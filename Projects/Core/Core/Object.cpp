@@ -165,7 +165,7 @@ Object Object::execute(const std::string& method, const VariablesList& params, c
 	// are we called from a member function?
 	bool callFromMember = false;
 	for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
-		if ( caller && ((*it) == *caller) ) {
+		if ( caller && (caller == &(*it)) ) {
 			// we have been called from a member function/method
 			// so visibility does not matter
 			callFromMember = true;
