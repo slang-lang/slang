@@ -64,10 +64,13 @@ ObjectBluePrint Analyser::createObject(TokenIterator& start)
 			std::string inheritance = (*start++).content();
 			std::string ancestor = (*start++).content();
 
+/*
 			parents.insert(std::make_pair<std::string, ObjectBluePrint::Ancestor>(
 				ancestor,
 				ObjectBluePrint::Ancestor(ancestor, Visibility::convert(inheritance))
 			));
+*/
+			parents[ancestor] = ObjectBluePrint::Ancestor(ancestor, Visibility::convert(inheritance));
 		} while ( std::distance(start, open) > 0 && ++start != mTokens.end() );
 	}
 
@@ -90,7 +93,7 @@ ObjectBluePrint Analyser::createObject(TokenIterator& start)
 
 void Analyser::generateObjects()
 {
-	TokenList::iterator it = mTokens.begin();
+	TokenList::const_iterator it = mTokens.begin();
 
 	// loop over all tokens and look for imports and object declarations
 	while ( it != mTokens.end() && it->type() != Token::Type::ENDOFFILE ) {

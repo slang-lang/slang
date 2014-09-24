@@ -22,28 +22,48 @@ class Exception : public std::exception
 {
 public:
 	Exception(const std::string& text, const Token::Position& position = Token::Position())
-	: std::exception(text.c_str()),
-	  mPosition(position),
-	  mText("Exception: " + text)
+	: mPosition(position),
+	  mText(text)
 	{ }
-	virtual ~Exception() { }
+	virtual ~Exception() throw() { }
 
 public:
-	std::string what() {
-		std::string result = mText;
-
+#ifdef __WIN32
+	const char* what() const {
+		return mText.c_str();
+	}
+#elif defined __APPLE__
+#include "TargetConditionals.h"
+#if TARGET_IPHONE_SIMULATOR
+    // iOS Simulator
+#elif TARGET_OS_IPHONE
+    // iOS device
+    const char* what() const throw() {
+        return mText.c_str();
+    }
+#elif TARGET_OS_MAC
+    // Other kinds of Mac OS
+    const char* what() const _NOEXCEPT {
 		//if ( mPosition.line != 0 ) {
 		//	result += " at line " + Tools::toString(mPosition.line);// + ", " + Tools::toString(mPosition.column);
 		//}
 
-		return result;
+        return mText.c_str();
+    }
+#else
+    // Unsupported platform
+#endif
+#elif defined __linux
+	virtual const char* what() const throw () {
+		return mText.c_str();
 	}
+#endif
 
 protected:
 
 private:
 	Token::Position mPosition;
-    std::string	mText;
+	std::string mText;
 };
 
 

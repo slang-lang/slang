@@ -45,9 +45,12 @@ void Method::addIdentifier(Object v)
 		throw DuplicateIdentifer(v.name());
 	}
 
+/*
 	mVariables.insert(
 		std::make_pair<std::string, Object>(v.name(), v)
 	);
+*/
+	mVariables[v.name()] = v;
 }
 
 Object Method::execute(const VariablesList& params)
@@ -120,7 +123,7 @@ Object& Method::getVariable(const std::string& name)
 
 void Method::handleType(TokenIterator& token)
 {
-	TokenIterator tmp = token;
+//	TokenIterator tmp = token;
 
 	bool isConst = false;
 	bool isStatic = false;
@@ -381,7 +384,7 @@ Object Method::parseAtom(TokenIterator& start)
 
 Object Method::parseCondition(TokenIterator& token)
 {
-	TokenIterator tmp = token;
+//	TokenIterator tmp = token;
 
 	Object v1 = parseExpression(token);
 
@@ -521,7 +524,7 @@ Object Method::process(TokenIterator start, TokenIterator end, Token::Type::E te
 				Object& s = getVariable(token->content());
 				Object t = parseExpression(++assign);
 
-				if ( s.isConst() || this->isConst() && isMember(s.name()) ) {
+				if ( s.isConst() || (this->isConst() && isMember(s.name())) ) {
 					throw Exception("can not change const object!", token->position());
 				}
 

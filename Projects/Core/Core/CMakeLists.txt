@@ -1,7 +1,7 @@
 INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
 ADD_SUBDIRECTORY(BuildInObjects)
-ADD_SUBDIRECTORY(Interfaces)
+#ADD_SUBDIRECTORY(Interfaces)
 ADD_SUBDIRECTORY(Keywords)
 #ADD_SUBDIRECTORY(Plugins)
 
@@ -43,6 +43,8 @@ SET(DEPENDENCIES
 	CoreKeywords
 	CoreBuildInObjects
 )
+
+add_include(Projects/Core)
 
 build_static_lib(Core "")
 

@@ -58,7 +58,7 @@ public:
 				VariablesList::const_iterator fIt = firstList.begin();
 				VariablesList::const_iterator sIt = secondList.begin();
 
-				for ( ; fIt != firstList.end(), sIt != secondList.end(); ++fIt, ++sIt ) {
+				for ( ; fIt != firstList.end() && sIt != secondList.end(); ++fIt, ++sIt ) {
 					if ( fIt->type() != sIt->type() ) {
 						return fIt->type() < sIt->type();
 					}
@@ -85,7 +85,7 @@ public:
 				VariablesList::const_iterator fIt = firstList.begin();
 				VariablesList::const_iterator sIt = secondList.begin();
 
-				for ( ; fIt != firstList.end(), sIt != secondList.end(); ++fIt, ++sIt ) {
+				for ( ; fIt != firstList.end() && sIt != secondList.end(); ++fIt, ++sIt ) {
 					if ( fIt->type() != sIt->type() ) {
 						return fIt->type() < sIt->type();
 					}

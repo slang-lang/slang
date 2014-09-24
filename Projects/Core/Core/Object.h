@@ -31,6 +31,11 @@ public:
 	class Ancestor
 	{
 	public:
+		Ancestor()
+		: mName(""),
+		  mVisibility(Visibility::Private)
+		{ }
+
 		Ancestor(const std::string& name, Visibility::E visibility)
 		: mName(name),
 		  mVisibility(visibility)
@@ -55,13 +60,16 @@ public:
 
 public:
 	ObjectBluePrint()
+	: mVisibility(Visibility::Public)
 	{ }
 
 	ObjectBluePrint(const std::string& objectType, const std::string& filename)
-	: mFilename(filename),
-	  mObjectType(objectType),
-	  mVisibility(Visibility::Public)
+	: mObjectType(objectType),
+	  mVisibility(Visibility::Public),
+	  mFilename(filename)
 	{ }
+
+	virtual ~ObjectBluePrint() { }
 
 public:
 	const Ancestors& getAncestors() const {
