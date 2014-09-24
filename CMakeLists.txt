@@ -1,4 +1,4 @@
-PROJECT(JsonDB)
+PROJECT(ObjectiveScript)
 
 INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
