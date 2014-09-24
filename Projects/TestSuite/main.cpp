@@ -1,15 +1,17 @@
 
-// Memory leak check - Begin
-#define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
+#ifdef _WIN32
+	// Memory leak check - Begin
+	#define _CRTDBG_MAP_ALLOC
+	#include <stdlib.h>
 
-#include <iostream>
-#include <crtdbg.h>
-#ifdef _DEBUG
-#define DEBUG_NEW new(_NORMAL_BLOCK, __FILE__, __LINE__)
-#define new DEBUG_NEW
+	#include <iostream>
+	#include <crtdbg.h>
+	#ifdef _DEBUG
+	#define DEBUG_NEW new(_NORMAL_BLOCK, __FILE__, __LINE__)
+	#define new DEBUG_NEW
+	#endif
+	// Memory leak check - End
 #endif
-// Memory leak check - End
 
 
 // Library includes
@@ -30,10 +32,11 @@ typedef std::list<TestFixture*> FixtureList;
 
 int main(int argc, const char* argv[])
 {
+#ifdef _WIN32
 	// Memory leak detection
 	_CrtSetDbgFlag ( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF );
 	// Memory leak detection
-
+#endif
 
 	bool executed = false;
 	FixtureList mFixtures;
