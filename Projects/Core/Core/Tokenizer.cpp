@@ -424,11 +424,12 @@ void Tokenizer::process()
 		lastChar = thisChar;
 	}
 
-	// add end of file token (Token::Type::ENDOFFILE)
+	// add end of file token
 	addToken(Token(Token::Type::ENDOFFILE));
 
 	removeWhiteSpaces();		// remove all whitespaces
-	replace();
+	replaceAssignments();
+	replacePrototypes();
 	//classify();
 }
 
@@ -445,7 +446,7 @@ void Tokenizer::removeWhiteSpaces()
 	mTokens = tmp;
 }
 
-void Tokenizer::replace()
+void Tokenizer::replaceAssignments()
 {
 	TokenList tmp;
 	Token::Type::E lastType = Token::Type::UNKNOWN;
@@ -514,6 +515,42 @@ void Tokenizer::replace()
 				tmp.push_back(Token(Token::Type::ASSIGN_SUBTRACT, "-="));
 			}
 		}
+
+		lastType = token->type();
+		if ( !changed ) {
+			tmp.push_back((*token));
+		}
+
+		token++;
+	}
+
+	mTokens = tmp;
+	tmp.clear();
+
+	for ( TokenIterator it = mTokens.begin(); it != mTokens.end(); ++it ) {
+		if ( (*it).type() == Token::Type::EQUAL ) {
+			tmp.push_back(Token(Token::Type::ASSIGN, (*it).content(), (*it).position()));
+		}
+		else {
+			tmp.push_back((*it));
+		}
+	}
+
+	mTokens = tmp;
+}
+
+void Tokenizer::replacePrototypes()
+{
+	TokenList tmp;
+	Token::Type::E lastType = Token::Type::UNKNOWN;
+	TokenIterator token = mTokens.begin();
+
+	// try to combine all compare tokens
+	while ( token != mTokens.end() ) {
+		bool changed = false;
+		Token::Type::E activeType = token->type();
+
+		// find prototype as ( identifier greater identifier less )
 
 		lastType = token->type();
 		if ( !changed ) {

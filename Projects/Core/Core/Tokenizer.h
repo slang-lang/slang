@@ -36,7 +36,8 @@ private:	// Tokenizer
 	void classify();
 	Token createToken(const std::string& con, const Token::Position& pos);
 	void removeWhiteSpaces();
-	void replace();
+	void replaceAssignments();
+	void replacePrototypes();
 
 	bool isBoolean(const std::string& token) const;
 	bool isDigit(const std::string& token) const;

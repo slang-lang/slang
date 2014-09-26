@@ -22,7 +22,9 @@ public object Main
 	public Void Main() { }
 	
 	public Void test() {
-		TestPrototype<Number> proto(100);
+		//TestPrototype<Number> proto(100);
+		//TestPrototype < Number > proto(100);
+		TestPrototype of Number proto(100);
 
 		print("Prototype value = " & proto.getValue());
 

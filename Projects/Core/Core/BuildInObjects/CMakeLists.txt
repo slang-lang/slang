@@ -8,6 +8,7 @@ SET(HEADERS
 	Bool.h
 	Number.h
 	String.h
+	Void.h
 )
 
 SET(DEPENDENCIES

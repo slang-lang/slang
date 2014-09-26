@@ -37,8 +37,7 @@ public:	// Constructor & Destructor
 	void destruct();
 
 public:	//Helpers
-	//Variable& getMember(const std::string& m);		// throws UnknownIdentifer exxception
-	Object& getMember(const std::string& m);		// throws UnknownIdentifer exxception
+	Object& getMember(const std::string& m);
 	bool hasMember(const std::string& m);
 	bool hasMethod(const std::string& m);
 	bool hasMethod(const std::string& m, const VariablesList& params);

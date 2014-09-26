@@ -324,6 +324,10 @@
 				RelativePath=".\Core\VirtualMachine.h"
 				>
 			</File>
+			<File
+				RelativePath=".\Core\BuildInObjects\Void.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"

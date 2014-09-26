@@ -8,6 +8,7 @@
 #include <Core/BuildInObjects/Bool.h>
 #include <Core/BuildInObjects/Number.h>
 #include <Core/BuildInObjects/String.h>
+#include <Core/BuildInObjects/Void.h>
 #include "Exceptions.h"
 #include "Preprocessor.h"
 #include "Tools.h"
@@ -23,6 +24,7 @@ Repository::Repository()
 	addBlueprint(Bool());
 	addBlueprint(Number());
 	addBlueprint(String());
+	addBlueprint(Void());
 }
 
 Repository::~Repository()
@@ -74,6 +76,38 @@ void Repository::addPrototype(const Prototype& prototype)
 
 	os_debug("addPrototype('" + type + "')");
 
+	Prototypes::iterator it = mPrototypes.find(type);
+	if ( it != mPrototypes.end() ) {
+		throw Exception("duplicate object '" + type + "' added to repository");
+	}
+
+	mPrototypes.insert(
+		std::make_pair<std::string, Prototype>(type, prototype)
+	);
+/*
+	Prototypes::iterator objIt = mPrototypes.find(type);
+
+	// loop over all tokens of a prototype blueprint object
+	// and retype all identifier tokens with object names as values with type
+	bool replaced = false;
+	TokenList tokens = objIt->second.getTokens();
+
+	for ( TokenList::iterator tokenIt = tokens.begin(); tokenIt != tokens.end(); ++tokenIt ) {
+		// we found an identifier token
+		if ( tokenIt->type() == Token::Type::IDENTIFER ) {
+			// check if it's content is one of our newly added blueprint objects
+			if ( tokenIt->content() != type && mBluePrints.find(tokenIt->content()) != mBluePrints.end() ) {
+				tokenIt->resetTypeTo(Token::Type::TYPE);
+
+				replaced = true;
+			}
+		}
+	}
+
+	if ( replaced ) {
+		objIt->second.setTokens(tokens);
+	}
+*/
 }
 
 Object Repository::createInstance(const std::string& type, const std::string& name)

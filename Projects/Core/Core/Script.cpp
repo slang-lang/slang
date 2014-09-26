@@ -58,8 +58,9 @@ void Script::construct()
 void Script::destruct()
 {
 	try {
-		assert(mObject);
-		mObject->Destructor();
+		if ( mObject ) {
+			mObject->Destructor();
+		}
 	}
 	catch ( Exception &e ) {
 		os_error(e.what());
@@ -81,11 +82,6 @@ Object Script::execute(const std::string& method, VariablesList params)
 
 	return returnValue;
 }
-
-//Variable& Script::getMember(const std::string& m)
-//{
-//	return mObject->getMember(m);
-//}
 
 Object& Script::getMember(const std::string& m)
 {
