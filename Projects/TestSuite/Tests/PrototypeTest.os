@@ -16,7 +16,7 @@ public prototype TestPrototype
 	}
 }
 
-/*
+
 public object Main
 {
 	public Void Main() { }
@@ -31,4 +31,3 @@ public object Main
 		print("Prototype value = " & proto.getValue());
 	}
 }
-*/

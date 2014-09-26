@@ -188,7 +188,7 @@ bool Analyser::isPrototypeDeclaration(TokenIterator start)
 	if ( (*start).type() != Token::Type::TYPE && (*start++).content() != "prototype" ) {
 		return false;
 	}
-	if ( (*start++).type() != Token::Type::VISIBILITY ) {
+	if ( (*start++).type() != Token::Type::IDENTIFER ) {
 		return false;
 	}
 

@@ -68,6 +68,7 @@ Script* VirtualMachine::create(const std::string& filename)
 
 	const std::list<std::string>& libraries = a.getLibraryReferences();
 	ObjectBluePrintList objects = a.getObjects();
+	PrototypeList prototypes = a.getPrototypes();
 
 	for ( std::list<std::string>::const_iterator it = libraries.begin(); it != libraries.end(); ++it ) {
 		loadLibrary((*it));
@@ -87,6 +88,10 @@ Script* VirtualMachine::create(const std::string& filename)
 
 			script->assign(&object->second);
 		}
+	}
+
+	for ( PrototypeList::iterator it = prototypes.begin(); it != prototypes.end(); ++it ) {
+		mRepository.addPrototype((*it));
 	}
 
 	script->init(&mRepository);

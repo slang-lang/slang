@@ -45,9 +45,10 @@ void Script::connectPrinter(IPrinter *p)
 void Script::construct()
 {
 	try {
-		assert(mObject);
-		mObject->connectPrinter(mPrinter);
-		mObject->Constructor(VariablesList());
+		if ( mObject ) {
+			mObject->connectPrinter(mPrinter);
+			mObject->Constructor(VariablesList());
+		}
 	}
 	catch ( Exception &e ) {
 		os_error(e.what());
@@ -112,8 +113,9 @@ void Script::init(Repository *r)
 
 	mRepository = r;
 
-	assert(mObject);
-	mObject->connectRepository(mRepository);
+	if ( mObject ) {
+		mObject->connectRepository(mRepository);
+	}
 }
 
 
