@@ -71,8 +71,8 @@ Object Method::execute(const VariablesList& params)
 	returnValue.visibility(visibility());
 
 	try {	// try to execute our method
-		//returnValue.value(process(mTokens.begin(), mTokens.end()).value());
-		Object r = process(mTokens.begin(), mTokens.end());
+		TokenIterator start = mTokens.begin();
+		Object r = process(start, mTokens.end());
 		returnValue.assign(r);
 	}
 	catch ( Exception &e ) {	// if any thing happens clean up the mess
@@ -158,13 +158,9 @@ void Method::handleType(TokenIterator& token)
 		}
 	}
 
-	//FIXME: this does not work because we extract a string from our object
+	TokenIterator assign = mTokens.end();
 	if ( token->type() == Token::Type::ASSIGN ) {
-		value = parseExpression(++token).value();
-	}
-
-	if ( token->type() != Token::Type::SEMICOLON ) {
-		throw SyntaxError("';' expected but '" + token->content() + "' found", token->position());
+		assign = ++token;
 	}
 
 	Object object;
@@ -177,9 +173,17 @@ void Method::handleType(TokenIterator& token)
 
 	if ( isConst ) object.setConst(true);
 	if ( isStatic ) object.setStatic(true);
-	object.value(value);
+
+	if ( assign != mTokens.end() ) {
+		object.assign(parseExpression(assign));
+		token = assign;
+	}
 
 	addIdentifier(object);
+
+	if ( token->type() != Token::Type::SEMICOLON ) {
+		throw SyntaxError("';' expected but '" + token->content() + "' found", token->position());
+	}
 }
 
 bool Method::isBooleanConst(const std::string& v) const
@@ -398,7 +402,9 @@ Object Method::parseAtom(TokenIterator& start)
 
 Object Method::parseCondition(TokenIterator& token)
 {
-	Object v1 = parseExpression(token);
+	//Object v1 = parseExpression(token);
+	Object v1;
+	v1.assign(parseExpression(token));
 
 	for ( ; ; ) {
 		Token::Type::E op = token->type();
@@ -433,13 +439,17 @@ Object Method::parseCondition(TokenIterator& token)
 
 Object Method::parseExpression(TokenIterator& start)
 {
-	Object result = parseSummands(start);
+	//Object result = parseSummands(start);
+	Object result;
+	result.assign(parseSummands(start));
 	return result;
 }
 
 Object Method::parseFactors(TokenIterator& start)
 {
-	Object v1 = parseAtom(start);
+	//Object v1 = parseAtom(start);
+	Object v1;
+	v1.assign(parseAtom(start));
 
 	for ( ; ; ) {
 		Token::Type::E op = start->type();
@@ -461,7 +471,9 @@ Object Method::parseFactors(TokenIterator& start)
 
 Object Method::parseSummands(TokenIterator& start)
 {
-	Object v1 = parseAtom(start);
+	//Object v1 = parseAtom(start);
+	Object v1;
+	v1.assign(parseAtom(start));
 
 	for ( ; ; ) {
 		Token::Type::E op = start->type();
@@ -490,10 +502,9 @@ void Method::pop_stack()
 	mStack.pop_back();
 }
 
-Object Method::process(TokenIterator start, TokenIterator end, Token::Type::E terminator)
+Object Method::process(TokenIterator& token, TokenIterator end, Token::Type::E terminator)
 {
 	Object returnValue;
-	TokenIterator token = start;
 
 	// go through all keywords and if we find the one
 	// that we want to execute, redirect to the corresponding method
@@ -564,6 +575,7 @@ Object Method::process(TokenIterator start, TokenIterator end, Token::Type::E te
 					else if ( keyword == "new" ) {
 						Object n = process_new(token);
 						returnValue.assign(n);
+						return returnValue;
 					}
 					else if ( keyword == "print" ) {
 						process_print(token);

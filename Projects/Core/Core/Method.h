@@ -125,7 +125,7 @@ private:	// Execution
 
 	// token processing
 	// {
-	Object process(TokenIterator start, TokenIterator end, Token::Type::E terminator = Token::Type::NIL);
+	Object process(TokenIterator& start, TokenIterator end, Token::Type::E terminator = Token::Type::NIL);
 	void process_assert(TokenIterator& token);
 	void process_for(TokenIterator& token);
 	void process_if(TokenIterator& token);

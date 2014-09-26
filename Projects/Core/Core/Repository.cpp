@@ -139,7 +139,7 @@ Object Repository::createInstanceFromPrototype(const std::string& prototype, con
 
 	ObjectBluePrint blue = it->second.generateBluePrint(type);
 
-	Object object(name, blue.filename(), prototype + ' of ' + type, "");
+	Object object(name, blue.filename(), prototype + " of " + type, "");
 	object.setTokens(blue.getTokens());
 
 	Preprocessor pre;

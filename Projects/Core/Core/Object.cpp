@@ -88,6 +88,7 @@ void Object::assign(const Object& other)
 		this->mConstructed = other.mConstructed;
 	this->mMembers = other.mMembers;
 	this->mMethods = other.mMethods;
+	this->mRepository = other.mRepository;
 	this->mTokens = other.mTokens;
 	this->mType = other.mType;
 	this->mValue = other.mValue;
