@@ -289,6 +289,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Utils\Printer.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Prototype\PrototypeTest.h"
 				>
 			</File>
