@@ -51,6 +51,7 @@ private:	// Tokenizer
 
 private:	// Preprocessor
 	bool isDefined(const std::string& token) const;
+	bool isPrototype(TokenIterator token) const;
 
 private:
 	std::string	mContent;

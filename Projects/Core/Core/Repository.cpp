@@ -132,14 +132,14 @@ Object Repository::createInstanceFromPrototype(const std::string& prototype, con
 {
 	os_debug("createInstanceFromPrototype('" + prototype + ", " + type + "', '" + name + "')");
 
-	Prototypes::iterator it = mPrototypes.find(type);
+	Prototypes::iterator it = mPrototypes.find(prototype);
 	if ( it == mPrototypes.end() ) {
 		throw Exception("trying to create prototype instance of unknown object '" + type + "'");
 	}
 
 	ObjectBluePrint blue = it->second.generateBluePrint(type);
 
-	Object object(name, blue.filename(), type, "");
+	Object object(name, blue.filename(), prototype + ' of ' + type, "");
 	object.setTokens(blue.getTokens());
 
 	Preprocessor pre;

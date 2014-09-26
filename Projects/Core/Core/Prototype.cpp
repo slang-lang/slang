@@ -36,6 +36,8 @@ ObjectBluePrint Prototype::generateBluePrint(const std::string& type)
 		if ( it->type() == Token::Type::IDENTIFER && it->content() == PROTOTYPE_TYPE ) {
 			it->resetContentTo(type);
 		}
+
+		it++;
 	}
 
 	ObjectBluePrint blue = mBluePrint;

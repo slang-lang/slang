@@ -300,6 +300,25 @@ bool Tokenizer::isKeyword(const std::string& token) const
 	return false;
 }
 
+bool Tokenizer::isPrototype(TokenIterator token) const
+{
+	if ( token->type() != Token::Type::IDENTIFER ) {
+		return false;
+	}
+	token++;
+
+	if ( token->type() != Token::Type::RESERVED && token->content() != "of" ) {
+		return false;
+	}
+	token++;
+
+	if ( token->type() != Token::Type::IDENTIFER ) {
+		return false;
+	}
+
+	return true;
+}
+
 bool Tokenizer::isReservedWord(const std::string& token) const
 {
 	for ( StringList::const_iterator it = mReservedWords.begin(); it != mReservedWords.end(); ++it ) {
@@ -539,40 +558,37 @@ void Tokenizer::replaceAssignments()
 	mTokens = tmp;
 }
 
+/*
+ *  This removes all 'of' tokens that are part of a prototype instantiation
+ *  and changes the token type of the prototype from identifier to prototype.
+ */
 void Tokenizer::replacePrototypes()
 {
-	TokenList tmp;
-	Token::Type::E lastType = Token::Type::UNKNOWN;
-	TokenIterator token = mTokens.begin();
+	TokenList::iterator token = mTokens.begin();
 
-	// try to combine all compare tokens
+	// try to combine all prototype tokens
 	while ( token != mTokens.end() ) {
-		bool changed = false;
-		Token::Type::E activeType = token->type();
+		// find prototype as ( identifier reserved identifier )
+		if ( isPrototype(token) ) {
+			// reset it's type
+			(*token).resetTypeTo(Token::Type::PROTOTYPE);
 
-		// find prototype as ( identifier greater identifier less )
+			// and remove the following 'of'-token
+			token++;
+			mTokens.erase(token++);
+			continue;
 
-		lastType = token->type();
-		if ( !changed ) {
-			tmp.push_back((*token));
+/*
+			// and remove the following 2 tokens ('of' & type)
+			token++;
+			mTokens.erase(token++);
+			mTokens.erase(token++);
+			continue;
+*/
 		}
 
 		token++;
 	}
-
-	mTokens = tmp;
-	tmp.clear();
-
-	for ( TokenIterator it = mTokens.begin(); it != mTokens.end(); ++it ) {
-		if ( (*it).type() == Token::Type::EQUAL ) {
-			tmp.push_back(Token(Token::Type::ASSIGN, (*it).content(), (*it).position()));
-		}
-		else {
-			tmp.push_back((*it));
-		}
-	}
-
-	mTokens = tmp;
 }
 
 const TokenList& Tokenizer::tokens() const

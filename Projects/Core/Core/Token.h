@@ -84,6 +84,7 @@ public:
 			NIL,
 			PARENTHESIS_CLOSE,
 			PARENTHESIS_OPEN,
+			PROTOTYPE,
 			QUOTATION_DOUBLE,
 			QUOTATION_SINGLE,
 			RESERVED,
@@ -136,6 +137,7 @@ public:
 				case NIL: return "NIL";
 				case PARENTHESIS_CLOSE: return ")";
 				case PARENTHESIS_OPEN: return "(";
+				case PROTOTYPE: return "prototype";
 				case QUOTATION_DOUBLE: return "\"";
 				case QUOTATION_SINGLE: return "'";
 				case RESERVED: return "reserved";

@@ -123,12 +123,18 @@ Object& Method::getVariable(const std::string& name)
 
 void Method::handleType(TokenIterator& token)
 {
-//	TokenIterator tmp = token;
-
 	bool isConst = false;
+	bool isPrototype = token->type() == Token::Type::PROTOTYPE;
 	bool isStatic = false;
+
 	std::string name;
+	std::string prototype;
 	std::string value;
+
+	if ( isPrototype ) {
+		prototype = token->content();
+		token++;
+	}
 
 	std::string type = token->content();
 	token++;
@@ -152,6 +158,7 @@ void Method::handleType(TokenIterator& token)
 		}
 	}
 
+	//FIXME: this does not work because we extract a string from our object
 	if ( token->type() == Token::Type::ASSIGN ) {
 		value = parseExpression(++token).value();
 	}
@@ -160,7 +167,14 @@ void Method::handleType(TokenIterator& token)
 		throw SyntaxError("';' expected but '" + token->content() + "' found", token->position());
 	}
 
-	Object object = mRepository->createInstance(type, name);
+	Object object;
+	if ( isPrototype ) {
+		object = mRepository->createInstanceFromPrototype(prototype, type, name);
+	}
+	else {
+		object = mRepository->createInstance(type, name);
+	}
+
 	if ( isConst ) object.setConst(true);
 	if ( isStatic ) object.setStatic(true);
 	object.value(value);
@@ -384,8 +398,6 @@ Object Method::parseAtom(TokenIterator& start)
 
 Object Method::parseCondition(TokenIterator& token)
 {
-//	TokenIterator tmp = token;
-
 	Object v1 = parseExpression(token);
 
 	for ( ; ; ) {
@@ -571,6 +583,7 @@ Object Method::process(TokenIterator start, TokenIterator end, Token::Type::E te
 			case Token::Type::LITERAL: {
 				parseExpression(token);
 			} break;
+			case Token::Type::PROTOTYPE:
 			case Token::Type::TYPE: {
 				handleType(token);
 				break;
@@ -722,7 +735,14 @@ Object Method::process_new(TokenIterator& token)
 {
 	TokenIterator tmp = token;
 
+	bool isPrototype = token->type() == Token::Type::PROTOTYPE;
 	std::string name = "<temporary object>";
+	std::string prototype = token->content();
+
+	if ( isPrototype ) {
+		token++;
+	}
+
 	std::string type = token->content();
 
 	TokenIterator opened = findNext(tmp, Token::Type::PARENTHESIS_OPEN);
@@ -748,7 +768,14 @@ Object Method::process_new(TokenIterator& token)
 
 	token = closed;
 
-	Object object = mRepository->createInstance(type, name);
+	Object object;
+	if ( isPrototype ) {
+		object = mRepository->createInstanceFromPrototype(prototype, type, name);
+	}
+	else {
+		object = mRepository->createInstance(type, name);
+	}
+
 	object.connectPrinter(mOwner->providePrinter());
 	object.connectRepository(mRepository);
 	object.Constructor(params);
