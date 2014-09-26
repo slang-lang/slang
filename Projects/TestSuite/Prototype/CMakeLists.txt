@@ -2,16 +2,17 @@ INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
 SET(SOURCES
     Fixture.cpp
-    TestFrameworkTest.cpp
+    PrototypeTest.cpp
 )
 
 SET(HEADERS
     Fixture.h
-    TestFrameworkTest.h
+    PrototypeTest.h
 )
 
 SET(DEPENDENCIES
+	Core
 )
 
-build_static_lib(Test_FrameworkTest "")
+build_static_lib(Test_Prototype "")
 

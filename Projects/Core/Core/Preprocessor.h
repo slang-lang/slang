@@ -39,7 +39,6 @@ private:
 	bool isLocalDeclaration(TokenIterator start);
 	bool isMemberDeclaration(TokenIterator start);
 	bool isMethodDeclaration(TokenIterator start);
-	bool isObjectDeclaration(TokenIterator start);
 
 private:
 	TokenList	mTokens;

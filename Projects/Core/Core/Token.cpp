@@ -40,6 +40,11 @@ const Token::Position& Token::position() const
 	return mPosition;
 }
 
+void Token::resetContentTo(const std::string& c)
+{
+	mContent = c;
+}
+
 void Token::resetTypeTo(Type::E type)
 {
 	mType = type;

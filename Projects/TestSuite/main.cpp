@@ -22,6 +22,7 @@
 #include <Tools/Strings.h>
 
 // Fixtures
+#include <Prototype/Fixture.h>
 #include <TestFramework/Fixture.h>
 
 // Namespace declarations
@@ -68,6 +69,9 @@ int main(int argc, const char* argv[])
 	try {
 		Testing::Fixture testing(logger);
 		mFixtures.push_back(&testing);
+
+		Testing::Prototype::Fixture prototype(logger);
+		mFixtures.push_back(&prototype);
 
 		for ( FixtureList::iterator it = mFixtures.begin(); it != mFixtures.end(); ++it ) {
 			if ( show ) {

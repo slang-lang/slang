@@ -162,8 +162,11 @@ public:
 	const std::string& content() const;
 	const Position& position() const;
 
-	void resetTypeTo(Type::E type);
 	Type::E type() const;
+
+public:
+	void resetContentTo(const std::string& c);
+	void resetTypeTo(Type::E type);
 
 protected:
 

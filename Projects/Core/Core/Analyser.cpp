@@ -64,12 +64,6 @@ ObjectBluePrint Analyser::createObject(TokenIterator& start)
 			std::string inheritance = (*start++).content();
 			std::string ancestor = (*start++).content();
 
-/*
-			parents.insert(std::make_pair<std::string, ObjectBluePrint::Ancestor>(
-				ancestor,
-				ObjectBluePrint::Ancestor(ancestor, Visibility::convert(inheritance))
-			));
-*/
 			parents[ancestor] = ObjectBluePrint::Ancestor(ancestor, Visibility::convert(inheritance));
 		} while ( std::distance(start, open) > 0 && ++start != mTokens.end() );
 	}
@@ -91,6 +85,14 @@ ObjectBluePrint Analyser::createObject(TokenIterator& start)
 	return blue;
 }
 
+Prototype Analyser::createPrototype(TokenIterator& start)
+{
+	ObjectBluePrint blue = createObject(start);
+
+	Prototype p(blue);
+	return p;
+}
+
 void Analyser::generateObjects()
 {
 	TokenList::const_iterator it = mTokens.begin();
@@ -105,9 +107,13 @@ void Analyser::generateObjects()
 			ObjectBluePrint o = createObject(it);
 			mObjects.push_back(o);
 		}
+		else if ( isPrototypeDeclaration(it) ) {
+			Prototype p = createPrototype(it);
+			mPrototypes.push_back(p);
+		}
 /*
 		else {
-			os_error("synthax error: looks like a member or method declaration but is none");
+			os_error("syntax error: looks like a library, object or prototype declaration but is none");
 			return;
 		}
 */
@@ -132,6 +138,11 @@ const std::list<std::string>& Analyser::getLibraryReferences() const
 const ObjectBluePrintList& Analyser::getObjects() const
 {
 	return mObjects;
+}
+
+const PrototypeList& Analyser::getPrototypes() const
+{
+	return mPrototypes;
 }
 
 // syntax:
@@ -161,6 +172,23 @@ bool Analyser::isObjectDeclaration(TokenIterator start)
 		return false;
 	}
 	if ( (*start++).type() != Token::Type::IDENTIFER ) {
+		return false;
+	}
+
+	return true;
+}
+
+// syntax:
+// <visibility> prototype <identifier> [extends <indentifier> [, <identifier>, ...]]
+bool Analyser::isPrototypeDeclaration(TokenIterator start)
+{
+	if ( (*start++).type() != Token::Type::VISIBILITY ) {
+		return false;
+	}
+	if ( (*start).type() != Token::Type::TYPE && (*start++).content() != "prototype" ) {
+		return false;
+	}
+	if ( (*start++).type() != Token::Type::VISIBILITY ) {
 		return false;
 	}
 

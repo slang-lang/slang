@@ -183,6 +183,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Core\Prototype.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\Repository.cpp"
 				>
 			</File>
@@ -274,6 +278,10 @@
 			</File>
 			<File
 				RelativePath=".\Core\Keywords\print.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\Prototype.h"
 				>
 			</File>
 			<File

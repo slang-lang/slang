@@ -28,8 +28,7 @@ public:
 	void setup();
 	void teardown();
 
-private:
-	// Tests
+private:	// Tests
 	void testCOMPARE();
 	void testTCOMPARE();
 	void testTFAIL();
@@ -46,5 +45,6 @@ private:
 
 
 }
+
 
 #endif

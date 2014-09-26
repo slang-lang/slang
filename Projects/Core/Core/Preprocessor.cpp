@@ -236,23 +236,6 @@ bool Preprocessor::isMethodDeclaration(TokenIterator start)
 	return checkSynthax(start, tokens);
 }
 
-// syntax:
-// <visibility> object <identifier> [extends <indentifier> [, <identifier>, ...]]
-bool Preprocessor::isObjectDeclaration(TokenIterator start)
-{
-	if ( (*start++).type() != Token::Type::VISIBILITY ) {
-		return false;
-	}
-	if ( (*start).type() != Token::Type::TYPE && (*start++).content() != "object" ) {
-		return false;
-	}
-	if ( (*start++).type() != Token::Type::VISIBILITY ) {
-		return false;
-	}
-
-	return true;
-}
-
 void Preprocessor::process(Object *object)
 {
 	os_debug("process('" + object->name() + "')");
