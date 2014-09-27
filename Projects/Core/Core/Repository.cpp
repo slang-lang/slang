@@ -32,11 +32,11 @@ Repository::~Repository()
 	mBluePrints.clear();
 }
 
-void Repository::addBlueprint(const ObjectBluePrint& object)
+void Repository::addBlueprint(const BluePrint& object)
 {
-	std::string type = object.objectType();
+	std::string type = object.Typename();
 
-	os_debug("addBlueprint('" + type + "')");
+	OSdebug("addBlueprint('" + type + "')");
 
 	BluePrints::iterator it = mBluePrints.find(type);
 	if ( it != mBluePrints.end() ) {
@@ -44,7 +44,7 @@ void Repository::addBlueprint(const ObjectBluePrint& object)
 	}
 
 	mBluePrints.insert(
-		std::make_pair<std::string, ObjectBluePrint>(type, object)
+		std::make_pair<std::string, BluePrint>(type, object)
 	);
 	BluePrints::iterator objIt = mBluePrints.find(type);
 
@@ -74,7 +74,7 @@ void Repository::addPrototype(const Prototype& prototype)
 {
 	std::string type = prototype.type();
 
-	os_debug("addPrototype('" + type + "')");
+	OSdebug("addPrototype('" + type + "')");
 
 	Prototypes::iterator it = mPrototypes.find(type);
 	if ( it != mPrototypes.end() ) {
@@ -112,7 +112,7 @@ void Repository::addPrototype(const Prototype& prototype)
 
 Object Repository::createInstance(const std::string& type, const std::string& name)
 {
-	os_debug("createInstance('" + type + "', '" + name + "')");
+	OSdebug("createInstance('" + type + "', '" + name + "')");
 
 	BluePrints::iterator it = mBluePrints.find(type);
 	if ( it == mBluePrints.end() ) {
@@ -130,14 +130,14 @@ Object Repository::createInstance(const std::string& type, const std::string& na
 
 Object Repository::createInstanceFromPrototype(const std::string& prototype, const std::string& type, const std::string& name)
 {
-	os_debug("createInstanceFromPrototype('" + prototype + ", " + type + "', '" + name + "')");
+	OSdebug("createInstanceFromPrototype('" + prototype + ", " + type + "', '" + name + "')");
 
 	Prototypes::iterator it = mPrototypes.find(prototype);
 	if ( it == mPrototypes.end() ) {
 		throw Exception("trying to create prototype instance of unknown object '" + type + "'");
 	}
 
-	ObjectBluePrint blue = it->second.generateBluePrint(type);
+	BluePrint blue = it->second.generateBluePrint(type);
 
 	Object object(name, blue.filename(), prototype + " of " + type, "");
 	object.setTokens(blue.getTokens());

@@ -171,6 +171,26 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Core\BluePrint.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Core\"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Core\"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath=".\Core\Method.cpp"
 				>
 			</File>
@@ -233,6 +253,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Core\BluePrint.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\BuildInObjects\Bool.h"
 				>
 			</File>
@@ -290,6 +314,10 @@
 			</File>
 			<File
 				RelativePath=".\Core\Keywords\return.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\RTTI.h"
 				>
 			</File>
 			<File

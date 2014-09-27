@@ -164,7 +164,7 @@ void Preprocessor::generateObject(Object *object)
 
 	// if we don't find anything our script file is invalid
 	if ( visList.empty() ) {
-		os_error("'" + object->name() + "' has no visibility declarations!");
+		OSerror("'" + object->name() + "' has no visibility declarations!");
 		return;
 	}
 
@@ -238,7 +238,7 @@ bool Preprocessor::isMethodDeclaration(TokenIterator start)
 
 void Preprocessor::process(Object *object)
 {
-	os_debug("process('" + object->name() + "')");
+	OSdebug("process('" + object->name() + "')");
 
 	mTokens = object->getTokens();
 

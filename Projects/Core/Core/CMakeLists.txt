@@ -7,9 +7,11 @@ ADD_SUBDIRECTORY(Keywords)
 
 SET(SOURCES
 	Analyser.cpp
+	BluePrint.cpp
 	Method.cpp
 	Object.cpp
 	Preprocessor.cpp
+	Prototype.cpp
 	Repository.cpp
 	Script.cpp
 	Token.cpp
@@ -22,11 +24,13 @@ SET(SOURCES
 
 SET(HEADERS
 	Analyser.h
+	BluePrint.h
 	Exceptions.h
 	Method.h
 	Object.h
 #	ObjectiveScript.h
 	Preprocessor.h
+	Prototype.h
 	Repository.h
 	Script.h
 	Token.h

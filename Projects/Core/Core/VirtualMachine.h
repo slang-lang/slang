@@ -39,7 +39,7 @@ public:
 protected:
 
 private:
-	typedef std::map<std::string, ObjectBluePrint> ObjectBluePrintMap;
+	typedef std::map<std::string, BluePrint> BluePrintMap;
 	typedef std::map<std::string, Object> ObjectMap;
 
 private:
@@ -47,12 +47,12 @@ private:
 	void loadLibrary(const std::string& library);
 
 private:
-	std::string			mBaseFolder;
-	ObjectBluePrintMap	mBluePrints;
-	size_t				mCounter;
-	ObjectMap			mObjects;
-	IPrinter			*mPrinter;
-	Repository			mRepository;
+	std::string		mBaseFolder;
+	BluePrintMap	mBluePrints;
+	size_t			mCounter;
+	ObjectMap		mObjects;
+	IPrinter		*mPrinter;
+	Repository		mRepository;
 };
 
 

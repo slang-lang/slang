@@ -28,7 +28,7 @@ public:
 	~Repository();
 
 public:
-	void addBlueprint(const ObjectBluePrint& object);
+	void addBlueprint(const BluePrint& object);
 	void addPrototype(const Prototype& prototype);
 
 	Object createInstance(const std::string& type, const std::string& name);
@@ -38,7 +38,7 @@ public:
 protected:
 
 private:
-	typedef std::map<std::string, ObjectBluePrint> BluePrints;
+	typedef std::map<std::string, BluePrint> BluePrints;
 	typedef std::map<std::string, Prototype> Prototypes;
 
 private:

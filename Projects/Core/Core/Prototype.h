@@ -7,7 +7,7 @@
 #include <list>
 
 // Project includes
-#include "Object.h"
+#include "BluePrint.h"
 
 // Forward declarations
 
@@ -20,18 +20,18 @@ namespace ObjectiveScript {
 class Prototype
 {
 public:
-	Prototype(const ObjectBluePrint& blue);
+	Prototype(const BluePrint& blue);
 	~Prototype();
 
 public:
-	ObjectBluePrint generateBluePrint(const std::string& type);
+	BluePrint generateBluePrint(const std::string& type);
 
 	const std::string& type() const;
 
 protected:
 
 private:
-	ObjectBluePrint mBluePrint;
+	BluePrint mBluePrint;
 };
 
 typedef std::list<Prototype> PrototypeList;

@@ -778,7 +778,12 @@ Object Method::process_method(TokenIterator& token)
 	token = closed;
 
 //TODO: what if we want to execute a method of another object?!?!
-	return mOwner->execute(method, params, this);
+
+	if ( mOwner->hasMethod(method, params) ) {
+		return mOwner->execute(method, params, this);
+	}
+
+	throw UnknownIdentifer("unknown/unexpected identifier '" + method + "' found", tmp->position());
 }
 
 // syntax:

@@ -26,7 +26,7 @@ class Analyser
 {
 public:
 	const std::list<std::string>& getLibraryReferences() const;
-	const ObjectBluePrintList& getObjects() const;
+	const BluePrintList& getObjects() const;
 	const PrototypeList& getPrototypes() const;
 
 public:
@@ -40,7 +40,7 @@ private:
 
 private:
 	std::string createLibraryReference(TokenIterator& start);
-	ObjectBluePrint createObject(TokenIterator& start);
+	BluePrint createObject(TokenIterator& start);
 	Prototype createPrototype(TokenIterator& start);
 
 private:
@@ -51,7 +51,7 @@ private:
 private:
 	std::string				mFilename;
 	std::list<std::string>	mLibraries;
-	ObjectBluePrintList		mObjects;
+	BluePrintList			mObjects;
 	PrototypeList			mPrototypes;
 	TokenList				mTokens;
 };

@@ -51,7 +51,7 @@ void Script::construct()
 		}
 	}
 	catch ( Exception &e ) {
-		os_error(e.what());
+		OSerror(e.what());
 	}
 }
 
@@ -63,13 +63,13 @@ void Script::destruct()
 		}
 	}
 	catch ( Exception &e ) {
-		os_error(e.what());
+		OSerror(e.what());
 	}
 }
 
 Object Script::execute(const std::string& method, VariablesList params)
 {
-	os_debug("execute('" + method + "', [" + toString(params) + "])");
+	OSdebug("execute('" + method + "', [" + toString(params) + "])");
 
 	Object returnValue;
 	try {
@@ -77,7 +77,7 @@ Object Script::execute(const std::string& method, VariablesList params)
 		returnValue = mObject->execute(method, params);
 	}
 	catch ( Exception &e ) {
-		os_error(e.what());
+		OSerror(e.what());
 	}
 
 	return returnValue;
@@ -105,7 +105,7 @@ bool Script::hasMethod(const std::string& m, const VariablesList& params)
 
 void Script::init(Repository *r)
 {
-	os_debug("initialize");
+	OSdebug("initialize");
 
 	mRepository = r;
 

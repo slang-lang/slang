@@ -8,6 +8,7 @@
 #include <set>
 
 // Project includes
+#include "BluePrint.h"
 #include "Method.h"
 #include "Token.h"
 #include "Types.h"
@@ -25,94 +26,8 @@ class IPrinter;
 class Method;
 class Repository;
 
-class ObjectBluePrint
-{
-public:
-	class Ancestor
-	{
-	public:
-		Ancestor()
-		: mName(""),
-		  mVisibility(Visibility::Private)
-		{ }
 
-		Ancestor(const std::string& name, Visibility::E visibility)
-		: mName(name),
-		  mVisibility(visibility)
-		{ }
-
-	public:
-		const std::string& name() const {
-			return mName;
-		}
-		Visibility::E visibility() const {
-			return mVisibility;
-		}
-
-	protected:
-
-	private:
-		std::string	mName;
-		Visibility::E mVisibility;
-	};
-
-	typedef std::map<std::string, Ancestor> Ancestors;
-
-public:
-	ObjectBluePrint()
-	: mVisibility(Visibility::Public)
-	{ }
-
-	ObjectBluePrint(const std::string& objectType, const std::string& filename)
-	: mObjectType(objectType),
-	  mVisibility(Visibility::Public),
-	  mFilename(filename)
-	{ }
-
-	virtual ~ObjectBluePrint() { }
-
-public:
-	const Ancestors& getAncestors() const {
-		return mAncestors;
-	}
-	void setAncestors(const Ancestors& ancestors) {
-		mAncestors = ancestors;
-	}
-
-	const TokenList& getTokens() const {
-		return mTokens;
-	}
-	virtual void setTokens(const TokenList& tokens) {
-		mTokens = tokens;
-	}
-
-	Visibility::E getVisibility() const {
-		return mVisibility;
-	}
-	void setVisibility(Visibility::E v) {
-		mVisibility = v;
-	}
-
-public:
-	const std::string& filename() const {
-		return mFilename;
-	}
-	const std::string& objectType() const {
-		return mObjectType;
-	}
-
-protected:
-	Ancestors		mAncestors;
-	std::string		mObjectType;
-	TokenList		mTokens;
-	Visibility::E	mVisibility;
-
-private:
-	std::string		mFilename;
-};
-
-
-class Object : public ObjectBluePrint,
+class Object : public BluePrint,
 			   public Variable
 {
 public:
@@ -176,7 +91,6 @@ private:
 	Repository			*mRepository;
 };
 
-typedef std::list<ObjectBluePrint> ObjectBluePrintList;
 typedef std::list<Object> ObjectList;
 
 

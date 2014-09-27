@@ -19,10 +19,10 @@
 namespace ObjectiveScript {
 
 
-#define os_debug(message) std::cout << "[DEBUG] " << message << std::endl;
-#define os_error(message) std::cout << "[ERROR] " << message << std::endl;
-#define os_info(message) std::cout << "[INFO ] " << message << std::endl;
-#define os_warn(message) std::cout << "[WARN ] " << message << std::endl;
+#define OSdebug(message) std::cout << "[DEBUG] " << message << std::endl;
+#define OSerror(message) std::cout << "[ERROR] " << message << std::endl;
+#define OSinfo(message) std::cout << "[INFO ] " << message << std::endl;
+#define OSwarn(message) std::cout << "[WARN ] " << message << std::endl;
 
 
 namespace Tools {

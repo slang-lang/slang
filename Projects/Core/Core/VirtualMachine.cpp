@@ -52,11 +52,10 @@ void VirtualMachine::connectPrinter(IPrinter *p)
 
 Script* VirtualMachine::create(const std::string& filename)
 {
-	os_debug("create('" + filename + "')");
-	mPrinter->print("create('" + filename + "')");
+	OSdebug("create('" + filename + "')");
 
 	if ( filename.empty() ) {
-		os_warn("invalid filename provided!");
+		OSwarn("invalid filename provided!");
 		return 0;
 	}
 
@@ -67,23 +66,23 @@ Script* VirtualMachine::create(const std::string& filename)
 	a.process(filename);
 
 	const std::list<std::string>& libraries = a.getLibraryReferences();
-	ObjectBluePrintList objects = a.getObjects();
+	BluePrintList objects = a.getObjects();
 	PrototypeList prototypes = a.getPrototypes();
 
 	for ( std::list<std::string>::const_iterator it = libraries.begin(); it != libraries.end(); ++it ) {
 		loadLibrary((*it));
 	}
 
-	for ( ObjectBluePrintList::iterator it = objects.begin(); it != objects.end(); ++it ) {
+	for ( BluePrintList::iterator it = objects.begin(); it != objects.end(); ++it ) {
 		mRepository.addBlueprint((*it));
 
-		if ( it->filename() == filename && it->objectType() == "Main" ) {
+		if ( it->filename() == filename && it->Typename() == "Main" ) {
 			mObjects.insert(std::make_pair<std::string, Object>(
-				it->objectType(),
-				mRepository.createInstance(it->objectType(), "main")
+				it->Typename(),
+				mRepository.createInstance(it->Typename(), "main")
 			));
 
-			ObjectMap::iterator object = mObjects.find(it->objectType());
+			ObjectMap::iterator object = mObjects.find(it->Typename());
 			assert(object != mObjects.end());
 
 			script->assign(&object->second);
@@ -102,25 +101,25 @@ Script* VirtualMachine::create(const std::string& filename)
 
 void VirtualMachine::loadLibrary(const std::string& library)
 {
-	os_debug("Loading additional library file '" + library + "'");
+	OSdebug("Loading additional library file '" + library + "'");
 
 	try {
 		Analyser a;
 		a.process(buildLibraryPath(library));
 
 		const std::list<std::string>& libraries = a.getLibraryReferences();
-		ObjectBluePrintList objects = a.getObjects();
+		BluePrintList objects = a.getObjects();
 
 		for ( std::list<std::string>::const_iterator it = libraries.begin(); it != libraries.end(); ++it ) {
 			loadLibrary((*it));
 		}
 
-		for ( ObjectBluePrintList::iterator it = objects.begin(); it != objects.end(); ++it ) {
+		for ( BluePrintList::iterator it = objects.begin(); it != objects.end(); ++it ) {
 			mRepository.addBlueprint((*it));
 		}
 	}
 	catch ( std::exception& e ) {
-		os_error("caught exceptions: " << e.what());
+		OSerror("caught exceptions: " << e.what());
 	}
 }
 

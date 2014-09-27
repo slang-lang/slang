@@ -5,7 +5,7 @@ public object BaseObject
 	private String mType;
 	public Number mValue;
 
-	public Void BaseObject(String name const)
+	public BaseObject BaseObject(String name const)
 	{
 		mName = name;
 		mType = "BaseObject";
@@ -32,8 +32,8 @@ public object DerivedObject extends public BaseObject
 {
 	private String mType;
 
-	public Void DerivedObject(String name const, String type const)
-	: BaseObject(name)
+	public DerivedObject DerivedObject(String name const, String type const)
+//	: BaseObject(name)
 	{
 		mName = "DerivedObject";
 		mType = "DerivedObject";

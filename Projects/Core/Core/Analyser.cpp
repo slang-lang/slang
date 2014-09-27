@@ -32,7 +32,7 @@ std::string Analyser::createLibraryReference(TokenIterator& start)
 	return reference;
 }
 
-ObjectBluePrint Analyser::createObject(TokenIterator& start)
+BluePrint Analyser::createObject(TokenIterator& start)
 {
 	std::string name;
 	std::string visibility;
@@ -49,7 +49,7 @@ ObjectBluePrint Analyser::createObject(TokenIterator& start)
 	// look for balanced curly brackets
 	TokenIterator closed = findNextBalancedCurlyBracket(open, 0, Token::Type::BRACKET_CURLY_CLOSE);
 
-	ObjectBluePrint::Ancestors parents;
+	BluePrint::Ancestors parents;
 
 	// check if we have some more tokens before our object declarations starts
 	if ( start != open ) {
@@ -64,7 +64,7 @@ ObjectBluePrint Analyser::createObject(TokenIterator& start)
 			std::string inheritance = (*start++).content();
 			std::string ancestor = (*start++).content();
 
-			parents[ancestor] = ObjectBluePrint::Ancestor(ancestor, Visibility::convert(inheritance));
+			parents[ancestor] = BluePrint::Ancestor(ancestor, Visibility::convert(inheritance));
 		} while ( std::distance(start, open) > 0 && ++start != mTokens.end() );
 	}
 
@@ -77,7 +77,7 @@ ObjectBluePrint Analyser::createObject(TokenIterator& start)
 
 	start = closed;
 
-	ObjectBluePrint blue(name, mFilename);
+	BluePrint blue(name, mFilename);
 	blue.setAncestors(parents);
 	blue.setTokens(tokens);
 	blue.setVisibility(Visibility::convert(visibility));
@@ -87,7 +87,7 @@ ObjectBluePrint Analyser::createObject(TokenIterator& start)
 
 Prototype Analyser::createPrototype(TokenIterator& start)
 {
-	ObjectBluePrint blue = createObject(start);
+	BluePrint blue = createObject(start);
 
 	Prototype p(blue);
 	return p;
@@ -104,7 +104,7 @@ void Analyser::generateObjects()
 			mLibraries.push_back(reference);
 		}
 		else if ( isObjectDeclaration(it) ) {
-			ObjectBluePrint o = createObject(it);
+			BluePrint o = createObject(it);
 			mObjects.push_back(o);
 		}
 		else if ( isPrototypeDeclaration(it) ) {
@@ -135,7 +135,7 @@ const std::list<std::string>& Analyser::getLibraryReferences() const
 	return mLibraries;
 }
 
-const ObjectBluePrintList& Analyser::getObjects() const
+const BluePrintList& Analyser::getObjects() const
 {
 	return mObjects;
 }
@@ -203,7 +203,7 @@ void Analyser::process(const std::string& filename)
 	mObjects.clear();
 	mTokens.clear();
 
-	os_debug("process('" + mFilename + "')");
+	OSdebug("process('" + mFilename + "')");
 
 	// read file content
 	std::ifstream in(mFilename.c_str(), std::ios_base::binary);

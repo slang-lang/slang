@@ -13,7 +13,7 @@
 namespace ObjectiveScript {
 
 
-Prototype::Prototype(const ObjectBluePrint& blue)
+Prototype::Prototype(const BluePrint& blue)
 : mBluePrint(blue)
 {
 }
@@ -22,7 +22,7 @@ Prototype::~Prototype()
 {
 }
 
-ObjectBluePrint Prototype::generateBluePrint(const std::string& type)
+BluePrint Prototype::generateBluePrint(const std::string& type)
 {
 	// get tokens from blue print and replace all occurences
 	// of type "Unknown" with our new given type
@@ -38,14 +38,14 @@ ObjectBluePrint Prototype::generateBluePrint(const std::string& type)
 		it++;
 	}
 
-	ObjectBluePrint blue = mBluePrint;
+	BluePrint blue = mBluePrint;
 	blue.setTokens(tokens);
 	return blue;
 }
 
 const std::string& Prototype::type() const
 {
-	return mBluePrint.objectType();
+	return mBluePrint.Typename();
 }
 
 

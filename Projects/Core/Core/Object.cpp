@@ -23,7 +23,7 @@ Object::Object()
 }
 
 Object::Object(const std::string& type, const std::string& filename)
-: ObjectBluePrint(type, filename),
+: BluePrint(type, filename),
   Variable("", type, ""),
   mConstructed(false),
   mPrinter(0),
@@ -32,7 +32,7 @@ Object::Object(const std::string& type, const std::string& filename)
 }
 
 Object::Object(const std::string& name, const std::string& filename, const std::string& type, const std::string& value)
-: ObjectBluePrint(type, filename),
+: BluePrint(type, filename),
   Variable(name, type, value),
   mConstructed(false),
   mPrinter(0),
@@ -51,7 +51,7 @@ Object::~Object()
 
 void Object::addMember(Object m)
 {
-	os_debug("addMember(" + m.name() + ")");
+	OSdebug("addMember(" + m.name() + ")");
 
 	if ( mMembers.find(m.name()) != mMembers.end() ) {
 		throw DuplicateIdentifer("duplicate member '" + m.name() + "' added");
@@ -62,7 +62,7 @@ void Object::addMember(Object m)
 
 void Object::addMethod(Method m)
 {
-	os_debug("addMethod(" + m.name() + ", [" + toString(m.provideSignature()) + "])");
+	OSdebug("addMethod(" + m.name() + ", [" + toString(m.provideSignature()) + "])");
 
 	if ( mMethods.find(m) != mMethods.end() ) {
 		throw DuplicateIdentifer("duplicate method '" + m.name() + "' added with same signature");
@@ -156,7 +156,7 @@ void Object::Destructor()
 
 Object Object::execute(const std::string& method, const VariablesList& params, const Method* caller)
 {
-	os_debug("execute('" + method + "', [" + toString(params) + "])");
+	OSdebug("execute('" + method + "', [" + toString(params) + "])");
 
 	MethodCollection::iterator mIt;
 	bool success = findMethod(method, params, mIt);
@@ -190,7 +190,7 @@ Object Object::execute(const std::string& method, const VariablesList& params, c
 	}
 	catch ( Exception &e ) {
 		// catch and log all errors that occured during method execution
-		std::cout << e.what() << std::endl;
+		OSerror(e.what());
 	}
 
 	return returnValue;
