@@ -109,7 +109,7 @@ private object Main extends public BaseObject,
 		mName = "Main";
 		mValue = 0.0;
 
-		mAssert.assertmsg("failed", true);
+		//mAssert.assertmsg("failed", true);
 	}
 
 	public void ~Main() 

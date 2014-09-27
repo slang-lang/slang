@@ -709,25 +709,42 @@ void Method::process_if(TokenIterator& token)
 	// find next balanced '{' & '}' pair
 	TokenIterator bodyEnd = findNextBalancedCurlyBracket(++bodyBegin);
 
+	TokenIterator elseBegin = mTokens.end();
+	TokenIterator elseEnd = mTokens.end();
+
+	TokenIterator eb = bodyEnd;
+	if ( ++eb != mTokens.end() ) {
+		if ( eb->type() == Token::Type::KEYWORD && eb->content() == "else" ) {
+			elseBegin = findNext(eb, Token::Type::BRACKET_CURLY_OPEN);
+			// find next balanced '{' & '}' pair
+			elseEnd = findNextBalancedCurlyBracket(++elseBegin);
+		}
+	}
 
 	if ( isTrue(parseCondition(condBegin)) ) {
-		TokenIterator bb = bodyBegin;
-		process(bb, bodyEnd, Token::Type::BRACKET_CURLY_CLOSE);
-		token = bodyEnd;
-	}
-	else {
-		TokenIterator eb = ++bodyEnd;
-		if ( eb != mTokens.end() ) {
-			if ( eb->type() == Token::Type::KEYWORD && eb->content() == "else" ) {
-				// else-begin
-				TokenIterator elseBegin = findNext(eb, Token::Type::BRACKET_CURLY_OPEN);
-				// find next balanced '{' & '}' pair
-				TokenIterator elseEnd = findNextBalancedCurlyBracket(++elseBegin);
+		process(bodyBegin, bodyEnd, Token::Type::BRACKET_CURLY_CLOSE);
 
-				process(elseBegin, elseEnd, Token::Type::BRACKET_CURLY_CLOSE);
-				token = elseEnd;
-			}
+		// check if we executed all tokens
+		if ( bodyBegin != bodyEnd ) {
+			throw Exception("half evaluated if found!", bodyBegin->position());
 		}
+
+		if ( elseEnd != mTokens.end() ) {
+			token = elseEnd;
+		}
+		else {
+			token = bodyEnd;
+		}
+	}
+	else if ( elseBegin != mTokens.end() ) {
+		process(elseBegin, elseEnd, Token::Type::BRACKET_CURLY_CLOSE);
+
+		// check if we executed all tokens
+		if ( elseBegin != elseEnd ) {
+			throw Exception("half evaluated if found!", bodyBegin->position());
+		}
+
+		token = elseEnd;
 	}
 }
 
