@@ -892,7 +892,9 @@ void Method::process_while(TokenIterator& token)
 	TokenIterator tmp = condBegin;
 
 	while ( isTrue(parseCondition(tmp)) ) {
-		process(bodyBegin, bodyEnd, Token::Type::BRACKET_CURLY_CLOSE);
+		TokenIterator bb = bodyBegin;
+
+		process(bb, bodyEnd, Token::Type::BRACKET_CURLY_CLOSE);
 
 		// reset iterator
 		tmp = condBegin;

@@ -30,6 +30,7 @@ PrototypeTest::PrototypeTest(const Utils::Common::Logger *p)
 
 void PrototypeTest::process()
 {
+	TEST(testBasicLanguage);
 	TEST(testPrototypeDeclaration);
 	TEST(testPrototypeUsage);
 }
@@ -42,15 +43,56 @@ void PrototypeTest::teardown()
 {
 }
 
+void PrototypeTest::testBasicLanguage()
+{
+	try {
+		VirtualMachine vm;
+		vm.connectPrinter(&stdoutPrinter);
+
+		Script *s = vm.create("Tests/BasicLanguageTest.os");
+
+		//s->execute("test_assert", VariablesList());
+		s->execute("test_comments", VariablesList());
+		s->execute("test_executeMethod", VariablesList());
+		//s->execute("test_for", VariablesList());
+
+		{
+			VariablesList params;
+			params.push_back(Variable("param1", "Number", "1"));
+			s->execute("test_if", params);
+		}
+		s->execute("test_localVar", VariablesList());
+		{
+			VariablesList params;
+			params.push_back(Variable("param1", "String", "1"));
+			s->execute("test_print", params);
+		}
+		s->execute("test_staticLocalVar", VariablesList());
+		{
+			VariablesList params;
+			params.push_back(Variable("maxCount", "Number", "5"));
+			s->execute("test_while", params);
+		}
+
+		// automatic succes
+		delete s;
+	}
+	catch ( std::exception& ) {
+		// exception has been thrown: test failed!
+		TFAIL("caught exception!");
+	}
+}
+
 void PrototypeTest::testPrototypeDeclaration()
 {
 	try {
 		VirtualMachine vm;
 		vm.connectPrinter(&stdoutPrinter);
 
-		vm.create("Tests/PrototypeTest.os");
+		Script *s = vm.create("Tests/PrototypeTest.os");
 
 		// automatic succes
+		delete s;
 	}
 	catch ( std::exception& ) {
 		// exception has been thrown: test failed!
@@ -70,6 +112,7 @@ void PrototypeTest::testPrototypeUsage()
 		s->execute("test", params);
 
 		// automatic succes
+		delete s;
 	}
 	catch ( std::exception& ) {
 		// exception has been thrown: test failed!

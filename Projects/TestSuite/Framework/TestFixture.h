@@ -64,6 +64,7 @@ private:
 	void cleanup() {
 		for ( TestList::iterator it = mTests.begin(); it != mTests.end(); ++it ) {
 			delete (*it);
+			(*it) = 0;
 		}
 		mTests.clear();
 	}

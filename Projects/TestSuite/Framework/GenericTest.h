@@ -22,15 +22,13 @@ namespace Testing {
 class GenericTest
 {
 public:
-	//typedef boost::shared_ptr<GenericTest> Ptr;
-
-public:
 	typedef enum TestResult_e {
 		Failed = 0,
 		Passed,
 		Skipped
 	};
 
+public:
 	GenericTest()
 	: mFailed(0),
 	  mLastResult(Failed),
@@ -43,16 +41,17 @@ public:
 	virtual void setup() = 0;
 	virtual void teardown() = 0;
 
+public:
 	void run() {
 		setup();
-			process();
+		process();
 		teardown();
 
 		printResults();
 	}
 
 protected:
-	TestResult_e	mLastResult;
+	TestResult_e mLastResult;
 
 	int mFailed;
 	int mRun;

@@ -27,11 +27,12 @@ public object Main
 		//TestPrototype<Number> proto(100);
 		//TestPrototype < Number > proto(100);
 		TestPrototype of Number prototype = new TestPrototype of Number(100);
-
+/*
 		print("Prototype value = " & prototype.getValue());
 
 		prototype.setValue(17);
 
 		print("Prototype value = " & prototype.getValue());
+*/
 	}
 }

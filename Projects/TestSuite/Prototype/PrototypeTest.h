@@ -23,6 +23,7 @@ class PrototypeTest : private Utils::Common::Logger,
 {
 public:
 	PrototypeTest(const Utils::Common::Logger *p);
+	virtual ~PrototypeTest() { }
 
 public:
 	void process();
@@ -30,6 +31,7 @@ public:
 	void teardown();
 
 private:	// Tests
+	void testBasicLanguage();
 	void testPrototypeDeclaration();
 	void testPrototypeUsage();
 };

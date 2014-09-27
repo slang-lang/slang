@@ -19,7 +19,8 @@ namespace ObjectiveScript {
 
 
 VirtualMachine::VirtualMachine()
-: mCounter(0),
+: mBaseFolder("."),
+  mCounter(0),
   mPrinter(0)
 {
 }
