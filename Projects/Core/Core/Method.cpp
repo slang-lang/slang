@@ -236,12 +236,44 @@ bool Method::isLocal(const std::string& token)
 
 bool Method::isMember(const std::string& token)
 {
+	std::string member, parent;
+	Tools::split(token, parent, member);
+
+	// check if token is a local variable
+	// OR
+	// loop through all locals and ask them if this identifier belongs to them
+	for ( MemberMap::iterator it = mVariables.begin(); it != mVariables.end(); ++it ) {
+		if ( it->first == token ) {
+			return true;
+		}
+
+		if ( it->second.name() == parent ) {
+			// check for member variable
+			if ( it->second.hasMember(member) ) {
+				return true;
+			}
+		}
+	}
+
 	// check if token is a member variable
 	return mOwner->hasMember(token);
 }
 
 bool Method::isMethod(const std::string& token)
 {
+	std::string member, parent;
+	Tools::split(token, parent, member);
+
+	// loop through all locals and ask them if this identifier belongs to them
+	for ( MemberMap::iterator it = mVariables.begin(); it != mVariables.end(); ++it ) {
+		if ( it->second.name() == parent ) {
+			// check for member function
+			if ( it->second.hasMethod(member) ) {
+				return true;
+			}
+		}
+	}
+
 	// check if token is a method of our parent object
 	return mOwner->hasMethod(token);
 }
@@ -378,10 +410,11 @@ Object Method::parseAtom(TokenIterator& start)
 		case Token::Type::IDENTIFER: {
 			// find out if we have to execute a method
 			// or simple get a stored variable
-			if ( isLocal(start->content()) ) {
+			/* if ( isLocal(start->content()) ) {
 				v.assign(getVariable(scope(start->content())));
 			}
-			else if ( isMember(start->content()) ) {
+			else */
+			if ( isMember(start->content()) ) {
 				v.assign(getVariable(start->content()));
 			}
 			else if ( isMethod(start->content()) ) {
@@ -744,6 +777,7 @@ Object Method::process_method(TokenIterator& token)
 
 	token = closed;
 
+//TODO: what if we want to execute a method of another object?!?!
 	return mOwner->execute(method, params, this);
 }
 
