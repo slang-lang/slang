@@ -5,14 +5,12 @@
 // Library includes
 
 // Project includes
+#include "Types.h"
 
 // Namespace declarations
 
 
 namespace ObjectiveScript {
-
-
-static const std::string PROTOTYPE_TYPE = "UNKNOWN";
 
 
 Prototype::Prototype(const ObjectBluePrint& blue)
@@ -33,7 +31,7 @@ ObjectBluePrint Prototype::generateBluePrint(const std::string& type)
 
 	TokenList::iterator it = tokens.begin();
 	while ( it != tokens.end() ) {
-		if ( it->type() == Token::Type::IDENTIFER && it->content() == PROTOTYPE_TYPE ) {
+		if ( it->type() == Token::Type::TYPE && it->content() == PROTOTYPE_TYPE ) {
 			it->resetContentTo(type);
 		}
 

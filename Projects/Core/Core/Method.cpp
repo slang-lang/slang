@@ -219,7 +219,13 @@ bool Method::isLocal(const std::string& token)
 		}
 
 		if ( it->second.name() == parent ) {
+			// check for member variable
 			if ( it->second.hasMember(member) ) {
+				return true;
+			}
+
+			// check for member function
+			if ( it->second.hasMethod(member) ) {
 				return true;
 			}
 		}

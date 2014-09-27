@@ -19,6 +19,9 @@
 namespace ObjectiveScript {
 
 
+static const std::string PROTOTYPE_TYPE = "UNKNOWN";
+
+
 typedef std::list<std::string> StringList;
 
 

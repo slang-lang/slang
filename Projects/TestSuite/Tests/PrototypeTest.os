@@ -3,7 +3,11 @@ public prototype TestPrototype
 {
 	private UNKNOWN mValue;
 
-	public TestPrototype(UNKNOWN value) {
+	public void TestPrototype() {
+		mValue = 0;
+	}
+
+	public void TestPrototype(UNKNOWN value) {
 		mValue = value;
 	}
 
@@ -11,7 +15,7 @@ public prototype TestPrototype
 		return mValue;
 	}
 
-	public Void setValue(UNKOWN value) {
+	public void setValue(UNKOWN value) {
 		mValue = value;
 	}
 }
@@ -24,12 +28,12 @@ public object Main
 	public Void test() {
 		//TestPrototype<Number> proto(100);
 		//TestPrototype < Number > proto(100);
-		TestPrototype of Number proto = new TestPrototype of Number(100);
+		TestPrototype of Number prototype = new TestPrototype of Number(100);
 
-		print("Prototype value = " & proto.getValue());
+		print("Prototype value = " & prototype.getValue());
 
-		proto.setValue(17);
+		prototype.setValue(17);
 
-		print("Prototype value = " & proto.getValue());
+		print("Prototype value = " & prototype.getValue());
 	}
 }

@@ -157,7 +157,7 @@ void Preprocessor::generateObject(Object *object)
 	// find all visibility keywords which we use
 	// as starting point for our interpreter
 	for ( TokenIterator it = mTokens.begin(); it != mTokens.end(); ++it ) {
-		if ( (*it).type() == Token::Type::VISIBILITY ) {
+		if ( it->type() == Token::Type::VISIBILITY ) {
 			visList.push_back(it);
 		}
 	}

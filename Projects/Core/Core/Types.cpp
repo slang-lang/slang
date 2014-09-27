@@ -15,6 +15,7 @@ StringList provideAtomarTypes()
 {
 	StringList types;
 
+	types.push_back(PROTOTYPE_TYPE);
 	types.push_back("bool");
 	types.push_back("float");
 	types.push_back("int");
