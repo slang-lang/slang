@@ -74,7 +74,7 @@ void PrototypeTest::testBasicLanguage()
 			s->execute("test_while", params);
 		}
 
-		// automatic succes
+		// automatic success
 		delete s;
 	}
 	catch ( std::exception& ) {
@@ -91,7 +91,7 @@ void PrototypeTest::testPrototypeDeclaration()
 
 		Script *s = vm.create("Tests/PrototypeTest.os");
 
-		// automatic succes
+		// automatic success
 		delete s;
 	}
 	catch ( std::exception& ) {
@@ -111,7 +111,7 @@ void PrototypeTest::testPrototypeUsage()
 		VariablesList params;
 		s->execute("test", params);
 
-		// automatic succes
+		// automatic success
 		delete s;
 	}
 	catch ( std::exception& ) {

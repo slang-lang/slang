@@ -198,7 +198,6 @@ private object Main extends public BaseObject,
 
 	public void test_if(Number param1)
 	{
-/*
 		if ( false ) {
 			print("if: false");
 		}
@@ -209,7 +208,7 @@ private object Main extends public BaseObject,
 		if ( true ) {
 			print("if: true");
 		}
-*/
+
 		if ( param1 - 1 == 0 ) {
 			print("if: true");
 		}
