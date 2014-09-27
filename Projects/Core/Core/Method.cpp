@@ -709,40 +709,26 @@ void Method::process_if(TokenIterator& token)
 	// find next balanced '{' & '}' pair
 	TokenIterator bodyEnd = findNextBalancedCurlyBracket(++bodyBegin);
 
-/*	
- * if-command only works if there is also an else-block
- * this is bad
- *
-	// find next keyword if there is any
-	TokenIterator elseToken = findNext(bodyEnd, Token::Type::KEYWORD);
-	// else-begin
-	TokenIterator elseBegin;
-	// else-end
-	TokenIterator elseEnd;
 
-	// check if our next keyword is an else-keyword
-	if ( elseToken != mTokens.end() && elseToken->content() == "else" ) {
-		// we found an else keyword after our if-body
-		// find next open curly bracket '{'
-		elseBegin = findNext(elseToken, Token::Type::BRACKET_CURLY_OPEN);
-		// find next balanced '{' & '}' pair
-		elseEnd = findNextBalancedCurlyBracket(++elseBegin);
-		// reset our end token
-		bodyEnd = elseEnd;
-	}
-*/
 	if ( isTrue(parseCondition(condBegin)) ) {
-		process(bodyBegin, bodyEnd, Token::Type::BRACKET_CURLY_CLOSE);
-//		bodyEnd = elseEnd;
+		TokenIterator bb = bodyBegin;
+		process(bb, bodyEnd, Token::Type::BRACKET_CURLY_CLOSE);
+		token = bodyEnd;
 	}
-/*
 	else {
-		process(elseBegin, elseEnd, Token::Type::BRACKET_CURLY_CLOSE);
-		token = elseBegin;
-	}
-*/
+		TokenIterator eb = ++bodyEnd;
+		if ( eb != mTokens.end() ) {
+			if ( eb->type() == Token::Type::KEYWORD && eb->content() == "else" ) {
+				// else-begin
+				TokenIterator elseBegin = findNext(eb, Token::Type::BRACKET_CURLY_OPEN);
+				// find next balanced '{' & '}' pair
+				TokenIterator elseEnd = findNextBalancedCurlyBracket(++elseBegin);
 
-	token = bodyEnd;
+				process(elseBegin, elseEnd, Token::Type::BRACKET_CURLY_CLOSE);
+				token = elseEnd;
+			}
+		}
+	}
 }
 
 // syntax:

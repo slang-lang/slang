@@ -34,6 +34,8 @@ public object BaseObject
 
 	public String getName() const
 	{
+		mLogger.debug("getName()");
+
 		return mName;
 	}
 
@@ -45,20 +47,20 @@ public object BaseObject
 
 	public void setName(String name)
 	{
-//		mLogger.debug("setName(" & name & ")");
+		mLogger.debug("setName(" & name & ")");
 
 		mName = name;
 	}
 
 	private void privateMethodCall()
 	{
-//		mLogger.debug("privateMethodCall()");
+		mLogger.debug("privateMethodCall()");
 		print("privateMethodCall()");
 	}
 
 	protected void protectedMethodCall()
 	{
-//		mLogger.debug("protectedMethodCall()");
+		mLogger.debug("protectedMethodCall()");
 		print("protectedMethodCall()");
 	}
 
@@ -93,8 +95,6 @@ private object Main extends public BaseObject,
 
 	public void Main(/*string name, number value*/)
 	{
-	//	print("this is a constructor");
-
 		mLogger = new Logger("Main");
 		mLogger.debug("Constructor");
 
@@ -112,9 +112,8 @@ private object Main extends public BaseObject,
 		mAssert.assertmsg("failed", true);
 	}
 
-	public void ~Main()
+	public void ~Main() 
 	{
-	//	print("this is a destructor");
 	}
 
 	public String getName() const
@@ -199,29 +198,27 @@ private object Main extends public BaseObject,
 
 	public void test_if(Number param1)
 	{
-		breakpoint;
-	/*
-		if ( true ) {
-			print("if: true");
-		}
+/*
 		if ( false ) {
 			print("if: false");
 		}
 		else {
 			print("if: else");
 		}
-	*/
+
+		if ( true ) {
+			print("if: true");
+		}
+*/
 		if ( param1 - 1 == 0 ) {
 			print("if: true");
 		}
 		else if ( true ) {
-			print("else: if: true");
+			print("else if: true");
 		}
 		else {
-			print("else: if: else");
+			print("else if: else");
 		}
-
-		breakpoint;
 	}
 
 	public void test_localVar()
