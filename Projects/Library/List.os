@@ -37,70 +37,7 @@ public object ContainerObserver
 	}
 }
 
-/*
-public prototype Iterator<T>
-{
-	private Number mIndex;
-	
-	public Void Iterator() {
-		mIndex = 0;
-	}
-	public Void ~Iterator() {
-	}
-
-	public T begin() {
-	}
-	
-	public T end() {
-	}
-	
-	public T operator++() {
-		mIndex += 1;
-	}
-	
-	public T operator--() {
-		mIndex -= 1;
-	}
-}
-*/
-
-/*
-public prototype List<T> extends public ContainerObserver
-{
-	private T mFirst;
-	private T mLast;
-
-	public Void List() {
-		mFirst = T();
-		mLast = T();
-	}
-
-	public T at(Number index) {
-		if ( index < mSize ) {
-			return mData[index];
-		}
-
-		assert(!"index out of range");
-		return T();
-	}
-
-	public Void push_back(T t) {
-		mLast = t;
-	}
-	
-	public Void push_front(T t) {
-		mFirst = t;
-	}
-
-	public Void pop_back() {
-	}
-	
-	public Void pop_front() {
-	}
-}
-*/
-
-public prototype List extends public ContainerObserver
+public prototype List //extends public ContainerObserver
 {
 	private UNKNOWN mFirst;
 	private UNKNOWN mLast;
@@ -138,7 +75,7 @@ public prototype List extends public ContainerObserver
 private object Main
 {
 	public Void Main() {
-		List<Number> numbers;
+		List of Number numbers;
 
 		numbers.push_back(1);
 		numbers.push_back(2);

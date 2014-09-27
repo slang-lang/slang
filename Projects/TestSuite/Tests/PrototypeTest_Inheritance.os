@@ -1,9 +1,23 @@
 
-public prototype TestPrototype
+public object Observer
+{
+	private String mTypeName;
+
+	public void Observer() {
+		mTypeName = "Observer";
+	}
+
+	public String getTypeName() const {
+		return mTypeName;
+	}
+}
+
+public prototype TestPrototype extends public Observer
 {
 	private UNKNOWN mValue;
 
 	public void TestPrototype() {
+		mTypeName = "TestPrototype";
 		mValue = 0;
 	}
 
@@ -24,14 +38,11 @@ public prototype TestPrototype
 public object Main
 {
 	public Void test() {
-		//TestPrototype<Number> proto(100);
-		//TestPrototype < Number > proto(100);
 		TestPrototype of Number prototype = new TestPrototype of Number(100);
 
-		print("Prototype value = " & prototype.getValue());
+		print("Observer = " & prototype.getTypeName());
 
-		prototype.setValue(17);
-
-		print("Prototype value = " & prototype.getValue());
+		// up- or downcast:
+		//Observer o = prototype as Observer;
 	}
 }
