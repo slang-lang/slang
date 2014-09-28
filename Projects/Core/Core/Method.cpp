@@ -741,7 +741,7 @@ void Method::process_if(TokenIterator& token)
 
 		// check if we executed all tokens
 		if ( elseBegin != elseEnd ) {
-			throw Exception("half evaluated if found!", bodyBegin->position());
+			throw Exception("half evaluated else found!", bodyBegin->position());
 		}
 
 		token = elseEnd;

@@ -42,6 +42,9 @@ private:
 	typedef std::map<std::string, Prototype> Prototypes;
 
 private:
+	Object createInstance(const BluePrint& blueprint, const std::string& type, const std::string& name);
+
+private:
 	BluePrints mBluePrints;
 	Prototypes mPrototypes;
 };

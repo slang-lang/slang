@@ -119,13 +119,7 @@ Object Repository::createInstance(const std::string& type, const std::string& na
 		throw Exception("trying to create instance of unknown object '" + type + "'");
 	}
 
-	Object object(name, it->second.filename(), type, "");
-	object.setTokens(it->second.getTokens());
-
-	Preprocessor pre;
-	pre.process(&object);
-
-	return object;
+	return createInstance(it->second, type, name);
 }
 
 Object Repository::createInstanceFromPrototype(const std::string& prototype, const std::string& type, const std::string& name)
@@ -137,10 +131,13 @@ Object Repository::createInstanceFromPrototype(const std::string& prototype, con
 		throw Exception("trying to create prototype instance of unknown object '" + type + "'");
 	}
 
-	BluePrint blue = it->second.generateBluePrint(type);
+	return createInstance(it->second.generateBluePrint(type), prototype + type, name);
+}
 
-	Object object(name, blue.filename(), prototype + " of " + type, "");
-	object.setTokens(blue.getTokens());
+Object Repository::createInstance(const BluePrint& blueprint, const std::string& type, const std::string& name)
+{
+	Object object(name, blueprint.filename(), type, "");
+	object.setTokens(blueprint.getTokens());
 
 	Preprocessor pre;
 	pre.process(&object);
