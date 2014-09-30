@@ -10,6 +10,7 @@
 #include <Core/BuildInObjects/String.h>
 #include <Core/BuildInObjects/Void.h>
 #include "Exceptions.h"
+#include "Memory.h"
 #include "Preprocessor.h"
 #include "Tools.h"
 
@@ -19,7 +20,8 @@
 namespace ObjectiveScript {
 
 
-Repository::Repository()
+Repository::Repository(Memory *m)
+: mMemory(m)
 {
 	addBlueprint(Bool());
 	addBlueprint(Number());
@@ -84,30 +86,6 @@ void Repository::addPrototype(const Prototype& prototype)
 	mPrototypes.insert(
 		std::make_pair<std::string, Prototype>(type, prototype)
 	);
-/*
-	Prototypes::iterator objIt = mPrototypes.find(type);
-
-	// loop over all tokens of a prototype blueprint object
-	// and retype all identifier tokens with object names as values with type
-	bool replaced = false;
-	TokenList tokens = objIt->second.getTokens();
-
-	for ( TokenList::iterator tokenIt = tokens.begin(); tokenIt != tokens.end(); ++tokenIt ) {
-		// we found an identifier token
-		if ( tokenIt->type() == Token::Type::IDENTIFER ) {
-			// check if it's content is one of our newly added blueprint objects
-			if ( tokenIt->content() != type && mBluePrints.find(tokenIt->content()) != mBluePrints.end() ) {
-				tokenIt->resetTypeTo(Token::Type::TYPE);
-
-				replaced = true;
-			}
-		}
-	}
-
-	if ( replaced ) {
-		objIt->second.setTokens(tokens);
-	}
-*/
 }
 
 Object Repository::createInstance(const std::string& type, const std::string& name)
@@ -119,7 +97,12 @@ Object Repository::createInstance(const std::string& type, const std::string& na
 		throw Exception("trying to create instance of unknown object '" + type + "'");
 	}
 
-	return createInstance(it->second, type, name);
+	// non-reference-based instantiation
+	//return createInstance(it->second, type, name);
+
+	// reference-based instantiation
+	Reference ref = createReferenceInstance(it->second, type, name);
+	return *mMemory->getObject(ref);
 }
 
 Object Repository::createInstanceFromPrototype(const std::string& prototype, const std::string& type, const std::string& name)
@@ -131,18 +114,38 @@ Object Repository::createInstanceFromPrototype(const std::string& prototype, con
 		throw Exception("trying to create prototype instance of unknown object '" + type + "'");
 	}
 
-	return createInstance(it->second.generateBluePrint(type), prototype + type, name);
+	// non-reference-based instantiation
+	//return createInstance(it->second.generateBluePrint(type), prototype + type, name);
+
+	// reference-based instantiation
+	Reference ref = createReferenceInstance(it->second.generateBluePrint(type), prototype + type, name);
+	return *mMemory->getObject(ref);
 }
 
 Object Repository::createInstance(const BluePrint& blueprint, const std::string& type, const std::string& name)
 {
+	// non-reference-based instantiation
+
 	Object object(name, blueprint.filename(), type, "");
 	object.setTokens(blueprint.getTokens());
 
-	Preprocessor pre;
-	pre.process(&object);
+	Preprocessor preprocessor;
+	preprocessor.process(&object);
 
 	return object;
+}
+
+const Reference& Repository::createReferenceInstance(const BluePrint& blueprint, const std::string& type, const std::string& name)
+{
+	// reference-based instantiation
+
+	Object *obj = new Object(name, blueprint.filename(), type, "");
+	obj->setTokens(blueprint.getTokens());
+
+	Preprocessor preprocessor;
+	preprocessor.process(obj);
+
+	return mMemory->newObject(obj);
 }
 
 bool Repository::isAlreadyKnown(const std::string& name) const

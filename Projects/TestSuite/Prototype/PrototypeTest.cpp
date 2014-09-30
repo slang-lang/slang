@@ -30,6 +30,7 @@ PrototypeTest::PrototypeTest(const Utils::Common::Logger *p)
 
 void PrototypeTest::process()
 {
+	TEST(testBasicObject);
 	TEST(testBasicLanguage);
 	TEST(testPrototypeDeclaration);
 	TEST(testPrototypeUsage);
@@ -81,6 +82,24 @@ void PrototypeTest::testBasicLanguage()
 		// exception has been thrown: test failed!
 		TFAIL("caught exception!");
 	}
+}
+
+void PrototypeTest::testBasicObject()
+{
+	try {
+		VirtualMachine vm;
+		vm.connectPrinter(&stdoutPrinter);
+
+		Script *s = vm.create("Tests/BasicObjectTest.os");
+
+		// automatic success
+		delete s;
+	}
+	catch ( std::exception& ) {
+		// exception has been thrown: test failed!
+		TFAIL("caught exception!");
+	}
+
 }
 
 void PrototypeTest::testPrototypeDeclaration()

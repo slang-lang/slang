@@ -10,7 +10,6 @@
 
 // Project includes
 #include "Object.h"
-#include "Repository.h"
 
 // Forward declarations
 
@@ -21,6 +20,8 @@ namespace ObjectiveScript {
 
 // Forward declarations
 class IPrinter;
+class Memory;
+class Repository;
 class Script;
 
 class VirtualMachine
@@ -50,9 +51,10 @@ private:
 	std::string		mBaseFolder;
 	BluePrintMap	mBluePrints;
 	size_t			mCounter;
+	Memory			*mMemory;
 	ObjectMap		mObjects;
 	IPrinter		*mPrinter;
-	Repository		mRepository;
+	Repository		*mRepository;
 };
 
 

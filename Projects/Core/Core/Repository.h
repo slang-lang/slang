@@ -10,6 +10,7 @@
 // Project includes
 #include "Object.h"
 #include "Prototype.h"
+#include "Reference.h"
 
 // Forward declarations
 
@@ -19,12 +20,13 @@
 namespace ObjectiveScript {
 
 // Forward declarations
+class Memory;
 class Object;
 
 class Repository
 {
 public:
-	Repository();
+	Repository(Memory *m);
 	~Repository();
 
 public:
@@ -43,10 +45,13 @@ private:
 
 private:
 	Object createInstance(const BluePrint& blueprint, const std::string& type, const std::string& name);
+	const Reference& createReferenceInstance(const BluePrint& blueprint, const std::string& type, const std::string& name);
 
 private:
 	BluePrints mBluePrints;
 	Prototypes mPrototypes;
+
+	Memory *mMemory;
 };
 
 

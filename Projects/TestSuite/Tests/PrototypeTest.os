@@ -23,7 +23,7 @@ public prototype TestPrototype
 
 public object Main
 {
-	public Void test() {
+	public void test() {
 		//TestPrototype<Number> proto(100);
 		//TestPrototype < Number > proto(100);
 		TestPrototype of Number prototype = new TestPrototype of Number(100);

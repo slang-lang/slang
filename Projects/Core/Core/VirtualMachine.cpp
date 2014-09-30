@@ -7,8 +7,9 @@
 // Project includes
 #include <Core/Interfaces/IPrinter.h>
 #include "Analyser.h"
-#include "Object.h"
+#include "Memory.h"
 #include "Preprocessor.h"
+#include "Repository.h"
 #include "Script.h"
 #include "Tools.h"
 
@@ -21,13 +22,20 @@ namespace ObjectiveScript {
 VirtualMachine::VirtualMachine()
 : mBaseFolder("."),
   mCounter(0),
-  mPrinter(0)
+  mMemory(0),
+  mPrinter(0),
+  mRepository(0)
 {
+	mMemory = new Memory();
+	mRepository = new Repository(mMemory);
 }
 
 VirtualMachine::~VirtualMachine()
 {
 	mObjects.clear();
+
+	delete mRepository;
+	delete mMemory;
 }
 
 std::string VirtualMachine::buildLibraryPath(const std::string& library) const
@@ -75,12 +83,12 @@ Script* VirtualMachine::create(const std::string& filename)
 	}
 
 	for ( BluePrintList::iterator it = objects.begin(); it != objects.end(); ++it ) {
-		mRepository.addBlueprint((*it));
+		mRepository->addBlueprint((*it));
 
 		if ( it->filename() == filename && it->Typename() == "Main" ) {
 			mObjects.insert(std::make_pair<std::string, Object>(
 				it->Typename(),
-				mRepository.createInstance(it->Typename(), "main")
+				mRepository->createInstance(it->Typename(), "main")
 			));
 
 			ObjectMap::iterator object = mObjects.find(it->Typename());
@@ -91,10 +99,10 @@ Script* VirtualMachine::create(const std::string& filename)
 	}
 
 	for ( PrototypeList::iterator it = prototypes.begin(); it != prototypes.end(); ++it ) {
-		mRepository.addPrototype((*it));
+		mRepository->addPrototype((*it));
 	}
 
-	script->init(&mRepository);
+	script->init(mRepository);
 	script->construct();
 
 	return script;
@@ -116,7 +124,7 @@ void VirtualMachine::loadLibrary(const std::string& library)
 		}
 
 		for ( BluePrintList::iterator it = objects.begin(); it != objects.end(); ++it ) {
-			mRepository.addBlueprint((*it));
+			mRepository->addBlueprint((*it));
 		}
 	}
 	catch ( std::exception& e ) {

@@ -191,6 +191,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\Core\Memory.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\Method.cpp"
 				>
 			</File>
@@ -204,6 +208,10 @@
 			</File>
 			<File
 				RelativePath=".\Core\Prototype.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\Reference.cpp"
 				>
 			</File>
 			<File
@@ -261,10 +269,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Plugins\ConsolePlugin.h"
-				>
-			</File>
-			<File
 				RelativePath=".\Core\Exceptions.h"
 				>
 			</File>
@@ -278,6 +282,10 @@
 			</File>
 			<File
 				RelativePath=".\Core\Interfaces\IPrinter.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\Memory.h"
 				>
 			</File>
 			<File
@@ -306,6 +314,10 @@
 			</File>
 			<File
 				RelativePath=".\Core\Prototype.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\Reference.h"
 				>
 			</File>
 			<File

@@ -32,6 +32,7 @@ public:
 
 private:	// Tests
 	void testBasicLanguage();
+	void testBasicObject();
 	void testPrototypeDeclaration();
 	void testPrototypeUsage();
 };
