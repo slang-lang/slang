@@ -18,10 +18,12 @@ namespace ObjectiveScript {
 class Reference
 {
 public:
+	Reference();
 	Reference(size_t address);
 
 public:
 	size_t getAddress() const;
+	bool isValid() const;
 
 public:
 	bool operator< (const Reference& other) const;

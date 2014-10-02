@@ -23,6 +23,7 @@ namespace ObjectiveScript {
 
 // Forward declarations
 class IPrinter;
+class Memory;
 class Method;
 class Repository;
 
@@ -42,6 +43,7 @@ public:	// Setup
 	void addParent(const std::string& parent);
 
 public:	// Connectors
+	void connectMemory(Memory *m);
 	void connectPrinter(IPrinter *p);
 	void connectRepository(Repository *r);
 
@@ -85,6 +87,7 @@ private:
 private:
 	bool				mConstructed;
 	MemberCollection	mMembers;
+	Memory				*mMemory;
 	MethodCollection	mMethods;
 	StringList			mParents;
 	IPrinter			*mPrinter;

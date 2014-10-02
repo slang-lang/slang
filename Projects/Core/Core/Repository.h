@@ -37,6 +37,9 @@ public:
 	Object createInstanceFromPrototype(const std::string& prototype, const std::string& type, const std::string& name);
 	bool isAlreadyKnown(const std::string& name) const;
 
+	const Reference& createReference(const std::string& type, const std::string& name);
+	const Reference& createReferenceFromPrototype(const std::string& prototype, const std::string& type, const std::string& name);
+
 protected:
 
 private:
@@ -45,7 +48,7 @@ private:
 
 private:
 	Object createInstance(const BluePrint& blueprint, const std::string& type, const std::string& name);
-	const Reference& createReferenceInstance(const BluePrint& blueprint, const std::string& type, const std::string& name);
+	const Reference& createReference(const BluePrint& blueprint, const std::string& type, const std::string& name);
 
 private:
 	BluePrints mBluePrints;

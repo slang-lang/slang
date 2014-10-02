@@ -11,6 +11,7 @@
 #include <Core/BuildInObjects/String.h>
 #include <Core/Interfaces/IPrinter.h>
 #include "Exceptions.h"
+#include "Memory.h"
 #include "Object.h"
 #include "Repository.h"
 #include "Tools.h"
@@ -23,6 +24,7 @@ namespace ObjectiveScript {
 
 Method::Method(const std::string& name, const std::string& type)
 : Variable(name, type),
+  mMemory(0),
   mOwner(0),
   mRepository(0)
 {
@@ -33,24 +35,38 @@ Method::~Method()
 	garbageCollector();
 }
 
-void Method::addIdentifier(Object v)
+/*
+void Method::addIdentifier(Object object)
 {
-	if ( mVariables.find(v.name()) != mVariables.end() ) {
-		if ( v.isStatic() ) {
+	if ( mLocales.find(object.name()) != mLocales.end() ) {
+		if ( object.isStatic() ) {
 			// don't insert static members a second time
 			// just return silently
 			return;
 		}
 
-		throw DuplicateIdentifer(v.name());
+		throw DuplicateIdentifer(object.name());
 	}
 
-/*
-	mVariables.insert(
-		std::make_pair<std::string, Object>(v.name(), v)
-	);
+	mLocales[object.name()] = object;
+}
 */
-	mVariables[v.name()] = v;
+
+void Method::addIdentifier(const Reference& r)
+{
+	Object *object = mMemory->getObject(r);
+
+	if ( mLocales.find(object->name()) != mLocales.end() ) {
+		if ( object->isStatic() ) {
+			// don't insert static members a second time
+			// just return silently
+			return;
+		}
+
+		throw DuplicateIdentifer(object->name());
+	}
+
+	mLocales[object->name()] = r;
 }
 
 Object Method::execute(const VariablesList& params)
@@ -62,9 +78,9 @@ Object Method::execute(const VariablesList& params)
 	VariablesList::const_iterator rIt = mSignature.begin();
 	// add parameters as pseudo members
 	for ( VariablesList::const_iterator it = params.begin(); it != params.end(); ++it, ++rIt ) {
-		Object v((*rIt).name(), "", (*it).type(), (*it).value());
+		Reference ref = mMemory->newObject(new Object((*rIt).name(), "", (*it).type(), (*it).value()));
 
-		addIdentifier(v);
+		addIdentifier(ref);
 	}
 
 	Object returnValue(name(), "", type(), "");
@@ -95,21 +111,39 @@ void Method::garbageCollector()
 	mStack.clear();
 
 	MemberMap tmp;
-	for ( MemberMap::iterator varIt = mVariables.begin(); varIt != mVariables.end(); ++varIt ) {
-		if ( varIt->second.isStatic() ) {
-			tmp.insert((*varIt));
+	for ( MemberMap::iterator it = mLocales.begin(); it != mLocales.end(); ++it ) {
+		Object *object = mMemory->getObject(it->second);
+
+		if ( object && object->isStatic() ) {
+			tmp.insert((*it));
+			continue;
+		}
+
+		mMemory->deleteObject(it->second);
+	}
+
+	mLocales.clear();
+	mLocales = tmp;
+}
+
+const Reference& Method::getLocale(const std::string& name) const
+{
+	for ( MemberMap::const_iterator it = mLocales.begin(); it != mLocales.end(); ++it ) {
+		if ( it->first == name ) {
+			return it->second;
 		}
 	}
 
-	mVariables.clear();
-	mVariables = tmp;
+	return mMemory->getNullReference();
 }
 
 Object& Method::getVariable(const std::string& name)
 {
-	for ( MemberMap::iterator it = mVariables.begin(); it != mVariables.end(); ++it ) {
-		if ( it->first == name ) {
-			return it->second;
+	for ( MemberMap::iterator it = mLocales.begin(); it != mLocales.end(); ++it ) {
+		Object *object = mMemory->getObject(it->second);
+
+		if ( object && object->name() == name ) {
+			return *object;
 		}
 	}
 
@@ -163,6 +197,29 @@ void Method::handleType(TokenIterator& token)
 		assign = ++token;
 	}
 
+
+	Reference ref;
+	if ( isPrototype ) {
+		ref = mRepository->createReferenceFromPrototype(prototype, type, name);
+	}
+	else {
+		ref = mRepository->createReference(type, name);
+	}
+
+
+	Object *object = mMemory->getObject(ref);
+
+	if ( isConst ) object->setConst(true);
+	if ( isStatic ) object->setStatic(true);
+
+	if ( assign != mTokens.end() ) {
+		object->assign(parseExpression(assign));
+		token = assign;
+	}
+
+	addIdentifier(ref);
+
+/*
 	Object object;
 	if ( isPrototype ) {
 		object = mRepository->createInstanceFromPrototype(prototype, type, name);
@@ -180,6 +237,7 @@ void Method::handleType(TokenIterator& token)
 	}
 
 	addIdentifier(object);
+*/
 
 	if ( token->type() != Token::Type::SEMICOLON ) {
 		throw SyntaxError("';' expected but '" + token->content() + "' found", token->position());
@@ -213,19 +271,20 @@ bool Method::isLocal(const std::string& token)
 	// check if token is a local variable
 	// OR
 	// loop through all locals and ask them if this identifier belongs to them
-	for ( MemberMap::iterator it = mVariables.begin(); it != mVariables.end(); ++it ) {
+	for ( MemberMap::iterator it = mLocales.begin(); it != mLocales.end(); ++it ) {
 		if ( it->first == token ) {
 			return true;
 		}
 
-		if ( it->second.name() == parent ) {
+		Object *object = mMemory->getObject(it->second);
+		if ( object && object->name() == parent ) {
 			// check for member variable
-			if ( it->second.hasMember(member) ) {
+			if ( object->hasMember(member) ) {
 				return true;
 			}
 
 			// check for member function
-			if ( it->second.hasMethod(member) ) {
+			if ( object->hasMethod(member) ) {
 				return true;
 			}
 		}
@@ -242,14 +301,15 @@ bool Method::isMember(const std::string& token)
 	// check if token is a local variable
 	// OR
 	// loop through all locals and ask them if this identifier belongs to them
-	for ( MemberMap::iterator it = mVariables.begin(); it != mVariables.end(); ++it ) {
+	for ( MemberMap::iterator it = mLocales.begin(); it != mLocales.end(); ++it ) {
 		if ( it->first == token ) {
 			return true;
 		}
 
-		if ( it->second.name() == parent ) {
+		Object *object = mMemory->getObject(it->second);
+		if ( object && object->name() == parent ) {
 			// check for member variable
-			if ( it->second.hasMember(member) ) {
+			if ( object->hasMember(member) ) {
 				return true;
 			}
 		}
@@ -265,10 +325,11 @@ bool Method::isMethod(const std::string& token)
 	Tools::split(token, parent, member);
 
 	// loop through all locals and ask them if this identifier belongs to them
-	for ( MemberMap::iterator it = mVariables.begin(); it != mVariables.end(); ++it ) {
-		if ( it->second.name() == parent ) {
+	for ( MemberMap::iterator it = mLocales.begin(); it != mLocales.end(); ++it ) {
+		Object *object = mMemory->getObject(it->second);
+		if ( object && object->name() == parent ) {
 			// check for member function
-			if ( it->second.hasMethod(member) ) {
+			if ( object->hasMethod(member) ) {
 				return true;
 			}
 		}
@@ -409,7 +470,7 @@ Object Method::parseAtom(TokenIterator& start)
 		} break;
 		case Token::Type::IDENTIFER: {
 			// find out if we have to execute a method
-			// or simple get a stored variable
+			// or simply get a stored variable
 			/* if ( isLocal(start->content()) ) {
 				v.assign(getVariable(scope(start->content())));
 			}
@@ -612,8 +673,11 @@ Object Method::process(TokenIterator& token, TokenIterator end, Token::Type::E t
 						process_if(token);
 					}
 					else if ( keyword == "new" ) {
-						Object n = process_new(token);
-						returnValue.assign(n);
+						//Object n = process_new(token);
+
+						Reference ref = process_new(token);
+						returnValue.assign(*mMemory->getObject(ref));
+
 						return returnValue;
 					}
 					else if ( keyword == "print" ) {
@@ -791,7 +855,8 @@ Object Method::process_method(TokenIterator& token)
 
 // syntax:
 // new <Object>([<parameter list>]);
-Object Method::process_new(TokenIterator& token)
+//Object Method::process_new(TokenIterator& token)
+Reference Method::process_new(TokenIterator& token)
 {
 	TokenIterator tmp = token;
 
@@ -828,6 +893,23 @@ Object Method::process_new(TokenIterator& token)
 
 	token = closed;
 
+	Reference ref;
+	if ( isPrototype ) {
+		ref = mRepository->createReferenceFromPrototype(prototype, type, name);
+	}
+	else {
+		ref = mRepository->createReference(type, name);
+	}
+
+	Object *object = mMemory->getObject(ref);
+	object->connectMemory(mMemory);
+	object->connectPrinter(mOwner->providePrinter());
+	object->connectRepository(mRepository);
+	object->Constructor(params);
+
+	return ref;
+
+/*
 	Object object;
 	if ( isPrototype ) {
 		object = mRepository->createInstanceFromPrototype(prototype, type, name);
@@ -841,6 +923,7 @@ Object Method::process_new(TokenIterator& token)
 	object.Constructor(params);
 
 	return object;
+*/
 }
 
 // syntax:
@@ -934,6 +1017,11 @@ std::string Method::scope(const std::string& name) const
 
 	result += name;
 	return result;
+}
+
+void Method::setMemory(Memory *memory)
+{
+	mMemory = memory;
 }
 
 void Method::setOwner(Object *owner)

@@ -19,6 +19,7 @@ namespace ObjectiveScript {
 
 // Forward declarations
 class IPrinter;
+class Memory;
 //class Object;
 class Repository;
 
@@ -30,7 +31,8 @@ public:
 
 public:	// Setup
 	void assign(Object *object);
-	void init(Repository *r);
+	void connectMemory(Memory *m);
+	void connectRepository(Repository *r);
 
 public:	// Constructor & Destructor
 	void construct();
@@ -55,6 +57,7 @@ protected:
 private:
 	size_t	mId;
 
+	Memory		*mMemory;
 	Object		*mObject;
 	IPrinter	*mPrinter;
 	Repository	*mRepository;

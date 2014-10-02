@@ -6,6 +6,7 @@
 
 // Project includes
 #include "Exceptions.h"
+#include "Memory.h"
 #include "Repository.h"
 #include "Tools.h"
 
@@ -17,6 +18,7 @@ namespace ObjectiveScript {
 
 Object::Object()
 : mConstructed(false),
+  mMemory(0),
   mPrinter(0),
   mRepository(0)
 {
@@ -26,6 +28,7 @@ Object::Object(const std::string& type, const std::string& filename)
 : BluePrint(type, filename),
   Variable("", type, ""),
   mConstructed(false),
+  mMemory(0),
   mPrinter(0),
   mRepository(0)
 {
@@ -35,6 +38,7 @@ Object::Object(const std::string& name, const std::string& filename, const std::
 : BluePrint(type, filename),
   Variable(name, type, value),
   mConstructed(false),
+  mMemory(0),
   mPrinter(0),
   mRepository(0)
 {
@@ -87,6 +91,7 @@ void Object::assign(const Object& other)
 	if ( other.mConstructed )	// don't override this with false
 		this->mConstructed = other.mConstructed;
 	this->mMembers = other.mMembers;
+	this->mMemory = other.mMemory;
 	this->mMethods = other.mMethods;
 	this->mPrinter = other.mPrinter;
 	this->mRepository = other.mRepository;
@@ -95,6 +100,11 @@ void Object::assign(const Object& other)
 	this->mValue = other.mValue;
 
 	updateMethodOwners();
+}
+
+void Object::connectMemory(Memory *m)
+{
+	mMemory = m;
 }
 
 void Object::connectPrinter(IPrinter *p)
@@ -119,6 +129,7 @@ void Object::Constructor(const VariablesList& params)
 
 	for ( MemberCollection::iterator it = mMembers.begin(); it != mMembers.end(); ++it ) {
 		it->second = mRepository->createInstance(it->second.type(), it->second.name());
+		it->second.connectMemory(mMemory);
 		it->second.connectPrinter(mPrinter);
 		it->second.connectRepository(mRepository);
 		it->second.Constructor(VariablesList());
@@ -442,6 +453,7 @@ IPrinter* Object::providePrinter() const
 void Object::updateMethodOwners()
 {
 	for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
+		it->setMemory(mMemory);
 		it->setOwner(this);
 		it->setRepository(mRepository);
 	}

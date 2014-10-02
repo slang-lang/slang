@@ -35,12 +35,14 @@ void Memory::deleteObject(const Reference& ref)
 		throw Exception("invalid delete for address " + ref.getAddress());
 	}
 
-	// remove address from memory ...
-	mMemory.erase(it);
-	// ... and delete it if it's valid
+	// delete it if it's valid ...
 	if ( it->second ) {
 		delete it->second;
+		it->second = 0;
 	}
+
+	// ... and remove address from memory
+	mMemory.erase(it);
 }
 
 const Reference& Memory::getAddress(Object *obj) const
@@ -54,11 +56,16 @@ const Reference& Memory::getAddress(Object *obj) const
 	return mNull;
 }
 
+const Reference& Memory::getNullReference() const
+{
+	return mNull;
+}
+
 const Reference& Memory::reserveAddress()
 {
 	// 1) the simple way:
 	//    only use an address once, so that no address can get
-	//    reused and we accidentaly make a forgotten reference
+	//    reused and we accidentally make a forgotten reference
 	//    valid again although it's objects has been deleted
 	//    long ago;
 	if ( mNextAddress >= SIZE_MAX ) {

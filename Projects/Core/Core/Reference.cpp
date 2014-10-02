@@ -12,6 +12,11 @@
 namespace ObjectiveScript {
 
 
+Reference::Reference()
+: mAddress(0)
+{
+}
+
 Reference::Reference(size_t address)
 : mAddress(address)
 {
@@ -20,6 +25,11 @@ Reference::Reference(size_t address)
 size_t Reference::getAddress() const
 {
 	return mAddress;
+}
+
+bool Reference::isValid() const
+{
+	return mAddress != 0;
 }
 
 bool Reference::operator< (const Reference& other) const

@@ -18,6 +18,7 @@ namespace ObjectiveScript {
 
 Script::Script(size_t id)
 : mId(id),
+  mMemory(0),
   mObject(0),
   mPrinter(0),
   mRepository(0)
@@ -34,6 +35,14 @@ void Script::assign(Object *object)
 	mObject = object;
 }
 
+void Script::connectMemory(Memory *m)
+{
+	assert(m);
+	assert(!mMemory);
+
+	mMemory = m;
+}
+
 void Script::connectPrinter(IPrinter *p)
 {
 	assert(p);
@@ -42,11 +51,21 @@ void Script::connectPrinter(IPrinter *p)
 	mPrinter = p;
 }
 
+void Script::connectRepository(Repository *r)
+{
+	assert(r);
+	assert(!mRepository);
+
+	mRepository = r;
+}
+
 void Script::construct()
 {
 	try {
 		if ( mObject ) {
+			mObject->connectMemory(mMemory);
 			mObject->connectPrinter(mPrinter);
+			mObject->connectRepository(mRepository);
 			mObject->Constructor(VariablesList());
 		}
 	}
@@ -101,17 +120,6 @@ bool Script::hasMethod(const std::string& m)
 bool Script::hasMethod(const std::string& m, const VariablesList& params)
 {
 	return mObject->hasMethod(m, params);
-}
-
-void Script::init(Repository *r)
-{
-	OSdebug("initialize");
-
-	mRepository = r;
-
-	if ( mObject ) {
-		mObject->connectRepository(mRepository);
-	}
 }
 
 

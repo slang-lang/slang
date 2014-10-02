@@ -9,6 +9,7 @@
 
 // Project includes
 #include "Object.h"
+#include "Reference.h"
 #include "Types.h"
 #include "Variable.h"
 
@@ -21,6 +22,7 @@ namespace ObjectiveScript {
 
 // Forward declarations
 class IPrinter;
+class Memory;
 class Object;
 class Repository;
 
@@ -31,6 +33,7 @@ public:
 	~Method();
 
 public:	// Setup
+	void setMemory(Memory *memory);
 	void setOwner(Object *owner);
 	void setRepository(Repository *repository);
 	void setSignature(const VariablesList& params);
@@ -101,10 +104,12 @@ public:
 protected:
 
 private:
-	typedef std::map<std::string, Object> MemberMap;
+	//typedef std::map<std::string, Object> MemberMap;
+	typedef std::map<std::string, Reference> MemberMap;
 
 private:	// Construction
-	void addIdentifier(Object v);		// throws DuplicateIdentifer exception
+	//void addIdentifier(Object object);			// throws DuplicateIdentifer exception
+	void addIdentifier(const Reference& r);		// throws DuplicateIdentifer exception
 
 private:	// Destruction
 	void garbageCollector();
@@ -130,7 +135,8 @@ private:	// Execution
 	void process_for(TokenIterator& token);
 	void process_if(TokenIterator& token);
 	Object process_method(TokenIterator& token);
-	Object process_new(TokenIterator& token);
+	//Object process_new(TokenIterator& token);
+	Reference process_new(TokenIterator& token);
 	void process_print(TokenIterator& token);
 	void process_switch(TokenIterator& token);
 	void process_while(TokenIterator& token);
@@ -143,6 +149,7 @@ private:	// Execution
 	void pop_stack();
 	// }
 
+	const Reference& getLocale(const std::string& name) const;
 	Object& getVariable(const std::string& name);
 
 	// condition evaluation
@@ -165,13 +172,14 @@ private:	// Execution
 	// }
 
 private:
+	MemberMap		mLocales;
+	Memory			*mMemory;
 	Object			*mOwner;
 	VariablesList	mParameters;
 	Repository		*mRepository;
 	VariablesList	mSignature;
 	StringList		mStack;
 	TokenList		mTokens;
-	MemberMap		mVariables;
 };
 
 /*

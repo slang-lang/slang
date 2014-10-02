@@ -102,7 +102,8 @@ Script* VirtualMachine::create(const std::string& filename)
 		mRepository->addPrototype((*it));
 	}
 
-	script->init(mRepository);
+	script->connectMemory(mMemory);
+	script->connectRepository(mRepository);
 	script->construct();
 
 	return script;

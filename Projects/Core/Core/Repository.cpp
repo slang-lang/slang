@@ -98,11 +98,7 @@ Object Repository::createInstance(const std::string& type, const std::string& na
 	}
 
 	// non-reference-based instantiation
-	//return createInstance(it->second, type, name);
-
-	// reference-based instantiation
-	Reference ref = createReferenceInstance(it->second, type, name);
-	return *mMemory->getObject(ref);
+	return createInstance(it->second, type, name);
 }
 
 Object Repository::createInstanceFromPrototype(const std::string& prototype, const std::string& type, const std::string& name)
@@ -115,11 +111,7 @@ Object Repository::createInstanceFromPrototype(const std::string& prototype, con
 	}
 
 	// non-reference-based instantiation
-	//return createInstance(it->second.generateBluePrint(type), prototype + type, name);
-
-	// reference-based instantiation
-	Reference ref = createReferenceInstance(it->second.generateBluePrint(type), prototype + type, name);
-	return *mMemory->getObject(ref);
+	return createInstance(it->second.generateBluePrint(type), prototype + type, name);
 }
 
 Object Repository::createInstance(const BluePrint& blueprint, const std::string& type, const std::string& name)
@@ -135,7 +127,19 @@ Object Repository::createInstance(const BluePrint& blueprint, const std::string&
 	return object;
 }
 
-const Reference& Repository::createReferenceInstance(const BluePrint& blueprint, const std::string& type, const std::string& name)
+const Reference& Repository::createReference(const std::string& type, const std::string& name)
+{
+	OSdebug("createReference('" + type + "', '" + name + "')");
+
+	BluePrints::iterator it = mBluePrints.find(type);
+	if ( it == mBluePrints.end() ) {
+		throw Exception("trying to create reference on unknown object '" + type + "'");
+	}
+
+	return createReference(it->second, type, name);
+}
+
+const Reference& Repository::createReference(const BluePrint& blueprint, const std::string& type, const std::string& name)
 {
 	// reference-based instantiation
 
@@ -146,6 +150,18 @@ const Reference& Repository::createReferenceInstance(const BluePrint& blueprint,
 	preprocessor.process(obj);
 
 	return mMemory->newObject(obj);
+}
+
+const Reference& Repository::createReferenceFromPrototype(const std::string& prototype, const std::string& type, const std::string& name)
+{
+	OSdebug("createReferenceFromPrototype('" + prototype + ", " + type + "', '" + name + "')");
+
+	Prototypes::iterator it = mPrototypes.find(prototype);
+	if ( it == mPrototypes.end() ) {
+		throw Exception("trying to create prototype reference on unknown object '" + type + "'");
+	}
+
+	return createReference(it->second.generateBluePrint(type), prototype + type, name);
 }
 
 bool Repository::isAlreadyKnown(const std::string& name) const
