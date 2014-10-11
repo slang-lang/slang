@@ -4,6 +4,7 @@
 
 
 // Library includes
+#include <list>
 
 // Project includes
 
@@ -34,6 +35,9 @@ protected:
 private:
 	size_t mAddress;
 };
+
+
+typedef std::list<Reference> ReferenceList;
 
 
 }

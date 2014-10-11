@@ -3,6 +3,12 @@ public object Logger
 {
 	// Members
 	private String mKey;
+	
+	// Default constructor
+	public void Logger()
+	{
+		mKey = "Logger";
+	}
 
 	// Specialised constructor
 	public void Logger(String key)

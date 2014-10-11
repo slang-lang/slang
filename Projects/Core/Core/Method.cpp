@@ -502,7 +502,6 @@ Object Method::parseAtom(TokenIterator& start)
 
 Object Method::parseCondition(TokenIterator& token)
 {
-	//Object v1 = parseExpression(token);
 	Object v1;
 	v1.assign(parseExpression(token));
 
@@ -539,15 +538,14 @@ Object Method::parseCondition(TokenIterator& token)
 
 Object Method::parseExpression(TokenIterator& start)
 {
-	//Object result = parseSummands(start);
 	Object result;
 	result.assign(parseSummands(start));
+
 	return result;
 }
 
 Object Method::parseFactors(TokenIterator& start)
 {
-	//Object v1 = parseAtom(start);
 	Object v1;
 	v1.assign(parseAtom(start));
 
@@ -571,7 +569,6 @@ Object Method::parseFactors(TokenIterator& start)
 
 Object Method::parseSummands(TokenIterator& start)
 {
-	//Object v1 = parseAtom(start);
 	Object v1;
 	v1.assign(parseAtom(start));
 
@@ -823,14 +820,17 @@ Object Method::process_method(TokenIterator& token)
 	TokenIterator opened = findNext(tmp, Token::Type::PARENTHESIS_OPEN);
 	TokenIterator closed = findNextBalancedParenthesis(++opened);
 
+	ReferenceList paramsAsReferences;
 	VariablesList params;
-	//ObjectList params;
 
 	tmp = opened;
 	// loop through all parameters seperated by colons
 	while ( tmp != closed ) {
 		Object v = parseExpression(tmp);
 		params.push_back(v);
+
+		Reference r = mMemory->getAddress(&v);
+		paramsAsReferences.push_back(r);
 
 		if ( std::distance(tmp, closed) <= 0 ) {
 			break;

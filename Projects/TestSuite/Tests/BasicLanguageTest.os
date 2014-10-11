@@ -6,6 +6,7 @@ import system.logger;
 public object BaseObject
 {
 	private Logger mLogger;
+	private Bool mLoggerOwner;
 	protected String mName;
 
 	public void constMethod() const
@@ -23,6 +24,7 @@ public object BaseObject
 	public void BaseObject()
 	{
 		mLogger = new Logger("BaseObject");
+		mLoggerOwner = true;
 		mName = "BaseObject";
 	}
 
@@ -30,6 +32,13 @@ public object BaseObject
 	{
 		mLogger = new Logger(name);
 		mName = name;
+	}
+
+	public void ~BaseObject()
+	{
+		if ( mLoggerOwner ) {
+			delete mLogger;
+		}
 	}
 
 	public String getName() const
@@ -41,6 +50,11 @@ public object BaseObject
 
 	public void setLogger(Logger l)
 	{
+		if ( mLoggerOwner ) {
+			delete mLogger;
+			mLoggerOwner = false;
+		}
+
 		assert(false);
 		mLogger = l;
 	}
@@ -110,6 +124,7 @@ private object Main extends public BaseObject,
 		mValue = 0.0;
 
 		//mAssert.assertmsg("failed", true);
+		//Assert::assertmsg("failed", true);
 	}
 
 	public void ~Main() 
