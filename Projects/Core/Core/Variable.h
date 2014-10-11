@@ -9,6 +9,7 @@
 #include <string>
 
 // Project includes
+#include "Visibility.h"
 
 // Forward declarations
 
@@ -16,26 +17,6 @@
 
 
 namespace ObjectiveScript {
-
-
-class Visibility
-{
-public:
-	enum E {
-		Private = 0,
-		Protected,
-		Public
-	};
-
-	static E convert(const std::string& v) {
-		if ( v == "private" ) { return Private; }
-		else if ( v == "protected" ) { return Protected; }
-		else if ( v == "public" ) { return Public; }
-
-		assert(!"invalid visibility!");
-		return Private;
-	}
-};
 
 
 class Variable

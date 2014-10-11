@@ -16,17 +16,22 @@
 namespace ObjectiveScript {
 
 
-class OSRTTI
+class RTTI
 {
 public:
-	OSRTTI()
+	RTTI()
 	{ }
 
-	OSRTTI(const std::string& type)
-	: mTypename(type)
+	RTTI(const std::string& type, const std::string& filename)
+	: mFilename(filename),
+	  mTypename(type)
 	{ }
 
 public:
+	const std::string& Filename() const {
+		return mFilename;
+	}
+
 	const std::string& Typename() const {
 		return mTypename;
 	}
@@ -34,6 +39,7 @@ public:
 protected:
 
 private:
+	std::string mFilename;
 	std::string mTypename;
 };
 

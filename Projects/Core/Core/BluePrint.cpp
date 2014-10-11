@@ -18,9 +18,8 @@ BluePrint::BluePrint()
 }
 
 BluePrint::BluePrint(const std::string& type, const std::string& filename)
-: OSRTTI(type),
-  mVisibility(Visibility::Public),
-  mFilename(filename)
+: RTTI(type, filename),
+  mVisibility(Visibility::Public)
 {
 }
 
@@ -56,11 +55,6 @@ Visibility::E BluePrint::getVisibility() const
 void BluePrint::setVisibility(Visibility::E v)
 {
 	mVisibility = v;
-}
-
-const std::string& BluePrint::filename() const
-{
-	return mFilename;
 }
 
 

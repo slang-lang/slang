@@ -85,7 +85,7 @@ Script* VirtualMachine::create(const std::string& filename)
 	for ( BluePrintList::iterator it = objects.begin(); it != objects.end(); ++it ) {
 		mRepository->addBlueprint((*it));
 
-		if ( it->filename() == filename && it->Typename() == "Main" ) {
+		if ( it->Filename() == filename && it->Typename() == "Main" ) {
 			mObjects.insert(std::make_pair<std::string, Object>(
 				it->Typename(),
 				mRepository->createInstance(it->Typename(), "main")

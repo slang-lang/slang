@@ -661,7 +661,7 @@ Object Method::process(TokenIterator& token, TokenIterator end, Token::Type::E t
 						process_assert(token);
 					}
 					else if ( keyword == "breakpoint" ) {
-						mOwner->providePrinter()->print("hit breakpoint   [" + mOwner->filename() + ": " + Tools::toString(token->position().line) + "]");
+						mOwner->providePrinter()->print("hit breakpoint   [" + mOwner->Filename() + ": " + Tools::toString(token->position().line) + "]");
 					}
 					else if ( keyword == "for" ) {
 						process_for(token);
@@ -938,7 +938,7 @@ void Method::process_print(TokenIterator& token)
 	TokenIterator tmp = findNext(closed, Token::Type::SEMICOLON);
 
 	Object v = parseExpression(opened);
-	mOwner->providePrinter()->print(v.value() + "   [" + mOwner->filename() + ":" + Tools::toString(token->position().line) + "]");
+	mOwner->providePrinter()->print(v.value() + "   [" + mOwner->Filename() + ":" + Tools::toString(token->position().line) + "]");
 
 	token = tmp;
 }

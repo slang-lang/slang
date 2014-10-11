@@ -281,9 +281,9 @@ private object Main extends public BaseObject,
 	/*
 	public void test_scope()
 	{
-		string var = "outer";
+		String var = "outer";
 		{
-			string var = "inner";
+			String var = "inner";
 			print(var);
 		}
 		print(var);
@@ -293,12 +293,12 @@ private object Main extends public BaseObject,
 /////////////////////////////////// Operator overloading \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 	/*
-	public number operator+(number other)
+	public Number operator+(Number other)
 	{
 		return mValue + other;
 	}
 
-	public number operator-(number other)
+	public Number operator-(Number other)
 	{
 		return mValue - other;
 	}
@@ -315,22 +315,22 @@ private object Main extends public BaseObject,
 		return var;
 	}
 
-	private Number returnNumber(Number param1)
+	private Number returnNumber(Number param1) const
 	{
 		return param1;
 	}
 
-	private Number returnSum(Number p1, Number p2)
+	private Number returnSum(Number p1, Number p2) const
 	{
 		return p1 + p2;
 	}
 
-	private Number returnSum(Number p1, Number p2, Number p3)
+	private Number returnSum(Number p1, Number p2, Number p3) const
 	{
 		return p1 + p2 + p3;
 	}
 
-	private String returnSum(String p1, String p2)
+	private String returnSum(String p1, String p2) const
 	{
 		return p1 & p2;
 	}
@@ -340,7 +340,7 @@ private object Main extends public BaseObject,
 		print("method without parameters called");
 	}
 
-	private Number testMethod(Number param1, Number param2)
+	private Number testMethod(Number param1, Number param2) const
 	{
 		return param1 + param2;
 	}

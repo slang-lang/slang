@@ -246,6 +246,10 @@
 				RelativePath=".\Core\VirtualMachine.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\Core\Visibility.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -362,6 +366,10 @@
 			</File>
 			<File
 				RelativePath=".\Core\VirtualMachine.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\Visibility.h"
 				>
 			</File>
 			<File

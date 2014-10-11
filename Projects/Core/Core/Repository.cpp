@@ -118,7 +118,7 @@ Object Repository::createInstance(const BluePrint& blueprint, const std::string&
 {
 	// non-reference-based instantiation
 
-	Object object(name, blueprint.filename(), type, "");
+	Object object(name, blueprint.Filename(), type, "");
 	object.setTokens(blueprint.getTokens());
 
 	Preprocessor preprocessor;
@@ -143,7 +143,7 @@ const Reference& Repository::createReference(const BluePrint& blueprint, const s
 {
 	// reference-based instantiation
 
-	Object *obj = new Object(name, blueprint.filename(), type, "");
+	Object *obj = new Object(name, blueprint.Filename(), type, "");
 	obj->setTokens(blueprint.getTokens());
 
 	Preprocessor preprocessor;

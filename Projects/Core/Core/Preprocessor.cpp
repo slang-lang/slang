@@ -172,7 +172,7 @@ void Preprocessor::generateObject(Object *object)
 	// if we have a member declaration or a method declaration
 	for ( TokenList::const_iterator it = visList.begin(); it != visList.end(); ++it ) {
 		if ( isMemberDeclaration((*it)) ) {
-			object->addMember(createMemberObject(object->filename(), (*it)));
+			object->addMember(createMemberObject(object->Filename(), (*it)));
 		}
 		else if ( isMethodDeclaration((*it)) ) {
 			object->addMethod(createMethod((*it)));

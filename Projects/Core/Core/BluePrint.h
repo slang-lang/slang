@@ -21,7 +21,7 @@
 namespace ObjectiveScript {
 
 
-class BluePrint : public OSRTTI
+class BluePrint : public RTTI
 {
 public:
 	class Ancestor
@@ -69,16 +69,13 @@ public:
 	Visibility::E getVisibility() const;
 	void setVisibility(Visibility::E v);
 
-public:
-	const std::string& filename() const;
-
 protected:
 	Ancestors mAncestors;
 	TokenList mTokens;
 	Visibility::E mVisibility;
 
 private:
-	std::string mFilename;
+
 };
 
 typedef std::list<BluePrint> BluePrintList;
