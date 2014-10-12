@@ -37,7 +37,7 @@ private:
 };
 
 
-typedef std::list<Reference> ReferenceList;
+typedef std::list<Reference> ReferencesList;
 
 
 }

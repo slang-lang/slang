@@ -62,15 +62,14 @@ StringList provideReservedWords()
 	return reservedWords;
 }
 
-std::string toString(const VariablesList& list)
+std::string toString(const ReferencesList& list)
 {
 	std::string result;
 
-	for ( VariablesList::const_iterator it = list.begin(); it != list.end(); ++it ) {
-		//result += "{ '" + (*it).name() + "', '" + (*it).value() + "' }";
-		result += (*it).type() + " " + (*it).name();
+	for ( ReferencesList::const_iterator it = list.begin(); it != list.end(); ++it ) {
+		//result += (*it).getAddress();
 
-		VariablesList::const_iterator copy = it;
+		ReferencesList::const_iterator copy = it;
 		if ( ++copy != list.end() ) {
 			result += ", ";
 		}
@@ -103,6 +102,22 @@ std::string toString(const TokenList& list)
 		result += (*it).content();
 
 		TokenIterator copy = it;
+		if ( ++copy != list.end() ) {
+			result += ", ";
+		}
+	}
+
+	return result;
+}
+
+std::string toString(const VariablesList& list)
+{
+	std::string result;
+
+	for ( VariablesList::const_iterator it = list.begin(); it != list.end(); ++it ) {
+		result += (*it).type() + " " + (*it).name();
+
+		VariablesList::const_iterator copy = it;
 		if ( ++copy != list.end() ) {
 			result += ", ";
 		}

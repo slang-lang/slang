@@ -11,7 +11,7 @@
 // Project includes
 #include "RTTI.h"
 #include "Token.h"
-#include "Types.h"
+#include "Visibility.h"
 
 // Forward declarations
 

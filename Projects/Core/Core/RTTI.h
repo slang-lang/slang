@@ -20,6 +20,8 @@ class RTTI
 {
 public:
 	RTTI()
+	: mFilename("<none>"),
+	  mTypename("<unknown type>")
 	{ }
 
 	RTTI(const std::string& type, const std::string& filename)

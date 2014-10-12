@@ -13,7 +13,8 @@ namespace ObjectiveScript {
 
 
 BluePrint::BluePrint()
-: mVisibility(Visibility::Public)
+: RTTI("<unknown type>", "<none>"),
+  mVisibility(Visibility::Public)
 {
 }
 

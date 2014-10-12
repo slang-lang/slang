@@ -820,7 +820,7 @@ Object Method::process_method(TokenIterator& token)
 	TokenIterator opened = findNext(tmp, Token::Type::PARENTHESIS_OPEN);
 	TokenIterator closed = findNextBalancedParenthesis(++opened);
 
-	ReferenceList paramsAsReferences;
+	ReferencesList paramsAsReferences;
 	VariablesList params;
 
 	tmp = opened;
