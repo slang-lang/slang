@@ -40,6 +40,13 @@ private:
 	Utils::Common::Logger *mLogger;
 };
 
+void printUsage()
+{
+	printf("usage:\n");
+	printf("\n");
+	printf("-v\t\t\tverbose output\n");
+	printf("-h|--help\t\tthis text\n");
+}
 
 int main(int argc, const char* argv[])
 {
@@ -51,7 +58,6 @@ int main(int argc, const char* argv[])
 
 	Utils::Common::Logger *logger = new Utils::Common::StdOutLogger();	//0;
 
-/*
 	if ( argc > 1 ) {
 		for (int i = 1; i < argc; i++) {
 			char buf[255];
@@ -60,9 +66,14 @@ int main(int argc, const char* argv[])
 			if ( Utils::Tools::StringCompare(buf, "-v") ) {
 				logger = new Utils::Common::StdOutLogger();
 			}
+			else if ( Utils::Tools::StringCompare(buf, "-h") || Utils::Tools::StringCompare(buf, "--help") ) {
+				printUsage();
+			}
 		}
 	}
-*/
+	else {
+		printUsage();
+	}
 
 	if ( !logger ) {
 		logger = new Utils::Common::Logger("objectivescript.log");
@@ -74,6 +85,8 @@ int main(int argc, const char* argv[])
 		ObjectiveScript::VirtualMachine *mVirtualMachine = new ObjectiveScript::VirtualMachine();
 		mVirtualMachine->connectPrinter(&mPrinter);
 		mVirtualMachine->setBaseFolder("");
+
+		mVirtualMachine->create(argv[1]);
 	}
 	catch ( std::exception &e ) {
 		std::cout << "Unhandled std::exception: " << e.what();
