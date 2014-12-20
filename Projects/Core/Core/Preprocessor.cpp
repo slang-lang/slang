@@ -170,11 +170,13 @@ void Preprocessor::generateObject(Object *object)
 		}
 	}
 
+/*
 	// if we don't find anything our script file is invalid
 	if ( visList.empty() ) {
 		OSerror("'" + object->name() + "' has no visibility declarations!");
 		return;
 	}
+*/
 
 	// loop over all visibility declarations and check
 	// if we have a member declaration or a method declaration

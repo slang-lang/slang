@@ -101,19 +101,6 @@ Object Repository::createInstance(const std::string& type, const std::string& na
 	return createInstance(it->second, type, name);
 }
 
-Object Repository::createInstanceFromPrototype(const std::string& prototype, const std::string& type, const std::string& name)
-{
-	OSdebug("createInstanceFromPrototype('" + prototype + ", " + type + "', '" + name + "')");
-
-	Prototypes::iterator it = mPrototypes.find(prototype);
-	if ( it == mPrototypes.end() ) {
-		throw Exception("trying to create prototype instance of unknown object '" + type + "'");
-	}
-
-	// non-reference-based instantiation
-	return createInstance(it->second.generateBluePrint(type), prototype + type, name);
-}
-
 Object Repository::createInstance(const BluePrint& blueprint, const std::string& type, const std::string& name)
 {
 	// non-reference-based instantiation
@@ -125,6 +112,19 @@ Object Repository::createInstance(const BluePrint& blueprint, const std::string&
 	preprocessor.process(&object);
 
 	return object;
+}
+
+Object Repository::createInstanceFromPrototype(const std::string& prototype, const std::string& type, const std::string& name)
+{
+	OSdebug("createInstanceFromPrototype('" + prototype + ", " + type + "', '" + name + "')");
+
+	Prototypes::iterator it = mPrototypes.find(prototype);
+	if ( it == mPrototypes.end() ) {
+		throw Exception("trying to create prototype instance of unknown object '" + type + "'");
+	}
+
+	// non-reference-based instantiation
+	return createInstance(it->second.generateBluePrint(type), prototype + type, name);
 }
 
 const Reference& Repository::createReference(const std::string& type, const std::string& name)
