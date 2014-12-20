@@ -119,6 +119,7 @@ void VirtualMachine::loadLibrary(const std::string& library)
 
 		const std::list<std::string>& libraries = a.getLibraryReferences();
 		BluePrintList objects = a.getObjects();
+		PrototypeList prototypes = a.getPrototypes();
 
 		for ( std::list<std::string>::const_iterator it = libraries.begin(); it != libraries.end(); ++it ) {
 			loadLibrary((*it));
@@ -126,6 +127,10 @@ void VirtualMachine::loadLibrary(const std::string& library)
 
 		for ( BluePrintList::iterator it = objects.begin(); it != objects.end(); ++it ) {
 			mRepository->addBlueprint((*it));
+		}
+
+		for ( PrototypeList::iterator it = prototypes.begin(); it != prototypes.end(); ++it ) {
+			mRepository->addPrototype((*it));
 		}
 	}
 	catch ( std::exception& e ) {

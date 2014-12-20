@@ -18,6 +18,8 @@
 // Project includes
 #include <Common/StdOutLogger.h>
 #include <Core/Interfaces/IPrinter.h>
+#include <Core/Script.h>
+#include <Core/Types.h>
 #include <Core/VirtualMachine.h>
 #include <Tools/Strings.h>
 
@@ -58,7 +60,11 @@ int main(int argc, const char* argv[])
 
 	Utils::Common::Logger *logger = new Utils::Common::StdOutLogger();	//0;
 
+	std::string filename;
+	ObjectiveScript::VariablesList params;
+
 	if ( argc > 1 ) {
+/*
 		for (int i = 1; i < argc; i++) {
 			char buf[255];
 			sprintf_s(buf, "%s", argv[i]);
@@ -70,6 +76,9 @@ int main(int argc, const char* argv[])
 				printUsage();
 			}
 		}
+*/
+
+		filename = argv[1];
 	}
 	else {
 		printUsage();
@@ -79,14 +88,16 @@ int main(int argc, const char* argv[])
 		logger = new Utils::Common::Logger("objectivescript.log");
 	}
 
+	Printer mPrinter(logger);
+
+	ObjectiveScript::VirtualMachine mVirtualMachine;
+	mVirtualMachine.connectPrinter(&mPrinter);
+	mVirtualMachine.setBaseFolder("./");
+
 	try {
-		Printer mPrinter(logger);
-
-		ObjectiveScript::VirtualMachine *mVirtualMachine = new ObjectiveScript::VirtualMachine();
-		mVirtualMachine->connectPrinter(&mPrinter);
-		mVirtualMachine->setBaseFolder("");
-
-		mVirtualMachine->create(argv[1]);
+		/*ObjectiveScript::Script *script = */mVirtualMachine.create(filename);
+		// our script automatically executes it's Main object's constructor,
+		// so there is no need to execute a method explicit
 	}
 	catch ( std::exception &e ) {
 		std::cout << "Unhandled std::exception: " << e.what();
