@@ -70,16 +70,16 @@ int main(int argc, const char* argv[])
 
 	try {
 		FixtureList mFixtures;
-
+/*
 		Testing::Fixture testing(logger);
 		mFixtures.push_back(&testing);
-
+*/
 		Testing::Attributes::Fixture attributes(logger);
 		mFixtures.push_back(&attributes);
-
+/*
 		Testing::Prototype::Fixture prototype(logger);
 		mFixtures.push_back(&prototype);
-
+*/
 		for ( FixtureList::iterator it = mFixtures.begin(); it != mFixtures.end(); ++it ) {
 			if ( show ) {
 				std::cout << (*it)->getName() << std::endl;

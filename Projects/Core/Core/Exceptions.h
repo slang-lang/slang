@@ -85,6 +85,15 @@ public:
 };
 
 
+class NotImplemented : public Exception
+{
+public:
+	NotImplemented(const std::string& text, const Token::Position& position = Token::Position())
+	: Exception("tried to execute not implemented feature: " + text, position)
+	{ }
+};
+
+
 class ParameterCountMissmatch : public Exception
 {
 public:

@@ -198,6 +198,7 @@ Token Tokenizer::createToken(const std::string& con, const Token::Position& pos)
 	else if ( isDigit(content) ) { type = Token::Type::CONSTANT; }
 	else if ( isIdentifer(content) ) { type = Token::Type::IDENTIFER; }
 	else if ( isKeyword(content) ) { type = Token::Type::KEYWORD; }
+	else if ( isLanguageFeature(content) ) { type = Token::Type::LANGUAGEFEATURE; }
 	else if ( isLiteral(content) ) {
 		// remove leading and trailing (", ') quotation marks (", ')
 		type = Token::Type::LITERAL;
@@ -208,7 +209,9 @@ Token Tokenizer::createToken(const std::string& con, const Token::Position& pos)
 	else if ( isVisibility(content) ) { type = Token::Type::VISIBILITY; }
 	else if ( isWhiteSpace(content) ) { type = Token::Type::WHITESPACE; }
 
-	return Token(type, content, pos);
+	Token token(type, content, pos);
+	token.setOptional(type == Token::Type::LANGUAGEFEATURE);
+	return token;
 }
 
 bool Tokenizer::isBoolean(const std::string& token) const
@@ -273,6 +276,27 @@ bool Tokenizer::isIdentifer(const std::string& token) const
 	return false;
 }
 
+bool Tokenizer::isKeyword(const std::string& token) const
+{
+	for ( StringList::const_iterator it = mKeywords.begin(); it != mKeywords.end(); ++it ) {
+		if ( (*it) == token ) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool Tokenizer::isLanguageFeature(const std::string& content) const
+{
+	if ( content == "deprecated" ) return true;
+	if ( content == "notimplemented" ) return true;
+	if ( content == "stable" ) return true;
+	if ( content == "unstable" ) return true;
+
+	return false;
+}
+
 bool Tokenizer::isLiteral(const std::string& token) const
 {
 	if ( token.size() > 1 ) {
@@ -282,17 +306,6 @@ bool Tokenizer::isLiteral(const std::string& token) const
 		}
 		// single quotated literals
 		if ( (token.at(0) == '\'' && token.at(token.size() - 1) == '\'') ) {
-			return true;
-		}
-	}
-
-	return false;
-}
-
-bool Tokenizer::isKeyword(const std::string& token) const
-{
-	for ( StringList::const_iterator it = mKeywords.begin(); it != mKeywords.end(); ++it ) {
-		if ( (*it) == token ) {
 			return true;
 		}
 	}

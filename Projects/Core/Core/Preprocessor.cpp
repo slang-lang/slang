@@ -19,12 +19,17 @@ namespace ObjectiveScript {
 Object Preprocessor::createMemberObject(const std::string& filename, TokenIterator token)
 {
 	std::string name;
+	std::string languageFeature;
 	std::string type;
 	std::string value;
 	std::string visibility;
 
 	// look for the visibility token
 	visibility = (*token++).content();
+	// look for an optional language feature token
+	if ( token->isOptional() ) {
+		languageFeature = (*token++).content();
+	}
 	// look for the type token
 	type = (*token++).content();
 	// look for the identifier token
@@ -36,6 +41,7 @@ Object Preprocessor::createMemberObject(const std::string& filename, TokenIterat
 
 	// create member variable
 	Object o(name, filename, type, value);
+	o.setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
 	o.setVisibility(Visibility::convert(visibility));
 	return o;
 }
@@ -45,12 +51,17 @@ Method Preprocessor::createMethod(TokenIterator token)
 	bool isConst = false;
 	bool isStatic = false;
 	std::string name;
+	std::string languageFeature;
 	std::string type;
 	std::string value;
 	std::string visibility;
 
 	// look for the visibility token
 	visibility = (*token++).content();
+	// look for an optional language feature token
+	if ( token->isOptional() ) {
+		languageFeature = (*token++).content();
+	}
 	// look for the type token
 	type = (*token++).content();
 	// look for the identifier token
@@ -135,6 +146,7 @@ Method Preprocessor::createMethod(TokenIterator token)
 	// create a new Method with the corresponding return value
 	Method m(name, type);
 	m.setConst(isConst);
+	m.setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
 	m.setSignature(params);
 	m.setStatic(isStatic);
 	m.setTokens(tokens);
@@ -225,6 +237,7 @@ bool Preprocessor::isMethodDeclaration(TokenIterator start)
 	TokenList tokens;
 
 	tokens.push_back(Token(Token::Type::VISIBILITY));
+	//tokens.push_back(Token(Token::Type::LANGUAGEFEATURE, true)); // this is an optional token
 	tokens.push_back(Token(Token::Type::TYPE));
 	tokens.push_back(Token(Token::Type::IDENTIFER));
 	tokens.push_back(Token(Token::Type::PARENTHESIS_OPEN));

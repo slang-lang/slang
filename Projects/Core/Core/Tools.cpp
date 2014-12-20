@@ -61,6 +61,11 @@ bool checkSynthax(TokenIterator start, const TokenList& expected)
 	}
 
 	for ( TokenIterator it = expected.begin(); it != expected.end(); ++it, ++start ) {
+		if ( start->isOptional() ) {
+			// optional tokens have to be skipped during syntax check
+			start++;
+		}
+
 		if ( it->type() != start->type() ) {
 			return false;
 		}

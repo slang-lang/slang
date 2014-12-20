@@ -75,6 +75,13 @@ Object Method::execute(const VariablesList& params)
 		throw ParameterCountMissmatch("number or type of parameters incorrect");
 	}
 
+	switch ( languageFeatureState() ) {
+		case LanguageFeatureState::Deprecated: OSwarn("method '" + name() + "' is marked as deprecated!"); break;
+		case LanguageFeatureState::NotImplemented: OSerror("method '" + name() + "' is marked as not implemented!"); throw NotImplemented(name()); break;
+		case LanguageFeatureState::Stable: /* this is the normal language feature state, so no need to log anything here */ break;
+		case LanguageFeatureState::Unstable: OSwarn("method '" + name() + "' is marked as unstable!"); break;
+	}
+
 	VariablesList::const_iterator rIt = mSignature.begin();
 	// add parameters as pseudo members
 	for ( VariablesList::const_iterator it = params.begin(); it != params.end(); ++it, ++rIt ) {
@@ -333,6 +340,10 @@ bool Method::isMethod(const std::string& token)
 				return true;
 			}
 		}
+	}
+
+	if ( mOwner->hasMember(parent) ) {
+		// TODO: our owning object has a member with this name, delegate this to him
 	}
 
 	// check if token is a method of our parent object

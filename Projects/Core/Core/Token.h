@@ -23,19 +23,20 @@ public:
 	class Position
 	{
 	public:
-		Position() : column(0), line(0) { }
-		Position(size_t l, size_t c) : column(c), line(l) { }
+		Position(size_t l = 0, size_t c = 0)
+		: column(c), line(l)
+		{ }
 
 	public:
 		bool operator==(const Position& other) {
-			return this->line == other.line && this->column == other.column;
+			return (this->line == other.line && this->column == other.column);
 		}
 
 		bool operator<(const Position& other) {
 			if ( this->line == other.line ) {
-				return this->column < other.column;
+				return (this->column < other.column);
 			}
-			return this->line < other.line;
+			return (this->line < other.line);
 		}
 
 	public:
@@ -75,6 +76,7 @@ public:
 			IDENTIFER,
 			KEYWORD,
 			LABEL,
+			LANGUAGEFEATURE,
 			LESS,
 			LITERAL,
 			MATH_ADD,
@@ -127,6 +129,7 @@ public:
 				case GREATER: return ">";
 				case IDENTIFER: return "identifier";
 				case LABEL: return "<LABEL>";
+				case LANGUAGEFEATURE: return "<LANGUAGEFEATURE>";
 				case KEYWORD: return "KEYWORD";
 				case LESS: return "<";
 				case LITERAL: return "literal";
@@ -151,12 +154,12 @@ public:
 				case WHITESPACE: return "whitespace";
 			}
 
-			return "unknown type";
+			return "unknown token type";
 		}
 	};
 
 public:
-	Token(Type::E type);
+	Token(Type::E type, bool isOptional = false);
 	Token(Type::E type, const std::string& content);
 	Token(Type::E type, const std::string& content, const Position& pos);
 
@@ -167,6 +170,9 @@ public:
 	Type::E type() const;
 
 public:
+	bool isOptional() const;
+	void setOptional(bool state);
+
 	void resetContentTo(const std::string& c);
 	void resetTypeTo(Type::E type);
 
@@ -174,6 +180,7 @@ protected:
 
 private:
 	std::string	mContent;
+	bool		mIsOptional;
 	Position	mPosition;
 	Type::E		mType;
 };

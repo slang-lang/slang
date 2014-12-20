@@ -43,6 +43,7 @@ private:	// Tokenizer
 	bool isDigit(const std::string& token) const;
 	bool isIdentifer(const std::string& token) const;
 	bool isKeyword(const std::string& token) const;
+	bool isLanguageFeature(const std::string& token) const;
 	bool isLiteral(const std::string& token) const;
 	bool isReservedWord(const std::string& token) const;
 	bool isType(const std::string& token) const;

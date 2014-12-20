@@ -21,8 +21,7 @@ LanguageFeatureState::E LanguageFeatureState::convert(const std::string& v)
 	else if ( v == "unknown" ) { return LanguageFeatureState::Unknown; }
 	else if ( v == "unstable" ) { return LanguageFeatureState::Unstable; }
 
-	assert(!"invalid language feature state!");
-	return LanguageFeatureState::Unknown;
+	return LanguageFeatureState::Stable;
 }
 
 std::string LanguageFeatureState::convert(LanguageFeatureState::E e)
