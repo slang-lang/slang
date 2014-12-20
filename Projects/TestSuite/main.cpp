@@ -24,6 +24,7 @@
 #include <Tools/Strings.h>
 
 // Fixtures
+#include <Attributes/Fixture.h>
 #include <Prototype/Fixture.h>
 #include <TestFramework/Fixture.h>
 
@@ -72,6 +73,9 @@ int main(int argc, const char* argv[])
 
 		Testing::Fixture testing(logger);
 		mFixtures.push_back(&testing);
+
+		Testing::Attributes::Fixture attributes(logger);
+		mFixtures.push_back(&attributes);
 
 		Testing::Prototype::Fixture prototype(logger);
 		mFixtures.push_back(&prototype);

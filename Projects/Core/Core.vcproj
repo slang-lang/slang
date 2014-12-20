@@ -171,6 +171,26 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Core\Attributes\Attributes.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Attributes\"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Attributes\"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath=".\Core\BluePrint.cpp"
 				>
 				<FileConfiguration
@@ -187,6 +207,26 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						ObjectFile="$(IntDir)\Core\"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\Core\Attributes\LanguageFeatureState.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Attributes\"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Attributes\"
 					/>
 				</FileConfiguration>
 			</File>
@@ -247,8 +287,16 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Visibility.cpp"
+				RelativePath=".\Core\Attributes\Visibility.cpp"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Attributes\"
+					/>
+				</FileConfiguration>
 			</File>
 		</Filter>
 		<Filter
@@ -262,6 +310,10 @@
 			</File>
 			<File
 				RelativePath=".\Core\Analyser.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\Attributes\Attributes.h"
 				>
 			</File>
 			<File
@@ -286,6 +338,10 @@
 			</File>
 			<File
 				RelativePath=".\Core\Interfaces\IPrinter.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\Attributes\LanguageFeatureState.h"
 				>
 			</File>
 			<File
@@ -369,7 +425,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Visibility.h"
+				RelativePath=".\Core\Attributes\Visibility.h"
 				>
 			</File>
 			<File

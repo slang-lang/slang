@@ -194,7 +194,7 @@ Object Object::execute(const std::string& method, const VariablesList& params, c
 	}
 
 	Object returnValue(name(), "", type(), "");
-	returnValue.visibility(visibility());
+	returnValue.setVisibility(visibility());
 	try {
 		// execute our member method
 		returnValue.assign(mIt->execute(params));

@@ -9,9 +9,9 @@
 #include <string>
 
 // Project includes
+#include <Core/Attributes/Visibility.h>
 #include "RTTI.h"
 #include "Token.h"
-#include "Visibility.h"
 
 // Forward declarations
 
@@ -66,8 +66,8 @@ public:
 	const TokenList& getTokens() const;
 	virtual void setTokens(const TokenList& tokens);
 
-	Visibility::E getVisibility() const;
-	void setVisibility(Visibility::E v);
+	Visibility::E getAncestorVisibility() const;
+	void setAncestorVisibility(Visibility::E v);
 
 protected:
 	Ancestors mAncestors;

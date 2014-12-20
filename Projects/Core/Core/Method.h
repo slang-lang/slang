@@ -182,8 +182,9 @@ private:
 	TokenList		mTokens;
 };
 
+
 /*
-friend std::ostream &operator<<(std::ostream &out, const Method& m)
+friend std::ostream& operator<<(std::ostream &out, const Method& m)
 {
 	out << m.name() << "(";
 	for ( VariablesList::const_iterator it = m.provideSignature().begin(); it != m.provideSignature().end(); ++it ) {

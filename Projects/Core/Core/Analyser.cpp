@@ -79,8 +79,8 @@ BluePrint Analyser::createObject(TokenIterator& start)
 
 	BluePrint blue(name, mFilename);
 	blue.setAncestors(parents);
+	blue.setAncestorVisibility(Visibility::convert(visibility));
 	blue.setTokens(tokens);
-	blue.setVisibility(Visibility::convert(visibility));
 
 	return blue;
 }

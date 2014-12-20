@@ -187,24 +187,8 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\Prototype\Fixture.cpp"
+				RelativePath=".\Attributes\AttributesTest.cpp"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\Prototype\"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\Prototype\"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\TestFramework\Fixture.cpp"
@@ -223,6 +207,30 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						ObjectFile="$(IntDir)\TestFramework\"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\Attributes\Fixture.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Prototype\Fixture.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Prototype\"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Prototype\"
 					/>
 				</FileConfiguration>
 			</File>
@@ -277,11 +285,19 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\Prototype\Fixture.h"
+				RelativePath=".\Attributes\AttributesTest.h"
 				>
 			</File>
 			<File
 				RelativePath=".\TestFramework\Fixture.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Prototype\Fixture.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Attributes\Fixture.h"
 				>
 			</File>
 			<File

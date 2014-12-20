@@ -1,5 +1,5 @@
 
-public object Assert
+namespace std
 {
 
 	public void assertmsg(String message const, Bool condition const) static

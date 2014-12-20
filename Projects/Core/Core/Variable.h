@@ -9,7 +9,7 @@
 #include <string>
 
 // Project includes
-#include "Visibility.h"
+#include <Core/Attributes/Attributes.h>
 
 // Forward declarations
 
@@ -19,7 +19,7 @@
 namespace ObjectiveScript {
 
 
-class Variable
+class Variable : public Attributes
 {
 public:
 	class BaseType
@@ -72,16 +72,6 @@ public:
 	virtual ~Variable();
 
 public:
-	Visibility::E visibility() const;
-	void visibility(const std::string& v);
-	void visibility(Visibility::E v);
-
-	bool isConst() const;
-	void setConst(bool state);
-
-	bool isStatic() const;
-	void setStatic(bool state);
-
 	const std::string& name() const;
 
 	BaseType::E realType() const;
@@ -95,13 +85,10 @@ public:
 	bool operator()();
 
 protected:
-	bool			mConst;
 	std::string		mName;
 	BaseType::E		mRealType;
-	bool			mStatic;
 	std::string		mType;
 	std::string		mValue;
-	Visibility::E	mVisibility;
 
 private:
 

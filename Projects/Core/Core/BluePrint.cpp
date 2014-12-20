@@ -33,9 +33,9 @@ const BluePrint::Ancestors& BluePrint::getAncestors() const
 	return mAncestors;
 }
 
-void BluePrint::setAncestors(const Ancestors& ancestors)
+Visibility::E BluePrint::getAncestorVisibility() const
 {
-	mAncestors = ancestors;
+	return mVisibility;
 }
 
 const TokenList& BluePrint::getTokens() const
@@ -43,19 +43,19 @@ const TokenList& BluePrint::getTokens() const
 	return mTokens;
 }
 
+void BluePrint::setAncestors(const Ancestors& ancestors)
+{
+	mAncestors = ancestors;
+}
+
+void BluePrint::setAncestorVisibility(Visibility::E v)
+{
+	mVisibility = v;
+}
+
 void BluePrint::setTokens(const TokenList& tokens)
 {
 	mTokens = tokens;
-}
-
-Visibility::E BluePrint::getVisibility() const
-{
-	return mVisibility;
-}
-
-void BluePrint::setVisibility(Visibility::E v)
-{
-	mVisibility = v;
 }
 
 

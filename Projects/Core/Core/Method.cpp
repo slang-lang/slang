@@ -84,7 +84,7 @@ Object Method::execute(const VariablesList& params)
 	}
 
 	Object returnValue(name(), "", type(), "");
-	returnValue.visibility(visibility());
+	returnValue.setVisibility(visibility());
 
 	try {	// try to execute our method
 		TokenIterator start = mTokens.begin();

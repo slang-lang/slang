@@ -18,8 +18,6 @@ namespace ObjectiveScript {
 
 Object Preprocessor::createMemberObject(const std::string& filename, TokenIterator token)
 {
-//	bool isConst = false;
-//	bool isStatic = false;
 	std::string name;
 	std::string type;
 	std::string value;
@@ -38,9 +36,7 @@ Object Preprocessor::createMemberObject(const std::string& filename, TokenIterat
 
 	// create member variable
 	Object o(name, filename, type, value);
-//	o.setConst(isConst);
-//	o.setStatic(isStatic);
-	o.visibility(Visibility::convert(visibility));
+	o.setVisibility(Visibility::convert(visibility));
 	return o;
 }
 
@@ -142,7 +138,7 @@ Method Preprocessor::createMethod(TokenIterator token)
 	m.setSignature(params);
 	m.setStatic(isStatic);
 	m.setTokens(tokens);
-	m.visibility(visibility);
+	m.setVisibility(Visibility::convert(visibility));
 
 	return m;
 }

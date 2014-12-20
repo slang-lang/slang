@@ -8,6 +8,7 @@
 #include <set>
 
 // Project includes
+#include <Core/Attributes/Attributes.h>
 #include "BluePrint.h"
 #include "Method.h"
 #include "Token.h"
@@ -30,6 +31,7 @@ class Repository;
 
 class Object : public BluePrint,
 			   public Variable
+			   //public Attributes
 {
 public:
 	Object();
