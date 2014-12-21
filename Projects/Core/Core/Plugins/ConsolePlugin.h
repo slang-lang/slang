@@ -4,6 +4,7 @@
 
 
 // Library includes
+#include <cassert>
 
 // Project includes
 #include <Interfaces/Console/IConsolePlugin.h>

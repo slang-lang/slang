@@ -1,15 +1,16 @@
 INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
 SET(SOURCES
-	
+	Exceptions.cpp
+	Position.h
 )
 
 SET(HEADERS
-	ConsolePlugin.h
+	Exceptions.h
+	Position.h
 )
 
 SET(DEPENDENCIES
 )
 
-build_static_lib(CorePlugins "")
-
+build_static_lib(CoreUtils "")

@@ -6,6 +6,7 @@
 // Library includes
 
 // Project includes
+#include <Utils/Position.h>
 #include "Types.h"
 
 // Forward declarations
@@ -34,7 +35,7 @@ private:	// Tokenizer
 	void addType(const std::string& type);
 
 	void classify();
-	Token createToken(const std::string& con, const Token::Position& pos);
+	Token createToken(const std::string& con, const Utils::Position& pos);
 	void removeWhiteSpaces();
 	void replaceAssignments();
 	void replacePrototypes();

@@ -1,9 +1,11 @@
 INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
+ADD_SUBDIRECTORY(Attributes)
 ADD_SUBDIRECTORY(BuildInObjects)
 #ADD_SUBDIRECTORY(Interfaces)
 ADD_SUBDIRECTORY(Keywords)
 #ADD_SUBDIRECTORY(Plugins)
+ADD_SUBDIRECTORY(Utils)
 
 SET(SOURCES
 	Analyser.cpp
@@ -25,7 +27,6 @@ SET(SOURCES
 SET(HEADERS
 	Analyser.h
 	BluePrint.h
-	Exceptions.h
 	Method.h
 	Object.h
 #	ObjectiveScript.h
@@ -42,10 +43,11 @@ SET(HEADERS
 )
 
 SET(DEPENDENCIES
-#	CoreConsolePlugins
-#	CoreInterfaces
+#	CoreUtils
+	CorePlugins
 	CoreKeywords
 	CoreBuildInObjects
+	CoreAttributes
 )
 
 add_include(Projects/Core)

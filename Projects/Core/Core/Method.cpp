@@ -6,11 +6,11 @@
 #include <cassert>
 
 // Project includes
-#include <Core/BuildInObjects/Bool.h>
-#include <Core/BuildInObjects/Number.h>
-#include <Core/BuildInObjects/String.h>
-#include <Core/Interfaces/IPrinter.h>
-#include "Exceptions.h"
+#include <BuildInObjects/Bool.h>
+#include <BuildInObjects/Number.h>
+#include <BuildInObjects/String.h>
+#include <Interfaces/IPrinter.h>
+#include <Utils/Exceptions.h>
 #include "Memory.h"
 #include "Object.h"
 #include "Repository.h"
@@ -79,6 +79,7 @@ Object Method::execute(const VariablesList& params)
 		case LanguageFeatureState::Deprecated: OSwarn("method '" + name() + "' is marked as deprecated!"); break;
 		case LanguageFeatureState::NotImplemented: OSerror("method '" + name() + "' is marked as not implemented!"); throw NotImplemented(name()); break;
 		case LanguageFeatureState::Stable: /* this is the normal language feature state, so no need to log anything here */ break;
+		case LanguageFeatureState::Unknown: /* ignore this one */ break;
 		case LanguageFeatureState::Unstable: OSwarn("method '" + name() + "' is marked as unstable!"); break;
 	}
 

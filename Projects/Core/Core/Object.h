@@ -8,7 +8,7 @@
 #include <set>
 
 // Project includes
-#include <Core/Attributes/Attributes.h>
+#include <Attributes/Attributes.h>
 #include "BluePrint.h"
 #include "Method.h"
 #include "Token.h"
@@ -53,7 +53,7 @@ public:	// Providers
 	IPrinter* providePrinter() const;
 
 public:	// Usage
-	void assign(const Object& other);
+	void assign(Object& other); //void assign(const Object& other);
 	void Constructor(const VariablesList& params);
 	void Destructor();
 

@@ -4,7 +4,7 @@
 
 // Library includes
 #include <cassert>
-#include <exception>
+#include <Utils/Exceptions.h>
 
 // Project includes
 
@@ -26,7 +26,7 @@ Attributes::Attributes()
 void Attributes::checkSealState()
 {
 	if ( mSealed ) {
-		throw std::exception("cannot update sealed attribute");
+		throw Exception("can not update sealed attribute");
 	}
 }
 

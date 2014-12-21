@@ -5,11 +5,11 @@
 // Library includes
 
 // Project includes
-#include <Core/Keywords/for.h>
-#include <Core/Keywords/if.h>
-#include <Core/Keywords/print.h>
-#include <Core/Keywords/return.h>
-#include "Exceptions.h"
+#include <Keywords/for.h>
+#include <Keywords/if.h>
+#include <Keywords/print.h>
+#include <Keywords/return.h>
+#include <Utils/Exceptions.h>
 
 // Namespace declarations
 
@@ -168,7 +168,7 @@ void Tokenizer::classify()
 
 }
 
-Token Tokenizer::createToken(const std::string& con, const Token::Position& pos)
+Token Tokenizer::createToken(const std::string& con, const Utils::Position& pos)
 {
 	std::string content = con;
 
@@ -379,7 +379,7 @@ void Tokenizer::process()
 	bool isString = false;
 
 	char lastChar = 0;
-	Token::Position pos(1, 1);
+	Utils::Position pos(1, 1);
 
 	while ( offset < mContent.size() ) {
 		char thisChar = mContent[offset++];

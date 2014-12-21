@@ -25,7 +25,7 @@ Token::Token(Type::E type, const std::string& content)
 {
 }
 
-Token::Token(Type::E type, const std::string& content, const Position& pos)
+Token::Token(Type::E type, const std::string& content, const Utils::Position& pos)
 : mContent(content),
   mIsOptional(false),
   mPosition(pos),
@@ -43,7 +43,7 @@ bool Token::isOptional() const
 	return mIsOptional;
 }
 
-const Token::Position& Token::position() const
+const Utils::Position& Token::position() const
 {
 	return mPosition;
 }

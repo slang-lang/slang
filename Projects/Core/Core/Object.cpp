@@ -5,7 +5,7 @@
 // Library includes
 
 // Project includes
-#include "Exceptions.h"
+#include <Utils/Exceptions.h>
 #include "Memory.h"
 #include "Repository.h"
 #include "Tools.h"
@@ -86,7 +86,7 @@ void Object::addParent(const std::string& parent)
 	mParents.push_back(parent);
 }
 
-void Object::assign(const Object& other)
+void Object::assign(Object& other)	//void Object::assign(const Object& other)
 {
 	if ( other.mConstructed )	// don't override this with false
 		this->mConstructed = other.mConstructed;

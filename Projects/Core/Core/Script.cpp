@@ -5,8 +5,8 @@
 // Library includes
 
 // Project includes
-#include <Core/Interfaces/IPrinter.h>
-#include "Exceptions.h"
+#include <Interfaces/IPrinter.h>
+#include <Utils/Exceptions.h>
 #include "Object.h"
 #include "Tools.h"
 

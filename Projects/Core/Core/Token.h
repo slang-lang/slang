@@ -8,6 +8,7 @@
 #include <string>
 
 // Project includes
+#include <Utils/Position.h>
 
 // Forward declarations
 
@@ -20,30 +21,6 @@ namespace ObjectiveScript {
 class Token
 {
 public:
-	class Position
-	{
-	public:
-		Position(size_t l = 0, size_t c = 0)
-		: column(c), line(l)
-		{ }
-
-	public:
-		bool operator==(const Position& other) {
-			return (this->line == other.line && this->column == other.column);
-		}
-
-		bool operator<(const Position& other) {
-			if ( this->line == other.line ) {
-				return (this->column < other.column);
-			}
-			return (this->line < other.line);
-		}
-
-	public:
-		size_t column;
-		size_t line;
-	};
-
 	class Type
 	{
 	public:
@@ -161,11 +138,11 @@ public:
 public:
 	Token(Type::E type, bool isOptional = false);
 	Token(Type::E type, const std::string& content);
-	Token(Type::E type, const std::string& content, const Position& pos);
+	Token(Type::E type, const std::string& content, const Utils::Position& pos);
 
 public:
 	const std::string& content() const;
-	const Position& position() const;
+	const Utils::Position& position() const;
 
 	Type::E type() const;
 
@@ -181,7 +158,7 @@ protected:
 private:
 	std::string	mContent;
 	bool		mIsOptional;
-	Position	mPosition;
+	Utils::Position mPosition;
 	Type::E		mType;
 };
 
