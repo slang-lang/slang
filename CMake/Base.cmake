@@ -63,11 +63,11 @@ include_directories(
 
 # make sure the user-settings file exists
 
-SET(USER_ENV "$ENV{HOME}/.isc/Env.cmake")
-INCLUDE(${USER_ENV} OPTIONAL RESULT_VARIABLE found)
-if ( "${found}" STREQUAL "NOTFOUND" )
-    MESSAGE(FATAL_ERROR "Your user-env file [${USER_ENV}] does not exist")
-endif()
+#SET(USER_ENV "$ENV{HOME}/.isc/Env.cmake")
+#INCLUDE(${USER_ENV} OPTIONAL RESULT_VARIABLE found)
+#if ( "${found}" STREQUAL "NOTFOUND" )
+#    MESSAGE(FATAL_ERROR "Your user-env file [${USER_ENV}] does not exist")
+#endif()
 
 # common used functionality and functions
 INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Common.cmake)
