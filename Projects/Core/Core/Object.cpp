@@ -209,7 +209,7 @@ Object Object::execute(const std::string& method, const VariablesList& params, c
 
 bool Object::findMember(const std::string& m, Object::MemberCollection::iterator& mIt)
 {
-	for ( MemberCollection::iterator it = mMembers.begin(); it != mMembers.end(); ++it ) {
+	for ( MemberCollection::const_iterator it = mMembers.begin(); it != mMembers.end(); ++it ) {
 		if ( it->first == m /*&& it->second.visibility() == Visibility::Public*/ ) {
 			mIt = it;
 			return true;
@@ -220,7 +220,7 @@ bool Object::findMember(const std::string& m, Object::MemberCollection::iterator
 	Tools::split(m, parent, member);
 
 	// loop through all members and ask them if this identifier belongs to them
-	for ( MemberCollection::iterator it = mMembers.begin(); it != mMembers.end(); ++it ) {
+	for ( MemberCollection::const_iterator it = mMembers.begin(); it != mMembers.end(); ++it ) {
 		if ( it->first == parent ) {
 			return it->second.findMember(member, mIt);
 		}

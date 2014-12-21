@@ -11,7 +11,9 @@ SET(HEADERS
 )
 
 SET(DEPENDENCIES
+	Core
 )
 
-build_static_lib(Test_FrameworkTest "")
+add_include(Projects/Utils)
 
+build_static_lib(Test_FrameworkTest "")

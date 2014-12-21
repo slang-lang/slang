@@ -67,7 +67,7 @@ int main(int argc, const char* argv[])
 /*
 		for (int i = 1; i < argc; i++) {
 			char buf[255];
-			sprintf_s(buf, "%s", argv[i]);
+			sprintf(buf, "%s", argv[i]);
 
 			if ( Utils::Tools::StringCompare(buf, "-v") ) {
 				logger = new Utils::Common::StdOutLogger();
