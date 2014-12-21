@@ -641,15 +641,15 @@ Object Method::process(TokenIterator& token, TokenIterator end, Token::Type::E t
 					break;
 				}
 
-				bool found = false;
 
 				if ( isLocal(token->content()) ) {
-					found = true;
+					// ok
 				}
 				else if ( isMember(token->content()) ) {
-					found = true;
+					// ok
 				}
 				else {
+					// not ok
 					throw UnknownIdentifer(token->content(), token->position());
 				}
 

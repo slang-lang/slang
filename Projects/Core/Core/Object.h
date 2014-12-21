@@ -53,7 +53,7 @@ public:	// Providers
 	IPrinter* providePrinter() const;
 
 public:	// Usage
-	void assign(Object& other); //void assign(const Object& other);
+	void assign(Object other); //void assign(const Object& other);
 	void Constructor(const VariablesList& params);
 	void Destructor();
 

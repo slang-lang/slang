@@ -100,10 +100,10 @@ function(_handle_modules_pre_linker modules)
     #    _handle_pre_boost()
     #endif()
 
-    list(FIND modules "json" found)
-    if ( ${found} GREATER -1 )
-        _handle_pre_json()
-    endif()
+#    list(FIND modules "json" found)
+#    if ( ${found} GREATER -1 )
+#        _handle_pre_json()
+#    endif()
 
 endfunction()
 
@@ -127,10 +127,10 @@ function(_handle_modules_post_linker modules target)
         _handle_post_qttest(${target})
     endif()
 
-    list(FIND modules "json" found)
-    if ( ${found} GREATER -1 )
-        _handle_post_json(${target})
-    endif()
+#    list(FIND modules "json" found)
+#    if ( ${found} GREATER -1 )
+#        _handle_post_json(${target})
+#    endif()
    
 endfunction()
 
