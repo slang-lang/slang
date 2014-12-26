@@ -10,9 +10,10 @@
 
 
 namespace ObjectiveScript {
+namespace Utils {
 
 
-Position::Position(size_t l = 0, size_t c = 0)
+Position::Position(size_t l, size_t c)
 : column(c), line(l)
 {
 }
@@ -31,4 +32,5 @@ bool Position::operator<(const Position& other)
 }
 
 
+}
 }

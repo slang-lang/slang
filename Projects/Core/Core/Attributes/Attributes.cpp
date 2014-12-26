@@ -4,9 +4,9 @@
 
 // Library includes
 #include <cassert>
-#include <Utils/Exceptions.h>
 
 // Project includes
+#include <Core/Utils/Exceptions.h>
 
 // Namespace declarations
 

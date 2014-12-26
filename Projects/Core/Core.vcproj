@@ -173,22 +173,6 @@
 			<File
 				RelativePath=".\Core\Attributes\Attributes.cpp"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\Attributes\"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\Attributes\"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\Core\BluePrint.cpp"
@@ -211,24 +195,12 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\Core\Utils\Exceptions.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\Attributes\LanguageFeatureState.cpp"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\Attributes\"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\Attributes\"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\Core\Memory.cpp"
@@ -240,6 +212,10 @@
 			</File>
 			<File
 				RelativePath=".\Core\Object.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\Utils\Position.cpp"
 				>
 			</File>
 			<File
@@ -289,14 +265,6 @@
 			<File
 				RelativePath=".\Core\Attributes\Visibility.cpp"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\Attributes\"
-					/>
-				</FileConfiguration>
 			</File>
 		</Filter>
 		<Filter
@@ -326,6 +294,10 @@
 			</File>
 			<File
 				RelativePath=".\Core\Exceptions.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\Utils\Exceptions.h"
 				>
 			</File>
 			<File
@@ -362,6 +334,10 @@
 			</File>
 			<File
 				RelativePath=".\Core\ObjectiveScript.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\Utils\Position.h"
 				>
 			</File>
 			<File

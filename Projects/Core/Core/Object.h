@@ -8,7 +8,7 @@
 #include <set>
 
 // Project includes
-#include <Attributes/Attributes.h>
+#include <Core/Attributes/Attributes.h>
 #include "BluePrint.h"
 #include "Method.h"
 #include "Token.h"

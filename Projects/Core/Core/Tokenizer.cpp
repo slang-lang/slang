@@ -5,11 +5,11 @@
 // Library includes
 
 // Project includes
-#include <Keywords/for.h>
-#include <Keywords/if.h>
-#include <Keywords/print.h>
-#include <Keywords/return.h>
-#include <Utils/Exceptions.h>
+#include <Core/Keywords/for.h>
+#include <Core/Keywords/if.h>
+#include <Core/Keywords/print.h>
+#include <Core/Keywords/return.h>
+#include <Core/Utils/Exceptions.h>
 
 // Namespace declarations
 

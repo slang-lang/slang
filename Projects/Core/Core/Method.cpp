@@ -6,11 +6,11 @@
 #include <cassert>
 
 // Project includes
-#include <BuildInObjects/Bool.h>
-#include <BuildInObjects/Number.h>
-#include <BuildInObjects/String.h>
-#include <Interfaces/IPrinter.h>
-#include <Utils/Exceptions.h>
+#include <Core/BuildInObjects/Bool.h>
+#include <Core/BuildInObjects/Number.h>
+#include <Core/BuildInObjects/String.h>
+#include <Core/Interfaces/IPrinter.h>
+#include <Core/Utils/Exceptions.h>
 #include "Memory.h"
 #include "Object.h"
 #include "Repository.h"
