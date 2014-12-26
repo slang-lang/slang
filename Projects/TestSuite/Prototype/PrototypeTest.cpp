@@ -20,11 +20,11 @@ namespace Testing {
 namespace Prototype {
 
 
-Utils::Printer stdoutPrinter;
+::Utils::Printer stdoutPrinter;
 
 
-PrototypeTest::PrototypeTest(const Utils::Common::Logger *p)
-: Utils::Common::Logger(p, "PrototypeTest")
+PrototypeTest::PrototypeTest(const ::Utils::Common::Logger *p)
+: ::Utils::Common::Logger(p, "PrototypeTest")
 {
 }
 

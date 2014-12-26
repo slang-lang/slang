@@ -20,11 +20,11 @@ namespace Testing {
 namespace Attributes {
 
 
-Utils::Printer stdoutPrinter;
+::Utils::Printer stdoutPrinter;
 
 
-AttributesTest::AttributesTest(const Utils::Common::Logger *p)
-: Utils::Common::Logger(p, "AttributesTest")
+AttributesTest::AttributesTest(const ::Utils::Common::Logger *p)
+: ::Utils::Common::Logger(p, "AttributesTest")
 {
 }
 
