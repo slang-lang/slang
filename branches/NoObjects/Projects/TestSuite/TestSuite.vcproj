@@ -62,7 +62,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Core_debug.lib Utils_debug.lib"
+				AdditionalDependencies="ObjectiveScript_debug.lib Utils_debug.lib"
 				OutputFile="$(OutDir)\$(ProjectName)_debug.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\Libs"
@@ -145,7 +145,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Core.lib Utils.lib"
+				AdditionalDependencies="ObjectiveScript.lib Utils.lib"
 				LinkIncremental="0"
 				AdditionalLibraryDirectories="..\Libs"
 				GenerateManifest="false"
@@ -191,26 +191,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\TestFramework\Fixture.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\TestFramework\"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\TestFramework\"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath=".\Attributes\Fixture.cpp"
 				>
 			</File>
@@ -231,6 +211,26 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						ObjectFile="$(IntDir)\Prototype\"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\TestFramework\Fixture.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\TestFramework\"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\TestFramework\"
 					/>
 				</FileConfiguration>
 			</File>
@@ -289,15 +289,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\TestFramework\Fixture.h"
-				>
-			</File>
-			<File
 				RelativePath=".\Prototype\Fixture.h"
 				>
 			</File>
 			<File
 				RelativePath=".\Attributes\Fixture.h"
+				>
+			</File>
+			<File
+				RelativePath=".\TestFramework\Fixture.h"
 				>
 			</File>
 			<File

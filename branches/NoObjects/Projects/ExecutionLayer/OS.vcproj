@@ -62,7 +62,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Core_debug.lib Utils_debug.lib"
+				AdditionalDependencies="ObjectiveScript_debug.lib Utils_debug.lib"
 				OutputFile="$(OutDir)\$(ProjectName)_debug.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\Libs"
@@ -145,7 +145,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Core.lib Utils.lib"
+				AdditionalDependencies="ObjectiveScript.lib Utils.lib"
 				LinkIncremental="0"
 				AdditionalLibraryDirectories="..\Libs"
 				GenerateManifest="false"
