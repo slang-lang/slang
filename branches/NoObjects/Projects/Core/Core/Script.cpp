@@ -16,8 +16,8 @@
 namespace ObjectiveScript {
 
 
-Script::Script(size_t id)
-: mId(id),
+Script::Script(size_t /*id*/)
+: //mId(id),
   mMemory(0),
   mObject(0),
   mPrinter(0),

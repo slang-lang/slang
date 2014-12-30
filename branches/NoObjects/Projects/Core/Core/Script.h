@@ -55,7 +55,7 @@ public:	// Debug only
 protected:
 
 private:
-	size_t	mId;
+//	size_t	mId;
 
 	Memory		*mMemory;
 	Object		*mObject;

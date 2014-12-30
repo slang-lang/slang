@@ -35,6 +35,7 @@ public:
 
 public:
 	void print(const std::string& text) {
+		mLogger->LogDebug(text, 0, 0);
 		std::cout << text << std::endl;
 	}
 
