@@ -41,7 +41,7 @@ VirtualMachine::~VirtualMachine()
 std::string VirtualMachine::buildLibraryPath(const std::string& library) const
 {
 	std::string result = library;
-	unsigned int npos = std::string::npos;
+	unsigned long npos = std::string::npos;
 
 	do {
 		npos = result.find_first_of(".");

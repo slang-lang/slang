@@ -124,7 +124,7 @@ TokenIterator findNextBalancedBracket(TokenIterator start, int generateErrorAfte
 TokenIterator findNextBalancedCurlyBracket(TokenIterator start, int generateErrorAfter, Token::Type::E end)
 {
 	int count = 0;
-	TokenIterator tmp = start;
+	//TokenIterator tmp = start;
 	int openCurlyBrackets = 0;
 
 	while ( start->type() != Token::Type::BRACKET_CURLY_CLOSE || openCurlyBrackets ) {

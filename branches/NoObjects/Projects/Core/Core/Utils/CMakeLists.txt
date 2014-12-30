@@ -2,7 +2,7 @@ INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
 SET(SOURCES
 	Exceptions.cpp
-	Position.h
+	Position.cpp
 )
 
 SET(HEADERS

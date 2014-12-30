@@ -77,7 +77,6 @@ Method Preprocessor::createMethod(TokenIterator token)
 	while ( (*++token).type() != Token::Type::PARENTHESIS_CLOSE ) {
 		if ( isLocalDeclaration(token) ) {
 			// try to create parameter objects
-			bool isConst = false;
 			std::string name;
 			std::string type = token->content();
 

@@ -13,8 +13,8 @@ namespace ObjectiveScript {
 namespace Utils {
 
 
-Position::Position(size_t l, size_t c)
-: column(c), line(l)
+Position::Position(unsigned int l, unsigned int c)
+: line(l), column(c)
 {
 }
 

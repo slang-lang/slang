@@ -62,7 +62,7 @@ public:	// Usage
 	Variable execute(const std::string& method, const ParameterList& params, const Method* caller = 0);		// throws VisibilityError exception
 
 public:	// Helpers
-	Object& getMember(const std::string& m);		// throws UnknownIdentifer exxception
+	Object& getMember(const std::string& m);		// throws UnknownIdentifer exception
 	bool hasMember(const std::string& m);
 	bool hasMethod(const std::string& m);
 	bool hasMethod(const std::string& m, const ParameterList& params);

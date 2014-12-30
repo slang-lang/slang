@@ -19,15 +19,15 @@ namespace Utils {
 class Position
 {
 public:
-	Position(size_t l = 0, size_t c = 0);
+	Position(unsigned int l = 0, unsigned int c = 0);
 
 public:
 	bool operator==(const Position& other);
 	bool operator<(const Position& other);
 
 public:
-	size_t line;
-	size_t column;
+	unsigned int line;
+	unsigned int column;
 };
 
 

@@ -10,10 +10,12 @@ ADD_SUBDIRECTORY(Utils)
 SET(SOURCES
 	Analyser.cpp
 	BluePrint.cpp
+	Memory.cpp
 	Method.cpp
 	Object.cpp
 	Preprocessor.cpp
 	Prototype.cpp
+	Reference.cpp
 	Repository.cpp
 	Script.cpp
 	Token.cpp
@@ -27,12 +29,14 @@ SET(SOURCES
 SET(HEADERS
 	Analyser.h
 	BluePrint.h
+	Memory.h
 	Method.h
 	Object.h
 #	ObjectiveScript.h
 	Parameter.h
 	Preprocessor.h
 	Prototype.h
+	Reference.h
 	Repository.h
 	Script.h
 	Token.h
@@ -44,8 +48,8 @@ SET(HEADERS
 )
 
 SET(DEPENDENCIES
-#	CoreUtils
-	CorePlugins
+	CoreUtils
+#	CorePlugins
 	CoreKeywords
 	CoreBuildInObjects
 	CoreAttributes

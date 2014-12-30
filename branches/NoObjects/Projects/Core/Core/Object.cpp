@@ -204,7 +204,8 @@ Variable Object::execute(const std::string& method, const ParameterList& params,
 	returnValue.setVisibility(visibility());
 	try {
 		// execute our member method
-		returnValue.value(mIt->execute(params).value());
+		Method m = (*mIt);
+		returnValue.value(m.execute(params).value());
 	}
 	catch ( Exception &e ) {
 		// catch and log all errors that occured during method execution
@@ -462,9 +463,10 @@ IPrinter* Object::providePrinter() const
 void Object::updateMethodOwners()
 {
 	for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
-		it->setMemory(mMemory);
-		it->setOwner(this);
-		it->setRepository(mRepository);
+		Method m = (*it);
+		m.setMemory(mMemory);
+		m.setOwner(this);
+		m.setRepository(mRepository);
 	}
 }
 
