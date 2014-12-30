@@ -1,6 +1,8 @@
 
+#ifdef _WIN32
 #pragma warning(disable : 4127)
 #pragma warning(disable : 4702)
+#endif
 
 // Header
 #include "TestFrameworkTest.h"
@@ -31,7 +33,6 @@ void TestFrameworkTest::dont_throw_std_ex()
 void TestFrameworkTest::preventFail(bool t, bool f, bool &result)
 {
 	int mFailed = 0;
-	mFailed;
 
 	// reset result to false
 	result = false;
@@ -191,7 +192,7 @@ void TestFrameworkTest::throw_std_ex()
 {
 	// do nothing
 	// but throw a std::exception
-	throw std::exception("std::exception");
+	throw std::exception(/*"std::exception"*/);
 }
 
 

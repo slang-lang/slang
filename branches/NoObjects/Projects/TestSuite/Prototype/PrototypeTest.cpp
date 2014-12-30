@@ -1,6 +1,8 @@
 
+#ifdef _WIN32
 #pragma warning(disable : 4127)
 #pragma warning(disable : 4702)
+#endif
 
 // Header
 #include "PrototypeTest.h"

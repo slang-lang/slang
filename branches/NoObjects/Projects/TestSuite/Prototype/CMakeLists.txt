@@ -14,5 +14,9 @@ SET(DEPENDENCIES
 	Core
 )
 
+add_include(Projects/Core)
+add_include(Projects/TestSuite)
+add_include(Projects/Utils)
+
 build_static_lib(Test_Prototype "")
 

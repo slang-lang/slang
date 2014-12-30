@@ -24,7 +24,7 @@ namespace Testing {
 class GenericTest
 {
 public:
-	typedef enum TestResult_e {
+	enum TestResult_e {
 		Failed = 0,
 		Passed,
 		Skipped
@@ -53,9 +53,8 @@ public:
 	}
 
 protected:
-	TestResult_e mLastResult;
-
 	int mFailed;
+	TestResult_e mLastResult;
 	int mRun;
 	int	mSkipped;
 
@@ -71,4 +70,4 @@ private:
 
 }
 
-#endif _Testing_GenericTest_h_
+#endif

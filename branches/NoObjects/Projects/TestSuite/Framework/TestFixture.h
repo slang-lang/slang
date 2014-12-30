@@ -88,4 +88,4 @@ private:
 }
 
 
-#endif _Testing_TestFixture_h_
+#endif
