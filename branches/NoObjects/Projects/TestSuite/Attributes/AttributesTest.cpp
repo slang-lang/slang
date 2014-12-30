@@ -28,6 +28,10 @@ AttributesTest::AttributesTest(const ::Utils::Common::Logger *p)
 {
 }
 
+AttributesTest::~AttributesTest()
+{
+}
+
 void AttributesTest::process()
 {
 	TEST(testBasicLanguageFeatures);

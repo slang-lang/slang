@@ -66,7 +66,7 @@ void Script::construct()
 			mObject->connectMemory(mMemory);
 			mObject->connectPrinter(mPrinter);
 			mObject->connectRepository(mRepository);
-			mObject->Constructor(VariablesList());
+			mObject->Constructor(ParameterList());
 		}
 	}
 	catch ( Exception &e ) {
@@ -86,11 +86,11 @@ void Script::destruct()
 	}
 }
 
-Object Script::execute(const std::string& method, VariablesList params)
+Variable Script::execute(const std::string& method, ParameterList params)
 {
-	OSdebug("execute('" + method + "', [" + toString(params) + "])");
+	//OSdebug("execute('" + method + "', [" + toString(params) + "])");
 
-	Object returnValue;
+	Variable returnValue;
 	try {
 		assert(mObject);
 		returnValue = mObject->execute(method, params);
@@ -117,7 +117,7 @@ bool Script::hasMethod(const std::string& m)
 	return mObject->hasMethod(m);
 }
 
-bool Script::hasMethod(const std::string& m, const VariablesList& params)
+bool Script::hasMethod(const std::string& m, const ParameterList& params)
 {
 	return mObject->hasMethod(m, params);
 }

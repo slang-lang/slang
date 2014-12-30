@@ -24,7 +24,7 @@ class Fixture : public TestFixture,
 {
 public:
 	Fixture(const Utils::Common::Logger *p);
-	virtual ~Fixture() { }
+	~Fixture();
 
 public:
 	void setup();

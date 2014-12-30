@@ -23,6 +23,7 @@ class Fixture : public TestFixture,
 {
 public:
 	Fixture(const Utils::Common::Logger *p);
+	~Fixture();
 
 public:
 	void setup();

@@ -66,7 +66,6 @@ public:
 
 public:
 	Variable();
-	Variable(const std::string& name, BaseType::E type);
 	Variable(const std::string& name, const std::string& type);
 	Variable(const std::string& name, const std::string& type, const std::string& value);
 	virtual ~Variable();
@@ -74,7 +73,6 @@ public:
 public:
 	const std::string& name() const;
 
-	BaseType::E realType() const;
 	const std::string& type() const;
 
 	const std::string& value() const;
@@ -85,10 +83,9 @@ public:
 	bool operator()();
 
 protected:
-	std::string		mName;
-	BaseType::E		mRealType;
-	std::string		mType;
-	std::string		mValue;
+	std::string mName;
+	std::string mType;
+	std::string mValue;
 
 private:
 

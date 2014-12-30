@@ -23,7 +23,7 @@ class AttributesTest : private Utils::Common::Logger,
 {
 public:
 	AttributesTest(const Utils::Common::Logger *p);
-	virtual ~AttributesTest() { }
+	~AttributesTest();
 
 public:
 	void process();

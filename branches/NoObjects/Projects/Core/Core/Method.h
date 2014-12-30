@@ -9,6 +9,7 @@
 
 // Project includes
 #include "Object.h"
+#include "Parameter.h"
 #include "Reference.h"
 #include "Types.h"
 #include "Variable.h"
@@ -36,21 +37,21 @@ public:	// Setup
 	void setMemory(Memory *memory);
 	void setOwner(Object *owner);
 	void setRepository(Repository *repository);
-	void setSignature(const VariablesList& params);
+	void setSignature(const ParameterList& params);
 	void setTokens(const TokenList& tokens);
 
 public:
-	bool isSignatureValid(const VariablesList& params) const;
-	const VariablesList& provideSignature() const;
+	bool isSignatureValid(const ParameterList& params) const;
+	const ParameterList& provideSignature() const;
 
 public:	// Execution
-	Object execute(const VariablesList& params);
+	Variable execute(const ParameterList& params);
 
 public:
 	bool operator() (const Method& first, const Method& second) const {
 		if ( first.name() == second.name() ) {
-			VariablesList firstList = first.provideSignature();
-			VariablesList secondList = second.provideSignature();
+			ParameterList firstList = first.provideSignature();
+			ParameterList secondList = second.provideSignature();
 
 			// unable to identify return value during method call
 			//if ( this->type() != other.type() ) {
@@ -58,8 +59,8 @@ public:
 			//}
 
 			if ( firstList.size() == secondList.size() ) {
-				VariablesList::const_iterator fIt = firstList.begin();
-				VariablesList::const_iterator sIt = secondList.begin();
+				ParameterList::const_iterator fIt = firstList.begin();
+				ParameterList::const_iterator sIt = secondList.begin();
 
 				for ( ; fIt != firstList.end() && sIt != secondList.end(); ++fIt, ++sIt ) {
 					if ( fIt->type() != sIt->type() ) {
@@ -76,8 +77,8 @@ public:
 
 	bool operator< (const Method& other) const {
 		if ( this->name() == other.name() ) {
-			VariablesList firstList = this->provideSignature();
-			VariablesList secondList = other.provideSignature();
+			ParameterList firstList = this->provideSignature();
+			ParameterList secondList = other.provideSignature();
 
 			// unable to identify return value during method call
 			//if ( this->type() != other.type() ) {
@@ -85,8 +86,8 @@ public:
 			//}
 
 			if ( firstList.size() == secondList.size() ) {
-				VariablesList::const_iterator fIt = firstList.begin();
-				VariablesList::const_iterator sIt = secondList.begin();
+				ParameterList::const_iterator fIt = firstList.begin();
+				ParameterList::const_iterator sIt = secondList.begin();
 
 				for ( ; fIt != firstList.end() && sIt != secondList.end(); ++fIt, ++sIt ) {
 					if ( fIt->type() != sIt->type() ) {
@@ -105,11 +106,13 @@ protected:
 
 private:
 	//typedef std::map<std::string, Object> MemberMap;
-	typedef std::map<std::string, Reference> MemberMap;
+	//typedef std::map<std::string, Reference> MemberMap;
+	typedef std::map<std::string, Variable> MemberMap;
 
 private:	// Construction
 	//void addIdentifier(Object object);			// throws DuplicateIdentifer exception
-	void addIdentifier(const Reference& r);		// throws DuplicateIdentifer exception
+	//void addIdentifier(const Reference& r);		// throws DuplicateIdentifer exception
+	void addIdentifier(Variable object);			// throws DuplicateIdentifer exception
 
 private:	// Destruction
 	void garbageCollector();
@@ -118,23 +121,23 @@ private:	// Execution
 	bool isLocal(const std::string& token);
 	bool isMember(const std::string& token);
 	bool isMethod(const std::string& token);
-	bool isMethod(const std::string& token, const VariablesList& params);
+	bool isMethod(const std::string& token, const ParameterList& params);
 
 	void handleType(TokenIterator& token);
 
 	bool isBooleanConst(const std::string& v) const;
 	bool isFalse(const std::string& s) const;
-	bool isFalse(const Object& v) const;
+	bool isFalse(const Variable& v) const;
 	bool isTrue(const std::string& s) const;
-	bool isTrue(const Object& v) const;
+	bool isTrue(const Variable& v) const;
 
 	// token processing
 	// {
-	Object process(TokenIterator& start, TokenIterator end, Token::Type::E terminator = Token::Type::NIL);
+	Variable process(TokenIterator& start, TokenIterator end, Token::Type::E terminator = Token::Type::NIL);
 	void process_assert(TokenIterator& token);
 	void process_for(TokenIterator& token);
 	void process_if(TokenIterator& token);
-	Object process_method(TokenIterator& token);
+	Variable process_method(TokenIterator& token);
 	//Object process_new(TokenIterator& token);
 	Reference process_new(TokenIterator& token);
 	void process_print(TokenIterator& token);
@@ -150,34 +153,34 @@ private:	// Execution
 	// }
 
 	const Reference& getLocale(const std::string& name) const;
-	Object& getVariable(const std::string& name);
+	Variable& getVariable(const std::string& name);
 
 	// condition evaluation
 	// {
-	Object parseCondition(TokenIterator& start);
+	Variable parseCondition(TokenIterator& start);
 	// }
 
 	// expression evaluation
 	// {
-	Object parseAtom(TokenIterator& start);
-	Object parseExpression(TokenIterator& start);
-	Object parseFactors(TokenIterator& start);
-	Object parseSummands(TokenIterator& start);
+	Variable parseAtom(TokenIterator& start);
+	Variable parseExpression(TokenIterator& start);
+	Variable parseFactors(TokenIterator& start);
+	Variable parseSummands(TokenIterator& start);
 
-	Object math_add(const Object& v1, const Object& v2);
-	Object math_divide(const Object& v1, const Object& v2);
-	Object math_multiply(const Object& v1, const Object& v2);
-	Object math_subtract(const Object& v1, const Object& v2);
-	Object string_concat(const Object& v1, const Object& v2);
+	Variable math_add(const Variable& v1, const Variable& v2);
+	Variable math_divide(const Variable& v1, const Variable& v2);
+	Variable math_multiply(const Variable& v1, const Variable& v2);
+	Variable math_subtract(const Variable& v1, const Variable& v2);
+	Variable string_concat(const Variable& v1, const Variable& v2);
 	// }
 
 private:
 	MemberMap		mLocales;
 	Memory			*mMemory;
 	Object			*mOwner;
-	VariablesList	mParameters;
+	ParameterList	mParameter;
 	Repository		*mRepository;
-	VariablesList	mSignature;
+	ParameterList	mSignature;
 	StringList		mStack;
 	TokenList		mTokens;
 };

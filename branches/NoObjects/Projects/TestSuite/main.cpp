@@ -12,7 +12,7 @@
 	#endif
 	// Memory leak check - End
 
-//	#include <vld.h>
+	//#include <vld.h>
 #endif
 
 
@@ -70,15 +70,15 @@ int main(int argc, const char* argv[])
 
 	try {
 		FixtureList mFixtures;
-/*
+
 		Testing::Fixture testing(logger);
 		mFixtures.push_back(&testing);
-*/
+
 		Testing::Attributes::Fixture attributes(logger);
-		mFixtures.push_back(&attributes);
+		//mFixtures.push_back(&attributes);
 
 		Testing::Prototype::Fixture prototype(logger);
-		mFixtures.push_back(&prototype);
+		//mFixtures.push_back(&prototype);
 
 		for ( FixtureList::iterator it = mFixtures.begin(); it != mFixtures.end(); ++it ) {
 			if ( show ) {
@@ -104,4 +104,7 @@ int main(int argc, const char* argv[])
 	}
 
 	delete logger;
+	logger = 0;
+
+	return 0;
 }

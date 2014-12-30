@@ -44,6 +44,11 @@ Object::Object(const std::string& name, const std::string& filename, const std::
 {
 }
 
+Object::Object(const Variable& var)
+: Variable(var.name(), var.type(), var.value())
+{
+}
+
 Object::~Object()
 {
 	if ( mConstructed ) {
@@ -55,7 +60,7 @@ Object::~Object()
 
 void Object::addMember(Object m)
 {
-	OSdebug("addMember(" + m.name() + ")");
+	OSdebug("addMember('" + m.name() + "')");
 
 	if ( mMembers.find(m.name()) != mMembers.end() ) {
 		throw DuplicateIdentifer("duplicate member '" + m.name() + "' added");
@@ -66,7 +71,8 @@ void Object::addMember(Object m)
 
 void Object::addMethod(Method m)
 {
-	OSdebug("addMethod(" + m.name() + ", [" + toString(m.provideSignature()) + "])");
+	//OSdebug("addMethod('" + m.name() + "', [" + toString(m.provideSignature()) + "])");
+	OSdebug("addMethod('" + m.name() + "')");
 
 	if ( mMethods.find(m) != mMethods.end() ) {
 		throw DuplicateIdentifer("duplicate method '" + m.name() + "' added with same signature");
@@ -119,7 +125,7 @@ void Object::connectRepository(Repository *r)
 	mRepository = r;
 }
 
-void Object::Constructor(const VariablesList& params)
+void Object::Constructor(const ParameterList& params)
 {
 	if ( mConstructed ) {
 		throw Exception("can not construct object '" + name() + "' multiple times");
@@ -132,7 +138,7 @@ void Object::Constructor(const VariablesList& params)
 		it->second.connectMemory(mMemory);
 		it->second.connectPrinter(mPrinter);
 		it->second.connectRepository(mRepository);
-		it->second.Constructor(VariablesList());
+		it->second.Constructor(ParameterList());
 	}
 
 	// only execute constructor if one is present
@@ -155,7 +161,7 @@ void Object::Destructor()
 
 	// only execute destructor if one is present
 	if ( hasMethod("~" + mName) ) {
-		execute("~" + mName, VariablesList());
+		execute("~" + mName, ParameterList());
 	}
 
 	garbageCollector();
@@ -165,9 +171,10 @@ void Object::Destructor()
 	mConstructed = false;
 }
 
-Object Object::execute(const std::string& method, const VariablesList& params, const Method* caller)
+Variable Object::execute(const std::string& method, const ParameterList& params, const Method* caller)
 {
-	OSdebug("execute('" + method + "', [" + toString(params) + "])");
+	//OSdebug("execute('" + method + "', [" + toString(params) + "])");
+	OSdebug("execute('" + method + "')");
 
 	MethodCollection::iterator mIt;
 	bool success = findMethod(method, params, mIt);
@@ -193,11 +200,11 @@ Object Object::execute(const std::string& method, const VariablesList& params, c
 		throw VisibilityError("invalid visibility: " + method);
 	}
 
-	Object returnValue(name(), "", type(), "");
+	Variable returnValue((*mIt).name(), (*mIt).type(), "");
 	returnValue.setVisibility(visibility());
 	try {
 		// execute our member method
-		returnValue.assign(mIt->execute(params));
+		returnValue.value(mIt->execute(params).value());
 	}
 	catch ( Exception &e ) {
 		// catch and log all errors that occured during method execution
@@ -295,7 +302,7 @@ bool Object::findMethod_(const std::string& m, MethodCollection::iterator& mIt)
 	return false;
 }
 
-bool Object::findMethod(const std::string& m, const VariablesList& params, MethodCollection::iterator& mIt)
+bool Object::findMethod(const std::string& m, const ParameterList& params, MethodCollection::iterator& mIt)
 {
 	for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
 		if ( it->name() == m && it->isSignatureValid(params) /*&& it->visibility() == Visibility::Public*/ ) {
@@ -317,7 +324,7 @@ bool Object::findMethod(const std::string& m, const VariablesList& params, Metho
 	return false;
 }
 
-bool Object::findMethod_(const std::string& m, const VariablesList& params, MethodCollection::iterator& mIt)
+bool Object::findMethod_(const std::string& m, const ParameterList& params, MethodCollection::iterator& mIt)
 {
 	for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
 		if ( it->name() == m && it->isSignatureValid(params) ) {
@@ -417,11 +424,13 @@ bool Object::hasMethod(const std::string& m)
 	return false;
 }
 
-bool Object::hasMethod(const std::string& m, const VariablesList& params)
+bool Object::hasMethod(const std::string& m, const ParameterList& params)
 {
 	for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
-		if ( it->name() == m && it->isSignatureValid(params) ) {
-			return true;
+		if ( it->name() == m ) {
+			if ( it->isSignatureValid(params) ) {
+				return true;
+			}
 		}
 	}
 

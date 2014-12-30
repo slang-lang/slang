@@ -70,7 +70,7 @@ Method Preprocessor::createMethod(TokenIterator token)
 	// look for the next opening parenthesis
 	do { token++; } while ( (*token).type() != Token::Type::PARENTHESIS_OPEN );
 
-	VariablesList params;
+	ParameterList params;
 
 	// look for the next closing parenthesis
 	// and create parameters
@@ -95,12 +95,9 @@ Method Preprocessor::createMethod(TokenIterator token)
 						throw Exception("static parameter declarations not allowed", token->position());
 					}
 				}
-			//} while ( token->type() != Token::Type::IDENTIFER );
 			} while ( token->type() != Token::Type::COLON && token->type() != Token::Type::PARENTHESIS_CLOSE );
 
-			Object o(name, "", type, "");
-			//o.setConst(isConst);
-			params.push_back(o);
+			params.push_back(Parameter(name, type, "", Parameter::AccessMode::ByValue));
 
 			if ( token->type() == Token::Type::PARENTHESIS_CLOSE ) {
 				break;

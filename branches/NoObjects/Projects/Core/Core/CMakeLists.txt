@@ -30,6 +30,7 @@ SET(HEADERS
 	Method.h
 	Object.h
 #	ObjectiveScript.h
+	Parameter.h
 	Preprocessor.h
 	Prototype.h
 	Repository.h

@@ -19,6 +19,10 @@ Fixture::Fixture(const Utils::Common::Logger *p)
 {
 }
 
+Fixture::~Fixture()
+{
+}
+
 void Fixture::setup()
 {
 	TestFrameworkTest* frameworkTest = new TestFrameworkTest(this);

@@ -26,8 +26,8 @@ public:
 	bool operator<(const Position& other);
 
 public:
-	size_t column;
 	size_t line;
+	size_t column;
 };
 
 

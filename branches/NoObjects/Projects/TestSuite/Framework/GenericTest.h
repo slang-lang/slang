@@ -4,7 +4,6 @@
 
 
 // Library includes
-//#include <boost/shared_ptr.hpp>
 #include <typeinfo>
 
 // Project includes
@@ -14,6 +13,9 @@
 // Forward declarations
 
 // Namespace declarations
+
+
+#define NO_TYPEID
 
 
 namespace Testing {
@@ -59,7 +61,11 @@ protected:
 
 private:
 	void printResults() {
+#ifndef NO_TYPEID
 		std::cout << typeid(*this).name() << " Statistics: " << (mRun - mFailed - mSkipped) << " passed, " << mFailed << " failed, " << mSkipped << " skipped" << std::endl;
+#else
+		std::cout << " Statistics: " << (mRun - mFailed - mSkipped) << " passed, " << mFailed << " failed, " << mSkipped << " skipped" << std::endl;
+#endif
 	}
 };
 

@@ -11,6 +11,7 @@
 #include <Core/Attributes/Attributes.h>
 #include "BluePrint.h"
 #include "Method.h"
+#include "Parameter.h"
 #include "Token.h"
 #include "Types.h"
 #include "Variable.h"
@@ -37,6 +38,7 @@ public:
 	Object();
 	Object(const std::string& name, const std::string& filename);
 	Object(const std::string& name, const std::string& filename, const std::string& type, const std::string& value);
+	Object(const Variable& var);
 	~Object();
 
 public:	// Setup
@@ -54,16 +56,16 @@ public:	// Providers
 
 public:	// Usage
 	void assign(Object other); //void assign(const Object& other);
-	void Constructor(const VariablesList& params);
+	void Constructor(const ParameterList& params);
 	void Destructor();
 
-	Object execute(const std::string& method, const VariablesList& params, const Method* caller = 0);		// throws VisibilityError exception
+	Variable execute(const std::string& method, const ParameterList& params, const Method* caller = 0);		// throws VisibilityError exception
 
 public:	// Helpers
 	Object& getMember(const std::string& m);		// throws UnknownIdentifer exxception
 	bool hasMember(const std::string& m);
 	bool hasMethod(const std::string& m);
-	bool hasMethod(const std::string& m, const VariablesList& params);
+	bool hasMethod(const std::string& m, const ParameterList& params);
 
 	bool isValid() const;
 
@@ -76,11 +78,11 @@ private:
 private:
 	bool findMember(const std::string& m, MemberCollection::iterator& mIt);
 	bool findMethod(const std::string& m, MethodCollection::iterator& mIt);
-	bool findMethod(const std::string& m, const VariablesList& params, MethodCollection::iterator& mIt);
+	bool findMethod(const std::string& m, const ParameterList& params, MethodCollection::iterator& mIt);
 
 	bool findMember_(const std::string& m, MemberCollection::iterator& mIt);
 	bool findMethod_(const std::string& m, MethodCollection::iterator& mIt);
-	bool findMethod_(const std::string& m, const VariablesList& params, MethodCollection::iterator& mIt);
+	bool findMethod_(const std::string& m, const ParameterList& params, MethodCollection::iterator& mIt);
 
 private:
 	void garbageCollector();

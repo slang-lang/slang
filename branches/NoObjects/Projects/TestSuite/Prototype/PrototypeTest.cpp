@@ -30,7 +30,7 @@ PrototypeTest::PrototypeTest(const ::Utils::Common::Logger *p)
 
 void PrototypeTest::process()
 {
-	TEST(testBasicObject);
+//	TEST(testBasicObject);
 	TEST(testBasicLanguage);
 	TEST(testPrototypeDeclaration);
 	TEST(testPrototypeUsage);
@@ -52,26 +52,26 @@ void PrototypeTest::testBasicLanguage()
 
 		Script *s = vm.create("Tests/BasicLanguageTest.os");
 
-		//s->execute("test_assert", VariablesList());
-		s->execute("test_comments", VariablesList());
-		s->execute("test_executeMethod", VariablesList());
-		//s->execute("test_for", VariablesList());
+		//s->execute("test_assert", ParameterList());
+		s->execute("test_comments", ParameterList());
+		s->execute("test_executeMethod", ParameterList());
+		//s->execute("test_for", ParameterList());
 
 		{
-			VariablesList params;
-			params.push_back(Variable("param1", "Number", "1"));
+			ParameterList params;
+			params.push_back(Parameter("param1", "Number", "1"));
 			s->execute("test_if", params);
 		}
-		s->execute("test_localVar", VariablesList());
+		s->execute("test_localVar", ParameterList());
 		{
-			VariablesList params;
-			params.push_back(Variable("param1", "String", "1"));
+			ParameterList params;
+			params.push_back(Parameter("param1", "String", "1"));
 			s->execute("test_print", params);
 		}
-		s->execute("test_staticLocalVar", VariablesList());
+		s->execute("test_staticLocalVar", ParameterList());
 		{
-			VariablesList params;
-			params.push_back(Variable("maxCount", "Number", "5"));
+			ParameterList params;
+			params.push_back(Parameter("maxCount", "Number", "5"));
 			s->execute("test_while", params);
 		}
 
@@ -127,7 +127,7 @@ void PrototypeTest::testPrototypeUsage()
 
 		Script *s = vm.create("Tests/PrototypeTest.os");
 
-		VariablesList params;
+		ParameterList params;
 		s->execute("test", params);
 
 		// automatic success

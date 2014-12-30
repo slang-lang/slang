@@ -20,6 +20,10 @@ Fixture::Fixture(const Utils::Common::Logger *p)
 {
 }
 
+Fixture::~Fixture()
+{
+}
+
 void Fixture::setup()
 {
 	PrototypeTest* prototypeTest = new PrototypeTest(this);

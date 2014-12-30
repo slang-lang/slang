@@ -38,7 +38,7 @@ void Repository::addBlueprint(const BluePrint& object)
 {
 	std::string type = object.Typename();
 
-	OSdebug("addBlueprint('" + type + "')");
+	//OSdebug("addBlueprint('" + type + "')");
 
 	BluePrints::iterator it = mBluePrints.find(type);
 	if ( it != mBluePrints.end() ) {

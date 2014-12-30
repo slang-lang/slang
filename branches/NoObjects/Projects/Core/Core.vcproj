@@ -293,11 +293,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Exceptions.h"
+				RelativePath=".\Core\Utils\Exceptions.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Utils\Exceptions.h"
+				RelativePath=".\Core\Exceptions.h"
 				>
 			</File>
 			<File
@@ -334,6 +334,10 @@
 			</File>
 			<File
 				RelativePath=".\Core\ObjectiveScript.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\Parameter.h"
 				>
 			</File>
 			<File

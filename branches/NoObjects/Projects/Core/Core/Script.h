@@ -42,11 +42,11 @@ public:	//Helpers
 	Object& getMember(const std::string& m);
 	bool hasMember(const std::string& m);
 	bool hasMethod(const std::string& m);
-	bool hasMethod(const std::string& m, const VariablesList& params);
+	bool hasMethod(const std::string& m, const ParameterList& params);
 
 public:	// Execution
 	// {
-	Object execute(const std::string& method, VariablesList params = VariablesList());
+	Variable execute(const std::string& method, ParameterList params = ParameterList());
 	// }
 
 public:	// Debug only

@@ -58,34 +58,36 @@ int main(int argc, const char* argv[])
 	// Memory leak detection
 #endif
 
-	Utils::Common::Logger *logger = new Utils::Common::StdOutLogger();	//0;
+	Utils::Common::Logger *logger = 0;
 
 	std::string filename;
 	ObjectiveScript::VariablesList params;
 
 	if ( argc > 1 ) {
-/*
 		for (int i = 1; i < argc; i++) {
-			char buf[255];
-			sprintf(buf, "%s", argv[i]);
-
-			if ( Utils::Tools::StringCompare(buf, "-v") ) {
+			if ( Utils::Tools::StringCompare(argv[i], "-f") ) {
+				i++;
+				if ( i < argc ) {
+					filename = argv[i];
+				}
+			}
+			else if ( Utils::Tools::StringCompare(argv[i], "-v") ) {
 				logger = new Utils::Common::StdOutLogger();
 			}
-			else if ( Utils::Tools::StringCompare(buf, "-h") || Utils::Tools::StringCompare(buf, "--help") ) {
+			else if ( Utils::Tools::StringCompare(argv[i], "-h") || Utils::Tools::StringCompare(argv[i], "--help") ) {
 				printUsage();
 			}
 		}
-*/
-
-		filename = argv[1];
 	}
-	else {
+	
+	if ( filename.empty() ) {
 		printUsage();
+
+		return 0;
 	}
 
 	if ( !logger ) {
-		logger = new Utils::Common::Logger("objectivescript.log");
+		logger = new Utils::Common::Logger();
 	}
 
 	Printer mPrinter(logger);
@@ -105,4 +107,6 @@ int main(int argc, const char* argv[])
 	}
 
 	delete logger;
+
+	return 0;
 }

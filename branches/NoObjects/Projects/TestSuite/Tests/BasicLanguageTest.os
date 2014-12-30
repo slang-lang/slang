@@ -103,11 +103,17 @@ private object Main extends public BaseObject,
 /*
 	private object Bla
 	{
+		public String mText;
+		
+		public void Bla()
+		{
+			mText = "Foobar";
+		}
 	}
 	private Bla mBla;
 */
 
-	public void Main(/*string name, number value*/)
+	public void Main(/*String name, Number value*/)
 	{
 		mLogger = new Logger("Main");
 		mLogger.debug("Constructor");

@@ -28,7 +28,9 @@ public:
 	TestFixture(const std::string& name)
 	: mName(name)
 	{ }
-	virtual ~TestFixture() { }
+	virtual ~TestFixture() {
+		cleanup();
+	}
 
 public:
 	virtual void setup() = 0;
@@ -44,7 +46,11 @@ public:
 	}
 
 	void run() {
+#ifndef NO_TYPEID
 		std::cout << std::endl << "********* Starting: " << typeid(*this).name() << " *********" << std::endl;
+#else
+		std::cout << std::endl << "********* Starting:  *********" << std::endl;
+#endif
 
 		setup();
 
@@ -55,7 +61,11 @@ public:
 		teardown();
 		cleanup();
 
+#ifndef NO_TYPEID
 		std::cout << "********* Finished: " << typeid(*this).name() << " *********" << std::endl;
+#else
+		std::cout << "********* Finished:  *********" << std::endl;
+#endif
 	}
 
 protected:

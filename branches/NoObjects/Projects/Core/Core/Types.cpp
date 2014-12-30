@@ -115,7 +115,7 @@ std::string toString(const VariablesList& list)
 	std::string result;
 
 	for ( VariablesList::const_iterator it = list.begin(); it != list.end(); ++it ) {
-		result += (*it).type() + " " + (*it).name();
+		result += (*it).type() + " " + (*it).name() + " = " + (*it).value();
 
 		VariablesList::const_iterator copy = it;
 		if ( ++copy != list.end() ) {
