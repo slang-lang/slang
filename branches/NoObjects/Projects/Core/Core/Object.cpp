@@ -463,6 +463,7 @@ IPrinter* Object::providePrinter() const
 void Object::updateMethodOwners()
 {
 	for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
+		// this does not work!!!
 		Method m = (*it);
 		m.setMemory(mMemory);
 		m.setOwner(this);
