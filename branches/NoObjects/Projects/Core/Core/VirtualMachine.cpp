@@ -64,7 +64,7 @@ Script* VirtualMachine::create(const std::string& filename)
 	OSdebug("create('" + filename + "')");
 
 	if ( filename.empty() ) {
-		OSwarn("invalid filename provided!");
+		OSwarn("invalid filename '" + filename + "' provided!");
 		return 0;
 	}
 

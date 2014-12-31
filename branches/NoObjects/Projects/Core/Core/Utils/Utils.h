@@ -19,10 +19,10 @@
 #define OSinfo(message) std::cout << "[INFO ] " << message << " in " << __FUNCTION__ << std::endl;
 #define OSwarn(message) std::cout << "[WARN ] " << message << " in " << __FUNCTION__ << std::endl;
 #else
-#define OSdebug(message) message;
-#define OSerror(message) message;
-#define OSinfo(message) message;
-#define OSwarn(message) message;
+#define OSdebug(message) (const char*)message;
+#define OSerror(message) (const char*)message;
+#define OSinfo(message) (const char*)message;
+#define OSwarn(message) (const char*)message;
 #endif
 
 
