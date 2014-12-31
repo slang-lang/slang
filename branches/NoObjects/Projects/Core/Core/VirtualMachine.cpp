@@ -134,7 +134,7 @@ void VirtualMachine::loadLibrary(const std::string& library)
 		}
 	}
 	catch ( std::exception& e ) {
-		OSerror("caught exceptions: " << e.what());
+		OSerror(e.what());
 	}
 }
 

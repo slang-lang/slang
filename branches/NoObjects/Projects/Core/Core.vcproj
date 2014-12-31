@@ -173,6 +173,22 @@
 			<File
 				RelativePath=".\Core\Attributes\Attributes.cpp"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Attributes\"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Attributes\"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\Core\BluePrint.cpp"
@@ -197,10 +213,42 @@
 			<File
 				RelativePath=".\Core\Utils\Exceptions.cpp"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Utils\"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Utils\"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\Core\Attributes\LanguageFeatureState.cpp"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Attributes\"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Attributes\"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\Core\Memory.cpp"
@@ -217,6 +265,22 @@
 			<File
 				RelativePath=".\Core\Utils\Position.cpp"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Utils\"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Utils\"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\Core\Preprocessor.cpp"
@@ -255,6 +319,26 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Core\Utils\Utils.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Utils\"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Utils\"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath=".\Core\Variable.cpp"
 				>
 			</File>
@@ -265,6 +349,22 @@
 			<File
 				RelativePath=".\Core\Attributes\Visibility.cpp"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Attributes\"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Attributes\"
+					/>
+				</FileConfiguration>
 			</File>
 		</Filter>
 		<Filter
@@ -293,11 +393,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Utils\Exceptions.h"
+				RelativePath=".\Core\Exceptions.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Exceptions.h"
+				RelativePath=".\Core\Utils\Exceptions.h"
 				>
 			</File>
 			<File
@@ -394,6 +494,10 @@
 			</File>
 			<File
 				RelativePath=".\Core\Types.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\Utils\Utils.h"
 				>
 			</File>
 			<File
