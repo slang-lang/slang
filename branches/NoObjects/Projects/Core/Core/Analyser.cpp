@@ -10,6 +10,7 @@
 
 // Project includes
 #include <Core/Utils/Exceptions.h>
+#include <Core/Utils/Utils.h>
 #include "Tokenizer.h"
 #include "Tools.h"
 

@@ -10,6 +10,7 @@
 #include <Core/BuildInObjects/String.h>
 #include <Core/BuildInObjects/Void.h>
 #include <Core/Utils/Exceptions.h>
+#include <Core/Utils/Utils.h>
 #include "Memory.h"
 #include "Preprocessor.h"
 #include "Tools.h"
@@ -38,7 +39,7 @@ void Repository::addBlueprint(const BluePrint& object)
 {
 	std::string type = object.Typename();
 
-	//OSdebug("addBlueprint('" + type + "')");
+	OSdebug("addBlueprint('" + type + "')");
 
 	BluePrints::iterator it = mBluePrints.find(type);
 	if ( it != mBluePrints.end() ) {

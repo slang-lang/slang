@@ -7,6 +7,7 @@
 // Project includes
 #include <Core/Interfaces/IPrinter.h>
 #include <Core/Utils/Exceptions.h>
+#include <Core/Utils/Utils.h>
 #include "Object.h"
 #include "Tools.h"
 
@@ -16,9 +17,8 @@
 namespace ObjectiveScript {
 
 
-Script::Script(size_t /*id*/)
-: //mId(id),
-  mMemory(0),
+Script::Script()
+: mMemory(0),
   mObject(0),
   mPrinter(0),
   mRepository(0)

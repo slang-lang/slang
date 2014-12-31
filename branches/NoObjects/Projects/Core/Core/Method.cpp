@@ -11,6 +11,7 @@
 #include <Core/BuildInObjects/String.h>
 #include <Core/Interfaces/IPrinter.h>
 #include <Core/Utils/Exceptions.h>
+#include <Core/Utils/Utils.h>
 #include "Memory.h"
 #include "Object.h"
 #include "Repository.h"

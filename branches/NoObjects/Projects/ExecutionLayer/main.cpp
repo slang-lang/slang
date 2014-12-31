@@ -11,6 +11,8 @@
 	#define new DEBUG_NEW
 	#endif
 	// Memory leak check - End
+
+	//#include <vld.h>
 #endif
 
 // Library includes
@@ -47,8 +49,10 @@ void printUsage()
 {
 	printf("usage:\n");
 	printf("\n");
+	printf("-f\t\t\tfile name\n");
 	printf("-v\t\t\tverbose output\n");
 	printf("-h|--help\t\tthis text\n");
+	printf("\n");
 }
 
 int main(int argc, const char* argv[])

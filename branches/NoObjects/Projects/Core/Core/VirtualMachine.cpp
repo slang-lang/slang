@@ -6,6 +6,7 @@
 
 // Project includes
 #include <Core/Interfaces/IPrinter.h>
+#include <Core/Utils/Utils.h>
 #include "Analyser.h"
 #include "Memory.h"
 #include "Preprocessor.h"
@@ -21,7 +22,6 @@ namespace ObjectiveScript {
 
 VirtualMachine::VirtualMachine()
 : mBaseFolder("."),
-  mCounter(0),
   mMemory(0),
   mPrinter(0),
   mRepository(0)
@@ -68,7 +68,7 @@ Script* VirtualMachine::create(const std::string& filename)
 		return 0;
 	}
 
-	Script *script = new Script(++mCounter);
+	Script *script = new Script();
 	script->connectPrinter(mPrinter);
 
 	Analyser a;

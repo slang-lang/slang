@@ -49,17 +49,14 @@ int main(int argc, const char* argv[])
 
 	if ( argc > 1 ) {
 		for (int i = 1; i < argc; i++) {
-			char buf[255];
-			sprintf_s(buf, "%s", argv[i]);
-
-			if ( Utils::Tools::StringCompare(buf, "-v") ) {
+			if ( Utils::Tools::StringCompare(argv[i], "-v") ) {
 				logger = new Utils::Common::StdOutLogger();
 			}
-			else if ( Utils::Tools::StringCompare(buf, "--show") ) {
+			else if ( Utils::Tools::StringCompare(argv[i], "--show") ) {
 				show = true;
 			}
 			else {
-				toRun = buf;
+				toRun = argv[i];
 			}
 		}
 	}
@@ -75,10 +72,10 @@ int main(int argc, const char* argv[])
 		mFixtures.push_back(&testing);
 
 		Testing::Attributes::Fixture attributes(logger);
-		//mFixtures.push_back(&attributes);
+		mFixtures.push_back(&attributes);
 
 		Testing::Prototype::Fixture prototype(logger);
-		//mFixtures.push_back(&prototype);
+		mFixtures.push_back(&prototype);
 
 		for ( FixtureList::iterator it = mFixtures.begin(); it != mFixtures.end(); ++it ) {
 			if ( show ) {

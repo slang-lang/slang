@@ -50,7 +50,6 @@ private:
 private:
 	std::string		mBaseFolder;
 	BluePrintMap	mBluePrints;
-	size_t			mCounter;
 	Memory			*mMemory;
 	ObjectMap		mObjects;
 	IPrinter		*mPrinter;

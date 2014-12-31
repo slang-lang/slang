@@ -17,31 +17,26 @@
 
 
 namespace ObjectiveScript {
-
-
-#define OSdebug(message) std::cout << "[DEBUG] " << message << " in " << __FUNCTION__ << std::endl;
-#define OSerror(message) std::cout << "[ERROR] " << message << " in " << __FUNCTION__ << std::endl;
-#define OSinfo(message) std::cout << "[INFO ] " << message << " in " << __FUNCTION__ << std::endl;
-#define OSwarn(message) std::cout << "[WARN ] " << message << " in " << __FUNCTION__ << std::endl;
-
-
 namespace Tools {
 
-std::string getFirstSubString(const std::string& str);
-std::string getLastSubString(const std::string& str);
-void split(const std::string& str, std::string& p, std::string& c);
 
-float stringToFloat(const std::string &str);
+	std::string getFirstSubString(const std::string& str);
+	std::string getLastSubString(const std::string& str);
+	void split(const std::string& str, std::string& p, std::string& c);
 
-template <class T>
-inline std::string toString(const T& t)
-{
-	std::stringstream ss;
-	ss << t;
-	return ss.str();
+	float stringToFloat(const std::string &str);
+
+	template <class T>
+	inline std::string toString(const T& t)
+	{
+		std::stringstream ss;
+		ss << t;
+		return ss.str();
+	}
+
+
 }
 
-}
 
 bool checkSynthax(TokenIterator start, const TokenList& expected);
 TokenIterator findNext(TokenIterator start, Token::Type::E type, Token::Type::E end = Token::Type::NIL);

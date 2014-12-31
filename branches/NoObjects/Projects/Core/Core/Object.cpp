@@ -6,6 +6,7 @@
 
 // Project includes
 #include <Core/Utils/Exceptions.h>
+#include <Core/Utils/Utils.h>
 #include "Memory.h"
 #include "Repository.h"
 #include "Tools.h"

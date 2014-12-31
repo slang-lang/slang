@@ -7,7 +7,7 @@
 #include <map>
 
 // Project includes
-#include "Object.h"
+#include "Parameter.h"
 #include "Types.h"
 
 // Forward declarations
@@ -20,13 +20,13 @@ namespace ObjectiveScript {
 // Forward declarations
 class IPrinter;
 class Memory;
-//class Object;
+class Object;
 class Repository;
 
 class Script
 {
 public:
-	Script(size_t id);
+	Script();
 	~Script();
 
 public:	// Setup
@@ -55,8 +55,6 @@ public:	// Debug only
 protected:
 
 private:
-//	size_t	mId;
-
 	Memory		*mMemory;
 	Object		*mObject;
 	IPrinter	*mPrinter;
