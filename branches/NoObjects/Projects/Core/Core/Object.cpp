@@ -46,7 +46,12 @@ Object::Object(const std::string& name, const std::string& filename, const std::
 }
 
 Object::Object(const Variable& var)
-: Variable(var.name(), var.type(), var.value())
+: BluePrint(var.type()),
+  Variable(var.name(), var.type(), var.value()),
+  mConstructed(false),
+  mMemory(0),
+  mPrinter(0),
+  mRepository(0)
 {
 }
 

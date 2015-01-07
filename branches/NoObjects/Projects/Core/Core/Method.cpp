@@ -610,6 +610,8 @@ Variable Method::parseCondition(TokenIterator& token)
 			v1.value( (v1.value() != v2.value()) ? "true" : "false" );
 		}
 	}
+
+	return Variable();
 }
 
 Variable Method::parseExpression(TokenIterator& start)
@@ -641,6 +643,8 @@ Variable Method::parseFactors(TokenIterator& start)
 			v1 = math_divide(v1, v2);
 		}
 	}
+
+	return Variable();
 }
 
 Variable Method::parseSummands(TokenIterator& start)
@@ -668,6 +672,8 @@ Variable Method::parseSummands(TokenIterator& start)
 			v1 = string_concat(v1, v2);
 		}
 	}
+
+	return Variable();
 }
 
 void Method::pop_stack()

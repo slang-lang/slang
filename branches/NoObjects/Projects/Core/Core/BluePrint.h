@@ -56,7 +56,7 @@ public:
 
 public:
 	BluePrint();
-	BluePrint(const std::string& type, const std::string& filename);
+	BluePrint(const std::string& type, const std::string& filename = "<none>");
 	virtual ~BluePrint();
 
 public:
