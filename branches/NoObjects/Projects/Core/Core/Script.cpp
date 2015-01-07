@@ -69,7 +69,7 @@ void Script::construct()
 			mObject->Constructor(ParameterList());
 		}
 	}
-	catch ( Exception &e ) {
+	catch ( Utils::Exception &e ) {
 		OSerror(e.what());
 	}
 }
@@ -81,7 +81,7 @@ void Script::destruct()
 			mObject->Destructor();
 		}
 	}
-	catch ( Exception &e ) {
+	catch ( Utils::Exception &e ) {
 		OSerror(e.what());
 	}
 }
@@ -95,7 +95,7 @@ Variable Script::execute(const std::string& method, ParameterList params)
 		assert(mObject);
 		returnValue = mObject->execute(method, params);
 	}
-	catch ( Exception &e ) {
+	catch ( Utils::Exception &e ) {
 		OSerror(e.what());
 	}
 

@@ -32,7 +32,7 @@ void Memory::deleteObject(const Reference& ref)
 {
 	MemoryMap::iterator it = mMemory.find(ref);
 	if ( it == mMemory.end() ) {
-		throw Exception("invalid delete for address ");//+ std::string(ref.getAddress()));
+		throw Utils::Exception("invalid delete for address ");//+ std::string(ref.getAddress()));
 	}
 
 	// delete it if it's valid ...
@@ -77,7 +77,7 @@ const Reference& Memory::reserveAddress()
 		//    address again);
 		//TODO: implement me
 
-		throw Exception("memory exhausted!");
+		throw Utils::Exception("memory exhausted!");
 	}
 
 	// reserve address by creating a new reference

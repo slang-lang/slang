@@ -86,7 +86,7 @@ Script* VirtualMachine::create(const std::string& filename)
 		mRepository->addBlueprint((*it));
 
 		if ( it->Filename() == filename && it->Typename() == "Main" ) {
-			mObjects.insert(std::make_pair<std::string, Object>(
+			mObjects.insert(std::make_pair(
 				it->Typename(),
 				mRepository->createInstance(it->Typename(), "main")
 			));

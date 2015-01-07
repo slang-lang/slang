@@ -12,9 +12,10 @@
 // Project includes
 #include <Core/Script.h>
 #include <Core/VirtualMachine.h>
+#include <Core/Utils/Exceptions.h>
 #include <Utils/Printer.h>
 
-// Namespace declartations
+// Namespace declarations
 using namespace ObjectiveScript;
 
 
@@ -50,6 +51,8 @@ void AttributesTest::teardown()
 void AttributesTest::testBasicLanguageFeatures()
 {
 	try {
+		//info("testBasicLanguageFeatures");
+
 		VirtualMachine vm;
 		vm.connectPrinter(&stdoutPrinter);
 
@@ -58,9 +61,13 @@ void AttributesTest::testBasicLanguageFeatures()
 		// automatic success
 		delete s;
 	}
-	catch ( std::exception& ) {
+	catch ( std::exception& e ) {
 		// exception has been thrown: test failed!
-		TFAIL("caught exception!");
+		TFAIL("caught exception: " << e.what());
+	}
+	catch ( ObjectiveScript::Utils::Exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL("caught exception: " << e.what());
 	}
 }
 

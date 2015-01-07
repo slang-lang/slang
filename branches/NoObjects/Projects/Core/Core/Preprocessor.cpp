@@ -37,7 +37,7 @@ Object Preprocessor::createMemberObject(const std::string& filename, TokenIterat
 	name = (*token++).content();
 
 	if ( (*token).type() != Token::Type::SEMICOLON ) {
-		throw Exception("Member initialisation not allowed at this point", token->position());
+		throw Utils::Exception("Member initialisation not allowed at this point", token->position());
 	}
 
 	// create member variable
@@ -92,7 +92,7 @@ Method Preprocessor::createMethod(TokenIterator token)
 						isConst = true;
 					}
 					else if ( token->content() == "static" ) {
-						throw Exception("static parameter declarations not allowed", token->position());
+						throw Utils::Exception("static parameter declarations not allowed", token->position());
 					}
 				}
 			} while ( token->type() != Token::Type::COLON && token->type() != Token::Type::PARENTHESIS_CLOSE );
@@ -137,7 +137,7 @@ Method Preprocessor::createMethod(TokenIterator token)
 	}
 
 	if ( isConst && isStatic ) {
-		throw Exception("static methods can not be const!");
+		throw Utils::Exception("static methods can not be const!");
 	}
 
 	// create a new Method with the corresponding return value

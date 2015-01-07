@@ -93,7 +93,7 @@ int main(int argc, const char* argv[])
 	}
 	catch ( std::exception &e ) {
 		std::cout << "Unhandled std::exception: " << e.what();
-		logger->LogError("Unhandled std::exception: " + std::string(e.what()), __FILE__, __LINE__);
+		//logger->LogError("Unhandled std::exception: " + std::string(e.what()), __FILE__, __LINE__);
 	}
 
 	if ( !executed && !show ) {

@@ -249,6 +249,8 @@ private object Main extends public BaseObject,
 
 	public void test_mathParsing()
 	{
+		breakpoint;
+
 		Number i = 1 + 2 + 3;
 		assert(i == 6);
 

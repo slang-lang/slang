@@ -43,12 +43,11 @@ void Repository::addBlueprint(const BluePrint& object)
 
 	BluePrints::iterator it = mBluePrints.find(type);
 	if ( it != mBluePrints.end() ) {
-		throw Exception("duplicate object '" + type + "' added to repository");
+		throw Utils::Exception("duplicate object '" + type + "' added to repository");
 	}
 
-	mBluePrints.insert(
-		std::make_pair<std::string, BluePrint>(type, object)
-	);
+	mBluePrints.insert(std::make_pair(type, object));
+
 	BluePrints::iterator objIt = mBluePrints.find(type);
 
 	// loop over all tokens of a blueprint object
@@ -81,12 +80,10 @@ void Repository::addPrototype(const Prototype& prototype)
 
 	Prototypes::iterator it = mPrototypes.find(type);
 	if ( it != mPrototypes.end() ) {
-		throw Exception("duplicate object '" + type + "' added to repository");
+		throw Utils::Exception("duplicate object '" + type + "' added to repository");
 	}
 
-	mPrototypes.insert(
-		std::make_pair<std::string, Prototype>(type, prototype)
-	);
+	mPrototypes.insert(std::make_pair(type, prototype));
 }
 
 Object Repository::createInstance(const std::string& type, const std::string& name)
@@ -95,7 +92,7 @@ Object Repository::createInstance(const std::string& type, const std::string& na
 
 	BluePrints::iterator it = mBluePrints.find(type);
 	if ( it == mBluePrints.end() ) {
-		throw Exception("trying to create instance of unknown object '" + type + "'");
+		throw Utils::Exception("trying to create instance of unknown object '" + type + "'");
 	}
 
 	// non-reference-based instantiation
@@ -121,7 +118,7 @@ Object Repository::createInstanceFromPrototype(const std::string& prototype, con
 
 	Prototypes::iterator it = mPrototypes.find(prototype);
 	if ( it == mPrototypes.end() ) {
-		throw Exception("trying to create prototype instance of unknown object '" + type + "'");
+		throw Utils::Exception("trying to create prototype instance of unknown object '" + type + "'");
 	}
 
 	// non-reference-based instantiation
@@ -134,7 +131,7 @@ const Reference& Repository::createReference(const std::string& type, const std:
 
 	BluePrints::iterator it = mBluePrints.find(type);
 	if ( it == mBluePrints.end() ) {
-		throw Exception("trying to create reference on unknown object '" + type + "'");
+		throw Utils::Exception("trying to create reference on unknown object '" + type + "'");
 	}
 
 	return createReference(it->second, type, name);
@@ -159,7 +156,7 @@ const Reference& Repository::createReferenceFromPrototype(const std::string& pro
 
 	Prototypes::iterator it = mPrototypes.find(prototype);
 	if ( it == mPrototypes.end() ) {
-		throw Exception("trying to create prototype reference on unknown object '" + type + "'");
+		throw Utils::Exception("trying to create prototype reference on unknown object '" + type + "'");
 	}
 
 	return createReference(it->second.generateBluePrint(type), prototype + type, name);

@@ -16,6 +16,7 @@
 
 
 namespace ObjectiveScript {
+namespace Utils {
 
 
 class Exception : public std::exception
@@ -44,11 +45,14 @@ public:
 #elif TARGET_OS_MAC
     // Other kinds of Mac OS X
     const char* what() const _NOEXCEPT {
-		//if ( mPosition.line != 0 ) {
-		//	result += " at line " + Tools::toString(mPosition.line);// + ", " + Tools::toString(mPosition.column);
-		//}
+    	std::string result = mText;
 
-        return mText.c_str();
+		if ( mPosition.line != 0 ) {
+			//result += " at line " + Tools::toString(mPosition.line) + ", " + Tools::toString(mPosition.column);
+			//result += " ";
+		}
+
+        return result.c_str();
     }
 #else
     // Unsupported platform
@@ -155,6 +159,7 @@ public:
 };
 
 
+}
 }
 
 

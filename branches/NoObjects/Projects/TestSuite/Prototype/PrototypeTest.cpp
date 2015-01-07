@@ -12,6 +12,7 @@
 // Project includes
 #include <Core/Script.h>
 #include <Core/VirtualMachine.h>
+#include <Core/Utils/Exceptions.h>
 #include <Utils/Printer.h>
 
 // Namespace declartations
@@ -54,10 +55,10 @@ void PrototypeTest::testBasicLanguage()
 
 		Script *s = vm.create("Tests/BasicLanguageTest.os");
 
-		//s->execute("test_assert", ParameterList());
+		s->execute("test_assert", ParameterList());
 		s->execute("test_comments", ParameterList());
 		s->execute("test_executeMethod", ParameterList());
-		//s->execute("test_for", ParameterList());
+		s->execute("test_for", ParameterList());
 
 		{
 			ParameterList params;
@@ -81,9 +82,36 @@ void PrototypeTest::testBasicLanguage()
 		// automatic success
 		delete s;
 	}
-	catch ( std::exception& ) {
+	catch ( std::exception& e ) {
 		// exception has been thrown: test failed!
-		TFAIL("caught exception!");
+		TFAIL("caught exception: " << e.what());
+	}
+	catch ( ObjectiveScript::Utils::Exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL("caught exception: " << e.what());
+	}
+}
+
+void PrototypeTest::testBasicMathParsing()
+{
+	try {
+		VirtualMachine vm;
+		vm.connectPrinter(&stdoutPrinter);
+
+		Script *s = vm.create("Tests/BasicLanguageTest.os");
+
+		s->execute("test_mathParsing", ParameterList());
+
+		// automatic success
+		delete s;
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL("caught exception: " << e.what());
+	}
+	catch ( ObjectiveScript::Utils::Exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL("caught exception: " << e.what());
 	}
 }
 
@@ -98,11 +126,14 @@ void PrototypeTest::testBasicObject()
 		// automatic success
 		delete s;
 	}
-	catch ( std::exception& ) {
+	catch ( std::exception& e ) {
 		// exception has been thrown: test failed!
-		TFAIL("caught exception!");
+		TFAIL("caught exception: " << e.what());
 	}
-
+	catch ( ObjectiveScript::Utils::Exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL("caught exception: " << e.what());
+	}
 }
 
 void PrototypeTest::testPrototypeDeclaration()
@@ -116,9 +147,13 @@ void PrototypeTest::testPrototypeDeclaration()
 		// automatic success
 		delete s;
 	}
-	catch ( std::exception& ) {
+	catch ( std::exception& e ) {
 		// exception has been thrown: test failed!
-		TFAIL("caught exception!");
+		TFAIL("caught exception: " << e.what());
+	}
+	catch ( ObjectiveScript::Utils::Exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL("caught exception: " << e.what());
 	}
 }
 
@@ -136,9 +171,13 @@ void PrototypeTest::testPrototypeUsage()
 		// automatic success
 		delete s;
 	}
-	catch ( std::exception& ) {
+	catch ( std::exception& e ) {
 		// exception has been thrown: test failed!
-		TFAIL("caught exception!");
+		TFAIL("caught exception: " << e.what());
+	}
+	catch ( ObjectiveScript::Utils::Exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL("caught exception: " << e.what());
 	}
 }
 

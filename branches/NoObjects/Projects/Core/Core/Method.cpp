@@ -81,7 +81,7 @@ void Method::addIdentifier(Variable object)
 			return;
 		}
 
-		throw DuplicateIdentifer(object.name());
+		throw Utils::DuplicateIdentifer(object.name());
 	}
 
 	mLocales[object.name()] = object;
@@ -91,12 +91,12 @@ void Method::addIdentifier(Variable object)
 Variable Method::execute(const ParameterList& params)
 {
 	if ( !isSignatureValid(params) ) {
-		throw ParameterCountMissmatch("number or type of parameters incorrect");
+		throw Utils::ParameterCountMissmatch("number or type of parameters incorrect");
 	}
 
 	switch ( languageFeatureState() ) {
 		case LanguageFeatureState::Deprecated: OSwarn("method '" + name() + "' is marked as deprecated!"); break;
-		case LanguageFeatureState::NotImplemented: OSerror("method '" + name() + "' is marked as not implemented!"); throw NotImplemented(name()); break;
+		case LanguageFeatureState::NotImplemented: OSerror("method '" + name() + "' is marked as not implemented!"); throw Utils::NotImplemented(name()); break;
 		case LanguageFeatureState::Stable: /* this is the normal language feature state, so no need to log anything here */ break;
 		case LanguageFeatureState::Unknown: /* ignore this one */ break;
 		case LanguageFeatureState::Unstable: OSwarn("method '" + name() + "' is marked as unstable!"); break;
@@ -121,7 +121,7 @@ Variable Method::execute(const ParameterList& params)
 		TokenIterator start = mTokens.begin();
 		returnValue.value(process(start, mTokens.end()).value());
 	}
-	catch ( Exception &e ) {	// if any thing happens clean up the mess
+	catch ( Utils::Exception &e ) {	// if any thing happens clean up the mess
 		garbageCollector();
 
 		// throw again so that our owner will be informed
@@ -198,7 +198,7 @@ Variable& Method::getVariable(const std::string& name)
 		return o;
 	}
 
-	throw SyntaxError("expected identifier but '" + name + "' found!");
+	throw Utils::SyntaxError("expected identifier but '" + name + "' found!");
 }
 
 void Method::handleType(TokenIterator& token)
@@ -221,7 +221,7 @@ void Method::handleType(TokenIterator& token)
 	name = token->content();
 
 	if ( token->type() != Token::Type::IDENTIFER ) {
-		throw SyntaxError("identifier expected but '" + token->content() + "' found", token->position());
+		throw Utils::SyntaxError("identifier expected but '" + token->content() + "' found", token->position());
 	}
 
 	token++;
@@ -286,7 +286,7 @@ void Method::handleType(TokenIterator& token)
 
 
 	if ( token->type() != Token::Type::SEMICOLON ) {
-		throw SyntaxError("';' expected but '" + token->content() + "' found", token->position());
+		throw Utils::SyntaxError("';' expected but '" + token->content() + "' found", token->position());
 	}
 }
 
@@ -469,8 +469,8 @@ Variable Method::math_add(const Variable& v1, const Variable& v2)
 		result = Number(Tools::toString(f1 + f2));
 	}
 	else {
-		//throw TypeMismatch("for addition: " + v1.value() + " and/or " + v2.value() + " are not of type 'float'");
-		throw TypeMismatch("for addition: '" + v1.value() + "' and/or '" + v2.value() + "' are not of type 'Number'");
+		//throw Utils::TypeMismatch("for addition: " + v1.value() + " and/or " + v2.value() + " are not of type 'float'");
+		throw Utils::TypeMismatch("for addition: '" + v1.value() + "' and/or '" + v2.value() + "' are not of type 'Number'");
 	}
 
 	return result;
@@ -488,8 +488,8 @@ Variable Method::math_divide(const Variable& v1, const Variable& v2)
 		result = Number(Tools::toString(f1 / f2));
 	}
 	else {
-		//throw TypeMismatch("for division: " + v1.value() + " and/or " + v2.value() + " are not of type 'float'");
-		throw TypeMismatch("for division: '" + v1.value() + "' and/or '" + v2.value() + "' are not of type 'Number'");
+		//throw Utils::TypeMismatch("for division: " + v1.value() + " and/or " + v2.value() + " are not of type 'float'");
+		throw Utils::TypeMismatch("for division: '" + v1.value() + "' and/or '" + v2.value() + "' are not of type 'Number'");
 	}
 
 	return result;
@@ -507,8 +507,8 @@ Variable Method::math_multiply(const Variable& v1, const Variable& v2)
 		result = Number(Tools::toString(f1 * f2));
 	}
 	else {
-		//throw TypeMismatch("for multiplication: " + v1.value() + " and/or " + v2.value() + " are not of type 'float'");
-		throw TypeMismatch("for multiplication: '" + v1.value() + "' and/or '" + v2.value() + "' are not of type 'Number'");
+		//throw Utils::TypeMismatch("for multiplication: " + v1.value() + " and/or " + v2.value() + " are not of type 'float'");
+		throw Utils::TypeMismatch("for multiplication: '" + v1.value() + "' and/or '" + v2.value() + "' are not of type 'Number'");
 	}
 
 	return result;
@@ -526,8 +526,8 @@ Variable Method::math_subtract(const Variable& v1, const Variable& v2)
 		result = Number(Tools::toString(f1 - f2));
 	}
 	else {
-		//throw TypeMismatch("for subtraction: " + v1.value() + " and/or " + v2.value() + " are not of type 'float'");
-		throw TypeMismatch("for subtraction: '" + v1.value() + "' and/or '" + v2.value() + "' are not of type 'Number'");
+		//throw Utils::TypeMismatch("for subtraction: " + v1.value() + " and/or " + v2.value() + " are not of type 'float'");
+		throw Utils::TypeMismatch("for subtraction: '" + v1.value() + "' and/or '" + v2.value() + "' are not of type 'Number'");
 	}
 
 	return result;
@@ -558,7 +558,7 @@ Variable Method::parseAtom(TokenIterator& start)
 				v = process_method(start);
 			}
 			else {
-				throw UnknownIdentifer("unknown/unexpected identifier '" + start->content() + "' found", start->position());
+				throw Utils::UnknownIdentifer("unknown/unexpected identifier '" + start->content() + "' found", start->position());
 			}
 		} break;
 		case Token::Type::KEYWORD: {
@@ -568,7 +568,7 @@ Variable Method::parseAtom(TokenIterator& start)
 			v = String(start->content());
 		} break;
 		default:
-			throw SyntaxError("identifier, literal or number expected but " + start->content() + " as " + Token::Type::convert(start->type()) + " found", start->position());
+			throw Utils::SyntaxError("identifier, literal or number expected but " + start->content() + " as " + Token::Type::convert(start->type()) + " found", start->position());
 			break;
 	}
 
@@ -625,7 +625,12 @@ Variable Method::parseExpression(TokenIterator& start)
 Variable Method::parseFactors(TokenIterator& start)
 {
 	Variable v1;
-	v1 = parseAtom(start);
+	if ( (start++)->type() == Token::Type::PARENTHESIS_OPEN) {
+		v1 = parseExpression(start);
+	}
+	else {
+		v1 = parseAtom(start);
+	}
 
 	for ( ; ; ) {
 		Token::Type::E op = start->type();
@@ -720,14 +725,14 @@ Variable Method::process(TokenIterator& token, TokenIterator end, Token::Type::E
 				}
 				else {
 					// not ok
-					throw UnknownIdentifer(token->content(), token->position());
+					throw Utils::UnknownIdentifer(token->content(), token->position());
 				}
 
 				Variable& s = getVariable(token->content());
 				Variable t = parseExpression(++assign);
 
 				if ( s.isConst() || (this->isConst() && isMember(s.name())) ) {
-					throw Exception("can not change const object!", token->position());
+					throw Utils::Exception("can not change const object!", token->position());
 				}
 
 				s.value(t.value());
@@ -808,7 +813,7 @@ void Method::process_assert(TokenIterator& token)
 	Variable condition = parseCondition(condBegin);
 
 	if ( isFalse(condition) ) {
-		throw AssertionFailed("'" + condition.value() + "'", token->position());
+		throw Utils::AssertionFailed("'" + condition.value() + "'", token->position());
 	}
 
 	token = tmp;
@@ -867,7 +872,7 @@ void Method::process_if(TokenIterator& token)
 
 		// check if we executed all tokens
 		if ( bodyBegin != bodyEnd ) {
-			throw Exception("half evaluated if found!", bodyBegin->position());
+			throw Utils::Exception("half evaluated if found!", bodyBegin->position());
 		}
 
 		if ( elseEnd != mTokens.end() ) {
@@ -882,7 +887,7 @@ void Method::process_if(TokenIterator& token)
 
 		// check if we executed all tokens
 		if ( elseBegin != elseEnd ) {
-			throw Exception("half evaluated else found!", bodyBegin->position());
+			throw Utils::Exception("half evaluated else found!", bodyBegin->position());
 		}
 
 		token = elseEnd;
@@ -932,7 +937,7 @@ Variable Method::process_method(TokenIterator& token)
 		return mOwner->execute(method, params, this);
 	}
 
-	throw UnknownIdentifer("unknown/unexpected identifier '" + method + "' found", tmp->position());
+	throw Utils::UnknownIdentifer("unknown/unexpected identifier '" + method + "' found", tmp->position());
 }
 
 // syntax:

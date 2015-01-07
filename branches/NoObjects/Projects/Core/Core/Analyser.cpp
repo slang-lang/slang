@@ -55,7 +55,7 @@ BluePrint Analyser::createObject(TokenIterator& start)
 	// check if we have some more tokens before our object declarations starts
 	if ( start != open ) {
 		if ( start->content() != "extends" ) {
-			throw Exception("invalid token '" + start->content() + "' during object declaration");
+			throw Utils::Exception("invalid token '" + start->content() + "' during object declaration");
 		}
 
 		// collect inheritences

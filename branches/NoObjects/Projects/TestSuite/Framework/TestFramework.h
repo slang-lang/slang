@@ -32,7 +32,7 @@
 #define TFAIL( expr ) \
 	mFailed++; \
 	mLastResult = GenericTest::Failed; \
-	std::cout << __FILE__ << ":" << __LINE__ << ": " << expr << std::endl; \
+	std::cout <<  __FILE__ << ":" << __LINE__ << ": \"" << expr << "\"" << std::endl; \
 	return; \
 
 // Print an expression.
@@ -57,7 +57,7 @@
 		return; \
 	}
 
-// Expects and catches exeptions.
+// Expects and catches exceptions.
 #define TTHROWS( func, ex ) \
 	{ \
 		bool __was__ex__thrown = false; \
@@ -70,6 +70,19 @@
 		TVERIFY( __was__ex__thrown ) \
 	}
 
+// Does not expect exceptions but can catche them.
+#define TNOTTHROWS( func ) \
+	{ \
+		bool __was__ex__thrown = false; \
+		try { \
+			(func); \
+		} \
+		catch ( ... ) { \
+			__was__ex__thrown = true; \
+		} \
+		TVERIFY( !__was__ex__thrown ) \
+	}
+
 // Runs the given test.
 #define TEST( exp ) \
 	{ \
@@ -77,9 +90,9 @@
 		mLastResult = GenericTest::Passed; \
 		exp(); \
 		switch ( mLastResult ) { \
-			case GenericTest::Failed:  std::cout << "!!!FAILED:  " << __FUNCTION__ << ": " << std::endl; break; \
-			case GenericTest::Passed:  std::cout << "PASSED:  " << __FUNCTION__ << ": " << std::endl; break; \
-			case GenericTest::Skipped: std::cout << "SKIPPED: " << __FUNCTION__ << ": " << std::endl; break; \
+			case GenericTest::Failed:  std::cout << "!!!FAILED:  " << __FUNCTION__ << std::endl; break; \
+			case GenericTest::Passed:  std::cout << "PASSED:  " << __FUNCTION__ << std::endl; break; \
+			case GenericTest::Skipped: std::cout << "SKIPPED: " << __FUNCTION__ << std::endl; break; \
 		} \
 	}
 

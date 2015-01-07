@@ -69,7 +69,7 @@ void Object::addMember(Object m)
 	OSdebug("addMember('" + m.name() + "')");
 
 	if ( mMembers.find(m.name()) != mMembers.end() ) {
-		throw DuplicateIdentifer("duplicate member '" + m.name() + "' added");
+		throw Utils::DuplicateIdentifer("duplicate member '" + m.name() + "' added");
 	}
 
 	mMembers.insert(std::make_pair(m.name(), m));
@@ -81,7 +81,7 @@ void Object::addMethod(Method m)
 	OSdebug("addMethod('" + m.name() + "')");
 
 	if ( mMethods.find(m) != mMethods.end() ) {
-		throw DuplicateIdentifer("duplicate method '" + m.name() + "' added with same signature");
+		throw Utils::DuplicateIdentifer("duplicate method '" + m.name() + "' added with same signature");
 	}
 
 	mMethods.insert(m);
@@ -91,7 +91,7 @@ void Object::addParent(const std::string& parent)
 {
 	for ( StringList::const_iterator it = mParents.begin(); it != mParents.end(); ++it ) {
 		if ( (*it) == parent ) {
-			throw Exception("duplicate inheritance detected");
+			throw Utils::Exception("duplicate inheritance detected");
 		}
 	}
 
@@ -134,7 +134,7 @@ void Object::connectRepository(Repository *r)
 void Object::Constructor(const ParameterList& params)
 {
 	if ( mConstructed ) {
-		throw Exception("can not construct object '" + name() + "' multiple times");
+		throw Utils::Exception("can not construct object '" + name() + "' multiple times");
 	}
 
 	updateMethodOwners();
@@ -162,7 +162,7 @@ void Object::Destructor()
 	if ( !mConstructed ) {
 		// either the destructor has already been executed (successfully)
 		// or the constructor has never been called successfully!
-		throw Exception("can not destroy object '" + name() + "' which has not been constructed");
+		throw Utils::Exception("can not destroy object '" + name() + "' which has not been constructed");
 	}
 
 	// only execute destructor if one is present
@@ -185,7 +185,7 @@ Variable Object::execute(const std::string& method, const ParameterList& params,
 	MethodCollection::iterator mIt;
 	bool success = findMethod(method, params, mIt);
 	if ( !success ) {
-		throw UnknownIdentifer("unknown method '" + method + "' or method with invalid parameter count called!");
+		throw Utils::UnknownIdentifer("unknown method '" + method + "' or method with invalid parameter count called!");
 	}
 
 	// are we called from a member function?
@@ -203,7 +203,7 @@ Variable Object::execute(const std::string& method, const ParameterList& params,
 	// member functions can always call us,
 	// for calls from non-member functions the method visibility must be public
 	if ( !callFromMember && mIt->visibility() != Visibility::Public ) {
-		throw VisibilityError("invalid visibility: " + method);
+		throw Utils::VisibilityError("invalid visibility: " + method);
 	}
 
 	Variable returnValue((*mIt).name(), (*mIt).type(), "");
@@ -213,7 +213,7 @@ Variable Object::execute(const std::string& method, const ParameterList& params,
 		Method m = (*mIt);
 		returnValue.value(m.execute(params).value());
 	}
-	catch ( Exception &e ) {
+	catch ( Utils::Exception &e ) {
 		// catch and log all errors that occured during method execution
 		OSerror(e.what());
 	}
@@ -376,7 +376,7 @@ Object& Object::getMember(const std::string& m)
 		}
 
 		if ( !it->second.isValid() ) {
-			throw Exception("trying to access not yet constructed object '" + this->name() + "'!");
+			throw Utils::Exception("trying to access not yet constructed object '" + this->name() + "'!");
 		}
 
 		if ( it->second.name() == parent ) {
@@ -384,7 +384,7 @@ Object& Object::getMember(const std::string& m)
 		}
 	}
 
-	throw UnknownIdentifer(m);
+	throw Utils::UnknownIdentifer(m);
 }
 
 bool Object::hasMember(const std::string& m)

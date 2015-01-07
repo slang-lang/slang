@@ -26,7 +26,7 @@ Attributes::Attributes()
 void Attributes::checkSealState()
 {
 	if ( mSealed ) {
-		throw Exception("can not update sealed attribute");
+		throw Utils::Exception("can not update sealed attribute");
 	}
 }
 

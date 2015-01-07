@@ -1,6 +1,6 @@
 
-#ifndef _Testing_GenericTest_h_
-#define _Testing_GenericTest_h_
+#ifndef _Framework_GenericTest_h_
+#define _Framework_GenericTest_h_
 
 
 // Library includes

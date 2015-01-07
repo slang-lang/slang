@@ -52,7 +52,7 @@ const std::string& Variable::value() const
 void Variable::value(const std::string& value)
 {
 	if ( isConst() ) {
-		throw Exception("tried to change const object");
+		throw Utils::Exception("tried to change const object");
 	}
 
 	mValue = value;

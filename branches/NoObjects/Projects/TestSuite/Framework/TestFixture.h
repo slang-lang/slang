@@ -1,6 +1,6 @@
 
-#ifndef _Testing_TestFixture_h_
-#define _Testing_TestFixture_h_
+#ifndef _Framework_TestFixture_h_
+#define _Framework_TestFixture_h_
 
 
 // Library includes
