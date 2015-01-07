@@ -15,8 +15,8 @@ namespace Attributes {
 
 
 Fixture::Fixture(const Utils::Common::Logger *p)
-: TestFixture("AttributesTestFixture"),
-  Utils::Common::Logger(p, "AttributesTestFixture")
+: TestFixture("Attributes"),
+  Utils::Common::Logger(p, "Attributes")
 {
 }
 

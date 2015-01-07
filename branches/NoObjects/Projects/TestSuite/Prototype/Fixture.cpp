@@ -15,8 +15,8 @@ namespace Prototype {
 
 
 Fixture::Fixture(const Utils::Common::Logger *p)
-: TestFixture("PrototypeTestFixture"),
-  Utils::Common::Logger(p, "PrototypeTestFixture")
+: TestFixture("Prototype"),
+  Utils::Common::Logger(p, "Prototype")
 {
 }
 

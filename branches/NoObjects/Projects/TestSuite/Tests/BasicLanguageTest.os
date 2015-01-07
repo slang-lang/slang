@@ -104,7 +104,7 @@ private object Main extends public BaseObject,
 	private object Bla
 	{
 		public String mText;
-		
+
 		public void Bla()
 		{
 			mText = "Foobar";
@@ -133,7 +133,7 @@ private object Main extends public BaseObject,
 		//Assert::assertmsg("failed", true);
 	}
 
-	public void ~Main() 
+	public void ~Main()
 	{
 	}
 
@@ -244,7 +244,28 @@ private object Main extends public BaseObject,
 	public void test_localVar()
 	{
 		Number i = 1;
-		print("print i = " & i); 
+		print("print i = " & i);
+	}
+
+	public void test_mathParsing()
+	{
+		Number i = 1 + 2 + 3;
+		assert(i == 6);
+
+		i = 1 + (2 + 3);
+		assert(i == 6);
+
+		i = 1 + 2 * 3;
+		assert(i == 7);
+
+		i = 1 * 2 + 3;
+		assert(i == 5);
+
+		i = (1 + 2) * 3;
+		assert(i == 9);
+
+		i = 1 * (2 + 3);
+		assert(i == 5);
 	}
 
 	public void test_print(String param1)
@@ -252,7 +273,7 @@ private object Main extends public BaseObject,
 		print("print 'text' with single quotes");
 		print("print \"text\" with double quotes");
 		print("print text with numbers 1234567890");
-		print("print text with special characters: ,.-;:_#'+*´`ß?");
+		print("print text with special characters: ,.-;:_#'+*ï¿½`ï¿½?");
 		print(1 + 2);
 		print(1 & param1 & 2);
 	}
@@ -317,7 +338,7 @@ private object Main extends public BaseObject,
 		Number var static = 0;
 
 		var = var + 1;
-		
+
 		return var;
 	}
 

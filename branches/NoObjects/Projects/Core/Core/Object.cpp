@@ -72,7 +72,7 @@ void Object::addMember(Object m)
 		throw DuplicateIdentifer("duplicate member '" + m.name() + "' added");
 	}
 
-	mMembers.insert(std::make_pair<std::string, Object>(m.name(), m));
+	mMembers.insert(std::make_pair(m.name(), m));
 }
 
 void Object::addMethod(Method m)

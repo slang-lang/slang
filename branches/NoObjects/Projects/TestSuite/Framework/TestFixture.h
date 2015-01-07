@@ -16,6 +16,9 @@
 // Namespace declarations
 
 
+//#define NO_TYPEID
+
+
 namespace Testing {
 
 
@@ -46,10 +49,10 @@ public:
 	}
 
 	void run() {
-#ifndef NO_TYPEID
-		std::cout << std::endl << "********* Starting: " << typeid(*this).name() << " *********" << std::endl;
-#else
+#ifdef NO_TYPEID
 		std::cout << std::endl << "********* Starting:  *********" << std::endl;
+#else
+		std::cout << std::endl << "********* Starting: " << typeid(*this).name() << " *********" << std::endl;
 #endif
 
 		setup();
@@ -62,9 +65,9 @@ public:
 		cleanup();
 
 #ifndef NO_TYPEID
-		std::cout << "********* Finished: " << typeid(*this).name() << " *********" << std::endl;
-#else
 		std::cout << "********* Finished:  *********" << std::endl;
+#else
+		std::cout << "********* Finished: " << typeid(*this).name() << " *********" << std::endl;
 #endif
 	}
 

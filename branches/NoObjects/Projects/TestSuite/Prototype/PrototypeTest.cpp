@@ -65,6 +65,7 @@ void PrototypeTest::testBasicLanguage()
 			s->execute("test_if", params);
 		}
 		s->execute("test_localVar", ParameterList());
+		s->execute("test_mathParsing", ParameterList());
 		{
 			ParameterList params;
 			params.push_back(Parameter("param1", "String", "1"));
