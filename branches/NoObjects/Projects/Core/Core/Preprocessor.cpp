@@ -97,12 +97,14 @@ Method Preprocessor::createMethod(TokenIterator token)
 				}
 			} while ( token->type() != Token::Type::COLON && token->type() != Token::Type::PARENTHESIS_CLOSE );
 
-			params.push_back(Parameter(name, type, "", Parameter::AccessMode::ByValue));
+			params.push_back(Parameter(name, type, "", isConst, Parameter::AccessMode::ByValue));
 
 			if ( token->type() == Token::Type::PARENTHESIS_CLOSE ) {
 				break;
 			}
 		}
+
+		isConst = false;
 	}
 
 	// collect all tokens of this method

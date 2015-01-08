@@ -31,8 +31,9 @@ public:
 	};
 
 public:
-	Parameter(const std::string& name, const std::string& type, const std::string& value, AccessMode::E access = AccessMode::ByValue)
+	Parameter(const std::string& name, const std::string& type, const std::string& value, bool isConst = false, AccessMode::E access = AccessMode::ByValue)
 	: mAccessMode(access),
+	  mIsConst(isConst),
 	  mName(name),
 	  mType(type),
 	  mValue(value)
@@ -40,6 +41,10 @@ public:
 
 	AccessMode::E access() const {
 		return mAccessMode;
+	}
+
+	bool isConst() const {
+		return mIsConst;
 	}
 
 	const std::string& name() const {
@@ -58,6 +63,7 @@ protected:
 
 private:
 	AccessMode::E mAccessMode;
+	bool mIsConst;
 	std::string mName;
 	std::string mType;
 	std::string mValue;
