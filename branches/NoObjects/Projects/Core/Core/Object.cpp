@@ -469,11 +469,17 @@ IPrinter* Object::providePrinter() const
 void Object::updateMethodOwners()
 {
 	for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
+#ifdef _WIN32
+		it->setMemory(mMemory);
+		it->setOwner(this);
+		it->setRepository(mRepository);
+#else
 		// this does not work!!!
 		Method m = (*it);
 		m.setMemory(mMemory);
 		m.setOwner(this);
 		m.setRepository(mRepository);
+#endif
 	}
 }
 

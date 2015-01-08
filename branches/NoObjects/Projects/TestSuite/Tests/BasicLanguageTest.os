@@ -366,7 +366,7 @@ private object Main extends public BaseObject,
 
 	private void returnVoid()
 	{
-		print("method without parameters called");
+		print("method without parameters called which returns nothing");
 	}
 
 	private Number testMethod(Number param1, Number param2) const

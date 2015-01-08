@@ -625,8 +625,12 @@ Variable Method::parseExpression(TokenIterator& start)
 Variable Method::parseFactors(TokenIterator& start)
 {
 	Variable v1;
-	if ( (start++)->type() == Token::Type::PARENTHESIS_OPEN) {
-		v1 = parseExpression(start);
+	if ( (start)->type() == Token::Type::PARENTHESIS_OPEN) {
+		v1 = parseExpression(++start);
+
+		if ( start->type() != Token::Type::PARENTHESIS_CLOSE ) {
+			// ups...
+		}
 	}
 	else {
 		v1 = parseAtom(start);
@@ -655,7 +659,16 @@ Variable Method::parseFactors(TokenIterator& start)
 Variable Method::parseSummands(TokenIterator& start)
 {
 	Variable v1;
-	v1 = parseAtom(start);
+	if ( (start)->type() == Token::Type::PARENTHESIS_OPEN) {
+		v1 = parseExpression(++start);
+
+		if ( start->type() != Token::Type::PARENTHESIS_CLOSE ) {
+			// ups...
+		}
+	}
+	else {
+		v1 = parseAtom(start);
+	}
 
 	for ( ; ; ) {
 		Token::Type::E op = start->type();
@@ -979,6 +992,8 @@ Reference Method::process_new(TokenIterator& token)
 	}
 
 	token = closed;
+
+	assert(mRepository);
 
 	Reference ref;
 	if ( isPrototype ) {
