@@ -90,13 +90,11 @@ private object Main extends public BaseObject,
 {
 /////////////////////////////////// Member Declarations \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
-	private Assert mAssert;
 	private BaseObject mBaseObject;
 	private Logger mLogger;
 
 	private Number mLastUpdate;
 	private String mName;
-	private Number mValue;
 
 /////////////////////////////////// Public Methods \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
@@ -113,7 +111,7 @@ private object Main extends public BaseObject,
 	private Bla mBla;
 */
 
-	public void Main(/*String name, Number value*/)
+	public void Main(/*String name*/)
 	{
 		mLogger = new Logger("Main");
 		mLogger.debug("Constructor");
@@ -127,14 +125,11 @@ private object Main extends public BaseObject,
 		//mBaseObject.staticMethod();	// access to members in static method is not yet handled correctly
 
 		mName = "Main";
-		mValue = 0.0;
-
-		//mAssert.assertmsg("failed", true);
-		//Assert::assertmsg("failed", true);
 	}
 
 	public void ~Main()
 	{
+		delete mLogger;
 	}
 
 	public String getName() const

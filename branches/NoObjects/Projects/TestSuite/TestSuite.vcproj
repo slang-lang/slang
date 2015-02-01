@@ -189,10 +189,22 @@
 			<File
 				RelativePath=".\Attributes\AttributesTest.cpp"
 				>
-			</File>
-			<File
-				RelativePath=".\Attributes\Fixture.cpp"
-				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Attributes\"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Attributes\"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\Prototype\Fixture.cpp"
@@ -235,8 +247,68 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\Math\Fixture.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Math\"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Math\"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\Attributes\Fixture.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Attributes\"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Attributes\"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath=".\main.cpp"
 				>
+			</File>
+			<File
+				RelativePath=".\Math\MathTest.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Math\"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Math\"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\Prototype\PrototypeTest.cpp"
@@ -301,7 +373,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Math\Fixture.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Framework\GenericTest.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Math\MathTest.h"
 				>
 			</File>
 			<File

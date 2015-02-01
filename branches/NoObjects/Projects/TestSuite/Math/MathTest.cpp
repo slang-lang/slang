@@ -5,7 +5,7 @@
 #endif
 
 // Header
-#include "AttributesTest.h"
+#include "MathTest.h"
 
 // Library includes
 
@@ -15,48 +15,44 @@
 #include <Core/Utils/Exceptions.h>
 #include <Utils/Printer.h>
 
-// Namespace declarations
+// Namespace declartations
 using namespace ObjectiveScript;
 
 
 namespace Testing {
-namespace Attributes {
+namespace Math {
 
 
 ::Utils::Printer stdoutPrinter;
 
 
-AttributesTest::AttributesTest(const ::Utils::Common::Logger *p)
-: ::Utils::Common::Logger(p, "AttributesTest")
+MathTest::MathTest(const ::Utils::Common::Logger *p)
+: ::Utils::Common::Logger(p, "Math")
 {
 }
 
-AttributesTest::~AttributesTest()
+void MathTest::process()
+{
+	TEST(testBasicExpressionParsing);
+}
+
+void MathTest::setup()
 {
 }
 
-void AttributesTest::process()
-{
-	TEST(testBasicLanguageFeatures);
-}
-
-void AttributesTest::setup()
+void MathTest::teardown()
 {
 }
 
-void AttributesTest::teardown()
-{
-}
-
-void AttributesTest::testBasicLanguageFeatures()
+void MathTest::testBasicExpressionParsing()
 {
 	try {
-		//info("testBasicLanguageFeatures");
-
 		VirtualMachine vm;
 		vm.connectPrinter(&stdoutPrinter);
 
-		Script *s = vm.create("Tests/AttributesTest.os");
+		Script *s = vm.create("Tests/Math/BasicTest.os");
+
+		s->execute("MathExpressionParsing", ParameterList());
 
 		// automatic success
 		delete s;

@@ -1,36 +1,46 @@
 
-namespace Main
+public namespace Main
 {
 	public object TestObject
 	{
 		public deprecated void deprecatedMethod()
 		{
-			print("you should see this");
+			print("deprecated method called");
 		}
+
 		public notimplemented void notimplementedMethod()
 		{
-			print("you should NOT see this");
+			print("not implemented method called");
 		}
+
 		public stable void stableMethod()
 		{
-			print("you should see this");
+			print("stable method called");
 		}
+
 		public unstable void unstableMethod()
 		{
-			print("you should see this");
+			print("unstable method called");
 		}
 	}
 
 	public object Main
 	{
-		private TestObject test;
+		private TestObject mTest;
 
 		public void Main()
 		{
-			test.deprecatedMethod();
-			//test.notimplementedMethod();
-			test.stableMethod();
-			test.unstableMethod();
+			mTest = new TestObject();
+
+			mTest.deprecatedMethod();
+			//mTest.notimplementedMethod();
+			mTest.stableMethod();
+			mTest.unstableMethod();
+		}
+
+		public void ~Main()
+		{
+			delete mTest;
 		}
 	}
 }
