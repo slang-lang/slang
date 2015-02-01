@@ -92,29 +92,6 @@ void PrototypeTest::testBasicLanguage()
 	}
 }
 
-void PrototypeTest::testBasicMathParsing()
-{
-	try {
-		VirtualMachine vm;
-		vm.connectPrinter(&stdoutPrinter);
-
-		Script *s = vm.create("Tests/BasicLanguageTest.os");
-
-		s->execute("test_mathParsing", ParameterList());
-
-		// automatic success
-		delete s;
-	}
-	catch ( ObjectiveScript::Utils::Exception& e ) {
-		// exception has been thrown: test failed!
-		TFAIL("caught exception: " << e.what());
-	}
-	catch ( std::exception& e ) {
-		// exception has been thrown: test failed!
-		TFAIL("caught exception: " << e.what());
-	}
-}
-
 void PrototypeTest::testBasicObject()
 {
 	try {

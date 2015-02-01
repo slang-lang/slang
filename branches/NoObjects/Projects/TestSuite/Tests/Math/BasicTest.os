@@ -6,7 +6,7 @@ public namespace Math
 		public void MathExpressionParsing()
 		{
 			Number i;
-/*
+
 			i = 1 + 2 + 3;
 			assert(i == 6);
 
@@ -18,7 +18,7 @@ public namespace Math
 
 			i = 1 * 2 + 3;
 			assert(i == 5);
-*/
+
 			i = (1 + 2) * 3;
 			assert(i == 9);
 
