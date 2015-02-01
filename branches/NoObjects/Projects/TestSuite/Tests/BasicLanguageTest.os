@@ -210,8 +210,8 @@ private object Main extends public BaseObject,
 	{
 		breakpoint;
 
-		for ( Number i = 0; i < 5; i = i + 1 ) {
-			print("i =" & i);
+		for ( Number i = 0; i < 5; i = i + 1; ) {
+			print("i = " & i);
 		}
 
 		breakpoint;

@@ -547,10 +547,9 @@ Variable Method::parseAtom(TokenIterator& start)
 		case Token::Type::IDENTIFER: {
 			// find out if we have to execute a method
 			// or simply get a stored variable
-			/* if ( isLocal(start->content()) ) {
-				v.assign(getVariable(scope(start->content())));
+			if ( isLocal(start->content()) ) {
+				v = getVariable(scope(start->content()));
 			}
-			else */
 			if ( isMember(start->content()) ) {
 				v = getVariable(start->content());
 			}
@@ -833,18 +832,43 @@ void Method::process_assert(TokenIterator& token)
 }
 
 // syntax:
-// for ( int i = 0; i < 5; i += 1 ) {
+// for ( <expression>; <condition>; <expression> ) { }
+// i.e. for ( int i = 0; i < 5; i += 1 ) {
 // ...
 // }
 void Method::process_for(TokenIterator& token)
 {
-assert(!"not implemented");
+	// find declaration
+	TokenIterator decl = ++findNext(token, Token::Type::PARENTHESIS_OPEN);
+	// find condition
+	TokenIterator cond = ++findNext(decl, Token::Type::SEMICOLON);
+	const TokenIterator conditionStart = cond;
+	// find expression
+	TokenIterator expr = ++findNext(cond, Token::Type::SEMICOLON);
+	const TokenIterator expressionStart = expr;
+	// find next open curly bracket '{'
+	const TokenIterator exprEnd = findNext(expr, Token::Type::PARENTHESIS_CLOSE);
 
-	TokenIterator tmp = token;
+	const TokenIterator bodyBegin = findNext(expr, Token::Type::BRACKET_CURLY_OPEN);
+	// find next balanced '{' & '}' pair
+	TokenIterator begin = bodyBegin;
+	TokenIterator bodyEnd = findNextBalancedCurlyBracket(++begin);
 
+	// process our declaration part
+	process(decl, cond, Token::Type::SEMICOLON);
 
+	while ( isTrue(parseCondition(cond = conditionStart)) ) {
+		TokenIterator bb = begin;
 
-	token = tmp;
+		// process loop body
+		process(bb, bodyEnd, Token::Type::BRACKET_CURLY_CLOSE);
+
+		// execute loop expression
+		expr = expressionStart;
+		process(expr, exprEnd, Token::Type::PARENTHESIS_CLOSE);
+	}
+
+	token = bodyEnd;
 }
 
 // syntax:
