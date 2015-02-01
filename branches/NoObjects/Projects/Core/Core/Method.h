@@ -166,12 +166,6 @@ private:	// Execution
 	Variable parseExpression(TokenIterator& start);
 	Variable parseFactors(TokenIterator& start);
 	Variable parseSummands(TokenIterator& start);
-
-	Variable math_add(const Variable& v1, const Variable& v2);
-	Variable math_divide(const Variable& v1, const Variable& v2);
-	Variable math_multiply(const Variable& v1, const Variable& v2);
-	Variable math_subtract(const Variable& v1, const Variable& v2);
-	Variable string_concat(const Variable& v1, const Variable& v2);
 	// }
 
 private:

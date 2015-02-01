@@ -9,6 +9,8 @@
 #include <Core/BuildInObjects/Bool.h>
 #include <Core/BuildInObjects/Number.h>
 #include <Core/BuildInObjects/String.h>
+#include <Core/Helpers/Math.h>
+#include <Core/Helpers/Strings.h>
 #include <Core/Interfaces/IPrinter.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Utils/Utils.h>
@@ -457,82 +459,6 @@ bool Method::isTrue(const Variable& v) const
 	return true;
 }
 
-Variable Method::math_add(const Variable& v1, const Variable& v2)
-{
-	Variable result;
-
-	if ( v1.type() == "Number" && v2.type() == "Number" ) {
-		// none of our summands is a string
-		float f1 = Tools::stringToFloat(v1.value());
-		float f2 = Tools::stringToFloat(v2.value());
-
-		result = Number(Tools::toString(f1 + f2));
-	}
-	else {
-		//throw Utils::TypeMismatch("for addition: " + v1.value() + " and/or " + v2.value() + " are not of type 'float'");
-		throw Utils::TypeMismatch("for addition: '" + v1.value() + "' and/or '" + v2.value() + "' are not of type 'Number'");
-	}
-
-	return result;
-}
-
-Variable Method::math_divide(const Variable& v1, const Variable& v2)
-{
-	Variable result;
-
-	if ( v1.type() == "Number" && v2.type() == "Number" ) {
-		// none of our summands is a string
-		float f1 = Tools::stringToFloat(v1.value());
-		float f2 = Tools::stringToFloat(v2.value());
-
-		result = Number(Tools::toString(f1 / f2));
-	}
-	else {
-		//throw Utils::TypeMismatch("for division: " + v1.value() + " and/or " + v2.value() + " are not of type 'float'");
-		throw Utils::TypeMismatch("for division: '" + v1.value() + "' and/or '" + v2.value() + "' are not of type 'Number'");
-	}
-
-	return result;
-}
-
-Variable Method::math_multiply(const Variable& v1, const Variable& v2)
-{
-	Variable result;
-
-	if ( v1.type() == "Number" && v2.type() == "Number" ) {
-		// none of our summands is a string
-		float f1 = Tools::stringToFloat(v1.value());
-		float f2 = Tools::stringToFloat(v2.value());
-
-		result = Number(Tools::toString(f1 * f2));
-	}
-	else {
-		//throw Utils::TypeMismatch("for multiplication: " + v1.value() + " and/or " + v2.value() + " are not of type 'float'");
-		throw Utils::TypeMismatch("for multiplication: '" + v1.value() + "' and/or '" + v2.value() + "' are not of type 'Number'");
-	}
-
-	return result;
-}
-
-Variable Method::math_subtract(const Variable& v1, const Variable& v2)
-{
-	Variable result;
-
-	if ( v1.type() == "Number" && v2.type() == "Number" ) {
-		// none of our summands is a string
-		float f1 = Tools::stringToFloat(v1.value());
-		float f2 = Tools::stringToFloat(v2.value());
-
-		result = Number(Tools::toString(f1 - f2));
-	}
-	else {
-		//throw Utils::TypeMismatch("for subtraction: " + v1.value() + " and/or " + v2.value() + " are not of type 'float'");
-		throw Utils::TypeMismatch("for subtraction: '" + v1.value() + "' and/or '" + v2.value() + "' are not of type 'Number'");
-	}
-
-	return result;
-}
-
 Variable Method::parseAtom(TokenIterator& start)
 {
 	Variable v;
@@ -610,7 +536,7 @@ Variable Method::parseCondition(TokenIterator& token)
 		}
 	}
 
-	return Variable();
+	return v1;
 }
 
 Variable Method::parseExpression(TokenIterator& start)
@@ -625,11 +551,14 @@ Variable Method::parseFactors(TokenIterator& start)
 {
 	Variable v1;
 	if ( (start)->type() == Token::Type::PARENTHESIS_OPEN) {
-		v1 = parseExpression(++start);
+		start++;
+		v1 = parseExpression(start);
 
 		if ( start->type() != Token::Type::PARENTHESIS_CLOSE ) {
 			// ups...
 		}
+
+		start++;
 	}
 	else {
 		v1 = parseAtom(start);
@@ -641,33 +570,38 @@ Variable Method::parseFactors(TokenIterator& start)
 			return v1;
 		}
 
+		// consume operator token
 		start++;
-		Variable v2 = parseAtom(start);
 
-		if ( op == Token::Type::MATH_MULTI ) {
-			v1 = math_multiply(v1, v2);
+		Variable v2;
+		if ( (start)->type() == Token::Type::PARENTHESIS_OPEN) {
+			start++;
+			v2 = parseExpression(start);
+
+			if ( start->type() != Token::Type::PARENTHESIS_CLOSE ) {
+				// ups...
+			}
+
+			start++;
 		}
 		else {
-			v1 = math_divide(v1, v2);
+			v2 = parseAtom(start);
+		}
+
+		if ( op == Token::Type::MATH_MULTI ) {
+			v1 = Math::multiply(v1, v2);
+		}
+		else {
+			v1 = Math::divide(v1, v2);
 		}
 	}
 
-	return Variable();
+	return v1;
 }
 
 Variable Method::parseSummands(TokenIterator& start)
 {
-	Variable v1;
-	if ( (start)->type() == Token::Type::PARENTHESIS_OPEN) {
-		v1 = parseExpression(++start);
-
-		if ( start->type() != Token::Type::PARENTHESIS_CLOSE ) {
-			// ups...
-		}
-	}
-	else {
-		v1 = parseAtom(start);
-	}
+	Variable v1 = parseFactors(start);
 
 	for ( ; ; ) {
 		Token::Type::E op = start->type();
@@ -676,21 +610,23 @@ Variable Method::parseSummands(TokenIterator& start)
 			return v1;
 		}
 
+		// consume operator token
 		start++;
+
 		Variable v2 = parseFactors(start);
 
 		if ( op == Token::Type::MATH_ADD ) {
-			v1 = math_add(v1, v2);
+			v1 = Math::add(v1, v2);
 		}
 		else if ( op == Token::Type::MATH_SUBTRACT ) {
-			v1 = math_subtract(v1, v2);
+			v1 = Math::subtract(v1, v2);
 		}
 		else if ( op == Token::Type::STRING_ADD ) {
-			v1 = string_concat(v1, v2);
+			v1 = Strings::concat(v1, v2);
 		}
 	}
 
-	return Variable();
+	return v1;
 }
 
 void Method::pop_stack()
@@ -1169,11 +1105,6 @@ void Method::setSignature(const ParameterList& params)
 void Method::setTokens(const TokenList& tokens)
 {
 	mTokens = tokens;
-}
-
-Variable Method::string_concat(const Variable& v1, const Variable& v2)
-{
-	return String(Tools::toString(v1.value() + v2.value()));
 }
 
 

@@ -251,6 +251,26 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\Core\Helpers\Math.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Helpers\"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Helpers\"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath=".\Core\Memory.cpp"
 				>
 			</File>
@@ -301,6 +321,26 @@
 			<File
 				RelativePath=".\Core\Script.cpp"
 				>
+			</File>
+			<File
+				RelativePath=".\Core\Helpers\Strings.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Helpers\"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Helpers\"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\Core\Token.cpp"
@@ -417,6 +457,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Core\Helpers\Math.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\Memory.h"
 				>
 			</File>
@@ -478,6 +522,10 @@
 			</File>
 			<File
 				RelativePath=".\Core\BuildInObjects\String.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\Helpers\Strings.h"
 				>
 			</File>
 			<File

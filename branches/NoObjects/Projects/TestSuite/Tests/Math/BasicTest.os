@@ -12,13 +12,13 @@ public namespace Math
 
 			i = 1 + (2 + 3);
 			assert(i == 6);
-*/
+
 			i = 1 + 2 * 3;
 			assert(i == 7);
 
 			i = 1 * 2 + 3;
 			assert(i == 5);
-
+*/
 			i = (1 + 2) * 3;
 			assert(i == 9);
 
