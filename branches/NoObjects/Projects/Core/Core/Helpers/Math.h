@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Helpers_Math_h
-#define ObjectiveScript_Helpers_Math_h
+#ifndef Core_Helpers_Math_h
+#define Core_Helpers_Math_h
 
 
 // Library includes

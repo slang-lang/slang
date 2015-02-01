@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Helpers_Strings_h
-#define ObjectiveScript_Helpers_Strings_h
+#ifndef Core_Helpers_Strings_h
+#define Core_Helpers_Strings_h
 
 
 // Library includes

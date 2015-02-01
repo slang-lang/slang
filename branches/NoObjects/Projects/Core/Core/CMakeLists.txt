@@ -2,6 +2,7 @@ INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
 ADD_SUBDIRECTORY(Attributes)
 ADD_SUBDIRECTORY(BuildInObjects)
+ADD_SUBDIRECTORY(Helpers)
 #ADD_SUBDIRECTORY(Interfaces)
 ADD_SUBDIRECTORY(Keywords)
 #ADD_SUBDIRECTORY(Plugins)
@@ -51,6 +52,7 @@ SET(DEPENDENCIES
 	CoreUtils
 #	CorePlugins
 	CoreKeywords
+	CoreHelpers
 	CoreBuildInObjects
 	CoreAttributes
 )

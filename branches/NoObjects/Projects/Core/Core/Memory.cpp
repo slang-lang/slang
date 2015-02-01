@@ -66,7 +66,7 @@ const Reference& Memory::reserveAddress()
 	// 1) the simple way:
 	//    only use an address once, so that no address can get
 	//    reused and we accidentally make a forgotten reference
-	//    valid again although it's objects has been deleted
+	//    valid again although it's objects have been deleted
 	//    long ago;
 	if ( mNextAddress >= SIZE_MAX ) {
 		// 2) the more sophisticated way:
