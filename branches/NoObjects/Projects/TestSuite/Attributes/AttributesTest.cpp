@@ -56,7 +56,7 @@ void AttributesTest::testBasicLanguageFeatures()
 		VirtualMachine vm;
 		vm.connectPrinter(&stdoutPrinter);
 
-		Script *s = vm.create("Tests/AttributesTest.os");
+		Script *s = vm.create("Tests/Language/AttributesTest.os");
 
 		// automatic success
 		delete s;
