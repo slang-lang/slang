@@ -39,6 +39,8 @@ void LanguageTest::process()
 	TEST(testIf);
 	TEST(testPrint);
 	TEST(testWhile);
+
+	TEST(testConstCorrectness);
 }
 
 void LanguageTest::setup()
@@ -186,6 +188,31 @@ void LanguageTest::testWhile()
 		TFAIL("caught exception: " << e.what());
 	}
 }
+
+void LanguageTest::testConstCorrectness()
+{
+	try {
+		VirtualMachine vm;
+		vm.connectPrinter(&stdoutPrinter);
+
+		Script *s = vm.create("Tests/Language/ConstCorrectness.os");
+
+		s->execute("ModifyConstParameter", ParameterList());
+		s->execute("ModifyMemberInConstMethod", ParameterList());
+
+		// automatic success
+		delete s;
+	}
+	catch ( ObjectiveScript::Utils::Exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL("caught exception: " << e.what());
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL("caught exception: " << e.what());
+	}
+}
+
 
 }
 }

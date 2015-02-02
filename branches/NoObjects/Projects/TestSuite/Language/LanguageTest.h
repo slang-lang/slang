@@ -37,6 +37,8 @@ private:	// Tests
 	void testIf();
 	void testPrint();
 	void testWhile();
+
+	void testConstCorrectness();
 };
 
 

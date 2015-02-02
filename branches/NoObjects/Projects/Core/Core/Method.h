@@ -145,15 +145,7 @@ private:	// Execution
 	void process_while(TokenIterator& token);
 	// }
 
-	// scope
-	// {
-	std::string scope(const std::string& name) const;
-	void push_stack(const std::string& scope);
-	void pop_stack();
-	// }
-
-	const Reference& getLocale(const std::string& name) const;
-	Variable& getVariable(const std::string& name);
+	Variable& getLocal(const std::string& token);
 
 	// condition evaluation
 	// {
@@ -169,27 +161,14 @@ private:	// Execution
 	// }
 
 private:
-	MemberMap		mLocales;
-	Memory			*mMemory;
-	Object			*mOwner;
-	ParameterList	mParameter;
-	Repository		*mRepository;
-	ParameterList	mSignature;
-	StringList		mStack;
-	TokenList		mTokens;
+	MemberMap mLocales;
+	Memory *mMemory;
+	Object *mOwner;
+	ParameterList mParameter;
+	Repository *mRepository;
+	ParameterList mSignature;
+	TokenList mTokens;
 };
-
-
-/*
-friend std::ostream& operator<<(std::ostream &out, const Method& m)
-{
-	out << m.name() << "(";
-	for ( VariablesList::const_iterator it = m.provideSignature().begin(); it != m.provideSignature().end(); ++it ) {
-		out << it->type() << " " << it->name() << ": " << it->value();
-	out << ")";
-	return out;
-}
-*/
 
 
 }

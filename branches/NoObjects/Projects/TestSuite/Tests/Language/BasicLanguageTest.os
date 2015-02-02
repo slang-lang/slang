@@ -61,13 +61,9 @@ public namespace
 
 		public void test_for()
 		{
-			breakpoint;
-
 			for ( Number i = 0; i < 5; i = i + 1; ) {
 				print("i = " & i);
 			}
-
-			breakpoint;
 		}
 
 		public void test_if(Number param1)

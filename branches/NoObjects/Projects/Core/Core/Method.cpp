@@ -100,7 +100,7 @@ Variable Method::execute(const ParameterList& params)
 		case LanguageFeatureState::Deprecated: OSwarn("method '" + name() + "' is marked as deprecated!"); break;
 		case LanguageFeatureState::NotImplemented: OSerror("method '" + name() + "' is marked as not implemented!"); throw Utils::NotImplemented(name()); break;
 		case LanguageFeatureState::Stable: /* this is the normal language feature state, so no need to log anything here */ break;
-		case LanguageFeatureState::Unknown: /* ignore this one */ break;
+		case LanguageFeatureState::Unknown: OSerror("unknown language feature state set for method '" + name() + "'!"); break;
 		case LanguageFeatureState::Unstable: OSwarn("method '" + name() + "' is marked as unstable!"); break;
 	}
 
@@ -139,9 +139,6 @@ Variable Method::execute(const ParameterList& params)
 
 void Method::garbageCollector()
 {
-	// clean up local stuff
-	mStack.clear();
-
 	MemberMap tmp;
 	for ( MemberMap::iterator it = mLocales.begin(); it != mLocales.end(); ++it ) {
 		if ( (*it).second.isStatic() ) {
@@ -165,42 +162,28 @@ void Method::garbageCollector()
 	mLocales = tmp;
 }
 
-const Reference& Method::getLocale(const std::string& name) const
-{
-	(void)name;
-/*
-	for ( MemberMap::const_iterator it = mLocales.begin(); it != mLocales.end(); ++it ) {
-		if ( it->first == name ) {
-			return it->second;
-		}
-	}
-*/
-
-	return mMemory->getNullReference();
-}
-
-Variable& Method::getVariable(const std::string& name)
+Variable& Method::getLocal(const std::string& token)
 {
 	for ( MemberMap::iterator it = mLocales.begin(); it != mLocales.end(); ++it ) {
-		if ( it->second.name() == name ) {
+		if ( it->second.name() == token ) {
 			return it->second;
 		}
 
 /*
 		Object *object = mMemory->getObject(it->second);
 
-		if ( object && object->name() == name ) {
+		if ( object && object->name() == token ) {
 			return *object;
 		}
 */
 	}
 
-	Variable& o = mOwner->getMember(name);
+	Variable& o = mOwner->getMember(token);
 	if ( o.name() != "" ) {
 		return o;
 	}
 
-	throw Utils::SyntaxError("expected identifier but '" + name + "' found!");
+	throw Utils::SyntaxError("expected identifier but '" + token + "' found!");
 }
 
 void Method::handleType(TokenIterator& token)
@@ -434,7 +417,7 @@ bool Method::isSignatureValid(const ParameterList& params) const
 	// 2) by comparing their types
 	ParameterList::const_iterator pIt = params.begin();
 	for ( ParameterList::const_iterator it = mSignature.begin(); it != mSignature.end(); ++it, ++pIt ) {
-		if ( (*it).type() != (*pIt).type() ) {
+		if ( it->type() != pIt->type() ) {
 			return false;
 		}
 	}
@@ -474,10 +457,10 @@ Variable Method::parseAtom(TokenIterator& start)
 			// find out if we have to execute a method
 			// or simply get a stored variable
 			if ( isLocal(start->content()) ) {
-				v = getVariable(scope(start->content()));
+				v = getLocal(start->content());
 			}
 			if ( isMember(start->content()) ) {
-				v = getVariable(start->content());
+				v = getLocal(start->content());
 			}
 			else if ( isMethod(start->content()) ) {
 				v = process_method(start);
@@ -492,9 +475,9 @@ Variable Method::parseAtom(TokenIterator& start)
 		case Token::Type::LITERAL: {
 			v = String(start->content());
 		} break;
-		default:
+		default: {
 			throw Utils::SyntaxError("identifier, literal or number expected but " + start->content() + " as " + Token::Type::convert(start->type()) + " found", start->position());
-			break;
+		} break;
 	}
 
 	start++;
@@ -629,11 +612,6 @@ Variable Method::parseSummands(TokenIterator& start)
 	return v1;
 }
 
-void Method::pop_stack()
-{
-	mStack.pop_back();
-}
-
 Variable Method::process(TokenIterator& token, TokenIterator end, Token::Type::E terminator)
 {
 	Variable returnValue;
@@ -644,12 +622,11 @@ Variable Method::process(TokenIterator& token, TokenIterator end, Token::Type::E
 		// decide what we want to do according to
 		// the type of token we have
 		switch ( token->type() ) {
-			case Token::Type::BOOLEAN: {
+			case Token::Type::BOOLEAN:
+			case Token::Type::CONSTANT:
+			case Token::Type::LITERAL:
 				parseExpression(token);
-			} break;
-			case Token::Type::CONSTANT: {
-				parseExpression(token);
-			} break;
+				break;
 			case Token::Type::IDENTIFER: {
 				// try to find assignment token
 				TokenIterator assign = findNext(token, Token::Type::ASSIGN, Token::Type::SEMICOLON);
@@ -669,6 +646,10 @@ Variable Method::process(TokenIterator& token, TokenIterator end, Token::Type::E
 					// ok
 				}
 				else if ( isMember(token->content()) ) {
+					if ( isConst() ) {
+						// not ok
+						throw Utils::SyntaxError("Not allowed to modify member in const method: " + token->content(), token->position());
+					}
 					// ok
 				}
 				else {
@@ -676,7 +657,7 @@ Variable Method::process(TokenIterator& token, TokenIterator end, Token::Type::E
 					throw Utils::UnknownIdentifer(token->content(), token->position());
 				}
 
-				Variable& s = getVariable(token->content());
+				Variable& s = getLocal(token->content());
 				Variable t = parseExpression(++assign);
 
 				if ( s.isConst() || (this->isConst() && isMember(s.name())) ) {
@@ -687,56 +668,49 @@ Variable Method::process(TokenIterator& token, TokenIterator end, Token::Type::E
 
 				// assign == end should now be true
 				token = end;
-				break;
-			}
+			} break;
 			case Token::Type::KEYWORD: {
-					std::string keyword = (*token++).content();
+				std::string keyword = (*token++).content();
 
-					if ( keyword == "assert" ) {
-						process_assert(token);
-					}
-					else if ( keyword == "breakpoint" ) {
-						mOwner->providePrinter()->print("hit breakpoint   [" + mOwner->Filename() + ": " + Tools::toString(token->position().line) + "]");
-					}
-					else if ( keyword == "for" ) {
-						process_for(token);
-					}
-					else if ( keyword == "if" ) {
-						process_if(token);
-					}
-					else if ( keyword == "new" ) {
-						Reference ref = process_new(token);
-						returnValue = (*mMemory->getObject(ref));
+				if ( keyword == "assert" ) {
+					process_assert(token);
+				}
+				else if ( keyword == "breakpoint" ) {
+					mOwner->providePrinter()->print("hit breakpoint   [" + mOwner->Filename() + ": " + Tools::toString(token->position().line) + "]");
+				}
+				else if ( keyword == "for" ) {
+					process_for(token);
+				}
+				else if ( keyword == "if" ) {
+					process_if(token);
+				}
+				else if ( keyword == "new" ) {
+					Reference ref = process_new(token);
+					return (*mMemory->getObject(ref));
+				}
+				else if ( keyword == "print" ) {
+					process_print(token);
+				}
+				else if ( keyword == "return" ) {
+					//returnValue.value(parseExpression(token).value());
+					//return returnValue;
 
-						return returnValue;
-					}
-					else if ( keyword == "print" ) {
-						process_print(token);
-					}
-					else if ( keyword == "return" ) {
-						returnValue.value(parseExpression(token).value());
-						return returnValue;
-					}
-					else if ( keyword == "switch" ) {
-						process_switch(token);
-					}
-					else if ( keyword == "while" ) {
-						process_while(token);
-					}
-				break;
-			}
-			case Token::Type::LITERAL: {
-				parseExpression(token);
+					return parseExpression(token);
+				}
+				else if ( keyword == "switch" ) {
+					process_switch(token);
+				}
+				else if ( keyword == "while" ) {
+					process_while(token);
+				}
 			} break;
 			case Token::Type::PROTOTYPE:
-			case Token::Type::TYPE: {
+			case Token::Type::TYPE:
 				handleType(token);
 				break;
-			}
-			default: {
+			default:
 				mOwner->providePrinter()->print("invalid token '" + token->content() + "' as type " + Token::Type::convert(token->type()) + " found!");
 				break;
-			}
 		}
 
 		// switch to next token
@@ -1055,31 +1029,6 @@ void Method::process_while(TokenIterator& token)
 const ParameterList& Method::provideSignature() const
 {
 	return mSignature;
-}
-
-void Method::push_stack(const std::string& scope)
-{
-	std::string s;
-
-	if ( !mStack.empty() ) {
-		s = mStack.back() + ".";
-	}
-
-	s += scope;
-	mStack.push_back(s);
-}
-
-std::string Method::scope(const std::string& name) const
-{
-	std::string result;
-
-	if ( !mStack.empty() ) {
-		result = mStack.back();
-		result += ".";
-	}
-
-	result += name;
-	return result;
 }
 
 void Method::setMemory(Memory *memory)

@@ -12,7 +12,7 @@
 // Namespace declarations
 
 
-//#define WRITE_LOGS
+#define WRITE_LOGS
 #ifdef WRITE_LOGS
 #define OSdebug(message) std::cout << "[DEBUG] " << message << " in " << __FUNCTION__ << std::endl;
 #define OSerror(message) std::cout << "[ERROR] " << message << " in " << __FUNCTION__ << std::endl;
