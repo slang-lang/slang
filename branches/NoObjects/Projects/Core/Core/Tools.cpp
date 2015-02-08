@@ -14,39 +14,39 @@ namespace ObjectiveScript {
 namespace Tools {
 
 
-	std::string getFirstSubString(const std::string& str)
-	{
-		return str.substr(0, str.find_first_of('.'));
+std::string getFirstSubString(const std::string& str)
+{
+	return str.substr(0, str.find_first_of('.'));
+}
+
+std::string getLastSubString(const std::string& str)
+{
+	return str.substr(str.find_last_of('.'), str.size());
+}
+
+void split(const std::string& str, std::string& p, std::string& c)
+{
+	unsigned int pos = str.find_first_of('.');
+
+	p = str.substr(0, pos);
+	if ( p.size() != str.size() ) {
+		c = str.substr(pos + 1, str.size());
+	}
+}
+
+float stringToFloat(const std::string &str)
+{
+	if ( str.empty() ) {
+		return 0.f;
 	}
 
-	std::string getLastSubString(const std::string& str)
-	{
-		return str.substr(str.find_last_of('.'), str.size());
-	}
+	std::stringstream stream;
+	stream << str;
+	float f;
+	stream >> f;
 
-	void split(const std::string& str, std::string& p, std::string& c)
-	{
-		unsigned int pos = str.find_first_of('.');
-
-		p = str.substr(0, pos);
-		if ( p.size() != str.size() ) {
-			c = str.substr(pos + 1, str.size());
-		}
-	}
-
-	float stringToFloat(const std::string &str)
-	{
-		if ( str.empty() ) {
-			return 0.f;
-		}
-
-		std::stringstream stream;
-		stream << str;
-		float f;
-		stream >> f;
-
-		return f;
-	}
+	return f;
+}
 
 
 }
@@ -180,6 +180,41 @@ TokenIterator findNextBalancedParenthesis(TokenIterator start, int generateError
 	}
 
 	return start;
+}
+
+bool isBooleanConst(const std::string& v)
+{
+	return ( v == "false" || v == "true" );
+}
+
+bool isFalse(const std::string& s)
+{
+	return (s == "false");
+}
+
+bool isFalse(const Variable& v)
+{
+	if ( v.value() == "0" || v.value() == "false" ) {
+		return true;
+	}
+
+	return false;
+}
+
+bool isTrue(const std::string& s)
+{
+	return (s == "true");
+}
+
+bool isTrue(const Variable& v)
+{
+	// check value is false
+	if ( v.value() == "0" || v.value() == "0.0" || v.value() == "false" ) {
+		return false;
+	}
+
+	// value is not false, so return true
+	return true;
 }
 
 

@@ -126,12 +126,6 @@ private:	// Execution
 	bool isMethod(const std::string& token);
 	bool isMethod(const std::string& token, const ParameterList& params);
 
-	bool isBooleanConst(const std::string& v) const;
-	bool isFalse(const std::string& s) const;
-	bool isFalse(const Variable& v) const;
-	bool isTrue(const std::string& s) const;
-	bool isTrue(const Variable& v) const;
-
 	// token processing
 	// {
 	Variable process(TokenIterator& start, TokenIterator end, Token::Type::E terminator = Token::Type::NIL);

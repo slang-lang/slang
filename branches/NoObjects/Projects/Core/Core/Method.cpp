@@ -192,25 +192,6 @@ Variable& Method::getSymbol(const std::string& token)
 	throw Utils::SyntaxError("expected identifier but '" + token + "' found!");
 }
 
-bool Method::isBooleanConst(const std::string& v) const
-{
-	return ( v == "false" || v == "true" );
-}
-
-bool Method::isFalse(const std::string& s) const
-{
-	return (s == "false");
-}
-
-bool Method::isFalse(const Variable& v) const
-{
-	if ( v.value() == "0" || v.value() == "false" ) {
-		return true;
-	}
-
-	return false;
-}
-
 bool Method::isLocalSymbol(const std::string& token)
 {
 	std::string member, parent;
@@ -343,22 +324,6 @@ bool Method::isSignatureValid(const ParameterList& params) const
 	return true;
 }
 
-bool Method::isTrue(const std::string& s) const
-{
-	return (s == "true");
-}
-
-bool Method::isTrue(const Variable& v) const
-{
-	// check value is false
-	if ( v.value() == "0" || v.value() == "0.0" || v.value() == "false" ) {
-		return false;
-	}
-
-	// value is not false, so return true
-	return true;
-}
-
 Variable Method::parseCondition(TokenIterator& token)
 {
 	Variable v1 = parseExpression(token);
@@ -370,7 +335,9 @@ Variable Method::parseCondition(TokenIterator& token)
 				return v1;
 		}
 
+		// consume operator token
 		token++;
+
 		Variable v2 = parseExpression(token);
 
 		if ( op == Token::Type::COMPARE_EQUAL ) {
@@ -541,16 +508,10 @@ Variable Method::process(TokenIterator& token, TokenIterator end, Token::Type::E
 				process_assign(token);
 			} break;
 			case Token::Type::KEYWORD: {
-				std::string keyword = token->content();
-
-				if ( keyword == "new" ) {
-					Reference ref = process_new(token);
-					return (*mMemory->getObject(ref));
+				if ( token->content() == "new" ) {
+					return (*mMemory->getObject(process_new(token)));
 				}
-				else if ( keyword == "return" ) {
-					//returnValue.value(parseExpression(token).value());
-					//return returnValue;
-
+				else if ( token->content() == "return" ) {
 					return parseExpression(++token);
 				}
 				else {
