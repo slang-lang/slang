@@ -36,6 +36,7 @@ private:	// Tests
 	void testFor();
 	void testIf();
 	void testPrint();
+	void testStaticLocalVariable();
 	void testWhile();
 
 	void testConstCorrectness();

@@ -82,7 +82,7 @@ void LanguageTest::testComment()
 
 		Script *s = vm.create("Tests/Language/BasicLanguageTest.os");
 
-		s->execute("test_comment", ParameterList());
+		s->execute("test_comments", ParameterList());
 
 		// automatic success
 		delete s;
@@ -128,7 +128,9 @@ void LanguageTest::testIf()
 
 		Script *s = vm.create("Tests/Language/BasicLanguageTest.os");
 
-		s->execute("test_if", ParameterList());
+		ParameterList params;
+		params.push_back(Parameter("param1", "Number", "1", false, Parameter::AccessMode::ByReference));
+		s->execute("test_if", params);
 
 		// automatic success
 		delete s;
@@ -151,7 +153,32 @@ void LanguageTest::testPrint()
 
 		Script *s = vm.create("Tests/Language/BasicLanguageTest.os");
 
-		s->execute("test_print", ParameterList());
+		ParameterList params;
+		params.push_back(Parameter("param1", "String", "parameter", false, Parameter::AccessMode::ByReference));
+		s->execute("test_print", params);
+
+		// automatic success
+		delete s;
+	}
+	catch ( ObjectiveScript::Utils::Exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL("caught exception: " << e.what());
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL("caught exception: " << e.what());
+	}
+}
+
+void LanguageTest::testStaticLocalVariable()
+{
+	try {
+		VirtualMachine vm;
+		vm.connectPrinter(&stdoutPrinter);
+
+		Script *s = vm.create("Tests/Language/BasicLanguageTest.os");
+
+		s->execute("test_static_local_variable", ParameterList());
 
 		// automatic success
 		delete s;
@@ -174,7 +201,9 @@ void LanguageTest::testWhile()
 
 		Script *s = vm.create("Tests/Language/BasicLanguageTest.os");
 
-		s->execute("test_while", ParameterList());
+		ParameterList params;
+		params.push_back(Parameter("maxCount", "Number", "5", false, Parameter::AccessMode::ByValue));
+		s->execute("test_while", params);
 
 		// automatic success
 		delete s;
@@ -197,7 +226,10 @@ void LanguageTest::testConstCorrectness()
 
 		Script *s = vm.create("Tests/Language/ConstCorrectness.os");
 
-		s->execute("ModifyConstParameter", ParameterList());
+		ParameterList params;
+		params.push_back(Parameter("two", "Number", "2", true, Parameter::AccessMode::ByReference));
+		s->execute("ModifyConstParameter", params);
+
 		s->execute("ModifyMemberInConstMethod", ParameterList());
 
 		// automatic success

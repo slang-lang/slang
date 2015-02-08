@@ -18,7 +18,7 @@ public namespace
 			assert(true);
 			assert(incStaticVar());
 			assert(incStaticVar() & "bla");
-			assert(true == false);
+			assert(false == false);
 		}
 
 		public void test_comments(/*number param1*/)
@@ -116,15 +116,11 @@ public namespace
 
 		public void test_while(Number maxCount)
 		{
-			breakpoint;
-
 			Number count = 0;
 			while ( count < maxCount ) {
 				count = count + 1;
 				print("count = " & count);
 			}
-
-			breakpoint;
 		}
 
 	/////////////////////////////////// Private Methods \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\

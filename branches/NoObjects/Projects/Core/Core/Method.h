@@ -33,6 +33,9 @@ public:
 	Method(const std::string& name, const std::string& type);
 	~Method();
 
+public:
+	Object* getOwner() const;
+
 public:	// Setup
 	void setMemory(Memory *memory);
 	void setOwner(Object *owner);
@@ -123,8 +126,6 @@ private:	// Execution
 	bool isMethod(const std::string& token);
 	bool isMethod(const std::string& token, const ParameterList& params);
 
-	void handleType(TokenIterator& token);
-
 	bool isBooleanConst(const std::string& v) const;
 	bool isFalse(const std::string& s) const;
 	bool isFalse(const Variable& v) const;
@@ -135,6 +136,7 @@ private:	// Execution
 	// {
 	Variable process(TokenIterator& start, TokenIterator end, Token::Type::E terminator = Token::Type::NIL);
 	void process_assert(TokenIterator& token);
+	void process_assign(TokenIterator& token);
 	void process_for(TokenIterator& token);
 	void process_if(TokenIterator& token);
 	void process_keyword(TokenIterator& token);
@@ -142,6 +144,7 @@ private:	// Execution
 	//Object process_new(TokenIterator& token);
 	Reference process_new(TokenIterator& token);
 	void process_print(TokenIterator& token);
+	void process_type(TokenIterator& token);
 	void process_switch(TokenIterator& token);
 	void process_while(TokenIterator& token);
 	// }
@@ -155,10 +158,9 @@ private:	// Execution
 
 	// expression evaluation
 	// {
-	Variable parseAtom(TokenIterator& start);
 	Variable parseExpression(TokenIterator& start);
 	Variable parseFactors(TokenIterator& start);
-	Variable parseSummands(TokenIterator& start);
+	Variable parseTerm(TokenIterator& start);
 	// }
 
 private:

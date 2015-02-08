@@ -104,14 +104,15 @@ Variable Method::execute(const ParameterList& params)
 		case LanguageFeatureState::Unstable: OSwarn("method '" + name() + "' is marked as unstable!"); break;
 	}
 
-	ParameterList::const_iterator rIt = mSignature.begin();
+	ParameterList::const_iterator sigIt = mSignature.begin();
 	// add parameters as pseudo members
-	for ( ParameterList::const_iterator it = params.begin(); it != params.end(); ++it, ++rIt ) {
-		addIdentifier(Variable((*rIt).name(), (*it).type(), (*it).value()));
+	for ( ParameterList::const_iterator it = params.begin(); it != params.end(); ++it, ++sigIt ) {
+		Variable param(sigIt->name(), it->type(), it->value());
+		param.setConst(sigIt->isConst());
+		addIdentifier(param);
 
 /*
-		Reference ref = mMemory->newObject(new Object((*rIt).name(), "", (*it).type(), (*it).value()));
-
+		Reference ref = mMemory->newObject(new Object(sigIt->name(), "", it->type(), it->value()));
 		addIdentifier(ref);
 */
 	}
@@ -123,7 +124,7 @@ Variable Method::execute(const ParameterList& params)
 		TokenIterator start = mTokens.begin();
 		returnValue.value(process(start, mTokens.end()).value());
 	}
-	catch ( Utils::Exception &e ) {	// if any thing happens clean up the mess
+	catch ( Utils::Exception &e ) {	// if anything happens clean up the mess
 		garbageCollector();
 
 		// throw again so that our owner will be informed
@@ -162,6 +163,11 @@ void Method::garbageCollector()
 	mLocalSymbols = tmp;
 }
 
+Object* Method::getOwner() const
+{
+	return mOwner;
+}
+
 Variable& Method::getSymbol(const std::string& token)
 {
 	for ( MemberMap::iterator it = mLocalSymbols.begin(); it != mLocalSymbols.end(); ++it ) {
@@ -184,95 +190,6 @@ Variable& Method::getSymbol(const std::string& token)
 	}
 
 	throw Utils::SyntaxError("expected identifier but '" + token + "' found!");
-}
-
-void Method::handleType(TokenIterator& token)
-{
-	bool isConst = false;
-	bool isPrototype = token->type() == Token::Type::PROTOTYPE;
-	bool isStatic = false;
-
-	std::string name;
-	std::string prototype;
-	std::string value;
-
-	if ( isPrototype ) {
-		prototype = token->content();
-		token++;
-	}
-
-	std::string type = token->content();
-	token++;
-	name = token->content();
-
-	if ( token->type() != Token::Type::IDENTIFER ) {
-		throw Utils::SyntaxError("identifier expected but '" + token->content() + "' found", token->position());
-	}
-
-	token++;
-
-	std::string tmpStr = token->content();
-	if ( tmpStr == "const" || tmpStr == "static" ) {
-		token++;
-
-		if ( tmpStr == "const" ) {
-			isConst = true;
-		}
-		else if ( tmpStr == "static" ) {
-			isStatic = true;
-		}
-	}
-
-	TokenIterator assign = mTokens.end();
-	if ( token->type() == Token::Type::ASSIGN ) {
-		assign = ++token;
-	}
-
-/*
-	Reference ref;
-	if ( isPrototype ) {
-		ref = mRepository->createReferenceFromPrototype(prototype, type, name);
-	}
-	else {
-		ref = mRepository->createReference(type, name);
-	}
-
-
-	Object *object = mMemory->getObject(ref);
-
-	if ( isConst ) object->setConst(true);
-	if ( isStatic ) object->setStatic(true);
-
-	if ( assign != mTokens.end() ) {
-		object->assign(parseExpression(assign));
-		token = assign;
-	}
-
-	addIdentifier(ref);
-*/
-
-	Variable object;
-	if ( isPrototype ) {
-		object = mRepository->createInstanceFromPrototype(prototype, type, name);
-	}
-	else {
-		object = mRepository->createInstance(type, name);
-	}
-
-	if ( isConst ) object.setConst(true);
-	if ( isStatic ) object.setStatic(true);
-
-	if ( assign != mTokens.end() ) {
-		object.value(parseExpression(assign).value());
-		token = assign;
-	}
-
-	addIdentifier(object);
-
-
-	if ( token->type() != Token::Type::SEMICOLON ) {
-		throw Utils::SyntaxError("';' expected but '" + token->content() + "' found", token->position());
-	}
 }
 
 bool Method::isBooleanConst(const std::string& v) const
@@ -442,52 +359,9 @@ bool Method::isTrue(const Variable& v) const
 	return true;
 }
 
-Variable Method::parseAtom(TokenIterator& start)
-{
-	Variable v;
-
-	switch ( start->type() ) {
-		case Token::Type::BOOLEAN: {
-			v = Bool(start->content());
-		} break;
-		case Token::Type::CONSTANT: {
-			v = Number(start->content());
-		} break;
-		case Token::Type::IDENTIFER: {
-			// find out if we have to execute a method
-			// or simply get a stored variable
-			if ( isLocalSymbol(start->content()) ) {
-				v = getSymbol(start->content());
-			}
-			if ( isMember(start->content()) ) {
-				v = getSymbol(start->content());
-			}
-			else if ( isMethod(start->content()) ) {
-				v = process_method(start);
-			}
-			else {
-				throw Utils::UnknownIdentifer("unknown/unexpected identifier '" + start->content() + "' found", start->position());
-			}
-		} break;
-		case Token::Type::KEYWORD: {
-			v = process(start, mTokens.end(), Token::Type::SEMICOLON);
-		} break;
-		case Token::Type::LITERAL: {
-			v = String(start->content());
-		} break;
-		default: {
-			throw Utils::SyntaxError("identifier, literal or number expected but " + start->content() + " as " + Token::Type::convert(start->type()) + " found", start->position());
-		} break;
-	}
-
-	start++;
-	return v;
-}
-
 Variable Method::parseCondition(TokenIterator& token)
 {
-	Variable v1;
-	v1 = parseExpression(token);
+	Variable v1 = parseExpression(token);
 
 	for ( ; ; ) {
 		Token::Type::E op = token->type();
@@ -524,66 +398,8 @@ Variable Method::parseCondition(TokenIterator& token)
 
 Variable Method::parseExpression(TokenIterator& start)
 {
-	Variable result;
-	result = parseSummands(start);
+	// parse summands
 
-	return result;
-}
-
-Variable Method::parseFactors(TokenIterator& start)
-{
-	Variable v1;
-	if ( (start)->type() == Token::Type::PARENTHESIS_OPEN) {
-		start++;
-		v1 = parseExpression(start);
-
-		if ( start->type() != Token::Type::PARENTHESIS_CLOSE ) {
-			// ups...
-		}
-
-		start++;
-	}
-	else {
-		v1 = parseAtom(start);
-	}
-
-	for ( ; ; ) {
-		Token::Type::E op = start->type();
-		if ( op != Token::Type::MATH_MULTI && op != Token::Type::MATH_DIV ) {
-			return v1;
-		}
-
-		// consume operator token
-		start++;
-
-		Variable v2;
-		if ( (start)->type() == Token::Type::PARENTHESIS_OPEN) {
-			start++;
-			v2 = parseExpression(start);
-
-			if ( start->type() != Token::Type::PARENTHESIS_CLOSE ) {
-				// ups...
-			}
-
-			start++;
-		}
-		else {
-			v2 = parseAtom(start);
-		}
-
-		if ( op == Token::Type::MATH_MULTI ) {
-			v1 = Math::multiply(v1, v2);
-		}
-		else {
-			v1 = Math::divide(v1, v2);
-		}
-	}
-
-	return v1;
-}
-
-Variable Method::parseSummands(TokenIterator& start)
-{
 	Variable v1 = parseFactors(start);
 
 	for ( ; ; ) {
@@ -612,6 +428,100 @@ Variable Method::parseSummands(TokenIterator& start)
 	return v1;
 }
 
+Variable Method::parseFactors(TokenIterator& start)
+{
+	Variable v1;
+	if ( (start)->type() == Token::Type::PARENTHESIS_OPEN) {
+		start++;
+		v1 = parseExpression(start);
+
+		if ( start->type() != Token::Type::PARENTHESIS_CLOSE ) {
+			// ups...
+		}
+
+		start++;
+	}
+	else {
+		v1 = parseTerm(start);
+	}
+
+	for ( ; ; ) {
+		Token::Type::E op = start->type();
+		if ( op != Token::Type::MATH_MULTI && op != Token::Type::MATH_DIV ) {
+			return v1;
+		}
+
+		// consume operator token
+		start++;
+
+		Variable v2;
+		if ( (start)->type() == Token::Type::PARENTHESIS_OPEN) {
+			start++;
+			v2 = parseExpression(start);
+
+			if ( start->type() != Token::Type::PARENTHESIS_CLOSE ) {
+				// ups...
+			}
+
+			start++;
+		}
+		else {
+			v2 = parseTerm(start);
+		}
+
+		if ( op == Token::Type::MATH_MULTI ) {
+			v1 = Math::multiply(v1, v2);
+		}
+		else {
+			v1 = Math::divide(v1, v2);
+		}
+	}
+
+	return v1;
+}
+
+Variable Method::parseTerm(TokenIterator& start)
+{
+	Variable result;
+
+	switch ( start->type() ) {
+		case Token::Type::BOOLEAN: {
+			result = Bool(start->content());
+		} break;
+		case Token::Type::CONSTANT: {
+			result = Number(start->content());
+		} break;
+		case Token::Type::IDENTIFER: {
+			// find out if we have to execute a method
+			// or simply get a stored variable
+			if ( isLocalSymbol(start->content()) ) {
+				result = getSymbol(start->content());
+			}
+			if ( isMember(start->content()) ) {
+				result = getSymbol(start->content());
+			}
+			else if ( isMethod(start->content()) ) {
+				result = process_method(start);
+			}
+			else {
+				throw Utils::UnknownIdentifer("unknown/unexpected identifier '" + start->content() + "' found", start->position());
+			}
+		} break;
+		case Token::Type::KEYWORD: {
+			result = process(start, mTokens.end(), Token::Type::SEMICOLON);
+		} break;
+		case Token::Type::LITERAL: {
+			result = String(start->content());
+		} break;
+		default: {
+			throw Utils::SyntaxError("identifier, literal or number expected but " + start->content() + " as " + Token::Type::convert(start->type()) + " found", start->position());
+		} break;
+	}
+
+	start++;
+	return result;
+}
+
 Variable Method::process(TokenIterator& token, TokenIterator end, Token::Type::E terminator)
 {
 	Variable returnValue;
@@ -628,53 +538,12 @@ Variable Method::process(TokenIterator& token, TokenIterator end, Token::Type::E
 				parseExpression(token);
 				break;
 			case Token::Type::IDENTIFER: {
-				// try to find assignment token
-				TokenIterator assign = findNext(token, Token::Type::ASSIGN, Token::Type::SEMICOLON);
-				// find next semicolon
-				TokenIterator end = findNext(token, Token::Type::SEMICOLON);
-
-				if ( assign == token ) {
-					// we don't have an assignment but a method call
-					parseExpression(token);
-
-					token = end;
-					break;
-				}
-
-				if ( isLocalSymbol(token->content()) ) {
-					// ok
-				}
-				else if ( isMember(token->content()) ) {
-					if ( isConst() ) {
-						// not ok
-						throw Utils::SyntaxError("Not allowed to modify member in const method: " + token->content(), token->position());
-					}
-					// ok
-				}
-				else {
-					// not ok
-					throw Utils::UnknownIdentifer(token->content(), token->position());
-				}
-
-				Variable& s = getSymbol(token->content());
-				Variable t = parseExpression(++assign);
-
-				if ( s.isConst() || (this->isConst() && isMember(s.name())) ) {
-					throw Utils::Exception("can not change const object!", token->position());
-				}
-
-				s.value(t.value());
-
-				// assign == end should now be true
-				token = end;
+				process_assign(token);
 			} break;
 			case Token::Type::KEYWORD: {
 				std::string keyword = token->content();
 
-				if ( keyword == "breakpoint" ) {
-					mOwner->providePrinter()->print("hit breakpoint   [" + mOwner->Filename() + ": " + Tools::toString(token->position().line) + "]");
-				}
-				else if ( keyword == "new" ) {
+				if ( keyword == "new" ) {
 					Reference ref = process_new(token);
 					return (*mMemory->getObject(ref));
 				}
@@ -682,7 +551,7 @@ Variable Method::process(TokenIterator& token, TokenIterator end, Token::Type::E
 					//returnValue.value(parseExpression(token).value());
 					//return returnValue;
 
-					return parseExpression(token);
+					return parseExpression(++token);
 				}
 				else {
 					process_keyword(token);
@@ -690,7 +559,7 @@ Variable Method::process(TokenIterator& token, TokenIterator end, Token::Type::E
 			} break;
 			case Token::Type::PROTOTYPE:
 			case Token::Type::TYPE:
-				handleType(token);
+				process_type(token);
 				break;
 			default:
 				mOwner->providePrinter()->print("invalid token '" + token->content() + "' as type " + Token::Type::convert(token->type()) + " found!");
@@ -723,6 +592,49 @@ void Method::process_assert(TokenIterator& token)
 	}
 
 	token = tmp;
+}
+
+void Method::process_assign(TokenIterator& token)
+{
+	// try to find assignment token
+	TokenIterator assign = findNext(token, Token::Type::ASSIGN, Token::Type::SEMICOLON);
+	// find next semicolon
+	TokenIterator end = findNext(token, Token::Type::SEMICOLON);
+
+	if ( assign == token ) {
+		// we don't have an assignment but a method call
+		parseExpression(token);
+
+		token = end;
+		return;
+	}
+
+	std::string identifier = token->content();
+
+	if ( isLocalSymbol(identifier) ) {
+		// ok
+	}
+	else if ( isMember(identifier) ) {
+		if ( isConst() ) {
+			// not ok
+			throw Utils::ConstCorrectnessViolated("Not allowed to modify member in const method!", token->position());
+		}
+		// ok
+	}
+	else {
+		// not ok
+		throw Utils::UnknownIdentifer(identifier, token->position());
+	}
+
+	Variable& s = getSymbol(identifier);
+	if ( s.isConst() ) {
+		throw Utils::ConstCorrectnessViolated("Not allowed to modify const member '" + identifier + "'!", token->position());
+	}
+
+	s.value(parseExpression(++assign).value());
+
+	// assign == end should now be true
+	token = end;
 }
 
 // syntax:
@@ -831,6 +743,9 @@ void Method::process_keyword(TokenIterator& token)
 
 	if ( keyword == "assert" ) {
 		process_assert(token);
+	}
+	if ( keyword == "breakpoint" ) {
+		mOwner->providePrinter()->print("hit breakpoint   [" + mOwner->Filename() + ": " + Tools::toString(token->position().line) + "]");
 	}
 	else if ( keyword == "for" ) {
 		process_for(token);
@@ -1003,6 +918,96 @@ assert(!"not implemented");
 
 	token = tmp;
 }
+
+void Method::process_type(TokenIterator& token)
+{
+	bool isConst = false;
+	bool isPrototype = token->type() == Token::Type::PROTOTYPE;
+	bool isStatic = false;
+
+	std::string name;
+	std::string prototype;
+	std::string value;
+
+	if ( isPrototype ) {
+		prototype = token->content();
+		token++;
+	}
+
+	std::string type = token->content();
+	token++;
+	name = token->content();
+
+	if ( token->type() != Token::Type::IDENTIFER ) {
+		throw Utils::SyntaxError("identifier expected but '" + token->content() + "' found", token->position());
+	}
+
+	token++;
+
+	std::string tmpStr = token->content();
+	if ( tmpStr == "const" || tmpStr == "static" ) {
+		token++;
+
+		if ( tmpStr == "const" ) {
+			isConst = true;
+		}
+		else if ( tmpStr == "static" ) {
+			isStatic = true;
+		}
+	}
+
+	TokenIterator assign = mTokens.end();
+	if ( token->type() == Token::Type::ASSIGN ) {
+		assign = ++token;
+	}
+
+/*
+	Reference ref;
+	if ( isPrototype ) {
+		ref = mRepository->createReferenceFromPrototype(prototype, type, name);
+	}
+	else {
+		ref = mRepository->createReference(type, name);
+	}
+
+
+	Object *object = mMemory->getObject(ref);
+
+	if ( isConst ) object->setConst(true);
+	if ( isStatic ) object->setStatic(true);
+
+	if ( assign != mTokens.end() ) {
+		object->assign(parseExpression(assign));
+		token = assign;
+	}
+
+	addIdentifier(ref);
+*/
+
+	Variable object;
+	if ( isPrototype ) {
+		object = mRepository->createInstanceFromPrototype(prototype, type, name);
+	}
+	else {
+		object = mRepository->createInstance(type, name);
+	}
+
+	if ( isConst ) object.setConst(true);
+	if ( isStatic ) object.setStatic(true);
+
+	if ( assign != mTokens.end() ) {
+		object.value(parseExpression(assign).value());
+		token = assign;
+	}
+
+	addIdentifier(object);
+
+
+	if ( token->type() != Token::Type::SEMICOLON ) {
+		throw Utils::SyntaxError("';' expected but '" + token->content() + "' found", token->position());
+	}
+}
+
 
 // syntax:
 // while ( <condition> ) {

@@ -29,7 +29,7 @@ public:
 	virtual ~Exception() throw() { }
 
 public:
-#ifdef __WIN32
+#ifdef _WIN32
 	const char* what() const {
 		return mText.c_str();
 	}
@@ -79,6 +79,17 @@ public:
 	{ }
 
 	virtual ~AssertionFailed() throw() { }
+};
+
+
+class ConstCorrectnessViolated : public Exception
+{
+public:
+	ConstCorrectnessViolated(const std::string& text, const Utils::Position& position = Utils::Position())
+	: Exception("const correctness violated: " + text, position)
+	{ }
+
+	virtual ~ConstCorrectnessViolated() throw() { }
 };
 
 

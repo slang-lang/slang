@@ -188,21 +188,13 @@ Variable Object::execute(const std::string& method, const ParameterList& params,
 		throw Utils::UnknownIdentifer("unknown method '" + method + "' or method with invalid parameter count called!");
 	}
 
-	// are we called from a member function?
-	bool callFromMember = false;
-	for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
-		if ( caller && (caller == &(*it)) ) {
-			// we have been called from a member function/method
-			// so visibility does not matter
-			callFromMember = true;
-			break;
-		}
-	}
+	// are we called from a colleague method?
+	bool callFromMethod = caller && (caller->getOwner() == this);
 
 	// check visibility:
-	// member functions can always call us,
-	// for calls from non-member functions the method visibility must be public
-	if ( !callFromMember && mIt->visibility() != Visibility::Public ) {
+	// colleague method functions can always call us,
+	// for calls from non-member functions the method visibility must be public (or protected if they belong to the same object hirachy)
+	if ( !callFromMethod && mIt->visibility() != Visibility::Public ) {
 		throw Utils::VisibilityError("invalid visibility: " + method);
 	}
 
