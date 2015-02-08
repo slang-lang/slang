@@ -171,6 +171,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Core\AST\Assert.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\AST\Assign.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\Attributes\Attributes.cpp"
 				>
 				<FileConfiguration
@@ -283,6 +291,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Core\AST\New.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\AST\Node.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\Object.cpp"
 				>
 			</File>
@@ -311,6 +327,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Core\AST\Print.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\Prototype.cpp"
 				>
 			</File>
@@ -324,6 +344,10 @@
 			</File>
 			<File
 				RelativePath=".\Core\Script.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\AST\Statement.cpp"
 				>
 			</File>
 			<File
@@ -410,6 +434,10 @@
 					/>
 				</FileConfiguration>
 			</File>
+			<File
+				RelativePath=".\Core\AST\While.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -425,6 +453,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Core\AST\Assert.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\AST\Assign.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\Attributes\Attributes.h"
 				>
 			</File>
@@ -437,11 +473,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Utils\Exceptions.h"
+				RelativePath=".\Core\Exceptions.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Exceptions.h"
+				RelativePath=".\Core\Utils\Exceptions.h"
 				>
 			</File>
 			<File
@@ -477,6 +513,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Core\AST\New.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\AST\Node.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\BuildInObjects\Number.h"
 				>
 			</File>
@@ -505,6 +549,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Core\AST\Print.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\Prototype.h"
 				>
 			</File>
@@ -526,6 +574,10 @@
 			</File>
 			<File
 				RelativePath=".\Core\Script.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\AST\Statement.h"
 				>
 			</File>
 			<File
@@ -570,6 +622,10 @@
 			</File>
 			<File
 				RelativePath=".\Core\BuildInObjects\Void.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\AST\While.h"
 				>
 			</File>
 		</Filter>

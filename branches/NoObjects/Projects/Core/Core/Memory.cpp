@@ -99,6 +99,17 @@ Object* Memory::getObject(const Reference& ref) const
 	return 0;
 }
 
+Object* Memory::getObject(const std::string& name) const
+{
+	for ( MemoryMap::const_iterator it = mMemory.begin(); it != mMemory.end(); ++it ) {
+		if ( it->second->name() == name ) {
+			return it->second;
+		}
+	}
+
+	return 0;
+}
+
 const Reference& Memory::newObject(Object *obj)
 {
 	mMemory[reserveAddress()] = obj;

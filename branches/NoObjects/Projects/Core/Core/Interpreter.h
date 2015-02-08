@@ -30,9 +30,10 @@ public:	// Setup
 	void setMemory(Memory *memory);
 	void setScope(const std::string& scope);
 	void setRepository(Repository *repository);
+	void setTokens(const TokenList& tokens);
 
 public:
-	void execute(const TokenList& tokens);
+	Object process();
 
 protected:
 
@@ -54,8 +55,6 @@ private:
 	Object parseFactors(TokenIterator& start);
 	Object parseTerm(TokenIterator& start);
 	// }
-
-	Object process();
 
 	void process_assert(TokenIterator& token);
 	Object process_new(TokenIterator& token);

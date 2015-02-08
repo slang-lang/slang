@@ -59,14 +59,6 @@ TokenIterator Interpreter::consumeToken()
 	return mTokens.begin();
 }
 
-void Interpreter::execute(const TokenList& tokens)
-{
-	mTokens = tokens;
-	TokenIterator token = tokens.begin();
-
-	process();
-}
-
 Object Interpreter::parseCondition(TokenIterator& token)
 {
 	Object v1 = parseExpression(token);
@@ -454,5 +446,11 @@ void Interpreter::setRepository(Repository *repository)
 {
 	mRepository = repository;
 }
+
+void Interpreter::setTokens(const TokenList& tokens)
+{
+	mTokens = tokens;
+}
+
 
 }
