@@ -76,7 +76,7 @@ void Method::addIdentifier(const Reference& r)
 
 void Method::addIdentifier(Variable object)
 {
-	if ( mLocales.find(object.name()) != mLocales.end() ) {
+	if ( mLocalSymbols.find(object.name()) != mLocalSymbols.end() ) {
 		if ( object.isStatic() ) {
 			// don't insert static members a second time
 			// just return silently
@@ -86,7 +86,7 @@ void Method::addIdentifier(Variable object)
 		throw Utils::DuplicateIdentifer(object.name());
 	}
 
-	mLocales[object.name()] = object;
+	mLocalSymbols[object.name()] = object;
 }
 
 //Variable Method::execute(const VariablesList& params)
@@ -140,7 +140,7 @@ Variable Method::execute(const ParameterList& params)
 void Method::garbageCollector()
 {
 	MemberMap tmp;
-	for ( MemberMap::iterator it = mLocales.begin(); it != mLocales.end(); ++it ) {
+	for ( MemberMap::iterator it = mLocalSymbols.begin(); it != mLocalSymbols.end(); ++it ) {
 		if ( (*it).second.isStatic() ) {
 			tmp.insert((*it));
 			continue;			
@@ -158,13 +158,13 @@ void Method::garbageCollector()
 */
 	}
 
-	mLocales.clear();
-	mLocales = tmp;
+	mLocalSymbols.clear();
+	mLocalSymbols = tmp;
 }
 
-Variable& Method::getLocal(const std::string& token)
+Variable& Method::getSymbol(const std::string& token)
 {
-	for ( MemberMap::iterator it = mLocales.begin(); it != mLocales.end(); ++it ) {
+	for ( MemberMap::iterator it = mLocalSymbols.begin(); it != mLocalSymbols.end(); ++it ) {
 		if ( it->second.name() == token ) {
 			return it->second;
 		}
@@ -294,7 +294,7 @@ bool Method::isFalse(const Variable& v) const
 	return false;
 }
 
-bool Method::isLocal(const std::string& token)
+bool Method::isLocalSymbol(const std::string& token)
 {
 	std::string member, parent;
 	Tools::split(token, parent, member);
@@ -302,7 +302,7 @@ bool Method::isLocal(const std::string& token)
 	// check if token is a local variable
 	// OR
 	// loop through all locals and ask them if this identifier belongs to them
-	for ( MemberMap::iterator it = mLocales.begin(); it != mLocales.end(); ++it ) {
+	for ( MemberMap::iterator it = mLocalSymbols.begin(); it != mLocalSymbols.end(); ++it ) {
 		if ( it->first == token ) {
 			return true;
 		}
@@ -334,7 +334,7 @@ bool Method::isMember(const std::string& token)
 	// check if token is a local variable
 	// OR
 	// loop through all locals and ask them if this identifier belongs to them
-	for ( MemberMap::iterator it = mLocales.begin(); it != mLocales.end(); ++it ) {
+	for ( MemberMap::iterator it = mLocalSymbols.begin(); it != mLocalSymbols.end(); ++it ) {
 		if ( it->first == token ) {
 			return true;
 		}
@@ -456,11 +456,11 @@ Variable Method::parseAtom(TokenIterator& start)
 		case Token::Type::IDENTIFER: {
 			// find out if we have to execute a method
 			// or simply get a stored variable
-			if ( isLocal(start->content()) ) {
-				v = getLocal(start->content());
+			if ( isLocalSymbol(start->content()) ) {
+				v = getSymbol(start->content());
 			}
 			if ( isMember(start->content()) ) {
-				v = getLocal(start->content());
+				v = getSymbol(start->content());
 			}
 			else if ( isMethod(start->content()) ) {
 				v = process_method(start);
@@ -641,8 +641,7 @@ Variable Method::process(TokenIterator& token, TokenIterator end, Token::Type::E
 					break;
 				}
 
-
-				if ( isLocal(token->content()) ) {
+				if ( isLocalSymbol(token->content()) ) {
 					// ok
 				}
 				else if ( isMember(token->content()) ) {
@@ -657,7 +656,7 @@ Variable Method::process(TokenIterator& token, TokenIterator end, Token::Type::E
 					throw Utils::UnknownIdentifer(token->content(), token->position());
 				}
 
-				Variable& s = getLocal(token->content());
+				Variable& s = getSymbol(token->content());
 				Variable t = parseExpression(++assign);
 
 				if ( s.isConst() || (this->isConst() && isMember(s.name())) ) {
@@ -670,26 +669,14 @@ Variable Method::process(TokenIterator& token, TokenIterator end, Token::Type::E
 				token = end;
 			} break;
 			case Token::Type::KEYWORD: {
-				std::string keyword = (*token++).content();
+				std::string keyword = token->content();
 
-				if ( keyword == "assert" ) {
-					process_assert(token);
-				}
-				else if ( keyword == "breakpoint" ) {
+				if ( keyword == "breakpoint" ) {
 					mOwner->providePrinter()->print("hit breakpoint   [" + mOwner->Filename() + ": " + Tools::toString(token->position().line) + "]");
-				}
-				else if ( keyword == "for" ) {
-					process_for(token);
-				}
-				else if ( keyword == "if" ) {
-					process_if(token);
 				}
 				else if ( keyword == "new" ) {
 					Reference ref = process_new(token);
 					return (*mMemory->getObject(ref));
-				}
-				else if ( keyword == "print" ) {
-					process_print(token);
 				}
 				else if ( keyword == "return" ) {
 					//returnValue.value(parseExpression(token).value());
@@ -697,11 +684,8 @@ Variable Method::process(TokenIterator& token, TokenIterator end, Token::Type::E
 
 					return parseExpression(token);
 				}
-				else if ( keyword == "switch" ) {
-					process_switch(token);
-				}
-				else if ( keyword == "while" ) {
-					process_while(token);
+				else {
+					process_keyword(token);
 				}
 			} break;
 			case Token::Type::PROTOTYPE:
@@ -713,7 +697,7 @@ Variable Method::process(TokenIterator& token, TokenIterator end, Token::Type::E
 				break;
 		}
 
-		// switch to next token
+		// consume token
 		token++;
 	}
 
@@ -838,6 +822,30 @@ void Method::process_if(TokenIterator& token)
 		}
 
 		token = elseEnd;
+	}
+}
+
+void Method::process_keyword(TokenIterator& token)
+{
+	std::string keyword = (*token++).content();
+
+	if ( keyword == "assert" ) {
+		process_assert(token);
+	}
+	else if ( keyword == "for" ) {
+		process_for(token);
+	}
+	else if ( keyword == "if" ) {
+		process_if(token);
+	}
+	else if ( keyword == "print" ) {
+		process_print(token);
+	}
+	else if ( keyword == "switch" ) {
+		process_switch(token);
+	}
+	else if ( keyword == "while" ) {
+		process_while(token);
 	}
 }
 

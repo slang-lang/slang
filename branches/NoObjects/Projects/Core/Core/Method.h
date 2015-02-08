@@ -118,7 +118,7 @@ private:	// Destruction
 	void garbageCollector();
 
 private:	// Execution
-	bool isLocal(const std::string& token);
+	bool isLocalSymbol(const std::string& token);
 	bool isMember(const std::string& token);
 	bool isMethod(const std::string& token);
 	bool isMethod(const std::string& token, const ParameterList& params);
@@ -137,6 +137,7 @@ private:	// Execution
 	void process_assert(TokenIterator& token);
 	void process_for(TokenIterator& token);
 	void process_if(TokenIterator& token);
+	void process_keyword(TokenIterator& token);
 	Variable process_method(TokenIterator& token);
 	//Object process_new(TokenIterator& token);
 	Reference process_new(TokenIterator& token);
@@ -145,7 +146,7 @@ private:	// Execution
 	void process_while(TokenIterator& token);
 	// }
 
-	Variable& getLocal(const std::string& token);
+	Variable& getSymbol(const std::string& token);
 
 	// condition evaluation
 	// {
@@ -161,7 +162,7 @@ private:	// Execution
 	// }
 
 private:
-	MemberMap mLocales;
+	MemberMap mLocalSymbols;
 	Memory *mMemory;
 	Object *mOwner;
 	ParameterList mParameter;
