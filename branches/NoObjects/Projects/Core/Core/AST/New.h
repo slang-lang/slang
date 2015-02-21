@@ -7,6 +7,7 @@
 
 
 namespace ObjectiveScript {
+namespace AST {
 
 
 class New: public Node
@@ -14,10 +15,11 @@ class New: public Node
 public:
 	New(const TokenList& tokens);
 
-	void execute();
+	Node* execute();
 };
 
 
+}
 }
 
 

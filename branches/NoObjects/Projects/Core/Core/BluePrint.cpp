@@ -13,13 +13,13 @@ namespace ObjectiveScript {
 
 
 BluePrint::BluePrint()
-: RTTI("<unknown type>", "<none>"),
+: Interface("<unknown type>", "<none>"),
   mVisibility(Visibility::Public)
 {
 }
 
 BluePrint::BluePrint(const std::string& type, const std::string& filename)
-: RTTI(type, filename),
+: Interface(type, filename),
   mVisibility(Visibility::Public)
 {
 }
@@ -33,14 +33,9 @@ const BluePrint::Ancestors& BluePrint::getAncestors() const
 	return mAncestors;
 }
 
-Visibility::E BluePrint::getAncestorVisibility() const
+Visibility::E BluePrint::getVisibility() const
 {
 	return mVisibility;
-}
-
-const TokenList& BluePrint::getTokens() const
-{
-	return mTokens;
 }
 
 void BluePrint::setAncestors(const Ancestors& ancestors)
@@ -48,14 +43,9 @@ void BluePrint::setAncestors(const Ancestors& ancestors)
 	mAncestors = ancestors;
 }
 
-void BluePrint::setAncestorVisibility(Visibility::E v)
+void BluePrint::setVisibility(Visibility::E v)
 {
 	mVisibility = v;
-}
-
-void BluePrint::setTokens(const TokenList& tokens)
-{
-	mTokens = tokens;
 }
 
 

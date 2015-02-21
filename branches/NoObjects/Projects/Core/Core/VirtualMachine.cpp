@@ -32,6 +32,8 @@ VirtualMachine::VirtualMachine()
 
 VirtualMachine::~VirtualMachine()
 {
+	mBluePrints.clear();
+	mInterfaces.clear();
 	mObjects.clear();
 
 	delete mRepository;
@@ -75,6 +77,7 @@ Script* VirtualMachine::create(const std::string& filename)
 	a.process(filename);
 
 	const std::list<std::string>& libraries = a.getLibraryReferences();
+	InterfaceList interfaces = a.getInterfaces();
 	BluePrintList objects = a.getObjects();
 	PrototypeList prototypes = a.getPrototypes();
 
@@ -96,6 +99,13 @@ Script* VirtualMachine::create(const std::string& filename)
 
 			script->assign(&object->second);
 		}
+	}
+
+	for ( InterfaceList::iterator it = interfaces.begin(); it != interfaces.end(); ++it ) {
+		mInterfaces.insert(std::make_pair(
+			it->Typename(),
+			(*it)
+		));
 	}
 
 	for ( PrototypeList::iterator it = prototypes.begin(); it != prototypes.end(); ++it ) {

@@ -77,16 +77,16 @@ void Attributes::setStatic(bool state)
 	mIsStatic = state;
 }
 
-void Attributes::setVisibility(Visibility::E v)
+Visibility::E Attributes::visibility() const
+{
+	return mVisibility;
+}
+
+void Attributes::visibility(Visibility::E v)
 {
 	checkSealState();
 
 	mVisibility = v;
-}
-
-Visibility::E Attributes::visibility() const
-{
-	return mVisibility;
 }
 
 

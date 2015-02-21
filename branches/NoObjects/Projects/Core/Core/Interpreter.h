@@ -42,7 +42,7 @@ private:
 
 	TokenIterator consumeToken();
 
-	Object& getSymbol(const std::string& token);
+	Object* getSymbol(const std::string& token);
 
 	// condition evaluation
 	// {

@@ -59,6 +59,12 @@ TokenIterator Interpreter::consumeToken()
 	return mTokens.begin();
 }
 
+Object* Interpreter::getSymbol(const std::string& token)
+{
+(void)token;
+	return 0;
+}
+
 Object Interpreter::parseCondition(TokenIterator& token)
 {
 	Object v1 = parseExpression(token);
@@ -210,7 +216,10 @@ Object Interpreter::parseTerm(TokenIterator& start)
 				throw Utils::UnknownIdentifer("unknown/unexpected identifier '" + start->content() + "' found", start->position());
 			}
 */
-			result = getSymbol(start->content());
+			Object *obj = getSymbol(start->content());
+			if ( obj ) {
+				result = (*obj);
+			}
 		} break;
 		case Token::Type::KEYWORD: {
 			result = process();

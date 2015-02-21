@@ -83,7 +83,7 @@ void Method::addIdentifier(Variable object)
 			return;
 		}
 
-		throw Utils::DuplicateIdentifer(object.name());
+		throw Utils::DuplicateIdentiferException(object.name());
 	}
 
 	mLocalSymbols[object.name()] = object;
@@ -118,7 +118,7 @@ Variable Method::execute(const ParameterList& params)
 	}
 
 	Variable returnValue(name(), type(), "");
-	returnValue.setVisibility(visibility());
+	returnValue.visibility(visibility());
 
 	try {	// try to execute our method
 		TokenIterator start = mTokens.begin();

@@ -7,6 +7,7 @@
 
 
 namespace ObjectiveScript {
+namespace AST {
 
 
 class Print: public Node
@@ -14,16 +15,11 @@ class Print: public Node
 public:
 	Print(const TokenList& tokens);
 
-public:
-	void execute();
-
-public:
-
-private:
-
+	Node* execute();
 };
 
 
+}
 }
 
 

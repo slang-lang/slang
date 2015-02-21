@@ -7,6 +7,7 @@
 
 
 namespace ObjectiveScript {
+namespace AST {
 
 
 class While : public Node
@@ -14,15 +15,16 @@ class While : public Node
 public:
 	While(const TokenList& tokens);
 
-	void addNode(Node *node);
+	Node* execute();
 
-	void execute();
+protected:
 
 private:
-	NodeList mNodes;
+
 };
 
 
+}
 }
 
 

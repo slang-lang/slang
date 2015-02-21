@@ -219,6 +219,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\Core\AST\Condition.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\Utils\Exceptions.cpp"
 				>
 				<FileConfiguration
@@ -237,6 +241,10 @@
 						ObjectFile="$(IntDir)\Utils\"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\Core\Interface.cpp"
+				>
 			</File>
 			<File
 				RelativePath=".\Core\Interpreter.cpp"
@@ -300,6 +308,10 @@
 			</File>
 			<File
 				RelativePath=".\Core\Object.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\AST\Parser.cpp"
 				>
 			</File>
 			<File
@@ -380,6 +392,10 @@
 			</File>
 			<File
 				RelativePath=".\Core\Tools.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\AST\Tree.cpp"
 				>
 			</File>
 			<File
@@ -473,11 +489,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Exceptions.h"
+				RelativePath=".\Core\AST\Condition.h"
 				>
 			</File>
 			<File
 				RelativePath=".\Core\Utils\Exceptions.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\Exceptions.h"
 				>
 			</File>
 			<File
@@ -486,6 +506,10 @@
 			</File>
 			<File
 				RelativePath=".\Core\Keywords\if.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\Interface.h"
 				>
 			</File>
 			<File
@@ -537,6 +561,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Core\AST\Parser.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\Utils\Position.h"
 				>
 			</File>
@@ -545,11 +573,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Keywords\print.h"
+				RelativePath=".\Core\AST\Print.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\AST\Print.h"
+				RelativePath=".\Core\Keywords\print.h"
 				>
 			</File>
 			<File
@@ -598,6 +626,10 @@
 			</File>
 			<File
 				RelativePath=".\Core\Tools.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\AST\Tree.h"
 				>
 			</File>
 			<File

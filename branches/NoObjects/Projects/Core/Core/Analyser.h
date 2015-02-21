@@ -25,6 +25,7 @@ namespace ObjectiveScript {
 class Analyser
 {
 public:
+	const InterfaceList& getInterfaces() const;
 	const std::list<std::string>& getLibraryReferences() const;
 	const BluePrintList& getObjects() const;
 	const PrototypeList& getPrototypes() const;
@@ -39,17 +40,20 @@ private:
 	void generateTokens(const std::string& content);
 
 private:
+	Interface createInterface(TokenIterator& start);
 	std::string createLibraryReference(TokenIterator& start);
 	BluePrint createObject(TokenIterator& start);
 	Prototype createPrototype(TokenIterator& start);
 
 private:
+	bool isInterfaceDeclaration(TokenIterator start);
 	bool isLibraryReference(TokenIterator start);
 	bool isObjectDeclaration(TokenIterator start);
 	bool isPrototypeDeclaration(TokenIterator start);
 
 private:
 	std::string				mFilename;
+	InterfaceList			mInterfaces;
 	std::list<std::string>	mLibraries;
 	BluePrintList			mObjects;
 	PrototypeList			mPrototypes;

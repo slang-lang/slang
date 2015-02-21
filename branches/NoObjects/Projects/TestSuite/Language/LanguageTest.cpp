@@ -41,6 +41,7 @@ void LanguageTest::process()
 	TEST(testWhile);
 
 	TEST(testConstCorrectness);
+	TEST(testInterfaces);
 }
 
 void LanguageTest::setup()
@@ -231,6 +232,30 @@ void LanguageTest::testConstCorrectness()
 		s->execute("ModifyConstParameter", params);
 
 		s->execute("ModifyMemberInConstMethod", ParameterList());
+
+		// automatic success
+		delete s;
+	}
+	catch ( ObjectiveScript::Utils::Exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL("caught exception: " << e.what());
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL("caught exception: " << e.what());
+	}
+}
+
+void LanguageTest::testInterfaces()
+{
+	try {
+		VirtualMachine vm;
+		vm.connectPrinter(&stdoutPrinter);
+
+		Script *s = vm.create("Tests/Language/InterfacesTest.os");
+
+		ParameterList params;
+		s->execute("GetBox", params);
 
 		// automatic success
 		delete s;

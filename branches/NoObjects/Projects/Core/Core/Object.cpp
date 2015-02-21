@@ -69,7 +69,7 @@ void Object::addMember(Object m)
 	OSdebug("addMember('" + m.name() + "')");
 
 	if ( mMembers.find(m.name()) != mMembers.end() ) {
-		throw Utils::DuplicateIdentifer("duplicate member '" + m.name() + "' added");
+		throw Utils::DuplicateIdentiferException("duplicate member '" + m.name() + "' added");
 	}
 
 	mMembers.insert(std::make_pair(m.name(), m));
@@ -81,7 +81,7 @@ void Object::addMethod(Method m)
 	OSdebug("addMethod('" + m.name() + "')");
 
 	if ( mMethods.find(m) != mMethods.end() ) {
-		throw Utils::DuplicateIdentifer("duplicate method '" + m.name() + "' added with same signature");
+		throw Utils::DuplicateIdentiferException("duplicate method '" + m.name() + "' added with same signature");
 	}
 
 	mMethods.insert(m);
@@ -199,7 +199,7 @@ Variable Object::execute(const std::string& method, const ParameterList& params,
 	}
 
 	Variable returnValue((*mIt).name(), (*mIt).type(), "");
-	returnValue.setVisibility(visibility());
+	returnValue.visibility(visibility());
 	try {
 		// execute our member method
 		Method m = (*mIt);

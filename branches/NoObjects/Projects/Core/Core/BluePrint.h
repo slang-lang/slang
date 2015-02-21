@@ -10,8 +10,7 @@
 
 // Project includes
 #include <Core/Attributes/Visibility.h>
-#include "RTTI.h"
-#include "Token.h"
+#include "Interface.h"
 
 // Forward declarations
 
@@ -21,7 +20,7 @@
 namespace ObjectiveScript {
 
 
-class BluePrint : public RTTI
+class BluePrint : public Interface
 {
 public:
 	class Ancestor
@@ -63,15 +62,11 @@ public:
 	const Ancestors& getAncestors() const;
 	void setAncestors(const Ancestors& ancestors);
 
-	const TokenList& getTokens() const;
-	virtual void setTokens(const TokenList& tokens);
-
-	Visibility::E getAncestorVisibility() const;
-	void setAncestorVisibility(Visibility::E v);
+	Visibility::E getVisibility() const;
+	void setVisibility(Visibility::E v);
 
 protected:
 	Ancestors mAncestors;
-	TokenList mTokens;
 	Visibility::E mVisibility;
 
 private:

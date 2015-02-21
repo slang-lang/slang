@@ -11,6 +11,9 @@
 #include "Tokenizer.h"
 #include "Tools.h"
 
+#include <Core/AST/Parser.h>
+#include <Core/AST/Tree.h>
+
 // Namespace declarations
 
 
@@ -149,7 +152,13 @@ Method Preprocessor::createMethod(TokenIterator token)
 	m.setSignature(params);
 	m.setStatic(isStatic);
 	m.setTokens(tokens);
-	m.setVisibility(Visibility::convert(visibility));
+	m.visibility(Visibility::convert(visibility));
+
+	{	// Abstract syntax tree generation test
+		AST::Parser p(tokens);
+		AST::Tree *tree = p.buildTree();
+		assert(tree);
+	}
 
 	return m;
 }
@@ -168,14 +177,6 @@ void Preprocessor::generateObject(Object *object)
 			visList.push_back(it);
 		}
 	}
-
-/*
-	// if we don't find anything our script file is invalid
-	if ( visList.empty() ) {
-		OSerror("'" + object->name() + "' has no visibility declarations!");
-		return;
-	}
-*/
 
 	// loop over all visibility declarations and check
 	// if we have a member declaration or a method declaration

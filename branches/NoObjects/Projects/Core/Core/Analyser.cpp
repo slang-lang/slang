@@ -33,6 +33,43 @@ std::string Analyser::createLibraryReference(TokenIterator& start)
 	return reference;
 }
 
+Interface Analyser::createInterface(TokenIterator& start)
+{
+	std::string name;
+	std::string visibility;
+
+	// look for the visibility token
+	visibility = (*start++).content();
+	// look for the object token
+	(*start++).content();
+	// look for the identifier token
+	name = (*start).content();
+
+	// look for the next opening curly brackets
+	TokenIterator open = findNext(++start, Token::Type::BRACKET_CURLY_OPEN);
+	// look for balanced curly brackets
+	TokenIterator closed = findNextBalancedCurlyBracket(open, 0, Token::Type::BRACKET_CURLY_CLOSE);
+
+	// check if we have some more tokens before our object declarations starts
+	if ( start != open ) {
+		throw Utils::Exception("invalid token '" + start->content() + "' during interface declaration");
+	}
+
+	// collect all tokens of this object
+	TokenList tokens;
+
+	for ( TokenIterator it = ++open; it != closed; ++it ) {
+		tokens.push_back((*it));
+	}
+
+	start = closed;
+
+	Interface inter(name, mFilename);
+	inter.setTokens(tokens);
+
+	return inter;
+}
+
 BluePrint Analyser::createObject(TokenIterator& start)
 {
 	std::string name;
@@ -54,19 +91,27 @@ BluePrint Analyser::createObject(TokenIterator& start)
 
 	// check if we have some more tokens before our object declarations starts
 	if ( start != open ) {
-		if ( start->content() != "extends" ) {
+		if ( start->content() == "extends" ) {
+			// collect inheritences
+			start++;
+
+			do {
+				std::string inheritance = (*start++).content();
+				std::string ancestor = (*start++).content();
+
+				parents[ancestor] = BluePrint::Ancestor(ancestor, Visibility::convert(inheritance));
+			} while ( std::distance(start, open) > 0 && ++start != mTokens.end() );
+		}
+		else if ( start->content() == "implements" ) {
+			// collect inheritences
+			start++;
+
+			std::string inheritance = (*start++).content();
+			parents[inheritance] = BluePrint::Ancestor(inheritance, Visibility::Public);
+		}
+		else {
 			throw Utils::Exception("invalid token '" + start->content() + "' during object declaration");
 		}
-
-		// collect inheritences
-		start++;
-
-		do {
-			std::string inheritance = (*start++).content();
-			std::string ancestor = (*start++).content();
-
-			parents[ancestor] = BluePrint::Ancestor(ancestor, Visibility::convert(inheritance));
-		} while ( std::distance(start, open) > 0 && ++start != mTokens.end() );
 	}
 
 	// collect all tokens of this object
@@ -80,8 +125,8 @@ BluePrint Analyser::createObject(TokenIterator& start)
 
 	BluePrint blue(name, mFilename);
 	blue.setAncestors(parents);
-	blue.setAncestorVisibility(Visibility::convert(visibility));
 	blue.setTokens(tokens);
+	blue.setVisibility(Visibility::convert(visibility));
 
 	return blue;
 }
@@ -100,7 +145,11 @@ void Analyser::generateObjects()
 
 	// loop over all tokens and look for imports and object declarations
 	while ( it != mTokens.end() && it->type() != Token::Type::ENDOFFILE ) {
-		if ( isLibraryReference(it) ) {
+		if ( isInterfaceDeclaration(it) ) {
+			Interface i = createInterface(it);
+			mInterfaces.push_back(i);
+		}
+		else if ( isLibraryReference(it) ) {
 			std::string reference = createLibraryReference(it);
 			mLibraries.push_back(reference);
 		}
@@ -131,6 +180,11 @@ void Analyser::generateTokens(const std::string& content)
 	mTokens = t.tokens();
 }
 
+const InterfaceList& Analyser::getInterfaces() const
+{
+	return mInterfaces;
+}
+
 const std::list<std::string>& Analyser::getLibraryReferences() const
 {
 	return mLibraries;
@@ -144,6 +198,23 @@ const BluePrintList& Analyser::getObjects() const
 const PrototypeList& Analyser::getPrototypes() const
 {
 	return mPrototypes;
+}
+
+// syntax:
+// <visibility> interface <identifier> ;
+bool Analyser::isInterfaceDeclaration(TokenIterator start)
+{
+	if ( (*start++).type() != Token::Type::VISIBILITY ) {
+		return false;
+	}
+	if ( (*start).type() != Token::Type::TYPE && (*start++).content() != "interface" ) {
+		return false;
+	}
+	if ( (*start++).type() != Token::Type::IDENTIFER ) {
+		return false;
+	}
+
+	return true;
 }
 
 // syntax:

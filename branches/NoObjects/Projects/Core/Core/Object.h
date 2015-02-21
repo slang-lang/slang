@@ -31,8 +31,8 @@ class Repository;
 
 
 class Object : public BluePrint,
-			   public Variable
-			   //public Attributes
+			   public Variable/*,
+			   public Attributes*/
 {
 public:
 	Object();

@@ -4,6 +4,7 @@
 
 
 namespace ObjectiveScript {
+namespace AST {
 
 
 Print::Print(const TokenList& tokens)
@@ -11,14 +12,17 @@ Print::Print(const TokenList& tokens)
 	mTokens = tokens;
 }
 
-void Print::execute()
+Node* Print::execute()
 {
 	mInterpreter->setScope(mScope);
 	mInterpreter->setTokens(mTokens);
 
 	Object result = mInterpreter->process();
 	//Printer::print(result.value());
+
+	return 0;
 }
 
 
+}
 }

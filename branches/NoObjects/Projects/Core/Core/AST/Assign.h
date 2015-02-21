@@ -7,6 +7,7 @@
 
 
 namespace ObjectiveScript {
+namespace AST {
 
 
 class Assign : public Node
@@ -14,13 +15,14 @@ class Assign : public Node
 public:
 	Assign(const std::string& assignee, const TokenList& tokens);
 
-	void execute();
+	Node* execute();
 
 private:
 	std::string mAssignee;
 };
 
 
+}
 }
 
 

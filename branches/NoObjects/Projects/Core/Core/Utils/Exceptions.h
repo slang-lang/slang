@@ -93,14 +93,14 @@ public:
 };
 
 
-class DuplicateIdentifer : public Exception
+class DuplicateIdentiferException : public Exception
 {
 public:
-	DuplicateIdentifer(const std::string& text, const Utils::Position& position = Utils::Position())
-	: Exception("duplicate identifier: " + text, position)
+	DuplicateIdentiferException(const std::string& text, const Utils::Position& position = Utils::Position())
+	: Exception("DuplicateIdentiferException: " + text, position)
 	{ }
 
-	virtual ~DuplicateIdentifer() throw() { }
+	virtual ~DuplicateIdentiferException() throw() { }
 };
 
 
@@ -112,6 +112,17 @@ public:
 	{ }
 
 	virtual ~NotImplemented() throw() { }
+};
+
+
+class NullPointerException : public Exception
+{
+public:
+	NullPointerException(const std::string& text, const Utils::Position& position = Utils::Position())
+	: Exception("NullPointerException: " + text, position)
+	{ }
+
+	virtual ~NullPointerException() throw() { }
 };
 
 

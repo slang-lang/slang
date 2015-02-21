@@ -41,6 +41,7 @@ protected:
 
 private:
 	typedef std::map<std::string, BluePrint> BluePrintMap;
+	typedef std::map<std::string, Interface> InterfaceMap;
 	typedef std::map<std::string, Object> ObjectMap;
 
 private:
@@ -50,6 +51,7 @@ private:
 private:
 	std::string		mBaseFolder;
 	BluePrintMap	mBluePrints;
+	InterfaceMap	mInterfaces;
 	Memory			*mMemory;
 	ObjectMap		mObjects;
 	IPrinter		*mPrinter;

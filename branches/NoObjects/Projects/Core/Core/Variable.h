@@ -22,6 +22,7 @@ namespace ObjectiveScript {
 class Variable : public Attributes
 {
 public:
+/*
 	class BaseType
 	{
 	public:
@@ -63,6 +64,7 @@ public:
 			return "object";
 		}
 	};
+*/
 
 public:
 	Variable();

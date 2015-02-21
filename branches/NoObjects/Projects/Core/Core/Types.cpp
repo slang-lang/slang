@@ -55,6 +55,7 @@ StringList provideReservedWords()
 
 	reservedWords.push_back("const");
 	reservedWords.push_back("extends");
+	reservedWords.push_back("interface");
 	reservedWords.push_back("object");
 	reservedWords.push_back("of");
 	reservedWords.push_back("static");

@@ -24,12 +24,11 @@ public:
 	Attributes();
 
 public:
-	bool isSealed() const;
-	void seal();
-
-public:
 	bool isConst() const;
 	void setConst(bool state);
+
+	bool isSealed() const;
+	void seal();
 
 	bool isStatic() const;
 	void setStatic(bool state);
@@ -38,7 +37,7 @@ public:
 	void setLanguageFeatureState(LanguageFeatureState::E s);
 
 	Visibility::E visibility() const;
-	void setVisibility(Visibility::E v);
+	void visibility(Visibility::E v);
 
 protected:
 

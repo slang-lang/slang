@@ -30,16 +30,6 @@ public:
 	{ }
 
 public:
-/*
-	const std::string& name() const {
-		return mName;
-	}
-
-	const std::string& type() const {
-		return mTypename;
-	}
-*/
-
 	const std::string& Filename() const {
 		return mFilename;
 	}
@@ -49,9 +39,6 @@ public:
 	}
 
 protected:
-/*
-	std::string mName;
-*/
 
 private:
 	std::string mFilename;

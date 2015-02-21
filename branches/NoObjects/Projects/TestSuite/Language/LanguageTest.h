@@ -40,6 +40,7 @@ private:	// Tests
 	void testWhile();
 
 	void testConstCorrectness();
+	void testInterfaces();
 };
 
 

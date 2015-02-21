@@ -1,6 +1,6 @@
 
-#ifndef AST_Assert_h
-#define AST_Assert_h
+#ifndef AST_Condition_h
+#define AST_Condition_h
 
 
 // Library includes
@@ -17,10 +17,10 @@ namespace ObjectiveScript {
 namespace AST {
 
 
-class Assert: public Node
+class Condition: public Node
 {
 public:
-	Assert(const TokenList& tokens);
+	Condition(const TokenList& tokens);
 
 	Node* execute();
 };
