@@ -9,6 +9,7 @@
 #include <string>
 
 // Project includes
+#include "Interface.h"
 #include "Object.h"
 
 // Forward declarations

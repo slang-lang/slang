@@ -11,7 +11,8 @@ ADD_SUBDIRECTORY(Utils)
 SET(SOURCES
 	Analyser.cpp
 	BluePrint.cpp
-	Interpreter.cpp
+	Interface.cpp
+#	Interpreter.cpp
 	Memory.cpp
 	Method.cpp
 	Object.cpp
@@ -31,7 +32,8 @@ SET(SOURCES
 SET(HEADERS
 	Analyser.h
 	BluePrint.h
-	Interpreter.h
+	Interface.h
+#	Interpreter.h
 	Memory.h
 	Method.h
 	Object.h

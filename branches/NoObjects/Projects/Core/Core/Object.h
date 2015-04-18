@@ -39,7 +39,7 @@ public:
 	Object(const std::string& name, const std::string& filename);
 	Object(const std::string& name, const std::string& filename, const std::string& type, const std::string& value);
 	Object(const Variable& var);
-	~Object();
+	virtual ~Object();
 
 public:	// Setup
 	void addMember(Object m);		// throws DuplicateIdentifer exception

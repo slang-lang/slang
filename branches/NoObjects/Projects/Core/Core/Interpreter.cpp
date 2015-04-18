@@ -13,6 +13,8 @@
 #include <Core/Interfaces/IPrinter.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Utils/Utils.h>
+#include <Core/Helpers/BooleanEvaluations.h>
+#include <Core/Helpers/Math.h>
 #include "Memory.h"
 #include "Object.h"
 #include "Repository.h"

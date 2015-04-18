@@ -29,6 +29,8 @@ public:
 	  mTypename(type)
 	{ }
 
+	virtual ~RTTI() { }
+
 public:
 	const std::string& Filename() const {
 		return mFilename;

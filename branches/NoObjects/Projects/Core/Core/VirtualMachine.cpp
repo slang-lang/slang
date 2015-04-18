@@ -94,10 +94,10 @@ Script* VirtualMachine::create(const std::string& filename)
 				mRepository->createInstance(it->Typename(), "main")
 			));
 
-			ObjectMap::iterator object = mObjects.find(it->Typename());
-			assert(object != mObjects.end());
+			ObjectMap::iterator objIt = mObjects.find(it->Typename());
+			assert(objIt != mObjects.end());
 
-			script->assign(&object->second);
+			script->assign(&objIt->second);
 		}
 	}
 

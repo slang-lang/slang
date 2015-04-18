@@ -11,8 +11,10 @@
 #include "Tokenizer.h"
 #include "Tools.h"
 
+/*
 #include <Core/AST/Parser.h>
 #include <Core/AST/Tree.h>
+*/
 
 // Namespace declarations
 
@@ -154,11 +156,13 @@ Method Preprocessor::createMethod(TokenIterator token)
 	m.setTokens(tokens);
 	m.visibility(Visibility::convert(visibility));
 
+/*
 	{	// Abstract syntax tree generation test
 		AST::Parser p(tokens);
 		AST::Tree *tree = p.buildTree();
 		assert(tree);
 	}
+*/
 
 	return m;
 }
