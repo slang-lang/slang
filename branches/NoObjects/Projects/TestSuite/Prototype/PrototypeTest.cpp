@@ -23,11 +23,9 @@ namespace Testing {
 namespace Prototype {
 
 
-::Utils::Printer stdoutPrinter;
-
-
 PrototypeTest::PrototypeTest(const ::Utils::Common::Logger *p)
-: ::Utils::Common::Logger(p, "PrototypeTest")
+: ::Utils::Common::Logger(p, "PrototypeTest"),
+  mStdoutPrinter(this)
 {
 }
 
@@ -51,7 +49,7 @@ void PrototypeTest::testBasicLanguage()
 {
 	try {
 		VirtualMachine vm;
-		vm.connectPrinter(&stdoutPrinter);
+		vm.connectPrinter(&mStdoutPrinter);
 
 		Script *s = vm.create("Tests/BasicLanguageTest.os");
 
@@ -96,7 +94,7 @@ void PrototypeTest::testBasicObject()
 {
 	try {
 		VirtualMachine vm;
-		vm.connectPrinter(&stdoutPrinter);
+		vm.connectPrinter(&mStdoutPrinter);
 
 		Script *s = vm.create("Tests/BasicObjectTest.os");
 
@@ -117,7 +115,7 @@ void PrototypeTest::testPrototypeDeclaration()
 {
 	try {
 		VirtualMachine vm;
-		vm.connectPrinter(&stdoutPrinter);
+		vm.connectPrinter(&mStdoutPrinter);
 
 		Script *s = vm.create("Tests/PrototypeTest.os");
 
@@ -138,7 +136,7 @@ void PrototypeTest::testPrototypeUsage()
 {
 	try {
 		VirtualMachine vm;
-		vm.connectPrinter(&stdoutPrinter);
+		vm.connectPrinter(&mStdoutPrinter);
 
 		Script *s = vm.create("Tests/PrototypeTest.os");
 

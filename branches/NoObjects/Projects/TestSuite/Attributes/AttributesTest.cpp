@@ -13,7 +13,6 @@
 #include <Core/Script.h>
 #include <Core/VirtualMachine.h>
 #include <Core/Utils/Exceptions.h>
-#include <Utils/Printer.h>
 
 // Namespace declarations
 using namespace ObjectiveScript;
@@ -23,11 +22,9 @@ namespace Testing {
 namespace Attributes {
 
 
-::Utils::Printer stdoutPrinter;
-
-
 AttributesTest::AttributesTest(const ::Utils::Common::Logger *p)
-: ::Utils::Common::Logger(p, "AttributesTest")
+: ::Utils::Common::Logger(p, "AttributesTest"),
+  mStdoutPrinter(this)
 {
 }
 
@@ -51,10 +48,10 @@ void AttributesTest::teardown()
 void AttributesTest::testBasicLanguageFeatures()
 {
 	try {
-		//info("testBasicLanguageFeatures");
+		info("testBasicLanguageFeatures");
 
 		VirtualMachine vm;
-		vm.connectPrinter(&stdoutPrinter);
+		vm.connectPrinter(&mStdoutPrinter);
 
 		Script *s = vm.create("Tests/Language/AttributesTest.os");
 

@@ -23,11 +23,9 @@ namespace Testing {
 namespace Language {
 
 
-::Utils::Printer stdoutPrinter;
-
-
 LanguageTest::LanguageTest(const ::Utils::Common::Logger *p)
-: ::Utils::Common::Logger(p, "Language")
+: ::Utils::Common::Logger(p, "Language"),
+  mStdoutPrinter(this)
 {
 }
 
@@ -56,7 +54,7 @@ void LanguageTest::testAssert()
 {
 	try {
 		VirtualMachine vm;
-		vm.connectPrinter(&stdoutPrinter);
+		vm.connectPrinter(&mStdoutPrinter);
 
 		Script *s = vm.create("Tests/Language/BasicLanguageTest.os");
 
@@ -79,7 +77,7 @@ void LanguageTest::testComment()
 {
 	try {
 		VirtualMachine vm;
-		vm.connectPrinter(&stdoutPrinter);
+		vm.connectPrinter(&mStdoutPrinter);
 
 		Script *s = vm.create("Tests/Language/BasicLanguageTest.os");
 
@@ -102,7 +100,7 @@ void LanguageTest::testFor()
 {
 	try {
 		VirtualMachine vm;
-		vm.connectPrinter(&stdoutPrinter);
+		vm.connectPrinter(&mStdoutPrinter);
 
 		Script *s = vm.create("Tests/Language/BasicLanguageTest.os");
 
@@ -125,7 +123,7 @@ void LanguageTest::testIf()
 {
 	try {
 		VirtualMachine vm;
-		vm.connectPrinter(&stdoutPrinter);
+		vm.connectPrinter(&mStdoutPrinter);
 
 		Script *s = vm.create("Tests/Language/BasicLanguageTest.os");
 
@@ -150,7 +148,7 @@ void LanguageTest::testPrint()
 {
 	try {
 		VirtualMachine vm;
-		vm.connectPrinter(&stdoutPrinter);
+		vm.connectPrinter(&mStdoutPrinter);
 
 		Script *s = vm.create("Tests/Language/BasicLanguageTest.os");
 
@@ -175,7 +173,7 @@ void LanguageTest::testStaticLocalVariable()
 {
 	try {
 		VirtualMachine vm;
-		vm.connectPrinter(&stdoutPrinter);
+		vm.connectPrinter(&mStdoutPrinter);
 
 		Script *s = vm.create("Tests/Language/BasicLanguageTest.os");
 
@@ -198,7 +196,7 @@ void LanguageTest::testWhile()
 {
 	try {
 		VirtualMachine vm;
-		vm.connectPrinter(&stdoutPrinter);
+		vm.connectPrinter(&mStdoutPrinter);
 
 		Script *s = vm.create("Tests/Language/BasicLanguageTest.os");
 
@@ -223,7 +221,7 @@ void LanguageTest::testConstCorrectness()
 {
 	try {
 		VirtualMachine vm;
-		vm.connectPrinter(&stdoutPrinter);
+		vm.connectPrinter(&mStdoutPrinter);
 
 		Script *s = vm.create("Tests/Language/ConstCorrectness.os");
 
@@ -250,7 +248,7 @@ void LanguageTest::testInterfaces()
 {
 	try {
 		VirtualMachine vm;
-		vm.connectPrinter(&stdoutPrinter);
+		vm.connectPrinter(&mStdoutPrinter);
 
 		Script *s = vm.create("Tests/Language/InterfacesTest.os");
 

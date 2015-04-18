@@ -8,6 +8,7 @@
 // Project includes
 #include <Common/Logger.h>
 #include <Framework/GenericTest.h>
+#include <Utils/Printer.h>
 
 // Forward declarations
 
@@ -35,6 +36,9 @@ private:	// Tests
 	void testBasicObject();
 	void testPrototypeDeclaration();
 	void testPrototypeUsage();
+
+private:
+	::Utils::Printer mStdoutPrinter;
 };
 
 

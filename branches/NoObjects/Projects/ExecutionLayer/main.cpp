@@ -36,8 +36,11 @@ public:
 	{ }
 
 public:
-	void print(const std::string& text) {
+	void log(const std::string& text) {
 		mLogger->LogDebug(text, 0, 0);
+	}
+
+	void print(const std::string& text) {
 		std::cout << text << std::endl;
 	}
 

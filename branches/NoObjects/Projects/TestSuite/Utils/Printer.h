@@ -7,6 +7,7 @@
 
 // Project includes
 #include <Core/Interfaces/IPrinter.h>
+#include <Common/Logger.h>
 
 // Forward declarations
 
@@ -16,11 +17,17 @@
 namespace Utils {
 
 
-class Printer : public ObjectiveScript::IPrinter
+class Printer : public ObjectiveScript::IPrinter,
+				public Common::Logger
 {
 public:
-	Printer() { }
+	Printer(const Common::Logger *p)
+	: Common::Logger(p, "")
+	{ }
 
+	void log(const std::string& text) {
+		std::cout << text << std::endl;
+	}
 	void print(const std::string& text) {
 		std::cout << text << std::endl;
 	}

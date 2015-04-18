@@ -23,11 +23,9 @@ namespace Testing {
 namespace Math {
 
 
-::Utils::Printer stdoutPrinter;
-
-
 MathTest::MathTest(const ::Utils::Common::Logger *p)
-: ::Utils::Common::Logger(p, "Math")
+: ::Utils::Common::Logger(p, "Math"),
+  mStdoutPrinter(this)
 {
 }
 
@@ -48,7 +46,7 @@ void MathTest::testBasicExpressionParsing()
 {
 	try {
 		VirtualMachine vm;
-		vm.connectPrinter(&stdoutPrinter);
+		vm.connectPrinter(&mStdoutPrinter);
 
 		Script *s = vm.create("Tests/Math/BasicTest.os");
 
