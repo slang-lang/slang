@@ -6,15 +6,28 @@ public namespace Main
 		public Number GetBox() const;
 	}
 
-	public object Main extends Base implements IWarehouse
+	public object Warehouse implements IWarehouse
+	{
+                public Number GetBox() const
+                {
+			// either this..
+                        return Number(1);
+			// or that..
+			//return 1;
+                }
+	}
+
+	public object Main
 	{
 		public void Main()
 		{
-		}
+			Warehouse w = new Warehouse();
 
-		public Number GetBox() const
-		{
-			return Number(1);
+			print("IWarehouse.GetBox() = " & w.GetBox());
+
+			// this is not necessary but perfectly valid:
+			delete w;
 		}
 	}
 }
+

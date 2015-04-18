@@ -36,6 +36,9 @@ public namespace Main
 			//mTest.notimplementedMethod();
 			mTest.stableMethod();
 			mTest.unstableMethod();
+
+			TestObject tmp = new TestObject();
+			//tmp runs out of scope and should now be automatically deleted
 		}
 
 		public void ~Main()
@@ -44,3 +47,4 @@ public namespace Main
 		}
 	}
 }
+

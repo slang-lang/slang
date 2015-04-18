@@ -7,3 +7,4 @@ public object Main
 		myNumber = 1;
 	}
 }
+

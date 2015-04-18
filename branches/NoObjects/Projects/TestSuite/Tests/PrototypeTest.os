@@ -20,6 +20,25 @@ public prototype TestPrototype
 	}
 }
 
+public prototype AnotherPrototype<object K, object V>
+{
+	private K mKey;
+	private V mValue;
+
+	public void AnotherPrototype(K key, V value)
+	{
+		mKey = key;
+		mValue = value;
+	}
+
+	public K getKey() const {
+		return mKey;
+	}
+
+	public V getValue() const {
+		return mValue;
+	}
+}
 
 public object Main
 {
@@ -27,6 +46,7 @@ public object Main
 		//TestPrototype<Number> proto(100);
 		//TestPrototype < Number > proto(100);
 		TestPrototype of Number prototype = new TestPrototype of Number(100);
+
 /*
 		print("Prototype value = " & prototype.getValue());
 
@@ -34,5 +54,10 @@ public object Main
 
 		print("Prototype value = " & prototype.getValue());
 */
+
+		AnotherPrototype<Number, String> another = new AnotherPrototype<Number, String>(1, "1");
+		another.getKey();
+		another.GetValue();
 	}
 }
+

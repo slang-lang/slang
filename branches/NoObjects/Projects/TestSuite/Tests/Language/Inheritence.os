@@ -26,7 +26,7 @@ public namespace Main
 
 		public String ToString() const
 		{
-			return "mPublicNumber = " & mPublicNumber & ", mProtectedNumber = " & mProtectedNumber & ", mPrivateNumber = " & mPrivateNumber;
+			return "mPublicNumber = " & mPublicNumber & ", mProtectedNumber = " & mProtectedNumber & ", mPrivateNumber = " & mPrivateNumber & ";";
 		}
 	}
 
@@ -53,7 +53,8 @@ public namespace Main
 
 		public String ToString() const
 		{
-			return "mPublicNumber = " & mPublicNumber & ", mProtectedNumber = " & mProtectedNumber & ", mPrivateNumber = " & mPrivateNumber;
+			return super.ToString() & "mPublicNumber = " & mPublicNumber & ", mProtectedNumber = " & mProtectedNumber & ", mPrivateNumber = " & mPrivateNumber & ";";
 		}
 	}
 }
+

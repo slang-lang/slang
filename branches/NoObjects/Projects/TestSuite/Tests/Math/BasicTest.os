@@ -6,6 +6,7 @@ public namespace Math
 		public void MathExpressionParsing()
 		{
 			Number i;
+			assert(i == 0);
 
 			i = 1 + 2 + 3;
 			assert(i == 6);
@@ -27,3 +28,4 @@ public namespace Math
 		}
 	}
 }
+
