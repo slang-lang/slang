@@ -108,14 +108,12 @@ public:
 protected:
 
 private:
-	//typedef std::map<std::string, Object> MemberMap;
 	//typedef std::map<std::string, Reference> MemberMap;
-	typedef std::map<std::string, Variable> MemberMap;
+	typedef std::map<std::string, Object*> MemberMap;
 
 private:	// Construction
-	//void addIdentifier(Object object);			// throws DuplicateIdentifer exception
 	//void addIdentifier(const Reference& r);		// throws DuplicateIdentifer exception
-	void addIdentifier(Variable object);			// throws DuplicateIdentifer exception
+	void addIdentifier(Object *object);			// throws DuplicateIdentifer exception
 
 private:	// Destruction
 	void garbageCollector();
@@ -143,7 +141,7 @@ private:	// Execution
 	void process_while(TokenIterator& token);
 	// }
 
-	Variable& getSymbol(const std::string& token);
+	Object* getSymbol(const std::string& token);
 
 	// condition evaluation
 	// {

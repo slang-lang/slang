@@ -42,7 +42,7 @@ public:
 	virtual ~Object();
 
 public:	// Setup
-	void addMember(Object m);		// throws DuplicateIdentifer exception
+	void addMember(Object *m);		// throws DuplicateIdentifer exception
 	void addMethod(Method *m);		// throws DuplicateIdentifer exception
 	void addParent(const std::string& parent);
 
@@ -62,7 +62,7 @@ public:	// Usage
 	Variable execute(const std::string& method, const ParameterList& params, const Method* caller = 0);		// throws VisibilityError exception
 
 public:	// Helpers
-	Object& getMember(const std::string& m);		// throws UnknownIdentifer exception
+	Object* getMember(const std::string& m);		// throws UnknownIdentifer exception
 	bool hasMember(const std::string& m);
 	bool hasMethod(const std::string& m);
 	bool hasMethod(const std::string& m, const ParameterList& params);
@@ -72,7 +72,7 @@ public:	// Helpers
 protected:
 
 private:
-	typedef std::map<std::string, Object> MemberCollection;
+	typedef std::map<std::string, Object*> MemberCollection;
 	typedef std::set<Method*> MethodCollection;
 
 private:

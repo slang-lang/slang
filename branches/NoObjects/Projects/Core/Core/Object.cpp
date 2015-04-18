@@ -73,15 +73,16 @@ Object::~Object()
 	mMethods.clear();
 }
 
-void Object::addMember(Object m)
+void Object::addMember(Object *m)
 {
-	OSdebug("addMember('" + m.name() + "')");
+assert(m);
+	OSdebug("addMember('" + m->name() + "')");
 
-	if ( mMembers.find(m.name()) != mMembers.end() ) {
-		throw Utils::DuplicateIdentiferException("duplicate member '" + m.name() + "' added");
+	if ( mMembers.find(m->name()) != mMembers.end() ) {
+		throw Utils::DuplicateIdentiferException("duplicate member '" + m->name() + "' added");
 	}
 
-	mMembers.insert(std::make_pair(m.name(), m));
+	mMembers.insert(std::make_pair(m->name(), m));
 }
 
 void Object::addMethod(Method *m)
@@ -149,11 +150,11 @@ void Object::Constructor(const ParameterList& params)
 	updateMethodOwners();
 
 	for ( MemberCollection::iterator it = mMembers.begin(); it != mMembers.end(); ++it ) {
-		it->second = mRepository->createInstance(it->second.type(), it->second.name());
-		it->second.connectMemory(mMemory);
-		it->second.connectPrinter(mPrinter);
-		it->second.connectRepository(mRepository);
-		it->second.Constructor(ParameterList());
+		it->second = mRepository->createInstance(it->second->type(), it->second->name());
+		it->second->connectMemory(mMemory);
+		it->second->connectPrinter(mPrinter);
+		it->second->connectRepository(mRepository);
+		it->second->Constructor(ParameterList());
 	}
 
 	// only execute constructor if one is present
@@ -238,7 +239,7 @@ bool Object::findMember(const std::string& m, Object::MemberCollection::iterator
 	// loop through all members and ask them if this identifier belongs to them
 	for ( MemberCollection::iterator it = mMembers.begin(); it != mMembers.end(); ++it ) {
 		if ( it->first == parent ) {
-			return it->second.findMember(member, mIt);
+			return it->second->findMember(member, mIt);
 		}
 	}
 
@@ -260,7 +261,7 @@ bool Object::findMember_(const std::string& m, Object::MemberCollection::iterato
 	// loop through all members and ask them if this identifier belongs to them
 	for ( MemberCollection::iterator it = mMembers.begin(); it != mMembers.end(); ++it ) {
 		if ( it->first == parent ) {
-			return it->second.findMember(member, mIt);
+			return it->second->findMember(member, mIt);
 		}
 	}
 
@@ -282,7 +283,7 @@ bool Object::findMethod(const std::string& m, MethodCollection::iterator& mIt)
 	// loop through all members and ask them if this identifier belongs to them
 	for ( MemberCollection::iterator it = mMembers.begin(); it != mMembers.end(); ++it ) {
 		if ( it->first == parent ) {
-			return it->second.findMethod(method, mIt);
+			return it->second->findMethod(method, mIt);
 		}
 	}
 
@@ -304,7 +305,7 @@ bool Object::findMethod_(const std::string& m, MethodCollection::iterator& mIt)
 	// loop through all members and ask them if this identifier belongs to them
 	for ( MemberCollection::iterator it = mMembers.begin(); it != mMembers.end(); ++it ) {
 		if ( it->first == parent ) {
-			return it->second.findMethod(method, mIt);
+			return it->second->findMethod(method, mIt);
 		}
 	}
 
@@ -326,7 +327,7 @@ bool Object::findMethod(const std::string& m, const ParameterList& params, Metho
 	// loop through all members and ask them if this identifier belongs to them
 	for ( MemberCollection::iterator it = mMembers.begin(); it != mMembers.end(); ++it ) {
 		if ( it->first == parent ) {
-			return it->second.findMethod(method, params, mIt);
+			return it->second->findMethod(method, params, mIt);
 		}
 	}
 
@@ -348,7 +349,7 @@ bool Object::findMethod_(const std::string& m, const ParameterList& params, Meth
 	// loop through all members and ask them if this identifier belongs to them
 	for ( MemberCollection::iterator it = mMembers.begin(); it != mMembers.end(); ++it ) {
 		if ( it->first == parent ) {
-			return it->second.findMethod(method, params, mIt);
+			return it->second->findMethod(method, params, mIt);
 		}
 	}
 
@@ -359,14 +360,14 @@ void Object::garbageCollector()
 {
 	// clean up all members (= reset to zero/empty)
 	for ( MemberCollection::iterator it = mMembers.begin(); it != mMembers.end(); ++it ) {
-		it->second.value("");
+		it->second->value("");
 	}
 	mMembers.clear();
 
 	mMethods.clear();
 }
 
-Object& Object::getMember(const std::string& m)
+Object* Object::getMember(const std::string& m)
 {
 	std::string member, parent;
 	Tools::split(m, parent, member);
@@ -377,12 +378,12 @@ Object& Object::getMember(const std::string& m)
 			return it->second;
 		}
 
-		if ( !it->second.isValid() ) {
+		if ( !it->second->isValid() ) {
 			throw Utils::Exception("trying to access not yet constructed object '" + this->name() + "'!");
 		}
 
-		if ( it->second.name() == parent ) {
-			return it->second.getMember(member);
+		if ( it->second->name() == parent ) {
+			return it->second->getMember(member);
 		}
 	}
 
@@ -400,8 +401,8 @@ bool Object::hasMember(const std::string& m)
 			return true;
 		}
 
-		if ( it->second.name() == parent ) {
-			if ( it->second.hasMember(member) ) {
+		if ( it->second->name() == parent ) {
+			if ( it->second->hasMember(member) ) {
 				return true;
 			}
 		}
@@ -424,7 +425,7 @@ bool Object::hasMethod(const std::string& m)
 	// loop through all members and ask them if this identifier belongs to them
 	for ( MemberCollection::iterator it = mMembers.begin(); it != mMembers.end(); ++it ) {
 		if ( it->first == parent ) {
-			if ( it->second.hasMethod(method) ) {
+			if ( it->second->hasMethod(method) ) {
 				return true;
 			}
 		}
@@ -449,7 +450,7 @@ bool Object::hasMethod(const std::string& m, const ParameterList& params)
 	// loop through all members and ask them if this identifier belongs to them
 	for ( MemberCollection::iterator it = mMembers.begin(); it != mMembers.end(); ++it ) {
 		if ( it->first == parent ) {
-			if ( it->second.hasMethod(method, params) ) {
+			if ( it->second->hasMethod(method, params) ) {
 				return true;
 			}
 		}

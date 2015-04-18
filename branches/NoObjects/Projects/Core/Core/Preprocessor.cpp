@@ -22,7 +22,7 @@
 namespace ObjectiveScript {
 
 
-Object Preprocessor::createMemberObject(const std::string& filename, TokenIterator token)
+Object* Preprocessor::createMemberObject(const std::string& filename, TokenIterator token)
 {
 	std::string name;
 	std::string languageFeature;
@@ -46,9 +46,9 @@ Object Preprocessor::createMemberObject(const std::string& filename, TokenIterat
 	}
 
 	// create member variable
-	Object o(name, filename, type, value);
-	o.setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
-	o.setVisibility(Visibility::convert(visibility));
+	Object *o = new Object(name, filename, type, value);
+	o->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
+	o->setVisibility(Visibility::convert(visibility));
 	return o;
 }
 

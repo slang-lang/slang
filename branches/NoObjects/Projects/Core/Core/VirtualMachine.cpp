@@ -34,6 +34,10 @@ VirtualMachine::~VirtualMachine()
 {
 	mBluePrints.clear();
 	mInterfaces.clear();
+
+	for ( ObjectMap::iterator it = mObjects.begin(); it != mObjects.end(); ++it ) {
+		delete it->second;
+	}
 	mObjects.clear();
 
 	delete mRepository;
@@ -97,7 +101,7 @@ Script* VirtualMachine::create(const std::string& filename)
 			ObjectMap::iterator objIt = mObjects.find(it->Typename());
 			assert(objIt != mObjects.end());
 
-			script->assign(&objIt->second);
+			script->assign(objIt->second);
 		}
 	}
 

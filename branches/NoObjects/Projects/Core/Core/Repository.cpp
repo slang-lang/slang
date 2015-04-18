@@ -86,7 +86,7 @@ void Repository::addPrototype(const Prototype& prototype)
 	mPrototypes.insert(std::make_pair(type, prototype));
 }
 
-Object Repository::createInstance(const std::string& type, const std::string& name)
+Object* Repository::createInstance(const std::string& type, const std::string& name)
 {
 	OSdebug("createInstance('" + type + "', '" + name + "')");
 
@@ -99,20 +99,20 @@ Object Repository::createInstance(const std::string& type, const std::string& na
 	return createInstance(it->second, type, name);
 }
 
-Object Repository::createInstance(const BluePrint& blueprint, const std::string& type, const std::string& name)
+Object* Repository::createInstance(const BluePrint& blueprint, const std::string& type, const std::string& name)
 {
 	// non-reference-based instantiation
 
-	Object object(name, blueprint.Filename(), type, "");
-	object.setTokens(blueprint.getTokens());
+	Object *object = new Object(name, blueprint.Filename(), type, "");
+	object->setTokens(blueprint.getTokens());
 
 	Preprocessor preprocessor;
-	preprocessor.process(&object);
+	preprocessor.process(object);
 
 	return object;
 }
 
-Object Repository::createInstanceFromPrototype(const std::string& prototype, const std::string& type, const std::string& name)
+Object* Repository::createInstanceFromPrototype(const std::string& prototype, const std::string& type, const std::string& name)
 {
 	OSdebug("createInstanceFromPrototype('" + prototype + ", " + type + "', '" + name + "')");
 

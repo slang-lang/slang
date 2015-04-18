@@ -39,23 +39,6 @@ Method::~Method()
 }
 
 /*
-void Method::addIdentifier(Object object)
-{
-	if ( mLocales.find(object.name()) != mLocales.end() ) {
-		if ( object.isStatic() ) {
-			// don't insert static members a second time
-			// just return silently
-			return;
-		}
-
-		throw DuplicateIdentifer(object.name());
-	}
-
-	mLocales[object.name()] = object;
-}
-*/
-
-/*
 void Method::addIdentifier(const Reference& r)
 {
 	Object *object = mMemory->getObject(r);
@@ -74,22 +57,21 @@ void Method::addIdentifier(const Reference& r)
 }
 */
 
-void Method::addIdentifier(Variable object)
+void Method::addIdentifier(Object *object)
 {
-	if ( mLocalSymbols.find(object.name()) != mLocalSymbols.end() ) {
-		if ( object.isStatic() ) {
+	if ( mLocalSymbols.find(object->name()) != mLocalSymbols.end() ) {
+		if ( object->isStatic() ) {
 			// don't insert static members a second time
 			// just return silently
 			return;
 		}
 
-		throw Utils::DuplicateIdentiferException(object.name());
+		throw Utils::DuplicateIdentiferException(object->name());
 	}
 
-	mLocalSymbols[object.name()] = object;
+	mLocalSymbols[object->name()] = object;
 }
 
-//Variable Method::execute(const VariablesList& params)
 Variable Method::execute(const ParameterList& params)
 {
 	assert(mOwner);
@@ -109,14 +91,17 @@ Variable Method::execute(const ParameterList& params)
 	ParameterList::const_iterator sigIt = mSignature.begin();
 	// add parameters as pseudo members
 	for ( ParameterList::const_iterator it = params.begin(); it != params.end(); ++it, ++sigIt ) {
-		Variable param(sigIt->name(), it->type(), it->value());
-		param.setConst(sigIt->isConst());
-		addIdentifier(param);
+		switch ( it->access() ) {
+			case Parameter::AccessMode::ByReference:
+				break;
+			case Parameter::AccessMode::ByValue:
+				break;
+		}
 
-/*
-		Reference ref = mMemory->newObject(new Object(sigIt->name(), "", it->type(), it->value()));
-		addIdentifier(ref);
-*/
+		Object *param = new Object(sigIt->name(), it->type());
+		param->value(it->value());
+		param->setConst(sigIt->isConst());
+		addIdentifier(param);
 	}
 
 	Variable returnValue(name(), type(), "");
@@ -144,7 +129,7 @@ void Method::garbageCollector()
 {
 	MemberMap tmp;
 	for ( MemberMap::iterator it = mLocalSymbols.begin(); it != mLocalSymbols.end(); ++it ) {
-		if ( (*it).second.isStatic() ) {
+		if ( (*it).second->isStatic() ) {
 			tmp.insert((*it));
 			continue;			
 		}
@@ -170,10 +155,10 @@ Object* Method::getOwner() const
 	return mOwner;
 }
 
-Variable& Method::getSymbol(const std::string& token)
+Object* Method::getSymbol(const std::string& token)
 {
 	for ( MemberMap::iterator it = mLocalSymbols.begin(); it != mLocalSymbols.end(); ++it ) {
-		if ( it->second.name() == token ) {
+		if ( it->second->name() == token ) {
 			return it->second;
 		}
 
@@ -186,8 +171,8 @@ Variable& Method::getSymbol(const std::string& token)
 */
 	}
 
-	Variable& o = mOwner->getMember(token);
-	if ( o.name() != "" ) {
+	Object *o = mOwner->getMember(token);
+	if ( o ) {
 		return o;
 	}
 
@@ -476,10 +461,10 @@ Variable Method::parseTerm(TokenIterator& start)
 			// find out if we have to execute a method
 			// or simply get a stored variable
 			if ( isLocalSymbol(start->content()) ) {
-				result = getSymbol(start->content());
+				result = *getSymbol(start->content());
 			}
 			if ( isMember(start->content()) ) {
-				result = getSymbol(start->content());
+				result = *getSymbol(start->content());
 			}
 			else if ( isMethod(start->content()) ) {
 				result = process_method(start);
@@ -601,7 +586,7 @@ void Method::process_assign(TokenIterator& token)
 		throw Utils::UnknownIdentifer(identifier, token->position());
 	}
 
-	Variable& s = getSymbol(identifier);
+	Variable& s = *getSymbol(identifier);
 	if ( s.isConst() ) {
 		throw Utils::ConstCorrectnessViolated("Not allowed to modify const member '" + identifier + "'!", token->position());
 	}
@@ -959,7 +944,7 @@ void Method::process_type(TokenIterator& token)
 	addIdentifier(ref);
 */
 
-	Variable object;
+	Object *object = 0;
 	if ( isPrototype ) {
 		object = mRepository->createInstanceFromPrototype(prototype, type, name);
 	}
@@ -967,11 +952,11 @@ void Method::process_type(TokenIterator& token)
 		object = mRepository->createInstance(type, name);
 	}
 
-	if ( isConst ) object.setConst(true);
-	if ( isStatic ) object.setStatic(true);
+	if ( isConst ) object->setConst(true);
+	if ( isStatic ) object->setStatic(true);
 
 	if ( assign != mTokens.end() ) {
-		object.value(parseExpression(assign).value());
+		object->value(parseExpression(assign).value());
 		token = assign;
 	}
 

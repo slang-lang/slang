@@ -43,7 +43,7 @@ protected:
 private:
 	typedef std::map<std::string, BluePrint> BluePrintMap;
 	typedef std::map<std::string, Interface> InterfaceMap;
-	typedef std::map<std::string, Object> ObjectMap;
+	typedef std::map<std::string, Object*> ObjectMap;
 
 private:
 	std::string buildLibraryPath(const std::string& library) const;

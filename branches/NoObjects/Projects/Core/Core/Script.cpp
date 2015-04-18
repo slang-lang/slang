@@ -102,7 +102,7 @@ Variable Script::execute(const std::string& method, ParameterList params)
 	return returnValue;
 }
 
-Object& Script::getMember(const std::string& m)
+Object* Script::getMember(const std::string& m)
 {
 	return mObject->getMember(m);
 }
