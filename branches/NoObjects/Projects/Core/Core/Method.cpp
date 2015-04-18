@@ -92,6 +92,8 @@ void Method::addIdentifier(Variable object)
 //Variable Method::execute(const VariablesList& params)
 Variable Method::execute(const ParameterList& params)
 {
+	assert(mOwner);
+
 	if ( !isSignatureValid(params) ) {
 		throw Utils::ParameterCountMissmatch("number or type of parameters incorrect");
 	}
@@ -226,6 +228,10 @@ bool Method::isLocalSymbol(const std::string& token)
 
 bool Method::isMember(const std::string& token)
 {
+	if ( !mOwner ) {
+		return false;
+	}
+
 	std::string member, parent;
 	Tools::split(token, parent, member);
 
@@ -254,6 +260,10 @@ bool Method::isMember(const std::string& token)
 
 bool Method::isMethod(const std::string& token)
 {
+	if ( !mOwner ) {
+		return false;
+	}
+
 	std::string member, parent;
 	Tools::split(token, parent, member);
 
@@ -280,6 +290,10 @@ bool Method::isMethod(const std::string& token)
 
 bool Method::isMethod(const std::string& token, const ParameterList& params)
 {
+	if ( !mOwner ) {
+		return false;
+	}
+
 	// check if token is a method of our parent object
 	return mOwner->hasMethod(token, params);
 }
@@ -776,7 +790,7 @@ Variable Method::process_method(TokenIterator& token)
 //Object Method::process_new(TokenIterator& token)
 Reference Method::process_new(TokenIterator& token)
 {
-	TokenIterator tmp = token;
+	TokenIterator tmp = token++;
 
 	bool isPrototype = token->type() == Token::Type::PROTOTYPE;
 	std::string name = "<temporary object>";

@@ -88,7 +88,7 @@ void Script::destruct()
 
 Variable Script::execute(const std::string& method, ParameterList params)
 {
-	//OSdebug("execute('" + method + "', [" + toString(params) + "])");
+	OSdebug("execute('" + method /*+ "', [" + toString(params) + "])"*/);
 
 	Variable returnValue;
 	try {

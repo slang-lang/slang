@@ -43,7 +43,7 @@ public:
 
 public:	// Setup
 	void addMember(Object m);		// throws DuplicateIdentifer exception
-	void addMethod(Method m);		// throws DuplicateIdentifer exception
+	void addMethod(Method *m);		// throws DuplicateIdentifer exception
 	void addParent(const std::string& parent);
 
 public:	// Connectors
@@ -73,7 +73,7 @@ protected:
 
 private:
 	typedef std::map<std::string, Object> MemberCollection;
-	typedef std::set<Method> MethodCollection;
+	typedef std::set<Method*> MethodCollection;
 
 private:
 	bool findMember(const std::string& m, MemberCollection::iterator& mIt);

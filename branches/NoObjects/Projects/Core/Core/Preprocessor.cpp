@@ -52,7 +52,7 @@ Object Preprocessor::createMemberObject(const std::string& filename, TokenIterat
 	return o;
 }
 
-Method Preprocessor::createMethod(TokenIterator token)
+Method* Preprocessor::createMethod(TokenIterator token)
 {
 	bool isConst = false;
 	bool isStatic = false;
@@ -148,13 +148,13 @@ Method Preprocessor::createMethod(TokenIterator token)
 	}
 
 	// create a new Method with the corresponding return value
-	Method m(name, type);
-	m.setConst(isConst);
-	m.setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
-	m.setSignature(params);
-	m.setStatic(isStatic);
-	m.setTokens(tokens);
-	m.visibility(Visibility::convert(visibility));
+	Method *m = new Method(name, type);
+	m->setConst(isConst);
+	m->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
+	m->setSignature(params);
+	m->setStatic(isStatic);
+	m->setTokens(tokens);
+	m->visibility(Visibility::convert(visibility));
 
 /*
 	{	// Abstract syntax tree generation test

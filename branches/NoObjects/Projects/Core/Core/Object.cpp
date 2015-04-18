@@ -62,6 +62,15 @@ Object::~Object()
 		// so execute our destructor
 		Destructor();
 	}
+
+/*
+	for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
+		if ( (*it) ) {
+			delete (*it);
+		}
+	}
+*/
+	mMethods.clear();
 }
 
 void Object::addMember(Object m)
@@ -75,13 +84,13 @@ void Object::addMember(Object m)
 	mMembers.insert(std::make_pair(m.name(), m));
 }
 
-void Object::addMethod(Method m)
+void Object::addMethod(Method *m)
 {
 	//OSdebug("addMethod('" + m.name() + "', [" + toString(m.provideSignature()) + "])");
-	OSdebug("addMethod('" + m.name() + "')");
+	OSdebug("addMethod('" + m->name() + "')");
 
 	if ( mMethods.find(m) != mMethods.end() ) {
-		throw Utils::DuplicateIdentiferException("duplicate method '" + m.name() + "' added with same signature");
+		throw Utils::DuplicateIdentiferException("duplicate method '" + m->name() + "' added with same signature");
 	}
 
 	mMethods.insert(m);
@@ -191,19 +200,20 @@ Variable Object::execute(const std::string& method, const ParameterList& params,
 	// are we called from a colleague method?
 	bool callFromMethod = caller && (caller->getOwner() == this);
 
+	Method *mPtr = (*mIt);
+
 	// check visibility:
 	// colleague method functions can always call us,
 	// for calls from non-member functions the method visibility must be public (or protected if they belong to the same object hirachy)
-	if ( !callFromMethod && mIt->visibility() != Visibility::Public ) {
+	if ( !callFromMethod && mPtr->visibility() != Visibility::Public ) {
 		throw Utils::VisibilityError("invalid visibility: " + method);
 	}
 
-	Variable returnValue((*mIt).name(), (*mIt).type(), "");
+	Variable returnValue(mPtr->name(), mPtr->type(), "");
 	returnValue.visibility(visibility());
 	try {
 		// execute our member method
-		Method m = (*mIt);
-		returnValue.value(m.execute(params).value());
+		returnValue.value(mPtr->execute(params).value());
 	}
 	catch ( Utils::Exception &e ) {
 		// catch and log all errors that occured during method execution
@@ -260,7 +270,7 @@ bool Object::findMember_(const std::string& m, Object::MemberCollection::iterato
 bool Object::findMethod(const std::string& m, MethodCollection::iterator& mIt)
 {
 	for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
-		if ( it->name() == m /*&& it->visibility() == Visibility::Public*/ ) {
+		if ( (*it)->name() == m /*&& it->visibility() == Visibility::Public*/ ) {
 			mIt = it;
 			return true;
 		}
@@ -282,7 +292,7 @@ bool Object::findMethod(const std::string& m, MethodCollection::iterator& mIt)
 bool Object::findMethod_(const std::string& m, MethodCollection::iterator& mIt)
 {
 	for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
-		if ( it->name() == m ) {
+		if ( (*it)->name() == m ) {
 			mIt = it;
 			return true;
 		}
@@ -304,7 +314,7 @@ bool Object::findMethod_(const std::string& m, MethodCollection::iterator& mIt)
 bool Object::findMethod(const std::string& m, const ParameterList& params, MethodCollection::iterator& mIt)
 {
 	for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
-		if ( it->name() == m && it->isSignatureValid(params) /*&& it->visibility() == Visibility::Public*/ ) {
+		if ( (*it)->name() == m && (*it)->isSignatureValid(params) /*&& it->visibility() == Visibility::Public*/ ) {
 			mIt = it;
 			return true;
 		}
@@ -326,7 +336,7 @@ bool Object::findMethod(const std::string& m, const ParameterList& params, Metho
 bool Object::findMethod_(const std::string& m, const ParameterList& params, MethodCollection::iterator& mIt)
 {
 	for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
-		if ( it->name() == m && it->isSignatureValid(params) ) {
+		if ( (*it)->name() == m && (*it)->isSignatureValid(params) ) {
 			mIt = it;
 			return true;
 		}
@@ -403,7 +413,7 @@ bool Object::hasMember(const std::string& m)
 bool Object::hasMethod(const std::string& m)
 {
 	for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
-		if ( it->name() == m ) {
+		if ( (*it)->name() == m ) {
 			return true;
 		}
 	}
@@ -426,8 +436,8 @@ bool Object::hasMethod(const std::string& m)
 bool Object::hasMethod(const std::string& m, const ParameterList& params)
 {
 	for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
-		if ( it->name() == m ) {
-			if ( it->isSignatureValid(params) ) {
+		if ( (*it)->name() == m ) {
+			if ( (*it)->isSignatureValid(params) ) {
 				return true;
 			}
 		}
@@ -467,10 +477,9 @@ void Object::updateMethodOwners()
 		it->setRepository(mRepository);
 #else
 		// this does not work!!!
-		Method m = (*it);
-		m.setMemory(mMemory);
-		m.setOwner(this);
-		m.setRepository(mRepository);
+		(*it)->setMemory(mMemory);
+		(*it)->setOwner(this);
+		(*it)->setRepository(mRepository);
 #endif
 	}
 }

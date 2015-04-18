@@ -31,7 +31,7 @@ protected:
 
 private:
 	Object createMemberObject(const std::string& filename, TokenIterator start);
-	Method createMethod(TokenIterator start);
+	Method* createMethod(TokenIterator start);
 
 	void generateObject(Object *object);
 	void generateTokens(const std::string& content);
