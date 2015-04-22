@@ -247,10 +247,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Interpreter.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\Core\Attributes\LanguageFeatureState.cpp"
 				>
 				<FileConfiguration
@@ -493,11 +489,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Utils\Exceptions.h"
+				RelativePath=".\Core\Exceptions.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Exceptions.h"
+				RelativePath=".\Core\Utils\Exceptions.h"
 				>
 			</File>
 			<File
@@ -510,10 +506,6 @@
 			</File>
 			<File
 				RelativePath=".\Core\Interface.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Core\Interpreter.h"
 				>
 			</File>
 			<File
@@ -573,11 +565,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\AST\Print.h"
+				RelativePath=".\Core\Keywords\print.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Keywords\print.h"
+				RelativePath=".\Core\AST\Print.h"
 				>
 			</File>
 			<File

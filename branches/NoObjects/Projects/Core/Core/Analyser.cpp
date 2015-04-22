@@ -99,7 +99,7 @@ BluePrint Analyser::createObject(TokenIterator& start)
 				std::string inheritance = (*start++).content();
 				std::string ancestor = (*start++).content();
 
-				parents[ancestor] = BluePrint::Ancestor(ancestor, Visibility::convert(inheritance));
+//				parents[ancestor] = BluePrint::Ancestor(ancestor, Visibility::convert(inheritance));
 			} while ( std::distance(start, open) > 0 && ++start != mTokens.end() );
 		}
 		else if ( start->content() == "implements" ) {

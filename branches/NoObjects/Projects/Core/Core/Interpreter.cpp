@@ -346,7 +346,7 @@ Object Interpreter::process_new(TokenIterator& token)
 
 	assert(mRepository);
 
-	Object object;
+	Object *object = 0;
 	if ( isPrototype ) {
 		object = mRepository->createInstanceFromPrototype(prototype, type, name);
 	}
@@ -354,8 +354,8 @@ Object Interpreter::process_new(TokenIterator& token)
 		object = mRepository->createInstance(type, name);
 	}
 
-	object.connectRepository(mRepository);
-	object.Constructor(params);
+	object->connectRepository(mRepository);
+	object->Constructor(params);
 
 	return object;
 }
