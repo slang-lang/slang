@@ -12,7 +12,6 @@
 #include "Parameter.h"
 #include "Reference.h"
 #include "Types.h"
-#include "Variable.h"
 
 // Forward declarations
 
@@ -112,7 +111,6 @@ private:
 	typedef std::map<std::string, Object*> MemberMap;
 
 private:	// Construction
-	//void addIdentifier(const Reference& r);		// throws DuplicateIdentifer exception
 	void addIdentifier(Object *object);			// throws DuplicateIdentifer exception
 
 private:	// Destruction
@@ -126,13 +124,13 @@ private:	// Execution
 
 	// token processing
 	// {
-	Variable process(TokenIterator& start, TokenIterator end, Token::Type::E terminator = Token::Type::NIL);
+	Object process(TokenIterator& start, TokenIterator end, Token::Type::E terminator = Token::Type::NIL);
 	void process_assert(TokenIterator& token);
 	void process_assign(TokenIterator& token);
 	void process_for(TokenIterator& token);
 	void process_if(TokenIterator& token);
 	void process_keyword(TokenIterator& token);
-	Variable process_method(TokenIterator& token);
+	Object process_method(TokenIterator& token);
 	//Object process_new(TokenIterator& token);
 	Reference process_new(TokenIterator& token);
 	void process_print(TokenIterator& token);
@@ -145,14 +143,14 @@ private:	// Execution
 
 	// condition evaluation
 	// {
-	Variable parseCondition(TokenIterator& start);
+	Object parseCondition(TokenIterator& start);
 	// }
 
 	// expression evaluation
 	// {
-	Variable parseExpression(TokenIterator& start);
-	Variable parseFactors(TokenIterator& start);
-	Variable parseTerm(TokenIterator& start);
+	Object parseExpression(TokenIterator& start);
+	Object parseFactors(TokenIterator& start);
+	Object parseTerm(TokenIterator& start);
 	// }
 
 private:

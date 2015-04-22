@@ -38,25 +38,6 @@ Method::~Method()
 	garbageCollector();
 }
 
-/*
-void Method::addIdentifier(const Reference& r)
-{
-	Object *object = mMemory->getObject(r);
-
-	if ( mLocales.find(object->name()) != mLocales.end() ) {
-		if ( object->isStatic() ) {
-			// don't insert static members a second time
-			// just return silently
-			return;
-		}
-
-		throw DuplicateIdentifer(object->name());
-	}
-
-	mLocales[object->name()] = r;
-}
-*/
-
 void Method::addIdentifier(Object *object)
 {
 	if ( mLocalSymbols.find(object->name()) != mLocalSymbols.end() ) {
@@ -92,16 +73,16 @@ Variable Method::execute(const ParameterList& params)
 	// add parameters as pseudo members
 	for ( ParameterList::const_iterator it = params.begin(); it != params.end(); ++it, ++sigIt ) {
 		switch ( it->access() ) {
-			case Parameter::AccessMode::ByReference:
-				break;
-			case Parameter::AccessMode::ByValue:
-				break;
+			case Parameter::AccessMode::ByReference: {
+				assert(!"not implemented");
+			} break;
+			case Parameter::AccessMode::ByValue: {
+				Object *param = new Object(sigIt->name(), it->type());
+				param->value(it->value());
+				param->setConst(sigIt->isConst());
+				addIdentifier(param);
+			} break;
 		}
-
-		Object *param = new Object(sigIt->name(), it->type());
-		param->value(it->value());
-		param->setConst(sigIt->isConst());
-		addIdentifier(param);
 	}
 
 	Variable returnValue(name(), type(), "");
@@ -127,27 +108,20 @@ Variable Method::execute(const ParameterList& params)
 
 void Method::garbageCollector()
 {
-	MemberMap tmp;
-	for ( MemberMap::iterator it = mLocalSymbols.begin(); it != mLocalSymbols.end(); ++it ) {
+	// delete all not static symbols
+	for ( MemberMap::iterator it = mLocalSymbols.begin(); it != mLocalSymbols.end(); ) {
 		if ( (*it).second->isStatic() ) {
-			tmp.insert((*it));
+			it++;
 			continue;			
 		}
+		else {
+			// local symbols of a method can never be referenced from outside,
+			// so we can safely delete them
+			delete it->second;
 
-/*
-		Variable *object = mMemory->getObject(it->second);
-
-		if ( object && object->isStatic() ) {
-			tmp.insert((*it));
-			continue;
+			it = mLocalSymbols.erase(it);
 		}
-
-		mMemory->deleteObject(it->second);
-*/
 	}
-
-	mLocalSymbols.clear();
-	mLocalSymbols = tmp;
 }
 
 Object* Method::getOwner() const
@@ -157,25 +131,22 @@ Object* Method::getOwner() const
 
 Object* Method::getSymbol(const std::string& token)
 {
+	// either it is a local symbol...
 	for ( MemberMap::iterator it = mLocalSymbols.begin(); it != mLocalSymbols.end(); ++it ) {
 		if ( it->second->name() == token ) {
 			return it->second;
 		}
+	}
 
-/*
-		Object *object = mMemory->getObject(it->second);
-
-		if ( object && object->name() == token ) {
-			return *object;
+	// ... or a member of our owner, if we have one
+	if ( mOwner ) {
+		Object *o = mOwner->getMember(token);
+		if ( o ) {
+			return o;
 		}
-*/
 	}
 
-	Object *o = mOwner->getMember(token);
-	if ( o ) {
-		return o;
-	}
-
+	// ups.. this symbol is neiter a local symbol, nor a member
 	throw Utils::SyntaxError("expected identifier but '" + token + "' found!");
 }
 
@@ -323,9 +294,9 @@ bool Method::isSignatureValid(const ParameterList& params) const
 	return true;
 }
 
-Variable Method::parseCondition(TokenIterator& token)
+Object Method::parseCondition(TokenIterator& token)
 {
-	Variable v1 = parseExpression(token);
+	Object v1 = parseExpression(token);
 
 	for ( ; ; ) {
 		Token::Type::E op = token->type();
@@ -337,7 +308,7 @@ Variable Method::parseCondition(TokenIterator& token)
 		// consume operator token
 		token++;
 
-		Variable v2 = parseExpression(token);
+		Object v2 = parseExpression(token);
 
 		if ( op == Token::Type::COMPARE_EQUAL ) {
 			v1.value( (v1.value() == v2.value()) ? "true" : "false" );
@@ -362,11 +333,11 @@ Variable Method::parseCondition(TokenIterator& token)
 	return v1;
 }
 
-Variable Method::parseExpression(TokenIterator& start)
+Object Method::parseExpression(TokenIterator& start)
 {
 	// parse summands
 
-	Variable v1 = parseFactors(start);
+	Object v1 = parseFactors(start);
 
 	for ( ; ; ) {
 		Token::Type::E op = start->type();
@@ -378,7 +349,7 @@ Variable Method::parseExpression(TokenIterator& start)
 		// consume operator token
 		start++;
 
-		Variable v2 = parseFactors(start);
+		Object v2 = parseFactors(start);
 
 		if ( op == Token::Type::MATH_ADD ) {
 			v1 = Math::add(v1, v2);
@@ -394,9 +365,9 @@ Variable Method::parseExpression(TokenIterator& start)
 	return v1;
 }
 
-Variable Method::parseFactors(TokenIterator& start)
+Object Method::parseFactors(TokenIterator& start)
 {
-	Variable v1;
+	Object v1;
 	if ( (start)->type() == Token::Type::PARENTHESIS_OPEN) {
 		start++;
 		v1 = parseExpression(start);
@@ -420,7 +391,7 @@ Variable Method::parseFactors(TokenIterator& start)
 		// consume operator token
 		start++;
 
-		Variable v2;
+		Object v2;
 		if ( (start)->type() == Token::Type::PARENTHESIS_OPEN) {
 			start++;
 			v2 = parseExpression(start);
@@ -446,9 +417,9 @@ Variable Method::parseFactors(TokenIterator& start)
 	return v1;
 }
 
-Variable Method::parseTerm(TokenIterator& start)
+Object Method::parseTerm(TokenIterator& start)
 {
-	Variable result;
+	Object result;
 
 	switch ( start->type() ) {
 		case Token::Type::BOOLEAN: {
@@ -488,9 +459,9 @@ Variable Method::parseTerm(TokenIterator& start)
 	return result;
 }
 
-Variable Method::process(TokenIterator& token, TokenIterator end, Token::Type::E terminator)
+Object Method::process(TokenIterator& token, TokenIterator end, Token::Type::E terminator)
 {
-	Variable returnValue;
+	Object returnValue;
 
 	// go through all keywords and if we find the one
 	// that we want to execute, redirect to the corresponding method
@@ -726,7 +697,7 @@ void Method::process_keyword(TokenIterator& token)
 
 // syntax:
 // type method(<parameter list>);
-Variable Method::process_method(TokenIterator& token)
+Object Method::process_method(TokenIterator& token)
 {
 	TokenIterator tmp = token;
 
@@ -741,13 +712,8 @@ Variable Method::process_method(TokenIterator& token)
 	tmp = opened;
 	// loop through all parameters seperated by colons
 	while ( tmp != closed ) {
-		Variable v = parseExpression(tmp);
+		Object v = parseExpression(tmp);
 		params.push_back(Parameter(v.name(), v.type(), v.value(), Parameter::AccessMode::ByValue));
-
-/*
-		Reference r = mMemory->getAddress(&v);
-		paramsAsReferences.push_back(r);
-*/
 
 		if ( std::distance(tmp, closed) <= 0 ) {
 			break;
@@ -827,22 +793,6 @@ Reference Method::process_new(TokenIterator& token)
 	object->Constructor(params);
 
 	return ref;
-
-/*
-	Object object;
-	if ( isPrototype ) {
-		object = mRepository->createInstanceFromPrototype(prototype, type, name);
-	}
-	else {
-		object = mRepository->createInstance(type, name);
-	}
-
-	object.connectPrinter(mOwner->providePrinter());
-	object.connectRepository(mRepository);
-	object.Constructor(params);
-
-	return object;
-*/
 }
 
 // syntax:
