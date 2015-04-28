@@ -25,7 +25,7 @@ namespace Prototype {
 
 PrototypeTest::PrototypeTest(const ::Utils::Common::Logger *p)
 : ::Utils::Common::Logger(p, "PrototypeTest"),
-  mStdoutPrinter(this)
+  mStdoutPrinter(p)
 {
 }
 

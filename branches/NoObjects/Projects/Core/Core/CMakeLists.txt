@@ -44,6 +44,7 @@ SET(HEADERS
 	Reference.h
 	Repository.h
 	Script.h
+	Symbol.h
 	Token.h
 	Tokenizer.h
 	Tools.h

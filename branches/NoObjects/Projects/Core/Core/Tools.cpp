@@ -192,9 +192,9 @@ bool isFalse(const std::string& s)
 	return (s == "false");
 }
 
-bool isFalse(const Variable& v)
+bool isFalse(const Object& o)
 {
-	if ( v.value() == "0" || v.value() == "false" ) {
+	if ( o.value() == "0" || o.value() == "false" ) {
 		return true;
 	}
 
@@ -206,10 +206,10 @@ bool isTrue(const std::string& s)
 	return (s == "true");
 }
 
-bool isTrue(const Variable& v)
+bool isTrue(const Object& o)
 {
 	// check value is false
-	if ( v.value() == "0" || v.value() == "0.0" || v.value() == "false" ) {
+	if ( o.value() == "0" || o.value() == "0.0" || o.value() == "false" ) {
 		return false;
 	}
 

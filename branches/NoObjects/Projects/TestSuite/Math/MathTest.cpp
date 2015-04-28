@@ -25,7 +25,7 @@ namespace Math {
 
 MathTest::MathTest(const ::Utils::Common::Logger *p)
 : ::Utils::Common::Logger(p, "Math"),
-  mStdoutPrinter(this)
+  mStdoutPrinter(p)
 {
 }
 

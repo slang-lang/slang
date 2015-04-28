@@ -35,9 +35,11 @@ VirtualMachine::~VirtualMachine()
 	mBluePrints.clear();
 	mInterfaces.clear();
 
+/*
 	for ( ObjectMap::iterator it = mObjects.begin(); it != mObjects.end(); ++it ) {
 		delete it->second;
 	}
+*/
 	mObjects.clear();
 
 	delete mRepository;
@@ -80,7 +82,7 @@ Script* VirtualMachine::create(const std::string& filename)
 	Analyser a;
 	a.process(filename);
 
-	const std::list<std::string>& libraries = a.getLibraryReferences();
+	std::list<std::string> libraries = a.getLibraryReferences();
 	InterfaceList interfaces = a.getInterfaces();
 	BluePrintList objects = a.getObjects();
 	PrototypeList prototypes = a.getPrototypes();
@@ -94,8 +96,7 @@ Script* VirtualMachine::create(const std::string& filename)
 
 		if ( it->Filename() == filename && it->Typename() == "Main" ) {
 			mObjects.insert(std::make_pair(
-				it->Typename(),
-				mRepository->createInstance(it->Typename(), "main")
+				it->Typename(), mRepository->createInstance(it->Typename(), "main")
 			));
 
 			ObjectMap::iterator objIt = mObjects.find(it->Typename());
@@ -107,8 +108,7 @@ Script* VirtualMachine::create(const std::string& filename)
 
 	for ( InterfaceList::iterator it = interfaces.begin(); it != interfaces.end(); ++it ) {
 		mInterfaces.insert(std::make_pair(
-			it->Typename(),
-			(*it)
+			it->Typename(), (*it)
 		));
 	}
 

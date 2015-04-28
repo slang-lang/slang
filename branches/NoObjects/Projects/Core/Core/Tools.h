@@ -9,6 +9,7 @@
 #include <string>
 
 // Project includes
+#include "Object.h"
 #include "Types.h"
 
 // Forward declarations
@@ -46,9 +47,9 @@ TokenIterator findNextBalancedParenthesis(TokenIterator start, int generateError
 
 bool isBooleanConst(const std::string& v);
 bool isFalse(const std::string& s);
-bool isFalse(const Variable& v);
+bool isFalse(const Object& o);
 bool isTrue(const std::string& s);
-bool isTrue(const Variable& v);
+bool isTrue(const Object& o);
 
 }
 

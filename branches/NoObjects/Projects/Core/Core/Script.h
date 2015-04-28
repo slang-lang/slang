@@ -46,7 +46,7 @@ public:	//Helpers
 
 public:	// Execution
 	// {
-	Variable execute(const std::string& method, ParameterList params = ParameterList());
+	Object execute(const std::string& method, ParameterList params = ParameterList());
 	// }
 
 public:	// Debug only

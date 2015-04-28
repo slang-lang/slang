@@ -25,7 +25,10 @@ class Object;
 class Preprocessor
 {
 public:
-	void process(Object *object);
+	Preprocessor(Object *object);
+
+public:
+	void process();
 
 protected:
 
@@ -33,7 +36,7 @@ private:
 	Object* createMemberObject(const std::string& filename, TokenIterator start);
 	Method* createMethod(TokenIterator start);
 
-	void generateObject(Object *object);
+	void generateObject();
 	void generateTokens(const std::string& content);
 
 	bool isLocalDeclaration(TokenIterator start);
@@ -41,7 +44,8 @@ private:
 	bool isMethodDeclaration(TokenIterator start);
 
 private:
-	TokenList	mTokens;
+	Object *mObject;
+	TokenList mTokens;
 };
 
 

@@ -86,11 +86,11 @@ void Script::destruct()
 	}
 }
 
-Variable Script::execute(const std::string& method, ParameterList params)
+Object Script::execute(const std::string& method, ParameterList params)
 {
 	OSdebug("execute('" + method /*+ "', [" + toString(params) + "])"*/);
 
-	Variable returnValue;
+	Object returnValue;
 	try {
 		assert(mObject);
 		returnValue = mObject->execute(method, params);

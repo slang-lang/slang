@@ -25,8 +25,9 @@
 namespace ObjectiveScript {
 
 
-Method::Method(const std::string& name, const std::string& type)
-: Variable(name, type),
+Method::Method(IScope *parent, const std::string& name, const std::string& type)
+: LocalScope(name, parent),
+  Variable(name, type),
   mMemory(0),
   mOwner(0),
   mRepository(0)
@@ -53,7 +54,7 @@ void Method::addIdentifier(Object *object)
 	mLocalSymbols[object->name()] = object;
 }
 
-Variable Method::execute(const ParameterList& params)
+Object Method::execute(const ParameterList& params)
 {
 	assert(mOwner);
 
@@ -74,6 +75,7 @@ Variable Method::execute(const ParameterList& params)
 	for ( ParameterList::const_iterator it = params.begin(); it != params.end(); ++it, ++sigIt ) {
 		switch ( it->access() ) {
 			case Parameter::AccessMode::ByReference: {
+				throw Utils::NotImplemented("Parameter::AccessMode::ByReference");
 				assert(!"not implemented");
 			} break;
 			case Parameter::AccessMode::ByValue: {
@@ -85,7 +87,7 @@ Variable Method::execute(const ParameterList& params)
 		}
 	}
 
-	Variable returnValue(name(), type(), "");
+	Object returnValue(name(), type());
 	returnValue.visibility(visibility());
 
 	try {	// try to execute our method
@@ -93,7 +95,7 @@ Variable Method::execute(const ParameterList& params)
 		returnValue.value(process(start, mTokens.end()).value());
 	}
 	catch ( Utils::Exception &e ) {	// if anything happens clean up the mess
-		garbageCollector();
+		garbageCollector(true);
 
 		// throw again so that our owner will be informed
 		throw e;
@@ -106,11 +108,12 @@ Variable Method::execute(const ParameterList& params)
 	return returnValue;
 }
 
-void Method::garbageCollector()
+void Method::garbageCollector(bool force)
 {
+/*
 	// delete all not static symbols
 	for ( MemberMap::iterator it = mLocalSymbols.begin(); it != mLocalSymbols.end(); ) {
-		if ( (*it).second->isStatic() ) {
+		if ( force || it->second->isStatic() ) {
 			it++;
 			continue;			
 		}
@@ -122,6 +125,7 @@ void Method::garbageCollector()
 			it = mLocalSymbols.erase(it);
 		}
 	}
+*/
 }
 
 Object* Method::getOwner() const
@@ -516,7 +520,7 @@ void Method::process_assert(TokenIterator& token)
 	// find semicolon
 	TokenIterator tmp = findNext(condEnd, Token::Type::SEMICOLON);
 
-	Variable condition = parseCondition(condBegin);
+	Object condition = parseCondition(condBegin);
 
 	if ( isFalse(condition) ) {
 		throw Utils::AssertionFailed("'" + condition.value() + "'", token->position());

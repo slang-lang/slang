@@ -33,6 +33,16 @@ Repository::Repository(Memory *m)
 Repository::~Repository()
 {
 	mBluePrints.clear();
+
+	for ( Objects::iterator it = mInstances.begin(); it != mInstances.end(); ++it ) {
+		if ( (*it) ) {
+			delete (*it);
+			(*it) = 0;
+		}
+	}
+
+	mInstances.clear();
+	mPrototypes.clear();
 }
 
 void Repository::addBlueprint(const BluePrint& object)
@@ -106,8 +116,10 @@ Object* Repository::createInstance(const BluePrint& blueprint, const std::string
 	Object *object = new Object(name, blueprint.Filename(), type, "");
 	object->setTokens(blueprint.getTokens());
 
-	Preprocessor preprocessor;
-	preprocessor.process(object);
+	Preprocessor preprocessor(object);
+	preprocessor.process();
+
+	mInstances.insert(object);
 
 	return object;
 }
@@ -144,8 +156,8 @@ const Reference& Repository::createReference(const BluePrint& blueprint, const s
 	Object *obj = new Object(name, blueprint.Filename(), type, "");
 	obj->setTokens(blueprint.getTokens());
 
-	Preprocessor preprocessor;
-	preprocessor.process(obj);
+	Preprocessor preprocessor(obj);
+	preprocessor.process();
 
 	return mMemory->newObject(obj);
 }

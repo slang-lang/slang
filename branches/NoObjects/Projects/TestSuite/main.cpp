@@ -1,4 +1,22 @@
 
+// Library includes
+#include <list>
+#include <map>
+
+// Project includes
+#include <Common/StdOutLogger.h>
+#include <Tools/Strings.h>
+
+// Fixtures
+#include <Attributes/Fixture.h>
+#include <Language/Fixture.h>
+#include <Math/Fixture.h>
+#include <Prototype/Fixture.h>
+#include <TestFramework/Fixture.h>
+
+// Namespace declarations
+
+
 #ifdef _WIN32
 	// Memory leak check - Begin
 	#define _CRTDBG_MAP_ALLOC
@@ -14,23 +32,6 @@
 
 	//#include <vld.h>
 #endif
-
-
-// Library includes
-#include <list>
-
-// Project includes
-#include <Common/StdOutLogger.h>
-#include <Tools/Strings.h>
-
-// Fixtures
-#include <Attributes/Fixture.h>
-#include <Language/Fixture.h>
-#include <Math/Fixture.h>
-#include <Prototype/Fixture.h>
-#include <TestFramework/Fixture.h>
-
-// Namespace declarations
 
 
 typedef std::list<TestFixture*> FixtureList;
@@ -108,8 +109,10 @@ int main(int argc, const char* argv[])
 		std::cout << "could not find fixture '" << toRun << "'!" << std::endl;
 	}
 
-	delete logger;
-	logger = 0;
+	if ( logger ) {
+		delete logger;
+		logger = 0;
+	}
 
 	return 0;
 }

@@ -45,6 +45,7 @@ protected:
 private:
 	typedef std::map<std::string, BluePrint> BluePrints;
 	typedef std::map<std::string, Prototype> Prototypes;
+	typedef std::set<Object*> Objects;
 
 private:
 	Object* createInstance(const BluePrint& blueprint, const std::string& type, const std::string& name);
@@ -52,6 +53,7 @@ private:
 
 private:
 	BluePrints mBluePrints;
+	Objects mInstances;
 	Prototypes mPrototypes;
 
 	Memory *mMemory;

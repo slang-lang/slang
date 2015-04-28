@@ -1,4 +1,16 @@
 
+// Library includes
+
+// Project includes
+#include <Common/StdOutLogger.h>
+#include <Core/Interfaces/IPrinter.h>
+#include <Core/Script.h>
+#include <Core/Types.h>
+#include <Core/VirtualMachine.h>
+#include <Tools/Strings.h>
+
+// Namespace declarations
+
 #ifdef _WIN32
 	// Memory leak check - Begin
 	#define _CRTDBG_MAP_ALLOC
@@ -14,18 +26,6 @@
 
 	//#include <vld.h>
 #endif
-
-// Library includes
-
-// Project includes
-#include <Common/StdOutLogger.h>
-#include <Core/Interfaces/IPrinter.h>
-#include <Core/Script.h>
-#include <Core/Types.h>
-#include <Core/VirtualMachine.h>
-#include <Tools/Strings.h>
-
-// Namespace declarations
 
 
 class Printer : public ObjectiveScript::IPrinter

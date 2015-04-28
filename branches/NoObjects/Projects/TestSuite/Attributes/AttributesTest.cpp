@@ -24,7 +24,7 @@ namespace Attributes {
 
 AttributesTest::AttributesTest(const ::Utils::Common::Logger *p)
 : ::Utils::Common::Logger(p, "AttributesTest"),
-  mStdoutPrinter(this)
+  mStdoutPrinter(p)
 {
 }
 

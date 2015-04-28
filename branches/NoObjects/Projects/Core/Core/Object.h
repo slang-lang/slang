@@ -12,6 +12,7 @@
 #include "BluePrint.h"
 #include "Method.h"
 #include "Parameter.h"
+#include "Scope.h"
 #include "Token.h"
 #include "Types.h"
 #include "Variable.h"
@@ -30,9 +31,10 @@ class Method;
 class Repository;
 
 
-class Object : public BluePrint,
-			   public Variable/*,
-			   public Attributes*/
+class Object : public LocalScope,
+			   public BluePrint,
+			   public Variable
+			   //public Attributes
 {
 public:
 	Object();
@@ -55,11 +57,11 @@ public:	// Providers
 	IPrinter* providePrinter() const;
 
 public:	// Usage
-	void assign(Object other); //void assign(const Object& other);
+	void assign(const Object& other); //void assign(const Object& other);
 	void Constructor(const ParameterList& params);
 	void Destructor();
 
-	Variable execute(const std::string& method, const ParameterList& params, const Method* caller = 0);		// throws VisibilityError exception
+	Object execute(const std::string& method, const ParameterList& params, const Method* caller = 0);		// throws VisibilityError exception
 
 public:	// Helpers
 	Object* getMember(const std::string& m);		// throws UnknownIdentifer exception
@@ -89,13 +91,13 @@ private:
 	void updateMethodOwners();
 
 private:
-	bool				mConstructed;
-	MemberCollection	mMembers;
-	Memory				*mMemory;
-	MethodCollection	mMethods;
-	StringList			mParents;
-	IPrinter			*mPrinter;
-	Repository			*mRepository;
+	bool mConstructed;
+	MemberCollection mMembers;
+	Memory *mMemory;
+	MethodCollection mMethods;
+	StringList mParents;
+	IPrinter *mPrinter;
+	Repository *mRepository;
 };
 
 typedef std::list<Object> ObjectList;

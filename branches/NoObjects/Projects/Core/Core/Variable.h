@@ -85,9 +85,9 @@ public:
 	bool operator()();
 
 protected:
-	std::string mName;
-	std::string mType;
-	std::string mValue;
+	std::string mVarName;
+	std::string mVarType;
+	std::string mVarValue;
 
 private:
 

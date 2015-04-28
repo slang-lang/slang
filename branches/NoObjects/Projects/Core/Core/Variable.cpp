@@ -18,15 +18,15 @@ Variable::Variable()
 }
 
 Variable::Variable(const std::string& name, const std::string& type)
-: mName(name),
-  mType(type)
+: mVarName(name),
+  mVarType(type)
 {
 }
 
 Variable::Variable(const std::string& name, const std::string& type, const std::string& value)
-: mName(name),
-  mType(type),
-  mValue(value)
+: mVarName(name),
+  mVarType(type),
+  mVarValue(value)
 {
 }
 
@@ -36,17 +36,17 @@ Variable::~Variable()
 
 const std::string& Variable::name() const
 {
-	return mName;
+	return mVarName;
 }
 
 const std::string& Variable::type() const
 {
-	return mType;
+	return mVarType;
 }
 
 const std::string& Variable::value() const
 {
-	return mValue;
+	return mVarValue;
 }
 
 void Variable::value(const std::string& value)
@@ -55,7 +55,7 @@ void Variable::value(const std::string& value)
 		throw Utils::Exception("tried to change const object");
 	}
 
-	mValue = value;
+	mVarValue = value;
 }
 
 bool Variable::operator==(const Variable& other)

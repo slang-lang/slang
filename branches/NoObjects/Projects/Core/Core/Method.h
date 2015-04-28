@@ -11,6 +11,7 @@
 #include "Object.h"
 #include "Parameter.h"
 #include "Reference.h"
+#include "Scope.h"
 #include "Types.h"
 
 // Forward declarations
@@ -26,10 +27,11 @@ class Memory;
 class Object;
 class Repository;
 
-class Method : public Variable
+class Method : public LocalScope,
+			   public Variable
 {
 public:
-	Method(const std::string& name, const std::string& type);
+	Method(IScope *parent, const std::string& name, const std::string& type);
 	~Method();
 
 public:
@@ -47,7 +49,7 @@ public:
 	const ParameterList& provideSignature() const;
 
 public:	// Execution
-	Variable execute(const ParameterList& params);
+	Object execute(const ParameterList& params);
 
 public:
 	bool operator() (const Method& first, const Method& second) const {
@@ -114,7 +116,7 @@ private:	// Construction
 	void addIdentifier(Object *object);			// throws DuplicateIdentifer exception
 
 private:	// Destruction
-	void garbageCollector();
+	void garbageCollector(bool force = false);
 
 private:	// Execution
 	bool isLocalSymbol(const std::string& token);

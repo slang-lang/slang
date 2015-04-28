@@ -171,14 +171,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\AST\Assert.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Core\AST\Assign.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\Core\Attributes\Attributes.cpp"
 				>
 				<FileConfiguration
@@ -217,10 +209,6 @@
 						ObjectFile="$(IntDir)\Core\"
 					/>
 				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\Core\AST\Condition.cpp"
-				>
 			</File>
 			<File
 				RelativePath=".\Core\Utils\Exceptions.cpp"
@@ -295,19 +283,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\AST\New.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Core\AST\Node.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\Core\Object.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Core\AST\Parser.cpp"
 				>
 			</File>
 			<File
@@ -335,10 +311,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\AST\Print.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\Core\Prototype.cpp"
 				>
 			</File>
@@ -352,10 +324,6 @@
 			</File>
 			<File
 				RelativePath=".\Core\Script.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Core\AST\Statement.cpp"
 				>
 			</File>
 			<File
@@ -388,10 +356,6 @@
 			</File>
 			<File
 				RelativePath=".\Core\Tools.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Core\AST\Tree.cpp"
 				>
 			</File>
 			<File
@@ -446,10 +410,6 @@
 					/>
 				</FileConfiguration>
 			</File>
-			<File
-				RelativePath=".\Core\AST\While.cpp"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -465,14 +425,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\AST\Assert.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Core\AST\Assign.h"
-				>
-			</File>
-			<File
 				RelativePath=".\Core\Attributes\Attributes.h"
 				>
 			</File>
@@ -482,10 +434,6 @@
 			</File>
 			<File
 				RelativePath=".\Core\BuildInObjects\Bool.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Core\AST\Condition.h"
 				>
 			</File>
 			<File
@@ -529,14 +477,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\AST\New.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Core\AST\Node.h"
-				>
-			</File>
-			<File
 				RelativePath=".\Core\BuildInObjects\Number.h"
 				>
 			</File>
@@ -553,10 +493,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\AST\Parser.h"
-				>
-			</File>
-			<File
 				RelativePath=".\Core\Utils\Position.h"
 				>
 			</File>
@@ -566,10 +502,6 @@
 			</File>
 			<File
 				RelativePath=".\Core\Keywords\print.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Core\AST\Print.h"
 				>
 			</File>
 			<File
@@ -593,11 +525,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Script.h"
+				RelativePath=".\Core\Scope.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\AST\Statement.h"
+				RelativePath=".\Core\Script.h"
 				>
 			</File>
 			<File
@@ -606,6 +538,10 @@
 			</File>
 			<File
 				RelativePath=".\Core\Helpers\Strings.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\Symbol.h"
 				>
 			</File>
 			<File
@@ -618,10 +554,6 @@
 			</File>
 			<File
 				RelativePath=".\Core\Tools.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Core\AST\Tree.h"
 				>
 			</File>
 			<File
@@ -646,10 +578,6 @@
 			</File>
 			<File
 				RelativePath=".\Core\BuildInObjects\Void.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Core\AST\While.h"
 				>
 			</File>
 		</Filter>

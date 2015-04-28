@@ -18,7 +18,8 @@ namespace ObjectiveScript {
 
 
 Object::Object()
-: mConstructed(false),
+: LocalScope("", 0),
+  mConstructed(false),
   mMemory(0),
   mPrinter(0),
   mRepository(0)
@@ -26,7 +27,8 @@ Object::Object()
 }
 
 Object::Object(const std::string& type, const std::string& filename)
-: BluePrint(type, filename),
+: LocalScope("", 0),
+  BluePrint(type, filename),
   Variable("", type, ""),
   mConstructed(false),
   mMemory(0),
@@ -36,7 +38,8 @@ Object::Object(const std::string& type, const std::string& filename)
 }
 
 Object::Object(const std::string& name, const std::string& filename, const std::string& type, const std::string& value)
-: BluePrint(type, filename),
+: LocalScope(name, 0),
+  BluePrint(type, filename),
   Variable(name, type, value),
   mConstructed(false),
   mMemory(0),
@@ -46,7 +49,8 @@ Object::Object(const std::string& name, const std::string& filename, const std::
 }
 
 Object::Object(const Variable& var)
-: BluePrint(var.type()),
+: LocalScope(var.name(), 0),
+  BluePrint(var.type()),
   Variable(var.name(), var.type(), var.value()),
   mConstructed(false),
   mMemory(0),
@@ -63,13 +67,12 @@ Object::~Object()
 		Destructor();
 	}
 
-/*
 	for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
 		if ( (*it) ) {
 			delete (*it);
+			(*it) = 0;
 		}
 	}
-*/
 	mMethods.clear();
 }
 
@@ -108,7 +111,7 @@ void Object::addParent(const std::string& parent)
 	mParents.push_back(parent);
 }
 
-void Object::assign(Object other)	//void Object::assign(const Object& other)
+void Object::assign(const Object& other)
 {
 	if ( other.mConstructed )	// don't override this with false
 		this->mConstructed = other.mConstructed;
@@ -118,8 +121,8 @@ void Object::assign(Object other)	//void Object::assign(const Object& other)
 	this->mPrinter = other.mPrinter;
 	this->mRepository = other.mRepository;
 	this->mTokens = other.mTokens;
-	this->mType = other.mType;
-	this->mValue = other.mValue;
+	this->mVarType = other.mVarType;
+	this->mVarValue = other.mVarValue;
 
 	updateMethodOwners();
 }
@@ -176,8 +179,8 @@ void Object::Destructor()
 	}
 
 	// only execute destructor if one is present
-	if ( hasMethod("~" + mName) ) {
-		execute("~" + mName, ParameterList());
+	if ( hasMethod("~" + getName()) ) {
+		execute("~" + getName(), ParameterList());
 	}
 
 	garbageCollector();
@@ -187,10 +190,9 @@ void Object::Destructor()
 	mConstructed = false;
 }
 
-Variable Object::execute(const std::string& method, const ParameterList& params, const Method* caller)
+Object Object::execute(const std::string& method, const ParameterList& params, const Method* caller)
 {
-	//OSdebug("execute('" + method + "', [" + toString(params) + "])");
-	OSdebug("execute('" + method + "')");
+	OSdebug("execute('" + method + "', [" + toString(params) + "])");
 
 	MethodCollection::iterator mIt;
 	bool success = findMethod(method, params, mIt);
@@ -210,11 +212,13 @@ Variable Object::execute(const std::string& method, const ParameterList& params,
 		throw Utils::VisibilityError("invalid visibility: " + method);
 	}
 
-	Variable returnValue(mPtr->name(), mPtr->type(), "");
+	Object returnValue(mPtr->name(), "", mPtr->type(), "");
 	returnValue.visibility(visibility());
 	try {
 		// execute our member method
-		returnValue.value(mPtr->execute(params).value());
+		//returnValue.value(mPtr->execute(params).value());
+
+		returnValue.assign(mPtr->execute(params));
 	}
 	catch ( Utils::Exception &e ) {
 		// catch and log all errors that occured during method execution

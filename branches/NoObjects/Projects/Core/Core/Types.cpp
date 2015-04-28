@@ -63,6 +63,22 @@ StringList provideReservedWords()
 	return reservedWords;
 }
 
+std::string toString(const ParameterList& list)
+{
+	std::string result;
+
+	for ( ParameterList::const_iterator it = list.begin(); it != list.end(); ++it ) {
+		result = it->type() + " " + it->name() + " = " + it->value();
+
+		ParameterList::const_iterator copy = it;
+		if ( ++copy != list.end() ) {
+			result += ", ";
+		}
+	}
+
+	return result;
+}
+
 std::string toString(const ReferencesList& list)
 {
 	std::string result;
@@ -111,6 +127,7 @@ std::string toString(const TokenList& list)
 	return result;
 }
 
+/* deprecated
 std::string toString(const VariablesList& list)
 {
 	std::string result;
@@ -126,6 +143,7 @@ std::string toString(const VariablesList& list)
 
 	return result;
 }
+*/
 
 
 }

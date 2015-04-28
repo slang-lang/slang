@@ -11,16 +11,16 @@
 #include "Tokenizer.h"
 #include "Tools.h"
 
-/*
-#include <Core/AST/Parser.h>
-#include <Core/AST/Tree.h>
-*/
-
 // Namespace declarations
 
 
 namespace ObjectiveScript {
 
+
+Preprocessor::Preprocessor(Object *object)
+: mObject(object)
+{
+}
 
 Object* Preprocessor::createMemberObject(const std::string& filename, TokenIterator token)
 {
@@ -148,7 +148,7 @@ Method* Preprocessor::createMethod(TokenIterator token)
 	}
 
 	// create a new Method with the corresponding return value
-	Method *m = new Method(name, type);
+	Method *m = new Method(mObject, name, type);
 	m->setConst(isConst);
 	m->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
 	m->setSignature(params);
@@ -156,20 +156,12 @@ Method* Preprocessor::createMethod(TokenIterator token)
 	m->setTokens(tokens);
 	m->visibility(Visibility::convert(visibility));
 
-/*
-	{	// Abstract syntax tree generation test
-		AST::Parser p(tokens);
-		AST::Tree *tree = p.buildTree();
-		assert(tree);
-	}
-*/
-
 	return m;
 }
 
-void Preprocessor::generateObject(Object *object)
+void Preprocessor::generateObject()
 {
-	assert(object);
+	assert(mObject);
 
 	typedef std::list<TokenIterator> TokenList;
 	TokenList visList;
@@ -186,10 +178,10 @@ void Preprocessor::generateObject(Object *object)
 	// if we have a member declaration or a method declaration
 	for ( TokenList::const_iterator it = visList.begin(); it != visList.end(); ++it ) {
 		if ( isMemberDeclaration((*it)) ) {
-			object->addMember(createMemberObject(object->Filename(), (*it)));
+			mObject->addMember(createMemberObject(mObject->Filename(), (*it)));
 		}
 		else if ( isMethodDeclaration((*it)) ) {
-			object->addMethod(createMethod((*it)));
+			mObject->addMethod(createMethod((*it)));
 		}
 /*
 		else {
@@ -251,14 +243,14 @@ bool Preprocessor::isMethodDeclaration(TokenIterator start)
 	return checkSynthax(start, tokens);
 }
 
-void Preprocessor::process(Object *object)
+void Preprocessor::process()
 {
-	OSdebug("process('" + object->name() + "')");
+	OSdebug("process('" + mObject->name() + "')");
 
-	mTokens = object->getTokens();
+	mTokens = mObject->getTokens();
 
 	// build object from tokens
-	generateObject(object);
+	generateObject();
 }
 
 
