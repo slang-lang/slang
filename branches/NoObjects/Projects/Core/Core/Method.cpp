@@ -92,7 +92,7 @@ Object Method::execute(const ParameterList& params)
 
 	try {	// try to execute our method
 		TokenIterator start = mTokens.begin();
-		returnValue.value(process(start, mTokens.end()).value());
+		returnValue.assign(process(start, mTokens.end()));
 	}
 	catch ( Utils::Exception &e ) {	// if anything happens clean up the mess
 		garbageCollector(true);
@@ -110,6 +110,7 @@ Object Method::execute(const ParameterList& params)
 
 void Method::garbageCollector(bool force)
 {
+(void)force;
 /*
 	// delete all not static symbols
 	for ( MemberMap::iterator it = mLocalSymbols.begin(); it != mLocalSymbols.end(); ) {

@@ -37,7 +37,6 @@ Repository::~Repository()
 	for ( Objects::iterator it = mInstances.begin(); it != mInstances.end(); ++it ) {
 		if ( (*it) ) {
 			delete (*it);
-			(*it) = 0;
 		}
 	}
 

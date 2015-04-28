@@ -23,6 +23,8 @@ public:
 	class IType
 	{
 	public:
+        virtual ~IType() { }
+
 		virtual const std::string& getName() const = 0;
 	};
 
@@ -64,7 +66,7 @@ class BuildInTypeSymbol : public Symbol,
 						  public Symbol::IType
 {
 public:
-	BuildInTypeSymbol(const std::string& name, IType *type)
+    BuildInTypeSymbol(const std::string& name, Symbol::IType *type)
 	: Symbol(name, type)
 	{ }
 	virtual ~BuildInTypeSymbol() { }
@@ -74,7 +76,7 @@ class ClassSymbol : public Symbol,
 					public Symbol::IType
 {
 public:
-	ClassSymbol(const std::string& name, IType *type)
+	ClassSymbol(const std::string& name, Symbol::IType *type)
 	: Symbol(name, type)
 	{ }
 	virtual ~ClassSymbol() { }
@@ -84,7 +86,7 @@ class MemberSymbol : public Symbol,
 					 public Symbol::IType
 {
 public:
-	MemberSymbol(const std::string& name, IType *type)
+	MemberSymbol(const std::string& name, Symbol::IType *type)
 	: Symbol(name, type)
 	{ }
 	virtual ~MemberSymbol() { }
@@ -94,7 +96,7 @@ class MethodSymbol : public Symbol,
 					 public Symbol::IType
 {
 public:
-	MethodSymbol(const std::string& name, IType *type)
+	MethodSymbol(const std::string& name, Symbol::IType *type)
 	: Symbol(name, type)
 	{ }
 	virtual ~MethodSymbol() { }

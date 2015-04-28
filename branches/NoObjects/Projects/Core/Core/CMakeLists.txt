@@ -43,6 +43,7 @@ SET(HEADERS
 	Prototype.h
 	Reference.h
 	Repository.h
+	Scope.h
 	Script.h
 	Symbol.h
 	Token.h

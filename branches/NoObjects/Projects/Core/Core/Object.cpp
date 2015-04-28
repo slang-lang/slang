@@ -70,7 +70,6 @@ Object::~Object()
 	for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
 		if ( (*it) ) {
 			delete (*it);
-			(*it) = 0;
 		}
 	}
 	mMethods.clear();
