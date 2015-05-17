@@ -31,6 +31,7 @@ LanguageTest::LanguageTest(const ::Utils::Common::Logger *p)
 
 void LanguageTest::process()
 {
+/*
 	TEST(testAssert);
 	TEST(testComment);
 	TEST(testFor);
@@ -39,7 +40,9 @@ void LanguageTest::process()
 	TEST(testWhile);
 
 	TEST(testConstCorrectness);
+*/
 	//TEST(testInterfaces);
+	TEST(testObjectReference);
 }
 
 void LanguageTest::setup()
@@ -61,7 +64,6 @@ void LanguageTest::testAssert()
 		s->execute("test_assert", ParameterList());
 
 		// automatic success
-		delete s;
 	}
 	catch ( ObjectiveScript::Utils::Exception& e ) {
 		// exception has been thrown: test failed!
@@ -84,7 +86,6 @@ void LanguageTest::testComment()
 		s->execute("test_comments", ParameterList());
 
 		// automatic success
-		delete s;
 	}
 	catch ( ObjectiveScript::Utils::Exception& e ) {
 		// exception has been thrown: test failed!
@@ -107,7 +108,6 @@ void LanguageTest::testFor()
 		s->execute("test_for", ParameterList());
 
 		// automatic success
-		delete s;
 	}
 	catch ( ObjectiveScript::Utils::Exception& e ) {
 		// exception has been thrown: test failed!
@@ -128,11 +128,10 @@ void LanguageTest::testIf()
 		Script *s = vm.create("Tests/Language/BasicLanguageTest.os");
 
 		ParameterList params;
-		params.push_back(Parameter("param1", "Number", "1", false, Parameter::AccessMode::ByReference));
+		params.push_back(Parameter("param1", "Number", "1", false, Parameter::AccessMode::ByValue));
 		s->execute("test_if", params);
 
 		// automatic success
-		delete s;
 	}
 	catch ( ObjectiveScript::Utils::Exception& e ) {
 		// exception has been thrown: test failed!
@@ -157,7 +156,6 @@ void LanguageTest::testPrint()
 		s->execute("test_print", params);
 
 		// automatic success
-		delete s;
 	}
 	catch ( ObjectiveScript::Utils::Exception& e ) {
 		// exception has been thrown: test failed!
@@ -180,7 +178,6 @@ void LanguageTest::testStaticLocalVariable()
 		s->execute("test_static_local_variable", ParameterList());
 
 		// automatic success
-		delete s;
 	}
 	catch ( ObjectiveScript::Utils::Exception& e ) {
 		// exception has been thrown: test failed!
@@ -205,7 +202,6 @@ void LanguageTest::testWhile()
 		s->execute("test_while", params);
 
 		// automatic success
-		delete s;
 	}
 	catch ( ObjectiveScript::Utils::Exception& e ) {
 		// exception has been thrown: test failed!
@@ -232,7 +228,6 @@ void LanguageTest::testConstCorrectness()
 		s->execute("ModifyMemberInConstMethod", ParameterList());
 
 		// automatic success
-		delete s;
 	}
 	catch ( ObjectiveScript::Utils::Exception& e ) {
 		// exception has been thrown: test failed!
@@ -256,7 +251,26 @@ void LanguageTest::testInterfaces()
 		s->execute("GetBox", params);
 
 		// automatic success
-		delete s;
+	}
+	catch ( ObjectiveScript::Utils::Exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL("caught exception: " << e.what());
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL("caught exception: " << e.what());
+	}
+}
+
+void LanguageTest::testObjectReference()
+{
+	try {
+		VirtualMachine vm;
+		vm.connectPrinter(&mStdoutPrinter);
+
+		vm.create("Tests/Language/ObjectReference.os");
+
+		// automatic success
 	}
 	catch ( ObjectiveScript::Utils::Exception& e ) {
 		// exception has been thrown: test failed!

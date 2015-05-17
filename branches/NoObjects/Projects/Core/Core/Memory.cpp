@@ -37,6 +37,8 @@ void Memory::deleteObject(const Reference& ref)
 
 	// delete it if it's valid ...
 	if ( it->second ) {
+		it->second->Destructor();
+
 		delete it->second;
 		it->second = 0;
 	}
@@ -66,7 +68,7 @@ const Reference& Memory::reserveAddress()
 	// 1) the simple way:
 	//    only use an address once, so that no address can get
 	//    reused and we accidentally make a forgotten reference
-	//    valid again although it's objects have been deleted
+	//    valid again although its object has been deleted
 	//    long ago;
 	if ( mNextAddress >= SIZE_MAX ) {
 		// 2) the more sophisticated way:
@@ -92,17 +94,6 @@ Object* Memory::getObject(const Reference& ref) const
 {
 	for ( MemoryMap::const_iterator it = mMemory.begin(); it != mMemory.end(); ++it ) {
 		if ( it->first == ref ) {
-			return it->second;
-		}
-	}
-
-	return 0;
-}
-
-Object* Memory::getObject(const std::string& name) const
-{
-	for ( MemoryMap::const_iterator it = mMemory.begin(); it != mMemory.end(); ++it ) {
-		if ( it->second->name() == name ) {
 			return it->second;
 		}
 	}

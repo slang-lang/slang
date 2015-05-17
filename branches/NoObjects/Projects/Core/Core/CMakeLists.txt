@@ -16,6 +16,7 @@ SET(SOURCES
 	Memory.cpp
 	Method.cpp
 	Object.cpp
+	Parameter.cpp
 	Preprocessor.cpp
 	Prototype.cpp
 	Reference.cpp

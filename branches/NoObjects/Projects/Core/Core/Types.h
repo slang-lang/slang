@@ -31,9 +31,6 @@ std::string toString(const ParameterList& list);
 std::string toString(const ReferencesList& list);
 std::string toString(const StringList& list);
 std::string toString(const TokenList& list);
-/* deprecated
-std::string toString(const VariablesList& list);
-*/
 
 StringList provideAtomarTypes();
 StringList provideKeyWords();

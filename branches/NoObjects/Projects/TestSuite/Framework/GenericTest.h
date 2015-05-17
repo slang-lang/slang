@@ -15,9 +15,6 @@
 // Namespace declarations
 
 
-//#define NO_TYPEID
-
-
 namespace Testing {
 
 
@@ -60,11 +57,8 @@ protected:
 
 private:
 	void printResults() {
-#ifdef NO_TYPEID
 		std::cout << "Statistics: " << (mRun - mFailed - mSkipped) << " passed, " << mFailed << " failed, " << mSkipped << " skipped" << std::endl;
-#else
-		std::cout << typeid(*this).name() << " Statistics: " << (mRun - mFailed - mSkipped) << " passed, " << mFailed << " failed, " << mSkipped << " skipped" << std::endl;
-#endif
+		//std::cout << typeid(*this).name() << " Statistics: " << (mRun - mFailed - mSkipped) << " passed, " << mFailed << " failed, " << mSkipped << " skipped" << std::endl;
 	}
 };
 

@@ -21,16 +21,12 @@ class Void : public Object
 public:
 	Void()
 	: Object("", "SYSTEM.OS", "Void", "")
-	{ }
-
-	Void(const std::string& value)
-	: Object("", "SYSTEM.OS", "Void", value)
-	{ }
+	{
+		Constructor(ParameterList());
+	}
 
 public:
-	void setTokens(const TokenList& tokens) {
-		(void)tokens;
-	}
+	void setTokens(const TokenList& /*tokens*/) { }
 
 protected:
 

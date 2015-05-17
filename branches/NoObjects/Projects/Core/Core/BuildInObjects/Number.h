@@ -19,9 +19,11 @@ namespace ObjectiveScript {
 class Number : public Object
 {
 public:
-	Number()
-	: Object("", "SYSTEM.OS", "Number", "")
+	Number(const std::string& value = "0")
+	: Object("", "SYSTEM.OS", "Number", value)
 	{
+		Constructor(ParameterList());
+
 /*
 		Variable mValue("mValue", "atomic_number", "0");
 		mValue.visibility(Visibility::Private);
@@ -42,14 +44,8 @@ public:
 */
 	}
 
-	Number(const std::string& value)
-	: Object("", "SYSTEM.OS", "Number", value)
-	{ }
-
 public:
-	void setTokens(const TokenList& tokens) {
-		(void)tokens;
-	}
+	void setTokens(const TokenList& /*tokens*/) { }
 
 protected:
 

@@ -8,7 +8,6 @@
 #include <string>
 
 // Project includes
-#include <Core/Variable.h>
 
 // Forward declarations
 
@@ -17,6 +16,8 @@
 
 namespace ObjectiveScript {
 
+// Forward declarations
+class Object;
 
 class Parameter
 {
@@ -31,33 +32,15 @@ public:
 	};
 
 public:
-	Parameter(const std::string& name, const std::string& type, const std::string& value, bool isConst = false, AccessMode::E access = AccessMode::ByValue)
-	: mAccessMode(access),
-	  mIsConst(isConst),
-	  mName(name),
-	  mType(type),
-	  mValue(value)
-	{ }
+	Parameter(const std::string& name, const std::string& type, const std::string& value, bool isConst = false, AccessMode::E access = AccessMode::ByValue, Object* reference = 0);
 
-	AccessMode::E access() const {
-		return mAccessMode;
-	}
-
-	bool isConst() const {
-		return mIsConst;
-	}
-
-	const std::string& name() const {
-		return mName;
-	}
-
-	const std::string& type() const {
-		return mType;
-	}
-
-	const std::string& value() const {
-		return mValue;
-	}
+public:
+	AccessMode::E access() const;
+	bool isConst() const;
+	const std::string& name() const;
+	Object* reference() const;
+	const std::string& type() const;
+	const std::string& value() const;
 
 protected:
 
@@ -65,6 +48,7 @@ private:
 	AccessMode::E mAccessMode;
 	bool mIsConst;
 	std::string mName;
+	Object* mReference;
 	std::string mType;
 	std::string mValue;
 };

@@ -287,6 +287,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Core\Parameter.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\Utils\Position.cpp"
 				>
 				<FileConfiguration

@@ -19,18 +19,14 @@ namespace ObjectiveScript {
 class Bool : public Object
 {
 public:
-	Bool()
-	: Object("", "SYSTEM.OS", "Bool", "")
-	{ }
-
-	Bool(const std::string& value)
+	Bool(const std::string& value = "false")
 	: Object("", "SYSTEM.OS", "Bool", value)
-	{ }
+	{
+		Constructor(ParameterList());
+	}
 
 public:
-	void setTokens(const TokenList& tokens) {
-		(void)tokens;
-	}
+	void setTokens(const TokenList& /*tokens*/) { }
 
 protected:
 

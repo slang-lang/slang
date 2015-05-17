@@ -8,6 +8,7 @@
 #include <Core/Utils/Exceptions.h>
 #include <Core/Utils/Utils.h>
 #include "Object.h"
+#include "Repository.h"
 #include "Tokenizer.h"
 #include "Tools.h"
 
@@ -17,13 +18,16 @@
 namespace ObjectiveScript {
 
 
-Preprocessor::Preprocessor(Object *object)
-: mObject(object)
+Preprocessor::Preprocessor(Repository *repository)
+: mObject(0),
+  mRepository(repository)
 {
 }
 
 Object* Preprocessor::createMemberObject(const std::string& filename, TokenIterator token)
 {
+(void)filename;
+
 	std::string name;
 	std::string languageFeature;
 	std::string type;
@@ -45,8 +49,7 @@ Object* Preprocessor::createMemberObject(const std::string& filename, TokenItera
 		throw Utils::Exception("Member initialisation not allowed at this point", token->position());
 	}
 
-	// create member variable
-	Object *o = new Object(name, filename, type, value);
+	Object *o = mRepository->createInstance(type, name);
 	o->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
 	o->setVisibility(Visibility::convert(visibility));
 	return o;
@@ -76,44 +79,7 @@ Method* Preprocessor::createMethod(TokenIterator token)
 	// look for the next opening parenthesis
 	do { token++; } while ( (*token).type() != Token::Type::PARENTHESIS_OPEN );
 
-	ParameterList params;
-
-	// look for the next closing parenthesis
-	// and create parameters
-	while ( (*++token).type() != Token::Type::PARENTHESIS_CLOSE ) {
-		if ( isLocalDeclaration(token) ) {
-			// try to create parameter objects
-			std::string name;
-			std::string type = token->content();
-
-			do {
-				token++;
-
-				if ( token->type() == Token::Type::IDENTIFER ) {
-					name = token->content();
-				}
-				else if ( token->type() == Token::Type::RESERVED ) {
-					if ( token->content() == "const" ) {
-						isConst = true;
-					}
-					else if ( token->content() == "static" ) {
-						throw Utils::Exception("static parameter declarations not allowed", token->position());
-					}
-				}
-			} while ( token->type() != Token::Type::COLON && token->type() != Token::Type::PARENTHESIS_CLOSE );
-
-			params.push_back(Parameter(name, type, "", isConst, Parameter::AccessMode::ByValue));
-
-			if ( token->type() == Token::Type::PARENTHESIS_CLOSE ) {
-				break;
-			}
-		}
-
-		isConst = false;
-	}
-
-	// collect all tokens of this method
-	TokenList tokens;
+	ParameterList params = parseParameters(token);
 
 	// look at possible attributes (const, static, etc.)
 	// look for the next opening curly bracket
@@ -130,6 +96,13 @@ Method* Preprocessor::createMethod(TokenIterator token)
 		}
 	} while ( token->type() != Token::Type::BRACKET_CURLY_OPEN );
 
+	if ( isConst && isStatic ) {
+		throw Utils::Exception("static methods can not be const!");
+	}
+
+	// collect all tokens of this method
+	TokenList tokens;
+
 	int scope = 0;
 	// look for the corresponding closing curly bracket
 	while ( (*++token).type() != Token::Type::BRACKET_CURLY_CLOSE || scope > 0 ) {
@@ -141,10 +114,6 @@ Method* Preprocessor::createMethod(TokenIterator token)
 		}
 
 		tokens.push_back((*token));
-	}
-
-	if ( isConst && isStatic ) {
-		throw Utils::Exception("static methods can not be const!");
 	}
 
 	// create a new Method with the corresponding return value
@@ -183,12 +152,6 @@ void Preprocessor::generateObject()
 		else if ( isMethodDeclaration((*it)) ) {
 			mObject->addMethod(createMethod((*it)));
 		}
-/*
-		else {
-			os_error("synthax error: looks like a member or method declaration but is none");
-			return;
-		}
-*/
 	}
 }
 
@@ -243,10 +206,95 @@ bool Preprocessor::isMethodDeclaration(TokenIterator start)
 	return checkSynthax(start, tokens);
 }
 
-void Preprocessor::process()
+ParameterList Preprocessor::parseParameters(TokenIterator &token)
 {
-	OSdebug("process('" + mObject->name() + "')");
+	ParameterList params;
 
+	while ( (*++token).type() != Token::Type::PARENTHESIS_CLOSE ) {
+		if ( !isLocalDeclaration(token) ) {
+			throw Utils::SyntaxError("could not parse parameter declaration!", token->position());
+		}
+
+		Parameter::AccessMode::E accessmode = Parameter::AccessMode::ByValue;
+		bool isConst = false;
+		std::string value;
+
+		std::string type = token->content();
+		token++;
+
+		std::string name = token->content();
+		token++;
+
+		if ( token->content() == "const" ) {
+			isConst = true;
+			token++;
+		}
+
+		if ( token->content() == "ref" ) {
+			accessmode = Parameter::AccessMode::ByReference;
+			token++;
+		}
+		else if ( token->content() == "val" ) {
+			accessmode = Parameter::AccessMode::ByValue;
+			token++;
+		} 
+
+		if ( token->type() == Token::Type::ASSIGN ) {
+			token++;
+			value = token->content();
+		}
+
+		Parameter param(name, type, value, isConst, accessmode, 0);
+		params.push_back(param);
+
+		if ( token->type() == Token::Type::PARENTHESIS_CLOSE ) {
+			break;
+		}
+	}
+
+/*
+	// look for the next closing parenthesis and create parameters
+	while ( (*++token).type() != Token::Type::PARENTHESIS_CLOSE ) {
+		if ( isLocalDeclaration(token) ) {
+			// try to create parameter objects
+			std::string name;
+			std::string type = token->content();
+
+			do {
+				token++;
+
+				if ( token->type() == Token::Type::IDENTIFER ) {
+					name = token->content();
+				}
+				else if ( token->type() == Token::Type::RESERVED ) {
+					if ( token->content() == "const" ) {
+						isConst = true;
+					}
+					else if ( token->content() == "static" ) {
+						throw Utils::Exception("static parameter declarations not allowed", token->position());
+					}
+				}
+			} while ( token->type() != Token::Type::COLON && token->type() != Token::Type::PARENTHESIS_CLOSE );
+
+			params.push_back(Parameter(name, type, "", isConst, Parameter::AccessMode::ByValue));
+
+			if ( token->type() == Token::Type::PARENTHESIS_CLOSE ) {
+				break;
+			}
+		}
+
+		isConst = false;
+	}
+*/
+
+	return params;
+}
+
+void Preprocessor::process(Object *object)
+{
+	//OSdebug("process('" + object->name() + "')");
+
+	mObject = object;
 	mTokens = mObject->getTokens();
 
 	// build object from tokens

@@ -42,6 +42,7 @@ private:	// Tests
 
 	void testConstCorrectness();
 	void testInterfaces();
+	void testObjectReference();
 
 private:
 	::Utils::Printer mStdoutPrinter;

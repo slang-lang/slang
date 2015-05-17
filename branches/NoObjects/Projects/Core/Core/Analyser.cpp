@@ -161,12 +161,6 @@ void Analyser::generateObjects()
 			Prototype p = createPrototype(it);
 			mPrototypes.push_back(p);
 		}
-/*
-		else {
-			os_error("syntax error: looks like a library, object or prototype declaration but is none");
-			return;
-		}
-*/
 
 		it++;
 	}
@@ -275,7 +269,7 @@ void Analyser::process(const std::string& filename)
 	mObjects.clear();
 	mTokens.clear();
 
-	OSdebug("process('" + mFilename + "')");
+	//OSdebug("process('" + mFilename + "')");
 
 	// read file content
 	std::ifstream in(mFilename.c_str(), std::ios_base::binary);

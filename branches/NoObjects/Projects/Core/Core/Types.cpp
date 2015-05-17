@@ -58,7 +58,10 @@ StringList provideReservedWords()
 	reservedWords.push_back("interface");
 	reservedWords.push_back("object");
 	reservedWords.push_back("of");
+	reservedWords.push_back("ref");
+	reservedWords.push_back("prototype");
 	reservedWords.push_back("static");
+	reservedWords.push_back("val");
 
 	return reservedWords;
 }
@@ -126,24 +129,6 @@ std::string toString(const TokenList& list)
 
 	return result;
 }
-
-/* deprecated
-std::string toString(const VariablesList& list)
-{
-	std::string result;
-
-	for ( VariablesList::const_iterator it = list.begin(); it != list.end(); ++it ) {
-		result += (*it).type() + " " + (*it).name() + " = " + (*it).value();
-
-		VariablesList::const_iterator copy = it;
-		if ( ++copy != list.end() ) {
-			result += ", ";
-		}
-	}
-
-	return result;
-}
-*/
 
 
 }

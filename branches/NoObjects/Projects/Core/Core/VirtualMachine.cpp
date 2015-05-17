@@ -34,16 +34,15 @@ VirtualMachine::~VirtualMachine()
 {
 	mBluePrints.clear();
 	mInterfaces.clear();
-
-/*
-	for ( ObjectMap::iterator it = mObjects.begin(); it != mObjects.end(); ++it ) {
-		delete it->second;
-	}
-*/
 	mObjects.clear();
 
-	delete mRepository;
+	for ( Scripts::iterator it = mScripts.begin(); it != mScripts.end(); ++it ) {
+		delete (*it);
+	}
+	mScripts.clear();
+
 	delete mMemory;
+	delete mRepository;
 }
 
 std::string VirtualMachine::buildLibraryPath(const std::string& library) const
@@ -77,6 +76,8 @@ Script* VirtualMachine::create(const std::string& filename)
 	}
 
 	Script *script = new Script();
+	mScripts.insert(script);
+
 	script->connectPrinter(mPrinter);
 
 	Analyser a;

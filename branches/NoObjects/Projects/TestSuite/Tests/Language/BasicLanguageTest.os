@@ -66,23 +66,20 @@ public namespace
 			}
 		}
 
-		public void test_if(Number param1)
+		public void test_if(Number param1 = 2)
 		{
-			if ( false ) {
-				print("if: false");
-			}
-			else {
-				print("if: else");
+			if ( true ) {
+				print("true");
 			}
 
-			if ( true ) {
-				print("if: true");
+			if ( false ) {
+				print("false");
 			}
 
 			if ( param1 - 1 == 0 ) {
 				print("if: true");
 			}
-			else if ( true ) {
+			else if ( param1 - 2 < 0 ) {
 				print("else if: true");
 			}
 			else {
@@ -114,7 +111,7 @@ public namespace
 			print("i = " & i);
 		}
 
-		public void test_while(Number maxCount)
+		public void test_while(Number maxCount = 7)
 		{
 			Number count = 0;
 			while ( count < maxCount ) {

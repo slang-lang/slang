@@ -28,6 +28,7 @@ namespace ObjectiveScript {
 class IPrinter;
 class Memory;
 class Method;
+class Object;
 class Repository;
 
 
@@ -43,13 +44,15 @@ public:
 	Object(const Variable& var);
 	virtual ~Object();
 
+public:
+	void operator= (const Object& other);
+
 public:	// Setup
 	void addMember(Object *m);		// throws DuplicateIdentifer exception
 	void addMethod(Method *m);		// throws DuplicateIdentifer exception
 	void addParent(const std::string& parent);
 
 public:	// Connectors
-	void connectMemory(Memory *m);
 	void connectPrinter(IPrinter *p);
 	void connectRepository(Repository *r);
 
@@ -57,7 +60,6 @@ public:	// Providers
 	IPrinter* providePrinter() const;
 
 public:	// Usage
-	void assign(const Object& other); //void assign(const Object& other);
 	void Constructor(const ParameterList& params);
 	void Destructor();
 
@@ -93,7 +95,6 @@ private:
 private:
 	bool mConstructed;
 	MemberCollection mMembers;
-	Memory *mMemory;
 	MethodCollection mMethods;
 	StringList mParents;
 	IPrinter *mPrinter;

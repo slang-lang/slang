@@ -32,7 +32,6 @@ public:
 	const Reference& getAddress(Object *obj) const;
 	const Reference& getNullReference() const;
 	Object* getObject(const Reference& ref) const;
-	Object* getObject(const std::string& name) const;
 
 protected:
 

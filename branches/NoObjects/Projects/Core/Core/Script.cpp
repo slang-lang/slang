@@ -9,6 +9,7 @@
 #include <Core/Utils/Exceptions.h>
 #include <Core/Utils/Utils.h>
 #include "Object.h"
+#include "Repository.h"
 #include "Tools.h"
 
 // Namespace declarations
@@ -27,6 +28,7 @@ Script::Script()
 
 Script::~Script()
 {
+	destruct();
 }
 
 void Script::assign(Object *object)
@@ -63,7 +65,6 @@ void Script::construct()
 {
 	try {
 		if ( mObject ) {
-			mObject->connectMemory(mMemory);
 			mObject->connectPrinter(mPrinter);
 			mObject->connectRepository(mRepository);
 			mObject->Constructor(ParameterList());
@@ -77,9 +78,7 @@ void Script::construct()
 void Script::destruct()
 {
 	try {
-		if ( mObject ) {
-			mObject->Destructor();
-		}
+		mRepository->removeReference(mObject);
 	}
 	catch ( Utils::Exception &e ) {
 		OSerror(e.what());

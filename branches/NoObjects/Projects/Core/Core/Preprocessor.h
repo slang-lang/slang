@@ -9,6 +9,7 @@
 
 // Project includes
 #include "Method.h"
+#include "Parameter.h"
 #include "Tokenizer.h"
 #include "Variable.h"
 
@@ -21,14 +22,15 @@ namespace ObjectiveScript {
 
 // Forward declarations
 class Object;
+class Repository;
 
 class Preprocessor
 {
 public:
-	Preprocessor(Object *object);
+	Preprocessor(Repository *repository);
 
 public:
-	void process();
+	void process(Object *object);
 
 protected:
 
@@ -43,8 +45,11 @@ private:
 	bool isMemberDeclaration(TokenIterator start);
 	bool isMethodDeclaration(TokenIterator start);
 
+	ParameterList parseParameters(TokenIterator &token);
+
 private:
 	Object *mObject;
+	Repository *mRepository;
 	TokenList mTokens;
 };
 

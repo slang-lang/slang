@@ -13,6 +13,7 @@
 #include "Reference.h"
 #include "Scope.h"
 #include "Types.h"
+#include "Variable.h"
 
 // Forward declarations
 
@@ -33,6 +34,9 @@ class Method : public LocalScope,
 public:
 	Method(IScope *parent, const std::string& name, const std::string& type);
 	~Method();
+
+public:
+	void operator= (const Method& other);
 
 public:
 	Object* getOwner() const;
@@ -116,7 +120,7 @@ private:	// Construction
 	void addIdentifier(Object *object);			// throws DuplicateIdentifer exception
 
 private:	// Destruction
-	void garbageCollector(bool force = false);
+	void garbageCollector();
 
 private:	// Execution
 	bool isLocalSymbol(const std::string& token);
@@ -129,12 +133,13 @@ private:	// Execution
 	Object process(TokenIterator& start, TokenIterator end, Token::Type::E terminator = Token::Type::NIL);
 	void process_assert(TokenIterator& token);
 	void process_assign(TokenIterator& token);
+	void process_delete(TokenIterator& token);
 	void process_for(TokenIterator& token);
 	void process_if(TokenIterator& token);
 	void process_keyword(TokenIterator& token);
 	Object process_method(TokenIterator& token);
-	//Object process_new(TokenIterator& token);
-	Reference process_new(TokenIterator& token);
+	Object process_new(TokenIterator& token);
+	Reference process_new_ref(TokenIterator& token);
 	void process_print(TokenIterator& token);
 	void process_type(TokenIterator& token);
 	void process_switch(TokenIterator& token);

@@ -44,6 +44,7 @@ private:
 	typedef std::map<std::string, BluePrint> BluePrintMap;
 	typedef std::map<std::string, Interface> InterfaceMap;
 	typedef std::map<std::string, Object*> ObjectMap;
+	typedef std::set<Script*> Scripts;
 
 private:
 	std::string buildLibraryPath(const std::string& library) const;
@@ -57,6 +58,7 @@ private:
 	ObjectMap		mObjects;
 	IPrinter		*mPrinter;
 	Repository		*mRepository;
+	Scripts			mScripts;
 };
 
 

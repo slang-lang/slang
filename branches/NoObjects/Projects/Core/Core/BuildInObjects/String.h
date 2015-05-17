@@ -19,16 +19,10 @@ namespace ObjectiveScript {
 class String : public Object
 {
 public:
-	String()
-	: Object("", "SYSTEM.OS", "String", "")
-	{
-		//init();
-	}
-
-	String(const std::string& value)
+	String(const std::string& value = "")
 	: Object("", "SYSTEM.OS", "String", value)
 	{
-		//init();
+		Constructor(ParameterList());
 	}
 
 public:
