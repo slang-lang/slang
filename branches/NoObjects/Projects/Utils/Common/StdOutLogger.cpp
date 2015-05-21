@@ -21,7 +21,7 @@ namespace Common {
 StdOutLogger::StdOutLogger()
 : mContext(0),
   mHasParent(false),
-  mLoudness(Logger::LoudnessMethod)
+  mLoudness(Logger::LoudnessDebug)
 {
 	mContext = new StdOutContext();
 }
@@ -30,7 +30,7 @@ StdOutLogger::StdOutLogger(const Logger *parent, const std::string& className, c
 : mContext(0),
   mHasParent(false),
   mKey(key),
-  mLoudness(Logger::LoudnessMethod)
+  mLoudness(Logger::LoudnessDebug)
 {
 	if ( parent ) {
 		mContext = parent->getContext();

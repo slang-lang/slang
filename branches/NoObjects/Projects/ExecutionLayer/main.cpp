@@ -52,7 +52,6 @@ void printUsage()
 {
 	printf("usage:\n");
 	printf("\n");
-	printf("-f\t\t\tfile name\n");
 	printf("-v\t\t\tverbose output\n");
 	printf("-h|--help\t\tthis text\n");
 	printf("\n");
@@ -66,24 +65,21 @@ int main(int argc, const char* argv[])
 	// Memory leak detection
 #endif
 
-	Utils::Common::ILogger *logger = 0;
+	Utils::Common::ILogger *logger = new Utils::Common::StdOutLogger();
 
 	std::string filename;
 	ObjectiveScript::VariablesList params;
 
 	if ( argc > 1 ) {
 		for (int i = 1; i < argc; i++) {
-			if ( Utils::Tools::StringCompare(argv[i], "-f") ) {
-				i++;
-				if ( i < argc ) {
-					filename = argv[i];
-				}
-			}
-			else if ( Utils::Tools::StringCompare(argv[i], "-v") ) {
-				logger = new Utils::Common::StdOutLogger();
+			if ( Utils::Tools::StringCompare(argv[i], "-v") ) {
+				logger->setLoudness(Utils::Common::ILogger::LoudnessInfo);
 			}
 			else if ( Utils::Tools::StringCompare(argv[i], "-h") || Utils::Tools::StringCompare(argv[i], "--help") ) {
 				printUsage();
+			}
+			else {
+				filename = argv[i];
 			}
 		}
 	}
