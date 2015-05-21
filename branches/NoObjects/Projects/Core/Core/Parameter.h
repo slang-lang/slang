@@ -26,6 +26,7 @@ public:
 	{
 	public:
 		enum E {
+			Unspecified,
 			ByReference,
 			ByValue
 		};

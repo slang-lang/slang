@@ -1,5 +1,5 @@
 
-public namespace Main
+public namespace
 {
 	public interface IWarehouse
 	{
@@ -8,13 +8,13 @@ public namespace Main
 
 	public object Warehouse implements IWarehouse
 	{
-                public Number GetBox() const
-                {
+		public Number GetBox() const
+		{
 			// either this..
-                        return Number(1);
+			return Number(1);
 			// or that..
 			//return 1;
-                }
+		}
 	}
 
 	public object Main
@@ -30,4 +30,3 @@ public namespace Main
 		}
 	}
 }
-

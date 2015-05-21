@@ -34,15 +34,16 @@ public:
 private:	// Tests
 	void testAssert();
 	void testComment();
+	void testConstCorrectness();
+	void testDefaultParameter();
 	void testFor();
 	void testIf();
+	void testInterfaces();
+	void testMethodOverloading();
+	void testObjectReference();
 	void testPrint();
 	void testStaticLocalVariable();
 	void testWhile();
-
-	void testConstCorrectness();
-	void testInterfaces();
-	void testObjectReference();
 
 private:
 	::Utils::Printer mStdoutPrinter;

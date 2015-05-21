@@ -1,5 +1,5 @@
 
-public namespace Main
+public namespace Inheritance
 {
 	public interface IContainer
 	{

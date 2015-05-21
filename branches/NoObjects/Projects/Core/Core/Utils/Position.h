@@ -4,6 +4,7 @@
 
 
 // Library includes
+#include <string>
 
 // Project includes
 
@@ -24,6 +25,8 @@ public:
 public:
 	bool operator==(const Position& other);
 	bool operator<(const Position& other);
+
+	std::string toString() const;
 
 public:
 	unsigned int line;

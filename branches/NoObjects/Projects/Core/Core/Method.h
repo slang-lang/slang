@@ -138,7 +138,7 @@ private:	// Execution
 	void process_if(TokenIterator& token);
 	void process_keyword(TokenIterator& token);
 	Object process_method(TokenIterator& token);
-	Object process_new(TokenIterator& token);
+	Object* process_new(TokenIterator& token);
 	Reference process_new_ref(TokenIterator& token);
 	void process_print(TokenIterator& token);
 	void process_type(TokenIterator& token);

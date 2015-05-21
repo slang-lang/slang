@@ -1,14 +1,25 @@
 
-namespace std
+public namespace
 {
-
-	public void assertmsg(String message const, Bool condition const) static
+	public object Assert
 	{
-		if ( condition == false ) {
-			print(message);
+		public void assertmsg(String message const, Bool condition const) static
+		{
+			if ( condition == false ) {
+				print(message);
 
-			assert(condition);
+				assert(condition);
+			}
+		}
+
+		public void debug(Bool condition const, String message const) static
+		{
+			if ( condition ) {
+				print("success: " & message);
+			}
+			else {
+				print("failed: " & message);
+			}
 		}
 	}
-
 }

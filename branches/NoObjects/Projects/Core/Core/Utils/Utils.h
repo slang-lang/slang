@@ -13,7 +13,14 @@
 
 
 #define WRITE_LOGS
+//#define WRITE_LOGS_WITH_FILENAMES
+
 #ifdef WRITE_LOGS
+#define OSdebug(message) std::cout << "[DEBUG] " << message << std::endl;
+#define OSerror(message) std::cout << "[ERROR] " << message << std::endl;
+#define OSinfo(message) std::cout << "[INFO ] " << message << std::endl;
+#define OSwarn(message) std::cout << "[WARN ] " << message << std::endl;
+#elif WRITE_LOGS_WITH_FILENAMES
 #define OSdebug(message) std::cout << "[DEBUG] " << message << " in " << __FUNCTION__ << std::endl;
 #define OSerror(message) std::cout << "[ERROR] " << message << " in " << __FUNCTION__ << std::endl;
 #define OSinfo(message) std::cout << "[INFO ] " << message << " in " << __FUNCTION__ << std::endl;

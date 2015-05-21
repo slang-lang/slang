@@ -17,40 +17,43 @@ public namespace {
 
 		public void Main()
 		{
-			DefaultParameter();
-
-			// instantiate new object
-			obj = new TestObject(1);
+			obj = new TestObject(1);	// instantiate new object (and execute it's constructor)
+			print("value.mValue = " & obj.mValue);
 
 			obj.mValue = 2;
-			print("value: " & obj.mValue);
+			print("value.mValue = " & obj.mValue);
 
-			ParameterByValue(obj);
-			print("value: " & obj.mValue);
+			ParameterByValue(obj.mValue);
+			print("value.mValue = " & obj.mValue);
 
-			//ParameterByReference(obj);
-			print("value: " & obj.mValue);
+			//ParameterByReference(obj.mValue);
+			print("value.mValue = " & obj.mValue);
 
-			// delete object (and execute it's destructor)
-			delete obj;
+			delete obj;					// delete object (and execute it's destructor)
 		}
 
-		private void ParameterByReference(TestObject value const ref)
+		private void ParameterByReference(TestObject value ref)
 		{
 			value.mValue = value.mValue + 1;
 			print("mValue = " & value.mValue);
 		}
 
-		private void ParameterByValue(TestObject value val = 0)
+		private void ParameterByReference(Number value ref)
+		{
+			value = value + 1;
+			print("ParameterByReference.value = " & value);
+		}
+
+		private void ParameterByValue(TestObject value val /*= TestObject(1)*/)
 		{
 			value.mValue = value.mValue + 1;
 			print("mValue = " & value.mValue);
 		}
-		
-		private void DefaultParameter(Number param = 1)
+
+		private void ParameterByValue(Number value val)
 		{
-			param = 2;
-			print("param = " & param);
+			value = value + 1;
+			print("ParameterByValue.value = " & value);
 		}
 	}
 

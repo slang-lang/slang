@@ -31,18 +31,18 @@ LanguageTest::LanguageTest(const ::Utils::Common::Logger *p)
 
 void LanguageTest::process()
 {
-/*
 	TEST(testAssert);
 	TEST(testComment);
+	TEST(testConstCorrectness);
+	TEST(testDefaultParameter);
 	TEST(testFor);
 	TEST(testIf);
-	TEST(testPrint);
-	TEST(testWhile);
-
-	TEST(testConstCorrectness);
-*/
 	//TEST(testInterfaces);
+	TEST(testMethodOverloading);
 	TEST(testObjectReference);
+	TEST(testPrint);
+	TEST(testStaticLocalVariable);
+	TEST(testWhile);
 }
 
 void LanguageTest::setup()
@@ -59,15 +59,12 @@ void LanguageTest::testAssert()
 		VirtualMachine vm;
 		vm.connectPrinter(&mStdoutPrinter);
 
-		Script *s = vm.create("Tests/Language/BasicLanguageTest.os");
-
-		s->execute("test_assert", ParameterList());
+		vm.create("Tests/Language/AssertTest.os");
 
 		// automatic success
 	}
-	catch ( ObjectiveScript::Utils::Exception& e ) {
-		// exception has been thrown: test failed!
-		TFAIL("caught exception: " << e.what());
+	catch ( ObjectiveScript::Utils::AssertionFailed& /*e*/ ) {
+		// success
 	}
 	catch ( std::exception& e ) {
 		// exception has been thrown: test failed!
@@ -81,131 +78,9 @@ void LanguageTest::testComment()
 		VirtualMachine vm;
 		vm.connectPrinter(&mStdoutPrinter);
 
-		Script *s = vm.create("Tests/Language/BasicLanguageTest.os");
-
-		s->execute("test_comments", ParameterList());
+		vm.create("Tests/Language/CommentTest.os");
 
 		// automatic success
-	}
-	catch ( ObjectiveScript::Utils::Exception& e ) {
-		// exception has been thrown: test failed!
-		TFAIL("caught exception: " << e.what());
-	}
-	catch ( std::exception& e ) {
-		// exception has been thrown: test failed!
-		TFAIL("caught exception: " << e.what());
-	}
-}
-
-void LanguageTest::testFor()
-{
-	try {
-		VirtualMachine vm;
-		vm.connectPrinter(&mStdoutPrinter);
-
-		Script *s = vm.create("Tests/Language/BasicLanguageTest.os");
-
-		s->execute("test_for", ParameterList());
-
-		// automatic success
-	}
-	catch ( ObjectiveScript::Utils::Exception& e ) {
-		// exception has been thrown: test failed!
-		TFAIL("caught exception: " << e.what());
-	}
-	catch ( std::exception& e ) {
-		// exception has been thrown: test failed!
-		TFAIL("caught exception: " << e.what());
-	}
-}
-
-void LanguageTest::testIf()
-{
-	try {
-		VirtualMachine vm;
-		vm.connectPrinter(&mStdoutPrinter);
-
-		Script *s = vm.create("Tests/Language/BasicLanguageTest.os");
-
-		ParameterList params;
-		params.push_back(Parameter("param1", "Number", "1", false, Parameter::AccessMode::ByValue));
-		s->execute("test_if", params);
-
-		// automatic success
-	}
-	catch ( ObjectiveScript::Utils::Exception& e ) {
-		// exception has been thrown: test failed!
-		TFAIL("caught exception: " << e.what());
-	}
-	catch ( std::exception& e ) {
-		// exception has been thrown: test failed!
-		TFAIL("caught exception: " << e.what());
-	}
-}
-
-void LanguageTest::testPrint()
-{
-	try {
-		VirtualMachine vm;
-		vm.connectPrinter(&mStdoutPrinter);
-
-		Script *s = vm.create("Tests/Language/BasicLanguageTest.os");
-
-		ParameterList params;
-		params.push_back(Parameter("param1", "String", "parameter", false, Parameter::AccessMode::ByReference));
-		s->execute("test_print", params);
-
-		// automatic success
-	}
-	catch ( ObjectiveScript::Utils::Exception& e ) {
-		// exception has been thrown: test failed!
-		TFAIL("caught exception: " << e.what());
-	}
-	catch ( std::exception& e ) {
-		// exception has been thrown: test failed!
-		TFAIL("caught exception: " << e.what());
-	}
-}
-
-void LanguageTest::testStaticLocalVariable()
-{
-	try {
-		VirtualMachine vm;
-		vm.connectPrinter(&mStdoutPrinter);
-
-		Script *s = vm.create("Tests/Language/BasicLanguageTest.os");
-
-		s->execute("test_static_local_variable", ParameterList());
-
-		// automatic success
-	}
-	catch ( ObjectiveScript::Utils::Exception& e ) {
-		// exception has been thrown: test failed!
-		TFAIL("caught exception: " << e.what());
-	}
-	catch ( std::exception& e ) {
-		// exception has been thrown: test failed!
-		TFAIL("caught exception: " << e.what());
-	}
-}
-
-void LanguageTest::testWhile()
-{
-	try {
-		VirtualMachine vm;
-		vm.connectPrinter(&mStdoutPrinter);
-
-		Script *s = vm.create("Tests/Language/BasicLanguageTest.os");
-
-		ParameterList params;
-		params.push_back(Parameter("maxCount", "Number", "5", false, Parameter::AccessMode::ByValue));
-		s->execute("test_while", params);
-
-		// automatic success
-	}
-	catch ( ObjectiveScript::Utils::Exception& e ) {
-		// exception has been thrown: test failed!
-		TFAIL("caught exception: " << e.what());
 	}
 	catch ( std::exception& e ) {
 		// exception has been thrown: test failed!
@@ -219,19 +94,63 @@ void LanguageTest::testConstCorrectness()
 		VirtualMachine vm;
 		vm.connectPrinter(&mStdoutPrinter);
 
-		Script *s = vm.create("Tests/Language/ConstCorrectness.os");
-
-		ParameterList params;
-		params.push_back(Parameter("two", "Number", "2", true, Parameter::AccessMode::ByReference));
-		s->execute("ModifyConstParameter", params);
-
-		s->execute("ModifyMemberInConstMethod", ParameterList());
+		vm.create("Tests/Language/ConstCorrectness.os");
 
 		// automatic success
 	}
-	catch ( ObjectiveScript::Utils::Exception& e ) {
+	catch ( ObjectiveScript::Utils::ConstCorrectnessViolated& /*e*/ ) {
+		// success
+	}
+	catch ( std::exception& e ) {
 		// exception has been thrown: test failed!
 		TFAIL("caught exception: " << e.what());
+	}
+}
+
+void LanguageTest::testDefaultParameter()
+{
+	try {
+		VirtualMachine vm;
+		vm.connectPrinter(&mStdoutPrinter);
+
+		vm.create("Tests/Language/DefaultParameter.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL("caught exception: " << e.what());
+	}
+}
+
+void LanguageTest::testFor()
+{
+	try {
+		VirtualMachine vm;
+		vm.connectPrinter(&mStdoutPrinter);
+
+		vm.create("Tests/Language/ForLoopTest.os");
+
+		// automatic success
+	}
+	catch ( ObjectiveScript::Utils::AssertionFailed& /*e*/ ) {
+		// this is okay for now => success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL("caught exception: " << e.what());
+	}
+}
+
+void LanguageTest::testIf()
+{
+	try {
+		VirtualMachine vm;
+		vm.connectPrinter(&mStdoutPrinter);
+
+		vm.create("Tests/Language/IfTest.os");
+
+		// automatic success
 	}
 	catch ( std::exception& e ) {
 		// exception has been thrown: test failed!
@@ -252,9 +171,27 @@ void LanguageTest::testInterfaces()
 
 		// automatic success
 	}
+/*
 	catch ( ObjectiveScript::Utils::Exception& e ) {
 		// exception has been thrown: test failed!
 		TFAIL("caught exception: " << e.what());
+	}
+*/
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL("caught exception: " << e.what());
+	}
+}
+
+void LanguageTest::testMethodOverloading()
+{
+	try {
+		VirtualMachine vm;
+		vm.connectPrinter(&mStdoutPrinter);
+
+		vm.create("Tests/Language/MethodOverloadingTest.os");
+
+		// automatic success
 	}
 	catch ( std::exception& e ) {
 		// exception has been thrown: test failed!
@@ -272,9 +209,53 @@ void LanguageTest::testObjectReference()
 
 		// automatic success
 	}
-	catch ( ObjectiveScript::Utils::Exception& e ) {
+	catch ( std::exception& e ) {
 		// exception has been thrown: test failed!
 		TFAIL("caught exception: " << e.what());
+	}
+}
+
+void LanguageTest::testPrint()
+{
+	try {
+		VirtualMachine vm;
+		vm.connectPrinter(&mStdoutPrinter);
+
+		vm.create("Tests/Language/PrintTest.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL("caught exception: " << e.what());
+	}
+}
+
+void LanguageTest::testStaticLocalVariable()
+{
+	try {
+		VirtualMachine vm;
+		vm.connectPrinter(&mStdoutPrinter);
+
+		vm.create("Tests/Language/StaticVariablesTest.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL("caught exception: " << e.what());
+	}
+}
+
+void LanguageTest::testWhile()
+{
+	try {
+		VirtualMachine vm;
+		vm.connectPrinter(&mStdoutPrinter);
+
+		vm.create("Tests/Language/WhileTest.os");
+
+		// automatic success
 	}
 	catch ( std::exception& e ) {
 		// exception has been thrown: test failed!

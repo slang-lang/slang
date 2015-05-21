@@ -71,7 +71,7 @@ std::string toString(const ParameterList& list)
 	std::string result;
 
 	for ( ParameterList::const_iterator it = list.begin(); it != list.end(); ++it ) {
-		result = it->type() + " " + it->name() + " = " + it->value();
+		result = it->type() + " " + (it->name() != "" ? it->name() + " = " : "<unnamed object> = ") + it->value();
 
 		ParameterList::const_iterator copy = it;
 		if ( ++copy != list.end() ) {

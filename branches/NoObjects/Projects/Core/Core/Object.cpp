@@ -241,6 +241,8 @@ Object Object::execute(const std::string& method, const ParameterList& params, c
 	catch ( Utils::Exception &e ) {
 		// catch and log all errors that occured during method execution
 		OSerror(e.what());
+
+		throw e;
 	}
 
 	return returnValue;

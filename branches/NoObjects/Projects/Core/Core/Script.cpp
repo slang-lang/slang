@@ -63,16 +63,22 @@ void Script::connectRepository(Repository *r)
 
 void Script::construct()
 {
+/*
 	try {
+*/
 		if ( mObject ) {
 			mObject->connectPrinter(mPrinter);
 			mObject->connectRepository(mRepository);
 			mObject->Constructor(ParameterList());
 		}
+/*
 	}
 	catch ( Utils::Exception &e ) {
-		OSerror(e.what());
+		//OSerror(e.what());
+
+		throw e;
 	}
+*/
 }
 
 void Script::destruct()
@@ -87,7 +93,7 @@ void Script::destruct()
 
 Object Script::execute(const std::string& method, ParameterList params)
 {
-	OSdebug("execute('" + method /*+ "', [" + toString(params) + "])"*/);
+	//OSdebug("execute('" + method + "', [" + toString(params) + "])");
 
 	Object returnValue;
 	try {

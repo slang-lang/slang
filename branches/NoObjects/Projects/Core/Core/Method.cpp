@@ -124,16 +124,23 @@ Object Method::execute(const ParameterList& params)
 	returnValue.connectRepository(mRepository);
 	returnValue.visibility(visibility());
 
+/*
 	try {	// try to execute our method
+*/
 		TokenIterator start = mTokens.begin();
 		returnValue = process(start, mTokens.end());
+/*
 	}
 	catch ( Utils::Exception &e ) {	// if anything happens clean up the mess
+		// catch and log all errors that occured during method execution
+		//OSerror(e.what());
+
 		garbageCollector();
 
 		// throw again so that our owner will be informed
 		throw e;
 	}
+*/
 
 	// after we gathered our result
 	// let the garbage collector do it's magic
@@ -144,12 +151,14 @@ Object Method::execute(const ParameterList& params)
 
 void Method::garbageCollector()
 {
-	for ( MemberMap::iterator it = mLocalSymbols.begin(); it != mLocalSymbols.end(); ++it) {
+	for ( MemberMap::iterator it = mLocalSymbols.begin(); it != mLocalSymbols.end(); ) {
 		if ( it->second->isStatic() ) {
-			continue;			
+			it++;
+			continue;
 		}
 		else {
 			mRepository->removeReference(it->second);
+			it = mLocalSymbols.erase(it);
 		}
 	}
 }
@@ -166,19 +175,14 @@ Object* Method::getSymbol(const std::string& token)
 
 	// either it is a local symbol...
 	for ( MemberMap::iterator it = mLocalSymbols.begin(); it != mLocalSymbols.end(); ++it ) {
-/*
-		if ( it->second->name() == token ) {
-			return it->second;
-		}
-*/
 		if ( it->first == token ) {
 			return it->second;
 		}
-
+/*
 		if ( !it->second->isValid() ) {
 			continue;
 		}
-
+*/
 		if ( it->second->name() == parent ) {
 			return it->second->getMember(member);
 		}
@@ -313,8 +317,8 @@ bool Method::isSignatureValid(const ParameterList& params) const
 
 	while ( sigIt != mSignature.end() ) {
 		if ( paramIt != params.end() ) {
-			if ( (sigIt->access() != paramIt->access()) ||
-				 (sigIt->isConst() != paramIt->isConst()) ||
+			if ( /*(sigIt->access() != paramIt->access()) ||*/
+				 /*(sigIt->isConst() != paramIt->isConst()) ||*/
 				 (sigIt->type() != paramIt->type()) ) {
 				return false;
 			}		
@@ -517,8 +521,7 @@ Object Method::process(TokenIterator& token, TokenIterator end, Token::Type::E t
 			} break;
 			case Token::Type::KEYWORD: {
 				if ( token->content() == "new" ) {
-					//return (*mMemory->getObject(process_new_ref(token)));
-					return process_new(token);
+					return *process_new(token);
 				}
 				else if ( token->content() == "return" ) {
 					return parseExpression(++token);
@@ -532,7 +535,7 @@ Object Method::process(TokenIterator& token, TokenIterator end, Token::Type::E t
 				process_type(token);
 				break;
 			default:
-				mOwner->providePrinter()->print("invalid token '" + token->content() + "' as type " + Token::Type::convert(token->type()) + " found!");
+				throw Utils::SyntaxError("invalid token '" + token->content() + "' as type " + Token::Type::convert(token->type()) + " found", token->position());
 				break;
 		}
 
@@ -586,7 +589,10 @@ void Method::process_assign(TokenIterator& token)
 		throw Utils::UnknownIdentifer("identified '" + identifier + "' not found", token->position());
 	}
 	if ( s->isConst() ) {
-		throw Utils::ConstCorrectnessViolated("Not allowed to modify const member '" + identifier + "'!", token->position());
+		throw Utils::ConstCorrectnessViolated("not allowed to modify const member '" + identifier + "'", token->position());
+	}
+	if ( this->isConst() && isMember(identifier) ) {
+		throw Utils::ConstCorrectnessViolated("not allowed to modify member '" + identifier + "' in const method '" + this->name() + "'", token->position());
 	}
 
 	*s = parseExpression(++assign);
@@ -760,8 +766,7 @@ Object Method::process_method(TokenIterator& token)
 	// loop through all parameters seperated by colons
 	while ( tmp != closed ) {
 		Object obj = parseExpression(tmp);
-		params.push_back(Parameter(method, obj.type(), obj.value(), obj.isConst(), Parameter::AccessMode::ByValue, getSymbol(method)));
-		//params.push_back(Parameter(method, obj.type(), obj.value(), obj.isConst(), Parameter::AccessMode::ByReference, &obj));
+		params.push_back(Parameter("", obj.type(), obj.value(), obj.isConst(), Parameter::AccessMode::Unspecified, getSymbol(obj.name())));
 
 		if ( std::distance(tmp, closed) <= 0 ) {
 			break;
@@ -786,7 +791,7 @@ Object Method::process_method(TokenIterator& token)
 
 // syntax:
 // new <Object>([<parameter list>]);
-Object Method::process_new(TokenIterator& token)
+Object* Method::process_new(TokenIterator& token)
 {
 	TokenIterator tmp = token++;
 
@@ -830,7 +835,7 @@ Object Method::process_new(TokenIterator& token)
 	object->connectRepository(mRepository);
 	object->Constructor(params);
 
-	return *object;
+	return object;
 }
 
 Reference Method::process_new_ref(TokenIterator& token)
@@ -964,7 +969,6 @@ void Method::process_type(TokenIterator& token)
 		if ( isStatic ) object->setStatic(true);
 
 		if ( assign != mTokens.end() ) {
-			//object->value(parseExpression(assign).value());
 			*object = parseExpression(assign);
 			token = assign;
 		}
@@ -980,6 +984,8 @@ void Method::process_type(TokenIterator& token)
 			// upsi, did not clean up..
 			throw Utils::DuplicateIdentiferException(name);
 		}
+
+		token = findNext(token, Token::Type::SEMICOLON);
 	}
 }
 

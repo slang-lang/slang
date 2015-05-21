@@ -23,15 +23,17 @@ class Exception : public std::exception
 {
 public:
 	Exception(const std::string& text, const Utils::Position& position = Utils::Position())
-	: mPosition(position),
-	  mText(text)
-	{ }
+	: mMessage(text),
+	  mPosition(position)
+	{
+		mCombinedMessage = mMessage + " at " + mPosition.toString();
+	}
 	virtual ~Exception() throw() { }
 
 public:
 #ifdef _WIN32
 	const char* what() const {
-		return mText.c_str();
+		return mCombinedMessage.c_str();
 	}
 #elif defined __APPLE__
 #include "TargetConditionals.h"
@@ -40,15 +42,15 @@ public:
 #elif TARGET_OS_IPHONE
     // iOS device
     const char* what() const throw() {
-        return mText.c_str();
+        return mMessage.c_str();
     }
 #elif TARGET_OS_MAC
     // Other kinds of Mac OS X
     const char* what() const _NOEXCEPT {
-    	std::string result = mText;
+    	std::string result = mMessage;
 
 		if ( mPosition.line != 0 ) {
-			//result += " at line " + Tools::toString(mPosition.line) + ", " + Tools::toString(mPosition.column);
+			//result += " at " + mPosition.toString();
 			//result += " ";
 		}
 
@@ -59,15 +61,16 @@ public:
 #endif
 #elif defined __linux
 	virtual const char* what() const throw() {
-		return mText.c_str();
+		return mMessage.c_str();
 	}
 #endif
 
 protected:
 
 private:
+	std::string mCombinedMessage;
+	std::string mMessage;
 	Utils::Position mPosition;
-	std::string mText;
 };
 
 
