@@ -31,7 +31,7 @@
 class Printer : public ObjectiveScript::IPrinter
 {
 public:
-	Printer(Utils::Common::Logger *l)
+	Printer(Utils::Common::ILogger *l)
 	: mLogger(l)
 	{ }
 
@@ -45,7 +45,7 @@ public:
 	}
 
 private:
-	Utils::Common::Logger *mLogger;
+	Utils::Common::ILogger *mLogger;
 };
 
 void printUsage()
@@ -66,7 +66,7 @@ int main(int argc, const char* argv[])
 	// Memory leak detection
 #endif
 
-	Utils::Common::Logger *logger = 0;
+	Utils::Common::ILogger *logger = 0;
 
 	std::string filename;
 	ObjectiveScript::VariablesList params;
@@ -94,24 +94,19 @@ int main(int argc, const char* argv[])
 		return 0;
 	}
 
-	if ( !logger ) {
-		logger = new Utils::Common::Logger();
-	}
-
 	Printer mPrinter(logger);
 
 	ObjectiveScript::VirtualMachine mVirtualMachine;
 	mVirtualMachine.connectPrinter(&mPrinter);
-	mVirtualMachine.setBaseFolder("./");
+	//mVirtualMachine.setBaseFolder("./");
 
 	try {
-		/*ObjectiveScript::Script *script = */mVirtualMachine.create(filename);
+		mVirtualMachine.create(filename);
 		// our script automatically executes it's Main object's constructor,
 		// so there is no need to execute a method explicit
 	}
 	catch ( std::exception &e ) {
-		std::cout << "Unhandled std::exception: " << e.what();
-		logger->LogError("Unhandled std::exception: " + std::string(e.what()), __FILE__, __LINE__);
+		std::cout << e.what() << std::endl;
 	}
 
 	delete logger;

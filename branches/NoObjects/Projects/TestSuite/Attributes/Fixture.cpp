@@ -14,7 +14,7 @@ namespace Testing {
 namespace Attributes {
 
 
-Fixture::Fixture(const Utils::Common::Logger *p)
+Fixture::Fixture(const Utils::Common::ILogger *p)
 : TestFixture("Attributes"),
   Utils::Common::Logger(p, "Attributes")
 {

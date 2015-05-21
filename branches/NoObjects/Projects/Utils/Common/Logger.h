@@ -26,8 +26,8 @@
 
 
 // Project includes
-#include "Context.h"
 #include <Interfaces/Common/ILogger.h>
+#include "Context.h"
 
 // Forward declarations
 
@@ -106,13 +106,13 @@ class Logger : public ILogger
 {
 public:
 	Logger(char* logfile = "logger.log");
-	Logger(const Logger *parent, const std::string& className, const std::string& key = "");
+	Logger(const ILogger *parent, const std::string& className, const std::string& key = "");
 	virtual ~Logger();
 
 public:
 	const std::string& getClassName() const;
 	IContext* getContext() const;
-	Logger* getLogger();
+	ILogger* getLogger();
 
 	void LogDebug(const std::string& message, char *file, unsigned int line);
 	void LogDeprecate(const std::string& message, char *file, unsigned int line);

@@ -16,6 +16,9 @@
 namespace Utils {
 namespace Common {
 
+// Forward declarations
+class IContext;
+
 
 class ILogger
 {
@@ -32,6 +35,7 @@ public:
 
 public:
 	virtual const std::string& getClassName() const = 0;
+	virtual IContext* getContext() const = 0;
 	virtual ILogger* getLogger() = 0;
 
 	virtual void LogDebug(const std::string& message, char* file, unsigned int line) = 0;

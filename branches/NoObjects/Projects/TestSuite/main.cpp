@@ -46,7 +46,7 @@ int main(int argc, const char* argv[])
 #endif
 
 	bool executed = false;
-	Utils::Common::Logger *logger = 0;
+	Utils::Common::ILogger *logger = 0;
 	std::string toRun = "";
 	bool show = false;
 
