@@ -48,15 +48,12 @@ void AttributesTest::teardown()
 void AttributesTest::testBasicLanguageFeatures()
 {
 	try {
-		info("testBasicLanguageFeatures");
-
 		VirtualMachine vm;
 		vm.connectPrinter(&mStdoutPrinter);
 
-		Script *s = vm.create("Tests/Language/AttributesTest.os");
+		vm.create("Tests/Language/AttributesTest.os");
 
 		// automatic success
-		delete s;
 	}
 	catch ( ObjectiveScript::Utils::Exception& e ) {
 		// exception has been thrown: test failed!

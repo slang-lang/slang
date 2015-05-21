@@ -48,12 +48,9 @@ void MathTest::testBasicExpressionParsing()
 		VirtualMachine vm;
 		vm.connectPrinter(&mStdoutPrinter);
 
-		Script *s = vm.create("Tests/Math/BasicTest.os");
-
-		s->execute("MathExpressionParsing", ParameterList());
+		vm.create("Tests/Math/BasicTest.os");
 
 		// automatic success
-		delete s;
 	}
 	catch ( ObjectiveScript::Utils::Exception& e ) {
 		// exception has been thrown: test failed!

@@ -50,10 +50,9 @@ void PrototypeTest::testBasicObject()
 		VirtualMachine vm;
 		vm.connectPrinter(&mStdoutPrinter);
 
-		Script *s = vm.create("Tests/BasicObjectTest.os");
+		vm.create("Tests/BasicObjectTest.os");
 
 		// automatic success
-		delete s;
 	}
 	catch ( ObjectiveScript::Utils::Exception& e ) {
 		// exception has been thrown: test failed!
@@ -71,10 +70,9 @@ void PrototypeTest::testPrototypeDeclaration()
 		VirtualMachine vm;
 		vm.connectPrinter(&mStdoutPrinter);
 
-		Script *s = vm.create("Tests/PrototypeTest.os");
+		vm.create("Tests/PrototypeTest.os");
 
 		// automatic success
-		delete s;
 	}
 	catch ( ObjectiveScript::Utils::Exception& e ) {
 		// exception has been thrown: test failed!
@@ -92,13 +90,9 @@ void PrototypeTest::testPrototypeUsage()
 		VirtualMachine vm;
 		vm.connectPrinter(&mStdoutPrinter);
 
-		Script *s = vm.create("Tests/PrototypeTest.os");
-
-		ParameterList params;
-		s->execute("test", params);
+		vm.create("Tests/PrototypeTest.os");
 
 		// automatic success
-		delete s;
 	}
 	catch ( ObjectiveScript::Utils::Exception& e ) {
 		// exception has been thrown: test failed!

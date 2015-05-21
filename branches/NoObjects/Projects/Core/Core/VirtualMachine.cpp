@@ -68,7 +68,7 @@ void VirtualMachine::connectPrinter(IPrinter *p)
 
 Script* VirtualMachine::create(const std::string& filename)
 {
-	OSdebug("create('" + filename + "')");
+	OSinfo("create('" + filename + "')");
 
 	if ( filename.empty() ) {
 		OSwarn("invalid filename '" + filename + "' provided!");
@@ -126,7 +126,7 @@ Script* VirtualMachine::create(const std::string& filename)
 
 void VirtualMachine::loadLibrary(const std::string& library)
 {
-	OSdebug("Loading additional library file '" + library + "'");
+	OSinfo("Loading additional library file '" + library + "'");
 
 	try {
 		Analyser a;

@@ -86,7 +86,7 @@
 // Runs the given test.
 #define TEST( exp ) \
 	{ \
-		std::cout << std::endl << "************ New test starting ************" << std::endl; \
+		/*std::cout << std::endl << "************ New test starting ************" << std::endl;*/ \
 		mRun++; \
 		mLastResult = GenericTest::Passed; \
 		exp(); \

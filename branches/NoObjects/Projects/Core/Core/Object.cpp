@@ -115,7 +115,7 @@ void Object::operator= (const Object& other)
 void Object::addMember(Object *m)
 {
 	assert(m);
-	//OSdebug(this->type() + ".addMember('" + m->name() + "')");
+	//OSinfo(this->type() + ".addMember('" + m->name() + "')");
 
 	if ( mMembers.find(m->name()) != mMembers.end() ) {
 		throw Utils::DuplicateIdentiferException("duplicate member '" + m->name() + "' added");
@@ -127,7 +127,7 @@ void Object::addMember(Object *m)
 void Object::addMethod(Method *m)
 {
 	assert(m);
-	//OSdebug(this->type() + ".addMethod('" + m->name() + "', [" + toString(m->provideSignature()) + "])");
+	//OSinfo(this->type() + ".addMethod('" + m->name() + "', [" + toString(m->provideSignature()) + "])");
 
 	if ( mMethods.find(m) != mMethods.end() ) {
 		throw Utils::DuplicateIdentiferException("duplicate method '" + m->name() + "' added with same signature");
@@ -212,7 +212,7 @@ void Object::Destructor()
 
 Object Object::execute(const std::string& method, const ParameterList& params, const Method* caller)
 {
-	OSdebug("execute('" + method + "', [" + toString(params) + "])");
+	//OSdebug("execute('" + method + "', [" + toString(params) + "])");
 
 	MethodCollection::iterator mIt;
 	bool success = findMethod(method, params, mIt);
@@ -427,6 +427,12 @@ bool Object::hasMember(const std::string& m)
 		if ( it->first == m ) {
 			return true;
 		}
+
+/*	this is not always okay, because static members are accessible although the object has not yet been instanciated
+		if ( !it->second->isValid() ) {
+			continue;
+		}
+*/
 
 		if ( it->second->name() == parent ) {
 			if ( it->second->hasMember(member) ) {
