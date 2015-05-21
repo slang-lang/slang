@@ -107,6 +107,9 @@ Object Method::execute(const ParameterList& params)
 		}
 
 		switch ( param.access() ) {
+			case Parameter::AccessMode::Unspecified: {
+				throw Utils::Exception("access mode unspecified");
+			} break;
 			case Parameter::AccessMode::ByReference: {
 				mRepository->addReference(param.reference());
 				addIdentifier(param.reference());
