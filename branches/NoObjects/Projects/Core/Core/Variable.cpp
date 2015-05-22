@@ -51,10 +51,6 @@ const std::string& Variable::value() const
 
 void Variable::value(const std::string& value)
 {
-	if ( isConst() ) {
-		throw Utils::Exception("tried to change const object");
-	}
-
 	mVarValue = value;
 }
 

@@ -1,14 +1,14 @@
 
-public namespace
+public namespace unstable InterfaceTest
 {
-	public interface IWarehouse
+	public interface stable IWarehouse
 	{
-		public Number GetBox() const;
+		public stable Number GetBox() const;
 	}
 
-	public object Warehouse implements IWarehouse
+	public object deprecated Warehouse implements public IWarehouse
 	{
-		public Number GetBox() const
+		public deprecated Number GetBox() const
 		{
 			// either this..
 			return Number(1);
@@ -17,9 +17,9 @@ public namespace
 		}
 	}
 
-	public object Main
+	public object unstable Main
 	{
-		public void Main()
+		public void unstable Main()
 		{
 			Warehouse w = new Warehouse();
 

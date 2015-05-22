@@ -23,12 +23,12 @@ Configurator::Configurator(const Utils::Common::Logger *p, const std::string& fi
   mConfigFile(file),
   mSuccess(false)
 {
-	char* homepath = getenv("JSONDB_HOME");
+	char* homepath = getenv("OBJECTIVESCRIPT_HOME");
 	if ( homepath ) {
 		mHomePath = homepath;
 		if ( !mHomePath.empty() ) {
 			mHomePath += "/";
-			assert(!mHomePath.empty() && "JSONDB_HOME environment variable is not set!");
+			assert(!mHomePath.empty() && "OBJECTIVESCRIPT_HOME environment variable is not set!");
 		}
 	}
 

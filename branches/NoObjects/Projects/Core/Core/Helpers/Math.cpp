@@ -16,9 +16,9 @@ namespace ObjectiveScript {
 namespace Math {
 
 
-Variable add(Variable v1, Variable v2)
+Object add(Object v1, Object v2)
 {
-	Variable result;
+	Object result;
 
 	if ( v1.type() == "Number" && v2.type() == "Number" ) {
 		// none of our summands is a string
@@ -34,9 +34,9 @@ Variable add(Variable v1, Variable v2)
 	return result;
 }
 
-Variable divide(Variable v1, Variable v2)
+Object divide(Object v1, Object v2)
 {
-	Variable result;
+	Object result;
 
 	if ( v1.type() == "Number" && v2.type() == "Number" ) {
 		// none of our summands is a string
@@ -52,9 +52,9 @@ Variable divide(Variable v1, Variable v2)
 	return result;
 }
 
-Variable multiply(Variable v1, Variable v2)
+Object multiply(Object v1, Object v2)
 {
-	Variable result;
+	Object result;
 
 	if ( v1.type() == "Number" && v2.type() == "Number" ) {
 		// none of our summands is a string
@@ -70,9 +70,9 @@ Variable multiply(Variable v1, Variable v2)
 	return result;
 }
 
-Variable subtract(Variable v1, Variable v2)
+Object subtract(Object v1, Object v2)
 {
-	Variable result;
+	Object result;
 
 	if ( v1.type() == "Number" && v2.type() == "Number" ) {
 		// none of our summands is a string

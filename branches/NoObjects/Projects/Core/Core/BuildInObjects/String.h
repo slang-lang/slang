@@ -38,7 +38,7 @@ private:
 
 		Method get("String", "get", "String"); {
 			VariablesList get_signature;
-			get_signature.push_back(Variable("value", "String", ""));
+			get_signature.push_back(Object("value", "", "String", ""));
 			get.setSignature(get_signature);
 
 			TokenList get_tokens; {

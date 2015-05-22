@@ -4,7 +4,6 @@
 
 
 // Library includes
-#include <list>
 #include <string>
 
 // Project includes
@@ -12,7 +11,7 @@
 #include "Object.h"
 #include "Prototype.h"
 #include "Token.h"
-#include "Variable.h"
+#include "Types.h"
 
 // Forward declarations
 
@@ -21,12 +20,18 @@
 
 namespace ObjectiveScript {
 
+// Forward declarations
+class IScope;
 
 class Analyser
 {
 public:
+	Analyser();
+	~Analyser();
+
+public:
 	const InterfaceList& getInterfaces() const;
-	const std::list<std::string>& getLibraryReferences() const;
+	const StringList& getLibraryReferences() const;
 	const BluePrintList& getObjects() const;
 	const PrototypeList& getPrototypes() const;
 
@@ -36,28 +41,30 @@ public:
 protected:
 
 private:
-	void generateObjects();
-	void generateTokens(const std::string& content);
+	void generateObjects(const TokenList& tokens);
+	TokenList generateTokens(const std::string& content);
 
 private:
-	Interface createInterface(TokenIterator& start);
-	std::string createLibraryReference(TokenIterator& start);
-	BluePrint createObject(TokenIterator& start);
-	Prototype createPrototype(TokenIterator& start);
+	Interface createInterface(TokenIterator& start, TokenIterator end);
+	std::string createLibraryReference(TokenIterator& start, TokenIterator end);
+	void createNamespace(TokenIterator& start, TokenIterator end);
+	BluePrint createObject(TokenIterator& start, TokenIterator end);
+	Prototype createPrototype(TokenIterator& start, TokenIterator end);
 
 private:
 	bool isInterfaceDeclaration(TokenIterator start);
 	bool isLibraryReference(TokenIterator start);
+	bool isNamespaceDeclaration(TokenIterator start);
 	bool isObjectDeclaration(TokenIterator start);
 	bool isPrototypeDeclaration(TokenIterator start);
 
 private:
-	std::string				mFilename;
-	InterfaceList			mInterfaces;
-	std::list<std::string>	mLibraries;
-	BluePrintList			mObjects;
-	PrototypeList			mPrototypes;
-	TokenList				mTokens;
+	std::string mFilename;
+	InterfaceList mInterfaces;
+	StringList mLibraries;
+	BluePrintList mObjects;
+	PrototypeList mPrototypes;
+	IScope *mScope;
 };
 
 

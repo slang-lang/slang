@@ -31,13 +31,13 @@ public:
 
 		Method get("number", "get", "atmoic_number"); {
 			VariablesList get_signature;
-			get_signature.push_back(Variable("n", "atomic_number", ""));
+			get_signature.push_back(Object("value", "", "atomic_number", ""));
 			get.setSignature(get_signature);
 
 			TokenList get_tokens; {
 				get_tokens.push_back(Token(Token::Type::IDENTIFER, "mValue"));
 				get_tokens.push_back(Token(Token::Type::ASSIGN, "="));
-				get_tokens.push_back(Token(Token::Type::IDENTIFER, "n"));
+				get_tokens.push_back(Token(Token::Type::IDENTIFER, "value"));
 			} get.setTokens(get_tokens);
 
 		} addMethod(get);

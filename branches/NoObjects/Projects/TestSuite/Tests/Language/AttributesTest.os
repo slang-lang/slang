@@ -1,7 +1,7 @@
 
-public namespace Main
+public namespace stable AttributeTest
 {
-	public object TestObject
+	public object unstable TestObject
 	{
 		public deprecated void deprecatedMethod()
 		{
@@ -24,7 +24,7 @@ public namespace Main
 		}
 	}
 
-	public object Main
+	public object stable Main
 	{
 		private TestObject mTest;
 
@@ -48,4 +48,3 @@ public namespace Main
 		}
 	}
 }
-

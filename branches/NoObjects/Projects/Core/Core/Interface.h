@@ -7,6 +7,7 @@
 #include <list>
 
 // Project includes
+#include <Core/Attributes/Attributes.h>
 #include "RTTI.h"
 #include "Token.h"
 
@@ -18,7 +19,8 @@
 namespace ObjectiveScript {
 
 
-class Interface : public RTTI
+class Interface : public RTTI,
+				  public Attributes
 {
 public:
 	Interface();

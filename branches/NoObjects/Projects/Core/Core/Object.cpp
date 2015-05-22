@@ -45,16 +45,6 @@ Object::Object(const std::string& name, const std::string& filename, const std::
 {
 }
 
-Object::Object(const Variable& var)
-: LocalScope(var.name(), 0),
-  BluePrint(var.type()),
-  Variable(var.name(), var.type(), var.value()),
-  mConstructed(false),
-  mPrinter(0),
-  mRepository(0)
-{
-}
-
 Object::~Object()
 {
 	// unregister current members
@@ -92,7 +82,14 @@ void Object::operator= (const Object& other)
 		addMember(it->second);
 		mRepository->addReference(it->second);
 	}
-/*
+
+	// unregister old methods
+	for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
+		delete (*it);
+	}
+	mMethods.clear();
+
+	// register new methods
 	for ( MethodCollection::const_iterator it = other.mMethods.begin(); it != other.mMethods.end(); ++it ) {
 		//Method *m = new Method(this, (*it)->name(), (*it)->type());
 		//m->setConst((*it)->isConst());
@@ -103,7 +100,7 @@ void Object::operator= (const Object& other)
 
 		addMethod(m);
 	}
-*/
+
 	//mMethods = other.mMethods;
 	mTokens = other.mTokens;
 	mVarType = other.mVarType;

@@ -11,7 +11,6 @@
 #include "Method.h"
 #include "Parameter.h"
 #include "Tokenizer.h"
-#include "Variable.h"
 
 // Forward declarations
 

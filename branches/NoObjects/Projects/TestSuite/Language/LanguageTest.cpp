@@ -39,6 +39,7 @@ void LanguageTest::process()
 	TEST(testIf);
 	//TEST(testInterfaces);
 	TEST(testMethodOverloading);
+	TEST(testNamespaces);
 	TEST(testObjectReference);
 	TEST(testPrint);
 	TEST(testStaticLocalVariable);
@@ -190,6 +191,22 @@ void LanguageTest::testMethodOverloading()
 		vm.connectPrinter(&mStdoutPrinter);
 
 		vm.create("Tests/Language/MethodOverloadingTest.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL("caught exception: " << e.what());
+	}
+}
+
+void LanguageTest::testNamespaces()
+{
+	try {
+		VirtualMachine vm;
+		vm.connectPrinter(&mStdoutPrinter);
+
+		vm.create("Tests/Language/NamespaceTest.os");
 
 		// automatic success
 	}

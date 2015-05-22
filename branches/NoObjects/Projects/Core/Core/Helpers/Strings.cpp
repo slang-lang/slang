@@ -15,7 +15,7 @@ namespace ObjectiveScript {
 namespace Strings {
 
 
-Variable concat(const Variable& v1, const Variable& v2)
+Object concat(const Object& v1, const Object& v2)
 {
 	return String(Tools::toString(v1.value() + v2.value()));
 }

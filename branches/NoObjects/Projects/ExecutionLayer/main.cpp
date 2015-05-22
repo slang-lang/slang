@@ -66,9 +66,7 @@ int main(int argc, const char* argv[])
 #endif
 
 	Utils::Common::ILogger *logger = new Utils::Common::StdOutLogger();
-
 	std::string filename;
-	ObjectiveScript::VariablesList params;
 
 	if ( argc > 1 ) {
 		for (int i = 1; i < argc; i++) {

@@ -36,6 +36,7 @@ public:
 	: mName(name),
 	  mParent(parent)
 	{ }
+
 	virtual ~LocalScope()
 	{
 		for ( Symbols::iterator it = mSymbols.begin(); it != mSymbols.end(); ++it ) {
@@ -66,8 +67,8 @@ public:	// IScope implementation
 		}
 
 		mSymbols.insert(std::make_pair(
-			symbol->getName(), symbol)
-		);
+			symbol->getName(), symbol
+		));
 	}
 
 	Symbol* resolve(const std::string& name) const {

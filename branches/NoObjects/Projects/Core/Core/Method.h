@@ -5,9 +5,9 @@
 
 // Library includes
 #include <map>
-//#include <ostream>
 
 // Project includes
+#include <Core/Attributes/Attributes.h>
 #include "Object.h"
 #include "Parameter.h"
 #include "Reference.h"
@@ -29,6 +29,7 @@ class Object;
 class Repository;
 
 class Method : public LocalScope,
+			   public Attributes,
 			   public Variable
 {
 public:
@@ -114,7 +115,7 @@ protected:
 
 private:
 	//typedef std::map<std::string, Reference> MemberMap;
-	typedef std::map<std::string, Object*> MemberMap;
+	typedef std::map<std::string, Object*> MemberCollection;
 
 private:	// Construction
 	void addIdentifier(Object *object);			// throws DuplicateIdentifer exception
@@ -161,7 +162,7 @@ private:	// Execution
 	// }
 
 private:
-	MemberMap mLocalSymbols;
+	MemberCollection mLocalSymbols;
 	Memory *mMemory;
 	Object *mOwner;
 	ParameterList mParameter;

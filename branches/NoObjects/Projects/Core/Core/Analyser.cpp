@@ -11,6 +11,7 @@
 // Project includes
 #include <Core/Utils/Exceptions.h>
 #include <Core/Utils/Utils.h>
+#include "Scope.h"
 #include "Tokenizer.h"
 #include "Tools.h"
 
@@ -20,21 +21,40 @@
 namespace ObjectiveScript {
 
 
-std::string Analyser::createLibraryReference(TokenIterator& start)
+Analyser::Analyser()
+: mScope(0)
+{
+	mScope = new GlobalScope();
+}
+
+Analyser::~Analyser()
+{
+	while ( mScope ) {
+		IScope *scope = mScope->getEnclosingScope();
+
+		delete mScope;
+		mScope = scope;
+	}
+}
+
+std::string Analyser::createLibraryReference(TokenIterator& start, TokenIterator end)
 {
 	std::string reference;
 
 	start++;
 
-	while ( start->type() != Token::Type::SEMICOLON && start != mTokens.end() ) {
+	while ( start->type() != Token::Type::SEMICOLON && start != end ) {
 		reference += (*start++).content();
 	}
 
 	return reference;
 }
 
-Interface Analyser::createInterface(TokenIterator& start)
+Interface Analyser::createInterface(TokenIterator& start, TokenIterator end)
 {
+(void)end;
+
+	std::string languageFeature;
 	std::string name;
 	std::string visibility;
 
@@ -42,6 +62,10 @@ Interface Analyser::createInterface(TokenIterator& start)
 	visibility = (*start++).content();
 	// look for the object token
 	(*start++).content();
+	// look for an optional language feature token
+	if ( start->isOptional() ) {
+		languageFeature = (*start++).content();
+	}
 	// look for the identifier token
 	name = (*start).content();
 
@@ -65,13 +89,17 @@ Interface Analyser::createInterface(TokenIterator& start)
 	start = closed;
 
 	Interface inter(name, mFilename);
+	inter.setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
 	inter.setTokens(tokens);
 
 	return inter;
 }
 
-BluePrint Analyser::createObject(TokenIterator& start)
+void Analyser::createNamespace(TokenIterator& start, TokenIterator end)
 {
+(void) end;
+
+	std::string languageFeature;
 	std::string name;
 	std::string visibility;
 
@@ -79,6 +107,45 @@ BluePrint Analyser::createObject(TokenIterator& start)
 	visibility = (*start++).content();
 	// look for the object token
 	(*start++).content();
+	// look for an optional language feature token
+	if ( start->isOptional() ) {
+		languageFeature = (*start++).content();
+	}
+	// look for the identifier token
+	name = (*start).content();
+
+	mScope = new LocalScope(name, mScope);
+
+	// look for the next opening curly brackets
+	TokenIterator open = findNext(++start, Token::Type::BRACKET_CURLY_OPEN);
+	// look for balanced curly brackets
+	TokenIterator closed = findNextBalancedCurlyBracket(open, 0, Token::Type::BRACKET_CURLY_CLOSE);
+
+	// collect all tokens of this object
+	TokenList tokens;
+	for ( TokenIterator it = ++open; it != closed; ++it ) {
+		tokens.push_back((*it));
+	}
+
+	generateObjects(tokens);
+
+	start = closed;
+}
+
+BluePrint Analyser::createObject(TokenIterator& start, TokenIterator end)
+{
+	std::string languageFeature;
+	std::string name;
+	std::string visibility;
+
+	// look for the visibility token
+	visibility = (*start++).content();
+	// look for the object token
+	(*start++).content();
+	// look for an optional language feature token
+	if ( start->isOptional() ) {
+		languageFeature = (*start++).content();
+	}
 	// look for the identifier token
 	name = (*start).content();
 
@@ -100,7 +167,7 @@ BluePrint Analyser::createObject(TokenIterator& start)
 				std::string ancestor = (*start++).content();
 
 //				parents[ancestor] = BluePrint::Ancestor(ancestor, Visibility::convert(inheritance));
-			} while ( std::distance(start, open) > 0 && ++start != mTokens.end() );
+			} while ( std::distance(start, open) > 0 && ++start != end );
 		}
 		else if ( start->content() == "implements" ) {
 			// collect inheritences
@@ -125,40 +192,44 @@ BluePrint Analyser::createObject(TokenIterator& start)
 
 	BluePrint blue(name, mFilename);
 	blue.setAncestors(parents);
+	blue.setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
 	blue.setTokens(tokens);
 	blue.setVisibility(Visibility::convert(visibility));
 
 	return blue;
 }
 
-Prototype Analyser::createPrototype(TokenIterator& start)
+Prototype Analyser::createPrototype(TokenIterator& start, TokenIterator end)
 {
-	BluePrint blue = createObject(start);
+	BluePrint blue = createObject(start, end);
 
 	Prototype p(blue);
 	return p;
 }
 
-void Analyser::generateObjects()
+void Analyser::generateObjects(const TokenList& tokens)
 {
-	TokenList::const_iterator it = mTokens.begin();
+	TokenList::const_iterator it = tokens.begin();
 
 	// loop over all tokens and look for imports and object declarations
-	while ( it != mTokens.end() && it->type() != Token::Type::ENDOFFILE ) {
+	while ( it != tokens.end() && it->type() != Token::Type::ENDOFFILE ) {
 		if ( isInterfaceDeclaration(it) ) {
-			Interface i = createInterface(it);
+			Interface i = createInterface(it, tokens.end());
 			mInterfaces.push_back(i);
 		}
 		else if ( isLibraryReference(it) ) {
-			std::string reference = createLibraryReference(it);
+			std::string reference = createLibraryReference(it, tokens.end());
 			mLibraries.push_back(reference);
 		}
+		else if ( isNamespaceDeclaration(it) ) {
+			createNamespace(it, tokens.end());
+		}
 		else if ( isObjectDeclaration(it) ) {
-			BluePrint o = createObject(it);
+			BluePrint o = createObject(it, tokens.end());
 			mObjects.push_back(o);
 		}
 		else if ( isPrototypeDeclaration(it) ) {
-			Prototype p = createPrototype(it);
+			Prototype p = createPrototype(it, tokens.end());
 			mPrototypes.push_back(p);
 		}
 
@@ -166,12 +237,12 @@ void Analyser::generateObjects()
 	}
 }
 
-void Analyser::generateTokens(const std::string& content)
+TokenList Analyser::generateTokens(const std::string& content)
 {
 	Tokenizer t(content);
 	t.process();
 
-	mTokens = t.tokens();
+	return t.tokens();
 }
 
 const InterfaceList& Analyser::getInterfaces() const
@@ -179,7 +250,7 @@ const InterfaceList& Analyser::getInterfaces() const
 	return mInterfaces;
 }
 
-const std::list<std::string>& Analyser::getLibraryReferences() const
+const StringList& Analyser::getLibraryReferences() const
 {
 	return mLibraries;
 }
@@ -202,6 +273,9 @@ bool Analyser::isInterfaceDeclaration(TokenIterator start)
 		return false;
 	}
 	if ( (*start).type() != Token::Type::TYPE && (*start++).content() != "interface" ) {
+		return false;
+	}
+	if ( (*start).isOptional() && (*start++).type() != Token::Type::LANGUAGEFEATURE ) {
 		return false;
 	}
 	if ( (*start++).type() != Token::Type::IDENTIFER ) {
@@ -228,6 +302,26 @@ bool Analyser::isLibraryReference(TokenIterator start)
 }
 
 // syntax:
+// <visibility> namespace <identifier>
+bool Analyser::isNamespaceDeclaration(TokenIterator start)
+{
+	if ( (*start++).type() != Token::Type::VISIBILITY ) {
+		return false;
+	}
+	if ( (*start).type() != Token::Type::TYPE && (*start++).content() != "namespace" ) {
+		return false;
+	}
+	if ( (*start).isOptional() && (*start++).type() != Token::Type::LANGUAGEFEATURE ) {
+		return false;
+	}
+	if ( (*start++).type() != Token::Type::IDENTIFER ) {
+		return false;
+	}
+
+	return true;
+}
+
+// syntax:
 // <visibility> object <identifier> [extends <indentifier> [, <identifier>, ...]]
 bool Analyser::isObjectDeclaration(TokenIterator start)
 {
@@ -235,6 +329,9 @@ bool Analyser::isObjectDeclaration(TokenIterator start)
 		return false;
 	}
 	if ( (*start).type() != Token::Type::TYPE && (*start++).content() != "object" ) {
+		return false;
+	}
+	if ( (*start).isOptional() && (*start++).type() != Token::Type::LANGUAGEFEATURE ) {
 		return false;
 	}
 	if ( (*start++).type() != Token::Type::IDENTIFER ) {
@@ -267,19 +364,18 @@ void Analyser::process(const std::string& filename)
 	mFilename = filename;
 	mLibraries.clear();
 	mObjects.clear();
-	mTokens.clear();
 
-	//OSdebug("process('" + mFilename + "')");
+	OSinfo("process('" + mFilename + "')");
 
 	// read file content
 	std::ifstream in(mFilename.c_str(), std::ios_base::binary);
 	in.exceptions(std::ios_base::badbit | std::ios_base::failbit | std::ios_base::eofbit);
 
 	// create token list from file content
-	generateTokens(std::string(std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>()));
+	TokenList tokens = generateTokens(std::string(std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>()));
 
 	// generate objects from tokens
-	generateObjects();
+	generateObjects(tokens);
 }
 
 

@@ -6,7 +6,7 @@
 // Library includes
 
 // Project includes
-#include <Core/Variable.h>
+#include <Core/Object.h>
 
 // Forward declarations
 
@@ -17,10 +17,10 @@ namespace ObjectiveScript {
 namespace Math {
 
 
-Variable add(Variable v1, Variable v2);
-Variable divide(Variable v1, Variable v2);
-Variable multiply(Variable v1, Variable v2);
-Variable subtract(Variable v1, Variable v2);
+Object add(Object v1, Object v2);
+Object divide(Object v1, Object v2);
+Object multiply(Object v1, Object v2);
+Object subtract(Object v1, Object v2);
 
 
 }

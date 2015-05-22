@@ -44,7 +44,19 @@ void Method::operator= (const Method& other)
 	setConst(other.isConst());
 	setStatic(other.isStatic());
 	setLanguageFeatureState(other.languageFeatureState());
-	//mLocalSymbols = other.mLocalSymbols;
+
+	// unregister current members
+	for ( MemberCollection::const_iterator it = mLocalSymbols.begin(); it != mLocalSymbols.end(); ) {
+		mRepository->removeReference(it->second);
+		it = mLocalSymbols.erase(it);
+	}
+
+	// register new members
+	for ( MemberCollection::const_iterator it = other.mLocalSymbols.begin(); it != other.mLocalSymbols.end(); ++it ) {
+		addIdentifier(it->second);
+		mRepository->addReference(it->second);
+	}
+
 	mMemory = other.mMemory;
 	mOwner = other.mOwner;
 	mParameter = other.mParameter;
@@ -154,7 +166,7 @@ Object Method::execute(const ParameterList& params)
 
 void Method::garbageCollector()
 {
-	for ( MemberMap::iterator it = mLocalSymbols.begin(); it != mLocalSymbols.end(); ) {
+	for ( MemberCollection::iterator it = mLocalSymbols.begin(); it != mLocalSymbols.end(); ) {
 		if ( it->second->isStatic() ) {
 			it++;
 			continue;
@@ -177,7 +189,7 @@ Object* Method::getSymbol(const std::string& token)
 	Tools::split(token, parent, member);
 
 	// either it is a local symbol...
-	for ( MemberMap::iterator it = mLocalSymbols.begin(); it != mLocalSymbols.end(); ++it ) {
+	for ( MemberCollection::iterator it = mLocalSymbols.begin(); it != mLocalSymbols.end(); ++it ) {
 		if ( it->first == token ) {
 			return it->second;
 		}
@@ -208,7 +220,7 @@ bool Method::isLocalSymbol(const std::string& token)
 	// check if token is a local variable
 	// OR
 	// loop through all locals and ask them if this identifier belongs to them
-	for ( MemberMap::iterator it = mLocalSymbols.begin(); it != mLocalSymbols.end(); ++it ) {
+	for ( MemberCollection::iterator it = mLocalSymbols.begin(); it != mLocalSymbols.end(); ++it ) {
 		if ( it->first == token ) {
 			return true;
 		}
@@ -244,7 +256,7 @@ bool Method::isMember(const std::string& token)
 	// check if token is a local variable
 	// OR
 	// loop through all locals and ask them if this identifier belongs to them
-	for ( MemberMap::iterator it = mLocalSymbols.begin(); it != mLocalSymbols.end(); ++it ) {
+	for ( MemberCollection::iterator it = mLocalSymbols.begin(); it != mLocalSymbols.end(); ++it ) {
 		if ( it->first == token ) {
 			return true;
 		}
@@ -273,10 +285,9 @@ bool Method::isMethod(const std::string& token)
 	std::string member, parent;
 	Tools::split(token, parent, member);
 
-/*
-	// loop through all locals and ask them if this identifier belongs to them
-	for ( MemberMap::iterator it = mLocales.begin(); it != mLocales.end(); ++it ) {
-		Object *object = mMemory->getObject(it->second);
+	// loop through all local symbols and ask them if this identifier belongs to them
+	for ( MemberCollection::iterator it = mLocalSymbols.begin(); it != mLocalSymbols.end(); ++it ) {
+		Object *object = it->second;
 		if ( object && object->name() == parent ) {
 			// check for member function
 			if ( object->hasMethod(member) ) {
@@ -284,10 +295,13 @@ bool Method::isMethod(const std::string& token)
 			}
 		}
 	}
-*/
 
 	if ( mOwner->hasMember(parent) ) {
 		// TODO: our owning object has a member with this name, delegate this to him
+		Object *member = mOwner->getMember(parent);
+		if ( member ) {
+			return member->hasMethod(token);
+		}
 	}
 
 	// check if token is a method of our parent object

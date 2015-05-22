@@ -6,7 +6,7 @@
 // Library includes
 
 // Project includes
-#include <Core/Variable.h>
+#include <Core/Object.h>
 
 // Forward declarations
 
@@ -18,7 +18,7 @@ namespace Strings {
 
 
 
-Variable concat(const Variable& v1, const Variable& v2);
+Object concat(const Object& v1, const Object& v2);
 
 
 }

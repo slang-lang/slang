@@ -51,14 +51,14 @@ private:
 	void loadLibrary(const std::string& library);
 
 private:
-	std::string		mBaseFolder;
-	BluePrintMap	mBluePrints;
-	InterfaceMap	mInterfaces;
-	Memory			*mMemory;
-	ObjectMap		mObjects;
-	IPrinter		*mPrinter;
-	Repository		*mRepository;
-	Scripts			mScripts;
+	std::string mBaseFolder;
+	BluePrintMap mBluePrints;
+	InterfaceMap mInterfaces;
+	Memory *mMemory;
+	ObjectMap mObjects;
+	IPrinter *mPrinter;
+	Repository *mRepository;
+	Scripts mScripts;
 };
 
 

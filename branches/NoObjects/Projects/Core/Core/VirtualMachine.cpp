@@ -80,13 +80,13 @@ Script* VirtualMachine::create(const std::string& filename)
 
 	script->connectPrinter(mPrinter);
 
-	Analyser a;
-	a.process(filename);
+	Analyser analyser;
+	analyser.process(filename);
 
-	std::list<std::string> libraries = a.getLibraryReferences();
-	InterfaceList interfaces = a.getInterfaces();
-	BluePrintList objects = a.getObjects();
-	PrototypeList prototypes = a.getPrototypes();
+	std::list<std::string> libraries = analyser.getLibraryReferences();
+	InterfaceList interfaces = analyser.getInterfaces();
+	BluePrintList objects = analyser.getObjects();
+	PrototypeList prototypes = analyser.getPrototypes();
 
 	for ( std::list<std::string>::const_iterator it = libraries.begin(); it != libraries.end(); ++it ) {
 		loadLibrary((*it));
