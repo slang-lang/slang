@@ -36,7 +36,7 @@ VirtualMachine::~VirtualMachine()
 	mInterfaces.clear();
 	mObjects.clear();
 
-	for ( Scripts::iterator it = mScripts.begin(); it != mScripts.end(); ++it ) {
+	for ( ScriptCollection::iterator it = mScripts.begin(); it != mScripts.end(); ++it ) {
 		delete (*it);
 	}
 	mScripts.clear();
@@ -68,22 +68,20 @@ void VirtualMachine::connectPrinter(IPrinter *p)
 
 Script* VirtualMachine::create(const std::string& filename)
 {
-	OSinfo("create('" + filename + "')");
+	OSinfo("Processing script '" + filename + "'...");
 
 	if ( filename.empty() ) {
-		OSwarn("invalid filename '" + filename + "' provided!");
+		OSwarn("Invalid filename '" + filename + "' provided!");
 		return 0;
 	}
 
 	Script *script = new Script();
-	mScripts.insert(script);
-
 	script->connectPrinter(mPrinter);
 
 	Analyser analyser;
 	analyser.process(filename);
 
-	std::list<std::string> libraries = analyser.getLibraryReferences();
+	StringList libraries = analyser.getLibraryReferences();
 	InterfaceList interfaces = analyser.getInterfaces();
 	BluePrintList objects = analyser.getObjects();
 	PrototypeList prototypes = analyser.getPrototypes();
@@ -100,7 +98,7 @@ Script* VirtualMachine::create(const std::string& filename)
 				it->Typename(), mRepository->createInstance(it->Typename(), "main")
 			));
 
-			ObjectMap::iterator objIt = mObjects.find(it->Typename());
+			ObjectCollection::iterator objIt = mObjects.find(it->Typename());
 			assert(objIt != mObjects.end());
 
 			script->assign(objIt->second);
@@ -121,12 +119,21 @@ Script* VirtualMachine::create(const std::string& filename)
 	script->connectRepository(mRepository);
 	script->construct();
 
+	mScripts.insert(script);
+
 	return script;
+}
+
+void VirtualMachine::init()
+{
+	if ( mBaseFolder.empty() ) {
+		setBaseFolder(getenv("OBJECTIVESCRIPT_HOME"));
+	}
 }
 
 void VirtualMachine::loadLibrary(const std::string& library)
 {
-	OSinfo("Loading additional library file '" + library + "'");
+	OSinfo("Loading additional library file '" + library + "'...");
 
 	try {
 		Analyser a;
@@ -155,7 +162,7 @@ void VirtualMachine::loadLibrary(const std::string& library)
 
 void VirtualMachine::setBaseFolder(const std::string& base)
 {
-	mBaseFolder = base;
+	mBaseFolder = base + "/";
 }
 
 

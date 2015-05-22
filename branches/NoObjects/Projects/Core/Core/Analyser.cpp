@@ -365,17 +365,22 @@ void Analyser::process(const std::string& filename)
 	mLibraries.clear();
 	mObjects.clear();
 
-	OSinfo("process('" + mFilename + "')");
+	OSinfo("Analyzing file '" + mFilename + "'...");
 
-	// read file content
-	std::ifstream in(mFilename.c_str(), std::ios_base::binary);
-	in.exceptions(std::ios_base::badbit | std::ios_base::failbit | std::ios_base::eofbit);
+	try {
+		// read file content
+		std::ifstream in(mFilename.c_str(), std::ios_base::binary);
+		in.exceptions(std::ios_base::badbit | std::ios_base::failbit | std::ios_base::eofbit);
 
-	// create token list from file content
-	TokenList tokens = generateTokens(std::string(std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>()));
+		// create token list from file content
+		TokenList tokens = generateTokens(std::string(std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>()));
 
-	// generate objects from tokens
-	generateObjects(tokens);
+		// generate objects from tokens
+		generateObjects(tokens);
+	}
+	catch ( std::exception &e ) {
+		throw Utils::Exception("file not found '" + filename + "'");
+	}
 }
 
 

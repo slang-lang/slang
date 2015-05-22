@@ -27,8 +27,9 @@ Configurator::Configurator(const Utils::Common::Logger *p, const std::string& fi
 	if ( homepath ) {
 		mHomePath = homepath;
 		if ( !mHomePath.empty() ) {
-			mHomePath += "/";
 			assert(!mHomePath.empty() && "OBJECTIVESCRIPT_HOME environment variable is not set!");
+
+			mHomePath += "/";
 		}
 	}
 

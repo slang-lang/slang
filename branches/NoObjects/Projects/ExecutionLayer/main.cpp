@@ -50,10 +50,12 @@ private:
 
 void printUsage()
 {
-	printf("usage:\n");
+	printf("Usage: oscript [options] [-f] <file>\n");
 	printf("\n");
-	printf("-v\t\t\tverbose output\n");
-	printf("-h|--help\t\tthis text\n");
+	printf("-f <file>\tParse and execute <file>\n");
+	printf("-h|--help\tThis help\n");
+	printf("-root\t\tRoot library path\n");
+	printf("-v\t\tVerbose output\n");
 	printf("\n");
 }
 
@@ -65,45 +67,57 @@ int main(int argc, const char* argv[])
 	// Memory leak detection
 #endif
 
-	Utils::Common::ILogger *logger = new Utils::Common::StdOutLogger();
+	Utils::Common::StdOutLogger mLogger;
+
 	std::string filename;
+	std::string root;
 
 	if ( argc > 1 ) {
 		for (int i = 1; i < argc; i++) {
-			if ( Utils::Tools::StringCompare(argv[i], "-v") ) {
-				logger->setLoudness(Utils::Common::ILogger::LoudnessInfo);
+			if ( Utils::Tools::StringCompare(argv[i], "-f") ) {
+				filename = argv[++i];
+			}
+			else if ( Utils::Tools::StringCompare(argv[i], "-root") ) {
+				if ( argc <= ++i ) {
+					std::cout << "invalid number of parameters provided!" << std::endl;
+					return -1;
+				}
+				root = argv[i];
+			}
+			else if ( Utils::Tools::StringCompare(argv[i], "-v") ) {
+				mLogger.setLoudness(Utils::Common::ILogger::LoudnessInfo);
 			}
 			else if ( Utils::Tools::StringCompare(argv[i], "-h") || Utils::Tools::StringCompare(argv[i], "--help") ) {
 				printUsage();
+				return 0;
 			}
 			else {
 				filename = argv[i];
 			}
 		}
 	}
-	
+
 	if ( filename.empty() ) {
 		printUsage();
 
 		return 0;
 	}
 
-	Printer mPrinter(logger);
+	Printer mPrinter(&mLogger);
 
 	ObjectiveScript::VirtualMachine mVirtualMachine;
 	mVirtualMachine.connectPrinter(&mPrinter);
-	//mVirtualMachine.setBaseFolder("./");
+	mVirtualMachine.setBaseFolder(root);
+	mVirtualMachine.init();
 
 	try {
 		mVirtualMachine.create(filename);
-		// our script automatically executes it's Main object's constructor,
+		// our script automatically executes it's Main object constructor,
 		// so there is no need to execute a method explicit
 	}
 	catch ( std::exception &e ) {
 		std::cout << e.what() << std::endl;
 	}
-
-	delete logger;
 
 	return 0;
 }

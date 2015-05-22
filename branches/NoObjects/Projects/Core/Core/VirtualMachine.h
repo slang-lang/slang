@@ -33,6 +33,7 @@ public:
 
 public:	// Setup
 	void connectPrinter(IPrinter *p);
+	void init();
 	void setBaseFolder(const std::string& base);
 
 public:
@@ -41,10 +42,10 @@ public:
 protected:
 
 private:
-	typedef std::map<std::string, BluePrint> BluePrintMap;
-	typedef std::map<std::string, Interface> InterfaceMap;
-	typedef std::map<std::string, Object*> ObjectMap;
-	typedef std::set<Script*> Scripts;
+	typedef std::map<std::string, BluePrint> BluePrintCollection;
+	typedef std::map<std::string, Interface> InterfaceCollection;
+	typedef std::map<std::string, Object*> ObjectCollection;
+	typedef std::set<Script*> ScriptCollection;
 
 private:
 	std::string buildLibraryPath(const std::string& library) const;
@@ -52,13 +53,13 @@ private:
 
 private:
 	std::string mBaseFolder;
-	BluePrintMap mBluePrints;
-	InterfaceMap mInterfaces;
+	BluePrintCollection mBluePrints;
+	InterfaceCollection mInterfaces;
 	Memory *mMemory;
-	ObjectMap mObjects;
+	ObjectCollection mObjects;
 	IPrinter *mPrinter;
 	Repository *mRepository;
-	Scripts mScripts;
+	ScriptCollection mScripts;
 };
 
 

@@ -31,7 +31,7 @@ public:
 	static const int LoudnessDebug = 2;
 	static const int LoudnessDeprecated = 3;
 	static const int LoudnessMethod = 4;
-	static const int LoudnessInfo = 4;
+	static const int LoudnessInfo = 5;
 
 public:
 	virtual const std::string& getClassName() const = 0;

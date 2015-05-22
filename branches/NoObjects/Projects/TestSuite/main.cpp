@@ -52,7 +52,14 @@ int main(int argc, const char* argv[])
 
 	if ( argc > 1 ) {
 		for (int i = 1; i < argc; i++) {
-			if ( Utils::Tools::StringCompare(argv[i], "-v") ) {
+			if ( Utils::Tools::StringCompare(argv[i], "--test") ) {
+				if ( argc <= ++i ) {
+					std::cout << "invalid number of parameters provided!" << std::endl;
+					return -1;
+				}
+				toRun = argv[i];
+			}
+			else if ( Utils::Tools::StringCompare(argv[i], "-v") ) {
 				logger = new Utils::Common::StdOutLogger();
 			}
 			else if ( Utils::Tools::StringCompare(argv[i], "--show") ) {
@@ -101,8 +108,7 @@ int main(int argc, const char* argv[])
 		mFixtures.clear();
 	}
 	catch ( std::exception &e ) {
-		std::cout << "Unhandled std::exception: " << e.what();
-		//logger->LogError("Unhandled std::exception: " + std::string(e.what()), __FILE__, __LINE__);
+		std::cout << "Unhandled std::exception: " << e.what() << std::endl;
 	}
 
 	if ( !executed && !show ) {
