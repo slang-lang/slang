@@ -48,7 +48,7 @@ void PrototypeTest::testBasicObject()
 {
 	try {
 		VirtualMachine vm;
-		vm.connectPrinter(&mStdoutPrinter);
+		vm.setPrinter(&mStdoutPrinter);
 
 		vm.create("Tests/BasicObjectTest.os");
 
@@ -68,7 +68,7 @@ void PrototypeTest::testPrototypeDeclaration()
 {
 	try {
 		VirtualMachine vm;
-		vm.connectPrinter(&mStdoutPrinter);
+		vm.setPrinter(&mStdoutPrinter);
 
 		vm.create("Tests/PrototypeTest.os");
 
@@ -88,7 +88,7 @@ void PrototypeTest::testPrototypeUsage()
 {
 	try {
 		VirtualMachine vm;
-		vm.connectPrinter(&mStdoutPrinter);
+		vm.setPrinter(&mStdoutPrinter);
 
 		vm.create("Tests/PrototypeTest.os");
 

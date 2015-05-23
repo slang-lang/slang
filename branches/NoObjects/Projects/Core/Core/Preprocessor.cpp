@@ -46,7 +46,7 @@ Object* Preprocessor::createMemberObject(const std::string& filename, TokenItera
 	name = (*token++).content();
 
 	if ( (*token).type() != Token::Type::SEMICOLON ) {
-		throw Utils::Exception("Member initialisation not allowed at this point", token->position());
+		throw Utils::Exception("Member initialization not allowed at this point", token->position());
 	}
 
 	Object *o = mRepository->createInstance(type, name);
@@ -79,7 +79,7 @@ Method* Preprocessor::createMethod(TokenIterator token)
 	// look for the next opening parenthesis
 	do { token++; } while ( (*token).type() != Token::Type::PARENTHESIS_OPEN );
 
-	ParameterList params = parseParameters(token);
+	ParameterList params = parseParameters(++token);
 
 	// look at possible attributes (const, static, etc.)
 	// look for the next opening curly bracket
@@ -210,7 +210,7 @@ ParameterList Preprocessor::parseParameters(TokenIterator &token)
 {
 	ParameterList params;
 
-	while ( (*++token).type() != Token::Type::PARENTHESIS_CLOSE ) {
+	while ( (*token).type() != Token::Type::PARENTHESIS_CLOSE ) {
 		if ( !isLocalDeclaration(token) ) {
 			throw Utils::SyntaxError("could not parse parameter declaration!", token->position());
 		}
@@ -242,6 +242,7 @@ ParameterList Preprocessor::parseParameters(TokenIterator &token)
 		if ( token->type() == Token::Type::ASSIGN ) {
 			token++;
 			value = token->content();
+			token++;
 		}
 
 		Parameter param(name, type, value, isConst, accessmode, 0);
@@ -251,41 +252,6 @@ ParameterList Preprocessor::parseParameters(TokenIterator &token)
 			break;
 		}
 	}
-
-/*
-	// look for the next closing parenthesis and create parameters
-	while ( (*++token).type() != Token::Type::PARENTHESIS_CLOSE ) {
-		if ( isLocalDeclaration(token) ) {
-			// try to create parameter objects
-			std::string name;
-			std::string type = token->content();
-
-			do {
-				token++;
-
-				if ( token->type() == Token::Type::IDENTIFER ) {
-					name = token->content();
-				}
-				else if ( token->type() == Token::Type::RESERVED ) {
-					if ( token->content() == "const" ) {
-						isConst = true;
-					}
-					else if ( token->content() == "static" ) {
-						throw Utils::Exception("static parameter declarations not allowed", token->position());
-					}
-				}
-			} while ( token->type() != Token::Type::COLON && token->type() != Token::Type::PARENTHESIS_CLOSE );
-
-			params.push_back(Parameter(name, type, "", isConst, Parameter::AccessMode::ByValue));
-
-			if ( token->type() == Token::Type::PARENTHESIS_CLOSE ) {
-				break;
-			}
-		}
-
-		isConst = false;
-	}
-*/
 
 	return params;
 }

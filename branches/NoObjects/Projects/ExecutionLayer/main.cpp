@@ -3,11 +3,12 @@
 
 // Project includes
 #include <Common/StdOutLogger.h>
-#include <Core/Interfaces/IPrinter.h>
+#include <Core/Parameter.h>
 #include <Core/Script.h>
 #include <Core/Types.h>
 #include <Core/VirtualMachine.h>
 #include <Tools/Strings.h>
+#include "Printer.h"
 
 // Namespace declarations
 
@@ -28,35 +29,62 @@
 #endif
 
 
-class Printer : public ObjectiveScript::IPrinter
-{
-public:
-	Printer(Utils::Common::ILogger *l)
-	: mLogger(l)
-	{ }
+std::string mFilename;
+Utils::Common::StdOutLogger mLogger;
+ObjectiveScript::ParameterList mParameters;
+std::string mRoot;
 
-public:
-	void log(const std::string& text) {
-		mLogger->LogDebug(text, 0, 0);
-	}
-
-	void print(const std::string& text) {
-		std::cout << text << std::endl;
-	}
-
-private:
-	Utils::Common::ILogger *mLogger;
-};
 
 void printUsage()
 {
 	std::cout << "Usage: oscript [options] [-f] <file>" << std::endl;
 	std::cout << std::endl;
-	std::cout << "-f <file>      Parse and execute <file>" << std::endl;
-	std::cout << "-h | --help    This help" << std::endl;
-	std::cout << "-r | --root    Library root path" << std::endl;
-	std::cout << "-v             Verbose output" << std::endl;
+	std::cout << "-f | --file <file>    Parse and execute <file>" << std::endl;
+	std::cout << "-h | --help           This help" << std::endl;
+	std::cout << "-r | --root           Library root path" << std::endl;
+	std::cout << "-v                    Verbose output" << std::endl;
 	std::cout << std::endl;
+}
+
+void processParameters(int argc, const char* argv[])
+{
+	if ( argc > 1 ) {
+		for (int i = 1; i < argc; i++) {
+			if ( Utils::Tools::StringCompare(argv[i], "-f") || Utils::Tools::StringCompare(argv[i], "--file") ) {
+				if ( argc <= ++i ) {
+					std::cout << "invalid number of parameters provided!" << std::endl;
+
+					exit(-1);
+				}
+
+				mFilename = argv[i];
+			}
+			else if ( Utils::Tools::StringCompare(argv[i], "-h") || Utils::Tools::StringCompare(argv[i], "--help") ) {
+				printUsage();
+
+				exit(0);
+			}
+			else if ( Utils::Tools::StringCompare(argv[i], "-r") || Utils::Tools::StringCompare(argv[i], "--root") ) {
+				if ( argc <= ++i ) {
+					std::cout << "invalid number of parameters provided!" << std::endl;
+
+					exit(-1);
+				}
+
+				mRoot = argv[i];
+			}
+			else if ( Utils::Tools::StringCompare(argv[i], "-v") ) {
+				mLogger.setLoudness(Utils::Common::ILogger::LoudnessInfo);
+			}
+			else if ( mFilename.empty() ){
+				mFilename = argv[i];
+			}
+			else {
+				ObjectiveScript::Parameter p("arg", "String", argv[i]);
+				mParameters.push_back(p);
+			}
+		}
+	}
 }
 
 int main(int argc, const char* argv[])
@@ -67,50 +95,25 @@ int main(int argc, const char* argv[])
 	// Memory leak detection
 #endif
 
-	Utils::Common::StdOutLogger mLogger;
+	processParameters(argc, argv);
 
-	std::string filename;
-	std::string root;
-
-	if ( argc > 1 ) {
-		for (int i = 1; i < argc; i++) {
-			if ( Utils::Tools::StringCompare(argv[i], "-f") ) {
-				filename = argv[++i];
-			}
-			else if ( Utils::Tools::StringCompare(argv[i], "-h") || Utils::Tools::StringCompare(argv[i], "--help") ) {
-				printUsage();
-				return 0;
-			}
-			else if ( Utils::Tools::StringCompare(argv[i], "-root") ) {
-				if ( argc <= ++i ) {
-					std::cout << "invalid number of parameters provided!" << std::endl;
-					return -1;
-				}
-				root = argv[i];
-			}
-			else if ( Utils::Tools::StringCompare(argv[i], "-v") ) {
-				mLogger.setLoudness(Utils::Common::ILogger::LoudnessInfo);
-			}
-			else {
-				filename = argv[i];
-			}
-		}
-	}
-
-	if ( filename.empty() ) {
+	if ( mFilename.empty() ) {
 		printUsage();
 
 		return 0;
 	}
 
+	ObjectiveScript::Parameter p("argc", "Number", Utils::Tools::toString(mParameters.size()));
+	mParameters.insert(mParameters.begin(), p);
+
 	Printer mPrinter(&mLogger);
 
 	ObjectiveScript::VirtualMachine mVirtualMachine;
-	mVirtualMachine.connectPrinter(&mPrinter);
-	mVirtualMachine.setBaseFolder(root);
+	mVirtualMachine.setPrinter(&mPrinter);
+	mVirtualMachine.setBaseFolder(mRoot);
 
 	try {
-		mVirtualMachine.create(filename);
+		mVirtualMachine.create(mFilename, mParameters);
 		// our script automatically executes it's Main object constructor,
 		// so there is no need to execute a method explicit
 	}

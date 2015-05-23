@@ -49,7 +49,7 @@ void AttributesTest::testBasicLanguageFeatures()
 {
 	try {
 		VirtualMachine vm;
-		vm.connectPrinter(&mStdoutPrinter);
+		vm.setPrinter(&mStdoutPrinter);
 
 		vm.create("Tests/Language/AttributesTest.os");
 

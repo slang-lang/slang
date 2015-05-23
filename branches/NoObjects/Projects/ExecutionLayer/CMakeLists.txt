@@ -7,6 +7,7 @@ SET(SOURCES
 )
 
 SET(HEADERS
+	Printer.h
 )
 
 SET(DEPENDENCIES

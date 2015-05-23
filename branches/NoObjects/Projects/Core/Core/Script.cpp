@@ -61,7 +61,7 @@ void Script::connectRepository(Repository *r)
 	mRepository = r;
 }
 
-void Script::construct()
+void Script::construct(const ParameterList& params)
 {
 /*
 	try {
@@ -69,7 +69,7 @@ void Script::construct()
 		if ( mObject ) {
 			mObject->connectPrinter(mPrinter);
 			mObject->connectRepository(mRepository);
-			mObject->Constructor(ParameterList());
+			mObject->Constructor(params);
 		}
 /*
 	}

@@ -46,7 +46,7 @@ void MathTest::testBasicExpressionParsing()
 {
 	try {
 		VirtualMachine vm;
-		vm.connectPrinter(&mStdoutPrinter);
+		vm.setPrinter(&mStdoutPrinter);
 
 		vm.create("Tests/Math/BasicTest.os");
 

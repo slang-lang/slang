@@ -30,9 +30,9 @@ public:
 	~Analyser();
 
 public:
+	const BluePrintList& getBluePrints() const;
 	const InterfaceList& getInterfaces() const;
 	const StringList& getLibraryReferences() const;
-	const BluePrintList& getObjects() const;
 	const PrototypeList& getPrototypes() const;
 
 public:
@@ -45,10 +45,10 @@ private:
 	TokenList generateTokens(const std::string& content);
 
 private:
+	BluePrint createBluePrint(TokenIterator& start, TokenIterator end);
 	Interface createInterface(TokenIterator& start, TokenIterator end);
 	std::string createLibraryReference(TokenIterator& start, TokenIterator end);
 	void createNamespace(TokenIterator& start, TokenIterator end);
-	BluePrint createObject(TokenIterator& start, TokenIterator end);
 	Prototype createPrototype(TokenIterator& start, TokenIterator end);
 
 private:
@@ -59,10 +59,10 @@ private:
 	bool isPrototypeDeclaration(TokenIterator start);
 
 private:
+	BluePrintList mBluePrints;
 	std::string mFilename;
 	InterfaceList mInterfaces;
 	StringList mLibraries;
-	BluePrintList mObjects;
 	PrototypeList mPrototypes;
 	IScope *mScope;
 };

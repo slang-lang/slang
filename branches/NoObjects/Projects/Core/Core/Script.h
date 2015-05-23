@@ -35,7 +35,7 @@ public:	// Setup
 	void connectRepository(Repository *r);
 
 public:	// Constructor & Destructor
-	void construct();
+	void construct(const ParameterList& params);
 	void destruct();
 
 public:	//Helpers

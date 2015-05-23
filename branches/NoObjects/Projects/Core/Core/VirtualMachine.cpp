@@ -21,7 +21,7 @@ namespace ObjectiveScript {
 
 
 VirtualMachine::VirtualMachine()
-: mBaseFolder("."),
+: mBaseFolder(""),
   mMemory(0),
   mPrinter(0),
   mRepository(0)
@@ -61,12 +61,7 @@ std::string VirtualMachine::buildLibraryPath(const std::string& library) const
 	return result;
 }
 
-void VirtualMachine::connectPrinter(IPrinter *p)
-{
-	mPrinter = p;
-}
-
-Script* VirtualMachine::create(const std::string& filename)
+Script* VirtualMachine::create(const std::string& filename, const ParameterList& params)
 {
 	init();
 
@@ -85,11 +80,21 @@ Script* VirtualMachine::create(const std::string& filename)
 
 	StringList libraries = analyser.getLibraryReferences();
 	InterfaceList interfaces = analyser.getInterfaces();
-	BluePrintList objects = analyser.getObjects();
+	BluePrintList objects = analyser.getBluePrints();
 	PrototypeList prototypes = analyser.getPrototypes();
 
-	for ( std::list<std::string>::const_iterator it = libraries.begin(); it != libraries.end(); ++it ) {
+	for ( StringList::const_iterator it = libraries.begin(); it != libraries.end(); ++it ) {
 		loadLibrary((*it));
+	}
+
+	for ( InterfaceList::iterator it = interfaces.begin(); it != interfaces.end(); ++it ) {
+		mInterfaces.insert(std::make_pair(
+			it->Typename(), (*it)
+		));
+	}
+
+	for ( PrototypeList::iterator it = prototypes.begin(); it != prototypes.end(); ++it ) {
+		mRepository->addPrototype((*it));
 	}
 
 	for ( BluePrintList::iterator it = objects.begin(); it != objects.end(); ++it ) {
@@ -107,19 +112,9 @@ Script* VirtualMachine::create(const std::string& filename)
 		}
 	}
 
-	for ( InterfaceList::iterator it = interfaces.begin(); it != interfaces.end(); ++it ) {
-		mInterfaces.insert(std::make_pair(
-			it->Typename(), (*it)
-		));
-	}
-
-	for ( PrototypeList::iterator it = prototypes.begin(); it != prototypes.end(); ++it ) {
-		mRepository->addPrototype((*it));
-	}
-
 	script->connectMemory(mMemory);
 	script->connectRepository(mRepository);
-	script->construct();
+	script->construct(params);
 
 	mScripts.insert(script);
 
@@ -142,7 +137,7 @@ void VirtualMachine::loadLibrary(const std::string& library)
 		a.process(buildLibraryPath(library));
 
 		const std::list<std::string>& libraries = a.getLibraryReferences();
-		BluePrintList objects = a.getObjects();
+		BluePrintList objects = a.getBluePrints();
 		PrototypeList prototypes = a.getPrototypes();
 
 		for ( std::list<std::string>::const_iterator it = libraries.begin(); it != libraries.end(); ++it ) {
@@ -168,9 +163,14 @@ void VirtualMachine::setBaseFolder(const std::string& base)
 		return;
 	}
 
-	OSinfo("Library root = " + base);
-
 	mBaseFolder = base;
+
+	OSinfo("Library root = " + mBaseFolder);
+}
+
+void VirtualMachine::setPrinter(IPrinter *p)
+{
+	mPrinter = p;
 }
 
 

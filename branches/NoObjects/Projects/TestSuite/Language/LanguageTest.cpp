@@ -58,7 +58,7 @@ void LanguageTest::testAssert()
 {
 	try {
 		VirtualMachine vm;
-		vm.connectPrinter(&mStdoutPrinter);
+		vm.setPrinter(&mStdoutPrinter);
 
 		vm.create("Tests/Language/AssertTest.os");
 
@@ -77,7 +77,7 @@ void LanguageTest::testComment()
 {
 	try {
 		VirtualMachine vm;
-		vm.connectPrinter(&mStdoutPrinter);
+		vm.setPrinter(&mStdoutPrinter);
 
 		vm.create("Tests/Language/CommentTest.os");
 
@@ -93,7 +93,7 @@ void LanguageTest::testConstCorrectness()
 {
 	try {
 		VirtualMachine vm;
-		vm.connectPrinter(&mStdoutPrinter);
+		vm.setPrinter(&mStdoutPrinter);
 
 		vm.create("Tests/Language/ConstCorrectness.os");
 
@@ -112,7 +112,7 @@ void LanguageTest::testDefaultParameter()
 {
 	try {
 		VirtualMachine vm;
-		vm.connectPrinter(&mStdoutPrinter);
+		vm.setPrinter(&mStdoutPrinter);
 
 		vm.create("Tests/Language/DefaultParameter.os");
 
@@ -128,7 +128,7 @@ void LanguageTest::testFor()
 {
 	try {
 		VirtualMachine vm;
-		vm.connectPrinter(&mStdoutPrinter);
+		vm.setPrinter(&mStdoutPrinter);
 
 		vm.create("Tests/Language/ForLoopTest.os");
 
@@ -147,7 +147,7 @@ void LanguageTest::testIf()
 {
 	try {
 		VirtualMachine vm;
-		vm.connectPrinter(&mStdoutPrinter);
+		vm.setPrinter(&mStdoutPrinter);
 
 		vm.create("Tests/Language/IfTest.os");
 
@@ -163,7 +163,7 @@ void LanguageTest::testInterfaces()
 {
 	try {
 		VirtualMachine vm;
-		vm.connectPrinter(&mStdoutPrinter);
+		vm.setPrinter(&mStdoutPrinter);
 
 		Script *s = vm.create("Tests/Language/InterfacesTest.os");
 
@@ -188,7 +188,7 @@ void LanguageTest::testMethodOverloading()
 {
 	try {
 		VirtualMachine vm;
-		vm.connectPrinter(&mStdoutPrinter);
+		vm.setPrinter(&mStdoutPrinter);
 
 		vm.create("Tests/Language/MethodOverloadingTest.os");
 
@@ -204,7 +204,7 @@ void LanguageTest::testNamespaces()
 {
 	try {
 		VirtualMachine vm;
-		vm.connectPrinter(&mStdoutPrinter);
+		vm.setPrinter(&mStdoutPrinter);
 
 		vm.create("Tests/Language/NamespaceTest.os");
 
@@ -220,7 +220,7 @@ void LanguageTest::testObjectReference()
 {
 	try {
 		VirtualMachine vm;
-		vm.connectPrinter(&mStdoutPrinter);
+		vm.setPrinter(&mStdoutPrinter);
 
 		vm.create("Tests/Language/ObjectReference.os");
 
@@ -236,7 +236,7 @@ void LanguageTest::testPrint()
 {
 	try {
 		VirtualMachine vm;
-		vm.connectPrinter(&mStdoutPrinter);
+		vm.setPrinter(&mStdoutPrinter);
 
 		vm.create("Tests/Language/PrintTest.os");
 
@@ -252,7 +252,7 @@ void LanguageTest::testStaticLocalVariable()
 {
 	try {
 		VirtualMachine vm;
-		vm.connectPrinter(&mStdoutPrinter);
+		vm.setPrinter(&mStdoutPrinter);
 
 		vm.create("Tests/Language/StaticVariablesTest.os");
 
@@ -268,7 +268,7 @@ void LanguageTest::testWhile()
 {
 	try {
 		VirtualMachine vm;
-		vm.connectPrinter(&mStdoutPrinter);
+		vm.setPrinter(&mStdoutPrinter);
 
 		vm.create("Tests/Language/WhileTest.os");
 

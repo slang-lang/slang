@@ -11,6 +11,7 @@
 // Project includes
 #include "Interface.h"
 #include "Object.h"
+#include "Parameter.h"
 
 // Forward declarations
 
@@ -32,11 +33,11 @@ public:
 	~VirtualMachine();
 
 public:	// Setup
-	void connectPrinter(IPrinter *p);
 	void setBaseFolder(const std::string& base);
+	void setPrinter(IPrinter *p);
 
 public:
-	Script* create(const std::string& filename);
+	Script* create(const std::string& filename, const ParameterList& params = ParameterList());
 
 protected:
 
