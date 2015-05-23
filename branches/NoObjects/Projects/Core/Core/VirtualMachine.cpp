@@ -57,7 +57,7 @@ std::string VirtualMachine::buildLibraryPath(const std::string& library) const
 		}
 	} while ( npos != std::string::npos );
 
-	result = mBaseFolder + "/" + result + ".os";
+	result = mBaseFolder + result + ".os";
 	return result;
 }
 
@@ -68,6 +68,8 @@ void VirtualMachine::connectPrinter(IPrinter *p)
 
 Script* VirtualMachine::create(const std::string& filename)
 {
+	init();
+
 	OSinfo("Processing script '" + filename + "'...");
 
 	if ( filename.empty() ) {
@@ -162,7 +164,13 @@ void VirtualMachine::loadLibrary(const std::string& library)
 
 void VirtualMachine::setBaseFolder(const std::string& base)
 {
-	mBaseFolder = base + "/";
+	if ( base.empty() ) {
+		return;
+	}
+
+	OSinfo("Library root = " + base);
+
+	mBaseFolder = base;
 }
 
 

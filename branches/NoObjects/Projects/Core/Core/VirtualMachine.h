@@ -33,7 +33,6 @@ public:
 
 public:	// Setup
 	void connectPrinter(IPrinter *p);
-	void init();
 	void setBaseFolder(const std::string& base);
 
 public:
@@ -49,6 +48,7 @@ private:
 
 private:
 	std::string buildLibraryPath(const std::string& library) const;
+	void init();
 	void loadLibrary(const std::string& library);
 
 private:

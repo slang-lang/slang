@@ -50,13 +50,13 @@ private:
 
 void printUsage()
 {
-	printf("Usage: oscript [options] [-f] <file>\n");
-	printf("\n");
-	printf("-f <file>\tParse and execute <file>\n");
-	printf("-h|--help\tThis help\n");
-	printf("-root\t\tRoot library path\n");
-	printf("-v\t\tVerbose output\n");
-	printf("\n");
+	std::cout << "Usage: oscript [options] [-f] <file>" << std::endl;
+	std::cout << std::endl;
+	std::cout << "-f <file>      Parse and execute <file>" << std::endl;
+	std::cout << "-h | --help    This help" << std::endl;
+	std::cout << "-r | --root    Library root path" << std::endl;
+	std::cout << "-v             Verbose output" << std::endl;
+	std::cout << std::endl;
 }
 
 int main(int argc, const char* argv[])
@@ -77,6 +77,10 @@ int main(int argc, const char* argv[])
 			if ( Utils::Tools::StringCompare(argv[i], "-f") ) {
 				filename = argv[++i];
 			}
+			else if ( Utils::Tools::StringCompare(argv[i], "-h") || Utils::Tools::StringCompare(argv[i], "--help") ) {
+				printUsage();
+				return 0;
+			}
 			else if ( Utils::Tools::StringCompare(argv[i], "-root") ) {
 				if ( argc <= ++i ) {
 					std::cout << "invalid number of parameters provided!" << std::endl;
@@ -86,10 +90,6 @@ int main(int argc, const char* argv[])
 			}
 			else if ( Utils::Tools::StringCompare(argv[i], "-v") ) {
 				mLogger.setLoudness(Utils::Common::ILogger::LoudnessInfo);
-			}
-			else if ( Utils::Tools::StringCompare(argv[i], "-h") || Utils::Tools::StringCompare(argv[i], "--help") ) {
-				printUsage();
-				return 0;
 			}
 			else {
 				filename = argv[i];
@@ -108,7 +108,6 @@ int main(int argc, const char* argv[])
 	ObjectiveScript::VirtualMachine mVirtualMachine;
 	mVirtualMachine.connectPrinter(&mPrinter);
 	mVirtualMachine.setBaseFolder(root);
-	mVirtualMachine.init();
 
 	try {
 		mVirtualMachine.create(filename);
