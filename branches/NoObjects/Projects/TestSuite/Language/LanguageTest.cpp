@@ -41,6 +41,7 @@ void LanguageTest::process()
 	TEST(testMethodOverloading);
 	TEST(testNamespaces);
 	TEST(testObjectReference);
+	TEST(testParameters);
 	TEST(testPrint);
 	TEST(testStaticLocalVariable);
 	TEST(testWhile);
@@ -223,6 +224,25 @@ void LanguageTest::testObjectReference()
 		vm.setPrinter(&mStdoutPrinter);
 
 		vm.create("Tests/Language/ObjectReference.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL("caught exception: " << e.what());
+	}
+}
+
+void LanguageTest::testParameters()
+{
+	try {
+		VirtualMachine vm;
+		vm.setPrinter(&mStdoutPrinter);
+
+		ParameterList params;
+		params.push_back(Parameter("argc", "Number", "2"));
+		params.push_back(Parameter("argv", "String", ""));
+		vm.create("Tests/Language/ParameterTest.os", params);
 
 		// automatic success
 	}

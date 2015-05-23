@@ -1,3 +1,4 @@
+#!/usr/bin/oscript
 
 import system.assert;
 

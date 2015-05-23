@@ -1,3 +1,4 @@
+#!/usr/bin/oscript
 
 public namespace stable AttributeTest
 {

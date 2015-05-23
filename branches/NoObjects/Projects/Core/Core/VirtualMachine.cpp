@@ -124,7 +124,10 @@ Script* VirtualMachine::create(const std::string& filename, const ParameterList&
 void VirtualMachine::init()
 {
 	if ( mBaseFolder.empty() ) {
-		setBaseFolder(getenv("OBJECTIVESCRIPT_HOME"));
+		const char* homepath = getenv("OBJECTIVESCRIPT_HOME");
+		if ( homepath ) {
+			setBaseFolder(homepath);
+		}
 	}
 }
 

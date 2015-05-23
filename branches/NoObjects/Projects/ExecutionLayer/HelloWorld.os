@@ -4,7 +4,7 @@ public namespace
 {
 	public object Main
 	{
-		public void Main(string[] args)
+		public void Main()
 		{
 			print("Hello World!\n");
 		}

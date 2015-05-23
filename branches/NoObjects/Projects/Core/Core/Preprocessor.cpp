@@ -79,7 +79,7 @@ Method* Preprocessor::createMethod(TokenIterator token)
 	// look for the next opening parenthesis
 	do { token++; } while ( (*token).type() != Token::Type::PARENTHESIS_OPEN );
 
-	ParameterList params = parseParameters(++token);
+	ParameterList params = parseParameters(token);
 
 	// look at possible attributes (const, static, etc.)
 	// look for the next opening curly bracket
@@ -210,7 +210,7 @@ ParameterList Preprocessor::parseParameters(TokenIterator &token)
 {
 	ParameterList params;
 
-	while ( (*token).type() != Token::Type::PARENTHESIS_CLOSE ) {
+	while ( (*++token).type() != Token::Type::PARENTHESIS_CLOSE ) {
 		if ( !isLocalDeclaration(token) ) {
 			throw Utils::SyntaxError("could not parse parameter declaration!", token->position());
 		}
