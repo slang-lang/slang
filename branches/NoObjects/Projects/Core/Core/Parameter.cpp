@@ -13,7 +13,13 @@
 namespace ObjectiveScript {
 
 
-Parameter::Parameter(const std::string& name, const std::string& type, const std::string& value, bool isConst, AccessMode::E access, Object* reference)
+Parameter::Parameter()
+: mAccessMode(AccessMode::Unspecified),
+  mIsConst(false)
+{
+}
+
+Parameter::Parameter(const std::string& name, const std::string& type, const std::string& value, bool isConst, AccessMode::E access, Reference reference)
 : mAccessMode(access),
   mIsConst(isConst),
   mName(name),
@@ -38,7 +44,7 @@ const std::string& Parameter::name() const
 	return mName;
 }
 
-Object* Parameter::reference() const
+const Reference& Parameter::reference() const
 {
 	return mReference;
 }

@@ -8,6 +8,7 @@
 #include <string>
 
 // Project includes
+#include "Reference.h"
 
 // Forward declarations
 
@@ -33,13 +34,14 @@ public:
 	};
 
 public:
-	Parameter(const std::string& name, const std::string& type, const std::string& value, bool isConst = false, AccessMode::E access = AccessMode::ByValue, Object* reference = 0);
+	Parameter();
+	Parameter(const std::string& name, const std::string& type, const std::string& value, bool isConst = false, AccessMode::E access = AccessMode::ByValue, Reference reference = Reference());
 
 public:
 	AccessMode::E access() const;
 	bool isConst() const;
 	const std::string& name() const;
-	Object* reference() const;
+	const Reference& reference() const;
 	const std::string& type() const;
 	const std::string& value() const;
 
@@ -49,7 +51,7 @@ private:
 	AccessMode::E mAccessMode;
 	bool mIsConst;
 	std::string mName;
-	Object* mReference;
+	Reference mReference;
 	std::string mType;
 	std::string mValue;
 };

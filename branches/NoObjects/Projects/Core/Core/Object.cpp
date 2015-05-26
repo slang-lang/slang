@@ -54,7 +54,7 @@ Object::~Object()
 	}
 
 	for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
-		//delete (*it);
+		delete (*it);
 	}
 	mMethods.clear();
 }
@@ -91,28 +91,20 @@ void Object::operator= (const Object& other)
 
 	// register new methods
 	for ( MethodCollection::const_iterator it = other.mMethods.begin(); it != other.mMethods.end(); ++it ) {
-		//Method *m = new Method(this, (*it)->name(), (*it)->type());
-		//m->setConst((*it)->isConst());
-		//m->setLanguageFeatureState((*it)->languageFeatureState());
-
 		Method *m = new Method(this, (*it)->name(), (*it)->type());
 		*m = *(*it);
 
 		addMethod(m);
 	}
 
-	//mMethods = other.mMethods;
 	mTokens = other.mTokens;
 	mVarType = other.mVarType;
 	mVarValue = other.mVarValue;
-
-	updateMethodOwners();
 }
 
 void Object::addMember(Object *m)
 {
 	assert(m);
-	//OSinfo(this->type() + ".addMember('" + m->name() + "')");
 
 	if ( mMembers.find(m->name()) != mMembers.end() ) {
 		throw Utils::DuplicateIdentiferException("duplicate member '" + m->name() + "' added");
@@ -124,11 +116,13 @@ void Object::addMember(Object *m)
 void Object::addMethod(Method *m)
 {
 	assert(m);
-	//OSinfo(this->type() + ".addMethod('" + m->name() + "', [" + toString(m->provideSignature()) + "])");
 
 	if ( mMethods.find(m) != mMethods.end() ) {
 		throw Utils::DuplicateIdentiferException("duplicate method '" + m->name() + "' added with same signature");
 	}
+
+	m->setOwner(this);
+	m->setRepository(mRepository);
 
 	mMethods.insert(m);
 }
@@ -158,6 +152,8 @@ void Object::connectRepository(Repository *r)
 
 void Object::Constructor(const ParameterList& params)
 {
+	//OSdebug("execute('" + name() + "', [" + toString(params) + "])");
+
 	if ( mConstructed ) {
 		throw Utils::Exception("can not construct object '" + name() + "' multiple times");
 	}

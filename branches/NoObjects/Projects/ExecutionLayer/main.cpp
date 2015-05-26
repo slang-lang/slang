@@ -37,7 +37,7 @@ std::string mRoot;
 
 void printUsage()
 {
-	std::cout << "Usage: oscript [options] [-f] <file>" << std::endl;
+	std::cout << "Usage: oscript [options] [-f] <file> [args...]" << std::endl;
 	std::cout << std::endl;
 	std::cout << "-f | --file <file>    Parse and execute <file>" << std::endl;
 	std::cout << "-h | --help           This help" << std::endl;
@@ -48,6 +48,9 @@ void printUsage()
 
 void processParameters(int argc, const char* argv[])
 {
+	StringList params;
+	std::string paramStr;
+
 	if ( argc > 1 ) {
 		for (int i = 1; i < argc; i++) {
 			if ( Utils::Tools::StringCompare(argv[i], "-f") || Utils::Tools::StringCompare(argv[i], "--file") ) {
@@ -58,6 +61,8 @@ void processParameters(int argc, const char* argv[])
 				}
 
 				mFilename = argv[i];
+				params.push_back(mFilename);
+				paramStr += mFilename;
 			}
 			else if ( Utils::Tools::StringCompare(argv[i], "-h") || Utils::Tools::StringCompare(argv[i], "--help") ) {
 				printUsage();
@@ -78,13 +83,21 @@ void processParameters(int argc, const char* argv[])
 			}
 			else if ( mFilename.empty() ){
 				mFilename = argv[i];
+				params.push_back(mFilename);
+				paramStr += mFilename;
 			}
 			else {
-				ObjectiveScript::Parameter p("arg", "String", argv[i]);
-				mParameters.push_back(p);
+				params.push_back(argv[i]);
+				paramStr += ", ";
+				paramStr += argv[i];
 			}
 		}
 	}
+
+/*
+	mParameters.push_back(ObjectiveScript::Parameter("argc", "Number", Utils::Tools::toString(params.size())));
+	mParameters.push_back(ObjectiveScript::Parameter("argv", "String", paramStr));
+*/
 }
 
 int main(int argc, const char* argv[])
@@ -103,14 +116,13 @@ int main(int argc, const char* argv[])
 		return 0;
 	}
 
-	ObjectiveScript::Parameter p("argc", "Number", Utils::Tools::toString(mParameters.size()));
-	mParameters.insert(mParameters.begin(), p);
-
 	Printer mPrinter(&mLogger);
 
 	ObjectiveScript::VirtualMachine mVirtualMachine;
 	mVirtualMachine.setPrinter(&mPrinter);
 	mVirtualMachine.setBaseFolder(mRoot);
+
+std::cout << "Parameters(" << mParameters.size() << "): " << ObjectiveScript::toString(mParameters) << std::endl;
 
 	try {
 		mVirtualMachine.create(mFilename, mParameters);

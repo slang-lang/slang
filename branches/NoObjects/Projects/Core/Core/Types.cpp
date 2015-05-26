@@ -66,12 +66,35 @@ StringList provideReservedWords()
 	return reservedWords;
 }
 
+std::string toString(const Parameter& param)
+{
+	std::string result = param.type();
+	if ( !param.name().empty() ) {
+		result += " " + param.name();
+	}
+	else {
+		result += " <unnamed object>";
+	}
+	if ( param.isConst() ) {
+		result += " const";
+	}
+	switch ( param.access() ) {
+		case Parameter::AccessMode::ByReference: result += " ByReference"; break;
+		case Parameter::AccessMode::ByValue: result += " ByValue"; break;
+		case Parameter::AccessMode::Unspecified: break;
+	}
+	result += " = ";
+	result += param.value();
+
+	return result;
+}
+
 std::string toString(const ParameterList& list)
 {
 	std::string result;
 
 	for ( ParameterList::const_iterator it = list.begin(); it != list.end(); ++it ) {
-		result = it->type() + " " + (it->name() != "" ? it->name() + " = " : "<unnamed object> = ") + it->value();
+		result = toString((*it));
 
 		ParameterList::const_iterator copy = it;
 		if ( ++copy != list.end() ) {
@@ -87,7 +110,7 @@ std::string toString(const ReferencesList& list)
 	std::string result;
 
 	for ( ReferencesList::const_iterator it = list.begin(); it != list.end(); ++it ) {
-		//result += (*it).getAddress();
+		//result += it->getAddress();
 
 		ReferencesList::const_iterator copy = it;
 		if ( ++copy != list.end() ) {
@@ -119,7 +142,7 @@ std::string toString(const TokenList& list)
 	std::string result;
 
 	for ( TokenIterator it = list.begin(); it != list.end(); ++it ) {
-		result += (*it).content();
+		result += it->content();
 
 		TokenIterator copy = it;
 		if ( ++copy != list.end() ) {

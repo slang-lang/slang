@@ -17,15 +17,16 @@
 // Namespace declarations
 
 
+typedef std::list<std::string> StringList;
+
+
 namespace ObjectiveScript {
 
 
 static const std::string PROTOTYPE_TYPE = "UNKNOWN";
 
 
-typedef std::list<std::string> StringList;
-
-
+std::string toString(const Parameter& param);
 std::string toString(const ParameterList& list);
 std::string toString(const ReferencesList& list);
 std::string toString(const StringList& list);

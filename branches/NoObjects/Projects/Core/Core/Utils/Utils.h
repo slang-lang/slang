@@ -12,8 +12,8 @@
 // Namespace declarations
 
 
-//#define WRITE_LOGS
-#define WRITE_LOGS_WITH_FILENAMES
+#define WRITE_LOGS
+//#define WRITE_LOGS_WITH_FILENAMES
 
 #ifdef WRITE_LOGS
 	#define OSdebug(message) std::cout << "[DEBUG] " << message << std::endl;
@@ -36,7 +36,6 @@
 
 
 namespace ObjectiveScript {
-
 
 
 

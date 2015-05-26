@@ -123,8 +123,12 @@ Object Method::execute(const ParameterList& params)
 				throw Utils::Exception("access mode unspecified");
 			} break;
 			case Parameter::AccessMode::ByReference: {
-				mRepository->addReference(param.reference());
-				addIdentifier(param.reference());
+				throw Utils::NotImplemented("handing over parameters as reference is not yet implemented");
+
+				Object *object = mMemory->getObject(param.reference());
+
+				mRepository->addReference(object);
+				addIdentifier(object);
 			} break;
 			case Parameter::AccessMode::ByValue: {
 				Object *object = mRepository->createInstance(param.type(), param.name());
@@ -297,7 +301,6 @@ bool Method::isMethod(const std::string& token)
 	}
 
 	if ( mOwner->hasMember(parent) ) {
-		// TODO: our owning object has a member with this name, delegate this to him
 		Object *member = mOwner->getMember(parent);
 		if ( member ) {
 			return member->hasMethod(token);
@@ -783,7 +786,7 @@ Object Method::process_method(TokenIterator& token)
 	// loop through all parameters seperated by colons
 	while ( tmp != closed ) {
 		Object obj = parseExpression(tmp);
-		params.push_back(Parameter("", obj.type(), obj.value(), obj.isConst(), Parameter::AccessMode::Unspecified, getSymbol(obj.name())));
+		params.push_back(Parameter("", obj.type(), obj.value(), obj.isConst(), Parameter::AccessMode::ByValue));
 
 		if ( std::distance(tmp, closed) <= 0 ) {
 			break;
@@ -831,7 +834,7 @@ Object* Method::process_new(TokenIterator& token)
 	// loop through all parameters seperated by colons
 	while ( tmp != closed ) {
 		Object object = parseExpression(tmp);
-		params.push_back(Parameter(object.name(), object.type(), object.value(), object.isConst(), Parameter::AccessMode::ByValue, getSymbol(object.name())));
+		params.push_back(Parameter(object.name(), object.type(), object.value(), object.isConst(), Parameter::AccessMode::ByValue));
 
 		if ( std::distance(tmp, closed) <= 0 ) {
 			break;
