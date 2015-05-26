@@ -29,7 +29,7 @@ public namespace stable AttributeTest
 	{
 		private TestObject mTest;
 
-		public void Main()
+		public void Main(Number argc = 0, String argv = "")
 		{
 			mTest = new TestObject();
 

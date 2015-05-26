@@ -1,5 +1,5 @@
 
-public namespace std
+public namespace System
 {
 	public object Logger
 	{

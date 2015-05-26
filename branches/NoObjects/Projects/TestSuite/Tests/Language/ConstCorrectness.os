@@ -6,7 +6,7 @@ public namespace
 	{
 		private Number mNumber;
 
-		public void Main()
+		public void Main(Number argc = 0, String argv = "")
 		{
 			mNumber = 1;
 

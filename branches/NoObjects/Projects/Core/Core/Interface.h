@@ -29,7 +29,7 @@ public:
 
 public:
 	const TokenList& getTokens() const;
-	virtual void setTokens(const TokenList& tokens);
+	void setTokens(const TokenList& tokens);
 
 protected:
 	TokenList mTokens;

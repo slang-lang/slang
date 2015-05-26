@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="OS"
+	Name="OScript"
 	ProjectGUID="{F60E42A5-1C6A-47E5-A040-977BE67C310D}"
 	RootNamespace="MyTest"
 	TargetFrameworkVersion="196613"
@@ -196,6 +196,10 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath=".\Printer.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"

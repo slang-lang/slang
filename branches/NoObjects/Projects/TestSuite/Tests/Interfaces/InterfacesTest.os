@@ -1,32 +1,40 @@
+#!/usr/bin/oscript
 
-public namespace unstable InterfaceTest
+public namespace Tests
 {
-	public interface stable IWarehouse
+	public namespace Interfaces
 	{
-		public stable Number GetBox() const;
-	}
-
-	public object deprecated Warehouse implements public IWarehouse
-	{
-		public deprecated Number GetBox() const
+		public interface IWarehouse
 		{
-			// either this..
-			return Number(1);
-			// or that..
-			//return 1;
+			public Number GetBox() const;
 		}
-	}
 
-	public object unstable Main
-	{
-		public void unstable Main()
+		public object Warehouse implements public IWarehouse
 		{
-			Warehouse w = new Warehouse();
+			public Number GetBox() const
+			{
+				// either this..
+				return Number(1);
+				// or that..
+				//return 1;
+			}
+		}
 
-			print("IWarehouse.GetBox() = " & w.GetBox());
+		public object Main
+		{
+			public void Main(Number argc = 0, String argv = "")
+			{
+				test();
+			}
 
-			// this is not necessary but perfectly valid:
-			delete w;
+			private void test()
+			{
+				Warehouse warehouse = new Warehouse();
+
+				print("IWarehouse.GetBox() = " & warehouse.GetBox());
+
+				delete warehouse;	// this is not necessary but perfectly valid
+			}
 		}
 	}
 }

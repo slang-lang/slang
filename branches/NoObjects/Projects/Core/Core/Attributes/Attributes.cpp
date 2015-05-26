@@ -23,6 +23,10 @@ Attributes::Attributes()
 {
 }
 
+Attributes::~Attributes()
+{
+}
+
 void Attributes::checkSealState()
 {
 	if ( mSealed ) {

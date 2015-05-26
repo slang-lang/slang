@@ -1,6 +1,6 @@
 #!/usr/bin/oscript
 
-public namespace
+public namespace 
 {
 	public object Main
 	{

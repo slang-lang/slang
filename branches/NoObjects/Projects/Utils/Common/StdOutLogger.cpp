@@ -48,6 +48,13 @@ StdOutLogger::StdOutLogger(const Logger *parent, const std::string& className, c
 	}
 }
 
+StdOutLogger::~StdOutLogger()
+{
+	if ( !mHasParent ) {
+		delete mContext;
+	}
+}
+
 const std::string& StdOutLogger::getClassName() const
 {
 	return mClassName;

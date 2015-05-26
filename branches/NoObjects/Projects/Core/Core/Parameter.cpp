@@ -15,12 +15,14 @@ namespace ObjectiveScript {
 
 Parameter::Parameter()
 : mAccessMode(AccessMode::Unspecified),
+  mHasDefaultValue(false),
   mIsConst(false)
 {
 }
 
-Parameter::Parameter(const std::string& name, const std::string& type, const std::string& value, bool isConst, AccessMode::E access, Reference reference)
+Parameter::Parameter(const std::string& name, const std::string& type, const std::string& value, bool hasDefaultValue, bool isConst, AccessMode::E access, Reference reference)
 : mAccessMode(access),
+  mHasDefaultValue(hasDefaultValue),
   mIsConst(isConst),
   mName(name),
   mReference(reference),
@@ -32,6 +34,11 @@ Parameter::Parameter(const std::string& name, const std::string& type, const std
 Parameter::AccessMode::E Parameter::access() const
 {
 	return mAccessMode;
+}
+
+bool Parameter::hasDefaultValue() const
+{
+	return mHasDefaultValue;
 }
 
 bool Parameter::isConst() const

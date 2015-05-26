@@ -28,7 +28,6 @@ namespace ObjectiveScript {
 Method::Method(IScope *parent, const std::string& name, const std::string& type)
 : LocalScope(name, parent),
   Variable(name, type),
-  mMemory(0),
   mOwner(0),
   mRepository(0)
 {
@@ -37,6 +36,62 @@ Method::Method(IScope *parent, const std::string& name, const std::string& type)
 Method::~Method()
 {
 	garbageCollector();
+}
+
+bool Method::operator() (const Method& first, const Method& second) const
+{
+	if ( first.name() == second.name() ) {
+		ParameterList firstList = first.provideSignature();
+		ParameterList secondList = second.provideSignature();
+
+		// unable to identify return value during method call
+		//if ( this->type() != other.type() ) {
+		//	return this->type() < other.type();
+		//}
+
+		if ( firstList.size() == secondList.size() ) {
+			ParameterList::const_iterator fIt = firstList.begin();
+			ParameterList::const_iterator sIt = secondList.begin();
+
+			for ( ; fIt != firstList.end() && sIt != secondList.end(); ++fIt, ++sIt ) {
+				if ( fIt->type() != sIt->type() ) {
+					return fIt->type() < sIt->type();
+				}
+			}
+		}
+
+		return firstList.size() < secondList.size();
+	}
+
+	return first.name() < second.name();
+}
+
+bool Method::operator< (const Method& other) const
+{
+	if ( this->name() == other.name() ) {
+		ParameterList firstList = this->provideSignature();
+		ParameterList secondList = other.provideSignature();
+
+		// unable to identify return value during method call
+		//if ( this->type() != other.type() ) {
+		//	return this->type() < other.type();
+		//}
+
+		if ( firstList.size() == secondList.size() ) {
+			ParameterList::const_iterator fIt = firstList.begin();
+			ParameterList::const_iterator sIt = secondList.begin();
+
+			for ( ; fIt != firstList.end() && sIt != secondList.end(); ++fIt, ++sIt ) {
+				if ( fIt->type() != sIt->type() ) {
+					return fIt->type() < sIt->type();
+				}
+			}
+		}
+
+		return firstList.size() < secondList.size();
+	}
+
+	return this->name() < other.name();
 }
 
 void Method::operator= (const Method& other)
@@ -57,7 +112,6 @@ void Method::operator= (const Method& other)
 		mRepository->addReference(it->second);
 	}
 
-	mMemory = other.mMemory;
 	mOwner = other.mOwner;
 	mParameter = other.mParameter;
 	mRepository = other.mRepository;
@@ -91,8 +145,6 @@ void Method::addIdentifier(Object *object)
 
 Object Method::execute(const ParameterList& params)
 {
-	assert(mOwner);
-
 	if ( !isSignatureValid(params) ) {
 		throw Utils::ParameterCountMissmatch("number or type of parameters incorrect");
 	}
@@ -105,15 +157,15 @@ Object Method::execute(const ParameterList& params)
 		case LanguageFeatureState::Unstable: OSwarn("method '" + name() + "' is marked as unstable!"); break;
 	}
 
-	ParameterList::const_iterator paramIt = params.begin();
 	// add parameters as pseudo members
+	ParameterList::const_iterator paramIt = params.begin();
 	for ( ParameterList::const_iterator sigIt = mSignature.begin(); sigIt != mSignature.end(); ++sigIt ) {
 		// initialize param with default value
-		Parameter param(sigIt->name(), sigIt->type(), sigIt->value(), sigIt->isConst(), sigIt->access(), sigIt->reference());
+		Parameter param(sigIt->name(), sigIt->type(), sigIt->value(), sigIt->hasDefaultValue(), sigIt->isConst(), sigIt->access(), sigIt->reference());
 
 		if ( paramIt != params.end() ) {
 			// override param with correct values
-			param = Parameter(sigIt->name(), sigIt->type(), paramIt->value(), sigIt->isConst(), sigIt->access(), paramIt->reference());
+			param = Parameter(sigIt->name(), sigIt->type(), paramIt->value(), sigIt->hasDefaultValue(), sigIt->isConst(), sigIt->access(), paramIt->reference());
 			// next iteration
 			paramIt++;
 		}
@@ -125,10 +177,12 @@ Object Method::execute(const ParameterList& params)
 			case Parameter::AccessMode::ByReference: {
 				throw Utils::NotImplemented("handing over parameters as reference is not yet implemented");
 
+/*
 				Object *object = mMemory->getObject(param.reference());
 
 				mRepository->addReference(object);
 				addIdentifier(object);
+*/
 			} break;
 			case Parameter::AccessMode::ByValue: {
 				Object *object = mRepository->createInstance(param.type(), param.name());
@@ -143,23 +197,8 @@ Object Method::execute(const ParameterList& params)
 	returnValue.connectRepository(mRepository);
 	returnValue.visibility(visibility());
 
-/*
-	try {	// try to execute our method
-*/
-		TokenIterator start = mTokens.begin();
-		returnValue = process(start, mTokens.end());
-/*
-	}
-	catch ( Utils::Exception &e ) {	// if anything happens clean up the mess
-		// catch and log all errors that occured during method execution
-		//OSerror(e.what());
-
-		garbageCollector();
-
-		// throw again so that our owner will be informed
-		throw e;
-	}
-*/
+	TokenIterator start = mTokens.begin();
+	returnValue = process(start, mTokens.end());
 
 	// after we gathered our result
 	// let the garbage collector do it's magic
@@ -254,6 +293,7 @@ bool Method::isMember(const std::string& token)
 		return false;
 	}
 
+/*
 	std::string member, parent;
 	Tools::split(token, parent, member);
 
@@ -264,17 +304,8 @@ bool Method::isMember(const std::string& token)
 		if ( it->first == token ) {
 			return true;
 		}
-
-/*
-		Object *object = mMemory->getObject(it->second);
-		if ( object && object->name() == parent ) {
-			// check for member variable
-			if ( object->hasMember(member) ) {
-				return true;
-			}
-		}
-*/
 	}
+*/
 
 	// check if token is a member variable
 	return mOwner->hasMember(token);
@@ -341,10 +372,11 @@ bool Method::isSignatureValid(const ParameterList& params) const
 				 /*(sigIt->isConst() != paramIt->isConst()) ||*/
 				 (sigIt->type() != paramIt->type()) ) {
 				return false;
-			}		
+			}
+			paramIt++;
 		}
 		else {
-			if ( sigIt->value() == "" ) {
+			if ( !sigIt->hasDefaultValue() ) {
 				return false;
 			}
 		}
@@ -397,8 +429,6 @@ Object Method::parseCondition(TokenIterator& token)
 
 Object Method::parseExpression(TokenIterator& start)
 {
-	// parse summands
-
 	Object v1 = parseFactors(start);
 
 	for ( ; ; ) {
@@ -435,7 +465,7 @@ Object Method::parseFactors(TokenIterator& start)
 		v1 = parseExpression(start);
 
 		if ( start->type() != Token::Type::PARENTHESIS_CLOSE ) {
-			// ups...
+			throw Utils::SyntaxError("')' expected but "  + start->content() + " found", start->position());
 		}
 
 		start++;
@@ -459,7 +489,7 @@ Object Method::parseFactors(TokenIterator& start)
 			v2 = parseExpression(start);
 
 			if ( start->type() != Token::Type::PARENTHESIS_CLOSE ) {
-				// ups...
+				throw Utils::SyntaxError("')' expected but "  + start->content() + " found", start->position());
 			}
 
 			start++;
@@ -523,33 +553,34 @@ Object Method::parseTerm(TokenIterator& start)
 
 Object Method::process(TokenIterator& token, TokenIterator end, Token::Type::E terminator)
 {
-	Object returnValue;
+	Object result;
 
 	// go through all keywords and if we find the one
 	// that we want to execute, redirect to the corresponding method
 	while ( token != end && token->type() != terminator && token->type() != Token::Type::ENDOFFILE ) {
-		// decide what we want to do according to
-		// the type of token we have
+		// decide what we want to do according to the type of token we have
 		switch ( token->type() ) {
 			case Token::Type::BOOLEAN:
 			case Token::Type::CONSTANT:
 			case Token::Type::LITERAL:
-				returnValue = parseExpression(token);
+				result = parseExpression(token);
 				break;
-			case Token::Type::IDENTIFER: {
+			case Token::Type::IDENTIFER:
 				process_assign(token);
-			} break;
-			case Token::Type::KEYWORD: {
+				break;
+			case Token::Type::KEYWORD:
 				if ( token->content() == "new" ) {
-					return *process_new(token);
+					//return *process_new(token);
+					result = *process_new(token);
 				}
 				else if ( token->content() == "return" ) {
-					return parseExpression(++token);
+					//return parseExpression(++token);
+					result = parseExpression(++token);
 				}
 				else {
 					process_keyword(token);
 				}
-			} break;
+				break;
 			case Token::Type::PROTOTYPE:
 			case Token::Type::TYPE:
 				process_type(token);
@@ -559,12 +590,10 @@ Object Method::process(TokenIterator& token, TokenIterator end, Token::Type::E t
 				break;
 		}
 
-		// consume token
-		token++;
+		token++;	// consume token
 	}
 
-	//pop_stack();
-	return returnValue;
+	return result;
 }
 
 // syntax:
@@ -579,9 +608,8 @@ void Method::process_assert(TokenIterator& token)
 	TokenIterator tmp = findNext(condEnd, Token::Type::SEMICOLON);
 
 	Object condition = parseCondition(condBegin);
-
-	if ( isFalse(condition) ) {
-		throw Utils::AssertionFailed("'" + condition.value() + "'", token->position());
+	if ( !condition.isValid() ) {
+		throw Utils::AssertionFailed("", token->position());
 	}
 
 	token = tmp;
@@ -745,9 +773,6 @@ void Method::process_keyword(TokenIterator& token)
 	if ( keyword == "assert" ) {
 		process_assert(token);
 	}
-	else if ( keyword == "breakpoint" ) {
-		mOwner->providePrinter()->print("hit breakpoint   [" + mOwner->Filename() + ": " + Tools::toString(token->position().line) + "]");
-	}
 	else if ( keyword == "delete" ) {
 		process_delete(token);
 	}
@@ -766,6 +791,11 @@ void Method::process_keyword(TokenIterator& token)
 	else if ( keyword == "while" ) {
 		process_while(token);
 	}
+// Debug only - begin
+	else if ( keyword == "breakpoint" ) {
+		mOwner->providePrinter()->print("hit breakpoint   [" + mOwner->Filename() + ": " + Tools::toString(token->position().line) + "]");
+	}
+// Debug only - end
 }
 
 // syntax:
@@ -785,8 +815,8 @@ Object Method::process_method(TokenIterator& token)
 	tmp = opened;
 	// loop through all parameters seperated by colons
 	while ( tmp != closed ) {
-		Object obj = parseExpression(tmp);
-		params.push_back(Parameter("", obj.type(), obj.value(), obj.isConst(), Parameter::AccessMode::ByValue));
+		Object object = parseExpression(tmp);
+		params.push_back(Parameter(object.name(), object.Typename(), object.value(), false, object.isConst(), Parameter::AccessMode::ByValue));
 
 		if ( std::distance(tmp, closed) <= 0 ) {
 			break;
@@ -834,7 +864,7 @@ Object* Method::process_new(TokenIterator& token)
 	// loop through all parameters seperated by colons
 	while ( tmp != closed ) {
 		Object object = parseExpression(tmp);
-		params.push_back(Parameter(object.name(), object.type(), object.value(), object.isConst(), Parameter::AccessMode::ByValue));
+		params.push_back(Parameter(object.name(), object.Typename(), object.value(), false, object.isConst(), Parameter::AccessMode::ByValue));
 
 		if ( std::distance(tmp, closed) <= 0 ) {
 			break;
@@ -858,53 +888,6 @@ Object* Method::process_new(TokenIterator& token)
 	return object;
 }
 
-Reference Method::process_new_ref(TokenIterator& token)
-{
-	TokenIterator tmp = token++;
-
-	bool isPrototype = token->type() == Token::Type::PROTOTYPE;
-	std::string name = "<temporary object>";
-	std::string prototype = token->content();
-
-	if ( isPrototype ) {
-		token++;
-	}
-
-	std::string type = token->content();
-
-	TokenIterator opened = findNext(tmp, Token::Type::PARENTHESIS_OPEN);
-	TokenIterator closed = findNextBalancedParenthesis(++opened);
-
-	ParameterList params;
-
-	tmp = opened;
-	// loop through all parameters seperated by colons
-	while ( tmp != closed ) {
-		Object o = parseExpression(tmp);
-		params.push_back(Parameter(o.name(), o.type(), o.value(), o.isConst(), Parameter::AccessMode::ByValue));
-
-		if ( std::distance(tmp, closed) <= 0 ) {
-			break;
-		}
-		tmp = findNext(tmp, Token::Type::COLON);
-		if ( std::distance(tmp, closed) < 0 ) {
-			break;
-		}
-		tmp++;
-	}
-
-	token = closed;
-
-	Reference ref = mRepository->createReference(type, name, prototype);
-
-	Object *object = mMemory->getObject(ref);
-	object->connectPrinter(mOwner->providePrinter());
-	object->connectRepository(mRepository);
-	object->Constructor(params);
-
-	return ref;
-}
-
 // syntax:
 // print(<expression>);
 void Method::process_print(TokenIterator& token)
@@ -917,7 +900,8 @@ void Method::process_print(TokenIterator& token)
 	TokenIterator tmp = findNext(closed, Token::Type::SEMICOLON);
 
 	Object object = parseExpression(opened);
-	mOwner->providePrinter()->print(object.value() + "   [" + mOwner->Filename() + ":" + Tools::toString(token->position().line) + "]");
+	//mOwner->providePrinter()->print(object.value() + "   [" + mOwner->Filename() + ":" + Tools::toString(token->position().line) + "]");
+	mOwner->providePrinter()->print(object.value());
 
 	token = tmp;
 }
@@ -1043,11 +1027,6 @@ void Method::process_while(TokenIterator& token)
 const ParameterList& Method::provideSignature() const
 {
 	return mSignature;
-}
-
-void Method::setMemory(Memory *memory)
-{
-	mMemory = memory;
 }
 
 void Method::setOwner(Object *owner)

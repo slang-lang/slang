@@ -30,6 +30,9 @@ public:
 	~Repository();
 
 public:
+	void CollectGarbage();
+
+public:
 	void addBlueprint(const BluePrint& object);
 	void addPrototype(const Prototype& prototype);
 

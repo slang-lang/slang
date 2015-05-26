@@ -1,7 +1,7 @@
 #!/usr/bin/oscript
 
-public namespace {
-
+public namespace 
+{
 	public object TestObject
 	{
 		public Number mValue;
@@ -16,7 +16,7 @@ public namespace {
 	{
 		private TestObject obj;
 
-		public void Main()
+		public void Main(Number argc = 0, String argv = "")
 		{
 			obj = new TestObject(1);	// instantiate new object (and execute it's constructor)
 			print("value.mValue = " & obj.mValue);

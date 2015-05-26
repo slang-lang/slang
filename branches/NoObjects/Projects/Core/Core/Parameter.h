@@ -35,10 +35,11 @@ public:
 
 public:
 	Parameter();
-	Parameter(const std::string& name, const std::string& type, const std::string& value, bool isConst = false, AccessMode::E access = AccessMode::ByValue, Reference reference = Reference());
+	Parameter(const std::string& name, const std::string& type, const std::string& value, bool hasDefaultValue = false, bool isConst = false, AccessMode::E access = AccessMode::ByValue, Reference reference = Reference());
 
 public:
 	AccessMode::E access() const;
+	bool hasDefaultValue() const;
 	bool isConst() const;
 	const std::string& name() const;
 	const Reference& reference() const;
@@ -49,6 +50,7 @@ protected:
 
 private:
 	AccessMode::E mAccessMode;
+	bool mHasDefaultValue;
 	bool mIsConst;
 	std::string mName;
 	Reference mReference;

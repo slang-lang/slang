@@ -1,8 +1,14 @@
+#!/usr/bin/oscript
 
-public namespace Math
+public namespace 
 {
 	public object Main
 	{
+		public void Main(Number argc = 0, String argv = "")
+		{
+			MathExpressionParsing();
+		}
+
 		public void MathExpressionParsing()
 		{
 			Number i;

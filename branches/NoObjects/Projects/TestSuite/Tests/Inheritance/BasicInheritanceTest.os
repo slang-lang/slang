@@ -1,35 +1,44 @@
+#!/usr/bin/oscript
 
-public namespace Inheritance
+public namespace Tests
 {
-	public object Base
+	public namespace Inheritance
 	{
-		public String getBaseName() const
+		public object Base
 		{
-			return "Base";
+			public String getBaseName() const
+			{
+				return "Base";
+			}
 		}
-	}
 
-	public object Extended extends Base
-	{
-		public String getExtendedName() const
+		public object Extended extends public Base
 		{
-			return "Extended";
+			public String getExtendedName() const
+			{
+				return "Extended";
+			}
 		}
-	}
 
-	public object Main
-	{
-		public void Main()
+		public object Main
 		{
-			Base base = new Base();
-			Extended extended = new Extended();
+			public void Main(Number argc = 0, String argv = "")
+			{
+				test();
+			}
 
-			print("base.getBaseName = " & base.getBaseName());
-			print("extended.getBaseName = " & extended.getBaseName());
-			print("extended.getExtendedName = " & extended.getExtendedName());
+			private void test()
+			{
+				Base base = new Base();
+				Extended extended = new Extended();
 
-			delete base;
-			delete extended;
+				print("base.getBaseName = " & base.getBaseName());
+				print("extended.getBaseName = " & extended.getBaseName());
+				print("extended.getExtendedName = " & extended.getExtendedName());
+
+				delete base;
+				delete extended;
+			}
 		}
 	}
 }

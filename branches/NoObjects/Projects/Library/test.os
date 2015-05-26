@@ -1,3 +1,4 @@
+#!/usr/bin/oscript
 
 public object BaseObject
 {
@@ -51,7 +52,7 @@ private object Main
 	private BaseObject base;
 	private DerivedObject derived;
 
-	public void Main()
+	public void Main(Number argc, String argv)
 	{
 		base = new BaseObject("base");
 		print("name = " & base.getName());

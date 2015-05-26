@@ -37,13 +37,14 @@ public:
 	~Method();
 
 public:
+	bool operator() (const Method& first, const Method& second) const;
+	bool operator< (const Method& other) const;
 	void operator= (const Method& other);
 
 public:
 	Object* getOwner() const;
 
 public:	// Setup
-	void setMemory(Memory *memory);
 	void setOwner(Object *owner);
 	void setRepository(Repository *repository);
 	void setSignature(const ParameterList& params);
@@ -56,65 +57,9 @@ public:
 public:	// Execution
 	Object execute(const ParameterList& params);
 
-public:
-	bool operator() (const Method& first, const Method& second) const {
-		if ( first.name() == second.name() ) {
-			ParameterList firstList = first.provideSignature();
-			ParameterList secondList = second.provideSignature();
-
-			// unable to identify return value during method call
-			//if ( this->type() != other.type() ) {
-			//	return this->type() < other.type();
-			//}
-
-			if ( firstList.size() == secondList.size() ) {
-				ParameterList::const_iterator fIt = firstList.begin();
-				ParameterList::const_iterator sIt = secondList.begin();
-
-				for ( ; fIt != firstList.end() && sIt != secondList.end(); ++fIt, ++sIt ) {
-					if ( fIt->type() != sIt->type() ) {
-						return fIt->type() < sIt->type();
-					}
-				}
-			}
-
-			return firstList.size() < secondList.size();
-		}
-
-		return first.name() < second.name();
-	}
-
-	bool operator< (const Method& other) const {
-		if ( this->name() == other.name() ) {
-			ParameterList firstList = this->provideSignature();
-			ParameterList secondList = other.provideSignature();
-
-			// unable to identify return value during method call
-			//if ( this->type() != other.type() ) {
-			//	return this->type() < other.type();
-			//}
-
-			if ( firstList.size() == secondList.size() ) {
-				ParameterList::const_iterator fIt = firstList.begin();
-				ParameterList::const_iterator sIt = secondList.begin();
-
-				for ( ; fIt != firstList.end() && sIt != secondList.end(); ++fIt, ++sIt ) {
-					if ( fIt->type() != sIt->type() ) {
-						return fIt->type() < sIt->type();
-					}
-				}
-			}
-
-			return firstList.size() < secondList.size();
-		}
-
-		return this->name() < other.name();
-	}
-
 protected:
 
 private:
-	//typedef std::map<std::string, Reference> MemberMap;
 	typedef std::map<std::string, Object*> MemberCollection;
 
 private:	// Construction
@@ -140,7 +85,6 @@ private:	// Execution
 	void process_keyword(TokenIterator& token);
 	Object process_method(TokenIterator& token);
 	Object* process_new(TokenIterator& token);
-	Reference process_new_ref(TokenIterator& token);
 	void process_print(TokenIterator& token);
 	void process_type(TokenIterator& token);
 	void process_switch(TokenIterator& token);
@@ -163,7 +107,6 @@ private:	// Execution
 
 private:
 	MemberCollection mLocalSymbols;
-	Memory *mMemory;
 	Object *mOwner;
 	ParameterList mParameter;
 	Repository *mRepository;

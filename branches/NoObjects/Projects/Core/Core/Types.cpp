@@ -32,11 +32,13 @@ StringList provideKeyWords()
 
 	keywords.push_back("assert");
 	keywords.push_back("break");
-	keywords.push_back("breakpoint");
 	keywords.push_back("case");
+	keywords.push_back("catch");
 	keywords.push_back("delete");
 	keywords.push_back("else");
+	keywords.push_back("except");
 	keywords.push_back("extends");
+	keywords.push_back("finally");
 	keywords.push_back("for");
 	keywords.push_back("if");
 	keywords.push_back("import");
@@ -44,7 +46,14 @@ StringList provideKeyWords()
 	keywords.push_back("print");
 	keywords.push_back("return");
 	keywords.push_back("switch");
+	keywords.push_back("throw");
+	keywords.push_back("try");
 	keywords.push_back("while");
+	keywords.push_back("using");
+
+// Debug only - begin
+	keywords.push_back("breakpoint");
+// Debug only - end
 
 	return keywords;
 }
@@ -94,7 +103,7 @@ std::string toString(const ParameterList& list)
 	std::string result;
 
 	for ( ParameterList::const_iterator it = list.begin(); it != list.end(); ++it ) {
-		result = toString((*it));
+		result += toString((*it));
 
 		ParameterList::const_iterator copy = it;
 		if ( ++copy != list.end() ) {

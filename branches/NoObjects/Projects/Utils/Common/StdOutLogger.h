@@ -24,6 +24,7 @@ class StdOutLogger : public ILogger
 public:
 	StdOutLogger();
 	StdOutLogger(const Logger *parent, const std::string& className, const std::string& key = "");
+	~StdOutLogger();
 
 public:
 	const std::string& getClassName() const;

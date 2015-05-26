@@ -1,3 +1,4 @@
+#!/usr/bin/oscript
 
 public object Observer
 {
@@ -37,7 +38,13 @@ public prototype TestPrototype extends public Observer
 
 public object Main
 {
-	public Void test() {
+	public void Main(Number argc = 0, String argv = "")
+	{
+		test();
+	}
+
+	public void test()
+	{
 		TestPrototype of Number prototype = new TestPrototype of Number(100);
 
 		print("Observer = " & prototype.getTypeName());

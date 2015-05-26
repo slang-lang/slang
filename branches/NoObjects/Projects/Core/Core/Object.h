@@ -33,9 +33,7 @@ class Repository;
 
 
 class Object : public LocalScope,
-			   public BluePrint,
-			   public Variable
-			   //public Attributes
+			   public BluePrint
 {
 public:
 	Object();
@@ -58,6 +56,12 @@ public:	// Connectors
 public:	// Providers
 	IPrinter* providePrinter() const;
 
+public:
+	const std::string& name() const;
+	const std::string& value() const;
+
+	void value(const std::string& value);
+
 public:	// Usage
 	void Constructor(const ParameterList& params);
 	void Destructor();
@@ -65,7 +69,7 @@ public:	// Usage
 	Object execute(const std::string& method, const ParameterList& params, const Method* caller = 0);		// throws VisibilityError exception
 
 public:	// Helpers
-	Object* getMember(const std::string& m);		// throws UnknownIdentifer exception
+	Object* getMember(const std::string& m);
 	bool hasMember(const std::string& m);
 	bool hasMethod(const std::string& m);
 	bool hasMethod(const std::string& m, const ParameterList& params);
@@ -83,10 +87,6 @@ private:
 	bool findMethod(const std::string& m, MethodCollection::iterator& mIt);
 	bool findMethod(const std::string& m, const ParameterList& params, MethodCollection::iterator& mIt);
 
-	bool findMember_(const std::string& m, MemberCollection::iterator& mIt);
-	bool findMethod_(const std::string& m, MethodCollection::iterator& mIt);
-	bool findMethod_(const std::string& m, const ParameterList& params, MethodCollection::iterator& mIt);
-
 private:
 	void garbageCollector();
 	void updateMethodOwners();
@@ -95,9 +95,11 @@ private:
 	bool mConstructed;
 	MemberCollection mMembers;
 	MethodCollection mMethods;
+	std::string mName;
 	StringList mParents;
 	IPrinter *mPrinter;
 	Repository *mRepository;
+	std::string mValue;
 };
 
 typedef std::list<Object> ObjectList;

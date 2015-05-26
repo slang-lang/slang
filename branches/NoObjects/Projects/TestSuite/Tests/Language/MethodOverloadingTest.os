@@ -1,10 +1,10 @@
 #!/usr/bin/oscript
 
-public namespace
+public namespace 
 {
 	public object Main
 	{
-		public void Main()
+		public void Main(Number argc = 0, String argv = "")
 		{
 			returnVoid();
 

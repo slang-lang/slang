@@ -54,16 +54,5 @@ void Variable::value(const std::string& value)
 	mVarValue = value;
 }
 
-bool Variable::operator==(const Variable& other)
-{
-	return (this->value() == other.value());
-}
-
-bool Variable::operator()()
-{
-	return (this->value() != "0");
-}
-
-
 
 }

@@ -4,7 +4,6 @@
 
 
 // Library includes
-#include <map>
 
 // Project includes
 #include "Parameter.h"
@@ -31,7 +30,8 @@ public:
 
 public:	// Setup
 	void assign(Object *object);
-	void connectMemory(Memory *m);
+
+	void connectPrinter(IPrinter *p);
 	void connectRepository(Repository *r);
 
 public:	// Constructor & Destructor
@@ -45,20 +45,14 @@ public:	//Helpers
 	bool hasMethod(const std::string& m, const ParameterList& params);
 
 public:	// Execution
-	// {
-	Object execute(const std::string& method, ParameterList params = ParameterList());
-	// }
-
-public:	// Debug only
-	void connectPrinter(IPrinter *p);
+	Object execute(const std::string& method, const ParameterList& params = ParameterList());
 
 protected:
 
 private:
-	Memory		*mMemory;
-	Object		*mObject;
-	IPrinter	*mPrinter;
-	Repository	*mRepository;
+	Object *mObject;
+	IPrinter *mPrinter;
+	Repository *mRepository;
 };
 
 

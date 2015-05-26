@@ -4,7 +4,7 @@ public namespace Tests
 {
 	public object Main
 	{
-		public void Main()
+		public void Main(Number argc = 0, String argv = "")
 		{
 			DefaultParameter();
 			DefaultParameter(2);

@@ -6,7 +6,7 @@ public namespace
 {
 	private object Main
 	{
-		public void Main()
+		public void Main(Number argc = 0, String argv = "")
 		{
 			assert(true);
 			assert(false == false);
@@ -16,7 +16,7 @@ public namespace
 			assert(ReturnAString());
 			assert(ReturnTrue());
 			//assert(!ReturnFalse());	// unary operator ! is not yet implemented
-			assert(ReturnFalse());
+			//assert(ReturnFalse());
 		}
 
 		private String ReturnAString() const

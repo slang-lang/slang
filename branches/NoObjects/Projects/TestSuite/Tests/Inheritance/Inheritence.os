@@ -1,60 +1,69 @@
+#!/usr/bin/oscript
 
-public namespace Inheritance
+public namespace Tests
 {
-	public interface IContainer
+	public namespace Inheritance
 	{
-		public String GetIdentifier() const;
-	}
-
-	public interface IWarehouse
-	{
-		public Number GetBox() const;
-	}
-
-	public object Base
-	{
-		public Number mPublicNumber;
-		protected Number mProtectedNumber;
-		private Number mPrivateNumber;
-
-		public void Base()
+		public interface IContainer
 		{
-			mPublicNumber = 1;
-			mProtectedNumber = 1;
-			mPrivateNumber = 1;
+			public String GetIdentifier() const;
 		}
 
-		public String ToString() const
+		public interface IWarehouse
 		{
-			return "mPublicNumber = " & mPublicNumber & ", mProtectedNumber = " & mProtectedNumber & ", mPrivateNumber = " & mPrivateNumber & ";";
-		}
-	}
-
-	public object Main extends Base implements IContainer, IWarehouse
-	{
-		private Number mPrivateNumber;
-
-		public void Main()
-		{
-			mPublicNumber = 2;
-			mProtectedNumber = 2;
-			mPrivateNumber = 2;
+			public Number GetBox() const;
 		}
 
-		public Number GetBox() const
+		public object Base
 		{
-			return Number(1);
+			public Number mPublicNumber;
+			protected Number mProtectedNumber;
+			private Number mPrivateNumber;
+
+			public void Base()
+			{
+				mPublicNumber = 1;
+				mProtectedNumber = 1;
+				mPrivateNumber = 1;
+			}
+
+			public String ToString() const
+			{
+				return "mPublicNumber = " & mPublicNumber & ", mProtectedNumber = " & mProtectedNumber & ", mPrivateNumber = " & mPrivateNumber & ";";
+			}
 		}
 
-		public String GetIdentifier() const
+		public object Main extends public Base
+						   implements public IContainer, public IWarehouse
 		{
-			return "bla";
-		}
+			private Number mPrivateNumber;
 
-		public String ToString() const
-		{
-			return super.ToString() & "mPublicNumber = " & mPublicNumber & ", mProtectedNumber = " & mProtectedNumber & ", mPrivateNumber = " & mPrivateNumber & ";";
+			public void Main(Number argc = 0, String argv = "")
+			{
+				test();
+			}
+
+			public Number GetBox() const
+			{
+				return Number(1);
+			}
+
+			public String GetIdentifier() const
+			{
+				return "bla";
+			}
+
+			public String ToString() const
+			{
+				return super.ToString() & "mPublicNumber = " & mPublicNumber & ", mProtectedNumber = " & mProtectedNumber & ", mPrivateNumber = " & mPrivateNumber & ";";
+			}
+
+			private void test()
+			{
+				mPublicNumber = 2;
+				mProtectedNumber = 2;
+				mPrivateNumber = 2;
+			}
 		}
 	}
 }
-

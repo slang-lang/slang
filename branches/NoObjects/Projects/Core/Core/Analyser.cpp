@@ -11,6 +11,7 @@
 // Project includes
 #include <Core/Utils/Exceptions.h>
 #include <Core/Utils/Utils.h>
+#include <Tools/Files.h>
 #include "Scope.h"
 #include "Tokenizer.h"
 #include "Tools.h"
@@ -365,20 +366,19 @@ void Analyser::process(const std::string& filename)
 
 	OSinfo("Analyzing file '" + mFilename + "'...");
 
-	try {
-		// read file content
-		std::ifstream in(mFilename.c_str(), std::ios_base::binary);
-		in.exceptions(std::ios_base::badbit | std::ios_base::failbit | std::ios_base::eofbit);
-
-		// create token list from file content
-		TokenList tokens = generateTokens(std::string(std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>()));
-
-		// generate objects from tokens
-		generateObjects(tokens);
+	if ( !::Utils::Tools::Files::exists(mFilename) ) {
+		throw Utils::Exception(mFilename + " file not found");
 	}
-	catch ( std::exception &e ) {
-		throw Utils::Exception("file not found '" + filename + "'");
-	}
+
+	// read file content
+	std::ifstream in(mFilename.c_str(), std::ios_base::binary);
+	//in.exceptions(std::ios_base::badbit | std::ios_base::failbit | std::ios_base::eofbit);
+
+	// create token list from file content
+	TokenList tokens = generateTokens(std::string(std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>()));
+
+	// generate objects from tokens
+	generateObjects(tokens);
 }
 
 

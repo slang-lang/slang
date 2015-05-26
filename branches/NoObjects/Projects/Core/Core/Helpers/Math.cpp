@@ -16,11 +16,11 @@ namespace ObjectiveScript {
 namespace Math {
 
 
-Object add(Object v1, Object v2)
+Object add(Object& v1, Object& v2)
 {
 	Object result;
 
-	if ( v1.type() == "Number" && v2.type() == "Number" ) {
+	if ( v1.Typename() == "Number" && v2.Typename() == "Number" ) {
 		// none of our summands is a string
 		float f1 = Tools::stringToFloat(v1.value());
 		float f2 = Tools::stringToFloat(v2.value());
@@ -34,11 +34,11 @@ Object add(Object v1, Object v2)
 	return result;
 }
 
-Object divide(Object v1, Object v2)
+Object divide(Object& v1, Object& v2)
 {
 	Object result;
 
-	if ( v1.type() == "Number" && v2.type() == "Number" ) {
+	if ( v1.Typename() == "Number" && v2.Typename() == "Number" ) {
 		// none of our summands is a string
 		float f1 = Tools::stringToFloat(v1.value());
 		float f2 = Tools::stringToFloat(v2.value());
@@ -52,11 +52,11 @@ Object divide(Object v1, Object v2)
 	return result;
 }
 
-Object multiply(Object v1, Object v2)
+Object multiply(Object& v1, Object& v2)
 {
 	Object result;
 
-	if ( v1.type() == "Number" && v2.type() == "Number" ) {
+	if ( v1.Typename() == "Number" && v2.Typename() == "Number" ) {
 		// none of our summands is a string
 		float f1 = Tools::stringToFloat(v1.value());
 		float f2 = Tools::stringToFloat(v2.value());
@@ -70,11 +70,11 @@ Object multiply(Object v1, Object v2)
 	return result;
 }
 
-Object subtract(Object v1, Object v2)
+Object subtract(Object& v1, Object& v2)
 {
 	Object result;
 
-	if ( v1.type() == "Number" && v2.type() == "Number" ) {
+	if ( v1.Typename() == "Number" && v2.Typename() == "Number" ) {
 		// none of our summands is a string
 		float f1 = Tools::stringToFloat(v1.value());
 		float f2 = Tools::stringToFloat(v2.value());

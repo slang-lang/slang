@@ -22,7 +22,7 @@ public namespace Tests
 	
 	public object Main
 	{
-		public void Main()
+		public void Main(Number argc = 0, String argv = "")
 		{
 			NamespaceTests.Test1 test1 = new Test1();
 			print(test1.getName());

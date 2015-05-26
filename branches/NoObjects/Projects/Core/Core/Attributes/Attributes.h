@@ -22,6 +22,7 @@ class Attributes
 {
 public:
 	Attributes();
+	~Attributes();
 
 public:
 	bool isConst() const;

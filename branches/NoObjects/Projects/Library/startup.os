@@ -1,3 +1,4 @@
+#!/usr/bin/oscript
 
 //import system.*;
 import system.assert;
@@ -89,7 +90,7 @@ private object Main extends public BaseObject,
 	}
 	private Bla mBla;
 
-	public void Main(/*string name, number value*/)
+	public void Main(Number argc, String argv)
 	{
 		mLogger = new Logger("Main");
 		mLogger.debug("Constructor");

@@ -27,7 +27,7 @@ public:
 	}
 
 	void print(const std::string& text) {
-		std::cout << text << std::endl;
+		std::cout << text;// << std::endl;
 	}
 
 private:

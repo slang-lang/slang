@@ -5,11 +5,9 @@
 
 // Library includes
 #include <cassert>
-#include <list>
 #include <string>
 
 // Project includes
-#include <Core/Attributes/Attributes.h>
 
 // Forward declarations
 
@@ -19,7 +17,7 @@
 namespace ObjectiveScript {
 
 
-class Variable /*: public Attributes*/
+class Variable
 {
 public:
 	Variable();
@@ -33,10 +31,6 @@ public:
 	const std::string& value() const;
 
 	void value(const std::string& value);
-
-public:
-	bool operator==(const Variable& other);
-	bool operator()();
 
 protected:
 	std::string mVarName;

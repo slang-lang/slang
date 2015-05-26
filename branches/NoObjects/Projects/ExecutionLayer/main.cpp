@@ -94,10 +94,8 @@ void processParameters(int argc, const char* argv[])
 		}
 	}
 
-/*
 	mParameters.push_back(ObjectiveScript::Parameter("argc", "Number", Utils::Tools::toString(params.size())));
 	mParameters.push_back(ObjectiveScript::Parameter("argv", "String", paramStr));
-*/
 }
 
 int main(int argc, const char* argv[])
@@ -121,8 +119,6 @@ int main(int argc, const char* argv[])
 	ObjectiveScript::VirtualMachine mVirtualMachine;
 	mVirtualMachine.setPrinter(&mPrinter);
 	mVirtualMachine.setBaseFolder(mRoot);
-
-std::cout << "Parameters(" << mParameters.size() << "): " << ObjectiveScript::toString(mParameters) << std::endl;
 
 	try {
 		mVirtualMachine.create(mFilename, mParameters);

@@ -18,7 +18,7 @@ namespace Strings {
 
 
 
-Object concat(const Object& v1, const Object& v2);
+Object concat(Object& v1, Object& v2);
 
 
 }

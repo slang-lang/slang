@@ -24,22 +24,16 @@ Preprocessor::Preprocessor(Repository *repository)
 {
 }
 
-Object* Preprocessor::createMemberObject(const std::string& filename, TokenIterator token)
+Object* Preprocessor::createMember(const std::string& filename, TokenIterator token)
 {
 (void)filename;
 
 	std::string name;
-	std::string languageFeature;
 	std::string type;
-	std::string value;
 	std::string visibility;
 
 	// look for the visibility token
 	visibility = (*token++).content();
-	// look for an optional language feature token
-	if ( token->isOptional() ) {
-		languageFeature = (*token++).content();
-	}
 	// look for the type token
 	type = (*token++).content();
 	// look for the identifier token
@@ -49,8 +43,8 @@ Object* Preprocessor::createMemberObject(const std::string& filename, TokenItera
 		throw Utils::Exception("Member initialization not allowed at this point", token->position());
 	}
 
-	Object *o = mRepository->createInstance(type, name);
-	o->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
+	//Object *o = mRepository->createInstance(type, name);
+	Object *o = new Object(name, filename, type, "");
 	o->setVisibility(Visibility::convert(visibility));
 	return o;
 }
@@ -147,7 +141,7 @@ void Preprocessor::generateObject()
 	// if we have a member declaration or a method declaration
 	for ( TokenList::const_iterator it = visList.begin(); it != visList.end(); ++it ) {
 		if ( isMemberDeclaration((*it)) ) {
-			mObject->addMember(createMemberObject(mObject->Filename(), (*it)));
+			mObject->addMember(createMember(mObject->Filename(), (*it)));
 		}
 		else if ( isMethodDeclaration((*it)) ) {
 			mObject->addMethod(createMethod((*it)));
@@ -216,6 +210,7 @@ ParameterList Preprocessor::parseParameters(TokenIterator &token)
 		}
 
 		Parameter::AccessMode::E accessmode = Parameter::AccessMode::ByValue;
+		bool hasDefaultValue = false;
 		bool isConst = false;
 		std::string value;
 
@@ -240,12 +235,13 @@ ParameterList Preprocessor::parseParameters(TokenIterator &token)
 		} 
 
 		if ( token->type() == Token::Type::ASSIGN ) {
+			hasDefaultValue = true;
 			token++;
 			value = token->content();
 			token++;
 		}
 
-		Parameter param(name, type, value, isConst, accessmode, 0);
+		Parameter param(name, type, value, hasDefaultValue, isConst, accessmode, 0);
 		params.push_back(param);
 
 		if ( token->type() == Token::Type::PARENTHESIS_CLOSE ) {

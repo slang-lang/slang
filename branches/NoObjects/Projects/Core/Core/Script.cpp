@@ -19,8 +19,7 @@ namespace ObjectiveScript {
 
 
 Script::Script()
-: mMemory(0),
-  mObject(0),
+: mObject(0),
   mPrinter(0),
   mRepository(0)
 {
@@ -35,14 +34,6 @@ void Script::assign(Object *object)
 {
 	assert(object);
 	mObject = object;
-}
-
-void Script::connectMemory(Memory *m)
-{
-	assert(m);
-	assert(!mMemory);
-
-	mMemory = m;
 }
 
 void Script::connectPrinter(IPrinter *p)
@@ -63,22 +54,13 @@ void Script::connectRepository(Repository *r)
 
 void Script::construct(const ParameterList& params)
 {
-/*
-	try {
-*/
-		if ( mObject ) {
-			mObject->connectPrinter(mPrinter);
-			mObject->connectRepository(mRepository);
-			mObject->Constructor(params);
-		}
-/*
+	if ( !mObject ) {
+		throw Utils::Exception("no object assigned");
 	}
-	catch ( Utils::Exception &e ) {
-		//OSerror(e.what());
 
-		throw e;
-	}
-*/
+	mObject->connectPrinter(mPrinter);
+	mObject->connectRepository(mRepository);
+	mObject->Constructor(params);
 }
 
 void Script::destruct()
@@ -91,10 +73,8 @@ void Script::destruct()
 	}
 }
 
-Object Script::execute(const std::string& method, ParameterList params)
+Object Script::execute(const std::string& method, const ParameterList& params)
 {
-	//OSdebug("execute('" + method + "', [" + toString(params) + "])");
-
 	Object returnValue;
 	try {
 		assert(mObject);

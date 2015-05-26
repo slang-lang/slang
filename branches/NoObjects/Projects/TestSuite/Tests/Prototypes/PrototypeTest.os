@@ -1,3 +1,4 @@
+#!/usr/bin/oscript
 
 public prototype TestPrototype
 {
@@ -42,6 +43,11 @@ public prototype AnotherPrototype<object K, object V>
 
 public object Main
 {
+	public void Main(Number argc = 0, String argv = "")
+	{
+		test();
+	}
+
 	public void test() {
 		//TestPrototype<Number> proto(100);
 		//TestPrototype < Number > proto(100);

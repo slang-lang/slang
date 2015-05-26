@@ -120,6 +120,29 @@ void Repository::addReference(Object *object)
 	mInstances.insert(std::make_pair(object, 1));
 }
 
+void Repository::CollectGarbage()
+{
+	for ( ReferenceCountedObjects::iterator it = mInstances.begin(); it != mInstances.end(); ) {
+		if ( it->second > 0 ) {
+			++it;
+			continue;
+		}
+
+		// as soon as we've lost all references, we can destroy our object
+		if ( it->second <= 0 ) {
+			if ( it->first ) {
+				// call object's destructor ...
+				it->first->Destructor();
+
+				// ... and delete it
+				delete it->first;
+			}
+
+			it = mInstances.erase(it);
+		}
+	}
+}
+
 Object* Repository::createInstance(const std::string& type, const std::string& name, const std::string& prototype)
 {
 	//OSinfo("createInstance('" + type + "', '" + name + "', '" + prototype + "')");
@@ -203,11 +226,12 @@ void Repository::removeReference(Object *object)
 
 	// as soon as we removed all references, we can destroy our object
 	if ( it->first && it->second <= 0 ) {
-		// call object's destructor
+		// call object's destructor ...
 		it->first->Destructor();
-		//delete it->first;
+		// ... and delete it
+		delete it->first;
 
-		//mInstances.erase(it);
+		mInstances.erase(it);
 	}
 }
 

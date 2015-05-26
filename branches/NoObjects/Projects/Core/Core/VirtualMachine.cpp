@@ -112,7 +112,6 @@ Script* VirtualMachine::create(const std::string& filename, const ParameterList&
 		}
 	}
 
-	script->connectMemory(mMemory);
 	script->connectRepository(mRepository);
 	script->construct(params);
 
@@ -166,7 +165,7 @@ void VirtualMachine::setBaseFolder(const std::string& base)
 		return;
 	}
 
-	mBaseFolder = base;
+	mBaseFolder = base + "/";
 
 	OSinfo("Library root = " + mBaseFolder);
 }
