@@ -168,7 +168,7 @@ Object* Repository::createInstance(const std::string& type, const std::string& n
 	object->setTokens(blueprint.getTokens());
 	object->connectRepository(this);
 
-	Preprocessor preprocessor(this);
+	Preprocessor preprocessor;
 	preprocessor.process(object);
 
 	addReference(object);
@@ -199,7 +199,7 @@ const Reference& Repository::createReference(const std::string& type, const std:
 	object->setTokens(blueprint.getTokens());
 	object->connectRepository(this);
 
-	Preprocessor preprocessor(this);
+	Preprocessor preprocessor;
 	preprocessor.process(object);
 
 	return mMemory->newObject(object);

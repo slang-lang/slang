@@ -39,10 +39,11 @@ public:
 	}
 
 protected:
+	std::string mFilename;
 	std::string mTypename;
 
 private:
-	std::string mFilename;
+
 };
 
 

@@ -18,16 +18,13 @@
 namespace ObjectiveScript {
 
 
-Preprocessor::Preprocessor(Repository *repository)
-: mObject(0),
-  mRepository(repository)
+Preprocessor::Preprocessor()
+: mObject(0)
 {
 }
 
 Object* Preprocessor::createMember(const std::string& filename, TokenIterator token)
 {
-(void)filename;
-
 	std::string name;
 	std::string type;
 	std::string visibility;
@@ -43,7 +40,6 @@ Object* Preprocessor::createMember(const std::string& filename, TokenIterator to
 		throw Utils::Exception("Member initialization not allowed at this point", token->position());
 	}
 
-	//Object *o = mRepository->createInstance(type, name);
 	Object *o = new Object(name, filename, type, "");
 	o->setVisibility(Visibility::convert(visibility));
 	return o;
