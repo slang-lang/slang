@@ -35,13 +35,6 @@ void Node::addRight(Node *node)
 	mRightNode = node;
 }
 
-/*
-void Node::addNode(Node *node)
-{
-	mNodes.push_back(node);
-}
-*/
-
 void Node::scope(const std::string& s)
 {
 	mScope = s;

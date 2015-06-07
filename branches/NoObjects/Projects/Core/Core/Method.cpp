@@ -115,11 +115,9 @@ void Method::operator= (const Method& other)
 	mOwner = other.mOwner;
 	mParameter = other.mParameter;
 	mRepository = other.mRepository;
-	if ( other.isSealed() ) {
-		seal();
-	}
-	setSignature(other.provideSignature());
 	mTokens = other.mTokens;
+
+	setSignature(other.provideSignature());
 	visibility(other.visibility());
 }
 
@@ -264,24 +262,9 @@ bool Method::isLocalSymbol(const std::string& token)
 	// OR
 	// loop through all locals and ask them if this identifier belongs to them
 	for ( MemberCollection::iterator it = mLocalSymbols.begin(); it != mLocalSymbols.end(); ++it ) {
-		if ( it->first == token ) {
+		if ( it->first == parent ) {
 			return true;
 		}
-
-/*
-		Object *object = mMemory->getObject(it->second);
-		if ( object && object->name() == parent ) {
-			// check for member variable
-			if ( object->hasMember(member) ) {
-				return true;
-			}
-
-			// check for member function
-			if ( object->hasMethod(member) ) {
-				return true;
-			}
-		}
-*/
 	}
 
 	return false;
@@ -292,20 +275,6 @@ bool Method::isMember(const std::string& token)
 	if ( !mOwner ) {
 		return false;
 	}
-
-/*
-	std::string member, parent;
-	Tools::split(token, parent, member);
-
-	// check if token is a local variable
-	// OR
-	// loop through all locals and ask them if this identifier belongs to them
-	for ( MemberCollection::iterator it = mLocalSymbols.begin(); it != mLocalSymbols.end(); ++it ) {
-		if ( it->first == token ) {
-			return true;
-		}
-	}
-*/
 
 	// check if token is a member variable
 	return mOwner->hasMember(token);
@@ -555,8 +524,7 @@ Object Method::process(TokenIterator& token, TokenIterator end, Token::Type::E t
 {
 	Object result;
 
-	// go through all keywords and if we find the one
-	// that we want to execute, redirect to the corresponding method
+	// loop through all keywords and redirect to the corresponding method
 	while ( token != end && token->type() != terminator && token->type() != Token::Type::ENDOFFILE ) {
 		// decide what we want to do according to the type of token we have
 		switch ( token->type() ) {
@@ -570,11 +538,9 @@ Object Method::process(TokenIterator& token, TokenIterator end, Token::Type::E t
 				break;
 			case Token::Type::KEYWORD:
 				if ( token->content() == "new" ) {
-					//return *process_new(token);
 					result = *process_new(token);
 				}
 				else if ( token->content() == "return" ) {
-					//return parseExpression(++token);
 					result = parseExpression(++token);
 				}
 				else {

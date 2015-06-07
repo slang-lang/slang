@@ -20,7 +20,7 @@ namespace ObjectiveScript {
 
 
 class Interface : public RTTI,
-				  public Attributes
+				  public ObjectAttributes
 {
 public:
 	Interface();

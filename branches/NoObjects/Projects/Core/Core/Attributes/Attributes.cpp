@@ -14,7 +14,7 @@
 namespace ObjectiveScript {
 
 
-Attributes::Attributes()
+GenericAttributes::GenericAttributes()
 : mIsConst(false),
   mIsStatic(false),
   mLanguageFeatureState(LanguageFeatureState::Stable),
@@ -23,74 +23,76 @@ Attributes::Attributes()
 {
 }
 
-Attributes::~Attributes()
+GenericAttributes::~GenericAttributes()
 {
 }
 
-void Attributes::checkSealState()
+void GenericAttributes::checkSealState()
 {
 	if ( mSealed ) {
 		throw Utils::Exception("can not update sealed attribute");
 	}
 }
 
-bool Attributes::isConst() const
+bool GenericAttributes::isConst() const
 {
 	return mIsConst;
 }
 
-bool Attributes::isSealed() const
-{
-	return mSealed;
-}
-
-bool Attributes::isStatic() const
+bool GenericAttributes::isStatic() const
 {
 	return mIsStatic;
 }
 
-LanguageFeatureState::E Attributes::languageFeatureState() const
+LanguageFeatureState::E GenericAttributes::languageFeatureState() const
 {
 	return mLanguageFeatureState;
 }
 
-void Attributes::seal()
-{
-	// after seal has been called no language feature can be modified anymore
-	mSealed = true;
-}
-
-void Attributes::setConst(bool state)
+void GenericAttributes::setConst(bool state)
 {
 	checkSealState();
 
 	mIsConst = state;
 }
 
-void Attributes::setLanguageFeatureState(LanguageFeatureState::E s)
+void GenericAttributes::setLanguageFeatureState(LanguageFeatureState::E s)
 {
 	checkSealState();
 
 	mLanguageFeatureState = s;
 }
 
-void Attributes::setStatic(bool state)
+void GenericAttributes::setStatic(bool state)
 {
 	checkSealState();
 
 	mIsStatic = state;
 }
 
-Visibility::E Attributes::visibility() const
+Visibility::E GenericAttributes::visibility() const
 {
 	return mVisibility;
 }
 
-void Attributes::visibility(Visibility::E v)
+void GenericAttributes::visibility(Visibility::E v)
 {
 	checkSealState();
 
 	mVisibility = v;
+}
+
+
+
+bool ObjectAttributes::isSealed() const
+{
+	return mSealed;
+}
+
+void ObjectAttributes::seal()
+{
+	// after seal has been called no language feature can get modified anymore
+	mSealed = true;
 }
 
 

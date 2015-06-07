@@ -29,7 +29,7 @@ class Object;
 class Repository;
 
 class Method : public LocalScope,
-			   public Attributes,
+			   public GenericAttributes,
 			   public Variable
 {
 public:

@@ -15,21 +15,17 @@
 
 
 namespace ObjectiveScript {
-//namespace Attributes {
 
 
-class Attributes
+class GenericAttributes
 {
 public:
-	Attributes();
-	~Attributes();
+	GenericAttributes();
+	virtual ~GenericAttributes();
 
 public:
 	bool isConst() const;
 	void setConst(bool state);
-
-	bool isSealed() const;
-	void seal();
 
 	bool isStatic() const;
 	void setStatic(bool state);
@@ -41,20 +37,26 @@ public:
 	void visibility(Visibility::E v);
 
 protected:
-
-private:
 	void checkSealState();
+
+protected:
+	bool mSealed;
 
 private:
 	bool mIsConst;
 	bool mIsStatic;
 	LanguageFeatureState::E mLanguageFeatureState;
-	bool mSealed;
 	Visibility::E mVisibility;
 };
 
+class ObjectAttributes : public GenericAttributes
+{
+public:
+	bool isSealed() const;
+	void seal();
+};
 
-//}
+
 }
 
 

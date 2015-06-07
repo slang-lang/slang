@@ -23,7 +23,7 @@ namespace ObjectiveScript {
 
 
 class BluePrint : public RTTI,
-				  public Attributes
+				  public ObjectAttributes
 {
 public:
 	class Ancestor

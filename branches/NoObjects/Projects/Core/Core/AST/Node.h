@@ -47,7 +47,6 @@ protected:
 	Interpreter *mInterpreter;
 	Node *mLeftNode;
 	Memory *mMemory;
-	//NodeList mNodes;
 	Node *mRightNode;
 	std::string mScope;
 	TokenList mTokens;

@@ -79,6 +79,9 @@ void Object::operator= (const Object& other)
 	mTypename = other.Typename();
 	mValue = other.value();
 
+	this->setConst(other.isConst());
+	this->setStatic(other.isStatic());
+
 	// unregister current members
 	for ( MemberCollection::const_iterator it = mMembers.begin(); it != mMembers.end(); ) {
 		mRepository->removeReference(it->second);
