@@ -15,10 +15,10 @@ namespace ObjectiveScript {
 
 
 GenericAttributes::GenericAttributes()
-: mIsConst(false),
+: mSealed(false),
+  mIsConst(false),
   mIsStatic(false),
   mLanguageFeatureState(LanguageFeatureState::Stable),
-  mSealed(false),
   mVisibility(Visibility::Private)
 {
 }
@@ -81,7 +81,6 @@ void GenericAttributes::visibility(Visibility::E v)
 
 	mVisibility = v;
 }
-
 
 
 bool ObjectAttributes::isSealed() const
