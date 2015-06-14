@@ -35,7 +35,7 @@ public namespace stable AttributeTest
 
 	public object ConstObject
 	{
-		private Number mNumber modify;
+		private Number mNumber;
 
 		public void ConstObject()
 		{
@@ -69,9 +69,9 @@ public namespace stable AttributeTest
 			//Number one = StaticObject.GetOne();
 
 			ConstObject value = new ConstObject();
-			print(value.GetNumber());
+			print("value.GetNumber() = " & value.GetNumber());
 			value.SetNumber(2);
-			print(value.GetNumber());
+			print("value.GetNumber() = " & value.GetNumber());
 
 			print(getTwo());
 

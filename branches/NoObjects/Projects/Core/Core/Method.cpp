@@ -493,7 +493,7 @@ void Method::parseTerm(Object *result, TokenIterator& start)
 			// or simply get a stored variable
 			Object *symbol = getSymbol(start->content());
 			if ( symbol ) {
-				result = symbol;
+				*result = *symbol;
 			}
 			else {
 				if ( isMethod(start->content()) ) {

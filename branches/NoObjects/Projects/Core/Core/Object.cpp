@@ -48,9 +48,6 @@ Object::Object(const std::string& name, const std::string& filename, const std::
 Object::~Object()
 {
 	garbageCollector();
-
-	mPrinter = 0;
-	mRepository = 0;
 }
 
 void Object::operator= (const Object& other)
@@ -78,18 +75,20 @@ void Object::operator= (const Object& other)
 		mRepository->removeReference(it->second);
 		it = mMembers.erase(it);
 	}
+	mMembers.clear();
+
 	// register new members
 	for ( MemberCollection::const_iterator it = other.mMembers.begin(); it != other.mMembers.end(); ++it ) {
 		addMember(it->second);
-		mRepository->addReference(it->second);
 	}
 
 	// unregister old methods
-	for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
+	for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ) {
 		delete (*it);
-		(*it) = 0;
+		it = mMethods.erase(it);
 	}
 	mMethods.clear();
+
 	// register new methods
 	for ( MethodCollection::const_iterator it = other.mMethods.begin(); it != other.mMethods.end(); ++it ) {
 		Method *m = new Method(this, (*it)->name(), (*it)->type());
@@ -108,6 +107,8 @@ void Object::addMember(Object *m)
 	}
 
 	mMembers.insert(std::make_pair(m->name(), m));
+
+	mRepository->addReference(m);
 }
 
 void Object::addMethod(Method *m)
