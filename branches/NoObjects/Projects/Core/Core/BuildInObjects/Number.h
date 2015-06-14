@@ -19,19 +19,16 @@ namespace ObjectiveScript {
 class Number : public Object
 {
 public:
-	Number(const std::string& value = "0")
-	: Object("", "SYSTEM.OS", "Number", value)
-	{
-		Constructor(ParameterList());
-	}
+	Number(const std::string& value = "0");
 
-public:
-	void setTokens(const TokenList& /*tokens*/) { }
+public:	// Operators
+	virtual void operator_assign(Object *other);
+	virtual void operator_divide(Object *other);
+	virtual void operator_multiply(Object *other);
+	virtual void operator_plus(Object *other);
+	virtual void operator_subtract(Object *other);
 
-protected:
-
-private:
-
+	virtual std::string ToString() const;
 };
 
 

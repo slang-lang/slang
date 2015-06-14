@@ -19,19 +19,16 @@ namespace ObjectiveScript {
 class Void : public Object
 {
 public:
-	Void()
-	: Object("", "SYSTEM.OS", "Void", "")
-	{
-		//Constructor(ParameterList());
-	}
+	Void();
 
 public:
-	void setTokens(const TokenList& /*tokens*/) { }
+	virtual void operator_assign(Object *other);
+	virtual void operator_divide(Object *other);
+	virtual void operator_multiply(Object *other);
+	virtual void operator_plus(Object *other);
+	virtual void operator_subtract(Object *other);
 
-protected:
-
-private:
-
+	virtual std::string ToString() const;
 };
 
 

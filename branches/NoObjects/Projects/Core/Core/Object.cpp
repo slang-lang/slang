@@ -164,7 +164,7 @@ void Object::Constructor(const ParameterList& params)
 	if ( !mConstructed ) {
 		// only execute constructor if one is present
 		if ( hasMethod(Typename(), params) ) {
-			execute(Typename(), params);
+			execute(0, Typename(), params);
 		}
 
 		// set after executing constructor
@@ -182,7 +182,7 @@ void Object::Destructor()
 	if ( mConstructed ) {
 		// only execute destructor if one is present
 		if ( hasMethod("~" + getName()) ) {
-			execute("~" + getName(), ParameterList());
+			execute(0, "~" + Typename(), ParameterList());
 		}
 	}
 	else {
@@ -198,7 +198,7 @@ void Object::Destructor()
 	mConstructed = false;
 }
 
-Object Object::execute(const std::string& method, const ParameterList& params, const Method* caller)
+void Object::execute(Object *result, const std::string& method, const ParameterList& params, const Method* caller)
 {
 	//OSdebug("execute('" + method + "', [" + toString(params) + "])");
 
@@ -220,11 +220,14 @@ Object Object::execute(const std::string& method, const ParameterList& params, c
 		throw Utils::VisibilityError("invalid visibility: " + method);
 	}
 
+/*
 	Object returnValue(mPtr->name(), "", mPtr->type(), "");
 	returnValue.visibility(visibility());
+*/
 	try {
 		// execute our member method
-		returnValue = mPtr->execute(params);
+		//returnValue = mPtr->execute(params);
+		*result = mPtr->execute(params);
 	}
 	catch ( Utils::Exception &e ) {
 		// catch and log all errors that occured during method execution
@@ -233,7 +236,7 @@ Object Object::execute(const std::string& method, const ParameterList& params, c
 		throw;
 	}
 
-	return returnValue;
+	//return returnValue;
 }
 
 bool Object::findMember(const std::string& m, Object::MemberCollection::iterator& mIt)
@@ -428,6 +431,31 @@ const std::string& Object::name() const
 void Object::name(const std::string& name)
 {
 	mName = name;
+}
+
+void Object::operator_assign(Object *other)
+{
+	throw Utils::Exception("operator= not implemented");
+}
+
+void Object::operator_divide(Object *other)
+{
+	throw Utils::Exception("operator/ not implemented");
+}
+
+void Object::operator_multiply(Object *other)
+{
+	throw Utils::Exception("operator* not implemented");
+}
+
+void Object::operator_plus(Object *other)
+{
+	throw Utils::Exception("operator+ not implemented");
+}
+
+void Object::operator_subtract(Object *other)
+{
+	throw Utils::Exception("operator- not implemented");
 }
 
 IPrinter* Object::providePrinter() const

@@ -396,6 +396,8 @@ bool Method::parseCondition(TokenIterator& token)
 			v1.value( (v1.value() != v2.value()) ? "true" : "false" );
 		}
 	}
+
+	return false;
 }
 
 void Method::parseExpression(Object *result, TokenIterator& start)
@@ -804,11 +806,15 @@ Object Method::process_method(TokenIterator& token)
 
 	Object *symbol = getSymbol(parent);
 	if ( symbol ) {
-		return symbol->execute(member, params, this);
+		Object object;
+		symbol->execute(&object, member, params, this);
+		return object;
 	}
 
 	if ( isMethod(method) ) {
-		return mOwner->execute(method, params, this);
+		Object object;
+		mOwner->execute(&object, method, params, this);
+		return object;
 	}
 
 	throw Utils::UnknownIdentifer("unknown/unexpected identifier '" + method + "' found", tmp->position());
@@ -875,9 +881,9 @@ void Method::process_print(TokenIterator& token)
 	// find semicolon
 	TokenIterator tmp = findNext(closed, Token::Type::SEMICOLON);
 
-	//Object object = parseExpression(opened);
 	Object object;
 	parseExpression(&object, opened);
+
 	//mOwner->providePrinter()->print(object.value() + "   [" + mOwner->Filename() + ":" + Tools::toString(token->position().line) + "]");
 	mOwner->providePrinter()->print(object.value());
 

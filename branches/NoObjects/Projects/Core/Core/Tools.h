@@ -25,7 +25,8 @@ namespace Tools {
 	std::string getLastSubString(const std::string& str);
 	void split(const std::string& str, std::string& p, std::string& c);
 
-	float stringToFloat(const std::string &str);
+	bool stringToBool(const std::string &value);
+	float stringToFloat(const std::string &value);
 
 	template <class T>
 	inline std::string toString(const T& t)

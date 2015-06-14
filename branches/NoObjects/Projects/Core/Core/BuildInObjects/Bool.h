@@ -19,19 +19,16 @@ namespace ObjectiveScript {
 class Bool : public Object
 {
 public:
-	Bool(const std::string& value = "false")
-	: Object("", "SYSTEM.OS", "Bool", value)
-	{
-		Constructor(ParameterList());
-	}
+	Bool(const std::string& value = "false");
 
-public:
-	void setTokens(const TokenList& /*tokens*/) { }
+public:	// Operators
+	virtual void operator_assign(Object *other);
+	virtual void operator_divide(Object *other);
+	virtual void operator_multiply(Object *other);
+	virtual void operator_plus(Object *other);
+	virtual void operator_subtract(Object *other);
 
-protected:
-
-private:
-
+	virtual std::string ToString() const;
 };
 
 

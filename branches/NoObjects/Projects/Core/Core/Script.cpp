@@ -78,7 +78,7 @@ Object Script::execute(const std::string& method, const ParameterList& params)
 	Object returnValue;
 	try {
 		assert(mObject);
-		returnValue = mObject->execute(method, params);
+		mObject->execute(&returnValue, method, params);
 	}
 	catch ( Utils::Exception &e ) {
 		OSerror(e.what());

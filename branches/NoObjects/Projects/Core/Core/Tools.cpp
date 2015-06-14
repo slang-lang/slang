@@ -34,14 +34,28 @@ void split(const std::string& str, std::string& p, std::string& c)
 	}
 }
 
-float stringToFloat(const std::string &str)
+bool stringToBool(const std::string &value)
 {
-	if ( str.empty() ) {
+	if ( value.empty() ) {
+		return false;
+	}
+
+	std::stringstream stream;
+	stream << value;
+	bool b;
+	stream >> b;
+
+	return b;
+}
+
+float stringToFloat(const std::string &value)
+{
+	if ( value.empty() ) {
 		return 0.f;
 	}
 
 	std::stringstream stream;
-	stream << str;
+	stream << value;
 	float f;
 	stream >> f;
 

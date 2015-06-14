@@ -56,6 +56,15 @@ public:	// Connectors
 public:	// Providers
 	IPrinter* providePrinter() const;
 
+public:	// Operators
+	virtual void operator_assign(Object *other);
+	virtual void operator_divide(Object *other);
+	virtual void operator_multiply(Object *other);
+	virtual void operator_plus(Object *other);
+	virtual void operator_subtract(Object *other);
+
+	virtual std::string ToString() const;
+
 public:
 	const std::string& name() const;
 	void name(const std::string& name);
@@ -68,7 +77,7 @@ public:	// Usage
 	void Destructor();
 	void garbageCollector(bool force = false);
 
-	Object execute(const std::string& method, const ParameterList& params, const Method* caller = 0);		// throws VisibilityError exception
+	void execute(Object *result, const std::string& method, const ParameterList& params, const Method* caller = 0);		// throws VisibilityError exception
 
 public:	// Helpers
 	Object* getMember(const std::string& m);
