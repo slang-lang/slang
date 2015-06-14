@@ -602,7 +602,7 @@ void Method::process_assign(TokenIterator& token)
 	if ( !s ) {
 		throw Utils::UnknownIdentifer("identified '" + identifier + "' not found", token->position());
 	}
-	if ( s->isConst() ) {
+	if ( s->isConst() || !s->isModifiable() ) {
 		throw Utils::ConstCorrectnessViolated("not allowed to modify const member '" + identifier + "'", token->position());
 	}
 	if ( this->isConst() && isMember(identifier) ) {

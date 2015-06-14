@@ -16,7 +16,8 @@ namespace ObjectiveScript {
 
 GenericAttributes::GenericAttributes()
 : mSealed(false),
-  mIsConst(false),
+  mIsConst(true),
+  mIsFinal(false),
   mIsStatic(false),
   mLanguageFeatureState(LanguageFeatureState::Stable),
   mVisibility(Visibility::Private)
@@ -39,6 +40,16 @@ bool GenericAttributes::isConst() const
 	return mIsConst;
 }
 
+bool GenericAttributes::isFinal() const
+{
+	return mIsFinal;
+}
+
+bool GenericAttributes::isModifiable() const
+{
+	return !mIsConst;
+}
+
 bool GenericAttributes::isStatic() const
 {
 	return mIsStatic;
@@ -56,11 +67,21 @@ void GenericAttributes::setConst(bool state)
 	mIsConst = state;
 }
 
+void GenericAttributes::setFinal(bool state)
+{
+	mIsFinal = state;
+}
+
 void GenericAttributes::setLanguageFeatureState(LanguageFeatureState::E s)
 {
 	checkSealState();
 
 	mLanguageFeatureState = s;
+}
+
+void GenericAttributes::setModifiable(bool state)
+{
+	mIsConst = state;
 }
 
 void GenericAttributes::setStatic(bool state)

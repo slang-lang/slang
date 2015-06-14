@@ -71,7 +71,7 @@ Method* Preprocessor::createMethod(TokenIterator token)
 
 	ParameterList params = parseParameters(token);
 
-	// look at possible attributes (const, static, etc.)
+	// look at possible attributes (const, modify, static, etc.)
 	// look for the next opening curly bracket
 	do {
 		token++;
@@ -79,6 +79,9 @@ Method* Preprocessor::createMethod(TokenIterator token)
 		if ( token->type() == Token::Type::RESERVED ) {
 			if ( token->content() == "const" ) {
 				isConst = true;
+			}
+			else if ( token->content() == "modify" ) {
+				isConst = false;
 			}
 			else if ( token->content() == "static" ) {
 				isStatic = true;

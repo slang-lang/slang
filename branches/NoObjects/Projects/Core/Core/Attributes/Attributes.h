@@ -27,6 +27,12 @@ public:
 	bool isConst() const;
 	void setConst(bool state);
 
+	bool isFinal() const;
+	void setFinal(bool state);
+
+	bool isModifiable() const;
+	void setModifiable(bool state);
+
 	bool isStatic() const;
 	void setStatic(bool state);
 
@@ -44,6 +50,7 @@ protected:
 
 private:
 	bool mIsConst;
+	bool mIsFinal;
 	bool mIsStatic;
 	LanguageFeatureState::E mLanguageFeatureState;
 	Visibility::E mVisibility;
