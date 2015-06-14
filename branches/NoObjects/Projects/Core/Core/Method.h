@@ -50,6 +50,9 @@ public:	// Setup
 	void setSignature(const ParameterList& params);
 	void setTokens(const TokenList& tokens);
 
+public: // Deinit
+	void garbageCollector(bool force = false);
+
 public:
 	bool isSignatureValid(const ParameterList& params) const;
 	const ParameterList& provideSignature() const;
@@ -65,9 +68,6 @@ private:
 private:	// Construction
 	void addIdentifier(Object *object);			// throws DuplicateIdentifer exception
 
-private:	// Destruction
-	void garbageCollector();
-
 private:	// Execution
 	bool isLocalSymbol(const std::string& token);
 	bool isMember(const std::string& token);
@@ -76,7 +76,7 @@ private:	// Execution
 
 	// token processing
 	// {
-	Object process(TokenIterator& start, TokenIterator end, Token::Type::E terminator = Token::Type::NIL);
+	void process(Object *result, TokenIterator& start, TokenIterator end, Token::Type::E terminator = Token::Type::NIL);
 	void process_assert(TokenIterator& token);
 	void process_assign(TokenIterator& token);
 	void process_delete(TokenIterator& token);
@@ -95,14 +95,14 @@ private:	// Execution
 
 	// condition evaluation
 	// {
-	Object parseCondition(TokenIterator& start);
+	bool parseCondition(TokenIterator& start);
 	// }
 
 	// expression evaluation
 	// {
-	Object parseExpression(TokenIterator& start);
-	Object parseFactors(TokenIterator& start);
-	Object parseTerm(TokenIterator& start);
+	void parseExpression(Object *result, TokenIterator& start);
+	void parseFactors(Object *result, TokenIterator& start);
+	void parseTerm(Object *result, TokenIterator& start);
 	// }
 
 private:

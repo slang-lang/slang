@@ -47,16 +47,7 @@ Object::Object(const std::string& name, const std::string& filename, const std::
 
 Object::~Object()
 {
-	// unregister current members
-	for ( MemberCollection::const_iterator it = mMembers.begin(); it != mMembers.end(); ) {
-		mRepository->removeReference(it->second);
-		it = mMembers.erase(it);
-	}
-
-	for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
-		delete (*it);
-	}
-	mMethods.clear();
+	garbageCollector();
 
 	mPrinter = 0;
 	mRepository = 0;
@@ -74,12 +65,12 @@ void Object::operator= (const Object& other)
 		mRepository = other.mRepository;
 	}
 
-	//mName = other.mName;
 	mTokens = other.mTokens;
 	mTypename = other.Typename();
 	mValue = other.value();
 
 	this->setConst(other.isConst());
+	this->setFinal(other.isFinal());
 	this->setStatic(other.isStatic());
 
 	// unregister current members
@@ -96,6 +87,7 @@ void Object::operator= (const Object& other)
 	// unregister old methods
 	for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
 		delete (*it);
+		(*it) = 0;
 	}
 	mMethods.clear();
 	// register new methods
@@ -198,7 +190,7 @@ void Object::Destructor()
 		//throw Utils::Exception("can not destroy object '" + name() + "' which has not been constructed");
 	}
 
-	garbageCollector();
+	garbageCollector(true);
 
 	// set after executing destructor
 	// in case any exceptions have been thrown
@@ -309,7 +301,7 @@ bool Object::findMethod(const std::string& m, const ParameterList& params, Metho
 	return false;
 }
 
-void Object::garbageCollector()
+void Object::garbageCollector(bool force)
 {
 	// members are objects, so they will get cleaned up by our repository
 	for ( MemberCollection::iterator it = mMembers.begin(); it != mMembers.end(); ++it ) {
@@ -318,6 +310,7 @@ void Object::garbageCollector()
 	mMembers.clear();
 
 	for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
+		(*it)->garbageCollector(force);
 		delete (*it);
 	}
 	mMethods.clear();

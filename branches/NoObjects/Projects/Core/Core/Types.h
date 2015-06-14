@@ -33,7 +33,9 @@ std::string toString(const StringList& list);
 std::string toString(const TokenList& list);
 
 StringList provideAtomarTypes();
+StringList provideLanguageFeatures();
 StringList provideKeyWords();
+StringList provideModifiers();
 StringList provideReservedWords();
 
 

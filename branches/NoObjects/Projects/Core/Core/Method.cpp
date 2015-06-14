@@ -35,7 +35,7 @@ Method::Method(IScope *parent, const std::string& name, const std::string& type)
 
 Method::~Method()
 {
-	garbageCollector();
+	//garbageCollector();
 }
 
 bool Method::operator() (const Method& first, const Method& second) const
@@ -196,7 +196,7 @@ Object Method::execute(const ParameterList& params)
 	returnValue.visibility(visibility());
 
 	TokenIterator start = mTokens.begin();
-	returnValue = process(start, mTokens.end());
+	process(&returnValue, start, mTokens.end());
 
 	// after we gathered our result
 	// let the garbage collector do it's magic
@@ -205,10 +205,10 @@ Object Method::execute(const ParameterList& params)
 	return returnValue;
 }
 
-void Method::garbageCollector()
+void Method::garbageCollector(bool force)
 {
 	for ( MemberCollection::iterator it = mLocalSymbols.begin(); it != mLocalSymbols.end(); ) {
-		if ( it->second->isStatic() ) {
+		if ( it->second->isStatic() && !force ) {
 			it++;
 			continue;
 		}
@@ -301,9 +301,9 @@ bool Method::isMethod(const std::string& token)
 	}
 
 	if ( mOwner->hasMember(parent) ) {
-		Object *member = mOwner->getMember(parent);
-		if ( member ) {
-			return member->hasMethod(token);
+		Object *obj = mOwner->getMember(parent);
+		if ( obj ) {
+			return obj->hasMethod(member);
 		}
 	}
 
@@ -357,21 +357,26 @@ bool Method::isSignatureValid(const ParameterList& params) const
 	return true;
 }
 
-Object Method::parseCondition(TokenIterator& token)
+bool Method::parseCondition(TokenIterator& token)
 {
-	Object v1 = parseExpression(token);
+	Object v1;
+	parseExpression(&v1, token);
 
 	for ( ; ; ) {
 		Token::Type::E op = token->type();
-		if ( op != Token::Type::COMPARE_EQUAL && op != Token::Type::COMPARE_GREATER && op != Token::Type::COMPARE_GREATER_EQUAL &&
-			op != Token::Type::COMPARE_LESS && op != Token::Type::COMPARE_LESS_EQUAL ) {
-				return v1;
+		if ( op != Token::Type::COMPARE_EQUAL &&
+			 op != Token::Type::COMPARE_GREATER &&
+			 op != Token::Type::COMPARE_GREATER_EQUAL &&
+			 op != Token::Type::COMPARE_LESS &&
+			 op != Token::Type::COMPARE_LESS_EQUAL ) {
+			return v1.isValid();
 		}
 
 		// consume operator token
 		token++;
 
-		Object v2 = parseExpression(token);
+		Object v2;
+		parseExpression(&v2, token);
 
 		if ( op == Token::Type::COMPARE_EQUAL ) {
 			v1.value( (v1.value() == v2.value()) ? "true" : "false" );
@@ -392,46 +397,43 @@ Object Method::parseCondition(TokenIterator& token)
 			v1.value( (v1.value() != v2.value()) ? "true" : "false" );
 		}
 	}
-
-	return v1;
 }
 
-Object Method::parseExpression(TokenIterator& start)
+void Method::parseExpression(Object *result, TokenIterator& start)
 {
-	Object v1 = parseFactors(start);
+	parseFactors(result, start);
 
 	for ( ; ; ) {
 		Token::Type::E op = start->type();
-		if ( op != Token::Type::MATH_ADD && op != Token::Type::MATH_SUBTRACT &&
+		if ( op != Token::Type::MATH_ADD &&
+			 op != Token::Type::MATH_SUBTRACT &&
 			 op != Token::Type::STRING_ADD ) {
-			return v1;
+			return;
 		}
 
 		// consume operator token
 		start++;
 
-		Object v2 = parseFactors(start);
+		Object v2;
+		parseFactors(&v2, start);
 
 		if ( op == Token::Type::MATH_ADD ) {
-			v1 = Math::add(v1, v2);
+			*result = Math::add(*result, v2);
 		}
 		else if ( op == Token::Type::MATH_SUBTRACT ) {
-			v1 = Math::subtract(v1, v2);
+			*result = Math::subtract(*result, v2);
 		}
 		else if ( op == Token::Type::STRING_ADD ) {
-			v1 = Strings::concat(v1, v2);
+			*result = Strings::concat(*result, v2);
 		}
 	}
-
-	return v1;
 }
 
-Object Method::parseFactors(TokenIterator& start)
+void Method::parseFactors(Object *result, TokenIterator& start)
 {
-	Object v1;
 	if ( (start)->type() == Token::Type::PARENTHESIS_OPEN) {
 		start++;
-		v1 = parseExpression(start);
+		parseExpression(result, start);
 
 		if ( start->type() != Token::Type::PARENTHESIS_CLOSE ) {
 			throw Utils::SyntaxError("')' expected but "  + start->content() + " found", start->position());
@@ -440,13 +442,14 @@ Object Method::parseFactors(TokenIterator& start)
 		start++;
 	}
 	else {
-		v1 = parseTerm(start);
+		parseTerm(result, start);
 	}
 
 	for ( ; ; ) {
 		Token::Type::E op = start->type();
-		if ( op != Token::Type::MATH_MULTI && op != Token::Type::MATH_DIV ) {
-			return v1;
+		if ( op != Token::Type::MATH_MULTI &&
+			 op != Token::Type::MATH_DIV ) {
+			return;
 		}
 
 		// consume operator token
@@ -455,7 +458,7 @@ Object Method::parseFactors(TokenIterator& start)
 		Object v2;
 		if ( (start)->type() == Token::Type::PARENTHESIS_OPEN) {
 			start++;
-			v2 = parseExpression(start);
+			parseExpression(&v2, start);
 
 			if ( start->type() != Token::Type::PARENTHESIS_CLOSE ) {
 				throw Utils::SyntaxError("')' expected but "  + start->content() + " found", start->position());
@@ -464,41 +467,37 @@ Object Method::parseFactors(TokenIterator& start)
 			start++;
 		}
 		else {
-			v2 = parseTerm(start);
+			parseTerm(&v2, start);
 		}
 
 		if ( op == Token::Type::MATH_MULTI ) {
-			v1 = Math::multiply(v1, v2);
+			*result = Math::multiply(*result, v2);
 		}
 		else {
-			v1 = Math::divide(v1, v2);
+			*result = Math::divide(*result, v2);
 		}
 	}
-
-	return v1;
 }
 
-Object Method::parseTerm(TokenIterator& start)
+void Method::parseTerm(Object *result, TokenIterator& start)
 {
-	Object result;
-
 	switch ( start->type() ) {
 		case Token::Type::BOOLEAN: {
-			result = Bool(start->content());
+			*result = Bool(start->content());
 		} break;
 		case Token::Type::CONSTANT: {
-			result = Number(start->content());
+			*result = Number(start->content());
 		} break;
 		case Token::Type::IDENTIFER: {
 			// find out if we have to execute a method
 			// or simply get a stored variable
 			Object *symbol = getSymbol(start->content());
 			if ( symbol ) {
-				result = *symbol;
+				result = symbol;
 			}
 			else {
 				if ( isMethod(start->content()) ) {
-					result = process_method(start);
+					*result = process_method(start);
 				}
 				else {
 					throw Utils::UnknownIdentifer("unknown/unexpected identifier '" + start->content() + "' found", start->position());
@@ -506,10 +505,10 @@ Object Method::parseTerm(TokenIterator& start)
 			}
 		} break;
 		case Token::Type::KEYWORD: {
-			result = process(start, mTokens.end(), Token::Type::SEMICOLON);
+			process(result, start, mTokens.end(), Token::Type::SEMICOLON);
 		} break;
 		case Token::Type::LITERAL: {
-			result = String(start->content());
+			*result = String(start->content());
 		} break;
 		default: {
 			throw Utils::SyntaxError("identifier, literal or number expected but " + start->content() + " as " + Token::Type::convert(start->type()) + " found", start->position());
@@ -517,13 +516,10 @@ Object Method::parseTerm(TokenIterator& start)
 	}
 
 	start++;
-	return result;
 }
 
-Object Method::process(TokenIterator& token, TokenIterator end, Token::Type::E terminator)
+void Method::process(Object *result, TokenIterator& token, TokenIterator end, Token::Type::E terminator)
 {
-	Object result;
-
 	// loop through all keywords and redirect to the corresponding method
 	while ( token != end && token->type() != terminator && token->type() != Token::Type::ENDOFFILE ) {
 		// decide what we want to do according to the type of token we have
@@ -531,17 +527,17 @@ Object Method::process(TokenIterator& token, TokenIterator end, Token::Type::E t
 			case Token::Type::BOOLEAN:
 			case Token::Type::CONSTANT:
 			case Token::Type::LITERAL:
-				result = parseExpression(token);
+				parseExpression(result, token);
 				break;
 			case Token::Type::IDENTIFER:
 				process_assign(token);
 				break;
 			case Token::Type::KEYWORD:
 				if ( token->content() == "new" ) {
-					result = *process_new(token);
+					*result = *process_new(token);
 				}
 				else if ( token->content() == "return" ) {
-					result = parseExpression(++token);
+					parseExpression(result, ++token);
 				}
 				else {
 					process_keyword(token);
@@ -558,8 +554,6 @@ Object Method::process(TokenIterator& token, TokenIterator end, Token::Type::E t
 
 		token++;	// consume token
 	}
-
-	return result;
 }
 
 // syntax:
@@ -573,8 +567,7 @@ void Method::process_assert(TokenIterator& token)
 	// find semicolon
 	TokenIterator tmp = findNext(condEnd, Token::Type::SEMICOLON);
 
-	Object condition = parseCondition(condBegin);
-	if ( !condition.isValid() ) {
+	if ( !parseCondition(condBegin) ) {
 		throw Utils::AssertionFailed("", token->position());
 	}
 
@@ -588,9 +581,10 @@ void Method::process_assign(TokenIterator& token)
 	// find next semicolon
 	TokenIterator end = findNext(token, Token::Type::SEMICOLON);
 
+	Object result;
 	if ( assign == token ) {
 		// we don't have an assignment but a method call
-		parseExpression(token);
+		parseExpression(&result, token);
 
 		token = end;
 		return;
@@ -602,14 +596,20 @@ void Method::process_assign(TokenIterator& token)
 	if ( !s ) {
 		throw Utils::UnknownIdentifer("identified '" + identifier + "' not found", token->position());
 	}
-	if ( s->isConst() || !s->isModifiable() ) {
+	if ( s->isConst() ) {
 		throw Utils::ConstCorrectnessViolated("not allowed to modify const member '" + identifier + "'", token->position());
 	}
 	if ( this->isConst() && isMember(identifier) ) {
 		throw Utils::ConstCorrectnessViolated("not allowed to modify member '" + identifier + "' in const method '" + this->name() + "'", token->position());
 	}
 
-	*s = parseExpression(++assign);
+	parseExpression(s, ++assign);
+
+	if ( s->isFinal() && s->isModifiable() ) {
+		// we have modified a final entity for the first time, we now have to set it so const 
+		s->setConst(true);
+		s->setFinal(false);
+	}
 
 	// assign == end should now be true
 	token = end;
@@ -653,17 +653,18 @@ void Method::process_for(TokenIterator& token)
 	TokenIterator bodyEnd = findNextBalancedCurlyBracket(++begin);
 
 	// process our declaration part
-	process(decl, cond, Token::Type::SEMICOLON);
+	Object result;
+	process(&result, decl, cond, Token::Type::SEMICOLON);
 
-	while ( isTrue(parseCondition(cond = conditionStart)) ) {
+	while ( parseCondition(cond = conditionStart) ) {
 		TokenIterator bb = begin;
 
 		// process loop body
-		process(bb, bodyEnd, Token::Type::BRACKET_CURLY_CLOSE);
+		process(&result, bb, bodyEnd, Token::Type::BRACKET_CURLY_CLOSE);
 
 		// execute loop expression
 		expr = expressionStart;
-		process(expr, exprEnd, Token::Type::PARENTHESIS_CLOSE);
+		process(&result, expr, exprEnd, Token::Type::PARENTHESIS_CLOSE);
 	}
 
 	token = bodyEnd;
@@ -702,8 +703,9 @@ void Method::process_if(TokenIterator& token)
 		}
 	}
 
-	if ( isTrue(parseCondition(condBegin)) ) {
-		process(bodyBegin, bodyEnd, Token::Type::BRACKET_CURLY_CLOSE);
+	Object result;
+	if ( parseCondition(condBegin) ) {
+		process(&result, bodyBegin, bodyEnd, Token::Type::BRACKET_CURLY_CLOSE);
 
 		// check if we executed all tokens
 		if ( bodyBegin != bodyEnd ) {
@@ -718,7 +720,7 @@ void Method::process_if(TokenIterator& token)
 		}
 	}
 	else if ( elseBegin != mTokens.end() ) {
-		process(elseBegin, elseEnd, Token::Type::BRACKET_CURLY_CLOSE);
+		process(&result, elseBegin, elseEnd, Token::Type::BRACKET_CURLY_CLOSE);
 
 		// check if we executed all tokens
 		if ( elseBegin != elseEnd ) {
@@ -781,7 +783,8 @@ Object Method::process_method(TokenIterator& token)
 	tmp = opened;
 	// loop through all parameters seperated by colons
 	while ( tmp != closed ) {
-		Object object = parseExpression(tmp);
+		Object object;
+		parseExpression(&object, tmp);
 		params.push_back(Parameter(object.name(), object.Typename(), object.value(), false, object.isConst(), Parameter::AccessMode::ByValue));
 
 		if ( std::distance(tmp, closed) <= 0 ) {
@@ -796,9 +799,16 @@ Object Method::process_method(TokenIterator& token)
 
 	token = closed;
 
-//TODO: what if we want to execute a method of another object?!?!
 
-	if ( mOwner->hasMethod(method, params) ) {
+	std::string member, parent;
+	Tools::split(method, parent, member);
+
+	Object *symbol = getSymbol(parent);
+	if ( symbol ) {
+		return symbol->execute(member, params, this);
+	}
+
+	if ( isMethod(method) ) {
 		return mOwner->execute(method, params, this);
 	}
 
@@ -829,7 +839,8 @@ Object* Method::process_new(TokenIterator& token)
 	tmp = opened;
 	// loop through all parameters seperated by colons
 	while ( tmp != closed ) {
-		Object object = parseExpression(tmp);
+		Object object;
+		parseExpression(&object, tmp);
 		params.push_back(Parameter(object.name(), object.Typename(), object.value(), false, object.isConst(), Parameter::AccessMode::ByValue));
 
 		if ( std::distance(tmp, closed) <= 0 ) {
@@ -865,7 +876,9 @@ void Method::process_print(TokenIterator& token)
 	// find semicolon
 	TokenIterator tmp = findNext(closed, Token::Type::SEMICOLON);
 
-	Object object = parseExpression(opened);
+	//Object object = parseExpression(opened);
+	Object object;
+	parseExpression(&object, opened);
 	//mOwner->providePrinter()->print(object.value() + "   [" + mOwner->Filename() + ":" + Tools::toString(token->position().line) + "]");
 	mOwner->providePrinter()->print(object.value());
 
@@ -892,6 +905,7 @@ assert(!"not implemented");
 void Method::process_type(TokenIterator& token)
 {
 	bool isConst = false;
+	bool isFinal = false;
 	bool isStatic = false;
 
 	std::string name;
@@ -918,12 +932,9 @@ void Method::process_type(TokenIterator& token)
 	if ( tmpStr == "const" || tmpStr == "static" ) {
 		token++;
 
-		if ( tmpStr == "const" ) {
-			isConst = true;
-		}
-		else if ( tmpStr == "static" ) {
-			isStatic = true;
-		}
+		if ( tmpStr == "const" ) { isConst = true; }
+		else if ( tmpStr == "final" ) { isFinal = true; }
+		else if ( tmpStr == "static" ) { isStatic = true; }
 	}
 
 	TokenIterator assign = mTokens.end();
@@ -936,11 +947,16 @@ void Method::process_type(TokenIterator& token)
 		object = mRepository->createInstance(type, name, prototype);
 
 		if ( isConst ) object->setConst(true);
+		if ( isFinal ) object->setFinal(true);
 		if ( isStatic ) object->setStatic(true);
 
 		if ( assign != mTokens.end() ) {
-			*object = parseExpression(assign);
-			token = assign;
+			//*object = parseExpression(assign);
+			//token = assign;
+
+			TokenIterator end = findNext(assign, Token::Type::SEMICOLON);
+			parseExpression(object, assign);
+			token = end;
 		}
 
 		addIdentifier(object);
@@ -977,10 +993,11 @@ void Method::process_while(TokenIterator& token)
 
 	TokenIterator tmp = condBegin;
 
-	while ( isTrue(parseCondition(tmp)) ) {
+	Object result;
+	while ( parseCondition(tmp) ) {
 		TokenIterator bb = bodyBegin;
 
-		process(bb, bodyEnd, Token::Type::BRACKET_CURLY_CLOSE);
+		process(&result, bb, bodyEnd, Token::Type::BRACKET_CURLY_CLOSE);
 
 		// reset iterator
 		tmp = condBegin;

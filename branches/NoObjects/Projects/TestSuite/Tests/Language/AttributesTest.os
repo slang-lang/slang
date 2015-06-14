@@ -35,7 +35,7 @@ public namespace stable AttributeTest
 
 	public object ConstObject
 	{
-		Number mNumber;
+		private Number mNumber modify;
 
 		public void ConstObject()
 		{
@@ -57,34 +57,35 @@ public namespace stable AttributeTest
 	{
 		private TestObject mTest;
 
-		public void Main(Number argc = 0, String argv = "")
+		public void Main(Number argc = 0, String argv = "") modify
 		{
-			{
-				mTest = new TestObject();
+			mTest = new TestObject();
 
-				mTest.deprecatedMethod();
-				//mTest.notimplementedMethod();
-				mTest.stableMethod();
-				mTest.unstableMethod();
-			}
+			mTest.deprecatedMethod();
+			//mTest.notimplementedMethod();
+			mTest.stableMethod();
+			mTest.unstableMethod();
 
-			{
-				//Number one = StaticObject.GetOne();
-			}
+			//Number one = StaticObject.GetOne();
 
-			{
-				ConstObject number = new ConstObject();
-				print(number.GetNumber());
-				number.SetNumber(2);
-				print(number.GetNumber());
+			ConstObject value = new ConstObject();
+			print(value.GetNumber());
+			value.SetNumber(2);
+			print(value.GetNumber());
 
-				delete number;
-			}
+			print(getTwo());
+
+			delete value;
 		}
 
 		public void ~Main()
 		{
 			delete mTest;
+		}
+		
+		private Number getTwo() const
+		{
+			return 2;
 		}
 	}
 }

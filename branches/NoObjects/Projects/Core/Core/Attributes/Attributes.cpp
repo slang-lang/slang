@@ -104,6 +104,11 @@ void GenericAttributes::visibility(Visibility::E v)
 }
 
 
+ObjectAttributes::ObjectAttributes()
+{
+	setConst(false);
+}
+
 bool ObjectAttributes::isSealed() const
 {
 	return mSealed;

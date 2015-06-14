@@ -26,6 +26,18 @@ StringList provideAtomarTypes()
 	return types;
 }
 
+StringList provideLanguageFeatures()
+{
+	StringList languageFeatures;
+
+	languageFeatures.push_back("deprecated");
+	languageFeatures.push_back("notimplemented");
+	languageFeatures.push_back("stable");
+	languageFeatures.push_back("unstable");
+
+	return languageFeatures;
+}
+
 StringList provideKeyWords()
 {
 	StringList keywords;
@@ -58,20 +70,33 @@ StringList provideKeyWords()
 	return keywords;
 }
 
+StringList provideModifiers()
+{
+	StringList modifiers;
+
+	modifiers.push_back("const");
+	modifiers.push_back("final");
+	modifiers.push_back("modify");
+	modifiers.push_back("static");
+
+	return modifiers;
+}
+
 StringList provideReservedWords()
 {
 	StringList reservedWords;
-
+/*
 	reservedWords.push_back("const");
-	reservedWords.push_back("extends");
 	reservedWords.push_back("final");
-	reservedWords.push_back("interface");
 	reservedWords.push_back("modify");
+	reservedWords.push_back("static");
+*/
+	reservedWords.push_back("extends");
+	reservedWords.push_back("interface");
 	reservedWords.push_back("object");
 	reservedWords.push_back("of");
 	reservedWords.push_back("ref");
 	reservedWords.push_back("prototype");
-	reservedWords.push_back("static");
 	reservedWords.push_back("val");
 
 	return reservedWords;

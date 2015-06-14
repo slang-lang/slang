@@ -59,6 +59,9 @@ private:
 class ObjectAttributes : public GenericAttributes
 {
 public:
+	ObjectAttributes();
+
+public:
 	bool isSealed() const;
 	void seal();
 };

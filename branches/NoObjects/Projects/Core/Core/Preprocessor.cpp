@@ -28,6 +28,9 @@ Object* Preprocessor::createMember(const std::string& filename, TokenIterator to
 	std::string name;
 	std::string type;
 	std::string visibility;
+	bool isConst = false;
+	bool isFinal = false;
+	bool isStatic = false;
 
 	// look for the visibility token
 	visibility = (*token++).content();
@@ -36,11 +39,31 @@ Object* Preprocessor::createMember(const std::string& filename, TokenIterator to
 	// look for the identifier token
 	name = (*token++).content();
 
+	if ( (*token).isOptional() ) {
+		if ( (*token).content() == "const" ) {
+			isConst = true;
+		}
+		else if ( (*token).content() == "final" ) {
+			isFinal = true;
+		}
+		else if ( (*token).content() == "modify" ) {
+			isConst = false;
+		}
+		else if ( (*token).content() == "static" ) {
+			isStatic = true;
+		}
+
+		token++;
+	}
+
 	if ( (*token).type() != Token::Type::SEMICOLON ) {
 		throw Utils::Exception("Member initialization not allowed at this point", token->position());
 	}
 
 	Object *o = new Object(name, filename, type, "");
+	o->setConst(isConst);
+	o->setFinal(isFinal);
+	o->setStatic(isStatic);
 	o->setVisibility(Visibility::convert(visibility));
 	return o;
 }
@@ -99,10 +122,10 @@ Method* Preprocessor::createMethod(TokenIterator token)
 	int scope = 0;
 	// look for the corresponding closing curly bracket
 	while ( (*++token).type() != Token::Type::BRACKET_CURLY_CLOSE || scope > 0 ) {
-		if ( token->type() == Token::Type::BRACKET_CURLY_OPEN ) {
+		if ( (*token).type() == Token::Type::BRACKET_CURLY_OPEN ) {
 			scope++;
 		}
-		if ( token->type() == Token::Type::BRACKET_CURLY_CLOSE ) {
+		if ( (*token).type() == Token::Type::BRACKET_CURLY_CLOSE ) {
 			scope--;
 		}
 

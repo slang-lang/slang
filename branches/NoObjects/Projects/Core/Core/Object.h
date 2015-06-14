@@ -65,6 +65,7 @@ public:
 public:	// Usage
 	void Constructor(const ParameterList& params);
 	void Destructor();
+	void garbageCollector(bool force = false);
 
 	Object execute(const std::string& method, const ParameterList& params, const Method* caller = 0);		// throws VisibilityError exception
 
@@ -88,7 +89,6 @@ private:
 	bool findMethod(const std::string& m, const ParameterList& params, MethodCollection::iterator& mIt);
 
 private:
-	void garbageCollector();
 	void updateMethodOwners();
 
 private:
