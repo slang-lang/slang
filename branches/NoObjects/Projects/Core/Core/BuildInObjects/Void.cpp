@@ -5,6 +5,8 @@
 // Library includes
 
 // Project includes
+#include <Core/Utils/Exceptions.h>
+#include <Core/Tools.h>
 
 // Namespace declarations
 
@@ -17,27 +19,27 @@ Void::	Void()
 {
 }
 
-void Void::operator_assign(Object *other)
+void Void::operator_assign(Object * /*other*/)
 {
 	throw Utils::Exception("operator= not implemented");
 }
 
-void Void::operator_divide(Object *other)
+void Void::operator_divide(Object * /*other*/)
 {
 	throw Utils::Exception("operator/ not implemented");
 }
 
-void Void::operator_multiply(Object *other)
+void Void::operator_multiply(Object * /*other*/)
 {
 	throw Utils::Exception("operator* not implemented");
 }
 
-void Void::operator_plus(Object *other)
+void Void::operator_plus(Object * /*other*/)
 {
 	throw Utils::Exception("operator+ not implemented");
 }
 
-void Void::operator_subtract(Object *other)
+void Void::operator_subtract(Object * /*other*/)
 {
 	throw Utils::Exception("operator- not implemented");
 }

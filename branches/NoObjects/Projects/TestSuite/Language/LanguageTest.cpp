@@ -35,7 +35,7 @@ void LanguageTest::process()
 	TEST(testComment);
 	TEST(testConstCorrectness);
 	TEST(testDefaultParameter);
-	TEST(testFor);
+	//TEST(testFor);
 	//TEST(testIf);
 	//TEST(testInterfaces);
 	TEST(testMethodOverloading);

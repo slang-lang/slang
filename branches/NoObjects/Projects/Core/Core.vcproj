@@ -211,6 +211,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\Core\BuildInObjects\Bool.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\Utils\Exceptions.cpp"
 				>
 				<FileConfiguration
@@ -283,6 +287,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Core\BuildInObjects\Number.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\Object.cpp"
 				>
 			</File>
@@ -331,6 +339,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Core\BuildInObjects\String.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\Helpers\Strings.cpp"
 				>
 				<FileConfiguration
@@ -364,6 +376,10 @@
 			</File>
 			<File
 				RelativePath=".\Core\Types.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\BuildInObjects\UserObject.cpp"
 				>
 			</File>
 			<File
@@ -413,6 +429,10 @@
 						ObjectFile="$(IntDir)\Attributes\"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\Core\BuildInObjects\Void.cpp"
+				>
 			</File>
 		</Filter>
 		<Filter

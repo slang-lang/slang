@@ -33,4 +33,7 @@ public:	// Operators
 };
 
 
+}
+
+
 #endif

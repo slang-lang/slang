@@ -5,6 +5,8 @@
 // Library includes
 
 // Project includes
+#include <Core/Utils/Exceptions.h>
+#include <Core/Tools.h>
 
 // Namespace declarations
 
@@ -12,7 +14,7 @@
 namespace ObjectiveScript {
 
 
-Bool::Bool(const std::string& value = "false")
+Bool::Bool(const std::string& value)
 : Object("", "SYSTEM.OS", "Bool", value)
 {
 	Constructor(ParameterList());
@@ -20,32 +22,32 @@ Bool::Bool(const std::string& value = "false")
 
 void Bool::operator_assign(Object *other)
 {
-	mValue = other->value();
+	value(other->value());
 }
 
-void Bool::operator_divide(Object *other)
+void Bool::operator_divide(Object * /*other*/)
 {
 	throw Utils::Exception("operator/ not implemented");
 }
 
-void Bool::operator_multiply(Object *other)
+void Bool::operator_multiply(Object * /*other*/)
 {
 	throw Utils::Exception("operator* not implemented");
 }
 
-void Bool::operator_plus(Object *other)
+void Bool::operator_plus(Object * /*other*/)
 {
-	mValue &= other->value();
+	throw Utils::Exception("operator+ not implemented");
 }
 
-void Bool::operator_subtract(Object *other)
+void Bool::operator_subtract(Object * /*other*/)
 {
 	throw Utils::Exception("operator- not implemented");
 }
 
 std::string Bool::ToString() const
 {
-	return mValue;
+	return value();
 }
 
 

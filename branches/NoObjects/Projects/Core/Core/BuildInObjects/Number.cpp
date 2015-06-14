@@ -5,7 +5,8 @@
 // Library includes
 
 // Project includes
-#include "Tools.h"
+#include <Core/Utils/Exceptions.h>
+#include <Core/Tools.h>
 
 // Namespace declarations
 
@@ -13,7 +14,7 @@
 namespace ObjectiveScript {
 
 
-Number::Number(const std::string& value = "0")
+Number::Number(const std::string& value)
 : Object("", "SYSTEM.OS", "Number", value)
 {
 	Constructor(ParameterList());
@@ -21,44 +22,44 @@ Number::Number(const std::string& value = "0")
 
 void Number::operator_assign(Object *other)
 {
-	mValue = other->value();
+	value(other->value());
 }
 
 void Number::operator_divide(Object *other)
 {
-	float value = Tools::stringToFloat(mValue);
-	value /= Tools::stringToFloat(other->value());
+	float f = Tools::stringToFloat(value());
+	f /= Tools::stringToFloat(other->value());
 
-	mValue = Tools::toString(value);
+	value(Tools::toString(f));
 }
 
 void Number::operator_multiply(Object *other)
 {
-	float value = Tools::stringToFloat(mValue);
-	value *= Tools::stringToFloat(other->value());
+	float f = Tools::stringToFloat(value());
+	f *= Tools::stringToFloat(other->value());
 
-	mValue = Tools::toString(value);
+	value(Tools::toString(f));
 }
 
 void Number::operator_plus(Object *other)
 {
-	float value = Tools::stringToFloat(mValue);
-	value += Tools::stringToFloat(other->value());
+	float f = Tools::stringToFloat(value());
+	f += Tools::stringToFloat(other->value());
 
-	mValue = Tools::toString(value);
+	value(Tools::toString(f));
 }
 
 void Number::operator_subtract(Object *other)
 {
-	float value = Tools::stringToFloat(mValue);
-	value -= Tools::stringToFloat(other->value());
+	float f = Tools::stringToFloat(value());
+	f -= Tools::stringToFloat(other->value());
 
-	mValue = Tools::toString(value);
+	value(Tools::toString(f));
 }
 
 std::string Number::ToString() const
 {
-	return mValue;
+	return value();
 }
 
 

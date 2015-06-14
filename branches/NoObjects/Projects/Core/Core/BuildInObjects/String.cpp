@@ -5,7 +5,8 @@
 // Library includes
 
 // Project includes
-#include "Tools.h"
+#include <Core/Utils/Exceptions.h>
+#include <Core/Tools.h>
 
 // Namespace declarations
 
@@ -13,7 +14,7 @@
 namespace ObjectiveScript {
 
 
-String::String(const std::string& value = "0")
+String::String(const std::string& value)
 : Object("", "SYSTEM.OS", "String", value)
 {
 	Constructor(ParameterList());
@@ -21,32 +22,32 @@ String::String(const std::string& value = "0")
 
 void String::operator_assign(Object *other)
 {
-	mValue = other->value();
+	value(other->value());
 }
 
-void String::operator_divide(Object *other)
+void String::operator_divide(Object * /*other*/)
 {
 	throw Utils::Exception("operator/ not implemented");
 }
 
-void String::operator_multiply(Object *other)
+void String::operator_multiply(Object * /*other*/)
 {
 	throw Utils::Exception("operator* not implemented");
 }
 
 void String::operator_plus(Object *other)
 {
-	mValue += other->value();
+	value(value() + other->value());
 }
 
-void String::operator_subtract(Object *other)
+void String::operator_subtract(Object * /*other*/)
 {
 	throw Utils::Exception("operator- not implemented");
 }
 
 std::string String::ToString() const
 {
-	return mValue;
+	return value();
 }
 
 

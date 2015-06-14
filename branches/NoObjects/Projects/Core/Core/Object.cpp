@@ -164,7 +164,8 @@ void Object::Constructor(const ParameterList& params)
 	if ( !mConstructed ) {
 		// only execute constructor if one is present
 		if ( hasMethod(Typename(), params) ) {
-			execute(0, Typename(), params);
+			Object object;
+			execute(&object, Typename(), params);
 		}
 
 		// set after executing constructor
@@ -182,7 +183,8 @@ void Object::Destructor()
 	if ( mConstructed ) {
 		// only execute destructor if one is present
 		if ( hasMethod("~" + getName()) ) {
-			execute(0, "~" + Typename(), ParameterList());
+			Object object;
+			execute(&object, "~" + Typename(), ParameterList());
 		}
 	}
 	else {
@@ -220,13 +222,8 @@ void Object::execute(Object *result, const std::string& method, const ParameterL
 		throw Utils::VisibilityError("invalid visibility: " + method);
 	}
 
-/*
-	Object returnValue(mPtr->name(), "", mPtr->type(), "");
-	returnValue.visibility(visibility());
-*/
 	try {
 		// execute our member method
-		//returnValue = mPtr->execute(params);
 		*result = mPtr->execute(params);
 	}
 	catch ( Utils::Exception &e ) {
@@ -433,27 +430,27 @@ void Object::name(const std::string& name)
 	mName = name;
 }
 
-void Object::operator_assign(Object *other)
+void Object::operator_assign(Object * /*other*/)
 {
 	throw Utils::Exception("operator= not implemented");
 }
 
-void Object::operator_divide(Object *other)
+void Object::operator_divide(Object * /*other*/)
 {
 	throw Utils::Exception("operator/ not implemented");
 }
 
-void Object::operator_multiply(Object *other)
+void Object::operator_multiply(Object * /*other*/)
 {
 	throw Utils::Exception("operator* not implemented");
 }
 
-void Object::operator_plus(Object *other)
+void Object::operator_plus(Object * /*other*/)
 {
 	throw Utils::Exception("operator+ not implemented");
 }
 
-void Object::operator_subtract(Object *other)
+void Object::operator_subtract(Object * /*other*/)
 {
 	throw Utils::Exception("operator- not implemented");
 }
@@ -461,6 +458,11 @@ void Object::operator_subtract(Object *other)
 IPrinter* Object::providePrinter() const
 {
 	return mPrinter;
+}
+
+std::string Object::ToString() const
+{
+	return value();
 }
 
 void Object::updateMethodOwners()

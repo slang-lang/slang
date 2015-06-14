@@ -419,10 +419,10 @@ void Method::parseExpression(Object *result, TokenIterator& start)
 		parseFactors(&v2, start);
 
 		if ( op == Token::Type::MATH_ADD ) {
-			*result = Math::add(*result, v2);
+			result->operator_plus(&v2);
 		}
 		else if ( op == Token::Type::MATH_SUBTRACT ) {
-			*result = Math::subtract(*result, v2);
+			result->operator_subtract(&v2);
 		}
 		else if ( op == Token::Type::STRING_ADD ) {
 			*result = Strings::concat(*result, v2);
@@ -472,10 +472,10 @@ void Method::parseFactors(Object *result, TokenIterator& start)
 		}
 
 		if ( op == Token::Type::MATH_MULTI ) {
-			*result = Math::multiply(*result, v2);
+			result->operator_multiply(&v2);
 		}
 		else {
-			*result = Math::divide(*result, v2);
+			result->operator_divide(&v2);
 		}
 	}
 }

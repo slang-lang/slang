@@ -5,7 +5,8 @@
 // Library includes
 
 // Project includes
-#include "Tools.h"
+#include <Core/Utils/Exceptions.h>
+#include <Core/Tools.h>
 
 // Namespace declarations
 
@@ -18,34 +19,34 @@ UserObject::UserObject(const std::string& name, const std::string& filename, con
 {
 }
 
-void UserObject::operator_assign(Object *other)
+void UserObject::operator_assign(Object * /*other*/)
 {
 	throw Utils::Exception("operator= not implemented");
 }
 
-void UserObject::operator_divide(Object *other)
+void UserObject::operator_divide(Object * /*other*/)
 {
 	throw Utils::Exception("operator/ not implemented");
 }
 
-void UserObject::operator_multiply(Object *other)
+void UserObject::operator_multiply(Object * /*other*/)
 {
 	throw Utils::Exception("operator* not implemented");
 }
 
-void UserObject::operator_plus(Object *other)
+void UserObject::operator_plus(Object * /*other*/)
 {
 	throw Utils::Exception("operator+ not implemented");
 }
 
-void UserObject::operator_subtract(Object *other)
+void UserObject::operator_subtract(Object * /*other*/)
 {
 	throw Utils::Exception("operator- not implemented");
 }
 
 std::string UserObject::ToString() const
 {
-	return mValue;
+	return value();
 }
 
 
