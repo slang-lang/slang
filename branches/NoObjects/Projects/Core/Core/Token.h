@@ -156,10 +156,10 @@ public:
 protected:
 
 private:
-	std::string	mContent;
-	bool		mIsOptional;
+	std::string mContent;
+	bool mIsOptional;
 	Utils::Position mPosition;
-	Type::E		mType;
+	Type::E mType;
 };
 
 
