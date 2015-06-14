@@ -417,12 +417,17 @@ bool Object::hasMethod(const std::string& m, const ParameterList& params)
 
 bool Object::isValid() const
 {
-	return mConstructed;
+	return mConstructed /*&& mValue != "0"*/;
 }
 
 const std::string& Object::name() const
 {
 	return mName;
+}
+
+void Object::name(const std::string& name)
+{
+	mName = name;
 }
 
 IPrinter* Object::providePrinter() const

@@ -89,10 +89,10 @@ int main(int argc, const char* argv[])
 
 		Testing::Math::Fixture math(logger);
 		mFixtures.push_back(&math);
-
+/*
 		Testing::Prototype::Fixture prototype(logger);
 		mFixtures.push_back(&prototype);
-
+*/
 		for ( FixtureList::iterator it = mFixtures.begin(); it != mFixtures.end(); ++it ) {
 			if ( show ) {
 				std::cout << (*it)->getName() << std::endl;

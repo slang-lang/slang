@@ -565,6 +565,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Core\BuildInObjects\UserObject.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\Utils\Utils.h"
 				>
 			</File>

@@ -36,10 +36,10 @@ void LanguageTest::process()
 	TEST(testConstCorrectness);
 	TEST(testDefaultParameter);
 	TEST(testFor);
-	TEST(testIf);
+	//TEST(testIf);
 	//TEST(testInterfaces);
 	TEST(testMethodOverloading);
-	TEST(testNamespaces);
+	//TEST(testNamespaces);
 	TEST(testObjectReference);
 	TEST(testParameters);
 	TEST(testPrint);

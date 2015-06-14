@@ -58,8 +58,9 @@ public:	// Providers
 
 public:
 	const std::string& name() const;
-	const std::string& value() const;
+	void name(const std::string& name);
 
+	const std::string& value() const;
 	void value(const std::string& value);
 
 public:	// Usage

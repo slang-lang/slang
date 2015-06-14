@@ -23,25 +23,6 @@ public:
 	: Object("", "SYSTEM.OS", "Number", value)
 	{
 		Constructor(ParameterList());
-
-/*
-		Variable mValue("mValue", "atomic_number", "0");
-		mValue.visibility(Visibility::Private);
-		addMember(mValue);
-
-		Method get("number", "get", "atmoic_number"); {
-			VariablesList get_signature;
-			get_signature.push_back(Object("value", "", "atomic_number", ""));
-			get.setSignature(get_signature);
-
-			TokenList get_tokens; {
-				get_tokens.push_back(Token(Token::Type::IDENTIFER, "mValue"));
-				get_tokens.push_back(Token(Token::Type::ASSIGN, "="));
-				get_tokens.push_back(Token(Token::Type::IDENTIFER, "value"));
-			} get.setTokens(get_tokens);
-
-		} addMethod(get);
-*/
 	}
 
 public:

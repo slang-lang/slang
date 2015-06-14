@@ -35,7 +35,6 @@ Method::Method(IScope *parent, const std::string& name, const std::string& type)
 
 Method::~Method()
 {
-	//garbageCollector();
 }
 
 bool Method::operator() (const Method& first, const Method& second) const
@@ -369,7 +368,7 @@ bool Method::parseCondition(TokenIterator& token)
 			 op != Token::Type::COMPARE_GREATER_EQUAL &&
 			 op != Token::Type::COMPARE_LESS &&
 			 op != Token::Type::COMPARE_LESS_EQUAL ) {
-			return v1.isValid();
+			return isTrue(v1);
 		}
 
 		// consume operator token

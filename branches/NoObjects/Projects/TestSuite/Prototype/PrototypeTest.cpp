@@ -31,7 +31,6 @@ PrototypeTest::PrototypeTest(const ::Utils::Common::Logger *p)
 
 void PrototypeTest::process()
 {
-	TEST(testBasicObject);
 	TEST(testPrototypeDeclaration);
 	TEST(testPrototypeUsage);
 }
@@ -44,33 +43,13 @@ void PrototypeTest::teardown()
 {
 }
 
-void PrototypeTest::testBasicObject()
-{
-	try {
-		VirtualMachine vm;
-		vm.setPrinter(&mStdoutPrinter);
-
-		vm.create("Tests/BasicObjectTest.os");
-
-		// automatic success
-	}
-	catch ( ObjectiveScript::Utils::Exception& e ) {
-		// exception has been thrown: test failed!
-		TFAIL("caught exception: " << e.what());
-	}
-	catch ( std::exception& e ) {
-		// exception has been thrown: test failed!
-		TFAIL("caught exception: " << e.what());
-	}
-}
-
 void PrototypeTest::testPrototypeDeclaration()
 {
 	try {
 		VirtualMachine vm;
 		vm.setPrinter(&mStdoutPrinter);
 
-		vm.create("Tests/PrototypeTest.os");
+		vm.create("Tests/Prototypes/PrototypeTest.os");
 
 		// automatic success
 	}
@@ -90,7 +69,7 @@ void PrototypeTest::testPrototypeUsage()
 		VirtualMachine vm;
 		vm.setPrinter(&mStdoutPrinter);
 
-		vm.create("Tests/PrototypeTest.os");
+		vm.create("Tests/Prototypes/PrototypeTest_Inheritance.os");
 
 		// automatic success
 	}

@@ -32,7 +32,6 @@ public:
 	void teardown();
 
 private:	// Tests
-	void testBasicObject();
 	void testPrototypeDeclaration();
 	void testPrototypeUsage();
 

@@ -8,6 +8,7 @@
 #include <Core/BuildInObjects/Bool.h>
 #include <Core/BuildInObjects/Number.h>
 #include <Core/BuildInObjects/String.h>
+#include <Core/BuildInObjects/UserObject.h>
 #include <Core/BuildInObjects/Void.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Utils/Utils.h>
@@ -164,7 +165,9 @@ Object* Repository::createInstance(const std::string& type, const std::string& n
 		}
 	}
 
-	Object *object = new Object(name, blueprint.Filename(), prototype + type, "");
+	//Object *object = new Object(name, blueprint.Filename(), prototype + type, "");
+	Object *object = createObject(name, blueprint.Filename(), prototype + type, "");
+	object->name(name);
 	object->setTokens(blueprint.getTokens());
 	object->connectRepository(this);
 
@@ -172,6 +175,29 @@ Object* Repository::createInstance(const std::string& type, const std::string& n
 	preprocessor.process(object);
 
 	addReference(object);
+
+	return object;
+}
+
+Object* Repository::createObject(const std::string& name, const std::string& filename, const std::string& type, const std::string& value)
+{
+	Object * object = 0;
+
+	if ( type == "Bool" ) {
+		object = new Bool();
+	}
+	else if ( type == "Number" ) {
+		object = new Number();
+	}
+	else if ( type == "String" ) {
+		object = new String();
+	}
+	else if ( type == "Void" ) {
+		object = new Void();
+	}
+	else {
+		object = new UserObject(name, filename, type, value);
+	}
 
 	return object;
 }

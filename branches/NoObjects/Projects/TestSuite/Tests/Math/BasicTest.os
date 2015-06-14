@@ -11,7 +11,7 @@ public namespace
 
 		public void MathExpressionParsing()
 		{
-			Number i;
+			Number i = 0;
 			assert(i == 0);
 
 			i = 1 + 2 + 3;

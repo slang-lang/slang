@@ -22,7 +22,7 @@ public:
 	Void()
 	: Object("", "SYSTEM.OS", "Void", "")
 	{
-		Constructor(ParameterList());
+		//Constructor(ParameterList());
 	}
 
 public:
