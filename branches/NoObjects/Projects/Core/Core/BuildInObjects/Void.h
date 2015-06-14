@@ -4,6 +4,7 @@
 
 
 // Library includes
+#include <string>
 
 // Project includes
 #include <Core/Object.h>
