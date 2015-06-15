@@ -46,7 +46,7 @@ protected:
 	void checkSealState();
 
 protected:
-	bool mSealed;
+	bool mIsSealed;
 
 private:
 	bool mIsConst;
@@ -56,6 +56,16 @@ private:
 	Visibility::E mVisibility;
 };
 
+class MethodAttributes : public GenericAttributes
+{
+public:
+	MethodAttributes();
+
+public:
+	bool isSealed() const;
+	void setSealed(bool state);
+};
+
 class ObjectAttributes : public GenericAttributes
 {
 public:
@@ -63,7 +73,7 @@ public:
 
 public:
 	bool isSealed() const;
-	void seal();
+	void setSealed(bool state);
 };
 
 

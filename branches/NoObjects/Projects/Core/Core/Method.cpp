@@ -183,7 +183,7 @@ Object Method::execute(const ParameterList& params)
 			} break;
 			case Parameter::AccessMode::ByValue: {
 				Object *object = mRepository->createInstance(param.type(), param.name());
-				object->value(param.value());
+				object->setValue(param.value());
 				object->setConst(param.isConst());
 				addIdentifier(object);
 			} break;
@@ -378,22 +378,22 @@ bool Method::parseCondition(TokenIterator& token)
 		parseExpression(&v2, token);
 
 		if ( op == Token::Type::COMPARE_EQUAL ) {
-			v1.value( (v1.value() == v2.value()) ? "true" : "false" );
+			v1.setValue( (v1.getValue() == v2.getValue()) ? "true" : "false" );
 		}
 		else if ( op == Token::Type::COMPARE_GREATER ) {
-			v1.value( (v1.value() > v2.value()) ? "true" : "false" );
+			v1.setValue( (v1.getValue() > v2.getValue()) ? "true" : "false" );
 		}
 		else if ( op == Token::Type::COMPARE_GREATER_EQUAL ) {
-			v1.value( (v1.value() >= v2.value()) ? "true" : "false" );
+			v1.setValue( (v1.getValue() >= v2.getValue()) ? "true" : "false" );
 		}
 		else if ( op == Token::Type::COMPARE_LESS ) {
-			v1.value( (v1.value() < v2.value()) ? "true" : "false" );
+			v1.setValue( (v1.getValue() < v2.getValue()) ? "true" : "false" );
 		}
 		else if ( op == Token::Type::COMPARE_LESS_EQUAL ) {
-			v1.value( (v1.value() <= v2.value()) ? "true" : "false" );
+			v1.setValue( (v1.getValue() <= v2.getValue()) ? "true" : "false" );
 		}
 		else if ( op == Token::Type::COMPARE_UNEQUAL ) {
-			v1.value( (v1.value() != v2.value()) ? "true" : "false" );
+			v1.setValue( (v1.getValue() != v2.getValue()) ? "true" : "false" );
 		}
 	}
 
@@ -498,7 +498,7 @@ void Method::parseTerm(Object *result, TokenIterator& start)
 			}
 			else {
 				if ( isMethod(start->content()) ) {
-					*result = process_method(start);
+					process_method(start, result);
 				}
 				else {
 					throw Utils::UnknownIdentifer("unknown/unexpected identifier '" + start->content() + "' found", start->position());
@@ -769,7 +769,7 @@ void Method::process_keyword(TokenIterator& token)
 
 // syntax:
 // type method(<parameter list>);
-Object Method::process_method(TokenIterator& token)
+void Method::process_method(TokenIterator& token, Object *result)
 {
 	TokenIterator tmp = token;
 
@@ -786,7 +786,7 @@ Object Method::process_method(TokenIterator& token)
 	while ( tmp != closed ) {
 		Object object;
 		parseExpression(&object, tmp);
-		params.push_back(Parameter(object.name(), object.Typename(), object.value(), false, object.isConst(), Parameter::AccessMode::ByValue));
+		params.push_back(Parameter(object.name(), object.Typename(), object.getValue(), false, object.isConst(), Parameter::AccessMode::ByValue));
 
 		if ( std::distance(tmp, closed) <= 0 ) {
 			break;
@@ -806,15 +806,13 @@ Object Method::process_method(TokenIterator& token)
 
 	Object *symbol = getSymbol(parent);
 	if ( symbol ) {
-		Object object;
-		symbol->execute(&object, member, params, this);
-		return object;
+		symbol->execute(result, member, params, this);
+		return;
 	}
 
 	if ( isMethod(method) ) {
-		Object object;
-		mOwner->execute(&object, method, params, this);
-		return object;
+		mOwner->execute(result, method, params, this);
+		return;
 	}
 
 	throw Utils::UnknownIdentifer("unknown/unexpected identifier '" + method + "' found", tmp->position());
@@ -846,7 +844,7 @@ Object* Method::process_new(TokenIterator& token)
 	while ( tmp != closed ) {
 		Object object;
 		parseExpression(&object, tmp);
-		params.push_back(Parameter(object.name(), object.Typename(), object.value(), false, object.isConst(), Parameter::AccessMode::ByValue));
+		params.push_back(Parameter(object.name(), object.Typename(), object.getValue(), false, object.isConst(), Parameter::AccessMode::ByValue));
 
 		if ( std::distance(tmp, closed) <= 0 ) {
 			break;
@@ -884,8 +882,8 @@ void Method::process_print(TokenIterator& token)
 	Object object;
 	parseExpression(&object, opened);
 
-	//mOwner->providePrinter()->print(object.value() + "   [" + mOwner->Filename() + ":" + Tools::toString(token->position().line) + "]");
-	mOwner->providePrinter()->print(object.value());
+	//mOwner->providePrinter()->print(object.getValue() + "   [" + mOwner->Filename() + ":" + Tools::toString(token->position().line) + "]");
+	mOwner->providePrinter()->print(object.getValue());
 
 	token = tmp;
 }

@@ -69,8 +69,8 @@ public:
 	const std::string& name() const;
 	void name(const std::string& name);
 
-	const std::string& value() const;
-	void value(const std::string& value);
+	const std::string& getValue() const;
+	void setValue(const std::string& value);
 
 public:	// Usage
 	void Constructor(const ParameterList& params);

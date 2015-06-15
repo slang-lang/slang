@@ -22,7 +22,7 @@ Bool::Bool(const std::string& value)
 
 void Bool::operator_assign(Object *other)
 {
-	value(other->value());
+	Object::setValue(other->getValue());
 }
 
 void Bool::operator_divide(Object * /*other*/)
@@ -47,7 +47,12 @@ void Bool::operator_subtract(Object * /*other*/)
 
 std::string Bool::ToString() const
 {
-	return value();
+	return getValue();
+}
+
+void Bool::setValue(bool val)
+{
+	Object::setValue(Tools::toString(val));
 }
 
 

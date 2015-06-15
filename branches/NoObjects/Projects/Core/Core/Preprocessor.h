@@ -26,7 +26,7 @@ class Repository;
 class Preprocessor
 {
 public:
-	Preprocessor();
+	Preprocessor(Repository *repo);
 
 public:
 	void process(Object *object);
@@ -48,6 +48,7 @@ private:
 
 private:
 	Object *mObject;
+	Repository *mRepository;
 	TokenList mTokens;
 };
 

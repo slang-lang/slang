@@ -18,8 +18,9 @@
 namespace ObjectiveScript {
 
 
-Preprocessor::Preprocessor()
-: mObject(0)
+Preprocessor::Preprocessor(Repository *repo)
+: mObject(0),
+  mRepository(repo)
 {
 }
 
@@ -30,6 +31,7 @@ Object* Preprocessor::createMember(const std::string& filename, TokenIterator to
 	std::string visibility;
 	bool isConst = false;
 	bool isFinal = false;
+//	bool isSealed = false;
 	bool isStatic = false;
 
 	// look for the visibility token
@@ -40,15 +42,23 @@ Object* Preprocessor::createMember(const std::string& filename, TokenIterator to
 	name = (*token++).content();
 
 	if ( (*token).isOptional() ) {
+/*
 		if ( (*token).content() == "const" ) {
 			isConst = true;
 		}
-		else if ( (*token).content() == "final" ) {
+		else
+*/
+		if ( (*token).content() == "final" ) {
 			isFinal = true;
 		}
 		else if ( (*token).content() == "modify" ) {
 			isConst = false;
 		}
+/*
+		else if ( (*token).content() == "sealed" ) {
+			isSealed = true;
+		}
+*/
 		else if ( (*token).content() == "static" ) {
 			isStatic = true;
 		}
@@ -57,10 +67,10 @@ Object* Preprocessor::createMember(const std::string& filename, TokenIterator to
 	}
 
 	if ( (*token).type() != Token::Type::SEMICOLON ) {
-		throw Utils::Exception("Member initialization not allowed at this point", token->position());
+		throw Utils::Exception("member initialization not allowed during declaration", token->position());
 	}
 
-	Object *o = new Object(name, filename, type, "");
+	Object *o = mRepository->createObject(name, filename, type, "");
 	o->setConst(isConst);
 	o->setFinal(isFinal);
 	o->setStatic(isStatic);
@@ -71,6 +81,8 @@ Object* Preprocessor::createMember(const std::string& filename, TokenIterator to
 Method* Preprocessor::createMethod(TokenIterator token)
 {
 	bool isConst = false;
+	bool isFinal = false;
+//	bool isSealed = false;
 	bool isStatic = false;
 	std::string name;
 	std::string languageFeature;
@@ -103,16 +115,24 @@ Method* Preprocessor::createMethod(TokenIterator token)
 			if ( token->content() == "const" ) {
 				isConst = true;
 			}
+			else if ( token->content() == "final" ) {
+				isFinal = false;
+			}
 			else if ( token->content() == "modify" ) {
 				isConst = false;
 			}
+/*
+			else if ( token->content() == "sealed" ) {
+				isSealed = true;
+			}
+*/
 			else if ( token->content() == "static" ) {
 				isStatic = true;
 			}
 		}
 	} while ( token->type() != Token::Type::BRACKET_CURLY_OPEN );
 
-	if ( isConst && isStatic ) {
+	if ( (isConst || isFinal) && isStatic ) {
 		throw Utils::Exception("static methods can not be const!");
 	}
 
@@ -135,6 +155,7 @@ Method* Preprocessor::createMethod(TokenIterator token)
 	// create a new Method with the corresponding return value
 	Method *m = new Method(mObject, name, type);
 	m->setConst(isConst);
+	m->setFinal(isFinal);
 	m->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
 	m->setSignature(params);
 	m->setStatic(isStatic);

@@ -31,6 +31,7 @@ public:
 
 public:
 	void CollectGarbage();
+	Object* createObject(const std::string& name, const std::string& filename, const std::string& type, const std::string& value);
 
 public:
 	void addBlueprint(const BluePrint& object);
@@ -54,7 +55,6 @@ private:
 
 private:
 	const Reference& createReference(const BluePrint& blueprint, const std::string& type, const std::string& name);
-	Object* createObject(const std::string& name, const std::string& filename, const std::string& type, const std::string& value);
 
 private:
 	BluePrints mBluePrints;

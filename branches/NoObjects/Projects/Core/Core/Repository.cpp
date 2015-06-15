@@ -165,13 +165,11 @@ Object* Repository::createInstance(const std::string& type, const std::string& n
 		}
 	}
 
-	//Object *object = new Object(name, blueprint.Filename(), prototype + type, "");
 	Object *object = createObject(name, blueprint.Filename(), prototype + type, "");
-	object->name(name);
 	object->setTokens(blueprint.getTokens());
 	object->connectRepository(this);
 
-	Preprocessor preprocessor;
+	Preprocessor preprocessor(this);
 	preprocessor.process(object);
 
 	addReference(object);
@@ -181,7 +179,7 @@ Object* Repository::createInstance(const std::string& type, const std::string& n
 
 Object* Repository::createObject(const std::string& name, const std::string& filename, const std::string& type, const std::string& value)
 {
-	Object * object = 0;
+	Object *object = 0;
 
 	if ( type == "Bool" ) {
 		object = new Bool();
@@ -197,6 +195,10 @@ Object* Repository::createObject(const std::string& name, const std::string& fil
 	}
 	else {
 		object = new UserObject(name, filename, type, value);
+	}
+
+	if ( object ) {
+		object->name(name);
 	}
 
 	return object;
@@ -221,11 +223,11 @@ const Reference& Repository::createReference(const std::string& type, const std:
 		}
 	}
 
-	Object *object = new Object(name, blueprint.Filename(), type, "");
+	Object *object = createObject(name, blueprint.Filename(), type, "");
 	object->setTokens(blueprint.getTokens());
 	object->connectRepository(this);
 
-	Preprocessor preprocessor;
+	Preprocessor preprocessor(this);
 	preprocessor.process(object);
 
 	return mMemory->newObject(object);

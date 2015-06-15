@@ -22,7 +22,7 @@ String::String(const std::string& value)
 
 void String::operator_assign(Object *other)
 {
-	value(other->value());
+	setValue(other->getValue());
 }
 
 void String::operator_divide(Object * /*other*/)
@@ -37,7 +37,7 @@ void String::operator_multiply(Object * /*other*/)
 
 void String::operator_plus(Object *other)
 {
-	value(value() + other->value());
+	setValue(getValue() + other->getValue());
 }
 
 void String::operator_subtract(Object * /*other*/)
@@ -47,7 +47,12 @@ void String::operator_subtract(Object * /*other*/)
 
 std::string String::ToString() const
 {
-	return value();
+	return getValue();
+}
+
+void String::setValue(const std::string& val)
+{
+	Object::setValue(val);
 }
 
 

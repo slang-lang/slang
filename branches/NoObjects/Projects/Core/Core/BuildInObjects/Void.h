@@ -30,6 +30,8 @@ public:
 	virtual void operator_subtract(Object *other);
 
 	virtual std::string ToString() const;
+
+	virtual void setValue(void);
 };
 
 

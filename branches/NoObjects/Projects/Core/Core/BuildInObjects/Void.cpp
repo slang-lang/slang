@@ -49,5 +49,9 @@ std::string Void::ToString() const
 	return "";
 }
 
+void Void::setValue(void)
+{
+}
+
 
 }

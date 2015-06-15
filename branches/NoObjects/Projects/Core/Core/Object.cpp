@@ -64,7 +64,7 @@ void Object::operator= (const Object& other)
 
 	mTokens = other.mTokens;
 	mTypename = other.Typename();
-	mValue = other.value();
+	mValue = other.getValue();
 
 	this->setConst(other.isConst());
 	this->setFinal(other.isFinal());
@@ -232,8 +232,6 @@ void Object::execute(Object *result, const std::string& method, const ParameterL
 
 		throw;
 	}
-
-	//return returnValue;
 }
 
 bool Object::findMember(const std::string& m, Object::MemberCollection::iterator& mIt)
@@ -432,27 +430,27 @@ void Object::name(const std::string& name)
 
 void Object::operator_assign(Object * /*other*/)
 {
-	throw Utils::Exception("operator= not implemented");
+	throw Utils::Exception(ToString() + ", operator= not implemented");
 }
 
 void Object::operator_divide(Object * /*other*/)
 {
-	throw Utils::Exception("operator/ not implemented");
+	throw Utils::Exception(ToString() + ", operator/ not implemented");
 }
 
 void Object::operator_multiply(Object * /*other*/)
 {
-	throw Utils::Exception("operator* not implemented");
+	throw Utils::Exception(ToString() + ", operator* not implemented");
 }
 
 void Object::operator_plus(Object * /*other*/)
 {
-	throw Utils::Exception("operator+ not implemented");
+	throw Utils::Exception(ToString() + ", operator+ not implemented");
 }
 
 void Object::operator_subtract(Object * /*other*/)
 {
-	throw Utils::Exception("operator- not implemented");
+	throw Utils::Exception(ToString() + ", operator- not implemented");
 }
 
 IPrinter* Object::providePrinter() const
@@ -462,7 +460,20 @@ IPrinter* Object::providePrinter() const
 
 std::string Object::ToString() const
 {
-	return value();
+	std::string result = "Object: " + name() + " <" + Typename() + "> = { ";
+
+	for ( MemberCollection::const_iterator it = mMembers.begin(); it != mMembers.end(); ++it ) {
+		result += it->second->ToString();
+
+		MemberCollection::const_iterator copy = it;
+		if ( ++copy != mMembers.end() ) {
+			result += ", ";
+		}
+	}
+
+	result += " }";
+
+	return result;
 }
 
 void Object::updateMethodOwners()
@@ -473,14 +484,15 @@ void Object::updateMethodOwners()
 	}
 }
 
-const std::string& Object::value() const
+const std::string& Object::getValue() const
 {
 	return mValue;
 }
 
-void Object::value(const std::string& value)
+void Object::setValue(const std::string& value)
 {
 	mValue = value;
 }
+
 
 }

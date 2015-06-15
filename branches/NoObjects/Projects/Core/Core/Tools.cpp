@@ -208,7 +208,7 @@ bool isFalse(const std::string& s)
 
 bool isFalse(const Object& o)
 {
-	if ( o.value() == "0" || o.value() == "false" ) {
+	if ( o.getValue() == "0" || o.getValue() == "false" ) {
 		return true;
 	}
 
@@ -223,7 +223,7 @@ bool isTrue(const std::string& s)
 bool isTrue(const Object& o)
 {
 	// check value is false
-	if ( o.value() == "0" || o.value() == "0.0" || o.value() == "false" ) {
+	if ( o.getValue() == "0" || o.getValue() == "0.0" || o.getValue() == "false" ) {
 		return false;
 	}
 

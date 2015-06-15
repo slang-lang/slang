@@ -15,7 +15,7 @@ namespace ObjectiveScript {
 
 
 GenericAttributes::GenericAttributes()
-: mSealed(false),
+: mIsSealed(false),
   mIsConst(true),
   mIsFinal(false),
   mIsStatic(false),
@@ -30,7 +30,7 @@ GenericAttributes::~GenericAttributes()
 
 void GenericAttributes::checkSealState()
 {
-	if ( mSealed ) {
+	if ( mIsSealed ) {
 		throw Utils::Exception("can not update sealed attribute");
 	}
 }
@@ -104,6 +104,22 @@ void GenericAttributes::visibility(Visibility::E v)
 }
 
 
+MethodAttributes::MethodAttributes()
+{
+}
+
+bool MethodAttributes::isSealed() const
+{
+	return mIsSealed;
+}
+
+void MethodAttributes::setSealed(bool state)
+{
+	// after seal has been called no language feature can get modified anymore
+	mIsSealed = state;
+}
+
+
 ObjectAttributes::ObjectAttributes()
 {
 	setConst(false);
@@ -111,13 +127,13 @@ ObjectAttributes::ObjectAttributes()
 
 bool ObjectAttributes::isSealed() const
 {
-	return mSealed;
+	return mIsSealed;
 }
 
-void ObjectAttributes::seal()
+void ObjectAttributes::setSealed(bool state)
 {
 	// after seal has been called no language feature can get modified anymore
-	mSealed = true;
+	mIsSealed = state;
 }
 
 

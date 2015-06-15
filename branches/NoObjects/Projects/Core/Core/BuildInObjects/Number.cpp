@@ -22,44 +22,49 @@ Number::Number(const std::string& value)
 
 void Number::operator_assign(Object *other)
 {
-	value(other->value());
+	Object::setValue(other->getValue());
 }
 
 void Number::operator_divide(Object *other)
 {
-	float f = Tools::stringToFloat(value());
-	f /= Tools::stringToFloat(other->value());
+	float f = Tools::stringToFloat(getValue());
+	f /= Tools::stringToFloat(other->getValue());
 
-	value(Tools::toString(f));
+	setValue(f);
 }
 
 void Number::operator_multiply(Object *other)
 {
-	float f = Tools::stringToFloat(value());
-	f *= Tools::stringToFloat(other->value());
+	float f = Tools::stringToFloat(getValue());
+	f *= Tools::stringToFloat(other->getValue());
 
-	value(Tools::toString(f));
+	setValue(f);
 }
 
 void Number::operator_plus(Object *other)
 {
-	float f = Tools::stringToFloat(value());
-	f += Tools::stringToFloat(other->value());
+	float f = Tools::stringToFloat(getValue());
+	f += Tools::stringToFloat(other->getValue());
 
-	value(Tools::toString(f));
+	setValue(f);
 }
 
 void Number::operator_subtract(Object *other)
 {
-	float f = Tools::stringToFloat(value());
-	f -= Tools::stringToFloat(other->value());
+	float f = Tools::stringToFloat(getValue());
+	f -= Tools::stringToFloat(other->getValue());
 
-	value(Tools::toString(f));
+	setValue(f);
 }
 
 std::string Number::ToString() const
 {
-	return value();
+	return getValue();
+}
+
+void Number::setValue(float val)
+{
+	Object::setValue(Tools::toString(val));
 }
 
 

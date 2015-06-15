@@ -46,7 +46,13 @@ void UserObject::operator_subtract(Object * /*other*/)
 
 std::string UserObject::ToString() const
 {
-	return value();
+	return getValue();
+}
+
+void UserObject::setValue(UserObject *val)
+{
+(void)val;
+	assert(!"not implemented!");
 }
 
 

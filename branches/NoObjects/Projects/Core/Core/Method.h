@@ -29,7 +29,7 @@ class Object;
 class Repository;
 
 class Method : public LocalScope,
-			   public GenericAttributes,
+			   public MethodAttributes,
 			   public Variable
 {
 public:
@@ -83,7 +83,7 @@ private:	// Execution
 	void process_for(TokenIterator& token);
 	void process_if(TokenIterator& token);
 	void process_keyword(TokenIterator& token);
-	Object process_method(TokenIterator& token);
+	void process_method(TokenIterator& token, Object *result);
 	Object* process_new(TokenIterator& token);
 	void process_print(TokenIterator& token);
 	void process_type(TokenIterator& token);

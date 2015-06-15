@@ -30,6 +30,13 @@ public:	// Operators
 	virtual void operator_subtract(Object *other);
 
 	virtual std::string ToString() const;
+
+	virtual void setValue(bool val);
+
+protected:
+
+private:
+	bool mValue;
 };
 
 
