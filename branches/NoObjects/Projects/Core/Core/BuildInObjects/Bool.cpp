@@ -18,6 +18,8 @@ Bool::Bool(const std::string& value)
 : Object("", "SYSTEM.OS", "Bool", value)
 {
 	Constructor(ParameterList());
+
+	mValue = Tools::stringToBool(value);
 }
 
 void Bool::operator_assign(Object *other)

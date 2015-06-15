@@ -18,6 +18,8 @@ Number::Number(const std::string& value)
 : Object("", "SYSTEM.OS", "Number", value)
 {
 	Constructor(ParameterList());
+
+	mValue = Tools::stringToFloat(value);
 }
 
 void Number::operator_assign(Object *other)

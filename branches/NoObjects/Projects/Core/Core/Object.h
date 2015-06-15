@@ -5,6 +5,7 @@
 
 // Library includes
 #include <map>
+#include <string>
 #include <set>
 
 // Project includes
@@ -15,7 +16,6 @@
 #include "Scope.h"
 #include "Token.h"
 #include "Types.h"
-#include "Variable.h"
 
 // Forward declarations
 
