@@ -5,7 +5,7 @@
 // Library includes
 
 // Project includes
-#include <Core/BuildInObjects/String.h>
+#include <Core/BuildInObjects/StringObject.h>
 #include <Core/Tools.h>
 
 // Namespace declarations

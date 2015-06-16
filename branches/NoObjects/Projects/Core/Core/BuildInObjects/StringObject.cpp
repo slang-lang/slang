@@ -1,6 +1,6 @@
 
 // Header
-#include "String.h"
+#include "StringObject.h"
 
 // Library includes
 

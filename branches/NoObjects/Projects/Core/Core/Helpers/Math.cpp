@@ -5,7 +5,7 @@
 // Library includes
 
 // Project includes
-#include <Core/BuildInObjects/Number.h>
+#include <Core/BuildInObjects/NumberObject.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Tools.h>
 

@@ -1,6 +1,6 @@
 
 // Header
-#include "Number.h"
+#include "NumberObject.h"
 
 // Library includes
 

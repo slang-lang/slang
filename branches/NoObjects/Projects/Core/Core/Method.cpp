@@ -6,9 +6,10 @@
 #include <cassert>
 
 // Project includes
-#include <Core/BuildInObjects/Bool.h>
-#include <Core/BuildInObjects/Number.h>
-#include <Core/BuildInObjects/String.h>
+#include <Core/BuildInObjects/BoolObject.h>
+#include <Core/BuildInObjects/NumberObject.h>
+#include <Core/BuildInObjects/StringObject.h>
+#include <Core/BuildInObjects/VoidObject.h>
 #include <Core/Helpers/Math.h>
 #include <Core/Helpers/Strings.h>
 #include <Core/Interfaces/IPrinter.h>

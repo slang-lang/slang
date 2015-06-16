@@ -1,6 +1,6 @@
 
 // Header
-#include "Void.h"
+#include "VoidObject.h"
 
 // Library includes
 
@@ -14,7 +14,7 @@
 namespace ObjectiveScript {
 
 
-Void::	Void()
+Void::Void()
 : Object("", "SYSTEM.OS", "Void", "")
 {
 }

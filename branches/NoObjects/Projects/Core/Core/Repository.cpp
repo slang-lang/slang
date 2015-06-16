@@ -5,11 +5,11 @@
 // Library includes
 
 // Project includes
-#include <Core/BuildInObjects/Bool.h>
-#include <Core/BuildInObjects/Number.h>
-#include <Core/BuildInObjects/String.h>
+#include <Core/BuildInObjects/BoolObject.h>
+#include <Core/BuildInObjects/NumberObject.h>
+#include <Core/BuildInObjects/StringObject.h>
 #include <Core/BuildInObjects/UserObject.h>
-#include <Core/BuildInObjects/Void.h>
+#include <Core/BuildInObjects/VoidObject.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Utils/Utils.h>
 #include "Memory.h"

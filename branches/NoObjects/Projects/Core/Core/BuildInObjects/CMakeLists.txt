@@ -1,19 +1,19 @@
 INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
 SET(SOURCES
-	Bool.cpp
-	Number.cpp
-	String.cpp
+	BoolObject.cpp
+	NumberObject.cpp
+	StringObject.cpp
 	UserObject.cpp
-	Void.cpp
+	VoidObject.cpp
 )
 
 SET(HEADERS
-	Bool.h
-	Number.h
-	String.h
+	BoolObject.h
+	NumberObject.h
+	StringObject.h
 	UserObject.h
-	Void.h
+	VoidObject.h
 )
 
 SET(DEPENDENCIES
