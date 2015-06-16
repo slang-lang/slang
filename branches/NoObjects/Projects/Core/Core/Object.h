@@ -63,6 +63,8 @@ public:	// Operators
 	virtual void operator_plus(Object *other);
 	virtual void operator_subtract(Object *other);
 
+	virtual bool isValid() const;
+
 	virtual std::string ToString() const;
 
 public:
@@ -75,17 +77,13 @@ public:
 public:	// Usage
 	void Constructor(const ParameterList& params);
 	void Destructor();
-	void garbageCollector(bool force = false);
-
 	void execute(Object *result, const std::string& method, const ParameterList& params, const Method* caller = 0);		// throws VisibilityError exception
+	void garbageCollector(bool force = false);
 
 public:	// Helpers
 	Object* getMember(const std::string& m);
-	bool hasMember(const std::string& m);
 	bool hasMethod(const std::string& m);
 	bool hasMethod(const std::string& m, const ParameterList& params);
-
-	bool isValid() const;
 
 protected:
 

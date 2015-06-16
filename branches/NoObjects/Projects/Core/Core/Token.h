@@ -21,6 +21,16 @@ namespace ObjectiveScript {
 class Token
 {
 public:
+	class Category
+	{
+	public:
+		enum E {
+			Assign,
+			Compare,
+			Literal
+		};
+	};
+
 	class Type
 	{
 	public:

@@ -69,8 +69,6 @@ private:	// Construction
 	void addIdentifier(Object *object);			// throws DuplicateIdentifer exception
 
 private:	// Execution
-	bool isLocalSymbol(const std::string& token);
-	bool isMember(const std::string& token);
 	bool isMethod(const std::string& token);
 	bool isMethod(const std::string& token, const ParameterList& params);
 

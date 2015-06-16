@@ -28,6 +28,8 @@ public:	// Operators
 	virtual void operator_plus(Object *other);
 	virtual void operator_subtract(Object *other);
 
+	virtual bool isValid() const;
+
 	virtual std::string ToString() const;
 
 	virtual void setValue(float val);
@@ -35,7 +37,7 @@ public:	// Operators
 protected:
 
 private:
-	float mValue;
+
 };
 
 

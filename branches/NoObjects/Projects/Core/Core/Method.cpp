@@ -173,14 +173,16 @@ Object Method::execute(const ParameterList& params)
 				throw Utils::Exception("access mode unspecified");
 			} break;
 			case Parameter::AccessMode::ByReference: {
-				throw Utils::NotImplemented("handing over parameters as reference is not yet implemented");
-
+//				throw Utils::NotImplemented("handing over parameters as reference is not yet implemented");
 /*
 				Object *object = mMemory->getObject(param.reference());
 
 				mRepository->addReference(object);
 				addIdentifier(object);
 */
+
+				mRepository->addReference(param.pointer());
+				addIdentifier(param.pointer());
 			} break;
 			case Parameter::AccessMode::ByValue: {
 				Object *object = mRepository->createInstance(param.type(), param.name());
@@ -191,18 +193,17 @@ Object Method::execute(const ParameterList& params)
 		}
 	}
 
-	Object returnValue(name(), type());
-	returnValue.connectRepository(mRepository);
-	returnValue.visibility(visibility());
+	Object result(name(), type());
+	result.connectRepository(mRepository);
+	result.visibility(visibility());
 
 	TokenIterator start = mTokens.begin();
-	process(&returnValue, start, mTokens.end());
+	process(&result, start, mTokens.end());
 
-	// after we gathered our result
-	// let the garbage collector do it's magic
+	// let the garbage collector do it's magic after we gathered our result
 	garbageCollector();
 
-	return returnValue;
+	return result;
 }
 
 void Method::garbageCollector(bool force)
@@ -234,11 +235,7 @@ Object* Method::getSymbol(const std::string& token)
 		if ( it->first == token ) {
 			return it->second;
 		}
-/*
-		if ( !it->second->isValid() ) {
-			continue;
-		}
-*/
+
 		if ( it->second->name() == parent ) {
 			return it->second->getMember(member);
 		}
@@ -249,35 +246,8 @@ Object* Method::getSymbol(const std::string& token)
 		return mOwner->getMember(token);
 	}
 
-	// ups.. this symbol is neiter a local symbol, nor a member
+	// ups.. this symbol is neither a local symbol, nor a member
 	throw Utils::UnknownIdentifer("identifier '" + token + "' not found!");
-}
-
-bool Method::isLocalSymbol(const std::string& token)
-{
-	std::string member, parent;
-	Tools::split(token, parent, member);
-
-	// check if token is a local variable
-	// OR
-	// loop through all locals and ask them if this identifier belongs to them
-	for ( MemberCollection::iterator it = mLocalSymbols.begin(); it != mLocalSymbols.end(); ++it ) {
-		if ( it->first == parent ) {
-			return true;
-		}
-	}
-
-	return false;
-}
-
-bool Method::isMember(const std::string& token)
-{
-	if ( !mOwner ) {
-		return false;
-	}
-
-	// check if token is a member variable
-	return mOwner->hasMember(token);
 }
 
 bool Method::isMethod(const std::string& token)
@@ -300,11 +270,9 @@ bool Method::isMethod(const std::string& token)
 		}
 	}
 
-	if ( mOwner->hasMember(parent) ) {
-		Object *obj = mOwner->getMember(parent);
-		if ( obj ) {
-			return obj->hasMethod(member);
-		}
+	Object *obj = mOwner->getMember(parent);
+	if ( obj ) {
+		return obj->hasMethod(member);
 	}
 
 	// check if token is a method of our parent object
@@ -601,7 +569,7 @@ void Method::process_assign(TokenIterator& token)
 	if ( s->isConst() ) {
 		throw Utils::ConstCorrectnessViolated("not allowed to modify const member '" + identifier + "'", token->position());
 	}
-	if ( this->isConst() && isMember(identifier) ) {
+	if ( this->isConst() && mOwner->getMember(identifier) ) {
 		throw Utils::ConstCorrectnessViolated("not allowed to modify member '" + identifier + "' in const method '" + this->name() + "'", token->position());
 	}
 
@@ -811,11 +779,12 @@ void Method::process_method(TokenIterator& token, Object *result)
 		return;
 	}
 
-	if ( isMethod(method) ) {
+	if ( isMethod(method, params) ) {
 		mOwner->execute(result, method, params, this);
 		return;
 	}
 
+	mOwner->providePrinter()->print(mOwner->ToString());
 	throw Utils::UnknownIdentifer("unknown/unexpected identifier '" + method + "' found", tmp->position());
 }
 
@@ -841,7 +810,7 @@ Object* Method::process_new(TokenIterator& token)
 	ParameterList params;
 
 	tmp = opened;
-	// loop through all parameters seperated by colons
+	// loop through all parameters separated by colons
 	while ( tmp != closed ) {
 		Object object;
 		parseExpression(&object, tmp);
@@ -955,9 +924,6 @@ void Method::process_type(TokenIterator& token)
 		if ( isStatic ) object->setStatic(true);
 
 		if ( assign != mTokens.end() ) {
-			//*object = parseExpression(assign);
-			//token = assign;
-
 			TokenIterator end = findNext(assign, Token::Type::SEMICOLON);
 			parseExpression(object, assign);
 			token = end;

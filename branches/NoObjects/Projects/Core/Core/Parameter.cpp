@@ -16,16 +16,31 @@ namespace ObjectiveScript {
 Parameter::Parameter()
 : mAccessMode(AccessMode::Unspecified),
   mHasDefaultValue(false),
-  mIsConst(false)
+  mIsConst(false),
+  mPointer(0)
 {
 }
 
-Parameter::Parameter(const std::string& name, const std::string& type, const std::string& value, bool hasDefaultValue, bool isConst, AccessMode::E access, Reference reference)
+Parameter::Parameter(const std::string& name, const std::string& type, const std::string& value, bool hasDefaultValue,
+					 bool isConst, AccessMode::E access, Reference reference)
 : mAccessMode(access),
   mHasDefaultValue(hasDefaultValue),
   mIsConst(isConst),
   mName(name),
+  mPointer(0),
   mReference(reference),
+  mType(type),
+  mValue(value)
+{
+}
+
+Parameter::Parameter(const std::string& name, const std::string& type, const std::string& value, bool hasDefaultValue,
+		 	 	 	 bool isConst, AccessMode::E access, Object* pointer)
+: mAccessMode(access),
+  mHasDefaultValue(hasDefaultValue),
+  mIsConst(isConst),
+  mName(name),
+  mPointer(pointer),
   mType(type),
   mValue(value)
 {
@@ -49,6 +64,11 @@ bool Parameter::isConst() const
 const std::string& Parameter::name() const
 {
 	return mName;
+}
+
+Object* Parameter::pointer() const
+{
+	return mPointer;
 }
 
 const Reference& Parameter::reference() const

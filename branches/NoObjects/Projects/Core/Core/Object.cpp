@@ -5,6 +5,7 @@
 // Library includes
 
 // Project includes
+#include <Core/Interfaces/IPrinter.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Utils/Utils.h>
 #include "Memory.h"
@@ -154,12 +155,14 @@ void Object::Constructor(const ParameterList& params)
 		throw Utils::Exception("can not construct object '" + name() + "' multiple times");
 	}
 
+/*
 	updateMethodOwners();
 
 	for ( MemberCollection::iterator it = mMembers.begin(); it != mMembers.end(); ++it ) {
 		it->second->connectPrinter(mPrinter);
 		it->second->connectRepository(mRepository);
 	}
+*/
 
 	if ( !mConstructed ) {
 		// only execute constructor if one is present
@@ -182,7 +185,7 @@ void Object::Destructor()
 {
 	if ( mConstructed ) {
 		// only execute destructor if one is present
-		if ( hasMethod("~" + getName()) ) {
+		if ( hasMethod("~" + getName(), ParameterList()) ) {
 			Object object;
 			execute(&object, "~" + Typename(), ParameterList());
 		}
@@ -229,6 +232,8 @@ void Object::execute(Object *result, const std::string& method, const ParameterL
 	catch ( Utils::Exception &e ) {
 		// catch and log all errors that occured during method execution
 		OSerror(e.what());
+
+		mPrinter->print(ToString());
 
 		throw;
 	}
@@ -326,43 +331,12 @@ Object* Object::getMember(const std::string& m)
 			return it->second;
 		}
 
-		if ( !it->second->isValid() ) {
-			continue;
-		}
-
 		if ( it->second->name() == parent ) {
 			return it->second->getMember(member);
 		}
 	}
 
 	return 0;
-}
-
-bool Object::hasMember(const std::string& m)
-{
-	std::string member, parent;
-	Tools::split(m, parent, member);
-
-	// loop through all members and ask them if this identifier belongs to them
-	for ( MemberCollection::iterator it = mMembers.begin(); it != mMembers.end(); ++it ) {
-		if ( it->first == m ) {
-			return true;
-		}
-
-/*	this is not always okay, because static members are accessible although the object has not yet been instanciated
-		if ( !it->second->isValid() ) {
-			continue;
-		}
-*/
-
-		if ( it->second->name() == parent ) {
-			if ( it->second->hasMember(member) ) {
-				return true;
-			}
-		}
-	}
-
-	return false;
 }
 
 bool Object::hasMethod(const std::string& m)
@@ -462,6 +436,14 @@ std::string Object::ToString() const
 {
 	std::string result = "Object: " + name() + " <" + Typename() + "> = { ";
 
+	for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
+		result += (*it)->type() + " " + (*it)->name();
+
+		MethodCollection::const_iterator copy = it;
+		if ( ++copy != mMethods.end() ) {
+			result += ", \n";
+		}
+	}
 	for ( MemberCollection::const_iterator it = mMembers.begin(); it != mMembers.end(); ++it ) {
 		result += it->second->ToString();
 

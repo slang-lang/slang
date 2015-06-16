@@ -40,7 +40,6 @@ public:	// Constructor & Destructor
 
 public:	//Helpers
 	Object* getMember(const std::string& m);
-	bool hasMember(const std::string& m);
 	bool hasMethod(const std::string& m);
 	bool hasMethod(const std::string& m, const ParameterList& params);
 

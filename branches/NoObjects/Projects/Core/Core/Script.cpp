@@ -92,11 +92,6 @@ Object* Script::getMember(const std::string& m)
 	return mObject->getMember(m);
 }
 
-bool Script::hasMember(const std::string& m)
-{
-	return mObject->hasMember(m);
-}
-
 bool Script::hasMethod(const std::string& m)
 {
 	return mObject->hasMethod(m);

@@ -35,13 +35,17 @@ public:
 
 public:
 	Parameter();
-	Parameter(const std::string& name, const std::string& type, const std::string& value, bool hasDefaultValue = false, bool isConst = false, AccessMode::E access = AccessMode::ByValue, Reference reference = Reference());
+	Parameter(const std::string& name, const std::string& type, const std::string& value, bool hasDefaultValue = false,
+			  bool isConst = false, AccessMode::E access = AccessMode::ByValue, Reference reference = Reference());
+	Parameter(const std::string& name, const std::string& type, const std::string& value, bool hasDefaultValue,
+			  bool isConst, AccessMode::E access, Object* pointer);
 
 public:
 	AccessMode::E access() const;
 	bool hasDefaultValue() const;
 	bool isConst() const;
 	const std::string& name() const;
+	Object* pointer() const;
 	const Reference& reference() const;
 	const std::string& type() const;
 	const std::string& value() const;
@@ -53,6 +57,7 @@ private:
 	bool mHasDefaultValue;
 	bool mIsConst;
 	std::string mName;
+	Object* mPointer;
 	Reference mReference;
 	std::string mType;
 	std::string mValue;
