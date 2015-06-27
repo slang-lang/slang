@@ -26,7 +26,6 @@ namespace ObjectiveScript {
 
 // Forward declarations
 class IPrinter;
-class Memory;
 class Method;
 class Object;
 class Repository;

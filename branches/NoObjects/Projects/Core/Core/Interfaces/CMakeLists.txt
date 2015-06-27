@@ -4,7 +4,8 @@ SET(SOURCES
 )
 
 SET(HEADERS
-#	IPrinter.h
+	IExternalCommand.h
+	IPrinter.h
 )
 
 SET(DEPENDENCIES

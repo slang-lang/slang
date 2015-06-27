@@ -36,10 +36,10 @@ public:
 	virtual ~Symbol() { }
 
 public:
-	bool operator < (const Symbol& other) const {
+	bool operator< (const Symbol& other) const {
 		return getName() < other.getName();
 	}
-	bool operator < (const Symbol* other) const {
+	bool operator< (const Symbol* other) const {
 		return getName() < other->getName();
 	}
 

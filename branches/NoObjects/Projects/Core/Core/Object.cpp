@@ -375,7 +375,7 @@ bool Object::hasMethod(const std::string& m, const ParameterList& params)
 	std::string method, parent;
 	Tools::split(m, parent, method);
 
-	// loop through all members and ask them if this identifier belongs to them
+	// loop through all members and ask them if this method belongs to them
 	for ( MemberCollection::iterator it = mMembers.begin(); it != mMembers.end(); ++it ) {
 		if ( it->first == parent ) {
 			if ( it->second->hasMethod(method, params) ) {

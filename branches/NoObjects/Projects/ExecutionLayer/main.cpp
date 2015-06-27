@@ -43,7 +43,15 @@ void printUsage()
 	std::cout << "-h | --help           This help" << std::endl;
 	std::cout << "-r | --root           Library root path" << std::endl;
 	std::cout << "-v                    Verbose output" << std::endl;
+	std::cout << "--version             Version information" << std::endl;
 	std::cout << std::endl;
+}
+
+void printVersion()
+{
+	std::cout << "ObjectiveScript Interpreter 0.0.1 (cli)" << std::endl;
+	std::cout << "Copyright (c) 2015 Michael Adelmann" << std::endl;
+	std::cout << "" << std::endl;
 }
 
 void processParameters(int argc, const char* argv[])
@@ -80,6 +88,11 @@ void processParameters(int argc, const char* argv[])
 			}
 			else if ( Utils::Tools::StringCompare(argv[i], "-v") ) {
 				mLogger.setLoudness(Utils::Common::ILogger::LoudnessInfo);
+			}
+			else if ( Utils::Tools::StringCompare(argv[i], "--version") ) {
+				printVersion();
+
+				exit(0);
 			}
 			else if ( mFilename.empty() ){
 				mFilename = argv[i];
@@ -126,7 +139,7 @@ int main(int argc, const char* argv[])
 		// so there is no need to execute a method explicit
 	}
 	catch ( std::exception &e ) {
-		std::cout << e.what() << std::endl;
+		//std::cout << e.what() << std::endl;
 	}
 
 	return 0;

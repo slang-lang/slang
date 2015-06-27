@@ -2,21 +2,22 @@
 
 import System.Console;
 
-public namespace 
+public object Main
 {
-	public object Main
-	{
-		public void Main(Number argc = 0, String argv = "")
-		{
-			print("Hello World!");
-			print("argc = " & argc);
-			print("argv = " & argv);
+	private Console mConsole;
 
-			System.Console.writeln("");
-			System.Console.write("Hello World!");
-			System.Console.writeln("Hello World!");
-			System.Console.write("argc = " & argc);
-			System.Console.writeln("argv = " & argv);
-		}
+	public void Main(Number argc, String argv)
+	{
+		mConsole = new Console();
+/*
+		print("Hello World!");
+		print("argc = " & argc);
+		print("argv = " & argv);
+*/
+
+		/*System.*/mConsole.write("Hello ");
+		/*System.*/Console.writeln("World!");
+		/*System.*/Console.write("argc = " & argc);
+		/*System.*/Console.writeln("argv = " & argv);
 	}
 }
