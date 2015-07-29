@@ -211,7 +211,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\Bool.cpp"
+				RelativePath=".\Core\BuildInObjects\BoolObject.cpp"
 				>
 			</File>
 			<File
@@ -287,7 +287,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\Number.cpp"
+				RelativePath=".\Core\BuildInObjects\NumberObject.cpp"
 				>
 			</File>
 			<File
@@ -339,7 +339,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\String.cpp"
+				RelativePath=".\Core\BuildInObjects\StringObject.cpp"
 				>
 			</File>
 			<File
@@ -431,7 +431,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\Void.cpp"
+				RelativePath=".\Core\BuildInObjects\VoidObject.cpp"
 				>
 			</File>
 		</Filter>
@@ -457,15 +457,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\Bool.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Core\Exceptions.h"
+				RelativePath=".\Core\BuildInObjects\BoolObject.h"
 				>
 			</File>
 			<File
 				RelativePath=".\Core\Utils\Exceptions.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\Exceptions.h"
 				>
 			</File>
 			<File
@@ -501,7 +501,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\Number.h"
+				RelativePath=".\Core\BuildInObjects\NumberObject.h"
 				>
 			</File>
 			<File
@@ -557,7 +557,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\String.h"
+				RelativePath=".\Core\BuildInObjects\StringObject.h"
 				>
 			</File>
 			<File
@@ -605,7 +605,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\Void.h"
+				RelativePath=".\Core\BuildInObjects\VoidObject.h"
 				>
 			</File>
 		</Filter>
