@@ -36,7 +36,7 @@ private:	// Tests
 	void testPrototypeUsage();
 
 private:
-	::Utils::Printer mStdoutPrinter;
+	Utils::Printer mStdoutPrinter;
 };
 
 

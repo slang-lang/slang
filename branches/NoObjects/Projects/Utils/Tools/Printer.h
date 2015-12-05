@@ -25,12 +25,25 @@ public:
 	: Common::Logger(p, ""),
 	  mActivateLogger(true),
 	  mActivatePrinter(true),
-	  mPrintFileAndLine(true)
+	  mPrintFileAndLine(false)
 	{ }
 
+	void activateLogger(bool state) {
+		mActivateLogger = state;
+	}
+
+	void activatePrinter(bool state) {
+		mActivatePrinter = state;
+	}
+
+	void printFileAndLine(bool state) {
+		mPrintFileAndLine = state;
+	}
+
+public:
 	void log(const std::string& text) {
 		if ( mActivateLogger ) {
-			std::cout << text << std::endl;
+			LogInfo(text, "", 0);
 		}
 	}
 	void print(const std::string& text, const std::string& file = "", int line = 0) {
@@ -38,8 +51,8 @@ public:
 			std::cout << text;
 			if ( mPrintFileAndLine ) {
 				std::cout << "   [" << file << ":" << line << "]";
+				std::cout << std::endl;
 			}
-			std::cout << std::endl;
 		}
 	}
 

@@ -16,6 +16,7 @@
 
 
 namespace Testing {
+namespace Framework {
 
 
 TestFrameworkTest::TestFrameworkTest(const Utils::Common::Logger *p)
@@ -196,4 +197,5 @@ void TestFrameworkTest::throw_std_ex()
 }
 
 
+}
 }

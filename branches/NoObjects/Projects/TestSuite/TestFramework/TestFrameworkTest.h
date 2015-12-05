@@ -15,6 +15,7 @@
 
 
 namespace Testing {
+namespace Framework {
 
 
 class TestFrameworkTest : private Utils::Common::Logger,
@@ -44,6 +45,7 @@ private:
 };
 
 
+}
 }
 
 

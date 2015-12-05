@@ -35,7 +35,7 @@ private:	// Tests
 	void testBasicLanguageFeatures();
 
 private:
-	::Utils::Printer mStdoutPrinter;
+	Utils::Printer mStdoutPrinter;
 };
 
 

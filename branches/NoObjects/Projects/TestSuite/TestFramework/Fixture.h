@@ -16,6 +16,7 @@ using namespace Testing;
 
 
 namespace Testing {
+namespace Framework {
 
 
 class Fixture : public TestFixture,
@@ -36,6 +37,7 @@ private:
 };
 
 
+}
 }
 
 

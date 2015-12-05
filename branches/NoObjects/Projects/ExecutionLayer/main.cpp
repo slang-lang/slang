@@ -129,7 +129,9 @@ int main(int argc, const char* argv[])
 	}
 
 	Utils::Printer mPrinter(&mLogger);
-	mPrinter.print("bla");
+	mPrinter.activateLogger(false);
+	mPrinter.activatePrinter(true);
+	mPrinter.printFileAndLine(false);
 
 	ObjectiveScript::VirtualMachine mVirtualMachine;
 	mVirtualMachine.setPrinter(&mPrinter);
@@ -140,8 +142,8 @@ int main(int argc, const char* argv[])
 		// our script automatically executes it's Main object constructor,
 		// so there is no need to execute a method explicitly
 	}
-	catch ( std::exception & /*e*/ ) {
-		//std::cout << e.what() << std::endl;
+	catch ( std::exception& e ) {
+		std::cout << e.what() << std::endl;
 	}
 
 	return 0;

@@ -53,11 +53,11 @@ void MathTest::testBasicExpressionParsing()
 	}
 	catch ( ObjectiveScript::Utils::Exception& e ) {
 		// exception has been thrown: test failed!
-		TFAIL("caught exception: " << e.what());
+		TFAIL(e.what());
 	}
 	catch ( std::exception& e ) {
 		// exception has been thrown: test failed!
-		TFAIL("caught exception: " << e.what());
+		TFAIL(e.what());
 	}
 }
 

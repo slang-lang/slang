@@ -35,7 +35,7 @@ private:	// Tests
 	void testBasicExpressionParsing();
 
 private:
-	::Utils::Printer mStdoutPrinter;
+	Utils::Printer mStdoutPrinter;
 };
 
 

@@ -48,7 +48,7 @@ private:	// Tests
 	void testWhile();
 
 private:
-	::Utils::Printer mStdoutPrinter;
+	Utils::Printer mStdoutPrinter;
 };
 
 

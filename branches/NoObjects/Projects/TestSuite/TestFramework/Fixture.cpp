@@ -11,6 +11,7 @@
 
 
 namespace Testing {
+namespace Framework {
 
 
 Fixture::Fixture(const Utils::Common::ILogger *p)
@@ -34,4 +35,5 @@ void Fixture::teardown()
 }
 
 
+}
 }

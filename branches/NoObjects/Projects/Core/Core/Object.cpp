@@ -155,15 +155,6 @@ void Object::Constructor(const ParameterList& params)
 		throw Utils::Exception("can not construct object '" + name() + "' multiple times");
 	}
 
-/*
-	updateMethodOwners();
-
-	for ( MemberCollection::iterator it = mMembers.begin(); it != mMembers.end(); ++it ) {
-		it->second->connectPrinter(mPrinter);
-		it->second->connectRepository(mRepository);
-	}
-*/
-
 	if ( !mConstructed ) {
 		// only execute constructor if one is present
 		if ( hasMethod(Typename(), params) ) {

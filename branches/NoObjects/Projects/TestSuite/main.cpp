@@ -79,7 +79,7 @@ int main(int argc, const char* argv[])
 	try {
 		FixtureList mFixtures;
 
-		Testing::Fixture testing(logger);
+		Testing::Framework::Fixture testing(logger);
 		mFixtures.push_back(&testing);
 
 		Testing::Attributes::Fixture attributes(logger);

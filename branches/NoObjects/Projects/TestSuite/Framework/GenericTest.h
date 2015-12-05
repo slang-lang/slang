@@ -53,12 +53,12 @@ protected:
 	int mFailed;
 	TestResult_e mLastResult;
 	int mRun;
-	int	mSkipped;
+	int mSkipped;
 
 private:
 	void printResults() {
-		std::cout << "Statistics: " << (mRun - mFailed - mSkipped) << " passed, " << mFailed << " failed, " << mSkipped << " skipped" << std::endl;
-		//std::cout << typeid(*this).name() << " Statistics: " << (mRun - mFailed - mSkipped) << " passed, " << mFailed << " failed, " << mSkipped << " skipped" << std::endl;
+		//std::cout << "Statistics: " << (mRun - mFailed - mSkipped) << " passed, " << mFailed << " failed, " << mSkipped << " skipped" << std::endl;
+		std::cout << typeid(*this).name() << " Statistics: " << (mRun - mFailed - mSkipped) << " passed, " << mFailed << " failed, " << mSkipped << " skipped" << std::endl;
 	}
 };
 
