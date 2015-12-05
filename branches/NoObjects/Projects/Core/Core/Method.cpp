@@ -714,7 +714,7 @@ void Method::process_assign(TokenIterator& token)
 
 	Object *s = getSymbol(identifier);
 	if ( !s ) {
-		throw Utils::UnknownIdentifer("identified '" + identifier + "' not found", token->position());
+		throw Utils::UnknownIdentifer("identifier '" + identifier + "' not found", token->position());
 	}
 	if ( s->isConst() ) {
 		throw Utils::ConstCorrectnessViolated("not allowed to modify const member '" + identifier + "'", token->position());
@@ -905,7 +905,7 @@ void Method::process_method(TokenIterator& token, Object *result)
 	while ( tmp != closed ) {
 		Object object;
 		parseExpression(&object, tmp);
-		params.push_back(Parameter(object.name(), object.Typename(), object.getValue(), false, object.isConst(), Parameter::AccessMode::ByValue));
+		params.push_back(Parameter(object.name(), object.Typename(), object.getValue(), false, object.isConst(), Parameter::AccessMode::ByValue, &object));
 
 		if ( std::distance(tmp, closed) <= 0 ) {
 			break;
@@ -964,7 +964,7 @@ Object* Method::process_new(TokenIterator& token)
 	while ( tmp != closed ) {
 		Object object;
 		parseExpression(&object, tmp);
-		params.push_back(Parameter(object.name(), object.Typename(), object.getValue(), false, object.isConst(), Parameter::AccessMode::ByValue));
+		params.push_back(Parameter(object.name(), object.Typename(), object.getValue(), false, object.isConst(), Parameter::AccessMode::ByValue, &object));
 
 		if ( std::distance(tmp, closed) <= 0 ) {
 			break;
@@ -1002,8 +1002,7 @@ void Method::process_print(TokenIterator& token)
 	Object object;
 	parseExpression(&object, opened);
 
-	//mOwner->providePrinter()->print(object.getValue() + "   [" + mOwner->Filename() + ":" + Tools::toString(token->position().line) + "]");
-	mOwner->providePrinter()->print(object.getValue());
+	mOwner->providePrinter()->print(object.getValue(), mOwner->Filename(), token->position().line);
 
 	token = tmp;
 }

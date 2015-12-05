@@ -7,8 +7,8 @@
 #include <Core/Script.h>
 #include <Core/Types.h>
 #include <Core/VirtualMachine.h>
+#include <Tools/Printer.h>
 #include <Tools/Strings.h>
-#include "Printer.h"
 
 // Namespace declarations
 
@@ -30,7 +30,8 @@
 
 
 std::string mFilename;
-Utils::Common::StdOutLogger mLogger;
+//Utils::Common::StdOutLogger mLogger;
+Utils::Common::Logger mLogger;
 ObjectiveScript::ParameterList mParameters;
 std::string mRoot;
 
@@ -127,7 +128,8 @@ int main(int argc, const char* argv[])
 		return 0;
 	}
 
-	Printer mPrinter(&mLogger);
+	Utils::Printer mPrinter(&mLogger);
+	mPrinter.print("bla");
 
 	ObjectiveScript::VirtualMachine mVirtualMachine;
 	mVirtualMachine.setPrinter(&mPrinter);
@@ -136,7 +138,7 @@ int main(int argc, const char* argv[])
 	try {
 		mVirtualMachine.create(mFilename, mParameters);
 		// our script automatically executes it's Main object constructor,
-		// so there is no need to execute a method explicit
+		// so there is no need to execute a method explicitly
 	}
 	catch ( std::exception & /*e*/ ) {
 		//std::cout << e.what() << std::endl;

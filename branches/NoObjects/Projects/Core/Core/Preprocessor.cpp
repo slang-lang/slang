@@ -82,12 +82,11 @@ Method* Preprocessor::createMethod(TokenIterator token)
 {
 	bool isConst = false;
 	bool isFinal = false;
-//	bool isSealed = false;
 	bool isStatic = false;
 	std::string name;
 	std::string languageFeature;
 	std::string type;
-	std::string value;
+	//std::string value;
 	std::string visibility;
 
 	// look for the visibility token
@@ -121,11 +120,6 @@ Method* Preprocessor::createMethod(TokenIterator token)
 			else if ( token->content() == "modify" ) {
 				isConst = false;
 			}
-/*
-			else if ( token->content() == "sealed" ) {
-				isSealed = true;
-			}
-*/
 			else if ( token->content() == "static" ) {
 				isStatic = true;
 			}

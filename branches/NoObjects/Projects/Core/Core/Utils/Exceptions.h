@@ -47,14 +47,7 @@ public:
 #elif TARGET_OS_MAC
     // Other kinds of Mac OS X
     const char* what() const _NOEXCEPT {
-    	std::string result = mMessage;
-
-		if ( mPosition.line != 0 ) {
-			//result += " at " + mPosition.toString();
-			//result += " ";
-		}
-
-        return result.c_str();
+    	return mCombinedMessage.c_str();
     }
 #else
     // Unsupported platform

@@ -8,7 +8,7 @@
 // Project includes
 #include <Common/Logger.h>
 #include <Framework/GenericTest.h>
-#include <Utils/Printer.h>
+#include <Tools/Printer.h>
 
 // Forward declarations
 

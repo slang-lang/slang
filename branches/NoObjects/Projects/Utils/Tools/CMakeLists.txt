@@ -8,6 +8,7 @@ SET(SOURCES
 
 SET(HEADERS
 	Files.h
+	Printer.h
 	Strings.h
 	Tools.h
 )
@@ -15,4 +16,3 @@ SET(HEADERS
 SET(DEPENDENCIES )
 
 build_static_lib(UtilsTools "")
-

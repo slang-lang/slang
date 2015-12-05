@@ -371,7 +371,7 @@ void Interpreter::process_print(TokenIterator& token)
 	// find semicolon
 	TokenIterator tmp = findNext(closed, Token::Type::SEMICOLON);
 
-	Object v = parseExpression(opened);
+	/*Object v =*/ parseExpression(opened);
 	//Printer::print(v.value() + "   [" + mOwner->Filename() + ":" + Tools::toString(token->position().line) + "]");
 
 	token = tmp;
@@ -424,7 +424,7 @@ void Interpreter::process_type(TokenIterator& token)
 		object = mRepository->createInstanceFromPrototype(prototype, type, name);
 	}
 	else {
-		object = mRepository->createInstance(type, name);
+		object = *mRepository->createInstance(type, name);
 	}
 
 	if ( isConst ) object.setConst(true);

@@ -5,6 +5,7 @@
 
 // Project includes
 #include <Common/StdOutLogger.h>
+#include <Tools/Printer.h>
 #include <Tools/Strings.h>
 
 // Fixtures
