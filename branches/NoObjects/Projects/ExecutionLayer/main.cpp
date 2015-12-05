@@ -25,7 +25,7 @@
 	#endif
 	// Memory leak check - End
 
-	#include <vld.h>
+//	#include <vld.h>
 #endif
 
 
@@ -138,7 +138,7 @@ int main(int argc, const char* argv[])
 		// our script automatically executes it's Main object constructor,
 		// so there is no need to execute a method explicit
 	}
-	catch ( std::exception &e ) {
+	catch ( std::exception & /*e*/ ) {
 		//std::cout << e.what() << std::endl;
 	}
 

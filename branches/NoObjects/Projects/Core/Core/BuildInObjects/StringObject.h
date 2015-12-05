@@ -21,6 +21,7 @@ class String : public Object
 {
 public:
 	String(const std::string& value = "");
+	String(const Object& object);
 
 public:	// Operators
 	virtual void operator_assign(Object *other);

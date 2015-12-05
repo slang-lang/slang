@@ -21,6 +21,7 @@ class UserObject : public Object
 {
 public:
 	UserObject(const std::string& name, const std::string& filename, const std::string& type, const std::string& value);
+	UserObject(const Object& object);
 
 public:	// Operators
 	virtual void operator_assign(Object *other);

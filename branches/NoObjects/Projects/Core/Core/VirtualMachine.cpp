@@ -73,6 +73,8 @@ Script* VirtualMachine::create(const std::string& filename, const ParameterList&
 	}
 
 	Script *script = new Script();
+	mScripts.insert(script);
+
 	script->connectPrinter(mPrinter);
 
 	Analyser analyser;
@@ -114,8 +116,6 @@ Script* VirtualMachine::create(const std::string& filename, const ParameterList&
 
 	script->connectRepository(mRepository);
 	script->construct(params);
-
-	mScripts.insert(script);
 
 	return script;
 }

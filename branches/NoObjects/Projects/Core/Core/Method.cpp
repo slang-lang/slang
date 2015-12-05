@@ -26,6 +26,152 @@
 namespace ObjectiveScript {
 
 
+void operator_divide(Object *base, Object *value)
+{
+	if ( !base ) {
+		throw Utils::NullPointerException("cannot add value to null pointer!");
+	}
+
+	std::string target = base->Typename();
+
+	if ( target == "bool" ) {
+		static_cast<Bool*>(base)->operator_divide(value);
+	}
+	else if ( target == "Number" ) {
+		Number num(*base);
+		num.operator_divide(value);
+
+		base->setValue(num.getValue());
+	}
+	else if ( target == "String" ) {
+		static_cast<String*>(base)->operator_divide(value);
+	}
+	else if ( target == "Void" ) {
+		static_cast<Void*>(base)->operator_divide(value);
+	}
+	else {
+		throw Utils::Exception("type cast failed!");
+	}
+}
+
+void operator_multiply(Object *base, Object *value)
+{
+	if ( !base ) {
+		throw Utils::NullPointerException("cannot add value to null pointer!");
+	}
+
+	std::string target = base->Typename();
+
+	if ( target == "bool" ) {
+		static_cast<Bool*>(base)->operator_multiply(value);
+	}
+	else if ( target == "Number" ) {
+		Number num(*base);
+		num.operator_multiply(value);
+
+		base->setValue(num.getValue());
+	}
+	else if ( target == "String" ) {
+		static_cast<String*>(base)->operator_multiply(value);
+	}
+	else if ( target == "Void" ) {
+		static_cast<Void*>(base)->operator_multiply(value);
+	}
+	else {
+		throw Utils::Exception("type cast failed!");
+	}
+}
+
+void operator_plus(Object *base, Object *value)
+{
+	if ( !base ) {
+		throw Utils::NullPointerException("cannot add value to null pointer!");
+	}
+
+	std::string target = base->Typename();
+
+	if ( target == "bool" ) {
+		static_cast<Bool*>(base)->operator_plus(value);
+	}
+	else if ( target == "Number" ) {
+		Number num(*base);
+		num.operator_plus(value);
+
+		base->setValue(num.getValue());
+	}
+	else if ( target == "String" ) {
+		static_cast<String*>(base)->operator_plus(value);
+	}
+	else if ( target == "Void" ) {
+		static_cast<Void*>(base)->operator_plus(value);
+	}
+	else {
+		throw Utils::Exception("type cast failed!");
+	}
+}
+
+void operator_subtract(Object *base, Object *value)
+{
+	if ( !base ) {
+		throw Utils::NullPointerException("cannot add value to null pointer!");
+	}
+
+	std::string target = base->Typename();
+
+	if ( target == "bool" ) {
+		static_cast<Bool*>(base)->operator_subtract(value);
+	}
+	else if ( target == "Number" ) {
+		Number num(*base);
+		num.operator_subtract(value);
+
+		base->setValue(num.getValue());
+	}
+	else if ( target == "String" ) {
+		static_cast<String*>(base)->operator_subtract(value);
+	}
+	else if ( target == "Void" ) {
+		static_cast<Void*>(base)->operator_subtract(value);
+	}
+	else {
+		throw Utils::Exception("type cast failed!");
+	}
+}
+
+Object* typecast(Object *base, const std::string& targetType = "" )
+{
+	if ( !base ) {
+		return base;
+	}
+
+	std::string target = targetType;
+	if ( target.empty() ) {
+		target = base->Typename();
+	}
+
+	Object *result = 0;
+
+	if ( target == "bool" ) {
+		result = static_cast<Bool*>(base);
+	}
+	else if ( target == "Number" ) {
+		result = static_cast<Number*>(base);
+	}
+	else if ( target == "String" ) {
+		result = static_cast<String*>(base);
+	}
+	else if ( target == "Void" ) {
+		result = static_cast<Void*>(base);
+	}
+
+	if ( !result ) {
+		throw Utils::Exception("type cast failed!");
+	}
+
+	return result;
+}
+
+
 Method::Method(IScope *parent, const std::string& name, const std::string& type)
 : LocalScope(name, parent),
   Variable(name, type),
@@ -388,10 +534,12 @@ void Method::parseExpression(Object *result, TokenIterator& start)
 		parseFactors(&v2, start);
 
 		if ( op == Token::Type::MATH_ADD ) {
-			result->operator_plus(&v2);
+			//result->operator_plus(&v2);
+			operator_plus(result, &v2);
 		}
 		else if ( op == Token::Type::MATH_SUBTRACT ) {
-			result->operator_subtract(&v2);
+			//result->operator_subtract(&v2);
+			operator_subtract(result, &v2);
 		}
 		else if ( op == Token::Type::STRING_ADD ) {
 			*result = Strings::concat(*result, v2);
@@ -441,10 +589,12 @@ void Method::parseFactors(Object *result, TokenIterator& start)
 		}
 
 		if ( op == Token::Type::MATH_MULTI ) {
-			result->operator_multiply(&v2);
+			//result->operator_multiply(&v2);
+			operator_multiply(result, &v2);
 		}
 		else {
-			result->operator_divide(&v2);
+			//result->operator_divide(&v2);
+			operator_divide(result, &v2);
 		}
 	}
 }

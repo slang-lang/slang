@@ -20,6 +20,7 @@ class Number : public Object
 {
 public:
 	Number(const std::string& value = "0");
+	Number(const Object& object);
 
 public:	// Operators
 	virtual void operator_assign(Object *other);

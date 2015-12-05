@@ -21,6 +21,7 @@ class Void : public Object
 {
 public:
 	Void();
+	Void(const Object& object);
 
 public:
 	virtual void operator_assign(Object *other);

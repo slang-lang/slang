@@ -20,6 +20,7 @@ class Bool : public Object
 {
 public:
 	Bool(const std::string& value = "false");
+	Bool(const Object& object);
 
 public:	// Operators
 	virtual void operator_assign(Object *other);

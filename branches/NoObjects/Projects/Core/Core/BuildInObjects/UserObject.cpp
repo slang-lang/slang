@@ -19,29 +19,34 @@ UserObject::UserObject(const std::string& name, const std::string& filename, con
 {
 }
 
+UserObject::UserObject(const Object& object)
+: Object(object.name(), object.Filename(), object.Typename(), object.getValue())
+{
+}
+
 void UserObject::operator_assign(Object * /*other*/)
 {
-	throw Utils::Exception("operator= not implemented");
+	throw Utils::NotImplemented("operator=");
 }
 
 void UserObject::operator_divide(Object * /*other*/)
 {
-	throw Utils::Exception("operator/ not implemented");
+	throw Utils::NotImplemented("operator/");
 }
 
 void UserObject::operator_multiply(Object * /*other*/)
 {
-	throw Utils::Exception("operator* not implemented");
+	throw Utils::NotImplemented("operator*");
 }
 
 void UserObject::operator_plus(Object * /*other*/)
 {
-	throw Utils::Exception("operator+ not implemented");
+	throw Utils::NotImplemented("operator+");
 }
 
 void UserObject::operator_subtract(Object * /*other*/)
 {
-	throw Utils::Exception("operator- not implemented");
+	throw Utils::NotImplemented("operator-");
 }
 
 std::string UserObject::ToString() const
@@ -49,10 +54,9 @@ std::string UserObject::ToString() const
 	return getValue();
 }
 
-void UserObject::setValue(UserObject *val)
+void UserObject::setValue(UserObject * /*val*/)
 {
-(void)val;
-	assert(!"not implemented!");
+	throw Utils::NotImplemented("setValue");
 }
 
 

@@ -20,6 +20,11 @@ Bool::Bool(const std::string& value)
 	Constructor(ParameterList());
 }
 
+Bool::Bool(const Object& object)
+: Object(object.name(), "SYSTEM.OS", "Bool", object.getValue())
+{
+}
+
 bool Bool::isValid() const
 {
 	return Tools::stringToBool(Object::getValue());
@@ -32,22 +37,22 @@ void Bool::operator_assign(Object *other)
 
 void Bool::operator_divide(Object * /*other*/)
 {
-	throw Utils::Exception("operator/ not implemented");
+	throw Utils::NotImplemented("operator/");
 }
 
 void Bool::operator_multiply(Object * /*other*/)
 {
-	throw Utils::Exception("operator* not implemented");
+	throw Utils::NotImplemented("operator*");
 }
 
 void Bool::operator_plus(Object * /*other*/)
 {
-	throw Utils::Exception("operator+ not implemented");
+	throw Utils::NotImplemented("operator+");
 }
 
 void Bool::operator_subtract(Object * /*other*/)
 {
-	throw Utils::Exception("operator- not implemented");
+	throw Utils::NotImplemented("operator-");
 }
 
 std::string Bool::ToString() const

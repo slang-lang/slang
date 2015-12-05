@@ -20,6 +20,11 @@ Number::Number(const std::string& value)
 	Constructor(ParameterList());
 }
 
+Number::Number(const Object& object)
+: Object(object.name(), "SYSTEM.OS", "Number", object.getValue())
+{
+}
+
 bool Number::isValid() const
 {
 	return Tools::stringToFloat(Object::getValue()) != 0.f;

@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="OScript"
+	Name="oscript"
 	ProjectGUID="{F60E42A5-1C6A-47E5-A040-977BE67C310D}"
 	RootNamespace="MyTest"
 	TargetFrameworkVersion="196613"
