@@ -74,7 +74,7 @@ void operator_assign(Object *base, Object *value)
 void operator_divide(Object *base, Object *value)
 {
 	if ( !base ) {
-		throw Utils::NullPointerException("cannot divide value to null pointer");
+		throw Utils::NullPointerException("operator_divide: cannot divide null pointer through object");
 	}
 	if ( !value ) {
 		throw Utils::NullPointerException("cannot divide object through null pointer");
@@ -120,7 +120,7 @@ void operator_divide(Object *base, Object *value)
 void operator_multiply(Object *base, Object *value)
 {
 	if ( !base ) {
-		throw Utils::NullPointerException("cannot multiply value by null pointer");
+		throw Utils::NullPointerException("cannot multiply null pointer by object");
 	}
 	if ( !value ) {
 		throw Utils::NullPointerException("cannot multiply object by null pointer");
@@ -166,10 +166,10 @@ void operator_multiply(Object *base, Object *value)
 void operator_plus(Object *base, Object *value)
 {
 	if ( !base ) {
-		throw Utils::NullPointerException("cannot add value to null pointer!");
+		throw Utils::NullPointerException("cannot add null pointer to object");
 	}
 	if ( !value ) {
-		throw Utils::NullPointerException("cannot null pointer to object!");
+		throw Utils::NullPointerException("cannot add object to null pointer");
 	}
 
 	std::string target = base->Typename();
@@ -212,7 +212,7 @@ void operator_plus(Object *base, Object *value)
 void operator_subtract(Object *base, Object *value)
 {
 	if ( !base ) {
-		throw Utils::NullPointerException("cannot subtract value from null pointer");
+		throw Utils::NullPointerException("cannot subtract object from null pointer");
 	}
 	if ( !value ) {
 		throw Utils::NullPointerException("cannot subtract null pointer from object");
