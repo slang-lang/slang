@@ -40,6 +40,7 @@ void LanguageTest::process()
 	TEST(testMethodOverloading);
 	//TEST(testNamespaces);
 	TEST(testObjectReference);
+	TEST(testOperatorOverloading);
 	TEST(testParameters);
 	TEST(testPrint);
 	TEST(testStaticLocalVariable);
@@ -226,6 +227,22 @@ void LanguageTest::testObjectReference()
 		vm.setPrinter(&mStdoutPrinter);
 
 		vm.create("Tests/Language/ObjectReference.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void LanguageTest::testOperatorOverloading()
+{
+	try {
+		VirtualMachine vm;
+		vm.setPrinter(&mStdoutPrinter);
+
+		vm.create("Tests/Language/OperatorOverloading.os");
 
 		// automatic success
 	}
