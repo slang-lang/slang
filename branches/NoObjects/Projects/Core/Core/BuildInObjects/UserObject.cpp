@@ -24,29 +24,59 @@ UserObject::UserObject(const Object& object)
 {
 }
 
-void UserObject::operator_assign(Object * /*other*/)
+void UserObject::operator_assign(Object *other)
 {
-	throw Utils::NotImplemented("operator=");
+	ParameterList params;
+	params.push_back(
+		Parameter(other->name(), other->Typename(), other->getValue())
+	);
+
+	Object tmp;
+	this->execute(&tmp, "operator_assign", params, 0);
 }
 
-void UserObject::operator_divide(Object * /*other*/)
+void UserObject::operator_divide(Object *other)
 {
-	throw Utils::NotImplemented("operator/");
+	ParameterList params;
+	params.push_back(
+		Parameter(other->name(), other->Typename(), other->getValue())
+	);
+
+	Object tmp;
+	this->execute(&tmp, "operator_divide", params, 0);
 }
 
-void UserObject::operator_multiply(Object * /*other*/)
+void UserObject::operator_multiply(Object *other)
 {
-	throw Utils::NotImplemented("operator*");
+	ParameterList params;
+	params.push_back(
+		Parameter(other->name(), other->Typename(), other->getValue())
+	);
+
+	Object tmp;
+	this->execute(&tmp, "operator_multiply", params, 0);
 }
 
-void UserObject::operator_plus(Object * /*other*/)
+void UserObject::operator_plus(Object *other)
 {
-	throw Utils::NotImplemented("operator+");
+	ParameterList params;
+	params.push_back(
+		Parameter(other->name(), other->Typename(), other->getValue())
+	);
+
+	Object tmp;
+	this->execute(&tmp, "operator_plus", params, 0);
 }
 
-void UserObject::operator_subtract(Object * /*other*/)
+void UserObject::operator_subtract(Object *other)
 {
-	throw Utils::NotImplemented("operator-");
+	ParameterList params;
+	params.push_back(
+		Parameter(other->name(), other->Typename(), other->getValue())
+	);
+
+	Object tmp;
+	this->execute(&tmp, "operator_subtract", params, 0);
 }
 
 std::string UserObject::ToString() const

@@ -26,7 +26,10 @@ public:
 	: mMessage(text),
 	  mPosition(position)
 	{
-		mCombinedMessage = mMessage + " at " + mPosition.toString();
+		mCombinedMessage = mMessage;
+		if ( !mPosition.toString().empty() ) {
+			mCombinedMessage += " at " + mPosition.toString();
+		}
 	}
 	virtual ~Exception() throw() { }
 

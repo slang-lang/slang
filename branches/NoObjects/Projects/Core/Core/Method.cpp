@@ -62,12 +62,7 @@ void operator_assign(Object *base, Object *value)
 		base->setValue(tmp.getValue());
 	}
 	else {
-		ParameterList params;
-		params.push_back(
-			Parameter(value->name(), value->Typename(), value->getValue())
-		);
-
-		base->execute(base, "operator_assign", params, 0);
+		base->operator_assign(value);
 	}
 }
 
@@ -107,13 +102,7 @@ void operator_divide(Object *base, Object *value)
 		base->setValue(tmp.getValue());
 	}
 	else {
-		ParameterList params;
-		params.push_back(
-			Parameter(value->name(), value->Typename(), value->getValue())
-		);
-
-		Object tmp;
-		base->execute(&tmp, "operator_divide", params, 0);
+		base->operator_divide(value);
 	}
 }
 
@@ -153,13 +142,7 @@ void operator_multiply(Object *base, Object *value)
 		base->setValue(tmp.getValue());
 	}
 	else {
-		ParameterList params;
-		params.push_back(
-			Parameter(value->name(), value->Typename(), value->getValue())
-		);
-
-		Object tmp;
-		base->execute(&tmp, "operator_multiply", params, 0);
+		base->operator_multiply(value);
 	}
 }
 
@@ -199,13 +182,7 @@ void operator_plus(Object *base, Object *value)
 		base->setValue(tmp.getValue());
 	}
 	else {
-		ParameterList params;
-		params.push_back(
-			Parameter(value->name(), value->Typename(), value->getValue())
-		);
-
-		Object tmp;
-		base->execute(&tmp, "operator_plus", params, 0);
+		base->operator_plus(value);
 	}
 }
 
@@ -245,13 +222,7 @@ void operator_subtract(Object *base, Object *value)
 		base->setValue(tmp.getValue());
 	}
 	else {
-		ParameterList params;
-		params.push_back(
-			Parameter(value->name(), value->Typename(), value->getValue())
-		);
-
-		Object tmp;
-		base->execute(&tmp, "operator_subtract", params, 0);
+		base->operator_subtract(value);
 	}
 }
 

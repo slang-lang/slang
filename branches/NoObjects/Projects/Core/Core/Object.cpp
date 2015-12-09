@@ -407,27 +407,27 @@ void Object::name(const std::string& name)
 
 void Object::operator_assign(Object * /*other*/)
 {
-	throw Utils::Exception(ToString() + ", operator= not implemented");
+	throw Utils::NotImplemented(ToString() + ", operator=");
 }
 
 void Object::operator_divide(Object * /*other*/)
 {
-	throw Utils::Exception(ToString() + ", operator/ not implemented");
+	throw Utils::NotImplemented(ToString() + ", operator/");
 }
 
 void Object::operator_multiply(Object * /*other*/)
 {
-	throw Utils::Exception(ToString() + ", operator* not implemented");
+	throw Utils::NotImplemented(ToString() + ", operator*");
 }
 
 void Object::operator_plus(Object * /*other*/)
 {
-	throw Utils::Exception(ToString() + ", operator+ not implemented");
+	throw Utils::NotImplemented(ToString() + ", operator+");
 }
 
 void Object::operator_subtract(Object * /*other*/)
 {
-	throw Utils::Exception(ToString() + ", operator- not implemented");
+	throw Utils::NotImplemented(ToString() + ", operator-");
 }
 
 IPrinter* Object::providePrinter() const
