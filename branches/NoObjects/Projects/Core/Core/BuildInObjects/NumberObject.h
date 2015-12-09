@@ -33,8 +33,6 @@ public:	// Operators
 
 	virtual std::string ToString() const;
 
-	virtual void setValue(float val);
-
 protected:
 
 private:

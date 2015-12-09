@@ -54,10 +54,5 @@ std::string UserObject::ToString() const
 	return getValue();
 }
 
-void UserObject::setValue(UserObject * /*val*/)
-{
-	throw Utils::NotImplemented("setValue");
-}
-
 
 }

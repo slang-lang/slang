@@ -17,6 +17,8 @@ namespace ObjectiveScript {
 Number::Number(const std::string& value)
 : Object("", "SYSTEM.OS", "Number", value)
 {
+	mIsAtomicType = true;
+
 	Constructor(ParameterList());
 }
 
@@ -40,7 +42,7 @@ void Number::operator_divide(Object *other)
 	float f = Tools::stringToFloat(getValue());
 	f /= Tools::stringToFloat(other->getValue());
 
-	setValue(f);
+	Object::setValue(Tools::toString(f));
 }
 
 void Number::operator_multiply(Object *other)
@@ -48,7 +50,7 @@ void Number::operator_multiply(Object *other)
 	float f = Tools::stringToFloat(getValue());
 	f *= Tools::stringToFloat(other->getValue());
 
-	setValue(f);
+	Object::setValue(Tools::toString(f));
 }
 
 void Number::operator_plus(Object *other)
@@ -56,7 +58,7 @@ void Number::operator_plus(Object *other)
 	float f = Tools::stringToFloat(getValue());
 	f += Tools::stringToFloat(other->getValue());
 
-	setValue(f);
+	Object::setValue(Tools::toString(f));
 }
 
 void Number::operator_subtract(Object *other)
@@ -64,17 +66,12 @@ void Number::operator_subtract(Object *other)
 	float f = Tools::stringToFloat(getValue());
 	f -= Tools::stringToFloat(other->getValue());
 
-	setValue(f);
+	Object::setValue(Tools::toString(f));
 }
 
 std::string Number::ToString() const
 {
 	return getValue();
-}
-
-void Number::setValue(float val)
-{
-	Object::setValue(Tools::toString(val));
 }
 
 

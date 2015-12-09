@@ -31,7 +31,6 @@ Object* Preprocessor::createMember(const std::string& filename, TokenIterator to
 	std::string visibility;
 	bool isConst = false;
 	bool isFinal = false;
-//	bool isSealed = false;
 	bool isStatic = false;
 
 	// look for the visibility token
@@ -42,23 +41,15 @@ Object* Preprocessor::createMember(const std::string& filename, TokenIterator to
 	name = (*token++).content();
 
 	if ( (*token).isOptional() ) {
-/*
 		if ( (*token).content() == "const" ) {
 			isConst = true;
 		}
-		else
-*/
-		if ( (*token).content() == "final" ) {
+		else if ( (*token).content() == "final" ) {
 			isFinal = true;
 		}
 		else if ( (*token).content() == "modify" ) {
 			isConst = false;
 		}
-/*
-		else if ( (*token).content() == "sealed" ) {
-			isSealed = true;
-		}
-*/
 		else if ( (*token).content() == "static" ) {
 			isStatic = true;
 		}

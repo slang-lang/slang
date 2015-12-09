@@ -67,6 +67,8 @@ public:	// Operators
 	virtual std::string ToString() const;
 
 public:
+	bool isAtomicType() const;
+
 	const std::string& name() const;
 	void name(const std::string& name);
 
@@ -85,6 +87,8 @@ public:	// Helpers
 	bool hasMethod(const std::string& m, const ParameterList& params);
 
 protected:
+	bool mIsAtomicType;
+	Repository *mRepository;
 
 private:
 	typedef std::map<std::string, Object*> MemberCollection;
@@ -105,7 +109,6 @@ private:
 	std::string mName;
 	StringList mParents;
 	IPrinter *mPrinter;
-	Repository *mRepository;
 	std::string mValue;
 };
 

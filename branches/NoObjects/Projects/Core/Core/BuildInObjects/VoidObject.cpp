@@ -17,6 +17,9 @@ namespace ObjectiveScript {
 Void::Void()
 : Object("", "SYSTEM.OS", "Void", "")
 {
+	mIsAtomicType = true;
+
+	Constructor(ParameterList());
 }
 
 Void::Void(const Object& object)
@@ -52,10 +55,6 @@ void Void::operator_subtract(Object * /*other*/)
 std::string Void::ToString() const
 {
 	return "";
-}
-
-void Void::setValue(void)
-{
 }
 
 

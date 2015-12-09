@@ -20,28 +20,31 @@ namespace ObjectiveScript {
 
 Object::Object()
 : LocalScope("", 0),
+  mIsAtomicType(false),
+  mRepository(0),
   mConstructed(false),
-  mPrinter(0),
-  mRepository(0)
+  mPrinter(0)
 {
 }
 
 Object::Object(const std::string& type, const std::string& filename)
 : LocalScope("", 0),
   BluePrint(type, filename),
+  mIsAtomicType(false),
+  mRepository(0),
   mConstructed(false),
-  mPrinter(0),
-  mRepository(0)
+  mPrinter(0)
 {
 }
 
 Object::Object(const std::string& name, const std::string& filename, const std::string& type, const std::string& value)
 : LocalScope(name, 0),
   BluePrint(type, filename),
+  mIsAtomicType(false),
+  mRepository(0),
   mConstructed(false),
   mName(name),
   mPrinter(0),
-  mRepository(0),
   mValue(value)
 {
 }
@@ -53,6 +56,10 @@ Object::~Object()
 
 void Object::operator= (const Object& other)
 {
+	if ( this == &other ) {
+		return;
+	}
+
 	if ( !mConstructed ) {
 		mConstructed = other.mConstructed;
 	}
@@ -67,7 +74,7 @@ void Object::operator= (const Object& other)
 	mTypename = other.Typename();
 	mValue = other.getValue();
 
-	this->setConst(other.isConst());
+	//this->setConst(other.isConst());
 	this->setFinal(other.isFinal());
 	this->setStatic(other.isStatic());
 
@@ -376,6 +383,11 @@ bool Object::hasMethod(const std::string& m, const ParameterList& params)
 	}
 
 	return false;
+}
+
+bool Object::isAtomicType() const
+{
+	return mIsAtomicType;
 }
 
 bool Object::isValid() const

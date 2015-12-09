@@ -17,6 +17,8 @@ namespace ObjectiveScript {
 String::String(const std::string& value)
 : Object("", "SYSTEM.OS", "String", value)
 {
+	mIsAtomicType = true;
+
 	Constructor(ParameterList());
 }
 
@@ -27,7 +29,7 @@ String::String(const Object& object)
 
 void String::operator_assign(Object *other)
 {
-	setValue(other->getValue());
+	Object::setValue(other->getValue());
 }
 
 void String::operator_divide(Object * /*other*/)
@@ -53,11 +55,6 @@ void String::operator_subtract(Object * /*other*/)
 std::string String::ToString() const
 {
 	return getValue();
-}
-
-void String::setValue(const std::string& val)
-{
-	Object::setValue(val);
 }
 
 

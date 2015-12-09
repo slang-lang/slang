@@ -17,6 +17,8 @@ namespace ObjectiveScript {
 Bool::Bool(const std::string& value)
 : Object("", "SYSTEM.OS", "Bool", value)
 {
+	mIsAtomicType = true;
+
 	Constructor(ParameterList());
 }
 
@@ -57,12 +59,7 @@ void Bool::operator_subtract(Object * /*other*/)
 
 std::string Bool::ToString() const
 {
-	return getValue();
-}
-
-void Bool::setValue(bool val)
-{
-	Object::setValue(Tools::toString(val));
+	return Object::getValue();
 }
 
 
