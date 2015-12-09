@@ -1,6 +1,6 @@
 #!/usr/bin/oscript
 
-public namespace
+public namespace ConstCorrectness
 {
 	public object Main
 	{
@@ -14,7 +14,7 @@ public namespace
 			ModifyByValueParameter(one);
 
 			one = 0;
-			ModifyByReferenceParameter(one);
+			//ModifyByReferenceParameter(one);
 
 			Number two const = 0;
 			ModifyConstParameter(two);
