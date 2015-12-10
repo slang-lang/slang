@@ -36,7 +36,7 @@ void split(const std::string& str, std::string& p, std::string& c)
 
 bool stringToBool(const std::string &value)
 {
-	if ( value.empty() ) {
+	if ( value.empty() || value == "false" ) {
 		return false;
 	}
 

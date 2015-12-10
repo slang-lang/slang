@@ -228,12 +228,22 @@ bool Preprocessor::isMethodDeclaration(TokenIterator start)
 	return checkSynthax(start, tokens);
 }
 
+bool Preprocessor::isParameterDeclaration(TokenIterator start)
+{
+	TokenList tokens;
+
+	tokens.push_back(Token(Token::Type::IDENTIFER));
+	tokens.push_back(Token(Token::Type::IDENTIFER));
+
+	return checkSynthax(start, tokens);
+}
+
 ParameterList Preprocessor::parseParameters(TokenIterator &token)
 {
 	ParameterList params;
 
 	while ( (*++token).type() != Token::Type::PARENTHESIS_CLOSE ) {
-		if ( !isLocalDeclaration(token) ) {
+		if ( !isLocalDeclaration(token) && !isParameterDeclaration(token) ) {
 			throw Utils::SyntaxError("could not parse parameter declaration!", token->position());
 		}
 

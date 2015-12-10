@@ -106,6 +106,161 @@ void operator_divide(Object *base, Object *value)
 	}
 }
 
+bool operator_equal(Object *base, Object *other)
+{
+	if ( !base ) {
+		throw Utils::NullPointerException("cannot compare null pointer to object");
+	}
+	if ( !other ) {
+		throw Utils::NullPointerException("cannot compare object to null pointer");
+	}
+
+	std::string target = base->Typename();
+
+	if ( target == "Bool" ) {
+		Bool tmp(base->getValue());
+		return tmp.operator_equal(other);
+	}
+	else if ( target == "Number" ) {
+		Number tmp(base->getValue());
+		return tmp.operator_equal(other);
+	}
+	else if ( target == "String" ) {
+		String tmp(base->getValue());
+		return tmp.operator_equal(other);
+	}
+	else if ( target == "Void" ) {
+		Void tmp;
+		return tmp.operator_equal(other);
+	}
+
+	return base->operator_equal(other);
+}
+
+bool operator_greater(Object *base, Object *other)
+{
+	if ( !base ) {
+		throw Utils::NullPointerException("cannot compare null pointer to object");
+	}
+	if ( !other ) {
+		throw Utils::NullPointerException("cannot compare object to null pointer");
+	}
+
+	std::string target = base->Typename();
+
+	if ( target == "Bool" ) {
+		Bool tmp(base->getValue());
+		return tmp.operator_greater(other);
+	}
+	else if ( target == "Number" ) {
+		Number tmp(base->getValue());
+		return tmp.operator_greater(other);
+	}
+	else if ( target == "String" ) {
+		String tmp(base->getValue());
+		return tmp.operator_greater(other);
+	}
+	else if ( target == "Void" ) {
+		Void tmp;
+		return tmp.operator_greater(other);
+	}
+
+	return base->operator_greater(other);
+}
+
+bool operator_greater_equal(Object *base, Object *other)
+{
+	if ( !base ) {
+		throw Utils::NullPointerException("cannot compare null pointer to object");
+	}
+	if ( !other ) {
+		throw Utils::NullPointerException("cannot compare object to null pointer");
+	}
+
+	std::string target = base->Typename();
+
+	if ( target == "Bool" ) {
+		Bool tmp(base->getValue());
+		return tmp.operator_greater_equal(other);
+	}
+	else if ( target == "Number" ) {
+		Number tmp(base->getValue());
+		return tmp.operator_greater_equal(other);
+	}
+	else if ( target == "String" ) {
+		String tmp(base->getValue());
+		return tmp.operator_greater_equal(other);
+	}
+	else if ( target == "Void" ) {
+		Void tmp;
+		return tmp.operator_greater_equal(other);
+	}
+
+	return base->operator_greater_equal(other);
+}
+
+bool operator_less(Object *base, Object *other)
+{
+	if ( !base ) {
+		throw Utils::NullPointerException("cannot compare null pointer to object");
+	}
+	if ( !other ) {
+		throw Utils::NullPointerException("cannot compare object to null pointer");
+	}
+
+	std::string target = base->Typename();
+
+	if ( target == "Bool" ) {
+		Bool tmp(base->getValue());
+		return tmp.operator_less(other);
+	}
+	else if ( target == "Number" ) {
+		Number tmp(base->getValue());
+		return tmp.operator_less(other);
+	}
+	else if ( target == "String" ) {
+		String tmp(base->getValue());
+		return tmp.operator_less(other);
+	}
+	else if ( target == "Void" ) {
+		Void tmp;
+		return tmp.operator_less(other);
+	}
+
+	return base->operator_less(other);
+}
+
+bool operator_less_equal(Object *base, Object *other)
+{
+	if ( !base ) {
+		throw Utils::NullPointerException("cannot compare null pointer to object");
+	}
+	if ( !other ) {
+		throw Utils::NullPointerException("cannot compare object to null pointer");
+	}
+
+	std::string target = base->Typename();
+
+	if ( target == "Bool" ) {
+		Bool tmp(base->getValue());
+		return tmp.operator_less_equal(other);
+	}
+	else if ( target == "Number" ) {
+		Number tmp(base->getValue());
+		return tmp.operator_less_equal(other);
+	}
+	else if ( target == "String" ) {
+		String tmp(base->getValue());
+		return tmp.operator_less_equal(other);
+	}
+	else if ( target == "Void" ) {
+		Void tmp;
+		return tmp.operator_less_equal(other);
+	}
+
+	return base->operator_less_equal(other);
+}
+
 void operator_multiply(Object *base, Object *value)
 {
 	if ( !base ) {
@@ -411,7 +566,7 @@ Object Method::execute(const ParameterList& params)
 void Method::garbageCollector(bool force)
 {
 	for ( MemberCollection::iterator it = mLocalSymbols.begin(); it != mLocalSymbols.end(); ) {
-		if ( it->second->isStatic() && !force ) {
+		if ( it->second && it->second->isStatic() && !force ) {
 			it++;
 			continue;
 		}
@@ -550,21 +705,27 @@ bool Method::parseCondition(TokenIterator& token)
 
 		if ( op == Token::Type::COMPARE_EQUAL ) {
 			v1.setValue( (v1.getValue() == v2.getValue()) ? "true" : "false" );
+			//return operator_equal(&v1, &v2);
 		}
 		else if ( op == Token::Type::COMPARE_GREATER ) {
 			v1.setValue( (v1.getValue() > v2.getValue()) ? "true" : "false" );
+			//return operator_greater(&v1, &v2);
 		}
 		else if ( op == Token::Type::COMPARE_GREATER_EQUAL ) {
 			v1.setValue( (v1.getValue() >= v2.getValue()) ? "true" : "false" );
+			//return operator_greater_equal(&v1, &v2);
 		}
 		else if ( op == Token::Type::COMPARE_LESS ) {
-			v1.setValue( (v1.getValue() < v2.getValue()) ? "true" : "false" );
+			//v1.setValue( (v1.getValue() < v2.getValue()) ? "true" : "false" );
+			return operator_less(&v1, &v2);
 		}
 		else if ( op == Token::Type::COMPARE_LESS_EQUAL ) {
 			v1.setValue( (v1.getValue() <= v2.getValue()) ? "true" : "false" );
+			//return operator_less_equal(&v1, &v2);
 		}
 		else if ( op == Token::Type::COMPARE_UNEQUAL ) {
 			v1.setValue( (v1.getValue() != v2.getValue()) ? "true" : "false" );
+			//return !operator_equal(&v1, &v2);
 		}
 	}
 

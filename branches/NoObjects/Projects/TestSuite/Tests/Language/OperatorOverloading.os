@@ -4,7 +4,7 @@ public namespace OperatorOverloading
 {
 	private object UserObject
 	{
-		public Number mNumber;
+		private Number mNumber;
 
 		public void UserObject(Number one const)
 		{
@@ -28,6 +28,14 @@ public namespace OperatorOverloading
 			print("operator_divide");
 			mNumber = mNumber / other;
 		}
+		public Bool operator_less(Number other const)
+		{
+			return (mNumber < other);
+		}
+		public Bool operator_less(UserObject other const)
+		{
+			return (mNumber < other.GetNumber());
+		}
 		public void operator_multiply(Number other const)
 		{
 			print("operator_multiply");
@@ -49,14 +57,26 @@ public namespace OperatorOverloading
 	{
 		public void Main(Number argc const = 0, String argv const = "")
 		{
-			UserObject obj = new UserObject(1);
-			obj = obj + 1;
-			obj = obj - 1;
-			obj = obj * 1;
-			obj = obj / 1;
+			UserObject obj1 = new UserObject(1);
+			obj1 = obj1 + 1;
+			obj1 = obj1 - 1;
+			obj1 = obj1 * 1;
+			obj1 = obj1 / 1;
 
-			print("obj.mNumber = " & obj.mNumber);
-			print("obj.GetNumber() = " & obj.GetNumber());
+			print("obj1.mNumber = " & obj1.mNumber);
+			print("obj1.GetNumber() = " & obj1.GetNumber());
+
+			UserObject obj2 = new UserObject(2);
+
+			assert( obj1 == 1 );
+			if ( obj1 == 1 ) {
+				print("obj1 == 1");
+			}
+
+			assert( obj1 < obj2 );
+			if ( obj1 < obj2 ) {
+				print(obj1 + " is smaller than " + obj2);
+			}
 		}
 	}
 }

@@ -75,7 +75,7 @@ public namespace stable AttributeTest
 
 			print(getTwo());
 
-			delete value;
+			//delete value;
 		}
 
 		public void ~Main()

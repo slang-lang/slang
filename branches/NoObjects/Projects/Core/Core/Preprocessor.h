@@ -43,6 +43,7 @@ private:
 	bool isLocalDeclaration(TokenIterator start);
 	bool isMemberDeclaration(TokenIterator start);
 	bool isMethodDeclaration(TokenIterator start);
+	bool isParameterDeclaration(TokenIterator start);
 
 	ParameterList parseParameters(TokenIterator &token);
 

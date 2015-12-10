@@ -54,56 +54,56 @@ Object::~Object()
 	garbageCollector();
 }
 
-void Object::operator= (const Object& other)
+Object& Object::operator= (const Object& other)
 {
-	if ( this == &other ) {
-		return;
+	if ( this != &other ) {
+		if ( !mConstructed ) {
+			mConstructed = other.mConstructed;
+		}
+		if ( !mPrinter ) {
+			mPrinter = other.mPrinter;
+		}
+		if ( !mRepository ) {
+			mRepository = other.mRepository;
+		}
+
+		mTokens = other.mTokens;
+		mTypename = other.Typename();
+		mValue = other.getValue();
+
+		//this->setConst(other.isConst());
+		this->setFinal(other.isFinal());
+		this->setStatic(other.isStatic());
+
+		// unregister current members
+		for ( MemberCollection::const_iterator it = mMembers.begin(); it != mMembers.end(); ) {
+			mRepository->removeReference(it->second);
+			it = mMembers.erase(it);
+		}
+		mMembers.clear();
+
+		// register new members
+		for ( MemberCollection::const_iterator it = other.mMembers.begin(); it != other.mMembers.end(); ++it ) {
+			addMember(it->second);
+		}
+
+		// unregister old methods
+		for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ) {
+			delete (*it);
+			it = mMethods.erase(it);
+		}
+		mMethods.clear();
+
+		// register new methods
+		for ( MethodCollection::const_iterator it = other.mMethods.begin(); it != other.mMethods.end(); ++it ) {
+			Method *m = new Method(this, (*it)->name(), (*it)->type());
+			*m = *(*it);
+
+			addMethod(m);
+		}
 	}
 
-	if ( !mConstructed ) {
-		mConstructed = other.mConstructed;
-	}
-	if ( !mPrinter ) {
-		mPrinter = other.mPrinter;
-	}
-	if ( !mRepository ) {
-		mRepository = other.mRepository;
-	}
-
-	mTokens = other.mTokens;
-	mTypename = other.Typename();
-	mValue = other.getValue();
-
-	//this->setConst(other.isConst());
-	this->setFinal(other.isFinal());
-	this->setStatic(other.isStatic());
-
-	// unregister current members
-	for ( MemberCollection::const_iterator it = mMembers.begin(); it != mMembers.end(); ) {
-		mRepository->removeReference(it->second);
-		it = mMembers.erase(it);
-	}
-	mMembers.clear();
-
-	// register new members
-	for ( MemberCollection::const_iterator it = other.mMembers.begin(); it != other.mMembers.end(); ++it ) {
-		addMember(it->second);
-	}
-
-	// unregister old methods
-	for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ) {
-		delete (*it);
-		it = mMethods.erase(it);
-	}
-	mMethods.clear();
-
-	// register new methods
-	for ( MethodCollection::const_iterator it = other.mMethods.begin(); it != other.mMethods.end(); ++it ) {
-		Method *m = new Method(this, (*it)->name(), (*it)->type());
-		*m = *(*it);
-
-		addMethod(m);
-	}
+	return *this;
 }
 
 void Object::addMember(Object *m)
@@ -413,6 +413,31 @@ void Object::operator_assign(Object * /*other*/)
 void Object::operator_divide(Object * /*other*/)
 {
 	throw Utils::NotImplemented(ToString() + ", operator/");
+}
+
+bool Object::operator_equal(Object * /*other*/)
+{
+	throw Utils::NotImplemented(ToString() + ", operator==");
+}
+
+bool Object::operator_greater(Object * /*other*/)
+{
+	throw Utils::NotImplemented(ToString() + ", operator>");
+}
+
+bool Object::operator_greater_equal(Object * /*other*/)
+{
+	throw Utils::NotImplemented(ToString() + ", operator>=");
+}
+
+bool Object::operator_less(Object * /*other*/)
+{
+	throw Utils::NotImplemented(ToString() + ", operator<");
+}
+
+bool Object::operator_less_equal(Object * /*other*/)
+{
+	throw Utils::NotImplemented(ToString() + ", operator<=");
 }
 
 void Object::operator_multiply(Object * /*other*/)
