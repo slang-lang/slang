@@ -32,14 +32,9 @@ void String::operator_assign(Object *other)
 	Object::setValue(other->getValue());
 }
 
-void String::operator_divide(Object * /*other*/)
+bool String::operator_equal(Object *other)
 {
-	throw Utils::NotImplemented("operator/");
-}
-
-void String::operator_multiply(Object * /*other*/)
-{
-	throw Utils::NotImplemented("operator*");
+	return (this->getValue() == other->getValue());
 }
 
 void String::operator_plus(Object *other)
@@ -47,14 +42,9 @@ void String::operator_plus(Object *other)
 	setValue(getValue() + other->getValue());
 }
 
-void String::operator_subtract(Object * /*other*/)
-{
-	throw Utils::NotImplemented("operator-");
-}
-
 std::string String::ToString() const
 {
-	return getValue();
+	return Typename() + " " + name() + " = " + getValue();
 }
 
 

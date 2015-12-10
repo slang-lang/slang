@@ -26,6 +26,11 @@ public:
 public:	// Operators
 	virtual void operator_assign(Object *other);
 	virtual void operator_divide(Object *other);
+	virtual bool operator_equal(Object *other);
+	virtual bool operator_greater(Object *other);
+	virtual bool operator_greater_equal(Object *other);
+	virtual bool operator_less(Object *other);
+	virtual bool operator_less_equal(Object *other);
 	virtual void operator_multiply(Object *other);
 	virtual void operator_plus(Object *other);
 	virtual void operator_subtract(Object *other);

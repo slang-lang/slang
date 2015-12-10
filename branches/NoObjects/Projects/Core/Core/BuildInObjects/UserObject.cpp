@@ -46,6 +46,61 @@ void UserObject::operator_divide(Object *other)
 	this->execute(&tmp, "operator_divide", params, 0);
 }
 
+bool UserObject::operator_equal(Object *other)
+{
+	ParameterList params;
+	params.push_back(Parameter(other->name(), other->Typename(), other->getValue()));
+
+	Object tmp;
+	this->execute(&tmp, "operator_equal", params, 0);
+
+	return tmp.isValid();
+}
+
+bool UserObject::operator_greater(Object *other)
+{
+	ParameterList params;
+	params.push_back(Parameter(other->name(), other->Typename(), other->getValue()));
+
+	Object tmp;
+	this->execute(&tmp, "operator_greater", params, 0);
+
+	return tmp.isValid();
+}
+
+bool UserObject::operator_greater_equal(Object *other)
+{
+	ParameterList params;
+	params.push_back(Parameter(other->name(), other->Typename(), other->getValue()));
+
+	Object tmp;
+	this->execute(&tmp, "operator_greater_equal", params, 0);
+
+	return tmp.isValid();
+}
+
+bool UserObject::operator_less(Object *other)
+{
+	ParameterList params;
+	params.push_back(Parameter(other->name(), other->Typename(), other->getValue()));
+
+	Object tmp;
+	this->execute(&tmp, "operator_less", params, 0);
+
+	return tmp.isValid();
+}
+
+bool UserObject::operator_less_equal(Object *other)
+{
+	ParameterList params;
+	params.push_back(Parameter(other->name(), other->Typename(), other->getValue()));
+
+	Object tmp;
+	this->execute(&tmp, "operator_less_equal", params, 0);
+
+	return tmp.isValid();
+}
+
 void UserObject::operator_multiply(Object *other)
 {
 	ParameterList params;
@@ -81,7 +136,7 @@ void UserObject::operator_subtract(Object *other)
 
 std::string UserObject::ToString() const
 {
-	return getValue();
+	return Typename() + " " + name() + " = " + getValue();
 }
 
 

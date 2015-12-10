@@ -14,8 +14,18 @@
 namespace ObjectiveScript {
 
 
+Bool::Bool(bool value)
+: Object("", "SYSTEM.OS", "Bool", ""),
+  mValue(value)
+{
+	mIsAtomicType = true;
+
+	Constructor(ParameterList());
+}
+
 Bool::Bool(const std::string& value)
-: Object("", "SYSTEM.OS", "Bool", value)
+: Object("", "SYSTEM.OS", "Bool", value),
+  mValue(Tools::stringToBool(value))
 {
 	mIsAtomicType = true;
 
@@ -23,43 +33,36 @@ Bool::Bool(const std::string& value)
 }
 
 Bool::Bool(const Object& object)
-: Object(object.name(), "SYSTEM.OS", "Bool", object.getValue())
+: Object(object.name(), "SYSTEM.OS", "Bool", object.getValue()),
+  mValue(Tools::stringToFloat(object.getValue()))
 {
+}
+
+std::string Bool::getValue() const
+{
+	return Tools::toString(mValue);
 }
 
 bool Bool::isValid() const
 {
-	return Tools::stringToBool(Object::getValue());
+	return true;
 }
 
 void Bool::operator_assign(Object *other)
 {
+	mValue = Tools::stringToBool(other->getValue());
+
 	Object::setValue(other->getValue());
 }
 
-void Bool::operator_divide(Object * /*other*/)
+bool Bool::operator_equal(Object *other)
 {
-	throw Utils::NotImplemented("operator/");
-}
-
-void Bool::operator_multiply(Object * /*other*/)
-{
-	throw Utils::NotImplemented("operator*");
-}
-
-void Bool::operator_plus(Object * /*other*/)
-{
-	throw Utils::NotImplemented("operator+");
-}
-
-void Bool::operator_subtract(Object * /*other*/)
-{
-	throw Utils::NotImplemented("operator-");
+	return (mValue == Tools::stringToBool(other->getValue()));
 }
 
 std::string Bool::ToString() const
 {
-	return Object::getValue();
+	return Typename() + " " + name() + " = " + getValue();
 }
 
 

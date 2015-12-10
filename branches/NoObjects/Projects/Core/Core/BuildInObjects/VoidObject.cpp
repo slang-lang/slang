@@ -27,34 +27,9 @@ Void::Void(const Object& object)
 {
 }
 
-void Void::operator_assign(Object * /*other*/)
-{
-	throw Utils::NotImplemented("operator=");
-}
-
-void Void::operator_divide(Object * /*other*/)
-{
-	throw Utils::NotImplemented("operator/");
-}
-
-void Void::operator_multiply(Object * /*other*/)
-{
-	throw Utils::NotImplemented("operator*");
-}
-
-void Void::operator_plus(Object * /*other*/)
-{
-	throw Utils::NotImplemented("operator+");
-}
-
-void Void::operator_subtract(Object * /*other*/)
-{
-	throw Utils::NotImplemented("operator-");
-}
-
 std::string Void::ToString() const
 {
-	return "";
+	return Typename() + " " + name() + " = " + getValue();
 }
 
 

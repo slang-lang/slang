@@ -14,8 +14,18 @@
 namespace ObjectiveScript {
 
 
+Number::Number(float value)
+: Object("", "SYSTEM.OS", "Number", ""),
+  mValue(value)
+{
+	mIsAtomicType = true;
+
+	Constructor(ParameterList());
+}
+
 Number::Number(const std::string& value)
-: Object("", "SYSTEM.OS", "Number", value)
+: Object("", "SYSTEM.OS", "Number", value),
+  mValue(Tools::stringToFloat(value))
 {
 	mIsAtomicType = true;
 
@@ -23,55 +33,84 @@ Number::Number(const std::string& value)
 }
 
 Number::Number(const Object& object)
-: Object(object.name(), "SYSTEM.OS", "Number", object.getValue())
+: Object(object.name(), "SYSTEM.OS", "Number", object.getValue()),
+  mValue(0.f)
 {
+}
+
+std::string Number::getValue() const
+{
+	return Tools::toString(mValue);
 }
 
 bool Number::isValid() const
 {
-	return Tools::stringToFloat(Object::getValue()) != 0.f;
+	return true;
 }
 
 void Number::operator_assign(Object *other)
 {
+	mValue = Tools::stringToFloat(other->getValue());
+
 	Object::setValue(other->getValue());
 }
 
 void Number::operator_divide(Object *other)
 {
-	float f = Tools::stringToFloat(getValue());
-	f /= Tools::stringToFloat(other->getValue());
+	mValue /= Tools::stringToFloat(other->getValue());
 
-	Object::setValue(Tools::toString(f));
+	Object::setValue(Tools::toString(mValue));
+}
+
+bool Number::operator_equal(Object *other)
+{
+	return (mValue == Tools::stringToFloat(other->getValue()));
+}
+
+bool Number::operator_greater(Object *other)
+{
+	return (mValue > Tools::stringToFloat(other->getValue()));
+}
+
+bool Number::operator_greater_equal(Object *other)
+{
+	return (mValue >= Tools::stringToFloat(other->getValue()));
+}
+
+bool Number::operator_less(Object *other)
+{
+	return (mValue < Tools::stringToFloat(other->getValue()));
+}
+
+bool Number::operator_less_equal(Object *other)
+{
+	return (mValue <= Tools::stringToFloat(other->getValue()));
 }
 
 void Number::operator_multiply(Object *other)
 {
-	float f = Tools::stringToFloat(getValue());
-	f *= Tools::stringToFloat(other->getValue());
+	mValue *= Tools::stringToFloat(other->getValue());
 
-	Object::setValue(Tools::toString(f));
+	Object::setValue(Tools::toString(mValue));
 }
 
 void Number::operator_plus(Object *other)
 {
-	float f = Tools::stringToFloat(getValue());
-	f += Tools::stringToFloat(other->getValue());
+	mValue += Tools::stringToFloat(other->getValue());
 
-	Object::setValue(Tools::toString(f));
+	Object::setValue(Tools::toString(mValue));
 }
 
 void Number::operator_subtract(Object *other)
 {
-	float f = Tools::stringToFloat(getValue());
-	f -= Tools::stringToFloat(other->getValue());
+	mValue -= Tools::stringToFloat(other->getValue());
 
-	Object::setValue(Tools::toString(f));
+	Object::setValue(Tools::toString(mValue));
 }
 
 std::string Number::ToString() const
 {
-	return getValue();
+	return Typename() + " " + name() + " = " + getValue();
 }
 
 
