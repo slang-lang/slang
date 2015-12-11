@@ -58,7 +58,7 @@ public:
 	const ParameterList& provideSignature() const;
 
 public:	// Execution
-	Object execute(const ParameterList& params);
+	void execute(const ParameterList& params, Object *result);
 
 protected:
 

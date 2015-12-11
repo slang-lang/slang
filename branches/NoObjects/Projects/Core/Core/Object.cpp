@@ -208,7 +208,7 @@ void Object::Destructor()
 
 void Object::execute(Object *result, const std::string& method, const ParameterList& params, const Method* caller)
 {
-	//OSdebug("execute('" + method + "', [" + toString(params) + "])");
+	OSdebug("execute('" + method + "', [" + toString(params) + "])");
 
 	MethodCollection::iterator mIt;
 	bool success = findMethod(method, params, mIt);
@@ -230,13 +230,13 @@ void Object::execute(Object *result, const std::string& method, const ParameterL
 
 	try {
 		// execute our member method
-		*result = mPtr->execute(params);
+		mPtr->execute(params, result);
 	}
 	catch ( Utils::Exception &e ) {
 		// catch and log all errors that occured during method execution
 		OSerror(e.what());
 
-		mPrinter->print(ToString());
+		mPrinter->print(ToString() + ": " + e.what());
 
 		throw;
 	}
@@ -458,11 +458,6 @@ void Object::operator_subtract(Object * /*other*/)
 IPrinter* Object::providePrinter() const
 {
 	return mPrinter;
-}
-
-void Object::setName(const std::string& name)
-{
-	mName = name;
 }
 
 void Object::setValue(const std::string& value)

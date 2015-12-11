@@ -50,7 +50,7 @@ float Number::getNativeValue() const
 
 std::string Number::getValue() const
 {
-	return Tools::toString(mValue);
+	return Tools::floatToString(mValue);
 }
 
 bool Number::isValid() const

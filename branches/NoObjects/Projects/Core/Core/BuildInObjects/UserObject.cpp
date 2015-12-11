@@ -147,7 +147,7 @@ void UserObject::operator_subtract(Object *other)
 
 std::string UserObject::ToString() const
 {
-	return Typename() + " " + getName() + " = " + getValue();
+	return Typename() + " " + getName();// + " = " + getValue();
 }
 
 

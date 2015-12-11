@@ -142,7 +142,7 @@ void Method::addIdentifier(Object *object)
 	mLocalSymbols[object->getName()] = object;
 }
 
-Object Method::execute(const ParameterList& params)
+void Method::execute(const ParameterList& params, Object *result)
 {
 	if ( !isSignatureValid(params) ) {
 		throw Utils::ParameterCountMissmatch("number or type of parameters incorrect");
@@ -195,17 +195,22 @@ Object Method::execute(const ParameterList& params)
 		}
 	}
 
+	result->overrideName(name());
+	result->overrideType(type());
+
+/*
 	Object result(name(), type());
 	result.connectRepository(mRepository);
 	result.visibility(visibility());
-
+*/
 	TokenIterator start = mTokens.begin();
-	process(&result, start, mTokens.end());
+	process(result, start, mTokens.end());
 
 	// let the garbage collector do it's magic after we gathered our result
 	garbageCollector();
-
+/*
 	return result;
+*/
 }
 
 void Method::garbageCollector(bool force)
@@ -349,8 +354,8 @@ bool Method::parseCondition(TokenIterator& token)
 		parseExpression(&v2, token);
 
 		if ( op == Token::Type::COMPARE_EQUAL ) {
-			v1.setValue( (v1.getValue() == v2.getValue()) ? "true" : "false" );
-			//return operator_equal(&v1, &v2);
+			//v1.setValue( (v1.getValue() == v2.getValue()) ? "true" : "false" );
+			return operator_equal(&v1, &v2);
 		}
 		else if ( op == Token::Type::COMPARE_GREATER ) {
 			v1.setValue( (v1.getValue() > v2.getValue()) ? "true" : "false" );

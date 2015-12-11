@@ -9,7 +9,6 @@ public namespace MathOverloads
 		public void OverloadedObject(Number one const)
 		{
 			mNumber = one;
-			mNumber = 1;
 		}
 
 		public Number GetNumber() const

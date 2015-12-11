@@ -198,7 +198,7 @@ Object* Repository::createObject(const std::string& name, const std::string& fil
 	}
 
 	if ( object ) {
-		object->setName(name);
+		object->overrideName(name);
 	}
 
 	return object;

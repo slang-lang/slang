@@ -30,6 +30,8 @@ OperatorTest::OperatorTest(const ::Utils::Common::Logger *p)
 
 void OperatorTest::process()
 {
+	//TEST(testBooleanOverloads_Equality);
+	TEST(testBooleanOverloads_Less);
 	TEST(testMathOverloadsWithNumbers);
 	TEST(testMathOverloadsWithObjects);
 }
@@ -42,6 +44,38 @@ void OperatorTest::teardown()
 {
 }
 
+void OperatorTest::testBooleanOverloads_Equality()
+{
+	try {
+		VirtualMachine vm;
+		vm.setPrinter(&mStdoutPrinter);
+
+		vm.create("Tests/Operator/BooleanOverloads_Equality.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void OperatorTest::testBooleanOverloads_Less()
+{
+	try {
+		VirtualMachine vm;
+		vm.setPrinter(&mStdoutPrinter);
+
+		vm.create("Tests/Operator/BooleanOverloads_Less.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
 void OperatorTest::testMathOverloadsWithNumbers()
 {
 	try {
@@ -51,9 +85,6 @@ void OperatorTest::testMathOverloadsWithNumbers()
 		vm.create("Tests/Operator/MathOverloadsWithNumbers.os");
 
 		// automatic success
-	}
-	catch ( ObjectiveScript::Utils::AssertionFailed& /*e*/ ) {
-		// success
 	}
 	catch ( std::exception& e ) {
 		// exception has been thrown: test failed!
@@ -70,9 +101,6 @@ void OperatorTest::testMathOverloadsWithObjects()
 		vm.create("Tests/Operator/MathOverloadsWithObjects.os");
 
 		// automatic success
-	}
-	catch ( ObjectiveScript::Utils::AssertionFailed& /*e*/ ) {
-		// success
 	}
 	catch ( std::exception& e ) {
 		// exception has been thrown: test failed!

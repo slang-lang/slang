@@ -74,7 +74,12 @@ public:	// Operators
 public:
 	bool isAtomicType() const;
 
-	void setName(const std::string& name);
+	void overrideName(const std::string& name) {
+		mName = name;
+	}
+	void overrideType(const std::string& type) {
+		mTypename = type;
+	}
 
 	virtual std::string getValue() const;
 	virtual void setValue(const std::string& value);

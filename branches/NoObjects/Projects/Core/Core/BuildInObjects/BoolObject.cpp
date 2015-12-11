@@ -50,7 +50,7 @@ bool Bool::getNativeValue() const
 
 std::string Bool::getValue() const
 {
-	return Tools::toString(mValue);
+	return Tools::boolToString(mValue);
 }
 
 bool Bool::isValid() const

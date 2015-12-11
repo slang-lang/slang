@@ -34,6 +34,20 @@ void split(const std::string& str, std::string& p, std::string& c)
 	}
 }
 
+std::string boolToString(bool value)
+{
+	if ( value ) {
+		return "true";
+	}
+
+	return "false";
+}
+
+std::string floatToString(float value)
+{
+	return toString(value);
+}
+
 bool stringToBool(const std::string &value)
 {
 	if ( value.empty() || value == "false" ) {
