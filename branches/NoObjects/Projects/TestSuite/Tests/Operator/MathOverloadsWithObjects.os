@@ -55,7 +55,7 @@ public namespace MathOverloads
 
 		private Bool TestCase1()
 		{
-			print("Starting TestCase1: using the overloaded plus operator");
+			print("TestCase1: using the overloaded plus operator");
 
 			OverloadedObject obj1 = new OverloadedObject(1);
 			OverloadedObject obj2 = new OverloadedObject(2);
@@ -69,7 +69,7 @@ public namespace MathOverloads
 
 		private Bool TestCase2()
 		{
-			print("Starting TestCase2: using the overloaded subtract operator");
+			print("TestCase2: using the overloaded subtract operator");
 
 			OverloadedObject obj1 = new OverloadedObject(1);
 			OverloadedObject obj2 = new OverloadedObject(2);
@@ -83,7 +83,7 @@ public namespace MathOverloads
 
 		private Bool TestCase3()
 		{
-			print("Starting TestCase3: using the overloaded multiply operator");
+			print("TestCase3: using the overloaded multiply operator");
 
 			OverloadedObject obj1 = new OverloadedObject(1);
 			OverloadedObject obj2 = new OverloadedObject(2);
@@ -97,7 +97,7 @@ public namespace MathOverloads
 
 		private Bool TestCase4()
 		{
-			print("Starting TestCase4: using the overloaded divide operator");
+			print("TestCase4: using the overloaded divide operator");
 
 			OverloadedObject obj1 = new OverloadedObject(1);
 			OverloadedObject obj2 = new OverloadedObject(2);
