@@ -33,9 +33,14 @@ Number::Number(const std::string& value)
 }
 
 Number::Number(const Object& object)
-: Object(object.name(), "SYSTEM.OS", "Number", object.getValue()),
+: Object(object.getName(), "SYSTEM.OS", "Number", object.getValue()),
   mValue(0.f)
 {
+}
+
+Number::operator bool() const
+{
+	return mValue != 0.f;
 }
 
 std::string Number::getValue() const
@@ -110,7 +115,7 @@ void Number::operator_subtract(Object *other)
 
 std::string Number::ToString() const
 {
-	return Typename() + " " + name() + " = " + getValue();
+	return Typename() + " " + getName() + " = " + getValue();
 }
 
 

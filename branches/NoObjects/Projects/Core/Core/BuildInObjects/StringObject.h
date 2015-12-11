@@ -24,6 +24,8 @@ public:
 	String(const Object& object);
 
 public:	// Operators
+	virtual operator bool() const;
+
 	virtual void operator_assign(Object *other);
 	virtual bool operator_equal(Object *other);
 	virtual void operator_plus(Object *other);

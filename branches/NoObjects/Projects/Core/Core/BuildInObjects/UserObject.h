@@ -24,6 +24,8 @@ public:
 	UserObject(const Object& object);
 
 public:	// Operators
+	virtual operator bool();
+
 	virtual void operator_assign(Object *other);
 	virtual void operator_divide(Object *other);
 	virtual bool operator_equal(Object *other);

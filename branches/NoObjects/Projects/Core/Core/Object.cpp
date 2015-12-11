@@ -43,7 +43,7 @@ Object::Object(const std::string& name, const std::string& filename, const std::
   mIsAtomicType(false),
   mRepository(0),
   mConstructed(false),
-  mName(name),
+//  mName(name),
   mPrinter(0),
   mValue(value)
 {
@@ -110,11 +110,11 @@ void Object::addMember(Object *m)
 {
 	assert(m);
 
-	if ( mMembers.find(m->name()) != mMembers.end() ) {
-		throw Utils::DuplicateIdentiferException("duplicate member '" + m->name() + "' added");
+	if ( mMembers.find(m->getName()) != mMembers.end() ) {
+		throw Utils::DuplicateIdentiferException("duplicate member '" + m->getName() + "' added");
 	}
 
-	mMembers.insert(std::make_pair(m->name(), m));
+	mMembers.insert(std::make_pair(m->getName(), m));
 
 	mRepository->addReference(m);
 }
@@ -124,7 +124,7 @@ void Object::addMethod(Method *m)
 	assert(m);
 
 	if ( mMethods.find(m) != mMethods.end() ) {
-		throw Utils::DuplicateIdentiferException("duplicate method '" + m->name() + "' added with same signature");
+		throw Utils::DuplicateIdentiferException("duplicate method '" + m->getName() + "' added with same signature");
 	}
 
 	m->setOwner(this);
@@ -159,7 +159,7 @@ void Object::connectRepository(Repository *r)
 void Object::Constructor(const ParameterList& params)
 {
 	if ( mConstructed ) {
-		throw Utils::Exception("can not construct object '" + name() + "' multiple times");
+		throw Utils::Exception("can not construct object '" + getName() + "' multiple times");
 	}
 
 	if ( !mConstructed ) {
@@ -329,7 +329,7 @@ Object* Object::getMember(const std::string& m)
 			return it->second;
 		}
 
-		if ( it->second->name() == parent ) {
+		if ( it->second->getName() == parent ) {
 			return it->second->getMember(member);
 		}
 	}
@@ -340,7 +340,7 @@ Object* Object::getMember(const std::string& m)
 bool Object::hasMethod(const std::string& m)
 {
 	for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
-		if ( (*it)->name() == m ) {
+		if ( (*it)->getName() == m ) {
 			return true;
 		}
 	}
@@ -392,17 +392,7 @@ bool Object::isAtomicType() const
 
 bool Object::isValid() const
 {
-	return mConstructed /*&& mValue != "0"*/;
-}
-
-const std::string& Object::name() const
-{
-	return mName;
-}
-
-void Object::name(const std::string& name)
-{
-	mName = name;
+	return mConstructed;
 }
 
 void Object::operator_assign(Object * /*other*/)
@@ -460,9 +450,14 @@ IPrinter* Object::providePrinter() const
 	return mPrinter;
 }
 
+void Object::setName(const std::string& name)
+{
+	mName = name;
+}
+
 std::string Object::ToString() const
 {
-	std::string result = "Object: " + name() + " <" + Typename() + "> = { ";
+	std::string result = "Object: " + getName() + " <" + Typename() + "> = { ";
 
 	for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
 		result += (*it)->type() + " " + (*it)->name();

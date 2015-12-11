@@ -33,9 +33,14 @@ Bool::Bool(const std::string& value)
 }
 
 Bool::Bool(const Object& object)
-: Object(object.name(), "SYSTEM.OS", "Bool", object.getValue()),
-  mValue(Tools::stringToFloat(object.getValue()))
+: Object(object.getName(), "SYSTEM.OS", "Bool", object.getValue()),
+  mValue(Tools::stringToBool(object.getValue()))
 {
+}
+
+Bool::operator bool() const
+{
+	return mValue;
 }
 
 std::string Bool::getValue() const
@@ -62,7 +67,7 @@ bool Bool::operator_equal(Object *other)
 
 std::string Bool::ToString() const
 {
-	return Typename() + " " + name() + " = " + getValue();
+	return Typename() + " " + getName() + " = " + getValue();
 }
 
 

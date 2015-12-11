@@ -104,11 +104,11 @@ void Repository::addReference(Object *object)
 	}
 
 	switch ( object->languageFeatureState() ) {
-		case LanguageFeatureState::Deprecated: OSwarn("method '" + object->name() + "' is marked as deprecated!"); break;
-		case LanguageFeatureState::NotImplemented: OSerror("method '" + object->name() + "' is marked as not implemented!"); throw Utils::NotImplemented(object->name()); break;
+		case LanguageFeatureState::Deprecated: OSwarn("method '" + object->getName() + "' is marked as deprecated!"); break;
+		case LanguageFeatureState::NotImplemented: OSerror("method '" + object->getName() + "' is marked as not implemented!"); throw Utils::NotImplemented(object->getName()); break;
 		case LanguageFeatureState::Stable: /* this is the normal language feature state, so no need to log anything here */ break;
-		case LanguageFeatureState::Unknown: OSerror("unknown language feature state set for method '" + object->name() + "'!"); break;
-		case LanguageFeatureState::Unstable: OSwarn("method '" + object->name() + "' is marked as unstable!"); break;
+		case LanguageFeatureState::Unknown: OSerror("unknown language feature state set for method '" + object->getName() + "'!"); break;
+		case LanguageFeatureState::Unstable: OSwarn("method '" + object->getName() + "' is marked as unstable!"); break;
 	}
 
 	ReferenceCountedObjects::iterator it = mInstances.find(object);
@@ -198,7 +198,7 @@ Object* Repository::createObject(const std::string& name, const std::string& fil
 	}
 
 	if ( object ) {
-		object->name(name);
+		object->setName(name);
 	}
 
 	return object;

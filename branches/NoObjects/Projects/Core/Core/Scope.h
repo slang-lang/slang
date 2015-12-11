@@ -85,9 +85,9 @@ public:	// IScope implementation
 	}
 
 protected:
+	std::string mName;
 
 private:
-	std::string mName;
 	IScope *mParent;
 	Symbols mSymbols;
 };

@@ -7,6 +7,7 @@
 // Project includes
 #include <Core/Utils/Exceptions.h>
 #include <Core/Tools.h>
+#include "BoolObject.h"
 
 // Namespace declarations
 
@@ -20,15 +21,25 @@ UserObject::UserObject(const std::string& name, const std::string& filename, con
 }
 
 UserObject::UserObject(const Object& object)
-: Object(object.name(), object.Filename(), object.Typename(), object.getValue())
+: Object(object.getName(), object.Filename(), object.Typename(), object.getValue())
 {
+}
+
+UserObject::operator bool()
+{
+	ParameterList params;
+	// empty parameter list
+
+	Bool tmp;
+	this->execute(&tmp, "operator_bool", params, 0);
+	return tmp;
 }
 
 void UserObject::operator_assign(Object *other)
 {
 	ParameterList params;
 	params.push_back(
-		Parameter(other->name(), other->Typename(), other->getValue())
+		Parameter(other->getName(), other->Typename(), other->getValue())
 	);
 
 	Object tmp;
@@ -39,7 +50,7 @@ void UserObject::operator_divide(Object *other)
 {
 	ParameterList params;
 	params.push_back(
-		Parameter(other->name(), other->Typename(), other->getValue())
+		Parameter(other->getName(), other->Typename(), other->getValue())
 	);
 
 	Object tmp;
@@ -49,7 +60,7 @@ void UserObject::operator_divide(Object *other)
 bool UserObject::operator_equal(Object *other)
 {
 	ParameterList params;
-	params.push_back(Parameter(other->name(), other->Typename(), other->getValue()));
+	params.push_back(Parameter(other->getName(), other->Typename(), other->getValue()));
 
 	Object tmp;
 	this->execute(&tmp, "operator_equal", params, 0);
@@ -60,7 +71,7 @@ bool UserObject::operator_equal(Object *other)
 bool UserObject::operator_greater(Object *other)
 {
 	ParameterList params;
-	params.push_back(Parameter(other->name(), other->Typename(), other->getValue()));
+	params.push_back(Parameter(other->getName(), other->Typename(), other->getValue()));
 
 	Object tmp;
 	this->execute(&tmp, "operator_greater", params, 0);
@@ -71,7 +82,7 @@ bool UserObject::operator_greater(Object *other)
 bool UserObject::operator_greater_equal(Object *other)
 {
 	ParameterList params;
-	params.push_back(Parameter(other->name(), other->Typename(), other->getValue()));
+	params.push_back(Parameter(other->getName(), other->Typename(), other->getValue()));
 
 	Object tmp;
 	this->execute(&tmp, "operator_greater_equal", params, 0);
@@ -82,7 +93,7 @@ bool UserObject::operator_greater_equal(Object *other)
 bool UserObject::operator_less(Object *other)
 {
 	ParameterList params;
-	params.push_back(Parameter(other->name(), other->Typename(), other->getValue()));
+	params.push_back(Parameter(other->getName(), other->Typename(), other->getValue()));
 
 	Object tmp;
 	this->execute(&tmp, "operator_less", params, 0);
@@ -93,7 +104,7 @@ bool UserObject::operator_less(Object *other)
 bool UserObject::operator_less_equal(Object *other)
 {
 	ParameterList params;
-	params.push_back(Parameter(other->name(), other->Typename(), other->getValue()));
+	params.push_back(Parameter(other->getName(), other->Typename(), other->getValue()));
 
 	Object tmp;
 	this->execute(&tmp, "operator_less_equal", params, 0);
@@ -105,7 +116,7 @@ void UserObject::operator_multiply(Object *other)
 {
 	ParameterList params;
 	params.push_back(
-		Parameter(other->name(), other->Typename(), other->getValue())
+		Parameter(other->getName(), other->Typename(), other->getValue())
 	);
 
 	Object tmp;
@@ -116,7 +127,7 @@ void UserObject::operator_plus(Object *other)
 {
 	ParameterList params;
 	params.push_back(
-		Parameter(other->name(), other->Typename(), other->getValue())
+		Parameter(other->getName(), other->Typename(), other->getValue())
 	);
 
 	Object tmp;
@@ -127,7 +138,7 @@ void UserObject::operator_subtract(Object *other)
 {
 	ParameterList params;
 	params.push_back(
-		Parameter(other->name(), other->Typename(), other->getValue())
+		Parameter(other->getName(), other->Typename(), other->getValue())
 	);
 
 	Object tmp;
@@ -136,7 +147,7 @@ void UserObject::operator_subtract(Object *other)
 
 std::string UserObject::ToString() const
 {
-	return Typename() + " " + name() + " = " + getValue();
+	return Typename() + " " + getName() + " = " + getValue();
 }
 
 

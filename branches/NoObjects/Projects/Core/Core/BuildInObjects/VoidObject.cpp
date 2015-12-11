@@ -23,13 +23,18 @@ Void::Void()
 }
 
 Void::Void(const Object& object)
-: Object(object.name(), "SYSTEM.OS", "Void", object.getValue())
+: Object(object.getName(), "SYSTEM.OS", "Void", object.getValue())
 {
+}
+
+Void::operator bool() const
+{
+	return false;
 }
 
 std::string Void::ToString() const
 {
-	return Typename() + " " + name() + " = " + getValue();
+	return Typename() + " " + getName() + " = " + getValue();
 }
 
 

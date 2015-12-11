@@ -74,8 +74,7 @@ public:	// Operators
 public:
 	bool isAtomicType() const;
 
-	const std::string& name() const;
-	void name(const std::string& name);
+	void setName(const std::string& name);
 
 	const std::string& getValue() const;
 	void setValue(const std::string& value);
@@ -111,7 +110,7 @@ private:
 	bool mConstructed;
 	MemberCollection mMembers;
 	MethodCollection mMethods;
-	std::string mName;
+	//std::string mName;
 	StringList mParents;
 	IPrinter *mPrinter;
 	std::string mValue;

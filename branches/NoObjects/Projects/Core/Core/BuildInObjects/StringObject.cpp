@@ -23,13 +23,18 @@ String::String(const std::string& value)
 }
 
 String::String(const Object& object)
-: Object(object.name(), "SYSTEM.OS", "String", object.getValue())
+: Object(object.getName(), "SYSTEM.OS", "String", object.getValue())
 {
+}
+
+String::operator bool() const
+{
+	return !getValue().empty();
 }
 
 void String::operator_assign(Object *other)
 {
-	Object::setValue(other->getValue());
+	setValue(other->getValue());
 }
 
 bool String::operator_equal(Object *other)
@@ -44,7 +49,7 @@ void String::operator_plus(Object *other)
 
 std::string String::ToString() const
 {
-	return Typename() + " " + name() + " = " + getValue();
+	return Typename() + " " + getName() + " = " + getValue();
 }
 
 

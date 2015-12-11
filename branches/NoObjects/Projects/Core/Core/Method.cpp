@@ -227,7 +227,12 @@ bool operator_less(Object *base, Object *other)
 		return tmp.operator_less(other);
 	}
 
-	return base->operator_less(other);
+	ParameterList params;
+	params.push_back(Parameter(other->getName(), other->Typename(), other->getValue()));
+
+	Bool tmp;
+	base->execute(&tmp, "operator_less", params, 0);
+	return tmp;
 }
 
 bool operator_less_equal(Object *base, Object *other)
@@ -258,7 +263,12 @@ bool operator_less_equal(Object *base, Object *other)
 		return tmp.operator_less_equal(other);
 	}
 
-	return base->operator_less_equal(other);
+	ParameterList params;
+	params.push_back(Parameter(other->getName(), other->Typename(), other->getValue()));
+
+	Bool tmp;
+	base->execute(&tmp, "operator_less_equal", params, 0);
+	return tmp;
 }
 
 void operator_multiply(Object *base, Object *value)
@@ -484,17 +494,17 @@ void Method::addIdentifier(Object *object)
 		return;
 	}
 
-	if ( mLocalSymbols.find(object->name()) != mLocalSymbols.end() ) {
+	if ( mLocalSymbols.find(object->getName()) != mLocalSymbols.end() ) {
 		if ( object->isStatic() ) {
 			// don't insert static members a second time
 			// just return silently
 			return;
 		}
 
-		throw Utils::DuplicateIdentiferException(object->name());
+		throw Utils::DuplicateIdentiferException(object->getName());
 	}
 
-	mLocalSymbols[object->name()] = object;
+	mLocalSymbols[object->getName()] = object;
 }
 
 Object Method::execute(const ParameterList& params)
@@ -593,7 +603,7 @@ Object* Method::getSymbol(const std::string& token)
 			return it->second;
 		}
 
-		if ( it->second->name() == parent ) {
+		if ( it->second->getName() == parent ) {
 			return it->second->getMember(member);
 		}
 	}
@@ -619,7 +629,7 @@ bool Method::isMethod(const std::string& token)
 	// loop through all local symbols and ask them if this identifier belongs to them
 	for ( MemberCollection::iterator it = mLocalSymbols.begin(); it != mLocalSymbols.end(); ++it ) {
 		Object *object = it->second;
-		if ( object && object->name() == parent ) {
+		if ( object && object->getName() == parent ) {
 			// check for member function
 			if ( object->hasMethod(member) ) {
 				return true;
@@ -720,8 +730,8 @@ bool Method::parseCondition(TokenIterator& token)
 			return operator_less(&v1, &v2);
 		}
 		else if ( op == Token::Type::COMPARE_LESS_EQUAL ) {
-			v1.setValue( (v1.getValue() <= v2.getValue()) ? "true" : "false" );
-			//return operator_less_equal(&v1, &v2);
+			//v1.setValue( (v1.getValue() <= v2.getValue()) ? "true" : "false" );
+			return operator_less_equal(&v1, &v2);
 		}
 		else if ( op == Token::Type::COMPARE_UNEQUAL ) {
 			v1.setValue( (v1.getValue() != v2.getValue()) ? "true" : "false" );
@@ -1118,7 +1128,7 @@ void Method::process_method(TokenIterator& token, Object *result)
 	while ( tmp != closed ) {
 		Object object;
 		parseExpression(&object, tmp);
-		params.push_back(Parameter(object.name(), object.Typename(), object.getValue(), false, object.isConst(), Parameter::AccessMode::ByValue, &object));
+		params.push_back(Parameter(object.getName(), object.Typename(), object.getValue(), false, object.isConst(), Parameter::AccessMode::ByValue, &object));
 
 		if ( std::distance(tmp, closed) <= 0 ) {
 			break;
@@ -1177,7 +1187,7 @@ Object* Method::process_new(TokenIterator& token)
 	while ( tmp != closed ) {
 		Object object;
 		parseExpression(&object, tmp);
-		params.push_back(Parameter(object.name(), object.Typename(), object.getValue(), false, object.isConst(), Parameter::AccessMode::ByValue, &object));
+		params.push_back(Parameter(object.getName(), object.Typename(), object.getValue(), false, object.isConst(), Parameter::AccessMode::ByValue, &object));
 
 		if ( std::distance(tmp, closed) <= 0 ) {
 			break;

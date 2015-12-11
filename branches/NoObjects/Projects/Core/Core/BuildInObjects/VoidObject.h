@@ -23,7 +23,9 @@ public:
 	Void();
 	Void(const Object& object);
 
-public:
+public:	// Operators
+	virtual operator bool() const;
+
 	virtual std::string ToString() const;
 };
 
