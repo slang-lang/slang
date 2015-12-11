@@ -31,7 +31,8 @@ Method::Method(IScope *parent, const std::string& name, const std::string& type)
 : LocalScope(name, parent),
   Variable(name, type),
   mOwner(0),
-  mRepository(0)
+  mRepository(0),
+  mStopProcessing(false)
 {
 }
 
@@ -144,6 +145,8 @@ void Method::addIdentifier(Object *object)
 
 void Method::execute(const ParameterList& params, Object *result)
 {
+	mStopProcessing = false;		// reset this every time we start executing a method
+
 	if ( !isSignatureValid(params) ) {
 		throw Utils::ParameterCountMissmatch("number or type of parameters incorrect");
 	}
@@ -197,20 +200,17 @@ void Method::execute(const ParameterList& params, Object *result)
 
 	result->overrideName(name());
 	result->overrideType(type());
+	result->connectPrinter(mOwner->providePrinter());
+	result->connectRepository(mRepository);
+	result->visibility(visibility());
 
-/*
-	Object result(name(), type());
-	result.connectRepository(mRepository);
-	result.visibility(visibility());
-*/
 	TokenIterator start = mTokens.begin();
 	process(result, start, mTokens.end());
 
+	mStopProcessing = false;	// just to be sure...
+
 	// let the garbage collector do it's magic after we gathered our result
 	garbageCollector();
-/*
-	return result;
-*/
 }
 
 void Method::garbageCollector(bool force)
@@ -358,12 +358,12 @@ bool Method::parseCondition(TokenIterator& token)
 			return operator_equal(&v1, &v2);
 		}
 		else if ( op == Token::Type::COMPARE_GREATER ) {
-			v1.setValue( (v1.getValue() > v2.getValue()) ? "true" : "false" );
-			//return operator_greater(&v1, &v2);
+			//v1.setValue( (v1.getValue() > v2.getValue()) ? "true" : "false" );
+			return operator_greater(&v1, &v2);
 		}
 		else if ( op == Token::Type::COMPARE_GREATER_EQUAL ) {
-			v1.setValue( (v1.getValue() >= v2.getValue()) ? "true" : "false" );
-			//return operator_greater_equal(&v1, &v2);
+			//v1.setValue( (v1.getValue() >= v2.getValue()) ? "true" : "false" );
+			return operator_greater_equal(&v1, &v2);
 		}
 		else if ( op == Token::Type::COMPARE_LESS ) {
 			//v1.setValue( (v1.getValue() < v2.getValue()) ? "true" : "false" );
@@ -374,8 +374,8 @@ bool Method::parseCondition(TokenIterator& token)
 			return operator_less_equal(&v1, &v2);
 		}
 		else if ( op == Token::Type::COMPARE_UNEQUAL ) {
-			v1.setValue( (v1.getValue() != v2.getValue()) ? "true" : "false" );
-			//return !operator_equal(&v1, &v2);
+			//v1.setValue( (v1.getValue() != v2.getValue()) ? "true" : "false" );
+			return !operator_equal(&v1, &v2);
 		}
 	}
 
@@ -504,7 +504,12 @@ void Method::parseTerm(Object *result, TokenIterator& start)
 void Method::process(Object *result, TokenIterator& token, TokenIterator end, Token::Type::E terminator)
 {
 	// loop through all keywords and redirect to the corresponding method
-	while ( token != end && token->type() != terminator && token->type() != Token::Type::ENDOFFILE ) {
+	while ( (token != end) && (token->type() != terminator) && (token->type() != Token::Type::ENDOFFILE) ) {
+		if ( mStopProcessing ) {
+			// a return command has been triggered, time to stop processing
+			break;
+		}
+
 		// decide what we want to do according to the type of token we have
 		switch ( token->type() ) {
 			case Token::Type::BOOLEAN:
@@ -513,18 +518,10 @@ void Method::process(Object *result, TokenIterator& token, TokenIterator end, To
 				parseExpression(result, token);
 				break;
 			case Token::Type::IDENTIFER:
-				process_assign(token);
+				process_assign(token, result);
 				break;
 			case Token::Type::KEYWORD:
-				if ( token->content() == "new" ) {
-					*result = *process_new(token);
-				}
-				else if ( token->content() == "return" ) {
-					parseExpression(result, ++token);
-				}
-				else {
-					process_keyword(token);
-				}
+				process_keyword(token, result);
 				break;
 			case Token::Type::PROTOTYPE:
 			case Token::Type::TYPE:
@@ -557,17 +554,16 @@ void Method::process_assert(TokenIterator& token)
 	token = tmp;
 }
 
-void Method::process_assign(TokenIterator& token)
+void Method::process_assign(TokenIterator& token, Object *result)
 {
 	// try to find assignment token
 	TokenIterator assign = findNext(token, Token::Type::ASSIGN, Token::Type::SEMICOLON);
 	// find next semicolon
 	TokenIterator end = findNext(token, Token::Type::SEMICOLON);
 
-	Object result;
 	if ( assign == token ) {
 		// we don't have an assignment but a method call
-		parseExpression(&result, token);
+		parseExpression(result, token);
 
 		token = end;
 		return;
@@ -663,7 +659,7 @@ void Method::process_for(TokenIterator& token)
 // else {
 // ...
 // }
-void Method::process_if(TokenIterator& token)
+void Method::process_if(TokenIterator& token, Object *result)
 {
 	// find next open parenthesis
 	TokenIterator condBegin = ++findNext(token, Token::Type::PARENTHESIS_OPEN);
@@ -686,9 +682,8 @@ void Method::process_if(TokenIterator& token)
 		}
 	}
 
-	Object result;
 	if ( parseCondition(condBegin) ) {
-		process(&result, bodyBegin, bodyEnd, Token::Type::BRACKET_CURLY_CLOSE);
+		process(result, bodyBegin, bodyEnd, Token::Type::BRACKET_CURLY_CLOSE);
 
 		// check if we executed all tokens
 		if ( bodyBegin != bodyEnd ) {
@@ -703,7 +698,7 @@ void Method::process_if(TokenIterator& token)
 		}
 	}
 	else if ( elseBegin != mTokens.end() ) {
-		process(&result, elseBegin, elseEnd, Token::Type::BRACKET_CURLY_CLOSE);
+		process(result, elseBegin, elseEnd, Token::Type::BRACKET_CURLY_CLOSE);
 
 		// check if we executed all tokens
 		if ( elseBegin != elseEnd ) {
@@ -717,7 +712,7 @@ void Method::process_if(TokenIterator& token)
 	}
 }
 
-void Method::process_keyword(TokenIterator& token)
+void Method::process_keyword(TokenIterator& token, Object *result)
 {
 	std::string keyword = (*token++).content();
 
@@ -731,10 +726,18 @@ void Method::process_keyword(TokenIterator& token)
 		process_for(token);
 	}
 	else if ( keyword == "if" ) {
-		process_if(token);
+		process_if(token, result);
 	}
 	else if ( keyword == "print" ) {
 		process_print(token);
+	}
+	else if ( keyword == "new" ) {
+		process_new(token, result);
+	}
+	else if ( keyword == "return" ) {
+		parseExpression(result, token);
+
+		mStopProcessing = true;
 	}
 	else if ( keyword == "switch" ) {
 		process_switch(token);
@@ -803,9 +806,9 @@ void Method::process_method(TokenIterator& token, Object *result)
 
 // syntax:
 // new <Object>([<parameter list>]);
-Object* Method::process_new(TokenIterator& token)
+void Method::process_new(TokenIterator& token, Object *result)
 {
-	TokenIterator tmp = token++;
+	TokenIterator tmp = token;
 
 	std::string name = "<temporary object>";
 	std::string prototype;
@@ -848,7 +851,7 @@ Object* Method::process_new(TokenIterator& token)
 	object->connectRepository(mRepository);
 	object->Constructor(params);
 
-	return object;
+	*result = *object;
 }
 
 // syntax:
@@ -865,7 +868,12 @@ void Method::process_print(TokenIterator& token)
 	String text;
 	parseExpression(&text, opened);
 
-	mOwner->providePrinter()->print(text.getValue() + "\n", mOwner->Filename(), token->position().line);
+	if ( mOwner->providePrinter() ) {
+		mOwner->providePrinter()->print(text.getValue() + "\n", mOwner->Filename(), token->position().line);
+	}
+	else {
+		std::cout << text.getValue() << std::endl;
+	}
 
 	token = tmp;
 }

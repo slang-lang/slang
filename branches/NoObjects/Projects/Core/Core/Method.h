@@ -76,13 +76,13 @@ private:	// Execution
 	// {
 	void process(Object *result, TokenIterator& start, TokenIterator end, Token::Type::E terminator = Token::Type::NIL);
 	void process_assert(TokenIterator& token);
-	void process_assign(TokenIterator& token);
+	void process_assign(TokenIterator& token, Object *result);
 	void process_delete(TokenIterator& token);
 	void process_for(TokenIterator& token);
-	void process_if(TokenIterator& token);
-	void process_keyword(TokenIterator& token);
+	void process_if(TokenIterator& token, Object *result);
+	void process_keyword(TokenIterator& token, Object *result);
 	void process_method(TokenIterator& token, Object *result);
-	Object* process_new(TokenIterator& token);
+	void process_new(TokenIterator& token, Object *result);
 	void process_print(TokenIterator& token);
 	void process_type(TokenIterator& token);
 	void process_switch(TokenIterator& token);
@@ -110,6 +110,9 @@ private:
 	Repository *mRepository;
 	ParameterList mSignature;
 	TokenList mTokens;
+
+private:
+	bool mStopProcessing;
 };
 
 

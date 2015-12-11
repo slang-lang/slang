@@ -32,8 +32,12 @@ public:
 	void teardown();
 
 private:	// Tests
-	void testBooleanOverloads_Equality();
+	void testBooleanOverloads_Assign();
+	void testBooleanOverloads_Equal();
+	void testBooleanOverloads_Greater();
+	void testBooleanOverloads_Greater_Equal();
 	void testBooleanOverloads_Less();
+	void testBooleanOverloads_Less_Equal();
 	void testMathOverloadsWithNumbers();
 	void testMathOverloadsWithObjects();
 

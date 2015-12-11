@@ -30,10 +30,14 @@ OperatorTest::OperatorTest(const ::Utils::Common::Logger *p)
 
 void OperatorTest::process()
 {
-	//TEST(testBooleanOverloads_Equality);
+	TEST(testBooleanOverloads_Assign);
+	TEST(testBooleanOverloads_Equal);
+	TEST(testBooleanOverloads_Greater);
+	TEST(testBooleanOverloads_Greater_Equal);
 	TEST(testBooleanOverloads_Less);
+	TEST(testBooleanOverloads_Less_Equal);
 	TEST(testMathOverloadsWithNumbers);
-	TEST(testMathOverloadsWithObjects);
+	//TEST(testMathOverloadsWithObjects);
 }
 
 void OperatorTest::setup()
@@ -44,13 +48,61 @@ void OperatorTest::teardown()
 {
 }
 
-void OperatorTest::testBooleanOverloads_Equality()
+void OperatorTest::testBooleanOverloads_Assign()
+{
+	try {
+		VirtualMachine vm;
+		vm.setPrinter(&mStdoutPrinter);
+
+		vm.create("Tests/Operator/BooleanOverloads_Assign.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void OperatorTest::testBooleanOverloads_Equal()
 {
 	try {
 		VirtualMachine vm;
 		vm.setPrinter(&mStdoutPrinter);
 
 		vm.create("Tests/Operator/BooleanOverloads_Equality.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void OperatorTest::testBooleanOverloads_Greater()
+{
+	try {
+		VirtualMachine vm;
+		vm.setPrinter(&mStdoutPrinter);
+
+		vm.create("Tests/Operator/BooleanOverloads_Greater.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void OperatorTest::testBooleanOverloads_Greater_Equal()
+{
+	try {
+		VirtualMachine vm;
+		vm.setPrinter(&mStdoutPrinter);
+
+		vm.create("Tests/Operator/BooleanOverloads_Greater_Equal.os");
 
 		// automatic success
 	}
@@ -67,6 +119,22 @@ void OperatorTest::testBooleanOverloads_Less()
 		vm.setPrinter(&mStdoutPrinter);
 
 		vm.create("Tests/Operator/BooleanOverloads_Less.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void OperatorTest::testBooleanOverloads_Less_Equal()
+{
+	try {
+		VirtualMachine vm;
+		vm.setPrinter(&mStdoutPrinter);
+
+		vm.create("Tests/Operator/BooleanOverloads_Less_Equal.os");
 
 		// automatic success
 	}
