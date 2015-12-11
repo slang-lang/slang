@@ -23,7 +23,7 @@ public:
 	UserObject(const std::string& name, const std::string& filename, const std::string& type, const std::string& value);
 	UserObject(const Object& object);
 
-public:	// Operators
+public: // Operators
 	virtual operator bool();
 
 	virtual void operator_assign(Object *other);
@@ -37,6 +37,7 @@ public:	// Operators
 	virtual void operator_plus(Object *other);
 	virtual void operator_subtract(Object *other);
 
+public: // Value
 	virtual std::string ToString() const;
 };
 

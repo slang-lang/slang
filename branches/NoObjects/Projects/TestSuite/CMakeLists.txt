@@ -3,6 +3,7 @@ INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 ADD_SUBDIRECTORY(Attributes)
 ADD_SUBDIRECTORY(Language)
 ADD_SUBDIRECTORY(Math)
+ADD_SUBDIRECTORY(Operator)
 ADD_SUBDIRECTORY(Prototype)
 ADD_SUBDIRECTORY(TestFramework)
 
@@ -16,6 +17,7 @@ SET(HEADERS
 SET(DEPENDENCIES
 	Test_TestFramework
 	Test_Prototype
+	Test_Operator
 	Test_Math
 	Test_Language
 	Test_Attributes

@@ -29,12 +29,16 @@ public:	// Operators
 	virtual void operator_assign(Object *other);
 	virtual bool operator_equal(Object *other);
 
+public: // Value
+	virtual bool getNativeValue() const;
+	virtual void setNativeValue(bool value);
+
 	virtual std::string getValue() const;
+	virtual void setValue(const std::string& value);
+
 	virtual bool isValid() const;
 
 	virtual std::string ToString() const;
-
-protected:
 
 private:
 	bool mValue;

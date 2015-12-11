@@ -16,6 +16,7 @@ SET(SOURCES
 	Memory.cpp
 	Method.cpp
 	Object.cpp
+	OperatorOverloading.cpp
 	Parameter.cpp
 	Preprocessor.cpp
 	Prototype.cpp
@@ -39,6 +40,7 @@ SET(HEADERS
 	Method.h
 	Object.h
 #	ObjectiveScript.h
+	OperatorOverloading.h
 	Parameter.h
 	Preprocessor.h
 	Prototype.h

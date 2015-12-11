@@ -43,6 +43,11 @@ Number::operator bool() const
 	return mValue != 0.f;
 }
 
+float Number::getNativeValue() const
+{
+	return mValue;
+}
+
 std::string Number::getValue() const
 {
 	return Tools::toString(mValue);
@@ -56,15 +61,11 @@ bool Number::isValid() const
 void Number::operator_assign(Object *other)
 {
 	mValue = Tools::stringToFloat(other->getValue());
-
-	Object::setValue(other->getValue());
 }
 
 void Number::operator_divide(Object *other)
 {
 	mValue /= Tools::stringToFloat(other->getValue());
-
-	Object::setValue(Tools::toString(mValue));
 }
 
 bool Number::operator_equal(Object *other)
@@ -95,22 +96,26 @@ bool Number::operator_less_equal(Object *other)
 void Number::operator_multiply(Object *other)
 {
 	mValue *= Tools::stringToFloat(other->getValue());
-
-	Object::setValue(Tools::toString(mValue));
 }
 
 void Number::operator_plus(Object *other)
 {
 	mValue += Tools::stringToFloat(other->getValue());
-
-	Object::setValue(Tools::toString(mValue));
 }
 
 void Number::operator_subtract(Object *other)
 {
 	mValue -= Tools::stringToFloat(other->getValue());
+}
 
-	Object::setValue(Tools::toString(mValue));
+void Number::setNativeValue(float value)
+{
+	mValue = value;
+}
+
+void Number::setValue(const std::string& value)
+{
+	mValue = Tools::stringToFloat(value);
 }
 
 std::string Number::ToString() const

@@ -32,6 +32,24 @@ Void::operator bool() const
 	return false;
 }
 
+void Void::getNativeValue() const
+{
+	return;	// this makes absolutely no sense but hey :-)
+}
+
+std::string Void::getValue() const
+{
+	return "<VOID>";
+}
+
+void Void::setNativeValue(void)
+{
+}
+
+void Void::setValue(const std::string& /*value*/)
+{
+}
+
 std::string Void::ToString() const
 {
 	return Typename() + " " + getName() + " = " + getValue();

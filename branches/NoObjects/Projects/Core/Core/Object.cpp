@@ -23,6 +23,7 @@ Object::Object()
   mIsAtomicType(false),
   mRepository(0),
   mConstructed(false),
+  mValue("<INVALID>"),
   mPrinter(0)
 {
 }
@@ -33,6 +34,7 @@ Object::Object(const std::string& type, const std::string& filename)
   mIsAtomicType(false),
   mRepository(0),
   mConstructed(false),
+  mValue("<INVALID>"),
   mPrinter(0)
 {
 }
@@ -43,7 +45,6 @@ Object::Object(const std::string& name, const std::string& filename, const std::
   mIsAtomicType(false),
   mRepository(0),
   mConstructed(false),
-//  mName(name),
   mPrinter(0),
   mValue(value)
 {
@@ -67,9 +68,12 @@ Object& Object::operator= (const Object& other)
 			mRepository = other.mRepository;
 		}
 
+		mFilename = other.mFilename;
 		mTokens = other.mTokens;
 		mTypename = other.Typename();
-		mValue = other.getValue();
+
+		//mValue = other.getValue();
+		setValue(other.getValue());
 
 		//this->setConst(other.isConst());
 		this->setFinal(other.isFinal());
@@ -123,7 +127,8 @@ void Object::addMethod(Method *m)
 {
 	assert(m);
 
-	if ( mMethods.find(m) != mMethods.end() ) {
+	MethodCollection::iterator tmpIt;
+	if ( findMethod(m->name(), m->provideSignature(), tmpIt) ) {
 		throw Utils::DuplicateIdentiferException("duplicate method '" + m->getName() + "' added with same signature");
 	}
 
@@ -337,6 +342,11 @@ Object* Object::getMember(const std::string& m)
 	return 0;
 }
 
+std::string Object::getValue() const
+{
+	return mValue;
+}
+
 bool Object::hasMethod(const std::string& m)
 {
 	for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
@@ -455,6 +465,11 @@ void Object::setName(const std::string& name)
 	mName = name;
 }
 
+void Object::setValue(const std::string& value)
+{
+	mValue = value;
+}
+
 std::string Object::ToString() const
 {
 	std::string result = "Object: " + getName() + " <" + Typename() + "> = { ";
@@ -487,16 +502,6 @@ void Object::updateMethodOwners()
 		(*it)->setOwner(this);
 		(*it)->setRepository(mRepository);
 	}
-}
-
-const std::string& Object::getValue() const
-{
-	return mValue;
-}
-
-void Object::setValue(const std::string& value)
-{
-	mValue = value;
 }
 
 

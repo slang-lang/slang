@@ -30,7 +30,17 @@ public:	// Operators
 	virtual bool operator_equal(Object *other);
 	virtual void operator_plus(Object *other);
 
+public: // Value
+	virtual std::string getNativeValue() const;
+	virtual void setNativeValue(const std::string& value);
+
+	virtual std::string getValue() const;
+	virtual void setValue(const std::string& value);
+
 	virtual std::string ToString() const;
+
+private:
+	std::string mValue;
 };
 
 

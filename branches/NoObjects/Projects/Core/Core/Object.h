@@ -76,8 +76,8 @@ public:
 
 	void setName(const std::string& name);
 
-	const std::string& getValue() const;
-	void setValue(const std::string& value);
+	virtual std::string getValue() const;
+	virtual void setValue(const std::string& value);
 
 public:	// Usage
 	void Constructor(const ParameterList& params);

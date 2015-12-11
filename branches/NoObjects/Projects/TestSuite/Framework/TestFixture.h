@@ -46,8 +46,8 @@ public:
 	}
 
 	void run() {
-		//std::cout << std::endl << "********* Starting:  *********" << std::endl;
-		std::cout << std::endl << "********* Starting: " << typeid(*this).name() << " *********" << std::endl;
+		std::cout << std::endl << "********* Starting:  *********" << std::endl;
+		//std::cout << std::endl << "********* Starting: " << typeid(*this).name() << " *********" << std::endl;
 
 		setup();
 
@@ -58,8 +58,8 @@ public:
 		teardown();
 		cleanup();
 
-		//std::cout << "********* Finished:  *********" << std::endl;
-		std::cout << "********* Finished: " << typeid(*this).name() << " *********" << std::endl;
+		std::cout << "********* Finished:  *********" << std::endl;
+		//std::cout << "********* Finished: " << typeid(*this).name() << " *********" << std::endl;
 	}
 
 protected:

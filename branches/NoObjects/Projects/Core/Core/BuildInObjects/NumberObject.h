@@ -37,7 +37,13 @@ public:	// Operators
 	virtual void operator_plus(Object *other);
 	virtual void operator_subtract(Object *other);
 
+public: // Values
+	virtual float getNativeValue() const;
+	virtual void setNativeValue(float value);
+
 	virtual std::string getValue() const;
+	virtual void setValue(const std::string& value);
+
 	virtual bool isValid() const;
 
 	virtual std::string ToString() const;

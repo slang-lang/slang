@@ -43,6 +43,11 @@ Bool::operator bool() const
 	return mValue;
 }
 
+bool Bool::getNativeValue() const
+{
+	return mValue;
+}
+
 std::string Bool::getValue() const
 {
 	return Tools::toString(mValue);
@@ -56,13 +61,21 @@ bool Bool::isValid() const
 void Bool::operator_assign(Object *other)
 {
 	mValue = Tools::stringToBool(other->getValue());
-
-	Object::setValue(other->getValue());
 }
 
 bool Bool::operator_equal(Object *other)
 {
 	return (mValue == Tools::stringToBool(other->getValue()));
+}
+
+void Bool::setNativeValue(bool value)
+{
+	mValue = value;
+}
+
+void Bool::setValue(const std::string& value)
+{
+	mValue = Tools::stringToBool(value);
 }
 
 std::string Bool::ToString() const

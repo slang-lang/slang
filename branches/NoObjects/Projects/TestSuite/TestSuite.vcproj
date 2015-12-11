@@ -207,26 +207,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\TestFramework\Fixture.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\TestFramework\"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\TestFramework\"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath=".\Math\Fixture.cpp"
 				>
 				<FileConfiguration
@@ -307,6 +287,30 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\Operator\Fixture.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\TestFramework\Fixture.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\TestFramework\"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\TestFramework\"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath=".\Language\LanguageTest.cpp"
 				>
 				<FileConfiguration
@@ -349,6 +353,10 @@
 						ObjectFile="$(IntDir)\Math\"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\Operator\OperatorTest.cpp"
+				>
 			</File>
 			<File
 				RelativePath=".\Prototype\PrototypeTest.cpp"
@@ -421,6 +429,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Operator\Fixture.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Framework\GenericTest.h"
 				>
 			</File>
@@ -430,6 +442,10 @@
 			</File>
 			<File
 				RelativePath=".\Math\MathTest.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Operator\OperatorTest.h"
 				>
 			</File>
 			<File
