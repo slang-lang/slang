@@ -18,7 +18,13 @@ public namespace MathOverloads
 
 		/////////////////////////////////////////////////////////////////////
 
-		public void operator_equal(OverloadedObject other const)
+		public void operator_divide(Number other const) modify
+		{
+			print("operator_divide");
+			mNumber = mNumber / other;
+		}
+
+		public Bool operator_equal(OverloadedObject other ref const) const
 		{
 			print("operator_equal(OverloadedObject)");
 			
@@ -29,7 +35,7 @@ public namespace MathOverloads
 			return false;
 		}
 		
-		public void operator_equal(Number other const)
+		public Bool operator_equal(Number other const) const
 		{
 			print("operator_equal(Number)");
 			
@@ -40,25 +46,19 @@ public namespace MathOverloads
 			return false;
 		}
 
-		public void operator_divide(Number other const)
-		{
-			print("operator_divide");
-			mNumber = mNumber / other;
-		}
-
-		public void operator_multiply(Number other const)
+		public void operator_multiply(Number other const) modify
 		{
 			print("operator_multiply");
 			mNumber = mNumber * other;
 		}
 
-		public void operator_plus(Number other const)
+		public void operator_plus(Number other const) modify
 		{
 			print("operator_plus");
 			mNumber = mNumber + other;
 		}
 
-		public void operator_subtract(Number other const)
+		public void operator_subtract(Number other const) modify
 		{
 			print("operator_subtract");
 			mNumber = mNumber - other;

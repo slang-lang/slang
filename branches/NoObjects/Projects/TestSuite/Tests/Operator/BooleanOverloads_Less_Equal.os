@@ -17,21 +17,21 @@ private namespace BooleanOverloads
 		
 		/////////////////////////////////////////////////////////////////////
 		
-		public Bool operator_less_equal(Number other const)
+		public Bool operator_less_equal(Number other const) const
 		{
 			if ( mValue <= other ) {
 				return true;
 			}
-			
+
 			return false;
 		}
-		
-		public Bool operator_less_equal(UserObject other ref const)
+
+		public Bool operator_less_equal(UserObject other ref const) const
 		{
 			if ( mValue <= other.GetValue() ) {
 				return true;
 			}
-			
+
 			return false;
 		}
 	}
@@ -44,7 +44,7 @@ private namespace BooleanOverloads
 			assert(TestCase2());
 		}
 
-		private Bool TestCase1()
+		private Bool TestCase1() const
 		{
 			print("TestCase1: less-equal operator with atomic type");
 
@@ -59,7 +59,7 @@ private namespace BooleanOverloads
 			return false;
 		}
 
-		private Bool TestCase2()
+		private Bool TestCase2() const
 		{
 			print("TestCase2: less-equal operator with object");
 

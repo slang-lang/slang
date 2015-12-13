@@ -44,7 +44,7 @@ private namespace BooleanOverloads
 			assert(TestCase2());
 		}
 
-		private Bool TestCase1()
+		private Bool TestCase1() const
 		{
 			print("TestCase1: equality operator with atomic type");
 
@@ -59,7 +59,7 @@ private namespace BooleanOverloads
 			return false;
 		}
 
-		private Bool TestCase2()
+		private Bool TestCase2() const
 		{
 			print("TestCase2: equality operator with object");
 

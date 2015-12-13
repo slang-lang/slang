@@ -17,25 +17,25 @@ private namespace BooleanOverloads
 		
 		/////////////////////////////////////////////////////////////////////
 		
-		public Bool operator_greater(Number other const)
+		public Bool operator_greater(Number other const) const
 		{
 			print("operator_greater(Number)");
 
 			if ( mValue > other ) {
 				return true;
 			}
-			
+
 			return false;
 		}
-		
-		public Bool operator_greater(UserObject other ref const)
+
+		public Bool operator_greater(UserObject other ref const) const
 		{
 			print("operator_greater(UserObject)");
 
 			if ( mValue > other.GetValue() ) {
 				return true;
 			}
-			
+
 			return false;
 		}
 	}
@@ -48,7 +48,7 @@ private namespace BooleanOverloads
 			assert(TestCase2());
 		}
 
-		private Bool TestCase1()
+		private Bool TestCase1() const
 		{
 			print("TestCase1: greater operator with atomic type");
 
@@ -63,7 +63,7 @@ private namespace BooleanOverloads
 			return false;
 		}
 
-		private Bool TestCase2()
+		private Bool TestCase2() const
 		{
 			print("TestCase2: greater operator with object");
 

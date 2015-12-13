@@ -17,12 +17,12 @@ private namespace BooleanOverloads
 
 		/////////////////////////////////////////////////////////////////////
 
-		public Void operator_assign(Number other const)
+		public void operator_assign(Number other const) modify
 		{
 			mValue = other;
 		}
 
-		public Void operator_assign(UserObject other ref const)
+		public void operator_assign(UserObject other ref const) modify
 		{
 			mValue = other.GetValue();
 		}
@@ -36,7 +36,7 @@ private namespace BooleanOverloads
 			assert(TestCase2());
 		}
 
-		private Bool TestCase1()
+		private Bool TestCase1() const
 		{
 			print("TestCase1: assign operator with atomic type");
 

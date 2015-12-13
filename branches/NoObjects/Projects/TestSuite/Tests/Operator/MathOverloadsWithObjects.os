@@ -18,13 +18,13 @@ public namespace MathOverloads
 
 		/////////////////////////////////////////////////////////////////////
 
-		public void operator_divide(OverloadedObject other ref const)
+		public void operator_divide(OverloadedObject other ref const) modify
 		{
 			print("operator_divide(OverloadedObject)");
 			mNumber = mNumber / other.GetNumber();
 		}
 
-		public void operator_equal(OverloadedObject other const)
+		public Bool operator_equal(OverloadedObject other ref const) const
 		{
 			print("operator_equal(OverloadedObject)");
 			
@@ -35,7 +35,7 @@ public namespace MathOverloads
 			return false;
 		}
 		
-		public void operator_equal(Number other const)
+		public Bool operator_equal(Number other const) const
 		{
 			print("operator_equal(Number)");
 			
@@ -46,19 +46,19 @@ public namespace MathOverloads
 			return false;
 		}
 
-		public void operator_multiply(OverloadedObject other ref const)
+		public void operator_multiply(OverloadedObject other ref const) modify
 		{
 			print("operator_multiply(OverloadedObject)");
 			mNumber = mNumber * other.GetNumber();
 		}
 
-		public void operator_plus(OverloadedObject other ref const)
+		public void operator_plus(OverloadedObject other ref const) modify
 		{
 			print("operator_plus(OverloadedObject)");
 			mNumber = mNumber + other.GetNumber();
 		}
 
-		public void operator_subtract(OverloadedObject other ref const)
+		public void operator_subtract(OverloadedObject other ref const) modify
 		{
 			print("operator_subtract(OverloadedObject)");
 			mNumber = mNumber - other.GetNumber();
@@ -75,7 +75,7 @@ public namespace MathOverloads
 			assert( TestCase4() );
 		}
 
-		private Bool TestCase1()
+		private Bool TestCase1() const
 		{
 			print("TestCase1: using the overloaded plus operator");
 
@@ -93,7 +93,7 @@ public namespace MathOverloads
 			return false;
 		}
 
-		private Bool TestCase2()
+		private Bool TestCase2() const
 		{
 			print("TestCase2: using the overloaded subtract operator");
 
@@ -111,7 +111,7 @@ public namespace MathOverloads
 			return false;
 		}
 
-		private Bool TestCase3()
+		private Bool TestCase3() const
 		{
 			print("TestCase3: using the overloaded multiply operator");
 
@@ -129,7 +129,7 @@ public namespace MathOverloads
 			return false;
 		}
 
-		private Bool TestCase4()
+		private Bool TestCase4() const
 		{
 			print("TestCase4: using the overloaded divide operator");
 
