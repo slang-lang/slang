@@ -28,7 +28,6 @@ void operator_assign(Object *base, Object *other)
 	}
 
 	std::string source = base->Typename();
-	std::string target = other->Typename();
 
 	if ( source == "Bool" ) {
 		Bool tmp(base->getValue());
@@ -57,7 +56,7 @@ void operator_assign(Object *base, Object *other)
 	else {
 		ParameterList params;
 		params.push_back(
-			Parameter(other->getName(), other->Typename(), other->getValue())
+			Parameter(other->getName(), other->Typename(), "", false, other->isConst(), Parameter::AccessMode::ByReference, other)
 		);
 
 		Bool tmp;
@@ -74,27 +73,27 @@ void operator_divide(Object *base, Object *other)
 		throw Utils::NullPointerException("cannot divide object through null pointer");
 	}
 
-	std::string target = base->Typename();
+	std::string source = base->Typename();
 
-	if ( target == "Bool" ) {
+	if ( source == "Bool" ) {
 		Bool tmp(base->getValue());
 		tmp.operator_divide(other);
 
 		base->setValue(tmp.getValue());
 	}
-	else if ( target == "Number" ) {
+	else if ( source == "Number" ) {
 		Number tmp(base->getValue());
 		tmp.operator_divide(other);
 
 		base->setValue(tmp.getValue());
 	}
-	else if ( target == "String" ) {
+	else if ( source == "String" ) {
 		String tmp(base->getValue());
 		tmp.operator_divide(other);
 
 		base->setValue(tmp.getValue());
 	}
-	else if ( target == "Void" ) {
+	else if ( source == "Void" ) {
 		Void tmp;
 		tmp.operator_divide(other);
 
@@ -103,7 +102,7 @@ void operator_divide(Object *base, Object *other)
 	else {
 		ParameterList params;
 		params.push_back(
-			Parameter(other->getName(), other->Typename(), other->getValue())
+			Parameter(other->getName(), other->Typename(), "", false, other->isConst(), Parameter::AccessMode::ByReference, other)
 		);
 
 		Bool tmp;
@@ -120,28 +119,28 @@ bool operator_equal(Object *base, Object *other)
 		throw Utils::NullPointerException("cannot compare object to null pointer");
 	}
 
-	std::string target = base->Typename();
+	std::string source = base->Typename();
 
-	if ( target == "Bool" ) {
+	if ( source == "Bool" ) {
 		Bool tmp(base->getValue());
 		return tmp.operator_equal(other);
 	}
-	else if ( target == "Number" ) {
+	else if ( source == "Number" ) {
 		Number tmp(base->getValue());
 		return tmp.operator_equal(other);
 	}
-	else if ( target == "String" ) {
+	else if ( source == "String" ) {
 		String tmp(base->getValue());
 		return tmp.operator_equal(other);
 	}
-	else if ( target == "Void" ) {
+	else if ( source == "Void" ) {
 		Void tmp;
 		return tmp.operator_equal(other);
 	}
 
 	ParameterList params;
 	params.push_back(
-		Parameter(other->getName(), other->Typename(), other->getValue())
+		Parameter(other->getName(), other->Typename(), "", false, other->isConst(), Parameter::AccessMode::ByReference, other)
 	);
 
 	Bool tmp;
@@ -158,28 +157,28 @@ bool operator_greater(Object *base, Object *other)
 		throw Utils::NullPointerException("cannot compare object to null pointer");
 	}
 
-	std::string target = base->Typename();
+	std::string source = base->Typename();
 
-	if ( target == "Bool" ) {
+	if ( source == "Bool" ) {
 		Bool tmp(base->getValue());
 		return tmp.operator_greater(other);
 	}
-	else if ( target == "Number" ) {
+	else if ( source == "Number" ) {
 		Number tmp(base->getValue());
 		return tmp.operator_greater(other);
 	}
-	else if ( target == "String" ) {
+	else if ( source == "String" ) {
 		String tmp(base->getValue());
 		return tmp.operator_greater(other);
 	}
-	else if ( target == "Void" ) {
+	else if ( source == "Void" ) {
 		Void tmp;
 		return tmp.operator_greater(other);
 	}
 
 	ParameterList params;
 	params.push_back(
-		Parameter(other->getName(), other->Typename(), other->getValue())
+		Parameter(other->getName(), other->Typename(), "", false, other->isConst(), Parameter::AccessMode::ByReference, other)
 	);
 
 	Bool tmp;
@@ -196,28 +195,28 @@ bool operator_greater_equal(Object *base, Object *other)
 		throw Utils::NullPointerException("cannot compare object to null pointer");
 	}
 
-	std::string target = base->Typename();
+	std::string source = base->Typename();
 
-	if ( target == "Bool" ) {
+	if ( source == "Bool" ) {
 		Bool tmp(base->getValue());
 		return tmp.operator_greater_equal(other);
 	}
-	else if ( target == "Number" ) {
+	else if ( source == "Number" ) {
 		Number tmp(base->getValue());
 		return tmp.operator_greater_equal(other);
 	}
-	else if ( target == "String" ) {
+	else if ( source == "String" ) {
 		String tmp(base->getValue());
 		return tmp.operator_greater_equal(other);
 	}
-	else if ( target == "Void" ) {
+	else if ( source == "Void" ) {
 		Void tmp;
 		return tmp.operator_greater_equal(other);
 	}
 
 	ParameterList params;
 	params.push_back(
-		Parameter(other->getName(), other->Typename(), other->getValue())
+		Parameter(other->getName(), other->Typename(), "", false, other->isConst(), Parameter::AccessMode::ByReference, other)
 	);
 
 	Bool tmp;
@@ -234,27 +233,29 @@ bool operator_less(Object *base, Object *other)
 		throw Utils::NullPointerException("cannot compare object to null pointer");
 	}
 
-	std::string target = base->Typename();
+	std::string source = base->Typename();
 
-	if ( target == "Bool" ) {
+	if ( source == "Bool" ) {
 		Bool tmp(base->getValue());
 		return tmp.operator_less(other);
 	}
-	else if ( target == "Number" ) {
+	else if ( source == "Number" ) {
 		Number tmp(base->getValue());
 		return tmp.operator_less(other);
 	}
-	else if ( target == "String" ) {
+	else if ( source == "String" ) {
 		String tmp(base->getValue());
 		return tmp.operator_less(other);
 	}
-	else if ( target == "Void" ) {
+	else if ( source == "Void" ) {
 		Void tmp;
 		return tmp.operator_less(other);
 	}
 
 	ParameterList params;
-	params.push_back(Parameter(other->getName(), other->Typename(), other->getValue()));
+	params.push_back(
+		Parameter(other->getName(), other->Typename(), "", false, other->isConst(), Parameter::AccessMode::ByReference, other)
+	);
 
 	Bool tmp;
 	base->execute(&tmp, "operator_less", params, 0);
@@ -270,27 +271,29 @@ bool operator_less_equal(Object *base, Object *other)
 		throw Utils::NullPointerException("cannot compare object to null pointer");
 	}
 
-	std::string target = base->Typename();
+	std::string source = base->Typename();
 
-	if ( target == "Bool" ) {
+	if ( source == "Bool" ) {
 		Bool tmp(base->getValue());
 		return tmp.operator_less_equal(other);
 	}
-	else if ( target == "Number" ) {
+	else if ( source == "Number" ) {
 		Number tmp(base->getValue());
 		return tmp.operator_less_equal(other);
 	}
-	else if ( target == "String" ) {
+	else if ( source == "String" ) {
 		String tmp(base->getValue());
 		return tmp.operator_less_equal(other);
 	}
-	else if ( target == "Void" ) {
+	else if ( source == "Void" ) {
 		Void tmp;
 		return tmp.operator_less_equal(other);
 	}
 
 	ParameterList params;
-	params.push_back(Parameter(other->getName(), other->Typename(), other->getValue()));
+	params.push_back(
+		Parameter(other->getName(), other->Typename(), "", false, other->isConst(), Parameter::AccessMode::ByReference, other)
+	);
 
 	Bool tmp;
 	base->execute(&tmp, "operator_less_equal", params, 0);
@@ -306,27 +309,27 @@ void operator_multiply(Object *base, Object *other)
 		throw Utils::NullPointerException("cannot multiply object by null pointer");
 	}
 
-	std::string target = base->Typename();
+	std::string source = base->Typename();
 
-	if ( target == "Bool" ) {
+	if ( source == "Bool" ) {
 		Bool tmp(base->getValue());
 		tmp.operator_multiply(other);
 
 		base->setValue(tmp.getValue());
 	}
-	else if ( target == "Number" ) {
+	else if ( source == "Number" ) {
 		Number tmp(base->getValue());
 		tmp.operator_multiply(other);
 
 		base->setValue(tmp.getValue());
 	}
-	else if ( target == "String" ) {
+	else if ( source == "String" ) {
 		String tmp(base->getValue());
 		tmp.operator_multiply(other);
 
 		base->setValue(tmp.getValue());
 	}
-	else if ( target == "Void" ) {
+	else if ( source == "Void" ) {
 		Void tmp;
 		tmp.operator_multiply(other);
 
@@ -335,7 +338,7 @@ void operator_multiply(Object *base, Object *other)
 	else {
 		ParameterList params;
 		params.push_back(
-			Parameter(other->getName(), other->Typename(), other->getValue())
+			Parameter(other->getName(), other->Typename(), "", false, other->isConst(), Parameter::AccessMode::ByReference, other)
 		);
 
 		Bool tmp;
@@ -353,31 +356,26 @@ void operator_plus(Object *base, Object *other)
 	}
 
 	std::string source = base->Typename();
-	std::string target = other->Typename();
 
-	if ( target == "Bool" ) {
+	if ( source == "Bool" ) {
 		Bool tmp(base->getValue());
 		tmp.operator_plus(other);
 
 		base->setValue(tmp.getValue());
 	}
-	else if ( target == "Number" ) {
+	else if ( source == "Number" ) {
 		Number tmp(base->getValue());
 		tmp.operator_plus(other);
 
 		base->setValue(tmp.getValue());
-/*
-		Number tmp(other->getValue());
-		base->operator_plus(&tmp);
-*/
 	}
-	else if ( target == "String" ) {
+	else if ( source == "String" ) {
 		String tmp(base->getValue());
 		tmp.operator_plus(other);
 
 		base->setValue(tmp.getValue());
 	}
-	else if ( target == "Void" ) {
+	else if ( source == "Void" ) {
 		Void tmp;
 		tmp.operator_plus(other);
 
@@ -386,7 +384,7 @@ void operator_plus(Object *base, Object *other)
 	else {
 		ParameterList params;
 		params.push_back(
-			Parameter(other->getName(), other->Typename(), other->getValue())
+			Parameter(other->getName(), other->Typename(), "", false, other->isConst(), Parameter::AccessMode::ByReference, other)
 		);
 
 		Bool tmp;
@@ -403,27 +401,27 @@ void operator_subtract(Object *base, Object *other)
 		throw Utils::NullPointerException("cannot subtract null pointer from object");
 	}
 
-	std::string target = base->Typename();
+	std::string source = base->Typename();
 
-	if ( target == "Bool" ) {
+	if ( source == "Bool" ) {
 		Bool tmp(base->getValue());
 		tmp.operator_subtract(other);
 
 		base->setValue(tmp.getValue());
 	}
-	else if ( target == "Number" ) {
+	else if ( source == "Number" ) {
 		Number tmp(base->getValue());
 		tmp.operator_subtract(other);
 
 		base->setValue(tmp.getValue());
 	}
-	else if ( target == "String" ) {
+	else if ( source == "String" ) {
 		String tmp(base->getValue());
 		tmp.operator_subtract(other);
 
 		base->setValue(tmp.getValue());
 	}
-	else if ( target == "Void" ) {
+	else if ( source == "Void" ) {
 		Void tmp;
 		tmp.operator_subtract(other);
 
@@ -432,7 +430,7 @@ void operator_subtract(Object *base, Object *other)
 	else {
 		ParameterList params;
 		params.push_back(
-			Parameter(other->getName(), other->Typename(), other->getValue())
+			Parameter(other->getName(), other->Typename(), "", false, other->isConst(), Parameter::AccessMode::ByReference, other)
 		);
 
 		Bool tmp;

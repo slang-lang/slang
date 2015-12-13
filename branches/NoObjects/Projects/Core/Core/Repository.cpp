@@ -182,13 +182,13 @@ Object* Repository::createObject(const std::string& name, const std::string& fil
 	Object *object = 0;
 
 	if ( type == "Bool" ) {
-		object = new Bool();
+		object = new Bool(value);
 	}
 	else if ( type == "Number" ) {
-		object = new Number();
+		object = new Number(value);
 	}
 	else if ( type == "String" ) {
-		object = new String();
+		object = new String(value);
 	}
 	else if ( type == "Void" ) {
 		object = new Void();

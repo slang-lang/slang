@@ -66,7 +66,7 @@ private:
 	typedef std::map<std::string, Object*> MemberCollection;
 
 private:	// Construction
-	void addIdentifier(Object *object);			// throws DuplicateIdentifer exception
+	void addIdentifier(const std::string& name, Object *object);			// throws DuplicateIdentifer exception
 
 private:	// Execution
 	bool isMethod(const std::string& token);

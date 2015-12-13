@@ -110,7 +110,7 @@ void Method::operator= (const Method& other)
 
 	// register new members
 	for ( MemberCollection::const_iterator it = other.mLocalSymbols.begin(); it != other.mLocalSymbols.end(); ++it ) {
-		addIdentifier(it->second);
+		addIdentifier(it->first, it->second);
 		mRepository->addReference(it->second);
 	}
 
@@ -123,24 +123,29 @@ void Method::operator= (const Method& other)
 	visibility(other.visibility());
 }
 
-void Method::addIdentifier(Object *object)
+void Method::addIdentifier(const std::string& name, Object *object)
 {
 	if ( !object ) {
 		// ups..
 		return;
 	}
 
-	if ( mLocalSymbols.find(object->getName()) != mLocalSymbols.end() ) {
+	std::string insertName = name;
+	if ( insertName.empty() ) {
+		insertName = object->getName();
+	}
+
+	if ( mLocalSymbols.find(insertName) != mLocalSymbols.end() ) {
 		if ( object->isStatic() ) {
 			// don't insert static members a second time
 			// just return silently
 			return;
 		}
 
-		throw Utils::DuplicateIdentiferException(object->getName());
+		throw Utils::DuplicateIdentiferException(insertName);
 	}
 
-	mLocalSymbols[object->getName()] = object;
+	mLocalSymbols[insertName] = object;
 }
 
 void Method::execute(const ParameterList& params, Object *result)
@@ -167,7 +172,8 @@ void Method::execute(const ParameterList& params, Object *result)
 
 		if ( paramIt != params.end() ) {
 			// override param with correct values
-			param = Parameter(sigIt->name(), sigIt->type(), paramIt->value(), sigIt->hasDefaultValue(), sigIt->isConst(), sigIt->access(), paramIt->reference());
+			//param = Parameter(sigIt->name(), sigIt->type(), paramIt->value(), sigIt->hasDefaultValue(), sigIt->isConst(), sigIt->access(), paramIt->reference());
+			param = Parameter(sigIt->name(), sigIt->type(), paramIt->value(), sigIt->hasDefaultValue(), sigIt->isConst(), sigIt->access(), paramIt->pointer());
 			// next iteration
 			paramIt++;
 		}
@@ -177,8 +183,6 @@ void Method::execute(const ParameterList& params, Object *result)
 				throw Utils::Exception("access mode unspecified");
 			} break;
 			case Parameter::AccessMode::ByReference: {
-				throw Utils::NotImplemented("handing over parameters as reference is not yet implemented");
-
 /*
 				Object *object = mMemory->getObject(param.reference());
 
@@ -186,14 +190,20 @@ void Method::execute(const ParameterList& params, Object *result)
 				addIdentifier(object);
 */
 
-				mRepository->addReference(param.pointer());
-				addIdentifier(param.pointer());
+				Object *object = param.pointer();
+
+				//mRepository->addReference(object);
+				addIdentifier(param.name(), object);
+
+/*
+				throw Utils::NotImplemented("handing over parameters as reference is not yet implemented");
+*/
 			} break;
 			case Parameter::AccessMode::ByValue: {
 				Object *object = mRepository->createInstance(param.type(), param.name());
 				object->setValue(param.value());
 				object->setConst(param.isConst());
-				addIdentifier(object);
+				addIdentifier(param.name(), object);
 			} break;
 		}
 	}
@@ -269,7 +279,11 @@ bool Method::isMethod(const std::string& token)
 	// loop through all local symbols and ask them if this identifier belongs to them
 	for ( MemberCollection::iterator it = mLocalSymbols.begin(); it != mLocalSymbols.end(); ++it ) {
 		Object *object = it->second;
-		if ( object && object->getName() == parent ) {
+		if ( !object ) {
+			continue;
+		}
+
+		if ( it->first == parent ) {
 			// check for member function
 			if ( object->hasMethod(member) ) {
 				return true;
@@ -354,8 +368,8 @@ bool Method::parseCondition(TokenIterator& token)
 		parseExpression(&v2, token);
 
 		if ( op == Token::Type::COMPARE_EQUAL ) {
-			v1.setValue( (v1.getValue() == v2.getValue()) ? "true" : "false" );
-			//return operator_equal(&v1, &v2);
+			//v1.setValue( (v1.getValue() == v2.getValue()) ? "true" : "false" );
+			return operator_equal(&v1, &v2);
 		}
 		else if ( op == Token::Type::COMPARE_GREATER ) {
 			v1.setValue( (v1.getValue() > v2.getValue()) ? "true" : "false" );
@@ -728,11 +742,11 @@ void Method::process_keyword(TokenIterator& token, Object *result)
 	else if ( keyword == "if" ) {
 		process_if(token, result);
 	}
-	else if ( keyword == "print" ) {
-		process_print(token);
-	}
 	else if ( keyword == "new" ) {
 		process_new(token, result);
+	}
+	else if ( keyword == "print" ) {
+		process_print(token);
 	}
 	else if ( keyword == "return" ) {
 		parseExpression(result, token);
@@ -949,7 +963,7 @@ void Method::process_type(TokenIterator& token)
 			token = end;
 		}
 
-		addIdentifier(object);
+		addIdentifier(name, object);
 
 		if ( token->type() != Token::Type::SEMICOLON ) {
 			throw Utils::SyntaxError("';' expected but '" + token->content() + "' found", token->position());
