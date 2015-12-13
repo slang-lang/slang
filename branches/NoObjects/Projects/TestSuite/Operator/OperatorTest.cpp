@@ -30,7 +30,7 @@ OperatorTest::OperatorTest(const ::Utils::Common::Logger *p)
 
 void OperatorTest::process()
 {
-	TEST(testBooleanOverloads_Assign);
+	//TEST(testBooleanOverloads_Assign);
 	TEST(testBooleanOverloads_Equal);
 	TEST(testBooleanOverloads_Greater);
 	TEST(testBooleanOverloads_Greater_Equal);
@@ -71,7 +71,7 @@ void OperatorTest::testBooleanOverloads_Equal()
 		VirtualMachine vm;
 		vm.setPrinter(&mStdoutPrinter);
 
-		vm.create("Tests/Operator/BooleanOverloads_Equality.os");
+		vm.create("Tests/Operator/BooleanOverloads_Equal.os");
 
 		// automatic success
 	}

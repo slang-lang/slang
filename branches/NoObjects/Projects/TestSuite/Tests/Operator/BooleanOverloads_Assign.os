@@ -22,7 +22,7 @@ private namespace BooleanOverloads
 			mValue = other;
 		}
 
-		public void operator_assign(UserObject other ref const) modify
+		public void operator_assign(UserObject other const ref) modify
 		{
 			mValue = other.GetValue();
 		}
@@ -51,7 +51,7 @@ private namespace BooleanOverloads
 			return false;
 		}
 
-		private Bool TestCase2()
+		private Bool TestCase2() const
 		{
 			print("TestCase2: assign operator with object");
 

@@ -77,7 +77,6 @@ Method* Preprocessor::createMethod(TokenIterator token)
 	std::string name;
 	std::string languageFeature;
 	std::string type;
-	//std::string value;
 	std::string visibility;
 
 	// look for the visibility token

@@ -98,29 +98,31 @@ bool Method::operator< (const Method& other) const
 
 void Method::operator= (const Method& other)
 {
-	setConst(other.isConst());
-	setStatic(other.isStatic());
-	setLanguageFeatureState(other.languageFeatureState());
+	if ( this != &other ) {
+		setConst(other.isConst());
+		setStatic(other.isStatic());
+		setLanguageFeatureState(other.languageFeatureState());
 
-	// unregister current members
-	for ( MemberCollection::const_iterator it = mLocalSymbols.begin(); it != mLocalSymbols.end(); ) {
-		mRepository->removeReference(it->second);
-		it = mLocalSymbols.erase(it);
+		// unregister current members
+		for ( MemberCollection::const_iterator it = mLocalSymbols.begin(); it != mLocalSymbols.end(); ) {
+			mRepository->removeReference(it->second);
+			it = mLocalSymbols.erase(it);
+		}
+
+		// register new members
+		for ( MemberCollection::const_iterator it = other.mLocalSymbols.begin(); it != other.mLocalSymbols.end(); ++it ) {
+			addIdentifier(it->first, it->second);
+			mRepository->addReference(it->second);
+		}
+
+		mOwner = other.mOwner;
+		mParameter = other.mParameter;
+		mRepository = other.mRepository;
+		mTokens = other.mTokens;
+
+		setSignature(other.provideSignature());
+		visibility(other.visibility());
 	}
-
-	// register new members
-	for ( MemberCollection::const_iterator it = other.mLocalSymbols.begin(); it != other.mLocalSymbols.end(); ++it ) {
-		addIdentifier(it->first, it->second);
-		mRepository->addReference(it->second);
-	}
-
-	mOwner = other.mOwner;
-	mParameter = other.mParameter;
-	mRepository = other.mRepository;
-	mTokens = other.mTokens;
-
-	setSignature(other.provideSignature());
-	visibility(other.visibility());
 }
 
 void Method::addIdentifier(const std::string& name, Object *object)
@@ -153,7 +155,7 @@ void Method::execute(const ParameterList& params, Object *result)
 	mStopProcessing = false;		// reset this every time we start executing a method
 
 	if ( !isSignatureValid(params) ) {
-		throw Utils::ParameterCountMissmatch("number or type of parameters incorrect");
+		throw Utils::ParameterCountMissmatch("incorrect number or type of parameters");
 	}
 
 	switch ( languageFeatureState() ) {
@@ -190,10 +192,6 @@ void Method::execute(const ParameterList& params, Object *result)
 			case Parameter::AccessMode::ByReference: {
 				Object *object = param.pointer();
 				addIdentifier(param.name(), object);
-
-/*
-				throw Utils::NotImplemented("handing over parameters as reference is not yet implemented");
-*/
 			} break;
 			case Parameter::AccessMode::ByValue: {
 				Object *object = mRepository->createInstance(param.type(), param.name());

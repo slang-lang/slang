@@ -513,7 +513,7 @@ void Tokenizer::replaceAssignments()
 				// ... and add COMPARE_EQUAL instead
 				tmp.push_back(Token(Token::Type::COMPARE_EQUAL, "=="));
 			}
-			else if ( lastType == Token::Type::GREATER ) {
+			else if ( lastType == Token::Type::GREATER || lastType == Token::Type::COMPARE_GREATER ) {
 				// >=
 				changed = true;
 				// remove last added token ...
@@ -521,7 +521,7 @@ void Tokenizer::replaceAssignments()
 				// ... and add COMPARE_GREATER_EQUAL instead
 				tmp.push_back(Token(Token::Type::COMPARE_GREATER_EQUAL, ">="));
 			}
-			else if ( lastType == Token::Type::LESS ) {
+			else if ( lastType == Token::Type::LESS || lastType == Token::Type::COMPARE_LESS ) {
 				// <=
 				changed = true;
 				// remove last added token ...

@@ -52,11 +52,11 @@ private namespace BooleanOverloads
 		{
 			print("TestCase1: greater-equal operator with atomic type");
 
-			UserObject obj1 = new UserObject(1);
+			UserObject obj1 = new UserObject(2);
 
-			//assert(obj1 >= 2);
-			if ( obj1 >= 2 ) {
-				print("obj1 >= 2");
+			//assert(obj1 >= 1);
+			if ( obj1 >= 1 ) {
+				print("obj1 >= 1");
 				return true;
 			}
 
@@ -67,8 +67,8 @@ private namespace BooleanOverloads
 		{
 			print("TestCase2: greater operator with object");
 
-			UserObject obj1 = new UserObject(1);
-			UserObject obj2 = new UserObject(2);
+			UserObject obj1 = new UserObject(2);
+			UserObject obj2 = new UserObject(1);
 
 			//assert(obj1 >= obj2);
 			if ( obj1 >= obj2 ) {

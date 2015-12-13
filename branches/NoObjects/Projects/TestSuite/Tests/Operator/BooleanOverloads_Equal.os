@@ -26,7 +26,7 @@ private namespace BooleanOverloads
 			return false;
 		}
 
-		public Bool operator_equal(UserObject other ref const) const
+		public Bool operator_equal(UserObject other const ref) const
 		{
 			if ( mValue == other.GetValue() ) {
 				return true;
