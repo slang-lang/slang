@@ -7,6 +7,10 @@
 // Project includes
 #include <Core/Utils/Exceptions.h>
 #include <Core/Tools.h>
+#include "BoolObject.h"
+#include "NumberObject.h"
+#include "UserObject.h"
+#include "VoidObject.h"
 
 // Namespace declarations
 
@@ -44,19 +48,112 @@ std::string String::getValue() const
 	return mValue;
 }
 
-void String::operator_assign(Object *other)
+void String::operator_assign(Bool *other)
 {
 	mValue = other->getValue();
 }
 
+void String::operator_assign(Number *other)
+{
+	mValue = other->getValue();
+}
+
+void String::operator_assign(Object *other)
+{
+	std::string target = other->Typename();
+	if ( target == "Bool" ) {
+		String tmp(other->getValue());
+
+		operator_assign(&tmp);
+	}
+	else if ( target == "Number" ) {
+		String tmp(other->getValue());
+
+		operator_assign(&tmp);
+	}
+	else if ( target == "String" ) {
+		String tmp(other->getValue());
+
+		operator_assign(&tmp);
+	}
+	else {
+		throw Utils::NotImplemented("operator_assign: conversion from " + target + " to Number not supported");
+	}
+}
+
+void String::operator_assign(String *other)
+{
+	mValue = other->getNativeValue();
+}
+
 bool String::operator_equal(Object *other)
 {
-	return (this->getValue() == other->getValue());
+	std::string target = other->Typename();
+
+/*
+	if ( target == "Bool" ) {
+		String tmp(other->getValue());
+
+		return operator_equal(&tmp);
+	}
+	else if ( target == "Number" ) {
+		String tmp(other->getValue());
+
+		return operator_equal(&tmp);
+	}
+	else
+*/
+	if ( target == "String" ) {
+		String tmp(other->getValue());
+
+		return operator_equal(&tmp);
+	}
+
+	throw Utils::NotImplemented("operator_equal: conversion from " + target + " to Number not supported");
+}
+
+bool String::operator_equal(String *other)
+{
+	return (mValue == other->getNativeValue());
+}
+
+void String::operator_plus(Bool *other)
+{
+	mValue += other->getValue();
+}
+
+void String::operator_plus(Number *other)
+{
+	mValue += other->getValue();
 }
 
 void String::operator_plus(Object *other)
 {
-	mValue = getValue() + other->getValue();
+	std::string target = other->Typename();
+
+	if ( target == "Bool" ) {
+		String tmp(other->getValue());
+
+		operator_plus(&tmp);
+	}
+	else if ( target == "Number" ) {
+		String tmp(other->getValue());
+
+		operator_plus(&tmp);
+	}
+	else if ( target == "String" ) {
+		String tmp(other->getValue());
+
+		operator_plus(&tmp);
+	}
+	else {
+		throw Utils::NotImplemented("operator_assign: conversion from " + target + " to Number not supported");
+	}
+}
+
+void String::operator_plus(String *other)
+{
+	mValue += other->getNativeValue();
 }
 
 void String::setNativeValue(const std::string& value)

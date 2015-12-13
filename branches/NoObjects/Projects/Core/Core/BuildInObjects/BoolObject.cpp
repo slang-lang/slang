@@ -58,14 +58,39 @@ bool Bool::isValid() const
 	return true;
 }
 
+void Bool::operator_assign(Bool *other)
+{
+	mValue = other->getNativeValue();
+}
+
 void Bool::operator_assign(Object *other)
 {
-	mValue = Tools::stringToBool(other->getValue());
+	std::string target = other->Typename();
+	if ( target == "Bool" ) {
+		Bool tmp(other->getValue());
+
+		operator_assign(&tmp);
+	}
+	else {
+		throw Utils::NotImplemented("operator_assign: conversion from " + target + " to Number not supported");
+	}
+}
+
+bool Bool::operator_equal(Bool *other)
+{
+	return (mValue == other->getNativeValue());
 }
 
 bool Bool::operator_equal(Object *other)
 {
-	return (mValue == Tools::stringToBool(other->getValue()));
+	std::string target = other->Typename();
+	if ( target == "Bool" ) {
+		Bool tmp(other->getValue());
+
+		return operator_equal(&tmp);
+	}
+
+	throw Utils::NotImplemented("operator_equal: conversion from " + target + " to Number not supported");
 }
 
 void Bool::setNativeValue(bool value)

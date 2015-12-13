@@ -26,9 +26,18 @@ public:
 public:	// Operators
 	virtual operator bool() const;
 
+	virtual void operator_assign(Bool *other);
+	virtual void operator_assign(Number *other);
 	virtual void operator_assign(Object *other);
+	virtual void operator_assign(String *other);
+
 	virtual bool operator_equal(Object *other);
+	virtual bool operator_equal(String *other);
+
+	virtual void operator_plus(Bool *other);
+	virtual void operator_plus(Number *other);
 	virtual void operator_plus(Object *other);
+	virtual void operator_plus(String *other);
 
 public: // Value
 	virtual std::string getNativeValue() const;
