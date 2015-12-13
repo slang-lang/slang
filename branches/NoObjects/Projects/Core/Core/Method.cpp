@@ -236,6 +236,11 @@ Object* Method::getOwner() const
 	return mOwner;
 }
 
+bool Method::isMember(const std::string& token) const
+{
+	return (mOwner && mOwner->getMember(token));
+}
+
 Object* Method::getSymbol(const std::string& token)
 {
 	std::string member, parent;
@@ -589,7 +594,7 @@ void Method::process_assign(TokenIterator& token, Object *result)
 	if ( s->isConst() ) {
 		throw Utils::ConstCorrectnessViolated("not allowed to modify const member '" + identifier + "'", token->position());
 	}
-	if ( this->isConst() && mOwner->getMember(identifier) ) {
+	if ( this->isConst() && isMember(identifier) ) {
 		throw Utils::ConstCorrectnessViolated("not allowed to modify member '" + identifier + "' in const method '" + this->name() + "'", token->position());
 	}
 
@@ -756,11 +761,6 @@ void Method::process_keyword(TokenIterator& token, Object *result)
 	else if ( keyword == "while" ) {
 		process_while(token);
 	}
-// Debug only - begin
-	else if ( keyword == "breakpoint" ) {
-		mOwner->providePrinter()->print("hit breakpoint   [" + mOwner->Filename() + ": " + Tools::toString(token->position().line) + "]");
-	}
-// Debug only - end
 }
 
 // syntax:

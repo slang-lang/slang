@@ -445,27 +445,7 @@ void Object::operator_multiply(Object * /*other*/)
 	throw Utils::NotImplemented(ToString() + ", operator*");
 }
 
-void Object::operator_plus(Bool * /*other*/)
-{
-	throw Utils::NotImplemented(ToString() + ", operator+");
-}
-
-void Object::operator_plus(Number * /*other*/)
-{
-	throw Utils::NotImplemented(ToString() + ", operator+");
-}
-
 void Object::operator_plus(Object * /*other*/)
-{
-	throw Utils::NotImplemented(ToString() + ", operator+");
-}
-
-void Object::operator_plus(String * /*other*/)
-{
-	throw Utils::NotImplemented(ToString() + ", operator+");
-}
-
-void Object::operator_plus(Void * /*other*/)
 {
 	throw Utils::NotImplemented(ToString() + ", operator+");
 }
@@ -474,6 +454,28 @@ void Object::operator_subtract(Object * /*other*/)
 {
 	throw Utils::NotImplemented(ToString() + ", operator-");
 }
+
+/*
+void Object::operator_plus(Bool *)
+{
+	throw Utils::NotImplemented(ToString() + ", operator+");
+}
+
+void Object::operator_plus(Number *)
+{
+	throw Utils::NotImplemented(ToString() + ", operator+");
+}
+
+void Object::operator_plus(String *)
+{
+	throw Utils::NotImplemented(ToString() + ", operator+");
+}
+
+void Object::operator_plus(Void *)
+{
+	throw Utils::NotImplemented(ToString() + ", operator+");
+}
+*/
 
 IPrinter* Object::providePrinter() const
 {

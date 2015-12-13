@@ -17,8 +17,8 @@ StringList provideAtomarTypes()
 
 	types.push_back(PROTOTYPE_TYPE);
 	types.push_back("bool");
-	types.push_back("float");
-	types.push_back("int");
+	//types.push_back("float");
+	//types.push_back("int");
 	types.push_back("number");
 	types.push_back("string");
 	types.push_back("void");
@@ -62,10 +62,6 @@ StringList provideKeyWords()
 	keywords.push_back("try");
 	keywords.push_back("while");
 	keywords.push_back("using");
-
-// Debug only - begin
-	keywords.push_back("breakpoint");
-// Debug only - end
 
 	return keywords;
 }

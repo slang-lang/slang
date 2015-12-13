@@ -30,7 +30,7 @@ OperatorTest::OperatorTest(const ::Utils::Common::Logger *p)
 
 void OperatorTest::process()
 {
-	//TEST(testBooleanOverloads_Assign);
+	TEST(testBooleanOverloads_Assign);
 	TEST(testBooleanOverloads_Equal);
 	TEST(testBooleanOverloads_Greater);
 	TEST(testBooleanOverloads_Greater_Equal);

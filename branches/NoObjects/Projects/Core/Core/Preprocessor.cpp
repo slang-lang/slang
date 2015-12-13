@@ -71,7 +71,7 @@ Object* Preprocessor::createMember(const std::string& filename, TokenIterator to
 
 Method* Preprocessor::createMethod(TokenIterator token)
 {
-	bool isConst = false;
+	bool isConst = false;		// set to 'true' to make all methods const by default (this is the only way the 'modify' attribute makes sense)
 	bool isFinal = false;
 	bool isStatic = false;
 	std::string name;
@@ -100,7 +100,7 @@ Method* Preprocessor::createMethod(TokenIterator token)
 	do {
 		token++;
 
-		if ( token->type() == Token::Type::RESERVED ) {
+		if ( token->type() == Token::Type::LANGUAGEFEATURE ) {
 			if ( token->content() == "const" ) {
 				isConst = true;
 			}

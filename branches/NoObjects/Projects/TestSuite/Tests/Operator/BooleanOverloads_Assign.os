@@ -5,7 +5,7 @@ private namespace BooleanOverloads
 	{
 		private Number mValue;
 
-		public void UserObject(Number value const)
+		public Void UserObject(Number value const)
 		{
 			mValue = value;
 		}
@@ -15,14 +15,19 @@ private namespace BooleanOverloads
 			return mValue;
 		}
 
+		public void setValue(Number value const)
+		{
+			mValue = value;
+		}
+
 		/////////////////////////////////////////////////////////////////////
 
-		public void operator_assign(Number other const) modify
+		public Void operator_assign(Number other const) modify
 		{
 			mValue = other;
 		}
 
-		public void operator_assign(UserObject other const ref) modify
+		public Void operator_assign(UserObject other const ref) modify
 		{
 			mValue = other.GetValue();
 		}
@@ -42,6 +47,7 @@ private namespace BooleanOverloads
 
 			UserObject obj1 = new UserObject(1);
 
+			obj1.setValue(2);
 			obj1 = 2;
 			//assert( obj1.GetValue() == 2 );
 			if ( obj1.GetValue() == 2 ) {

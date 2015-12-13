@@ -46,7 +46,7 @@ void Void::setNativeValue(void)
 {
 }
 
-void Void::setValue(const std::string& /*value*/)
+void Void::setValue(const std::string&)
 {
 }
 
