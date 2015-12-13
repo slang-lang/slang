@@ -236,7 +236,7 @@ void Object::execute(Object *result, const std::string& method, const ParameterL
 		// catch and log all errors that occured during method execution
 		OSerror(e.what());
 
-		mPrinter->print(ToString() + ": " + e.what());
+		mPrinter->print(ToString() + ": " + e.what() + "\n");
 
 		throw;
 	}

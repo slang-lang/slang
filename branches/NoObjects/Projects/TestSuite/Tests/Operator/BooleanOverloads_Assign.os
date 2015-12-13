@@ -47,7 +47,6 @@ private namespace BooleanOverloads
 
 			UserObject obj1 = new UserObject(1);
 
-			obj1.setValue(2);
 			obj1 = 2;
 			//assert( obj1.GetValue() == 2 );
 			if ( obj1.GetValue() == 2 ) {

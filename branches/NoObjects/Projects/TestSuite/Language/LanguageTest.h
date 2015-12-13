@@ -42,7 +42,6 @@ private:	// Tests
 	void testMethodOverloading();
 	void testNamespaces();
 	void testObjectReference();
-	void testOperatorOverloading();
 	void testParameters();
 	void testPrint();
 	void testStaticLocalVariable();

@@ -45,7 +45,7 @@ public namespace
 			print("ParameterByReference.value = " & value);
 		}
 
-		private void ParameterByValue(TestObject value val /*= TestObject(1)*/)
+		private void ParameterByValue(TestObject value val)
 		{
 			value.mValue = value.mValue + 1;
 			print("mValue = " & value.mValue);
