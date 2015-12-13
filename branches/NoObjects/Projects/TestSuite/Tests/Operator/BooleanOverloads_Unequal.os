@@ -14,7 +14,7 @@ private namespace BooleanOverloads
 		{
 			return mValue;
 		}
-		
+
 		/////////////////////////////////////////////////////////////////////
 
 		public Bool operator_equal(Number other const) const
@@ -50,9 +50,9 @@ private namespace BooleanOverloads
 
 			UserObject obj1 = new UserObject(1);
 
-			//assert(obj1 == 1);
-			if ( obj1 == 1 ) {
-				print("obj1 == 1");
+			//assert(obj1 != 2);
+			if ( obj1 != 2 ) {
+				print("obj1 != 2");
 				return true;
 			}
 
@@ -64,11 +64,11 @@ private namespace BooleanOverloads
 			print("TestCase2: equality operator with object");
 
 			UserObject obj1 = new UserObject(1);
-			UserObject obj2 = new UserObject(1);
+			UserObject obj2 = new UserObject(2);
 
 			//assert(obj1 == obj2);
-			if ( obj1 == obj2 ) {
-				print("obj1 == obj2");
+			if ( obj1 != obj2 ) {
+				print("obj1 != obj2");
 				return true;
 			}
 

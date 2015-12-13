@@ -36,6 +36,7 @@ void OperatorTest::process()
 	TEST(testBooleanOverloads_Greater_Equal);
 	TEST(testBooleanOverloads_Less);
 	TEST(testBooleanOverloads_Less_Equal);
+	TEST(testBooleanOverloads_Unequal);
 	TEST(testMathOverloadsWithNumbers);
 	TEST(testMathOverloadsWithObjects);
 }
@@ -135,6 +136,22 @@ void OperatorTest::testBooleanOverloads_Less_Equal()
 		vm.setPrinter(&mStdoutPrinter);
 
 		vm.create("Tests/Operator/BooleanOverloads_Less_Equal.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void OperatorTest::testBooleanOverloads_Unequal()
+{
+	try {
+		VirtualMachine vm;
+		vm.setPrinter(&mStdoutPrinter);
+
+		vm.create("Tests/Operator/BooleanOverloads_Unequal.os");
 
 		// automatic success
 	}

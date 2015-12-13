@@ -171,9 +171,14 @@ void Method::execute(const ParameterList& params, Object *result)
 		Parameter param(sigIt->name(), sigIt->type(), sigIt->value(), sigIt->hasDefaultValue(), sigIt->isConst(), sigIt->access(), sigIt->reference());
 
 		if ( paramIt != params.end() ) {
+			Parameter::AccessMode::E access = sigIt->access();
+/*
+			if ( paramIt->pointer() ) {
+				access = Parameter::AccessMode::ByReference;
+			}
+*/
 			// override param with correct values
-			//param = Parameter(sigIt->name(), sigIt->type(), paramIt->value(), sigIt->hasDefaultValue(), sigIt->isConst(), sigIt->access(), paramIt->reference());
-			param = Parameter(sigIt->name(), sigIt->type(), paramIt->value(), sigIt->hasDefaultValue(), sigIt->isConst(), sigIt->access(), paramIt->pointer());
+			param = Parameter(sigIt->name(), sigIt->type(), paramIt->value(), sigIt->hasDefaultValue(), sigIt->isConst(), access, paramIt->pointer());
 			// next iteration
 			paramIt++;
 		}
@@ -183,16 +188,7 @@ void Method::execute(const ParameterList& params, Object *result)
 				throw Utils::Exception("access mode unspecified");
 			} break;
 			case Parameter::AccessMode::ByReference: {
-/*
-				Object *object = mMemory->getObject(param.reference());
-
-				mRepository->addReference(object);
-				addIdentifier(object);
-*/
-
 				Object *object = param.pointer();
-
-				//mRepository->addReference(object);
 				addIdentifier(param.name(), object);
 
 /*
@@ -384,12 +380,12 @@ bool Method::parseCondition(TokenIterator& token)
 			return operator_less(&v1, &v2);
 		}
 		else if ( op == Token::Type::COMPARE_LESS_EQUAL ) {
-			v1.setValue( (v1.getValue() <= v2.getValue()) ? "true" : "false" );
-			//return operator_less_equal(&v1, &v2);
+			//v1.setValue( (v1.getValue() <= v2.getValue()) ? "true" : "false" );
+			return operator_less_equal(&v1, &v2);
 		}
 		else if ( op == Token::Type::COMPARE_UNEQUAL ) {
-			v1.setValue( (v1.getValue() != v2.getValue()) ? "true" : "false" );
-			//return !operator_equal(&v1, &v2);
+			//v1.setValue( (v1.getValue() != v2.getValue()) ? "true" : "false" );
+			return !operator_equal(&v1, &v2);
 		}
 	}
 

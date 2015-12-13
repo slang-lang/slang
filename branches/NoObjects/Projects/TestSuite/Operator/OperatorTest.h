@@ -38,6 +38,7 @@ private:	// Tests
 	void testBooleanOverloads_Greater_Equal();
 	void testBooleanOverloads_Less();
 	void testBooleanOverloads_Less_Equal();
+	void testBooleanOverloads_Unequal();
 	void testMathOverloadsWithNumbers();
 	void testMathOverloadsWithObjects();
 

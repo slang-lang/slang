@@ -18,6 +18,28 @@ public namespace MathOverloads
 
 		/////////////////////////////////////////////////////////////////////
 
+		public void operator_equal(OverloadedObject other const)
+		{
+			print("operator_equal(OverloadedObject)");
+			
+			if ( mNumber == other.GetNumber() ) {
+				return true;
+			}
+			
+			return false;
+		}
+		
+		public void operator_equal(Number other const)
+		{
+			print("operator_equal(Number)");
+			
+			if ( mNumber == other ) {
+				return true;
+			}
+			
+			return false;
+		}
+
 		public void operator_divide(Number other const)
 		{
 			print("operator_divide");
@@ -63,7 +85,11 @@ public namespace MathOverloads
 			//assert(obj1 == 3);
 			print("obj1.GetNumber() = " & obj1.GetNumber());
 
-			return true;
+			if ( obj1 == 3 ) {
+				return true;
+			}
+
+			return false;
 		}
 
 		private Bool TestCase2() const
@@ -76,7 +102,11 @@ public namespace MathOverloads
 			//assert( obj1 == -1 );
 			print("obj1.GetNumber() = " & obj1.GetNumber());
 
-			return true;
+			if ( obj1 == obj1.GetNumber() ) {
+				return true;
+			}
+
+			return false;
 		}
 
 		private Bool TestCase3() const
@@ -89,7 +119,11 @@ public namespace MathOverloads
 			//assert( obj1 == 2 );
 			print("obj1.GetNumber() = " & obj1.GetNumber());
 
-			return true;
+			if ( obj1 == 2 ) {
+				return true;
+			}
+
+			return false;
 		}
 
 		private Bool TestCase4() const
@@ -102,7 +136,11 @@ public namespace MathOverloads
 			//assert( obj1 == 0.5 );
 			print("obj1.GetNumber() = " & obj1.GetNumber());
 
-			return true;
+			if ( obj1 == 0.5 ) {
+				return true;
+			}
+
+			return false;
 		}
 	}
 }
