@@ -347,16 +347,16 @@ std::string Object::getValue() const
 	return mValue;
 }
 
-bool Object::hasMethod(const std::string& m)
+bool Object::hasMethod(const std::string& token)
 {
 	for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
-		if ( (*it)->getName() == m ) {
+		if ( (*it)->getName() == token ) {
 			return true;
 		}
 	}
 
 	std::string method, parent;
-	Tools::split(m, parent, method);
+	Tools::split(token, parent, method);
 
 	// loop through all members and ask them if this identifier belongs to them
 	for ( MemberCollection::iterator it = mMembers.begin(); it != mMembers.end(); ++it ) {

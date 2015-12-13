@@ -22,7 +22,7 @@ private namespace BooleanOverloads
 			mValue = other;
 		}
 
-		public Void operator_assign(UserObject other const)
+		public Void operator_assign(UserObject other ref const)
 		{
 			mValue = other.GetValue();
 		}
@@ -33,7 +33,7 @@ private namespace BooleanOverloads
 		public void Main(Number argc = 0, String argv = "")
 		{
 			assert(TestCase1());
-			//assert(TestCase2());
+			assert(TestCase2());
 		}
 
 		private Bool TestCase1()

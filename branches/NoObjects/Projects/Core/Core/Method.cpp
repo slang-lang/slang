@@ -273,8 +273,8 @@ bool Method::isMethod(const std::string& token)
 		return false;
 	}
 
-	std::string member, parent;
-	Tools::split(token, parent, member);
+	std::string method, parent;
+	Tools::split(token, parent, method);
 
 	// loop through all local symbols and ask them if this identifier belongs to them
 	for ( MemberCollection::iterator it = mLocalSymbols.begin(); it != mLocalSymbols.end(); ++it ) {
@@ -285,7 +285,7 @@ bool Method::isMethod(const std::string& token)
 
 		if ( it->first == parent ) {
 			// check for member function
-			if ( object->hasMethod(member) ) {
+			if ( object->hasMethod(method) ) {
 				return true;
 			}
 		}
@@ -293,7 +293,7 @@ bool Method::isMethod(const std::string& token)
 
 	Object *obj = mOwner->getMember(parent);
 	if ( obj ) {
-		return obj->hasMethod(member);
+		return obj->hasMethod(method);
 	}
 
 	// check if token is a method of our parent object
@@ -372,16 +372,16 @@ bool Method::parseCondition(TokenIterator& token)
 			return operator_equal(&v1, &v2);
 		}
 		else if ( op == Token::Type::COMPARE_GREATER ) {
-			v1.setValue( (v1.getValue() > v2.getValue()) ? "true" : "false" );
-			//return operator_greater(&v1, &v2);
+			//v1.setValue( (v1.getValue() > v2.getValue()) ? "true" : "false" );
+			return operator_greater(&v1, &v2);
 		}
 		else if ( op == Token::Type::COMPARE_GREATER_EQUAL ) {
-			v1.setValue( (v1.getValue() >= v2.getValue()) ? "true" : "false" );
-			//return operator_greater_equal(&v1, &v2);
+			//v1.setValue( (v1.getValue() >= v2.getValue()) ? "true" : "false" );
+			return operator_greater_equal(&v1, &v2);
 		}
 		else if ( op == Token::Type::COMPARE_LESS ) {
-			v1.setValue( (v1.getValue() < v2.getValue()) ? "true" : "false" );
-			//return operator_less(&v1, &v2);
+			//v1.setValue( (v1.getValue() < v2.getValue()) ? "true" : "false" );
+			return operator_less(&v1, &v2);
 		}
 		else if ( op == Token::Type::COMPARE_LESS_EQUAL ) {
 			v1.setValue( (v1.getValue() <= v2.getValue()) ? "true" : "false" );
@@ -506,6 +506,9 @@ void Method::parseTerm(Object *result, TokenIterator& start)
 		} break;
 		case Token::Type::LITERAL: {
 			*result = String(start->content());
+		} break;
+		case Token::Type::MATH_SUBTRACT: {
+			throw Utils::NotImplemented("unary minus");
 		} break;
 		default: {
 			throw Utils::SyntaxError("identifier, literal or number expected but " + start->content() + " as " + Token::Type::convert(start->type()) + " found", start->position());

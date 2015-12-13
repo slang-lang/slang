@@ -19,6 +19,8 @@ private namespace BooleanOverloads
 		
 		public Bool operator_greater(Number other const)
 		{
+			print("operator_greater(Number)");
+
 			if ( mValue > other ) {
 				return true;
 			}
@@ -26,8 +28,10 @@ private namespace BooleanOverloads
 			return false;
 		}
 		
-		public Bool operator_greater(UserObject other const)
+		public Bool operator_greater(UserObject other ref const)
 		{
+			print("operator_greater(UserObject)");
+
 			if ( mValue > other.GetValue() ) {
 				return true;
 			}
@@ -41,18 +45,18 @@ private namespace BooleanOverloads
 		public void Main(Number argc = 0, String argv = "")
 		{
 			assert(TestCase1());
-			//assert(TestCase2());
+			assert(TestCase2());
 		}
 
 		private Bool TestCase1()
 		{
 			print("TestCase1: greater operator with atomic type");
 
-			UserObject obj1 = new UserObject(1);
+			UserObject obj1 = new UserObject(2);
 
-			//assert(obj1 > 2);
-			if ( obj1 > 2 ) {
-				print("obj1 > 2");
+			//assert(obj1 > 1);
+			if ( obj1 > 1 ) {
+				print("obj1 > 1");
 				return true;
 			}
 
@@ -66,9 +70,9 @@ private namespace BooleanOverloads
 			UserObject obj1 = new UserObject(1);
 			UserObject obj2 = new UserObject(2);
 
-			//assert(obj1 > obj2);
-			if ( obj1 > obj2 ) {
-				print("obj1 > obj2");
+			//assert(obj2 > obj1);
+			if ( obj2 > obj1 ) {
+				print("obj2 > obj1");
 				return true;
 			}
 

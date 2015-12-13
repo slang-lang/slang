@@ -58,9 +58,22 @@ bool Number::isValid() const
 	return true;
 }
 
+void Number::operator_assign(Number *other)
+{
+	mValue = other->getNativeValue();
+}
+
 void Number::operator_assign(Object *other)
 {
-	mValue = Tools::stringToFloat(other->getValue());
+	std::string target = other->Typename();
+	if ( target == "Number" ) {
+		Number tmp(other->getValue());
+
+		operator_assign(&tmp);
+	}
+	else {
+		throw Utils::NotImplemented("operator_assign: conversion from " + target + " to Number not supported");
+	}
 }
 
 void Number::operator_divide(Number *other)
@@ -98,24 +111,72 @@ bool Number::operator_equal(Object *other)
 	throw Utils::NotImplemented("operator_equal: conversion from " + target + " to Number not supported");
 }
 
+bool Number::operator_greater(Number *other)
+{
+	return (mValue > other->getNativeValue());
+}
+
 bool Number::operator_greater(Object *other)
 {
-	return (mValue > Tools::stringToFloat(other->getValue()));
+	std::string target = other->Typename();
+	if ( target == "Number" ) {
+		Number tmp(other->getValue());
+
+		return operator_greater(&tmp);
+	}
+
+	throw Utils::NotImplemented("operator_greater: conversion from " + target + " to Number not supported");
+}
+
+bool Number::operator_greater_equal(Number *other)
+{
+	return (mValue >= other->getNativeValue());
 }
 
 bool Number::operator_greater_equal(Object *other)
 {
-	return (mValue >= Tools::stringToFloat(other->getValue()));
+	std::string target = other->Typename();
+	if ( target == "Number" ) {
+		Number tmp(other->getValue());
+
+		return operator_greater_equal(&tmp);
+	}
+
+	throw Utils::NotImplemented("operator_greater_equal: conversion from " + target + " to Number not supported");
+}
+
+bool Number::operator_less(Number *other)
+{
+	return (mValue < other->getNativeValue());
 }
 
 bool Number::operator_less(Object *other)
 {
-	return (mValue < Tools::stringToFloat(other->getValue()));
+	std::string target = other->Typename();
+	if ( target == "Number" ) {
+		Number tmp(other->getValue());
+
+		return operator_less(&tmp);
+	}
+
+	throw Utils::NotImplemented("operator_less: conversion from " + target + " to Number not supported");
+}
+
+bool Number::operator_less_equal(Number *other)
+{
+	return (mValue <= other->getNativeValue());
 }
 
 bool Number::operator_less_equal(Object *other)
 {
-	return (mValue <= Tools::stringToFloat(other->getValue()));
+	std::string target = other->Typename();
+	if ( target == "Number" ) {
+		Number tmp(other->getValue());
+
+		return operator_less_equal(&tmp);
+	}
+
+	throw Utils::NotImplemented("operator_less_equal: conversion from " + target + " to Number not supported");
 }
 
 void Number::operator_multiply(Number *other)

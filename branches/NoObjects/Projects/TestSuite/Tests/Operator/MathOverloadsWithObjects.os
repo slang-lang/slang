@@ -18,15 +18,15 @@ public namespace MathOverloads
 
 		/////////////////////////////////////////////////////////////////////
 
-		public void operator_divide(OverloadedObject other const)
+		public void operator_divide(OverloadedObject other ref const)
 		{
-			print("operator_divide");
+			print("operator_divide(OverloadedObject)");
 			mNumber = mNumber / other.GetNumber();
 		}
 
-		public void operator_equal(OverloadedObject other ref const)
+		public void operator_equal(OverloadedObject other const)
 		{
-			print("operator_equal");
+			print("operator_equal(OverloadedObject)");
 			
 			if ( mNumber == other.GetNumber() ) {
 				return true;
@@ -37,7 +37,7 @@ public namespace MathOverloads
 		
 		public void operator_equal(Number other const)
 		{
-			print("operator_equal");
+			print("operator_equal(Number)");
 			
 			if ( mNumber == other ) {
 				return true;
@@ -46,21 +46,21 @@ public namespace MathOverloads
 			return false;
 		}
 
-		public void operator_multiply(OverloadedObject other const)
+		public void operator_multiply(OverloadedObject other ref const)
 		{
-			print("operator_multiply");
+			print("operator_multiply(OverloadedObject)");
 			mNumber = mNumber * other.GetNumber();
 		}
 
 		public void operator_plus(OverloadedObject other ref const)
 		{
-			print("operator_plus");
+			print("operator_plus(OverloadedObject)");
 			mNumber = mNumber + other.GetNumber();
 		}
 
-		public void operator_subtract(OverloadedObject other const)
+		public void operator_subtract(OverloadedObject other ref const)
 		{
-			print("operator_subtract");
+			print("operator_subtract(OverloadedObject)");
 			mNumber = mNumber - other.GetNumber();
 		}
 	}
@@ -102,9 +102,9 @@ public namespace MathOverloads
 
 			obj1 = obj1 - obj2;
 			//assert( obj1 == -1 );
-			print("obj1.GetNumber() = " & obj1.GetNumber());
+			print("obj1.GetNumber() = " + obj1.GetNumber());
 
-			if ( obj1 == -1 ) {
+			if ( obj1 == obj1.GetNumber() ) {
 				return true;
 			}
 

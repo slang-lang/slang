@@ -19,6 +19,8 @@ private namespace BooleanOverloads
 		
 		public Bool operator_greater_equal(Number other const)
 		{
+			print("operator_greater_equal(Number)");
+
 			if ( mValue >= other ) {
 				return true;
 			}
@@ -26,8 +28,10 @@ private namespace BooleanOverloads
 			return false;
 		}
 		
-		public Bool operator_greater_equal(UserObject other const)
+		public Bool operator_greater_equal(UserObject other ref const)
 		{
+			print("operator_greater_equal(UserObject)");
+
 			if ( mValue >= other.GetValue() ) {
 				return true;
 			}
@@ -41,7 +45,7 @@ private namespace BooleanOverloads
 		public void Main(Number argc = 0, String argv = "")
 		{
 			assert(TestCase1());
-			//assert(TestCase2());
+			assert(TestCase2());
 		}
 
 		private Bool TestCase1()

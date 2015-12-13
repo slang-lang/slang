@@ -26,7 +26,7 @@ private namespace BooleanOverloads
 			return false;
 		}
 		
-		public Bool operator_less(UserObject other const)
+		public Bool operator_less(UserObject other ref const)
 		{
 			if ( mValue < other.GetValue() ) {
 				return true;
@@ -41,7 +41,7 @@ private namespace BooleanOverloads
 		public void Main(Number argc = 0, String argv = "")
 		{
 			assert(TestCase1());
-			//assert(TestCase2());
+			assert(TestCase2());
 		}
 
 		private Bool TestCase1()

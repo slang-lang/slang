@@ -56,7 +56,7 @@ void operator_assign(Object *base, Object *other)
 	else {
 		ParameterList params;
 		params.push_back(
-			Parameter(other->getName(), other->Typename(), "", false, other->isConst(), Parameter::AccessMode::ByReference, other)
+			Parameter(other->getName(), other->Typename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
 		);
 
 		Bool tmp;
@@ -102,7 +102,7 @@ void operator_divide(Object *base, Object *other)
 	else {
 		ParameterList params;
 		params.push_back(
-			Parameter(other->getName(), other->Typename(), "", false, other->isConst(), Parameter::AccessMode::ByReference, other)
+			Parameter(other->getName(), other->Typename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
 		);
 
 		Bool tmp;
@@ -140,7 +140,7 @@ bool operator_equal(Object *base, Object *other)
 
 	ParameterList params;
 	params.push_back(
-		Parameter(other->getName(), other->Typename(), "", false, other->isConst(), Parameter::AccessMode::ByReference, other)
+		Parameter(other->getName(), other->Typename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
 	);
 
 	Bool tmp;
@@ -178,7 +178,7 @@ bool operator_greater(Object *base, Object *other)
 
 	ParameterList params;
 	params.push_back(
-		Parameter(other->getName(), other->Typename(), "", false, other->isConst(), Parameter::AccessMode::ByReference, other)
+		Parameter(other->getName(), other->Typename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
 	);
 
 	Bool tmp;
@@ -216,7 +216,7 @@ bool operator_greater_equal(Object *base, Object *other)
 
 	ParameterList params;
 	params.push_back(
-		Parameter(other->getName(), other->Typename(), "", false, other->isConst(), Parameter::AccessMode::ByReference, other)
+		Parameter(other->getName(), other->Typename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
 	);
 
 	Bool tmp;
@@ -254,7 +254,7 @@ bool operator_less(Object *base, Object *other)
 
 	ParameterList params;
 	params.push_back(
-		Parameter(other->getName(), other->Typename(), "", false, other->isConst(), Parameter::AccessMode::ByReference, other)
+		Parameter(other->getName(), other->Typename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
 	);
 
 	Bool tmp;
@@ -292,7 +292,7 @@ bool operator_less_equal(Object *base, Object *other)
 
 	ParameterList params;
 	params.push_back(
-		Parameter(other->getName(), other->Typename(), "", false, other->isConst(), Parameter::AccessMode::ByReference, other)
+		Parameter(other->getName(), other->Typename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
 	);
 
 	Bool tmp;
@@ -338,7 +338,7 @@ void operator_multiply(Object *base, Object *other)
 	else {
 		ParameterList params;
 		params.push_back(
-			Parameter(other->getName(), other->Typename(), "", false, other->isConst(), Parameter::AccessMode::ByReference, other)
+			Parameter(other->getName(), other->Typename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
 		);
 
 		Bool tmp;
@@ -384,7 +384,7 @@ void operator_plus(Object *base, Object *other)
 	else {
 		ParameterList params;
 		params.push_back(
-			Parameter(other->getName(), other->Typename(), "", false, other->isConst(), Parameter::AccessMode::ByReference, other)
+			Parameter(other->getName(), other->Typename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
 		);
 
 		Bool tmp;
@@ -430,7 +430,7 @@ void operator_subtract(Object *base, Object *other)
 	else {
 		ParameterList params;
 		params.push_back(
-			Parameter(other->getName(), other->Typename(), "", false, other->isConst(), Parameter::AccessMode::ByReference, other)
+			Parameter(other->getName(), other->Typename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
 		);
 
 		Bool tmp;
