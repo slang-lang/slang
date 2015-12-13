@@ -27,27 +27,28 @@ void operator_assign(Object *base, Object *other)
 		throw Utils::NullPointerException("cannot assign object to null pointer");
 	}
 
-	std::string target = base->Typename();
+	std::string source = base->Typename();
+	std::string target = other->Typename();
 
-	if ( target == "Bool" ) {
+	if ( source == "Bool" ) {
 		Bool tmp(base->getValue());
 		tmp.operator_assign(other);
 
 		base->setValue(tmp.getValue());
 	}
-	else if ( target == "Number" ) {
+	else if ( source == "Number" ) {
 		Number tmp(base->getValue());
 		tmp.operator_assign(other);
 
 		base->setValue(tmp.getValue());
 	}
-	else if ( target == "String" ) {
+	else if ( source == "String" ) {
 		String tmp(base->getValue());
 		tmp.operator_assign(other);
 
 		base->setValue(tmp.getValue());
 	}
-	else if ( target == "Void" ) {
+	else if ( source == "Void" ) {
 		Void tmp;
 		tmp.operator_assign(other);
 
@@ -351,7 +352,8 @@ void operator_plus(Object *base, Object *other)
 		throw Utils::NullPointerException("cannot add object to null pointer");
 	}
 
-	std::string target = base->Typename();
+	std::string source = base->Typename();
+	std::string target = other->Typename();
 
 	if ( target == "Bool" ) {
 		Bool tmp(base->getValue());
@@ -364,6 +366,10 @@ void operator_plus(Object *base, Object *other)
 		tmp.operator_plus(other);
 
 		base->setValue(tmp.getValue());
+/*
+		Number tmp(other->getValue());
+		base->operator_plus(&tmp);
+*/
 	}
 	else if ( target == "String" ) {
 		String tmp(base->getValue());

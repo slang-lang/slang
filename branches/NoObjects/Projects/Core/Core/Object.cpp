@@ -23,8 +23,8 @@ Object::Object()
   mIsAtomicType(false),
   mRepository(0),
   mConstructed(false),
-  mValue("<INVALID>"),
-  mPrinter(0)
+  mPrinter(0),
+  mValue("<INVALID>")
 {
 }
 
@@ -34,8 +34,8 @@ Object::Object(const std::string& type, const std::string& filename)
   mIsAtomicType(false),
   mRepository(0),
   mConstructed(false),
-  mValue("<INVALID>"),
-  mPrinter(0)
+  mPrinter(0),
+  mValue("<INVALID>")
 {
 }
 
@@ -445,7 +445,27 @@ void Object::operator_multiply(Object * /*other*/)
 	throw Utils::NotImplemented(ToString() + ", operator*");
 }
 
+void Object::operator_plus(Bool * /*other*/)
+{
+	throw Utils::NotImplemented(ToString() + ", operator+");
+}
+
+void Object::operator_plus(Number * /*other*/)
+{
+	throw Utils::NotImplemented(ToString() + ", operator+");
+}
+
 void Object::operator_plus(Object * /*other*/)
+{
+	throw Utils::NotImplemented(ToString() + ", operator+");
+}
+
+void Object::operator_plus(String * /*other*/)
+{
+	throw Utils::NotImplemented(ToString() + ", operator+");
+}
+
+void Object::operator_plus(Void * /*other*/)
 {
 	throw Utils::NotImplemented(ToString() + ", operator+");
 }

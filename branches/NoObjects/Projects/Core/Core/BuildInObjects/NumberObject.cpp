@@ -98,6 +98,12 @@ void Number::operator_multiply(Object *other)
 	mValue *= Tools::stringToFloat(other->getValue());
 }
 
+void Number::operator_plus(Number *other)
+{
+	//mValue += Tools::stringToFloat(other->getValue());
+	mValue += other->getNativeValue();
+}
+
 void Number::operator_plus(Object *other)
 {
 	mValue += Tools::stringToFloat(other->getValue());

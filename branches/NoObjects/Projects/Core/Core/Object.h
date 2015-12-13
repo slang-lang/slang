@@ -25,6 +25,12 @@
 namespace ObjectiveScript {
 
 // Forward declarations
+class Bool;
+class Number;
+class String;
+class Void;
+
+// Forward declarations
 class IPrinter;
 class Method;
 class Object;
@@ -64,9 +70,16 @@ public:	// Operators
 	virtual bool operator_less(Object *other);
 	virtual bool operator_less_equal(Object *other);
 	virtual void operator_multiply(Object *other);
-	virtual void operator_plus(Object *other);
 	virtual void operator_subtract(Object *other);
 
+
+	virtual void operator_plus(Bool *other);
+	virtual void operator_plus(Number *other);
+	virtual void operator_plus(Object *other);
+	virtual void operator_plus(String *other);
+	virtual void operator_plus(Void *other);
+
+public:	// Value
 	virtual bool isValid() const;
 
 	virtual std::string ToString() const;

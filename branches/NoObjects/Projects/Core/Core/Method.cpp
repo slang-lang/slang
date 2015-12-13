@@ -354,28 +354,28 @@ bool Method::parseCondition(TokenIterator& token)
 		parseExpression(&v2, token);
 
 		if ( op == Token::Type::COMPARE_EQUAL ) {
-			//v1.setValue( (v1.getValue() == v2.getValue()) ? "true" : "false" );
-			return operator_equal(&v1, &v2);
+			v1.setValue( (v1.getValue() == v2.getValue()) ? "true" : "false" );
+			//return operator_equal(&v1, &v2);
 		}
 		else if ( op == Token::Type::COMPARE_GREATER ) {
-			//v1.setValue( (v1.getValue() > v2.getValue()) ? "true" : "false" );
-			return operator_greater(&v1, &v2);
+			v1.setValue( (v1.getValue() > v2.getValue()) ? "true" : "false" );
+			//return operator_greater(&v1, &v2);
 		}
 		else if ( op == Token::Type::COMPARE_GREATER_EQUAL ) {
-			//v1.setValue( (v1.getValue() >= v2.getValue()) ? "true" : "false" );
-			return operator_greater_equal(&v1, &v2);
+			v1.setValue( (v1.getValue() >= v2.getValue()) ? "true" : "false" );
+			//return operator_greater_equal(&v1, &v2);
 		}
 		else if ( op == Token::Type::COMPARE_LESS ) {
-			//v1.setValue( (v1.getValue() < v2.getValue()) ? "true" : "false" );
-			return operator_less(&v1, &v2);
+			v1.setValue( (v1.getValue() < v2.getValue()) ? "true" : "false" );
+			//return operator_less(&v1, &v2);
 		}
 		else if ( op == Token::Type::COMPARE_LESS_EQUAL ) {
-			//v1.setValue( (v1.getValue() <= v2.getValue()) ? "true" : "false" );
-			return operator_less_equal(&v1, &v2);
+			v1.setValue( (v1.getValue() <= v2.getValue()) ? "true" : "false" );
+			//return operator_less_equal(&v1, &v2);
 		}
 		else if ( op == Token::Type::COMPARE_UNEQUAL ) {
-			//v1.setValue( (v1.getValue() != v2.getValue()) ? "true" : "false" );
-			return !operator_equal(&v1, &v2);
+			v1.setValue( (v1.getValue() != v2.getValue()) ? "true" : "false" );
+			//return !operator_equal(&v1, &v2);
 		}
 	}
 
