@@ -4,12 +4,12 @@ public namespace
 {
 	public object Main
 	{
-		public void Main(Number argc = 0, string argv = "")
+		public void Main(number argc = 0, string argv = "")
 		{
 			assert( TestCase1() );
 		}
 
-		public bool TestCase1(Number param1 = 2)
+		public bool TestCase1(number param1 = 2)
 		{
 			if ( true ) {
 				print("true");

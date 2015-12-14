@@ -4,21 +4,21 @@ public namespace MathOverloads
 {
 	private object OverloadedObject
 	{
-		private Number mNumber;
+		private number mNumber;
 
-		public void OverloadedObject(Number one const)
+		public void OverloadedObject(number one const)
 		{
 			mNumber = one;
 		}
 
-		public Number GetNumber() const
+		public number GetNumber() const
 		{
 			return mNumber;
 		}
 
 		/////////////////////////////////////////////////////////////////////
 
-		public void operator_divide(Number other const) modify
+		public void operator_divide(number other const) modify
 		{
 			print("operator_divide");
 			mNumber = mNumber / other;
@@ -35,9 +35,9 @@ public namespace MathOverloads
 			return false;
 		}
 		
-		public bool operator_equal(Number other const) const
+		public bool operator_equal(number other const) const
 		{
-			print("operator_equal(Number)");
+			print("operator_equal(number)");
 			
 			if ( mNumber == other ) {
 				return true;
@@ -46,19 +46,19 @@ public namespace MathOverloads
 			return false;
 		}
 
-		public void operator_multiply(Number other const) modify
+		public void operator_multiply(number other const) modify
 		{
 			print("operator_multiply");
 			mNumber = mNumber * other;
 		}
 
-		public void operator_plus(Number other const) modify
+		public void operator_plus(number other const) modify
 		{
 			print("operator_plus");
 			mNumber = mNumber + other;
 		}
 
-		public void operator_subtract(Number other const) modify
+		public void operator_subtract(number other const) modify
 		{
 			print("operator_subtract");
 			mNumber = mNumber - other;
@@ -67,7 +67,7 @@ public namespace MathOverloads
 
 	public object Main
 	{
-		public void Main(Number argc const = 0, string argv const = "")
+		public void Main(number argc const = 0, string argv const = "")
 		{
 			assert( TestCase1() );
 			assert( TestCase2() );

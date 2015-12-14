@@ -38,14 +38,14 @@ public prototype TestPrototype extends public Observer
 
 public object Main
 {
-	public void Main(Number argc = 0, string argv = "")
+	public void Main(number argc = 0, string argv = "")
 	{
 		test();
 	}
 
 	public void test()
 	{
-		TestPrototype of Number prototype = new TestPrototype of Number(100);
+		TestPrototype of number prototype = new TestPrototype of number(100);
 
 		print("Observer = " & prototype.getTypeName());
 

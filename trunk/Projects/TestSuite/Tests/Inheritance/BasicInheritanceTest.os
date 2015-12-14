@@ -22,7 +22,7 @@ public namespace Tests
 
 		public object Main
 		{
-			public void Main(Number argc = 0, string argv = "")
+			public void Main(number argc = 0, string argv = "")
 			{
 				test();
 			}

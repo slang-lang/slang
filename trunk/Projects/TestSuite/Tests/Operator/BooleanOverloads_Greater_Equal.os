@@ -4,23 +4,23 @@ private namespace BooleanOverloads
 {
 	private object UserObject
 	{
-		private Number mValue;
+		private number mValue;
 
-		public void UserObject(Number value const)
+		public void UserObject(number value const)
 		{
 			mValue = value;
 		}
 
-		public Number GetValue() const
+		public number GetValue() const
 		{
 			return mValue;
 		}
 		
 		/////////////////////////////////////////////////////////////////////
 		
-		public bool operator_greater_equal(Number other const) const
+		public bool operator_greater_equal(number other const) const
 		{
-			print("operator_greater_equal(Number)");
+			print("operator_greater_equal(number)");
 
 			if ( mValue >= other ) {
 				return true;
@@ -43,7 +43,7 @@ private namespace BooleanOverloads
 
 	public object Main
 	{
-		public void Main(Number argc = 0, string argv = "")
+		public void Main(number argc = 0, string argv = "")
 		{
 			assert(TestCase1());
 			assert(TestCase2());

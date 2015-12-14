@@ -4,19 +4,19 @@ public namespace ConstCorrectness
 {
 	private object UserObject
 	{
-		private Number mValue;
+		private number mValue;
 
-		public void UserObject(Number value const)
+		public void UserObject(number value const)
 		{
 			mValue = value;
 		}
 
-		public Number getValue() const
+		public number getValue() const
 		{
 			return mValue;
 		}
 
-		public void setValue(Number value const)
+		public void setValue(number value const)
 		{
 			mValue = value;
 		}
@@ -24,7 +24,7 @@ public namespace ConstCorrectness
 
 	public object Main
 	{
-		public void Main(Number argc const = 0, string argv const = "")
+		public void Main(number argc const = 0, string argv const = "")
 		{
 			//assert( ObjectAsReference() );
 		}

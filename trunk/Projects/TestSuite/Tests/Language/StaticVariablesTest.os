@@ -4,9 +4,9 @@ public namespace Language
 {
 	public object Main
 	{
-		public void Main(Number argc = 0, string argv = "")
+		public void Main(number argc = 0, string argv = "")
 		{
-			Number i = 0;
+			number i = 0;
 
 			i = incStaticVar();
 			print("i = " & i);
@@ -18,9 +18,9 @@ public namespace Language
 			print("i = " & i);
 		}
 
-		private Number incStaticVar()
+		private number incStaticVar()
 		{
-			Number var static = 0;
+			number var static = 0;
 
 			var = var + 1;
 

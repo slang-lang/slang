@@ -15,7 +15,7 @@
 namespace ObjectiveScript {
 
 
-std::string NumberObject::TYPENAME = "Number";
+std::string NumberObject::TYPENAME = "number";
 
 
 NumberObject::NumberObject(float value)
