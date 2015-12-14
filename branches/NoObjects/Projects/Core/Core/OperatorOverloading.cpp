@@ -51,8 +51,8 @@ void operator_assign(Object *base, Object *other)
 
 		*base = tmp;
 	}
-	else if ( source == Void::TYPENAME ) {
-		Void tmp;
+	else if ( source == VoidObject::TYPENAME ) {
+		VoidObject tmp;
 		tmp.operator_assign(other);
 
 		*base = tmp;
@@ -97,8 +97,8 @@ void operator_divide(Object *base, Object *other)
 
 		*base = tmp;
 	}
-	else if ( source == Void::TYPENAME ) {
-		Void tmp;
+	else if ( source == VoidObject::TYPENAME ) {
+		VoidObject tmp;
 		tmp.operator_divide(other);
 
 		*base = tmp;
@@ -137,8 +137,8 @@ bool operator_equal(Object *base, Object *other)
 		String tmp(base->getValue());
 		return tmp.operator_equal(other);
 	}
-	else if ( source == Void::TYPENAME ) {
-		Void tmp;
+	else if ( source == VoidObject::TYPENAME ) {
+		VoidObject tmp;
 		return tmp.operator_equal(other);
 	}
 
@@ -175,8 +175,8 @@ bool operator_greater(Object *base, Object *other)
 		String tmp(base->getValue());
 		return tmp.operator_greater(other);
 	}
-	else if ( source == Void::TYPENAME ) {
-		Void tmp;
+	else if ( source == VoidObject::TYPENAME ) {
+		VoidObject tmp;
 		return tmp.operator_greater(other);
 	}
 
@@ -213,8 +213,8 @@ bool operator_greater_equal(Object *base, Object *other)
 		String tmp(base->getValue());
 		return tmp.operator_greater_equal(other);
 	}
-	else if ( source == Void::TYPENAME ) {
-		Void tmp;
+	else if ( source == VoidObject::TYPENAME ) {
+		VoidObject tmp;
 		return tmp.operator_greater_equal(other);
 	}
 
@@ -251,8 +251,8 @@ bool operator_less(Object *base, Object *other)
 		String tmp(base->getValue());
 		return tmp.operator_less(other);
 	}
-	else if ( source == Void::TYPENAME ) {
-		Void tmp;
+	else if ( source == VoidObject::TYPENAME ) {
+		VoidObject tmp;
 		return tmp.operator_less(other);
 	}
 
@@ -289,8 +289,8 @@ bool operator_less_equal(Object *base, Object *other)
 		String tmp(base->getValue());
 		return tmp.operator_less_equal(other);
 	}
-	else if ( source == Void::TYPENAME ) {
-		Void tmp;
+	else if ( source == VoidObject::TYPENAME ) {
+		VoidObject tmp;
 		return tmp.operator_less_equal(other);
 	}
 
@@ -333,8 +333,8 @@ void operator_multiply(Object *base, Object *other)
 
 		*base = tmp;
 	}
-	else if ( source == Void::TYPENAME ) {
-		Void tmp;
+	else if ( source == VoidObject::TYPENAME ) {
+		VoidObject tmp;
 		tmp.operator_multiply(other);
 
 		*base = tmp;
@@ -379,8 +379,8 @@ void operator_plus(Object *base, Object *other)
 
 		*base = tmp;
 	}
-	else if ( source == Void::TYPENAME ) {
-		Void tmp;
+	else if ( source == VoidObject::TYPENAME ) {
+		VoidObject tmp;
 		tmp.operator_plus(other);
 
 		*base = tmp;
@@ -425,8 +425,8 @@ void operator_subtract(Object *base, Object *other)
 
 		*base = tmp;
 	}
-	else if ( source == Void::TYPENAME ) {
-		Void tmp;
+	else if ( source == VoidObject::TYPENAME ) {
+		VoidObject tmp;
 		tmp.operator_subtract(other);
 
 		*base = tmp;

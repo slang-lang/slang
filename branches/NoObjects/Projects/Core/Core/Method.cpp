@@ -514,7 +514,7 @@ void Method::parseTerm(Object *result, TokenIterator& start)
 			throw Utils::NotImplemented("unary minus");
 		} break;
 		case Token::Type::SEMICOLON: {
-			if ( result->Typename() == Void::TYPENAME ) {
+			if ( result->Typename() == VoidObject::TYPENAME ) {
 				// this is okay, as long as we have a been called by a return command in a void method
 				return;
 			}

@@ -17,14 +17,14 @@
 namespace ObjectiveScript {
 
 
-class Void : public Object
+class VoidObject : public Object
 {
 public:
 	static std::string TYPENAME;
 
 public:
-	Void();
-	Void(const Object& object);
+	VoidObject();
+	VoidObject(const Object& object);
 
 public:	// Operators
 	virtual operator bool() const;

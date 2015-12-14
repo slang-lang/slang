@@ -15,10 +15,10 @@
 namespace ObjectiveScript {
 
 
-std::string Void::TYPENAME = "void";
+std::string VoidObject::TYPENAME = "void";
 
 
-Void::Void()
+VoidObject::VoidObject()
 : Object("", SYSTEM_LIBRARY, TYPENAME, "")
 {
 	mIsAtomicType = true;
@@ -26,35 +26,35 @@ Void::Void()
 	Constructor(ParameterList());
 }
 
-Void::Void(const Object& object)
+VoidObject::VoidObject(const Object& object)
 : Object(object.getName(), SYSTEM_LIBRARY, TYPENAME, object.getValue())
 {
 }
 
-Void::operator bool() const
+VoidObject::operator bool() const
 {
 	return false;
 }
 
-void Void::getNativeValue() const
+void VoidObject::getNativeValue() const
 {
 	return;	// this makes absolutely no sense but hey :-)
 }
 
-std::string Void::getValue() const
+std::string VoidObject::getValue() const
 {
 	return "<VOID>";
 }
 
-void Void::setNativeValue(void)
+void VoidObject::setNativeValue(void)
 {
 }
 
-void Void::setValue(const std::string&)
+void VoidObject::setValue(const std::string&)
 {
 }
 
-std::string Void::ToString() const
+std::string VoidObject::ToString() const
 {
 	return Typename() + " " + getName() + " = " + getValue();
 }

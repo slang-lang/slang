@@ -26,7 +26,7 @@ StringList provideAtomarTypes()
 	//types.push_back(IntegerObject::TYPENAME);
 	types.push_back(Number::TYPENAME);
 	types.push_back(String::TYPENAME);
-	types.push_back(Void::TYPENAME);
+	types.push_back(VoidObject::TYPENAME);
 
 	return types;
 }

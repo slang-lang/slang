@@ -28,7 +28,7 @@ namespace ObjectiveScript {
 class BoolObject;
 class Number;
 class String;
-class Void;
+class VoidObject;
 
 // Forward declarations
 class IPrinter;
