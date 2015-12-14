@@ -1,3 +1,4 @@
+#!/usr/local/bin/oscript
 
 private namespace BooleanOverloads
 {
@@ -5,7 +6,7 @@ private namespace BooleanOverloads
 	{
 		private Number mValue;
 
-		public Void UserObject(Number value const)
+		public void UserObject(Number value const)
 		{
 			mValue = value;
 		}
@@ -22,12 +23,12 @@ private namespace BooleanOverloads
 
 		/////////////////////////////////////////////////////////////////////
 
-		public Void operator_assign(Number other const) modify
+		public void operator_assign(Number other const) modify
 		{
 			mValue = other;
 		}
 
-		public Void operator_assign(UserObject other const ref) modify
+		public void operator_assign(UserObject other const ref) modify
 		{
 			mValue = other.GetValue();
 		}

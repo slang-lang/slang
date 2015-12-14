@@ -1,4 +1,4 @@
-#!/usr/bin/oscript
+#!/usr/local/bin/oscript
 
 public namespace stable AttributeTest
 {

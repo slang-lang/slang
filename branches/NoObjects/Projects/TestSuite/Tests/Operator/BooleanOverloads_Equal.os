@@ -1,3 +1,4 @@
+#!/usr/local/bin/oscript
 
 private namespace BooleanOverloads
 {

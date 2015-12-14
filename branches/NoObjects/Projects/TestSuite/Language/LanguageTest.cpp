@@ -10,6 +10,8 @@
 // Library includes
 
 // Project includes
+#include <Core/BuildInObjects/NumberObject.h>
+#include <Core/BuildInObjects/StringObject.h>
 #include <Core/Script.h>
 #include <Core/VirtualMachine.h>
 #include <Core/Utils/Exceptions.h>
@@ -33,17 +35,20 @@ void LanguageTest::process()
 	TEST(testAssert);
 	TEST(testComment);
 	TEST(testConstCorrectness);
+	TEST(testConstCorrectness2);
 	TEST(testDefaultParameter);
-	//TEST(testFor);
-	//TEST(testIf);
-	//TEST(testInterfaces);
 	TEST(testMethodOverloading);
-	//TEST(testNamespaces);
 	TEST(testObjectReference);
 	TEST(testParameters);
 	TEST(testPrint);
 	TEST(testStaticLocalVariable);
 	TEST(testWhile);
+
+// not yet implemented
+	//TEST(testFor);
+	//TEST(testIf);
+	//TEST(testInterfaces);
+	//TEST(testNamespaces);
 }
 
 void LanguageTest::setup()
@@ -60,7 +65,7 @@ void LanguageTest::testAssert()
 		VirtualMachine vm;
 		vm.setPrinter(&mStdoutPrinter);
 
-		vm.create("Tests/Language/AssertTest.os");
+		TTHROWS(vm.create("Tests/Language/AssertTest.os"), ObjectiveScript::Utils::AssertionFailed);
 
 		// automatic success
 	}
@@ -95,12 +100,32 @@ void LanguageTest::testConstCorrectness()
 		VirtualMachine vm;
 		vm.setPrinter(&mStdoutPrinter);
 
-		vm.create("Tests/Language/ConstCorrectness.os");
+		//vm.create("Tests/Language/ConstCorrectness.os");
+		TTHROWS(vm.create("Tests/Language/ConstCorrectness.os"), ObjectiveScript::Utils::ConstCorrectnessViolated);
 
 		// automatic success
 
-		//TTHROWS(vm.create("Tests/Language/ConstCorrectness.os"), ObjectiveScript::Utils::ConstCorrectnessViolated);
+	}
+	catch ( ObjectiveScript::Utils::ConstCorrectnessViolated& /*e*/ ) {
+		// success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
 
+void LanguageTest::testConstCorrectness2()
+{
+	try {
+		VirtualMachine vm;
+		vm.setPrinter(&mStdoutPrinter);
+
+		vm.create("Tests/Language/ConstCorrectness2.os");
+
+		// automatic success
+
+		//TTHROWS(vm.create("Tests/Language/ConstCorrectness2.os"), ObjectiveScript::Utils::ConstCorrectnessViolated);
 	}
 	catch ( ObjectiveScript::Utils::ConstCorrectnessViolated& /*e*/ ) {
 		// success
@@ -175,12 +200,6 @@ void LanguageTest::testInterfaces()
 
 		// automatic success
 	}
-/*
-	catch ( ObjectiveScript::Utils::Exception& e ) {
-		// exception has been thrown: test failed!
-		TFAIL("caught exception: " << e.what());
-	}
-*/
 	catch ( std::exception& e ) {
 		// exception has been thrown: test failed!
 		TFAIL(e.what());
@@ -242,8 +261,8 @@ void LanguageTest::testParameters()
 		vm.setPrinter(&mStdoutPrinter);
 
 		ParameterList params;
-		params.push_back(Parameter("argc", "Number", "2"));
-		params.push_back(Parameter("argv", "String", ""));
+		params.push_back(Parameter("argc", Number::TYPENAME, "2"));
+		params.push_back(Parameter("argv", String::TYPENAME, ""));
 		vm.create("Tests/Language/ParameterTest.os", params);
 
 		// automatic success

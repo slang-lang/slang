@@ -1,4 +1,4 @@
-#!/usr/bin/oscript
+#!/usr/local/bin/oscript
 
 import system.assert;
 
@@ -6,7 +6,7 @@ public namespace
 {
 	public object Main
 	{
-		private Assert mAssert;
+		//private Assert mAssert;
 
 		public void Main(Number argc = 0, String argv = "")
 		{

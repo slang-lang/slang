@@ -1,4 +1,4 @@
-#!/usr/bin/oscript
+#!/usr/local/bin/oscript
 
 import system.assert;
 
@@ -16,7 +16,7 @@ public namespace
 			assert(ReturnAString());
 			assert(ReturnTrue());
 			//assert(!ReturnFalse());	// unary operator ! is not yet implemented
-			//assert(ReturnFalse());
+			assert(ReturnFalse());
 		}
 
 		private String ReturnAString() const

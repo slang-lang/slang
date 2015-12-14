@@ -1,4 +1,4 @@
-#!/usr/bin/oscript
+#!/usr/local/bin/oscript
 
 public namespace
 {
@@ -6,10 +6,10 @@ public namespace
 	{
 		public void Main(Number argc = 0, String argv = "")
 		{
-			test_if();
+			assert( TestCase1() );
 		}
 
-		public void test_if(Number param1 = 2)
+		public Bool TestCase1(Number param1 = 2)
 		{
 			if ( true ) {
 				print("true");
@@ -28,7 +28,8 @@ public namespace
 			else {
 				print("else if: else");
 			}
-		}
 
+			return true;
+		}
 	}
 }

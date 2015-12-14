@@ -1,4 +1,4 @@
-#!/usr/bin/oscript
+#!/usr/local/bin/oscript
 
 public namespace 
 {
@@ -48,6 +48,7 @@ public namespace
 		private void returnVoid()
 		{
 			print("method without parameters called which returns nothing");
+			return;
 		}
 
 		private Number testMethod(Number param1, Number param2) const

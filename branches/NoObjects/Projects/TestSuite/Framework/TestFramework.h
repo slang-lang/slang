@@ -53,7 +53,7 @@
 	if ( !expr ) { \
 		mFailed++; \
 		mLastResult = GenericTest::Failed; \
-		std::cout << __FILE__ << ":" << __LINE__ << ": " << expr << std::endl; \
+		std::cout << __FILE__ << ":" << __LINE__ << ": '" << expr << "'" << std::endl; \
 		return; \
 	}
 

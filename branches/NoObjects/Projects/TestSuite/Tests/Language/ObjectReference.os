@@ -1,6 +1,6 @@
-#!/usr/bin/oscript
+#!/usr/local/bin/oscript
 
-public namespace 
+public namespace Language
 {
 	public object TestObject
 	{
