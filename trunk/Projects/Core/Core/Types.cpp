@@ -5,6 +5,7 @@
 // Library includes
 
 // Project includes
+#include <Core/Consts.h>
 #include <Core/BuildInObjects/BoolObject.h>
 #include <Core/BuildInObjects/NumberObject.h>
 #include <Core/BuildInObjects/StringObject.h>
@@ -86,12 +87,7 @@ StringList provideModifiers()
 StringList provideReservedWords()
 {
 	StringList reservedWords;
-/*
-	reservedWords.push_back("const");
-	reservedWords.push_back("final");
-	reservedWords.push_back("modify");
-	reservedWords.push_back("static");
-*/
+
 	reservedWords.push_back("extends");
 	reservedWords.push_back("interface");
 	reservedWords.push_back("object");

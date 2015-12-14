@@ -120,6 +120,23 @@ void MethodAttributes::setSealed(bool state)
 }
 
 
+NamespaceAttributes::NamespaceAttributes()
+{
+	setConst(false);
+}
+
+bool NamespaceAttributes::isSealed() const
+{
+	return mIsSealed;
+}
+
+void NamespaceAttributes::setSealed(bool state)
+{
+	// after seal has been called no language feature can get modified anymore
+	mIsSealed = state;
+}
+
+
 ObjectAttributes::ObjectAttributes()
 {
 	setConst(false);

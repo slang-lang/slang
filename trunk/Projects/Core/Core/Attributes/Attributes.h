@@ -66,6 +66,16 @@ public:
 	void setSealed(bool state);
 };
 
+class NamespaceAttributes : public GenericAttributes
+{
+public:
+	NamespaceAttributes();
+
+public:
+	bool isSealed() const;
+	void setSealed(bool state);
+};
+
 class ObjectAttributes : public GenericAttributes
 {
 public:

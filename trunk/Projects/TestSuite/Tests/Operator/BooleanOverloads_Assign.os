@@ -33,7 +33,7 @@ private namespace BooleanOverloads
 			mValue = other.GetValue();
 		}
 
-		public Bool operator_equal(Number other const) const
+		public bool operator_equal(Number other const) const
 		{
 			if ( mValue == other ) {
 				return true;
@@ -42,7 +42,7 @@ private namespace BooleanOverloads
 			return false;
 		}
 
-		public Bool operator_equal(UserObject other const ref) const
+		public bool operator_equal(UserObject other const ref) const
 		{
 			if ( mValue == other.GetValue() ) {
 				return true;
@@ -56,11 +56,11 @@ private namespace BooleanOverloads
 	{
 		public void Main(Number argc = 0, String argv = "")
 		{
-			assert(TestCase1());
-			assert(TestCase2());
+			assert( TestCase1() );
+			assert( TestCase2() );
 		}
 
-		private Bool TestCase1() const
+		private bool TestCase1() const
 		{
 			print("TestCase1: assign operator with atomic type");
 
@@ -77,7 +77,7 @@ private namespace BooleanOverloads
 			return false;
 		}
 
-		private Bool TestCase2() const
+		private bool TestCase2() const
 		{
 			print("TestCase2: assign operator with object");
 

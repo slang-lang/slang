@@ -5,6 +5,7 @@
 // Library includes
 
 // Project includes
+#include <Core/Consts.h>
 #include <Core/Utils/Exceptions.h>
 
 // Namespace declarations
@@ -37,10 +38,10 @@ void split(const std::string& str, std::string& p, std::string& c)
 std::string boolToString(bool value)
 {
 	if ( value ) {
-		return "true";
+		return TRUE;
 	}
 
-	return "false";
+	return FALSE;
 }
 
 std::string floatToString(float value)
@@ -212,17 +213,17 @@ TokenIterator findNextBalancedParenthesis(TokenIterator start, int generateError
 
 bool isBooleanConst(const std::string& v)
 {
-	return ( v == "false" || v == "true" );
+	return ( v == FALSE || v == TRUE );
 }
 
 bool isFalse(const std::string& s)
 {
-	return (s == "false");
+	return ( s == FALSE );
 }
 
 bool isFalse(const Object& o)
 {
-	if ( o.getValue() == "0" || o.getValue() == "false" ) {
+	if ( o.getValue() == "0" || o.getValue() == FALSE ) {
 		return true;
 	}
 
@@ -231,13 +232,13 @@ bool isFalse(const Object& o)
 
 bool isTrue(const std::string& s)
 {
-	return (s == "true");
+	return ( s == TRUE );
 }
 
 bool isTrue(const Object& o)
 {
 	// check value is false
-	if ( o.getValue() == "0" || o.getValue() == "0.0" || o.getValue() == "false" ) {
+	if ( o.getValue() == "0" || o.getValue() == "0.0" || o.getValue() == FALSE ) {
 		return false;
 	}
 

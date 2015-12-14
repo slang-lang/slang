@@ -19,6 +19,16 @@ namespace ObjectiveScript {
 //#define USE_EXTREME_CONST_CORRECTNESS
 
 
+static const char* FALSE = "false";
+static const char* TRUE = "true";
+
+static const char* PRIVATE = "private";
+static const char* PROTECTED = "protected";
+static const char* PUBLIC = "public";
+
+static const char* PROTOTYPE_TYPE = "UNKNOWN";
+
+
 }
 
 

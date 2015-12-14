@@ -9,7 +9,7 @@ public namespace
 			assert( TestCase1() );
 		}
 
-		public Bool TestCase1(Number param1 = 2)
+		public bool TestCase1(Number param1 = 2)
 		{
 			if ( true ) {
 				print("true");
