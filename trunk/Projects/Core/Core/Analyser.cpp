@@ -9,6 +9,7 @@
 #include <cstdlib>
 
 // Project includes
+#include <Core/Consts.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Utils/Utils.h>
 #include <Tools/Files.h>
@@ -322,7 +323,7 @@ bool Analyser::isObjectDeclaration(TokenIterator start)
 	if ( (*start++).type() != Token::Type::VISIBILITY ) {
 		return false;
 	}
-	if ( (*start).type() != Token::Type::TYPE && (*start++).content() != "object" ) {
+	if ( (*start).type() != Token::Type::TYPE && (*start++).content() != RESERVED_WORD_OBJECT ) {
 		return false;
 	}
 	if ( (*start).isOptional() && (*start++).type() != Token::Type::LANGUAGEFEATURE ) {
