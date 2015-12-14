@@ -6,7 +6,7 @@ public namespace ConstCorrectness
 	{
 		private Number mNumber;
 
-		public void Main(Number argc const = 0, String argv const = "")
+		public void Main(Number argc const = 0, string argv const = "")
 		{
 			mNumber = 0;
 

@@ -6,7 +6,7 @@ public namespace Tests
 	{
 		public object Base
 		{
-			public String getBaseName() const
+			public string getBaseName() const
 			{
 				return "Base";
 			}
@@ -14,7 +14,7 @@ public namespace Tests
 
 		public object Extended extends public Base
 		{
-			public String getExtendedName() const
+			public string getExtendedName() const
 			{
 				return "Extended";
 			}
@@ -22,7 +22,7 @@ public namespace Tests
 
 		public object Main
 		{
-			public void Main(Number argc = 0, String argv = "")
+			public void Main(Number argc = 0, string argv = "")
 			{
 				test();
 			}

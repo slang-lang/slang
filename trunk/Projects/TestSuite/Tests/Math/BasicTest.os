@@ -4,7 +4,7 @@ public namespace
 {
 	public object Main
 	{
-		public void Main(Number argc = 0, String argv = "")
+		public void Main(Number argc = 0, string argv = "")
 		{
 			MathExpressionParsing();
 		}

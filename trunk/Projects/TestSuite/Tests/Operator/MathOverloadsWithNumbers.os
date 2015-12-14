@@ -67,7 +67,7 @@ public namespace MathOverloads
 
 	public object Main
 	{
-		public void Main(Number argc const = 0, String argv const = "")
+		public void Main(Number argc const = 0, string argv const = "")
 		{
 			assert( TestCase1() );
 			assert( TestCase2() );

@@ -6,7 +6,7 @@ public namespace
 {
 	private object Main
 	{
-		public void Main(Number argc = 0, String argv = "")
+		public void Main(Number argc = 0, string argv = "")
 		{
 			assert(true);
 			assert(false == false);
@@ -19,7 +19,7 @@ public namespace
 			assert(ReturnFalse());
 		}
 
-		private String ReturnAString() const
+		private string ReturnAString() const
 		{
 			return "ThisIsAString";
 		}

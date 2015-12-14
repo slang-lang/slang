@@ -57,7 +57,7 @@ public namespace stable AttributeTest
 	{
 		private TestObject mTest;
 
-		public void Main(Number argc = 0, String argv = "") modify
+		public void Main(Number argc = 0, string argv = "") modify
 		{
 			mTest = new TestObject();
 

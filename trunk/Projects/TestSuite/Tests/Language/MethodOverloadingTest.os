@@ -4,7 +4,7 @@ public namespace
 {
 	public object Main
 	{
-		public void Main(Number argc = 0, String argv = "")
+		public void Main(Number argc = 0, string argv = "")
 		{
 			returnVoid();
 
@@ -40,7 +40,7 @@ public namespace
 			return p1 + p2 + p3;
 		}
 
-		private String returnSum(String p1, String p2) const
+		private string returnSum(string p1, string p2) const
 		{
 			return p1 & p2;
 		}
