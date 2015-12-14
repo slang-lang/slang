@@ -4,14 +4,14 @@ public namespace MathOverloads
 {
 	private object OverloadedObject
 	{
-		private Number mNumber;
+		private number mNumber;
 
-		public void OverloadedObject(Number one const)
+		public void OverloadedObject(number one const)
 		{
 			mNumber = one;
 		}
 
-		public Number GetNumber() const
+		public number GetNumber() const
 		{
 			return mNumber;
 		}
@@ -35,9 +35,9 @@ public namespace MathOverloads
 			return false;
 		}
 		
-		public bool operator_equal(Number other const) const
+		public bool operator_equal(number other const) const
 		{
-			print("operator_equal(Number)");
+			print("operator_equal(number)");
 			
 			if ( mNumber == other ) {
 				return true;
@@ -67,7 +67,7 @@ public namespace MathOverloads
 
 	public object Main
 	{
-		public void Main(Number argc const = 0, string argv const = "")
+		public void Main(number argc const = 0, string argv const = "")
 		{
 			assert( TestCase1() );
 			assert( TestCase2() );

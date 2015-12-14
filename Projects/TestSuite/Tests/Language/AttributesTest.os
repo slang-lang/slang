@@ -27,27 +27,27 @@ public namespace stable AttributeTest
 
 	public object StaticObject
 	{
-		public Number GetOne() static
+		public number GetOne() static
 		{
-			return Number(1);
+			return number(1);
 		}
 	}
 
 	public object ConstObject
 	{
-		private Number mNumber;
+		private number mNumber;
 
 		public void ConstObject()
 		{
 			mNumber = 1;
 		}
 
-		public Number GetNumber() const
+		public number GetNumber() const
 		{
 			return mNumber;
 		}
 
-		public void SetNumber(Number value) modify
+		public void SetNumber(number value) modify
 		{
 			mNumber = value;
 		}
@@ -57,7 +57,7 @@ public namespace stable AttributeTest
 	{
 		private TestObject mTest;
 
-		public void Main(Number argc = 0, string argv = "") modify
+		public void Main(number argc = 0, string argv = "") modify
 		{
 			mTest = new TestObject();
 
@@ -66,7 +66,7 @@ public namespace stable AttributeTest
 			mTest.stableMethod();
 			mTest.unstableMethod();
 
-			//Number one = StaticObject.GetOne();
+			//number one = StaticObject.GetOne();
 
 			ConstObject value = new ConstObject();
 			print("value.GetNumber() = " & value.GetNumber());
@@ -83,7 +83,7 @@ public namespace stable AttributeTest
 			delete mTest;
 		}
 		
-		private Number getTwo() const
+		private number getTwo() const
 		{
 			return 2;
 		}

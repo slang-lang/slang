@@ -4,14 +4,14 @@ public namespace Language
 {
 	public object Main
 	{
-		public void Main(Number argc = 0, string argv = "")
+		public void Main(number argc = 0, string argv = "")
 		{
 			assert( TestCase1(5) );
 		}
 
-		public void TestCase1(Number maxCount = 7)
+		public void TestCase1(number maxCount = 7)
 		{
-			Number count = 0;
+			number count = 0;
 			while ( count < maxCount ) {
 				count = count + 1;
 				print("count = " & count);

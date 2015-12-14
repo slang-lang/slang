@@ -1,17 +1,17 @@
 #!/usr/local/bin/oscript
 
-public namespace 
+public namespace BasicTest
 {
 	public object Main
 	{
-		public void Main(Number argc = 0, string argv = "")
+		public void Main(number argc = 0, string argv = "")
 		{
 			MathExpressionParsing();
 		}
 
 		public void MathExpressionParsing()
 		{
-			Number i = 0;
+			number i = 0;
 			assert(i == 0);
 
 			i = 1 + 2 + 3;

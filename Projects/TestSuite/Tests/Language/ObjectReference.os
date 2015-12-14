@@ -4,9 +4,9 @@ public namespace Language
 {
 	public object TestObject
 	{
-		public Number mValue;
+		public number mValue;
 
-		public void TestObject(Number value = 1)
+		public void TestObject(number value = 1)
 		{
 			mValue = value;
 		}
@@ -16,7 +16,7 @@ public namespace Language
 	{
 		private TestObject obj;
 
-		public void Main(Number argc = 0, string argv = "")
+		public void Main(number argc = 0, string argv = "")
 		{
 			obj = new TestObject(1);	// instantiate new object (and execute it's constructor)
 			print("value.mValue = " & obj.mValue);
@@ -39,7 +39,7 @@ public namespace Language
 			print("mValue = " & value.mValue);
 		}
 
-		private void ParameterByReference(Number value ref)
+		private void ParameterByReference(number value ref)
 		{
 			value = value + 1;
 			print("ParameterByReference.value = " & value);
@@ -51,7 +51,7 @@ public namespace Language
 			print("mValue = " & value.mValue);
 		}
 
-		private void ParameterByValue(Number value val)
+		private void ParameterByValue(number value val)
 		{
 			value = value + 1;
 			print("ParameterByValue.value = " & value);

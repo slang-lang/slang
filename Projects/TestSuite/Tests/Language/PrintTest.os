@@ -4,7 +4,7 @@ public namespace Language
 {
 	public object Main
 	{
-		public void Main(Number argc = 0, string argv = "")
+		public void Main(number argc = 0, string argv = "")
 		{
 			test_print(" parameter ");
 		}

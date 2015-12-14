@@ -6,15 +6,15 @@ public namespace Tests
 	{
 		public interface IWarehouse
 		{
-			public Number GetBox() const;
+			public number GetBox() const;
 		}
 
 		public object Warehouse implements public IWarehouse
 		{
-			public Number GetBox() const
+			public number GetBox() const
 			{
 				// either this..
-				return Number(1);
+				return number(1);
 				// or that..
 				//return 1;
 			}
@@ -22,7 +22,7 @@ public namespace Tests
 
 		public object Main
 		{
-			public void Main(Number argc = 0, string argv = "")
+			public void Main(number argc = 0, string argv = "")
 			{
 				test();
 			}

@@ -11,14 +11,14 @@ public namespace Tests
 
 		public interface IWarehouse
 		{
-			public Number GetBox() const;
+			public number GetBox() const;
 		}
 
 		public object Base
 		{
-			public Number mPublicNumber;
-			protected Number mProtectedNumber;
-			private Number mPrivateNumber;
+			public number mPublicNumber;
+			protected number mProtectedNumber;
+			private number mPrivateNumber;
 
 			public void Base()
 			{
@@ -36,16 +36,16 @@ public namespace Tests
 		public object Main extends public Base
 						   implements public IContainer, public IWarehouse
 		{
-			private Number mPrivateNumber;
+			private number mPrivateNumber;
 
-			public void Main(Number argc = 0, string argv = "")
+			public void Main(number argc = 0, string argv = "")
 			{
 				test();
 			}
 
-			public Number GetBox() const
+			public number GetBox() const
 			{
-				return Number(1);
+				return number(1);
 			}
 
 			public string GetIdentifier() const

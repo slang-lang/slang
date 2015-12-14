@@ -4,26 +4,26 @@ private namespace BooleanOverloads
 {
 	private object UserObject
 	{
-		private Number mValue;
+		private number mValue;
 
-		public void UserObject(Number value const)
+		public void UserObject(number value const)
 		{
 			mValue = value;
 		}
 
-		public Number GetValue() const
+		public number GetValue() const
 		{
 			return mValue;
 		}
 
-		public void setValue(Number value const)
+		public void setValue(number value const)
 		{
 			mValue = value;
 		}
 
 		/////////////////////////////////////////////////////////////////////
 
-		public void operator_assign(Number other const) modify
+		public void operator_assign(number other const) modify
 		{
 			mValue = other;
 		}
@@ -33,7 +33,7 @@ private namespace BooleanOverloads
 			mValue = other.GetValue();
 		}
 
-		public bool operator_equal(Number other const) const
+		public bool operator_equal(number other const) const
 		{
 			if ( mValue == other ) {
 				return true;
@@ -54,7 +54,7 @@ private namespace BooleanOverloads
 
 	public object Main
 	{
-		public void Main(Number argc = 0, string argv = "")
+		public void Main(number argc = 0, string argv = "")
 		{
 			assert( TestCase1() );
 			assert( TestCase2() );

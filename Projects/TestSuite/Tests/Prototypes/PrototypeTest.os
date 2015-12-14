@@ -43,15 +43,15 @@ public prototype AnotherPrototype<object K, object V>
 
 public object Main
 {
-	public void Main(Number argc = 0, string argv = "")
+	public void Main(number argc = 0, string argv = "")
 	{
 		test();
 	}
 
 	public void test() {
-		//TestPrototype<Number> proto(100);
-		//TestPrototype < Number > proto(100);
-		TestPrototype of Number prototype = new TestPrototype of Number(100);
+		//TestPrototype<number> proto(100);
+		//TestPrototype < number > proto(100);
+		TestPrototype of number prototype = new TestPrototype of number(100);
 
 /*
 		print("Prototype value = " & prototype.getValue());
@@ -61,7 +61,7 @@ public object Main
 		print("Prototype value = " & prototype.getValue());
 */
 
-		AnotherPrototype<Number, string> another = new AnotherPrototype<Number, string>(1, "1");
+		AnotherPrototype<number, string> another = new AnotherPrototype<number, string>(1, "1");
 		another.getKey();
 		another.GetValue();
 	}
