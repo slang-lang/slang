@@ -94,7 +94,7 @@ void BoolObject::operator_assign(Object *other)
 		operator_assign(&tmp);
 	}
 	else {
-		throw Utils::NotImplemented("operator_assign: conversion from " + target + " to " + Typename() + " not supported");
+		throw Utils::Exceptions::NotImplemented("operator_assign: conversion from " + target + " to " + Typename() + " not supported");
 	}
 }
 
@@ -133,7 +133,7 @@ bool BoolObject::operator_equal(Object *other)
 		return operator_equal(&tmp);
 	}
 
-	throw Utils::NotImplemented("operator_equal: conversion from " + target + " to " + Typename() + " not supported");
+	throw Utils::Exceptions::NotImplemented("operator_equal: conversion from " + target + " to " + Typename() + " not supported");
 }
 
 bool BoolObject::operator_equal(StringObject *other)

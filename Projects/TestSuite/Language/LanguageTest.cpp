@@ -65,12 +65,9 @@ void LanguageTest::testAssert()
 		VirtualMachine vm;
 		vm.setPrinter(&mStdoutPrinter);
 
-		TTHROWS(vm.create("Tests/Language/AssertTest.os"), ObjectiveScript::Utils::AssertionFailed);
+		TTHROWS(vm.create("Tests/Language/AssertTest.os"), ObjectiveScript::Utils::Exceptions::AssertionFailed);
 
 		// automatic success
-	}
-	catch ( ObjectiveScript::Utils::AssertionFailed& /*e*/ ) {
-		// success
 	}
 	catch ( std::exception& e ) {
 		// exception has been thrown: test failed!
@@ -101,13 +98,10 @@ void LanguageTest::testConstCorrectness()
 		vm.setPrinter(&mStdoutPrinter);
 
 		//vm.create("Tests/Language/ConstCorrectness.os");
-		TTHROWS(vm.create("Tests/Language/ConstCorrectness.os"), ObjectiveScript::Utils::ConstCorrectnessViolated);
+		TTHROWS(vm.create("Tests/Language/ConstCorrectness.os"), ObjectiveScript::Utils::Exceptions::ConstCorrectnessViolated);
 
 		// automatic success
 
-	}
-	catch ( ObjectiveScript::Utils::ConstCorrectnessViolated& /*e*/ ) {
-		// success
 	}
 	catch ( std::exception& e ) {
 		// exception has been thrown: test failed!
@@ -121,14 +115,9 @@ void LanguageTest::testConstCorrectness2()
 		VirtualMachine vm;
 		vm.setPrinter(&mStdoutPrinter);
 
-		vm.create("Tests/Language/ConstCorrectness2.os");
+		TTHROWS(vm.create("Tests/Language/ConstCorrectness2.os"), ObjectiveScript::Utils::Exceptions::ConstCorrectnessViolated);
 
 		// automatic success
-
-		//TTHROWS(vm.create("Tests/Language/ConstCorrectness2.os"), ObjectiveScript::Utils::ConstCorrectnessViolated);
-	}
-	catch ( ObjectiveScript::Utils::ConstCorrectnessViolated& /*e*/ ) {
-		// success
 	}
 	catch ( std::exception& e ) {
 		// exception has been thrown: test failed!
@@ -161,9 +150,6 @@ void LanguageTest::testFor()
 		vm.create("Tests/Language/ForLoopTest.os");
 
 		// automatic success
-	}
-	catch ( ObjectiveScript::Utils::AssertionFailed& /*e*/ ) {
-		// this is okay for now => success
 	}
 	catch ( std::exception& e ) {
 		// exception has been thrown: test failed!

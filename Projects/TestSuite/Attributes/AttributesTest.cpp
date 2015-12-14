@@ -55,10 +55,6 @@ void AttributesTest::testBasicLanguageFeatures()
 
 		// automatic success
 	}
-	catch ( ObjectiveScript::Utils::Exception& e ) {
-		// exception has been thrown: test failed!
-		TFAIL(e.what());
-	}
 	catch ( std::exception& e ) {
 		// exception has been thrown: test failed!
 		TFAIL(e.what());

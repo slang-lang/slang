@@ -52,13 +52,9 @@ void PrototypeTest::testPrototypeDeclaration()
 
 		// automatic success
 	}
-	catch ( ObjectiveScript::Utils::Exception& e ) {
-		// exception has been thrown: test failed!
-		TFAIL("caught exception: " << e.what());
-	}
 	catch ( std::exception& e ) {
 		// exception has been thrown: test failed!
-		TFAIL("caught exception: " << e.what());
+		TFAIL(e.what());
 	}
 }
 
@@ -72,13 +68,9 @@ void PrototypeTest::testPrototypeUsage()
 
 		// automatic success
 	}
-	catch ( ObjectiveScript::Utils::Exception& e ) {
-		// exception has been thrown: test failed!
-		TFAIL("caught exception: " << e.what());
-	}
 	catch ( std::exception& e ) {
 		// exception has been thrown: test failed!
-		TFAIL("caught exception: " << e.what());
+		TFAIL(e.what());
 	}
 }
 

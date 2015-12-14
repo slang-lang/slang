@@ -145,7 +145,7 @@ void Method::addIdentifier(const std::string& name, Object *object)
 			return;
 		}
 
-		throw Utils::DuplicateIdentiferException(insertName);
+		throw Utils::Exceptions::DuplicateIdentifer(insertName);
 	}
 
 	mLocalSymbols[insertName] = object;
@@ -156,13 +156,13 @@ void Method::execute(const ParameterList& params, Object *result)
 	mStopProcessing = false;		// reset this every time we start executing a method
 
 	if ( !isSignatureValid(params) ) {
-		throw Utils::ParameterCountMissmatch("incorrect number or type of parameters");
+		throw Utils::Exceptions::ParameterCountMissmatch("incorrect number or type of parameters");
 	}
 
 	switch ( languageFeatureState() ) {
 		case LanguageFeatureState::Deprecated: OSwarn("method '" + name() + "' is marked as deprecated!"); break;
-		case LanguageFeatureState::NotImplemented: OSerror("method '" + name() + "' is marked as not implemented!"); throw Utils::NotImplemented(name()); break;
-		case LanguageFeatureState::Stable: /* this is the normal language feature state, so no need to log anything here */ break;
+		case LanguageFeatureState::NotImplemented: OSerror("method '" + name() + "' is marked as not implemented!"); throw Utils::Exceptions::NotImplemented(name()); break;
+		case LanguageFeatureState::Stable: /* this is the normal language feature state, so there is no need to log anything here */ break;
 		case LanguageFeatureState::Unknown: OSerror("unknown language feature state set for method '" + name() + "'!"); break;
 		case LanguageFeatureState::Unstable: OSwarn("method '" + name() + "' is marked as unstable!"); break;
 	}
@@ -188,7 +188,7 @@ void Method::execute(const ParameterList& params, Object *result)
 
 		switch ( param.access() ) {
 			case Parameter::AccessMode::Unspecified: {
-				throw Utils::Exception("access mode unspecified");
+				throw Utils::Exceptions::AccessMode("unspecified");
 			} break;
 			case Parameter::AccessMode::ByReference: {
 				Object *object = param.pointer();
@@ -264,7 +264,7 @@ Object* Method::getSymbol(const std::string& token)
 	}
 
 	// ups.. this symbol is neither a local symbol, nor a member
-	throw Utils::UnknownIdentifer("identifier '" + token + "' not found!");
+	throw Utils::Exceptions::UnknownIdentifer("identifier '" + token + "' not found!");
 }
 
 bool Method::isMethod(const std::string& token)
@@ -433,7 +433,7 @@ void Method::parseFactors(Object *result, TokenIterator& start)
 		parseExpression(result, start);
 
 		if ( start->type() != Token::Type::PARENTHESIS_CLOSE ) {
-			throw Utils::SyntaxError("')' expected but "  + start->content() + " found", start->position());
+			throw Utils::Exceptions::SyntaxError("')' expected but "  + start->content() + " found", start->position());
 		}
 
 		start++;
@@ -458,7 +458,7 @@ void Method::parseFactors(Object *result, TokenIterator& start)
 			parseExpression(&v2, start);
 
 			if ( start->type() != Token::Type::PARENTHESIS_CLOSE ) {
-				throw Utils::SyntaxError("')' expected but "  + start->content() + " found", start->position());
+				throw Utils::Exceptions::SyntaxError("')' expected but "  + start->content() + " found", start->position());
 			}
 
 			start++;
@@ -500,7 +500,7 @@ void Method::parseTerm(Object *result, TokenIterator& start)
 					process_method(start, result);
 				}
 				else {
-					throw Utils::UnknownIdentifer("unknown/unexpected identifier '" + start->content() + "' found", start->position());
+					throw Utils::Exceptions::UnknownIdentifer("unknown/unexpected identifier '" + start->content() + "' found", start->position());
 				}
 			}
 		} break;
@@ -512,7 +512,7 @@ void Method::parseTerm(Object *result, TokenIterator& start)
 			operator_assign(result, &tmp);
 		} break;
 		case Token::Type::MATH_SUBTRACT: {
-			throw Utils::NotImplemented("unary minus");
+			throw Utils::Exceptions::NotImplemented("unary minus");
 		} break;
 		case Token::Type::SEMICOLON: {
 			if ( result->Typename() == VoidObject::TYPENAME ) {
@@ -521,7 +521,7 @@ void Method::parseTerm(Object *result, TokenIterator& start)
 			}
 		} break;
 		default: {
-			throw Utils::SyntaxError("identifier, literal or number expected but " + start->content() + " as " + Token::Type::convert(start->type()) + " found", start->position());
+			throw Utils::Exceptions::SyntaxError("identifier, literal or number expected but " + start->content() + " as " + Token::Type::convert(start->type()) + " found", start->position());
 		} break;
 	}
 
@@ -555,7 +555,7 @@ void Method::process(Object *result, TokenIterator& token, TokenIterator end, To
 				process_type(token);
 				break;
 			default:
-				throw Utils::SyntaxError("invalid token '" + token->content() + "' as type " + Token::Type::convert(token->type()) + " found", token->position());
+				throw Utils::Exceptions::SyntaxError("invalid token '" + token->content() + "' as type " + Token::Type::convert(token->type()) + " found", token->position());
 				break;
 		}
 
@@ -575,7 +575,7 @@ void Method::process_assert(TokenIterator& token)
 	TokenIterator tmp = findNext(condEnd, Token::Type::SEMICOLON);
 
 	if ( !parseCondition(condBegin) ) {
-		throw Utils::AssertionFailed("", token->position());
+		throw Utils::Exceptions::AssertionFailed("", token->position());
 	}
 
 	token = tmp;
@@ -600,13 +600,13 @@ void Method::process_assign(TokenIterator& token, Object *result)
 
 	Object *s = getSymbol(identifier);
 	if ( !s ) {
-		throw Utils::UnknownIdentifer("identifier '" + identifier + "' not found", token->position());
+		throw Utils::Exceptions::UnknownIdentifer("identifier '" + identifier + "' not found", token->position());
 	}
 	if ( s->isConst() ) {
-		throw Utils::ConstCorrectnessViolated("not allowed to modify const member '" + identifier + "'", token->position());
+		throw Utils::Exceptions::ConstCorrectnessViolated("not allowed to modify const member '" + identifier + "'", token->position());
 	}
 	if ( this->isConst() && isMember(identifier) ) {
-		throw Utils::ConstCorrectnessViolated("not allowed to modify member '" + identifier + "' in const method '" + this->name() + "'", token->position());
+		throw Utils::Exceptions::ConstCorrectnessViolated("not allowed to modify member '" + identifier + "' in const method '" + this->name() + "'", token->position());
 	}
 
 	parseExpression(s, ++assign);
@@ -714,7 +714,7 @@ void Method::process_if(TokenIterator& token, Object *result)
 
 		// check if we executed all tokens
 		if ( bodyBegin != bodyEnd ) {
-			throw Utils::Exception("half evaluated if found!", bodyBegin->position());
+			throw Utils::Exceptions::Exception("half evaluated if found!", bodyBegin->position());
 		}
 
 		if ( elseEnd != mTokens.end() ) {
@@ -729,7 +729,7 @@ void Method::process_if(TokenIterator& token, Object *result)
 
 		// check if we executed all tokens
 		if ( elseBegin != elseEnd ) {
-			throw Utils::Exception("half evaluated else found!", bodyBegin->position());
+			throw Utils::Exceptions::Exception("half evaluated else found!", bodyBegin->position());
 		}
 
 		token = elseEnd;
@@ -823,7 +823,7 @@ void Method::process_method(TokenIterator& token, Object *result)
 	}
 
 	mOwner->providePrinter()->print(mOwner->ToString());
-	throw Utils::UnknownIdentifer("unknown/unexpected identifier '" + method + "' found", tmp->position());
+	throw Utils::Exceptions::UnknownIdentifer("unknown/unexpected identifier '" + method + "' found", tmp->position());
 }
 
 // syntax:
@@ -938,7 +938,7 @@ void Method::process_type(TokenIterator& token)
 	name = token->content();
 
 	if ( token->type() != Token::Type::IDENTIFER ) {
-		throw Utils::SyntaxError("identifier expected but '" + token->content() + "' found", token->position());
+		throw Utils::Exceptions::SyntaxError("identifier expected but '" + token->content() + "' found", token->position());
 	}
 
 	token++;
@@ -974,13 +974,13 @@ void Method::process_type(TokenIterator& token)
 		addIdentifier(name, object);
 
 		if ( token->type() != Token::Type::SEMICOLON ) {
-			throw Utils::SyntaxError("';' expected but '" + token->content() + "' found", token->position());
+			throw Utils::Exceptions::SyntaxError("';' expected but '" + token->content() + "' found", token->position());
 		}
 	}
 	else {
 		if ( !object->isStatic() ) {
 			// upsi, did not clean up..
-			throw Utils::DuplicateIdentiferException(name);
+			throw Utils::Exceptions::DuplicateIdentifer(name);
 		}
 
 		token = findNext(token, Token::Type::SEMICOLON);

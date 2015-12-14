@@ -31,7 +31,7 @@ GenericAttributes::~GenericAttributes()
 void GenericAttributes::checkSealState()
 {
 	if ( mIsSealed ) {
-		throw Utils::Exception("can not update sealed attribute");
+		throw Utils::Exceptions::Exception("can not update sealed attribute");
 	}
 }
 

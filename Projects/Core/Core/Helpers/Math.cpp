@@ -28,7 +28,7 @@ Object add(Object& v1, Object& v2)
 		result = NumberObject(Tools::toString(f1 + f2));
 	}
 	else {
-		throw Utils::TypeMismatch("for addition: '" + v1.getValue() + "' and/or '" + v2.getValue() + "' are not of type 'NumberObject'");
+		throw Utils::Exceptions::TypeMismatch("for addition: '" + v1.getValue() + "' and/or '" + v2.getValue() + "' are not of type 'NumberObject'");
 	}
 
 	return result;
@@ -46,7 +46,7 @@ Object divide(Object& v1, Object& v2)
 		result = NumberObject(Tools::toString(f1 / f2));
 	}
 	else {
-		throw Utils::TypeMismatch("for division: '" + v1.getValue() + "' and/or '" + v2.getValue() + "' are not of type 'NumberObject'");
+		throw Utils::Exceptions::TypeMismatch("for division: '" + v1.getValue() + "' and/or '" + v2.getValue() + "' are not of type 'NumberObject'");
 	}
 
 	return result;
@@ -64,7 +64,7 @@ Object multiply(Object& v1, Object& v2)
 		result = NumberObject(Tools::toString(f1 * f2));
 	}
 	else {
-		throw Utils::TypeMismatch("for multiplication: '" + v1.getValue() + "' and/or '" + v2.getValue() + "' are not of type 'NumberObject'");
+		throw Utils::Exceptions::TypeMismatch("for multiplication: '" + v1.getValue() + "' and/or '" + v2.getValue() + "' are not of type 'NumberObject'");
 	}
 
 	return result;
@@ -82,7 +82,7 @@ Object subtract(Object& v1, Object& v2)
 		result = NumberObject(Tools::toString(f1 - f2));
 	}
 	else {
-		throw Utils::TypeMismatch("for subtraction: '" + v1.getValue() + "' and/or '" + v2.getValue() + "' are not of type 'NumberObject'");
+		throw Utils::Exceptions::TypeMismatch("for subtraction: '" + v1.getValue() + "' and/or '" + v2.getValue() + "' are not of type 'NumberObject'");
 	}
 
 	return result;
