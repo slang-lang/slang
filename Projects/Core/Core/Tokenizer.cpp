@@ -5,6 +5,7 @@
 // Library includes
 
 // Project includes
+#include <Core/Consts.h>
 #include <Core/Keywords/for.h>
 #include <Core/Keywords/if.h>
 #include <Core/Keywords/print.h>
@@ -219,7 +220,7 @@ Token Tokenizer::createToken(const std::string& con, const Utils::Position& pos)
 
 bool Tokenizer::isBoolean(const std::string& token) const
 {
-	return (token == "false" || token == "true");
+	return ( token == FALSE || token == TRUE );
 }
 
 bool Tokenizer::isDefined(const std::string& token) const
@@ -371,7 +372,7 @@ bool Tokenizer::isType(const std::string& token) const
 
 bool Tokenizer::isVisibility(const std::string& token) const
 {
-	if ( token == "private" || token == "protected" || token == "public" ) {
+	if ( token == PRIVATE || token == PROTECTED || token == PUBLIC ) {
 		return true;
 	}
 

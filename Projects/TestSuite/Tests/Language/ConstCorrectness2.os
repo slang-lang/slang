@@ -29,7 +29,7 @@ public namespace ConstCorrectness
 			//assert( ObjectAsReference() );
 		}
 
-		private Bool ObjectAsReference() const
+		private bool ObjectAsReference() const
 		{
 			UserObject obj1 = new UserObject(1);
 
@@ -38,7 +38,7 @@ public namespace ConstCorrectness
 			return true;
 		}
 
-		private Bool UpdateUserObject(UserObject obj const) const
+		private bool UpdateUserObject(UserObject obj const) const
 		{
 			obj.setValue(2);
 		}

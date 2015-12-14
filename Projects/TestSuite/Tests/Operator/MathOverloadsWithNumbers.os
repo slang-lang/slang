@@ -24,7 +24,7 @@ public namespace MathOverloads
 			mNumber = mNumber / other;
 		}
 
-		public Bool operator_equal(OverloadedObject other ref const) const
+		public bool operator_equal(OverloadedObject other ref const) const
 		{
 			print("operator_equal(OverloadedObject)");
 			
@@ -35,7 +35,7 @@ public namespace MathOverloads
 			return false;
 		}
 		
-		public Bool operator_equal(Number other const) const
+		public bool operator_equal(Number other const) const
 		{
 			print("operator_equal(Number)");
 			
@@ -75,7 +75,7 @@ public namespace MathOverloads
 			assert( TestCase4() );
 		}
 
-		private Bool TestCase1() const
+		private bool TestCase1() const
 		{
 			print("TestCase1: using the overloaded plus operator");
 
@@ -92,7 +92,7 @@ public namespace MathOverloads
 			return false;
 		}
 
-		private Bool TestCase2() const
+		private bool TestCase2() const
 		{
 			print("TestCase2: using the overloaded subtract operator");
 
@@ -109,7 +109,7 @@ public namespace MathOverloads
 			return false;
 		}
 
-		private Bool TestCase3() const
+		private bool TestCase3() const
 		{
 			print("TestCase3: using the overloaded multiply operator");
 
@@ -126,7 +126,7 @@ public namespace MathOverloads
 			return false;
 		}
 
-		private Bool TestCase4() const
+		private bool TestCase4() const
 		{
 			print("TestCase4: using the overloaded divide operator");
 

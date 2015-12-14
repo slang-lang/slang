@@ -29,12 +29,12 @@ public namespace
 			return 1;
 		}
 
-		private Bool ReturnFalse() const
+		private bool ReturnFalse() const
 		{
 			return false;
 		}
 
-		private Bool ReturnTrue() const
+		private bool ReturnTrue() const
 		{
 			return true;
 		}

@@ -17,7 +17,7 @@
 namespace ObjectiveScript {
 
 
-std::string BoolObject::TYPENAME = "Bool";
+std::string BoolObject::TYPENAME = "bool";
 
 
 BoolObject::BoolObject(bool value)
