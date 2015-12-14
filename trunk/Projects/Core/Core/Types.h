@@ -8,13 +8,16 @@
 #include <string>
 
 // Project includes
+#include "Parameter.h"
 #include "Reference.h"
 #include "Token.h"
-#include "Variable.h"
 
 // Forward declarations
 
 // Namespace declarations
+
+
+typedef std::list<std::string> StringList;
 
 
 namespace ObjectiveScript {
@@ -23,16 +26,16 @@ namespace ObjectiveScript {
 static const std::string PROTOTYPE_TYPE = "UNKNOWN";
 
 
-typedef std::list<std::string> StringList;
-
-
+std::string toString(const Parameter& param);
+std::string toString(const ParameterList& list);
 std::string toString(const ReferencesList& list);
 std::string toString(const StringList& list);
 std::string toString(const TokenList& list);
-std::string toString(const VariablesList& list);
 
 StringList provideAtomarTypes();
+StringList provideLanguageFeatures();
 StringList provideKeyWords();
+StringList provideModifiers();
 StringList provideReservedWords();
 
 

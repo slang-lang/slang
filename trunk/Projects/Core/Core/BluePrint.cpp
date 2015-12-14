@@ -28,14 +28,22 @@ BluePrint::~BluePrint()
 {
 }
 
+void BluePrint::addInterface(const Ancestor& iface)
+{
+	mInterfaces.insert(std::make_pair(
+		iface.name(),
+		iface
+	));
+}
+
 const BluePrint::Ancestors& BluePrint::getAncestors() const
 {
 	return mAncestors;
 }
 
-Visibility::E BluePrint::getAncestorVisibility() const
+const BluePrint::Ancestors& BluePrint::getInterfaces() const
 {
-	return mVisibility;
+	return mInterfaces;
 }
 
 const TokenList& BluePrint::getTokens() const
@@ -43,19 +51,24 @@ const TokenList& BluePrint::getTokens() const
 	return mTokens;
 }
 
+Visibility::E BluePrint::getVisibility() const
+{
+	return mVisibility;
+}
+
 void BluePrint::setAncestors(const Ancestors& ancestors)
 {
 	mAncestors = ancestors;
 }
 
-void BluePrint::setAncestorVisibility(Visibility::E v)
-{
-	mVisibility = v;
-}
-
 void BluePrint::setTokens(const TokenList& tokens)
 {
 	mTokens = tokens;
+}
+
+void BluePrint::setVisibility(Visibility::E v)
+{
+	mVisibility = v;
 }
 
 

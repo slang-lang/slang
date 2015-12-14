@@ -1,18 +1,24 @@
 INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
 SET(SOURCES
-	Bool.cpp
+	BoolObject.cpp
+	NumberObject.cpp
+	StringObject.cpp
+	UserObject.cpp
+	VoidObject.cpp
 )
 
 SET(HEADERS
-	Bool.h
-	Number.h
-	String.h
-	Void.h
+	BoolObject.h
+	NumberObject.h
+	StringObject.h
+	UserObject.h
+	VoidObject.h
 )
 
 SET(DEPENDENCIES
 )
 
-build_static_lib(CoreBuildInObjects "")
+add_include(Projects/Core)
 
+build_static_lib(CoreBuildInObjects "")

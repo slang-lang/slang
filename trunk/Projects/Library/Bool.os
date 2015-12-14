@@ -1,20 +1,23 @@
 
-public object Bool
+public namespace
 {
-	private Bool mValue;
-
-	public void Bool(/*Bool value*/) 
+	public object Bool
 	{
-		mValue = false;
-	}
+		private atomic_bool mValue;
 
-	public Bool get() const
-	{
-		return mValue;
-	}
+		public void Bool(atomic_bool value = false) 
+		{
+			mValue = false;
+		}
 
-	public void set(Bool value)
-	{
-		mValue = value;
+		public atomic_bool get() const
+		{
+			return mValue;
+		}
+
+		public void set(atomic_bool value)
+		{
+			mValue = value;
+		}
 	}
 }

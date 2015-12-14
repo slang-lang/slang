@@ -16,21 +16,27 @@
 
 
 namespace ObjectiveScript {
+namespace Utils {
 
 
 class Exception : public std::exception
 {
 public:
 	Exception(const std::string& text, const Utils::Position& position = Utils::Position())
-	: mPosition(position),
-	  mText(text)
-	{ }
+	: mMessage(text),
+	  mPosition(position)
+	{
+		mCombinedMessage = mMessage;
+		if ( !mPosition.toString().empty() ) {
+			mCombinedMessage += " at " + mPosition.toString();
+		}
+	}
 	virtual ~Exception() throw() { }
 
 public:
-#ifdef __WIN32
+#ifdef _WIN32
 	const char* what() const {
-		return mText.c_str();
+		return mCombinedMessage.c_str();
 	}
 #elif defined __APPLE__
 #include "TargetConditionals.h"
@@ -39,31 +45,28 @@ public:
 #elif TARGET_OS_IPHONE
     // iOS device
     const char* what() const throw() {
-        return mText.c_str();
+        return mMessage.c_str();
     }
 #elif TARGET_OS_MAC
     // Other kinds of Mac OS X
     const char* what() const _NOEXCEPT {
-		//if ( mPosition.line != 0 ) {
-		//	result += " at line " + Tools::toString(mPosition.line);// + ", " + Tools::toString(mPosition.column);
-		//}
-
-        return mText.c_str();
+    	return mCombinedMessage.c_str();
     }
 #else
     // Unsupported platform
 #endif
 #elif defined __linux
 	virtual const char* what() const throw() {
-		return mText.c_str();
+		return mMessage.c_str();
 	}
 #endif
 
 protected:
 
 private:
+	std::string mCombinedMessage;
+	std::string mMessage;
 	Utils::Position mPosition;
-	std::string mText;
 };
 
 
@@ -78,14 +81,25 @@ public:
 };
 
 
-class DuplicateIdentifer : public Exception
+class ConstCorrectnessViolated : public Exception
 {
 public:
-	DuplicateIdentifer(const std::string& text, const Utils::Position& position = Utils::Position())
-	: Exception("duplicate identifier: " + text, position)
+	ConstCorrectnessViolated(const std::string& text, const Utils::Position& position = Utils::Position())
+	: Exception("const correctness violated: " + text, position)
 	{ }
 
-	virtual ~DuplicateIdentifer() throw() { }
+	virtual ~ConstCorrectnessViolated() throw() { }
+};
+
+
+class DuplicateIdentiferException : public Exception
+{
+public:
+	DuplicateIdentiferException(const std::string& text, const Utils::Position& position = Utils::Position())
+	: Exception("DuplicateIdentiferException: " + text, position)
+	{ }
+
+	virtual ~DuplicateIdentiferException() throw() { }
 };
 
 
@@ -97,6 +111,17 @@ public:
 	{ }
 
 	virtual ~NotImplemented() throw() { }
+};
+
+
+class NullPointerException : public Exception
+{
+public:
+	NullPointerException(const std::string& text, const Utils::Position& position = Utils::Position())
+	: Exception("NullPointerException: " + text, position)
+	{ }
+
+	virtual ~NullPointerException() throw() { }
 };
 
 
@@ -155,6 +180,7 @@ public:
 };
 
 
+}
 }
 
 

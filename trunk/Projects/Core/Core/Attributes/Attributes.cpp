@@ -14,79 +14,126 @@
 namespace ObjectiveScript {
 
 
-Attributes::Attributes()
-: mIsConst(false),
+GenericAttributes::GenericAttributes()
+: mIsSealed(false),
+  mIsConst(true),
+  mIsFinal(false),
   mIsStatic(false),
   mLanguageFeatureState(LanguageFeatureState::Stable),
-  mSealed(false),
   mVisibility(Visibility::Private)
 {
 }
 
-void Attributes::checkSealState()
+GenericAttributes::~GenericAttributes()
 {
-	if ( mSealed ) {
-		throw Exception("can not update sealed attribute");
+}
+
+void GenericAttributes::checkSealState()
+{
+	if ( mIsSealed ) {
+		throw Utils::Exception("can not update sealed attribute");
 	}
 }
 
-bool Attributes::isConst() const
+bool GenericAttributes::isConst() const
 {
 	return mIsConst;
 }
 
-bool Attributes::isSealed() const
+bool GenericAttributes::isFinal() const
 {
-	return mSealed;
+	return mIsFinal;
 }
 
-bool Attributes::isStatic() const
+bool GenericAttributes::isModifiable() const
+{
+	return !mIsConst;
+}
+
+bool GenericAttributes::isStatic() const
 {
 	return mIsStatic;
 }
 
-LanguageFeatureState::E Attributes::languageFeatureState() const
+LanguageFeatureState::E GenericAttributes::languageFeatureState() const
 {
 	return mLanguageFeatureState;
 }
 
-void Attributes::seal()
-{
-	// after seal has been called no language feature can be modified anymore
-	mSealed = true;
-}
-
-void Attributes::setConst(bool state)
+void GenericAttributes::setConst(bool state)
 {
 	checkSealState();
 
 	mIsConst = state;
 }
 
-void Attributes::setLanguageFeatureState(LanguageFeatureState::E s)
+void GenericAttributes::setFinal(bool state)
+{
+	mIsFinal = state;
+}
+
+void GenericAttributes::setLanguageFeatureState(LanguageFeatureState::E s)
 {
 	checkSealState();
 
 	mLanguageFeatureState = s;
 }
 
-void Attributes::setStatic(bool state)
+void GenericAttributes::setModifiable(bool state)
+{
+	mIsConst = state;
+}
+
+void GenericAttributes::setStatic(bool state)
 {
 	checkSealState();
 
 	mIsStatic = state;
 }
 
-void Attributes::setVisibility(Visibility::E v)
+Visibility::E GenericAttributes::visibility() const
+{
+	return mVisibility;
+}
+
+void GenericAttributes::visibility(Visibility::E v)
 {
 	checkSealState();
 
 	mVisibility = v;
 }
 
-Visibility::E Attributes::visibility() const
+
+MethodAttributes::MethodAttributes()
 {
-	return mVisibility;
+}
+
+bool MethodAttributes::isSealed() const
+{
+	return mIsSealed;
+}
+
+void MethodAttributes::setSealed(bool state)
+{
+	// after seal has been called no language feature can get modified anymore
+	mIsSealed = state;
+}
+
+
+ObjectAttributes::ObjectAttributes()
+{
+	setConst(false);
+}
+
+bool ObjectAttributes::isSealed() const
+{
+	return mIsSealed;
+}
+
+void ObjectAttributes::setSealed(bool state)
+{
+	// after seal has been called no language feature can get modified anymore
+	mIsSealed = state;
 }
 
 

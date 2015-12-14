@@ -9,7 +9,9 @@
 #include <string>
 
 // Project includes
+#include "Interface.h"
 #include "Object.h"
+#include "Parameter.h"
 
 // Forward declarations
 
@@ -31,30 +33,34 @@ public:
 	~VirtualMachine();
 
 public:	// Setup
-	void connectPrinter(IPrinter *p);
 	void setBaseFolder(const std::string& base);
+	void setPrinter(IPrinter *p);
 
 public:
-	Script* create(const std::string& filename);
+	Script* create(const std::string& filename, const ParameterList& params = ParameterList());
 
 protected:
 
 private:
-	typedef std::map<std::string, BluePrint> BluePrintMap;
-	typedef std::map<std::string, Object> ObjectMap;
+	typedef std::map<std::string, BluePrint> BluePrintCollection;
+	typedef std::map<std::string, Interface> InterfaceCollection;
+	typedef std::map<std::string, Object*> ObjectCollection;
+	typedef std::set<Script*> ScriptCollection;
 
 private:
 	std::string buildLibraryPath(const std::string& library) const;
+	void init();
 	void loadLibrary(const std::string& library);
 
 private:
-	std::string		mBaseFolder;
-	BluePrintMap	mBluePrints;
-	size_t			mCounter;
-	Memory			*mMemory;
-	ObjectMap		mObjects;
-	IPrinter		*mPrinter;
-	Repository		*mRepository;
+	std::string mBaseFolder;
+	BluePrintCollection mBluePrints;
+	InterfaceCollection mInterfaces;
+	Memory *mMemory;
+	ObjectCollection mObjects;
+	IPrinter *mPrinter;
+	Repository *mRepository;
+	ScriptCollection mScripts;
 };
 
 

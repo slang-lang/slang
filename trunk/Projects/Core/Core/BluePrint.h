@@ -9,9 +9,10 @@
 #include <string>
 
 // Project includes
+#include <Core/Attributes/Attributes.h>
 #include <Core/Attributes/Visibility.h>
+#include "Interface.h"
 #include "RTTI.h"
-#include "Token.h"
 
 // Forward declarations
 
@@ -21,7 +22,8 @@
 namespace ObjectiveScript {
 
 
-class BluePrint : public RTTI
+class BluePrint : public RTTI,
+				  public ObjectAttributes
 {
 public:
 	class Ancestor
@@ -56,21 +58,25 @@ public:
 
 public:
 	BluePrint();
-	BluePrint(const std::string& type, const std::string& filename);
+	BluePrint(const std::string& type, const std::string& filename = "<none>");
 	virtual ~BluePrint();
 
 public:
+	void addInterface(const Ancestor& iface);
+	const Ancestors& getInterfaces() const;
+
 	const Ancestors& getAncestors() const;
 	void setAncestors(const Ancestors& ancestors);
 
 	const TokenList& getTokens() const;
-	virtual void setTokens(const TokenList& tokens);
+	void setTokens(const TokenList& tokens);
 
-	Visibility::E getAncestorVisibility() const;
-	void setAncestorVisibility(Visibility::E v);
+	Visibility::E getVisibility() const;
+	void setVisibility(Visibility::E v);
 
 protected:
 	Ancestors mAncestors;
+	Ancestors mInterfaces;
 	TokenList mTokens;
 	Visibility::E mVisibility;
 

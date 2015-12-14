@@ -1,4 +1,24 @@
 
+// Library includes
+#include <list>
+#include <map>
+
+// Project includes
+#include <Common/StdOutLogger.h>
+#include <Tools/Printer.h>
+#include <Tools/Strings.h>
+
+// Fixtures
+#include <Attributes/Fixture.h>
+#include <Language/Fixture.h>
+#include <Math/Fixture.h>
+#include <Operator/Fixture.h>
+#include <Prototype/Fixture.h>
+#include <TestFramework/Fixture.h>
+
+// Namespace declarations
+
+
 #ifdef _WIN32
 	// Memory leak check - Begin
 	#define _CRTDBG_MAP_ALLOC
@@ -12,23 +32,8 @@
 	#endif
 	// Memory leak check - End
 
-//	#include <vld.h>
+	//#include <vld.h>
 #endif
-
-
-// Library includes
-#include <list>
-
-// Project includes
-#include <Common/StdOutLogger.h>
-#include <Tools/Strings.h>
-
-// Fixtures
-#include <Attributes/Fixture.h>
-#include <Prototype/Fixture.h>
-#include <TestFramework/Fixture.h>
-
-// Namespace declarations
 
 
 typedef std::list<TestFixture*> FixtureList;
@@ -43,23 +48,27 @@ int main(int argc, const char* argv[])
 #endif
 
 	bool executed = false;
-	Utils::Common::Logger *logger = 0;
+	Utils::Common::ILogger *logger = 0;
 	std::string toRun = "";
 	bool show = false;
 
 	if ( argc > 1 ) {
 		for (int i = 1; i < argc; i++) {
-			char buf[255];
-			sprintf_s(buf, "%s", argv[i]);
-
-			if ( Utils::Tools::StringCompare(buf, "-v") ) {
+			if ( Utils::Tools::StringCompare(argv[i], "--test") ) {
+				if ( argc <= ++i ) {
+					std::cout << "invalid number of parameters provided!" << std::endl;
+					return -1;
+				}
+				toRun = argv[i];
+			}
+			else if ( Utils::Tools::StringCompare(argv[i], "-v") ) {
 				logger = new Utils::Common::StdOutLogger();
 			}
-			else if ( Utils::Tools::StringCompare(buf, "--show") ) {
+			else if ( Utils::Tools::StringCompare(argv[i], "--show") ) {
 				show = true;
 			}
 			else {
-				toRun = buf;
+				toRun = argv[i];
 			}
 		}
 	}
@@ -70,16 +79,25 @@ int main(int argc, const char* argv[])
 
 	try {
 		FixtureList mFixtures;
-/*
-		Testing::Fixture testing(logger);
+
+		Testing::Framework::Fixture testing(logger);
 		mFixtures.push_back(&testing);
-*/
+
 		Testing::Attributes::Fixture attributes(logger);
 		mFixtures.push_back(&attributes);
 
+		Testing::Language::Fixture language(logger);
+		mFixtures.push_back(&language);
+
+		Testing::Math::Fixture math(logger);
+		mFixtures.push_back(&math);
+
+		Testing::Operator::Fixture operator_overloading(logger);
+		mFixtures.push_back(&operator_overloading);
+/*
 		Testing::Prototype::Fixture prototype(logger);
 		mFixtures.push_back(&prototype);
-
+*/
 		for ( FixtureList::iterator it = mFixtures.begin(); it != mFixtures.end(); ++it ) {
 			if ( show ) {
 				std::cout << (*it)->getName() << std::endl;
@@ -95,13 +113,17 @@ int main(int argc, const char* argv[])
 		mFixtures.clear();
 	}
 	catch ( std::exception &e ) {
-		std::cout << "Unhandled std::exception: " << e.what();
-		logger->LogError("Unhandled std::exception: " + std::string(e.what()), __FILE__, __LINE__);
+		std::cout << "Unhandled std::exception: " << e.what() << std::endl;
 	}
 
 	if ( !executed && !show ) {
 		std::cout << "could not find fixture '" << toRun << "'!" << std::endl;
 	}
 
-	delete logger;
+	if ( logger ) {
+		delete logger;
+		logger = 0;
+	}
+
+	return 0;
 }

@@ -1,6 +1,8 @@
 
+#ifdef _WIN32
 #pragma warning(disable : 4127)
 #pragma warning(disable : 4702)
+#endif
 
 // Header
 #include "AttributesTest.h"
@@ -10,9 +12,9 @@
 // Project includes
 #include <Core/Script.h>
 #include <Core/VirtualMachine.h>
-#include <Utils/Printer.h>
+#include <Core/Utils/Exceptions.h>
 
-// Namespace declartations
+// Namespace declarations
 using namespace ObjectiveScript;
 
 
@@ -20,11 +22,13 @@ namespace Testing {
 namespace Attributes {
 
 
-::Utils::Printer stdoutPrinter;
-
-
 AttributesTest::AttributesTest(const ::Utils::Common::Logger *p)
-: ::Utils::Common::Logger(p, "AttributesTest")
+: ::Utils::Common::Logger(p, "AttributesTest"),
+  mStdoutPrinter(p)
+{
+}
+
+AttributesTest::~AttributesTest()
 {
 }
 
@@ -45,16 +49,19 @@ void AttributesTest::testBasicLanguageFeatures()
 {
 	try {
 		VirtualMachine vm;
-		vm.connectPrinter(&stdoutPrinter);
+		vm.setPrinter(&mStdoutPrinter);
 
-		Script *s = vm.create("Tests/AttributesTest.os");
+		vm.create("Tests/Language/AttributesTest.os");
 
 		// automatic success
-		delete s;
 	}
-	catch ( std::exception& ) {
+	catch ( ObjectiveScript::Utils::Exception& e ) {
 		// exception has been thrown: test failed!
-		TFAIL("caught exception!");
+		TFAIL(e.what());
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL(e.what());
 	}
 }
 

@@ -25,7 +25,9 @@ const std::string WHITESPACES	= "\t\n\r ";
 Tokenizer::Tokenizer(const std::string& content)
 : mContent(content)
 {
+	mLanguageFeatures = provideLanguageFeatures();
 	mKeywords = provideKeyWords();
+	mModifiers = provideModifiers();
 	mReservedWords = provideReservedWords();
 	mTypes = provideAtomarTypes();
 }
@@ -78,21 +80,21 @@ void Tokenizer::classify()
 		if ( (*token).content() == "for" ) {
 			// if the next token is no '(' throw a synthax error exception
 			if ( (*++token).type() != Token::Type::PARENTHESIS_OPEN ) {
-				throw SyntaxError("'(' expected but '" + (*token).content() + "' found", token->position());
+				throw Utils::SyntaxError("'(' expected but '" + (*token).content() + "' found", token->position());
 			}
 
 		}
 		else if ( (*token).content() == "if" ) {
 			// if the next token is no '(' throw a synthax error exception
 			if ( (*++token).type() != Token::Type::PARENTHESIS_OPEN ) {
-				throw SyntaxError("'(' expected but '" + (*token).content() + "' found", token->position());
+				throw Utils::SyntaxError("'(' expected but '" + (*token).content() + "' found", token->position());
 			}
 
 		}
 		else if ( (*token).content() == "print" ) {
 			// if the next token is no '(' throw a synthax error exception
 			if ( (*++token).type() != Token::Type::PARENTHESIS_OPEN ) {
-				throw SyntaxError("'(' expected but '" + (*token).content() + "' found", token->position());
+				throw Utils::SyntaxError("'(' expected but '" + (*token).content() + "' found", token->position());
 			}
 
 			token++;
@@ -116,7 +118,7 @@ void Tokenizer::classify()
 			}
 
 			if ( (*++token).type() != Token::Type::SEMICOLON ) {
-				throw SyntaxError("';' expected but '" + (*token).content() + "' found", token->position());
+				throw Utils::SyntaxError("';' expected but '" + (*token).content() + "' found", token->position());
 			}
 
 			Keywords::Print p;
@@ -152,7 +154,7 @@ void Tokenizer::classify()
 			}
 
 			if ( (*token).type() != Token::Type::SEMICOLON ) {
-				throw SyntaxError("';' expected but '" + (*token).content() + "' found", token->position());
+				throw Utils::SyntaxError("';' expected but '" + (*token).content() + "' found", token->position());
 			}
 
 			Keywords::Return r;
@@ -204,6 +206,7 @@ Token Tokenizer::createToken(const std::string& con, const Utils::Position& pos)
 		type = Token::Type::LITERAL;
 		content = con.substr(1, con.length() - 2);
 	}
+	else if ( isModifier(content) ) { type = Token::Type::LANGUAGEFEATURE; }
 	else if ( isReservedWord(content) ) { type = Token::Type::RESERVED; }
 	else if ( isType(content) ) { type = Token::Type::TYPE; }
 	else if ( isVisibility(content) ) { type = Token::Type::VISIBILITY; }
@@ -287,12 +290,13 @@ bool Tokenizer::isKeyword(const std::string& token) const
 	return false;
 }
 
-bool Tokenizer::isLanguageFeature(const std::string& content) const
+bool Tokenizer::isLanguageFeature(const std::string& token) const
 {
-	if ( content == "deprecated" ) return true;
-	if ( content == "notimplemented" ) return true;
-	if ( content == "stable" ) return true;
-	if ( content == "unstable" ) return true;
+	for ( StringList::const_iterator it = mLanguageFeatures.begin(); it != mLanguageFeatures.end(); ++it ) {
+		if ( (*it) == token ) {
+			return true;
+		}
+	}
 
 	return false;
 }
@@ -306,6 +310,17 @@ bool Tokenizer::isLiteral(const std::string& token) const
 		}
 		// single quotated literals
 		if ( (token.at(0) == '\'' && token.at(token.size() - 1) == '\'') ) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool Tokenizer::isModifier(const std::string& token) const
+{
+	for ( StringList::const_iterator it = mModifiers.begin(); it != mModifiers.end(); ++it ) {
+		if ( (*it) == token ) {
 			return true;
 		}
 	}
@@ -498,7 +513,7 @@ void Tokenizer::replaceAssignments()
 				// ... and add COMPARE_EQUAL instead
 				tmp.push_back(Token(Token::Type::COMPARE_EQUAL, "=="));
 			}
-			else if ( lastType == Token::Type::GREATER ) {
+			else if ( lastType == Token::Type::GREATER || lastType == Token::Type::COMPARE_GREATER ) {
 				// >=
 				changed = true;
 				// remove last added token ...
@@ -506,7 +521,7 @@ void Tokenizer::replaceAssignments()
 				// ... and add COMPARE_GREATER_EQUAL instead
 				tmp.push_back(Token(Token::Type::COMPARE_GREATER_EQUAL, ">="));
 			}
-			else if ( lastType == Token::Type::LESS ) {
+			else if ( lastType == Token::Type::LESS || lastType == Token::Type::COMPARE_LESS ) {
 				// <=
 				changed = true;
 				// remove last added token ...

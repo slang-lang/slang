@@ -23,23 +23,13 @@ public:
 	: mFilename("<unknown file>"),
 	  mTypename("<unknown type>")
 	{ }
-
 	RTTI(const std::string& type, const std::string& filename)
 	: mFilename(filename),
 	  mTypename(type)
 	{ }
+	virtual ~RTTI() { }
 
 public:
-/*
-	const std::string& name() const {
-		return mName;
-	}
-
-	const std::string& type() const {
-		return mTypename;
-	}
-*/
-
 	const std::string& Filename() const {
 		return mFilename;
 	}
@@ -49,13 +39,11 @@ public:
 	}
 
 protected:
-/*
-	std::string mName;
-*/
-
-private:
 	std::string mFilename;
 	std::string mTypename;
+
+private:
+
 };
 
 

@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="Core"
+	Name="ObjectiveScript"
 	ProjectGUID="{C6DB82E5-93BC-4A67-8D37-2FA7BEBDDF29}"
 	RootNamespace="ObjectiveScript"
 	Keyword="Win32Proj"
@@ -42,7 +42,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".\;..\Externals"
+				AdditionalIncludeDirectories=".\;..\Externals;..\Utils"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
 				StringPooling="true"
 				MinimalRebuild="true"
@@ -173,6 +173,22 @@
 			<File
 				RelativePath=".\Core\Attributes\Attributes.cpp"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Attributes\"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Attributes\"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\Core\BluePrint.cpp"
@@ -195,12 +211,72 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\Core\BuildInObjects\BoolObject.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\Utils\Exceptions.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Utils\"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Utils\"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\Core\Interface.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\Core\Attributes\LanguageFeatureState.cpp"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Attributes\"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Attributes\"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\Core\Helpers\Math.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Helpers\"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Helpers\"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\Core\Memory.cpp"
@@ -211,12 +287,40 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Core\BuildInObjects\NumberObject.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\Object.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\OperatorOverloading.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\Parameter.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\Core\Utils\Position.cpp"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Utils\"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Utils\"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\Core\Preprocessor.cpp"
@@ -239,6 +343,30 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Core\BuildInObjects\StringObject.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\Helpers\Strings.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Helpers\"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Helpers\"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath=".\Core\Token.cpp"
 				>
 			</File>
@@ -255,6 +383,30 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Core\BuildInObjects\UserObject.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\Utils\Utils.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Utils\"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Utils\"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath=".\Core\Variable.cpp"
 				>
 			</File>
@@ -264,6 +416,26 @@
 			</File>
 			<File
 				RelativePath=".\Core\Attributes\Visibility.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Attributes\"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Attributes\"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\Core\BuildInObjects\VoidObject.cpp"
 				>
 			</File>
 		</Filter>
@@ -289,15 +461,19 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\Bool.h"
+				RelativePath=".\Core\BuildInObjects\BoolObject.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Exceptions.h"
+				RelativePath=".\Core\Consts.h"
 				>
 			</File>
 			<File
 				RelativePath=".\Core\Utils\Exceptions.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\Exceptions.h"
 				>
 			</File>
 			<File
@@ -309,11 +485,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Core\Interface.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\Interfaces\IPrinter.h"
 				>
 			</File>
 			<File
 				RelativePath=".\Core\Attributes\LanguageFeatureState.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\Helpers\Math.h"
 				>
 			</File>
 			<File
@@ -325,7 +509,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\Number.h"
+				RelativePath=".\Core\BuildInObjects\NumberObject.h"
 				>
 			</File>
 			<File
@@ -334,6 +518,14 @@
 			</File>
 			<File
 				RelativePath=".\Core\ObjectiveScript.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\OperatorOverloading.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\Parameter.h"
 				>
 			</File>
 			<File
@@ -369,11 +561,23 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Core\Scope.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\Script.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\String.h"
+				RelativePath=".\Core\BuildInObjects\StringObject.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\Helpers\Strings.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\Symbol.h"
 				>
 			</File>
 			<File
@@ -393,6 +597,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Core\BuildInObjects\UserObject.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\Utils\Utils.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\Variable.h"
 				>
 			</File>
@@ -405,7 +617,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\Void.h"
+				RelativePath=".\Core\BuildInObjects\VoidObject.h"
 				>
 			</File>
 		</Filter>

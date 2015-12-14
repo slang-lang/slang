@@ -32,11 +32,13 @@ void Memory::deleteObject(const Reference& ref)
 {
 	MemoryMap::iterator it = mMemory.find(ref);
 	if ( it == mMemory.end() ) {
-		throw Exception("invalid delete for address " + ref.getAddress());
+		throw Utils::Exception("invalid delete for address ");//+ std::string(ref.getAddress()));
 	}
 
 	// delete it if it's valid ...
 	if ( it->second ) {
+		it->second->Destructor();
+
 		delete it->second;
 		it->second = 0;
 	}
@@ -66,7 +68,7 @@ const Reference& Memory::reserveAddress()
 	// 1) the simple way:
 	//    only use an address once, so that no address can get
 	//    reused and we accidentally make a forgotten reference
-	//    valid again although it's objects has been deleted
+	//    valid again although its object has been deleted
 	//    long ago;
 	if ( mNextAddress >= SIZE_MAX ) {
 		// 2) the more sophisticated way:
@@ -77,7 +79,7 @@ const Reference& Memory::reserveAddress()
 		//    address again);
 		//TODO: implement me
 
-		throw Exception("memory exhausted!");
+		throw Utils::Exception("memory exhausted!");
 	}
 
 	// reserve address by creating a new reference

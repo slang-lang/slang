@@ -9,8 +9,8 @@
 
 // Project includes
 #include "Method.h"
+#include "Parameter.h"
 #include "Tokenizer.h"
-#include "Variable.h"
 
 // Forward declarations
 
@@ -21,27 +21,36 @@ namespace ObjectiveScript {
 
 // Forward declarations
 class Object;
+class Repository;
 
 class Preprocessor
 {
+public:
+	Preprocessor(Repository *repo);
+
 public:
 	void process(Object *object);
 
 protected:
 
 private:
-	Object createMemberObject(const std::string& filename, TokenIterator start);
-	Method createMethod(TokenIterator start);
+	Object* createMember(const std::string& filename, TokenIterator start);
+	Method* createMethod(TokenIterator start);
 
-	void generateObject(Object *object);
+	void generateObject();
 	void generateTokens(const std::string& content);
 
 	bool isLocalDeclaration(TokenIterator start);
 	bool isMemberDeclaration(TokenIterator start);
 	bool isMethodDeclaration(TokenIterator start);
+	bool isParameterDeclaration(TokenIterator start);
+
+	ParameterList parseParameters(TokenIterator &token);
 
 private:
-	TokenList	mTokens;
+	Object *mObject;
+	Repository *mRepository;
+	TokenList mTokens;
 };
 
 

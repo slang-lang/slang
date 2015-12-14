@@ -16,6 +16,9 @@
 namespace Utils {
 namespace Common {
 
+// Forward declarations
+class IContext;
+
 
 class ILogger
 {
@@ -28,10 +31,11 @@ public:
 	static const int LoudnessDebug = 2;
 	static const int LoudnessDeprecated = 3;
 	static const int LoudnessMethod = 4;
-	static const int LoudnessInfo = 4;
+	static const int LoudnessInfo = 5;
 
 public:
 	virtual const std::string& getClassName() const = 0;
+	virtual IContext* getContext() const = 0;
 	virtual ILogger* getLogger() = 0;
 
 	virtual void LogDebug(const std::string& message, char* file, unsigned int line) = 0;

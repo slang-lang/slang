@@ -6,7 +6,9 @@
 
 // Project includes
 #include <Core/Utils/Exceptions.h>
+#include <Core/Utils/Utils.h>
 #include "Object.h"
+#include "Repository.h"
 #include "Tokenizer.h"
 #include "Tools.h"
 
@@ -16,44 +18,65 @@
 namespace ObjectiveScript {
 
 
-Object Preprocessor::createMemberObject(const std::string& filename, TokenIterator token)
+Preprocessor::Preprocessor(Repository *repo)
+: mObject(0),
+  mRepository(repo)
+{
+}
+
+Object* Preprocessor::createMember(const std::string& filename, TokenIterator token)
 {
 	std::string name;
-	std::string languageFeature;
 	std::string type;
-	std::string value;
 	std::string visibility;
+	bool isConst = false;
+	bool isFinal = false;
+	bool isStatic = false;
 
 	// look for the visibility token
 	visibility = (*token++).content();
-	// look for an optional language feature token
-	if ( token->isOptional() ) {
-		languageFeature = (*token++).content();
-	}
 	// look for the type token
 	type = (*token++).content();
 	// look for the identifier token
 	name = (*token++).content();
 
-	if ( (*token).type() != Token::Type::SEMICOLON ) {
-		throw Exception("Member initialisation not allowed at this point", token->position());
+	if ( (*token).isOptional() ) {
+		if ( (*token).content() == "const" ) {
+			isConst = true;
+		}
+		else if ( (*token).content() == "final" ) {
+			isFinal = true;
+		}
+		else if ( (*token).content() == "modify" ) {
+			isConst = false;
+		}
+		else if ( (*token).content() == "static" ) {
+			isStatic = true;
+		}
+
+		token++;
 	}
 
-	// create member variable
-	Object o(name, filename, type, value);
-	o.setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
-	o.setVisibility(Visibility::convert(visibility));
+	if ( (*token).type() != Token::Type::SEMICOLON ) {
+		throw Utils::Exception("member initialization not allowed during declaration", token->position());
+	}
+
+	Object *o = mRepository->createObject(name, filename, type, "");
+	o->setConst(isConst);
+	o->setFinal(isFinal);
+	o->setStatic(isStatic);
+	o->setVisibility(Visibility::convert(visibility));
 	return o;
 }
 
-Method Preprocessor::createMethod(TokenIterator token)
+Method* Preprocessor::createMethod(TokenIterator token)
 {
-	bool isConst = false;
+	bool isConst = false;		// set to 'true' to make all methods const by default (this is the only way the 'modify' attribute makes sense)
+	bool isFinal = false;
 	bool isStatic = false;
 	std::string name;
 	std::string languageFeature;
 	std::string type;
-	std::string value;
 	std::string visibility;
 
 	// look for the visibility token
@@ -70,55 +93,22 @@ Method Preprocessor::createMethod(TokenIterator token)
 	// look for the next opening parenthesis
 	do { token++; } while ( (*token).type() != Token::Type::PARENTHESIS_OPEN );
 
-	VariablesList params;
+	ParameterList params = parseParameters(token);
 
-	// look for the next closing parenthesis
-	// and create parameters
-	while ( (*++token).type() != Token::Type::PARENTHESIS_CLOSE ) {
-		if ( isLocalDeclaration(token) ) {
-			// try to create parameter objects
-			bool isConst = false;
-			std::string name;
-			std::string type = token->content();
-
-			do {
-				token++;
-
-				if ( token->type() == Token::Type::IDENTIFER ) {
-					name = token->content();
-				}
-				else if ( token->type() == Token::Type::RESERVED ) {
-					if ( token->content() == "const" ) {
-						isConst = true;
-					}
-					else if ( token->content() == "static" ) {
-						throw Exception("static parameter declarations not allowed", token->position());
-					}
-				}
-			//} while ( token->type() != Token::Type::IDENTIFER );
-			} while ( token->type() != Token::Type::COLON && token->type() != Token::Type::PARENTHESIS_CLOSE );
-
-			Object o(name, "", type, "");
-			//o.setConst(isConst);
-			params.push_back(o);
-
-			if ( token->type() == Token::Type::PARENTHESIS_CLOSE ) {
-				break;
-			}
-		}
-	}
-
-	// collect all tokens of this method
-	TokenList tokens;
-
-	// look at possible attributes (const, static, etc.)
+	// look at possible attributes (const, modify, static, etc.)
 	// look for the next opening curly bracket
 	do {
 		token++;
 
-		if ( token->type() == Token::Type::RESERVED ) {
+		if ( token->type() == Token::Type::LANGUAGEFEATURE ) {
 			if ( token->content() == "const" ) {
 				isConst = true;
+			}
+			else if ( token->content() == "final" ) {
+				isFinal = false;
+			}
+			else if ( token->content() == "modify" ) {
+				isConst = false;
 			}
 			else if ( token->content() == "static" ) {
 				isStatic = true;
@@ -126,38 +116,42 @@ Method Preprocessor::createMethod(TokenIterator token)
 		}
 	} while ( token->type() != Token::Type::BRACKET_CURLY_OPEN );
 
+	if ( (isConst || isFinal) && isStatic ) {
+		throw Utils::Exception("static methods can not be const!");
+	}
+
+	// collect all tokens of this method
+	TokenList tokens;
+
 	int scope = 0;
 	// look for the corresponding closing curly bracket
 	while ( (*++token).type() != Token::Type::BRACKET_CURLY_CLOSE || scope > 0 ) {
-		if ( token->type() == Token::Type::BRACKET_CURLY_OPEN ) {
+		if ( (*token).type() == Token::Type::BRACKET_CURLY_OPEN ) {
 			scope++;
 		}
-		if ( token->type() == Token::Type::BRACKET_CURLY_CLOSE ) {
+		if ( (*token).type() == Token::Type::BRACKET_CURLY_CLOSE ) {
 			scope--;
 		}
 
 		tokens.push_back((*token));
 	}
 
-	if ( isConst && isStatic ) {
-		throw Exception("static methods can not be const!");
-	}
-
 	// create a new Method with the corresponding return value
-	Method m(name, type);
-	m.setConst(isConst);
-	m.setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
-	m.setSignature(params);
-	m.setStatic(isStatic);
-	m.setTokens(tokens);
-	m.setVisibility(Visibility::convert(visibility));
+	Method *m = new Method(mObject, name, type);
+	m->setConst(isConst);
+	m->setFinal(isFinal);
+	m->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
+	m->setSignature(params);
+	m->setStatic(isStatic);
+	m->setTokens(tokens);
+	m->visibility(Visibility::convert(visibility));
 
 	return m;
 }
 
-void Preprocessor::generateObject(Object *object)
+void Preprocessor::generateObject()
 {
-	assert(object);
+	assert(mObject);
 
 	typedef std::list<TokenIterator> TokenList;
 	TokenList visList;
@@ -170,29 +164,15 @@ void Preprocessor::generateObject(Object *object)
 		}
 	}
 
-/*
-	// if we don't find anything our script file is invalid
-	if ( visList.empty() ) {
-		OSerror("'" + object->name() + "' has no visibility declarations!");
-		return;
-	}
-*/
-
 	// loop over all visibility declarations and check
 	// if we have a member declaration or a method declaration
 	for ( TokenList::const_iterator it = visList.begin(); it != visList.end(); ++it ) {
 		if ( isMemberDeclaration((*it)) ) {
-			object->addMember(createMemberObject(object->Filename(), (*it)));
+			mObject->addMember(createMember(mObject->Filename(), (*it)));
 		}
 		else if ( isMethodDeclaration((*it)) ) {
-			object->addMethod(createMethod((*it)));
+			mObject->addMethod(createMethod((*it)));
 		}
-/*
-		else {
-			os_error("synthax error: looks like a member or method declaration but is none");
-			return;
-		}
-*/
 	}
 }
 
@@ -247,14 +227,77 @@ bool Preprocessor::isMethodDeclaration(TokenIterator start)
 	return checkSynthax(start, tokens);
 }
 
+bool Preprocessor::isParameterDeclaration(TokenIterator start)
+{
+	TokenList tokens;
+
+	tokens.push_back(Token(Token::Type::IDENTIFER));
+	tokens.push_back(Token(Token::Type::IDENTIFER));
+
+	return checkSynthax(start, tokens);
+}
+
+ParameterList Preprocessor::parseParameters(TokenIterator &token)
+{
+	ParameterList params;
+
+	while ( (*++token).type() != Token::Type::PARENTHESIS_CLOSE ) {
+		if ( !isLocalDeclaration(token) && !isParameterDeclaration(token) ) {
+			throw Utils::SyntaxError("could not parse parameter declaration!", token->position());
+		}
+
+		Parameter::AccessMode::E accessmode = Parameter::AccessMode::ByValue;
+		bool hasDefaultValue = false;
+		bool isConst = false;
+		std::string value;
+
+		std::string type = token->content();
+		token++;
+
+		std::string name = token->content();
+		token++;
+
+		if ( token->content() == "const" ) {
+			isConst = true;
+			token++;
+		}
+
+		if ( token->content() == "ref" ) {
+			accessmode = Parameter::AccessMode::ByReference;
+			token++;
+		}
+		else if ( token->content() == "val" ) {
+			accessmode = Parameter::AccessMode::ByValue;
+			token++;
+		} 
+
+		if ( token->type() == Token::Type::ASSIGN ) {
+			hasDefaultValue = true;
+			token++;
+			value = token->content();
+			token++;
+		}
+
+		Parameter param(name, type, value, hasDefaultValue, isConst, accessmode, 0);
+		params.push_back(param);
+
+		if ( token->type() == Token::Type::PARENTHESIS_CLOSE ) {
+			break;
+		}
+	}
+
+	return params;
+}
+
 void Preprocessor::process(Object *object)
 {
-	OSdebug("process('" + object->name() + "')");
+	//OSdebug("process('" + object->name() + "')");
 
-	mTokens = object->getTokens();
+	mObject = object;
+	mTokens = mObject->getTokens();
 
 	// build object from tokens
-	generateObject(object);
+	generateObject();
 }
 
 

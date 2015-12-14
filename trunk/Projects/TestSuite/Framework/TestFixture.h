@@ -1,6 +1,6 @@
 
-#ifndef _Testing_TestFixture_h_
-#define _Testing_TestFixture_h_
+#ifndef _Framework_TestFixture_h_
+#define _Framework_TestFixture_h_
 
 
 // Library includes
@@ -28,7 +28,9 @@ public:
 	TestFixture(const std::string& name)
 	: mName(name)
 	{ }
-	virtual ~TestFixture() { }
+	virtual ~TestFixture() {
+		cleanup();
+	}
 
 public:
 	virtual void setup() = 0;
@@ -44,7 +46,8 @@ public:
 	}
 
 	void run() {
-		std::cout << std::endl << "********* Starting: " << typeid(*this).name() << " *********" << std::endl;
+		std::cout << std::endl << "********* Starting:  *********" << std::endl;
+		//std::cout << std::endl << "********* Starting: " << typeid(*this).name() << " *********" << std::endl;
 
 		setup();
 
@@ -55,7 +58,8 @@ public:
 		teardown();
 		cleanup();
 
-		std::cout << "********* Finished: " << typeid(*this).name() << " *********" << std::endl;
+		std::cout << "********* Finished:  *********" << std::endl;
+		//std::cout << "********* Finished: " << typeid(*this).name() << " *********" << std::endl;
 	}
 
 protected:
@@ -70,12 +74,12 @@ private:
 	}
 
 private:
-	std::string	mName;
-	TestList	mTests;
+	std::string mName;
+	TestList mTests;
 };
 
 
 }
 
 
-#endif _Testing_TestFixture_h_
+#endif

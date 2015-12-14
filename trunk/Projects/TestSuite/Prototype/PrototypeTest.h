@@ -8,6 +8,7 @@
 // Project includes
 #include <Common/Logger.h>
 #include <Framework/GenericTest.h>
+#include <Tools/Printer.h>
 
 // Forward declarations
 
@@ -31,10 +32,11 @@ public:
 	void teardown();
 
 private:	// Tests
-	void testBasicLanguage();
-	void testBasicObject();
 	void testPrototypeDeclaration();
 	void testPrototypeUsage();
+
+private:
+	Utils::Printer mStdoutPrinter;
 };
 
 

@@ -8,6 +8,7 @@
 // Project includes
 #include <Common/Logger.h>
 #include <Framework/GenericTest.h>
+#include <Tools/Printer.h>
 
 // Forward declarations
 
@@ -23,7 +24,7 @@ class AttributesTest : private Utils::Common::Logger,
 {
 public:
 	AttributesTest(const Utils::Common::Logger *p);
-	virtual ~AttributesTest() { }
+	~AttributesTest();
 
 public:
 	void process();
@@ -32,6 +33,9 @@ public:
 
 private:	// Tests
 	void testBasicLanguageFeatures();
+
+private:
+	Utils::Printer mStdoutPrinter;
 };
 
 

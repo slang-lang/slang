@@ -27,6 +27,11 @@ public:
 
 	static E convert(const std::string& v);
 	static std::string convert(E e);
+
+private:
+	static const std::string PrivateStr;
+	static const std::string ProtectedStr;
+	static const std::string PublicStr;
 };
 
 
