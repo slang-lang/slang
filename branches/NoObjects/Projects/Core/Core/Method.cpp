@@ -479,14 +479,10 @@ void Method::parseTerm(Object *result, TokenIterator& start)
 {
 	switch ( start->type() ) {
 		case Token::Type::BOOLEAN: {
-			//*result = Bool(start->content());
-
-			Bool tmp(start->content());
+			BoolObject tmp(start->content());
 			operator_assign(result, &tmp);
 		} break;
 		case Token::Type::CONSTANT: {
-			//*result = Number(start->content());
-
 			Number tmp(start->content());
 			operator_assign(result, &tmp);
 		} break;
@@ -511,13 +507,17 @@ void Method::parseTerm(Object *result, TokenIterator& start)
 			process(result, start, mTokens.end(), Token::Type::SEMICOLON);
 		} break;
 		case Token::Type::LITERAL: {
-			//*result = String(start->content());
-
 			String tmp(start->content());
 			operator_assign(result, &tmp);
 		} break;
 		case Token::Type::MATH_SUBTRACT: {
 			throw Utils::NotImplemented("unary minus");
+		} break;
+		case Token::Type::SEMICOLON: {
+			if ( result->Typename() == Void::TYPENAME ) {
+				// this is okay, as long as we have a been called by a return command in a void method
+				return;
+			}
 		} break;
 		default: {
 			throw Utils::SyntaxError("identifier, literal or number expected but " + start->content() + " as " + Token::Type::convert(start->type()) + " found", start->position());

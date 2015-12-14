@@ -15,6 +15,9 @@
 namespace ObjectiveScript {
 
 
+std::string UserObject::TYPENAME = "UserObject";
+
+
 UserObject::UserObject(const std::string& name, const std::string& filename, const std::string& type, const std::string& value)
 : Object(name, filename, type, value)
 {
@@ -30,7 +33,7 @@ UserObject::operator bool()
 	ParameterList params;
 	// empty parameter list
 
-	Bool tmp;
+	BoolObject tmp;
 	this->execute(&tmp, "operator_bool", params, 0);
 	return tmp;
 }

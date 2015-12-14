@@ -5,6 +5,7 @@
 // Library includes
 
 // Project includes
+#include <Core/Consts.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Tools.h>
 #include "BoolObject.h"
@@ -18,8 +19,11 @@
 namespace ObjectiveScript {
 
 
+std::string String::TYPENAME = "String";
+
+
 String::String(const std::string& value)
-: Object("", "SYSTEM.OS", "String", value),
+: Object("", SYSTEM_LIBRARY, TYPENAME, value),
   mValue(value)
 {
 	mIsAtomicType = true;
@@ -28,7 +32,7 @@ String::String(const std::string& value)
 }
 
 String::String(const Object& object)
-: Object(object.getName(), "SYSTEM.OS", "String", object.getValue()),
+: Object(object.getName(), SYSTEM_LIBRARY, TYPENAME, object.getValue()),
   mValue(object.getValue())
 {
 }
@@ -48,7 +52,7 @@ std::string String::getValue() const
 	return mValue;
 }
 
-void String::operator_assign(Bool *other)
+void String::operator_assign(BoolObject *other)
 {
 	mValue = other->getValue();
 }
@@ -62,17 +66,17 @@ void String::operator_assign(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == "Bool" ) {
+	if ( target == BoolObject::TYPENAME ) {
 		String tmp(other->getValue());
 
 		operator_assign(&tmp);
 	}
-	else if ( target == "Number" ) {
+	else if ( target == Number::TYPENAME ) {
 		String tmp(other->getValue());
 
 		operator_assign(&tmp);
 	}
-	else if ( target == "String" ) {
+	else if ( target == String::TYPENAME ) {
 		String tmp(other->getValue());
 
 		operator_assign(&tmp);
@@ -92,19 +96,19 @@ bool String::operator_equal(Object *other)
 	std::string target = other->Typename();
 
 /*
-	if ( target == "Bool" ) {
+	if ( target == Bool::TYPENAME ) {
 		String tmp(other->getValue());
 
 		return operator_equal(&tmp);
 	}
-	else if ( target == "Number" ) {
+	else if ( target == Number::TYPENAME ) {
 		String tmp(other->getValue());
 
 		return operator_equal(&tmp);
 	}
 	else
 */
-	if ( target == "String" ) {
+	if ( target == String::TYPENAME ) {
 		String tmp(other->getValue());
 
 		return operator_equal(&tmp);
@@ -118,7 +122,7 @@ bool String::operator_equal(String *other)
 	return (mValue == other->getNativeValue());
 }
 
-void String::operator_plus(Bool *other)
+void String::operator_plus(BoolObject *other)
 {
 	mValue += other->getValue();
 }
@@ -132,17 +136,17 @@ void String::operator_plus(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == "Bool" ) {
+	if ( target == BoolObject::TYPENAME ) {
 		String tmp(other->getValue());
 
 		operator_plus(&tmp);
 	}
-	else if ( target == "Number" ) {
+	else if ( target == Number::TYPENAME ) {
 		String tmp(other->getValue());
 
 		operator_plus(&tmp);
 	}
-	else if ( target == "String" ) {
+	else if ( target == String::TYPENAME ) {
 		String tmp(other->getValue());
 
 		operator_plus(&tmp);

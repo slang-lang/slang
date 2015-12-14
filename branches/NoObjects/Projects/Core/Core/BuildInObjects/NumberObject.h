@@ -19,6 +19,9 @@ namespace ObjectiveScript {
 class Number : public Object
 {
 public:
+	static std::string TYPENAME;
+
+public:
 	Number(float value = 0.f);
 	Number(const std::string& value);
 	Number(const Object& object);

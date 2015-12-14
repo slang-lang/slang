@@ -34,6 +34,7 @@ SET(SOURCES
 SET(HEADERS
 	Analyser.h
 	BluePrint.h
+	Consts.h
 	Interface.h
 #	Interpreter.h
 	Memory.h

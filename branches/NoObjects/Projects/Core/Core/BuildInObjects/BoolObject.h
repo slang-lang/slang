@@ -16,22 +16,25 @@
 namespace ObjectiveScript {
 
 
-class Bool : public Object
+class BoolObject : public Object
 {
 public:
-	Bool(bool value = false);
-	Bool(const std::string& value);
-	Bool(const Object& object);
+	static std::string TYPENAME;
+
+public:
+	BoolObject(bool value = false);
+	BoolObject(const std::string& value);
+	BoolObject(const Object& object);
 
 public:	// Operators
 	virtual operator bool() const;
 
-	virtual void operator_assign(Bool *other);
+	virtual void operator_assign(BoolObject *other);
 	virtual void operator_assign(Number *other);
 	virtual void operator_assign(Object *other);
 	virtual void operator_assign(String *other);
 
-	virtual bool operator_equal(Bool *other);
+	virtual bool operator_equal(BoolObject *other);
 	virtual bool operator_equal(Number *other);
 	virtual bool operator_equal(Object *other);
 	virtual bool operator_equal(String *other);

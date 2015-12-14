@@ -25,7 +25,7 @@ namespace ObjectiveScript {
 Repository::Repository(Memory *m)
 : mMemory(m)
 {
-	addBlueprint(Bool());
+	addBlueprint(BoolObject());
 	addBlueprint(Number());
 	addBlueprint(String());
 	addBlueprint(Void());
@@ -181,16 +181,16 @@ Object* Repository::createObject(const std::string& name, const std::string& fil
 {
 	Object *object = 0;
 
-	if ( type == "Bool" ) {
-		object = new Bool(value);
+	if ( type == BoolObject::TYPENAME ) {
+		object = new BoolObject(value);
 	}
-	else if ( type == "Number" ) {
+	else if ( type == Number::TYPENAME ) {
 		object = new Number(value);
 	}
-	else if ( type == "String" ) {
+	else if ( type == String::TYPENAME ) {
 		object = new String(value);
 	}
-	else if ( type == "Void" ) {
+	else if ( type == Void::TYPENAME ) {
 		object = new Void();
 	}
 	else {

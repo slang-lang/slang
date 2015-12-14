@@ -20,6 +20,9 @@ namespace ObjectiveScript {
 class Void : public Object
 {
 public:
+	static std::string TYPENAME;
+
+public:
 	Void();
 	Void(const Object& object);
 

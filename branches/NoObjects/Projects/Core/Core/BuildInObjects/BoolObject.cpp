@@ -5,6 +5,7 @@
 // Library includes
 
 // Project includes
+#include <Core/Consts.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Tools.h>
 #include "NumberObject.h"
@@ -16,8 +17,11 @@
 namespace ObjectiveScript {
 
 
-Bool::Bool(bool value)
-: Object("", "SYSTEM.OS", "Bool", ""),
+std::string BoolObject::TYPENAME = "Bool";
+
+
+BoolObject::BoolObject(bool value)
+: Object("", SYSTEM_LIBRARY, TYPENAME, ""),
   mValue(value)
 {
 	mIsAtomicType = true;
@@ -25,8 +29,8 @@ Bool::Bool(bool value)
 	Constructor(ParameterList());
 }
 
-Bool::Bool(const std::string& value)
-: Object("", "SYSTEM.OS", "Bool", value),
+BoolObject::BoolObject(const std::string& value)
+: Object("", SYSTEM_LIBRARY, TYPENAME, value),
   mValue(Tools::stringToBool(value))
 {
 	mIsAtomicType = true;
@@ -34,58 +38,58 @@ Bool::Bool(const std::string& value)
 	Constructor(ParameterList());
 }
 
-Bool::Bool(const Object& object)
-: Object(object.getName(), "SYSTEM.OS", "Bool", object.getValue()),
+BoolObject::BoolObject(const Object& object)
+: Object(object.getName(), SYSTEM_LIBRARY, TYPENAME, object.getValue()),
   mValue(Tools::stringToBool(object.getValue()))
 {
 }
 
-Bool::operator bool() const
+BoolObject::operator bool() const
 {
 	return mValue;
 }
 
-bool Bool::getNativeValue() const
+bool BoolObject::getNativeValue() const
 {
 	return mValue;
 }
 
-std::string Bool::getValue() const
+std::string BoolObject::getValue() const
 {
 	return Tools::boolToString(mValue);
 }
 
-bool Bool::isValid() const
+bool BoolObject::isValid() const
 {
 	return true;
 }
 
-void Bool::operator_assign(Bool *other)
+void BoolObject::operator_assign(BoolObject *other)
 {
 	mValue = other->getNativeValue();
 }
 
-void Bool::operator_assign(Number *other)
+void BoolObject::operator_assign(Number *other)
 {
 	mValue = (other->getNativeValue() != 0.f);
 }
 
-void Bool::operator_assign(Object *other)
+void BoolObject::operator_assign(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == "Bool" ) {
-		Bool tmp(other->getValue());
+	if ( target == BoolObject::TYPENAME ) {
+		BoolObject tmp(other->getValue());
 
 		operator_assign(&tmp);
 	}
-	else if ( target == "Number" ) {
-		Bool tmp(other->getValue());
+	else if ( target == Number::TYPENAME ) {
+		BoolObject tmp(other->getValue());
 
 		operator_assign(&tmp);
 	}
-	else if ( target == "String" ) {
-		Bool tmp(other->getValue());
+	else if ( target == String::TYPENAME ) {
+		BoolObject tmp(other->getValue());
 
 		operator_assign(&tmp);
 	}
@@ -94,37 +98,37 @@ void Bool::operator_assign(Object *other)
 	}
 }
 
-void Bool::operator_assign(String *other)
+void BoolObject::operator_assign(String *other)
 {
 	mValue = !other->getNativeValue().empty();
 }
 
-bool Bool::operator_equal(Bool *other)
+bool BoolObject::operator_equal(BoolObject *other)
 {
 	return (mValue == other->getNativeValue());
 }
 
-bool Bool::operator_equal(Number *other)
+bool BoolObject::operator_equal(Number *other)
 {
 	return (mValue == (other->getNativeValue() != 0.f));
 }
 
-bool Bool::operator_equal(Object *other)
+bool BoolObject::operator_equal(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == "Bool" ) {
-		Bool tmp(other->getValue());
+	if ( target == BoolObject::TYPENAME ) {
+		BoolObject tmp(other->getValue());
 
 		return operator_equal(&tmp);
 	}
-	else if ( target == "Number" ) {
-		Bool tmp(other->getValue());
+	else if ( target == Number::TYPENAME ) {
+		BoolObject tmp(other->getValue());
 
 		return operator_equal(&tmp);
 	}
-	else if ( target == "String" ) {
-		Bool tmp(other->getValue());
+	else if ( target == String::TYPENAME ) {
+		BoolObject tmp(other->getValue());
 
 		return operator_equal(&tmp);
 	}
@@ -132,22 +136,22 @@ bool Bool::operator_equal(Object *other)
 	throw Utils::NotImplemented("operator_equal: conversion from " + target + " to " + Typename() + " not supported");
 }
 
-bool Bool::operator_equal(String *other)
+bool BoolObject::operator_equal(String *other)
 {
 	return (mValue == (!other->getNativeValue().empty()));
 }
 
-void Bool::setNativeValue(bool value)
+void BoolObject::setNativeValue(bool value)
 {
 	mValue = value;
 }
 
-void Bool::setValue(const std::string& value)
+void BoolObject::setValue(const std::string& value)
 {
 	mValue = Tools::stringToBool(value);
 }
 
-std::string Bool::ToString() const
+std::string BoolObject::ToString() const
 {
 	return Typename() + " " + getName() + " = " + getValue();
 }

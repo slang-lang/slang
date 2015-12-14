@@ -5,6 +5,7 @@
 // Library includes
 
 // Project includes
+#include <Core/Consts.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Tools.h>
 
@@ -14,8 +15,11 @@
 namespace ObjectiveScript {
 
 
+std::string Number::TYPENAME = "Number";
+
+
 Number::Number(float value)
-: Object("", "SYSTEM.OS", "Number", ""),
+: Object("", SYSTEM_LIBRARY, TYPENAME, ""),
   mValue(value)
 {
 	mIsAtomicType = true;
@@ -24,7 +28,7 @@ Number::Number(float value)
 }
 
 Number::Number(const std::string& value)
-: Object("", "SYSTEM.OS", "Number", value),
+: Object("", SYSTEM_LIBRARY, TYPENAME, value),
   mValue(Tools::stringToFloat(value))
 {
 	mIsAtomicType = true;
@@ -33,7 +37,7 @@ Number::Number(const std::string& value)
 }
 
 Number::Number(const Object& object)
-: Object(object.getName(), "SYSTEM.OS", "Number", object.getValue()),
+: Object(object.getName(), SYSTEM_LIBRARY, TYPENAME, object.getValue()),
   mValue(0.f)
 {
 }
@@ -67,7 +71,7 @@ void Number::operator_assign(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == "Number" ) {
+	if ( target == Number::TYPENAME ) {
 		Number tmp(other->getValue());
 
 		operator_assign(&tmp);
@@ -86,7 +90,7 @@ void Number::operator_divide(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == "Number" ) {
+	if ( target == Number::TYPENAME ) {
 		Number tmp(other->getValue());
 
 		operator_divide(&tmp);
@@ -105,7 +109,7 @@ bool Number::operator_equal(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == "Number" ) {
+	if ( target == Number::TYPENAME ) {
 		Number tmp(other->getValue());
 
 		return operator_equal(&tmp);
@@ -123,7 +127,7 @@ bool Number::operator_greater(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == "Number" ) {
+	if ( target == Number::TYPENAME ) {
 		Number tmp(other->getValue());
 
 		return operator_greater(&tmp);
@@ -141,7 +145,7 @@ bool Number::operator_greater_equal(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == "Number" ) {
+	if ( target == Number::TYPENAME ) {
 		Number tmp(other->getValue());
 
 		return operator_greater_equal(&tmp);
@@ -159,7 +163,7 @@ bool Number::operator_less(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == "Number" ) {
+	if ( target == Number::TYPENAME ) {
 		Number tmp(other->getValue());
 
 		return operator_less(&tmp);
@@ -177,7 +181,7 @@ bool Number::operator_less_equal(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == "Number" ) {
+	if ( target == Number::TYPENAME ) {
 		Number tmp(other->getValue());
 
 		return operator_less_equal(&tmp);
@@ -195,7 +199,7 @@ void Number::operator_multiply(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == "Number" ) {
+	if ( target == Number::TYPENAME ) {
 		Number tmp(other->getValue());
 
 		operator_multiply(&tmp);
@@ -214,7 +218,7 @@ void Number::operator_plus(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == "Number" ) {
+	if ( target == Number::TYPENAME ) {
 		Number tmp(other->getValue());
 
 		operator_plus(&tmp);
@@ -233,7 +237,7 @@ void Number::operator_subtract(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == "Number" ) {
+	if ( target == Number::TYPENAME ) {
 		Number tmp(other->getValue());
 
 		operator_subtract(&tmp);

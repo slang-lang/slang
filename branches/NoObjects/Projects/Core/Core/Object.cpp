@@ -77,7 +77,7 @@ Object& Object::operator= (const Object& other)
 
 		//this->setConst(other.isConst());
 		this->setFinal(other.isFinal());
-		this->setStatic(other.isStatic());
+		//this->setStatic(other.isStatic());
 
 		// unregister current members
 		for ( MemberCollection::const_iterator it = mMembers.begin(); it != mMembers.end(); ) {
@@ -474,28 +474,6 @@ void Object::operator_subtract(Object *other)
 
 	throw Utils::NotImplemented("operator-: conversion from " + target + " to " + Typename() + " not supported");
 }
-
-/*
-void Object::operator_plus(Bool *)
-{
-	throw Utils::NotImplemented(ToString() + ", operator+");
-}
-
-void Object::operator_plus(Number *)
-{
-	throw Utils::NotImplemented(ToString() + ", operator+");
-}
-
-void Object::operator_plus(String *)
-{
-	throw Utils::NotImplemented(ToString() + ", operator+");
-}
-
-void Object::operator_plus(Void *)
-{
-	throw Utils::NotImplemented(ToString() + ", operator+");
-}
-*/
 
 IPrinter* Object::providePrinter() const
 {

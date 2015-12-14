@@ -3,6 +3,8 @@
 
 // Project includes
 #include <Common/StdOutLogger.h>
+#include <Core/BuildInObjects/NumberObject.h>
+#include <Core/BuildInObjects/StringObject.h>
 #include <Core/Parameter.h>
 #include <Core/Script.h>
 #include <Core/Types.h>
@@ -108,8 +110,8 @@ void processParameters(int argc, const char* argv[])
 		}
 	}
 
-	mParameters.push_back(ObjectiveScript::Parameter("argc", "Number", Utils::Tools::toString(params.size())));
-	mParameters.push_back(ObjectiveScript::Parameter("argv", "String", paramStr));
+	mParameters.push_back(ObjectiveScript::Parameter("argc", ObjectiveScript::Number::TYPENAME, Utils::Tools::toString(params.size())));
+	mParameters.push_back(ObjectiveScript::Parameter("argv", ObjectiveScript::String::TYPENAME, paramStr));
 }
 
 int main(int argc, const char* argv[])

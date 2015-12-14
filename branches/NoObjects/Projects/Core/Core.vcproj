@@ -465,11 +465,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Exceptions.h"
+				RelativePath=".\Core\Consts.h"
 				>
 			</File>
 			<File
 				RelativePath=".\Core\Utils\Exceptions.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\Exceptions.h"
 				>
 			</File>
 			<File

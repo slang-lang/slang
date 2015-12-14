@@ -20,13 +20,16 @@ namespace ObjectiveScript {
 class String : public Object
 {
 public:
+	static std::string TYPENAME;
+
+public:
 	String(const std::string& value = "");
 	String(const Object& object);
 
 public:	// Operators
 	virtual operator bool() const;
 
-	virtual void operator_assign(Bool *other);
+	virtual void operator_assign(BoolObject *other);
 	virtual void operator_assign(Number *other);
 	virtual void operator_assign(Object *other);
 	virtual void operator_assign(String *other);
@@ -34,7 +37,7 @@ public:	// Operators
 	virtual bool operator_equal(Object *other);
 	virtual bool operator_equal(String *other);
 
-	virtual void operator_plus(Bool *other);
+	virtual void operator_plus(BoolObject *other);
 	virtual void operator_plus(Number *other);
 	virtual void operator_plus(Object *other);
 	virtual void operator_plus(String *other);

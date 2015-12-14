@@ -6,6 +6,7 @@
 
 // Project includes
 #include <Core/Utils/Exceptions.h>
+#include <Core/Consts.h>
 #include <Core/Tools.h>
 
 // Namespace declarations
@@ -14,8 +15,11 @@
 namespace ObjectiveScript {
 
 
+std::string Void::TYPENAME = "void";
+
+
 Void::Void()
-: Object("", "SYSTEM.OS", "Void", "")
+: Object("", SYSTEM_LIBRARY, TYPENAME, "")
 {
 	mIsAtomicType = true;
 
@@ -23,7 +27,7 @@ Void::Void()
 }
 
 Void::Void(const Object& object)
-: Object(object.getName(), "SYSTEM.OS", "Void", object.getValue())
+: Object(object.getName(), SYSTEM_LIBRARY, TYPENAME, object.getValue())
 {
 }
 

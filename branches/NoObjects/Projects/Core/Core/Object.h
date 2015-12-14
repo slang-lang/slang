@@ -25,7 +25,7 @@
 namespace ObjectiveScript {
 
 // Forward declarations
-class Bool;
+class BoolObject;
 class Number;
 class String;
 class Void;
@@ -72,13 +72,6 @@ public:	// Operators
 	virtual void operator_multiply(Object *other);
 	virtual void operator_plus(Object *other);
 	virtual void operator_subtract(Object *other);
-
-/*
-	virtual void operator_plus(Bool *other);
-	virtual void operator_plus(Number *other);
-	virtual void operator_plus(String *other);
-	virtual void operator_plus(Void *other);
-*/
 
 public:	// Value
 	virtual bool isValid() const;

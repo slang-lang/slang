@@ -5,6 +5,11 @@
 // Library includes
 
 // Project includes
+#include <Core/BuildInObjects/BoolObject.h>
+#include <Core/BuildInObjects/NumberObject.h>
+#include <Core/BuildInObjects/StringObject.h>
+#include <Core/BuildInObjects/UserObject.h>
+#include <Core/BuildInObjects/VoidObject.h>
 
 // Namespace declaration
 
@@ -16,12 +21,12 @@ StringList provideAtomarTypes()
 	StringList types;
 
 	types.push_back(PROTOTYPE_TYPE);
-	types.push_back("bool");
-	//types.push_back("float");
-	//types.push_back("int");
-	types.push_back("number");
-	types.push_back("string");
-	types.push_back("void");
+	types.push_back(BoolObject::TYPENAME);
+	//types.push_back(FloatObject::TYPENAME);
+	//types.push_back(IntegerObject::TYPENAME);
+	types.push_back(Number::TYPENAME);
+	types.push_back(String::TYPENAME);
+	types.push_back(Void::TYPENAME);
 
 	return types;
 }

@@ -20,7 +20,7 @@ Object add(Object& v1, Object& v2)
 {
 	Object result;
 
-	if ( v1.Typename() == "Number" && v2.Typename() == "Number" ) {
+	if ( v1.Typename() == Number::TYPENAME && v2.Typename() == Number::TYPENAME ) {
 		// none of our summands is a string
 		float f1 = Tools::stringToFloat(v1.getValue());
 		float f2 = Tools::stringToFloat(v2.getValue());
@@ -38,7 +38,7 @@ Object divide(Object& v1, Object& v2)
 {
 	Object result;
 
-	if ( v1.Typename() == "Number" && v2.Typename() == "Number" ) {
+	if ( v1.Typename() == Number::TYPENAME && v2.Typename() == Number::TYPENAME ) {
 		// none of our summands is a string
 		float f1 = Tools::stringToFloat(v1.getValue());
 		float f2 = Tools::stringToFloat(v2.getValue());
@@ -56,7 +56,7 @@ Object multiply(Object& v1, Object& v2)
 {
 	Object result;
 
-	if ( v1.Typename() == "Number" && v2.Typename() == "Number" ) {
+	if ( v1.Typename() == Number::TYPENAME && v2.Typename() == Number::TYPENAME ) {
 		// none of our summands is a string
 		float f1 = Tools::stringToFloat(v1.getValue());
 		float f2 = Tools::stringToFloat(v2.getValue());
@@ -74,7 +74,7 @@ Object subtract(Object& v1, Object& v2)
 {
 	Object result;
 
-	if ( v1.Typename() == "Number" && v2.Typename() == "Number" ) {
+	if ( v1.Typename() == Number::TYPENAME && v2.Typename() == Number::TYPENAME ) {
 		// none of our summands is a string
 		float f1 = Tools::stringToFloat(v1.getValue());
 		float f2 = Tools::stringToFloat(v2.getValue());

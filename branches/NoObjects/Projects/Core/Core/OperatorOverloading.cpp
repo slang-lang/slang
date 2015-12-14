@@ -33,25 +33,25 @@ void operator_assign(Object *base, Object *other)
 		// assign directly because our base has not yet been initialized
 		*base = *other;
 	}
-	else if ( source == "Bool" ) {
-		Bool tmp(base->getValue());
+	else if ( source == BoolObject::TYPENAME ) {
+		BoolObject tmp(base->getValue());
 		tmp.operator_assign(other);
 
 		*base = tmp;
 	}
-	else if ( source == "Number" ) {
+	else if ( source == Number::TYPENAME ) {
 		Number tmp(base->getValue());
 		tmp.operator_assign(other);
 
 		*base = tmp;
 	}
-	else if ( source == "String" ) {
+	else if ( source == String::TYPENAME ) {
 		String tmp(base->getValue());
 		tmp.operator_assign(other);
 
 		*base = tmp;
 	}
-	else if ( source == "Void" ) {
+	else if ( source == Void::TYPENAME ) {
 		Void tmp;
 		tmp.operator_assign(other);
 
@@ -63,7 +63,7 @@ void operator_assign(Object *base, Object *other)
 			Parameter(other->getName(), other->Typename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
 		);
 
-		Bool tmp;
+		BoolObject tmp;
 		base->execute(&tmp, "operator_assign", params, 0);
 	}
 }
@@ -79,25 +79,25 @@ void operator_divide(Object *base, Object *other)
 
 	std::string source = base->Typename();
 
-	if ( source == "Bool" ) {
-		Bool tmp(base->getValue());
+	if ( source == BoolObject::TYPENAME ) {
+		BoolObject tmp(base->getValue());
 		tmp.operator_divide(other);
 
 		*base = tmp;
 	}
-	else if ( source == "Number" ) {
+	else if ( source == Number::TYPENAME ) {
 		Number tmp(base->getValue());
 		tmp.operator_divide(other);
 
 		*base = tmp;
 	}
-	else if ( source == "String" ) {
+	else if ( source == String::TYPENAME ) {
 		String tmp(base->getValue());
 		tmp.operator_divide(other);
 
 		*base = tmp;
 	}
-	else if ( source == "Void" ) {
+	else if ( source == Void::TYPENAME ) {
 		Void tmp;
 		tmp.operator_divide(other);
 
@@ -109,7 +109,7 @@ void operator_divide(Object *base, Object *other)
 			Parameter(other->getName(), other->Typename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
 		);
 
-		Bool tmp;
+		BoolObject tmp;
 		base->execute(&tmp, "operator_divide", params, 0);
 	}
 }
@@ -125,19 +125,19 @@ bool operator_equal(Object *base, Object *other)
 
 	std::string source = base->Typename();
 
-	if ( source == "Bool" ) {
-		Bool tmp(base->getValue());
+	if ( source == BoolObject::TYPENAME ) {
+		BoolObject tmp(base->getValue());
 		return tmp.operator_equal(other);
 	}
-	else if ( source == "Number" ) {
+	else if ( source == Number::TYPENAME ) {
 		Number tmp(base->getValue());
 		return tmp.operator_equal(other);
 	}
-	else if ( source == "String" ) {
+	else if ( source == String::TYPENAME ) {
 		String tmp(base->getValue());
 		return tmp.operator_equal(other);
 	}
-	else if ( source == "Void" ) {
+	else if ( source == Void::TYPENAME ) {
 		Void tmp;
 		return tmp.operator_equal(other);
 	}
@@ -147,7 +147,7 @@ bool operator_equal(Object *base, Object *other)
 		Parameter(other->getName(), other->Typename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
 	);
 
-	Bool tmp;
+	BoolObject tmp;
 	base->execute(&tmp, "operator_equal", params, 0);
 	return tmp;
 }
@@ -163,19 +163,19 @@ bool operator_greater(Object *base, Object *other)
 
 	std::string source = base->Typename();
 
-	if ( source == "Bool" ) {
-		Bool tmp(base->getValue());
+	if ( source == BoolObject::TYPENAME ) {
+		BoolObject tmp(base->getValue());
 		return tmp.operator_greater(other);
 	}
-	else if ( source == "Number" ) {
+	else if ( source == Number::TYPENAME ) {
 		Number tmp(base->getValue());
 		return tmp.operator_greater(other);
 	}
-	else if ( source == "String" ) {
+	else if ( source == String::TYPENAME ) {
 		String tmp(base->getValue());
 		return tmp.operator_greater(other);
 	}
-	else if ( source == "Void" ) {
+	else if ( source == Void::TYPENAME ) {
 		Void tmp;
 		return tmp.operator_greater(other);
 	}
@@ -185,7 +185,7 @@ bool operator_greater(Object *base, Object *other)
 		Parameter(other->getName(), other->Typename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
 	);
 
-	Bool tmp;
+	BoolObject tmp;
 	base->execute(&tmp, "operator_greater", params, 0);
 	return tmp;
 }
@@ -201,19 +201,19 @@ bool operator_greater_equal(Object *base, Object *other)
 
 	std::string source = base->Typename();
 
-	if ( source == "Bool" ) {
-		Bool tmp(base->getValue());
+	if ( source == BoolObject::TYPENAME ) {
+		BoolObject tmp(base->getValue());
 		return tmp.operator_greater_equal(other);
 	}
-	else if ( source == "Number" ) {
+	else if ( source == Number::TYPENAME ) {
 		Number tmp(base->getValue());
 		return tmp.operator_greater_equal(other);
 	}
-	else if ( source == "String" ) {
+	else if ( source == String::TYPENAME ) {
 		String tmp(base->getValue());
 		return tmp.operator_greater_equal(other);
 	}
-	else if ( source == "Void" ) {
+	else if ( source == Void::TYPENAME ) {
 		Void tmp;
 		return tmp.operator_greater_equal(other);
 	}
@@ -223,7 +223,7 @@ bool operator_greater_equal(Object *base, Object *other)
 		Parameter(other->getName(), other->Typename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
 	);
 
-	Bool tmp;
+	BoolObject tmp;
 	base->execute(&tmp, "operator_greater_equal", params, 0);
 	return tmp;
 }
@@ -239,19 +239,19 @@ bool operator_less(Object *base, Object *other)
 
 	std::string source = base->Typename();
 
-	if ( source == "Bool" ) {
-		Bool tmp(base->getValue());
+	if ( source == BoolObject::TYPENAME ) {
+		BoolObject tmp(base->getValue());
 		return tmp.operator_less(other);
 	}
-	else if ( source == "Number" ) {
+	else if ( source == Number::TYPENAME ) {
 		Number tmp(base->getValue());
 		return tmp.operator_less(other);
 	}
-	else if ( source == "String" ) {
+	else if ( source == String::TYPENAME ) {
 		String tmp(base->getValue());
 		return tmp.operator_less(other);
 	}
-	else if ( source == "Void" ) {
+	else if ( source == Void::TYPENAME ) {
 		Void tmp;
 		return tmp.operator_less(other);
 	}
@@ -261,7 +261,7 @@ bool operator_less(Object *base, Object *other)
 		Parameter(other->getName(), other->Typename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
 	);
 
-	Bool tmp;
+	BoolObject tmp;
 	base->execute(&tmp, "operator_less", params, 0);
 	return tmp;
 }
@@ -277,19 +277,19 @@ bool operator_less_equal(Object *base, Object *other)
 
 	std::string source = base->Typename();
 
-	if ( source == "Bool" ) {
-		Bool tmp(base->getValue());
+	if ( source == BoolObject::TYPENAME ) {
+		BoolObject tmp(base->getValue());
 		return tmp.operator_less_equal(other);
 	}
-	else if ( source == "Number" ) {
+	else if ( source == Number::TYPENAME ) {
 		Number tmp(base->getValue());
 		return tmp.operator_less_equal(other);
 	}
-	else if ( source == "String" ) {
+	else if ( source == String::TYPENAME ) {
 		String tmp(base->getValue());
 		return tmp.operator_less_equal(other);
 	}
-	else if ( source == "Void" ) {
+	else if ( source == Void::TYPENAME ) {
 		Void tmp;
 		return tmp.operator_less_equal(other);
 	}
@@ -299,7 +299,7 @@ bool operator_less_equal(Object *base, Object *other)
 		Parameter(other->getName(), other->Typename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
 	);
 
-	Bool tmp;
+	BoolObject tmp;
 	base->execute(&tmp, "operator_less_equal", params, 0);
 	return tmp;
 }
@@ -315,25 +315,25 @@ void operator_multiply(Object *base, Object *other)
 
 	std::string source = base->Typename();
 
-	if ( source == "Bool" ) {
-		Bool tmp(base->getValue());
+	if ( source == BoolObject::TYPENAME ) {
+		BoolObject tmp(base->getValue());
 		tmp.operator_multiply(other);
 
 		*base = tmp;
 	}
-	else if ( source == "Number" ) {
+	else if ( source == Number::TYPENAME ) {
 		Number tmp(base->getValue());
 		tmp.operator_multiply(other);
 
 		*base = tmp;
 	}
-	else if ( source == "String" ) {
+	else if ( source == String::TYPENAME ) {
 		String tmp(base->getValue());
 		tmp.operator_multiply(other);
 
 		*base = tmp;
 	}
-	else if ( source == "Void" ) {
+	else if ( source == Void::TYPENAME ) {
 		Void tmp;
 		tmp.operator_multiply(other);
 
@@ -345,7 +345,7 @@ void operator_multiply(Object *base, Object *other)
 			Parameter(other->getName(), other->Typename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
 		);
 
-		Bool tmp;
+		BoolObject tmp;
 		base->execute(&tmp, "operator_multiply", params, 0);
 	}
 }
@@ -361,25 +361,25 @@ void operator_plus(Object *base, Object *other)
 
 	std::string source = base->Typename();
 
-	if ( source == "Bool" ) {
-		Bool tmp(base->getValue());
+	if ( source == BoolObject::TYPENAME ) {
+		BoolObject tmp(base->getValue());
 		tmp.operator_plus(other);
 
 		*base = tmp;
 	}
-	else if ( source == "Number" ) {
+	else if ( source == Number::TYPENAME ) {
 		Number tmp(base->getValue());
 		tmp.operator_plus(other);
 
 		*base = tmp;
 	}
-	else if ( source == "String" ) {
+	else if ( source == String::TYPENAME ) {
 		String tmp(base->getValue());
 		tmp.operator_plus(other);
 
 		*base = tmp;
 	}
-	else if ( source == "Void" ) {
+	else if ( source == Void::TYPENAME ) {
 		Void tmp;
 		tmp.operator_plus(other);
 
@@ -391,7 +391,7 @@ void operator_plus(Object *base, Object *other)
 			Parameter(other->getName(), other->Typename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
 		);
 
-		Bool tmp;
+		BoolObject tmp;
 		base->execute(&tmp, "operator_plus", params, 0);
 	}
 }
@@ -407,25 +407,25 @@ void operator_subtract(Object *base, Object *other)
 
 	std::string source = base->Typename();
 
-	if ( source == "Bool" ) {
-		Bool tmp(base->getValue());
+	if ( source == BoolObject::TYPENAME ) {
+		BoolObject tmp(base->getValue());
 		tmp.operator_subtract(other);
 
 		*base = tmp;
 	}
-	else if ( source == "Number" ) {
+	else if ( source == Number::TYPENAME ) {
 		Number tmp(base->getValue());
 		tmp.operator_subtract(other);
 
 		*base = tmp;
 	}
-	else if ( source == "String" ) {
+	else if ( source == String::TYPENAME ) {
 		String tmp(base->getValue());
 		tmp.operator_subtract(other);
 
 		*base = tmp;
 	}
-	else if ( source == "Void" ) {
+	else if ( source == Void::TYPENAME ) {
 		Void tmp;
 		tmp.operator_subtract(other);
 
@@ -437,7 +437,7 @@ void operator_subtract(Object *base, Object *other)
 			Parameter(other->getName(), other->Typename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
 		);
 
-		Bool tmp;
+		BoolObject tmp;
 		base->execute(&tmp, "operator_subtract", params, 0);
 	}
 }
