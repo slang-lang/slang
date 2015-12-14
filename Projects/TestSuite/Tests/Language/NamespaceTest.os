@@ -6,14 +6,14 @@ public namespace Tests
 	{
 		public object Test1
 		{
-			private String mName;
+			private string mName;
 
-			public void Test1(String name const = "Test1")
+			public void Test1(string name const = "Test1")
 			{
 				mName = name;
 			}
 
-			public String getName() const
+			public string getName() const
 			{
 				return mName;
 			}
@@ -22,7 +22,7 @@ public namespace Tests
 	
 	public object Main
 	{
-		public void Main(Number argc = 0, String argv = "")
+		public void Main(Number argc = 0, string argv = "")
 		{
 			NamespaceTests.Test1 test1 = new Test1();
 			print(test1.getName());

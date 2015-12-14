@@ -2,13 +2,13 @@
 
 public object Observer
 {
-	private String mTypeName;
+	private string mTypeName;
 
 	public void Observer() {
 		mTypeName = "Observer";
 	}
 
-	public String getTypeName() const {
+	public string getTypeName() const {
 		return mTypeName;
 	}
 }
@@ -38,7 +38,7 @@ public prototype TestPrototype extends public Observer
 
 public object Main
 {
-	public void Main(Number argc = 0, String argv = "")
+	public void Main(Number argc = 0, string argv = "")
 	{
 		test();
 	}

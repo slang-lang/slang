@@ -24,7 +24,7 @@ public namespace ConstCorrectness
 
 	public object Main
 	{
-		public void Main(Number argc const = 0, String argv const = "")
+		public void Main(Number argc const = 0, string argv const = "")
 		{
 			//assert( ObjectAsReference() );
 		}

@@ -19,7 +19,7 @@
 namespace ObjectiveScript {
 
 
-std::string StringObject::TYPENAME = "String";
+std::string StringObject::TYPENAME = "string";
 
 
 StringObject::StringObject(const std::string& value)

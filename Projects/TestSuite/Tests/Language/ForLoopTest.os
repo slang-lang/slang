@@ -8,7 +8,7 @@ public namespace
 	{
 		//private Assert mAssert;
 
-		public void Main(Number argc = 0, String argv = "")
+		public void Main(Number argc = 0, string argv = "")
 		{
 			//mAssert = new Assert();
 

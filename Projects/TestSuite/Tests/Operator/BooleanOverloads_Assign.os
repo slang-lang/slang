@@ -54,7 +54,7 @@ private namespace BooleanOverloads
 
 	public object Main
 	{
-		public void Main(Number argc = 0, String argv = "")
+		public void Main(Number argc = 0, string argv = "")
 		{
 			assert( TestCase1() );
 			assert( TestCase2() );

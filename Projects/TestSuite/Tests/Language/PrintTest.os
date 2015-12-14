@@ -4,12 +4,12 @@ public namespace Language
 {
 	public object Main
 	{
-		public void Main(Number argc = 0, String argv = "")
+		public void Main(Number argc = 0, string argv = "")
 		{
 			test_print(" parameter ");
 		}
 
-		public void test_print(String param1)
+		public void test_print(string param1)
 		{
 			print("print 'text' with single quotes");
 			print("print \"text\" with double quotes");

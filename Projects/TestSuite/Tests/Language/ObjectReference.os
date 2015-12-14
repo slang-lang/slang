@@ -16,7 +16,7 @@ public namespace Language
 	{
 		private TestObject obj;
 
-		public void Main(Number argc = 0, String argv = "")
+		public void Main(Number argc = 0, string argv = "")
 		{
 			obj = new TestObject(1);	// instantiate new object (and execute it's constructor)
 			print("value.mValue = " & obj.mValue);

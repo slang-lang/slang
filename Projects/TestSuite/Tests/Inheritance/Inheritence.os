@@ -6,7 +6,7 @@ public namespace Tests
 	{
 		public interface IContainer
 		{
-			public String GetIdentifier() const;
+			public string GetIdentifier() const;
 		}
 
 		public interface IWarehouse
@@ -27,7 +27,7 @@ public namespace Tests
 				mPrivateNumber = 1;
 			}
 
-			public String ToString() const
+			public string ToString() const
 			{
 				return "mPublicNumber = " & mPublicNumber & ", mProtectedNumber = " & mProtectedNumber & ", mPrivateNumber = " & mPrivateNumber & ";";
 			}
@@ -38,7 +38,7 @@ public namespace Tests
 		{
 			private Number mPrivateNumber;
 
-			public void Main(Number argc = 0, String argv = "")
+			public void Main(Number argc = 0, string argv = "")
 			{
 				test();
 			}
@@ -48,12 +48,12 @@ public namespace Tests
 				return Number(1);
 			}
 
-			public String GetIdentifier() const
+			public string GetIdentifier() const
 			{
 				return "bla";
 			}
 
-			public String ToString() const
+			public string ToString() const
 			{
 				return super.ToString() & "mPublicNumber = " & mPublicNumber & ", mProtectedNumber = " & mProtectedNumber & ", mPrivateNumber = " & mPrivateNumber & ";";
 			}
