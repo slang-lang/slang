@@ -115,7 +115,7 @@ void Object::addMember(Object *m)
 	assert(m);
 
 	if ( mMembers.find(m->getName()) != mMembers.end() ) {
-		throw Utils::DuplicateIdentiferException("duplicate member '" + m->getName() + "' added");
+		throw Utils::Exceptions::DuplicateIdentifer("duplicate member '" + m->getName() + "' added");
 	}
 
 	mMembers.insert(std::make_pair(m->getName(), m));
@@ -129,7 +129,7 @@ void Object::addMethod(Method *m)
 
 	MethodCollection::iterator tmpIt;
 	if ( findMethod(m->name(), m->provideSignature(), tmpIt) ) {
-		throw Utils::DuplicateIdentiferException("duplicate method '" + m->getName() + "' added with same signature");
+		throw Utils::Exceptions::DuplicateIdentifer("duplicate method '" + m->getName() + "' added with same signature");
 	}
 
 	m->setOwner(this);
@@ -142,7 +142,7 @@ void Object::addParent(const std::string& parent)
 {
 	for ( StringList::const_iterator it = mParents.begin(); it != mParents.end(); ++it ) {
 		if ( (*it) == parent ) {
-			throw Utils::Exception("duplicate inheritance detected");
+			throw Utils::Exceptions::Exception("duplicate inheritance detected");
 		}
 	}
 
@@ -164,7 +164,7 @@ void Object::connectRepository(Repository *r)
 void Object::Constructor(const ParameterList& params)
 {
 	if ( mConstructed ) {
-		throw Utils::Exception("can not construct object '" + getName() + "' multiple times");
+		throw Utils::Exceptions::Exception("can not construct object '" + getName() + "' multiple times");
 	}
 
 	if ( !mConstructed ) {
@@ -180,7 +180,7 @@ void Object::Constructor(const ParameterList& params)
 	}
 	else {
 		// the constructor has already been executed!
-		//throw Utils::Exception("can not create object '" + name() + "' which has already been constructed");
+		//throw Utils::Exceptions::Exception("can not create object '" + name() + "' which has already been constructed");
 	}
 }
 
@@ -196,7 +196,7 @@ void Object::Destructor()
 	else {
 		// either the destructor has already been executed
 		// or the constructor has never been called successfully!
-		//throw Utils::Exception("can not destroy object '" + name() + "' which has not been constructed");
+		//throw Utils::Exceptions::Exception("can not destroy object '" + name() + "' which has not been constructed");
 	}
 
 	garbageCollector(true);
@@ -213,7 +213,7 @@ void Object::execute(Object *result, const std::string& method, const ParameterL
 	MethodCollection::iterator mIt;
 	bool success = findMethod(method, params, mIt);
 	if ( !success ) {
-		throw Utils::UnknownIdentifer("unknown method '" + method + "' or method with invalid parameter count called!");
+		throw Utils::Exceptions::UnknownIdentifer("unknown method '" + method + "' or method with invalid parameter count called!");
 	}
 
 	// are we called from a colleague method?
@@ -225,14 +225,14 @@ void Object::execute(Object *result, const std::string& method, const ParameterL
 	// colleague method functions can always call us,
 	// for calls from non-member functions the method visibility must be public (or protected if they belong to the same object hirarchy)
 	if ( !callFromMethod && mPtr->visibility() != Visibility::Public ) {
-		throw Utils::VisibilityError("invalid visibility: " + method);
+		throw Utils::Exceptions::VisibilityError("invalid visibility: " + method);
 	}
 
 	try {
 		// execute our member method
 		mPtr->execute(params, result);
 	}
-	catch ( Utils::Exception &e ) {
+	catch ( Utils::Exceptions::Exception &e ) {
 		// catch and log all errors that occured during method execution
 		OSerror(e.what());
 
@@ -409,70 +409,70 @@ void Object::operator_assign(Object *other)
 {
 	std::string target = other->Typename();
 
-	throw Utils::NotImplemented("operator=: conversion from " + target + " to " + Typename() + " not supported");
+	throw Utils::Exceptions::NotImplemented("operator=: conversion from " + target + " to " + Typename() + " not supported");
 }
 
 void Object::operator_divide(Object *other)
 {
 	std::string target = other->Typename();
 
-	throw Utils::NotImplemented("operator/: conversion from " + target + " to " + Typename() + " not supported");
+	throw Utils::Exceptions::NotImplemented("operator/: conversion from " + target + " to " + Typename() + " not supported");
 }
 
 bool Object::operator_equal(Object *other)
 {
 	std::string target = other->Typename();
 
-	throw Utils::NotImplemented("operator==: conversion from " + target + " to " + Typename() + " not supported");
+	throw Utils::Exceptions::NotImplemented("operator==: conversion from " + target + " to " + Typename() + " not supported");
 }
 
 bool Object::operator_greater(Object *other)
 {
 	std::string target = other->Typename();
 
-	throw Utils::NotImplemented("operator>: conversion from " + target + " to " + Typename() + " not supported");
+	throw Utils::Exceptions::NotImplemented("operator>: conversion from " + target + " to " + Typename() + " not supported");
 }
 
 bool Object::operator_greater_equal(Object *other)
 {
 	std::string target = other->Typename();
 
-	throw Utils::NotImplemented("operator>=: conversion from " + target + " to " + Typename() + " not supported");
+	throw Utils::Exceptions::NotImplemented("operator>=: conversion from " + target + " to " + Typename() + " not supported");
 }
 
 bool Object::operator_less(Object *other)
 {
 	std::string target = other->Typename();
 
-	throw Utils::NotImplemented("operator<: conversion from " + target + " to " + Typename() + " not supported");
+	throw Utils::Exceptions::NotImplemented("operator<: conversion from " + target + " to " + Typename() + " not supported");
 }
 
 bool Object::operator_less_equal(Object *other)
 {
 	std::string target = other->Typename();
 
-	throw Utils::NotImplemented("operator<=: conversion from " + target + " to " + Typename() + " not supported");
+	throw Utils::Exceptions::NotImplemented("operator<=: conversion from " + target + " to " + Typename() + " not supported");
 }
 
 void Object::operator_multiply(Object *other)
 {
 	std::string target = other->Typename();
 
-	throw Utils::NotImplemented("operator*: conversion from " + target + " to " + Typename() + " not supported");
+	throw Utils::Exceptions::NotImplemented("operator*: conversion from " + target + " to " + Typename() + " not supported");
 }
 
 void Object::operator_plus(Object *other)
 {
 	std::string target = other->Typename();
 
-	throw Utils::NotImplemented("operator+: conversion from " + target + " to " + Typename() + " not supported");
+	throw Utils::Exceptions::NotImplemented("operator+: conversion from " + target + " to " + Typename() + " not supported");
 }
 
 void Object::operator_subtract(Object *other)
 {
 	std::string target = other->Typename();
 
-	throw Utils::NotImplemented("operator-: conversion from " + target + " to " + Typename() + " not supported");
+	throw Utils::Exceptions::NotImplemented("operator-: conversion from " + target + " to " + Typename() + " not supported");
 }
 
 IPrinter* Object::providePrinter() const

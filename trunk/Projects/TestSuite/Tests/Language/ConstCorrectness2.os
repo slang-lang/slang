@@ -24,9 +24,21 @@ public namespace ConstCorrectness
 
 	public object Main
 	{
+		private number mNumber;
+
 		public void Main(number argc const = 0, string argv const = "")
 		{
+			mNumber = 1;
+			assert( UpdateConstMember(2) );
+
 			//assert( ObjectAsReference() );
+		}
+
+		private bool UpdateConstMember(number value const) const
+		{
+			mNumber = value;
+
+			return false;
 		}
 
 		private bool ObjectAsReference() const

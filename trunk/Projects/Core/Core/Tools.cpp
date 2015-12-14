@@ -138,7 +138,7 @@ TokenIterator findNextBalancedBracket(TokenIterator start, int generateErrorAfte
 			return tmp;
 		}
 		if ( generateErrorAfter && count >= generateErrorAfter ) {
-			throw Utils::SyntaxError("Closed bracket expected, but not found after " + Tools::toString(count) + " iteration(s)", start->position());
+			throw Utils::Exceptions::SyntaxError("Closed bracket expected, but not found after " + Tools::toString(count) + " iteration(s)", start->position());
 		}
 
 		count++;
@@ -172,7 +172,7 @@ TokenIterator findNextBalancedCurlyBracket(TokenIterator start, int generateErro
 		}
 
 		if ( generateErrorAfter && count >= generateErrorAfter ) {
-			throw Utils::SyntaxError("Closed curly bracket expected, but not found after " + Tools::toString(count) + " iteration(s)", start->position());
+			throw Utils::Exceptions::SyntaxError("Closed curly bracket expected, but not found after " + Tools::toString(count) + " iteration(s)", start->position());
 		}
 
 		count++;
@@ -201,7 +201,7 @@ TokenIterator findNextBalancedParenthesis(TokenIterator start, int generateError
 			return tmp;
 		}
 		if ( generateErrorAfter && count >= generateErrorAfter ) {
-			throw Utils::SyntaxError("Closed parenthesis expected, but not found after " + Tools::toString(count) + " iteration(s)", start->position());
+			throw Utils::Exceptions::SyntaxError("Closed parenthesis expected, but not found after " + Tools::toString(count) + " iteration(s)", start->position());
 		}
 
 		count++;

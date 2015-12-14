@@ -77,7 +77,7 @@ void NumberObject::operator_assign(Object *other)
 		operator_assign(&tmp);
 	}
 	else {
-		throw Utils::NotImplemented("operator_assign: conversion from " + target + " to " + Typename() + " not supported");
+		throw Utils::Exceptions::NotImplemented("operator_assign: conversion from " + target + " to " + Typename() + " not supported");
 	}
 }
 
@@ -96,7 +96,7 @@ void NumberObject::operator_divide(Object *other)
 		operator_divide(&tmp);
 	}
 	else {
-		throw Utils::NotImplemented("operator_divide: conversion from " + target + " to " + Typename() + " not supported");
+		throw Utils::Exceptions::NotImplemented("operator_divide: conversion from " + target + " to " + Typename() + " not supported");
 	}
 }
 
@@ -115,7 +115,7 @@ bool NumberObject::operator_equal(Object *other)
 		return operator_equal(&tmp);
 	}
 
-	throw Utils::NotImplemented("operator_equal: conversion from " + target + " to " + Typename() + " not supported");
+	throw Utils::Exceptions::NotImplemented("operator_equal: conversion from " + target + " to " + Typename() + " not supported");
 }
 
 bool NumberObject::operator_greater(NumberObject *other)
@@ -133,7 +133,7 @@ bool NumberObject::operator_greater(Object *other)
 		return operator_greater(&tmp);
 	}
 
-	throw Utils::NotImplemented("operator_greater: conversion from " + target + " to " + Typename() + " not supported");
+	throw Utils::Exceptions::NotImplemented("operator_greater: conversion from " + target + " to " + Typename() + " not supported");
 }
 
 bool NumberObject::operator_greater_equal(NumberObject *other)
@@ -151,7 +151,7 @@ bool NumberObject::operator_greater_equal(Object *other)
 		return operator_greater_equal(&tmp);
 	}
 
-	throw Utils::NotImplemented("operator_greater_equal: conversion from " + target + " to " + Typename() + " not supported");
+	throw Utils::Exceptions::NotImplemented("operator_greater_equal: conversion from " + target + " to " + Typename() + " not supported");
 }
 
 bool NumberObject::operator_less(NumberObject *other)
@@ -169,7 +169,7 @@ bool NumberObject::operator_less(Object *other)
 		return operator_less(&tmp);
 	}
 
-	throw Utils::NotImplemented("operator_less: conversion from " + target + " to " + Typename() + " not supported");
+	throw Utils::Exceptions::NotImplemented("operator_less: conversion from " + target + " to " + Typename() + " not supported");
 }
 
 bool NumberObject::operator_less_equal(NumberObject *other)
@@ -187,7 +187,7 @@ bool NumberObject::operator_less_equal(Object *other)
 		return operator_less_equal(&tmp);
 	}
 
-	throw Utils::NotImplemented("operator_less_equal: conversion from " + target + " to " + Typename() + " not supported");
+	throw Utils::Exceptions::NotImplemented("operator_less_equal: conversion from " + target + " to " + Typename() + " not supported");
 }
 
 void NumberObject::operator_multiply(NumberObject *other)
@@ -205,7 +205,7 @@ void NumberObject::operator_multiply(Object *other)
 		operator_multiply(&tmp);
 	}
 	else {
-		throw Utils::NotImplemented("operator_multiply: conversion from " + target + " to " + Typename() + " not supported");
+		throw Utils::Exceptions::NotImplemented("operator_multiply: conversion from " + target + " to " + Typename() + " not supported");
 	}
 }
 
@@ -224,7 +224,7 @@ void NumberObject::operator_plus(Object *other)
 		operator_plus(&tmp);
 	}
 	else {
-		throw Utils::NotImplemented("operator_plus: conversion from " + target + " to " + Typename() + " not supported");
+		throw Utils::Exceptions::NotImplemented("operator_plus: conversion from " + target + " to " + Typename() + " not supported");
 	}
 }
 
@@ -243,7 +243,7 @@ void NumberObject::operator_subtract(Object *other)
 		operator_subtract(&tmp);
 	}
 	else {
-		throw Utils::NotImplemented("operator_subtract: conversion from " + target + " to " + Typename() + " not supported");
+		throw Utils::Exceptions::NotImplemented("operator_subtract: conversion from " + target + " to " + Typename() + " not supported");
 	}
 }
 

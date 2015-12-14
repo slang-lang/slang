@@ -59,7 +59,7 @@ Object* Preprocessor::createMember(const std::string& filename, TokenIterator to
 	}
 
 	if ( (*token).type() != Token::Type::SEMICOLON ) {
-		throw Utils::Exception("member initialization not allowed during declaration", token->position());
+		throw Utils::Exceptions::Exception("member initialization not allowed during declaration", token->position());
 	}
 
 	Object *o = mRepository->createObject(name, filename, type, "");
@@ -123,7 +123,7 @@ Method* Preprocessor::createMethod(TokenIterator token)
 	} while ( token->type() != Token::Type::BRACKET_CURLY_OPEN );
 
 	if ( (isConst || isFinal) && isStatic ) {
-		throw Utils::Exception("static methods can not be const!");
+		throw Utils::Exceptions::Exception("static methods can not be const!");
 	}
 
 	// collect all tokens of this method
@@ -249,7 +249,7 @@ ParameterList Preprocessor::parseParameters(TokenIterator &token)
 
 	while ( (*++token).type() != Token::Type::PARENTHESIS_CLOSE ) {
 		if ( !isLocalDeclaration(token) && !isParameterDeclaration(token) ) {
-			throw Utils::SyntaxError("could not parse parameter declaration!", token->position());
+			throw Utils::Exceptions::SyntaxError("could not parse parameter declaration!", token->position());
 		}
 
 		Parameter::AccessMode::E accessmode = Parameter::AccessMode::ByValue;

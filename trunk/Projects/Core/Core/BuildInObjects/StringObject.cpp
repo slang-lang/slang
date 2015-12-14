@@ -82,7 +82,7 @@ void StringObject::operator_assign(Object *other)
 		operator_assign(&tmp);
 	}
 	else {
-		throw Utils::NotImplemented("operator_assign: conversion from " + target + " to " + Typename() + " not supported");
+		throw Utils::Exceptions::NotImplemented("operator=: conversion from " + target + " to " + Typename() + " not supported");
 	}
 }
 
@@ -114,7 +114,7 @@ bool StringObject::operator_equal(Object *other)
 		return operator_equal(&tmp);
 	}
 
-	throw Utils::NotImplemented("operator_equal: conversion from " + target + " to " + Typename() + " not supported");
+	throw Utils::Exceptions::NotImplemented("operator==: conversion from " + target + " to " + Typename() + " not supported");
 }
 
 bool StringObject::operator_equal(StringObject *other)
@@ -152,7 +152,7 @@ void StringObject::operator_plus(Object *other)
 		operator_plus(&tmp);
 	}
 	else {
-		throw Utils::NotImplemented("operator_assign: conversion from " + target + " to " + Typename() + " not supported");
+		throw Utils::Exceptions::NotImplemented("operator+: conversion from " + target + " to " + Typename() + " not supported");
 	}
 }
 

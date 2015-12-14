@@ -84,7 +84,7 @@ BluePrint Analyser::createBluePrint(TokenIterator& start, TokenIterator end)
 			parents[inheritance] = BluePrint::Ancestor(inheritance, Visibility::Public);
 		}
 		else {
-			throw Utils::Exception("invalid token '" + start->content() + "' during object declaration");
+			throw Utils::Exceptions::Exception("invalid token '" + start->content() + "' during object declaration");
 		}
 	}
 
@@ -143,7 +143,7 @@ Interface Analyser::createInterface(TokenIterator& start, TokenIterator end)
 
 	// check if we have some more tokens before our object declarations starts
 	if ( start != open ) {
-		throw Utils::Exception("invalid token '" + start->content() + "' during interface declaration");
+		throw Utils::Exceptions::Exception("invalid token '" + start->content() + "' during interface declaration");
 	}
 
 	// collect all tokens of this object
@@ -368,7 +368,7 @@ void Analyser::process(const std::string& filename)
 	OSinfo("Analyzing file '" + mFilename + "'...");
 
 	if ( !::Utils::Tools::Files::exists(mFilename) ) {
-		throw Utils::Exception(mFilename + " file not found");
+		throw Utils::Exceptions::Exception(mFilename + " file not found");
 	}
 
 	// read file content

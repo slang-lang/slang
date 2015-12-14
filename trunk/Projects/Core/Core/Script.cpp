@@ -55,7 +55,7 @@ void Script::connectRepository(Repository *r)
 void Script::construct(const ParameterList& params)
 {
 	if ( !mObject ) {
-		throw Utils::Exception("no object assigned");
+		throw Utils::Exceptions::Exception("no object assigned");
 	}
 
 	mObject->connectPrinter(mPrinter);
@@ -68,7 +68,7 @@ void Script::destruct()
 	try {
 		mRepository->removeReference(mObject);
 	}
-	catch ( Utils::Exception &e ) {
+	catch ( Utils::Exceptions::Exception &e ) {
 		OSerror(e.what());
 	}
 }
@@ -80,7 +80,7 @@ Object Script::execute(const std::string& method, const ParameterList& params)
 		assert(mObject);
 		mObject->execute(&returnValue, method, params);
 	}
-	catch ( Utils::Exception &e ) {
+	catch ( Utils::Exceptions::Exception &e ) {
 		OSerror(e.what());
 	}
 

@@ -21,10 +21,10 @@ namespace ObjectiveScript {
 void operator_assign(Object *base, Object *other)
 {
 	if ( !base ) {
-		throw Utils::NullPointerException("cannot assign value to null pointer");
+		throw Utils::Exceptions::NullPointer("cannot assign value to null pointer");
 	}
 	if ( !other ) {
-		throw Utils::NullPointerException("cannot assign object to null pointer");
+		throw Utils::Exceptions::NullPointer("cannot assign object to null pointer");
 	}
 
 	std::string source = base->Typename();
@@ -71,10 +71,10 @@ void operator_assign(Object *base, Object *other)
 void operator_divide(Object *base, Object *other)
 {
 	if ( !base ) {
-		throw Utils::NullPointerException("operator_divide: cannot divide null pointer through object");
+		throw Utils::Exceptions::NullPointer("operator_divide: cannot divide null pointer through object");
 	}
 	if ( !other ) {
-		throw Utils::NullPointerException("cannot divide object through null pointer");
+		throw Utils::Exceptions::NullPointer("cannot divide object through null pointer");
 	}
 
 	std::string source = base->Typename();
@@ -117,10 +117,10 @@ void operator_divide(Object *base, Object *other)
 bool operator_equal(Object *base, Object *other)
 {
 	if ( !base ) {
-		throw Utils::NullPointerException("cannot compare null pointer to object");
+		throw Utils::Exceptions::NullPointer("cannot compare null pointer to object");
 	}
 	if ( !other ) {
-		throw Utils::NullPointerException("cannot compare object to null pointer");
+		throw Utils::Exceptions::NullPointer("cannot compare object to null pointer");
 	}
 
 	std::string source = base->Typename();
@@ -155,10 +155,10 @@ bool operator_equal(Object *base, Object *other)
 bool operator_greater(Object *base, Object *other)
 {
 	if ( !base ) {
-		throw Utils::NullPointerException("cannot compare null pointer to object");
+		throw Utils::Exceptions::NullPointer("cannot compare null pointer to object");
 	}
 	if ( !other ) {
-		throw Utils::NullPointerException("cannot compare object to null pointer");
+		throw Utils::Exceptions::NullPointer("cannot compare object to null pointer");
 	}
 
 	std::string source = base->Typename();
@@ -193,10 +193,10 @@ bool operator_greater(Object *base, Object *other)
 bool operator_greater_equal(Object *base, Object *other)
 {
 	if ( !base ) {
-		throw Utils::NullPointerException("cannot compare null pointer to object");
+		throw Utils::Exceptions::NullPointer("cannot compare null pointer to object");
 	}
 	if ( !other ) {
-		throw Utils::NullPointerException("cannot compare object to null pointer");
+		throw Utils::Exceptions::NullPointer("cannot compare object to null pointer");
 	}
 
 	std::string source = base->Typename();
@@ -231,10 +231,10 @@ bool operator_greater_equal(Object *base, Object *other)
 bool operator_less(Object *base, Object *other)
 {
 	if ( !base ) {
-		throw Utils::NullPointerException("cannot compare null pointer to object");
+		throw Utils::Exceptions::NullPointer("cannot compare null pointer to object");
 	}
 	if ( !other ) {
-		throw Utils::NullPointerException("cannot compare object to null pointer");
+		throw Utils::Exceptions::NullPointer("cannot compare object to null pointer");
 	}
 
 	std::string source = base->Typename();
@@ -269,10 +269,10 @@ bool operator_less(Object *base, Object *other)
 bool operator_less_equal(Object *base, Object *other)
 {
 	if ( !base ) {
-		throw Utils::NullPointerException("cannot compare null pointer to object");
+		throw Utils::Exceptions::NullPointer("cannot compare null pointer to object");
 	}
 	if ( !other ) {
-		throw Utils::NullPointerException("cannot compare object to null pointer");
+		throw Utils::Exceptions::NullPointer("cannot compare object to null pointer");
 	}
 
 	std::string source = base->Typename();
@@ -307,10 +307,10 @@ bool operator_less_equal(Object *base, Object *other)
 void operator_multiply(Object *base, Object *other)
 {
 	if ( !base ) {
-		throw Utils::NullPointerException("cannot multiply null pointer by object");
+		throw Utils::Exceptions::NullPointer("cannot multiply null pointer by object");
 	}
 	if ( !other ) {
-		throw Utils::NullPointerException("cannot multiply object by null pointer");
+		throw Utils::Exceptions::NullPointer("cannot multiply object by null pointer");
 	}
 
 	std::string source = base->Typename();
@@ -353,10 +353,10 @@ void operator_multiply(Object *base, Object *other)
 void operator_plus(Object *base, Object *other)
 {
 	if ( !base ) {
-		throw Utils::NullPointerException("cannot add null pointer to object");
+		throw Utils::Exceptions::NullPointer("cannot add null pointer to object");
 	}
 	if ( !other ) {
-		throw Utils::NullPointerException("cannot add object to null pointer");
+		throw Utils::Exceptions::NullPointer("cannot add object to null pointer");
 	}
 
 	std::string source = base->Typename();
@@ -399,10 +399,10 @@ void operator_plus(Object *base, Object *other)
 void operator_subtract(Object *base, Object *other)
 {
 	if ( !base ) {
-		throw Utils::NullPointerException("cannot subtract object from null pointer");
+		throw Utils::Exceptions::NullPointer("cannot subtract object from null pointer");
 	}
 	if ( !other ) {
-		throw Utils::NullPointerException("cannot subtract null pointer from object");
+		throw Utils::Exceptions::NullPointer("cannot subtract null pointer from object");
 	}
 
 	std::string source = base->Typename();

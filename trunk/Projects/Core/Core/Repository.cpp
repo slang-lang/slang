@@ -54,7 +54,7 @@ void Repository::addBlueprint(const BluePrint& object)
 
 	BluePrints::iterator it = mBluePrints.find(type);
 	if ( it != mBluePrints.end() ) {
-		throw Utils::Exception("duplicate object '" + type + "' added to repository");
+		throw Utils::Exceptions::Exception("duplicate object '" + type + "' added to repository");
 	}
 
 	mBluePrints.insert(std::make_pair(type, object));
@@ -87,11 +87,9 @@ void Repository::addPrototype(const Prototype& prototype)
 {
 	std::string type = prototype.type();
 
-	//OSinfo("addPrototype('" + type + "')");
-
 	Prototypes::iterator it = mPrototypes.find(type);
 	if ( it != mPrototypes.end() ) {
-		throw Utils::Exception("duplicate object '" + type + "' added to repository");
+		throw Utils::Exceptions::Exception("duplicate object '" + type + "' added to repository");
 	}
 
 	mPrototypes.insert(std::make_pair(type, prototype));
@@ -105,7 +103,7 @@ void Repository::addReference(Object *object)
 
 	switch ( object->languageFeatureState() ) {
 		case LanguageFeatureState::Deprecated: OSwarn("method '" + object->getName() + "' is marked as deprecated!"); break;
-		case LanguageFeatureState::NotImplemented: OSerror("method '" + object->getName() + "' is marked as not implemented!"); throw Utils::NotImplemented(object->getName()); break;
+		case LanguageFeatureState::NotImplemented: OSerror("method '" + object->getName() + "' is marked as not implemented!"); throw Utils::Exceptions::NotImplemented(object->getName()); break;
 		case LanguageFeatureState::Stable: /* this is the normal language feature state, so no need to log anything here */ break;
 		case LanguageFeatureState::Unknown: OSerror("unknown language feature state set for method '" + object->getName() + "'!"); break;
 		case LanguageFeatureState::Unstable: OSwarn("method '" + object->getName() + "' is marked as unstable!"); break;
@@ -161,7 +159,7 @@ Object* Repository::createInstance(const std::string& type, const std::string& n
 			blueprint = it->second;
 		}
 		else {
-			throw Utils::Exception("trying to create instance of unknown object '" + type + "'");
+			throw Utils::Exceptions::Exception("trying to create instance of unknown object '" + type + "'");
 		}
 	}
 
@@ -219,7 +217,7 @@ const Reference& Repository::createReference(const std::string& type, const std:
 			blueprint = it->second;
 		}
 		else {
-			throw Utils::Exception("trying to create instance of unknown object '" + type + "'");
+			throw Utils::Exceptions::Exception("trying to create instance of unknown object '" + type + "'");
 		}
 	}
 

@@ -81,21 +81,21 @@ void Tokenizer::classify()
 		if ( (*token).content() == "for" ) {
 			// if the next token is no '(' throw a synthax error exception
 			if ( (*++token).type() != Token::Type::PARENTHESIS_OPEN ) {
-				throw Utils::SyntaxError("'(' expected but '" + (*token).content() + "' found", token->position());
+				throw Utils::Exceptions::SyntaxError("'(' expected but '" + (*token).content() + "' found", token->position());
 			}
 
 		}
 		else if ( (*token).content() == "if" ) {
 			// if the next token is no '(' throw a synthax error exception
 			if ( (*++token).type() != Token::Type::PARENTHESIS_OPEN ) {
-				throw Utils::SyntaxError("'(' expected but '" + (*token).content() + "' found", token->position());
+				throw Utils::Exceptions::SyntaxError("'(' expected but '" + (*token).content() + "' found", token->position());
 			}
 
 		}
 		else if ( (*token).content() == "print" ) {
 			// if the next token is no '(' throw a synthax error exception
 			if ( (*++token).type() != Token::Type::PARENTHESIS_OPEN ) {
-				throw Utils::SyntaxError("'(' expected but '" + (*token).content() + "' found", token->position());
+				throw Utils::Exceptions::SyntaxError("'(' expected but '" + (*token).content() + "' found", token->position());
 			}
 
 			token++;
@@ -119,7 +119,7 @@ void Tokenizer::classify()
 			}
 
 			if ( (*++token).type() != Token::Type::SEMICOLON ) {
-				throw Utils::SyntaxError("';' expected but '" + (*token).content() + "' found", token->position());
+				throw Utils::Exceptions::SyntaxError("';' expected but '" + (*token).content() + "' found", token->position());
 			}
 
 			Keywords::Print p;
@@ -155,7 +155,7 @@ void Tokenizer::classify()
 			}
 
 			if ( (*token).type() != Token::Type::SEMICOLON ) {
-				throw Utils::SyntaxError("';' expected but '" + (*token).content() + "' found", token->position());
+				throw Utils::Exceptions::SyntaxError("';' expected but '" + (*token).content() + "' found", token->position());
 			}
 
 			Keywords::Return r;
