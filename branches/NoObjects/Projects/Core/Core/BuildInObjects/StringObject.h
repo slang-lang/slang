@@ -17,30 +17,30 @@
 namespace ObjectiveScript {
 
 
-class String : public Object
+class StringObject : public Object
 {
 public:
 	static std::string TYPENAME;
 
 public:
-	String(const std::string& value = "");
-	String(const Object& object);
+	StringObject(const std::string& value = "");
+	StringObject(const Object& object);
 
 public:	// Operators
 	virtual operator bool() const;
 
 	virtual void operator_assign(BoolObject *other);
-	virtual void operator_assign(Number *other);
+	virtual void operator_assign(NumberObject *other);
 	virtual void operator_assign(Object *other);
-	virtual void operator_assign(String *other);
+	virtual void operator_assign(StringObject *other);
 
 	virtual bool operator_equal(Object *other);
-	virtual bool operator_equal(String *other);
+	virtual bool operator_equal(StringObject *other);
 
 	virtual void operator_plus(BoolObject *other);
-	virtual void operator_plus(Number *other);
+	virtual void operator_plus(NumberObject *other);
 	virtual void operator_plus(Object *other);
-	virtual void operator_plus(String *other);
+	virtual void operator_plus(StringObject *other);
 
 public: // Value
 	virtual std::string getNativeValue() const;

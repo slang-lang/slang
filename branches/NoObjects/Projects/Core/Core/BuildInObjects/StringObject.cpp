@@ -19,10 +19,10 @@
 namespace ObjectiveScript {
 
 
-std::string String::TYPENAME = "String";
+std::string StringObject::TYPENAME = "String";
 
 
-String::String(const std::string& value)
+StringObject::StringObject(const std::string& value)
 : Object("", SYSTEM_LIBRARY, TYPENAME, value),
   mValue(value)
 {
@@ -31,53 +31,53 @@ String::String(const std::string& value)
 	Constructor(ParameterList());
 }
 
-String::String(const Object& object)
+StringObject::StringObject(const Object& object)
 : Object(object.getName(), SYSTEM_LIBRARY, TYPENAME, object.getValue()),
   mValue(object.getValue())
 {
 }
 
-String::operator bool() const
+StringObject::operator bool() const
 {
 	return !getValue().empty();
 }
 
-std::string String::getNativeValue() const
+std::string StringObject::getNativeValue() const
 {
 	return mValue;
 }
 
-std::string String::getValue() const
+std::string StringObject::getValue() const
 {
 	return mValue;
 }
 
-void String::operator_assign(BoolObject *other)
+void StringObject::operator_assign(BoolObject *other)
 {
 	mValue = other->getValue();
 }
 
-void String::operator_assign(Number *other)
+void StringObject::operator_assign(NumberObject *other)
 {
 	mValue = other->getValue();
 }
 
-void String::operator_assign(Object *other)
+void StringObject::operator_assign(Object *other)
 {
 	std::string target = other->Typename();
 
 	if ( target == BoolObject::TYPENAME ) {
-		String tmp(other->getValue());
+		StringObject tmp(other->getValue());
 
 		operator_assign(&tmp);
 	}
-	else if ( target == Number::TYPENAME ) {
-		String tmp(other->getValue());
+	else if ( target == NumberObject::TYPENAME ) {
+		StringObject tmp(other->getValue());
 
 		operator_assign(&tmp);
 	}
-	else if ( target == String::TYPENAME ) {
-		String tmp(other->getValue());
+	else if ( target == StringObject::TYPENAME ) {
+		StringObject tmp(other->getValue());
 
 		operator_assign(&tmp);
 	}
@@ -86,30 +86,30 @@ void String::operator_assign(Object *other)
 	}
 }
 
-void String::operator_assign(String *other)
+void StringObject::operator_assign(StringObject *other)
 {
 	mValue = other->getNativeValue();
 }
 
-bool String::operator_equal(Object *other)
+bool StringObject::operator_equal(Object *other)
 {
 	std::string target = other->Typename();
 
 /*
 	if ( target == Bool::TYPENAME ) {
-		String tmp(other->getValue());
+		StringObject tmp(other->getValue());
 
 		return operator_equal(&tmp);
 	}
-	else if ( target == Number::TYPENAME ) {
-		String tmp(other->getValue());
+	else if ( target == NumberObject::TYPENAME ) {
+		StringObject tmp(other->getValue());
 
 		return operator_equal(&tmp);
 	}
 	else
 */
-	if ( target == String::TYPENAME ) {
-		String tmp(other->getValue());
+	if ( target == StringObject::TYPENAME ) {
+		StringObject tmp(other->getValue());
 
 		return operator_equal(&tmp);
 	}
@@ -117,37 +117,37 @@ bool String::operator_equal(Object *other)
 	throw Utils::NotImplemented("operator_equal: conversion from " + target + " to " + Typename() + " not supported");
 }
 
-bool String::operator_equal(String *other)
+bool StringObject::operator_equal(StringObject *other)
 {
 	return (mValue == other->getNativeValue());
 }
 
-void String::operator_plus(BoolObject *other)
+void StringObject::operator_plus(BoolObject *other)
 {
 	mValue += other->getValue();
 }
 
-void String::operator_plus(Number *other)
+void StringObject::operator_plus(NumberObject *other)
 {
 	mValue += other->getValue();
 }
 
-void String::operator_plus(Object *other)
+void StringObject::operator_plus(Object *other)
 {
 	std::string target = other->Typename();
 
 	if ( target == BoolObject::TYPENAME ) {
-		String tmp(other->getValue());
+		StringObject tmp(other->getValue());
 
 		operator_plus(&tmp);
 	}
-	else if ( target == Number::TYPENAME ) {
-		String tmp(other->getValue());
+	else if ( target == NumberObject::TYPENAME ) {
+		StringObject tmp(other->getValue());
 
 		operator_plus(&tmp);
 	}
-	else if ( target == String::TYPENAME ) {
-		String tmp(other->getValue());
+	else if ( target == StringObject::TYPENAME ) {
+		StringObject tmp(other->getValue());
 
 		operator_plus(&tmp);
 	}
@@ -156,22 +156,22 @@ void String::operator_plus(Object *other)
 	}
 }
 
-void String::operator_plus(String *other)
+void StringObject::operator_plus(StringObject *other)
 {
 	mValue += other->getNativeValue();
 }
 
-void String::setNativeValue(const std::string& value)
+void StringObject::setNativeValue(const std::string& value)
 {
 	mValue = value;
 }
 
-void String::setValue(const std::string& value)
+void StringObject::setValue(const std::string& value)
 {
 	mValue = value;
 }
 
-std::string String::ToString() const
+std::string StringObject::ToString() const
 {
 	return Typename() + " " + getName() + " = " + getValue();
 }

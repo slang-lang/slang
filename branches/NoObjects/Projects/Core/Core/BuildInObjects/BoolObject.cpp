@@ -69,7 +69,7 @@ void BoolObject::operator_assign(BoolObject *other)
 	mValue = other->getNativeValue();
 }
 
-void BoolObject::operator_assign(Number *other)
+void BoolObject::operator_assign(NumberObject *other)
 {
 	mValue = (other->getNativeValue() != 0.f);
 }
@@ -83,12 +83,12 @@ void BoolObject::operator_assign(Object *other)
 
 		operator_assign(&tmp);
 	}
-	else if ( target == Number::TYPENAME ) {
+	else if ( target == NumberObject::TYPENAME ) {
 		BoolObject tmp(other->getValue());
 
 		operator_assign(&tmp);
 	}
-	else if ( target == String::TYPENAME ) {
+	else if ( target == StringObject::TYPENAME ) {
 		BoolObject tmp(other->getValue());
 
 		operator_assign(&tmp);
@@ -98,7 +98,7 @@ void BoolObject::operator_assign(Object *other)
 	}
 }
 
-void BoolObject::operator_assign(String *other)
+void BoolObject::operator_assign(StringObject *other)
 {
 	mValue = !other->getNativeValue().empty();
 }
@@ -108,7 +108,7 @@ bool BoolObject::operator_equal(BoolObject *other)
 	return (mValue == other->getNativeValue());
 }
 
-bool BoolObject::operator_equal(Number *other)
+bool BoolObject::operator_equal(NumberObject *other)
 {
 	return (mValue == (other->getNativeValue() != 0.f));
 }
@@ -122,12 +122,12 @@ bool BoolObject::operator_equal(Object *other)
 
 		return operator_equal(&tmp);
 	}
-	else if ( target == Number::TYPENAME ) {
+	else if ( target == NumberObject::TYPENAME ) {
 		BoolObject tmp(other->getValue());
 
 		return operator_equal(&tmp);
 	}
-	else if ( target == String::TYPENAME ) {
+	else if ( target == StringObject::TYPENAME ) {
 		BoolObject tmp(other->getValue());
 
 		return operator_equal(&tmp);
@@ -136,7 +136,7 @@ bool BoolObject::operator_equal(Object *other)
 	throw Utils::NotImplemented("operator_equal: conversion from " + target + " to " + Typename() + " not supported");
 }
 
-bool BoolObject::operator_equal(String *other)
+bool BoolObject::operator_equal(StringObject *other)
 {
 	return (mValue == (!other->getNativeValue().empty()));
 }

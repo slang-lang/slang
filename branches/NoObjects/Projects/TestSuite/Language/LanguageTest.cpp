@@ -261,8 +261,8 @@ void LanguageTest::testParameters()
 		vm.setPrinter(&mStdoutPrinter);
 
 		ParameterList params;
-		params.push_back(Parameter("argc", Number::TYPENAME, "2"));
-		params.push_back(Parameter("argv", String::TYPENAME, ""));
+		params.push_back(Parameter("argc", NumberObject::TYPENAME, "2"));
+		params.push_back(Parameter("argv", StringObject::TYPENAME, ""));
 		vm.create("Tests/Language/ParameterTest.os", params);
 
 		// automatic success

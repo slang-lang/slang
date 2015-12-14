@@ -17,7 +17,7 @@ namespace Strings {
 
 Object concat(Object& v1, Object& v2)
 {
-	return String(Tools::toString(v1.getValue() + v2.getValue()));
+	return StringObject(Tools::toString(v1.getValue() + v2.getValue()));
 }
 
 }

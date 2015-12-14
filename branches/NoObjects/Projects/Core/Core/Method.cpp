@@ -483,7 +483,7 @@ void Method::parseTerm(Object *result, TokenIterator& start)
 			operator_assign(result, &tmp);
 		} break;
 		case Token::Type::CONSTANT: {
-			Number tmp(start->content());
+			NumberObject tmp(start->content());
 			operator_assign(result, &tmp);
 		} break;
 		case Token::Type::IDENTIFER: {
@@ -507,7 +507,7 @@ void Method::parseTerm(Object *result, TokenIterator& start)
 			process(result, start, mTokens.end(), Token::Type::SEMICOLON);
 		} break;
 		case Token::Type::LITERAL: {
-			String tmp(start->content());
+			StringObject tmp(start->content());
 			operator_assign(result, &tmp);
 		} break;
 		case Token::Type::MATH_SUBTRACT: {
@@ -886,7 +886,7 @@ void Method::process_print(TokenIterator& token)
 	// find semicolon
 	TokenIterator tmp = findNext(closed, Token::Type::SEMICOLON);
 
-	String text;
+	StringObject text;
 	parseExpression(&text, opened);
 
 	if ( mOwner->providePrinter() ) {

@@ -39,14 +39,14 @@ void operator_assign(Object *base, Object *other)
 
 		*base = tmp;
 	}
-	else if ( source == Number::TYPENAME ) {
-		Number tmp(base->getValue());
+	else if ( source == NumberObject::TYPENAME ) {
+		NumberObject tmp(base->getValue());
 		tmp.operator_assign(other);
 
 		*base = tmp;
 	}
-	else if ( source == String::TYPENAME ) {
-		String tmp(base->getValue());
+	else if ( source == StringObject::TYPENAME ) {
+		StringObject tmp(base->getValue());
 		tmp.operator_assign(other);
 
 		*base = tmp;
@@ -85,14 +85,14 @@ void operator_divide(Object *base, Object *other)
 
 		*base = tmp;
 	}
-	else if ( source == Number::TYPENAME ) {
-		Number tmp(base->getValue());
+	else if ( source == NumberObject::TYPENAME ) {
+		NumberObject tmp(base->getValue());
 		tmp.operator_divide(other);
 
 		*base = tmp;
 	}
-	else if ( source == String::TYPENAME ) {
-		String tmp(base->getValue());
+	else if ( source == StringObject::TYPENAME ) {
+		StringObject tmp(base->getValue());
 		tmp.operator_divide(other);
 
 		*base = tmp;
@@ -129,12 +129,12 @@ bool operator_equal(Object *base, Object *other)
 		BoolObject tmp(base->getValue());
 		return tmp.operator_equal(other);
 	}
-	else if ( source == Number::TYPENAME ) {
-		Number tmp(base->getValue());
+	else if ( source == NumberObject::TYPENAME ) {
+		NumberObject tmp(base->getValue());
 		return tmp.operator_equal(other);
 	}
-	else if ( source == String::TYPENAME ) {
-		String tmp(base->getValue());
+	else if ( source == StringObject::TYPENAME ) {
+		StringObject tmp(base->getValue());
 		return tmp.operator_equal(other);
 	}
 	else if ( source == VoidObject::TYPENAME ) {
@@ -167,12 +167,12 @@ bool operator_greater(Object *base, Object *other)
 		BoolObject tmp(base->getValue());
 		return tmp.operator_greater(other);
 	}
-	else if ( source == Number::TYPENAME ) {
-		Number tmp(base->getValue());
+	else if ( source == NumberObject::TYPENAME ) {
+		NumberObject tmp(base->getValue());
 		return tmp.operator_greater(other);
 	}
-	else if ( source == String::TYPENAME ) {
-		String tmp(base->getValue());
+	else if ( source == StringObject::TYPENAME ) {
+		StringObject tmp(base->getValue());
 		return tmp.operator_greater(other);
 	}
 	else if ( source == VoidObject::TYPENAME ) {
@@ -205,12 +205,12 @@ bool operator_greater_equal(Object *base, Object *other)
 		BoolObject tmp(base->getValue());
 		return tmp.operator_greater_equal(other);
 	}
-	else if ( source == Number::TYPENAME ) {
-		Number tmp(base->getValue());
+	else if ( source == NumberObject::TYPENAME ) {
+		NumberObject tmp(base->getValue());
 		return tmp.operator_greater_equal(other);
 	}
-	else if ( source == String::TYPENAME ) {
-		String tmp(base->getValue());
+	else if ( source == StringObject::TYPENAME ) {
+		StringObject tmp(base->getValue());
 		return tmp.operator_greater_equal(other);
 	}
 	else if ( source == VoidObject::TYPENAME ) {
@@ -243,12 +243,12 @@ bool operator_less(Object *base, Object *other)
 		BoolObject tmp(base->getValue());
 		return tmp.operator_less(other);
 	}
-	else if ( source == Number::TYPENAME ) {
-		Number tmp(base->getValue());
+	else if ( source == NumberObject::TYPENAME ) {
+		NumberObject tmp(base->getValue());
 		return tmp.operator_less(other);
 	}
-	else if ( source == String::TYPENAME ) {
-		String tmp(base->getValue());
+	else if ( source == StringObject::TYPENAME ) {
+		StringObject tmp(base->getValue());
 		return tmp.operator_less(other);
 	}
 	else if ( source == VoidObject::TYPENAME ) {
@@ -281,12 +281,12 @@ bool operator_less_equal(Object *base, Object *other)
 		BoolObject tmp(base->getValue());
 		return tmp.operator_less_equal(other);
 	}
-	else if ( source == Number::TYPENAME ) {
-		Number tmp(base->getValue());
+	else if ( source == NumberObject::TYPENAME ) {
+		NumberObject tmp(base->getValue());
 		return tmp.operator_less_equal(other);
 	}
-	else if ( source == String::TYPENAME ) {
-		String tmp(base->getValue());
+	else if ( source == StringObject::TYPENAME ) {
+		StringObject tmp(base->getValue());
 		return tmp.operator_less_equal(other);
 	}
 	else if ( source == VoidObject::TYPENAME ) {
@@ -321,14 +321,14 @@ void operator_multiply(Object *base, Object *other)
 
 		*base = tmp;
 	}
-	else if ( source == Number::TYPENAME ) {
-		Number tmp(base->getValue());
+	else if ( source == NumberObject::TYPENAME ) {
+		NumberObject tmp(base->getValue());
 		tmp.operator_multiply(other);
 
 		*base = tmp;
 	}
-	else if ( source == String::TYPENAME ) {
-		String tmp(base->getValue());
+	else if ( source == StringObject::TYPENAME ) {
+		StringObject tmp(base->getValue());
 		tmp.operator_multiply(other);
 
 		*base = tmp;
@@ -367,14 +367,14 @@ void operator_plus(Object *base, Object *other)
 
 		*base = tmp;
 	}
-	else if ( source == Number::TYPENAME ) {
-		Number tmp(base->getValue());
+	else if ( source == NumberObject::TYPENAME ) {
+		NumberObject tmp(base->getValue());
 		tmp.operator_plus(other);
 
 		*base = tmp;
 	}
-	else if ( source == String::TYPENAME ) {
-		String tmp(base->getValue());
+	else if ( source == StringObject::TYPENAME ) {
+		StringObject tmp(base->getValue());
 		tmp.operator_plus(other);
 
 		*base = tmp;
@@ -413,14 +413,14 @@ void operator_subtract(Object *base, Object *other)
 
 		*base = tmp;
 	}
-	else if ( source == Number::TYPENAME ) {
-		Number tmp(base->getValue());
+	else if ( source == NumberObject::TYPENAME ) {
+		NumberObject tmp(base->getValue());
 		tmp.operator_subtract(other);
 
 		*base = tmp;
 	}
-	else if ( source == String::TYPENAME ) {
-		String tmp(base->getValue());
+	else if ( source == StringObject::TYPENAME ) {
+		StringObject tmp(base->getValue());
 		tmp.operator_subtract(other);
 
 		*base = tmp;

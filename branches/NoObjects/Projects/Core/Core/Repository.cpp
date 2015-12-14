@@ -26,8 +26,8 @@ Repository::Repository(Memory *m)
 : mMemory(m)
 {
 	addBlueprint(BoolObject());
-	addBlueprint(Number());
-	addBlueprint(String());
+	addBlueprint(NumberObject());
+	addBlueprint(StringObject());
 	addBlueprint(VoidObject());
 }
 
@@ -184,11 +184,11 @@ Object* Repository::createObject(const std::string& name, const std::string& fil
 	if ( type == BoolObject::TYPENAME ) {
 		object = new BoolObject(value);
 	}
-	else if ( type == Number::TYPENAME ) {
-		object = new Number(value);
+	else if ( type == NumberObject::TYPENAME ) {
+		object = new NumberObject(value);
 	}
-	else if ( type == String::TYPENAME ) {
-		object = new String(value);
+	else if ( type == StringObject::TYPENAME ) {
+		object = new StringObject(value);
 	}
 	else if ( type == VoidObject::TYPENAME ) {
 		object = new VoidObject();

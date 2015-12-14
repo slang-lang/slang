@@ -26,8 +26,8 @@ namespace ObjectiveScript {
 
 // Forward declarations
 class BoolObject;
-class Number;
-class String;
+class NumberObject;
+class StringObject;
 class VoidObject;
 
 // Forward declarations
