@@ -42,16 +42,16 @@ Object* Preprocessor::createMember(const std::string& filename, TokenIterator to
 	name = (*token++).content();
 
 	if ( (*token).isOptional() ) {
-		if ( (*token).content() == "const" ) {
+		if ( (*token).content() == MODIFIER_CONST ) {
 			isConst = true;
 		}
-		else if ( (*token).content() == "final" ) {
+		else if ( (*token).content() == MODIFIER_FINAL ) {
 			isFinal = true;
 		}
-		else if ( (*token).content() == "modify" ) {
+		else if ( (*token).content() == MODIFIER_MODIFY ) {
 			isConst = false;
 		}
-		else if ( (*token).content() == "static" ) {
+		else if ( (*token).content() == MODIFIER_STATIC ) {
 			isStatic = true;
 		}
 
@@ -107,16 +107,16 @@ Method* Preprocessor::createMethod(TokenIterator token)
 		token++;
 
 		if ( token->type() == Token::Type::LANGUAGEFEATURE ) {
-			if ( token->content() == "const" ) {
+			if ( token->content() == MODIFIER_CONST ) {
 				isConst = true;
 			}
-			else if ( token->content() == "final" ) {
+			else if ( token->content() == MODIFIER_FINAL ) {
 				isFinal = false;
 			}
-			else if ( token->content() == "modify" ) {
+			else if ( token->content() == MODIFIER_MODIFY ) {
 				isConst = false;
 			}
-			else if ( token->content() == "static" ) {
+			else if ( token->content() == MODIFIER_STATIC ) {
 				isStatic = true;
 			}
 		}
@@ -263,16 +263,16 @@ ParameterList Preprocessor::parseParameters(TokenIterator &token)
 		std::string name = token->content();
 		token++;
 
-		if ( token->content() == "const" ) {
+		if ( token->content() == MODIFIER_CONST ) {
 			isConst = true;
 			token++;
 		}
 
-		if ( token->content() == "ref" ) {
+		if ( token->content() == RESERVED_WORD_BY_REFERENCE ) {
 			accessmode = Parameter::AccessMode::ByReference;
 			token++;
 		}
-		else if ( token->content() == "val" ) {
+		else if ( token->content() == RESERVED_WORD_BY_VALUE ) {
 			accessmode = Parameter::AccessMode::ByValue;
 			token++;
 		} 

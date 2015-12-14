@@ -36,10 +36,10 @@ StringList provideLanguageFeatures()
 {
 	StringList languageFeatures;
 
-	languageFeatures.push_back("deprecated");
-	languageFeatures.push_back("notimplemented");
-	languageFeatures.push_back("stable");
-	languageFeatures.push_back("unstable");
+	languageFeatures.push_back(LANGUAGE_FEATURE_DEPRECATED);
+	languageFeatures.push_back(LANGUAGE_FEATURE_NOTIMPLEMENTED);
+	languageFeatures.push_back(LANGUAGE_FEATURE_STABLE);
+	languageFeatures.push_back(LANGUAGE_FEATURE_UNSTABLE);
 
 	return languageFeatures;
 }
@@ -48,26 +48,24 @@ StringList provideKeyWords()
 {
 	StringList keywords;
 
-	keywords.push_back("assert");
-	keywords.push_back("break");
-	keywords.push_back("case");
+	keywords.push_back(KEYWORD_ASSERT);
+	keywords.push_back(KEYWORD_BREAK);
+	keywords.push_back(KEYWORD_CASE);
+	keywords.push_back(KEYWORD_DELETE);
+	keywords.push_back(KEYWORD_ELSE);
+	keywords.push_back(KEYWORD_FOR);
+	keywords.push_back(KEYWORD_IF);
+	keywords.push_back(KEYWORD_IMPORT);
+	keywords.push_back(KEYWORD_NEW);
+	keywords.push_back(KEYWORD_PRINT);
+	keywords.push_back(KEYWORD_RETURN);
+	keywords.push_back(KEYWORD_SWITCH);
+	keywords.push_back(KEYWORD_WHILE);
 	keywords.push_back("catch");
-	keywords.push_back("delete");
-	keywords.push_back("else");
 	keywords.push_back("except");
-	keywords.push_back("extends");
 	keywords.push_back("finally");
-	keywords.push_back("for");
-	keywords.push_back("if");
-	keywords.push_back("import");
-	keywords.push_back("new");
-	keywords.push_back("print");
-	keywords.push_back("return");
-	keywords.push_back("switch");
 	keywords.push_back("throw");
 	keywords.push_back("try");
-	keywords.push_back("while");
-	keywords.push_back("using");
 
 	return keywords;
 }
@@ -76,10 +74,10 @@ StringList provideModifiers()
 {
 	StringList modifiers;
 
-	modifiers.push_back("const");
-	modifiers.push_back("final");
-	modifiers.push_back("modify");
-	modifiers.push_back("static");
+	modifiers.push_back(MODIFIER_CONST);
+	modifiers.push_back(MODIFIER_FINAL);
+	modifiers.push_back(MODIFIER_MODIFY);
+	modifiers.push_back(MODIFIER_STATIC);
 
 	return modifiers;
 }
@@ -88,13 +86,14 @@ StringList provideReservedWords()
 {
 	StringList reservedWords;
 
-	reservedWords.push_back("extends");
-	reservedWords.push_back("interface");
-	reservedWords.push_back("object");
+	reservedWords.push_back(RESERVED_WORD_BY_REFERENCE);
+	reservedWords.push_back(RESERVED_WORD_BY_VALUE);
+	reservedWords.push_back(RESERVED_WORD_EXTENDS);
+	reservedWords.push_back(RESERVED_WORD_INTERFACE);
+	reservedWords.push_back(RESERVED_WORD_OBJECT);
+	reservedWords.push_back(RESERVED_WORD_PROTOTYPE);
+	reservedWords.push_back(RESERVED_WORD_USING);
 	reservedWords.push_back("of");
-	reservedWords.push_back("ref");
-	reservedWords.push_back("prototype");
-	reservedWords.push_back("val");
 
 	return reservedWords;
 }
@@ -109,11 +108,12 @@ std::string toString(const Parameter& param)
 		result += " <unnamed object>";
 	}
 	if ( param.isConst() ) {
-		result += " const";
+		result += " ";
+		result += MODIFIER_CONST;
 	}
 	switch ( param.access() ) {
-		case Parameter::AccessMode::ByReference: result += " ByReference"; break;
-		case Parameter::AccessMode::ByValue: result += " ByValue"; break;
+		case Parameter::AccessMode::ByReference: result += " "; result += RESERVED_WORD_BY_REFERENCE; break;
+		case Parameter::AccessMode::ByValue: result += " "; result += RESERVED_WORD_BY_VALUE; break;
 		case Parameter::AccessMode::Unspecified: break;
 	}
 	result += " = ";

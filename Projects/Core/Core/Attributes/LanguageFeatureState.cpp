@@ -6,6 +6,7 @@
 #include <cassert>
 
 // Project includes
+#include <Core/Consts.h>
 
 // Namespace declarations
 
@@ -15,26 +16,26 @@ namespace ObjectiveScript {
 
 LanguageFeatureState::E LanguageFeatureState::convert(const std::string& v)
 {
-	if ( v == "deprecated" ) { return LanguageFeatureState::Deprecated; }
-	else if ( v == "notimplemented" ) { return LanguageFeatureState::NotImplemented; }
-	else if ( v == "stable" ) { return LanguageFeatureState::Stable; }
-	else if ( v == "unknown" ) { return LanguageFeatureState::Unknown; }
-	else if ( v == "unstable" ) { return LanguageFeatureState::Unstable; }
+	if ( v == LANGUAGE_FEATURE_DEPRECATED ) { return LanguageFeatureState::Deprecated; }
+	else if ( v == LANGUAGE_FEATURE_NONE ) { return LanguageFeatureState::Stable; }
+	else if ( v == LANGUAGE_FEATURE_NOTIMPLEMENTED ) { return LanguageFeatureState::NotImplemented; }
+	else if ( v == LANGUAGE_FEATURE_STABLE ) { return LanguageFeatureState::Stable; }
+	else if ( v == LANGUAGE_FEATURE_UNKNOWN ) { return LanguageFeatureState::Unknown; }
+	else if ( v == LANGUAGE_FEATURE_UNSTABLE ) { return LanguageFeatureState::Unstable; }
 
-	return LanguageFeatureState::Stable;
+	return LanguageFeatureState::Unknown;
 }
 
 std::string LanguageFeatureState::convert(LanguageFeatureState::E e)
 {
 	switch ( e ) {
-		case LanguageFeatureState::Deprecated: return "deprecated";
-		case LanguageFeatureState::NotImplemented: return "notimplemented";
-		case LanguageFeatureState::Stable: return "stable";
-		case LanguageFeatureState::Unknown: return "unknown";
-		case LanguageFeatureState::Unstable: return "unstable";
+		case LanguageFeatureState::Deprecated: return LANGUAGE_FEATURE_DEPRECATED;
+		case LanguageFeatureState::NotImplemented: return LANGUAGE_FEATURE_NOTIMPLEMENTED;
+		case LanguageFeatureState::Stable: return LANGUAGE_FEATURE_STABLE;
+		case LanguageFeatureState::Unstable: return LANGUAGE_FEATURE_UNSTABLE;
 	}
 
-	return "<unknown language feature state>";
+	return LANGUAGE_FEATURE_UNKNOWN;
 }
 
 

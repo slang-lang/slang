@@ -10,6 +10,7 @@
 #include <Core/BuildInObjects/NumberObject.h>
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/BuildInObjects/VoidObject.h>
+#include <Core/Consts.h>
 #include <Core/Helpers/Math.h>
 #include <Core/Helpers/Strings.h>
 #include <Core/Interfaces/IPrinter.h>
@@ -943,12 +944,12 @@ void Method::process_type(TokenIterator& token)
 	token++;
 
 	std::string tmpStr = token->content();
-	if ( tmpStr == "const" || tmpStr == "static" ) {
+	if ( tmpStr == MODIFIER_CONST || tmpStr == MODIFIER_STATIC ) {
 		token++;
 
-		if ( tmpStr == "const" ) { isConst = true; }
-		else if ( tmpStr == "final" ) { isFinal = true; }
-		else if ( tmpStr == "static" ) { isStatic = true; }
+		if ( tmpStr == MODIFIER_CONST ) { isConst = true; }
+		else if ( tmpStr == MODIFIER_FINAL ) { isFinal = true; }
+		else if ( tmpStr == MODIFIER_STATIC ) { isStatic = true; }
 	}
 
 	TokenIterator assign = mTokens.end();

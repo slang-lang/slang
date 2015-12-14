@@ -11,7 +11,7 @@ private namespace BooleanOverloads
 			mValue = value;
 		}
 
-		public number GetValue() const
+		public number getValue() const
 		{
 			return mValue;
 		}
@@ -30,7 +30,7 @@ private namespace BooleanOverloads
 
 		public void operator_assign(UserObject other const ref) modify
 		{
-			mValue = other.GetValue();
+			mValue = other.getValue();
 		}
 
 		public bool operator_equal(number other const) const
@@ -44,7 +44,7 @@ private namespace BooleanOverloads
 
 		public bool operator_equal(UserObject other const ref) const
 		{
-			if ( mValue == other.GetValue() ) {
+			if ( mValue == other.getValue() ) {
 				return true;
 			}
 
@@ -67,8 +67,7 @@ private namespace BooleanOverloads
 			UserObject obj1 = new UserObject(1);
 
 			obj1 = 2;
-			//obj1.setValue(2);
-			//assert( obj1.GetValue() == 2 );
+			//assert( obj1 == 2 );
 			if ( obj1 == 2 ) {
 				print("obj1 == 2");
 				return true;
@@ -85,7 +84,7 @@ private namespace BooleanOverloads
 			UserObject obj2 = new UserObject(1);
 
 			obj1 = obj2;
-			//assert( obj1.GetValue() == obj2.GetValue() );
+			//assert( obj1 == obj2 );
 			if ( obj1 == obj2 ) {
 				print("obj1 == obj2");
 				return true;
