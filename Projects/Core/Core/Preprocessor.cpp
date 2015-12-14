@@ -5,6 +5,7 @@
 // Library includes
 
 // Project includes
+#include <Core/Consts.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Utils/Utils.h>
 #include "Object.h"
@@ -71,7 +72,12 @@ Object* Preprocessor::createMember(const std::string& filename, TokenIterator to
 
 Method* Preprocessor::createMethod(TokenIterator token)
 {
-	bool isConst = false;		// set to 'true' to make all methods const by default (this is the only way the 'modify' attribute makes sense)
+#ifdef USE_EXTREME_CONST_CORRECTNESS
+	bool isConst = true;		// all methods const by default (this is the only way the 'modify' attribute makes sense)
+#else
+	bool isConst = false;
+#endif
+
 	bool isFinal = false;
 	bool isStatic = false;
 	std::string name;

@@ -1,23 +1,14 @@
-#!/usr/bin/oscript
+#!/usr/local/bin/oscript
 
-import System.Console;
-
-public object Main
+public namespace Program
 {
-	private Console mConsole;
-
-	public void Main(Number argc, String argv)
+	public object Main
 	{
-		mConsole = new Console();
-/*
-		print("Hello World!");
-		print("argc = " & argc);
-		print("argv = " & argv);
-*/
-
-		/*System.*/mConsole.write("Hello ");
-		/*System.*/Console.writeln("World!");
-		/*System.*/Console.write("argc = " & argc);
-		/*System.*/Console.writeln("argv = " & argv);
+		public void Main(Number argc = 0, String argv = "")
+		{
+			print("Hello World!");
+			print("argc = " & argc);
+			print("argv = " & argv);
+		}
 	}
 }

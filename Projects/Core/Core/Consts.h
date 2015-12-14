@@ -16,6 +16,7 @@ namespace ObjectiveScript {
 
 
 #define SYSTEM_LIBRARY "SYSTEM.OS"
+//#define USE_EXTREME_CONST_CORRECTNESS
 
 
 }
