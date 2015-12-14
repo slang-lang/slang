@@ -20,10 +20,10 @@ class Reference
 {
 public:
 	Reference();
-	Reference(size_t address);
+	Reference(unsigned int address);
 
 public:
-	size_t getAddress() const;
+	unsigned int getAddress() const;
 	bool isValid() const;
 
 public:
@@ -33,7 +33,7 @@ public:
 protected:
 
 private:
-	size_t mAddress;
+	unsigned int mAddress;
 };
 
 

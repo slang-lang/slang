@@ -6,13 +6,18 @@
 #include <cassert>
 
 // Project includes
-#include <Core/BuildInObjects/Bool.h>
-#include <Core/BuildInObjects/Number.h>
-#include <Core/BuildInObjects/String.h>
+#include <Core/BuildInObjects/BoolObject.h>
+#include <Core/BuildInObjects/NumberObject.h>
+#include <Core/BuildInObjects/StringObject.h>
+#include <Core/BuildInObjects/VoidObject.h>
+#include <Core/Helpers/Math.h>
+#include <Core/Helpers/Strings.h>
 #include <Core/Interfaces/IPrinter.h>
 #include <Core/Utils/Exceptions.h>
+#include <Core/Utils/Utils.h>
 #include "Memory.h"
 #include "Object.h"
+#include "OperatorOverloading.h"
 #include "Repository.h"
 #include "Tools.h"
 
@@ -22,708 +27,539 @@
 namespace ObjectiveScript {
 
 
-Method::Method(const std::string& name, const std::string& type)
-: Variable(name, type),
-  mMemory(0),
+Method::Method(IScope *parent, const std::string& name, const std::string& type)
+: LocalScope(name, parent),
+  Variable(name, type),
   mOwner(0),
-  mRepository(0)
+  mRepository(0),
+  mStopProcessing(false)
 {
 }
 
 Method::~Method()
 {
-	garbageCollector();
 }
 
-/*
-void Method::addIdentifier(Object object)
+bool Method::operator() (const Method& first, const Method& second) const
 {
-	if ( mLocales.find(object.name()) != mLocales.end() ) {
-		if ( object.isStatic() ) {
-			// don't insert static members a second time
-			// just return silently
-			return;
+	if ( first.name() == second.name() ) {
+		ParameterList firstList = first.provideSignature();
+		ParameterList secondList = second.provideSignature();
+
+		// unable to identify return value during method call
+		//if ( this->type() != other.type() ) {
+		//	return this->type() < other.type();
+		//}
+
+		if ( firstList.size() == secondList.size() ) {
+			ParameterList::const_iterator fIt = firstList.begin();
+			ParameterList::const_iterator sIt = secondList.begin();
+
+			for ( ; fIt != firstList.end() && sIt != secondList.end(); ++fIt, ++sIt ) {
+				if ( fIt->type() != sIt->type() ) {
+					return fIt->type() < sIt->type();
+				}
+			}
 		}
 
-		throw DuplicateIdentifer(object.name());
+		return firstList.size() < secondList.size();
 	}
 
-	mLocales[object.name()] = object;
+	return first.name() < second.name();
 }
-*/
 
-void Method::addIdentifier(const Reference& r)
+bool Method::operator< (const Method& other) const
 {
-	Object *object = mMemory->getObject(r);
+	if ( this->name() == other.name() ) {
+		ParameterList firstList = this->provideSignature();
+		ParameterList secondList = other.provideSignature();
 
-	if ( mLocales.find(object->name()) != mLocales.end() ) {
+		// unable to identify return value during method call
+		//if ( this->type() != other.type() ) {
+		//	return this->type() < other.type();
+		//}
+
+		if ( firstList.size() == secondList.size() ) {
+			ParameterList::const_iterator fIt = firstList.begin();
+			ParameterList::const_iterator sIt = secondList.begin();
+
+			for ( ; fIt != firstList.end() && sIt != secondList.end(); ++fIt, ++sIt ) {
+				if ( fIt->type() != sIt->type() ) {
+					return fIt->type() < sIt->type();
+				}
+			}
+		}
+
+		return firstList.size() < secondList.size();
+	}
+
+	return this->name() < other.name();
+}
+
+void Method::operator= (const Method& other)
+{
+	if ( this != &other ) {
+		setConst(other.isConst());
+		setStatic(other.isStatic());
+		setLanguageFeatureState(other.languageFeatureState());
+
+		// unregister current members
+		for ( MemberCollection::const_iterator it = mLocalSymbols.begin(); it != mLocalSymbols.end(); ) {
+			mRepository->removeReference(it->second);
+			it = mLocalSymbols.erase(it);
+		}
+
+		// register new members
+		for ( MemberCollection::const_iterator it = other.mLocalSymbols.begin(); it != other.mLocalSymbols.end(); ++it ) {
+			addIdentifier(it->first, it->second);
+			mRepository->addReference(it->second);
+		}
+
+		mOwner = other.mOwner;
+		mParameter = other.mParameter;
+		mRepository = other.mRepository;
+		mTokens = other.mTokens;
+
+		setSignature(other.provideSignature());
+		visibility(other.visibility());
+	}
+}
+
+void Method::addIdentifier(const std::string& name, Object *object)
+{
+	if ( !object ) {
+		// ups..
+		return;
+	}
+
+	std::string insertName = name;
+	if ( insertName.empty() ) {
+		insertName = object->getName();
+	}
+
+	if ( mLocalSymbols.find(insertName) != mLocalSymbols.end() ) {
 		if ( object->isStatic() ) {
 			// don't insert static members a second time
 			// just return silently
 			return;
 		}
 
-		throw DuplicateIdentifer(object->name());
+		throw Utils::DuplicateIdentiferException(insertName);
 	}
 
-	mLocales[object->name()] = r;
+	mLocalSymbols[insertName] = object;
 }
 
-Object Method::execute(const VariablesList& params)
+void Method::execute(const ParameterList& params, Object *result)
 {
+	mStopProcessing = false;		// reset this every time we start executing a method
+
 	if ( !isSignatureValid(params) ) {
-		throw ParameterCountMissmatch("number or type of parameters incorrect");
+		throw Utils::ParameterCountMissmatch("incorrect number or type of parameters");
 	}
 
 	switch ( languageFeatureState() ) {
 		case LanguageFeatureState::Deprecated: OSwarn("method '" + name() + "' is marked as deprecated!"); break;
-		case LanguageFeatureState::NotImplemented: OSerror("method '" + name() + "' is marked as not implemented!"); throw NotImplemented(name()); break;
+		case LanguageFeatureState::NotImplemented: OSerror("method '" + name() + "' is marked as not implemented!"); throw Utils::NotImplemented(name()); break;
 		case LanguageFeatureState::Stable: /* this is the normal language feature state, so no need to log anything here */ break;
-		case LanguageFeatureState::Unknown: /* ignore this one */ break;
+		case LanguageFeatureState::Unknown: OSerror("unknown language feature state set for method '" + name() + "'!"); break;
 		case LanguageFeatureState::Unstable: OSwarn("method '" + name() + "' is marked as unstable!"); break;
 	}
 
-	VariablesList::const_iterator rIt = mSignature.begin();
 	// add parameters as pseudo members
-	for ( VariablesList::const_iterator it = params.begin(); it != params.end(); ++it, ++rIt ) {
-		Reference ref = mMemory->newObject(new Object((*rIt).name(), "", (*it).type(), (*it).value()));
+	ParameterList::const_iterator paramIt = params.begin();
+	for ( ParameterList::const_iterator sigIt = mSignature.begin(); sigIt != mSignature.end(); ++sigIt ) {
+		// initialize param with default value
+		Parameter param(sigIt->name(), sigIt->type(), sigIt->value(), sigIt->hasDefaultValue(), sigIt->isConst(), sigIt->access(), sigIt->reference());
 
-		addIdentifier(ref);
+		if ( paramIt != params.end() ) {
+			Parameter::AccessMode::E access = sigIt->access();
+/*
+			if ( paramIt->pointer() ) {
+				access = Parameter::AccessMode::ByReference;
+			}
+*/
+			// override param with correct values
+			param = Parameter(sigIt->name(), sigIt->type(), paramIt->value(), sigIt->hasDefaultValue(), sigIt->isConst(), access, paramIt->pointer());
+			// next iteration
+			paramIt++;
+		}
+
+		switch ( param.access() ) {
+			case Parameter::AccessMode::Unspecified: {
+				throw Utils::Exception("access mode unspecified");
+			} break;
+			case Parameter::AccessMode::ByReference: {
+				Object *object = param.pointer();
+				addIdentifier(param.name(), object);
+			} break;
+			case Parameter::AccessMode::ByValue: {
+				Object *object = mRepository->createInstance(param.type(), param.name());
+				object->setValue(param.value());
+				object->setConst(param.isConst());
+				addIdentifier(param.name(), object);
+			} break;
+		}
 	}
 
-	Object returnValue(name(), "", type(), "");
-	returnValue.setVisibility(visibility());
+	result->overrideName(name());
+	result->overrideType(type());
+	result->connectPrinter(mOwner->providePrinter());
+	result->connectRepository(mRepository);
+	result->visibility(visibility());
 
-	try {	// try to execute our method
-		TokenIterator start = mTokens.begin();
-		Object r = process(start, mTokens.end());
-		returnValue.assign(r);
-	}
-	catch ( Exception &e ) {	// if any thing happens clean up the mess
-		garbageCollector();
+	TokenIterator start = mTokens.begin();
+	process(result, start, mTokens.end());
 
-		// throw again so that our owner will be informed
-		throw e;
-	}
+	mStopProcessing = false;	// just to be sure...
 
-	// after we gathered our result
-	// let the garbage collector do it's magic
+	// let the garbage collector do it's magic after we gathered our result
 	garbageCollector();
-
-	return returnValue;
 }
 
-void Method::garbageCollector()
+void Method::garbageCollector(bool force)
 {
-	// clean up local stuff
-	mStack.clear();
-
-	MemberMap tmp;
-	for ( MemberMap::iterator it = mLocales.begin(); it != mLocales.end(); ++it ) {
-		Object *object = mMemory->getObject(it->second);
-
-		if ( object && object->isStatic() ) {
-			tmp.insert((*it));
+	for ( MemberCollection::iterator it = mLocalSymbols.begin(); it != mLocalSymbols.end(); ) {
+		if ( it->second && it->second->isStatic() && !force ) {
+			it++;
 			continue;
 		}
-
-		mMemory->deleteObject(it->second);
+		else {
+			mRepository->removeReference(it->second);
+			it = mLocalSymbols.erase(it);
+		}
 	}
-
-	mLocales.clear();
-	mLocales = tmp;
 }
 
-const Reference& Method::getLocale(const std::string& name) const
+Object* Method::getOwner() const
 {
-	for ( MemberMap::const_iterator it = mLocales.begin(); it != mLocales.end(); ++it ) {
-		if ( it->first == name ) {
+	return mOwner;
+}
+
+bool Method::isMember(const std::string& token) const
+{
+	return (mOwner && mOwner->getMember(token));
+}
+
+Object* Method::getSymbol(const std::string& token)
+{
+	std::string member, parent;
+	Tools::split(token, parent, member);
+
+	// either it is a local symbol...
+	for ( MemberCollection::iterator it = mLocalSymbols.begin(); it != mLocalSymbols.end(); ++it ) {
+		if ( it->first == token ) {
 			return it->second;
 		}
-	}
 
-	return mMemory->getNullReference();
-}
-
-Object& Method::getVariable(const std::string& name)
-{
-	for ( MemberMap::iterator it = mLocales.begin(); it != mLocales.end(); ++it ) {
-		Object *object = mMemory->getObject(it->second);
-
-		if ( object && object->name() == name ) {
-			return *object;
+		if ( it->second->getName() == parent ) {
+			return it->second->getMember(member);
 		}
 	}
 
-	Object& o = mOwner->getMember(name);
-	if ( o.name() != "" ) {
-		return o;
+	// ... or a member of our owner, if we have one
+	if ( mOwner ) {
+		return mOwner->getMember(token);
 	}
 
-	throw SyntaxError("expected identifier but '" + name + "' found!");
-}
-
-void Method::handleType(TokenIterator& token)
-{
-	bool isConst = false;
-	bool isPrototype = token->type() == Token::Type::PROTOTYPE;
-	bool isStatic = false;
-
-	std::string name;
-	std::string prototype;
-	std::string value;
-
-	if ( isPrototype ) {
-		prototype = token->content();
-		token++;
-	}
-
-	std::string type = token->content();
-	token++;
-	name = token->content();
-
-	if ( token->type() != Token::Type::IDENTIFER ) {
-		throw SyntaxError("identifier expected but '" + token->content() + "' found", token->position());
-	}
-
-	token++;
-
-	std::string tmpStr = token->content();
-	if ( tmpStr == "const" || tmpStr == "static" ) {
-		token++;
-
-		if ( tmpStr == "const" ) {
-			isConst = true;
-		}
-		else if ( tmpStr == "static" ) {
-			isStatic = true;
-		}
-	}
-
-	TokenIterator assign = mTokens.end();
-	if ( token->type() == Token::Type::ASSIGN ) {
-		assign = ++token;
-	}
-
-
-	Reference ref;
-	if ( isPrototype ) {
-		ref = mRepository->createReferenceFromPrototype(prototype, type, name);
-	}
-	else {
-		ref = mRepository->createReference(type, name);
-	}
-
-
-	Object *object = mMemory->getObject(ref);
-
-	if ( isConst ) object->setConst(true);
-	if ( isStatic ) object->setStatic(true);
-
-	if ( assign != mTokens.end() ) {
-		object->assign(parseExpression(assign));
-		token = assign;
-	}
-
-	addIdentifier(ref);
-
-/*
-	Object object;
-	if ( isPrototype ) {
-		object = mRepository->createInstanceFromPrototype(prototype, type, name);
-	}
-	else {
-		object = mRepository->createInstance(type, name);
-	}
-
-	if ( isConst ) object.setConst(true);
-	if ( isStatic ) object.setStatic(true);
-
-	if ( assign != mTokens.end() ) {
-		object.assign(parseExpression(assign));
-		token = assign;
-	}
-
-	addIdentifier(object);
-*/
-
-	if ( token->type() != Token::Type::SEMICOLON ) {
-		throw SyntaxError("';' expected but '" + token->content() + "' found", token->position());
-	}
-}
-
-bool Method::isBooleanConst(const std::string& v) const
-{
-	return ( v == "false" || v == "true" );
-}
-
-bool Method::isFalse(const std::string& s) const
-{
-	return (s == "false");
-}
-
-bool Method::isFalse(const Object& v) const
-{
-	if ( v.value() == "0" || v.value() == "false" ) {
-		return true;
-	}
-
-	return false;
-}
-
-bool Method::isLocal(const std::string& token)
-{
-	std::string member, parent;
-	Tools::split(token, parent, member);
-
-	// check if token is a local variable
-	// OR
-	// loop through all locals and ask them if this identifier belongs to them
-	for ( MemberMap::iterator it = mLocales.begin(); it != mLocales.end(); ++it ) {
-		if ( it->first == token ) {
-			return true;
-		}
-
-		Object *object = mMemory->getObject(it->second);
-		if ( object && object->name() == parent ) {
-			// check for member variable
-			if ( object->hasMember(member) ) {
-				return true;
-			}
-
-			// check for member function
-			if ( object->hasMethod(member) ) {
-				return true;
-			}
-		}
-	}
-
-	return false;
-}
-
-bool Method::isMember(const std::string& token)
-{
-	std::string member, parent;
-	Tools::split(token, parent, member);
-
-	// check if token is a local variable
-	// OR
-	// loop through all locals and ask them if this identifier belongs to them
-	for ( MemberMap::iterator it = mLocales.begin(); it != mLocales.end(); ++it ) {
-		if ( it->first == token ) {
-			return true;
-		}
-
-		Object *object = mMemory->getObject(it->second);
-		if ( object && object->name() == parent ) {
-			// check for member variable
-			if ( object->hasMember(member) ) {
-				return true;
-			}
-		}
-	}
-
-	// check if token is a member variable
-	return mOwner->hasMember(token);
+	// ups.. this symbol is neither a local symbol, nor a member
+	throw Utils::UnknownIdentifer("identifier '" + token + "' not found!");
 }
 
 bool Method::isMethod(const std::string& token)
 {
-	std::string member, parent;
-	Tools::split(token, parent, member);
+	if ( !mOwner ) {
+		return false;
+	}
 
-	// loop through all locals and ask them if this identifier belongs to them
-	for ( MemberMap::iterator it = mLocales.begin(); it != mLocales.end(); ++it ) {
-		Object *object = mMemory->getObject(it->second);
-		if ( object && object->name() == parent ) {
+	std::string method, parent;
+	Tools::split(token, parent, method);
+
+	// loop through all local symbols and ask them if this identifier belongs to them
+	for ( MemberCollection::iterator it = mLocalSymbols.begin(); it != mLocalSymbols.end(); ++it ) {
+		Object *object = it->second;
+		if ( !object ) {
+			continue;
+		}
+
+		if ( it->first == parent ) {
 			// check for member function
-			if ( object->hasMethod(member) ) {
+			if ( object->hasMethod(method) ) {
 				return true;
 			}
 		}
 	}
 
-	if ( mOwner->hasMember(parent) ) {
-		// TODO: our owning object has a member with this name, delegate this to him
+	Object *obj = mOwner->getMember(parent);
+	if ( obj ) {
+		return obj->hasMethod(method);
 	}
 
 	// check if token is a method of our parent object
 	return mOwner->hasMethod(token);
 }
 
-bool Method::isMethod(const std::string& token, const VariablesList& params)
+bool Method::isMethod(const std::string& token, const ParameterList& params)
 {
+	if ( !mOwner ) {
+		return false;
+	}
+
 	// check if token is a method of our parent object
 	return mOwner->hasMethod(token, params);
 }
 
-bool Method::isSignatureValid(const VariablesList& params) const
+bool Method::isSignatureValid(const ParameterList& params) const
 {
 	// check method signature by:
 	// 1) comparing the number of parameters
-	if ( mSignature.size() != params.size() ) {
+	//	  by expecting the same number of parameters or less, we can make use of default parameters
+	if ( mSignature.size() < params.size() ) {
+		// we received more parameters than we expected
 		return false;
 	}
 
-	// 2) by comparing their types
-	VariablesList::const_iterator pIt = params.begin();
-	for ( VariablesList::const_iterator it = mSignature.begin(); it != mSignature.end(); ++it, ++pIt ) {
-		if ( (*it).type() != (*pIt).type() ) {
-			return false;
+	// 2) by comparing each parameter one by one
+	ParameterList::const_iterator paramIt = params.begin();
+	ParameterList::const_iterator sigIt = mSignature.begin();
+
+	while ( sigIt != mSignature.end() ) {
+		if ( paramIt != params.end() ) {
+			if ( /*(sigIt->access() != paramIt->access()) ||*/
+				 /*(sigIt->isConst() != paramIt->isConst()) ||*/
+				 (sigIt->type() != paramIt->type()) ) {
+				return false;
+			}
+			paramIt++;
+		}
+		else {
+			if ( !sigIt->hasDefaultValue() ) {
+				return false;
+			}
+		}
+
+		sigIt++;
+	}
+
+	// no differences found
+	return true;
+}
+
+bool Method::parseCondition(TokenIterator& token)
+{
+	Object v1;
+	parseExpression(&v1, token);
+
+	for ( ; ; ) {
+		Token::Type::E op = token->type();
+		if ( op != Token::Type::COMPARE_EQUAL &&
+			 op != Token::Type::COMPARE_GREATER &&
+			 op != Token::Type::COMPARE_GREATER_EQUAL &&
+			 op != Token::Type::COMPARE_LESS &&
+			 op != Token::Type::COMPARE_LESS_EQUAL ) {
+			return isTrue(v1);
+		}
+
+		// consume operator token
+		token++;
+
+		Object v2;
+		parseExpression(&v2, token);
+
+		if ( op == Token::Type::COMPARE_EQUAL ) {
+			//v1.setValue( (v1.getValue() == v2.getValue()) ? "true" : "false" );
+			return operator_equal(&v1, &v2);
+		}
+		else if ( op == Token::Type::COMPARE_GREATER ) {
+			//v1.setValue( (v1.getValue() > v2.getValue()) ? "true" : "false" );
+			return operator_greater(&v1, &v2);
+		}
+		else if ( op == Token::Type::COMPARE_GREATER_EQUAL ) {
+			//v1.setValue( (v1.getValue() >= v2.getValue()) ? "true" : "false" );
+			return operator_greater_equal(&v1, &v2);
+		}
+		else if ( op == Token::Type::COMPARE_LESS ) {
+			//v1.setValue( (v1.getValue() < v2.getValue()) ? "true" : "false" );
+			return operator_less(&v1, &v2);
+		}
+		else if ( op == Token::Type::COMPARE_LESS_EQUAL ) {
+			//v1.setValue( (v1.getValue() <= v2.getValue()) ? "true" : "false" );
+			return operator_less_equal(&v1, &v2);
+		}
+		else if ( op == Token::Type::COMPARE_UNEQUAL ) {
+			//v1.setValue( (v1.getValue() != v2.getValue()) ? "true" : "false" );
+			return !operator_equal(&v1, &v2);
 		}
 	}
 
-	// no difference was found
-	return true;
+	return false;
 }
 
-bool Method::isTrue(const std::string& s) const
+void Method::parseExpression(Object *result, TokenIterator& start)
 {
-	return (s == "true");
-}
+	parseFactors(result, start);
 
-bool Method::isTrue(const Object& v) const
-{
-	// check value is false
-	if ( v.value() == "0" || v.value() == "0.0" || v.value() == "false" ) {
-		return false;
+	for ( ; ; ) {
+		Token::Type::E op = start->type();
+		if ( op != Token::Type::MATH_ADD &&
+			 op != Token::Type::MATH_SUBTRACT &&
+			 op != Token::Type::STRING_ADD ) {
+			return;
+		}
+
+		// consume operator token
+		start++;
+
+		Object v2;
+		parseFactors(&v2, start);
+
+		if ( op == Token::Type::MATH_ADD ) {
+			operator_plus(result, &v2);
+		}
+		else if ( op == Token::Type::MATH_SUBTRACT ) {
+			operator_subtract(result, &v2);
+		}
+		else if ( op == Token::Type::STRING_ADD ) {
+			*result = Strings::concat(*result, v2);
+		}
 	}
-
-	// value is not false, so return true
-	return true;
 }
 
-Object Method::math_add(const Object& v1, const Object& v2)
+void Method::parseFactors(Object *result, TokenIterator& start)
 {
-	Object result;
+	if ( (start)->type() == Token::Type::PARENTHESIS_OPEN) {
+		start++;
+		parseExpression(result, start);
 
-	if ( v1.type() == "Number" && v2.type() == "Number" ) {
-		// none of our summands is a string
-		float f1 = Tools::stringToFloat(v1.value());
-		float f2 = Tools::stringToFloat(v2.value());
+		if ( start->type() != Token::Type::PARENTHESIS_CLOSE ) {
+			throw Utils::SyntaxError("')' expected but "  + start->content() + " found", start->position());
+		}
 
-		result = Number(Tools::toString(f1 + f2));
+		start++;
 	}
 	else {
-		//throw TypeMismatch("for addition: " + v1.value() + " and/or " + v2.value() + " are not of type 'float'");
-		throw TypeMismatch("for addition: '" + v1.value() + "' and/or '" + v2.value() + "' are not of type 'Number'");
+		parseTerm(result, start);
 	}
 
-	return result;
+	for ( ; ; ) {
+		Token::Type::E op = start->type();
+		if ( op != Token::Type::MATH_MULTI &&
+			 op != Token::Type::MATH_DIV ) {
+			return;
+		}
+
+		// consume operator token
+		start++;
+
+		Object v2;
+		if ( (start)->type() == Token::Type::PARENTHESIS_OPEN) {
+			start++;
+			parseExpression(&v2, start);
+
+			if ( start->type() != Token::Type::PARENTHESIS_CLOSE ) {
+				throw Utils::SyntaxError("')' expected but "  + start->content() + " found", start->position());
+			}
+
+			start++;
+		}
+		else {
+			parseTerm(&v2, start);
+		}
+
+		if ( op == Token::Type::MATH_MULTI ) {
+			operator_multiply(result, &v2);
+		}
+		else {
+			operator_divide(result, &v2);
+		}
+	}
 }
 
-Object Method::math_divide(const Object& v1, const Object& v2)
+void Method::parseTerm(Object *result, TokenIterator& start)
 {
-	Object result;
-
-	if ( v1.type() == "Number" && v2.type() == "Number" ) {
-		// none of our summands is a string
-		float f1 = Tools::stringToFloat(v1.value());
-		float f2 = Tools::stringToFloat(v2.value());
-
-		result = Number(Tools::toString(f1 / f2));
-	}
-	else {
-		//throw TypeMismatch("for division: " + v1.value() + " and/or " + v2.value() + " are not of type 'float'");
-		throw TypeMismatch("for division: '" + v1.value() + "' and/or '" + v2.value() + "' are not of type 'Number'");
-	}
-
-	return result;
-}
-
-Object Method::math_multiply(const Object& v1, const Object& v2)
-{
-	Object result;
-
-	if ( v1.type() == "Number" && v2.type() == "Number" ) {
-		// none of our summands is a string
-		float f1 = Tools::stringToFloat(v1.value());
-		float f2 = Tools::stringToFloat(v2.value());
-
-		result = Number(Tools::toString(f1 * f2));
-	}
-	else {
-		//throw TypeMismatch("for multiplication: " + v1.value() + " and/or " + v2.value() + " are not of type 'float'");
-		throw TypeMismatch("for multiplication: '" + v1.value() + "' and/or '" + v2.value() + "' are not of type 'Number'");
-	}
-
-	return result;
-}
-
-Object Method::math_subtract(const Object& v1, const Object& v2)
-{
-	Object result;
-
-	if ( v1.type() == "Number" && v2.type() == "Number" ) {
-		// none of our summands is a string
-		float f1 = Tools::stringToFloat(v1.value());
-		float f2 = Tools::stringToFloat(v2.value());
-
-		result = Number(Tools::toString(f1 - f2));
-	}
-	else {
-		//throw TypeMismatch("for subtraction: " + v1.value() + " and/or " + v2.value() + " are not of type 'float'");
-		throw TypeMismatch("for subtraction: '" + v1.value() + "' and/or '" + v2.value() + "' are not of type 'Number'");
-	}
-
-	return result;
-}
-
-Object Method::parseAtom(TokenIterator& start)
-{
-	Object v;
-
 	switch ( start->type() ) {
 		case Token::Type::BOOLEAN: {
-			v = Bool(start->content());
+			BoolObject tmp(start->content());
+			operator_assign(result, &tmp);
 		} break;
 		case Token::Type::CONSTANT: {
-			v = Number(start->content());
+			NumberObject tmp(start->content());
+			operator_assign(result, &tmp);
 		} break;
 		case Token::Type::IDENTIFER: {
 			// find out if we have to execute a method
 			// or simply get a stored variable
-			/* if ( isLocal(start->content()) ) {
-				v.assign(getVariable(scope(start->content())));
-			}
-			else */
-			if ( isMember(start->content()) ) {
-				v.assign(getVariable(start->content()));
-			}
-			else if ( isMethod(start->content()) ) {
-				v.assign(process_method(start));
+			Object *symbol = getSymbol(start->content());
+			if ( symbol ) {
+				*result = *symbol;
+				//operator_assign(result, symbol);
 			}
 			else {
-				throw UnknownIdentifer("unknown/unexpected identifier '" + start->content() + "' found", start->position());
+				if ( isMethod(start->content()) ) {
+					process_method(start, result);
+				}
+				else {
+					throw Utils::UnknownIdentifer("unknown/unexpected identifier '" + start->content() + "' found", start->position());
+				}
 			}
 		} break;
 		case Token::Type::KEYWORD: {
-			v.assign(process(start, mTokens.end(), Token::Type::SEMICOLON));
+			process(result, start, mTokens.end(), Token::Type::SEMICOLON);
 		} break;
 		case Token::Type::LITERAL: {
-			v = String(start->content());
+			StringObject tmp(start->content());
+			operator_assign(result, &tmp);
 		} break;
-		default:
-			throw SyntaxError("identifier, literal or number expected but " + start->content() + " as " + Token::Type::convert(start->type()) + " found", start->position());
-			break;
+		case Token::Type::MATH_SUBTRACT: {
+			throw Utils::NotImplemented("unary minus");
+		} break;
+		case Token::Type::SEMICOLON: {
+			if ( result->Typename() == VoidObject::TYPENAME ) {
+				// this is okay, as long as we have a been called by a return command in a void method
+				return;
+			}
+		} break;
+		default: {
+			throw Utils::SyntaxError("identifier, literal or number expected but " + start->content() + " as " + Token::Type::convert(start->type()) + " found", start->position());
+		} break;
 	}
 
 	start++;
-	return v;
 }
 
-Object Method::parseCondition(TokenIterator& token)
+void Method::process(Object *result, TokenIterator& token, TokenIterator end, Token::Type::E terminator)
 {
-	Object v1;
-	v1.assign(parseExpression(token));
-
-	for ( ; ; ) {
-		Token::Type::E op = token->type();
-		if ( op != Token::Type::COMPARE_EQUAL && op != Token::Type::COMPARE_GREATER && op != Token::Type::COMPARE_GREATER_EQUAL &&
-			op != Token::Type::COMPARE_LESS && op != Token::Type::COMPARE_LESS_EQUAL ) {
-				return v1;
+	// loop through all keywords and redirect to the corresponding method
+	while ( (token != end) && (token->type() != terminator) && (token->type() != Token::Type::ENDOFFILE) ) {
+		if ( mStopProcessing ) {
+			// a return command has been triggered, time to stop processing
+			break;
 		}
 
-		token++;
-		Object v2 = parseExpression(token);
-
-		if ( op == Token::Type::COMPARE_EQUAL ) {
-			v1.value( (v1.value() == v2.value()) ? "true" : "false" );
-		}
-		else if ( op == Token::Type::COMPARE_GREATER ) {
-			v1.value( (v1.value() > v2.value()) ? "true" : "false" );
-		}
-		else if ( op == Token::Type::COMPARE_GREATER_EQUAL ) {
-			v1.value( (v1.value() >= v2.value()) ? "true" : "false" );
-		}
-		else if ( op == Token::Type::COMPARE_LESS ) {
-			v1.value( (v1.value() < v2.value()) ? "true" : "false" );
-		}
-		else if ( op == Token::Type::COMPARE_LESS_EQUAL ) {
-			v1.value( (v1.value() <= v2.value()) ? "true" : "false" );
-		}
-		else if ( op == Token::Type::COMPARE_UNEQUAL ) {
-			v1.value( (v1.value() != v2.value()) ? "true" : "false" );
-		}
-	}
-}
-
-Object Method::parseExpression(TokenIterator& start)
-{
-	Object result;
-	result.assign(parseSummands(start));
-
-	return result;
-}
-
-Object Method::parseFactors(TokenIterator& start)
-{
-	Object v1;
-	v1.assign(parseAtom(start));
-
-	for ( ; ; ) {
-		Token::Type::E op = start->type();
-		if ( op != Token::Type::MATH_MULTI && op != Token::Type::MATH_DIV ) {
-			return v1;
-		}
-
-		start++;
-		Object v2 = parseAtom(start);
-
-		if ( op == Token::Type::MATH_MULTI ) {
-			v1 = math_multiply(v1, v2);
-		}
-		else {
-			v1 = math_divide(v1, v2);
-		}
-	}
-}
-
-Object Method::parseSummands(TokenIterator& start)
-{
-	Object v1;
-	v1.assign(parseAtom(start));
-
-	for ( ; ; ) {
-		Token::Type::E op = start->type();
-		if ( op != Token::Type::MATH_ADD && op != Token::Type::MATH_SUBTRACT &&
-			 op != Token::Type::STRING_ADD ) {
-			return v1;
-		}
-
-		start++;
-		Object v2 = parseFactors(start);
-
-		if ( op == Token::Type::MATH_ADD ) {
-			v1 = math_add(v1, v2);
-		}
-		else if ( op == Token::Type::MATH_SUBTRACT ) {
-			v1 = math_subtract(v1, v2);
-		}
-		else if ( op == Token::Type::STRING_ADD ) {
-			v1 = string_concat(v1, v2);
-		}
-	}
-}
-
-void Method::pop_stack()
-{
-	mStack.pop_back();
-}
-
-Object Method::process(TokenIterator& token, TokenIterator end, Token::Type::E terminator)
-{
-	Object returnValue;
-
-	// go through all keywords and if we find the one
-	// that we want to execute, redirect to the corresponding method
-	while ( token != end && token->type() != terminator && token->type() != Token::Type::ENDOFFILE ) {
-		// decide what we want to do according to
-		// the type of token we have
+		// decide what we want to do according to the type of token we have
 		switch ( token->type() ) {
-			case Token::Type::BOOLEAN: {
-				parseExpression(token);
-			} break;
-			case Token::Type::CONSTANT: {
-				parseExpression(token);
-			} break;
-			case Token::Type::IDENTIFER: {
-				// try to find assignment token
-				TokenIterator assign = findNext(token, Token::Type::ASSIGN, Token::Type::SEMICOLON);
-				// find next semicolon
-				TokenIterator end = findNext(token, Token::Type::SEMICOLON);
-
-				if ( assign == token ) {
-					// we don't have an assignment but a method call
-					parseExpression(token);
-
-					token = end;
-					break;
-				}
-
-
-				if ( isLocal(token->content()) ) {
-					// ok
-				}
-				else if ( isMember(token->content()) ) {
-					// ok
-				}
-				else {
-					// not ok
-					throw UnknownIdentifer(token->content(), token->position());
-				}
-
-				Object& s = getVariable(token->content());
-				Object t = parseExpression(++assign);
-
-				if ( s.isConst() || (this->isConst() && isMember(s.name())) ) {
-					throw Exception("can not change const object!", token->position());
-				}
-
-				s.assign(t);
-
-				// assign == end should now be true
-				token = end;
+			case Token::Type::BOOLEAN:
+			case Token::Type::CONSTANT:
+			case Token::Type::LITERAL:
+				parseExpression(result, token);
 				break;
-			}
-			case Token::Type::KEYWORD: {
-					std::string keyword = (*token++).content();
-
-					if ( keyword == "assert" ) {
-						process_assert(token);
-					}
-					else if ( keyword == "breakpoint" ) {
-						mOwner->providePrinter()->print("hit breakpoint   [" + mOwner->Filename() + ": " + Tools::toString(token->position().line) + "]");
-					}
-					else if ( keyword == "for" ) {
-						process_for(token);
-					}
-					else if ( keyword == "if" ) {
-						process_if(token);
-					}
-					else if ( keyword == "new" ) {
-						//Object n = process_new(token);
-
-						Reference ref = process_new(token);
-						returnValue.assign(*mMemory->getObject(ref));
-
-						return returnValue;
-					}
-					else if ( keyword == "print" ) {
-						process_print(token);
-					}
-					else if ( keyword == "return" ) {
-						returnValue.assign(parseExpression(token));
-						return returnValue;
-					}
-					else if ( keyword == "switch" ) {
-						process_switch(token);
-					}
-					else if ( keyword == "while" ) {
-						process_while(token);
-					}
+			case Token::Type::IDENTIFER:
+				process_assign(token, result);
 				break;
-			}
-			case Token::Type::LITERAL: {
-				parseExpression(token);
-			} break;
+			case Token::Type::KEYWORD:
+				process_keyword(token, result);
+				break;
 			case Token::Type::PROTOTYPE:
-			case Token::Type::TYPE: {
-				handleType(token);
+			case Token::Type::TYPE:
+				process_type(token);
 				break;
-			}
-			default: {
-				mOwner->providePrinter()->print("invalid token '" + token->content() + "' as type " + Token::Type::convert(token->type()) + " found!");
+			default:
+				throw Utils::SyntaxError("invalid token '" + token->content() + "' as type " + Token::Type::convert(token->type()) + " found", token->position());
 				break;
-			}
 		}
 
-		// switch to next token
-		token++;
+		token++;	// consume token
 	}
-
-	//pop_stack();
-	return returnValue;
 }
 
 // syntax:
@@ -737,28 +573,106 @@ void Method::process_assert(TokenIterator& token)
 	// find semicolon
 	TokenIterator tmp = findNext(condEnd, Token::Type::SEMICOLON);
 
-	Object condition = parseCondition(condBegin);
-
-	if ( isFalse(condition) ) {
-		throw AssertionFailed("'" + condition.value() + "'", token->position());
+	if ( !parseCondition(condBegin) ) {
+		throw Utils::AssertionFailed("", token->position());
 	}
 
 	token = tmp;
 }
 
+void Method::process_assign(TokenIterator& token, Object *result)
+{
+	// try to find assignment token
+	TokenIterator assign = findNext(token, Token::Type::ASSIGN, Token::Type::SEMICOLON);
+	// find next semicolon
+	TokenIterator end = findNext(token, Token::Type::SEMICOLON);
+
+	if ( assign == token ) {
+		// we don't have an assignment but a method call
+		parseExpression(result, token);
+
+		token = end;
+		return;
+	}
+
+	std::string identifier = token->content();
+
+	Object *s = getSymbol(identifier);
+	if ( !s ) {
+		throw Utils::UnknownIdentifer("identifier '" + identifier + "' not found", token->position());
+	}
+	if ( s->isConst() ) {
+		throw Utils::ConstCorrectnessViolated("not allowed to modify const member '" + identifier + "'", token->position());
+	}
+	if ( this->isConst() && isMember(identifier) ) {
+		throw Utils::ConstCorrectnessViolated("not allowed to modify member '" + identifier + "' in const method '" + this->name() + "'", token->position());
+	}
+
+	parseExpression(s, ++assign);
+
+	if ( s->isFinal() && s->isModifiable() ) {
+		// we have modified a final entity for the first time, we now have to set it so const 
+		s->setConst(true);
+		s->setFinal(false);
+	}
+
+	// assign == end should now be true
+	token = end;
+}
+
 // syntax:
-// for ( int i = 0; i < 5; i += 1 ) {
+// delete <identifier>;
+void Method::process_delete(TokenIterator& token)
+{
+	TokenIterator end = findNext(token, Token::Type::SEMICOLON);
+
+	Object *object = getSymbol(token->content());
+	if ( object ) {
+		mRepository->removeReference(object);
+	}
+
+	token = end;
+}
+
+// syntax:
+// for ( <expression>; <condition>; <expression> ) { }
+// i.e. for ( int i = 0; i < 5; i += 1 ) {
 // ...
 // }
 void Method::process_for(TokenIterator& token)
 {
-assert(!"not implemented");
+	// find declaration
+	TokenIterator decl = ++findNext(token, Token::Type::PARENTHESIS_OPEN);
+	// find condition
+	TokenIterator cond = ++findNext(decl, Token::Type::SEMICOLON);
+	const TokenIterator conditionStart = cond;
+	// find expression
+	TokenIterator expr = ++findNext(cond, Token::Type::SEMICOLON);
+	const TokenIterator expressionStart = expr;
+	// find next open curly bracket '{'
+	const TokenIterator exprEnd = findNext(expr, Token::Type::PARENTHESIS_CLOSE);
 
-	TokenIterator tmp = token;
+	const TokenIterator bodyBegin = findNext(expr, Token::Type::BRACKET_CURLY_OPEN);
+	// find next balanced '{' & '}' pair
+	TokenIterator begin = bodyBegin;
+	TokenIterator bodyEnd = findNextBalancedCurlyBracket(++begin);
 
+	// process our declaration part
+	Object result;
+	process(&result, decl, cond, Token::Type::SEMICOLON);
 
+	while ( parseCondition(cond = conditionStart) ) {
+		TokenIterator bb = begin;
 
-	token = tmp;
+		// process loop body
+		process(&result, bb, bodyEnd, Token::Type::BRACKET_CURLY_CLOSE);
+
+		// execute loop expression
+		expr = expressionStart;
+		process(&result, expr, exprEnd, Token::Type::PARENTHESIS_CLOSE);
+	}
+
+	token = bodyEnd;
 }
 
 // syntax:
@@ -771,7 +685,7 @@ assert(!"not implemented");
 // else {
 // ...
 // }
-void Method::process_if(TokenIterator& token)
+void Method::process_if(TokenIterator& token, Object *result)
 {
 	// find next open parenthesis
 	TokenIterator condBegin = ++findNext(token, Token::Type::PARENTHESIS_OPEN);
@@ -794,12 +708,12 @@ void Method::process_if(TokenIterator& token)
 		}
 	}
 
-	if ( isTrue(parseCondition(condBegin)) ) {
-		process(bodyBegin, bodyEnd, Token::Type::BRACKET_CURLY_CLOSE);
+	if ( parseCondition(condBegin) ) {
+		process(result, bodyBegin, bodyEnd, Token::Type::BRACKET_CURLY_CLOSE);
 
 		// check if we executed all tokens
 		if ( bodyBegin != bodyEnd ) {
-			throw Exception("half evaluated if found!", bodyBegin->position());
+			throw Utils::Exception("half evaluated if found!", bodyBegin->position());
 		}
 
 		if ( elseEnd != mTokens.end() ) {
@@ -810,20 +724,58 @@ void Method::process_if(TokenIterator& token)
 		}
 	}
 	else if ( elseBegin != mTokens.end() ) {
-		process(elseBegin, elseEnd, Token::Type::BRACKET_CURLY_CLOSE);
+		process(result, elseBegin, elseEnd, Token::Type::BRACKET_CURLY_CLOSE);
 
 		// check if we executed all tokens
 		if ( elseBegin != elseEnd ) {
-			throw Exception("half evaluated else found!", bodyBegin->position());
+			throw Utils::Exception("half evaluated else found!", bodyBegin->position());
 		}
 
 		token = elseEnd;
+	}
+	else {
+		token = bodyEnd;
+	}
+}
+
+void Method::process_keyword(TokenIterator& token, Object *result)
+{
+	std::string keyword = (*token++).content();
+
+	if ( keyword == "assert" ) {
+		process_assert(token);
+	}
+	else if ( keyword == "delete" ) {
+		process_delete(token);
+	}
+	else if ( keyword == "for" ) {
+		process_for(token);
+	}
+	else if ( keyword == "if" ) {
+		process_if(token, result);
+	}
+	else if ( keyword == "new" ) {
+		process_new(token, result);
+	}
+	else if ( keyword == "print" ) {
+		process_print(token);
+	}
+	else if ( keyword == "return" ) {
+		parseExpression(result, token);
+
+		mStopProcessing = true;
+	}
+	else if ( keyword == "switch" ) {
+		process_switch(token);
+	}
+	else if ( keyword == "while" ) {
+		process_while(token);
 	}
 }
 
 // syntax:
 // type method(<parameter list>);
-Object Method::process_method(TokenIterator& token)
+void Method::process_method(TokenIterator& token, Object *result)
 {
 	TokenIterator tmp = token;
 
@@ -833,16 +785,14 @@ Object Method::process_method(TokenIterator& token)
 	TokenIterator closed = findNextBalancedParenthesis(++opened);
 
 	ReferencesList paramsAsReferences;
-	VariablesList params;
+	ParameterList params;
 
 	tmp = opened;
 	// loop through all parameters seperated by colons
 	while ( tmp != closed ) {
-		Object v = parseExpression(tmp);
-		params.push_back(v);
-
-		Reference r = mMemory->getAddress(&v);
-		paramsAsReferences.push_back(r);
+		Object object;
+		parseExpression(&object, tmp);
+		params.push_back(Parameter(object.getName(), object.Typename(), object.getValue(), false, object.isConst(), Parameter::AccessMode::ByValue, &object));
 
 		if ( std::distance(tmp, closed) <= 0 ) {
 			break;
@@ -856,27 +806,36 @@ Object Method::process_method(TokenIterator& token)
 
 	token = closed;
 
-//TODO: what if we want to execute a method of another object?!?!
 
-	if ( mOwner->hasMethod(method, params) ) {
-		return mOwner->execute(method, params, this);
+	std::string member, parent;
+	Tools::split(method, parent, member);
+
+	Object *symbol = getSymbol(parent);
+	if ( symbol ) {
+		symbol->execute(result, member, params, this);
+		return;
 	}
 
-	throw UnknownIdentifer("unknown/unexpected identifier '" + method + "' found", tmp->position());
+	if ( isMethod(method, params) ) {
+		mOwner->execute(result, method, params, this);
+		return;
+	}
+
+	mOwner->providePrinter()->print(mOwner->ToString());
+	throw Utils::UnknownIdentifer("unknown/unexpected identifier '" + method + "' found", tmp->position());
 }
 
 // syntax:
 // new <Object>([<parameter list>]);
-//Object Method::process_new(TokenIterator& token)
-Reference Method::process_new(TokenIterator& token)
+void Method::process_new(TokenIterator& token, Object *result)
 {
 	TokenIterator tmp = token;
 
-	bool isPrototype = token->type() == Token::Type::PROTOTYPE;
 	std::string name = "<temporary object>";
-	std::string prototype = token->content();
+	std::string prototype;
 
-	if ( isPrototype ) {
+	if ( token->type() == Token::Type::PROTOTYPE ) {
+		prototype = token->content();
 		token++;
 	}
 
@@ -885,13 +844,14 @@ Reference Method::process_new(TokenIterator& token)
 	TokenIterator opened = findNext(tmp, Token::Type::PARENTHESIS_OPEN);
 	TokenIterator closed = findNextBalancedParenthesis(++opened);
 
-	VariablesList params;
+	ParameterList params;
 
 	tmp = opened;
-	// loop through all parameters seperated by colons
+	// loop through all parameters separated by colons
 	while ( tmp != closed ) {
-		Object v = parseExpression(tmp);
-		params.push_back(v);
+		Object object;
+		parseExpression(&object, tmp);
+		params.push_back(Parameter(object.getName(), object.Typename(), object.getValue(), false, object.isConst(), Parameter::AccessMode::ByValue, &object));
 
 		if ( std::distance(tmp, closed) <= 0 ) {
 			break;
@@ -905,37 +865,14 @@ Reference Method::process_new(TokenIterator& token)
 
 	token = closed;
 
-	Reference ref;
-	if ( isPrototype ) {
-		ref = mRepository->createReferenceFromPrototype(prototype, type, name);
-	}
-	else {
-		ref = mRepository->createReference(type, name);
-	}
+	assert(mRepository);
 
-	Object *object = mMemory->getObject(ref);
-	object->connectMemory(mMemory);
+	Object *object = mRepository->createInstance(type, name, prototype);
 	object->connectPrinter(mOwner->providePrinter());
 	object->connectRepository(mRepository);
 	object->Constructor(params);
 
-	return ref;
-
-/*
-	Object object;
-	if ( isPrototype ) {
-		object = mRepository->createInstanceFromPrototype(prototype, type, name);
-	}
-	else {
-		object = mRepository->createInstance(type, name);
-	}
-
-	object.connectPrinter(mOwner->providePrinter());
-	object.connectRepository(mRepository);
-	object.Constructor(params);
-
-	return object;
-*/
+	*result = *object;
 }
 
 // syntax:
@@ -949,8 +886,15 @@ void Method::process_print(TokenIterator& token)
 	// find semicolon
 	TokenIterator tmp = findNext(closed, Token::Type::SEMICOLON);
 
-	Object v = parseExpression(opened);
-	mOwner->providePrinter()->print(v.value() + "   [" + mOwner->Filename() + ":" + Tools::toString(token->position().line) + "]");
+	StringObject text;
+	parseExpression(&text, opened);
+
+	if ( mOwner->providePrinter() ) {
+		mOwner->providePrinter()->print(text.getValue() + "\n", mOwner->Filename(), token->position().line);
+	}
+	else {
+		std::cout << text.getValue() << std::endl;
+	}
 
 	token = tmp;
 }
@@ -972,6 +916,77 @@ assert(!"not implemented");
 	token = tmp;
 }
 
+void Method::process_type(TokenIterator& token)
+{
+	bool isConst = false;
+	bool isFinal = false;
+	bool isStatic = false;
+
+	std::string name;
+	std::string prototype;
+	std::string type;
+	std::string value;
+
+	if ( token->type() == Token::Type::PROTOTYPE ) {
+		prototype = token->content();
+		token++;
+	}
+
+	type = token->content();
+	token++;
+	name = token->content();
+
+	if ( token->type() != Token::Type::IDENTIFER ) {
+		throw Utils::SyntaxError("identifier expected but '" + token->content() + "' found", token->position());
+	}
+
+	token++;
+
+	std::string tmpStr = token->content();
+	if ( tmpStr == "const" || tmpStr == "static" ) {
+		token++;
+
+		if ( tmpStr == "const" ) { isConst = true; }
+		else if ( tmpStr == "final" ) { isFinal = true; }
+		else if ( tmpStr == "static" ) { isStatic = true; }
+	}
+
+	TokenIterator assign = mTokens.end();
+	if ( token->type() == Token::Type::ASSIGN ) {
+		assign = ++token;
+	}
+
+	Object *object = getSymbol(name);
+	if ( !object ) {
+		object = mRepository->createInstance(type, name, prototype);
+
+		if ( isConst ) object->setConst(true);
+		if ( isFinal ) object->setFinal(true);
+		if ( isStatic ) object->setStatic(true);
+
+		if ( assign != mTokens.end() ) {
+			TokenIterator end = findNext(assign, Token::Type::SEMICOLON);
+			parseExpression(object, assign);
+			token = end;
+		}
+
+		addIdentifier(name, object);
+
+		if ( token->type() != Token::Type::SEMICOLON ) {
+			throw Utils::SyntaxError("';' expected but '" + token->content() + "' found", token->position());
+		}
+	}
+	else {
+		if ( !object->isStatic() ) {
+			// upsi, did not clean up..
+			throw Utils::DuplicateIdentiferException(name);
+		}
+
+		token = findNext(token, Token::Type::SEMICOLON);
+	}
+}
+
+
 // syntax:
 // while ( <condition> ) {
 // ...
@@ -989,10 +1004,11 @@ void Method::process_while(TokenIterator& token)
 
 	TokenIterator tmp = condBegin;
 
-	while ( isTrue(parseCondition(tmp)) ) {
+	Object result;
+	while ( parseCondition(tmp) ) {
 		TokenIterator bb = bodyBegin;
 
-		process(bb, bodyEnd, Token::Type::BRACKET_CURLY_CLOSE);
+		process(&result, bb, bodyEnd, Token::Type::BRACKET_CURLY_CLOSE);
 
 		// reset iterator
 		tmp = condBegin;
@@ -1001,39 +1017,10 @@ void Method::process_while(TokenIterator& token)
 	token = bodyEnd;
 }
 
-const VariablesList& Method::provideSignature() const
+//const VariablesList& Method::provideSignature() const
+const ParameterList& Method::provideSignature() const
 {
 	return mSignature;
-}
-
-void Method::push_stack(const std::string& scope)
-{
-	std::string s;
-
-	if ( !mStack.empty() ) {
-		s = mStack.back() + ".";
-	}
-
-	s += scope;
-	mStack.push_back(s);
-}
-
-std::string Method::scope(const std::string& name) const
-{
-	std::string result;
-
-	if ( !mStack.empty() ) {
-		result = mStack.back();
-		result += ".";
-	}
-
-	result += name;
-	return result;
-}
-
-void Method::setMemory(Memory *memory)
-{
-	mMemory = memory;
 }
 
 void Method::setOwner(Object *owner)
@@ -1046,7 +1033,7 @@ void Method::setRepository(Repository *repository)
 	mRepository = repository;
 }
 
-void Method::setSignature(const VariablesList& params)
+void Method::setSignature(const ParameterList& params)
 {
 	mSignature = params;
 }
@@ -1054,11 +1041,6 @@ void Method::setSignature(const VariablesList& params)
 void Method::setTokens(const TokenList& tokens)
 {
 	mTokens = tokens;
-}
-
-Object Method::string_concat(const Object& v1, const Object& v2)
-{
-	return String(Tools::toString(v1.value() + v2.value()));
 }
 
 

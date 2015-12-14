@@ -21,7 +21,8 @@ class IPrinter
 public:
 	virtual ~IPrinter() { }
 
-	virtual void print(const std::string& text) = 0;
+	virtual void log(const std::string& text) = 0;
+	virtual void print(const std::string& text, const std::string& file = "", int line = 0) = 0;
 };
 
 

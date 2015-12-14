@@ -11,8 +11,6 @@
 
 
 namespace ObjectiveScript {
-
-
 namespace Tools {
 
 
@@ -36,16 +34,44 @@ void split(const std::string& str, std::string& p, std::string& c)
 	}
 }
 
-float stringToFloat(const std::string &str)
+std::string boolToString(bool value)
 {
-	if ( str.empty() ) {
+	if ( value ) {
+		return "true";
+	}
+
+	return "false";
+}
+
+std::string floatToString(float value)
+{
+	return toString(value);
+}
+
+bool stringToBool(const std::string &value)
+{
+	if ( value.empty() || value == "false" ) {
+		return false;
+	}
+
+	std::stringstream stream;
+	stream << value;
+	bool b;
+	stream >> b;
+
+	return b;
+}
+
+float stringToFloat(const std::string &value)
+{
+	if ( value.empty() ) {
 		return 0.f;
 	}
 
-    std::stringstream stream;
-    stream << str;
+	std::stringstream stream;
+	stream << value;
 	float f;
-    stream >> f;
+	stream >> f;
 
 	return f;
 }
@@ -111,7 +137,7 @@ TokenIterator findNextBalancedBracket(TokenIterator start, int generateErrorAfte
 			return tmp;
 		}
 		if ( generateErrorAfter && count >= generateErrorAfter ) {
-			throw SyntaxError("Closed bracket expected, but not found after " + Tools::toString(count) + " iteration(s)", start->position());
+			throw Utils::SyntaxError("Closed bracket expected, but not found after " + Tools::toString(count) + " iteration(s)", start->position());
 		}
 
 		count++;
@@ -124,7 +150,7 @@ TokenIterator findNextBalancedBracket(TokenIterator start, int generateErrorAfte
 TokenIterator findNextBalancedCurlyBracket(TokenIterator start, int generateErrorAfter, Token::Type::E end)
 {
 	int count = 0;
-	TokenIterator tmp = start;
+	//TokenIterator tmp = start;
 	int openCurlyBrackets = 0;
 
 	while ( start->type() != Token::Type::BRACKET_CURLY_CLOSE || openCurlyBrackets ) {
@@ -145,7 +171,7 @@ TokenIterator findNextBalancedCurlyBracket(TokenIterator start, int generateErro
 		}
 
 		if ( generateErrorAfter && count >= generateErrorAfter ) {
-			throw SyntaxError("Closed curly bracket expected, but not found after " + Tools::toString(count) + " iteration(s)", start->position());
+			throw Utils::SyntaxError("Closed curly bracket expected, but not found after " + Tools::toString(count) + " iteration(s)", start->position());
 		}
 
 		count++;
@@ -174,7 +200,7 @@ TokenIterator findNextBalancedParenthesis(TokenIterator start, int generateError
 			return tmp;
 		}
 		if ( generateErrorAfter && count >= generateErrorAfter ) {
-			throw SyntaxError("Closed parenthesis expected, but not found after " + Tools::toString(count) + " iteration(s)", start->position());
+			throw Utils::SyntaxError("Closed parenthesis expected, but not found after " + Tools::toString(count) + " iteration(s)", start->position());
 		}
 
 		count++;
@@ -182,6 +208,41 @@ TokenIterator findNextBalancedParenthesis(TokenIterator start, int generateError
 	}
 
 	return start;
+}
+
+bool isBooleanConst(const std::string& v)
+{
+	return ( v == "false" || v == "true" );
+}
+
+bool isFalse(const std::string& s)
+{
+	return (s == "false");
+}
+
+bool isFalse(const Object& o)
+{
+	if ( o.getValue() == "0" || o.getValue() == "false" ) {
+		return true;
+	}
+
+	return false;
+}
+
+bool isTrue(const std::string& s)
+{
+	return (s == "true");
+}
+
+bool isTrue(const Object& o)
+{
+	// check value is false
+	if ( o.getValue() == "0" || o.getValue() == "0.0" || o.getValue() == "false" ) {
+		return false;
+	}
+
+	// value is not false, so return true
+	return true;
 }
 
 

@@ -1,5 +1,5 @@
 
-namespace std
+public namespace std
 {
 
 	public object Logger
@@ -13,7 +13,7 @@ namespace std
 			mKey = "Logger";
 		}
 
-		// Specialised constructor
+		// Specialized constructor
 		public void Logger(String key)
 		{
 			mKey = key;

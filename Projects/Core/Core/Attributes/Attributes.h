@@ -15,21 +15,23 @@
 
 
 namespace ObjectiveScript {
-//namespace Attributes {
 
 
-class Attributes
+class GenericAttributes
 {
 public:
-	Attributes();
-
-public:
-	bool isSealed() const;
-	void seal();
+	GenericAttributes();
+	virtual ~GenericAttributes();
 
 public:
 	bool isConst() const;
 	void setConst(bool state);
+
+	bool isFinal() const;
+	void setFinal(bool state);
+
+	bool isModifiable() const;
+	void setModifiable(bool state);
 
 	bool isStatic() const;
 	void setStatic(bool state);
@@ -38,23 +40,43 @@ public:
 	void setLanguageFeatureState(LanguageFeatureState::E s);
 
 	Visibility::E visibility() const;
-	void setVisibility(Visibility::E v);
+	void visibility(Visibility::E v);
 
 protected:
-
-private:
 	void checkSealState();
+
+protected:
+	bool mIsSealed;
 
 private:
 	bool mIsConst;
+	bool mIsFinal;
 	bool mIsStatic;
 	LanguageFeatureState::E mLanguageFeatureState;
-	bool mSealed;
 	Visibility::E mVisibility;
 };
 
+class MethodAttributes : public GenericAttributes
+{
+public:
+	MethodAttributes();
 
-//}
+public:
+	bool isSealed() const;
+	void setSealed(bool state);
+};
+
+class ObjectAttributes : public GenericAttributes
+{
+public:
+	ObjectAttributes();
+
+public:
+	bool isSealed() const;
+	void setSealed(bool state);
+};
+
+
 }
 
 

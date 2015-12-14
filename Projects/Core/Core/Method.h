@@ -5,11 +5,13 @@
 
 // Library includes
 #include <map>
-//#include <ostream>
 
 // Project includes
+#include <Core/Attributes/Attributes.h>
 #include "Object.h"
+#include "Parameter.h"
 #include "Reference.h"
+#include "Scope.h"
 #include "Types.h"
 #include "Variable.h"
 
@@ -26,173 +28,93 @@ class Memory;
 class Object;
 class Repository;
 
-class Method : public Variable
+class Method : public LocalScope,
+			   public MethodAttributes,
+			   public Variable
 {
 public:
-	Method(const std::string& name, const std::string& type);
+	Method(IScope *parent, const std::string& name, const std::string& type);
 	~Method();
 
+public:
+	bool operator() (const Method& first, const Method& second) const;
+	bool operator< (const Method& other) const;
+	void operator= (const Method& other);
+
+public:
+	Object* getOwner() const;
+
 public:	// Setup
-	void setMemory(Memory *memory);
 	void setOwner(Object *owner);
 	void setRepository(Repository *repository);
-	void setSignature(const VariablesList& params);
+	void setSignature(const ParameterList& params);
 	void setTokens(const TokenList& tokens);
 
+public: // Deinit
+	void garbageCollector(bool force = false);
+
 public:
-	bool isSignatureValid(const VariablesList& params) const;
-	const VariablesList& provideSignature() const;
+	bool isSignatureValid(const ParameterList& params) const;
+	const ParameterList& provideSignature() const;
 
 public:	// Execution
-	Object execute(const VariablesList& params);
-
-public:
-	bool operator() (const Method& first, const Method& second) const {
-		if ( first.name() == second.name() ) {
-			VariablesList firstList = first.provideSignature();
-			VariablesList secondList = second.provideSignature();
-
-			// unable to identify return value during method call
-			//if ( this->type() != other.type() ) {
-			//	return this->type() < other.type();
-			//}
-
-			if ( firstList.size() == secondList.size() ) {
-				VariablesList::const_iterator fIt = firstList.begin();
-				VariablesList::const_iterator sIt = secondList.begin();
-
-				for ( ; fIt != firstList.end() && sIt != secondList.end(); ++fIt, ++sIt ) {
-					if ( fIt->type() != sIt->type() ) {
-						return fIt->type() < sIt->type();
-					}
-				}
-			}
-
-			return firstList.size() < secondList.size();
-		}
-
-		return first.name() < second.name();
-	}
-
-	bool operator< (const Method& other) const {
-		if ( this->name() == other.name() ) {
-			VariablesList firstList = this->provideSignature();
-			VariablesList secondList = other.provideSignature();
-
-			// unable to identify return value during method call
-			//if ( this->type() != other.type() ) {
-			//	return this->type() < other.type();
-			//}
-
-			if ( firstList.size() == secondList.size() ) {
-				VariablesList::const_iterator fIt = firstList.begin();
-				VariablesList::const_iterator sIt = secondList.begin();
-
-				for ( ; fIt != firstList.end() && sIt != secondList.end(); ++fIt, ++sIt ) {
-					if ( fIt->type() != sIt->type() ) {
-						return fIt->type() < sIt->type();
-					}
-				}
-			}
-
-			return firstList.size() < secondList.size();
-		}
-
-		return this->name() < other.name();
-	}
+	void execute(const ParameterList& params, Object *result);
 
 protected:
 
 private:
-	//typedef std::map<std::string, Object> MemberMap;
-	typedef std::map<std::string, Reference> MemberMap;
+	typedef std::map<std::string, Object*> MemberCollection;
 
 private:	// Construction
-	//void addIdentifier(Object object);			// throws DuplicateIdentifer exception
-	void addIdentifier(const Reference& r);		// throws DuplicateIdentifer exception
-
-private:	// Destruction
-	void garbageCollector();
+	void addIdentifier(const std::string& name, Object *object);			// throws DuplicateIdentifer exception
 
 private:	// Execution
-	bool isLocal(const std::string& token);
-	bool isMember(const std::string& token);
+	bool isMember(const std::string& token) const;
 	bool isMethod(const std::string& token);
-	bool isMethod(const std::string& token, const VariablesList& params);
-
-	void handleType(TokenIterator& token);
-
-	bool isBooleanConst(const std::string& v) const;
-	bool isFalse(const std::string& s) const;
-	bool isFalse(const Object& v) const;
-	bool isTrue(const std::string& s) const;
-	bool isTrue(const Object& v) const;
+	bool isMethod(const std::string& token, const ParameterList& params);
 
 	// token processing
 	// {
-	Object process(TokenIterator& start, TokenIterator end, Token::Type::E terminator = Token::Type::NIL);
+	void process(Object *result, TokenIterator& start, TokenIterator end, Token::Type::E terminator = Token::Type::NIL);
 	void process_assert(TokenIterator& token);
+	void process_assign(TokenIterator& token, Object *result);
+	void process_delete(TokenIterator& token);
 	void process_for(TokenIterator& token);
-	void process_if(TokenIterator& token);
-	Object process_method(TokenIterator& token);
-	//Object process_new(TokenIterator& token);
-	Reference process_new(TokenIterator& token);
+	void process_if(TokenIterator& token, Object *result);
+	void process_keyword(TokenIterator& token, Object *result);
+	void process_method(TokenIterator& token, Object *result);
+	void process_new(TokenIterator& token, Object *result);
 	void process_print(TokenIterator& token);
+	void process_type(TokenIterator& token);
 	void process_switch(TokenIterator& token);
 	void process_while(TokenIterator& token);
 	// }
 
-	// scope
-	// {
-	std::string scope(const std::string& name) const;
-	void push_stack(const std::string& scope);
-	void pop_stack();
-	// }
-
-	const Reference& getLocale(const std::string& name) const;
-	Object& getVariable(const std::string& name);
+	Object* getSymbol(const std::string& token);
 
 	// condition evaluation
 	// {
-	Object parseCondition(TokenIterator& start);
+	bool parseCondition(TokenIterator& start);
 	// }
 
 	// expression evaluation
 	// {
-	Object parseAtom(TokenIterator& start);
-	Object parseExpression(TokenIterator& start);
-	Object parseFactors(TokenIterator& start);
-	Object parseSummands(TokenIterator& start);
-
-	Object math_add(const Object& v1, const Object& v2);
-	Object math_divide(const Object& v1, const Object& v2);
-	Object math_multiply(const Object& v1, const Object& v2);
-	Object math_subtract(const Object& v1, const Object& v2);
-	Object string_concat(const Object& v1, const Object& v2);
+	void parseExpression(Object *result, TokenIterator& start);
+	void parseFactors(Object *result, TokenIterator& start);
+	void parseTerm(Object *result, TokenIterator& start);
 	// }
 
 private:
-	MemberMap		mLocales;
-	Memory			*mMemory;
-	Object			*mOwner;
-	VariablesList	mParameters;
-	Repository		*mRepository;
-	VariablesList	mSignature;
-	StringList		mStack;
-	TokenList		mTokens;
+	MemberCollection mLocalSymbols;
+	Object *mOwner;
+	ParameterList mParameter;
+	Repository *mRepository;
+	ParameterList mSignature;
+	TokenList mTokens;
+
+private:
+	bool mStopProcessing;
 };
-
-
-/*
-friend std::ostream& operator<<(std::ostream &out, const Method& m)
-{
-	out << m.name() << "(";
-	for ( VariablesList::const_iterator it = m.provideSignature().begin(); it != m.provideSignature().end(); ++it ) {
-		out << it->type() << " " << it->name() << ": " << it->value();
-	out << ")";
-	return out;
-}
-*/
 
 
 }

@@ -46,6 +46,7 @@ private:	// Tokenizer
 	bool isKeyword(const std::string& token) const;
 	bool isLanguageFeature(const std::string& token) const;
 	bool isLiteral(const std::string& token) const;
+	bool isModifier(const std::string& token) const;
 	bool isReservedWord(const std::string& token) const;
 	bool isType(const std::string& token) const;
 	bool isVisibility(const std::string& token) const;
@@ -57,12 +58,14 @@ private:	// Preprocessor
 
 private:
 	std::string	mContent;
-	StringList	mDefines;
-	StringList	mIdentifiers;
-	StringList	mKeywords;
-	StringList	mReservedWords;
-	TokenList	mTokens;
-	StringList	mTypes;
+	StringList mDefines;
+	StringList mIdentifiers;
+	StringList mLanguageFeatures;
+	StringList mKeywords;
+	StringList mModifiers;
+	StringList mReservedWords;
+	TokenList mTokens;
+	StringList mTypes;
 };
 
 

@@ -12,7 +12,6 @@
 #include "Preprocessor.h"
 #include "Tools.h"
 #include "Types.h"
-#include "Variable.h"
 
 // Forward declarations
 

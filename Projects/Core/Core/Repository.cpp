@@ -5,11 +5,13 @@
 // Library includes
 
 // Project includes
-#include <Core/BuildInObjects/Bool.h>
-#include <Core/BuildInObjects/Number.h>
-#include <Core/BuildInObjects/String.h>
-#include <Core/BuildInObjects/Void.h>
+#include <Core/BuildInObjects/BoolObject.h>
+#include <Core/BuildInObjects/NumberObject.h>
+#include <Core/BuildInObjects/StringObject.h>
+#include <Core/BuildInObjects/UserObject.h>
+#include <Core/BuildInObjects/VoidObject.h>
 #include <Core/Utils/Exceptions.h>
+#include <Core/Utils/Utils.h>
 #include "Memory.h"
 #include "Preprocessor.h"
 #include "Tools.h"
@@ -23,31 +25,40 @@ namespace ObjectiveScript {
 Repository::Repository(Memory *m)
 : mMemory(m)
 {
-	addBlueprint(Bool());
-	addBlueprint(Number());
-	addBlueprint(String());
-	addBlueprint(Void());
+	addBlueprint(BoolObject());
+	addBlueprint(NumberObject());
+	addBlueprint(StringObject());
+	addBlueprint(VoidObject());
 }
 
 Repository::~Repository()
 {
 	mBluePrints.clear();
+
+	for ( ReferenceCountedObjects::iterator it = mInstances.begin(); it != mInstances.end(); ++it ) {
+		it->first->Destructor();
+	}
+	for ( ReferenceCountedObjects::iterator it = mInstances.begin(); it != mInstances.end(); ++it ) {
+		delete it->first;
+	}
+	mInstances.clear();
+
+	mPrototypes.clear();
 }
 
 void Repository::addBlueprint(const BluePrint& object)
 {
 	std::string type = object.Typename();
 
-	OSdebug("addBlueprint('" + type + "')");
+	//OSinfo("addBlueprint('" + type + "')");
 
 	BluePrints::iterator it = mBluePrints.find(type);
 	if ( it != mBluePrints.end() ) {
-		throw Exception("duplicate object '" + type + "' added to repository");
+		throw Utils::Exception("duplicate object '" + type + "' added to repository");
 	}
 
-	mBluePrints.insert(
-		std::make_pair<std::string, BluePrint>(type, object)
-	);
+	mBluePrints.insert(std::make_pair(type, object));
+
 	BluePrints::iterator objIt = mBluePrints.find(type);
 
 	// loop over all tokens of a blueprint object
@@ -76,97 +87,180 @@ void Repository::addPrototype(const Prototype& prototype)
 {
 	std::string type = prototype.type();
 
-	OSdebug("addPrototype('" + type + "')");
+	//OSinfo("addPrototype('" + type + "')");
 
 	Prototypes::iterator it = mPrototypes.find(type);
 	if ( it != mPrototypes.end() ) {
-		throw Exception("duplicate object '" + type + "' added to repository");
+		throw Utils::Exception("duplicate object '" + type + "' added to repository");
 	}
 
-	mPrototypes.insert(
-		std::make_pair<std::string, Prototype>(type, prototype)
-	);
+	mPrototypes.insert(std::make_pair(type, prototype));
 }
 
-Object Repository::createInstance(const std::string& type, const std::string& name)
+void Repository::addReference(Object *object)
 {
-	OSdebug("createInstance('" + type + "', '" + name + "')");
-
-	BluePrints::iterator it = mBluePrints.find(type);
-	if ( it == mBluePrints.end() ) {
-		throw Exception("trying to create instance of unknown object '" + type + "'");
+	if ( !object ) {
+		return;
 	}
 
-	// non-reference-based instantiation
-	return createInstance(it->second, type, name);
+	switch ( object->languageFeatureState() ) {
+		case LanguageFeatureState::Deprecated: OSwarn("method '" + object->getName() + "' is marked as deprecated!"); break;
+		case LanguageFeatureState::NotImplemented: OSerror("method '" + object->getName() + "' is marked as not implemented!"); throw Utils::NotImplemented(object->getName()); break;
+		case LanguageFeatureState::Stable: /* this is the normal language feature state, so no need to log anything here */ break;
+		case LanguageFeatureState::Unknown: OSerror("unknown language feature state set for method '" + object->getName() + "'!"); break;
+		case LanguageFeatureState::Unstable: OSwarn("method '" + object->getName() + "' is marked as unstable!"); break;
+	}
+
+	ReferenceCountedObjects::iterator it = mInstances.find(object);
+	if ( it != mInstances.end() ) {
+		// increment reference count
+		it->second++;
+		return;
+	}
+
+	mInstances.insert(std::make_pair(object, 1));
 }
 
-Object Repository::createInstance(const BluePrint& blueprint, const std::string& type, const std::string& name)
+void Repository::CollectGarbage()
 {
+	for ( ReferenceCountedObjects::iterator it = mInstances.begin(); it != mInstances.end(); ) {
+		if ( it->second > 0 ) {
+			++it;
+			continue;
+		}
+
+		// as soon as we've lost all references, we can destroy our object
+		if ( it->second <= 0 ) {
+			if ( it->first ) {
+				// call object's destructor ...
+				it->first->Destructor();
+
+				// ... and delete it
+				delete it->first;
+			}
+
+			it = mInstances.erase(it);
+		}
+	}
+}
+
+Object* Repository::createInstance(const std::string& type, const std::string& name, const std::string& prototype)
+{
+	//OSinfo("createInstance('" + type + "', '" + name + "', '" + prototype + "')");
+
 	// non-reference-based instantiation
+	BluePrint blueprint;
 
-	Object object(name, blueprint.Filename(), type, "");
-	object.setTokens(blueprint.getTokens());
+	Prototypes::iterator it = mPrototypes.find(prototype);
+	if ( it != mPrototypes.end() ) {
+		blueprint = it->second.generateBluePrint(type);
+	}
+	else {
+		BluePrints::iterator it = mBluePrints.find(type);
+		if ( it != mBluePrints.end() ) {
+			blueprint = it->second;
+		}
+		else {
+			throw Utils::Exception("trying to create instance of unknown object '" + type + "'");
+		}
+	}
 
-	Preprocessor preprocessor;
-	preprocessor.process(&object);
+	Object *object = createObject(name, blueprint.Filename(), prototype + type, "");
+	object->setTokens(blueprint.getTokens());
+	object->connectRepository(this);
+
+	Preprocessor preprocessor(this);
+	preprocessor.process(object);
+
+	addReference(object);
 
 	return object;
 }
 
-Object Repository::createInstanceFromPrototype(const std::string& prototype, const std::string& type, const std::string& name)
+Object* Repository::createObject(const std::string& name, const std::string& filename, const std::string& type, const std::string& value)
 {
-	OSdebug("createInstanceFromPrototype('" + prototype + ", " + type + "', '" + name + "')");
+	Object *object = 0;
 
-	Prototypes::iterator it = mPrototypes.find(prototype);
-	if ( it == mPrototypes.end() ) {
-		throw Exception("trying to create prototype instance of unknown object '" + type + "'");
+	if ( type == BoolObject::TYPENAME ) {
+		object = new BoolObject(value);
+	}
+	else if ( type == NumberObject::TYPENAME ) {
+		object = new NumberObject(value);
+	}
+	else if ( type == StringObject::TYPENAME ) {
+		object = new StringObject(value);
+	}
+	else if ( type == VoidObject::TYPENAME ) {
+		object = new VoidObject();
+	}
+	else {
+		object = new UserObject(name, filename, type, value);
 	}
 
-	// non-reference-based instantiation
-	return createInstance(it->second.generateBluePrint(type), prototype + type, name);
-}
-
-const Reference& Repository::createReference(const std::string& type, const std::string& name)
-{
-	OSdebug("createReference('" + type + "', '" + name + "')");
-
-	BluePrints::iterator it = mBluePrints.find(type);
-	if ( it == mBluePrints.end() ) {
-		throw Exception("trying to create reference on unknown object '" + type + "'");
+	if ( object ) {
+		object->overrideName(name);
 	}
 
-	return createReference(it->second, type, name);
+	return object;
 }
 
-const Reference& Repository::createReference(const BluePrint& blueprint, const std::string& type, const std::string& name)
+const Reference& Repository::createReference(const std::string& type, const std::string& name, const std::string& prototype)
 {
 	// reference-based instantiation
-
-	Object *obj = new Object(name, blueprint.Filename(), type, "");
-	obj->setTokens(blueprint.getTokens());
-
-	Preprocessor preprocessor;
-	preprocessor.process(obj);
-
-	return mMemory->newObject(obj);
-}
-
-const Reference& Repository::createReferenceFromPrototype(const std::string& prototype, const std::string& type, const std::string& name)
-{
-	OSdebug("createReferenceFromPrototype('" + prototype + ", " + type + "', '" + name + "')");
+	BluePrint blueprint;
 
 	Prototypes::iterator it = mPrototypes.find(prototype);
-	if ( it == mPrototypes.end() ) {
-		throw Exception("trying to create prototype reference on unknown object '" + type + "'");
+	if ( it != mPrototypes.end() ) {
+		blueprint = it->second.generateBluePrint(type);
+	}
+	else {
+		BluePrints::iterator it = mBluePrints.find(type);
+		if ( it != mBluePrints.end() ) {
+			blueprint = it->second;
+		}
+		else {
+			throw Utils::Exception("trying to create instance of unknown object '" + type + "'");
+		}
 	}
 
-	return createReference(it->second.generateBluePrint(type), prototype + type, name);
+	Object *object = createObject(name, blueprint.Filename(), type, "");
+	object->setTokens(blueprint.getTokens());
+	object->connectRepository(this);
+
+	Preprocessor preprocessor(this);
+	preprocessor.process(object);
+
+	return mMemory->newObject(object);
 }
 
 bool Repository::isAlreadyKnown(const std::string& name) const
 {
 	return mBluePrints.find(name) != mBluePrints.end();
+}
+
+void Repository::removeReference(Object *object)
+{
+	if ( !object ) {
+		return;
+	}
+
+	ReferenceCountedObjects::iterator it = mInstances.find(object);
+	if ( it == mInstances.end() ) {
+		return;
+	}
+
+	// decrement reference count
+	it->second--;
+
+	// as soon as we removed all references, we can destroy our object
+	if ( it->first && it->second <= 0 ) {
+		// call object's destructor ...
+		it->first->Destructor();
+		// ... and delete it
+		delete it->first;
+
+		mInstances.erase(it);
+	}
 }
 
 

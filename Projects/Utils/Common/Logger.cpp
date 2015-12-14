@@ -29,7 +29,7 @@ Logger::Logger(char* logfile)
 	}
 }
 
-Logger::Logger(const Logger *parent, const std::string& className, const std::string& key)
+Logger::Logger(const ILogger *parent, const std::string& className, const std::string& key)
 : mContext(0),
   mHasParent(false),
   mKey(key),
@@ -83,7 +83,7 @@ std::string Logger::getDateTime()
 	return std::string(dateStr) + " " + std::string(timeStr);
 }
 
-Logger* Logger::getLogger()
+ILogger* Logger::getLogger()
 {
 	return this;
 }

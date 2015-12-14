@@ -5,15 +5,17 @@
 
 // Library includes
 #include <map>
+#include <string>
 #include <set>
 
 // Project includes
 #include <Core/Attributes/Attributes.h>
 #include "BluePrint.h"
 #include "Method.h"
+#include "Parameter.h"
+#include "Scope.h"
 #include "Token.h"
 #include "Types.h"
-#include "Variable.h"
 
 // Forward declarations
 
@@ -23,77 +25,107 @@
 namespace ObjectiveScript {
 
 // Forward declarations
+class BoolObject;
+class NumberObject;
+class StringObject;
+class VoidObject;
+
+// Forward declarations
 class IPrinter;
-class Memory;
 class Method;
+class Object;
 class Repository;
 
 
-class Object : public BluePrint,
-			   public Variable
-			   //public Attributes
+class Object : public LocalScope,
+			   public BluePrint
 {
 public:
 	Object();
 	Object(const std::string& name, const std::string& filename);
 	Object(const std::string& name, const std::string& filename, const std::string& type, const std::string& value);
-	~Object();
+	virtual ~Object();
+
+public:
+	Object& operator= (const Object& other);
 
 public:	// Setup
-	void addMember(Object m);		// throws DuplicateIdentifer exception
-	void addMethod(Method m);		// throws DuplicateIdentifer exception
+	void addMember(Object *m);		// throws DuplicateIdentifer exception
+	void addMethod(Method *m);		// throws DuplicateIdentifer exception
 	void addParent(const std::string& parent);
 
 public:	// Connectors
-	void connectMemory(Memory *m);
 	void connectPrinter(IPrinter *p);
 	void connectRepository(Repository *r);
 
 public:	// Providers
 	IPrinter* providePrinter() const;
 
-public:	// Usage
-	void assign(Object other); //void assign(const Object& other);
-	void Constructor(const VariablesList& params);
-	void Destructor();
+public:	// Operators
+	virtual void operator_assign(Object *other);
+	virtual void operator_divide(Object *other);
+	virtual bool operator_equal(Object *other);
+	virtual bool operator_greater(Object *other);
+	virtual bool operator_greater_equal(Object *other);
+	virtual bool operator_less(Object *other);
+	virtual bool operator_less_equal(Object *other);
+	virtual void operator_multiply(Object *other);
+	virtual void operator_plus(Object *other);
+	virtual void operator_subtract(Object *other);
 
-	Object execute(const std::string& method, const VariablesList& params, const Method* caller = 0);		// throws VisibilityError exception
+public:	// Value
+	virtual bool isValid() const;
+
+	virtual std::string ToString() const;
+
+public:
+	bool isAtomicType() const;
+
+	void overrideName(const std::string& name) {
+		mName = name;
+	}
+	void overrideType(const std::string& type) {
+		mTypename = type;
+	}
+
+	virtual std::string getValue() const;
+	virtual void setValue(const std::string& value);
+
+public:	// Usage
+	void Constructor(const ParameterList& params);
+	void Destructor();
+	void execute(Object *result, const std::string& method, const ParameterList& params, const Method* caller = 0);		// throws VisibilityError exception
+	void garbageCollector(bool force = false);
 
 public:	// Helpers
-	Object& getMember(const std::string& m);		// throws UnknownIdentifer exxception
-	bool hasMember(const std::string& m);
+	Object* getMember(const std::string& m);
 	bool hasMethod(const std::string& m);
-	bool hasMethod(const std::string& m, const VariablesList& params);
-
-	bool isValid() const;
+	bool hasMethod(const std::string& m, const ParameterList& params);
 
 protected:
+	bool mIsAtomicType;
+	Repository *mRepository;
 
 private:
-	typedef std::map<std::string, Object> MemberCollection;
-	typedef std::set<Method> MethodCollection;
+	typedef std::map<std::string, Object*> MemberCollection;
+	typedef std::set<Method*> MethodCollection;
 
 private:
 	bool findMember(const std::string& m, MemberCollection::iterator& mIt);
 	bool findMethod(const std::string& m, MethodCollection::iterator& mIt);
-	bool findMethod(const std::string& m, const VariablesList& params, MethodCollection::iterator& mIt);
-
-	bool findMember_(const std::string& m, MemberCollection::iterator& mIt);
-	bool findMethod_(const std::string& m, MethodCollection::iterator& mIt);
-	bool findMethod_(const std::string& m, const VariablesList& params, MethodCollection::iterator& mIt);
+	bool findMethod(const std::string& m, const ParameterList& params, MethodCollection::iterator& mIt);
 
 private:
-	void garbageCollector();
 	void updateMethodOwners();
 
 private:
-	bool				mConstructed;
-	MemberCollection	mMembers;
-	Memory				*mMemory;
-	MethodCollection	mMethods;
-	StringList			mParents;
-	IPrinter			*mPrinter;
-	Repository			*mRepository;
+	bool mConstructed;
+	MemberCollection mMembers;
+	MethodCollection mMethods;
+	//std::string mName;
+	StringList mParents;
+	IPrinter *mPrinter;
+	std::string mValue;
 };
 
 typedef std::list<Object> ObjectList;

@@ -3,6 +3,7 @@
 #include "Position.h"
 
 // Library includes
+#include <sstream>
 
 // Project includes
 
@@ -13,8 +14,8 @@ namespace ObjectiveScript {
 namespace Utils {
 
 
-Position::Position(size_t l, size_t c)
-: column(c), line(l)
+Position::Position(unsigned int l, unsigned int c)
+: line(l), column(c)
 {
 }
 
@@ -29,6 +30,15 @@ bool Position::operator<(const Position& other)
 		return (this->column < other.column);
 	}
 	return (this->line < other.line);
+}
+
+std::string Position::toString() const
+{
+	std::stringstream ss;
+	if ( line != 0 ) {
+		ss << "Line " << line << ", Column " << column;
+	}
+	return ss.str();
 }
 
 

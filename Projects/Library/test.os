@@ -1,3 +1,4 @@
+#!/usr/bin/oscript
 
 public object BaseObject
 {
@@ -35,7 +36,7 @@ public object DerivedObject extends public BaseObject
 	public DerivedObject DerivedObject(String name const, String type const)
 //	: BaseObject(name)
 	{
-		mName = "DerivedObject";
+		mName = name;
 		mType = "DerivedObject";
 		mValue = 2;
 	}
@@ -51,12 +52,14 @@ private object Main
 	private BaseObject base;
 	private DerivedObject derived;
 
-	public void Main()
+	public void Main(Number argc, String argv)
 	{
+		base = new BaseObject("base");
 		print("name = " & base.getName());
 		print("type = " & base.getType());
 		print("value = " & base.getValue());
 
+		derived = new DerivedObject("derived", "DerivedObject");
 		print("name = " & derived.getName());
 		print("type = " & derived.getType());
 		print("value = " & derived.getValue());

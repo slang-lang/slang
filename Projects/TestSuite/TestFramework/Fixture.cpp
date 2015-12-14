@@ -11,11 +11,16 @@
 
 
 namespace Testing {
+namespace Framework {
 
 
-Fixture::Fixture(const Utils::Common::Logger *p)
+Fixture::Fixture(const Utils::Common::ILogger *p)
 : TestFixture("Testing"),
   Utils::Common::Logger(p, "TestFramework")
+{
+}
+
+Fixture::~Fixture()
 {
 }
 
@@ -30,4 +35,5 @@ void Fixture::teardown()
 }
 
 
+}
 }

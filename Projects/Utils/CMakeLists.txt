@@ -11,7 +11,7 @@ SET(SOURCES
 )
 
 SET(HEADERS
-        Utils.h
+	Utils.h
 )
 
 SET(DEPENDENCIES
@@ -23,4 +23,3 @@ SET(DEPENDENCIES
 )
 
 build_static_lib(Utils "")
-

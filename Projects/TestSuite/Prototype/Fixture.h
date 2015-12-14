@@ -23,8 +23,8 @@ class Fixture : public TestFixture,
 				private Utils::Common::Logger
 {
 public:
-	Fixture(const Utils::Common::Logger *p);
-	virtual ~Fixture() { }
+	Fixture(const Utils::Common::ILogger *p);
+	~Fixture();
 
 public:
 	void setup();

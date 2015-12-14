@@ -24,8 +24,8 @@ Prototype::~Prototype()
 
 BluePrint Prototype::generateBluePrint(const std::string& type)
 {
-	// get tokens from blue print and replace all occurences
-	// of type "Unknown" with our new given type
+	// get tokens from blue print and replace all occurrences
+	// of type "UNKNOWN" with our new given type
 
 	TokenList tokens = mBluePrint.getTokens();
 

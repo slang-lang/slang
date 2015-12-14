@@ -16,13 +16,15 @@ using namespace Testing;
 
 
 namespace Testing {
+namespace Framework {
 
 
 class Fixture : public TestFixture,
 				private Utils::Common::Logger
 {
 public:
-	Fixture(const Utils::Common::Logger *p);
+	Fixture(const Utils::Common::ILogger *p);
+	~Fixture();
 
 public:
 	void setup();
@@ -35,6 +37,7 @@ private:
 };
 
 
+}
 }
 
 

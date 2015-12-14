@@ -1,10 +1,9 @@
 
-#ifndef _Testing_GenericTest_h_
-#define _Testing_GenericTest_h_
+#ifndef _Framework_GenericTest_h_
+#define _Framework_GenericTest_h_
 
 
 // Library includes
-//#include <boost/shared_ptr.hpp>
 #include <typeinfo>
 
 // Project includes
@@ -22,7 +21,7 @@ namespace Testing {
 class GenericTest
 {
 public:
-	typedef enum TestResult_e {
+	enum TestResult_e {
 		Failed = 0,
 		Passed,
 		Skipped
@@ -51,18 +50,18 @@ public:
 	}
 
 protected:
-	TestResult_e mLastResult;
-
 	int mFailed;
+	TestResult_e mLastResult;
 	int mRun;
-	int	mSkipped;
+	int mSkipped;
 
 private:
 	void printResults() {
-		std::cout << typeid(*this).name() << " Statistics: " << (mRun - mFailed - mSkipped) << " passed, " << mFailed << " failed, " << mSkipped << " skipped" << std::endl;
+		std::cout << "Statistics: " << (mRun - mFailed - mSkipped) << " passed, " << mFailed << " failed, " << mSkipped << " skipped" << std::endl;
+		//std::cout << typeid(*this).name() << " Statistics: " << (mRun - mFailed - mSkipped) << " passed, " << mFailed << " failed, " << mSkipped << " skipped" << std::endl;
 	}
 };
 
 }
 
-#endif _Testing_GenericTest_h_
+#endif

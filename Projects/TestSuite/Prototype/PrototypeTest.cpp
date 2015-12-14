@@ -1,6 +1,8 @@
 
+#ifdef _WIN32
 #pragma warning(disable : 4127)
 #pragma warning(disable : 4702)
+#endif
 
 // Header
 #include "PrototypeTest.h"
@@ -10,7 +12,7 @@
 // Project includes
 #include <Core/Script.h>
 #include <Core/VirtualMachine.h>
-#include <Utils/Printer.h>
+#include <Core/Utils/Exceptions.h>
 
 // Namespace declartations
 using namespace ObjectiveScript;
@@ -20,18 +22,14 @@ namespace Testing {
 namespace Prototype {
 
 
-::Utils::Printer stdoutPrinter;
-
-
 PrototypeTest::PrototypeTest(const ::Utils::Common::Logger *p)
-: ::Utils::Common::Logger(p, "PrototypeTest")
+: ::Utils::Common::Logger(p, "PrototypeTest"),
+  mStdoutPrinter(p)
 {
 }
 
 void PrototypeTest::process()
 {
-	TEST(testBasicObject);
-	TEST(testBasicLanguage);
 	TEST(testPrototypeDeclaration);
 	TEST(testPrototypeUsage);
 }
@@ -44,78 +42,23 @@ void PrototypeTest::teardown()
 {
 }
 
-void PrototypeTest::testBasicLanguage()
-{
-	try {
-		VirtualMachine vm;
-		vm.connectPrinter(&stdoutPrinter);
-
-		Script *s = vm.create("Tests/BasicLanguageTest.os");
-
-		//s->execute("test_assert", VariablesList());
-		s->execute("test_comments", VariablesList());
-		s->execute("test_executeMethod", VariablesList());
-		//s->execute("test_for", VariablesList());
-
-		{
-			VariablesList params;
-			params.push_back(Variable("param1", "Number", "1"));
-			s->execute("test_if", params);
-		}
-		s->execute("test_localVar", VariablesList());
-		{
-			VariablesList params;
-			params.push_back(Variable("param1", "String", "1"));
-			s->execute("test_print", params);
-		}
-		s->execute("test_staticLocalVar", VariablesList());
-		{
-			VariablesList params;
-			params.push_back(Variable("maxCount", "Number", "5"));
-			s->execute("test_while", params);
-		}
-
-		// automatic success
-		delete s;
-	}
-	catch ( std::exception& ) {
-		// exception has been thrown: test failed!
-		TFAIL("caught exception!");
-	}
-}
-
-void PrototypeTest::testBasicObject()
-{
-	try {
-		VirtualMachine vm;
-		vm.connectPrinter(&stdoutPrinter);
-
-		Script *s = vm.create("Tests/BasicObjectTest.os");
-
-		// automatic success
-		delete s;
-	}
-	catch ( std::exception& ) {
-		// exception has been thrown: test failed!
-		TFAIL("caught exception!");
-	}
-
-}
-
 void PrototypeTest::testPrototypeDeclaration()
 {
 	try {
 		VirtualMachine vm;
-		vm.connectPrinter(&stdoutPrinter);
+		vm.setPrinter(&mStdoutPrinter);
 
-		Script *s = vm.create("Tests/PrototypeTest.os");
+		vm.create("Tests/Prototypes/PrototypeTest.os");
 
 		// automatic success
-		delete s;
 	}
-	catch ( std::exception& ) {
+	catch ( ObjectiveScript::Utils::Exception& e ) {
 		// exception has been thrown: test failed!
-		TFAIL("caught exception!");
+		TFAIL("caught exception: " << e.what());
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL("caught exception: " << e.what());
 	}
 }
 
@@ -123,19 +66,19 @@ void PrototypeTest::testPrototypeUsage()
 {
 	try {
 		VirtualMachine vm;
-		vm.connectPrinter(&stdoutPrinter);
+		vm.setPrinter(&mStdoutPrinter);
 
-		Script *s = vm.create("Tests/PrototypeTest.os");
-
-		VariablesList params;
-		s->execute("test", params);
+		vm.create("Tests/Prototypes/PrototypeTest_Inheritance.os");
 
 		// automatic success
-		delete s;
 	}
-	catch ( std::exception& ) {
+	catch ( ObjectiveScript::Utils::Exception& e ) {
 		// exception has been thrown: test failed!
-		TFAIL("caught exception!");
+		TFAIL("caught exception: " << e.what());
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL("caught exception: " << e.what());
 	}
 }
 
