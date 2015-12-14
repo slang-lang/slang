@@ -27,10 +27,14 @@ public:	// Operators
 	virtual operator bool() const;
 
 	virtual void operator_assign(Bool *other);
+	virtual void operator_assign(Number *other);
 	virtual void operator_assign(Object *other);
+	virtual void operator_assign(String *other);
 
 	virtual bool operator_equal(Bool *other);
+	virtual bool operator_equal(Number *other);
 	virtual bool operator_equal(Object *other);
+	virtual bool operator_equal(String *other);
 
 public: // Value
 	virtual bool getNativeValue() const;

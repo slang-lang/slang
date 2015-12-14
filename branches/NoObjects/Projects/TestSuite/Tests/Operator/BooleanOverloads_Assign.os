@@ -31,6 +31,24 @@ private namespace BooleanOverloads
 		{
 			mValue = other.GetValue();
 		}
+
+		public Bool operator_equal(Number other const) const
+		{
+			if ( mValue == other ) {
+				return true;
+			}
+
+			return false;
+		}
+
+		public Bool operator_equal(UserObject other const ref) const
+		{
+			if ( mValue == other.GetValue() ) {
+				return true;
+			}
+
+			return false;
+		}
 	}
 
 	public object Main
@@ -47,10 +65,11 @@ private namespace BooleanOverloads
 
 			UserObject obj1 = new UserObject(1);
 
-			//obj1 = 2;		// beware! this overrides our object because operator_assign overloading is not yet done!
-			obj1.setValue(2);
+			obj1 = 2;
+			//obj1.setValue(2);
 			//assert( obj1.GetValue() == 2 );
-			if ( obj1.GetValue() == 2 ) {
+			if ( obj1 == 2 ) {
+				print("obj1 == 2");
 				return true;
 			}
 
@@ -66,7 +85,8 @@ private namespace BooleanOverloads
 
 			obj1 = obj2;
 			//assert( obj1.GetValue() == obj2.GetValue() );
-			if ( obj1.GetValue() == obj2.GetValue() ) {
+			if ( obj1 == obj2 ) {
+				print("obj1 == obj2");
 				return true;
 			}
 

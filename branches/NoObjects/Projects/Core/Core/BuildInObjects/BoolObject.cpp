@@ -7,6 +7,8 @@
 // Project includes
 #include <Core/Utils/Exceptions.h>
 #include <Core/Tools.h>
+#include "NumberObject.h"
+#include "StringObject.h"
 
 // Namespace declarations
 
@@ -63,17 +65,38 @@ void Bool::operator_assign(Bool *other)
 	mValue = other->getNativeValue();
 }
 
+void Bool::operator_assign(Number *other)
+{
+	mValue = (other->getNativeValue() != 0.f);
+}
+
 void Bool::operator_assign(Object *other)
 {
 	std::string target = other->Typename();
+
 	if ( target == "Bool" ) {
 		Bool tmp(other->getValue());
 
 		operator_assign(&tmp);
 	}
-	else {
-		throw Utils::NotImplemented("operator_assign: conversion from " + target + " to Number not supported");
+	else if ( target == "Number" ) {
+		Bool tmp(other->getValue());
+
+		operator_assign(&tmp);
 	}
+	else if ( target == "String" ) {
+		Bool tmp(other->getValue());
+
+		operator_assign(&tmp);
+	}
+	else {
+		throw Utils::NotImplemented("operator_assign: conversion from " + target + " to " + Typename() + " not supported");
+	}
+}
+
+void Bool::operator_assign(String *other)
+{
+	mValue = !other->getNativeValue().empty();
 }
 
 bool Bool::operator_equal(Bool *other)
@@ -81,16 +104,37 @@ bool Bool::operator_equal(Bool *other)
 	return (mValue == other->getNativeValue());
 }
 
+bool Bool::operator_equal(Number *other)
+{
+	return (mValue == (other->getNativeValue() != 0.f));
+}
+
 bool Bool::operator_equal(Object *other)
 {
 	std::string target = other->Typename();
+
 	if ( target == "Bool" ) {
 		Bool tmp(other->getValue());
 
 		return operator_equal(&tmp);
 	}
+	else if ( target == "Number" ) {
+		Bool tmp(other->getValue());
 
-	throw Utils::NotImplemented("operator_equal: conversion from " + target + " to Number not supported");
+		return operator_equal(&tmp);
+	}
+	else if ( target == "String" ) {
+		Bool tmp(other->getValue());
+
+		return operator_equal(&tmp);
+	}
+
+	throw Utils::NotImplemented("operator_equal: conversion from " + target + " to " + Typename() + " not supported");
+}
+
+bool Bool::operator_equal(String *other)
+{
+	return (mValue == (!other->getNativeValue().empty()));
 }
 
 void Bool::setNativeValue(bool value)

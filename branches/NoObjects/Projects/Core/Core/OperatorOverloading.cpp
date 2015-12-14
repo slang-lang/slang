@@ -29,29 +29,33 @@ void operator_assign(Object *base, Object *other)
 
 	std::string source = base->Typename();
 
-	if ( source == "Bool" ) {
+	if ( source == "<unknown type>" ) {
+		// assign directly because our base has not yet been initialized
+		*base = *other;
+	}
+	else if ( source == "Bool" ) {
 		Bool tmp(base->getValue());
 		tmp.operator_assign(other);
 
-		base->setValue(tmp.getValue());
+		*base = tmp;
 	}
 	else if ( source == "Number" ) {
 		Number tmp(base->getValue());
 		tmp.operator_assign(other);
 
-		base->setValue(tmp.getValue());
+		*base = tmp;
 	}
 	else if ( source == "String" ) {
 		String tmp(base->getValue());
 		tmp.operator_assign(other);
 
-		base->setValue(tmp.getValue());
+		*base = tmp;
 	}
 	else if ( source == "Void" ) {
 		Void tmp;
 		tmp.operator_assign(other);
 
-		base->setValue(tmp.getValue());
+		*base = tmp;
 	}
 	else {
 		ParameterList params;
@@ -79,25 +83,25 @@ void operator_divide(Object *base, Object *other)
 		Bool tmp(base->getValue());
 		tmp.operator_divide(other);
 
-		base->setValue(tmp.getValue());
+		*base = tmp;
 	}
 	else if ( source == "Number" ) {
 		Number tmp(base->getValue());
 		tmp.operator_divide(other);
 
-		base->setValue(tmp.getValue());
+		*base = tmp;
 	}
 	else if ( source == "String" ) {
 		String tmp(base->getValue());
 		tmp.operator_divide(other);
 
-		base->setValue(tmp.getValue());
+		*base = tmp;
 	}
 	else if ( source == "Void" ) {
 		Void tmp;
 		tmp.operator_divide(other);
 
-		base->setValue(tmp.getValue());
+		*base = tmp;
 	}
 	else {
 		ParameterList params;
@@ -315,25 +319,25 @@ void operator_multiply(Object *base, Object *other)
 		Bool tmp(base->getValue());
 		tmp.operator_multiply(other);
 
-		base->setValue(tmp.getValue());
+		*base = tmp;
 	}
 	else if ( source == "Number" ) {
 		Number tmp(base->getValue());
 		tmp.operator_multiply(other);
 
-		base->setValue(tmp.getValue());
+		*base = tmp;
 	}
 	else if ( source == "String" ) {
 		String tmp(base->getValue());
 		tmp.operator_multiply(other);
 
-		base->setValue(tmp.getValue());
+		*base = tmp;
 	}
 	else if ( source == "Void" ) {
 		Void tmp;
 		tmp.operator_multiply(other);
 
-		base->setValue(tmp.getValue());
+		*base = tmp;
 	}
 	else {
 		ParameterList params;
@@ -361,25 +365,25 @@ void operator_plus(Object *base, Object *other)
 		Bool tmp(base->getValue());
 		tmp.operator_plus(other);
 
-		base->setValue(tmp.getValue());
+		*base = tmp;
 	}
 	else if ( source == "Number" ) {
 		Number tmp(base->getValue());
 		tmp.operator_plus(other);
 
-		base->setValue(tmp.getValue());
+		*base = tmp;
 	}
 	else if ( source == "String" ) {
 		String tmp(base->getValue());
 		tmp.operator_plus(other);
 
-		base->setValue(tmp.getValue());
+		*base = tmp;
 	}
 	else if ( source == "Void" ) {
 		Void tmp;
 		tmp.operator_plus(other);
 
-		base->setValue(tmp.getValue());
+		*base = tmp;
 	}
 	else {
 		ParameterList params;
@@ -407,25 +411,25 @@ void operator_subtract(Object *base, Object *other)
 		Bool tmp(base->getValue());
 		tmp.operator_subtract(other);
 
-		base->setValue(tmp.getValue());
+		*base = tmp;
 	}
 	else if ( source == "Number" ) {
 		Number tmp(base->getValue());
 		tmp.operator_subtract(other);
 
-		base->setValue(tmp.getValue());
+		*base = tmp;
 	}
 	else if ( source == "String" ) {
 		String tmp(base->getValue());
 		tmp.operator_subtract(other);
 
-		base->setValue(tmp.getValue());
+		*base = tmp;
 	}
 	else if ( source == "Void" ) {
 		Void tmp;
 		tmp.operator_subtract(other);
 
-		base->setValue(tmp.getValue());
+		*base = tmp;
 	}
 	else {
 		ParameterList params;

@@ -479,10 +479,16 @@ void Method::parseTerm(Object *result, TokenIterator& start)
 {
 	switch ( start->type() ) {
 		case Token::Type::BOOLEAN: {
-			*result = Bool(start->content());
+			//*result = Bool(start->content());
+
+			Bool tmp(start->content());
+			operator_assign(result, &tmp);
 		} break;
 		case Token::Type::CONSTANT: {
-			*result = Number(start->content());
+			//*result = Number(start->content());
+
+			Number tmp(start->content());
+			operator_assign(result, &tmp);
 		} break;
 		case Token::Type::IDENTIFER: {
 			// find out if we have to execute a method
@@ -490,6 +496,7 @@ void Method::parseTerm(Object *result, TokenIterator& start)
 			Object *symbol = getSymbol(start->content());
 			if ( symbol ) {
 				*result = *symbol;
+				//operator_assign(result, symbol);
 			}
 			else {
 				if ( isMethod(start->content()) ) {
@@ -504,7 +511,10 @@ void Method::parseTerm(Object *result, TokenIterator& start)
 			process(result, start, mTokens.end(), Token::Type::SEMICOLON);
 		} break;
 		case Token::Type::LITERAL: {
-			*result = String(start->content());
+			//*result = String(start->content());
+
+			String tmp(start->content());
+			operator_assign(result, &tmp);
 		} break;
 		case Token::Type::MATH_SUBTRACT: {
 			throw Utils::NotImplemented("unary minus");

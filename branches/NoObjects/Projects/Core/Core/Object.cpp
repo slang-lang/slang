@@ -236,7 +236,7 @@ void Object::execute(Object *result, const std::string& method, const ParameterL
 		// catch and log all errors that occured during method execution
 		OSerror(e.what());
 
-		mPrinter->print(ToString() + ": " + e.what() + "\n");
+		//mPrinter->print(ToString() + ": " + e.what() + "\n");
 
 		throw;
 	}
@@ -405,54 +405,74 @@ bool Object::isValid() const
 	return mConstructed;
 }
 
-void Object::operator_assign(Object * /*other*/)
+void Object::operator_assign(Object *other)
 {
-	throw Utils::NotImplemented(ToString() + ", operator=");
+	std::string target = other->Typename();
+
+	throw Utils::NotImplemented("operator=: conversion from " + target + " to " + Typename() + " not supported");
 }
 
-void Object::operator_divide(Object * /*other*/)
+void Object::operator_divide(Object *other)
 {
-	throw Utils::NotImplemented(ToString() + ", operator/");
+	std::string target = other->Typename();
+
+	throw Utils::NotImplemented("operator/: conversion from " + target + " to " + Typename() + " not supported");
 }
 
-bool Object::operator_equal(Object * /*other*/)
+bool Object::operator_equal(Object *other)
 {
-	throw Utils::NotImplemented(ToString() + ", operator==");
+	std::string target = other->Typename();
+
+	throw Utils::NotImplemented("operator==: conversion from " + target + " to " + Typename() + " not supported");
 }
 
-bool Object::operator_greater(Object * /*other*/)
+bool Object::operator_greater(Object *other)
 {
-	throw Utils::NotImplemented(ToString() + ", operator>");
+	std::string target = other->Typename();
+
+	throw Utils::NotImplemented("operator>: conversion from " + target + " to " + Typename() + " not supported");
 }
 
-bool Object::operator_greater_equal(Object * /*other*/)
+bool Object::operator_greater_equal(Object *other)
 {
-	throw Utils::NotImplemented(ToString() + ", operator>=");
+	std::string target = other->Typename();
+
+	throw Utils::NotImplemented("operator>=: conversion from " + target + " to " + Typename() + " not supported");
 }
 
-bool Object::operator_less(Object * /*other*/)
+bool Object::operator_less(Object *other)
 {
-	throw Utils::NotImplemented(ToString() + ", operator<");
+	std::string target = other->Typename();
+
+	throw Utils::NotImplemented("operator<: conversion from " + target + " to " + Typename() + " not supported");
 }
 
-bool Object::operator_less_equal(Object * /*other*/)
+bool Object::operator_less_equal(Object *other)
 {
-	throw Utils::NotImplemented(ToString() + ", operator<=");
+	std::string target = other->Typename();
+
+	throw Utils::NotImplemented("operator<=: conversion from " + target + " to " + Typename() + " not supported");
 }
 
-void Object::operator_multiply(Object * /*other*/)
+void Object::operator_multiply(Object *other)
 {
-	throw Utils::NotImplemented(ToString() + ", operator*");
+	std::string target = other->Typename();
+
+	throw Utils::NotImplemented("operator*: conversion from " + target + " to " + Typename() + " not supported");
 }
 
-void Object::operator_plus(Object * /*other*/)
+void Object::operator_plus(Object *other)
 {
-	throw Utils::NotImplemented(ToString() + ", operator+");
+	std::string target = other->Typename();
+
+	throw Utils::NotImplemented("operator+: conversion from " + target + " to " + Typename() + " not supported");
 }
 
-void Object::operator_subtract(Object * /*other*/)
+void Object::operator_subtract(Object *other)
 {
-	throw Utils::NotImplemented(ToString() + ", operator-");
+	std::string target = other->Typename();
+
+	throw Utils::NotImplemented("operator-: conversion from " + target + " to " + Typename() + " not supported");
 }
 
 /*

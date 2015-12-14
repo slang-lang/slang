@@ -61,6 +61,7 @@ void String::operator_assign(Number *other)
 void String::operator_assign(Object *other)
 {
 	std::string target = other->Typename();
+
 	if ( target == "Bool" ) {
 		String tmp(other->getValue());
 
@@ -77,7 +78,7 @@ void String::operator_assign(Object *other)
 		operator_assign(&tmp);
 	}
 	else {
-		throw Utils::NotImplemented("operator_assign: conversion from " + target + " to Number not supported");
+		throw Utils::NotImplemented("operator_assign: conversion from " + target + " to " + Typename() + " not supported");
 	}
 }
 
@@ -109,7 +110,7 @@ bool String::operator_equal(Object *other)
 		return operator_equal(&tmp);
 	}
 
-	throw Utils::NotImplemented("operator_equal: conversion from " + target + " to Number not supported");
+	throw Utils::NotImplemented("operator_equal: conversion from " + target + " to " + Typename() + " not supported");
 }
 
 bool String::operator_equal(String *other)
@@ -147,7 +148,7 @@ void String::operator_plus(Object *other)
 		operator_plus(&tmp);
 	}
 	else {
-		throw Utils::NotImplemented("operator_assign: conversion from " + target + " to Number not supported");
+		throw Utils::NotImplemented("operator_assign: conversion from " + target + " to " + Typename() + " not supported");
 	}
 }
 

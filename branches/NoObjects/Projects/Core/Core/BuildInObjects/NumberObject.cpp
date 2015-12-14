@@ -66,13 +66,14 @@ void Number::operator_assign(Number *other)
 void Number::operator_assign(Object *other)
 {
 	std::string target = other->Typename();
+
 	if ( target == "Number" ) {
 		Number tmp(other->getValue());
 
 		operator_assign(&tmp);
 	}
 	else {
-		throw Utils::NotImplemented("operator_assign: conversion from " + target + " to Number not supported");
+		throw Utils::NotImplemented("operator_assign: conversion from " + target + " to " + Typename() + " not supported");
 	}
 }
 
@@ -84,13 +85,14 @@ void Number::operator_divide(Number *other)
 void Number::operator_divide(Object *other)
 {
 	std::string target = other->Typename();
+
 	if ( target == "Number" ) {
 		Number tmp(other->getValue());
 
 		operator_divide(&tmp);
 	}
 	else {
-		throw Utils::NotImplemented("operator_divide: conversion from " + target + " to Number not supported");
+		throw Utils::NotImplemented("operator_divide: conversion from " + target + " to " + Typename() + " not supported");
 	}
 }
 
@@ -102,13 +104,14 @@ bool Number::operator_equal(Number *other)
 bool Number::operator_equal(Object *other)
 {
 	std::string target = other->Typename();
+
 	if ( target == "Number" ) {
 		Number tmp(other->getValue());
 
 		return operator_equal(&tmp);
 	}
 
-	throw Utils::NotImplemented("operator_equal: conversion from " + target + " to Number not supported");
+	throw Utils::NotImplemented("operator_equal: conversion from " + target + " to " + Typename() + " not supported");
 }
 
 bool Number::operator_greater(Number *other)
@@ -119,13 +122,14 @@ bool Number::operator_greater(Number *other)
 bool Number::operator_greater(Object *other)
 {
 	std::string target = other->Typename();
+
 	if ( target == "Number" ) {
 		Number tmp(other->getValue());
 
 		return operator_greater(&tmp);
 	}
 
-	throw Utils::NotImplemented("operator_greater: conversion from " + target + " to Number not supported");
+	throw Utils::NotImplemented("operator_greater: conversion from " + target + " to " + Typename() + " not supported");
 }
 
 bool Number::operator_greater_equal(Number *other)
@@ -136,13 +140,14 @@ bool Number::operator_greater_equal(Number *other)
 bool Number::operator_greater_equal(Object *other)
 {
 	std::string target = other->Typename();
+
 	if ( target == "Number" ) {
 		Number tmp(other->getValue());
 
 		return operator_greater_equal(&tmp);
 	}
 
-	throw Utils::NotImplemented("operator_greater_equal: conversion from " + target + " to Number not supported");
+	throw Utils::NotImplemented("operator_greater_equal: conversion from " + target + " to " + Typename() + " not supported");
 }
 
 bool Number::operator_less(Number *other)
@@ -153,13 +158,14 @@ bool Number::operator_less(Number *other)
 bool Number::operator_less(Object *other)
 {
 	std::string target = other->Typename();
+
 	if ( target == "Number" ) {
 		Number tmp(other->getValue());
 
 		return operator_less(&tmp);
 	}
 
-	throw Utils::NotImplemented("operator_less: conversion from " + target + " to Number not supported");
+	throw Utils::NotImplemented("operator_less: conversion from " + target + " to " + Typename() + " not supported");
 }
 
 bool Number::operator_less_equal(Number *other)
@@ -170,13 +176,14 @@ bool Number::operator_less_equal(Number *other)
 bool Number::operator_less_equal(Object *other)
 {
 	std::string target = other->Typename();
+
 	if ( target == "Number" ) {
 		Number tmp(other->getValue());
 
 		return operator_less_equal(&tmp);
 	}
 
-	throw Utils::NotImplemented("operator_less_equal: conversion from " + target + " to Number not supported");
+	throw Utils::NotImplemented("operator_less_equal: conversion from " + target + " to " + Typename() + " not supported");
 }
 
 void Number::operator_multiply(Number *other)
@@ -187,13 +194,14 @@ void Number::operator_multiply(Number *other)
 void Number::operator_multiply(Object *other)
 {
 	std::string target = other->Typename();
+
 	if ( target == "Number" ) {
 		Number tmp(other->getValue());
 
 		operator_multiply(&tmp);
 	}
 	else {
-		throw Utils::NotImplemented("operator_multiply: conversion from " + target + " to Number not supported");
+		throw Utils::NotImplemented("operator_multiply: conversion from " + target + " to " + Typename() + " not supported");
 	}
 }
 
@@ -205,13 +213,14 @@ void Number::operator_plus(Number *other)
 void Number::operator_plus(Object *other)
 {
 	std::string target = other->Typename();
+
 	if ( target == "Number" ) {
 		Number tmp(other->getValue());
 
 		operator_plus(&tmp);
 	}
 	else {
-		throw Utils::NotImplemented("operator_plus: conversion from " + target + " to Number not supported");
+		throw Utils::NotImplemented("operator_plus: conversion from " + target + " to " + Typename() + " not supported");
 	}
 }
 
@@ -223,13 +232,14 @@ void Number::operator_subtract(Number *other)
 void Number::operator_subtract(Object *other)
 {
 	std::string target = other->Typename();
+
 	if ( target == "Number" ) {
 		Number tmp(other->getValue());
 
 		operator_subtract(&tmp);
 	}
 	else {
-		throw Utils::NotImplemented("operator_subtract: conversion from " + target + " to Number not supported");
+		throw Utils::NotImplemented("operator_subtract: conversion from " + target + " to " + Typename() + " not supported");
 	}
 }
 
