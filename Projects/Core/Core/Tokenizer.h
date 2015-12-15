@@ -41,12 +41,14 @@ private:	// Tokenizer
 	void replacePrototypes();
 
 	bool isBoolean(const std::string& token) const;
-	bool isDigit(const std::string& token) const;
+	bool isFloat(const std::string& token) const;
 	bool isIdentifer(const std::string& token) const;
+	bool isInteger(const std::string& token) const;
 	bool isKeyword(const std::string& token) const;
 	bool isLanguageFeature(const std::string& token) const;
 	bool isLiteral(const std::string& token) const;
 	bool isModifier(const std::string& token) const;
+	bool isNumber(const std::string& token) const;
 	bool isReservedWord(const std::string& token) const;
 	bool isType(const std::string& token) const;
 	bool isVisibility(const std::string& token) const;

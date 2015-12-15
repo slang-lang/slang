@@ -30,6 +30,7 @@ public:	// Operators
 	virtual operator bool() const;
 
 	virtual void operator_assign(BoolObject *other);
+	virtual void operator_assign(FloatObject *other);
 	virtual void operator_assign(NumberObject *other);
 	virtual void operator_assign(Object *other);
 	virtual void operator_assign(StringObject *other);
@@ -38,6 +39,7 @@ public:	// Operators
 	virtual bool operator_equal(StringObject *other);
 
 	virtual void operator_plus(BoolObject *other);
+	virtual void operator_plus(FloatObject *other);
 	virtual void operator_plus(NumberObject *other);
 	virtual void operator_plus(Object *other);
 	virtual void operator_plus(StringObject *other);

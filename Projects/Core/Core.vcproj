@@ -235,6 +235,14 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\Core\BuildInObjects\FloatObject.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\BuildInObjects\IntegerObject.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\Interface.cpp"
 				>
 			</File>
@@ -469,11 +477,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Core\Exceptions.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\Utils\Exceptions.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Exceptions.h"
+				RelativePath=".\Core\BuildInObjects\FloatObject.h"
 				>
 			</File>
 			<File
@@ -482,6 +494,10 @@
 			</File>
 			<File
 				RelativePath=".\Core\Keywords\if.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\BuildInObjects\IntegerObject.h"
 				>
 			</File>
 			<File

@@ -33,6 +33,8 @@ public:
 
 private:	// Tests
 	void testBasicExpressionParsing();
+	void testDataTypeFloat();
+	void testDataTypeInt();
 
 private:
 	Utils::Printer mStdoutPrinter;
