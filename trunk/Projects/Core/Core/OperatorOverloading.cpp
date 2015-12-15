@@ -124,7 +124,7 @@ void operator_divide(Object *base, Object *other)
 		);
 
 		BoolObject tmp;
-		base->execute(&tmp, "operator_divide", params, 0);
+		base->execute(&tmp, "operator/", params, 0);
 	}
 }
 
@@ -360,7 +360,7 @@ void operator_multiply(Object *base, Object *other)
 		);
 
 		BoolObject tmp;
-		base->execute(&tmp, "operator_multiply", params, 0);
+		base->execute(&tmp, "operator*", params, 0);
 	}
 }
 
@@ -406,7 +406,7 @@ void operator_plus(Object *base, Object *other)
 		);
 
 		BoolObject tmp;
-		base->execute(&tmp, "operator_plus", params, 0);
+		base->execute(&tmp, "operator+", params, 0);
 	}
 }
 
@@ -452,7 +452,7 @@ void operator_subtract(Object *base, Object *other)
 		);
 
 		BoolObject tmp;
-		base->execute(&tmp, "operator_subtract", params, 0);
+		base->execute(&tmp, "operator-", params, 0);
 	}
 }
 

@@ -18,9 +18,9 @@ public namespace MathOverloads
 
 		/////////////////////////////////////////////////////////////////////
 
-		public void operator_divide(number other const) modify
+		public void operator/(number other const) modify
 		{
-			print("operator_divide");
+			print("operator/");
 			mNumber = mNumber / other;
 		}
 
@@ -46,21 +46,21 @@ public namespace MathOverloads
 			return false;
 		}
 
-		public void operator_multiply(number other const) modify
+		public void operator*(number other const) modify
 		{
-			print("operator_multiply");
+			print("operator*");
 			mNumber = mNumber * other;
 		}
 
-		public void operator_plus(number other const) modify
+		public void operator+(number other const) modify
 		{
-			print("operator_plus");
+			print("operator+");
 			mNumber = mNumber + other;
 		}
 
-		public void operator_subtract(number other const) modify
+		public void operator-(number other const) modify
 		{
-			print("operator_subtract");
+			print("operator-");
 			mNumber = mNumber - other;
 		}
 	}

@@ -545,6 +545,7 @@ void Tokenizer::process()
 
 	removeWhiteSpaces();		// remove all whitespaces
 	replaceAssignments();
+	replaceOperators();
 	replacePrototypes();
 	//classify();
 }
@@ -653,6 +654,34 @@ void Tokenizer::replaceAssignments()
 	}
 
 	mTokens = tmp;
+}
+
+/*
+ * This merges all 'operator' tokens with their according operator (+, -, *, /, =, ==, <, <=, >, >=, etc.)
+ */
+void Tokenizer::replaceOperators()
+{
+	TokenList::iterator token = mTokens.begin();
+
+	// try to combine all operator tokens
+	while ( token != mTokens.end() ) {
+		if ( (*token).type() == Token::Type::RESERVED && (*token).content() == RESERVED_WORD_OPERATOR ) {
+			// we found an operator
+			TokenList::iterator opToken = token;
+
+			// remove the following 'operator'-token
+			token++;
+
+			// and reset our opToken's type
+			(*opToken).resetTypeTo(Token::Type::IDENTIFER);
+			(*opToken).resetContentTo(RESERVED_WORD_OPERATOR + (*token).content());
+
+			mTokens.erase(token++);
+			continue;
+		}
+
+		token++;
+	}
 }
 
 /*
