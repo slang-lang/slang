@@ -9,6 +9,8 @@
 #include <Core/Utils/Exceptions.h>
 #include <Core/Tools.h>
 #include "BoolObject.h"
+#include "FloatObject.h"
+#include "IntegerObject.h"
 #include "NumberObject.h"
 #include "UserObject.h"
 #include "VoidObject.h"
@@ -57,6 +59,11 @@ void StringObject::operator_assign(BoolObject *other)
 	mValue = other->getValue();
 }
 
+void StringObject::operator_assign(FloatObject *other)
+{
+	mValue = other->getValue();
+}
+
 void StringObject::operator_assign(NumberObject *other)
 {
 	mValue = other->getValue();
@@ -66,17 +73,11 @@ void StringObject::operator_assign(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == BoolObject::TYPENAME ) {
-		StringObject tmp(other->getValue());
-
-		operator_assign(&tmp);
-	}
-	else if ( target == NumberObject::TYPENAME ) {
-		StringObject tmp(other->getValue());
-
-		operator_assign(&tmp);
-	}
-	else if ( target == StringObject::TYPENAME ) {
+	if ( target == BoolObject::TYPENAME ||
+		 target == FloatObject::TYPENAME ||
+		 target == IntegerObject::TYPENAME ||
+		 target == NumberObject::TYPENAME ||
+		 target == StringObject::TYPENAME ) {
 		StringObject tmp(other->getValue());
 
 		operator_assign(&tmp);
@@ -127,6 +128,11 @@ void StringObject::operator_plus(BoolObject *other)
 	mValue += other->getValue();
 }
 
+void StringObject::operator_plus(FloatObject *other)
+{
+	mValue += other->getValue();
+}
+
 void StringObject::operator_plus(NumberObject *other)
 {
 	mValue += other->getValue();
@@ -136,17 +142,11 @@ void StringObject::operator_plus(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == BoolObject::TYPENAME ) {
-		StringObject tmp(other->getValue());
-
-		operator_plus(&tmp);
-	}
-	else if ( target == NumberObject::TYPENAME ) {
-		StringObject tmp(other->getValue());
-
-		operator_plus(&tmp);
-	}
-	else if ( target == StringObject::TYPENAME ) {
+	if ( target == BoolObject::TYPENAME ||
+		 target == FloatObject::TYPENAME ||
+		 target == IntegerObject::TYPENAME ||
+		 target == NumberObject::TYPENAME ||
+		 target == StringObject::TYPENAME ) {
 		StringObject tmp(other->getValue());
 
 		operator_plus(&tmp);

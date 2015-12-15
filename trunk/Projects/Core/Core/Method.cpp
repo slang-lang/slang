@@ -7,6 +7,8 @@
 
 // Project includes
 #include <Core/BuildInObjects/BoolObject.h>
+#include <Core/BuildInObjects/FloatObject.h>
+#include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/BuildInObjects/NumberObject.h>
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/BuildInObjects/VoidObject.h>
@@ -479,11 +481,23 @@ void Method::parseFactors(Object *result, TokenIterator& start)
 void Method::parseTerm(Object *result, TokenIterator& start)
 {
 	switch ( start->type() ) {
-		case Token::Type::BOOLEAN: {
+		case Token::Type::CONST_BOOLEAN: {
 			BoolObject tmp(start->content());
 			operator_assign(result, &tmp);
 		} break;
-		case Token::Type::CONSTANT: {
+		case Token::Type::CONST_FLOAT: {
+			FloatObject tmp(start->content());
+			operator_assign(result, &tmp);
+		} break;
+		case Token::Type::CONST_INTEGER: {
+			IntegerObject tmp(start->content());
+			operator_assign(result, &tmp);
+		} break;
+		case Token::Type::CONST_LITERAL: {
+			StringObject tmp(start->content());
+			operator_assign(result, &tmp);
+		} break;
+		case Token::Type::CONST_NUMBER: {
 			NumberObject tmp(start->content());
 			operator_assign(result, &tmp);
 		} break;
@@ -506,10 +520,6 @@ void Method::parseTerm(Object *result, TokenIterator& start)
 		} break;
 		case Token::Type::KEYWORD: {
 			process(result, start, mTokens.end(), Token::Type::SEMICOLON);
-		} break;
-		case Token::Type::LITERAL: {
-			StringObject tmp(start->content());
-			operator_assign(result, &tmp);
 		} break;
 		case Token::Type::MATH_SUBTRACT: {
 			throw Utils::Exceptions::NotImplemented("unary minus");
@@ -539,9 +549,11 @@ void Method::process(Object *result, TokenIterator& token, TokenIterator end, To
 
 		// decide what we want to do according to the type of token we have
 		switch ( token->type() ) {
-			case Token::Type::BOOLEAN:
-			case Token::Type::CONSTANT:
-			case Token::Type::LITERAL:
+			case Token::Type::CONST_BOOLEAN:
+			case Token::Type::CONST_FLOAT:
+			case Token::Type::CONST_INTEGER:
+			case Token::Type::CONST_LITERAL:
+			case Token::Type::CONST_NUMBER:
 				parseExpression(result, token);
 				break;
 			case Token::Type::IDENTIFER:

@@ -197,17 +197,18 @@ Token Tokenizer::createToken(const std::string& con, const Utils::Position& pos)
 	else if ( content == "-" ) { type = Token::Type::MATH_SUBTRACT; }
 	else if ( content == "&" ) { type = Token::Type::STRING_ADD; }
 	else if ( content == "case" ) { type = Token::Type::CASE; }
-	else if ( isBoolean(content) ) { type = Token::Type::BOOLEAN; }
-	else if ( isDigit(content) ) { type = Token::Type::CONSTANT; }
+	else if ( isBoolean(content) ) { type = Token::Type::CONST_BOOLEAN; }
+	else if ( isFloat(content) ) { type = Token::Type::CONST_NUMBER; }
 	else if ( isIdentifer(content) ) { type = Token::Type::IDENTIFER; }
+	else if ( isInteger(content) ) { type = Token::Type::CONST_NUMBER; }
 	else if ( isKeyword(content) ) { type = Token::Type::KEYWORD; }
 	else if ( isLanguageFeature(content) ) { type = Token::Type::LANGUAGEFEATURE; }
-	else if ( isLiteral(content) ) {
+	else if ( isLiteral(content) ) { type = Token::Type::CONST_LITERAL;
 		// remove leading and trailing (", ') quotation marks (", ')
-		type = Token::Type::LITERAL;
 		content = con.substr(1, con.length() - 2);
 	}
 	else if ( isModifier(content) ) { type = Token::Type::LANGUAGEFEATURE; }
+	else if ( isNumber(content) ) { type = Token::Type::CONST_NUMBER; }
 	else if ( isReservedWord(content) ) { type = Token::Type::RESERVED; }
 	else if ( isType(content) ) { type = Token::Type::TYPE; }
 	else if ( isVisibility(content) ) { type = Token::Type::VISIBILITY; }
@@ -234,7 +235,7 @@ bool Tokenizer::isDefined(const std::string& token) const
 	return false;
 }
 
-bool Tokenizer::isDigit(const std::string& token) const
+bool Tokenizer::isFloat(const std::string& token) const
 {
 	if ( token.empty() ) {
 		return false;
@@ -242,7 +243,7 @@ bool Tokenizer::isDigit(const std::string& token) const
 
 	int numOfDots = 0;
 
-	for ( unsigned int c = 0; c < token.size(); c++ ) {
+	for ( unsigned int c = 0; c < token.size() - 1; c++ ) {
 		switch ( token[c] ) {
 			case '.':
 				numOfDots++;
@@ -266,7 +267,12 @@ bool Tokenizer::isDigit(const std::string& token) const
 		}
 	}
 
-	return true;
+	// the last char of our token has to be an 'f'
+	if ( token[token.size() - 1] == 'f' ) {
+		return true;
+	}
+
+	return false;
 }
 
 bool Tokenizer::isIdentifer(const std::string& token) const
@@ -278,6 +284,33 @@ bool Tokenizer::isIdentifer(const std::string& token) const
 	}
 
 	return false;
+}
+
+bool Tokenizer::isInteger(const std::string& token) const
+{
+	if ( token.empty() ) {
+		return false;
+	}
+
+	for ( unsigned int c = 0; c < token.size(); c++ ) {
+		switch ( token[c] ) {
+			case '1':
+			case '2':
+			case '3':
+			case '4':
+			case '5':
+			case '6':
+			case '7':
+			case '8':
+			case '9':
+			case '0':
+				break;
+			default:
+				return false;
+		}
+	}
+
+	return true;
 }
 
 bool Tokenizer::isKeyword(const std::string& token) const
@@ -327,6 +360,41 @@ bool Tokenizer::isModifier(const std::string& token) const
 	}
 
 	return false;
+}
+
+bool Tokenizer::isNumber(const std::string& token) const
+{
+	if ( token.empty() ) {
+		return false;
+	}
+
+	int numOfDots = 0;
+
+	for ( unsigned int c = 0; c < token.size(); c++ ) {
+		switch ( token[c] ) {
+			case '.':
+				numOfDots++;
+				if ( numOfDots > 1 ) {
+					return false;
+				}
+				break;
+			case '1':
+			case '2':
+			case '3':
+			case '4':
+			case '5':
+			case '6':
+			case '7':
+			case '8':
+			case '9':
+			case '0':
+				break;
+			default:
+				return false;
+		}
+	}
+
+	return true;
 }
 
 bool Tokenizer::isPrototype(TokenIterator token) const

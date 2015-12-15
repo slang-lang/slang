@@ -6,6 +6,8 @@
 
 // Project includes
 #include <Core/BuildInObjects/BoolObject.h>
+#include <Core/BuildInObjects/FloatObject.h>
+#include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/BuildInObjects/NumberObject.h>
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/BuildInObjects/UserObject.h>
@@ -26,6 +28,8 @@ Repository::Repository(Memory *m)
 : mMemory(m)
 {
 	addBlueprint(BoolObject());
+	//addBlueprint(FloatObject());
+	//addBlueprint(IntegerObject());
 	addBlueprint(NumberObject());
 	addBlueprint(StringObject());
 	addBlueprint(VoidObject());
@@ -181,6 +185,12 @@ Object* Repository::createObject(const std::string& name, const std::string& fil
 
 	if ( type == BoolObject::TYPENAME ) {
 		object = new BoolObject(value);
+	}
+	else if ( type == FloatObject::TYPENAME ) {
+		object = new FloatObject(value);
+	}
+	else if ( type == IntegerObject::TYPENAME ) {
+		object = new IntegerObject(value);
 	}
 	else if ( type == NumberObject::TYPENAME ) {
 		object = new NumberObject(value);

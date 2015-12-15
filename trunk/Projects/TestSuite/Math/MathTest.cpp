@@ -31,6 +31,8 @@ MathTest::MathTest(const ::Utils::Common::Logger *p)
 void MathTest::process()
 {
 	TEST(testBasicExpressionParsing);
+	TEST(testDataTypeFloat);
+	TEST(testDataTypeInt);
 }
 
 void MathTest::setup()
@@ -48,6 +50,38 @@ void MathTest::testBasicExpressionParsing()
 		vm.setPrinter(&mStdoutPrinter);
 
 		vm.create("Tests/Math/BasicTest.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void MathTest::testDataTypeFloat()
+{
+	try {
+		VirtualMachine vm;
+		vm.setPrinter(&mStdoutPrinter);
+
+		vm.create("Tests/Math/DataTypeFloat.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void MathTest::testDataTypeInt()
+{
+	try {
+		VirtualMachine vm;
+		vm.setPrinter(&mStdoutPrinter);
+
+		vm.create("Tests/Math/DataTypeInt.os");
 
 		// automatic success
 	}

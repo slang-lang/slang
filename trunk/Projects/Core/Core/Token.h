@@ -27,7 +27,7 @@ public:
 		enum E {
 			Assign,
 			Compare,
-			Literal
+			Constant
 		};
 	};
 
@@ -41,7 +41,6 @@ public:
 			ASSIGN_MULTI,
 			ASSIGN_SUBTRACT,
 			BACKSLASH,
-			BOOLEAN,
 			BRACKET_CLOSE,
 			BRACKET_CURLY_CLOSE,
 			BRACKET_CURLY_OPEN,
@@ -54,7 +53,11 @@ public:
 			COMPARE_GREATER,
 			COMPARE_GREATER_EQUAL,
 			COMPARE_UNEQUAL,
-			CONSTANT,
+			CONST_BOOLEAN,
+			CONST_FLOAT,
+			CONST_INTEGER,
+			CONST_LITERAL,
+			CONST_NUMBER,
 			DASH,
 			DOT,
 			ENDOFFILE,
@@ -65,7 +68,6 @@ public:
 			LABEL,
 			LANGUAGEFEATURE,
 			LESS,
-			LITERAL,
 			MATH_ADD,
 			MATH_DIV,
 			MATH_MULTI,
@@ -95,7 +97,6 @@ public:
 				case ASSIGN_MULTI: return "*=";
 				case ASSIGN_SUBTRACT: return "-=";
 				case BACKSLASH: return "\\";
-				case BOOLEAN: return "BOOLEAN";
 				case BRACKET_CLOSE: return "]";
 				case BRACKET_CURLY_CLOSE: return "}";
 				case BRACKET_CURLY_OPEN: return "{";
@@ -108,7 +109,11 @@ public:
 				case COMPARE_GREATER: return ">";
 				case COMPARE_GREATER_EQUAL: return ">=";
 				case COMPARE_UNEQUAL: return "!=";
-				case CONSTANT: return "CONSTANT";
+				case CONST_BOOLEAN: return "CONST_BOOLEAN";
+				case CONST_FLOAT: return "CONST_FLOAT";
+				case CONST_INTEGER: return "CONST_INTEGER";
+				case CONST_LITERAL: return "CONST_LITERAL";
+				case CONST_NUMBER: return "CONST_NUMBER";
 				case DASH: return "-";
 				case DOT: return ".";
 				case ENDOFFILE: return "<EOF>";
@@ -119,7 +124,6 @@ public:
 				case LANGUAGEFEATURE: return "LANGUAGEFEATURE";
 				case KEYWORD: return "KEYWORD";
 				case LESS: return "<";
-				case LITERAL: return "LITERAL";
 				case MATH_ADD: return "+";
 				case MATH_DIV: return "/";
 				case MATH_MULTI: return "*";

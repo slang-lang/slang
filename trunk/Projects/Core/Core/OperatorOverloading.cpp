@@ -6,6 +6,8 @@
 
 // Project includes
 #include <Core/BuildInObjects/BoolObject.h>
+#include <Core/BuildInObjects/FloatObject.h>
+#include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/BuildInObjects/NumberObject.h>
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/BuildInObjects/VoidObject.h>
@@ -35,6 +37,18 @@ void operator_assign(Object *base, Object *other)
 	}
 	else if ( source == BoolObject::TYPENAME ) {
 		BoolObject tmp(base->getValue());
+		tmp.operator_assign(other);
+
+		*base = tmp;
+	}
+	else if ( source == FloatObject::TYPENAME ) {
+		FloatObject tmp(base->getValue());
+		tmp.operator_assign(other);
+
+		*base = tmp;
+	}
+	else if ( source == IntegerObject::TYPENAME ) {
+		IntegerObject tmp(base->getValue());
 		tmp.operator_assign(other);
 
 		*base = tmp;

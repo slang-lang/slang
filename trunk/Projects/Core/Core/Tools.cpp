@@ -49,6 +49,11 @@ std::string floatToString(float value)
 	return toString(value);
 }
 
+std::string intToString(int value)
+{
+	return toString(value);
+}
+
 bool stringToBool(const std::string &value)
 {
 	if ( value.empty() || value == "false" ) {
@@ -75,6 +80,20 @@ float stringToFloat(const std::string &value)
 	stream >> f;
 
 	return f;
+}
+
+int stringToInt(const std::string &value)
+{
+	if ( value.empty() ) {
+		return 0;
+	}
+
+	std::stringstream stream;
+	stream << value;
+	int result;
+	stream >> result;
+
+	return result;
 }
 
 

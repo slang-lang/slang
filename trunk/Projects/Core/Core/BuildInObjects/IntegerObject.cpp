@@ -1,6 +1,6 @@
 
 // Header
-#include "NumberObject.h"
+#include "IntegerObject.h"
 
 // Library includes
 
@@ -8,8 +8,6 @@
 #include <Core/Consts.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Tools.h>
-#include "FloatObject.h"
-//#include "IntegerObject.h"
 
 // Namespace declarations
 
@@ -17,10 +15,11 @@
 namespace ObjectiveScript {
 
 
-std::string NumberObject::TYPENAME = "number";
+//std::string IntegerObject::TYPENAME = "int";
+std::string IntegerObject::TYPENAME = "number";
 
 
-NumberObject::NumberObject(float value)
+IntegerObject::IntegerObject(int value)
 : Object("", SYSTEM_LIBRARY, TYPENAME, ""),
   mValue(value)
 {
@@ -29,52 +28,52 @@ NumberObject::NumberObject(float value)
 	Constructor(ParameterList());
 }
 
-NumberObject::NumberObject(const std::string& value)
+IntegerObject::IntegerObject(const std::string& value)
 : Object("", SYSTEM_LIBRARY, TYPENAME, value),
-  mValue(Tools::stringToFloat(value))
+  mValue(Tools::stringToInt(value))
 {
 	mIsAtomicType = true;
 
 	Constructor(ParameterList());
 }
 
-NumberObject::NumberObject(const Object& object)
+IntegerObject::IntegerObject(const Object& object)
 : Object(object.getName(), SYSTEM_LIBRARY, TYPENAME, object.getValue()),
-  mValue(0.f)
+  mValue(0)
 {
 }
 
-NumberObject::operator bool() const
+IntegerObject::operator bool() const
 {
 	return mValue != 0.f;
 }
 
-float NumberObject::getNativeValue() const
+int IntegerObject::getNativeValue() const
 {
 	return mValue;
 }
 
-std::string NumberObject::getValue() const
+std::string IntegerObject::getValue() const
 {
-	return Tools::floatToString(mValue);
+	return Tools::intToString(mValue);
 }
 
-bool NumberObject::isValid() const
+bool IntegerObject::isValid() const
 {
 	return true;
 }
 
-void NumberObject::operator_assign(NumberObject *other)
+void IntegerObject::operator_assign(IntegerObject *other)
 {
 	mValue = other->getNativeValue();
 }
 
-void NumberObject::operator_assign(Object *other)
+void IntegerObject::operator_assign(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == NumberObject::TYPENAME || target == FloatObject::TYPENAME ) {
-		NumberObject tmp(other->getValue());
+	if ( target == IntegerObject::TYPENAME ) {
+		IntegerObject tmp(other->getValue());
 
 		operator_assign(&tmp);
 	}
@@ -83,17 +82,17 @@ void NumberObject::operator_assign(Object *other)
 	}
 }
 
-void NumberObject::operator_divide(NumberObject *other)
+void IntegerObject::operator_divide(IntegerObject *other)
 {
 	mValue /= other->getNativeValue();
 }
 
-void NumberObject::operator_divide(Object *other)
+void IntegerObject::operator_divide(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == NumberObject::TYPENAME || target == FloatObject::TYPENAME  ) {
-		NumberObject tmp(other->getValue());
+	if ( target == IntegerObject::TYPENAME ) {
+		IntegerObject tmp(other->getValue());
 
 		operator_divide(&tmp);
 	}
@@ -102,17 +101,17 @@ void NumberObject::operator_divide(Object *other)
 	}
 }
 
-bool NumberObject::operator_equal(NumberObject *other)
+bool IntegerObject::operator_equal(IntegerObject *other)
 {
 	return (mValue == other->getNativeValue());
 }
 
-bool NumberObject::operator_equal(Object *other)
+bool IntegerObject::operator_equal(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == NumberObject::TYPENAME || target == FloatObject::TYPENAME  ) {
-		NumberObject tmp(other->getValue());
+	if ( target == IntegerObject::TYPENAME ) {
+		IntegerObject tmp(other->getValue());
 
 		return operator_equal(&tmp);
 	}
@@ -120,17 +119,17 @@ bool NumberObject::operator_equal(Object *other)
 	throw Utils::Exceptions::NotImplemented("operator_equal: conversion from " + target + " to " + Typename() + " not supported");
 }
 
-bool NumberObject::operator_greater(NumberObject *other)
+bool IntegerObject::operator_greater(IntegerObject *other)
 {
 	return (mValue > other->getNativeValue());
 }
 
-bool NumberObject::operator_greater(Object *other)
+bool IntegerObject::operator_greater(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == NumberObject::TYPENAME || target == FloatObject::TYPENAME  ) {
-		NumberObject tmp(other->getValue());
+	if ( target == IntegerObject::TYPENAME ) {
+		IntegerObject tmp(other->getValue());
 
 		return operator_greater(&tmp);
 	}
@@ -138,17 +137,17 @@ bool NumberObject::operator_greater(Object *other)
 	throw Utils::Exceptions::NotImplemented("operator_greater: conversion from " + target + " to " + Typename() + " not supported");
 }
 
-bool NumberObject::operator_greater_equal(NumberObject *other)
+bool IntegerObject::operator_greater_equal(IntegerObject *other)
 {
 	return (mValue >= other->getNativeValue());
 }
 
-bool NumberObject::operator_greater_equal(Object *other)
+bool IntegerObject::operator_greater_equal(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == NumberObject::TYPENAME || target == FloatObject::TYPENAME  ) {
-		NumberObject tmp(other->getValue());
+	if ( target == IntegerObject::TYPENAME ) {
+		IntegerObject tmp(other->getValue());
 
 		return operator_greater_equal(&tmp);
 	}
@@ -156,17 +155,17 @@ bool NumberObject::operator_greater_equal(Object *other)
 	throw Utils::Exceptions::NotImplemented("operator_greater_equal: conversion from " + target + " to " + Typename() + " not supported");
 }
 
-bool NumberObject::operator_less(NumberObject *other)
+bool IntegerObject::operator_less(IntegerObject *other)
 {
 	return (mValue < other->getNativeValue());
 }
 
-bool NumberObject::operator_less(Object *other)
+bool IntegerObject::operator_less(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == NumberObject::TYPENAME || target == FloatObject::TYPENAME  ) {
-		NumberObject tmp(other->getValue());
+	if ( target == IntegerObject::TYPENAME ) {
+		IntegerObject tmp(other->getValue());
 
 		return operator_less(&tmp);
 	}
@@ -174,17 +173,17 @@ bool NumberObject::operator_less(Object *other)
 	throw Utils::Exceptions::NotImplemented("operator_less: conversion from " + target + " to " + Typename() + " not supported");
 }
 
-bool NumberObject::operator_less_equal(NumberObject *other)
+bool IntegerObject::operator_less_equal(IntegerObject *other)
 {
 	return (mValue <= other->getNativeValue());
 }
 
-bool NumberObject::operator_less_equal(Object *other)
+bool IntegerObject::operator_less_equal(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == NumberObject::TYPENAME || target == FloatObject::TYPENAME  ) {
-		NumberObject tmp(other->getValue());
+	if ( target == IntegerObject::TYPENAME ) {
+		IntegerObject tmp(other->getValue());
 
 		return operator_less_equal(&tmp);
 	}
@@ -192,17 +191,17 @@ bool NumberObject::operator_less_equal(Object *other)
 	throw Utils::Exceptions::NotImplemented("operator_less_equal: conversion from " + target + " to " + Typename() + " not supported");
 }
 
-void NumberObject::operator_multiply(NumberObject *other)
+void IntegerObject::operator_multiply(IntegerObject *other)
 {
 	mValue *= other->getNativeValue();
 }
 
-void NumberObject::operator_multiply(Object *other)
+void IntegerObject::operator_multiply(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == NumberObject::TYPENAME || target == FloatObject::TYPENAME  ) {
-		NumberObject tmp(other->getValue());
+	if ( target == IntegerObject::TYPENAME ) {
+		IntegerObject tmp(other->getValue());
 
 		operator_multiply(&tmp);
 	}
@@ -211,17 +210,17 @@ void NumberObject::operator_multiply(Object *other)
 	}
 }
 
-void NumberObject::operator_plus(NumberObject *other)
+void IntegerObject::operator_plus(IntegerObject *other)
 {
 	mValue += other->getNativeValue();
 }
 
-void NumberObject::operator_plus(Object *other)
+void IntegerObject::operator_plus(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == NumberObject::TYPENAME || target == FloatObject::TYPENAME  ) {
-		NumberObject tmp(other->getValue());
+	if ( target == IntegerObject::TYPENAME ) {
+		IntegerObject tmp(other->getValue());
 
 		operator_plus(&tmp);
 	}
@@ -230,17 +229,17 @@ void NumberObject::operator_plus(Object *other)
 	}
 }
 
-void NumberObject::operator_subtract(NumberObject *other)
+void IntegerObject::operator_subtract(IntegerObject *other)
 {
 	mValue -= other->getNativeValue();
 }
 
-void NumberObject::operator_subtract(Object *other)
+void IntegerObject::operator_subtract(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == NumberObject::TYPENAME || target == FloatObject::TYPENAME  ) {
-		NumberObject tmp(other->getValue());
+	if ( target == IntegerObject::TYPENAME ) {
+		IntegerObject tmp(other->getValue());
 
 		operator_subtract(&tmp);
 	}
@@ -249,17 +248,17 @@ void NumberObject::operator_subtract(Object *other)
 	}
 }
 
-void NumberObject::setNativeValue(float value)
+void IntegerObject::setNativeValue(int value)
 {
 	mValue = value;
 }
 
-void NumberObject::setValue(const std::string& value)
+void IntegerObject::setValue(const std::string& value)
 {
-	mValue = Tools::stringToFloat(value);
+	mValue = Tools::stringToInt(value);
 }
 
-std::string NumberObject::ToString() const
+std::string IntegerObject::ToString() const
 {
 	return Typename() + " " + getName() + " = " + getValue();
 }

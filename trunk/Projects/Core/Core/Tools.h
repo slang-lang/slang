@@ -27,8 +27,10 @@ namespace Tools {
 
 	std::string boolToString(bool value);
 	std::string floatToString(float value);
+	std::string intToString(int value);
 	bool stringToBool(const std::string &value);
 	float stringToFloat(const std::string &value);
+	int stringToInt(const std::string &value);
 
 	template <class T>
 	inline std::string toString(const T& t)
