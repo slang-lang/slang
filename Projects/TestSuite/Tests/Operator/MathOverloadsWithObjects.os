@@ -18,13 +18,13 @@ public namespace MathOverloads
 
 		/////////////////////////////////////////////////////////////////////
 
-		public void operator_divide(OverloadedObject other ref const) modify
+		public void operator/(OverloadedObject other const ref) modify
 		{
-			print("operator_divide(OverloadedObject)");
+			print("operator/(OverloadedObject)");
 			mNumber = mNumber / other.GetNumber();
 		}
 
-		public bool operator_equal(OverloadedObject other ref const) const
+		public bool operator_equal(OverloadedObject other const ref) const
 		{
 			print("operator_equal(OverloadedObject)");
 			
@@ -46,21 +46,21 @@ public namespace MathOverloads
 			return false;
 		}
 
-		public void operator_multiply(OverloadedObject other ref const) modify
+		public void operator*(OverloadedObject other const ref) modify
 		{
-			print("operator_multiply(OverloadedObject)");
+			print("operator*(OverloadedObject)");
 			mNumber = mNumber * other.GetNumber();
 		}
 
-		public void operator_plus(OverloadedObject other ref const) modify
+		public void operator+(OverloadedObject other const ref) modify
 		{
-			print("operator_plus(OverloadedObject)");
+			print("operator+(OverloadedObject)");
 			mNumber = mNumber + other.GetNumber();
 		}
 
-		public void operator_subtract(OverloadedObject other ref const) modify
+		public void operator-(OverloadedObject other const ref) modify
 		{
-			print("operator_subtract(OverloadedObject)");
+			print("operator-(OverloadedObject)");
 			mNumber = mNumber - other.GetNumber();
 		}
 	}

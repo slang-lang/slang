@@ -93,6 +93,7 @@ StringList provideReservedWords()
 	reservedWords.push_back(RESERVED_WORD_EXTENDS);
 	reservedWords.push_back(RESERVED_WORD_INTERFACE);
 	reservedWords.push_back(RESERVED_WORD_OBJECT);
+	reservedWords.push_back(RESERVED_WORD_OPERATOR);
 	reservedWords.push_back(RESERVED_WORD_PROTOTYPE);
 	reservedWords.push_back(RESERVED_WORD_USING);
 	reservedWords.push_back("of");

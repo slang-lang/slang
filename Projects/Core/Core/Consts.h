@@ -57,6 +57,7 @@ static const char* RESERVED_WORD_BY_VALUE = "val";
 static const char* RESERVED_WORD_EXTENDS = "extends";
 static const char* RESERVED_WORD_INTERFACE = "interface";
 static const char* RESERVED_WORD_OBJECT = "object";
+static const char* RESERVED_WORD_OPERATOR = "operator";
 static const char* RESERVED_WORD_PROTOTYPE = "prototype";
 static const char* RESERVED_WORD_USING = "using";
 

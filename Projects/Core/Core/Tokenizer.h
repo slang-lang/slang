@@ -38,6 +38,7 @@ private:	// Tokenizer
 	Token createToken(const std::string& con, const Utils::Position& pos);
 	void removeWhiteSpaces();
 	void replaceAssignments();
+	void replaceOperators();
 	void replacePrototypes();
 
 	bool isBoolean(const std::string& token) const;
