@@ -169,20 +169,16 @@ void Method::execute(const ParameterList& params, Object *result)
 		case LanguageFeatureState::Unstable: OSwarn("method '" + name() + "' is marked as unstable!"); break;
 	}
 
-	// add parameters as pseudo members
+	// add parameters as locale variables
 	ParameterList::const_iterator paramIt = params.begin();
 	for ( ParameterList::const_iterator sigIt = mSignature.begin(); sigIt != mSignature.end(); ++sigIt ) {
 		// initialize param with default value
-		Parameter param(sigIt->name(), sigIt->type(), sigIt->value(), sigIt->hasDefaultValue(), sigIt->isConst(), sigIt->access(), sigIt->reference());
+		Parameter param(sigIt->name(), sigIt->type(), sigIt->value(), sigIt->hasDefaultValue(), sigIt->isConst(), sigIt->access());
 
 		if ( paramIt != params.end() ) {
 			Parameter::AccessMode::E access = sigIt->access();
-/*
-			if ( paramIt->pointer() ) {
-				access = Parameter::AccessMode::ByReference;
-			}
-*/
-			// override param with correct values
+
+			// override param with correct value
 			param = Parameter(sigIt->name(), sigIt->type(), paramIt->value(), sigIt->hasDefaultValue(), sigIt->isConst(), access, paramIt->pointer());
 			// next iteration
 			paramIt++;
@@ -198,17 +194,21 @@ void Method::execute(const ParameterList& params, Object *result)
 			} break;
 			case Parameter::AccessMode::ByValue: {
 				Object *object = mRepository->createInstance(param.type(), param.name());
-				object->setValue(param.value());
+				object->setValue(param.value());	// in case we have a default value
+				if ( param.pointer() ) {
+					*object = Object(*param.pointer());
+				}
 				object->setConst(param.isConst());
+
 				addIdentifier(param.name(), object);
 			} break;
 		}
 	}
 
-	result->overrideName(name());
-	result->overrideType(type());
 	result->connectPrinter(mOwner->providePrinter());
 	result->connectRepository(mRepository);
+	result->overrideName(name());
+	result->overrideType(type());
 	result->visibility(visibility());
 
 	TokenIterator start = mTokens.begin();
@@ -255,7 +255,7 @@ Object* Method::getSymbol(const std::string& token)
 			return it->second;
 		}
 
-		if ( it->second->getName() == parent ) {
+		if ( it->first == parent ) {
 			return it->second->getMember(member);
 		}
 	}
@@ -280,14 +280,13 @@ bool Method::isMethod(const std::string& token)
 
 	// loop through all local symbols and ask them if this identifier belongs to them
 	for ( MemberCollection::iterator it = mLocalSymbols.begin(); it != mLocalSymbols.end(); ++it ) {
-		Object *object = it->second;
-		if ( !object ) {
+		if ( !it->second ) {
 			continue;
 		}
 
 		if ( it->first == parent ) {
 			// check for member function
-			if ( object->hasMethod(method) ) {
+			if ( it->second->hasMethod(method) ) {
 				return true;
 			}
 		}
@@ -507,7 +506,6 @@ void Method::parseTerm(Object *result, TokenIterator& start)
 			Object *symbol = getSymbol(start->content());
 			if ( symbol ) {
 				*result = *symbol;
-				//operator_assign(result, symbol);
 			}
 			else {
 				if ( isMethod(start->content()) ) {
@@ -617,7 +615,7 @@ void Method::process_assign(TokenIterator& token, Object *result)
 	if ( s->isConst() ) {
 		throw Utils::Exceptions::ConstCorrectnessViolated("not allowed to modify const member '" + identifier + "'", token->position());
 	}
-	if ( this->isConst() && isMember(identifier) ) {
+	if ( isMember(identifier) && (this->isConst() || mOwner->isConst()) ) {
 		throw Utils::Exceptions::ConstCorrectnessViolated("not allowed to modify member '" + identifier + "' in const method '" + this->name() + "'", token->position());
 	}
 
@@ -797,15 +795,17 @@ void Method::process_method(TokenIterator& token, Object *result)
 	TokenIterator opened = findNext(tmp, Token::Type::PARENTHESIS_OPEN);
 	TokenIterator closed = findNextBalancedParenthesis(++opened);
 
-	ReferencesList paramsAsReferences;
+	std::list<Object> objectList;
 	ParameterList params;
 
 	tmp = opened;
 	// loop through all parameters seperated by colons
 	while ( tmp != closed ) {
-		Object object;
-		parseExpression(&object, tmp);
-		params.push_back(Parameter(object.getName(), object.Typename(), object.getValue(), false, object.isConst(), Parameter::AccessMode::ByValue, &object));
+		objectList.push_back(Object());
+
+		Object *obj = &objectList.back();
+		parseExpression(obj, tmp);
+		params.push_back(Parameter(obj->getName(), obj->Typename(), obj->getValue(), false, obj->isConst(), Parameter::AccessMode::Unspecified, obj));
 
 		if ( std::distance(tmp, closed) <= 0 ) {
 			break;
@@ -818,7 +818,6 @@ void Method::process_method(TokenIterator& token, Object *result)
 	}
 
 	token = closed;
-
 
 	std::string member, parent;
 	Tools::split(method, parent, member);
@@ -834,7 +833,6 @@ void Method::process_method(TokenIterator& token, Object *result)
 		return;
 	}
 
-	mOwner->providePrinter()->print(mOwner->ToString());
 	throw Utils::Exceptions::UnknownIdentifer("unknown/unexpected identifier '" + method + "' found", tmp->position());
 }
 
@@ -857,14 +855,17 @@ void Method::process_new(TokenIterator& token, Object *result)
 	TokenIterator opened = findNext(tmp, Token::Type::PARENTHESIS_OPEN);
 	TokenIterator closed = findNextBalancedParenthesis(++opened);
 
+	std::list<Object> objectList;
 	ParameterList params;
 
 	tmp = opened;
 	// loop through all parameters separated by colons
 	while ( tmp != closed ) {
-		Object object;
-		parseExpression(&object, tmp);
-		params.push_back(Parameter(object.getName(), object.Typename(), object.getValue(), false, object.isConst(), Parameter::AccessMode::ByValue, &object));
+		objectList.push_back(Object());
+
+		Object *obj = &objectList.back();
+		parseExpression(obj, tmp);
+		params.push_back(Parameter(obj->getName(), obj->Typename(), obj->getValue(), false, obj->isConst(), Parameter::AccessMode::Unspecified, obj));
 
 		if ( std::distance(tmp, closed) <= 0 ) {
 			break;
@@ -886,6 +887,8 @@ void Method::process_new(TokenIterator& token, Object *result)
 	object->Constructor(params);
 
 	*result = *object;
+
+	mRepository->removeReference(object);
 }
 
 // syntax:

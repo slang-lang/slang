@@ -24,20 +24,9 @@ public namespace MathOverloads
 			mNumber = mNumber / other;
 		}
 
-		public bool operator_equal(OverloadedObject other ref const) const
+		public bool operator==(number other const) const
 		{
-			print("operator_equal(OverloadedObject)");
-			
-			if ( mNumber == other.GetNumber() ) {
-				return true;
-			}
-			
-			return false;
-		}
-		
-		public bool operator_equal(number other const) const
-		{
-			print("operator_equal(number)");
+			print("operator==(number)");
 			
 			if ( mNumber == other ) {
 				return true;
@@ -45,7 +34,18 @@ public namespace MathOverloads
 			
 			return false;
 		}
-
+/*
+		public bool operator==(OverloadedObject other const ref) const
+		{
+			print("operator==(OverloadedObject)");
+			
+			if ( mNumber == other.GetNumber() ) {
+				return true;
+			}
+			
+			return false;
+		}
+*/
 		public void operator*(number other const) modify
 		{
 			print("operator*");

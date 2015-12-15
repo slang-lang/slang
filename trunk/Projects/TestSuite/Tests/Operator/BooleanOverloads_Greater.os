@@ -18,9 +18,9 @@ private namespace BooleanOverloads
 		
 		/////////////////////////////////////////////////////////////////////
 		
-		public bool operator_greater(number other const) const
+		public bool operator>(number other const) const
 		{
-			print("operator_greater(number)");
+			print("operator>(number)");
 
 			if ( mValue > other ) {
 				return true;
@@ -29,9 +29,9 @@ private namespace BooleanOverloads
 			return false;
 		}
 
-		public bool operator_greater(UserObject other ref const) const
+		public bool operator>(UserObject other ref const) const
 		{
-			print("operator_greater(UserObject)");
+			print("operator>(UserObject)");
 
 			if ( mValue > other.GetValue() ) {
 				return true;

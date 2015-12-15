@@ -15,12 +15,11 @@
 namespace ObjectiveScript {
 
 
-//std::string FloatObject::TYPENAME = "float";
-std::string FloatObject::TYPENAME = "number";
+std::string FloatObject::TYPENAME = "float";
 
 
 FloatObject::FloatObject(float value)
-: Object("", SYSTEM_LIBRARY, TYPENAME, ""),
+: Object("<unnamed object>", SYSTEM_LIBRARY, TYPENAME, ""),
   mValue(value)
 {
 	mIsAtomicType = true;

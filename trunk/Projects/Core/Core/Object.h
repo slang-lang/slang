@@ -44,6 +44,7 @@ class Object : public LocalScope,
 {
 public:
 	Object();
+	Object(const Object& other);
 	Object(const std::string& name, const std::string& filename);
 	Object(const std::string& name, const std::string& filename, const std::string& type, const std::string& value);
 	virtual ~Object();
@@ -118,6 +119,7 @@ private:
 	bool findMethod(const std::string& m, const ParameterList& params, MethodCollection::iterator& mIt);
 
 private:
+	void copyMember(Object *member);
 	void updateMethodOwners();
 
 private:

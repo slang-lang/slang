@@ -18,8 +18,8 @@
 namespace ObjectiveScript {
 
 
-const std::string CONTROLCHARS	= "#,;:=()[]{}+-*/&'\" ";
-const std::string DELIMITERS	= "#,;:=()[]{}+-*/&'\"\t\n\r ";
+const std::string CONTROLCHARS	= "#,;:=()[]{}<>+-*/&'\" ";
+const std::string DELIMITERS	= "#,;:=()[]{}<>+-*/&'\"\t\n\r ";
 const std::string WHITESPACES	= "\t\n\r ";
 
 
@@ -574,63 +574,61 @@ void Tokenizer::replaceAssignments()
 		bool changed = false;
 		Token::Type::E activeType = token->type();
 
-		if ( activeType == Token::Type::EQUAL ) {
-			if ( lastType == Token::Type::EQUAL ) {
-				// ==
-				changed = true;
-				// remove last added token ...
-				tmp.pop_back();
-				// ... and add COMPARE_EQUAL instead
-				tmp.push_back(Token(Token::Type::COMPARE_EQUAL, "=="));
-			}
-			else if ( lastType == Token::Type::GREATER || lastType == Token::Type::COMPARE_GREATER ) {
-				// >=
-				changed = true;
-				// remove last added token ...
-				tmp.pop_back();
-				// ... and add COMPARE_GREATER_EQUAL instead
-				tmp.push_back(Token(Token::Type::COMPARE_GREATER_EQUAL, ">="));
-			}
-			else if ( lastType == Token::Type::LESS || lastType == Token::Type::COMPARE_LESS ) {
-				// <=
-				changed = true;
-				// remove last added token ...
-				tmp.pop_back();
-				// ... and add COMPARE_LESS_EQUAL instead
-				tmp.push_back(Token(Token::Type::COMPARE_LESS_EQUAL, "<="));
-			}
-			else if ( lastType == Token::Type::MATH_ADD ) {
-				// +=
-				changed = true;
-				// remove last added token ...
-				tmp.pop_back();
-				// ... and add ASSIGN_ADD instead
-				tmp.push_back(Token(Token::Type::ASSIGN_ADD, "+="));
-			}
-			else if ( lastType == Token::Type::MATH_DIV ) {
-				// /=
-				changed = true;
-				// remove last added token ...
-				tmp.pop_back();
-				// ... and add ASSIGN_DIVIDE instead
-				tmp.push_back(Token(Token::Type::ASSIGN_DIVIDE, "/="));
-			}
-			else if ( lastType == Token::Type::MATH_MULTI ) {
-				// *=
-				changed = true;
-				// remove last added token ...
-				tmp.pop_back();
-				// ... and add ASSIGN_MULTI instead
-				tmp.push_back(Token(Token::Type::ASSIGN_MULTI, "*="));
-			}
-			else if ( lastType == Token::Type::MATH_SUBTRACT ) {
-				// -=
-				changed = true;
-				// remove last added token ...
-				tmp.pop_back();
-				// ... and add ASSIGN_SUBTRACT instead
-				tmp.push_back(Token(Token::Type::ASSIGN_SUBTRACT, "-="));
-			}
+		if ( (lastType == Token::Type::EQUAL) && (activeType == Token::Type::EQUAL) ) {
+			// ==
+			changed = true;
+			// remove last added token ...
+			tmp.pop_back();
+			// ... and add COMPARE_EQUAL instead
+			tmp.push_back(Token(Token::Type::COMPARE_EQUAL, "==", token->position()));
+		}
+		else if ( (lastType == Token::Type::GREATER || lastType == Token::Type::COMPARE_GREATER) && (activeType == Token::Type::EQUAL) ) {
+			// >=
+			changed = true;
+			// remove last added token ...
+			tmp.pop_back();
+			// ... and add COMPARE_GREATER_EQUAL instead
+			tmp.push_back(Token(Token::Type::COMPARE_GREATER_EQUAL, ">=", token->position()));
+		}
+		else if ( (lastType == Token::Type::LESS || lastType == Token::Type::COMPARE_LESS) && (activeType == Token::Type::EQUAL) ) {
+			// <=
+			changed = true;
+			// remove last added token ...
+			tmp.pop_back();
+			// ... and add COMPARE_LESS_EQUAL instead
+			tmp.push_back(Token(Token::Type::COMPARE_LESS_EQUAL, "<=", token->position()));
+		}
+		else if ( (lastType == Token::Type::MATH_ADD) && (activeType == Token::Type::EQUAL) ) {
+			// +=
+			changed = true;
+			// remove last added token ...
+			tmp.pop_back();
+			// ... and add ASSIGN_ADD instead
+			tmp.push_back(Token(Token::Type::ASSIGN_ADD, "+=", token->position()));
+		}
+		else if ( (lastType == Token::Type::MATH_DIV) && (activeType == Token::Type::EQUAL) ) {
+			// /=
+			changed = true;
+			// remove last added token ...
+			tmp.pop_back();
+			// ... and add ASSIGN_DIVIDE instead
+			tmp.push_back(Token(Token::Type::ASSIGN_DIVIDE, "/=", token->position()));
+		}
+		else if ( (lastType == Token::Type::MATH_MULTI) && (activeType == Token::Type::EQUAL) ) {
+			// *=
+			changed = true;
+			// remove last added token ...
+			tmp.pop_back();
+			// ... and add ASSIGN_MULTI instead
+			tmp.push_back(Token(Token::Type::ASSIGN_MULTI, "*=", token->position()));
+		}
+		else if ( (lastType == Token::Type::MATH_SUBTRACT) && (activeType == Token::Type::EQUAL) ) {
+			// -=
+			changed = true;
+			// remove last added token ...
+			tmp.pop_back();
+			// ... and add ASSIGN_SUBTRACT instead
+			tmp.push_back(Token(Token::Type::ASSIGN_SUBTRACT, "-=", token->position()));
 		}
 
 		lastType = token->type();

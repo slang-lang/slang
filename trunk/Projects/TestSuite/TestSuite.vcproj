@@ -409,10 +409,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Attributes\Fixture.h"
-				>
-			</File>
-			<File
 				RelativePath=".\TestFramework\Fixture.h"
 				>
 			</File>
@@ -430,6 +426,10 @@
 			</File>
 			<File
 				RelativePath=".\Operator\Fixture.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Attributes\Fixture.h"
 				>
 			</File>
 			<File

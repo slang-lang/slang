@@ -49,7 +49,7 @@ public:
 	}
 
 public:	// IScope implementation
-	const std::string& getName() const {
+	virtual const std::string& getName() const {
 		return mName;
 	}
 

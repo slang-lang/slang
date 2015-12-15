@@ -24,22 +24,22 @@ public namespace MathOverloads
 			mNumber = mNumber / other.GetNumber();
 		}
 
-		public bool operator_equal(OverloadedObject other const ref) const
+		public bool operator==(number other const) const
 		{
-			print("operator_equal(OverloadedObject)");
+			print("operator==(number)");
 			
-			if ( mNumber == other.GetNumber() ) {
+			if ( mNumber == other ) {
 				return true;
 			}
 			
 			return false;
 		}
-		
-		public bool operator_equal(number other const) const
+
+		public bool operator==(OverloadedObject other const ref) const
 		{
-			print("operator_equal(number)");
+			print("operator==(OverloadedObject)");
 			
-			if ( mNumber == other ) {
+			if ( mNumber == other.GetNumber() ) {
 				return true;
 			}
 			
