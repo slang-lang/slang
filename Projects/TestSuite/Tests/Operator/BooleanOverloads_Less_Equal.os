@@ -18,8 +18,10 @@ private namespace BooleanOverloads
 		
 		/////////////////////////////////////////////////////////////////////
 		
-		public bool operator_less_equal(number other const) const
+		public bool operator<=(number other const) const
 		{
+			print("operator<=(number)");
+
 			if ( mValue <= other ) {
 				return true;
 			}
@@ -27,8 +29,10 @@ private namespace BooleanOverloads
 			return false;
 		}
 
-		public bool operator_less_equal(UserObject other ref const) const
+		public bool operator<=(UserObject other const ref) const
 		{
+			print("operator<=(UserObject)");
+
 			if ( mValue <= other.GetValue() ) {
 				return true;
 			}

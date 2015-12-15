@@ -18,7 +18,7 @@ private namespace BooleanOverloads
 
 		/////////////////////////////////////////////////////////////////////
 
-		public bool operator_equal(number other const) const
+		public bool operator==(number other const) const
 		{
 			if ( mValue == other ) {
 				return true;
@@ -27,7 +27,7 @@ private namespace BooleanOverloads
 			return false;
 		}
 
-		public bool operator_equal(UserObject other const ref) const
+		public bool operator==(UserObject other const ref) const
 		{
 			if ( mValue == other.GetValue() ) {
 				return true;

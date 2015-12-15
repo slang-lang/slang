@@ -72,13 +72,18 @@ void operator_assign(Object *base, Object *other)
 		*base = tmp;
 	}
 	else {
+		// no atomic data type, so we have to look if our assign operator has been overwritten
+
 		ParameterList params;
 		params.push_back(
 			Parameter(other->getName(), other->Typename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
 		);
 
-		BoolObject tmp;
-		base->execute(&tmp, "operator_assign", params, 0);
+		if ( base->hasMethod("operator=", params) ) {
+			// our object has an overwritten assign operator, so we execute it
+			BoolObject tmp;
+			base->execute(&tmp, "operator=", params, 0);
+		}
 	}
 }
 
@@ -162,7 +167,7 @@ bool operator_equal(Object *base, Object *other)
 	);
 
 	BoolObject tmp;
-	base->execute(&tmp, "operator_equal", params, 0);
+	base->execute(&tmp, "operator==", params, 0);
 	return tmp;
 }
 
@@ -200,7 +205,7 @@ bool operator_greater(Object *base, Object *other)
 	);
 
 	BoolObject tmp;
-	base->execute(&tmp, "operator_greater", params, 0);
+	base->execute(&tmp, "operator>", params, 0);
 	return tmp;
 }
 
@@ -238,7 +243,7 @@ bool operator_greater_equal(Object *base, Object *other)
 	);
 
 	BoolObject tmp;
-	base->execute(&tmp, "operator_greater_equal", params, 0);
+	base->execute(&tmp, "operator>=", params, 0);
 	return tmp;
 }
 
@@ -276,7 +281,7 @@ bool operator_less(Object *base, Object *other)
 	);
 
 	BoolObject tmp;
-	base->execute(&tmp, "operator_less", params, 0);
+	base->execute(&tmp, "operator<", params, 0);
 	return tmp;
 }
 
@@ -314,7 +319,7 @@ bool operator_less_equal(Object *base, Object *other)
 	);
 
 	BoolObject tmp;
-	base->execute(&tmp, "operator_less_equal", params, 0);
+	base->execute(&tmp, "operator<=", params, 0);
 	return tmp;
 }
 

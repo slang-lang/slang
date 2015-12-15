@@ -23,17 +23,17 @@ private namespace BooleanOverloads
 
 		/////////////////////////////////////////////////////////////////////
 
-		public void operator_assign(number other const) modify
+		public void operator=(number other const) modify
 		{
 			mValue = other;
 		}
 
-		public void operator_assign(UserObject other const ref) modify
+		public void operator=(UserObject other const ref) modify
 		{
 			mValue = other.getValue();
 		}
 
-		public bool operator_equal(number other const) const
+		public bool operator==(number other const) const
 		{
 			if ( mValue == other ) {
 				return true;
@@ -42,7 +42,7 @@ private namespace BooleanOverloads
 			return false;
 		}
 
-		public bool operator_equal(UserObject other const ref) const
+		public bool operator==(UserObject other const ref) const
 		{
 			if ( mValue == other.getValue() ) {
 				return true;

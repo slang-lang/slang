@@ -15,12 +15,11 @@
 namespace ObjectiveScript {
 
 
-//std::string IntegerObject::TYPENAME = "int";
-std::string IntegerObject::TYPENAME = "number";
+std::string IntegerObject::TYPENAME = "int";
 
 
 IntegerObject::IntegerObject(int value)
-: Object("", SYSTEM_LIBRARY, TYPENAME, ""),
+: Object("<unnamed object>", SYSTEM_LIBRARY, TYPENAME, ""),
   mValue(value)
 {
 	mIsAtomicType = true;

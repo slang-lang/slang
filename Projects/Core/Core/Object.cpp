@@ -5,6 +5,7 @@
 // Library includes
 
 // Project includes
+#include <Core/BuildInObjects/VoidObject.h>
 #include <Core/Interfaces/IPrinter.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Utils/Utils.h>
@@ -26,6 +27,36 @@ Object::Object()
   mPrinter(0),
   mValue("<INVALID>")
 {
+}
+
+Object::Object(const Object& other)
+: LocalScope(other.mName, 0),
+  BluePrint(other.mTypename, other.mFilename),
+  mIsAtomicType(other.mIsAtomicType),
+  mRepository(other.mRepository),
+  mConstructed(other.mConstructed),
+  mPrinter(other.mPrinter)
+{
+	mTokens = other.mTokens;
+
+	setValue(other.getValue());
+
+	setConst(other.isConst());
+	setFinal(other.isFinal());
+	//setStatic(other.isStatic());
+
+	// register new members
+	for ( MemberCollection::const_iterator it = other.mMembers.begin(); it != other.mMembers.end(); ++it ) {
+		copyMember(it->second);
+	}
+
+	// register new methods
+	for ( MethodCollection::const_iterator it = other.mMethods.begin(); it != other.mMethods.end(); ++it ) {
+		Method *m = new Method(this, (*it)->name(), (*it)->type());
+		*m = *(*it);
+
+		addMethod(m);
+	}
 }
 
 Object::Object(const std::string& type, const std::string& filename)
@@ -72,12 +103,11 @@ Object& Object::operator= (const Object& other)
 		mTokens = other.mTokens;
 		mTypename = other.Typename();
 
-		//mValue = other.getValue();
 		setValue(other.getValue());
 
-		//this->setConst(other.isConst());
-		this->setFinal(other.isFinal());
-		//this->setStatic(other.isStatic());
+		//setConst(other.isConst());
+		setFinal(other.isFinal());
+		//setStatic(other.isStatic());
 
 		// unregister current members
 		for ( MemberCollection::const_iterator it = mMembers.begin(); it != mMembers.end(); ) {
@@ -170,8 +200,8 @@ void Object::Constructor(const ParameterList& params)
 	if ( !mConstructed ) {
 		// only execute constructor if one is present
 		if ( hasMethod(Typename(), params) ) {
-			Object object;
-			execute(&object, Typename(), params);
+			VoidObject tmp;
+			execute(&tmp, Typename(), params);
 		}
 
 		// set after executing constructor
@@ -182,6 +212,21 @@ void Object::Constructor(const ParameterList& params)
 		// the constructor has already been executed!
 		//throw Utils::Exceptions::Exception("can not create object '" + name() + "' which has already been constructed");
 	}
+}
+
+void Object::copyMember(Object *member)
+{
+	assert(member);
+
+	Object *object = mRepository->createInstance(member->Typename(), member->getName());
+
+	*object = *member;
+
+	if ( mMembers.find(member->getName()) != mMembers.end() ) {
+		throw Utils::Exceptions::DuplicateIdentifer("duplicate member '" + member->getName() + "' added");
+	}
+
+	mMembers.insert(std::make_pair(member->getName(), member));
 }
 
 void Object::Destructor()
@@ -235,8 +280,6 @@ void Object::execute(Object *result, const std::string& method, const ParameterL
 	catch ( Utils::Exceptions::Exception &e ) {
 		// catch and log all errors that occured during method execution
 		OSerror(e.what());
-
-		//mPrinter->print(ToString() + ": " + e.what() + "\n");
 
 		throw;
 	}
