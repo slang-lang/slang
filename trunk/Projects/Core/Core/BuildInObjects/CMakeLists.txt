@@ -13,7 +13,7 @@ SET(SOURCES
 SET(HEADERS
 	BoolObject.h
 	FloatObject.h
-	IntergerObject.h
+	IntegerObject.h
 	NumberObject.h
 	StringObject.h
 	UserObject.h
