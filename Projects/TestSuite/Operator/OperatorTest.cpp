@@ -31,6 +31,8 @@ OperatorTest::OperatorTest(const ::Utils::Common::Logger *p)
 void OperatorTest::process()
 {
 	TEST(testBooleanOverloads_Assign);
+	TEST(testBooleanOverloads_BitAnd);
+	TEST(testBooleanOverloads_BitOr);
 	TEST(testBooleanOverloads_Equal);
 	TEST(testBooleanOverloads_Greater);
 	TEST(testBooleanOverloads_Greater_Equal);
@@ -56,6 +58,38 @@ void OperatorTest::testBooleanOverloads_Assign()
 		vm.setPrinter(&mStdoutPrinter);
 
 		vm.create("Tests/Operator/BooleanOverloads_Assign.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void OperatorTest::testBooleanOverloads_BitAnd()
+{
+	try {
+		VirtualMachine vm;
+		vm.setPrinter(&mStdoutPrinter);
+
+		vm.create("Tests/Operator/BooleanOverloads_BitAnd.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void OperatorTest::testBooleanOverloads_BitOr()
+{
+	try {
+		VirtualMachine vm;
+		vm.setPrinter(&mStdoutPrinter);
+
+		vm.create("Tests/Operator/BooleanOverloads_BitOr.os");
 
 		// automatic success
 	}

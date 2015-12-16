@@ -28,8 +28,8 @@ Repository::Repository(Memory *m)
 : mMemory(m)
 {
 	addBlueprint(BoolObject());
-	//addBlueprint(FloatObject());
-	//addBlueprint(IntegerObject());
+	addBlueprint(FloatObject());
+	addBlueprint(IntegerObject());
 	addBlueprint(NumberObject());
 	addBlueprint(StringObject());
 	addBlueprint(VoidObject());

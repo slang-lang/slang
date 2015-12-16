@@ -64,6 +64,11 @@ void StringObject::operator_assign(FloatObject *other)
 	mValue = other->getValue();
 }
 
+void StringObject::operator_assign(IntegerObject *other)
+{
+	mValue = other->getValue();
+}
+
 void StringObject::operator_assign(NumberObject *other)
 {
 	mValue = other->getValue();
@@ -83,7 +88,7 @@ void StringObject::operator_assign(Object *other)
 		operator_assign(&tmp);
 	}
 	else {
-		throw Utils::Exceptions::NotImplemented("operator=: conversion from " + target + " to " + Typename() + " not supported");
+		Object::operator_assign(other);
 	}
 }
 
@@ -115,7 +120,7 @@ bool StringObject::operator_equal(Object *other)
 		return operator_equal(&tmp);
 	}
 
-	throw Utils::Exceptions::NotImplemented("operator==: conversion from " + target + " to " + Typename() + " not supported");
+	return Object::operator_equal(other);
 }
 
 bool StringObject::operator_equal(StringObject *other)
@@ -129,6 +134,11 @@ void StringObject::operator_plus(BoolObject *other)
 }
 
 void StringObject::operator_plus(FloatObject *other)
+{
+	mValue += other->getValue();
+}
+
+void StringObject::operator_plus(IntegerObject *other)
 {
 	mValue += other->getValue();
 }
@@ -152,7 +162,7 @@ void StringObject::operator_plus(Object *other)
 		operator_plus(&tmp);
 	}
 	else {
-		throw Utils::Exceptions::NotImplemented("operator+: conversion from " + target + " to " + Typename() + " not supported");
+		Object::operator_plus(other);
 	}
 }
 

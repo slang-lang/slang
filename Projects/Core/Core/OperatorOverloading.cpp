@@ -87,6 +87,122 @@ void operator_assign(Object *base, Object *other)
 	}
 }
 
+void operator_bitand(Object *base, Object *other)
+{
+	if ( !base ) {
+		throw Utils::Exceptions::NullPointer("cannot bitand value to null pointer");
+	}
+	if ( !other ) {
+		throw Utils::Exceptions::NullPointer("cannot bitand object to null pointer");
+	}
+
+	std::string source = base->Typename();
+
+	if ( source == BoolObject::TYPENAME ) {
+		BoolObject tmp(base->getValue());
+		tmp.operator_bitand(other);
+
+		*base = tmp;
+	}
+	else if ( source == FloatObject::TYPENAME ) {
+		FloatObject tmp(base->getValue());
+		tmp.operator_bitand(other);
+
+		*base = tmp;
+	}
+	else if ( source == IntegerObject::TYPENAME ) {
+		IntegerObject tmp(base->getValue());
+		tmp.operator_bitand(other);
+
+		*base = tmp;
+	}
+	else if ( source == NumberObject::TYPENAME ) {
+		NumberObject tmp(base->getValue());
+		tmp.operator_bitand(other);
+
+		*base = tmp;
+	}
+	else if ( source == StringObject::TYPENAME ) {
+		StringObject tmp(base->getValue());
+		tmp.operator_bitand(other);
+
+		*base = tmp;
+	}
+	else if ( source == VoidObject::TYPENAME ) {
+		VoidObject tmp;
+		tmp.operator_bitand(other);
+
+		*base = tmp;
+	}
+	else {
+		ParameterList params;
+		params.push_back(
+			Parameter(other->getName(), other->Typename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
+		);
+
+		BoolObject tmp;
+		base->execute(&tmp, "operator&", params, 0);
+	}
+}
+
+void operator_bitor(Object *base, Object *other)
+{
+	if ( !base ) {
+		throw Utils::Exceptions::NullPointer("cannot bitor value to null pointer");
+	}
+	if ( !other ) {
+		throw Utils::Exceptions::NullPointer("cannot bitor object to null pointer");
+	}
+
+	std::string source = base->Typename();
+
+	if ( source == BoolObject::TYPENAME ) {
+		BoolObject tmp(base->getValue());
+		tmp.operator_bitor(other);
+
+		*base = tmp;
+	}
+	else if ( source == FloatObject::TYPENAME ) {
+		FloatObject tmp(base->getValue());
+		tmp.operator_bitor(other);
+
+		*base = tmp;
+	}
+	else if ( source == IntegerObject::TYPENAME ) {
+		IntegerObject tmp(base->getValue());
+		tmp.operator_bitor(other);
+
+		*base = tmp;
+	}
+	else if ( source == NumberObject::TYPENAME ) {
+		NumberObject tmp(base->getValue());
+		tmp.operator_bitor(other);
+
+		*base = tmp;
+	}
+	else if ( source == StringObject::TYPENAME ) {
+		StringObject tmp(base->getValue());
+		tmp.operator_bitor(other);
+
+		*base = tmp;
+	}
+	else if ( source == VoidObject::TYPENAME ) {
+		VoidObject tmp;
+		tmp.operator_bitor(other);
+
+		*base = tmp;
+	}
+	else {
+		ParameterList params;
+		params.push_back(
+			Parameter(other->getName(), other->Typename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
+		);
+
+		BoolObject tmp;
+		base->execute(&tmp, "operator|", params, 0);
+	}
+}
+
 void operator_divide(Object *base, Object *other)
 {
 	if ( !base ) {
@@ -321,6 +437,58 @@ bool operator_less_equal(Object *base, Object *other)
 	BoolObject tmp;
 	base->execute(&tmp, "operator<=", params, 0);
 	return tmp;
+}
+
+void operator_modulo(Object *base, Object *other)
+{
+	if ( !base ) {
+		throw Utils::Exceptions::NullPointer("cannot modulo null pointer by object");
+	}
+	if ( !other ) {
+		throw Utils::Exceptions::NullPointer("cannot modulo object by null pointer");
+	}
+
+	std::string source = base->Typename();
+
+	if ( source == BoolObject::TYPENAME ) {
+		BoolObject tmp(base->getValue());
+		tmp.operator_modulo(other);
+
+		*base = tmp;
+	}
+	else if ( source == IntegerObject::TYPENAME ) {
+		IntegerObject tmp(base->getValue());
+		tmp.operator_modulo(other);
+
+		*base = tmp;
+	}
+	else if ( source == NumberObject::TYPENAME ) {
+		NumberObject tmp(base->getValue());
+		tmp.operator_modulo(other);
+
+		*base = tmp;
+	}
+	else if ( source == StringObject::TYPENAME ) {
+		StringObject tmp(base->getValue());
+		tmp.operator_modulo(other);
+
+		*base = tmp;
+	}
+	else if ( source == VoidObject::TYPENAME ) {
+		VoidObject tmp;
+		tmp.operator_modulo(other);
+
+		*base = tmp;
+	}
+	else {
+		ParameterList params;
+		params.push_back(
+			Parameter(other->getName(), other->Typename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
+		);
+
+		BoolObject tmp;
+		base->execute(&tmp, "operator%", params, 0);
+	}
 }
 
 void operator_multiply(Object *base, Object *other)

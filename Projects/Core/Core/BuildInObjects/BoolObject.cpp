@@ -8,6 +8,8 @@
 #include <Core/Consts.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Tools.h>
+#include "FloatObject.h"
+#include "IntegerObject.h"
 #include "NumberObject.h"
 #include "StringObject.h"
 
@@ -69,38 +71,68 @@ void BoolObject::operator_assign(BoolObject *other)
 	mValue = other->getNativeValue();
 }
 
-void BoolObject::operator_assign(NumberObject *other)
-{
-	mValue = (other->getNativeValue() != 0.f);
-}
-
 void BoolObject::operator_assign(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == BoolObject::TYPENAME ) {
-		BoolObject tmp(other->getValue());
-
-		operator_assign(&tmp);
-	}
-	else if ( target == NumberObject::TYPENAME ) {
-		BoolObject tmp(other->getValue());
-
-		operator_assign(&tmp);
-	}
-	else if ( target == StringObject::TYPENAME ) {
+	if ( target == BoolObject::TYPENAME ||
+		 target == FloatObject::TYPENAME ||
+		 target == IntegerObject::TYPENAME ||
+		 target == NumberObject::TYPENAME ||
+		 target == StringObject::TYPENAME ) {
 		BoolObject tmp(other->getValue());
 
 		operator_assign(&tmp);
 	}
 	else {
-		throw Utils::Exceptions::NotImplemented("operator_assign: conversion from " + target + " to " + Typename() + " not supported");
+		Object::operator_assign(other);
 	}
 }
 
-void BoolObject::operator_assign(StringObject *other)
+void BoolObject::operator_bitand(BoolObject *other)
 {
-	mValue = !other->getNativeValue().empty();
+	mValue &= other->getNativeValue();
+}
+
+void BoolObject::operator_bitand(Object *other)
+{
+	std::string target = other->Typename();
+
+	if ( target == BoolObject::TYPENAME ||
+		 target == FloatObject::TYPENAME ||
+		 target == IntegerObject::TYPENAME ||
+		 target == NumberObject::TYPENAME ||
+		 target == StringObject::TYPENAME ) {
+		BoolObject tmp(other->getValue());
+
+		operator_bitand(&tmp);
+	}
+	else {
+		Object::operator_bitand(other);
+	}
+}
+
+void BoolObject::operator_bitor(BoolObject *other)
+{
+	mValue |= other->getNativeValue();
+}
+
+void BoolObject::operator_bitor(Object *other)
+{
+	std::string target = other->Typename();
+
+	if ( target == BoolObject::TYPENAME ||
+		 target == FloatObject::TYPENAME ||
+		 target == IntegerObject::TYPENAME ||
+		 target == NumberObject::TYPENAME ||
+		 target == StringObject::TYPENAME ) {
+		BoolObject tmp(other->getValue());
+
+		operator_bitor(&tmp);
+	}
+	else {
+		Object::operator_bitor(other);
+	}
 }
 
 bool BoolObject::operator_equal(BoolObject *other)
@@ -108,37 +140,21 @@ bool BoolObject::operator_equal(BoolObject *other)
 	return (mValue == other->getNativeValue());
 }
 
-bool BoolObject::operator_equal(NumberObject *other)
-{
-	return (mValue == (other->getNativeValue() != 0.f));
-}
-
 bool BoolObject::operator_equal(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == BoolObject::TYPENAME ) {
-		BoolObject tmp(other->getValue());
-
-		return operator_equal(&tmp);
-	}
-	else if ( target == NumberObject::TYPENAME ) {
-		BoolObject tmp(other->getValue());
-
-		return operator_equal(&tmp);
-	}
-	else if ( target == StringObject::TYPENAME ) {
+	if ( target == BoolObject::TYPENAME ||
+		 target == FloatObject::TYPENAME ||
+		 target == IntegerObject::TYPENAME ||
+		 target == NumberObject::TYPENAME ||
+		 target == StringObject::TYPENAME ) {
 		BoolObject tmp(other->getValue());
 
 		return operator_equal(&tmp);
 	}
 
-	throw Utils::Exceptions::NotImplemented("operator_equal: conversion from " + target + " to " + Typename() + " not supported");
-}
-
-bool BoolObject::operator_equal(StringObject *other)
-{
-	return (mValue == (!other->getNativeValue().empty()));
+	return Object::operator_equal(other);
 }
 
 void BoolObject::setNativeValue(bool value)

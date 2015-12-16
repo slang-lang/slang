@@ -77,7 +77,7 @@ void FloatObject::operator_assign(Object *other)
 		operator_assign(&tmp);
 	}
 	else {
-		throw Utils::Exceptions::NotImplemented("operator_assign: conversion from " + target + " to " + Typename() + " not supported");
+		Object::operator_assign(other);
 	}
 }
 
@@ -96,7 +96,7 @@ void FloatObject::operator_divide(Object *other)
 		operator_divide(&tmp);
 	}
 	else {
-		throw Utils::Exceptions::NotImplemented("operator_divide: conversion from " + target + " to " + Typename() + " not supported");
+		Object::operator_divide(other);
 	}
 }
 
@@ -115,7 +115,7 @@ bool FloatObject::operator_equal(Object *other)
 		return operator_equal(&tmp);
 	}
 
-	throw Utils::Exceptions::NotImplemented("operator_equal: conversion from " + target + " to " + Typename() + " not supported");
+	return Object::operator_equal(other);
 }
 
 bool FloatObject::operator_greater(FloatObject *other)
@@ -133,7 +133,7 @@ bool FloatObject::operator_greater(Object *other)
 		return operator_greater(&tmp);
 	}
 
-	throw Utils::Exceptions::NotImplemented("operator_greater: conversion from " + target + " to " + Typename() + " not supported");
+	return Object::operator_greater(other);
 }
 
 bool FloatObject::operator_greater_equal(FloatObject *other)
@@ -151,7 +151,7 @@ bool FloatObject::operator_greater_equal(Object *other)
 		return operator_greater_equal(&tmp);
 	}
 
-	throw Utils::Exceptions::NotImplemented("operator_greater_equal: conversion from " + target + " to " + Typename() + " not supported");
+	return Object::operator_greater_equal(other);
 }
 
 bool FloatObject::operator_less(FloatObject *other)
@@ -169,7 +169,7 @@ bool FloatObject::operator_less(Object *other)
 		return operator_less(&tmp);
 	}
 
-	throw Utils::Exceptions::NotImplemented("operator_less: conversion from " + target + " to " + Typename() + " not supported");
+	return Object::operator_less(other);
 }
 
 bool FloatObject::operator_less_equal(FloatObject *other)
@@ -187,7 +187,7 @@ bool FloatObject::operator_less_equal(Object *other)
 		return operator_less_equal(&tmp);
 	}
 
-	throw Utils::Exceptions::NotImplemented("operator_less_equal: conversion from " + target + " to " + Typename() + " not supported");
+	return Object::operator_less_equal(other);
 }
 
 void FloatObject::operator_multiply(FloatObject *other)
@@ -205,7 +205,7 @@ void FloatObject::operator_multiply(Object *other)
 		operator_multiply(&tmp);
 	}
 	else {
-		throw Utils::Exceptions::NotImplemented("operator_multiply: conversion from " + target + " to " + Typename() + " not supported");
+		Object::operator_multiply(other);
 	}
 }
 
@@ -224,7 +224,7 @@ void FloatObject::operator_plus(Object *other)
 		operator_plus(&tmp);
 	}
 	else {
-		throw Utils::Exceptions::NotImplemented("operator_plus: conversion from " + target + " to " + Typename() + " not supported");
+		Object::operator_plus(other);
 	}
 }
 
@@ -243,7 +243,7 @@ void FloatObject::operator_subtract(Object *other)
 		operator_subtract(&tmp);
 	}
 	else {
-		throw Utils::Exceptions::NotImplemented("operator_subtract: conversion from " + target + " to " + Typename() + " not supported");
+		Object::operator_subtract(other);
 	}
 }
 
