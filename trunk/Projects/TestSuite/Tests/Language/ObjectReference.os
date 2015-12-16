@@ -45,33 +45,33 @@ public namespace Language
 
 		private void ParameterByReference(number value ref)
 		{
-			print("ParameterByReference(number): value = " & value);
+			print("ParameterByReference(number): value = " + value);
 			value = value + 1;
-			print("ParameterByReference(number): value = " & value);
+			print("ParameterByReference(number): value = " + value);
 			assert(value == 2);
 		}
 
 		private void ParameterByReference(TestObject value const ref)
 		{
-			print("ParameterByReference(TestObject): mValue = " & value.mValue);
+			print("ParameterByReference(TestObject): mValue = " + value.mValue);
 			value.mValue = value.mValue + 1;
-			print("ParameterByReference(TestObject): mValue = " & value.mValue);
+			print("ParameterByReference(TestObject): mValue = " + value.mValue);
 			assert(value.mValue == 2);
 		}
 
 		private void ParameterByValue(number value val)
 		{
-			print("ParameterByValue(number): value = " & value);
+			print("ParameterByValue(number): value = " + value);
 			value = value + 1;
-			print("ParameterByValue(number): value = " & value);
+			print("ParameterByValue(number): value = " + value);
 			assert(value == 2);
 		}
 
 		private void ParameterByValue(TestObject value val)
 		{
-			print("ParameterByValue(TestObject): mValue = " & value.mValue);
+			print("ParameterByValue(TestObject): mValue = " + value.mValue);
 			value.mValue = value.mValue + 1;
-			print("ParameterByValue(TestObject): mValue = " & value.mValue);
+			print("ParameterByValue(TestObject): mValue = " + value.mValue);
 			assert(value.mValue == 2);
 		}
 	}

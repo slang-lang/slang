@@ -9,13 +9,13 @@ public namespace Language
 			number i = 0;
 
 			i = incStaticVar();
-			print("i = " & i);
+			print("i = " + i);
 
 			i = incStaticVar();
-			print("i = " & i);
+			print("i = " + i);
 
 			i = incStaticVar();
-			print("i = " & i);
+			print("i = " + i);
 		}
 
 		private number incStaticVar()

@@ -12,7 +12,7 @@ public namespace
 			assert(false == false);
 			assert(ReturnOne());
 			assert(ReturnOne() > 0);
-			assert(ReturnOne() & "bla");
+			assert("bla" + ReturnOne() + "bla");
 			assert(ReturnAString());
 			assert(ReturnTrue());
 			//assert(!ReturnFalse());	// unary operator ! is not yet implemented
