@@ -18,8 +18,8 @@
 namespace ObjectiveScript {
 
 
-const std::string CONTROLCHARS	= "#,;:=()[]{}<>+-*/&'\" ";
-const std::string DELIMITERS	= "#,;:=()[]{}<>+-*/&'\"\t\n\r ";
+const std::string CONTROLCHARS	= "#,;:=()[]{}<>+-*/%&'\" ";
+const std::string DELIMITERS	= "#,;:=()[]{}<>+-*/%&'\"\t\n\r ";
 const std::string WHITESPACES	= "\t\n\r ";
 
 
@@ -177,7 +177,8 @@ Token Tokenizer::createToken(const std::string& con, const Utils::Position& pos)
 
 	Token::Type::E type = Token::Type::IDENTIFER;
 
-	if ( content == "," ) { type = Token::Type::COLON; }
+	if ( content == "=" ) { type = Token::Type::ASSIGN; }
+	else if ( content == "," ) { type = Token::Type::COLON; }
 	else if ( content == "." ) { type = Token::Type::DOT; }
 	else if ( content == ";" ) { type = Token::Type::SEMICOLON; }
 	else if ( content == "'" ) { type = Token::Type::QUOTATION_SINGLE; }
@@ -188,19 +189,19 @@ Token Tokenizer::createToken(const std::string& con, const Utils::Position& pos)
 	else if ( content == "}" ) { type = Token::Type::BRACKET_CURLY_CLOSE; }
 	else if ( content == ">" ) { type = Token::Type::COMPARE_GREATER; }
 	else if ( content == "<" ) { type = Token::Type::COMPARE_LESS; }
-	else if ( content == "=" ) { type = Token::Type::EQUAL; }
 	else if ( content == "(" ) { type = Token::Type::PARENTHESIS_OPEN; }
 	else if ( content == ")" ) { type = Token::Type::PARENTHESIS_CLOSE; }
 	else if ( content == "+" ) { type = Token::Type::MATH_ADD; }
 	else if ( content == "/" ) { type = Token::Type::MATH_DIV; }
 	else if ( content == "*" ) { type = Token::Type::MATH_MULTI; }
 	else if ( content == "-" ) { type = Token::Type::MATH_SUBTRACT; }
-	else if ( content == "&" ) { type = Token::Type::STRING_ADD; }
-	else if ( content == "case" ) { type = Token::Type::CASE; }
+	else if ( content == "%" ) { type = Token::Type::MATH_MODULO; }
+	else if ( content == "&" ) { type = Token::Type::BITAND; }
+	else if ( content == "|" ) { type = Token::Type::BITOR; }
 	else if ( isBoolean(content) ) { type = Token::Type::CONST_BOOLEAN; }
-	else if ( isFloat(content) ) { type = Token::Type::CONST_NUMBER; }
+	else if ( isFloat(content) ) { type = Token::Type::CONST_FLOAT; }
 	else if ( isIdentifer(content) ) { type = Token::Type::IDENTIFER; }
-	else if ( isInteger(content) ) { type = Token::Type::CONST_NUMBER; }
+	else if ( isInteger(content) ) { type = Token::Type::CONST_NUMBER; }		// TODO: change me to CONST_INTEGER
 	else if ( isKeyword(content) ) { type = Token::Type::KEYWORD; }
 	else if ( isLanguageFeature(content) ) { type = Token::Type::LANGUAGEFEATURE; }
 	else if ( isLiteral(content) ) { type = Token::Type::CONST_LITERAL;
@@ -574,7 +575,7 @@ void Tokenizer::replaceAssignments()
 		bool changed = false;
 		Token::Type::E activeType = token->type();
 
-		if ( (lastType == Token::Type::EQUAL) && (activeType == Token::Type::EQUAL) ) {
+		if ( (lastType == Token::Type::ASSIGN) && (activeType == Token::Type::ASSIGN) ) {
 			// ==
 			changed = true;
 			// remove last added token ...
@@ -582,7 +583,7 @@ void Tokenizer::replaceAssignments()
 			// ... and add COMPARE_EQUAL instead
 			tmp.push_back(Token(Token::Type::COMPARE_EQUAL, "==", token->position()));
 		}
-		else if ( (lastType == Token::Type::GREATER || lastType == Token::Type::COMPARE_GREATER) && (activeType == Token::Type::EQUAL) ) {
+		else if ( (lastType == Token::Type::GREATER || lastType == Token::Type::COMPARE_GREATER) && (activeType == Token::Type::ASSIGN) ) {
 			// >=
 			changed = true;
 			// remove last added token ...
@@ -590,7 +591,7 @@ void Tokenizer::replaceAssignments()
 			// ... and add COMPARE_GREATER_EQUAL instead
 			tmp.push_back(Token(Token::Type::COMPARE_GREATER_EQUAL, ">=", token->position()));
 		}
-		else if ( (lastType == Token::Type::LESS || lastType == Token::Type::COMPARE_LESS) && (activeType == Token::Type::EQUAL) ) {
+		else if ( (lastType == Token::Type::LESS || lastType == Token::Type::COMPARE_LESS) && (activeType == Token::Type::ASSIGN) ) {
 			// <=
 			changed = true;
 			// remove last added token ...
@@ -598,7 +599,7 @@ void Tokenizer::replaceAssignments()
 			// ... and add COMPARE_LESS_EQUAL instead
 			tmp.push_back(Token(Token::Type::COMPARE_LESS_EQUAL, "<=", token->position()));
 		}
-		else if ( (lastType == Token::Type::MATH_ADD) && (activeType == Token::Type::EQUAL) ) {
+		else if ( (lastType == Token::Type::MATH_ADD) && (activeType == Token::Type::ASSIGN) ) {
 			// +=
 			changed = true;
 			// remove last added token ...
@@ -606,7 +607,7 @@ void Tokenizer::replaceAssignments()
 			// ... and add ASSIGN_ADD instead
 			tmp.push_back(Token(Token::Type::ASSIGN_ADD, "+=", token->position()));
 		}
-		else if ( (lastType == Token::Type::MATH_DIV) && (activeType == Token::Type::EQUAL) ) {
+		else if ( (lastType == Token::Type::MATH_DIV) && (activeType == Token::Type::ASSIGN) ) {
 			// /=
 			changed = true;
 			// remove last added token ...
@@ -614,7 +615,7 @@ void Tokenizer::replaceAssignments()
 			// ... and add ASSIGN_DIVIDE instead
 			tmp.push_back(Token(Token::Type::ASSIGN_DIVIDE, "/=", token->position()));
 		}
-		else if ( (lastType == Token::Type::MATH_MULTI) && (activeType == Token::Type::EQUAL) ) {
+		else if ( (lastType == Token::Type::MATH_MULTI) && (activeType == Token::Type::ASSIGN) ) {
 			// *=
 			changed = true;
 			// remove last added token ...
@@ -622,7 +623,7 @@ void Tokenizer::replaceAssignments()
 			// ... and add ASSIGN_MULTI instead
 			tmp.push_back(Token(Token::Type::ASSIGN_MULTI, "*=", token->position()));
 		}
-		else if ( (lastType == Token::Type::MATH_SUBTRACT) && (activeType == Token::Type::EQUAL) ) {
+		else if ( (lastType == Token::Type::MATH_SUBTRACT) && (activeType == Token::Type::ASSIGN) ) {
 			// -=
 			changed = true;
 			// remove last added token ...
@@ -637,18 +638,6 @@ void Tokenizer::replaceAssignments()
 		}
 
 		token++;
-	}
-
-	mTokens = tmp;
-	tmp.clear();
-
-	for ( TokenIterator it = mTokens.begin(); it != mTokens.end(); ++it ) {
-		if ( (*it).type() == Token::Type::EQUAL ) {
-			tmp.push_back(Token(Token::Type::ASSIGN, (*it).content(), (*it).position()));
-		}
-		else {
-			tmp.push_back((*it));
-		}
 	}
 
 	mTokens = tmp;

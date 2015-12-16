@@ -9,7 +9,7 @@
 #include <Core/Utils/Exceptions.h>
 #include <Core/Tools.h>
 #include "FloatObject.h"
-//#include "IntegerObject.h"
+#include "IntegerObject.h"
 
 // Namespace declarations
 
@@ -73,13 +73,15 @@ void NumberObject::operator_assign(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == NumberObject::TYPENAME || target == FloatObject::TYPENAME ) {
+	if ( target == FloatObject::TYPENAME ||
+		 target == IntegerObject::TYPENAME ||
+		 target == NumberObject::TYPENAME ) {
 		NumberObject tmp(other->getValue());
 
 		operator_assign(&tmp);
 	}
 	else {
-		throw Utils::Exceptions::NotImplemented("operator_assign: conversion from " + target + " to " + Typename() + " not supported");
+		Object::operator_assign(other);
 	}
 }
 
@@ -92,13 +94,15 @@ void NumberObject::operator_divide(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == NumberObject::TYPENAME || target == FloatObject::TYPENAME  ) {
+	if ( target == FloatObject::TYPENAME ||
+		 target == IntegerObject::TYPENAME ||
+		 target == NumberObject::TYPENAME ) {
 		NumberObject tmp(other->getValue());
 
 		operator_divide(&tmp);
 	}
 	else {
-		throw Utils::Exceptions::NotImplemented("operator_divide: conversion from " + target + " to " + Typename() + " not supported");
+		Object::operator_divide(other);
 	}
 }
 
@@ -111,13 +115,15 @@ bool NumberObject::operator_equal(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == NumberObject::TYPENAME || target == FloatObject::TYPENAME  ) {
+	if ( target == FloatObject::TYPENAME ||
+		 target == IntegerObject::TYPENAME ||
+		 target == NumberObject::TYPENAME ) {
 		NumberObject tmp(other->getValue());
 
 		return operator_equal(&tmp);
 	}
 
-	throw Utils::Exceptions::NotImplemented("operator_equal: conversion from " + target + " to " + Typename() + " not supported");
+	return Object::operator_equal(other);
 }
 
 bool NumberObject::operator_greater(NumberObject *other)
@@ -129,13 +135,15 @@ bool NumberObject::operator_greater(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == NumberObject::TYPENAME || target == FloatObject::TYPENAME  ) {
+	if ( target == FloatObject::TYPENAME ||
+		 target == IntegerObject::TYPENAME ||
+		 target == NumberObject::TYPENAME ) {
 		NumberObject tmp(other->getValue());
 
 		return operator_greater(&tmp);
 	}
 
-	throw Utils::Exceptions::NotImplemented("operator_greater: conversion from " + target + " to " + Typename() + " not supported");
+	return Object::operator_greater(other);
 }
 
 bool NumberObject::operator_greater_equal(NumberObject *other)
@@ -147,13 +155,15 @@ bool NumberObject::operator_greater_equal(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == NumberObject::TYPENAME || target == FloatObject::TYPENAME  ) {
+	if ( target == FloatObject::TYPENAME ||
+		 target == IntegerObject::TYPENAME ||
+		 target == NumberObject::TYPENAME ) {
 		NumberObject tmp(other->getValue());
 
 		return operator_greater_equal(&tmp);
 	}
 
-	throw Utils::Exceptions::NotImplemented("operator_greater_equal: conversion from " + target + " to " + Typename() + " not supported");
+	return Object::operator_greater_equal(other);
 }
 
 bool NumberObject::operator_less(NumberObject *other)
@@ -165,13 +175,15 @@ bool NumberObject::operator_less(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == NumberObject::TYPENAME || target == FloatObject::TYPENAME  ) {
+	if ( target == FloatObject::TYPENAME ||
+		 target == IntegerObject::TYPENAME ||
+		 target == NumberObject::TYPENAME ) {
 		NumberObject tmp(other->getValue());
 
 		return operator_less(&tmp);
 	}
 
-	throw Utils::Exceptions::NotImplemented("operator_less: conversion from " + target + " to " + Typename() + " not supported");
+	return Object::operator_less(other);
 }
 
 bool NumberObject::operator_less_equal(NumberObject *other)
@@ -183,13 +195,15 @@ bool NumberObject::operator_less_equal(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == NumberObject::TYPENAME || target == FloatObject::TYPENAME  ) {
+	if ( target == FloatObject::TYPENAME ||
+		 target == IntegerObject::TYPENAME ||
+		 target == NumberObject::TYPENAME ) {
 		NumberObject tmp(other->getValue());
 
 		return operator_less_equal(&tmp);
 	}
 
-	throw Utils::Exceptions::NotImplemented("operator_less_equal: conversion from " + target + " to " + Typename() + " not supported");
+	return Object::operator_less_equal(other);
 }
 
 void NumberObject::operator_multiply(NumberObject *other)
@@ -201,13 +215,15 @@ void NumberObject::operator_multiply(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == NumberObject::TYPENAME || target == FloatObject::TYPENAME  ) {
+	if ( target == FloatObject::TYPENAME ||
+		 target == IntegerObject::TYPENAME ||
+		 target == NumberObject::TYPENAME ) {
 		NumberObject tmp(other->getValue());
 
 		operator_multiply(&tmp);
 	}
 	else {
-		throw Utils::Exceptions::NotImplemented("operator_multiply: conversion from " + target + " to " + Typename() + " not supported");
+		Object::operator_multiply(other);
 	}
 }
 
@@ -220,13 +236,15 @@ void NumberObject::operator_plus(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == NumberObject::TYPENAME || target == FloatObject::TYPENAME  ) {
+	if ( target == FloatObject::TYPENAME ||
+		 target == IntegerObject::TYPENAME ||
+		 target == NumberObject::TYPENAME ) {
 		NumberObject tmp(other->getValue());
 
 		operator_plus(&tmp);
 	}
 	else {
-		throw Utils::Exceptions::NotImplemented("operator_plus: conversion from " + target + " to " + Typename() + " not supported");
+		Object::operator_plus(other);
 	}
 }
 
@@ -239,13 +257,15 @@ void NumberObject::operator_subtract(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == NumberObject::TYPENAME || target == FloatObject::TYPENAME  ) {
+	if ( target == FloatObject::TYPENAME ||
+		 target == IntegerObject::TYPENAME ||
+		 target == NumberObject::TYPENAME ) {
 		NumberObject tmp(other->getValue());
 
 		operator_subtract(&tmp);
 	}
 	else {
-		throw Utils::Exceptions::NotImplemented("operator_subtract: conversion from " + target + " to " + Typename() + " not supported");
+		Object::operator_subtract(other);
 	}
 }
 

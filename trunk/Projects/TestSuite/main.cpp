@@ -113,7 +113,7 @@ int main(int argc, const char* argv[])
 		mFixtures.clear();
 	}
 	catch ( std::exception &e ) {
-		std::cout << "Unhandled std::exception: " << e.what() << std::endl;
+		std::cout << "unhandled exception: " << e.what() << std::endl;
 	}
 
 	if ( !executed && !show ) {

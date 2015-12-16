@@ -45,6 +45,8 @@ public:
 			BRACKET_CURLY_CLOSE,
 			BRACKET_CURLY_OPEN,
 			BRACKET_OPEN,
+			BITAND,
+			BITOR,
 			CASE,
 			COLON,
 			COMPARE_EQUAL,
@@ -61,7 +63,6 @@ public:
 			DASH,
 			DOT,
 			ENDOFFILE,
-			EQUAL,
 			GREATER,
 			IDENTIFER,
 			KEYWORD,
@@ -70,6 +71,7 @@ public:
 			LESS,
 			MATH_ADD,
 			MATH_DIV,
+			MATH_MODULO,
 			MATH_MULTI,
 			MATH_SUBTRACT,
 			NIL,
@@ -82,7 +84,6 @@ public:
 			SEMICOLON,
 			SLASH,
 			STRING,
-			STRING_ADD,
 			TYPE,
 			UNKNOWN,
 			VISIBILITY,
@@ -101,6 +102,8 @@ public:
 				case BRACKET_CURLY_CLOSE: return "}";
 				case BRACKET_CURLY_OPEN: return "{";
 				case BRACKET_OPEN: return "[";
+				case BITAND: return "&";
+				case BITOR: return "|";
 				case CASE: return "CASE";
 				case COLON: return ",";
 				case COMPARE_EQUAL: return "==";
@@ -117,7 +120,6 @@ public:
 				case DASH: return "-";
 				case DOT: return ".";
 				case ENDOFFILE: return "<EOF>";
-				case EQUAL: return "=";
 				case GREATER: return ">";
 				case IDENTIFER: return "IDENTIFER";
 				case LABEL: return "LABEL";
@@ -126,6 +128,7 @@ public:
 				case LESS: return "<";
 				case MATH_ADD: return "+";
 				case MATH_DIV: return "/";
+				case MATH_MODULO: return "%";
 				case MATH_MULTI: return "*";
 				case MATH_SUBTRACT: return "-";
 				case NIL: return "NIL";
@@ -138,7 +141,6 @@ public:
 				case SEMICOLON: return ";";
 				case SLASH: return "/";
 				case STRING: return "STRING";
-				case STRING_ADD: return "&";
 				case TYPE: return "TYPE";
 				case UNKNOWN: return "UNKNOWN";
 				case VISIBILITY: return "VISIBILITY";

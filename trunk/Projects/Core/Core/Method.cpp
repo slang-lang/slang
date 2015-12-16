@@ -359,7 +359,8 @@ bool Method::parseCondition(TokenIterator& token)
 			 op != Token::Type::COMPARE_GREATER_EQUAL &&
 			 op != Token::Type::COMPARE_LESS &&
 			 op != Token::Type::COMPARE_LESS_EQUAL ) {
-			return isTrue(v1);
+			//return isTrue(v1);
+			 break;
 		}
 
 		// consume operator token
@@ -369,32 +370,27 @@ bool Method::parseCondition(TokenIterator& token)
 		parseExpression(&v2, token);
 
 		if ( op == Token::Type::COMPARE_EQUAL ) {
-			//v1.setValue( (v1.getValue() == v2.getValue()) ? "true" : "false" );
 			return operator_equal(&v1, &v2);
 		}
 		else if ( op == Token::Type::COMPARE_GREATER ) {
-			//v1.setValue( (v1.getValue() > v2.getValue()) ? "true" : "false" );
 			return operator_greater(&v1, &v2);
 		}
 		else if ( op == Token::Type::COMPARE_GREATER_EQUAL ) {
-			//v1.setValue( (v1.getValue() >= v2.getValue()) ? "true" : "false" );
 			return operator_greater_equal(&v1, &v2);
 		}
 		else if ( op == Token::Type::COMPARE_LESS ) {
-			//v1.setValue( (v1.getValue() < v2.getValue()) ? "true" : "false" );
 			return operator_less(&v1, &v2);
 		}
 		else if ( op == Token::Type::COMPARE_LESS_EQUAL ) {
-			//v1.setValue( (v1.getValue() <= v2.getValue()) ? "true" : "false" );
 			return operator_less_equal(&v1, &v2);
 		}
 		else if ( op == Token::Type::COMPARE_UNEQUAL ) {
-			//v1.setValue( (v1.getValue() != v2.getValue()) ? "true" : "false" );
 			return !operator_equal(&v1, &v2);
 		}
 	}
 
-	return false;
+	//return false;
+	return isTrue(v1);
 }
 
 void Method::parseExpression(Object *result, TokenIterator& start)
@@ -403,9 +399,10 @@ void Method::parseExpression(Object *result, TokenIterator& start)
 
 	for ( ; ; ) {
 		Token::Type::E op = start->type();
-		if ( op != Token::Type::MATH_ADD &&
-			 op != Token::Type::MATH_SUBTRACT &&
-			 op != Token::Type::STRING_ADD ) {
+		if ( op != Token::Type::BITAND &&
+			 op != Token::Type::BITOR &&
+			 op != Token::Type::MATH_ADD &&
+			 op != Token::Type::MATH_SUBTRACT ) {
 			return;
 		}
 
@@ -415,14 +412,20 @@ void Method::parseExpression(Object *result, TokenIterator& start)
 		Object v2;
 		parseFactors(&v2, start);
 
-		if ( op == Token::Type::MATH_ADD ) {
+		if ( op == Token::Type::BITAND ) {
+			operator_bitand(result, &v2);
+		}
+		else if ( op == Token::Type::BITOR ) {
+			operator_bitor(result, &v2);
+		}
+		else if ( op == Token::Type::MATH_ADD ) {
 			operator_plus(result, &v2);
 		}
 		else if ( op == Token::Type::MATH_SUBTRACT ) {
 			operator_subtract(result, &v2);
 		}
-		else if ( op == Token::Type::STRING_ADD ) {
-			*result = Strings::concat(*result, v2);
+		else {
+			throw Utils::Exceptions::SyntaxError("unexpected token " + start->content() + " found");
 		}
 	}
 }
@@ -445,8 +448,9 @@ void Method::parseFactors(Object *result, TokenIterator& start)
 
 	for ( ; ; ) {
 		Token::Type::E op = start->type();
-		if ( op != Token::Type::MATH_MULTI &&
-			 op != Token::Type::MATH_DIV ) {
+		if ( op != Token::Type::MATH_DIV &&
+			 op != Token::Type::MATH_MODULO &&
+			 op != Token::Type::MATH_MULTI ) {
 			return;
 		}
 
@@ -468,11 +472,17 @@ void Method::parseFactors(Object *result, TokenIterator& start)
 			parseTerm(&v2, start);
 		}
 
-		if ( op == Token::Type::MATH_MULTI ) {
+		if ( op == Token::Type::MATH_DIV ) {
+			operator_divide(result, &v2);
+		}
+		else if ( op == Token::Type::MATH_MODULO ) {
+			operator_modulo(result, &v2);
+		}
+		else if ( op == Token::Type::MATH_MULTI ) {
 			operator_multiply(result, &v2);
 		}
 		else {
-			operator_divide(result, &v2);
+			throw Utils::Exceptions::SyntaxError("unexpected token " + start->content() + " found");
 		}
 	}
 }

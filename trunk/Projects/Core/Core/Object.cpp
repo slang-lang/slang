@@ -455,6 +455,20 @@ void Object::operator_assign(Object *other)
 	throw Utils::Exceptions::NotImplemented("operator=: conversion from " + target + " to " + Typename() + " not supported");
 }
 
+void Object::operator_bitand(Object *other)
+{
+	std::string target = other->Typename();
+
+	throw Utils::Exceptions::NotImplemented("operator&: conversion from " + target + " to " + Typename() + " not supported");
+}
+
+void Object::operator_bitor(Object *other)
+{
+	std::string target = other->Typename();
+
+	throw Utils::Exceptions::NotImplemented("operator|: conversion from " + target + " to " + Typename() + " not supported");
+}
+
 void Object::operator_divide(Object *other)
 {
 	std::string target = other->Typename();
@@ -495,6 +509,13 @@ bool Object::operator_less_equal(Object *other)
 	std::string target = other->Typename();
 
 	throw Utils::Exceptions::NotImplemented("operator<=: conversion from " + target + " to " + Typename() + " not supported");
+}
+
+void Object::operator_modulo(Object *other)
+{
+	std::string target = other->Typename();
+
+	throw Utils::Exceptions::NotImplemented("operator%: conversion from " + target + " to " + Typename() + " not supported");
 }
 
 void Object::operator_multiply(Object *other)

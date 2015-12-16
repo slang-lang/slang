@@ -31,6 +31,7 @@ public:	// Operators
 
 	virtual void operator_assign(BoolObject *other);
 	virtual void operator_assign(FloatObject *other);
+	virtual void operator_assign(IntegerObject *other);
 	virtual void operator_assign(NumberObject *other);
 	virtual void operator_assign(Object *other);
 	virtual void operator_assign(StringObject *other);
@@ -40,6 +41,7 @@ public:	// Operators
 
 	virtual void operator_plus(BoolObject *other);
 	virtual void operator_plus(FloatObject *other);
+	virtual void operator_plus(IntegerObject *other);
 	virtual void operator_plus(NumberObject *other);
 	virtual void operator_plus(Object *other);
 	virtual void operator_plus(StringObject *other);

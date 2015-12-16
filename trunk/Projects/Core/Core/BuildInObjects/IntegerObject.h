@@ -50,6 +50,9 @@ public:	// Operators
 	virtual bool operator_less_equal(IntegerObject *other);
 	virtual bool operator_less_equal(Object *other);
 
+	virtual void operator_modulo(IntegerObject *other);
+	virtual void operator_modulo(Object *other);
+
 	virtual void operator_multiply(IntegerObject *other);
 	virtual void operator_multiply(Object *other);
 
