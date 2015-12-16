@@ -6,8 +6,8 @@ public namespace Language
 	{
 		public void Main(number argc = 0, string argv = "")
 		{
-			print("argc = " & argc);
-			print("argv = " & argv);
+			print("argc = " + argc);
+			print("argv = " + argv);
 		}
 	}
 }

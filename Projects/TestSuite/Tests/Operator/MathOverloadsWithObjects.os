@@ -52,6 +52,12 @@ public namespace MathOverloads
 			mNumber = mNumber * other.GetNumber();
 		}
 
+		public void operator%(OverloadedObject other const ref) modify
+		{
+			print("operator%(OverloadedObject)");
+			mNumber = mNumber % other.GetNumber();
+		}
+
 		public void operator+(OverloadedObject other const ref) modify
 		{
 			print("operator+(OverloadedObject)");
@@ -73,6 +79,7 @@ public namespace MathOverloads
 			assert( TestCase2() );
 			assert( TestCase3() );
 			assert( TestCase4() );
+			//assert( TestCase5() );
 		}
 
 		private bool TestCase1() const
@@ -84,7 +91,7 @@ public namespace MathOverloads
 
 			obj1 = obj1 + obj2;
 			//assert(obj1 == 3);
-			print("obj1.GetNumber() = " & obj1.GetNumber());
+			print("obj1.GetNumber() = " + obj1.GetNumber());
 			
 			if ( obj1 == 3 ) {
 				return true;
@@ -120,7 +127,7 @@ public namespace MathOverloads
 
 			obj1 = obj1 * obj2;
 			//assert( obj1 == 2 );
-			print("obj1.GetNumber() = " & obj1.GetNumber());
+			print("obj1.GetNumber() = " + obj1.GetNumber());
 
 			if ( obj1 == 2 ) {
 				return true;
@@ -138,9 +145,27 @@ public namespace MathOverloads
 
 			obj1 = obj1 / obj2;
 			//assert( obj1 == 0.5 );
-			print("obj1.GetNumber() = " & obj1.GetNumber());
+			print("obj1.GetNumber() = " + obj1.GetNumber());
 
 			if ( obj1 == 0.5 ) {
+				return true;
+			}
+
+			return false;
+		}
+
+		private bool TestCase5() const
+		{
+			print("TestCase5: using the overloaded modulo operator");
+
+			OverloadedObject obj1 = new OverloadedObject(5);
+			OverloadedObject obj2 = new OverloadedObject(2);
+
+			obj1 = obj1 % obj2;
+			//assert( obj1 == 0.5 );
+			print("obj1.GetNumber() = " + obj1.GetNumber());
+
+			if ( obj1 == 1 ) {
 				return true;
 			}
 

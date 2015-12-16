@@ -10,19 +10,19 @@ public namespace
 
 			number i = 0;
 			i = testMethod(returnNumber(1), returnNumber(2));
-			print("i = " & i);
+			print("i = " + i);
 
 			i = returnSum(2, 3);
-			print("i = " & i);
+			print("i = " + i);
 
 			i = returnSum(3, 4, 5);
-			print("i = " & i);
+			print("i = " + i);
 
 			i = returnSum("6+", "7");
-			print("i = " & i);
+			print("i = " + i);
 
-			i = returnSum(""&8, "9");
-			print("i = " & i);
+			i = returnSum("" + 8, "9");
+			print("i = " + i);
 		}
 
 		private number returnNumber(number param1) const
@@ -42,7 +42,7 @@ public namespace
 
 		private string returnSum(string p1, string p2) const
 		{
-			return p1 & p2;
+			return "" + p1 + p2;
 		}
 
 		private void returnVoid()

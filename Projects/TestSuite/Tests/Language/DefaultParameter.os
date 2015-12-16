@@ -12,7 +12,7 @@ public namespace Tests
 
 		private void DefaultParameter(number param = 1)
 		{
-			print("param = " & param);
+			print("param = " + param);
 		}
 	}
 }

@@ -69,9 +69,9 @@ public namespace stable AttributeTest
 			//number one = StaticObject.GetOne();
 
 			ConstObject value = new ConstObject();
-			print("value.GetNumber() = " & value.GetNumber());
+			print("value.GetNumber() = " + value.GetNumber());
 			value.SetNumber(2);
-			print("value.GetNumber() = " & value.GetNumber());
+			print("value.GetNumber() = " + value.GetNumber());
 
 			print(getTwo());
 

@@ -14,7 +14,7 @@ public namespace Language
 			number count = 0;
 			while ( count < maxCount ) {
 				count = count + 1;
-				print("count = " & count);
+				print("count = " + count);
 			}
 		}
 	}
