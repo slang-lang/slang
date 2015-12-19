@@ -63,12 +63,12 @@ std::string VirtualMachine::buildLibraryPath(const std::string& library) const
 
 Script* VirtualMachine::create(const std::string& filename, const ParameterList& params)
 {
+	OSinfo("processing script '" + filename + "'...");
+
 	init();
 
-	OSinfo("Processing script '" + filename + "'...");
-
 	if ( filename.empty() ) {
-		OSwarn("Invalid filename '" + filename + "' provided!");
+		OSwarn("invalid filename '" + filename + "' provided!");
 		return 0;
 	}
 
@@ -76,34 +76,39 @@ Script* VirtualMachine::create(const std::string& filename, const ParameterList&
 	mScripts.insert(script);
 
 	script->connectPrinter(mPrinter);
+	script->connectRepository(mRepository);
 
 	Analyser analyser;
 	analyser.process(filename);
 
 	StringList libraries = analyser.getLibraryReferences();
-	BluePrintList objects = analyser.getBluePrints();
-	//InterfaceList interfaces = analyser.getInterfaces();
-	//PrototypeList prototypes = analyser.getPrototypes();
-
 	for ( StringList::const_iterator it = libraries.begin(); it != libraries.end(); ++it ) {
 		loadLibrary((*it));
 	}
-/*
+
+/*	Not part of this release
+	InterfaceList interfaces = analyser.getInterfaces();
+
 	for ( InterfaceList::iterator it = interfaces.begin(); it != interfaces.end(); ++it ) {
 		mInterfaces.insert(std::make_pair(
 			it->Typename(), (*it)
 		));
 	}
 */
-/*
+/*	Not part of this release
+	PrototypeList prototypes = analyser.getPrototypes();
 	for ( PrototypeList::iterator it = prototypes.begin(); it != prototypes.end(); ++it ) {
 		mRepository->addPrototype((*it));
 	}
 */
+
+	BluePrintList objects = analyser.getBluePrints();
 	for ( BluePrintList::iterator it = objects.begin(); it != objects.end(); ++it ) {
+		// add blue prints to our object repository
 		mRepository->addBlueprint((*it));
 
 		if ( it->Filename() == filename && it->Typename() == "Main" ) {
+			// create an instance of our Main object
 			mObjects.insert(std::make_pair(
 				it->Typename(), mRepository->createInstance(it->Typename(), "main")
 			));
@@ -111,11 +116,12 @@ Script* VirtualMachine::create(const std::string& filename, const ParameterList&
 			ObjectCollection::iterator objIt = mObjects.find(it->Typename());
 			assert(objIt != mObjects.end());
 
+			// ... and assign it to our script
 			script->assign(objIt->second);
 		}
 	}
 
-	script->connectRepository(mRepository);
+	// execute this script's constructor
 	script->construct(params);
 
 	return script;
@@ -133,36 +139,37 @@ void VirtualMachine::init()
 
 void VirtualMachine::loadLibrary(const std::string& library)
 {
-	OSinfo("Loading additional library file '" + library + "'...");
+	OSinfo("loading additional library file '" + library + "'...");
 
 	try {
-		Analyser a;
-		a.process(buildLibraryPath(library));
+		Analyser analyser;
+		analyser.process(buildLibraryPath(library));
 
-		const std::list<std::string>& libraries = a.getLibraryReferences();
-		BluePrintList objects = a.getBluePrints();
-		//InterfaceList interfaces = a.getInterfaces();
-		//PrototypeList prototypes = a.getPrototypes();
-
+		const std::list<std::string>& libraries = analyser.getLibraryReferences();
 		for ( std::list<std::string>::const_iterator it = libraries.begin(); it != libraries.end(); ++it ) {
 			loadLibrary((*it));
 		}
 
-		for ( BluePrintList::iterator it = objects.begin(); it != objects.end(); ++it ) {
-			mRepository->addBlueprint((*it));
+/*	Not part of this release
+		InterfaceList interfaces = analyser.getInterfaces();
+		for ( InterfaceList::iterator it = interfaces.begin(); it != interfaces.end(); ++it ) {
+			mInterfaces.insert(std::make_pair(
+				it->Typename(), (*it)
+			));
 		}
-/*
-	for ( InterfaceList::iterator it = interfaces.begin(); it != interfaces.end(); ++it ) {
-		mInterfaces.insert(std::make_pair(
-			it->Typename(), (*it)
-		));
-	}
 */
-/*
+
+/*	Not part of this release
+		PrototypeList prototypes = analyser.getPrototypes();
 		for ( PrototypeList::iterator it = prototypes.begin(); it != prototypes.end(); ++it ) {
 			mRepository->addPrototype((*it));
 		}
 */
+
+		BluePrintList objects = analyser.getBluePrints();
+		for ( BluePrintList::iterator it = objects.begin(); it != objects.end(); ++it ) {
+			mRepository->addBlueprint((*it));
+		}
 	}
 	catch ( std::exception& e ) {
 		OSerror(e.what());
@@ -177,7 +184,7 @@ void VirtualMachine::setBaseFolder(const std::string& base)
 
 	mBaseFolder = base + "/";
 
-	OSinfo("Library root = " + mBaseFolder);
+	OSinfo("library root = " + mBaseFolder);
 }
 
 void VirtualMachine::setPrinter(IPrinter *p)

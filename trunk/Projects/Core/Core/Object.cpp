@@ -267,8 +267,8 @@ void Object::execute(Object *result, const std::string& method, const ParameterL
 	Method *mPtr = (*mIt);
 
 	// check visibility:
-	// colleague method functions can always call us,
-	// for calls from non-member functions the method visibility must be public (or protected if they belong to the same object hirarchy)
+	// colleague methods can always call us,
+	// for calls from non-member functions the method visibility must be public (or protected if they belong to the same object hierarchy)
 	if ( !callFromMethod && mPtr->visibility() != Visibility::Public ) {
 		throw Utils::Exceptions::VisibilityError("invalid visibility: " + method);
 	}
