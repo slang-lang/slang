@@ -22,7 +22,9 @@ SET(SOURCES
 	Prototype.cpp
 	Reference.cpp
 	Repository.cpp
+	Scope.cpp
 	Script.cpp
+	Stack.cpp
 	Token.cpp
 	Tokenizer.cpp
 	Tools.cpp
@@ -49,6 +51,7 @@ SET(HEADERS
 	Repository.h
 	Scope.h
 	Script.h
+	Stack.h
 	Symbol.h
 	Token.h
 	Tokenizer.h

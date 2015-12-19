@@ -7,6 +7,7 @@
 
 // Project includes
 #include "Parameter.h"
+#include "Stack.h"
 #include "Types.h"
 
 // Forward declarations
@@ -52,6 +53,7 @@ private:
 	Object *mObject;
 	IPrinter *mPrinter;
 	Repository *mRepository;
+	StackTrace mStackTrace;
 };
 
 
