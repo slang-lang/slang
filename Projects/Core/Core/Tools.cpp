@@ -60,12 +60,11 @@ bool stringToBool(const std::string &value)
 		return false;
 	}
 
-	std::stringstream stream;
-	stream << value;
-	bool b;
-	stream >> b;
-
-	return b;
+    //std::transform(value.begin(), value.end(), value.begin(), ::tolower);
+    std::istringstream is(value);
+    bool b;
+    is >> std::boolalpha >> b;
+    return b;
 }
 
 float stringToFloat(const std::string &value)

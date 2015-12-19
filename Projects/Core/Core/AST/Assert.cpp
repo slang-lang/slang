@@ -28,7 +28,7 @@ Node* Assert::execute()
 
 	Object result = mInterpreter->process();
 	if ( isFalse(result) ) {
-		throw Utils::AssertionFailed(result.value(), mTokens.begin()->position());
+		throw Utils::Exceptions::AssertionFailed(result.getValue(), mTokens.begin()->position());
 	}
 
 	return 0;

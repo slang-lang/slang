@@ -5,12 +5,16 @@
 // Library includes
 
 // Project includes
-#include <Core/BuildInObjects/Bool.h>
-#include <Core/BuildInObjects/Number.h>
-#include <Core/BuildInObjects/String.h>
+#include <Core/BuildInObjects/BoolObject.h>
+#include <Core/BuildInObjects/FloatObject.h>
+#include <Core/BuildInObjects/IntegerObject.h>
+#include <Core/BuildInObjects/NumberObject.h>
+#include <Core/BuildInObjects/StringObject.h>
+#include <Core/BuildInObjects/VoidObject.h>
 #include <Core/Helpers/Math.h>
 #include <Core/Helpers/Strings.h>
 #include <Core/Interfaces/IPrinter.h>
+#include <Core/OperatorOverloading.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Utils/Utils.h>
 #include <Core/Helpers/BooleanEvaluations.h>
@@ -84,22 +88,22 @@ Object Interpreter::parseCondition(TokenIterator& token)
 		Object v2 = parseExpression(token);
 
 		if ( op == Token::Type::COMPARE_EQUAL ) {
-			v1.value( (v1.value() == v2.value()) ? "true" : "false" );
+			v1.setValue( (v1.getValue() == v2.getValue()) ? "true" : "false" );
 		}
 		else if ( op == Token::Type::COMPARE_GREATER ) {
-			v1.value( (v1.value() > v2.value()) ? "true" : "false" );
+			v1.setValue( (v1.getValue() > v2.getValue()) ? "true" : "false" );
 		}
 		else if ( op == Token::Type::COMPARE_GREATER_EQUAL ) {
-			v1.value( (v1.value() >= v2.value()) ? "true" : "false" );
+			v1.setValue( (v1.getValue() >= v2.getValue()) ? "true" : "false" );
 		}
 		else if ( op == Token::Type::COMPARE_LESS ) {
-			v1.value( (v1.value() < v2.value()) ? "true" : "false" );
+			v1.setValue( (v1.getValue() < v2.getValue()) ? "true" : "false" );
 		}
 		else if ( op == Token::Type::COMPARE_LESS_EQUAL ) {
-			v1.value( (v1.value() <= v2.value()) ? "true" : "false" );
+			v1.setValue( (v1.getValue() <= v2.getValue()) ? "true" : "false" );
 		}
 		else if ( op == Token::Type::COMPARE_UNEQUAL ) {
-			v1.value( (v1.value() != v2.value()) ? "true" : "false" );
+			v1.setValue( (v1.getValue() != v2.getValue()) ? "true" : "false" );
 		}
 	}
 
@@ -114,24 +118,33 @@ Object Interpreter::parseExpression(TokenIterator& start)
 
 	for ( ; ; ) {
 		Token::Type::E op = start->type();
-		if ( op != Token::Type::MATH_ADD && op != Token::Type::MATH_SUBTRACT &&
-			 op != Token::Type::STRING_ADD ) {
+		if ( op != Token::Type::BITAND &&
+			 op != Token::Type::BITOR &&
+			 op != Token::Type::MATH_ADD &&
+			 op != Token::Type::MATH_SUBTRACT ) {
 			return v1;
 		}
 
 		// consume operator token
 		start++;
 
-		Object v2 = parseFactors(start);
+		Object v2;
+		parseFactors(&v2, start);
 
-		if ( op == Token::Type::MATH_ADD ) {
-			v1 = Math::add(v1, v2);
+		if ( op == Token::Type::BITAND ) {
+			operator_bitand(&v1, &v2);
+		}
+		else if ( op == Token::Type::BITOR ) {
+			operator_bitor(&v1, &v2);
+		}
+		else if ( op == Token::Type::MATH_ADD ) {
+			operator_plus(&v1, &v2);
 		}
 		else if ( op == Token::Type::MATH_SUBTRACT ) {
-			v1 = Math::subtract(v1, v2);
+			operator_subtract(&v1, &v2);
 		}
-		else if ( op == Token::Type::STRING_ADD ) {
-			v1 = Strings::concat(v1, v2);
+		else {
+			throw Utils::Exceptions::SyntaxError("unexpected token " + start->content() + " found");
 		}
 	}
 
@@ -157,7 +170,9 @@ Object Interpreter::parseFactors(TokenIterator& start)
 
 	for ( ; ; ) {
 		Token::Type::E op = start->type();
-		if ( op != Token::Type::MATH_MULTI && op != Token::Type::MATH_DIV ) {
+		if ( op != Token::Type::MATH_DIV &&
+			 op != Token::Type::MATH_MODULO &&
+			 op != Token::Type::MATH_MULTI ) {
 			return v1;
 		}
 
@@ -179,11 +194,17 @@ Object Interpreter::parseFactors(TokenIterator& start)
 			v2 = parseTerm(start);
 		}
 
-		if ( op == Token::Type::MATH_MULTI ) {
-			v1 = Math::multiply(v1, v2);
+		if ( op == Token::Type::MATH_DIV ) {
+			operator_divide(&v1, &v2);
+		}
+		else if ( op == Token::Type::MATH_MODULO ) {
+			operator_modulo(&v1, &v2);
+		}
+		else if ( op == Token::Type::MATH_MULTI ) {
+			operator_multiply(&v1, &v2);
 		}
 		else {
-			v1 = Math::divide(v1, v2);
+			throw Utils::Exceptions::SyntaxError("unexpected token " + start->content() + " found");
 		}
 	}
 
@@ -195,10 +216,10 @@ Object Interpreter::parseTerm(TokenIterator& start)
 	Object result;
 
 	switch ( start->type() ) {
-		case Token::Type::BOOLEAN: {
+		case Token::Type::CONST_BOOLEAN: {
 			result = Bool(start->content());
 		} break;
-		case Token::Type::CONSTANT: {
+		case Token::Type::CONST_NUMBER: {
 			result = Number(start->content());
 		} break;
 		case Token::Type::IDENTIFER: {
@@ -226,11 +247,11 @@ Object Interpreter::parseTerm(TokenIterator& start)
 		case Token::Type::KEYWORD: {
 			result = process();
 		} break;
-		case Token::Type::LITERAL: {
+		case Token::Type::CONST_LITERAL: {
 			result = String(start->content());
 		} break;
 		default: {
-			throw Utils::SyntaxError("identifier, literal or number expected but " + start->content() + " as " + Token::Type::convert(start->type()) + " found", start->position());
+			throw Utils::Exceptions::SyntaxError("identifier, literal or number expected but " + start->content() + " as " + Token::Type::convert(start->type()) + " found", start->position());
 		} break;
 	}
 
@@ -250,9 +271,11 @@ Object Interpreter::process()
 		// decide what we want to do according to
 		// the type of token we have
 		switch ( token->type() ) {
-			case Token::Type::BOOLEAN:
-			case Token::Type::CONSTANT:
-			case Token::Type::LITERAL:
+			case Token::Type::CONST_BOOLEAN:
+			case Token::Type::CONST_FLOAT:
+			case Token::Type::CONST_INTEGER:
+			case Token::Type::CONST_LITERAL:
+			case Token::Type::CONST_NUMBER:
 				//parseExpression(token);
 				break;
 			case Token::Type::IDENTIFER: {
@@ -299,7 +322,7 @@ void Interpreter::process_assert(TokenIterator& token)
 	Object condition = parseCondition(condBegin);
 
 	if ( isFalse(condition) ) {
-		throw Utils::AssertionFailed("'" + condition.value() + "'", token->position());
+		throw Utils::Exceptions::AssertionFailed("'" + condition.getValue() + "'", token->position());
 	}
 
 	token = tmp;
@@ -330,7 +353,7 @@ Object Interpreter::process_new(TokenIterator& token)
 	// loop through all parameters seperated by colons
 	while ( tmp != closed ) {
 		Object v = parseExpression(tmp);
-		params.push_back(Parameter(v.name(), v.type(), v.value(), Parameter::AccessMode::ByValue));
+		params.push_back(Parameter(v.getName(), v.Typename(), v.getValue(), Parameter::AccessMode::ByValue));
 
 		if ( std::distance(tmp, closed) <= 0 ) {
 			break;
@@ -346,14 +369,7 @@ Object Interpreter::process_new(TokenIterator& token)
 
 	assert(mRepository);
 
-	Object *object = 0;
-	if ( isPrototype ) {
-		object = mRepository->createInstanceFromPrototype(prototype, type, name);
-	}
-	else {
-		object = mRepository->createInstance(type, name);
-	}
-
+	Object *object = mRepository->createInstance(type, name, prototype);
 	object->connectRepository(mRepository);
 	object->Constructor(params);
 
@@ -397,7 +413,7 @@ void Interpreter::process_type(TokenIterator& token)
 	name = token->content();
 
 	if ( token->type() != Token::Type::IDENTIFER ) {
-		throw Utils::SyntaxError("identifier expected but '" + token->content() + "' found", token->position());
+		throw Utils::Exceptions::SyntaxError("identifier expected but '" + token->content() + "' found", token->position());
 	}
 
 	token++;
@@ -419,19 +435,13 @@ void Interpreter::process_type(TokenIterator& token)
 		assign = ++token;
 	}
 
-	Object object;
-	if ( isPrototype ) {
-		object = mRepository->createInstanceFromPrototype(prototype, type, name);
-	}
-	else {
-		object = *mRepository->createInstance(type, name);
-	}
+	Object object = mRepository->createInstance(type, name, prototype);
 
 	if ( isConst ) object.setConst(true);
 	if ( isStatic ) object.setStatic(true);
 
 	if ( assign != mTokens.end() ) {
-		object.value(parseExpression(assign).value());
+		object.setValue(parseExpression(assign).value());
 		token = assign;
 	}
 
@@ -439,7 +449,7 @@ void Interpreter::process_type(TokenIterator& token)
 
 
 	if ( token->type() != Token::Type::SEMICOLON ) {
-		throw Utils::SyntaxError("';' expected but '" + token->content() + "' found", token->position());
+		throw Utils::Exceptions::SyntaxError("';' expected but '" + token->content() + "' found", token->position());
 	}
 }
 
