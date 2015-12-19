@@ -60,6 +60,9 @@ void Script::construct(const ParameterList& params)
 
 	mObject->connectPrinter(mPrinter);
 	mObject->connectRepository(mRepository);
+
+	mStackTrace.pushStack(mObject->getName(), params);
+
 	mObject->Constructor(params);
 }
 
@@ -67,6 +70,8 @@ void Script::destruct()
 {
 	try {
 		mRepository->removeReference(mObject);
+
+		mStackTrace.popStack();
 	}
 	catch ( Utils::Exceptions::Exception &e ) {
 		OSerror(e.what());
