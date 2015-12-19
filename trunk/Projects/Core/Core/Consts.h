@@ -34,7 +34,7 @@ static const char* KEYWORD_IMPORT = "import";
 static const char* KEYWORD_NEW = "new";
 static const char* KEYWORD_PRINT = "print";
 static const char* KEYWORD_RETURN = "return";
-static const char* KEYWORD_SWITCH = "swicth";
+static const char* KEYWORD_SWITCH = "switch";
 static const char* KEYWORD_WHILE = "while";
 
 // Language feature states

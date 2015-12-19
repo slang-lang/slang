@@ -31,14 +31,16 @@ public:
 
 public:
 	const BluePrintList& getBluePrints() const;
-	const InterfaceList& getInterfaces() const;
 	const StringList& getLibraryReferences() const;
-	const PrototypeList& getPrototypes() const;
 
 public:
 	void process(const std::string& filename);
 
 protected:
+
+private:	// moved to private to prevent usage in this release
+	const InterfaceList& getInterfaces() const;
+	const PrototypeList& getPrototypes() const;
 
 private:
 	void generateObjects(const TokenList& tokens);
