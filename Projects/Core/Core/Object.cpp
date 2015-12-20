@@ -24,7 +24,6 @@ Object::Object()
   mIsAtomicType(false),
   mRepository(0),
   mConstructed(false),
-  mPrinter(0),
   mValue("<INVALID>")
 {
 }
@@ -34,8 +33,7 @@ Object::Object(const Object& other)
   BluePrint(other.mTypename, other.mFilename),
   mIsAtomicType(other.mIsAtomicType),
   mRepository(other.mRepository),
-  mConstructed(other.mConstructed),
-  mPrinter(other.mPrinter)
+  mConstructed(other.mConstructed)
 {
 	mTokens = other.mTokens;
 
@@ -65,7 +63,6 @@ Object::Object(const std::string& type, const std::string& filename)
   mIsAtomicType(false),
   mRepository(0),
   mConstructed(false),
-  mPrinter(0),
   mValue("<INVALID>")
 {
 }
@@ -76,7 +73,6 @@ Object::Object(const std::string& name, const std::string& filename, const std::
   mIsAtomicType(false),
   mRepository(0),
   mConstructed(false),
-  mPrinter(0),
   mValue(value)
 {
 }
@@ -91,9 +87,6 @@ Object& Object::operator= (const Object& other)
 	if ( this != &other ) {
 		if ( !mConstructed ) {
 			mConstructed = other.mConstructed;
-		}
-		if ( !mPrinter ) {
-			mPrinter = other.mPrinter;
 		}
 		if ( !mRepository ) {
 			mRepository = other.mRepository;
@@ -177,11 +170,6 @@ void Object::addParent(const std::string& parent)
 	}
 
 	mParents.push_back(parent);
-}
-
-void Object::connectPrinter(IPrinter *p)
-{
-	mPrinter = p;
 }
 
 void Object::connectRepository(Repository *r)
@@ -537,11 +525,6 @@ void Object::operator_subtract(Object *other)
 	std::string target = other->Typename();
 
 	throw Utils::Exceptions::NotImplemented("operator-: conversion from " + target + " to " + Typename() + " not supported");
-}
-
-IPrinter* Object::providePrinter() const
-{
-	return mPrinter;
 }
 
 void Object::setValue(const std::string& value)

@@ -7,7 +7,6 @@
 
 // Project includes
 #include "Parameter.h"
-#include "Stack.h"
 #include "Types.h"
 
 // Forward declarations
@@ -32,7 +31,6 @@ public:
 public:	// Setup
 	void assign(Object *object);
 
-	void connectPrinter(IPrinter *p);
 	void connectRepository(Repository *r);
 
 public:	// Constructor & Destructor
@@ -51,9 +49,7 @@ protected:
 
 private:
 	Object *mObject;
-	IPrinter *mPrinter;
 	Repository *mRepository;
-	StackTrace mStackTrace;
 };
 
 

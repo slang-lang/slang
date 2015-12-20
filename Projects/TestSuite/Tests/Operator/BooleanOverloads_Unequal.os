@@ -47,7 +47,7 @@ private namespace BooleanOverloads
 
 		private bool TestCase1() const
 		{
-			print("TestCase1: equality operator with atomic type");
+			print("TestCase1: unequal operator with atomic type");
 
 			UserObject obj1 = new UserObject(1);
 
@@ -62,7 +62,7 @@ private namespace BooleanOverloads
 
 		private bool TestCase2() const
 		{
-			print("TestCase2: equality operator with object");
+			print("TestCase2: unequal operator with object");
 
 			UserObject obj1 = new UserObject(1);
 			UserObject obj2 = new UserObject(2);

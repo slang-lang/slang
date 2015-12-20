@@ -205,7 +205,6 @@ void Method::execute(const ParameterList& params, Object *result)
 		}
 	}
 
-	result->connectPrinter(mOwner->providePrinter());
 	result->connectRepository(mRepository);
 	result->overrideName(name());
 	result->overrideType(type());
@@ -347,10 +346,9 @@ bool Method::isSignatureValid(const ParameterList& params) const
 	return true;
 }
 
-bool Method::parseCondition(TokenIterator& token)
+bool Method::parseCondition(TokenIterator& token, Object *result)
 {
-	Object v1;
-	parseExpression(&v1, token);
+	parseExpression(result, token);
 
 	for ( ; ; ) {
 		Token::Type::E op = token->type();
@@ -359,7 +357,6 @@ bool Method::parseCondition(TokenIterator& token)
 			 op != Token::Type::COMPARE_GREATER_EQUAL &&
 			 op != Token::Type::COMPARE_LESS &&
 			 op != Token::Type::COMPARE_LESS_EQUAL ) {
-			//return isTrue(v1);
 			 break;
 		}
 
@@ -370,27 +367,27 @@ bool Method::parseCondition(TokenIterator& token)
 		parseExpression(&v2, token);
 
 		if ( op == Token::Type::COMPARE_EQUAL ) {
-			return operator_equal(&v1, &v2);
+			return operator_equal(result, &v2);
 		}
 		else if ( op == Token::Type::COMPARE_GREATER ) {
-			return operator_greater(&v1, &v2);
+			return operator_greater(result, &v2);
 		}
 		else if ( op == Token::Type::COMPARE_GREATER_EQUAL ) {
-			return operator_greater_equal(&v1, &v2);
+			return operator_greater_equal(result, &v2);
 		}
 		else if ( op == Token::Type::COMPARE_LESS ) {
-			return operator_less(&v1, &v2);
+			return operator_less(result, &v2);
 		}
 		else if ( op == Token::Type::COMPARE_LESS_EQUAL ) {
-			return operator_less_equal(&v1, &v2);
+			return operator_less_equal(result, &v2);
 		}
 		else if ( op == Token::Type::COMPARE_UNEQUAL ) {
-			return !operator_equal(&v1, &v2);
+			return !operator_equal(result, &v2);
 		}
 	}
 
-	//return false;
-	return isTrue(v1);
+	return isTrue(*result);
+    //return BoolObject(*result);
 }
 
 void Method::parseExpression(Object *result, TokenIterator& start)
@@ -594,7 +591,8 @@ void Method::process_assert(TokenIterator& token)
 	// find semicolon
 	TokenIterator tmp = findNext(condEnd, Token::Type::SEMICOLON);
 
-	if ( !parseCondition(condBegin) ) {
+    Object condition;
+	if ( !parseCondition(condBegin, &condition) ) {
 		throw Utils::Exceptions::AssertionFailed("", token->position());
 	}
 
@@ -608,33 +606,33 @@ void Method::process_assign(TokenIterator& token, Object *result)
 	// find next semicolon
 	TokenIterator end = findNext(token, Token::Type::SEMICOLON);
 
-	if ( assign == token ) {
-		// we don't have an assignment but a method call
-		parseExpression(result, token);
+    if ( assign == token ) {
+        // we don't have an assignment but a method call
+        parseExpression(result, token);
 
-		token = end;
-		return;
-	}
-
+        token = end;
+        return;
+    }
+    
 	std::string identifier = token->content();
 
-	Object *s = getSymbol(identifier);
-	if ( !s ) {
+	Object *symbol = getSymbol(identifier);
+	if ( !symbol ) {
 		throw Utils::Exceptions::UnknownIdentifer("identifier '" + identifier + "' not found", token->position());
 	}
-	if ( s->isConst() ) {
+	if ( symbol->isConst() ) {
 		throw Utils::Exceptions::ConstCorrectnessViolated("not allowed to modify const member '" + identifier + "'", token->position());
 	}
 	if ( isMember(identifier) && (this->isConst() || mOwner->isConst()) ) {
 		throw Utils::Exceptions::ConstCorrectnessViolated("not allowed to modify member '" + identifier + "' in const method '" + this->name() + "'", token->position());
 	}
 
-	parseExpression(s, ++assign);
+	parseExpression(symbol, ++assign);
 
-	if ( s->isFinal() && s->isModifiable() ) {
+	if ( symbol->isFinal() && symbol->isModifiable() ) {
 		// we have modified a final entity for the first time, we now have to set it so const 
-		s->setConst(true);
-		s->setFinal(false);
+		symbol->setConst(true);
+		symbol->setFinal(false);
 	}
 
 	// assign == end should now be true
@@ -682,7 +680,8 @@ void Method::process_for(TokenIterator& token)
 	Object result;
 	process(&result, decl, cond, Token::Type::SEMICOLON);
 
-	while ( parseCondition(cond = conditionStart) ) {
+    Object condition;
+	while ( parseCondition(cond = conditionStart, &condition) ) {
 		TokenIterator bb = begin;
 
 		// process loop body
@@ -729,7 +728,8 @@ void Method::process_if(TokenIterator& token, Object *result)
 		}
 	}
 
-	if ( parseCondition(condBegin) ) {
+    Object condition;
+	if ( parseCondition(condBegin, &condition) ) {
 		process(result, bodyBegin, bodyEnd, Token::Type::BRACKET_CURLY_CLOSE);
 
 		// check if we executed all tokens
@@ -782,9 +782,7 @@ void Method::process_keyword(TokenIterator& token, Object *result)
 		process_print(token);
 	}
 	else if ( keyword == "return" ) {
-		parseExpression(result, token);
-
-		mStopProcessing = true;
+		process_return(token, result);
 	}
 	else if ( keyword == "switch" ) {
 		process_switch(token);
@@ -892,7 +890,6 @@ void Method::process_new(TokenIterator& token, Object *result)
 	assert(mRepository);
 
 	Object *object = mRepository->createInstance(type, name, prototype);
-	object->connectPrinter(mOwner->providePrinter());
 	object->connectRepository(mRepository);
 	object->Constructor(params);
 
@@ -915,14 +912,19 @@ void Method::process_print(TokenIterator& token)
 	StringObject text;
 	parseExpression(&text, opened);
 
-	if ( mOwner->providePrinter() ) {
-		mOwner->providePrinter()->print(text.getValue() + "\n", mOwner->Filename(), token->position().line);
-	}
-	else {
-		std::cout << text.getValue() << std::endl;
-	}
+	// print with line break
+	std::cout << text.getValue() << std::endl;
 
 	token = tmp;
+}
+
+// syntax:
+// return <expression>;
+void Method::process_return(TokenIterator& token, Object *result)
+{
+	parseExpression(result, token);
+
+	mStopProcessing = true;
 }
 
 // syntax:
@@ -1030,10 +1032,11 @@ void Method::process_while(TokenIterator& token)
 
 	TokenIterator tmp = condBegin;
 
-	Object result;
-	while ( parseCondition(tmp) ) {
+    Object condition;
+	while ( parseCondition(tmp, &condition) ) {
 		TokenIterator bb = bodyBegin;
-
+        
+        Object result;
 		process(&result, bb, bodyEnd, Token::Type::BRACKET_CURLY_CLOSE);
 
 		// reset iterator
