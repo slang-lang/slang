@@ -545,10 +545,9 @@ void Tokenizer::process()
 	addToken(Token(Token::Type::ENDOFFILE));
 
 	removeWhiteSpaces();		// remove all whitespaces
-	replaceAssignments();
-	replaceOperators();
-	replacePrototypes();
-	//classify();
+	replaceAssignments();		// replace assignment tokens with compare tokens (if present)
+	replaceOperators();			// combine 'operator' identifiers with the next following token i.e. 'operator' '+' => 'operator+'
+	replacePrototypes();		//
 }
 
 void Tokenizer::removeWhiteSpaces()
@@ -564,6 +563,9 @@ void Tokenizer::removeWhiteSpaces()
 	mTokens = tmp;
 }
 
+/*
+ * replaceAssignments replaces/merges all assignment tokens with compare tokens (if present), i.e. '+' '=' => '+='
+ */
 void Tokenizer::replaceAssignments()
 {
 	TokenList tmp;
