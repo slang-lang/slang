@@ -44,7 +44,6 @@ public:
 public:
 	Object* getOwner() const;
 
-public:	// Setup
 	void setOwner(Object *owner);
 	void setRepository(Repository *repository);
 	void setSignature(const ParameterList& params);
@@ -57,18 +56,16 @@ public:
 	bool isSignatureValid(const ParameterList& params) const;
 	const ParameterList& provideSignature() const;
 
-public:	// Execution
+public: // Execution
 	void execute(const ParameterList& params, Object *result);
-
-protected:
 
 private:
 	typedef std::map<std::string, Object*> MemberCollection;
 
-private:	// Construction
+private: // Construction
 	void addIdentifier(const std::string& name, Object *object);			// throws DuplicateIdentifer exception
 
-private:	// Execution
+private: // Execution
 	bool isMember(const std::string& token) const;
 	bool isMethod(const std::string& token);
 	bool isMethod(const std::string& token, const ParameterList& params);
@@ -85,6 +82,7 @@ private:	// Execution
 	void process_method(TokenIterator& token, Object *result);
 	void process_new(TokenIterator& token, Object *result);
 	void process_print(TokenIterator& token);
+	void process_return(TokenIterator& token, Object *result);
 	void process_type(TokenIterator& token);
 	void process_switch(TokenIterator& token);
 	void process_while(TokenIterator& token);
@@ -94,7 +92,7 @@ private:	// Execution
 
 	// condition evaluation
 	// {
-	bool parseCondition(TokenIterator& start);
+	bool parseCondition(TokenIterator& start, Object *result);
 	// }
 
 	// expression evaluation

@@ -84,7 +84,7 @@ StackTrace::~StackTrace()
 void StackTrace::popStack()
 {
 	if ( mStack.empty() ) {
-		throw Utils::Exceptions::Exception("cannot pop stack beyong bottom");
+		throw Utils::Exceptions::Exception("cannot pop stack beyond bottom");
 	}
 
 	Stack *stack = mStack.back();

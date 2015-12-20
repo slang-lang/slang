@@ -58,11 +58,7 @@ public:	// Setup
 	void addParent(const std::string& parent);
 
 public:	// Connectors
-	void connectPrinter(IPrinter *p);
 	void connectRepository(Repository *r);
-
-public:	// Providers
-	IPrinter* providePrinter() const;
 
 public:	// Operators
 	virtual void operator_assign(Object *other);
@@ -129,9 +125,7 @@ private:
 	bool mConstructed;
 	MemberCollection mMembers;
 	MethodCollection mMethods;
-	//std::string mName;
 	StringList mParents;
-	IPrinter *mPrinter;
 	std::string mValue;
 };
 

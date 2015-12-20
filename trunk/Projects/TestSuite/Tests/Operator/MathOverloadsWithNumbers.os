@@ -27,6 +27,8 @@ public namespace MathOverloads
 		public bool operator==(number other const) const
 		{
 			print("operator==(number)");
+
+			//return mNumber == other;
 			
 			if ( mNumber == other ) {
 				return true;
@@ -34,18 +36,7 @@ public namespace MathOverloads
 			
 			return false;
 		}
-/*
-		public bool operator==(OverloadedObject other const ref) const
-		{
-			print("operator==(OverloadedObject)");
-			
-			if ( mNumber == other.GetNumber() ) {
-				return true;
-			}
-			
-			return false;
-		}
-*/
+
 		public void operator*(number other const) modify
 		{
 			print("operator*");

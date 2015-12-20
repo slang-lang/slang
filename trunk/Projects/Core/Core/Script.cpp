@@ -20,7 +20,6 @@ namespace ObjectiveScript {
 
 Script::Script()
 : mObject(0),
-  mPrinter(0),
   mRepository(0)
 {
 }
@@ -34,14 +33,6 @@ void Script::assign(Object *object)
 {
 	assert(object);
 	mObject = object;
-}
-
-void Script::connectPrinter(IPrinter *p)
-{
-	assert(p);
-	assert(!mPrinter);
-
-	mPrinter = p;
 }
 
 void Script::connectRepository(Repository *r)
@@ -58,11 +49,7 @@ void Script::construct(const ParameterList& params)
 		throw Utils::Exceptions::Exception("no object assigned");
 	}
 
-	mObject->connectPrinter(mPrinter);
 	mObject->connectRepository(mRepository);
-
-	mStackTrace.pushStack(mObject->getName(), params);
-
 	mObject->Constructor(params);
 }
 
@@ -70,8 +57,6 @@ void Script::destruct()
 {
 	try {
 		mRepository->removeReference(mObject);
-
-		mStackTrace.popStack();
 	}
 	catch ( Utils::Exceptions::Exception &e ) {
 		OSerror(e.what());
