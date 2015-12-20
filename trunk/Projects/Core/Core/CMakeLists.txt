@@ -25,6 +25,7 @@ SET(SOURCES
 	Scope.cpp
 	Script.cpp
 	Stack.cpp
+	System.cpp
 	Token.cpp
 	Tokenizer.cpp
 	Tools.cpp
@@ -52,6 +53,7 @@ SET(HEADERS
 	Scope.h
 	Script.h
 	Stack.h
+	System.h
 	Symbol.h
 	Token.h
 	Tokenizer.h

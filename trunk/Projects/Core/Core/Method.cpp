@@ -22,6 +22,7 @@
 #include "Object.h"
 #include "OperatorOverloading.h"
 #include "Repository.h"
+#include "System.h"
 #include "Tools.h"
 
 // Namespace declarations
@@ -613,7 +614,7 @@ void Method::process_assign(TokenIterator& token, Object *result)
         token = end;
         return;
     }
-    
+
 	std::string identifier = token->content();
 
 	Object *symbol = getSymbol(identifier);
@@ -630,7 +631,7 @@ void Method::process_assign(TokenIterator& token, Object *result)
 	parseExpression(symbol, ++assign);
 
 	if ( symbol->isFinal() && symbol->isModifiable() ) {
-		// we have modified a final entity for the first time, we now have to set it so const 
+		// we have modified a final entity for the first time, we now have to set it so const
 		symbol->setConst(true);
 		symbol->setFinal(false);
 	}
@@ -912,8 +913,7 @@ void Method::process_print(TokenIterator& token)
 	StringObject text;
 	parseExpression(&text, opened);
 
-	// print with line break
-	std::cout << text.getValue() << std::endl;
+	System::print(text);
 
 	token = tmp;
 }
@@ -1035,7 +1035,7 @@ void Method::process_while(TokenIterator& token)
     Object condition;
 	while ( parseCondition(tmp, &condition) ) {
 		TokenIterator bb = bodyBegin;
-        
+
         Object result;
 		process(&result, bb, bodyEnd, Token::Type::BRACKET_CURLY_CLOSE);
 
