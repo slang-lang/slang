@@ -21,26 +21,12 @@ private namespace BooleanOverloads
 		public bool operator_equal(number other const) const
 		{
 			print("operator==(number)");
-/*
-			if ( mValue == other ) {
-				return true;
-			}
-
-			return false;
-*/
 			return mValue == other;
 		}
 
 		public bool operator_equal(UserObject other const ref) const
 		{
 			print("operator==(UserObject)");
-/*
-			if ( mValue == other.GetValue() ) {
-				return true;
-			}
-
-			return false;
-*/
 			return mValue == other.GetValue();
 		}
 	}
@@ -75,7 +61,7 @@ private namespace BooleanOverloads
 			UserObject obj1 = new UserObject(1);
 			UserObject obj2 = new UserObject(2);
 
-			//assert(obj1 == obj2);
+			//assert(obj1 != obj2);
 			if ( obj1 != obj2 ) {
 				print("obj1 != obj2");
 				return true;

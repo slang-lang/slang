@@ -21,7 +21,7 @@ std::string IntegerObject::TYPENAME = "int";
 
 
 IntegerObject::IntegerObject(int value)
-: Object("<unnamed object>", SYSTEM_LIBRARY, TYPENAME, ""),
+: Object(UNNAMED_OBJECT, SYSTEM_LIBRARY, TYPENAME, ""),
   mValue(value)
 {
 	mIsAtomicType = true;
@@ -30,7 +30,7 @@ IntegerObject::IntegerObject(int value)
 }
 
 IntegerObject::IntegerObject(const std::string& value)
-: Object("", SYSTEM_LIBRARY, TYPENAME, value),
+: Object(UNNAMED_OBJECT, SYSTEM_LIBRARY, TYPENAME, value),
   mValue(Tools::stringToInt(value))
 {
 	mIsAtomicType = true;

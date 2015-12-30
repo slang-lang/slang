@@ -27,13 +27,6 @@ public namespace MathOverloads
 		public bool operator==(number other const) const
 		{
 			print("operator==(number)");
-/*
-			if ( mNumber == other ) {
-				return true;
-			}
-			
-			return false;
-*/
 			return mNumber == other;
 		}
 
@@ -70,7 +63,7 @@ public namespace MathOverloads
 			assert( TestCase2() );
 			assert( TestCase3() );
 			assert( TestCase4() );
-			//assert( TestCase5() );
+			//assert( TestCase5() );	modulo operator only implemented for integer type
 		}
 
 		private bool TestCase1() const
@@ -151,7 +144,7 @@ public namespace MathOverloads
 			//assert( obj1 == 0.5 );
 			print("obj1.GetNumber() = " + obj1.GetNumber());
 
-			if ( obj1 == 1 ) {
+			if ( obj1 == 1i ) {
 				return true;
 			}
 

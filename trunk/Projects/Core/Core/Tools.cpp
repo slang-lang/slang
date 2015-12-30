@@ -229,39 +229,34 @@ TokenIterator findNextBalancedParenthesis(TokenIterator start, int generateError
 	return start;
 }
 
-bool isBooleanConst(const std::string& v)
+bool isBooleanConst(const std::string& value)
 {
-	return ( v == FALSE || v == TRUE );
+	return ( value == FALSE || value == TRUE );
 }
 
-bool isFalse(const std::string& s)
+bool isFalse(const std::string& value)
 {
-	return ( s == FALSE );
+	return ( value == FALSE );
 }
 
-bool isFalse(const Object& o)
+bool isFalse(const Object& object)
 {
-	if ( o.getValue() == "0" || o.getValue() == FALSE ) {
+	if ( object.getValue() == "0" || object.getValue() == "0.0" || object.getValue() == FALSE ) {
 		return true;
 	}
 
+	// everything that's not false has to be true
 	return false;
 }
 
-bool isTrue(const std::string& s)
+bool isTrue(const std::string& value)
 {
-	return ( s == TRUE );
+	return !isFalse(value);
 }
 
-bool isTrue(const Object& o)
+bool isTrue(const Object& object)
 {
-	// check value is false
-	if ( o.getValue() == "0" || o.getValue() == "0.0" || o.getValue() == FALSE ) {
-		return false;
-	}
-
-	// value is not false, so return true
-	return true;
+	return !isFalse(object);
 }
 
 

@@ -23,7 +23,7 @@ std::string BoolObject::TYPENAME = "bool";
 
 
 BoolObject::BoolObject(bool value)
-: Object("", SYSTEM_LIBRARY, TYPENAME, ""),
+: Object(UNNAMED_OBJECT, SYSTEM_LIBRARY, TYPENAME, ""),
   mValue(value)
 {
 	mIsAtomicType = true;
@@ -32,7 +32,7 @@ BoolObject::BoolObject(bool value)
 }
 
 BoolObject::BoolObject(const std::string& value)
-: Object("", SYSTEM_LIBRARY, TYPENAME, value),
+: Object(UNNAMED_OBJECT, SYSTEM_LIBRARY, TYPENAME, value),
   mValue(Tools::stringToBool(value))
 {
 	mIsAtomicType = true;

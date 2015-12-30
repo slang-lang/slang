@@ -201,7 +201,7 @@ Token Tokenizer::createToken(const std::string& con, const Utils::Position& pos)
 	else if ( isBoolean(content) ) { type = Token::Type::CONST_BOOLEAN; }
 	else if ( isFloat(content) ) { type = Token::Type::CONST_FLOAT; }
 	else if ( isIdentifer(content) ) { type = Token::Type::IDENTIFER; }
-	else if ( isInteger(content) ) { type = Token::Type::CONST_NUMBER; }		// TODO: change me to CONST_INTEGER
+	else if ( isInteger(content) ) { type = Token::Type::CONST_INTEGER; }		// TODO: change me to CONST_INTEGER was CONST_NUMBER
 	else if ( isKeyword(content) ) { type = Token::Type::KEYWORD; }
 	else if ( isLanguageFeature(content) ) { type = Token::Type::LANGUAGEFEATURE; }
 	else if ( isLiteral(content) ) { type = Token::Type::CONST_LITERAL;
@@ -269,7 +269,7 @@ bool Tokenizer::isFloat(const std::string& token) const
 	}
 
 	// the last char of our token has to be an 'f'
-	if ( token[token.size() - 1] == 'f' ) {
+	if ( token[token.size() - 1] == 'f' && token.size() > 1 ) {
 		return true;
 	}
 
@@ -293,7 +293,7 @@ bool Tokenizer::isInteger(const std::string& token) const
 		return false;
 	}
 
-	for ( unsigned int c = 0; c < token.size(); c++ ) {
+	for ( unsigned int c = 0; c < token.size() - 1; c++ ) {
 		switch ( token[c] ) {
 			case '1':
 			case '2':
@@ -311,7 +311,12 @@ bool Tokenizer::isInteger(const std::string& token) const
 		}
 	}
 
-	return true;
+	// the last char of our token has to be an 'i'
+	if ( token[token.size() - 1] == 'i' && token.size() > 1 ) {
+		return true;
+	}
+
+	return false;
 }
 
 bool Tokenizer::isKeyword(const std::string& token) const

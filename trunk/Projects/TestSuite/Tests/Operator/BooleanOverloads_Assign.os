@@ -35,20 +35,12 @@ private namespace BooleanOverloads
 
 		public bool operator==(number other const) const
 		{
-			if ( mValue == other ) {
-				return true;
-			}
-
-			return false;
+			return mValue == other;
 		}
 
 		public bool operator==(UserObject other const ref) const
 		{
-			if ( mValue == other.getValue() ) {
-				return true;
-			}
-
-			return false;
+			return mValue == other.getValue();
 		}
 	}
 

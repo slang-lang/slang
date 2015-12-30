@@ -11,12 +11,12 @@
 
 // Namespace declarations
 
+// Global defines
+//#define USE_EXTREME_CONST_CORRECTNESS
+
 
 namespace ObjectiveScript {
 
-
-#define SYSTEM_LIBRARY "SYSTEM.OS"
-//#define USE_EXTREME_CONST_CORRECTNESS
 
 // Boolean values
 static const char* FALSE = "false";
@@ -47,7 +47,7 @@ static const char* LANGUAGE_FEATURE_UNSTABLE = "unstable";
 
 // Modifiers
 static const char* MODIFIER_CONST = "const";
-static const char* MODIFIER_FINAL = "finale";
+static const char* MODIFIER_FINAL = "final";
 static const char* MODIFIER_MODIFY = "modify";
 static const char* MODIFIER_STATIC = "static";
 
@@ -61,8 +61,16 @@ static const char* RESERVED_WORD_OPERATOR = "operator";
 static const char* RESERVED_WORD_PROTOTYPE = "prototype";
 static const char* RESERVED_WORD_USING = "using";
 
+// System
+static const char* SYSTEM_LIBRARY = "SYSTEM.OS";
+static const char* TEMPORARY_OBJECT = "<temporary object>";
+static const char* UNNAMED_OBJECT = "";
+
 // Types
 static const char* PROTOTYPE_TYPE = "UNKNOWN";
+
+// Values
+static const char* VALUE_NULL = "null";
 
 // Visibility
 static const char* PRIVATE = "private";

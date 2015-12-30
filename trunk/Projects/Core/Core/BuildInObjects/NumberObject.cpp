@@ -21,7 +21,7 @@ std::string NumberObject::TYPENAME = "number";
 
 
 NumberObject::NumberObject(float value)
-: Object("<unnamed object>", SYSTEM_LIBRARY, TYPENAME, Tools::floatToString(value)),
+: Object(UNNAMED_OBJECT, SYSTEM_LIBRARY, TYPENAME, Tools::floatToString(value)),
   mValue(value)
 {
 	mIsAtomicType = true;
@@ -30,7 +30,7 @@ NumberObject::NumberObject(float value)
 }
 
 NumberObject::NumberObject(const std::string& value)
-: Object("<unnamed object>", SYSTEM_LIBRARY, TYPENAME, value),
+: Object(UNNAMED_OBJECT, SYSTEM_LIBRARY, TYPENAME, value),
   mValue(Tools::stringToFloat(value))
 {
 	mIsAtomicType = true;

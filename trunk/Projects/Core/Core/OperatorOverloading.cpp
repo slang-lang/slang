@@ -13,6 +13,7 @@
 #include <Core/BuildInObjects/VoidObject.h>
 #include <Core/Utils/Exceptions.h>
 #include "Object.h"
+#include "Tools.h"
 
 // Namespace declarations
 
@@ -81,7 +82,7 @@ void operator_assign(Object *base, Object *other)
 
 		if ( base->hasMethod("operator=", params) ) {
 			// our object has an overwritten assign operator, so we execute it
-			BoolObject tmp;
+			Object tmp;
 			base->execute(&tmp, "operator=", params, 0);
 		}
 	}
@@ -140,7 +141,7 @@ void operator_bitand(Object *base, Object *other)
 			Parameter(other->getName(), other->Typename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
 		);
 
-		BoolObject tmp;
+		Object tmp;
 		base->execute(&tmp, "operator&", params, 0);
 	}
 }
@@ -198,7 +199,7 @@ void operator_bitor(Object *base, Object *other)
 			Parameter(other->getName(), other->Typename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
 		);
 
-		BoolObject tmp;
+		Object tmp;
 		base->execute(&tmp, "operator|", params, 0);
 	}
 }
@@ -244,7 +245,7 @@ void operator_divide(Object *base, Object *other)
 			Parameter(other->getName(), other->Typename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
 		);
 
-		BoolObject tmp;
+		Object tmp;
 		base->execute(&tmp, "operator/", params, 0);
 	}
 }
@@ -282,9 +283,9 @@ bool operator_equal(Object *base, Object *other)
 		Parameter(other->getName(), other->Typename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
 	);
 
-	BoolObject tmp;
+	Object tmp;
 	base->execute(&tmp, "operator==", params, 0);
-	return tmp;
+	return isTrue(tmp);
 }
 
 bool operator_greater(Object *base, Object *other)
@@ -320,9 +321,9 @@ bool operator_greater(Object *base, Object *other)
 		Parameter(other->getName(), other->Typename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
 	);
 
-	BoolObject tmp;
+	Object tmp;
 	base->execute(&tmp, "operator>", params, 0);
-	return tmp;
+	return isTrue(tmp);
 }
 
 bool operator_greater_equal(Object *base, Object *other)
@@ -358,9 +359,9 @@ bool operator_greater_equal(Object *base, Object *other)
 		Parameter(other->getName(), other->Typename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
 	);
 
-	BoolObject tmp;
+	Object tmp;
 	base->execute(&tmp, "operator>=", params, 0);
-	return tmp;
+	return isTrue(tmp);
 }
 
 bool operator_less(Object *base, Object *other)
@@ -396,9 +397,9 @@ bool operator_less(Object *base, Object *other)
 		Parameter(other->getName(), other->Typename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
 	);
 
-	BoolObject tmp;
+	Object tmp;
 	base->execute(&tmp, "operator<", params, 0);
-	return tmp;
+	return isTrue(tmp);
 }
 
 bool operator_less_equal(Object *base, Object *other)
@@ -434,9 +435,9 @@ bool operator_less_equal(Object *base, Object *other)
 		Parameter(other->getName(), other->Typename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
 	);
 
-	BoolObject tmp;
+	Object tmp;
 	base->execute(&tmp, "operator<=", params, 0);
-	return tmp;
+	return isTrue(tmp);
 }
 
 void operator_modulo(Object *base, Object *other)
@@ -486,7 +487,7 @@ void operator_modulo(Object *base, Object *other)
 			Parameter(other->getName(), other->Typename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
 		);
 
-		BoolObject tmp;
+		Object tmp;
 		base->execute(&tmp, "operator%", params, 0);
 	}
 }
@@ -532,7 +533,7 @@ void operator_multiply(Object *base, Object *other)
 			Parameter(other->getName(), other->Typename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
 		);
 
-		BoolObject tmp;
+		Object tmp;
 		base->execute(&tmp, "operator*", params, 0);
 	}
 }
@@ -578,7 +579,7 @@ void operator_plus(Object *base, Object *other)
 			Parameter(other->getName(), other->Typename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
 		);
 
-		BoolObject tmp;
+		Object tmp;
 		base->execute(&tmp, "operator+", params, 0);
 	}
 }
@@ -624,7 +625,7 @@ void operator_subtract(Object *base, Object *other)
 			Parameter(other->getName(), other->Typename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
 		);
 
-		BoolObject tmp;
+		Object tmp;
 		base->execute(&tmp, "operator-", params, 0);
 	}
 }
