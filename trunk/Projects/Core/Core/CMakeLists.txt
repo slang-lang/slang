@@ -50,6 +50,7 @@ SET(HEADERS
 	Prototype.h
 	Reference.h
 	Repository.h
+	RTTI.h
 	Scope.h
 	Script.h
 	Stack.h
