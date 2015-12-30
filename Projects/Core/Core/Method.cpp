@@ -357,11 +357,12 @@ bool Method::parseExternalCondition(TokenIterator& token, Object *result)
 			 op != Token::Type::COMPARE_GREATER &&
 			 op != Token::Type::COMPARE_GREATER_EQUAL &&
 			 op != Token::Type::COMPARE_LESS &&
-			 op != Token::Type::COMPARE_LESS_EQUAL ) {
+			 op != Token::Type::COMPARE_LESS_EQUAL &&
+			 op != Token::Type::COMPARE_UNEQUAL ) {
 			 break;
 		}
 
-		// consume operator token
+		// consume comperator token
 		token++;
 
 		Object v2;
@@ -401,11 +402,12 @@ void Method::parseCondition(Object *result, TokenIterator& start)
 			 op != Token::Type::COMPARE_GREATER &&
 			 op != Token::Type::COMPARE_GREATER_EQUAL &&
 			 op != Token::Type::COMPARE_LESS &&
-			 op != Token::Type::COMPARE_LESS_EQUAL ) {
+			 op != Token::Type::COMPARE_LESS_EQUAL &&
+			 op != Token::Type::COMPARE_UNEQUAL ) {
 			 break;
 		}
 
-		// consume operator token
+		// consume comperator token
 		start++;
 
 		Object v2;

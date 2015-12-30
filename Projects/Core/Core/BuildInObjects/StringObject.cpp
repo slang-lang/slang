@@ -25,7 +25,7 @@ std::string StringObject::TYPENAME = "string";
 
 
 StringObject::StringObject(const std::string& value)
-: Object("<unnamed object>", SYSTEM_LIBRARY, TYPENAME, value),
+: Object(UNNAMED_OBJECT, SYSTEM_LIBRARY, TYPENAME, value),
   mValue(value)
 {
 	mIsAtomicType = true;

@@ -20,20 +20,28 @@ private namespace BooleanOverloads
 
 		public bool operator==(number other const) const
 		{
-			if ( mValue == other ) {
+			print("operator==(number)");
+/*
+		if ( mValue == other ) {
 				return true;
 			}
 
 			return false;
+*/
+			return mValue == other;
 		}
 
 		public bool operator==(UserObject other const ref) const
 		{
+			print("operator==(UserObject)");
+/*
 			if ( mValue == other.GetValue() ) {
 				return true;
 			}
 
 			return false;
+*/
+			return mValue == other.GetValue();
 		}
 	}
 

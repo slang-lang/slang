@@ -27,28 +27,12 @@ public namespace MathOverloads
 		public bool operator==(number other const) const
 		{
 			print("operator==(number)");
-
-/*
-			if ( mNumber == other ) {
-				return true;
-			}
-			
-			return false;
-*/
 			return mNumber == other;
 		}
 
 		public bool operator==(OverloadedObject other const ref) const
 		{
 			print("operator==(OverloadedObject)");
-
-/*
-			if ( mNumber == other.GetNumber() ) {
-				return true;
-			}
-			
-			return false;
-*/
 			return mNumber == other.GetNumber();
 		}
 
