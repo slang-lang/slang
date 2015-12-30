@@ -347,7 +347,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Core\Scope.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\Script.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\Stack.cpp"
 				>
 			</File>
 			<File
@@ -373,6 +381,10 @@
 						ObjectFile="$(IntDir)\Helpers\"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\Core\System.cpp"
+				>
 			</File>
 			<File
 				RelativePath=".\Core\Token.cpp"
@@ -585,6 +597,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Core\Stack.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\BuildInObjects\StringObject.h"
 				>
 			</File>
@@ -594,6 +610,10 @@
 			</File>
 			<File
 				RelativePath=".\Core\Symbol.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\System.h"
 				>
 			</File>
 			<File

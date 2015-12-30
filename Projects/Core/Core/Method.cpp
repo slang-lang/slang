@@ -347,7 +347,7 @@ bool Method::isSignatureValid(const ParameterList& params) const
 	return true;
 }
 
-bool Method::parseCondition(TokenIterator& token, Object *result)
+bool Method::parseExternalCondition(TokenIterator& token, Object *result)
 {
 	parseExpression(result, token);
 
@@ -389,6 +389,47 @@ bool Method::parseCondition(TokenIterator& token, Object *result)
 
 	return isTrue(*result);
     //return BoolObject(*result);
+}
+
+void Method::parseCondition(Object *result, TokenIterator& start)
+{
+	parseTerm(result, start);
+
+	for ( ; ; ) {
+		Token::Type::E op = start->type();
+		if ( op != Token::Type::COMPARE_EQUAL &&
+			 op != Token::Type::COMPARE_GREATER &&
+			 op != Token::Type::COMPARE_GREATER_EQUAL &&
+			 op != Token::Type::COMPARE_LESS &&
+			 op != Token::Type::COMPARE_LESS_EQUAL ) {
+			 break;
+		}
+
+		// consume operator token
+		start++;
+
+		Object v2;
+		parseTerm(&v2, start);
+
+		if ( op == Token::Type::COMPARE_EQUAL ) {
+			*result = BoolObject(operator_equal(result, &v2));
+		}
+		else if ( op == Token::Type::COMPARE_GREATER ) {
+			*result = BoolObject(operator_greater(result, &v2));
+		}
+		else if ( op == Token::Type::COMPARE_GREATER_EQUAL ) {
+			*result = BoolObject(operator_greater_equal(result, &v2));
+		}
+		else if ( op == Token::Type::COMPARE_LESS ) {
+			*result = BoolObject(operator_less(result, &v2));
+		}
+		else if ( op == Token::Type::COMPARE_LESS_EQUAL ) {
+			*result = BoolObject(operator_less_equal(result, &v2));
+		}
+		else if ( op == Token::Type::COMPARE_UNEQUAL ) {
+			*result = BoolObject(!operator_equal(result, &v2));
+		}
+	}
 }
 
 void Method::parseExpression(Object *result, TokenIterator& start)
@@ -441,7 +482,8 @@ void Method::parseFactors(Object *result, TokenIterator& start)
 		start++;
 	}
 	else {
-		parseTerm(result, start);
+		//parseTerm(result, start);
+		parseCondition(result, start);
 	}
 
 	for ( ; ; ) {
@@ -467,7 +509,8 @@ void Method::parseFactors(Object *result, TokenIterator& start)
 			start++;
 		}
 		else {
-			parseTerm(&v2, start);
+			//parseTerm(&v2, start);
+			parseCondition(&v2, start);
 		}
 
 		if ( op == Token::Type::MATH_DIV ) {
@@ -593,7 +636,15 @@ void Method::process_assert(TokenIterator& token)
 	TokenIterator tmp = findNext(condEnd, Token::Type::SEMICOLON);
 
     Object condition;
-	if ( !parseCondition(condBegin, &condition) ) {
+/*
+	if ( !parseExternalCondition(condBegin, &condition) ) {
+		throw Utils::Exceptions::AssertionFailed("", token->position());
+	}
+*/
+
+	parseExpression(&condition, condBegin);
+
+	if ( !isTrue(condition) ) {
 		throw Utils::Exceptions::AssertionFailed("", token->position());
 	}
 
@@ -682,7 +733,7 @@ void Method::process_for(TokenIterator& token)
 	process(&result, decl, cond, Token::Type::SEMICOLON);
 
     Object condition;
-	while ( parseCondition(cond = conditionStart, &condition) ) {
+	while ( parseExternalCondition(cond = conditionStart, &condition) ) {
 		TokenIterator bb = begin;
 
 		// process loop body
@@ -730,7 +781,7 @@ void Method::process_if(TokenIterator& token, Object *result)
 	}
 
     Object condition;
-	if ( parseCondition(condBegin, &condition) ) {
+	if ( parseExternalCondition(condBegin, &condition) ) {
 		process(result, bodyBegin, bodyEnd, Token::Type::BRACKET_CURLY_CLOSE);
 
 		// check if we executed all tokens
@@ -1033,7 +1084,7 @@ void Method::process_while(TokenIterator& token)
 	TokenIterator tmp = condBegin;
 
     Object condition;
-	while ( parseCondition(tmp, &condition) ) {
+	while ( parseExternalCondition(tmp, &condition) ) {
 		TokenIterator bb = bodyBegin;
 
         Object result;

@@ -92,11 +92,12 @@ private: // Execution
 
 	// condition evaluation
 	// {
-	bool parseCondition(TokenIterator& start, Object *result);
+	bool parseExternalCondition(TokenIterator& start, Object *result);
 	// }
 
 	// expression evaluation
 	// {
+	void parseCondition(Object *result, TokenIterator& start);
 	void parseExpression(Object *result, TokenIterator& start);
 	void parseFactors(Object *result, TokenIterator& start);
 	void parseTerm(Object *result, TokenIterator& start);

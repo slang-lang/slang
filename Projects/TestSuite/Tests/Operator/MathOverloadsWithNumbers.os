@@ -27,14 +27,14 @@ public namespace MathOverloads
 		public bool operator==(number other const) const
 		{
 			print("operator==(number)");
-
-			//return mNumber == other;
-			
+/*
 			if ( mNumber == other ) {
 				return true;
 			}
 			
 			return false;
+*/
+			return mNumber == other;
 		}
 
 		public void operator*(number other const) modify

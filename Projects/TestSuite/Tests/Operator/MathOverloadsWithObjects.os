@@ -27,23 +27,29 @@ public namespace MathOverloads
 		public bool operator==(number other const) const
 		{
 			print("operator==(number)");
-			
+
+/*
 			if ( mNumber == other ) {
 				return true;
 			}
 			
 			return false;
+*/
+			return mNumber == other;
 		}
 
 		public bool operator==(OverloadedObject other const ref) const
 		{
 			print("operator==(OverloadedObject)");
-			
+
+/*
 			if ( mNumber == other.GetNumber() ) {
 				return true;
 			}
 			
 			return false;
+*/
+			return mNumber == other.GetNumber();
 		}
 
 		public void operator*(OverloadedObject other const ref) modify
@@ -90,7 +96,7 @@ public namespace MathOverloads
 			OverloadedObject obj2 = new OverloadedObject(2);
 
 			obj1 = obj1 + obj2;
-			//assert(obj1 == 3);
+			assert(obj1 == 3);
 			print("obj1.GetNumber() = " + obj1.GetNumber());
 			
 			if ( obj1 == 3 ) {
