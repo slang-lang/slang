@@ -99,6 +99,16 @@ private: // Execution
 	void parseTerm(Object *result, TokenIterator& start);
 	// }
 
+	// Token stack
+	// {
+	const TokenList& getTokens() const;
+	void popTokens();
+	void pushTokens(const TokenList& tokens);
+	// }
+
+private:
+	typedef std::list<TokenList> TokenStack;
+
 private:
 	MemberCollection mLocalSymbols;
 	Object *mOwner;
@@ -106,6 +116,7 @@ private:
 	Repository *mRepository;
 	ParameterList mSignature;
 	TokenList mTokens;
+	TokenStack mTokenStack;
 
 private:
 	bool mStopProcessing;

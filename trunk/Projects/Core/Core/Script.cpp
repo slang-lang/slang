@@ -50,7 +50,16 @@ void Script::construct(const ParameterList& params)
 	}
 
 	mObject->connectRepository(mRepository);
-	mObject->Constructor(params);
+
+	try {
+		mObject->Constructor(params);
+	}
+	catch ( Utils::Exceptions::Exception &e ) {
+		// catch and log all errors that occured during method execution
+		OSerror(e.what());
+
+		throw;
+	}
 }
 
 void Script::destruct()
@@ -60,6 +69,8 @@ void Script::destruct()
 	}
 	catch ( Utils::Exceptions::Exception &e ) {
 		OSerror(e.what());
+
+		throw;
 	}
 }
 
@@ -75,6 +86,8 @@ Object Script::execute(const std::string& method, const ParameterList& params)
 	}
 	catch ( Utils::Exceptions::Exception &e ) {
 		OSerror(e.what());
+
+		throw;
 	}
 
 	return returnValue;

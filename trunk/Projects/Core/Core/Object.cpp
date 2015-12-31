@@ -100,7 +100,7 @@ Object& Object::operator= (const Object& other)
 		setValue(other.getValue());
 
 		//setConst(other.isConst());
-		setFinal(other.isFinal());
+		//setFinal(other.isFinal());
 		//setStatic(other.isStatic());
 
 		// unregister current members
@@ -176,7 +176,6 @@ void Object::addParent(const std::string& parent)
 void Object::connectRepository(Repository *r)
 {
 	assert(r);
-
 	mRepository = r;
 }
 
@@ -186,34 +185,29 @@ void Object::Constructor(const ParameterList& params)
 		throw Utils::Exceptions::Exception("can not construct object '" + getName() + "' multiple times");
 	}
 
-	if ( !mConstructed ) {
-		// only execute constructor if one is present
-		if ( hasMethod(Typename(), params) ) {
-			VoidObject tmp;
-			execute(&tmp, Typename(), params);
-		}
+	// only execute constructor if one is present
+	if ( hasMethod(Typename(), params) ) {
+		VoidObject tmp;
+		execute(&tmp, Typename(), params);
+	}
 
-		// set after executing constructor
-		// in case any exceptions have been thrown
-		mConstructed = true;
-	}
-	else {
-		// the constructor has already been executed!
-		//throw Utils::Exceptions::Exception("can not create object '" + name() + "' which has already been constructed");
-	}
+	// set after executing constructor in case any exceptions have been thrown
+	mConstructed = true;
 }
 
 void Object::copyMember(Object *member)
 {
 	assert(member);
 
-	Object *object = mRepository->createInstance(member->Typename(), member->getName());
-
-	*object = *member;
-
 	if ( mMembers.find(member->getName()) != mMembers.end() ) {
 		throw Utils::Exceptions::DuplicateIdentifer("duplicate member '" + member->getName() + "' added");
 	}
+
+	// create object instance
+	Object *object = mRepository->createInstance(member->Typename(), member->getName());
+
+	// and fill it with life
+	*object = *member;
 
 	mMembers.insert(std::make_pair(member->getName(), member));
 }
@@ -235,8 +229,7 @@ void Object::Destructor()
 
 	garbageCollector(true);
 
-	// set after executing destructor
-	// in case any exceptions have been thrown
+	// set after executing destructor in case any exceptions have been thrown
 	mConstructed = false;
 }
 
@@ -262,16 +255,8 @@ void Object::execute(Object *result, const std::string& method, const ParameterL
 		throw Utils::Exceptions::VisibilityError("invalid visibility: " + method);
 	}
 
-	try {
-		// execute our member method
-		mPtr->execute(params, result);
-	}
-	catch ( Utils::Exceptions::Exception &e ) {
-		// catch and log all errors that occured during method execution
-		OSerror(e.what());
-
-		throw;
-	}
+	// execute our member method
+	mPtr->execute(params, result);
 }
 
 bool Object::findMember(const std::string& m, Object::MemberCollection::iterator& mIt)

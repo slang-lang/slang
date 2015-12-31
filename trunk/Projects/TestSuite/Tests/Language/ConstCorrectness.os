@@ -14,7 +14,7 @@ public namespace ConstCorrectness
 			ModifyByValueParameter(one);
 
 			one = 0;
-			//ModifyByReferenceParameter(one);
+			//ModifyByReferenceParameter(one);	// this is not supported atm
 
 			number two const = 0;
 			ModifyConstParameter(two);
@@ -23,28 +23,27 @@ public namespace ConstCorrectness
 			ModifyMemberInConstMethod(three);
 		}
 
-		private void ModifyByValueParameter(number one val) modify
+		private void ModifyByReferenceParameter(number value ref) modify
 		{
 			mNumber = 1;
-			one = 1;
+			value = 1;
 		}
 
-		private void ModifyByReferenceParameter(number one ref) modify
+		private void ModifyByValueParameter(number value val) modify
 		{
 			mNumber = 1;
-			one = 1;
+			value = 1;
 		}
 
-		private void ModifyConstParameter(number two const) modify
+		private void ModifyConstParameter(number value const) modify
 		{
-			mNumber = 2;
-			two = 2;
+			mNumber = 2;	// allowed
+			value = 2;		// throws a ConstCorrectnessViolated exception
 		}
 
-		private void ModifyMemberInConstMethod(number three) const
+		private void ModifyMemberInConstMethod(number value const) const
 		{
-			mNumber = 3;
-			three = 3;
+			mNumber = value;	// throws a ConstCorrectnessViolated exception
 		}
 	}
 }
