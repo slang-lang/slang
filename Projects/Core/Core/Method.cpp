@@ -237,14 +237,11 @@ void Method::expression(Object *result, TokenIterator& start)
 		Object v2;
 		parseExpression(&v2, start);
 
-		if ( op == Token::Type::AND ) {
-			operator_bitand(result, &v2);
+		if ( op == Token::Type::AND && isTrue(*result) ) {
+			*result = BoolObject(isTrue(*result) && isTrue(v2));
 		}
-		else if ( op == Token::Type::OR ) {
-			operator_bitor(result, &v2);
-		}
-		else {
-			throw Utils::Exceptions::SyntaxError("unexpected token " + start->content() + " found");
+		else if ( op == Token::Type::OR && isFalse(*result) ) {
+			*result = BoolObject(isTrue(*result) || isTrue(v2));
 		}
 	}
 }
@@ -449,9 +446,6 @@ void Method::parseExpression(Object *result, TokenIterator& start)
 		else if ( op == Token::Type::MATH_SUBTRACT ) {
 			operator_subtract(result, &v2);
 		}
-		else {
-			throw Utils::Exceptions::SyntaxError("unexpected token " + start->content() + " found");
-		}
 	}
 }
 
@@ -459,7 +453,7 @@ void Method::parseFactors(Object *result, TokenIterator& start)
 {
 	if ( (start)->type() == Token::Type::PARENTHESIS_OPEN) {
 		start++;
-		parseExpression(result, start);
+		expression(result, start);
 
 		if ( start->type() != Token::Type::PARENTHESIS_CLOSE ) {
 			throw Utils::Exceptions::SyntaxError("')' expected but "  + start->content() + " found", start->position());
@@ -468,7 +462,6 @@ void Method::parseFactors(Object *result, TokenIterator& start)
 		start++;
 	}
 	else {
-		//parseTerm(result, start);
 		parseCondition(result, start);
 	}
 
@@ -486,7 +479,7 @@ void Method::parseFactors(Object *result, TokenIterator& start)
 		Object v2;
 		if ( (start)->type() == Token::Type::PARENTHESIS_OPEN) {
 			start++;
-			parseExpression(&v2, start);
+			expression(&v2, start);
 
 			if ( start->type() != Token::Type::PARENTHESIS_CLOSE ) {
 				throw Utils::Exceptions::SyntaxError("')' expected but "  + start->content() + " found", start->position());
@@ -495,7 +488,6 @@ void Method::parseFactors(Object *result, TokenIterator& start)
 			start++;
 		}
 		else {
-			//parseTerm(&v2, start);
 			parseCondition(&v2, start);
 		}
 
@@ -507,9 +499,6 @@ void Method::parseFactors(Object *result, TokenIterator& start)
 		}
 		else if ( op == Token::Type::MATH_MULTI ) {
 			operator_multiply(result, &v2);
-		}
-		else {
-			throw Utils::Exceptions::SyntaxError("unexpected token " + start->content() + " found");
 		}
 	}
 }
@@ -589,7 +578,8 @@ void Method::process(Object *result, TokenIterator& token, TokenIterator end, To
 			case Token::Type::CONST_INTEGER:
 			case Token::Type::CONST_LITERAL:
 			case Token::Type::CONST_NUMBER:
-				parseExpression(result, token);
+				//parseExpression(result, token);
+				expression(result, token);
 				break;
 			case Token::Type::IDENTIFER:
 				process_assign(token, result);
@@ -622,7 +612,7 @@ void Method::process_assert(TokenIterator& token)
 	TokenIterator tmp = findNext(condEnd, Token::Type::SEMICOLON);
 
     Object condition;
-	parseExpression(&condition, condBegin);
+	expression(&condition, condBegin);
 
 	if ( !isTrue(condition) ) {
 		throw Utils::Exceptions::AssertionFailed(condition.ToString(), token->position());
@@ -640,7 +630,8 @@ void Method::process_assign(TokenIterator& token, Object *result)
 
     if ( assign == token ) {
         // we don't have an assignment but a method call
-        parseExpression(result, token);
+        //parseExpression(result, token);
+		expression(result, token);
 
         token = end;
         return;
@@ -659,7 +650,8 @@ void Method::process_assign(TokenIterator& token, Object *result)
 		throw Utils::Exceptions::ConstCorrectnessViolated("not allowed to modify member '" + identifier + "' in const method '" + this->name() + "'", token->position());
 	}
 
-	parseExpression(symbol, ++assign);
+	//parseExpression(symbol, ++assign);
+	expression(symbol, ++assign);
 
 	if ( symbol->isFinal() && symbol->isModifiable() ) {
 		// we have modified a final entity for the first time, we now have to set it so const
@@ -714,7 +706,8 @@ void Method::process_for(TokenIterator& token)
 
 	for ( ; ; ) {
 		Object condition;
-		parseExpression(&condition, cond = conditionStart);
+		//parseExpression(&condition, cond = conditionStart);
+		expression(&condition, cond = conditionStart);
 
 		if ( isFalse(condition) ) {
 			break;
@@ -767,7 +760,8 @@ void Method::process_if(TokenIterator& token, Object *result)
 	}
 
     Object condition;
-	parseExpression(&condition, condBegin);
+	//parseExpression(&condition, condBegin);
+	expression(&condition, condBegin);
 
 	if ( isTrue(condition) ) {
 		process(result, bodyBegin, bodyEnd, Token::Type::BRACKET_CURLY_CLOSE);
@@ -852,7 +846,8 @@ void Method::process_method(TokenIterator& token, Object *result)
 		objectList.push_back(Object());
 
 		Object *obj = &objectList.back();
-		parseExpression(obj, tmp);
+		//parseExpression(obj, tmp);
+		expression(obj, tmp);
 		params.push_back(Parameter(obj->getName(), obj->Typename(), obj->getValue(), false, obj->isConst(), Parameter::AccessMode::Unspecified, obj));
 
 		if ( std::distance(tmp, closed) <= 0 ) {
@@ -912,7 +907,8 @@ void Method::process_new(TokenIterator& token, Object *result)
 		objectList.push_back(Object());
 
 		Object *obj = &objectList.back();
-		parseExpression(obj, tmp);
+		//parseExpression(obj, tmp);
+		expression(obj, tmp);
 		params.push_back(Parameter(obj->getName(), obj->Typename(), obj->getValue(), false, obj->isConst(), Parameter::AccessMode::Unspecified, obj));
 
 		if ( std::distance(tmp, closed) <= 0 ) {
@@ -950,7 +946,8 @@ void Method::process_print(TokenIterator& token)
 	TokenIterator tmp = findNext(closed, Token::Type::SEMICOLON);
 
 	StringObject text;
-	parseExpression(&text, opened);
+	//parseExpression(&text, opened);
+	expression(&text, opened);
 
 	System::print(text);
 
@@ -961,7 +958,8 @@ void Method::process_print(TokenIterator& token)
 // return <expression>;
 void Method::process_return(TokenIterator& token, Object *result)
 {
-	parseExpression(result, token);
+	//parseExpression(result, token);
+	expression(result, token);
 
 	mStopProcessing = true;
 }
@@ -1033,7 +1031,8 @@ void Method::process_type(TokenIterator& token)
 
 		if ( assign != mTokens.end() ) {
 			TokenIterator end = findNext(assign, Token::Type::SEMICOLON);
-			parseExpression(object, assign);
+			//parseExpression(object, assign);
+			expression(object, assign);
 			token = end;
 		}
 
@@ -1073,7 +1072,8 @@ void Method::process_while(TokenIterator& token)
 
 	for ( ; ; ) {
 		Object condition;
-		parseExpression(&condition, tmp);
+		//parseExpression(&condition, tmp);
+		expression(&condition, tmp);
 
 		if ( isFalse(condition) ) {
 			break;
