@@ -33,11 +33,12 @@ public:
 
 private:	// Tests
 	void testAssert();
+	void testBooleanOperators();
 	void testComment();
 	void testConstCorrectness();
 	void testConstCorrectness2();
 	void testDefaultParameter();
-	void testFor();
+	void testForLoop();
 	void testIf();
 	void testInterfaces();
 	void testMethodOverloading();

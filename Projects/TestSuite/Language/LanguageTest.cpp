@@ -33,10 +33,12 @@ LanguageTest::LanguageTest(const ::Utils::Common::Logger *p)
 void LanguageTest::process()
 {
 	TEST(testAssert);
+	TEST(testBooleanOperators);
 	TEST(testComment);
 	TEST(testConstCorrectness);
 	TEST(testConstCorrectness2);
 	TEST(testDefaultParameter);
+	TEST(testForLoop);
 	TEST(testMethodOverloading);
 	TEST(testObjectReference);
 	TEST(testParameters);
@@ -45,7 +47,6 @@ void LanguageTest::process()
 	TEST(testWhile);
 
 // not yet implemented
-	//TEST(testFor);
 	//TEST(testIf);
 	//TEST(testInterfaces);
 	//TEST(testNamespaces);
@@ -66,6 +67,23 @@ void LanguageTest::testAssert()
 		vm.setPrinter(&mStdoutPrinter);
 
 		TTHROWS(vm.create("Tests/Language/AssertTest.os"), ObjectiveScript::Utils::Exceptions::AssertionFailed);
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void LanguageTest::testBooleanOperators()
+{
+	try {
+		VirtualMachine vm;
+		vm.setPrinter(&mStdoutPrinter);
+
+		//TTHROWS(vm.create("Tests/Language/BooleanOperators.os"), ObjectiveScript::Utils::Exceptions::AssertionFailed);
+		vm.create("Tests/Language/BooleanOperators.os");
 
 		// automatic success
 	}
@@ -141,7 +159,7 @@ void LanguageTest::testDefaultParameter()
 	}
 }
 
-void LanguageTest::testFor()
+void LanguageTest::testForLoop()
 {
 	try {
 		VirtualMachine vm;
