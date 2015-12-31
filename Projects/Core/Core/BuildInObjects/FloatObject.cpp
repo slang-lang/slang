@@ -19,7 +19,7 @@ std::string FloatObject::TYPENAME = "float";
 
 
 FloatObject::FloatObject(float value)
-: Object(UNNAMED_OBJECT, SYSTEM_LIBRARY, TYPENAME, ""),
+: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, ""),
   mValue(value)
 {
 	mIsAtomicType = true;
@@ -28,7 +28,7 @@ FloatObject::FloatObject(float value)
 }
 
 FloatObject::FloatObject(const std::string& value)
-: Object(UNNAMED_OBJECT, SYSTEM_LIBRARY, TYPENAME, value),
+: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, value),
   mValue(Tools::stringToFloat(value))
 {
 	mIsAtomicType = true;

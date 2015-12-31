@@ -19,7 +19,7 @@ std::string VoidObject::TYPENAME = "void";
 
 
 VoidObject::VoidObject()
-: Object(UNNAMED_OBJECT, SYSTEM_LIBRARY, TYPENAME, "<VOID>")
+: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, "<VOID>")
 {
 	mIsAtomicType = true;
 

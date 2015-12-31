@@ -220,6 +220,35 @@ void Method::execute(const ParameterList& params, Object *result)
 	garbageCollector();
 }
 
+void Method::expression(Object *result, TokenIterator& start)
+{
+	parseExpression(result, start);
+
+	for ( ; ; ) {
+		Token::Type::E op = start->type();
+		if ( op != Token::Type::AND &&
+			 op != Token::Type::OR ) {
+			return;
+		}
+
+		// consume operator token
+		start++;
+
+		Object v2;
+		parseExpression(&v2, start);
+
+		if ( op == Token::Type::AND ) {
+			operator_bitand(result, &v2);
+		}
+		else if ( op == Token::Type::OR ) {
+			operator_bitor(result, &v2);
+		}
+		else {
+			throw Utils::Exceptions::SyntaxError("unexpected token " + start->content() + " found");
+		}
+	}
+}
+
 void Method::garbageCollector(bool force)
 {
 	for ( MemberCollection::iterator it = mLocalSymbols.begin(); it != mLocalSymbols.end(); ) {
@@ -345,51 +374,6 @@ bool Method::isSignatureValid(const ParameterList& params) const
 
 	// no differences found
 	return true;
-}
-
-bool Method::parseExternalCondition(TokenIterator& token, Object *result)
-{
-	parseExpression(result, token);
-
-	for ( ; ; ) {
-		Token::Type::E op = token->type();
-		if ( op != Token::Type::COMPARE_EQUAL &&
-			 op != Token::Type::COMPARE_GREATER &&
-			 op != Token::Type::COMPARE_GREATER_EQUAL &&
-			 op != Token::Type::COMPARE_LESS &&
-			 op != Token::Type::COMPARE_LESS_EQUAL &&
-			 op != Token::Type::COMPARE_UNEQUAL ) {
-			 break;
-		}
-
-		// consume comperator token
-		token++;
-
-		Object v2;
-		parseExpression(&v2, token);
-
-		if ( op == Token::Type::COMPARE_EQUAL ) {
-			return operator_equal(result, &v2);
-		}
-		else if ( op == Token::Type::COMPARE_GREATER ) {
-			return operator_greater(result, &v2);
-		}
-		else if ( op == Token::Type::COMPARE_GREATER_EQUAL ) {
-			return operator_greater_equal(result, &v2);
-		}
-		else if ( op == Token::Type::COMPARE_LESS ) {
-			return operator_less(result, &v2);
-		}
-		else if ( op == Token::Type::COMPARE_LESS_EQUAL ) {
-			return operator_less_equal(result, &v2);
-		}
-		else if ( op == Token::Type::COMPARE_UNEQUAL ) {
-			return !operator_equal(result, &v2);
-		}
-	}
-
-	return isTrue(*result);
-    //return BoolObject(*result);
 }
 
 void Method::parseCondition(Object *result, TokenIterator& start)
@@ -638,16 +622,10 @@ void Method::process_assert(TokenIterator& token)
 	TokenIterator tmp = findNext(condEnd, Token::Type::SEMICOLON);
 
     Object condition;
-/*
-	if ( !parseExternalCondition(condBegin, &condition) ) {
-		throw Utils::Exceptions::AssertionFailed("", token->position());
-	}
-*/
-
 	parseExpression(&condition, condBegin);
 
 	if ( !isTrue(condition) ) {
-		throw Utils::Exceptions::AssertionFailed("", token->position());
+		throw Utils::Exceptions::AssertionFailed(condition.ToString(), token->position());
 	}
 
 	token = tmp;
@@ -734,8 +712,14 @@ void Method::process_for(TokenIterator& token)
 	Object result;
 	process(&result, decl, cond, Token::Type::SEMICOLON);
 
-    Object condition;
-	while ( parseExternalCondition(cond = conditionStart, &condition) ) {
+	for ( ; ; ) {
+		Object condition;
+		parseExpression(&condition, cond = conditionStart);
+
+		if ( isFalse(condition) ) {
+			break;
+		}
+
 		TokenIterator bb = begin;
 
 		// process loop body
@@ -783,7 +767,9 @@ void Method::process_if(TokenIterator& token, Object *result)
 	}
 
     Object condition;
-	if ( parseExternalCondition(condBegin, &condition) ) {
+	parseExpression(&condition, condBegin);
+
+	if ( isTrue(condition) ) {
 		process(result, bodyBegin, bodyEnd, Token::Type::BRACKET_CURLY_CLOSE);
 
 		// check if we executed all tokens
@@ -1085,11 +1071,17 @@ void Method::process_while(TokenIterator& token)
 
 	TokenIterator tmp = condBegin;
 
-    Object condition;
-	while ( parseExternalCondition(tmp, &condition) ) {
+	for ( ; ; ) {
+		Object condition;
+		parseExpression(&condition, tmp);
+
+		if ( isFalse(condition) ) {
+			break;
+		}
+
 		TokenIterator bb = bodyBegin;
 
-        Object result;
+        VoidObject result;
 		process(&result, bb, bodyEnd, Token::Type::BRACKET_CURLY_CLOSE);
 
 		// reset iterator

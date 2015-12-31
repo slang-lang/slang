@@ -90,13 +90,9 @@ private: // Execution
 
 	Object* getSymbol(const std::string& token);
 
-	// condition evaluation
-	// {
-	bool parseExternalCondition(TokenIterator& start, Object *result);
-	// }
-
 	// expression evaluation
 	// {
+	void expression(Object *result, TokenIterator& start);
 	void parseCondition(Object *result, TokenIterator& start);
 	void parseExpression(Object *result, TokenIterator& start);
 	void parseFactors(Object *result, TokenIterator& start);
