@@ -35,6 +35,7 @@ public:
 	{
 	public:
 		enum E {
+			AND,
 			ASSIGN,
 			ASSIGN_ADD,
 			ASSIGN_DIVIDE,
@@ -75,6 +76,7 @@ public:
 			MATH_MULTI,
 			MATH_SUBTRACT,
 			NIL,
+			OR,
 			PARENTHESIS_CLOSE,
 			PARENTHESIS_OPEN,
 			PROTOTYPE,
@@ -92,6 +94,7 @@ public:
 
 		static std::string convert(E e) {
 			switch ( e ) {
+				case AND: return "&&";
 				case ASSIGN: return "=";
 				case ASSIGN_ADD: return "+=";
 				case ASSIGN_DIVIDE: return "/=";
@@ -132,6 +135,7 @@ public:
 				case MATH_MULTI: return "*";
 				case MATH_SUBTRACT: return "-";
 				case NIL: return "NIL";
+				case OR: return "||";
 				case PARENTHESIS_CLOSE: return ")";
 				case PARENTHESIS_OPEN: return "(";
 				case PROTOTYPE: return "PROTOTYPE";

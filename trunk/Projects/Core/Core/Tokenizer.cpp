@@ -18,8 +18,8 @@
 namespace ObjectiveScript {
 
 
-const std::string CONTROLCHARS	= "#,;:=()[]{}<>+-*/%&'\" ";
-const std::string DELIMITERS	= "#,;:=()[]{}<>+-*/%&'\"\t\n\r ";
+const std::string CONTROLCHARS	= "#,;:=()[]{}<>+-*/%&|'\" ";
+const std::string DELIMITERS	= "#,;:=()[]{}<>+-*/%&|'\"\t\n\r ";
 const std::string WHITESPACES	= "\t\n\r ";
 
 
@@ -178,6 +178,8 @@ Token Tokenizer::createToken(const std::string& con, const Utils::Position& pos)
 	Token::Type::E type = Token::Type::IDENTIFER;
 
 	if ( content == "=" ) { type = Token::Type::ASSIGN; }
+	else if ( content == "&" ) { type = Token::Type::BITAND; }
+	else if ( content == "|" ) { type = Token::Type::BITOR; }
 	else if ( content == "," ) { type = Token::Type::COLON; }
 	else if ( content == "." ) { type = Token::Type::DOT; }
 	else if ( content == ";" ) { type = Token::Type::SEMICOLON; }
@@ -196,8 +198,6 @@ Token Tokenizer::createToken(const std::string& con, const Utils::Position& pos)
 	else if ( content == "*" ) { type = Token::Type::MATH_MULTI; }
 	else if ( content == "-" ) { type = Token::Type::MATH_SUBTRACT; }
 	else if ( content == "%" ) { type = Token::Type::MATH_MODULO; }
-	else if ( content == "&" ) { type = Token::Type::BITAND; }
-	else if ( content == "|" ) { type = Token::Type::BITOR; }
 	else if ( isBoolean(content) ) { type = Token::Type::CONST_BOOLEAN; }
 	else if ( isFloat(content) ) { type = Token::Type::CONST_FLOAT; }
 	else if ( isIdentifer(content) ) { type = Token::Type::IDENTIFER; }
@@ -458,6 +458,48 @@ bool Tokenizer::isWhiteSpace(const std::string& token) const
 	return (WHITESPACES.find_first_of(token) != std::string::npos);
 }
 
+/*
+ * This merges all pairs of & or | operators together (i.e. '&' '&' becomes '&&')
+ */
+void Tokenizer::mergeBooleanOperators()
+{
+	TokenList tmp;
+	Token::Type::E lastType = Token::Type::UNKNOWN;
+	TokenIterator token = mTokens.begin();
+
+	// try to combine all compare tokens
+	while ( token != mTokens.end() ) {
+		bool changed = false;
+		Token::Type::E activeType = token->type();
+
+		if ( (lastType == Token::Type::BITAND) && (activeType == Token::Type::BITAND) ) {
+			// ==
+			changed = true;
+			// remove last added token ...
+			tmp.pop_back();
+			// ... and add AND instead
+			tmp.push_back(Token(Token::Type::AND, "&&", token->position()));
+		}
+		else if ( (lastType == Token::Type::BITOR) && (activeType == Token::Type::BITOR) ) {
+			// >=
+			changed = true;
+			// remove last added token ...
+			tmp.pop_back();
+			// ... and add OR instead
+			tmp.push_back(Token(Token::Type::OR, "||", token->position()));
+		}
+
+		lastType = token->type();
+		if ( !changed ) {
+			tmp.push_back((*token));
+		}
+
+		token++;
+	}
+
+	mTokens = tmp;
+}
+
 void Tokenizer::process()
 {
 	size_t offset = 0;
@@ -551,6 +593,7 @@ void Tokenizer::process()
 
 	removeWhiteSpaces();		// remove all whitespaces
 	replaceAssignments();		// replace assignment tokens with compare tokens (if present)
+	mergeBooleanOperators();	// merge '&' '&' into '&&'
 	replaceOperators();			// combine 'operator' identifiers with the next following token i.e. 'operator' '+' => 'operator+'
 	replacePrototypes();		//
 }
@@ -651,7 +694,7 @@ void Tokenizer::replaceAssignments()
 }
 
 /*
- * This merges all 'operator' tokens with their according operator (+, -, *, /, =, ==, <, <=, >, >=, etc.)
+ * This merges all 'operator' tokens with their according operator (+, -, *, /, &, |, =, ==, <, <=, >, >=, etc.)
  */
 void Tokenizer::replaceOperators()
 {

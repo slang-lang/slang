@@ -9,6 +9,7 @@
 #include <Core/Interfaces/IPrinter.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Utils/Utils.h>
+#include "Consts.h"
 #include "Memory.h"
 #include "Repository.h"
 #include "Tools.h"
@@ -20,11 +21,11 @@ namespace ObjectiveScript {
 
 
 Object::Object()
-: LocalScope("", 0),
-  mIsAtomicType(false),
+: LocalScope(ANONYMOUS_OBJECT, 0),
+  mIsAtomicType(true),
   mRepository(0),
   mConstructed(false),
-  mValue("<INVALID>")
+  mValue(VALUE_NULL)
 {
 }
 
@@ -58,19 +59,19 @@ Object::Object(const Object& other)
 }
 
 Object::Object(const std::string& type, const std::string& filename)
-: LocalScope("", 0),
+: LocalScope(ANONYMOUS_OBJECT, 0),
   BluePrint(type, filename),
-  mIsAtomicType(false),
+  mIsAtomicType(true),
   mRepository(0),
   mConstructed(false),
-  mValue("<INVALID>")
+  mValue(VALUE_NULL)
 {
 }
 
 Object::Object(const std::string& name, const std::string& filename, const std::string& type, const std::string& value)
 : LocalScope(name, 0),
   BluePrint(type, filename),
-  mIsAtomicType(false),
+  mIsAtomicType(true),
   mRepository(0),
   mConstructed(false),
   mValue(value)
@@ -534,26 +535,30 @@ void Object::setValue(const std::string& value)
 
 std::string Object::ToString() const
 {
-	std::string result = "Object: " + getName() + " <" + Typename() + "> = { ";
+	std::string result = getName() + " " + Typename() + " = " + getValue();
 
-	for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
-		result += (*it)->type() + " " + (*it)->name();
+	if ( !isAtomicType() ) {
+		result += " { ";
 
-		MethodCollection::const_iterator copy = it;
-		if ( ++copy != mMethods.end() ) {
-			result += ", \n";
+		for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
+			result += (*it)->type() + " " + (*it)->name();
+
+			MethodCollection::const_iterator copy = it;
+			if ( ++copy != mMethods.end() ) {
+				result += ", \n";
+			}
 		}
-	}
-	for ( MemberCollection::const_iterator it = mMembers.begin(); it != mMembers.end(); ++it ) {
-		result += it->second->ToString();
+		for ( MemberCollection::const_iterator it = mMembers.begin(); it != mMembers.end(); ++it ) {
+			result += it->second->ToString();
 
-		MemberCollection::const_iterator copy = it;
-		if ( ++copy != mMembers.end() ) {
-			result += ", ";
+			MemberCollection::const_iterator copy = it;
+			if ( ++copy != mMembers.end() ) {
+				result += ", ";
+			}
 		}
-	}
 
-	result += " }";
+		result += " }";
+	}
 
 	return result;
 }

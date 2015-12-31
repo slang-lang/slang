@@ -21,11 +21,13 @@ std::string UserObject::TYPENAME = "UserObject";
 UserObject::UserObject(const std::string& name, const std::string& filename, const std::string& type, const std::string& value)
 : Object(name, filename, type, value)
 {
+	mIsAtomicType = false;
 }
 
 UserObject::UserObject(const Object& object)
 : Object(object.getName(), object.Filename(), object.Typename(), object.getValue())
 {
+	mIsAtomicType = false;
 }
 
 UserObject::operator bool()

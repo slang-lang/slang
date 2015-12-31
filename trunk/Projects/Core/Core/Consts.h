@@ -62,9 +62,9 @@ static const char* RESERVED_WORD_PROTOTYPE = "prototype";
 static const char* RESERVED_WORD_USING = "using";
 
 // System
+static const char* ANONYMOUS_OBJECT = "<anonymous>";
 static const char* SYSTEM_LIBRARY = "SYSTEM.OS";
-static const char* TEMPORARY_OBJECT = "<temporary object>";
-static const char* UNNAMED_OBJECT = "";
+static const char* TEMPORARY_OBJECT = "<temporary>";
 
 // Types
 static const char* PROTOTYPE_TYPE = "UNKNOWN";
