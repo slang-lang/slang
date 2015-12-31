@@ -16,10 +16,12 @@ public namespace IfTest
 		{
 			if ( true ) {
 				print("TestCase1: true");
+				assert(true);
 			}
 
 			if ( false ) {
 				print("TestCase1: false");
+				assert(false);
 			}
 
 			return true;
@@ -27,20 +29,23 @@ public namespace IfTest
 
 		private bool TestCase2(number param1 = 2)
 		{
+			number one = 1;
+
 			if ( (param1 - 1) == 0 ) {
-				assert(false);
 				print("TestCase2: if-true");
+				assert(false);
+			}
+			else if ( (param1 - 2) == 0 ) {
+				print("TestCase2: else-if-true");
+				assert(true);
 			}
 			else {
-				if ( (param1 - 2) == 0 ) {
-					print("TestCase2: else-if-true");
-				}
-				else {
-					assert(false);
-					print("TestCase2: else-if-else");
-				}
+				print("TestCase2: else-if-else");
+				assert(false);
 			}
 
+			one = one + 1;
+			print("one = " + one);
 			return true;
 		}
 
@@ -49,6 +54,7 @@ public namespace IfTest
 			// comparison operators are stickier than boolean operators
 			if ( true == true && false == false ) {
 				print("TestCase3: true");
+				assert(true);
 				return true;
 			}
 
@@ -62,6 +68,7 @@ public namespace IfTest
 			// comparison operators are stickier than boolean operators
 			if ( true == (true && false) == false ) {
 				print("TestCase4: true");
+				assert(true);
 				return true;
 			}
 

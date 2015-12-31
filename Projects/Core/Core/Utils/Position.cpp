@@ -19,12 +19,12 @@ Position::Position(unsigned int l, unsigned int c)
 {
 }
 
-bool Position::operator==(const Position& other)
+bool Position::operator==(const Position& other) const
 {
 	return (this->line == other.line && this->column == other.column);
 }
 
-bool Position::operator<(const Position& other)
+bool Position::operator<(const Position& other) const
 {
 	if ( this->line == other.line ) {
 		return (this->column < other.column);

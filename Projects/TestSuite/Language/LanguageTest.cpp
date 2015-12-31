@@ -16,7 +16,7 @@
 #include <Core/VirtualMachine.h>
 #include <Core/Utils/Exceptions.h>
 
-// Namespace declartations
+// Namespace declarations
 using namespace ObjectiveScript;
 
 
@@ -38,6 +38,7 @@ void LanguageTest::process()
 	TEST(testConstCorrectness);
 	TEST(testConstCorrectness2);
 	TEST(testDefaultParameter);
+	TEST(testFinal);
 	TEST(testForLoop);
 	TEST(testIf);
 	TEST(testMethodOverloading);
@@ -71,7 +72,7 @@ void LanguageTest::testAssert()
 		// automatic success
 	}
 	catch ( std::exception& e ) {
-		// exception has been thrown: test failed!
+		// unexpected exception has been thrown: test failed!
 		TFAIL(e.what());
 	}
 }
@@ -87,7 +88,7 @@ void LanguageTest::testBooleanOperators()
 		// automatic success
 	}
 	catch ( std::exception& e ) {
-		// exception has been thrown: test failed!
+		// unexpected exception has been thrown: test failed!
 		TFAIL(e.what());
 	}
 }
@@ -103,7 +104,7 @@ void LanguageTest::testComment()
 		// automatic success
 	}
 	catch ( std::exception& e ) {
-		// exception has been thrown: test failed!
+		// unexpected exception has been thrown: test failed!
 		TFAIL(e.what());
 	}
 }
@@ -114,14 +115,12 @@ void LanguageTest::testConstCorrectness()
 		VirtualMachine vm;
 		vm.setPrinter(&mStdoutPrinter);
 
-		//vm.create("Tests/Language/ConstCorrectness.os");
 		TTHROWS(vm.create("Tests/Language/ConstCorrectness.os"), ObjectiveScript::Utils::Exceptions::ConstCorrectnessViolated);
 
 		// automatic success
-
 	}
 	catch ( std::exception& e ) {
-		// exception has been thrown: test failed!
+		// unexpected exception has been thrown: test failed!
 		TFAIL(e.what());
 	}
 }
@@ -137,7 +136,7 @@ void LanguageTest::testConstCorrectness2()
 		// automatic success
 	}
 	catch ( std::exception& e ) {
-		// exception has been thrown: test failed!
+		// unexpected exception has been thrown: test failed!
 		TFAIL(e.what());
 	}
 }
@@ -153,7 +152,23 @@ void LanguageTest::testDefaultParameter()
 		// automatic success
 	}
 	catch ( std::exception& e ) {
-		// exception has been thrown: test failed!
+		// unexpected exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void LanguageTest::testFinal()
+{
+	try {
+		VirtualMachine vm;
+		vm.setPrinter(&mStdoutPrinter);
+
+		TTHROWS(vm.create("Tests/Language/FinalTest.os"), ObjectiveScript::Utils::Exceptions::ConstCorrectnessViolated);
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// unexpected exception has been thrown: test failed!
 		TFAIL(e.what());
 	}
 }
@@ -169,7 +184,7 @@ void LanguageTest::testForLoop()
 		// automatic success
 	}
 	catch ( std::exception& e ) {
-		// exception has been thrown: test failed!
+		// unexpected exception has been thrown: test failed!
 		TFAIL(e.what());
 	}
 }
@@ -185,7 +200,7 @@ void LanguageTest::testIf()
 		// automatic success
 	}
 	catch ( std::exception& e ) {
-		// exception has been thrown: test failed!
+		// unexpected exception has been thrown: test failed!
 		TFAIL(e.what());
 	}
 }
@@ -204,7 +219,7 @@ void LanguageTest::testInterfaces()
 		// automatic success
 	}
 	catch ( std::exception& e ) {
-		// exception has been thrown: test failed!
+		// unexpected exception has been thrown: test failed!
 		TFAIL(e.what());
 	}
 }
@@ -220,7 +235,7 @@ void LanguageTest::testMethodOverloading()
 		// automatic success
 	}
 	catch ( std::exception& e ) {
-		// exception has been thrown: test failed!
+		// unexpected exception has been thrown: test failed!
 		TFAIL(e.what());
 	}
 }
@@ -236,7 +251,7 @@ void LanguageTest::testNamespaces()
 		// automatic success
 	}
 	catch ( std::exception& e ) {
-		// exception has been thrown: test failed!
+		// unexpected exception has been thrown: test failed!
 		TFAIL(e.what());
 	}
 }
@@ -252,7 +267,7 @@ void LanguageTest::testObjectReference()
 		// automatic success
 	}
 	catch ( std::exception& e ) {
-		// exception has been thrown: test failed!
+		// unexpected exception has been thrown: test failed!
 		TFAIL(e.what());
 	}
 }
@@ -271,7 +286,7 @@ void LanguageTest::testParameters()
 		// automatic success
 	}
 	catch ( std::exception& e ) {
-		// exception has been thrown: test failed!
+		// unexpected exception has been thrown: test failed!
 		TFAIL(e.what());
 	}
 }
@@ -287,7 +302,7 @@ void LanguageTest::testPrint()
 		// automatic success
 	}
 	catch ( std::exception& e ) {
-		// exception has been thrown: test failed!
+		// unexpected exception has been thrown: test failed!
 		TFAIL(e.what());
 	}
 }
@@ -303,7 +318,7 @@ void LanguageTest::testStaticLocalVariable()
 		// automatic success
 	}
 	catch ( std::exception& e ) {
-		// exception has been thrown: test failed!
+		// unexpected exception has been thrown: test failed!
 		TFAIL(e.what());
 	}
 }
@@ -319,7 +334,7 @@ void LanguageTest::testWhile()
 		// automatic success
 	}
 	catch ( std::exception& e ) {
-		// exception has been thrown: test failed!
+		// unexpected exception has been thrown: test failed!
 		TFAIL(e.what());
 	}
 }

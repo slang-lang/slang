@@ -211,8 +211,12 @@ void Method::execute(const ParameterList& params, Object *result)
 	result->overrideType(type());
 	result->visibility(visibility());
 
-	TokenIterator start = mTokens.begin();
-	process(result, start, mTokens.end());
+	pushTokens(mTokens);
+		TokenIterator start = getTokens().begin();
+		TokenIterator end = getTokens().end();
+
+		process(result, start, end);
+	popTokens();
 
 	mStopProcessing = false;	// just to be sure...
 
@@ -543,7 +547,7 @@ void Method::parseTerm(Object *result, TokenIterator& start)
 			}
 		} break;
 		case Token::Type::KEYWORD: {
-			process(result, start, mTokens.end(), Token::Type::SEMICOLON);
+			process(result, start, getTokens().end(), Token::Type::SEMICOLON);
 		} break;
 		case Token::Type::MATH_SUBTRACT: {
 			throw Utils::Exceptions::NotImplemented("unary minus");
@@ -565,7 +569,13 @@ void Method::parseTerm(Object *result, TokenIterator& start)
 void Method::process(Object *result, TokenIterator& token, TokenIterator end, Token::Type::E terminator)
 {
 	// loop through all keywords and redirect to the corresponding method
-	while ( (token != end) && (token->type() != terminator) && (token->type() != Token::Type::ENDOFFILE) ) {
+	while ( ((token != getTokens().end()) && (token != end) ) &&
+			((token->type() != terminator) && (token->type() != Token::Type::ENDOFFILE)) ) {
+
+		//if ( std::distance(token, end) <= 0 ) {
+		//	break;
+		//}
+
 		if ( mStopProcessing ) {
 			// a return command has been triggered, time to stop processing
 			break;
@@ -642,10 +652,10 @@ void Method::process_assign(TokenIterator& token, Object *result)
 		throw Utils::Exceptions::UnknownIdentifer("identifier '" + identifier + "' not found", token->position());
 	}
 	if ( symbol->isConst() ) {
-		throw Utils::Exceptions::ConstCorrectnessViolated("not allowed to modify const member '" + identifier + "'", token->position());
+		throw Utils::Exceptions::ConstCorrectnessViolated("tried to modify const symbol '" + identifier + "'", token->position());
 	}
 	if ( isMember(identifier) && (this->isConst() || mOwner->isConst()) ) {
-		throw Utils::Exceptions::ConstCorrectnessViolated("not allowed to modify member '" + identifier + "' in const method '" + this->name() + "'", token->position());
+		throw Utils::Exceptions::ConstCorrectnessViolated("tried to modify member '" + identifier + "' in const method '" + this->name() + "'", token->position());
 	}
 
 	expression(symbol, ++assign);
@@ -695,7 +705,7 @@ void Method::process_for(TokenIterator& token)
 	const TokenIterator bodyBegin = findNext(expr, Token::Type::BRACKET_CURLY_OPEN);
 	// find next balanced '{' & '}' pair
 	TokenIterator begin = bodyBegin;
-	TokenIterator bodyEnd = findNextBalancedCurlyBracket(++begin);
+	TokenIterator bodyEnd = findNextBalancedCurlyBracket(++begin, getTokens().end());
 
 	// process our declaration part
 	Object result;
@@ -726,9 +736,6 @@ void Method::process_for(TokenIterator& token)
 // if ( <expression> ) {
 // ...
 // }
-// else if ( <expression> ) {
-// ...
-// }
 // else {
 // ...
 // }
@@ -741,50 +748,82 @@ void Method::process_if(TokenIterator& token, Object *result)
 	// find next open curly bracket '{'
 	TokenIterator bodyBegin = findNext(condEnd, Token::Type::BRACKET_CURLY_OPEN);
 	// find next balanced '{' & '}' pair
-	TokenIterator bodyEnd = findNextBalancedCurlyBracket(++bodyBegin);
+	TokenIterator bodyEnd = findNextBalancedCurlyBracket(++bodyBegin, getTokens().end());
 
-	TokenIterator elseBegin = mTokens.end();
-	TokenIterator elseEnd = mTokens.end();
-
-	TokenIterator eb = bodyEnd;
-	if ( ++eb != mTokens.end() ) {
-		if ( eb->type() == Token::Type::KEYWORD && eb->content() == "else" ) {
-			elseBegin = findNext(eb, Token::Type::BRACKET_CURLY_OPEN);
-			// find next balanced '{' & '}' pair
-			elseEnd = findNextBalancedCurlyBracket(++elseBegin);
-		}
+	// collect all tokens for our if-block
+	TokenList ifTokens;
+	while ( bodyBegin != bodyEnd ) {
+		ifTokens.push_back((*bodyBegin));
+		bodyBegin++;
 	}
+
+	// no matter what, at least set our token to our if-block's end
+	token = bodyEnd;
+
+	bool targetReached = true;	// initially don't collect else-block tokens
+	TokenIterator elseBegin = getTokens().end();
+	TokenIterator elseEnd = getTokens().end();
+
+	// look for an else-token
+	bodyEnd++;
+	if ( bodyEnd != getTokens().end() && (bodyEnd->type() == Token::Type::KEYWORD && bodyEnd->content() == "else") ) {
+		elseBegin = findNext(bodyEnd, Token::Type::BRACKET_CURLY_OPEN);
+		// find next balanced '{' & '}' pair
+		elseEnd = findNextBalancedCurlyBracket(elseBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
+
+		for ( ; ; ) {
+			// check if there is another if after our else-block
+			TokenIterator tmpIf = elseEnd;
+			tmpIf++;
+			if ( tmpIf != getTokens().end() && tmpIf->type() == Token::Type::KEYWORD && tmpIf->content() == "else" ) {
+				// find next balanced '{' & '}' pair
+				elseEnd = findNextBalancedCurlyBracket(tmpIf, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
+
+				continue;
+			}
+
+			token = elseEnd;
+			break;
+		}
+
+		// reset elseBegin to bodyEnd + 1
+		elseBegin = ++bodyEnd;
+
+		targetReached = false;
+	}
+
+	TokenList elseTokens;
+
+	while ( !targetReached ) {
+		if ( elseBegin == elseEnd ) {
+			targetReached = true;
+		}
+
+		elseTokens.push_back((*elseBegin));
+		elseBegin++;
+	}
+
 
     Object condition;
 	expression(&condition, condBegin);
 
 	if ( isTrue(condition) ) {
-		process(result, bodyBegin, bodyEnd, Token::Type::BRACKET_CURLY_CLOSE);
+		pushTokens(ifTokens);
+			TokenIterator tmpBegin = getTokens().begin();
+			TokenIterator tmpEnd = getTokens().end();
 
-		// check if we executed all tokens
-		if ( bodyBegin != bodyEnd ) {
-			throw Utils::Exceptions::Exception("half evaluated if found!", bodyBegin->position());
-		}
-
-		if ( elseEnd != mTokens.end() ) {
-			token = elseEnd;
-		}
-		else {
-			token = bodyEnd;
-		}
+			process(result, tmpBegin, tmpEnd, Token::Type::BRACKET_CURLY_CLOSE);
+		popTokens();
 	}
-	else if ( elseBegin != mTokens.end() ) {
-		process(result, elseBegin, elseEnd, Token::Type::BRACKET_CURLY_CLOSE);
+	else if ( !elseTokens.empty() ) {
+		pushTokens(elseTokens);
+			TokenIterator tmpBegin = getTokens().begin();
+			TokenIterator tmpEnd = getTokens().end();
 
-		// check if we executed all tokens
-		if ( elseBegin != elseEnd ) {
-			throw Utils::Exceptions::Exception("half evaluated else found!", bodyBegin->position());
-		}
+			process(result, tmpBegin, tmpEnd, Token::Type::BRACKET_CURLY_CLOSE);
+		popTokens();
 
-		token = elseEnd;
-	}
-	else {
-		token = bodyEnd;
+		//token = elseEnd;
 	}
 }
 
@@ -1007,7 +1046,7 @@ void Method::process_type(TokenIterator& token)
 		else if ( tmpStr == MODIFIER_STATIC ) { isStatic = true; }
 	}
 
-	TokenIterator assign = mTokens.end();
+	TokenIterator assign = getTokens().end();
 	if ( token->type() == Token::Type::ASSIGN ) {
 		assign = ++token;
 	}
@@ -1020,7 +1059,7 @@ void Method::process_type(TokenIterator& token)
 		if ( isFinal ) object->setFinal(true);
 		if ( isStatic ) object->setStatic(true);
 
-		if ( assign != mTokens.end() ) {
+		if ( assign != getTokens().end() ) {
 			TokenIterator end = findNext(assign, Token::Type::SEMICOLON);
 
 			expression(object, assign);
@@ -1058,7 +1097,7 @@ void Method::process_while(TokenIterator& token)
 	// find next open curly bracket '{'
 	TokenIterator bodyBegin = findNext(condEnd, Token::Type::BRACKET_CURLY_OPEN);
 	// find next balanced '{' & '}' pair
-	TokenIterator bodyEnd = findNextBalancedCurlyBracket(++bodyBegin);
+	TokenIterator bodyEnd = findNextBalancedCurlyBracket(++bodyBegin, getTokens().end());
 
 	TokenIterator tmp = condBegin;
 
@@ -1106,6 +1145,22 @@ void Method::setSignature(const ParameterList& params)
 void Method::setTokens(const TokenList& tokens)
 {
 	mTokens = tokens;
+}
+
+
+const TokenList& Method::getTokens() const
+{
+	return mTokenStack.back();
+}
+
+void Method::popTokens()
+{
+	mTokenStack.pop_back();
+}
+
+void Method::pushTokens(const TokenList& tokens)
+{
+	mTokenStack.push_back(tokens);
 }
 
 

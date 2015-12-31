@@ -59,7 +59,7 @@ BluePrint Analyser::createBluePrint(TokenIterator& start, TokenIterator end)
 	// look for the next opening curly brackets
 	TokenIterator open = findNext(++start, Token::Type::BRACKET_CURLY_OPEN);
 	// look for balanced curly brackets
-	TokenIterator closed = findNextBalancedCurlyBracket(open, 0, Token::Type::BRACKET_CURLY_CLOSE);
+	TokenIterator closed = findNextBalancedCurlyBracket(open, end, 0, Token::Type::BRACKET_CURLY_CLOSE);
 
 	BluePrint::Ancestors parents;
 
@@ -139,7 +139,7 @@ Interface Analyser::createInterface(TokenIterator& start, TokenIterator end)
 	// look for the next opening curly brackets
 	TokenIterator open = findNext(++start, Token::Type::BRACKET_CURLY_OPEN);
 	// look for balanced curly brackets
-	TokenIterator closed = findNextBalancedCurlyBracket(open, 0, Token::Type::BRACKET_CURLY_CLOSE);
+	TokenIterator closed = findNextBalancedCurlyBracket(open, end, 0, Token::Type::BRACKET_CURLY_CLOSE);
 
 	// check if we have some more tokens before our object declarations starts
 	if ( start != open ) {
@@ -184,7 +184,7 @@ void Analyser::createNamespace(TokenIterator& start, TokenIterator end)
 	// look for the next opening curly brackets
 	TokenIterator open = findNext(++start, Token::Type::BRACKET_CURLY_OPEN);
 	// look for balanced curly brackets
-	TokenIterator closed = findNextBalancedCurlyBracket(open, 0, Token::Type::BRACKET_CURLY_CLOSE);
+	TokenIterator closed = findNextBalancedCurlyBracket(open, end, 0, Token::Type::BRACKET_CURLY_CLOSE);
 
 	// collect all tokens of this object
 	TokenList tokens;

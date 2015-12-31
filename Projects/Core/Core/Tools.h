@@ -45,10 +45,10 @@ namespace Tools {
 
 
 bool checkSynthax(TokenIterator start, const TokenList& expected);
-TokenIterator findNext(TokenIterator start, Token::Type::E type, Token::Type::E end = Token::Type::NIL);
-TokenIterator findNextBalancedBracket(TokenIterator start, int generateErrorAfter = 0, Token::Type::E end = Token::Type::NIL);
-TokenIterator findNextBalancedCurlyBracket(TokenIterator start, int generateErrorAfter = 0, Token::Type::E end = Token::Type::NIL);
-TokenIterator findNextBalancedParenthesis(TokenIterator start, int generateErrorAfter = 0, Token::Type::E end = Token::Type::NIL);
+TokenIterator findNext(TokenIterator start, Token::Type::E type, Token::Type::E terminator = Token::Type::NIL);
+TokenIterator findNextBalancedBracket(TokenIterator start, int generateErrorAfter = 0, Token::Type::E terminator = Token::Type::NIL);
+TokenIterator findNextBalancedCurlyBracket(TokenIterator start, TokenIterator end, int generateErrorAfter = 0, Token::Type::E terminator = Token::Type::NIL);
+TokenIterator findNextBalancedParenthesis(TokenIterator start, int generateErrorAfter = 0, Token::Type::E terminator = Token::Type::NIL);
 
 bool isBooleanConst(const std::string& value);
 bool isFalse(const std::string& value);

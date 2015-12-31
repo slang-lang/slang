@@ -23,8 +23,8 @@ public:
 	Position(unsigned int l = 0, unsigned int c = 0);
 
 public:
-	bool operator==(const Position& other);
-	bool operator<(const Position& other);
+	bool operator==(const Position& other) const;
+	bool operator<(const Position& other) const;
 
 	std::string toString() const;
 

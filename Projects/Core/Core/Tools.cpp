@@ -119,13 +119,13 @@ bool checkSynthax(TokenIterator start, const TokenList& expected)
 	return true;
 }
 
-TokenIterator findNext(TokenIterator start, Token::Type::E type, Token::Type::E end)
+TokenIterator findNext(TokenIterator start, Token::Type::E type, Token::Type::E terminator)
 {
 	int count = 0;
 	TokenIterator tmp = start;
 
 	while ( tmp->type() != type ) {
-		if ( tmp->type() == end ) {
+		if ( tmp->type() == terminator ) {
 			// we did not find a result before the defined end-token appeared
 			return start;
 		}
@@ -137,7 +137,7 @@ TokenIterator findNext(TokenIterator start, Token::Type::E type, Token::Type::E 
 	return tmp;
 }
 
-TokenIterator findNextBalancedBracket(TokenIterator start, int generateErrorAfter, Token::Type::E end)
+TokenIterator findNextBalancedBracket(TokenIterator start, int generateErrorAfter, Token::Type::E terminator)
 {
 	int count = 0;
 	TokenIterator tmp = start;
@@ -151,7 +151,7 @@ TokenIterator findNextBalancedBracket(TokenIterator start, int generateErrorAfte
 			openBrackets--;
 		}
 
-		if ( start->type() == end ) {
+		if ( start->type() == terminator ) {
 			// we did not find a result before the defined end-token appeared
 			return tmp;
 		}
@@ -166,13 +166,12 @@ TokenIterator findNextBalancedBracket(TokenIterator start, int generateErrorAfte
 	return start;
 }
 
-TokenIterator findNextBalancedCurlyBracket(TokenIterator start, int generateErrorAfter, Token::Type::E end)
+TokenIterator findNextBalancedCurlyBracket(TokenIterator start, TokenIterator end, int generateErrorAfter, Token::Type::E terminator)
 {
 	int count = 0;
-	//TokenIterator tmp = start;
 	int openCurlyBrackets = 0;
 
-	while ( start->type() != Token::Type::BRACKET_CURLY_CLOSE || openCurlyBrackets ) {
+	while ( ((start != end) && start->type() != Token::Type::BRACKET_CURLY_CLOSE) || openCurlyBrackets ) {
 		if ( start->type() == Token::Type::BRACKET_CURLY_OPEN ) {
 			openCurlyBrackets++;
 		}
@@ -180,12 +179,7 @@ TokenIterator findNextBalancedCurlyBracket(TokenIterator start, int generateErro
 			openCurlyBrackets--;
 		}
 
-		//if ( start->type() == end ) {
-		//	// we did not find a result before the defined end-token appeared
-		//	return tmp;
-		//}
-
-		if ( openCurlyBrackets == 0 && start->type() == end ) {
+		if ( openCurlyBrackets == 0 && start->type() == terminator ) {
 			break;
 		}
 
@@ -200,7 +194,7 @@ TokenIterator findNextBalancedCurlyBracket(TokenIterator start, int generateErro
 	return start;
 }
 
-TokenIterator findNextBalancedParenthesis(TokenIterator start, int generateErrorAfter, Token::Type::E end)
+TokenIterator findNextBalancedParenthesis(TokenIterator start, int generateErrorAfter, Token::Type::E terminator)
 {
 	int count = 0;
 	TokenIterator tmp = start;
@@ -214,7 +208,7 @@ TokenIterator findNextBalancedParenthesis(TokenIterator start, int generateError
 			openParenthesis--;
 		}
 
-		if ( start->type() == end ) {
+		if ( start->type() == terminator ) {
 			// we did not find a result before the defined end-token appeared
 			return tmp;
 		}
