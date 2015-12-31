@@ -1,7 +1,5 @@
 #!/usr/local/bin/oscript
 
-import system.assert;
-
 public namespace BooleanOperators
 {
 	private object Main
@@ -9,8 +7,13 @@ public namespace BooleanOperators
 		public void Main(number argc = 0, string argv = "")
 		{
 			assert( true && true );
-			assert( true || false );
-			//assert( 1 == 0 );
+			assert( false || true );
+			assert( (1 == 1) && (2 == 2) );
+			assert( (true == false) || (false == true) || (false) || (true) );
+			//assert( true > false );	// operator> for boolean type not implemented, this is perfectly okay
+
+			bool bla = (false == false);
+			assert(bla);
 		}
 	}
 }

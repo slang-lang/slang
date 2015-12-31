@@ -82,7 +82,6 @@ void LanguageTest::testBooleanOperators()
 		VirtualMachine vm;
 		vm.setPrinter(&mStdoutPrinter);
 
-		//TTHROWS(vm.create("Tests/Language/BooleanOperators.os"), ObjectiveScript::Utils::Exceptions::AssertionFailed);
 		vm.create("Tests/Language/BooleanOperators.os");
 
 		// automatic success
