@@ -39,6 +39,7 @@ void LanguageTest::process()
 	TEST(testConstCorrectness2);
 	TEST(testDefaultParameter);
 	TEST(testForLoop);
+	TEST(testIf);
 	TEST(testMethodOverloading);
 	TEST(testObjectReference);
 	TEST(testParameters);
@@ -47,7 +48,6 @@ void LanguageTest::process()
 	TEST(testWhile);
 
 // not yet implemented
-	//TEST(testIf);
 	//TEST(testInterfaces);
 	//TEST(testNamespaces);
 }
