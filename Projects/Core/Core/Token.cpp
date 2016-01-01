@@ -13,24 +13,37 @@ namespace ObjectiveScript {
 
 
 Token::Token(Type::E type, bool isOptional)
-: mIsOptional(isOptional),
+: mCategory(Category::None),
+  mIsOptional(isOptional),
   mType(type)
 {
 }
 
 Token::Token(Type::E type, const std::string& content)
-: mContent(content),
+: mCategory(Category::None),
+  mContent(content),
   mIsOptional(false),
   mType(type)
 {
 }
 
-Token::Token(Type::E type, const std::string& content, const Utils::Position& pos)
-: mContent(content),
+Token::Token(Category::E category, Type::E type, const std::string& content, const Utils::Position& pos)
+: mCategory(category),
+  mContent(content),
   mIsOptional(false),
   mPosition(pos),
   mType(type)
 {
+}
+
+Token::Category::E Token::category() const
+{
+	return mCategory;
+}
+
+void Token::category(Category::E category)
+{
+	mCategory = category;
 }
 
 const std::string& Token::content() const

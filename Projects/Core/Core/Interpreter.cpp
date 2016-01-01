@@ -170,9 +170,9 @@ Object Interpreter::parseFactors(TokenIterator& start)
 
 	for ( ; ; ) {
 		Token::Type::E op = start->type();
-		if ( op != Token::Type::MATH_DIV &&
+		if ( op != Token::Type::MATH_DIVIDE &&
 			 op != Token::Type::MATH_MODULO &&
-			 op != Token::Type::MATH_MULTI ) {
+			 op != Token::Type::MATH_MULTIPLY ) {
 			return v1;
 		}
 
@@ -194,13 +194,13 @@ Object Interpreter::parseFactors(TokenIterator& start)
 			v2 = parseTerm(start);
 		}
 
-		if ( op == Token::Type::MATH_DIV ) {
+		if ( op == Token::Type::MATH_DIVIDE ) {
 			operator_divide(&v1, &v2);
 		}
 		else if ( op == Token::Type::MATH_MODULO ) {
 			operator_modulo(&v1, &v2);
 		}
-		else if ( op == Token::Type::MATH_MULTI ) {
+		else if ( op == Token::Type::MATH_MULTIPLY ) {
 			operator_multiply(&v1, &v2);
 		}
 		else {

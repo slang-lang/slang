@@ -25,9 +25,11 @@ public:
 	{
 	public:
 		enum E {
-			Assign,
-			Compare,
-			Constant
+			None,
+			Assignment,
+			Comparator,
+			Constant,
+			Operator
 		};
 	};
 
@@ -39,7 +41,8 @@ public:
 			ASSIGN,
 			ASSIGN_ADD,
 			ASSIGN_DIVIDE,
-			ASSIGN_MULTI,
+			ASSIGN_MODULO,
+			ASSIGN_MULTIPLY,
 			ASSIGN_SUBTRACT,
 			BACKSLASH,
 			BRACKET_CLOSE,
@@ -71,9 +74,9 @@ public:
 			LANGUAGEFEATURE,
 			LESS,
 			MATH_ADD,
-			MATH_DIV,
+			MATH_DIVIDE,
 			MATH_MODULO,
-			MATH_MULTI,
+			MATH_MULTIPLY,
 			MATH_SUBTRACT,
 			NIL,
 			OR,
@@ -98,7 +101,8 @@ public:
 				case ASSIGN: return "=";
 				case ASSIGN_ADD: return "+=";
 				case ASSIGN_DIVIDE: return "/=";
-				case ASSIGN_MULTI: return "*=";
+				case ASSIGN_MODULO: return "%=";
+				case ASSIGN_MULTIPLY: return "*=";
 				case ASSIGN_SUBTRACT: return "-=";
 				case BACKSLASH: return "\\";
 				case BRACKET_CLOSE: return "]";
@@ -130,9 +134,9 @@ public:
 				case KEYWORD: return "KEYWORD";
 				case LESS: return "<";
 				case MATH_ADD: return "+";
-				case MATH_DIV: return "/";
+				case MATH_DIVIDE: return "/";
 				case MATH_MODULO: return "%";
-				case MATH_MULTI: return "*";
+				case MATH_MULTIPLY: return "*";
 				case MATH_SUBTRACT: return "-";
 				case NIL: return "NIL";
 				case OR: return "||";
@@ -158,12 +162,14 @@ public:
 public:
 	Token(Type::E type, bool isOptional = false);
 	Token(Type::E type, const std::string& content);
-	Token(Type::E type, const std::string& content, const Utils::Position& pos);
+	Token(Category::E category, Type::E type, const std::string& content, const Utils::Position& pos);
 
 public:
+	Category::E category() const;
+	void category(Category::E category);
+
 	const std::string& content() const;
 	const Utils::Position& position() const;
-
 	Type::E type() const;
 
 public:
@@ -176,6 +182,7 @@ public:
 protected:
 
 private:
+	Category::E mCategory;
 	std::string mContent;
 	bool mIsOptional;
 	Utils::Position mPosition;

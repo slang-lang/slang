@@ -6,7 +6,6 @@ public namespace PerformanceTest
 	{
 		public void Main(number argc = 0, string argv = "")
 		{
-			//print("argv = " + argv);
 			print("Starting performance test...");
 
 			number count = 0;

@@ -473,9 +473,9 @@ void Method::parseFactors(Object *result, TokenIterator& start)
 
 	for ( ; ; ) {
 		Token::Type::E op = start->type();
-		if ( op != Token::Type::MATH_DIV &&
+		if ( op != Token::Type::MATH_DIVIDE &&
 			 op != Token::Type::MATH_MODULO &&
-			 op != Token::Type::MATH_MULTI ) {
+			 op != Token::Type::MATH_MULTIPLY ) {
 			return;
 		}
 
@@ -497,13 +497,13 @@ void Method::parseFactors(Object *result, TokenIterator& start)
 			parseTerm(&v2, start);
 		}
 
-		if ( op == Token::Type::MATH_DIV ) {
+		if ( op == Token::Type::MATH_DIVIDE ) {
 			operator_divide(result, &v2);
 		}
 		else if ( op == Token::Type::MATH_MODULO ) {
 			operator_modulo(result, &v2);
 		}
-		else if ( op == Token::Type::MATH_MULTI ) {
+		else if ( op == Token::Type::MATH_MULTIPLY ) {
 			operator_multiply(result, &v2);
 		}
 	}
@@ -561,7 +561,7 @@ void Method::parseTerm(Object *result, TokenIterator& start)
 			}
 		} break;
 		default: {
-			throw Utils::Exceptions::SyntaxError("identifier, literal or number expected but " + start->content() + " as " + Token::Type::convert(start->type()) + " found", start->position());
+			throw Utils::Exceptions::SyntaxError("identifier, literal or number expected but " + start->content() + " found", start->position());
 		} break;
 	}
 
@@ -608,20 +608,20 @@ void Method::process(Object *result, TokenIterator& token, TokenIterator end, To
 }
 
 // syntax:
-// assert(<condition>);
+// assert [(] <expression> [)];
 void Method::process_assert(TokenIterator& token)
 {
 	// find next open parenthesis
-	TokenIterator condBegin = ++findNext(token, Token::Type::PARENTHESIS_OPEN, Token::Type::SEMICOLON);
+	TokenIterator condBegin = findNext(token, Token::Type::PARENTHESIS_OPEN, Token::Type::SEMICOLON);
 	// find next balanced '(' & ')' pair
-	TokenIterator condEnd = findNextBalancedParenthesis(condBegin, 0, Token::Type::SEMICOLON);
+	TokenIterator condEnd = findNextBalancedParenthesis(++condBegin, 0, Token::Type::SEMICOLON);
 	// find semicolon
 	TokenIterator tmp = findNext(condEnd, Token::Type::SEMICOLON);
 
     Object condition;
-	expression(&condition, condBegin);
+	expression(&condition, token);
 
-	if ( !isTrue(condition) ) {
+	if ( isFalse(condition) ) {
 		throw Utils::Exceptions::AssertionFailed(condition.ToString(), token->position());
 	}
 
@@ -650,41 +650,49 @@ void Method::process_delete(TokenIterator& token)
 void Method::process_for(TokenIterator& token)
 {
 	// find declaration
-	TokenIterator decl = ++findNext(token, Token::Type::PARENTHESIS_OPEN);
+	TokenIterator declarationBegin = ++findNext(token, Token::Type::PARENTHESIS_OPEN);
 	// find condition
-	TokenIterator cond = ++findNext(decl, Token::Type::SEMICOLON);
-	const TokenIterator conditionStart = cond;
+	const TokenIterator conditionBegin = ++findNext(declarationBegin, Token::Type::SEMICOLON);
 	// find expression
-	TokenIterator expr = ++findNext(cond, Token::Type::SEMICOLON);
-	const TokenIterator expressionStart = expr;
+	const TokenIterator expressionBegin = ++findNext(conditionBegin, Token::Type::SEMICOLON);
 	// find next open curly bracket '{'
-	const TokenIterator exprEnd = findNext(expr, Token::Type::PARENTHESIS_CLOSE);
+	const TokenIterator expressionEnd = findNext(expressionBegin, Token::Type::PARENTHESIS_CLOSE);
 
-	const TokenIterator bodyBegin = findNext(expr, Token::Type::BRACKET_CURLY_OPEN);
-	// find next balanced '{' & '}' pair
-	TokenIterator begin = bodyBegin;
-	TokenIterator bodyEnd = findNextBalancedCurlyBracket(++begin, getTokens().end());
+	// find next balanced '{' & '}' pair for loop-body
+	TokenIterator bodyBegin = findNext(expressionBegin, Token::Type::BRACKET_CURLY_OPEN);
+	TokenIterator bodyEnd = findNextBalancedCurlyBracket(++bodyBegin, getTokens().end());
 
 	// process our declaration part
 	Object result;
-	process(&result, decl, cond, Token::Type::SEMICOLON);
+	process(&result, declarationBegin, conditionBegin, Token::Type::SEMICOLON);
+
+	TokenList loopTokens;
+	while ( bodyBegin != bodyEnd ) {
+		loopTokens.push_back((*bodyBegin));
+		bodyBegin++;
+	}
 
 	for ( ; ; ) {
 		Object condition;
-		expression(&condition, cond = conditionStart);
+		TokenIterator condBegin = conditionBegin;
+
+		expression(&condition, condBegin);
 
 		if ( isFalse(condition) ) {
 			break;
 		}
 
-		TokenIterator bb = begin;
+		pushTokens(loopTokens);
+			TokenIterator tmpBegin = getTokens().begin();
+			TokenIterator tmpEnd = getTokens().end();
 
-		// process loop body
-		process(&result, bb, bodyEnd, Token::Type::BRACKET_CURLY_CLOSE);
+			process(&result, tmpBegin, tmpEnd, Token::Type::BRACKET_CURLY_CLOSE);
+		popTokens();
 
 		// execute loop expression
-		expr = expressionStart;
-		process(&result, expr, exprEnd, Token::Type::PARENTHESIS_CLOSE);
+		TokenIterator exprBegin = expressionBegin;
+		TokenIterator exprEnd = expressionEnd;
+		process(&result, exprBegin, exprEnd, Token::Type::PARENTHESIS_CLOSE);
 	}
 
 	token = bodyEnd;
@@ -929,7 +937,7 @@ void Method::process_new(TokenIterator& token, Object *result)
 	TokenIterator opened = findNext(tmp, Token::Type::PARENTHESIS_OPEN);
 	TokenIterator closed = findNextBalancedParenthesis(++opened);
 
-	std::list<Object> objectList;
+	std::list<Object> objectList;	// this is a hack to prevent the provided object parameters to run out of scope after our while-loop
 	ParameterList params;
 
 	tmp = opened;
@@ -1097,17 +1105,15 @@ void Method::process_while(TokenIterator& token)
 	// find next balanced '{' & '}' pair
 	TokenIterator bodyEnd = findNextBalancedCurlyBracket(++bodyBegin, getTokens().end());
 
-	TokenIterator tmp = condBegin;
-
-
 	TokenList whileTokens;
 	while ( bodyBegin != bodyEnd ) {
 		whileTokens.push_back((*bodyBegin));
 		bodyBegin++;
 	}
 
-
 	for ( ; ; ) {
+		TokenIterator tmp = condBegin;
+
 		Object condition;
 		expression(&condition, tmp);
 
@@ -1122,9 +1128,6 @@ void Method::process_while(TokenIterator& token)
 			VoidObject result;
 			process(&result, tmpBegin, tmpEnd, Token::Type::BRACKET_CURLY_CLOSE);
 		popTokens();
-
-		// reset iterator
-		tmp = condBegin;
 	}
 
 	token = bodyEnd;
