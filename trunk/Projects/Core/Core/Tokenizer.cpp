@@ -171,15 +171,16 @@ void Tokenizer::classify()
 
 }
 
-Token Tokenizer::createToken(const std::string& con, const Utils::Position& pos)
+Token Tokenizer::createToken(const std::string& con, const Utils::Position& position)
 {
 	std::string content = con;
 
+	Token::Category::E category = Token::Category::None;
 	Token::Type::E type = Token::Type::IDENTIFER;
 
-	if ( content == "=" ) { type = Token::Type::ASSIGN; }
-	else if ( content == "&" ) { type = Token::Type::BITAND; }
-	else if ( content == "|" ) { type = Token::Type::BITOR; }
+	if ( content == "=" ) { category = Token::Category::Assignment; type = Token::Type::ASSIGN; }
+	else if ( content == "&" ) { category = Token::Category::Operator; type = Token::Type::BITAND; }
+	else if ( content == "|" ) { category = Token::Category::Operator; type = Token::Type::BITOR; }
 	else if ( content == "," ) { type = Token::Type::COLON; }
 	else if ( content == "." ) { type = Token::Type::DOT; }
 	else if ( content == ";" ) { type = Token::Type::SEMICOLON; }
@@ -189,33 +190,33 @@ Token Tokenizer::createToken(const std::string& con, const Utils::Position& pos)
 	else if ( content == "]" ) { type = Token::Type::BRACKET_CLOSE; }
 	else if ( content == "{" ) { type = Token::Type::BRACKET_CURLY_OPEN; }
 	else if ( content == "}" ) { type = Token::Type::BRACKET_CURLY_CLOSE; }
-	else if ( content == ">" ) { type = Token::Type::COMPARE_GREATER; }
-	else if ( content == "<" ) { type = Token::Type::COMPARE_LESS; }
+	else if ( content == ">" ) { category = Token::Category::Operator; type = Token::Type::COMPARE_GREATER; }
+	else if ( content == "<" ) { category = Token::Category::Operator; type = Token::Type::COMPARE_LESS; }
 	else if ( content == "(" ) { type = Token::Type::PARENTHESIS_OPEN; }
 	else if ( content == ")" ) { type = Token::Type::PARENTHESIS_CLOSE; }
-	else if ( content == "+" ) { type = Token::Type::MATH_ADD; }
-	else if ( content == "/" ) { type = Token::Type::MATH_DIV; }
-	else if ( content == "*" ) { type = Token::Type::MATH_MULTI; }
-	else if ( content == "-" ) { type = Token::Type::MATH_SUBTRACT; }
-	else if ( content == "%" ) { type = Token::Type::MATH_MODULO; }
-	else if ( isBoolean(content) ) { type = Token::Type::CONST_BOOLEAN; }
-	else if ( isFloat(content) ) { type = Token::Type::CONST_FLOAT; }
+	else if ( content == "+" ) { category = Token::Category::Operator; type = Token::Type::MATH_ADD; }
+	else if ( content == "/" ) { category = Token::Category::Operator; type = Token::Type::MATH_DIVIDE; }
+	else if ( content == "%" ) { category = Token::Category::Operator; type = Token::Type::MATH_MODULO; }
+	else if ( content == "*" ) { category = Token::Category::Operator; type = Token::Type::MATH_MULTIPLY; }
+	else if ( content == "-" ) { category = Token::Category::Operator; type = Token::Type::MATH_SUBTRACT; }
+	else if ( isBoolean(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_BOOLEAN; }
+	else if ( isFloat(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_FLOAT; }
 	else if ( isIdentifer(content) ) { type = Token::Type::IDENTIFER; }
-	else if ( isInteger(content) ) { type = Token::Type::CONST_INTEGER; }		// TODO: change me to CONST_INTEGER was CONST_NUMBER
+	else if ( isInteger(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_INTEGER; }
 	else if ( isKeyword(content) ) { type = Token::Type::KEYWORD; }
 	else if ( isLanguageFeature(content) ) { type = Token::Type::LANGUAGEFEATURE; }
-	else if ( isLiteral(content) ) { type = Token::Type::CONST_LITERAL;
+	else if ( isLiteral(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_LITERAL;
 		// remove leading and trailing (", ') quotation marks (", ')
 		content = con.substr(1, con.length() - 2);
 	}
 	else if ( isModifier(content) ) { type = Token::Type::LANGUAGEFEATURE; }
-	else if ( isNumber(content) ) { type = Token::Type::CONST_NUMBER; }
+	else if ( isNumber(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_NUMBER; }
 	else if ( isReservedWord(content) ) { type = Token::Type::RESERVED; }
 	else if ( isType(content) ) { type = Token::Type::TYPE; }
 	else if ( isVisibility(content) ) { type = Token::Type::VISIBILITY; }
 	else if ( isWhiteSpace(content) ) { type = Token::Type::WHITESPACE; }
 
-	Token token(type, content, pos);
+	Token token(category, type, content, position);
 	token.setOptional(type == Token::Type::LANGUAGEFEATURE);
 	return token;
 }
@@ -478,7 +479,7 @@ void Tokenizer::mergeBooleanOperators()
 			// remove last added token ...
 			tmp.pop_back();
 			// ... and add AND instead
-			tmp.push_back(Token(Token::Type::AND, "&&", token->position()));
+			tmp.push_back(Token(Token::Category::Operator, Token::Type::AND, "&&", token->position()));
 		}
 		else if ( (lastType == Token::Type::BITOR) && (activeType == Token::Type::BITOR) ) {
 			// >=
@@ -486,7 +487,7 @@ void Tokenizer::mergeBooleanOperators()
 			// remove last added token ...
 			tmp.pop_back();
 			// ... and add OR instead
-			tmp.push_back(Token(Token::Type::OR, "||", token->position()));
+			tmp.push_back(Token(Token::Category::Operator, Token::Type::OR, "||", token->position()));
 		}
 
 		lastType = token->type();
@@ -631,7 +632,7 @@ void Tokenizer::replaceAssignments()
 			// remove last added token ...
 			tmp.pop_back();
 			// ... and add COMPARE_EQUAL instead
-			tmp.push_back(Token(Token::Type::COMPARE_EQUAL, "==", token->position()));
+			tmp.push_back(Token(Token::Category::Assignment, Token::Type::COMPARE_EQUAL, "==", token->position()));
 		}
 		else if ( (lastType == Token::Type::GREATER || lastType == Token::Type::COMPARE_GREATER) && (activeType == Token::Type::ASSIGN) ) {
 			// >=
@@ -639,7 +640,7 @@ void Tokenizer::replaceAssignments()
 			// remove last added token ...
 			tmp.pop_back();
 			// ... and add COMPARE_GREATER_EQUAL instead
-			tmp.push_back(Token(Token::Type::COMPARE_GREATER_EQUAL, ">=", token->position()));
+			tmp.push_back(Token(Token::Category::Assignment, Token::Type::COMPARE_GREATER_EQUAL, ">=", token->position()));
 		}
 		else if ( (lastType == Token::Type::LESS || lastType == Token::Type::COMPARE_LESS) && (activeType == Token::Type::ASSIGN) ) {
 			// <=
@@ -647,7 +648,7 @@ void Tokenizer::replaceAssignments()
 			// remove last added token ...
 			tmp.pop_back();
 			// ... and add COMPARE_LESS_EQUAL instead
-			tmp.push_back(Token(Token::Type::COMPARE_LESS_EQUAL, "<=", token->position()));
+			tmp.push_back(Token(Token::Category::Assignment, Token::Type::COMPARE_LESS_EQUAL, "<=", token->position()));
 		}
 		else if ( (lastType == Token::Type::MATH_ADD) && (activeType == Token::Type::ASSIGN) ) {
 			// +=
@@ -655,23 +656,31 @@ void Tokenizer::replaceAssignments()
 			// remove last added token ...
 			tmp.pop_back();
 			// ... and add ASSIGN_ADD instead
-			tmp.push_back(Token(Token::Type::ASSIGN_ADD, "+=", token->position()));
+			tmp.push_back(Token(Token::Category::Assignment, Token::Type::ASSIGN_ADD, "+=", token->position()));
 		}
-		else if ( (lastType == Token::Type::MATH_DIV) && (activeType == Token::Type::ASSIGN) ) {
+		else if ( (lastType == Token::Type::MATH_DIVIDE) && (activeType == Token::Type::ASSIGN) ) {
 			// /=
 			changed = true;
 			// remove last added token ...
 			tmp.pop_back();
 			// ... and add ASSIGN_DIVIDE instead
-			tmp.push_back(Token(Token::Type::ASSIGN_DIVIDE, "/=", token->position()));
+			tmp.push_back(Token(Token::Category::Assignment, Token::Type::ASSIGN_DIVIDE, "/=", token->position()));
 		}
-		else if ( (lastType == Token::Type::MATH_MULTI) && (activeType == Token::Type::ASSIGN) ) {
+		else if ( (lastType == Token::Type::MATH_MODULO) && (activeType == Token::Type::ASSIGN) ) {
+			// %=
+			changed = true;
+			// remove last added token ...
+			tmp.pop_back();
+			// ... and add ASSIGN_MULTI instead
+			tmp.push_back(Token(Token::Category::Assignment, Token::Type::ASSIGN_MODULO, "*=", token->position()));
+		}
+		else if ( (lastType == Token::Type::MATH_MULTIPLY) && (activeType == Token::Type::ASSIGN) ) {
 			// *=
 			changed = true;
 			// remove last added token ...
 			tmp.pop_back();
 			// ... and add ASSIGN_MULTI instead
-			tmp.push_back(Token(Token::Type::ASSIGN_MULTI, "*=", token->position()));
+			tmp.push_back(Token(Token::Category::Assignment, Token::Type::ASSIGN_MULTIPLY, "*=", token->position()));
 		}
 		else if ( (lastType == Token::Type::MATH_SUBTRACT) && (activeType == Token::Type::ASSIGN) ) {
 			// -=
@@ -679,7 +688,7 @@ void Tokenizer::replaceAssignments()
 			// remove last added token ...
 			tmp.pop_back();
 			// ... and add ASSIGN_SUBTRACT instead
-			tmp.push_back(Token(Token::Type::ASSIGN_SUBTRACT, "-=", token->position()));
+			tmp.push_back(Token(Token::Category::Assignment, Token::Type::ASSIGN_SUBTRACT, "-=", token->position()));
 		}
 
 		lastType = token->type();

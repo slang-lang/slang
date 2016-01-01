@@ -1,14 +1,14 @@
 #!/usr/local/bin/oscript
 
-import system.assert;
-
 public namespace
 {
 	private object Main
 	{
 		public void Main(number argc = 0, string argv = "")
 		{
+			assert true;
 			assert(true);
+			assert false == false;
 			assert(false == false);
 			assert(ReturnOne());
 			assert(ReturnOne() > 0);
