@@ -116,7 +116,7 @@ void LanguageTest::testConstCorrectness1()
 		VirtualMachine vm;
 		vm.setPrinter(&mStdoutPrinter);
 
-		TTHROWS(vm.create("Tests/Language/ConstCorrectness.os"), ObjectiveScript::Utils::Exceptions::ConstCorrectnessViolated);
+		TTHROWS(vm.create("Tests/Language/ConstCorrectness1.os"), ObjectiveScript::Utils::Exceptions::ConstCorrectnessViolated);
 
 		// automatic success
 	}
