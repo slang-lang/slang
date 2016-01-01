@@ -35,8 +35,9 @@ void LanguageTest::process()
 	TEST(testAssert);
 	TEST(testBooleanOperators);
 	TEST(testComment);
-	TEST(testConstCorrectness);
+	TEST(testConstCorrectness1);
 	TEST(testConstCorrectness2);
+	TEST(testConstCorrectness3);
 	TEST(testDefaultParameter);
 	TEST(testFinal);
 	TEST(testForLoop);
@@ -109,7 +110,7 @@ void LanguageTest::testComment()
 	}
 }
 
-void LanguageTest::testConstCorrectness()
+void LanguageTest::testConstCorrectness1()
 {
 	try {
 		VirtualMachine vm;
@@ -132,6 +133,22 @@ void LanguageTest::testConstCorrectness2()
 		vm.setPrinter(&mStdoutPrinter);
 
 		TTHROWS(vm.create("Tests/Language/ConstCorrectness2.os"), ObjectiveScript::Utils::Exceptions::ConstCorrectnessViolated);
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// unexpected exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void LanguageTest::testConstCorrectness3()
+{
+	try {
+		VirtualMachine vm;
+		vm.setPrinter(&mStdoutPrinter);
+
+		TTHROWS(vm.create("Tests/Language/ConstCorrectness3.os"), ObjectiveScript::Utils::Exceptions::ConstCorrectnessViolated);
 
 		// automatic success
 	}
