@@ -60,7 +60,7 @@ public namespace ConstCorrectness
 			// altough all objects are references it should never be possible to change a const object => fail
 
 			UserObject obj1 = new UserObject(1);
-assert( false );
+
 			UpdateConstUserObject(obj1);
 
 			return false;
@@ -74,13 +74,15 @@ assert( false );
 
 			UpdateUserObject(obj1);
 
+			assert( obj1.getValue() == 2 );
+
 			return true;
 		}
 
-		private bool UpdateConstUserObject(UserObject obj const) const
+		private bool UpdateConstUserObject(UserObject obj const ref) const
 		{
 			// altough all objects are references it should never be possible to change a const object => fail
-assert( false );
+
 			obj.setValue(2);
 
 			return false;

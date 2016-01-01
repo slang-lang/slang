@@ -635,7 +635,8 @@ void Method::process_assign(TokenIterator& token, Object *result)
 
     if ( assign == token ) {
         // we don't have an assignment but a method call
-		expression(result, token);
+		Object tmp;
+		expression(&tmp, token);
 
         token = end;
         return;
