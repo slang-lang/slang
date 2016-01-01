@@ -46,6 +46,7 @@ public namespace IfTest
 
 			one = one + 1;
 			print("one = " + one);
+			assert( one == 1 );
 			return true;
 		}
 
