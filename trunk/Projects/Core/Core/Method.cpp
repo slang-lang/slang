@@ -626,7 +626,7 @@ void Method::process_assert(TokenIterator& token)
 	token = tmp;
 }
 
-void Method::process_assign(TokenIterator& token, Object *result)
+void Method::process_assign(TokenIterator& token, Object* /*result*/)
 {
 	// try to find assignment token
 	TokenIterator assign = findNext(token, Token::Type::ASSIGN, Token::Type::SEMICOLON);

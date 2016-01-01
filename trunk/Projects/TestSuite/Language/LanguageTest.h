@@ -35,8 +35,9 @@ private:	// Tests
 	void testAssert();
 	void testBooleanOperators();
 	void testComment();
-	void testConstCorrectness();
+	void testConstCorrectness1();
 	void testConstCorrectness2();
+	void testConstCorrectness3();
 	void testDefaultParameter();
 	void testFinal();
 	void testForLoop();
