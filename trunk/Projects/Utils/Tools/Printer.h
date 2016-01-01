@@ -21,7 +21,7 @@ class Printer : public ObjectiveScript::IPrinter,
 				public Common::Logger
 {
 public:
-	Printer(const Common::Logger *p)
+	Printer(const Common::ILogger *p)
 	: Common::Logger(p, ""),
 	  mActivateLogger(true),
 	  mActivatePrinter(true),

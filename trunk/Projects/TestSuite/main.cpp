@@ -74,7 +74,7 @@ int main(int argc, const char* argv[])
 	}
 
 	if ( !logger ) {
-		logger = new Utils::Common::Logger("TestSuite.log");
+		logger = new Utils::Common::StdOutLogger();
 	}
 
 	try {

@@ -32,8 +32,7 @@
 
 
 std::string mFilename;
-//Utils::Common::StdOutLogger mLogger;
-Utils::Common::Logger mLogger;
+Utils::Common::StdOutLogger mLogger;
 ObjectiveScript::ParameterList mParameters;
 std::string mRoot;
 
