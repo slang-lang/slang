@@ -1095,6 +1095,14 @@ void Method::process_while(TokenIterator& token)
 
 	TokenIterator tmp = condBegin;
 
+
+	TokenList whileTokens;
+	while ( bodyBegin != bodyEnd ) {
+		whileTokens.push_back((*bodyBegin));
+		bodyBegin++;
+	}
+
+
 	for ( ; ; ) {
 		Object condition;
 		expression(&condition, tmp);
@@ -1103,10 +1111,13 @@ void Method::process_while(TokenIterator& token)
 			break;
 		}
 
-		TokenIterator bb = bodyBegin;
+		pushTokens(whileTokens);
+			TokenIterator tmpBegin = getTokens().begin();
+			TokenIterator tmpEnd = getTokens().end();
 
-        VoidObject result;
-		process(&result, bb, bodyEnd, Token::Type::BRACKET_CURLY_CLOSE);
+			VoidObject result;
+			process(&result, tmpBegin, tmpEnd, Token::Type::BRACKET_CURLY_CLOSE);
+		popTokens();
 
 		// reset iterator
 		tmp = condBegin;
