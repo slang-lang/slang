@@ -572,10 +572,6 @@ void Method::process(Object *result, TokenIterator& token, TokenIterator end, To
 	while ( ((token != getTokens().end()) && (token != end) ) &&
 			((token->type() != terminator) && (token->type() != Token::Type::ENDOFFILE)) ) {
 
-		//if ( std::distance(token, end) <= 0 ) {
-		//	break;
-		//}
-
 		if ( mStopProcessing ) {
 			// a return command has been triggered, time to stop processing
 			break;
@@ -822,8 +818,6 @@ void Method::process_if(TokenIterator& token, Object *result)
 
 			process(result, tmpBegin, tmpEnd, Token::Type::BRACKET_CURLY_CLOSE);
 		popTokens();
-
-		//token = elseEnd;
 	}
 }
 

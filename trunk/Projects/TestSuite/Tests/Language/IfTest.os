@@ -29,7 +29,7 @@ public namespace IfTest
 
 		private bool TestCase2(number param1 = 2)
 		{
-			number one = 1;
+			number one = 0;
 
 			if ( (param1 - 1) == 0 ) {
 				print("TestCase2: if-true");
