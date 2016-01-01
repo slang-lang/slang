@@ -191,6 +191,8 @@ void Method::execute(const ParameterList& params, Object *result)
 			} break;
 			case Parameter::AccessMode::ByReference: {
 				Object *object = param.pointer();
+				object->setConst(param.isConst());
+
 				addIdentifier(param.name(), object);
 			} break;
 			case Parameter::AccessMode::ByValue: {
