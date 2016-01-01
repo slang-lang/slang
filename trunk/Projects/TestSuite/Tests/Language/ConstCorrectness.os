@@ -38,7 +38,7 @@ public namespace ConstCorrectness
 		private void ModifyConstParameter(number value const) modify
 		{
 			mNumber = 2;	// allowed
-			value = 2;		// throws a ConstCorrectnessViolated exception
+			value = 2;	// throws a ConstCorrectnessViolated exception
 		}
 
 		private void ModifyMemberInConstMethod(number value const) const
