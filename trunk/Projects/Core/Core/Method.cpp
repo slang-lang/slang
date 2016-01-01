@@ -589,7 +589,7 @@ void Method::process(Object *result, TokenIterator& token, TokenIterator end, To
 				expression(result, token);
 				break;
 			case Token::Type::IDENTIFER:
-				process_assign(token, result);
+				process_identifier(token);
 				break;
 			case Token::Type::KEYWORD:
 				process_keyword(token, result);
@@ -626,47 +626,6 @@ void Method::process_assert(TokenIterator& token)
 	}
 
 	token = tmp;
-}
-
-void Method::process_assign(TokenIterator& token, Object* /*result*/)
-{
-	// try to find assignment token
-	TokenIterator assign = findNext(token, Token::Type::ASSIGN, Token::Type::SEMICOLON);
-	// find next semicolon
-	TokenIterator end = findNext(token, Token::Type::SEMICOLON);
-
-    if ( assign == token ) {
-        // we don't have an assignment but a method call
-		Object tmp;
-		expression(&tmp, token);
-
-        token = end;
-        return;
-    }
-
-	std::string identifier = token->content();
-
-	Object *symbol = getSymbol(identifier);
-	if ( !symbol ) {
-		throw Utils::Exceptions::UnknownIdentifer("identifier '" + identifier + "' not found", token->position());
-	}
-	if ( symbol->isConst() ) {
-		throw Utils::Exceptions::ConstCorrectnessViolated("tried to modify const symbol '" + identifier + "'", token->position());
-	}
-	if ( isMember(identifier) && (this->isConst() || mOwner->isConst()) ) {
-		throw Utils::Exceptions::ConstCorrectnessViolated("tried to modify member '" + identifier + "' in const method '" + this->name() + "'", token->position());
-	}
-
-	expression(symbol, ++assign);
-
-	if ( symbol->isFinal() && symbol->isModifiable() ) {
-		// we have modified a final entity for the first time, we now have to set it so const
-		symbol->setConst(true);
-		symbol->setFinal(false);
-	}
-
-	// assign == end should now be true
-	token = end;
 }
 
 // syntax:
@@ -729,6 +688,48 @@ void Method::process_for(TokenIterator& token)
 	}
 
 	token = bodyEnd;
+}
+
+// executes a method or processes an assign statement
+void Method::process_identifier(TokenIterator& token)
+{
+	// try to find assignment token
+	TokenIterator assign = findNext(token, Token::Type::ASSIGN, Token::Type::SEMICOLON);
+	// find next semicolon
+	TokenIterator end = findNext(token, Token::Type::SEMICOLON);
+
+    if ( assign == token ) {
+        // we don't have an assignment but a method call
+		Object tmp;
+		expression(&tmp, token);
+
+        token = end;
+        return;
+    }
+
+	std::string identifier = token->content();
+
+	Object *symbol = getSymbol(identifier);
+	if ( !symbol ) {
+		throw Utils::Exceptions::UnknownIdentifer("identifier '" + identifier + "' not found", token->position());
+	}
+	if ( symbol->isConst() ) {
+		throw Utils::Exceptions::ConstCorrectnessViolated("tried to modify const symbol '" + identifier + "'", token->position());
+	}
+	if ( isMember(identifier) && (this->isConst() || mOwner->isConst()) ) {
+		throw Utils::Exceptions::ConstCorrectnessViolated("tried to modify member '" + identifier + "' in const method '" + this->name() + "'", token->position());
+	}
+
+	expression(symbol, ++assign);
+
+	if ( symbol->isFinal() && symbol->isModifiable() ) {
+		// we have modified a final entity for the first time, we now have to set it so const
+		symbol->setConst(true);
+		symbol->setFinal(false);
+	}
+
+	// assign == end should now be true
+	token = end;
 }
 
 // syntax:
