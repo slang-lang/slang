@@ -209,7 +209,7 @@ Token Tokenizer::createToken(const std::string& con, const Utils::Position& posi
 		// remove leading and trailing (", ') quotation marks (", ')
 		content = con.substr(1, con.length() - 2);
 	}
-	else if ( isModifier(content) ) { type = Token::Type::LANGUAGEFEATURE; }
+	else if ( isModifier(content) ) { category = Token::Category::Modifier; type = Token::Type::LANGUAGEFEATURE; }
 	else if ( isNumber(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_NUMBER; }
 	else if ( isReservedWord(content) ) { type = Token::Type::RESERVED; }
 	else if ( isType(content) ) { type = Token::Type::TYPE; }

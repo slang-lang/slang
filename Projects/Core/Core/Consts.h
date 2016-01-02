@@ -12,7 +12,7 @@
 // Namespace declarations
 
 // Global defines
-//#define USE_EXTREME_CONST_CORRECTNESS
+#define USE_EXTREME_CONST_CORRECTNESS
 
 
 namespace ObjectiveScript {

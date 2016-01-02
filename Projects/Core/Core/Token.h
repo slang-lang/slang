@@ -29,6 +29,7 @@ public:
 			Assignment,
 			Comparator,
 			Constant,
+			Modifier,
 			Operator
 		};
 	};

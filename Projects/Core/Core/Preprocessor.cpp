@@ -73,11 +73,12 @@ Object* Preprocessor::createMember(const std::string& filename, TokenIterator to
 Method* Preprocessor::createMethod(TokenIterator token)
 {
 #ifdef USE_EXTREME_CONST_CORRECTNESS
-	bool isConst = true;		// all methods const by default (this is the only way the 'modify' attribute makes sense)
+	bool isConst = true;		// all methods are const by default (this is the only way the 'modify' attribute makes sense)
 #else
 	bool isConst = false;
 #endif
 
+	bool isStructor = false;
 	bool isFinal = false;
 	bool isStatic = false;
 	std::string name;
@@ -96,17 +97,25 @@ Method* Preprocessor::createMethod(TokenIterator token)
 	// look for the identifier token
 	name = (*token).content();
 
+	if ( name == mObject->Typename() || name == "~" + mObject->Typename() ) {
+		// this method has the same name as it's containing object, so this has to be a constructor or a destructor,
+		// these 2 methods can never ever be const
+		isConst = false;
+		isStructor = true;
+	}
+
 	// look for the next opening parenthesis
 	do { token++; } while ( (*token).type() != Token::Type::PARENTHESIS_OPEN );
 
 	ParameterList params = parseParameters(token);
 
-	// look at possible attributes (const, modify, static, etc.)
-	// look for the next opening curly bracket
+	// look at possible attributes (const, final, modify, static, etc.)
+	// while looking for the next opening curly bracket
 	do {
 		token++;
 
-		if ( token->type() == Token::Type::LANGUAGEFEATURE ) {
+		//if ( token->type() == Token::Type::LANGUAGEFEATURE ) {
+		if ( token->category() == Token::Category::Modifier ) {
 			if ( token->content() == MODIFIER_CONST ) {
 				isConst = true;
 			}
@@ -122,7 +131,13 @@ Method* Preprocessor::createMethod(TokenIterator token)
 		}
 	} while ( token->type() != Token::Type::BRACKET_CURLY_OPEN );
 
-	if ( (isConst || isFinal) && isStatic ) {
+	if ( isStructor && isConst ) {
+		throw Utils::Exceptions::SyntaxError("constructor or destructor cannot be const");
+	}
+	if ( isStructor && isStatic ) {
+		throw Utils::Exceptions::SyntaxError("constructor or destructor cannot be static");
+	}
+	if ( (!isConst || isFinal) && isStatic ) {
 		throw Utils::Exceptions::Exception("static methods can not be const!");
 	}
 
@@ -142,7 +157,7 @@ Method* Preprocessor::createMethod(TokenIterator token)
 		tokens.push_back((*token));
 	}
 
-	// create a new Method with the corresponding return value
+	// create a new method with the corresponding return value
 	Method *m = new Method(mObject, name, type);
 	m->setConst(isConst);
 	m->setFinal(isFinal);
@@ -275,7 +290,7 @@ ParameterList Preprocessor::parseParameters(TokenIterator &token)
 		else if ( token->content() == RESERVED_WORD_BY_VALUE ) {
 			accessmode = Parameter::AccessMode::ByValue;
 			token++;
-		} 
+		}
 
 		if ( token->type() == Token::Type::ASSIGN ) {
 			hasDefaultValue = true;
