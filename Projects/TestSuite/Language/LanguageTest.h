@@ -23,7 +23,7 @@ class LanguageTest : private Utils::Common::Logger,
 					 public GenericTest
 {
 public:
-	LanguageTest(const Utils::Common::Logger *p);
+	LanguageTest(const Utils::Common::ILogger *p);
 	virtual ~LanguageTest() { }
 
 public:
@@ -52,7 +52,7 @@ private:	// Tests
 	void testWhile();
 
 private:
-	Utils::Printer mStdoutPrinter;
+	Utils::Printer mPrinter;
 };
 
 

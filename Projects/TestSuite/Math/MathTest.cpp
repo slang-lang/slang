@@ -22,9 +22,9 @@ namespace Testing {
 namespace Math {
 
 
-MathTest::MathTest(const ::Utils::Common::Logger *p)
+MathTest::MathTest(const ::Utils::Common::ILogger *p)
 : ::Utils::Common::Logger(p, "Math"),
-  mStdoutPrinter(p)
+  mPrinter(p)
 {
 }
 
@@ -47,7 +47,7 @@ void MathTest::testBasicExpressionParsing()
 {
 	try {
 		VirtualMachine vm;
-		vm.setPrinter(&mStdoutPrinter);
+		vm.setPrinter(&mPrinter);
 
 		vm.create("Tests/Math/BasicTest.os");
 
@@ -63,7 +63,7 @@ void MathTest::testDataTypeFloat()
 {
 	try {
 		VirtualMachine vm;
-		vm.setPrinter(&mStdoutPrinter);
+		vm.setPrinter(&mPrinter);
 
 		vm.create("Tests/Math/DataTypeFloat.os");
 
@@ -79,7 +79,7 @@ void MathTest::testDataTypeInt()
 {
 	try {
 		VirtualMachine vm;
-		vm.setPrinter(&mStdoutPrinter);
+		vm.setPrinter(&mPrinter);
 
 		vm.create("Tests/Math/DataTypeInt.os");
 

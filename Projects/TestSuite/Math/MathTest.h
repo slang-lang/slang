@@ -23,7 +23,7 @@ class MathTest : private Utils::Common::Logger,
 				 public GenericTest
 {
 public:
-	MathTest(const Utils::Common::Logger *p);
+	MathTest(const Utils::Common::ILogger *p);
 	virtual ~MathTest() { }
 
 public:
@@ -37,7 +37,7 @@ private:	// Tests
 	void testDataTypeInt();
 
 private:
-	Utils::Printer mStdoutPrinter;
+	Utils::Printer mPrinter;
 };
 
 

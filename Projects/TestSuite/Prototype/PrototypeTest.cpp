@@ -22,9 +22,9 @@ namespace Testing {
 namespace Prototype {
 
 
-PrototypeTest::PrototypeTest(const ::Utils::Common::Logger *p)
+PrototypeTest::PrototypeTest(const ::Utils::Common::ILogger *p)
 : ::Utils::Common::Logger(p, "PrototypeTest"),
-  mStdoutPrinter(p)
+  mPrinter(p)
 {
 }
 
@@ -46,7 +46,7 @@ void PrototypeTest::testPrototypeDeclaration()
 {
 	try {
 		VirtualMachine vm;
-		vm.setPrinter(&mStdoutPrinter);
+		vm.setPrinter(&mPrinter);
 
 		vm.create("Tests/Prototypes/PrototypeTest.os");
 
@@ -62,7 +62,7 @@ void PrototypeTest::testPrototypeUsage()
 {
 	try {
 		VirtualMachine vm;
-		vm.setPrinter(&mStdoutPrinter);
+		vm.setPrinter(&mPrinter);
 
 		vm.create("Tests/Prototypes/PrototypeTest_Inheritance.os");
 

@@ -55,7 +55,7 @@ void Script::construct(const ParameterList& params)
 		mObject->Constructor(params);
 	}
 	catch ( Utils::Exceptions::Exception &e ) {
-		// catch and log all errors that occured during method execution
+		// catch and log all errors that occurred during method execution
 		OSerror(e.what());
 
 		throw;

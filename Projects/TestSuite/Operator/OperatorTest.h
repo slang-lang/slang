@@ -45,7 +45,7 @@ private:	// Tests
 	void testMathOverloadsWithObjects();
 
 private:
-	Utils::Printer mStdoutPrinter;
+	Utils::Printer mPrinter;
 };
 
 

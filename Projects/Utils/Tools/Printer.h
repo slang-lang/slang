@@ -23,7 +23,7 @@ class Printer : public ObjectiveScript::IPrinter,
 public:
 	Printer(const Common::ILogger *p)
 	: Common::Logger(p, ""),
-	  mActivateLogger(true),
+	  mActivateLogger(false),
 	  mActivatePrinter(true),
 	  mPrintFileAndLine(false)
 	{ }
@@ -50,8 +50,7 @@ public:
 		if ( mActivatePrinter ) {
 			std::cout << text;
 			if ( mPrintFileAndLine ) {
-				std::cout << "   [" << file << ":" << line << "]";
-				std::cout << std::endl;
+				std::cout << "   [" << file << ":" << line << "]" << std::endl;
 			}
 		}
 	}

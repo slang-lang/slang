@@ -24,7 +24,7 @@ namespace Operator {
 
 OperatorTest::OperatorTest(const ::Utils::Common::Logger *p)
 : ::Utils::Common::Logger(p, "Operator"),
-  mStdoutPrinter(p)
+  mPrinter(p)
 {
 }
 
@@ -55,7 +55,7 @@ void OperatorTest::testBooleanOverloads_Assign()
 {
 	try {
 		VirtualMachine vm;
-		vm.setPrinter(&mStdoutPrinter);
+		vm.setPrinter(&mPrinter);
 
 		vm.create("Tests/Operator/BooleanOverloads_Assign.os");
 
@@ -71,7 +71,7 @@ void OperatorTest::testBooleanOverloads_BitAnd()
 {
 	try {
 		VirtualMachine vm;
-		vm.setPrinter(&mStdoutPrinter);
+		vm.setPrinter(&mPrinter);
 
 		vm.create("Tests/Operator/BooleanOverloads_BitAnd.os");
 
@@ -87,7 +87,7 @@ void OperatorTest::testBooleanOverloads_BitOr()
 {
 	try {
 		VirtualMachine vm;
-		vm.setPrinter(&mStdoutPrinter);
+		vm.setPrinter(&mPrinter);
 
 		vm.create("Tests/Operator/BooleanOverloads_BitOr.os");
 
@@ -103,7 +103,7 @@ void OperatorTest::testBooleanOverloads_Equal()
 {
 	try {
 		VirtualMachine vm;
-		vm.setPrinter(&mStdoutPrinter);
+		vm.setPrinter(&mPrinter);
 
 		vm.create("Tests/Operator/BooleanOverloads_Equal.os");
 
@@ -119,7 +119,7 @@ void OperatorTest::testBooleanOverloads_Greater()
 {
 	try {
 		VirtualMachine vm;
-		vm.setPrinter(&mStdoutPrinter);
+		vm.setPrinter(&mPrinter);
 
 		vm.create("Tests/Operator/BooleanOverloads_Greater.os");
 
@@ -135,7 +135,7 @@ void OperatorTest::testBooleanOverloads_Greater_Equal()
 {
 	try {
 		VirtualMachine vm;
-		vm.setPrinter(&mStdoutPrinter);
+		vm.setPrinter(&mPrinter);
 
 		vm.create("Tests/Operator/BooleanOverloads_Greater_Equal.os");
 
@@ -151,7 +151,7 @@ void OperatorTest::testBooleanOverloads_Less()
 {
 	try {
 		VirtualMachine vm;
-		vm.setPrinter(&mStdoutPrinter);
+		vm.setPrinter(&mPrinter);
 
 		vm.create("Tests/Operator/BooleanOverloads_Less.os");
 
@@ -167,7 +167,7 @@ void OperatorTest::testBooleanOverloads_Less_Equal()
 {
 	try {
 		VirtualMachine vm;
-		vm.setPrinter(&mStdoutPrinter);
+		vm.setPrinter(&mPrinter);
 
 		vm.create("Tests/Operator/BooleanOverloads_Less_Equal.os");
 
@@ -183,7 +183,7 @@ void OperatorTest::testBooleanOverloads_Unequal()
 {
 	try {
 		VirtualMachine vm;
-		vm.setPrinter(&mStdoutPrinter);
+		vm.setPrinter(&mPrinter);
 
 		vm.create("Tests/Operator/BooleanOverloads_Unequal.os");
 
@@ -199,7 +199,7 @@ void OperatorTest::testMathOverloadsWithNumbers()
 {
 	try {
 		VirtualMachine vm;
-		vm.setPrinter(&mStdoutPrinter);
+		vm.setPrinter(&mPrinter);
 
 		vm.create("Tests/Operator/MathOverloadsWithNumbers.os");
 
@@ -215,7 +215,7 @@ void OperatorTest::testMathOverloadsWithObjects()
 {
 	try {
 		VirtualMachine vm;
-		vm.setPrinter(&mStdoutPrinter);
+		vm.setPrinter(&mPrinter);
 
 		vm.create("Tests/Operator/MathOverloadsWithObjects.os");
 
