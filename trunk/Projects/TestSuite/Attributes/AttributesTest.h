@@ -23,7 +23,7 @@ class AttributesTest : private Utils::Common::Logger,
 					   public GenericTest
 {
 public:
-	AttributesTest(const Utils::Common::Logger *p);
+	AttributesTest(const Utils::Common::ILogger *p);
 	~AttributesTest();
 
 public:
@@ -35,7 +35,7 @@ private:	// Tests
 	void testBasicLanguageFeatures();
 
 private:
-	Utils::Printer mStdoutPrinter;
+	Utils::Printer mPrinter;
 };
 
 

@@ -26,6 +26,7 @@ public:
 	virtual ~ILogger() { }
 
 public:
+	static const int LoudnessMute = -1;
 	static const int LoudnessError = 0;
 	static const int LoudnessWarning = 1;
 	static const int LoudnessDebug = 2;

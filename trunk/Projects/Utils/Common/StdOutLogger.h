@@ -9,7 +9,6 @@
 // Project includes
 #include <Interfaces/Common/ILogger.h>
 #include "Context.h"
-#include "Logger.h"
 
 // Forward declarations
 
@@ -23,7 +22,7 @@ class StdOutLogger : public ILogger
 {
 public:
 	StdOutLogger();
-	StdOutLogger(const Logger *parent, const std::string& className, const std::string& key = "");
+	StdOutLogger(const ILogger *parent, const std::string& className, const std::string& key = "");
 	~StdOutLogger();
 
 public:

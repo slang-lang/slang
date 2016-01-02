@@ -23,7 +23,7 @@ class PrototypeTest : private Utils::Common::Logger,
 					  public GenericTest
 {
 public:
-	PrototypeTest(const Utils::Common::Logger *p);
+	PrototypeTest(const Utils::Common::ILogger *p);
 	virtual ~PrototypeTest() { }
 
 public:
@@ -36,7 +36,7 @@ private:	// Tests
 	void testPrototypeUsage();
 
 private:
-	Utils::Printer mStdoutPrinter;
+	Utils::Printer mPrinter;
 };
 
 

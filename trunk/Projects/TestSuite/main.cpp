@@ -64,6 +64,9 @@ int main(int argc, const char* argv[])
 			else if ( Utils::Tools::StringCompare(argv[i], "-v") ) {
 				logger = new Utils::Common::StdOutLogger();
 			}
+			else if ( Utils::Tools::StringCompare(argv[i], "-q") ) {
+				logger = new Utils::Common::Logger();
+			}
 			else if ( Utils::Tools::StringCompare(argv[i], "--show") ) {
 				show = true;
 			}

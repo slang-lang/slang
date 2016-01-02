@@ -43,6 +43,7 @@ void printUsage()
 	std::cout << std::endl;
 	std::cout << "-f | --file <file>    Parse and execute <file>" << std::endl;
 	std::cout << "-h | --help           This help" << std::endl;
+	std::cout << "-q                    Quiet mode, chats as less as possible" << std::endl;
 	std::cout << "-r | --root           Library root path" << std::endl;
 	std::cout << "-v                    Verbose output" << std::endl;
 	std::cout << "--version             Version information" << std::endl;
@@ -52,7 +53,7 @@ void printUsage()
 void printVersion()
 {
 	std::cout << "ObjectiveScript Interpreter 0.0.1 (cli)" << std::endl;
-	std::cout << "Copyright (c) 2015 Michael Adelmann" << std::endl;
+	std::cout << "Copyright (c) 2015-2016 Michael Adelmann" << std::endl;
 	std::cout << "" << std::endl;
 }
 
@@ -78,6 +79,9 @@ void processParameters(int argc, const char* argv[])
 				printUsage();
 
 				exit(0);
+			}
+			else if ( Utils::Tools::StringCompare(argv[i], "-q") ) {
+				mLogger.setLoudness(Utils::Common::ILogger::LoudnessMute);
 			}
 			else if ( Utils::Tools::StringCompare(argv[i], "-r") || Utils::Tools::StringCompare(argv[i], "--root") ) {
 				if ( argc <= ++i ) {

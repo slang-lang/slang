@@ -12,14 +12,14 @@
 
 // Project includes
 
-// Namespace declartations
+// Namespace declarations
 
 
 namespace Testing {
 namespace Framework {
 
 
-TestFrameworkTest::TestFrameworkTest(const Utils::Common::Logger *p)
+TestFrameworkTest::TestFrameworkTest(const Utils::Common::ILogger *p)
 : Utils::Common::Logger(p, "TestFrameworkTest")
 {
 }

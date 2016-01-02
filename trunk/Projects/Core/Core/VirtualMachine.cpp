@@ -87,7 +87,6 @@ Script* VirtualMachine::create(const std::string& filename, const ParameterList&
 
 /*	Not part of this release
 	InterfaceList interfaces = analyser.getInterfaces();
-
 	for ( InterfaceList::iterator it = interfaces.begin(); it != interfaces.end(); ++it ) {
 		mInterfaces.insert(std::make_pair(
 			it->Typename(), (*it)

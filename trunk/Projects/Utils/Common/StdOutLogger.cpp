@@ -3,6 +3,7 @@
 #include "StdOutLogger.h"
 
 // Library includes
+#include <cassert>
 #include <stdarg.h>
 #include <stdlib.h>
 #include <time.h>
@@ -21,16 +22,16 @@ namespace Common {
 StdOutLogger::StdOutLogger()
 : mContext(0),
   mHasParent(false),
-  mLoudness(Logger::LoudnessDebug)
+  mLoudness(ILogger::LoudnessDebug)
 {
 	mContext = new StdOutContext();
 }
 
-StdOutLogger::StdOutLogger(const Logger *parent, const std::string& className, const std::string& key)
+StdOutLogger::StdOutLogger(const ILogger *parent, const std::string& className, const std::string& key)
 : mContext(0),
   mHasParent(false),
   mKey(key),
-  mLoudness(Logger::LoudnessDebug)
+  mLoudness(ILogger::LoudnessDebug)
 {
 	if ( parent ) {
 		mContext = parent->getContext();

@@ -22,7 +22,7 @@ class TestFrameworkTest : private Utils::Common::Logger,
 						  public GenericTest
 {
 public:
-	TestFrameworkTest(const Utils::Common::Logger *p);
+	TestFrameworkTest(const Utils::Common::ILogger *p);
 
 public:
 	void process();
