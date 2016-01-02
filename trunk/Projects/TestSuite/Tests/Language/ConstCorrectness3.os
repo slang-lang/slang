@@ -11,6 +11,10 @@ public namespace ConstCorrectness
 			mValue = value;
 		}
 
+		public void ~UserObject()
+		{
+		}
+
 		public number getValue() const
 		{
 			return mValue;
@@ -28,6 +32,8 @@ public namespace ConstCorrectness
 
 		public void Main(number argc const = 0, string argv const = "")
 		{
+			mNumber = 1;
+
 			assert( ObjectAsReference() );
 			assert( ObjectAsConstReference() );
 		}
@@ -53,13 +59,14 @@ public namespace ConstCorrectness
 
 			assert( obj1.getValue() == 2 );
 
+			obj1.setValue(3);
+
 			return true;
 		}
 
 		private bool UpdateConstUserObject(UserObject obj const ref) const
 		{
 			// altough all objects are references it should never be possible to change a const object => fail
-
 			obj.setValue(2);
 
 			return false;
