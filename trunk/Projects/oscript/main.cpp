@@ -133,13 +133,12 @@ int main(int argc, const char* argv[])
 		return 0;
 	}
 
-	Utils::Printer mPrinter(&mLogger);
-	mPrinter.activateLogger(false);
-	mPrinter.activatePrinter(true);
-	mPrinter.printFileAndLine(false);
+	Utils::Printer& mPrinter = Utils::PrinterDriver::getInstance();
+	mPrinter.ActivatePrinter = true;
+	mPrinter.AutomaticLineBreak = true;
+	mPrinter.PrintFileAndLine = true;
 
 	ObjectiveScript::VirtualMachine mVirtualMachine;
-	mVirtualMachine.setPrinter(&mPrinter);
 	mVirtualMachine.setBaseFolder(mRoot);
 
 	try {

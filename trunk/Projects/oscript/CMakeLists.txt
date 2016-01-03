@@ -8,8 +8,8 @@ SET(HEADERS
 )
 
 SET(DEPENDENCIES
-	Utils
 	Core
+	Utils
 )
 
 add_include(Projects/Core)
