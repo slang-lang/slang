@@ -34,7 +34,7 @@ public:
 protected:
 
 private:
-	Object* createMember(const std::string& filename, TokenIterator start);
+	Object* createMember(TokenIterator start);
 	Method* createMethod(TokenIterator start);
 
 	void generateObject();
@@ -48,6 +48,7 @@ private:
 	ParameterList parseParameters(TokenIterator &token);
 
 private:
+	std::string mFilename;
 	Object *mObject;
 	Repository *mRepository;
 	TokenList mTokens;

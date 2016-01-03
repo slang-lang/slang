@@ -23,8 +23,9 @@ const std::string DELIMITERS	= "#,;:=()[]{}<>+-*/%&|'\"\t\n\r ";
 const std::string WHITESPACES	= "\t\n\r ";
 
 
-Tokenizer::Tokenizer(const std::string& content)
-: mContent(content)
+Tokenizer::Tokenizer(const std::string& filename, const std::string& content)
+: mContent(content),
+  mFilename(filename)
 {
 	mLanguageFeatures = provideLanguageFeatures();
 	mKeywords = provideKeyWords();
@@ -512,7 +513,7 @@ void Tokenizer::process()
 	bool isString = false;
 
 	char lastChar = 0;
-	Utils::Position pos(1, 1);
+	Utils::Position pos(mFilename, 1, 1);
 
 	while ( offset < mContent.size() ) {
 		char thisChar = mContent[offset++];

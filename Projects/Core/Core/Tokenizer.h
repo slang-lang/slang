@@ -20,7 +20,7 @@ namespace ObjectiveScript {
 class Tokenizer
 {
 public:
-	Tokenizer(const std::string& content);
+	Tokenizer(const std::string& filename, const std::string& content);
 
 public:
 	void process();
@@ -63,6 +63,7 @@ private:	// Preprocessor
 private:
 	std::string	mContent;
 	StringList mDefines;
+	std::string mFilename;
 	StringList mIdentifiers;
 	StringList mLanguageFeatures;
 	StringList mKeywords;

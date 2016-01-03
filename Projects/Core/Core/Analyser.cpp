@@ -234,7 +234,7 @@ void Analyser::generateObjects(const TokenList& tokens)
 
 TokenList Analyser::generateTokens(const std::string& content)
 {
-	Tokenizer t(content);
+	Tokenizer t(mFilename, content);
 	t.process();
 
 	return t.tokens();

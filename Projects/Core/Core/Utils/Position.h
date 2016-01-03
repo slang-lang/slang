@@ -20,7 +20,7 @@ namespace Utils {
 class Position
 {
 public:
-	Position(unsigned int l = 0, unsigned int c = 0);
+	Position(const std::string& f = "", unsigned int l = 0, unsigned int c = 0);
 
 public:
 	bool operator==(const Position& other) const;
@@ -29,6 +29,7 @@ public:
 	std::string toString() const;
 
 public:
+	std::string file;
 	unsigned int line;
 	unsigned int column;
 };

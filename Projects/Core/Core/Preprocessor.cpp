@@ -25,7 +25,7 @@ Preprocessor::Preprocessor(Repository *repo)
 {
 }
 
-Object* Preprocessor::createMember(const std::string& filename, TokenIterator token)
+Object* Preprocessor::createMember(TokenIterator token)
 {
 	std::string name;
 	std::string type;
@@ -62,7 +62,7 @@ Object* Preprocessor::createMember(const std::string& filename, TokenIterator to
 		throw Utils::Exceptions::Exception("member initialization not allowed during declaration", token->position());
 	}
 
-	Object *o = mRepository->createObject(name, filename, type, "");
+	Object *o = mRepository->createObject(name, mFilename, type, "");
 	o->setConst(isConst);
 	o->setFinal(isFinal);
 	o->setStatic(isStatic);
@@ -189,7 +189,7 @@ void Preprocessor::generateObject()
 	// if we have a member declaration or a method declaration
 	for ( TokenList::const_iterator it = visList.begin(); it != visList.end(); ++it ) {
 		if ( isMemberDeclaration((*it)) ) {
-			mObject->addMember(createMember(mObject->Filename(), (*it)));
+			mObject->addMember(createMember((*it)));
 		}
 		else if ( isMethodDeclaration((*it)) ) {
 			mObject->addMethod(createMethod((*it)));
@@ -199,7 +199,7 @@ void Preprocessor::generateObject()
 
 void Preprocessor::generateTokens(const std::string& content)
 {
-	Tokenizer t(content);
+	Tokenizer t(mFilename, content);
 	t.process();
 
 	mTokens = t.tokens();
@@ -315,6 +315,8 @@ void Preprocessor::process(Object *object)
 	//OSdebug("process('" + object->name() + "')");
 
 	mObject = object;
+
+	mFilename = mObject->Filename();
 	mTokens = mObject->getTokens();
 
 	// build object from tokens

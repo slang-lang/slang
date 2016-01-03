@@ -28,7 +28,7 @@ public:
 	  mPosition(position)
 	{
 		if ( !mPosition.toString().empty() ) {
-			mMessage += " at " + mPosition.toString();
+			mMessage += " in " + mPosition.toString();
 		}
 	}
 	virtual ~Exception() throw() { }

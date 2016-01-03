@@ -301,7 +301,12 @@ Object* Method::getSymbol(const std::string& token)
 	throw Utils::Exceptions::UnknownIdentifer("identifier '" + token + "' not found!");
 }
 
-bool Method::isMethod(const std::string& token)
+const TokenList& Method::getTokens() const
+{
+	return mTokenStack.back();
+}
+
+bool Method::isMethod(const std::string& token) const
 {
 	if ( !mOwner ) {
 		return false;
@@ -311,7 +316,7 @@ bool Method::isMethod(const std::string& token)
 	Tools::split(token, parent, method);
 
 	// loop through all local symbols and ask them if this identifier belongs to them
-	for ( MemberCollection::iterator it = mLocalSymbols.begin(); it != mLocalSymbols.end(); ++it ) {
+	for ( MemberCollection::const_iterator it = mLocalSymbols.begin(); it != mLocalSymbols.end(); ++it ) {
 		if ( !it->second ) {
 			continue;
 		}
@@ -333,7 +338,7 @@ bool Method::isMethod(const std::string& token)
 	return mOwner->hasMethod(token);
 }
 
-bool Method::isMethod(const std::string& token, const ParameterList& params)
+bool Method::isMethod(const std::string& token, const ParameterList& params) const
 {
 	if ( !mOwner ) {
 		return false;
@@ -568,6 +573,11 @@ void Method::parseTerm(Object *result, TokenIterator& start)
 	start++;
 }
 
+void Method::popTokens()
+{
+	mTokenStack.pop_back();
+}
+
 void Method::process(Object *result, TokenIterator& token, TokenIterator end, Token::Type::E terminator)
 {
 	// loop through all keywords and redirect to the corresponding method
@@ -621,12 +631,7 @@ void Method::process_assert(TokenIterator& token)
     Object condition;
 	expression(&condition, token);
 
-/*
-	if ( isFalse(condition) ) {
-		throw Utils::Exceptions::AssertionFailed(condition.ToString(), token->position());
-	}
-*/
-	System::Assert(condition, mOwner->Filename(), token->position().line);
+	System::Assert(condition, token->position());
 
 	token = tmp;
 }
@@ -989,7 +994,7 @@ void Method::process_print(TokenIterator& token)
 	StringObject text;
 	expression(&text, opened);
 
-	System::print(text.getValue(), mOwner->Filename(), token->position().line);
+	System::Print(text.getValue(), token->position());
 
 	token = tmp;
 }
@@ -1142,6 +1147,11 @@ const ParameterList& Method::provideSignature() const
 	return mSignature;
 }
 
+void Method::pushTokens(const TokenList& tokens)
+{
+	mTokenStack.push_back(tokens);
+}
+
 void Method::setOwner(Object *owner)
 {
 	mOwner = owner;
@@ -1160,22 +1170,6 @@ void Method::setSignature(const ParameterList& params)
 void Method::setTokens(const TokenList& tokens)
 {
 	mTokens = tokens;
-}
-
-
-const TokenList& Method::getTokens() const
-{
-	return mTokenStack.back();
-}
-
-void Method::popTokens()
-{
-	mTokenStack.pop_back();
-}
-
-void Method::pushTokens(const TokenList& tokens)
-{
-	mTokenStack.push_back(tokens);
 }
 
 
