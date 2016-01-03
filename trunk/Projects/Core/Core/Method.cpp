@@ -15,7 +15,6 @@
 #include <Core/Consts.h>
 #include <Core/Helpers/Math.h>
 #include <Core/Helpers/Strings.h>
-#include <Core/Interfaces/IPrinter.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Utils/Utils.h>
 #include <Tools/Printer.h>
@@ -622,9 +621,12 @@ void Method::process_assert(TokenIterator& token)
     Object condition;
 	expression(&condition, token);
 
+/*
 	if ( isFalse(condition) ) {
 		throw Utils::Exceptions::AssertionFailed(condition.ToString(), token->position());
 	}
+*/
+	System::Assert(condition, mOwner->Filename(), token->position().line);
 
 	token = tmp;
 }
@@ -987,8 +989,7 @@ void Method::process_print(TokenIterator& token)
 	StringObject text;
 	expression(&text, opened);
 
-	//System::print(text);
-	::Utils::PrinterDriver::getInstance().print(text.getValue(), mOwner->Filename(), token->position().line);
+	System::print(text.getValue(), mOwner->Filename(), token->position().line);
 
 	token = tmp;
 }

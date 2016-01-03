@@ -29,10 +29,10 @@ public:
 	static const int LoudnessMute = -1;
 	static const int LoudnessError = 0;
 	static const int LoudnessWarning = 1;
-	static const int LoudnessDebug = 2;
-	static const int LoudnessDeprecated = 3;
-	static const int LoudnessMethod = 4;
-	static const int LoudnessInfo = 5;
+	static const int LoudnessInfo = 2;
+	static const int LoudnessMethod = 3;
+	static const int LoudnessDeprecated = 4;
+	static const int LoudnessDebug = 5;
 
 public:
 	virtual const std::string& getClassName() const = 0;

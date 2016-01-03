@@ -5,11 +5,9 @@ SET(SOURCES
 
 SET(HEADERS
 	IExternalCommand.h
-	IPrinter.h
 )
 
 SET(DEPENDENCIES
 )
 
 build_static_lib(CoreInterfaces "")
-

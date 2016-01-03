@@ -10,6 +10,8 @@ public namespace
 			assert(true);
 			assert false == false;
 			assert(false == false);
+			assert 1;
+			assert(1);
 			assert(ReturnOne());
 			assert(ReturnOne() > 0);
 			assert("bla" + ReturnOne() + "bla");

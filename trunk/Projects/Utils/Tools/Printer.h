@@ -39,10 +39,10 @@ public:
 class PrinterDriver
 {
 public:
-	static Printer& getInstance() {
+	static Printer* getInstance() {
 		static Printer mPrinter;
 
-		return mPrinter;
+		return &mPrinter;
 	}
 
 private:

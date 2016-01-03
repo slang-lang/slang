@@ -5,7 +5,6 @@
 // Library includes
 
 // Project includes
-#include <Core/Interfaces/IPrinter.h>
 #include <Core/Utils/Utils.h>
 #include "Analyser.h"
 #include "Memory.h"
