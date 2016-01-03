@@ -24,7 +24,11 @@ public:
 
 public:
 	VoidObject();
+	VoidObject(const std::string& name);
 	VoidObject(const Object& object);
+
+public:	// Symbol::IType implementation
+	const std::string& getTypeName() const;
 
 public:	// Operators
 	virtual operator bool() const;

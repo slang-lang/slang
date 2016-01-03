@@ -29,8 +29,17 @@ NumberObject::NumberObject(float value)
 	Constructor(ParameterList());
 }
 
-NumberObject::NumberObject(const std::string& value)
-: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, value),
+NumberObject::NumberObject(const std::string& name, float value)
+: Object(name, SYSTEM_LIBRARY, TYPENAME, Tools::floatToString(value)),
+  mValue(value)
+{
+	mIsAtomicType = true;
+
+	Constructor(ParameterList());
+}
+
+NumberObject::NumberObject(const std::string& name, const std::string& value)
+: Object(name, SYSTEM_LIBRARY, TYPENAME, value),
   mValue(Tools::stringToFloat(value))
 {
 	mIsAtomicType = true;
@@ -52,6 +61,11 @@ NumberObject::operator bool() const
 float NumberObject::getNativeValue() const
 {
 	return mValue;
+}
+
+const std::string& NumberObject::getTypeName() const
+{
+	return TYPENAME;
 }
 
 std::string NumberObject::getValue() const
@@ -76,7 +90,7 @@ void NumberObject::operator_assign(Object *other)
 	if ( target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ) {
-		NumberObject tmp(other->getValue());
+		NumberObject tmp(Tools::stringToFloat(other->getValue()));
 
 		operator_assign(&tmp);
 	}
@@ -97,7 +111,7 @@ void NumberObject::operator_divide(Object *other)
 	if ( target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ) {
-		NumberObject tmp(other->getValue());
+		NumberObject tmp(Tools::stringToFloat(other->getValue()));
 
 		operator_divide(&tmp);
 	}
@@ -118,7 +132,7 @@ bool NumberObject::operator_equal(Object *other)
 	if ( target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ) {
-		NumberObject tmp(other->getValue());
+		NumberObject tmp(Tools::stringToFloat(other->getValue()));
 
 		return operator_equal(&tmp);
 	}
@@ -138,7 +152,7 @@ bool NumberObject::operator_greater(Object *other)
 	if ( target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ) {
-		NumberObject tmp(other->getValue());
+		NumberObject tmp(Tools::stringToFloat(other->getValue()));
 
 		return operator_greater(&tmp);
 	}
@@ -158,7 +172,7 @@ bool NumberObject::operator_greater_equal(Object *other)
 	if ( target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ) {
-		NumberObject tmp(other->getValue());
+		NumberObject tmp(Tools::stringToFloat(other->getValue()));
 
 		return operator_greater_equal(&tmp);
 	}
@@ -178,7 +192,7 @@ bool NumberObject::operator_less(Object *other)
 	if ( target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ) {
-		NumberObject tmp(other->getValue());
+		NumberObject tmp(Tools::stringToFloat(other->getValue()));
 
 		return operator_less(&tmp);
 	}
@@ -198,7 +212,7 @@ bool NumberObject::operator_less_equal(Object *other)
 	if ( target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ) {
-		NumberObject tmp(other->getValue());
+		NumberObject tmp(Tools::stringToFloat(other->getValue()));
 
 		return operator_less_equal(&tmp);
 	}
@@ -218,7 +232,7 @@ void NumberObject::operator_multiply(Object *other)
 	if ( target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ) {
-		NumberObject tmp(other->getValue());
+		NumberObject tmp(Tools::stringToFloat(other->getValue()));
 
 		operator_multiply(&tmp);
 	}
@@ -239,7 +253,7 @@ void NumberObject::operator_plus(Object *other)
 	if ( target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ) {
-		NumberObject tmp(other->getValue());
+		NumberObject tmp(Tools::stringToFloat(other->getValue()));
 
 		operator_plus(&tmp);
 	}
@@ -260,7 +274,7 @@ void NumberObject::operator_subtract(Object *other)
 	if ( target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ) {
-		NumberObject tmp(other->getValue());
+		NumberObject tmp(Tools::stringToFloat(other->getValue()));
 
 		operator_subtract(&tmp);
 	}

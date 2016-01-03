@@ -19,7 +19,15 @@ std::string VoidObject::TYPENAME = "void";
 
 
 VoidObject::VoidObject()
-: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, "<VOID>")
+: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, VALUE_NULL)
+{
+	mIsAtomicType = true;
+
+	Constructor(ParameterList());
+}
+
+VoidObject::VoidObject(const std::string& name)
+: Object(name, SYSTEM_LIBRARY, TYPENAME, VALUE_NULL)
 {
 	mIsAtomicType = true;
 
@@ -27,7 +35,7 @@ VoidObject::VoidObject()
 }
 
 VoidObject::VoidObject(const Object& object)
-: Object(object.getName(), SYSTEM_LIBRARY, TYPENAME, object.getValue())
+: Object(object.getName(), SYSTEM_LIBRARY, TYPENAME, VALUE_NULL)
 {
 }
 
@@ -39,6 +47,11 @@ VoidObject::operator bool() const
 void VoidObject::getNativeValue() const
 {
 	return;	// this makes absolutely no sense but hey :-)
+}
+
+const std::string& VoidObject::getTypeName() const
+{
+	return TYPENAME;
 }
 
 std::string VoidObject::getValue() const

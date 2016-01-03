@@ -37,25 +37,25 @@ void operator_assign(Object *base, Object *other)
 		*base = *other;
 	}
 	else if ( source == BoolObject::TYPENAME ) {
-		BoolObject tmp(base->getValue());
+		BoolObject tmp(Tools::stringToBool(base->getValue()));
 		tmp.operator_assign(other);
 
 		*base = tmp;
 	}
 	else if ( source == FloatObject::TYPENAME ) {
-		FloatObject tmp(base->getValue());
+		FloatObject tmp(Tools::stringToFloat(base->getValue()));
 		tmp.operator_assign(other);
 
 		*base = tmp;
 	}
 	else if ( source == IntegerObject::TYPENAME ) {
-		IntegerObject tmp(base->getValue());
+		IntegerObject tmp(Tools::stringToInt(base->getValue()));
 		tmp.operator_assign(other);
 
 		*base = tmp;
 	}
 	else if ( source == NumberObject::TYPENAME ) {
-		NumberObject tmp(base->getValue());
+		NumberObject tmp(Tools::stringToFloat(base->getValue()));
 		tmp.operator_assign(other);
 
 		*base = tmp;
@@ -100,25 +100,25 @@ void operator_bitand(Object *base, Object *other)
 	std::string source = base->Typename();
 
 	if ( source == BoolObject::TYPENAME ) {
-		BoolObject tmp(base->getValue());
+		BoolObject tmp(Tools::stringToBool(base->getValue()));
 		tmp.operator_bitand(other);
 
 		*base = tmp;
 	}
 	else if ( source == FloatObject::TYPENAME ) {
-		FloatObject tmp(base->getValue());
+		FloatObject tmp(Tools::stringToFloat(base->getValue()));
 		tmp.operator_bitand(other);
 
 		*base = tmp;
 	}
 	else if ( source == IntegerObject::TYPENAME ) {
-		IntegerObject tmp(base->getValue());
+		IntegerObject tmp(Tools::stringToInt(base->getValue()));
 		tmp.operator_bitand(other);
 
 		*base = tmp;
 	}
 	else if ( source == NumberObject::TYPENAME ) {
-		NumberObject tmp(base->getValue());
+		NumberObject tmp(Tools::stringToFloat(base->getValue()));
 		tmp.operator_bitand(other);
 
 		*base = tmp;
@@ -158,25 +158,25 @@ void operator_bitor(Object *base, Object *other)
 	std::string source = base->Typename();
 
 	if ( source == BoolObject::TYPENAME ) {
-		BoolObject tmp(base->getValue());
+		BoolObject tmp(Tools::stringToBool(base->getValue()));
 		tmp.operator_bitor(other);
 
 		*base = tmp;
 	}
 	else if ( source == FloatObject::TYPENAME ) {
-		FloatObject tmp(base->getValue());
+		FloatObject tmp(Tools::stringToFloat(base->getValue()));
 		tmp.operator_bitor(other);
 
 		*base = tmp;
 	}
 	else if ( source == IntegerObject::TYPENAME ) {
-		IntegerObject tmp(base->getValue());
+		IntegerObject tmp(Tools::stringToInt(base->getValue()));
 		tmp.operator_bitor(other);
 
 		*base = tmp;
 	}
 	else if ( source == NumberObject::TYPENAME ) {
-		NumberObject tmp(base->getValue());
+		NumberObject tmp(Tools::stringToFloat(base->getValue()));
 		tmp.operator_bitor(other);
 
 		*base = tmp;
@@ -216,13 +216,25 @@ void operator_divide(Object *base, Object *other)
 	std::string source = base->Typename();
 
 	if ( source == BoolObject::TYPENAME ) {
-		BoolObject tmp(base->getValue());
+		BoolObject tmp(Tools::stringToBool(base->getValue()));
+		tmp.operator_divide(other);
+
+		*base = tmp;
+	}
+	else if ( source == FloatObject::TYPENAME ) {
+		FloatObject tmp(Tools::stringToFloat(base->getValue()));
+		tmp.operator_divide(other);
+
+		*base = tmp;
+	}
+	else if ( source == IntegerObject::TYPENAME ) {
+		IntegerObject tmp(Tools::stringToInt(base->getValue()));
 		tmp.operator_divide(other);
 
 		*base = tmp;
 	}
 	else if ( source == NumberObject::TYPENAME ) {
-		NumberObject tmp(base->getValue());
+		NumberObject tmp(Tools::stringToFloat(base->getValue()));
 		tmp.operator_divide(other);
 
 		*base = tmp;
@@ -262,11 +274,19 @@ bool operator_equal(Object *base, Object *other)
 	std::string source = base->Typename();
 
 	if ( source == BoolObject::TYPENAME ) {
-		BoolObject tmp(base->getValue());
+		BoolObject tmp(Tools::stringToBool(base->getValue()));
+		return tmp.operator_equal(other);
+	}
+	else if ( source == FloatObject::TYPENAME ) {
+		FloatObject tmp(Tools::stringToFloat(base->getValue()));
+		return tmp.operator_equal(other);
+	}
+	else if ( source == IntegerObject::TYPENAME ) {
+		IntegerObject tmp(Tools::stringToInt(base->getValue()));
 		return tmp.operator_equal(other);
 	}
 	else if ( source == NumberObject::TYPENAME ) {
-		NumberObject tmp(base->getValue());
+		NumberObject tmp(Tools::stringToFloat(base->getValue()));
 		return tmp.operator_equal(other);
 	}
 	else if ( source == StringObject::TYPENAME ) {
@@ -300,11 +320,19 @@ bool operator_greater(Object *base, Object *other)
 	std::string source = base->Typename();
 
 	if ( source == BoolObject::TYPENAME ) {
-		BoolObject tmp(base->getValue());
+		BoolObject tmp(Tools::stringToBool(base->getValue()));
+		return tmp.operator_greater(other);
+	}
+	else if ( source == FloatObject::TYPENAME ) {
+		FloatObject tmp(Tools::stringToFloat(base->getValue()));
+		return tmp.operator_greater(other);
+	}
+	else if ( source == IntegerObject::TYPENAME ) {
+		IntegerObject tmp(Tools::stringToInt(base->getValue()));
 		return tmp.operator_greater(other);
 	}
 	else if ( source == NumberObject::TYPENAME ) {
-		NumberObject tmp(base->getValue());
+		NumberObject tmp(Tools::stringToFloat(base->getValue()));
 		return tmp.operator_greater(other);
 	}
 	else if ( source == StringObject::TYPENAME ) {
@@ -338,11 +366,19 @@ bool operator_greater_equal(Object *base, Object *other)
 	std::string source = base->Typename();
 
 	if ( source == BoolObject::TYPENAME ) {
-		BoolObject tmp(base->getValue());
+		BoolObject tmp(Tools::stringToBool(base->getValue()));
+		return tmp.operator_greater_equal(other);
+	}
+	else if ( source == FloatObject::TYPENAME ) {
+		FloatObject tmp(Tools::stringToFloat(base->getValue()));
+		return tmp.operator_greater_equal(other);
+	}
+	else if ( source == IntegerObject::TYPENAME ) {
+		IntegerObject tmp(Tools::stringToInt(base->getValue()));
 		return tmp.operator_greater_equal(other);
 	}
 	else if ( source == NumberObject::TYPENAME ) {
-		NumberObject tmp(base->getValue());
+		NumberObject tmp(Tools::stringToFloat(base->getValue()));
 		return tmp.operator_greater_equal(other);
 	}
 	else if ( source == StringObject::TYPENAME ) {
@@ -376,11 +412,19 @@ bool operator_less(Object *base, Object *other)
 	std::string source = base->Typename();
 
 	if ( source == BoolObject::TYPENAME ) {
-		BoolObject tmp(base->getValue());
+		BoolObject tmp(Tools::stringToBool(base->getValue()));
+		return tmp.operator_less(other);
+	}
+	else if ( source == FloatObject::TYPENAME ) {
+		FloatObject tmp(Tools::stringToFloat(base->getValue()));
+		return tmp.operator_less(other);
+	}
+	else if ( source == IntegerObject::TYPENAME ) {
+		IntegerObject tmp(Tools::stringToInt(base->getValue()));
 		return tmp.operator_less(other);
 	}
 	else if ( source == NumberObject::TYPENAME ) {
-		NumberObject tmp(base->getValue());
+		NumberObject tmp(Tools::stringToFloat(base->getValue()));
 		return tmp.operator_less(other);
 	}
 	else if ( source == StringObject::TYPENAME ) {
@@ -414,11 +458,19 @@ bool operator_less_equal(Object *base, Object *other)
 	std::string source = base->Typename();
 
 	if ( source == BoolObject::TYPENAME ) {
-		BoolObject tmp(base->getValue());
+		BoolObject tmp(Tools::stringToBool(base->getValue()));
+		return tmp.operator_less_equal(other);
+	}
+	else if ( source == FloatObject::TYPENAME ) {
+		FloatObject tmp(Tools::stringToFloat(base->getValue()));
+		return tmp.operator_less_equal(other);
+	}
+	else if ( source == IntegerObject::TYPENAME ) {
+		IntegerObject tmp(Tools::stringToInt(base->getValue()));
 		return tmp.operator_less_equal(other);
 	}
 	else if ( source == NumberObject::TYPENAME ) {
-		NumberObject tmp(base->getValue());
+		NumberObject tmp(Tools::stringToFloat(base->getValue()));
 		return tmp.operator_less_equal(other);
 	}
 	else if ( source == StringObject::TYPENAME ) {
@@ -452,19 +504,25 @@ void operator_modulo(Object *base, Object *other)
 	std::string source = base->Typename();
 
 	if ( source == BoolObject::TYPENAME ) {
-		BoolObject tmp(base->getValue());
+		BoolObject tmp(Tools::stringToBool(base->getValue()));
+		tmp.operator_modulo(other);
+
+		*base = tmp;
+	}
+	else if ( source == FloatObject::TYPENAME ) {
+		FloatObject tmp(Tools::stringToFloat(base->getValue()));
 		tmp.operator_modulo(other);
 
 		*base = tmp;
 	}
 	else if ( source == IntegerObject::TYPENAME ) {
-		IntegerObject tmp(base->getValue());
+		IntegerObject tmp(Tools::stringToInt(base->getValue()));
 		tmp.operator_modulo(other);
 
 		*base = tmp;
 	}
 	else if ( source == NumberObject::TYPENAME ) {
-		NumberObject tmp(base->getValue());
+		NumberObject tmp(Tools::stringToFloat(base->getValue()));
 		tmp.operator_modulo(other);
 
 		*base = tmp;
@@ -504,13 +562,25 @@ void operator_multiply(Object *base, Object *other)
 	std::string source = base->Typename();
 
 	if ( source == BoolObject::TYPENAME ) {
-		BoolObject tmp(base->getValue());
+		BoolObject tmp(Tools::stringToBool(base->getValue()));
+		tmp.operator_multiply(other);
+
+		*base = tmp;
+	}
+	else if ( source == FloatObject::TYPENAME ) {
+		FloatObject tmp(Tools::stringToFloat(base->getValue()));
+		tmp.operator_multiply(other);
+
+		*base = tmp;
+	}
+	else if ( source == IntegerObject::TYPENAME ) {
+		IntegerObject tmp(Tools::stringToInt(base->getValue()));
 		tmp.operator_multiply(other);
 
 		*base = tmp;
 	}
 	else if ( source == NumberObject::TYPENAME ) {
-		NumberObject tmp(base->getValue());
+		NumberObject tmp(Tools::stringToFloat(base->getValue()));
 		tmp.operator_multiply(other);
 
 		*base = tmp;
@@ -550,13 +620,25 @@ void operator_plus(Object *base, Object *other)
 	std::string source = base->Typename();
 
 	if ( source == BoolObject::TYPENAME ) {
-		BoolObject tmp(base->getValue());
+		BoolObject tmp(Tools::stringToBool(base->getValue()));
+		tmp.operator_plus(other);
+
+		*base = tmp;
+	}
+	else if ( source == FloatObject::TYPENAME ) {
+		FloatObject tmp(Tools::stringToFloat(base->getValue()));
+		tmp.operator_plus(other);
+
+		*base = tmp;
+	}
+	else if ( source == IntegerObject::TYPENAME ) {
+		IntegerObject tmp(Tools::stringToInt(base->getValue()));
 		tmp.operator_plus(other);
 
 		*base = tmp;
 	}
 	else if ( source == NumberObject::TYPENAME ) {
-		NumberObject tmp(base->getValue());
+		NumberObject tmp(Tools::stringToFloat(base->getValue()));
 		tmp.operator_plus(other);
 
 		*base = tmp;
@@ -596,13 +678,25 @@ void operator_subtract(Object *base, Object *other)
 	std::string source = base->Typename();
 
 	if ( source == BoolObject::TYPENAME ) {
-		BoolObject tmp(base->getValue());
+		BoolObject tmp(Tools::stringToBool(base->getValue()));
+		tmp.operator_subtract(other);
+
+		*base = tmp;
+	}
+	else if ( source == FloatObject::TYPENAME ) {
+		FloatObject tmp(Tools::stringToFloat(base->getValue()));
+		tmp.operator_subtract(other);
+
+		*base = tmp;
+	}
+	else if ( source == IntegerObject::TYPENAME ) {
+		IntegerObject tmp(Tools::stringToInt(base->getValue()));
 		tmp.operator_subtract(other);
 
 		*base = tmp;
 	}
 	else if ( source == NumberObject::TYPENAME ) {
-		NumberObject tmp(base->getValue());
+		NumberObject tmp(Tools::stringToFloat(base->getValue()));
 		tmp.operator_subtract(other);
 
 		*base = tmp;

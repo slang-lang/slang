@@ -29,7 +29,8 @@ class Object;
 class Repository;
 
 class Method : public LocalScope,
-			   public MethodAttributes,
+			   //public MethodAttributes,
+			   public MethodSymbol,
 			   public Variable
 {
 public:
@@ -48,6 +49,9 @@ public:
 	void setRepository(Repository *repository);
 	void setSignature(const ParameterList& params);
 	void setTokens(const TokenList& tokens);
+
+public:	// Symbol::IType implementation
+	const std::string& getTypeName() const;
 
 public: // Deinit
 	void garbageCollector(bool force = false);
@@ -83,6 +87,7 @@ private: // Execution
 	void process_new(TokenIterator& token, Object *result);
 	void process_print(TokenIterator& token);
 	void process_return(TokenIterator& token, Object *result);
+	void process_scope(TokenIterator& token, Object *result);
 	void process_type(TokenIterator& token);
 	void process_switch(TokenIterator& token);
 	void process_while(TokenIterator& token);

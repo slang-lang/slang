@@ -23,7 +23,7 @@ public:
 	virtual ~IScope() { }
 
 	virtual void define(Symbol *symbol) = 0;
-	virtual const std::string& getName() const = 0;
+	//virtual const std::string& getName() const = 0;
 	virtual IScope* getEnclosingScope() const = 0;
 	virtual Symbol* resolve(const std::string& name) const = 0;
 };
@@ -32,17 +32,17 @@ public:
 class LocalScope : public IScope
 {
 public:
-	LocalScope(const std::string& name, IScope *parent = 0);
+	LocalScope(/*const std::string& name,*/ IScope *parent = 0);
 	virtual ~LocalScope();
 
 public:	// IScope implementation
 	void define(Symbol *symbol);
-	const std::string& getName() const;
+	//const std::string& getName() const;
 	IScope* getEnclosingScope() const;
 	Symbol* resolve(const std::string& name) const;
 
 protected:
-	std::string mName;
+	//std::string mName;
 
 private:
 	IScope *mParent;
