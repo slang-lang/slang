@@ -5,12 +5,10 @@
 // Library includes
 
 // Project includes
-#include <Core/Interfaces/IPrinter.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Utils/Utils.h>
 #include "Object.h"
 #include "Repository.h"
-#include "Tools.h"
 
 // Namespace declarations
 
@@ -32,6 +30,8 @@ Script::~Script()
 void Script::assign(Object *object)
 {
 	assert(object);
+	assert(!mObject);
+
 	mObject = object;
 }
 
@@ -45,9 +45,7 @@ void Script::connectRepository(Repository *r)
 
 void Script::construct(const ParameterList& params)
 {
-	if ( !mObject ) {
-		throw Utils::Exceptions::Exception("no object assigned");
-	}
+	assert(mObject);
 
 	mObject->connectRepository(mRepository);
 
@@ -64,6 +62,8 @@ void Script::construct(const ParameterList& params)
 
 void Script::destruct()
 {
+	assert(mObject);
+
 	try {
 		mRepository->removeReference(mObject);
 	}
@@ -76,12 +76,10 @@ void Script::destruct()
 
 Object Script::execute(const std::string& method, const ParameterList& params)
 {
+	assert(mObject);
+
 	Object returnValue;
 	try {
-		if ( !mObject ) {
-			throw Utils::Exceptions::Exception("no object assigned");
-		}
-
 		mObject->execute(&returnValue, method, params);
 	}
 	catch ( Utils::Exceptions::Exception &e ) {
@@ -95,27 +93,21 @@ Object Script::execute(const std::string& method, const ParameterList& params)
 
 Object* Script::getMember(const std::string& m)
 {
-	if ( !mObject ) {
-		throw Utils::Exceptions::Exception("no object assigned");
-	}
+	assert(mObject);
 
 	return mObject->getMember(m);
 }
 
 bool Script::hasMethod(const std::string& m)
 {
-	if ( !mObject ) {
-		throw Utils::Exceptions::Exception("no object assigned");
-	}
+	assert(mObject);
 
 	return mObject->hasMethod(m);
 }
 
 bool Script::hasMethod(const std::string& m, const ParameterList& params)
 {
-	if ( !mObject ) {
-		throw Utils::Exceptions::Exception("no object assigned");
-	}
+	assert(mObject);
 
 	return mObject->hasMethod(m, params);
 }

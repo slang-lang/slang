@@ -6,7 +6,6 @@
 
 // Project includes
 #include <Core/BuildInObjects/VoidObject.h>
-#include <Core/Interfaces/IPrinter.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Utils/Utils.h>
 #include "Consts.h"
@@ -217,7 +216,7 @@ void Object::Destructor()
 	if ( mConstructed ) {
 		// only execute destructor if one is present
 		if ( hasMethod("~" + getName(), ParameterList()) ) {
-			Object object;
+			VoidObject object;
 			execute(&object, "~" + Typename(), ParameterList());
 		}
 	}
@@ -237,8 +236,8 @@ void Object::execute(Object *result, const std::string& method, const ParameterL
 {
 	OSdebug("execute('" + method + "', [" + toString(params) + "])");
 
-	MethodCollection::iterator mIt;
-	bool success = findMethod(method, params, mIt);
+	MethodCollection::iterator methodIt;
+	bool success = findMethod(method, params, methodIt);
 	if ( !success ) {
 		throw Utils::Exceptions::UnknownIdentifer("unknown method '" + method + "' or method with invalid parameter count called!");
 	}
@@ -246,17 +245,15 @@ void Object::execute(Object *result, const std::string& method, const ParameterL
 	// are we called from a colleague method?
 	bool callFromMethod = caller && (caller->getOwner() == this);
 
-	Method *mPtr = (*mIt);
-
 	// check visibility:
 	// colleague methods can always call us,
 	// for calls from non-member functions the method visibility must be public (or protected if they belong to the same object hierarchy)
-	if ( !callFromMethod && mPtr->visibility() != Visibility::Public ) {
+	if ( !callFromMethod && (*methodIt)->visibility() != Visibility::Public ) {
 		throw Utils::Exceptions::VisibilityError("invalid visibility: " + method);
 	}
 
 	// execute our member method
-	mPtr->execute(params, result);
+	(*methodIt)->execute(params, result);
 }
 
 bool Object::findMember(const std::string& m, Object::MemberCollection::iterator& mIt)
@@ -546,14 +543,6 @@ std::string Object::ToString() const
 	}
 
 	return result;
-}
-
-void Object::updateMethodOwners()
-{
-	for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
-		(*it)->setOwner(this);
-		(*it)->setRepository(mRepository);
-	}
 }
 
 

@@ -29,6 +29,7 @@ bool Position::operator<(const Position& other) const
 	if ( this->line == other.line ) {
 		return (this->column < other.column);
 	}
+
 	return (this->line < other.line);
 }
 
@@ -36,7 +37,11 @@ std::string Position::toString() const
 {
 	std::stringstream ss;
 	if ( line != 0 ) {
-		ss << "Line " << line << ", Column " << column;
+		ss << "Line " << line;
+
+		if ( column != 0 ) {
+			ss << ", Column " << column;
+		}
 	}
 	return ss.str();
 }

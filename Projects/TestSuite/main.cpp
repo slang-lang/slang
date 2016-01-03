@@ -47,9 +47,10 @@ int main(int argc, const char* argv[])
 	// Memory leak detection
 #endif
 
+	Utils::Common::ILogger *mLogger = new Utils::Common::StdOutLogger();
+	Utils::Printer *mPrinter = Utils::PrinterDriver::getInstance();
+
 	bool executed = false;
-	Utils::Common::ILogger *mLogger = 0;
-	Utils::Printer& mPrinter = Utils::PrinterDriver::getInstance();
 	bool show = false;
 	std::string toRun = "";
 
@@ -63,15 +64,15 @@ int main(int argc, const char* argv[])
 				toRun = argv[i];
 			}
 			else if ( Utils::Tools::StringCompare(argv[i], "-v") ) {
-				mLogger = new Utils::Common::StdOutLogger();
+				mLogger->setLoudness(Utils::Common::ILogger::LoudnessDebug);
 
-				mPrinter.ActivatePrinter = true;
-				mPrinter.PrintFileAndLine = true;
+				mPrinter->ActivatePrinter = true;
+				mPrinter->PrintFileAndLine = true;
 			}
 			else if ( Utils::Tools::StringCompare(argv[i], "-q") ) {
-				mLogger = new Utils::Common::Logger();
+				mLogger->setLoudness(Utils::Common::ILogger::LoudnessMute);
 
-				mPrinter.ActivatePrinter = false;
+				mPrinter->ActivatePrinter = false;
 			}
 			else if ( Utils::Tools::StringCompare(argv[i], "--show") ) {
 				show = true;
@@ -80,10 +81,6 @@ int main(int argc, const char* argv[])
 				toRun = argv[i];
 			}
 		}
-	}
-
-	if ( !mLogger ) {
-		mLogger = new Utils::Common::StdOutLogger();
 	}
 
 	try {

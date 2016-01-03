@@ -113,13 +113,10 @@ private:
 	typedef std::set<Method*> MethodCollection;
 
 private:
+	void copyMember(Object *member);
 	bool findMember(const std::string& m, MemberCollection::iterator& mIt);
 	bool findMethod(const std::string& m, MethodCollection::iterator& mIt);
 	bool findMethod(const std::string& m, const ParameterList& params, MethodCollection::iterator& mIt);
-
-private:
-	void copyMember(Object *member);
-	void updateMethodOwners();
 
 private:
 	bool mConstructed;
