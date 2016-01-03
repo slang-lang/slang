@@ -1,4 +1,4 @@
-#!/usr/bin/oscript
+#!/usr/local/bin/oscript
 
 //import system.*;
 import system.assert;
@@ -7,7 +7,7 @@ import system.logger;
 public object BaseObject
 {
 	private Logger mLogger;
-	protected String mName;
+	protected string mName;
 
 	public void constMethod() const
 	{
@@ -27,39 +27,38 @@ public object BaseObject
 		mName = "BaseObject";
 	}
 
-	public void BaseObject(String name const)
+	public void BaseObject(string name const)
 	{
 		mLogger = new Logger(name);
 		mName = name;
 	}
 
-	public String getName() const
+	public string getName() const
 	{
 		return mName;
 	}
 
-	public void setLogger(Logger l)
+	public void setLogger(Logger logger ref) modify
 	{
-		assert(false);
-		mLogger = l;
+		mLogger = logger;
 	}
 
-	public void setName(String name)
+	public void setName(String name) modify
 	{
-//		mLogger.debug("setName(" & name & ")");
+//		mLogger.debug("setName(" + name + ")");
 
 		mName = name;
 	}
 
 	private void privateMethodCall()
 	{
-//		mLogger.debug("privateMethodCall()");
+		mLogger.debug("privateMethodCall()");
 		print("privateMethodCall()");
 	}
 
 	protected void protectedMethodCall()
 	{
-//		mLogger.debug("protectedMethodCall()");
+		mLogger.debug("protectedMethodCall()");
 		print("protectedMethodCall()");
 	}
 
@@ -79,9 +78,9 @@ private object Main extends public BaseObject,
 	private BaseObject mBaseObject;
 	private Logger mLogger;
 
-	private Number mLastUpdate;
-	private String mName;
-	private Number mValue;
+	private number mLastUpdate;
+	private string mName;
+	private number mValue;
 
 /////////////////////////////////// Public Methods \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
@@ -90,18 +89,16 @@ private object Main extends public BaseObject,
 	}
 	private Bla mBla;
 
-	public void Main(Number argc, String argv)
+	public void Main(number argc, string argv)
 	{
 		mLogger = new Logger("Main");
 		mLogger.debug("Constructor");
 
 
 		mBaseObject = new BaseObject("this is a test");
-/*	// handing over objects as parameters does not work right now because parameters are still variables instead of objects
 		mBaseObject.setLogger(mLogger);
-*/
-		//mBaseObject.constMethod();	// handled correctly
-		//mBaseObject.staticMethod();	// access to members in static method is not yet handled correctly
+		mBaseObject.constMethod();	// handled correctly
+		mBaseObject.staticMethod();	// access to members in static method is not yet handled correctly
 
 		mName = "Main";
 		mValue = 0.0;
@@ -118,24 +115,22 @@ private object Main extends public BaseObject,
 		mLogger.debug("Destructor");
 	}
 
-	public String getName() const
+	public string getName() const
 	{
 		return mName;
 	}
 
-	public void setName(String name)
+	public void setName(string name) modify
 	{
 		mName = name;
 	}
 
-/*
-	public void update(Number elapsedTime)
+	public void update(number elapsedTime) modify
 	{
 		mLastUpdate = elapsedTime;
 	}
-*/
 
-	/*
+/*
 	public void test_scope()
 	{
 		string var = "outer";
@@ -145,19 +140,5 @@ private object Main extends public BaseObject,
 		}
 		print(var);
 	}
-	*/
-
-/////////////////////////////////// Operator overloading \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-
-	/*
-	public number operator+(number other)
-	{
-		return mValue + other;
-	}
-
-	public number operator-(number other)
-	{
-		return mValue - other;
-	}
-	*/
+*/
 }

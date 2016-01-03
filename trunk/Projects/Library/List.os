@@ -1,53 +1,56 @@
 
 public object ContainerObserver
 {
-	protected Number mIndex;
-	protected Number mSize;
+	protected number mIndex;
+	protected number mSize;
 
-	public Void ContainerObserver() {
+	public void ContainerObserver() {
 		mIndex = 0;
 		mSize = 0;
 	}
 
-	public Void ~ContainerObserver() {
+	public void ~ContainerObserver() {
 	}
 
-	public Bool empty() const {
+	public bool empty() const {
 		return mSize == 0;
 	}
 
-	public Bool hasNext() const {
-		return mIndex + 1 < mSize;
+	public bool hasNext() const {
+		return (mIndex + 1) < mSize;
 	}
 
-	public Bool hasPrevious() const {
-		return mIndex - 1 > 0;
+	public bool hasPrevious() const {
+		return (mIndex - 1) > 0;
 	}
 
-	public Void iterateNext() {
-		mIndex += 1;
+	public void iterateNext() {
+		//mIndex += 1;
+		mIndex = mIndex + 1;
 	}
 
-	public Void iteratePrevious() {
-		mIndex -= 1;
+	public void iteratePrevious() {
+		//mIndex -= 1;
+		mIndex = mIndex - 1;
 	}
 
-	public Number size() const {
+	public number size() const {
 		return mSize;
 	}
 }
 
 public prototype List //extends public ContainerObserver
 {
+	private UNKNOWN mData[];
 	private UNKNOWN mFirst;
 	private UNKNOWN mLast;
 
-	public Void List() {
+	public void List() {
 		mFirst = UNKNOWN();
 		mLast = UNKNOWN();
 	}
 
-	public UNKNOWN at(Number index) {
+	public UNKNOWN at(number index) {
 		if ( index < mSize ) {
 			return mData[index];
 		}
@@ -56,36 +59,37 @@ public prototype List //extends public ContainerObserver
 		return UNKNOWN();
 	}
 
-	public Void push_back(UNKNOWN t) {
+	public void push_back(UNKNOWN t) {
 		mLast = t;
 	}
 	
-	public Void push_front(UNKNOWN t) {
+	public void push_front(UNKNOWN t) {
 		mFirst = t;
 	}
 
-	public Void pop_back() {
+	public void pop_back() {
 	}
 	
-	public Void pop_front() {
+	public void pop_front() {
 	}
 }
 
 
 private object Main
 {
-	public Void Main() {
-		List of Number numbers;
+	public void Main() {
+		List of number numbers;
 
 		numbers.push_back(1);
 		numbers.push_back(2);
 
-		print("numbers.size() = " & numbers.size());
+		print("numbers.size() = " + numbers.size());
 
-		Number num1 = numbers.at(1);
-		print("num1 = " & num1);
+		number num1 = numbers.at(1);
+		print("num1 = " + num1);
 
 		numbers.pop_back();
-		print("numbers.size() = " & numbers.size());
+		print("numbers.size() = " + numbers.size());
 	}
 }
+
