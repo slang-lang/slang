@@ -1,13 +1,12 @@
 
-#ifndef _Testing_Utils_Printer_h_
-#define _Testing_Utils_Printer_h_
+#ifndef _Utils_Tools_Printer_h_
+#define _Utils_Tools_Printer_h_
 
 
 // Library includes
+#include <string>
 
 // Project includes
-#include <Core/Interfaces/IPrinter.h>
-#include <Common/Logger.h>
 
 // Forward declarations
 
@@ -17,48 +16,40 @@
 namespace Utils {
 
 
-class Printer : public ObjectiveScript::IPrinter,
-				public Common::Logger
+class Printer
 {
 public:
-	Printer(const Common::ILogger *p)
-	: Common::Logger(p, ""),
-	  mActivateLogger(false),
-	  mActivatePrinter(true),
-	  mPrintFileAndLine(false)
-	{ }
-
-	void activateLogger(bool state) {
-		mActivateLogger = state;
-	}
-
-	void activatePrinter(bool state) {
-		mActivatePrinter = state;
-	}
-
-	void printFileAndLine(bool state) {
-		mPrintFileAndLine = state;
-	}
+	Printer();
 
 public:
-	void log(const std::string& text) {
-		if ( mActivateLogger ) {
-			LogInfo(text, "", 0);
-		}
-	}
-	void print(const std::string& text, const std::string& file = "", int line = 0) {
-		if ( mActivatePrinter ) {
-			std::cout << text;
-			if ( mPrintFileAndLine ) {
-				std::cout << "   [" << file << ":" << line << "]" << std::endl;
-			}
-		}
+	void activateFileAndLinePrinting(bool state);
+	void activatePrinter(bool state);
+
+public:
+	void print(const std::string& text, const std::string& file = "", int line = 0);
+	void println(const std::string& text, const std::string& file = "", int line = 0);
+
+public:
+	bool ActivatePrinter;
+	bool AutomaticLineBreak;
+	bool PrintFileAndLine;
+};
+
+
+class PrinterDriver
+{
+public:
+	static Printer& getInstance() {
+		static Printer mPrinter;
+
+		return mPrinter;
 	}
 
 private:
-	bool mActivateLogger;
-	bool mActivatePrinter;
-	bool mPrintFileAndLine;
+	PrinterDriver();
+	PrinterDriver(const PrinterDriver& );
+	PrinterDriver operator=(const PrinterDriver& );
+	~PrinterDriver();
 };
 
 
