@@ -23,7 +23,6 @@ namespace ObjectiveScript {
 VirtualMachine::VirtualMachine()
 : mBaseFolder(""),
   mMemory(0),
-  mPrinter(0),
   mRepository(0)
 {
 	mMemory = new Memory();
@@ -93,6 +92,7 @@ Script* VirtualMachine::create(const std::string& filename, const ParameterList&
 		));
 	}
 */
+
 /*	Not part of this release
 	PrototypeList prototypes = analyser.getPrototypes();
 	for ( PrototypeList::iterator it = prototypes.begin(); it != prototypes.end(); ++it ) {
@@ -183,11 +183,6 @@ void VirtualMachine::setBaseFolder(const std::string& base)
 	mBaseFolder = base + "/";
 
 	OSinfo("library root = " + mBaseFolder);
-}
-
-void VirtualMachine::setPrinter(IPrinter *p)
-{
-	mPrinter = p;
 }
 
 

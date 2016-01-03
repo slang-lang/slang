@@ -23,8 +23,7 @@ namespace Attributes {
 
 
 AttributesTest::AttributesTest(const ::Utils::Common::ILogger *p)
-: ::Utils::Common::Logger(p, "AttributesTest"),
-  mPrinter(p)
+: ::Utils::Common::Logger(p, "AttributesTest")
 {
 }
 
@@ -49,8 +48,6 @@ void AttributesTest::testBasicLanguageFeatures()
 {
 	try {
 		VirtualMachine vm;
-		vm.setPrinter(&mPrinter);
-
 		vm.create("Tests/Language/AttributesTest.os");
 
 		// automatic success

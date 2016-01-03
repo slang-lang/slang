@@ -34,7 +34,6 @@ public:
 
 public:	// Setup
 	void setBaseFolder(const std::string& base);
-	void setPrinter(IPrinter *p);
 
 public:
 	Script* create(const std::string& filename, const ParameterList& params = ParameterList());
@@ -58,7 +57,6 @@ private:
 	InterfaceCollection mInterfaces;
 	Memory *mMemory;
 	ObjectCollection mObjects;
-	IPrinter *mPrinter;
 	Repository *mRepository;
 	ScriptCollection mScripts;
 };

@@ -14,7 +14,7 @@
 #include <Core/VirtualMachine.h>
 #include <Core/Utils/Exceptions.h>
 
-// Namespace declartations
+// Namespace declarations
 using namespace ObjectiveScript;
 
 
@@ -23,8 +23,7 @@ namespace Prototype {
 
 
 PrototypeTest::PrototypeTest(const ::Utils::Common::ILogger *p)
-: ::Utils::Common::Logger(p, "PrototypeTest"),
-  mPrinter(p)
+: ::Utils::Common::Logger(p, "PrototypeTest")
 {
 }
 
@@ -46,7 +45,6 @@ void PrototypeTest::testPrototypeDeclaration()
 {
 	try {
 		VirtualMachine vm;
-		vm.setPrinter(&mPrinter);
 
 		vm.create("Tests/Prototypes/PrototypeTest.os");
 
@@ -62,7 +60,6 @@ void PrototypeTest::testPrototypeUsage()
 {
 	try {
 		VirtualMachine vm;
-		vm.setPrinter(&mPrinter);
 
 		vm.create("Tests/Prototypes/PrototypeTest_Inheritance.os");
 

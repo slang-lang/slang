@@ -21,8 +21,8 @@ SET(DEPENDENCIES
 	Test_Math
 	Test_Language
 	Test_Attributes
-	Utils
 	Core
+	Utils
 )
 
 add_include(Projects/Core)
