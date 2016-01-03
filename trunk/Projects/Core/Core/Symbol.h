@@ -8,6 +8,7 @@
 #include <string>
 
 // Project includes
+#include <Core/Attributes/Attributes.h>
 
 // Forward declarations
 
@@ -25,7 +26,7 @@ public:
 	public:
         virtual ~IType() { }
 
-		virtual const std::string& getName() const = 0;
+		virtual const std::string& getTypeName() const = 0;
 	};
 
 public:
@@ -43,6 +44,7 @@ public:
 		return getName() < other->getName();
 	}
 
+public:
 	const std::string& getName() const {
 		return mName;
 	}
@@ -57,13 +59,14 @@ private:
 	IType *mType;
 };
 
-typedef std::less<std::string> StringLess; 
+typedef std::less<std::string> StringLess;
 
 typedef std::map<std::string, Symbol*> Symbols;
 
 
 class BuildInTypeSymbol : public Symbol,
-						  public Symbol::IType
+						  public Symbol::IType,
+						  public ObjectAttributes
 {
 public:
     BuildInTypeSymbol(const std::string& name, Symbol::IType *type)
@@ -72,18 +75,9 @@ public:
 	virtual ~BuildInTypeSymbol() { }
 };
 
-class ClassSymbol : public Symbol,
-					public Symbol::IType
-{
-public:
-	ClassSymbol(const std::string& name, Symbol::IType *type)
-	: Symbol(name, type)
-	{ }
-	virtual ~ClassSymbol() { }
-};
-
 class MemberSymbol : public Symbol,
-					 public Symbol::IType
+					 public Symbol::IType,
+					 public ObjectAttributes
 {
 public:
 	MemberSymbol(const std::string& name, Symbol::IType *type)
@@ -93,13 +87,25 @@ public:
 };
 
 class MethodSymbol : public Symbol,
-					 public Symbol::IType
+					 public Symbol::IType,
+					 public MethodAttributes
 {
 public:
 	MethodSymbol(const std::string& name, Symbol::IType *type)
 	: Symbol(name, type)
 	{ }
 	virtual ~MethodSymbol() { }
+};
+
+class ObjectSymbol : public Symbol,
+					 public Symbol::IType
+					 //public ObjectAttributes
+{
+public:
+	ObjectSymbol(const std::string& name, Symbol::IType *type)
+	: Symbol(name, type)
+	{ }
+	virtual ~ObjectSymbol() { }
 };
 
 

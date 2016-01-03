@@ -7,6 +7,7 @@
 
 // Project includes
 #include <Core/Object.h>
+#include <Core/Symbol.h>
 
 // Forward declarations
 
@@ -23,8 +24,12 @@ public:
 
 public:
 	BoolObject(bool value = false);
-	BoolObject(const std::string& value);
+	BoolObject(const std::string& name, bool value);
+	BoolObject(const std::string& name, const std::string& value);
 	BoolObject(const Object& object);
+
+public:	// Symbol::IType implementation
+	const std::string& getTypeName() const;
 
 public:	// Operators
 	virtual operator bool() const;

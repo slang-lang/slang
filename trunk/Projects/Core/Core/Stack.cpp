@@ -56,13 +56,13 @@ void Stack::popScope()
 void Stack::print()
 {
 	for ( ScopeStack::const_iterator it = mScopeStack.begin(); it != mScopeStack.end(); ++it ) {
-		std::cout << "Scope(" << (*it)->getName() << ")" << std::endl;
+		std::cout << "Scope(" << /*(*it)->getName() <<*/ ")" << std::endl;
 	}
 }
 
-IScope* Stack::pushScope(const std::string& name)
+IScope* Stack::pushScope(const std::string& /*name*/)
 {
-	LocalScope *scope = new LocalScope(name, getCurrentScope());
+	LocalScope *scope = new LocalScope(/*name,*/ getCurrentScope());
 
 	mScopeStack.push_back(scope);
 	return scope;

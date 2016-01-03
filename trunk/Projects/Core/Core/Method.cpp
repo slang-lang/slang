@@ -32,7 +32,8 @@ namespace ObjectiveScript {
 
 
 Method::Method(IScope *parent, const std::string& name, const std::string& type)
-: LocalScope(name, parent),
+: LocalScope(/*name,*/ parent),
+  MethodSymbol(name, 0),
   Variable(name, type),
   mOwner(0),
   mRepository(0),
@@ -271,6 +272,11 @@ Object* Method::getOwner() const
 	return mOwner;
 }
 
+const std::string& Method::getTypeName() const
+{
+	return mVarType;
+}
+
 bool Method::isMember(const std::string& token) const
 {
 	return (mOwner && mOwner->getMember(token));
@@ -280,6 +286,12 @@ Object* Method::getSymbol(const std::string& token)
 {
 	std::string member, parent;
 	Tools::split(token, parent, member);
+
+	Object *symbol = static_cast<Object*>(resolve(token));
+	if ( symbol ) {
+		//System::Print("resolved symbol '" + token + "'");
+		return symbol;
+	}
 
 	// either it is a local symbol...
 	for ( MemberCollection::iterator it = mLocalSymbols.begin(); it != mLocalSymbols.end(); ++it ) {
@@ -518,15 +530,15 @@ void Method::parseTerm(Object *result, TokenIterator& start)
 {
 	switch ( start->type() ) {
 		case Token::Type::CONST_BOOLEAN: {
-			BoolObject tmp(start->content());
+			BoolObject tmp(Tools::stringToBool(start->content()));
 			operator_assign(result, &tmp);
 		} break;
 		case Token::Type::CONST_FLOAT: {
-			FloatObject tmp(start->content());
+			FloatObject tmp(Tools::stringToFloat(start->content()));
 			operator_assign(result, &tmp);
 		} break;
 		case Token::Type::CONST_INTEGER: {
-			IntegerObject tmp(start->content());
+			IntegerObject tmp(Tools::stringToInt(start->content()));
 			operator_assign(result, &tmp);
 		} break;
 		case Token::Type::CONST_LITERAL: {
@@ -534,7 +546,7 @@ void Method::parseTerm(Object *result, TokenIterator& start)
 			operator_assign(result, &tmp);
 		} break;
 		case Token::Type::CONST_NUMBER: {
-			NumberObject tmp(start->content());
+			NumberObject tmp(Tools::stringToFloat(start->content()));
 			operator_assign(result, &tmp);
 		} break;
 		case Token::Type::IDENTIFER: {
@@ -608,6 +620,10 @@ void Method::process(Object *result, TokenIterator& token, TokenIterator end, To
 			case Token::Type::TYPE:
 				process_type(token);
 				break;
+			case Token::Type::BRACKET_CURLY_OPEN: {
+				// this opens a new scope
+				process_scope(token, result);
+			} break;
 			default:
 				throw Utils::Exceptions::SyntaxError("invalid token '" + token->content() + "' as type " + Token::Type::convert(token->type()) + " found", token->position());
 				break;
@@ -1009,6 +1025,32 @@ void Method::process_return(TokenIterator& token, Object *result)
 }
 
 // syntax:
+// { <statement> }
+void Method::process_scope(TokenIterator& token, Object *result)
+{
+	TokenIterator scopeBegin = token;
+	TokenIterator scopeEnd = findNextBalancedCurlyBracket(++scopeBegin, getTokens().end());
+
+	TokenList tmpTokens;
+	while ( scopeBegin != scopeEnd ) {
+		tmpTokens.push_back((*scopeBegin));
+		scopeBegin++;
+	}
+
+	pushTokens(tmpTokens);
+		TokenIterator newScopeBegin = getTokens().begin();
+		TokenIterator newScopeEnd = getTokens().end();
+
+		//LocalScope scope(this);
+
+		process(result, newScopeBegin, newScopeEnd, Token::Type::BRACKET_CURLY_CLOSE);
+	popTokens();
+
+	token = scopeEnd;
+}
+
+
+// syntax:
 // switch ( <expression> ) {
 //		case <identifier>:
 //			...
@@ -1066,6 +1108,7 @@ void Method::process_type(TokenIterator& token)
 	}
 
 	Object *object = getSymbol(name);
+	//Object *object = static_cast<Object*>(resolve(name));
 	if ( !object ) {
 		object = mRepository->createInstance(type, name, prototype);
 
@@ -1095,6 +1138,9 @@ void Method::process_type(TokenIterator& token)
 
 		token = findNext(token, Token::Type::SEMICOLON);
 	}
+
+	// define object in our scope (this will replace 'addIdentifier' in the distant future)
+	define(object);
 }
 
 

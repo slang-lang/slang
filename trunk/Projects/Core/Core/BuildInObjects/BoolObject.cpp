@@ -23,7 +23,7 @@ std::string BoolObject::TYPENAME = "bool";
 
 
 BoolObject::BoolObject(bool value)
-: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, ""),
+: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, Tools::boolToString(value)),
   mValue(value)
 {
 	mIsAtomicType = true;
@@ -31,8 +31,17 @@ BoolObject::BoolObject(bool value)
 	Constructor(ParameterList());
 }
 
-BoolObject::BoolObject(const std::string& value)
-: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, value),
+BoolObject::BoolObject(const std::string& name, bool value)
+: Object(name, SYSTEM_LIBRARY, TYPENAME, Tools::boolToString(value)),
+  mValue(value)
+{
+	mIsAtomicType = true;
+
+	Constructor(ParameterList());
+}
+
+BoolObject::BoolObject(const std::string& name, const std::string& value)
+: Object(name, SYSTEM_LIBRARY, TYPENAME, value),
   mValue(Tools::stringToBool(value))
 {
 	mIsAtomicType = true;
@@ -54,6 +63,11 @@ BoolObject::operator bool() const
 bool BoolObject::getNativeValue() const
 {
 	return mValue;
+}
+
+const std::string& BoolObject::getTypeName() const
+{
+	return TYPENAME;
 }
 
 std::string BoolObject::getValue() const
@@ -80,7 +94,7 @@ void BoolObject::operator_assign(Object *other)
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ||
 		 target == StringObject::TYPENAME ) {
-		BoolObject tmp(other->getValue());
+		BoolObject tmp(Tools::stringToBool(other->getValue()));
 
 		operator_assign(&tmp);
 	}
@@ -103,7 +117,7 @@ void BoolObject::operator_bitand(Object *other)
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ||
 		 target == StringObject::TYPENAME ) {
-		BoolObject tmp(other->getValue());
+		BoolObject tmp(Tools::stringToBool(other->getValue()));
 
 		operator_bitand(&tmp);
 	}
@@ -126,7 +140,7 @@ void BoolObject::operator_bitor(Object *other)
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ||
 		 target == StringObject::TYPENAME ) {
-		BoolObject tmp(other->getValue());
+		BoolObject tmp(Tools::stringToBool(other->getValue()));
 
 		operator_bitor(&tmp);
 	}
@@ -149,7 +163,7 @@ bool BoolObject::operator_equal(Object *other)
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ||
 		 target == StringObject::TYPENAME ) {
-		BoolObject tmp(other->getValue());
+		BoolObject tmp(Tools::stringToBool(other->getValue()));
 
 		return operator_equal(&tmp);
 	}

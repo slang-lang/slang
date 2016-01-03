@@ -40,17 +40,21 @@ class Repository;
 
 
 class Object : public LocalScope,
+			   public ObjectSymbol,
 			   public BluePrint
 {
 public:
 	Object();
-	Object(const Object& other);
 	Object(const std::string& name, const std::string& filename);
 	Object(const std::string& name, const std::string& filename, const std::string& type, const std::string& value);
+	Object(const Object& other);
 	virtual ~Object();
 
 public:
 	Object& operator= (const Object& other);
+
+public:	// Symbol::IType implementation
+	const std::string& getTypeName() const;
 
 public:	// Setup
 	void addMember(Object *m);		// throws DuplicateIdentifer exception
@@ -83,8 +87,8 @@ public:	// Value
 public:
 	bool isAtomicType() const;
 
-	void overrideName(const std::string& name) {
-		mName = name;
+	void overrideName(const std::string& /*name*/) {
+		//mName = name;
 	}
 	void overrideType(const std::string& type) {
 		mTypename = type;

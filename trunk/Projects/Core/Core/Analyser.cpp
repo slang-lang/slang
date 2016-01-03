@@ -179,7 +179,7 @@ void Analyser::createNamespace(TokenIterator& start, TokenIterator end)
 	// look for the identifier token
 	name = (*start).content();
 
-	mScope = new LocalScope(name, mScope);
+	mScope = new LocalScope(/*name,*/ mScope);
 
 	// look for the next opening curly brackets
 	TokenIterator open = findNext(++start, Token::Type::BRACKET_CURLY_OPEN);

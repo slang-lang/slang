@@ -40,6 +40,11 @@ UserObject::operator bool()
 	return tmp;
 }
 
+const std::string& UserObject::getTypeName() const
+{
+	return TYPENAME;
+}
+
 void UserObject::operator_assign(Object *other)
 {
 	ParameterList params;

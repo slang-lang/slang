@@ -23,8 +23,12 @@ public:
 
 public:
 	NumberObject(float value = 0.f);
-	NumberObject(const std::string& value);
+	NumberObject(const std::string& name, float value);
+	NumberObject(const std::string& name, const std::string& value);
 	NumberObject(const Object& object);
+
+public:	// Symbol::IType implementation
+	const std::string& getTypeName() const;
 
 public:	// Operators
 	virtual operator bool() const;

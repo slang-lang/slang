@@ -20,7 +20,8 @@ namespace ObjectiveScript {
 
 
 Object::Object()
-: LocalScope(ANONYMOUS_OBJECT, 0),
+: LocalScope(0),
+  ObjectSymbol(ANONYMOUS_OBJECT, 0),
   mIsAtomicType(true),
   mRepository(0),
   mConstructed(false),
@@ -29,7 +30,8 @@ Object::Object()
 }
 
 Object::Object(const Object& other)
-: LocalScope(other.mName, 0),
+: LocalScope(0),
+  ObjectSymbol(other.getName(), 0),
   BluePrint(other.mTypename, other.mFilename),
   mIsAtomicType(other.mIsAtomicType),
   mRepository(other.mRepository),
@@ -58,7 +60,8 @@ Object::Object(const Object& other)
 }
 
 Object::Object(const std::string& type, const std::string& filename)
-: LocalScope(ANONYMOUS_OBJECT, 0),
+: LocalScope(0),
+  ObjectSymbol(ANONYMOUS_OBJECT, 0),
   BluePrint(type, filename),
   mIsAtomicType(true),
   mRepository(0),
@@ -68,7 +71,8 @@ Object::Object(const std::string& type, const std::string& filename)
 }
 
 Object::Object(const std::string& name, const std::string& filename, const std::string& type, const std::string& value)
-: LocalScope(name, 0),
+: LocalScope(0),
+  ObjectSymbol(name, 0),
   BluePrint(type, filename),
   mIsAtomicType(true),
   mRepository(0),
@@ -354,6 +358,11 @@ Object* Object::getMember(const std::string& m) const
 	}
 
 	return 0;
+}
+
+const std::string& Object::getTypeName() const
+{
+	return Typename();
 }
 
 std::string Object::getValue() const

@@ -14,6 +14,7 @@
 #include <Core/BuildInObjects/VoidObject.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Utils/Utils.h>
+#include "Consts.h"
 #include "Memory.h"
 #include "Preprocessor.h"
 #include "Tools.h"
@@ -184,29 +185,25 @@ Object* Repository::createObject(const std::string& name, const std::string& fil
 	Object *object = 0;
 
 	if ( type == BoolObject::TYPENAME ) {
-		object = new BoolObject(value);
+		object = new BoolObject(name, value);
 	}
 	else if ( type == FloatObject::TYPENAME ) {
-		object = new FloatObject(value);
+		object = new FloatObject(name, value);
 	}
 	else if ( type == IntegerObject::TYPENAME ) {
-		object = new IntegerObject(value);
+		object = new IntegerObject(name, value);
 	}
 	else if ( type == NumberObject::TYPENAME ) {
-		object = new NumberObject(value);
+		object = new NumberObject(name, value);
 	}
 	else if ( type == StringObject::TYPENAME ) {
-		object = new StringObject(value);
+		object = new StringObject(name, value);
 	}
 	else if ( type == VoidObject::TYPENAME ) {
-		object = new VoidObject();
+		object = new VoidObject(name);
 	}
 	else {
 		object = new UserObject(name, filename, type, value);
-	}
-
-	if ( object ) {
-		object->overrideName(name);
 	}
 
 	return object;
