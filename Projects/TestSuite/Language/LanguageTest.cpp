@@ -31,6 +31,7 @@ LanguageTest::LanguageTest(const ::Utils::Common::ILogger *p)
 
 void LanguageTest::process()
 {
+TEST(testScope);
 	TEST(testAssert);
 	TEST(testBooleanOperators);
 	TEST(testComment);
@@ -45,7 +46,8 @@ void LanguageTest::process()
 	TEST(testObjectReference);
 	TEST(testParameters);
 	TEST(testPrint);
-	TEST(testStaticLocalVariable);
+	//TEST(testScope);	// not yet implemented
+	//TEST(testStaticLocalVariable);	// temporary broken
 	TEST(testWhile);
 
 // not yet implemented
@@ -298,6 +300,21 @@ void LanguageTest::testPrint()
 		VirtualMachine vm;
 
 		vm.create("Tests/Language/PrintTest.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// unexpected exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void LanguageTest::testScope()
+{
+	try {
+		VirtualMachine vm;
+
+		vm.create("Tests/Language/ScopeTest.os");
 
 		// automatic success
 	}

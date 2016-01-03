@@ -21,12 +21,14 @@ private namespace BooleanOverloads
 		public bool operator<=(number other const) const
 		{
 			print("operator<=(number)");
+
 			return mValue <= other;
 		}
 
 		public bool operator<=(UserObject other const ref) const
 		{
 			print("operator<=(UserObject)");
+
 			return mValue <= other.GetValue();
 		}
 	}

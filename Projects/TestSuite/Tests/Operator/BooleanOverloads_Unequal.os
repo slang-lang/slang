@@ -21,12 +21,14 @@ private namespace BooleanOverloads
 		public bool operator_equal(number other const) const
 		{
 			print("operator==(number)");
+
 			return mValue == other;
 		}
 
 		public bool operator_equal(UserObject other const ref) const
 		{
 			print("operator==(UserObject)");
+
 			return mValue == other.GetValue();
 		}
 	}
