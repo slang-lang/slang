@@ -24,7 +24,7 @@ class IExternalMethod
 public:
 	virtual ~IExternalMethod() { }
 
-	virtual Object* execute(const ParameterList& params) = 0;
+	virtual void execute(Object* result, const ParameterList& params) = 0;
 };
 
 

@@ -8,7 +8,6 @@
 // Project includes
 #include <Common/Logger.h>
 #include <Framework/GenericTest.h>
-#include <Tools/Printer.h>
 
 // Forward declarations
 
@@ -50,9 +49,6 @@ private:	// Tests
 	void testPrint();
 	void testStaticLocalVariable();
 	void testWhile();
-
-private:
-	Utils::Printer mPrinter;
 };
 
 

@@ -8,7 +8,6 @@
 // Project includes
 #include <Common/Logger.h>
 #include <Framework/GenericTest.h>
-#include <Tools/Printer.h>
 
 // Forward declarations
 
@@ -43,9 +42,6 @@ private:	// Tests
 	void testBooleanOverloads_Unequal();
 	void testMathOverloadsWithNumbers();
 	void testMathOverloadsWithObjects();
-
-private:
-	Utils::Printer mPrinter;
 };
 
 

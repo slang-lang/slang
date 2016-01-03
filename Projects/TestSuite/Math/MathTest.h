@@ -8,7 +8,6 @@
 // Project includes
 #include <Common/Logger.h>
 #include <Framework/GenericTest.h>
-#include <Tools/Printer.h>
 
 // Forward declarations
 
@@ -35,9 +34,6 @@ private:	// Tests
 	void testBasicExpressionParsing();
 	void testDataTypeFloat();
 	void testDataTypeInt();
-
-private:
-	Utils::Printer mPrinter;
 };
 
 

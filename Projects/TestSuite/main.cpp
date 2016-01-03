@@ -48,9 +48,10 @@ int main(int argc, const char* argv[])
 #endif
 
 	bool executed = false;
-	Utils::Common::ILogger *logger = 0;
-	std::string toRun = "";
+	Utils::Common::ILogger *mLogger = 0;
+	Utils::Printer& mPrinter = Utils::PrinterDriver::getInstance();
 	bool show = false;
+	std::string toRun = "";
 
 	if ( argc > 1 ) {
 		for (int i = 1; i < argc; i++) {
@@ -62,10 +63,15 @@ int main(int argc, const char* argv[])
 				toRun = argv[i];
 			}
 			else if ( Utils::Tools::StringCompare(argv[i], "-v") ) {
-				logger = new Utils::Common::StdOutLogger();
+				mLogger = new Utils::Common::StdOutLogger();
+
+				mPrinter.ActivatePrinter = true;
+				mPrinter.PrintFileAndLine = true;
 			}
 			else if ( Utils::Tools::StringCompare(argv[i], "-q") ) {
-				logger = new Utils::Common::Logger();
+				mLogger = new Utils::Common::Logger();
+
+				mPrinter.ActivatePrinter = false;
 			}
 			else if ( Utils::Tools::StringCompare(argv[i], "--show") ) {
 				show = true;
@@ -76,8 +82,8 @@ int main(int argc, const char* argv[])
 		}
 	}
 
-	if ( !logger ) {
-		logger = new Utils::Common::StdOutLogger();
+	if ( !mLogger ) {
+		mLogger = new Utils::Common::StdOutLogger();
 	}
 
 	try {
@@ -86,16 +92,16 @@ int main(int argc, const char* argv[])
 		Testing::Framework::Fixture testing(logger);
 		mFixtures.push_back(&testing);
 */
-		Testing::Attributes::Fixture attributes(logger);
+		Testing::Attributes::Fixture attributes(mLogger);
 		mFixtures.push_back(&attributes);
 
-		Testing::Language::Fixture language(logger);
+		Testing::Language::Fixture language(mLogger);
 		mFixtures.push_back(&language);
 
-		Testing::Math::Fixture math(logger);
+		Testing::Math::Fixture math(mLogger);
 		mFixtures.push_back(&math);
 
-		Testing::Operator::Fixture operator_overloading(logger);
+		Testing::Operator::Fixture operator_overloading(mLogger);
 		mFixtures.push_back(&operator_overloading);
 /*
 		Testing::Prototype::Fixture prototype(logger);
@@ -123,9 +129,9 @@ int main(int argc, const char* argv[])
 		std::cout << "could not find fixture '" << toRun << "'!" << std::endl;
 	}
 
-	if ( logger ) {
-		delete logger;
-		logger = 0;
+	if ( mLogger ) {
+		delete mLogger;
+		mLogger = 0;
 	}
 
 	return 0;

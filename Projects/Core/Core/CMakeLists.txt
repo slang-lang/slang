@@ -4,8 +4,6 @@ ADD_SUBDIRECTORY(Attributes)
 ADD_SUBDIRECTORY(BuildInObjects)
 ADD_SUBDIRECTORY(Helpers)
 #ADD_SUBDIRECTORY(Interfaces)
-ADD_SUBDIRECTORY(Keywords)
-#ADD_SUBDIRECTORY(Plugins)
 ADD_SUBDIRECTORY(Utils)
 
 SET(SOURCES
@@ -66,11 +64,10 @@ SET(HEADERS
 
 SET(DEPENDENCIES
 	CoreUtils
-#	CorePlugins
-	CoreKeywords
 	CoreHelpers
 	CoreBuildInObjects
 	CoreAttributes
+	Utils
 )
 
 add_include(Projects/Core)

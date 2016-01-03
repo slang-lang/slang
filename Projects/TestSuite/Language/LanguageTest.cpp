@@ -25,8 +25,7 @@ namespace Language {
 
 
 LanguageTest::LanguageTest(const ::Utils::Common::ILogger *p)
-: ::Utils::Common::Logger(p, "Language"),
-  mPrinter(p)
+: ::Utils::Common::Logger(p, "Language")
 {
 }
 
@@ -66,7 +65,6 @@ void LanguageTest::testAssert()
 {
 	try {
 		VirtualMachine vm;
-		vm.setPrinter(&mPrinter);
 
 		TTHROWS(vm.create("Tests/Language/AssertTest.os"), ObjectiveScript::Utils::Exceptions::AssertionFailed);
 
@@ -82,7 +80,6 @@ void LanguageTest::testBooleanOperators()
 {
 	try {
 		VirtualMachine vm;
-		vm.setPrinter(&mPrinter);
 
 		vm.create("Tests/Language/BooleanOperators.os");
 
@@ -98,7 +95,6 @@ void LanguageTest::testComment()
 {
 	try {
 		VirtualMachine vm;
-		vm.setPrinter(&mPrinter);
 
 		vm.create("Tests/Language/CommentTest.os");
 
@@ -114,7 +110,6 @@ void LanguageTest::testConstCorrectness1()
 {
 	try {
 		VirtualMachine vm;
-		vm.setPrinter(&mPrinter);
 
 		TTHROWS(vm.create("Tests/Language/ConstCorrectness1.os"), ObjectiveScript::Utils::Exceptions::ConstCorrectnessViolated);
 
@@ -130,7 +125,6 @@ void LanguageTest::testConstCorrectness2()
 {
 	try {
 		VirtualMachine vm;
-		vm.setPrinter(&mPrinter);
 
 		TTHROWS(vm.create("Tests/Language/ConstCorrectness2.os"), ObjectiveScript::Utils::Exceptions::ConstCorrectnessViolated);
 
@@ -146,7 +140,6 @@ void LanguageTest::testConstCorrectness3()
 {
 	try {
 		VirtualMachine vm;
-		vm.setPrinter(&mPrinter);
 
 		TTHROWS(vm.create("Tests/Language/ConstCorrectness3.os"), ObjectiveScript::Utils::Exceptions::ConstCorrectnessViolated);
 
@@ -162,7 +155,6 @@ void LanguageTest::testDefaultParameter()
 {
 	try {
 		VirtualMachine vm;
-		vm.setPrinter(&mPrinter);
 
 		vm.create("Tests/Language/DefaultParameter.os");
 
@@ -178,7 +170,6 @@ void LanguageTest::testFinal()
 {
 	try {
 		VirtualMachine vm;
-		vm.setPrinter(&mPrinter);
 
 		TTHROWS(vm.create("Tests/Language/FinalTest.os"), ObjectiveScript::Utils::Exceptions::ConstCorrectnessViolated);
 
@@ -194,7 +185,6 @@ void LanguageTest::testForLoop()
 {
 	try {
 		VirtualMachine vm;
-		vm.setPrinter(&mPrinter);
 
 		vm.create("Tests/Language/ForLoopTest.os");
 
@@ -210,7 +200,6 @@ void LanguageTest::testIf()
 {
 	try {
 		VirtualMachine vm;
-		vm.setPrinter(&mPrinter);
 
 		vm.create("Tests/Language/IfTest.os");
 
@@ -226,7 +215,6 @@ void LanguageTest::testInterfaces()
 {
 	try {
 		VirtualMachine vm;
-		vm.setPrinter(&mPrinter);
 
 		Script *s = vm.create("Tests/Language/InterfacesTest.os");
 
@@ -245,7 +233,6 @@ void LanguageTest::testMethodOverloading()
 {
 	try {
 		VirtualMachine vm;
-		vm.setPrinter(&mPrinter);
 
 		vm.create("Tests/Language/MethodOverloadingTest.os");
 
@@ -261,7 +248,6 @@ void LanguageTest::testNamespaces()
 {
 	try {
 		VirtualMachine vm;
-		vm.setPrinter(&mPrinter);
 
 		vm.create("Tests/Language/NamespaceTest.os");
 
@@ -277,7 +263,6 @@ void LanguageTest::testObjectReference()
 {
 	try {
 		VirtualMachine vm;
-		vm.setPrinter(&mPrinter);
 
 		vm.create("Tests/Language/ObjectReference.os");
 
@@ -293,7 +278,6 @@ void LanguageTest::testParameters()
 {
 	try {
 		VirtualMachine vm;
-		vm.setPrinter(&mPrinter);
 
 		ParameterList params;
 		params.push_back(Parameter("argc", NumberObject::TYPENAME, "2"));
@@ -312,7 +296,6 @@ void LanguageTest::testPrint()
 {
 	try {
 		VirtualMachine vm;
-		vm.setPrinter(&mPrinter);
 
 		vm.create("Tests/Language/PrintTest.os");
 
@@ -328,7 +311,6 @@ void LanguageTest::testStaticLocalVariable()
 {
 	try {
 		VirtualMachine vm;
-		vm.setPrinter(&mPrinter);
 
 		vm.create("Tests/Language/StaticVariablesTest.os");
 
@@ -344,7 +326,6 @@ void LanguageTest::testWhile()
 {
 	try {
 		VirtualMachine vm;
-		vm.setPrinter(&mPrinter);
 
 		vm.create("Tests/Language/WhileTest.os");
 

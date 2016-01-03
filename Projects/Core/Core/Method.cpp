@@ -18,6 +18,7 @@
 #include <Core/Interfaces/IPrinter.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Utils/Utils.h>
+#include <Tools/Printer.h>
 #include "Memory.h"
 #include "Object.h"
 #include "OperatorOverloading.h"
@@ -986,7 +987,8 @@ void Method::process_print(TokenIterator& token)
 	StringObject text;
 	expression(&text, opened);
 
-	System::print(text);
+	//System::print(text);
+	::Utils::PrinterDriver::getInstance().print(text.getValue(), mOwner->Filename(), token->position().line);
 
 	token = tmp;
 }
