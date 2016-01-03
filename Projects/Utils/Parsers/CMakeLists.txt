@@ -18,9 +18,7 @@ SET(HEADERS
 	Valueizer.h
 )
 
-SET(DEPENDENCIES
-	UtilsMath
-)
+SET(DEPENDENCIES )
 
 add_include(Projects/Utils)
 
