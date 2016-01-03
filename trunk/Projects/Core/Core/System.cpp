@@ -17,23 +17,21 @@ namespace ObjectiveScript {
 namespace System {
 
 
-void Assert(const Object& condition, const std::string& file, int line)
+void Assert(const Object& condition, const Utils::Position& position)
 {
-(void)file;
-
 	if ( isFalse(condition) ) {
-		throw Utils::Exceptions::AssertionFailed(condition.ToString(), Utils::Position(line, 0));
+		throw Utils::Exceptions::AssertionFailed(condition.ToString(), position);
 	}
 }
 
-void print(const std::string& text, const std::string& file, int line)
+void Print(const std::string& text, const Utils::Position& position)
 {
-	::Utils::PrinterDriver::getInstance()->print(text, file, line);
+	::Utils::PrinterDriver::getInstance()->print(text, position.file, position.line);
 }
 
-void println(const std::string& text, const std::string& file, int line)
+void PrintLn(const std::string& text, const Utils::Position& position)
 {
-	::Utils::PrinterDriver::getInstance()->println(text, file, line);
+	::Utils::PrinterDriver::getInstance()->println(text, position.file, position.line);
 }
 
 

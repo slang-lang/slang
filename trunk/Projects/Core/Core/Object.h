@@ -100,9 +100,9 @@ public:	// Usage
 	void garbageCollector(bool force = false);
 
 public:	// Helpers
-	Object* getMember(const std::string& m);
-	bool hasMethod(const std::string& m);
-	bool hasMethod(const std::string& m, const ParameterList& params);
+	Object* getMember(const std::string& m) const;
+	bool hasMethod(const std::string& m) const;
+	bool hasMethod(const std::string& m, const ParameterList& params) const;
 
 protected:
 	bool mIsAtomicType;
@@ -114,9 +114,9 @@ private:
 
 private:
 	void copyMember(Object *member);
-	bool findMember(const std::string& m, MemberCollection::iterator& mIt);
-	bool findMethod(const std::string& m, MethodCollection::iterator& mIt);
-	bool findMethod(const std::string& m, const ParameterList& params, MethodCollection::iterator& mIt);
+	bool findMember(const std::string& m, MemberCollection::const_iterator& mIt) const;
+	bool findMethod(const std::string& m, MethodCollection::const_iterator& mIt) const;
+	bool findMethod(const std::string& m, const ParameterList& params, MethodCollection::const_iterator& mIt) const;
 
 private:
 	bool mConstructed;

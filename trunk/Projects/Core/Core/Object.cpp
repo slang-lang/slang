@@ -256,9 +256,9 @@ void Object::execute(Object *result, const std::string& method, const ParameterL
 	(*methodIt)->execute(params, result);
 }
 
-bool Object::findMember(const std::string& m, Object::MemberCollection::iterator& mIt)
+bool Object::findMember(const std::string& m, Object::MemberCollection::const_iterator& mIt) const
 {
-	for ( MemberCollection::iterator it = mMembers.begin(); it != mMembers.end(); ++it ) {
+	for ( MemberCollection::const_iterator it = mMembers.begin(); it != mMembers.end(); ++it ) {
 		if ( it->first == m /*&& it->second.visibility() == Visibility::Public*/ ) {
 			mIt = it;
 			return true;
@@ -269,7 +269,7 @@ bool Object::findMember(const std::string& m, Object::MemberCollection::iterator
 	Tools::split(m, parent, member);
 
 	// loop through all members and ask them if this identifier belongs to them
-	for ( MemberCollection::iterator it = mMembers.begin(); it != mMembers.end(); ++it ) {
+	for ( MemberCollection::const_iterator it = mMembers.begin(); it != mMembers.end(); ++it ) {
 		if ( it->first == parent ) {
 			return it->second->findMember(member, mIt);
 		}
@@ -278,9 +278,9 @@ bool Object::findMember(const std::string& m, Object::MemberCollection::iterator
 	return false;
 }
 
-bool Object::findMethod(const std::string& m, MethodCollection::iterator& mIt)
+bool Object::findMethod(const std::string& m, MethodCollection::const_iterator& mIt) const
 {
-	for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
+	for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
 		if ( (*it)->name() == m /*&& it->visibility() == Visibility::Public*/ ) {
 			mIt = it;
 			return true;
@@ -291,7 +291,7 @@ bool Object::findMethod(const std::string& m, MethodCollection::iterator& mIt)
 	Tools::split(m, parent, method);
 
 	// loop through all members and ask them if this identifier belongs to them
-	for ( MemberCollection::iterator it = mMembers.begin(); it != mMembers.end(); ++it ) {
+	for ( MemberCollection::const_iterator it = mMembers.begin(); it != mMembers.end(); ++it ) {
 		if ( it->first == parent ) {
 			return it->second->findMethod(method, mIt);
 		}
@@ -300,9 +300,9 @@ bool Object::findMethod(const std::string& m, MethodCollection::iterator& mIt)
 	return false;
 }
 
-bool Object::findMethod(const std::string& m, const ParameterList& params, MethodCollection::iterator& mIt)
+bool Object::findMethod(const std::string& m, const ParameterList& params, MethodCollection::const_iterator& mIt) const
 {
-	for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
+	for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
 		if ( (*it)->name() == m && (*it)->isSignatureValid(params) ) {
 			mIt = it;
 			return true;
@@ -313,7 +313,7 @@ bool Object::findMethod(const std::string& m, const ParameterList& params, Metho
 	Tools::split(m, parent, method);
 
 	// loop through all members and ask them if this identifier belongs to them
-	for ( MemberCollection::iterator it = mMembers.begin(); it != mMembers.end(); ++it ) {
+	for ( MemberCollection::const_iterator it = mMembers.begin(); it != mMembers.end(); ++it ) {
 		if ( it->first == parent ) {
 			return it->second->findMethod(method, params, mIt);
 		}
@@ -337,13 +337,13 @@ void Object::garbageCollector(bool force)
 	mMethods.clear();
 }
 
-Object* Object::getMember(const std::string& m)
+Object* Object::getMember(const std::string& m) const
 {
 	std::string member, parent;
 	Tools::split(m, parent, member);
 
 	// loop through all members and ask them if this identifier belongs to them
-	for ( MemberCollection::iterator it = mMembers.begin(); it != mMembers.end(); ++it ) {
+	for ( MemberCollection::const_iterator it = mMembers.begin(); it != mMembers.end(); ++it ) {
 		if ( it->first == m ) {
 			return it->second;
 		}
@@ -361,9 +361,9 @@ std::string Object::getValue() const
 	return mValue;
 }
 
-bool Object::hasMethod(const std::string& token)
+bool Object::hasMethod(const std::string& token) const
 {
-	for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
+	for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
 		if ( (*it)->getName() == token ) {
 			return true;
 		}
@@ -373,7 +373,7 @@ bool Object::hasMethod(const std::string& token)
 	Tools::split(token, parent, method);
 
 	// loop through all members and ask them if this identifier belongs to them
-	for ( MemberCollection::iterator it = mMembers.begin(); it != mMembers.end(); ++it ) {
+	for ( MemberCollection::const_iterator it = mMembers.begin(); it != mMembers.end(); ++it ) {
 		if ( it->first == parent ) {
 			if ( it->second->hasMethod(method) ) {
 				return true;
@@ -384,9 +384,9 @@ bool Object::hasMethod(const std::string& token)
 	return false;
 }
 
-bool Object::hasMethod(const std::string& m, const ParameterList& params)
+bool Object::hasMethod(const std::string& m, const ParameterList& params) const
 {
-	for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
+	for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
 		if ( (*it)->name() == m ) {
 			if ( (*it)->isSignatureValid(params) ) {
 				return true;
@@ -398,7 +398,7 @@ bool Object::hasMethod(const std::string& m, const ParameterList& params)
 	Tools::split(m, parent, method);
 
 	// loop through all members and ask them if this method belongs to them
-	for ( MemberCollection::iterator it = mMembers.begin(); it != mMembers.end(); ++it ) {
+	for ( MemberCollection::const_iterator it = mMembers.begin(); it != mMembers.end(); ++it ) {
 		if ( it->first == parent ) {
 			if ( it->second->hasMethod(method, params) ) {
 				return true;

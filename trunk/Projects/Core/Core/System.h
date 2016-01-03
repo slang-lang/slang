@@ -8,6 +8,7 @@
 // Project includes
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Object.h>
+#include <Utils/Position.h>
 
 // Forward declarations
 
@@ -18,13 +19,13 @@ namespace ObjectiveScript {
 namespace System {
 
 
-void Assert(const Object& condition, const std::string& file = "", int line = 0);
-void print(const std::string& text, const std::string& file = "", int line = 0);
-void println(const std::string& text, const std::string& file = "", int line = 0);
+void Assert(const Object& condition, const Utils::Position& position = Utils::Position());
+void Print(const std::string& text, const Utils::Position& position = Utils::Position());
+void PrintLn(const std::string& text, const Utils::Position& position = Utils::Position());
 
 
 }
 }
 
 
-#endif //OBJECTIVESCRIPT_SYSTEM_H
+#endif

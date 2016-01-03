@@ -67,8 +67,8 @@ private: // Construction
 
 private: // Execution
 	bool isMember(const std::string& token) const;
-	bool isMethod(const std::string& token);
-	bool isMethod(const std::string& token, const ParameterList& params);
+	bool isMethod(const std::string& token) const;
+	bool isMethod(const std::string& token, const ParameterList& params) const;
 
 	// token processing
 	// {
@@ -90,7 +90,7 @@ private: // Execution
 
 	Object* getSymbol(const std::string& token);
 
-	// expression evaluation
+	// expression parsing
 	// {
 	void expression(Object *result, TokenIterator& start);
 	void parseCondition(Object *result, TokenIterator& start);
