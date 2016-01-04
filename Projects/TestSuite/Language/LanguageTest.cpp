@@ -31,7 +31,6 @@ LanguageTest::LanguageTest(const ::Utils::Common::ILogger *p)
 
 void LanguageTest::process()
 {
-TEST(testSwitch);
 	TEST(testAssert);
 	TEST(testBooleanOperators);
 	TEST(testComment);
@@ -48,7 +47,7 @@ TEST(testSwitch);
 	TEST(testPrint);
 	TEST(testScope);
 	//TEST(testStaticLocalVariable);	// temporary broken
-	//TEST(testSwitch);					// not yet implemented
+	TEST(testSwitch);					// not yet implemented
 	TEST(testWhile);
 
 // not yet implemented
@@ -346,7 +345,7 @@ void LanguageTest::testSwitch()
 	try {
 		VirtualMachine vm;
 
-		vm.create("Tests/Language/SwitchTest.os");
+		TTHROWS(vm.create("Tests/Language/SwitchTest.os"), ObjectiveScript::Utils::Exceptions::NotImplemented);
 
 		// automatic success
 	}
