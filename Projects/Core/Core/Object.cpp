@@ -20,7 +20,7 @@ namespace ObjectiveScript {
 
 
 Object::Object()
-: LocalScope(0),
+: LocalScope(ANONYMOUS_OBJECT, 0),
   ObjectSymbol(ANONYMOUS_OBJECT, 0),
   mIsAtomicType(true),
   mRepository(0),
@@ -30,7 +30,7 @@ Object::Object()
 }
 
 Object::Object(const Object& other)
-: LocalScope(0),
+: LocalScope(other.getName(), 0),
   ObjectSymbol(other.getName(), 0),
   BluePrint(other.mTypename, other.mFilename),
   mIsAtomicType(other.mIsAtomicType),
@@ -60,7 +60,7 @@ Object::Object(const Object& other)
 }
 
 Object::Object(const std::string& type, const std::string& filename)
-: LocalScope(0),
+: LocalScope(ANONYMOUS_OBJECT, 0),
   ObjectSymbol(ANONYMOUS_OBJECT, 0),
   BluePrint(type, filename),
   mIsAtomicType(true),
@@ -71,7 +71,7 @@ Object::Object(const std::string& type, const std::string& filename)
 }
 
 Object::Object(const std::string& name, const std::string& filename, const std::string& type, const std::string& value)
-: LocalScope(0),
+: LocalScope(name, 0),
   ObjectSymbol(name, 0),
   BluePrint(type, filename),
   mIsAtomicType(true),
@@ -84,6 +84,12 @@ Object::Object(const std::string& name, const std::string& filename, const std::
 Object::~Object()
 {
 	garbageCollector();
+
+/*
+	if ( mRepository ) {
+		mRepository->removeReference(this);
+	}
+*/
 }
 
 Object& Object::operator= (const Object& other)
@@ -341,14 +347,20 @@ void Object::garbageCollector(bool force)
 	mMethods.clear();
 }
 
-Object* Object::getMember(const std::string& m) const
+Object* Object::getMember(const std::string& symbol) const
 {
 	std::string member, parent;
-	Tools::split(m, parent, member);
+	Tools::split(symbol, parent, member);
+
+	Object *object = static_cast<Object*>(resolve(symbol));
+	if ( object ) {
+		//System::Print("resolved symbol '" + token + "'");
+		return object;
+	}
 
 	// loop through all members and ask them if this identifier belongs to them
 	for ( MemberCollection::const_iterator it = mMembers.begin(); it != mMembers.end(); ++it ) {
-		if ( it->first == m ) {
+		if ( it->first == symbol ) {
 			return it->second;
 		}
 
@@ -370,16 +382,16 @@ std::string Object::getValue() const
 	return mValue;
 }
 
-bool Object::hasMethod(const std::string& token) const
+bool Object::hasMethod(const std::string& symbol) const
 {
 	for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
-		if ( (*it)->getName() == token ) {
+		if ( (*it)->getName() == symbol ) {
 			return true;
 		}
 	}
 
 	std::string method, parent;
-	Tools::split(token, parent, method);
+	Tools::split(symbol, parent, method);
 
 	// loop through all members and ask them if this identifier belongs to them
 	for ( MemberCollection::const_iterator it = mMembers.begin(); it != mMembers.end(); ++it ) {
@@ -393,10 +405,10 @@ bool Object::hasMethod(const std::string& token) const
 	return false;
 }
 
-bool Object::hasMethod(const std::string& m, const ParameterList& params) const
+bool Object::hasMethod(const std::string& symbol, const ParameterList& params) const
 {
 	for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
-		if ( (*it)->name() == m ) {
+		if ( (*it)->name() == symbol ) {
 			if ( (*it)->isSignatureValid(params) ) {
 				return true;
 			}
@@ -404,7 +416,7 @@ bool Object::hasMethod(const std::string& m, const ParameterList& params) const
 	}
 
 	std::string method, parent;
-	Tools::split(m, parent, method);
+	Tools::split(symbol, parent, method);
 
 	// loop through all members and ask them if this method belongs to them
 	for ( MemberCollection::const_iterator it = mMembers.begin(); it != mMembers.end(); ++it ) {

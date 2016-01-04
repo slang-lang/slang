@@ -52,6 +52,7 @@ TEST(testScope);
 
 // not yet implemented
 	//TEST(testInterfaces);
+	//TEST(testSwitch);
 	//TEST(testNamespaces);
 }
 
@@ -330,6 +331,21 @@ void LanguageTest::testStaticLocalVariable()
 		VirtualMachine vm;
 
 		vm.create("Tests/Language/StaticVariablesTest.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// unexpected exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void LanguageTest::testSwitch()
+{
+	try {
+		VirtualMachine vm;
+
+		vm.create("Tests/Language/SwitchTest.os");
 
 		// automatic success
 	}

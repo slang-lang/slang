@@ -14,8 +14,8 @@
 namespace ObjectiveScript {
 
 
-LocalScope::LocalScope(/*const std::string& name,*/ IScope *parent)
-: //mName(name),
+LocalScope::LocalScope(const std::string& name, IScope *parent)
+: mScopeName(name),
   mParent(parent)
 {
 }
@@ -33,26 +33,19 @@ LocalScope::~LocalScope()
 	mSymbols.clear();
 }
 
-void LocalScope::define(Symbol *symbol)
+void LocalScope::define(const std::string& name, Symbol *symbol)
 {
 	assert(symbol);
 
-	if ( mSymbols.find(symbol->getName()) != mSymbols.end() ) {
+	if ( mSymbols.find(name) != mSymbols.end() ) {
 		// duplicate symbol defined
 		throw Utils::Exceptions::DuplicateIdentifer("duplicate identifier defined: " + symbol->getName());
 	}
 
 	mSymbols.insert(std::make_pair(
-		symbol->getName(), symbol
+		name, symbol
 	));
 }
-
-/*
-const std::string& LocalScope::getName() const
-{
-	return mName;
-}
-*/
 
 IScope* LocalScope::getEnclosingScope() const
 {
@@ -63,14 +56,19 @@ IScope* LocalScope::getEnclosingScope() const
 	return 0;
 }
 
-Symbol* LocalScope::resolve(const std::string& name) const
+const std::string& LocalScope::getScopeName() const
+{
+	return mScopeName;
+}
+
+Symbol* LocalScope::resolve(const std::string& name, bool onlyCurrentScope) const
 {
 	Symbols::const_iterator it = mSymbols.find(name);
 	if ( it != mSymbols.end() ) {
 		return it->second;
 	}
 
-	if ( mParent ) {
+	if ( mParent && !onlyCurrentScope ) {
 		return mParent->resolve(name);
 	}
 
@@ -79,7 +77,7 @@ Symbol* LocalScope::resolve(const std::string& name) const
 
 
 GlobalScope::GlobalScope()
-: LocalScope(/*"global",*/ 0)
+: LocalScope("global", 0)
 {
 }
 

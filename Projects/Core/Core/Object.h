@@ -4,6 +4,7 @@
 
 
 // Library includes
+#include <cassert>
 #include <map>
 #include <string>
 #include <set>
@@ -87,10 +88,8 @@ public:	// Value
 public:
 	bool isAtomicType() const;
 
-	void overrideName(const std::string& /*name*/) {
-		//mName = name;
-	}
 	void overrideType(const std::string& type) {
+		//assert( mTypename == type );
 		mTypename = type;
 	}
 
@@ -104,9 +103,9 @@ public:	// Usage
 	void garbageCollector(bool force = false);
 
 public:	// Helpers
-	Object* getMember(const std::string& m) const;
-	bool hasMethod(const std::string& m) const;
-	bool hasMethod(const std::string& m, const ParameterList& params) const;
+	Object* getMember(const std::string& symbol) const;
+	bool hasMethod(const std::string& symbol) const;
+	bool hasMethod(const std::string& symbol, const ParameterList& params) const;
 
 protected:
 	bool mIsAtomicType;
