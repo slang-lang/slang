@@ -46,13 +46,12 @@ void LanguageTest::process()
 	TEST(testParameters);
 	TEST(testPrint);
 	TEST(testScope);
-	//TEST(testStaticLocalVariable);	// temporary broken
+	TEST(testStaticLocalVariable);
 	TEST(testSwitch);					// not yet implemented
 	TEST(testWhile);
 
 // not yet implemented
 	//TEST(testInterfaces);
-	//TEST(testSwitch);
 	//TEST(testNamespaces);
 }
 

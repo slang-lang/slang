@@ -775,15 +775,12 @@ void Method::process_for(TokenIterator& token)
 		popTokens();
 
 		if ( mControlFlow == ControlFlow::Break ) {
-			System::Print("control flow: break");
 			break;
 		}
 		else if ( mControlFlow == ControlFlow::Continue ) {
-			System::Print("control flow: continue");
 			continue;
 		}
 		else if ( mControlFlow == ControlFlow::Return ) {
-			System::Print("control flow: return");
 			return;
 		}
 
@@ -1332,15 +1329,12 @@ void Method::process_while(TokenIterator& token)
 		popTokens();
 
 		if ( mControlFlow == ControlFlow::Break ) {
-			System::Print("control flow: break");
 			break;
 		}
 		else if ( mControlFlow == ControlFlow::Continue ) {
-			System::Print("control flow: continue");
 			continue;
 		}
 		else if ( mControlFlow == ControlFlow::Return ) {
-			System::Print("control flow: return");
 			return;
 		}
 	}
