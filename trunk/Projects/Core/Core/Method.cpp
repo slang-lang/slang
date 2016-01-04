@@ -225,8 +225,6 @@ void Method::execute(const ParameterList& params, Object *result)
 		process(result, start, end);
 	popTokens();
 
-	mStopProcessing = false;	// just to be sure...
-
 	// let the garbage collector do it's magic after we gathered our result
 	garbageCollector();
 }
@@ -1108,10 +1106,6 @@ void Method::process_scope(TokenIterator& token, Object *result)
 	scope.setTokens(tmpTokens);
 	scope.visibility(this->visibility());
 
-/*
-	Method scope = *this;
-	scope.setTokens(tmpTokens);
-*/
 	scope.execute(ParameterList(), result);
 
 	this->mStopProcessing = scope.mStopProcessing;
