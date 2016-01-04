@@ -14,7 +14,13 @@ public namespace IfTest
 
 		private bool TestCase1()
 		{
+			number one = 1;
+			print("one = " + one);
+
 			if ( true ) {
+				number one = 2;
+				print("one = " + one);
+
 				print("TestCase1: true");
 				assert(true);
 			}
@@ -37,8 +43,8 @@ public namespace IfTest
 				assert(false);
 			}
 			else if ( (param1 - 2) == 0 ) {
-				//number one = 1;
-				//print("one = " + one);
+				number one = 1;
+				print("one = " + one);
 
 				print("TestCase2: else-if-true");
 				assert(true);

@@ -81,7 +81,7 @@ private: // Execution
 	void process_delete(TokenIterator& token);
 	void process_for(TokenIterator& token);
 	void process_identifier(TokenIterator& token);
-	void process_if(TokenIterator& token, Object *result);
+	void process_if(TokenIterator& token);
 	void process_keyword(TokenIterator& token, Object *result);
 	void process_method(TokenIterator& token, Object *result);
 	void process_new(TokenIterator& token, Object *result);

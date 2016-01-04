@@ -42,23 +42,23 @@ public namespace ScopeTest
 			print("one = " + one);
 			number two = 2;
 			print("two = " + two);
-			for ( int i = 0i; i < 5i; i = i + 1i; ) {
-				print("i = " + i);
+			for ( int num = 0i; num < 5i; num = num + 1i; ) {
+				print("num = " + num);
 				print("one = " + one);
 				print("two = " + two);
 
 				{ number one = 1; number two = 2; }
-                                print("one = " + one);
-                                print("two = " + two);
+				print("one = " + one);
+				print("two = " + two);
 
-//				number one = 3;
+				number one = 3;
 				{ number one = 3; number two = 4; }
-                                print("one = " + one);
-                                print("two = " + two);
+				print("one = " + one);
+				print("two = " + two);
 
 				{ number one = 5; number two = 6; }
-                                print("one = " + one);
-                                print("two = " + two);
+				print("one = " + one);
+				print("two = " + two);
 			}
 			print("one = " + one);
 			print("two = " + two);

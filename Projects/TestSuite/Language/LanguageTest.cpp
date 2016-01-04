@@ -31,7 +31,7 @@ LanguageTest::LanguageTest(const ::Utils::Common::ILogger *p)
 
 void LanguageTest::process()
 {
-TEST(testScope);
+TEST(testSwitch);
 	TEST(testAssert);
 	TEST(testBooleanOperators);
 	TEST(testComment);
@@ -46,8 +46,9 @@ TEST(testScope);
 	TEST(testObjectReference);
 	TEST(testParameters);
 	TEST(testPrint);
-	TEST(testScope);	// not yet implemented
+	TEST(testScope);
 	//TEST(testStaticLocalVariable);	// temporary broken
+	//TEST(testSwitch);					// not yet implemented
 	TEST(testWhile);
 
 // not yet implemented

@@ -6,16 +6,39 @@ public namespace Language
 	{
 		public void Main(number argc = 0, string argv = "")
 		{
-			assert( TestCase1(5) );
+			assert( TestCase1() );
+			assert( TestCase2(5) );
 		}
 
-		public void TestCase1(number maxCount = 7)
+		public bool TestCase1(number maxCount = 7) const
 		{
 			number count = 0;
 			while ( count < maxCount ) {
 				count = count + 1;
 				print("count = " + count);
 			}
+
+			return true;
+		}
+
+		public bool TestCase2(number maxCount = 7) const
+		{
+			number count = 0;
+
+			number one = 1;
+			print("one = " + one);
+
+			while ( count < maxCount ) {
+				count = count + 1;
+				print("count = " + count);
+
+				number one = 2;
+				print("one = " + one);
+			}
+
+			print("one = " + one);
+
+			return true;
 		}
 	}
 }
