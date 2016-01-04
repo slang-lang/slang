@@ -716,11 +716,16 @@ void Method::process_for(TokenIterator& token)
 
 	// find next balanced '{' & '}' pair for loop-body
 	TokenIterator bodyBegin = findNext(expressionBegin, Token::Type::BRACKET_CURLY_OPEN);
-	TokenIterator bodyEnd = findNextBalancedCurlyBracket(++bodyBegin, getTokens().end());
+	TokenIterator bodyEnd = findNextBalancedCurlyBracket(bodyBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
 
 	// process our declaration part
-	Object result;
-	process(&result, declarationBegin, conditionBegin, Token::Type::SEMICOLON);
+	Object declaration;
+	process(&declaration, declarationBegin, conditionBegin, Token::Type::SEMICOLON);
+
+	token = bodyEnd;
+	if ( bodyEnd != getTokens().end() ) {
+		bodyEnd++;
+	}
 
 	TokenList loopTokens;
 	while ( bodyBegin != bodyEnd ) {
@@ -731,27 +736,31 @@ void Method::process_for(TokenIterator& token)
 	for ( ; ; ) {
 		Object condition;
 		TokenIterator condBegin = conditionBegin;
-
 		expression(&condition, condBegin);
 
 		if ( isFalse(condition) ) {
 			break;
 		}
 
+		mStopProcessing = false;
+
 		pushTokens(loopTokens);
 			TokenIterator tmpBegin = getTokens().begin();
 			TokenIterator tmpEnd = getTokens().end();
 
-			process(&result, tmpBegin, tmpEnd);
+			VoidObject tmp;
+			process(&tmp, tmpBegin, tmpEnd);
 		popTokens();
+
+		mStopProcessing = false;
 
 		// execute loop expression
 		TokenIterator exprBegin = expressionBegin;
 		TokenIterator exprEnd = expressionEnd;
+
+		Object result;
 		process(&result, exprBegin, exprEnd, Token::Type::PARENTHESIS_CLOSE);
 	}
-
-	token = bodyEnd;
 }
 
 // executes a method or processes an assign statement
@@ -773,7 +782,8 @@ void Method::process_identifier(TokenIterator& token)
 
 	std::string identifier = token->content();
 
-	Object *symbol = getObject(identifier);
+	//Object *symbol = getObject(identifier);
+	Object *symbol = static_cast<Object*>(resolve(identifier));
 	if ( !symbol ) {
 		throw Utils::Exceptions::UnknownIdentifer("identifier '" + identifier + "' not found", token->position());
 	}
@@ -803,7 +813,7 @@ void Method::process_identifier(TokenIterator& token)
 // else {
 // ...
 // }
-void Method::process_if(TokenIterator& token, Object *result)
+void Method::process_if(TokenIterator& token)
 {
 	// find next open parenthesis
 	TokenIterator condBegin = ++findNext(token, Token::Type::PARENTHESIS_OPEN);
@@ -812,7 +822,13 @@ void Method::process_if(TokenIterator& token, Object *result)
 	// find next open curly bracket '{'
 	TokenIterator bodyBegin = findNext(condEnd, Token::Type::BRACKET_CURLY_OPEN);
 	// find next balanced '{' & '}' pair
-	TokenIterator bodyEnd = findNextBalancedCurlyBracket(++bodyBegin, getTokens().end());
+	TokenIterator bodyEnd = findNextBalancedCurlyBracket(bodyBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
+
+	// no matter what, at least set our token to our if-block's end
+	token = bodyEnd;
+	if ( bodyEnd != getTokens().end() ) {
+		bodyEnd++;
+	}
 
 	// collect all tokens for our if-block
 	TokenList ifTokens;
@@ -821,15 +837,11 @@ void Method::process_if(TokenIterator& token, Object *result)
 		bodyBegin++;
 	}
 
-	// no matter what, at least set our token to our if-block's end
-	token = bodyEnd;
-
 	bool targetReached = true;	// initially don't collect else-block tokens
 	TokenIterator elseBegin = getTokens().end();
 	TokenIterator elseEnd = getTokens().end();
 
 	// look for an else-token
-	bodyEnd++;
 	if ( bodyEnd != getTokens().end() && (bodyEnd->type() == Token::Type::KEYWORD && bodyEnd->content() == "else") ) {
 		elseBegin = findNext(bodyEnd, Token::Type::BRACKET_CURLY_OPEN);
 		// find next balanced '{' & '}' pair
@@ -876,7 +888,8 @@ void Method::process_if(TokenIterator& token, Object *result)
 			TokenIterator tmpBegin = getTokens().begin();
 			TokenIterator tmpEnd = getTokens().end();
 
-			process(result, tmpBegin, tmpEnd, Token::Type::BRACKET_CURLY_CLOSE);
+			VoidObject tmp;
+			process(&tmp, tmpBegin, tmpEnd);
 		popTokens();
 	}
 	else if ( !elseTokens.empty() ) {
@@ -884,7 +897,8 @@ void Method::process_if(TokenIterator& token, Object *result)
 			TokenIterator tmpBegin = getTokens().begin();
 			TokenIterator tmpEnd = getTokens().end();
 
-			process(result, tmpBegin, tmpEnd, Token::Type::BRACKET_CURLY_CLOSE);
+			VoidObject tmp;
+			process(&tmp, tmpBegin, tmpEnd);
 		popTokens();
 	}
 }
@@ -903,7 +917,7 @@ void Method::process_keyword(TokenIterator& token, Object *result)
 		process_for(token);
 	}
 	else if ( keyword == "if" ) {
-		process_if(token, result);
+		process_if(token);
 	}
 	else if ( keyword == "new" ) {
 		process_new(token, result);
@@ -1076,8 +1090,8 @@ void Method::process_return(TokenIterator& token, Object *result)
 // { <statement> }
 void Method::process_scope(TokenIterator& token, Object *result)
 {
-	TokenIterator scopeBegin = token;
-	TokenIterator scopeEnd = findNextBalancedCurlyBracket(++scopeBegin, getTokens().end());
+	TokenIterator scopeBegin = ++token;
+	TokenIterator scopeEnd = findNextBalancedCurlyBracket(scopeBegin, getTokens().end());
 
 	TokenList tmpTokens;
 	while ( scopeBegin != scopeEnd ) {
@@ -1105,8 +1119,6 @@ void Method::process_scope(TokenIterator& token, Object *result)
 	scope.setTokens(tmpTokens);
 	scope.visibility(this->visibility());
 
-System::Print("opening new scope", token->position());
-
 	scope.execute(ParameterList(), result);
 
 	this->mStopProcessing = scope.mStopProcessing;
@@ -1122,14 +1134,41 @@ System::Print("opening new scope", token->position());
 // }
 void Method::process_switch(TokenIterator& token)
 {
-assert(!"not implemented");
-//	throw Utils::Exceptions::NotImplemented("switch-case");
+throw Utils::Exceptions::NotImplemented("switch-case");
 
-	TokenIterator tmp = token;
+	// find next open parenthesis
+	TokenIterator condBegin = ++findNext(token, Token::Type::PARENTHESIS_OPEN);
+	// find next balanced '(' & ')' pair
+	TokenIterator condEnd = findNextBalancedParenthesis(condBegin);
+	// find next open curly bracket '{'
+	TokenIterator bodyBegin = findNext(condEnd, Token::Type::BRACKET_CURLY_OPEN);
+	// find next balanced '{' & '}' pair
+	TokenIterator bodyEnd = findNextBalancedCurlyBracket(bodyBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
+
+	token = bodyEnd;
+	if ( bodyEnd != getTokens().end() ) {
+		bodyEnd++;
+	}
+
+	TokenList switchTokens;
+	while ( bodyBegin != bodyEnd ) {
+		switchTokens.push_back((*bodyBegin));
+		bodyBegin++;
+	}
 
 
+	TokenIterator tmp = condBegin;
 
-	token = tmp;
+	Object value;
+	expression(&value, tmp);
+
+	pushTokens(switchTokens);
+		TokenIterator tmpBegin = getTokens().begin();
+		TokenIterator tmpEnd = getTokens().end();
+
+		VoidObject result;
+		process(&result, tmpBegin, tmpEnd);
+	popTokens();
 }
 
 void Method::process_type(TokenIterator& token)
@@ -1218,7 +1257,12 @@ void Method::process_while(TokenIterator& token)
 	// find next open curly bracket '{'
 	TokenIterator bodyBegin = findNext(condEnd, Token::Type::BRACKET_CURLY_OPEN);
 	// find next balanced '{' & '}' pair
-	TokenIterator bodyEnd = findNextBalancedCurlyBracket(++bodyBegin, getTokens().end());
+	TokenIterator bodyEnd = findNextBalancedCurlyBracket(bodyBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
+
+	token = bodyEnd;
+	if ( bodyEnd != getTokens().end() ) {
+		bodyEnd++;
+	}
 
 	TokenList whileTokens;
 	while ( bodyBegin != bodyEnd ) {
@@ -1241,11 +1285,9 @@ void Method::process_while(TokenIterator& token)
 			TokenIterator tmpEnd = getTokens().end();
 
 			VoidObject result;
-			process(&result, tmpBegin, tmpEnd, Token::Type::BRACKET_CURLY_CLOSE);
+			process(&result, tmpBegin, tmpEnd);
 		popTokens();
 	}
-
-	token = bodyEnd;
 }
 
 //const VariablesList& Method::provideSignature() const
