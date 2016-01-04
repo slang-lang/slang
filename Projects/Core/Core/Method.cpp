@@ -753,7 +753,9 @@ void Method::process_for(TokenIterator& token)
 		bodyBegin++;
 	}
 
-	do {
+	for ( ; ; ) {
+		mControlFlow = ControlFlow::None;
+
 		Object condition;
 		TokenIterator condBegin = conditionBegin;
 		expression(&condition, condBegin);
@@ -793,7 +795,7 @@ void Method::process_for(TokenIterator& token)
 
 		Object result;
 		process(&result, exprBegin, exprEnd, Token::Type::PARENTHESIS_CLOSE);
-	} while ( true );
+	}
 }
 
 // executes a method or processes an assign statement
@@ -1309,7 +1311,9 @@ void Method::process_while(TokenIterator& token)
 		bodyBegin++;
 	}
 
-	do {
+	for ( ; ; ) {
+		mControlFlow = ControlFlow::None;
+
 		TokenIterator tmp = condBegin;
 
 		Object condition;
@@ -1339,7 +1343,7 @@ void Method::process_while(TokenIterator& token)
 			System::Print("control flow: return");
 			return;
 		}
-	} while ( true );
+	}
 }
 
 const ParameterList& Method::provideSignature() const
