@@ -643,7 +643,7 @@ void Method::process(Object *result, TokenIterator& token, TokenIterator end, To
 				expression(result, token);
 				break;
 			case Token::Type::IDENTIFER:
-				process_identifier(token);
+				process_identifier(token, terminator == Token::Type::NIL ? Token::Type::SEMICOLON : terminator);
 				break;
 			case Token::Type::KEYWORD:
 				process_keyword(token, result);
@@ -732,7 +732,11 @@ void Method::process_for(TokenIterator& token)
 	// find expression
 	const TokenIterator expressionBegin = ++findNext(conditionBegin, Token::Type::SEMICOLON);
 	// find next open curly bracket '{'
-	const TokenIterator expressionEnd = findNext(expressionBegin, Token::Type::PARENTHESIS_CLOSE);
+	TokenIterator expressionEnd = findNext(expressionBegin, Token::Type::PARENTHESIS_CLOSE);
+
+	if ( expressionEnd != getTokens().end() ) {
+		expressionEnd++;
+	}
 
 	// find next balanced '{' & '}' pair for loop-body
 	TokenIterator bodyBegin = findNext(expressionBegin, Token::Type::BRACKET_CURLY_OPEN);
@@ -754,24 +758,32 @@ void Method::process_for(TokenIterator& token)
 	}
 
 	for ( ; ; ) {
+		// Condition parsing
+		// {
 		mControlFlow = ControlFlow::None;
 
-		Object condition;
 		TokenIterator condBegin = conditionBegin;
+
+		Object condition;
 		expression(&condition, condBegin);
 
 		if ( isFalse(condition) ) {
 			break;
 		}
+		// }
 
+		// Body parsing
+		// {
 		mControlFlow = ControlFlow::None;
 
 		pushTokens(loopTokens);
+		{
 			TokenIterator tmpBegin = getTokens().begin();
 			TokenIterator tmpEnd = getTokens().end();
 
 			VoidObject tmp;
 			process(&tmp, tmpBegin, tmpEnd);
+		}
 		popTokens();
 
 		if ( mControlFlow == ControlFlow::Break ) {
@@ -783,25 +795,40 @@ void Method::process_for(TokenIterator& token)
 		else if ( mControlFlow == ControlFlow::Return ) {
 			return;
 		}
+		// }
 
+		// Expression parsing
+		// {
 		mControlFlow = ControlFlow::None;
 
-		// execute loop expression
 		TokenIterator exprBegin = expressionBegin;
-		TokenIterator exprEnd = expressionEnd;
+		TokenList exprTokens;
 
-		Object result;
-		process(&result, exprBegin, exprEnd, Token::Type::PARENTHESIS_CLOSE);
+		while ( exprBegin != expressionEnd ) {
+			exprTokens.push_back((*exprBegin));
+			exprBegin++;
+		}
+
+		pushTokens(exprTokens);
+		{
+			TokenIterator tmpBegin = getTokens().begin();
+			TokenIterator tmpEnd = getTokens().end();
+
+			Object result;
+			process(&result, tmpBegin, tmpEnd, Token::Type::PARENTHESIS_CLOSE);
+		}
+		popTokens();
+		// }
 	}
 }
 
 // executes a method or processes an assign statement
-void Method::process_identifier(TokenIterator& token)
+void Method::process_identifier(TokenIterator& token, Token::Type::E terminator)
 {
 	// try to find assignment token
-	TokenIterator assign = findNext(token, Token::Type::ASSIGN, Token::Type::SEMICOLON);
+	TokenIterator assign = findNext(token, Token::Type::ASSIGN, terminator);//Token::Type::SEMICOLON);
 	// find next semicolon
-	TokenIterator end = findNext(token, Token::Type::SEMICOLON);
+	TokenIterator end = findNext(assign, terminator);//Token::Type::SEMICOLON);
 
     if ( assign == token ) {
         // we don't have an assignment but a method call
@@ -917,20 +944,24 @@ void Method::process_if(TokenIterator& token)
 
 	if ( isTrue(condition) ) {
 		pushTokens(ifTokens);
+		{
 			TokenIterator tmpBegin = getTokens().begin();
 			TokenIterator tmpEnd = getTokens().end();
 
 			VoidObject tmp;
 			process(&tmp, tmpBegin, tmpEnd);
+		}
 		popTokens();
 	}
 	else if ( !elseTokens.empty() ) {
 		pushTokens(elseTokens);
+		{
 			TokenIterator tmpBegin = getTokens().begin();
 			TokenIterator tmpEnd = getTokens().end();
 
 			VoidObject tmp;
 			process(&tmp, tmpBegin, tmpEnd);
+		}
 		popTokens();
 	}
 }
@@ -1137,17 +1168,6 @@ void Method::process_scope(TokenIterator& token, Object *result)
 		scopeBegin++;
 	}
 
-/*
-	pushScope(getName());
-	pushTokens(tmpTokens);
-		TokenIterator newScopeBegin = getTokens().begin();
-		TokenIterator newScopeEnd = getTokens().end();
-
-		process(result, newScopeBegin, newScopeEnd, Token::Type::BRACKET_CURLY_CLOSE);
-	popTokens();
-	popScope(true);
-*/
-
 	Method scope(this, getName(), getTypeName());
 	scope.setConst(this->isConst());
 	scope.setFinal(this->isFinal());
@@ -1201,11 +1221,13 @@ throw Utils::Exceptions::NotImplemented("switch-case");
 	expression(&value, tmp);
 
 	pushTokens(switchTokens);
+	{
 		TokenIterator tmpBegin = getTokens().begin();
 		TokenIterator tmpEnd = getTokens().end();
 
 		VoidObject result;
 		process(&result, tmpBegin, tmpEnd);
+	}
 	popTokens();
 }
 
@@ -1321,11 +1343,13 @@ void Method::process_while(TokenIterator& token)
 		}
 
 		pushTokens(whileTokens);
+		{
 			TokenIterator tmpBegin = getTokens().begin();
 			TokenIterator tmpEnd = getTokens().end();
 
 			VoidObject result;
 			process(&result, tmpBegin, tmpEnd);
+		}
 		popTokens();
 
 		if ( mControlFlow == ControlFlow::Break ) {

@@ -39,7 +39,7 @@ void LanguageTest::process()
 	TEST(testConstCorrectness3);
 	TEST(testDefaultParameter);
 	TEST(testFinal);
-	TEST(testForLoop);
+	TEST(testFor);
 	TEST(testIf);
 	TEST(testMethodOverloading);
 	TEST(testObjectReference);
@@ -183,7 +183,7 @@ void LanguageTest::testFinal()
 	}
 }
 
-void LanguageTest::testForLoop()
+void LanguageTest::testFor()
 {
 	try {
 		VirtualMachine vm;
