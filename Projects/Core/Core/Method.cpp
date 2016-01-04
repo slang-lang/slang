@@ -33,13 +33,13 @@ namespace ObjectiveScript {
 
 Method::Method(IScope *parent, const std::string& name, const std::string& type)
 : LocalScope(name, parent),
-  MethodSymbol(name, 0),
+  MethodSymbol(name),
   Variable(name, type),
   mOwner(0),
   mRepository(0),
   mStopProcessing(false)
 {
-	pushScope(name);
+	pushScope(this);
 }
 
 Method::~Method()
@@ -265,7 +265,7 @@ void Method::expression(Object *result, TokenIterator& start)
 void Method::garbageCollector(bool force)
 {
 	for ( MemberCollection::iterator it = mLocalSymbols.begin(); it != mLocalSymbols.end(); ) {
-		if ( it->second && it->second->isStatic() && !force ) {
+		if ( it->second->isStatic() && !force ) {
 			it++;
 			continue;
 		}
@@ -296,7 +296,7 @@ IScope* Method::getScope() const
 	return mScopeStack.back();
 }
 
-Object* Method::getSymbol(const std::string& symbol)
+Object* Method::getObject(const std::string& symbol) const
 {
 	std::string member, parent;
 	Tools::split(symbol, parent, member);
@@ -307,8 +307,9 @@ Object* Method::getSymbol(const std::string& symbol)
 		return object;
 	}
 
+
 	// either it is a local symbol...
-	for ( MemberCollection::iterator it = mLocalSymbols.begin(); it != mLocalSymbols.end(); ++it ) {
+	for ( MemberCollection::const_iterator it = mLocalSymbols.begin(); it != mLocalSymbols.end(); ++it ) {
 		if ( it->first == symbol ) {
 			return it->second;
 		}
@@ -566,7 +567,7 @@ void Method::parseTerm(Object *result, TokenIterator& start)
 		case Token::Type::IDENTIFER: {
 			// find out if we have to execute a method
 			// or simply get a stored variable
-			Object *symbol = getSymbol(start->content());
+			Object *symbol = getObject(start->content());
 			if ( symbol ) {
 				*result = *symbol;
 			}
@@ -599,13 +600,15 @@ void Method::parseTerm(Object *result, TokenIterator& start)
 	start++;
 }
 
-void Method::popScope()
+void Method::popScope(bool deleteScope)
 {
 	IScope *scope = mScopeStack.back();
 
 	mScopeStack.pop_back();
 
-	delete scope;
+	if ( deleteScope ) {
+		delete scope;
+	}
 }
 
 void Method::popTokens()
@@ -681,7 +684,7 @@ void Method::process_delete(TokenIterator& token)
 {
 	TokenIterator end = findNext(token, Token::Type::SEMICOLON);
 
-	Object *object = getSymbol(token->content());
+	Object *object = getObject(token->content());
 	if ( object ) {
 		mRepository->removeReference(object);
 	}
@@ -764,7 +767,7 @@ void Method::process_identifier(TokenIterator& token)
 
 	std::string identifier = token->content();
 
-	Object *symbol = getSymbol(identifier);
+	Object *symbol = getObject(identifier);
 	if ( !symbol ) {
 		throw Utils::Exceptions::UnknownIdentifer("identifier '" + identifier + "' not found", token->position());
 	}
@@ -951,7 +954,7 @@ void Method::process_method(TokenIterator& token, Object *result)
 	std::string member, parent;
 	Tools::split(method, parent, member);
 
-	Object *symbol = getSymbol(parent);
+	Object *symbol = getObject(parent);
 	if ( symbol ) {
 		symbol->execute(result, member, params, this);
 		return;
@@ -1068,7 +1071,7 @@ void Method::process_scope(TokenIterator& token, Object *result)
 
 		process(result, newScopeBegin, newScopeEnd, Token::Type::BRACKET_CURLY_CLOSE);
 	popTokens();
-	popScope();
+	popScope(true);
 
 /*
 	Method scope(this, getName(), getTypeName());
@@ -1093,8 +1096,8 @@ void Method::process_scope(TokenIterator& token, Object *result)
 // }
 void Method::process_switch(TokenIterator& token)
 {
-//assert(!"not implemented");
-	throw Utils::Exceptions::NotImplemented("switch-case");
+assert(!"not implemented");
+//	throw Utils::Exceptions::NotImplemented("switch-case");
 
 	TokenIterator tmp = token;
 
@@ -1144,7 +1147,7 @@ void Method::process_type(TokenIterator& token)
 	}
 
 	//Object *object = getSymbol(name);
-	Object *object = static_cast<Object*>(getScope()->resolve(name, true));
+	Object *object = static_cast<Object*>(getScope()->resolve(name));
 	if ( !object ) {
 		object = mRepository->createInstance(type, name, prototype);
 
@@ -1232,7 +1235,11 @@ const ParameterList& Method::provideSignature() const
 void Method::pushScope(const std::string& name)
 {
 	IScope *scope = new LocalScope(name);
+	pushScope(scope);
+}
 
+void Method::pushScope(IScope *scope)
+{
 	mScopeStack.push_back(scope);
 }
 
