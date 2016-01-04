@@ -39,7 +39,7 @@ private:	// Tests
 	void testConstCorrectness3();
 	void testDefaultParameter();
 	void testFinal();
-	void testForLoop();
+	void testFor();
 	void testIf();
 	void testInterfaces();
 	void testMethodOverloading();
