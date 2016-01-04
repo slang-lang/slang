@@ -94,7 +94,7 @@ private: // Execution
 	// }
 
 	Object* getObject(const std::string& symbol) const;
-	Symbol* resolve(const std::string& symbol) const;
+	Symbol* resolve(const std::string& name, bool onlyCurrentScope = false) const;
 
 	// expression parsing
 	// {

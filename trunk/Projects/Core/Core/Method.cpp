@@ -145,7 +145,7 @@ void Method::addIdentifier(const std::string& name, Object *object)
 	}
 
 	// define object in our scope (this will replace 'addIdentifier' in the distant future)
-	getScope()->define(insertName, object);
+	//getScope()->define(insertName, object);
 
 	if ( mLocalSymbols.find(insertName) != mLocalSymbols.end() ) {
 		if ( object->isStatic() ) {
@@ -569,6 +569,8 @@ void Method::parseTerm(Object *result, TokenIterator& start)
 					case Symbol::IType::ObjectSymbol:
 						*result = *static_cast<Object*>(symbol);
 						break;
+					case Symbol::IType::UnknownSymbol:
+						break;
 				}
 			}
 			else {
@@ -968,6 +970,8 @@ void Method::process_method(TokenIterator& token, Object *result)
 			case Symbol::IType::ObjectSymbol:
 				*result = *static_cast<Object*>(symbol);
 				return;
+			case Symbol::IType::UnknownSymbol:
+				break;
 		}
 	}
 
@@ -1083,7 +1087,7 @@ void Method::process_scope(TokenIterator& token, Object *result)
 		scopeBegin++;
 	}
 
-
+/*
 	pushScope(getName());
 	pushTokens(tmpTokens);
 		TokenIterator newScopeBegin = getTokens().begin();
@@ -1092,8 +1096,8 @@ void Method::process_scope(TokenIterator& token, Object *result)
 		process(result, newScopeBegin, newScopeEnd, Token::Type::BRACKET_CURLY_CLOSE);
 	popTokens();
 	popScope(true);
+*/
 
-/*
 	Method scope(this, getName(), getTypeName());
 	scope.setConst(this->isConst());
 	scope.setFinal(this->isFinal());
@@ -1103,8 +1107,15 @@ void Method::process_scope(TokenIterator& token, Object *result)
 	scope.setStatic(this->isStatic());
 	scope.setTokens(tmpTokens);
 	scope.visibility(this->visibility());
-	scope.execute(ParameterList(), result);
+
+/*
+	Method scope = *this;
+	scope.setTokens(tmpTokens);
 */
+	scope.execute(ParameterList(), result);
+
+	this->mStopProcessing = scope.mStopProcessing;
+
 	token = scopeEnd;
 }
 
@@ -1199,7 +1210,6 @@ void Method::process_type(TokenIterator& token)
 	}
 }
 
-
 // syntax:
 // while ( <condition> ) {
 // ...
@@ -1265,14 +1275,14 @@ void Method::pushTokens(const TokenList& tokens)
 	mTokenStack.push_back(tokens);
 }
 
-Symbol* Method::resolve(const std::string& symbol) const
+Symbol* Method::resolve(const std::string& name, bool onlyCurrentScope) const
 {
 	std::string member, parent;
-	Tools::split(symbol, parent, member);
+	Tools::split(name, parent, member);
 
-	Symbol *result = getScope()->resolve(parent);
+	Symbol *result = getScope()->getEnclosingScope()->resolve(parent, onlyCurrentScope);
 
-	if ( symbol == parent ) {
+	if ( name == parent ) {
 		return result;
 	}
 
@@ -1284,6 +1294,8 @@ Symbol* Method::resolve(const std::string& symbol) const
 			case Symbol::IType::MemberSymbol:
 			case Symbol::IType::ObjectSymbol:
 				return static_cast<Object*>(result)->resolve(member);
+			case Symbol::IType::UnknownSymbol:
+				break;
 		}
 	}
 

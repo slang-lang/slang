@@ -24,13 +24,13 @@ public:
 	class IType
 	{
 	public:
-		typedef enum E {
+		typedef enum {
 			UnknownSymbol,
 			BuildInTypeSymbol,
 			MemberSymbol,
 			MethodSymbol,
 			ObjectSymbol
-		};
+		} E;
 
         virtual ~IType() { }
 
