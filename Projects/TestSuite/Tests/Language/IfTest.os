@@ -30,12 +30,16 @@ public namespace IfTest
 		private bool TestCase2(number param1 = 2)
 		{
 			number one = 0;
+			print("one = " + one);
 
 			if ( (param1 - 1) == 0 ) {
 				print("TestCase2: if-true");
 				assert(false);
 			}
 			else if ( (param1 - 2) == 0 ) {
+				//number one = 1;
+				//print("one = " + one);
+
 				print("TestCase2: else-if-true");
 				assert(true);
 			}
@@ -43,6 +47,9 @@ public namespace IfTest
 				print("TestCase2: else-if-else");
 				assert(false);
 			}
+
+			print("one = " + one);
+			assert(one == 0);
 
 			one = one + 1;
 			print("one = " + one);

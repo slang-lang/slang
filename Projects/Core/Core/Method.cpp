@@ -145,7 +145,7 @@ void Method::addIdentifier(const std::string& name, Object *object)
 	}
 
 	// define object in our scope (this will replace 'addIdentifier' in the distant future)
-	//getScope()->define(insertName, object);
+	getScope()->define(insertName, object);
 
 	if ( mLocalSymbols.find(insertName) != mLocalSymbols.end() ) {
 		if ( object->isStatic() ) {
@@ -154,7 +154,7 @@ void Method::addIdentifier(const std::string& name, Object *object)
 			return;
 		}
 
-		throw Utils::Exceptions::DuplicateIdentifer(insertName);
+		throw Utils::Exceptions::DuplicateIdentifer("addIdentifier: " + insertName);
 	}
 
 	mLocalSymbols[insertName] = object;
@@ -742,7 +742,7 @@ void Method::process_for(TokenIterator& token)
 			TokenIterator tmpBegin = getTokens().begin();
 			TokenIterator tmpEnd = getTokens().end();
 
-			process(&result, tmpBegin, tmpEnd, Token::Type::BRACKET_CURLY_CLOSE);
+			process(&result, tmpBegin, tmpEnd);
 		popTokens();
 
 		// execute loop expression
@@ -1101,10 +1101,11 @@ void Method::process_scope(TokenIterator& token, Object *result)
 	scope.setFinal(this->isFinal());
 	scope.setLanguageFeatureState(this->languageFeatureState());
 	scope.setRepository(this->mRepository);
-	scope.setSignature(ParameterList());
 	scope.setStatic(this->isStatic());
 	scope.setTokens(tmpTokens);
 	scope.visibility(this->visibility());
+
+System::Print("opening new scope", token->position());
 
 	scope.execute(ParameterList(), result);
 
@@ -1172,7 +1173,7 @@ void Method::process_type(TokenIterator& token)
 	}
 
 	//Object *object = getSymbol(name);
-	Object *object = static_cast<Object*>(getScope()->resolve(name));
+	Object *object = static_cast<Object*>(resolve(name, true));
 	if ( !object ) {
 		object = mRepository->createInstance(type, name, prototype);
 
@@ -1197,7 +1198,7 @@ void Method::process_type(TokenIterator& token)
 	else {
 		if ( !object->isStatic() ) {
 			// upsi, did not clean up..
-			throw Utils::Exceptions::DuplicateIdentifer(name, token->position());
+			throw Utils::Exceptions::DuplicateIdentifer("process_type: " + name, token->position());
 		}
 
 		token = findNext(token, Token::Type::SEMICOLON);
@@ -1274,7 +1275,7 @@ Symbol* Method::resolve(const std::string& name, bool onlyCurrentScope) const
 	std::string member, parent;
 	Tools::split(name, parent, member);
 
-	Symbol *result = getScope()->getEnclosingScope()->resolve(parent, onlyCurrentScope);
+	Symbol *result = LocalScope::resolve(parent, onlyCurrentScope);
 
 	if ( name == parent ) {
 		return result;

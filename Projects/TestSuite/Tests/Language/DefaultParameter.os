@@ -6,6 +6,9 @@ public namespace Tests
 	{
 		public void Main(number argc = 0, string argv = "")
 		{
+			print("argc = " + argc);
+			print("argv = " + argv);
+
 			DefaultParameter();
 			DefaultParameter(2);
 		}
