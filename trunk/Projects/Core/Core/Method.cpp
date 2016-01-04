@@ -32,17 +32,19 @@ namespace ObjectiveScript {
 
 
 Method::Method(IScope *parent, const std::string& name, const std::string& type)
-: LocalScope(/*name,*/ parent),
+: LocalScope(name, parent),
   MethodSymbol(name, 0),
   Variable(name, type),
   mOwner(0),
   mRepository(0),
   mStopProcessing(false)
 {
+	pushScope(name);
 }
 
 Method::~Method()
 {
+	popScope();
 }
 
 bool Method::operator() (const Method& first, const Method& second) const
@@ -117,6 +119,10 @@ void Method::operator= (const Method& other)
 		// register new members
 		for ( MemberCollection::const_iterator it = other.mLocalSymbols.begin(); it != other.mLocalSymbols.end(); ++it ) {
 			addIdentifier(it->first, it->second);
+
+			// define object in our scope (this will replace 'addIdentifier' in the distant future)
+			getScope()->define(it->first, it->second);
+
 			mRepository->addReference(it->second);
 		}
 
@@ -195,6 +201,8 @@ void Method::execute(const ParameterList& params, Object *result)
 				object->setConst(param.isConst());
 
 				addIdentifier(param.name(), object);
+				// define object in our scope (this will replace 'addIdentifier' in the distant future)
+				//getScope()->define(param.name(), object);
 			} break;
 			case Parameter::AccessMode::ByValue: {
 				Object *object = mRepository->createInstance(param.type(), param.name());
@@ -205,12 +213,13 @@ void Method::execute(const ParameterList& params, Object *result)
 				object->setConst(param.isConst());
 
 				addIdentifier(param.name(), object);
+				// define object in our scope (this will replace 'addIdentifier' in the distant future)
+				//getScope()->define(param.name(), object);
 			} break;
 		}
 	}
 
 	result->connectRepository(mRepository);
-	result->overrideName(name());
 	result->overrideType(type());
 	result->visibility(visibility());
 
@@ -282,20 +291,25 @@ bool Method::isMember(const std::string& token) const
 	return (mOwner && mOwner->getMember(token));
 }
 
-Object* Method::getSymbol(const std::string& token)
+IScope* Method::getScope() const
+{
+	return mScopeStack.back();
+}
+
+Object* Method::getSymbol(const std::string& symbol)
 {
 	std::string member, parent;
-	Tools::split(token, parent, member);
+	Tools::split(symbol, parent, member);
 
-	Object *symbol = static_cast<Object*>(resolve(token));
-	if ( symbol ) {
+	Object *object = static_cast<Object*>(getScope()->resolve(symbol));
+	if ( object ) {
 		//System::Print("resolved symbol '" + token + "'");
-		return symbol;
+		return object;
 	}
 
 	// either it is a local symbol...
 	for ( MemberCollection::iterator it = mLocalSymbols.begin(); it != mLocalSymbols.end(); ++it ) {
-		if ( it->first == token ) {
+		if ( it->first == symbol ) {
 			return it->second;
 		}
 
@@ -306,11 +320,11 @@ Object* Method::getSymbol(const std::string& token)
 
 	// ... or a member of our owner, if we have one
 	if ( mOwner ) {
-		return mOwner->getMember(token);
+		return mOwner->getMember(symbol);
 	}
 
 	// ups.. this symbol is neither a local symbol, nor a member
-	throw Utils::Exceptions::UnknownIdentifer("identifier '" + token + "' not found!");
+	throw Utils::Exceptions::UnknownIdentifer("identifier '" + symbol + "' not found!");
 }
 
 const TokenList& Method::getTokens() const
@@ -583,6 +597,15 @@ void Method::parseTerm(Object *result, TokenIterator& start)
 	}
 
 	start++;
+}
+
+void Method::popScope()
+{
+	IScope *scope = mScopeStack.back();
+
+	mScopeStack.pop_back();
+
+	delete scope;
 }
 
 void Method::popTokens()
@@ -1037,18 +1060,30 @@ void Method::process_scope(TokenIterator& token, Object *result)
 		scopeBegin++;
 	}
 
+
+	pushScope(getName());
 	pushTokens(tmpTokens);
 		TokenIterator newScopeBegin = getTokens().begin();
 		TokenIterator newScopeEnd = getTokens().end();
 
-		//LocalScope scope(this);
-
 		process(result, newScopeBegin, newScopeEnd, Token::Type::BRACKET_CURLY_CLOSE);
 	popTokens();
+	popScope();
 
+/*
+	Method scope(this, getName(), getTypeName());
+	scope.setConst(this->isConst());
+	scope.setFinal(this->isFinal());
+	scope.setLanguageFeatureState(this->languageFeatureState());
+	scope.setRepository(this->mRepository);
+	scope.setSignature(ParameterList());
+	scope.setStatic(this->isStatic());
+	scope.setTokens(tmpTokens);
+	scope.visibility(this->visibility());
+	scope.execute(ParameterList(), result);
+*/
 	token = scopeEnd;
 }
-
 
 // syntax:
 // switch ( <expression> ) {
@@ -1058,7 +1093,8 @@ void Method::process_scope(TokenIterator& token, Object *result)
 // }
 void Method::process_switch(TokenIterator& token)
 {
-assert(!"not implemented");
+//assert(!"not implemented");
+	throw Utils::Exceptions::NotImplemented("switch-case");
 
 	TokenIterator tmp = token;
 
@@ -1107,8 +1143,8 @@ void Method::process_type(TokenIterator& token)
 		assign = ++token;
 	}
 
-	Object *object = getSymbol(name);
-	//Object *object = static_cast<Object*>(resolve(name));
+	//Object *object = getSymbol(name);
+	Object *object = static_cast<Object*>(getScope()->resolve(name, true));
 	if ( !object ) {
 		object = mRepository->createInstance(type, name, prototype);
 
@@ -1126,6 +1162,9 @@ void Method::process_type(TokenIterator& token)
 
 		addIdentifier(name, object);
 
+		// define object in our scope (this will replace 'addIdentifier' in the distant future)
+		getScope()->define(name, object);
+
 		if ( token->type() != Token::Type::SEMICOLON ) {
 			throw Utils::Exceptions::SyntaxError("';' expected but '" + token->content() + "' found", token->position());
 		}
@@ -1133,14 +1172,11 @@ void Method::process_type(TokenIterator& token)
 	else {
 		if ( !object->isStatic() ) {
 			// upsi, did not clean up..
-			throw Utils::Exceptions::DuplicateIdentifer(name);
+			throw Utils::Exceptions::DuplicateIdentifer(name, token->position());
 		}
 
 		token = findNext(token, Token::Type::SEMICOLON);
 	}
-
-	// define object in our scope (this will replace 'addIdentifier' in the distant future)
-	define(object);
 }
 
 
@@ -1191,6 +1227,13 @@ void Method::process_while(TokenIterator& token)
 const ParameterList& Method::provideSignature() const
 {
 	return mSignature;
+}
+
+void Method::pushScope(const std::string& name)
+{
+	IScope *scope = new LocalScope(name);
+
+	mScopeStack.push_back(scope);
 }
 
 void Method::pushTokens(const TokenList& tokens)

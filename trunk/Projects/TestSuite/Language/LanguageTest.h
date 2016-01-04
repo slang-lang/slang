@@ -49,6 +49,7 @@ private:	// Tests
 	void testPrint();
 	void testScope();
 	void testStaticLocalVariable();
+	void testSwitch();
 	void testWhile();
 };
 

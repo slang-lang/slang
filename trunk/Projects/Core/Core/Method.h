@@ -93,7 +93,7 @@ private: // Execution
 	void process_while(TokenIterator& token);
 	// }
 
-	Object* getSymbol(const std::string& token);
+	Object* getSymbol(const std::string& symbol);
 
 	// expression parsing
 	// {
@@ -104,6 +104,13 @@ private: // Execution
 	void parseTerm(Object *result, TokenIterator& start);
 	// }
 
+	// Scope stack
+	// {
+	IScope* getScope() const;
+	void popScope();
+	void pushScope(const std::string& name);
+	// }
+
 	// Token stack
 	// {
 	const TokenList& getTokens() const;
@@ -112,6 +119,7 @@ private: // Execution
 	// }
 
 private:
+	typedef std::list<IScope*> ScopeStack;
 	typedef std::list<TokenList> TokenStack;
 
 private:
@@ -119,6 +127,7 @@ private:
 	Object *mOwner;
 	ParameterList mParameter;
 	Repository *mRepository;
+	ScopeStack mScopeStack;
 	ParameterList mSignature;
 	TokenList mTokens;
 	TokenStack mTokenStack;
