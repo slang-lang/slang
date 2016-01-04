@@ -31,7 +31,6 @@ LanguageTest::LanguageTest(const ::Utils::Common::ILogger *p)
 
 void LanguageTest::process()
 {
-//TEST(testScope);
 	TEST(testAssert);
 	TEST(testBooleanOperators);
 	TEST(testComment);

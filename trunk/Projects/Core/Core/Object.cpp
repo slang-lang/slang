@@ -114,22 +114,26 @@ Object& Object::operator= (const Object& other)
 
 		// unregister current members
 		for ( MemberCollection::const_iterator it = mMembers.begin(); it != mMembers.end(); ) {
+			undefine(it->first, it->second);
+
 			mRepository->removeReference(it->second);
 			it = mMembers.erase(it);
 		}
 		mMembers.clear();
 
-		// register new members
-		for ( MemberCollection::const_iterator it = other.mMembers.begin(); it != other.mMembers.end(); ++it ) {
-			addMember(it->second);
-		}
-
 		// unregister old methods
 		for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ) {
+			undefine((*it)->getName(), (*it));
+
 			delete (*it);
 			it = mMethods.erase(it);
 		}
 		mMethods.clear();
+
+		// register new members
+		for ( MemberCollection::const_iterator it = other.mMembers.begin(); it != other.mMembers.end(); ++it ) {
+			addMember(it->second);
+		}
 
 		// register new methods
 		for ( MethodCollection::const_iterator it = other.mMethods.begin(); it != other.mMethods.end(); ++it ) {
@@ -143,32 +147,36 @@ Object& Object::operator= (const Object& other)
 	return *this;
 }
 
-void Object::addMember(Object *m)
+void Object::addMember(Object *member)
 {
-	assert(m);
+	assert(member);
 
-	if ( mMembers.find(m->getName()) != mMembers.end() ) {
-		throw Utils::Exceptions::DuplicateIdentifer("duplicate member '" + m->getName() + "' added");
+	if ( mMembers.find(member->getName()) != mMembers.end() ) {
+		throw Utils::Exceptions::DuplicateIdentifer("duplicate member '" + member->getName() + "' added");
 	}
 
-	mMembers.insert(std::make_pair(m->getName(), m));
+	mMembers.insert(std::make_pair(member->getName(), member));
 
-	mRepository->addReference(m);
+	mRepository->addReference(member);
+
+	define(member->getName(), member);
 }
 
-void Object::addMethod(Method *m)
+void Object::addMethod(Method *method)
 {
-	assert(m);
+	assert(method);
 
 	MethodCollection::iterator tmpIt;
-	if ( findMethod(m->name(), m->provideSignature(), tmpIt) ) {
-		throw Utils::Exceptions::DuplicateIdentifer("duplicate method '" + m->getName() + "' added with same signature");
+	if ( findMethod(method->name(), method->provideSignature(), tmpIt) ) {
+		throw Utils::Exceptions::DuplicateIdentifer("duplicate method '" + method->getName() + "' added with same signature");
 	}
 
-	m->setOwner(this);
-	m->setRepository(mRepository);
+	method->setOwner(this);
+	method->setRepository(mRepository);
 
-	mMethods.insert(m);
+	mMethods.insert(method);
+
+	//define(method->getName(), method);	// does not allowed method overloading..
 }
 
 void Object::addParent(const std::string& parent)
@@ -352,12 +360,6 @@ Object* Object::getMember(const std::string& symbol) const
 {
 	std::string member, parent;
 	Tools::split(symbol, parent, member);
-
-	Object *object = static_cast<Object*>(resolve(symbol));
-	if ( object ) {
-		//System::Print("resolved symbol '" + token + "'");
-		return object;
-	}
 
 	// loop through all members and ask them if this identifier belongs to them
 	for ( MemberCollection::const_iterator it = mMembers.begin(); it != mMembers.end(); ++it ) {

@@ -119,10 +119,6 @@ void Method::operator= (const Method& other)
 		// register new members
 		for ( MemberCollection::const_iterator it = other.mLocalSymbols.begin(); it != other.mLocalSymbols.end(); ++it ) {
 			addIdentifier(it->first, it->second);
-
-			// define object in our scope (this will replace 'addIdentifier' in the distant future)
-			getScope()->define(it->first, it->second);
-
 			mRepository->addReference(it->second);
 		}
 
@@ -147,6 +143,9 @@ void Method::addIdentifier(const std::string& name, Object *object)
 	if ( insertName.empty() ) {
 		insertName = object->getName();
 	}
+
+	// define object in our scope (this will replace 'addIdentifier' in the distant future)
+	getScope()->define(insertName, object);
 
 	if ( mLocalSymbols.find(insertName) != mLocalSymbols.end() ) {
 		if ( object->isStatic() ) {
@@ -201,8 +200,6 @@ void Method::execute(const ParameterList& params, Object *result)
 				object->setConst(param.isConst());
 
 				addIdentifier(param.name(), object);
-				// define object in our scope (this will replace 'addIdentifier' in the distant future)
-				//getScope()->define(param.name(), object);
 			} break;
 			case Parameter::AccessMode::ByValue: {
 				Object *object = mRepository->createInstance(param.type(), param.name());
@@ -213,8 +210,6 @@ void Method::execute(const ParameterList& params, Object *result)
 				object->setConst(param.isConst());
 
 				addIdentifier(param.name(), object);
-				// define object in our scope (this will replace 'addIdentifier' in the distant future)
-				//getScope()->define(param.name(), object);
 			} break;
 		}
 	}
@@ -270,6 +265,8 @@ void Method::garbageCollector(bool force)
 			continue;
 		}
 		else {
+			getScope()->undefine(it->first, it->second);
+
 			mRepository->removeReference(it->second);
 			it = mLocalSymbols.erase(it);
 		}
@@ -300,13 +297,6 @@ Object* Method::getObject(const std::string& symbol) const
 {
 	std::string member, parent;
 	Tools::split(symbol, parent, member);
-
-	Object *object = static_cast<Object*>(getScope()->resolve(symbol));
-	if ( object ) {
-		//System::Print("resolved symbol '" + token + "'");
-		return object;
-	}
-
 
 	// either it is a local symbol...
 	for ( MemberCollection::const_iterator it = mLocalSymbols.begin(); it != mLocalSymbols.end(); ++it ) {
@@ -567,16 +557,32 @@ void Method::parseTerm(Object *result, TokenIterator& start)
 		case Token::Type::IDENTIFER: {
 			// find out if we have to execute a method
 			// or simply get a stored variable
-			Object *symbol = getObject(start->content());
+
+			Symbol *symbol = resolve(start->content());
 			if ( symbol ) {
-				*result = *symbol;
+				switch ( symbol->getType() ) {
+					case Symbol::IType::MethodSymbol:
+						process_method(start, result);
+						break;
+					case Symbol::IType::BuildInTypeSymbol:
+					case Symbol::IType::MemberSymbol:
+					case Symbol::IType::ObjectSymbol:
+						*result = *static_cast<Object*>(symbol);
+						break;
+				}
 			}
 			else {
-				if ( isMethod(start->content()) ) {
-					process_method(start, result);
+				Object *object = getObject(start->content());
+				if ( object ) {
+					*result = *object;
 				}
 				else {
-					throw Utils::Exceptions::UnknownIdentifer("unknown/unexpected identifier '" + start->content() + "' found", start->position());
+					if ( isMethod(start->content()) ) {
+						process_method(start, result);
+					}
+					else {
+						throw Utils::Exceptions::UnknownIdentifer("unknown/unexpected identifier '" + start->content() + "' found", start->position());
+					}
 				}
 			}
 		} break;
@@ -951,12 +957,26 @@ void Method::process_method(TokenIterator& token, Object *result)
 
 	token = closed;
 
+	Symbol *symbol = resolve(method);
+	if ( symbol ) {
+		switch ( symbol->getType() ) {
+			case Symbol::IType::MethodSymbol:
+				static_cast<Method*>(symbol)->execute(params, result);
+				return;
+			case Symbol::IType::BuildInTypeSymbol:
+			case Symbol::IType::MemberSymbol:
+			case Symbol::IType::ObjectSymbol:
+				*result = *static_cast<Object*>(symbol);
+				return;
+		}
+	}
+
 	std::string member, parent;
 	Tools::split(method, parent, member);
 
-	Object *symbol = getObject(parent);
-	if ( symbol ) {
-		symbol->execute(result, member, params, this);
+	Object *object = getObject(parent);
+	if ( object ) {
+		object->execute(result, member, params, this);
 		return;
 	}
 
@@ -1165,9 +1185,6 @@ void Method::process_type(TokenIterator& token)
 
 		addIdentifier(name, object);
 
-		// define object in our scope (this will replace 'addIdentifier' in the distant future)
-		getScope()->define(name, object);
-
 		if ( token->type() != Token::Type::SEMICOLON ) {
 			throw Utils::Exceptions::SyntaxError("';' expected but '" + token->content() + "' found", token->position());
 		}
@@ -1246,6 +1263,31 @@ void Method::pushScope(IScope *scope)
 void Method::pushTokens(const TokenList& tokens)
 {
 	mTokenStack.push_back(tokens);
+}
+
+Symbol* Method::resolve(const std::string& symbol) const
+{
+	std::string member, parent;
+	Tools::split(symbol, parent, member);
+
+	Symbol *result = getScope()->resolve(parent);
+
+	if ( symbol == parent ) {
+		return result;
+	}
+
+	if ( result ) {
+		switch ( result->getType() ) {
+			case Symbol::IType::MethodSymbol:
+				break;
+			case Symbol::IType::BuildInTypeSymbol:
+			case Symbol::IType::MemberSymbol:
+			case Symbol::IType::ObjectSymbol:
+				return static_cast<Object*>(result)->resolve(member);
+		}
+	}
+
+	return result;
 }
 
 void Method::setOwner(Object *owner)
