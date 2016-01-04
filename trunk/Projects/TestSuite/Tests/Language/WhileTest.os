@@ -10,9 +10,10 @@ public namespace Language
 			assert( TestCase2(5) );
 			assert( TestCase3() );
 			assert( TestCase4() );
+			assert( TestCase5() );
 		}
 
-		public bool TestCase1(number maxCount = 7) const
+		private bool TestCase1(number maxCount = 7) const
 		{
 			print("TestCase1");
 
@@ -25,7 +26,7 @@ public namespace Language
 			return true;
 		}
 
-		public bool TestCase2(number maxCount = 7) const
+		private bool TestCase2(number maxCount = 7) const
 		{
 			print("TestCase2");
 
@@ -47,7 +48,7 @@ public namespace Language
 			return true;
 		}
 
-		public bool TestCase3() const
+		private bool TestCase3() const
 		{
 			print("TestCase3");
 
@@ -56,7 +57,7 @@ public namespace Language
 			while ( count < 5 ) {
 				print("count = " + count);
 
-				if ( count == 1 ) {
+				if ( count == 2 ) {
 					break;
 				}
 
@@ -66,13 +67,13 @@ public namespace Language
 			return true;
 		}
 
-		public bool TestCase4() const
+		private bool TestCase4() const
 		{
 			print("TestCase4");
 
 			number count = 0;
 
-			while ( count <= 5 ) {
+			while ( count < 5 ) {
 				print("count = " + count);
 				count = count + 1;
 
@@ -82,6 +83,24 @@ public namespace Language
 			}
 
 			return true;
+		}
+
+		private bool TestCase5() const
+		{
+			print("TestCase5");
+
+			number count = 0;
+
+			while ( count < 5 ) {
+				print("count = " + count);
+				count = count + 1;
+
+				if ( count == 2 ) {
+					return true;
+				}
+			}
+
+			return false;
 		}
 	}
 }
