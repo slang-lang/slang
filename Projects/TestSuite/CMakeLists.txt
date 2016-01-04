@@ -30,4 +30,4 @@ add_include(Projects/TestSuite)
 add_include(Projects/Utils)
 
 SET(EXECUTABLE_OUTPUT_PATH ${EXECUTABLE_OUTPUT_PATH}/TestSuite)
-build_app(Test "")
+build_app(TestSuite "")

@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="Testing"
+	Name="TestSuite"
 	ProjectGUID="{381A8136-0195-4A4F-BBCD-4AD754123425}"
 	RootNamespace="MyTest"
 	TargetFrameworkVersion="196613"
@@ -63,7 +63,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="ObjectiveScript_debug.lib Utils_debug.lib"
-				OutputFile="$(OutDir)\$(ProjectName)_debug.exe"
+				OutputFile="$(OutDir)\$(ProjectName).exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\Libs"
 				GenerateManifest="false"
@@ -409,10 +409,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\TestFramework\Fixture.h"
-				>
-			</File>
-			<File
 				RelativePath=".\Math\Fixture.h"
 				>
 			</File>
@@ -430,6 +426,10 @@
 			</File>
 			<File
 				RelativePath=".\Attributes\Fixture.h"
+				>
+			</File>
+			<File
+				RelativePath=".\TestFramework\Fixture.h"
 				>
 			</File>
 			<File
