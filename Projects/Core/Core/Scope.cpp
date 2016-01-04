@@ -25,14 +25,14 @@ LocalScope::~LocalScope()
 	for ( Symbols::iterator it = mSymbols.begin(); it != mSymbols.end(); ++it ) {
 /*
 		Symbol::IType::E type = it->second->getType();
-		
+
 		switch ( type ) {
+			case Symbol::IType::UnknownSymbol:
+				break;
 			case Symbol::IType::BuildInTypeSymbol:
 			case Symbol::IType::MemberSymbol:
 			case Symbol::IType::MethodSymbol:
 			case Symbol::IType::ObjectSymbol:
-				break;
-			default:
 				break;
 		}
 */
