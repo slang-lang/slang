@@ -46,7 +46,7 @@ TEST(testScope);
 	TEST(testObjectReference);
 	TEST(testParameters);
 	TEST(testPrint);
-	//TEST(testScope);	// not yet implemented
+	TEST(testScope);	// not yet implemented
 	//TEST(testStaticLocalVariable);	// temporary broken
 	TEST(testWhile);
 

@@ -34,6 +34,7 @@
 std::string mFilename;
 Utils::Common::StdOutLogger mLogger;
 ObjectiveScript::ParameterList mParameters;
+Utils::Printer *mPrinter;
 std::string mRoot;
 
 
@@ -43,8 +44,8 @@ void printUsage()
 	std::cout << std::endl;
 	std::cout << "-f | --file <file>    Parse and execute <file>" << std::endl;
 	std::cout << "-h | --help           This help" << std::endl;
+	std::cout << "-l | --library        Library root path" << std::endl;
 	std::cout << "-q                    Quiet mode, chats as less as possible" << std::endl;
-	std::cout << "-r | --root           Library root path" << std::endl;
 	std::cout << "-v                    Verbose output" << std::endl;
 	std::cout << "--version             Version information" << std::endl;
 	std::cout << std::endl;
@@ -62,8 +63,10 @@ void processParameters(int argc, const char* argv[])
 	StringList params;
 	std::string paramStr;
 
-	if ( argc > 1 ) {
-		for (int i = 1; i < argc; i++) {
+	bool scriptParams = false;
+
+	for ( int i = 1; i < argc; i++ ) {
+		if ( !scriptParams ) {
 			if ( Utils::Tools::StringCompare(argv[i], "-f") || Utils::Tools::StringCompare(argv[i], "--file") ) {
 				if ( argc <= ++i ) {
 					std::cout << "invalid number of parameters provided!" << std::endl;
@@ -74,16 +77,16 @@ void processParameters(int argc, const char* argv[])
 				mFilename = argv[i];
 				params.push_back(mFilename);
 				paramStr += mFilename;
+
+				// all parameters that follow are designated for our script
+				scriptParams = true;
 			}
 			else if ( Utils::Tools::StringCompare(argv[i], "-h") || Utils::Tools::StringCompare(argv[i], "--help") ) {
 				printUsage();
 
 				exit(0);
 			}
-			else if ( Utils::Tools::StringCompare(argv[i], "-q") ) {
-				mLogger.setLoudness(Utils::Common::ILogger::LoudnessMute);
-			}
-			else if ( Utils::Tools::StringCompare(argv[i], "-r") || Utils::Tools::StringCompare(argv[i], "--root") ) {
+			else if ( Utils::Tools::StringCompare(argv[i], "-l") || Utils::Tools::StringCompare(argv[i], "--library") ) {
 				if ( argc <= ++i ) {
 					std::cout << "invalid number of parameters provided!" << std::endl;
 
@@ -92,8 +95,16 @@ void processParameters(int argc, const char* argv[])
 
 				mRoot = argv[i];
 			}
+			else if ( Utils::Tools::StringCompare(argv[i], "-q") ) {
+				mLogger.setLoudness(Utils::Common::ILogger::LoudnessMute);
+
+				mPrinter->ActivatePrinter = false;
+			}
 			else if ( Utils::Tools::StringCompare(argv[i], "-v") ) {
 				mLogger.setLoudness(Utils::Common::ILogger::LoudnessInfo);
+
+				mPrinter->ActivatePrinter = true;
+				mPrinter->PrintFileAndLine = true;
 			}
 			else if ( Utils::Tools::StringCompare(argv[i], "--version") ) {
 				printVersion();
@@ -104,12 +115,15 @@ void processParameters(int argc, const char* argv[])
 				mFilename = argv[i];
 				params.push_back(mFilename);
 				paramStr += mFilename;
+
+				// all parameters that follow are designated for our script
+				scriptParams = true;
 			}
-			else {
-				params.push_back(argv[i]);
-				paramStr += ", ";
-				paramStr += argv[i];
-			}
+		}
+		else {
+			params.push_back(argv[i]);
+			paramStr += ", ";
+			paramStr += argv[i];
 		}
 	}
 
@@ -125,6 +139,8 @@ int main(int argc, const char* argv[])
 	// Memory leak detection
 #endif
 
+	mPrinter = Utils::PrinterDriver::getInstance();
+
 	processParameters(argc, argv);
 
 	if ( mFilename.empty() ) {
@@ -132,11 +148,6 @@ int main(int argc, const char* argv[])
 
 		return 0;
 	}
-
-	Utils::Printer *mPrinter = Utils::PrinterDriver::getInstance();
-	mPrinter->ActivatePrinter = true;
-	mPrinter->AutomaticLineBreak = true;
-	mPrinter->PrintFileAndLine = true;
 
 	ObjectiveScript::VirtualMachine mVirtualMachine;
 	mVirtualMachine.setBaseFolder(mRoot);

@@ -6,9 +6,9 @@ public namespace ScopeTest
 	{
 		public void Main(number argc = 0, string argv = "")
 		{
-			assert( TestCase1() );
-			assert( TestCase2() );
-			//assert( TestCase3() );
+			//assert( TestCase1() );
+			//assert( TestCase2() );
+			assert( TestCase3() );
 		}
 
 		private bool TestCase1() const
@@ -40,10 +40,28 @@ public namespace ScopeTest
 		{
 			number one = 1;
 			print("one = " + one);
-			for ( number one = 2; one < 5; one = one + 1 ) {
+			number two = 2;
+			print("two = " + two);
+			for ( int i = 0i; i < 5i; i = i + 1i; ) {
+				print("i = " + i);
 				print("one = " + one);
-				assert(one != 1);
+				print("two = " + two);
+
+				{ number one = 1; number two = 2; }
+                                print("one = " + one);
+                                print("two = " + two);
+
+//				number one = 3;
+				{ number one = 3; number two = 4; }
+                                print("one = " + one);
+                                print("two = " + two);
+
+				{ number one = 5; number two = 6; }
+                                print("one = " + one);
+                                print("two = " + two);
 			}
+			print("one = " + one);
+			print("two = " + two);
 			return true;
 		}
 	}
