@@ -12,7 +12,7 @@ public namespace
 			}
 			// if this assert fails or succeeds, either way this means our scopes are not working correctly
 			// we should never ever be able to access a variable that was declared in a loop
-			assert(loop1 == 5);
+			assert( loop1 == 5 );
 
 			for ( number loop2 = 0; loop2 < 10; loop2 = loop2 + 1; ) {
 				print("loop2 = " + loop2);
@@ -20,7 +20,17 @@ public namespace
 			}
 			// if this assert fails or succeeds, either way this means our scopes are not working correctly
 			// we should never ever be able to access a variable that was declared in a loop
-			assert(loop2 == 10);
+			assert( loop2 == 10 );
+
+			for ( number loop3 = 0; loop3 < 5; loop3 = loop3 + 1; ) {
+				print("loop3 = " + loop3);
+				assert( loop3 < 5 );
+
+				if ( loop3 > 2 ) {
+					break;
+				}
+			}
+			assert( loop3 == 3 );
 		}
 	}
 }

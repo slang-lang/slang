@@ -26,6 +26,7 @@ static const char* TRUE = "true";
 static const char* KEYWORD_ASSERT = "assert";
 static const char* KEYWORD_BREAK = "break";
 static const char* KEYWORD_CASE = "case";
+static const char* KEYWORD_CONTINUE = "continue";
 static const char* KEYWORD_DELETE = "delete";
 static const char* KEYWORD_ELSE = "else";
 static const char* KEYWORD_FOR = "for";

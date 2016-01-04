@@ -66,6 +66,17 @@ public: // Execution
 private:
 	typedef std::map<std::string, Object*> MemberCollection;
 
+	class ControlFlow
+	{
+	public:
+		typedef enum {
+			Break,
+			Continue,
+			None,
+			Return
+		} E;
+	};
+
 private: // Construction
 	void addIdentifier(const std::string& name, Object *object);			// throws DuplicateIdentifer exception
 
@@ -78,6 +89,8 @@ private: // Execution
 	// {
 	void process(Object *result, TokenIterator& start, TokenIterator end, Token::Type::E terminator = Token::Type::NIL);
 	void process_assert(TokenIterator& token);
+	void process_break(TokenIterator& token);
+	void process_continue(TokenIterator& token);
 	void process_delete(TokenIterator& token);
 	void process_for(TokenIterator& token);
 	void process_identifier(TokenIterator& token);
@@ -135,7 +148,7 @@ private:
 	TokenStack mTokenStack;
 
 private:
-	bool mStopProcessing;
+	ControlFlow::E mControlFlow;
 };
 
 

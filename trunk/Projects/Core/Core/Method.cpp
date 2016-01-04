@@ -37,7 +37,7 @@ Method::Method(IScope *parent, const std::string& name, const std::string& type)
   Variable(name, type),
   mOwner(0),
   mRepository(0),
-  mStopProcessing(false)
+  mControlFlow(ControlFlow::None)
 {
 	pushScope(this);
 }
@@ -162,7 +162,7 @@ void Method::addIdentifier(const std::string& name, Object *object)
 
 void Method::execute(const ParameterList& params, Object *result)
 {
-	mStopProcessing = false;		// reset this every time we start executing a method
+	mControlFlow = ControlFlow::None;		// reset this every time we start executing a method
 
 	if ( !isSignatureValid(params) ) {
 		throw Utils::Exceptions::ParameterCountMissmatch("incorrect number or type of parameters");
@@ -628,7 +628,7 @@ void Method::process(Object *result, TokenIterator& token, TokenIterator end, To
 	while ( ((token != getTokens().end()) && (token != end) ) &&
 			((token->type() != terminator) && (token->type() != Token::Type::ENDOFFILE)) ) {
 
-		if ( mStopProcessing ) {
+		if ( mControlFlow != ControlFlow::None ) {
 			// a return command has been triggered, time to stop processing
 			break;
 		}
@@ -685,6 +685,26 @@ void Method::process_assert(TokenIterator& token)
 }
 
 // syntax:
+// break;
+void Method::process_break(TokenIterator& token)
+{
+	//System::Print(KEYWORD_BREAK, token->position());
+
+(void)token;
+	mControlFlow = ControlFlow::Break;
+}
+
+// syntax:
+// continue;
+void Method::process_continue(TokenIterator& token)
+{
+	//System::Print(KEYWORD_CONTINUE, token->position());
+
+(void)token;
+	mControlFlow = ControlFlow::Continue;
+}
+
+// syntax:
 // delete <identifier>;
 void Method::process_delete(TokenIterator& token)
 {
@@ -733,7 +753,7 @@ void Method::process_for(TokenIterator& token)
 		bodyBegin++;
 	}
 
-	for ( ; ; ) {
+	do {
 		Object condition;
 		TokenIterator condBegin = conditionBegin;
 		expression(&condition, condBegin);
@@ -742,7 +762,7 @@ void Method::process_for(TokenIterator& token)
 			break;
 		}
 
-		mStopProcessing = false;
+		mControlFlow = ControlFlow::None;
 
 		pushTokens(loopTokens);
 			TokenIterator tmpBegin = getTokens().begin();
@@ -752,7 +772,20 @@ void Method::process_for(TokenIterator& token)
 			process(&tmp, tmpBegin, tmpEnd);
 		popTokens();
 
-		mStopProcessing = false;
+		if ( mControlFlow == ControlFlow::Break ) {
+			System::Print("control flow: break");
+			break;
+		}
+		else if ( mControlFlow == ControlFlow::Continue ) {
+			System::Print("control flow: continue");
+			continue;
+		}
+		else if ( mControlFlow == ControlFlow::Return ) {
+			System::Print("control flow: return");
+			return;
+		}
+
+		mControlFlow = ControlFlow::None;
 
 		// execute loop expression
 		TokenIterator exprBegin = expressionBegin;
@@ -760,7 +793,7 @@ void Method::process_for(TokenIterator& token)
 
 		Object result;
 		process(&result, exprBegin, exprEnd, Token::Type::PARENTHESIS_CLOSE);
-	}
+	} while ( true );
 }
 
 // executes a method or processes an assign statement
@@ -907,31 +940,37 @@ void Method::process_keyword(TokenIterator& token, Object *result)
 {
 	std::string keyword = (*token++).content();
 
-	if ( keyword == "assert" ) {
+	if ( keyword == KEYWORD_ASSERT ) {
 		process_assert(token);
 	}
-	else if ( keyword == "delete" ) {
+	else if ( keyword == KEYWORD_BREAK ) {
+		process_break(token);
+	}
+	else if ( keyword == KEYWORD_CONTINUE ) {
+		process_continue(token);
+	}
+	else if ( keyword == KEYWORD_DELETE ) {
 		process_delete(token);
 	}
-	else if ( keyword == "for" ) {
+	else if ( keyword == KEYWORD_FOR ) {
 		process_for(token);
 	}
-	else if ( keyword == "if" ) {
+	else if ( keyword == KEYWORD_IF ) {
 		process_if(token);
 	}
-	else if ( keyword == "new" ) {
+	else if ( keyword == KEYWORD_NEW ) {
 		process_new(token, result);
 	}
-	else if ( keyword == "print" ) {
+	else if ( keyword == KEYWORD_PRINT ) {
 		process_print(token);
 	}
-	else if ( keyword == "return" ) {
+	else if ( keyword == KEYWORD_RETURN ) {
 		process_return(token, result);
 	}
-	else if ( keyword == "switch" ) {
+	else if ( keyword == KEYWORD_SWITCH ) {
 		process_switch(token);
 	}
-	else if ( keyword == "while" ) {
+	else if ( keyword == KEYWORD_WHILE ) {
 		process_while(token);
 	}
 }
@@ -1083,7 +1122,7 @@ void Method::process_return(TokenIterator& token, Object *result)
 {
 	expression(result, token);
 
-	mStopProcessing = true;
+	mControlFlow = ControlFlow::Return;
 }
 
 // syntax:
@@ -1121,7 +1160,7 @@ void Method::process_scope(TokenIterator& token, Object *result)
 
 	scope.execute(ParameterList(), result);
 
-	this->mStopProcessing = scope.mStopProcessing;
+	this->mControlFlow = scope.mControlFlow;
 
 	token = scopeEnd;
 }
@@ -1270,7 +1309,7 @@ void Method::process_while(TokenIterator& token)
 		bodyBegin++;
 	}
 
-	for ( ; ; ) {
+	do {
 		TokenIterator tmp = condBegin;
 
 		Object condition;
@@ -1287,10 +1326,22 @@ void Method::process_while(TokenIterator& token)
 			VoidObject result;
 			process(&result, tmpBegin, tmpEnd);
 		popTokens();
-	}
+
+		if ( mControlFlow == ControlFlow::Break ) {
+			System::Print("control flow: break");
+			break;
+		}
+		else if ( mControlFlow == ControlFlow::Continue ) {
+			System::Print("control flow: continue");
+			continue;
+		}
+		else if ( mControlFlow == ControlFlow::Return ) {
+			System::Print("control flow: return");
+			return;
+		}
+	} while ( true );
 }
 
-//const VariablesList& Method::provideSignature() const
 const ParameterList& Method::provideSignature() const
 {
 	return mSignature;
