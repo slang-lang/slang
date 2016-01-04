@@ -8,7 +8,7 @@
 // Project includes
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Object.h>
-#include <Utils/Position.h>
+#include <Core/Utils/Position.h>
 
 // Forward declarations
 

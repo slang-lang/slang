@@ -6,7 +6,7 @@
 #include <cassert>
 
 // Project includes
-#include <Utils/Exceptions.h>
+#include <Core/Utils/Exceptions.h>
 
 // Namespace declarations
 
@@ -22,14 +22,27 @@ LocalScope::LocalScope(const std::string& name, IScope *parent)
 
 LocalScope::~LocalScope()
 {
-/*
 	for ( Symbols::iterator it = mSymbols.begin(); it != mSymbols.end(); ++it ) {
+/*
+		Symbol::IType::E type = it->second->getType();
+		
+		switch ( type ) {
+			case Symbol::IType::BuildInTypeSymbol:
+			case Symbol::IType::MemberSymbol:
+			case Symbol::IType::MethodSymbol:
+			case Symbol::IType::ObjectSymbol:
+				break;
+			default:
+				break;
+		}
+*/
+/*
 		if ( it->second ) {
 			delete it->second;
 			it->second = 0;
 		}
-	}
 */
+	}
 	mSymbols.clear();
 }
 

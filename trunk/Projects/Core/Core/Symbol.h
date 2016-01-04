@@ -24,13 +24,21 @@ public:
 	class IType
 	{
 	public:
+		typedef enum E {
+			UnknownSymbol,
+			BuildInTypeSymbol,
+			MemberSymbol,
+			MethodSymbol,
+			ObjectSymbol
+		};
+
         virtual ~IType() { }
 
 		virtual const std::string& getTypeName() const = 0;
 	};
 
 public:
-	Symbol(const std::string& name, IType *type)
+	Symbol(const std::string& name, IType::E type)
 	: mName(name),
 	  mType(type)
 	{ }
@@ -48,7 +56,7 @@ public:
 	const std::string& getName() const {
 		return mName;
 	}
-	IType* getType() const {
+	IType::E getType() const {
 		return mType;
 	}
 
@@ -56,7 +64,7 @@ protected:
 
 private:
 	std::string mName;
-	IType *mType;
+	IType::E mType;
 };
 
 typedef std::less<std::string> StringLess;
@@ -69,8 +77,8 @@ class BuildInTypeSymbol : public Symbol,
 						  public ObjectAttributes
 {
 public:
-    BuildInTypeSymbol(const std::string& name, Symbol::IType *type)
-	: Symbol(name, type)
+    BuildInTypeSymbol(const std::string& name)
+	: Symbol(name, Symbol::IType::BuildInTypeSymbol)
 	{ }
 	virtual ~BuildInTypeSymbol() { }
 };
@@ -80,8 +88,8 @@ class MemberSymbol : public Symbol,
 					 public ObjectAttributes
 {
 public:
-	MemberSymbol(const std::string& name, Symbol::IType *type)
-	: Symbol(name, type)
+	MemberSymbol(const std::string& name)
+	: Symbol(name, Symbol::IType::MemberSymbol)
 	{ }
 	virtual ~MemberSymbol() { }
 };
@@ -91,8 +99,8 @@ class MethodSymbol : public Symbol,
 					 public MethodAttributes
 {
 public:
-	MethodSymbol(const std::string& name, Symbol::IType *type)
-	: Symbol(name, type)
+	MethodSymbol(const std::string& name)
+	: Symbol(name, Symbol::IType::MethodSymbol)
 	{ }
 	virtual ~MethodSymbol() { }
 };
@@ -102,8 +110,8 @@ class ObjectSymbol : public Symbol,
 					 //public ObjectAttributes
 {
 public:
-	ObjectSymbol(const std::string& name, Symbol::IType *type)
-	: Symbol(name, type)
+	ObjectSymbol(const std::string& name)
+	: Symbol(name, Symbol::IType::ObjectSymbol)
 	{ }
 	virtual ~ObjectSymbol() { }
 };

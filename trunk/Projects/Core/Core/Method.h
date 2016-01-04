@@ -93,7 +93,7 @@ private: // Execution
 	void process_while(TokenIterator& token);
 	// }
 
-	Object* getSymbol(const std::string& symbol);
+	Object* getObject(const std::string& symbol) const;
 
 	// expression parsing
 	// {
@@ -107,8 +107,9 @@ private: // Execution
 	// Scope stack
 	// {
 	IScope* getScope() const;
-	void popScope();
+	void popScope(bool deleteScope = false);
 	void pushScope(const std::string& name);
+	void pushScope(IScope *scope);
 	// }
 
 	// Token stack

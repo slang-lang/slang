@@ -365,31 +365,11 @@
 			>
 		</File>
 		<File
-			RelativePath=".\Math\Matrix4.h"
+			RelativePath=".\Tools\Printer.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\Math\Normals.cpp"
-			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					ObjectFile="$(IntDir)\Math\"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					ObjectFile="$(IntDir)\Math\"
-				/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath=".\Math\Normals.h"
+			RelativePath=".\Tools\Printer.h"
 			>
 		</File>
 		<File
@@ -465,26 +445,6 @@
 			>
 		</File>
 		<File
-			RelativePath=".\Math\Tools.cpp"
-			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					ObjectFile="$(IntDir)\Math\"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					ObjectFile="$(IntDir)\Math\"
-				/>
-			</FileConfiguration>
-		</File>
-		<File
 			RelativePath=".\Tools\Tools.cpp"
 			>
 			<FileConfiguration
@@ -505,15 +465,7 @@
 			</FileConfiguration>
 		</File>
 		<File
-			RelativePath=".\Math\Tools.h"
-			>
-		</File>
-		<File
-			RelativePath=".\Tools\Tools.h"
-			>
-		</File>
-		<File
-			RelativePath=".\Math\Trigonometrics.cpp"
+			RelativePath=".\Math\Tools.cpp"
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
@@ -533,19 +485,11 @@
 			</FileConfiguration>
 		</File>
 		<File
-			RelativePath=".\Math\Trigonometrics.h"
+			RelativePath=".\Tools\Tools.h"
 			>
 		</File>
 		<File
-			RelativePath=".\Math\Tuple2.h"
-			>
-		</File>
-		<File
-			RelativePath=".\Math\Tuple3.h"
-			>
-		</File>
-		<File
-			RelativePath=".\Math\Tuple4.h"
+			RelativePath=".\Math\Tools.h"
 			>
 		</File>
 		<File
