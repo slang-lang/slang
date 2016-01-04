@@ -88,6 +88,16 @@ Symbol* LocalScope::resolve(const std::string& name, bool onlyCurrentScope) cons
 	return 0;
 }
 
+void LocalScope::undefine(const std::string& name, Symbol *symbol)
+{
+	assert(symbol);
+
+	Symbols::const_iterator it = mSymbols.find(name);
+	if ( it != mSymbols.end() ) {
+		mSymbols.erase(it);
+	}
+}
+
 
 GlobalScope::GlobalScope()
 : LocalScope("global", 0)

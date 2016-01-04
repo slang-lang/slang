@@ -26,6 +26,7 @@ public:
 	virtual IScope* getEnclosingScope() const = 0;
 	virtual const std::string& getScopeName() const = 0;
 	virtual Symbol* resolve(const std::string& name, bool onlyCurrentScope = false) const = 0;
+	virtual void undefine(const std::string& name, Symbol *symbol) = 0;
 };
 
 
@@ -40,6 +41,7 @@ public:	// IScope implementation
 	IScope* getEnclosingScope() const;
 	const std::string& getScopeName() const;
 	Symbol* resolve(const std::string& name, bool onlyCurrentScope = false) const;
+	void undefine(const std::string& name, Symbol *symbol);
 
 protected:
 	std::string mScopeName;
