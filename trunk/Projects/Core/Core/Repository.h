@@ -31,7 +31,7 @@ public:
 
 public:
 	void CollectGarbage();
-	Object* createObject(const std::string& name, const std::string& filename, const std::string& type, const std::string& value);
+	Object* createObject(const std::string& name, const std::string& filename, const std::string& type);
 
 public:
 	void addBlueprint(const BluePrint& object);

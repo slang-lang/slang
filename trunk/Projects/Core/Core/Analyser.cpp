@@ -13,6 +13,7 @@
 #include <Core/Utils/Exceptions.h>
 #include <Core/Utils/Utils.h>
 #include <Tools/Files.h>
+#include "SanityChecker.h"
 #include "Scope.h"
 #include "Tokenizer.h"
 #include "Tools.h"
@@ -23,20 +24,13 @@
 namespace ObjectiveScript {
 
 
-Analyser::Analyser()
-: mScope(0)
+Analyser::Analyser(IScope *scope)
+: mScope(scope)
 {
-	mScope = new GlobalScope();
 }
 
 Analyser::~Analyser()
 {
-	while ( mScope ) {
-		IScope *scope = mScope->getEnclosingScope();
-
-		delete mScope;
-		mScope = scope;
-	}
 }
 
 BluePrint Analyser::createBluePrint(TokenIterator& start, TokenIterator end)
@@ -97,6 +91,9 @@ BluePrint Analyser::createBluePrint(TokenIterator& start, TokenIterator end)
 
 	start = closed;
 
+	SanityChecker sanity;
+	sanity.process(tokens);
+
 	BluePrint blue(name, mFilename);
 	blue.setAncestors(parents);
 	blue.setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
@@ -155,6 +152,9 @@ Interface Analyser::createInterface(TokenIterator& start, TokenIterator end)
 
 	start = closed;
 
+	SanityChecker sanity;
+	sanity.process(tokens);
+
 	Interface inter(name, mFilename);
 	inter.setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
 	inter.setTokens(tokens);
@@ -192,7 +192,10 @@ void Analyser::createNamespace(TokenIterator& start, TokenIterator end)
 		tokens.push_back((*it));
 	}
 
-	generateObjects(tokens);
+	SanityChecker sanity;
+	sanity.process(tokens);
+
+	generate(tokens);
 
 	start = closed;
 }
@@ -202,7 +205,7 @@ Prototype Analyser::createPrototype(TokenIterator& start, TokenIterator end)
 	return Prototype(createBluePrint(start, end));
 }
 
-void Analyser::generateObjects(const TokenList& tokens)
+void Analyser::generate(const TokenList& tokens)
 {
 	TokenList::const_iterator it = tokens.begin();
 
@@ -373,13 +376,12 @@ void Analyser::process(const std::string& filename)
 
 	// read file content
 	std::ifstream in(mFilename.c_str(), std::ios_base::binary);
-	//in.exceptions(std::ios_base::badbit | std::ios_base::failbit | std::ios_base::eofbit);
 
 	// create token list from file content
 	TokenList tokens = generateTokens(std::string(std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>()));
 
 	// generate objects from tokens
-	generateObjects(tokens);
+	generate(tokens);
 }
 
 

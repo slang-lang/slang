@@ -20,6 +20,7 @@
 namespace ObjectiveScript {
 
 // Forward declarations
+class IScope;
 class Object;
 class Repository;
 
@@ -30,6 +31,7 @@ public:
 
 public:
 	void process(Object *object);
+	void processScope(IScope *scope, const TokenList& tokens);
 
 protected:
 
@@ -38,6 +40,7 @@ private:
 	Method* createMethod(TokenIterator start);
 
 	void generateObject();
+	void generateScope();
 	void generateTokens(const std::string& content);
 
 	bool isLocalDeclaration(TokenIterator start);
@@ -51,6 +54,7 @@ private:
 	std::string mFilename;
 	Object *mObject;
 	Repository *mRepository;
+	IScope *mScope;
 	TokenList mTokens;
 };
 

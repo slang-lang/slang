@@ -8,7 +8,6 @@
 #include <Core/Utils/Utils.h>
 #include "Analyser.h"
 #include "Memory.h"
-#include "Preprocessor.h"
 #include "Repository.h"
 #include "Script.h"
 #include "Tools.h"
@@ -22,10 +21,12 @@ namespace ObjectiveScript {
 VirtualMachine::VirtualMachine()
 : mBaseFolder(""),
   mMemory(0),
-  mRepository(0)
+  mRepository(0),
+  mScope(0)
 {
 	mMemory = new Memory();
 	mRepository = new Repository(mMemory);
+	mScope = new GlobalScope();
 }
 
 VirtualMachine::~VirtualMachine()
@@ -39,8 +40,15 @@ VirtualMachine::~VirtualMachine()
 	}
 	mScripts.clear();
 
-	delete mMemory;
+	while ( mScope ) {
+		IScope *scope = mScope->getEnclosingScope();
+
+		delete mScope;
+		mScope = scope;
+	}
+
 	delete mRepository;
+	delete mMemory;
 }
 
 std::string VirtualMachine::buildLibraryPath(const std::string& library) const
@@ -75,7 +83,7 @@ Script* VirtualMachine::create(const std::string& filename, const ParameterList&
 
 	script->connectRepository(mRepository);
 
-	Analyser analyser;
+	Analyser analyser(mScope);
 	analyser.process(filename);
 
 	StringList libraries = analyser.getLibraryReferences();
@@ -139,7 +147,7 @@ void VirtualMachine::loadLibrary(const std::string& library)
 	OSinfo("loading additional library file '" + library + "'...");
 
 	try {
-		Analyser analyser;
+		Analyser analyser(mScope);
 		analyser.process(buildLibraryPath(library));
 
 		const std::list<std::string>& libraries = analyser.getLibraryReferences();
