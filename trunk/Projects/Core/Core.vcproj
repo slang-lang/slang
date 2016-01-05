@@ -347,6 +347,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Core\SanityChecker.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\Scope.cpp"
 				>
 			</File>
@@ -586,6 +590,10 @@
 			</File>
 			<File
 				RelativePath=".\Core\RTTI.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\SanityChecker.h"
 				>
 			</File>
 			<File

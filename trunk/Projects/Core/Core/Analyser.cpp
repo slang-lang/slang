@@ -179,8 +179,6 @@ void Analyser::createNamespace(TokenIterator& start, TokenIterator end)
 	// look for the identifier token
 	name = (*start).content();
 
-	mScope = new LocalScope(name, mScope);
-
 	// look for the next opening curly brackets
 	TokenIterator open = findNext(++start, Token::Type::BRACKET_CURLY_OPEN);
 	// look for balanced curly brackets
@@ -194,6 +192,8 @@ void Analyser::createNamespace(TokenIterator& start, TokenIterator end)
 
 	SanityChecker sanity;
 	sanity.process(tokens);
+
+	//mScope = new LocalScope(name, mScope);
 
 	generate(tokens);
 
@@ -379,6 +379,9 @@ void Analyser::process(const std::string& filename)
 
 	// create token list from file content
 	TokenList tokens = generateTokens(std::string(std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>()));
+
+	SanityChecker sanity;
+	sanity.process(tokens);
 
 	// generate objects from tokens
 	generate(tokens);

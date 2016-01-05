@@ -40,13 +40,7 @@ VirtualMachine::~VirtualMachine()
 	}
 	mScripts.clear();
 
-	while ( mScope ) {
-		IScope *scope = mScope->getEnclosingScope();
-
-		delete mScope;
-		mScope = scope;
-	}
-
+	delete mScope;
 	delete mRepository;
 	delete mMemory;
 }
