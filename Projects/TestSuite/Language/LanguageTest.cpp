@@ -45,6 +45,7 @@ void LanguageTest::process()
 	TEST(testObjectReference);
 	TEST(testParameters);
 	TEST(testPrint);
+	//TEST(testSanityChecker);			// temporary disabled
 	TEST(testScope);
 	TEST(testStaticLocalVariable);
 	TEST(testSwitch);					// not yet implemented
@@ -300,6 +301,21 @@ void LanguageTest::testPrint()
 		VirtualMachine vm;
 
 		vm.create("Tests/Language/PrintTest.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// unexpected exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void LanguageTest::testSanityChecker()
+{
+	try {
+		VirtualMachine vm;
+
+		TTHROWS(vm.create("Tests/Language/SanityChecker.os"), ObjectiveScript::Utils::Exceptions::SyntaxError);
 
 		// automatic success
 	}

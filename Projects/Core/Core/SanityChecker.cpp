@@ -5,7 +5,7 @@
 // Library includes
 
 // Project includes
-#include <Utils/Exceptions.h>
+#include <Core/Utils/Exceptions.h>
 #include "Tools.h"
 
 // Namespace declarations
@@ -82,15 +82,12 @@ bool SanityChecker::process(const TokenList& tokens)
 
 	if ( !checkBalancedCurlyBrackets() ) {
 		throw Utils::Exceptions::SyntaxError("SanityCheck: unbalanced curly brackets found");
-		return false;
 	}
 	if ( !checkBalancedParenthesis() ) {
 		throw Utils::Exceptions::SyntaxError("SanityCheck: unbalanced parenthesis found");
-		return false;
 	}
 	if ( !checkBalancedQuotes() ) {
 		throw Utils::Exceptions::SyntaxError("SanityCheck: unbalanced quotes found");
-		return false;
 	}
 
 	return true;
