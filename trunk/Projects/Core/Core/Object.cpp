@@ -24,8 +24,8 @@ Object::Object()
   ObjectSymbol(ANONYMOUS_OBJECT),
   mIsAtomicType(true),
   mRepository(0),
-  mConstructed(false),
-  mValue(VALUE_NONE)
+  mValue(VALUE_NONE),
+  mConstructed(false)
 {
 }
 
@@ -65,8 +65,8 @@ Object::Object(const std::string& type, const std::string& filename)
   BluePrint(type, filename),
   mIsAtomicType(true),
   mRepository(0),
-  mConstructed(false),
-  mValue(VALUE_NONE)
+  mValue(VALUE_NONE),
+  mConstructed(false)
 {
 }
 
@@ -76,8 +76,8 @@ Object::Object(const std::string& name, const std::string& filename, const std::
   BluePrint(type, filename),
   mIsAtomicType(true),
   mRepository(0),
-  mConstructed(false),
-  mValue(value)
+  mValue(value),
+  mConstructed(false)
 {
 }
 

@@ -10,7 +10,7 @@ SET(SOURCES
 	Analyser.cpp
 	BluePrint.cpp
 	Interface.cpp
-#	Interpreter.cpp
+	Interpreter.cpp
 	Memory.cpp
 	Method.cpp
 	Object.cpp
@@ -38,7 +38,7 @@ SET(HEADERS
 	BluePrint.h
 	Consts.h
 	Interface.h
-#	Interpreter.h
+	Interpreter.h
 	Memory.h
 	Method.h
 	Object.h
