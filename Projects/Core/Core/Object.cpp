@@ -351,8 +351,6 @@ void Object::garbageCollector(bool force)
 	for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
 		(*it)->garbageCollector(force);
 		delete (*it);
-
-		//(*it) = 0;
 	}
 	mMethods.clear();
 }

@@ -8,6 +8,7 @@
 
 // Project includes
 #include <Core/Attributes/Attributes.h>
+#include "Interpreter.h"
 #include "Object.h"
 #include "Parameter.h"
 #include "Reference.h"
@@ -66,17 +67,6 @@ public: // Execution
 private:
 	typedef std::map<std::string, Object*> MemberCollection;
 
-	class ControlFlow
-	{
-	public:
-		typedef enum {
-			Break,
-			Continue,
-			None,
-			Return
-		} E;
-	};
-
 private: // Construction
 	void addIdentifier(const std::string& name, Object *object);			// throws DuplicateIdentifer exception
 
@@ -130,6 +120,7 @@ private:
 	typedef std::list<TokenList> TokenStack;
 
 private:
+	Interpreter::ControlFlow::E mControlFlow;
 	MemberCollection mLocalSymbols;
 	Object *mOwner;
 	ParameterList mParameter;
@@ -137,9 +128,6 @@ private:
 	ParameterList mSignature;
 	TokenList mTokens;
 	TokenStack mTokenStack;
-
-private:
-	ControlFlow::E mControlFlow;
 };
 
 

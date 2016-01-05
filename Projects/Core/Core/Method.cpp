@@ -36,7 +36,7 @@ Method::Method(IScope *parent, const std::string& name, const std::string& type)
   Variable(name, type),
   mOwner(0),
   mRepository(0),
-  mControlFlow(ControlFlow::None)
+  mControlFlow(Interpreter::ControlFlow::None)
 {
 }
 
@@ -159,7 +159,7 @@ void Method::addIdentifier(const std::string& name, Object *object)
 
 void Method::execute(const ParameterList& params, Object *result)
 {
-	mControlFlow = ControlFlow::None;		// reset this every time we start executing a method
+	mControlFlow = Interpreter::ControlFlow::None;		// reset this every time we start executing a method
 
 	if ( !isSignatureValid(params) ) {
 		throw Utils::Exceptions::ParameterCountMissmatch("incorrect number or type of parameters");
@@ -215,12 +215,27 @@ void Method::execute(const ParameterList& params, Object *result)
 	result->overrideType(type());
 	result->visibility(visibility());
 
+
+	// parse tokens in Method::process
+	// {
 	pushTokens(mTokens);
 		TokenIterator start = getTokens().begin();
 		TokenIterator end = getTokens().end();
 
 		process(result, start, end);
 	popTokens();
+	// }
+
+/*
+	// parse tokens in Interpreter::process
+	// {
+	Interpreter interpreter(this, getName());
+	interpreter.setRepository(mRepository);
+	interpreter.setTokens(mTokens);
+
+	interpreter.execute(result);
+	// }
+*/
 
 	// let the garbage collector do it's magic after we gathered our result
 	garbageCollector();
@@ -610,7 +625,7 @@ void Method::process(Object *result, TokenIterator& token, TokenIterator end, To
 	while ( ((token != getTokens().end()) && (token != end) ) &&
 			((token->type() != terminator) && (token->type() != Token::Type::ENDOFFILE)) ) {
 
-		if ( mControlFlow != ControlFlow::None ) {
+		if ( mControlFlow != Interpreter::ControlFlow::None ) {
 			// a return command has been triggered, time to stop processing
 			break;
 		}
@@ -673,7 +688,7 @@ void Method::process_break(TokenIterator& token)
 	//System::Print(KEYWORD_BREAK, token->position());
 
 (void)token;
-	mControlFlow = ControlFlow::Break;
+	mControlFlow = Interpreter::ControlFlow::Break;
 }
 
 // syntax:
@@ -683,7 +698,7 @@ void Method::process_continue(TokenIterator& token)
 	//System::Print(KEYWORD_CONTINUE, token->position());
 
 (void)token;
-	mControlFlow = ControlFlow::Continue;
+	mControlFlow = Interpreter::ControlFlow::Continue;
 }
 
 // syntax:
@@ -742,7 +757,7 @@ void Method::process_for(TokenIterator& token)
 	for ( ; ; ) {
 		// Condition parsing
 		// {
-		mControlFlow = ControlFlow::None;
+		mControlFlow = Interpreter::ControlFlow::None;
 
 		TokenIterator condBegin = conditionBegin;
 
@@ -756,7 +771,7 @@ void Method::process_for(TokenIterator& token)
 
 		// Body parsing
 		// {
-		mControlFlow = ControlFlow::None;
+		mControlFlow = Interpreter::ControlFlow::None;
 
 		pushTokens(loopTokens);
 		{
@@ -768,20 +783,20 @@ void Method::process_for(TokenIterator& token)
 		}
 		popTokens();
 
-		if ( mControlFlow == ControlFlow::Break ) {
+		if ( mControlFlow == Interpreter::ControlFlow::Break ) {
 			break;
 		}
-		else if ( mControlFlow == ControlFlow::Continue ) {
+		else if ( mControlFlow == Interpreter::ControlFlow::Continue ) {
 			continue;
 		}
-		else if ( mControlFlow == ControlFlow::Return ) {
+		else if ( mControlFlow == Interpreter::ControlFlow::Return ) {
 			return;
 		}
 		// }
 
 		// Expression parsing
 		// {
-		mControlFlow = ControlFlow::None;
+		mControlFlow = Interpreter::ControlFlow::None;
 
 		TokenIterator exprBegin = expressionBegin;
 		TokenList exprTokens;
@@ -930,7 +945,7 @@ void Method::process_if(TokenIterator& token)
 			TokenIterator tmpBegin = getTokens().begin();
 			TokenIterator tmpEnd = getTokens().end();
 
-			VoidObject tmp;
+			Object tmp;
 			process(&tmp, tmpBegin, tmpEnd);
 		}
 		popTokens();
@@ -941,7 +956,7 @@ void Method::process_if(TokenIterator& token)
 			TokenIterator tmpBegin = getTokens().begin();
 			TokenIterator tmpEnd = getTokens().end();
 
-			VoidObject tmp;
+			Object tmp;
 			process(&tmp, tmpBegin, tmpEnd);
 		}
 		popTokens();
@@ -1135,7 +1150,7 @@ void Method::process_return(TokenIterator& token, Object *result)
 {
 	expression(result, token);
 
-	mControlFlow = ControlFlow::Return;
+	mControlFlow = Interpreter::ControlFlow::Return;
 }
 
 // syntax:
@@ -1150,7 +1165,7 @@ void Method::process_scope(TokenIterator& token, Object *result)
 		tmpTokens.push_back((*scopeBegin));
 		scopeBegin++;
 	}
-
+/*
 	Method scope(this, getName(), getTypeName());
 	scope.setConst(this->isConst());
 	scope.setFinal(this->isFinal());
@@ -1162,7 +1177,14 @@ void Method::process_scope(TokenIterator& token, Object *result)
 
 	scope.execute(ParameterList(), result);
 
-	this->mControlFlow = scope.mControlFlow;
+	mControlFlow = scope.mControlFlow;
+*/
+
+	Interpreter interpreter(this, getName());
+	interpreter.setRepository(mRepository);
+	interpreter.setTokens(tmpTokens);
+
+	mControlFlow = interpreter.execute(result);
 
 	token = scopeEnd;
 }
@@ -1314,7 +1336,7 @@ void Method::process_while(TokenIterator& token)
 	}
 
 	for ( ; ; ) {
-		mControlFlow = ControlFlow::None;
+		mControlFlow = Interpreter::ControlFlow::None;
 
 		TokenIterator tmp = condBegin;
 
@@ -1335,13 +1357,13 @@ void Method::process_while(TokenIterator& token)
 		}
 		popTokens();
 
-		if ( mControlFlow == ControlFlow::Break ) {
+		if ( mControlFlow == Interpreter::ControlFlow::Break ) {
 			break;
 		}
-		else if ( mControlFlow == ControlFlow::Continue ) {
+		else if ( mControlFlow == Interpreter::ControlFlow::Continue ) {
 			continue;
 		}
-		else if ( mControlFlow == ControlFlow::Return ) {
+		else if ( mControlFlow == Interpreter::ControlFlow::Return ) {
 			return;
 		}
 	}
