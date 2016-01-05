@@ -35,25 +35,6 @@ void split(const std::string& str, std::string& p, std::string& c)
 	}
 }
 
-std::string boolToString(bool value)
-{
-	if ( value ) {
-		return TRUE;
-	}
-
-	return FALSE;
-}
-
-std::string floatToString(float value)
-{
-	return toString(value);
-}
-
-std::string intToString(int value)
-{
-	return toString(value);
-}
-
 bool stringToBool(const std::string &value)
 {
 	if ( value.empty() || value == "false" ) {
@@ -65,6 +46,20 @@ bool stringToBool(const std::string &value)
     bool b;
     is >> std::boolalpha >> b;
     return b;
+}
+
+double stringToDouble(const std::string &value)
+{
+	if ( value.empty() ) {
+		return 0.0;
+	}
+
+	std::stringstream stream;
+	stream << value;
+	double f;
+	stream >> f;
+
+	return f;
 }
 
 float stringToFloat(const std::string &value)
@@ -93,6 +88,35 @@ int stringToInt(const std::string &value)
 	stream >> result;
 
 	return result;
+}
+
+std::string toString(bool value)
+{
+	if ( value ) {
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+std::string toString(double value)
+{
+	return ConvertToString(value);
+}
+
+std::string toString(float value)
+{
+	return ConvertToString(value);
+}
+
+std::string toString(int value)
+{
+	return ConvertToString(value);
+}
+
+std::string toString(const std::string& value)
+{
+	return value;
 }
 
 

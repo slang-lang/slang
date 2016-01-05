@@ -118,14 +118,6 @@ private: // Execution
 	void parseTerm(Object *result, TokenIterator& start);
 	// }
 
-	// Scope stack
-	// {
-	IScope* getScope() const;
-	void popScope(bool deleteScope = false);
-	void pushScope(const std::string& name);
-	void pushScope(IScope *scope);
-	// }
-
 	// Token stack
 	// {
 	const TokenList& getTokens() const;
@@ -142,7 +134,6 @@ private:
 	Object *mOwner;
 	ParameterList mParameter;
 	Repository *mRepository;
-	ScopeStack mScopeStack;
 	ParameterList mSignature;
 	TokenList mTokens;
 	TokenStack mTokenStack;

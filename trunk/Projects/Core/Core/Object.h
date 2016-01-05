@@ -110,6 +110,7 @@ public:	// Helpers
 protected:
 	bool mIsAtomicType;
 	Repository *mRepository;
+	std::string mValue;
 
 private:
 	typedef std::map<std::string, Object*> MemberCollection;
@@ -126,7 +127,6 @@ private:
 	MemberCollection mMembers;
 	MethodCollection mMethods;
 	StringList mParents;
-	std::string mValue;
 };
 
 typedef std::list<Object> ObjectList;

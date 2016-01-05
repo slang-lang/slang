@@ -17,6 +17,7 @@
 namespace ObjectiveScript {
 
 
+int IntegerObject::DEFAULTVALUE = 0;
 std::string IntegerObject::TYPENAME = "int";
 
 
@@ -30,7 +31,7 @@ IntegerObject::IntegerObject(int value)
 }
 
 IntegerObject::IntegerObject(const std::string& name, int value)
-: Object(name, SYSTEM_LIBRARY, TYPENAME, Tools::intToString(value)),
+: Object(name, SYSTEM_LIBRARY, TYPENAME, Tools::toString(value)),
   mValue(value)
 {
 	mIsAtomicType = true;
@@ -70,7 +71,7 @@ const std::string& IntegerObject::getTypeName() const
 
 std::string IntegerObject::getValue() const
 {
-	return Tools::intToString(mValue);
+	return Tools::toString(mValue);
 }
 
 bool IntegerObject::isValid() const

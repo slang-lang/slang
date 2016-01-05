@@ -20,6 +20,7 @@ namespace ObjectiveScript {
 class BoolObject : public Object
 {
 public:
+	static bool DEFAULTVALUE;
 	static std::string TYPENAME;
 
 public:

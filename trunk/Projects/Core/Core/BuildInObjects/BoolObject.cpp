@@ -19,11 +19,12 @@
 namespace ObjectiveScript {
 
 
+bool BoolObject::DEFAULTVALUE = false;
 std::string BoolObject::TYPENAME = "bool";
 
 
 BoolObject::BoolObject(bool value)
-: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, Tools::boolToString(value)),
+: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, Tools::toString(value)),
   mValue(value)
 {
 	mIsAtomicType = true;
@@ -32,7 +33,7 @@ BoolObject::BoolObject(bool value)
 }
 
 BoolObject::BoolObject(const std::string& name, bool value)
-: Object(name, SYSTEM_LIBRARY, TYPENAME, Tools::boolToString(value)),
+: Object(name, SYSTEM_LIBRARY, TYPENAME, Tools::toString(value)),
   mValue(value)
 {
 	mIsAtomicType = true;
@@ -72,7 +73,7 @@ const std::string& BoolObject::getTypeName() const
 
 std::string BoolObject::getValue() const
 {
-	return Tools::boolToString(mValue);
+	return Tools::toString(mValue);
 }
 
 bool BoolObject::isValid() const

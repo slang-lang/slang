@@ -186,25 +186,25 @@ Object* Repository::createObject(const std::string& name, const std::string& fil
 	Object *object = 0;
 
 	if ( type == BoolObject::TYPENAME ) {
-		object = new BoolObject(name, VALUE_NONE);
+		object = new BoolObject(name, BoolObject::DEFAULTVALUE);
 	}
 	else if ( type == FloatObject::TYPENAME ) {
-		object = new FloatObject(name, VALUE_NONE);
+		object = new FloatObject(name, FloatObject::DEFAULTVALUE);
 	}
 	else if ( type == IntegerObject::TYPENAME ) {
-		object = new IntegerObject(name, VALUE_NONE);
+		object = new IntegerObject(name, IntegerObject::DEFAULTVALUE);
 	}
 	else if ( type == NumberObject::TYPENAME ) {
-		object = new NumberObject(name, VALUE_NONE);
+		object = new NumberObject(name, NumberObject::DEFAULTVALUE);
 	}
 	else if ( type == StringObject::TYPENAME ) {
-		object = new StringObject(name, VALUE_NONE);
+		object = new StringObject(name, StringObject::DEFAULTVALUE);
 	}
 	else if ( type == VoidObject::TYPENAME ) {
 		object = new VoidObject(name);
 	}
 	else {
-		object = new UserObject(name, filename, type, VALUE_NONE);
+		object = new UserObject(name, filename, type, UserObject::DEFAULTVALUE);
 	}
 
 	return object;

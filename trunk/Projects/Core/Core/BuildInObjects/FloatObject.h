@@ -19,6 +19,7 @@ namespace ObjectiveScript {
 class FloatObject : public Object
 {
 public:
+	static float DEFAULTVALUE;
 	static std::string TYPENAME;
 
 public:

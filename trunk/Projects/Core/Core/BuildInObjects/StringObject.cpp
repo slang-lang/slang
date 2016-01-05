@@ -21,12 +21,13 @@
 namespace ObjectiveScript {
 
 
+std::string StringObject::DEFAULTVALUE = "";
 std::string StringObject::TYPENAME = "string";
 
 
 StringObject::StringObject(const std::string& value)
-: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, value),
-  mValue(value)
+: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, value)
+//  mValue(value)
 {
 	mIsAtomicType = true;
 
@@ -34,8 +35,8 @@ StringObject::StringObject(const std::string& value)
 }
 
 StringObject::StringObject(const std::string& name, const std::string& value)
-: Object(name, SYSTEM_LIBRARY, TYPENAME, value),
-  mValue(value)
+: Object(name, SYSTEM_LIBRARY, TYPENAME, value)
+//  mValue(value)
 {
 	mIsAtomicType = true;
 
@@ -43,8 +44,8 @@ StringObject::StringObject(const std::string& name, const std::string& value)
 }
 
 StringObject::StringObject(const Object& object)
-: Object(object.getName(), SYSTEM_LIBRARY, TYPENAME, object.getValue()),
-  mValue(object.getValue())
+: Object(object.getName(), SYSTEM_LIBRARY, TYPENAME, object.getValue())
+//  mValue(object.getValue())
 {
 }
 
@@ -115,19 +116,6 @@ bool StringObject::operator_equal(Object *other)
 {
 	std::string target = other->Typename();
 
-/*
-	if ( target == Bool::TYPENAME ) {
-		StringObject tmp(other->getValue());
-
-		return operator_equal(&tmp);
-	}
-	else if ( target == NumberObject::TYPENAME ) {
-		StringObject tmp(other->getValue());
-
-		return operator_equal(&tmp);
-	}
-	else
-*/
 	if ( target == StringObject::TYPENAME ) {
 		StringObject tmp(other->getValue());
 

@@ -20,6 +20,7 @@ namespace ObjectiveScript {
 class StringObject : public Object
 {
 public:
+	static std::string DEFAULTVALUE;
 	static std::string TYPENAME;
 
 public:
@@ -60,7 +61,7 @@ public: // Value
 	virtual std::string ToString() const;
 
 private:
-	std::string mValue;
+	//std::string mValue;
 };
 
 

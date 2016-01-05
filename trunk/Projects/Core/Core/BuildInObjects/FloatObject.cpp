@@ -15,6 +15,7 @@
 namespace ObjectiveScript {
 
 
+float FloatObject::DEFAULTVALUE = 0.f;
 std::string FloatObject::TYPENAME = "float";
 
 
@@ -28,7 +29,7 @@ FloatObject::FloatObject(float value)
 }
 
 FloatObject::FloatObject(const std::string& name, float value)
-: Object(name, SYSTEM_LIBRARY, TYPENAME, Tools::floatToString(value)),
+: Object(name, SYSTEM_LIBRARY, TYPENAME, Tools::toString(value)),
   mValue(value)
 {
 	mIsAtomicType = true;
@@ -68,7 +69,7 @@ const std::string& FloatObject::getTypeName() const
 
 std::string FloatObject::getValue() const
 {
-	return Tools::floatToString(mValue);
+	return Tools::toString(mValue);
 }
 
 bool FloatObject::isValid() const
