@@ -10,6 +10,7 @@
 #include <Core/Utils/Utils.h>
 #include "Object.h"
 #include "Repository.h"
+#include "Scope.h"
 #include "Tokenizer.h"
 #include "Tools.h"
 
@@ -21,7 +22,8 @@ namespace ObjectiveScript {
 
 Preprocessor::Preprocessor(Repository *repo)
 : mObject(0),
-  mRepository(repo)
+  mRepository(repo),
+  mScope(0)
 {
 }
 
@@ -62,7 +64,7 @@ Object* Preprocessor::createMember(TokenIterator token)
 		throw Utils::Exceptions::Exception("member initialization not allowed during declaration", token->position());
 	}
 
-	Object *o = mRepository->createObject(name, mFilename, type, "");
+	Object *o = mRepository->createObject(name, mFilename, type);
 	o->setConst(isConst);
 	o->setFinal(isFinal);
 	o->setStatic(isStatic);
@@ -98,6 +100,7 @@ Method* Preprocessor::createMethod(TokenIterator token)
 	name = (*token).content();
 
 	if ( name == mObject->Typename() || name == "~" + mObject->Typename() ) {
+	//if ( name == mScope->getScopeName() || name == "~" + mScope->getScopeName() ) {
 		// this method has the same name as it's containing object, so this has to be a constructor or a destructor,
 		// these 2 methods can never ever be const
 		isConst = false;
@@ -158,7 +161,7 @@ Method* Preprocessor::createMethod(TokenIterator token)
 	}
 
 	// create a new method with the corresponding return value
-	Method *m = new Method(mObject, name, type);
+	Method *m = new Method(mScope, name, type);
 	m->setConst(isConst);
 	m->setFinal(isFinal);
 	m->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
@@ -193,6 +196,39 @@ void Preprocessor::generateObject()
 		}
 		else if ( isMethodDeclaration((*it)) ) {
 			mObject->addMethod(createMethod((*it)));
+		}
+	}
+}
+
+void Preprocessor::generateScope()
+{
+	assert(mScope);
+
+	typedef std::list<TokenIterator> TokenList;
+	TokenList visList;
+
+	// find all visibility keywords which we use
+	// as starting point for our interpreter
+	for ( TokenIterator it = mTokens.begin(); it != mTokens.end(); ++it ) {
+		if ( it->type() == Token::Type::VISIBILITY ) {
+			visList.push_back(it);
+		}
+	}
+
+	// loop over all visibility declarations and check
+	// if we have a member declaration or a method declaration
+	for ( TokenList::const_iterator it = visList.begin(); it != visList.end(); ++it ) {
+		if ( isMemberDeclaration((*it)) ) {
+			Object *member = createMember((*it));
+
+			//mObject->addMember(member);
+			mScope->define(member->getName(), member);
+		}
+		else if ( isMethodDeclaration((*it)) ) {
+			Method *method = createMethod((*it));
+
+			//mObject->addMethod(method);
+			mScope->define(method->getName(), method);
 		}
 	}
 }
@@ -312,15 +348,29 @@ ParameterList Preprocessor::parseParameters(TokenIterator &token)
 
 void Preprocessor::process(Object *object)
 {
-	//OSdebug("process('" + object->name() + "')");
+	OSdebug("process('" + object->getName() + "')");
 
 	mObject = object;
+	mScope = object;
 
 	mFilename = mObject->Filename();
 	mTokens = mObject->getTokens();
 
 	// build object from tokens
 	generateObject();
+}
+
+void Preprocessor::processScope(IScope *scope, const TokenList& tokens)
+{
+	OSdebug("process('" + scope->getScopeName() + "')");
+
+	mScope = scope;
+
+	//mFilename = mObject->Filename();
+	mTokens = tokens;
+
+	// build object from tokens
+	generateScope();
 }
 
 

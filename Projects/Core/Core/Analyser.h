@@ -26,7 +26,7 @@ class IScope;
 class Analyser
 {
 public:
-	Analyser();
+	Analyser(IScope *scope);
 	~Analyser();
 
 public:
@@ -43,7 +43,7 @@ private:	// moved to private to prevent usage in this release
 	const PrototypeList& getPrototypes() const;
 
 private:
-	void generateObjects(const TokenList& tokens);
+	void generate(const TokenList& tokens);
 	TokenList generateTokens(const std::string& content);
 
 private:

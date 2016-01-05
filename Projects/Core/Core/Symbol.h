@@ -26,7 +26,8 @@ public:
 	public:
 		typedef enum {
 			UnknownSymbol,
-			BuildInTypeSymbol,
+			AtomicTypeSymbol,
+			NamespaceSymbol,
 			MemberSymbol,
 			MethodSymbol,
 			ObjectSymbol
@@ -72,15 +73,15 @@ typedef std::less<std::string> StringLess;
 typedef std::map<std::string, Symbol*> Symbols;
 
 
-class BuildInTypeSymbol : public Symbol,
-						  public Symbol::IType,
-						  public ObjectAttributes
+class AtomicTypeSymbol : public Symbol,
+						 public Symbol::IType,
+						 public ObjectAttributes
 {
 public:
-    BuildInTypeSymbol(const std::string& name)
-	: Symbol(name, Symbol::IType::BuildInTypeSymbol)
+    AtomicTypeSymbol(const std::string& name)
+	: Symbol(name, Symbol::IType::AtomicTypeSymbol)
 	{ }
-	virtual ~BuildInTypeSymbol() { }
+	virtual ~AtomicTypeSymbol() { }
 };
 
 class MemberSymbol : public Symbol,
@@ -103,6 +104,17 @@ public:
 	: Symbol(name, Symbol::IType::MethodSymbol)
 	{ }
 	virtual ~MethodSymbol() { }
+};
+
+class NamespaceSymbol : public Symbol,
+						public Symbol::IType,
+						public MethodAttributes
+{
+public:
+	NamespaceSymbol(const std::string& name)
+	: Symbol(name, Symbol::IType::NamespaceSymbol)
+	{ }
+	virtual ~NamespaceSymbol() { }
 };
 
 class ObjectSymbol : public Symbol,

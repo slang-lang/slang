@@ -149,7 +149,7 @@ void Repository::CollectGarbage()
 
 Object* Repository::createInstance(const std::string& type, const std::string& name, const std::string& prototype)
 {
-	//OSinfo("createInstance('" + type + "', '" + name + "', '" + prototype + "')");
+	OSinfo("createInstance('" + type + "', '" + name + "', '" + prototype + "')");
 
 	// non-reference-based instantiation
 	BluePrint blueprint;
@@ -168,42 +168,43 @@ Object* Repository::createInstance(const std::string& type, const std::string& n
 		}
 	}
 
-	Object *object = createObject(name, blueprint.Filename(), prototype + type, "");
+	Object *object = createObject(name, blueprint.Filename(), prototype + type);
 	object->setTokens(blueprint.getTokens());
 	object->connectRepository(this);
 
 	Preprocessor preprocessor(this);
 	preprocessor.process(object);
+	//preprocessor.processScope(object, object->getTokens());
 
 	addReference(object);
 
 	return object;
 }
 
-Object* Repository::createObject(const std::string& name, const std::string& filename, const std::string& type, const std::string& value)
+Object* Repository::createObject(const std::string& name, const std::string& filename, const std::string& type)
 {
 	Object *object = 0;
 
 	if ( type == BoolObject::TYPENAME ) {
-		object = new BoolObject(name, value);
+		object = new BoolObject(name, VALUE_NONE);
 	}
 	else if ( type == FloatObject::TYPENAME ) {
-		object = new FloatObject(name, value);
+		object = new FloatObject(name, VALUE_NONE);
 	}
 	else if ( type == IntegerObject::TYPENAME ) {
-		object = new IntegerObject(name, value);
+		object = new IntegerObject(name, VALUE_NONE);
 	}
 	else if ( type == NumberObject::TYPENAME ) {
-		object = new NumberObject(name, value);
+		object = new NumberObject(name, VALUE_NONE);
 	}
 	else if ( type == StringObject::TYPENAME ) {
-		object = new StringObject(name, value);
+		object = new StringObject(name, VALUE_NONE);
 	}
 	else if ( type == VoidObject::TYPENAME ) {
 		object = new VoidObject(name);
 	}
 	else {
-		object = new UserObject(name, filename, type, value);
+		object = new UserObject(name, filename, type, VALUE_NONE);
 	}
 
 	return object;
@@ -228,12 +229,13 @@ const Reference& Repository::createReference(const std::string& type, const std:
 		}
 	}
 
-	Object *object = createObject(name, blueprint.Filename(), type, "");
+	Object *object = createObject(name, blueprint.Filename(), type);
 	object->setTokens(blueprint.getTokens());
 	object->connectRepository(this);
 
 	Preprocessor preprocessor(this);
 	preprocessor.process(object);
+	//preprocessor.processScope(object, object->getTokens());
 
 	return mMemory->newObject(object);
 }

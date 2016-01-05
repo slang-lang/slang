@@ -22,6 +22,7 @@ namespace ObjectiveScript {
 
 // Forward declarations
 class IPrinter;
+class IScope;
 class Memory;
 class Repository;
 class Script;
@@ -58,6 +59,7 @@ private:
 	Memory *mMemory;
 	ObjectCollection mObjects;
 	Repository *mRepository;
+	IScope *mScope;
 	ScriptCollection mScripts;
 };
 

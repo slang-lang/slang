@@ -562,11 +562,12 @@ void Method::parseTerm(Object *result, TokenIterator& start)
 					case Symbol::IType::MethodSymbol:
 						process_method(start, result);
 						break;
-					case Symbol::IType::BuildInTypeSymbol:
+					case Symbol::IType::AtomicTypeSymbol:
 					case Symbol::IType::MemberSymbol:
 					case Symbol::IType::ObjectSymbol:
 						*result = *static_cast<Object*>(symbol);
 						break;
+					case Symbol::IType::NamespaceSymbol:
 					case Symbol::IType::UnknownSymbol:
 						break;
 				}
@@ -1046,11 +1047,12 @@ void Method::process_method(TokenIterator& token, Object *result)
 			case Symbol::IType::MethodSymbol:
 				static_cast<Method*>(symbol)->execute(params, result);
 				return;
-			case Symbol::IType::BuildInTypeSymbol:
+			case Symbol::IType::AtomicTypeSymbol:
 			case Symbol::IType::MemberSymbol:
 			case Symbol::IType::ObjectSymbol:
 				*result = *static_cast<Object*>(symbol);
 				return;
+			case Symbol::IType::NamespaceSymbol:
 			case Symbol::IType::UnknownSymbol:
 				break;
 		}
@@ -1398,12 +1400,12 @@ Symbol* Method::resolve(const std::string& name, bool onlyCurrentScope) const
 
 	if ( result ) {
 		switch ( result->getType() ) {
-			case Symbol::IType::MethodSymbol:
-				break;
-			case Symbol::IType::BuildInTypeSymbol:
+			case Symbol::IType::AtomicTypeSymbol:
 			case Symbol::IType::MemberSymbol:
 			case Symbol::IType::ObjectSymbol:
 				return static_cast<Object*>(result)->resolve(member);
+			case Symbol::IType::MethodSymbol:
+			case Symbol::IType::NamespaceSymbol:
 			case Symbol::IType::UnknownSymbol:
 				break;
 		}

@@ -71,6 +71,7 @@ static const char* TEMPORARY_OBJECT = "<temporary>";
 static const char* PROTOTYPE_TYPE = "UNKNOWN";
 
 // Values
+static const char* VALUE_NONE = "";
 static const char* VALUE_NULL = "null";
 
 // Visibility
