@@ -19,6 +19,7 @@ namespace ObjectiveScript {
 class IntegerObject : public Object
 {
 public:
+	static int DEFAULTVALUE;
 	static std::string TYPENAME;
 
 public:

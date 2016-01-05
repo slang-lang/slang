@@ -367,26 +367,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Helpers\Strings.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\Helpers\"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\Helpers\"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath=".\Core\System.cpp"
 				>
 			</File>
@@ -610,10 +590,6 @@
 			</File>
 			<File
 				RelativePath=".\Core\BuildInObjects\StringObject.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Core\Helpers\Strings.h"
 				>
 			</File>
 			<File

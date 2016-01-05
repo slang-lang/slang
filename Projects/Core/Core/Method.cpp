@@ -14,7 +14,6 @@
 #include <Core/BuildInObjects/VoidObject.h>
 #include <Core/Consts.h>
 #include <Core/Helpers/Math.h>
-#include <Core/Helpers/Strings.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Utils/Utils.h>
 #include <Tools/Printer.h>
@@ -39,12 +38,10 @@ Method::Method(IScope *parent, const std::string& name, const std::string& type)
   mRepository(0),
   mControlFlow(ControlFlow::None)
 {
-	pushScope(this);
 }
 
 Method::~Method()
 {
-	popScope();
 }
 
 bool Method::operator() (const Method& first, const Method& second) const
@@ -145,7 +142,7 @@ void Method::addIdentifier(const std::string& name, Object *object)
 	}
 
 	// define object in our scope (this will replace 'addIdentifier' in the distant future)
-	getScope()->define(insertName, object);
+	define(insertName, object);
 
 	if ( mLocalSymbols.find(insertName) != mLocalSymbols.end() ) {
 		if ( object->isStatic() ) {
@@ -263,7 +260,7 @@ void Method::garbageCollector(bool force)
 			continue;
 		}
 		else {
-			getScope()->undefine(it->first, it->second);
+			undefine(it->first, it->second);
 
 			mRepository->removeReference(it->second);
 			it = mLocalSymbols.erase(it);
@@ -284,11 +281,6 @@ const std::string& Method::getTypeName() const
 bool Method::isMember(const std::string& token) const
 {
 	return (mOwner && mOwner->getMember(token));
-}
-
-IScope* Method::getScope() const
-{
-	return mScopeStack.back();
 }
 
 Object* Method::getObject(const std::string& symbol) const
@@ -605,17 +597,6 @@ void Method::parseTerm(Object *result, TokenIterator& start)
 	}
 
 	start++;
-}
-
-void Method::popScope(bool deleteScope)
-{
-	IScope *scope = mScopeStack.back();
-
-	mScopeStack.pop_back();
-
-	if ( deleteScope ) {
-		delete scope;
-	}
 }
 
 void Method::popTokens()
@@ -1369,17 +1350,6 @@ void Method::process_while(TokenIterator& token)
 const ParameterList& Method::provideSignature() const
 {
 	return mSignature;
-}
-
-void Method::pushScope(const std::string& name)
-{
-	IScope *scope = new LocalScope(name);
-	pushScope(scope);
-}
-
-void Method::pushScope(IScope *scope)
-{
-	mScopeStack.push_back(scope);
 }
 
 void Method::pushTokens(const TokenList& tokens)

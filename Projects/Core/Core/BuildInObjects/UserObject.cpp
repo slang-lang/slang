@@ -15,6 +15,7 @@
 namespace ObjectiveScript {
 
 
+std::string UserObject::DEFAULTVALUE = "";
 std::string UserObject::TYPENAME = "UserObject";
 
 

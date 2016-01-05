@@ -20,6 +20,7 @@ namespace ObjectiveScript {
 class UserObject : public Object
 {
 public:
+	static std::string DEFAULTVALUE;
 	static std::string TYPENAME;
 
 public:

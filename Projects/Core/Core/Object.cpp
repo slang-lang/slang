@@ -25,7 +25,7 @@ Object::Object()
   mIsAtomicType(true),
   mRepository(0),
   mConstructed(false),
-  mValue(VALUE_NULL)
+  mValue(VALUE_NONE)
 {
 }
 
@@ -66,7 +66,7 @@ Object::Object(const std::string& type, const std::string& filename)
   mIsAtomicType(true),
   mRepository(0),
   mConstructed(false),
-  mValue(VALUE_NULL)
+  mValue(VALUE_NONE)
 {
 }
 
