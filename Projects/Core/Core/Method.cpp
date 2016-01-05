@@ -34,9 +34,9 @@ Method::Method(IScope *parent, const std::string& name, const std::string& type)
 : LocalScope(name, parent),
   MethodSymbol(name),
   Variable(name, type),
+  mControlFlow(Interpreter::ControlFlow::None),
   mOwner(0),
-  mRepository(0),
-  mControlFlow(Interpreter::ControlFlow::None)
+  mRepository(0)
 {
 }
 
