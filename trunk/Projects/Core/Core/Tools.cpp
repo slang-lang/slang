@@ -27,6 +27,9 @@ std::string getLastSubString(const std::string& str)
 
 void split(const std::string& str, std::string& p, std::string& c)
 {
+	p = "";
+	c = "";
+
 	unsigned int pos = str.find_first_of('.');
 
 	p = str.substr(0, pos);
