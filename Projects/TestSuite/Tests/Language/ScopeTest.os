@@ -6,8 +6,8 @@ public namespace ScopeTest
 	{
 		public void Main(number argc = 0, string argv = "")
 		{
-			//assert( TestCase1() );
-			//assert( TestCase2() );
+			assert( TestCase1() );
+			assert( TestCase2() );
 			assert( TestCase3() );
 		}
 
