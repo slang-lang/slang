@@ -66,7 +66,7 @@ private:
 	InterfaceList mInterfaces;
 	StringList mLibraries;
 	PrototypeList mPrototypes;
-	IScope *mScope;
+	//IScope *mScope;
 };
 
 

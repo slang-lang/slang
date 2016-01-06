@@ -24,8 +24,8 @@
 namespace ObjectiveScript {
 
 
-Analyser::Analyser(IScope *scope)
-: mScope(scope)
+Analyser::Analyser(IScope */*scope*/)
+//: mScope(scope)
 {
 }
 
