@@ -247,6 +247,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Core\Interpreter.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\Attributes\LanguageFeatureState.cpp"
 				>
 				<FileConfiguration
@@ -498,6 +502,10 @@
 			</File>
 			<File
 				RelativePath=".\Core\Interface.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\Interpreter.h"
 				>
 			</File>
 			<File
