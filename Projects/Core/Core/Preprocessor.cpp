@@ -166,7 +166,6 @@ Method* Preprocessor::createMethod(TokenIterator token)
 	m->setFinal(isFinal);
 	m->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
 	m->setSignature(params);
-	m->setStatic(isStatic);
 	m->setTokens(tokens);
 	m->visibility(Visibility::convert(visibility));
 

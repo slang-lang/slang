@@ -30,12 +30,6 @@ public:
 	bool isFinal() const;
 	void setFinal(bool state);
 
-	bool isModifiable() const;
-	void setModifiable(bool state);
-
-	bool isStatic() const;
-	void setStatic(bool state);
-
 	LanguageFeatureState::E languageFeatureState() const;
 	void setLanguageFeatureState(LanguageFeatureState::E s);
 
@@ -51,9 +45,30 @@ protected:
 private:
 	bool mIsConst;
 	bool mIsFinal;
-	bool mIsStatic;
 	LanguageFeatureState::E mLanguageFeatureState;
 	Visibility::E mVisibility;
+};
+
+class LocalAttributes : public GenericAttributes
+{
+public:
+	LocalAttributes();
+
+public:
+	bool isStatic() const;
+	void setStatic(bool state);
+
+private:
+	bool mIsStatic;
+};
+
+class MemberAttributes : public GenericAttributes
+{
+public:
+	MemberAttributes();
+
+public:
+
 };
 
 class MethodAttributes : public GenericAttributes
@@ -82,8 +97,14 @@ public:
 	ObjectAttributes();
 
 public:
+	bool isStatic() const;
+	void setStatic(bool state);
+
 	bool isSealed() const;
 	void setSealed(bool state);
+
+private:
+	bool mIsStatic;
 };
 
 

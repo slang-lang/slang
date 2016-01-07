@@ -556,7 +556,7 @@ void Interpreter::process_identifier(TokenIterator& token, Token::Type::E termin
 
 	expression(symbol, ++assign);
 
-	if ( symbol->isFinal() && symbol->isModifiable() ) {
+	if ( !symbol->isConst() && symbol->isFinal() ) {
 		// we have modified a final entity for the first time, we now have to set it so const
 		symbol->setConst(true);
 		symbol->setFinal(false);

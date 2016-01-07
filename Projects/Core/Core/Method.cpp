@@ -104,7 +104,7 @@ void Method::operator= (const Method& other)
 {
 	if ( this != &other ) {
 		setConst(other.isConst());
-		setStatic(other.isStatic());
+		setFinal(other.isFinal());
 		setLanguageFeatureState(other.languageFeatureState());
 
 		// unregister current members
@@ -852,7 +852,7 @@ void Method::process_identifier(TokenIterator& token, Token::Type::E terminator)
 
 	expression(symbol, ++assign);
 
-	if ( symbol->isFinal() && symbol->isModifiable() ) {
+	if ( !symbol->isConst() && symbol->isFinal() ) {
 		// we have modified a final entity for the first time, we now have to set it so const
 		symbol->setConst(true);
 		symbol->setFinal(false);

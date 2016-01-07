@@ -18,7 +18,6 @@ GenericAttributes::GenericAttributes()
 : mIsSealed(false),
   mIsConst(true),
   mIsFinal(false),
-  mIsStatic(false),
   mLanguageFeatureState(LanguageFeatureState::Stable),
   mVisibility(Visibility::Private)
 {
@@ -45,16 +44,6 @@ bool GenericAttributes::isFinal() const
 	return mIsFinal;
 }
 
-bool GenericAttributes::isModifiable() const
-{
-	return !mIsConst;
-}
-
-bool GenericAttributes::isStatic() const
-{
-	return mIsStatic;
-}
-
 LanguageFeatureState::E GenericAttributes::languageFeatureState() const
 {
 	return mLanguageFeatureState;
@@ -79,18 +68,6 @@ void GenericAttributes::setLanguageFeatureState(LanguageFeatureState::E s)
 	mLanguageFeatureState = s;
 }
 
-void GenericAttributes::setModifiable(bool state)
-{
-	mIsConst = state;
-}
-
-void GenericAttributes::setStatic(bool state)
-{
-	checkSealState();
-
-	mIsStatic = state;
-}
-
 Visibility::E GenericAttributes::visibility() const
 {
 	return mVisibility;
@@ -101,6 +78,29 @@ void GenericAttributes::visibility(Visibility::E v)
 	checkSealState();
 
 	mVisibility = v;
+}
+
+
+LocalAttributes::LocalAttributes()
+: mIsStatic(false)
+{
+}
+
+bool LocalAttributes::isStatic() const
+{
+	return mIsStatic;
+}
+
+void LocalAttributes::setStatic(bool state)
+{
+	checkSealState();
+
+	mIsStatic = state;
+}
+
+
+MemberAttributes::MemberAttributes()
+{
 }
 
 
@@ -138,6 +138,7 @@ void NamespaceAttributes::setSealed(bool state)
 
 
 ObjectAttributes::ObjectAttributes()
+: mIsStatic(false)
 {
 	setConst(false);
 }
@@ -147,10 +148,22 @@ bool ObjectAttributes::isSealed() const
 	return mIsSealed;
 }
 
+bool ObjectAttributes::isStatic() const
+{
+	return mIsStatic;
+}
+
 void ObjectAttributes::setSealed(bool state)
 {
 	// after seal has been called no language feature can get modified anymore
 	mIsSealed = state;
+}
+
+void ObjectAttributes::setStatic(bool state)
+{
+	checkSealState();
+
+	mIsStatic = state;
 }
 
 
