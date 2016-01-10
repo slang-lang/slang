@@ -2,6 +2,7 @@ INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
 ADD_SUBDIRECTORY(Attributes)
 ADD_SUBDIRECTORY(BuildInObjects)
+ADD_SUBDIRECTORY(DesignTime)
 ADD_SUBDIRECTORY(Helpers)
 #ADD_SUBDIRECTORY(Interfaces)
 ADD_SUBDIRECTORY(Utils)
@@ -24,6 +25,7 @@ SET(SOURCES
 	Scope.cpp
 	Script.cpp
 	Stack.cpp
+	Symbol.cpp
 	System.cpp
 	Token.cpp
 	Tokenizer.cpp
@@ -67,6 +69,7 @@ SET(HEADERS
 SET(DEPENDENCIES
 	CoreUtils
 	CoreHelpers
+	CoreDesignTime
 	CoreBuildInObjects
 	CoreAttributes
 	Utils

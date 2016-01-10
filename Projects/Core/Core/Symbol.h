@@ -27,9 +27,9 @@ public:
 		typedef enum {
 			UnknownSymbol,
 			AtomicTypeSymbol,
-			NamespaceSymbol,
 			MemberSymbol,
 			MethodSymbol,
+			NamespaceSymbol,
 			ObjectSymbol
 		} E;
 
@@ -39,29 +39,16 @@ public:
 	};
 
 public:
-	Symbol(const std::string& name, IType::E type)
-	: mName(name),
-	  mType(type)
-	{ }
-	virtual ~Symbol() { }
+	Symbol(const std::string& name, IType::E type);
+	virtual ~Symbol();
 
 public:
-	bool operator< (const Symbol& other) const {
-		return getName() < other.getName();
-	}
-	bool operator< (const Symbol* other) const {
-		return getName() < other->getName();
-	}
+	bool operator< (const Symbol& other) const;
+	bool operator< (const Symbol* other) const;
 
 public:
-	const std::string& getName() const {
-		return mName;
-	}
-	IType::E getType() const {
-		return mType;
-	}
-
-protected:
+	const std::string& getName() const;
+	IType::E getType() const;
 
 private:
 	std::string mName;
@@ -108,7 +95,7 @@ public:
 
 class NamespaceSymbol : public Symbol,
 						public Symbol::IType,
-						public MethodAttributes
+						public NamespaceAttributes
 {
 public:
 	NamespaceSymbol(const std::string& name)
