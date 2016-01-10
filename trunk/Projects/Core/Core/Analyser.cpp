@@ -10,6 +10,7 @@
 
 // Project includes
 #include <Core/Consts.h>
+#include <Core/DesignTime/Namespace.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Utils/Utils.h>
 #include <Tools/Files.h>
@@ -167,6 +168,7 @@ void Analyser::createNamespace(TokenIterator& start, TokenIterator end)
 	std::string languageFeature;
 	std::string name;
 	std::string visibility;
+	bool isSealed = false;
 
 	// look for the visibility token
 	visibility = (*start++).content();
@@ -177,10 +179,14 @@ void Analyser::createNamespace(TokenIterator& start, TokenIterator end)
 		languageFeature = (*start++).content();
 	}
 	// look for the identifier token
-	name = (*start).content();
+	name = (*start++).content();
+
+	if ( (*start).content() == MODIFIER_SEALED ) {
+		isSealed = true;
+	}
 
 	// look for the next opening curly brackets
-	TokenIterator open = findNext(++start, Token::Type::BRACKET_CURLY_OPEN);
+	TokenIterator open = findNext(start, Token::Type::BRACKET_CURLY_OPEN);
 	// look for balanced curly brackets
 	TokenIterator closed = findNextBalancedCurlyBracket(open, end, 0, Token::Type::BRACKET_CURLY_CLOSE);
 
@@ -194,6 +200,9 @@ void Analyser::createNamespace(TokenIterator& start, TokenIterator end)
 	sanity.process(tokens);
 
 	//mScope = new LocalScope(name, mScope);
+
+	DesignTime::Namespace space(name, 0);
+	space.setSealed(isSealed);
 
 	generate(tokens);
 
@@ -270,7 +279,7 @@ bool Analyser::isInterfaceDeclaration(TokenIterator start)
 	if ( (*start++).type() != Token::Type::VISIBILITY ) {
 		return false;
 	}
-	if ( (*start).type() != Token::Type::TYPE && (*start++).content() != "interface" ) {
+	if ( (*start).type() != Token::Type::TYPE && (*start++).content() != RESERVED_WORD_INTERFACE ) {
 		return false;
 	}
 	if ( (*start).isOptional() && (*start++).type() != Token::Type::LANGUAGEFEATURE ) {
@@ -306,7 +315,7 @@ bool Analyser::isNamespaceDeclaration(TokenIterator start)
 	if ( (*start++).type() != Token::Type::VISIBILITY ) {
 		return false;
 	}
-	if ( (*start).type() != Token::Type::TYPE && (*start++).content() != "namespace" ) {
+	if ( (*start).type() != Token::Type::TYPE && (*start++).content() != RESERVED_WORD_NAMESPACE ) {
 		return false;
 	}
 	if ( (*start).isOptional() && (*start++).type() != Token::Type::LANGUAGEFEATURE ) {
@@ -346,7 +355,7 @@ bool Analyser::isPrototypeDeclaration(TokenIterator start)
 	if ( (*start++).type() != Token::Type::VISIBILITY ) {
 		return false;
 	}
-	if ( (*start).type() != Token::Type::TYPE && (*start++).content() != "prototype" ) {
+	if ( (*start).type() != Token::Type::TYPE && (*start++).content() != RESERVED_WORD_PROTOTYPE ) {
 		return false;
 	}
 	if ( (*start).isOptional() && (*start++).type() != Token::Type::LANGUAGEFEATURE ) {

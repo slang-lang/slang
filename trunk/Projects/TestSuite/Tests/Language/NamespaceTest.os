@@ -1,8 +1,8 @@
 #!/usr/local/bin/oscript
 
-public namespace Tests
+public namespace Tests sealed
 {
-	public namespace NamespaceTests
+	public namespace NamespaceTests sealed
 	{
 		public object Test1
 		{

@@ -50,6 +50,7 @@ static const char* LANGUAGE_FEATURE_UNSTABLE = "unstable";
 static const char* MODIFIER_CONST = "const";
 static const char* MODIFIER_FINAL = "final";
 static const char* MODIFIER_MODIFY = "modify";
+static const char* MODIFIER_SEALED = "sealed";
 static const char* MODIFIER_STATIC = "static";
 
 // Reserved words
@@ -57,6 +58,7 @@ static const char* RESERVED_WORD_BY_REFERENCE = "ref";
 static const char* RESERVED_WORD_BY_VALUE = "val";
 static const char* RESERVED_WORD_EXTENDS = "extends";
 static const char* RESERVED_WORD_INTERFACE = "interface";
+static const char* RESERVED_WORD_NAMESPACE = "namespace";
 static const char* RESERVED_WORD_OBJECT = "object";
 static const char* RESERVED_WORD_OPERATOR = "operator";
 static const char* RESERVED_WORD_PROTOTYPE = "prototype";
