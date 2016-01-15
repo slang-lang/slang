@@ -783,14 +783,12 @@ void Method::process_for(TokenIterator& token)
 		}
 		popTokens();
 
-		if ( mControlFlow == Interpreter::ControlFlow::Break ) {
-			break;
-		}
-		else if ( mControlFlow == Interpreter::ControlFlow::Continue ) {
-			continue;
-		}
-		else if ( mControlFlow == Interpreter::ControlFlow::Return ) {
-			return;
+		switch ( mControlFlow ) {
+			case Interpreter::ControlFlow::Break: return;
+			case Interpreter::ControlFlow::Continue: continue;
+			case Interpreter::ControlFlow::None: break;
+			case Interpreter::ControlFlow::Return: return;
+			case Interpreter::ControlFlow::Throw: return;
 		}
 		// }
 
@@ -996,6 +994,12 @@ void Method::process_keyword(TokenIterator& token, Object *result)
 	}
 	else if ( keyword == KEYWORD_SWITCH ) {
 		process_switch(token);
+	}
+	else if ( keyword == KEYWORD_THROW ) {
+		process_throw(token);
+	}
+	else if ( keyword == KEYWORD_TRY ) {
+		process_try(token);
 	}
 	else if ( keyword == KEYWORD_WHILE ) {
 		process_while(token);
@@ -1236,6 +1240,70 @@ throw Utils::Exceptions::NotImplemented("switch-case");
 	popTokens();
 }
 
+// syntax:
+// throw;
+void Method::process_throw(TokenIterator& token)
+{
+	//System::Print(KEYWORD_THROW, token->position());
+
+(void)token;
+	mControlFlow = Interpreter::ControlFlow::Throw;
+}
+
+// syntax:
+// try { } [ catch { } ] [ finally { } ]
+void Method::process_try(TokenIterator& token)
+{
+	// find next open curly bracket '{'
+	TokenIterator bodyBegin = findNext(++token, Token::Type::BRACKET_CURLY_OPEN);
+	// find next balanced '{' & '}' pair
+	TokenIterator bodyEnd = findNextBalancedCurlyBracket(bodyBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
+
+/*
+	// catch
+	// find next open curly bracket '{'
+	TokenIterator bodyBegin = findNext(bodyEnd, Token::Type::BRACKET_CURLY_OPEN);
+	// find next balanced '{' & '}' pair
+	TokenIterator bodyEnd = findNextBalancedCurlyBracket(bodyBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
+
+	// finally
+	// find next open curly bracket '{'
+	TokenIterator bodyBegin = findNext(bodyEnd, Token::Type::BRACKET_CURLY_OPEN);
+	// find next balanced '{' & '}' pair
+	TokenIterator bodyEnd = findNextBalancedCurlyBracket(bodyBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
+*/
+
+	token = bodyEnd;
+	if ( bodyEnd != getTokens().end() ) {
+		bodyEnd++;
+	}
+
+	TokenList tryTokens;
+	while ( bodyBegin != bodyEnd ) {
+		tryTokens.push_back((*bodyBegin));
+		bodyBegin++;
+	}
+
+
+	mControlFlow = Interpreter::ControlFlow::None;
+
+	pushTokens(tryTokens);
+	{
+		TokenIterator tmpBegin = getTokens().begin();
+		TokenIterator tmpEnd = getTokens().end();
+
+		VoidObject result;
+		process(&result, tmpBegin, tmpEnd);
+	}
+	popTokens();
+
+	if ( mControlFlow == Interpreter::ControlFlow::Throw ) {
+		// execute catch
+	}
+
+	// execute finally
+}
+
 void Method::process_type(TokenIterator& token)
 {
 	bool isConst = false;
@@ -1276,7 +1344,6 @@ void Method::process_type(TokenIterator& token)
 		assign = ++token;
 	}
 
-	//Object *object = getSymbol(name);
 	Object *object = static_cast<Object*>(resolve(name, true));
 	if ( !object ) {
 		object = mRepository->createInstance(type, name, prototype);
@@ -1357,14 +1424,12 @@ void Method::process_while(TokenIterator& token)
 		}
 		popTokens();
 
-		if ( mControlFlow == Interpreter::ControlFlow::Break ) {
-			break;
-		}
-		else if ( mControlFlow == Interpreter::ControlFlow::Continue ) {
-			continue;
-		}
-		else if ( mControlFlow == Interpreter::ControlFlow::Return ) {
-			return;
+		switch ( mControlFlow ) {
+			case Interpreter::ControlFlow::Break: return;
+			case Interpreter::ControlFlow::Continue: continue;
+			case Interpreter::ControlFlow::None: break;
+			case Interpreter::ControlFlow::Return: return;
+			case Interpreter::ControlFlow::Throw: return;
 		}
 	}
 }

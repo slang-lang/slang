@@ -91,6 +91,8 @@ private: // Execution
 	void process_print(TokenIterator& token);
 	void process_return(TokenIterator& token, Object *result);
 	void process_scope(TokenIterator& token, Object *result);
+	void process_throw(TokenIterator& token);
+	void process_try(TokenIterator& token);
 	void process_type(TokenIterator& token);
 	void process_switch(TokenIterator& token);
 	void process_while(TokenIterator& token);

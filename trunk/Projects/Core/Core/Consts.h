@@ -26,9 +26,11 @@ static const char* TRUE = "true";
 static const char* KEYWORD_ASSERT = "assert";
 static const char* KEYWORD_BREAK = "break";
 static const char* KEYWORD_CASE = "case";
+static const char* KEYWORD_CATCH = "catch";
 static const char* KEYWORD_CONTINUE = "continue";
 static const char* KEYWORD_DELETE = "delete";
 static const char* KEYWORD_ELSE = "else";
+static const char* KEYWORD_FINALLY = "finally";
 static const char* KEYWORD_FOR = "for";
 static const char* KEYWORD_IF = "if";
 static const char* KEYWORD_IMPORT = "import";
@@ -36,6 +38,8 @@ static const char* KEYWORD_NEW = "new";
 static const char* KEYWORD_PRINT = "print";
 static const char* KEYWORD_RETURN = "return";
 static const char* KEYWORD_SWITCH = "switch";
+static const char* KEYWORD_THROW = "throw";
+static const char* KEYWORD_TRY = "try";
 static const char* KEYWORD_WHILE = "while";
 
 // Language feature states
