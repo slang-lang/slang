@@ -62,7 +62,7 @@ public:
 	const ParameterList& provideSignature() const;
 
 public: // Execution
-	void execute(const ParameterList& params, Object *result);
+	ControlFlow::E execute(const ParameterList& params, Object *result);
 
 private:
 	typedef std::map<std::string, Object*> MemberCollection;
@@ -122,7 +122,7 @@ private:
 	typedef std::list<TokenList> TokenStack;
 
 private:
-	Interpreter::ControlFlow::E mControlFlow;
+	ControlFlow::E mControlFlow;
 	MemberCollection mLocalSymbols;
 	Object *mOwner;
 	ParameterList mParameter;

@@ -38,6 +38,7 @@ private:	// Tests
 	void testConstCorrectness2();
 	void testConstCorrectness3();
 	void testDefaultParameter();
+	void testException();
 	void testFinal();
 	void testFor();
 	void testIf();

@@ -12,6 +12,7 @@
 // Project includes
 #include <Core/Attributes/Attributes.h>
 #include "BluePrint.h"
+#include "Interpreter.h"
 #include "Method.h"
 #include "Parameter.h"
 #include "Scope.h"
@@ -99,7 +100,7 @@ public:
 public:	// Usage
 	void Constructor(const ParameterList& params);
 	void Destructor();
-	void execute(Object *result, const std::string& method, const ParameterList& params, const Method* caller = 0);		// throws VisibilityError exception
+	ControlFlow::E execute(Object *result, const std::string& method, const ParameterList& params, const Method* caller = 0);		// throws VisibilityError exception
 	void garbageCollector(bool force = false);
 
 public:	// Helpers
