@@ -22,21 +22,20 @@ class Memory;
 class Object;
 class Repository;
 
-class Interpreter : LocalScope
+class ControlFlow
 {
 public:
-	class ControlFlow
-	{
-	public:
-		typedef enum {
-			Break,
-			Continue,
-			None,
-			Return,
-			Throw
-		} E;
-	};
+	typedef enum {
+		Break,
+		Continue,
+		None,
+		Return,
+		Throw
+	} E;
+};
 
+class Interpreter : LocalScope
+{
 public:
 	Interpreter(IScope *scope, const std::string& name);
 	~Interpreter();

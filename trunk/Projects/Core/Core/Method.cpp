@@ -34,7 +34,7 @@ Method::Method(IScope *parent, const std::string& name, const std::string& type)
 : LocalScope(name, parent),
   MethodSymbol(name),
   Variable(name, type),
-  mControlFlow(Interpreter::ControlFlow::None),
+  mControlFlow(ControlFlow::None),
   mOwner(0),
   mRepository(0)
 {
@@ -157,9 +157,9 @@ void Method::addIdentifier(const std::string& name, Object *object)
 	mLocalSymbols[insertName] = object;
 }
 
-void Method::execute(const ParameterList& params, Object *result)
+ControlFlow::E Method::execute(const ParameterList& params, Object *result)
 {
-	mControlFlow = Interpreter::ControlFlow::None;		// reset this every time we start executing a method
+	mControlFlow = ControlFlow::None;		// reset this every time we start executing a method
 
 	if ( !isSignatureValid(params) ) {
 		throw Utils::Exceptions::ParameterCountMissmatch("incorrect number or type of parameters");
@@ -176,13 +176,13 @@ void Method::execute(const ParameterList& params, Object *result)
 	// add parameters as locale variables
 	ParameterList::const_iterator paramIt = params.begin();
 	for ( ParameterList::const_iterator sigIt = mSignature.begin(); sigIt != mSignature.end(); ++sigIt ) {
-		// initialize param with default value
+		// initialize parameter with default value
 		Parameter param(sigIt->name(), sigIt->type(), sigIt->value(), sigIt->hasDefaultValue(), sigIt->isConst(), sigIt->access());
 
 		if ( paramIt != params.end() ) {
 			Parameter::AccessMode::E access = sigIt->access();
 
-			// override param with correct value
+			// override parameter with correct value
 			param = Parameter(sigIt->name(), sigIt->type(), paramIt->value(), sigIt->hasDefaultValue(), sigIt->isConst(), access, paramIt->pointer());
 			// next iteration
 			paramIt++;
@@ -213,7 +213,7 @@ void Method::execute(const ParameterList& params, Object *result)
 
 	result->connectRepository(mRepository);
 	result->overrideType(type());
-	result->visibility(visibility());
+	//result->visibility(visibility());
 
 
 	// parse tokens in Method::process
@@ -233,12 +233,14 @@ void Method::execute(const ParameterList& params, Object *result)
 	interpreter.setRepository(mRepository);
 	interpreter.setTokens(mTokens);
 
-	interpreter.execute(result);
+	mControlFlow = interpreter.execute(result);
 	// }
 */
 
 	// let the garbage collector do it's magic after we gathered our result
 	garbageCollector();
+
+	return mControlFlow;
 }
 
 void Method::expression(Object *result, TokenIterator& start)
@@ -625,7 +627,7 @@ void Method::process(Object *result, TokenIterator& token, TokenIterator end, To
 	while ( ((token != getTokens().end()) && (token != end) ) &&
 			((token->type() != terminator) && (token->type() != Token::Type::ENDOFFILE)) ) {
 
-		if ( mControlFlow != Interpreter::ControlFlow::None ) {
+		if ( mControlFlow != ControlFlow::None ) {
 			// a return command has been triggered, time to stop processing
 			break;
 		}
@@ -688,7 +690,7 @@ void Method::process_break(TokenIterator& token)
 	//System::Print(KEYWORD_BREAK, token->position());
 
 (void)token;
-	mControlFlow = Interpreter::ControlFlow::Break;
+	mControlFlow = ControlFlow::Break;
 }
 
 // syntax:
@@ -698,7 +700,7 @@ void Method::process_continue(TokenIterator& token)
 	//System::Print(KEYWORD_CONTINUE, token->position());
 
 (void)token;
-	mControlFlow = Interpreter::ControlFlow::Continue;
+	mControlFlow = ControlFlow::Continue;
 }
 
 // syntax:
@@ -757,7 +759,7 @@ void Method::process_for(TokenIterator& token)
 	for ( ; ; ) {
 		// Condition parsing
 		// {
-		mControlFlow = Interpreter::ControlFlow::None;
+		mControlFlow = ControlFlow::None;
 
 		TokenIterator condBegin = conditionBegin;
 
@@ -771,7 +773,7 @@ void Method::process_for(TokenIterator& token)
 
 		// Body parsing
 		// {
-		mControlFlow = Interpreter::ControlFlow::None;
+		mControlFlow = ControlFlow::None;
 
 		pushTokens(loopTokens);
 		{
@@ -784,17 +786,17 @@ void Method::process_for(TokenIterator& token)
 		popTokens();
 
 		switch ( mControlFlow ) {
-			case Interpreter::ControlFlow::Break: return;
-			case Interpreter::ControlFlow::Continue: continue;
-			case Interpreter::ControlFlow::None: break;
-			case Interpreter::ControlFlow::Return: return;
-			case Interpreter::ControlFlow::Throw: return;
+			case ControlFlow::Break: return;
+			case ControlFlow::Continue: continue;
+			case ControlFlow::None: break;
+			case ControlFlow::Return: return;
+			case ControlFlow::Throw: return;
 		}
 		// }
 
 		// Expression parsing
 		// {
-		mControlFlow = Interpreter::ControlFlow::None;
+		mControlFlow = ControlFlow::None;
 
 		TokenIterator exprBegin = expressionBegin;
 		TokenList exprTokens;
@@ -1061,18 +1063,29 @@ void Method::process_method(TokenIterator& token, Object *result)
 	std::string member, parent;
 	Tools::split(method, parent, member);
 
+	ControlFlow::E controlflow = ControlFlow::None;
+
 	Object *object = getObject(parent);
 	if ( object ) {
-		object->execute(result, member, params, this);
-		return;
+		controlflow = object->execute(result, member, params, this);
+	}
+	else if ( isMethod(method, params) ) {
+		controlflow = mOwner->execute(result, method, params, this);
+	}
+	else {
+		throw Utils::Exceptions::UnknownIdentifer("unknown/unexpected identifier '" + method + "' found", tmp->position());
 	}
 
-	if ( isMethod(method, params) ) {
-		mOwner->execute(result, method, params, this);
-		return;
+	switch ( controlflow ) {
+		case ControlFlow::Break:
+		case ControlFlow::Continue:
+		case ControlFlow::None:
+		case ControlFlow::Return:
+			break;
+		case ControlFlow::Throw:
+			mControlFlow = ControlFlow::Throw;
+			break;
 	}
-
-	throw Utils::Exceptions::UnknownIdentifer("unknown/unexpected identifier '" + method + "' found", tmp->position());
 }
 
 // syntax:
@@ -1154,7 +1167,7 @@ void Method::process_return(TokenIterator& token, Object *result)
 {
 	expression(result, token);
 
-	mControlFlow = Interpreter::ControlFlow::Return;
+	mControlFlow = ControlFlow::Return;
 }
 
 // syntax:
@@ -1247,7 +1260,7 @@ void Method::process_throw(TokenIterator& token)
 	//System::Print(KEYWORD_THROW, token->position());
 
 (void)token;
-	mControlFlow = Interpreter::ControlFlow::Throw;
+	mControlFlow = ControlFlow::Throw;
 }
 
 // syntax:
@@ -1255,37 +1268,24 @@ void Method::process_throw(TokenIterator& token)
 void Method::process_try(TokenIterator& token)
 {
 	// find next open curly bracket '{'
-	TokenIterator bodyBegin = findNext(++token, Token::Type::BRACKET_CURLY_OPEN);
+	TokenIterator tryBegin = findNext(++token, Token::Type::BRACKET_CURLY_OPEN);
 	// find next balanced '{' & '}' pair
-	TokenIterator bodyEnd = findNextBalancedCurlyBracket(bodyBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
+	TokenIterator tryEnd = findNextBalancedCurlyBracket(tryBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
 
-/*
-	// catch
-	// find next open curly bracket '{'
-	TokenIterator bodyBegin = findNext(bodyEnd, Token::Type::BRACKET_CURLY_OPEN);
-	// find next balanced '{' & '}' pair
-	TokenIterator bodyEnd = findNextBalancedCurlyBracket(bodyBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
-
-	// finally
-	// find next open curly bracket '{'
-	TokenIterator bodyBegin = findNext(bodyEnd, Token::Type::BRACKET_CURLY_OPEN);
-	// find next balanced '{' & '}' pair
-	TokenIterator bodyEnd = findNextBalancedCurlyBracket(bodyBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
-*/
-
-	token = bodyEnd;
-	if ( bodyEnd != getTokens().end() ) {
-		bodyEnd++;
+	token = tryEnd;
+	if ( tryEnd != getTokens().end() ) {
+		tryEnd++;
 	}
 
+	// collect try-block tokens
 	TokenList tryTokens;
-	while ( bodyBegin != bodyEnd ) {
-		tryTokens.push_back((*bodyBegin));
-		bodyBegin++;
+	while ( tryBegin != tryEnd ) {
+		tryTokens.push_back((*tryBegin));
+		tryBegin++;
 	}
 
 
-	mControlFlow = Interpreter::ControlFlow::None;
+	mControlFlow = ControlFlow::None;
 
 	pushTokens(tryTokens);
 	{
@@ -1297,11 +1297,50 @@ void Method::process_try(TokenIterator& token)
 	}
 	popTokens();
 
-	if ( mControlFlow == Interpreter::ControlFlow::Throw ) {
-		// execute catch
+
+	// execute catch-block if an exception has been thrown
+	if ( mControlFlow == ControlFlow::Throw ) {
+		// reset control flow after try block
+		mControlFlow = ControlFlow::None;
+
+		// TODO: execute catch-block
+/*
+		// catch
+		// find next open curly bracket '{'
+		TokenIterator catchBegin = findNext(token, Token::Type::BRACKET_CURLY_OPEN);
+		// find next balanced '{' & '}' pair
+		TokenIterator catchEnd = findNextBalancedCurlyBracket(catchBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
+*/
+	}
+	else {
+		// reset control flow after try block
+		mControlFlow = ControlFlow::None;
 	}
 
-	// execute finally
+	// execute finally if present
+	if ( token->content() == KEYWORD_FINALLY ) {
+		// find next open curly bracket '{'
+		TokenIterator finallyBegin = findNext(token, Token::Type::BRACKET_CURLY_OPEN);
+		// find next balanced '{' & '}' pair
+		TokenIterator finallyEnd = findNextBalancedCurlyBracket(finallyBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
+
+		// collect finally-block tokens
+		TokenList finallyTokens;
+		while ( finallyBegin != finallyEnd ) {
+			finallyTokens.push_back((*finallyBegin));
+			finallyBegin++;
+		}
+
+		pushTokens(finallyTokens);
+		{
+			TokenIterator tmpBegin = getTokens().begin();
+			TokenIterator tmpEnd = getTokens().end();
+
+			VoidObject result;
+			process(&result, tmpBegin, tmpEnd);
+		}
+		popTokens();
+	}
 }
 
 void Method::process_type(TokenIterator& token)
@@ -1403,7 +1442,7 @@ void Method::process_while(TokenIterator& token)
 	}
 
 	for ( ; ; ) {
-		mControlFlow = Interpreter::ControlFlow::None;
+		mControlFlow = ControlFlow::None;
 
 		TokenIterator tmp = condBegin;
 
@@ -1425,11 +1464,11 @@ void Method::process_while(TokenIterator& token)
 		popTokens();
 
 		switch ( mControlFlow ) {
-			case Interpreter::ControlFlow::Break: return;
-			case Interpreter::ControlFlow::Continue: continue;
-			case Interpreter::ControlFlow::None: break;
-			case Interpreter::ControlFlow::Return: return;
-			case Interpreter::ControlFlow::Throw: return;
+			case ControlFlow::Break: return;
+			case ControlFlow::Continue: continue;
+			case ControlFlow::None: break;
+			case ControlFlow::Return: return;
+			case ControlFlow::Throw: return;
 		}
 	}
 }

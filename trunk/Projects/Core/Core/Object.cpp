@@ -250,7 +250,7 @@ void Object::Destructor()
 	mConstructed = false;
 }
 
-void Object::execute(Object *result, const std::string& method, const ParameterList& params, const Method* caller)
+ControlFlow::E Object::execute(Object *result, const std::string& method, const ParameterList& params, const Method* caller)
 {
 	OSdebug("execute('" + method + "', [" + toString(params) + "])");
 
@@ -271,7 +271,7 @@ void Object::execute(Object *result, const std::string& method, const ParameterL
 	}
 
 	// execute our member method
-	(*methodIt)->execute(params, result);
+	return (*methodIt)->execute(params, result);
 }
 
 bool Object::findMember(const std::string& m, Object::MemberCollection::const_iterator& mIt) const

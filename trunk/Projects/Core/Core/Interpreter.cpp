@@ -41,7 +41,7 @@ Interpreter::~Interpreter()
 {
 }
 
-Interpreter::ControlFlow::E Interpreter::execute(Object *result)
+ControlFlow::E Interpreter::execute(Object *result)
 {
 	mControlFlow = ControlFlow::None;		// reset this every time we start executing a method
 
@@ -947,33 +947,20 @@ void Interpreter::process_throw(TokenIterator& token)
 void Interpreter::process_try(TokenIterator& token)
 {
 	// find next open curly bracket '{'
-	TokenIterator bodyBegin = findNext(++token, Token::Type::BRACKET_CURLY_OPEN);
+	TokenIterator tryBegin = findNext(++token, Token::Type::BRACKET_CURLY_OPEN);
 	// find next balanced '{' & '}' pair
-	TokenIterator bodyEnd = findNextBalancedCurlyBracket(bodyBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
+	TokenIterator tryEnd = findNextBalancedCurlyBracket(tryBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
 
-/*
-	// catch
-	// find next open curly bracket '{'
-	TokenIterator bodyBegin = findNext(bodyEnd, Token::Type::BRACKET_CURLY_OPEN);
-	// find next balanced '{' & '}' pair
-	TokenIterator bodyEnd = findNextBalancedCurlyBracket(bodyBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
-
-	// finally
-	// find next open curly bracket '{'
-	TokenIterator bodyBegin = findNext(bodyEnd, Token::Type::BRACKET_CURLY_OPEN);
-	// find next balanced '{' & '}' pair
-	TokenIterator bodyEnd = findNextBalancedCurlyBracket(bodyBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
-*/
-
-	token = bodyEnd;
-	if ( bodyEnd != getTokens().end() ) {
-		bodyEnd++;
+	token = tryEnd;
+	if ( tryEnd != getTokens().end() ) {
+		tryEnd++;
 	}
 
+	// collect try-block tokens
 	TokenList tryTokens;
-	while ( bodyBegin != bodyEnd ) {
-		tryTokens.push_back((*bodyBegin));
-		bodyBegin++;
+	while ( tryBegin != tryEnd ) {
+		tryTokens.push_back((*tryBegin));
+		tryBegin++;
 	}
 
 
@@ -989,19 +976,50 @@ void Interpreter::process_try(TokenIterator& token)
 	}
 	popTokens();
 
+
+	// execute catch-block if an exception has been thrown
 	if ( mControlFlow == ControlFlow::Throw ) {
+		// reset control flow after try block
+		mControlFlow = ControlFlow::None;
+
+		// TODO: execute catch-block
 /*
-		// execute catch
-		mControlFlow == ControlFlow::None;
+		// catch
+		// find next open curly bracket '{'
+		TokenIterator catchBegin = findNext(token, Token::Type::BRACKET_CURLY_OPEN);
+		// find next balanced '{' & '}' pair
+		TokenIterator catchEnd = findNextBalancedCurlyBracket(catchBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
 */
+	}
+	else {
+		// reset control flow after try block
+		mControlFlow = ControlFlow::None;
 	}
 
-/*
-	// execute finally
-	{
-		mControlFlow == ControlFlow::None;
+	// execute finally if present
+	if ( token->content() == KEYWORD_FINALLY ) {
+		// find next open curly bracket '{'
+		TokenIterator finallyBegin = findNext(token, Token::Type::BRACKET_CURLY_OPEN);
+		// find next balanced '{' & '}' pair
+		TokenIterator finallyEnd = findNextBalancedCurlyBracket(finallyBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
+
+		// collect finally-block tokens
+		TokenList finallyTokens;
+		while ( finallyBegin != finallyEnd ) {
+			finallyTokens.push_back((*finallyBegin));
+			finallyBegin++;
+		}
+
+		pushTokens(finallyTokens);
+		{
+			TokenIterator tmpBegin = getTokens().begin();
+			TokenIterator tmpEnd = getTokens().end();
+
+			VoidObject result;
+			process(&result, tmpBegin, tmpEnd);
+		}
+		popTokens();
 	}
-*/
 }
 
 void Interpreter::process_type(TokenIterator& token)
@@ -1131,18 +1149,6 @@ void Interpreter::process_while(TokenIterator& token)
 			case ControlFlow::Return: return;
 			case ControlFlow::Throw: return;
 		}
-
-/*
-		if ( mControlFlow == ControlFlow::Break ) {
-			break;
-		}
-		else if ( mControlFlow == ControlFlow::Continue ) {
-			continue;
-		}
-		else if ( mControlFlow == ControlFlow::Return ) {
-			return;
-		}
-*/
 	}
 }
 

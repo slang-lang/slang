@@ -38,6 +38,7 @@ void LanguageTest::process()
 	TEST(testConstCorrectness2);
 	TEST(testConstCorrectness3);
 	TEST(testDefaultParameter);
+	TEST(testException);
 	TEST(testFinal);
 	TEST(testFor);
 	TEST(testIf);
@@ -160,6 +161,21 @@ void LanguageTest::testDefaultParameter()
 		VirtualMachine vm;
 
 		vm.create("Tests/Language/DefaultParameter.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// unexpected exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void LanguageTest::testException()
+{
+	try {
+		VirtualMachine vm;
+
+		vm.create("Tests/Language/ExceptionTest.os");
 
 		// automatic success
 	}
