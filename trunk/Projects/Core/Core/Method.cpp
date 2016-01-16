@@ -240,6 +240,18 @@ ControlFlow::E Method::execute(const ParameterList& params, Object *result)
 	// let the garbage collector do it's magic after we gathered our result
 	garbageCollector();
 
+	switch ( mControlFlow ) {
+		case ControlFlow::Break:
+		case ControlFlow::Continue:
+		case ControlFlow::None:
+		case ControlFlow::Return:
+			mControlFlow =  ControlFlow::None;
+			break;
+		case ControlFlow::Throw:
+			mControlFlow = ControlFlow::Throw;
+			break;
+	}
+
 	return mControlFlow;
 }
 
