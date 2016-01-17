@@ -109,6 +109,8 @@ public namespace ExceptionTest
 			finally {
 				print("finally");
 			}
+
+			return true;
 		}
 
 		private bool TestCase5()
@@ -132,6 +134,8 @@ public namespace ExceptionTest
 			finally {
 				print("outter finally");
 			}
+
+			return true;
 		}
 	}
 }

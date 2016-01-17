@@ -48,7 +48,7 @@ void LanguageTest::process()
 	TEST(testPrint);
 	//TEST(testSanityChecker);			// temporary disabled
 	TEST(testScope);
-	TEST(testStaticLocalVariable);
+	//TEST(testStaticLocalVariable);
 	//TEST(testSwitch);					// not yet implemented
 	TEST(testWhile);
 
@@ -283,7 +283,7 @@ void LanguageTest::testObjectReference()
 	try {
 		VirtualMachine vm;
 
-		vm.create("Tests/Language/ObjectReference.os");
+		TTHROWS(vm.create("Tests/Language/ObjectReference.os"), ObjectiveScript::Utils::Exceptions::ConstCorrectnessViolated);
 
 		// automatic success
 	}

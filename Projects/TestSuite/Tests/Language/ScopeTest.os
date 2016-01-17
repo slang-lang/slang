@@ -21,16 +21,16 @@ public namespace ScopeTest
 			}
 			print("one = " + one);
 
-			return true;
+			return (one == 1);
 		}
 
 		private bool TestCase2() const
 		{
-			int i = 1i;
-			print("i = " + i);
+			int one = 1i;
+			print("one = " + one);
 			{
-				int i = 2i;
-				print("i = " + i);
+				int one = 2i;
+				print("one = " + one);
 				return true;
 			}
 			return false;	// this should not get executed
@@ -62,7 +62,7 @@ public namespace ScopeTest
 			}
 			print("one = " + one);
 			print("two = " + two);
-			return true;
+			return one == 1 && two == 2;
 		}
 	}
 }

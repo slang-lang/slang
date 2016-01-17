@@ -23,7 +23,7 @@ public namespace Language
 				print("count = " + count);
 			}
 
-			return true;
+			return count == maxCount;
 		}
 
 		private bool TestCase2(number maxCount = 7) const
@@ -45,7 +45,7 @@ public namespace Language
 
 			print("one = " + one);
 
-			return true;
+			return count == maxCount;
 		}
 
 		private bool TestCase3() const
@@ -64,7 +64,7 @@ public namespace Language
 				count = count + 1;
 			}
 
-			return true;
+			return count == 2;
 		}
 
 		private bool TestCase4() const
