@@ -27,7 +27,7 @@ public:
 	BoolObject(bool value = false);
 	BoolObject(const std::string& name, bool value);
 	BoolObject(const std::string& name, const std::string& value);
-	BoolObject(const Object& object);
+	BoolObject(const BoolObject& object);
 
 public:	// Symbol::IType implementation
 	const std::string& getTypeName() const;
