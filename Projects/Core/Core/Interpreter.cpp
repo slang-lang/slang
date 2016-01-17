@@ -746,24 +746,29 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 
 	token = closed;
 
+	ControlFlow::E controlflow = ControlFlow::None;
+
 	Symbol *symbol = resolve(method);
-	if ( symbol ) {
-		switch ( symbol->getType() ) {
-			case Symbol::IType::MethodSymbol:
-				static_cast<Method*>(symbol)->execute(params, result);
-				return;
-			case Symbol::IType::AtomicTypeSymbol:
-			case Symbol::IType::MemberSymbol:
-			case Symbol::IType::ObjectSymbol:
-				*result = *static_cast<Object*>(symbol);
-				return;
-			case Symbol::IType::NamespaceSymbol:
-			case Symbol::IType::UnknownSymbol:
-				break;
-		}
+	if ( !symbol ) {
+		throw Utils::Exceptions::UnknownIdentifer("unknown/unexpected identifier '" + method + "' found", tmp->position());
 	}
 
-	throw Utils::Exceptions::UnknownIdentifer("unknown/unexpected identifier '" + method + "' found", tmp->position());
+	switch ( symbol->getType() ) {
+		case Symbol::IType::MethodSymbol:
+			controlflow = static_cast<Method*>(symbol)->execute(params, result);
+			break;
+		case Symbol::IType::AtomicTypeSymbol:
+		case Symbol::IType::MemberSymbol:
+		case Symbol::IType::ObjectSymbol:
+		case Symbol::IType::NamespaceSymbol:
+		case Symbol::IType::UnknownSymbol:
+			throw Utils::Exceptions::UnknownIdentifer("could not resolve method '" + method + "'");
+			break;
+	}
+
+	if ( controlflow == ControlFlow::Throw ) {
+		mControlFlow = ControlFlow::Throw;
+	}
 }
 
 // syntax:
