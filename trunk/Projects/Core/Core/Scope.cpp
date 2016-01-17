@@ -7,6 +7,7 @@
 
 // Project includes
 #include <Core/Utils/Exceptions.h>
+#include "Method.h"
 
 // Namespace declarations
 
@@ -15,8 +16,8 @@ namespace ObjectiveScript {
 
 
 LocalScope::LocalScope(const std::string& name, IScope *parent)
-: mScopeName(name),
-  mParent(parent)
+: mParent(parent),
+  mScopeName(name)
 {
 }
 
@@ -99,11 +100,69 @@ void LocalScope::undefine(const std::string& name, Symbol *symbol)
 }
 
 
-GlobalScope::GlobalScope()
-: LocalScope("global", 0)
+
+MethodScope::MethodScope(const std::string& name, IScope *parent)
+: LocalScope(name, parent)
 {
 }
 
+MethodScope::~MethodScope()
+{
+}
+
+void MethodScope::defineMethod(Method* method)
+{
+	assert(method);
+
+	MethodCollection::iterator tmpIt;
+	if ( resolveMethod(method->getName(), method->provideSignature(), true) ) {
+		throw Utils::Exceptions::DuplicateIdentifer("duplicate method '" + method->getName() + "' added with same signature");
+	}
+
+	Symbols::iterator it = mSymbols.find(method->getName());
+	if ( it == mSymbols.end() ) {
+		LocalScope::define(method->getName(), method);
+	}
+	else {
+		it->second = method;
+	}
+
+	mMethods.insert(method);
+}
+
+MethodSymbol* MethodScope::resolveMethod(const std::string& name, const ParameterList& params, bool /*onlyCurrentScope*/) const
+{
+	for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
+		Method *method = (*it);
+
+		if ( method->getName() == name && method->isSignatureValid(params) ) {
+			return method;
+		}
+	}
+
+	return 0;
+}
+
+void MethodScope::undefineMethod(Method* method)
+{
+	assert(method);
+
+	undefine(method->getName(), method);
+
+	for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
+		if ( (*it) == method ) {
+		//if ( (*it)->getName() == method->getName() && (*it)->isSignatureValid(method->provideSignature()) ) {
+			mMethods.erase(it);
+			return;
+		}
+	}
+}
+
+
+GlobalScope::GlobalScope()
+: MethodScope("global", 0)
+{
+}
 GlobalScope::~GlobalScope()
 {
 }

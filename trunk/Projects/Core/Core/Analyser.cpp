@@ -10,7 +10,7 @@
 
 // Project includes
 #include <Core/Consts.h>
-#include <Core/DesignTime/Namespace.h>
+//#include <Core/DesignTime/Namespace.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Utils/Utils.h>
 #include <Tools/Files.h>
@@ -201,8 +201,10 @@ void Analyser::createNamespace(TokenIterator& start, TokenIterator end)
 
 	//mScope = new LocalScope(name, mScope);
 
+/*
 	DesignTime::Namespace space(name, 0);
 	space.setSealed(isSealed);
+*/
 
 	generate(tokens);
 

@@ -4,9 +4,11 @@
 
 
 // Library include
+#include <set>
 #include <string>
 
 // Project includes
+#include "Parameter.h"
 #include "Symbol.h"
 
 // Forward declarations
@@ -16,6 +18,8 @@
 
 namespace ObjectiveScript {
 
+// Forward declarations
+class Method;
 
 class IScope
 {
@@ -44,15 +48,35 @@ public:	// IScope implementation
 	void undefine(const std::string& name, Symbol *symbol);
 
 protected:
+	IScope *mParent;
 	std::string mScopeName;
+	Symbols mSymbols;
 
 private:
-	IScope *mParent;
-	Symbols mSymbols;
+
 };
 
 
-class GlobalScope : public LocalScope
+class MethodScope : public LocalScope
+{
+public:
+	typedef std::set<Method*> MethodCollection;
+
+public:
+	MethodScope(const std::string& name, IScope *parent = 0);
+	virtual ~MethodScope();
+
+public:
+	void defineMethod(Method *method);
+	MethodSymbol* resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope = false) const;
+	void undefineMethod(Method *method);
+
+protected:
+	MethodCollection mMethods;
+};
+
+
+class GlobalScope : public MethodScope
 {
 public:
 	GlobalScope();
