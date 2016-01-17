@@ -213,7 +213,6 @@ ControlFlow::E Method::execute(const ParameterList& params, Object *result)
 
 	result->connectRepository(mRepository);
 	result->overrideType(type());
-	//result->visibility(visibility());
 
 
 	// parse tokens in Method::process
@@ -226,30 +225,12 @@ ControlFlow::E Method::execute(const ParameterList& params, Object *result)
 	popTokens();
 	// }
 
-/*
-	// parse tokens in Interpreter::process
-	// {
-	Interpreter interpreter(this, getName());
-	interpreter.setRepository(mRepository);
-	interpreter.setTokens(mTokens);
-
-	mControlFlow = interpreter.execute(result);
-	// }
-*/
-
 	// let the garbage collector do it's magic after we gathered our result
 	garbageCollector();
 
-	switch ( mControlFlow ) {
-		case ControlFlow::Break:
-		case ControlFlow::Continue:
-		case ControlFlow::None:
-		case ControlFlow::Return:
-			mControlFlow =  ControlFlow::None;
-			break;
-		case ControlFlow::Throw:
-			mControlFlow = ControlFlow::Throw;
-			break;
+	// reset control flow if necessary
+	if ( mControlFlow != ControlFlow::Throw ) {
+		mControlFlow = ControlFlow::None;
 	}
 
 	return mControlFlow;
@@ -1035,7 +1016,7 @@ void Method::process_method(TokenIterator& token, Object *result)
 	ParameterList params;
 
 	tmp = opened;
-	// loop through all parameters seperated by colons
+	// loop through all parameters separated by colons
 	while ( tmp != closed ) {
 		objectList.push_back(Object());
 
@@ -1055,48 +1036,38 @@ void Method::process_method(TokenIterator& token, Object *result)
 
 	token = closed;
 
+	ControlFlow::E controlflow = ControlFlow::None;
+
 	Symbol *symbol = resolve(method);
-	if ( symbol ) {
+	if ( !symbol ) {
+		std::string member, parent;
+		Tools::split(method, parent, member);
+
+		Object *object = getObject(parent);
+		if ( object ) {
+			controlflow = object->execute(result, member, params, this);
+		}
+		else {
+			controlflow = mOwner->execute(result, method, params, this);
+		}
+	}
+	else {
 		switch ( symbol->getType() ) {
 			case Symbol::IType::MethodSymbol:
-				static_cast<Method*>(symbol)->execute(params, result);
-				return;
+				controlflow = static_cast<Method*>(symbol)->execute(params, result);
+				break;
 			case Symbol::IType::AtomicTypeSymbol:
 			case Symbol::IType::MemberSymbol:
 			case Symbol::IType::ObjectSymbol:
-				*result = *static_cast<Object*>(symbol);
-				return;
 			case Symbol::IType::NamespaceSymbol:
 			case Symbol::IType::UnknownSymbol:
+				throw Utils::Exceptions::UnknownIdentifer("could not resolve method '" + method + "'");
 				break;
 		}
 	}
 
-	std::string member, parent;
-	Tools::split(method, parent, member);
-
-	ControlFlow::E controlflow = ControlFlow::None;
-
-	Object *object = getObject(parent);
-	if ( object ) {
-		controlflow = object->execute(result, member, params, this);
-	}
-	else if ( isMethod(method, params) ) {
-		controlflow = mOwner->execute(result, method, params, this);
-	}
-	else {
-		throw Utils::Exceptions::UnknownIdentifer("unknown/unexpected identifier '" + method + "' found", tmp->position());
-	}
-
-	switch ( controlflow ) {
-		case ControlFlow::Break:
-		case ControlFlow::Continue:
-		case ControlFlow::None:
-		case ControlFlow::Return:
-			break;
-		case ControlFlow::Throw:
-			mControlFlow = ControlFlow::Throw;
-			break;
+	if ( controlflow == ControlFlow::Throw ) {
+		mControlFlow = ControlFlow::Throw;
 	}
 }
 

@@ -84,12 +84,6 @@ Object::Object(const std::string& name, const std::string& filename, const std::
 Object::~Object()
 {
 	garbageCollector();
-
-/*
-	if ( mRepository ) {
-		mRepository->removeReference(this);
-	}
-*/
 }
 
 Object& Object::operator= (const Object& other)
@@ -205,7 +199,11 @@ void Object::Constructor(const ParameterList& params)
 	// only execute constructor if one is present
 	if ( hasMethod(Typename(), params) ) {
 		VoidObject tmp;
-		execute(&tmp, Typename(), params);
+		ControlFlow::E controlflow = execute(&tmp, Typename(), params);
+
+		if ( controlflow != ControlFlow::None ) {
+			// uups
+		}
 	}
 
 	// set after executing constructor in case any exceptions have been thrown
@@ -235,7 +233,11 @@ void Object::Destructor()
 		// only execute destructor if one is present
 		if ( hasMethod("~" + getName(), ParameterList()) ) {
 			VoidObject object;
-			execute(&object, "~" + Typename(), ParameterList());
+			ControlFlow::E controlflow = execute(&object, "~" + Typename(), ParameterList());
+
+			if ( controlflow != ControlFlow::None ) {
+				// uups
+			}
 		}
 	}
 	else {
