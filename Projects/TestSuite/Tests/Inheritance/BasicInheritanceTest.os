@@ -32,9 +32,9 @@ public namespace Tests
 				Base base = new Base();
 				Extended extended = new Extended();
 
-				print("base.getBaseName = " & base.getBaseName());
-				print("extended.getBaseName = " & extended.getBaseName());
-				print("extended.getExtendedName = " & extended.getExtendedName());
+				print("base.getBaseName = " + base.getBaseName());
+				print("extended.getBaseName = " + extended.getBaseName());
+				print("extended.getExtendedName = " + extended.getExtendedName());
 
 				delete base;
 				delete extended;

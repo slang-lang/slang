@@ -4,8 +4,7 @@ public namespace Math
 {
 	public object Main
 	{
-		//private float mNumber;
-		private number mNumber;
+		private float mNumber;
 
 		public void Main(number argc = 0, string argv = "")
 		{
