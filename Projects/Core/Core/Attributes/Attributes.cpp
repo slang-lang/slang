@@ -138,9 +138,15 @@ void NamespaceAttributes::setSealed(bool state)
 
 
 ObjectAttributes::ObjectAttributes()
-: mIsStatic(false)
+: mIsMember(false),
+  mIsStatic(false)
 {
 	setConst(false);
+}
+
+bool ObjectAttributes::isMember() const
+{
+	return mIsMember;
 }
 
 bool ObjectAttributes::isSealed() const
@@ -151,6 +157,11 @@ bool ObjectAttributes::isSealed() const
 bool ObjectAttributes::isStatic() const
 {
 	return mIsStatic;
+}
+
+void ObjectAttributes::setMember(bool state)
+{
+	mIsMember = state;
 }
 
 void ObjectAttributes::setSealed(bool state)

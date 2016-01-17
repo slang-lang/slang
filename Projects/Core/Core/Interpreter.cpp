@@ -32,7 +32,7 @@ namespace ObjectiveScript {
 
 Interpreter::Interpreter(IScope *scope, const std::string& name)
 : LocalScope(name, scope),
-  mControlFlow(ControlFlow::None),
+  mControlFlow(ControlFlow::Normal),
   mRepository(0)
 {
 }
@@ -43,8 +43,6 @@ Interpreter::~Interpreter()
 
 ControlFlow::E Interpreter::execute(Object *result)
 {
-	mControlFlow = ControlFlow::None;		// reset this every time we start executing a method
-
 	pushTokens(mTokens);
 		TokenIterator start = getTokens().begin();
 		TokenIterator end = getTokens().end();
@@ -84,25 +82,15 @@ void Interpreter::expression(Object *result, TokenIterator& start)
 	}
 }
 
-void Interpreter::garbageCollector(bool /*force*/)
+void Interpreter::garbageCollector()
 {
-	//for ( Symbols::iterator it = mSymbols.begin(); it != mSymbols.end(); ++it ) {
-/*
-	Symbols::iterator it = mSymbols.begin();
-	while ( it != mSymbols.end() ) {
-		Symbol *symbol = it->second;
-
-		if ( symbol->getType() == Symbol::IType::ObjectSymbol ) {
-			mRepository->removeReference(static_cast<Object*>(symbol));
-		}
-		else {
-			delete symbol;
+	for ( Symbols::reverse_iterator it = mSymbols.rbegin(); it != mSymbols.rend(); ) {
+		if ( it->second && it->second->getType() == Symbol::IType::ObjectSymbol ) {
+			mRepository->removeReference(static_cast<Object*>(it->second));
 		}
 
-		it = mSymbols.erase(it);
+		undefine(it->first, it->second);
 	}
-	mSymbols.clear();
-*/
 }
 
 const TokenList& Interpreter::getTokens() const
@@ -317,7 +305,7 @@ void Interpreter::process(Object *result, TokenIterator& token, TokenIterator en
 	while ( ((token != getTokens().end()) && (token != end) ) &&
 			((token->type() != terminator) && (token->type() != Token::Type::ENDOFFILE)) ) {
 
-		if ( mControlFlow != ControlFlow::None ) {
+		if ( mControlFlow != ControlFlow::Normal ) {
 			// a return command has been triggered, time to stop processing
 			break;
 		}
@@ -462,7 +450,7 @@ void Interpreter::process_for(TokenIterator& token)
 	for ( ; ; ) {
 		// Condition parsing
 		// {
-		mControlFlow = ControlFlow::None;
+		mControlFlow = ControlFlow::Normal;
 
 		TokenIterator condBegin = conditionBegin;
 
@@ -476,7 +464,7 @@ void Interpreter::process_for(TokenIterator& token)
 
 		// Body parsing
 		// {
-		mControlFlow = ControlFlow::None;
+		mControlFlow = ControlFlow::Normal;
 
 		pushTokens(loopTokens);
 		{
@@ -489,18 +477,17 @@ void Interpreter::process_for(TokenIterator& token)
 		popTokens();
 
 		switch ( mControlFlow ) {
-			case ControlFlow::Break: return;
+			case ControlFlow::Break: mControlFlow = ControlFlow::Normal; return;
 			case ControlFlow::Continue: continue;
-			case ControlFlow::None: break;
+			case ControlFlow::Normal: mControlFlow = ControlFlow::Normal; break;
 			case ControlFlow::Return: return;
 			case ControlFlow::Throw: return;
 		}
-
 		// }
 
 		// Expression parsing
 		// {
-		mControlFlow = ControlFlow::None;
+		mControlFlow = ControlFlow::Normal;
 
 		TokenIterator exprBegin = expressionBegin;
 		TokenList exprTokens;
@@ -549,11 +536,9 @@ void Interpreter::process_identifier(TokenIterator& token, Token::Type::E termin
 	if ( symbol->isConst() ) {
 		throw Utils::Exceptions::ConstCorrectnessViolated("tried to modify const symbol '" + identifier + "'", token->position());
 	}
-/*
-	if ( isMember(identifier) && (this->isConst() || mOwner->isConst()) ) {
+	if ( this->isConst() && symbol->isMember() ) {
 		throw Utils::Exceptions::ConstCorrectnessViolated("tried to modify member '" + identifier + "' in const method '" + getScopeName() + "'", token->position());
 	}
-*/
 
 	expression(symbol, ++assign);
 
@@ -748,7 +733,7 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 
 	token = closed;
 
-	ControlFlow::E controlflow = ControlFlow::None;
+	ControlFlow::E controlflow = ControlFlow::Normal;
 
 	Symbol *symbol = resolve(method);
 	if ( !symbol ) {
@@ -862,30 +847,18 @@ void Interpreter::process_scope(TokenIterator& token, Object* /*result*/)
 	TokenIterator scopeBegin = ++token;
 	TokenIterator scopeEnd = findNextBalancedCurlyBracket(scopeBegin, getTokens().end());
 
-	TokenList tmpTokens;
+	TokenList scopeTokens;
 	while ( scopeBegin != scopeEnd ) {
-		tmpTokens.push_back((*scopeBegin));
+		scopeTokens.push_back((*scopeBegin));
 		scopeBegin++;
 	}
 
-/*
-	Method scope(this, getName(), getTypeName());
-	scope.setConst(this->isConst());
-	scope.setFinal(this->isFinal());
-	scope.setLanguageFeatureState(this->languageFeatureState());
-	scope.setRepository(this->mRepository);
-	scope.setStatic(this->isStatic());
-	scope.setTokens(tmpTokens);
-	scope.visibility(this->visibility());
-
-	scope.execute(ParameterList(), result);
-
-	this->mControlFlow = scope.mControlFlow;
-*/
-
 	Interpreter interpreter(this, getScopeName());
+	interpreter.setConst(isConst());
+	interpreter.setFinal(isFinal());
+	interpreter.setLanguageFeatureState(languageFeatureState());
 	interpreter.setRepository(mRepository);
-	interpreter.setTokens(tmpTokens);
+	interpreter.setTokens(scopeTokens);
 
 	Object tmp;
 	mControlFlow = interpreter.execute(&tmp);
@@ -975,8 +948,9 @@ void Interpreter::process_try(TokenIterator& token)
 	}
 
 
-	mControlFlow = ControlFlow::None;
+	mControlFlow = ControlFlow::Normal;
 
+/*
 	pushTokens(tryTokens);
 	{
 		TokenIterator tmpBegin = getTokens().begin();
@@ -986,12 +960,22 @@ void Interpreter::process_try(TokenIterator& token)
 		process(&result, tmpBegin, tmpEnd);
 	}
 	popTokens();
+*/
 
+	Interpreter interpreter(this, getScopeName());
+	interpreter.setConst(isConst());
+	interpreter.setFinal(isFinal());
+	interpreter.setLanguageFeatureState(languageFeatureState());
+	interpreter.setRepository(mRepository);
+	interpreter.setTokens(tryTokens);
+
+	Object object;
+	mControlFlow = interpreter.execute(&object);
 
 	// execute catch-block if an exception has been thrown
 	if ( mControlFlow == ControlFlow::Throw ) {
 		// reset control flow after try block
-		mControlFlow = ControlFlow::None;
+		mControlFlow = ControlFlow::Normal;
 
 		if ( tmp != getTokens().end() && tmp->content() == KEYWORD_CATCH ) {
 			// find next open curly bracket '{'
@@ -1025,7 +1009,7 @@ void Interpreter::process_try(TokenIterator& token)
 	}
 	else {
 		// reset control flow after try block
-		mControlFlow = ControlFlow::None;
+		mControlFlow = ControlFlow::Normal;
 	}
 
 	// execute finally if present
@@ -1159,7 +1143,7 @@ void Interpreter::process_while(TokenIterator& token)
 	}
 
 	for ( ; ; ) {
-		mControlFlow = ControlFlow::None;
+		mControlFlow = ControlFlow::Normal;
 
 		TokenIterator tmp = condBegin;
 
@@ -1181,9 +1165,9 @@ void Interpreter::process_while(TokenIterator& token)
 		popTokens();
 
 		switch ( mControlFlow ) {
-			case ControlFlow::Break: return;
+			case ControlFlow::Break: mControlFlow = ControlFlow::Normal; return;
 			case ControlFlow::Continue: continue;
-			case ControlFlow::None: break;
+			case ControlFlow::Normal: mControlFlow = ControlFlow::Normal; break;
 			case ControlFlow::Return: return;
 			case ControlFlow::Throw: return;
 		}
