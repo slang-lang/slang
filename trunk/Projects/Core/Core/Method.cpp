@@ -262,19 +262,13 @@ void Method::expression(Object *result, TokenIterator& start)
 	}
 }
 
-void Method::garbageCollector(bool force)
+void Method::garbageCollector()
 {
 	for ( MemberCollection::iterator it = mLocalSymbols.begin(); it != mLocalSymbols.end(); ) {
-		if ( it->second->isStatic() && !force ) {
-			it++;
-			continue;
-		}
-		else {
-			undefine(it->first, it->second);
+		undefine(it->first, it->second);
 
-			mRepository->removeReference(it->second);
-			it = mLocalSymbols.erase(it);
-		}
+		mRepository->removeReference(it->second);
+		it = mLocalSymbols.erase(it);
 	}
 }
 
@@ -559,34 +553,22 @@ void Method::parseTerm(Object *result, TokenIterator& start)
 			// or simply get a stored variable
 
 			Symbol *symbol = resolve(start->content());
-			if ( symbol ) {
-				switch ( symbol->getType() ) {
-					case Symbol::IType::MethodSymbol:
-						process_method(start, result);
-						break;
-					case Symbol::IType::AtomicTypeSymbol:
-					case Symbol::IType::MemberSymbol:
-					case Symbol::IType::ObjectSymbol:
-						*result = *static_cast<Object*>(symbol);
-						break;
-					case Symbol::IType::NamespaceSymbol:
-					case Symbol::IType::UnknownSymbol:
-						break;
-				}
+			if ( !symbol ) {
+				throw Utils::Exceptions::UnknownIdentifer("unknown/unexpected identifier '" + start->content() + "' found", start->position());
 			}
-			else {
-				Object *object = getObject(start->content());
-				if ( object ) {
-					*result = *object;
-				}
-				else {
-					if ( isMethod(start->content()) ) {
-						process_method(start, result);
-					}
-					else {
-						throw Utils::Exceptions::UnknownIdentifer("unknown/unexpected identifier '" + start->content() + "' found", start->position());
-					}
-				}
+
+			switch ( symbol->getType() ) {
+				case Symbol::IType::MethodSymbol:
+					process_method(start, result);
+					break;
+				case Symbol::IType::AtomicTypeSymbol:
+				case Symbol::IType::MemberSymbol:
+				case Symbol::IType::ObjectSymbol:
+					*result = *static_cast<Object*>(symbol);
+					break;
+				case Symbol::IType::NamespaceSymbol:
+				case Symbol::IType::UnknownSymbol:
+					break;
 			}
 		} break;
 		case Token::Type::KEYWORD: {
@@ -1038,31 +1020,32 @@ void Method::process_method(TokenIterator& token, Object *result)
 
 	ControlFlow::E controlflow = ControlFlow::None;
 
-	Symbol *symbol = resolve(method);
-	if ( !symbol ) {
-		std::string member, parent;
-		Tools::split(method, parent, member);
 
-		Object *object = getObject(parent);
-		if ( object ) {
-			controlflow = object->execute(result, member, params, this);
-		}
-		else {
-			controlflow = mOwner->execute(result, method, params, this);
-		}
+	std::string member, parent;
+	Tools::split(method, parent, member);
+
+	Object *object = getObject(parent);
+	if ( object ) {
+		controlflow = object->execute(result, member, params, this);
+	}
+	else if ( isMethod(method, params) ) {
+		controlflow = mOwner->execute(result, method, params, this);
 	}
 	else {
-		switch ( symbol->getType() ) {
-			case Symbol::IType::MethodSymbol:
-				controlflow = static_cast<Method*>(symbol)->execute(params, result);
-				break;
-			case Symbol::IType::AtomicTypeSymbol:
-			case Symbol::IType::MemberSymbol:
-			case Symbol::IType::ObjectSymbol:
-			case Symbol::IType::NamespaceSymbol:
-			case Symbol::IType::UnknownSymbol:
-				throw Utils::Exceptions::UnknownIdentifer("could not resolve method '" + method + "'");
-				break;
+		Symbol *symbol = resolve(method);
+		if ( symbol) {
+			switch ( symbol->getType() ) {
+				case Symbol::IType::MethodSymbol:
+					controlflow = static_cast<Method*>(symbol)->execute(params, result);
+					break;
+				case Symbol::IType::AtomicTypeSymbol:
+				case Symbol::IType::MemberSymbol:
+				case Symbol::IType::ObjectSymbol:
+				case Symbol::IType::NamespaceSymbol:
+				case Symbol::IType::UnknownSymbol:
+					throw Utils::Exceptions::UnknownIdentifer("could not resolve method '" + method + "'");
+					break;
+			}
 		}
 	}
 

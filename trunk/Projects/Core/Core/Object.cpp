@@ -170,7 +170,14 @@ void Object::addMethod(Method *method)
 
 	mMethods.insert(method);
 
-	//define(method->getName(), method);	// does not allowed method overloading..
+	//define(method->getName(), method);	// does not allow method overloading..
+	Symbols::iterator it = mSymbols.find(method->getName());
+	if ( it == mSymbols.end() ) {
+		mSymbols.insert(std::make_pair(method->getName(), method));
+	}
+	else {
+		it->second = method;
+	}
 }
 
 void Object::addParent(const std::string& parent)
@@ -246,7 +253,7 @@ void Object::Destructor()
 		//throw Utils::Exceptions::Exception("can not destroy object '" + name() + "' which has not been constructed");
 	}
 
-	garbageCollector(true);
+	garbageCollector();
 
 	// set after executing destructor in case any exceptions have been thrown
 	mConstructed = false;
@@ -342,7 +349,7 @@ bool Object::findMethod(const std::string& m, const ParameterList& params, Metho
 	return false;
 }
 
-void Object::garbageCollector(bool force)
+void Object::garbageCollector()
 {
 	// members are objects, so they will get cleaned up by our repository
 	for ( MemberCollection::iterator it = mMembers.begin(); it != mMembers.end(); ++it ) {
@@ -351,7 +358,7 @@ void Object::garbageCollector(bool force)
 	mMembers.clear();
 
 	for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
-		(*it)->garbageCollector(force);
+		(*it)->garbageCollector();
 		delete (*it);
 	}
 	mMethods.clear();

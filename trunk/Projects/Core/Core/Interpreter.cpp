@@ -268,20 +268,22 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 			// or simply get a stored variable
 
 			Symbol *symbol = resolve(start->content());
-			if ( symbol ) {
-				switch ( symbol->getType() ) {
-					case Symbol::IType::MethodSymbol:
-						process_method(start, result);
-						break;
-					case Symbol::IType::AtomicTypeSymbol:
-					case Symbol::IType::MemberSymbol:
-					case Symbol::IType::ObjectSymbol:
-						*result = *static_cast<Object*>(symbol);
-						break;
-					case Symbol::IType::NamespaceSymbol:
-					case Symbol::IType::UnknownSymbol:
-						break;
-				}
+			if ( !symbol ) {
+				throw Utils::Exceptions::UnknownIdentifer("unknown/unexpected identifier '" + start->content() + "' found", start->position());
+			}
+
+			switch ( symbol->getType() ) {
+				case Symbol::IType::MethodSymbol:
+					process_method(start, result);
+					break;
+				case Symbol::IType::AtomicTypeSymbol:
+				case Symbol::IType::MemberSymbol:
+				case Symbol::IType::ObjectSymbol:
+					*result = *static_cast<Object*>(symbol);
+					break;
+				case Symbol::IType::NamespaceSymbol:
+				case Symbol::IType::UnknownSymbol:
+					break;
 			}
 		} break;
 		case Token::Type::KEYWORD: {

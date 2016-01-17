@@ -101,7 +101,7 @@ public:	// Usage
 	void Constructor(const ParameterList& params);
 	void Destructor();
 	ControlFlow::E execute(Object *result, const std::string& method, const ParameterList& params, const Method* caller = 0);		// throws VisibilityError exception
-	void garbageCollector(bool force = false);
+	void garbageCollector();
 
 public:	// Helpers
 	Object* getMember(const std::string& symbol) const;
