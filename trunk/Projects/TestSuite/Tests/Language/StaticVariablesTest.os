@@ -6,6 +6,11 @@ public namespace Language
 	{
 		public void Main(number argc = 0, string argv = "")
 		{
+			assert( TestCase1() );
+		}
+
+		private bool TestCase1()
+		{
 			number i = 0;
 
 			i = incStaticVar();
@@ -16,6 +21,8 @@ public namespace Language
 
 			i = incStaticVar();
 			print("i = " + i);
+
+			return i == 3;
 		}
 
 		private number incStaticVar()

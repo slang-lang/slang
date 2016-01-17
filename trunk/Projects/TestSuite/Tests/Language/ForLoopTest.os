@@ -1,6 +1,6 @@
 #!/usr/local/bin/oscript
 
-public namespace 
+public namespace ForLoopTest
 {
 	public object Main
 	{
@@ -40,13 +40,14 @@ public namespace
 		private bool TestCase3() const
 		{
 			for ( number loop3 = 0; loop3 < 5; loop3 = loop3 + 1 ) {
-					print("loop3 = " + loop3);
-					assert( loop3 < 5 );
+				print("loop3 = " + loop3);
+				assert( loop3 < 5 );
 
-					if ( loop3 > 2 ) {
-							break;
-					}
+				if ( loop3 > 2 ) {
+					break;
+				}
 			}
+
 			print("loop3 = " + loop3);
 			assert( loop3 == 3 );
 
