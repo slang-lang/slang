@@ -371,6 +371,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Core\Symbol.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\System.cpp"
 				>
 			</File>
