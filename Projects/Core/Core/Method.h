@@ -55,7 +55,7 @@ public:	// Symbol::IType implementation
 	const std::string& getTypeName() const;
 
 public: // Deinit
-	void garbageCollector(bool force = false);
+	void garbageCollector();
 
 public:
 	bool isSignatureValid(const ParameterList& params) const;

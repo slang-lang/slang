@@ -151,7 +151,6 @@ void MethodScope::undefineMethod(Method* method)
 
 	for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
 		if ( (*it) == method ) {
-		//if ( (*it)->getName() == method->getName() && (*it)->isSignatureValid(method->provideSignature()) ) {
 			mMethods.erase(it);
 			return;
 		}
