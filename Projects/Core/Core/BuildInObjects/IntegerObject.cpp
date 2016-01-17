@@ -48,9 +48,9 @@ IntegerObject::IntegerObject(const std::string& name, const std::string& value)
 	Constructor(ParameterList());
 }
 
-IntegerObject::IntegerObject(const Object& object)
+IntegerObject::IntegerObject(const IntegerObject& object)
 : Object(object.getName(), SYSTEM_LIBRARY, TYPENAME, object.getValue()),
-  mValue(0)
+  mValue(object.getNativeValue())
 {
 }
 

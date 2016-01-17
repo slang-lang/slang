@@ -46,9 +46,9 @@ FloatObject::FloatObject(const std::string& name, const std::string& value)
 	Constructor(ParameterList());
 }
 
-FloatObject::FloatObject(const Object& object)
+FloatObject::FloatObject(const FloatObject& object)
 : Object(object.getName(), SYSTEM_LIBRARY, TYPENAME, object.getValue()),
-  mValue(0.f)
+  mValue(object.getNativeValue())
 {
 }
 

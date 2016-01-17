@@ -27,7 +27,6 @@ std::string StringObject::TYPENAME = "string";
 
 StringObject::StringObject(const std::string& value)
 : Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, value)
-//  mValue(value)
 {
 	mIsAtomicType = true;
 
@@ -36,7 +35,6 @@ StringObject::StringObject(const std::string& value)
 
 StringObject::StringObject(const std::string& name, const std::string& value)
 : Object(name, SYSTEM_LIBRARY, TYPENAME, value)
-//  mValue(value)
 {
 	mIsAtomicType = true;
 
@@ -45,7 +43,6 @@ StringObject::StringObject(const std::string& name, const std::string& value)
 
 StringObject::StringObject(const Object& object)
 : Object(object.getName(), SYSTEM_LIBRARY, TYPENAME, object.getValue())
-//  mValue(object.getValue())
 {
 }
 

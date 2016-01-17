@@ -50,9 +50,9 @@ BoolObject::BoolObject(const std::string& name, const std::string& value)
 	Constructor(ParameterList());
 }
 
-BoolObject::BoolObject(const Object& object)
+BoolObject::BoolObject(const BoolObject& object)
 : Object(object.getName(), SYSTEM_LIBRARY, TYPENAME, object.getValue()),
-  mValue(Tools::stringToBool(object.getValue()))
+  mValue(object.getNativeValue())
 {
 }
 
