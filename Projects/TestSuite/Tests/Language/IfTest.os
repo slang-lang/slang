@@ -79,7 +79,7 @@ public namespace IfTest
 
 		private bool TestCase4()
 		{
-			// comparison operators are stickier than boolean operators
+			// comparison operators are stickier than boolean operators but parenthesis are even better :-)
 			if ( true == (true && false) == false ) {
 				print("TestCase4: true");
 				assert(true);

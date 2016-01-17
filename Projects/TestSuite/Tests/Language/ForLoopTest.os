@@ -47,6 +47,7 @@ public namespace
 							break;
 					}
 			}
+			print("loop3 = " + loop3);
 			assert( loop3 == 3 );
 
 			return true;

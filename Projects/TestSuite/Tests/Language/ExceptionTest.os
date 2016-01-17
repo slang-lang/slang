@@ -4,10 +4,12 @@ public namespace ExceptionTest
 {
 	private object ObjectThatThrows
 	{
+/*
 		public void ObjectThatThrows()
 		{
+			// not implementing this constructor and using the default constructor would also be valid
 		}
-
+*/
 		public void MethodThatThrows()
 		{
 			print("MethodThatThrows()");
@@ -23,7 +25,7 @@ public namespace ExceptionTest
 			assert( TestCase1() );
 			assert( TestCase2() );
 			assert( TestCase3() );
-			assert( TestCase4() );
+			assert( TestCase4() );	// this is not supported as long as we don't define methods in object scope
 			assert( TestCase5() );
 		}
 
@@ -40,9 +42,6 @@ public namespace ExceptionTest
 				throw;
 
 				assert( false );
-			}
-			finally {
-				print("finally");
 			}
 
 			return true;
@@ -80,12 +79,10 @@ public namespace ExceptionTest
 
 				assert( false );
 			}
-/*
 			catch {
 				number one = 2;
 				print("one = " + one);
 			}
-*/
 			finally {
 				number one = 3;
 				print("one = " + one);
@@ -97,18 +94,6 @@ public namespace ExceptionTest
 		{
 			print("TestCase4()");
 
-			number one = 1;
-			print("one = " + one);
-
-			throw;
-
-			assert( false );
-		}
-
-		private bool TestCase5()
-		{
-			print("TestCase5()");
-
 			ObjectThatThrows obj = new ObjectThatThrows();
 
 			try {
@@ -118,13 +103,34 @@ public namespace ExceptionTest
 
 				assert( false );
 			}
-/*
 			catch {
 				print("catch");
 			}
-*/
 			finally {
 				print("finally");
+			}
+		}
+
+		private bool TestCase5()
+		{
+			print("TestCase5()");
+
+			number one = 1;
+			print("one = " + one);
+
+			try {
+				print("outter try");
+
+				try {
+					print("inner try");
+
+					throw;
+
+					assert( false );
+				}
+			}
+			finally {
+				print("outter finally");
 			}
 		}
 	}
