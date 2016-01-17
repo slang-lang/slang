@@ -67,6 +67,7 @@ Object* Preprocessor::createMember(TokenIterator token)
 	Object *o = mRepository->createObject(name, mFilename, type);
 	o->setConst(isConst);
 	o->setFinal(isFinal);
+	o->setMember(true);		// every object that is created here is a member object
 	o->setStatic(isStatic);
 	o->setVisibility(Visibility::convert(visibility));
 	return o;

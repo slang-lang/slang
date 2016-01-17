@@ -43,6 +43,7 @@ Object::Object(const Object& other)
 
 	setConst(other.isConst());
 	setFinal(other.isFinal());
+	setMember(other.isMember());
 	//setStatic(other.isStatic());
 
 	// register new members
@@ -208,7 +209,7 @@ void Object::Constructor(const ParameterList& params)
 		VoidObject tmp;
 		ControlFlow::E controlflow = execute(&tmp, Typename(), params);
 
-		if ( controlflow != ControlFlow::None ) {
+		if ( controlflow != ControlFlow::Normal ) {
 			// uups
 		}
 	}
@@ -242,7 +243,7 @@ void Object::Destructor()
 			VoidObject object;
 			ControlFlow::E controlflow = execute(&object, "~" + Typename(), ParameterList());
 
-			if ( controlflow != ControlFlow::None ) {
+			if ( controlflow != ControlFlow::Normal ) {
 				// uups
 			}
 		}

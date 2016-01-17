@@ -34,7 +34,7 @@ Method::Method(IScope *parent, const std::string& name, const std::string& type)
 : LocalScope(name, parent),
   MethodSymbol(name),
   Variable(name, type),
-  mControlFlow(ControlFlow::None),
+  mControlFlow(ControlFlow::Normal),
   mOwner(0),
   mRepository(0)
 {
@@ -42,34 +42,6 @@ Method::Method(IScope *parent, const std::string& name, const std::string& type)
 
 Method::~Method()
 {
-}
-
-bool Method::operator() (const Method& first, const Method& second) const
-{
-	if ( first.name() == second.name() ) {
-		ParameterList firstList = first.provideSignature();
-		ParameterList secondList = second.provideSignature();
-
-		// unable to identify return value during method call
-		//if ( this->type() != other.type() ) {
-		//	return this->type() < other.type();
-		//}
-
-		if ( firstList.size() == secondList.size() ) {
-			ParameterList::const_iterator fIt = firstList.begin();
-			ParameterList::const_iterator sIt = secondList.begin();
-
-			for ( ; fIt != firstList.end() && sIt != secondList.end(); ++fIt, ++sIt ) {
-				if ( fIt->type() != sIt->type() ) {
-					return fIt->type() < sIt->type();
-				}
-			}
-		}
-
-		return firstList.size() < secondList.size();
-	}
-
-	return first.name() < second.name();
 }
 
 bool Method::operator< (const Method& other) const
@@ -106,19 +78,25 @@ void Method::operator= (const Method& other)
 		setConst(other.isConst());
 		setFinal(other.isFinal());
 		setLanguageFeatureState(other.languageFeatureState());
-
+/*
 		// unregister current members
-		for ( MemberCollection::const_iterator it = mLocalSymbols.begin(); it != mLocalSymbols.end(); ) {
-			mRepository->removeReference(it->second);
-			it = mLocalSymbols.erase(it);
+		for ( Symbols::const_iterator it = mSymbols.begin(); it != mSymbols.end(); ) {
+			if ( it->second && it->second->getType() == Symbol::IType::ObjectSymbol ) {
+				mRepository->removeReference(static_cast<Object*>(it->second));
+			}
+
+			undefine(it->first, it->second);
 		}
 
 		// register new members
-		for ( MemberCollection::const_iterator it = other.mLocalSymbols.begin(); it != other.mLocalSymbols.end(); ++it ) {
-			addIdentifier(it->first, it->second);
-			mRepository->addReference(it->second);
-		}
+		for ( Symbols::const_iterator it = other.mSymbols.begin(); it != other.mSymbols.end(); ++it ) {
+			if ( it->second && it->second->getType() == Symbol::IType::ObjectSymbol ) {
+				mRepository->addReference(static_cast<Object*>(it->second));
+			}
 
+			define(it->first, it->second);
+		}
+*/
 		mOwner = other.mOwner;
 		mParameter = other.mParameter;
 		mRepository = other.mRepository;
@@ -143,23 +121,11 @@ void Method::addIdentifier(const std::string& name, Object *object)
 
 	// define object in our scope (this will replace 'addIdentifier' in the distant future)
 	define(insertName, object);
-
-	if ( mLocalSymbols.find(insertName) != mLocalSymbols.end() ) {
-		if ( object->isStatic() ) {
-			// don't insert static members a second time
-			// just return silently
-			return;
-		}
-
-		throw Utils::Exceptions::DuplicateIdentifer("addIdentifier: " + insertName);
-	}
-
-	mLocalSymbols[insertName] = object;
 }
 
 ControlFlow::E Method::execute(const ParameterList& params, Object *result)
 {
-	mControlFlow = ControlFlow::None;		// reset this every time we start executing a method
+	mControlFlow = ControlFlow::Normal;		// reset this every time we start executing a method
 
 	if ( !isSignatureValid(params) ) {
 		throw Utils::Exceptions::ParameterCountMissmatch("incorrect number or type of parameters");
@@ -228,9 +194,22 @@ ControlFlow::E Method::execute(const ParameterList& params, Object *result)
 	// let the garbage collector do it's magic after we gathered our result
 	garbageCollector();
 
-	// reset control flow if necessary
-	if ( mControlFlow != ControlFlow::Throw ) {
-		mControlFlow = ControlFlow::None;
+	// detect unnatural control flow
+	switch ( mControlFlow ) {
+		case ControlFlow::Break:
+		case ControlFlow::Continue:
+		case ControlFlow::Normal:
+			if ( result->Typename() != VoidObject::TYPENAME ) {
+				throw Utils::Exceptions::Exception("unnatural method return at '" + getName() + "'");
+			}
+
+			mControlFlow = ControlFlow::Normal;
+			break;
+		case ControlFlow::Return:
+			mControlFlow = ControlFlow::Normal;
+			break;
+		case ControlFlow::Throw:
+			break;
 	}
 
 	return mControlFlow;
@@ -264,11 +243,12 @@ void Method::expression(Object *result, TokenIterator& start)
 
 void Method::garbageCollector()
 {
-	for ( MemberCollection::iterator it = mLocalSymbols.begin(); it != mLocalSymbols.end(); ) {
-		undefine(it->first, it->second);
+	for ( Symbols::reverse_iterator it = mSymbols.rbegin(); it != mSymbols.rend(); ) {
+		if ( it->second && it->second->getType() == Symbol::IType::ObjectSymbol ) {
+			mRepository->removeReference(static_cast<Object*>(it->second));
+		}
 
-		mRepository->removeReference(it->second);
-		it = mLocalSymbols.erase(it);
+		undefine(it->first, it->second);
 	}
 }
 
@@ -282,24 +262,19 @@ const std::string& Method::getTypeName() const
 	return mVarType;
 }
 
-bool Method::isMember(const std::string& token) const
-{
-	return (mOwner && mOwner->getMember(token));
-}
-
 Object* Method::getObject(const std::string& symbol) const
 {
 	std::string member, parent;
 	Tools::split(symbol, parent, member);
 
 	// either it is a local symbol...
-	for ( MemberCollection::const_iterator it = mLocalSymbols.begin(); it != mLocalSymbols.end(); ++it ) {
+	for ( Symbols::const_iterator it = mSymbols.begin(); it != mSymbols.end(); ++it ) {
 		if ( it->first == symbol ) {
-			return it->second;
+			return static_cast<Object*>(it->second);
 		}
 
 		if ( it->first == parent ) {
-			return it->second->getMember(member);
+			return static_cast<Object*>(it->second)->getMember(member);
 		}
 	}
 
@@ -315,38 +290,6 @@ Object* Method::getObject(const std::string& symbol) const
 const TokenList& Method::getTokens() const
 {
 	return mTokenStack.back();
-}
-
-bool Method::isMethod(const std::string& token) const
-{
-	if ( !mOwner ) {
-		return false;
-	}
-
-	std::string method, parent;
-	Tools::split(token, parent, method);
-
-	// loop through all local symbols and ask them if this identifier belongs to them
-	for ( MemberCollection::const_iterator it = mLocalSymbols.begin(); it != mLocalSymbols.end(); ++it ) {
-		if ( !it->second ) {
-			continue;
-		}
-
-		if ( it->first == parent ) {
-			// check for member function
-			if ( it->second->hasMethod(method) ) {
-				return true;
-			}
-		}
-	}
-
-	Object *obj = mOwner->getMember(parent);
-	if ( obj ) {
-		return obj->hasMethod(method);
-	}
-
-	// check if token is a method of our parent object
-	return mOwner->hasMethod(token);
 }
 
 bool Method::isMethod(const std::string& token, const ParameterList& params) const
@@ -602,7 +545,7 @@ void Method::process(Object *result, TokenIterator& token, TokenIterator end, To
 	while ( ((token != getTokens().end()) && (token != end) ) &&
 			((token->type() != terminator) && (token->type() != Token::Type::ENDOFFILE)) ) {
 
-		if ( mControlFlow != ControlFlow::None ) {
+		if ( mControlFlow != ControlFlow::Normal ) {
 			// a return command has been triggered, time to stop processing
 			break;
 		}
@@ -734,7 +677,7 @@ void Method::process_for(TokenIterator& token)
 	for ( ; ; ) {
 		// Condition parsing
 		// {
-		mControlFlow = ControlFlow::None;
+		mControlFlow = ControlFlow::Normal;
 
 		TokenIterator condBegin = conditionBegin;
 
@@ -748,7 +691,7 @@ void Method::process_for(TokenIterator& token)
 
 		// Body parsing
 		// {
-		mControlFlow = ControlFlow::None;
+		mControlFlow = ControlFlow::Normal;
 
 		pushTokens(loopTokens);
 		{
@@ -761,9 +704,9 @@ void Method::process_for(TokenIterator& token)
 		popTokens();
 
 		switch ( mControlFlow ) {
-			case ControlFlow::Break: return;
+			case ControlFlow::Break: mControlFlow = ControlFlow::Normal; return;
 			case ControlFlow::Continue: continue;
-			case ControlFlow::None: break;
+			case ControlFlow::Normal: mControlFlow = ControlFlow::Normal; break;
 			case ControlFlow::Return: return;
 			case ControlFlow::Throw: return;
 		}
@@ -771,7 +714,7 @@ void Method::process_for(TokenIterator& token)
 
 		// Expression parsing
 		// {
-		mControlFlow = ControlFlow::None;
+		mControlFlow = ControlFlow::Normal;
 
 		TokenIterator exprBegin = expressionBegin;
 		TokenList exprTokens;
@@ -821,7 +764,7 @@ void Method::process_identifier(TokenIterator& token, Token::Type::E terminator)
 	if ( symbol->isConst() ) {
 		throw Utils::Exceptions::ConstCorrectnessViolated("tried to modify const symbol '" + identifier + "'", token->position());
 	}
-	if ( isMember(identifier) && (this->isConst() || mOwner->isConst()) ) {
+	if ( symbol->isMember() && (this->isConst() || mOwner->isConst()) ) {
 		throw Utils::Exceptions::ConstCorrectnessViolated("tried to modify member '" + identifier + "' in const method '" + this->name() + "'", token->position());
 	}
 
@@ -1018,7 +961,7 @@ void Method::process_method(TokenIterator& token, Object *result)
 
 	token = closed;
 
-	ControlFlow::E controlflow = ControlFlow::None;
+	ControlFlow::E controlflow = ControlFlow::Normal;
 
 
 	std::string member, parent;
@@ -1143,29 +1086,18 @@ void Method::process_scope(TokenIterator& token, Object *result)
 	TokenIterator scopeBegin = ++token;
 	TokenIterator scopeEnd = findNextBalancedCurlyBracket(scopeBegin, getTokens().end());
 
-	TokenList tmpTokens;
+	TokenList scopeTokens;
 	while ( scopeBegin != scopeEnd ) {
-		tmpTokens.push_back((*scopeBegin));
+		scopeTokens.push_back((*scopeBegin));
 		scopeBegin++;
 	}
-/*
-	Method scope(this, getName(), getTypeName());
-	scope.setConst(this->isConst());
-	scope.setFinal(this->isFinal());
-	scope.setLanguageFeatureState(this->languageFeatureState());
-	scope.setRepository(this->mRepository);
-	scope.setStatic(this->isStatic());
-	scope.setTokens(tmpTokens);
-	scope.visibility(this->visibility());
-
-	scope.execute(ParameterList(), result);
-
-	mControlFlow = scope.mControlFlow;
-*/
 
 	Interpreter interpreter(this, getName());
+	interpreter.setConst(isConst());
+	interpreter.setFinal(isFinal());
+	interpreter.setLanguageFeatureState(languageFeatureState());
 	interpreter.setRepository(mRepository);
-	interpreter.setTokens(tmpTokens);
+	interpreter.setTokens(scopeTokens);
 
 	mControlFlow = interpreter.execute(result);
 
@@ -1255,8 +1187,9 @@ void Method::process_try(TokenIterator& token)
 	}
 
 
-	mControlFlow = ControlFlow::None;
+	mControlFlow = ControlFlow::Normal;
 
+/*
 	pushTokens(tryTokens);
 	{
 		TokenIterator tmpBegin = getTokens().begin();
@@ -1266,12 +1199,23 @@ void Method::process_try(TokenIterator& token)
 		process(&result, tmpBegin, tmpEnd);
 	}
 	popTokens();
+*/
+
+	Interpreter interpreter(this, getScopeName());
+	interpreter.setConst(isConst());
+	interpreter.setFinal(isFinal());
+	interpreter.setLanguageFeatureState(languageFeatureState());
+	interpreter.setRepository(mRepository);
+	interpreter.setTokens(tryTokens);
+
+	Object object;
+	mControlFlow = interpreter.execute(&object);
 
 
 	// execute catch-block if an exception has been thrown
 	if ( mControlFlow == ControlFlow::Throw ) {
 		// reset control flow after try block
-		mControlFlow = ControlFlow::None;
+		mControlFlow = ControlFlow::Normal;
 
 		if ( tmp != getTokens().end() && tmp->content() == KEYWORD_CATCH ) {
 			// find next open curly bracket '{'
@@ -1305,7 +1249,7 @@ void Method::process_try(TokenIterator& token)
 	}
 	else {
 		// reset control flow after try block
-		mControlFlow = ControlFlow::None;
+		mControlFlow = ControlFlow::Normal;
 	}
 
 	// execute finally if present
@@ -1439,7 +1383,7 @@ void Method::process_while(TokenIterator& token)
 	}
 
 	for ( ; ; ) {
-		mControlFlow = ControlFlow::None;
+		mControlFlow = ControlFlow::Normal;
 
 		TokenIterator tmp = condBegin;
 
@@ -1461,9 +1405,9 @@ void Method::process_while(TokenIterator& token)
 		popTokens();
 
 		switch ( mControlFlow ) {
-			case ControlFlow::Break: return;
+			case ControlFlow::Break: mControlFlow = ControlFlow::Normal; return;
 			case ControlFlow::Continue: continue;
-			case ControlFlow::None: break;
+			case ControlFlow::Normal: mControlFlow = ControlFlow::Normal; break;
 			case ControlFlow::Return: return;
 			case ControlFlow::Throw: return;
 		}

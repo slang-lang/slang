@@ -97,6 +97,9 @@ public:
 	ObjectAttributes();
 
 public:
+	bool isMember() const;
+	void setMember(bool state);
+
 	bool isStatic() const;
 	void setStatic(bool state);
 
@@ -104,6 +107,7 @@ public:
 	void setSealed(bool state);
 
 private:
+	bool mIsMember;
 	bool mIsStatic;
 };
 

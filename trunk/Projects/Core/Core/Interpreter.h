@@ -28,13 +28,14 @@ public:
 	typedef enum {
 		Break,
 		Continue,
-		None,
+		Normal,
 		Return,
 		Throw
 	} E;
 };
 
-class Interpreter : LocalScope
+class Interpreter : public LocalScope,
+					public GenericAttributes
 {
 public:
 	Interpreter(IScope *scope, const std::string& name);
@@ -45,7 +46,7 @@ public:
 	void setTokens(const TokenList& tokens);
 
 public: // Deinit
-	void garbageCollector(bool force = false);
+	void garbageCollector();
 
 public: // Execution
 	ControlFlow::E execute(Object *result);
