@@ -50,6 +50,7 @@ void LanguageTest::process()
 	TEST(testScope);
 	//TEST(testStaticLocalVariable);
 	//TEST(testSwitch);					// not yet implemented
+	TEST(testThis);
 	TEST(testWhile);
 
 // not yet implemented
@@ -377,6 +378,21 @@ void LanguageTest::testSwitch()
 		VirtualMachine vm;
 
 		TTHROWS(vm.create("Tests/Language/SwitchTest.os"), ObjectiveScript::Utils::Exceptions::NotImplemented);
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// unexpected exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void LanguageTest::testThis()
+{
+	try {
+		VirtualMachine vm;
+
+		vm.create("Tests/Language/ThisTest.os");
 
 		// automatic success
 	}
