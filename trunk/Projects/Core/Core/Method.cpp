@@ -44,6 +44,30 @@ Method::~Method()
 {
 }
 
+bool Method::operator()(const Method& first, const Method& second) const
+{
+	if (first.name() == second.name()) {
+		ParameterList firstList = first.provideSignature();
+		ParameterList secondList = second.provideSignature();
+		// unable to identify return value during method call
+		//if ( this->type() != other.type() ) {
+		//	return this->type() < other.type();
+		//}
+		if (firstList.size() == secondList.size()) {
+			ParameterList::const_iterator fIt = firstList.begin();
+			ParameterList::const_iterator sIt = secondList.begin();
+			for (; fIt != firstList.end() && sIt != secondList.end();
+					++fIt, ++sIt) {
+				if (fIt->type() != sIt->type()) {
+					return fIt->type() < sIt->type();
+				}
+			}
+		}
+		return firstList.size() < secondList.size();
+	}
+	return first.name() < second.name();
+}
+
 bool Method::operator< (const Method& other) const
 {
 	if ( this->name() == other.name() ) {
@@ -78,25 +102,7 @@ void Method::operator= (const Method& other)
 		setConst(other.isConst());
 		setFinal(other.isFinal());
 		setLanguageFeatureState(other.languageFeatureState());
-/*
-		// unregister current members
-		for ( Symbols::const_iterator it = mSymbols.begin(); it != mSymbols.end(); ) {
-			if ( it->second && it->second->getType() == Symbol::IType::ObjectSymbol ) {
-				mRepository->removeReference(static_cast<Object*>(it->second));
-			}
 
-			undefine(it->first, it->second);
-		}
-
-		// register new members
-		for ( Symbols::const_iterator it = other.mSymbols.begin(); it != other.mSymbols.end(); ++it ) {
-			if ( it->second && it->second->getType() == Symbol::IType::ObjectSymbol ) {
-				mRepository->addReference(static_cast<Object*>(it->second));
-			}
-
-			define(it->first, it->second);
-		}
-*/
 		mOwner = other.mOwner;
 		mParameter = other.mParameter;
 		mRepository = other.mRepository;
