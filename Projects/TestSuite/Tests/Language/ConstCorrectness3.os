@@ -64,19 +64,19 @@ public namespace ConstCorrectness
 			return true;
 		}
 
-		private bool UpdateConstUserObject(UserObject obj const ref) const
+		private bool UpdateConstUserObject(UserObject objConstRef const ref) const
 		{
 			// altough all objects are references it should never be possible to change a const object => fail
-			obj.setValue(2);
+			objConstRef.setValue(2);
 
 			return false;
 		}
 
-		private bool UpdateUserObject(UserObject obj ref) const
+		private bool UpdateUserObject(UserObject objRef ref) const
 		{
 			// all objects are references so this is perfectly valid => success
 
-			obj.setValue(2);
+			objRef.setValue(2);
 
 			return true;
 		}

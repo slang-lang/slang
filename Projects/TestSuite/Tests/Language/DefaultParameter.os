@@ -9,7 +9,9 @@ public namespace Tests
 			print("argc = " + argc);
 			print("argv = " + argv);
 
+			print("DefaultParameter();");
 			DefaultParameter();
+			print("DefaultParameter(2);");
 			DefaultParameter(2);
 		}
 
