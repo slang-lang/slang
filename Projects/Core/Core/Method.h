@@ -39,28 +39,7 @@ public:
 	~Method();
 
 public:
-	bool operator ()(const Method& first, const Method& second) const {
-		if (first.name() == second.name()) {
-			ParameterList firstList = first.provideSignature();
-			ParameterList secondList = second.provideSignature();
-			// unable to identify return value during method call
-			//if ( this->type() != other.type() ) {
-			//	return this->type() < other.type();
-			//}
-			if (firstList.size() == secondList.size()) {
-				ParameterList::const_iterator fIt = firstList.begin();
-				ParameterList::const_iterator sIt = secondList.begin();
-				for (; fIt != firstList.end() && sIt != secondList.end();
-						++fIt, ++sIt) {
-					if (fIt->type() != sIt->type()) {
-						return fIt->type() < sIt->type();
-					}
-				}
-			}
-			return firstList.size() < secondList.size();
-		}
-		return first.name() < second.name();
-	}
+	bool operator()(const Method& first, const Method& second) const;
 	bool operator< (const Method& other) const;
 	void operator= (const Method& other);
 
