@@ -52,6 +52,7 @@ private:	// Tests
 	void testScope();
 	void testStaticLocalVariable();
 	void testSwitch();
+	void testThis();
 	void testWhile();
 };
 
