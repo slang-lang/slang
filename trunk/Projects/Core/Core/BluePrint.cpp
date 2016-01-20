@@ -11,6 +11,7 @@
 
 
 namespace ObjectiveScript {
+namespace DesignTime {
 
 
 BluePrint::BluePrint()
@@ -29,24 +30,6 @@ BluePrint::~BluePrint()
 {
 }
 
-void BluePrint::addInterface(const Ancestor& iface)
-{
-	mInterfaces.insert(std::make_pair(
-		iface.name(),
-		iface
-	));
-}
-
-const BluePrint::Ancestors& BluePrint::getAncestors() const
-{
-	return mAncestors;
-}
-
-const BluePrint::Ancestors& BluePrint::getInterfaces() const
-{
-	return mInterfaces;
-}
-
 const TokenList& BluePrint::getTokens() const
 {
 	return mTokens;
@@ -55,11 +38,6 @@ const TokenList& BluePrint::getTokens() const
 Visibility::E BluePrint::getVisibility() const
 {
 	return mVisibility;
-}
-
-void BluePrint::setAncestors(const Ancestors& ancestors)
-{
-	mAncestors = ancestors;
 }
 
 void BluePrint::setTokens(const TokenList& tokens)
@@ -73,4 +51,5 @@ void BluePrint::setVisibility(Visibility::E v)
 }
 
 
+}
 }

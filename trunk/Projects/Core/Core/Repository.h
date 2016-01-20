@@ -34,7 +34,7 @@ public:
 	Object* createObject(const std::string& name, const std::string& filename, const std::string& type);
 
 public:
-	void addBlueprint(const BluePrint& object);
+	void addBlueprint(const DesignTime::BluePrint& object);
 	void addPrototype(const Prototype& prototype);
 
 	Object* createInstance(const std::string& type, const std::string& name, const std::string& prototype = "");
@@ -48,13 +48,13 @@ public:
 protected:
 
 private:
-	typedef std::map<std::string, BluePrint> BluePrints;
+	typedef std::map<std::string, DesignTime::BluePrint> BluePrints;
 	typedef std::map<std::string, Prototype> Prototypes;
 	typedef std::map<Object*, int> ReferenceCountedObjects;
 	typedef std::set<Object*> Objects;
 
 private:
-	const Reference& createReference(const BluePrint& blueprint, const std::string& type, const std::string& name);
+	const Reference& createReference(const DesignTime::BluePrint& blueprint, const std::string& type, const std::string& name);
 
 private:
 	BluePrints mBluePrints;

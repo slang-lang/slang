@@ -20,18 +20,18 @@ namespace ObjectiveScript {
 class Prototype
 {
 public:
-	Prototype(const BluePrint& blue);
+	Prototype(const DesignTime::BluePrint& blue);
 	~Prototype();
 
 public:
-	BluePrint generateBluePrint(const std::string& type);
+	DesignTime::BluePrint generateBluePrint(const std::string& type);
 
 	const std::string& type() const;
 
 protected:
 
 private:
-	BluePrint mBluePrint;
+	DesignTime::BluePrint mBluePrint;
 };
 
 typedef std::list<Prototype> PrototypeList;

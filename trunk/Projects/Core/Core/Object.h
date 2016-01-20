@@ -43,7 +43,7 @@ class Repository;
 
 class Object : public MethodScope,
 			   public ObjectSymbol,
-			   public BluePrint
+			   public DesignTime::BluePrint
 {
 public:
 	Object();
