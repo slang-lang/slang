@@ -34,7 +34,7 @@ VoidObject::VoidObject(const std::string& name)
 	Constructor(ParameterList());
 }
 
-VoidObject::VoidObject(const Object& object)
+VoidObject::VoidObject(const VoidObject& object)
 : Object(object.getName(), SYSTEM_LIBRARY, TYPENAME, VALUE_NONE)
 {
 }
@@ -56,7 +56,7 @@ const std::string& VoidObject::getTypeName() const
 
 std::string VoidObject::getValue() const
 {
-	return "<VOID>";
+	return VALUE_NONE;
 }
 
 void VoidObject::setNativeValue(void)

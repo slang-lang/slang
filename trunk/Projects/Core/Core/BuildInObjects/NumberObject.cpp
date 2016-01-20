@@ -48,9 +48,9 @@ NumberObject::NumberObject(const std::string& name, const std::string& value)
 	Constructor(ParameterList());
 }
 
-NumberObject::NumberObject(const Object& object)
+NumberObject::NumberObject(const NumberObject& object)
 : Object(object.getName(), SYSTEM_LIBRARY, TYPENAME, object.getValue()),
-  mValue(0.f)
+  mValue(object.getNativeValue())
 {
 }
 

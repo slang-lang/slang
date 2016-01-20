@@ -41,7 +41,7 @@ StringObject::StringObject(const std::string& name, const std::string& value)
 	Constructor(ParameterList());
 }
 
-StringObject::StringObject(const Object& object)
+StringObject::StringObject(const StringObject& object)
 : Object(object.getName(), SYSTEM_LIBRARY, TYPENAME, object.getValue())
 {
 }
