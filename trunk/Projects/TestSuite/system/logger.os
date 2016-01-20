@@ -1,11 +1,10 @@
 
-public namespace std
+public namespace System
 {
-
 	public object Logger
 	{
 		// Members
-		private String mKey;
+		private string mKey;
 		
 		// Default constructor
 		public void Logger()
@@ -14,31 +13,30 @@ public namespace std
 		}
 
 		// Specialized constructor
-		public void Logger(String key)
+		public void Logger(string key)
 		{
 			mKey = key;
 		}
 
 		// Public methods
-		public void debug(String message)
+		public void debug(string message) const
 		{
 			print("[OS::DEBUG] " & mKey & "::" & message);
 		}
 
-		public void error(String message)
+		public void error(string message) const
 		{
 			print("[OS::ERROR] " & mKey & "::" & message);
 		}
 
-		public void info(String message)
+		public void info(string message) const
 		{
 			print("[OS::INFO ] " & mKey & "::" & message);
 		}
 
-		public void warning(String message)
+		public void warning(string message) const
 		{
 			print("[OS::WARN ] " & mKey & "::" & message);
 		}
 	}
-
 }
