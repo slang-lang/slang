@@ -14,7 +14,6 @@
 #include "Reference.h"
 #include "Scope.h"
 #include "Types.h"
-#include "Variable.h"
 
 // Forward declarations
 
