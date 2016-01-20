@@ -47,7 +47,7 @@ void Script::construct(const ParameterList& params)
 {
 	assert(mObject);
 
-	mObject->connectRepository(mRepository);
+	mObject->setRepository(mRepository);
 
 	try {
 		mObject->Constructor(params);
@@ -91,25 +91,33 @@ Object Script::execute(const std::string& method, const ParameterList& params)
 	return returnValue;
 }
 
-Object* Script::getMember(const std::string& m)
+Symbol* Script::getSymbol(const std::string& symbol)
 {
 	assert(mObject);
 
-	return mObject->getMember(m);
+	return mObject->resolve(symbol);
 }
 
 bool Script::hasMethod(const std::string& m)
 {
 	assert(mObject);
 
-	return mObject->hasMethod(m);
+	if ( mObject->resolve(m) ) {
+		return true;
+	}
+
+	return false;
 }
 
 bool Script::hasMethod(const std::string& m, const ParameterList& params)
 {
 	assert(mObject);
 
-	return mObject->hasMethod(m, params);
+	if ( mObject->resolveMethod(m, params) ) {
+		return true;
+	}
+
+	return false;
 }
 
 

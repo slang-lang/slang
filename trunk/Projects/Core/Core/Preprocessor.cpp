@@ -34,7 +34,7 @@ Object* Preprocessor::createMember(TokenIterator token)
 	std::string visibility;
 	bool isConst = false;
 	bool isFinal = false;
-	bool isStatic = false;
+	//bool isStatic = false;
 
 	// look for the visibility token
 	visibility = (*token++).content();
@@ -53,9 +53,9 @@ Object* Preprocessor::createMember(TokenIterator token)
 		else if ( (*token).content() == MODIFIER_MODIFY ) {
 			isConst = false;
 		}
-		else if ( (*token).content() == MODIFIER_STATIC ) {
-			isStatic = true;
-		}
+		//else if ( (*token).content() == MODIFIER_STATIC ) {
+		//	isStatic = true;
+		//}
 
 		token++;
 	}
@@ -68,19 +68,15 @@ Object* Preprocessor::createMember(TokenIterator token)
 	o->setConst(isConst);
 	o->setFinal(isFinal);
 	o->setMember(true);		// every object that is created here is a member object
-	o->setStatic(isStatic);
+	o->setRepository(mRepository);
+	//o->setStatic(isStatic);
 	o->setVisibility(Visibility::convert(visibility));
 	return o;
 }
 
 Method* Preprocessor::createMethod(TokenIterator token)
 {
-#ifdef USE_EXTREME_CONST_CORRECTNESS
 	bool isConst = true;		// all methods are const by default (this is the only way the 'modify' attribute makes sense)
-#else
-	bool isConst = false;
-#endif
-
 	bool isStructor = false;
 	bool isFinal = false;
 	bool isStatic = false;
@@ -100,8 +96,8 @@ Method* Preprocessor::createMethod(TokenIterator token)
 	// look for the identifier token
 	name = (*token).content();
 
-	if ( name == mObject->Typename() || name == "~" + mObject->Typename() ) {
-	//if ( name == mScope->getScopeName() || name == "~" + mScope->getScopeName() ) {
+	if ( name == mObject->Typename() ||
+		 name == "~" + mObject->Typename() ) {
 		// this method has the same name as it's containing object, so this has to be a constructor or a destructor,
 		// these 2 methods can never ever be const
 		isConst = false;
@@ -166,6 +162,7 @@ Method* Preprocessor::createMethod(TokenIterator token)
 	m->setConst(isConst);
 	m->setFinal(isFinal);
 	m->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
+	m->setRepository(mRepository);
 	m->setSignature(params);
 	m->setTokens(tokens);
 	m->visibility(Visibility::convert(visibility));
@@ -192,43 +189,15 @@ void Preprocessor::generateObject()
 	// if we have a member declaration or a method declaration
 	for ( TokenList::const_iterator it = visList.begin(); it != visList.end(); ++it ) {
 		if ( isMemberDeclaration((*it)) ) {
-			mObject->addMember(createMember((*it)));
-		}
-		else if ( isMethodDeclaration((*it)) ) {
-			mObject->addMethod(createMethod((*it)));
-		}
-	}
-}
-
-void Preprocessor::generateScope()
-{
-	assert(mScope);
-
-	typedef std::list<TokenIterator> TokenList;
-	TokenList visList;
-
-	// find all visibility keywords which we use
-	// as starting point for our interpreter
-	for ( TokenIterator it = mTokens.begin(); it != mTokens.end(); ++it ) {
-		if ( it->type() == Token::Type::VISIBILITY ) {
-			visList.push_back(it);
-		}
-	}
-
-	// loop over all visibility declarations and check
-	// if we have a member declaration or a method declaration
-	for ( TokenList::const_iterator it = visList.begin(); it != visList.end(); ++it ) {
-		if ( isMemberDeclaration((*it)) ) {
 			Object *member = createMember((*it));
 
-			//mObject->addMember(member);
-			mScope->define(member->getName(), member);
+			mObject->define(member->getName(), member);
 		}
 		else if ( isMethodDeclaration((*it)) ) {
 			Method *method = createMethod((*it));
+			method->setOwner(mObject);
 
-			//mObject->addMethod(method);
-			mScope->define(method->getName(), method);
+			mObject->defineMethod(method);
 		}
 	}
 }
@@ -358,19 +327,6 @@ void Preprocessor::process(Object *object)
 
 	// build object from tokens
 	generateObject();
-}
-
-void Preprocessor::processScope(IScope *scope, const TokenList& tokens)
-{
-	OSdebug("process('" + scope->getScopeName() + "')");
-
-	mScope = scope;
-
-	//mFilename = mObject->Filename();
-	mTokens = tokens;
-
-	// build object from tokens
-	generateScope();
 }
 
 

@@ -11,6 +11,7 @@
 #include "Consts.h"
 #include "Memory.h"
 #include "Repository.h"
+#include "Symbol.h"
 #include "Tools.h"
 
 // Namespace declarations
@@ -20,8 +21,9 @@ namespace ObjectiveScript {
 
 
 Object::Object()
-: LocalScope(ANONYMOUS_OBJECT, 0),
+: MethodScope(ANONYMOUS_OBJECT, 0),
   ObjectSymbol(ANONYMOUS_OBJECT),
+  BluePrint(ANONYMOUS_OBJECT, SYSTEM_LIBRARY),
   mIsAtomicType(true),
   mRepository(0),
   mValue(VALUE_NONE),
@@ -30,49 +32,55 @@ Object::Object()
 }
 
 Object::Object(const Object& other)
-: LocalScope(other.getName(), 0),
+: MethodScope(other.getName(), 0),
   ObjectSymbol(other.getName()),
-  BluePrint(other.mTypename, other.mFilename),
+  BluePrint(other.Typename(), other.Filename()),
   mIsAtomicType(other.mIsAtomicType),
   mRepository(other.mRepository),
   mConstructed(other.mConstructed)
 {
-	mTokens = other.mTokens;
-
 	setValue(other.getValue());
 
 	setConst(other.isConst());
 	setFinal(other.isFinal());
 	setMember(other.isMember());
-	//setStatic(other.isStatic());
+
+	// register this
+	define(KEYWORD_THIS, this);
 
 	// register new members
-	for ( MemberCollection::const_iterator it = other.mMembers.begin(); it != other.mMembers.end(); ++it ) {
-		copyMember(it->second);
+	for ( Symbols::const_iterator it = other.mSymbols.begin(); it != other.mSymbols.end(); ++it ) {
+		if ( it->first == KEYWORD_THIS || !it->second || it->second->getType() != Symbol::IType::ObjectSymbol ) {
+			continue;
+		}
+
+		Object *symbol = static_cast<Object*>(it->second);
+
+		// create object instance
+		Object *object = mRepository->createInstance(symbol->Typename(), symbol->getName());
+
+		// and fill it with life
+		*object = *symbol;
+
+		mRepository->removeReference(symbol);
+
+		define(object->getName(), object);
 	}
 
 	// register new methods
 	for ( MethodCollection::const_iterator it = other.mMethods.begin(); it != other.mMethods.end(); ++it ) {
-		Method *m = new Method(this, (*it)->name(), (*it)->type());
-		*m = *(*it);
+		Method *method = new Method(this, (*it)->getName(), (*it)->getTypeName());
+		*method = *(*it);
 
-		addMethod(m);
+		method->define(KEYWORD_THIS, this);
+		method->setOwner(this);
+
+		defineMethod(method);
 	}
 }
 
-Object::Object(const std::string& type, const std::string& filename)
-: LocalScope(ANONYMOUS_OBJECT, 0),
-  ObjectSymbol(ANONYMOUS_OBJECT),
-  BluePrint(type, filename),
-  mIsAtomicType(true),
-  mRepository(0),
-  mValue(VALUE_NONE),
-  mConstructed(false)
-{
-}
-
 Object::Object(const std::string& name, const std::string& filename, const std::string& type, const std::string& value)
-: LocalScope(name, 0),
+: MethodScope(name, 0),
   ObjectSymbol(name),
   BluePrint(type, filename),
   mIsAtomicType(true),
@@ -87,7 +95,7 @@ Object::~Object()
 	garbageCollector();
 }
 
-Object& Object::operator= (const Object& other)
+void Object::operator= (const Object& other)
 {
 	if ( this != &other ) {
 		if ( !mConstructed ) {
@@ -98,104 +106,40 @@ Object& Object::operator= (const Object& other)
 		}
 
 		mFilename = other.mFilename;
-		mTokens = other.mTokens;
-		mTypename = other.Typename();
+		mName = other.mName;
+		mTypename = other.mTypename;
 
 		setValue(other.getValue());
 
 		//setConst(other.isConst());
 		//setFinal(other.isFinal());
-		//setStatic(other.isStatic());
+		//setMember(other.isMember());
 
-		// unregister current members
-		for ( MemberCollection::const_iterator it = mMembers.begin(); it != mMembers.end(); ) {
-			undefine(it->first, it->second);
+		garbageCollector();
 
-			mRepository->removeReference(it->second);
-			it = mMembers.erase(it);
-		}
-		mMembers.clear();
-
-		// unregister old methods
-		for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ) {
-			undefine((*it)->getName(), (*it));
-
-			delete (*it);
-			it = mMethods.erase(it);
-		}
-		mMethods.clear();
+		// register this
+		define(KEYWORD_THIS, this);
 
 		// register new members
-		for ( MemberCollection::const_iterator it = other.mMembers.begin(); it != other.mMembers.end(); ++it ) {
-			addMember(it->second);
+		for ( Symbols::const_iterator it = other.mSymbols.begin(); it != other.mSymbols.end(); ++it ) {
+			if ( it->first == KEYWORD_THIS ) {
+				continue;
+			}
+
+			define(it->first, it->second);
 		}
 
 		// register new methods
 		for ( MethodCollection::const_iterator it = other.mMethods.begin(); it != other.mMethods.end(); ++it ) {
-			Method *m = new Method(this, (*it)->name(), (*it)->type());
-			*m = *(*it);
+			Method *method = new Method(this, (*it)->getName(), (*it)->getTypeName());
+			*method = *(*it);
 
-			addMethod(m);
+			method->define(KEYWORD_THIS, this);
+			method->setOwner(this);
+
+			defineMethod(method);
 		}
 	}
-
-	return *this;
-}
-
-void Object::addMember(Object *member)
-{
-	assert(member);
-
-	if ( mMembers.find(member->getName()) != mMembers.end() ) {
-		throw Utils::Exceptions::DuplicateIdentifer("duplicate member '" + member->getName() + "' added");
-	}
-
-	mMembers.insert(std::make_pair(member->getName(), member));
-
-	mRepository->addReference(member);
-
-	define(member->getName(), member);
-}
-
-void Object::addMethod(Method *method)
-{
-	assert(method);
-
-	MethodCollection::iterator tmpIt;
-	if ( findMethod(method->name(), method->provideSignature(), tmpIt) ) {
-		throw Utils::Exceptions::DuplicateIdentifer("duplicate method '" + method->getName() + "' added with same signature");
-	}
-
-	method->setOwner(this);
-	method->setRepository(mRepository);
-
-	mMethods.insert(method);
-
-	//define(method->getName(), method);	// does not allow method overloading..
-	Symbols::iterator it = mSymbols.find(method->getName());
-	if ( it == mSymbols.end() ) {
-		mSymbols.insert(std::make_pair(method->getName(), method));
-	}
-	else {
-		it->second = method;
-	}
-}
-
-void Object::addParent(const std::string& parent)
-{
-	for ( StringList::const_iterator it = mParents.begin(); it != mParents.end(); ++it ) {
-		if ( (*it) == parent ) {
-			throw Utils::Exceptions::Exception("duplicate inheritance detected");
-		}
-	}
-
-	mParents.push_back(parent);
-}
-
-void Object::connectRepository(Repository *r)
-{
-	assert(r);
-	mRepository = r;
 }
 
 void Object::Constructor(const ParameterList& params)
@@ -205,9 +149,10 @@ void Object::Constructor(const ParameterList& params)
 	}
 
 	// only execute constructor if one is present
-	if ( hasMethod(Typename(), params) ) {
+	Method *constructor = static_cast<Method*>(resolveMethod(Typename(), params));
+	if ( constructor ) {
 		VoidObject tmp;
-		ControlFlow::E controlflow = execute(&tmp, Typename(), params);
+		ControlFlow::E controlflow = constructor->execute(params, &tmp);
 
 		if ( controlflow != ControlFlow::Normal ) {
 			// uups
@@ -218,30 +163,16 @@ void Object::Constructor(const ParameterList& params)
 	mConstructed = true;
 }
 
-void Object::copyMember(Object *member)
-{
-	assert(member);
-
-	if ( mMembers.find(member->getName()) != mMembers.end() ) {
-		throw Utils::Exceptions::DuplicateIdentifer("duplicate member '" + member->getName() + "' added");
-	}
-
-	// create object instance
-	Object *object = mRepository->createInstance(member->Typename(), member->getName());
-
-	// and fill it with life
-	*object = *member;
-
-	mMembers.insert(std::make_pair(member->getName(), member));
-}
-
 void Object::Destructor()
 {
 	if ( mConstructed ) {
+		ParameterList params;
+
 		// only execute destructor if one is present
-		if ( hasMethod("~" + getName(), ParameterList()) ) {
-			VoidObject object;
-			ControlFlow::E controlflow = execute(&object, "~" + Typename(), ParameterList());
+		Method *constructor = static_cast<Method*>(resolveMethod("~" + Typename(), params));
+		if ( constructor ) {
+			VoidObject tmp;
+			ControlFlow::E controlflow = constructor->execute(params, &tmp);
 
 			if ( controlflow != ControlFlow::Normal ) {
 				// uups
@@ -254,8 +185,6 @@ void Object::Destructor()
 		//throw Utils::Exceptions::Exception("can not destroy object '" + name() + "' which has not been constructed");
 	}
 
-	garbageCollector();
-
 	// set after executing destructor in case any exceptions have been thrown
 	mConstructed = false;
 }
@@ -264,182 +193,58 @@ ControlFlow::E Object::execute(Object *result, const std::string& method, const 
 {
 	OSdebug("execute('" + method + "', [" + toString(params) + "])");
 
-	MethodCollection::iterator methodIt;
-	bool success = findMethod(method, params, methodIt);
-	if ( !success ) {
+	Method *symbol = static_cast<Method*>(resolveMethod(method, params, true));
+	if ( !symbol ) {
 		throw Utils::Exceptions::UnknownIdentifer("unknown method '" + method + "' or method with invalid parameter count called!");
 	}
 
 	// are we called from a colleague method?
-	bool callFromMethod = caller && (caller->getOwner() == this);
+	bool callFromMethod = caller && (caller->resolve(KEYWORD_THIS) == this);
 
 	// check visibility:
 	// colleague methods can always call us,
 	// for calls from non-member functions the method visibility must be public (or protected if they belong to the same object hierarchy)
-	if ( !callFromMethod && (*methodIt)->visibility() != Visibility::Public ) {
+	if ( !callFromMethod && symbol->visibility() != Visibility::Public ) {
 		throw Utils::Exceptions::VisibilityError("invalid visibility: " + method);
 	}
 
+	result->setRepository(mRepository);
+
+	symbol->setOwner(this);
+	symbol->setRepository(mRepository);
+
 	// execute our member method
-	return (*methodIt)->execute(params, result);
-}
-
-bool Object::findMember(const std::string& m, Object::MemberCollection::const_iterator& mIt) const
-{
-	for ( MemberCollection::const_iterator it = mMembers.begin(); it != mMembers.end(); ++it ) {
-		if ( it->first == m /*&& it->second.visibility() == Visibility::Public*/ ) {
-			mIt = it;
-			return true;
-		}
-	}
-
-	std::string member, parent;
-	Tools::split(m, parent, member);
-
-	// loop through all members and ask them if this identifier belongs to them
-	for ( MemberCollection::const_iterator it = mMembers.begin(); it != mMembers.end(); ++it ) {
-		if ( it->first == parent ) {
-			return it->second->findMember(member, mIt);
-		}
-	}
-
-	return false;
-}
-
-bool Object::findMethod(const std::string& m, MethodCollection::const_iterator& mIt) const
-{
-	for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
-		if ( (*it)->name() == m /*&& it->visibility() == Visibility::Public*/ ) {
-			mIt = it;
-			return true;
-		}
-	}
-
-	std::string method, parent;
-	Tools::split(m, parent, method);
-
-	// loop through all members and ask them if this identifier belongs to them
-	for ( MemberCollection::const_iterator it = mMembers.begin(); it != mMembers.end(); ++it ) {
-		if ( it->first == parent ) {
-			return it->second->findMethod(method, mIt);
-		}
-	}
-
-	return false;
-}
-
-bool Object::findMethod(const std::string& m, const ParameterList& params, MethodCollection::const_iterator& mIt) const
-{
-	for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
-		if ( (*it)->name() == m && (*it)->isSignatureValid(params) ) {
-			mIt = it;
-			return true;
-		}
-	}
-
-	std::string method, parent;
-	Tools::split(m, parent, method);
-
-	// loop through all members and ask them if this identifier belongs to them
-	for ( MemberCollection::const_iterator it = mMembers.begin(); it != mMembers.end(); ++it ) {
-		if ( it->first == parent ) {
-			return it->second->findMethod(method, params, mIt);
-		}
-	}
-
-	return false;
+	return symbol->execute(params, result);
 }
 
 void Object::garbageCollector()
 {
-	// members are objects, so they will get cleaned up by our repository
-	for ( MemberCollection::iterator it = mMembers.begin(); it != mMembers.end(); ++it ) {
-		mRepository->removeReference(it->second);
-	}
-	mMembers.clear();
-
 	for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
-		(*it)->garbageCollector();
+		undefine((*it)->getName(), (*it));
+
 		delete (*it);
+		(*it) = 0;
 	}
 	mMethods.clear();
-}
 
-Object* Object::getMember(const std::string& symbol) const
-{
-	std::string member, parent;
-	Tools::split(symbol, parent, member);
-
-	// loop through all members and ask them if this identifier belongs to them
-	for ( MemberCollection::const_iterator it = mMembers.begin(); it != mMembers.end(); ++it ) {
-		if ( it->first == symbol ) {
-			return it->second;
-		}
-
-		if ( it->second->getName() == parent ) {
-			return it->second->getMember(member);
+	for ( Symbols::reverse_iterator it = mSymbols.rbegin(); it != mSymbols.rend(); ++it ) {
+		if ( it->first != KEYWORD_THIS &&
+			 it->second && it->second->getType() == Symbol::IType::ObjectSymbol ) {
+			// members are objects, so they will get cleaned up by our repository
+			mRepository->removeReference(static_cast<Object*>(it->second));
 		}
 	}
-
-	return 0;
+	mSymbols.clear();
 }
 
 const std::string& Object::getTypeName() const
 {
-	return Typename();
+	return mTypename;
 }
 
 std::string Object::getValue() const
 {
 	return mValue;
-}
-
-bool Object::hasMethod(const std::string& symbol) const
-{
-	for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
-		if ( (*it)->getName() == symbol ) {
-			return true;
-		}
-	}
-
-	std::string method, parent;
-	Tools::split(symbol, parent, method);
-
-	// loop through all members and ask them if this identifier belongs to them
-	for ( MemberCollection::const_iterator it = mMembers.begin(); it != mMembers.end(); ++it ) {
-		if ( it->first == parent ) {
-			if ( it->second->hasMethod(method) ) {
-				return true;
-			}
-		}
-	}
-
-	return false;
-}
-
-bool Object::hasMethod(const std::string& symbol, const ParameterList& params) const
-{
-	for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
-		if ( (*it)->name() == symbol ) {
-			if ( (*it)->isSignatureValid(params) ) {
-				return true;
-			}
-		}
-	}
-
-	std::string method, parent;
-	Tools::split(symbol, parent, method);
-
-	// loop through all members and ask them if this method belongs to them
-	for ( MemberCollection::const_iterator it = mMembers.begin(); it != mMembers.end(); ++it ) {
-		if ( it->first == parent ) {
-			if ( it->second->hasMethod(method, params) ) {
-				return true;
-			}
-		}
-	}
-
-	return false;
 }
 
 bool Object::isAtomicType() const
@@ -543,6 +348,12 @@ void Object::operator_subtract(Object *other)
 	throw Utils::Exceptions::NotImplemented("operator-: conversion from " + target + " to " + Typename() + " not supported");
 }
 
+void Object::setRepository(Repository *r)
+{
+	assert(r);
+	mRepository = r;
+}
+
 void Object::setValue(const std::string& value)
 {
 	mValue = value;
@@ -556,18 +367,22 @@ std::string Object::ToString() const
 		result += " { ";
 
 		for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
-			result += (*it)->type() + " " + (*it)->name();
+			result += (*it)->getTypeName() + " " + (*it)->getName();
 
 			MethodCollection::const_iterator copy = it;
 			if ( ++copy != mMethods.end() ) {
 				result += ", \n";
 			}
 		}
-		for ( MemberCollection::const_iterator it = mMembers.begin(); it != mMembers.end(); ++it ) {
-			result += it->second->ToString();
+		for ( Symbols::const_iterator it = mSymbols.begin(); it != mSymbols.end(); ++it ) {
+			if ( !it->second || it->second->getType() != Symbol::IType::ObjectSymbol ) {
+				continue;
+			}
 
-			MemberCollection::const_iterator copy = it;
-			if ( ++copy != mMembers.end() ) {
+			result += static_cast<Object*>(it->second)->ToString();
+
+			Symbols::const_iterator copy = it;
+			if ( ++copy != mSymbols.end() ) {
 				result += ", ";
 			}
 		}
