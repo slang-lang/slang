@@ -1,11 +1,9 @@
 INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
 SET(SOURCES
-	Math.cpp
 )
 
 SET(HEADERS
-	Math.h
 )
 
 SET(DEPENDENCIES
