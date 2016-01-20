@@ -154,8 +154,7 @@ void Interpreter::parseExpression(Object *result, TokenIterator& start)
 			return;
 		}
 
-		// consume operator token
-		start++;
+		start++;	// consume operator token
 
 		Object v2;
 		parseFactors(&v2, start);
@@ -178,14 +177,15 @@ void Interpreter::parseExpression(Object *result, TokenIterator& start)
 void Interpreter::parseFactors(Object *result, TokenIterator& start)
 {
 	if ( (start)->type() == Token::Type::PARENTHESIS_OPEN) {
-		start++;
+		start++;	// consume operator token
+
 		expression(result, start);
 
 		if ( start->type() != Token::Type::PARENTHESIS_CLOSE ) {
-			throw Utils::Exceptions::SyntaxError("')' expected but "  + start->content() + " found", start->position());
+			throw Utils::Exceptions::SyntaxError("')' expected but '"  + start->content() + "' found", start->position());
 		}
 
-		start++;
+		start++;	// consume operator token
 	}
 	else {
 		parseTerm(result, start);
@@ -199,19 +199,18 @@ void Interpreter::parseFactors(Object *result, TokenIterator& start)
 			return;
 		}
 
-		// consume operator token
-		start++;
+		start++;	// consume operator token
 
 		Object v2;
 		if ( (start)->type() == Token::Type::PARENTHESIS_OPEN) {
-			start++;
+			start++;	// consume operator token
 			expression(&v2, start);
 
 			if ( start->type() != Token::Type::PARENTHESIS_CLOSE ) {
-				throw Utils::Exceptions::SyntaxError("')' expected but "  + start->content() + " found", start->position());
+				throw Utils::Exceptions::SyntaxError("')' expected but '"  + start->content() + "' found", start->position());
 			}
 
-			start++;
+			start++;	// consume operator token
 		}
 		else {
 			parseTerm(&v2, start);

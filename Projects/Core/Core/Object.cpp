@@ -223,7 +223,6 @@ void Object::garbageCollector()
 		undefine((*it)->getName(), (*it));
 
 		delete (*it);
-		(*it) = 0;
 	}
 	mMethods.clear();
 
