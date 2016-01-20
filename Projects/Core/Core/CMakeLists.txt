@@ -31,7 +31,6 @@ SET(SOURCES
 	Tokenizer.cpp
 	Tools.cpp
 	Types.cpp
-	Variable.cpp
 	VirtualMachine.cpp
 )
 
@@ -62,7 +61,6 @@ SET(HEADERS
 	Tokenizer.h
 	Tools.h
 	Types.h
-	Variable.h
 	VirtualMachine.h
 )
 
