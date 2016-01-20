@@ -5,6 +5,7 @@
 // Library includes
 
 // Project includes
+#include "Consts.h"
 
 // Namespace declarations
 
@@ -13,7 +14,7 @@ namespace ObjectiveScript {
 
 
 BluePrint::BluePrint()
-: RTTI("<unknown type>", "<none>"),
+: RTTI(ANONYMOUS_OBJECT, ANONYMOUS_OBJECT),
   mVisibility(Visibility::Public)
 {
 }
