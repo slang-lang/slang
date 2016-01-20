@@ -417,26 +417,33 @@ void Interpreter::process_delete(TokenIterator& token)
 // }
 void Interpreter::process_for(TokenIterator& token, Object *result)
 {
-	// find declaration
-	TokenIterator declarationBegin = ++findNext(token, Token::Type::PARENTHESIS_OPEN);
-	// find condition
-	const TokenIterator conditionBegin = ++findNext(declarationBegin, Token::Type::SEMICOLON);
-	// find expression
-	const TokenIterator expressionBegin = ++findNext(conditionBegin, Token::Type::SEMICOLON);
+	// initialization-begin
+	TokenIterator initializationBegin = ++findNext(token, Token::Type::PARENTHESIS_OPEN);
+	// initialization-end
+
+	// condition-begin
+	const TokenIterator conditionBegin = ++findNext(initializationBegin, Token::Type::SEMICOLON);
+	// condition-end
+
+	// increase-begin
+	const TokenIterator increaseBegin = ++findNext(conditionBegin, Token::Type::SEMICOLON);
+	// increase-end
+
 	// find next open curly bracket '{'
-	TokenIterator expressionEnd = findNext(expressionBegin, Token::Type::PARENTHESIS_CLOSE);
+	TokenIterator expressionEnd = findNext(increaseBegin, Token::Type::PARENTHESIS_CLOSE);
+
 
 	if ( expressionEnd != getTokens().end() ) {
 		expressionEnd++;
 	}
 
 	// find next balanced '{' & '}' pair for loop-body
-	TokenIterator bodyBegin = findNext(expressionBegin, Token::Type::BRACKET_CURLY_OPEN);
+	TokenIterator bodyBegin = findNext(increaseBegin, Token::Type::BRACKET_CURLY_OPEN);
 	TokenIterator bodyEnd = findNextBalancedCurlyBracket(bodyBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
 
 	// process our declaration part
 	Object declaration;
-	process(&declaration, declarationBegin, conditionBegin, Token::Type::SEMICOLON);
+	process(&declaration, initializationBegin, conditionBegin, Token::Type::SEMICOLON);
 
 	token = bodyEnd;
 	if ( bodyEnd != getTokens().end() ) {
@@ -490,7 +497,7 @@ void Interpreter::process_for(TokenIterator& token, Object *result)
 		// {
 		mControlFlow = ControlFlow::Normal;
 
-		TokenIterator exprBegin = expressionBegin;
+		TokenIterator exprBegin = increaseBegin;
 		TokenList exprTokens;
 
 		while ( exprBegin != expressionEnd ) {
