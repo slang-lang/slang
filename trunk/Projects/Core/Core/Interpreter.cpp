@@ -13,11 +13,9 @@
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/BuildInObjects/VoidObject.h>
 #include <Core/Consts.h>
-#include <Core/Helpers/Math.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Utils/Utils.h>
 #include <Tools/Printer.h>
-#include "Memory.h"
 #include "Object.h"
 #include "OperatorOverloading.h"
 #include "Repository.h"
@@ -39,6 +37,8 @@ Interpreter::Interpreter(IScope *scope, const std::string& name)
 
 Interpreter::~Interpreter()
 {
+	// let the garbage collector do it's magic
+	garbageCollector();
 }
 
 ControlFlow::E Interpreter::execute(Object *result)
@@ -85,7 +85,8 @@ void Interpreter::expression(Object *result, TokenIterator& start)
 void Interpreter::garbageCollector()
 {
 	for ( Symbols::reverse_iterator it = mSymbols.rbegin(); it != mSymbols.rend(); ) {
-		if ( it->second && it->second->getType() == Symbol::IType::ObjectSymbol ) {
+		if ( it->first != KEYWORD_THIS &&
+			 it->second && it->second->getType() == Symbol::IType::ObjectSymbol ) {
 			mRepository->removeReference(static_cast<Object*>(it->second));
 		}
 
@@ -271,6 +272,7 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 					break;
 				case Symbol::IType::NamespaceSymbol:
 				case Symbol::IType::UnknownSymbol:
+					throw Utils::Exceptions::SyntaxError("unexpected symbol resolved", start->position());
 					break;
 			}
 		} break;
@@ -281,7 +283,7 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 			throw Utils::Exceptions::NotImplemented("unary minus");
 		} break;
 		case Token::Type::SEMICOLON: {
-			if ( result->Typename() == VoidObject::TYPENAME ) {
+			if ( result->getTypeName() == VoidObject::TYPENAME ) {
 				// this is okay, as long as we have a been called by a return command in a void method
 				return;
 			}
@@ -413,7 +415,7 @@ void Interpreter::process_delete(TokenIterator& token)
 // i.e. for ( int i = 0; i < 5; i += 1 ) {
 // ...
 // }
-void Interpreter::process_for(TokenIterator& token)
+void Interpreter::process_for(TokenIterator& token, Object *result)
 {
 	// find declaration
 	TokenIterator declarationBegin = ++findNext(token, Token::Type::PARENTHESIS_OPEN);
@@ -471,8 +473,7 @@ void Interpreter::process_for(TokenIterator& token)
 			TokenIterator tmpBegin = getTokens().begin();
 			TokenIterator tmpEnd = getTokens().end();
 
-			VoidObject tmp;
-			process(&tmp, tmpBegin, tmpEnd);
+			process(result, tmpBegin, tmpEnd);
 		}
 		popTokens();
 
@@ -559,7 +560,7 @@ void Interpreter::process_identifier(TokenIterator& token, Token::Type::E termin
 // else {
 // ...
 // }
-void Interpreter::process_if(TokenIterator& token)
+void Interpreter::process_if(TokenIterator& token, Object *result)
 {
 	// find next open parenthesis
 	TokenIterator condBegin = ++findNext(token, Token::Type::PARENTHESIS_OPEN);
@@ -635,8 +636,7 @@ void Interpreter::process_if(TokenIterator& token)
 			TokenIterator tmpBegin = getTokens().begin();
 			TokenIterator tmpEnd = getTokens().end();
 
-			VoidObject tmp;
-			process(&tmp, tmpBegin, tmpEnd);
+			process(result, tmpBegin, tmpEnd);
 		}
 		popTokens();
 	}
@@ -646,8 +646,7 @@ void Interpreter::process_if(TokenIterator& token)
 			TokenIterator tmpBegin = getTokens().begin();
 			TokenIterator tmpEnd = getTokens().end();
 
-			VoidObject tmp;
-			process(&tmp, tmpBegin, tmpEnd);
+			process(result, tmpBegin, tmpEnd);
 		}
 		popTokens();
 	}
@@ -670,10 +669,10 @@ void Interpreter::process_keyword(TokenIterator& token, Object *result)
 		process_delete(token);
 	}
 	else if ( keyword == KEYWORD_FOR ) {
-		process_for(token);
+		process_for(token, result);
 	}
 	else if ( keyword == KEYWORD_IF ) {
-		process_if(token);
+		process_if(token, result);
 	}
 	else if ( keyword == KEYWORD_NEW ) {
 		process_new(token, result);
@@ -685,16 +684,16 @@ void Interpreter::process_keyword(TokenIterator& token, Object *result)
 		process_return(token, result);
 	}
 	else if ( keyword == KEYWORD_SWITCH ) {
-		process_switch(token);
+		process_switch(token, result);
 	}
 	else if ( keyword == KEYWORD_THROW ) {
-		process_throw(token);
+		process_throw(token, result);
 	}
 	else if ( keyword == KEYWORD_TRY ) {
-		process_try(token);
+		process_try(token, result);
 	}
 	else if ( keyword == KEYWORD_WHILE ) {
-		process_while(token);
+		process_while(token, result);
 	}
 }
 
@@ -719,7 +718,10 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 
 		Object *obj = &objectList.back();
 		expression(obj, tmp);
-		params.push_back(Parameter(obj->getName(), obj->Typename(), obj->getValue(), false, obj->isConst(), Parameter::AccessMode::Unspecified, obj));
+
+		params.push_back(
+			Parameter(obj->getName(), obj->getTypeName(), obj->getValue(), false, obj->isConst(), Parameter::AccessMode::Unspecified, obj)
+		);
 
 		if ( std::distance(tmp, closed) <= 0 ) {
 			break;
@@ -733,12 +735,17 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 
 	token = closed;
 
-	ControlFlow::E controlflow = ControlFlow::Normal;
 
-	Symbol *symbol = resolve(method);
-	if ( !symbol ) {
-		throw Utils::Exceptions::UnknownIdentifer("unknown/unexpected identifier '" + method + "' found", tmp->position());
+	std::string member, parent;
+	Tools::split(method, parent, member);
+
+	Symbol *symbol = resolveMethod(method, params);
+
+	if ( !symbol) {
+		throw Utils::Exceptions::UnknownIdentifer("could not resolve method '" + method + "'");
 	}
+
+	ControlFlow::E controlflow = ControlFlow::Normal;
 
 	switch ( symbol->getType() ) {
 		case Symbol::IType::MethodSymbol:
@@ -764,7 +771,7 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 {
 	TokenIterator tmp = token;
 
-	std::string name = "<temporary object>";
+	std::string name = ANONYMOUS_OBJECT;
 	std::string prototype;
 
 	if ( token->type() == Token::Type::PROTOTYPE ) {
@@ -787,7 +794,10 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 
 		Object *obj = &objectList.back();
 		expression(obj, tmp);
-		params.push_back(Parameter(obj->getName(), obj->Typename(), obj->getValue(), false, obj->isConst(), Parameter::AccessMode::Unspecified, obj));
+
+		params.push_back(
+			Parameter(obj->getName(), obj->getTypeName(), obj->getValue(), false, obj->isConst(), Parameter::AccessMode::Unspecified, obj)
+		);
 
 		if ( std::distance(tmp, closed) <= 0 ) {
 			break;
@@ -804,12 +814,12 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 	assert(mRepository);
 
 	Object *object = mRepository->createInstance(type, name, prototype);
-	object->connectRepository(mRepository);
+	object->setRepository(mRepository);
 	object->Constructor(params);
 
 	*result = *object;
 
-	//mRepository->removeReference(object);
+	mRepository->removeReference(object);
 }
 
 // syntax:
@@ -842,7 +852,7 @@ void Interpreter::process_return(TokenIterator& token, Object *result)
 
 // syntax:
 // { <statement> }
-void Interpreter::process_scope(TokenIterator& token, Object* /*result*/)
+void Interpreter::process_scope(TokenIterator& token, Object* result)
 {
 	TokenIterator scopeBegin = ++token;
 	TokenIterator scopeEnd = findNextBalancedCurlyBracket(scopeBegin, getTokens().end());
@@ -860,8 +870,7 @@ void Interpreter::process_scope(TokenIterator& token, Object* /*result*/)
 	interpreter.setRepository(mRepository);
 	interpreter.setTokens(scopeTokens);
 
-	Object tmp;
-	mControlFlow = interpreter.execute(&tmp);
+	mControlFlow = interpreter.execute(result);
 
 	token = scopeEnd;
 }
@@ -872,7 +881,7 @@ void Interpreter::process_scope(TokenIterator& token, Object* /*result*/)
 //			...
 //		break;
 // }
-void Interpreter::process_switch(TokenIterator& token)
+void Interpreter::process_switch(TokenIterator& token, Object *result)
 {
 assert(!"not implemented");
 //throw Utils::Exceptions::NotImplemented("switch-case");
@@ -907,25 +916,26 @@ assert(!"not implemented");
 		TokenIterator tmpBegin = getTokens().begin();
 		TokenIterator tmpEnd = getTokens().end();
 
-		VoidObject result;
-		process(&result, tmpBegin, tmpEnd);
+		process(result, tmpBegin, tmpEnd);
 	}
 	popTokens();
 }
 
 // syntax:
 // throw;
-void Interpreter::process_throw(TokenIterator& token)
+void Interpreter::process_throw(TokenIterator& token, Object *result)
 {
 	//System::Print(KEYWORD_THROW, token->position());
 
 (void)token;
 	mControlFlow = ControlFlow::Throw;
+
+	expression(result, token);
 }
 
 // syntax:
 // try { } [ catch { } ] [ finally { } ]
-void Interpreter::process_try(TokenIterator& token)
+void Interpreter::process_try(TokenIterator& token, Object *result)
 {
 	TokenIterator tmp;
 
@@ -948,20 +958,6 @@ void Interpreter::process_try(TokenIterator& token)
 	}
 
 
-	mControlFlow = ControlFlow::Normal;
-
-/*
-	pushTokens(tryTokens);
-	{
-		TokenIterator tmpBegin = getTokens().begin();
-		TokenIterator tmpEnd = getTokens().end();
-
-		VoidObject result;
-		process(&result, tmpBegin, tmpEnd);
-	}
-	popTokens();
-*/
-
 	Interpreter interpreter(this, getScopeName());
 	interpreter.setConst(isConst());
 	interpreter.setFinal(isFinal());
@@ -969,8 +965,7 @@ void Interpreter::process_try(TokenIterator& token)
 	interpreter.setRepository(mRepository);
 	interpreter.setTokens(tryTokens);
 
-	Object object;
-	mControlFlow = interpreter.execute(&object);
+	mControlFlow = interpreter.execute(result);
 
 	// execute catch-block if an exception has been thrown
 	if ( mControlFlow == ControlFlow::Throw ) {
@@ -1001,8 +996,7 @@ void Interpreter::process_try(TokenIterator& token)
 				TokenIterator tmpBegin = getTokens().begin();
 				TokenIterator tmpEnd = getTokens().end();
 
-				VoidObject result;
-				process(&result, tmpBegin, tmpEnd);
+				process(result, tmpBegin, tmpEnd);
 			}
 			popTokens();
 		}
@@ -1037,8 +1031,7 @@ void Interpreter::process_try(TokenIterator& token)
 			TokenIterator tmpBegin = getTokens().begin();
 			TokenIterator tmpEnd = getTokens().end();
 
-			VoidObject result;
-			process(&result, tmpBegin, tmpEnd);
+			process(result, tmpBegin, tmpEnd);
 		}
 		popTokens();
 	}
@@ -1090,7 +1083,6 @@ void Interpreter::process_type(TokenIterator& token)
 
 		if ( isConst ) object->setConst(true);
 		if ( isFinal ) object->setFinal(true);
-		if ( isStatic ) object->setStatic(true);
 
 		if ( assign != getTokens().end() ) {
 			TokenIterator end = findNext(assign, Token::Type::SEMICOLON);
@@ -1107,12 +1099,7 @@ void Interpreter::process_type(TokenIterator& token)
 		}
 	}
 	else {
-		if ( !object->isStatic() ) {
-			// upsi, did not clean up..
-			throw Utils::Exceptions::DuplicateIdentifer("process_type: " + name, token->position());
-		}
-
-		token = findNext(token, Token::Type::SEMICOLON);
+		throw Utils::Exceptions::DuplicateIdentifer("process_type: " + name, token->position());
 	}
 }
 
@@ -1120,7 +1107,7 @@ void Interpreter::process_type(TokenIterator& token)
 // while ( <condition> ) {
 // ...
 // }
-void Interpreter::process_while(TokenIterator& token)
+void Interpreter::process_while(TokenIterator& token, Object *result)
 {
 	// find next open parenthesis
 	TokenIterator condBegin = ++findNext(token, Token::Type::PARENTHESIS_OPEN);
@@ -1136,9 +1123,9 @@ void Interpreter::process_while(TokenIterator& token)
 		bodyEnd++;
 	}
 
-	TokenList whileTokens;
+	TokenList statementTokens;
 	while ( bodyBegin != bodyEnd ) {
-		whileTokens.push_back((*bodyBegin));
+		statementTokens.push_back((*bodyBegin));
 		bodyBegin++;
 	}
 
@@ -1154,13 +1141,12 @@ void Interpreter::process_while(TokenIterator& token)
 			break;
 		}
 
-		pushTokens(whileTokens);
+		pushTokens(statementTokens);
 		{
 			TokenIterator tmpBegin = getTokens().begin();
 			TokenIterator tmpEnd = getTokens().end();
 
-			VoidObject result;
-			process(&result, tmpBegin, tmpEnd);
+			process(result, tmpBegin, tmpEnd);
 		}
 		popTokens();
 
@@ -1204,6 +1190,35 @@ Symbol* Interpreter::resolve(const std::string& name, bool onlyCurrentScope) con
 	}
 
 	return result;
+}
+
+Symbol* Interpreter::resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope) const
+{
+	std::string member, parent;
+	Tools::split(name, parent, member);
+
+	if ( member.empty() ) {
+		member = parent;
+		parent = KEYWORD_THIS;
+	}
+
+	Symbol *result = LocalScope::resolve(parent, onlyCurrentScope);
+
+	if ( result ) {
+		switch ( result->getType() ) {
+			case Symbol::IType::AtomicTypeSymbol:
+			case Symbol::IType::MemberSymbol:
+			case Symbol::IType::ObjectSymbol:
+				return static_cast<Object*>(result)->resolveMethod(member, params);
+			case Symbol::IType::MethodSymbol:
+				return result;
+			case Symbol::IType::NamespaceSymbol:
+			case Symbol::IType::UnknownSymbol:
+				throw Utils::Exceptions::SyntaxError("cannot directly access locales of method/namespace");
+		}
+	}
+
+	return 0;
 }
 
 void Interpreter::setRepository(Repository *repository)
