@@ -89,7 +89,7 @@ MethodScope::~MethodScope()
 {
 }
 
-void MethodScope::defineMethod(Method* method)
+void MethodScope::defineMethod(Runtime::Method* method)
 {
 	assert(method);
 
@@ -116,11 +116,11 @@ MethodSymbol* MethodScope::resolveMethod(const std::string& name, const Paramete
 
 	Symbol *result = LocalScope::resolve(parent, onlyCurrentScope);
 	if ( result && result->getType() == Symbol::IType::ObjectSymbol ) {
-		return static_cast<Object*>(result)->resolveMethod(member, params);
+		return static_cast<Runtime::Object*>(result)->resolveMethod(member, params);
 	}
 
 	for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
-		Method *method = (*it);
+		Runtime::Method *method = (*it);
 
 		if ( method->getName() == name && method->isSignatureValid(params) ) {
 			return method;
@@ -130,7 +130,7 @@ MethodSymbol* MethodScope::resolveMethod(const std::string& name, const Paramete
 	return 0;
 }
 
-void MethodScope::undefineMethod(Method* method)
+void MethodScope::undefineMethod(Runtime::Method* method)
 {
 	assert(method);
 

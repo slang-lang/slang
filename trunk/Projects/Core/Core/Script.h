@@ -19,7 +19,9 @@ namespace ObjectiveScript {
 // Forward declarations
 class IPrinter;
 class Memory;
-class Object;
+namespace Runtime {
+	class Object;
+}
 class Repository;
 class Symbol;
 
@@ -30,7 +32,7 @@ public:
 	~Script();
 
 public:	// Setup
-	void assign(Object *object);
+	void assign(Runtime::Object *object);
 
 	void connectRepository(Repository *r);
 
@@ -44,12 +46,12 @@ public:	//Helpers
 	bool hasMethod(const std::string& m, const ParameterList& params);
 
 public:	// Execution
-	Object execute(const std::string& method, const ParameterList& params = ParameterList());
+	Runtime::Object execute(const std::string& method, const ParameterList& params = ParameterList());
 
 protected:
 
 private:
-	Object *mObject;
+	Runtime::Object *mObject;
 	Repository *mRepository;
 };
 

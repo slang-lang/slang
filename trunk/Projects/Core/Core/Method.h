@@ -25,8 +25,12 @@ namespace ObjectiveScript {
 // Forward declarations
 class IPrinter;
 class Memory;
-class Object;
 class Repository;
+
+namespace Runtime {
+
+// Forward declarations
+class Object;
 
 class Method : public LocalScope,
 			   public MethodSymbol
@@ -76,6 +80,7 @@ private:
 };
 
 
+}
 }
 
 

@@ -27,14 +27,13 @@ Preprocessor::Preprocessor(Repository *repo)
 {
 }
 
-Object* Preprocessor::createMember(TokenIterator token)
+Runtime::Object* Preprocessor::createMember(TokenIterator token)
 {
 	std::string name;
 	std::string type;
 	std::string visibility;
 	bool isConst = false;
 	bool isFinal = false;
-	//bool isStatic = false;
 
 	// look for the visibility token
 	visibility = (*token++).content();
@@ -53,9 +52,6 @@ Object* Preprocessor::createMember(TokenIterator token)
 		else if ( (*token).content() == MODIFIER_MODIFY ) {
 			isConst = false;
 		}
-		//else if ( (*token).content() == MODIFIER_STATIC ) {
-		//	isStatic = true;
-		//}
 
 		token++;
 	}
@@ -64,17 +60,16 @@ Object* Preprocessor::createMember(TokenIterator token)
 		throw Utils::Exceptions::Exception("member initialization not allowed during declaration", token->position());
 	}
 
-	Object *o = mRepository->createObject(name, mFilename, type);
+	Runtime::Object *o = mRepository->createObject(name, mFilename, type);
 	o->setConst(isConst);
 	o->setFinal(isFinal);
 	o->setMember(true);		// every object that is created here is a member object
 	o->setRepository(mRepository);
-	//o->setStatic(isStatic);
 	o->setVisibility(Visibility::convert(visibility));
 	return o;
 }
 
-Method* Preprocessor::createMethod(TokenIterator token)
+Runtime::Method* Preprocessor::createMethod(TokenIterator token)
 {
 	bool isConst = true;		// all methods are const by default (this is the only way the 'modify' attribute makes sense)
 	bool isStructor = false;
@@ -158,7 +153,7 @@ Method* Preprocessor::createMethod(TokenIterator token)
 	}
 
 	// create a new method with the corresponding return value
-	Method *m = new Method(mScope, name, type);
+	Runtime::Method *m = new Runtime::Method(mScope, name, type);
 	m->setConst(isConst);
 	m->setFinal(isFinal);
 	m->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
@@ -189,12 +184,12 @@ void Preprocessor::generateObject()
 	// if we have a member declaration or a method declaration
 	for ( TokenList::const_iterator it = visList.begin(); it != visList.end(); ++it ) {
 		if ( isMemberDeclaration((*it)) ) {
-			Object *member = createMember((*it));
+			Runtime::Object *member = createMember((*it));
 
 			mObject->define(member->getName(), member);
 		}
 		else if ( isMethodDeclaration((*it)) ) {
-			Method *method = createMethod((*it));
+			Runtime::Method *method = createMethod((*it));
 			method->setOwner(mObject);
 
 			mObject->defineMethod(method);
@@ -315,7 +310,7 @@ ParameterList Preprocessor::parseParameters(TokenIterator &token)
 	return params;
 }
 
-void Preprocessor::process(Object *object)
+void Preprocessor::process(Runtime::Object *object)
 {
 	OSdebug("process('" + object->getName() + "')");
 

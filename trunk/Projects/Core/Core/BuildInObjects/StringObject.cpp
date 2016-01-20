@@ -19,6 +19,7 @@
 
 
 namespace ObjectiveScript {
+namespace Runtime {
 
 
 std::string StringObject::DEFAULTVALUE = "";
@@ -186,4 +187,5 @@ std::string StringObject::ToString() const
 }
 
 
+}
 }

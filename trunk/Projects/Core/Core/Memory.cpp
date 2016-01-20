@@ -47,7 +47,7 @@ void Memory::deleteObject(const Reference& ref)
 	mMemory.erase(it);
 }
 
-const Reference& Memory::getAddress(Object *obj) const
+const Reference& Memory::getAddress(Runtime::Object *obj) const
 {
 	for ( MemoryMap::const_iterator it = mMemory.begin(); it != mMemory.end(); ++it ) {
 		if ( it->second == obj ) {
@@ -90,7 +90,7 @@ const Reference& Memory::reserveAddress()
 	return mMemory.rbegin()->first;
 }
 
-Object* Memory::getObject(const Reference& ref) const
+Runtime::Object* Memory::getObject(const Reference& ref) const
 {
 	for ( MemoryMap::const_iterator it = mMemory.begin(); it != mMemory.end(); ++it ) {
 		if ( it->first == ref ) {
@@ -101,7 +101,7 @@ Object* Memory::getObject(const Reference& ref) const
 	return 0;
 }
 
-const Reference& Memory::newObject(Object *obj)
+const Reference& Memory::newObject(Runtime::Object *obj)
 {
 	mMemory[reserveAddress()] = obj;
 

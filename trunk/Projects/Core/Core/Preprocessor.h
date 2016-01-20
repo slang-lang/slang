@@ -21,7 +21,9 @@ namespace ObjectiveScript {
 
 // Forward declarations
 class IScope;
-class Object;
+namespace Runtime {
+	class Object;
+}
 class Repository;
 
 class Preprocessor
@@ -30,11 +32,11 @@ public:
 	Preprocessor(Repository *repo);
 
 public:
-	void process(Object *object);
+	void process(Runtime::Object *object);
 
 private:
-	Object* createMember(TokenIterator start);
-	Method* createMethod(TokenIterator start);
+	Runtime::Object* createMember(TokenIterator start);
+	Runtime::Method* createMethod(TokenIterator start);
 
 	void generateObject();
 	void generateTokens(const std::string& content);
@@ -48,7 +50,7 @@ private:
 
 private:
 	std::string mFilename;
-	Object *mObject;
+	Runtime::Object *mObject;
 	Repository *mRepository;
 	IScope *mScope;
 	TokenList mTokens;

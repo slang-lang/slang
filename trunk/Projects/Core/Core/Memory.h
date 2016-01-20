@@ -26,17 +26,17 @@ public:
 
 public:
 	void deleteObject(const Reference& ref);
-	const Reference& newObject(Object *obj);
+	const Reference& newObject(Runtime::Object *obj);
 
 public:
-	const Reference& getAddress(Object *obj) const;
+	const Reference& getAddress(Runtime::Object *obj) const;
 	const Reference& getNullReference() const;
-	Object* getObject(const Reference& ref) const;
+	Runtime::Object* getObject(const Reference& ref) const;
 
 protected:
 
 private:
-	typedef std::map<Reference, Object*> MemoryMap;
+	typedef std::map<Reference, Runtime::Object*> MemoryMap;
 
 private:
 	const Reference& reserveAddress();

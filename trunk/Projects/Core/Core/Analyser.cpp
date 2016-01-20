@@ -32,7 +32,7 @@ Analyser::~Analyser()
 {
 }
 
-DesignTime::BluePrint Analyser::createBluePrint(TokenIterator& start, TokenIterator end)
+Designtime::BluePrint Analyser::createBluePrint(TokenIterator& start, TokenIterator end)
 {
 	std::string languageFeature;
 	std::string name;
@@ -54,7 +54,7 @@ DesignTime::BluePrint Analyser::createBluePrint(TokenIterator& start, TokenItera
 	// look for balanced curly brackets
 	TokenIterator closed = findNextBalancedCurlyBracket(open, end, 0, Token::Type::BRACKET_CURLY_CLOSE);
 
-	DesignTime::Ancestors parents;
+	Designtime::Ancestors parents;
 
 	// check if we have some more tokens before our object declarations starts
 	if ( start != open ) {
@@ -74,7 +74,7 @@ DesignTime::BluePrint Analyser::createBluePrint(TokenIterator& start, TokenItera
 			start++;
 
 			std::string inheritance = (*start++).content();
-			parents[inheritance] = DesignTime::Ancestor(inheritance, Visibility::Public);
+			parents[inheritance] = Designtime::Ancestor(inheritance, Visibility::Public);
 		}
 		else {
 			throw Utils::Exceptions::Exception("invalid token '" + start->content() + "' during object declaration");
@@ -93,7 +93,7 @@ DesignTime::BluePrint Analyser::createBluePrint(TokenIterator& start, TokenItera
 	SanityChecker sanity;
 	sanity.process(tokens);
 
-	DesignTime::BluePrint blue(name, mFilename);
+	Designtime::BluePrint blue(name, mFilename);
 	blue.setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
 	blue.setTokens(tokens);
 	blue.setVisibility(Visibility::convert(visibility));
@@ -224,7 +224,7 @@ void Analyser::generate(const TokenList& tokens)
 			createNamespace(it, tokens.end());
 		}
 		else if ( isObjectDeclaration(it) ) {
-			DesignTime::BluePrint o = createBluePrint(it, tokens.end());
+			Designtime::BluePrint o = createBluePrint(it, tokens.end());
 			mBluePrints.push_back(o);
 		}
 		else if ( isPrototypeDeclaration(it) ) {
@@ -244,7 +244,7 @@ TokenList Analyser::generateTokens(const std::string& content)
 	return t.tokens();
 }
 
-const DesignTime::BluePrintList& Analyser::getBluePrints() const
+const Designtime::BluePrintList& Analyser::getBluePrints() const
 {
 	return mBluePrints;
 }

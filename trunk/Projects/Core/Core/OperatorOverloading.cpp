@@ -20,6 +20,7 @@
 
 
 namespace ObjectiveScript {
+namespace Runtime {
 
 
 void operator_assign(Object *base, Object *other)
@@ -722,4 +723,5 @@ void operator_subtract(Object *base, Object *other)
 }
 
 
+}
 }

@@ -260,7 +260,7 @@ bool isFalse(const std::string& value)
 	return ( value == FALSE );
 }
 
-bool isFalse(const Object& object)
+bool isFalse(const Runtime::Object& object)
 {
 	if ( !object.isValid() || object.getValue() == "0" || object.getValue() == "0.0" || object.getValue() == FALSE ) {
 		return true;
@@ -275,7 +275,7 @@ bool isTrue(const std::string& value)
 	return !isFalse(value);
 }
 
-bool isTrue(const Object& object)
+bool isTrue(const Runtime::Object& object)
 {
 	return !isFalse(object);
 }

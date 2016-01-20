@@ -26,6 +26,7 @@
 
 
 namespace ObjectiveScript {
+namespace Runtime {
 
 
 Interpreter::Interpreter(IScope *scope, const std::string& name)
@@ -1238,4 +1239,5 @@ void Interpreter::setTokens(const TokenList& tokens)
 }
 
 
+}
 }

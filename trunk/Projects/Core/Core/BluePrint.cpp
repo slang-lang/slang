@@ -11,7 +11,7 @@
 
 
 namespace ObjectiveScript {
-namespace DesignTime {
+namespace Designtime {
 
 
 BluePrint::BluePrint()

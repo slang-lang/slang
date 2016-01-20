@@ -26,6 +26,12 @@
 
 namespace ObjectiveScript {
 
+// Forward declaration
+class IPrinter;
+class Repository;
+
+namespace Runtime {
+
 // Forward declarations
 class BoolObject;
 class FloatObject;
@@ -35,15 +41,13 @@ class StringObject;
 class VoidObject;
 
 // Forward declarations
-class IPrinter;
 class Method;
 class Object;
-class Repository;
 
 
 class Object : public MethodScope,
 			   public ObjectSymbol,
-			   public DesignTime::BluePrint
+			   public Designtime::BluePrint
 {
 public:
 	Object();
@@ -58,7 +62,7 @@ public:	// Symbol::IType implementation
 	virtual const std::string& getTypeName() const;
 
 public:	// Setup
-	void setRepository(Repository *r);
+	void setRepository(Repository *repository);
 
 public:	// Operators
 	virtual void operator_assign(Object *other);
@@ -103,6 +107,7 @@ private:
 };
 
 
+}
 }
 
 

@@ -18,12 +18,13 @@
 
 
 namespace ObjectiveScript {
+namespace Runtime {
 
 
 Object::Object()
 : MethodScope(ANONYMOUS_OBJECT, 0),
   ObjectSymbol(ANONYMOUS_OBJECT),
-  DesignTime::BluePrint(ANONYMOUS_OBJECT, SYSTEM_LIBRARY),
+  Designtime::BluePrint(ANONYMOUS_OBJECT, SYSTEM_LIBRARY),
   mIsAtomicType(true),
   mRepository(0),
   mValue(VALUE_NONE),
@@ -34,7 +35,7 @@ Object::Object()
 Object::Object(const Object& other)
 : MethodScope(other.getName(), 0),
   ObjectSymbol(other.getName()),
-  DesignTime::BluePrint(other.Typename(), other.Filename()),
+  Designtime::BluePrint(other.Typename(), other.Filename()),
   mIsAtomicType(other.mIsAtomicType),
   mRepository(other.mRepository),
   mConstructed(other.mConstructed)
@@ -82,7 +83,7 @@ Object::Object(const Object& other)
 Object::Object(const std::string& name, const std::string& filename, const std::string& type, const std::string& value)
 : MethodScope(name, 0),
   ObjectSymbol(name),
-  DesignTime::BluePrint(type, filename),
+  Designtime::BluePrint(type, filename),
   mIsAtomicType(true),
   mRepository(0),
   mValue(value),
@@ -347,10 +348,9 @@ void Object::operator_subtract(Object *other)
 	throw Utils::Exceptions::NotImplemented("operator-: conversion from " + target + " to " + Typename() + " not supported");
 }
 
-void Object::setRepository(Repository *r)
+void Object::setRepository(Repository *repository)
 {
-	assert(r);
-	mRepository = r;
+	mRepository = repository;
 }
 
 void Object::setValue(const std::string& value)
@@ -393,4 +393,5 @@ std::string Object::ToString() const
 }
 
 
+}
 }

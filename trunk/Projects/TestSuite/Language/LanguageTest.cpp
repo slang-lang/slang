@@ -300,8 +300,8 @@ void LanguageTest::testParameters()
 		VirtualMachine vm;
 
 		ParameterList params;
-		params.push_back(Parameter("argc", NumberObject::TYPENAME, "2"));
-		params.push_back(Parameter("argv", StringObject::TYPENAME, ""));
+		params.push_back(Parameter("argc", Runtime::NumberObject::TYPENAME, "2"));
+		params.push_back(Parameter("argv", Runtime::StringObject::TYPENAME, ""));
 		vm.create("Tests/Language/ParameterTest.os", params);
 
 		// automatic success

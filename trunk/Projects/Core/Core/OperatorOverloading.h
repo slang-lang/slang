@@ -13,6 +13,7 @@
 
 
 namespace ObjectiveScript {
+namespace Runtime {
 
 // Forward declarations
 class Object;
@@ -33,6 +34,7 @@ void operator_plus(Object *base, Object *other);
 void operator_subtract(Object *base, Object *other);
 
 
+}
 }
 
 

@@ -28,12 +28,12 @@ namespace ObjectiveScript {
 Repository::Repository(Memory *m)
 : mMemory(m)
 {
-	addBlueprint(BoolObject());
-	addBlueprint(FloatObject());
-	addBlueprint(IntegerObject());
-	addBlueprint(NumberObject());
-	addBlueprint(StringObject());
-	addBlueprint(VoidObject());
+	addBlueprint(Runtime::BoolObject());
+	addBlueprint(Runtime::FloatObject());
+	addBlueprint(Runtime::IntegerObject());
+	addBlueprint(Runtime::NumberObject());
+	addBlueprint(Runtime::StringObject());
+	addBlueprint(Runtime::VoidObject());
 }
 
 Repository::~Repository()
@@ -51,7 +51,7 @@ Repository::~Repository()
 	mPrototypes.clear();
 }
 
-void Repository::addBlueprint(const DesignTime::BluePrint& object)
+void Repository::addBlueprint(const Designtime::BluePrint& object)
 {
 	OSinfo("addBlueprint('" + object.Typename() + "')");
 
@@ -98,7 +98,7 @@ void Repository::addPrototype(const Prototype& prototype)
 	mPrototypes.insert(std::make_pair(type, prototype));
 }
 
-void Repository::addReference(Object *object)
+void Repository::addReference(Runtime::Object *object)
 {
 	if ( !object ) {
 		return;
@@ -145,12 +145,12 @@ void Repository::CollectGarbage()
 	}
 }
 
-Object* Repository::createInstance(const std::string& type, const std::string& name, const std::string& prototype)
+Runtime::Object* Repository::createInstance(const std::string& type, const std::string& name, const std::string& prototype)
 {
 	OSinfo("createInstance('" + type + "', '" + name + "', '" + prototype + "')");
 
 	// non-reference-based instantiation
-	DesignTime::BluePrint blueprint;
+	Designtime::BluePrint blueprint;
 
 	Prototypes::iterator it = mPrototypes.find(prototype);
 	if ( it != mPrototypes.end() ) {
@@ -166,7 +166,7 @@ Object* Repository::createInstance(const std::string& type, const std::string& n
 		}
 	}
 
-	Object *object = createObject(name, blueprint.Filename(), prototype + type);
+	Runtime::Object *object = createObject(name, blueprint.Filename(), prototype + type);
 	object->setTokens(blueprint.getTokens());
 
 	Preprocessor preprocessor(this);
@@ -179,30 +179,30 @@ Object* Repository::createInstance(const std::string& type, const std::string& n
 	return object;
 }
 
-Object* Repository::createObject(const std::string& name, const std::string& filename, const std::string& type)
+Runtime::Object* Repository::createObject(const std::string& name, const std::string& filename, const std::string& type)
 {
-	Object *object = 0;
+	Runtime::Object *object = 0;
 
-	if ( type == BoolObject::TYPENAME ) {
-		object = new BoolObject(name, BoolObject::DEFAULTVALUE);
+	if ( type == Runtime::BoolObject::TYPENAME ) {
+		object = new Runtime::BoolObject(name, Runtime::BoolObject::DEFAULTVALUE);
 	}
-	else if ( type == FloatObject::TYPENAME ) {
-		object = new FloatObject(name, FloatObject::DEFAULTVALUE);
+	else if ( type == Runtime::FloatObject::TYPENAME ) {
+		object = new Runtime::FloatObject(name, Runtime::FloatObject::DEFAULTVALUE);
 	}
-	else if ( type == IntegerObject::TYPENAME ) {
-		object = new IntegerObject(name, IntegerObject::DEFAULTVALUE);
+	else if ( type == Runtime::IntegerObject::TYPENAME ) {
+		object = new Runtime::IntegerObject(name, Runtime::IntegerObject::DEFAULTVALUE);
 	}
-	else if ( type == NumberObject::TYPENAME ) {
-		object = new NumberObject(name, NumberObject::DEFAULTVALUE);
+	else if ( type == Runtime::NumberObject::TYPENAME ) {
+		object = new Runtime::NumberObject(name, Runtime::NumberObject::DEFAULTVALUE);
 	}
-	else if ( type == StringObject::TYPENAME ) {
-		object = new StringObject(name, StringObject::DEFAULTVALUE);
+	else if ( type == Runtime::StringObject::TYPENAME ) {
+		object = new Runtime::StringObject(name, Runtime::StringObject::DEFAULTVALUE);
 	}
-	else if ( type == VoidObject::TYPENAME ) {
-		object = new VoidObject(name);
+	else if ( type == Runtime::VoidObject::TYPENAME ) {
+		object = new Runtime::VoidObject(name);
 	}
 	else {
-		object = new UserObject(name, filename, type, UserObject::DEFAULTVALUE);
+		object = new Runtime::UserObject(name, filename, type, Runtime::UserObject::DEFAULTVALUE);
 	}
 
 	object->setRepository(this);
@@ -212,7 +212,7 @@ Object* Repository::createObject(const std::string& name, const std::string& fil
 const Reference& Repository::createReference(const std::string& type, const std::string& name, const std::string& prototype)
 {
 	// reference-based instantiation
-	DesignTime::BluePrint blueprint;
+	Designtime::BluePrint blueprint;
 
 	Prototypes::iterator it = mPrototypes.find(prototype);
 	if ( it != mPrototypes.end() ) {
@@ -228,7 +228,7 @@ const Reference& Repository::createReference(const std::string& type, const std:
 		}
 	}
 
-	Object *object = createObject(name, blueprint.Filename(), type);
+	Runtime::Object *object = createObject(name, blueprint.Filename(), type);
 	object->setTokens(blueprint.getTokens());
 
 	Preprocessor preprocessor(this);
@@ -242,7 +242,7 @@ bool Repository::isAlreadyKnown(const std::string& name) const
 	return mBluePrints.find(name) != mBluePrints.end();
 }
 
-void Repository::removeReference(Object *object)
+void Repository::removeReference(Runtime::Object *object)
 {
 	if ( !object ) {
 		return;

@@ -56,9 +56,9 @@ TokenIterator findNextBalancedParenthesis(TokenIterator start, int generateError
 
 bool isBooleanConst(const std::string& value);
 bool isFalse(const std::string& value);
-bool isFalse(const Object& object);
+bool isFalse(const Runtime::Object& object);
 bool isTrue(const std::string& value);
-bool isTrue(const Object& object);
+bool isTrue(const Runtime::Object& object);
 
 }
 

@@ -24,12 +24,12 @@ StringList provideAtomarTypes()
 	StringList types;
 
 	types.push_back(PROTOTYPE_TYPE);
-	types.push_back(BoolObject::TYPENAME);
-	types.push_back(FloatObject::TYPENAME);
-	types.push_back(IntegerObject::TYPENAME);
-	types.push_back(NumberObject::TYPENAME);
-	types.push_back(StringObject::TYPENAME);
-	types.push_back(VoidObject::TYPENAME);
+	types.push_back(Runtime::BoolObject::TYPENAME);
+	types.push_back(Runtime::FloatObject::TYPENAME);
+	types.push_back(Runtime::IntegerObject::TYPENAME);
+	types.push_back(Runtime::NumberObject::TYPENAME);
+	types.push_back(Runtime::StringObject::TYPENAME);
+	types.push_back(Runtime::VoidObject::TYPENAME);
 
 	return types;
 }
