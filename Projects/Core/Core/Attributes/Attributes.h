@@ -49,6 +49,7 @@ private:
 	Visibility::E mVisibility;
 };
 
+
 class LocalAttributes : public GenericAttributes
 {
 public:
@@ -62,6 +63,7 @@ private:
 	bool mIsStatic;
 };
 
+
 class MemberAttributes : public GenericAttributes
 {
 public:
@@ -70,6 +72,7 @@ public:
 public:
 
 };
+
 
 class MethodAttributes : public GenericAttributes
 {
@@ -81,6 +84,7 @@ public:
 	void setSealed(bool state);
 };
 
+
 class NamespaceAttributes : public GenericAttributes
 {
 public:
@@ -91,6 +95,7 @@ public:
 	void setSealed(bool state);
 };
 
+
 class ObjectAttributes : public GenericAttributes
 {
 public:
@@ -100,15 +105,11 @@ public:
 	bool isMember() const;
 	void setMember(bool state);
 
-	bool isStatic() const;
-	void setStatic(bool state);
-
 	bool isSealed() const;
 	void setSealed(bool state);
 
 private:
 	bool mIsMember;
-	bool mIsStatic;
 };
 
 
