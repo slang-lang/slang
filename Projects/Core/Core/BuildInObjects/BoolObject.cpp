@@ -17,6 +17,7 @@
 
 
 namespace ObjectiveScript {
+namespace Runtime {
 
 
 bool BoolObject::DEFAULTVALUE = false;
@@ -188,4 +189,5 @@ std::string BoolObject::ToString() const
 }
 
 
+}
 }

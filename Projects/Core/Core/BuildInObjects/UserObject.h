@@ -15,6 +15,7 @@
 
 
 namespace ObjectiveScript {
+namespace Runtime {
 
 
 class UserObject : public Object
@@ -49,6 +50,7 @@ public: // Value
 };
 
 
+}
 }
 
 

@@ -20,8 +20,12 @@ namespace ObjectiveScript {
 
 // Forward declarations
 class Memory;
-class Object;
 class Repository;
+
+namespace Runtime {
+
+// Forward declarations
+class Object;
 
 class ControlFlow
 {
@@ -106,6 +110,7 @@ private:
 };
 
 
+}
 }
 
 

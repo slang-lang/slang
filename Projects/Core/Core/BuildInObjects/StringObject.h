@@ -15,6 +15,7 @@
 
 
 namespace ObjectiveScript {
+namespace Runtime {
 
 
 class StringObject : public Object
@@ -65,6 +66,7 @@ private:
 };
 
 
+}
 }
 
 

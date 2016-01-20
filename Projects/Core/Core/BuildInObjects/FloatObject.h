@@ -14,6 +14,7 @@
 
 
 namespace ObjectiveScript {
+namespace Runtime {
 
 
 class FloatObject : public Object
@@ -82,6 +83,7 @@ private:
 };
 
 
+}
 }
 
 

@@ -21,7 +21,9 @@ namespace ObjectiveScript {
 
 // Forward declarations
 class Memory;
-class Object;
+namespace Runtime {
+	class Object;
+}
 
 class Repository
 {
@@ -31,30 +33,29 @@ public:
 
 public:
 	void CollectGarbage();
-	Object* createObject(const std::string& name, const std::string& filename, const std::string& type);
+	Runtime::Object* createObject(const std::string& name, const std::string& filename, const std::string& type);
 
 public:
-	void addBlueprint(const DesignTime::BluePrint& object);
+	void addBlueprint(const Designtime::BluePrint& object);
 	void addPrototype(const Prototype& prototype);
 
-	Object* createInstance(const std::string& type, const std::string& name, const std::string& prototype = "");
+	Runtime::Object* createInstance(const std::string& type, const std::string& name, const std::string& prototype = "");
 	const Reference& createReference(const std::string& type, const std::string& name, const std::string& prototype = "");
 
-	void addReference(Object *object);
-	void removeReference(Object *object);
+	void addReference(Runtime::Object *object);
+	void removeReference(Runtime::Object *object);
 
 	bool isAlreadyKnown(const std::string& name) const;
 
 protected:
 
 private:
-	typedef std::map<std::string, DesignTime::BluePrint> BluePrints;
+	typedef std::map<std::string, Designtime::BluePrint> BluePrints;
 	typedef std::map<std::string, Prototype> Prototypes;
-	typedef std::map<Object*, int> ReferenceCountedObjects;
-	typedef std::set<Object*> Objects;
+	typedef std::map<Runtime::Object*, int> ReferenceCountedObjects;
 
 private:
-	const Reference& createReference(const DesignTime::BluePrint& blueprint, const std::string& type, const std::string& name);
+	const Reference& createReference(const Designtime::BluePrint& blueprint, const std::string& type, const std::string& name);
 
 private:
 	BluePrints mBluePrints;

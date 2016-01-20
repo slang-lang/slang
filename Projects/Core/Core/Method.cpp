@@ -18,6 +18,7 @@
 
 
 namespace ObjectiveScript {
+namespace Runtime {
 
 
 Method::Method(IScope *parent, const std::string& name, const std::string& type)
@@ -341,4 +342,5 @@ void Method::setTokens(const TokenList& tokens)
 }
 
 
+}
 }

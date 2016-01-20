@@ -15,6 +15,7 @@
 
 
 namespace ObjectiveScript {
+namespace Runtime {
 
 
 class BoolObject : public Object
@@ -63,6 +64,7 @@ private:
 };
 
 
+}
 }
 
 

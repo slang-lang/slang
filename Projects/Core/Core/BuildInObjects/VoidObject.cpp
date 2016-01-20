@@ -13,6 +13,7 @@
 
 
 namespace ObjectiveScript {
+namespace Runtime {
 
 
 std::string VoidObject::TYPENAME = "void";
@@ -73,4 +74,5 @@ std::string VoidObject::ToString() const
 }
 
 
+}
 }

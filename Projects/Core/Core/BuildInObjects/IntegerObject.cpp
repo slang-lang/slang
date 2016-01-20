@@ -15,6 +15,7 @@
 
 
 namespace ObjectiveScript {
+namespace Runtime {
 
 
 int IntegerObject::DEFAULTVALUE = 0;
@@ -321,4 +322,5 @@ std::string IntegerObject::ToString() const
 }
 
 
+}
 }

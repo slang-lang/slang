@@ -13,6 +13,7 @@
 
 
 namespace ObjectiveScript {
+namespace Runtime {
 
 
 float FloatObject::DEFAULTVALUE = 0.f;
@@ -278,4 +279,5 @@ std::string FloatObject::ToString() const
 }
 
 
+}
 }

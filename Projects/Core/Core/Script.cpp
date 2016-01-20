@@ -27,7 +27,7 @@ Script::~Script()
 	destruct();
 }
 
-void Script::assign(Object *object)
+void Script::assign(Runtime::Object *object)
 {
 	assert(object);
 	assert(!mObject);
@@ -74,11 +74,11 @@ void Script::destruct()
 	}
 }
 
-Object Script::execute(const std::string& method, const ParameterList& params)
+Runtime::Object Script::execute(const std::string& method, const ParameterList& params)
 {
 	assert(mObject);
 
-	Object returnValue;
+	Runtime::Object returnValue;
 	try {
 		mObject->execute(&returnValue, method, params);
 	}

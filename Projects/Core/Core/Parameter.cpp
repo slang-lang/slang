@@ -35,7 +35,7 @@ Parameter::Parameter(const std::string& name, const std::string& type, const std
 }
 
 Parameter::Parameter(const std::string& name, const std::string& type, const std::string& value, bool hasDefaultValue,
-		 	 	 	 bool isConst, AccessMode::E access, Object* pointer)
+		 	 	 	 bool isConst, AccessMode::E access, Runtime::Object* pointer)
 : mAccessMode(access),
   mHasDefaultValue(hasDefaultValue),
   mIsConst(isConst),
@@ -66,7 +66,7 @@ const std::string& Parameter::name() const
 	return mName;
 }
 
-Object* Parameter::pointer() const
+Runtime::Object* Parameter::pointer() const
 {
 	return mPointer;
 }

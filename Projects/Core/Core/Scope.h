@@ -19,7 +19,9 @@
 namespace ObjectiveScript {
 
 // Forward declarations
-class Method;
+namespace Runtime {
+	class Method;
+}
 
 class IScope
 {
@@ -60,16 +62,16 @@ private:
 class MethodScope : public LocalScope
 {
 public:
-	typedef std::set<Method*> MethodCollection;
+	typedef std::set<Runtime::Method*> MethodCollection;
 
 public:
 	MethodScope(const std::string& name, IScope *parent = 0);
 	virtual ~MethodScope();
 
 public:
-	virtual void defineMethod(Method* method);
+	virtual void defineMethod(Runtime::Method* method);
 	virtual MethodSymbol* resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope = false) const;
-	virtual void undefineMethod(Method* method);
+	virtual void undefineMethod(Runtime::Method* method);
 
 protected:
 	MethodCollection mMethods;

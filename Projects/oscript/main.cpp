@@ -127,8 +127,8 @@ void processParameters(int argc, const char* argv[])
 		}
 	}
 
-	mParameters.push_back(ObjectiveScript::Parameter("argc", ObjectiveScript::NumberObject::TYPENAME, Utils::Tools::toString(params.size())));
-	mParameters.push_back(ObjectiveScript::Parameter("argv", ObjectiveScript::StringObject::TYPENAME, paramStr));
+	mParameters.push_back(ObjectiveScript::Parameter("argc", ObjectiveScript::Runtime::NumberObject::TYPENAME, Utils::Tools::toString(params.size())));
+	mParameters.push_back(ObjectiveScript::Parameter("argv", ObjectiveScript::Runtime::StringObject::TYPENAME, paramStr));
 }
 
 int main(int argc, const char* argv[])

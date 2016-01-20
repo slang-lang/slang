@@ -17,7 +17,7 @@ namespace ObjectiveScript {
 namespace System {
 
 
-void Assert(const Object& condition, const Utils::Position& position)
+void Assert(const Runtime::Object& condition, const Utils::Position& position)
 {
 	if ( isFalse(condition) ) {
 		throw Utils::Exceptions::AssertionFailed(condition.ToString(), position);

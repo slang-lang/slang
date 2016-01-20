@@ -13,6 +13,7 @@
 
 
 namespace ObjectiveScript {
+namespace Runtime {
 
 
 std::string UserObject::DEFAULTVALUE = "";
@@ -162,4 +163,5 @@ std::string UserObject::ToString() const
 }
 
 
+}
 }

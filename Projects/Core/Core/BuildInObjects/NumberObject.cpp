@@ -15,6 +15,7 @@
 
 
 namespace ObjectiveScript {
+namespace Runtime {
 
 
 double NumberObject::DEFAULTVALUE = 0.0;
@@ -300,4 +301,5 @@ std::string NumberObject::ToString() const
 }
 
 
+}
 }

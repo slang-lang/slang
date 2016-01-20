@@ -14,6 +14,7 @@
 
 
 namespace ObjectiveScript {
+namespace Runtime {
 
 
 class IntegerObject : public Object
@@ -85,6 +86,7 @@ private:
 };
 
 
+}
 }
 
 

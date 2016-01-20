@@ -15,6 +15,7 @@
 
 
 namespace ObjectiveScript {
+namespace Runtime {
 
 
 class VoidObject : public Object
@@ -44,6 +45,7 @@ public: // Value
 };
 
 
+}
 }
 
 
