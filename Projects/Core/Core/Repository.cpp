@@ -51,7 +51,7 @@ Repository::~Repository()
 	mPrototypes.clear();
 }
 
-void Repository::addBlueprint(const BluePrint& object)
+void Repository::addBlueprint(const DesignTime::BluePrint& object)
 {
 	OSinfo("addBlueprint('" + object.Typename() + "')");
 
@@ -150,7 +150,7 @@ Object* Repository::createInstance(const std::string& type, const std::string& n
 	OSinfo("createInstance('" + type + "', '" + name + "', '" + prototype + "')");
 
 	// non-reference-based instantiation
-	BluePrint blueprint;
+	DesignTime::BluePrint blueprint;
 
 	Prototypes::iterator it = mPrototypes.find(prototype);
 	if ( it != mPrototypes.end() ) {
@@ -212,7 +212,7 @@ Object* Repository::createObject(const std::string& name, const std::string& fil
 const Reference& Repository::createReference(const std::string& type, const std::string& name, const std::string& prototype)
 {
 	// reference-based instantiation
-	BluePrint blueprint;
+	DesignTime::BluePrint blueprint;
 
 	Prototypes::iterator it = mPrototypes.find(prototype);
 	if ( it != mPrototypes.end() ) {

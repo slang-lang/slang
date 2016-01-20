@@ -23,7 +23,7 @@ namespace ObjectiveScript {
 Object::Object()
 : MethodScope(ANONYMOUS_OBJECT, 0),
   ObjectSymbol(ANONYMOUS_OBJECT),
-  BluePrint(ANONYMOUS_OBJECT, SYSTEM_LIBRARY),
+  DesignTime::BluePrint(ANONYMOUS_OBJECT, SYSTEM_LIBRARY),
   mIsAtomicType(true),
   mRepository(0),
   mValue(VALUE_NONE),
@@ -34,7 +34,7 @@ Object::Object()
 Object::Object(const Object& other)
 : MethodScope(other.getName(), 0),
   ObjectSymbol(other.getName()),
-  BluePrint(other.Typename(), other.Filename()),
+  DesignTime::BluePrint(other.Typename(), other.Filename()),
   mIsAtomicType(other.mIsAtomicType),
   mRepository(other.mRepository),
   mConstructed(other.mConstructed)
@@ -82,7 +82,7 @@ Object::Object(const Object& other)
 Object::Object(const std::string& name, const std::string& filename, const std::string& type, const std::string& value)
 : MethodScope(name, 0),
   ObjectSymbol(name),
-  BluePrint(type, filename),
+  DesignTime::BluePrint(type, filename),
   mIsAtomicType(true),
   mRepository(0),
   mValue(value),

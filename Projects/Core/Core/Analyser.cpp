@@ -32,7 +32,7 @@ Analyser::~Analyser()
 {
 }
 
-BluePrint Analyser::createBluePrint(TokenIterator& start, TokenIterator end)
+DesignTime::BluePrint Analyser::createBluePrint(TokenIterator& start, TokenIterator end)
 {
 	std::string languageFeature;
 	std::string name;
@@ -54,7 +54,7 @@ BluePrint Analyser::createBluePrint(TokenIterator& start, TokenIterator end)
 	// look for balanced curly brackets
 	TokenIterator closed = findNextBalancedCurlyBracket(open, end, 0, Token::Type::BRACKET_CURLY_CLOSE);
 
-	BluePrint::Ancestors parents;
+	DesignTime::Ancestors parents;
 
 	// check if we have some more tokens before our object declarations starts
 	if ( start != open ) {
@@ -66,7 +66,7 @@ BluePrint Analyser::createBluePrint(TokenIterator& start, TokenIterator end)
 				std::string inheritance = (*start++).content();
 				std::string ancestor = (*start++).content();
 
-//				parents[ancestor] = BluePrint::Ancestor(ancestor, Visibility::convert(inheritance));
+				//parents[ancestor] = Ancestor(ancestor, Visibility::convert(inheritance));
 			} while ( std::distance(start, open) > 0 && ++start != end );
 		}
 		else if ( start->content() == "implements" ) {
@@ -74,7 +74,7 @@ BluePrint Analyser::createBluePrint(TokenIterator& start, TokenIterator end)
 			start++;
 
 			std::string inheritance = (*start++).content();
-			parents[inheritance] = BluePrint::Ancestor(inheritance, Visibility::Public);
+			parents[inheritance] = DesignTime::Ancestor(inheritance, Visibility::Public);
 		}
 		else {
 			throw Utils::Exceptions::Exception("invalid token '" + start->content() + "' during object declaration");
@@ -93,8 +93,7 @@ BluePrint Analyser::createBluePrint(TokenIterator& start, TokenIterator end)
 	SanityChecker sanity;
 	sanity.process(tokens);
 
-	BluePrint blue(name, mFilename);
-	blue.setAncestors(parents);
+	DesignTime::BluePrint blue(name, mFilename);
 	blue.setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
 	blue.setTokens(tokens);
 	blue.setVisibility(Visibility::convert(visibility));
@@ -225,7 +224,7 @@ void Analyser::generate(const TokenList& tokens)
 			createNamespace(it, tokens.end());
 		}
 		else if ( isObjectDeclaration(it) ) {
-			BluePrint o = createBluePrint(it, tokens.end());
+			DesignTime::BluePrint o = createBluePrint(it, tokens.end());
 			mBluePrints.push_back(o);
 		}
 		else if ( isPrototypeDeclaration(it) ) {
@@ -245,7 +244,7 @@ TokenList Analyser::generateTokens(const std::string& content)
 	return t.tokens();
 }
 
-const BluePrintList& Analyser::getBluePrints() const
+const DesignTime::BluePrintList& Analyser::getBluePrints() const
 {
 	return mBluePrints;
 }

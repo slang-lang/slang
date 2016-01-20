@@ -42,7 +42,7 @@ public:
 protected:
 
 private:
-	typedef std::map<std::string, BluePrint> BluePrintCollection;
+	typedef std::map<std::string, DesignTime::BluePrint> BluePrintCollection;
 	typedef std::map<std::string, Interface> InterfaceCollection;
 	typedef std::map<std::string, Object*> ObjectCollection;
 	typedef std::set<Script*> ScriptCollection;

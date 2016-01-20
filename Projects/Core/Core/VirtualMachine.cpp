@@ -101,8 +101,8 @@ Script* VirtualMachine::create(const std::string& filename, const ParameterList&
 	}
 */
 
-	BluePrintList objects = analyser.getBluePrints();
-	for ( BluePrintList::iterator it = objects.begin(); it != objects.end(); ++it ) {
+	DesignTime::BluePrintList objects = analyser.getBluePrints();
+	for ( DesignTime::BluePrintList::iterator it = objects.begin(); it != objects.end(); ++it ) {
 		// add blue prints to our object repository
 		mRepository->addBlueprint((*it));
 
@@ -165,8 +165,8 @@ void VirtualMachine::loadLibrary(const std::string& library)
 		}
 */
 
-		BluePrintList objects = analyser.getBluePrints();
-		for ( BluePrintList::iterator it = objects.begin(); it != objects.end(); ++it ) {
+		DesignTime::BluePrintList objects = analyser.getBluePrints();
+		for ( DesignTime::BluePrintList::iterator it = objects.begin(); it != objects.end(); ++it ) {
 			mRepository->addBlueprint((*it));
 		}
 	}
