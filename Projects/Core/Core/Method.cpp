@@ -282,6 +282,7 @@ Symbol* Method::resolve(const std::string& name, bool onlyCurrentScope) const
 			case Symbol::IType::MethodSymbol:
 			case Symbol::IType::NamespaceSymbol:
 				return result;
+			case Symbol::IType::BluePrintSymbol:
 			case Symbol::IType::UnknownSymbol:
 				throw Utils::Exceptions::SyntaxError("cannot directly access locales of method/namespace");
 		}
@@ -312,6 +313,7 @@ Symbol* Method::resolveMethod(const std::string& name, const ParameterList& para
 				return static_cast<Object*>(result)->resolveMethod(member, params);
 			case Symbol::IType::MethodSymbol:
 				return mOwner->resolveMethod(member, params, onlyCurrentScope);
+			case Symbol::IType::BluePrintSymbol:
 			case Symbol::IType::NamespaceSymbol:
 			case Symbol::IType::UnknownSymbol:
 				throw Utils::Exceptions::SyntaxError("cannot directly access locales of method/namespace");

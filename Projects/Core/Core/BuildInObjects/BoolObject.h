@@ -6,6 +6,8 @@
 // Library includes
 
 // Project includes
+#include <Core/BluePrint.h>
+#include <Core/Consts.h>
 #include <Core/Object.h>
 #include <Core/Symbol.h>
 

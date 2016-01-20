@@ -12,10 +12,17 @@
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/BuildInObjects/UserObject.h>
 #include <Core/BuildInObjects/VoidObject.h>
+#include <Core/Designtime/BuildInTypes/BoolObject.h>
+#include <Core/Designtime/BuildInTypes/FloatObject.h>
+#include <Core/Designtime/BuildInTypes/IntegerObject.h>
+#include <Core/Designtime/BuildInTypes/NumberObject.h>
+#include <Core/Designtime/BuildInTypes/StringObject.h>
+#include <Core/Designtime/BuildInTypes/VoidObject.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Utils/Utils.h>
 #include "Consts.h"
 #include "Memory.h"
+#include "Method.h"
 #include "Preprocessor.h"
 #include "Tools.h"
 
@@ -28,12 +35,12 @@ namespace ObjectiveScript {
 Repository::Repository(Memory *m)
 : mMemory(m)
 {
-	addBlueprint(Runtime::BoolObject());
-	addBlueprint(Runtime::FloatObject());
-	addBlueprint(Runtime::IntegerObject());
-	addBlueprint(Runtime::NumberObject());
-	addBlueprint(Runtime::StringObject());
-	addBlueprint(Runtime::VoidObject());
+	addBlueprint(Designtime::BoolObject());
+	addBlueprint(Designtime::FloatObject());
+	addBlueprint(Designtime::IntegerObject());
+	addBlueprint(Designtime::NumberObject());
+	addBlueprint(Designtime::StringObject());
+	addBlueprint(Designtime::VoidObject());
 }
 
 Repository::~Repository()
@@ -51,18 +58,23 @@ Repository::~Repository()
 	mPrototypes.clear();
 }
 
-void Repository::addBlueprint(const Designtime::BluePrint& object)
+void Repository::addBlueprint(const Designtime::BluePrint& blueprint)
 {
-	OSinfo("addBlueprint('" + object.Typename() + "')");
+	OSinfo("addBlueprint('" + blueprint.Typename() + "')");
 
-	BluePrints::iterator it = mBluePrints.find(object.Typename());
+	BluePrints::iterator it = mBluePrints.find(blueprint.Typename());
 	if ( it != mBluePrints.end() ) {
-		throw Utils::Exceptions::Exception("duplicate object '" + object.Typename() + "' added to repository");
+		throw Utils::Exceptions::Exception("duplicate object '" + blueprint.Typename() + "' added to repository");
 	}
 
-	mBluePrints.insert(std::make_pair(object.Typename(), object));
+/*
+	Preprocessor preprocessor(this);
+	preprocessor.process(&blueprint);
+*/
 
-	BluePrints::iterator objIt = mBluePrints.find(object.Typename());
+	mBluePrints.insert(std::make_pair(blueprint.Typename(), blueprint));
+
+	BluePrints::iterator objIt = mBluePrints.find(blueprint.Typename());
 
 	// loop over all tokens of a blueprint object
 	// and retype all identifier tokens with object names as values with type
@@ -73,7 +85,7 @@ void Repository::addBlueprint(const Designtime::BluePrint& object)
 		// we found an identifier token
 		if ( tokenIt->type() == Token::Type::IDENTIFER ) {
 			// check if it's content is one of our newly added blueprint objects
-			if ( tokenIt->content() != object.Typename() && mBluePrints.find(tokenIt->content()) != mBluePrints.end() ) {
+			if ( tokenIt->content() != blueprint.Typename() && mBluePrints.find(tokenIt->content()) != mBluePrints.end() ) {
 				tokenIt->resetTypeTo(Token::Type::TYPE);
 
 				replaced = true;
@@ -166,45 +178,61 @@ Runtime::Object* Repository::createInstance(const std::string& type, const std::
 		}
 	}
 
-	Runtime::Object *object = createObject(name, blueprint.Filename(), prototype + type);
-	object->setTokens(blueprint.getTokens());
-
-	Preprocessor preprocessor(this);
-	preprocessor.process(object);
-
-	object->define(KEYWORD_THIS, object);
+	Runtime::Object *object = createObject(name, &blueprint);
 
 	addReference(object);
 
 	return object;
 }
 
-Runtime::Object* Repository::createObject(const std::string& name, const std::string& filename, const std::string& type)
+Runtime::Object* Repository::createObject(const std::string& name, Designtime::BluePrint* blueprint)
 {
 	Runtime::Object *object = 0;
 
-	if ( type == Runtime::BoolObject::TYPENAME ) {
+	if ( blueprint->Typename() == Runtime::BoolObject::TYPENAME ) {
 		object = new Runtime::BoolObject(name, Runtime::BoolObject::DEFAULTVALUE);
 	}
-	else if ( type == Runtime::FloatObject::TYPENAME ) {
+	else if ( blueprint->Typename() == Runtime::FloatObject::TYPENAME ) {
 		object = new Runtime::FloatObject(name, Runtime::FloatObject::DEFAULTVALUE);
 	}
-	else if ( type == Runtime::IntegerObject::TYPENAME ) {
+	else if ( blueprint->Typename() == Runtime::IntegerObject::TYPENAME ) {
 		object = new Runtime::IntegerObject(name, Runtime::IntegerObject::DEFAULTVALUE);
 	}
-	else if ( type == Runtime::NumberObject::TYPENAME ) {
+	else if ( blueprint->Typename() == Runtime::NumberObject::TYPENAME ) {
 		object = new Runtime::NumberObject(name, Runtime::NumberObject::DEFAULTVALUE);
 	}
-	else if ( type == Runtime::StringObject::TYPENAME ) {
+	else if ( blueprint->Typename() == Runtime::StringObject::TYPENAME ) {
 		object = new Runtime::StringObject(name, Runtime::StringObject::DEFAULTVALUE);
 	}
-	else if ( type == Runtime::VoidObject::TYPENAME ) {
+	else if ( blueprint->Typename() == Runtime::VoidObject::TYPENAME ) {
 		object = new Runtime::VoidObject(name);
 	}
 	else {
-		object = new Runtime::UserObject(name, filename, type, Runtime::UserObject::DEFAULTVALUE);
+		object = new Runtime::UserObject(name, blueprint->Filename(), blueprint->Typename(), Runtime::UserObject::DEFAULTVALUE);
+
+		object->define(KEYWORD_THIS, object);
+
+		Symbols symbols = blueprint->provideSymbols();
+		for ( Symbols::const_iterator it = symbols.begin(); it != symbols.end(); ++it ) {
+			if ( !it->second || it->second->getType() != Symbol::IType::BluePrintSymbol ) {
+				continue;
+			}
+
+			Symbol *symbol = createObject(it->first, static_cast<Designtime::BluePrint*>(it->second));
+
+			object->define(symbol->getName(), symbol);
+		}
+
+		MethodScope::MethodCollection methods = blueprint->provideMethods();
+		for ( MethodScope::MethodCollection::const_iterator it = methods.begin(); it != methods.end(); ++it ) {
+			Runtime::Method* method = new Runtime::Method(object, (*it)->getName(), (*it)->getTypeName());
+			*method = *(*it);
+
+			object->defineMethod(method);
+		}
 	}
 
+	assert(object);
 	object->setRepository(this);
 	return object;
 }
@@ -228,11 +256,9 @@ const Reference& Repository::createReference(const std::string& type, const std:
 		}
 	}
 
-	Runtime::Object *object = createObject(name, blueprint.Filename(), type);
-	object->setTokens(blueprint.getTokens());
+	Runtime::Object *object = createObject(name, &blueprint);
 
-	Preprocessor preprocessor(this);
-	preprocessor.process(object);
+	object->define(KEYWORD_THIS, object);
 
 	return mMemory->newObject(object);
 }

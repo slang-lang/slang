@@ -165,8 +165,8 @@ void VirtualMachine::loadLibrary(const std::string& library)
 		}
 */
 
-		Designtime::BluePrintList objects = analyser.getBluePrints();
-		for ( Designtime::BluePrintList::iterator it = objects.begin(); it != objects.end(); ++it ) {
+		Designtime::BluePrintList blueprints = analyser.getBluePrints();
+		for ( Designtime::BluePrintList::iterator it = blueprints.begin(); it != blueprints.end(); ++it ) {
 			mRepository->addBlueprint((*it));
 		}
 	}

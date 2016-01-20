@@ -8,6 +8,7 @@
 #include <string>
 
 // Project includes
+#include "BluePrint.h"
 #include "Method.h"
 #include "Parameter.h"
 #include "Tokenizer.h"
@@ -32,10 +33,10 @@ public:
 	Preprocessor(Repository *repo);
 
 public:
-	void process(Runtime::Object *object);
+	void process(Designtime::BluePrint* blueprint);
 
 private:
-	Runtime::Object* createMember(TokenIterator start);
+	Designtime::BluePrint* createMember(TokenIterator start);
 	Runtime::Method* createMethod(TokenIterator start);
 
 	void generateObject();
@@ -50,7 +51,7 @@ private:
 
 private:
 	std::string mFilename;
-	Runtime::Object *mObject;
+	Designtime::BluePrint *mBluePrint;
 	Repository *mRepository;
 	IScope *mScope;
 	TokenList mTokens;

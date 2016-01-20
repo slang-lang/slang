@@ -10,6 +10,7 @@
 
 // Project includes
 #include <Core/Consts.h>
+#include <Core/Designtime/Anchestor.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Utils/Utils.h>
 #include <Tools/Files.h>
