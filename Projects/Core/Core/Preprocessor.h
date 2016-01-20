@@ -31,16 +31,12 @@ public:
 
 public:
 	void process(Object *object);
-	void processScope(IScope *scope, const TokenList& tokens);
-
-protected:
 
 private:
 	Object* createMember(TokenIterator start);
 	Method* createMethod(TokenIterator start);
 
 	void generateObject();
-	void generateScope();
 	void generateTokens(const std::string& content);
 
 	bool isLocalDeclaration(TokenIterator start);

@@ -21,6 +21,7 @@ class IPrinter;
 class Memory;
 class Object;
 class Repository;
+class Symbol;
 
 class Script
 {
@@ -38,7 +39,7 @@ public:	// Constructor & Destructor
 	void destruct();
 
 public:	//Helpers
-	Object* getMember(const std::string& m);
+	Symbol* getSymbol(const std::string& symbol);
 	bool hasMethod(const std::string& m);
 	bool hasMethod(const std::string& m, const ParameterList& params);
 

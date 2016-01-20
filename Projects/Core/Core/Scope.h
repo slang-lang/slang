@@ -41,11 +41,11 @@ public:
 	virtual ~LocalScope();
 
 public:	// IScope implementation
-	void define(const std::string& name, Symbol *symbol);
-	IScope* getEnclosingScope() const;
-	const std::string& getScopeName() const;
-	Symbol* resolve(const std::string& name, bool onlyCurrentScope = false) const;
-	void undefine(const std::string& name, Symbol *symbol);
+	virtual void define(const std::string& name, Symbol *symbol);
+	virtual IScope* getEnclosingScope() const;
+	virtual const std::string& getScopeName() const;
+	virtual Symbol* resolve(const std::string& name, bool onlyCurrentScope = false) const;
+	virtual void undefine(const std::string& name, Symbol *symbol);
 
 protected:
 	IScope *mParent;
@@ -67,9 +67,9 @@ public:
 	virtual ~MethodScope();
 
 public:
-	void defineMethod(Method *method);
-	MethodSymbol* resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope = false) const;
-	void undefineMethod(Method *method);
+	virtual void defineMethod(Method* method);
+	virtual MethodSymbol* resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope = false) const;
+	virtual void undefineMethod(Method* method);
 
 protected:
 	MethodCollection mMethods;

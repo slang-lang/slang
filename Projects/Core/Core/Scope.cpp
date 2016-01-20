@@ -8,6 +8,7 @@
 // Project includes
 #include <Core/Utils/Exceptions.h>
 #include "Method.h"
+#include "Tools.h"
 
 // Namespace declarations
 
@@ -23,28 +24,6 @@ LocalScope::LocalScope(const std::string& name, IScope *parent)
 
 LocalScope::~LocalScope()
 {
-	for ( Symbols::iterator it = mSymbols.begin(); it != mSymbols.end(); ++it ) {
-/*
-		Symbol::IType::E type = it->second->getType();
-
-		switch ( type ) {
-			case Symbol::IType::UnknownSymbol:
-				break;
-			case Symbol::IType::BuildInTypeSymbol:
-			case Symbol::IType::MemberSymbol:
-			case Symbol::IType::MethodSymbol:
-			case Symbol::IType::ObjectSymbol:
-				break;
-		}
-*/
-/*
-		if ( it->second ) {
-			delete it->second;
-			it->second = 0;
-		}
-*/
-	}
-	mSymbols.clear();
 }
 
 void LocalScope::define(const std::string& name, Symbol *symbol)
@@ -130,8 +109,16 @@ void MethodScope::defineMethod(Method* method)
 	mMethods.insert(method);
 }
 
-MethodSymbol* MethodScope::resolveMethod(const std::string& name, const ParameterList& params, bool /*onlyCurrentScope*/) const
+MethodSymbol* MethodScope::resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope) const
 {
+	std::string member, parent;
+	Tools::split(name, parent, member);
+
+	Symbol *result = LocalScope::resolve(parent, onlyCurrentScope);
+	if ( result && result->getType() == Symbol::IType::ObjectSymbol ) {
+		return static_cast<Object*>(result)->resolveMethod(member, params);
+	}
+
 	for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
 		Method *method = (*it);
 
@@ -149,11 +136,9 @@ void MethodScope::undefineMethod(Method* method)
 
 	undefine(method->getName(), method);
 
-	for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
-		if ( (*it) == method ) {
-			mMethods.erase(it);
-			return;
-		}
+	MethodCollection::const_iterator it = mMethods.find(method);
+	if ( it != mMethods.end() ) {
+		mMethods.erase(it);
 	}
 }
 

@@ -271,26 +271,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\Helpers\Math.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\Helpers\"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\Helpers\"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath=".\Core\Memory.cpp"
 				>
 			</File>
@@ -518,10 +498,6 @@
 			</File>
 			<File
 				RelativePath=".\Core\Attributes\LanguageFeatureState.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Core\Helpers\Math.h"
 				>
 			</File>
 			<File

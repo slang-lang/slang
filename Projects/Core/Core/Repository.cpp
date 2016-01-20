@@ -53,18 +53,16 @@ Repository::~Repository()
 
 void Repository::addBlueprint(const BluePrint& object)
 {
-	std::string type = object.Typename();
+	OSinfo("addBlueprint('" + object.Typename() + "')");
 
-	//OSinfo("addBlueprint('" + type + "')");
-
-	BluePrints::iterator it = mBluePrints.find(type);
+	BluePrints::iterator it = mBluePrints.find(object.Typename());
 	if ( it != mBluePrints.end() ) {
-		throw Utils::Exceptions::Exception("duplicate object '" + type + "' added to repository");
+		throw Utils::Exceptions::Exception("duplicate object '" + object.Typename() + "' added to repository");
 	}
 
-	mBluePrints.insert(std::make_pair(type, object));
+	mBluePrints.insert(std::make_pair(object.Typename(), object));
 
-	BluePrints::iterator objIt = mBluePrints.find(type);
+	BluePrints::iterator objIt = mBluePrints.find(object.Typename());
 
 	// loop over all tokens of a blueprint object
 	// and retype all identifier tokens with object names as values with type
@@ -75,7 +73,7 @@ void Repository::addBlueprint(const BluePrint& object)
 		// we found an identifier token
 		if ( tokenIt->type() == Token::Type::IDENTIFER ) {
 			// check if it's content is one of our newly added blueprint objects
-			if ( tokenIt->content() != type && mBluePrints.find(tokenIt->content()) != mBluePrints.end() ) {
+			if ( tokenIt->content() != object.Typename() && mBluePrints.find(tokenIt->content()) != mBluePrints.end() ) {
 				tokenIt->resetTypeTo(Token::Type::TYPE);
 
 				replaced = true;
@@ -170,11 +168,11 @@ Object* Repository::createInstance(const std::string& type, const std::string& n
 
 	Object *object = createObject(name, blueprint.Filename(), prototype + type);
 	object->setTokens(blueprint.getTokens());
-	object->connectRepository(this);
 
 	Preprocessor preprocessor(this);
 	preprocessor.process(object);
-	//preprocessor.processScope(object, object->getTokens());
+
+	object->define(KEYWORD_THIS, object);
 
 	addReference(object);
 
@@ -207,6 +205,7 @@ Object* Repository::createObject(const std::string& name, const std::string& fil
 		object = new UserObject(name, filename, type, UserObject::DEFAULTVALUE);
 	}
 
+	object->setRepository(this);
 	return object;
 }
 
@@ -231,11 +230,9 @@ const Reference& Repository::createReference(const std::string& type, const std:
 
 	Object *object = createObject(name, blueprint.Filename(), type);
 	object->setTokens(blueprint.getTokens());
-	object->connectRepository(this);
 
 	Preprocessor preprocessor(this);
 	preprocessor.process(object);
-	//preprocessor.processScope(object, object->getTokens());
 
 	return mMemory->newObject(object);
 }
