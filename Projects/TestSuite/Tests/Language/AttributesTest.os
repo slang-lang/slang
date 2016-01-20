@@ -25,14 +25,6 @@ public namespace stable AttributeTest
 		}
 	}
 
-	public object StaticObject
-	{
-		public number GetOne() static
-		{
-			return number(1);
-		}
-	}
-
 	public object ConstObject
 	{
 		private number mNumber;
@@ -66,16 +58,12 @@ public namespace stable AttributeTest
 			mTest.stableMethod();
 			mTest.unstableMethod();
 
-			//number one = StaticObject.GetOne();
-
 			ConstObject value = new ConstObject();
 			print("value.GetNumber() = " + value.GetNumber());
 			value.SetNumber(2);
 			print("value.GetNumber() = " + value.GetNumber());
 
 			print(getTwo());
-
-			//delete value;
 		}
 
 		public void ~Main()
