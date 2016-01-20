@@ -77,7 +77,7 @@ Script* VirtualMachine::create(const std::string& filename, const ParameterList&
 
 	script->connectRepository(mRepository);
 
-	Analyser analyser(mScope);
+	Analyser analyser;
 	analyser.process(filename);
 
 	StringList libraries = analyser.getLibraryReferences();
@@ -141,7 +141,7 @@ void VirtualMachine::loadLibrary(const std::string& library)
 	OSinfo("loading additional library file '" + library + "'...");
 
 	try {
-		Analyser analyser(mScope);
+		Analyser analyser;
 		analyser.process(buildLibraryPath(library));
 
 		const std::list<std::string>& libraries = analyser.getLibraryReferences();
