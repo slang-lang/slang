@@ -33,7 +33,6 @@ public:
 
 public:
 	void CollectGarbage();
-	Runtime::Object* createObject(const std::string& name, const std::string& filename, const std::string& type);
 
 public:
 	void addBlueprint(const Designtime::BluePrint& object);
@@ -55,6 +54,7 @@ private:
 	typedef std::map<Runtime::Object*, int> ReferenceCountedObjects;
 
 private:
+	Runtime::Object* createObject(const std::string& name, Designtime::BluePrint* blueprint);
 	const Reference& createReference(const Designtime::BluePrint& blueprint, const std::string& type, const std::string& name);
 
 private:

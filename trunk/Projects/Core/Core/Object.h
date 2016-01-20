@@ -47,7 +47,7 @@ class Object;
 
 class Object : public MethodScope,
 			   public ObjectSymbol,
-			   public Designtime::BluePrint
+			   public RTTI
 {
 public:
 	Object();

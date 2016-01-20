@@ -62,8 +62,6 @@ void Script::construct(const ParameterList& params)
 
 void Script::destruct()
 {
-	assert(mObject);
-
 	try {
 		mRepository->removeReference(mObject);
 	}

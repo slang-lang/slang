@@ -24,7 +24,6 @@ namespace Runtime {
 Object::Object()
 : MethodScope(ANONYMOUS_OBJECT, 0),
   ObjectSymbol(ANONYMOUS_OBJECT),
-  Designtime::BluePrint(ANONYMOUS_OBJECT, SYSTEM_LIBRARY),
   mIsAtomicType(true),
   mRepository(0),
   mValue(VALUE_NONE),
@@ -35,7 +34,7 @@ Object::Object()
 Object::Object(const Object& other)
 : MethodScope(other.getName(), 0),
   ObjectSymbol(other.getName()),
-  Designtime::BluePrint(other.Typename(), other.Filename()),
+  RTTI(other.Typename(), other.Filename()),
   mIsAtomicType(other.mIsAtomicType),
   mRepository(other.mRepository),
   mConstructed(other.mConstructed)
@@ -83,7 +82,7 @@ Object::Object(const Object& other)
 Object::Object(const std::string& name, const std::string& filename, const std::string& type, const std::string& value)
 : MethodScope(name, 0),
   ObjectSymbol(name),
-  Designtime::BluePrint(type, filename),
+  RTTI(type, filename),
   mIsAtomicType(true),
   mRepository(0),
   mValue(value),

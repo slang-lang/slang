@@ -21,13 +21,13 @@ namespace ObjectiveScript {
 
 
 Preprocessor::Preprocessor(Repository *repo)
-: mObject(0),
+: mBluePrint(0),
   mRepository(repo),
   mScope(0)
 {
 }
 
-Runtime::Object* Preprocessor::createMember(TokenIterator token)
+Designtime::BluePrint* Preprocessor::createMember(TokenIterator token)
 {
 	std::string name;
 	std::string type;
@@ -60,13 +60,12 @@ Runtime::Object* Preprocessor::createMember(TokenIterator token)
 		throw Utils::Exceptions::Exception("member initialization not allowed during declaration", token->position());
 	}
 
-	Runtime::Object *o = mRepository->createObject(name, mFilename, type);
-	o->setConst(isConst);
-	o->setFinal(isFinal);
-	o->setMember(true);		// every object that is created here is a member object
-	o->setRepository(mRepository);
-	o->setVisibility(Visibility::convert(visibility));
-	return o;
+	Designtime::BluePrint* blue = new Designtime::BluePrint(type, mFilename, name);
+	blue->setConst(isConst);
+	blue->setFinal(isFinal);
+	blue->setMember(true);		// every object that is created here is a member object
+	blue->visibility(Visibility::convert(visibility));
+	return blue;
 }
 
 Runtime::Method* Preprocessor::createMethod(TokenIterator token)
@@ -91,8 +90,8 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token)
 	// look for the identifier token
 	name = (*token).content();
 
-	if ( name == mObject->Typename() ||
-		 name == "~" + mObject->Typename() ) {
+	if ( name == mBluePrint->Typename() ||
+		 name == "~" + mBluePrint->Typename() ) {
 		// this method has the same name as it's containing object, so this has to be a constructor or a destructor,
 		// these 2 methods can never ever be const
 		isConst = false;
@@ -167,7 +166,7 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token)
 
 void Preprocessor::generateObject()
 {
-	assert(mObject);
+	assert(mBluePrint);
 
 	typedef std::list<TokenIterator> TokenList;
 	TokenList visList;
@@ -184,15 +183,14 @@ void Preprocessor::generateObject()
 	// if we have a member declaration or a method declaration
 	for ( TokenList::const_iterator it = visList.begin(); it != visList.end(); ++it ) {
 		if ( isMemberDeclaration((*it)) ) {
-			Runtime::Object *member = createMember((*it));
+			Designtime::BluePrint *member = createMember((*it));
 
-			mObject->define(member->getName(), member);
+			mBluePrint->define(member->getName(), member);
 		}
 		else if ( isMethodDeclaration((*it)) ) {
 			Runtime::Method *method = createMethod((*it));
-			method->setOwner(mObject);
 
-			mObject->defineMethod(method);
+			mBluePrint->defineMethod(method);
 		}
 	}
 }
@@ -310,15 +308,15 @@ ParameterList Preprocessor::parseParameters(TokenIterator &token)
 	return params;
 }
 
-void Preprocessor::process(Runtime::Object *object)
+void Preprocessor::process(Designtime::BluePrint* blueprint)
 {
-	OSdebug("process('" + object->getName() + "')");
+	assert(blueprint);
+	mBluePrint = blueprint;
 
-	mObject = object;
-	mScope = object;
+	OSdebug("process('" + mBluePrint->Typename() + "')");
 
-	mFilename = mObject->Filename();
-	mTokens = mObject->getTokens();
+	mFilename = mBluePrint->Filename();
+	mTokens = mBluePrint->getTokens();
 
 	// build object from tokens
 	generateObject();

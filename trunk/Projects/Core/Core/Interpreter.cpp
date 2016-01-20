@@ -270,6 +270,7 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 				case Symbol::IType::ObjectSymbol:
 					*result = *static_cast<Object*>(symbol);
 					break;
+				case Symbol::IType::BluePrintSymbol:
 				case Symbol::IType::NamespaceSymbol:
 				case Symbol::IType::UnknownSymbol:
 					throw Utils::Exceptions::SyntaxError("unexpected symbol resolved", start->position());
@@ -400,6 +401,7 @@ void Interpreter::process_delete(TokenIterator& token)
 		case Symbol::IType::ObjectSymbol:
 			mRepository->removeReference(static_cast<Object*>(symbol));
 			break;
+		case Symbol::IType::BluePrintSymbol:
 		case Symbol::IType::MethodSymbol:
 		case Symbol::IType::NamespaceSymbol:
 		case Symbol::IType::UnknownSymbol:
@@ -759,6 +761,7 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 			controlflow = static_cast<Method*>(symbol)->execute(params, result);
 			break;
 		case Symbol::IType::AtomicTypeSymbol:
+		case Symbol::IType::BluePrintSymbol:
 		case Symbol::IType::MemberSymbol:
 		case Symbol::IType::ObjectSymbol:
 		case Symbol::IType::NamespaceSymbol:
@@ -1189,6 +1192,7 @@ Symbol* Interpreter::resolve(const std::string& name, bool onlyCurrentScope) con
 			case Symbol::IType::MethodSymbol:
 			case Symbol::IType::NamespaceSymbol:
 				return result;
+			case Symbol::IType::BluePrintSymbol:
 			case Symbol::IType::UnknownSymbol:
 				throw Utils::Exceptions::SyntaxError("cannot directly access locales of method/namespace");
 		}
@@ -1219,6 +1223,7 @@ Symbol* Interpreter::resolveMethod(const std::string& name, const ParameterList&
 				return static_cast<Object*>(result)->resolveMethod(member, params);
 			case Symbol::IType::MethodSymbol:
 				return result;
+			case Symbol::IType::BluePrintSymbol:
 			case Symbol::IType::NamespaceSymbol:
 			case Symbol::IType::UnknownSymbol:
 				throw Utils::Exceptions::SyntaxError("cannot directly access locales of method/namespace");
