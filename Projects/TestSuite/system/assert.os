@@ -3,16 +3,15 @@ public namespace System
 {
 	public object Assert
 	{
-		public void assertmsg(String message const, Bool condition const) static
+		public void assertmsg(string message, bool condition) const
 		{
-			if ( condition == false ) {
+			if ( !condition ) {
 				print(message);
-
 				assert(condition);
 			}
 		}
 
-		public void debug(Bool condition const, String message const) static
+		public void debug(bool condition, string message) const
 		{
 			if ( condition ) {
 				print("success: " & message);
