@@ -262,7 +262,7 @@ bool isFalse(const std::string& value)
 
 bool isFalse(const Object& object)
 {
-	if ( object.getValue() == "0" || object.getValue() == "0.0" || object.getValue() == FALSE ) {
+	if ( !object.isValid() || object.getValue() == "0" || object.getValue() == "0.0" || object.getValue() == FALSE ) {
 		return true;
 	}
 

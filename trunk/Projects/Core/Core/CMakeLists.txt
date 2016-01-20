@@ -3,7 +3,7 @@ INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 ADD_SUBDIRECTORY(Attributes)
 ADD_SUBDIRECTORY(BuildInObjects)
 ADD_SUBDIRECTORY(DesignTime)
-ADD_SUBDIRECTORY(Helpers)
+#ADD_SUBDIRECTORY(Helpers)
 #ADD_SUBDIRECTORY(Interfaces)
 ADD_SUBDIRECTORY(Utils)
 
@@ -68,7 +68,7 @@ SET(HEADERS
 
 SET(DEPENDENCIES
 	CoreUtils
-	CoreHelpers
+#	CoreHelpers
 	CoreDesignTime
 	CoreBuildInObjects
 	CoreAttributes

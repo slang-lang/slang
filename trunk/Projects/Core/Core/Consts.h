@@ -12,7 +12,6 @@
 // Namespace declarations
 
 // Global defines
-#define USE_EXTREME_CONST_CORRECTNESS
 
 
 namespace ObjectiveScript {
@@ -38,6 +37,7 @@ static const char* KEYWORD_NEW = "new";
 static const char* KEYWORD_PRINT = "print";
 static const char* KEYWORD_RETURN = "return";
 static const char* KEYWORD_SWITCH = "switch";
+static const char* KEYWORD_THIS = "this";
 static const char* KEYWORD_THROW = "throw";
 static const char* KEYWORD_TRY = "try";
 static const char* KEYWORD_WHILE = "while";

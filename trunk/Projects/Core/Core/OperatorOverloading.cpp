@@ -12,6 +12,7 @@
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/BuildInObjects/VoidObject.h>
 #include <Core/Utils/Exceptions.h>
+#include "Consts.h"
 #include "Object.h"
 #include "Tools.h"
 
@@ -32,7 +33,7 @@ void operator_assign(Object *base, Object *other)
 
 	std::string source = base->Typename();
 
-	if ( source == "<unknown type>" ) {
+	if ( source == ANONYMOUS_OBJECT ) {
 		// assign directly because our base has not yet been initialized
 		*base = *other;
 	}
@@ -74,17 +75,13 @@ void operator_assign(Object *base, Object *other)
 	}
 	else {
 		// no atomic data type, so we have to look if our assign operator has been overwritten
-
 		ParameterList params;
 		params.push_back(
 			Parameter(other->getName(), other->Typename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
 		);
 
-		if ( base->hasMethod("operator=", params) ) {
-			// our object has an overwritten assign operator, so we execute it
-			Object tmp;
-			base->execute(&tmp, "operator=", params, 0);
-		}
+		Object tmp;
+		base->execute(&tmp, "operator=", params, 0);
 	}
 }
 

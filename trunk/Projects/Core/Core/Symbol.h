@@ -50,7 +50,7 @@ public:
 	const std::string& getName() const;
 	IType::E getType() const;
 
-private:
+protected:
 	std::string mName;
 	IType::E mType;
 };

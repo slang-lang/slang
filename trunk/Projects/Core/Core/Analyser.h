@@ -26,7 +26,7 @@ class IScope;
 class Analyser
 {
 public:
-	Analyser(IScope *scope);
+	Analyser();
 	~Analyser();
 
 public:
@@ -66,7 +66,6 @@ private:
 	InterfaceList mInterfaces;
 	StringList mLibraries;
 	PrototypeList mPrototypes;
-	//IScope *mScope;
 };
 
 
