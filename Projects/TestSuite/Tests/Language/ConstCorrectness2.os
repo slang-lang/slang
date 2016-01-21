@@ -1,27 +1,7 @@
 #!/usr/local/bin/oscript
 
-public namespace ConstCorrectness
+public namespace ConstCorrectness2
 {
-	private object UserObject
-	{
-		private number mValue;
-
-		public void UserObject(number value const)
-		{
-			mValue = value;
-		}
-
-		public number getValue() const
-		{
-			return mValue;
-		}
-
-		public void setValue(number value const) modify
-		{
-			mValue = value;
-		}
-	}
-
 	public object Main
 	{
 		private number mNumber;
@@ -31,10 +11,10 @@ public namespace ConstCorrectness
 			mNumber = 0;
 
 			assert( UpdateMember(1) );
-			assert( UpdateConstMember(2) );
+			assert( UpdateMemberInConstMethod(2) );
 		}
 
-		private bool UpdateConstMember(number value const) const
+		private bool UpdateMemberInConstMethod(number value const) const
 		{
 			// if we reach the end of our method without a ConstCorrectnessViolated exception being raise, something is very wrong
 

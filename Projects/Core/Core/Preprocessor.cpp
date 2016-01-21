@@ -73,7 +73,6 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token)
 	bool isConst = true;		// all methods are const by default (this is the only way the 'modify' attribute makes sense)
 	bool isStructor = false;
 	bool isFinal = false;
-	bool isStatic = false;
 	std::string name;
 	std::string languageFeature;
 	std::string type;
@@ -119,20 +118,11 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token)
 			else if ( token->content() == MODIFIER_MODIFY ) {
 				isConst = false;
 			}
-			else if ( token->content() == MODIFIER_STATIC ) {
-				isStatic = true;
-			}
 		}
 	} while ( token->type() != Token::Type::BRACKET_CURLY_OPEN );
 
 	if ( isStructor && isConst ) {
 		throw Utils::Exceptions::SyntaxError("constructor or destructor cannot be const");
-	}
-	if ( isStructor && isStatic ) {
-		throw Utils::Exceptions::SyntaxError("constructor or destructor cannot be static");
-	}
-	if ( (!isConst || isFinal) && isStatic ) {
-		throw Utils::Exceptions::Exception("static methods can not be const!");
 	}
 
 	// collect all tokens of this method
