@@ -38,6 +38,29 @@ BluePrint::~BluePrint()
 {
 }
 
+void BluePrint::cleanup()
+{
+	for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
+		undefine((*it)->getName(), (*it));
+
+		delete (*it);
+	}
+	mMethods.clear();
+
+	for ( Symbols::iterator it = mSymbols.begin(); it != mSymbols.end(); ++it ) {
+		if ( it->first == KEYWORD_THIS || !it->second ) {
+			continue;
+		}
+
+		if ( it->second->getType() == Symbol::IType::BluePrintSymbol ) {
+			static_cast<BluePrint*>(it->second)->cleanup();
+		}
+
+		delete it->second;
+	}
+	mSymbols.clear();
+}
+
 const std::string& BluePrint::getName() const
 {
 	return mName;

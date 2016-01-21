@@ -39,11 +39,16 @@ public namespace ConstCorrectness
 		{
 			mNumber = 2;	// allowed
 			value = 2;	// throws a ConstCorrectnessViolated exception
+			
+			assert( false );
 		}
 
 		private void ModifyMemberInConstMethod(number value const) const
 		{
 			mNumber = value;	// throws a ConstCorrectnessViolated exception
+			value = 2;	// throws a ConstCorrectnessViolated exception
+			
+			assert( false );
 		}
 	}
 }

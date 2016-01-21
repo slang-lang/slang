@@ -154,6 +154,7 @@ ControlFlow::E Method::execute(const ParameterList& params, Object *result)
 			} break;
 			case Parameter::AccessMode::ByValue: {
 				Object *object = mRepository->createInstance(param.type(), param.name());
+
 				object->setValue(param.value());	// in case we have a default value
 				if ( param.pointer() ) {
 					*object = Object(*param.pointer());
@@ -170,9 +171,6 @@ ControlFlow::E Method::execute(const ParameterList& params, Object *result)
 	//result->setValue(/*get default value for return type*/);
 
 	ControlFlow::E controlflow = interpreter.execute(result);
-
-	// let the garbage collector do it's magic
-	garbageCollector();
 
 	// detect unnatural control flow
 	switch ( controlflow ) {

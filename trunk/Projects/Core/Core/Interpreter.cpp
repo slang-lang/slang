@@ -398,9 +398,11 @@ void Interpreter::process_delete(TokenIterator& token)
 	switch ( symbol->getType() ) {
 		case Symbol::IType::AtomicTypeSymbol:
 		case Symbol::IType::MemberSymbol:
-		case Symbol::IType::ObjectSymbol:
-			mRepository->removeReference(static_cast<Object*>(symbol));
-			break;
+		case Symbol::IType::ObjectSymbol: {
+			Object *object = static_cast<Object*>(symbol);
+
+			*object = Object(object->getName(), object->Filename(), object->Typename(), VALUE_NONE);
+		} break;
 		case Symbol::IType::BluePrintSymbol:
 		case Symbol::IType::MethodSymbol:
 		case Symbol::IType::NamespaceSymbol:
@@ -546,7 +548,7 @@ void Interpreter::process_identifier(TokenIterator& token, Token::Type::E termin
 	if ( symbol->isConst() ) {
 		throw Utils::Exceptions::ConstCorrectnessViolated("tried to modify const symbol '" + identifier + "'", token->position());
 	}
-	if ( this->isConst() && symbol->isMember() ) {
+	if ( symbol->isMember() && this->isConst() ) {
 		throw Utils::Exceptions::ConstCorrectnessViolated("tried to modify member '" + identifier + "' in const method '" + getScopeName() + "'", token->position());
 	}
 
@@ -828,8 +830,6 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 	object->Constructor(params);
 
 	*result = *object;
-
-	mRepository->removeReference(object);
 }
 
 // syntax:
@@ -1102,6 +1102,7 @@ void Interpreter::process_type(TokenIterator& token)
 			token = end;
 		}
 
+		//mRepository->addReference(object);
 		define(name, object);
 
 		if ( token->type() != Token::Type::SEMICOLON ) {
