@@ -142,6 +142,16 @@ void Object::operator= (const Object& other)
 
 void Object::Constructor(const ParameterList& params)
 {
+	// hack to initialize atomic types
+	if ( isAtomicType() && !params.empty() ) {
+		if ( params.size() != 1 ) {
+			throw Utils::Exceptions::ParameterCountMissmatch("atomic types only support one constructor parameter");
+		}
+
+		mValue = params.front().value();
+		return;
+	}
+
 	if ( mConstructed ) {
 		throw Utils::Exceptions::Exception("can not construct object '" + getName() + "' multiple times");
 	}

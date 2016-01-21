@@ -937,10 +937,28 @@ void Interpreter::process_throw(TokenIterator& token, Object *result)
 {
 	//System::Print(KEYWORD_THROW, token->position());
 
-(void)token;
+	TokenIterator begin = token;
+	TokenIterator semicolon = findNext(token, Token::Type::SEMICOLON);
+
+	// collect tokens
+	TokenList throwTokens;
+	while ( begin != semicolon ) {
+		throwTokens.push_back((*begin));
+		begin++;
+	}
+
+	pushTokens(throwTokens);
+	{
+		TokenIterator tmpBegin = getTokens().begin();
+		TokenIterator tmpEnd = getTokens().end();
+
+		process(result, tmpBegin, tmpEnd);
+	}
+	popTokens();
+
 	mControlFlow = ControlFlow::Throw;
 
-	expression(result, token);
+	token = semicolon;
 }
 
 // syntax:
@@ -1051,7 +1069,6 @@ void Interpreter::process_type(TokenIterator& token)
 {
 	bool isConst = false;
 	bool isFinal = false;
-	bool isStatic = false;
 
 	std::string name;
 	std::string prototype;
@@ -1074,12 +1091,11 @@ void Interpreter::process_type(TokenIterator& token)
 	token++;
 
 	std::string tmpStr = token->content();
-	if ( tmpStr == MODIFIER_CONST || tmpStr == MODIFIER_STATIC ) {
+	if ( tmpStr == MODIFIER_CONST || tmpStr == MODIFIER_FINAL ) {
 		token++;
 
 		if ( tmpStr == MODIFIER_CONST ) { isConst = true; }
 		else if ( tmpStr == MODIFIER_FINAL ) { isFinal = true; }
-		else if ( tmpStr == MODIFIER_STATIC ) { isStatic = true; }
 	}
 
 	TokenIterator assign = getTokens().end();
@@ -1091,6 +1107,8 @@ void Interpreter::process_type(TokenIterator& token)
 	if ( !object ) {
 		object = mRepository->createInstance(type, name, prototype);
 
+		define(name, object);
+
 		if ( isConst ) object->setConst(true);
 		if ( isFinal ) object->setFinal(true);
 
@@ -1101,9 +1119,6 @@ void Interpreter::process_type(TokenIterator& token)
 
 			token = end;
 		}
-
-		//mRepository->addReference(object);
-		define(name, object);
 
 		if ( token->type() != Token::Type::SEMICOLON ) {
 			throw Utils::Exceptions::SyntaxError("';' expected but '" + token->content() + "' found", token->position());

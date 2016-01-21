@@ -25,8 +25,9 @@ public namespace ExceptionTest
 			assert( TestCase1() );
 			assert( TestCase2() );
 			assert( TestCase3() );
-			assert( TestCase4() );	// this is not supported as long as we don't define methods in object scope
+			assert( TestCase4() );
 			assert( TestCase5() );
+			//assert( TestCase6() );	// not supported atm
 		}
 
 		private bool TestCase1()
@@ -133,6 +134,20 @@ public namespace ExceptionTest
 			}
 			finally {
 				print("outter finally");
+			}
+
+			return true;
+		}
+
+		private bool TestCase6()
+		{
+			print("TestCase6()");
+
+			try {
+				throw new number(1);
+			}
+			catch ( number one ) {
+				print("one = " + one);
 			}
 
 			return true;

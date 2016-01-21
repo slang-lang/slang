@@ -55,7 +55,6 @@ static const char* MODIFIER_CONST = "const";
 static const char* MODIFIER_FINAL = "final";
 static const char* MODIFIER_MODIFY = "modify";
 static const char* MODIFIER_SEALED = "sealed";
-static const char* MODIFIER_STATIC = "static";
 
 // Reserved words
 static const char* RESERVED_WORD_BY_REFERENCE = "ref";

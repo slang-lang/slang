@@ -1,6 +1,6 @@
 #!/usr/local/bin/oscript
 
-public namespace ConstCorrectness
+public namespace ConstCorrectness3
 {
 	private object UserObject
 	{

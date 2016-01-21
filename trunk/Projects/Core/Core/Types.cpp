@@ -80,7 +80,6 @@ StringList provideModifiers()
 	modifiers.push_back(MODIFIER_CONST);
 	modifiers.push_back(MODIFIER_FINAL);
 	modifiers.push_back(MODIFIER_MODIFY);
-	modifiers.push_back(MODIFIER_STATIC);
 
 	return modifiers;
 }
