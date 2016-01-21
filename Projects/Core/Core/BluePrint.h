@@ -42,6 +42,9 @@ public:
 	virtual ~BluePrint();
 
 public:
+	void cleanup();
+
+public:
 	const std::string& getName() const;
 
 	const TokenList& getTokens() const;

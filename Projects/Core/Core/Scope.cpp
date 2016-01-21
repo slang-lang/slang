@@ -76,6 +76,9 @@ void LocalScope::undefine(const std::string& name, Symbol *symbol)
 	if ( it != mSymbols.end() ) {
 		mSymbols.erase(it);
 	}
+	else if ( mParent ) {
+		return mParent->undefine(name, symbol);
+	}
 }
 
 

@@ -152,16 +152,16 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token)
 	}
 
 	// create a new method with the corresponding return value
-	Runtime::Method *m = new Runtime::Method(mScope, name, type);
-	m->setConst(isConst);
-	m->setFinal(isFinal);
-	m->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
-	m->setRepository(mRepository);
-	m->setSignature(params);
-	m->setTokens(tokens);
-	m->visibility(Visibility::convert(visibility));
+	Runtime::Method *method = new Runtime::Method(mScope, name, type);
+	method->setConst(isConst);
+	method->setFinal(isFinal);
+	method->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
+	method->setRepository(mRepository);
+	method->setSignature(params);
+	method->setTokens(tokens);
+	method->visibility(Visibility::convert(visibility));
 
-	return m;
+	return method;
 }
 
 void Preprocessor::generateObject()
@@ -320,6 +320,8 @@ void Preprocessor::process(Designtime::BluePrint* blueprint)
 
 	// build object from tokens
 	generateObject();
+
+	mBluePrint = 0;
 }
 
 

@@ -7,6 +7,7 @@
 #include <string>
 
 // Project includes
+#include <Core/Consts.h>
 
 // Forward declarations
 
@@ -20,8 +21,8 @@ class RTTI
 {
 public:
 	RTTI()
-	: mFilename("<unknown file>"),
-	  mTypename("<unknown type>")
+	: mFilename(SYSTEM_LIBRARY),
+	  mTypename(ANONYMOUS_OBJECT)
 	{ }
 	RTTI(const std::string& type, const std::string& filename)
 	: mFilename(filename),

@@ -39,32 +39,30 @@ Object::Object(const Object& other)
   mRepository(other.mRepository),
   mConstructed(other.mConstructed)
 {
-	setValue(other.getValue());
+	mName = other.getName();
 
 	setConst(other.isConst());
 	setFinal(other.isFinal());
+	setLanguageFeatureState(other.languageFeatureState());
 	setMember(other.isMember());
+	setValue(other.getValue());
+
+	garbageCollector();
 
 	// register this
 	define(KEYWORD_THIS, this);
 
 	// register new members
 	for ( Symbols::const_iterator it = other.mSymbols.begin(); it != other.mSymbols.end(); ++it ) {
-		if ( it->first == KEYWORD_THIS || !it->second || it->second->getType() != Symbol::IType::ObjectSymbol ) {
+		if ( it->first == KEYWORD_THIS ) {
 			continue;
 		}
 
-		Object *symbol = static_cast<Object*>(it->second);
+		if ( it->second && it->second->getType() == Symbol::IType::ObjectSymbol ) {
+			mRepository->addReference(static_cast<Object*>(it->second));
+		}
 
-		// create object instance
-		Object *object = mRepository->createInstance(symbol->Typename(), symbol->getName());
-
-		// and fill it with life
-		*object = *symbol;
-
-		mRepository->removeReference(symbol);
-
-		define(object->getName(), object);
+		define(it->first, it->second);
 	}
 
 	// register new methods
@@ -72,7 +70,6 @@ Object::Object(const Object& other)
 		Method *method = new Method(this, (*it)->getName(), (*it)->getTypeName());
 		*method = *(*it);
 
-		method->define(KEYWORD_THIS, this);
 		method->setOwner(this);
 
 		defineMethod(method);
@@ -106,14 +103,12 @@ void Object::operator= (const Object& other)
 		}
 
 		mFilename = other.mFilename;
-		mName = other.mName;
 		mTypename = other.mTypename;
-
-		setValue(other.getValue());
 
 		//setConst(other.isConst());
 		//setFinal(other.isFinal());
 		//setMember(other.isMember());
+		setValue(other.getValue());
 
 		garbageCollector();
 
@@ -126,6 +121,10 @@ void Object::operator= (const Object& other)
 				continue;
 			}
 
+			if ( it->second && it->second->getType() == Symbol::IType::ObjectSymbol ) {
+				mRepository->addReference(static_cast<Object*>(it->second));
+			}
+
 			define(it->first, it->second);
 		}
 
@@ -134,7 +133,6 @@ void Object::operator= (const Object& other)
 			Method *method = new Method(this, (*it)->getName(), (*it)->getTypeName());
 			*method = *(*it);
 
-			method->define(KEYWORD_THIS, this);
 			method->setOwner(this);
 
 			defineMethod(method);
@@ -226,9 +224,12 @@ void Object::garbageCollector()
 	}
 	mMethods.clear();
 
-	for ( Symbols::reverse_iterator it = mSymbols.rbegin(); it != mSymbols.rend(); ++it ) {
-		if ( it->first != KEYWORD_THIS &&
-			 it->second && it->second->getType() == Symbol::IType::ObjectSymbol ) {
+	for ( Symbols::iterator it = mSymbols.begin(); it != mSymbols.end(); ++it ) {
+		if ( it->first == KEYWORD_THIS ) {
+			continue;
+		}
+
+		if ( it->second && it->second->getType() == Symbol::IType::ObjectSymbol ) {
 			// members are objects, so they will get cleaned up by our repository
 			mRepository->removeReference(static_cast<Object*>(it->second));
 		}

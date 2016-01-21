@@ -45,6 +45,9 @@ Repository::Repository(Memory *m)
 
 Repository::~Repository()
 {
+	for ( BluePrints::iterator it = mBluePrints.begin(); it != mBluePrints.end(); ++it ) {
+		it->second.cleanup();
+	}
 	mBluePrints.clear();
 
 	for ( ReferenceCountedObjects::iterator it = mInstances.begin(); it != mInstances.end(); ++it ) {
@@ -67,19 +70,14 @@ void Repository::addBlueprint(const Designtime::BluePrint& blueprint)
 		throw Utils::Exceptions::Exception("duplicate object '" + blueprint.Typename() + "' added to repository");
 	}
 
-/*
-	Preprocessor preprocessor(this);
-	preprocessor.process(&blueprint);
-*/
-
 	mBluePrints.insert(std::make_pair(blueprint.Typename(), blueprint));
 
-	BluePrints::iterator objIt = mBluePrints.find(blueprint.Typename());
+	BluePrints::iterator blueIt = mBluePrints.find(blueprint.Typename());
 
 	// loop over all tokens of a blueprint object
 	// and retype all identifier tokens with object names as values with type
 	bool replaced = false;
-	TokenList tokens = objIt->second.getTokens();
+	TokenList tokens = blueIt->second.getTokens();
 
 	for ( TokenList::iterator tokenIt = tokens.begin(); tokenIt != tokens.end(); ++tokenIt ) {
 		// we found an identifier token
@@ -94,8 +92,11 @@ void Repository::addBlueprint(const Designtime::BluePrint& blueprint)
 	}
 
 	if ( replaced ) {
-		objIt->second.setTokens(tokens);
+		blueIt->second.setTokens(tokens);
 	}
+
+	Preprocessor preprocessor(this);
+	preprocessor.process(&blueIt->second);
 }
 
 void Repository::addPrototype(const Prototype& prototype)
@@ -218,7 +219,8 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 				continue;
 			}
 
-			Symbol *symbol = createObject(it->first, static_cast<Designtime::BluePrint*>(it->second));
+			Designtime::BluePrint *blue = static_cast<Designtime::BluePrint*>(it->second);
+			Symbol *symbol = createInstance(blue->Typename(), blue->getName(), "");
 
 			object->define(symbol->getName(), symbol);
 		}
@@ -227,6 +229,7 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 		for ( MethodScope::MethodCollection::const_iterator it = methods.begin(); it != methods.end(); ++it ) {
 			Runtime::Method* method = new Runtime::Method(object, (*it)->getName(), (*it)->getTypeName());
 			*method = *(*it);
+			method->setOwner(object);
 
 			object->defineMethod(method);
 		}
