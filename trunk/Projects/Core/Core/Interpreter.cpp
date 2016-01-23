@@ -77,7 +77,7 @@ void Interpreter::expression(Object *result, TokenIterator& start)
 		if ( op == Token::Type::AND && isTrue(*result) ) {
 			*result = BoolObject(isTrue(*result) && isTrue(v2));
 		}
-		else if ( op == Token::Type::OR && isFalse(*result) ) {
+		else if ( op == Token::Type::OR && !isTrue(*result) ) {
 			*result = BoolObject(isTrue(*result) || isTrue(v2));
 		}
 	}
@@ -366,21 +366,15 @@ void Interpreter::process_assert(TokenIterator& token)
 
 // syntax:
 // break;
-void Interpreter::process_break(TokenIterator& token)
+void Interpreter::process_break(TokenIterator& /*token*/)
 {
-	//System::Print(KEYWORD_BREAK, token->position());
-
-(void)token;
 	mControlFlow = ControlFlow::Break;
 }
 
 // syntax:
 // continue;
-void Interpreter::process_continue(TokenIterator& token)
+void Interpreter::process_continue(TokenIterator& /*token*/)
 {
-	//System::Print(KEYWORD_CONTINUE, token->position());
-
-(void)token;
 	mControlFlow = ControlFlow::Continue;
 }
 
@@ -470,7 +464,7 @@ void Interpreter::process_for(TokenIterator& token, Object *result)
 		Object condition;
 		expression(&condition, condBegin);
 
-		if ( isFalse(condition) ) {
+		if ( !isTrue(condition) ) {
 			break;
 		}
 		// }
@@ -479,14 +473,14 @@ void Interpreter::process_for(TokenIterator& token, Object *result)
 		// {
 		mControlFlow = ControlFlow::Normal;
 
-		pushTokens(loopTokens);
-		{
-			TokenIterator tmpBegin = getTokens().begin();
-			TokenIterator tmpEnd = getTokens().end();
+		Interpreter interpreter(this, getScopeName());
+		interpreter.setConst(isConst());
+		interpreter.setFinal(isFinal());
+		interpreter.setLanguageFeatureState(languageFeatureState());
+		interpreter.setRepository(mRepository);
+		interpreter.setTokens(loopTokens);
 
-			process(result, tmpBegin, tmpEnd);
-		}
-		popTokens();
+		mControlFlow = interpreter.execute(result);
 
 		switch ( mControlFlow ) {
 			case ControlFlow::Break: mControlFlow = ControlFlow::Normal; return;
@@ -642,24 +636,24 @@ void Interpreter::process_if(TokenIterator& token, Object *result)
 	expression(&condition, condBegin);
 
 	if ( isTrue(condition) ) {
-		pushTokens(ifTokens);
-		{
-			TokenIterator tmpBegin = getTokens().begin();
-			TokenIterator tmpEnd = getTokens().end();
+		Interpreter interpreter(this, getScopeName());
+		interpreter.setConst(isConst());
+		interpreter.setFinal(isFinal());
+		interpreter.setLanguageFeatureState(languageFeatureState());
+		interpreter.setRepository(mRepository);
+		interpreter.setTokens(ifTokens);
 
-			process(result, tmpBegin, tmpEnd);
-		}
-		popTokens();
+		mControlFlow = interpreter.execute(result);
 	}
 	else if ( !elseTokens.empty() ) {
-		pushTokens(elseTokens);
-		{
-			TokenIterator tmpBegin = getTokens().begin();
-			TokenIterator tmpEnd = getTokens().end();
+		Interpreter interpreter(this, getScopeName());
+		interpreter.setConst(isConst());
+		interpreter.setFinal(isFinal());
+		interpreter.setLanguageFeatureState(languageFeatureState());
+		interpreter.setRepository(mRepository);
+		interpreter.setTokens(elseTokens);
 
-			process(result, tmpBegin, tmpEnd);
-		}
-		popTokens();
+		mControlFlow = interpreter.execute(result);
 	}
 }
 
@@ -1019,14 +1013,14 @@ void Interpreter::process_try(TokenIterator& token, Object *result)
 				catchBegin++;
 			}
 
-			pushTokens(catchTokens);
-			{
-				TokenIterator tmpBegin = getTokens().begin();
-				TokenIterator tmpEnd = getTokens().end();
+			Interpreter interpreter(this, getScopeName());
+			interpreter.setConst(isConst());
+			interpreter.setFinal(isFinal());
+			interpreter.setLanguageFeatureState(languageFeatureState());
+			interpreter.setRepository(mRepository);
+			interpreter.setTokens(catchTokens);
 
-				process(result, tmpBegin, tmpEnd);
-			}
-			popTokens();
+			mControlFlow = interpreter.execute(result);
 		}
 	}
 	else {
@@ -1054,14 +1048,14 @@ void Interpreter::process_try(TokenIterator& token, Object *result)
 			finallyBegin++;
 		}
 
-		pushTokens(finallyTokens);
-		{
-			TokenIterator tmpBegin = getTokens().begin();
-			TokenIterator tmpEnd = getTokens().end();
+		Interpreter interpreter(this, getScopeName());
+		interpreter.setConst(isConst());
+		interpreter.setFinal(isFinal());
+		interpreter.setLanguageFeatureState(languageFeatureState());
+		interpreter.setRepository(mRepository);
+		interpreter.setTokens(finallyTokens);
 
-			process(result, tmpBegin, tmpEnd);
-		}
-		popTokens();
+		mControlFlow = interpreter.execute(result);
 	}
 }
 
@@ -1104,28 +1098,28 @@ void Interpreter::process_type(TokenIterator& token)
 	}
 
 	Object *object = static_cast<Object*>(resolve(name, true));
-	if ( !object ) {
-		object = mRepository->createInstance(type, name, prototype);
-
-		define(name, object);
-
-		if ( isConst ) object->setConst(true);
-		if ( isFinal ) object->setFinal(true);
-
-		if ( assign != getTokens().end() ) {
-			TokenIterator end = findNext(assign, Token::Type::SEMICOLON);
-
-			expression(object, assign);
-
-			token = end;
-		}
-
-		if ( token->type() != Token::Type::SEMICOLON ) {
-			throw Utils::Exceptions::SyntaxError("';' expected but '" + token->content() + "' found", token->position());
-		}
-	}
-	else {
+	if ( object ) {
 		throw Utils::Exceptions::DuplicateIdentifer("process_type: " + name, token->position());
+	}
+
+	object = mRepository->createInstance(type, name, prototype);
+	*object = Object(object->getName(), object->Filename(), object->Typename(), VALUE_NONE);
+
+	define(name, object);
+
+	if ( isConst ) object->setConst(true);
+	if ( isFinal ) object->setFinal(true);
+
+	if ( assign != getTokens().end() ) {
+		TokenIterator end = findNext(assign, Token::Type::SEMICOLON);
+
+		expression(object, assign);
+
+		token = end;
+	}
+
+	if ( token->type() != Token::Type::SEMICOLON ) {
+		throw Utils::Exceptions::SyntaxError("';' expected but '" + token->content() + "' found", token->position());
 	}
 }
 
@@ -1163,18 +1157,18 @@ void Interpreter::process_while(TokenIterator& token, Object *result)
 		Object condition;
 		expression(&condition, tmp);
 
-		if ( isFalse(condition) ) {
+		if ( !isTrue(condition) ) {
 			break;
 		}
 
-		pushTokens(statementTokens);
-		{
-			TokenIterator tmpBegin = getTokens().begin();
-			TokenIterator tmpEnd = getTokens().end();
+		Interpreter interpreter(this, getScopeName());
+		interpreter.setConst(isConst());
+		interpreter.setFinal(isFinal());
+		interpreter.setLanguageFeatureState(languageFeatureState());
+		interpreter.setRepository(mRepository);
+		interpreter.setTokens(statementTokens);
 
-			process(result, tmpBegin, tmpEnd);
-		}
-		popTokens();
+		mControlFlow = interpreter.execute(result);
 
 		switch ( mControlFlow ) {
 			case ControlFlow::Break: mControlFlow = ControlFlow::Normal; return;

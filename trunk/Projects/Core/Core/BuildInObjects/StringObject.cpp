@@ -67,6 +67,11 @@ std::string StringObject::getValue() const
 	return mValue;
 }
 
+bool StringObject::isValid() const
+{
+	return !mValue.empty();
+}
+
 void StringObject::operator_assign(BoolObject *other)
 {
 	mValue = other->getValue();
