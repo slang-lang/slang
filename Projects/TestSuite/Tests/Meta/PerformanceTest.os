@@ -9,7 +9,7 @@ public namespace PerformanceTest
 			print("Starting performance test...");
 
 			number count = 0;
-			number upperbound = 10000;
+			number upperbound = 100000;
 
 			while ( count < upperbound ) {
 				//print("count = " + count);

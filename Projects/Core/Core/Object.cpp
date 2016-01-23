@@ -264,6 +264,11 @@ bool Object::isAtomicType() const
 
 bool Object::isValid() const
 {
+	if ( !mIsAtomicType ) {
+		return mConstructed;
+	}
+
+	//return getValue() == "0" || getValue() == "0.0" || getValue() == FALSE;
 	return mConstructed;
 }
 
@@ -370,7 +375,7 @@ void Object::setValue(const std::string& value)
 
 std::string Object::ToString() const
 {
-	std::string result = getName() + " " + Typename() + " = " + getValue();
+	std::string result = getName() + /*" " + Typename()*/ + " = " + getValue();
 
 	if ( !isAtomicType() ) {
 		result += " { ";

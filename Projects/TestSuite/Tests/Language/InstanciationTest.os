@@ -40,6 +40,8 @@ public namespace InstanciationTest
 			OuterObject.InnerObject inner = new OuterObject.InnerObject();
 			print("inner.mValue = " + inner.mValue);
 */
+
+			return true;
 		}
 	}
 }

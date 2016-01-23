@@ -79,7 +79,7 @@ std::string BoolObject::getValue() const
 
 bool BoolObject::isValid() const
 {
-	return true;
+	return mValue;
 }
 
 void BoolObject::operator_assign(BoolObject *other)

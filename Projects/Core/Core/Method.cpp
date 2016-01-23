@@ -113,15 +113,15 @@ ControlFlow::E Method::execute(const ParameterList& params, Object *result)
 	}
 
 	switch ( languageFeatureState() ) {
-		case LanguageFeatureState::Deprecated: OSwarn("method '" + getName() + "' is marked as deprecated!"); break;
-		case LanguageFeatureState::NotImplemented: OSerror("method '" + getName() + "' is marked as not implemented!"); throw Utils::Exceptions::NotImplemented(getName()); break;
+		case LanguageFeatureState::Deprecated: OSwarn("method '" + getName() + "' is marked as deprecated"); break;
+		case LanguageFeatureState::NotImplemented: OSerror("method '" + getName() + "' is marked as not implemented"); throw Utils::Exceptions::NotImplemented(getName()); break;
 		case LanguageFeatureState::Stable: /* this is the normal language feature state, so there is no need to log anything here */ break;
-		case LanguageFeatureState::Unknown: OSerror("unknown language feature state set for method '" + getName() + "'!"); break;
-		case LanguageFeatureState::Unstable: OSwarn("method '" + getName() + "' is marked as unstable!"); break;
+		case LanguageFeatureState::Unknown: OSerror("unknown language feature state set for method '" + getName() + "'"); break;
+		case LanguageFeatureState::Unstable: OSwarn("method '" + getName() + "' is marked as unstable"); break;
 	}
 
 	Interpreter interpreter(this, getName());
-	interpreter.setConst(isConst() || mOwner->isConst());
+	interpreter.setConst(isConst() /*|| mOwner->isConst()*/);
 	interpreter.setFinal(isFinal());
 	interpreter.setLanguageFeatureState(languageFeatureState());
 	interpreter.setRepository(mRepository);

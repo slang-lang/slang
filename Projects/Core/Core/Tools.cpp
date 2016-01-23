@@ -255,29 +255,19 @@ bool isBooleanConst(const std::string& value)
 	return ( value == FALSE || value == TRUE );
 }
 
-bool isFalse(const std::string& value)
-{
-	return ( value == FALSE );
-}
-
-bool isFalse(const Runtime::Object& object)
-{
-	if ( !object.isValid() || object.getValue() == "0" || object.getValue() == "0.0" || object.getValue() == FALSE ) {
-		return true;
-	}
-
-	// everything that's not false has to be true
-	return false;
-}
-
 bool isTrue(const std::string& value)
 {
-	return !isFalse(value);
+	return ( value != FALSE && value != "0" && value != "0.0" );
 }
 
 bool isTrue(const Runtime::Object& object)
 {
-	return !isFalse(object);
+	if ( !object.isValid() || object.getValue() == "0" || object.getValue() == "0.0" || object.getValue() == FALSE ) {
+		return false;
+	}
+
+	// everything that's not false has to be true
+	return true;
 }
 
 
