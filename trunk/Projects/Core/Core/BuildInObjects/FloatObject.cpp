@@ -263,6 +263,21 @@ void FloatObject::operator_subtract(Object *other)
 	}
 }
 
+void FloatObject::operator_unary_decrement()
+{
+	mValue--;
+}
+
+void FloatObject::operator_unary_increment()
+{
+	mValue++;
+}
+
+void FloatObject::operator_unary_not()
+{
+	mValue = !mValue;
+}
+
 void FloatObject::setNativeValue(float value)
 {
 	mValue = value;

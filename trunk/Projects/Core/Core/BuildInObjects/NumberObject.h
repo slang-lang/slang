@@ -65,6 +65,10 @@ public:	// Operators
 	virtual void operator_subtract(NumberObject *other);
 	virtual void operator_subtract(Object *other);
 
+	virtual void operator_unary_decrement();
+	virtual void operator_unary_increment();
+	virtual void operator_unary_not();
+
 public: // Values
 	virtual double getNativeValue() const;
 	virtual void setNativeValue(double value);

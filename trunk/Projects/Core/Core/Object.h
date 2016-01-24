@@ -79,8 +79,8 @@ public:	// Operators
 	virtual void operator_multiply(Object *other);
 	virtual void operator_plus(Object *other);
 	virtual void operator_subtract(Object *other);
-	virtual bool operator_unary_decrement();
-	virtual bool operator_unary_increment();
+	virtual void operator_unary_decrement();
+	virtual void operator_unary_increment();
 	virtual void operator_unary_not();
 
 public:	// Value

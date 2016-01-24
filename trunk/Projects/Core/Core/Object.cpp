@@ -370,12 +370,12 @@ void Object::operator_subtract(Object *other)
 	throw Utils::Exceptions::NotImplemented("operator-: conversion from " + target + " to " + Typename() + " not supported");
 }
 
-bool Object::operator_unary_decrement()
+void Object::operator_unary_decrement()
 {
 	throw Utils::Exceptions::NotImplemented("operator--: for " + Typename() + " not supported");
 }
 
-bool Object::operator_unary_increment()
+void Object::operator_unary_increment()
 {
 	throw Utils::Exceptions::NotImplemented("operator++: for " + Typename() + " not supported");
 }

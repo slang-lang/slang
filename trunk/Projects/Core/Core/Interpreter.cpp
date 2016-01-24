@@ -243,10 +243,9 @@ void Interpreter::parseInfixPostfix(Object *result, TokenIterator& start)
 	if ( op == Token::Type::NOT ) {
 		start++;
 
-		parseTerm(result, start);
-
 		operator_unary_not(result);
 	}
+/*
 	else if ( op == Token::Type::MATH_SUBTRACT ) {
 		start++;
 
@@ -254,15 +253,19 @@ void Interpreter::parseInfixPostfix(Object *result, TokenIterator& start)
 
 		//operator_unary_minus(result, result);
 	}
+*/
+/*
 	else if ( op == Token::Type::TYPE ) {
 		// type cast
 
 		start++;
 	}
+*/
 	else {
 		parseTerm(result, start);
 	}
 
+	op = start->type();
 	if ( op == Token::Type::DECREMENT ) {
 		operator_unary_decrement(result);
 
