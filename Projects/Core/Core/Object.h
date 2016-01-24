@@ -67,6 +67,7 @@ public:	// Setup
 public:	// Operators
 	virtual void operator_assign(Object *other);
 	virtual void operator_bitand(Object *other);
+	virtual void operator_bitcomplement(Object *other);
 	virtual void operator_bitor(Object *other);
 	virtual void operator_divide(Object *other);
 	virtual bool operator_equal(Object *other);
@@ -78,6 +79,9 @@ public:	// Operators
 	virtual void operator_multiply(Object *other);
 	virtual void operator_plus(Object *other);
 	virtual void operator_subtract(Object *other);
+	virtual bool operator_unary_decrement();
+	virtual bool operator_unary_increment();
+	virtual void operator_unary_not();
 
 public:	// Value
 	void overrideType(const std::string& type) {

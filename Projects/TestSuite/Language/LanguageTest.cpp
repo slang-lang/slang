@@ -42,9 +42,11 @@ void LanguageTest::process()
 	TEST(testFinal);
 	TEST(testFor);
 	TEST(testIf);
+	TEST(testInfixOperator);
 	TEST(testMethodOverloading);
 	TEST(testObjectReference);
 	TEST(testParameters);
+	TEST(testPostfixOperator);
 	TEST(testPrint);
 	//TEST(testSanityChecker);			// temporary disabled
 	TEST(testScope);
@@ -231,6 +233,21 @@ void LanguageTest::testIf()
 	}
 }
 
+void LanguageTest::testInfixOperator()
+{
+	try {
+		VirtualMachine vm;
+
+		vm.create("Tests/Language/InfixOperator.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// unexpected exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
 void LanguageTest::testInterfaces()
 {
 	try {
@@ -312,6 +329,20 @@ void LanguageTest::testParameters()
 	}
 }
 
+void LanguageTest::testPostfixOperator()
+{
+	try {
+		VirtualMachine vm;
+
+		vm.create("Tests/Language/PostfixOperator.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// unexpected exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
 void LanguageTest::testPrint()
 {
 	try {

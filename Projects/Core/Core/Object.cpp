@@ -286,6 +286,13 @@ void Object::operator_bitand(Object *other)
 	throw Utils::Exceptions::NotImplemented("operator&: conversion from " + target + " to " + Typename() + " not supported");
 }
 
+void Object::operator_bitcomplement(Object *other)
+{
+	std::string target = other->Typename();
+
+	throw Utils::Exceptions::NotImplemented("operator~: conversion from " + target + " to " + Typename() + " not supported");
+}
+
 void Object::operator_bitor(Object *other)
 {
 	std::string target = other->Typename();
@@ -361,6 +368,21 @@ void Object::operator_subtract(Object *other)
 	std::string target = other->Typename();
 
 	throw Utils::Exceptions::NotImplemented("operator-: conversion from " + target + " to " + Typename() + " not supported");
+}
+
+bool Object::operator_unary_decrement()
+{
+	throw Utils::Exceptions::NotImplemented("operator--: for " + Typename() + " not supported");
+}
+
+bool Object::operator_unary_increment()
+{
+	throw Utils::Exceptions::NotImplemented("operator++: for " + Typename() + " not supported");
+}
+
+void Object::operator_unary_not()
+{
+	throw Utils::Exceptions::NotImplemented("operator unary !: for " + Typename() + " not supported");
 }
 
 void Object::setRepository(Repository *repository)

@@ -149,8 +149,9 @@ void Interpreter::parseExpression(Object *result, TokenIterator& start)
 	for ( ; ; ) {
 		Token::Type::E op = start->type();
 		if ( op != Token::Type::BITAND &&
+			 op != Token::Type::BITCOMPLEMENT &&
 			 op != Token::Type::BITOR &&
-			 op != Token::Type::MATH_ADD &&
+			 op != Token::Type::MATH_ADDITION &&
 			 op != Token::Type::MATH_SUBTRACT ) {
 			return;
 		}
@@ -163,10 +164,13 @@ void Interpreter::parseExpression(Object *result, TokenIterator& start)
 		if ( op == Token::Type::BITAND ) {
 			operator_bitand(result, &v2);
 		}
+		else if ( op == Token::Type::BITCOMPLEMENT ) {
+			operator_bitcomplement(result, &v2);
+		}
 		else if ( op == Token::Type::BITOR ) {
 			operator_bitor(result, &v2);
 		}
-		else if ( op == Token::Type::MATH_ADD ) {
+		else if ( op == Token::Type::MATH_ADDITION ) {
 			operator_plus(result, &v2);
 		}
 		else if ( op == Token::Type::MATH_SUBTRACT ) {
@@ -189,7 +193,8 @@ void Interpreter::parseFactors(Object *result, TokenIterator& start)
 		start++;	// consume operator token
 	}
 	else {
-		parseTerm(result, start);
+		//parseTerm(result, start);
+		parseInfixPostfix(result, start);
 	}
 
 	for ( ; ; ) {
@@ -214,7 +219,8 @@ void Interpreter::parseFactors(Object *result, TokenIterator& start)
 			start++;	// consume operator token
 		}
 		else {
-			parseTerm(&v2, start);
+			//parseTerm(&v2, start);
+			parseInfixPostfix(&v2, start);
 		}
 
 		if ( op == Token::Type::MATH_DIVIDE ) {
@@ -226,6 +232,46 @@ void Interpreter::parseFactors(Object *result, TokenIterator& start)
 		else if ( op == Token::Type::MATH_MULTIPLY ) {
 			operator_multiply(result, &v2);
 		}
+	}
+}
+
+void Interpreter::parseInfixPostfix(Object *result, TokenIterator& start)
+{
+	Token::Type::E op = start->type();
+
+	// infix
+	if ( op == Token::Type::NOT ) {
+		start++;
+
+		parseTerm(result, start);
+
+		operator_unary_not(result);
+	}
+	else if ( op == Token::Type::MATH_SUBTRACT ) {
+		start++;
+
+		parseTerm(result, start);
+
+		//operator_unary_minus(result, result);
+	}
+	else if ( op == Token::Type::TYPE ) {
+		// type cast
+
+		start++;
+	}
+	else {
+		parseTerm(result, start);
+	}
+
+	if ( op == Token::Type::DECREMENT ) {
+		operator_unary_decrement(result);
+
+		start++;
+	}
+	else if ( op == Token::Type::INCREMENT ) {
+		operator_unary_increment(result);
+
+		start++;
 	}
 }
 

@@ -18,8 +18,8 @@
 namespace ObjectiveScript {
 
 
-const std::string CONTROLCHARS	= "#,;:=()[]{}<>+-*/%&|'\" ";
-const std::string DELIMITERS	= "#,;:=()[]{}<>+-*/%&|'\"\t\n\r ";
+const std::string CONTROLCHARS	= "#,;:=()[]{}!<>+-*/%&|'\" ";
+const std::string DELIMITERS	= "#,;:=()[]{}!<>+-*/%&|'\"\t\n\r ";
 const std::string WHITESPACES	= "\t\n\r ";
 
 
@@ -195,11 +195,12 @@ Token Tokenizer::createToken(const std::string& con, const Utils::Position& posi
 	else if ( content == "<" ) { category = Token::Category::Operator; type = Token::Type::COMPARE_LESS; }
 	else if ( content == "(" ) { type = Token::Type::PARENTHESIS_OPEN; }
 	else if ( content == ")" ) { type = Token::Type::PARENTHESIS_CLOSE; }
-	else if ( content == "+" ) { category = Token::Category::Operator; type = Token::Type::MATH_ADD; }
+	else if ( content == "+" ) { category = Token::Category::Operator; type = Token::Type::MATH_ADDITION; }
 	else if ( content == "/" ) { category = Token::Category::Operator; type = Token::Type::MATH_DIVIDE; }
 	else if ( content == "%" ) { category = Token::Category::Operator; type = Token::Type::MATH_MODULO; }
 	else if ( content == "*" ) { category = Token::Category::Operator; type = Token::Type::MATH_MULTIPLY; }
 	else if ( content == "-" ) { category = Token::Category::Operator; type = Token::Type::MATH_SUBTRACT; }
+	else if ( content == "!" ) { category = Token::Category::Operator; type = Token::Type::NOT; }
 	else if ( isBoolean(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_BOOLEAN; }
 	else if ( isFloat(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_FLOAT; }
 	else if ( isIdentifer(content) ) { type = Token::Type::IDENTIFER; }
@@ -461,7 +462,7 @@ bool Tokenizer::isWhiteSpace(const std::string& token) const
 }
 
 /*
- * This merges all pairs of & or | operators together (i.e. '&' '&' becomes '&&')
+ * mergeBooleanOperators: merges all pairs of & or | operators together (i.e. '&' '&' becomes '&&')
  */
 void Tokenizer::mergeBooleanOperators()
 {
@@ -475,7 +476,7 @@ void Tokenizer::mergeBooleanOperators()
 		Token::Type::E activeType = token->type();
 
 		if ( (lastType == Token::Type::BITAND) && (activeType == Token::Type::BITAND) ) {
-			// ==
+			// &&
 			changed = true;
 			// remove last added token ...
 			tmp.pop_back();
@@ -483,12 +484,54 @@ void Tokenizer::mergeBooleanOperators()
 			tmp.push_back(Token(Token::Category::Operator, Token::Type::AND, "&&", token->position()));
 		}
 		else if ( (lastType == Token::Type::BITOR) && (activeType == Token::Type::BITOR) ) {
-			// >=
+			// ||
 			changed = true;
 			// remove last added token ...
 			tmp.pop_back();
 			// ... and add OR instead
 			tmp.push_back(Token(Token::Category::Operator, Token::Type::OR, "||", token->position()));
+		}
+
+		lastType = token->type();
+		if ( !changed ) {
+			tmp.push_back((*token));
+		}
+
+		token++;
+	}
+
+	mTokens = tmp;
+}
+
+/*
+ * mergeInfixPostfixOperators: merges all pairs of & or | operators together (i.e. '&' '&' becomes '&&')
+ */
+void Tokenizer::mergeInfixPostfixOperators()
+{
+	TokenList tmp;
+	Token::Type::E lastType = Token::Type::UNKNOWN;
+	TokenIterator token = mTokens.begin();
+
+	// try to combine all compare tokens
+	while ( token != mTokens.end() ) {
+		bool changed = false;
+		Token::Type::E activeType = token->type();
+
+		if ( (lastType == Token::Type::MATH_SUBTRACT) && (activeType == Token::Type::MATH_SUBTRACT) ) {
+			// --
+			changed = true;
+			// remove last added token ...
+			tmp.pop_back();
+			// ... and add OR instead
+			tmp.push_back(Token(Token::Category::Operator, Token::Type::DECREMENT, "--", token->position()));
+		}
+		else if ( (lastType == Token::Type::MATH_ADDITION) && (activeType == Token::Type::MATH_ADDITION) ) {
+			// ++
+			changed = true;
+			// remove last added token ...
+			tmp.pop_back();
+			// ... and add AND instead
+			tmp.push_back(Token(Token::Category::Operator, Token::Type::INCREMENT, "++", token->position()));
 		}
 
 		lastType = token->type();
@@ -596,6 +639,7 @@ void Tokenizer::process()
 	removeWhiteSpaces();		// remove all whitespaces
 	replaceAssignments();		// replace assignment tokens with compare tokens (if present)
 	mergeBooleanOperators();	// merge '&' '&' into '&&'
+	mergeInfixPostfixOperators();			// merge '+' '+' into '++'
 	replaceOperators();			// combine 'operator' identifiers with the next following token i.e. 'operator' '+' => 'operator+'
 	replacePrototypes();		//
 }
@@ -635,6 +679,14 @@ void Tokenizer::replaceAssignments()
 			// ... and add COMPARE_EQUAL instead
 			tmp.push_back(Token(Token::Category::Assignment, Token::Type::COMPARE_EQUAL, "==", token->position()));
 		}
+		else if ( (lastType == Token::Type::BITCOMPLEMENT) && (activeType == Token::Type::ASSIGN) ) {
+			// ~=
+			changed = true;
+			// remove last added token ...
+			tmp.pop_back();
+			// ... and add ASSIGN_ADD instead
+			tmp.push_back(Token(Token::Category::Assignment, Token::Type::ASSIGN_BITCOMPLEMENT, "~=", token->position()));
+		}
 		else if ( (lastType == Token::Type::GREATER || lastType == Token::Type::COMPARE_GREATER) && (activeType == Token::Type::ASSIGN) ) {
 			// >=
 			changed = true;
@@ -651,13 +703,13 @@ void Tokenizer::replaceAssignments()
 			// ... and add COMPARE_LESS_EQUAL instead
 			tmp.push_back(Token(Token::Category::Assignment, Token::Type::COMPARE_LESS_EQUAL, "<=", token->position()));
 		}
-		else if ( (lastType == Token::Type::MATH_ADD) && (activeType == Token::Type::ASSIGN) ) {
+		else if ( (lastType == Token::Type::MATH_ADDITION) && (activeType == Token::Type::ASSIGN) ) {
 			// +=
 			changed = true;
 			// remove last added token ...
 			tmp.pop_back();
 			// ... and add ASSIGN_ADD instead
-			tmp.push_back(Token(Token::Category::Assignment, Token::Type::ASSIGN_ADD, "+=", token->position()));
+			tmp.push_back(Token(Token::Category::Assignment, Token::Type::ASSIGN_ADDITION, "+=", token->position()));
 		}
 		else if ( (lastType == Token::Type::MATH_DIVIDE) && (activeType == Token::Type::ASSIGN) ) {
 			// /=

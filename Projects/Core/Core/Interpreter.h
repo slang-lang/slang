@@ -92,6 +92,7 @@ private: // Execution
 	void parseCondition(Object *result, TokenIterator& start);
 	void parseExpression(Object *result, TokenIterator& start);
 	void parseFactors(Object *result, TokenIterator& start);
+	void parseInfixPostfix(Object *result, TokenIterator& start);
 	void parseTerm(Object *result, TokenIterator& start);
 	// }
 

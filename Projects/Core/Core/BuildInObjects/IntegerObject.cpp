@@ -77,7 +77,7 @@ std::string IntegerObject::getValue() const
 
 bool IntegerObject::isValid() const
 {
-	return mValue;
+	return mValue != 0;
 }
 
 void IntegerObject::operator_assign(IntegerObject *other)

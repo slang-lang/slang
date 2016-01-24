@@ -173,6 +173,11 @@ bool BoolObject::operator_equal(Object *other)
 	return Object::operator_equal(other);
 }
 
+void BoolObject::operator_unary_not()
+{
+	mValue = !mValue;
+}
+
 void BoolObject::setNativeValue(bool value)
 {
 	mValue = value;

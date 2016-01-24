@@ -57,7 +57,7 @@ NumberObject::NumberObject(const NumberObject& object)
 
 NumberObject::operator bool() const
 {
-	return mValue != 0.f;
+	return mValue != 0.0;
 }
 
 double NumberObject::getNativeValue() const
@@ -77,7 +77,7 @@ std::string NumberObject::getValue() const
 
 bool NumberObject::isValid() const
 {
-	return mValue;
+	return mValue != 0.0;
 }
 
 void NumberObject::operator_assign(NumberObject *other)
