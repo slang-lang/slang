@@ -105,12 +105,23 @@ MemberAttributes::MemberAttributes()
 
 
 MethodAttributes::MethodAttributes()
+: mIsAbstract(false)
 {
+}
+
+bool MethodAttributes::isAbstract() const
+{
+	return mIsAbstract;
 }
 
 bool MethodAttributes::isSealed() const
 {
 	return mIsSealed;
+}
+
+void MethodAttributes::setAbstract(bool state)
+{
+	mIsAbstract = state;
 }
 
 void MethodAttributes::setSealed(bool state)

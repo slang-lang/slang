@@ -53,6 +53,8 @@ public:
 	Visibility::E getVisibility() const;
 	void setVisibility(Visibility::E v);
 
+	bool isAbstract() const;
+
 public:
 	MethodCollection provideMethods() const {
 		return mMethods;

@@ -69,6 +69,17 @@ private:
 };
 
 
+class AbstractObject : public Exception
+{
+public:
+	AbstractObject(const std::string& text, const Utils::Position& position = Utils::Position())
+	: Exception("Exception.AbstractObject: " + text, position)
+	{ }
+
+	virtual ~AbstractObject() throw() { }
+};
+
+
 class AccessMode : public Exception
 {
 public:
@@ -121,6 +132,17 @@ public:
 	{ }
 
 	virtual ~NotImplemented() throw() { }
+};
+
+
+class NotSupported : public Exception
+{
+public:
+	NotSupported(const std::string& text, const Utils::Position& position = Utils::Position())
+	: Exception("Exception.NotSupported: " + text, position)
+	{ }
+
+	virtual ~NotSupported() throw() { }
 };
 
 

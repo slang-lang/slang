@@ -18,8 +18,8 @@
 namespace ObjectiveScript {
 
 
-const std::string CONTROLCHARS	= "#,;:=()[]{}!<>+-*/%&|'\" ";
-const std::string DELIMITERS	= "#,;:=()[]{}!<>+-*/%&|'\"\t\n\r ";
+const std::string CONTROLCHARS	= "#,;:=()[]{}!<>+-*/%&|~'\" ";
+const std::string DELIMITERS	= "#,;:=()[]{}!<>+-*/%&|~'\"\t\n\r ";
 const std::string WHITESPACES	= "\t\n\r ";
 
 
@@ -462,7 +462,7 @@ bool Tokenizer::isWhiteSpace(const std::string& token) const
 }
 
 /*
- * mergeBooleanOperators: merges all pairs of & or | operators together (i.e. '&' '&' becomes '&&')
+ * mergeBooleanOperators: merges all pairs of & or | operators together (i.e. '&' '&' become '&&')
  */
 void Tokenizer::mergeBooleanOperators()
 {
@@ -504,7 +504,7 @@ void Tokenizer::mergeBooleanOperators()
 }
 
 /*
- * mergeInfixPostfixOperators: merges all pairs of & or | operators together (i.e. '&' '&' becomes '&&')
+ * mergeInfixPostfixOperators: merges all pairs of + or - operators together (i.e. '+' '+' become '++')
  */
 void Tokenizer::mergeInfixPostfixOperators()
 {
@@ -636,12 +636,12 @@ void Tokenizer::process()
 	// add end of file token
 	addToken(Token(Token::Type::ENDOFFILE));
 
-	removeWhiteSpaces();		// remove all whitespaces
-	replaceAssignments();		// replace assignment tokens with compare tokens (if present)
-	mergeBooleanOperators();	// merge '&' '&' into '&&'
-	mergeInfixPostfixOperators();			// merge '+' '+' into '++'
-	replaceOperators();			// combine 'operator' identifiers with the next following token i.e. 'operator' '+' => 'operator+'
-	replacePrototypes();		//
+	removeWhiteSpaces();			// remove all whitespaces
+	replaceAssignments();			// replace assignment tokens with compare tokens (if present)
+	mergeBooleanOperators();		// merge '&' '&' into '&&'
+	mergeInfixPostfixOperators();	// merge '+' '+' into '++'
+	replaceOperators();				// combine 'operator' identifiers with the next following token i.e. 'operator' '+' => 'operator+'
+	replacePrototypes();			//
 }
 
 void Tokenizer::removeWhiteSpaces()

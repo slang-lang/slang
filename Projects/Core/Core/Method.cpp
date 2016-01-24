@@ -144,11 +144,11 @@ ControlFlow::E Method::execute(const ParameterList& params, Object *result)
 
 		switch ( param.access() ) {
 			case Parameter::AccessMode::Unspecified: {
-				throw Utils::Exceptions::AccessMode("unspecified");
+				throw Utils::Exceptions::AccessMode("unspecified access mode");
 			} break;
 			case Parameter::AccessMode::ByReference: {
 				Object *object = param.pointer();
-				object->setConst(param.isConst());
+				object->setConst(param.isConst());	// const references are not supported atm so this should always be false
 
 				interpreter.define(param.name(), object);
 			} break;
@@ -249,7 +249,7 @@ bool Method::isSignatureValid(const ParameterList& params) const
 		sigIt++;
 	}
 
-	// no differences found
+	// no differences found, nailed it!
 	return true;
 }
 
@@ -310,7 +310,7 @@ Symbol* Method::resolveMethod(const std::string& name, const ParameterList& para
 			case Symbol::IType::ObjectSymbol:
 				return static_cast<Object*>(result)->resolveMethod(member, params);
 			case Symbol::IType::MethodSymbol:
-				return mOwner->resolveMethod(member, params, onlyCurrentScope);
+				return static_cast<Method*>(result)->resolveMethod(member, params, onlyCurrentScope);
 			case Symbol::IType::BluePrintSymbol:
 			case Symbol::IType::NamespaceSymbol:
 			case Symbol::IType::UnknownSymbol:

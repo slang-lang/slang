@@ -80,8 +80,14 @@ public:
 	MethodAttributes();
 
 public:
+	bool isAbstract() const;
+	void setAbstract(bool state);
+
 	bool isSealed() const;
 	void setSealed(bool state);
+
+private:
+	bool mIsAbstract;
 };
 
 

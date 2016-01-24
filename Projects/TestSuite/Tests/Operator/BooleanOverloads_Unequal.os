@@ -25,7 +25,7 @@ private namespace BooleanOverloads
 			return mValue == other;
 		}
 
-		public bool operator_equal(UserObject other const ref) const
+		public bool operator_equal(UserObject other const) const
 		{
 			print("operator==(UserObject)");
 
