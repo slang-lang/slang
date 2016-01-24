@@ -64,7 +64,7 @@ public namespace ConstCorrectness3
 			return true;
 		}
 
-		private bool UpdateConstUserObject(UserObject objConstRef const ref) const
+		private bool UpdateConstUserObject(UserObject objConstRef const) const
 		{
 			// altough all objects are references it should never be possible to change a const object => fail
 			objConstRef.setValue(2);

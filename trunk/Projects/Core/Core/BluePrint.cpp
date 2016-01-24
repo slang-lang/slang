@@ -76,6 +76,17 @@ Visibility::E BluePrint::getVisibility() const
 	return mVisibility;
 }
 
+bool BluePrint::isAbstract() const
+{
+	for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
+		if ( (*it)->isAbstract() ) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
 void BluePrint::setTokens(const TokenList& tokens)
 {
 	mTokens = tokens;

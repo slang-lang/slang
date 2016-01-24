@@ -266,7 +266,7 @@ const PrototypeList& Analyser::getPrototypes() const
 }
 
 // syntax:
-// <visibility> interface [language feature] <identifier> ;
+// <visibility> interface [language feature] <identifier> { ... }
 bool Analyser::isInterfaceDeclaration(TokenIterator start)
 {
 	if ( (*start++).type() != Token::Type::VISIBILITY ) {
@@ -302,7 +302,7 @@ bool Analyser::isLibraryReference(TokenIterator start)
 }
 
 // syntax:
-// <visibility> namespace [language feature] <identifier>
+// <visibility> namespace [language feature] <identifier> { ... }
 bool Analyser::isNamespaceDeclaration(TokenIterator start)
 {
 	if ( (*start++).type() != Token::Type::VISIBILITY ) {
@@ -322,7 +322,7 @@ bool Analyser::isNamespaceDeclaration(TokenIterator start)
 }
 
 // syntax:
-// <visibility> object [language feature] <identifier> [extends <identifier> [, <identifier>, ...]]
+// <visibility> object [language feature] <identifier> [extends <identifier> [implements <identifier>, ...]] { ... }
 bool Analyser::isObjectDeclaration(TokenIterator start)
 {
 	if ( (*start++).type() != Token::Type::VISIBILITY ) {
@@ -342,7 +342,7 @@ bool Analyser::isObjectDeclaration(TokenIterator start)
 }
 
 // syntax:
-// <visibility> prototype [language feature] <identifier> [extends <identifier> [, <identifier>, ...]]
+// <visibility> prototype [language feature] <identifier> [extends <identifier> [implements <identifier>, ...]] { ... }
 bool Analyser::isPrototypeDeclaration(TokenIterator start)
 {
 	if ( (*start++).type() != Token::Type::VISIBILITY ) {
@@ -373,7 +373,7 @@ void Analyser::process(const std::string& filename)
 	OSinfo("Analyzing file '" + mFilename + "'...");
 
 	if ( !::Utils::Tools::Files::exists(mFilename) ) {
-		throw Utils::Exceptions::Exception(mFilename + " file not found");
+		throw Utils::Exceptions::Exception("File '" + mFilename + "' not found");
 	}
 
 	// read file content

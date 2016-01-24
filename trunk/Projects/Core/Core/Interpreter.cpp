@@ -329,9 +329,6 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 		case Token::Type::KEYWORD: {
 			process(result, start, getTokens().end(), Token::Type::SEMICOLON);
 		} break;
-		case Token::Type::MATH_SUBTRACT: {
-			throw Utils::Exceptions::NotImplemented("unary minus");
-		} break;
 		case Token::Type::SEMICOLON: {
 			if ( result->getTypeName() == VoidObject::TYPENAME ) {
 				// this is okay, as long as we have a been called by a return command in a void method

@@ -28,7 +28,7 @@ private namespace BooleanOverloads
 			mValue = mValue & other;
 		}
 
-		public void operator&(UserObject other const ref) modify
+		public void operator&(UserObject other const) modify
 		{
 			mValue = mValue & other.getValue();
 		}
@@ -38,7 +38,7 @@ private namespace BooleanOverloads
 			return mValue == other;
 		}
 
-		public bool operator==(UserObject other const ref) const
+		public bool operator==(UserObject other const) const
 		{
 			return mValue == other.getValue();
 		}

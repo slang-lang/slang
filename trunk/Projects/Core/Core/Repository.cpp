@@ -190,6 +190,7 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 {
 	Runtime::Object *object = 0;
 
+	// instantiate atomic types
 	if ( blueprint->Typename() == Runtime::BoolObject::TYPENAME ) {
 		object = new Runtime::BoolObject(name, Runtime::BoolObject::DEFAULTVALUE);
 	}
@@ -209,10 +210,13 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 		object = new Runtime::VoidObject(name);
 	}
 	else {
+		// instantiate user defined type
 		object = new Runtime::UserObject(name, blueprint->Filename(), blueprint->Typename(), Runtime::UserObject::DEFAULTVALUE);
 
+		// define this-symbol
 		object->define(KEYWORD_THIS, object);
 
+		// create and define all members
 		Symbols symbols = blueprint->provideSymbols();
 		for ( Symbols::const_iterator it = symbols.begin(); it != symbols.end(); ++it ) {
 			if ( !it->second || it->second->getType() != Symbol::IType::BluePrintSymbol ) {
@@ -220,11 +224,16 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 			}
 
 			Designtime::BluePrint *blue = static_cast<Designtime::BluePrint*>(it->second);
+			if ( blue->isAbstract() ) {
+				throw Utils::Exceptions::AbstractObject("cannot instantiate abstract object '" + blue->Typename() + "'");
+			}
+
 			Symbol *symbol = createInstance(blue->Typename(), blue->getName(), "");
 
 			object->define(symbol->getName(), symbol);
 		}
 
+		// define and create all methods
 		MethodScope::MethodCollection methods = blueprint->provideMethods();
 		for ( MethodScope::MethodCollection::const_iterator it = methods.begin(); it != methods.end(); ++it ) {
 			Runtime::Method* method = new Runtime::Method(object, (*it)->getName(), (*it)->getTypeName());

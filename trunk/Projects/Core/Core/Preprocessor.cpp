@@ -63,13 +63,15 @@ Designtime::BluePrint* Preprocessor::createMember(TokenIterator token)
 	Designtime::BluePrint* blue = new Designtime::BluePrint(type, mFilename, name);
 	blue->setConst(isConst);
 	blue->setFinal(isFinal);
-	blue->setMember(true);		// every object that is created here is a member object
+	blue->setMember(true);		// every object created here is a member object
 	blue->visibility(Visibility::convert(visibility));
+
 	return blue;
 }
 
 Runtime::Method* Preprocessor::createMethod(TokenIterator token)
 {
+	bool isAbstract = false;
 	bool isConst = true;		// all methods are const by default (this is the only way the 'modify' attribute makes sense)
 	bool isStructor = false;
 	bool isFinal = false;
@@ -91,8 +93,9 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token)
 
 	if ( name == mBluePrint->Typename() ||
 		 name == "~" + mBluePrint->Typename() ) {
-		// this method has the same name as it's containing object, so this has to be a constructor or a destructor,
-		// these 2 methods can never ever be const
+		// these methods have the same name as their containing object,
+		// so this has to be a constructor or a destructor;
+		// they can never ever be const
 		isConst = false;
 		isStructor = true;
 	}
@@ -107,7 +110,6 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token)
 	do {
 		token++;
 
-		//if ( token->type() == Token::Type::LANGUAGEFEATURE ) {
 		if ( token->category() == Token::Category::Modifier ) {
 			if ( token->content() == MODIFIER_CONST ) {
 				isConst = true;
@@ -143,6 +145,7 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token)
 
 	// create a new method with the corresponding return value
 	Runtime::Method *method = new Runtime::Method(mScope, name, type);
+	method->setAbstract(isAbstract);
 	method->setConst(isConst);
 	method->setFinal(isFinal);
 	method->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
@@ -161,16 +164,14 @@ void Preprocessor::generateObject()
 	typedef std::list<TokenIterator> TokenList;
 	TokenList visList;
 
-	// find all visibility keywords which we use
-	// as starting point for our interpreter
+	// find all visibility keywords which we use as starting point for our interpreter
 	for ( TokenIterator it = mTokens.begin(); it != mTokens.end(); ++it ) {
 		if ( it->type() == Token::Type::VISIBILITY ) {
 			visList.push_back(it);
 		}
 	}
 
-	// loop over all visibility declarations and check
-	// if we have a member declaration or a method declaration
+	// loop over all visibility declarations and check if we have a member declaration or a method declaration
 	for ( TokenList::const_iterator it = visList.begin(); it != visList.end(); ++it ) {
 		if ( isMemberDeclaration((*it)) ) {
 			Designtime::BluePrint *member = createMember((*it));
@@ -252,7 +253,7 @@ ParameterList Preprocessor::parseParameters(TokenIterator &token)
 
 	while ( (*++token).type() != Token::Type::PARENTHESIS_CLOSE ) {
 		if ( !isLocalDeclaration(token) && !isParameterDeclaration(token) ) {
-			throw Utils::Exceptions::SyntaxError("could not parse parameter declaration!", token->position());
+			throw Utils::Exceptions::SyntaxError("could not parse parameter declaration", token->position());
 		}
 
 		Parameter::AccessMode::E accessmode = Parameter::AccessMode::ByValue;
@@ -272,6 +273,11 @@ ParameterList Preprocessor::parseParameters(TokenIterator &token)
 		}
 
 		if ( token->content() == RESERVED_WORD_BY_REFERENCE ) {
+			if ( isConst ) {
+				// const reference parameters are not supported, they won't make sense
+				throw Utils::Exceptions::NotSupported("const reference parameters are not supported");
+			}
+
 			accessmode = Parameter::AccessMode::ByReference;
 			token++;
 		}

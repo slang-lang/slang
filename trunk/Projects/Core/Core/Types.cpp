@@ -23,7 +23,6 @@ StringList provideAtomarTypes()
 {
 	StringList types;
 
-	types.push_back(PROTOTYPE_TYPE);
 	types.push_back(Runtime::BoolObject::TYPENAME);
 	types.push_back(Runtime::FloatObject::TYPENAME);
 	types.push_back(Runtime::IntegerObject::TYPENAME);
@@ -53,9 +52,11 @@ StringList provideKeyWords()
 	keywords.push_back(KEYWORD_ASSERT);
 	keywords.push_back(KEYWORD_BREAK);
 	keywords.push_back(KEYWORD_CASE);
+	keywords.push_back(KEYWORD_CATCH);
 	keywords.push_back(KEYWORD_CONTINUE);
 	keywords.push_back(KEYWORD_DELETE);
 	keywords.push_back(KEYWORD_ELSE);
+	keywords.push_back(KEYWORD_FINALLY);
 	keywords.push_back(KEYWORD_FOR);
 	keywords.push_back(KEYWORD_IF);
 	keywords.push_back(KEYWORD_IMPORT);
@@ -63,12 +64,10 @@ StringList provideKeyWords()
 	keywords.push_back(KEYWORD_PRINT);
 	keywords.push_back(KEYWORD_RETURN);
 	keywords.push_back(KEYWORD_SWITCH);
+	keywords.push_back(KEYWORD_THIS);
+	keywords.push_back(KEYWORD_THROW);
+	keywords.push_back(KEYWORD_TRY);
 	keywords.push_back(KEYWORD_WHILE);
-	keywords.push_back("catch");
-	keywords.push_back("except");
-	keywords.push_back("finally");
-	keywords.push_back("throw");
-	keywords.push_back("try");
 
 	return keywords;
 }
@@ -96,7 +95,6 @@ StringList provideReservedWords()
 	reservedWords.push_back(RESERVED_WORD_OPERATOR);
 	reservedWords.push_back(RESERVED_WORD_PROTOTYPE);
 	reservedWords.push_back(RESERVED_WORD_USING);
-	reservedWords.push_back("of");
 
 	return reservedWords;
 }
