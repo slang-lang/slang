@@ -261,8 +261,6 @@ const Reference& Repository::createReference(const std::string& type, const std:
 
 	Runtime::Object *object = createObject(name, &blueprint);
 
-	object->define(KEYWORD_THIS, object);
-
 	return mMemory->newObject(object);
 }
 

@@ -301,7 +301,7 @@ void LanguageTest::testObjectReference()
 	try {
 		VirtualMachine vm;
 
-		TTHROWS(vm.create("Tests/Language/ObjectReference.os"), ObjectiveScript::Utils::Exceptions::ConstCorrectnessViolated);
+		vm.create("Tests/Language/ObjectReference.os");
 
 		// automatic success
 	}

@@ -12,6 +12,8 @@ public namespace InfixOperator
 
 		private bool TestCase1() const
 		{
+			print("TestCase1: postfix -- operator");
+
 			number value = 2;
 			value--;
 
@@ -20,6 +22,8 @@ public namespace InfixOperator
 
 		private bool TestCase2() const
 		{
+			print("TestCase2: postfix ++ operator");
+
 			number value = 2;
 			value++;
 
