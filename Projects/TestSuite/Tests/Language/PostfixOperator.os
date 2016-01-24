@@ -15,7 +15,9 @@ public namespace InfixOperator
 			print("TestCase1: postfix -- operator");
 
 			number value = 2;
+			print("value = " + value);
 			value--;
+			print("value = " + value);
 
 			return value == 1;
 		}
@@ -25,7 +27,9 @@ public namespace InfixOperator
 			print("TestCase2: postfix ++ operator");
 
 			number value = 2;
+			print("value = " + value);
 			value++;
+			print("value = " + value);
 
 			return value == 3;
 		}

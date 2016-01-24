@@ -306,6 +306,21 @@ void IntegerObject::operator_subtract(Object *other)
 	}
 }
 
+void IntegerObject::operator_unary_decrement()
+{
+	mValue--;
+}
+
+void IntegerObject::operator_unary_increment()
+{
+	mValue++;
+}
+
+void IntegerObject::operator_unary_not()
+{
+	mValue = !mValue;
+}
+
 void IntegerObject::setNativeValue(int value)
 {
 	mValue = value;

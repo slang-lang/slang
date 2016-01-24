@@ -285,6 +285,21 @@ void NumberObject::operator_subtract(Object *other)
 	}
 }
 
+void NumberObject::operator_unary_decrement()
+{
+	mValue--;
+}
+
+void NumberObject::operator_unary_increment()
+{
+	mValue++;
+}
+
+void NumberObject::operator_unary_not()
+{
+	mValue = !mValue;
+}
+
 void NumberObject::setNativeValue(double value)
 {
 	mValue = value;
