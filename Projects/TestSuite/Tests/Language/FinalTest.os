@@ -13,7 +13,7 @@ public namespace FinalTest
 			assert( TestCase1() );
 		}
 
-		private bool TestCase1()
+		private bool TestCase1() modify
 		{
 /*
 			number one const = 1;

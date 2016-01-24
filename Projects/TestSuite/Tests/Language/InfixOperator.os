@@ -13,6 +13,8 @@ public namespace InfixOperator
 
 		private bool TestCase1() const
 		{
+			print("TestCase1: unary ! operator");
+
 			bool value = false;
 
 			return !value;
@@ -20,6 +22,8 @@ public namespace InfixOperator
 
 		private bool TestCase2() const
 		{
+			print("TestCase2: infix -- operator");
+
 			number value = 2;
 			--value;
 
@@ -28,6 +32,8 @@ public namespace InfixOperator
 
 		private bool TestCase3() const
 		{
+			print("TestCase3: infix ++ operator");
+
 			number value = 2;
 			++value;
 
