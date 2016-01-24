@@ -144,6 +144,64 @@ void operator_bitand(Object *base, Object *other)
 	}
 }
 
+void operator_bitcomplement(Object *base, Object *other)
+{
+	if ( !base ) {
+		throw Utils::Exceptions::NullPointer("cannot bitcomplement value to null pointer");
+	}
+	if ( !other ) {
+		throw Utils::Exceptions::NullPointer("cannot bitcomplement object to null pointer");
+	}
+
+	std::string source = base->Typename();
+
+	if ( source == BoolObject::TYPENAME ) {
+		BoolObject tmp(Tools::stringToBool(base->getValue()));
+		tmp.operator_bitcomplement(other);
+
+		*base = tmp;
+	}
+	else if ( source == FloatObject::TYPENAME ) {
+		FloatObject tmp(Tools::stringToFloat(base->getValue()));
+		tmp.operator_bitcomplement(other);
+
+		*base = tmp;
+	}
+	else if ( source == IntegerObject::TYPENAME ) {
+		IntegerObject tmp(Tools::stringToInt(base->getValue()));
+		tmp.operator_bitcomplement(other);
+
+		*base = tmp;
+	}
+	else if ( source == NumberObject::TYPENAME ) {
+		NumberObject tmp(Tools::stringToFloat(base->getValue()));
+		tmp.operator_bitcomplement(other);
+
+		*base = tmp;
+	}
+	else if ( source == StringObject::TYPENAME ) {
+		StringObject tmp(base->getValue());
+		tmp.operator_bitcomplement(other);
+
+		*base = tmp;
+	}
+	else if ( source == VoidObject::TYPENAME ) {
+		VoidObject tmp;
+		tmp.operator_bitcomplement(other);
+
+		*base = tmp;
+	}
+	else {
+		ParameterList params;
+		params.push_back(
+			Parameter(other->getName(), other->Typename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
+		);
+
+		Object tmp;
+		base->execute(&tmp, "operator~", params, 0);
+	}
+}
+
 void operator_bitor(Object *base, Object *other)
 {
 	if ( !base ) {
@@ -719,6 +777,156 @@ void operator_subtract(Object *base, Object *other)
 
 		Object tmp;
 		base->execute(&tmp, "operator-", params, 0);
+	}
+}
+
+void operator_unary_decrement(Object *base)
+{
+	if ( !base ) {
+		throw Utils::Exceptions::NullPointer("cannot subtract object from null pointer");
+	}
+
+	std::string source = base->Typename();
+
+	if ( source == BoolObject::TYPENAME ) {
+		BoolObject tmp(Tools::stringToBool(base->getValue()));
+		tmp.operator_unary_decrement();
+
+		*base = tmp;
+	}
+	else if ( source == FloatObject::TYPENAME ) {
+		FloatObject tmp(Tools::stringToFloat(base->getValue()));
+		tmp.operator_unary_decrement();
+
+		*base = tmp;
+	}
+	else if ( source == IntegerObject::TYPENAME ) {
+		IntegerObject tmp(Tools::stringToInt(base->getValue()));
+		tmp.operator_unary_decrement();
+
+		*base = tmp;
+	}
+	else if ( source == NumberObject::TYPENAME ) {
+		NumberObject tmp(Tools::stringToFloat(base->getValue()));
+		tmp.operator_unary_decrement();
+
+		*base = tmp;
+	}
+	else if ( source == StringObject::TYPENAME ) {
+		StringObject tmp(base->getValue());
+		tmp.operator_unary_decrement();
+
+		*base = tmp;
+	}
+	else if ( source == VoidObject::TYPENAME ) {
+		VoidObject tmp;
+		tmp.operator_unary_decrement();
+
+		*base = tmp;
+	}
+	else {
+		Object tmp;
+		base->execute(&tmp, "operator--", ParameterList(), 0);
+	}
+}
+
+void operator_unary_increment(Object *base)
+{
+	if ( !base ) {
+		throw Utils::Exceptions::NullPointer("cannot subtract object from null pointer");
+	}
+
+	std::string source = base->Typename();
+
+	if ( source == BoolObject::TYPENAME ) {
+		BoolObject tmp(Tools::stringToBool(base->getValue()));
+		tmp.operator_unary_increment();
+
+		*base = tmp;
+	}
+	else if ( source == FloatObject::TYPENAME ) {
+		FloatObject tmp(Tools::stringToFloat(base->getValue()));
+		tmp.operator_unary_increment();
+
+		*base = tmp;
+	}
+	else if ( source == IntegerObject::TYPENAME ) {
+		IntegerObject tmp(Tools::stringToInt(base->getValue()));
+		tmp.operator_unary_increment();
+
+		*base = tmp;
+	}
+	else if ( source == NumberObject::TYPENAME ) {
+		NumberObject tmp(Tools::stringToFloat(base->getValue()));
+		tmp.operator_unary_increment();
+
+		*base = tmp;
+	}
+	else if ( source == StringObject::TYPENAME ) {
+		StringObject tmp(base->getValue());
+		tmp.operator_unary_increment();
+
+		*base = tmp;
+	}
+	else if ( source == VoidObject::TYPENAME ) {
+		VoidObject tmp;
+		tmp.operator_unary_increment();
+
+		*base = tmp;
+	}
+	else {
+		Object tmp;
+		base->execute(&tmp, "operator++", ParameterList(), 0);
+	}
+}
+
+void operator_unary_not(Object *base)
+{
+	if ( !base ) {
+		throw Utils::Exceptions::NullPointer("cannot subtract object from null pointer");
+	}
+
+	std::string source = base->Typename();
+
+	if ( source == BoolObject::TYPENAME ) {
+		BoolObject tmp(Tools::stringToBool(base->getValue()));
+		tmp.operator_unary_not();
+
+		*base = tmp;
+	}
+	else if ( source == FloatObject::TYPENAME ) {
+		FloatObject tmp(Tools::stringToFloat(base->getValue()));
+		tmp.operator_unary_not();
+
+		*base = tmp;
+	}
+	else if ( source == IntegerObject::TYPENAME ) {
+		IntegerObject tmp(Tools::stringToInt(base->getValue()));
+		tmp.operator_unary_not();
+
+		*base = tmp;
+	}
+	else if ( source == NumberObject::TYPENAME ) {
+		NumberObject tmp(Tools::stringToFloat(base->getValue()));
+		tmp.operator_unary_not();
+
+		*base = tmp;
+	}
+	else if ( source == StringObject::TYPENAME ) {
+		StringObject tmp(base->getValue());
+		tmp.operator_unary_not();
+
+		*base = tmp;
+	}
+	else if ( source == VoidObject::TYPENAME ) {
+		VoidObject tmp;
+		tmp.operator_unary_not();
+
+		*base = tmp;
+	}
+	else {
+		Object tmp;
+		base->execute(&tmp, "operator!", ParameterList(), 0);
 	}
 }
 

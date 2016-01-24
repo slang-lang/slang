@@ -37,6 +37,7 @@ private:	// Tokenizer
 	void classify();
 	Token createToken(const std::string& con, const Utils::Position& position);
 	void mergeBooleanOperators();
+	void mergeInfixPostfixOperators();
 	void removeWhiteSpaces();
 	void replaceAssignments();
 	void replaceOperators();

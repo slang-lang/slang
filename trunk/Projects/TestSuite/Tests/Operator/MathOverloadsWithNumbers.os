@@ -53,6 +53,18 @@ public namespace MathOverloads
 			print("operator-");
 			mNumber = mNumber - other;
 		}
+
+		public void operator++() modify
+		{
+			print("operator++");
+			mNumber++;
+		}
+
+		public void operator--() modify
+		{
+			print("operator--");
+			mNumber--;
+		}
 	}
 
 	public object Main
@@ -64,6 +76,8 @@ public namespace MathOverloads
 			assert( TestCase3() );
 			assert( TestCase4() );
 			//assert( TestCase5() );	modulo operator only implemented for integer type
+			//assert( TestCase6() );
+			//assert( TestCase7() );
 		}
 
 		private bool TestCase1() const
@@ -145,6 +159,40 @@ public namespace MathOverloads
 			print("obj1.GetNumber() = " + obj1.GetNumber());
 
 			if ( obj1 == 1i ) {
+				return true;
+			}
+
+			return false;
+		}
+
+		private bool TestCase6() const
+		{
+			print("TestCase6: using the overloaded decrement operator");
+
+			OverloadedObject obj1 = new OverloadedObject(5);
+
+			obj1--;
+			//assert( obj1 == 4 );
+			print("obj1.GetNumber() = " + obj1.GetNumber());
+
+			if ( obj1 == 4 ) {
+				return true;
+			}
+
+			return false;
+		}
+
+		private bool TestCase7() const
+		{
+			print("TestCase7: using the overloaded increment operator");
+
+			OverloadedObject obj1 = new OverloadedObject(5);
+
+			obj1++;
+			//assert( obj1 == 6 );
+			print("obj1.GetNumber() = " + obj1.GetNumber());
+
+			if ( obj1 == 6 ) {
 				return true;
 			}
 

@@ -75,7 +75,7 @@ std::string FloatObject::getValue() const
 
 bool FloatObject::isValid() const
 {
-	return mValue;
+	return mValue != 0.f;
 }
 
 void FloatObject::operator_assign(FloatObject *other)

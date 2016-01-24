@@ -40,7 +40,8 @@ public:
 		enum E {
 			AND,
 			ASSIGN,
-			ASSIGN_ADD,
+			ASSIGN_ADDITION,
+			ASSIGN_BITCOMPLEMENT,
 			ASSIGN_DIVIDE,
 			ASSIGN_MODULO,
 			ASSIGN_MULTIPLY,
@@ -51,6 +52,7 @@ public:
 			BRACKET_CURLY_OPEN,
 			BRACKET_OPEN,
 			BITAND,
+			BITCOMPLEMENT,
 			BITOR,
 			CASE,
 			COLON,
@@ -66,20 +68,23 @@ public:
 			CONST_LITERAL,
 			CONST_NUMBER,
 			DASH,
+			DECREMENT,
 			DOT,
 			ENDOFFILE,
 			GREATER,
 			IDENTIFER,
+			INCREMENT,
 			KEYWORD,
 			LABEL,
 			LANGUAGEFEATURE,
 			LESS,
-			MATH_ADD,
+			MATH_ADDITION,
 			MATH_DIVIDE,
 			MATH_MODULO,
 			MATH_MULTIPLY,
 			MATH_SUBTRACT,
 			NIL,
+			NOT,
 			OR,
 			PARENTHESIS_CLOSE,
 			PARENTHESIS_OPEN,
@@ -100,7 +105,8 @@ public:
 			switch ( e ) {
 				case AND: return "&&";
 				case ASSIGN: return "=";
-				case ASSIGN_ADD: return "+=";
+				case ASSIGN_ADDITION: return "+=";
+				case ASSIGN_BITCOMPLEMENT: return "~=";
 				case ASSIGN_DIVIDE: return "/=";
 				case ASSIGN_MODULO: return "%=";
 				case ASSIGN_MULTIPLY: return "*=";
@@ -111,6 +117,7 @@ public:
 				case BRACKET_CURLY_OPEN: return "{";
 				case BRACKET_OPEN: return "[";
 				case BITAND: return "&";
+				case BITCOMPLEMENT: return "~";
 				case BITOR: return "|";
 				case CASE: return "CASE";
 				case COLON: return ",";
@@ -126,20 +133,23 @@ public:
 				case CONST_LITERAL: return "CONST_LITERAL";
 				case CONST_NUMBER: return "CONST_NUMBER";
 				case DASH: return "-";
+				case DECREMENT: return "--";
 				case DOT: return ".";
 				case ENDOFFILE: return "<EOF>";
 				case GREATER: return ">";
 				case IDENTIFER: return "IDENTIFER";
+				case INCREMENT: return "++";
 				case LABEL: return "LABEL";
 				case LANGUAGEFEATURE: return "LANGUAGEFEATURE";
 				case KEYWORD: return "KEYWORD";
 				case LESS: return "<";
-				case MATH_ADD: return "+";
+				case MATH_ADDITION: return "+";
 				case MATH_DIVIDE: return "/";
 				case MATH_MODULO: return "%";
 				case MATH_MULTIPLY: return "*";
 				case MATH_SUBTRACT: return "-";
 				case NIL: return "NIL";
+				case NOT: return "!";
 				case OR: return "||";
 				case PARENTHESIS_CLOSE: return ")";
 				case PARENTHESIS_OPEN: return "(";

@@ -42,11 +42,13 @@ private:	// Tests
 	void testFinal();
 	void testFor();
 	void testIf();
+	void testInfixOperator();
 	void testInterfaces();
 	void testMethodOverloading();
 	void testNamespaces();
 	void testObjectReference();
 	void testParameters();
+	void testPostfixOperator();
 	void testPrint();
 	void testSanityChecker();
 	void testScope();

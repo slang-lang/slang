@@ -50,6 +50,8 @@ public:	// Operators
 	virtual bool operator_equal(BoolObject *other);
 	virtual bool operator_equal(Object *other);
 
+	virtual void operator_unary_not();
+
 public: // Value
 	virtual bool getNativeValue() const;
 	virtual void setNativeValue(bool value);
