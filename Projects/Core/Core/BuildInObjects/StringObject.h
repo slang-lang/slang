@@ -27,6 +27,7 @@ public:
 public:
 	StringObject(const std::string& value = "");
 	StringObject(const std::string& name, const std::string& value);
+	StringObject(const Object& other);
 	StringObject(const StringObject& object);
 
 public:	// Symbol::IType implementation

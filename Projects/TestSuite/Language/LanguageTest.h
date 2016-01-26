@@ -55,6 +55,7 @@ private:	// Tests
 	void testStaticLocalVariable();
 	void testSwitch();
 	void testThis();
+	void testTypeCast();
 	void testWhile();
 };
 

@@ -8,6 +8,9 @@
 #include <Core/Consts.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Tools.h>
+#include "IntegerObject.h"
+#include "NumberObject.h"
+#include "StringObject.h"
 
 // Namespace declarations
 
@@ -51,6 +54,24 @@ FloatObject::FloatObject(const FloatObject& object)
 : Object(object.getName(), SYSTEM_LIBRARY, TYPENAME, object.getValue()),
   mValue(object.getNativeValue())
 {
+}
+
+FloatObject::FloatObject(const Object& other)
+: Object(other.getName(), SYSTEM_LIBRARY, TYPENAME, other.getValue())
+{
+	// generic type cast
+
+	std::string source = other.Typename();
+
+	if ( source == FloatObject::TYPENAME ||
+		 source == IntegerObject::TYPENAME ||
+		 source == NumberObject::TYPENAME ||
+		 source == StringObject::TYPENAME) {
+		mValue = Tools::stringToFloat(other.getValue());
+	}
+	else {
+		throw Utils::Exceptions::InvalidTypeCast("from " + source + " to " + TYPENAME);
+	}
 }
 
 FloatObject::operator bool() const
