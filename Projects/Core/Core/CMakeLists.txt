@@ -31,6 +31,7 @@ SET(SOURCES
 	Token.cpp
 	Tokenizer.cpp
 	Tools.cpp
+	TypeCast.cpp
 	Types.cpp
 	VirtualMachine.cpp
 )
@@ -61,6 +62,7 @@ SET(HEADERS
 	Token.h
 	Tokenizer.h
 	Tools.h
+	TypeCast.h
 	Types.h
 	VirtualMachine.h
 )

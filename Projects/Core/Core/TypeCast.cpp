@@ -79,3 +79,4 @@ void typecast(Object *base, const std::string& type)
 
 
 }
+
