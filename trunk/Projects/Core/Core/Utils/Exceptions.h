@@ -124,6 +124,17 @@ public:
 };
 
 
+class InvalidTypeCast : public Exception
+{
+public:
+	InvalidTypeCast(const std::string& text, const Utils::Position& position = Utils::Position())
+	: Exception("Exception.InvalidTypeCast: " + text, position)
+	{ }
+
+	virtual ~InvalidTypeCast() throw() { }
+};
+
+
 class NotImplemented : public Exception
 {
 public:

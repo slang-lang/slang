@@ -27,7 +27,8 @@ public:
 	IntegerObject(int value = 0);
 	IntegerObject(const std::string& name, int value);
 	IntegerObject(const std::string& name, const std::string& value);
-	IntegerObject(const IntegerObject& object);
+	IntegerObject(const IntegerObject& other);
+	IntegerObject(const Object& object);
 
 public:	// Symbol::IType implementation
 	const std::string& getTypeName() const;

@@ -42,6 +42,24 @@ StringObject::StringObject(const std::string& name, const std::string& value)
 	Constructor(ParameterList());
 }
 
+StringObject::StringObject(const Object& other)
+: Object(other.getName(), SYSTEM_LIBRARY, TYPENAME, other.getValue())
+{
+	// generic type cast
+
+	std::string source = other.Typename();
+
+	if ( source == BoolObject::TYPENAME ||
+		 source == FloatObject::TYPENAME ||
+		 source == IntegerObject::TYPENAME ||
+		 source == NumberObject::TYPENAME ) {
+		mValue = other.getValue();
+	}
+	else {
+		throw Utils::Exceptions::InvalidTypeCast("from " + source + " to " + TYPENAME);
+	}
+}
+
 StringObject::StringObject(const StringObject& object)
 : Object(object.getName(), SYSTEM_LIBRARY, TYPENAME, object.getValue())
 {

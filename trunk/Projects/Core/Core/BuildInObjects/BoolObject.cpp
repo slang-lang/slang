@@ -57,6 +57,14 @@ BoolObject::BoolObject(const BoolObject& object)
 {
 }
 
+BoolObject::BoolObject(const Object& object)
+: Object(object.getName(), SYSTEM_LIBRARY, TYPENAME, object.getValue())
+{
+	// generic type cast
+
+	mValue = isTrue(object);
+}
+
 BoolObject::operator bool() const
 {
 	return mValue;

@@ -21,6 +21,7 @@
 #include "Repository.h"
 #include "System.h"
 #include "Tools.h"
+#include "TypeCast.h"
 
 // Namespace declarations
 
@@ -248,8 +249,12 @@ void Interpreter::parseInfixPostfix(Object *result, TokenIterator& start)
 			parseTerm(result, start);
 			operator_unary_minus(result);
 		} break;
-		//case Token::Type::TYPE: {
-		//} break;
+		case Token::Type::TYPE: {
+			std::string newType = start->content();
+			start++;
+			parseTerm(result, start);
+			typecast(result, newType);
+		} break;
 		default: {
 			parseTerm(result, start);
 		} break;

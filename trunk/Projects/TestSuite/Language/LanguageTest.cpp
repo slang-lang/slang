@@ -53,6 +53,7 @@ void LanguageTest::process()
 	//TEST(testStaticLocalVariable);
 	//TEST(testSwitch);					// not yet implemented
 	TEST(testThis);
+	TEST(testTypeCast);
 	TEST(testWhile);
 
 // not yet implemented
@@ -424,6 +425,21 @@ void LanguageTest::testThis()
 		VirtualMachine vm;
 
 		vm.create("Tests/Language/ThisTest.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// unexpected exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void LanguageTest::testTypeCast()
+{
+	try {
+		VirtualMachine vm;
+
+		vm.create("Tests/Language/TypeCastTest.os");
 
 		// automatic success
 	}
