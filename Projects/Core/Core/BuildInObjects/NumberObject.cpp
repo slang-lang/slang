@@ -295,6 +295,11 @@ void NumberObject::operator_unary_increment()
 	mValue++;
 }
 
+void NumberObject::operator_unary_minus()
+{
+	mValue = -mValue;
+}
+
 void NumberObject::operator_unary_not()
 {
 	mValue = !mValue;

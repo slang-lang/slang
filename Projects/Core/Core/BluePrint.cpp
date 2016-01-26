@@ -78,7 +78,7 @@ Visibility::E BluePrint::getVisibility() const
 
 bool BluePrint::isAbstract() const
 {
-	for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
+	for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
 		if ( (*it)->isAbstract() ) {
 			return true;
 		}

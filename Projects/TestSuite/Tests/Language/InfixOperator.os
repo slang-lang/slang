@@ -9,6 +9,7 @@ public namespace InfixOperator
 			assert( TestCase1() );
 			//assert( TestCase2() );
 			//assert( TestCase3() );
+			assert( TestCase4() );
 		}
 
 		private bool TestCase1() const
@@ -38,6 +39,18 @@ public namespace InfixOperator
 			++value;
 
 			return value == 3;
+		}
+
+		private bool TestCase4() const
+		{
+			print("TestCase4: unary - operator");
+
+			number value = 2;
+			print("value = " + value);
+			value = -1;
+			print("value = " + value);
+
+			return value == -1;
 		}
 	}
 }
