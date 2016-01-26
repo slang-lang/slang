@@ -267,6 +267,8 @@ void Interpreter::parseInfixPostfix(Object *result, TokenIterator& start)
 			operator_unary_increment(result);
 			start++;
 		} break;
+		default: {
+		} break;
 	}
 }
 
