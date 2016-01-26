@@ -880,6 +880,56 @@ void operator_unary_increment(Object *base)
 	}
 }
 
+void operator_unary_minus(Object *base)
+{
+	if ( !base ) {
+		throw Utils::Exceptions::NullPointer("cannot subtract object from null pointer");
+	}
+
+	std::string source = base->Typename();
+
+	if ( source == BoolObject::TYPENAME ) {
+		BoolObject tmp(Tools::stringToBool(base->getValue()));
+		tmp.operator_unary_minus();
+
+		*base = tmp;
+	}
+	else if ( source == FloatObject::TYPENAME ) {
+		FloatObject tmp(Tools::stringToFloat(base->getValue()));
+		tmp.operator_unary_minus();
+
+		*base = tmp;
+	}
+	else if ( source == IntegerObject::TYPENAME ) {
+		IntegerObject tmp(Tools::stringToInt(base->getValue()));
+		tmp.operator_unary_minus();
+
+		*base = tmp;
+	}
+	else if ( source == NumberObject::TYPENAME ) {
+		NumberObject tmp(Tools::stringToFloat(base->getValue()));
+		tmp.operator_unary_minus();
+
+		*base = tmp;
+	}
+	else if ( source == StringObject::TYPENAME ) {
+		StringObject tmp(base->getValue());
+		tmp.operator_unary_minus();
+
+		*base = tmp;
+	}
+	else if ( source == VoidObject::TYPENAME ) {
+		VoidObject tmp;
+		tmp.operator_unary_minus();
+
+		*base = tmp;
+	}
+	else {
+		Object tmp;
+		base->execute(&tmp, "operator-", ParameterList(), 0);
+	}
+}
+
 void operator_unary_not(Object *base)
 {
 	if ( !base ) {

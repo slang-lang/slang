@@ -316,6 +316,11 @@ void IntegerObject::operator_unary_increment()
 	mValue++;
 }
 
+void IntegerObject::operator_unary_minus()
+{
+	mValue = -mValue;
+}
+
 void IntegerObject::operator_unary_not()
 {
 	mValue = !mValue;

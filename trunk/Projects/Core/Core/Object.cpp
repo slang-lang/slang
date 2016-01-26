@@ -380,6 +380,11 @@ void Object::operator_unary_increment()
 	throw Utils::Exceptions::NotImplemented("operator++: for " + Typename() + " not supported");
 }
 
+void Object::operator_unary_minus()
+{
+	throw Utils::Exceptions::NotImplemented("operator unary -: for " + Typename() + " not supported");
+}
+
 void Object::operator_unary_not()
 {
 	throw Utils::Exceptions::NotImplemented("operator unary !: for " + Typename() + " not supported");

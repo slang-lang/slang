@@ -115,8 +115,7 @@ void Interpreter::parseCondition(Object *result, TokenIterator& start)
 			 break;
 		}
 
-		// consume comperator token
-		start++;
+		start++;	// consume comperator token
 
 		Object v2;
 		parseExpression(&v2, start);
@@ -193,7 +192,6 @@ void Interpreter::parseFactors(Object *result, TokenIterator& start)
 		start++;	// consume operator token
 	}
 	else {
-		//parseTerm(result, start);
 		parseInfixPostfix(result, start);
 	}
 
@@ -219,7 +217,6 @@ void Interpreter::parseFactors(Object *result, TokenIterator& start)
 			start++;	// consume operator token
 		}
 		else {
-			//parseTerm(&v2, start);
 			parseInfixPostfix(&v2, start);
 		}
 
@@ -240,41 +237,36 @@ void Interpreter::parseInfixPostfix(Object *result, TokenIterator& start)
 	Token::Type::E op = start->type();
 
 	// infix
-	if ( op == Token::Type::NOT ) {
-		start++;
-
-		operator_unary_not(result);
-	}
-/*
-	else if ( op == Token::Type::MATH_SUBTRACT ) {
-		start++;
-
-		parseTerm(result, start);
-
-		//operator_unary_minus(result, result);
-	}
-*/
-/*
-	else if ( op == Token::Type::TYPE ) {
-		// type cast
-
-		start++;
-	}
-*/
-	else {
-		parseTerm(result, start);
+	switch ( op ) {
+		case Token::Type::NOT: {
+			start++;
+			parseTerm(result, start);
+			operator_unary_not(result);
+		} break;
+		case Token::Type::MATH_SUBTRACT: {
+			start++;
+			parseTerm(result, start);
+			operator_unary_minus(result);
+		} break;
+		//case Token::Type::TYPE: {
+		//} break;
+		default: {
+			parseTerm(result, start);
+		} break;
 	}
 
 	op = start->type();
-	if ( op == Token::Type::DECREMENT ) {
-		operator_unary_decrement(result);
 
-		start++;
-	}
-	else if ( op == Token::Type::INCREMENT ) {
-		operator_unary_increment(result);
-
-		start++;
+	// postfix
+	switch ( op ) {
+		case Token::Type::DECREMENT: {
+			operator_unary_decrement(result);
+			start++;
+		} break;
+		case Token::Type::INCREMENT: {
+			operator_unary_increment(result);
+			start++;
+		} break;
 	}
 }
 
@@ -566,9 +558,11 @@ void Interpreter::process_for(TokenIterator& token, Object *result)
 void Interpreter::process_identifier(TokenIterator& token, Token::Type::E terminator)
 {
 	// try to find assignment token
-	TokenIterator assign = findNext(token, Token::Type::ASSIGN, terminator);//Token::Type::SEMICOLON);
+	TokenIterator assign = findNext(token, Token::Type::ASSIGN, terminator);
 	// find next semicolon
-	TokenIterator end = findNext(assign, terminator);//Token::Type::SEMICOLON);
+	TokenIterator end = findNext(assign, terminator);
+
+	std::string identifier = token->content();
 
     if ( assign == token ) {
         // we don't have an assignment but a method call
@@ -578,8 +572,6 @@ void Interpreter::process_identifier(TokenIterator& token, Token::Type::E termin
         token = end;
         return;
     }
-
-	std::string identifier = token->content();
 
 	Object *symbol = static_cast<Object*>(resolve(identifier));
 	if ( !symbol ) {

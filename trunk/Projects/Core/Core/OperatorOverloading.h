@@ -35,6 +35,7 @@ void operator_plus(Object *base, Object *other);
 void operator_subtract(Object *base, Object *other);
 void operator_unary_decrement(Object *base);
 void operator_unary_increment(Object *base);
+void operator_unary_minus(Object *base);
 void operator_unary_not(Object *base);
 
 
