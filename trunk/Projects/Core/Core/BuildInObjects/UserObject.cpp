@@ -55,7 +55,7 @@ void UserObject::operator_assign(Object *other)
 	);
 
 	Object tmp;
-	this->execute(&tmp, "operator_assign", params, 0);
+	this->execute(&tmp, "operator=", params, 0);
 }
 
 void UserObject::operator_divide(Object *other)
@@ -66,7 +66,7 @@ void UserObject::operator_divide(Object *other)
 	);
 
 	Object tmp;
-	this->execute(&tmp, "operator_divide", params, 0);
+	this->execute(&tmp, "operator/", params, 0);
 }
 
 bool UserObject::operator_equal(Object *other)
@@ -75,7 +75,7 @@ bool UserObject::operator_equal(Object *other)
 	params.push_back(Parameter(other->getName(), other->Typename(), other->getValue()));
 
 	Object tmp;
-	this->execute(&tmp, "operator_equal", params, 0);
+	this->execute(&tmp, "operator==", params, 0);
 
 	return tmp.isValid();
 }
@@ -86,7 +86,7 @@ bool UserObject::operator_greater(Object *other)
 	params.push_back(Parameter(other->getName(), other->Typename(), other->getValue()));
 
 	Object tmp;
-	this->execute(&tmp, "operator_greater", params, 0);
+	this->execute(&tmp, "operator>", params, 0);
 
 	return tmp.isValid();
 }
@@ -97,7 +97,7 @@ bool UserObject::operator_greater_equal(Object *other)
 	params.push_back(Parameter(other->getName(), other->Typename(), other->getValue()));
 
 	Object tmp;
-	this->execute(&tmp, "operator_greater_equal", params, 0);
+	this->execute(&tmp, "operator>=", params, 0);
 
 	return tmp.isValid();
 }
@@ -108,7 +108,7 @@ bool UserObject::operator_less(Object *other)
 	params.push_back(Parameter(other->getName(), other->Typename(), other->getValue()));
 
 	Object tmp;
-	this->execute(&tmp, "operator_less", params, 0);
+	this->execute(&tmp, "operator<", params, 0);
 
 	return tmp.isValid();
 }
@@ -119,7 +119,7 @@ bool UserObject::operator_less_equal(Object *other)
 	params.push_back(Parameter(other->getName(), other->Typename(), other->getValue()));
 
 	Object tmp;
-	this->execute(&tmp, "operator_less_equal", params, 0);
+	this->execute(&tmp, "operator<=", params, 0);
 
 	return tmp.isValid();
 }
@@ -132,7 +132,7 @@ void UserObject::operator_multiply(Object *other)
 	);
 
 	Object tmp;
-	this->execute(&tmp, "operator_multiply", params, 0);
+	this->execute(&tmp, "operator*", params, 0);
 }
 
 void UserObject::operator_plus(Object *other)
@@ -143,7 +143,7 @@ void UserObject::operator_plus(Object *other)
 	);
 
 	Object tmp;
-	this->execute(&tmp, "operator_plus", params, 0);
+	this->execute(&tmp, "operator+", params, 0);
 }
 
 void UserObject::operator_subtract(Object *other)
@@ -154,7 +154,7 @@ void UserObject::operator_subtract(Object *other)
 	);
 
 	Object tmp;
-	this->execute(&tmp, "operator_subtract", params, 0);
+	this->execute(&tmp, "operator-", params, 0);
 }
 
 std::string UserObject::ToString() const

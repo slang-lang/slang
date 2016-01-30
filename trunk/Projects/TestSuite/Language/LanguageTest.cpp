@@ -44,6 +44,7 @@ void LanguageTest::process()
 	TEST(testIf);
 	TEST(testInfixOperator);
 	TEST(testMethodOverloading);
+	TEST(testObjectEquality);
 	TEST(testObjectReference);
 	TEST(testParameters);
 	TEST(testPostfixOperator);
@@ -288,6 +289,21 @@ void LanguageTest::testNamespaces()
 		VirtualMachine vm;
 
 		vm.create("Tests/Language/NamespaceTest.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// unexpected exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void LanguageTest::testObjectEquality()
+{
+	try {
+		VirtualMachine vm;
+
+		vm.create("Tests/Language/ObjectEqualityTest.os");
 
 		// automatic success
 	}

@@ -677,7 +677,7 @@ void Tokenizer::replaceAssignments()
 			// remove last added token ...
 			tmp.pop_back();
 			// ... and add COMPARE_EQUAL instead
-			tmp.push_back(Token(Token::Category::Assignment, Token::Type::COMPARE_EQUAL, "==", token->position()));
+			tmp.push_back(Token(Token::Category::Comparator, Token::Type::COMPARE_EQUAL, "==", token->position()));
 		}
 		else if ( (lastType == Token::Type::BITCOMPLEMENT) && (activeType == Token::Type::ASSIGN) ) {
 			// ~=
@@ -687,13 +687,21 @@ void Tokenizer::replaceAssignments()
 			// ... and add ASSIGN_ADD instead
 			tmp.push_back(Token(Token::Category::Assignment, Token::Type::ASSIGN_BITCOMPLEMENT, "~=", token->position()));
 		}
+		else if ( (lastType == Token::Type::NOT) && (activeType == Token::Type::ASSIGN) ) {
+			// !=
+			changed = true;
+			// remove last added token ...
+			tmp.pop_back();
+			// ... and add ASSIGN_ADD instead
+			tmp.push_back(Token(Token::Category::Comparator, Token::Type::COMPARE_UNEQUAL, "!=", token->position()));
+		}
 		else if ( (lastType == Token::Type::GREATER || lastType == Token::Type::COMPARE_GREATER) && (activeType == Token::Type::ASSIGN) ) {
 			// >=
 			changed = true;
 			// remove last added token ...
 			tmp.pop_back();
 			// ... and add COMPARE_GREATER_EQUAL instead
-			tmp.push_back(Token(Token::Category::Assignment, Token::Type::COMPARE_GREATER_EQUAL, ">=", token->position()));
+			tmp.push_back(Token(Token::Category::Comparator, Token::Type::COMPARE_GREATER_EQUAL, ">=", token->position()));
 		}
 		else if ( (lastType == Token::Type::LESS || lastType == Token::Type::COMPARE_LESS) && (activeType == Token::Type::ASSIGN) ) {
 			// <=
@@ -701,7 +709,7 @@ void Tokenizer::replaceAssignments()
 			// remove last added token ...
 			tmp.pop_back();
 			// ... and add COMPARE_LESS_EQUAL instead
-			tmp.push_back(Token(Token::Category::Assignment, Token::Type::COMPARE_LESS_EQUAL, "<=", token->position()));
+			tmp.push_back(Token(Token::Category::Comparator, Token::Type::COMPARE_LESS_EQUAL, "<=", token->position()));
 		}
 		else if ( (lastType == Token::Type::MATH_ADDITION) && (activeType == Token::Type::ASSIGN) ) {
 			// +=

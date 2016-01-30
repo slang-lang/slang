@@ -46,6 +46,7 @@ private:	// Tests
 	void testInterfaces();
 	void testMethodOverloading();
 	void testNamespaces();
+	void testObjectEquality();
 	void testObjectReference();
 	void testParameters();
 	void testPostfixOperator();
