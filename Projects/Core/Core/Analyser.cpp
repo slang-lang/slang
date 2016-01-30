@@ -35,6 +35,7 @@ Analyser::~Analyser()
 
 Designtime::BluePrint Analyser::createBluePrint(TokenIterator& start, TokenIterator end)
 {
+	std::string fullyQualifiedName;
 	std::string languageFeature;
 	std::string name;
 	std::string visibility;
@@ -49,6 +50,10 @@ Designtime::BluePrint Analyser::createBluePrint(TokenIterator& start, TokenItera
 	}
 	// look for the identifier token
 	name = (*start).content();
+
+	if ( !mScopeName.empty() ) {
+		fullyQualifiedName = mScopeName + RESERVED_WORD_SCOPE_OPERATOR + name;
+	}
 
 	// look for the next opening curly brackets
 	TokenIterator open = findNext(++start, Token::Type::BRACKET_CURLY_OPEN);
@@ -95,6 +100,7 @@ Designtime::BluePrint Analyser::createBluePrint(TokenIterator& start, TokenItera
 	sanity.process(tokens);
 
 	Designtime::BluePrint blue(name, mFilename);
+	blue.setFullyQualifiedName(fullyQualifiedName);
 	blue.setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
 	blue.setTokens(tokens);
 	blue.setVisibility(Visibility::convert(visibility));
@@ -117,6 +123,7 @@ std::string Analyser::createLibraryReference(TokenIterator& start, TokenIterator
 
 Interface Analyser::createInterface(TokenIterator& start, TokenIterator end)
 {
+	std::string fullyQualifiedName;
 	std::string languageFeature;
 	std::string name;
 	std::string visibility;
@@ -131,6 +138,10 @@ Interface Analyser::createInterface(TokenIterator& start, TokenIterator end)
 	}
 	// look for the identifier token
 	name = (*start).content();
+
+	if ( !mScopeName.empty() ) {
+		fullyQualifiedName = mScopeName + RESERVED_WORD_SCOPE_OPERATOR + name;
+	}
 
 	// look for the next opening curly brackets
 	TokenIterator open = findNext(++start, Token::Type::BRACKET_CURLY_OPEN);
@@ -155,6 +166,7 @@ Interface Analyser::createInterface(TokenIterator& start, TokenIterator end)
 	sanity.process(tokens);
 
 	Interface inter(name, mFilename);
+	//inter.setFullyQualifiedName(fullyQualifiedName);
 	inter.setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
 	inter.setTokens(tokens);
 
@@ -196,6 +208,11 @@ void Analyser::createNamespace(TokenIterator& start, TokenIterator end)
 
 	SanityChecker sanity;
 	sanity.process(tokens);
+
+	if ( !mScopeName.empty() ) {
+		mScopeName += RESERVED_WORD_SCOPE_OPERATOR;
+	}
+	mScopeName += name;
 
 	generate(tokens);
 

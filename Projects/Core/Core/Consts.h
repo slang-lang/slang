@@ -67,6 +67,7 @@ static const char* RESERVED_WORD_NAMESPACE = "namespace";
 static const char* RESERVED_WORD_OBJECT = "object";
 static const char* RESERVED_WORD_OPERATOR = "operator";
 static const char* RESERVED_WORD_PROTOTYPE = "prototype";
+static const char* RESERVED_WORD_SCOPE_OPERATOR = ".";
 static const char* RESERVED_WORD_USING = "using";
 
 // System

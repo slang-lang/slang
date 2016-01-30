@@ -61,6 +61,16 @@ void BluePrint::cleanup()
 	mSymbols.clear();
 }
 
+const std::string& BluePrint::getFullyQualifiedName() const
+{
+	return mFullyQualifiedName;
+}
+
+void BluePrint::setFullyQualifiedName(const std::string& name)
+{
+	mFullyQualifiedName = name;
+}
+
 const std::string& BluePrint::getName() const
 {
 	return mName;

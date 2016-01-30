@@ -45,6 +45,9 @@ public:
 	void cleanup();
 
 public:
+	const std::string& getFullyQualifiedName() const;
+	void setFullyQualifiedName(const std::string& name);
+
 	const std::string& getName() const;
 
 	const TokenList& getTokens() const;
@@ -69,6 +72,7 @@ protected:
 	}
 
 private:
+	std::string mFullyQualifiedName;
 	std::string mName;
 	TokenList mTokens;
 	Visibility::E mVisibility;

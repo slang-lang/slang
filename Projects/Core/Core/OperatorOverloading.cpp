@@ -359,9 +359,14 @@ bool operator_equal(Object *base, Object *other)
 		Parameter(other->getName(), other->Typename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
 	);
 
-	Object tmp;
-	base->execute(&tmp, "operator==", params, 0);
-	return isTrue(tmp);
+	if ( base->resolveMethod("operator==", params) ) {
+		Object tmp;
+		base->execute(&tmp, "operator==", params, 0);
+		return isTrue(tmp);
+	}
+
+	// no equality operator found, so we have to compare our references
+	return base == other;
 }
 
 bool operator_greater(Object *base, Object *other)

@@ -66,6 +66,7 @@ private:
 	InterfaceList mInterfaces;
 	StringList mLibraries;
 	PrototypeList mPrototypes;
+	std::string mScopeName;
 };
 
 
