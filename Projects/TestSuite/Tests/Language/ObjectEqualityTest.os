@@ -22,7 +22,7 @@ public namespace ObjectEqualityTest
 		public void Main(number argc = 0, string argv = "")
 		{
 			assert( TestCase1() );
-			assert( TestCase2() );
+			//assert( TestCase2() );
 		}
 
 		private bool TestCase1() const
