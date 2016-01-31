@@ -15,9 +15,9 @@ namespace ObjectiveScript {
 
 
 GenericAttributes::GenericAttributes()
-: mIsSealed(false),
-  mIsConst(true),
+: mIsConst(true),
   mIsFinal(false),
+  mIsSealed(false),
   mLanguageFeatureState(LanguageFeatureState::Stable),
   mVisibility(Visibility::Private)
 {
@@ -34,6 +34,11 @@ void GenericAttributes::checkSealState()
 	}
 }
 
+LanguageFeatureState::E GenericAttributes::getLanguageFeatureState() const
+{
+	return mLanguageFeatureState;
+}
+
 bool GenericAttributes::isConst() const
 {
 	return mIsConst;
@@ -42,11 +47,6 @@ bool GenericAttributes::isConst() const
 bool GenericAttributes::isFinal() const
 {
 	return mIsFinal;
-}
-
-LanguageFeatureState::E GenericAttributes::languageFeatureState() const
-{
-	return mLanguageFeatureState;
 }
 
 void GenericAttributes::setConst(bool state)
@@ -68,12 +68,12 @@ void GenericAttributes::setLanguageFeatureState(LanguageFeatureState::E s)
 	mLanguageFeatureState = s;
 }
 
-Visibility::E GenericAttributes::visibility() const
+Visibility::E GenericAttributes::getVisibility() const
 {
 	return mVisibility;
 }
 
-void GenericAttributes::visibility(Visibility::E v)
+void GenericAttributes::setVisibility(Visibility::E v)
 {
 	checkSealState();
 
@@ -114,22 +114,10 @@ bool MethodAttributes::isAbstract() const
 	return mIsAbstract;
 }
 
-bool MethodAttributes::isSealed() const
-{
-	return mIsSealed;
-}
-
 void MethodAttributes::setAbstract(bool state)
 {
 	mIsAbstract = state;
 }
-
-void MethodAttributes::setSealed(bool state)
-{
-	// after seal has been called no language feature can get modified anymore
-	mIsSealed = state;
-}
-
 
 NamespaceAttributes::NamespaceAttributes()
 {

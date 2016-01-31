@@ -70,7 +70,6 @@ private: // Deinit
 	void garbageCollector();
 
 private:
-	ParameterList mParameter;
 	Repository *mRepository;
 	ParameterList mSignature;
 	TokenList mTokens;

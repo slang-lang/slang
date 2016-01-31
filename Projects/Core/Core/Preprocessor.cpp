@@ -64,7 +64,7 @@ Designtime::BluePrint* Preprocessor::createMember(TokenIterator token)
 	blue->setConst(isConst);
 	blue->setFinal(isFinal);
 	blue->setMember(true);		// every object created here is a member object
-	blue->visibility(Visibility::convert(visibility));
+	blue->setVisibility(Visibility::convert(visibility));
 
 	return blue;
 }
@@ -152,7 +152,7 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token)
 	method->setRepository(mRepository);
 	method->setSignature(params);
 	method->setTokens(tokens);
-	method->visibility(Visibility::convert(visibility));
+	method->setVisibility(Visibility::convert(visibility));
 
 	return method;
 }

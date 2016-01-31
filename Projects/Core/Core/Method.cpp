@@ -31,7 +31,6 @@ Method::Method(IScope *parent, const std::string& name, const std::string& type)
 
 Method::~Method()
 {
-	garbageCollector();
 }
 
 bool Method::operator() (const Method& first, const Method& second) const
@@ -89,16 +88,15 @@ bool Method::operator< (const Method& other) const
 void Method::operator= (const Method& other)
 {
 	if ( this != &other ) {
-		setConst(other.isConst());
-		setFinal(other.isFinal());
-		setLanguageFeatureState(other.languageFeatureState());
-
-		mParameter = other.mParameter;
+		mLanguageFeatureState = other.mLanguageFeatureState;
+		mIsAbstract = other.mIsAbstract;
+		mIsConst = other.mIsConst;
+		mIsFinal = other.mIsFinal;
+		mIsSealed = other.mIsSealed;
 		mRepository = other.mRepository;
+		mSignature = other.mSignature;
 		mTokens = other.mTokens;
-
-		setSignature(other.provideSignature());
-		visibility(other.visibility());
+		mVisibility = other.mVisibility;
 	}
 }
 
@@ -110,7 +108,7 @@ ControlFlow::E Method::execute(const ParameterList& params, Object *result)
 		throw Utils::Exceptions::ParameterCountMissmatch("incorrect number or type of parameters");
 	}
 
-	switch ( languageFeatureState() ) {
+	switch ( getLanguageFeatureState() ) {
 		case LanguageFeatureState::Deprecated: OSwarn("method '" + getName() + "' is marked as deprecated"); break;
 		case LanguageFeatureState::NotImplemented: OSerror("method '" + getName() + "' is marked as not implemented"); throw Utils::Exceptions::NotImplemented(getName()); break;
 		case LanguageFeatureState::Stable: /* this is the normal language feature state, so there is no need to log anything here */ break;
@@ -121,9 +119,10 @@ ControlFlow::E Method::execute(const ParameterList& params, Object *result)
 	Interpreter interpreter(this, getName());
 	interpreter.setConst(isConst());
 	interpreter.setFinal(isFinal());
-	interpreter.setLanguageFeatureState(languageFeatureState());
+	interpreter.setLanguageFeatureState(getLanguageFeatureState());
 	interpreter.setRepository(mRepository);
 	interpreter.setTokens(mTokens);
+	interpreter.setVisibility(getVisibility());
 
 	// add parameters as locale variables
 	ParameterList::const_iterator paramIt = params.begin();
@@ -170,6 +169,9 @@ ControlFlow::E Method::execute(const ParameterList& params, Object *result)
 
 	ControlFlow::E controlflow = interpreter.execute(result);
 
+	// let the garbage collector do its magic
+	garbageCollector();
+
 	// detect unnatural control flow
 	switch ( controlflow ) {
 		case ControlFlow::Break:
@@ -205,9 +207,8 @@ void Method::garbageCollector()
 			 it->second && it->second->getType() == Symbol::IType::ObjectSymbol ) {
 			mRepository->removeReference(static_cast<Object*>(it->second));
 		}
-
-		undefine(it->first, it->second);
 	}
+	mSymbols.clear();
 }
 
 const std::string& Method::getTypeName() const
@@ -280,7 +281,7 @@ Symbol* Method::resolve(const std::string& name, bool onlyCurrentScope) const
 				return result;
 			case Symbol::IType::BluePrintSymbol:
 			case Symbol::IType::UnknownSymbol:
-				throw Utils::Exceptions::SyntaxError("cannot directly access locales of method/namespace");
+				throw Utils::Exceptions::SyntaxError("cannot directly access locals of method/namespace");
 		}
 
 		Tools::split(member, parent, member);
@@ -312,7 +313,7 @@ Symbol* Method::resolveMethod(const std::string& name, const ParameterList& para
 			case Symbol::IType::BluePrintSymbol:
 			case Symbol::IType::NamespaceSymbol:
 			case Symbol::IType::UnknownSymbol:
-				throw Utils::Exceptions::SyntaxError("cannot directly access locales of method/namespace");
+				throw Utils::Exceptions::SyntaxError("cannot directly access locals of method/namespace");
 		}
 	}
 

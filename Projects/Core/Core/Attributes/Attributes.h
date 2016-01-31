@@ -30,21 +30,19 @@ public:
 	bool isFinal() const;
 	void setFinal(bool state);
 
-	LanguageFeatureState::E languageFeatureState() const;
+	LanguageFeatureState::E getLanguageFeatureState() const;
 	void setLanguageFeatureState(LanguageFeatureState::E s);
 
-	Visibility::E visibility() const;
-	void visibility(Visibility::E v);
+	Visibility::E getVisibility() const;
+	void setVisibility(Visibility::E v);
 
 protected:
 	void checkSealState();
 
 protected:
-	bool mIsSealed;
-
-private:
 	bool mIsConst;
 	bool mIsFinal;
+	bool mIsSealed;
 	LanguageFeatureState::E mLanguageFeatureState;
 	Visibility::E mVisibility;
 };
@@ -83,10 +81,7 @@ public:
 	bool isAbstract() const;
 	void setAbstract(bool state);
 
-	bool isSealed() const;
-	void setSealed(bool state);
-
-private:
+protected:
 	bool mIsAbstract;
 };
 
@@ -114,7 +109,7 @@ public:
 	bool isSealed() const;
 	void setSealed(bool state);
 
-private:
+protected:
 	bool mIsMember;
 };
 
