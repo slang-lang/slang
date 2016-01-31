@@ -82,7 +82,7 @@ void Repository::addBlueprint(const Designtime::BluePrint& blueprint)
 	for ( TokenList::iterator tokenIt = tokens.begin(); tokenIt != tokens.end(); ++tokenIt ) {
 		// we found an identifier token
 		if ( tokenIt->type() == Token::Type::IDENTIFER ) {
-			// check if it's content is one of our newly added blueprint objects
+			// check if its content is one of our newly added blueprint objects
 			if ( tokenIt->content() != blueprint.Typename() && mBluePrints.find(tokenIt->content()) != mBluePrints.end() ) {
 				tokenIt->resetTypeTo(Token::Type::TYPE);
 
@@ -117,7 +117,7 @@ void Repository::addReference(Runtime::Object *object)
 		return;
 	}
 
-	switch ( object->languageFeatureState() ) {
+	switch ( object->getLanguageFeatureState() ) {
 		case LanguageFeatureState::Deprecated: OSwarn("method '" + object->getName() + "' is marked as deprecated!"); break;
 		case LanguageFeatureState::NotImplemented: OSerror("method '" + object->getName() + "' is marked as not implemented!"); throw Utils::Exceptions::NotImplemented(object->getName()); break;
 		case LanguageFeatureState::Stable: /* this is the normal language feature state, so no need to log anything here */ break;
@@ -213,6 +213,8 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 		// instantiate user defined type
 		object = new Runtime::UserObject(name, blueprint->Filename(), blueprint->Typename(), Runtime::UserObject::DEFAULTVALUE);
 
+		object->setRepository(this);
+
 		// define this-symbol
 		object->define(KEYWORD_THIS, object);
 
@@ -244,7 +246,6 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 	}
 
 	assert(object);
-	object->setRepository(this);
 	return object;
 }
 

@@ -43,7 +43,7 @@ Object::Object(const Object& other)
 
 	setConst(other.isConst());
 	setFinal(other.isFinal());
-	setLanguageFeatureState(other.languageFeatureState());
+	setLanguageFeatureState(other.getLanguageFeatureState());
 	setMember(other.isMember());
 	setValue(other.getValue());
 
@@ -208,7 +208,7 @@ ControlFlow::E Object::execute(Object *result, const std::string& method, const 
 	// check visibility:
 	// colleague methods can always call us,
 	// for calls from non-member functions the method visibility must be public (or protected if they belong to the same object hierarchy)
-	if ( !callFromMethod && symbol->visibility() != Visibility::Public ) {
+	if ( !callFromMethod && symbol->getVisibility() != Visibility::Public ) {
 		throw Utils::Exceptions::VisibilityError("invalid visibility: " + method);
 	}
 
@@ -229,12 +229,8 @@ void Object::garbageCollector()
 	mMethods.clear();
 
 	for ( Symbols::iterator it = mSymbols.begin(); it != mSymbols.end(); ++it ) {
-		if ( it->first == KEYWORD_THIS ) {
-			continue;
-		}
-
-		if ( it->second && it->second->getType() == Symbol::IType::ObjectSymbol ) {
-			// members are objects, so they will get cleaned up by our repository
+		if ( it->first != KEYWORD_THIS &&
+			 it->second && it->second->getType() == Symbol::IType::ObjectSymbol ) {
 			mRepository->removeReference(static_cast<Object*>(it->second));
 		}
 	}

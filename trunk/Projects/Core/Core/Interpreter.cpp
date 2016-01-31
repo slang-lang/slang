@@ -514,7 +514,7 @@ void Interpreter::process_for(TokenIterator& token, Object *result)
 		Interpreter interpreter(this, getScopeName());
 		interpreter.setConst(isConst());
 		interpreter.setFinal(isFinal());
-		interpreter.setLanguageFeatureState(languageFeatureState());
+		interpreter.setLanguageFeatureState(getLanguageFeatureState());
 		interpreter.setRepository(mRepository);
 		interpreter.setTokens(loopTokens);
 
@@ -677,7 +677,7 @@ void Interpreter::process_if(TokenIterator& token, Object *result)
 		Interpreter interpreter(this, getScopeName());
 		interpreter.setConst(isConst());
 		interpreter.setFinal(isFinal());
-		interpreter.setLanguageFeatureState(languageFeatureState());
+		interpreter.setLanguageFeatureState(getLanguageFeatureState());
 		interpreter.setRepository(mRepository);
 		interpreter.setTokens(ifTokens);
 
@@ -687,7 +687,7 @@ void Interpreter::process_if(TokenIterator& token, Object *result)
 		Interpreter interpreter(this, getScopeName());
 		interpreter.setConst(isConst());
 		interpreter.setFinal(isFinal());
-		interpreter.setLanguageFeatureState(languageFeatureState());
+		interpreter.setLanguageFeatureState(getLanguageFeatureState());
 		interpreter.setRepository(mRepository);
 		interpreter.setTokens(elseTokens);
 
@@ -908,7 +908,7 @@ void Interpreter::process_scope(TokenIterator& token, Object* result)
 	Interpreter interpreter(this, getScopeName());
 	interpreter.setConst(isConst());
 	interpreter.setFinal(isFinal());
-	interpreter.setLanguageFeatureState(languageFeatureState());
+	interpreter.setLanguageFeatureState(getLanguageFeatureState());
 	interpreter.setRepository(mRepository);
 	interpreter.setTokens(scopeTokens);
 
@@ -1021,7 +1021,7 @@ void Interpreter::process_try(TokenIterator& token, Object *result)
 	Interpreter interpreter(this, getScopeName());
 	interpreter.setConst(isConst());
 	interpreter.setFinal(isFinal());
-	interpreter.setLanguageFeatureState(languageFeatureState());
+	interpreter.setLanguageFeatureState(getLanguageFeatureState());
 	interpreter.setRepository(mRepository);
 	interpreter.setTokens(tryTokens);
 
@@ -1054,7 +1054,7 @@ void Interpreter::process_try(TokenIterator& token, Object *result)
 			Interpreter interpreter(this, getScopeName());
 			interpreter.setConst(isConst());
 			interpreter.setFinal(isFinal());
-			interpreter.setLanguageFeatureState(languageFeatureState());
+			interpreter.setLanguageFeatureState(getLanguageFeatureState());
 			interpreter.setRepository(mRepository);
 			interpreter.setTokens(catchTokens);
 
@@ -1089,7 +1089,7 @@ void Interpreter::process_try(TokenIterator& token, Object *result)
 		Interpreter interpreter(this, getScopeName());
 		interpreter.setConst(isConst());
 		interpreter.setFinal(isFinal());
-		interpreter.setLanguageFeatureState(languageFeatureState());
+		interpreter.setLanguageFeatureState(getLanguageFeatureState());
 		interpreter.setRepository(mRepository);
 		interpreter.setTokens(finallyTokens);
 
@@ -1202,7 +1202,7 @@ void Interpreter::process_while(TokenIterator& token, Object *result)
 		Interpreter interpreter(this, getScopeName());
 		interpreter.setConst(isConst());
 		interpreter.setFinal(isFinal());
-		interpreter.setLanguageFeatureState(languageFeatureState());
+		interpreter.setLanguageFeatureState(getLanguageFeatureState());
 		interpreter.setRepository(mRepository);
 		interpreter.setTokens(statementTokens);
 
