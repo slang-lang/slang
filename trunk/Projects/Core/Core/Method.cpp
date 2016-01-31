@@ -24,7 +24,6 @@ namespace Runtime {
 Method::Method(IScope *parent, const std::string& name, const std::string& type)
 : LocalScope(name, parent),
   MethodSymbol(name),
-  mOwner(0),
   mRepository(0),
   mTypeName(type)
 {
@@ -94,7 +93,6 @@ void Method::operator= (const Method& other)
 		setFinal(other.isFinal());
 		setLanguageFeatureState(other.languageFeatureState());
 
-		mOwner = other.mOwner;
 		mParameter = other.mParameter;
 		mRepository = other.mRepository;
 		mTokens = other.mTokens;
@@ -121,7 +119,7 @@ ControlFlow::E Method::execute(const ParameterList& params, Object *result)
 	}
 
 	Interpreter interpreter(this, getName());
-	interpreter.setConst(isConst() /*|| mOwner->isConst()*/);
+	interpreter.setConst(isConst());
 	interpreter.setFinal(isFinal());
 	interpreter.setLanguageFeatureState(languageFeatureState());
 	interpreter.setRepository(mRepository);
@@ -319,11 +317,6 @@ Symbol* Method::resolveMethod(const std::string& name, const ParameterList& para
 	}
 
 	return 0;
-}
-
-void Method::setOwner(Object *owner)
-{
-	mOwner = owner;
 }
 
 void Method::setRepository(Repository *repository)

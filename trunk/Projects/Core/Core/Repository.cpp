@@ -238,7 +238,6 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 		for ( MethodScope::MethodCollection::const_iterator it = methods.begin(); it != methods.end(); ++it ) {
 			Runtime::Method* method = new Runtime::Method(object, (*it)->getName(), (*it)->getTypeName());
 			*method = *(*it);
-			method->setOwner(object);
 
 			object->defineMethod(method);
 		}

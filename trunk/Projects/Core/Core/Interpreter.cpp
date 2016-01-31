@@ -39,8 +39,6 @@ Interpreter::Interpreter(IScope *scope, const std::string& name)
 
 Interpreter::~Interpreter()
 {
-	// let the garbage collector do it's magic
-	garbageCollector();
 }
 
 ControlFlow::E Interpreter::execute(Object *result)
@@ -455,9 +453,6 @@ void Interpreter::process_delete(TokenIterator& token)
 
 // syntax:
 // for ( <expression>; <condition>; <expression> ) { }
-// i.e. for ( int i = 0; i < 5; i += 1 ) {
-// ...
-// }
 void Interpreter::process_for(TokenIterator& token, Object *result)
 {
 	// initialization-begin
@@ -516,8 +511,6 @@ void Interpreter::process_for(TokenIterator& token, Object *result)
 
 		// Body parsing
 		// {
-		mControlFlow = ControlFlow::Normal;
-
 		Interpreter interpreter(this, getScopeName());
 		interpreter.setConst(isConst());
 		interpreter.setFinal(isFinal());
@@ -529,7 +522,7 @@ void Interpreter::process_for(TokenIterator& token, Object *result)
 
 		switch ( mControlFlow ) {
 			case ControlFlow::Break: mControlFlow = ControlFlow::Normal; return;
-			case ControlFlow::Continue: continue;
+			case ControlFlow::Continue: mControlFlow = ControlFlow::Normal; continue;
 			case ControlFlow::Normal: mControlFlow = ControlFlow::Normal; break;
 			case ControlFlow::Return: return;
 			case ControlFlow::Throw: return;

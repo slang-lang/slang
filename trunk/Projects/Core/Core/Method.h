@@ -58,7 +58,6 @@ public: // Signature
 	const ParameterList& provideSignature() const;
 
 public: // Setup
-	void setOwner(Object *owner);
 	void setRepository(Repository *repository);
 	void setSignature(const ParameterList& params);
 	void setTokens(const TokenList& tokens);
@@ -71,7 +70,6 @@ private: // Deinit
 	void garbageCollector();
 
 private:
-	Object *mOwner;
 	ParameterList mParameter;
 	Repository *mRepository;
 	ParameterList mSignature;

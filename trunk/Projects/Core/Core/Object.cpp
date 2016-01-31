@@ -70,8 +70,6 @@ Object::Object(const Object& other)
 		Method *method = new Method(this, (*it)->getName(), (*it)->getTypeName());
 		*method = *(*it);
 
-		method->setOwner(this);
-
 		defineMethod(method);
 	}
 }
@@ -132,8 +130,6 @@ void Object::operator= (const Object& other)
 		for ( MethodCollection::const_iterator it = other.mMethods.begin(); it != other.mMethods.end(); ++it ) {
 			Method *method = new Method(this, (*it)->getName(), (*it)->getTypeName());
 			*method = *(*it);
-
-			method->setOwner(this);
 
 			defineMethod(method);
 		}
@@ -217,8 +213,6 @@ ControlFlow::E Object::execute(Object *result, const std::string& method, const 
 	}
 
 	result->setRepository(mRepository);
-
-	symbol->setOwner(this);
 	symbol->setRepository(mRepository);
 
 	// execute our member method
