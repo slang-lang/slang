@@ -82,20 +82,7 @@ void GenericAttributes::setVisibility(Visibility::E v)
 
 
 LocalAttributes::LocalAttributes()
-: mIsStatic(false)
 {
-}
-
-bool LocalAttributes::isStatic() const
-{
-	return mIsStatic;
-}
-
-void LocalAttributes::setStatic(bool state)
-{
-	checkSealState();
-
-	mIsStatic = state;
 }
 
 

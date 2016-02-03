@@ -34,12 +34,11 @@ Object::Object()
 Object::Object(const Object& other)
 : MethodScope(other.getName(), 0),
   ObjectSymbol(other.getName()),
-  RTTI(other.Typename(), other.Filename()),
-  mIsAtomicType(other.mIsAtomicType),
-  mRepository(other.mRepository),
-  mConstructed(other.mConstructed)
+  RTTI(other.Typename(), other.Filename())
 {
-	mName = other.getName();
+	mConstructed = other.mConstructed;
+	mIsAtomicType = other.mIsAtomicType;
+	mRepository = other.mRepository;
 
 	setConst(other.isConst());
 	setFinal(other.isFinal());
@@ -47,30 +46,30 @@ Object::Object(const Object& other)
 	setMember(other.isMember());
 	setValue(other.getValue());
 
-	garbageCollector();
+	if ( !mIsAtomicType ) {
+		// register this
+		define(KEYWORD_THIS, this);
 
-	// register this
-	define(KEYWORD_THIS, this);
+		// register new members
+		for ( Symbols::const_iterator it = other.mSymbols.begin(); it != other.mSymbols.end(); ++it ) {
+			if ( it->first == KEYWORD_THIS ) {
+				continue;
+			}
 
-	// register new members
-	for ( Symbols::const_iterator it = other.mSymbols.begin(); it != other.mSymbols.end(); ++it ) {
-		if ( it->first == KEYWORD_THIS ) {
-			continue;
+			if ( it->second && it->second->getType() == Symbol::IType::ObjectSymbol ) {
+				mRepository->addReference(static_cast<Object*>(it->second));
+			}
+
+			define(it->first, it->second);
 		}
 
-		if ( it->second && it->second->getType() == Symbol::IType::ObjectSymbol ) {
-			mRepository->addReference(static_cast<Object*>(it->second));
+		// register new methods
+		for ( MethodCollection::const_iterator it = other.mMethods.begin(); it != other.mMethods.end(); ++it ) {
+			Method *method = new Method(this, (*it)->getName(), (*it)->getTypeName());
+			*method = *(*it);
+
+			defineMethod(method);
 		}
-
-		define(it->first, it->second);
-	}
-
-	// register new methods
-	for ( MethodCollection::const_iterator it = other.mMethods.begin(); it != other.mMethods.end(); ++it ) {
-		Method *method = new Method(this, (*it)->getName(), (*it)->getTypeName());
-		*method = *(*it);
-
-		defineMethod(method);
 	}
 }
 
@@ -100,38 +99,39 @@ void Object::operator= (const Object& other)
 			mRepository = other.mRepository;
 		}
 
+		mIsAtomicType = other.mIsAtomicType;
+
 		mFilename = other.mFilename;
 		mTypename = other.mTypename;
 
-		//setConst(other.isConst());
-		//setFinal(other.isFinal());
-		//setMember(other.isMember());
 		setValue(other.getValue());
 
 		garbageCollector();
 
-		// register this
-		define(KEYWORD_THIS, this);
+		if ( !mIsAtomicType ) {
+			// register this
+			define(KEYWORD_THIS, this);
 
-		// register new members
-		for ( Symbols::const_iterator it = other.mSymbols.begin(); it != other.mSymbols.end(); ++it ) {
-			if ( it->first == KEYWORD_THIS ) {
-				continue;
+			// register new members
+			for ( Symbols::const_iterator it = other.mSymbols.begin(); it != other.mSymbols.end(); ++it ) {
+				if ( it->first == KEYWORD_THIS ) {
+					continue;
+				}
+
+				if ( it->second && it->second->getType() == Symbol::IType::ObjectSymbol ) {
+					mRepository->addReference(static_cast<Object*>(it->second));
+				}
+
+				define(it->first, it->second);
 			}
 
-			if ( it->second && it->second->getType() == Symbol::IType::ObjectSymbol ) {
-				mRepository->addReference(static_cast<Object*>(it->second));
+			// register new methods
+			for ( MethodCollection::const_iterator it = other.mMethods.begin(); it != other.mMethods.end(); ++it ) {
+				Method *method = new Method(this, (*it)->getName(), (*it)->getTypeName());
+				*method = *(*it);
+
+				defineMethod(method);
 			}
-
-			define(it->first, it->second);
-		}
-
-		// register new methods
-		for ( MethodCollection::const_iterator it = other.mMethods.begin(); it != other.mMethods.end(); ++it ) {
-			Method *method = new Method(this, (*it)->getName(), (*it)->getTypeName());
-			*method = *(*it);
-
-			defineMethod(method);
 		}
 	}
 }

@@ -88,11 +88,11 @@ bool Method::operator< (const Method& other) const
 void Method::operator= (const Method& other)
 {
 	if ( this != &other ) {
-		mLanguageFeatureState = other.mLanguageFeatureState;
 		mIsAbstract = other.mIsAbstract;
 		mIsConst = other.mIsConst;
 		mIsFinal = other.mIsFinal;
 		mIsSealed = other.mIsSealed;
+		mLanguageFeatureState = other.mLanguageFeatureState;
 		mRepository = other.mRepository;
 		mSignature = other.mSignature;
 		mTokens = other.mTokens;

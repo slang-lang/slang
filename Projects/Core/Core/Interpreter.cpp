@@ -374,7 +374,7 @@ void Interpreter::process(Object *result, TokenIterator& token, TokenIterator en
 				expression(result, token);
 				break;
 			case Token::Type::IDENTIFER:
-				process_identifier(token, terminator == Token::Type::NIL ? Token::Type::SEMICOLON : terminator);
+				process_identifier(token, result, terminator == Token::Type::NIL ? Token::Type::SEMICOLON : terminator);
 				break;
 			case Token::Type::KEYWORD:
 				process_keyword(token, result);
@@ -563,8 +563,10 @@ void Interpreter::process_for(TokenIterator& token, Object *result)
 }
 
 // executes a method or processes an assign statement
-void Interpreter::process_identifier(TokenIterator& token, Token::Type::E terminator)
+void Interpreter::process_identifier(TokenIterator& token, Object *result, Token::Type::E terminator)
 {
+(void)result;
+
 	// try to find assignment token
 	TokenIterator assign = findNext(token, Token::Type::ASSIGN, terminator);
 	// find next semicolon
@@ -863,13 +865,9 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 
 	token = closed;
 
-	assert(mRepository);
-
-	Object *object = mRepository->createInstance(type, name, prototype);
-	object->setRepository(mRepository);
-	object->Constructor(params);
-
-	*result = *object;
+	*result = *mRepository->createInstance(type, name, prototype);
+	result->setRepository(mRepository);
+	result->Constructor(params);
 }
 
 // syntax:

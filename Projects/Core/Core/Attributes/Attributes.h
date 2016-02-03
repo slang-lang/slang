@@ -24,17 +24,17 @@ public:
 	virtual ~GenericAttributes();
 
 public:
-	bool isConst() const;
-	void setConst(bool state);
+	virtual bool isConst() const;
+	virtual void setConst(bool state);
 
-	bool isFinal() const;
-	void setFinal(bool state);
+	virtual bool isFinal() const;
+	virtual void setFinal(bool state);
 
-	LanguageFeatureState::E getLanguageFeatureState() const;
-	void setLanguageFeatureState(LanguageFeatureState::E s);
+	virtual LanguageFeatureState::E getLanguageFeatureState() const;
+	virtual void setLanguageFeatureState(LanguageFeatureState::E s);
 
-	Visibility::E getVisibility() const;
-	void setVisibility(Visibility::E v);
+	virtual Visibility::E getVisibility() const;
+	virtual void setVisibility(Visibility::E v);
 
 protected:
 	void checkSealState();
@@ -54,11 +54,6 @@ public:
 	LocalAttributes();
 
 public:
-	bool isStatic() const;
-	void setStatic(bool state);
-
-private:
-	bool mIsStatic;
 };
 
 
@@ -78,8 +73,8 @@ public:
 	MethodAttributes();
 
 public:
-	bool isAbstract() const;
-	void setAbstract(bool state);
+	virtual bool isAbstract() const;
+	virtual void setAbstract(bool state);
 
 protected:
 	bool mIsAbstract;
@@ -92,8 +87,8 @@ public:
 	NamespaceAttributes();
 
 public:
-	bool isSealed() const;
-	void setSealed(bool state);
+	virtual bool isSealed() const;
+	virtual void setSealed(bool state);
 };
 
 
@@ -103,11 +98,11 @@ public:
 	ObjectAttributes();
 
 public:
-	bool isMember() const;
-	void setMember(bool state);
+	virtual bool isMember() const;
+	virtual void setMember(bool state);
 
-	bool isSealed() const;
-	void setSealed(bool state);
+	virtual bool isSealed() const;
+	virtual void setSealed(bool state);
 
 protected:
 	bool mIsMember;
