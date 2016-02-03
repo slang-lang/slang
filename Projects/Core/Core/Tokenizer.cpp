@@ -476,7 +476,7 @@ void Tokenizer::mergeBooleanOperators()
 		Token::Type::E activeType = token->type();
 
 		if ( (lastType == Token::Type::BITAND) && (activeType == Token::Type::BITAND) ) {
-			// &&
+			// && and
 			changed = true;
 			// remove last added token ...
 			tmp.pop_back();
@@ -484,12 +484,28 @@ void Tokenizer::mergeBooleanOperators()
 			tmp.push_back(Token(Token::Category::Operator, Token::Type::AND, "&&", token->position()));
 		}
 		else if ( (lastType == Token::Type::BITOR) && (activeType == Token::Type::BITOR) ) {
-			// ||
+			// || or
 			changed = true;
 			// remove last added token ...
 			tmp.pop_back();
 			// ... and add OR instead
 			tmp.push_back(Token(Token::Category::Operator, Token::Type::OR, "||", token->position()));
+		}
+		else if ( (lastType == Token::Type::NOT) && (activeType == Token::Type::BITAND) ) {
+			// !& not and
+			changed = true;
+			// remove last added token ...
+			tmp.pop_back();
+			// ... and add OR instead
+			tmp.push_back(Token(Token::Category::Operator, Token::Type::NAND, "!&", token->position()));
+		}
+		else if ( (lastType == Token::Type::NOT) && (activeType == Token::Type::BITOR) ) {
+			// !| and not
+			changed = true;
+			// remove last added token ...
+			tmp.pop_back();
+			// ... and add OR instead
+			tmp.push_back(Token(Token::Category::Operator, Token::Type::NOR, "!|", token->position()));
 		}
 
 		lastType = token->type();

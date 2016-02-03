@@ -83,7 +83,9 @@ public:
 			MATH_MODULO,
 			MATH_MULTIPLY,
 			MATH_SUBTRACT,
+			NAND,
 			NIL,
+			NOR,
 			NOT,
 			OR,
 			PARENTHESIS_CLOSE,
@@ -148,7 +150,9 @@ public:
 				case MATH_MODULO: return "%";
 				case MATH_MULTIPLY: return "*";
 				case MATH_SUBTRACT: return "-";
+				case NAND: return "negative AND";
 				case NIL: return "NIL";
+				case NOR: return "negative OR";
 				case NOT: return "!";
 				case OR: return "||";
 				case PARENTHESIS_CLOSE: return ")";
