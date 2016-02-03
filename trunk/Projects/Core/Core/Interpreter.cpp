@@ -63,6 +63,8 @@ void Interpreter::expression(Object *result, TokenIterator& start)
 	for ( ; ; ) {
 		Token::Type::E op = start->type();
 		if ( op != Token::Type::AND &&
+			 op != Token::Type::NAND &&
+			 op != Token::Type::NOR &&
 			 op != Token::Type::OR ) {
 			return;
 		}
@@ -75,6 +77,12 @@ void Interpreter::expression(Object *result, TokenIterator& start)
 
 		if ( op == Token::Type::AND && isTrue(*result) ) {
 			*result = BoolObject(isTrue(*result) && isTrue(v2));
+		}
+		else if ( op == Token::Type::NAND && !isTrue(*result) ) {
+			*result = BoolObject(!isTrue(*result) && !isTrue(v2));
+		}
+		else if ( op == Token::Type::NOR && !isTrue(*result) ) {
+			*result = BoolObject(!isTrue(*result) || !isTrue(v2));
 		}
 		else if ( op == Token::Type::OR && !isTrue(*result) ) {
 			*result = BoolObject(isTrue(*result) || isTrue(v2));
