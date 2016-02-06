@@ -20,7 +20,7 @@ BluePrint::BluePrint()
 : MethodScope(ANONYMOUS_OBJECT, 0),
   BluePrintSymbol(ANONYMOUS_OBJECT),
   RTTI(ANONYMOUS_OBJECT, ANONYMOUS_OBJECT),
-  mFullyQualifiedName(ANONYMOUS_OBJECT),
+  mFullyQualifiedTypeName(ANONYMOUS_OBJECT),
   mName(ANONYMOUS_OBJECT),
   mVisibility(Visibility::Public)
 {
@@ -30,7 +30,7 @@ BluePrint::BluePrint(const std::string& type, const std::string& filename, const
 : MethodScope(type, 0),
   BluePrintSymbol(type),
   RTTI(type, filename),
-  mFullyQualifiedName(name),
+  mFullyQualifiedTypeName(type),
   mName(name),
   mVisibility(Visibility::Public)
 {
@@ -63,14 +63,14 @@ void BluePrint::cleanup()
 	mSymbols.clear();
 }
 
-const std::string& BluePrint::getFullyQualifiedName() const
+const std::string& BluePrint::getFullyQualifiedTypename() const
 {
-	return mFullyQualifiedName;
+	return mFullyQualifiedTypeName;
 }
 
-void BluePrint::setFullyQualifiedName(const std::string& name)
+void BluePrint::setFullyQualifiedTypename(const std::string& name)
 {
-	mFullyQualifiedName = name;
+	mFullyQualifiedTypeName = name;
 }
 
 const std::string& BluePrint::getName() const

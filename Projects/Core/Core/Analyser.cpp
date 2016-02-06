@@ -35,7 +35,7 @@ Analyser::~Analyser()
 
 Designtime::BluePrint Analyser::createBluePrint(TokenIterator& start, TokenIterator end)
 {
-	std::string fullyQualifiedName;
+	std::string fullyQualifiedTypename;
 	std::string languageFeature;
 	std::string name;
 	std::string visibility;
@@ -52,7 +52,10 @@ Designtime::BluePrint Analyser::createBluePrint(TokenIterator& start, TokenItera
 	name = (*start).content();
 
 	if ( !mScopeName.empty() ) {
-		fullyQualifiedName = mScopeName + RESERVED_WORD_SCOPE_OPERATOR + name;
+		fullyQualifiedTypename = mScopeName + RESERVED_WORD_SCOPE_OPERATOR + name;
+	}
+	else {
+		fullyQualifiedTypename = name;
 	}
 
 	// look for the next opening curly brackets
@@ -100,7 +103,7 @@ Designtime::BluePrint Analyser::createBluePrint(TokenIterator& start, TokenItera
 	sanity.process(tokens);
 
 	Designtime::BluePrint blue(name, mFilename);
-	blue.setFullyQualifiedName(fullyQualifiedName);
+	blue.setFullyQualifiedTypename(fullyQualifiedTypename);
 	blue.setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
 	blue.setTokens(tokens);
 	blue.setVisibility(Visibility::convert(visibility));

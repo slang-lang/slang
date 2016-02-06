@@ -49,6 +49,16 @@ IScope* LocalScope::getEnclosingScope() const
 	return 0;
 }
 
+std::string LocalScope::getFullName() const
+{
+	std::string scope;
+	if ( mParent ) {
+		scope = mParent->getFullName() + RESERVED_WORD_SCOPE_OPERATOR;
+	}
+
+	return scope + getScopeName();
+}
+
 const std::string& LocalScope::getScopeName() const
 {
 	return mScopeName;

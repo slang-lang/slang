@@ -66,23 +66,25 @@ public namespace Language
 			return obj.mValue == 2;
 		}
 
-		private void ParameterByReference(number value ref)
+		private void ParameterByReference(number value ref) const
 		{
+			assert(value == 1);
 			print("ParameterByReference(number): value = " + value);
 			value = value + 1;
 			print("ParameterByReference(number): value = " + value);
 			assert(value == 2);
 		}
 
-		private void ParameterByReference(TestObject value ref)
+		private void ParameterByReference(TestObject value ref) const
 		{
+			assert(value.mValue == 1);
 			print("ParameterByReference(TestObject): mValue = " + value.mValue);
 			value.mValue = value.mValue + 1;
 			print("ParameterByReference(TestObject): mValue = " + value.mValue);
 			assert(value.mValue == 2);
 		}
 
-		private void ParameterByValue(number value val)
+		private void ParameterByValue(number value val) const
 		{
 			assert(value == 1);
 			print("ParameterByValue(number): value = " + value);
@@ -91,8 +93,9 @@ public namespace Language
 			assert(value == 2);
 		}
 
-		private void ParameterByValue(TestObject value const)
+		private void ParameterByValue(TestObject value const) const
 		{
+			assert(value.mValue == 1);
 			print("ParameterByValue(TestObject): mValue = " + value.mValue);
 			value.mValue = value.mValue + 1;
 			print("ParameterByValue(TestObject): mValue = " + value.mValue);

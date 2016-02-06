@@ -1,8 +1,8 @@
 #!/usr/local/bin/oscript
 
-public namespace
-{
-	private object Main
+//public namespace AssertTest
+//{
+	public object Main
 	{
 		public void Main(number argc = 0, string argv = "")
 		{
@@ -41,4 +41,4 @@ public namespace
 			return true;
 		}
 	}
-}
+//}
