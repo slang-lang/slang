@@ -227,7 +227,12 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 				throw Utils::Exceptions::AbstractException("cannot instantiate abstract object '" + blue->Typename() + "'");
 			}
 
-			Symbol *symbol = createInstance(blue->Typename(), blue->getName(), "");
+			Runtime::Object *symbol = createInstance(blue->Typename(), blue->getName(), "");
+			symbol->setConst(blue->isConst());
+			symbol->setFinal(blue->isFinal());
+			symbol->setLanguageFeatureState(blue->getLanguageFeatureState());
+			symbol->setMember(blue->isMember());
+			symbol->setVisibility(blue->getVisibility());
 
 			object->define(symbol->getName(), symbol);
 		}
@@ -243,6 +248,13 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 	}
 
 	assert(object);
+
+	object->setConst(blueprint->isConst());
+	object->setFinal(blueprint->isFinal());
+	object->setLanguageFeatureState(blueprint->getLanguageFeatureState());
+	object->setMember(blueprint->isMember());
+	object->setVisibility(blueprint->getVisibility());
+
 	return object;
 }
 

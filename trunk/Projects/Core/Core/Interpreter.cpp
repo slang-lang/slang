@@ -792,27 +792,18 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 	std::string member, parent;
 	Tools::split(method, parent, member);
 
-	Symbol *symbol = resolveMethod(method, params);
+	Method *symbol = static_cast<Method*>(resolveMethod(method, params));
 
 	if ( !symbol) {
 		throw Utils::Exceptions::UnknownIdentifer("could not resolve method '" + method + "'");
 	}
 
-	ControlFlow::E controlflow = ControlFlow::Normal;
-
-	switch ( symbol->getType() ) {
-		case Symbol::IType::MethodSymbol:
-			controlflow = static_cast<Method*>(symbol)->execute(params, result);
-			break;
-		case Symbol::IType::AtomicTypeSymbol:
-		case Symbol::IType::BluePrintSymbol:
-		case Symbol::IType::MemberSymbol:
-		case Symbol::IType::ObjectSymbol:
-		case Symbol::IType::NamespaceSymbol:
-		case Symbol::IType::UnknownSymbol:
-			throw Utils::Exceptions::UnknownIdentifer("could not resolve method '" + method + "'");
-			break;
+	// check target method's const-ness
+	if ( isConst() && !symbol->isConst() ) {	// this is a const method and we want to call a non-const method... neeeeey!
+		throw Utils::Exceptions::ConstCorrectnessViolated("only calls to const methods are allowed in const method '" + getScopeName() + "'");
 	}
+
+	ControlFlow::E controlflow = static_cast<Method*>(symbol)->execute(params, result);
 
 	if ( controlflow == ControlFlow::Throw ) {
 		mControlFlow = ControlFlow::Throw;
