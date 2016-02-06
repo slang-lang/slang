@@ -26,9 +26,8 @@ std::string FloatObject::TYPENAME = "float";
 FloatObject::FloatObject(float value)
 : Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, "")
 {
+	mConstructed = true;
 	mIsAtomicType = true;
-
-	Constructor(ParameterList());
 
 	setNativeValue(value);
 }
@@ -36,9 +35,8 @@ FloatObject::FloatObject(float value)
 FloatObject::FloatObject(const std::string& name, float value)
 : Object(name, SYSTEM_LIBRARY, TYPENAME, "")
 {
+	mConstructed = true;
 	mIsAtomicType = true;
-
-	Constructor(ParameterList());
 
 	setNativeValue(value);
 }
@@ -46,9 +44,8 @@ FloatObject::FloatObject(const std::string& name, float value)
 FloatObject::FloatObject(const std::string& name, const std::string& value)
 : Object(name, SYSTEM_LIBRARY, TYPENAME, "")
 {
+	mConstructed = true;
 	mIsAtomicType = true;
-
-	Constructor(ParameterList());
 
 	setValue(value);
 }
@@ -57,6 +54,9 @@ FloatObject::FloatObject(const Object& other)
 : Object(other.getName(), SYSTEM_LIBRARY, TYPENAME, "")
 {
 	// generic type cast
+
+	mConstructed = true;
+	mIsAtomicType = true;
 
 	std::string source = other.Typename();
 

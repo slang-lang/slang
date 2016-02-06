@@ -27,9 +27,8 @@ std::string NumberObject::TYPENAME = "number";
 NumberObject::NumberObject(double value)
 : Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, "")
 {
+	mConstructed = true;
 	mIsAtomicType = true;
-
-	Constructor(ParameterList());
 
 	setNativeValue(value);
 }
@@ -37,9 +36,8 @@ NumberObject::NumberObject(double value)
 NumberObject::NumberObject(const std::string& name, double value)
 : Object(name, SYSTEM_LIBRARY, TYPENAME, "")
 {
+	mConstructed = true;
 	mIsAtomicType = true;
-
-	Constructor(ParameterList());
 
 	setNativeValue(value);
 }
@@ -47,9 +45,8 @@ NumberObject::NumberObject(const std::string& name, double value)
 NumberObject::NumberObject(const std::string& name, const std::string& value)
 : Object(name, SYSTEM_LIBRARY, TYPENAME, "")
 {
+	mConstructed = true;
 	mIsAtomicType = true;
-
-	Constructor(ParameterList());
 
 	setValue(value);
 }
@@ -58,6 +55,9 @@ NumberObject::NumberObject(const Object& other)
 : Object(other.getName(), SYSTEM_LIBRARY, TYPENAME, "")
 {
 	// generic type cast
+
+	mConstructed = true;
+	mIsAtomicType = true;
 
 	std::string source = other.Typename();
 

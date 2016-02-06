@@ -26,9 +26,8 @@ std::string IntegerObject::TYPENAME = "int";
 IntegerObject::IntegerObject(int value)
 : Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, "")
 {
+	mConstructed = true;
 	mIsAtomicType = true;
-
-	Constructor(ParameterList());
 
 	setNativeValue(value);
 }
@@ -36,9 +35,8 @@ IntegerObject::IntegerObject(int value)
 IntegerObject::IntegerObject(const std::string& name, int value)
 : Object(name, SYSTEM_LIBRARY, TYPENAME, "")
 {
+	mConstructed = true;
 	mIsAtomicType = true;
-
-	Constructor(ParameterList());
 
 	setNativeValue(value);
 }
@@ -46,9 +44,8 @@ IntegerObject::IntegerObject(const std::string& name, int value)
 IntegerObject::IntegerObject(const std::string& name, const std::string& value)
 : Object(name, SYSTEM_LIBRARY, TYPENAME, "")
 {
+	mConstructed = true;
 	mIsAtomicType = true;
-
-	Constructor(ParameterList());
 
 	setValue(value);
 }
@@ -57,6 +54,9 @@ IntegerObject::IntegerObject(const Object& other)
 : Object(other.getName(), SYSTEM_LIBRARY, TYPENAME, "")
 {
 	// generic type cast
+
+	mConstructed = true;
+	mIsAtomicType = true;
 
 	std::string source = other.Typename();
 

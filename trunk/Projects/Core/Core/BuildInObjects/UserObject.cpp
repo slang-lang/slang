@@ -7,7 +7,6 @@
 // Project includes
 #include <Core/Utils/Exceptions.h>
 #include <Core/Tools.h>
-#include "BoolObject.h"
 
 // Namespace declarations
 
@@ -16,13 +15,23 @@ namespace ObjectiveScript {
 namespace Runtime {
 
 
-std::string UserObject::DEFAULTVALUE = "";
+std::string UserObject::DEFAULTVALUE = VALUE_NONE;
 std::string UserObject::TYPENAME = "UserObject";
 
+
+UserObject::UserObject()
+: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, "")
+{
+	mConstructed = false;
+	mIsAtomicType = false;
+
+	//setValue(VALUE_NONE);
+}
 
 UserObject::UserObject(const std::string& name, const std::string& filename, const std::string& type, const std::string& value)
 : Object(name, filename, type, value)
 {
+	mConstructed = false;
 	mIsAtomicType = false;
 
 	//setValue(value);
@@ -31,6 +40,7 @@ UserObject::UserObject(const std::string& name, const std::string& filename, con
 UserObject::UserObject(const Object& object)
 : Object(object.getName(), object.Filename(), object.Typename(), "")
 {
+	mConstructed = false;
 	mIsAtomicType = false;
 
 	setValue(object.getValue());
@@ -38,12 +48,7 @@ UserObject::UserObject(const Object& object)
 
 UserObject::operator bool()
 {
-	ParameterList params;
-	// empty parameter list
-
-	BoolObject tmp;
-	this->execute(&tmp, "operator_bool", params, 0);
-	return tmp;
+	return isValid();
 }
 
 const std::string& UserObject::getTypeName() const

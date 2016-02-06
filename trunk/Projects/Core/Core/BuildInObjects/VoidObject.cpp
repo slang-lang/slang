@@ -22,22 +22,22 @@ std::string VoidObject::TYPENAME = "void";
 VoidObject::VoidObject()
 : Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, VALUE_NONE)
 {
+	mConstructed = true;
 	mIsAtomicType = true;
-
-	Constructor(ParameterList());
 }
 
 VoidObject::VoidObject(const std::string& name)
 : Object(name, SYSTEM_LIBRARY, TYPENAME, VALUE_NONE)
 {
+	mConstructed = true;
 	mIsAtomicType = true;
-
-	Constructor(ParameterList());
 }
 
 VoidObject::VoidObject(const Object& object)
 : Object(object.getName(), SYSTEM_LIBRARY, TYPENAME, VALUE_NONE)
 {
+	mConstructed = true;
+	mIsAtomicType = true;
 }
 
 VoidObject::operator bool() const

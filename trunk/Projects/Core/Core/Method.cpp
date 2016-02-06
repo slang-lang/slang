@@ -187,7 +187,7 @@ ControlFlow::E Method::execute(const ParameterList& params, Object *result)
 		case ControlFlow::Continue:
 		case ControlFlow::Normal:
 			// verify method return reason
-			if ( result->getTypeName() != VoidObject::TYPENAME ) {
+			if ( result->Typename() != VoidObject::TYPENAME ) {
 				throw Utils::Exceptions::Exception("unnatural method return at '" + getName() + "'");
 			}
 

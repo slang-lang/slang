@@ -103,12 +103,12 @@ public:	// Usage
 	void garbageCollector();
 
 protected:
+	bool mConstructed;
 	bool mIsAtomicType;
 	Repository *mRepository;
 	std::string mValue;
 
 private:
-	bool mConstructed;
 };
 
 
