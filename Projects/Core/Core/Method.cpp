@@ -293,7 +293,6 @@ Symbol* Method::resolve(const std::string& name, bool onlyCurrentScope) const
 	while ( result && !member.empty() ) {
 		switch ( result->getType() ) {
 			case Symbol::IType::AtomicTypeSymbol:
-			case Symbol::IType::MemberSymbol:
 			case Symbol::IType::NamespaceSymbol:
 			case Symbol::IType::ObjectSymbol:
 				result = static_cast<Object*>(result)->resolve(member);
@@ -326,7 +325,6 @@ Symbol* Method::resolveMethod(const std::string& name, const ParameterList& para
 	if ( result ) {
 		switch ( result->getType() ) {
 			case Symbol::IType::AtomicTypeSymbol:
-			case Symbol::IType::MemberSymbol:
 			case Symbol::IType::ObjectSymbol:
 				return static_cast<Object*>(result)->resolveMethod(member, params);
 			case Symbol::IType::MethodSymbol:

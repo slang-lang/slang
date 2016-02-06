@@ -320,7 +320,6 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 					process_method(start, result);
 					break;
 				case Symbol::IType::AtomicTypeSymbol:
-				case Symbol::IType::MemberSymbol:
 				case Symbol::IType::ObjectSymbol:
 					*result = *static_cast<Object*>(symbol);
 					break;
@@ -442,7 +441,6 @@ void Interpreter::process_delete(TokenIterator& token)
 
 	switch ( symbol->getType() ) {
 		case Symbol::IType::AtomicTypeSymbol:
-		case Symbol::IType::MemberSymbol:
 		case Symbol::IType::ObjectSymbol: {
 			Object *object = static_cast<Object*>(symbol);
 
@@ -1230,7 +1228,6 @@ Symbol* Interpreter::resolve(const std::string& name, bool onlyCurrentScope) con
 	while ( result && !member.empty() ) {
 		switch ( result->getType() ) {
 			case Symbol::IType::AtomicTypeSymbol:
-			case Symbol::IType::MemberSymbol:
 			case Symbol::IType::ObjectSymbol:
 				result = static_cast<Object*>(result)->resolve(member);
 				break;
@@ -1263,7 +1260,6 @@ Symbol* Interpreter::resolveMethod(const std::string& name, const ParameterList&
 	if ( result ) {
 		switch ( result->getType() ) {
 			case Symbol::IType::AtomicTypeSymbol:
-			case Symbol::IType::MemberSymbol:
 			case Symbol::IType::ObjectSymbol:
 				return static_cast<Object*>(result)->resolveMethod(member, params);
 			case Symbol::IType::MethodSymbol:

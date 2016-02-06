@@ -28,7 +28,6 @@ public:
 			UnknownSymbol,
 			AtomicTypeSymbol,
 			BluePrintSymbol,
-			MemberSymbol,
 			MethodSymbol,
 			NamespaceSymbol,
 			ObjectSymbol
@@ -83,17 +82,6 @@ public:
 	: Symbol(name, Symbol::IType::BluePrintSymbol)
 	{ }
 	virtual ~BluePrintSymbol() { }
-};
-
-class MemberSymbol : public Symbol,
-					 public Symbol::IType,
-					 public ObjectAttributes
-{
-public:
-	MemberSymbol(const std::string& name)
-	: Symbol(name, Symbol::IType::MemberSymbol)
-	{ }
-	virtual ~MemberSymbol() { }
 };
 
 class MethodSymbol : public Symbol,

@@ -48,20 +48,6 @@ protected:
 };
 
 
-class LocalAttributes : public GenericAttributes
-{
-public:
-	LocalAttributes();
-};
-
-
-class MemberAttributes : public GenericAttributes
-{
-public:
-	MemberAttributes();
-};
-
-
 class MethodAttributes : public GenericAttributes
 {
 public:
