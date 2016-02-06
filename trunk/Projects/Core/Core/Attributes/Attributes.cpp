@@ -81,16 +81,6 @@ void GenericAttributes::setVisibility(Visibility::E v)
 }
 
 
-LocalAttributes::LocalAttributes()
-{
-}
-
-
-MemberAttributes::MemberAttributes()
-{
-}
-
-
 MethodAttributes::MethodAttributes()
 : mIsAbstract(false),
   mIsRecursive(false)
