@@ -27,7 +27,6 @@ public:
 	NumberObject(double value = 0.0);
 	NumberObject(const std::string& name, double value);
 	NumberObject(const std::string& name, const std::string& value);
-	NumberObject(const NumberObject& other);
 	NumberObject(const Object& object);
 
 public:	// Symbol::IType implementation

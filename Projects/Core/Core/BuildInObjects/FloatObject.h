@@ -27,7 +27,6 @@ public:
 	FloatObject(float value = 0.f);
 	FloatObject(const std::string& name, float value);
 	FloatObject(const std::string& name, const std::string& value);
-	FloatObject(const FloatObject& other);
 	FloatObject(const Object& object);
 
 public:	// Symbol::IType implementation

@@ -27,7 +27,6 @@ public:
 	VoidObject();
 	VoidObject(const std::string& name);
 	VoidObject(const Object& other);
-	VoidObject(const VoidObject& object);
 
 public:	// Symbol::IType implementation
 	const std::string& getTypeName() const;

@@ -54,12 +54,6 @@ NumberObject::NumberObject(const std::string& name, const std::string& value)
 	setValue(value);
 }
 
-NumberObject::NumberObject(const NumberObject& object)
-: Object(object.getName(), SYSTEM_LIBRARY, TYPENAME, "")
-{
-	setNativeValue(object.getNativeValue());
-}
-
 NumberObject::NumberObject(const Object& other)
 : Object(other.getName(), SYSTEM_LIBRARY, TYPENAME, "")
 {
