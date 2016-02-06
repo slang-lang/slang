@@ -75,7 +75,7 @@ void LanguageTest::testAssert()
 	try {
 		VirtualMachine vm;
 
-		TTHROWS(vm.create("Tests/Language/AssertTest.os"), ObjectiveScript::Utils::Exceptions::AssertionFailed);
+		TTHROWS(vm.createScriptFromFile("Tests/Language/AssertTest.os"), ObjectiveScript::Utils::Exceptions::AssertionFailed);
 
 		// automatic success
 	}
@@ -90,7 +90,7 @@ void LanguageTest::testBooleanOperators()
 	try {
 		VirtualMachine vm;
 
-		vm.create("Tests/Language/BooleanOperators.os");
+		vm.createScriptFromFile("Tests/Language/BooleanOperators.os");
 
 		// automatic success
 	}
@@ -105,7 +105,7 @@ void LanguageTest::testComment()
 	try {
 		VirtualMachine vm;
 
-		vm.create("Tests/Language/CommentTest.os");
+		vm.createScriptFromFile("Tests/Language/CommentTest.os");
 
 		// automatic success
 	}
@@ -120,7 +120,7 @@ void LanguageTest::testConstCorrectness1()
 	try {
 		VirtualMachine vm;
 
-		TTHROWS(vm.create("Tests/Language/ConstCorrectness1.os"), ObjectiveScript::Utils::Exceptions::ConstCorrectnessViolated);
+		TTHROWS(vm.createScriptFromFile("Tests/Language/ConstCorrectness1.os"), ObjectiveScript::Utils::Exceptions::ConstCorrectnessViolated);
 
 		// automatic success
 	}
@@ -135,7 +135,7 @@ void LanguageTest::testConstCorrectness2()
 	try {
 		VirtualMachine vm;
 
-		TTHROWS(vm.create("Tests/Language/ConstCorrectness2.os"), ObjectiveScript::Utils::Exceptions::ConstCorrectnessViolated);
+		TTHROWS(vm.createScriptFromFile("Tests/Language/ConstCorrectness2.os"), ObjectiveScript::Utils::Exceptions::ConstCorrectnessViolated);
 
 		// automatic success
 	}
@@ -150,7 +150,7 @@ void LanguageTest::testConstCorrectness3()
 	try {
 		VirtualMachine vm;
 
-		TTHROWS(vm.create("Tests/Language/ConstCorrectness3.os"), ObjectiveScript::Utils::Exceptions::ConstCorrectnessViolated);
+		TTHROWS(vm.createScriptFromFile("Tests/Language/ConstCorrectness3.os"), ObjectiveScript::Utils::Exceptions::ConstCorrectnessViolated);
 
 		// automatic success
 	}
@@ -165,7 +165,7 @@ void LanguageTest::testDefaultParameter()
 	try {
 		VirtualMachine vm;
 
-		vm.create("Tests/Language/DefaultParameter.os");
+		vm.createScriptFromFile("Tests/Language/DefaultParameter.os");
 
 		// automatic success
 	}
@@ -180,7 +180,7 @@ void LanguageTest::testException()
 	try {
 		VirtualMachine vm;
 
-		vm.create("Tests/Language/ExceptionTest.os");
+		vm.createScriptFromFile("Tests/Language/ExceptionTest.os");
 
 		// automatic success
 	}
@@ -195,7 +195,7 @@ void LanguageTest::testFinal()
 	try {
 		VirtualMachine vm;
 
-		TTHROWS(vm.create("Tests/Language/FinalTest.os"), ObjectiveScript::Utils::Exceptions::ConstCorrectnessViolated);
+		TTHROWS(vm.createScriptFromFile("Tests/Language/FinalTest.os"), ObjectiveScript::Utils::Exceptions::ConstCorrectnessViolated);
 
 		// automatic success
 	}
@@ -210,7 +210,7 @@ void LanguageTest::testFor()
 	try {
 		VirtualMachine vm;
 
-		vm.create("Tests/Language/ForLoopTest.os");
+		vm.createScriptFromFile("Tests/Language/ForLoopTest.os");
 
 		// automatic success
 	}
@@ -225,7 +225,7 @@ void LanguageTest::testIf()
 	try {
 		VirtualMachine vm;
 
-		vm.create("Tests/Language/IfTest.os");
+		vm.createScriptFromFile("Tests/Language/IfTest.os");
 
 		// automatic success
 	}
@@ -240,7 +240,7 @@ void LanguageTest::testInfixOperator()
 	try {
 		VirtualMachine vm;
 
-		vm.create("Tests/Language/InfixOperator.os");
+		vm.createScriptFromFile("Tests/Language/InfixOperator.os");
 
 		// automatic success
 	}
@@ -255,7 +255,7 @@ void LanguageTest::testInterfaces()
 	try {
 		VirtualMachine vm;
 
-		Script *s = vm.create("Tests/Language/InterfacesTest.os");
+		Script *s = vm.createScriptFromFile("Tests/Language/InterfacesTest.os");
 
 		ParameterList params;
 		s->execute("GetBox", params);
@@ -273,7 +273,7 @@ void LanguageTest::testMethodOverloading()
 	try {
 		VirtualMachine vm;
 
-		vm.create("Tests/Language/MethodOverloadingTest.os");
+		vm.createScriptFromFile("Tests/Language/MethodOverloadingTest.os");
 
 		// automatic success
 	}
@@ -288,7 +288,7 @@ void LanguageTest::testNamespaces()
 	try {
 		VirtualMachine vm;
 
-		vm.create("Tests/Language/NamespaceTest.os");
+		vm.createScriptFromFile("Tests/Language/NamespaceTest.os");
 
 		// automatic success
 	}
@@ -303,7 +303,7 @@ void LanguageTest::testObjectEquality()
 	try {
 		VirtualMachine vm;
 
-		vm.create("Tests/Language/ObjectEqualityTest.os");
+		vm.createScriptFromFile("Tests/Language/ObjectEqualityTest.os");
 
 		// automatic success
 	}
@@ -318,7 +318,7 @@ void LanguageTest::testObjectReference()
 	try {
 		VirtualMachine vm;
 
-		vm.create("Tests/Language/ObjectReference.os");
+		vm.createScriptFromFile("Tests/Language/ObjectReference.os");
 
 		// automatic success
 	}
@@ -336,7 +336,7 @@ void LanguageTest::testParameters()
 		ParameterList params;
 		params.push_back(Parameter("argc", Runtime::NumberObject::TYPENAME, "2"));
 		params.push_back(Parameter("argv", Runtime::StringObject::TYPENAME, ""));
-		vm.create("Tests/Language/ParameterTest.os", params);
+		vm.createScriptFromFile("Tests/Language/ParameterTest.os", params);
 
 		// automatic success
 	}
@@ -351,7 +351,7 @@ void LanguageTest::testPostfixOperator()
 	try {
 		VirtualMachine vm;
 
-		vm.create("Tests/Language/PostfixOperator.os");
+		vm.createScriptFromFile("Tests/Language/PostfixOperator.os");
 
 		// automatic success
 	}
@@ -365,7 +365,7 @@ void LanguageTest::testPrint()
 	try {
 		VirtualMachine vm;
 
-		vm.create("Tests/Language/PrintTest.os");
+		vm.createScriptFromFile("Tests/Language/PrintTest.os");
 
 		// automatic success
 	}
@@ -380,7 +380,7 @@ void LanguageTest::testSanityChecker()
 	try {
 		VirtualMachine vm;
 
-		TTHROWS(vm.create("Tests/Language/SanityChecker.os"), ObjectiveScript::Utils::Exceptions::SyntaxError);
+		TTHROWS(vm.createScriptFromFile("Tests/Language/SanityChecker.os"), ObjectiveScript::Utils::Exceptions::SyntaxError);
 
 		// automatic success
 	}
@@ -395,7 +395,7 @@ void LanguageTest::testScope()
 	try {
 		VirtualMachine vm;
 
-		vm.create("Tests/Language/ScopeTest.os");
+		vm.createScriptFromFile("Tests/Language/ScopeTest.os");
 
 		// automatic success
 	}
@@ -410,7 +410,7 @@ void LanguageTest::testStaticLocalVariable()
 	try {
 		VirtualMachine vm;
 
-		vm.create("Tests/Language/StaticVariablesTest.os");
+		vm.createScriptFromFile("Tests/Language/StaticVariablesTest.os");
 
 		// automatic success
 	}
@@ -425,7 +425,7 @@ void LanguageTest::testSwitch()
 	try {
 		VirtualMachine vm;
 
-		TTHROWS(vm.create("Tests/Language/SwitchTest.os"), ObjectiveScript::Utils::Exceptions::NotImplemented);
+		TTHROWS(vm.createScriptFromFile("Tests/Language/SwitchTest.os"), ObjectiveScript::Utils::Exceptions::NotImplemented);
 
 		// automatic success
 	}
@@ -440,7 +440,7 @@ void LanguageTest::testThis()
 	try {
 		VirtualMachine vm;
 
-		vm.create("Tests/Language/ThisTest.os");
+		vm.createScriptFromFile("Tests/Language/ThisTest.os");
 
 		// automatic success
 	}
@@ -455,7 +455,7 @@ void LanguageTest::testTypeCast()
 	try {
 		VirtualMachine vm;
 
-		vm.create("Tests/Language/TypeCastTest.os");
+		vm.createScriptFromFile("Tests/Language/TypeCastTest.os");
 
 		// automatic success
 	}
@@ -470,7 +470,7 @@ void LanguageTest::testWhile()
 	try {
 		VirtualMachine vm;
 
-		vm.create("Tests/Language/WhileTest.os");
+		vm.createScriptFromFile("Tests/Language/WhileTest.os");
 
 		// automatic success
 	}

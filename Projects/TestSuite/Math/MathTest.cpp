@@ -46,7 +46,7 @@ void MathTest::testBasicExpressionParsing()
 {
 	try {
 		VirtualMachine vm;
-		vm.create("Tests/Math/BasicTest.os");
+		vm.createScriptFromFile("Tests/Math/BasicTest.os");
 
 		// automatic success
 	}
@@ -60,7 +60,7 @@ void MathTest::testDataTypeFloat()
 {
 	try {
 		VirtualMachine vm;
-		vm.create("Tests/Math/DataTypeFloat.os");
+		vm.createScriptFromFile("Tests/Math/DataTypeFloat.os");
 
 		// automatic success
 	}
@@ -74,7 +74,7 @@ void MathTest::testDataTypeInt()
 {
 	try {
 		VirtualMachine vm;
-		vm.create("Tests/Math/DataTypeInt.os");
+		vm.createScriptFromFile("Tests/Math/DataTypeInt.os");
 
 		// automatic success
 	}

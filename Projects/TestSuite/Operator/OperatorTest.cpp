@@ -54,7 +54,7 @@ void OperatorTest::testBooleanOverloads_Assign()
 {
 	try {
 		VirtualMachine vm;
-		vm.create("Tests/Operator/BooleanOverloads_Assign.os");
+		vm.createScriptFromFile("Tests/Operator/BooleanOverloads_Assign.os");
 
 		// automatic success
 	}
@@ -68,7 +68,7 @@ void OperatorTest::testBooleanOverloads_BitAnd()
 {
 	try {
 		VirtualMachine vm;
-		vm.create("Tests/Operator/BooleanOverloads_BitAnd.os");
+		vm.createScriptFromFile("Tests/Operator/BooleanOverloads_BitAnd.os");
 
 		// automatic success
 	}
@@ -82,7 +82,7 @@ void OperatorTest::testBooleanOverloads_BitOr()
 {
 	try {
 		VirtualMachine vm;
-		vm.create("Tests/Operator/BooleanOverloads_BitOr.os");
+		vm.createScriptFromFile("Tests/Operator/BooleanOverloads_BitOr.os");
 
 		// automatic success
 	}
@@ -96,7 +96,7 @@ void OperatorTest::testBooleanOverloads_Equal()
 {
 	try {
 		VirtualMachine vm;
-		vm.create("Tests/Operator/BooleanOverloads_Equal.os");
+		vm.createScriptFromFile("Tests/Operator/BooleanOverloads_Equal.os");
 
 		// automatic success
 	}
@@ -110,7 +110,7 @@ void OperatorTest::testBooleanOverloads_Greater()
 {
 	try {
 		VirtualMachine vm;
-		vm.create("Tests/Operator/BooleanOverloads_Greater.os");
+		vm.createScriptFromFile("Tests/Operator/BooleanOverloads_Greater.os");
 
 		// automatic success
 	}
@@ -124,7 +124,7 @@ void OperatorTest::testBooleanOverloads_Greater_Equal()
 {
 	try {
 		VirtualMachine vm;
-		vm.create("Tests/Operator/BooleanOverloads_Greater_Equal.os");
+		vm.createScriptFromFile("Tests/Operator/BooleanOverloads_Greater_Equal.os");
 
 		// automatic success
 	}
@@ -138,7 +138,7 @@ void OperatorTest::testBooleanOverloads_Less()
 {
 	try {
 		VirtualMachine vm;
-		vm.create("Tests/Operator/BooleanOverloads_Less.os");
+		vm.createScriptFromFile("Tests/Operator/BooleanOverloads_Less.os");
 
 		// automatic success
 	}
@@ -152,7 +152,7 @@ void OperatorTest::testBooleanOverloads_Less_Equal()
 {
 	try {
 		VirtualMachine vm;
-		vm.create("Tests/Operator/BooleanOverloads_Less_Equal.os");
+		vm.createScriptFromFile("Tests/Operator/BooleanOverloads_Less_Equal.os");
 
 		// automatic success
 	}
@@ -166,7 +166,7 @@ void OperatorTest::testBooleanOverloads_Unequal()
 {
 	try {
 		VirtualMachine vm;
-		vm.create("Tests/Operator/BooleanOverloads_Unequal.os");
+		vm.createScriptFromFile("Tests/Operator/BooleanOverloads_Unequal.os");
 
 		// automatic success
 	}
@@ -180,7 +180,7 @@ void OperatorTest::testMathOverloadsWithNumbers()
 {
 	try {
 		VirtualMachine vm;
-		vm.create("Tests/Operator/MathOverloadsWithNumbers.os");
+		vm.createScriptFromFile("Tests/Operator/MathOverloadsWithNumbers.os");
 
 		// automatic success
 	}
@@ -194,7 +194,7 @@ void OperatorTest::testMathOverloadsWithObjects()
 {
 	try {
 		VirtualMachine vm;
-		vm.create("Tests/Operator/MathOverloadsWithObjects.os");
+		vm.createScriptFromFile("Tests/Operator/MathOverloadsWithObjects.os");
 
 		// automatic success
 	}

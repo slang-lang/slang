@@ -23,11 +23,12 @@ Assert::Assert(const TokenList& tokens)
 
 Node* Assert::execute()
 {
-	mInterpreter->setScope(mScope);
 	mInterpreter->setTokens(mTokens);
 
-	Object result = mInterpreter->process();
-	if ( isFalse(result) ) {
+	Runtime::Object result;
+	mInterpreter->execute(&result);
+
+	if ( !isTrue(result) ) {
 		throw Utils::Exceptions::AssertionFailed(result.getValue(), mTokens.begin()->position());
 	}
 

@@ -23,10 +23,9 @@ Assign::Assign(const std::string& assignee, const TokenList& tokens)
 
 Node* Assign::execute()
 {
-	mInterpreter->setScope(mScope);
 	mInterpreter->setTokens(mTokens);
 
-	Object *assignee = 0;//mMemory->getObject(mAssignee);
+	Runtime::Object *assignee = 0;//mMemory->getObject(mAssignee);
 	if ( !assignee ) {
 		// ups..
 		throw Utils::Exceptions::NullPointer("while trying to access " + mAssignee, (*mTokens.begin()).position());

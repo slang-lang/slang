@@ -21,16 +21,18 @@ While::While(const TokenList& tokens)
 
 Node* While::execute()
 {
-	mInterpreter->setScope(mScope);
 	mInterpreter->setTokens(mTokens);
 
-	while ( isTrue(mInterpreter->process()) ) {
-/*
-		for ( NodeList::iterator it = mNodes.begin(); it != mNodes.end(); ++it ) {
-			(*it)->execute();
+	Runtime::Object condition;
+	for ( ; ; ) {
+		mInterpreter->execute(&condition);
+
+		if ( !isTrue(condition) ) {
+			break;
 		}
-*/
-	}
+
+		// execute body
+	};
 
 	return mLeftNode;
 }

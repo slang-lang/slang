@@ -3,6 +3,8 @@
 #include "VirtualMachine.h"
 
 // Library includes
+#include <iostream>
+#include <fstream>
 
 // Project includes
 #include <Core/Utils/Utils.h>
@@ -61,16 +63,9 @@ std::string VirtualMachine::buildLibraryPath(const std::string& library) const
 	return result;
 }
 
-Script* VirtualMachine::create(const std::string& filename, const ParameterList& params)
+Script* VirtualMachine::createScript(const std::string& content, const ParameterList& params)
 {
-	OSinfo("processing script '" + filename + "'...");
-
 	init();
-
-	if ( filename.empty() ) {
-		OSwarn("invalid filename '" + filename + "' provided!");
-		return 0;
-	}
 
 	Script *script = new Script();
 	mScripts.insert(script);
@@ -78,7 +73,7 @@ Script* VirtualMachine::create(const std::string& filename, const ParameterList&
 	script->connectRepository(mRepository);
 
 	Analyser analyser;
-	analyser.process(filename);
+	analyser.processString(content, mScriptFile);
 
 	StringList libraries = analyser.getLibraryReferences();
 	for ( StringList::const_iterator it = libraries.begin(); it != libraries.end(); ++it ) {
@@ -106,7 +101,7 @@ Script* VirtualMachine::create(const std::string& filename, const ParameterList&
 		// add blue prints to our object repository
 		mRepository->addBlueprint((*it));
 
-		if ( it->Filename() == filename && it->Typename() == "Main" ) {
+		if ( it->Filename() == mScriptFile && it->Typename() == "Main" ) {
 			// create an instance of our Main object
 			mObjects.insert(std::make_pair(
 				it->Typename(), mRepository->createInstance(it->Typename(), "main")
@@ -126,6 +121,34 @@ Script* VirtualMachine::create(const std::string& filename, const ParameterList&
 	return script;
 }
 
+Script* VirtualMachine::createScriptFromFile(const std::string& filename, const ParameterList& params)
+{
+	OSinfo("processing script '" + filename + "'...");
+
+	if ( filename.empty() ) {
+		OSwarn("invalid filename '" + filename + "' provided!");
+		return 0;
+	}
+
+	mScriptFile = filename;
+
+	// read file content
+	std::ifstream in(filename.c_str(), std::ios_base::binary);
+
+	std::string content = std::string(std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>());
+
+	return createScript(content, params);
+}
+
+Script* VirtualMachine::createScriptFromString(const std::string& content, const ParameterList& params)
+{
+	OSinfo("processing string...");
+
+	mScriptFile = "";
+
+	return createScript(content, params);
+}
+
 void VirtualMachine::init()
 {
 	if ( mBaseFolder.empty() ) {
@@ -142,7 +165,7 @@ void VirtualMachine::loadLibrary(const std::string& library)
 
 	try {
 		Analyser analyser;
-		analyser.process(buildLibraryPath(library));
+		analyser.processFile(buildLibraryPath(library));
 
 		const std::list<std::string>& libraries = analyser.getLibraryReferences();
 		for ( std::list<std::string>::const_iterator it = libraries.begin(); it != libraries.end(); ++it ) {

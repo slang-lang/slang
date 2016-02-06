@@ -153,7 +153,7 @@ int main(int argc, const char* argv[])
 	mVirtualMachine.setBaseFolder(mRoot);
 
 	try {
-		mVirtualMachine.create(mFilename, mParameters);
+		mVirtualMachine.createScriptFromFile(mFilename, mParameters);
 		// our script automatically executes it's Main object constructor,
 		// so there is no need to execute a method explicitly
 	}

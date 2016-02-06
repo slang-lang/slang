@@ -14,10 +14,10 @@ Print::Print(const TokenList& tokens)
 
 Node* Print::execute()
 {
-	mInterpreter->setScope(mScope);
 	mInterpreter->setTokens(mTokens);
 
-	Object result = mInterpreter->process();
+	Runtime::Object result;
+	mInterpreter->execute(&result);
 	//Printer::print(result.value());
 
 	return 0;

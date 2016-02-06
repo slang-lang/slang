@@ -22,12 +22,12 @@ Condition::Condition(const TokenList& tokens)
 
 Node* Condition::execute()
 {
-	mInterpreter->setScope(mScope);
 	mInterpreter->setTokens(mTokens);
 
-	Object result = mInterpreter->process();
+	Runtime::Object result;
+	mInterpreter->execute(&result);
 
-	return 0;
+	return isTrue(result);
 }
 
 }

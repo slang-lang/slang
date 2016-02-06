@@ -44,7 +44,7 @@ public:
 	const std::string& scope() const;
 
 protected:
-	Interpreter *mInterpreter;
+	Runtime::Interpreter *mInterpreter;
 	Node *mLeftNode;
 	Memory *mMemory;
 	Node *mRightNode;
