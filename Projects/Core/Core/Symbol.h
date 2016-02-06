@@ -51,6 +51,8 @@ public:
 	const std::string& getName() const;
 	IType::E getType() const;
 
+	virtual std::string ToString() const = 0;
+
 protected:
 	std::string mName;
 	IType::E mType;
