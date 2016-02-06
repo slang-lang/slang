@@ -10,6 +10,7 @@
 #include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/BuildInObjects/NumberObject.h>
 #include <Core/BuildInObjects/StringObject.h>
+#include <Core/BuildInObjects/UserObject.h>
 #include <Core/BuildInObjects/VoidObject.h>
 #include <Core/Utils/Exceptions.h>
 #include "Consts.h"

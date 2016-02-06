@@ -24,10 +24,10 @@ namespace Runtime {
 Object::Object()
 : MethodScope(ANONYMOUS_OBJECT, 0),
   ObjectSymbol(ANONYMOUS_OBJECT),
+  mConstructed(false),
   mIsAtomicType(true),
   mRepository(0),
-  mValue(VALUE_NONE),
-  mConstructed(false)
+  mValue(VALUE_NONE)
 {
 }
 
@@ -77,10 +77,10 @@ Object::Object(const std::string& name, const std::string& filename, const std::
 : MethodScope(name, 0),
   ObjectSymbol(name),
   RTTI(type, filename),
+  mConstructed(false),
   mIsAtomicType(true),
   mRepository(0),
-  mValue(value),
-  mConstructed(false)
+  mValue(value)
 {
 }
 
