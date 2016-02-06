@@ -35,6 +35,11 @@ VoidObject::VoidObject(const std::string& name)
 	Constructor(ParameterList());
 }
 
+VoidObject::VoidObject(const Object& object)
+: Object(object.getName(), SYSTEM_LIBRARY, TYPENAME, VALUE_NONE)
+{
+}
+
 VoidObject::VoidObject(const VoidObject& object)
 : Object(object.getName(), SYSTEM_LIBRARY, TYPENAME, VALUE_NONE)
 {

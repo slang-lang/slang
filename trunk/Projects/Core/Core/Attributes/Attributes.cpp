@@ -92,7 +92,8 @@ MemberAttributes::MemberAttributes()
 
 
 MethodAttributes::MethodAttributes()
-: mIsAbstract(false)
+: mIsAbstract(false),
+  mIsRecursive(false)
 {
 }
 
@@ -101,9 +102,19 @@ bool MethodAttributes::isAbstract() const
 	return mIsAbstract;
 }
 
+bool MethodAttributes::isRecursive() const
+{
+	return mIsRecursive;
+}
+
 void MethodAttributes::setAbstract(bool state)
 {
 	mIsAbstract = state;
+}
+
+void MethodAttributes::setRecursive(bool state)
+{
+	mIsRecursive = state;
 }
 
 NamespaceAttributes::NamespaceAttributes()

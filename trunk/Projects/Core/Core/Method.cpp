@@ -116,6 +116,10 @@ ControlFlow::E Method::execute(const ParameterList& params, Object *result)
 		case LanguageFeatureState::Unstable: OSwarn("method '" + getName() + "' is marked as unstable"); break;
 	}
 
+	if ( isAbstract() ) {
+		throw Utils::Exceptions::AbstractException("cannot execute abstract method '" + getName() + "'");
+	}
+
 	Interpreter interpreter(this, getName());
 	interpreter.setConst(isConst());
 	interpreter.setFinal(isFinal());

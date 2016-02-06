@@ -4,6 +4,8 @@ public namespace TypeCastTest
 {
 	public object Main
 	{
+private void Bla() abstract
+
 		public void Main(number argc = 0, string argv = "")
 		{
 			assert( TestCase1() );
@@ -20,8 +22,9 @@ public namespace TypeCastTest
 			number value = 5;
 			bool state = false;
 
-			state = bool value;
-			print("state = " + bool value);
+			state = (bool value);
+			print("(bool value) = " + (bool value));
+			print("state = " + state);
 
 			return state;
 		}

@@ -27,6 +27,30 @@ Preprocessor::Preprocessor(Repository *repo)
 {
 }
 
+TokenList Preprocessor::collectScopeTokens(TokenIterator& token) const
+{
+	if ( (*token).type() != Token::Type::BRACKET_CURLY_OPEN ) {
+		throw Utils::Exceptions::Exception("collectScopeTokens: invalid start token found");
+	}
+
+	int scope = 0;
+	TokenList tokens;
+
+	// look for the corresponding closing curly bracket
+	while ( (*++token).type() != Token::Type::BRACKET_CURLY_CLOSE || scope > 0 ) {
+		if ( (*token).type() == Token::Type::BRACKET_CURLY_OPEN ) {
+			scope++;
+		}
+		if ( (*token).type() == Token::Type::BRACKET_CURLY_CLOSE ) {
+			scope--;
+		}
+
+		tokens.push_back((*token));
+	}
+
+	return tokens;
+}
+
 Designtime::BluePrint* Preprocessor::createMember(TokenIterator token)
 {
 	std::string name;
@@ -72,9 +96,10 @@ Designtime::BluePrint* Preprocessor::createMember(TokenIterator token)
 Runtime::Method* Preprocessor::createMethod(TokenIterator token)
 {
 	bool isAbstract = false;
-	bool isConst = true;		// all methods are const by default (this is the only way the 'modify' attribute makes sense)
-	bool isStructor = false;
+	bool isConst = true;		// all methods are const by default
 	bool isFinal = false;
+	bool isRecursive = false;
+	bool isStructor = false;
 	std::string name;
 	std::string languageFeature;
 	std::string type;
@@ -89,29 +114,35 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token)
 	// look for the type token
 	type = (*token++).content();
 	// look for the identifier token
-	name = (*token).content();
+	name = (*token++).content();
 
 	if ( name == mBluePrint->Typename() ||
 		 name == "~" + mBluePrint->Typename() ) {
 		// these methods have the same name as their containing object,
 		// so this has to be a constructor or a destructor;
-		// they can never ever be const
+		// they can never ever be const, ever
 		isConst = false;
 		isStructor = true;
 	}
 
 	// look for the next opening parenthesis
-	do { token++; } while ( (*token).type() != Token::Type::PARENTHESIS_OPEN );
+	if ( (*token).type() != Token::Type::PARENTHESIS_OPEN ) {
+		throw Utils::Exceptions::SyntaxError("paratemer declaration expected");
+	}
 
 	ParameterList params = parseParameters(token);
 
-	// look at possible attributes (const, final, modify, static, etc.)
+	// look at possible attributes (abstract, const, final, modify, etc.)
 	// while looking for the next opening curly bracket
+	bool isModifierToken = true;
 	do {
 		token++;
 
 		if ( token->category() == Token::Category::Modifier ) {
-			if ( token->content() == MODIFIER_CONST ) {
+			if ( token->content() == MODIFIER_ABSTRACT ) {
+				isAbstract = true;
+			}
+			else if ( token->content() == MODIFIER_CONST ) {
 				isConst = true;
 			}
 			else if ( token->content() == MODIFIER_FINAL ) {
@@ -120,8 +151,14 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token)
 			else if ( token->content() == MODIFIER_MODIFY ) {
 				isConst = false;
 			}
+			else if ( token->content() == MODIFIER_RECURSIVE ) {
+				isRecursive = true;
+			}
 		}
-	} while ( token->type() != Token::Type::BRACKET_CURLY_OPEN );
+		else {
+			isModifierToken = false;
+		}
+	} while ( isModifierToken && token->type() != Token::Type::BRACKET_CURLY_OPEN );
 
 	if ( isStructor && isConst ) {
 		throw Utils::Exceptions::SyntaxError("constructor or destructor cannot be const");
@@ -129,18 +166,12 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token)
 
 	// collect all tokens of this method
 	TokenList tokens;
+	if ( token->type() == Token::Type::BRACKET_CURLY_OPEN ) {
+		tokens = collectScopeTokens(token);
+	}
 
-	int scope = 0;
-	// look for the corresponding closing curly bracket
-	while ( (*++token).type() != Token::Type::BRACKET_CURLY_CLOSE || scope > 0 ) {
-		if ( (*token).type() == Token::Type::BRACKET_CURLY_OPEN ) {
-			scope++;
-		}
-		if ( (*token).type() == Token::Type::BRACKET_CURLY_CLOSE ) {
-			scope--;
-		}
-
-		tokens.push_back((*token));
+	if ( isAbstract && !tokens.empty() ) {
+		throw Utils::Exceptions::SyntaxError("abstract methods cannot have an implementation");
 	}
 
 	// create a new method with the corresponding return value
@@ -149,6 +180,7 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token)
 	method->setConst(isConst);
 	method->setFinal(isFinal);
 	method->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
+	method->setRecursive(isRecursive);
 	method->setRepository(mRepository);
 	method->setSignature(params);
 	method->setTokens(tokens);

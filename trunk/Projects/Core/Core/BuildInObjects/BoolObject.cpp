@@ -97,6 +97,7 @@ void BoolObject::operator_assign(BoolObject *other)
 
 void BoolObject::operator_assign(Object *other)
 {
+/*
 	std::string target = other->Typename();
 
 	if ( target == BoolObject::TYPENAME ||
@@ -104,13 +105,16 @@ void BoolObject::operator_assign(Object *other)
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ||
 		 target == StringObject::TYPENAME ) {
-		BoolObject tmp(Tools::stringToBool(other->getValue()));
+		BoolObject tmp(isTrue(*other));
 
 		operator_assign(&tmp);
 	}
 	else {
 		Object::operator_assign(other);
 	}
+*/
+
+	mValue = isTrue(*other);
 }
 
 void BoolObject::operator_bitand(BoolObject *other)

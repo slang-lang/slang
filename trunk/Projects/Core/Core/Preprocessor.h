@@ -39,6 +39,8 @@ private:
 	Designtime::BluePrint* createMember(TokenIterator start);
 	Runtime::Method* createMethod(TokenIterator start);
 
+	TokenList collectScopeTokens(TokenIterator& token) const;
+
 	void generateObject();
 	void generateTokens(const std::string& content);
 

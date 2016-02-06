@@ -69,14 +69,14 @@ private:
 };
 
 
-class AbstractObject : public Exception
+class AbstractException : public Exception
 {
 public:
-	AbstractObject(const std::string& text, const Utils::Position& position = Utils::Position())
-	: Exception("Exception.AbstractObject: " + text, position)
+	AbstractException(const std::string& text, const Utils::Position& position = Utils::Position())
+	: Exception("Exception.AbstractException: " + text, position)
 	{ }
 
-	virtual ~AbstractObject() throw() { }
+	virtual ~AbstractException() throw() { }
 };
 
 
