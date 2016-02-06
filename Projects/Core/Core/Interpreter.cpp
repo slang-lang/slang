@@ -335,7 +335,7 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 			process(result, start, getTokens().end(), Token::Type::SEMICOLON);
 		} break;
 		case Token::Type::SEMICOLON: {
-			if ( result->getTypeName() == VoidObject::TYPENAME ) {
+			if ( result->Typename() == VoidObject::TYPENAME ) {
 				// this is okay, as long as we have a been called by a return command in a void method
 				return;
 			}
@@ -773,7 +773,7 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 		expression(obj, tmp);
 
 		params.push_back(
-			Parameter(obj->getName(), obj->getTypeName(), obj->getValue(), false, obj->isConst(), Parameter::AccessMode::Unspecified, obj)
+			Parameter(obj->getName(), obj->Typename(), obj->getValue(), false, obj->isConst(), Parameter::AccessMode::Unspecified, obj)
 		);
 
 		if ( std::distance(tmp, closed) <= 0 ) {
@@ -841,7 +841,7 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 		expression(obj, tmp);
 
 		params.push_back(
-			Parameter(obj->getName(), obj->getTypeName(), obj->getValue(), false, obj->isConst(), Parameter::AccessMode::Unspecified, obj)
+			Parameter(obj->getName(), obj->Typename(), obj->getValue(), false, obj->isConst(), Parameter::AccessMode::Unspecified, obj)
 		);
 
 		if ( std::distance(tmp, closed) <= 0 ) {

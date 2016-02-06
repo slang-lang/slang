@@ -45,7 +45,7 @@ public: // overloaded operators
 	void operator= (const Method& other);
 
 public:	// Symbol::IType implementation
-	const std::string& getTypeName() const;
+	const std::string& Typename() const;
 	std::string ToString() const;
 
 public: // Execution

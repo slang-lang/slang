@@ -22,8 +22,8 @@ std::string UserObject::TYPENAME = "UserObject";
 UserObject::UserObject()
 : Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, "")
 {
-	mConstructed = false;
 	mIsAtomicType = false;
+	mIsConstructed = false;
 
 	//setValue(VALUE_NONE);
 }
@@ -31,8 +31,8 @@ UserObject::UserObject()
 UserObject::UserObject(const std::string& name, const std::string& filename, const std::string& type, const std::string& value)
 : Object(name, filename, type, value)
 {
-	mConstructed = false;
 	mIsAtomicType = false;
+	mIsConstructed = false;
 
 	//setValue(value);
 }
@@ -40,8 +40,8 @@ UserObject::UserObject(const std::string& name, const std::string& filename, con
 UserObject::UserObject(const Object& object)
 : Object(object.getName(), object.Filename(), object.Typename(), "")
 {
-	mConstructed = false;
 	mIsAtomicType = false;
+	mIsConstructed = false;
 
 	setValue(object.getValue());
 }
