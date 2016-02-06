@@ -17,7 +17,7 @@ public namespace
 			assert("bla" + ReturnOne() + "bla");
 			assert(ReturnAString());
 			assert(ReturnTrue());
-			//assert(!ReturnFalse());	// unary operator ! is not yet implemented
+			assert(!ReturnFalse());	// unary operator ! is not yet implemented
 			assert(ReturnFalse());
 		}
 
