@@ -54,12 +54,6 @@ BoolObject::BoolObject(const std::string& name, const std::string& value)
 	setValue(value);
 }
 
-BoolObject::BoolObject(const BoolObject& object)
-: Object(object.getName(), SYSTEM_LIBRARY, TYPENAME, "")
-{
-	setNativeValue(object.getNativeValue());
-}
-
 BoolObject::BoolObject(const Object& object)
 : Object(object.getName(), SYSTEM_LIBRARY, TYPENAME, "")
 {
