@@ -25,54 +25,57 @@ std::string BoolObject::TYPENAME = "bool";
 
 
 BoolObject::BoolObject(bool value)
-: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, Tools::toString(value)),
-  mValue(value)
+: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, "")
 {
 	mIsAtomicType = true;
 
 	Constructor(ParameterList());
+
+	setNativeValue(value);
 }
 
 BoolObject::BoolObject(const std::string& name, bool value)
-: Object(name, SYSTEM_LIBRARY, TYPENAME, Tools::toString(value)),
-  mValue(value)
+: Object(name, SYSTEM_LIBRARY, TYPENAME, "")
 {
 	mIsAtomicType = true;
 
 	Constructor(ParameterList());
+
+	setNativeValue(value);
 }
 
 BoolObject::BoolObject(const std::string& name, const std::string& value)
-: Object(name, SYSTEM_LIBRARY, TYPENAME, value),
-  mValue(Tools::stringToBool(value))
+: Object(name, SYSTEM_LIBRARY, TYPENAME, "")
 {
 	mIsAtomicType = true;
 
 	Constructor(ParameterList());
+
+	setValue(value);
 }
 
 BoolObject::BoolObject(const BoolObject& object)
-: Object(object.getName(), SYSTEM_LIBRARY, TYPENAME, object.getValue()),
-  mValue(object.getNativeValue())
+: Object(object.getName(), SYSTEM_LIBRARY, TYPENAME, "")
 {
+	setNativeValue(object.getNativeValue());
 }
 
 BoolObject::BoolObject(const Object& object)
-: Object(object.getName(), SYSTEM_LIBRARY, TYPENAME, object.getValue())
+: Object(object.getName(), SYSTEM_LIBRARY, TYPENAME, "")
 {
 	// generic type cast
 
-	mValue = isTrue(object);
+	setNativeValue(isTrue(object));
 }
 
 BoolObject::operator bool() const
 {
-	return mValue;
+	return mNativeValue;
 }
 
 bool BoolObject::getNativeValue() const
 {
-	return mValue;
+	return mNativeValue;
 }
 
 const std::string& BoolObject::getTypeName() const
@@ -82,17 +85,17 @@ const std::string& BoolObject::getTypeName() const
 
 std::string BoolObject::getValue() const
 {
-	return Tools::toString(mValue);
+	return mValue;
 }
 
 bool BoolObject::isValid() const
 {
-	return mValue;
+	return mNativeValue;
 }
 
 void BoolObject::operator_assign(BoolObject *other)
 {
-	mValue = other->getNativeValue();
+	setNativeValue(other->getNativeValue());
 }
 
 void BoolObject::operator_assign(Object *other)
@@ -114,12 +117,12 @@ void BoolObject::operator_assign(Object *other)
 	}
 */
 
-	mValue = isTrue(*other);
+	setNativeValue(isTrue(*other));
 }
 
 void BoolObject::operator_bitand(BoolObject *other)
 {
-	mValue &= other->getNativeValue();
+	setNativeValue(mNativeValue & other->getNativeValue());
 }
 
 void BoolObject::operator_bitand(Object *other)
@@ -142,7 +145,7 @@ void BoolObject::operator_bitand(Object *other)
 
 void BoolObject::operator_bitor(BoolObject *other)
 {
-	mValue |= other->getNativeValue();
+	setNativeValue(mNativeValue | other->getNativeValue());
 }
 
 void BoolObject::operator_bitor(Object *other)
@@ -165,7 +168,7 @@ void BoolObject::operator_bitor(Object *other)
 
 bool BoolObject::operator_equal(BoolObject *other)
 {
-	return (mValue == other->getNativeValue());
+	return (mNativeValue == other->getNativeValue());
 }
 
 bool BoolObject::operator_equal(Object *other)
@@ -187,17 +190,19 @@ bool BoolObject::operator_equal(Object *other)
 
 void BoolObject::operator_unary_not()
 {
-	mValue = !mValue;
+	setNativeValue(!mNativeValue);
 }
 
 void BoolObject::setNativeValue(bool value)
 {
-	mValue = value;
+	mNativeValue = value;
+	mValue = Tools::toString(value);
 }
 
 void BoolObject::setValue(const std::string& value)
 {
-	mValue = Tools::stringToBool(value);
+	mNativeValue = Tools::stringToBool(value);
+	mValue = value;
 }
 
 std::string BoolObject::ToString() const

@@ -65,7 +65,7 @@ public: // Value
 	virtual std::string ToString() const;
 
 private:
-	bool mValue;
+	bool mNativeValue;
 };
 
 
