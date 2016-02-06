@@ -20,6 +20,7 @@ BluePrint::BluePrint()
 : MethodScope(ANONYMOUS_OBJECT, 0),
   BluePrintSymbol(ANONYMOUS_OBJECT),
   RTTI(ANONYMOUS_OBJECT, ANONYMOUS_OBJECT),
+  mFullyQualifiedName(ANONYMOUS_OBJECT),
   mName(ANONYMOUS_OBJECT),
   mVisibility(Visibility::Public)
 {
@@ -29,6 +30,7 @@ BluePrint::BluePrint(const std::string& type, const std::string& filename, const
 : MethodScope(type, 0),
   BluePrintSymbol(type),
   RTTI(type, filename),
+  mFullyQualifiedName(name),
   mName(name),
   mVisibility(Visibility::Public)
 {

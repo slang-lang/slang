@@ -84,6 +84,7 @@ public namespace Language
 
 		private void ParameterByValue(number value val)
 		{
+			assert(value == 1);
 			print("ParameterByValue(number): value = " + value);
 			value = value + 1;
 			print("ParameterByValue(number): value = " + value);

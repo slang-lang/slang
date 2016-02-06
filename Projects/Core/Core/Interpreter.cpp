@@ -587,10 +587,10 @@ void Interpreter::process_identifier(TokenIterator& token, Object *result, Token
 	if ( !symbol ) {
 		throw Utils::Exceptions::UnknownIdentifer("identifier '" + identifier + "' not found", token->position());
 	}
-	if ( symbol->isConst() ) {
+	if ( symbol->isConst() ) {	// we tried to modify a const symbol (i.e. member, parameter or local variable)
 		throw Utils::Exceptions::ConstCorrectnessViolated("tried to modify const symbol '" + identifier + "'", token->position());
 	}
-	if ( symbol->isMember() && this->isConst() ) {
+	if ( symbol->isMember() && this->isConst() ) {	// we tried to modify a member in a const method
 		throw Utils::Exceptions::ConstCorrectnessViolated("tried to modify member '" + identifier + "' in const method '" + getScopeName() + "'", token->position());
 	}
 

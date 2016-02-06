@@ -145,6 +145,11 @@ ControlFlow::E Method::execute(const ParameterList& params, Object *result)
 			} break;
 			case Parameter::AccessMode::ByReference: {
 				Object *object = param.pointer();
+
+				if ( param.isConst() ) {
+					throw Utils::Exceptions::NotImplemented("const references as parameters not supported");
+				}
+
 				object->setConst(param.isConst());	// const references are not supported atm so this should always be false
 
 				interpreter.define(param.name(), object);
@@ -154,7 +159,7 @@ ControlFlow::E Method::execute(const ParameterList& params, Object *result)
 
 				object->setValue(param.value());	// in case we have a default value
 				if ( param.pointer() ) {
-					*object = Object(*param.pointer());
+					*object = *param.pointer();
 				}
 				object->setConst(param.isConst());
 
@@ -232,17 +237,29 @@ bool Method::isSignatureValid(const ParameterList& params) const
 
 	while ( sigIt != mSignature.end() ) {
 		if ( paramIt != params.end() ) {
-			if ( /*(sigIt->access() != paramIt->access()) ||*/
-				 /*(sigIt->isConst() != paramIt->isConst()) ||*/
-				 (sigIt->type() != paramIt->type()) ) {
+			// compare received type with expected type
+			if ( sigIt->type() != paramIt->type() ) {
+				// we received the wrong parameter type
 				return false;
 			}
+			// compare received const-ness with expected const-ness
+			if ( paramIt->isConst() && !sigIt->isConst() ) {
+				// we received a const parameter but expect a non-const parameter
+				return false;
+			}
+/*
+			// compare access types
+			if ( paramIt->access() != sigIt->access() ) {
+				// received wrong access type
+				return false;
+			}
+*/
+
 			paramIt++;
 		}
-		else {
-			if ( !sigIt->hasDefaultValue() ) {
-				return false;
-			}
+		else if ( !sigIt->hasDefaultValue() ) {
+			// we received less parameters than expected and we have no default value set
+			return false;
 		}
 
 		sigIt++;
@@ -273,15 +290,15 @@ Symbol* Method::resolve(const std::string& name, bool onlyCurrentScope) const
 		switch ( result->getType() ) {
 			case Symbol::IType::AtomicTypeSymbol:
 			case Symbol::IType::MemberSymbol:
-			case Symbol::IType::ObjectSymbol: {
-				result = static_cast<Object*>(result)->resolve(member);
-			} break;
-			case Symbol::IType::MethodSymbol:
 			case Symbol::IType::NamespaceSymbol:
+			case Symbol::IType::ObjectSymbol:
+				result = static_cast<Object*>(result)->resolve(member);
+				break;
+			case Symbol::IType::MethodSymbol:
 				return result;
 			case Symbol::IType::BluePrintSymbol:
 			case Symbol::IType::UnknownSymbol:
-				throw Utils::Exceptions::SyntaxError("cannot directly access locals of method/namespace");
+				throw Utils::Exceptions::SyntaxError("unknown symbol '" + name + "' requested");
 		}
 
 		Tools::split(member, parent, member);
@@ -309,11 +326,12 @@ Symbol* Method::resolveMethod(const std::string& name, const ParameterList& para
 			case Symbol::IType::ObjectSymbol:
 				return static_cast<Object*>(result)->resolveMethod(member, params);
 			case Symbol::IType::MethodSymbol:
-				return static_cast<Method*>(result)->resolveMethod(member, params, onlyCurrentScope);
-			case Symbol::IType::BluePrintSymbol:
+				return result;
 			case Symbol::IType::NamespaceSymbol:
+				//return static_cast<Namespace*>(result)->resolveMethod(member, params, onlyCurrentScope);
+			case Symbol::IType::BluePrintSymbol:
 			case Symbol::IType::UnknownSymbol:
-				throw Utils::Exceptions::SyntaxError("cannot directly access locals of method/namespace");
+				throw Utils::Exceptions::SyntaxError("unknown symbol '" + name + "' requested");
 		}
 	}
 
