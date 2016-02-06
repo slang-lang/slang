@@ -85,7 +85,7 @@ public: // Values
 protected:
 
 private:
-	float mValue;
+	float mNativeValue;
 };
 
 

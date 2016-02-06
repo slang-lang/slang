@@ -25,40 +25,43 @@ std::string NumberObject::TYPENAME = "number";
 
 
 NumberObject::NumberObject(double value)
-: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, Tools::toString(value)),
-  mValue(value)
+: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, "")
 {
 	mIsAtomicType = true;
 
 	Constructor(ParameterList());
+
+	setNativeValue(value);
 }
 
 NumberObject::NumberObject(const std::string& name, double value)
-: Object(name, SYSTEM_LIBRARY, TYPENAME, Tools::toString(value)),
-  mValue(value)
+: Object(name, SYSTEM_LIBRARY, TYPENAME, "")
 {
 	mIsAtomicType = true;
 
 	Constructor(ParameterList());
+
+	setNativeValue(value);
 }
 
 NumberObject::NumberObject(const std::string& name, const std::string& value)
-: Object(name, SYSTEM_LIBRARY, TYPENAME, value),
-  mValue(Tools::stringToDouble(value))
+: Object(name, SYSTEM_LIBRARY, TYPENAME, "")
 {
 	mIsAtomicType = true;
 
 	Constructor(ParameterList());
+
+	setValue(value);
 }
 
 NumberObject::NumberObject(const NumberObject& object)
-: Object(object.getName(), SYSTEM_LIBRARY, TYPENAME, object.getValue()),
-  mValue(object.getNativeValue())
+: Object(object.getName(), SYSTEM_LIBRARY, TYPENAME, "")
 {
+	setNativeValue(object.getNativeValue());
 }
 
 NumberObject::NumberObject(const Object& other)
-: Object(other.getName(), SYSTEM_LIBRARY, TYPENAME, other.getValue())
+: Object(other.getName(), SYSTEM_LIBRARY, TYPENAME, "")
 {
 	// generic type cast
 
@@ -68,7 +71,7 @@ NumberObject::NumberObject(const Object& other)
 		 source == IntegerObject::TYPENAME ||
 		 source == NumberObject::TYPENAME ||
 		 source == StringObject::TYPENAME ) {
-		mValue = Tools::stringToDouble(other.getValue());
+		setValue(other.getValue());
 	}
 	else {
 		throw Utils::Exceptions::InvalidTypeCast("from " + source + " to " + TYPENAME);
@@ -77,12 +80,12 @@ NumberObject::NumberObject(const Object& other)
 
 NumberObject::operator bool() const
 {
-	return mValue != 0.0;
+	return mNativeValue != 0.0;
 }
 
 double NumberObject::getNativeValue() const
 {
-	return mValue;
+	return mNativeValue;
 }
 
 const std::string& NumberObject::getTypeName() const
@@ -92,17 +95,17 @@ const std::string& NumberObject::getTypeName() const
 
 std::string NumberObject::getValue() const
 {
-	return Tools::toString(mValue);
+	return mValue;
 }
 
 bool NumberObject::isValid() const
 {
-	return mValue != 0.0;
+	return mNativeValue != 0.0;
 }
 
 void NumberObject::operator_assign(NumberObject *other)
 {
-	mValue = other->getNativeValue();
+	setNativeValue(other->getNativeValue());
 }
 
 void NumberObject::operator_assign(Object *other)
@@ -123,7 +126,7 @@ void NumberObject::operator_assign(Object *other)
 
 void NumberObject::operator_divide(NumberObject *other)
 {
-	mValue /= other->getNativeValue();
+	setNativeValue(mNativeValue / other->getNativeValue());
 }
 
 void NumberObject::operator_divide(Object *other)
@@ -144,7 +147,7 @@ void NumberObject::operator_divide(Object *other)
 
 bool NumberObject::operator_equal(NumberObject *other)
 {
-	return (mValue == other->getNativeValue());
+	return (mNativeValue == other->getNativeValue());
 }
 
 bool NumberObject::operator_equal(Object *other)
@@ -164,7 +167,7 @@ bool NumberObject::operator_equal(Object *other)
 
 bool NumberObject::operator_greater(NumberObject *other)
 {
-	return (mValue > other->getNativeValue());
+	return (mNativeValue > other->getNativeValue());
 }
 
 bool NumberObject::operator_greater(Object *other)
@@ -184,7 +187,7 @@ bool NumberObject::operator_greater(Object *other)
 
 bool NumberObject::operator_greater_equal(NumberObject *other)
 {
-	return (mValue >= other->getNativeValue());
+	return (mNativeValue >= other->getNativeValue());
 }
 
 bool NumberObject::operator_greater_equal(Object *other)
@@ -204,7 +207,7 @@ bool NumberObject::operator_greater_equal(Object *other)
 
 bool NumberObject::operator_less(NumberObject *other)
 {
-	return (mValue < other->getNativeValue());
+	return (mNativeValue < other->getNativeValue());
 }
 
 bool NumberObject::operator_less(Object *other)
@@ -224,7 +227,7 @@ bool NumberObject::operator_less(Object *other)
 
 bool NumberObject::operator_less_equal(NumberObject *other)
 {
-	return (mValue <= other->getNativeValue());
+	return (mNativeValue <= other->getNativeValue());
 }
 
 bool NumberObject::operator_less_equal(Object *other)
@@ -244,7 +247,7 @@ bool NumberObject::operator_less_equal(Object *other)
 
 void NumberObject::operator_multiply(NumberObject *other)
 {
-	mValue *= other->getNativeValue();
+	setNativeValue(mNativeValue * other->getNativeValue());
 }
 
 void NumberObject::operator_multiply(Object *other)
@@ -265,7 +268,7 @@ void NumberObject::operator_multiply(Object *other)
 
 void NumberObject::operator_plus(NumberObject *other)
 {
-	mValue += other->getNativeValue();
+	setNativeValue(mNativeValue + other->getNativeValue());
 }
 
 void NumberObject::operator_plus(Object *other)
@@ -286,7 +289,7 @@ void NumberObject::operator_plus(Object *other)
 
 void NumberObject::operator_subtract(NumberObject *other)
 {
-	mValue -= other->getNativeValue();
+	setNativeValue(mNativeValue - other->getNativeValue());
 }
 
 void NumberObject::operator_subtract(Object *other)
@@ -307,32 +310,34 @@ void NumberObject::operator_subtract(Object *other)
 
 void NumberObject::operator_unary_decrement()
 {
-	mValue--;
+	setNativeValue(mNativeValue - 1);
 }
 
 void NumberObject::operator_unary_increment()
 {
-	mValue++;
+	setNativeValue(mNativeValue + 1);
 }
 
 void NumberObject::operator_unary_minus()
 {
-	mValue = -mValue;
+	setNativeValue(mNativeValue * -1);
 }
 
 void NumberObject::operator_unary_not()
 {
-	mValue = !mValue;
+	setNativeValue(!mNativeValue);
 }
 
 void NumberObject::setNativeValue(double value)
 {
-	mValue = value;
+	mNativeValue = value;
+	mValue = Tools::toString(value);
 }
 
 void NumberObject::setValue(const std::string& value)
 {
-	mValue = Tools::stringToDouble(value);
+	mNativeValue = Tools::stringToDouble(value);
+	mValue = value;
 }
 
 std::string NumberObject::ToString() const
