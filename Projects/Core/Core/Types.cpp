@@ -76,9 +76,11 @@ StringList provideModifiers()
 {
 	StringList modifiers;
 
+	modifiers.push_back(MODIFIER_ABSTRACT);
 	modifiers.push_back(MODIFIER_CONST);
 	modifiers.push_back(MODIFIER_FINAL);
 	modifiers.push_back(MODIFIER_MODIFY);
+	modifiers.push_back(MODIFIER_RECURSIVE);
 
 	return modifiers;
 }

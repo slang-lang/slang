@@ -51,9 +51,11 @@ static const char* LANGUAGE_FEATURE_UNKNOWN = "unknown";
 static const char* LANGUAGE_FEATURE_UNSTABLE = "unstable";
 
 // Modifiers
+static const char* MODIFIER_ABSTRACT = "abstract";
 static const char* MODIFIER_CONST = "const";
 static const char* MODIFIER_FINAL = "final";
 static const char* MODIFIER_MODIFY = "modify";
+static const char* MODIFIER_RECURSIVE = "recursive";
 static const char* MODIFIER_SEALED = "sealed";
 
 // Reserved words

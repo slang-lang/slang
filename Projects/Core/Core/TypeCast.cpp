@@ -57,7 +57,7 @@ void typecast(Object *base, const std::string& type)
 		*base = tmp;
 	}
 	else if ( type == VoidObject::TYPENAME ) {
-		VoidObject tmp;
+		VoidObject tmp(*base);
 
 		*base = tmp;
 	}

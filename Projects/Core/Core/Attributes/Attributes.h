@@ -52,8 +52,6 @@ class LocalAttributes : public GenericAttributes
 {
 public:
 	LocalAttributes();
-
-public:
 };
 
 
@@ -61,9 +59,6 @@ class MemberAttributes : public GenericAttributes
 {
 public:
 	MemberAttributes();
-
-public:
-
 };
 
 
@@ -76,8 +71,12 @@ public:
 	virtual bool isAbstract() const;
 	virtual void setAbstract(bool state);
 
+	virtual bool isRecursive() const;
+	virtual void setRecursive(bool state);
+
 protected:
 	bool mIsAbstract;
+	bool mIsRecursive;
 };
 
 

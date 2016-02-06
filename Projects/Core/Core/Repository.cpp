@@ -144,14 +144,11 @@ void Repository::CollectGarbage()
 		}
 
 		// as soon as we've lost all references, we can destroy our object
-		if ( it->second <= 0 ) {
-			if ( it->first ) {
-				// call object's destructor ...
-				it->first->Destructor();
-
-				// ... and delete it
-				delete it->first;
-			}
+		if ( it->first && it->second <= 0 ) {
+			// call object's destructor ...
+			it->first->Destructor();
+			// ... and delete it
+			delete it->first;
 
 			it = mInstances.erase(it);
 		}
@@ -227,7 +224,7 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 
 			Designtime::BluePrint *blue = static_cast<Designtime::BluePrint*>(it->second);
 			if ( blue->isAbstract() ) {
-				throw Utils::Exceptions::AbstractObject("cannot instantiate abstract object '" + blue->Typename() + "'");
+				throw Utils::Exceptions::AbstractException("cannot instantiate abstract object '" + blue->Typename() + "'");
 			}
 
 			Symbol *symbol = createInstance(blue->Typename(), blue->getName(), "");
