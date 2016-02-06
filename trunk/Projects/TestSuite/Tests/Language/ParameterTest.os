@@ -8,6 +8,22 @@ public namespace Language
 		{
 			print("argc = " + argc);
 			print("argv = " + argv);
+
+			//assert( TestCase1() );
+		}
+
+		private bool TestCase1() const
+		{
+			int bla final = 1;
+
+			ModifyInt(bla);
+
+			return false;
+		}
+		
+		private void ModifyInt(int value ref) const
+		{
+			value = value++;
 		}
 	}
 }
