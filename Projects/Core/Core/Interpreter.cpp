@@ -110,6 +110,22 @@ const TokenList& Interpreter::getTokens() const
 	return mTokenStack.back();
 }
 
+ControlFlow::E Interpreter::interpret(const TokenList& tokens, Object* result)
+{
+	// this creates a new scope
+
+	Interpreter interpreter(this, getScopeName());
+	interpreter.setConst(isConst());
+	interpreter.setFinal(isFinal());
+	interpreter.setLanguageFeatureState(getLanguageFeatureState());
+	interpreter.setRepository(mRepository);
+	interpreter.setTokens(tokens);
+
+	ControlFlow::E controlflow = interpreter.execute(result);
+
+	return controlflow;
+}
+
 void Interpreter::parseCondition(Object *result, TokenIterator& start)
 {
 	parseExpression(result, start);
@@ -198,14 +214,12 @@ void Interpreter::parseExpression(Object *result, TokenIterator& start)
 
 void Interpreter::parseFactors(Object *result, TokenIterator& start)
 {
-	if ( (start)->type() == Token::Type::PARENTHESIS_OPEN) {
+	if ( start->type() == Token::Type::PARENTHESIS_OPEN) {
 		start++;	// consume operator token
 
 		expression(result, start);
 
-		if ( start->type() != Token::Type::PARENTHESIS_CLOSE ) {
-			throw Utils::Exceptions::SyntaxError("')' expected but '"  + start->content() + "' found", start->position());
-		}
+		expect(Token::Type::PARENTHESIS_CLOSE, start);
 
 		start++;	// consume operator token
 	}
@@ -224,13 +238,11 @@ void Interpreter::parseFactors(Object *result, TokenIterator& start)
 		start++;	// consume operator token
 
 		Object v2;
-		if ( (start)->type() == Token::Type::PARENTHESIS_OPEN) {
+		if ( start->type() == Token::Type::PARENTHESIS_OPEN) {
 			start++;	// consume operator token
 			expression(&v2, start);
 
-			if ( start->type() != Token::Type::PARENTHESIS_CLOSE ) {
-				throw Utils::Exceptions::SyntaxError("')' expected but '"  + start->content() + "' found", start->position());
-			}
+			expect(Token::Type::PARENTHESIS_CLOSE, start);
 
 			start++;	// consume operator token
 		}
@@ -414,6 +426,8 @@ void Interpreter::process(Object *result, TokenIterator& token, TokenIterator en
 // assert [(] <expression> [)];
 void Interpreter::process_assert(TokenIterator& token)
 {
+	//expect(Token::Type::PARENTHESIS_OPEN, token);
+
 	// find next open parenthesis
 	TokenIterator condBegin = findNext(token, Token::Type::PARENTHESIS_OPEN, Token::Type::SEMICOLON);
 	// find next balanced '(' & ')' pair
@@ -517,8 +531,6 @@ void Interpreter::process_for(TokenIterator& token, Object *result)
 	for ( ; ; ) {
 		// Condition parsing
 		// {
-		mControlFlow = ControlFlow::Normal;
-
 		TokenIterator condBegin = conditionBegin;
 
 		Object condition;
@@ -531,28 +543,19 @@ void Interpreter::process_for(TokenIterator& token, Object *result)
 
 		// Body parsing
 		// {
-		Interpreter interpreter(this, getScopeName());
-		interpreter.setConst(isConst());
-		interpreter.setFinal(isFinal());
-		interpreter.setLanguageFeatureState(getLanguageFeatureState());
-		interpreter.setRepository(mRepository);
-		interpreter.setTokens(loopTokens);
+		ControlFlow::E controlflow = interpret(loopTokens, result);
 
-		mControlFlow = interpreter.execute(result);
-
-		switch ( mControlFlow ) {
+		switch ( controlflow ) {
 			case ControlFlow::Break: mControlFlow = ControlFlow::Normal; return;
 			case ControlFlow::Continue: mControlFlow = ControlFlow::Normal; continue;
 			case ControlFlow::Normal: mControlFlow = ControlFlow::Normal; break;
-			case ControlFlow::Return: return;
-			case ControlFlow::Throw: return;
+			case ControlFlow::Return: mControlFlow = ControlFlow::Return; return;
+			case ControlFlow::Throw: mControlFlow = ControlFlow::Throw; return;
 		}
 		// }
 
 		// Expression parsing
 		// {
-		mControlFlow = ControlFlow::Normal;
-
 		TokenIterator exprBegin = increaseBegin;
 		TokenList exprTokens;
 
@@ -609,7 +612,7 @@ void Interpreter::process_identifier(TokenIterator& token, Object *result, Token
 	expression(symbol, ++assign);
 
 	if ( !symbol->isConst() && symbol->isFinal() ) {
-		// we have modified a final entity for the first time, we now have to set it so const
+		// we have modified a final symbol for the first time, we now have to set it so const
 		symbol->setConst(true);
 		symbol->setFinal(false);
 	}
@@ -696,24 +699,10 @@ void Interpreter::process_if(TokenIterator& token, Object *result)
 	expression(&condition, condBegin);
 
 	if ( isTrue(condition) ) {
-		Interpreter interpreter(this, getScopeName());
-		interpreter.setConst(isConst());
-		interpreter.setFinal(isFinal());
-		interpreter.setLanguageFeatureState(getLanguageFeatureState());
-		interpreter.setRepository(mRepository);
-		interpreter.setTokens(ifTokens);
-
-		mControlFlow = interpreter.execute(result);
+		mControlFlow = interpret(ifTokens, result);
 	}
 	else if ( !elseTokens.empty() ) {
-		Interpreter interpreter(this, getScopeName());
-		interpreter.setConst(isConst());
-		interpreter.setFinal(isFinal());
-		interpreter.setLanguageFeatureState(getLanguageFeatureState());
-		interpreter.setRepository(mRepository);
-		interpreter.setTokens(elseTokens);
-
-		mControlFlow = interpreter.execute(result);
+		mControlFlow = interpret(elseTokens, result);
 	}
 }
 
@@ -812,7 +801,7 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 
 	// check target method's const-ness
 	if ( isConst() && !symbol->isConst() ) {	// this is a const method and we want to call a non-const method... neeeeey!
-		throw Utils::Exceptions::ConstCorrectnessViolated("only calls to const methods are allowed in const method '" + getScopeName() + "'");
+		throw Utils::Exceptions::ConstCorrectnessViolated("only calls to const methods are allowed in const method '" + getScopeName() + "'", token->position());
 	}
 
 	ControlFlow::E controlflow = static_cast<Method*>(symbol)->execute(params, result);
@@ -877,6 +866,8 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 // print(<expression>);
 void Interpreter::process_print(TokenIterator& token)
 {
+	//expect(Token::Type::PARENTHESIS_OPEN, token);
+
 	// find open parenthesis
 	TokenIterator opened = findNext(token, Token::Type::PARENTHESIS_OPEN);
 	// find closed parenthesis
@@ -914,14 +905,7 @@ void Interpreter::process_scope(TokenIterator& token, Object* result)
 		scopeBegin++;
 	}
 
-	Interpreter interpreter(this, getScopeName());
-	interpreter.setConst(isConst());
-	interpreter.setFinal(isFinal());
-	interpreter.setLanguageFeatureState(getLanguageFeatureState());
-	interpreter.setRepository(mRepository);
-	interpreter.setTokens(scopeTokens);
-
-	mControlFlow = interpreter.execute(result);
+	mControlFlow = interpret(scopeTokens, result);
 
 	token = scopeEnd;
 }
@@ -1024,15 +1008,7 @@ void Interpreter::process_try(TokenIterator& token, Object *result)
 		tryBegin++;
 	}
 
-
-	Interpreter interpreter(this, getScopeName());
-	interpreter.setConst(isConst());
-	interpreter.setFinal(isFinal());
-	interpreter.setLanguageFeatureState(getLanguageFeatureState());
-	interpreter.setRepository(mRepository);
-	interpreter.setTokens(tryTokens);
-
-	mControlFlow = interpreter.execute(result);
+	mControlFlow = interpret(tryTokens, result);
 
 	// execute catch-block if an exception has been thrown
 	if ( mControlFlow == ControlFlow::Throw ) {
@@ -1058,14 +1034,7 @@ void Interpreter::process_try(TokenIterator& token, Object *result)
 				catchBegin++;
 			}
 
-			Interpreter interpreter(this, getScopeName());
-			interpreter.setConst(isConst());
-			interpreter.setFinal(isFinal());
-			interpreter.setLanguageFeatureState(getLanguageFeatureState());
-			interpreter.setRepository(mRepository);
-			interpreter.setTokens(catchTokens);
-
-			mControlFlow = interpreter.execute(result);
+			mControlFlow = interpret(catchTokens, result);
 		}
 	}
 	else {
@@ -1093,14 +1062,7 @@ void Interpreter::process_try(TokenIterator& token, Object *result)
 			finallyBegin++;
 		}
 
-		Interpreter interpreter(this, getScopeName());
-		interpreter.setConst(isConst());
-		interpreter.setFinal(isFinal());
-		interpreter.setLanguageFeatureState(getLanguageFeatureState());
-		interpreter.setRepository(mRepository);
-		interpreter.setTokens(finallyTokens);
-
-		mControlFlow = interpreter.execute(result);
+		mControlFlow = interpret(finallyTokens, result);
 	}
 }
 
@@ -1123,9 +1085,7 @@ void Interpreter::process_type(TokenIterator& token)
 	token++;
 	name = token->content();
 
-	if ( token->type() != Token::Type::IDENTIFER ) {
-		throw Utils::Exceptions::SyntaxError("identifier expected but '" + token->content() + "' found", token->position());
-	}
+	expect(Token::Type::IDENTIFER, token);
 
 	token++;
 
@@ -1148,7 +1108,6 @@ void Interpreter::process_type(TokenIterator& token)
 	}
 
 	object = mRepository->createInstance(type, name, prototype);
-	*object = Object(object->getName(), object->Filename(), object->Typename(), VALUE_NONE);
 
 	define(name, object);
 
@@ -1163,9 +1122,7 @@ void Interpreter::process_type(TokenIterator& token)
 		token = end;
 	}
 
-	if ( token->type() != Token::Type::SEMICOLON ) {
-		throw Utils::Exceptions::SyntaxError("';' expected but '" + token->content() + "' found", token->position());
-	}
+	expect(Token::Type::SEMICOLON, token);
 }
 
 // syntax:
@@ -1195,8 +1152,6 @@ void Interpreter::process_while(TokenIterator& token, Object *result)
 	}
 
 	for ( ; ; ) {
-		mControlFlow = ControlFlow::Normal;
-
 		TokenIterator tmp = condBegin;
 
 		Object condition;
@@ -1206,21 +1161,14 @@ void Interpreter::process_while(TokenIterator& token, Object *result)
 			break;
 		}
 
-		Interpreter interpreter(this, getScopeName());
-		interpreter.setConst(isConst());
-		interpreter.setFinal(isFinal());
-		interpreter.setLanguageFeatureState(getLanguageFeatureState());
-		interpreter.setRepository(mRepository);
-		interpreter.setTokens(statementTokens);
+		ControlFlow::E controlflow = interpret(statementTokens, result);
 
-		mControlFlow = interpreter.execute(result);
-
-		switch ( mControlFlow ) {
+		switch ( controlflow ) {
 			case ControlFlow::Break: mControlFlow = ControlFlow::Normal; return;
-			case ControlFlow::Continue: continue;
+			case ControlFlow::Continue: mControlFlow = ControlFlow::Normal; continue;
 			case ControlFlow::Normal: mControlFlow = ControlFlow::Normal; break;
-			case ControlFlow::Return: return;
-			case ControlFlow::Throw: return;
+			case ControlFlow::Return: mControlFlow = ControlFlow::Return; return;
+			case ControlFlow::Throw: mControlFlow = ControlFlow::Throw; return;
 		}
 	}
 }
