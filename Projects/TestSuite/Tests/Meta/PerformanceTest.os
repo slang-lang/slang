@@ -6,7 +6,7 @@ public namespace PerformanceTest
 	{
 		public void Main(number argc = 0, string argv = "")
 		{
-			number count = 0;
+			number count = 1;
 			number upperbound = 100000;
 
 			print("Starting performance test (by counting from " + count + " to " + upperbound + ")...");

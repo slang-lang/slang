@@ -151,7 +151,7 @@ ControlFlow::E Method::execute(const ParameterList& params, Object *result)
 				Object *object = param.pointer();
 
 				if ( param.isConst() ) {
-					throw Utils::Exceptions::NotImplemented("const references as parameters not supported");
+					throw Utils::Exceptions::NotImplemented("const reference parameters not supported");
 				}
 
 				object->setConst(param.isConst());	// const references are not supported atm so this should always be false
