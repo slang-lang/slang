@@ -32,6 +32,7 @@ public:
 
 private:	// Tests
 	void testBasicExpressionParsing();
+	void testDataTypeBool();
 	void testDataTypeFloat();
 	void testDataTypeInt();
 };

@@ -30,6 +30,7 @@ MathTest::MathTest(const ::Utils::Common::ILogger *p)
 void MathTest::process()
 {
 	TEST(testBasicExpressionParsing);
+	TEST(testDataTypeBool);
 	TEST(testDataTypeFloat);
 	TEST(testDataTypeInt);
 }
@@ -47,6 +48,27 @@ void MathTest::testBasicExpressionParsing()
 	try {
 		VirtualMachine vm;
 		vm.createScriptFromFile("Tests/Math/BasicTest.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void MathTest::testDataTypeBool()
+{
+	try {
+		VirtualMachine vm;
+		vm.createScriptFromString(
+			"public object Main {\
+				public void Main() {\
+					number one = 1;\
+					print(\"one = \" + one);\
+				}\
+			}"
+		);
 
 		// automatic success
 	}
