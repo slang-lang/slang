@@ -64,6 +64,19 @@ const std::string& StdOutLogger::getClassName() const
 std::string StdOutLogger::getDateTime()
 {
 	time_t t = time(0);
+
+#ifdef _WIN32
+	tm _Tm;
+	if ( localtime_s(&_Tm, &t) != 0 ) {
+		return "<invalid date and time>";
+	}
+
+	char dateStr[11];
+	sprintf_s(dateStr, "%04d-%02d-%02d", _Tm.tm_year + 1900, _Tm.tm_mon + 1, _Tm.tm_mday);
+
+	char timeStr[9];
+	sprintf_s(timeStr, "%02d:%02d:%02d", _Tm.tm_hour, _Tm.tm_min, _Tm.tm_sec);
+#else
 	tm *lt = localtime(&t);
 
 	char dateStr[11];
@@ -71,6 +84,7 @@ std::string StdOutLogger::getDateTime()
 
 	char timeStr[9];
 	sprintf(timeStr, "%02d:%02d:%02d", lt->tm_hour, lt->tm_min, lt->tm_sec);
+#endif
 
 	return std::string(dateStr) + " " + std::string(timeStr);
 }
