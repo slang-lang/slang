@@ -34,7 +34,8 @@ public:
 	const StringList& getLibraryReferences() const;
 
 public:
-	void process(const std::string& filename);
+	void processFile(const std::string& filename);
+	void processString(const std::string& content, const std::string& filename = "");
 
 protected:
 
@@ -45,6 +46,7 @@ private:	// moved to private to prevent usage in this release
 private:
 	void generate(const TokenList& tokens);
 	TokenList generateTokens(const std::string& content);
+	void process(const std::string& content);
 
 private:
 	Designtime::BluePrint createBluePrint(TokenIterator& start, TokenIterator end);

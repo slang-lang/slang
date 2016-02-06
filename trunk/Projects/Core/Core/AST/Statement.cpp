@@ -14,10 +14,10 @@ Statement::Statement(const TokenList& tokens)
 
 Node* Statement::execute()
 {
-	mInterpreter->setScope(mScope);
 	mInterpreter->setTokens(mTokens);
 
-	mInterpreter->process();
+	Runtime::Object result;
+	mInterpreter->execute(&result);
 
 	return 0;
 }

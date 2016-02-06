@@ -14,10 +14,10 @@ New::New(const TokenList& tokens)
 
 Node* New::execute()
 {
-	mInterpreter->setScope(mScope);
 	mInterpreter->setTokens(mTokens);
 
-	/*Object result = */mInterpreter->process();
+	Runtime::Object result;
+	mInterpreter->execute(&result);
 	return 0;
 }
 

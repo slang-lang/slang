@@ -48,7 +48,7 @@ void AttributesTest::testBasicLanguageFeatures()
 {
 	try {
 		VirtualMachine vm;
-		vm.create("Tests/Language/AttributesTest.os");
+		vm.createScriptFromFile("Tests/Language/AttributesTest.os");
 
 		// automatic success
 	}

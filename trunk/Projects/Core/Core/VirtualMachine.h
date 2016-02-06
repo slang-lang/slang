@@ -37,7 +37,8 @@ public:	// Setup
 	void setBaseFolder(const std::string& base);
 
 public:
-	Script* create(const std::string& filename, const ParameterList& params = ParameterList());
+	Script* createScriptFromFile(const std::string& filename, const ParameterList& params = ParameterList());
+	Script* createScriptFromString(const std::string& content, const ParameterList& params = ParameterList());
 
 protected:
 
@@ -49,6 +50,7 @@ private:
 
 private:
 	std::string buildLibraryPath(const std::string& library) const;
+	Script* createScript(const std::string& content, const ParameterList& params);
 	void init();
 	void loadLibrary(const std::string& library);
 
@@ -60,6 +62,7 @@ private:
 	ObjectCollection mObjects;
 	Repository *mRepository;
 	IScope *mScope;
+	std::string mScriptFile;
 	ScriptCollection mScripts;
 };
 

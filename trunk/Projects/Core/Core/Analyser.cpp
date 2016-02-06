@@ -168,12 +168,12 @@ Interface Analyser::createInterface(TokenIterator& start, TokenIterator end)
 	SanityChecker sanity;
 	sanity.process(tokens);
 
-	Interface inter(name, mFilename);
-	//inter.setFullyQualifiedName(fullyQualifiedName);
-	inter.setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
-	inter.setTokens(tokens);
+	Interface interface(name, mFilename);
+	//interface.setFullyQualifiedName(fullyQualifiedName);
+	interface.setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
+	interface.setTokens(tokens);
 
-	return inter;
+	return interface;
 }
 
 void Analyser::createNamespace(TokenIterator& start, TokenIterator end)
@@ -381,16 +381,32 @@ bool Analyser::isPrototypeDeclaration(TokenIterator start)
 	return true;
 }
 
-void Analyser::process(const std::string& filename)
+void Analyser::process(const std::string& content)
 {
 	// factory reset
-	mFilename = filename;
 	mBluePrints.clear();
 	mInterfaces.clear();
 	mLibraries.clear();
 	mPrototypes.clear();
 
-	OSinfo("Analyzing file '" + mFilename + "'...");
+	OSinfo("Analyzing string...");
+
+	// create token list from string
+	TokenList tokens = generateTokens(content);
+
+	// make basic sanity checks
+	SanityChecker sanity;
+	sanity.process(tokens);
+
+	// generate objects from tokens
+	generate(tokens);
+}
+
+void Analyser::processFile(const std::string& filename)
+{
+	OSinfo("Preparing file '" + filename + "'...");
+
+	mFilename = filename;
 
 	if ( !::Utils::Tools::Files::exists(mFilename) ) {
 		throw Utils::Exceptions::Exception("File '" + mFilename + "' not found");
@@ -399,14 +415,16 @@ void Analyser::process(const std::string& filename)
 	// read file content
 	std::ifstream in(mFilename.c_str(), std::ios_base::binary);
 
-	// create token list from file content
-	TokenList tokens = generateTokens(std::string(std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>()));
+	process(std::string(std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>()));
+}
 
-	SanityChecker sanity;
-	sanity.process(tokens);
+void Analyser::processString(const std::string& content, const std::string& filename)
+{
+	OSinfo("Preparing string data...");
 
-	// generate objects from tokens
-	generate(tokens);
+	mFilename = filename;
+
+	process(content);
 }
 
 

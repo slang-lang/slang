@@ -46,7 +46,7 @@ void PrototypeTest::testPrototypeDeclaration()
 	try {
 		VirtualMachine vm;
 
-		vm.create("Tests/Prototypes/PrototypeTest.os");
+		vm.createScriptFromFile("Tests/Prototypes/PrototypeTest.os");
 
 		// automatic success
 	}
@@ -61,7 +61,7 @@ void PrototypeTest::testPrototypeUsage()
 	try {
 		VirtualMachine vm;
 
-		vm.create("Tests/Prototypes/PrototypeTest_Inheritance.os");
+		vm.createScriptFromFile("Tests/Prototypes/PrototypeTest_Inheritance.os");
 
 		// automatic success
 	}

@@ -240,7 +240,7 @@ TokenIterator findNextBalancedParenthesis(TokenIterator start, int generateError
 			return tmp;
 		}
 		if ( generateErrorAfter && count >= generateErrorAfter ) {
-			throw Utils::Exceptions::SyntaxError("Closed parenthesis expected, but not found after " + Tools::toString(count) + " iteration(s)", start->position());
+			throw Utils::Exceptions::SyntaxError("closed parenthesis expected, but not found after " + Tools::toString(count) + " iteration(s)", start->position());
 		}
 
 		count++;
@@ -257,7 +257,7 @@ bool isBooleanConst(const std::string& value)
 
 bool isTrue(const std::string& value)
 {
-	return ( value != FALSE && value != "0" && value != "0.0" );
+	return ( value != FALSE && value != "0" && value != "0.f" && value != "0.0" );
 }
 
 bool isTrue(const Runtime::Object& object)
