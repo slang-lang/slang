@@ -24,21 +24,24 @@ namespace Runtime {
 Object::Object()
 : MethodScope(ANONYMOUS_OBJECT, 0),
   ObjectSymbol(ANONYMOUS_OBJECT),
-  mConstructed(false),
+  mFilename(ANONYMOUS_OBJECT),
   mIsAtomicType(true),
+  mIsConstructed(false),
   mRepository(0),
+  mTypename(ANONYMOUS_OBJECT),
   mValue(VALUE_NONE)
 {
 }
 
 Object::Object(const Object& other)
 : MethodScope(other.getName(), 0),
-  ObjectSymbol(other.getName()),
-  RTTI(other.Typename(), other.Filename())
+  ObjectSymbol(other.getName())
 {
-	mConstructed = other.mConstructed;
+	mFilename = other.mFilename;
 	mIsAtomicType = other.mIsAtomicType;
+	mIsConstructed = other.mIsConstructed;
 	mRepository = other.mRepository;
+	mTypename = other.mTypename;
 
 	setConst(other.isConst());
 	setFinal(other.isFinal());
@@ -65,7 +68,7 @@ Object::Object(const Object& other)
 
 		// register new methods
 		for ( MethodCollection::const_iterator it = other.mMethods.begin(); it != other.mMethods.end(); ++it ) {
-			Method *method = new Method(this, (*it)->getName(), (*it)->getTypeName());
+			Method *method = new Method(this, (*it)->getName(), (*it)->Typename());
 			*method = *(*it);
 
 			defineMethod(method);
@@ -76,10 +79,11 @@ Object::Object(const Object& other)
 Object::Object(const std::string& name, const std::string& filename, const std::string& type, const std::string& value)
 : MethodScope(name, 0),
   ObjectSymbol(name),
-  RTTI(type, filename),
-  mConstructed(false),
+  mFilename(filename),
   mIsAtomicType(true),
+  mIsConstructed(false),
   mRepository(0),
+  mTypename(type),
   mValue(value)
 {
 }
@@ -92,15 +96,12 @@ Object::~Object()
 void Object::operator= (const Object& other)
 {
 	if ( this != &other ) {
-		if ( !mConstructed ) {
-			mConstructed = other.mConstructed;
-		}
 		if ( !mRepository ) {
 			mRepository = other.mRepository;
 		}
 
 		mIsAtomicType = other.mIsAtomicType;
-
+		mIsConstructed = other.mIsConstructed ? other.mIsConstructed : mIsConstructed;
 		mFilename = other.mFilename;
 		mTypename = other.mTypename;
 
@@ -127,7 +128,7 @@ void Object::operator= (const Object& other)
 
 			// register new methods
 			for ( MethodCollection::const_iterator it = other.mMethods.begin(); it != other.mMethods.end(); ++it ) {
-				Method *method = new Method(this, (*it)->getName(), (*it)->getTypeName());
+				Method *method = new Method(this, (*it)->getName(), (*it)->Typename());
 				*method = *(*it);
 
 				defineMethod(method);
@@ -148,7 +149,7 @@ void Object::Constructor(const ParameterList& params)
 		return;
 	}
 
-	if ( mConstructed ) {
+	if ( mIsConstructed ) {
 		throw Utils::Exceptions::Exception("can not construct object '" + getName() + "' multiple times");
 	}
 
@@ -164,12 +165,12 @@ void Object::Constructor(const ParameterList& params)
 	}
 
 	// set after executing constructor in case any exceptions have been thrown
-	mConstructed = true;
+	mIsConstructed = true;
 }
 
 void Object::Destructor()
 {
-	if ( mConstructed ) {
+	if ( mIsConstructed ) {
 		ParameterList params;
 
 		// only execute destructor if one is present
@@ -190,7 +191,7 @@ void Object::Destructor()
 	}
 
 	// set after executing destructor in case any exceptions have been thrown
-	mConstructed = false;
+	mIsConstructed = false;
 }
 
 ControlFlow::E Object::execute(Object *result, const std::string& method, const ParameterList& params, const Method* caller)
@@ -237,11 +238,6 @@ void Object::garbageCollector()
 	mSymbols.clear();
 }
 
-const std::string& Object::getTypeName() const
-{
-	return mTypename;
-}
-
 std::string Object::getValue() const
 {
 	return mValue;
@@ -255,11 +251,11 @@ bool Object::isAtomicType() const
 bool Object::isValid() const
 {
 	if ( !mIsAtomicType ) {
-		return mConstructed;
+		return mIsConstructed;
 	}
 
 	//return getValue() == "0" || getValue() == "0.0" || getValue() == FALSE;
-	return mConstructed;
+	return mIsConstructed;
 }
 
 void Object::operator_assign(Object *other)
@@ -398,7 +394,7 @@ std::string Object::ToString() const
 		result += " { ";
 
 		for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
-			result += (*it)->getTypeName() + " " + (*it)->getName();
+			result += (*it)->Typename() + " " + (*it)->getName();
 
 			MethodCollection::const_iterator copy = it;
 			if ( ++copy != mMethods.end() ) {

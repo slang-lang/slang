@@ -172,7 +172,7 @@ ControlFlow::E Method::execute(const ParameterList& params, Object *result)
 		}
 	}
 
-	result->overrideType(getTypeName());
+	result->overrideTypename(Typename());
 	result->setRepository(mRepository);
 	//result->setValue(/*get default value for return type*/);
 
@@ -195,7 +195,7 @@ ControlFlow::E Method::execute(const ParameterList& params, Object *result)
 			break;
 		case ControlFlow::Return:
 			// validate return value
-			if ( result->Typename() != getTypeName() ) {
+			if ( result->Typename() != Typename() ) {
 				throw Utils::Exceptions::Exception("invalid return of type '" + result->Typename() + "' in '" + getName() + "'");
 			}
 
@@ -220,7 +220,7 @@ void Method::garbageCollector()
 	mSymbols.clear();
 }
 
-const std::string& Method::getTypeName() const
+const std::string& Method::Typename() const
 {
 	return mTypeName;
 }
@@ -359,7 +359,7 @@ void Method::setTokens(const TokenList& tokens)
 
 std::string Method::ToString() const
 {
-	return getTypeName() + " " + getName();
+	return Typename() + " " + getName();
 }
 
 }

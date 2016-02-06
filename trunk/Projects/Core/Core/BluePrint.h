@@ -33,8 +33,7 @@ namespace Designtime {
 
 
 class BluePrint : public MethodScope,
-				  public BluePrintSymbol,
-				  public RTTI
+				  public BluePrintSymbol
 {
 public:
 	BluePrint();
@@ -43,6 +42,14 @@ public:
 
 public:
 	void cleanup();
+
+public:	// RTTI
+	const std::string& Filename() const {
+		return mFilename;
+	}
+	const std::string& Typename() const {
+		return mTypename;
+	}
 
 public:
 	const std::string& getFullyQualifiedTypename() const;
@@ -70,13 +77,15 @@ public:
 
 protected:
 	const std::string& getTypeName() const {
-		return RTTI::Typename();
+		return Typename();
 	}
 
 private:
+	std::string mFilename;
 	std::string mFullyQualifiedTypeName;
 	std::string mName;
 	TokenList mTokens;
+	std::string mTypename;
 	Visibility::E mVisibility;
 };
 

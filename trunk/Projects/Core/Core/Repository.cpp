@@ -240,7 +240,7 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 		// define and create all methods
 		MethodScope::MethodCollection methods = blueprint->provideMethods();
 		for ( MethodScope::MethodCollection::const_iterator it = methods.begin(); it != methods.end(); ++it ) {
-			Runtime::Method* method = new Runtime::Method(object, (*it)->getName(), (*it)->getTypeName());
+			Runtime::Method* method = new Runtime::Method(object, (*it)->getName(), (*it)->Typename());
 			*method = *(*it);
 
 			object->defineMethod(method);

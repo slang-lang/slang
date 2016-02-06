@@ -46,8 +46,7 @@ class Object;
 
 
 class Object : public MethodScope,
-			   public ObjectSymbol,
-			   public RTTI
+			   public ObjectSymbol
 {
 public:
 	Object();
@@ -58,11 +57,34 @@ public:
 public:
 	void operator= (const Object& other);
 
-public:	// Symbol::IType implementation
-	virtual const std::string& getTypeName() const;
+public:	// Symbol::IType implementation & RTTI
+	const std::string& Filename() const {
+		return mFilename;
+	}
+	const std::string& Typename() const {
+		return mTypename;
+	}
+
+	void overrideTypename(const std::string& type) {
+		mTypename = type;
+	}
 
 public:	// Setup
 	void setRepository(Repository *repository);
+
+public:	// Value
+	virtual std::string getValue() const;
+	virtual void setValue(const std::string& value);
+
+	virtual bool isAtomicType() const;
+	virtual bool isValid() const;
+	virtual std::string ToString() const;
+
+public:	// Usage
+	void Constructor(const ParameterList& params);
+	void Destructor();
+	ControlFlow::E execute(Object *result, const std::string& method, const ParameterList& params, const Method* caller = 0);		// throws VisibilityError exception
+	void garbageCollector();
 
 public:	// Operators
 	virtual void operator_assign(Object *other);
@@ -84,28 +106,12 @@ public:	// Operators
 	virtual void operator_unary_minus();
 	virtual void operator_unary_not();
 
-public:	// Value
-	void overrideType(const std::string& type) {
-		mTypename = type;
-	}
-
-	virtual std::string getValue() const;
-	virtual void setValue(const std::string& value);
-
-	virtual bool isAtomicType() const;
-	virtual bool isValid() const;
-	virtual std::string ToString() const;
-
-public:	// Usage
-	void Constructor(const ParameterList& params);
-	void Destructor();
-	ControlFlow::E execute(Object *result, const std::string& method, const ParameterList& params, const Method* caller = 0);		// throws VisibilityError exception
-	void garbageCollector();
-
 protected:
-	bool mConstructed;
+	std::string mFilename;
 	bool mIsAtomicType;
+	bool mIsConstructed;
 	Repository *mRepository;
+	std::string mTypename;
 	std::string mValue;
 
 private:

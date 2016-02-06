@@ -29,8 +29,8 @@ std::string StringObject::TYPENAME = "string";
 StringObject::StringObject(const std::string& value)
 : Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, "")
 {
-	mConstructed = true;
 	mIsAtomicType = true;
+	mIsConstructed = true;
 
 	setNativeValue(value);
 }
@@ -38,8 +38,8 @@ StringObject::StringObject(const std::string& value)
 StringObject::StringObject(const std::string& name, const std::string& value)
 : Object(name, SYSTEM_LIBRARY, TYPENAME, "")
 {
-	mConstructed = true;
 	mIsAtomicType = true;
+	mIsConstructed = true;
 
 	setNativeValue(value);
 }
@@ -49,8 +49,8 @@ StringObject::StringObject(const Object& other)
 {
 	// generic type cast
 
-	mConstructed = true;
 	mIsAtomicType = true;
+	mIsConstructed = true;
 
 	std::string source = other.Typename();
 
