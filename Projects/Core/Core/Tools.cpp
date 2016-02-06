@@ -262,7 +262,17 @@ bool isTrue(const std::string& value)
 
 bool isTrue(const Runtime::Object& object)
 {
-	if ( !object.isValid() || object.getValue() == "0" || object.getValue() == "0.0" || object.getValue() == FALSE ) {
+	if ( !object.isValid() || !isTrue(object.getValue()) ) {
+		return false;
+	}
+
+	// everything that's not false has to be true
+	return true;
+}
+
+bool isTrue(const Runtime::Object* object)
+{
+	if ( !object || !object->isValid() || !isTrue(object->getValue()) ) {
 		return false;
 	}
 

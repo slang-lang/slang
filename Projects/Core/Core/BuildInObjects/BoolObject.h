@@ -30,7 +30,6 @@ public:
 	BoolObject(bool value = false);
 	BoolObject(const std::string& name, bool value);
 	BoolObject(const std::string& name, const std::string& value);
-	BoolObject(const BoolObject& object);
 	BoolObject(const Object& other);
 
 public:	// Symbol::IType implementation
