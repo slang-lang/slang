@@ -40,11 +40,6 @@ VoidObject::VoidObject(const Object& object)
 {
 }
 
-VoidObject::VoidObject(const VoidObject& object)
-: Object(object.getName(), SYSTEM_LIBRARY, TYPENAME, VALUE_NONE)
-{
-}
-
 VoidObject::operator bool() const
 {
 	return false;

@@ -24,12 +24,16 @@ UserObject::UserObject(const std::string& name, const std::string& filename, con
 : Object(name, filename, type, value)
 {
 	mIsAtomicType = false;
+
+	//setValue(value);
 }
 
-UserObject::UserObject(const UserObject& object)
-: Object(object.getName(), object.Filename(), object.Typename(), object.getValue())
+UserObject::UserObject(const Object& object)
+: Object(object.getName(), object.Filename(), object.Typename(), "")
 {
 	mIsAtomicType = false;
+
+	setValue(object.getValue());
 }
 
 UserObject::operator bool()

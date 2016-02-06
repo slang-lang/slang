@@ -53,12 +53,6 @@ FloatObject::FloatObject(const std::string& name, const std::string& value)
 	setValue(value);
 }
 
-FloatObject::FloatObject(const FloatObject& object)
-: Object(object.getName(), SYSTEM_LIBRARY, TYPENAME, "")
-{
-	setNativeValue(object.getNativeValue());
-}
-
 FloatObject::FloatObject(const Object& other)
 : Object(other.getName(), SYSTEM_LIBRARY, TYPENAME, "")
 {

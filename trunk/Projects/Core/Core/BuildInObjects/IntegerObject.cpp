@@ -53,12 +53,6 @@ IntegerObject::IntegerObject(const std::string& name, const std::string& value)
 	setValue(value);
 }
 
-IntegerObject::IntegerObject(const IntegerObject& object)
-: Object(object.getName(), SYSTEM_LIBRARY, TYPENAME, "")
-{
-	setNativeValue(object.getNativeValue());
-}
-
 IntegerObject::IntegerObject(const Object& other)
 : Object(other.getName(), SYSTEM_LIBRARY, TYPENAME, "")
 {
