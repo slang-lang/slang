@@ -465,8 +465,7 @@ void Interpreter::process_delete(TokenIterator& token)
 		case Symbol::IType::MethodSymbol:
 		case Symbol::IType::NamespaceSymbol:
 		case Symbol::IType::UnknownSymbol:
-			throw Utils::Exceptions::TypeMismatch("member or local variable expected but " + symbol->getName() + " found", token->position());
-			break;
+			throw Utils::Exceptions::TypeMismatch("member or local variable expected but symbol '" + symbol->getName() + "' found", token->position());
 	}
 
 	token = end;
@@ -977,8 +976,6 @@ assert(!"not implemented");
 // throw;
 void Interpreter::process_throw(TokenIterator& token, Object *result)
 {
-	//System::Print(KEYWORD_THROW, token->position());
-
 	TokenIterator begin = token;
 	TokenIterator semicolon = findNext(token, Token::Type::SEMICOLON);
 
