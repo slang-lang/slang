@@ -109,6 +109,11 @@ void BluePrint::setVisibility(Visibility::E v)
 	mVisibility = v;
 }
 
+std::string BluePrint::ToString() const
+{
+	return Typename() + " " + getName();
+}
+
 
 }
 }

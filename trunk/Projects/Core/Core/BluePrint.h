@@ -58,6 +58,8 @@ public:
 
 	bool isAbstract() const;
 
+	virtual std::string ToString() const;
+
 public:
 	MethodCollection provideMethods() const {
 		return mMethods;

@@ -357,6 +357,10 @@ void Method::setTokens(const TokenList& tokens)
 	mTokens = tokens;
 }
 
+std::string Method::ToString() const
+{
+	return getTypeName() + " " + getName();
+}
 
 }
 }

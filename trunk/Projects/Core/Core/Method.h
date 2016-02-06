@@ -46,6 +46,7 @@ public: // overloaded operators
 
 public:	// Symbol::IType implementation
 	const std::string& getTypeName() const;
+	std::string ToString() const;
 
 public: // Execution
 	ControlFlow::E execute(const ParameterList& params, Object *result);
