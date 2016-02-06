@@ -52,7 +52,7 @@ SET(HEADERS
 	Prototype.h
 	Reference.h
 	Repository.h
-	RTTI.h
+#	RTTI.h
 	SanityChecker.h
 	Scope.h
 	Script.h

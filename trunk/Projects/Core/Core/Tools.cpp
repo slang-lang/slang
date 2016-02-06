@@ -146,6 +146,13 @@ bool checkSynthax(TokenIterator start, const TokenList& expected)
 	return true;
 }
 
+void expect(Token::Type::E expected, TokenIterator found)
+{
+	if ( found->type() != expected ) {
+		throw Utils::Exceptions::SyntaxError("';' expected but '" + found->content() + "' found", found->position());
+	}
+}
+
 TokenIterator findNext(TokenIterator start, Token::Type::E type, Token::Type::E terminator)
 {
 	int count = 0;

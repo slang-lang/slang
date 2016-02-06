@@ -103,6 +103,8 @@ private: // Execution
 	void pushTokens(const TokenList& tokens);
 	// }
 
+	ControlFlow::E interpret(const TokenList& tokens, Object* result);
+
 private:
 	ControlFlow::E mControlFlow;
 	Repository *mRepository;
