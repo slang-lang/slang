@@ -77,6 +77,9 @@ public:
 
 protected:
 	MethodCollection mMethods;
+
+private:
+
 };
 
 

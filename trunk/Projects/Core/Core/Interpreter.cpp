@@ -26,6 +26,9 @@
 // Namespace declarations
 
 
+#define USE_SWITCH
+
+
 namespace ObjectiveScript {
 namespace Runtime {
 
@@ -127,23 +130,27 @@ void Interpreter::parseCondition(Object *result, TokenIterator& start)
 		Object v2;
 		parseExpression(&v2, start);
 
-		if ( op == Token::Type::COMPARE_EQUAL ) {
-			*result = BoolObject(operator_equal(result, &v2));
-		}
-		else if ( op == Token::Type::COMPARE_GREATER ) {
-			*result = BoolObject(operator_greater(result, &v2));
-		}
-		else if ( op == Token::Type::COMPARE_GREATER_EQUAL ) {
-			*result = BoolObject(operator_greater_equal(result, &v2));
-		}
-		else if ( op == Token::Type::COMPARE_LESS ) {
-			*result = BoolObject(operator_less(result, &v2));
-		}
-		else if ( op == Token::Type::COMPARE_LESS_EQUAL ) {
-			*result = BoolObject(operator_less_equal(result, &v2));
-		}
-		else if ( op == Token::Type::COMPARE_UNEQUAL ) {
-			*result = BoolObject(!operator_equal(result, &v2));
+		switch ( op ) {
+			case Token::Type::COMPARE_EQUAL:
+				*result = BoolObject(operator_equal(result, &v2));
+				break;
+			case Token::Type::COMPARE_GREATER:
+				*result = BoolObject(operator_greater(result, &v2));
+				break;
+			case Token::Type::COMPARE_GREATER_EQUAL:
+				*result = BoolObject(operator_greater_equal(result, &v2));
+				break;
+			case Token::Type::COMPARE_LESS:
+				*result = BoolObject(operator_less(result, &v2));
+				break;
+			case Token::Type::COMPARE_LESS_EQUAL:
+				*result = BoolObject(operator_less_equal(result, &v2));
+				break;
+			case Token::Type::COMPARE_UNEQUAL:
+				*result = BoolObject(!operator_equal(result, &v2));
+				break;
+			default:
+				break;
 		}
 	}
 }
@@ -167,20 +174,24 @@ void Interpreter::parseExpression(Object *result, TokenIterator& start)
 		Object v2;
 		parseFactors(&v2, start);
 
-		if ( op == Token::Type::BITAND ) {
-			operator_bitand(result, &v2);
-		}
-		else if ( op == Token::Type::BITCOMPLEMENT ) {
-			operator_bitcomplement(result, &v2);
-		}
-		else if ( op == Token::Type::BITOR ) {
-			operator_bitor(result, &v2);
-		}
-		else if ( op == Token::Type::MATH_ADDITION ) {
-			operator_plus(result, &v2);
-		}
-		else if ( op == Token::Type::MATH_SUBTRACT ) {
-			operator_subtract(result, &v2);
+		switch ( op ) {
+			case Token::Type::BITAND:
+				operator_bitand(result, &v2);
+				break;
+			case Token::Type::BITCOMPLEMENT:
+				operator_bitcomplement(result, &v2);
+				break;
+			case Token::Type::BITOR:
+				operator_bitor(result, &v2);
+				break;
+			case Token::Type::MATH_ADDITION:
+				operator_plus(result, &v2);
+				break;
+			case Token::Type::MATH_SUBTRACT:
+				operator_subtract(result, &v2);
+				break;
+			default:
+				break;
 		}
 	}
 }
@@ -227,14 +238,18 @@ void Interpreter::parseFactors(Object *result, TokenIterator& start)
 			parseInfixPostfix(&v2, start);
 		}
 
-		if ( op == Token::Type::MATH_DIVIDE ) {
-			operator_divide(result, &v2);
-		}
-		else if ( op == Token::Type::MATH_MODULO ) {
-			operator_modulo(result, &v2);
-		}
-		else if ( op == Token::Type::MATH_MULTIPLY ) {
-			operator_multiply(result, &v2);
+		switch ( op ) {
+			case Token::Type::MATH_DIVIDE:
+				operator_divide(result, &v2);
+				break;
+			case Token::Type::MATH_MODULO:
+				operator_modulo(result, &v2);
+				break;
+			case Token::Type::MATH_MULTIPLY:
+				operator_multiply(result, &v2);
+				break;
+			default:
+				break;
 		}
 	}
 }
