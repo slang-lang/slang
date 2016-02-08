@@ -45,7 +45,7 @@ SET(HEADERS
 	Memory.h
 	Method.h
 	Object.h
-#	ObjectiveScript.h
+	ObjectiveScript.h
 	OperatorOverloading.h
 	Parameter.h
 	Preprocessor.h

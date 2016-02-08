@@ -59,7 +59,7 @@ BoolObject::BoolObject(const Object& object)
 	mIsAtomicType = true;
 	mIsConstructed = true;
 
-	setNativeValue(isTrue(object));
+	setValue(object.getValue());
 }
 
 BoolObject::operator bool() const
@@ -195,8 +195,8 @@ void BoolObject::setNativeValue(bool value)
 
 void BoolObject::setValue(const std::string& value)
 {
-	mNativeValue = Tools::stringToBool(value);
-	mValue = value;
+	mNativeValue = isTrue(value);
+	mValue = isTrue(value);
 }
 
 std::string BoolObject::ToString() const
