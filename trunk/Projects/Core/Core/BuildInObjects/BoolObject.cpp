@@ -196,7 +196,7 @@ void BoolObject::setNativeValue(bool value)
 void BoolObject::setValue(const std::string& value)
 {
 	mNativeValue = isTrue(value);
-	mValue = isTrue(value);
+	mValue = Tools::toString(isTrue(value));
 }
 
 std::string BoolObject::ToString() const
