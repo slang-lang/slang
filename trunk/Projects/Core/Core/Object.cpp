@@ -229,11 +229,13 @@ void Object::garbageCollector()
 	}
 	mMethods.clear();
 
-	for ( Symbols::iterator it = mSymbols.begin(); it != mSymbols.end(); ++it ) {
+	for ( Symbols::reverse_iterator it = mSymbols.rbegin(); it != mSymbols.rend(); ) {
 		if ( it->first != KEYWORD_THIS &&
 			 it->second && it->second->getType() == Symbol::IType::ObjectSymbol ) {
 			mRepository->removeReference(static_cast<Object*>(it->second));
 		}
+
+		undefine(it->first, it->second);
 	}
 	mSymbols.clear();
 }

@@ -51,9 +51,6 @@ Repository::~Repository()
 	mBluePrints.clear();
 
 	for ( ReferenceCountedObjects::iterator it = mInstances.begin(); it != mInstances.end(); ++it ) {
-		it->first->Destructor();
-	}
-	for ( ReferenceCountedObjects::iterator it = mInstances.begin(); it != mInstances.end(); ++it ) {
 		delete it->first;
 	}
 	mInstances.clear();
@@ -137,20 +134,28 @@ void Repository::addReference(Runtime::Object *object)
 
 void Repository::CollectGarbage()
 {
-	for ( ReferenceCountedObjects::iterator it = mInstances.begin(); it != mInstances.end(); ) {
-		if ( it->second > 0 ) {
-			++it;
-			continue;
-		}
+	bool success = true;
 
-		// as soon as we've lost all references, we can destroy our object
-		if ( it->first && it->second <= 0 ) {
-			// call object's destructor ...
-			it->first->Destructor();
-			// ... and delete it
-			delete it->first;
+	while ( success ) {
+		success = false;
 
-			it = mInstances.erase(it);
+		for ( ReferenceCountedObjects::iterator it = mInstances.begin(); it != mInstances.end(); ) {
+			if ( it->second > 0 ) {
+				++it;
+				continue;
+			}
+
+			// as soon as we've lost all references, we can destroy our object
+			if ( it->first && it->second <= 0 ) {
+				// call object's destructor ...
+				it->first->Destructor();
+				// ... and delete it
+				delete it->first;
+
+				it = mInstances.erase(it);
+
+				success = true;
+			}
 		}
 	}
 }
@@ -306,9 +311,9 @@ void Repository::removeReference(Runtime::Object *object)
 		// call object's destructor ...
 		it->first->Destructor();
 		// ... and delete it
-		//delete it->first;
+		delete it->first;
 
-		//mInstances.erase(it);
+		mInstances.erase(it);
 	}
 }
 
