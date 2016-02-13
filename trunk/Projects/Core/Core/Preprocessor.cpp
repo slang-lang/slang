@@ -127,7 +127,7 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token)
 
 	// look for the next opening parenthesis
 	if ( (*token).type() != Token::Type::PARENTHESIS_OPEN ) {
-		throw Utils::Exceptions::SyntaxError("paratemer declaration expected");
+		throw Utils::Exceptions::SyntaxError("parameter declaration expected");
 	}
 
 	ParameterList params = parseParameters(token);
