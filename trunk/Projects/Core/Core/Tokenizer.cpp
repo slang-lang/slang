@@ -6,10 +6,6 @@
 
 // Project includes
 #include <Core/Consts.h>
-#include <Core/Keywords/for.h>
-#include <Core/Keywords/if.h>
-#include <Core/Keywords/print.h>
-#include <Core/Keywords/return.h>
 #include <Core/Utils/Exceptions.h>
 
 // Namespace declarations
@@ -67,109 +63,6 @@ void Tokenizer::addType(const std::string& type)
 	}
 
 	mTypes.push_back(type);
-}
-
-void Tokenizer::classify()
-{
-	// 1) check for a keyword
-	// 2) get its' "content"
-	// 3) and fill it up
-
-	std::list<Keywords::AKeyword> keywords;
-
-	TokenIterator token = mTokens.begin();
-	while ( token != mTokens.end() ) {
-		if ( (*token).content() == "for" ) {
-			// if the next token is no '(' throw a synthax error exception
-			if ( (*++token).type() != Token::Type::PARENTHESIS_OPEN ) {
-				throw Utils::Exceptions::SyntaxError("'(' expected but '" + (*token).content() + "' found", token->position());
-			}
-
-		}
-		else if ( (*token).content() == "if" ) {
-			// if the next token is no '(' throw a synthax error exception
-			if ( (*++token).type() != Token::Type::PARENTHESIS_OPEN ) {
-				throw Utils::Exceptions::SyntaxError("'(' expected but '" + (*token).content() + "' found", token->position());
-			}
-
-		}
-		else if ( (*token).content() == "print" ) {
-			// if the next token is no '(' throw a synthax error exception
-			if ( (*++token).type() != Token::Type::PARENTHESIS_OPEN ) {
-				throw Utils::Exceptions::SyntaxError("'(' expected but '" + (*token).content() + "' found", token->position());
-			}
-
-			token++;
-
-			TokenList list;
-
-			int parenthesis = 0;
-			while ( token != mTokens.end() || parenthesis > 0 ) {
-				if ( (*token).type() == Token::Type::PARENTHESIS_CLOSE ) {
-					if ( parenthesis == 0 ) {
-						break;
-					}
-					parenthesis--;
-				}
-				else if ( (*token).type() == Token::Type::PARENTHESIS_OPEN ) {
-					parenthesis++;
-				}
-
-				list.push_back((*token));
-				token++;
-			}
-
-			if ( (*++token).type() != Token::Type::SEMICOLON ) {
-				throw Utils::Exceptions::SyntaxError("';' expected but '" + (*token).content() + "' found", token->position());
-			}
-
-			Keywords::Print p;
-			p.tokens(list);
-
-			keywords.push_back(p);
-		}
-		else if ( (*token).content() == "return" ) {
-			// this one is difficult, there can be virtually an token after a return keyword...
-			// so pick up all tokens until we find a semicolon
-
-			token++;
-
-			TokenList list;
-
-			int parenthesis = 0;
-			while ( token != mTokens.end() || parenthesis > 0 || (*token).type() != Token::Type::SEMICOLON ) {
-				if ( (*token).type() == Token::Type::SEMICOLON ) {
-					break;
-				}
-				if ( (*token).type() == Token::Type::PARENTHESIS_CLOSE ) {
-					if ( parenthesis == 0 ) {
-						break;
-					}
-					parenthesis--;
-				}
-				else if ( (*token).type() == Token::Type::PARENTHESIS_OPEN ) {
-					parenthesis++;
-				}
-
-				list.push_back((*token));
-				token++;
-			}
-
-			if ( (*token).type() != Token::Type::SEMICOLON ) {
-				throw Utils::Exceptions::SyntaxError("';' expected but '" + (*token).content() + "' found", token->position());
-			}
-
-			Keywords::Return r;
-			r.tokens(list);
-
-			keywords.push_back(r);
-		}
-
-		token++;
-	}
-
-
-
 }
 
 Token Tokenizer::createToken(const std::string& con, const Utils::Position& position)
