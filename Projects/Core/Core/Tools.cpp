@@ -141,6 +141,9 @@ bool checkSynthax(TokenIterator start, const TokenList& expected)
 		if ( it->type() != start->type() ) {
 			return false;
 		}
+		if ( !it->content().empty() && it->content() != start->content() ) {
+			return false;
+		}
 	}
 
 	return true;

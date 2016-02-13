@@ -103,6 +103,7 @@ void Interpreter::garbageCollector()
 
 		undefine(it->first, it->second);
 	}
+	mSymbols.clear();
 }
 
 const TokenList& Interpreter::getTokens() const

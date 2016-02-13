@@ -216,6 +216,8 @@ void Method::garbageCollector()
 			 it->second && it->second->getType() == Symbol::IType::ObjectSymbol ) {
 			mRepository->removeReference(static_cast<Object*>(it->second));
 		}
+
+		undefine(it->first, it->second);
 	}
 	mSymbols.clear();
 }

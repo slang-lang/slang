@@ -325,20 +325,14 @@ bool Analyser::isLibraryReference(TokenIterator start)
 // <visibility> namespace [language feature] <identifier> { ... }
 bool Analyser::isNamespaceDeclaration(TokenIterator start)
 {
-	if ( (*start++).type() != Token::Type::VISIBILITY ) {
-		return false;
-	}
-	if ( (*start).type() != Token::Type::TYPE && (*start++).content() != RESERVED_WORD_NAMESPACE ) {
-		return false;
-	}
-	if ( (*start).isOptional() && (*start++).type() != Token::Type::LANGUAGEFEATURE ) {
-		return false;
-	}
-	if ( (*start++).type() != Token::Type::IDENTIFER ) {
-		return false;
-	}
+	TokenList tokens;
 
-	return true;
+	tokens.push_back(Token(Token::Type::VISIBILITY));
+	tokens.push_back(Token(Token::Type::TYPE, std::string(RESERVED_WORD_NAMESPACE)));
+	tokens.push_back(Token(Token::Type::LANGUAGEFEATURE, true));
+	tokens.push_back(Token(Token::Type::IDENTIFER));
+
+	return checkSynthax(start, tokens);
 }
 
 // syntax:
@@ -394,7 +388,7 @@ void Analyser::process(const std::string& content)
 	// create token list from string
 	TokenList tokens = generateTokens(content);
 
-	// make basic sanity checks
+	// execute basic sanity checks
 	SanityChecker sanity;
 	sanity.process(tokens);
 

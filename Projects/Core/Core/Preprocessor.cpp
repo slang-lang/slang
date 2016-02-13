@@ -247,6 +247,7 @@ bool Preprocessor::isMemberDeclaration(TokenIterator start)
 	TokenList tokens;
 
 	tokens.push_back(Token(Token::Type::VISIBILITY));
+	//tokens.push_back(Token(Token::Type::LANGUAGEFEATURE, true)); // this is an optional token
 	tokens.push_back(Token(Token::Type::TYPE));
 	tokens.push_back(Token(Token::Type::IDENTIFER));
 	tokens.push_back(Token(Token::Type::SEMICOLON));
@@ -269,6 +270,8 @@ bool Preprocessor::isMethodDeclaration(TokenIterator start)
 	return checkSynthax(start, tokens);
 }
 
+// syntax:
+// <type> <identifier>
 bool Preprocessor::isParameterDeclaration(TokenIterator start)
 {
 	TokenList tokens;
