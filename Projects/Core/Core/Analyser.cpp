@@ -67,7 +67,7 @@ Designtime::BluePrint Analyser::createBluePrint(TokenIterator& start, TokenItera
 
 	// check if we have some more tokens before our object declarations starts
 	if ( start != open ) {
-		if ( start->content() == "extends" ) {
+		if ( start->content() == RESERVED_WORD_EXTENDS ) {
 			// collect inheritances
 			start++;
 
@@ -78,7 +78,7 @@ Designtime::BluePrint Analyser::createBluePrint(TokenIterator& start, TokenItera
 				//parents[ancestor] = Ancestor(ancestor, Visibility::convert(inheritance));
 			} while ( std::distance(start, open) > 0 && ++start != end );
 		}
-		else if ( start->content() == "implements" ) {
+		else if ( start->content() == RESERVED_WORD_IMPLEMENTS ) {
 			// collect inheritances
 			start++;
 
@@ -311,7 +311,7 @@ bool Analyser::isLibraryReference(TokenIterator start)
 {
 	TokenList tokens;
 
-	if ( (*start++).content() != "import" ) {
+	if ( (*start++).content() != RESERVED_WORD_IMPORT ) {
 		return false;
 	}
 
