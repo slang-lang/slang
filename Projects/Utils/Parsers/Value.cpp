@@ -26,14 +26,18 @@ Value::Value()
 Value::Value(const std::string& v)
 : mName(""),
   mType(""),
-  mValue(v)
+  mValue(v),
+  mIsArray(false),
+  mSize(0)
 {
 }
 
 Value::Value(const std::string& t, const std::string& v)
 : mName(""),
   mType(t),
-  mValue(v)
+  mValue(v),
+  mIsArray(false),
+  mSize(0)
 {
 }
 
