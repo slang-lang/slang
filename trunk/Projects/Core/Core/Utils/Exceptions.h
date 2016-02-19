@@ -135,6 +135,17 @@ public:
 };
 
 
+class LawOfDemeterViolated : public Exception
+{
+public:
+	LawOfDemeterViolated(const std::string& text, const Utils::Position& position = Utils::Position())
+			: Exception("Exception.LawOfDemeterViolated: " + text, position)
+	{ }
+
+	virtual ~LawOfDemeterViolated() throw() { }
+};
+
+
 class NotImplemented : public Exception
 {
 public:
