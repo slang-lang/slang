@@ -25,7 +25,7 @@ std::string BoolObject::TYPENAME = "bool";
 
 
 BoolObject::BoolObject(bool value)
-: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, "")
+: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, VALUE_NONE)
 {
 	mIsAtomicType = true;
 	mIsConstructed = true;
@@ -34,7 +34,7 @@ BoolObject::BoolObject(bool value)
 }
 
 BoolObject::BoolObject(const std::string& name, bool value)
-: Object(name, SYSTEM_LIBRARY, TYPENAME, "")
+: Object(name, SYSTEM_LIBRARY, TYPENAME, VALUE_NONE)
 {
 	mIsAtomicType = true;
 	mIsConstructed = true;
@@ -43,7 +43,7 @@ BoolObject::BoolObject(const std::string& name, bool value)
 }
 
 BoolObject::BoolObject(const std::string& name, const std::string& value)
-: Object(name, SYSTEM_LIBRARY, TYPENAME, "")
+: Object(name, SYSTEM_LIBRARY, TYPENAME, VALUE_NONE)
 {
 	mIsAtomicType = true;
 	mIsConstructed = true;
@@ -52,7 +52,7 @@ BoolObject::BoolObject(const std::string& name, const std::string& value)
 }
 
 BoolObject::BoolObject(const Object& object)
-: Object(object.getName(), SYSTEM_LIBRARY, TYPENAME, "")
+: Object(object.getName(), SYSTEM_LIBRARY, TYPENAME, VALUE_NONE)
 {
 	// generic type cast
 

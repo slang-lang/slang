@@ -26,9 +26,6 @@
 // Namespace declarations
 
 
-#define USE_SWITCH
-
-
 namespace ObjectiveScript {
 namespace Runtime {
 
@@ -42,6 +39,7 @@ Interpreter::Interpreter(IScope *scope, const std::string& name)
 
 Interpreter::~Interpreter()
 {
+	garbageCollector();
 }
 
 ControlFlow::E Interpreter::execute(Object *result)

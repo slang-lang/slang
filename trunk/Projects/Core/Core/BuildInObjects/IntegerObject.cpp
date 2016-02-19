@@ -24,7 +24,7 @@ std::string IntegerObject::TYPENAME = "int";
 
 
 IntegerObject::IntegerObject(int value)
-: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, "")
+: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, VALUE_NONE)
 {
 	mIsAtomicType = true;
 	mIsConstructed = true;
@@ -33,7 +33,7 @@ IntegerObject::IntegerObject(int value)
 }
 
 IntegerObject::IntegerObject(const std::string& name, int value)
-: Object(name, SYSTEM_LIBRARY, TYPENAME, "")
+: Object(name, SYSTEM_LIBRARY, TYPENAME, VALUE_NONE)
 {
 	mIsAtomicType = true;
 	mIsConstructed = true;
@@ -42,7 +42,7 @@ IntegerObject::IntegerObject(const std::string& name, int value)
 }
 
 IntegerObject::IntegerObject(const std::string& name, const std::string& value)
-: Object(name, SYSTEM_LIBRARY, TYPENAME, "")
+: Object(name, SYSTEM_LIBRARY, TYPENAME, VALUE_NONE)
 {
 	mIsAtomicType = true;
 	mIsConstructed = true;
@@ -51,7 +51,7 @@ IntegerObject::IntegerObject(const std::string& name, const std::string& value)
 }
 
 IntegerObject::IntegerObject(const Object& other)
-: Object(other.getName(), SYSTEM_LIBRARY, TYPENAME, "")
+: Object(other.getName(), SYSTEM_LIBRARY, TYPENAME, VALUE_NONE)
 {
 	// generic type cast
 

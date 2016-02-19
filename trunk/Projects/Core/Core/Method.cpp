@@ -31,6 +31,7 @@ Method::Method(IScope *parent, const std::string& name, const std::string& type)
 
 Method::~Method()
 {
+	garbageCollector();
 }
 
 bool Method::operator() (const Method& first, const Method& second) const

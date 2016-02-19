@@ -20,9 +20,7 @@
 #include <Core/Designtime/BuildInTypes/VoidObject.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Utils/Utils.h>
-#include "Consts.h"
 #include "Memory.h"
-#include "Method.h"
 #include "Preprocessor.h"
 #include "Tools.h"
 
@@ -45,17 +43,30 @@ Repository::Repository(Memory *m)
 
 Repository::~Repository()
 {
+	// Cleanup blue prints
+	// {
 	for ( BluePrints::iterator it = mBluePrints.begin(); it != mBluePrints.end(); ++it ) {
 		it->second.cleanup();
 	}
 	mBluePrints.clear();
+	// }
+
+	// Cleanup instances
+	// {
+	for ( ReferenceCountedObjects::iterator it = mInstances.begin(); it != mInstances.end(); ++it ) {
+		it->first->Destructor();
+	}
 
 	for ( ReferenceCountedObjects::iterator it = mInstances.begin(); it != mInstances.end(); ++it ) {
 		delete it->first;
 	}
 	mInstances.clear();
+	// }
 
+	// Cleanup prototypes
+	// {
 	mPrototypes.clear();
+	// }
 }
 
 void Repository::addBlueprint(const Designtime::BluePrint& blueprint)
@@ -211,8 +222,8 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 	else if ( blueprint->Typename() == Runtime::VoidObject::TYPENAME ) {
 		object = new Runtime::VoidObject(name);
 	}
+	// instantiate user defined type
 	else {
-		// instantiate user defined type
 		object = new Runtime::UserObject(name, blueprint->Filename(), blueprint->Typename(), Runtime::UserObject::DEFAULTVALUE);
 
 		object->setRepository(this);
@@ -311,9 +322,9 @@ void Repository::removeReference(Runtime::Object *object)
 		// call object's destructor ...
 		it->first->Destructor();
 		// ... and delete it
-		delete it->first;
+		//delete it->first;
 
-		mInstances.erase(it);
+		//mInstances.erase(it);
 	}
 }
 

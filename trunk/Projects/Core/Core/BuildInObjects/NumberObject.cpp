@@ -25,7 +25,7 @@ std::string NumberObject::TYPENAME = "number";
 
 
 NumberObject::NumberObject(float value)
-: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, "")
+: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, VALUE_NONE)
 {
 	mIsAtomicType = true;
 	mIsConstructed = true;
@@ -34,7 +34,7 @@ NumberObject::NumberObject(float value)
 }
 
 NumberObject::NumberObject(const std::string& name, float value)
-: Object(name, SYSTEM_LIBRARY, TYPENAME, "")
+: Object(name, SYSTEM_LIBRARY, TYPENAME, VALUE_NONE)
 {
 	mIsAtomicType = true;
 	mIsConstructed = true;
@@ -43,7 +43,7 @@ NumberObject::NumberObject(const std::string& name, float value)
 }
 
 NumberObject::NumberObject(const std::string& name, const std::string& value)
-: Object(name, SYSTEM_LIBRARY, TYPENAME, "")
+: Object(name, SYSTEM_LIBRARY, TYPENAME, VALUE_NONE)
 {
 	mIsAtomicType = true;
 	mIsConstructed = true;
@@ -52,7 +52,7 @@ NumberObject::NumberObject(const std::string& name, const std::string& value)
 }
 
 NumberObject::NumberObject(const Object& other)
-: Object(other.getName(), SYSTEM_LIBRARY, TYPENAME, "")
+: Object(other.getName(), SYSTEM_LIBRARY, TYPENAME, VALUE_NONE)
 {
 	// generic type cast
 

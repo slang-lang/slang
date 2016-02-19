@@ -19,7 +19,6 @@
 namespace ObjectiveScript {
 
 // Forward declarations
-class Memory;
 class Repository;
 
 namespace Runtime {
