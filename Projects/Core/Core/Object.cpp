@@ -8,10 +8,7 @@
 #include <Core/BuildInObjects/VoidObject.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Utils/Utils.h>
-#include "Consts.h"
-#include "Memory.h"
 #include "Repository.h"
-#include "Symbol.h"
 #include "Tools.h"
 
 // Namespace declarations

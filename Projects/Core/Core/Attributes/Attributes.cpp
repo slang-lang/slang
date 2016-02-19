@@ -3,7 +3,6 @@
 #include "Attributes.h"
 
 // Library includes
-#include <cassert>
 
 // Project includes
 #include <Core/Utils/Exceptions.h>

@@ -5,8 +5,6 @@
 // Library includes
 
 // Project includes
-#include "Consts.h"
-#include "Types.h"
 
 // Namespace declarations
 

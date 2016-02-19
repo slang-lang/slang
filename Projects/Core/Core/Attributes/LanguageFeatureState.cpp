@@ -3,7 +3,6 @@
 #include "LanguageFeatureState.h"
 
 // Library includes
-#include <cassert>
 
 // Project includes
 #include <Core/Consts.h>

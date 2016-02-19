@@ -20,7 +20,7 @@ std::string UserObject::TYPENAME = "UserObject";
 
 
 UserObject::UserObject()
-: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, "")
+: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, VALUE_NONE)
 {
 	mIsAtomicType = false;
 	mIsConstructed = false;
@@ -38,7 +38,7 @@ UserObject::UserObject(const std::string& name, const std::string& filename, con
 }
 
 UserObject::UserObject(const Object& object)
-: Object(object.getName(), object.Filename(), object.Typename(), "")
+: Object(object.getName(), object.Filename(), object.Typename(), VALUE_NONE)
 {
 	mIsAtomicType = false;
 	mIsConstructed = false;

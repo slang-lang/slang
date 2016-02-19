@@ -27,7 +27,7 @@ std::string StringObject::TYPENAME = "string";
 
 
 StringObject::StringObject(const std::string& value)
-: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, "")
+: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, VALUE_NONE)
 {
 	mIsAtomicType = true;
 	mIsConstructed = true;
@@ -36,7 +36,7 @@ StringObject::StringObject(const std::string& value)
 }
 
 StringObject::StringObject(const std::string& name, const std::string& value)
-: Object(name, SYSTEM_LIBRARY, TYPENAME, "")
+: Object(name, SYSTEM_LIBRARY, TYPENAME, VALUE_NONE)
 {
 	mIsAtomicType = true;
 	mIsConstructed = true;
@@ -45,7 +45,7 @@ StringObject::StringObject(const std::string& name, const std::string& value)
 }
 
 StringObject::StringObject(const Object& other)
-: Object(other.getName(), SYSTEM_LIBRARY, TYPENAME, "")
+: Object(other.getName(), SYSTEM_LIBRARY, TYPENAME, VALUE_NONE)
 {
 	// generic type cast
 
