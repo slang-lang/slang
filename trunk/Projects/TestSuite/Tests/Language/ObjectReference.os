@@ -4,9 +4,19 @@ public namespace Language
 {
 	public object TestObject
 	{
-		public number mValue;
+		private number mValue;
 
 		public void TestObject(number value)
+		{
+			mValue = value;
+		}
+
+		public number getValue() const
+		{
+			return mValue;
+		}
+
+		public void setValue(number value const)
 		{
 			mValue = value;
 		}
