@@ -90,6 +90,12 @@ Designtime::BluePrint* Preprocessor::createMember(TokenIterator token)
 	blue->setMember(true);		// every object created here is a member object
 	blue->setVisibility(Visibility::convert(visibility));
 
+	if ( blue->getVisibility() == Visibility::Public ) {
+		// beware: public members are deprecated, remember the "Law of Demeter"
+		// consider using wrappers (getter, setter) instead of directly providing access to members to outsiders
+		OSwarn("public member found: " + name);
+	}
+
 	return blue;
 }
 
