@@ -43,6 +43,7 @@ void LanguageTest::process()
 	TEST(testFor);
 	TEST(testIf);
 	TEST(testInfixOperator);
+	TEST(testLawOfDemeter);
 	TEST(testMethodOverloading);
 	TEST(testObjectEquality);
 	TEST(testObjectReference);
@@ -259,6 +260,21 @@ void LanguageTest::testInterfaces()
 
 		ParameterList params;
 		s->execute("GetBox", params);
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// unexpected exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void LanguageTest::testLawOfDemeter()
+{
+	try {
+		VirtualMachine vm;
+
+		TTHROWS(vm.createScriptFromFile("Tests/Language/LawOfDemeterTest.os"), ObjectiveScript::Utils::Exceptions::LawOfDemeterViolated);
 
 		// automatic success
 	}
