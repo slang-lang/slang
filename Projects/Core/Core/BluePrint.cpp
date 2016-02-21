@@ -43,22 +43,13 @@ BluePrint::~BluePrint()
 {
 }
 
-void BluePrint::addAnchestor(const std::string& ancestor)
+void BluePrint::addInheritance(const Designtime::Ancestor& inheritance)
 {
-	if ( ancestor.empty() ) {
-		throw Utils::Exceptions::Exception("invalid ancestor added");
+	if ( inheritance.name().empty() ) {
+		throw Utils::Exceptions::Exception("invalid inheritance added");
 	}
 
-	mAncestors.push_back(ancestor);
-}
-
-void BluePrint::addImplementation(const std::string &implementation)
-{
-	if ( implementation.empty() ) {
-		throw Utils::Exceptions::Exception("invalid implemantation added");
-	}
-
-	mImplementations.push_back(implementation);
+	mInheritance.insert(inheritance);
 }
 
 void BluePrint::cleanup()
@@ -84,9 +75,17 @@ void BluePrint::cleanup()
 	mSymbols.clear();
 }
 
-const StringList& BluePrint::getAncestors() const
+Designtime::Ancestors BluePrint::getAncestors() const
 {
-	return mAncestors;
+	Designtime::Ancestors ancestors;
+
+	for ( Designtime::Ancestors::const_iterator it = mInheritance.begin(); it != mInheritance.end(); ++it ) {
+		if ( it->type() == Designtime::Ancestor::Type::Extends ) {
+			ancestors.insert((*it));
+		}
+	}
+
+	return ancestors;
 }
 
 const std::string& BluePrint::getFullyQualifiedTypename() const
@@ -94,9 +93,17 @@ const std::string& BluePrint::getFullyQualifiedTypename() const
 	return mFullyQualifiedTypeName;
 }
 
-const StringList& BluePrint::getImplementations() const
+Designtime::Ancestors BluePrint::getImplementations() const
 {
-	return mImplementations;
+	Designtime::Ancestors implementations;
+
+	for ( Designtime::Ancestors::const_iterator it = mInheritance.begin(); it != mInheritance.end(); ++it ) {
+		if ( it->type() == Designtime::Ancestor::Type::Implements ) {
+			implementations.insert((*it));
+		}
+	}
+
+	return implementations;
 }
 
 const std::string& BluePrint::getName() const

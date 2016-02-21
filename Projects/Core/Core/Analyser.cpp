@@ -36,30 +36,34 @@ Designtime::Ancestors Analyser::collectInheritance(TokenIterator &start, TokenIt
 {
 	Designtime::Ancestors ancestors;
 
+	Designtime::Ancestor::Type::E type = Designtime::Ancestor::Type::Unknown;
+	Visibility::E visibility = Visibility::Public;
+
 	while ( start != end ) {
-		if (start->content() == RESERVED_WORD_EXTENDS) {
-			// collect inheritances
+		if ( start->content() == RESERVED_WORD_EXTENDS ) {
+			// consume token
 			start++;
 
-			//do {
-			std::string ancestor = (*start++).content();
-			ancestors[ancestor] = Designtime::Ancestor(ancestor, Designtime::Ancestor::Type::Extends,
-													   Visibility::Public);
-			//} while ( ++start != end );
+			type = Designtime::Ancestor::Type::Extends;
 		}
-		else if (start->content() == RESERVED_WORD_IMPLEMENTS) {
-			// collect implementations
+		else if ( start->content() == RESERVED_WORD_IMPLEMENTS ) {
+			// consume token
 			start++;
 
-			do {
-				std::string inheritance = (*start++).content();
-				ancestors[inheritance] = Designtime::Ancestor(inheritance, Designtime::Ancestor::Type::Implements,
-															  Visibility::Public);
-			} while (++start != end);
+			type = Designtime::Ancestor::Type::Implements;
 		}
-		else {
-			throw Utils::Exceptions::Exception("invalid token '" + start->content() + "' during object declaration");
+		else if ( start->type() == Token::Type::COLON ) {
+			// consume token
+			start++;
+
+			continue;
 		}
+
+		if ( start->type() != Token::Type::IDENTIFER ) {
+			throw Utils::Exceptions::Exception("invalid token found: '" + start->content() + "'", start->position());
+		}
+
+		ancestors.insert(Designtime::Ancestor((start++)->content(), type, visibility));
 	}
 
 	return ancestors;
@@ -119,35 +123,8 @@ Designtime::BluePrint Analyser::createBluePrint(TokenIterator& start, TokenItera
 	// look for balanced curly brackets
 	TokenIterator closed = findNextBalancedCurlyBracket(open, end, 0, Token::Type::BRACKET_CURLY_CLOSE);
 
-	Designtime::Ancestors implementations;
-	Designtime::Ancestors inheritance;
-	Designtime::Ancestors parents;
-
 	// check if we have some more tokens before our object declarations starts
-	if ( start != open ) {
-/*
-		if ( start->content() == RESERVED_WORD_EXTENDS ) {
-			// collect inheritances
-			start++;
-
-			do {
-				std::string ancestor = (*start++).content();
-				parents[ancestor] = Designtime::Ancestor(ancestor, Designtime::Ancestor::Type::Extends, Visibility::Public);
-			} while ( std::distance(start, open) > 0 && ++start != end );
-		}
-		else if ( start->content() == RESERVED_WORD_IMPLEMENTS ) {
-			// collect implementations
-			start++;
-
-			std::string inheritance = (*start++).content();
-			implementations[inheritance] = Designtime::Ancestor(inheritance, Designtime::Ancestor::Type::Implements, Visibility::Public);
-		}
-		else {
-			throw Utils::Exceptions::Exception("invalid token '" + start->content() + "' during object declaration");
-		}
-*/
-		inheritance = collectInheritance(start, open);
-	}
+	Designtime::Ancestors inheritance = collectInheritance(start, open);
 
 	// collect all tokens of this object
 	TokenList tokens;
@@ -166,6 +143,13 @@ Designtime::BluePrint Analyser::createBluePrint(TokenIterator& start, TokenItera
 	blue.setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
 	blue.setTokens(tokens);
 	blue.setVisibility(Visibility::convert(visibility));
+
+	// set up inheritances (if present)
+	if ( !inheritance.empty() ) {
+		for ( Designtime::Ancestors::const_iterator it = inheritance.begin(); it != inheritance.end(); ++it ) {
+			blue.addInheritance((*it));
+		}
+	}
 
 	return blue;
 }

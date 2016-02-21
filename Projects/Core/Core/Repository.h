@@ -56,6 +56,7 @@ private:
 private:
 	Runtime::Object* createObject(const std::string& name, Designtime::BluePrint* blueprint);
 	const Reference& createReference(const Designtime::BluePrint& blueprint, const std::string& type, const std::string& name);
+	void initializeObject(Runtime::Object *object, Designtime::BluePrint* blueprint);
 
 private:
 	BluePrints mBluePrints;

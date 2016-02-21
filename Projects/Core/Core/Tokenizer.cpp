@@ -306,12 +306,19 @@ bool Tokenizer::isPrototype(TokenIterator token) const
 	}
 	token++;
 
-	if ( token->type() != Token::Type::RESERVED && token->content() != "of" ) {
+	if ( token->type() != Token::Type::COMPARE_LESS ) {
 		return false;
 	}
 	token++;
 
 	if ( token->type() != Token::Type::IDENTIFER ) {
+		return false;
+	}
+	token++;
+
+	// TODO: to allow more complex prototype one would have to allow more tokens here (i.e. Identifier, Identifier, ...)
+
+	if ( token->type() != Token::Type::COMPARE_GREATER ) {
 		return false;
 	}
 
