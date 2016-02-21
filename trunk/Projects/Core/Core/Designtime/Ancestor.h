@@ -4,7 +4,7 @@
 
 
 // Library includes
-#include <map>
+#include <set>
 #include <string>
 
 // Project includes
@@ -26,21 +26,25 @@ public:
 	{
 	public:
 		enum E {
-			Unknown,
+			Base,
 			Extends,
-			Implements
+			Implements,
+			Unknown
 		};
 	};
 
+public:
 	Ancestor();
 	Ancestor(const std::string& name, Type::E type, Visibility::E visibility);
+
+public:
+	bool operator<(const Ancestor& other) const;
+	bool operator==(const Ancestor& other) const;
 
 public:
 	const std::string& name() const;
 	Type::E type() const;
 	Visibility::E visibility() const;
-
-protected:
 
 private:
 	std::string	mName;
@@ -48,7 +52,7 @@ private:
 	Visibility::E mVisibility;
 };
 
-typedef std::map<std::string, Ancestor> Ancestors;
+typedef std::set<Ancestor> Ancestors;
 
 
 }

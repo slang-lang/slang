@@ -27,6 +27,38 @@ Ancestor::Ancestor(const std::string& name, Type::E type, Visibility::E visibili
 {
 }
 
+bool Ancestor::operator<(const Ancestor& other) const
+{
+	if ( type() == other.type() ) {
+		if ( name() == other.name() ) {
+			if ( visibility() < other.visibility() ) {
+				return true;
+			}
+
+			return (visibility() < other.visibility());
+		}
+
+		return (name() < other.name());
+	}
+
+	return (type() < other.type());
+}
+
+bool Ancestor::operator==(const Ancestor& other) const
+{
+	if ( name() != other.name() ) {
+		return false;
+	}
+	if ( type() != other.type() ) {
+		return false;
+	}
+	if ( visibility() != other.visibility() ) {
+		return false;
+	}
+
+	return true;
+}
+
 const std::string& Ancestor::name() const
 {
 	return mName;

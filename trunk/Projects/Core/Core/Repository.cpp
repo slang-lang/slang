@@ -173,16 +173,18 @@ void Repository::CollectGarbage()
 
 Runtime::Object* Repository::createInstance(const std::string& type, const std::string& name, const std::string& prototype)
 {
+	// non-reference-based instantiation
 	OSinfo("createInstance('" + type + "', '" + name + "', '" + prototype + "')");
 
-	// non-reference-based instantiation
 	Designtime::BluePrint blueprint;
 
+/*
 	Prototypes::iterator it = mPrototypes.find(prototype);
 	if ( it != mPrototypes.end() ) {
 		blueprint = it->second.generateBluePrint(type);
 	}
 	else {
+*/
 		BluePrints::iterator it = mBluePrints.find(type);
 		if ( it != mBluePrints.end() ) {
 			blueprint = it->second;
@@ -190,7 +192,9 @@ Runtime::Object* Repository::createInstance(const std::string& type, const std::
 		else {
 			throw Utils::Exceptions::Exception("trying to create instance of unknown object '" + type + "'");
 		}
+/*
 	}
+*/
 
 	Runtime::Object *object = createObject(name, &blueprint);
 
@@ -231,36 +235,7 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 		// define this-symbol
 		object->define(KEYWORD_THIS, object);
 
-		// create and define all members
-		Symbols symbols = blueprint->provideSymbols();
-		for ( Symbols::const_iterator it = symbols.begin(); it != symbols.end(); ++it ) {
-			if ( !it->second || it->second->getType() != Symbol::IType::BluePrintSymbol ) {
-				continue;
-			}
-
-			Designtime::BluePrint *blue = static_cast<Designtime::BluePrint*>(it->second);
-			if ( blue->isAbstract() ) {
-				throw Utils::Exceptions::AbstractException("cannot instantiate abstract object '" + blue->Typename() + "'");
-			}
-
-			Runtime::Object *symbol = createInstance(blue->Typename(), blue->getName(), "");
-			symbol->setConst(blue->isConst());
-			symbol->setFinal(blue->isFinal());
-			symbol->setLanguageFeatureState(blue->getLanguageFeatureState());
-			symbol->setMember(blue->isMember());
-			symbol->setVisibility(blue->getVisibility());
-
-			object->define(symbol->getName(), symbol);
-		}
-
-		// define and create all methods
-		MethodScope::MethodCollection methods = blueprint->provideMethods();
-		for ( MethodScope::MethodCollection::const_iterator it = methods.begin(); it != methods.end(); ++it ) {
-			Runtime::Method* method = new Runtime::Method(object, (*it)->getName(), (*it)->Typename());
-			*method = *(*it);
-
-			object->defineMethod(method);
-		}
+		initializeObject(object, blueprint);
 	}
 
 	assert(object);
@@ -296,6 +271,56 @@ const Reference& Repository::createReference(const std::string& type, const std:
 	Runtime::Object *object = createObject(name, &blueprint);
 
 	return mMemory->newObject(object);
+}
+
+void Repository::initializeObject(Runtime::Object *object, Designtime::BluePrint* blueprint)
+{
+	assert(blueprint);
+	assert(object);
+
+	Designtime::Ancestors ancestors = blueprint->getAncestors();
+	ancestors.insert(Designtime::Ancestor(
+		blueprint->Typename(), Designtime::Ancestor::Type::Base, Visibility::Public
+	));
+
+	// walk through inheritance and create all members and methods
+	for ( Designtime::Ancestors::const_iterator ancestorIt = ancestors.begin(); ancestorIt != ancestors.end(); ++ancestorIt ) {
+		BluePrints::const_iterator blueIt = mBluePrints.find(ancestorIt->name());
+		if ( blueIt == mBluePrints.end() ) {
+			throw Utils::Exceptions::Exception("trying to initialize unknown object '" + ancestorIt->name() + "'");
+		}
+
+		// create and define all members
+		Symbols symbols = blueIt->second.provideSymbols();
+		for ( Symbols::const_iterator it = symbols.begin(); it != symbols.end(); ++it ) {
+			if ( !it->second || it->second->getType() != Symbol::IType::BluePrintSymbol ) {
+				continue;
+			}
+
+			Designtime::BluePrint *blue = static_cast<Designtime::BluePrint*>(it->second);
+			if ( blue->isAbstract() ) {
+				throw Utils::Exceptions::AbstractException("cannot instantiate abstract object '" + blue->Typename() + "'");
+			}
+
+			Runtime::Object *symbol = createInstance(blue->Typename(), blue->getName(), "");
+			symbol->setConst(blue->isConst());
+			symbol->setFinal(blue->isFinal());
+			symbol->setLanguageFeatureState(blue->getLanguageFeatureState());
+			symbol->setMember(blue->isMember());
+			symbol->setVisibility(blue->getVisibility());
+
+			object->define(symbol->getName(), symbol);
+		}
+
+		// define and create all methods
+		MethodScope::MethodCollection methods = blueIt->second.provideMethods();
+		for ( MethodScope::MethodCollection::const_iterator it = methods.begin(); it != methods.end(); ++it ) {
+			Runtime::Method* method = new Runtime::Method(object, (*it)->getName(), (*it)->Typename());
+			*method = *(*it);
+
+			object->defineMethod(method);
+		}
+	}
 }
 
 bool Repository::isAlreadyKnown(const std::string& name) const

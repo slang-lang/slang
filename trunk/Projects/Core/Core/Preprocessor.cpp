@@ -66,6 +66,12 @@ Designtime::BluePrint* Preprocessor::createMember(TokenIterator token)
 	// look for the identifier token
 	name = (*token++).content();
 
+	if ( Visibility::convert(visibility) == Visibility::Public ) {
+		// beware: public members are deprecated, remember the "Law of Demeter"
+		// consider using wrappers (getter, setter) instead of directly providing access to members to outsiders
+		throw Utils::Exceptions::LawOfDemeterViolated("public member " + name + " violates \"Law of Demeter\"", token->position());
+	}
+
 	if ( (*token).isOptional() ) {
 		if ( (*token).content() == MODIFIER_CONST ) {
 			isConst = true;
@@ -89,12 +95,6 @@ Designtime::BluePrint* Preprocessor::createMember(TokenIterator token)
 	blue->setFinal(isFinal);
 	blue->setMember(true);		// every object created here is a member object
 	blue->setVisibility(Visibility::convert(visibility));
-
-	if ( blue->getVisibility() == Visibility::Public ) {
-		// beware: public members are deprecated, remember the "Law of Demeter"
-		// consider using wrappers (getter, setter) instead of directly providing access to members to outsiders
-		throw Utils::Exceptions::LawOfDemeterViolated("public member " + name + " violates \"Law of Demeter\"", token->position());
-	}
 
 	return blue;
 }

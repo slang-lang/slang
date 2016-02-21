@@ -11,6 +11,7 @@
 // Project includes
 #include <Core/Attributes/Attributes.h>
 #include <Core/Attributes/Visibility.h>
+#include <Core/Designtime/Ancestor.h>
 #include "Consts.h"
 #include "Interface.h"
 #include "RTTI.h"
@@ -53,11 +54,13 @@ public:	// RTTI
 	}
 
 public:
-	void addAnchestor(const std::string &ancestor);
-	const StringList& getAncestors() const;
+	// Inheritance
+	// {
+	Designtime::Ancestors getAncestors() const;
+	Designtime::Ancestors getImplementations() const;
 
-	void addImplementation(const std::string& implementation);
-	const StringList& getImplementations() const;
+	void addInheritance(const Designtime::Ancestor& inheritance);
+	// }
 
 	const std::string& getFullyQualifiedTypename() const;
 	void setFullyQualifiedTypename(const std::string& name);
@@ -88,10 +91,9 @@ protected:
 	}
 
 private:
-	StringList mAncestors;
 	std::string mFilename;
 	std::string mFullyQualifiedTypeName;
-	StringList mImplementations;
+	Ancestors mInheritance;
 	std::string mName;
 	TokenList mTokens;
 	std::string mTypename;

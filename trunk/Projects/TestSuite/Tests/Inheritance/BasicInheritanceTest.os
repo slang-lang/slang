@@ -1,44 +1,55 @@
 #!/usr/local/bin/oscript
 
-public namespace Tests
+public namespace BasicInheritanceTest
 {
-	public namespace Inheritance
+	public interface IDummyInterface
 	{
-		public object Base
+		public string getName() const;
+	}
+
+	public object Base
+	{
+		public string getBaseName() const
 		{
-			public string getBaseName() const
-			{
-				return "Base";
-			}
+			return "Base";
+		}
+	}
+
+	public object Extended extends Base, implements IDummyInterface
+	{
+		public string getExtendedName() const
+		{
+			return "Extended";
 		}
 
-		public object Extended extends Base
+		public string getName() const
 		{
-			public string getExtendedName() const
-			{
-				return "Extended";
-			}
+			return "Extended";
+		}
+	}
+
+	public object Main
+	{
+		public void Main(number argc = 0, string argv = "")
+		{
+			assert( TestCase1() );
 		}
 
-		public object Main
+		private bool TestCase1()
 		{
-			public void Main(number argc = 0, string argv = "")
-			{
-				test();
-			}
+			print("TestCase1: ");
 
-			private void test()
-			{
-				Base base = new Base();
-				Extended extended = new Extended();
+			Base base = new Base();
+			Extended extended = new Extended();
 
-				print("base.getBaseName = " + base.getBaseName());
-				print("extended.getBaseName = " + extended.getBaseName());
-				print("extended.getExtendedName = " + extended.getExtendedName());
+			print("base.getBaseName = " + base.getBaseName());
+			print("extended.getBaseName = " + extended.getBaseName());
+			print("extended.getExtendedName = " + extended.getExtendedName());
 
-				delete base;
-				delete extended;
-			}
+			delete extended;
+			delete base;
+
+			return true;
 		}
 	}
 }
