@@ -44,6 +44,7 @@ private:	// Tests
 	void testIf();
 	void testInfixOperator();
 	void testInterfaces();
+	void testLawOfDemeter();
 	void testMethodOverloading();
 	void testNamespaces();
 	void testObjectEquality();
