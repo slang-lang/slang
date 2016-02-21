@@ -1,21 +1,21 @@
 INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
 SET(SOURCES
-	AttributesTest.cpp
     Fixture.cpp
+    InheritanceTest.cpp
 )
 
 SET(HEADERS
-	AttributesTest.h
     Fixture.h
+    InheritanceTest.h
 )
 
 SET(DEPENDENCIES
-	Core
+    Core
 )
 
 add_include(Projects/Core)
 add_include(Projects/TestSuite)
 add_include(Projects/Utils)
 
-build_static_lib(Test_Attributes "")
+build_static_lib(Test_Inheritance "")

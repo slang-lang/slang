@@ -3,11 +3,11 @@ INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 ADD_SUBDIRECTORY(BuildInTypes)
 
 SET(SOURCES
-	Anchestor.cpp
+		Ancestor.cpp
 )
 
 SET(HEADERS
-	Anchestor.h
+		Ancestor.h
 )
 
 SET(DEPENDENCIES
