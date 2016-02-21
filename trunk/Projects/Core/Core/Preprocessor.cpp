@@ -5,13 +5,9 @@
 // Library includes
 
 // Project includes
-#include <Core/Consts.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Utils/Utils.h>
-#include "Object.h"
 #include "Repository.h"
-#include "Scope.h"
-#include "Tokenizer.h"
 #include "Tools.h"
 
 // Namespace declarations

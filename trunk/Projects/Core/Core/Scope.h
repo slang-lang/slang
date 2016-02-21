@@ -8,6 +8,7 @@
 #include <string>
 
 // Project includes
+#include <Core/Interfaces/IScope.h>
 #include "Parameter.h"
 #include "Symbol.h"
 
@@ -17,24 +18,6 @@
 
 
 namespace ObjectiveScript {
-
-// Forward declarations
-namespace Runtime {
-	class Method;
-}
-
-class IScope
-{
-public:
-	virtual ~IScope() { }
-
-	virtual void define(const std::string& name, Symbol *symbol) = 0;
-	virtual IScope* getEnclosingScope() const = 0;
-	virtual std::string getFullName() const = 0;
-	virtual const std::string& getScopeName() const = 0;
-	virtual Symbol* resolve(const std::string& name, bool onlyCurrentScope = false) const = 0;
-	virtual void undefine(const std::string& name, Symbol *symbol) = 0;
-};
 
 
 class LocalScope : public IScope

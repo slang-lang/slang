@@ -11,13 +11,13 @@
 // Project includes
 #include <Core/Attributes/Attributes.h>
 #include <Core/Attributes/Visibility.h>
-#include <Core/Designtime/Ancestor.h>
-#include "Consts.h"
-#include "Interface.h"
-#include "RTTI.h"
-#include "Scope.h"
-#include "Symbol.h"
-#include "Types.h"
+#include <Core/Consts.h>
+#include <Core/Interface.h>
+#include <Core/RTTI.h>
+#include <Core/Scope.h>
+#include <Core/Symbol.h>
+#include <Core/Types.h>
+#include "Ancestor.h"
 
 // Forward declarations
 

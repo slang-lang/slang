@@ -6,7 +6,7 @@
 // Library includes
 
 // Project includes
-#include <Core/BluePrint.h>
+#include <Core/Designtime/BluePrint.h>
 
 // Forward declarations
 
