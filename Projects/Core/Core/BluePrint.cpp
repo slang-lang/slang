@@ -4,6 +4,7 @@
 
 // Library includes
 #include <cassert>
+#include <Utils/Exceptions.h>
 
 // Project includes
 #include "Consts.h"
@@ -42,6 +43,24 @@ BluePrint::~BluePrint()
 {
 }
 
+void BluePrint::addAnchestor(const std::string &anchestor)
+{
+	if ( anchestor.empty() ) {
+		throw Utils::Exceptions::Exception("invalid ancestor added");
+	}
+
+	mAnchestors.push_back(anchestor);
+}
+
+void BluePrint::addImplementation(const std::string &implementation)
+{
+	if ( implementation.empty() ) {
+		throw Utils::Exceptions::Exception("invalid implemantation added");
+	}
+
+	mImplementations.push_back(implementation);
+}
+
 void BluePrint::cleanup()
 {
 	for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
@@ -65,14 +84,19 @@ void BluePrint::cleanup()
 	mSymbols.clear();
 }
 
+const StringList& BluePrint::getAnchestors() const
+{
+	return mAnchestors;
+}
+
 const std::string& BluePrint::getFullyQualifiedTypename() const
 {
 	return mFullyQualifiedTypeName;
 }
 
-void BluePrint::setFullyQualifiedTypename(const std::string& name)
+const StringList& BluePrint::getImplementations() const
 {
-	mFullyQualifiedTypeName = name;
+	return mImplementations;
 }
 
 const std::string& BluePrint::getName() const
@@ -99,6 +123,11 @@ bool BluePrint::isAbstract() const
 	}
 
 	return false;
+}
+
+void BluePrint::setFullyQualifiedTypename(const std::string& name)
+{
+	mFullyQualifiedTypeName = name;
 }
 
 void BluePrint::setTokens(const TokenList& tokens)

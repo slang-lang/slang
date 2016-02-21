@@ -1,6 +1,6 @@
 
 // Header
-#include "Anchestor.h"
+#include "Ancestor.h"
 
 // Library includes
 
@@ -15,12 +15,14 @@ namespace Designtime {
 
 Ancestor::Ancestor()
 : mName(""),
+  mType(Type::Unknown),
   mVisibility(Visibility::Private)
 {
 }
 
-Ancestor::Ancestor(const std::string& name, Visibility::E visibility)
+Ancestor::Ancestor(const std::string& name, Type::E type, Visibility::E visibility)
 : mName(name),
+  mType(type),
   mVisibility(visibility)
 {
 }
@@ -28,6 +30,11 @@ Ancestor::Ancestor(const std::string& name, Visibility::E visibility)
 const std::string& Ancestor::name() const
 {
 	return mName;
+}
+
+Ancestor::Type::E Ancestor::type() const
+{
+	return mType;
 }
 
 Visibility::E Ancestor::visibility() const

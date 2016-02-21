@@ -7,6 +7,7 @@
 #include <string>
 
 // Project includes
+#include <Core/Designtime/Ancestor.h>
 #include "Method.h"
 #include "Object.h"
 #include "Prototype.h"
@@ -48,14 +49,15 @@ private:
 	TokenList generateTokens(const std::string& content);
 	void process(const std::string& content);
 
-private:
 	Designtime::BluePrint createBluePrint(TokenIterator& start, TokenIterator end);
 	Interface createInterface(TokenIterator& start, TokenIterator end);
 	std::string createLibraryReference(TokenIterator& start, TokenIterator end);
 	void createNamespace(TokenIterator& start, TokenIterator end);
 	Prototype createPrototype(TokenIterator& start, TokenIterator end);
 
-private:
+	Designtime::Ancestors collectInheritance(TokenIterator &start, TokenIterator end) const;
+	TokenList collectScopeTokens(TokenIterator& token) const;
+
 	bool isInterfaceDeclaration(TokenIterator start);
 	bool isLibraryReference(TokenIterator start);
 	bool isNamespaceDeclaration(TokenIterator start);

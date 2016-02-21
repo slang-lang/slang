@@ -10,7 +10,6 @@
 
 // Project includes
 #include <Core/Consts.h>
-#include <Core/Designtime/Anchestor.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Utils/Utils.h>
 #include <Tools/Files.h>
@@ -31,6 +30,63 @@ Analyser::Analyser()
 
 Analyser::~Analyser()
 {
+}
+
+Designtime::Ancestors Analyser::collectInheritance(TokenIterator &start, TokenIterator end) const
+{
+	Designtime::Ancestors ancestors;
+
+	while ( start != end ) {
+		if (start->content() == RESERVED_WORD_EXTENDS) {
+			// collect inheritances
+			start++;
+
+			//do {
+			std::string ancestor = (*start++).content();
+			ancestors[ancestor] = Designtime::Ancestor(ancestor, Designtime::Ancestor::Type::Extends,
+													   Visibility::Public);
+			//} while ( ++start != end );
+		}
+		else if (start->content() == RESERVED_WORD_IMPLEMENTS) {
+			// collect implementations
+			start++;
+
+			do {
+				std::string inheritance = (*start++).content();
+				ancestors[inheritance] = Designtime::Ancestor(inheritance, Designtime::Ancestor::Type::Implements,
+															  Visibility::Public);
+			} while (++start != end);
+		}
+		else {
+			throw Utils::Exceptions::Exception("invalid token '" + start->content() + "' during object declaration");
+		}
+	}
+
+	return ancestors;
+}
+
+TokenList Analyser::collectScopeTokens(TokenIterator& token) const
+{
+	if ( (*token).type() != Token::Type::BRACKET_CURLY_OPEN ) {
+		throw Utils::Exceptions::Exception("collectScopeTokens: invalid start token found");
+	}
+
+	int scope = 0;
+	TokenList tokens;
+
+	// look for the corresponding closing curly bracket
+	while ( (*++token).type() != Token::Type::BRACKET_CURLY_CLOSE || scope > 0 ) {
+		if ( (*token).type() == Token::Type::BRACKET_CURLY_OPEN ) {
+			scope++;
+		}
+		if ( (*token).type() == Token::Type::BRACKET_CURLY_CLOSE ) {
+			scope--;
+		}
+
+		tokens.push_back((*token));
+	}
+
+	return tokens;
 }
 
 Designtime::BluePrint Analyser::createBluePrint(TokenIterator& start, TokenIterator end)
@@ -63,31 +119,34 @@ Designtime::BluePrint Analyser::createBluePrint(TokenIterator& start, TokenItera
 	// look for balanced curly brackets
 	TokenIterator closed = findNextBalancedCurlyBracket(open, end, 0, Token::Type::BRACKET_CURLY_CLOSE);
 
+	Designtime::Ancestors implementations;
+	Designtime::Ancestors inheritance;
 	Designtime::Ancestors parents;
 
 	// check if we have some more tokens before our object declarations starts
 	if ( start != open ) {
+/*
 		if ( start->content() == RESERVED_WORD_EXTENDS ) {
 			// collect inheritances
 			start++;
 
 			do {
-				std::string inheritance = (*start++).content();
 				std::string ancestor = (*start++).content();
-
-				//parents[ancestor] = Ancestor(ancestor, Visibility::convert(inheritance));
+				parents[ancestor] = Designtime::Ancestor(ancestor, Designtime::Ancestor::Type::Extends, Visibility::Public);
 			} while ( std::distance(start, open) > 0 && ++start != end );
 		}
 		else if ( start->content() == RESERVED_WORD_IMPLEMENTS ) {
-			// collect inheritances
+			// collect implementations
 			start++;
 
 			std::string inheritance = (*start++).content();
-			parents[inheritance] = Designtime::Ancestor(inheritance, Visibility::Public);
+			implementations[inheritance] = Designtime::Ancestor(inheritance, Designtime::Ancestor::Type::Implements, Visibility::Public);
 		}
 		else {
 			throw Utils::Exceptions::Exception("invalid token '" + start->content() + "' during object declaration");
 		}
+*/
+		inheritance = collectInheritance(start, open);
 	}
 
 	// collect all tokens of this object

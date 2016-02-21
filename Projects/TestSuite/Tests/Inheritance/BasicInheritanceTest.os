@@ -12,7 +12,7 @@ public namespace Tests
 			}
 		}
 
-		public object Extended extends public Base
+		public object Extended extends Base
 		{
 			public string getExtendedName() const
 			{

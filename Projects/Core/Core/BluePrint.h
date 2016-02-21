@@ -16,6 +16,7 @@
 #include "RTTI.h"
 #include "Scope.h"
 #include "Symbol.h"
+#include "Types.h"
 
 // Forward declarations
 
@@ -52,6 +53,12 @@ public:	// RTTI
 	}
 
 public:
+	void addAnchestor(const std::string &anchestor);
+	const StringList& getAnchestors() const;
+
+	void addImplementation(const std::string& implementation);
+	const StringList& getImplementations() const;
+
 	const std::string& getFullyQualifiedTypename() const;
 	void setFullyQualifiedTypename(const std::string& name);
 
@@ -81,8 +88,10 @@ protected:
 	}
 
 private:
+	StringList mAnchestors;
 	std::string mFilename;
 	std::string mFullyQualifiedTypeName;
+	StringList mImplementations;
 	std::string mName;
 	TokenList mTokens;
 	std::string mTypename;

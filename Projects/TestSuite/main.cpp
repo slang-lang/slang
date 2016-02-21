@@ -10,6 +10,7 @@
 
 // Fixtures
 #include <Attributes/Fixture.h>
+#include <Inheritance/Fixture.h>
 #include <Language/Fixture.h>
 #include <Math/Fixture.h>
 #include <Operator/Fixture.h>
@@ -91,6 +92,9 @@ int main(int argc, const char* argv[])
 */
 		Testing::Attributes::Fixture attributes(mLogger);
 		mFixtures.push_back(&attributes);
+
+		Testing::Inheritance::Fixture inheritance(mLogger);
+		mFixtures.push_back(&inheritance);
 
 		Testing::Language::Fixture language(mLogger);
 		mFixtures.push_back(&language);

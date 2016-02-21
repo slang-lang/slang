@@ -33,8 +33,7 @@ public namespace Tests
 			}
 		}
 
-		public object Main extends public Base
-						   implements public IContainer, public IWarehouse
+		public object Main extends Base, implements IContainer, IWarehouse
 		{
 			private number mPrivateNumber;
 
