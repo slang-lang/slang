@@ -34,7 +34,7 @@ namespace Runtime {
 namespace Designtime {
 
 
-class BluePrint : public MethodScope,
+class BluePrint : public ObjectScope,
 				  public BluePrintSymbol
 {
 public:

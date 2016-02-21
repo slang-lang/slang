@@ -37,7 +37,7 @@ public namespace BasicInheritanceTest
 
 		private bool TestCase1()
 		{
-			print("TestCase1: ");
+			print("TestCase 1: ");
 
 			Base base = new Base();
 			Extended extended = new Extended();

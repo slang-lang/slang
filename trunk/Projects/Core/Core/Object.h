@@ -16,6 +16,7 @@
 #include "Method.h"
 #include "Parameter.h"
 #include "Scope.h"
+#include "Symbol.h"
 #include "Token.h"
 #include "Types.h"
 
@@ -45,7 +46,7 @@ class Method;
 class Object;
 
 
-class Object : public MethodScope,
+class Object : public ObjectScope,
 			   public ObjectSymbol
 {
 public:

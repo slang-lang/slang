@@ -18,7 +18,7 @@ namespace Designtime {
 
 
 BluePrint::BluePrint()
-: MethodScope(ANONYMOUS_OBJECT, 0),
+: ObjectScope(ANONYMOUS_OBJECT, 0),
   BluePrintSymbol(ANONYMOUS_OBJECT),
   mFilename(ANONYMOUS_OBJECT),
   mFullyQualifiedTypeName(ANONYMOUS_OBJECT),
@@ -29,7 +29,7 @@ BluePrint::BluePrint()
 }
 
 BluePrint::BluePrint(const std::string& type, const std::string& filename, const std::string& name)
-: MethodScope(type, 0),
+: ObjectScope(type, 0),
   BluePrintSymbol(type),
   mFilename(filename),
   mFullyQualifiedTypeName(type),

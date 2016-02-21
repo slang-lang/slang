@@ -16,7 +16,7 @@ public namespace Tests
 
 		public object Base
 		{
-			public number mPublicNumber;
+			protected number mPublicNumber;	// public members are not allowed
 			protected number mProtectedNumber;
 			private number mPrivateNumber;
 
@@ -29,17 +29,23 @@ public namespace Tests
 
 			public string ToString() const
 			{
-				return "mPublicNumber = " & mPublicNumber & ", mProtectedNumber = " & mProtectedNumber & ", mPrivateNumber = " & mPrivateNumber & ";";
+				return "mPublicNumber = " + mPublicNumber + ", mProtectedNumber = " + mProtectedNumber + ", mPrivateNumber = " + mPrivateNumber + ";";
 			}
 		}
 
 		public object Main extends Base, implements IContainer, IWarehouse
 		{
-			private number mPrivateNumber;
+			//private number mPrivateNumber;
 
 			public void Main(number argc = 0, string argv = "")
 			{
+				print(ToString());
+				//ToString2();
+
 				test();
+
+				print(ToString());
+				//ToString2();
 			}
 
 			public number GetBox() const
@@ -54,10 +60,10 @@ public namespace Tests
 
 			public string ToString() const
 			{
-				return super.ToString() & "mPublicNumber = " & mPublicNumber & ", mProtectedNumber = " & mProtectedNumber & ", mPrivateNumber = " & mPrivateNumber & ";";
+				return super.ToString() + "\nmPublicNumber = " + mPublicNumber + ", mProtectedNumber = " + mProtectedNumber + ", mPrivateNumber = " + mPrivateNumber + ";";
 			}
 
-			private void test()
+			private void test() modify
 			{
 				mPublicNumber = 2;
 				mProtectedNumber = 2;

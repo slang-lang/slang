@@ -61,14 +61,14 @@ private:
 };
 
 
-class MethodScope : public LocalScope
+class ObjectScope : public LocalScope
 {
 public:
 	typedef std::set<Runtime::Method*> MethodCollection;
 
 public:
-	MethodScope(const std::string& name, IScope *parent = 0);
-	virtual ~MethodScope();
+	ObjectScope(const std::string& name, IScope *parent = 0);
+	virtual ~ObjectScope();
 
 public:
 	virtual void defineMethod(Runtime::Method* method);
@@ -83,7 +83,7 @@ private:
 };
 
 
-class GlobalScope : public MethodScope
+class GlobalScope : public ObjectScope
 {
 public:
 	GlobalScope();
