@@ -279,6 +279,8 @@ void Repository::initializeObject(Runtime::Object *object, Designtime::BluePrint
 	assert(object);
 
 	Designtime::Ancestors ancestors = blueprint->getAncestors();
+
+	// add our base object to our ancestor collection (thanks to Ancestor::Type::Base sort places it in first position)
 	ancestors.insert(Designtime::Ancestor(
 		blueprint->Typename(), Designtime::Ancestor::Type::Base, Visibility::Public
 	));
@@ -313,8 +315,8 @@ void Repository::initializeObject(Runtime::Object *object, Designtime::BluePrint
 		}
 
 		// define and create all methods
-		MethodScope::MethodCollection methods = blueIt->second.provideMethods();
-		for ( MethodScope::MethodCollection::const_iterator it = methods.begin(); it != methods.end(); ++it ) {
+		ObjectScope::MethodCollection methods = blueIt->second.provideMethods();
+		for (ObjectScope::MethodCollection::const_iterator it = methods.begin(); it != methods.end(); ++it ) {
 			Runtime::Method* method = new Runtime::Method(object, (*it)->getName(), (*it)->Typename());
 			*method = *(*it);
 

@@ -93,16 +93,16 @@ void LocalScope::undefine(const std::string& name, Symbol *symbol)
 
 
 
-MethodScope::MethodScope(const std::string& name, IScope *parent)
+ObjectScope::ObjectScope(const std::string& name, IScope *parent)
 : LocalScope(name, parent)
 {
 }
 
-MethodScope::~MethodScope()
+ObjectScope::~ObjectScope()
 {
 }
 
-void MethodScope::defineMethod(Runtime::Method* method)
+void ObjectScope::defineMethod(Runtime::Method* method)
 {
 	assert(method);
 
@@ -122,7 +122,7 @@ void MethodScope::defineMethod(Runtime::Method* method)
 	mMethods.insert(method);
 }
 
-MethodSymbol* MethodScope::resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope) const
+MethodSymbol*ObjectScope::resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope) const
 {
 	std::string member, parent;
 	Tools::split(name, parent, member);
@@ -143,7 +143,7 @@ MethodSymbol* MethodScope::resolveMethod(const std::string& name, const Paramete
 	return 0;
 }
 
-void MethodScope::undefineMethod(Runtime::Method* method)
+void ObjectScope::undefineMethod(Runtime::Method* method)
 {
 	assert(method);
 
@@ -157,7 +157,7 @@ void MethodScope::undefineMethod(Runtime::Method* method)
 
 
 GlobalScope::GlobalScope()
-: MethodScope("global", 0)
+: ObjectScope("global", 0)
 {
 }
 GlobalScope::~GlobalScope()
