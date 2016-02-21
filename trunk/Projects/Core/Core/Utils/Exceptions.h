@@ -139,7 +139,7 @@ class LawOfDemeterViolated : public Exception
 {
 public:
 	LawOfDemeterViolated(const std::string& text, const Utils::Position& position = Utils::Position())
-			: Exception("Exception.LawOfDemeterViolated: " + text, position)
+	: Exception("Exception.LawOfDemeterViolated: " + text, position)
 	{ }
 
 	virtual ~LawOfDemeterViolated() throw() { }

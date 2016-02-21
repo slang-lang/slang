@@ -15,7 +15,7 @@ namespace Inheritance {
 
 
 Fixture::Fixture(const Utils::Common::ILogger *p)
-: TestFixture("Attributes"),
+: TestFixture("Inheritance"),
   Utils::Common::Logger(p, "Inheritance")
 {
 }

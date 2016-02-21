@@ -53,8 +53,8 @@ public:	// RTTI
 	}
 
 public:
-	void addAnchestor(const std::string &anchestor);
-	const StringList& getAnchestors() const;
+	void addAnchestor(const std::string &ancestor);
+	const StringList& getAncestors() const;
 
 	void addImplementation(const std::string& implementation);
 	const StringList& getImplementations() const;
@@ -88,7 +88,7 @@ protected:
 	}
 
 private:
-	StringList mAnchestors;
+	StringList mAncestors;
 	std::string mFilename;
 	std::string mFullyQualifiedTypeName;
 	StringList mImplementations;
