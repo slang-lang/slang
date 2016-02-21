@@ -4,9 +4,9 @@
 
 // Library includes
 #include <cassert>
-#include <Utils/Exceptions.h>
 
 // Project includes
+#include <Core/Utils/Exceptions.h>
 #include "Consts.h"
 #include "Object.h"
 
@@ -43,13 +43,13 @@ BluePrint::~BluePrint()
 {
 }
 
-void BluePrint::addAnchestor(const std::string &anchestor)
+void BluePrint::addAnchestor(const std::string& ancestor)
 {
-	if ( anchestor.empty() ) {
+	if ( ancestor.empty() ) {
 		throw Utils::Exceptions::Exception("invalid ancestor added");
 	}
 
-	mAnchestors.push_back(anchestor);
+	mAncestors.push_back(ancestor);
 }
 
 void BluePrint::addImplementation(const std::string &implementation)
@@ -84,9 +84,9 @@ void BluePrint::cleanup()
 	mSymbols.clear();
 }
 
-const StringList& BluePrint::getAnchestors() const
+const StringList& BluePrint::getAncestors() const
 {
-	return mAnchestors;
+	return mAncestors;
 }
 
 const std::string& BluePrint::getFullyQualifiedTypename() const

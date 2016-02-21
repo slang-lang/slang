@@ -311,6 +311,46 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\Inheritance\Fixture.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Inheritance\"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Inheritance\"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\Inheritance\InheritanceTest.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Inheritance\"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Inheritance\"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath=".\Language\LanguageTest.cpp"
 				>
 				<FileConfiguration
@@ -433,7 +473,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Inheritance\Fixture.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Framework\GenericTest.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Inheritance\InheritanceTest.h"
 				>
 			</File>
 			<File

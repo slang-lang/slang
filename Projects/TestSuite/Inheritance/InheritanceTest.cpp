@@ -23,7 +23,7 @@ namespace Inheritance {
 
 
 InheritanceTest::InheritanceTest(const ::Utils::Common::ILogger *p)
-: ::Utils::Common::Logger(p, "AttributesTest")
+: ::Utils::Common::Logger(p, "InheritanceTest")
 {
 }
 
