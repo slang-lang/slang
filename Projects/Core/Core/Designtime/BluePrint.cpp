@@ -6,9 +6,9 @@
 #include <cassert>
 
 // Project includes
+#include <Core/Consts.h>
+#include <Core/Object.h>
 #include <Core/Utils/Exceptions.h>
-#include "Consts.h"
-#include "Object.h"
 
 // Namespace declarations
 

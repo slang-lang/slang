@@ -4,10 +4,12 @@ ADD_SUBDIRECTORY(BuildInTypes)
 
 SET(SOURCES
 		Ancestor.cpp
+		BluePrint.cpp
 )
 
 SET(HEADERS
 		Ancestor.h
+		BluePrint.h
 )
 
 SET(DEPENDENCIES

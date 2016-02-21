@@ -7,7 +7,7 @@
 #include <list>
 
 // Project includes
-#include "BluePrint.h"
+#include <Core/Designtime/BluePrint.h>
 
 // Forward declarations
 

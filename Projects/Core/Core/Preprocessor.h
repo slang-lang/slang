@@ -8,7 +8,7 @@
 #include <string>
 
 // Project includes
-#include "BluePrint.h"
+#include <Core/Designtime/BluePrint.h>
 #include "Method.h"
 #include "Parameter.h"
 #include "Tokenizer.h"

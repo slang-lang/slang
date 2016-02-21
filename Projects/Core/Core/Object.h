@@ -11,7 +11,7 @@
 
 // Project includes
 #include <Core/Attributes/Attributes.h>
-#include "BluePrint.h"
+#include <Core/Designtime/BluePrint.h>
 #include "Interpreter.h"
 #include "Method.h"
 #include "Parameter.h"
