@@ -2,8 +2,8 @@
 // Created by Michael Adelmann on 21/02/16.
 //
 
-#ifndef OBJECTIVESCRIPT_ISCOPE_H
-#define OBJECTIVESCRIPT_ISCOPE_H
+#ifndef ObjectiveScript_Interfaces_IScope_h
+#define ObjectiveScript_Interfaces_IScope_h
 
 
 // Library includes
@@ -52,4 +52,4 @@ class IObjectScope : public IScope
 }
 
 
-#endif //OBJECTIVESCRIPT_ISCOPE_H
+#endif
