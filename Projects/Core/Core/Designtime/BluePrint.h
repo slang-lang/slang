@@ -57,6 +57,7 @@ public:
 	// Inheritance
 	// {
 	Designtime::Ancestors getAncestors() const;
+	Designtime::Ancestors getInheritance() const;
 	Designtime::Ancestors getImplementations() const;
 
 	void addInheritance(const Designtime::Ancestor& inheritance);

@@ -23,6 +23,7 @@ static const char* TRUE = "true";
 
 // Keywords
 static const char* KEYWORD_ASSERT = "assert";
+static const char* KEYWORD_BASE = "base";
 static const char* KEYWORD_BREAK = "break";
 static const char* KEYWORD_CASE = "case";
 static const char* KEYWORD_CATCH = "catch";

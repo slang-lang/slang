@@ -32,6 +32,7 @@ public:
 
 private:	// Tests
     void testBasicInheritance();
+	void testKeywordBase();
 };
 
 

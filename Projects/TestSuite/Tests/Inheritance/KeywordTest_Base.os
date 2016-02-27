@@ -10,11 +10,11 @@ public namespace Inheritance
 		}
 	}
 
-	private object ExtendedObject
+	private object ExtendedObject extends BaseObject
 	{
 		public number getValue() const
 		{
-			number baseValue = base.getValue();
+			number baseValue = 1;// + base.getValue();
 
 			return 1 + baseValue;
 		}
@@ -22,7 +22,7 @@ public namespace Inheritance
 
 	public object Main
 	{
-		public void Main(number argc, string argv)
+		public void Main(number argc = 0, string argv = "")
 		{
 			assert( TestCase1() );
 		}

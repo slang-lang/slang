@@ -34,6 +34,7 @@ InheritanceTest::~InheritanceTest()
 void InheritanceTest::process()
 {
     TEST(testBasicInheritance);
+	TEST(testKeywordBase);
 }
 
 void InheritanceTest::setup()
@@ -49,6 +50,20 @@ void InheritanceTest::testBasicInheritance()
     try {
         VirtualMachine vm;
         vm.createScriptFromFile("Tests/Inheritance/BasicInheritanceTest.os");
+
+        // automatic success
+    }
+    catch ( std::exception& e ) {
+        // exception has been thrown: test failed!
+        TFAIL(e.what());
+    }
+}
+
+void InheritanceTest::testKeywordBase()
+{
+    try {
+        VirtualMachine vm;
+        vm.createScriptFromFile("Tests/Inheritance/KeywordTest_Base.os");
 
         // automatic success
     }

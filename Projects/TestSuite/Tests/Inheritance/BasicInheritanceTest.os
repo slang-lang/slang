@@ -35,7 +35,7 @@ public namespace Inheritance
 			print("TestCase 1: ");
 
 			BaseObject b = new BaseObject();
-			ExtendedObject e = new Extended();
+			ExtendedObject e = new ExtendedObject();
 
 			print("b.getName = " + b.getName());
 			print("e.getName = " + e.getName());
