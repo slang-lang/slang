@@ -1,30 +1,25 @@
 #!/usr/local/bin/oscript
 
-public namespace BasicInheritanceTest
+public namespace Inheritance
 {
-	public interface IDummyInterface
+	public object BaseObject
 	{
-		public string getName() const;
-	}
-
-	public object Base
-	{
-		public string getBaseName() const
+		public string getName() const
 		{
-			return "Base";
+			return "BaseObject";
 		}
 	}
 
-	public object Extended extends Base, implements IDummyInterface
+	public object ExtendedObject extends BaseObject
 	{
 		public string getExtendedName() const
 		{
-			return "Extended";
+			return "ExtendedObject";
 		}
 
 		public string getName() const
 		{
-			return "Extended";
+			return "ExtendedObject";
 		}
 	}
 
@@ -39,15 +34,15 @@ public namespace BasicInheritanceTest
 		{
 			print("TestCase 1: ");
 
-			Base base = new Base();
-			Extended extended = new Extended();
+			BaseObject b = new BaseObject();
+			ExtendedObject e = new Extended();
 
-			print("base.getBaseName = " + base.getBaseName());
-			print("extended.getBaseName = " + extended.getBaseName());
-			print("extended.getExtendedName = " + extended.getExtendedName());
+			print("b.getName = " + b.getName());
+			print("e.getName = " + e.getName());
+			print("e.getExtendedName = " + e.getExtendedName());
 
-			delete extended;
-			delete base;
+			delete e;
+			delete b;
 
 			return true;
 		}

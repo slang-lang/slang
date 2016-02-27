@@ -4,8 +4,6 @@ public namespace TypeCastTest
 {
 	public object Main
 	{
-private void Bla() abstract
-
 		public void Main(number argc = 0, string argv = "")
 		{
 			assert( TestCase1() );
