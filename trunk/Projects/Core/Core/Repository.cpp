@@ -228,9 +228,11 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 	}
 	// instantiate user defined type
 	else {
-		object = new Runtime::UserObject(name, blueprint->Filename(), blueprint->Typename(), Runtime::UserObject::DEFAULTVALUE);
+		if ( blueprint->isAbstract() ) {
+			throw Utils::Exceptions::AbstractException("cannot instantiate abstract object '" + blueprint->Typename() + "'");
+		}
 
-		object->setRepository(this);
+		object = new Runtime::UserObject(name, blueprint->Filename(), blueprint->Typename(), Runtime::UserObject::DEFAULTVALUE);
 
 		// define this-symbol
 		object->define(KEYWORD_THIS, object);
@@ -238,12 +240,11 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 		initializeObject(object, blueprint);
 	}
 
-	assert(object);
-
 	object->setConst(blueprint->isConst());
 	object->setFinal(blueprint->isFinal());
 	object->setLanguageFeatureState(blueprint->getLanguageFeatureState());
 	object->setMember(blueprint->isMember());
+	object->setRepository(this);
 	object->setVisibility(blueprint->getVisibility());
 
 	return object;
@@ -278,7 +279,12 @@ void Repository::initializeObject(Runtime::Object *object, Designtime::BluePrint
 	assert(blueprint);
 	assert(object);
 
-	Designtime::Ancestors ancestors = blueprint->getAncestors();
+	//Designtime::Ancestors ancestors = blueprint->getAncestors();
+	Designtime::Ancestors ancestors = blueprint->getInheritance();
+
+	if ( !ancestors.empty() ) {
+		object->define(KEYWORD_BASE, object);
+	}
 
 	// add our base object to our ancestor collection (thanks to Ancestor::Type::Base sort places it in first position)
 	ancestors.insert(Designtime::Ancestor(
@@ -295,20 +301,19 @@ void Repository::initializeObject(Runtime::Object *object, Designtime::BluePrint
 		// create and define all members
 		Symbols symbols = blueIt->second.provideSymbols();
 		for ( Symbols::const_iterator it = symbols.begin(); it != symbols.end(); ++it ) {
-			if ( !it->second || it->second->getType() != Symbol::IType::BluePrintSymbol ) {
+			if ( !it->second ||
+				 it->second->getType() != Symbol::IType::BluePrintSymbol ) {
 				continue;
 			}
 
 			Designtime::BluePrint *blue = static_cast<Designtime::BluePrint*>(it->second);
-			if ( blue->isAbstract() ) {
-				throw Utils::Exceptions::AbstractException("cannot instantiate abstract object '" + blue->Typename() + "'");
-			}
 
 			Runtime::Object *symbol = createInstance(blue->Typename(), blue->getName(), "");
 			symbol->setConst(blue->isConst());
 			symbol->setFinal(blue->isFinal());
 			symbol->setLanguageFeatureState(blue->getLanguageFeatureState());
 			symbol->setMember(blue->isMember());
+			symbol->setRepository(this);
 			symbol->setVisibility(blue->getVisibility());
 
 			object->define(symbol->getName(), symbol);
@@ -319,6 +324,13 @@ void Repository::initializeObject(Runtime::Object *object, Designtime::BluePrint
 		for (ObjectScope::MethodCollection::const_iterator it = methods.begin(); it != methods.end(); ++it ) {
 			Runtime::Method* method = new Runtime::Method(object, (*it)->getName(), (*it)->Typename());
 			*method = *(*it);
+
+			MethodSymbol* baseMethod = object->resolveMethod(method->getName(), method->provideSignature(), true);
+			if ( baseMethod ) {
+				// override base method by undefining it
+				object->undefineMethod(static_cast<Runtime::Method*>(baseMethod));
+				delete baseMethod;
+			}
 
 			object->defineMethod(method);
 		}

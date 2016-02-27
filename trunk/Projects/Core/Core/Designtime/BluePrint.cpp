@@ -93,6 +93,11 @@ const std::string& BluePrint::getFullyQualifiedTypename() const
 	return mFullyQualifiedTypeName;
 }
 
+Designtime::Ancestors BluePrint::getInheritance() const
+{
+	return mInheritance;
+}
+
 Designtime::Ancestors BluePrint::getImplementations() const
 {
 	Designtime::Ancestors implementations;

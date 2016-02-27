@@ -116,6 +116,7 @@ protected:
 	std::string mValue;
 
 private:
+
 };
 
 

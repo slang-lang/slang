@@ -112,11 +112,9 @@ Designtime::BluePrint Analyser::createBluePrint(TokenIterator& start, TokenItera
 	name = (*start).content();
 
 	if ( !mScopeName.empty() ) {
-		fullyQualifiedTypename = mScopeName + RESERVED_WORD_SCOPE_OPERATOR + name;
+		fullyQualifiedTypename = mScopeName + RESERVED_WORD_SCOPE_OPERATOR;
 	}
-	else {
-		fullyQualifiedTypename = name;
-	}
+	fullyQualifiedTypename += name;
 
 	// look for the next opening curly brackets
 	TokenIterator open = findNext(++start, Token::Type::BRACKET_CURLY_OPEN);
@@ -167,9 +165,9 @@ std::string Analyser::createLibraryReference(TokenIterator& start, TokenIterator
 	return reference;
 }
 
-Interface Analyser::createInterface(TokenIterator& start, TokenIterator end)
+Designtime::BluePrint Analyser::createInterface(TokenIterator& start, TokenIterator end)
 {
-	std::string fullyQualifiedName;
+	std::string fullyQualifiedTypename;
 	std::string languageFeature;
 	std::string name;
 	std::string visibility;
@@ -186,8 +184,9 @@ Interface Analyser::createInterface(TokenIterator& start, TokenIterator end)
 	name = (*start).content();
 
 	if ( !mScopeName.empty() ) {
-		fullyQualifiedName = mScopeName + RESERVED_WORD_SCOPE_OPERATOR + name;
+		fullyQualifiedTypename = mScopeName + RESERVED_WORD_SCOPE_OPERATOR;
 	}
+	fullyQualifiedTypename += name;
 
 	// look for the next opening curly brackets
 	TokenIterator open = findNext(++start, Token::Type::BRACKET_CURLY_OPEN);
@@ -198,6 +197,9 @@ Interface Analyser::createInterface(TokenIterator& start, TokenIterator end)
 	if ( start != open ) {
 		throw Utils::Exceptions::Exception("invalid token '" + start->content() + "' during interface declaration");
 	}
+
+	// check if we have some more tokens before our object declarations starts
+	Designtime::Ancestors inheritance = collectInheritance(start, open);
 
 	// collect all tokens of this object
 	TokenList tokens;
@@ -211,12 +213,20 @@ Interface Analyser::createInterface(TokenIterator& start, TokenIterator end)
 	SanityChecker sanity;
 	sanity.process(tokens);
 
-	Interface interface(name, mFilename);
-	//interface.setFullyQualifiedName(fullyQualifiedName);
-	interface.setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
-	interface.setTokens(tokens);
+	Designtime::BluePrint blue(name, mFilename);
+	blue.setFullyQualifiedTypename(fullyQualifiedTypename);
+	blue.setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
+	blue.setTokens(tokens);
+	blue.setVisibility(Visibility::convert(visibility));
 
-	return interface;
+	// set up inheritances (if present)
+	if ( !inheritance.empty() ) {
+		for ( Designtime::Ancestors::const_iterator it = inheritance.begin(); it != inheritance.end(); ++it ) {
+			blue.addInheritance((*it));
+		}
+	}
+
+	return blue;
 }
 
 void Analyser::createNamespace(TokenIterator& start, TokenIterator end)
@@ -277,8 +287,8 @@ void Analyser::generate(const TokenList& tokens)
 	// loop over all tokens and look for imports and object declarations
 	while ( it != tokens.end() && it->type() != Token::Type::ENDOFFILE ) {
 		if ( isInterfaceDeclaration(it) ) {
-			Interface i = createInterface(it, tokens.end());
-			mInterfaces.push_back(i);
+			Designtime::BluePrint i = createInterface(it, tokens.end());
+			mBluePrints.push_back(i);
 		}
 		else if ( isLibraryReference(it) ) {
 			std::string reference = createLibraryReference(it, tokens.end());
@@ -311,11 +321,6 @@ TokenList Analyser::generateTokens(const std::string& content)
 const Designtime::BluePrintList& Analyser::getBluePrints() const
 {
 	return mBluePrints;
-}
-
-const InterfaceList& Analyser::getInterfaces() const
-{
-	return mInterfaces;
 }
 
 const StringList& Analyser::getLibraryReferences() const
@@ -422,7 +427,6 @@ void Analyser::process(const std::string& content)
 {
 	// factory reset
 	mBluePrints.clear();
-	mInterfaces.clear();
 	mLibraries.clear();
 	mPrototypes.clear();
 

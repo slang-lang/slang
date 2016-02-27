@@ -41,7 +41,7 @@ bool Ancestor::operator<(const Ancestor& other) const
 		return (name() < other.name());
 	}
 
-	return (type() < other.type());
+	return (type() > other.type());
 }
 
 bool Ancestor::operator==(const Ancestor& other) const

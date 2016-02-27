@@ -50,6 +50,7 @@ StringList provideKeyWords()
 	StringList keywords;
 
 	keywords.push_back(KEYWORD_ASSERT);
+	keywords.push_back(KEYWORD_BASE);
 	keywords.push_back(KEYWORD_BREAK);
 	keywords.push_back(KEYWORD_CASE);
 	keywords.push_back(KEYWORD_CATCH);
