@@ -58,7 +58,7 @@ public namespace Inheritance
 
 		public string ToString() const
 		{
-			return super.ToString() + "\nmPublicNumber = " + mPublicNumber + ", mProtectedNumber = " + mProtectedNumber + ", mPrivateNumber = " + mPrivateNumber + ";";
+			return base.ToString() + "\nmPublicNumber = " + mPublicNumber + ", mProtectedNumber = " + mProtectedNumber + ", mPrivateNumber = " + mPrivateNumber + ";";
 		}
 
 		private void test() modify
