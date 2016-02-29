@@ -7,10 +7,10 @@
 #include <cassert>
 #include <map>
 #include <string>
-#include <set>
 
 // Project includes
 #include <Core/Attributes/Attributes.h>
+#include <Core/Designtime/Ancestor.h>
 #include <Core/Designtime/BluePrint.h>
 #include "Interpreter.h"
 #include "Method.h"
@@ -71,6 +71,7 @@ public:	// Symbol::IType implementation & RTTI
 	}
 
 public:	// Setup
+	void addInheritance(const Designtime::Ancestor& ancestor, Object* inheritance);
 	void setRepository(Repository *repository);
 
 public:	// Value
@@ -108,7 +109,12 @@ public:	// Operators
 	virtual void operator_unary_not();
 
 protected:
+	typedef std::map<Designtime::Ancestor, Object*> Inheritance;
+
+protected:
+	//std::string mCurrentOuterface;
 	std::string mFilename;
+	Inheritance mInheritance;
 	bool mIsAtomicType;
 	bool mIsConstructed;
 	Repository *mRepository;

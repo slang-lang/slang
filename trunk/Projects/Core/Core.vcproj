@@ -213,6 +213,22 @@
 			<File
 				RelativePath=".\Core\Designtime\BluePrint.cpp"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Designtime\"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Designtime\"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\Core\BuildInObjects\BoolObject.cpp"
@@ -371,8 +387,24 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Prototype.cpp"
+				RelativePath=".\Core\Designtime\Prototype.cpp"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Designtime\"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Designtime\"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\Core\Reference.cpp"
@@ -633,7 +665,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Prototype.h"
+				RelativePath=".\Core\Designtime\Prototype.h"
 				>
 			</File>
 			<File

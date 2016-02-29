@@ -243,66 +243,79 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 	}
 
 	Runtime::Object *object = new Runtime::UserObject(name, blueprint->Filename(), blueprint->Typename(), Runtime::UserObject::DEFAULTVALUE);
-	object->define(KEYWORD_THIS, object);	// define this-symbol
 
-	//Designtime::Ancestors ancestors = blueprint->getAncestors();
 	Designtime::Ancestors ancestors = blueprint->getInheritance();
 
 	if ( !ancestors.empty() ) {
-		object->define(KEYWORD_BASE, object);
-	}
-
-	// add our base object to our ancestor collection (thanks to Ancestor::Type::Base sort places it in first position)
-	ancestors.insert(Designtime::Ancestor(
-		blueprint->Typename(), Designtime::Ancestor::Type::Base, Visibility::Public
-	));
-
-	// walk through inheritance and create all members and methods
-	for ( Designtime::Ancestors::const_iterator ancestorIt = ancestors.begin(); ancestorIt != ancestors.end(); ++ancestorIt ) {
-		Designtime::BluePrintMap::const_iterator blueIt = mBluePrints.find(ancestorIt->name());
-		if ( blueIt == mBluePrints.end() ) {
-			throw Utils::Exceptions::Exception("trying to initialize unknown object '" + ancestorIt->name() + "'");
-		}
-
-		// create and define all members
-		Symbols symbols = blueIt->second.provideSymbols();
-		for ( Symbols::const_iterator it = symbols.begin(); it != symbols.end(); ++it ) {
-			if ( !it->second ||
-				 it->second->getType() != Symbol::IType::BluePrintSymbol ) {
-				continue;
+		// walk through inheritance and create all members and methods
+		for ( Designtime::Ancestors::const_iterator ancestorIt = ancestors.begin(); ancestorIt != ancestors.end(); ++ancestorIt ) {
+			Designtime::BluePrintMap::iterator blueIt = mBluePrints.find(ancestorIt->name());
+			if ( blueIt == mBluePrints.end() ) {
+				throw Utils::Exceptions::Exception("trying to initialize unknown object '" + ancestorIt->name() + "'");
 			}
 
-			Designtime::BluePrint *blue = static_cast<Designtime::BluePrint*>(it->second);
+			// create base object
+			Runtime::Object *ancestor = createObject(ancestorIt->name(), &blueIt->second);
 
-			Runtime::Object *symbol = createInstance(blue->Typename(), blue->getName(), "");
-			symbol->setConst(blue->isConst());
-			symbol->setFinal(blue->isFinal());
-			symbol->setLanguageFeatureState(blue->getLanguageFeatureState());
-			symbol->setMember(blue->isMember());
-			symbol->setRepository(this);
-			symbol->setVisibility(blue->getVisibility());
+			// undefine previous base
+			object->undefine(KEYWORD_BASE, object->resolve(KEYWORD_BASE));
+			// define new base
+			object->define(KEYWORD_BASE, ancestor);
 
-			object->define(symbol->getName(), symbol);
-		}
+			addReference(ancestor);
 
-		// define and create all methods
-		ObjectScope::MethodCollection methods = blueIt->second.provideMethods();
-		for (ObjectScope::MethodCollection::const_iterator it = methods.begin(); it != methods.end(); ++it ) {
-			Runtime::Method* method = new Runtime::Method(object, (*it)->getName(), (*it)->Typename());
-			*method = *(*it);
-
-			MethodSymbol* baseMethod = object->resolveMethod(method->getName(), method->provideSignature(), true);
-			if ( baseMethod ) {
-				// override base method by undefining it
-				object->undefineMethod(static_cast<Runtime::Method*>(baseMethod));
-				delete baseMethod;
-			}
-
-			object->defineMethod(method);
+			object->addInheritance((*ancestorIt), ancestor);
 		}
 	}
+
+	// initialize base object
+	initializeObject(object, blueprint);
 
 	return object;
+}
+
+void Repository::initializeObject(Runtime::Object *object, Designtime::BluePrint* blueprint)
+{
+	// create and define all members
+	Symbols symbols = blueprint->provideSymbols();
+	for ( Symbols::const_iterator it = symbols.begin(); it != symbols.end(); ++it ) {
+		if ( !it->second ||
+			 it->second->getType() != Symbol::IType::BluePrintSymbol ) {
+			continue;
+		}
+
+		Designtime::BluePrint *blue = static_cast<Designtime::BluePrint*>(it->second);
+
+		Runtime::Object *symbol = createInstance(blue->Typename(), blue->getName(), "");
+		symbol->setConst(blue->isConst());
+		symbol->setFinal(blue->isFinal());
+		symbol->setLanguageFeatureState(blue->getLanguageFeatureState());
+		symbol->setMember(blue->isMember());
+		symbol->setRepository(this);
+		symbol->setVisibility(blue->getVisibility());
+
+		object->define(symbol->getName(), symbol);
+	}
+
+	// define and create all methods
+	ObjectScope::MethodCollection methods = blueprint->provideMethods();
+	for (ObjectScope::MethodCollection::const_iterator it = methods.begin(); it != methods.end(); ++it ) {
+		Runtime::Method* method = new Runtime::Method(object, (*it)->getName(), (*it)->Typename());
+		*method = *(*it);
+
+/*
+		MethodSymbol* baseMethod = object->resolveMethod(method->getName(), method->provideSignature(), true);
+		if ( baseMethod ) {
+			// override base method by undefining it
+			object->undefineMethod(static_cast<Runtime::Method*>(baseMethod));
+			delete baseMethod;
+		}
+*/
+
+		object->defineMethod(method);
+	}
+
+	object->define(KEYWORD_THIS, object);	// define this-symbol
 }
 
 bool Repository::isAlreadyKnown(const std::string& name) const
