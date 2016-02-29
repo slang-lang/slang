@@ -134,6 +134,16 @@ void Object::operator= (const Object& other)
 	}
 }
 
+void Object::addInheritance(const Designtime::Ancestor& ancestor, Object* inheritance)
+{
+	if ( !inheritance ) {
+		// bam!
+		throw Utils::Exceptions::Exception("invalid inheritance level added!");
+	}
+
+	mInheritance.insert(std::make_pair(ancestor, inheritance));
+}
+
 void Object::Constructor(const ParameterList& params)
 {
 	// hack to initialize atomic types
@@ -201,7 +211,7 @@ ControlFlow::E Object::execute(Object *result, const std::string& method, const 
 	}
 
 	// are we called from a colleague method?
-	bool callFromMethod = caller && (caller->resolve(KEYWORD_THIS) == this);
+	bool callFromMethod = caller && (caller->resolve(KEYWORD_BASE) == this || caller->resolve(KEYWORD_THIS) == this);
 
 	// check visibility:
 	// colleague methods can always call us,
@@ -227,7 +237,7 @@ void Object::garbageCollector()
 	mMethods.clear();
 
 	for ( Symbols::reverse_iterator it = mSymbols.rbegin(); it != mSymbols.rend(); ) {
-		if ( it->first != KEYWORD_THIS &&
+		if ( it->first != KEYWORD_BASE && it->first != KEYWORD_THIS &&
 			 it->second && it->second->getType() == Symbol::IType::ObjectSymbol ) {
 			mRepository->removeReference(static_cast<Object*>(it->second));
 		}

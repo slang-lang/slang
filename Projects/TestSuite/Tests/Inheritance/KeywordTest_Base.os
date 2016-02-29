@@ -14,9 +14,14 @@ public namespace Inheritance
 	{
 		public number getValue() const
 		{
-			number baseValue = 1;// + base.getValue();
+			number baseValue = 1 + base.getValue();
 
-			return 1 + baseValue;
+			return baseValue;
+		}
+
+		public number getBaseValue() const
+		{
+			return base.getValue();
 		}
 	}
 
@@ -29,11 +34,17 @@ public namespace Inheritance
 
 		private bool TestCase1() const
 		{
+			this;
+			base;
+
 			BaseObject b = new BaseObject();
 			ExtendedObject e = new ExtendedObject();
 
 			print("b.getValue() = " + b.getValue());
 			assert( b.getValue() == 1 );
+
+			print("e.getBaseValue() = " + e.getBaseValue() );
+			assert( e.getBaseValue() == 1 );
 
 			print("e.getValue() = " + e.getValue() );
 			assert( e.getValue() == 2 );

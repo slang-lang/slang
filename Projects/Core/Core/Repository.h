@@ -53,6 +53,7 @@ private:
 private:
 	Runtime::Object* createObject(const std::string& name, Designtime::BluePrint* blueprint);
 	Runtime::Object* createUserObject(const std::string& name, Designtime::BluePrint* blueprint);
+	void initializeObject(Runtime::Object *object, Designtime::BluePrint* blueprint);
 
 private:
 	Designtime::BluePrintMap mBluePrints;
