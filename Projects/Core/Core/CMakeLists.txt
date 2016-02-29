@@ -18,7 +18,6 @@ SET(SOURCES
 	OperatorOverloading.cpp
 	Parameter.cpp
 	Preprocessor.cpp
-	Prototype.cpp
 	Reference.cpp
 	Repository.cpp
 	SanityChecker.cpp
@@ -47,7 +46,6 @@ SET(HEADERS
 	OperatorOverloading.h
 	Parameter.h
 	Preprocessor.h
-	Prototype.h
 	Reference.h
 	Repository.h
 #	RTTI.h

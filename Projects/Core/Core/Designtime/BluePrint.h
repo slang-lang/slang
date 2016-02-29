@@ -102,6 +102,7 @@ private:
 };
 
 typedef std::list<BluePrint> BluePrintList;
+typedef std::map<std::string, BluePrint> BluePrintMap;
 
 
 }
