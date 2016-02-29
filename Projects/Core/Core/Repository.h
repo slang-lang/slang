@@ -21,7 +21,6 @@
 namespace ObjectiveScript {
 
 // Forward declarations
-class Memory;
 namespace Runtime {
 	class Object;
 }
@@ -29,7 +28,7 @@ namespace Runtime {
 class Repository
 {
 public:
-	Repository(Memory *m);
+	Repository();
 	~Repository();
 
 public:
@@ -58,7 +57,6 @@ private:
 private:
 	Designtime::BluePrintMap mBluePrints;
 	ReferenceCountedObjects mInstances;
-	Memory *mMemory;
 	Designtime::PrototypeMap mPrototypes;
 };
 

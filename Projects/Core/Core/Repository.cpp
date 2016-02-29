@@ -20,7 +20,6 @@
 #include <Core/Designtime/BuildInTypes/VoidObject.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Utils/Utils.h>
-#include "Memory.h"
 #include "Preprocessor.h"
 #include "Tools.h"
 
@@ -30,8 +29,7 @@
 namespace ObjectiveScript {
 
 
-Repository::Repository(Memory *m)
-: mMemory(m)
+Repository::Repository()
 {
 	addBlueprint(Designtime::BoolObject());
 	addBlueprint(Designtime::FloatObject());
