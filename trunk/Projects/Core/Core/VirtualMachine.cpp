@@ -27,7 +27,7 @@ VirtualMachine::VirtualMachine()
   mScope(0)
 {
 	mMemory = new Memory();
-	mRepository = new Repository(mMemory);
+	mRepository = new Repository();
 	mScope = new GlobalScope();
 }
 
