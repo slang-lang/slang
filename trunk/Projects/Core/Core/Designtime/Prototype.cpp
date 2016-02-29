@@ -10,6 +10,7 @@
 
 
 namespace ObjectiveScript {
+namespace Designtime {
 
 
 Prototype::Prototype(const Designtime::BluePrint& blue)
@@ -48,4 +49,5 @@ const std::string& Prototype::type() const
 }
 
 
+}
 }

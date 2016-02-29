@@ -45,7 +45,7 @@ Repository::~Repository()
 {
 	// Cleanup blue prints
 	// {
-	for ( BluePrints::iterator it = mBluePrints.begin(); it != mBluePrints.end(); ++it ) {
+	for ( Designtime::BluePrintMap::iterator it = mBluePrints.begin(); it != mBluePrints.end(); ++it ) {
 		it->second.cleanup();
 	}
 	mBluePrints.clear();
@@ -73,17 +73,18 @@ void Repository::addBlueprint(const Designtime::BluePrint& blueprint)
 {
 	OSinfo("addBlueprint('" + blueprint.Typename() + "')");
 
-	BluePrints::iterator it = mBluePrints.find(blueprint.Typename());
+	Designtime::BluePrintMap::iterator it = mBluePrints.find(blueprint.Typename());
 	if ( it != mBluePrints.end() ) {
 		throw Utils::Exceptions::Exception("duplicate object '" + blueprint.Typename() + "' added to repository");
 	}
 
 	mBluePrints.insert(std::make_pair(blueprint.Typename(), blueprint));
 
-	BluePrints::iterator blueIt = mBluePrints.find(blueprint.Typename());
+	Designtime::BluePrintMap::iterator blueIt = mBluePrints.find(blueprint.Typename());
 
 	// loop over all tokens of a blueprint object
 	// and retype all identifier tokens with object names as values with type
+	// {
 	bool replaced = false;
 	TokenList tokens = blueIt->second.getTokens();
 
@@ -102,16 +103,17 @@ void Repository::addBlueprint(const Designtime::BluePrint& blueprint)
 	if ( replaced ) {
 		blueIt->second.setTokens(tokens);
 	}
+	// }
 
 	Preprocessor preprocessor(this);
 	preprocessor.process(&blueIt->second);
 }
 
-void Repository::addPrototype(const Prototype& prototype)
+void Repository::addPrototype(const Designtime::Prototype& prototype)
 {
 	std::string type = prototype.type();
 
-	Prototypes::iterator it = mPrototypes.find(type);
+	Designtime::PrototypeMap::iterator it = mPrototypes.find(type);
 	if ( it != mPrototypes.end() ) {
 		throw Utils::Exceptions::Exception("duplicate object '" + type + "' added to repository");
 	}
@@ -123,14 +125,6 @@ void Repository::addReference(Runtime::Object *object)
 {
 	if ( !object ) {
 		return;
-	}
-
-	switch ( object->getLanguageFeatureState() ) {
-		case LanguageFeatureState::Deprecated: OSwarn("method '" + object->getName() + "' is marked as deprecated!"); break;
-		case LanguageFeatureState::NotImplemented: OSerror("method '" + object->getName() + "' is marked as not implemented!"); throw Utils::Exceptions::NotImplemented(object->getName()); break;
-		case LanguageFeatureState::Stable: /* this is the normal language feature state, so no need to log anything here */ break;
-		case LanguageFeatureState::Unknown: OSerror("unknown language feature state set for method '" + object->getName() + "'!"); break;
-		case LanguageFeatureState::Unstable: OSwarn("method '" + object->getName() + "' is marked as unstable!"); break;
 	}
 
 	ReferenceCountedObjects::iterator it = mInstances.find(object);
@@ -161,10 +155,11 @@ void Repository::CollectGarbage()
 				// call object's destructor ...
 				it->first->Destructor();
 				// ... and delete it
+/*
 				delete it->first;
 
 				it = mInstances.erase(it);
-
+*/
 				success = true;
 			}
 		}
@@ -185,7 +180,7 @@ Runtime::Object* Repository::createInstance(const std::string& type, const std::
 	}
 	else {
 */
-		BluePrints::iterator it = mBluePrints.find(type);
+		Designtime::BluePrintMap::iterator it = mBluePrints.find(type);
 		if ( it != mBluePrints.end() ) {
 			blueprint = it->second;
 		}
@@ -228,16 +223,7 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 	}
 	// instantiate user defined type
 	else {
-		if ( blueprint->isAbstract() ) {
-			throw Utils::Exceptions::AbstractException("cannot instantiate abstract object '" + blueprint->Typename() + "'");
-		}
-
-		object = new Runtime::UserObject(name, blueprint->Filename(), blueprint->Typename(), Runtime::UserObject::DEFAULTVALUE);
-
-		// define this-symbol
-		object->define(KEYWORD_THIS, object);
-
-		initializeObject(object, blueprint);
+		object = createUserObject(name, blueprint);
 	}
 
 	object->setConst(blueprint->isConst());
@@ -250,34 +236,16 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 	return object;
 }
 
-const Reference& Repository::createReference(const std::string& type, const std::string& name, const std::string& prototype)
-{
-	// reference-based instantiation
-	Designtime::BluePrint blueprint;
-
-	Prototypes::iterator it = mPrototypes.find(prototype);
-	if ( it != mPrototypes.end() ) {
-		blueprint = it->second.generateBluePrint(type);
-	}
-	else {
-		BluePrints::iterator it = mBluePrints.find(type);
-		if ( it != mBluePrints.end() ) {
-			blueprint = it->second;
-		}
-		else {
-			throw Utils::Exceptions::Exception("trying to create instance of unknown object '" + type + "'");
-		}
-	}
-
-	Runtime::Object *object = createObject(name, &blueprint);
-
-	return mMemory->newObject(object);
-}
-
-void Repository::initializeObject(Runtime::Object *object, Designtime::BluePrint* blueprint)
+Runtime::Object* Repository::createUserObject(const std::string& name, Designtime::BluePrint* blueprint)
 {
 	assert(blueprint);
-	assert(object);
+
+	if ( blueprint->isAbstract() ) {
+		throw Utils::Exceptions::AbstractException("cannot instantiate abstract object '" + blueprint->Typename() + "'");
+	}
+
+	Runtime::Object *object = new Runtime::UserObject(name, blueprint->Filename(), blueprint->Typename(), Runtime::UserObject::DEFAULTVALUE);
+	object->define(KEYWORD_THIS, object);	// define this-symbol
 
 	//Designtime::Ancestors ancestors = blueprint->getAncestors();
 	Designtime::Ancestors ancestors = blueprint->getInheritance();
@@ -293,7 +261,7 @@ void Repository::initializeObject(Runtime::Object *object, Designtime::BluePrint
 
 	// walk through inheritance and create all members and methods
 	for ( Designtime::Ancestors::const_iterator ancestorIt = ancestors.begin(); ancestorIt != ancestors.end(); ++ancestorIt ) {
-		BluePrints::const_iterator blueIt = mBluePrints.find(ancestorIt->name());
+		Designtime::BluePrintMap::const_iterator blueIt = mBluePrints.find(ancestorIt->name());
 		if ( blueIt == mBluePrints.end() ) {
 			throw Utils::Exceptions::Exception("trying to initialize unknown object '" + ancestorIt->name() + "'");
 		}
@@ -335,6 +303,8 @@ void Repository::initializeObject(Runtime::Object *object, Designtime::BluePrint
 			object->defineMethod(method);
 		}
 	}
+
+	return object;
 }
 
 bool Repository::isAlreadyKnown(const std::string& name) const

@@ -275,9 +275,9 @@ void Analyser::createNamespace(TokenIterator& start, TokenIterator end)
 	start = closed;
 }
 
-Prototype Analyser::createPrototype(TokenIterator& start, TokenIterator end)
+Designtime::Prototype Analyser::createPrototype(TokenIterator& start, TokenIterator end)
 {
-	return Prototype(createBluePrint(start, end));
+	return Designtime::Prototype(createBluePrint(start, end));
 }
 
 void Analyser::generate(const TokenList& tokens)
@@ -302,7 +302,7 @@ void Analyser::generate(const TokenList& tokens)
 			mBluePrints.push_back(o);
 		}
 		else if ( isPrototypeDeclaration(it) ) {
-			Prototype p = createPrototype(it, tokens.end());
+			Designtime::Prototype p = createPrototype(it, tokens.end());
 			mPrototypes.push_back(p);
 		}
 
@@ -328,7 +328,7 @@ const StringList& Analyser::getLibraryReferences() const
 	return mLibraries;
 }
 
-const PrototypeList& Analyser::getPrototypes() const
+const Designtime::PrototypeList& Analyser::getPrototypes() const
 {
 	return mPrototypes;
 }

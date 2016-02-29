@@ -5,6 +5,7 @@
 
 // Library includes
 #include <list>
+#include <map>
 
 // Project includes
 #include <Core/Designtime/BluePrint.h>
@@ -15,6 +16,7 @@
 
 
 namespace ObjectiveScript {
+namespace Designtime {
 
 
 class Prototype
@@ -35,8 +37,10 @@ private:
 };
 
 typedef std::list<Prototype> PrototypeList;
+typedef std::map<std::string, Prototype> PrototypeMap;
 
 
+}
 }
 
 

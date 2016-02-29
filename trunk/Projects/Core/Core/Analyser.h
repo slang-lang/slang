@@ -8,9 +8,10 @@
 
 // Project includes
 #include <Core/Designtime/Ancestor.h>
+#include <Core/Designtime/BluePrint.h>
+#include <Core/Designtime/Prototype.h>
 #include "Method.h"
 #include "Object.h"
-#include "Prototype.h"
 #include "Token.h"
 #include "Types.h"
 
@@ -41,7 +42,7 @@ public:
 protected:
 
 private:	// moved to private to prevent usage in this release
-	const PrototypeList& getPrototypes() const;
+	const Designtime::PrototypeList& getPrototypes() const;
 
 private:
 	void generate(const TokenList& tokens);
@@ -52,7 +53,7 @@ private:
 	Designtime::BluePrint createInterface(TokenIterator& start, TokenIterator end);
 	std::string createLibraryReference(TokenIterator& start, TokenIterator end);
 	void createNamespace(TokenIterator& start, TokenIterator end);
-	Prototype createPrototype(TokenIterator& start, TokenIterator end);
+	Designtime::Prototype createPrototype(TokenIterator& start, TokenIterator end);
 
 	Designtime::Ancestors collectInheritance(TokenIterator &start, TokenIterator end) const;
 	TokenList collectScopeTokens(TokenIterator& token) const;
@@ -67,7 +68,7 @@ private:
 	Designtime::BluePrintList mBluePrints;
 	std::string mFilename;
 	StringList mLibraries;
-	PrototypeList mPrototypes;
+	Designtime::PrototypeList mPrototypes;
 	std::string mScopeName;
 };
 

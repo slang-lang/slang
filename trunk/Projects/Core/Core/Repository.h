@@ -8,8 +8,9 @@
 #include <string>
 
 // Project includes
+#include <Core/Designtime/BluePrint.h>
+#include <Core/Designtime/Prototype.h>
 #include "Object.h"
-#include "Prototype.h"
 #include "Reference.h"
 
 // Forward declarations
@@ -36,10 +37,9 @@ public:
 
 public:
 	void addBlueprint(const Designtime::BluePrint& object);
-	void addPrototype(const Prototype& prototype);
+	void addPrototype(const Designtime::Prototype& prototype);
 
 	Runtime::Object* createInstance(const std::string& type, const std::string& name, const std::string& prototype = "");
-	const Reference& createReference(const std::string& type, const std::string& name, const std::string& prototype = "");
 
 	void addReference(Runtime::Object *object);
 	void removeReference(Runtime::Object *object);
@@ -49,20 +49,17 @@ public:
 protected:
 
 private:
-	typedef std::map<std::string, Designtime::BluePrint> BluePrints;
-	typedef std::map<std::string, Prototype> Prototypes;
 	typedef std::map<Runtime::Object*, int> ReferenceCountedObjects;
 
 private:
 	Runtime::Object* createObject(const std::string& name, Designtime::BluePrint* blueprint);
-	const Reference& createReference(const Designtime::BluePrint& blueprint, const std::string& type, const std::string& name);
-	void initializeObject(Runtime::Object *object, Designtime::BluePrint* blueprint);
+	Runtime::Object* createUserObject(const std::string& name, Designtime::BluePrint* blueprint);
 
 private:
-	BluePrints mBluePrints;
+	Designtime::BluePrintMap mBluePrints;
 	ReferenceCountedObjects mInstances;
 	Memory *mMemory;
-	Prototypes mPrototypes;
+	Designtime::PrototypeMap mPrototypes;
 };
 
 
