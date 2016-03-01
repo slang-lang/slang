@@ -19,7 +19,7 @@ public namespace Tests sealed
 			}
 		}
 	}
-	
+
 	public object Main
 	{
 		public void Main(number argc = 0, string argv = "")

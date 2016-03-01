@@ -102,6 +102,17 @@ public:
 };
 
 
+class ControlFlowException : public Exception
+{
+public:
+	ControlFlowException(const std::string& text, const Utils::Position& position = Utils::Position())
+	: Exception("Exception.ControlFlowException: " + text, position)
+	{ }
+
+	virtual ~ControlFlowException() throw() { }
+};
+
+
 class ConstCorrectnessViolated : public Exception
 {
 public:
