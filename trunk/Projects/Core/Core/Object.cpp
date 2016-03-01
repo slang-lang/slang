@@ -152,7 +152,7 @@ void Object::Constructor(const ParameterList& params)
 			throw Utils::Exceptions::ParameterCountMissmatch("atomic types only support one constructor parameter");
 		}
 
-		mValue = params.front().value();
+		setValue(params.front().value());
 		return;
 	}
 
@@ -160,14 +160,23 @@ void Object::Constructor(const ParameterList& params)
 		throw Utils::Exceptions::Exception("can not construct object '" + getName() + "' multiple times");
 	}
 
-	// only execute constructor if one is present
 	Method *constructor = static_cast<Method*>(resolveMethod(Typename(), params));
 	if ( constructor ) {
+		// only execute constructor if one is present
 		VoidObject tmp;
 		ControlFlow::E controlflow = constructor->execute(params, &tmp);
 
 		if ( controlflow != ControlFlow::Normal ) {
 			// uups
+			throw Utils::Exceptions::ControlFlowException("at " + Typename());
+		}
+	}
+	else {
+		// check if we have implemented at least one constructor
+		Symbol *symbol = resolve(Typename());
+		if ( symbol ) {
+			// if there is a constructor implemented, the default constructor cannot be used
+			throw Utils::Exceptions::Exception(Typename() + ": unknown constructor called");
 		}
 	}
 
