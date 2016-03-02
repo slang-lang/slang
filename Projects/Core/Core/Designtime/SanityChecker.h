@@ -1,12 +1,12 @@
 
-#ifndef ObjectiveScript_SanityChecker_h
-#define ObjectiveScript_SanityChecker_h
+#ifndef ObjectiveScript_Designtime_SanityChecker_h
+#define ObjectiveScript_Designtime_SanityChecker_h
 
 
 // Library includes
 
 // Project includes
-#include "Token.h"
+#include <Core/Token.h>
 
 // Forward declarations
 
@@ -14,6 +14,7 @@
 
 
 namespace ObjectiveScript {
+namespace Designtime {
 
 
 class SanityChecker
@@ -23,7 +24,7 @@ public:
 	~SanityChecker();
 
 public:
-	bool process(const TokenList& tokens);
+	bool process(const TokenList &tokens);
 
 private:
 	bool checkBalancedCurlyBrackets() const;
@@ -35,6 +36,7 @@ private:
 };
 
 
+}
 }
 
 

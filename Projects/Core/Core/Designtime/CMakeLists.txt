@@ -6,12 +6,14 @@ SET(SOURCES
 		Ancestor.cpp
 		BluePrint.cpp
 		Prototype.cpp
+		SanityChecker.cpp
 )
 
 SET(HEADERS
 		Ancestor.h
 		BluePrint.h
 		Prototype.h
+		SanityChecker.h
 )
 
 SET(DEPENDENCIES
