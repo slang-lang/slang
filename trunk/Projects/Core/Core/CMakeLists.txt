@@ -20,7 +20,6 @@ SET(SOURCES
 	Preprocessor.cpp
 	Reference.cpp
 	Repository.cpp
-	SanityChecker.cpp
 	Scope.cpp
 	Script.cpp
 	Stack.cpp
@@ -49,7 +48,6 @@ SET(HEADERS
 	Reference.h
 	Repository.h
 #	RTTI.h
-	SanityChecker.h
 	Scope.h
 	Script.h
 	Stack.h

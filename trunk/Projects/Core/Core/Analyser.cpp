@@ -10,10 +10,10 @@
 
 // Project includes
 #include <Core/Consts.h>
+#include <Core/Designtime/SanityChecker.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Utils/Utils.h>
 #include <Tools/Files.h>
-#include "SanityChecker.h"
 #include "Scope.h"
 #include "Tokenizer.h"
 #include "Tools.h"
@@ -133,7 +133,7 @@ Designtime::BluePrint Analyser::createBluePrint(TokenIterator& start, TokenItera
 
 	start = closed;
 
-	SanityChecker sanity;
+	Designtime::SanityChecker sanity;
 	sanity.process(tokens);
 
 	Designtime::BluePrint blue(name, mFilename);
@@ -210,7 +210,7 @@ Designtime::BluePrint Analyser::createInterface(TokenIterator& start, TokenItera
 
 	start = closed;
 
-	SanityChecker sanity;
+	Designtime::SanityChecker sanity;
 	sanity.process(tokens);
 
 	Designtime::BluePrint blue(name, mFilename);
@@ -262,7 +262,7 @@ void Analyser::createNamespace(TokenIterator& start, TokenIterator end)
 		tokens.push_back((*it));
 	}
 
-	SanityChecker sanity;
+	Designtime::SanityChecker sanity;
 	sanity.process(tokens);
 
 	if ( !mScopeName.empty() ) {
@@ -436,7 +436,7 @@ void Analyser::process(const std::string& content)
 	TokenList tokens = generateTokens(content);
 
 	// execute basic sanity checks
-	SanityChecker sanity;
+	Designtime::SanityChecker sanity;
 	sanity.process(tokens);
 
 	// generate objects from tokens

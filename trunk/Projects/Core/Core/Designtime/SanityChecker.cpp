@@ -6,12 +6,13 @@
 
 // Project includes
 #include <Core/Utils/Exceptions.h>
-#include "Tools.h"
+#include <Core/Tools.h>
 
 // Namespace declarations
 
 
 namespace ObjectiveScript {
+namespace Designtime {
 
 
 SanityChecker::SanityChecker()
@@ -27,11 +28,11 @@ bool SanityChecker::checkBalancedCurlyBrackets() const
 	int openBrackets = 0;
 	TokenIterator token = mTokens.begin();
 
-	while ( token != mTokens.end() ) {
-		if ( token->type() == Token::Type::BRACKET_CURLY_OPEN ) {
+	while (token != mTokens.end()) {
+		if (token->type() == Token::Type::BRACKET_CURLY_OPEN) {
 			openBrackets++;
 		}
-		if ( token->type() == Token::Type::BRACKET_CURLY_CLOSE ) {
+		if (token->type() == Token::Type::BRACKET_CURLY_CLOSE) {
 			openBrackets--;
 		}
 
@@ -46,11 +47,11 @@ bool SanityChecker::checkBalancedParenthesis() const
 	int openParenthesis = 0;
 	TokenIterator token = mTokens.begin();
 
-	while ( token != mTokens.end() ) {
-		if ( token->type() == Token::Type::PARENTHESIS_OPEN ) {
+	while (token != mTokens.end()) {
+		if (token->type() == Token::Type::PARENTHESIS_OPEN) {
 			openParenthesis++;
 		}
-		if ( token->type() == Token::Type::PARENTHESIS_CLOSE ) {
+		if (token->type() == Token::Type::PARENTHESIS_CLOSE) {
 			openParenthesis--;
 		}
 
@@ -65,8 +66,8 @@ bool SanityChecker::checkBalancedQuotes() const
 	bool openQuote = false;
 	TokenIterator token = mTokens.begin();
 
-	while ( token != mTokens.end() ) {
-		if ( token->type() == Token::Type::QUOTATION_DOUBLE ) {
+	while (token != mTokens.end()) {
+		if (token->type() == Token::Type::QUOTATION_DOUBLE) {
 			openQuote = !openQuote;
 		}
 
@@ -76,21 +77,23 @@ bool SanityChecker::checkBalancedQuotes() const
 	return !openQuote;
 }
 
-bool SanityChecker::process(const TokenList& tokens)
+bool SanityChecker::process(const TokenList &tokens)
 {
 	mTokens = tokens;
 
-	if ( !checkBalancedCurlyBrackets() ) {
+	if (!checkBalancedCurlyBrackets()) {
 		throw Utils::Exceptions::SyntaxError("SanityCheck: unbalanced curly brackets found");
 	}
-	if ( !checkBalancedParenthesis() ) {
+	if (!checkBalancedParenthesis()) {
 		throw Utils::Exceptions::SyntaxError("SanityCheck: unbalanced parenthesis found");
 	}
-	if ( !checkBalancedQuotes() ) {
+	if (!checkBalancedQuotes()) {
 		throw Utils::Exceptions::SyntaxError("SanityCheck: unbalanced quotes found");
 	}
 
 	return true;
 }
 
+
+}
 }
