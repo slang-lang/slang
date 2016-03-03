@@ -413,7 +413,7 @@ void Interpreter::process(Object *result, TokenIterator& token, TokenIterator en
 				process_scope(token, result);
 			} break;
 			default:
-				throw Utils::Exceptions::SyntaxError("invalid token '" + token->content() + "' as type " + Token::Type::convert(token->type()) + " found", token->position());
+				throw Utils::Exceptions::SyntaxError("invalid token '" + token->content() + "' found", token->position());
 				break;
 		}
 
@@ -921,11 +921,11 @@ assert(!"not implemented");
 //throw Utils::Exceptions::NotImplemented("switch-case");
 
 	// find next open parenthesis
-	TokenIterator condBegin = ++findNext(token, Token::Type::PARENTHESIS_OPEN);
+	TokenIterator expressionBegin = ++findNext(token, Token::Type::PARENTHESIS_OPEN);
 	// find next balanced '(' & ')' pair
-	TokenIterator condEnd = findNextBalancedParenthesis(condBegin);
+	TokenIterator expressionEnd = findNextBalancedParenthesis(expressionBegin);
 	// find next open curly bracket '{'
-	TokenIterator bodyBegin = findNext(condEnd, Token::Type::BRACKET_CURLY_OPEN);
+	TokenIterator bodyBegin = findNext(expressionEnd, Token::Type::BRACKET_CURLY_OPEN);
 	// find next balanced '{' & '}' pair
 	TokenIterator bodyEnd = findNextBalancedCurlyBracket(bodyBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
 
@@ -940,7 +940,7 @@ assert(!"not implemented");
 		bodyBegin++;
 	}
 
-	TokenIterator tmp = condBegin;
+	TokenIterator tmp = expressionBegin;
 
 	Object value;
 	expression(&value, tmp);
