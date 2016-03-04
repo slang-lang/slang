@@ -74,6 +74,10 @@ public:	// Setup
 	void addInheritance(const Designtime::Ancestor& ancestor, Object* inheritance);
 	void setRepository(Repository *repository);
 
+public: // Symbol
+	Symbol* resolve(const std::string& name, bool onlyCurrentScope = false) const;
+	ObjectiveScript::MethodSymbol* resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope = false) const;
+
 public:	// Value
 	virtual std::string getValue() const;
 	virtual void setValue(const std::string& value);
@@ -118,6 +122,7 @@ protected:
 	bool mIsAtomicType;
 	bool mIsConstructed;
 	Repository *mRepository;
+	Object *mThis;
 	std::string mTypename;
 	std::string mValue;
 

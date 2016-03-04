@@ -148,7 +148,7 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token)
 				isConst = true;
 			}
 			else if ( token->content() == MODIFIER_FINAL ) {
-				isFinal = false;
+				isFinal = true;
 			}
 			else if ( token->content() == MODIFIER_MODIFY ) {
 				isConst = false;
@@ -215,7 +215,7 @@ void Preprocessor::generateObject()
 		else if ( isMethodDeclaration((*it)) ) {
 			Runtime::Method *method = createMethod((*it));
 
-			mBluePrint->defineMethod(method);
+			mBluePrint->defineMethod(method->getName(), method);
 		}
 	}
 }

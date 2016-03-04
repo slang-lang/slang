@@ -312,7 +312,7 @@ void Repository::initializeObject(Runtime::Object *object, Designtime::BluePrint
 		}
 */
 
-		object->defineMethod(method);
+		object->defineMethod((*it)->getName(), method);
 	}
 
 	object->define(KEYWORD_THIS, object);	// define this-symbol

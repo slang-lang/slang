@@ -30,7 +30,7 @@ void LocalScope::define(const std::string& name, Symbol *symbol)
 {
 	assert(symbol);
 
-	if ( mSymbols.find(name) != mSymbols.end() ) {
+	if ( resolve(name, true) ) {
 		// duplicate symbol defined
 		throw Utils::Exceptions::DuplicateIdentifer("duplicate identifier defined: " + symbol->getName());
 	}
@@ -72,7 +72,7 @@ Symbol* LocalScope::resolve(const std::string& name, bool onlyCurrentScope) cons
 	}
 
 	if ( mParent && !onlyCurrentScope ) {
-		return mParent->resolve(name);
+		return mParent->resolve(name, onlyCurrentScope);
 	}
 
 	return 0;
@@ -100,35 +100,31 @@ ObjectScope::~ObjectScope()
 {
 }
 
-void ObjectScope::defineMethod(Runtime::Method* method)
+void ObjectScope::defineMethod(const std::string& name, Runtime::Method* method)
 {
 	assert(method);
 
-	MethodCollection::iterator tmpIt;
-	if ( resolveMethod(method->getName(), method->provideSignature(), true) ) {
+	if ( ObjectScope::resolveMethod(name, method->provideSignature(), true) ) {
+		// duplicate method defined
 		throw Utils::Exceptions::DuplicateIdentifer("duplicate method '" + method->getName() + "' added with same signature");
 	}
 
-	Symbols::iterator it = mSymbols.find(method->getName());
+	Symbols::iterator it = mSymbols.find(name);
 	if ( it == mSymbols.end() ) {
-		LocalScope::define(method->getName(), method);
+		// define new symbol
+		LocalScope::define(name, method);
 	}
 	else {
+		// override existing symbol
 		it->second = method;
 	}
 
 	mMethods.insert(method);
 }
 
-MethodSymbol*ObjectScope::resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope) const
+MethodSymbol* ObjectScope::resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope) const
 {
-	std::string member, parent;
-	Tools::split(name, parent, member);
-
-	Symbol *result = LocalScope::resolve(parent, onlyCurrentScope);
-	if ( result && result->getType() == Symbol::IType::ObjectSymbol ) {
-		return static_cast<Runtime::Object*>(result)->resolveMethod(member, params);
-	}
+(void)onlyCurrentScope;
 
 	for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
 		Runtime::Method *method = (*it);
@@ -137,6 +133,12 @@ MethodSymbol*ObjectScope::resolveMethod(const std::string& name, const Parameter
 			return method;
 		}
 	}
+
+/*
+	if ( mParent && !onlyCurrentScope ) {
+		static_cast<ObjectScope*>(mParent)->resolveMethod(name, params, onlyCurrentScope);
+	}
+*/
 
 	return 0;
 }

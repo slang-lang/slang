@@ -106,7 +106,7 @@ Token Tokenizer::createToken(const std::string& con, const Utils::Position& posi
 	}
 	else if ( isModifier(content) ) { category = Token::Category::Modifier; type = Token::Type::LANGUAGEFEATURE; }
 	else if ( isNumber(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_NUMBER; }
-	else if ( isReservedWord(content) ) { type = Token::Type::RESERVED; }
+	else if ( isReservedWord(content) ) { type = Token::Type::RESERVED_WORD; }
 	else if ( isType(content) ) { type = Token::Type::TYPE; }
 	else if ( isVisibility(content) ) { type = Token::Type::VISIBILITY; }
 	else if ( isWhiteSpace(content) ) { type = Token::Type::WHITESPACE; }
@@ -688,7 +688,7 @@ void Tokenizer::replaceOperators()
 
 	// try to combine all operator tokens
 	while ( token != mTokens.end() ) {
-		if ( (*token).type() == Token::Type::RESERVED && (*token).content() == RESERVED_WORD_OPERATOR ) {
+		if ( (*token).type() == Token::Type::RESERVED_WORD && (*token).content() == RESERVED_WORD_OPERATOR ) {
 			// we found an operator
 			TokenList::iterator opToken = token;
 

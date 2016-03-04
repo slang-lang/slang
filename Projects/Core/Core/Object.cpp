@@ -25,6 +25,7 @@ Object::Object()
   mIsAtomicType(true),
   mIsConstructed(false),
   mRepository(0),
+  mThis(0),
   mTypename(ANONYMOUS_OBJECT),
   mValue(VALUE_NONE)
 {
@@ -68,9 +69,11 @@ Object::Object(const Object& other)
 			Method *method = new Method(this, (*it)->getName(), (*it)->Typename());
 			*method = *(*it);
 
-			defineMethod(method);
+			defineMethod((*it)->getName(), method);
 		}
 	}
+
+	mThis = mInheritance.begin()->second;
 }
 
 Object::Object(const std::string& name, const std::string& filename, const std::string& type, const std::string& value)
@@ -80,6 +83,7 @@ Object::Object(const std::string& name, const std::string& filename, const std::
   mIsAtomicType(true),
   mIsConstructed(false),
   mRepository(0),
+  mThis(0),
   mTypename(type),
   mValue(value)
 {
@@ -128,9 +132,11 @@ void Object::operator= (const Object& other)
 				Method *method = new Method(this, (*it)->getName(), (*it)->Typename());
 				*method = *(*it);
 
-				defineMethod(method);
+				defineMethod((*it)->getName(), method);
 			}
 		}
+
+		mThis = mInheritance.begin()->second;
 	}
 }
 
@@ -214,7 +220,7 @@ ControlFlow::E Object::execute(Object *result, const std::string& method, const 
 {
 	OSdebug("execute('" + method + "', [" + toString(params) + "])");
 
-	Method *symbol = static_cast<Method*>(resolveMethod(method, params, true));
+	Method *symbol = static_cast<Method*>(resolveMethod(method, params, false));
 	if ( !symbol ) {
 		throw Utils::Exceptions::UnknownIdentifer("unknown method '" + method + "' or method with invalid parameter count called!");
 	}
@@ -392,6 +398,72 @@ void Object::operator_unary_minus()
 void Object::operator_unary_not()
 {
 	throw Utils::Exceptions::NotImplemented("operator unary !: for " + Typename() + " not supported");
+}
+
+Symbol* Object::resolve(const std::string& name, bool onlyCurrentScope) const
+{
+	Symbol *result = ObjectScope::resolve(name, onlyCurrentScope);
+
+	if ( !result && !onlyCurrentScope ) {
+		for ( Inheritance::const_iterator it = mInheritance.begin(); it != mInheritance.end(); ++it ) {
+			result = it->second->resolve(name, onlyCurrentScope);
+
+			if ( result ) {
+				break;
+			}
+		}
+	}
+
+	return result;
+}
+
+ObjectiveScript::MethodSymbol* Object::resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope) const
+{
+/*
+	ObjectiveScript::MethodSymbol *result = ObjectScope::resolveMethod(name, params, onlyCurrentScope);
+
+	if ( !result && !onlyCurrentScope ) {
+		// TODO: this implementation takes the quick and dirty way by looking from the youngest implementation to the oldest ancestor
+		//       this doesn't allow the use advanced object orientated constructs like final or sealed
+		for ( Inheritance::const_iterator it = mInheritance.begin(); it != mInheritance.end(); ++it ) {
+			result = it->second->resolveMethod(name, params, onlyCurrentScope);
+
+			if ( result ) {
+				break;
+			}
+		}
+	}
+*/
+
+	ObjectiveScript::MethodSymbol *result = 0;
+
+	for ( Inheritance::const_reverse_iterator it = mInheritance.rbegin(); it != mInheritance.rend(); ++it ) {
+		ObjectiveScript::MethodSymbol *tmp = it->second->resolveMethod(name, params, onlyCurrentScope);
+
+		if ( tmp &&
+			 !tmp->isAbstract() &&
+			 (tmp->getVisibility() == Visibility::Protected || tmp->getVisibility() == Visibility::Public) ) {
+			result = tmp;
+		}
+
+		if ( result && result->isFinal() ) {
+			// we found a method that is not allowed to be overwritten, so this is the one we have to use
+			break;
+		}
+	}
+
+	if ( !result || !result->isFinal() ) {
+		ObjectiveScript::MethodSymbol *tmp = ObjectScope::resolveMethod(name, params, onlyCurrentScope);
+
+		if ( tmp &&
+			 !tmp->isAbstract()
+			 //&& (tmp->getVisibility() == Visibility::Protected || tmp->getVisibility() == Visibility::Public)
+		) {
+			result = tmp;
+		}
+	}
+
+	return result;
 }
 
 void Object::setRepository(Repository *repository)
