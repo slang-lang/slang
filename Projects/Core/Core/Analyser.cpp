@@ -41,11 +41,16 @@ Designtime::Ancestors Analyser::collectInheritance(TokenIterator &start, TokenIt
 		return ancestors;
 	}
 
+	bool replicates = false;
 	Designtime::Ancestor::Type::E type = Designtime::Ancestor::Type::Unknown;
 	Visibility::E visibility = Visibility::Public;
 
 	while ( start != end ) {
-		if ( start->content() == RESERVED_WORD_EXTENDS || start->content() == RESERVED_WORD_REPLICATES ) {
+		if ( replicates ) {
+			throw Utils::Exceptions::Exception("combinations with 'replicates' are not allowed");
+		}
+
+		if ( start->content() == RESERVED_WORD_EXTENDS ) {
 			start++;	// consume token
 
 			type = Designtime::Ancestor::Type::Extends;
@@ -54,6 +59,12 @@ Designtime::Ancestors Analyser::collectInheritance(TokenIterator &start, TokenIt
 			start++;	// consume token
 
 			type = Designtime::Ancestor::Type::Implements;
+		}
+		if ( start->content() == RESERVED_WORD_REPLICATES ) {
+			start++;	// consume token
+
+			replicates = true;
+			type = Designtime::Ancestor::Type::Replicates;
 		}
 		else if ( start->type() == Token::Type::COLON ) {
 			start++;	// consume token
