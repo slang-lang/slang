@@ -93,10 +93,15 @@ StringList provideReservedWords()
 	reservedWords.push_back(RESERVED_WORD_BY_REFERENCE);
 	reservedWords.push_back(RESERVED_WORD_BY_VALUE);
 	reservedWords.push_back(RESERVED_WORD_EXTENDS);
+	reservedWords.push_back(RESERVED_WORD_IMPLEMENTS);
+	reservedWords.push_back(RESERVED_WORD_IMPORT);
 	reservedWords.push_back(RESERVED_WORD_INTERFACE);
+	reservedWords.push_back(RESERVED_WORD_NAMESPACE);
 	reservedWords.push_back(RESERVED_WORD_OBJECT);
 	reservedWords.push_back(RESERVED_WORD_OPERATOR);
 	reservedWords.push_back(RESERVED_WORD_PROTOTYPE);
+	reservedWords.push_back(RESERVED_WORD_REPLICATES);
+	reservedWords.push_back(RESERVED_WORD_SCOPE_OPERATOR);
 	reservedWords.push_back(RESERVED_WORD_USING);
 
 	return reservedWords;

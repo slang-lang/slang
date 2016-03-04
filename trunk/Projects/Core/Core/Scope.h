@@ -31,7 +31,7 @@ public:	// IScope implementation
 	virtual IScope* getEnclosingScope() const;
 	virtual std::string getFullName() const;
 	virtual const std::string& getScopeName() const;
-	virtual Symbol* resolve(const std::string& name, bool onlyCurrentScope = false) const;
+	virtual Symbol* resolve(const std::string& name, bool onlyCurrentScope) const;
 	virtual void undefine(const std::string& name, Symbol *symbol);
 
 protected:
@@ -54,8 +54,8 @@ public:
 	virtual ~ObjectScope();
 
 public:
-	virtual void defineMethod(Runtime::Method* method);
-	virtual MethodSymbol* resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope = false) const;
+	virtual void defineMethod(const std::string& name, Runtime::Method* method);
+	virtual MethodSymbol* resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope) const;
 	virtual void undefineMethod(Runtime::Method* method);
 
 protected:

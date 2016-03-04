@@ -36,25 +36,27 @@ Designtime::Ancestors Analyser::collectInheritance(TokenIterator &start, TokenIt
 {
 	Designtime::Ancestors ancestors;
 
+	if ( start->type() != Token::Type::RESERVED_WORD ) {
+		// no reserved word, no ancestors
+		return ancestors;
+	}
+
 	Designtime::Ancestor::Type::E type = Designtime::Ancestor::Type::Unknown;
 	Visibility::E visibility = Visibility::Public;
 
 	while ( start != end ) {
-		if ( start->content() == RESERVED_WORD_EXTENDS ) {
-			// consume token
-			start++;
+		if ( start->content() == RESERVED_WORD_EXTENDS || start->content() == RESERVED_WORD_REPLICATES ) {
+			start++;	// consume token
 
 			type = Designtime::Ancestor::Type::Extends;
 		}
 		else if ( start->content() == RESERVED_WORD_IMPLEMENTS ) {
-			// consume token
-			start++;
+			start++;	// consume token
 
 			type = Designtime::Ancestor::Type::Implements;
 		}
 		else if ( start->type() == Token::Type::COLON ) {
-			// consume token
-			start++;
+			start++;	// consume token
 
 			continue;
 		}

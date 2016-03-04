@@ -92,6 +92,7 @@ void Method::operator= (const Method& other)
 		mIsAbstract = other.mIsAbstract;
 		mIsConst = other.mIsConst;
 		mIsFinal = other.mIsFinal;
+		mIsRecursive = other.mIsRecursive;
 		mIsSealed = other.mIsSealed;
 		mLanguageFeatureState = other.mLanguageFeatureState;
 		mRepository = other.mRepository;

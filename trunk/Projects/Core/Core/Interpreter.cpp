@@ -1220,7 +1220,7 @@ Symbol* Interpreter::resolveMethod(const std::string& name, const ParameterList&
 		switch ( result->getType() ) {
 			case Symbol::IType::AtomicTypeSymbol:
 			case Symbol::IType::ObjectSymbol:
-				return static_cast<Object*>(result)->resolveMethod(member, params);
+				return static_cast<Object*>(result)->resolveMethod(member, params, onlyCurrentScope);
 			case Symbol::IType::MethodSymbol:
 				return result;
 			case Symbol::IType::BluePrintSymbol:
