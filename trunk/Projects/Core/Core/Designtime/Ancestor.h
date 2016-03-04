@@ -29,6 +29,7 @@ public:
 			Base,
 			Extends,
 			Implements,
+			Replicates,
 			Unknown
 		};
 	};
