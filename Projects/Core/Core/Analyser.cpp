@@ -32,7 +32,7 @@ Analyser::~Analyser()
 {
 }
 
-Designtime::Ancestors Analyser::collectInheritance(TokenIterator &start, TokenIterator end) const
+Designtime::Ancestors Analyser::collectInheritance(TokenIterator &start) const
 {
 	Designtime::Ancestors ancestors;
 
@@ -45,7 +45,7 @@ Designtime::Ancestors Analyser::collectInheritance(TokenIterator &start, TokenIt
 	Designtime::Ancestor::Type::E type = Designtime::Ancestor::Type::Unknown;
 	Visibility::E visibility = Visibility::Public;
 
-	while ( start != end ) {
+	while ( true ) {
 		if ( replicates ) {
 			throw Utils::Exceptions::Exception("combinations with 'replicates' are not allowed");
 		}
@@ -73,7 +73,7 @@ Designtime::Ancestors Analyser::collectInheritance(TokenIterator &start, TokenIt
 		}
 
 		if ( start->type() != Token::Type::IDENTIFER ) {
-			throw Utils::Exceptions::Exception("invalid token found: '" + start->content() + "'", start->position());
+			break;
 		}
 
 		ancestors.insert(Designtime::Ancestor((start++)->content(), type, visibility));
@@ -129,13 +129,17 @@ Designtime::BluePrint Analyser::createBluePrint(TokenIterator& start, TokenItera
 	}
 	fullyQualifiedTypename += name;
 
+	// check if we have some more tokens before our object declarations starts
+	Designtime::Ancestors inheritance = collectInheritance(++start);
+
+	if ( start->type() != Token::Type::BRACKET_CURLY_OPEN ) {
+		throw Utils::Exceptions::Exception("invalid token found: " + start->content(), start->position());
+	}
+
 	// look for the next opening curly brackets
-	TokenIterator open = findNext(++start, Token::Type::BRACKET_CURLY_OPEN);
+	TokenIterator open = start;
 	// look for balanced curly brackets
 	TokenIterator closed = findNextBalancedCurlyBracket(open, end, 0, Token::Type::BRACKET_CURLY_CLOSE);
-
-	// check if we have some more tokens before our object declarations starts
-	Designtime::Ancestors inheritance = collectInheritance(start, open);
 
 	// collect all tokens of this object
 	TokenList tokens;
@@ -201,8 +205,15 @@ Designtime::BluePrint Analyser::createInterface(TokenIterator& start, TokenItera
 	}
 	fullyQualifiedTypename += name;
 
+	// check if we have some more tokens before our object declarations starts
+	Designtime::Ancestors inheritance = collectInheritance(++start);
+
+	if ( start->type() != Token::Type::BRACKET_CURLY_OPEN ) {
+		throw Utils::Exceptions::Exception("invalid token found: " + start->content(), start->position());
+	}
+
 	// look for the next opening curly brackets
-	TokenIterator open = findNext(++start, Token::Type::BRACKET_CURLY_OPEN);
+	TokenIterator open = start;
 	// look for balanced curly brackets
 	TokenIterator closed = findNextBalancedCurlyBracket(open, end, 0, Token::Type::BRACKET_CURLY_CLOSE);
 
@@ -210,9 +221,6 @@ Designtime::BluePrint Analyser::createInterface(TokenIterator& start, TokenItera
 	if ( start != open ) {
 		throw Utils::Exceptions::Exception("invalid token '" + start->content() + "' during interface declaration");
 	}
-
-	// check if we have some more tokens before our object declarations starts
-	Designtime::Ancestors inheritance = collectInheritance(start, open);
 
 	// collect all tokens of this object
 	TokenList tokens;

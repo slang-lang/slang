@@ -73,7 +73,7 @@ Object::Object(const Object& other)
 		}
 	}
 
-	mThis = mInheritance.begin()->second;
+	//mThis = mInheritance.begin()->second;
 }
 
 Object::Object(const std::string& name, const std::string& filename, const std::string& type, const std::string& value)
@@ -136,7 +136,7 @@ void Object::operator= (const Object& other)
 			}
 		}
 
-		mThis = mInheritance.begin()->second;
+		//mThis = mInheritance.begin()->second;
 	}
 }
 

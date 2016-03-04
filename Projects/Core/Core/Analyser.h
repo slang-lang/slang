@@ -55,7 +55,7 @@ private:
 	void createNamespace(TokenIterator& start, TokenIterator end);
 	Designtime::Prototype createPrototype(TokenIterator& start, TokenIterator end);
 
-	Designtime::Ancestors collectInheritance(TokenIterator &start, TokenIterator end) const;
+	Designtime::Ancestors collectInheritance(TokenIterator &start) const;
 	TokenList collectScopeTokens(TokenIterator& token) const;
 
 	bool isInterfaceDeclaration(TokenIterator start);
