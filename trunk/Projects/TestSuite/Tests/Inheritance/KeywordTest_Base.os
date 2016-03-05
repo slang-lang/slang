@@ -22,6 +22,8 @@ public namespace Inheritance
 		}
 	}
 
+	private object Replicate replicates BaseObject;
+
 	private object DerivedObject extends BaseObject
 	{
 		protected BaseObject mBaseObject;
@@ -44,6 +46,11 @@ public namespace Inheritance
 
 			return baseValue;
 		}
+
+		public void ThisMethodOnlyExistsInDerivedObject()
+		{
+			print("ThisMethodOnlyExistsInDerivedObject");
+		}
 	}
 
 	private object ExtendedObject extends DerivedObject
@@ -63,6 +70,11 @@ public namespace Inheritance
 		public number getBaseValue() const
 		{
 			return base.getValue();
+		}
+
+		public void ThisMethodOnlyExistsInExtendedObject()
+		{
+			print("ThisMethodOnlyExistsInExtendedObject");
 		}
 	}
 
@@ -95,6 +107,8 @@ public namespace Inheritance
 			assert( e.getBaseValue() == 2 );
 
 			e.ThisMethodOnlyExistsInBaseObject();
+			e.ThisMethodOnlyExistsInDerivedObject();
+			e.ThisMethodOnlyExistsInExtendedObject();
 
 			return true;
 		}

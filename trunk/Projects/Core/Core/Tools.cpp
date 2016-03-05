@@ -152,7 +152,7 @@ bool checkSynthax(TokenIterator start, const TokenList& expected)
 void expect(Token::Type::E expected, TokenIterator found)
 {
 	if ( found->type() != expected ) {
-		throw Utils::Exceptions::SyntaxError("';' expected but '" + found->content() + "' found", found->position());
+		throw Utils::Exceptions::SyntaxError("unexpected token '" + found->content() + "' found", found->position());
 	}
 }
 
