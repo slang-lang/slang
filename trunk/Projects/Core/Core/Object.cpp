@@ -189,6 +189,11 @@ System::Print(getName() + "::" + Typename());
 		}
 	}
 
+	// execute parent object constructors
+	for ( Inheritance::iterator it = mInheritance.begin(); it != mInheritance.end(); ++it ) {
+		it->second->Constructor(ParameterList());
+	}
+
 	// set after executing constructor in case any exceptions have been thrown
 	mIsConstructed = true;
 }
@@ -203,14 +208,17 @@ System::Print(getName() + "::~" + Typename());
 		// only execute destructor if one is present
 		Method *destructor = static_cast<Method*>(resolveMethod("~" + Typename(), params, false));
 		if ( destructor ) {
-assert(!"destructor has been called");
-
 			VoidObject tmp;
 			ControlFlow::E controlflow = destructor->execute(params, &tmp);
 
 			if ( controlflow != ControlFlow::Normal ) {
 				// uups
 			}
+		}
+
+		// execute parent object destructors
+		for ( Inheritance::iterator it = mInheritance.begin(); it != mInheritance.end(); ++it ) {
+			it->second->Destructor();
 		}
 	}
 	else {

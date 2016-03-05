@@ -94,6 +94,7 @@ Token Tokenizer::createToken(const std::string& con, const Utils::Position& posi
 	else if ( content == "*" ) { category = Token::Category::Operator; type = Token::Type::MATH_MULTIPLY; }
 	else if ( content == "-" ) { category = Token::Category::Operator; type = Token::Type::MATH_SUBTRACT; }
 	else if ( content == "!" ) { category = Token::Category::Operator; type = Token::Type::NOT; }
+	else if ( content == "~" ) { type = Token::Type::TILDE; }
 	else if ( isBoolean(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_BOOLEAN; }
 	else if ( isFloat(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_FLOAT; }
 	else if ( isIdentifer(content) ) { type = Token::Type::IDENTIFER; }
@@ -420,6 +421,40 @@ void Tokenizer::mergeBooleanOperators()
 }
 
 /*
+ * mergeDestructors: merges all '~' with their corresponding typename
+ */
+void Tokenizer::mergeDestructors()
+{
+	TokenList tmp;
+	Token::Type::E lastType = Token::Type::UNKNOWN;
+	TokenIterator token = mTokens.begin();
+
+	// try to combine all compare tokens
+	while ( token != mTokens.end() ) {
+		bool changed = false;
+		Token::Type::E activeType = token->type();
+
+		if ( (lastType == Token::Type::TILDE) && (activeType == Token::Type::IDENTIFER) ) {
+			// ~<identifier>
+			changed = true;
+			// remove last added token ...
+			tmp.pop_back();
+			// ... and add OR instead
+			tmp.push_back(Token(Token::Category::None, Token::Type::IDENTIFER, "~" + token->content(), token->position()));
+		}
+
+		lastType = token->type();
+		if ( !changed ) {
+			tmp.push_back((*token));
+		}
+
+		token++;
+	}
+
+	mTokens = tmp;
+}
+
+/*
  * mergeInfixPostfixOperators: merges all pairs of + or - operators together (i.e. '+' '+' become '++')
  */
 void Tokenizer::mergeInfixPostfixOperators()
@@ -554,6 +589,7 @@ void Tokenizer::process()
 	removeWhiteSpaces();			// remove all white spaces
 	replaceAssignments();			// replace assignment tokens with compare tokens (if present)
 	mergeBooleanOperators();		// merge '&' '&' into '&&'
+	mergeDestructors();				// merge '~' & typename into '~<typename>'
 	mergeInfixPostfixOperators();	// merge '+' '+' into '++'
 	replaceOperators();				// combine 'operator' identifiers with the next following token i.e. 'operator' '+' => 'operator+'
 	replacePrototypes();			//

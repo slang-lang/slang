@@ -97,6 +97,7 @@ public:
 			SEMICOLON,
 			SLASH,
 			STRING,
+			TILDE,
 			TYPE,
 			UNKNOWN,
 			VISIBILITY,
