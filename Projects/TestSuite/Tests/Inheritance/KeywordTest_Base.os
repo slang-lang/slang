@@ -8,13 +8,13 @@ public namespace Inheritance
 
 		public void BaseObject(number value)
 		{
-			print("BaseObject::BaseObject(" + value + ")");
+			print("BaseObject(" + value + ")");
 			mValue = value;
 		}
 
 		public void ~BaseObject()
 		{
-			print("BaseObject::~BaseObject()");
+			print("~BaseObject()");
 		}
 
 		public number getValue() const
@@ -35,21 +35,21 @@ public namespace Inheritance
 
 	private object DerivedObject extends BaseObject
 	{
-		protected BaseObject mBaseObject;
+		//protected BaseObject mBaseObject;
 
 		public void DerivedObject(number value)
 		{
-			print("DerivedObject::DerivedObject(" + value + ")");
+			print("DerivedObject(" + value + ")");
 
 			base.BaseObject(value);
 
 			//mBaseObject = new BaseObject(5);
-			mBaseObject.setValue(9);
+			//mBaseObject.setValue(9);
 		}
 
 		public void ~DerivedObject()
 		{
-			print("DerivedObject::~DerivedObject()");
+			print("~DerivedObject()");
 		}
 
 		public number getBaseValue() const
@@ -74,14 +74,14 @@ public namespace Inheritance
 	{
 		public void ExtendedObject(number value)
 		{
-			print("ExtendedObject::ExtendedObject(" + value + ")");
+			print("ExtendedObject(" + value + ")");
 
-			base.DerivedObject(1);
+			base.DerivedObject(value);
 		}
 
 		public void ~ExtendedObject()
 		{
-			print("ExtendedObject::~ExtendedObject()");
+			print("~ExtendedObject()");
 		}
 
 		public number getValue() const
@@ -134,9 +134,9 @@ public namespace Inheritance
 			e.ThisMethodOnlyExistsInDerivedObject();
 			e.ThisMethodOnlyExistsInExtendedObject();
 
-delete e;
-delete d;
-delete b;
+			delete e;
+			delete d;
+			delete b;
 
 			return true;
 		}

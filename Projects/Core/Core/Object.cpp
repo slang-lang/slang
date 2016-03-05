@@ -157,7 +157,7 @@ bool Object::CanExecuteDefaultConstructor() const
 
 	bool defaultConstructorPresent = resolveMethod(Typename(), ParameterList(), true);
 
-	return symbol && defaultConstructorPresent;
+	return !symbol || defaultConstructorPresent;
 }
 
 ControlFlow::E Object::Constructor(const ParameterList& params)
@@ -177,11 +177,11 @@ ControlFlow::E Object::Constructor(const ParameterList& params)
 	if ( mIsConstructed ) {
 		throw Utils::Exceptions::Exception("can not construct object '" + getName() + "' multiple times");
 	}
-
+/*
 	if ( !mIsAtomicType ) {
 		System::Print("C++ (Constructor-Begin): " + getName() + "::" + Typename() + "()");
 	}
-
+*/
 	// execute parent object constructors
 	for ( Inheritance::iterator it = mInheritance.begin(); it != mInheritance.end(); ++it ) {
 		if ( !it->second->CanExecuteDefaultConstructor() ) {
@@ -212,18 +212,21 @@ ControlFlow::E Object::Constructor(const ParameterList& params)
 		}
 	}
 
+/*
 	// check if all base objects have been constructed correctly
 	for ( Inheritance::iterator it = mInheritance.begin(); it != mInheritance.end(); ++it ) {
 		if ( !it->second->mIsConstructed ) {
-			System::Print(it->second->ToString());
+			System::Print("C++ (Constructor): " + getName() + "::" + Typename() + "()");
 
 			throw Utils::Exceptions::Exception(getName() + "::" + Typename() + "(): not all base objects have been instantiated");
 		}
 	}
-
+*/
+/*
 	if ( !mIsAtomicType ) {
 		System::Print("C++ (Constructor-End): " + getName() + "::" + Typename() + "()");
 	}
+*/
 
 	// set after executing constructor in case any exceptions have been thrown
 	mIsConstructed = true;
@@ -237,11 +240,11 @@ ControlFlow::E Object::Destructor()
 
 	if ( mIsConstructed ) {
 		ParameterList params;
-
+/*
 		if ( !mIsAtomicType ) {
 			System::Print("C++ (Destructor-Begin): " + getName() + "::~" + Typename() + "()");
 		}
-
+*/
 		// only execute destructor if one is present
 		Method *destructor = static_cast<Method*>(resolveMethod("~" + Typename(), params, true));
 		if ( destructor ) {
@@ -257,10 +260,11 @@ ControlFlow::E Object::Destructor()
 		for ( Inheritance::iterator it = mInheritance.begin(); it != mInheritance.end(); ++it ) {
 			it->second->Destructor();
 		}
-
+/*
 		if ( !mIsAtomicType ) {
-			System::Print("C++ (Destructor-End): " + getName() + "::" + Typename() + "()");
+			System::Print("C++ (Destructor-End): " + getName() + "::~" + Typename() + "()");
 		}
+*/
 	}
 	else {
 		// either the destructor has already been executed
