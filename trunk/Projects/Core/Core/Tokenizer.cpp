@@ -316,7 +316,7 @@ bool Tokenizer::isPrototype(TokenIterator token) const
 	}
 	token++;
 
-	// TODO: to allow more complex prototype one would have to allow more tokens here (i.e. Identifier, Identifier, ...)
+	// TODO: to allow more complex prototype declarations one would have to allow more tokens here (i.e. Identifier, Identifier, ...)
 
 	if ( token->type() != Token::Type::COMPARE_GREATER ) {
 		return false;
@@ -549,10 +549,9 @@ void Tokenizer::process()
 		lastChar = thisChar;
 	}
 
-	// add end of file token
-	addToken(Token(Token::Type::ENDOFFILE));
+	addToken(Token(Token::Type::ENDOFFILE));	// add end of file token
 
-	removeWhiteSpaces();			// remove all whitespaces
+	removeWhiteSpaces();			// remove all white spaces
 	replaceAssignments();			// replace assignment tokens with compare tokens (if present)
 	mergeBooleanOperators();		// merge '&' '&' into '&&'
 	mergeInfixPostfixOperators();	// merge '+' '+' into '++'
@@ -574,7 +573,7 @@ void Tokenizer::removeWhiteSpaces()
 }
 
 /*
- * replaceAssignments replaces/merges all assignment tokens with compare tokens (if present), i.e. '+' '=' => '+='
+ * replaceAssignments replaces/merges all assignment tokens with compare tokens (if present), i.e. '+' & '=' => '+='
  */
 void Tokenizer::replaceAssignments()
 {

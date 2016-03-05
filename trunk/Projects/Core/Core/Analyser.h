@@ -50,7 +50,6 @@ private:
 	void process(const std::string& content);
 
 	Designtime::BluePrint createBluePrint(TokenIterator& start, TokenIterator end);
-	Designtime::BluePrint createInterface(TokenIterator& start, TokenIterator end);
 	std::string createLibraryReference(TokenIterator& start, TokenIterator end);
 	void createNamespace(TokenIterator& start, TokenIterator end);
 	Designtime::Prototype createPrototype(TokenIterator& start, TokenIterator end);
