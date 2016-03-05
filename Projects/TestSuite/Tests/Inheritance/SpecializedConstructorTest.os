@@ -2,29 +2,32 @@
 
 private object BaseObject
 {
-	public void BaseObject()
+	protected number mValue;
+
+	public void BaseObject(number value)
 	{
-		print("BaseObject()");
+		mValue = value;
+		print("BaseObject(" + mValue + ")");
 	}
 
 	public void ~BaseObject()
 	{
-		print("~BaseObject()");
+		print("~BaseObject(" + mValue + ")");
 	}
 }
 
 private object DerivedObject extends BaseObject
 {
-	public void DerivedObject()
+	public void DerivedObject(number value)
 	{
-		print("DerivedObject()");
+		print("DerivedObject(" + value + ")");
 
-		//base.BaseObject();
+		base.BaseObject(value);
 	}
 
 	public void ~DerivedObject()
 	{
-		print("~DerivedObject");
+		print("~DerivedObject(" + mValue + ")");
 	}
 }
 
@@ -32,7 +35,7 @@ public object Main
 {
 	public void Main(number argc, string argv)
 	{
-		DerivedObject derived = new DerivedObject();
+		DerivedObject derived = new DerivedObject(5);
 		//DerivedObject derived;
 
 		//delete derived;	// this should not be necessary because our garbage collection has to delete everything that's left over

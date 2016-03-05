@@ -8,12 +8,23 @@ public namespace Inheritance
 
 		public void BaseObject(number value)
 		{
+			print("BaseObject::BaseObject(" + value + ")");
 			mValue = value;
+		}
+
+		public void ~BaseObject()
+		{
+			print("BaseObject::~BaseObject()");
 		}
 
 		public number getValue() const
 		{
 			return mValue;
+		}
+
+		public void setValue(number value) modify
+		{
+			mValue = value;
 		}
 
 		public void ThisMethodOnlyExistsInBaseObject()
@@ -22,17 +33,23 @@ public namespace Inheritance
 		}
 	}
 
-	private object Replicate replicates BaseObject;
-
 	private object DerivedObject extends BaseObject
 	{
 		protected BaseObject mBaseObject;
 
 		public void DerivedObject(number value)
 		{
+			print("DerivedObject::DerivedObject(" + value + ")");
+
 			base.BaseObject(value);
 
-			mBaseObject = new BaseObject(5);
+			//mBaseObject = new BaseObject(5);
+			mBaseObject.setValue(9);
+		}
+
+		public void ~DerivedObject()
+		{
+			print("DerivedObject::~DerivedObject()");
 		}
 
 		public number getBaseValue() const
@@ -57,7 +74,14 @@ public namespace Inheritance
 	{
 		public void ExtendedObject(number value)
 		{
+			print("ExtendedObject::ExtendedObject(" + value + ")");
+
 			base.DerivedObject(1);
+		}
+
+		public void ~ExtendedObject()
+		{
+			print("ExtendedObject::~ExtendedObject()");
 		}
 
 		public number getValue() const
@@ -109,6 +133,10 @@ public namespace Inheritance
 			e.ThisMethodOnlyExistsInBaseObject();
 			e.ThisMethodOnlyExistsInDerivedObject();
 			e.ThisMethodOnlyExistsInExtendedObject();
+
+delete e;
+delete d;
+delete b;
 
 			return true;
 		}

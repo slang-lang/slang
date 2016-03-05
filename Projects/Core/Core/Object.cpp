@@ -151,8 +151,19 @@ void Object::addInheritance(const Designtime::Ancestor& ancestor, Object* inheri
 	mInheritance.insert(std::make_pair(ancestor, inheritance));
 }
 
-void Object::Constructor(const ParameterList& params)
+bool Object::CanExecuteDefaultConstructor() const
 {
+	Symbol *symbol = resolve(Typename(), false);
+
+	bool defaultConstructorPresent = resolveMethod(Typename(), ParameterList(), true);
+
+	return symbol && defaultConstructorPresent;
+}
+
+ControlFlow::E Object::Constructor(const ParameterList& params)
+{
+	ControlFlow::E controlflow = ControlFlow::Normal;
+
 	// hack to initialize atomic types
 	if ( isAtomicType() && !params.empty() ) {
 		if ( params.size() != 1 ) {
@@ -160,65 +171,95 @@ void Object::Constructor(const ParameterList& params)
 		}
 
 		setValue(params.front().value());
-		return;
+		return controlflow;
 	}
 
 	if ( mIsConstructed ) {
 		throw Utils::Exceptions::Exception("can not construct object '" + getName() + "' multiple times");
 	}
 
-System::Print(getName() + "::" + Typename());
-
-	// only execute constructor if one is present
-	Method *constructor = static_cast<Method*>(resolveMethod(Typename(), params, false));
-	if ( constructor ) {
-		VoidObject tmp;
-		ControlFlow::E controlflow = constructor->execute(params, &tmp);
-
-		if ( controlflow != ControlFlow::Normal ) {
-			// uups
-			throw Utils::Exceptions::ControlFlowException("at " + Typename());
-		}
-	}
-	else {
-		// check if we have implemented at least one constructor
-		Symbol *symbol = resolve(Typename(), false);
-		if ( symbol ) {
-			// if there is a constructor implemented, the default constructor cannot be used
-			throw Utils::Exceptions::Exception(Typename() + ": unknown constructor called");
-		}
+	if ( !mIsAtomicType ) {
+		System::Print("C++ (Constructor-Begin): " + getName() + "::" + Typename() + "()");
 	}
 
 	// execute parent object constructors
 	for ( Inheritance::iterator it = mInheritance.begin(); it != mInheritance.end(); ++it ) {
+		if ( !it->second->CanExecuteDefaultConstructor() ) {
+			break;
+		}
+
+		// try to execute the default constructor
 		it->second->Constructor(ParameterList());
+	}
+
+	// check if we have implemented at least one constructor
+	Symbol *symbol = resolve(Typename(), true);
+	if ( symbol ) {
+		// if a specialized constructor is implemented, the default constructor cannot be used
+
+		Method *constructor = static_cast<Method*>(resolveMethod(Typename(), params, true));
+		if ( constructor ) {
+			VoidObject tmp;
+			controlflow = constructor->execute(params, &tmp);
+
+			if ( controlflow != ControlFlow::Normal ) {
+				throw Utils::Exceptions::ControlFlowException("at " + Typename());
+			}
+		}
+		else {
+			// no appropriate constructor found
+			throw Utils::Exceptions::Exception(Typename() + ": no appropriate constructor found");
+		}
+	}
+
+	// check if all base objects have been constructed correctly
+	for ( Inheritance::iterator it = mInheritance.begin(); it != mInheritance.end(); ++it ) {
+		if ( !it->second->mIsConstructed ) {
+			System::Print(it->second->ToString());
+
+			throw Utils::Exceptions::Exception(getName() + "::" + Typename() + "(): not all base objects have been instantiated");
+		}
+	}
+
+	if ( !mIsAtomicType ) {
+		System::Print("C++ (Constructor-End): " + getName() + "::" + Typename() + "()");
 	}
 
 	// set after executing constructor in case any exceptions have been thrown
 	mIsConstructed = true;
+
+	return controlflow;
 }
 
-void Object::Destructor()
+ControlFlow::E Object::Destructor()
 {
+	ControlFlow::E controlflow = ControlFlow::Normal;
+
 	if ( mIsConstructed ) {
 		ParameterList params;
 
-System::Print(getName() + "::~" + Typename());
+		if ( !mIsAtomicType ) {
+			System::Print("C++ (Destructor-Begin): " + getName() + "::~" + Typename() + "()");
+		}
 
 		// only execute destructor if one is present
-		Method *destructor = static_cast<Method*>(resolveMethod("~" + Typename(), params, false));
+		Method *destructor = static_cast<Method*>(resolveMethod("~" + Typename(), params, true));
 		if ( destructor ) {
 			VoidObject tmp;
-			ControlFlow::E controlflow = destructor->execute(params, &tmp);
+			controlflow = destructor->execute(params, &tmp);
 
 			if ( controlflow != ControlFlow::Normal ) {
-				// uups
+				throw Utils::Exceptions::ControlFlowException("at " + Typename());
 			}
 		}
 
-		// execute parent object destructors
+		// execute base object's destructor
 		for ( Inheritance::iterator it = mInheritance.begin(); it != mInheritance.end(); ++it ) {
 			it->second->Destructor();
+		}
+
+		if ( !mIsAtomicType ) {
+			System::Print("C++ (Destructor-End): " + getName() + "::" + Typename() + "()");
 		}
 	}
 	else {
@@ -229,6 +270,8 @@ System::Print(getName() + "::~" + Typename());
 
 	// set after executing destructor in case any exceptions have been thrown
 	mIsConstructed = false;
+
+	return controlflow;
 }
 
 ControlFlow::E Object::execute(Object *result, const std::string& method, const ParameterList& params, const Method* caller)
@@ -434,30 +477,12 @@ Symbol* Object::resolve(const std::string& name, bool onlyCurrentScope) const
 
 ObjectiveScript::MethodSymbol* Object::resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope) const
 {
-/*
-	ObjectiveScript::MethodSymbol *result = ObjectScope::resolveMethod(name, params, onlyCurrentScope);
-
-	if ( !result && !onlyCurrentScope ) {
-		// TODO: this implementation takes the quick and dirty way by looking from the youngest implementation to the oldest ancestor
-		//       this doesn't allow the use advanced object orientated constructs like final or sealed
-		for ( Inheritance::const_iterator it = mInheritance.begin(); it != mInheritance.end(); ++it ) {
-			result = it->second->resolveMethod(name, params, onlyCurrentScope);
-
-			if ( result ) {
-				break;
-			}
-		}
-	}
-*/
-
 	ObjectiveScript::MethodSymbol *result = 0;
 
 	for ( Inheritance::const_reverse_iterator it = mInheritance.rbegin(); it != mInheritance.rend(); ++it ) {
 		ObjectiveScript::MethodSymbol *tmp = it->second->resolveMethod(name, params, onlyCurrentScope);
 
-		if ( tmp &&
-			 !tmp->isAbstract() &&
-			 (tmp->getVisibility() == Visibility::Protected || tmp->getVisibility() == Visibility::Public) ) {
+		if ( tmp && !tmp->isAbstract() && (tmp->getVisibility() == Visibility::Protected || tmp->getVisibility() == Visibility::Public) ) {
 			result = tmp;
 		}
 
@@ -470,10 +495,11 @@ ObjectiveScript::MethodSymbol* Object::resolveMethod(const std::string& name, co
 	if ( !result || !result->isFinal() ) {
 		ObjectiveScript::MethodSymbol *tmp = ObjectScope::resolveMethod(name, params, onlyCurrentScope);
 
-		if ( tmp &&
-			 !tmp->isAbstract()
-			 //&& (tmp->getVisibility() == Visibility::Protected || tmp->getVisibility() == Visibility::Public)
-		) {
+		if ( tmp ) {
+			if ( tmp->isAbstract() ) {
+				throw Utils::Exceptions::Exception(tmp->getName() + " is abstract");
+			}
+
 			result = tmp;
 		}
 	}
