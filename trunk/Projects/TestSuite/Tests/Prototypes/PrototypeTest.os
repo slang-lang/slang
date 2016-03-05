@@ -63,7 +63,7 @@ public object Main
 
 		AnotherPrototype<number, string> another = new AnotherPrototype<number, string>(1, "1");
 		another.getKey();
-		another.GetValue();
+		another.getValue();
 	}
 }
 

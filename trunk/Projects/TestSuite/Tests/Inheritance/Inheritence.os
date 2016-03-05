@@ -2,19 +2,9 @@
 
 public namespace Inheritance
 {
-	public interface IContainer
-	{
-		public string GetIdentifier() const;
-	}
-
-	public interface IWarehouse
-	{
-		public number GetBox() const;
-	}
-
 	public object BaseObject
 	{
-		protected number mPublicNumber;	// public members are not allowed, remeber the "Law of Demeter"
+		protected number mPublicNumber;	// public members are not allowed, remember the "Law of Demeter"
 		protected number mProtectedNumber;
 		private number mPrivateNumber;
 
@@ -27,16 +17,18 @@ public namespace Inheritance
 
 		public string ToString() const
 		{
-			return "mPublicNumber = " + mPublicNumber + ", mProtectedNumber = " + mProtectedNumber + ", mPrivateNumber = " + mPrivateNumber + ";";
+			return "mPublicNumber = " + mPublicNumber + ", mProtectedNumber = " + mProtectedNumber + ", mPrivateNumber = " + mPrivateNumber;
 		}
 	}
 
-	public object Main extends BaseObject, implements IContainer, IWarehouse
+	public object Main extends BaseObject
 	{
 		//private number mPrivateNumber;
 
 		public void Main(number argc = 0, string argv = "")
 		{
+			base.BaseObject();
+
 			print(ToString());
 			print(ToString2());
 
@@ -58,7 +50,7 @@ public namespace Inheritance
 
 		public string ToString2() const
 		{
-			return base.ToString() + "\nmPublicNumber = " + mPublicNumber + ", mProtectedNumber = " + mProtectedNumber + ", mPrivateNumber = " + mPrivateNumber + ";";
+			return base.ToString() + "	mPublicNumber = " + mPublicNumber + ", mProtectedNumber = " + mProtectedNumber + ", mPrivateNumber = " + mPrivateNumber;
 		}
 
 		private void test() modify

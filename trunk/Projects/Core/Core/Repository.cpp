@@ -258,7 +258,7 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 			Runtime::Object *ancestor = createObject(ancestorIt->name(), &blueIt->second);
 
 			// undefine previous base
-			object->undefine(KEYWORD_BASE, object->resolve(KEYWORD_BASE));
+			object->undefine(KEYWORD_BASE, object->resolve(KEYWORD_BASE, false));
 			// define new base
 			object->define(KEYWORD_BASE, ancestor);
 

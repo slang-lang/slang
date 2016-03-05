@@ -19,7 +19,7 @@ public namespace Inheritance
 
 		public string getName() const
 		{
-			return "ExtendedObject" + base.getName();
+			return "ExtendedObject::" + base.getName();
 		}
 	}
 
@@ -37,9 +37,9 @@ public namespace Inheritance
 			BaseObject b = new BaseObject();
 			ExtendedObject e = new ExtendedObject();
 
-			print("b.getName = " + b.getName());
-			print("e.getName = " + e.getName());
-			print("e.getExtendedName = " + e.getExtendedName());
+			print("b.getName() = " + b.getName());
+			print("e.getName() = " + e.getName());
+			print("e.getExtendedName() = " + e.getExtendedName());
 
 			delete e;
 			delete b;

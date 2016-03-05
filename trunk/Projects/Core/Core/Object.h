@@ -75,8 +75,8 @@ public:	// Setup
 	void setRepository(Repository *repository);
 
 public: // Symbol
-	Symbol* resolve(const std::string& name, bool onlyCurrentScope = false) const;
-	ObjectiveScript::MethodSymbol* resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope = false) const;
+	Symbol* resolve(const std::string& name, bool onlyCurrentScope) const;
+	ObjectiveScript::MethodSymbol* resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope) const;
 
 public:	// Value
 	virtual std::string getValue() const;

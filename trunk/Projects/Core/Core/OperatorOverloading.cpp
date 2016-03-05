@@ -360,7 +360,7 @@ bool operator_equal(Object *base, Object *other)
 		Parameter(other->getName(), other->Typename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
 	);
 
-	if ( base->resolveMethod("operator==", params) ) {
+	if ( base->resolveMethod("operator==", params, false) ) {
 		Object tmp;
 		base->execute(&tmp, "operator==", params, 0);
 		return isTrue(tmp);
