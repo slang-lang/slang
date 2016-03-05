@@ -8,6 +8,8 @@ public namespace SwitchTest
 		{
 			assert( TestCase1() );
 			assert( TestCase2() );
+			assert( TestCase3() );
+			//assert( TestCase4() );
 		}
 
 		private bool TestCase1() const
@@ -32,6 +34,30 @@ public namespace SwitchTest
 			}
 
 			return false;
+		}
+
+		private bool TestCase3() const
+		{
+			number one = 1;
+			switch ( one ) {
+				case 1: print("case 1");
+				case 2: print("case 2"); break;
+				case 3: assert( false ); break;
+				default: assert( false ); break;
+			}
+
+			return true;
+		}
+
+		private bool TestCase4() const
+		{
+			number one = 1;
+			switch ( 2 ) {
+				case (one + 1): print("case one + 1"); break;
+				case 2: print("case 2"); break;
+			}
+
+			return true;
 		}
 	}
 }

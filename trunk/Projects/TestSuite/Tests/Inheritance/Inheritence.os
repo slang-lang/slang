@@ -38,12 +38,12 @@ public namespace Inheritance
 		public void Main(number argc = 0, string argv = "")
 		{
 			print(ToString());
-			//ToString2();
+			print(ToString2());
 
 			test();
 
 			print(ToString());
-			//ToString2();
+			print(ToString2());
 		}
 
 		public number GetBox() const
@@ -56,7 +56,7 @@ public namespace Inheritance
 			return "bla";
 		}
 
-		public string ToString() const
+		public string ToString2() const
 		{
 			return base.ToString() + "\nmPublicNumber = " + mPublicNumber + ", mProtectedNumber = " + mProtectedNumber + ", mPrivateNumber = " + mPrivateNumber + ";";
 		}
