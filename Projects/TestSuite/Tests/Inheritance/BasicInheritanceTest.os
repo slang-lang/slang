@@ -19,7 +19,7 @@ public namespace Inheritance
 
 		public string getName() const
 		{
-			return "ExtendedObject";
+			return "ExtendedObject" + base.getName();
 		}
 	}
 

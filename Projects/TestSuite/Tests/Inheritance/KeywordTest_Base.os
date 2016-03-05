@@ -15,13 +15,22 @@ public namespace Inheritance
 		{
 			return mValue;
 		}
+
+		public void ThisMethodOnlyExistsInBaseObject()
+		{
+			print("ThisMethodOnlyExistsInBaseObject");
+		}
 	}
 
 	private object DerivedObject extends BaseObject
 	{
+		protected BaseObject mBaseObject;
+
 		public void DerivedObject(number value)
 		{
 			base.BaseObject(value);
+
+			mBaseObject = new BaseObject(5);
 		}
 
 		public number getBaseValue() const
@@ -84,6 +93,8 @@ public namespace Inheritance
 
 			print("e.getBaseValue() = " + e.getBaseValue() );
 			assert( e.getBaseValue() == 2 );
+
+			e.ThisMethodOnlyExistsInBaseObject();
 
 			return true;
 		}

@@ -60,7 +60,7 @@ Designtime::Ancestors Analyser::collectInheritance(TokenIterator &start) const
 
 			type = Designtime::Ancestor::Type::Implements;
 		}
-		if ( start->content() == RESERVED_WORD_REPLICATES ) {
+		else if ( start->content() == RESERVED_WORD_REPLICATES ) {
 			start++;	// consume token
 
 			replicates = true;
