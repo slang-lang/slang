@@ -62,7 +62,7 @@ void typecast(Object *base, const std::string& type)
 		*base = tmp;
 	}
 	else {
-		throw Utils::Exceptions::NotImplemented("type cast to user defined type");
+		throw Utils::Exceptions::NotImplemented("type cast from type " + base->Typename() + " to type " + type);
 
 /*
 		ParameterList params;

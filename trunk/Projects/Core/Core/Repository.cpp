@@ -67,6 +67,9 @@ Repository::~Repository()
 	// }
 }
 
+/*
+ * adds new blue print to our repository
+ */
 void Repository::addBlueprint(const Designtime::BluePrint& blueprint)
 {
 	OSinfo("addBlueprint('" + blueprint.Typename() + "')");
@@ -107,6 +110,9 @@ void Repository::addBlueprint(const Designtime::BluePrint& blueprint)
 	preprocessor.process(&blueIt->second);
 }
 
+/*
+ * DEPRECATED: adds a new prototype (= generic) to our repository
+ */
 void Repository::addPrototype(const Designtime::Prototype& prototype)
 {
 	std::string type = prototype.type();
@@ -119,6 +125,9 @@ void Repository::addPrototype(const Designtime::Prototype& prototype)
 	mPrototypes.insert(std::make_pair(type, prototype));
 }
 
+/*
+ * updates (increases) an object's reference count
+ */
 void Repository::addReference(Runtime::Object *object)
 {
 	if ( !object ) {
@@ -164,6 +173,9 @@ void Repository::CollectGarbage()
 	}
 }
 
+/*
+ * single point of contact for outsiders to create and instantiate new objects (no matter if atomic or not)
+ */
 Runtime::Object* Repository::createInstance(const std::string& type, const std::string& name, const std::string& prototype)
 {
 	// non-reference-based instantiation
@@ -196,6 +208,9 @@ Runtime::Object* Repository::createInstance(const std::string& type, const std::
 	return object;
 }
 
+/*
+ * creates (and initializes) atomic types and triggers the user defined object creation process
+ */
 Runtime::Object* Repository::createObject(const std::string& name, Designtime::BluePrint* blueprint)
 {
 	Runtime::Object *object = 0;
@@ -219,7 +234,7 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 	else if ( blueprint->Typename() == Runtime::VoidObject::TYPENAME ) {
 		object = new Runtime::VoidObject(name);
 	}
-	// instantiate user defined type
+	// instantiate user defined types
 	else {
 		object = createUserObject(name, blueprint);
 	}
@@ -234,6 +249,9 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 	return object;
 }
 
+/*
+ * creates and initializes a user defined object type and initializes its base classes
+ */
 Runtime::Object* Repository::createUserObject(const std::string& name, Designtime::BluePrint* blueprint)
 {
 	assert(blueprint);
@@ -242,41 +260,48 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 		throw Utils::Exceptions::AbstractException("cannot instantiate abstract object '" + blueprint->Typename() + "'");
 	}
 
+	// create the base object
 	Runtime::Object *object = new Runtime::UserObject(name, blueprint->Filename(), blueprint->Typename(), Runtime::UserObject::DEFAULTVALUE);
 
 	Designtime::Ancestors ancestors = blueprint->getInheritance();
 
 	if ( !ancestors.empty() ) {
-		// walk through inheritance and create all members and methods
+		// walk through the inheritance and create (and initialize) all base objects
 		for ( Designtime::Ancestors::const_iterator ancestorIt = ancestors.begin(); ancestorIt != ancestors.end(); ++ancestorIt ) {
 			Designtime::BluePrintMap::iterator blueIt = mBluePrints.find(ancestorIt->name());
+
 			if ( blueIt == mBluePrints.end() ) {
 				throw Utils::Exceptions::Exception("trying to initialize unknown object '" + ancestorIt->name() + "'");
 			}
 
 			// create base object
-			Runtime::Object *ancestor = createObject(ancestorIt->name(), &blueIt->second);
+			Runtime::Object *ancestor = createObject(name, &blueIt->second);
 
-			// undefine previous base
+			// undefine previous base (while using single inheritance none should exist yet)
 			object->undefine(KEYWORD_BASE, object->resolve(KEYWORD_BASE, false));
 			// define new base
 			object->define(KEYWORD_BASE, ancestor);
 
+			// update our reference counter
 			addReference(ancestor);
 
+			// add our newly created ancestor to our inheritance
 			object->addInheritance((*ancestorIt), ancestor);
 		}
 	}
 
-	// initialize base object
+	// initialize the base object
 	initializeObject(object, blueprint);
 
 	return object;
 }
 
+/*
+ * creates and defines all members and methods of an object
+ */
 void Repository::initializeObject(Runtime::Object *object, Designtime::BluePrint* blueprint)
 {
-	// create and define all members
+	// create and define all symbols based on given blueprint
 	Symbols symbols = blueprint->provideSymbols();
 	for ( Symbols::const_iterator it = symbols.begin(); it != symbols.end(); ++it ) {
 		if ( !it->second ||
@@ -297,20 +322,11 @@ void Repository::initializeObject(Runtime::Object *object, Designtime::BluePrint
 		object->define(symbol->getName(), symbol);
 	}
 
-	// define and create all methods
+	// create and define all methods based on given blueprint
 	ObjectScope::MethodCollection methods = blueprint->provideMethods();
-	for (ObjectScope::MethodCollection::const_iterator it = methods.begin(); it != methods.end(); ++it ) {
+	for ( ObjectScope::MethodCollection::const_iterator it = methods.begin(); it != methods.end(); ++it ) {
 		Runtime::Method* method = new Runtime::Method(object, (*it)->getName(), (*it)->Typename());
 		*method = *(*it);
-
-/*
-		MethodSymbol* baseMethod = object->resolveMethod(method->getName(), method->provideSignature(), true);
-		if ( baseMethod ) {
-			// override base method by undefining it
-			object->undefineMethod(static_cast<Runtime::Method*>(baseMethod));
-			delete baseMethod;
-		}
-*/
 
 		object->defineMethod((*it)->getName(), method);
 	}
@@ -323,6 +339,9 @@ bool Repository::isAlreadyKnown(const std::string& name) const
 	return mBluePrints.find(name) != mBluePrints.end();
 }
 
+/*
+ * updates (decreases) an object's reference count
+ */
 void Repository::removeReference(Runtime::Object *object)
 {
 	if ( !object ) {

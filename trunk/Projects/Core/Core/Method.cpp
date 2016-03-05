@@ -98,6 +98,7 @@ void Method::operator= (const Method& other)
 		mRepository = other.mRepository;
 		mSignature = other.mSignature;
 		mTokens = other.mTokens;
+		mTypeName = other.mTypeName;
 		mVisibility = other.mVisibility;
 	}
 }

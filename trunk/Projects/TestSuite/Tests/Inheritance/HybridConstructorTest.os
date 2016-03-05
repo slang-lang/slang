@@ -2,14 +2,17 @@
 
 private object BaseObject
 {
-	public void BaseObject()
+	protected number mValue;
+
+	public void BaseObject(number value)
 	{
-		print("BaseObject()");
+		mValue = value;
+		print("BaseObject(" + mValue + ")");
 	}
 
 	public void ~BaseObject()
 	{
-		print("~BaseObject()");
+		print("~BaseObject(" + mValue + ")");
 	}
 }
 
@@ -19,12 +22,13 @@ private object DerivedObject extends BaseObject
 	{
 		print("DerivedObject()");
 
-		//base.BaseObject();
+		base.BaseObject(5);
 	}
 
 	public void ~DerivedObject()
 	{
-		print("~DerivedObject");
+		print("" + mValue + " == " + base.mValue);
+		print("~DerivedObject(" + mValue + ")");
 	}
 }
 

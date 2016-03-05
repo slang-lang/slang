@@ -1115,6 +1115,8 @@ void Interpreter::process_type(TokenIterator& token)
 	if ( isFinal ) object->setFinal(true);
 
 	if ( assign != getTokens().end() ) {
+		// TODO: create a shallow object if we have an assignment statement to prevent duplicate object instantiation
+
 		TokenIterator end = findNext(assign, Token::Type::SEMICOLON);
 
 		expression(object, assign);
