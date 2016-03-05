@@ -45,17 +45,21 @@ Designtime::Ancestors Analyser::collectInheritance(TokenIterator &start) const
 	Designtime::Ancestor::Type::E type = Designtime::Ancestor::Type::Unknown;
 	Visibility::E visibility = Visibility::Public;
 
-	while ( true ) {
-		if ( replicates ) {
-			throw Utils::Exceptions::Exception("combinations with 'replicates' are not allowed");
-		}
-
+	for ( ; ; ) {
 		if ( start->content() == RESERVED_WORD_EXTENDS ) {
+			if ( replicates ) {
+				throw Utils::Exceptions::Exception("combinations with 'replicates' are not allowed");
+			}
+
 			start++;	// consume token
 
 			type = Designtime::Ancestor::Type::Extends;
 		}
 		else if ( start->content() == RESERVED_WORD_IMPLEMENTS ) {
+			if ( replicates ) {
+				throw Utils::Exceptions::Exception("combinations with 'replicates' are not allowed");
+			}
+
 			start++;	// consume token
 
 			type = Designtime::Ancestor::Type::Implements;
@@ -129,26 +133,31 @@ Designtime::BluePrint Analyser::createBluePrint(TokenIterator& start, TokenItera
 	}
 	fullyQualifiedTypename += name;
 
-	// check if we have some more tokens before our object declarations starts
+	// collect inheritance (if present)
 	Designtime::Ancestors inheritance = collectInheritance(++start);
 
-	if ( start->type() != Token::Type::BRACKET_CURLY_OPEN ) {
-		throw Utils::Exceptions::Exception("invalid token found: " + start->content(), start->position());
+	bool isReplication = false;
+	if ( !inheritance.empty() ) {
+		isReplication = (inheritance.begin()->type() == Designtime::Ancestor::Type::Replicates);
 	}
 
-	// look for the next opening curly brackets
-	TokenIterator open = start;
-	// look for balanced curly brackets
-	TokenIterator closed = findNextBalancedCurlyBracket(open, end, 0, Token::Type::BRACKET_CURLY_CLOSE);
-
-	// collect all tokens of this object
 	TokenList tokens;
 
-	for ( TokenIterator it = ++open; it != closed && it != end; ++it ) {
-		tokens.push_back((*it));
-	}
+	if ( !isReplication ) {	// only collect all tokens of this object if it's not a replication
+		// object or interface declarations have to start with an '{' token
+		expect(Token::Type::BRACKET_CURLY_OPEN, start);
 
-	start = closed;
+		// look for the next opening curly brackets
+		TokenIterator open = start;
+		// look for balanced curly brackets
+		TokenIterator closed = findNextBalancedCurlyBracket(open, end, 0, Token::Type::BRACKET_CURLY_CLOSE);
+
+		for ( TokenIterator it = ++open; it != closed && it != end; ++it ) {
+			tokens.push_back((*it));
+		}
+
+		start = closed;
+	}
 
 	Designtime::SanityChecker sanity;
 	sanity.process(tokens);
@@ -159,7 +168,7 @@ Designtime::BluePrint Analyser::createBluePrint(TokenIterator& start, TokenItera
 	blue.setTokens(tokens);
 	blue.setVisibility(Visibility::convert(visibility));
 
-	// set up inheritances (if present)
+	// set up inheritance (if present)
 	if ( !inheritance.empty() ) {
 		for ( Designtime::Ancestors::const_iterator it = inheritance.begin(); it != inheritance.end(); ++it ) {
 			blue.addInheritance((*it));
