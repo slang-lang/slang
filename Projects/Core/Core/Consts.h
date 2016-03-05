@@ -33,7 +33,6 @@ static const char* KEYWORD_ELSE = "else";
 static const char* KEYWORD_FINALLY = "finally";
 static const char* KEYWORD_FOR = "for";
 static const char* KEYWORD_IF = "if";
-static const char* KEYWORD_IMPORT = "import";
 static const char* KEYWORD_NEW = "new";
 static const char* KEYWORD_PRINT = "print";
 static const char* KEYWORD_RETURN = "return";

@@ -60,7 +60,6 @@ StringList provideKeyWords()
 	keywords.push_back(KEYWORD_FINALLY);
 	keywords.push_back(KEYWORD_FOR);
 	keywords.push_back(KEYWORD_IF);
-	keywords.push_back(KEYWORD_IMPORT);
 	keywords.push_back(KEYWORD_NEW);
 	keywords.push_back(KEYWORD_PRINT);
 	keywords.push_back(KEYWORD_RETURN);

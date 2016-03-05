@@ -299,10 +299,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Interface.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\Core\Interpreter.cpp"
 				>
 			</File>
@@ -335,10 +331,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\NumberObject.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\Core\Designtime\BuildInTypes\NumberObject.cpp"
 				>
 				<FileConfiguration
@@ -349,6 +341,10 @@
 						ObjectFile="$(IntDir)\Core\Designtime\BuildInTypes\"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\Core\BuildInObjects\NumberObject.cpp"
+				>
 			</File>
 			<File
 				RelativePath=".\Core\Object.cpp"
@@ -622,10 +618,6 @@
 			</File>
 			<File
 				RelativePath=".\Core\Designtime\BuildInTypes\IntegerObject.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Core\Interface.h"
 				>
 			</File>
 			<File

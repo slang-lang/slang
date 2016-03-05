@@ -331,6 +331,26 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\Interfaces\Fixture.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Interfaces\"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Interfaces\"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath=".\Inheritance\InheritanceTest.cpp"
 				>
 				<FileConfiguration
@@ -347,6 +367,26 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						ObjectFile="$(IntDir)\Inheritance\"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\Interfaces\InterfacesTest.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Interfaces\"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Interfaces\"
 					/>
 				</FileConfiguration>
 			</File>
@@ -477,11 +517,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Interfaces\Fixture.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Framework\GenericTest.h"
 				>
 			</File>
 			<File
 				RelativePath=".\Inheritance\InheritanceTest.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Interfaces\InterfacesTest.h"
 				>
 			</File>
 			<File

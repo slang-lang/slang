@@ -26,6 +26,30 @@ namespace ObjectiveScript {
 
 Analyser::Analyser()
 {
+	// interface declaration
+	mInterfaceDeclaration.push_back(Token(Token::Type::VISIBILITY));
+	mInterfaceDeclaration.push_back(Token(Token::Type::RESERVED_WORD, std::string(RESERVED_WORD_INTERFACE)));
+	mInterfaceDeclaration.push_back(Token(Token::Type::IDENTIFER));
+
+	// library declaration
+	mLibraryDeclaration.push_back(Token(Token::Type::RESERVED_WORD, std::string(RESERVED_WORD_IMPORT)));
+	mLibraryDeclaration.push_back(Token(Token::Type::IDENTIFER));
+	mLibraryDeclaration.push_back(Token(Token::Type::SEMICOLON));
+
+	// namespace declaration
+	mNamespaceDeclaration.push_back(Token(Token::Type::VISIBILITY));
+	mNamespaceDeclaration.push_back(Token(Token::Type::RESERVED_WORD, std::string(RESERVED_WORD_NAMESPACE)));
+	mNamespaceDeclaration.push_back(Token(Token::Type::IDENTIFER));
+
+	// object declaration
+	mObjectDeclaration.push_back(Token(Token::Type::VISIBILITY));
+	mObjectDeclaration.push_back(Token(Token::Type::RESERVED_WORD, std::string(RESERVED_WORD_OBJECT)));
+	mObjectDeclaration.push_back(Token(Token::Type::IDENTIFER));
+
+	// prototype declaration
+	mPrototypeDeclaration.push_back(Token(Token::Type::VISIBILITY));
+	mPrototypeDeclaration.push_back(Token(Token::Type::RESERVED_WORD, std::string(RESERVED_WORD_PROTOTYPE)));
+	mPrototypeDeclaration.push_back(Token(Token::Type::IDENTIFER));
 }
 
 Analyser::~Analyser()
@@ -299,6 +323,7 @@ const Designtime::PrototypeList& Analyser::getPrototypes() const
 // <visibility> interface [language feature] <identifier> { ... }
 bool Analyser::isInterfaceDeclaration(TokenIterator start)
 {
+/*
 	if ( (*start++).type() != Token::Type::VISIBILITY ) {
 		return false;
 	}
@@ -313,53 +338,61 @@ bool Analyser::isInterfaceDeclaration(TokenIterator start)
 	}
 
 	return true;
-
-/*
-	TokenList tokens;
-
-	tokens.push_back(Token(Token::Type::VISIBILITY));
-	tokens.push_back(Token(Token::Type::TYPE, std::string(RESERVED_WORD_INTERFACE)));
-	tokens.push_back(Token(Token::Type::LANGUAGEFEATURE, true));
-	tokens.push_back(Token(Token::Type::IDENTIFER));
-
-	return checkSynthax(start, tokens);
 */
+
+	return checkSynthax(start, mInterfaceDeclaration);
 }
 
 // syntax:
 // import <identifier> ;
 bool Analyser::isLibraryReference(TokenIterator start)
 {
-	TokenList tokens;
-
-	if ( (*start++).content() != RESERVED_WORD_IMPORT ) {
+/*
+	if ( (*start).type() != Token::Type::RESERVED_WORD && (*start++).content() != RESERVED_WORD_IMPORT ) {
+		return false;
+	}
+	if ( (*start++).type() != Token::Type::IDENTIFER ) {
+		return false;
+	}
+	if ( (*start++).type() != Token::Type::SEMICOLON ) {
 		return false;
 	}
 
-	tokens.push_back(Token(Token::Type::IDENTIFER));
-	tokens.push_back(Token(Token::Type::SEMICOLON));
+	return true;
+*/
 
-	return checkSynthax(start, tokens);
+	return checkSynthax(start, mLibraryDeclaration);
 }
 
 // syntax:
 // <visibility> namespace [language feature] <identifier> { ... }
 bool Analyser::isNamespaceDeclaration(TokenIterator start)
 {
-	TokenList tokens;
+/*
+	if ( (*start++).type() != Token::Type::VISIBILITY ) {
+		return false;
+	}
+	if ( (*start).type() != Token::Type::TYPE && (*start++).content() != RESERVED_WORD_NAMESPACE ) {
+		return false;
+	}
+	if ( (*start).isOptional() && (*start++).type() != Token::Type::LANGUAGEFEATURE ) {
+		return false;
+	}
+	if ( (*start++).type() != Token::Type::IDENTIFER ) {
+		return false;
+	}
 
-	tokens.push_back(Token(Token::Type::VISIBILITY));
-	tokens.push_back(Token(Token::Type::TYPE, std::string(RESERVED_WORD_NAMESPACE)));
-	tokens.push_back(Token(Token::Type::LANGUAGEFEATURE, true));
-	tokens.push_back(Token(Token::Type::IDENTIFER));
+	return true;
+*/
 
-	return checkSynthax(start, tokens);
+	return checkSynthax(start, mNamespaceDeclaration);
 }
 
 // syntax:
 // <visibility> object [language feature] <identifier> [extends <identifier> [implements <identifier>, ...]] { ... }
 bool Analyser::isObjectDeclaration(TokenIterator start)
 {
+/*
 	if ( (*start++).type() != Token::Type::VISIBILITY ) {
 		return false;
 	}
@@ -374,12 +407,16 @@ bool Analyser::isObjectDeclaration(TokenIterator start)
 	}
 
 	return true;
+*/
+
+	return checkSynthax(start, mObjectDeclaration);
 }
 
 // syntax:
 // <visibility> prototype [language feature] <identifier> [extends <identifier> [implements <identifier>, ...]] { ... }
 bool Analyser::isPrototypeDeclaration(TokenIterator start)
 {
+/*
 	if ( (*start++).type() != Token::Type::VISIBILITY ) {
 		return false;
 	}
@@ -394,6 +431,9 @@ bool Analyser::isPrototypeDeclaration(TokenIterator start)
 	}
 
 	return true;
+*/
+
+	return checkSynthax(start, mPrototypeDeclaration);
 }
 
 void Analyser::process(const std::string& content)

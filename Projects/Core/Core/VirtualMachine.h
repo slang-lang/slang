@@ -9,7 +9,6 @@
 #include <string>
 
 // Project includes
-#include "Interface.h"
 #include "Object.h"
 #include "Parameter.h"
 
@@ -44,7 +43,6 @@ protected:
 
 private:
 	typedef std::map<std::string, Designtime::BluePrint> BluePrintCollection;
-	typedef std::map<std::string, Interface> InterfaceCollection;
 	typedef std::map<std::string, Runtime::Object*> ObjectCollection;
 	typedef std::set<Script*> ScriptCollection;
 
@@ -57,7 +55,6 @@ private:
 private:
 	std::string mBaseFolder;
 	BluePrintCollection mBluePrints;
-	InterfaceCollection mInterfaces;
 	Memory *mMemory;
 	ObjectCollection mObjects;
 	Repository *mRepository;
