@@ -12,7 +12,6 @@
 #include <Core/Attributes/Attributes.h>
 #include <Core/Attributes/Visibility.h>
 #include <Core/Consts.h>
-#include <Core/Interface.h>
 #include <Core/RTTI.h>
 #include <Core/Scope.h>
 #include <Core/Symbol.h>

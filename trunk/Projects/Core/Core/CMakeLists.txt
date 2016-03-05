@@ -10,7 +10,6 @@ ADD_SUBDIRECTORY(Utils)
 
 SET(SOURCES
 	Analyser.cpp
-	Interface.cpp
 	Interpreter.cpp
 	Memory.cpp
 	Method.cpp
@@ -36,7 +35,6 @@ SET(SOURCES
 SET(HEADERS
 	Analyser.h
 	Consts.h
-	Interface.h
 	Interpreter.h
 	Memory.h
 	Method.h

@@ -34,7 +34,6 @@ VirtualMachine::VirtualMachine()
 VirtualMachine::~VirtualMachine()
 {
 	mBluePrints.clear();
-	mInterfaces.clear();
 	mObjects.clear();
 
 	for ( ScriptCollection::iterator it = mScripts.begin(); it != mScripts.end(); ++it ) {
@@ -79,15 +78,6 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 	for ( StringList::const_iterator it = libraries.begin(); it != libraries.end(); ++it ) {
 		loadLibrary((*it));
 	}
-
-/*	Not part of this release
-	InterfaceList interfaces = analyser.getInterfaces();
-	for ( InterfaceList::iterator it = interfaces.begin(); it != interfaces.end(); ++it ) {
-		mInterfaces.insert(std::make_pair(
-			it->Typename(), (*it)
-		));
-	}
-*/
 
 /*	Not part of this release
 	PrototypeList prototypes = analyser.getPrototypes();
@@ -171,15 +161,6 @@ void VirtualMachine::loadLibrary(const std::string& library)
 		for ( std::list<std::string>::const_iterator it = libraries.begin(); it != libraries.end(); ++it ) {
 			loadLibrary((*it));
 		}
-
-/*	Not part of this release
-		InterfaceList interfaces = analyser.getInterfaces();
-		for ( InterfaceList::iterator it = interfaces.begin(); it != interfaces.end(); ++it ) {
-			mInterfaces.insert(std::make_pair(
-				it->Typename(), (*it)
-			));
-		}
-*/
 
 /*	Not part of this release
 		PrototypeList prototypes = analyser.getPrototypes();

@@ -69,6 +69,13 @@ private:
 	StringList mLibraries;
 	Designtime::PrototypeList mPrototypes;
 	std::string mScopeName;
+
+	// Comparator token lists
+	TokenList mInterfaceDeclaration;
+	TokenList mLibraryDeclaration;
+	TokenList mNamespaceDeclaration;
+	TokenList mObjectDeclaration;
+	TokenList mPrototypeDeclaration;
 };
 
 
