@@ -471,6 +471,7 @@ void Interpreter::process_delete(TokenIterator& token)
 		case Symbol::IType::AtomicTypeSymbol:
 		case Symbol::IType::ObjectSymbol: {
 			Object *object = static_cast<Object*>(symbol);
+			object->Destructor();
 
 			*object = Object(object->getName(), object->Filename(), object->Typename(), VALUE_NONE);
 		} break;
@@ -1120,6 +1121,10 @@ void Interpreter::process_type(TokenIterator& token)
 
 		token = end;
 	}
+	else {
+		// call default constructor if one is present
+		object->Constructor(ParameterList());
+	}
 
 	expect(Token::Type::SEMICOLON, token);
 }
@@ -1188,7 +1193,7 @@ Symbol* Interpreter::resolve(const std::string& name, bool onlyCurrentScope) con
 		switch ( result->getType() ) {
 			case Symbol::IType::AtomicTypeSymbol:
 			case Symbol::IType::ObjectSymbol:
-				result = static_cast<Object*>(result)->resolve(member);
+				result = static_cast<Object*>(result)->resolve(member, onlyCurrentScope);
 				break;
 			case Symbol::IType::MethodSymbol:
 			case Symbol::IType::NamespaceSymbol:

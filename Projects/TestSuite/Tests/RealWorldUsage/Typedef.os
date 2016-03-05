@@ -15,7 +15,7 @@ private object TestObject
 	}
 }
 
-private object RetypedObject extends TestObject
+private object DerivedObject extends TestObject
 {
 	public void setValue(number value) modify
 	{
@@ -25,21 +25,21 @@ private object RetypedObject extends TestObject
 
 private object Retyped replicates TestObject;
 
+//private prototype Proto<
+
 private object Main
 {
-	private object InnerObject { }
-
 	public void Main(number argc, string argv)
 	{
-		InnerObject inner;
-
-		RetypedObject obj1;
-		print(obj1.getValue());
+		DerivedObject obj1;
+		print("obj1.getValue() = " + obj1.getValue());
 		obj1.setValue(2);
-		print(obj1.getValue());
+		print("obj1.getValue() = " + obj1.getValue());
 
 		Retyped obj2;
-		print(obj2.getValue());
+		print("obj2.getValue() = " + obj2.getValue());
+		obj2.setValue(2);
+		print("obj2.getValue() = " + obj2.getValue());
 	}
 }
 

@@ -13,7 +13,7 @@ public object Observer
 	}
 }
 
-public prototype TestPrototype extends public Observer
+public prototype TestPrototype extends Observer
 {
 	private UNKNOWN mValue;
 

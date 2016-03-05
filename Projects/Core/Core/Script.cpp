@@ -93,14 +93,14 @@ Symbol* Script::getSymbol(const std::string& symbol)
 {
 	assert(mObject);
 
-	return mObject->resolve(symbol);
+	return mObject->resolve(symbol, false);
 }
 
 bool Script::hasMethod(const std::string& m)
 {
 	assert(mObject);
 
-	if ( mObject->resolve(m) ) {
+	if ( mObject->resolve(m, false) ) {
 		return true;
 	}
 
@@ -111,7 +111,7 @@ bool Script::hasMethod(const std::string& m, const ParameterList& params)
 {
 	assert(mObject);
 
-	if ( mObject->resolveMethod(m, params) ) {
+	if ( mObject->resolveMethod(m, params, false) ) {
 		return true;
 	}
 

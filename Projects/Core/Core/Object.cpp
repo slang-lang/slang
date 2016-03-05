@@ -9,6 +9,7 @@
 #include <Core/Utils/Exceptions.h>
 #include <Core/Utils/Utils.h>
 #include "Repository.h"
+#include "System.h"
 #include "Tools.h"
 
 // Namespace declarations
@@ -102,7 +103,7 @@ void Object::operator= (const Object& other)
 		}
 
 		mIsAtomicType = other.mIsAtomicType;
-		mIsConstructed = other.mIsConstructed ? other.mIsConstructed : mIsConstructed;
+		mIsConstructed = other.mIsConstructed;// ? other.mIsConstructed : mIsConstructed;
 		mFilename = other.mFilename;
 		mTypename = other.mTypename;
 
@@ -166,9 +167,11 @@ void Object::Constructor(const ParameterList& params)
 		throw Utils::Exceptions::Exception("can not construct object '" + getName() + "' multiple times");
 	}
 
-	Method *constructor = static_cast<Method*>(resolveMethod(Typename(), params));
+System::Print(getName() + "::" + Typename());
+
+	// only execute constructor if one is present
+	Method *constructor = static_cast<Method*>(resolveMethod(Typename(), params, false));
 	if ( constructor ) {
-		// only execute constructor if one is present
 		VoidObject tmp;
 		ControlFlow::E controlflow = constructor->execute(params, &tmp);
 
@@ -179,7 +182,7 @@ void Object::Constructor(const ParameterList& params)
 	}
 	else {
 		// check if we have implemented at least one constructor
-		Symbol *symbol = resolve(Typename());
+		Symbol *symbol = resolve(Typename(), false);
 		if ( symbol ) {
 			// if there is a constructor implemented, the default constructor cannot be used
 			throw Utils::Exceptions::Exception(Typename() + ": unknown constructor called");
@@ -195,11 +198,15 @@ void Object::Destructor()
 	if ( mIsConstructed ) {
 		ParameterList params;
 
+System::Print(getName() + "::~" + Typename());
+
 		// only execute destructor if one is present
-		Method *constructor = static_cast<Method*>(resolveMethod("~" + Typename(), params));
-		if ( constructor ) {
+		Method *destructor = static_cast<Method*>(resolveMethod("~" + Typename(), params, false));
+		if ( destructor ) {
+assert(!"destructor has been called");
+
 			VoidObject tmp;
-			ControlFlow::E controlflow = constructor->execute(params, &tmp);
+			ControlFlow::E controlflow = destructor->execute(params, &tmp);
 
 			if ( controlflow != ControlFlow::Normal ) {
 				// uups
@@ -209,7 +216,7 @@ void Object::Destructor()
 	else {
 		// either the destructor has already been executed
 		// or the constructor has never been called successfully!
-		//throw Utils::Exceptions::Exception("can not destroy object '" + name() + "' which has not been constructed");
+		//throw Utils::Exceptions::Exception("can not destroy object '" + Typename() + "' which has not been constructed");
 	}
 
 	// set after executing destructor in case any exceptions have been thrown

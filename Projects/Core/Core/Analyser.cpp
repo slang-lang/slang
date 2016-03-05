@@ -27,26 +27,31 @@ namespace ObjectiveScript {
 Analyser::Analyser()
 {
 	// interface declaration
+	// <visibility> interface [language feature] <identifier> { ... }
 	mInterfaceDeclaration.push_back(Token(Token::Type::VISIBILITY));
 	mInterfaceDeclaration.push_back(Token(Token::Type::RESERVED_WORD, std::string(RESERVED_WORD_INTERFACE)));
 	mInterfaceDeclaration.push_back(Token(Token::Type::IDENTIFER));
 
 	// library declaration
+	// import <identifier> ;
 	mLibraryDeclaration.push_back(Token(Token::Type::RESERVED_WORD, std::string(RESERVED_WORD_IMPORT)));
 	mLibraryDeclaration.push_back(Token(Token::Type::IDENTIFER));
 	mLibraryDeclaration.push_back(Token(Token::Type::SEMICOLON));
 
 	// namespace declaration
+	// <visibility> namespace [language feature] <identifier> { ... }
 	mNamespaceDeclaration.push_back(Token(Token::Type::VISIBILITY));
 	mNamespaceDeclaration.push_back(Token(Token::Type::RESERVED_WORD, std::string(RESERVED_WORD_NAMESPACE)));
 	mNamespaceDeclaration.push_back(Token(Token::Type::IDENTIFER));
 
 	// object declaration
+	// <visibility> object [language feature] <identifier> [extends <identifier> [implements <identifier>, ...]] { ... }
 	mObjectDeclaration.push_back(Token(Token::Type::VISIBILITY));
 	mObjectDeclaration.push_back(Token(Token::Type::RESERVED_WORD, std::string(RESERVED_WORD_OBJECT)));
 	mObjectDeclaration.push_back(Token(Token::Type::IDENTIFER));
 
 	// prototype declaration
+	// <visibility> prototype [language feature] <identifier> [extends <identifier> [implements <identifier>, ...]] { ... }
 	mPrototypeDeclaration.push_back(Token(Token::Type::VISIBILITY));
 	mPrototypeDeclaration.push_back(Token(Token::Type::RESERVED_WORD, std::string(RESERVED_WORD_PROTOTYPE)));
 	mPrototypeDeclaration.push_back(Token(Token::Type::IDENTIFER));

@@ -2,6 +2,7 @@ INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
 ADD_SUBDIRECTORY(Attributes)
 ADD_SUBDIRECTORY(Inheritance)
+ADD_SUBDIRECTORY(Interfaces)
 ADD_SUBDIRECTORY(Language)
 ADD_SUBDIRECTORY(Math)
 ADD_SUBDIRECTORY(Operator)
@@ -21,6 +22,7 @@ SET(DEPENDENCIES
 	Test_Operator
 	Test_Math
 	Test_Language
+	Test_Interfaces
 	Test_Inheritance
 	Test_Attributes
 	Core
