@@ -6,7 +6,14 @@ public namespace Language
 	{
 		public void Main(number argc = 0, string argv = "")
 		{
+			assert( TestCase1() );
+		}
+
+		private bool TestCase1() const
+		{
 			test_print(" parameter ");
+
+			return true;
 		}
 
 		public void test_print(string param1)
@@ -17,7 +24,7 @@ public namespace Language
 			print("print text with special characters: ,.-;:_#'+*?`??");
 			print("print text with\t\ttabs");
 			print(1 + 2);
-			print(1 + param1 + 2);
+			print((string 1) + param1 + (string 2));
 		}
 	}
 }
