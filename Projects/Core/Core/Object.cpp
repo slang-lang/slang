@@ -519,7 +519,7 @@ void Object::setValue(const std::string& value)
 
 std::string Object::ToString() const
 {
-	std::string result = getName() + /*" " + Typename()*/ + " = " + getValue();
+	std::string result = Typename() + " " + getName() + " = " + getValue();
 
 	if ( !isAtomicType() ) {
 		result += " { ";
@@ -533,7 +533,8 @@ std::string Object::ToString() const
 			}
 		}
 		for ( Symbols::const_iterator it = mSymbols.begin(); it != mSymbols.end(); ++it ) {
-			if ( !it->second || it->second->getType() != Symbol::IType::ObjectSymbol ) {
+			if ( it->first == KEYWORD_BASE || it->first == KEYWORD_THIS ||
+				 !it->second || it->second->getType() != Symbol::IType::ObjectSymbol ) {
 				continue;
 			}
 
