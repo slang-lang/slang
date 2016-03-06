@@ -45,9 +45,6 @@ public: // Operators
 	virtual void operator_multiply(Object *other);
 	virtual void operator_plus(Object *other);
 	virtual void operator_subtract(Object *other);
-
-public: // Value
-	virtual std::string ToString() const;
 };
 
 
