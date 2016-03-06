@@ -331,7 +331,7 @@ void NumberObject::setNativeValue(float value)
 void NumberObject::setValue(const std::string& value)
 {
 	mNativeValue = Tools::stringToFloat(value);
-	mValue = value;
+	mValue = Tools::toString(mNativeValue);		// this conversion is necessary because these two values could drift apart because std::string can also hold floating point values
 }
 
 std::string NumberObject::ToString() const

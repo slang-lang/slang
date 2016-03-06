@@ -11,6 +11,8 @@ public namespace Math
 			mNumber = 1;
 
 			print("mNumber = " + mNumber);
+
+			assert( mNumber == 1i );
 		}
 	}
 }

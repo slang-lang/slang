@@ -105,7 +105,9 @@ void FloatObject::operator_assign(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == FloatObject::TYPENAME ) {
+	if ( target == FloatObject::TYPENAME ||
+		 target == IntegerObject::TYPENAME ||
+		 target == NumberObject::TYPENAME) {
 		FloatObject tmp(Tools::stringToFloat(other->getValue()));
 
 		operator_assign(&tmp);
@@ -124,7 +126,9 @@ void FloatObject::operator_divide(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == FloatObject::TYPENAME ) {
+	if ( target == FloatObject::TYPENAME ||
+		 target == IntegerObject::TYPENAME ||
+		 target == NumberObject::TYPENAME) {
 		FloatObject tmp(Tools::stringToFloat(other->getValue()));
 
 		operator_divide(&tmp);
@@ -143,7 +147,9 @@ bool FloatObject::operator_equal(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == FloatObject::TYPENAME ) {
+	if ( target == FloatObject::TYPENAME ||
+		 target == IntegerObject::TYPENAME ||
+		 target == NumberObject::TYPENAME) {
 		FloatObject tmp(Tools::stringToFloat(other->getValue()));
 
 		return operator_equal(&tmp);
@@ -161,7 +167,9 @@ bool FloatObject::operator_greater(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == FloatObject::TYPENAME ) {
+	if ( target == FloatObject::TYPENAME ||
+		 target == IntegerObject::TYPENAME ||
+		 target == NumberObject::TYPENAME) {
 		FloatObject tmp(Tools::stringToFloat(other->getValue()));
 
 		return operator_greater(&tmp);
@@ -179,7 +187,9 @@ bool FloatObject::operator_greater_equal(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == FloatObject::TYPENAME ) {
+	if ( target == FloatObject::TYPENAME ||
+		 target == IntegerObject::TYPENAME ||
+		 target == NumberObject::TYPENAME) {
 		FloatObject tmp(Tools::stringToFloat(other->getValue()));
 
 		return operator_greater_equal(&tmp);
@@ -197,7 +207,9 @@ bool FloatObject::operator_less(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == FloatObject::TYPENAME ) {
+	if ( target == FloatObject::TYPENAME ||
+		 target == IntegerObject::TYPENAME ||
+		 target == NumberObject::TYPENAME) {
 		FloatObject tmp(Tools::stringToFloat(other->getValue()));
 
 		return operator_less(&tmp);
@@ -215,7 +227,9 @@ bool FloatObject::operator_less_equal(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == FloatObject::TYPENAME ) {
+	if ( target == FloatObject::TYPENAME ||
+		 target == IntegerObject::TYPENAME ||
+		 target == NumberObject::TYPENAME) {
 		FloatObject tmp(Tools::stringToFloat(other->getValue()));
 
 		return operator_less_equal(&tmp);
@@ -233,7 +247,9 @@ void FloatObject::operator_multiply(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == FloatObject::TYPENAME ) {
+	if ( target == FloatObject::TYPENAME ||
+		 target == IntegerObject::TYPENAME ||
+		 target == NumberObject::TYPENAME) {
 		FloatObject tmp(Tools::stringToFloat(other->getValue()));
 
 		operator_multiply(&tmp);
@@ -252,7 +268,9 @@ void FloatObject::operator_plus(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == FloatObject::TYPENAME ) {
+	if ( target == FloatObject::TYPENAME ||
+		 target == IntegerObject::TYPENAME ||
+		 target == NumberObject::TYPENAME) {
 		FloatObject tmp(Tools::stringToFloat(other->getValue()));
 
 		operator_plus(&tmp);
@@ -271,7 +289,9 @@ void FloatObject::operator_subtract(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == FloatObject::TYPENAME ) {
+	if ( target == FloatObject::TYPENAME ||
+		 target == IntegerObject::TYPENAME ||
+		 target == NumberObject::TYPENAME) {
 		FloatObject tmp(Tools::stringToFloat(other->getValue()));
 
 		operator_subtract(&tmp);
@@ -304,13 +324,13 @@ void FloatObject::operator_unary_not()
 void FloatObject::setNativeValue(float value)
 {
 	mNativeValue = value;
-	mValue = Tools::toString(mNativeValue);
+	mValue = Tools::toString(value);
 }
 
 void FloatObject::setValue(const std::string& value)
 {
 	mNativeValue = Tools::stringToFloat(value);
-	mValue = value;
+	mValue = Tools::toString(mNativeValue);		// this conversion is necessary because these two values could drift apart because std::string can also hold floating point values
 }
 
 std::string FloatObject::ToString() const

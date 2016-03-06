@@ -6,8 +6,8 @@ public namespace StackTest
 {
 	private object Node
 	{
-		public Node Next;
-		public number Value;
+		private Node _next;
+		private number _value;
 
 		public void Node()
 		{
@@ -15,13 +15,13 @@ public namespace StackTest
 
 		public void Node(number value)
 		{
-			Value = value;
+			_value = value;
 		}
 
 		public void Node(number value, Node node)
 		{
-			Next = node;
-			Value = value;
+			_next = node;
+			_value = value;
 		}
 	}
 
