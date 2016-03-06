@@ -31,8 +31,13 @@ public:
     void teardown();
 
 private:	// Tests
-    void testBasicInheritance();
+    void testBasicInheritanceTest();
+	void testDefaultConstructorTest();
+	void testExceptionDuringConstructorTest();
+	void testExceptionDuringDestructorTest();
+	void testHybridConstructorTest();
 	void testKeywordBase();
+	void testSpecializedConstructorTest();
 };
 
 
