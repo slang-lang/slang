@@ -39,4 +39,3 @@ public object Main
 		DerivedObject derived = new DerivedObject(5);
 	}
 }
-

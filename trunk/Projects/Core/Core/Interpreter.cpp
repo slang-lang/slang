@@ -290,9 +290,7 @@ void Interpreter::parseInfixPostfix(Object *result, TokenIterator& start)
 		case Token::Type::TYPE: {
 			std::string newType = start->content();
 			start++;
-
 			expression(result, start);
-
 			typecast(result, newType);
 		} break;
 		default: {
@@ -365,15 +363,20 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 			}
 		} break;
 		case Token::Type::KEYWORD: {
-			process(result, start, getTokens().end(), Token::Type::SEMICOLON);
+			TokenIterator semicolon = findNext(start, Token::Type::SEMICOLON);
+
+			process(result, start, semicolon, Token::Type::SEMICOLON);
+
+			return;
 		} break;
 		case Token::Type::SEMICOLON: {
 			return;
-
+/*
 			if ( result->Typename() == VoidObject::TYPENAME ) {
 				// this is okay, as long as we have a been called by a return command in a void method
 				return;
 			}
+*/
 		} break;
 		default: {
 			throw Utils::Exceptions::SyntaxError("identifier, literal or number expected but " + start->content() + " found", start->position());
