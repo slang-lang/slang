@@ -2,6 +2,21 @@
 
 public namespace ExceptionTest
 {
+	private object Exception
+	{
+		private string _exception;
+
+		private void Exception(string ex)
+		{
+			_exception = ex;
+		}
+
+		public string what() const
+		{
+			return "Exception: " + _exception;
+		}
+	}
+
 	private object ObjectThatThrows
 	{
 /*
@@ -14,7 +29,7 @@ public namespace ExceptionTest
 		{
 			print("MethodThatThrows()");
 
-			throw;
+			throw new Exception("MethodThatThrows");
 		}
 	}
 
@@ -80,7 +95,7 @@ public namespace ExceptionTest
 
 				assert( false );
 			}
-			catch {
+			catch (bool exception) {
 				number one = 2;
 				print("one = " + one);
 			}
