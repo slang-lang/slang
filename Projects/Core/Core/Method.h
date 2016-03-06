@@ -50,6 +50,7 @@ public:	// Symbol::IType implementation
 
 public: // Execution
 	ControlFlow::E execute(const ParameterList& params, Object *result);
+	Object* getExceptionData() const;
 
 	Symbol* resolve(const std::string& name, bool onlyCurrentScope = false) const;
 	Symbol* resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope = false) const;
@@ -71,6 +72,7 @@ private: // Deinit
 	void garbageCollector();
 
 private:
+	Object *mExceptionData;
 	Repository *mRepository;
 	ParameterList mSignature;
 	TokenList mTokens;

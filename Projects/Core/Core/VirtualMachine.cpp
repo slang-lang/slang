@@ -9,7 +9,6 @@
 // Project includes
 #include <Core/Utils/Utils.h>
 #include "Analyser.h"
-#include "Memory.h"
 #include "Repository.h"
 #include "Script.h"
 #include "Tools.h"
@@ -22,11 +21,9 @@ namespace ObjectiveScript {
 
 VirtualMachine::VirtualMachine()
 : mBaseFolder(""),
-  mMemory(0),
   mRepository(0),
   mScope(0)
 {
-	mMemory = new Memory();
 	mRepository = new Repository();
 	mScope = new GlobalScope();
 }
@@ -43,7 +40,6 @@ VirtualMachine::~VirtualMachine()
 
 	delete mScope;
 	delete mRepository;
-	delete mMemory;
 }
 
 std::string VirtualMachine::buildLibraryPath(const std::string& library) const

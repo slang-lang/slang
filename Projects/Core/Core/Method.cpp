@@ -12,6 +12,7 @@
 #include <Core/Utils/Utils.h>
 #include "Object.h"
 #include "Repository.h"
+#include "System.h"
 #include "Tools.h"
 
 // Namespace declarations
@@ -24,6 +25,7 @@ namespace Runtime {
 Method::Method(IScope *parent, const std::string& name, const std::string& type)
 : LocalScope(name, parent),
   MethodSymbol(name),
+  mExceptionData(0),
   mRepository(0),
   mTypeName(type)
 {
@@ -194,6 +196,7 @@ ControlFlow::E Method::execute(const ParameterList& params, Object *result)
 				throw Utils::Exceptions::Exception("unnatural method return at '" + getName() + "'");
 			}
 
+			// correct behaviour detected, override control flow with normal state
 			controlflow = ControlFlow::Normal;
 			break;
 		case ControlFlow::Return:
@@ -202,10 +205,16 @@ ControlFlow::E Method::execute(const ParameterList& params, Object *result)
 				throw Utils::Exceptions::Exception("invalid return of type '" + result->Typename() + "' in '" + getName() + "'");
 			}
 
+			// correct behaviour detected, override control flow with normal state
 			controlflow = ControlFlow::Normal;
 			break;
 		case ControlFlow::Throw:
 			// an ObjectiveScript exception has been thrown
+			mExceptionData = interpreter.getExceptionData();
+
+			if ( mExceptionData ) {
+				System::Print("Found uncaught exception: " + mExceptionData->ToString());
+			}
 			break;
 	}
 
@@ -225,9 +234,9 @@ void Method::garbageCollector()
 	mSymbols.clear();
 }
 
-const std::string& Method::Typename() const
+Object* Method::getExceptionData() const
 {
-	return mTypeName;
+	return mExceptionData;
 }
 
 bool Method::isSignatureValid(const ParameterList& params) const
@@ -362,8 +371,14 @@ void Method::setTokens(const TokenList& tokens)
 
 std::string Method::ToString() const
 {
-	return Typename() + " " + getName();
+	return Typename() + " " + getName() + "(" + toString(mSignature) + ")";
 }
+
+const std::string& Method::Typename() const
+{
+	return mTypeName;
+}
+
 
 }
 }

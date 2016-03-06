@@ -5,6 +5,7 @@
 // Library includes
 
 // Project includes
+#include <Core/Runtime/ControlFlow.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Utils/Utils.h>
 #include "Object.h"
@@ -50,7 +51,11 @@ void Script::construct(const ParameterList& params)
 	mObject->setRepository(mRepository);
 
 	try {
-		mObject->Constructor(params);
+		Runtime::ControlFlow::E controlflow = mObject->Constructor(params);
+
+		if ( controlflow != Runtime::ControlFlow::Normal ) {
+			throw Utils::Exceptions::ControlFlowException("in " + mObject->getFullName() + "::" + mObject->Typename());
+		}
 	}
 	catch ( Utils::Exceptions::Exception &e ) {
 		// catch and log all errors that occurred during method execution
@@ -78,7 +83,11 @@ Runtime::Object Script::execute(const std::string& method, const ParameterList& 
 
 	Runtime::Object returnValue;
 	try {
-		mObject->execute(&returnValue, method, params);
+		Runtime::ControlFlow::E controlflow = mObject->execute(&returnValue, method, params);
+
+		if ( controlflow != Runtime::ControlFlow::Normal ) {
+			throw Utils::Exceptions::ControlFlowException("in " + mObject->getFullName() + "::" + method);
+		}
 	}
 	catch ( Utils::Exceptions::Exception &e ) {
 		OSerror(e.what());

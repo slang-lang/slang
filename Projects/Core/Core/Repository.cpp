@@ -14,6 +14,7 @@
 #include <Core/BuildInObjects/VoidObject.h>
 #include <Core/Designtime/BuildInTypes/BoolObject.h>
 #include <Core/Designtime/BuildInTypes/FloatObject.h>
+#include <Core/Designtime/BuildInTypes/GenericObject.h>
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
 #include <Core/Designtime/BuildInTypes/NumberObject.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
@@ -37,6 +38,7 @@ Repository::Repository()
 	addBlueprint(Designtime::NumberObject());
 	addBlueprint(Designtime::StringObject());
 	addBlueprint(Designtime::VoidObject());
+	addBlueprint(Designtime::GenericObject());
 }
 
 Repository::~Repository()
