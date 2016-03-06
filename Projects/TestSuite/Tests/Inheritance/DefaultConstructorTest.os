@@ -18,8 +18,6 @@ private object DerivedObject extends BaseObject
 	public void DerivedObject()
 	{
 		print("DerivedObject()");
-
-		//base.BaseObject();
 	}
 
 	public void ~DerivedObject()
@@ -30,9 +28,8 @@ private object DerivedObject extends BaseObject
 
 public object Main
 {
-	public void Main(number argc, string argv)
+	public void Main(number argc = 0, string argv = "")
 	{
 		DerivedObject derived;
 	}
 }
-

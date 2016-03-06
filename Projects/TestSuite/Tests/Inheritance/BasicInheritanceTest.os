@@ -5,7 +5,8 @@ public namespace Inheritance
 	public object BaseObject
 	{
 		public void ~BaseObject()
-		{ }
+		{
+		}
 
 		public string getName() const
 		{
@@ -17,7 +18,6 @@ public namespace Inheritance
 	{
 		public void ~ExtendedObject()
 		{
-			delete base;
 		}
 
 		public string getExtendedName() const

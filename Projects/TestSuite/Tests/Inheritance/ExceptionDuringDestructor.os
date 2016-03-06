@@ -12,13 +12,13 @@ private object TestObject
 		print("~TestObject()");
 
 		print("throw in destructor");
-		throw;
+		throw 42;
 	}
 }
 
 public object Main
 {
-	public void Main(number argc, string argv)
+	public void Main(number argc = 0, string argv = "")
 	{
 		//try {
 			TestObject obj;

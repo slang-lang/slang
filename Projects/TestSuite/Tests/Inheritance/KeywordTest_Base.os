@@ -35,16 +35,11 @@ public namespace Inheritance
 
 	private object DerivedObject extends BaseObject
 	{
-		//protected BaseObject mBaseObject;
-
 		public void DerivedObject(number value)
 		{
 			print("DerivedObject(" + value + ")");
 
 			base.BaseObject(value);
-
-			//mBaseObject = new BaseObject(5);
-			//mBaseObject.setValue(9);
 		}
 
 		public void ~DerivedObject()
@@ -59,9 +54,7 @@ public namespace Inheritance
 
 		public number getValue() const
 		{
-			number baseValue = 1 + base.getValue();
-
-			return baseValue;
+			return 1 + base.getValue();
 		}
 
 		public void ThisMethodOnlyExistsInDerivedObject()
@@ -86,9 +79,7 @@ public namespace Inheritance
 
 		public number getValue() const
 		{
-			number baseValue = 1 + base.getValue();
-
-			return baseValue;
+			return 1 + base.getValue();
 		}
 
 		public number getBaseValue() const
