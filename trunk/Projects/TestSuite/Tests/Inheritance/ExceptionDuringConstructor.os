@@ -7,7 +7,7 @@ private object TestObject
 		print("TestObject()");
 
 		print("throw in constructor");
-		throw 17;
+		throw 42;
 	}
 
 	public void ~TestObject()
@@ -18,11 +18,11 @@ private object TestObject
 
 public object Main
 {
-	public void Main(number argc, string argv)
+	public void Main(number argc = 0, string argv = "")
 	{
-		try {
+		//try {
 			TestObject obj;
-		}
+		//}
 	}
 }
 

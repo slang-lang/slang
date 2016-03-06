@@ -7,6 +7,7 @@ private object BaseObject
 	public void BaseObject(number value)
 	{
 		print("BaseObject(" + value + ")");
+
 		mValue = value;
 	}
 
@@ -33,7 +34,7 @@ private object DerivedObject extends BaseObject
 
 public object Main
 {
-	public void Main(number argc, string argv)
+	public void Main(number argc = 0, string argv = "")
 	{
 		DerivedObject derived;
 	}
