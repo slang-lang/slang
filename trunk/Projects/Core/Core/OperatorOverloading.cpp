@@ -35,7 +35,8 @@ void operator_assign(Object *base, Object *other)
 
 	std::string source = base->Typename();
 
-	if ( source == ANONYMOUS_OBJECT ) {
+	//if ( source == ANONYMOUS_OBJECT) {
+	if ( !base->isValid() ) {
 		// assign directly because our base has not yet been initialized
 		*base = *other;
 	}

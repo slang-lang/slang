@@ -177,11 +177,7 @@ ControlFlow::E Object::Constructor(const ParameterList& params)
 	if ( mIsConstructed ) {
 		throw Utils::Exceptions::Exception("can not construct object '" + getName() + "' multiple times");
 	}
-/*
-	if ( !mIsAtomicType ) {
-		System::Print("C++ (Constructor-Begin): " + getName() + "::" + Typename() + "()");
-	}
-*/
+
 	// execute parent object constructors
 	for ( Inheritance::iterator it = mInheritance.begin(); it != mInheritance.end(); ++it ) {
 		if ( !it->second->CanExecuteDefaultConstructor() ) {
@@ -189,7 +185,11 @@ ControlFlow::E Object::Constructor(const ParameterList& params)
 		}
 
 		// try to execute the default constructor
-		it->second->Constructor(ParameterList());
+		controlflow = it->second->Constructor(ParameterList());
+
+		if ( controlflow != ControlFlow::Normal ) {
+			return controlflow;
+		}
 	}
 
 	// check if we have implemented at least one constructor
@@ -203,7 +203,7 @@ ControlFlow::E Object::Constructor(const ParameterList& params)
 			controlflow = constructor->execute(params, &tmp);
 
 			if ( controlflow != ControlFlow::Normal ) {
-				throw Utils::Exceptions::ControlFlowException("at " + Typename());
+				return controlflow;
 			}
 		}
 		else {
@@ -222,11 +222,6 @@ ControlFlow::E Object::Constructor(const ParameterList& params)
 		}
 	}
 */
-/*
-	if ( !mIsAtomicType ) {
-		System::Print("C++ (Constructor-End): " + getName() + "::" + Typename() + "()");
-	}
-*/
 
 	// set after executing constructor in case any exceptions have been thrown
 	mIsConstructed = true;
@@ -239,12 +234,10 @@ ControlFlow::E Object::Destructor()
 	ControlFlow::E controlflow = ControlFlow::Normal;
 
 	if ( mIsConstructed ) {
+		mIsConstructed = false;
+
 		ParameterList params;
-/*
-		if ( !mIsAtomicType ) {
-			System::Print("C++ (Destructor-Begin): " + getName() + "::~" + Typename() + "()");
-		}
-*/
+
 		// only execute destructor if one is present
 		Method *destructor = static_cast<Method*>(resolveMethod("~" + Typename(), params, true));
 		if ( destructor ) {
@@ -252,19 +245,18 @@ ControlFlow::E Object::Destructor()
 			controlflow = destructor->execute(params, &tmp);
 
 			if ( controlflow != ControlFlow::Normal ) {
-				throw Utils::Exceptions::ControlFlowException("at " + Typename());
+				return controlflow;
 			}
 		}
 
-		// execute base object's destructor
+		// force execution of base object's destructor
 		for ( Inheritance::iterator it = mInheritance.begin(); it != mInheritance.end(); ++it ) {
-			it->second->Destructor();
+			controlflow = it->second->Destructor();
+
+			if ( controlflow != ControlFlow::Normal ) {
+				return controlflow;
+			}
 		}
-/*
-		if ( !mIsAtomicType ) {
-			System::Print("C++ (Destructor-End): " + getName() + "::~" + Typename() + "()");
-		}
-*/
 	}
 	else {
 		// either the destructor has already been executed
@@ -278,13 +270,13 @@ ControlFlow::E Object::Destructor()
 	return controlflow;
 }
 
-ControlFlow::E Object::execute(Object *result, const std::string& method, const ParameterList& params, const Method* caller)
+ControlFlow::E Object::execute(Object *result, const std::string& name, const ParameterList& params, const Method* caller)
 {
-	OSdebug("execute('" + method + "', [" + toString(params) + "])");
+	OSdebug("execute('" + name + "', [" + toString(params) + "])");
 
-	Method *symbol = static_cast<Method*>(resolveMethod(method, params, false));
-	if ( !symbol ) {
-		throw Utils::Exceptions::UnknownIdentifer("unknown method '" + method + "' or method with invalid parameter count called!");
+	Method *method = static_cast<Method*>(resolveMethod(name, params, false));
+	if ( !method ) {
+		throw Utils::Exceptions::UnknownIdentifer("unknown method '" + name + "' or method with invalid parameter count called!");
 	}
 
 	// are we called from a colleague method?
@@ -293,15 +285,19 @@ ControlFlow::E Object::execute(Object *result, const std::string& method, const 
 	// check visibility:
 	// colleague methods can always call us,
 	// for calls from non-member functions the method visibility must be public (or protected if they belong to the same object hierarchy)
-	if ( !callFromMethod && symbol->getVisibility() != Visibility::Public ) {
-		throw Utils::Exceptions::VisibilityError("invalid visibility: " + method);
+	if ( !callFromMethod && method->getVisibility() != Visibility::Public ) {
+		throw Utils::Exceptions::VisibilityError("invalid visibility: " + name);
 	}
 
 	result->setRepository(mRepository);
-	symbol->setRepository(mRepository);
+	method->setRepository(mRepository);
 
 	// execute our member method
-	return symbol->execute(params, result);
+	ControlFlow::E controlflow = method->execute(params, result);
+
+	// TODO: process control flow
+
+	return controlflow;
 }
 
 void Object::garbageCollector()
@@ -529,7 +525,7 @@ std::string Object::ToString() const
 		result += " { ";
 
 		for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
-			result += (*it)->Typename() + " " + (*it)->getName();
+			result += (*it)->ToString();
 
 			MethodCollection::const_iterator copy = it;
 			if ( ++copy != mMethods.end() ) {
@@ -541,7 +537,7 @@ std::string Object::ToString() const
 				continue;
 			}
 
-			result += static_cast<Object*>(it->second)->ToString();
+			result += it->second->ToString();
 
 			Symbols::const_iterator copy = it;
 			if ( ++copy != mSymbols.end() ) {

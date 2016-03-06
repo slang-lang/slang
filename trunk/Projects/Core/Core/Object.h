@@ -12,6 +12,7 @@
 #include <Core/Attributes/Attributes.h>
 #include <Core/Designtime/Ancestor.h>
 #include <Core/Designtime/BluePrint.h>
+#include <Core/Runtime/ControlFlow.h>
 #include "Interpreter.h"
 #include "Method.h"
 #include "Parameter.h"

@@ -7,6 +7,7 @@
 #include <list>
 
 // Project includes
+#include <Core/Runtime/ControlFlow.h>
 #include "Parameter.h"
 #include "Scope.h"
 #include "Token.h"
@@ -26,17 +27,6 @@ namespace Runtime {
 // Forward declarations
 class Object;
 
-class ControlFlow
-{
-public:
-	typedef enum {
-		Break,
-		Continue,
-		Normal,
-		Return,
-		Throw
-	} E;
-};
 
 class Interpreter : public LocalScope,
 					public GenericAttributes
@@ -51,6 +41,7 @@ public:
 
 public: // Execution
 	ControlFlow::E execute(Object *result);
+	Object* getExceptionData() const;
 
 private: // private types
 	typedef std::list<TokenList> TokenStack;
@@ -106,6 +97,7 @@ private: // Execution
 
 private:
 	ControlFlow::E mControlFlow;
+	Object *mExceptionData;
 	Repository *mRepository;
 	TokenList mTokens;
 	TokenStack mTokenStack;

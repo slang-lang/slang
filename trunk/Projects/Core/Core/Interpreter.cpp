@@ -33,6 +33,7 @@ namespace Runtime {
 Interpreter::Interpreter(IScope *scope, const std::string& name)
 : LocalScope(name, scope),
   mControlFlow(ControlFlow::Normal),
+  mExceptionData(0),
   mRepository(0)
 {
 }
@@ -123,6 +124,11 @@ ControlFlow::E Interpreter::interpret(const TokenList& tokens, Object* result)
 	ControlFlow::E controlflow = interpreter.execute(result);
 
 	return controlflow;
+}
+
+Object* Interpreter::getExceptionData() const
+{
+	return mExceptionData;
 }
 
 void Interpreter::parseCondition(Object *result, TokenIterator& start)
@@ -284,7 +290,9 @@ void Interpreter::parseInfixPostfix(Object *result, TokenIterator& start)
 		case Token::Type::TYPE: {
 			std::string newType = start->content();
 			start++;
-			parseTerm(result, start);
+
+			expression(result, start);
+
 			typecast(result, newType);
 		} break;
 		default: {
@@ -360,6 +368,8 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 			process(result, start, getTokens().end(), Token::Type::SEMICOLON);
 		} break;
 		case Token::Type::SEMICOLON: {
+			return;
+
 			if ( result->Typename() == VoidObject::TYPENAME ) {
 				// this is okay, as long as we have a been called by a return command in a void method
 				return;
@@ -960,6 +970,7 @@ assert(!"not implemented");
 // throw;
 void Interpreter::process_throw(TokenIterator& token, Object *result)
 {
+/*
 	TokenIterator begin = token;
 	TokenIterator semicolon = findNext(token, Token::Type::SEMICOLON);
 
@@ -978,6 +989,19 @@ void Interpreter::process_throw(TokenIterator& token, Object *result)
 		process(result, tmpBegin, tmpEnd);
 	}
 	popTokens();
+
+	mControlFlow = ControlFlow::Throw;
+
+	token = semicolon;
+*/
+
+(void)result;
+
+	TokenIterator semicolon = findNext(token, Token::Type::SEMICOLON);
+
+	mExceptionData = mRepository->createInstance(GENERIC_OBJECT, ANONYMOUS_OBJECT);
+
+	expression(mExceptionData, token);
 
 	mControlFlow = ControlFlow::Throw;
 

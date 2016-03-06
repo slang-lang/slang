@@ -2,6 +2,7 @@ INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
 ADD_SUBDIRECTORY(Attributes)
 ADD_SUBDIRECTORY(BuildInObjects)
+#ADD_SUBDIRECTORY(Common)
 ADD_SUBDIRECTORY(Designtime)
 #ADD_SUBDIRECTORY(Helpers)
 #ADD_SUBDIRECTORY(Interfaces)
@@ -11,7 +12,7 @@ ADD_SUBDIRECTORY(Utils)
 SET(SOURCES
 	Analyser.cpp
 	Interpreter.cpp
-	Memory.cpp
+#	Memory.cpp
 	Method.cpp
 	Object.cpp
 	OperatorOverloading.cpp
@@ -36,7 +37,7 @@ SET(HEADERS
 	Analyser.h
 	Consts.h
 	Interpreter.h
-	Memory.h
+#	Memory.h
 	Method.h
 	Object.h
 	ObjectiveScript.h
@@ -65,6 +66,7 @@ SET(DEPENDENCIES
 #	CoreHelpers
 	CoreDesigntimeBuildInTypes
 	CoreDesigntime
+#	CoreCommon
 	CoreBuildInObjects
 	CoreAttributes
 	Utils
