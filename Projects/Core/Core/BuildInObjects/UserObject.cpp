@@ -166,11 +166,6 @@ void UserObject::operator_subtract(Object *other)
 	this->execute(&tmp, "operator-", params, 0);
 }
 
-std::string UserObject::ToString() const
-{
-	return Typename() + " " + getName();// + " = " + getValue();
-}
-
 
 }
 }
