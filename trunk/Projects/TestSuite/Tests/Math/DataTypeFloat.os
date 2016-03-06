@@ -8,9 +8,11 @@ public namespace Math
 
 		public void Main(number argc = 0, string argv = "")
 		{
-			mNumber = 1.0f;
+			mNumber = 1.f;
 
 			print("mNumber = " + mNumber);
+
+			assert( mNumber == 1.f );
 		}
 	}
 }

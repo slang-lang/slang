@@ -25,7 +25,13 @@ private object DerivedObject extends TestObject
 
 private object Retyped replicates TestObject;
 
-//private prototype Proto<
+/*
+private prototype Proto<value>
+{
+}
+
+private object RetypedProto replicates Proto<number>;
+*/
 
 private object Main
 {
