@@ -296,6 +296,20 @@ ControlFlow::E Object::execute(Object *result, const std::string& name, const Pa
 	ControlFlow::E controlflow = method->execute(params, result);
 
 	// TODO: process control flow
+	if ( controlflow == ControlFlow::Normal ) {
+		switch ( method->getMethodType() ) {
+			case MethodAttributes::MethodType::Constructor:
+				assert(!"constructor");
+				mIsConstructed = true;
+				break;
+			case MethodAttributes::MethodType::Destructor:
+				assert(!"destructor");
+				mIsConstructed = false;
+				break;
+			default:
+				break;
+		}
+	}
 
 	return controlflow;
 }

@@ -82,8 +82,14 @@ void GenericAttributes::setVisibility(Visibility::E v)
 
 MethodAttributes::MethodAttributes()
 : mIsAbstract(false),
-  mIsRecursive(false)
+  mIsRecursive(false),
+  mMethodType(MethodType::Method)
 {
+}
+
+MethodAttributes::MethodType::E MethodAttributes::getMethodType() const
+{
+	return mMethodType;
 }
 
 bool MethodAttributes::isAbstract() const
@@ -104,6 +110,11 @@ void MethodAttributes::setAbstract(bool state)
 void MethodAttributes::setRecursive(bool state)
 {
 	mIsRecursive = state;
+}
+
+void MethodAttributes::setMethodType(MethodType::E type)
+{
+	mMethodType = type;
 }
 
 NamespaceAttributes::NamespaceAttributes()

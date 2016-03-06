@@ -51,6 +51,17 @@ protected:
 class MethodAttributes : public GenericAttributes
 {
 public:
+	class MethodType
+	{
+	public:
+		enum E {
+			Constructor,
+			Destructor,
+			Method
+		};
+	};
+
+public:
 	MethodAttributes();
 
 public:
@@ -60,9 +71,13 @@ public:
 	virtual bool isRecursive() const;
 	virtual void setRecursive(bool state);
 
+	virtual MethodType::E getMethodType() const;
+	virtual void setMethodType(MethodType::E type);
+
 protected:
 	bool mIsAbstract;
 	bool mIsRecursive;
+	MethodType::E mMethodType;
 };
 
 

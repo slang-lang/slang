@@ -97,6 +97,7 @@ void Method::operator= (const Method& other)
 		mIsRecursive = other.mIsRecursive;
 		mIsSealed = other.mIsSealed;
 		mLanguageFeatureState = other.mLanguageFeatureState;
+		mMethodType = other.mMethodType;
 		mRepository = other.mRepository;
 		mSignature = other.mSignature;
 		mTokens = other.mTokens;

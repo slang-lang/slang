@@ -101,7 +101,7 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token)
 	bool isConst = true;		// all methods are const by default
 	bool isFinal = false;
 	bool isRecursive = false;
-	bool isStructor = false;
+	MethodAttributes::MethodType::E methodType = MethodAttributes::MethodType::Method;
 	std::string name;
 	std::string languageFeature;
 	std::string type;
@@ -118,13 +118,19 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token)
 	// look for the identifier token
 	name = (*token++).content();
 
-	if ( name == mBluePrint->Typename() ||
-		 name == "~" + mBluePrint->Typename() ) {
+	if ( name == mBluePrint->Typename() ) {
 		// these methods have the same name as their containing object,
 		// so this has to be a constructor or a destructor;
 		// they can never ever be const, ever
 		isConst = false;
-		isStructor = true;
+		methodType = MethodAttributes::MethodType::Constructor;
+	}
+	else if ( name == "~" + mBluePrint->Typename() ) {
+		// these methods have the same name as their containing object,
+		// so this has to be a constructor or a destructor;
+		// they can never ever be const, ever
+		isConst = false;
+		methodType = MethodAttributes::MethodType::Destructor;
 	}
 
 	// look for the next opening parenthesis
@@ -162,7 +168,8 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token)
 		}
 	} while ( isModifierToken && token->type() != Token::Type::BRACKET_CURLY_OPEN );
 
-	if ( isStructor && isConst ) {
+	if ( isConst &&
+		(methodType == MethodAttributes::MethodType::Constructor || methodType == MethodAttributes::MethodType::Destructor) ) {
 		throw Utils::Exceptions::SyntaxError("constructor or destructor cannot be const");
 	}
 
@@ -182,6 +189,7 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token)
 	method->setConst(isConst);
 	method->setFinal(isFinal);
 	method->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
+	method->setMethodType(methodType);
 	method->setRecursive(isRecursive);
 	method->setRepository(mRepository);
 	method->setSignature(params);
