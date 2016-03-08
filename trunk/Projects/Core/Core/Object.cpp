@@ -151,6 +151,14 @@ void Object::addInheritance(const Designtime::Ancestor& ancestor, Object* inheri
 	mInheritance.insert(std::make_pair(ancestor, inheritance));
 }
 
+bool Object::CanExecuteDefaultConstructor() const
+{
+	Symbol* anyConstructor = resolve(Typename(), false);
+	Symbol* defaultConstructor = resolveMethod(Typename(), ParameterList(), true);
+
+	return !anyConstructor || defaultConstructor;
+}
+
 ControlFlow::E Object::Constructor(const ParameterList& params)
 {
 	ControlFlow::E controlflow = ControlFlow::Normal;
@@ -171,10 +179,15 @@ ControlFlow::E Object::Constructor(const ParameterList& params)
 
 	// execute parent object constructors
 	for ( Inheritance::iterator it = mInheritance.begin(); it != mInheritance.end(); ++it ) {
-		Symbol *anyConstructor = it->second->resolve(Typename(), false);
-		Symbol *defaultConstructor = it->second->resolveMethod(Typename(), ParameterList(), true);
+/*
+		Symbol* anyConstructor = it->second->resolve(Typename(), false);
+		Symbol* defaultConstructor = it->second->resolveMethod(Typename(), ParameterList(), true);
 
-		if ( !anyConstructor || defaultConstructor ) {
+		if ( anyConstructor && !defaultConstructor ) {
+			break;
+		}
+*/
+		if ( !it->second->CanExecuteDefaultConstructor() ) {
 			break;
 		}
 
