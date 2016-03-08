@@ -6,7 +6,7 @@ ADD_SUBDIRECTORY(BuildInObjects)
 ADD_SUBDIRECTORY(Designtime)
 #ADD_SUBDIRECTORY(Helpers)
 #ADD_SUBDIRECTORY(Interfaces)
-#ADD_SUBDIRECTORY(Runtime)
+ADD_SUBDIRECTORY(Runtime)
 ADD_SUBDIRECTORY(Utils)
 
 SET(SOURCES
@@ -62,7 +62,7 @@ SET(HEADERS
 
 SET(DEPENDENCIES
 	CoreUtils
-#	CoreRuntime
+	CoreRuntime
 #	CoreHelpers
 	CoreDesigntimeBuildInTypes
 	CoreDesigntime

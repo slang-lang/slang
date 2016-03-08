@@ -88,6 +88,7 @@ public:	// Value
 	virtual std::string ToString() const;
 
 public:	// Usage
+	bool CanExecuteDefaultConstructor() const;
 	ControlFlow::E Constructor(const ParameterList& params);
 	ControlFlow::E Destructor();
 	ControlFlow::E execute(Object *result, const std::string& method, const ParameterList& params, const Method* caller = 0);		// throws VisibilityError exception
