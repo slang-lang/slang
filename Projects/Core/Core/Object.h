@@ -89,10 +89,8 @@ public:	// Value
 
 public:	// Usage
 	ControlFlow::E Constructor(const ParameterList& params);
-	bool CanExecuteDefaultConstructor() const;
 	ControlFlow::E Destructor();
 	ControlFlow::E execute(Object *result, const std::string& method, const ParameterList& params, const Method* caller = 0);		// throws VisibilityError exception
-	void garbageCollector();
 
 public:	// Operators
 	virtual void operator_assign(Object *other);
@@ -118,6 +116,9 @@ protected:
 	typedef std::map<Designtime::Ancestor, Object*> Inheritance;
 
 protected:
+	void garbageCollector();
+
+protected:
 	//std::string mCurrentOuterface;
 	std::string mFilename;
 	Inheritance mInheritance;
@@ -129,7 +130,6 @@ protected:
 	std::string mValue;
 
 private:
-
 };
 
 

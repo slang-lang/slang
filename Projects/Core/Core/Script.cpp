@@ -10,6 +10,7 @@
 #include <Core/Utils/Utils.h>
 #include "Object.h"
 #include "Repository.h"
+#include "System.h"
 
 // Namespace declarations
 
@@ -54,7 +55,8 @@ void Script::construct(const ParameterList& params)
 		Runtime::ControlFlow::E controlflow = mObject->Constructor(params);
 
 		if ( controlflow != Runtime::ControlFlow::Normal ) {
-			throw Utils::Exceptions::ControlFlowException("in " + mObject->getFullName() + "::" + mObject->Typename());
+			//throw Utils::Exceptions::ControlFlowException("in " + mObject->getFullName() + "::" + mObject->Typename());
+			System::Print("Exception raised in " + mObject->getFullName() + "::" + mObject->Typename());
 		}
 	}
 	catch ( Utils::Exceptions::Exception &e ) {
@@ -86,7 +88,8 @@ Runtime::Object Script::execute(const std::string& method, const ParameterList& 
 		Runtime::ControlFlow::E controlflow = mObject->execute(&returnValue, method, params);
 
 		if ( controlflow != Runtime::ControlFlow::Normal ) {
-			throw Utils::Exceptions::ControlFlowException("in " + mObject->getFullName() + "::" + method);
+			//throw Utils::Exceptions::ControlFlowException("in " + mObject->getFullName() + "::" + mObject->Typename());
+			System::Print("Exception raised in " + mObject->getFullName() + "::" + mObject->Typename());
 		}
 	}
 	catch ( Utils::Exceptions::Exception &e ) {

@@ -11,6 +11,7 @@ public namespace TypeCastTest
 			assert( TestCase3() );
 			assert( TestCase4() );
 			assert( TestCase5() );
+			assert( TestCase6() );
 		}
 
 		private bool TestCase1() const
@@ -71,6 +72,15 @@ public namespace TypeCastTest
 
 			number value = 3 + (number str);
 			print("value = " + value);
+
+			return true;
+		}
+
+		private bool TestCase6() const
+		{
+			print("TestCase 6: invalid string to number type cast");
+			string str = "bla";
+			print("string = " + number str);
 
 			return true;
 		}

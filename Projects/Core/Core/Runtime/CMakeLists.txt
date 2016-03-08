@@ -1,10 +1,12 @@
 INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
 SET(SOURCES
+	ExceptionData.cpp
 )
 
 SET(HEADERS
 	ControlFlow.h
+	ExceptionData.h
 )
 
 SET(DEPENDENCIES

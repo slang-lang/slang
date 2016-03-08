@@ -151,21 +151,12 @@ void Object::addInheritance(const Designtime::Ancestor& ancestor, Object* inheri
 	mInheritance.insert(std::make_pair(ancestor, inheritance));
 }
 
-bool Object::CanExecuteDefaultConstructor() const
-{
-	Symbol *symbol = resolve(Typename(), false);
-
-	bool defaultConstructorPresent = resolveMethod(Typename(), ParameterList(), true);
-
-	return !symbol || defaultConstructorPresent;
-}
-
 ControlFlow::E Object::Constructor(const ParameterList& params)
 {
 	ControlFlow::E controlflow = ControlFlow::Normal;
 
 	// hack to initialize atomic types
-	if ( isAtomicType() && !params.empty() ) {
+	if ( mIsAtomicType && !params.empty() ) {
 		if ( params.size() != 1 ) {
 			throw Utils::Exceptions::ParameterCountMissmatch("atomic types only support one constructor parameter");
 		}
@@ -180,7 +171,10 @@ ControlFlow::E Object::Constructor(const ParameterList& params)
 
 	// execute parent object constructors
 	for ( Inheritance::iterator it = mInheritance.begin(); it != mInheritance.end(); ++it ) {
-		if ( !it->second->CanExecuteDefaultConstructor() ) {
+		Symbol *anyConstructor = it->second->resolve(Typename(), false);
+		Symbol *defaultConstructor = it->second->resolveMethod(Typename(), ParameterList(), true);
+
+		if ( !anyConstructor || defaultConstructor ) {
 			break;
 		}
 
@@ -233,7 +227,7 @@ ControlFlow::E Object::Destructor()
 {
 	ControlFlow::E controlflow = ControlFlow::Normal;
 
-	if ( mIsConstructed ) {
+	if ( mIsConstructed && !mIsAtomicType ) {
 		mIsConstructed = false;
 
 		ParameterList params;
@@ -249,7 +243,7 @@ ControlFlow::E Object::Destructor()
 			}
 		}
 
-		// force execution of base object's destructor
+		// execute parent object destructors
 		for ( Inheritance::iterator it = mInheritance.begin(); it != mInheritance.end(); ++it ) {
 			controlflow = it->second->Destructor();
 
