@@ -8,6 +8,7 @@
 
 // Project includes
 #include <Core/Attributes/Attributes.h>
+#include <Core/Runtime/ExceptionData.h>
 #include "Interpreter.h"
 #include "Object.h"
 #include "Parameter.h"
@@ -50,7 +51,7 @@ public:	// Symbol::IType implementation
 
 public: // Execution
 	ControlFlow::E execute(const ParameterList& params, Object *result);
-	Object* getExceptionData() const;
+	const ExceptionData& getExceptionData() const;
 
 	Symbol* resolve(const std::string& name, bool onlyCurrentScope = false) const;
 	Symbol* resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope = false) const;
@@ -70,9 +71,10 @@ private: // private types
 
 private: // Deinit
 	void garbageCollector();
+	ControlFlow::E processControlFlow(ControlFlow::E controlflow, Object *result);
 
 private:
-	Object *mExceptionData;
+	ExceptionData mExceptionData;
 	Repository *mRepository;
 	ParameterList mSignature;
 	TokenList mTokens;

@@ -33,7 +33,6 @@ namespace Runtime {
 Interpreter::Interpreter(IScope *scope, const std::string& name)
 : LocalScope(name, scope),
   mControlFlow(ControlFlow::Normal),
-  mExceptionData(0),
   mRepository(0)
 {
 }
@@ -126,7 +125,7 @@ ControlFlow::E Interpreter::interpret(const TokenList& tokens, Object* result)
 	return controlflow;
 }
 
-Object* Interpreter::getExceptionData() const
+const ExceptionData& Interpreter::getExceptionData() const
 {
 	return mExceptionData;
 }
@@ -484,7 +483,8 @@ void Interpreter::process_delete(TokenIterator& token)
 		case Symbol::IType::AtomicTypeSymbol:
 		case Symbol::IType::ObjectSymbol: {
 			Object *object = static_cast<Object*>(symbol);
-			object->Destructor();
+
+			mControlFlow = object->Destructor();
 
 			*object = Object(object->getName(), object->Filename(), object->Typename(), VALUE_NONE);
 		} break;
@@ -872,7 +872,8 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 
 	*result = *mRepository->createInstance(type, name, prototype);
 	result->setRepository(mRepository);
-	result->Constructor(params);
+
+	mControlFlow = result->Constructor(params);
 }
 
 // syntax:
@@ -971,42 +972,16 @@ assert(!"not implemented");
 
 // syntax:
 // throw;
-void Interpreter::process_throw(TokenIterator& token, Object *result)
+void Interpreter::process_throw(TokenIterator& token, Object* /*result*/)
 {
-/*
-	TokenIterator begin = token;
 	TokenIterator semicolon = findNext(token, Token::Type::SEMICOLON);
 
-	// collect tokens
-	TokenList throwTokens;
-	while ( begin != semicolon ) {
-		throwTokens.push_back((*begin));
-		begin++;
-	}
+	Object *data = mRepository->createInstance(GENERIC_OBJECT, ANONYMOUS_OBJECT);
 
-	pushTokens(throwTokens);
-	{
-		TokenIterator tmpBegin = getTokens().begin();
-		TokenIterator tmpEnd = getTokens().end();
-
-		process(result, tmpBegin, tmpEnd);
-	}
-	popTokens();
+	expression(data, token);
 
 	mControlFlow = ControlFlow::Throw;
-
-	token = semicolon;
-*/
-
-(void)result;
-
-	TokenIterator semicolon = findNext(token, Token::Type::SEMICOLON);
-
-	mExceptionData = mRepository->createInstance(GENERIC_OBJECT, ANONYMOUS_OBJECT);
-
-	expression(mExceptionData, token);
-
-	mControlFlow = ControlFlow::Throw;
+	mExceptionData = ExceptionData(data, token->position());
 
 	token = semicolon;
 }
@@ -1015,12 +990,12 @@ void Interpreter::process_throw(TokenIterator& token, Object *result)
 // try { } [ catch { } ] [ finally { } ]
 void Interpreter::process_try(TokenIterator& token, Object *result)
 {
-	TokenIterator tmp;
-
 	// find next open curly bracket '{'
 	TokenIterator tryBegin = findNext(token, Token::Type::BRACKET_CURLY_OPEN);
 	// find next balanced '{' & '}' pair
 	TokenIterator tryEnd = findNextBalancedCurlyBracket(tryBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
+
+	TokenIterator tmp;
 
 	token = tryEnd;
 	if ( tryEnd != getTokens().end() ) {
@@ -1097,16 +1072,9 @@ void Interpreter::process_type(TokenIterator& token)
 {
 	bool isConst = false;
 	bool isFinal = false;
-
 	std::string name;
-	std::string prototype;
 	std::string type;
 	std::string value;
-
-	if ( token->type() == Token::Type::PROTOTYPE ) {
-		prototype = token->content();
-		token++;
-	}
 
 	type = token->content();
 	token++;
@@ -1134,7 +1102,8 @@ void Interpreter::process_type(TokenIterator& token)
 		throw Utils::Exceptions::DuplicateIdentifer("process_type: " + name, token->position());
 	}
 
-	object = mRepository->createInstance(type, name, prototype);
+	// TODO: create a shallow object if we have an assignment statement to prevent duplicate object instantiation
+	object = mRepository->createInstance(type, name);
 
 	define(name, object);
 
@@ -1142,20 +1111,15 @@ void Interpreter::process_type(TokenIterator& token)
 	if ( isFinal ) object->setFinal(true);
 
 	if ( assign != getTokens().end() ) {
-		// TODO: create a shallow object if we have an assignment statement to prevent duplicate object instantiation
-
-		TokenIterator end = findNext(assign, Token::Type::SEMICOLON);
-
-		expression(object, assign);
-
-		token = end;
+		// execute assignment statement
+		expression(object, token);
 	}
 	else {
 		// call default constructor if one is present
-		object->Constructor(ParameterList());
+		mControlFlow = object->Constructor(ParameterList());
 	}
 
-	expect(Token::Type::SEMICOLON, token);
+	expect(Token::Type::SEMICOLON, token);	// make sure everything went exactly the way we want it
 }
 
 // syntax:

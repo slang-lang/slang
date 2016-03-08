@@ -8,6 +8,7 @@
 
 // Project includes
 #include <Core/Runtime/ControlFlow.h>
+#include <Core/Runtime/ExceptionData.h>
 #include "Parameter.h"
 #include "Scope.h"
 #include "Token.h"
@@ -41,7 +42,7 @@ public:
 
 public: // Execution
 	ControlFlow::E execute(Object *result);
-	Object* getExceptionData() const;
+	const ExceptionData& getExceptionData() const;
 
 private: // private types
 	typedef std::list<TokenList> TokenStack;
@@ -97,7 +98,7 @@ private: // Execution
 
 private:
 	ControlFlow::E mControlFlow;
-	Object *mExceptionData;
+	ExceptionData mExceptionData;
 	Repository *mRepository;
 	TokenList mTokens;
 	TokenStack mTokenStack;

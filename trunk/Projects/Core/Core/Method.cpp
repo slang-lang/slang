@@ -25,7 +25,6 @@ namespace Runtime {
 Method::Method(IScope *parent, const std::string& name, const std::string& type)
 : LocalScope(name, parent),
   MethodSymbol(name),
-  mExceptionData(0),
   mRepository(0),
   mTypeName(type)
 {
@@ -182,44 +181,13 @@ ControlFlow::E Method::execute(const ParameterList& params, Object *result)
 	result->setRepository(mRepository);
 	//result->setValue(/*get default value for return type*/);
 
-	ControlFlow::E controlflow = interpreter.execute(result);
+	ControlFlow::E controlflow = interpreter.execute(result);	// execute method code
 
-	// let the garbage collector do its magic
-	garbageCollector();
+	mExceptionData = interpreter.getExceptionData();	// collect exception data no matter what
 
-	// detect unnatural control flow
-	switch ( controlflow ) {
-		case ControlFlow::Break:
-		case ControlFlow::Continue:
-		case ControlFlow::Normal:
-			// verify method return reason
-			if ( result->Typename() != VoidObject::TYPENAME ) {
-				throw Utils::Exceptions::Exception("unnatural method return at '" + getName() + "'");
-			}
+	garbageCollector();		// let the garbage collector do its magic
 
-			// correct behaviour detected, override control flow with normal state
-			controlflow = ControlFlow::Normal;
-			break;
-		case ControlFlow::Return:
-			// validate return value
-			if ( result->Typename() != Typename() ) {
-				throw Utils::Exceptions::Exception("invalid return of type '" + result->Typename() + "' in '" + getName() + "'");
-			}
-
-			// correct behaviour detected, override control flow with normal state
-			controlflow = ControlFlow::Normal;
-			break;
-		case ControlFlow::Throw:
-			// an ObjectiveScript exception has been thrown
-			mExceptionData = interpreter.getExceptionData();
-
-			if ( mExceptionData ) {
-				System::Print("Found uncaught exception: " + mExceptionData->ToString());
-			}
-			break;
-	}
-
-	return controlflow;
+	return processControlFlow(controlflow, result);
 }
 
 void Method::garbageCollector()
@@ -235,7 +203,7 @@ void Method::garbageCollector()
 	mSymbols.clear();
 }
 
-Object* Method::getExceptionData() const
+const ExceptionData& Method::getExceptionData() const
 {
 	return mExceptionData;
 }
@@ -286,6 +254,38 @@ bool Method::isSignatureValid(const ParameterList& params) const
 
 	// no differences found, nailed it!
 	return true;
+}
+
+ControlFlow::E Method::processControlFlow(ControlFlow::E controlflow, Object *result)
+{
+	// detect unnatural control flow
+	switch ( controlflow ) {
+		case ControlFlow::Break:
+		case ControlFlow::Continue:
+		case ControlFlow::Normal:
+			// verify method return reason
+			if ( result->Typename() != VoidObject::TYPENAME ) {
+				throw Utils::Exceptions::Exception("unnatural method return at '" + getName() + "'");
+			}
+
+			// correct behaviour detected, override control flow with normal state
+			controlflow = ControlFlow::Normal;
+			break;
+		case ControlFlow::Return:
+			// validate return value
+			if ( result->Typename() != Typename() ) {
+				throw Utils::Exceptions::Exception("invalid return of type '" + result->Typename() + "' in '" + getName() + "'");
+			}
+
+			// correct behaviour detected, override control flow with normal state
+			controlflow = ControlFlow::Normal;
+			break;
+		case ControlFlow::Throw:
+			// an ObjectiveScript exception has been thrown
+			break;
+	}
+
+	return controlflow;
 }
 
 const ParameterList& Method::provideSignature() const
