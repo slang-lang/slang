@@ -4,6 +4,7 @@
 
 
 // Library includes
+#include <ostream>
 
 // Project includes
 
@@ -17,17 +18,17 @@
 
 
 #ifdef WRITE_LOGS
-#	ifdef WRITE_LOGS_WITH_FILENAMES
+	#ifdef WRITE_LOGS_WITH_FILENAMES
 		#define OSdebug(message) std::cout << "[DEBUG] " << message << "   " << __FILE__ << ":" << __LINE__ << std::endl;
 		#define OSerror(message) std::cout << "[ERROR] " << message << "   " << __FILE__ << ":" << __LINE__ << std::endl;
 		#define OSinfo(message)  std::cout << "[INFO ] " << message << "   " << __FILE__ << ":" << __LINE__ << std::endl;
 		#define OSwarn(message)  std::cout << "[WARN ] " << message << "   " << __FILE__ << ":" << __LINE__ << std::endl;
-#	else
+	#else
 		#define OSdebug(message) std::cout << "[DEBUG] " << message << std::endl;
 		#define OSerror(message) std::cout << "[ERROR] " << message << std::endl;
 		#define OSinfo(message)  std::cout << "[INFO ] " << message << std::endl;
 		#define OSwarn(message)  std::cout << "[WARN ] " << message << std::endl;
-#	endif
+	#endif
 #else
 	#define OSdebug(message) (const char*)message;
 	#define OSerror(message) (const char*)message;

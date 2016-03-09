@@ -357,7 +357,6 @@ bool Object::isValid() const
 		return mIsConstructed;
 	}
 
-	//return getValue() == "0" || getValue() == "0.0" || getValue() == FALSE;
 	return mIsConstructed;
 }
 
