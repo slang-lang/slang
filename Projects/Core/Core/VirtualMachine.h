@@ -38,8 +38,6 @@ public:
 	Script* createScriptFromFile(const std::string& filename, const ParameterList& params = ParameterList());
 	Script* createScriptFromString(const std::string& content, const ParameterList& params = ParameterList());
 
-protected:
-
 private:
 	typedef std::map<std::string, Designtime::BluePrint> BluePrintCollection;
 	typedef std::map<std::string, Runtime::Object*> ObjectCollection;

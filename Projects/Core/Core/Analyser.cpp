@@ -26,31 +26,31 @@ namespace ObjectiveScript {
 
 Analyser::Analyser()
 {
-	// interface declaration
+	// interface declaration:
 	// <visibility> interface [language feature] <identifier> { ... }
 	mInterfaceDeclaration.push_back(Token(Token::Type::VISIBILITY));
 	mInterfaceDeclaration.push_back(Token(Token::Type::RESERVED_WORD, std::string(RESERVED_WORD_INTERFACE)));
 	mInterfaceDeclaration.push_back(Token(Token::Type::IDENTIFER));
 
-	// library declaration
+	// library declaration:
 	// import <identifier> ;
 	mLibraryDeclaration.push_back(Token(Token::Type::RESERVED_WORD, std::string(RESERVED_WORD_IMPORT)));
 	mLibraryDeclaration.push_back(Token(Token::Type::IDENTIFER));
 	mLibraryDeclaration.push_back(Token(Token::Type::SEMICOLON));
 
-	// namespace declaration
+	// namespace declaration:
 	// <visibility> namespace [language feature] <identifier> { ... }
 	mNamespaceDeclaration.push_back(Token(Token::Type::VISIBILITY));
 	mNamespaceDeclaration.push_back(Token(Token::Type::RESERVED_WORD, std::string(RESERVED_WORD_NAMESPACE)));
 	mNamespaceDeclaration.push_back(Token(Token::Type::IDENTIFER));
 
-	// object declaration
+	// object declaration:
 	// <visibility> object [language feature] <identifier> [extends <identifier> [implements <identifier>, ...]] { ... }
 	mObjectDeclaration.push_back(Token(Token::Type::VISIBILITY));
 	mObjectDeclaration.push_back(Token(Token::Type::RESERVED_WORD, std::string(RESERVED_WORD_OBJECT)));
 	mObjectDeclaration.push_back(Token(Token::Type::IDENTIFER));
 
-	// prototype declaration
+	// prototype declaration:
 	// <visibility> prototype [language feature] <identifier> [extends <identifier> [implements <identifier>, ...]] { ... }
 	mPrototypeDeclaration.push_back(Token(Token::Type::VISIBILITY));
 	mPrototypeDeclaration.push_back(Token(Token::Type::RESERVED_WORD, std::string(RESERVED_WORD_PROTOTYPE)));
@@ -328,23 +328,6 @@ const Designtime::PrototypeList& Analyser::getPrototypes() const
 // <visibility> interface [language feature] <identifier> { ... }
 bool Analyser::isInterfaceDeclaration(TokenIterator start)
 {
-/*
-	if ( (*start++).type() != Token::Type::VISIBILITY ) {
-		return false;
-	}
-	if ( (*start).type() != Token::Type::TYPE && (*start++).content() != RESERVED_WORD_INTERFACE ) {
-		return false;
-	}
-	if ( (*start).isOptional() && (*start++).type() != Token::Type::LANGUAGEFEATURE ) {
-		return false;
-	}
-	if ( (*start++).type() != Token::Type::IDENTIFER ) {
-		return false;
-	}
-
-	return true;
-*/
-
 	return checkSynthax(start, mInterfaceDeclaration);
 }
 
@@ -352,20 +335,6 @@ bool Analyser::isInterfaceDeclaration(TokenIterator start)
 // import <identifier> ;
 bool Analyser::isLibraryReference(TokenIterator start)
 {
-/*
-	if ( (*start).type() != Token::Type::RESERVED_WORD && (*start++).content() != RESERVED_WORD_IMPORT ) {
-		return false;
-	}
-	if ( (*start++).type() != Token::Type::IDENTIFER ) {
-		return false;
-	}
-	if ( (*start++).type() != Token::Type::SEMICOLON ) {
-		return false;
-	}
-
-	return true;
-*/
-
 	return checkSynthax(start, mLibraryDeclaration);
 }
 
@@ -373,23 +342,6 @@ bool Analyser::isLibraryReference(TokenIterator start)
 // <visibility> namespace [language feature] <identifier> { ... }
 bool Analyser::isNamespaceDeclaration(TokenIterator start)
 {
-/*
-	if ( (*start++).type() != Token::Type::VISIBILITY ) {
-		return false;
-	}
-	if ( (*start).type() != Token::Type::TYPE && (*start++).content() != RESERVED_WORD_NAMESPACE ) {
-		return false;
-	}
-	if ( (*start).isOptional() && (*start++).type() != Token::Type::LANGUAGEFEATURE ) {
-		return false;
-	}
-	if ( (*start++).type() != Token::Type::IDENTIFER ) {
-		return false;
-	}
-
-	return true;
-*/
-
 	return checkSynthax(start, mNamespaceDeclaration);
 }
 
@@ -397,23 +349,6 @@ bool Analyser::isNamespaceDeclaration(TokenIterator start)
 // <visibility> object [language feature] <identifier> [extends <identifier> [implements <identifier>, ...]] { ... }
 bool Analyser::isObjectDeclaration(TokenIterator start)
 {
-/*
-	if ( (*start++).type() != Token::Type::VISIBILITY ) {
-		return false;
-	}
-	if ( (*start).type() != Token::Type::TYPE && (*start++).content() != RESERVED_WORD_OBJECT ) {
-		return false;
-	}
-	if ( (*start).isOptional() && (*start++).type() != Token::Type::LANGUAGEFEATURE ) {
-		return false;
-	}
-	if ( (*start++).type() != Token::Type::IDENTIFER ) {
-		return false;
-	}
-
-	return true;
-*/
-
 	return checkSynthax(start, mObjectDeclaration);
 }
 
@@ -441,7 +376,7 @@ bool Analyser::isPrototypeDeclaration(TokenIterator start)
 	return checkSynthax(start, mPrototypeDeclaration);
 }
 
-void Analyser::process(const std::string& content)
+void Analyser::process(const TokenList& tokens)
 {
 	// factory reset
 	mBluePrints.clear();
@@ -449,9 +384,6 @@ void Analyser::process(const std::string& content)
 	mPrototypes.clear();
 
 	OSinfo("Processing string data...");
-
-	// create token list from string
-	TokenList tokens = generateTokens(content);
 
 	// execute basic sanity checks
 	Designtime::SanityChecker sanity;
@@ -474,7 +406,11 @@ void Analyser::processFile(const std::string& filename)
 	// read file content
 	std::ifstream in(mFilename.c_str(), std::ios_base::binary);
 
-	process(std::string(std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>()));
+	// create token list from string
+	TokenList tokens = generateTokens(std::string(std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>()));
+
+	// start the real processing
+	process(tokens);
 }
 
 void Analyser::processString(const std::string& content, const std::string& filename)
@@ -483,7 +419,19 @@ void Analyser::processString(const std::string& content, const std::string& file
 
 	mFilename = filename;
 
-	process(content);
+	// create token list from string
+	TokenList tokens = generateTokens(content);
+
+	// start the real processing
+	process(tokens);
+}
+
+void Analyser::processTokens(const TokenList& tokens)
+{
+	OSinfo("Preparing token data...");
+
+	// start the real processing
+	process(tokens);
 }
 
 
