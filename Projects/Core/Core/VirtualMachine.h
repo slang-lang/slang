@@ -33,6 +33,7 @@ public:
 
 public:	// Setup
 	void setBaseFolder(const std::string& base);
+	void setLibraryFolder(const std::string& library);
 
 public:
 	Script* createScriptFromFile(const std::string& filename, const ParameterList& params = ParameterList());
@@ -44,14 +45,16 @@ private:
 	typedef std::set<Script*> ScriptCollection;
 
 private:
-	std::string buildLibraryPath(const std::string& library) const;
+	std::string buildPath(const std::string& basefolder, const std::string& library) const;
+
 	Script* createScript(const std::string& content, const ParameterList& params);
 	void init();
-	void loadLibrary(const std::string& library);
+	bool loadLibrary(const std::string& library);
 
 private:
 	std::string mBaseFolder;
 	BluePrintCollection mBluePrints;
+	std::string mLibraryFolder;
 	ObjectCollection mObjects;
 	Repository *mRepository;
 	IScope *mScope;

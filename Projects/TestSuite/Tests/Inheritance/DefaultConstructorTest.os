@@ -1,9 +1,8 @@
 #!/usr/local/bin/oscript
 
 //import Tests.Inheritance.BaseObject;
-import Tests.Inheritance.DerivedObject;
+//import Tests.Inheritance.DerivedObject;
 
-/*
 private object BaseObject
 {
 	public void BaseObject()
@@ -16,9 +15,7 @@ private object BaseObject
 		print("~BaseObject()");
 	}
 }
-*/
 
-/*
 private object DerivedObject extends BaseObject
 {
 	public void DerivedObject()
@@ -31,7 +28,6 @@ private object DerivedObject extends BaseObject
 		print("~DerivedObject()");
 	}
 }
-*/
 
 public object Main
 {
