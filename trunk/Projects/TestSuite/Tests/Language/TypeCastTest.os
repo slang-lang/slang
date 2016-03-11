@@ -31,6 +31,7 @@ public namespace TypeCastTest
 		private bool TestCase2() const
 		{
 			print("TestCase 2: int to number type cast");
+
 			int integral = 2i;
 			print("integral = " + number integral);
 
@@ -43,6 +44,7 @@ public namespace TypeCastTest
 		private bool TestCase3() const
 		{
 			print("TestCase 3: float to int type cast");
+
 			float real = 3.5f;
 			print("float = " + number real);
 
@@ -55,10 +57,11 @@ public namespace TypeCastTest
 		private bool TestCase4() const
 		{
 			print("TestCase 4: float to number type cast");
+
 			float real = 3.5f;
 			print("float = " + number real);
 
-			number value = 3 + (number real);
+			number value = 3 + number real;
 			print("value = " + value);
 
 			return true;
@@ -67,6 +70,7 @@ public namespace TypeCastTest
 		private bool TestCase5() const
 		{
 			print("TestCase 5: string to number type cast");
+
 			string str = "3.5f";
 			print("string = " + number str);
 
@@ -79,6 +83,7 @@ public namespace TypeCastTest
 		private bool TestCase6() const
 		{
 			print("TestCase 6: invalid string to number type cast");
+
 			string str = "bla";
 			print("string = " + number str);
 

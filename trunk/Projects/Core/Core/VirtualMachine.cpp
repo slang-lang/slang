@@ -7,7 +7,9 @@
 #include <fstream>
 
 // Project includes
+#include <Core/Utils/Exceptions.h>
 #include <Core/Utils/Utils.h>
+#include <Tools/Files.h>
 #include "Analyser.h"
 #include "Repository.h"
 #include "Script.h"
@@ -20,8 +22,7 @@ namespace ObjectiveScript {
 
 
 VirtualMachine::VirtualMachine()
-: mBaseFolder(""),
-  mRepository(0),
+: mRepository(0),
   mScope(0)
 {
 	mRepository = new Repository();
@@ -42,7 +43,7 @@ VirtualMachine::~VirtualMachine()
 	delete mRepository;
 }
 
-std::string VirtualMachine::buildLibraryPath(const std::string& library) const
+std::string VirtualMachine::buildPath(const std::string& basefolder, const std::string& library) const
 {
 	std::string result = library;
 	unsigned long npos = std::string::npos;
@@ -54,7 +55,7 @@ std::string VirtualMachine::buildLibraryPath(const std::string& library) const
 		}
 	} while ( npos != std::string::npos );
 
-	result = mBaseFolder + result + ".os";
+	result = basefolder + result + ".os";
 	return result;
 }
 
@@ -63,7 +64,6 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 	init();
 
 	Script *script = new Script();
-	mScripts.insert(script);
 
 	script->connectRepository(mRepository);
 
@@ -72,7 +72,15 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 
 	StringList libraries = analyser.getLibraryReferences();
 	for ( StringList::const_iterator it = libraries.begin(); it != libraries.end(); ++it ) {
-		loadLibrary((*it));
+		std::string filename = buildPath(mBaseFolder, (*it));
+
+		if ( !loadLibrary(filename) ) {
+			filename = buildPath(mLibraryFolder, (*it));
+
+			if ( !loadLibrary(filename) ) {
+				throw Utils::Exceptions::Exception("could not resolve import '" + (*it) + "'");
+			}
+		}
 	}
 
 /*	Not part of this release
@@ -101,6 +109,8 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 		}
 	}
 
+	mScripts.insert(script);
+
 	// execute this script's constructor
 	script->construct(params);
 
@@ -112,10 +122,15 @@ Script* VirtualMachine::createScriptFromFile(const std::string& filename, const 
 	OSinfo("processing script '" + filename + "'...");
 
 	if ( filename.empty() ) {
-		OSwarn("invalid filename '" + filename + "' provided!");
-		return 0;
+		OSerror("invalid filename '" + filename + "' provided!");
+		throw Utils::Exceptions::Exception("invalid filename '" + filename + "' provided!");
+	}
+	if ( !::Utils::Tools::Files::exists(filename) ) {
+		OSerror("file '" + filename + "' not found!");
+		throw Utils::Exceptions::Exception("file '" + filename + "' not found!");
 	}
 
+	mBaseFolder = ::Utils::Tools::Files::ExtractPathname(filename);
 	mScriptFile = filename;
 
 	// read file content
@@ -130,6 +145,7 @@ Script* VirtualMachine::createScriptFromString(const std::string& content, const
 {
 	OSinfo("processing string...");
 
+	mBaseFolder = "";
 	mScriptFile = "";
 
 	return createScript(content, params);
@@ -137,25 +153,39 @@ Script* VirtualMachine::createScriptFromString(const std::string& content, const
 
 void VirtualMachine::init()
 {
-	if ( mBaseFolder.empty() ) {
-		const char* homepath = getenv("OBJECTIVESCRIPT_HOME");
+	if ( mLibraryFolder.empty() ) {
+		const char* homepath = getenv("OBJECTIVESCRIPT_LIBRARY");
 		if ( homepath ) {
-			setBaseFolder(homepath);
+			setLibraryFolder(homepath);
 		}
 	}
 }
 
-void VirtualMachine::loadLibrary(const std::string& library)
+bool VirtualMachine::loadLibrary(const std::string& library)
 {
 	OSinfo("loading additional library file '" + library + "'...");
 
+	if ( !::Utils::Tools::Files::exists(library) ) {
+		return false;
+	}
+
+	std::string baseFolder = ::Utils::Tools::Files::ExtractPathname(library);
+
 	try {
 		Analyser analyser;
-		analyser.processFile(buildLibraryPath(library));
+		analyser.processFile(library);
 
 		const std::list<std::string>& libraries = analyser.getLibraryReferences();
 		for ( std::list<std::string>::const_iterator it = libraries.begin(); it != libraries.end(); ++it ) {
-			loadLibrary((*it));
+			std::string filename = buildPath(baseFolder, (*it));
+
+			if ( !loadLibrary(filename) ) {
+				filename = buildPath(mLibraryFolder, (*it));
+
+				if ( !loadLibrary(filename) ) {
+					throw Utils::Exceptions::Exception("could not resolve import '" + (*it) + "'");
+				}
+			}
 		}
 
 /*	Not part of this release
@@ -169,10 +199,14 @@ void VirtualMachine::loadLibrary(const std::string& library)
 		for ( Designtime::BluePrintList::iterator it = blueprints.begin(); it != blueprints.end(); ++it ) {
 			mRepository->addBlueprint((*it));
 		}
+
+		return true;
 	}
 	catch ( std::exception& e ) {
 		OSerror(e.what());
 	}
+
+	return false;
 }
 
 void VirtualMachine::setBaseFolder(const std::string& base)
@@ -183,7 +217,18 @@ void VirtualMachine::setBaseFolder(const std::string& base)
 
 	mBaseFolder = base + "/";
 
-	OSinfo("library root = " + mBaseFolder);
+	OSinfo("root = " + mBaseFolder);
+}
+
+void VirtualMachine::setLibraryFolder(const std::string& library)
+{
+	if ( library.empty() ) {
+		return;
+	}
+
+	mLibraryFolder = library + "/";
+
+	OSinfo("library root = " + mLibraryFolder);
 }
 
 
