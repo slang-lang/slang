@@ -62,7 +62,7 @@ void BluePrint::cleanup()
 	mMethods.clear();
 
 	for ( Symbols::iterator it = mSymbols.begin(); it != mSymbols.end(); ++it ) {
-		if ( it->first == KEYWORD_THIS || !it->second ) {
+		if ( it->first == IDENTIFIER_BASE || it->first == IDENTIFIER_THIS || !it->second ) {
 			continue;
 		}
 

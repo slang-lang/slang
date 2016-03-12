@@ -1,23 +1,21 @@
 #!/usr/local/bin/oscript
 
-public namespace PerformanceTest
+public object Main
 {
-	public object Main
+	public void Main(number argc = 0, string argv = "")
 	{
-		public void Main(number argc = 0, string argv = "")
-		{
-			int count = 1;
-			int upperbound = 100000;
+		int lowerbound = 1;
+		int upperbound = 100000;
 
-			print("Starting performance test (by counting from " + count + " to " + upperbound + ")...");
+		print("Starting performance test (by counting from " + lowerbound + " to " + upperbound + ")...");
 
-			while ( count < upperbound ) {
-				//print("count = " + count);
-				count = count + 1;
-			}
-
-			print("Finished performance test.");
+		while ( lowerbound < upperbound ) {
+			//print("lowerbound = " + lowerbound);
+			//lowerbound += 1;
+			lowerbound = lowerbound + 1;
 		}
+
+		print("Finished performance test.");
 	}
 }
 

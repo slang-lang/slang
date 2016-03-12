@@ -50,7 +50,6 @@ StringList provideKeyWords()
 	StringList keywords;
 
 	keywords.push_back(KEYWORD_ASSERT);
-	keywords.push_back(KEYWORD_BASE);
 	keywords.push_back(KEYWORD_BREAK);
 	keywords.push_back(KEYWORD_CASE);
 	keywords.push_back(KEYWORD_CATCH);
@@ -64,7 +63,6 @@ StringList provideKeyWords()
 	keywords.push_back(KEYWORD_PRINT);
 	keywords.push_back(KEYWORD_RETURN);
 	keywords.push_back(KEYWORD_SWITCH);
-	keywords.push_back(KEYWORD_THIS);
 	keywords.push_back(KEYWORD_THROW);
 	keywords.push_back(KEYWORD_TRY);
 	keywords.push_back(KEYWORD_WHILE);
@@ -83,6 +81,16 @@ StringList provideModifiers()
 	modifiers.push_back(MODIFIER_RECURSIVE);
 
 	return modifiers;
+}
+
+StringList providePredefinedIdentifiers()
+{
+	StringList identifiers;
+
+	identifiers.push_back(IDENTIFIER_BASE);
+	identifiers.push_back(IDENTIFIER_THIS);
+
+	return identifiers;
 }
 
 StringList provideReservedWords()

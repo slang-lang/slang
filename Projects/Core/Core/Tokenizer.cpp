@@ -23,6 +23,7 @@ Tokenizer::Tokenizer(const std::string& filename, const std::string& content)
 : mContent(content),
   mFilename(filename)
 {
+	mIdentifiers = providePredefinedIdentifiers();
 	mLanguageFeatures = provideLanguageFeatures();
 	mKeywords = provideKeyWords();
 	mModifiers = provideModifiers();
@@ -94,20 +95,20 @@ Token Tokenizer::createToken(const std::string& con, const Utils::Position& posi
 	else if ( content == "*" ) { category = Token::Category::Operator; type = Token::Type::MATH_MULTIPLY; }
 	else if ( content == "-" ) { category = Token::Category::Operator; type = Token::Type::MATH_SUBTRACT; }
 	else if ( content == "!" ) { category = Token::Category::Operator; type = Token::Type::NOT; }
-	else if ( content == "~" ) { type = Token::Type::TILDE; }
+	else if ( content == "~" ) { category = Token::Category::Operator; type = Token::Type::TILDE; }
 	else if ( isBoolean(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_BOOLEAN; }
 	else if ( isFloat(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_FLOAT; }
 	else if ( isIdentifer(content) ) { type = Token::Type::IDENTIFER; }
 	else if ( isInteger(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_INTEGER; }
-	else if ( isKeyword(content) ) { type = Token::Type::KEYWORD; }
-	else if ( isLanguageFeature(content) ) { type = Token::Type::LANGUAGEFEATURE; }
+	else if ( isKeyword(content) ) { category = Token::Category::Keyword; type = Token::Type::KEYWORD; }
+	else if ( isLanguageFeature(content) ) { category = Token::Category::Modifier; type = Token::Type::LANGUAGEFEATURE; }
 	else if ( isLiteral(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_LITERAL;
 		// remove leading and trailing (", ') quotation marks (", ')
 		content = con.substr(1, con.length() - 2);
 	}
 	else if ( isModifier(content) ) { category = Token::Category::Modifier; type = Token::Type::LANGUAGEFEATURE; }
 	else if ( isNumber(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_NUMBER; }
-	else if ( isReservedWord(content) ) { type = Token::Type::RESERVED_WORD; }
+	else if ( isReservedWord(content) ) { category = Token::Category::ReservedWord; type = Token::Type::RESERVED_WORD; }
 	else if ( isType(content) ) { type = Token::Type::TYPE; }
 	else if ( isVisibility(content) ) { type = Token::Type::VISIBILITY; }
 	else if ( isWhiteSpace(content) ) { type = Token::Type::WHITESPACE; }

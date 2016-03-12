@@ -6,8 +6,7 @@ public namespace BooleanOperators
 	{
 		public void Main(number argc = 0, string argv = "")
 		{
-			assert true;
-			assert false == false;
+			assert( false == false );
 			assert( true && true );
 			assert( false || true );
 			assert( false !& false );

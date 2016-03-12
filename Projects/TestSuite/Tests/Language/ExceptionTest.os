@@ -95,7 +95,7 @@ public namespace ExceptionTest
 
 				assert( false );
 			}
-			catch (bool exception) {
+			catch {
 				number one = 2;
 				print("one = " + one);
 			}

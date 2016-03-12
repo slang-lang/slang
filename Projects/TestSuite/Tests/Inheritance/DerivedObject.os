@@ -1,5 +1,5 @@
 
-import Tests.Inheritance.BaseObject;
+import BaseObject;
 
 private object DerivedObject extends BaseObject
 {

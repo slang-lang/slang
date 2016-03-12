@@ -280,9 +280,9 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 			Runtime::Object *ancestor = createObject(name, &blueIt->second);
 
 			// undefine previous base (while using single inheritance none should exist yet)
-			object->undefine(KEYWORD_BASE, object->resolve(KEYWORD_BASE, false));
+			object->undefine(IDENTIFIER_BASE, object->resolve(IDENTIFIER_BASE, false));
 			// define new base
-			object->define(KEYWORD_BASE, ancestor);
+			object->define(IDENTIFIER_BASE, ancestor);
 
 			// update our reference counter
 			addReference(ancestor);
@@ -333,7 +333,7 @@ void Repository::initializeObject(Runtime::Object *object, Designtime::BluePrint
 		object->defineMethod((*it)->getName(), method);
 	}
 
-	object->define(KEYWORD_THIS, object);	// define this-symbol
+	object->define(IDENTIFIER_THIS, object);	// define this-symbol
 }
 
 bool Repository::isAlreadyKnown(const std::string& name) const

@@ -193,7 +193,7 @@ ControlFlow::E Method::execute(const ParameterList& params, Object *result)
 void Method::garbageCollector()
 {
 	for ( Symbols::reverse_iterator it = mSymbols.rbegin(); it != mSymbols.rend(); ) {
-		if ( it->first != KEYWORD_BASE && it->first != KEYWORD_THIS &&
+		if ( it->first != IDENTIFIER_BASE && it->first != IDENTIFIER_THIS &&
 			 it->second && it->second->getType() == Symbol::IType::ObjectSymbol ) {
 			mRepository->removeReference(static_cast<Object*>(it->second));
 		}
@@ -300,7 +300,7 @@ Symbol* Method::resolve(const std::string& name, bool onlyCurrentScope) const
 
 	if ( member.empty() ) {
 		member = parent;
-		parent = KEYWORD_THIS;
+		parent = IDENTIFIER_THIS;
 	}
 
 	Symbol *result = LocalScope::resolve(parent, onlyCurrentScope);
@@ -332,7 +332,7 @@ Symbol* Method::resolveMethod(const std::string& name, const ParameterList& para
 
 	if ( member.empty() ) {
 		member = parent;
-		parent = KEYWORD_THIS;
+		parent = IDENTIFIER_THIS;
 	}
 
 	Symbol *result = LocalScope::resolve(parent, onlyCurrentScope);

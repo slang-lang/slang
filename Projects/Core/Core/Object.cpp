@@ -50,11 +50,11 @@ Object::Object(const Object& other)
 
 	if ( !mIsAtomicType ) {
 		// register this
-		define(KEYWORD_THIS, this);
+		define(IDENTIFIER_THIS, this);
 
 		// register new members
 		for ( Symbols::const_iterator it = other.mSymbols.begin(); it != other.mSymbols.end(); ++it ) {
-			if ( it->first == KEYWORD_THIS ) {
+			if ( /*it->first == IDENTIFIER_BASE ||*/ it->first == IDENTIFIER_THIS ) {
 				continue;
 			}
 
@@ -113,11 +113,11 @@ void Object::operator= (const Object& other)
 
 		if ( !mIsAtomicType ) {
 			// register this
-			define(KEYWORD_THIS, this);
+			define(IDENTIFIER_THIS, this);
 
 			// register new members
 			for ( Symbols::const_iterator it = other.mSymbols.begin(); it != other.mSymbols.end(); ++it ) {
-				if ( it->first == KEYWORD_THIS ) {
+				if ( /*it->first == IDENTIFIER_BASE ||*/ it->first == IDENTIFIER_THIS ) {
 					continue;
 				}
 
@@ -287,7 +287,7 @@ ControlFlow::E Object::execute(Object *result, const std::string& name, const Pa
 	}
 
 	// are we called from a colleague method?
-	bool callFromMethod = caller && (caller->resolve(KEYWORD_BASE) == this || caller->resolve(KEYWORD_THIS) == this);
+	bool callFromMethod = caller && (caller->resolve(IDENTIFIER_BASE) == this || caller->resolve(IDENTIFIER_THIS) == this);
 
 	// check visibility:
 	// colleague methods can always call us,
@@ -302,7 +302,6 @@ ControlFlow::E Object::execute(Object *result, const std::string& name, const Pa
 	// execute our member method
 	ControlFlow::E controlflow = method->execute(params, result);
 
-	// TODO: process control flow
 	if ( controlflow == ControlFlow::Normal ) {
 		switch ( method->getMethodType() ) {
 			case MethodAttributes::MethodType::Constructor:
@@ -331,7 +330,7 @@ void Object::garbageCollector()
 	mMethods.clear();
 
 	for ( Symbols::reverse_iterator it = mSymbols.rbegin(); it != mSymbols.rend(); ) {
-		if ( it->first != KEYWORD_BASE && it->first != KEYWORD_THIS &&
+		if ( it->first != IDENTIFIER_BASE && it->first != IDENTIFIER_THIS &&
 			 it->second && it->second->getType() == Symbol::IType::ObjectSymbol ) {
 			mRepository->removeReference(static_cast<Object*>(it->second));
 		}
@@ -553,7 +552,7 @@ std::string Object::ToString() const
 			}
 		}
 		for ( Symbols::const_iterator it = mSymbols.begin(); it != mSymbols.end(); ++it ) {
-			if ( it->first == KEYWORD_BASE || it->first == KEYWORD_THIS ||
+			if ( it->first == IDENTIFIER_BASE || it->first == IDENTIFIER_THIS ||
 				 !it->second || it->second->getType() != Symbol::IType::ObjectSymbol ) {
 				continue;
 			}

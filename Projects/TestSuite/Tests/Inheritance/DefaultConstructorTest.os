@@ -1,7 +1,6 @@
 #!/usr/local/bin/oscript
 
-//import Tests.Inheritance.BaseObject;
-//import Tests.Inheritance.DerivedObject;
+//import DerivedObject;
 
 private object BaseObject
 {
