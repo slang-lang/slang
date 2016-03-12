@@ -191,7 +191,7 @@ bool Tokenizer::isInteger(const std::string& token) const
 		return false;
 	}
 
-	for ( unsigned int c = 0; c < token.size() - 1; c++ ) {
+	for ( unsigned int c = 0; c < token.size() /*- 1*/; c++ ) {
 		switch ( token[c] ) {
 			case '1':
 			case '2':
@@ -209,12 +209,16 @@ bool Tokenizer::isInteger(const std::string& token) const
 		}
 	}
 
+/*
 	// the last char of our token has to be an 'i'
 	if ( token[token.size() - 1] == 'i' && token.size() > 1 ) {
 		return true;
 	}
 
 	return false;
+*/
+
+	return true;
 }
 
 bool Tokenizer::isKeyword(const std::string& token) const

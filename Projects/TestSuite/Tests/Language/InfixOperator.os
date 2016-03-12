@@ -4,7 +4,7 @@ public namespace InfixOperator
 {
 	public object Main
 	{
-		public void Main(number argc = 0, string argv = "")
+		public void Main(int argc = 0, string argv = "")
 		{
 			assert( TestCase1() );
 			//assert( TestCase2() );
@@ -25,7 +25,7 @@ public namespace InfixOperator
 		{
 			print("TestCase2: infix -- operator");
 
-			number value = 2;
+			int value = 2;
 			--value;
 
 			return value == 1;
@@ -35,7 +35,7 @@ public namespace InfixOperator
 		{
 			print("TestCase3: infix ++ operator");
 
-			number value = 2;
+			int value = 2;
 			++value;
 
 			return value == 3;
@@ -45,7 +45,7 @@ public namespace InfixOperator
 		{
 			print("TestCase4: unary - operator");
 
-			number value = 2;
+			int value = 2;
 			print("value = " + value);
 			value = -1;
 			print("value = " + value);

@@ -1,7 +1,7 @@
 
 public object BaseObject
 {
-	private number mValue;
+	private int mValue;
 
 	public void BaseObject()
 	{
@@ -13,12 +13,12 @@ public object BaseObject
 		print("BaseObject::~BaseObject()");
 	}
 
-	public number getValue() const
+	public int getValue() const
 	{
 		return mValue;
 	}
 
-	public void setValue(number value) modify
+	public void setValue(int value) modify
 	{
 		mValue = value;
 	}

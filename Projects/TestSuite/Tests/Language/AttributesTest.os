@@ -27,19 +27,19 @@ public namespace stable AttributeTest
 
 	public object ConstObject
 	{
-		private number mNumber;
+		private int mNumber;
 
 		public void ConstObject()
 		{
 			mNumber = 1;
 		}
 
-		public number GetNumber() const
+		public int GetNumber() const
 		{
 			return mNumber;
 		}
 
-		public void SetNumber(number value) modify
+		public void SetNumber(int value) modify
 		{
 			mNumber = value;
 		}
@@ -49,7 +49,7 @@ public namespace stable AttributeTest
 	{
 		private TestObject mTest;
 
-		public void Main(number argc = 0, string argv = "")
+		public void Main(int argc = 0, string argv = "")
 		{
 			mTest = new TestObject();
 
@@ -71,7 +71,7 @@ public namespace stable AttributeTest
 			delete mTest;
 		}
 		
-		private number getTwo() const
+		private int getTwo() const
 		{
 			return 2;
 		}

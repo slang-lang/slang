@@ -4,9 +4,9 @@ public namespace ProcessIdentifier
 {
 	public object Main
 	{
-		public void Main(number argc, string argv)
+		public void Main(int argc, string argv)
 		{
-			number one = 1;
+			int one = 1;
 
 			one;
 

@@ -4,7 +4,7 @@ public namespace BooleanOperators
 {
 	private object Main
 	{
-		public void Main(number argc = 0, string argv = "")
+		public void Main(int argc = 0, string argv = "")
 		{
 			assert( false == false );
 			assert( true && true );

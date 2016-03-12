@@ -4,23 +4,23 @@ private namespace BooleanOverloads
 {
 	private object UserObject
 	{
-		private number mValue;
+		private int mValue;
 
-		public void UserObject(number value const)
+		public void UserObject(int value const)
 		{
 			mValue = value;
 		}
 
-		public number GetValue() const
+		public int GetValue() const
 		{
 			return mValue;
 		}
 		
 		/////////////////////////////////////////////////////////////////////
 		
-		public bool operator<=(number other const) const
+		public bool operator<=(int other const) const
 		{
-			print("operator<=(number)");
+			print("operator<=(int)");
 
 			return mValue <= other;
 		}
@@ -35,7 +35,7 @@ private namespace BooleanOverloads
 
 	public object Main
 	{
-		public void Main(number argc = 0, string argv = "")
+		public void Main(int argc = 0, string argv = "")
 		{
 			assert(TestCase1());
 			assert(TestCase2());

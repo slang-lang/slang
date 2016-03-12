@@ -4,26 +4,26 @@ private namespace BooleanOverloads
 {
 	private object UserObject
 	{
-		private number mValue;
+		private int mValue;
 
-		public void UserObject(number value const)
+		public void UserObject(int value const)
 		{
 			mValue = value;
 		}
 
-		public number getValue() const
+		public int getValue() const
 		{
 			return mValue;
 		}
 
-		public void setValue(number value const)
+		public void setValue(int value const)
 		{
 			mValue = value;
 		}
 
 		/////////////////////////////////////////////////////////////////////
 
-		public void operator=(number other const) modify
+		public void operator=(int other const) modify
 		{
 			mValue = other;
 		}
@@ -33,7 +33,7 @@ private namespace BooleanOverloads
 			mValue = other.getValue();
 		}
 
-		public bool operator==(number other const) const
+		public bool operator==(int other const) const
 		{
 			return mValue == other;
 		}
@@ -51,7 +51,7 @@ private namespace BooleanOverloads
 
 	public object Main
 	{
-		public void Main(number argc = 0, string argv = "")
+		public void Main(int argc = 0, string argv = "")
 		{
 			assert( TestCase1() );
 			assert( TestCase2() );

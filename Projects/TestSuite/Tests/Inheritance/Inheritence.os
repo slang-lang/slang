@@ -4,9 +4,9 @@ public namespace Inheritance
 {
 	public object BaseObject
 	{
-		protected number mPublicNumber;	// public members are not allowed, remember the "Law of Demeter"
-		protected number mProtectedNumber;
-		private number mPrivateNumber;
+		protected int mPublicNumber;	// public members are not allowed, remember the "Law of Demeter"
+		protected int mProtectedNumber;
+		private int mPrivateNumber;
 
 		public void BaseObject()
 		{
@@ -23,9 +23,9 @@ public namespace Inheritance
 
 	public object Main extends BaseObject
 	{
-		//private number mPrivateNumber;
+		//private int mPrivateNumber;
 
-		public void Main(number argc = 0, string argv = "")
+		public void Main(int argc = 0, string argv = "")
 		{
 			base.BaseObject();
 
@@ -38,9 +38,9 @@ public namespace Inheritance
 			print(ToString2());
 		}
 
-		public number GetBox() const
+		public int GetBox() const
 		{
-			return number(1);
+			return int(1);
 		}
 
 		public string GetIdentifier() const

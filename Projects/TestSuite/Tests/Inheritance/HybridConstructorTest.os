@@ -2,9 +2,9 @@
 
 private object BaseObject
 {
-	protected number mValue;
+	protected int mValue;
 
-	public void BaseObject(number value)
+	public void BaseObject(int value)
 	{
 		print("BaseObject(" + value + ")");
 
@@ -34,7 +34,7 @@ private object DerivedObject extends BaseObject
 
 public object Main
 {
-	public void Main(number argc = 0, string argv = "")
+	public void Main(int argc = 0, string argv = "")
 	{
 		DerivedObject derived;
 	}

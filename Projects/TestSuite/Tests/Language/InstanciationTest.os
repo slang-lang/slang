@@ -16,7 +16,7 @@ public namespace InstanciationTest
 		}
 */
 
-		public string mValue;
+		private string mValue;
 
 		public void OuterObject(string value = "OuterObject")
 		{
@@ -26,7 +26,7 @@ public namespace InstanciationTest
 
 	public object Main
 	{
-		public void Main(number arc = 0, string argv = "")
+		public void Main(int arc = 0, string argv = "")
 		{
 			assert( TestCase1() );
 		}

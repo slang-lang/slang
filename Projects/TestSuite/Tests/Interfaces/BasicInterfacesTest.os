@@ -4,15 +4,15 @@ public namespace InterfacesTest
 {
 	public interface IWarehouse
 	{
-		public number GetBox() const;
+		public int GetBox() const;
 	}
 
 	public object Warehouse implements IWarehouse
 	{
-		public number GetBox() const
+		public int GetBox() const
 		{
 			// either this..
-			return number 1;
+			return int 1;
 			// or that..
 			//return 1;
 		}
@@ -20,7 +20,7 @@ public namespace InterfacesTest
 
 	public object Main
 	{
-		public void Main(number argc = 0, string argv = "")
+		public void Main(int argc = 0, string argv = "")
 		{
 			test();
 		}

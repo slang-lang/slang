@@ -4,7 +4,7 @@ public namespace SanityCheckerTest
 {
 	public object Main
 	{
-		public void Main(number argc = 0, string argv = "")
+		public void Main(int argc = 0, string argv = "")
 		{
 			assert( TestCase1() );
 			assert( TestCase2() );
@@ -14,7 +14,7 @@ public namespace SanityCheckerTest
 		private bool TestCase1() const
 		{
 			{
-				number one = 1;
+				int one = 1;
 
 			return false;
 		}

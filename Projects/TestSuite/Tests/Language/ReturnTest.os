@@ -4,7 +4,7 @@ public namespace ReturnTest
 {
 	public object Main
 	{
-		public void Main(number argc, string argv)
+		public void Main(int argc, string argv)
 		{
 			assert( TestCase1() );
 			assert( TestCase2() );

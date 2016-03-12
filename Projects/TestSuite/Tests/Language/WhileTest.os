@@ -4,7 +4,7 @@ public namespace Language
 {
 	public object Main
 	{
-		public void Main(number argc = 0, string argv = "")
+		public void Main(int argc = 0, string argv = "")
 		{
 			assert( TestCase1() );
 			assert( TestCase2(5) );
@@ -13,11 +13,11 @@ public namespace Language
 			assert( TestCase5() );
 		}
 
-		private bool TestCase1(number maxCount = 7) const
+		private bool TestCase1(int maxCount = 7) const
 		{
 			print("TestCase1");
 
-			number count = 0;
+			int count = 0;
 			while ( count < maxCount ) {
 				count = count + 1;
 				print("count = " + count);
@@ -26,20 +26,20 @@ public namespace Language
 			return count == maxCount;
 		}
 
-		private bool TestCase2(number maxCount = 7) const
+		private bool TestCase2(int maxCount = 7) const
 		{
 			print("TestCase2");
 
-			number count = 0;
+			int count = 0;
 
-			number one = 1;
+			int one = 1;
 			print("one = " + one);
 
 			while ( count < maxCount ) {
 				count = count + 1;
 				print("count = " + count);
 
-				number one = 2;
+				int one = 2;
 				print("one = " + one);
 			}
 
@@ -52,7 +52,7 @@ public namespace Language
 		{
 			print("TestCase3");
 
-			number count = 0;
+			int count = 0;
 
 			while ( count < 5 ) {
 				print("count = " + count);
@@ -71,7 +71,7 @@ public namespace Language
 		{
 			print("TestCase4");
 
-			number count = 0;
+			int count = 0;
 
 			while ( count < 5 ) {
 				print("count = " + count);
@@ -89,7 +89,7 @@ public namespace Language
 		{
 			print("TestCase5");
 
-			number count = 0;
+			int count = 0;
 
 			while ( count < 5 ) {
 				print("count = " + count);

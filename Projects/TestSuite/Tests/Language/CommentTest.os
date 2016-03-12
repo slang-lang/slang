@@ -4,12 +4,12 @@ public namespace
 {
 	public object Main
 	{
-		public void Main(number argc = 0, string argv = "")
+		public void Main(int argc = 0, string argv = "")
 		{
 			test_comments();
 		}
 
-		public void test_comments(/*number param1*/)
+		public void test_comments(/*int param1*/)
 		{
 			//this is a single line comment
 			// this is another single line comment

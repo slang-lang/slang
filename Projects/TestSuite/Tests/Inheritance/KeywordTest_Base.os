@@ -4,9 +4,9 @@ public namespace Inheritance
 {
 	private object BaseObject
 	{
-		private number mValue;
+		private int mValue;
 
-		public void BaseObject(number value)
+		public void BaseObject(int value)
 		{
 			print("BaseObject(" + value + ")");
 			mValue = value;
@@ -17,12 +17,12 @@ public namespace Inheritance
 			print("~BaseObject()");
 		}
 
-		public number getValue() const
+		public int getValue() const
 		{
 			return mValue;
 		}
 
-		public void setValue(number value) modify
+		public void setValue(int value) modify
 		{
 			mValue = value;
 		}
@@ -35,7 +35,7 @@ public namespace Inheritance
 
 	private object DerivedObject extends BaseObject
 	{
-		public void DerivedObject(number value)
+		public void DerivedObject(int value)
 		{
 			print("DerivedObject(" + value + ")");
 
@@ -47,12 +47,12 @@ public namespace Inheritance
 			print("~DerivedObject()");
 		}
 
-		public number getBaseValue() const
+		public int getBaseValue() const
 		{
 			return base.getValue();
 		}
 
-		public number getValue() const
+		public int getValue() const
 		{
 			return 1 + base.getValue();
 		}
@@ -65,7 +65,7 @@ public namespace Inheritance
 
 	private object ExtendedObject extends DerivedObject
 	{
-		public void ExtendedObject(number value)
+		public void ExtendedObject(int value)
 		{
 			print("ExtendedObject(" + value + ")");
 
@@ -77,12 +77,12 @@ public namespace Inheritance
 			print("~ExtendedObject()");
 		}
 
-		public number getValue() const
+		public int getValue() const
 		{
 			return 1 + base.getValue();
 		}
 
-		public number getBaseValue() const
+		public int getBaseValue() const
 		{
 			return base.getValue();
 		}
@@ -95,7 +95,7 @@ public namespace Inheritance
 
 	public object Main
 	{
-		public void Main(number argc = 0, string argv = "")
+		public void Main(int argc = 0, string argv = "")
 		{
 			assert( TestCase1() );
 		}

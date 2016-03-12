@@ -4,7 +4,7 @@ public namespace InfixOperator
 {
 	public object Main
 	{
-		public void Main(number argc = 0, string argv = "")
+		public void Main(int argc = 0, string argv = "")
 		{
 			assert( TestCase1() );
 			assert( TestCase2() );
@@ -14,7 +14,7 @@ public namespace InfixOperator
 		{
 			print("TestCase1: postfix -- operator");
 
-			number value = 2;
+			int value = 2;
 			print("value = " + value);
 			value = value--;
 			print("value = " + value);
@@ -26,7 +26,7 @@ public namespace InfixOperator
 		{
 			print("TestCase2: postfix ++ operator");
 
-			number value = 2;
+			int value = 2;
 			print("value = " + value);
 			value = value++;
 			print("value = " + value);

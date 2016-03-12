@@ -4,7 +4,7 @@ public namespace TypeCastTest
 {
 	public object Main
 	{
-		public void Main(number argc = 0, string argv = "")
+		public void Main(int argc = 0, string argv = "")
 		{
 			assert( TestCase1() );
 			assert( TestCase2() );
@@ -16,9 +16,9 @@ public namespace TypeCastTest
 
 		private bool TestCase1() const
 		{
-			print("TestCase 1: number to bool type cast");
+			print("TestCase 1: int to bool type cast");
 			
-			number value = 5;
+			int value = 5;
 			bool state = false;
 
 			state = (bool value);
@@ -30,12 +30,12 @@ public namespace TypeCastTest
 
 		private bool TestCase2() const
 		{
-			print("TestCase 2: int to number type cast");
+			print("TestCase 2: int to int type cast");
 
-			int integral = 2i;
-			print("integral = " + number integral);
+			int integral = 2;
+			print("integral = " + int integral);
 
-			number value = 3 + (number integral);
+			int value = 3 + (int integral);
 			print("value = " + value);
 
 			return true;
@@ -46,7 +46,7 @@ public namespace TypeCastTest
 			print("TestCase 3: float to int type cast");
 
 			float real = 3.5f;
-			print("float = " + number real);
+			print("float = " + int real);
 
 			int value = 3 + (int real);
 			print("value = " + value);
@@ -56,12 +56,12 @@ public namespace TypeCastTest
 
 		private bool TestCase4() const
 		{
-			print("TestCase 4: float to number type cast");
+			print("TestCase 4: float to int type cast");
 
 			float real = 3.5f;
-			print("float = " + number real);
+			print("float = " + int real);
 
-			number value = 3 + number real;
+			int value = 3 + int real;
 			print("value = " + value);
 
 			return true;
@@ -69,12 +69,12 @@ public namespace TypeCastTest
 
 		private bool TestCase5() const
 		{
-			print("TestCase 5: string to number type cast");
+			print("TestCase 5: string to int type cast");
 
 			string str = "3.5f";
-			print("string = " + number str);
+			print("string = " + int str);
 
-			number value = 3 + (number str);
+			int value = 3 + (int str);
 			print("value = " + value);
 
 			return true;
@@ -82,10 +82,10 @@ public namespace TypeCastTest
 
 		private bool TestCase6() const
 		{
-			print("TestCase 6: invalid string to number type cast");
+			print("TestCase 6: invalid string to int type cast");
 
 			string str = "bla";
-			print("string = " + number str);
+			print("string = " + int str);
 
 			return true;
 		}

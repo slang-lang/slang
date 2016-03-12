@@ -2,7 +2,7 @@
 
 private object Level1
 {
-	private number mLevel1;
+	private int mLevel1;
 
 	public void Level1()
 	{
@@ -19,7 +19,7 @@ private object Level1
 
 private object Level2 extends Level1
 {
-        private number mLevel2;
+        private int mLevel2;
 
         public void Level2()
         {
@@ -36,7 +36,7 @@ private object Level2 extends Level1
 
 private object Level3 extends Level2
 {
-        private number mLevel3;
+        private int mLevel3;
 
         public void Level3()
         {
@@ -53,7 +53,7 @@ private object Level3 extends Level2
 
 private object Level4 extends Level3
 {
-        private number mLevel4;
+        private int mLevel4;
 
         public void Level4()
         {
@@ -72,7 +72,7 @@ private object Level4Replica replicates Level4;
 
 public object Main
 {
-	public void Main(number argc, string argv)
+	public void Main(int argc, string argv)
 	{
 		Level4Replica replica;
 		print(replica.mLevel1);

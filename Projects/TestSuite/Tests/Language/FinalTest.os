@@ -4,9 +4,9 @@ public namespace FinalTest
 {
 	public object Main
 	{
-		private number mNumber final;
+		private int mNumber final;
 
-		public void Main(number argv = 0, string args = "")
+		public void Main(int argv = 0, string args = "")
 		{
 			mNumber = 1;
 
@@ -16,7 +16,7 @@ public namespace FinalTest
 		private bool TestCase1() modify
 		{
 /*
-			number one const = 1;
+			int one const = 1;
 			one = 2;	// throws ConstCorrectnessViolated exception
 */
 

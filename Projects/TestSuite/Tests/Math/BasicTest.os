@@ -4,14 +4,14 @@ public namespace BasicTest
 {
 	public object Main
 	{
-		public void Main(number argc = 0, string argv = "")
+		public void Main(int argc = 0, string argv = "")
 		{
 			MathExpressionParsing();
 		}
 
 		public void MathExpressionParsing()
 		{
-			number i = 0;
+			int i = 0;
 			print("i == 0: " + i);
 			assert(i == 0);
 

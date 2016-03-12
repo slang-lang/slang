@@ -6,7 +6,7 @@ public namespace Math
 	{
 		private float mNumber;
 
-		public void Main(number argc = 0, string argv = "")
+		public void Main(int argc = 0, string argv = "")
 		{
 			mNumber = 1.f;
 

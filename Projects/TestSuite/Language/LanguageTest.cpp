@@ -10,7 +10,7 @@
 // Library includes
 
 // Project includes
-#include <Core/BuildInObjects/NumberObject.h>
+#include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Script.h>
 #include <Core/VirtualMachine.h>
@@ -50,17 +50,16 @@ void LanguageTest::process()
 	TEST(testParameters);
 	TEST(testPostfixOperator);
 	TEST(testPrint);
-	//TEST(testSanityChecker);			// temporary disabled
+	TEST(testSanityChecker);
 	TEST(testScope);
-	//TEST(testStaticLocalVariable);
-	//TEST(testSwitch);					// not yet implemented
 	TEST(testThis);
 	TEST(testTypeCast);
 	TEST(testWhile);
 
-// not yet implemented
-	//TEST(testInterfaces);
+// not implemented
 	//TEST(testNamespaces);
+	//TEST(testStaticLocalVariable);	// static methods or variables are not supported any more
+	//TEST(testSwitch);
 }
 
 void LanguageTest::setup()
@@ -251,24 +250,6 @@ void LanguageTest::testInfixOperator()
 	}
 }
 
-void LanguageTest::testInterfaces()
-{
-	try {
-		VirtualMachine vm;
-
-		Script *s = vm.createScriptFromFile("Tests/Language/InterfacesTest.os");
-
-		ParameterList params;
-		s->execute("GetBox", params);
-
-		// automatic success
-	}
-	catch ( std::exception& e ) {
-		// unexpected exception has been thrown: test failed!
-		TFAIL(e.what());
-	}
-}
-
 void LanguageTest::testLawOfDemeter()
 {
 	try {
@@ -350,7 +331,7 @@ void LanguageTest::testParameters()
 		VirtualMachine vm;
 
 		ParameterList params;
-		params.push_back(Parameter("argc", Runtime::NumberObject::TYPENAME, "2"));
+		params.push_back(Parameter("argc", Runtime::IntegerObject::TYPENAME, "2"));
 		params.push_back(Parameter("argv", Runtime::StringObject::TYPENAME, ""));
 		vm.createScriptFromFile("Tests/Language/ParameterTest.os", params);
 
@@ -396,7 +377,7 @@ void LanguageTest::testSanityChecker()
 	try {
 		VirtualMachine vm;
 
-		TTHROWS(vm.createScriptFromFile("Tests/Language/SanityChecker.os"), ObjectiveScript::Utils::Exceptions::SyntaxError);
+		TTHROWS(vm.createScriptFromFile("Tests/Language/SanityCheckerTest.os"), ObjectiveScript::Utils::Exceptions::SyntaxError);
 
 		// automatic success
 	}

@@ -401,7 +401,7 @@ void Interpreter::process(Object *result, TokenIterator& token, TokenIterator en
 			case Token::Type::CONST_INTEGER:
 			case Token::Type::CONST_LITERAL:
 			case Token::Type::CONST_NUMBER:
-				expression(result, token);
+				parseTerm(result, token);
 				break;
 			case Token::Type::IDENTIFER:
 				process_identifier(token, result, terminator == Token::Type::NIL ? Token::Type::SEMICOLON : terminator);
