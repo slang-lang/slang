@@ -21,9 +21,12 @@ namespace ObjectiveScript {
 static const char* FALSE = "false";
 static const char* TRUE = "true";
 
+// Predefined identifiers
+static const char* IDENTIFIER_BASE = "base";
+static const char* IDENTIFIER_THIS = "this";
+
 // Keywords
 static const char* KEYWORD_ASSERT = "assert";
-static const char* KEYWORD_BASE = "base";
 static const char* KEYWORD_BREAK = "break";
 static const char* KEYWORD_CASE = "case";
 static const char* KEYWORD_CATCH = "catch";
@@ -37,7 +40,6 @@ static const char* KEYWORD_NEW = "new";
 static const char* KEYWORD_PRINT = "print";
 static const char* KEYWORD_RETURN = "return";
 static const char* KEYWORD_SWITCH = "switch";
-static const char* KEYWORD_THIS = "this";
 static const char* KEYWORD_THROW = "throw";
 static const char* KEYWORD_TRY = "try";
 static const char* KEYWORD_WHILE = "while";

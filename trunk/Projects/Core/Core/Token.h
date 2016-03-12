@@ -29,7 +29,9 @@ public:
 			Assignment,
 			Comparator,
 			Constant,
+			Keyword,
 			Modifier,
+			ReservedWord,
 			Operator
 		};
 	};

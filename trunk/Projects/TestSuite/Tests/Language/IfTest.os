@@ -22,7 +22,6 @@ public namespace IfTest
 				print("one = " + one);
 
 				print("TestCase1: true");
-				assert(true);
 			}
 
 			if ( false ) {
@@ -47,7 +46,6 @@ public namespace IfTest
 				print("one = " + one);
 
 				print("TestCase2: else-if-true");
-				assert(true);
 			}
 			else {
 				print("TestCase2: else-if-else");
@@ -68,7 +66,6 @@ public namespace IfTest
 			// comparison operators are stickier than boolean operators
 			if ( true == true && false == false ) {
 				print("TestCase3: true");
-				assert(true);
 				return true;
 			}
 
@@ -82,7 +79,6 @@ public namespace IfTest
 			// comparison operators are stickier than boolean operators but parenthesis are even better :-)
 			if ( true == (true && false) == false ) {
 				print("TestCase4: true");
-				assert(true);
 				return true;
 			}
 

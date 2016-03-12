@@ -70,8 +70,7 @@ void Interpreter::expression(Object *result, TokenIterator& start)
 			return;
 		}
 
-		// consume operator token
-		start++;
+		start++;	// consume operator token
 
 		Object v2;
 		parseCondition(&v2, start);
@@ -94,7 +93,7 @@ void Interpreter::expression(Object *result, TokenIterator& start)
 void Interpreter::garbageCollector()
 {
 	for ( Symbols::reverse_iterator it = mSymbols.rbegin(); it != mSymbols.rend(); ) {
-		if ( it->first != KEYWORD_BASE && it->first != KEYWORD_THIS &&
+		if ( it->first != IDENTIFIER_BASE && it->first != IDENTIFIER_THIS &&
 			 it->second && it->second->getType() == Symbol::IType::ObjectSymbol ) {
 			mRepository->removeReference(static_cast<Object*>(it->second));
 		}
@@ -145,7 +144,7 @@ void Interpreter::parseCondition(Object *result, TokenIterator& start)
 			 break;
 		}
 
-		start++;	// consume comperator token
+		start++;	// consume comparator token
 
 		Object v2;
 		parseExpression(&v2, start);
@@ -370,12 +369,6 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 		} break;
 		case Token::Type::SEMICOLON: {
 			return;
-/*
-			if ( result->Typename() == VoidObject::TYPENAME ) {
-				// this is okay, as long as we have a been called by a return command in a void method
-				return;
-			}
-*/
 		} break;
 		default: {
 			throw Utils::Exceptions::SyntaxError("identifier, literal or number expected but " + start->content() + " found", start->position());
@@ -393,8 +386,8 @@ void Interpreter::popTokens()
 void Interpreter::process(Object *result, TokenIterator& token, TokenIterator end, Token::Type::E terminator)
 {
 	// loop through all keywords and redirect to the corresponding method
-	while ( ((token != getTokens().end()) && (token != end) ) &&
-			((token->type() != terminator) && (token->type() != Token::Type::ENDOFFILE)) ) {
+	while ( ( (token != getTokens().end()) && (token != end) ) &&
+			( (token->type() != terminator) && (token->type() != Token::Type::ENDOFFILE) ) ) {
 
 		if ( mControlFlow != ControlFlow::Normal ) {
 			// a return command has been triggered, time to stop processing
@@ -424,6 +417,8 @@ void Interpreter::process(Object *result, TokenIterator& token, TokenIterator en
 				// this opens a new scope
 				process_scope(token, result);
 			} break;
+			case Token::Type::SEMICOLON:
+				break;
 			default:
 				throw Utils::Exceptions::SyntaxError("invalid token '" + token->content() + "' found", token->position());
 				break;
@@ -437,21 +432,14 @@ void Interpreter::process(Object *result, TokenIterator& token, TokenIterator en
 // assert [(] <expression> [)];
 void Interpreter::process_assert(TokenIterator& token)
 {
-	//expect(Token::Type::PARENTHESIS_OPEN, token);
-
-	// find next open parenthesis
-	TokenIterator condBegin = findNext(token, Token::Type::PARENTHESIS_OPEN, Token::Type::SEMICOLON);
-	// find next balanced '(' & ')' pair
-	TokenIterator condEnd = findNextBalancedParenthesis(++condBegin, 0, Token::Type::SEMICOLON);
-	// find semicolon
-	TokenIterator tmp = findNext(condEnd, Token::Type::SEMICOLON);
+	expect(Token::Type::PARENTHESIS_OPEN, token++);
 
     Object condition;
 	expression(&condition, token);
 
 	System::Assert(condition, token->position());
 
-	token = tmp;
+	expect(Token::Type::PARENTHESIS_CLOSE, token++);
 }
 
 // syntax:
@@ -502,6 +490,8 @@ void Interpreter::process_delete(TokenIterator& token)
 // for ( <expression>; <condition>; <expression> ) { }
 void Interpreter::process_for(TokenIterator& token, Object *result)
 {
+	expect(Token::Type::PARENTHESIS_OPEN, token);
+
 	// initialization-begin
 	TokenIterator initializationBegin = ++findNext(token, Token::Type::PARENTHESIS_OPEN);
 	// initialization-end
@@ -591,10 +581,8 @@ void Interpreter::process_for(TokenIterator& token, Object *result)
 }
 
 // executes a method or processes an assign statement
-void Interpreter::process_identifier(TokenIterator& token, Object *result, Token::Type::E terminator)
+void Interpreter::process_identifier(TokenIterator& token, Object* /*result*/, Token::Type::E terminator)
 {
-(void)result;
-
 	// try to find assignment token
 	TokenIterator assign = findNext(token, Token::Type::ASSIGN, terminator);
 	// find next semicolon
@@ -643,8 +631,11 @@ void Interpreter::process_identifier(TokenIterator& token, Object *result, Token
 // }
 void Interpreter::process_if(TokenIterator& token, Object *result)
 {
+	expect(Token::Type::PARENTHESIS_OPEN, token++);
+
 	// find next open parenthesis
-	TokenIterator condBegin = ++findNext(token, Token::Type::PARENTHESIS_OPEN);
+	//TokenIterator condBegin = ++findNext(token, Token::Type::PARENTHESIS_OPEN);
+	TokenIterator condBegin = token;
 	// find next balanced '(' & ')' pair
 	TokenIterator condEnd = findNextBalancedParenthesis(condBegin);
 	// find next open curly bracket '{'
@@ -825,7 +816,7 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 }
 
 // syntax:
-// new <Object>([<parameter list>]);
+// new <Typename>([<parameter list>]);
 void Interpreter::process_new(TokenIterator& token, Object *result)
 {
 	TokenIterator tmp = token;
@@ -880,21 +871,14 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 // print(<expression>);
 void Interpreter::process_print(TokenIterator& token)
 {
-	//expect(Token::Type::PARENTHESIS_OPEN, token);
-
-	// find open parenthesis
-	TokenIterator opened = findNext(token, Token::Type::PARENTHESIS_OPEN);
-	// find closed parenthesis
-	TokenIterator closed = findNextBalancedParenthesis(++opened);
-	// find semicolon
-	TokenIterator tmp = findNext(closed, Token::Type::SEMICOLON);
+	expect(Token::Type::PARENTHESIS_OPEN, token++);
 
 	StringObject text;
-	expression(&text, opened);
+	expression(&text, token);
 
 	System::Print(text.getValue(), token->position());
 
-	token = tmp;
+	expect(Token::Type::PARENTHESIS_CLOSE, token++);
 }
 
 // syntax:
@@ -974,8 +958,6 @@ assert(!"not implemented");
 // throw;
 void Interpreter::process_throw(TokenIterator& token, Object* /*result*/)
 {
-	TokenIterator semicolon = findNext(token, Token::Type::SEMICOLON);
-
 	Object *data = mRepository->createInstance(GENERIC_OBJECT, ANONYMOUS_OBJECT);
 
 	expression(data, token);
@@ -983,13 +965,15 @@ void Interpreter::process_throw(TokenIterator& token, Object* /*result*/)
 	mControlFlow = ControlFlow::Throw;
 	mExceptionData = ExceptionData(data, token->position());
 
-	token = semicolon;
+	expect(Token::Type::SEMICOLON, token++);
 }
 
 // syntax:
 // try { } [ catch { } ] [ finally { } ]
 void Interpreter::process_try(TokenIterator& token, Object *result)
 {
+	expect(Token::Type::BRACKET_CURLY_OPEN, token);
+
 	// find next open curly bracket '{'
 	TokenIterator tryBegin = findNext(token, Token::Type::BRACKET_CURLY_OPEN);
 	// find next balanced '{' & '}' pair
@@ -1018,6 +1002,9 @@ void Interpreter::process_try(TokenIterator& token, Object *result)
 		mControlFlow = ControlFlow::Normal;
 
 		if ( tmp != getTokens().end() && tmp->content() == KEYWORD_CATCH ) {
+			tmp++;
+			expect(Token::Type::BRACKET_CURLY_OPEN, tmp);
+
 			// find next open curly bracket '{'
 			TokenIterator catchBegin = findNext(tmp, Token::Type::BRACKET_CURLY_OPEN);
 			// find next balanced '{' & '}' pair
@@ -1046,6 +1033,9 @@ void Interpreter::process_try(TokenIterator& token, Object *result)
 
 	// execute finally if present
 	if ( tmp != getTokens().end() && tmp->content() == KEYWORD_FINALLY ) {
+		tmp++;
+		expect(Token::Type::BRACKET_CURLY_OPEN, tmp);
+
 		// find next open curly bracket '{'
 		TokenIterator finallyBegin = findNext(tmp, Token::Type::BRACKET_CURLY_OPEN);
 		// find next balanced '{' & '}' pair
@@ -1066,6 +1056,8 @@ void Interpreter::process_try(TokenIterator& token, Object *result)
 
 		mControlFlow = interpret(finallyTokens, result);
 	}
+
+	expect(Token::Type::BRACKET_CURLY_CLOSE, token);
 }
 
 void Interpreter::process_type(TokenIterator& token)
@@ -1128,6 +1120,8 @@ void Interpreter::process_type(TokenIterator& token)
 // }
 void Interpreter::process_while(TokenIterator& token, Object *result)
 {
+	expect(Token::Type::PARENTHESIS_OPEN, token);
+
 	// find next open parenthesis
 	TokenIterator condBegin = ++findNext(token, Token::Type::PARENTHESIS_OPEN);
 	// find next balanced '(' & ')' pair
@@ -1209,7 +1203,7 @@ Symbol* Interpreter::resolveMethod(const std::string& name, const ParameterList&
 
 	if ( member.empty() ) {
 		member = parent;
-		parent = KEYWORD_THIS;
+		parent = IDENTIFIER_THIS;
 	}
 
 	Symbol *result = LocalScope::resolve(parent, onlyCurrentScope);

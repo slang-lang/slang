@@ -2,16 +2,16 @@
 
 <?php
 
-$count = 1;
+$lowerbound = 1;
 $upperbound = 100000;
 
-print("Starting performance test (by counting from " . $count . " to " . $upperbound . ")...");
+print("Starting performance test (by counting from " . $lowerbound . " to " . $upperbound . ")...\n");
 
-while ( $count < $upperbound ) {
-	//print("count = " + $count);
-	$count = $count + 1;
+while ( $lowerbound < $upperbound ) {
+	//print("lowerbound = " . $lowerbound);
+	$lowerbound = $lowerbound + 1;
 }
 
-print("Finished performance test.");
+print("Finished performance test.\n");
 
 ?>

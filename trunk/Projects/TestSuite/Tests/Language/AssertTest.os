@@ -6,11 +6,8 @@
 	{
 		public void Main(number argc = 0, string argv = "")
 		{
-			assert true;
 			assert(true);
-			assert false == false;
 			assert(false == false);
-			assert 1;
 			assert(1);
 			assert(ReturnOne());
 			assert(ReturnOne() > 0);

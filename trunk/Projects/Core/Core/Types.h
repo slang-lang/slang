@@ -33,6 +33,7 @@ StringList provideAtomarTypes();
 StringList provideLanguageFeatures();
 StringList provideKeyWords();
 StringList provideModifiers();
+StringList providePredefinedIdentifiers();
 StringList provideReservedWords();
 
 
