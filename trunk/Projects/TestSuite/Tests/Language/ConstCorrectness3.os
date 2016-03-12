@@ -4,9 +4,9 @@ public namespace ConstCorrectness3
 {
 	private object UserObject
 	{
-		private number mValue;
+		private int mValue;
 
-		public void UserObject(number value const)
+		public void UserObject(int value const)
 		{
 			mValue = value;
 		}
@@ -15,12 +15,12 @@ public namespace ConstCorrectness3
 		{
 		}
 
-		public number getValue() const
+		public int getValue() const
 		{
 			return mValue;
 		}
 
-		public void setValue(number value const) modify
+		public void setValue(int value const) modify
 		{
 			mValue = value;
 		}
@@ -28,9 +28,9 @@ public namespace ConstCorrectness3
 
 	public object Main
 	{
-		private number mNumber;
+		private int mNumber;
 
-		public void Main(number argc const = 0, string argv const = "")
+		public void Main(int argc const = 0, string argv const = "")
 		{
 			mNumber = 1;
 

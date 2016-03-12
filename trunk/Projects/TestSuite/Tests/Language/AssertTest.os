@@ -4,7 +4,7 @@
 //{
 	public object Main
 	{
-		public void Main(number argc = 0, string argv = "")
+		public void Main(int argc = 0, string argv = "")
 		{
 			assert(true);
 			assert(false == false);
@@ -23,7 +23,7 @@
 			return "ThisIsAString";
 		}
 
-		private number ReturnOne() const
+		private int ReturnOne() const
 		{
 			return 1;
 		}

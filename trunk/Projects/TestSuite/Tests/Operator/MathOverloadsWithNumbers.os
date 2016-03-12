@@ -4,51 +4,51 @@ public namespace MathOverloads
 {
 	private object OverloadedObject
 	{
-		private number mNumber;
+		private int mNumber;
 
-		public void OverloadedObject(number one const)
+		public void OverloadedObject(int one const)
 		{
 			mNumber = one;
 		}
 
-		public number GetNumber() const
+		public int GetNumber() const
 		{
 			return mNumber;
 		}
 
 		/////////////////////////////////////////////////////////////////////
 
-		public void operator/(number other const) modify
+		public void operator/(int other const) modify
 		{
 			print("operator/");
 			mNumber = mNumber / other;
 		}
 
-		public bool operator==(number other const) const
+		public bool operator==(int other const) const
 		{
-			print("operator==(number)");
+			print("operator==(int)");
 			return mNumber == other;
 		}
 
-		public void operator*(number other const) modify
+		public void operator*(int other const) modify
 		{
 			print("operator*");
 			mNumber = mNumber * other;
 		}
 
-		public void operator%(number other const) modify
+		public void operator%(int other const) modify
 		{
 			print("operator%");
 			mNumber = mNumber % other;
 		}
 
-		public void operator+(number other const) modify
+		public void operator+(int other const) modify
 		{
 			print("operator+");
 			mNumber = mNumber + other;
 		}
 
-		public void operator-(number other const) modify
+		public void operator-(int other const) modify
 		{
 			print("operator-");
 			mNumber = mNumber - other;
@@ -57,27 +57,27 @@ public namespace MathOverloads
 		public void operator++() modify
 		{
 			print("operator++");
-			mNumber++;
+			mNumber = mNumber++;
 		}
 
 		public void operator--() modify
 		{
 			print("operator--");
-			mNumber--;
+			mNumber = mNumber--;
 		}
 	}
 
 	public object Main
 	{
-		public void Main(number argc const = 0, string argv const = "")
+		public void Main(int argc const = 0, string argv const = "")
 		{
 			assert( TestCase1() );
 			assert( TestCase2() );
 			assert( TestCase3() );
 			assert( TestCase4() );
-			//assert( TestCase5() );	modulo operator only implemented for integer type
-			//assert( TestCase6() );
-			//assert( TestCase7() );
+			assert( TestCase5() );	//modulo operator only implemented for integer type
+			assert( TestCase6() );
+			assert( TestCase7() );
 		}
 
 		private bool TestCase1() const
@@ -135,13 +135,13 @@ public namespace MathOverloads
 		{
 			print("TestCase4: using the overloaded divide operator");
 
-			OverloadedObject obj1 = new OverloadedObject(1);
+			OverloadedObject obj1 = new OverloadedObject(4);
 
 			obj1 = obj1 / 2;
 			//assert( obj1 == 0.5 );
 			print("obj1.GetNumber() = " + obj1.GetNumber());
 
-			if ( obj1 == 0.5 ) {
+			if ( obj1 == 2 ) {
 				return true;
 			}
 
@@ -158,7 +158,7 @@ public namespace MathOverloads
 			//assert( obj1 == 0.5 );
 			print("obj1.GetNumber() = " + obj1.GetNumber());
 
-			if ( obj1 == 1i ) {
+			if ( obj1 == 1 ) {
 				return true;
 			}
 

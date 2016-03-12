@@ -43,7 +43,6 @@ private:	// Tests
 	void testFor();
 	void testIf();
 	void testInfixOperator();
-	void testInterfaces();
 	void testLawOfDemeter();
 	void testMethodOverloading();
 	void testNamespaces();

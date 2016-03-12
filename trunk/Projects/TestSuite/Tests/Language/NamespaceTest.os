@@ -22,9 +22,9 @@ public namespace Tests sealed
 
 	public object Main
 	{
-		public void Main(number argc = 0, string argv = "")
+		public void Main(int argc = 0, string argv = "")
 		{
-			NamespaceTests.Test1 test1 = new Test1();
+			NamespaceTests.Test1 test1 = new NamespaceTests.Test1();
 			print(test1.getName());
 		}
 	}

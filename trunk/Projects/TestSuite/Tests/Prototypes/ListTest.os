@@ -4,14 +4,14 @@ public namespace ListTest
 {
 	public object Main
 	{
-		public void Main(number argc = 0, string argv = "")
+		public void Main(int argc = 0, string argv = "")
 		{
 			assert( TestCase1() );
 		}
 
 		private bool TestCase1() const
 		{
-			list<number> values;
+			list<int> values;
 
 			print("values.size() = " + values.size());
 

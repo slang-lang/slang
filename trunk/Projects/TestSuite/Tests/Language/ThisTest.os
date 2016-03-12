@@ -4,9 +4,9 @@ public namespace ThisTest
 {
 	public object Main
 	{
-		private number mNumber;
+		private int mNumber;
 
-		public void Main(number argc = 0, string argv = "")
+		public void Main(int argc = 0, string argv = "")
 		{
 			assert( TestCase1() );
 			assert( TestCase2() );
@@ -55,12 +55,12 @@ public namespace ThisTest
 			return true;
 		}
 
-		private void ModifyThisInMethod1(number value) modify
+		private void ModifyThisInMethod1(int value) modify
 		{
 			mNumber = value;
 		}
 
-		private void ModifyThisInMethod2(number value) modify
+		private void ModifyThisInMethod2(int value) modify
 		{
 			this.mNumber = value;
 		}

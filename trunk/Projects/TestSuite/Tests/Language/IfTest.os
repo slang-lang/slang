@@ -4,7 +4,7 @@ public namespace IfTest
 {
 	public object Main
 	{
-		public void Main(number argc = 0, string argv = "")
+		public void Main(int argc = 0, string argv = "")
 		{
 			assert( TestCase1() );
 			assert( TestCase2() );
@@ -14,11 +14,11 @@ public namespace IfTest
 
 		private bool TestCase1()
 		{
-			number one = 1;
+			int one = 1;
 			print("one = " + one);
 
 			if ( true ) {
-				number one = 2;
+				int one = 2;
 				print("one = " + one);
 
 				print("TestCase1: true");
@@ -32,9 +32,9 @@ public namespace IfTest
 			return true;
 		}
 
-		private bool TestCase2(number param1 = 2)
+		private bool TestCase2(int param1 = 2)
 		{
-			number one = 0;
+			int one = 0;
 			print("one = " + one);
 
 			if ( (param1 - 1) == 0 ) {
@@ -42,7 +42,7 @@ public namespace IfTest
 				assert(false);
 			}
 			else if ( (param1 - 2) == 0 ) {
-				number one = 1;
+				int one = 1;
 				print("one = " + one);
 
 				print("TestCase2: else-if-true");

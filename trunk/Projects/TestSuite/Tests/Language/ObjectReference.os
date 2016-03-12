@@ -4,19 +4,19 @@ public namespace Language
 {
 	public object TestObject
 	{
-		private number mValue;
+		private int mValue;
 
-		public void TestObject(number value)
+		public void TestObject(int value)
 		{
 			mValue = value;
 		}
 
-		public number getValue() const
+		public int getValue() const
 		{
 			return mValue;
 		}
 
-		public void setValue(number value const)
+		public void setValue(int value const)
 		{
 			mValue = value;
 		}
@@ -24,7 +24,7 @@ public namespace Language
 
 	public object Main
 	{
-		public void Main(number argc = 0, string argv = "")
+		public void Main(int argc = 0, string argv = "")
 		{
 			assert( TestCase1() );
 			//assert( TestCase2() );
@@ -65,7 +65,7 @@ public namespace Language
 			return obj.mValue == 2;
 		}
 
-		private bool TestCase4() const
+		private bool TestCase4() modify
 		{
 			print("TestCase4: parameter as object by reference");
 
@@ -76,16 +76,16 @@ public namespace Language
 			return obj.mValue == 2;
 		}
 
-		private void ParameterByReference(number value ref) const
+		private void ParameterByReference(int value ref) const
 		{
 			assert(value == 1);
-			print("ParameterByReference(number): value = " + value);
+			print("ParameterByReference(int): value = " + value);
 			value = value + 1;
-			print("ParameterByReference(number): value = " + value);
+			print("ParameterByReference(int): value = " + value);
 			assert(value == 2);
 		}
 
-		private void ParameterByReference(TestObject value ref) const
+		private void ParameterByReference(TestObject value ref) modify
 		{
 			assert(value.mValue == 1);
 			print("ParameterByReference(TestObject): mValue = " + value.mValue);
@@ -94,12 +94,12 @@ public namespace Language
 			assert(value.mValue == 2);
 		}
 
-		private void ParameterByValue(number value val) const
+		private void ParameterByValue(int value val) const
 		{
 			assert(value == 1);
-			print("ParameterByValue(number): value = " + value);
+			print("ParameterByValue(int): value = " + value);
 			value = value + 1;
-			print("ParameterByValue(number): value = " + value);
+			print("ParameterByValue(int): value = " + value);
 			assert(value == 2);
 		}
 

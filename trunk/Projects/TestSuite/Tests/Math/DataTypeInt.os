@@ -6,13 +6,13 @@ public namespace Math
 	{
 		private int mNumber;
 
-		public void Main(number argc = 0, string argv = "")
+		public void Main(int argc = 0, string argv = "")
 		{
 			mNumber = 1;
 
 			print("mNumber = " + mNumber);
 
-			assert( mNumber == 1i );
+			assert( mNumber == 1 );
 		}
 	}
 }

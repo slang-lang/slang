@@ -7,18 +7,18 @@ public namespace StackTest
 	private object Node
 	{
 		private Node _next;
-		private number _value;
+		private int _value;
 
 		public void Node()
 		{
 		}
 
-		public void Node(number value)
+		public void Node(int value)
 		{
 			_value = value;
 		}
 
-		public void Node(number value, Node node)
+		public void Node(int value, Node node)
 		{
 			_next = node;
 			_value = value;
@@ -38,7 +38,7 @@ public namespace StackTest
 			return (first);
 		}
 
-		public number pop()
+		public int pop()
 		{
 			if ( first ) {
 				Node temp = first.value;
@@ -50,7 +50,7 @@ public namespace StackTest
 			}
 		}
 
-		public void push(number value) modify
+		public void push(int value) modify
 		{
 			first = new Node(value, first);
 		}
@@ -58,11 +58,11 @@ public namespace StackTest
 
 	public object Main
 	{
-		public void Main(number argc = 0, string argv = "")
+		public void Main(int argc = 0, string argv = "")
 		{
 			Stack stack = new Stack();
 			
-			for ( number bla = 0; bla < 10; bla = bla + 1 ) {
+			for ( int bla = 0; bla < 10; bla = bla + 1 ) {
 				stack.push(bla);
 			}
 			

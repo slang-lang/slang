@@ -35,7 +35,7 @@ public namespace ExceptionTest
 
 	public object Main
 	{
-		public void Main(number argc = 0, string argv = "")
+		public void Main(int argc = 0, string argv = "")
 		{
 			assert( TestCase1() );
 			assert( TestCase2() );
@@ -52,7 +52,7 @@ public namespace ExceptionTest
 			try {
 				print("try");
 
-				number one = 1;
+				int one = 1;
 				print("one = " + one);
 
 				throw;
@@ -68,7 +68,7 @@ public namespace ExceptionTest
 			print("TestCase2()");
 
 			try {
-				number one = 1;
+				int one = 1;
 				print("one = " + one);
 
 				throw;
@@ -76,7 +76,7 @@ public namespace ExceptionTest
 				assert( false );
 			}
 			finally {
-				number one = 2;
+				int one = 2;
 				print("one = " + one);
 			}
 
@@ -88,7 +88,7 @@ public namespace ExceptionTest
 			print("TestCase3()");
 
 			try {
-				number one = 1;
+				int one = 1;
 				print("one = " + one);
 
 				throw;
@@ -96,11 +96,11 @@ public namespace ExceptionTest
 				assert( false );
 			}
 			catch {
-				number one = 2;
+				int one = 2;
 				print("one = " + one);
 			}
 			finally {
-				number one = 3;
+				int one = 3;
 				print("one = " + one);
 			}
 			return true;
@@ -133,7 +133,7 @@ public namespace ExceptionTest
 		{
 			print("TestCase5()");
 
-			number one = 1;
+			int one = 1;
 			print("one = " + one);
 
 			try {
@@ -159,9 +159,9 @@ public namespace ExceptionTest
 			print("TestCase6()");
 
 			try {
-				throw new number(1);
+				throw new int(1);
 			}
-			catch ( number one ) {
+			catch ( int one ) {
 				print("one = " + one);
 			}
 

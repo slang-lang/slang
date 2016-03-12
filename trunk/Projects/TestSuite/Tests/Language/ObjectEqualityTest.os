@@ -4,22 +4,29 @@ public namespace ObjectEqualityTest
 {
 	private object TestObject
 	{
-		private number mValue;
+		private int mValue;
 
-		public number getValue() const
+		public int getValue() const
 		{
 			return mValue;
 		}
 
-		public void setValue(number value const)
+		public void setValue(int value const)
 		{
 			mValue = value;
 		}
+
+/*
+		public bool operator==(TestObject other const) const
+		{
+			return mValue == other.mValue;
+		}
+*/
 	}
 
 	public object Main
 	{
-		public void Main(number argc = 0, string argv = "")
+		public void Main(int argc = 0, string argv = "")
 		{
 			assert( TestCase1() );
 			assert( TestCase2() );

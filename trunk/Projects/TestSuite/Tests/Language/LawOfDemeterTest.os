@@ -4,9 +4,9 @@ public namespace LawOfDemeterTest
 {
 	public object Main
 	{
-		public number mPublicMember;
+		public int mPublicMember;
 
-		public void Main(number argc, string argv)
+		public void Main(int argc, string argv)
 		{
 			mPublicMember = 0;
 		}

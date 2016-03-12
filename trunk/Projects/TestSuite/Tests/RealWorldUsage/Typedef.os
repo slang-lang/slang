@@ -2,14 +2,14 @@
 
 private object TestObject
 {
-	private number mValue;
+	private int mValue;
 
-	public number getValue() const
+	public int getValue() const
 	{
 		return mValue;
 	}
 
-	public void setValue(number value) modify
+	public void setValue(int value) modify
 	{
 		mValue = value;
 	}
@@ -17,7 +17,7 @@ private object TestObject
 
 private object DerivedObject extends TestObject
 {
-	public void setValue(number value) modify
+	public void setValue(int value) modify
 	{
 		mValue = value * value;
 	}
@@ -30,12 +30,12 @@ private prototype Proto<value>
 {
 }
 
-private object RetypedProto replicates Proto<number>;
+private object RetypedProto replicates Proto<int>;
 */
 
 private object Main
 {
-	public void Main(number argc, string argv)
+	public void Main(int argc, string argv)
 	{
 		DerivedObject obj1;
 		print("obj1.getValue() = " + obj1.getValue());

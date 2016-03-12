@@ -4,11 +4,11 @@ public namespace
 {
 	public object Main
 	{
-		public void Main(number argc = 0, string argv = "")
+		public void Main(int argc = 0, string argv = "")
 		{
 			returnVoid();
 
-			number i = 0;
+			int i = 0;
 			i = testMethod(returnNumber(1), returnNumber(2));
 			print("i = " + i);
 
@@ -25,17 +25,17 @@ public namespace
 			print("i = " + i);
 		}
 
-		private number returnNumber(number param1) const
+		private int returnNumber(int param1) const
 		{
 			return param1;
 		}
 
-		private number returnSum(number p1, number p2) const
+		private int returnSum(int p1, int p2) const
 		{
 			return p1 + p2;
 		}
 
-		private number returnSum(number p1, number p2, number p3) const
+		private int returnSum(int p1, int p2, int p3) const
 		{
 			return p1 + p2 + p3;
 		}
@@ -51,7 +51,7 @@ public namespace
 			return;
 		}
 
-		private number testMethod(number param1, number param2) const
+		private int testMethod(int param1, int param2) const
 		{
 			return param1 + param2;
 		}

@@ -4,14 +4,14 @@ public namespace MathOverloads
 {
 	private object OverloadedObject
 	{
-		private number mNumber;
+		private int mNumber;
 
-		public void OverloadedObject(number one const)
+		public void OverloadedObject(int one const)
 		{
 			mNumber = one;
 		}
 
-		public number GetNumber() const
+		public int GetNumber() const
 		{
 			return mNumber;
 		}
@@ -24,9 +24,9 @@ public namespace MathOverloads
 			mNumber = mNumber / other.GetNumber();
 		}
 
-		public bool operator==(number other const) const
+		public bool operator==(int other const) const
 		{
-			print("operator==(number)");
+			print("operator==(int)");
 			return mNumber == other;
 		}
 
@@ -63,13 +63,13 @@ public namespace MathOverloads
 
 	public object Main
 	{
-		public void Main(number argc const = 0, string argv const = "")
+		public void Main(int argc const = 0, string argv const = "")
 		{
 			assert( TestCase1() );
 			assert( TestCase2() );
 			assert( TestCase3() );
 			assert( TestCase4() );
-			//assert( TestCase5() );
+			assert( TestCase5() );
 		}
 
 		private bool TestCase1() const
@@ -130,14 +130,14 @@ public namespace MathOverloads
 		{
 			print("TestCase4: using the overloaded divide operator");
 
-			OverloadedObject obj1 = new OverloadedObject(1);
+			OverloadedObject obj1 = new OverloadedObject(4);
 			OverloadedObject obj2 = new OverloadedObject(2);
 
 			obj1 = obj1 / obj2;
-			//assert( obj1 == 0.5 );
+			//assert( obj1 == 2 );
 			print("obj1.GetNumber() = " + obj1.GetNumber());
 
-			if ( obj1 == 0.5 ) {
+			if ( obj1 == 2 ) {
 				return true;
 			}
 

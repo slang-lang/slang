@@ -4,14 +4,14 @@ public namespace Language
 {
 	public object Main
 	{
-		public void Main(number argc = 0, string argv = "")
+		public void Main(int argc = 0, string argv = "")
 		{
 			assert( TestCase1() );
 		}
 
 		private bool TestCase1()
 		{
-			number i = 0;
+			int i = 0;
 
 			i = incStaticVar();
 			print("i = " + i);
@@ -25,9 +25,9 @@ public namespace Language
 			return i == 3;
 		}
 
-		private number incStaticVar()
+		private int incStaticVar()
 		{
-			number var static = 0;
+			int var static = 0;
 
 			var = var + 1;
 

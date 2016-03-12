@@ -4,7 +4,7 @@ public namespace Tests
 {
 	public object Main
 	{
-		public void Main(number argc = 0, string argv = "")
+		public void Main(int argc = 0, string argv = "")
 		{
 			print("argc = " + argc);
 			print("argv = " + argv);
@@ -15,7 +15,7 @@ public namespace Tests
 			DefaultParameter(2);
 		}
 
-		private void DefaultParameter(number param = 1)
+		private void DefaultParameter(int param = 1)
 		{
 			print("param = " + param);
 		}
