@@ -338,8 +338,8 @@ void Repository::initializeObject(Runtime::Object *object, Designtime::BluePrint
 	}
 
 	// create and define all methods based on given blueprint
-	ObjectScope::MethodCollection methods = blueprint->provideMethods();
-	for ( ObjectScope::MethodCollection::const_iterator it = methods.begin(); it != methods.end(); ++it ) {
+	MethodScope::MethodCollection methods = blueprint->provideMethods();
+	for ( MethodScope::MethodCollection::const_iterator it = methods.begin(); it != methods.end(); ++it ) {
 		Runtime::Method* method = new Runtime::Method(object, (*it)->getName(), (*it)->Typename());
 		*method = *(*it);
 

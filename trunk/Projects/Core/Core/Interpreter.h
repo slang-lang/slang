@@ -29,7 +29,7 @@ namespace Runtime {
 class Object;
 
 
-class Interpreter : public LocalScope,
+class Interpreter : public SymbolScope,
 					public GenericAttributes
 {
 public:

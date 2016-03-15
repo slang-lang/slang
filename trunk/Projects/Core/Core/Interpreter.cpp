@@ -31,7 +31,7 @@ namespace Runtime {
 
 
 Interpreter::Interpreter(IScope *scope, const std::string& name)
-: LocalScope(name, scope),
+: SymbolScope(name, scope),
   mControlFlow(ControlFlow::Normal),
   mRepository(0)
 {
@@ -1175,14 +1175,14 @@ Symbol* Interpreter::resolve(const std::string& name, bool onlyCurrentScope) con
 	std::string member, parent;
 	Tools::split(name, parent, member);
 
-	Symbol *result = LocalScope::resolve(parent, onlyCurrentScope);
+	Symbol *result = SymbolScope::resolve(parent, onlyCurrentScope);
 
 	while ( result && !member.empty() ) {
 		switch ( result->getType() ) {
-			case Symbol::IType::AtomicTypeSymbol:
 			case Symbol::IType::ObjectSymbol:
 				result = static_cast<Object*>(result)->resolve(member, onlyCurrentScope);
 				break;
+			case Symbol::IType::AtomicTypeSymbol:
 			case Symbol::IType::MethodSymbol:
 			case Symbol::IType::NamespaceSymbol:
 				return result;
@@ -1207,23 +1207,27 @@ Symbol* Interpreter::resolveMethod(const std::string& name, const ParameterList&
 		parent = IDENTIFIER_THIS;
 	}
 
-	Symbol *result = LocalScope::resolve(parent, onlyCurrentScope);
+	Symbol *result = SymbolScope::resolve(parent, onlyCurrentScope);
 
-	if ( result ) {
+	while ( result && !member.empty() ) {
 		switch ( result->getType() ) {
-			case Symbol::IType::AtomicTypeSymbol:
+			//case Symbol::IType::NamespaceSymbol:
+				//return static_cast<Namespace*>(result)->resolveMethod(member, params, onlyCurrentScope);
 			case Symbol::IType::ObjectSymbol:
-				return static_cast<Object*>(result)->resolveMethod(member, params, onlyCurrentScope);
-			case Symbol::IType::MethodSymbol:
-				return result;
+				result = static_cast<Object*>(result)->resolveMethod(member, params, onlyCurrentScope);
+				break;
+			case Symbol::IType::AtomicTypeSymbol:
 			case Symbol::IType::BluePrintSymbol:
+			case Symbol::IType::MethodSymbol:
 			case Symbol::IType::NamespaceSymbol:
 			case Symbol::IType::UnknownSymbol:
 				throw Utils::Exceptions::SyntaxError("cannot directly access locales of method/namespace");
 		}
+
+		Tools::split(member, parent, member);
 	}
 
-	return 0;
+	return result;
 }
 
 void Interpreter::setRepository(Repository *repository)

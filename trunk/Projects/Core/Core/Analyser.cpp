@@ -6,15 +6,14 @@
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
-#include <string>
 
 // Project includes
 #include <Core/Designtime/SanityChecker.h>
+#include <Core/Parser/Parser.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Utils/Utils.h>
 #include <Tools/Files.h>
 #include "Repository.h"
-#include "Scope.h"
 #include "Tokenizer.h"
 #include "Tools.h"
 
@@ -28,36 +27,6 @@ Analyser::Analyser(Repository *repository)
 : mRepository(repository)
 {
 	mScope = mRepository->getGlobalScope();
-
-	// interface declaration:
-	// <visibility> interface [language feature] <identifier> { ... }
-	mInterfaceDeclaration.push_back(Token(Token::Type::VISIBILITY));
-	mInterfaceDeclaration.push_back(Token(Token::Type::RESERVED_WORD, std::string(RESERVED_WORD_INTERFACE)));
-	mInterfaceDeclaration.push_back(Token(Token::Type::IDENTIFER));
-
-	// library declaration:
-	// import <identifier> ;
-	mLibraryDeclaration.push_back(Token(Token::Type::RESERVED_WORD, std::string(RESERVED_WORD_IMPORT)));
-	mLibraryDeclaration.push_back(Token(Token::Type::IDENTIFER));
-	mLibraryDeclaration.push_back(Token(Token::Type::SEMICOLON));
-
-	// namespace declaration:
-	// <visibility> namespace [language feature] <identifier> { ... }
-	mNamespaceDeclaration.push_back(Token(Token::Type::VISIBILITY));
-	mNamespaceDeclaration.push_back(Token(Token::Type::RESERVED_WORD, std::string(RESERVED_WORD_NAMESPACE)));
-	mNamespaceDeclaration.push_back(Token(Token::Type::IDENTIFER));
-
-	// object declaration:
-	// <visibility> object [language feature] <identifier> [extends <identifier> [implements <identifier>, ...]] { ... }
-	mObjectDeclaration.push_back(Token(Token::Type::VISIBILITY));
-	mObjectDeclaration.push_back(Token(Token::Type::RESERVED_WORD, std::string(RESERVED_WORD_OBJECT)));
-	mObjectDeclaration.push_back(Token(Token::Type::IDENTIFER));
-
-	// prototype declaration:
-	// <visibility> prototype [language feature] <identifier> [extends <identifier> [implements <identifier>, ...]] { ... }
-	mPrototypeDeclaration.push_back(Token(Token::Type::VISIBILITY));
-	mPrototypeDeclaration.push_back(Token(Token::Type::RESERVED_WORD, std::string(RESERVED_WORD_PROTOTYPE)));
-	mPrototypeDeclaration.push_back(Token(Token::Type::IDENTIFER));
 }
 
 Analyser::~Analyser()
@@ -118,31 +87,7 @@ Designtime::Ancestors Analyser::collectInheritance(TokenIterator &start) const
 	return ancestors;
 }
 
-TokenList Analyser::collectScopeTokens(TokenIterator& token) const
-{
-	if ( (*token).type() != Token::Type::BRACKET_CURLY_OPEN ) {
-		throw Utils::Exceptions::Exception("collectScopeTokens: invalid start token found");
-	}
-
-	int scope = 0;
-	TokenList tokens;
-
-	// look for the corresponding closing curly bracket
-	while ( (*++token).type() != Token::Type::BRACKET_CURLY_CLOSE || scope > 0 ) {
-		if ( (*token).type() == Token::Type::BRACKET_CURLY_OPEN ) {
-			scope++;
-		}
-		if ( (*token).type() == Token::Type::BRACKET_CURLY_CLOSE ) {
-			scope--;
-		}
-
-		tokens.push_back((*token));
-	}
-
-	return tokens;
-}
-
-Designtime::BluePrint Analyser::createBluePrint(TokenIterator& start, TokenIterator end)
+Designtime::BluePrint Analyser::createBluePrint(TokenIterator& start, TokenIterator end) const
 {
 	std::string fullyQualifiedTypename;
 	std::string languageFeature;
@@ -151,12 +96,12 @@ Designtime::BluePrint Analyser::createBluePrint(TokenIterator& start, TokenItera
 
 	// look for the visibility token
 	visibility = (*start++).content();
-	// look for the object token
-	(*start++).content();
 	// look for an optional language feature token
 	if ( start->isOptional() ) {
 		languageFeature = (*start++).content();
 	}
+	// look for the object token
+	(*start++).content();
 	// look for the identifier token
 	name = (*start).content();
 
@@ -210,7 +155,7 @@ Designtime::BluePrint Analyser::createBluePrint(TokenIterator& start, TokenItera
 	return blue;
 }
 
-std::string Analyser::createLibraryReference(TokenIterator& start, TokenIterator end)
+std::string Analyser::createLibraryReference(TokenIterator& start, TokenIterator end) const
 {
 	std::string reference;
 
@@ -221,6 +166,106 @@ std::string Analyser::createLibraryReference(TokenIterator& start, TokenIterator
 	}
 
 	return reference;
+}
+
+void Analyser::createMember(TokenIterator& start, TokenIterator /*end*/)
+{
+	bool isConst = false;
+	bool isFinal = false;
+	std::string languageFeature;
+	std::string name;
+	std::string type;
+	std::string visibility;
+
+	// look for the visibility token
+	visibility = (*start++).content();
+	// look for an optional language feature token
+	if ( start->isOptional() ) {
+		languageFeature = (*start++).content();
+	}
+	// look for the type token
+	type = (*start++).content();
+	// look for the identifier token
+	name = (*start++).content();
+
+	if ( (*start).type() != Token::Type::SEMICOLON ) {
+		throw Utils::Exceptions::Exception("member initialization not allowed during declaration", start->position());
+	}
+
+	Runtime::Object *symbol = mRepository->createInstance(type, name);
+	symbol->setConst(isConst);
+	symbol->setFinal(isFinal);
+	symbol->setMember(false);
+	symbol->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
+	symbol->setParent(mScope);
+	symbol->setRepository(mRepository);
+	symbol->setVisibility(Visibility::convert(visibility));
+
+	mScope->define(name, symbol);
+}
+
+void Analyser::createMethod(TokenIterator &start, TokenIterator end)
+{
+	bool isAbstract = false;
+	bool isConst = true;
+	bool isFinal = false;
+	bool isRecursive = false;
+	std::string languageFeature;
+	MethodAttributes::MethodType::E methodType = MethodAttributes::MethodType::Function;
+	std::string name;
+	std::string type;
+	std::string visibility;
+
+	// look for the visibility token
+	visibility = (*start++).content();
+	// look for an optional language feature token
+	if ( start->isOptional() ) {
+		languageFeature = (*start++).content();
+	}
+	// look for the type token
+	type = (*start++).content();
+	// look for the identifier token
+	name = (*start++).content();
+
+	// look for the next opening parenthesis
+	if ( (*start).type() != Token::Type::PARENTHESIS_OPEN ) {
+		throw Utils::Exceptions::SyntaxError("parameter declaration expected");
+	}
+
+	ParameterList params = Parser::parseParameters(start);
+
+	// look for the next opening curly brackets
+	TokenIterator open = findNext(start, Token::Type::BRACKET_CURLY_OPEN);
+	// look for balanced curly brackets
+	TokenIterator closed = findNextBalancedCurlyBracket(open, end, 0, Token::Type::BRACKET_CURLY_CLOSE);
+
+	// collect all tokens of this object
+	TokenList tokens;
+	for ( TokenIterator it = ++open; it != closed && it != end; ++it ) {
+		tokens.push_back((*it));
+	}
+
+	Designtime::SanityChecker sanity;
+	sanity.process(tokens);
+
+
+	// create a new method with the corresponding return value
+	Runtime::Method *method = new Runtime::Method(mScope, name, type);
+	method->setAbstract(isAbstract);
+	method->setConst(isConst);
+	method->setFinal(isFinal);
+	method->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
+	method->setMethodType(methodType);
+	method->setParent(mScope);
+	method->setRecursive(isRecursive);
+	method->setRepository(mRepository);
+	method->setSignature(params);
+	method->setTokens(tokens);
+	method->setVisibility(Visibility::convert(visibility));
+
+	mScope->defineMethod(name, method);
+
+	start = closed;
 }
 
 void Analyser::createNamespace(TokenIterator& start, TokenIterator end)
@@ -269,7 +314,7 @@ void Analyser::createNamespace(TokenIterator& start, TokenIterator end)
 	start = closed;
 }
 
-Designtime::Prototype Analyser::createPrototype(TokenIterator& start, TokenIterator end)
+Designtime::Prototype Analyser::createPrototype(TokenIterator& start, TokenIterator end) const
 {
 	return Designtime::Prototype(createBluePrint(start, end));
 }
@@ -280,22 +325,28 @@ void Analyser::generate(const TokenList& tokens)
 
 	// loop over all tokens and look for imports and object declarations
 	while ( it != tokens.end() && it->type() != Token::Type::ENDOFFILE ) {
-		if ( isInterfaceDeclaration(it) ) {
+		if ( Parser::isInterfaceDeclaration(it) ) {
 			Designtime::BluePrint i = createBluePrint(it, tokens.end());
 			mBluePrints.push_back(i);
 		}
-		else if ( isLibraryReference(it) ) {
+		else if ( Parser::isLibraryReference(it) ) {
 			std::string reference = createLibraryReference(it, tokens.end());
 			mLibraries.push_back(reference);
 		}
-		else if ( isNamespaceDeclaration(it) ) {
+		else if ( Parser::isMemberDeclaration(it) ) {
+			createMember(it, tokens.end());
+		}
+		else if ( Parser::isMethodDeclaration(it) ) {
+			createMethod(it, tokens.end());
+		}
+		else if ( Parser::isNamespaceDeclaration(it) ) {
 			createNamespace(it, tokens.end());
 		}
-		else if ( isObjectDeclaration(it) ) {
+		else if ( Parser::isObjectDeclaration(it) ) {
 			Designtime::BluePrint o = createBluePrint(it, tokens.end());
 			mBluePrints.push_back(o);
 		}
-		else if ( isPrototypeDeclaration(it) ) {
+		else if ( Parser::isPrototypeDeclaration(it) ) {
 			Designtime::Prototype p = createPrototype(it, tokens.end());
 			mPrototypes.push_back(p);
 		}
@@ -325,58 +376,6 @@ const StringList& Analyser::getLibraryReferences() const
 const Designtime::PrototypeList& Analyser::getPrototypes() const
 {
 	return mPrototypes;
-}
-
-// syntax:
-// <visibility> interface [language feature] <identifier> { ... }
-bool Analyser::isInterfaceDeclaration(TokenIterator start) const
-{
-	return checkSynthax(start, mInterfaceDeclaration);
-}
-
-// syntax:
-// import <identifier> ;
-bool Analyser::isLibraryReference(TokenIterator start) const
-{
-	return checkSynthax(start, mLibraryDeclaration);
-}
-
-// syntax:
-// <visibility> namespace [language feature] <identifier> { ... }
-bool Analyser::isNamespaceDeclaration(TokenIterator start) const
-{
-	return checkSynthax(start, mNamespaceDeclaration);
-}
-
-// syntax:
-// <visibility> object [language feature] <identifier> [extends <identifier> [implements <identifier>, ...]] { ... }
-bool Analyser::isObjectDeclaration(TokenIterator start) const
-{
-	return checkSynthax(start, mObjectDeclaration);
-}
-
-// syntax:
-// <visibility> prototype [language feature] <identifier> [extends <identifier> [implements <identifier>, ...]] { ... }
-bool Analyser::isPrototypeDeclaration(TokenIterator start) const
-{
-/*
-	if ( (*start++).type() != Token::Type::VISIBILITY ) {
-		return false;
-	}
-	if ( (*start).type() != Token::Type::TYPE && (*start++).content() != RESERVED_WORD_PROTOTYPE ) {
-		return false;
-	}
-	if ( (*start).isOptional() && (*start++).type() != Token::Type::LANGUAGEFEATURE ) {
-		return false;
-	}
-	if ( (*start++).type() != Token::Type::IDENTIFER ) {
-		return false;
-	}
-
-	return true;
-*/
-
-	return checkSynthax(start, mPrototypeDeclaration);
 }
 
 void Analyser::process(const TokenList& tokens)

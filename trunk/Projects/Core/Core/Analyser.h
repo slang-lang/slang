@@ -20,7 +20,7 @@
 namespace ObjectiveScript {
 
 // Forward declarations
-class ObjectScope;
+class MethodScope;
 class Repository;
 
 class Analyser
@@ -48,19 +48,14 @@ private:
 	TokenList generateTokens(const std::string& content);
 	void process(const TokenList& tokens);
 
-	Designtime::BluePrint createBluePrint(TokenIterator& start, TokenIterator end);
-	std::string createLibraryReference(TokenIterator& start, TokenIterator end);
+	Designtime::BluePrint createBluePrint(TokenIterator& start, TokenIterator end) const;
+	std::string createLibraryReference(TokenIterator& start, TokenIterator end) const;
+	void createMember(TokenIterator& start, TokenIterator end);
+	void createMethod(TokenIterator& start, TokenIterator end);
 	void createNamespace(TokenIterator& start, TokenIterator end);
-	Designtime::Prototype createPrototype(TokenIterator& start, TokenIterator end);
+	Designtime::Prototype createPrototype(TokenIterator& start, TokenIterator end) const;
 
 	Designtime::Ancestors collectInheritance(TokenIterator &start) const;
-	TokenList collectScopeTokens(TokenIterator& token) const;
-
-	bool isInterfaceDeclaration(TokenIterator start) const;
-	bool isLibraryReference(TokenIterator start) const;
-	bool isNamespaceDeclaration(TokenIterator start) const;
-	bool isObjectDeclaration(TokenIterator start) const;
-	bool isPrototypeDeclaration(TokenIterator start) const;
 
 private:
 	Designtime::BluePrintList mBluePrints;
@@ -68,15 +63,8 @@ private:
 	StringList mLibraries;
 	Designtime::PrototypeList mPrototypes;
 	Repository *mRepository;
-	ObjectScope *mScope;
+	MethodScope *mScope;
 	std::string mScopeName;
-
-	// Comparator token lists
-	TokenList mInterfaceDeclaration;
-	TokenList mLibraryDeclaration;
-	TokenList mNamespaceDeclaration;
-	TokenList mObjectDeclaration;
-	TokenList mPrototypeDeclaration;
 };
 
 

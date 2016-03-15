@@ -33,7 +33,7 @@ namespace Runtime {
 // Forward declarations
 class Object;
 
-class Method : public LocalScope,
+class Method : public SymbolScope,
 			   public MethodSymbol
 {
 public:
@@ -61,6 +61,7 @@ public: // Signature
 	const ParameterList& provideSignature() const;
 
 public: // Setup
+	void setParent(IScope *scope);
 	void setRepository(Repository *repository);
 	void setSignature(const ParameterList& params);
 	void setTokens(const TokenList& tokens);

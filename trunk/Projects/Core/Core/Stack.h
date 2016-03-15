@@ -19,7 +19,7 @@ namespace ObjectiveScript {
 
 // Forward declarations
 class IScope;
-class LocalScope;
+class SymbolScope;
 
 class Stack
 {
@@ -34,10 +34,10 @@ public:	// Scope
 	void print();
 
 private:
-	typedef std::list<LocalScope*> ScopeStack;
+	typedef std::list<SymbolScope*> ScopeStack;
 
 private:
-	LocalScope* getCurrentScope() const;
+	SymbolScope* getCurrentScope() const;
 
 private:
 	std::string mName;
