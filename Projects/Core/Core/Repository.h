@@ -24,6 +24,7 @@ namespace ObjectiveScript {
 namespace Runtime {
 	class Object;
 }
+class GlobalScope;
 
 class Repository
 {
@@ -33,6 +34,7 @@ public:
 
 public:
 	void CollectGarbage();
+	GlobalScope* getGlobalScope() const;
 
 public:
 	void addBlueprint(const Designtime::BluePrint& object);
@@ -59,6 +61,7 @@ private:
 	Designtime::BluePrintMap mBluePrints;
 	ReferenceCountedObjects mInstances;
 	Designtime::PrototypeMap mPrototypes;
+	GlobalScope *mScope;
 };
 
 

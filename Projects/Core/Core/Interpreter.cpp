@@ -471,6 +471,7 @@ void Interpreter::process_delete(TokenIterator& token)
 		case Symbol::IType::AtomicTypeSymbol:
 		case Symbol::IType::ObjectSymbol: {
 			Object *object = static_cast<Object*>(symbol);
+			assert(object);
 
 			mControlFlow = object->Destructor();
 

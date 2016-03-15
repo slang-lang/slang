@@ -73,6 +73,7 @@ public:	// Symbol::IType implementation & RTTI
 
 public:	// Setup
 	void addInheritance(const Designtime::Ancestor& ancestor, Object* inheritance);
+	void setParent(IScope *scope);
 	void setRepository(Repository *repository);
 
 public: // Symbol

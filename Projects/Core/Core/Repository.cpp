@@ -22,6 +22,7 @@
 #include <Core/Utils/Exceptions.h>
 #include <Core/Utils/Utils.h>
 #include "Preprocessor.h"
+#include "Scope.h"
 #include "Tools.h"
 
 // Namespace declarations
@@ -31,7 +32,10 @@ namespace ObjectiveScript {
 
 
 Repository::Repository()
+: mScope(0)
 {
+	mScope = new GlobalScope();
+
 	addBlueprint(Designtime::BoolObject());
 	addBlueprint(Designtime::FloatObject());
 	addBlueprint(Designtime::IntegerObject());
@@ -67,6 +71,8 @@ Repository::~Repository()
 	// {
 	mPrototypes.clear();
 	// }
+
+	delete mScope;
 }
 
 /*
@@ -245,6 +251,7 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 	object->setFinal(blueprint->isFinal());
 	object->setLanguageFeatureState(blueprint->getLanguageFeatureState());
 	object->setMember(blueprint->isMember());
+	object->setParent(mScope);
 	object->setRepository(this);
 	object->setVisibility(blueprint->getVisibility());
 
@@ -298,6 +305,11 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 	return object;
 }
 
+GlobalScope* Repository::getGlobalScope() const
+{
+	return mScope;
+}
+
 /*
  * creates and defines all members and methods of an object
  */
@@ -318,6 +330,7 @@ void Repository::initializeObject(Runtime::Object *object, Designtime::BluePrint
 		symbol->setFinal(blue->isFinal());
 		symbol->setLanguageFeatureState(blue->getLanguageFeatureState());
 		symbol->setMember(blue->isMember());
+		symbol->setParent(object);
 		symbol->setRepository(this);
 		symbol->setVisibility(blue->getVisibility());
 

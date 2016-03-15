@@ -39,6 +39,7 @@ Object::Object(const Object& other)
 	mFilename = other.mFilename;
 	mIsAtomicType = other.mIsAtomicType;
 	mIsConstructed = other.mIsConstructed;
+	mParent = other.mParent;
 	mRepository = other.mRepository;
 	mTypename = other.mTypename;
 
@@ -105,6 +106,8 @@ void Object::operator= (const Object& other)
 		mIsAtomicType = other.mIsAtomicType;
 		mIsConstructed = other.mIsConstructed;// ? other.mIsConstructed : mIsConstructed;
 		mFilename = other.mFilename;
+		mParent = other.mParent ? other.mParent : mParent;
+		mRepository = other.mRepository ? other.mRepository : mRepository;
 		mTypename = other.mTypename;
 
 		setValue(other.getValue());
@@ -524,6 +527,11 @@ ObjectiveScript::MethodSymbol* Object::resolveMethod(const std::string& name, co
 	}
 
 	return result;
+}
+
+void Object::setParent(IScope *scope)
+{
+	mParent = scope;
 }
 
 void Object::setRepository(Repository *repository)

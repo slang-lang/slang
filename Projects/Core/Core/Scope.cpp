@@ -124,8 +124,6 @@ void ObjectScope::defineMethod(const std::string& name, Runtime::Method* method)
 
 MethodSymbol* ObjectScope::resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope) const
 {
-(void)onlyCurrentScope;
-
 	for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
 		Runtime::Method *method = (*it);
 
@@ -134,11 +132,9 @@ MethodSymbol* ObjectScope::resolveMethod(const std::string& name, const Paramete
 		}
 	}
 
-/*
 	if ( mParent && !onlyCurrentScope ) {
-		static_cast<ObjectScope*>(mParent)->resolveMethod(name, params, onlyCurrentScope);
+		return static_cast<ObjectScope*>(mParent)->resolveMethod(name, params, onlyCurrentScope);
 	}
-*/
 
 	return 0;
 }
@@ -160,8 +156,20 @@ GlobalScope::GlobalScope()
 : ObjectScope("global", 0)
 {
 }
+
 GlobalScope::~GlobalScope()
 {
+	for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
+		undefine((*it)->getName(), (*it));
+
+		delete (*it);
+	}
+	mMethods.clear();
+
+	for ( Symbols::reverse_iterator it = mSymbols.rbegin(); it != mSymbols.rend(); ) {
+		undefine(it->first, it->second);
+	}
+	mSymbols.clear();
 }
 
 
