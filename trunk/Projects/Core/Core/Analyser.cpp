@@ -3,17 +3,17 @@
 #include "Analyser.h"
 
 // Library includes
+#include <cstdlib>
+#include <fstream>
 #include <iostream>
 #include <string>
-#include <fstream>
-#include <cstdlib>
 
 // Project includes
-#include <Core/Consts.h>
 #include <Core/Designtime/SanityChecker.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Utils/Utils.h>
 #include <Tools/Files.h>
+#include "Repository.h"
 #include "Scope.h"
 #include "Tokenizer.h"
 #include "Tools.h"
@@ -24,8 +24,11 @@
 namespace ObjectiveScript {
 
 
-Analyser::Analyser()
+Analyser::Analyser(Repository *repository)
+: mRepository(repository)
 {
+	mScope = mRepository->getGlobalScope();
+
 	// interface declaration:
 	// <visibility> interface [language feature] <identifier> { ... }
 	mInterfaceDeclaration.push_back(Token(Token::Type::VISIBILITY));
@@ -326,35 +329,35 @@ const Designtime::PrototypeList& Analyser::getPrototypes() const
 
 // syntax:
 // <visibility> interface [language feature] <identifier> { ... }
-bool Analyser::isInterfaceDeclaration(TokenIterator start)
+bool Analyser::isInterfaceDeclaration(TokenIterator start) const
 {
 	return checkSynthax(start, mInterfaceDeclaration);
 }
 
 // syntax:
 // import <identifier> ;
-bool Analyser::isLibraryReference(TokenIterator start)
+bool Analyser::isLibraryReference(TokenIterator start) const
 {
 	return checkSynthax(start, mLibraryDeclaration);
 }
 
 // syntax:
 // <visibility> namespace [language feature] <identifier> { ... }
-bool Analyser::isNamespaceDeclaration(TokenIterator start)
+bool Analyser::isNamespaceDeclaration(TokenIterator start) const
 {
 	return checkSynthax(start, mNamespaceDeclaration);
 }
 
 // syntax:
 // <visibility> object [language feature] <identifier> [extends <identifier> [implements <identifier>, ...]] { ... }
-bool Analyser::isObjectDeclaration(TokenIterator start)
+bool Analyser::isObjectDeclaration(TokenIterator start) const
 {
 	return checkSynthax(start, mObjectDeclaration);
 }
 
 // syntax:
 // <visibility> prototype [language feature] <identifier> [extends <identifier> [implements <identifier>, ...]] { ... }
-bool Analyser::isPrototypeDeclaration(TokenIterator start)
+bool Analyser::isPrototypeDeclaration(TokenIterator start) const
 {
 /*
 	if ( (*start++).type() != Token::Type::VISIBILITY ) {

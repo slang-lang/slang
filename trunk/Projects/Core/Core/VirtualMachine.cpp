@@ -12,6 +12,7 @@
 #include <Tools/Files.h>
 #include "Analyser.h"
 #include "Repository.h"
+#include "Scope.h"
 #include "Script.h"
 #include "Tools.h"
 
@@ -22,11 +23,9 @@ namespace ObjectiveScript {
 
 
 VirtualMachine::VirtualMachine()
-: mRepository(0),
-  mScope(0)
+: mRepository(0)
 {
 	mRepository = new Repository();
-	mScope = new GlobalScope();
 }
 
 VirtualMachine::~VirtualMachine()
@@ -39,7 +38,6 @@ VirtualMachine::~VirtualMachine()
 	}
 	mScripts.clear();
 
-	delete mScope;
 	delete mRepository;
 }
 
@@ -67,7 +65,7 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 
 	script->connectRepository(mRepository);
 
-	Analyser analyser;
+	Analyser analyser(mRepository);
 	analyser.processString(content, mScriptFile);
 
 	StringList libraries = analyser.getLibraryReferences();
@@ -172,7 +170,7 @@ bool VirtualMachine::loadLibrary(const std::string& library)
 	std::string baseFolder = ::Utils::Tools::Files::ExtractPathname(library);
 
 	try {
-		Analyser analyser;
+		Analyser analyser(mRepository);
 		analyser.processFile(library);
 
 		const std::list<std::string>& libraries = analyser.getLibraryReferences();

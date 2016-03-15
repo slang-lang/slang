@@ -10,10 +10,7 @@
 #include <Core/Designtime/Ancestor.h>
 #include <Core/Designtime/BluePrint.h>
 #include <Core/Designtime/Prototype.h>
-#include "Method.h"
-#include "Object.h"
 #include "Token.h"
-#include "Types.h"
 
 // Forward declarations
 
@@ -23,12 +20,13 @@
 namespace ObjectiveScript {
 
 // Forward declarations
-class IScope;
+class ObjectScope;
+class Repository;
 
 class Analyser
 {
 public:
-	Analyser();
+	Analyser(Repository *repository);
 	~Analyser();
 
 public:
@@ -58,17 +56,19 @@ private:
 	Designtime::Ancestors collectInheritance(TokenIterator &start) const;
 	TokenList collectScopeTokens(TokenIterator& token) const;
 
-	bool isInterfaceDeclaration(TokenIterator start);
-	bool isLibraryReference(TokenIterator start);
-	bool isNamespaceDeclaration(TokenIterator start);
-	bool isObjectDeclaration(TokenIterator start);
-	bool isPrototypeDeclaration(TokenIterator start);
+	bool isInterfaceDeclaration(TokenIterator start) const;
+	bool isLibraryReference(TokenIterator start) const;
+	bool isNamespaceDeclaration(TokenIterator start) const;
+	bool isObjectDeclaration(TokenIterator start) const;
+	bool isPrototypeDeclaration(TokenIterator start) const;
 
 private:
 	Designtime::BluePrintList mBluePrints;
 	std::string mFilename;
 	StringList mLibraries;
 	Designtime::PrototypeList mPrototypes;
+	Repository *mRepository;
+	ObjectScope *mScope;
 	std::string mScopeName;
 
 	// Comparator token lists

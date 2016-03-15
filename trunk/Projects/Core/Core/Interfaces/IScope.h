@@ -1,12 +1,10 @@
-//
-// Created by Michael Adelmann on 21/02/16.
-//
 
 #ifndef ObjectiveScript_Interfaces_IScope_h
 #define ObjectiveScript_Interfaces_IScope_h
 
 
 // Library includes
+#include <string>
 
 // Project includes
 #include <Core/Parameter.h>
@@ -43,9 +41,12 @@ public:
 
 class IObjectScope : public IScope
 {
+public:
     virtual ~IObjectScope() { }
 
-    virtual MethodSymbol* resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope = false) const;
+	virtual void defineMethod(const std::string& name, Runtime::Method* method) = 0;
+	virtual MethodSymbol* resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope) const = 0;
+	virtual void undefineMethod(Runtime::Method* method) = 0;
 };
 
 

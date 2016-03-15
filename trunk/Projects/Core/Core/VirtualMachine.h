@@ -21,7 +21,7 @@ namespace ObjectiveScript {
 
 // Forward declarations
 class IPrinter;
-class IScope;
+class ObjectScope;
 class Repository;
 class Script;
 
@@ -57,7 +57,6 @@ private:
 	std::string mLibraryFolder;
 	ObjectCollection mObjects;
 	Repository *mRepository;
-	IScope *mScope;
 	std::string mScriptFile;
 	ScriptCollection mScripts;
 };

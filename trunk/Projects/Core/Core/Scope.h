@@ -38,9 +38,6 @@ protected:
 	IScope *mParent;
 	std::string mScopeName;
 	Symbols mSymbols;
-
-private:
-
 };
 
 
@@ -60,9 +57,6 @@ public:
 
 protected:
 	MethodCollection mMethods;
-
-private:
-
 };
 
 
