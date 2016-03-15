@@ -57,6 +57,7 @@ public:
 		enum E {
 			Constructor,
 			Destructor,
+			Function,
 			Method
 		};
 	};

@@ -31,7 +31,7 @@ Stack::~Stack()
 	mScopeStack.clear();
 }
 
-LocalScope* Stack::getCurrentScope() const
+SymbolScope* Stack::getCurrentScope() const
 {
 	if ( mScopeStack.empty() ) {
 		return 0;
@@ -47,7 +47,7 @@ void Stack::popScope()
 		return;
 	}
 
-	LocalScope *scope = mScopeStack.back();
+	SymbolScope *scope = mScopeStack.back();
 	mScopeStack.pop_back();
 
 	delete scope;
@@ -62,7 +62,7 @@ void Stack::print()
 
 IScope* Stack::pushScope(const std::string& name)
 {
-	LocalScope *scope = new LocalScope(name, getCurrentScope());
+	SymbolScope *scope = new SymbolScope(name, getCurrentScope());
 
 	mScopeStack.push_back(scope);
 	return scope;

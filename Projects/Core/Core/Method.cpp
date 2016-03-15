@@ -23,7 +23,7 @@ namespace Runtime {
 
 
 Method::Method(IScope *parent, const std::string& name, const std::string& type)
-: LocalScope(name, parent),
+: SymbolScope(name, parent),
   MethodSymbol(name),
   mRepository(0),
   mTypeName(type)
@@ -298,20 +298,20 @@ Symbol* Method::resolve(const std::string& name, bool onlyCurrentScope) const
 	std::string member, parent;
 	Tools::split(name, parent, member);
 
-	if ( member.empty() ) {
+	if ( member.empty() && mMethodType != MethodType::Function ) {
 		member = parent;
 		parent = IDENTIFIER_THIS;
 	}
 
-	Symbol *result = LocalScope::resolve(parent, onlyCurrentScope);
+	Symbol *result = SymbolScope::resolve(parent, onlyCurrentScope);
 
 	while ( result && !member.empty() ) {
 		switch ( result->getType() ) {
-			case Symbol::IType::AtomicTypeSymbol:
 			case Symbol::IType::NamespaceSymbol:
 			case Symbol::IType::ObjectSymbol:
 				result = static_cast<Object*>(result)->resolve(member, onlyCurrentScope);
 				break;
+			case Symbol::IType::AtomicTypeSymbol:
 			case Symbol::IType::MethodSymbol:
 				return result;
 			case Symbol::IType::BluePrintSymbol:
@@ -330,22 +330,22 @@ Symbol* Method::resolveMethod(const std::string& name, const ParameterList& para
 	std::string member, parent;
 	Tools::split(name, parent, member);
 
-	if ( member.empty() ) {
+	if ( member.empty() && mMethodType != MethodType::Function ) {
 		member = parent;
 		parent = IDENTIFIER_THIS;
 	}
 
-	Symbol *result = LocalScope::resolve(parent, onlyCurrentScope);
+	Symbol *result = SymbolScope::resolve(parent, onlyCurrentScope);
 
 	if ( result ) {
 		switch ( result->getType() ) {
-			case Symbol::IType::AtomicTypeSymbol:
 			case Symbol::IType::ObjectSymbol:
 				return static_cast<Object*>(result)->resolveMethod(member, params, onlyCurrentScope);
 			case Symbol::IType::MethodSymbol:
 				return result;
 			case Symbol::IType::NamespaceSymbol:
 				//return static_cast<Namespace*>(result)->resolveMethod(member, params, onlyCurrentScope);
+			case Symbol::IType::AtomicTypeSymbol:
 			case Symbol::IType::BluePrintSymbol:
 			case Symbol::IType::UnknownSymbol:
 				throw Utils::Exceptions::SyntaxError("unknown symbol '" + name + "' requested");
@@ -353,6 +353,11 @@ Symbol* Method::resolveMethod(const std::string& name, const ParameterList& para
 	}
 
 	return 0;
+}
+
+void Method::setParent(IScope *scope)
+{
+	mParent = scope;
 }
 
 void Method::setRepository(Repository *repository)

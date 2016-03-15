@@ -8,8 +8,6 @@
 #include <string>
 
 // Project includes
-#include <Core/Designtime/BluePrint.h>
-#include "Method.h"
 #include "Parameter.h"
 #include "Tokenizer.h"
 
@@ -21,8 +19,13 @@
 namespace ObjectiveScript {
 
 // Forward declarations
+namespace Designtime {
+	class BluePrint;
+}
 class IScope;
+class MethodScope;
 namespace Runtime {
+	class Method;
 	class Object;
 }
 class Repository;
@@ -36,20 +39,11 @@ public:
 	void process(Designtime::BluePrint* blueprint);
 
 private:
-	Designtime::BluePrint* createMember(TokenIterator start);
-	Runtime::Method* createMethod(TokenIterator start);
-
-	TokenList collectScopeTokens(TokenIterator& token) const;
+	Designtime::BluePrint* createMember(TokenIterator start) const;
+	Runtime::Method* createMethod(TokenIterator start) const;
 
 	void generateObject();
 	void generateTokens(const std::string& content);
-
-	bool isLocalDeclaration(TokenIterator start);
-	bool isMemberDeclaration(TokenIterator start);
-	bool isMethodDeclaration(TokenIterator start);
-	bool isParameterDeclaration(TokenIterator start);
-
-	ParameterList parseParameters(TokenIterator &token);
 
 private:
 	std::string mFilename;

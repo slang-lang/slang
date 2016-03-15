@@ -5,10 +5,10 @@
 // Library includes
 
 // Project includes
+#include <Core/Parser/Parser.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Utils/Utils.h>
 #include "Repository.h"
-#include "Tools.h"
 
 // Namespace declarations
 
@@ -23,31 +23,7 @@ Preprocessor::Preprocessor(Repository *repo)
 {
 }
 
-TokenList Preprocessor::collectScopeTokens(TokenIterator& token) const
-{
-	if ( (*token).type() != Token::Type::BRACKET_CURLY_OPEN ) {
-		throw Utils::Exceptions::Exception("collectScopeTokens: invalid start token found");
-	}
-
-	int scope = 0;
-	TokenList tokens;
-
-	// look for the corresponding closing curly bracket
-	while ( (*++token).type() != Token::Type::BRACKET_CURLY_CLOSE || scope > 0 ) {
-		if ( (*token).type() == Token::Type::BRACKET_CURLY_OPEN ) {
-			scope++;
-		}
-		if ( (*token).type() == Token::Type::BRACKET_CURLY_CLOSE ) {
-			scope--;
-		}
-
-		tokens.push_back((*token));
-	}
-
-	return tokens;
-}
-
-Designtime::BluePrint* Preprocessor::createMember(TokenIterator token)
+Designtime::BluePrint* Preprocessor::createMember(TokenIterator token) const
 {
 	std::string name;
 	std::string type;
@@ -95,7 +71,7 @@ Designtime::BluePrint* Preprocessor::createMember(TokenIterator token)
 	return blue;
 }
 
-Runtime::Method* Preprocessor::createMethod(TokenIterator token)
+Runtime::Method* Preprocessor::createMethod(TokenIterator token) const
 {
 	bool isAbstract = false;
 	bool isConst = true;		// all methods are const by default
@@ -138,7 +114,7 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token)
 		throw Utils::Exceptions::SyntaxError("parameter declaration expected");
 	}
 
-	ParameterList params = parseParameters(token);
+	ParameterList params = Parser::parseParameters(token);
 
 	// look at possible attributes (abstract, const, final, modify, etc.)
 	// while looking for the next opening curly bracket
@@ -176,7 +152,7 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token)
 	// collect all tokens of this method
 	TokenList tokens;
 	if ( token->type() == Token::Type::BRACKET_CURLY_OPEN ) {
-		tokens = collectScopeTokens(token);
+		tokens = Parser::collectScopeTokens(token);
 	}
 
 	if ( isAbstract && !tokens.empty() ) {
@@ -215,12 +191,12 @@ void Preprocessor::generateObject()
 
 	// loop over all visibility declarations and check if we have a member declaration or a method declaration
 	for ( TokenList::const_iterator it = visList.begin(); it != visList.end(); ++it ) {
-		if ( isMemberDeclaration((*it)) ) {
+		if ( Parser::isMemberDeclaration((*it)) ) {
 			Designtime::BluePrint *member = createMember((*it));
 
 			mBluePrint->define(member->getName(), member);
 		}
-		else if ( isMethodDeclaration((*it)) ) {
+		else if ( Parser::isMethodDeclaration((*it)) ) {
 			Runtime::Method *method = createMethod((*it));
 
 			mBluePrint->defineMethod(method->getName(), method);
@@ -234,119 +210,6 @@ void Preprocessor::generateTokens(const std::string& content)
 	t.process();
 
 	mTokens = t.tokens();
-}
-
-// syntax:
-// <type> <identifier>
-bool Preprocessor::isLocalDeclaration(TokenIterator start)
-{
-	TokenList tokens;
-
-	tokens.push_back(Token(Token::Type::TYPE));
-	tokens.push_back(Token(Token::Type::IDENTIFER));
-
-	return checkSynthax(start, tokens);
-}
-
-// syntax:
-// <visibility> <type> <identifier> ;
-bool Preprocessor::isMemberDeclaration(TokenIterator start)
-{
-	// initialization is not allowed during member creation
-
-	TokenList tokens;
-
-	tokens.push_back(Token(Token::Type::VISIBILITY));
-	//tokens.push_back(Token(Token::Type::LANGUAGEFEATURE, true)); // this is an optional token
-	tokens.push_back(Token(Token::Type::TYPE));
-	tokens.push_back(Token(Token::Type::IDENTIFER));
-	tokens.push_back(Token(Token::Type::SEMICOLON));
-
-	return checkSynthax(start, tokens);
-}
-
-// syntax:
-// <visibility> <type> <identifier> (
-bool Preprocessor::isMethodDeclaration(TokenIterator start)
-{
-	TokenList tokens;
-
-	tokens.push_back(Token(Token::Type::VISIBILITY));
-	//tokens.push_back(Token(Token::Type::LANGUAGEFEATURE, true)); // this is an optional token
-	tokens.push_back(Token(Token::Type::TYPE));
-	tokens.push_back(Token(Token::Type::IDENTIFER));
-	tokens.push_back(Token(Token::Type::PARENTHESIS_OPEN));
-
-	return checkSynthax(start, tokens);
-}
-
-// syntax:
-// <type> <identifier>
-bool Preprocessor::isParameterDeclaration(TokenIterator start)
-{
-	TokenList tokens;
-
-	tokens.push_back(Token(Token::Type::IDENTIFER));
-	tokens.push_back(Token(Token::Type::IDENTIFER));
-
-	return checkSynthax(start, tokens);
-}
-
-ParameterList Preprocessor::parseParameters(TokenIterator &token)
-{
-	ParameterList params;
-
-	while ( (*++token).type() != Token::Type::PARENTHESIS_CLOSE ) {
-		if ( !isLocalDeclaration(token) && !isParameterDeclaration(token) ) {
-			throw Utils::Exceptions::SyntaxError("could not parse parameter declaration", token->position());
-		}
-
-		Parameter::AccessMode::E accessmode = Parameter::AccessMode::ByValue;
-		bool hasDefaultValue = false;
-		bool isConst = false;
-		std::string value;
-
-		std::string type = token->content();
-		token++;
-
-		std::string name = token->content();
-		token++;
-
-		if ( token->content() == MODIFIER_CONST ) {
-			isConst = true;
-			token++;
-		}
-
-		if ( token->content() == RESERVED_WORD_BY_REFERENCE ) {
-			if ( isConst ) {
-				// const reference parameters are not supported, they won't make sense
-				throw Utils::Exceptions::NotSupported("const reference parameters are not supported");
-			}
-
-			accessmode = Parameter::AccessMode::ByReference;
-			token++;
-		}
-		else if ( token->content() == RESERVED_WORD_BY_VALUE ) {
-			accessmode = Parameter::AccessMode::ByValue;
-			token++;
-		}
-
-		if ( token->type() == Token::Type::ASSIGN ) {
-			hasDefaultValue = true;
-			token++;
-			value = token->content();
-			token++;
-		}
-
-		Parameter param(name, type, value, hasDefaultValue, isConst, accessmode, 0);
-		params.push_back(param);
-
-		if ( token->type() == Token::Type::PARENTHESIS_CLOSE ) {
-			break;
-		}
-	}
-
-	return params;
 }
 
 void Preprocessor::process(Designtime::BluePrint* blueprint)

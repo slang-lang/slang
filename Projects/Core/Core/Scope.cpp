@@ -16,17 +16,17 @@
 namespace ObjectiveScript {
 
 
-LocalScope::LocalScope(const std::string& name, IScope *parent)
+SymbolScope::SymbolScope(const std::string& name, IScope *parent)
 : mParent(parent),
   mScopeName(name)
 {
 }
 
-LocalScope::~LocalScope()
+SymbolScope::~SymbolScope()
 {
 }
 
-void LocalScope::define(const std::string& name, Symbol *symbol)
+void SymbolScope::define(const std::string& name, Symbol *symbol)
 {
 	assert(symbol);
 
@@ -40,7 +40,7 @@ void LocalScope::define(const std::string& name, Symbol *symbol)
 	));
 }
 
-IScope* LocalScope::getEnclosingScope() const
+IScope* SymbolScope::getEnclosingScope() const
 {
 	if ( mParent ) {
 		return mParent;
@@ -49,7 +49,7 @@ IScope* LocalScope::getEnclosingScope() const
 	return 0;
 }
 
-std::string LocalScope::getFullName() const
+std::string SymbolScope::getFullName() const
 {
 	std::string scope;
 	if ( mParent ) {
@@ -59,12 +59,12 @@ std::string LocalScope::getFullName() const
 	return scope + getScopeName();
 }
 
-const std::string& LocalScope::getScopeName() const
+const std::string& SymbolScope::getScopeName() const
 {
 	return mScopeName;
 }
 
-Symbol* LocalScope::resolve(const std::string& name, bool onlyCurrentScope) const
+Symbol* SymbolScope::resolve(const std::string& name, bool onlyCurrentScope) const
 {
 	Symbols::const_iterator it = mSymbols.find(name);
 	if ( it != mSymbols.end() ) {
@@ -78,7 +78,7 @@ Symbol* LocalScope::resolve(const std::string& name, bool onlyCurrentScope) cons
 	return 0;
 }
 
-void LocalScope::undefine(const std::string& name, Symbol *symbol)
+void SymbolScope::undefine(const std::string& name, Symbol *symbol)
 {
 	Symbols::const_iterator it = mSymbols.find(name);
 	if ( it != mSymbols.end() ) {
@@ -91,20 +91,20 @@ void LocalScope::undefine(const std::string& name, Symbol *symbol)
 
 
 
-ObjectScope::ObjectScope(const std::string& name, IScope *parent)
-: LocalScope(name, parent)
+MethodScope::MethodScope(const std::string& name, IScope *parent)
+: SymbolScope(name, parent)
 {
 }
 
-ObjectScope::~ObjectScope()
+MethodScope::~MethodScope()
 {
 }
 
-void ObjectScope::defineMethod(const std::string& name, Runtime::Method* method)
+void MethodScope::defineMethod(const std::string& name, Runtime::Method* method)
 {
 	assert(method);
 
-	if ( ObjectScope::resolveMethod(name, method->provideSignature(), true) ) {
+	if ( MethodScope::resolveMethod(name, method->provideSignature(), true) ) {
 		// duplicate method defined
 		throw Utils::Exceptions::DuplicateIdentifer("duplicate method '" + method->getName() + "' added with same signature");
 	}
@@ -112,7 +112,7 @@ void ObjectScope::defineMethod(const std::string& name, Runtime::Method* method)
 	Symbols::iterator it = mSymbols.find(name);
 	if ( it == mSymbols.end() ) {
 		// define new symbol
-		LocalScope::define(name, method);
+		SymbolScope::define(name, method);
 	}
 	else {
 		// override existing symbol
@@ -122,7 +122,7 @@ void ObjectScope::defineMethod(const std::string& name, Runtime::Method* method)
 	mMethods.insert(method);
 }
 
-MethodSymbol* ObjectScope::resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope) const
+MethodSymbol* MethodScope::resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope) const
 {
 	for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
 		Runtime::Method *method = (*it);
@@ -133,13 +133,13 @@ MethodSymbol* ObjectScope::resolveMethod(const std::string& name, const Paramete
 	}
 
 	if ( mParent && !onlyCurrentScope ) {
-		return static_cast<ObjectScope*>(mParent)->resolveMethod(name, params, onlyCurrentScope);
+		return static_cast<MethodScope*>(mParent)->resolveMethod(name, params, onlyCurrentScope);
 	}
 
 	return 0;
 }
 
-void ObjectScope::undefineMethod(Runtime::Method* method)
+void MethodScope::undefineMethod(Runtime::Method* method)
 {
 	assert(method);
 
@@ -153,7 +153,7 @@ void ObjectScope::undefineMethod(Runtime::Method* method)
 
 
 GlobalScope::GlobalScope()
-: ObjectScope("global", 0)
+: MethodScope("global", 0)
 {
 }
 

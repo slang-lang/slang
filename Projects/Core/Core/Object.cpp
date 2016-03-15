@@ -20,7 +20,7 @@ namespace Runtime {
 
 
 Object::Object()
-: ObjectScope(ANONYMOUS_OBJECT, 0),
+: MethodScope(ANONYMOUS_OBJECT, 0),
   ObjectSymbol(ANONYMOUS_OBJECT),
   mFilename(ANONYMOUS_OBJECT),
   mIsAtomicType(true),
@@ -33,7 +33,7 @@ Object::Object()
 }
 
 Object::Object(const Object& other)
-: ObjectScope(other.getName(), 0),
+: MethodScope(other.getName(), 0),
   ObjectSymbol(other.getName())
 {
 	mFilename = other.mFilename;
@@ -79,7 +79,7 @@ Object::Object(const Object& other)
 }
 
 Object::Object(const std::string& name, const std::string& filename, const std::string& type, const std::string& value)
-: ObjectScope(name, 0),
+: MethodScope(name, 0),
   ObjectSymbol(name),
   mFilename(filename),
   mIsAtomicType(true),
@@ -482,7 +482,7 @@ void Object::operator_unary_not()
 
 Symbol* Object::resolve(const std::string& name, bool onlyCurrentScope) const
 {
-	Symbol *result = ObjectScope::resolve(name, onlyCurrentScope);
+	Symbol *result = MethodScope::resolve(name, onlyCurrentScope);
 
 	if ( !result && !onlyCurrentScope ) {
 		for ( Inheritance::const_iterator it = mInheritance.begin(); it != mInheritance.end(); ++it ) {
@@ -515,7 +515,7 @@ ObjectiveScript::MethodSymbol* Object::resolveMethod(const std::string& name, co
 	}
 
 	if ( !result || !result->isFinal() ) {
-		ObjectiveScript::MethodSymbol *tmp = ObjectScope::resolveMethod(name, params, onlyCurrentScope);
+		ObjectiveScript::MethodSymbol *tmp = MethodScope::resolveMethod(name, params, onlyCurrentScope);
 
 		if ( tmp ) {
 			if ( tmp->isAbstract() ) {

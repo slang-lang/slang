@@ -47,7 +47,7 @@ class Method;
 class Object;
 
 
-class Object : public ObjectScope,
+class Object : public MethodScope,
 			   public ObjectSymbol
 {
 public:

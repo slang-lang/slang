@@ -20,11 +20,11 @@
 namespace ObjectiveScript {
 
 
-class LocalScope : public IScope
+class SymbolScope : public IScope
 {
 public:
-	LocalScope(const std::string& name, IScope *parent = 0);
-	virtual ~LocalScope();
+	SymbolScope(const std::string& name, IScope *parent = 0);
+	virtual ~SymbolScope();
 
 public:	// IScope implementation
 	virtual void define(const std::string& name, Symbol *symbol);
@@ -41,14 +41,14 @@ protected:
 };
 
 
-class ObjectScope : public LocalScope
+class MethodScope : public SymbolScope
 {
 public:
 	typedef std::set<Runtime::Method*> MethodCollection;
 
 public:
-	ObjectScope(const std::string& name, IScope *parent = 0);
-	virtual ~ObjectScope();
+	MethodScope(const std::string& name, IScope *parent = 0);
+	virtual ~MethodScope();
 
 public:
 	virtual void defineMethod(const std::string& name, Runtime::Method* method);
@@ -60,7 +60,7 @@ protected:
 };
 
 
-class GlobalScope : public ObjectScope
+class GlobalScope : public MethodScope
 {
 public:
 	GlobalScope();

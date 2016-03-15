@@ -6,6 +6,7 @@ ADD_SUBDIRECTORY(BuildInObjects)
 ADD_SUBDIRECTORY(Designtime)
 #ADD_SUBDIRECTORY(Helpers)
 #ADD_SUBDIRECTORY(Interfaces)
+ADD_SUBDIRECTORY(Parser)
 ADD_SUBDIRECTORY(Runtime)
 ADD_SUBDIRECTORY(Utils)
 
@@ -46,7 +47,6 @@ SET(HEADERS
 	Preprocessor.h
 	Reference.h
 	Repository.h
-#	RTTI.h
 	Scope.h
 	Script.h
 	Stack.h
@@ -63,6 +63,7 @@ SET(HEADERS
 SET(DEPENDENCIES
 	CoreUtils
 	CoreRuntime
+	CoreParser
 #	CoreHelpers
 	CoreDesigntimeBuildInTypes
 	CoreDesigntime
