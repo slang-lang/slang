@@ -1,8 +1,8 @@
 #!/usr/local/bin/oscript
 
-public namespace stable AttributeTest
+public stable namespace AttributeTest
 {
-	public object unstable TestObject
+	public unstable object TestObject
 	{
 		public deprecated void deprecatedMethod()
 		{
@@ -45,7 +45,7 @@ public namespace stable AttributeTest
 		}
 	}
 
-	public object stable Main
+	public stable object Main
 	{
 		private TestObject mTest;
 

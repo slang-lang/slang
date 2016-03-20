@@ -4,13 +4,15 @@ public namespace Math
 {
 	public object Main
 	{
+		private number mNumber;
+
 		public void Main(int argc = 0, string argv = "")
 		{
-			float mNumber = 1.f;
+			mNumber = 1.0;
 
 			print("mNumber = " + mNumber);
 
-			assert( mNumber == 1.f );
+			assert( mNumber == 1.0 );
 		}
 	}
 }
