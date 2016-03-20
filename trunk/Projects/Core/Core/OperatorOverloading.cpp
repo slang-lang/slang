@@ -27,10 +27,10 @@ namespace Runtime {
 void operator_assign(Object *base, Object *other)
 {
 	if ( !base ) {
-		throw Utils::Exceptions::NullPointer("cannot assign value to null pointer");
+		throw Utils::Exceptions::AccessViolation("cannot assign value to null pointer");
 	}
 	if ( !other ) {
-		throw Utils::Exceptions::NullPointer("cannot assign object to null pointer");
+		throw Utils::Exceptions::AccessViolation("cannot assign object to null pointer");
 	}
 
 	std::string source = base->Typename();
@@ -91,10 +91,10 @@ void operator_assign(Object *base, Object *other)
 void operator_bitand(Object *base, Object *other)
 {
 	if ( !base ) {
-		throw Utils::Exceptions::NullPointer("cannot bitand value to null pointer");
+		throw Utils::Exceptions::AccessViolation("cannot bitand value to null pointer");
 	}
 	if ( !other ) {
-		throw Utils::Exceptions::NullPointer("cannot bitand object to null pointer");
+		throw Utils::Exceptions::AccessViolation("cannot bitand object to null pointer");
 	}
 
 	std::string source = base->Typename();
@@ -149,10 +149,10 @@ void operator_bitand(Object *base, Object *other)
 void operator_bitcomplement(Object *base, Object *other)
 {
 	if ( !base ) {
-		throw Utils::Exceptions::NullPointer("cannot bitcomplement value to null pointer");
+		throw Utils::Exceptions::AccessViolation("cannot bitcomplement value to null pointer");
 	}
 	if ( !other ) {
-		throw Utils::Exceptions::NullPointer("cannot bitcomplement object to null pointer");
+		throw Utils::Exceptions::AccessViolation("cannot bitcomplement object to null pointer");
 	}
 
 	std::string source = base->Typename();
@@ -207,10 +207,10 @@ void operator_bitcomplement(Object *base, Object *other)
 void operator_bitor(Object *base, Object *other)
 {
 	if ( !base ) {
-		throw Utils::Exceptions::NullPointer("cannot bitor value to null pointer");
+		throw Utils::Exceptions::AccessViolation("cannot bitor value to null pointer");
 	}
 	if ( !other ) {
-		throw Utils::Exceptions::NullPointer("cannot bitor object to null pointer");
+		throw Utils::Exceptions::AccessViolation("cannot bitor object to null pointer");
 	}
 
 	std::string source = base->Typename();
@@ -265,10 +265,10 @@ void operator_bitor(Object *base, Object *other)
 void operator_divide(Object *base, Object *other)
 {
 	if ( !base ) {
-		throw Utils::Exceptions::NullPointer("operator_divide: cannot divide null pointer through object");
+		throw Utils::Exceptions::AccessViolation("operator_divide: cannot divide null pointer through object");
 	}
 	if ( !other ) {
-		throw Utils::Exceptions::NullPointer("cannot divide object through null pointer");
+		throw Utils::Exceptions::AccessViolation("cannot divide object through null pointer");
 	}
 
 	std::string source = base->Typename();
@@ -323,10 +323,10 @@ void operator_divide(Object *base, Object *other)
 bool operator_equal(Object *base, Object *other)
 {
 	if ( !base ) {
-		throw Utils::Exceptions::NullPointer("cannot compare null pointer to object");
+		throw Utils::Exceptions::AccessViolation("cannot compare null pointer to object");
 	}
 	if ( !other ) {
-		throw Utils::Exceptions::NullPointer("cannot compare object to null pointer");
+		throw Utils::Exceptions::AccessViolation("cannot compare object to null pointer");
 	}
 
 	std::string source = base->Typename();
@@ -374,10 +374,10 @@ bool operator_equal(Object *base, Object *other)
 bool operator_greater(Object *base, Object *other)
 {
 	if ( !base ) {
-		throw Utils::Exceptions::NullPointer("cannot compare null pointer to object");
+		throw Utils::Exceptions::AccessViolation("cannot compare null pointer to object");
 	}
 	if ( !other ) {
-		throw Utils::Exceptions::NullPointer("cannot compare object to null pointer");
+		throw Utils::Exceptions::AccessViolation("cannot compare object to null pointer");
 	}
 
 	std::string source = base->Typename();
@@ -420,10 +420,10 @@ bool operator_greater(Object *base, Object *other)
 bool operator_greater_equal(Object *base, Object *other)
 {
 	if ( !base ) {
-		throw Utils::Exceptions::NullPointer("cannot compare null pointer to object");
+		throw Utils::Exceptions::AccessViolation("cannot compare null pointer to object");
 	}
 	if ( !other ) {
-		throw Utils::Exceptions::NullPointer("cannot compare object to null pointer");
+		throw Utils::Exceptions::AccessViolation("cannot compare object to null pointer");
 	}
 
 	std::string source = base->Typename();
@@ -466,10 +466,10 @@ bool operator_greater_equal(Object *base, Object *other)
 bool operator_less(Object *base, Object *other)
 {
 	if ( !base ) {
-		throw Utils::Exceptions::NullPointer("cannot compare null pointer to object");
+		throw Utils::Exceptions::AccessViolation("cannot compare null pointer to object");
 	}
 	if ( !other ) {
-		throw Utils::Exceptions::NullPointer("cannot compare object to null pointer");
+		throw Utils::Exceptions::AccessViolation("cannot compare object to null pointer");
 	}
 
 	std::string source = base->Typename();
@@ -512,10 +512,10 @@ bool operator_less(Object *base, Object *other)
 bool operator_less_equal(Object *base, Object *other)
 {
 	if ( !base ) {
-		throw Utils::Exceptions::NullPointer("cannot compare null pointer to object");
+		throw Utils::Exceptions::AccessViolation("cannot compare null pointer to object");
 	}
 	if ( !other ) {
-		throw Utils::Exceptions::NullPointer("cannot compare object to null pointer");
+		throw Utils::Exceptions::AccessViolation("cannot compare object to null pointer");
 	}
 
 	std::string source = base->Typename();
@@ -558,10 +558,10 @@ bool operator_less_equal(Object *base, Object *other)
 void operator_modulo(Object *base, Object *other)
 {
 	if ( !base ) {
-		throw Utils::Exceptions::NullPointer("cannot modulo null pointer by object");
+		throw Utils::Exceptions::AccessViolation("cannot modulo null pointer by object");
 	}
 	if ( !other ) {
-		throw Utils::Exceptions::NullPointer("cannot modulo object by null pointer");
+		throw Utils::Exceptions::AccessViolation("cannot modulo object by null pointer");
 	}
 
 	std::string source = base->Typename();
@@ -616,10 +616,10 @@ void operator_modulo(Object *base, Object *other)
 void operator_multiply(Object *base, Object *other)
 {
 	if ( !base ) {
-		throw Utils::Exceptions::NullPointer("cannot multiply null pointer by object");
+		throw Utils::Exceptions::AccessViolation("cannot multiply null pointer by object");
 	}
 	if ( !other ) {
-		throw Utils::Exceptions::NullPointer("cannot multiply object by null pointer");
+		throw Utils::Exceptions::AccessViolation("cannot multiply object by null pointer");
 	}
 
 	std::string source = base->Typename();
@@ -674,10 +674,10 @@ void operator_multiply(Object *base, Object *other)
 void operator_plus(Object *base, Object *other)
 {
 	if ( !base ) {
-		throw Utils::Exceptions::NullPointer("cannot add null pointer to object");
+		throw Utils::Exceptions::AccessViolation("cannot add null pointer to object");
 	}
 	if ( !other ) {
-		throw Utils::Exceptions::NullPointer("cannot add object to null pointer");
+		throw Utils::Exceptions::AccessViolation("cannot add object to null pointer");
 	}
 
 	std::string source = base->Typename();
@@ -732,10 +732,10 @@ void operator_plus(Object *base, Object *other)
 void operator_subtract(Object *base, Object *other)
 {
 	if ( !base ) {
-		throw Utils::Exceptions::NullPointer("cannot subtract object from null pointer");
+		throw Utils::Exceptions::AccessViolation("cannot subtract object from null pointer");
 	}
 	if ( !other ) {
-		throw Utils::Exceptions::NullPointer("cannot subtract null pointer from object");
+		throw Utils::Exceptions::AccessViolation("cannot subtract null pointer from object");
 	}
 
 	std::string source = base->Typename();
@@ -790,7 +790,7 @@ void operator_subtract(Object *base, Object *other)
 void operator_unary_decrement(Object *base)
 {
 	if ( !base ) {
-		throw Utils::Exceptions::NullPointer("cannot subtract object from null pointer");
+		throw Utils::Exceptions::AccessViolation("cannot decrement null pointer");
 	}
 
 	std::string source = base->Typename();
@@ -840,7 +840,7 @@ void operator_unary_decrement(Object *base)
 void operator_unary_increment(Object *base)
 {
 	if ( !base ) {
-		throw Utils::Exceptions::NullPointer("cannot subtract object from null pointer");
+		throw Utils::Exceptions::AccessViolation("cannot increment null pointer");
 	}
 
 	std::string source = base->Typename();
@@ -890,7 +890,7 @@ void operator_unary_increment(Object *base)
 void operator_unary_minus(Object *base)
 {
 	if ( !base ) {
-		throw Utils::Exceptions::NullPointer("cannot subtract object from null pointer");
+		throw Utils::Exceptions::AccessViolation("null pointer access");
 	}
 
 	std::string source = base->Typename();
@@ -933,14 +933,16 @@ void operator_unary_minus(Object *base)
 	}
 	else {
 		Object tmp;
-		base->execute(&tmp, "operator-", ParameterList(), 0);
+		tmp.operator_unary_minus();
+
+		*base = tmp;
 	}
 }
 
 void operator_unary_not(Object *base)
 {
 	if ( !base ) {
-		throw Utils::Exceptions::NullPointer("cannot subtract object from null pointer");
+		throw Utils::Exceptions::AccessViolation("null pointer access");
 	}
 
 	std::string source = base->Typename();

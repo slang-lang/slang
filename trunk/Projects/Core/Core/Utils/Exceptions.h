@@ -80,6 +80,17 @@ public:
 };
 
 
+class AccessViolation : public Exception
+{
+public:
+	AccessViolation(const std::string& text, const Utils::Position& position = Utils::Position())
+	: Exception("Exception.AccessViolation: " + text, position)
+	{ }
+
+	virtual ~AccessViolation() throw() { }
+};
+
+
 class AccessMode : public Exception
 {
 public:

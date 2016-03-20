@@ -311,7 +311,6 @@ Symbol* Method::resolve(const std::string& name, bool onlyCurrentScope) const
 			case Symbol::IType::ObjectSymbol:
 				result = static_cast<Object*>(result)->resolve(member, onlyCurrentScope);
 				break;
-			case Symbol::IType::AtomicTypeSymbol:
 			case Symbol::IType::MethodSymbol:
 				return result;
 			case Symbol::IType::BluePrintSymbol:
@@ -337,22 +336,23 @@ Symbol* Method::resolveMethod(const std::string& name, const ParameterList& para
 
 	Symbol *result = SymbolScope::resolve(parent, onlyCurrentScope);
 
-	if ( result ) {
+	while ( result && !member.empty() ) {
 		switch ( result->getType() ) {
-			case Symbol::IType::ObjectSymbol:
-				return static_cast<Object*>(result)->resolveMethod(member, params, onlyCurrentScope);
 			case Symbol::IType::MethodSymbol:
 				return result;
 			case Symbol::IType::NamespaceSymbol:
-				//return static_cast<Namespace*>(result)->resolveMethod(member, params, onlyCurrentScope);
-			case Symbol::IType::AtomicTypeSymbol:
+			case Symbol::IType::ObjectSymbol:
+				result = static_cast<Object*>(result)->resolveMethod(member, params, onlyCurrentScope);
+				break;
 			case Symbol::IType::BluePrintSymbol:
 			case Symbol::IType::UnknownSymbol:
-				throw Utils::Exceptions::SyntaxError("unknown symbol '" + name + "' requested");
+				throw Utils::Exceptions::SyntaxError("cannot directly access locales of method/namespace");
 		}
+
+		Tools::split(member, parent, member);
 	}
 
-	return 0;
+	return result;
 }
 
 void Method::setParent(IScope *scope)

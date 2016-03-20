@@ -172,5 +172,20 @@ GlobalScope::~GlobalScope()
 	mSymbols.clear();
 }
 
+std::string GlobalScope::ToString() const
+{
+	std::string result;
+
+	for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
+		result += (*it)->ToString();
+	}
+
+	for ( Symbols::const_iterator it = mSymbols.begin(); it != mSymbols.end(); ) {
+		result += (*it).second->ToString();
+	}
+
+	return result;
+}
+
 
 }

@@ -65,6 +65,9 @@ class GlobalScope : public MethodScope
 public:
 	GlobalScope();
 	~GlobalScope();
+
+public:
+	std::string ToString() const;
 };
 
 

@@ -33,12 +33,22 @@ VirtualMachine::~VirtualMachine()
 	mBluePrints.clear();
 	mObjects.clear();
 
+	for ( Extensions::ExtensionList::iterator it = mExtensions.begin(); it != mExtensions.end(); ++it ) {
+		delete (*it);
+	}
 	for ( ScriptCollection::iterator it = mScripts.begin(); it != mScripts.end(); ++it ) {
 		delete (*it);
 	}
 	mScripts.clear();
 
 	delete mRepository;
+}
+
+void VirtualMachine::addExtension(Extensions::IExtension *extension)
+{
+	assert(extension);
+
+	mExtensions.push_back(extension);
 }
 
 std::string VirtualMachine::buildPath(const std::string& basefolder, const std::string& library) const
@@ -151,12 +161,34 @@ Script* VirtualMachine::createScriptFromString(const std::string& content, const
 
 void VirtualMachine::init()
 {
-	if ( mLibraryFolder.empty() ) {
-		const char* homepath = getenv("OBJECTIVESCRIPT_LIBRARY");
-		if ( homepath ) {
-			setLibraryFolder(homepath);
+	if ( !mLibraryFolder.empty() ) {
+		return;
+	}
+
+	const char* homepath = getenv("OBJECTIVESCRIPT_LIBRARY");
+	if ( homepath ) {
+		setLibraryFolder(homepath);
+	}
+
+	loadExtensions();
+}
+
+bool VirtualMachine::loadExtensions()
+{
+	for (Extensions::ExtensionList::const_iterator extIt = mExtensions.begin(); extIt != mExtensions.end(); ++extIt) {
+		Extensions::ExtensionMethods methods;
+		(*extIt)->provideMethods(methods);
+
+		for (Extensions::ExtensionMethods::const_iterator it = methods.begin(); it != methods.end(); ++it) {
+			std::cout << "adding extension '" << (*extIt)->getName() << "." << (*it)->getName() << "'" << std::endl;
+
+			(*it)->setParent(mRepository->getGlobalScope());
+
+			mRepository->getGlobalScope()->defineMethod((*it)->getName(), (*it));
 		}
 	}
+
+	return true;
 }
 
 bool VirtualMachine::loadLibrary(const std::string& library)

@@ -9,7 +9,8 @@
 #include <string>
 
 // Project includes
-#include "Object.h"
+#include <Core/Designtime/BluePrint.h>
+#include <Core/Interfaces/IExtension.h>
 #include "Parameter.h"
 
 // Forward declarations
@@ -23,6 +24,9 @@ namespace ObjectiveScript {
 class IPrinter;
 class MethodScope;
 class Repository;
+namespace Runtime {
+	class Object;
+}
 class Script;
 
 class VirtualMachine
@@ -32,6 +36,7 @@ public:
 	~VirtualMachine();
 
 public:	// Setup
+	void addExtension(Extensions::IExtension *extension);
 	void setBaseFolder(const std::string& base);
 	void setLibraryFolder(const std::string& library);
 
@@ -49,11 +54,13 @@ private:
 
 	Script* createScript(const std::string& content, const ParameterList& params);
 	void init();
+	bool loadExtensions();
 	bool loadLibrary(const std::string& library);
 
 private:
 	std::string mBaseFolder;
 	BluePrintCollection mBluePrints;
+	Extensions::ExtensionList mExtensions;
 	std::string mLibraryFolder;
 	ObjectCollection mObjects;
 	Repository *mRepository;

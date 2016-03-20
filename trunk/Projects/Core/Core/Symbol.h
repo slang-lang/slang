@@ -26,7 +26,6 @@ public:
 	public:
 		typedef enum {
 			UnknownSymbol,
-			AtomicTypeSymbol,
 			BluePrintSymbol,
 			MethodSymbol,
 			NamespaceSymbol,
@@ -61,17 +60,6 @@ typedef std::less<std::string> StringLess;
 
 typedef std::map<std::string, Symbol*> Symbols;
 
-
-class AtomicTypeSymbol : public Symbol,
-						 public Symbol::IType,
-						 public ObjectAttributes
-{
-public:
-    AtomicTypeSymbol(const std::string& name)
-	: Symbol(name, Symbol::IType::AtomicTypeSymbol)
-	{ }
-	virtual ~AtomicTypeSymbol() { }
-};
 
 class BluePrintSymbol : public Symbol,
 						public Symbol::IType,
