@@ -17,6 +17,7 @@ SET(HEADERS
 )
 
 SET(DEPENDENCIES
+	Utils
 	Test_TestFramework
 	Test_Prototype
 	Test_Operator
@@ -25,11 +26,12 @@ SET(DEPENDENCIES
 	Test_Interfaces
 	Test_Inheritance
 	Test_Attributes
+	Extensions
 	Core
-	Utils
 )
 
 add_include(Projects/Core)
+add_include(Projects/Extensions)
 add_include(Projects/TestSuite)
 add_include(Projects/Utils)
 

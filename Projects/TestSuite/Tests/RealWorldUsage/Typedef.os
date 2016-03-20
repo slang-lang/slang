@@ -37,15 +37,15 @@ private object Main
 {
 	public void Main(int argc, string argv)
 	{
-		DerivedObject obj1;
-		print("obj1.getValue() = " + obj1.getValue());
-		obj1.setValue(2);
-		print("obj1.getValue() = " + obj1.getValue());
+		DerivedObject derived;
+		print("derived.getValue() = " + derived.getValue());
+		derived.setValue(2);
+		print("derived.getValue() = " + derived.getValue());
 
-		Retyped obj2;
-		print("obj2.getValue() = " + obj2.getValue());
-		obj2.setValue(2);
-		print("obj2.getValue() = " + obj2.getValue());
+		Retyped retyped;
+		print("retyped.getValue() = " + retyped.getValue());
+		retyped.setValue(2);
+		print("retyped.getValue() = " + retyped.getValue());
 	}
 }
 

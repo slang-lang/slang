@@ -27,7 +27,7 @@ void Printer::print(const std::string& text, const std::string& file, int line)
 
 	std::cout << text;
 	if ( PrintFileAndLine ) {
-		std::cout << "   [" << file << ":" << line << "]" << std::endl;
+		std::cout << "   [" << file << ":" << line << "]";
 	}
 
 	if ( AutomaticLineBreak && !PrintFileAndLine ) {
