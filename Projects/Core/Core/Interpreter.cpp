@@ -349,7 +349,6 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 				case Symbol::IType::MethodSymbol:
 					process_method(start, result);
 					break;
-				case Symbol::IType::AtomicTypeSymbol:
 				case Symbol::IType::ObjectSymbol:
 					*result = *static_cast<Object*>(symbol);
 					break;
@@ -468,7 +467,6 @@ void Interpreter::process_delete(TokenIterator& token)
 	}
 
 	switch ( symbol->getType() ) {
-		case Symbol::IType::AtomicTypeSymbol:
 		case Symbol::IType::ObjectSymbol: {
 			Object *object = static_cast<Object*>(symbol);
 			assert(object);
@@ -1179,13 +1177,12 @@ Symbol* Interpreter::resolve(const std::string& name, bool onlyCurrentScope) con
 
 	while ( result && !member.empty() ) {
 		switch ( result->getType() ) {
-			case Symbol::IType::ObjectSymbol:
-				result = static_cast<Object*>(result)->resolve(member, onlyCurrentScope);
-				break;
-			case Symbol::IType::AtomicTypeSymbol:
 			case Symbol::IType::MethodSymbol:
 			case Symbol::IType::NamespaceSymbol:
 				return result;
+			case Symbol::IType::ObjectSymbol:
+				result = static_cast<Object*>(result)->resolve(member, onlyCurrentScope);
+				break;
 			case Symbol::IType::BluePrintSymbol:
 			case Symbol::IType::UnknownSymbol:
 				throw Utils::Exceptions::SyntaxError("cannot directly access locales of method/namespace");
@@ -1211,15 +1208,12 @@ Symbol* Interpreter::resolveMethod(const std::string& name, const ParameterList&
 
 	while ( result && !member.empty() ) {
 		switch ( result->getType() ) {
-			//case Symbol::IType::NamespaceSymbol:
-				//return static_cast<Namespace*>(result)->resolveMethod(member, params, onlyCurrentScope);
+			case Symbol::IType::NamespaceSymbol:
 			case Symbol::IType::ObjectSymbol:
 				result = static_cast<Object*>(result)->resolveMethod(member, params, onlyCurrentScope);
 				break;
-			case Symbol::IType::AtomicTypeSymbol:
 			case Symbol::IType::BluePrintSymbol:
 			case Symbol::IType::MethodSymbol:
-			case Symbol::IType::NamespaceSymbol:
 			case Symbol::IType::UnknownSymbol:
 				throw Utils::Exceptions::SyntaxError("cannot directly access locales of method/namespace");
 		}

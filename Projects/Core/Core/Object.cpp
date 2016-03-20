@@ -284,6 +284,11 @@ ControlFlow::E Object::execute(Object *result, const std::string& name, const Pa
 {
 	OSdebug("execute('" + name + "', [" + toString(params) + "])");
 
+	if ( !mIsConstructed ) {
+		// a method is being called although our object has not yet been constructed?
+		throw Utils::Exceptions::AccessViolation("while accessing " + Typename() + "." + name);
+	}
+
 	Method *method = static_cast<Method*>(resolveMethod(name, params, false));
 	if ( !method ) {
 		throw Utils::Exceptions::UnknownIdentifer("unknown method '" + name + "' or method with invalid parameter count called!");

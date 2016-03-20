@@ -4,7 +4,9 @@ SET(SOURCES
 )
 
 SET(HEADERS
+	IExtension.h
 	IExternalCommand.h
+	IScope.h
 )
 
 SET(DEPENDENCIES

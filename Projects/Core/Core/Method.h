@@ -50,8 +50,8 @@ public:	// Symbol::IType implementation
 	std::string ToString() const;
 
 public: // Execution
-	ControlFlow::E execute(const ParameterList& params, Object *result);
-	const ExceptionData& getExceptionData() const;
+	virtual ControlFlow::E execute(const ParameterList& params, Object *result);
+	virtual const ExceptionData& getExceptionData() const;
 
 	Symbol* resolve(const std::string& name, bool onlyCurrentScope = false) const;
 	Symbol* resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope = false) const;
