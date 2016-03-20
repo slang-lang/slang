@@ -7,7 +7,7 @@
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Script.h>
 #include <Core/VirtualMachine.h>
-#include <StdOutPrinter/StdOutPrinter.h>
+#include <System/System.h>
 #include <Tools/Printer.h>
 #include <Tools/Strings.h>
 
@@ -149,7 +149,7 @@ int main(int argc, const char* argv[])
 	}
 
 	ObjectiveScript::VirtualMachine mVirtualMachine;
-	mVirtualMachine.addExtension(new ObjectiveScript::Extensions::StdOutPrinter());
+	mVirtualMachine.addExtension(new ObjectiveScript::Extensions::System());
 	mVirtualMachine.setBaseFolder(mRoot);
 
 	try {
