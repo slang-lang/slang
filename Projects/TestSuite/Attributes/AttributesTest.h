@@ -31,7 +31,7 @@ public:
 	void teardown();
 
 private:	// Tests
-	void testBasicLanguageFeatures();
+	void testAttributesTest();
 };
 
 
