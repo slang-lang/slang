@@ -33,7 +33,7 @@ AttributesTest::~AttributesTest()
 
 void AttributesTest::process()
 {
-	TEST(testBasicLanguageFeatures);
+	TEST(testAttributesTest);
 }
 
 void AttributesTest::setup()
@@ -44,7 +44,7 @@ void AttributesTest::teardown()
 {
 }
 
-void AttributesTest::testBasicLanguageFeatures()
+void AttributesTest::testAttributesTest()
 {
 	try {
 		VirtualMachine vm;
