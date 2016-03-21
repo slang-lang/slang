@@ -40,7 +40,7 @@ public:
 class System : public IExtension
 {
 public:
-	char *getName() const {
+	const char *getName() const {
 		return "System";
 	}
 
