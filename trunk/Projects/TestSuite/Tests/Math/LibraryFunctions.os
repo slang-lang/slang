@@ -6,6 +6,8 @@ public object Main
 {
 	public void Main(int argc, string argv)
 	{
+		print("PI = " + PI);
+
 		assert( TestCase1() );
 		assert( TestCase2() );
 	}
@@ -14,7 +16,7 @@ public object Main
 	{
 		print("TestCase 1: abs");
 
-		float floatValue = -17.3f;
+		float floatValue = -17.31;
 		print("abs(float: " + floatValue + ") = " + abs(floatValue));
 		floatValue = floatValue * -1;
 		print("abs(float: " + floatValue + ") = " + abs(floatValue));
@@ -36,7 +38,7 @@ public object Main
 	{
 		print("TestCase 2: power");
 
-		float floatValue = -17.3f;
+		float floatValue = -17.3;
 		print("power(float: " + floatValue + ") = " + power(floatValue));
 
 		int intValue = -17;
