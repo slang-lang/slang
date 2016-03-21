@@ -2,8 +2,36 @@
 
 public stable namespace AttributeTest
 {
+	public void Function1()
+	{
+		print("Function1");
+
+		SubFunction1();
+		SubFunction2();
+	}
+
+	public void SubFunction1()
+	{
+		print("SubFunction1");
+	}
+
+	public void SubFunction2()
+	{
+		print("SubFunction2");
+	}
+
 	public unstable object TestObject
 	{
+		public void TestObject()
+		{
+			print("TestObject()");
+		}
+
+		public void ~TestObject()
+		{
+			print("~TestObject()");
+		}
+
 		public deprecated void deprecatedMethod()
 		{
 			print("deprecated method called");
@@ -51,6 +79,10 @@ public stable namespace AttributeTest
 
 		public void Main(int argc = 0, string argv = "")
 		{
+			Function1();
+
+			bla(1);
+
 			mTest = new TestObject();
 
 			mTest.deprecatedMethod();
@@ -75,5 +107,8 @@ public stable namespace AttributeTest
 		{
 			return 2;
 		}
+		
+		private void bla() { }
+		private void bla(int num) { }
 	}
 }

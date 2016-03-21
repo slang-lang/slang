@@ -49,7 +49,7 @@ public:
 
 		if ( !isTrue(condition) ) {
 			throw Utils::Exceptions::AssertionFailed(condition.ToString() + ", with message: \"" + params.back().value() + "\"");
-			return Runtime::ControlFlow::Throw;
+			//return Runtime::ControlFlow::Throw;
 		}
 
 		return Runtime::ControlFlow::Normal;
