@@ -793,9 +793,6 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 	token = closed;
 
 
-	std::string member, parent;
-	Tools::split(method, parent, member);
-
 	Method *symbol = static_cast<Method*>(resolveMethod(method, params));
 
 	if ( !symbol) {

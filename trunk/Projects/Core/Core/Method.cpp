@@ -32,7 +32,6 @@ Method::Method(IScope *parent, const std::string& name, const std::string& type)
 
 Method::~Method()
 {
-	garbageCollector();
 }
 
 bool Method::operator() (const Method& first, const Method& second) const
@@ -184,8 +183,6 @@ ControlFlow::E Method::execute(const ParameterList& params, Object *result)
 	ControlFlow::E controlflow = interpreter.execute(result);	// execute method code
 
 	mExceptionData = interpreter.getExceptionData();	// collect exception data no matter what
-
-	garbageCollector();		// let the garbage collector do its magic
 
 	return processControlFlow(controlflow, result);
 }

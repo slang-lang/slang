@@ -72,6 +72,7 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 	init();
 
 	Script *script = new Script();
+	mScripts.insert(script);
 
 	script->connectRepository(mRepository);
 
@@ -116,8 +117,6 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 			script->assign(objIt->second);
 		}
 	}
-
-	mScripts.insert(script);
 
 	// execute this script's constructor
 	script->construct(params);
