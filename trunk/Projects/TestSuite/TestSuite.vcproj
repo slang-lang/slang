@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".\;..\Core;..\Externals;..\Utils"
+				AdditionalIncludeDirectories=".\;..\Core;..\Extensions;..\Externals;..\Utils"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
 				StringPooling="true"
 				MinimalRebuild="true"
@@ -62,7 +62,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ObjectiveScript_debug.lib Utils_debug.lib"
+				AdditionalDependencies="Extensions_debug.lib ObjectiveScript_debug.lib Utils_debug.lib"
 				OutputFile="$(OutDir)\$(ProjectName).exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\Libs"
@@ -123,7 +123,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="3"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories=".\;..\Core;..\Externals;..\Utils"
+				AdditionalIncludeDirectories=".\;..\Core;..\Extensions;..\Externals;..\Utils"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				StringPooling="true"
 				RuntimeLibrary="0"
@@ -145,7 +145,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ObjectiveScript.lib Utils.lib"
+				AdditionalDependencies="Extensions.lib ObjectiveScript.lib Utils.lib"
 				LinkIncremental="0"
 				AdditionalLibraryDirectories="..\Libs"
 				GenerateManifest="false"
