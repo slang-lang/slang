@@ -86,9 +86,11 @@ bool Parser::isMemberDeclaration(TokenIterator start)
 	TokenList tokens;
 
 	tokens.push_back(Token(Token::Type::VISIBILITY));
-	//tokens.push_back(Token(Token::Type::LANGUAGEFEATURE, true)); // this is an optional token
 	tokens.push_back(Token(Token::Type::TYPE));
 	tokens.push_back(Token(Token::Type::IDENTIFER));
+	//tokens.push_back(Token(Token::Type::LANGUAGEFEATURE, true));
+	//tokens.push_back(Token(Token::Type::ASSIGN, true));
+	//tokens.push_back(Token(Token::Type::IDENTIFER, true));
 	tokens.push_back(Token(Token::Type::SEMICOLON));
 
 	return checkSynthax(start, tokens);
@@ -101,7 +103,6 @@ bool Parser::isMethodDeclaration(TokenIterator start)
 	TokenList tokens;
 
 	tokens.push_back(Token(Token::Type::VISIBILITY));
-	//tokens.push_back(Token(Token::Type::LANGUAGEFEATURE, true)); // this is an optional token
 	tokens.push_back(Token(Token::Type::TYPE));
 	tokens.push_back(Token(Token::Type::IDENTIFER));
 	tokens.push_back(Token(Token::Type::PARENTHESIS_OPEN));

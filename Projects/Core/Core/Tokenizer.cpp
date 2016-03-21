@@ -191,7 +191,7 @@ bool Tokenizer::isInteger(const std::string& token) const
 		return false;
 	}
 
-	for ( unsigned int c = 0; c < token.size() /*- 1*/; c++ ) {
+	for ( unsigned int c = 0; c < token.size(); c++ ) {
 		switch ( token[c] ) {
 			case '1':
 			case '2':
@@ -208,15 +208,6 @@ bool Tokenizer::isInteger(const std::string& token) const
 				return false;
 		}
 	}
-
-/*
-	// the last char of our token has to be an 'i'
-	if ( token[token.size() - 1] == 'i' && token.size() > 1 ) {
-		return true;
-	}
-
-	return false;
-*/
 
 	return true;
 }
@@ -300,6 +291,10 @@ bool Tokenizer::isNumber(const std::string& token) const
 			default:
 				return false;
 		}
+	}
+
+	if ( numOfDots == 0 ) {
+		return false;
 	}
 
 	return true;
