@@ -333,7 +333,7 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 			operator_assign(result, &tmp);
 		} break;
 		case Token::Type::CONST_NUMBER: {
-			NumberObject tmp(Tools::stringToFloat(start->content()));
+			NumberObject tmp(Tools::stringToDouble(start->content()));
 			operator_assign(result, &tmp);
 		} break;
 		case Token::Type::IDENTIFER: {
