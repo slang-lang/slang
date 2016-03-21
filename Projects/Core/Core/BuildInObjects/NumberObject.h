@@ -20,12 +20,12 @@ namespace Runtime {
 class NumberObject : public Object
 {
 public:
-	static float DEFAULTVALUE;
+	static double DEFAULTVALUE;
 	static std::string TYPENAME;
 
 public:
-	NumberObject(float value = 0.0);
-	NumberObject(const std::string& name, float value);
+	NumberObject(double value = 0.0);
+	NumberObject(const std::string& name, double value);
 	NumberObject(const std::string& name, const std::string& value);
 	NumberObject(const Object& object);
 
@@ -71,8 +71,8 @@ public:	// Operators
 	virtual void operator_unary_not();
 
 public: // Values
-	virtual float getNativeValue() const;
-	virtual void setNativeValue(float value);
+	virtual double getNativeValue() const;
+	virtual void setNativeValue(double value);
 
 	virtual std::string getValue() const;
 	virtual void setValue(const std::string& value);
@@ -84,7 +84,7 @@ public: // Values
 protected:
 
 private:
-	float mNativeValue;
+	double mNativeValue;
 };
 
 
