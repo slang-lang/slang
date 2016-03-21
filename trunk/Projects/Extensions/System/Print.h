@@ -45,7 +45,7 @@ public:
 
 		if ( params.size() != 1 ) {
 			throw Utils::Exceptions::ParameterCountMissmatch("1 parameter expected, but " + ::Utils::Tools::toString(params.size()) + " parameter(s) found");
-			return Runtime::ControlFlow::Throw;
+			//return Runtime::ControlFlow::Throw;
 		}
 
 		text = params.front().value();

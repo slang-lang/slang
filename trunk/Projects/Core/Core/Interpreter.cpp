@@ -1171,12 +1171,17 @@ Symbol* Interpreter::resolve(const std::string& name, bool onlyCurrentScope) con
 	Tools::split(name, parent, member);
 
 	Symbol *result = SymbolScope::resolve(parent, onlyCurrentScope);
+	if ( !result ) {
+		// no symbol found with this name
+		return 0;
+	}
 
 	while ( result && !member.empty() ) {
 		switch ( result->getType() ) {
 			case Symbol::IType::MethodSymbol:
-			case Symbol::IType::NamespaceSymbol:
 				return result;
+			case Symbol::IType::NamespaceSymbol:
+				throw Utils::Exceptions::NotImplemented("namespace symbol");
 			case Symbol::IType::ObjectSymbol:
 				result = static_cast<Object*>(result)->resolve(member, onlyCurrentScope);
 				break;
@@ -1196,26 +1201,24 @@ Symbol* Interpreter::resolveMethod(const std::string& name, const ParameterList&
 	std::string member, parent;
 	Tools::split(name, parent, member);
 
-	if ( member.empty() ) {
-		member = parent;
-		parent = IDENTIFIER_THIS;
+	Symbol *result = SymbolScope::resolve(parent, onlyCurrentScope);
+	if ( !result ) {
+		// no symbol found with this name
+		return 0;
 	}
 
-	Symbol *result = SymbolScope::resolve(parent, onlyCurrentScope);
-
-	while ( result && !member.empty() ) {
-		switch ( result->getType() ) {
-			case Symbol::IType::NamespaceSymbol:
-			case Symbol::IType::ObjectSymbol:
-				result = static_cast<Object*>(result)->resolveMethod(member, params, onlyCurrentScope);
-				break;
-			case Symbol::IType::BluePrintSymbol:
-			case Symbol::IType::MethodSymbol:
-			case Symbol::IType::UnknownSymbol:
-				throw Utils::Exceptions::SyntaxError("cannot directly access locales of method/namespace");
-		}
-
-		Tools::split(member, parent, member);
+	switch ( result->getType() ) {
+		case Symbol::IType::MethodSymbol:
+			result = static_cast<Method*>(mParent)->resolveMethod(parent, params, onlyCurrentScope);
+			break;
+		case Symbol::IType::NamespaceSymbol:
+			throw Utils::Exceptions::NotImplemented("namespace symbol");
+		case Symbol::IType::ObjectSymbol:
+			result = static_cast<Object*>(result)->resolveMethod(member, params, onlyCurrentScope);
+			break;
+		case Symbol::IType::BluePrintSymbol:
+		case Symbol::IType::UnknownSymbol:
+			throw Utils::Exceptions::SyntaxError("cannot directly access locales of method/namespace");
 	}
 
 	return result;
