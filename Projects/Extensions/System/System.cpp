@@ -6,6 +6,7 @@
 #include <iostream>
 
 // Project includes
+#include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/Designtime/BuildInTypes/VoidObject.h>
 #include <Core/Repository.h>
 #include <Core/Utils/Exceptions.h>
@@ -21,6 +22,10 @@ namespace Extensions {
 Print::Print()
 : Runtime::Method(0, "print", Designtime::VoidObject::TYPENAME)
 {
+	ParameterList params;
+	params.push_back(Parameter(ANONYMOUS_OBJECT, Designtime::StringObject::TYPENAME, VALUE_NONE));
+
+	setSignature(params);
 }
 
 Runtime::ControlFlow::E Print::execute(const ParameterList& params, Runtime::Object* /*result*/)
@@ -42,6 +47,10 @@ Runtime::ControlFlow::E Print::execute(const ParameterList& params, Runtime::Obj
 PrintLine::PrintLine()
 : Runtime::Method(0, "println", Designtime::VoidObject::TYPENAME)
 {
+	ParameterList params;
+	params.push_back(Parameter(ANONYMOUS_OBJECT, Designtime::StringObject::TYPENAME, VALUE_NONE));
+
+	setSignature(params);
 }
 
 Runtime::ControlFlow::E PrintLine::execute(const ParameterList& params, Runtime::Object* /*result*/)
