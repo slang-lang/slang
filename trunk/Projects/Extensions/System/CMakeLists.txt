@@ -5,6 +5,8 @@ SET(SOURCES
 )
 
 SET(HEADERS
+	AssertMsg.h
+	Print.h
 	System.h
 )
 
