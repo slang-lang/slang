@@ -179,7 +179,7 @@ bool VirtualMachine::loadExtensions()
 		(*extIt)->provideMethods(methods);
 
 		for (Extensions::ExtensionMethods::const_iterator it = methods.begin(); it != methods.end(); ++it) {
-			std::cout << "adding extension '" << (*extIt)->getName() << "." << (*it)->getName() << "'" << std::endl;
+			OSinfo("adding extension '" + (*extIt)->getName() + "." + (*it)->getName() + "'");
 
 			(*it)->setParent(mRepository->getGlobalScope());
 

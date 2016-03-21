@@ -5,6 +5,7 @@
 
 // Library includes
 #include <list>
+#include <string>
 
 // Project includes
 
@@ -31,7 +32,7 @@ class IExtension
 public:
 	virtual ~IExtension() { }
 
-	virtual const char* getName() const = 0;
+	virtual std::string getName() const = 0;
 	virtual void provideMethods(ExtensionMethods& methods) = 0;
 };
 

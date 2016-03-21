@@ -7,7 +7,8 @@
 
 // Project includes
 #include <Core/Interfaces/IExtension.h>
-#include <Core/Method.h>
+#include "AssertMsg.h"
+#include "Print.h"
 
 // Forward declarations
 
@@ -18,35 +19,18 @@ namespace ObjectiveScript {
 namespace Extensions {
 
 
-class Print : public Runtime::Method
-{
-public:
-	Print();
-
-public:
-	Runtime::ControlFlow::E execute(const ParameterList &params, Runtime::Object *result);
-};
-
-class PrintLine : public Runtime::Method
-{
-public:
-	PrintLine();
-
-public:
-	Runtime::ControlFlow::E execute(const ParameterList &params, Runtime::Object *result);
-};
-
-
 class System : public IExtension
 {
 public:
-	const char *getName() const {
+	std::string getName() const {
 		return "System";
 	}
 
 	void provideMethods(ExtensionMethods &methods) {
-		methods.push_back(new Print());
-		methods.push_back(new PrintLine());
+		assert(methods.empty());
+
+		methods.push_back(new AssertMsg());
+		methods.push_back(new Printf());
 	}
 };
 
