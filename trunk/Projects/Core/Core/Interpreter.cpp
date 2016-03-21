@@ -961,7 +961,7 @@ void Interpreter::process_throw(TokenIterator& token, Object* /*result*/)
 	mControlFlow = ControlFlow::Throw;
 	mExceptionData = ExceptionData(data, token->position());
 
-	expect(Token::Type::SEMICOLON, token++);
+	expect(Token::Type::SEMICOLON, token);
 }
 
 // syntax:
