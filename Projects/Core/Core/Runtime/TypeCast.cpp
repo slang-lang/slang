@@ -12,8 +12,8 @@
 #include <Core/BuildInObjects/NumberObject.h>
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/BuildInObjects/VoidObject.h>
+#include <Core/Object.h>
 #include <Core/Utils/Exceptions.h>
-#include "Object.h"
 
 // Namespace declarations
 
