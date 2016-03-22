@@ -7,6 +7,7 @@
 
 // Project includes
 #include <Core/BuildInObjects/BoolObject.h>
+#include <Core/BuildInObjects/DoubleObject.h>
 #include <Core/BuildInObjects/FloatObject.h>
 #include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/BuildInObjects/NumberObject.h>
@@ -33,6 +34,11 @@ void typecast(Object *base, const std::string& type)
 
 	if ( type == BoolObject::TYPENAME ) {
 		BoolObject tmp(*base);
+
+		*base = tmp;
+	}
+	else if ( type == DoubleObject::TYPENAME ) {
+		DoubleObject tmp(*base);
 
 		*base = tmp;
 	}

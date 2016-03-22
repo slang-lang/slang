@@ -44,6 +44,7 @@ private:	// Tokenizer
 	void replacePrototypes();
 
 	bool isBoolean(const std::string& token) const;
+	bool isDouble(const std::string& token) const;
 	bool isFloat(const std::string& token) const;
 	bool isIdentifer(const std::string& token) const;
 	bool isInteger(const std::string& token) const;

@@ -8,6 +8,7 @@
 #include <Core/Consts.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Tools.h>
+#include "DoubleObject.h"
 #include "FloatObject.h"
 #include "IntegerObject.h"
 #include "NumberObject.h"
@@ -94,23 +95,6 @@ void BoolObject::operator_assign(BoolObject *other)
 
 void BoolObject::operator_assign(Object *other)
 {
-/*
-	std::string target = other->Typename();
-
-	if ( target == BoolObject::TYPENAME ||
-		 target == FloatObject::TYPENAME ||
-		 target == IntegerObject::TYPENAME ||
-		 target == NumberObject::TYPENAME ||
-		 target == StringObject::TYPENAME ) {
-		BoolObject tmp(isTrue(*other));
-
-		operator_assign(&tmp);
-	}
-	else {
-		Object::operator_assign(other);
-	}
-*/
-
 	setNativeValue(isTrue(*other));
 }
 
@@ -124,6 +108,7 @@ void BoolObject::operator_bitand(Object *other)
 	std::string target = other->Typename();
 
 	if ( target == BoolObject::TYPENAME ||
+		 target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ||
@@ -147,6 +132,7 @@ void BoolObject::operator_bitor(Object *other)
 	std::string target = other->Typename();
 
 	if ( target == BoolObject::TYPENAME ||
+		 target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ||
@@ -170,6 +156,7 @@ bool BoolObject::operator_equal(Object *other)
 	std::string target = other->Typename();
 
 	if ( target == BoolObject::TYPENAME ||
+		 target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ||

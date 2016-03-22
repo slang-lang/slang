@@ -62,10 +62,12 @@ std::string VoidObject::getValue() const
 
 void VoidObject::setNativeValue(void)
 {
+	// this makes absolutely no sense but hey :-)
 }
 
 void VoidObject::setValue(const std::string&)
 {
+	// this makes absolutely no sense but hey :-)
 }
 
 std::string VoidObject::ToString() const

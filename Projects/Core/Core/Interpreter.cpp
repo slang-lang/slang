@@ -7,6 +7,7 @@
 
 // Project includes
 #include <Core/BuildInObjects/BoolObject.h>
+#include <Core/BuildInObjects/DoubleObject.h>
 #include <Core/BuildInObjects/FloatObject.h>
 #include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/BuildInObjects/NumberObject.h>
@@ -320,6 +321,10 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 			BoolObject tmp(Tools::stringToBool(start->content()));
 			operator_assign(result, &tmp);
 		} break;
+		case Token::Type::CONST_DOUBLE: {
+			DoubleObject tmp(Tools::stringToDouble(start->content()));
+			operator_assign(result, &tmp);
+		} break;
 		case Token::Type::CONST_FLOAT: {
 			FloatObject tmp(Tools::stringToFloat(start->content()));
 			operator_assign(result, &tmp);
@@ -396,6 +401,7 @@ void Interpreter::process(Object *result, TokenIterator& token, TokenIterator en
 		// decide what we want to do according to the type of token we have
 		switch ( token->type() ) {
 			case Token::Type::CONST_BOOLEAN:
+			case Token::Type::CONST_DOUBLE:
 			case Token::Type::CONST_FLOAT:
 			case Token::Type::CONST_INTEGER:
 			case Token::Type::CONST_LITERAL:

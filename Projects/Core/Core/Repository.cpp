@@ -6,6 +6,7 @@
 
 // Project includes
 #include <Core/BuildInObjects/BoolObject.h>
+#include <Core/BuildInObjects/DoubleObject.h>
 #include <Core/BuildInObjects/FloatObject.h>
 #include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/BuildInObjects/NumberObject.h>
@@ -13,6 +14,7 @@
 #include <Core/BuildInObjects/UserObject.h>
 #include <Core/BuildInObjects/VoidObject.h>
 #include <Core/Designtime/BuildInTypes/BoolObject.h>
+#include <Core/Designtime/BuildInTypes/DoubleObject.h>
 #include <Core/Designtime/BuildInTypes/FloatObject.h>
 #include <Core/Designtime/BuildInTypes/GenericObject.h>
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
@@ -37,6 +39,7 @@ Repository::Repository()
 	mScope = new GlobalScope();
 
 	addBlueprint(Designtime::BoolObject());
+	addBlueprint(Designtime::DoubleObject());
 	addBlueprint(Designtime::FloatObject());
 	addBlueprint(Designtime::IntegerObject());
 	addBlueprint(Designtime::NumberObject());
@@ -226,6 +229,9 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 	// instantiate atomic types
 	if ( blueprint->Typename() == Runtime::BoolObject::TYPENAME ) {
 		object = new Runtime::BoolObject(name, Runtime::BoolObject::DEFAULTVALUE);
+	}
+	else if ( blueprint->Typename() == Runtime::DoubleObject::TYPENAME ) {
+		object = new Runtime::DoubleObject(name, Runtime::DoubleObject::DEFAULTVALUE);
 	}
 	else if ( blueprint->Typename() == Runtime::FloatObject::TYPENAME ) {
 		object = new Runtime::FloatObject(name, Runtime::FloatObject::DEFAULTVALUE);
