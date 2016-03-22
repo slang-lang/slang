@@ -7,7 +7,7 @@
 
 // Project includes
 #include "Script.h"
-#include "VirtualMachine.h
+#include "VirtualMachine.h"
 
 // Forward declarations
 
