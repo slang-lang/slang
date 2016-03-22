@@ -13,12 +13,12 @@
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/BuildInObjects/VoidObject.h>
 #include <Core/Consts.h>
+#include <Core/Runtime/OperatorOverloading.h>
 #include <Core/Runtime/TypeCast.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Utils/Utils.h>
 #include <Tools/Printer.h>
 #include "Object.h"
-#include "OperatorOverloading.h"
 #include "Repository.h"
 #include "System.h"
 #include "Tools.h"

@@ -12,10 +12,10 @@
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/BuildInObjects/UserObject.h>
 #include <Core/BuildInObjects/VoidObject.h>
+#include <Core/Consts.h>
+#include <Core/Object.h>
+#include <Core/Tools.h>
 #include <Core/Utils/Exceptions.h>
-#include "Consts.h"
-#include "Object.h"
-#include "Tools.h"
 
 // Namespace declarations
 

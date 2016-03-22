@@ -1,6 +1,6 @@
 
-#ifndef Core_OperatorOverloading_h
-#define Core_OperatorOverloading_h
+#ifndef ObjectiveScript_Core_Runtime_OperatorOverloading_h
+#define ObjectiveScript_Core_Runtime_OperatorOverloading_h
 
 
 // Library includes
