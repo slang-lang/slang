@@ -9,6 +9,7 @@
 #include <Core/Utils/Exceptions.h>
 #include <Core/Tools.h>
 #include "BoolObject.h"
+#include "DoubleObject.h"
 #include "FloatObject.h"
 #include "IntegerObject.h"
 #include "NumberObject.h"
@@ -55,6 +56,7 @@ StringObject::StringObject(const Object& other)
 	std::string source = other.Typename();
 
 	if ( source == BoolObject::TYPENAME ||
+		 source == DoubleObject::TYPENAME ||
 		 source == FloatObject::TYPENAME ||
 		 source == IntegerObject::TYPENAME ||
 		 source == NumberObject::TYPENAME ) {
@@ -95,6 +97,7 @@ void StringObject::operator_assign(Object *other)
 	std::string target = other->Typename();
 
 	if ( target == BoolObject::TYPENAME ||
+		 target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ||
@@ -134,6 +137,7 @@ void StringObject::operator_plus(Object *other)
 	std::string target = other->Typename();
 
 	if ( target == BoolObject::TYPENAME ||
+		 target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ||

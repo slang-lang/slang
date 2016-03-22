@@ -6,6 +6,7 @@
 
 // Project includes
 #include <Core/BuildInObjects/BoolObject.h>
+#include <Core/BuildInObjects/DoubleObject.h>
 #include <Core/BuildInObjects/FloatObject.h>
 #include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/BuildInObjects/NumberObject.h>
@@ -41,6 +42,12 @@ void operator_assign(Object *base, Object *other)
 	}
 	else if ( source == BoolObject::TYPENAME ) {
 		BoolObject tmp(Tools::stringToBool(base->getValue()));
+		tmp.operator_assign(other);
+
+		*base = tmp;
+	}
+	else if ( source == DoubleObject::TYPENAME ) {
+		DoubleObject tmp(Tools::stringToDouble(base->getValue()));
 		tmp.operator_assign(other);
 
 		*base = tmp;
@@ -104,6 +111,12 @@ void operator_bitand(Object *base, Object *other)
 
 		*base = tmp;
 	}
+	else if ( source == DoubleObject::TYPENAME ) {
+		DoubleObject tmp(Tools::stringToDouble(base->getValue()));
+		tmp.operator_bitand(other);
+
+		*base = tmp;
+	}
 	else if ( source == FloatObject::TYPENAME ) {
 		FloatObject tmp(Tools::stringToFloat(base->getValue()));
 		tmp.operator_bitand(other);
@@ -158,6 +171,12 @@ void operator_bitcomplement(Object *base, Object *other)
 
 	if ( source == BoolObject::TYPENAME ) {
 		BoolObject tmp(Tools::stringToBool(base->getValue()));
+		tmp.operator_bitcomplement(other);
+
+		*base = tmp;
+	}
+	else if ( source == DoubleObject::TYPENAME ) {
+		DoubleObject tmp(Tools::stringToDouble(base->getValue()));
 		tmp.operator_bitcomplement(other);
 
 		*base = tmp;
@@ -220,6 +239,12 @@ void operator_bitor(Object *base, Object *other)
 
 		*base = tmp;
 	}
+	else if ( source == DoubleObject::TYPENAME ) {
+		DoubleObject tmp(Tools::stringToDouble(base->getValue()));
+		tmp.operator_bitor(other);
+
+		*base = tmp;
+	}
 	else if ( source == FloatObject::TYPENAME ) {
 		FloatObject tmp(Tools::stringToFloat(base->getValue()));
 		tmp.operator_bitor(other);
@@ -274,6 +299,12 @@ void operator_divide(Object *base, Object *other)
 
 	if ( source == BoolObject::TYPENAME ) {
 		BoolObject tmp(Tools::stringToBool(base->getValue()));
+		tmp.operator_divide(other);
+
+		*base = tmp;
+	}
+	else if ( source == DoubleObject::TYPENAME ) {
+		DoubleObject tmp(Tools::stringToDouble(base->getValue()));
 		tmp.operator_divide(other);
 
 		*base = tmp;
@@ -334,6 +365,10 @@ bool operator_equal(Object *base, Object *other)
 		BoolObject tmp(Tools::stringToBool(base->getValue()));
 		return tmp.operator_equal(other);
 	}
+	else if ( source == DoubleObject::TYPENAME ) {
+		DoubleObject tmp(Tools::stringToDouble(base->getValue()));
+		return tmp.operator_equal(other);
+	}
 	else if ( source == FloatObject::TYPENAME ) {
 		FloatObject tmp(Tools::stringToFloat(base->getValue()));
 		return tmp.operator_equal(other);
@@ -385,6 +420,10 @@ bool operator_greater(Object *base, Object *other)
 		BoolObject tmp(Tools::stringToBool(base->getValue()));
 		return tmp.operator_greater(other);
 	}
+	else if ( source == DoubleObject::TYPENAME ) {
+		DoubleObject tmp(Tools::stringToDouble(base->getValue()));
+		return tmp.operator_greater(other);
+	}
 	else if ( source == FloatObject::TYPENAME ) {
 		FloatObject tmp(Tools::stringToFloat(base->getValue()));
 		return tmp.operator_greater(other);
@@ -429,6 +468,10 @@ bool operator_greater_equal(Object *base, Object *other)
 
 	if ( source == BoolObject::TYPENAME ) {
 		BoolObject tmp(Tools::stringToBool(base->getValue()));
+		return tmp.operator_greater_equal(other);
+	}
+	else if ( source == DoubleObject::TYPENAME ) {
+		DoubleObject tmp(Tools::stringToDouble(base->getValue()));
 		return tmp.operator_greater_equal(other);
 	}
 	else if ( source == FloatObject::TYPENAME ) {
@@ -477,6 +520,10 @@ bool operator_less(Object *base, Object *other)
 		BoolObject tmp(Tools::stringToBool(base->getValue()));
 		return tmp.operator_less(other);
 	}
+	else if ( source == DoubleObject::TYPENAME ) {
+		DoubleObject tmp(Tools::stringToDouble(base->getValue()));
+		return tmp.operator_less(other);
+	}
 	else if ( source == FloatObject::TYPENAME ) {
 		FloatObject tmp(Tools::stringToFloat(base->getValue()));
 		return tmp.operator_less(other);
@@ -523,6 +570,10 @@ bool operator_less_equal(Object *base, Object *other)
 		BoolObject tmp(Tools::stringToBool(base->getValue()));
 		return tmp.operator_less_equal(other);
 	}
+	else if ( source == DoubleObject::TYPENAME ) {
+		DoubleObject tmp(Tools::stringToDouble(base->getValue()));
+		return tmp.operator_less_equal(other);
+	}
 	else if ( source == FloatObject::TYPENAME ) {
 		FloatObject tmp(Tools::stringToFloat(base->getValue()));
 		return tmp.operator_less_equal(other);
@@ -567,6 +618,12 @@ void operator_modulo(Object *base, Object *other)
 
 	if ( source == BoolObject::TYPENAME ) {
 		BoolObject tmp(Tools::stringToBool(base->getValue()));
+		tmp.operator_modulo(other);
+
+		*base = tmp;
+	}
+	else if ( source == DoubleObject::TYPENAME ) {
+		DoubleObject tmp(Tools::stringToDouble(base->getValue()));
 		tmp.operator_modulo(other);
 
 		*base = tmp;
@@ -629,6 +686,12 @@ void operator_multiply(Object *base, Object *other)
 
 		*base = tmp;
 	}
+	else if ( source == DoubleObject::TYPENAME ) {
+		DoubleObject tmp(Tools::stringToDouble(base->getValue()));
+		tmp.operator_multiply(other);
+
+		*base = tmp;
+	}
 	else if ( source == FloatObject::TYPENAME ) {
 		FloatObject tmp(Tools::stringToFloat(base->getValue()));
 		tmp.operator_multiply(other);
@@ -683,6 +746,12 @@ void operator_plus(Object *base, Object *other)
 
 	if ( source == BoolObject::TYPENAME ) {
 		BoolObject tmp(Tools::stringToBool(base->getValue()));
+		tmp.operator_plus(other);
+
+		*base = tmp;
+	}
+	else if ( source == DoubleObject::TYPENAME ) {
+		DoubleObject tmp(Tools::stringToDouble(base->getValue()));
 		tmp.operator_plus(other);
 
 		*base = tmp;
@@ -745,6 +814,12 @@ void operator_subtract(Object *base, Object *other)
 
 		*base = tmp;
 	}
+	else if ( source == DoubleObject::TYPENAME ) {
+		DoubleObject tmp(Tools::stringToDouble(base->getValue()));
+		tmp.operator_subtract(other);
+
+		*base = tmp;
+	}
 	else if ( source == FloatObject::TYPENAME ) {
 		FloatObject tmp(Tools::stringToFloat(base->getValue()));
 		tmp.operator_subtract(other);
@@ -800,6 +875,12 @@ void operator_unary_decrement(Object *base)
 
 		*base = tmp;
 	}
+	else if ( source == DoubleObject::TYPENAME ) {
+		DoubleObject tmp(Tools::stringToDouble(base->getValue()));
+		tmp.operator_unary_decrement();
+
+		*base = tmp;
+	}
 	else if ( source == FloatObject::TYPENAME ) {
 		FloatObject tmp(Tools::stringToFloat(base->getValue()));
 		tmp.operator_unary_decrement();
@@ -846,6 +927,12 @@ void operator_unary_increment(Object *base)
 
 	if ( source == BoolObject::TYPENAME ) {
 		BoolObject tmp(Tools::stringToBool(base->getValue()));
+		tmp.operator_unary_increment();
+
+		*base = tmp;
+	}
+	else if ( source == DoubleObject::TYPENAME ) {
+		DoubleObject tmp(Tools::stringToDouble(base->getValue()));
 		tmp.operator_unary_increment();
 
 		*base = tmp;
@@ -900,6 +987,12 @@ void operator_unary_minus(Object *base)
 
 		*base = tmp;
 	}
+	else if ( source == DoubleObject::TYPENAME ) {
+		DoubleObject tmp(Tools::stringToDouble(base->getValue()));
+		tmp.operator_unary_minus();
+
+		*base = tmp;
+	}
 	else if ( source == FloatObject::TYPENAME ) {
 		FloatObject tmp(Tools::stringToFloat(base->getValue()));
 		tmp.operator_unary_minus();
@@ -948,6 +1041,12 @@ void operator_unary_not(Object *base)
 
 	if ( source == BoolObject::TYPENAME ) {
 		BoolObject tmp(Tools::stringToBool(base->getValue()));
+		tmp.operator_unary_not();
+
+		*base = tmp;
+	}
+	else if ( source == DoubleObject::TYPENAME ) {
+		DoubleObject tmp(Tools::stringToDouble(base->getValue()));
 		tmp.operator_unary_not();
 
 		*base = tmp;

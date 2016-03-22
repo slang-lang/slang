@@ -1,6 +1,6 @@
 
-#ifndef Core_BuildInObjects_Void_h
-#define Core_BuildInObjects_Void_h
+#ifndef Core_Runtime_BuildInObjects_VoidObject_h
+#define Core_Runtime_BuildInObjects_VoidObject_h
 
 
 // Library includes

@@ -8,6 +8,7 @@
 #include <Core/Consts.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Tools.h>
+#include "DoubleObject.h"
 #include "FloatObject.h"
 #include "NumberObject.h"
 #include "StringObject.h"
@@ -60,7 +61,8 @@ IntegerObject::IntegerObject(const Object& other)
 
 	std::string source = other.Typename();
 
-	if ( source == FloatObject::TYPENAME ||
+	if ( source == DoubleObject::TYPENAME ||
+		 source == FloatObject::TYPENAME ||
 		 source == IntegerObject::TYPENAME ||
 		 source == NumberObject::TYPENAME ||
 		 source == StringObject::TYPENAME ) {
@@ -105,7 +107,8 @@ void IntegerObject::operator_assign(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == FloatObject::TYPENAME ||
+	if ( target == DoubleObject::TYPENAME ||
+		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME) {
 		IntegerObject tmp(Tools::stringToInt(other->getValue()));
@@ -126,7 +129,8 @@ void IntegerObject::operator_divide(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == FloatObject::TYPENAME ||
+	if ( target == DoubleObject::TYPENAME ||
+		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME) {
 		IntegerObject tmp(Tools::stringToInt(other->getValue()));
@@ -147,7 +151,8 @@ bool IntegerObject::operator_equal(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == FloatObject::TYPENAME ||
+	if ( target == DoubleObject::TYPENAME ||
+		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME) {
 		IntegerObject tmp(Tools::stringToInt(other->getValue()));
@@ -167,7 +172,8 @@ bool IntegerObject::operator_greater(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == FloatObject::TYPENAME ||
+	if ( target == DoubleObject::TYPENAME ||
+		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME) {
 		IntegerObject tmp(Tools::stringToInt(other->getValue()));
@@ -187,7 +193,8 @@ bool IntegerObject::operator_greater_equal(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == FloatObject::TYPENAME ||
+	if ( target == DoubleObject::TYPENAME ||
+		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME) {
 		IntegerObject tmp(Tools::stringToInt(other->getValue()));
@@ -207,7 +214,8 @@ bool IntegerObject::operator_less(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == FloatObject::TYPENAME ||
+	if ( target == DoubleObject::TYPENAME ||
+		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME) {
 		IntegerObject tmp(Tools::stringToInt(other->getValue()));
@@ -227,7 +235,8 @@ bool IntegerObject::operator_less_equal(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == FloatObject::TYPENAME ||
+	if ( target == DoubleObject::TYPENAME ||
+		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME) {
 		IntegerObject tmp(Tools::stringToInt(other->getValue()));
@@ -247,7 +256,8 @@ void IntegerObject::operator_modulo(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == FloatObject::TYPENAME ||
+	if ( target == DoubleObject::TYPENAME ||
+		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME) {
 		IntegerObject tmp(Tools::stringToInt(other->getValue()));
@@ -268,7 +278,8 @@ void IntegerObject::operator_multiply(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == FloatObject::TYPENAME ||
+	if ( target == DoubleObject::TYPENAME ||
+		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME) {
 		IntegerObject tmp(Tools::stringToInt(other->getValue()));
@@ -289,7 +300,8 @@ void IntegerObject::operator_plus(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == FloatObject::TYPENAME ||
+	if ( target == DoubleObject::TYPENAME ||
+		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME) {
 		IntegerObject tmp(Tools::stringToInt(other->getValue()));
@@ -310,7 +322,8 @@ void IntegerObject::operator_subtract(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == FloatObject::TYPENAME ||
+	if ( target == DoubleObject::TYPENAME ||
+		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME) {
 		IntegerObject tmp(Tools::stringToInt(other->getValue()));

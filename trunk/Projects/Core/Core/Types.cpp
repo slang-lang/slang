@@ -7,6 +7,7 @@
 // Project includes
 #include <Core/Consts.h>
 #include <Core/BuildInObjects/BoolObject.h>
+#include <Core/BuildInObjects/DoubleObject.h>
 #include <Core/BuildInObjects/FloatObject.h>
 #include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/BuildInObjects/NumberObject.h>
@@ -24,6 +25,7 @@ StringList provideAtomarTypes()
 	StringList types;
 
 	types.push_back(Runtime::BoolObject::TYPENAME);
+	types.push_back(Runtime::DoubleObject::TYPENAME);
 	types.push_back(Runtime::FloatObject::TYPENAME);
 	types.push_back(Runtime::IntegerObject::TYPENAME);
 	types.push_back(Runtime::NumberObject::TYPENAME);

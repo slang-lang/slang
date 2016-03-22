@@ -2,6 +2,7 @@ INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
 SET(SOURCES
 	BoolObject.cpp
+	DoubleObject.cpp
 	FloatObject.cpp
 	IntegerObject.cpp
 	NumberObject.cpp
@@ -12,6 +13,7 @@ SET(SOURCES
 
 SET(HEADERS
 	BoolObject.h
+	DoubleObject.h
 	FloatObject.h
 	IntegerObject.h
 	NumberObject.h

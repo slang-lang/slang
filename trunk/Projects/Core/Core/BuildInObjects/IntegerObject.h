@@ -1,6 +1,6 @@
 
-#ifndef Core_BuildInObjects_IntegerObject_h
-#define Core_BuildInObjects_IntegerObject_h
+#ifndef Core_Runtime_BuildInObjects_IntegerObject_h
+#define Core_Runtime_BuildInObjects_IntegerObject_h
 
 
 // Library includes

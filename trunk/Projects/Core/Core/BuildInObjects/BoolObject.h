@@ -1,6 +1,6 @@
 
-#ifndef Core_BuildInObjects_Bool_h
-#define Core_BuildInObjects_Bool_h
+#ifndef Core_Runtime_BuildInObjects_BoolObject_h
+#define Core_Runtime_BuildInObjects_BoolObject_h
 
 
 // Library includes

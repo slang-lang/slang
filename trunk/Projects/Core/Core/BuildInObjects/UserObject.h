@@ -1,6 +1,6 @@
 
-#ifndef Core_BuildInObjects_UserObject_h
-#define Core_BuildInObjects_UserObject_h
+#ifndef Core_Runtime_BuildInObjects_UserObject_h
+#define Core_Runtime_BuildInObjects_UserObject_h
 
 
 // Library includes

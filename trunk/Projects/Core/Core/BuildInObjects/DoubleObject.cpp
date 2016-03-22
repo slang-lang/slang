@@ -1,6 +1,6 @@
 
 // Header
-#include "FloatObject.h"
+#include "DoubleObject.h"
 
 // Library includes
 
@@ -8,7 +8,8 @@
 #include <Core/Consts.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Tools.h>
-#include "DoubleObject.h"
+#include "BoolObject.h"
+#include "FloatObject.h"
 #include "IntegerObject.h"
 #include "NumberObject.h"
 #include "StringObject.h"
@@ -20,11 +21,11 @@ namespace ObjectiveScript {
 namespace Runtime {
 
 
-float FloatObject::DEFAULTVALUE = 0.f;
-std::string FloatObject::TYPENAME = "float";
+double DoubleObject::DEFAULTVALUE = 0.0;
+std::string DoubleObject::TYPENAME = "double";
 
 
-FloatObject::FloatObject(float value)
+DoubleObject::DoubleObject(double value)
 : Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, VALUE_NONE)
 {
 	mIsAtomicType = true;
@@ -33,7 +34,7 @@ FloatObject::FloatObject(float value)
 	setNativeValue(value);
 }
 
-FloatObject::FloatObject(const std::string& name, float value)
+DoubleObject::DoubleObject(const std::string& name, double value)
 : Object(name, SYSTEM_LIBRARY, TYPENAME, VALUE_NONE)
 {
 	mIsAtomicType = true;
@@ -42,7 +43,7 @@ FloatObject::FloatObject(const std::string& name, float value)
 	setNativeValue(value);
 }
 
-FloatObject::FloatObject(const std::string& name, const std::string& value)
+DoubleObject::DoubleObject(const std::string& name, const std::string& value)
 : Object(name, SYSTEM_LIBRARY, TYPENAME, VALUE_NONE)
 {
 	mIsAtomicType = true;
@@ -51,7 +52,7 @@ FloatObject::FloatObject(const std::string& name, const std::string& value)
 	setValue(value);
 }
 
-FloatObject::FloatObject(const Object& other)
+DoubleObject::DoubleObject(const Object& other)
 : Object(other.getName(), SYSTEM_LIBRARY, TYPENAME, VALUE_NONE)
 {
 	// generic type cast
@@ -65,7 +66,7 @@ FloatObject::FloatObject(const Object& other)
 		 source == FloatObject::TYPENAME ||
 		 source == IntegerObject::TYPENAME ||
 		 source == NumberObject::TYPENAME ||
-		 source == StringObject::TYPENAME) {
+		 source == StringObject::TYPENAME ) {
 		setValue(other.getValue());
 	}
 	else {
@@ -73,45 +74,45 @@ FloatObject::FloatObject(const Object& other)
 	}
 }
 
-FloatObject::operator bool() const
+DoubleObject::operator bool() const
 {
-	return mNativeValue != 0.f;
+	return mNativeValue != 0.0;
 }
 
-float FloatObject::getNativeValue() const
+double DoubleObject::getNativeValue() const
 {
 	return mNativeValue;
 }
 
-const std::string& FloatObject::getTypeName() const
+const std::string& DoubleObject::getTypeName() const
 {
 	return TYPENAME;
 }
 
-std::string FloatObject::getValue() const
+std::string DoubleObject::getValue() const
 {
 	return mValue;
 }
 
-bool FloatObject::isValid() const
+bool DoubleObject::isValid() const
 {
-	return mNativeValue != 0.f;
+	return mNativeValue != 0.0;
 }
 
-void FloatObject::operator_assign(FloatObject *other)
+void DoubleObject::operator_assign(DoubleObject *other)
 {
 	setNativeValue(other->getNativeValue());
 }
 
-void FloatObject::operator_assign(Object *other)
+void DoubleObject::operator_assign(Object *other)
 {
 	std::string target = other->Typename();
 
 	if ( target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
-		 target == NumberObject::TYPENAME) {
-		FloatObject tmp(Tools::stringToFloat(other->getValue()));
+		 target == NumberObject::TYPENAME ) {
+		DoubleObject tmp(Tools::stringToDouble(other->getValue()));
 
 		operator_assign(&tmp);
 	}
@@ -120,20 +121,20 @@ void FloatObject::operator_assign(Object *other)
 	}
 }
 
-void FloatObject::operator_divide(FloatObject *other)
+void DoubleObject::operator_divide(DoubleObject *other)
 {
 	setNativeValue(mNativeValue / other->getNativeValue());
 }
 
-void FloatObject::operator_divide(Object *other)
+void DoubleObject::operator_divide(Object *other)
 {
 	std::string target = other->Typename();
 
 	if ( target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
-		 target == NumberObject::TYPENAME) {
-		FloatObject tmp(Tools::stringToFloat(other->getValue()));
+		 target == NumberObject::TYPENAME ) {
+		DoubleObject tmp(Tools::stringToDouble(other->getValue()));
 
 		operator_divide(&tmp);
 	}
@@ -142,20 +143,20 @@ void FloatObject::operator_divide(Object *other)
 	}
 }
 
-bool FloatObject::operator_equal(FloatObject *other)
+bool DoubleObject::operator_equal(DoubleObject *other)
 {
 	return (mNativeValue == other->getNativeValue());
 }
 
-bool FloatObject::operator_equal(Object *other)
+bool DoubleObject::operator_equal(Object *other)
 {
 	std::string target = other->Typename();
 
 	if ( target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
-		 target == NumberObject::TYPENAME) {
-		FloatObject tmp(Tools::stringToFloat(other->getValue()));
+		 target == NumberObject::TYPENAME ) {
+		DoubleObject tmp(Tools::stringToDouble(other->getValue()));
 
 		return operator_equal(&tmp);
 	}
@@ -163,20 +164,20 @@ bool FloatObject::operator_equal(Object *other)
 	return Object::operator_equal(other);
 }
 
-bool FloatObject::operator_greater(FloatObject *other)
+bool DoubleObject::operator_greater(DoubleObject *other)
 {
 	return (mNativeValue > other->getNativeValue());
 }
 
-bool FloatObject::operator_greater(Object *other)
+bool DoubleObject::operator_greater(Object *other)
 {
 	std::string target = other->Typename();
 
 	if ( target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
-		 target == NumberObject::TYPENAME) {
-		FloatObject tmp(Tools::stringToFloat(other->getValue()));
+		 target == NumberObject::TYPENAME ) {
+		DoubleObject tmp(Tools::stringToDouble(other->getValue()));
 
 		return operator_greater(&tmp);
 	}
@@ -184,20 +185,20 @@ bool FloatObject::operator_greater(Object *other)
 	return Object::operator_greater(other);
 }
 
-bool FloatObject::operator_greater_equal(FloatObject *other)
+bool DoubleObject::operator_greater_equal(DoubleObject *other)
 {
 	return (mNativeValue >= other->getNativeValue());
 }
 
-bool FloatObject::operator_greater_equal(Object *other)
+bool DoubleObject::operator_greater_equal(Object *other)
 {
 	std::string target = other->Typename();
 
 	if ( target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
-		 target == NumberObject::TYPENAME) {
-		FloatObject tmp(Tools::stringToFloat(other->getValue()));
+		 target == NumberObject::TYPENAME ) {
+		DoubleObject tmp(Tools::stringToDouble(other->getValue()));
 
 		return operator_greater_equal(&tmp);
 	}
@@ -205,20 +206,20 @@ bool FloatObject::operator_greater_equal(Object *other)
 	return Object::operator_greater_equal(other);
 }
 
-bool FloatObject::operator_less(FloatObject *other)
+bool DoubleObject::operator_less(DoubleObject *other)
 {
 	return (mNativeValue < other->getNativeValue());
 }
 
-bool FloatObject::operator_less(Object *other)
+bool DoubleObject::operator_less(Object *other)
 {
 	std::string target = other->Typename();
 
 	if ( target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
-		 target == NumberObject::TYPENAME) {
-		FloatObject tmp(Tools::stringToFloat(other->getValue()));
+		 target == NumberObject::TYPENAME ) {
+		DoubleObject tmp(Tools::stringToDouble(other->getValue()));
 
 		return operator_less(&tmp);
 	}
@@ -226,20 +227,20 @@ bool FloatObject::operator_less(Object *other)
 	return Object::operator_less(other);
 }
 
-bool FloatObject::operator_less_equal(FloatObject *other)
+bool DoubleObject::operator_less_equal(DoubleObject *other)
 {
 	return (mNativeValue <= other->getNativeValue());
 }
 
-bool FloatObject::operator_less_equal(Object *other)
+bool DoubleObject::operator_less_equal(Object *other)
 {
 	std::string target = other->Typename();
 
 	if ( target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
-		 target == NumberObject::TYPENAME) {
-		FloatObject tmp(Tools::stringToFloat(other->getValue()));
+		 target == NumberObject::TYPENAME ) {
+		DoubleObject tmp(Tools::stringToDouble(other->getValue()));
 
 		return operator_less_equal(&tmp);
 	}
@@ -247,20 +248,20 @@ bool FloatObject::operator_less_equal(Object *other)
 	return Object::operator_less_equal(other);
 }
 
-void FloatObject::operator_multiply(FloatObject *other)
+void DoubleObject::operator_multiply(DoubleObject *other)
 {
 	setNativeValue(mNativeValue * other->getNativeValue());
 }
 
-void FloatObject::operator_multiply(Object *other)
+void DoubleObject::operator_multiply(Object *other)
 {
 	std::string target = other->Typename();
 
 	if ( target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
-		 target == NumberObject::TYPENAME) {
-		FloatObject tmp(Tools::stringToFloat(other->getValue()));
+		 target == NumberObject::TYPENAME ) {
+		DoubleObject tmp(Tools::stringToDouble(other->getValue()));
 
 		operator_multiply(&tmp);
 	}
@@ -269,20 +270,20 @@ void FloatObject::operator_multiply(Object *other)
 	}
 }
 
-void FloatObject::operator_plus(FloatObject *other)
+void DoubleObject::operator_plus(DoubleObject *other)
 {
 	setNativeValue(mNativeValue + other->getNativeValue());
 }
 
-void FloatObject::operator_plus(Object *other)
+void DoubleObject::operator_plus(Object *other)
 {
 	std::string target = other->Typename();
 
 	if ( target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
-		 target == NumberObject::TYPENAME) {
-		FloatObject tmp(Tools::stringToFloat(other->getValue()));
+		 target == NumberObject::TYPENAME ) {
+		DoubleObject tmp(Tools::stringToDouble(other->getValue()));
 
 		operator_plus(&tmp);
 	}
@@ -291,20 +292,20 @@ void FloatObject::operator_plus(Object *other)
 	}
 }
 
-void FloatObject::operator_subtract(FloatObject *other)
+void DoubleObject::operator_subtract(DoubleObject *other)
 {
 	setNativeValue(mNativeValue - other->getNativeValue());
 }
 
-void FloatObject::operator_subtract(Object *other)
+void DoubleObject::operator_subtract(Object *other)
 {
 	std::string target = other->Typename();
 
 	if ( target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
-		 target == NumberObject::TYPENAME) {
-		FloatObject tmp(Tools::stringToFloat(other->getValue()));
+		 target == NumberObject::TYPENAME ) {
+		DoubleObject tmp(Tools::stringToDouble(other->getValue()));
 
 		operator_subtract(&tmp);
 	}
@@ -313,39 +314,39 @@ void FloatObject::operator_subtract(Object *other)
 	}
 }
 
-void FloatObject::operator_unary_decrement()
+void DoubleObject::operator_unary_decrement()
 {
 	setNativeValue(mNativeValue - 1);
 }
 
-void FloatObject::operator_unary_increment()
+void DoubleObject::operator_unary_increment()
 {
 	setNativeValue(mNativeValue + 1);
 }
 
-void FloatObject::operator_unary_minus()
+void DoubleObject::operator_unary_minus()
 {
 	setNativeValue(mNativeValue * -1);
 }
 
-void FloatObject::operator_unary_not()
+void DoubleObject::operator_unary_not()
 {
 	setNativeValue(!mNativeValue);
 }
 
-void FloatObject::setNativeValue(float value)
+void DoubleObject::setNativeValue(double value)
 {
 	mNativeValue = value;
 	mValue = Tools::toString(value);
 }
 
-void FloatObject::setValue(const std::string& value)
+void DoubleObject::setValue(const std::string& value)
 {
-	mNativeValue = Tools::stringToFloat(value);
+	mNativeValue = Tools::stringToDouble(value);
 	mValue = Tools::toString(mNativeValue);		// this conversion is necessary because these two values could drift apart because std::string can also hold floating point values
 }
 
-std::string FloatObject::ToString() const
+std::string DoubleObject::ToString() const
 {
 	return Typename() + " " + getName() + " = " + getValue();
 }

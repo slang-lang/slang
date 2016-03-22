@@ -97,6 +97,10 @@ Token Tokenizer::createToken(const std::string& con, const Utils::Position& posi
 	else if ( content == "!" ) { category = Token::Category::Operator; type = Token::Type::NOT; }
 	else if ( content == "~" ) { category = Token::Category::Operator; type = Token::Type::TILDE; }
 	else if ( isBoolean(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_BOOLEAN; }
+	else if ( isDouble(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_DOUBLE;
+		// remove trailing 'd' character
+		content = con.substr(0, con.length() - 1);
+	}
 	else if ( isFloat(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_FLOAT;
 		// remove trailing 'f' character
 		content = con.substr(0, con.length() - 1);
@@ -132,6 +136,46 @@ bool Tokenizer::isDefined(const std::string& token) const
 		if ( (*it) == token ) {
 			return true;
 		}
+	}
+
+	return false;
+}
+
+bool Tokenizer::isDouble(const std::string& token) const
+{
+	if ( token.empty() ) {
+		return false;
+	}
+
+	int numOfDots = 0;
+
+	for ( unsigned int c = 0; c < token.size() - 1; c++ ) {
+		switch ( token[c] ) {
+			case '.':
+				numOfDots++;
+				if ( numOfDots > 1 ) {
+					return false;
+				}
+				break;
+			case '1':
+			case '2':
+			case '3':
+			case '4':
+			case '5':
+			case '6':
+			case '7':
+			case '8':
+			case '9':
+			case '0':
+				break;
+			default:
+				return false;
+		}
+	}
+
+	// the last char of our token has to be an 'f'
+	if ( token[token.size() - 1] == 'd' && token.size() > 1 ) {
+		return true;
 	}
 
 	return false;
