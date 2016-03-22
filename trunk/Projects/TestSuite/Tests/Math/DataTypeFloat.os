@@ -6,11 +6,12 @@ public namespace Math
 	{
 		public void Main(int argc = 0, string argv = "")
 		{
-			float mNumber = 1.f;
+			float mNumber = 1.731389f;
 
-			print("mNumber = " + mNumber);
+			print("mNumber = " +  mNumber);
 
-			assert( mNumber == 1.f );
+			//assert( (string mNumber) == "1.731389" );
+			assert( mNumber == 1.731389f );
 		}
 	}
 }

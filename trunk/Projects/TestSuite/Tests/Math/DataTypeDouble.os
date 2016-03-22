@@ -6,11 +6,14 @@ public namespace Math
 	{
 		public void Main(int argc = 0, string argv = "")
 		{
-			int value = 1731389;
-
+			double value = 100000000000000000000d;
 			print("value = " + value);
 
-			assert( (string value) == "1731389" );
+			double mNumber = 1.731389d;
+
+			print("mNumber = " + mNumber);
+
+			assert( (string mNumber) == "1.731389" );
 		}
 	}
 }
