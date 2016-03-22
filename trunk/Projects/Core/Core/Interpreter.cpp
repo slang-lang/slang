@@ -13,6 +13,7 @@
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/BuildInObjects/VoidObject.h>
 #include <Core/Consts.h>
+#include <Core/Runtime/TypeCast.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Utils/Utils.h>
 #include <Tools/Printer.h>
@@ -21,7 +22,6 @@
 #include "Repository.h"
 #include "System.h"
 #include "Tools.h"
-#include "TypeCast.h"
 
 // Namespace declarations
 
