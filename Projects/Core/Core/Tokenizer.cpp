@@ -97,7 +97,10 @@ Token Tokenizer::createToken(const std::string& con, const Utils::Position& posi
 	else if ( content == "!" ) { category = Token::Category::Operator; type = Token::Type::NOT; }
 	else if ( content == "~" ) { category = Token::Category::Operator; type = Token::Type::TILDE; }
 	else if ( isBoolean(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_BOOLEAN; }
-	else if ( isFloat(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_FLOAT; }
+	else if ( isFloat(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_FLOAT;
+		// remove trailing 'f' character
+		content = con.substr(0, con.length() - 1);
+	}
 	else if ( isIdentifer(content) ) { type = Token::Type::IDENTIFER; }
 	else if ( isInteger(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_INTEGER; }
 	else if ( isKeyword(content) ) { category = Token::Category::Keyword; type = Token::Type::KEYWORD; }
