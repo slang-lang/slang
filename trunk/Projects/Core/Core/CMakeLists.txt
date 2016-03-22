@@ -4,7 +4,6 @@ ADD_SUBDIRECTORY(Attributes)
 ADD_SUBDIRECTORY(BuildInObjects)
 #ADD_SUBDIRECTORY(Common)
 ADD_SUBDIRECTORY(Designtime)
-#ADD_SUBDIRECTORY(Helpers)
 #ADD_SUBDIRECTORY(Interfaces)
 ADD_SUBDIRECTORY(Parser)
 ADD_SUBDIRECTORY(Runtime)
@@ -22,7 +21,6 @@ SET(SOURCES
 	Repository.cpp
 	Scope.cpp
 	Script.cpp
-	Stack.cpp
 	Symbol.cpp
 	System.cpp
 	Token.cpp
@@ -46,7 +44,6 @@ SET(HEADERS
 	Repository.h
 	Scope.h
 	Script.h
-	Stack.h
 	System.h
 	Symbol.h
 	Token.h
