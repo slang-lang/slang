@@ -16,7 +16,7 @@ public object Main
 	{
 		print("TestCase 1: abs");
 
-		float floatValue = -17.31;
+		float floatValue = -17.31f;
 		print("abs(float: " + floatValue + ") = " + abs(floatValue));
 		floatValue = floatValue * -1;
 		print("abs(float: " + floatValue + ") = " + abs(floatValue));
@@ -38,13 +38,13 @@ public object Main
 	{
 		print("TestCase 2: power");
 
-		float floatValue = -17.3;
+		float floatValue = -17.3f;
 		print("power(float: " + floatValue + ") = " + power(floatValue));
 
 		int intValue = -17;
 		print("power(int: " + intValue + ") = " + power(intValue));
 
-		number numberValue = 173.1389;
+		number numberValue = -173.1389;
 		print("power(number: " + numberValue + ") = " + power(numberValue));
 
 		return true;
