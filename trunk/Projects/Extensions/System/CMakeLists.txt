@@ -8,6 +8,8 @@ SET(HEADERS
 	AssertMsg.h
 	Print.h
 	System.h
+	Write.h
+	WriteLn.h
 )
 
 SET(DEPENDENCIES
