@@ -15,22 +15,22 @@ public namespace System
 		// Public methods
 		public void debug(string message const)
 		{
-			print("[OS::DEBUG] " & mKey & "::" & message);
+			print("[DEBUG] " + mKey + "::" + message);
 		}
 
 		public void error(string message const)
 		{
-			print("[OS::ERROR] " & mKey & "::" & message);
+			print("[ERROR] " + mKey + "::" + message);
 		}
 
 		public void info(string message const)
 		{
-			print("[OS::INFO ] " & mKey & "::" & message);
+			print("[INFO ] " + mKey + "::" + message);
 		}
 
 		public void warning(string message const)
 		{
-			print("[OS::WARN ] " & mKey & "::" & message);
+			print("[WARN ] " + mKey + "::" + message);
 		}
 
 	}

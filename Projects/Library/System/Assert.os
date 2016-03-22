@@ -1,10 +1,10 @@
 
 public namespace System
 {
-	public void assertmsg(string message const, bool condition)
+	public void assertmsg(string message, bool condition)
 	{
 		if ( !condition ) {
-			print(message);
+			write(message + ": ");
 
 			assert(condition);
 		}
