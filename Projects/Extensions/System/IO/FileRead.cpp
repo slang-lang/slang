@@ -57,15 +57,13 @@ Runtime::ControlFlow::E FileReadDouble::execute(const ParameterList& params, Run
 		double value = 0.0;
 
 		long size = read(handle, &value, sizeof(double));
-		if ( size == -1 ) {
-			std::cout << "size = " << size << std::endl;
-			return Runtime::ControlFlow::Throw;
+		if ( size == -1 ) {    // error while reading
+			throw;
 		}
 
 		*result = Runtime::DoubleObject(value);
 	}
 	catch ( ... ) {
-		std::cout << "caught exception" << std::endl;
 		controlFlow =  Runtime::ControlFlow::Throw;
 	}
 
@@ -96,15 +94,13 @@ Runtime::ControlFlow::E FileReadFloat::execute(const ParameterList& params, Runt
 		float value = 0.f;
 
 		long size = read(handle, &value, sizeof(float));
-		if ( size == -1 ) {
-			std::cout << "size = " << size << std::endl;
-			return Runtime::ControlFlow::Throw;
+		if ( size == -1 ) {	// error while reading
+			throw;
 		}
 
 		*result = Runtime::FloatObject(value);
 	}
 	catch ( ... ) {
-		std::cout << "caught exception" << std::endl;
 		controlFlow =  Runtime::ControlFlow::Throw;
 	}
 
@@ -135,15 +131,13 @@ Runtime::ControlFlow::E FileReadInt::execute(const ParameterList& params, Runtim
 		int value = 0;
 
 		long size = read(handle, &value, sizeof(int));
-		if ( size == -1 ) {
-			std::cout << "size = " << size << std::endl;
-			return Runtime::ControlFlow::Throw;
+		if ( size == -1 ) {	// error while reading
+			throw;
 		}
 
 		*result = Runtime::IntegerObject(value);
 	}
 	catch ( ... ) {
-		std::cout << "caught exception" << std::endl;
 		controlFlow = Runtime::ControlFlow::Throw;
 	}
 
@@ -173,18 +167,27 @@ Runtime::ControlFlow::E FileReadString::execute(const ParameterList& params, Run
 
 	try {
 		int handle = Tools::stringToInt(fileHandle);
-		char *value = 0;
+		int count = Tools::stringToInt(fileCount);
+		std::string str;
 
-		long size = read(handle, &value, SIZE_MAX);
-		if ( size == -1 ) {
-			std::cout << "size = " << size << std::endl;
-			return Runtime::ControlFlow::Throw;
+		while ( count > 0 ) {
+			char value;
+
+			long size = read(handle, &value, 1);
+			if ( size == -1 ) {	// error while reading
+				throw;
+			}
+			if ( size == 0 ) {	// EOF reached
+				break;
+			}
+
+			str += value;
+			count--;
 		}
 
-		*result = Runtime::StringObject(value);
+		*result = Runtime::StringObject(str);
 	}
 	catch ( ... ) {
-		std::cout << "caught exception" << std::endl;
 		controlFlow =  Runtime::ControlFlow::Throw;
 	}
 

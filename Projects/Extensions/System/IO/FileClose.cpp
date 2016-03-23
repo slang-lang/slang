@@ -46,7 +46,7 @@ Runtime::ControlFlow::E FileClose::execute(const ParameterList& params, Runtime:
 	try {
 		int handle = Tools::stringToInt(filehandle);
 
-		int fileresult = _close(handle);
+		int fileresult = close(handle);
 
 		*result = Runtime::IntegerObject(fileresult);
 	}

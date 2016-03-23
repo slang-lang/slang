@@ -52,7 +52,7 @@ Runtime::ControlFlow::E FileOpen::execute(const ParameterList& params, Runtime::
 	int mode = parseAccessMode(accessmode);
 
 	try {
-		handle = _open(filename.c_str(), mode);
+		handle = open(filename.c_str(), mode, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 
 		*result = Runtime::IntegerObject(handle);
 	}
