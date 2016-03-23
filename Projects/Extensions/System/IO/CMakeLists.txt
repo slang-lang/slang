@@ -4,6 +4,7 @@ SET(SOURCES
 	FileClose.cpp
 	FileOpen.cpp
 	FileRead.cpp
+	FileSeek.cpp
 	FileWrite.cpp
 )
 
@@ -11,6 +12,7 @@ SET(HEADERS
 	FileClose.h
 	FileOpen.h
 	FileRead.h
+	FileSeek.h
 	FileWrite.h
 )
 

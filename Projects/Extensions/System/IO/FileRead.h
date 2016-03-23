@@ -19,6 +19,15 @@ namespace Extensions {
 namespace IO {
 
 
+class FileReadBool : public Runtime::Method
+{
+public:
+	FileReadBool();
+
+	Runtime::ControlFlow::E execute(const ParameterList &params, Runtime::Object *result);
+};
+
+
 class FileReadDouble : public Runtime::Method
 {
 public:
@@ -26,6 +35,7 @@ public:
 
 	Runtime::ControlFlow::E execute(const ParameterList &params, Runtime::Object *result);
 };
+
 
 class FileReadFloat : public Runtime::Method
 {
@@ -35,6 +45,7 @@ public:
 	Runtime::ControlFlow::E execute(const ParameterList &params, Runtime::Object *result);
 };
 
+
 class FileReadInt : public Runtime::Method
 {
 public:
@@ -42,6 +53,7 @@ public:
 
 	Runtime::ControlFlow::E execute(const ParameterList &params, Runtime::Object *result);
 };
+
 
 class FileReadString : public Runtime::Method
 {
