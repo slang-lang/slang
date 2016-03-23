@@ -4,6 +4,12 @@
 
 // Library includes
 #include <fcntl.h>
+#ifdef __APPLE__
+#	include <unistd.h>
+#elif defined _WIN32
+#	include <io.h>
+#	pragma warning(disable:4996)
+#endif
 
 // Project includes
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
@@ -46,7 +52,7 @@ Runtime::ControlFlow::E FileOpen::execute(const ParameterList& params, Runtime::
 	int mode = parseAccessMode(accessmode);
 
 	try {
-		handle = open(filename.c_str(), mode);
+		handle = _open(filename.c_str(), mode);
 
 		*result = Runtime::IntegerObject(handle);
 	}
@@ -64,8 +70,11 @@ int FileOpen::parseAccessMode(std::string accessmode) const
 	while ( accessmode.size() > 0 ) {
 		switch ( accessmode[0] ) {
 			case 'a': mode |= O_APPEND; break;
+			case 'c': mode |= O_CREAT; break;
 			case 'r': mode |= O_RDONLY; break;
+			case 't': mode |= O_TRUNC; break;
 			case 'w': mode |= O_WRONLY; break;
+			case 'x': mode |= O_EXCL; break;
 		}
 
 		accessmode = accessmode.substr(1, accessmode.size());

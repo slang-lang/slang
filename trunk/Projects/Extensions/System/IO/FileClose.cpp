@@ -3,7 +3,11 @@
 #include "FileClose.h"
 
 // Library includes
-#include <unistd.h>
+#ifdef __APPLE__
+#	include <unistd.h>
+#elif defined _WIN32
+#	include <io.h>
+#endif
 
 // Project includes
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
@@ -42,7 +46,7 @@ Runtime::ControlFlow::E FileClose::execute(const ParameterList& params, Runtime:
 	try {
 		int handle = Tools::stringToInt(filehandle);
 
-		int fileresult = close(handle);
+		int fileresult = _close(handle);
 
 		*result = Runtime::IntegerObject(fileresult);
 	}
