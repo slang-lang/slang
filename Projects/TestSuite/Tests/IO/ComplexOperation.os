@@ -1,9 +1,14 @@
 #!/usr/local/bin/oscript
 
+import System.IO.File;
+
 public object Main
 {
 	public void Main(int argc, string argv)
 	{
+		File file = new File("testfile", "ctw");
+		assert( file.isOpen() );
+
 		assert( writeFile() );
 		assert( readFile() );
 	}
