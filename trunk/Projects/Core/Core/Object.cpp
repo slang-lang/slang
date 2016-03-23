@@ -157,9 +157,17 @@ void Object::addInheritance(const Designtime::Ancestor& ancestor, Object* inheri
 bool Object::CanExecuteDefaultConstructor() const
 {
 	Symbol* anyConstructor = resolve(Typename(), false);
+	if ( !anyConstructor ) {
+		// no constructor found at all
+		// we can call our default constructor but it won't do anything besides
+		// setting our object to constructed
+		return true;
+	}
+
 	Symbol* defaultConstructor = resolveMethod(Typename(), ParameterList(), true);
 
-	return !anyConstructor || defaultConstructor;
+	//return !anyConstructor || defaultConstructor;
+	return defaultConstructor && (anyConstructor == defaultConstructor);
 }
 
 ControlFlow::E Object::Constructor(const ParameterList& params)
@@ -282,7 +290,7 @@ ControlFlow::E Object::Destructor()
 	return controlflow;
 }
 
-ControlFlow::E Object::execute(Object *result, const std::string& name, const ParameterList& params, const Method* caller)
+ControlFlow::E Object::execute(Object *result, const std::string& name, const ParameterList& params, const Method* /*caller*/)
 {
 	OSdebug("execute('" + name + "', [" + toString(params) + "])");
 
@@ -296,6 +304,7 @@ ControlFlow::E Object::execute(Object *result, const std::string& name, const Pa
 		throw Utils::Exceptions::UnknownIdentifer("unknown method '" + name + "' or method with invalid parameter count called!");
 	}
 
+/*
 	// are we called from a colleague method?
 	bool callFromMethod = caller && (caller->resolve(IDENTIFIER_BASE) == this || caller->resolve(IDENTIFIER_THIS) == this);
 
@@ -305,6 +314,7 @@ ControlFlow::E Object::execute(Object *result, const std::string& name, const Pa
 	if ( !callFromMethod && method->getVisibility() != Visibility::Public ) {
 		throw Utils::Exceptions::VisibilityError("invalid visibility: " + name);
 	}
+*/
 
 	result->setRepository(mRepository);
 	method->setRepository(mRepository);

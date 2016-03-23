@@ -20,7 +20,9 @@ public object Main
 {
 	public void Main(int argc = 0, string argv = "")
 	{
-		TestObject obj;
+		try {
+			TestObject obj;
+		}
 	}
 }
 
