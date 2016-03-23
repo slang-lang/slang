@@ -165,6 +165,10 @@
 			>
 		</Filter>
 		<File
+			RelativePath=".\System\AssertMsg.h"
+			>
+		</File>
+		<File
 			RelativePath=".\CMakeLists.txt"
 			>
 		</File>
@@ -177,11 +181,135 @@
 			>
 		</File>
 		<File
-			RelativePath=".\System\System.cpp"
+			RelativePath=".\System\IO\FileClose.cpp"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					ObjectFile="$(IntDir)\System\IO\"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					ObjectFile="$(IntDir)\System\IO\"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath=".\System\IO\FileClose.h"
 			>
 		</File>
 		<File
+			RelativePath=".\System\IO\FileOpen.cpp"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					ObjectFile="$(IntDir)\System\IO\"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					ObjectFile="$(IntDir)\System\IO\"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath=".\System\IO\FileOpen.h"
+			>
+		</File>
+		<File
+			RelativePath=".\System\IO\FileRead.cpp"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					ObjectFile="$(IntDir)\System\IO\"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					ObjectFile="$(IntDir)\System\IO\"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath=".\System\IO\FileRead.h"
+			>
+		</File>
+		<File
+			RelativePath=".\System\IO\FileWrite.cpp"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					ObjectFile="$(IntDir)\System\IO\"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					ObjectFile="$(IntDir)\System\IO\"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath=".\System\IO\FileWrite.h"
+			>
+		</File>
+		<File
+			RelativePath=".\System\Print.h"
+			>
+		</File>
+		<File
+			RelativePath=".\System\System.cpp"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					ObjectFile="$(IntDir)\System\"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					ObjectFile="$(IntDir)\System\"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
 			RelativePath=".\System\System.h"
+			>
+		</File>
+		<File
+			RelativePath=".\System\Write.h"
+			>
+		</File>
+		<File
+			RelativePath=".\System\WriteLn.h"
 			>
 		</File>
 	</Files>

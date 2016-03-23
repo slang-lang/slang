@@ -231,6 +231,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\Core\BuildInObjects\BoolObject.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\Designtime\BuildInTypes\BoolObject.cpp"
 				>
 				<FileConfiguration
@@ -251,8 +255,28 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\BoolObject.cpp"
+				RelativePath=".\Core\BuildInObjects\DoubleObject.cpp"
 				>
+			</File>
+			<File
+				RelativePath=".\Core\Designtime\BuildInTypes\DoubleObject.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Core\Designtime\BuildInTypes\"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Core\Designtime\BuildInTypes\"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\Core\Runtime\ExceptionData.cpp"
@@ -423,8 +447,24 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\OperatorOverloading.cpp"
+				RelativePath=".\Core\Runtime\OperatorOverloading.cpp"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Runtime\"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Runtime\"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\Core\Parameter.cpp"
@@ -531,10 +571,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Stack.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\Core\BuildInObjects\StringObject.cpp"
 				>
 			</File>
@@ -579,15 +615,27 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\TypeCast.cpp"
+				RelativePath=".\Core\Runtime\TypeCast.cpp"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Runtime\"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Runtime\"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\Core\Types.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Core\BuildInObjects\UserObject.cpp"
 				>
 			</File>
 			<File
@@ -609,6 +657,10 @@
 						ObjectFile="$(IntDir)\Core\Designtime\BuildInTypes\"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\Core\BuildInObjects\UserObject.cpp"
+				>
 			</File>
 			<File
 				RelativePath=".\Core\Utils\Utils.cpp"
@@ -717,15 +769,23 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Core\BuildInObjects\DoubleObject.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\Designtime\BuildInTypes\DoubleObject.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\Runtime\ExceptionData.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Exceptions.h"
+				RelativePath=".\Core\Utils\Exceptions.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Utils\Exceptions.h"
+				RelativePath=".\Core\Exceptions.h"
 				>
 			</File>
 			<File
@@ -789,7 +849,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\OperatorOverloading.h"
+				RelativePath=".\Core\Runtime\OperatorOverloading.h"
 				>
 			</File>
 			<File
@@ -833,15 +893,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Stack.h"
+				RelativePath=".\Core\BuildInObjects\StringObject.h"
 				>
 			</File>
 			<File
 				RelativePath=".\Core\Designtime\BuildInTypes\StringObject.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Core\BuildInObjects\StringObject.h"
 				>
 			</File>
 			<File
@@ -865,7 +921,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\TypeCast.h"
+				RelativePath=".\Core\Runtime\TypeCast.h"
 				>
 			</File>
 			<File
@@ -873,11 +929,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\UserObject.h"
+				RelativePath=".\Core\Designtime\BuildInTypes\UserObject.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\UserObject.h"
+				RelativePath=".\Core\BuildInObjects\UserObject.h"
 				>
 			</File>
 			<File

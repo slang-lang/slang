@@ -4,7 +4,13 @@
 
 // Library includes
 #include <fcntl.h>
-#include <unistd.h>
+#include <fcntl.h>
+#ifdef __APPLE__
+#	include <unistd.h>
+#elif defined _WIN32
+#	include <io.h>
+#	pragma warning(disable:4996)
+#endif
 
 // Project includes
 #include <Core/Designtime/BuildInTypes/DoubleObject.h>
@@ -50,7 +56,7 @@ Runtime::ControlFlow::E FileReadDouble::execute(const ParameterList& params, Run
 		int handle = Tools::stringToInt(fileHandle);
 		double value = 0.0;
 
-		ssize_t size = read(handle, &value, sizeof(double));
+		long size = read(handle, &value, sizeof(double));
 		if ( size == -1 ) {
 			std::cout << "size = " << size << std::endl;
 			return Runtime::ControlFlow::Throw;
@@ -89,7 +95,7 @@ Runtime::ControlFlow::E FileReadFloat::execute(const ParameterList& params, Runt
 		int handle = Tools::stringToInt(fileHandle);
 		float value = 0.f;
 
-		ssize_t size = read(handle, &value, sizeof(float));
+		long size = read(handle, &value, sizeof(float));
 		if ( size == -1 ) {
 			std::cout << "size = " << size << std::endl;
 			return Runtime::ControlFlow::Throw;
@@ -128,7 +134,7 @@ Runtime::ControlFlow::E FileReadInt::execute(const ParameterList& params, Runtim
 		int handle = Tools::stringToInt(fileHandle);
 		int value = 0;
 
-		ssize_t size = read(handle, &value, sizeof(int));
+		long size = read(handle, &value, sizeof(int));
 		if ( size == -1 ) {
 			std::cout << "size = " << size << std::endl;
 			return Runtime::ControlFlow::Throw;
@@ -169,7 +175,7 @@ Runtime::ControlFlow::E FileReadString::execute(const ParameterList& params, Run
 		int handle = Tools::stringToInt(fileHandle);
 		char *value = 0;
 
-		ssize_t size = read(handle, &value, SIZE_MAX);
+		long size = read(handle, &value, SIZE_MAX);
 		if ( size == -1 ) {
 			std::cout << "size = " << size << std::endl;
 			return Runtime::ControlFlow::Throw;

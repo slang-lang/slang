@@ -4,7 +4,13 @@
 
 // Library includes
 #include <fcntl.h>
-#include <unistd.h>
+#include <fcntl.h>
+#ifdef __APPLE__
+#	include <unistd.h>
+#elif defined _WIN32
+#	include <io.h>
+#	pragma warning(disable:4996)
+#endif
 
 // Project includes
 #include <Core/Designtime/BuildInTypes/DoubleObject.h>
@@ -52,9 +58,7 @@ Runtime::ControlFlow::E FileWriteDouble::execute(const ParameterList& params, Ru
 		int handle = Tools::stringToInt(fileHandle);
 		double doubleValue = Tools::stringToDouble(value);
 
-		void* buffer = &doubleValue;
-
-		ssize_t size = write(handle, buffer, sizeof(double));
+		long size = _write(handle, &doubleValue, sizeof(double));
 		if ( size == -1 ) {
 			return Runtime::ControlFlow::Throw;
 		}
@@ -91,11 +95,9 @@ Runtime::ControlFlow::E FileWriteFloat::execute(const ParameterList& params, Run
 
 	try {
 		int handle = Tools::stringToInt(fileHandle);
-		float floatValue = Tools::stringToDouble(value);
+		float floatValue = Tools::stringToFloat(value);
 
-		void* buffer = &floatValue;
-
-		ssize_t size = write(handle, buffer, sizeof(float));
+		long size = _write(handle, &floatValue, sizeof(float));
 		if ( size == -1 ) {
 			return Runtime::ControlFlow::Throw;
 		}
@@ -132,11 +134,9 @@ Runtime::ControlFlow::E FileWriteInt::execute(const ParameterList& params, Runti
 
 	try {
 		int handle = Tools::stringToInt(fileHandle);
-		int intValue = Tools::stringToDouble(value);
+		int intValue = Tools::stringToInt(value);
 
-		void* buffer = &intValue;
-
-		ssize_t size = write(handle, buffer, sizeof(int));
+		long size = _write(handle, &intValue, sizeof(int));
 		if ( size == -1 ) {
 			return Runtime::ControlFlow::Throw;
 		}
@@ -174,9 +174,7 @@ Runtime::ControlFlow::E FileWriteString::execute(const ParameterList& params, Ru
 	try {
 		int handle = Tools::stringToInt(fileHandle);
 
-		void* buffer = 0;
-
-		ssize_t size = write(handle, buffer, sizeof(value.c_str()));
+		long size = _write(handle, (void*)value.c_str(), sizeof(value.c_str()));
 		if ( size == -1 ) {
 			return Runtime::ControlFlow::Throw;
 		}
