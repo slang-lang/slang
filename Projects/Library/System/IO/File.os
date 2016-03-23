@@ -40,6 +40,8 @@ public namespace IO
 			mAccessMode = mode;
 			mFilename = filename;
 			mHandle = fopen(mFilename, mAccessMode);
+
+			return true;
 		}
 
 		public bool readBool() {
