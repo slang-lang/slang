@@ -3,11 +3,10 @@
 #include "FileClose.h"
 
 // Library includes
-#include <fcntl.h>
+#include <unistd.h>
 
 // Project includes
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
-#include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/Tools.h>
 #include <Core/Utils/Exceptions.h>
