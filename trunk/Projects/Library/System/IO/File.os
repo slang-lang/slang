@@ -31,7 +31,7 @@ public namespace IO
 			return (mHandle != 0);
 		}
 
-		public bool open(string filename, string mode) {
+		public bool open(string filename, string mode) modify {
 			if ( mHandle != 0 ) {
 				// we already have an open file handle
 				return false;

@@ -44,8 +44,8 @@ void printUsage()
 	std::cout << "-f | --file <file>    Parse and execute <file>" << std::endl;
 	std::cout << "-h | --help           This help" << std::endl;
 	std::cout << "-l | --library        Library root path" << std::endl;
-	std::cout << "-q                    Quiet mode, chats as less as possible" << std::endl;
-	std::cout << "-v                    Verbose output" << std::endl;
+	std::cout << "-q | --quiet          Quiet mode, chats as less as possible" << std::endl;
+	std::cout << "-v | --verbose        Verbose output" << std::endl;
 	std::cout << "--version             Version information" << std::endl;
 	std::cout << std::endl;
 }
@@ -94,12 +94,12 @@ void processParameters(int argc, const char* argv[])
 
 				mRoot = argv[i];
 			}
-			else if ( Utils::Tools::StringCompare(argv[i], "-q") ) {
+			else if ( Utils::Tools::StringCompare(argv[i], "-q") || Utils::Tools::StringCompare(argv[i], "--quiet") ) {
 				mLogger.setLoudness(Utils::Common::ILogger::LoudnessMute);
 
 				mPrinter->ActivatePrinter = false;
 			}
-			else if ( Utils::Tools::StringCompare(argv[i], "-v") ) {
+			else if ( Utils::Tools::StringCompare(argv[i], "-v") || Utils::Tools::StringCompare(argv[i], "--verbose") ) {
 				mLogger.setLoudness(Utils::Common::ILogger::LoudnessInfo);
 
 				mPrinter->ActivatePrinter = true;
