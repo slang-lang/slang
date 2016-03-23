@@ -976,18 +976,15 @@ void Interpreter::process_try(TokenIterator& token, Object *result)
 {
 	expect(Token::Type::BRACKET_CURLY_OPEN, token);
 
+	TokenIterator tmp = token;
+
 	// find next open curly bracket '{'
-	TokenIterator tryBegin = findNext(token, Token::Type::BRACKET_CURLY_OPEN);
+	TokenIterator tryBegin = findNext(tmp, Token::Type::BRACKET_CURLY_OPEN);
 	// find next balanced '{' & '}' pair
 	TokenIterator tryEnd = findNextBalancedCurlyBracket(tryBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
 
-	TokenIterator tmp;
-
+	tryBegin++;	// don't collect scope tokens
 	token = tryEnd;
-	if ( tryEnd != getTokens().end() ) {
-		tryEnd++;
-	}
-	tmp = tryEnd;
 
 	// collect try-block tokens
 	TokenList tryTokens;
@@ -998,40 +995,41 @@ void Interpreter::process_try(TokenIterator& token, Object *result)
 
 	mControlFlow = interpret(tryTokens, result);
 
-	// execute catch-block if an exception has been thrown
-	if ( mControlFlow == ControlFlow::Throw ) {
-		// reset control flow after try block
-		mControlFlow = ControlFlow::Normal;
+	tmp = token;
+	tmp++;	// look ahead
 
-		if ( tmp != getTokens().end() && tmp->content() == KEYWORD_CATCH ) {
-			tmp++;
-			expect(Token::Type::BRACKET_CURLY_OPEN, tmp);
+	if ( tmp != getTokens().end() && tmp->content() == KEYWORD_CATCH ) {
+		tmp++;
+		expect(Token::Type::BRACKET_CURLY_OPEN, tmp);
 
-			// find next open curly bracket '{'
-			TokenIterator catchBegin = findNext(tmp, Token::Type::BRACKET_CURLY_OPEN);
-			// find next balanced '{' & '}' pair
-			TokenIterator catchEnd = findNextBalancedCurlyBracket(catchBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
+		// find next open curly bracket '{'
+		TokenIterator catchBegin = findNext(tmp, Token::Type::BRACKET_CURLY_OPEN);
+		// find next balanced '{' & '}' pair
+		TokenIterator catchEnd = findNextBalancedCurlyBracket(catchBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
 
-			token = catchEnd;
-			if ( catchEnd != getTokens().end() ) {
-				catchEnd++;
-			}
-			tmp = catchEnd;
+		token = catchEnd;
+		if (catchEnd != getTokens().end()) {
+			catchEnd++;
+		}
 
-			// collect catch-block tokens
-			TokenList catchTokens;
-			while ( catchBegin != catchEnd ) {
-				catchTokens.push_back((*catchBegin));
-				catchBegin++;
-			}
+		// collect catch-block tokens
+		TokenList catchTokens;
+		while (catchBegin != catchEnd) {
+			catchTokens.push_back((*catchBegin));
+			catchBegin++;
+		}
 
+		// execute catch-block if an exception has been thrown
+		if ( mControlFlow == ControlFlow::Throw ) {
 			mControlFlow = interpret(catchTokens, result);
 		}
 	}
-	else {
-		// reset control flow after try block
-		mControlFlow = ControlFlow::Normal;
-	}
+
+	// reset control flow after try block
+	mControlFlow = ControlFlow::Normal;
+
+	tmp = token;
+	tmp++;	// look ahead
 
 	// execute finally if present
 	if ( tmp != getTokens().end() && tmp->content() == KEYWORD_FINALLY ) {
@@ -1047,7 +1045,6 @@ void Interpreter::process_try(TokenIterator& token, Object *result)
 		if ( finallyEnd != getTokens().end() ) {
 			finallyEnd++;
 		}
-		tmp = finallyEnd;
 
 		// collect finally-block tokens
 		TokenList finallyTokens;
@@ -1058,8 +1055,6 @@ void Interpreter::process_try(TokenIterator& token, Object *result)
 
 		mControlFlow = interpret(finallyTokens, result);
 	}
-
-	expect(Token::Type::BRACKET_CURLY_CLOSE, token);
 }
 
 void Interpreter::process_type(TokenIterator& token)
