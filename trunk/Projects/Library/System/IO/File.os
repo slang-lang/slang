@@ -64,6 +64,11 @@ public namespace IO
 			return value;
 		}
 
+		public string readString(int length) {
+			string value = freads(mHandle, length);
+			return value;
+		}
+
 		public bool rewind() {
 			//int result = frewind(mHandle);
 			int result = fseek(mHandle, 0);

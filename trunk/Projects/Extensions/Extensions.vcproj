@@ -253,6 +253,30 @@
 			>
 		</File>
 		<File
+			RelativePath=".\System\IO\FileSeek.cpp"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					ObjectFile="$(IntDir)\System\IO\"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					ObjectFile="$(IntDir)\System\IO\"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath=".\System\IO\FileSeek.h"
+			>
+		</File>
+		<File
 			RelativePath=".\System\IO\FileWrite.cpp"
 			>
 			<FileConfiguration

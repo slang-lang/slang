@@ -4,7 +4,6 @@
 
 // Library includes
 #include <fcntl.h>
-#include <fcntl.h>
 #ifdef __APPLE__
 #	include <unistd.h>
 #elif defined _WIN32
