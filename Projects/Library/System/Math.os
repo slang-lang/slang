@@ -30,15 +30,6 @@ public namespace Math
 		return value * -1;
 	}
 
-	public number abs(number value)
-	{
-		if ( value >= 0.0 ) {
-			return value;
-		}
-
-		return value * -1;
-	}
-
 	public double power(double value)
 	{
 		return value * value;
@@ -50,11 +41,6 @@ public namespace Math
 	}
 
 	public int power(int value)
-	{
-		return value * value;
-	}
-
-	public number power(number value)
 	{
 		return value * value;
 	}
@@ -82,11 +68,6 @@ public namespace Math
 	}
 
 	public int sqr(int value)
-	{
-		return power(value);
-	}
-
-	public number sqr(number value)
 	{
 		return power(value);
 	}

@@ -7,6 +7,7 @@
 #	include <unistd.h>
 #elif defined _WIN32
 #	include <io.h>
+#	pragma warning(disable:4996)
 #endif
 
 // Project includes
