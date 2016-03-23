@@ -58,9 +58,9 @@ Runtime::ControlFlow::E FileWriteDouble::execute(const ParameterList& params, Ru
 		int handle = Tools::stringToInt(fileHandle);
 		double doubleValue = Tools::stringToDouble(value);
 
-		long size = _write(handle, &doubleValue, sizeof(double));
+		long size = write(handle, &doubleValue, sizeof(double));
 		if ( size == -1 ) {
-			return Runtime::ControlFlow::Throw;
+			throw;
 		}
 
 		*result = Runtime::IntegerObject((int)size);
@@ -97,9 +97,9 @@ Runtime::ControlFlow::E FileWriteFloat::execute(const ParameterList& params, Run
 		int handle = Tools::stringToInt(fileHandle);
 		float floatValue = Tools::stringToFloat(value);
 
-		long size = _write(handle, &floatValue, sizeof(float));
+		long size = write(handle, &floatValue, sizeof(float));
 		if ( size == -1 ) {
-			return Runtime::ControlFlow::Throw;
+			throw;
 		}
 
 		*result = Runtime::IntegerObject((int)size);
@@ -136,9 +136,9 @@ Runtime::ControlFlow::E FileWriteInt::execute(const ParameterList& params, Runti
 		int handle = Tools::stringToInt(fileHandle);
 		int intValue = Tools::stringToInt(value);
 
-		long size = _write(handle, &intValue, sizeof(int));
+		long size = write(handle, &intValue, sizeof(int));
 		if ( size == -1 ) {
-			return Runtime::ControlFlow::Throw;
+			throw;
 		}
 
 		*result = Runtime::IntegerObject((int)size);
@@ -174,9 +174,9 @@ Runtime::ControlFlow::E FileWriteString::execute(const ParameterList& params, Ru
 	try {
 		int handle = Tools::stringToInt(fileHandle);
 
-		long size = _write(handle, (void*)value.c_str(), sizeof(value.c_str()));
+		long size = write(handle, (void*)value.c_str(), strlen(value.c_str()));
 		if ( size == -1 ) {
-			return Runtime::ControlFlow::Throw;
+			throw;
 		}
 
 		*result = Runtime::IntegerObject((int)size);
