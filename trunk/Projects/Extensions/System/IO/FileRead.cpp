@@ -59,12 +59,12 @@ Runtime::ControlFlow::E FileReadBool::execute(const ParameterList& params, Runti
 
 		long size = read(handle, &value, sizeof(bool));
 		if ( size == -1 ) {    // error while reading
-			throw;
+			return Runtime::ControlFlow::Throw;
 		}
 
 		*result = Runtime::BoolObject(value);
 	}
-	catch ( ... ) {
+	catch ( std::exception& /*e*/ ) {
 		controlFlow =  Runtime::ControlFlow::Throw;
 	}
 
@@ -102,7 +102,7 @@ Runtime::ControlFlow::E FileReadDouble::execute(const ParameterList& params, Run
 
 		*result = Runtime::DoubleObject(value);
 	}
-	catch ( ... ) {
+	catch ( std::exception& /*e*/ ) {
 		controlFlow =  Runtime::ControlFlow::Throw;
 	}
 
@@ -139,7 +139,7 @@ Runtime::ControlFlow::E FileReadFloat::execute(const ParameterList& params, Runt
 
 		*result = Runtime::FloatObject(value);
 	}
-	catch ( ... ) {
+	catch ( std::exception& /*e*/ ) {
 		controlFlow =  Runtime::ControlFlow::Throw;
 	}
 
@@ -171,13 +171,14 @@ Runtime::ControlFlow::E FileReadInt::execute(const ParameterList& params, Runtim
 
 		long size = read(handle, &value, sizeof(int));
 		if ( size == -1 ) {	// error while reading
-			throw;
+			*result = Runtime::StringObject("read error");
+			return Runtime::ControlFlow::Throw;
 		}
 
 		*result = Runtime::IntegerObject(value);
 	}
-	catch ( ... ) {
-		controlFlow = Runtime::ControlFlow::Throw;
+	catch ( std::exception& /*e*/ ) {
+		controlFlow =  Runtime::ControlFlow::Throw;
 	}
 
 	return controlFlow;
@@ -226,7 +227,7 @@ Runtime::ControlFlow::E FileReadString::execute(const ParameterList& params, Run
 
 		*result = Runtime::StringObject(value);
 	}
-	catch ( ... ) {
+	catch ( std::exception& /*e*/ ) {
 		controlFlow =  Runtime::ControlFlow::Throw;
 	}
 

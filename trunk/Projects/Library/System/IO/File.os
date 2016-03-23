@@ -17,7 +17,19 @@ public namespace IO
 			open(filename, mode);
 		}
 
-		public bool close() {
+		public void ~File() {
+			if ( mHandle != 0 ) {
+				close();
+			}
+		}
+
+		public bool close() modify {
+			print("File::close()");
+
+			if ( mHandle == 0 ) {
+				return false;
+			}
+
 			int result = fclose(mHandle);
 
 			mAccessMode = "";
@@ -27,14 +39,20 @@ public namespace IO
 			return (result == 0);
 		}
 
+		public int getDescriptor() const {
+			return mHandle;
+		}
+
 		public bool isOpen() const {
 			return (mHandle != 0);
 		}
 
 		public bool open(string filename, string mode) modify {
+			print("File::open(\"" + filename + "\", \"" + mode + "\")");
+
 			if ( mHandle != 0 ) {
 				// we already have an open file handle
-				return false;
+				throw new string("file descriptor still points to an open file!");
 			}
 
 			mAccessMode = mode;
@@ -70,7 +88,6 @@ public namespace IO
 		}
 
 		public bool rewind() {
-			//int result = frewind(mHandle);
 			int result = fseek(mHandle, 0);
 			return (result == 0);
 		}
