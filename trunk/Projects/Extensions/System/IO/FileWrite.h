@@ -19,6 +19,15 @@ namespace Extensions {
 namespace IO {
 
 
+class FileWriteBool : public Runtime::Method
+{
+public:
+	FileWriteBool();
+
+	Runtime::ControlFlow::E execute(const ParameterList &params, Runtime::Object *result);
+};
+
+
 class FileWriteDouble : public Runtime::Method
 {
 public:
@@ -26,6 +35,7 @@ public:
 
 	Runtime::ControlFlow::E execute(const ParameterList &params, Runtime::Object *result);
 };
+
 
 class FileWriteFloat : public Runtime::Method
 {
@@ -35,6 +45,7 @@ public:
 	Runtime::ControlFlow::E execute(const ParameterList &params, Runtime::Object *result);
 };
 
+
 class FileWriteInt : public Runtime::Method
 {
 public:
@@ -42,6 +53,7 @@ public:
 
 	Runtime::ControlFlow::E execute(const ParameterList &params, Runtime::Object *result);
 };
+
 
 class FileWriteString : public Runtime::Method
 {

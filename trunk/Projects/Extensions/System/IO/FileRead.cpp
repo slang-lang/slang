@@ -13,10 +13,12 @@
 #endif
 
 // Project includes
+#include <Core/Designtime/BuildInTypes/BoolObject.h>
 #include <Core/Designtime/BuildInTypes/DoubleObject.h>
 #include <Core/Designtime/BuildInTypes/FloatObject.h>
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
+#include <Core/BuildInObjects/BoolObject.h>
 #include <Core/BuildInObjects/DoubleObject.h>
 #include <Core/BuildInObjects/FloatObject.h>
 #include <Core/BuildInObjects/IntegerObject.h>
@@ -31,6 +33,44 @@
 namespace ObjectiveScript {
 namespace Extensions {
 namespace IO {
+
+
+FileReadBool::FileReadBool()
+: Runtime::Method(0, "freadb", Designtime::BoolObject::TYPENAME)
+{
+	ParameterList params;
+	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, VALUE_NONE));
+
+	setSignature(params);
+}
+
+Runtime::ControlFlow::E FileReadBool::execute(const ParameterList& params, Runtime::Object* result)
+{
+	if ( params.size() != 1 ) {
+		throw Utils::Exceptions::ParameterCountMissmatch("1 parameter expected, but " + ::Utils::Tools::toString(params.size()) + " parameter(s) found");
+	}
+
+	Runtime::ControlFlow::E controlFlow = Runtime::ControlFlow::Normal;
+
+	std::string fileHandle = params.front().pointer()->getValue();
+
+	try {
+		int handle = Tools::stringToInt(fileHandle);
+		bool value = false;
+
+		long size = read(handle, &value, sizeof(bool));
+		if ( size == -1 ) {    // error while reading
+			throw;
+		}
+
+		*result = Runtime::BoolObject(value);
+	}
+	catch ( ... ) {
+		controlFlow =  Runtime::ControlFlow::Throw;
+	}
+
+	return controlFlow;
+}
 
 
 FileReadDouble::FileReadDouble()
@@ -149,7 +189,7 @@ FileReadString::FileReadString()
 {
 	ParameterList params;
 	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, VALUE_NONE));
-	params.push_back(Parameter("count", Designtime::IntegerObject::TYPENAME, "0", true));
+	params.push_back(Parameter("count", Designtime::IntegerObject::TYPENAME, "1", true));
 
 	setSignature(params);
 }
@@ -168,12 +208,12 @@ Runtime::ControlFlow::E FileReadString::execute(const ParameterList& params, Run
 	try {
 		int handle = Tools::stringToInt(fileHandle);
 		int count = Tools::stringToInt(fileCount);
-		std::string str;
+		std::string value;
 
 		while ( count > 0 ) {
-			char value;
+			char charValue;
 
-			long size = read(handle, &value, 1);
+			long size = read(handle, &charValue, 1);
 			if ( size == -1 ) {	// error while reading
 				throw;
 			}
@@ -181,11 +221,11 @@ Runtime::ControlFlow::E FileReadString::execute(const ParameterList& params, Run
 				break;
 			}
 
-			str += value;
+			value += charValue;
 			count--;
 		}
 
-		*result = Runtime::StringObject(str);
+		*result = Runtime::StringObject(value);
 	}
 	catch ( ... ) {
 		controlFlow =  Runtime::ControlFlow::Throw;

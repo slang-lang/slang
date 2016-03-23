@@ -8,6 +8,7 @@
 #include <System/IO/FileClose.h>
 #include <System/IO/FileOpen.h>
 #include <System/IO/FileRead.h>
+#include <System/IO/FileSeek.h>
 #include <System/IO/FileWrite.h>
 #include "AssertMsg.h"
 #include "Print.h"
@@ -32,10 +33,13 @@ void System::provideMethods(ExtensionMethods &methods)
 
 	methods.push_back(new IO::FileClose());
 	methods.push_back(new IO::FileOpen());
+	methods.push_back(new IO::FileReadBool());
 	methods.push_back(new IO::FileReadDouble());
 	methods.push_back(new IO::FileReadFloat());
 	methods.push_back(new IO::FileReadInt());
 	methods.push_back(new IO::FileReadString());
+	methods.push_back(new IO::FileSeek());
+	methods.push_back(new IO::FileWriteBool());
 	methods.push_back(new IO::FileWriteDouble());
 	methods.push_back(new IO::FileWriteFloat());
 	methods.push_back(new IO::FileWriteInt());
