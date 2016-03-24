@@ -194,6 +194,11 @@ bool VirtualMachine::loadLibrary(const std::string& library)
 {
 	OSinfo("loading additional library file '" + library + "'...");
 
+	if ( mImportedLibraries.find(library) != mImportedLibraries.end() ) {
+		// circular import => abort
+		return true;
+	}
+
 	if ( !::Utils::Tools::Files::exists(library) ) {
 		return false;
 	}
@@ -203,6 +208,8 @@ bool VirtualMachine::loadLibrary(const std::string& library)
 	try {
 		Analyser analyser(mRepository);
 		analyser.processFile(library);
+
+		mImportedLibraries.insert(library);
 
 		const std::list<std::string>& libraries = analyser.getLibraryReferences();
 		for ( std::list<std::string>::const_iterator it = libraries.begin(); it != libraries.end(); ++it ) {
