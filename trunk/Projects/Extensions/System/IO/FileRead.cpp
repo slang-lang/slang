@@ -9,6 +9,8 @@
 #elif defined _WIN32
 #	include <io.h>
 #	pragma warning(disable:4996)
+#else
+#	include <unistd.h>
 #endif
 
 // Project includes
