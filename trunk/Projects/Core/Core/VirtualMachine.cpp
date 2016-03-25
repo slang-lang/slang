@@ -3,6 +3,7 @@
 #include "VirtualMachine.h"
 
 // Library includes
+#include <stdlib.h>
 #include <iostream>
 #include <fstream>
 

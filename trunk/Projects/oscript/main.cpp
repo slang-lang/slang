@@ -13,7 +13,8 @@
 
 // Namespace declarations
 
-#ifdef _WIN32
+#ifdef __APPLE__
+#elif defined _WIN32
 	// Memory leak check - Begin
 	#define _CRTDBG_MAP_ALLOC
 	#include <stdlib.h>
@@ -27,6 +28,8 @@
 	// Memory leak check - End
 
 	//#include <vld.h>
+#else
+#	include <stdlib.h>
 #endif
 
 
