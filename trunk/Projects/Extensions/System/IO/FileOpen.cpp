@@ -80,6 +80,10 @@ Runtime::ControlFlow::E FileOpen::execute(const ParameterList& params, Runtime::
 	try {
 		handle = open(filename.c_str(), mode, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 
+		if ( handle == -1 ) {
+			return Runtime::ControlFlow::Throw;
+		}
+
 		*result = Runtime::IntegerObject(handle);
 	}
 	catch ( ... ) {

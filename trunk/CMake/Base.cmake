@@ -17,28 +17,28 @@ SET(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)      # library root
 #SET(CMAKE_CXX_FLAGS "-ansi -pedantic -fPIC -Wall -Werror -Wunused -Wno-long-long -Wnon-virtual-dtor") # -std=c++0x ;-(
 SET(CMAKE_CXX_FLAGS "-pedantic -fPIC -Wall -Werror -Wunused -Wno-long-long -Wnon-virtual-dtor") # -std=c++0x -std=c++11 ;-(
 
-if( "${ISC_BUILD}" STREQUAL "" OR "${ISC_BUILD}" MATCHES "Debug")
+if( "${BUILD}" STREQUAL "" OR "${BUILD}" MATCHES "Debug")
 
     # by default we build debug!
     # MESSAGE("Setting default build to: Debug")
     SET(CMAKE_BUILD_TYPE "Debug")
 
     # do more logging
-    add_definitions(-DISC_DEBUG)
+    add_definitions(-DDEBUG)
 
     # suppress "veraltete Konvertierung von Zeichenkettenkonstante in »char*« [-Werror=write-strings]"
     add_definitions(-Wno-write-strings)
     
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wextra")
 
-elseif("${ISC_BUILD}" MATCHES "Release")
+elseif("${BUILD}" MATCHES "Release")
 
     # MESSAGE("Setting default build to: Release")
     SET(CMAKE_BUILD_TYPE "Release")
     SET(CMAKE_CXX_FLAGS "")
     
     # do less logging
-    add_definitions(-DISC_NO_DEBUG_LOG)
+    #add_definitions(-DNO_DEBUG_LOG)
 
     # suppress "veraltete Konvertierung von Zeichenkettenkonstante in »char*« [-Werror=write-strings]"
     add_definitions(-Wno-write-strings)
@@ -47,7 +47,7 @@ elseif("${ISC_BUILD}" MATCHES "Release")
 
 else()
 
-    MESSAGE(FATAL_ERROR "Specify a valid build type: cmake -DISC_BUILD=Release|Debug")
+    MESSAGE(FATAL_ERROR "Specify a valid build type: cmake -DBUILD=Release|Debug")
 
 endif()
 
