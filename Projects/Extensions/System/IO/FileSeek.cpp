@@ -54,6 +54,9 @@ Runtime::ControlFlow::E FileSeek::execute(const ParameterList& params, Runtime::
 		int offset = Tools::stringToInt(fileOffset);
 
 		long size = lseek(handle, offset, SEEK_SET);
+		if ( size == -1 ) {    // error while reading
+			return Runtime::ControlFlow::Throw;
+		}
 
 		*result = Runtime::IntegerObject(size);
 	}

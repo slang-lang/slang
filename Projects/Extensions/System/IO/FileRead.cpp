@@ -99,7 +99,7 @@ Runtime::ControlFlow::E FileReadDouble::execute(const ParameterList& params, Run
 
 		long size = read(handle, &value, sizeof(double));
 		if ( size == -1 ) {    // error while reading
-			throw;
+			return Runtime::ControlFlow::Throw;
 		}
 
 		*result = Runtime::DoubleObject(value);
@@ -135,8 +135,8 @@ Runtime::ControlFlow::E FileReadFloat::execute(const ParameterList& params, Runt
 		float value = 0.f;
 
 		long size = read(handle, &value, sizeof(float));
-		if ( size == -1 ) {	// error while reading
-			throw;
+		if ( size == -1 ) {    // error while reading
+			return Runtime::ControlFlow::Throw;
 		}
 
 		*result = Runtime::FloatObject(value);
@@ -172,8 +172,7 @@ Runtime::ControlFlow::E FileReadInt::execute(const ParameterList& params, Runtim
 		int value = 0;
 
 		long size = read(handle, &value, sizeof(int));
-		if ( size == -1 ) {	// error while reading
-			*result = Runtime::StringObject("read error");
+		if ( size == -1 ) {    // error while reading
 			return Runtime::ControlFlow::Throw;
 		}
 
@@ -216,8 +215,8 @@ Runtime::ControlFlow::E FileReadString::execute(const ParameterList& params, Run
 			char charValue;
 
 			long size = read(handle, &charValue, 1);
-			if ( size == -1 ) {	// error while reading
-				throw;
+			if ( size == -1 ) {    // error while reading
+				return Runtime::ControlFlow::Throw;
 			}
 			if ( size == 0 ) {	// EOF reached
 				break;

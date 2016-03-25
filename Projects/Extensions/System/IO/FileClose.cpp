@@ -49,12 +49,15 @@ Runtime::ControlFlow::E FileClose::execute(const ParameterList& params, Runtime:
 	try {
 		int handle = Tools::stringToInt(filehandle);
 
-		int fileresult = close(handle);
+		int fileResult = close(handle);
+		if ( fileResult == -1 ) {
+			return Runtime::ControlFlow::Throw;
+		}
 
-		*result = Runtime::IntegerObject(fileresult);
+		*result = Runtime::IntegerObject(fileResult);
 	}
 	catch ( ... ) {
-		controlFlow =  Runtime::ControlFlow::Throw;
+		controlFlow = Runtime::ControlFlow::Throw;
 	}
 
 	return controlFlow;

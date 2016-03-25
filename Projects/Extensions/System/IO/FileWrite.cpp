@@ -63,8 +63,8 @@ Runtime::ControlFlow::E FileWriteBool::execute(const ParameterList& params, Runt
 		bool boolValue = Tools::stringToBool(value);
 
 		long size = write(handle, &boolValue, sizeof(bool));
-		if ( size == -1 ) {
-			throw;
+		if ( size == -1 ) {    // error while reading
+			return Runtime::ControlFlow::Throw;
 		}
 
 		*result = Runtime::IntegerObject((int)size);
@@ -103,8 +103,8 @@ Runtime::ControlFlow::E FileWriteDouble::execute(const ParameterList& params, Ru
 		double doubleValue = Tools::stringToDouble(value);
 
 		long size = write(handle, &doubleValue, sizeof(double));
-		if ( size == -1 ) {
-			throw;
+		if ( size == -1 ) {    // error while reading
+			return Runtime::ControlFlow::Throw;
 		}
 
 		*result = Runtime::IntegerObject((int)size);
@@ -142,8 +142,8 @@ Runtime::ControlFlow::E FileWriteFloat::execute(const ParameterList& params, Run
 		float floatValue = Tools::stringToFloat(value);
 
 		long size = write(handle, &floatValue, sizeof(float));
-		if ( size == -1 ) {
-			throw;
+		if ( size == -1 ) {    // error while reading
+			return Runtime::ControlFlow::Throw;
 		}
 
 		*result = Runtime::IntegerObject((int)size);
@@ -181,8 +181,8 @@ Runtime::ControlFlow::E FileWriteInt::execute(const ParameterList& params, Runti
 		int intValue = Tools::stringToInt(value);
 
 		long size = write(handle, &intValue, sizeof(int));
-		if ( size == -1 ) {
-			throw;
+		if ( size == -1 ) {    // error while reading
+			return Runtime::ControlFlow::Throw;
 		}
 
 		*result = Runtime::IntegerObject((int)size);
@@ -219,8 +219,8 @@ Runtime::ControlFlow::E FileWriteString::execute(const ParameterList& params, Ru
 		int handle = Tools::stringToInt(fileHandle);
 
 		long size = write(handle, (void*)value.c_str(), strlen(value.c_str()));
-		if ( size == -1 ) {
-			throw;
+		if ( size == -1 ) {    // error while reading
+			return Runtime::ControlFlow::Throw;
 		}
 
 		*result = Runtime::IntegerObject((int)size);
