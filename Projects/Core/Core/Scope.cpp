@@ -80,7 +80,7 @@ Symbol* SymbolScope::resolve(const std::string& name, bool onlyCurrentScope) con
 
 void SymbolScope::undefine(const std::string& name, Symbol *symbol)
 {
-	Symbols::const_iterator it = mSymbols.find(name);
+	Symbols::iterator it = mSymbols.find(name);
 	if ( it != mSymbols.end() ) {
 		mSymbols.erase(it);
 	}
