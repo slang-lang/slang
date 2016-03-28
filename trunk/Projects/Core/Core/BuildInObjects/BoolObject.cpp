@@ -43,15 +43,6 @@ BoolObject::BoolObject(const std::string& name, bool value)
 	setNativeValue(value);
 }
 
-BoolObject::BoolObject(const std::string& name, const std::string& value)
-: Object(name, SYSTEM_LIBRARY, TYPENAME, VALUE_NONE)
-{
-	mIsAtomicType = true;
-	mIsConstructed = true;
-
-	setValue(value);
-}
-
 BoolObject::BoolObject(const Object& object)
 : Object(object.getName(), SYSTEM_LIBRARY, TYPENAME, VALUE_NONE)
 {

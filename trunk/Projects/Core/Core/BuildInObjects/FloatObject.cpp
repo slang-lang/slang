@@ -42,15 +42,6 @@ FloatObject::FloatObject(const std::string& name, float value)
 	setNativeValue(value);
 }
 
-FloatObject::FloatObject(const std::string& name, const std::string& value)
-: Object(name, SYSTEM_LIBRARY, TYPENAME, VALUE_NONE)
-{
-	mIsAtomicType = true;
-	mIsConstructed = true;
-
-	setValue(value);
-}
-
 FloatObject::FloatObject(const Object& other)
 : Object(other.getName(), SYSTEM_LIBRARY, TYPENAME, VALUE_NONE)
 {

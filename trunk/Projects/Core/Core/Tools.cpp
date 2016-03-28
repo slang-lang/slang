@@ -46,9 +46,9 @@ bool stringToBool(const std::string &value)
 
     //std::transform(value.begin(), value.end(), value.begin(), ::tolower);
     std::istringstream is(value);
-    bool b;
-    is >> std::boolalpha >> b;
-    return b;
+    bool result;
+    is >> std::boolalpha >> result;
+    return result;
 }
 
 double stringToDouble(const std::string &value)
@@ -59,10 +59,10 @@ double stringToDouble(const std::string &value)
 
 	std::stringstream stream;
 	stream << value;
-	double f;
-	stream >> f;
+	double result;
+	stream >> result;
 
-	return f;
+	return result;
 }
 
 float stringToFloat(const std::string &value)
@@ -73,10 +73,10 @@ float stringToFloat(const std::string &value)
 
 	std::stringstream stream;
 	stream << value;
-	float f;
-	stream >> f;
+	float result;
+	stream >> result;
 
-	return f;
+	return result;
 }
 
 int stringToInt(const std::string &value)
@@ -88,6 +88,20 @@ int stringToInt(const std::string &value)
 	std::stringstream stream;
 	stream << value;
 	int result;
+	stream >> result;
+
+	return result;
+}
+
+double stringToNumber(const std::string &value)
+{
+	if ( value.empty() ) {
+		return 0.0;
+	}
+
+	std::stringstream stream;
+	stream << value;
+	double result;
 	stream >> result;
 
 	return result;
