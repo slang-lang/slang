@@ -36,8 +36,9 @@ void operator_assign(Object *base, Object *other)
 
 	std::string source = base->Typename();
 
-	if ( !base->isValid() ) {
+	if ( !base->isValid() || source == other->Typename() ) {
 		// assign directly because our base has not yet been initialized
+		// or no type conversion is necessary
 		*base = *other;
 	}
 	else if ( source == BoolObject::TYPENAME ) {
@@ -88,6 +89,8 @@ void operator_assign(Object *base, Object *other)
 		params.push_back(
 			Parameter(other->getName(), other->Typename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
 		);
+
+		//std::cout << "operator=(" << toString(params) << ")" << std::endl;
 
 		Object tmp;
 		base->execute(&tmp, "operator=", params, 0);
@@ -394,6 +397,8 @@ bool operator_equal(Object *base, Object *other)
 	params.push_back(
 		Parameter(other->getName(), other->Typename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
 	);
+
+	//std::cout << "operator=(" << toString(params) << ")" << std::endl;
 
 	if ( base->resolveMethod("operator==", params, false) ) {
 		Object tmp;
@@ -1084,6 +1089,62 @@ void operator_unary_not(Object *base)
 	else {
 		Object tmp;
 		base->execute(&tmp, "operator!", ParameterList(), 0);
+	}
+}
+
+
+void operator_unary_validate(Object *base)
+{
+	if ( !base ) {
+		throw Utils::Exceptions::AccessViolation("null pointer access");
+	}
+
+	std::string source = base->Typename();
+
+	if ( source == BoolObject::TYPENAME ) {
+		BoolObject tmp(Tools::stringToBool(base->getValue()));
+		if ( !tmp.isValid() ) {
+			throw Utils::Exceptions::AccessViolation(base->getFullName() + " is not valid");
+		}
+	}
+	else if ( source == DoubleObject::TYPENAME ) {
+		DoubleObject tmp(Tools::stringToDouble(base->getValue()));
+		if ( !tmp.isValid() ) {
+			throw Utils::Exceptions::AccessViolation(base->getFullName() + " is not valid");
+		}
+	}
+	else if ( source == FloatObject::TYPENAME ) {
+		FloatObject tmp(Tools::stringToFloat(base->getValue()));
+		if ( !tmp.isValid() ) {
+			throw Utils::Exceptions::AccessViolation(base->getFullName() + " is not valid");
+		}
+	}
+	else if ( source == IntegerObject::TYPENAME ) {
+		IntegerObject tmp(Tools::stringToInt(base->getValue()));
+		if ( !tmp.isValid() ) {
+			throw Utils::Exceptions::AccessViolation(base->getFullName() + " is not valid");
+		}
+	}
+	else if ( source == NumberObject::TYPENAME ) {
+		NumberObject tmp(Tools::stringToDouble(base->getValue()));
+		if ( !tmp.isValid() ) {
+			throw Utils::Exceptions::AccessViolation(base->getFullName() + " is not valid");
+		}
+	}
+	else if ( source == StringObject::TYPENAME ) {
+		StringObject tmp(base->getValue());
+		if ( !tmp.isValid() ) {
+			throw Utils::Exceptions::AccessViolation(base->getFullName() + " is not valid");
+		}
+	}
+	else if ( source == VoidObject::TYPENAME ) {
+		VoidObject tmp;
+		throw Utils::Exceptions::AccessViolation(base->getFullName() + " is not valid");
+	}
+	else {
+		if ( !base->isValid() ) {
+			throw Utils::Exceptions::AccessViolation(base->getFullName() + " is not valid");
+		}
 	}
 }
 
