@@ -13,7 +13,7 @@
 
 const float fPi = 3.14159265f;
 //const double dPi = 3.1415926535897932384626433832795;
-const double dPI = 2 * std::acos(0.0);
+//const double dPI = 2 * std::acos(0.0);
 
 
 /////////////////////////////////////// CROSS \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*

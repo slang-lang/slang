@@ -309,6 +309,10 @@ void Interpreter::parseInfixPostfix(Object *result, TokenIterator& start)
 			operator_unary_increment(result);
 			start++;
 		} break;
+		case Token::Type::NOT: {
+			operator_unary_validate(result);
+			start++;
+		} break;
 		default: {
 		} break;
 	}
@@ -355,7 +359,7 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 					process_method(start, result);
 					break;
 				case Symbol::IType::ObjectSymbol:
-					*result = *static_cast<Object*>(symbol);
+					operator_assign(result, static_cast<Object*>(symbol));
 					break;
 				case Symbol::IType::BluePrintSymbol:
 				case Symbol::IType::NamespaceSymbol:
