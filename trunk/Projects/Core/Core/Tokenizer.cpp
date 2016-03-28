@@ -15,8 +15,8 @@ namespace ObjectiveScript {
 
 
 const std::string CONTROLCHARS	= "#,;:=()[]{}!<>+-*/%&|~'\" ";
-const std::string DELIMITERS	= "#,;:=()[]{}!<>+-*/%&|~'\"\t\n\r ";
 const std::string WHITESPACES	= "\t\n\r ";
+const std::string DELIMITERS	= CONTROLCHARS + WHITESPACES;
 
 
 Tokenizer::Tokenizer(const std::string& filename, const std::string& content)
@@ -77,7 +77,7 @@ Token Tokenizer::createToken(const std::string& con, const Utils::Position& posi
 	else if ( content == "&" ) { category = Token::Category::Operator; type = Token::Type::BITAND; }
 	else if ( content == "|" ) { category = Token::Category::Operator; type = Token::Type::BITOR; }
 	else if ( content == "," ) { type = Token::Type::COLON; }
-	else if ( content == "." ) { type = Token::Type::DOT; }
+	else if ( content == "." ) { type = Token::Type::SCOPE; }
 	else if ( content == ";" ) { type = Token::Type::SEMICOLON; }
 	else if ( content == "'" ) { type = Token::Type::QUOTATION_SINGLE; }
 	else if ( content == "\"" ) { type = Token::Type::QUOTATION_DOUBLE; }
