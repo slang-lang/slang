@@ -29,6 +29,7 @@ namespace Tools {
 	double stringToDouble(const std::string &value);
 	float stringToFloat(const std::string &value);
 	int stringToInt(const std::string &value);
+	double stringToNumber(const std::string &value);
 
 	std::string toString(bool value);
 	std::string toString(double value);

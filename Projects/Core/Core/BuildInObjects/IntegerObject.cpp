@@ -42,15 +42,6 @@ IntegerObject::IntegerObject(const std::string& name, int value)
 	setNativeValue(value);
 }
 
-IntegerObject::IntegerObject(const std::string& name, const std::string& value)
-: Object(name, SYSTEM_LIBRARY, TYPENAME, VALUE_NONE)
-{
-	mIsAtomicType = true;
-	mIsConstructed = true;
-
-	setValue(value);
-}
-
 IntegerObject::IntegerObject(const Object& other)
 : Object(other.getName(), SYSTEM_LIBRARY, TYPENAME, VALUE_NONE)
 {

@@ -43,15 +43,6 @@ DoubleObject::DoubleObject(const std::string& name, double value)
 	setNativeValue(value);
 }
 
-DoubleObject::DoubleObject(const std::string& name, const std::string& value)
-: Object(name, SYSTEM_LIBRARY, TYPENAME, VALUE_NONE)
-{
-	mIsAtomicType = true;
-	mIsConstructed = true;
-
-	setValue(value);
-}
-
 DoubleObject::DoubleObject(const Object& other)
 : Object(other.getName(), SYSTEM_LIBRARY, TYPENAME, VALUE_NONE)
 {

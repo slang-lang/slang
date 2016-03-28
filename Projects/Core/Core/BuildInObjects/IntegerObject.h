@@ -26,7 +26,6 @@ public:
 public:
 	IntegerObject(int value = 0);
 	IntegerObject(const std::string& name, int value);
-	IntegerObject(const std::string& name, const std::string& value);
 	IntegerObject(const Object& object);
 
 public:	// Symbol::IType implementation

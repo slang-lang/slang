@@ -26,7 +26,6 @@ public:
 public:
 	DoubleObject(double value = 0.0);
 	DoubleObject(const std::string& name, double value);
-	DoubleObject(const std::string& name, const std::string& value);
 	DoubleObject(const Object& object);
 
 public:	// Symbol::IType implementation

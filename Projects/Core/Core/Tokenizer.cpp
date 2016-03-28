@@ -114,7 +114,10 @@ Token Tokenizer::createToken(const std::string& con, const Utils::Position& posi
 		content = con.substr(1, con.length() - 2);
 	}
 	else if ( isModifier(content) ) { category = Token::Category::Modifier; type = Token::Type::LANGUAGEFEATURE; }
-	else if ( isNumber(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_NUMBER; }
+	else if ( isNumber(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_NUMBER;
+		// remove trailing 'n' character
+		content = con.substr(0, con.length() - 1);
+	}
 	else if ( isReservedWord(content) ) { category = Token::Category::ReservedWord; type = Token::Type::RESERVED_WORD; }
 	else if ( isType(content) ) { type = Token::Type::TYPE; }
 	else if ( isVisibility(content) ) { type = Token::Type::VISIBILITY; }
@@ -316,7 +319,7 @@ bool Tokenizer::isNumber(const std::string& token) const
 
 	int numOfDots = 0;
 
-	for ( unsigned int c = 0; c < token.size(); c++ ) {
+	for ( unsigned int c = 0; c < token.size() - 1; c++ ) {
 		switch ( token[c] ) {
 			case '.':
 				numOfDots++;
@@ -340,11 +343,12 @@ bool Tokenizer::isNumber(const std::string& token) const
 		}
 	}
 
-	if ( numOfDots == 0 ) {
-		return false;
+	// the last char of our token has to be an 'n'
+	if ( token[token.size() - 1] == 'n' && token.size() > 1 ) {
+		return true;
 	}
 
-	return true;
+	return false;
 }
 
 bool Tokenizer::isPrototype(TokenIterator token) const
