@@ -168,15 +168,18 @@ void Repository::CollectGarbage()
 				continue;
 			}
 
-			if ( it->first ) {
+			// as soon as we've lost all references, we can destroy our object
+			if ( it->first && it->second <= 0 ) {
+				// call object's destructor ...
 				it->first->Destructor();
-
+				// ... and delete it
+/*
 				delete it->first;
+
+				it = mInstances.erase(it);
+*/
+				success = true;
 			}
-
-			it = mInstances.erase(it);
-
-			success = true;
 		}
 	}
 }
@@ -379,9 +382,9 @@ void Repository::removeReference(Runtime::Object *object)
 		// call object's destructor ...
 		it->first->Destructor();
 		// ... and delete it
-		delete it->first;
+		//delete it->first;
 
-		mInstances.erase(it);
+		//mInstances.erase(it);
 	}
 }
 
