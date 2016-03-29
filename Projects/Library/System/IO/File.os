@@ -1,6 +1,7 @@
 
-public namespace IO
-{
+public namespace System {
+public namespace IO {
+
 	public object File
 	{
 		private string mAccessMode;
@@ -62,65 +63,66 @@ public namespace IO
 			return true;
 		}
 
-		public bool readBool() {
+		public bool readBool() const {
 			bool value = freadb(mHandle);
 			return value;
 		}
 
-		public double readDouble() {
+		public double readDouble() const {
 			double value = freadd(mHandle);
 			return value;
 		}
 
-		public float readFloat() {
+		public float readFloat() const {
 			float value = freadf(mHandle);
 			return value;
 		}
 
-		public int readInt() {
+		public int readInt() const {
 			int value = freadi(mHandle);
 			return value;
 		}
 
-		public string readString(int length) {
+		public string readString(int length const) {
 			string value = freads(mHandle, length);
 			return value;
 		}
 
-		public bool rewind() {
+		public bool rewind() const {
 			int result = fseek(mHandle, 0);
 			return (result == 0);
 		}
 
-		public bool seek(int address) {
+		public bool seek(int address const) {
 			int result = fseek(mHandle, address);
 			return (result == 0);
 		}
 
-		public bool write(bool value) {
+		public bool write(bool value const) {
 			int result = fwriteb(mHandle, value);
 			return (result == 0);
 		}
 
-		public bool write(double value) {
+		public bool write(double value const) {
 			int result = fwrited(mHandle, value);
 			return (result == 0);
 		}
 
-		public bool write(float value) {
+		public bool write(float value const) {
 			int result = fwritef(mHandle, value);
 			return (result == 0);
 		}
 
-		public bool write(int value) {
+		public bool write(int value const) {
 			int result = fwritei(mHandle, value);
 			return (result == 0);
 		}
 
-		public bool write(string value) {
+		public bool write(string value const) {
 			int result = fwrites(mHandle, value);
 			return (result == 0);
 		}
 	}
+}
 }
 
