@@ -1,7 +1,7 @@
 
 public namespace Math
 {
-	public float PI;// = 3.14159265359f;
+	public float PI const;// = 3.14159265359f;
 
 	public double abs(double value)
 	{
