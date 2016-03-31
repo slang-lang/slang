@@ -1,6 +1,6 @@
 
-public namespace System
-{
+public namespace System {
+
 	public void assertmsg(string message, bool condition)
 	{
 		if ( !condition ) {
@@ -19,4 +19,6 @@ public namespace System
 			print(msg_fail);
 		}
 	}
+
 }
+

@@ -1,6 +1,6 @@
 
-public namespace System
-{
+public namespace System {
+
 	public interface IException
 	{
 		public string what() const;
@@ -20,5 +20,6 @@ public namespace System
 			return _exception;
 		}
 	}
+
 }
 

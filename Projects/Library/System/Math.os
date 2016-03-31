@@ -1,6 +1,7 @@
 
-public namespace Math
-{
+public namespace System {
+public namespace Math {
+
 	public float PI const;// = 3.14159265359f;
 
 	public double abs(double value)
@@ -71,5 +72,7 @@ public namespace Math
 	{
 		return power(value);
 	}
+
+}
 }
 
