@@ -814,7 +814,7 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 		throw Utils::Exceptions::ConstCorrectnessViolated("only calls to const methods are allowed in const method '" + getScopeName() + "'", token->position());
 	}
 
-	ControlFlow::E controlflow = static_cast<Method*>(symbol)->execute(params, result);
+	ControlFlow::E controlflow = static_cast<Method*>(symbol)->execute(params, result, token);
 
 	if ( controlflow == ControlFlow::Throw ) {
 		mControlFlow = ControlFlow::Throw;

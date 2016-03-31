@@ -14,42 +14,44 @@ namespace ObjectiveScript {
 namespace Utils {
 
 
-Position::Position(const std::string& f, unsigned int l, unsigned int c)
-: file(f), line(l), column(c)
+Position::Position(const std::string& file, unsigned int line, unsigned int column)
+: mFile(file), mLine(line), mColumn(column)
 {
 }
 
 bool Position::operator==(const Position& other) const
 {
-	return (this->file == other.file && this->line == other.line && this->column == other.column);
+	return (this->mFile == other.mFile && this->mLine == other.mLine && this->mColumn == other.mColumn);
 }
 
 bool Position::operator<(const Position& other) const
 {
-	if ( this->file == other.file ) {
-		if ( this->line == other.line ) {
-			return (this->column < other.column);
+	if ( this->mFile == other.mFile ) {
+		if ( this->mLine == other.mLine ) {
+			return (this->mColumn < other.mColumn);
 		}
 
-		return (this->line < other.line);
+		return (this->mLine < other.mLine);
 	}
 
-	return (this->file < other.file);
+	return (this->mFile < other.mFile);
 }
 
 std::string Position::toString() const
 {
 	std::stringstream ss;
-	if ( !file.empty() ) {
-		ss << "File " << file << ": ";
-	}
-	if ( line != 0 ) {
-		ss << "Line " << line;
 
-		if ( column != 0 ) {
-			ss << ", Column " << column;
+	if ( !mFile.empty() ) {
+		ss << "file " << mFile;
+	}
+	if ( mLine != 0 ) {
+		ss << ", line " << mLine;
+
+		if ( mColumn != 0 ) {
+			ss << ", column " << mColumn;
 		}
 	}
+
 	return ss.str();
 }
 

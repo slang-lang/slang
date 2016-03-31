@@ -39,13 +39,12 @@ public:
 	}
 
 public:
-	Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* /*result*/)
+	Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* /*result*/, const TokenIterator& token)
 	{
 		std::string text;
 
 		if ( params.size() != 1 ) {
-			throw Utils::Exceptions::ParameterCountMissmatch("1 parameter expected, but " + ::Utils::Tools::toString(params.size()) + " parameter(s) found");
-			//return Runtime::ControlFlow::Throw;
+			throw Utils::Exceptions::ParameterCountMissmatch("1 parameter expected, but " + ::Utils::Tools::toString(params.size()) + " parameter(s) found", token->position());
 		}
 
 		text = params.front().value();

@@ -24,7 +24,7 @@ class FileSeek : public Runtime::Method
 public:
 	FileSeek();
 
-	Runtime::ControlFlow::E execute(const ParameterList &params, Runtime::Object *result);
+	Runtime::ControlFlow::E execute(const ParameterList &params, Runtime::Object *result, const TokenIterator& token);
 };
 
 

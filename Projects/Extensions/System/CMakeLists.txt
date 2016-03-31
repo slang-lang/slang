@@ -3,6 +3,7 @@ INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 ADD_SUBDIRECTORY(IO)
 
 SET(SOURCES
+	AssertMsg.cpp
 	System.cpp
 )
 

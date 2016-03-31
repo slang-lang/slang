@@ -24,36 +24,21 @@ namespace ObjectiveScript {
 namespace Extensions {
 
 
+class Assert : public Runtime::Method
+{
+public:
+	Assert();
+
+	Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* /*result*/, const TokenIterator& token);
+};
+
+
 class AssertMsg : public Runtime::Method
 {
 public:
-	AssertMsg()
-	: Runtime::Method(0, "assertmsg", Designtime::VoidObject::TYPENAME)
-	{
-		ParameterList params;
-		params.push_back(Parameter(ANONYMOUS_OBJECT, Designtime::BoolObject::TYPENAME, FALSE));
-		params.push_back(Parameter(ANONYMOUS_OBJECT, Designtime::StringObject::TYPENAME, VALUE_NONE));
+	AssertMsg();
 
-		setSignature(params);
-	}
-
-public:
-	Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* /*result*/) {
-		std::string text;
-
-		if ( params.size() != 2 ) {
-			throw Utils::Exceptions::ParameterCountMissmatch("1 parameter expected, but " + ::Utils::Tools::toString(params.size()) + " parameter(s) found");
-		}
-
-		Runtime::Object condition = *params.front().pointer();
-
-		if ( !isTrue(condition) ) {
-			throw Utils::Exceptions::AssertionFailed(condition.ToString() + ", with message: \"" + params.back().value() + "\"");
-			//return Runtime::ControlFlow::Throw;
-		}
-
-		return Runtime::ControlFlow::Normal;
-	}
+	Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* /*result*/, const TokenIterator& token);
 };
 
 

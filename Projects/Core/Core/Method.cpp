@@ -104,12 +104,12 @@ void Method::operator= (const Method& other)
 	}
 }
 
-ControlFlow::E Method::execute(const ParameterList& params, Object *result)
+ControlFlow::E Method::execute(const ParameterList& params, Object *result, const TokenIterator& token)
 {
 	assert(mRepository);
 
 	if ( !isSignatureValid(params) ) {
-		throw Utils::Exceptions::ParameterCountMissmatch("incorrect number or type of parameters");
+		throw Utils::Exceptions::ParameterCountMissmatch("incorrect number or type of parameters", token->position());
 	}
 
 	switch ( getLanguageFeatureState() ) {
