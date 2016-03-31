@@ -623,12 +623,12 @@ void Tokenizer::process()
 		}
 
 		// counting lines and columns
-		pos.column++;
+		pos.mColumn++;
 		if ( thisChar == '\n' ) {
 			isPreprocessorDirective = false;
 			isSingleLineComment = false;
-			pos.line++;
-			pos.column = 1;
+			pos.mLine++;
+			pos.mColumn = 1;
 		}
 
 		// keep track of our last char (i.e. for escape sequences)

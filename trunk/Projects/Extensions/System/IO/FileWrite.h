@@ -24,7 +24,7 @@ class FileWriteBool : public Runtime::Method
 public:
 	FileWriteBool();
 
-	Runtime::ControlFlow::E execute(const ParameterList &params, Runtime::Object *result);
+	Runtime::ControlFlow::E execute(const ParameterList &params, Runtime::Object *result, const TokenIterator& token);
 };
 
 
@@ -33,7 +33,7 @@ class FileWriteDouble : public Runtime::Method
 public:
 	FileWriteDouble();
 
-	Runtime::ControlFlow::E execute(const ParameterList &params, Runtime::Object *result);
+	Runtime::ControlFlow::E execute(const ParameterList &params, Runtime::Object *result, const TokenIterator& token);
 };
 
 
@@ -42,7 +42,7 @@ class FileWriteFloat : public Runtime::Method
 public:
 	FileWriteFloat();
 
-	Runtime::ControlFlow::E execute(const ParameterList &params, Runtime::Object *result);
+	Runtime::ControlFlow::E execute(const ParameterList &params, Runtime::Object *result, const TokenIterator& token);
 };
 
 
@@ -51,7 +51,7 @@ class FileWriteInt : public Runtime::Method
 public:
 	FileWriteInt();
 
-	Runtime::ControlFlow::E execute(const ParameterList &params, Runtime::Object *result);
+	Runtime::ControlFlow::E execute(const ParameterList &params, Runtime::Object *result, const TokenIterator& token);
 };
 
 
@@ -60,7 +60,7 @@ class FileWriteString : public Runtime::Method
 public:
 	FileWriteString();
 
-	Runtime::ControlFlow::E execute(const ParameterList &params, Runtime::Object *result);
+	Runtime::ControlFlow::E execute(const ParameterList &params, Runtime::Object *result, const TokenIterator& token);
 };
 
 

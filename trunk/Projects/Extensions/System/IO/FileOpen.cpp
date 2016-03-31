@@ -63,10 +63,10 @@ FileOpen::FileOpen()
 	setSignature(params);
 }
 
-Runtime::ControlFlow::E FileOpen::execute(const ParameterList& params, Runtime::Object* result)
+Runtime::ControlFlow::E FileOpen::execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token)
 {
 	if ( params.size() != 2 ) {
-		throw Utils::Exceptions::ParameterCountMissmatch("2 parameter expected, but " + ::Utils::Tools::toString(params.size()) + " parameter(s) found");
+		throw Utils::Exceptions::ParameterCountMissmatch("2 parameter expected, but " + ::Utils::Tools::toString(params.size()) + " parameter(s) found", token->position());
 	}
 
 	Runtime::ControlFlow::E controlFlow = Runtime::ControlFlow::Normal;

@@ -38,10 +38,10 @@ FileSeek::FileSeek()
 	setSignature(params);
 }
 
-Runtime::ControlFlow::E FileSeek::execute(const ParameterList& params, Runtime::Object* result)
+Runtime::ControlFlow::E FileSeek::execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token)
 {
 	if ( params.size() != 2 ) {
-		throw Utils::Exceptions::ParameterCountMissmatch("2 parameters expected, but " + ::Utils::Tools::toString(params.size()) + " parameter(s) found");
+		throw Utils::Exceptions::ParameterCountMissmatch("2 parameters expected, but " + ::Utils::Tools::toString(params.size()) + " parameter(s) found", token->position());
 	}
 
 	Runtime::ControlFlow::E controlFlow = Runtime::ControlFlow::Normal;

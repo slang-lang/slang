@@ -47,8 +47,10 @@ public namespace ObjectEqualityTest
 			print("TestCase 2: comparing same references");
 
 			TestObject obj1 = new TestObject();
-			
-			return obj1 == obj1;
+			TestObject obj2 = obj1;
+
+			//return obj1 == obj1;			
+			return obj1 == obj2;
 		}
 	}
 }

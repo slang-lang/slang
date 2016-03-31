@@ -45,10 +45,10 @@ FileReadBool::FileReadBool()
 	setSignature(params);
 }
 
-Runtime::ControlFlow::E FileReadBool::execute(const ParameterList& params, Runtime::Object* result)
+Runtime::ControlFlow::E FileReadBool::execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token)
 {
 	if ( params.size() != 1 ) {
-		throw Utils::Exceptions::ParameterCountMissmatch("1 parameter expected, but " + ::Utils::Tools::toString(params.size()) + " parameter(s) found");
+		throw Utils::Exceptions::ParameterCountMissmatch("1 parameter expected, but " + ::Utils::Tools::toString(params.size()) + " parameter(s) found", token->position());
 	}
 
 	Runtime::ControlFlow::E controlFlow = Runtime::ControlFlow::Normal;
@@ -83,10 +83,10 @@ FileReadDouble::FileReadDouble()
 	setSignature(params);
 }
 
-Runtime::ControlFlow::E FileReadDouble::execute(const ParameterList& params, Runtime::Object* result)
+Runtime::ControlFlow::E FileReadDouble::execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token)
 {
 	if ( params.size() != 1 ) {
-		throw Utils::Exceptions::ParameterCountMissmatch("1 parameter expected, but " + ::Utils::Tools::toString(params.size()) + " parameter(s) found");
+		throw Utils::Exceptions::ParameterCountMissmatch("1 parameter expected, but " + ::Utils::Tools::toString(params.size()) + " parameter(s) found", token->position());
 	}
 
 	Runtime::ControlFlow::E controlFlow = Runtime::ControlFlow::Normal;
@@ -120,10 +120,10 @@ FileReadFloat::FileReadFloat()
 	setSignature(params);
 }
 
-Runtime::ControlFlow::E FileReadFloat::execute(const ParameterList& params, Runtime::Object* result)
+Runtime::ControlFlow::E FileReadFloat::execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token)
 {
 	if ( params.size() != 1 ) {
-		throw Utils::Exceptions::ParameterCountMissmatch("1 parameter expected, but " + ::Utils::Tools::toString(params.size()) + " parameter(s) found");
+		throw Utils::Exceptions::ParameterCountMissmatch("1 parameter expected, but " + ::Utils::Tools::toString(params.size()) + " parameter(s) found", token->position());
 	}
 
 	Runtime::ControlFlow::E controlFlow = Runtime::ControlFlow::Normal;
@@ -157,10 +157,10 @@ FileReadInt::FileReadInt()
 	setSignature(params);
 }
 
-Runtime::ControlFlow::E FileReadInt::execute(const ParameterList& params, Runtime::Object* result)
+Runtime::ControlFlow::E FileReadInt::execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token)
 {
 	if ( params.size() != 1 ) {
-		throw Utils::Exceptions::ParameterCountMissmatch("1 parameter expected, but " + ::Utils::Tools::toString(params.size()) + " parameter(s) found");
+		throw Utils::Exceptions::ParameterCountMissmatch("1 parameter expected, but " + ::Utils::Tools::toString(params.size()) + " parameter(s) found", token->position());
 	}
 
 	Runtime::ControlFlow::E controlFlow = Runtime::ControlFlow::Normal;
@@ -195,10 +195,10 @@ FileReadString::FileReadString()
 	setSignature(params);
 }
 
-Runtime::ControlFlow::E FileReadString::execute(const ParameterList& params, Runtime::Object* result)
+Runtime::ControlFlow::E FileReadString::execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token)
 {
 	if ( params.size() != 2 ) {
-		throw Utils::Exceptions::ParameterCountMissmatch("2 parameters expected, but " + ::Utils::Tools::toString(params.size()) + " parameter(s) found");
+		throw Utils::Exceptions::ParameterCountMissmatch("2 parameters expected, but " + ::Utils::Tools::toString(params.size()) + " parameter(s) found", token->position());
 	}
 
 	Runtime::ControlFlow::E controlFlow = Runtime::ControlFlow::Normal;

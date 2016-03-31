@@ -218,7 +218,7 @@ ControlFlow::E Object::Constructor(const ParameterList& params)
 		Method *constructor = static_cast<Method*>(resolveMethod(Typename(), params, true));
 		if ( constructor ) {
 			VoidObject tmp;
-			controlflow = constructor->execute(params, &tmp);
+			controlflow = constructor->execute(params, &tmp, TokenIterator());
 
 			if ( controlflow != ControlFlow::Normal ) {
 				return controlflow;
@@ -260,7 +260,7 @@ ControlFlow::E Object::Destructor()
 		Method *destructor = static_cast<Method*>(resolveMethod("~" + Typename(), params, true));
 		if ( destructor ) {
 			VoidObject tmp;
-			controlflow = destructor->execute(params, &tmp);
+			controlflow = destructor->execute(params, &tmp, TokenIterator());
 
 			if ( controlflow != ControlFlow::Normal ) {
 				return controlflow;
@@ -320,7 +320,7 @@ ControlFlow::E Object::execute(Object *result, const std::string& name, const Pa
 	method->setRepository(mRepository);
 
 	// execute our member method
-	ControlFlow::E controlflow = method->execute(params, result);
+	ControlFlow::E controlflow = method->execute(params, result, TokenIterator());
 
 	if ( controlflow == ControlFlow::Normal ) {
 		switch ( method->getMethodType() ) {

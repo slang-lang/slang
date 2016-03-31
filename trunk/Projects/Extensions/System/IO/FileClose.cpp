@@ -36,10 +36,10 @@ FileClose::FileClose()
 	setSignature(params);
 }
 
-Runtime::ControlFlow::E FileClose::execute(const ParameterList& params, Runtime::Object* result)
+Runtime::ControlFlow::E FileClose::execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token)
 {
 	if ( params.size() != 1 ) {
-		throw Utils::Exceptions::ParameterCountMissmatch("1 parameter expected, but " + ::Utils::Tools::toString(params.size()) + " parameter(s) found");
+		throw Utils::Exceptions::ParameterCountMissmatch("1 parameter expected, but " + ::Utils::Tools::toString(params.size()) + " parameter(s) found", token->position());
 	}
 
 	Runtime::ControlFlow::E controlFlow = Runtime::ControlFlow::Normal;

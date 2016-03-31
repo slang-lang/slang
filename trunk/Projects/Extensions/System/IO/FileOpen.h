@@ -24,7 +24,7 @@ class FileOpen : public Runtime::Method
 public:
 	FileOpen();
 
-	Runtime::ControlFlow::E execute(const ParameterList &params, Runtime::Object *result);
+	Runtime::ControlFlow::E execute(const ParameterList &params, Runtime::Object *result, const TokenIterator& token);
 
 private:
 	int parseAccessMode(std::string accessmode) const;
