@@ -21,32 +21,20 @@ public object Main
 		try {
 			fd = fopen("file.complex", "r");
 
-			write("file: ");
-
 			bool boolValue = freadb(fd);		// read bool
-			write("bool " + boolValue + ", ");
+			writeln("bool " + boolValue + ", ");
 
 			double doubleValue = freadd(fd);	// read double
-			write("double " + doubleValue + ", ");
+			writeln("double " + doubleValue + ", ");
 
 			float floatValue = freadf(fd);		// read float
-			write("float " + floatValue + ", ");
+			writeln("float " + floatValue + ", ");
 
 			int intValue = freadi(fd);		// read int
-			write("int " + intValue + ", ");
+			writeln("int " + intValue + ", ");
 
 			string stringValue = freads(fd, 6);	// read string
-			write("string " + stringValue);
-
-/*
-			write(", string ");
-			for ( int i = 0; i < 7; i=i+1) {
-				string str = freads(fd, 1);	// read string
-				write(str);
-			}
-*/
-
-			writeln("");
+			writeln("string " + stringValue);
 		}
 		catch {
 			writeln("ups..");
@@ -74,7 +62,7 @@ public object Main
 			fwrited(fd, 173.1389d); // write double
 			fwritef(fd, 173.1389f)  // write float
 			fwritei(fd, 1731389);	// write int
-			fwrites(fd, "1731389");  // write string
+			fwrites(fd, "1731389");	// write string
 		}
 		catch {
 			writeln("ups..");

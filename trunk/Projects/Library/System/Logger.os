@@ -1,6 +1,6 @@
 
-public namespace System
-{
+public namespace System {
+
 	public object Logger
 	{
 		// Members
@@ -34,4 +34,6 @@ public namespace System
 		}
 
 	}
+
 }
+
