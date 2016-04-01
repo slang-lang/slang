@@ -26,12 +26,10 @@ SET(DEPENDENCIES
 	Test_Interfaces
 	Test_Inheritance
 	Test_Attributes
-	Extensions
 	Core
 )
 
 add_include(Projects/Core)
-add_include(Projects/Extensions)
 add_include(Projects/TestSuite)
 add_include(Projects/Utils)
 

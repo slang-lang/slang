@@ -173,14 +173,6 @@
 			>
 		</File>
 		<File
-			RelativePath=".\Extensions.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\Extensions.h"
-			>
-		</File>
-		<File
 			RelativePath=".\System\IO\FileClose.cpp"
 			>
 			<FileConfiguration
