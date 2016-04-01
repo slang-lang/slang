@@ -49,7 +49,7 @@ void printUsage()
 	std::cout << "-h | --help           This help" << std::endl;
 	std::cout << "-l | --library        Library root path" << std::endl;
 	std::cout << "-q | --quiet          Quiet mode, chats as less as possible" << std::endl;
-	std::cout << "-s                    Structured mode" << std::endl;
+	std::cout << "-s                    (deactivated) Structured execution mode" << std::endl;
 	std::cout << "-v | --verbose        Verbose output" << std::endl;
 	std::cout << "--version             Version information" << std::endl;
 	std::cout << std::endl;
