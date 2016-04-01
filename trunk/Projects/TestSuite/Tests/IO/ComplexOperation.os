@@ -1,12 +1,14 @@
 #!/usr/local/bin/oscript
 
-import System.IO.File;
+//import System.IO.File;
+//import System.IO.All;
+import System.All;
 
 public object Main
 {
 	public void Main(int argc, string argv)
 	{
-		File file = new File("testfile", "ctw");
+		File file = new File("file.complex", "ctw");
 		assert( file.isOpen() );
 
 		assert( writeFile() );
