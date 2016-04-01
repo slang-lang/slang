@@ -133,9 +133,6 @@ public namespace ExceptionTest
 		{
 			print("TestCase5()");
 
-			int one = 1;
-			print("one = " + one);
-
 			try {
 				print("outter try");
 
@@ -146,6 +143,16 @@ public namespace ExceptionTest
 
 					assert( false );
 				}
+				catch {
+					print("inner catch");
+				}
+				finally {
+					print("inner finally");
+				}
+			}
+			catch {
+				print("outter catch");
+				assert(false);
 			}
 			finally {
 				print("outter finally");

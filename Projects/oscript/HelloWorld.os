@@ -1,14 +1,20 @@
 #!/usr/local/bin/oscript
 
-public namespace HelloWorld
+public object Main
 {
-	public object Main
+	public void Main(int argc, string argv)
 	{
-		public void Main(number argc, string argv)
-		{
-			print("Hello World!");
-			print("argc = " + argc);
-			print("argv = " + argv);
-		}
+		print("Hello World!");
+		print("argc = " + argc);
+		print("argv = " + argv);
 	}
 }
+
+/*
+public int Main(int argc, string argv)
+{
+	print("Hello World!");
+	print("argc = " + argc);
+	print("argv = " + argv);
+}
+*/

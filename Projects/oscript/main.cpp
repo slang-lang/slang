@@ -38,6 +38,7 @@ Utils::Common::StdOutLogger mLogger;
 ObjectiveScript::ParameterList mParameters;
 Utils::Printer *mPrinter;
 std::string mRoot;
+bool mStructuredExecution;
 
 
 void printUsage()
@@ -48,6 +49,7 @@ void printUsage()
 	std::cout << "-h | --help           This help" << std::endl;
 	std::cout << "-l | --library        Library root path" << std::endl;
 	std::cout << "-q | --quiet          Quiet mode, chats as less as possible" << std::endl;
+	std::cout << "-s                    Structured mode" << std::endl;
 	std::cout << "-v | --verbose        Verbose output" << std::endl;
 	std::cout << "--version             Version information" << std::endl;
 	std::cout << std::endl;
@@ -102,6 +104,9 @@ void processParameters(int argc, const char* argv[])
 
 				mPrinter->ActivatePrinter = false;
 			}
+			else if ( Utils::Tools::StringCompare(argv[i], "-s") ) {
+				mStructuredExecution = true;
+			}
 			else if ( Utils::Tools::StringCompare(argv[i], "-v") || Utils::Tools::StringCompare(argv[i], "--verbose") ) {
 				mLogger.setLoudness(Utils::Common::ILogger::LoudnessInfo);
 
@@ -142,6 +147,7 @@ int main(int argc, const char* argv[])
 #endif
 
 	mPrinter = Utils::PrinterDriver::getInstance();
+	mStructuredExecution = false;
 
 	processParameters(argc, argv);
 
@@ -157,6 +163,16 @@ int main(int argc, const char* argv[])
 
 	try {
 		mVirtualMachine.createScriptFromFile(mFilename, mParameters);
+
+/*
+		ObjectiveScript::Script *script = mVirtualMachine.createScriptFromFile(mFilename, mParameters);
+
+		assert(script);
+		if ( mStructuredExecution ) {
+			script->execute("Main", mParameters);
+		}
+*/
+
 		// our script automatically executes it's Main object constructor,
 		// so there is no need to execute a method explicitly
 	}

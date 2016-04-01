@@ -33,12 +33,11 @@ public:
 	~Repository();
 
 public:
-	void CollectGarbage();
 	GlobalScope* getGlobalScope() const;
 
 public:
-	void addBlueprint(const Designtime::BluePrint& object);
-	void addPrototype(const Designtime::Prototype& prototype);
+	void addBlueprint(const Designtime::BluePrint& object, bool doPreProcessing = true);
+	void addPrototype(const Designtime::Prototype& prototype, bool doPreProcessing = true);
 
 	Runtime::Object* createInstance(const std::string& type, const std::string& name, const std::string& prototype = "");
 
@@ -51,6 +50,9 @@ protected:
 
 private:
 	typedef std::map<Runtime::Object*, int> ReferenceCountedObjects;
+
+private: // hide me from public
+	void CollectGarbage();
 
 private:
 	Runtime::Object* createObject(const std::string& name, Designtime::BluePrint* blueprint);

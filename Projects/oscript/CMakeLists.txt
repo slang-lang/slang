@@ -8,7 +8,7 @@ SET(HEADERS
 )
 
 SET(DEPENDENCIES
-	Extensions
+	ExtensionsSystem
 	Core
 	Utils
 )
