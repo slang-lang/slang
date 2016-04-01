@@ -11,7 +11,7 @@ public object Main
 
 		while ( lowerbound < upperbound ) {
 			//print("lowerbound = " + lowerbound);
-			//lowerbound += 1;
+
 			lowerbound = lowerbound + 1;
 		}
 

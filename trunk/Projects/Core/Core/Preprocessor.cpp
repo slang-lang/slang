@@ -7,8 +7,8 @@
 // Project includes
 #include <Core/Parser/Parser.h>
 #include <Core/Utils/Exceptions.h>
-#include <Core/Utils/Utils.h>
 #include "Repository.h"
+#include "Tokenizer.h"
 
 // Namespace declarations
 
@@ -25,6 +25,7 @@ Preprocessor::Preprocessor(Repository *repo)
 
 Designtime::BluePrint* Preprocessor::createMember(TokenIterator token) const
 {
+	std::string languageFeature;
 	std::string name;
 	std::string type;
 	std::string visibility;
@@ -33,6 +34,10 @@ Designtime::BluePrint* Preprocessor::createMember(TokenIterator token) const
 
 	// look for the visibility token
 	visibility = (*token++).content();
+	// look for an optional language feature token
+	if ( token->isOptional() ) {
+		languageFeature = (*token++).content();
+	}
 	// look for the type token
 	type = (*token++).content();
 	// look for the identifier token
@@ -41,30 +46,29 @@ Designtime::BluePrint* Preprocessor::createMember(TokenIterator token) const
 	if ( Visibility::convert(visibility) == Visibility::Public ) {
 		// beware: public members are deprecated, remember the "Law of Demeter"
 		// consider using wrappers (getter, setter) instead of directly providing access to members to outsiders
+		// haven't you heard? outsiders, or sometimes called strangers, are evil
 		throw Utils::Exceptions::LawOfDemeterViolated("public member " + name + " violates \"Law of Demeter\"", token->position());
 	}
 
-	if ( (*token).isOptional() ) {
+	if ( token->category() == Token::Category::Modifier ) {
 		if ( (*token).content() == MODIFIER_CONST ) {
 			isConst = true;
 		}
 		else if ( (*token).content() == MODIFIER_FINAL ) {
 			isFinal = true;
 		}
-		else if ( (*token).content() == MODIFIER_MODIFY ) {
-			isConst = false;
-		}
 
 		token++;
 	}
 
 	if ( (*token).type() != Token::Type::SEMICOLON ) {
-		throw Utils::Exceptions::Exception("member initialization not allowed during declaration", token->position());
+		throw Utils::Exceptions::Exception("initialization not allowed during member declaration", token->position());
 	}
 
 	Designtime::BluePrint* blue = new Designtime::BluePrint(type, mFilename, name);
 	blue->setConst(isConst);
 	blue->setFinal(isFinal);
+	blue->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
 	blue->setMember(true);		// every object created here is a member object
 	blue->setVisibility(Visibility::convert(visibility));
 
@@ -74,14 +78,15 @@ Designtime::BluePrint* Preprocessor::createMember(TokenIterator token) const
 Runtime::Method* Preprocessor::createMethod(TokenIterator token) const
 {
 	bool isAbstract = false;
-	bool isConst = true;		// all methods are const by default
+	bool isConst = true;		// extreme const correctness: all methods are const by default
 	bool isFinal = false;
 	bool isRecursive = false;
+	std::string languageFeature;
 	MethodAttributes::MethodType::E methodType = MethodAttributes::MethodType::Method;
 	std::string name;
-	std::string languageFeature;
 	std::string type;
 	std::string visibility;
+	int numConstModifiers = 0;
 
 	// look for the visibility token
 	visibility = (*token++).content();
@@ -128,12 +133,14 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token) const
 			}
 			else if ( token->content() == MODIFIER_CONST ) {
 				isConst = true;
+				numConstModifiers++;
 			}
 			else if ( token->content() == MODIFIER_FINAL ) {
 				isFinal = true;
 			}
 			else if ( token->content() == MODIFIER_MODIFY ) {
 				isConst = false;
+				numConstModifiers++;
 			}
 			else if ( token->content() == MODIFIER_RECURSIVE ) {
 				isRecursive = true;
@@ -143,6 +150,10 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token) const
 			isModifierToken = false;
 		}
 	} while ( isModifierToken && token->type() != Token::Type::BRACKET_CURLY_OPEN );
+
+	if ( numConstModifiers > 1 ) {
+		throw Utils::Exceptions::Exception("modifiers 'const' & 'modify' are exclusive");
+	}
 
 	if ( isConst &&
 		(methodType == MethodAttributes::MethodType::Constructor || methodType == MethodAttributes::MethodType::Destructor) ) {
@@ -216,8 +227,6 @@ void Preprocessor::process(Designtime::BluePrint* blueprint)
 {
 	assert(blueprint);
 	mBluePrint = blueprint;
-
-	OSdebug("process('" + mBluePrint->Typename() + "')");
 
 	mFilename = mBluePrint->Filename();
 	mTokens = mBluePrint->getTokens();

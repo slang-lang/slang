@@ -1,6 +1,6 @@
 #!/usr/local/bin/oscript
 
-//import System;
+import System.Exception;
 
 public namespace StackTest
 {
@@ -33,9 +33,13 @@ public namespace StackTest
 		{
 		}
 
+		public ~Stack()
+		{
+		}
+
 		public bool empty() const
 		{
-			return (first);
+			return first;
 		}
 
 		public int pop()
@@ -45,9 +49,8 @@ public namespace StackTest
 				first = first.Next;
 				return temp;
 			}
-			else {
-				throw;
-			}
+
+			throw new Exception("cannot pop beyond first node");
 		}
 
 		public void push(int value) modify

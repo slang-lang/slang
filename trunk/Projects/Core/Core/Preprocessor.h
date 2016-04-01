@@ -9,7 +9,7 @@
 
 // Project includes
 #include "Parameter.h"
-#include "Tokenizer.h"
+#include "Token.h"
 
 // Forward declarations
 

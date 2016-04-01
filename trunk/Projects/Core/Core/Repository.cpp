@@ -38,14 +38,14 @@ Repository::Repository()
 {
 	mScope = new GlobalScope();
 
-	addBlueprint(Designtime::BoolObject());
-	addBlueprint(Designtime::DoubleObject());
-	addBlueprint(Designtime::FloatObject());
-	addBlueprint(Designtime::IntegerObject());
-	addBlueprint(Designtime::NumberObject());
-	addBlueprint(Designtime::StringObject());
-	addBlueprint(Designtime::VoidObject());
-	addBlueprint(Designtime::GenericObject());
+	addBlueprint(Designtime::BoolObject(), false);
+	addBlueprint(Designtime::DoubleObject(), false);
+	addBlueprint(Designtime::FloatObject(), false);
+	addBlueprint(Designtime::IntegerObject(), false);
+	addBlueprint(Designtime::NumberObject(), false);
+	addBlueprint(Designtime::StringObject(), false);
+	addBlueprint(Designtime::VoidObject(), false);
+	addBlueprint(Designtime::GenericObject(), false);
 }
 
 Repository::~Repository()
@@ -81,7 +81,7 @@ Repository::~Repository()
 /*
  * adds new blue print to our repository
  */
-void Repository::addBlueprint(const Designtime::BluePrint& blueprint)
+void Repository::addBlueprint(const Designtime::BluePrint& blueprint, bool doPreProcessing)
 {
 	OSinfo("addBlueprint('" + blueprint.Typename() + "')");
 
@@ -117,14 +117,16 @@ void Repository::addBlueprint(const Designtime::BluePrint& blueprint)
 	}
 	// }
 
-	Preprocessor preprocessor(this);
-	preprocessor.process(&blueIt->second);
+	if ( doPreProcessing ) {
+		Preprocessor preprocessor(this);
+		preprocessor.process(&blueIt->second);
+	}
 }
 
 /*
  * DEPRECATED: adds a new prototype (= generic) to our repository
  */
-void Repository::addPrototype(const Designtime::Prototype& prototype)
+void Repository::addPrototype(const Designtime::Prototype& prototype, bool /*doPreProcessing*/)
 {
 	std::string type = prototype.type();
 
@@ -190,11 +192,11 @@ void Repository::CollectGarbage()
 Runtime::Object* Repository::createInstance(const std::string& type, const std::string& name, const std::string& prototype)
 {
 	// non-reference-based instantiation
-	OSinfo("createInstance('" + type + "', '" + name + "', '" + prototype + "')");
+	OSdebug("createInstance('" + type + "', '" + name + "', '" + prototype + "')");
 
 	Designtime::BluePrint blueprint;
 
-/*
+/*	Not part of this release
 	Prototypes::iterator it = mPrototypes.find(prototype);
 	if ( it != mPrototypes.end() ) {
 		blueprint = it->second.generateBluePrint(type);
@@ -208,7 +210,7 @@ Runtime::Object* Repository::createInstance(const std::string& type, const std::
 		else {
 			throw Utils::Exceptions::Exception("trying to create instance of unknown object '" + type + "'");
 		}
-/*
+/*	Not part of this release
 	}
 */
 

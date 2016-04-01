@@ -176,15 +176,20 @@ void VirtualMachine::init()
 bool VirtualMachine::loadExtensions()
 {
 	for (Extensions::ExtensionList::const_iterator extIt = mExtensions.begin(); extIt != mExtensions.end(); ++extIt) {
-		Extensions::ExtensionMethods methods;
-		(*extIt)->provideMethods(methods);
+		try {
+			Extensions::ExtensionMethods methods;
+			(*extIt)->provideMethods(methods);
 
-		for (Extensions::ExtensionMethods::const_iterator it = methods.begin(); it != methods.end(); ++it) {
-			OSinfo("adding extension '" + (*extIt)->getName() + "." + (*it)->getName() + "'");
+			for (Extensions::ExtensionMethods::const_iterator it = methods.begin(); it != methods.end(); ++it) {
+				OSinfo("adding extension '" + (*extIt)->getName() + "." + (*it)->getName() + "'");
 
-			(*it)->setParent(mRepository->getGlobalScope());
+				(*it)->setParent(mRepository->getGlobalScope());
 
-			mRepository->getGlobalScope()->defineMethod((*it)->getName(), (*it));
+				mRepository->getGlobalScope()->defineMethod((*it)->getName(), (*it));
+			}
+		}
+		catch ( ... ) {
+			std::cout << "error while loading extensions" << std::endl;
 		}
 	}
 
@@ -195,55 +200,50 @@ bool VirtualMachine::loadLibrary(const std::string& library)
 {
 	OSinfo("loading additional library file '" + library + "'...");
 
-	if ( mImportedLibraries.find(library) != mImportedLibraries.end() ) {
-		// circular import => abort
-		return true;
+	if ( !::Utils::Tools::Files::exists(library) ) {
+		// provided library file doesn't exist!
+		return false;
 	}
 
-	if ( !::Utils::Tools::Files::exists(library) ) {
-		return false;
+	if ( mImportedLibraries.find(library) != mImportedLibraries.end() ) {
+		// circular import => abort
+		OSwarn("circular imports detected in file '" + library + "'");
+		return true;
 	}
 
 	std::string baseFolder = ::Utils::Tools::Files::ExtractPathname(library);
 
-	try {
-		Analyser analyser(mRepository);
-		analyser.processFile(library);
+	Analyser analyser(mRepository);
+	analyser.processFile(library);
 
-		mImportedLibraries.insert(library);
+	mImportedLibraries.insert(library);
 
-		const std::list<std::string>& libraries = analyser.getLibraryReferences();
-		for ( std::list<std::string>::const_iterator it = libraries.begin(); it != libraries.end(); ++it ) {
-			std::string filename = buildPath(baseFolder, (*it));
+	const std::list<std::string>& libraries = analyser.getLibraryReferences();
+	for ( std::list<std::string>::const_iterator it = libraries.begin(); it != libraries.end(); ++it ) {
+		std::string filename = buildPath(baseFolder, (*it));
+
+		if ( !loadLibrary(filename) ) {
+			filename = buildPath(mLibraryFolder, (*it));
 
 			if ( !loadLibrary(filename) ) {
-				filename = buildPath(mLibraryFolder, (*it));
-
-				if ( !loadLibrary(filename) ) {
-					throw Utils::Exceptions::Exception("could not resolve import '" + (*it) + "'");
-				}
+				throw Utils::Exceptions::Exception("could not resolve import '" + (*it) + "'");
 			}
 		}
+	}
 
 /*	Not part of this release
-		PrototypeList prototypes = analyser.getPrototypes();
-		for ( PrototypeList::iterator it = prototypes.begin(); it != prototypes.end(); ++it ) {
-			mRepository->addPrototype((*it));
-		}
+	PrototypeList prototypes = analyser.getPrototypes();
+	for ( PrototypeList::iterator it = prototypes.begin(); it != prototypes.end(); ++it ) {
+		mRepository->addPrototype((*it));
+	}
 */
 
-		Designtime::BluePrintList blueprints = analyser.getBluePrints();
-		for ( Designtime::BluePrintList::iterator it = blueprints.begin(); it != blueprints.end(); ++it ) {
-			mRepository->addBlueprint((*it));
-		}
-
-		return true;
-	}
-	catch ( std::exception& e ) {
-		OSerror(e.what());
+	Designtime::BluePrintList blueprints = analyser.getBluePrints();
+	for ( Designtime::BluePrintList::iterator it = blueprints.begin(); it != blueprints.end(); ++it ) {
+		mRepository->addBlueprint((*it));
 	}
 
-	return false;
+	return true;
 }
 
 void VirtualMachine::setBaseFolder(const std::string& base)

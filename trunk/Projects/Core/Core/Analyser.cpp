@@ -89,7 +89,7 @@ Designtime::Ancestors Analyser::collectInheritance(TokenIterator &start) const
 
 Designtime::BluePrint Analyser::createBluePrint(TokenIterator& start, TokenIterator end) const
 {
-	std::string fullyQualifiedTypename;
+	std::string fullyQualifiedName;
 	std::string languageFeature;
 	std::string name;
 	std::string visibility;
@@ -106,9 +106,9 @@ Designtime::BluePrint Analyser::createBluePrint(TokenIterator& start, TokenItera
 	name = (*start).content();
 
 	if ( !mScopeName.empty() ) {
-		fullyQualifiedTypename = mScopeName + RESERVED_WORD_SCOPE_OPERATOR;
+		fullyQualifiedName = mScopeName + RESERVED_WORD_SCOPE_OPERATOR;
 	}
-	fullyQualifiedTypename += name;
+	fullyQualifiedName += name;
 
 	// collect inheritance (if present)
 	Designtime::Ancestors inheritance = collectInheritance(++start);
@@ -140,7 +140,7 @@ Designtime::BluePrint Analyser::createBluePrint(TokenIterator& start, TokenItera
 	sanity.process(tokens);
 
 	Designtime::BluePrint blue(name, mFilename);
-	blue.setFullyQualifiedTypename(fullyQualifiedTypename);
+	blue.setFullyQualifiedTypename(fullyQualifiedName);
 	blue.setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
 	blue.setTokens(tokens);
 	blue.setVisibility(Visibility::convert(visibility));
@@ -170,6 +170,7 @@ std::string Analyser::createLibraryReference(TokenIterator& start, TokenIterator
 
 void Analyser::createMember(TokenIterator& start, TokenIterator /*end*/)
 {
+	std::string fullyQualifiedName;
 	bool isConst = false;
 	bool isFinal = false;
 	std::string languageFeature;
@@ -188,8 +189,13 @@ void Analyser::createMember(TokenIterator& start, TokenIterator /*end*/)
 	// look for the identifier token
 	name = (*start++).content();
 
+	if ( !mScopeName.empty() ) {
+		fullyQualifiedName = mScopeName + RESERVED_WORD_SCOPE_OPERATOR;
+	}
+	fullyQualifiedName += name;
+
 	if ( (*start).type() != Token::Type::SEMICOLON ) {
-		throw Utils::Exceptions::Exception("member initialization not allowed during declaration", start->position());
+		throw Utils::Exceptions::Exception("initialization not allowed during declaration", start->position());
 	}
 
 	Runtime::Object *symbol = mRepository->createInstance(type, name);
