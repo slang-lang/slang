@@ -25,7 +25,7 @@ function(build_static_lib target modules)
         if ( num_dependencies GREATER 0 )
             target_link_libraries(${target} ${DEPENDENCIES})
         endif()
-        
+
         _handle_modules_post_linker("${modules}" ${target})
 
 endfunction()
@@ -57,53 +57,53 @@ endfunction()
 
 function(build_app target modules)
 
-        _handle_modules_pre_linker("${modules}")
+    _handle_modules_pre_linker("${modules}")
 
-        SET(CMAKE_CXX_FLAGS "-Wl,--as-needed")
-        LIST(LENGTH HEADERS num_headers)
-        #if ( num_headers GREATER 0 )
-        #    qt_wrap_cpp(${target} HEADERS ${HEADERS})
-        #endif()
+    SET(CMAKE_CXX_FLAGS "-Wl,--as-needed")
+    LIST(LENGTH HEADERS num_headers)
+    #if ( num_headers GREATER 0 )
+    #    qt_wrap_cpp(${target} HEADERS ${HEADERS})
+    #endif()
 
-        add_executable(${target} ${SOURCES} ${HEADERS})
-    
-        # link against specified libs
-        target_link_libraries(${target} ${DEPENDENCIES})
-        
-        _handle_modules_post_linker("${modules}" ${target})
+    add_executable(${target} ${SOURCES} ${HEADERS})
+
+    # link against specified libs
+    target_link_libraries(${target} ${DEPENDENCIES})
+
+    _handle_modules_post_linker("${modules}" ${target})
 
 endfunction()
 
 function(_handle_modules_pre_linker modules)
-    
+
     # make qt available to all by default
     #_handle_pre_qtcore()
 
-    list(FIND modules "qtgui" found)
-    if ( ${found} GREATER -1 )
-        _handle_pre_qtgui()
-    endif()
+    #list(FIND modules "qtgui" found)
+    #if ( ${found} GREATER -1 )
+    #    _handle_pre_qtgui()
+    #endif()
 
-    list(FIND modules "qtsql" found)
-    if ( ${found} GREATER -1 )
-        _handle_pre_qtsql()
-    endif()
+    #list(FIND modules "qtsql" found)
+    #if ( ${found} GREATER -1 )
+    #    _handle_pre_qtsql()
+    #endif()
 
-    list(FIND modules "qttest" found)
-    if ( ${found} GREATER -1 )
-        _handle_pre_qttest()
-    endif()
-   
+    #list(FIND modules "qttest" found)
+    #if ( ${found} GREATER -1 )
+    #    _handle_pre_qttest()
+    #endif()
+
     # always include boost
     #list(FIND modules "boost" found)
     #if ( ${found} GREATER -1 )
     #    _handle_pre_boost()
     #endif()
 
-#    list(FIND modules "json" found)
-#    if ( ${found} GREATER -1 )
-#        _handle_pre_json()
-#    endif()
+    #list(FIND modules "json" found)
+    #if ( ${found} GREATER -1 )
+    #    _handle_pre_json()
+    #endif()
 
 endfunction()
 
@@ -111,27 +111,27 @@ function(_handle_modules_post_linker modules target)
 
     # link against qtcore by default 
     #_handle_post_qtcore(${target})
-    
-    list(FIND modules "qtgui" found)
-    if ( ${found} GREATER -1 )
-        _handle_post_qtgui(${target})
-    endif()
-    
-    list(FIND modules "qtsql" found)
-    if ( ${found} GREATER -1 )
-        _handle_post_qtsql(${target})
-    endif()
-    
-    list(FIND modules "qttest" found)
-    if ( ${found} GREATER -1 )
-        _handle_post_qttest(${target})
-    endif()
 
-#    list(FIND modules "json" found)
-#    if ( ${found} GREATER -1 )
-#        _handle_post_json(${target})
-#    endif()
-   
+    #list(FIND modules "qtgui" found)
+    #if ( ${found} GREATER -1 )
+    #    _handle_post_qtgui(${target})
+    #endif()
+
+    #list(FIND modules "qtsql" found)
+    #if ( ${found} GREATER -1 )
+    #    _handle_post_qtsql(${target})
+    #endif()
+
+    #list(FIND modules "qttest" found)
+    #if ( ${found} GREATER -1 )
+    #    _handle_post_qttest(${target})
+    #endif()
+
+    #list(FIND modules "json" found)
+    #if ( ${found} GREATER -1 )
+    #    _handle_post_json(${target})
+    #endif()
+
 endfunction()
 
 function(_handle_pre_qtcore)
@@ -212,12 +212,12 @@ endfunction()
 function(_json_check_existence)
 
     # make sure the appropriate environment variable is set!
-    if("${ISC_BUILD_JSON_INC}" STREQUAL "")
-        MESSAGE(FATAL_ERROR "ISC_BUILD_JSON_INC needed for json!")
+    if("${BUILD_JSON_INC}" STREQUAL "")
+        MESSAGE(FATAL_ERROR "BUILD_JSON_INC needed for json!")
     endif()
 
-    if("${ISC_BUILD_JSON_LIB}" STREQUAL "")
-        MESSAGE(FATAL_ERROR "ISC_BUILD_JSON_LIB needed for json!")
+    if("${BUILD_JSON_LIB}" STREQUAL "")
+        MESSAGE(FATAL_ERROR "BUILD_JSON_LIB needed for json!")
     endif()
 
 endfunction()
@@ -225,8 +225,8 @@ endfunction()
 function(_handle_pre_json)
 
     _json_check_existence()
-    include_directories(${ISC_BUILD_JSON_INC})
-    link_directories(${ISC_BUILD_JSON_LIB})
+    include_directories(${BUILD_JSON_INC})
+    link_directories(${BUILD_JSON_LIB})
 
 endfunction()
 

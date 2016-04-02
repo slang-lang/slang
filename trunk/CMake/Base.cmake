@@ -1,8 +1,8 @@
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 2.8)
 
 # cmake policy changes. use "cmake --help-policy <policyid>" for details
 cmake_policy(SET CMP0000 OLD)
-if ( CMAKE_VERSION VERSION_LESS "2.6.4" )
+if ( CMAKE_VERSION VERSION_LESS "2.8.0" )
 else()
 	cmake_policy(SET CMP0011 NEW)
 endif()
@@ -14,7 +14,6 @@ endif()
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)   # binary root
 SET(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)      # library root
 
-#SET(CMAKE_CXX_FLAGS "-ansi -pedantic -fPIC -Wall -Werror -Wunused -Wno-long-long -Wnon-virtual-dtor") # -std=c++0x ;-(
 SET(CMAKE_CXX_FLAGS "-pedantic -fPIC -Wall -Werror -Wunused -Wno-long-long -Wnon-virtual-dtor") # -std=c++0x -std=c++11 ;-(
 
 if( "${BUILD}" STREQUAL "" OR "${BUILD}" MATCHES "Debug")
@@ -28,7 +27,7 @@ if( "${BUILD}" STREQUAL "" OR "${BUILD}" MATCHES "Debug")
 
     # suppress "veraltete Konvertierung von Zeichenkettenkonstante in »char*« [-Werror=write-strings]"
     add_definitions(-Wno-write-strings)
-    
+
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wextra")
 
 elseif("${BUILD}" MATCHES "Release")
@@ -36,13 +35,13 @@ elseif("${BUILD}" MATCHES "Release")
     # MESSAGE("Setting default build to: Release")
     SET(CMAKE_BUILD_TYPE "Release")
     SET(CMAKE_CXX_FLAGS "")
-    
+
     # do less logging
     #add_definitions(-DNO_DEBUG_LOG)
 
     # suppress "veraltete Konvertierung von Zeichenkettenkonstante in »char*« [-Werror=write-strings]"
     add_definitions(-Wno-write-strings)
-    
+
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-strict-aliasing")
 
 else()
