@@ -297,6 +297,8 @@ void LanguageTest::testNamespaces()
 
 void LanguageTest::testObjectEquality()
 {
+	TSKIP("skipping object equality test");
+
 	try {
 		VirtualMachine vm;
 
