@@ -105,6 +105,11 @@ function(_handle_modules_pre_linker modules)
     #    _handle_pre_json()
     #endif()
 
+    list(FIND modules "mysql" found)
+    if ( ${found} GREATER -1 )
+        _handle_pre_mysql()
+    endif()
+
 endfunction()
 
 function(_handle_modules_post_linker modules target)
@@ -132,7 +137,42 @@ function(_handle_modules_post_linker modules target)
     #    _handle_post_json(${target})
     #endif()
 
+    list(FIND modules "mysql" found)
+    if ( ${found} GREATER -1 )
+        _handle_post_mysql(${target})
+    endif()
+
 endfunction()
+
+
+function(_mysql_check_existence)
+
+    # make sure the appropriate environment variable is set!
+    if("${BUILD_MYSQL_INC}" STREQUAL "")
+        MESSAGE(FATAL_ERROR "BUILD_MYSQL_INC needed for mysql!")
+    endif()
+
+    if("${BUILD_MYSQL_LIB}" STREQUAL "")
+        MESSAGE(FATAL_ERROR "BUILD_MYSQL_LIB needed for mysql!")
+    endif()
+
+endfunction()
+
+function(_handle_pre_mysql)
+
+    _mysql_check_existence()
+    include_directories(${BUILD_MYSQL_INC})
+    link_directories(${BUILD_MYSQL_LIB})
+
+endfunction()
+
+function(_handle_post_mysql target)
+
+    _mysql_check_existence()
+    target_link_libraries(${target} mysqlclient)
+
+endfunction()
+
 
 function(_handle_pre_qtcore)
 
