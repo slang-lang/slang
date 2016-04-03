@@ -17,8 +17,8 @@ Assert::Assert()
 : Runtime::Method(0, "assert", Designtime::VoidObject::TYPENAME)
 {
 	ParameterList params;
-	params.push_back(Parameter(ANONYMOUS_OBJECT, Designtime::BoolObject::TYPENAME, FALSE));
-	params.push_back(Parameter(ANONYMOUS_OBJECT, Designtime::StringObject::TYPENAME, VALUE_NONE, true));
+	params.push_back(Parameter("condition", Designtime::BoolObject::TYPENAME, FALSE));
+	params.push_back(Parameter("message", Designtime::StringObject::TYPENAME, VALUE_NONE, true));
 
 	setSignature(params);
 }
@@ -48,8 +48,8 @@ AssertMsg::AssertMsg()
 : Runtime::Method(0, "assertmsg", Designtime::VoidObject::TYPENAME)
 {
 	ParameterList params;
-	params.push_back(Parameter(ANONYMOUS_OBJECT, Designtime::BoolObject::TYPENAME, FALSE));
-	params.push_back(Parameter(ANONYMOUS_OBJECT, Designtime::StringObject::TYPENAME, VALUE_NONE));
+	params.push_back(Parameter("condition", Designtime::BoolObject::TYPENAME, FALSE));
+	params.push_back(Parameter("message", Designtime::StringObject::TYPENAME, VALUE_NONE));
 
 	setSignature(params);
 }

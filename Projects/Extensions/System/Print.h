@@ -33,7 +33,7 @@ public:
 	: Runtime::Method(0, "printf", Designtime::VoidObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter(ANONYMOUS_OBJECT, Designtime::StringObject::TYPENAME, VALUE_NONE));
+		params.push_back(Parameter("text", Designtime::StringObject::TYPENAME, VALUE_NONE));
 
 		setSignature(params);
 	}
