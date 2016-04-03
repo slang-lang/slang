@@ -4,9 +4,8 @@ public object Main
 {
 	public void Main(int argc, string argv)
 	{
-		writeln("mysql_init()");
-
-		mysql_init();
+		int handle = mysql_init();
+		writeln("mysql_init() = " + handle);
 
 		writeln("done.");
 	}

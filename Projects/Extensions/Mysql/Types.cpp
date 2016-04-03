@@ -14,8 +14,11 @@ namespace Extensions {
 namespace Mysql {
 
 
-MYSQL *MySQLConnection = 0;
-MYSQL_RES *MySQLResult = 0;
+MysqlConnectionMap mMysqlConnections;
+int mNumMysqlConnections = 0;
+
+MysqlResultMap mMysqlResults;
+int mNumMysqlResults = 0;
 
 
 }

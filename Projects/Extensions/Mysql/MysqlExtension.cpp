@@ -16,6 +16,7 @@
 #include "Init.h"
 #include "NumRows.h"
 #include "Query.h"
+#include "StoreResult.h"
 
 // Namespace declarations
 
@@ -43,6 +44,7 @@ void MysqlExtension::provideMethods(ExtensionMethods &methods)
 	methods.push_back(new MysqlNumRows());
 	methods.push_back(new MysqlQuery());
 	methods.push_back(new MysqlRealConnect());
+	methods.push_back(new MysqlStoreResult());
 }
 
 

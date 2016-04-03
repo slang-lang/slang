@@ -37,7 +37,10 @@ Runtime::ControlFlow::E MysqlAffectedRows::execute(const ParameterList& params, 
 (void)token;
 
 	try {
-		*result = Runtime::IntegerObject(mysql_affected_rows(MySQLConnection));
+		int handle = Tools::stringToInt(params.begin()->value());
+		MYSQL *myConn = mMysqlConnections[handle];
+
+		*result = Runtime::IntegerObject(mysql_affected_rows(myConn));
 
 		return Runtime::ControlFlow::Normal;
 	}

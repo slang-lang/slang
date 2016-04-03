@@ -19,11 +19,12 @@ public object Main
 		conn.open("192.168.0.22", 3306, "oscript", "oscript", "ts_parking");
 		if ( !conn.isOpen() ) {
 			writeln("error: could not connect to database!);
+			writeln("conn.error() = " + conn.error());
+
 			throw new string("error: could not connect to database!);
 		}
 
 		// do something
-		writeln("conn.error() = " + conn.error());
 		//writeln("conn.info() = " + conn.info());
 
 		conn.close();

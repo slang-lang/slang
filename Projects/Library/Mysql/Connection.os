@@ -32,6 +32,10 @@ public namespace Mysql {
 			}
 		}
 
+		public int affectedRows() const {
+			return mysql_affected_rows();
+		}
+
 		private void cleanup() modify {
 			mDatabase = "";
 			mHandle = 0;
@@ -71,6 +75,10 @@ public namespace Mysql {
 
 		public bool isOpen() const {
 			return (mHandle != 0);
+		}
+
+		public int numRows() const {
+			return mysql_num_rows();
 		}
 
 		public bool open(string hostname, int port, string user, string password, string database) modify {

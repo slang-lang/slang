@@ -37,11 +37,11 @@ Runtime::ControlFlow::E MysqlNumRows::execute(const ParameterList& params, Runti
 (void)token;
 
 	try {
-		if ( !MySQLResult ) {
-			throw Utils::Exceptions::Exception("no result selected");
-		}
+		int handle = Tools::stringToInt(params.begin()->value());
 
-		*result = Runtime::IntegerObject(mysql_num_rows(MySQLResult));
+		MYSQL_RES *my_result = mMysqlResults[handle];
+
+		*result = Runtime::IntegerObject(mysql_num_rows(my_result));
 
 		return Runtime::ControlFlow::Normal;
 	}
