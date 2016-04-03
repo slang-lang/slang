@@ -66,6 +66,10 @@ public: // Setup
 	void setSignature(const ParameterList& params);
 	void setTokens(const TokenList& tokens);
 
+protected:
+	ExceptionData mExceptionData;
+	Repository *mRepository;
+
 private: // private types
 	typedef std::list<IScope*> ScopeStack;
 	typedef std::list<TokenList> TokenStack;
@@ -75,8 +79,6 @@ private: // Deinit
 	ControlFlow::E processControlFlow(ControlFlow::E controlflow, Object *result);
 
 private:
-	ExceptionData mExceptionData;
-	Repository *mRepository;
 	ParameterList mSignature;
 	TokenList mTokens;
 	std::string mTypeName;

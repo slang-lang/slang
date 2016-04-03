@@ -6,6 +6,7 @@
 #include <cassert>
 
 // Project includes
+#include "AffectedRows.h"
 #include "Close.h"
 #include "Connect.h"
 #include "ConnectionTest.h"
@@ -13,6 +14,8 @@
 #include "GetClientInfo.h"
 #include "Info.h"
 #include "Init.h"
+#include "NumRows.h"
+#include "Query.h"
 
 // Namespace declarations
 
@@ -31,11 +34,14 @@ void MysqlExtension::provideMethods(ExtensionMethods &methods)
 	methods.push_back(new ConnectionTest());
 	// }
 
+	methods.push_back(new MysqlAffectedRows());
 	methods.push_back(new MysqlClose());
 	methods.push_back(new MysqlGetClientInfo());
 	methods.push_back(new MysqlError());
 	methods.push_back(new MysqlInfo());
 	methods.push_back(new MysqlInit());
+	methods.push_back(new MysqlNumRows());
+	methods.push_back(new MysqlQuery());
 	methods.push_back(new MysqlRealConnect());
 }
 

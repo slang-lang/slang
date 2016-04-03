@@ -19,6 +19,7 @@ namespace Mysql {
 
 
 extern MYSQL *MySQLConnection;
+extern MYSQL_RES *MySQLResult;
 
 
 }
