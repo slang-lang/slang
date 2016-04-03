@@ -9,6 +9,7 @@ SET(HEADERS
 
 SET(DEPENDENCIES
 	ExtensionsSystem
+	ExtensionsMysql
 	Core
 	Utils
 )

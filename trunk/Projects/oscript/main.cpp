@@ -7,9 +7,12 @@
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Script.h>
 #include <Core/VirtualMachine.h>
-#include <System/System.h>
 #include <Tools/Printer.h>
 #include <Tools/Strings.h>
+
+// Extension includes
+#include <Mysql/MysqlExtension.h>
+#include <System/System.h>
 
 // Namespace declarations
 
@@ -158,8 +161,11 @@ int main(int argc, const char* argv[])
 	}
 
 	ObjectiveScript::VirtualMachine mVirtualMachine;
-	mVirtualMachine.addExtension(new ObjectiveScript::Extensions::System());
 	mVirtualMachine.setBaseFolder(mRoot);
+
+	// add extensions
+	mVirtualMachine.addExtension(new ObjectiveScript::Extensions::Mysql::MysqlExtension());
+	mVirtualMachine.addExtension(new ObjectiveScript::Extensions::System());
 
 	try {
 		mVirtualMachine.createScriptFromFile(mFilename, mParameters);
