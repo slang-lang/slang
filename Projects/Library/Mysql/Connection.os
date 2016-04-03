@@ -2,7 +2,7 @@
 import Query;
 import Result;
 
-public namespace MySQL {
+public namespace Mysql {
 
 	public object Connection
 	{

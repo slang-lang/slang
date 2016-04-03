@@ -1,4 +1,6 @@
 
+import Entry;
+
 public namespace Mysql {
 
 public object Result {
