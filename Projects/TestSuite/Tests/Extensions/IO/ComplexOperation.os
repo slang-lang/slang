@@ -1,6 +1,8 @@
 #!/usr/local/bin/oscript
 
-import System.IO.File;
+//import System.IO.File;
+//import System.IO.All;
+import System.All;
 
 public object Main
 {
