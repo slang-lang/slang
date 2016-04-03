@@ -1,6 +1,6 @@
 #!/usr/local/bin/oscript
 
-import MySQL.Connection;
+import Mysql.Connection;
 
 public object Main
 {
