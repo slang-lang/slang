@@ -38,7 +38,7 @@ Runtime::ControlFlow::E MysqlClose::execute(const ParameterList& params, Runtime
 
 	if ( !MySQLConnection ) {
 		// close without open connection?!
-		return Runtime::ControlFlow::Throw;
+		return Runtime::ControlFlow::Normal;
 	}
 
 	mysql_close(MySQLConnection);

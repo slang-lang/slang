@@ -33,9 +33,7 @@ Runtime::ControlFlow::E MysqlInfo::execute(const ParameterList& params, Runtime:
 (void)params;
 (void)token;
 
-	std::string info = mysql_info(MySQLConnection);
-
-	*result = Runtime::StringObject(info);
+	*result = Runtime::StringObject(mysql_info(MySQLConnection));
 
 	return Runtime::ControlFlow::Normal;
 }
