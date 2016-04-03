@@ -1,11 +1,10 @@
 
-import Query;
+//import Query;
 import Result;
 
 public namespace Mysql {
 
-	public object Connection
-	{
+	public object Connection {
 		private string mDatabase;
 		private int mHandle;
 		private string mHostName;
@@ -60,6 +59,10 @@ public namespace Mysql {
 
 		public int descriptor() const {
 			return mHandle;
+		}
+
+		public string error() const {
+			return mysql_error();
 		}
 
 		public string info() const {
