@@ -1,6 +1,7 @@
 INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
 SET(SOURCES
+	AffectedRows.cpp
 	Close.cpp
 	Connect.cpp
 	ConnectionTest.cpp
@@ -9,10 +10,13 @@ SET(SOURCES
 	Info.cpp
 	Init.cpp
 	MysqlExtension.cpp
+	NumRows.cpp
+	Query.cpp
 	Types.cpp
 )
 
 SET(HEADERS
+	AffectedRows.h
 	Close.h
 	Connect.h
 	ConnectionTest.h
@@ -21,6 +25,8 @@ SET(HEADERS
 	Info.h
 	Init.h
 	MysqlExtension.h
+	NumRows.h
+	Query.h
 	Types.h
 )
 

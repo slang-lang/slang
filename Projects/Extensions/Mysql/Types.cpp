@@ -15,6 +15,7 @@ namespace Mysql {
 
 
 MYSQL *MySQLConnection = 0;
+MYSQL_RES *MySQLResult = 0;
 
 
 }
