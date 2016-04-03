@@ -54,7 +54,7 @@ Runtime::ControlFlow::E MysqlRealConnect::execute(const ParameterList& params, R
 	std::string socket;
 	long clientflag = 0;
 
-	mysql_real_connect(MySQLConnection, host.c_str(), user.c_str(), passwd.c_str(), db.c_str(), port, socket.c_str(), clientflag);
+	MySQLConnection = mysql_real_connect(MySQLConnection, host.c_str(), user.c_str(), passwd.c_str(), db.c_str(), port, socket.c_str(), clientflag);
 
 	return Runtime::ControlFlow::Normal;
 }

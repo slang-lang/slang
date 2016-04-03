@@ -30,14 +30,8 @@ MysqlGetClientInfo::MysqlGetClientInfo()
 
 Runtime::ControlFlow::E MysqlGetClientInfo::execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token)
 {
-	(void)params;
-	(void)token;
-
-/*
-	if ( params.size() > 0 ) {
-		throw Utils::Exceptions::ParameterCountMissmatch("0 parameters expected, but " + ::Utils::Tools::toString(params.size()) + " parameter(s) found", token->position());
-	}
-*/
+(void)params;
+(void)token;
 
 	*result = Runtime::StringObject(mysql_get_client_info());
 

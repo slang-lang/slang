@@ -27,11 +27,11 @@ ConnectionTest::ConnectionTest()
 	setSignature(params);
 }
 
-Runtime::ControlFlow::E ConnectionTest::execute(const ParameterList& params, Runtime::Object* /*result*/, const TokenIterator& token)
+Runtime::ControlFlow::E ConnectionTest::execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token)
 {
-	if ( params.size() > 0 ) {
-		throw Utils::Exceptions::ParameterCountMissmatch("0 parameters expected, but " + ::Utils::Tools::toString(params.size()) + " parameter(s) found", token->position());
-	}
+(void)params;
+(void)result;
+(void)token;
 
 	MYSQL *conn;
 	MYSQL_RES *res;
