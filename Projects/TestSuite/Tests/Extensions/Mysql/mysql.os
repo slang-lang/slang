@@ -1,5 +1,6 @@
 #!/usr/local/bin/oscript
 
+//import Mysql.All;
 import Mysql.Connection;
 
 public object Main
@@ -22,6 +23,7 @@ public object Main
 		}
 
 		// do something
+		writeln("conn.error() = " + conn.error());
 		//writeln("conn.info() = " + conn.info());
 
 		conn.close();

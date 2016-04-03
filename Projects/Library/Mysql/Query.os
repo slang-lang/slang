@@ -4,7 +4,6 @@ import Result;
 public namespace Mysql {
 
 public object Query {
-
 	private string mExecutedString;
 	private string mQueryString;
 

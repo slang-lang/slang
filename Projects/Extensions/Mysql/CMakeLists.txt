@@ -4,6 +4,7 @@ SET(SOURCES
 	Close.cpp
 	Connect.cpp
 	ConnectionTest.cpp
+	Error.cpp
 	GetClientInfo.cpp
 	Info.cpp
 	Init.cpp
@@ -15,6 +16,7 @@ SET(HEADERS
 	Close.h
 	Connect.h
 	ConnectionTest.h
+	Error.h
 	GetClientInfo.h
 	Info.h
 	Init.h

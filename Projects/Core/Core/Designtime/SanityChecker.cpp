@@ -82,13 +82,13 @@ bool SanityChecker::process(const TokenList &tokens)
 	mTokens = tokens;
 
 	if (!checkBalancedCurlyBrackets()) {
-		throw Utils::Exceptions::SyntaxError("SanityCheck: unbalanced curly brackets found");
+		throw Utils::Exceptions::SyntaxError("SanityCheck: unbalanced curly brackets found", mTokens.begin()->position());
 	}
 	if (!checkBalancedParenthesis()) {
-		throw Utils::Exceptions::SyntaxError("SanityCheck: unbalanced parenthesis found");
+		throw Utils::Exceptions::SyntaxError("SanityCheck: unbalanced parenthesis found", mTokens.begin()->position());
 	}
 	if (!checkBalancedQuotes()) {
-		throw Utils::Exceptions::SyntaxError("SanityCheck: unbalanced quotes found");
+		throw Utils::Exceptions::SyntaxError("SanityCheck: unbalanced quotes found", mTokens.begin()->position());
 	}
 
 	return true;
