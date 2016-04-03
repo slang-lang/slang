@@ -174,17 +174,19 @@ ControlFlow::E Object::Constructor(const ParameterList& params)
 {
 	ControlFlow::E controlflow = ControlFlow::Normal;
 
-	// hack to initialize atomic types
-	if ( mIsAtomicType && !params.empty() ) {
-		if ( params.size() != 1 ) {
-			throw Utils::Exceptions::ParameterCountMissmatch("atomic types only support one constructor parameter");
+	if ( mIsAtomicType ) {	// hack to initialize atomic types
+		if ( !params.empty() ) {
+			if ( params.size() != 1 ) {
+				throw Utils::Exceptions::ParameterCountMissmatch("atomic types only support one constructor parameter");
+			}
+
+			setValue(params.front().value());
 		}
 
-		setValue(params.front().value());
 		return controlflow;
 	}
 
-	if ( mIsConstructed ) {
+	if ( mIsConstructed ) {	// prevent multiple instantiations
 		throw Utils::Exceptions::Exception("can not construct object '" + getName() + "' multiple times");
 	}
 
@@ -230,7 +232,7 @@ ControlFlow::E Object::Constructor(const ParameterList& params)
 		}
 	}
 
-/*
+/*	// doesn't work properly yes
 	// check if all base objects have been constructed correctly
 	for ( Inheritance::iterator it = mInheritance.begin(); it != mInheritance.end(); ++it ) {
 		if ( !it->second->mIsConstructed ) {

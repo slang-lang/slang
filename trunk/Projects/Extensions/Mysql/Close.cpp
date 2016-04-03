@@ -5,10 +5,8 @@
 // Library includes
 
 // Project includes
-#include <Core/Designtime/BuildInTypes/BoolObject.h>
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
-#include <Core/Designtime/BuildInTypes/StringObject.h>
-#include <Core/BuildInObjects/StringObject.h>
+#include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/Tools.h>
 #include <Core/Utils/Exceptions.h>
 #include <Tools/Strings.h>
@@ -26,22 +24,33 @@ MysqlClose::MysqlClose()
 : Runtime::Method(0, "mysql_close", Designtime::IntegerObject::TYPENAME)
 {
 	ParameterList params;
+	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, VALUE_NONE));
 
 	setSignature(params);
 }
 
 Runtime::ControlFlow::E MysqlClose::execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token)
 {
-(void)params;
-(void)result;
 (void)token;
 
-	if ( !MySQLConnection ) {
-		// close without open connection?!
+	try {
+		int handle = Tools::stringToInt(params.begin()->value());
+		MYSQL *myConn = mMysqlConnections[handle];
+
+		if ( !myConn ) {
+			// close without open connection?!
+			*result = Runtime::IntegerObject(-1);
+			return Runtime::ControlFlow::Normal;
+		}
+
+		mysql_close(myConn);
+
+		*result = Runtime::IntegerObject(0);
 		return Runtime::ControlFlow::Normal;
 	}
-
-	mysql_close(MySQLConnection);
+	catch ( std::exception &e ) {
+		return Runtime::ControlFlow::Throw;
+	}
 
 	return Runtime::ControlFlow::Normal;
 }

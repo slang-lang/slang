@@ -2,22 +2,33 @@
 
 public object Main {
 	public void Main(int argc, string argv) {
+		int result;
+		int result_handle;
+
+		int handle = mysql_init();
+
 		writeln("mysql_real_connect()");
-		mysql_real_connect("192.168.0.22", 3306, "oscript", "oscript", "ts_parking");
+		mysql_real_connect(handle, "192.168.0.22", 3306, "oscript", "oscript", "ts_parking");
 
-		string query = "SHOW TABLES";
+		string query = "SELECT * FROM parking_zones";
 
-		writeln("mysql_query(\"" + query + "\")");
-		int result = mysql_query(query);
+		result = mysql_query(handle, query);
+		writeln("mysql_query(" + handle + ", \"" + query + "\") = " + result);
 
 		if ( result != 0 ) {
-			writeln("mysql_error() = " + mysql_error());
+			writeln("mysql_error(" + handle + ") = " + mysql_error(handle));
 			writeln("failed.");
 			return;
 		}
 
-		result = mysql_num_rows(/*dummy handle*/ 0);
-		writeln("mysql_num_rows(0) = " + result);
+		result_handle = mysql_store_result(handle);
+		writeln("mysql_store_result(" + handle + ") = " + result_handle);
+
+		result = mysql_num_rows(result_handle);
+		writeln("mysql_num_rows(" + result_handle + ") = " + result);
+
+		result = mysql_close(handle);
+		writeln("mysql_close(" + handle + ") = " + result);
 
 		writeln("done");
 	}

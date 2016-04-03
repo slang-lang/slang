@@ -6,6 +6,7 @@
 
 // Project includes
 #include <Core/BuildInObjects/StringObject.h>
+#include <Core/Designtime/BuildInTypes/IntegerObject.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/Tools.h>
 #include <Core/Utils/Exceptions.h>
@@ -24,6 +25,7 @@ MysqlError::MysqlError()
 : Runtime::Method(0, "mysql_error", Designtime::StringObject::TYPENAME)
 {
 	ParameterList params;
+	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, VALUE_NONE));
 
 	setSignature(params);
 }
@@ -33,7 +35,16 @@ Runtime::ControlFlow::E MysqlError::execute(const ParameterList& params, Runtime
 (void)params;
 (void)token;
 
-	*result = Runtime::StringObject(mysql_error(MySQLConnection));
+	try {
+		int handle = Tools::stringToInt(params.begin()->value());
+
+		*result = Runtime::StringObject(mysql_error(mMysqlConnections[handle]));
+
+		return Runtime::ControlFlow::Normal;
+	}
+	catch ( std::exception &e ) {
+		return Runtime::ControlFlow::Throw;
+	}
 
 	return Runtime::ControlFlow::Normal;
 }

@@ -12,6 +12,7 @@ SET(SOURCES
 	MysqlExtension.cpp
 	NumRows.cpp
 	Query.cpp
+	StoreResult.cpp
 	Types.cpp
 )
 
@@ -27,6 +28,7 @@ SET(HEADERS
 	MysqlExtension.h
 	NumRows.h
 	Query.h
+	StoreResult.h
 	Types.h
 )
 

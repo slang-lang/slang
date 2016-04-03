@@ -1,6 +1,6 @@
 
 // Header
-#include "Query.h"
+#include "StoreResult.h"
 
 // Library includes
 
@@ -22,29 +22,29 @@ namespace Extensions {
 namespace Mysql {
 
 
-MysqlQuery::MysqlQuery()
-: Runtime::Method(0, "mysql_query", Designtime::IntegerObject::TYPENAME)
+MysqlStoreResult::MysqlStoreResult()
+: Runtime::Method(0, "mysql_store_result", Designtime::IntegerObject::TYPENAME)
 {
 	ParameterList params;
 	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, VALUE_NONE));
-	params.push_back(Parameter("query", Designtime::StringObject::TYPENAME, VALUE_NONE));
 
 	setSignature(params);
 }
 
-Runtime::ControlFlow::E MysqlQuery::execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token)
+Runtime::ControlFlow::E MysqlStoreResult::execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token)
 {
 (void)token;
 
 	try {
-		ParameterList::const_iterator it = params.begin();
-
-		int handle = Tools::stringToInt((*it++).value());
-		std::string query = (*it++).value();
-
+		int handle = Tools::stringToInt(params.begin()->value());
 		MYSQL *myConn = mMysqlConnections[handle];
 
-		*result = Runtime::IntegerObject(mysql_query(myConn, query.c_str()));
+		MYSQL_RES *my_result = mysql_store_result(myConn);
+
+		mNumMysqlResults++;
+		mMysqlResults.insert(std::make_pair(mNumMysqlResults, my_result));
+
+		*result = Runtime::IntegerObject(mNumMysqlResults);
 
 		return Runtime::ControlFlow::Normal;
 	}

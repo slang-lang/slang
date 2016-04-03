@@ -1,14 +1,16 @@
 #!/usr/local/bin/oscript
 
-public object Main
-{
-	public void Main(int argc, string argv)
-	{
-		writeln("mysql_real_connect()");
-		mysql_real_connect("192.168.0.22", 3306, "oscript", "oscript", "ts_parking");
+public object Main {
+	public void Main(int argc, string argv) {
+		int result;
 
-		writeln("mysql_close()");
-		mysql_close();
+		int handle = mysql_init();
+
+		writeln("mysql_real_connect()");
+		mysql_real_connect(handle, "192.168.0.22", 3306, "oscript", "oscript", "ts_parking");
+
+		result = mysql_close(handle);
+		writeln("mysql_close() = " + result);
 
 		writeln("done");
 	}

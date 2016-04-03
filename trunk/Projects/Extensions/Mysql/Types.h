@@ -4,6 +4,7 @@
 
 
 // Library includes
+#include <map>
 #include <mysql.h>
 
 // Project includes
@@ -18,8 +19,14 @@ namespace Extensions {
 namespace Mysql {
 
 
-extern MYSQL *MySQLConnection;
-extern MYSQL_RES *MySQLResult;
+typedef std::map<int, MYSQL*> MysqlConnectionMap;
+typedef std::map<int, MYSQL_RES*> MysqlResultMap;
+
+extern MysqlConnectionMap mMysqlConnections;
+extern int mNumMysqlConnections;
+
+extern MysqlResultMap mMysqlResults;
+extern int mNumMysqlResults;
 
 
 }
