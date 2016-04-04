@@ -37,12 +37,16 @@ Runtime::ControlFlow::E MysqlAffectedRows::execute(const ParameterList& params, 
 (void)token;
 
 	try {
-		int handle = Tools::stringToInt(params.begin()->value());
-		MYSQL *myConn = mMysqlConnections[handle];
+		// Parameter processing
+		// {
+		ParameterList::const_iterator it = params.begin();
+
+		int param_handle = Tools::stringToInt((*it++).value());
+		// }
+
+		MYSQL *myConn = mMysqlConnections[param_handle];
 
 		*result = Runtime::IntegerObject(mysql_affected_rows(myConn));
-
-		return Runtime::ControlFlow::Normal;
 	}
 	catch ( std::exception &e ) {
 		Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
@@ -52,7 +56,7 @@ Runtime::ControlFlow::E MysqlAffectedRows::execute(const ParameterList& params, 
 		return Runtime::ControlFlow::Throw;
 	}
 
-	return Runtime::ControlFlow::Throw;
+	return Runtime::ControlFlow::Normal;
 }
 
 }

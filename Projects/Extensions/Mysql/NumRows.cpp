@@ -37,13 +37,18 @@ Runtime::ControlFlow::E MysqlNumRows::execute(const ParameterList& params, Runti
 (void)token;
 
 	try {
-		int handle = Tools::stringToInt(params.begin()->value());
+		// Parameter processing
+		// {
+		ParameterList::const_iterator it = params.begin();
 
-		MYSQL_RES *my_result = mMysqlResults[handle];
+		int param_handle = Tools::stringToInt((*it++).value());
+		// }
 
-		*result = Runtime::IntegerObject(mysql_num_rows(my_result));
+		MYSQL_RES *myResult = mMysqlResults[param_handle];
 
-		return Runtime::ControlFlow::Normal;
+		int my_result = mysql_num_rows(myResult);
+
+		*result = Runtime::IntegerObject(my_result);
 	}
 	catch ( std::exception &e ) {
 		Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
@@ -53,7 +58,7 @@ Runtime::ControlFlow::E MysqlNumRows::execute(const ParameterList& params, Runti
 		return Runtime::ControlFlow::Throw;
 	}
 
-	return Runtime::ControlFlow::Throw;
+	return Runtime::ControlFlow::Normal;
 }
 
 }

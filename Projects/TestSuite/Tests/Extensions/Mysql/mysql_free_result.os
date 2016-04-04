@@ -3,8 +3,11 @@
 public object Main {
 	public void Main(int argc, string argv) {
 		int error = 0;
-		int handle = mysql_init();
+		int handle = 0;
 		int result_handle = 0;
+
+		handle = mysql_init();
+		writeln("mysql_init() = " + handle);
 
 		mysql_real_connect(handle, "192.168.0.22", 3306, "oscript", "oscript", "ts_parking");
 		writeln("mysql_real_connect()");
@@ -22,6 +25,9 @@ public object Main {
 
 		result_handle = mysql_store_result(handle);
 		writeln("mysql_store_result(" + handle + ") = " + result_handle);
+
+		mysql_free_result(result_handle);
+		writeln("mysql_free_result(" + result_handle + ")");
 
 		mysql_close(handle);
 		writeln("mysql_close(" + handle + ")");

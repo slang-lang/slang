@@ -5,10 +5,11 @@
 // Library includes
 
 // Project includes
-#include <Core/Designtime/BuildInTypes/IntegerObject.h>
-#include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/BuildInObjects/StringObject.h>
+#include <Core/Designtime/BuildInTypes/IntegerObject.h>
+#include <Core/Designtime/BuildInTypes/StringObject.h>
+#include <Core/Repository.h>
 #include <Core/Tools.h>
 #include <Core/Utils/Exceptions.h>
 #include <Tools/Strings.h>
@@ -36,24 +37,34 @@ Runtime::ControlFlow::E MysqlStoreResult::execute(const ParameterList& params, R
 (void)token;
 
 	try {
-		int handle = Tools::stringToInt(params.begin()->value());
-		MYSQL *myConn = mMysqlConnections[handle];
+		// Parameter processing
+		// {
+		ParameterList::const_iterator it = params.begin();
 
-		MYSQL_RES *my_result = mysql_store_result(myConn);
+		int param_handle = Tools::stringToInt((*it++).value());
+		// }
 
-		mNumMysqlResults++;
-		mMysqlResults.insert(std::make_pair(mNumMysqlResults, my_result));
+		MYSQL *myConn = mMysqlConnections[param_handle];
 
-		*result = Runtime::IntegerObject(mNumMysqlResults);
+		MYSQL_RES *myResult = mysql_store_result(myConn);
 
-		return Runtime::ControlFlow::Normal;
+		int my_result = 0;
+		if ( myResult ) {
+			my_result = ++mNumMysqlResults;
+			mMysqlResults.insert(std::make_pair(my_result, myResult));
+		}
+
+		*result = Runtime::IntegerObject(my_result);
 	}
-	catch ( ... ) {
+	catch ( std::exception &e ) {
+		Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+		*data = Runtime::StringObject(e.what());
+
+		mExceptionData = Runtime::ExceptionData(data, token->position());
 		return Runtime::ControlFlow::Throw;
 	}
 
-	// something weird happened...
-	return Runtime::ControlFlow::Throw;
+	return Runtime::ControlFlow::Normal;
 }
 
 }

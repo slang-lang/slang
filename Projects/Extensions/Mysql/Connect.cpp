@@ -5,10 +5,11 @@
 // Library includes
 
 // Project includes
+#include <Core/BuildInObjects/StringObject.h>
 #include <Core/Designtime/BuildInTypes/BoolObject.h>
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
-#include <Core/BuildInObjects/StringObject.h>
+#include <Core/Repository.h>
 #include <Core/Tools.h>
 #include <Core/Utils/Exceptions.h>
 #include <Tools/Strings.h>
@@ -42,24 +43,29 @@ Runtime::ControlFlow::E MysqlRealConnect::execute(const ParameterList& params, R
 (void)token;
 
 	try {
+		// Parameter processing
+		// {
 		ParameterList::const_iterator it = params.begin();
 
-		int handle = Tools::stringToInt((*it++).value());
-		std::string host = (*it++).value();
-		int port = Tools::stringToInt((*it++).value());
-		std::string user = (*it++).value();
-		std::string passwd = (*it++).value();
-		std::string db = (*it++).value();
-		std::string socket;
-		long clientflag = 0;
+		int param_handle = Tools::stringToInt((*it++).value());
+		std::string param_host = (*it++).value();
+		int param_port = Tools::stringToInt((*it++).value());
+		std::string param_user = (*it++).value();
+		std::string param_passwd = (*it++).value();
+		std::string param_db = (*it++).value();
+		std::string param_socket;
+		long param_clientflag = 0;
+		// }
 
-		MYSQL *myConn = mMysqlConnections[handle];
+		MYSQL *myConn = mMysqlConnections[param_handle];
 
-		mysql_real_connect(myConn, host.c_str(), user.c_str(), passwd.c_str(), db.c_str(), port, socket.c_str(), clientflag);
-
-		return Runtime::ControlFlow::Normal;
+		mysql_real_connect(myConn, param_host.c_str(), param_user.c_str(), param_passwd.c_str(), param_db.c_str(), param_port, param_socket.c_str(), param_clientflag);
 	}
 	catch ( std::exception &e ) {
+		Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+		*data = Runtime::StringObject(e.what());
+
+		mExceptionData = Runtime::ExceptionData(data, token->position());
 		return Runtime::ControlFlow::Throw;
 	}
 

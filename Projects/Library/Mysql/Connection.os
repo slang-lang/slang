@@ -45,20 +45,16 @@ public namespace Mysql {
 			mUserName = "";
 		}
 
-		public bool close() modify {
+		public void close() modify {
 			print("Connection::close()");
 
 			if ( mHandle == 0 ) {
 				return false;
 			}
 
-			//int result = mysql_close(mHandle);
-			mysql_close();
-			int result = 1;
+			mysql_close(mHandle);
 
 			cleanup();
-
-			return (result == 0);
 		}
 
 		public int descriptor() const {
@@ -66,11 +62,12 @@ public namespace Mysql {
 		}
 
 		public string error() const {
-			return mysql_error();
+			return mysql_error(mHandle);
 		}
 
 		public string info() const {
-			return mysql_info();
+			assert(!"mysql_info() is not implemented");
+			return mysql_info(mHandle);
 		}
 
 		public bool isOpen() const {
@@ -78,7 +75,7 @@ public namespace Mysql {
 		}
 
 		public int numRows() const {
-			return mysql_num_rows();
+			return mysql_num_rows(mHandle);
 		}
 
 		public bool open(string hostname, int port, string user, string password, string database) modify {
@@ -89,8 +86,9 @@ public namespace Mysql {
 				throw new string("mysql descriptor still points to an open connection!");
 			}
 
-			/*mHandle =*/ mysql_real_connect(hostname, port, user, password, database);
-			mHandle = 1;
+			mHandle = mysql_init();
+
+			mysql_real_connect(mHandle, hostname, port, user, password, database);
 
 			mDatabase = database;
 			mHostName = hostname;

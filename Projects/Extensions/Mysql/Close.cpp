@@ -5,9 +5,11 @@
 // Library includes
 
 // Project includes
+#include <Core/BuildInObjects/IntegerObject.h>
+#include <Core/BuildInObjects/StringObject.h>
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
 #include <Core/Designtime/BuildInTypes/VoidObject.h>
-#include <Core/BuildInObjects/IntegerObject.h>
+#include <Core/Repository.h>
 #include <Core/Tools.h>
 #include <Core/Utils/Exceptions.h>
 #include <Tools/Strings.h>
@@ -36,14 +38,22 @@ Runtime::ControlFlow::E MysqlClose::execute(const ParameterList& params, Runtime
 (void)token;
 
 	try {
-		int handle = Tools::stringToInt(params.begin()->value());
-		MYSQL *myConn = mMysqlConnections[handle];
+		// Parameter processing
+		// {
+		ParameterList::const_iterator it = params.begin();
+
+		int param_handle = Tools::stringToInt((*it++).value());
+		// }
+
+		MYSQL *myConn = mMysqlConnections[param_handle];
 
 		mysql_close(myConn);
-
-		return Runtime::ControlFlow::Normal;
 	}
 	catch ( std::exception &e ) {
+		Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+		*data = Runtime::StringObject(e.what());
+
+		mExceptionData = Runtime::ExceptionData(data, token->position());
 		return Runtime::ControlFlow::Throw;
 	}
 

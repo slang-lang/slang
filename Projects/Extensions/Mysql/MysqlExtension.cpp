@@ -11,6 +11,7 @@
 #include "Connect.h"
 #include "ConnectionTest.h"
 #include "Error.h"
+#include "FreeResult.h"
 #include "GetClientInfo.h"
 #include "Info.h"
 #include "Init.h"
@@ -39,6 +40,7 @@ void MysqlExtension::provideMethods(ExtensionMethods &methods)
 	methods.push_back(new MysqlClose());
 	methods.push_back(new MysqlGetClientInfo());
 	methods.push_back(new MysqlError());
+	methods.push_back(new MysqlFreeResult());
 	methods.push_back(new MysqlInfo());
 	methods.push_back(new MysqlInit());
 	methods.push_back(new MysqlNumRows());
