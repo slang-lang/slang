@@ -6,6 +6,7 @@ SET(SOURCES
 	Connect.cpp
 	ConnectionTest.cpp
 	Error.cpp
+	FieldCount.cpp
 	FreeResult.cpp
 	GetClientInfo.cpp
 	Info.cpp
@@ -23,6 +24,7 @@ SET(HEADERS
 	Connect.h
 	ConnectionTest.h
 	Error.h
+	FieldCount.h
 	FreeResult.h
 	GetClientInfo.h
 	Info.h
