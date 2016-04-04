@@ -9,8 +9,8 @@ public object Main {
 		writeln("mysql_real_connect()");
 		mysql_real_connect(handle, "192.168.0.22", 3306, "oscript", "oscript", "ts_parking");
 
-		result = mysql_close(handle);
-		writeln("mysql_close() = " + result);
+		mysql_close(handle);
+		writeln("mysql_close()");
 
 		writeln("done");
 	}

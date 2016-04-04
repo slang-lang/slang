@@ -6,6 +6,7 @@
 
 // Project includes
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
+#include <Core/Designtime/BuildInTypes/VoidObject.h>
 #include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/Tools.h>
 #include <Core/Utils/Exceptions.h>
@@ -21,7 +22,7 @@ namespace Mysql {
 
 
 MysqlClose::MysqlClose()
-: Runtime::Method(0, "mysql_close", Designtime::IntegerObject::TYPENAME)
+: Runtime::Method(0, "mysql_close", Designtime::VoidObject::TYPENAME)
 {
 	ParameterList params;
 	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, VALUE_NONE));
@@ -31,21 +32,15 @@ MysqlClose::MysqlClose()
 
 Runtime::ControlFlow::E MysqlClose::execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token)
 {
+(void)result;
 (void)token;
 
 	try {
 		int handle = Tools::stringToInt(params.begin()->value());
 		MYSQL *myConn = mMysqlConnections[handle];
 
-		if ( !myConn ) {
-			// close without open connection?!
-			*result = Runtime::IntegerObject(-1);
-			return Runtime::ControlFlow::Normal;
-		}
-
 		mysql_close(myConn);
 
-		*result = Runtime::IntegerObject(0);
 		return Runtime::ControlFlow::Normal;
 	}
 	catch ( std::exception &e ) {

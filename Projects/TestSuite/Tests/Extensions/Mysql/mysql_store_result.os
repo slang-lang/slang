@@ -24,7 +24,8 @@ public object Main {
 		result_handle = mysql_store_result(handle);
 		writeln("mysql_store_result(0) = " + result_handle);
 
-		writeln("mysql_close(" + handle + ") = " + mysql_close(handle));
+		mysql_close(handle);
+		writeln("mysql_close(" + handle + ")");
 
 		writeln("done");
 	}
