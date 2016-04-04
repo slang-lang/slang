@@ -3,8 +3,17 @@
 public object Main
 {
 	public void Main(int argc, string argv)
-	{
-		writeln("mysql_info(0) = " + mysql_info(/*dummy handle*/0));
+	{	
+		int handle = 0;
+
+		handle = mysql_init();
+		writeln("mysql_init() = " + handle);
+
+		writeln("mysql_info(" + handle + ") = " + mysql_info(handle));
+
+		mysql_close(handle);
+		writeln("mysql_close(" + handle + ")");
+
 		writeln("done.");
 	}
 }

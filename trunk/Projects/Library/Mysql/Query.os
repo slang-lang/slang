@@ -1,21 +1,30 @@
 
+import Connection;
 import Result;
 
 public namespace Mysql {
 
 public object Query {
+	private Connection mConnection;
 	private string mExecutedString;
 	private string mQueryString;
+	private int mResultHandle;
 
-	public void Query() {
+	public void Query(Connection connection) {
 		writeln("Query::Query()");
 
+		mConnection = connection;
 		mExecutedQuery = "";
 		mQueryString = "";
+		mResultHandle = 0;
 	}
 
 	public void ~Query() {
 		writeln("Query::~Query()");
+
+		if ( mResultHandle ) {
+			mysql_free_result(mResultHandle);
+		}
 	}
 
 	public bool bind(string field, bool value) modify {
@@ -49,6 +58,10 @@ public object Query {
 
 	public Result execute() const {
 		writeln("mQueryString = " + mQueryString");
+
+		mysql_query(mConnection.descriptor(), mQueryString);
+
+		mResultHandle = mysql_store_result(mConnection.descriptor());
 
 		Result result = new Result();
 

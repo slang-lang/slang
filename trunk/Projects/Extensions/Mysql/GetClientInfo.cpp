@@ -6,8 +6,9 @@
 #include <mysql.h>
 
 // Project includes
-#include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/BuildInObjects/StringObject.h>
+#include <Core/Designtime/BuildInTypes/StringObject.h>
+#include <Core/Repository.h>
 #include <Core/Tools.h>
 #include <Core/Utils/Exceptions.h>
 #include <Tools/Strings.h>
@@ -33,7 +34,18 @@ Runtime::ControlFlow::E MysqlGetClientInfo::execute(const ParameterList& params,
 (void)params;
 (void)token;
 
-	*result = Runtime::StringObject(mysql_get_client_info());
+	try {
+		std::string my_result = mysql_get_client_info();
+
+		*result = Runtime::StringObject(my_result);
+	}
+	catch ( std::exception &e ) {
+		Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+		*data = Runtime::StringObject(e.what());
+
+		mExceptionData = Runtime::ExceptionData(data, token->position());
+		return Runtime::ControlFlow::Throw;
+	}
 
 	return Runtime::ControlFlow::Normal;
 }

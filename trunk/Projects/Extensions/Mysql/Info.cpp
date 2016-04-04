@@ -8,6 +8,7 @@
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
+#include <Core/Repository.h>
 #include <Core/Tools.h>
 #include <Core/Utils/Exceptions.h>
 #include <Tools/Strings.h>
@@ -35,14 +36,27 @@ Runtime::ControlFlow::E MysqlInfo::execute(const ParameterList& params, Runtime:
 (void)token;
 
 	try {
-		int handle = Tools::stringToInt(params.begin()->value());
-		MYSQL *myConn = mMysqlConnections[handle];
+		// Parameter processing
+		// {
+		ParameterList::const_iterator it = params.begin();
 
-		*result = Runtime::StringObject(mysql_info(myConn));
+		int param_handle = Tools::stringToInt((*it++).value());
+		// }
 
-		return Runtime::ControlFlow::Normal;
+		MYSQL *myConn = mMysqlConnections[param_handle];
+
+		std::string my_result;
+		if ( myConn ) {
+			my_result = mysql_info(myConn);
+		}
+
+		*result = Runtime::StringObject(my_result);
 	}
 	catch ( std::exception &e ) {
+		Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+		*data = Runtime::StringObject(e.what());
+
+		mExceptionData = Runtime::ExceptionData(data, token->position());
 		return Runtime::ControlFlow::Throw;
 	}
 

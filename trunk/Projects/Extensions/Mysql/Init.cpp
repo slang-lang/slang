@@ -6,7 +6,9 @@
 
 // Project includes
 #include <Core/BuildInObjects/IntegerObject.h>
+#include <Core/BuildInObjects/StringObject.h>
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
+#include <Core/Repository.h>
 #include <Core/Tools.h>
 #include <Core/Utils/Exceptions.h>
 #include <Tools/Strings.h>
@@ -34,16 +36,21 @@ Runtime::ControlFlow::E MysqlInit::execute(const ParameterList& params, Runtime:
 (void)token;
 
 	try {
-		MYSQL *handle = mysql_init(0);
+		MYSQL *myHandle = mysql_init(0);
 
-		mNumMysqlConnections++;
-		mMysqlConnections.insert(std::make_pair(mNumMysqlConnections, handle));
+		int my_result = 0;
+		if ( myHandle ) {
+			my_result = ++mNumMysqlConnections;
+			mMysqlConnections.insert(std::make_pair(my_result, myHandle));
+		}
 
-		*result = Runtime::IntegerObject(mNumMysqlConnections);
-
-		return Runtime::ControlFlow::Normal;
+		*result = Runtime::IntegerObject(my_result);
 	}
 	catch ( std::exception &e ) {
+		Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+		*data = Runtime::StringObject(e.what());
+
+		mExceptionData = Runtime::ExceptionData(data, token->position());
 		return Runtime::ControlFlow::Throw;
 	}
 
