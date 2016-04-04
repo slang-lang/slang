@@ -25,7 +25,7 @@ public object Main
 		}
 
 		// do something
-		//writeln("conn.info() = " + conn.info());
+		writeln("conn.info() = " + conn.info());
 
 		conn.close();
 

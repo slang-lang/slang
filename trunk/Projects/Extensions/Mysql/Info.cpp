@@ -47,7 +47,11 @@ Runtime::ControlFlow::E MysqlInfo::execute(const ParameterList& params, Runtime:
 
 		std::string my_result;
 		if ( myConn ) {
-			my_result = mysql_info(myConn);
+			const char* my_info = mysql_info(myConn);
+
+			if ( my_info ) {
+				my_result = std::string(my_info);
+			}
 		}
 
 		*result = Runtime::StringObject(my_result);
