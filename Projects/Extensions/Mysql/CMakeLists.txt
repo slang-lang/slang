@@ -16,6 +16,7 @@ SET(SOURCES
 	Query.cpp
 	StoreResult.cpp
 	Types.cpp
+	UseResult.cpp
 )
 
 SET(HEADERS
@@ -34,6 +35,7 @@ SET(HEADERS
 	Query.h
 	StoreResult.h
 	Types.h
+	UseResult.h
 )
 
 SET(DEPENDENCIES
