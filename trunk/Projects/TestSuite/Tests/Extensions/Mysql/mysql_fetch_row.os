@@ -2,11 +2,10 @@
 
 public object Main {
 	public void Main(int argc, string argv) {
-		int error = 0;
-		int handle = 0;
-		int result_handle = 0;
+		int result;
+		int result_handle;
 
-		handle = mysql_init();
+		int handle = mysql_init();
 		writeln("mysq_init() = " + handle);
 
 		writeln("mysql_real_connect()");
@@ -14,10 +13,10 @@ public object Main {
 
 		string query = "SELECT * FROM parking_zones";
 
-		error = mysql_query(handle, query);
-		writeln("mysql_query(" + handle + ", \"" + query + "\") = " + error);
+		result = mysql_query(handle, query);
+		writeln("mysql_query(" + handle + ", \"" + query + "\") = " + result);
 
-		if ( error != 0 ) {
+		if ( result != 0 ) {
 			writeln("mysql_error(" + handle + ") = " + mysql_error(handle));
 			writeln("failed.");
 			return;
@@ -26,14 +25,8 @@ public object Main {
 		result_handle = mysql_store_result(handle);
 		writeln("mysql_store_result(" + handle + ") = " + result_handle);
 
-		int numRows = mysql_num_rows(result_handle);
-		writeln("mysql_num_rows(" + result_handle + ") = " + numRows);
-
-		mysql_fetch_row(handle);
-		writeln("mysq_fetch_row(" + handle + ")");
-
-		mysql_free_result(result_handle);
-		writeln("mysql_free_result(" + result_handle + ")");
+		result = mysql_num_rows(result_handle);
+		writeln("mysql_num_rows(" + result_handle + ") = " + result);
 
 		mysql_close(handle);
 		writeln("mysql_close(" + handle + ")");

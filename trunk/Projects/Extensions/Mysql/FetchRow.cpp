@@ -1,6 +1,6 @@
 
 // Header
-#include "NumRows.h"
+#include "FetchRow.h"
 
 // Library includes
 
@@ -22,8 +22,8 @@ namespace Extensions {
 namespace Mysql {
 
 
-MysqlNumRows::MysqlNumRows()
-: Runtime::Method(0, "mysql_num_rows", Designtime::IntegerObject::TYPENAME)
+MysqlFetchRow::MysqlFetchRow()
+: Runtime::Method(0, "mysql_fetch_row", Designtime::IntegerObject::TYPENAME)
 {
 	ParameterList params;
 	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, VALUE_NONE));
@@ -31,7 +31,7 @@ MysqlNumRows::MysqlNumRows()
 	setSignature(params);
 }
 
-Runtime::ControlFlow::E MysqlNumRows::execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token)
+Runtime::ControlFlow::E MysqlFetchRow::execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token)
 {
 (void)token;
 
@@ -44,8 +44,11 @@ Runtime::ControlFlow::E MysqlNumRows::execute(const ParameterList& params, Runti
 		// }
 
 		MYSQL_RES *myResult = mMysqlResults[param_handle];
+		MYSQL_ROW myRow = mysql_fetch_row(myResult);
 
-		int my_result = mysql_num_rows(myResult);
+		(void)myRow;
+
+		int my_result = 0;
 
 		*result = Runtime::IntegerObject(my_result);
 	}

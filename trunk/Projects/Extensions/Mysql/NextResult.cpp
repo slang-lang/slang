@@ -1,6 +1,6 @@
 
 // Header
-#include "NumRows.h"
+#include "NextResult.h"
 
 // Library includes
 
@@ -22,8 +22,8 @@ namespace Extensions {
 namespace Mysql {
 
 
-MysqlNumRows::MysqlNumRows()
-: Runtime::Method(0, "mysql_num_rows", Designtime::IntegerObject::TYPENAME)
+MysqlNextResult::MysqlNextResult()
+: Runtime::Method(0, "mysql_next_result", Designtime::IntegerObject::TYPENAME)
 {
 	ParameterList params;
 	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, VALUE_NONE));
@@ -31,8 +31,9 @@ MysqlNumRows::MysqlNumRows()
 	setSignature(params);
 }
 
-Runtime::ControlFlow::E MysqlNumRows::execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token)
+Runtime::ControlFlow::E MysqlNextResult::execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token)
 {
+(void)params;
 (void)token;
 
 	try {
@@ -43,9 +44,9 @@ Runtime::ControlFlow::E MysqlNumRows::execute(const ParameterList& params, Runti
 		int param_handle = Tools::stringToInt((*it++).value());
 		// }
 
-		MYSQL_RES *myResult = mMysqlResults[param_handle];
+		MYSQL *myConn = mMysqlConnections[param_handle];
 
-		int my_result = mysql_num_rows(myResult);
+		int my_result = mysql_next_result(myConn);
 
 		*result = Runtime::IntegerObject(my_result);
 	}
