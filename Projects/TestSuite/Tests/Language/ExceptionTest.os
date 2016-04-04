@@ -166,10 +166,17 @@ public namespace ExceptionTest
 			print("TestCase6()");
 
 			try {
-				throw new int(1);
+				print("try");
+
+				print("throw new Exception()");
+				throw new Exception("");
 			}
-			catch ( int one ) {
-				print("one = " + one);
+			catch ( Exception one ) {
+				print("catch");
+				//print("one = " + one);
+			}
+			finally {
+				print("finally");
 			}
 
 			return true;
