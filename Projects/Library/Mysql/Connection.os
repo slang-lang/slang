@@ -66,7 +66,6 @@ public namespace Mysql {
 		}
 
 		public string info() const {
-			assert(!"mysql_info() is not implemented");
 			return mysql_info(mHandle);
 		}
 

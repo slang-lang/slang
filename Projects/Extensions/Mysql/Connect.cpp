@@ -5,6 +5,7 @@
 // Library includes
 
 // Project includes
+#include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Designtime/BuildInTypes/BoolObject.h>
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
@@ -59,7 +60,16 @@ Runtime::ControlFlow::E MysqlRealConnect::execute(const ParameterList& params, R
 
 		MYSQL *myConn = mMysqlConnections[param_handle];
 
-		mysql_real_connect(myConn, param_host.c_str(), param_user.c_str(), param_passwd.c_str(), param_db.c_str(), param_port, param_socket.c_str(), param_clientflag);
+		myConn = mysql_real_connect(myConn, param_host.c_str(), param_user.c_str(), param_passwd.c_str(), param_db.c_str(), param_port, param_socket.c_str(), param_clientflag);
+
+		mMysqlConnections[param_handle] = myConn;
+
+		int my_result = 0;
+		if ( myConn ) {
+			my_result = param_handle;
+		}
+
+		*result = Runtime::IntegerObject(my_result);
 	}
 	catch ( std::exception &e ) {
 		Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
