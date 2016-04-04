@@ -10,7 +10,7 @@ public object Main {
 		writeln("mysql_real_connect()");
 		mysql_real_connect(handle, "192.168.0.22", 3306, "oscript", "oscript", "ts_parking");
 
-		string query = "SHOW TABLES";
+		string query = "SELECT * FROM parking_tickets";
 
 		result = mysql_query(handle, query);
 		writeln("mysql_query(" + handle + ", \"" + query + "\") = " + result);
@@ -24,8 +24,8 @@ public object Main {
 		result = mysql_affected_rows(handle);
 		writeln("mysql_affected_rows(" + handle + ") = " + result);
 
-		result = mysql_close(handle);
-		writeln("mysql_close(" + handle + ") = " + result);
+		mysql_close(handle);
+		writeln("mysql_close(" + handle + ")");
 
 		writeln("done");
 	}

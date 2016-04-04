@@ -27,8 +27,8 @@ public object Main {
 		result = mysql_num_rows(result_handle);
 		writeln("mysql_num_rows(" + result_handle + ") = " + result);
 
-		result = mysql_close(handle);
-		writeln("mysql_close(" + handle + ") = " + result);
+		mysql_close(handle);
+		writeln("mysql_close(" + handle + ")");
 
 		writeln("done");
 	}
