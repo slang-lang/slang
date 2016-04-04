@@ -46,7 +46,9 @@ Runtime::ControlFlow::E MysqlFieldCount::execute(const ParameterList& params, Ru
 
 		MYSQL *myConn = mMysqlConnections[param_handle];
 
-		*result = Runtime::IntegerObject(mysql_field_count(myConn));
+		int my_result = mysql_field_count(myConn);
+
+		*result = Runtime::IntegerObject(my_result);
 	}
 	catch ( std::exception &e ) {
 		Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);

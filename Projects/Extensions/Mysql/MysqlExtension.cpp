@@ -11,11 +11,14 @@
 #include "Connect.h"
 #include "ConnectionTest.h"
 #include "Error.h"
+#include "FetchRow.h"
 #include "FieldCount.h"
 #include "FreeResult.h"
 #include "GetClientInfo.h"
 #include "Info.h"
 #include "Init.h"
+#include "NextResult.h"
+#include "NumFields.h"
 #include "NumRows.h"
 #include "Query.h"
 #include "StoreResult.h"
@@ -42,10 +45,13 @@ void MysqlExtension::provideMethods(ExtensionMethods &methods)
 	methods.push_back(new MysqlClose());
 	methods.push_back(new MysqlGetClientInfo());
 	methods.push_back(new MysqlError());
+	methods.push_back(new MysqlFetchRow());
 	methods.push_back(new MysqlFieldCount());
 	methods.push_back(new MysqlFreeResult());
 	methods.push_back(new MysqlInfo());
 	methods.push_back(new MysqlInit());
+	methods.push_back(new MysqlNextResult());
+	methods.push_back(new MysqlNumFields());
 	methods.push_back(new MysqlNumRows());
 	methods.push_back(new MysqlQuery());
 	methods.push_back(new MysqlRealConnect());

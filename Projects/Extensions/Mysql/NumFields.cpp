@@ -1,6 +1,6 @@
 
 // Header
-#include "NumRows.h"
+#include "NumFields.h"
 
 // Library includes
 
@@ -22,8 +22,8 @@ namespace Extensions {
 namespace Mysql {
 
 
-MysqlNumRows::MysqlNumRows()
-: Runtime::Method(0, "mysql_num_rows", Designtime::IntegerObject::TYPENAME)
+MysqlNumFields::MysqlNumFields()
+: Runtime::Method(0, "mysql_num_fields", Designtime::IntegerObject::TYPENAME)
 {
 	ParameterList params;
 	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, VALUE_NONE));
@@ -31,7 +31,7 @@ MysqlNumRows::MysqlNumRows()
 	setSignature(params);
 }
 
-Runtime::ControlFlow::E MysqlNumRows::execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token)
+Runtime::ControlFlow::E MysqlNumFields::execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token)
 {
 (void)token;
 
@@ -45,7 +45,7 @@ Runtime::ControlFlow::E MysqlNumRows::execute(const ParameterList& params, Runti
 
 		MYSQL_RES *myResult = mMysqlResults[param_handle];
 
-		int my_result = mysql_num_rows(myResult);
+		int my_result = mysql_num_fields(myResult);
 
 		*result = Runtime::IntegerObject(my_result);
 	}

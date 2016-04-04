@@ -4,12 +4,13 @@ public object Main {
 	public void Main(int argc, string argv) {
 		int error = 0;
 		int handle = 0;
+		int result_handle = 0;
 
 		handle = mysql_init();
-		writeln("mysql_init() = " + handle);
+		writeln("mysq_init() = " + handle);
 
-		mysql_real_connect(handle, "192.168.0.22", 3306, "oscript", "oscript", "ts_parking");
 		writeln("mysql_real_connect()");
+		mysql_real_connect(handle, "192.168.0.22", 3306, "oscript", "oscript", "ts_parking");
 
 		string query = "SELECT * FROM parking_zones";
 
@@ -22,8 +23,11 @@ public object Main {
 			return;
 		}
 
-		int numAffectedRows = mysql_affected_rows(handle);
-		writeln("mysql_affected_rows(" + handle + ") = " + numAffectedRows);
+		result_handle = mysql_store_result(handle);
+		writeln("mysql_store_result(" + handle + ") = " + result_handle);
+
+		int numFields = mysql_num_fields(result_handle);
+		writeln("mysql_num_fields(" + result_handle + ") = " + numFields);
 
 		mysql_close(handle);
 		writeln("mysql_close(" + handle + ")");
