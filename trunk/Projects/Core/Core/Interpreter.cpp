@@ -1030,7 +1030,7 @@ void Interpreter::process_try(TokenIterator& token, Object *result)
 	}
 
 	// reset control flow after try block
-	mControlFlow = ControlFlow::Normal;
+	//mControlFlow = ControlFlow::Normal;
 
 	tmp = token;
 	tmp++;	// look ahead
@@ -1057,7 +1057,10 @@ void Interpreter::process_try(TokenIterator& token, Object *result)
 			finallyBegin++;
 		}
 
-		mControlFlow = interpret(finallyTokens, result);
+		// TODO: should we execute the finally-block in any case (i.e. even though a return has been issued by the user)?
+		if ( mControlFlow == ControlFlow::Normal ) {
+			mControlFlow = interpret(finallyTokens, result);
+		}
 	}
 }
 

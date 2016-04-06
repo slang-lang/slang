@@ -47,6 +47,9 @@ Runtime::ControlFlow::E MysqlQuery::execute(const ParameterList& params, Runtime
 		// }
 
 		MYSQL *myConn = mMysqlConnections[param_handle];
+		if ( !myConn ) {
+			throw Utils::Exceptions::Exception("no database connection found for connection handle " + Tools::toString(param_handle));
+		}
 
 		int my_result = mysql_query(myConn, query.c_str());
 
