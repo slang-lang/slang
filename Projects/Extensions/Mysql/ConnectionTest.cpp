@@ -29,9 +29,9 @@ ConnectionTest::ConnectionTest()
 
 Runtime::ControlFlow::E ConnectionTest::execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token)
 {
-(void)params;
-(void)result;
-(void)token;
+	(void)params;
+	(void)result;
+	(void)token;
 
 	MYSQL *conn;
 	MYSQL_RES *res;
@@ -50,7 +50,7 @@ Runtime::ControlFlow::E ConnectionTest::execute(const ParameterList& params, Run
 	}
 
 	/* send SQL query */
-	if (mysql_query(conn, "show tables")) {
+	if (mysql_query(conn, "select * from parking_zones")) {
 		fprintf(stderr, "%s\n", mysql_error(conn));
 		exit(1);
 	}
@@ -59,8 +59,17 @@ Runtime::ControlFlow::E ConnectionTest::execute(const ParameterList& params, Run
 
 	/* output table name */
 	printf("MySQL Tables in mysql database:\n");
+
+	unsigned int num_fields = 0;
+	num_fields = mysql_num_fields(res);
+
 	while ((row = mysql_fetch_row(res)) != NULL) {
-		printf("%s \n", row[0]);
+		unsigned long *lengths = mysql_fetch_lengths(res);
+
+		for ( unsigned int i = 0; i < num_fields; i++ ) {
+			printf("[%.*s]", (int) lengths[i], row[i] ? row[i] : "NULL");
+		}
+		printf("\n");
 	}
 
 	/* close connection */
