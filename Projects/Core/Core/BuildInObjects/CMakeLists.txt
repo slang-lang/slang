@@ -4,6 +4,7 @@ SET(SOURCES
 	BoolObject.cpp
 	DoubleObject.cpp
 	FloatObject.cpp
+	GenericObject.cpp
 	IntegerObject.cpp
 	NumberObject.cpp
 	StringObject.cpp
@@ -15,6 +16,7 @@ SET(HEADERS
 	BoolObject.h
 	DoubleObject.h
 	FloatObject.h
+	GenericObject.h
 	IntegerObject.h
 	NumberObject.h
 	StringObject.h
