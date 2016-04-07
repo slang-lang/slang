@@ -135,9 +135,15 @@ void NamespaceAttributes::setSealed(bool state)
 
 
 ObjectAttributes::ObjectAttributes()
-: mIsMember(false)
+: mIsAbstract(false),
+  mIsMember(false)
 {
 	setConst(false);
+}
+
+bool ObjectAttributes::isAbstract() const
+{
+	return mIsAbstract;
 }
 
 bool ObjectAttributes::isMember() const
@@ -150,6 +156,10 @@ bool ObjectAttributes::isSealed() const
 	return mIsSealed;
 }
 
+void ObjectAttributes::setAbstract(bool state)
+{
+	mIsAbstract = state;
+}
 
 void ObjectAttributes::setMember(bool state)
 {

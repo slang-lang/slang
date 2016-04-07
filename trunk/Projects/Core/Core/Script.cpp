@@ -10,7 +10,6 @@
 #include <Core/Utils/Utils.h>
 #include "Object.h"
 #include "Repository.h"
-#include "System.h"
 
 // Namespace declarations
 
@@ -55,12 +54,11 @@ void Script::construct(const ParameterList& params)
 		Runtime::ControlFlow::E controlflow = mObject->Constructor(params);
 
 		if ( controlflow != Runtime::ControlFlow::Normal ) {
-			//throw Utils::Exceptions::ControlFlowException("in " + mObject->getFullName() + "::" + mObject->Typename());
-			System::Print("Exception raised in " + mObject->getFullName() + "::" + mObject->Typename());
+			throw Utils::Exceptions::Exception("Exception raised in " + mObject->getFullName() + "::" + mObject->Typename());
 		}
 	}
-	catch ( Utils::Exceptions::Exception &e ) {
-		// catch and log all errors that occurred during method execution
+	catch ( std::exception &e ) {
+		// catch and log all errors that occurred during execution
 		OSerror(e.what());
 
 		throw;
@@ -72,7 +70,8 @@ void Script::destruct()
 	try {
 		mRepository->removeReference(mObject);
 	}
-	catch ( Utils::Exceptions::Exception &e ) {
+	catch ( std::exception &e ) {
+		// catch and log all errors that occurred during execution
 		OSerror(e.what());
 
 		throw;
@@ -85,14 +84,18 @@ Runtime::Object Script::execute(const std::string& method, const ParameterList& 
 
 	Runtime::Object returnValue;
 	try {
-		Runtime::ControlFlow::E controlflow = mObject->execute(&returnValue, method, params);
+		Symbol *symbol = mRepository->getGlobalScope()->resolveMethod(method, params, false);
+		if ( !symbol ) {			
+			throw Utils::Exceptions::Exception("Could not resolve method '" + method + "(" + toString(params) + ")'");
+		}
 
+		Runtime::ControlFlow::E controlflow = static_cast<Runtime::Method*>(symbol)->execute(params, &returnValue, TokenIterator());
 		if ( controlflow != Runtime::ControlFlow::Normal ) {
-			//throw Utils::Exceptions::ControlFlowException("in " + mObject->getFullName() + "::" + mObject->Typename());
-			System::Print("Exception raised in " + mObject->getFullName() + "::" + mObject->Typename());
+			throw Utils::Exceptions::Exception("Exception raised in " + mObject->getFullName() + "::" + mObject->Typename());
 		}
 	}
-	catch ( Utils::Exceptions::Exception &e ) {
+	catch ( std::exception &e ) {
+		// catch and log all errors that occurred during execution
 		OSerror(e.what());
 
 		throw;

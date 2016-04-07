@@ -6,12 +6,10 @@
 // Library includes
 
 // Project includes
-#include <Core/Interfaces/IExtension.h>
-#include <Core/Method.h>
-
-#include <Core/Designtime/BuildInTypes/BoolObject.h>
+#include <Core/BuildInObjects/StringObject.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/Designtime/BuildInTypes/VoidObject.h>
+#include <Core/Method.h>
 #include <Core/Repository.h>
 #include <Core/Tools.h>
 #include <Core/Utils/Exceptions.h>

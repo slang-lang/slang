@@ -99,6 +99,9 @@ public:
 	ObjectAttributes();
 
 public:
+	virtual bool isAbstract() const;
+	virtual void setAbstract(bool state);
+
 	virtual bool isMember() const;
 	virtual void setMember(bool state);
 
@@ -106,6 +109,7 @@ public:
 	virtual void setSealed(bool state);
 
 protected:
+	bool mIsAbstract;
 	bool mIsMember;
 };
 
