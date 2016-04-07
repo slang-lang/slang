@@ -134,7 +134,7 @@ bool BluePrint::isAbstract() const
 		}
 	}
 
-	return false;
+	return ObjectAttributes::isAbstract();
 }
 
 void BluePrint::setFullyQualifiedTypename(const std::string& name)

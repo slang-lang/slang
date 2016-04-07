@@ -168,19 +168,14 @@ int main(int argc, const char* argv[])
 	mVirtualMachine.addExtension(new ObjectiveScript::Extensions::System());
 
 	try {
-		mVirtualMachine.createScriptFromFile(mFilename, mParameters);
-
-/*
 		ObjectiveScript::Script *script = mVirtualMachine.createScriptFromFile(mFilename, mParameters);
 
 		assert(script);
 		if ( mStructuredExecution ) {
-			script->execute("Main", mParameters);
+			ObjectiveScript::Runtime::IntegerObject result = script->execute("Main", mParameters);
+			return result.getNativeValue();
 		}
-*/
 
-		// our script automatically executes it's Main object constructor,
-		// so there is no need to execute a method explicitly
 	}
 	catch ( std::exception& e ) {
 		std::cout << e.what() << std::endl;

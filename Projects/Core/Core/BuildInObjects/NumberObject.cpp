@@ -53,7 +53,10 @@ NumberObject::NumberObject(const Object& other)
 
 	std::string source = other.Typename();
 
-	if ( source == DoubleObject::TYPENAME ||
+	if ( source == BoolObject::TYPENAME ) {
+		setNativeValue(other.isValid());
+	}
+	else if ( source == DoubleObject::TYPENAME ||
 		 source == FloatObject::TYPENAME ||
 		 source == IntegerObject::TYPENAME ||
 		 source == NumberObject::TYPENAME ||
