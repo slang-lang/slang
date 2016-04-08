@@ -42,7 +42,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".\;..\Core;..\Externals;..\Utils"
+				AdditionalIncludeDirectories=".\;..\Core;..\Externals;..\Utils;&quot;$(JSON)\include&quot;;&quot;$(MYSQL)\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
 				StringPooling="true"
 				MinimalRebuild="true"
@@ -113,7 +113,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="3"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories=".\;..\Core;..\Externals;..\Utils"
+				AdditionalIncludeDirectories=".\;..\Core;..\Externals;..\Utils;&quot;$(JSON)\include&quot;;&quot;$(MYSQL)\include&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
 				StringPooling="true"
 				MinimalRebuild="false"
@@ -165,6 +165,14 @@
 			>
 		</Filter>
 		<File
+			RelativePath=".\Mysql\AffectedRows.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\AffectedRows.h"
+			>
+		</File>
+		<File
 			RelativePath=".\System\AssertMsg.cpp"
 			>
 			<FileConfiguration
@@ -189,7 +197,55 @@
 			>
 		</File>
 		<File
+			RelativePath=".\Mysql\Close.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\Close.h"
+			>
+		</File>
+		<File
 			RelativePath=".\CMakeLists.txt"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\Connect.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\Connect.h"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\ConnectionTest.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\ConnectionTest.h"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\Error.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\Error.h"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\FetchRow.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\FetchRow.h"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\FieldCount.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\FieldCount.h"
 			>
 		</File>
 		<File
@@ -313,7 +369,87 @@
 			>
 		</File>
 		<File
+			RelativePath=".\Mysql\FreeResult.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\FreeResult.h"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\GetClientInfo.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\GetClientInfo.h"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\Info.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\Info.h"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\Init.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\Init.h"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\MysqlExtension.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\MysqlExtension.h"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\NextResult.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\NextResult.h"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\NumFields.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\NumFields.h"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\NumRows.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\NumRows.h"
+			>
+		</File>
+		<File
 			RelativePath=".\System\Print.h"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\Query.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\Query.h"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\StoreResult.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\StoreResult.h"
 			>
 		</File>
 		<File
@@ -338,6 +474,22 @@
 		</File>
 		<File
 			RelativePath=".\System\System.h"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\Types.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\Types.h"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\UseResult.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\UseResult.h"
 			>
 		</File>
 		<File
