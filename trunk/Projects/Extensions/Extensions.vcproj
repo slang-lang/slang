@@ -42,7 +42,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".\;..\Core;..\Externals;..\Utils;&quot;$(JSON)\include&quot;;&quot;$(MYSQL)\include&quot;"
+				AdditionalIncludeDirectories=".\;..\Core;..\Externals;..\Utils;&quot;$(JSON)&quot;;&quot;$(MYSQL)\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
 				StringPooling="true"
 				MinimalRebuild="true"
@@ -67,8 +67,9 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
+				AdditionalDependencies="&quot;$(MYSQL)\lib\libmysql.lib&quot;"
 				OutputFile="$(OutDir)\$(ProjectName)_debug.lib"
-				AdditionalLibraryDirectories="..\Externals"
+				AdditionalLibraryDirectories="..\Externals; ..\Libs"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -377,6 +378,74 @@
 			>
 		</File>
 		<File
+			RelativePath=".\System\FromJson.h"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\GetClientInfo.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\GetClientInfo.h"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\Info.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\Info.h"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\Init.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\Init.h"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\MysqlExtension.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\MysqlExtension.h"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\NextResult.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\NextResult.h"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\NumFields.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\NumFields.h"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\NumRows.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\NumRows.h"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\FreeResult.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\FreeResult.h"
+			>
+		</File>
+		<File
 			RelativePath=".\Mysql\GetClientInfo.cpp"
 			>
 		</File>
@@ -474,6 +543,10 @@
 		</File>
 		<File
 			RelativePath=".\System\System.h"
+			>
+		</File>
+		<File
+			RelativePath=".\System\ToJson.h"
 			>
 		</File>
 		<File

@@ -11,7 +11,9 @@
 #include <System/IO/FileSeek.h>
 #include <System/IO/FileWrite.h>
 #include "AssertMsg.h"
+#include "FromJson.h"
 #include "Print.h"
+#include "ToJson.h"
 #include "Write.h"
 #include "WriteLn.h"
 
@@ -30,6 +32,9 @@ void System::provideMethods(ExtensionMethods &methods)
 	methods.push_back(new Printf());
 	methods.push_back(new Write());
 	methods.push_back(new WriteLn());
+
+	methods.push_back(new FromJson());
+	methods.push_back(new ToJson());
 
 	methods.push_back(new IO::FileClose());
 	methods.push_back(new IO::FileOpen());

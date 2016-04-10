@@ -41,11 +41,11 @@ Repository::Repository()
 	addBlueprint(Designtime::BoolObject(), false);
 	addBlueprint(Designtime::DoubleObject(), false);
 	addBlueprint(Designtime::FloatObject(), false);
+	addBlueprint(Designtime::GenericObject(), false);
 	addBlueprint(Designtime::IntegerObject(), false);
 	addBlueprint(Designtime::NumberObject(), false);
 	addBlueprint(Designtime::StringObject(), false);
 	addBlueprint(Designtime::VoidObject(), false);
-	addBlueprint(Designtime::GenericObject(), false);
 }
 
 Repository::~Repository()
@@ -184,6 +184,48 @@ void Repository::CollectGarbage()
 			}
 		}
 	}
+}
+
+void Repository::createDefaultMethods(Runtime::Object *object)
+{
+	assert(object);
+
+	class ToString : public Runtime::Method
+	{
+	public:
+		ToString()
+		: Runtime::Method(0, "ToString", Designtime::StringObject::TYPENAME)
+		{
+			ParameterList params;
+
+			setSignature(params);
+		}
+
+		Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token)
+		{
+			(void)token;
+
+			try {
+				ParameterList::const_iterator it = params.begin();
+
+				*result = Runtime::StringObject("blablabla");
+			}
+			catch ( std::exception &e ) {
+				Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+				*data = Runtime::StringObject(e.what());
+
+				mExceptionData = Runtime::ExceptionData(data, token->position());
+				return Runtime::ControlFlow::Throw;
+			}
+
+			return Runtime::ControlFlow::Normal;
+		}
+	};
+
+	ToString *toString = new ToString();
+	toString->setRepository(this);
+
+	object->defineMethod(toString->getName(), toString);
 }
 
 /*

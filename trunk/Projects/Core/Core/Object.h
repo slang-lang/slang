@@ -7,6 +7,7 @@
 #include <cassert>
 #include <map>
 #include <string>
+#include <Json/Value.h>
 
 // Project includes
 #include <Core/Attributes/Attributes.h>
@@ -87,6 +88,10 @@ public:	// Value
 	virtual bool isAtomicType() const;
 	virtual bool isValid() const;
 	virtual std::string ToString() const;
+
+public:	// Json serialization
+	virtual void FromJson(const Json::Value& value);
+	virtual Json::Value ToJson() const;
 
 public:	// Usage
 	bool CanExecuteDefaultConstructor() const;

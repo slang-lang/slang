@@ -57,6 +57,8 @@ private: // hide me from public
 private:
 	Runtime::Object* createObject(const std::string& name, Designtime::BluePrint* blueprint);
 	Runtime::Object* createUserObject(const std::string& name, Designtime::BluePrint* blueprint);
+
+	void createDefaultMethods(Runtime::Object *object);
 	void initializeObject(Runtime::Object *object, Designtime::BluePrint* blueprint);
 
 private:
