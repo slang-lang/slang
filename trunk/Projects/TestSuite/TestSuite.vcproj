@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".\;..\Core;..\Extensions;..\Externals;..\Utils"
+				AdditionalIncludeDirectories=".\;..\Core;..\Extensions;..\Externals;..\Utils;&quot;$(JSON)&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
 				StringPooling="true"
 				MinimalRebuild="true"
