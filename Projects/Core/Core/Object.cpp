@@ -342,6 +342,26 @@ ControlFlow::E Object::execute(Object *result, const std::string& name, const Pa
 	return controlflow;
 }
 
+void Object::FromJson(const Json::Value& value)
+{
+	for ( Json::Value::Members::const_iterator it = value.members().begin(); it != value.members().end(); ++it ) {
+		Json::Value sub = (*it);
+
+		Symbol *symbol = resolve(sub.key(), true);
+		if ( !symbol ) {
+			throw Utils::Exceptions::Exception("FromJson: unknown member '" + sub.key() + "'!");
+		}
+
+		Object *obj = static_cast<Object*>(symbol);
+		if ( obj->isAtomicType() ) {
+			obj->setValue(sub.asString());
+		}
+		else {
+			obj->FromJson(sub);
+		}
+	}
+}
+
 void Object::garbageCollector()
 {
 	for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
@@ -561,6 +581,28 @@ void Object::setRepository(Repository *repository)
 void Object::setValue(const std::string& value)
 {
 	mValue = value;
+}
+
+Json::Value Object::ToJson() const
+{
+	Json::Value result;
+
+	for ( Symbols::const_iterator it = mSymbols.begin(); it != mSymbols.end(); ++it ) {
+		if ( it->first == IDENTIFIER_BASE ) {
+			result["base"] = static_cast<Object*>(it->second)->ToJson();
+		}
+
+		if ( it->first == IDENTIFIER_BASE || it->first == IDENTIFIER_THIS ||
+			 !it->second || it->second->getType() != Symbol::IType::ObjectSymbol ) {
+			continue;
+		}
+
+		Object *obj = static_cast<Object*>(it->second);
+
+		result[it->first] = obj->getValue();
+	}
+
+	return result;
 }
 
 std::string Object::ToString() const

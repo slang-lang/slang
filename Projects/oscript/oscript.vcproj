@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".\;..\Core;..\Extensions;..\Externals;..\Utils"
+				AdditionalIncludeDirectories=".\;..\Core;..\Extensions;..\Externals;..\Utils;&quot;$(JSON)&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
 				StringPooling="true"
 				MinimalRebuild="true"
@@ -62,7 +62,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="libmysql.lib"
+				AdditionalDependencies="Extensions_debug.lib Json.lib ObjectiveScript_debug.lib Utils_debug.lib"
 				OutputFile="$(OutDir)\$(ProjectName).exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\Libs;&quot;$(JSON)\lib&quot;;&quot;$(MYSQL)\lib&quot;"
