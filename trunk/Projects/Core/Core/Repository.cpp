@@ -207,6 +207,7 @@ void Repository::createDefaultMethods(Runtime::Object *object)
 
 			try {
 				ParameterList::const_iterator it = params.begin();
+				(void)it;
 
 				*result = Runtime::StringObject("blablabla");
 			}
