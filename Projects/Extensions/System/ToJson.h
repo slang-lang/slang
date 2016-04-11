@@ -48,7 +48,7 @@ public:
 
 			Json::Value value = (*it).pointer()->ToJson();
 
-			*result = Runtime::StringObject(value.toStyledString());
+			*result = Runtime::StringObject(value.toString());
 		}
 		catch ( std::exception &e ) {
 			Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);

@@ -90,7 +90,7 @@ public:	// Value
 	virtual std::string ToString() const;
 
 public:	// Json serialization
-	virtual void FromJson(const Json::Value& value);
+	virtual bool FromJson(const Json::Value& value);
 	virtual Json::Value ToJson() const;
 
 public:	// Usage

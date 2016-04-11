@@ -28,7 +28,7 @@ if( "${BUILD}" STREQUAL "" OR "${BUILD}" MATCHES "Debug")
     # suppress "veraltete Konvertierung von Zeichenkettenkonstante in »char*« [-Werror=write-strings]"
     add_definitions(-Wno-write-strings)
 
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wextra")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wextra -g")
 
 elseif("${BUILD}" MATCHES "Release")
 
@@ -36,13 +36,10 @@ elseif("${BUILD}" MATCHES "Release")
     SET(CMAKE_BUILD_TYPE "Release")
     SET(CMAKE_CXX_FLAGS "")
 
-    # do less logging
-    #add_definitions(-DNO_DEBUG_LOG)
-
     # suppress "veraltete Konvertierung von Zeichenkettenkonstante in »char*« [-Werror=write-strings]"
     add_definitions(-Wno-write-strings)
 
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-strict-aliasing")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-strict-aliasing -O2")
 
 else()
 
@@ -55,17 +52,10 @@ endif()
 
 # specify default includes for the project
 SET(CMAKE_INCLUDE_CURRENT_DIR ON)
-include_directories(
-    ${PROJECT_SOURCE_DIR}/Interfaces
-    ${PROJECT_SOURCE_DIR}/Utils
-)
-
-# make sure the user-settings file exists
-#SET(USER_ENV "$ENV{HOME}/.cmake")
-#INCLUDE(${USER_ENV} OPTIONAL RESULT_VARIABLE found)
-#if ( "${found}" STREQUAL "NOTFOUND" )
-#    MESSAGE(FATAL_ERROR "Your user-env file [${USER_ENV}] does not exist")
-#endif()
+#include_directories(
+#    ${PROJECT_SOURCE_DIR}/Interfaces
+#    ${PROJECT_SOURCE_DIR}/Utils
+#)
 
 # common used functionality and functions
 INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Common.cmake)
@@ -75,4 +65,3 @@ INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Builder.cmake)
 
 # include custom dependencies
 INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Dependencies.cmake)
-

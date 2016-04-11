@@ -9,8 +9,10 @@ SET(SOURCES
 
 SET(HEADERS
 	AssertMsg.h
+	FromJson.h
 	Print.h
 	System.h
+	ToJson.h
 	Write.h
 	WriteLn.h
 )

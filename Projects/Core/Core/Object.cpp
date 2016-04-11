@@ -342,7 +342,7 @@ ControlFlow::E Object::execute(Object *result, const std::string& name, const Pa
 	return controlflow;
 }
 
-void Object::FromJson(const Json::Value& value)
+bool Object::FromJson(const Json::Value& value)
 {
 	for ( Json::Value::Members::const_iterator it = value.members().begin(); it != value.members().end(); ++it ) {
 		Json::Value sub = (*it);
@@ -360,6 +360,8 @@ void Object::FromJson(const Json::Value& value)
 			obj->FromJson(sub);
 		}
 	}
+
+	return true;
 }
 
 void Object::garbageCollector()
@@ -589,7 +591,7 @@ Json::Value Object::ToJson() const
 
 	for ( Symbols::const_iterator it = mSymbols.begin(); it != mSymbols.end(); ++it ) {
 		if ( it->first == IDENTIFIER_BASE ) {
-			result["base"] = static_cast<Object*>(it->second)->ToJson();
+			result.addMember(it->first, static_cast<Object*>(it->second)->ToJson());
 		}
 
 		if ( it->first == IDENTIFIER_BASE || it->first == IDENTIFIER_THIS ||
@@ -599,7 +601,7 @@ Json::Value Object::ToJson() const
 
 		Object *obj = static_cast<Object*>(it->second);
 
-		result[it->first] = obj->getValue();
+		result.addMember(it->first, obj->getValue());
 	}
 
 	return result;

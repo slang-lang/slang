@@ -962,14 +962,12 @@ assert(!"not implemented");
 
 // syntax:
 // throw;
-void Interpreter::process_throw(TokenIterator& token, Object* /*result*/)
+void Interpreter::process_throw(TokenIterator& token, Object* result)
 {
-	Object *data = mRepository->createInstance(GENERIC_OBJECT, ANONYMOUS_OBJECT);
-
-	expression(data, token);
+	expression(result, token);
 
 	mControlFlow = ControlFlow::Throw;
-	mExceptionData = ExceptionData(data, token->position());
+	mExceptionData = ExceptionData(result, token->position());
 
 	expect(Token::Type::SEMICOLON, token);
 }
@@ -1007,7 +1005,7 @@ void Interpreter::process_try(TokenIterator& token, Object *result)
 		expect(Token::Type::BRACKET_CURLY_OPEN, tmp);
 
 		// find next open curly bracket '{'
-		TokenIterator catchBegin = findNext(tmp, Token::Type::BRACKET_CURLY_OPEN);
+		TokenIterator catchBegin = tmp; //findNext(tmp, Token::Type::BRACKET_CURLY_OPEN);
 		// find next balanced '{' & '}' pair
 		TokenIterator catchEnd = findNextBalancedCurlyBracket(catchBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
 
@@ -1028,9 +1026,10 @@ void Interpreter::process_try(TokenIterator& token, Object *result)
 			mControlFlow = interpret(catchTokens, result);
 		}
 	}
-
-	// reset control flow after try block
-	//mControlFlow = ControlFlow::Normal;
+	else {
+		// reset control flow after try block
+		mControlFlow = ControlFlow::Normal;
+	}
 
 	tmp = token;
 	tmp++;	// look ahead
@@ -1041,7 +1040,7 @@ void Interpreter::process_try(TokenIterator& token, Object *result)
 		expect(Token::Type::BRACKET_CURLY_OPEN, tmp);
 
 		// find next open curly bracket '{'
-		TokenIterator finallyBegin = findNext(tmp, Token::Type::BRACKET_CURLY_OPEN);
+		TokenIterator finallyBegin = tmp; //findNext(tmp, Token::Type::BRACKET_CURLY_OPEN);
 		// find next balanced '{' & '}' pair
 		TokenIterator finallyEnd = findNextBalancedCurlyBracket(finallyBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
 

@@ -30,7 +30,7 @@ void Printer::print(const std::string& text, const std::string& file, int line)
 		std::cout << "   [" << file << ":" << line << "]";
 	}
 
-	if ( AutomaticLineBreak && !PrintFileAndLine ) {
+	if ( AutomaticLineBreak ) {
 		std::cout << std::endl;
 	}
 }

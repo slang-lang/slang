@@ -70,3 +70,4 @@ add_include(Projects/Core)
 add_include(Projects/Utils)
 
 build_static_lib(Core "")
+

@@ -8,8 +8,10 @@
 #include <Json/Value.h>
 
 // Project includes
+#include <Core/BuildInObjects/BoolObject.h>
 #include <Core/BuildInObjects/GenericObject.h>
 #include <Core/BuildInObjects/StringObject.h>
+#include <Core/Designtime/BuildInTypes/BoolObject.h>
 #include <Core/Designtime/BuildInTypes/GenericObject.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/Designtime/BuildInTypes/VoidObject.h>
@@ -32,7 +34,7 @@ class FromJson : public Runtime::Method
 {
 public:
 	FromJson()
-	: Runtime::Method(0, "FromJsonString", Designtime::VoidObject::TYPENAME)
+	: Runtime::Method(0, "FromJsonString", Designtime::BoolObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter("object", Designtime::GenericObject::TYPENAME, VALUE_NONE));
@@ -53,7 +55,9 @@ public:
 			Runtime::Object *obj = (*it++).pointer();
 			std::string jsonStr = (*it++).value();
 
-			obj->FromJson(Json::Parser::parse(jsonStr));
+			bool success = obj->FromJson(Json::Parser::parse(jsonStr));
+
+			*result = Runtime::BoolObject(success);
 		}
 		catch ( std::exception &e ) {
 			Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
