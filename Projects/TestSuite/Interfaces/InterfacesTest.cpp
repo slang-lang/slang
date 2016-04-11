@@ -23,7 +23,8 @@ namespace Interfaces {
 
 
 InterfacesTest::InterfacesTest(const ::Utils::Common::ILogger *p)
-: ::Utils::Common::Logger(p, "InterfacesTest")
+: GenericTest("InterfacesTest"),
+  ::Utils::Common::Logger(p, "InterfacesTest")
 {
 }
 

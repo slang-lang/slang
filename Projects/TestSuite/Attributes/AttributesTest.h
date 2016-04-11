@@ -18,8 +18,8 @@ namespace Testing {
 namespace Attributes {
 
 
-class AttributesTest : private Utils::Common::Logger,
-					   public GenericTest
+class AttributesTest : public GenericTest,
+					   private Utils::Common::Logger
 {
 public:
 	AttributesTest(const Utils::Common::ILogger *p);

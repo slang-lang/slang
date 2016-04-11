@@ -91,9 +91,9 @@
 		mLastResult = GenericTest::Passed; \
 		func(); \
 		switch ( mLastResult ) { \
-			case GenericTest::Failed:  std::cout << "!!!FAILED:  " << __FUNCTION__ << std::endl; break; \
-			case GenericTest::Passed:  std::cout << "PASSED:  " << __FUNCTION__ << std::endl; break; \
-			case GenericTest::Skipped: std::cout << "SKIPPED: " << __FUNCTION__ << std::endl; break; \
+			case GenericTest::Failed:  std::cout << "!!!FAILED:  " << getName() << "::" << __FUNCTION__ << std::endl; break; \
+			case GenericTest::Passed:  std::cout << "PASSED:  "    << getName() << "::" << __FUNCTION__ << std::endl; break; \
+			case GenericTest::Skipped: std::cout << "SKIPPED: "    << getName() << "::" << __FUNCTION__ << std::endl; break; \
 		} \
 	}
 

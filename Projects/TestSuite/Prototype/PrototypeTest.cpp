@@ -23,7 +23,8 @@ namespace Prototype {
 
 
 PrototypeTest::PrototypeTest(const ::Utils::Common::ILogger *p)
-: ::Utils::Common::Logger(p, "PrototypeTest")
+: GenericTest("PrototypeTest"),
+  ::Utils::Common::Logger(p, "PrototypeTest")
 {
 }
 

@@ -18,8 +18,8 @@ namespace Testing {
 namespace Framework {
 
 
-class TestFrameworkTest : private Utils::Common::Logger,
-						  public GenericTest
+class TestFrameworkTest : public GenericTest,
+						  private Utils::Common::Logger
 {
 public:
 	TestFrameworkTest(const Utils::Common::ILogger *p);

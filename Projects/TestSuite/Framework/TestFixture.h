@@ -8,8 +8,8 @@
 #include <typeinfo>
 
 // Project includes
-#include "GenericTest.h"
 #include <Common/Logger.h>
+#include "GenericTest.h"
 
 // Forward declarations
 
@@ -45,9 +45,16 @@ public:
 		return mName;
 	}
 
+	void print() {
+		std::cout << "TestSuite: " << getName() << std::endl;
+
+		for ( TestList::const_iterator it = mTests.begin(); it!= mTests.end(); it++ ) {
+			(*it)->print();
+		}
+	}
+
 	void run() {
-		std::cout << std::endl << "********* Starting:  *********" << std::endl;
-		//std::cout << std::endl << "********* Starting: " << typeid(*this).name() << " *********" << std::endl;
+		std::cout << std::endl << "********* Starting: " << getName() << " *********" << std::endl;
 
 		setup();
 
@@ -58,8 +65,7 @@ public:
 		teardown();
 		cleanup();
 
-		std::cout << "********* Finished:  *********" << std::endl;
-		//std::cout << "********* Finished: " << typeid(*this).name() << " *********" << std::endl;
+		std::cout << "********* Finished: " << getName() << " *********" << std::endl;
 	}
 
 protected:

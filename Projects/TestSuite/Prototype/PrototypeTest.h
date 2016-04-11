@@ -18,8 +18,8 @@ namespace Testing {
 namespace Prototype {
 
 
-class PrototypeTest : private Utils::Common::Logger,
-					  public GenericTest
+class PrototypeTest : public GenericTest,
+					  private Utils::Common::Logger
 {
 public:
 	PrototypeTest(const Utils::Common::ILogger *p);

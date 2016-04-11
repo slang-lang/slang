@@ -28,9 +28,10 @@ public:
 	};
 
 public:
-	GenericTest()
+	GenericTest(const std::string& name)
 	: mFailed(0),
 	  mLastResult(Failed),
+	  mName(name),
 	  mRun(0),
 	  mSkipped(0)
 	{ }
@@ -41,6 +42,14 @@ public:
 	virtual void teardown() = 0;
 
 public:
+	const std::string& getName() const {
+		return mName;
+	}
+
+	void print() {
+		std::cout << getName() << std::endl;
+	}
+
 	void run() {
 		setup();
 		process();
@@ -52,12 +61,13 @@ public:
 protected:
 	int mFailed;
 	TestResult_e mLastResult;
+	std::string mName;
 	int mRun;
 	int mSkipped;
 
 private:
 	void printResults() {
-		std::cout << "Statistics: " << (mRun - mFailed - mSkipped) << " passed, " << mFailed << " failed, " << mSkipped << " skipped" << std::endl;
+		std::cout << "Statistics: " << getName() << " " << (mRun - mFailed - mSkipped) << " passed, " << mFailed << " failed, " << mSkipped << " skipped" << std::endl;
 		//std::cout << typeid(*this).name() << " Statistics: " << (mRun - mFailed - mSkipped) << " passed, " << mFailed << " failed, " << mSkipped << " skipped" << std::endl;
 	}
 };

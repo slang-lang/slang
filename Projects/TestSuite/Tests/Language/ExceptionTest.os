@@ -19,12 +19,11 @@ public namespace ExceptionTest
 
 	private object ObjectThatThrows
 	{
-/*
 		public void ObjectThatThrows()
 		{
 			// not implementing this constructor and using the default constructor would also be valid
 		}
-*/
+
 		public void MethodThatThrows()
 		{
 			print("MethodThatThrows()");
@@ -169,11 +168,10 @@ public namespace ExceptionTest
 				print("try");
 
 				print("throw new Exception()");
-				throw new Exception("");
+				throw new Exception("standard exception");
 			}
-			catch ( Exception one ) {
-				print("catch");
-				//print("one = " + one);
+			catch ( Exception exception ) {
+				print("catch " + exception.what());
 			}
 			finally {
 				print("finally");

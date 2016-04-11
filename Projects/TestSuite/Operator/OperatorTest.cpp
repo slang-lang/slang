@@ -23,7 +23,8 @@ namespace Operator {
 
 
 OperatorTest::OperatorTest(const ::Utils::Common::Logger *p)
-: ::Utils::Common::Logger(p, "Operator")
+: GenericTest("OperatorTest"),
+  ::Utils::Common::Logger(p, "OperatorTest")
 {
 }
 

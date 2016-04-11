@@ -20,7 +20,8 @@ namespace Framework {
 
 
 TestFrameworkTest::TestFrameworkTest(const Utils::Common::ILogger *p)
-: Utils::Common::Logger(p, "TestFrameworkTest")
+: GenericTest("TestFrameworkTest"),
+  Utils::Common::Logger(p, "TestFrameworkTest")
 {
 }
 
