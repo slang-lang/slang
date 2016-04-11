@@ -1,5 +1,7 @@
 #!/usr/local/bin/oscript
 
+import System.Exception;
+
 private object TestObject
 {
 	public void TestObject()
@@ -7,7 +9,8 @@ private object TestObject
 		print("TestObject()");
 
 		print("throw in constructor");
-		throw 42;
+		//throw 42;
+		throw new Exception("42");
 	}
 
 	public void ~TestObject()
