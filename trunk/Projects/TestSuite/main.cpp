@@ -41,6 +41,19 @@
 typedef std::list<TestFixture*> FixtureList;
 
 
+void printUsage()
+{
+	std::cout << "Usage: TestSuite [options] [args...]" << std::endl;
+	std::cout << std::endl;
+	std::cout << "-h | --help           This help" << std::endl;
+	std::cout << "-q | --quiet          Quiet mode, chats as less as possible" << std::endl;
+	std::cout << "--show                Print test suites information" << std::endl;
+	std::cout << "--showtests           Print unit tests of given test suite" << std::endl;
+	std::cout << "--test                Execute given test suite" << std::endl;
+	std::cout << "-v | --verbose        Verbose output" << std::endl;
+	std::cout << std::endl;
+}
+
 int main(int argc, const char* argv[])
 {
 #ifdef _WIN32
@@ -58,26 +71,40 @@ int main(int argc, const char* argv[])
 
 	if ( argc > 1 ) {
 		for (int i = 1; i < argc; i++) {
-			if ( Utils::Tools::StringCompare(argv[i], "--test") ) {
-				if ( argc <= ++i ) {
-					std::cout << "invalid number of parameters provided!" << std::endl;
-					return -1;
-				}
-				toRun = argv[i];
-			}
-			else if ( Utils::Tools::StringCompare(argv[i], "-v") ) {
-				mLogger->setLoudness(Utils::Common::ILogger::LoudnessDebug);
+			if ( Utils::Tools::StringCompare(argv[i], "--help") ) {
+				printUsage();
 
-				mPrinter->ActivatePrinter = true;
-				mPrinter->PrintFileAndLine = true;
+				exit(0);
 			}
-			else if ( Utils::Tools::StringCompare(argv[i], "-q") ) {
+			else if ( Utils::Tools::StringCompare(argv[i], "-q") || Utils::Tools::StringCompare(argv[i], "--quiet") ) {
 				mLogger->setLoudness(Utils::Common::ILogger::LoudnessMute);
 
 				mPrinter->ActivatePrinter = false;
 			}
 			else if ( Utils::Tools::StringCompare(argv[i], "--show") ) {
 				show = true;
+			}
+			else if ( Utils::Tools::StringCompare(argv[i], "--showtests") ) {
+				show = true;
+				if ( argc <= ++i ) {
+					std::cout << "invalid number of parameters provided!" << std::endl;
+					return -1;
+				}
+				toRun = argv[i];
+			}
+			else if ( Utils::Tools::StringCompare(argv[i], "--test") ) {
+				if ( argc <= ++i ) {
+					std::cout << "invalid number of parameters provided!" << std::endl;
+					return -1;
+				}
+				toRun = argv[i];
+			}
+			else if ( Utils::Tools::StringCompare(argv[i], "-v") || Utils::Tools::StringCompare(argv[i], "--verbose") ) {
+				mLogger->setLoudness(Utils::Common::ILogger::LoudnessDebug);
+
+				mPrinter->ActivatePrinter = true;
+				mPrinter->AutomaticLineBreak = true;
+				mPrinter->PrintFileAndLine = true;
 			}
 			else {
 				toRun = argv[i];
@@ -114,11 +141,15 @@ int main(int argc, const char* argv[])
 */
 		for ( FixtureList::iterator it = mFixtures.begin(); it != mFixtures.end(); ++it ) {
 			if ( show ) {
-				std::cout << (*it)->getName() << std::endl;
-				continue;
+				if ( toRun.empty() ) {
+					std::cout << (*it)->getName() << std::endl;
+					continue;
+				}
+				else if ( toRun == (*it)->getName() ) {
+					(*it)->print();
+				}
 			}
-
-			if ( toRun.empty() || toRun == (*it)->getName() ) {
+			else if ( toRun.empty() || toRun == (*it)->getName() ) {
 				executed = true;
 				(*it)->run();
 			}

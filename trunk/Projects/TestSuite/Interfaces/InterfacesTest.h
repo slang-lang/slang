@@ -18,8 +18,8 @@ namespace Testing {
 namespace Interfaces {
 
 
-class InterfacesTest : private Utils::Common::Logger,
-                       public GenericTest
+class InterfacesTest : public GenericTest,
+					   private Utils::Common::Logger
 {
 public:
     InterfacesTest(const Utils::Common::ILogger *p);

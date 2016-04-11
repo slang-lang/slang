@@ -18,8 +18,8 @@ namespace Testing {
 namespace Inheritance {
 
 
-class InheritanceTest : private Utils::Common::Logger,
-                        public GenericTest
+class InheritanceTest : public GenericTest,
+						private Utils::Common::Logger
 {
 public:
     InheritanceTest(const Utils::Common::ILogger *p);

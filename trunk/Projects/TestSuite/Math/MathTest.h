@@ -18,8 +18,8 @@ namespace Testing {
 namespace Math {
 
 
-class MathTest : private Utils::Common::Logger,
-				 public GenericTest
+class MathTest : public GenericTest,
+				 private Utils::Common::Logger
 {
 public:
 	MathTest(const Utils::Common::ILogger *p);

@@ -23,7 +23,8 @@ namespace Attributes {
 
 
 AttributesTest::AttributesTest(const ::Utils::Common::ILogger *p)
-: ::Utils::Common::Logger(p, "AttributesTest")
+: GenericTest("AttributesTest"),
+  ::Utils::Common::Logger(p, "AttributesTest")
 {
 }
 

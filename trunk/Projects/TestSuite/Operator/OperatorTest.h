@@ -18,8 +18,8 @@ namespace Testing {
 namespace Operator {
 
 
-class OperatorTest : private Utils::Common::Logger,
-					 public GenericTest
+class OperatorTest : public GenericTest,
+					 private Utils::Common::Logger
 {
 public:
 	OperatorTest(const Utils::Common::Logger *p);

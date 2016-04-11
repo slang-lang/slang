@@ -18,8 +18,8 @@ namespace Testing {
 namespace Language {
 
 
-class LanguageTest : private Utils::Common::Logger,
-					 public GenericTest
+class LanguageTest : public GenericTest,
+					 private Utils::Common::Logger
 {
 public:
 	LanguageTest(const Utils::Common::ILogger *p);

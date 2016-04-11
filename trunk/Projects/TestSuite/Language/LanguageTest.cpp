@@ -25,7 +25,8 @@ namespace Language {
 
 
 LanguageTest::LanguageTest(const ::Utils::Common::ILogger *p)
-: ::Utils::Common::Logger(p, "Language")
+: GenericTest("LanguageTest"),
+  ::Utils::Common::Logger(p, "LanguageTest")
 {
 }
 
