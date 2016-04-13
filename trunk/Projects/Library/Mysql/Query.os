@@ -7,7 +7,7 @@ public namespace Mysql {
 public object Query {
 	private Connection mConnection;
 	private string mExecutedString;
-	private string mQueryString;
+	private string mPreparedQuery;
 	private int mResultHandle;
 
 	public void Query(Connection connection) {
@@ -15,7 +15,7 @@ public object Query {
 
 		mConnection = connection;
 		mExecutedQuery = "";
-		mQueryString = "";
+		mPreparedQuery = "";
 		mResultHandle = 0;
 	}
 
@@ -52,14 +52,25 @@ public object Query {
 		return false;
         }
 
-	public void prepare(string query) modify {
-		mQueryString = query;
+	public bool execute(string query = "") modify {
+		if ( query ) {
+			mExecutedQuery = query;
+		}
+
+		writeln("mExecutedQuery = " + mExecutedQuery);
+		int result = mysql_query(mConnection.descriptor(), mExecutedQuery);
+		return (result == 0);
 	}
 
-	public Result execute() const {
-		writeln("mQueryString = " + mQueryString");
+	public void prepare(string query) modify {
+		mPreparedQuery = query;
+	}
 
-		mysql_query(mConnection.descriptor(), mQueryString);
+/*
+	public Result execute() const {
+		writeln("mPreparedQuery = " + mPreparedQuery");
+
+		mysql_query(mConnection.descriptor(), mPreparedQuery);
 
 		mResultHandle = mysql_store_result(mConnection.descriptor());
 
@@ -67,6 +78,7 @@ public object Query {
 
 		return result;
 	}
+*/
 }
 
 }
