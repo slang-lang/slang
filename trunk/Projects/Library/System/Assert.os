@@ -4,7 +4,7 @@ public namespace System {
 	public void assertmsg(string message, bool condition)
 	{
 		if ( !condition ) {
-			write(message + ": ");
+			writeln("failed with message \"" + message + "\"");
 
 			assert(condition);
 		}
@@ -13,12 +13,29 @@ public namespace System {
 	public void debug(bool condition, string msg_success, string msg_fail)
 	{
 		if ( condition ) {
-			print(msg_success);
+			writeln(msg_success);
 		}
 		else {
-			print(msg_fail);
+			writeln("[DEBUG] " + msg_fail);
 		}
 	}
 
+	public void error(bool condition, string msg_success, string msg_fail) {
+		if ( condition ) {
+			writeln(msg_success);
+		}
+		else {
+			writeln("[ERROR] " + msg_fail);
+		}
+	}
+
+	public void warn(bool condition, string msg_success, string msg_fail) {
+		if ( condition ) {
+			writeln(msg_success);
+		}
+		else {
+			writeln("[WARN ] " + msg_fail);
+		}
+	}
 }
 
