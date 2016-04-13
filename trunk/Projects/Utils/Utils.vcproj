@@ -67,7 +67,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\$(ProjectName)_debug.lib"
+				OutputFile="$(OutDir)\$(ProjectName).lib"
 				AdditionalLibraryDirectories="..\Externals"
 			/>
 			<Tool
@@ -445,26 +445,6 @@
 			>
 		</File>
 		<File
-			RelativePath=".\Tools\Tools.cpp"
-			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					ObjectFile="$(IntDir)\Tools\"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					ObjectFile="$(IntDir)\Tools\"
-				/>
-			</FileConfiguration>
-		</File>
-		<File
 			RelativePath=".\Math\Tools.cpp"
 			>
 			<FileConfiguration
@@ -485,11 +465,31 @@
 			</FileConfiguration>
 		</File>
 		<File
-			RelativePath=".\Tools\Tools.h"
+			RelativePath=".\Tools\Tools.cpp"
 			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					ObjectFile="$(IntDir)\Tools\"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					ObjectFile="$(IntDir)\Tools\"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath=".\Math\Tools.h"
+			>
+		</File>
+		<File
+			RelativePath=".\Tools\Tools.h"
 			>
 		</File>
 		<File
