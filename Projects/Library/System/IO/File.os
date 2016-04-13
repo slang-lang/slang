@@ -1,4 +1,6 @@
 
+import System.Exception;
+
 public namespace System {
 public namespace IO {
 
@@ -25,7 +27,7 @@ public namespace IO {
 		}
 
 		public bool close() modify {
-			print("File::close()");
+			writeln("File::close()");
 
 			if ( mHandle == 0 ) {
 				return false;
@@ -49,11 +51,11 @@ public namespace IO {
 		}
 
 		public bool open(string filename, string mode) modify {
-			print("File::open(\"" + filename + "\", \"" + mode + "\")");
+			writeln("File::open(\"" + filename + "\", \"" + mode + "\")");
 
 			if ( mHandle != 0 ) {
 				// we already have an open file handle
-				throw new string("file descriptor still points to an open file!");
+				throw new Exception("file descriptor still points to an open file!");
 			}
 
 			mAccessMode = mode;

@@ -46,7 +46,7 @@ public namespace Mysql {
 		}
 
 		public void close() modify {
-			print("Connection::close()");
+			writeln("Connection::close()");
 
 			if ( mHandle == 0 ) {
 				return false;
@@ -55,6 +55,12 @@ public namespace Mysql {
 			mysql_close(mHandle);
 
 			cleanup();
+		}
+
+		public Query createQuery() const {
+			Query query = new Query(this);
+
+			return query;
 		}
 
 		public int descriptor() const {
@@ -78,7 +84,7 @@ public namespace Mysql {
 		}
 
 		public bool open(string hostname, int port, string user, string password, string database) modify {
-			print("Connection::open(\"" + hostname + "\", " + port + ", \"" + user + "\", <password>, \"" + database + "\")");
+			writeln("Connection::open(\"" + hostname + "\", " + port + ", \"" + user + "\", <password>, \"" + database + "\")");
 
 			if ( mHandle != 0 ) {
 				// we already have a connection handle
