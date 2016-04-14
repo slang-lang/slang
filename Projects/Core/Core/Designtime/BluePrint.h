@@ -73,6 +73,10 @@ public:
 	void setVisibility(Visibility::E v);
 
 	bool isAbstract() const;
+	void setAbstract(bool state);
+
+	bool isInterface() const;
+	void setInterface(bool state);
 
 	virtual std::string ToString() const;
 
@@ -93,6 +97,7 @@ private:
 	std::string mFilename;
 	std::string mFullyQualifiedTypeName;
 	Ancestors mInheritance;
+	bool mIsInterface;
 	std::string mName;
 	TokenList mTokens;
 	std::string mTypename;

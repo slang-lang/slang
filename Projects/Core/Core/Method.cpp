@@ -110,6 +110,9 @@ ControlFlow::E Method::execute(const ParameterList& params, Object *result, cons
 		throw Utils::Exceptions::Exception("mRepository not set");
 	}
 
+	if ( isAbstract() ) {
+		throw Utils::Exceptions::AbstractException(getName() + " is abstract");
+	}
 	if ( !isSignatureValid(params) ) {
 		throw Utils::Exceptions::ParameterCountMissmatch("incorrect number or type of parameters", token->position());
 	}

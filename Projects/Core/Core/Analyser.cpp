@@ -87,9 +87,10 @@ Designtime::Ancestors Analyser::collectInheritance(TokenIterator &start) const
 	return ancestors;
 }
 
-Designtime::BluePrint Analyser::createBluePrint(TokenIterator& start, TokenIterator end) const
+Designtime::BluePrint Analyser::createBluePrint(TokenIterator& start, TokenIterator end, bool isInterface) const
 {
 	std::string fullyQualifiedName;
+	bool isAbstract = false;
 	std::string languageFeature;
 	std::string name;
 	std::string visibility;
@@ -140,7 +141,9 @@ Designtime::BluePrint Analyser::createBluePrint(TokenIterator& start, TokenItera
 	sanity.process(tokens);
 
 	Designtime::BluePrint blue(name, mFilename);
+	blue.setAbstract(isAbstract || isInterface);
 	blue.setFullyQualifiedTypename(fullyQualifiedName);
+	blue.setInterface(isInterface);
 	blue.setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
 	blue.setTokens(tokens);
 	blue.setVisibility(Visibility::convert(visibility));
@@ -332,7 +335,7 @@ void Analyser::generate(const TokenList& tokens)
 	// loop over all tokens and look for imports and object declarations
 	while ( it != tokens.end() && it->type() != Token::Type::ENDOFFILE ) {
 		if ( Parser::isInterfaceDeclaration(it) ) {
-			Designtime::BluePrint i = createBluePrint(it, tokens.end());
+			Designtime::BluePrint i = createBluePrint(it, tokens.end(), true);
 			mBluePrints.push_back(i);
 		}
 		else if ( Parser::isLibraryReference(it) ) {

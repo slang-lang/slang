@@ -29,11 +29,6 @@ void Print(const std::string& text, const Utils::Position& position)
 	::Utils::PrinterDriver::getInstance()->print(text, position.mFile, position.mLine);
 }
 
-void PrintLn(const std::string& text, const Utils::Position& position)
-{
-	::Utils::PrinterDriver::getInstance()->println(text, position.mFile, position.mLine);
-}
-
 
 }
 }
