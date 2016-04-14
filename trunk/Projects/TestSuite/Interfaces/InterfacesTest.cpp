@@ -49,7 +49,7 @@ void InterfacesTest::testBasicInterfaces()
 {
     try {
         VirtualMachine vm;
-        vm.createScriptFromFile("Tests/Interfaces/BasicInterfacesTest.os");
+        TTHROWS(vm.createScriptFromFile("Tests/Interfaces/BasicInterfacesTest.os"), ObjectiveScript::Utils::Exceptions::AbstractException);
 
         // automatic success
     }

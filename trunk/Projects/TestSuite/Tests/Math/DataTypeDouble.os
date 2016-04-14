@@ -13,7 +13,8 @@ public namespace Math
 
 			print("mNumber = " + mNumber);
 
-			assert( (string mNumber) == "1.731389" );
+			//assert( (string mNumber) == "1.731389" );
+			assert( mNumber == 1.731389d );
 		}
 	}
 }
