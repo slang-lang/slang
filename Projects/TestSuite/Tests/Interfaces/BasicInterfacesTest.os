@@ -5,6 +5,7 @@ public namespace InterfacesTest
 	public interface IWarehouse
 	{
 		public int GetBox() const;
+		public string GetBoxType(int boxId) const;
 	}
 
 	public object Warehouse implements IWarehouse
@@ -16,6 +17,8 @@ public namespace InterfacesTest
 			// or that..
 			//return 1;
 		}
+
+		//public string GetBoxType(int boxId) const { return "bla"; }
 	}
 
 	public object Main
@@ -30,6 +33,8 @@ public namespace InterfacesTest
 			Warehouse warehouse = new Warehouse();
 
 			print("IWarehouse.GetBox() = " + warehouse.GetBox());
+
+			warehouse.GetBoxType(17);
 
 			delete warehouse;	// this is not necessary but perfectly valid
 		}
