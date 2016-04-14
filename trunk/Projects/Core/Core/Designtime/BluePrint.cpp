@@ -22,6 +22,7 @@ BluePrint::BluePrint()
   BluePrintSymbol(ANONYMOUS_OBJECT),
   mFilename(ANONYMOUS_OBJECT),
   mFullyQualifiedTypeName(ANONYMOUS_OBJECT),
+  mIsInterface(false),
   mName(ANONYMOUS_OBJECT),
   mTypename(ANONYMOUS_OBJECT),
   mVisibility(Visibility::Public)
@@ -33,6 +34,7 @@ BluePrint::BluePrint(const std::string& type, const std::string& filename, const
   BluePrintSymbol(type),
   mFilename(filename),
   mFullyQualifiedTypeName(type),
+  mIsInterface(false),
   mName(name),
   mTypename(type),
   mVisibility(Visibility::Public)
@@ -137,9 +139,24 @@ bool BluePrint::isAbstract() const
 	return ObjectAttributes::isAbstract();
 }
 
+bool BluePrint::isInterface() const
+{
+	return mIsInterface;
+}
+
+void BluePrint::setAbstract(bool state)
+{
+	mIsAbstract = state;
+}
+
 void BluePrint::setFullyQualifiedTypename(const std::string& name)
 {
 	mFullyQualifiedTypeName = name;
+}
+
+void BluePrint::setInterface(bool state)
+{
+	mIsInterface = state;
 }
 
 void BluePrint::setTokens(const TokenList& tokens)

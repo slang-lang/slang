@@ -5,6 +5,7 @@
 // Library includes
 
 // Project includes
+#include <Core/Designtime/BluePrint.h>
 #include <Core/Parser/Parser.h>
 #include <Core/Utils/Exceptions.h>
 #include "Repository.h"
@@ -172,7 +173,7 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token) const
 
 	// create a new method with the corresponding return value
 	Runtime::Method *method = new Runtime::Method(mScope, name, type);
-	method->setAbstract(isAbstract);
+	method->setAbstract(isAbstract || mBluePrint->isInterface());
 	method->setConst(isConst);
 	method->setFinal(isFinal);
 	method->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));

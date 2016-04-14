@@ -298,6 +298,11 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 		object = createUserObject(name, blueprint);
 	}
 
+	// TODO: this is no real check, one would have to check every method in an object to verify an objects abstractness
+	if ( object->isAbstract() ) {
+		throw Utils::Exceptions::AbstractException("cannot instantiate abstract object '" + blueprint->Typename() + "'");
+	}
+
 	object->setConst(blueprint->isConst());
 	object->setFinal(blueprint->isFinal());
 	object->setLanguageFeatureState(blueprint->getLanguageFeatureState());
@@ -315,10 +320,6 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 Runtime::Object* Repository::createUserObject(const std::string& name, Designtime::BluePrint* blueprint)
 {
 	assert(blueprint);
-
-	if ( blueprint->isAbstract() ) {
-		throw Utils::Exceptions::AbstractException("cannot instantiate abstract object '" + blueprint->Typename() + "'");
-	}
 
 	// create the base object
 	Runtime::Object *object = new Runtime::UserObject(name, blueprint->Filename(), blueprint->Typename(), Runtime::UserObject::DEFAULTVALUE);

@@ -48,7 +48,7 @@ private:
 	TokenList generateTokens(const std::string& content);
 	void process(const TokenList& tokens);
 
-	Designtime::BluePrint createBluePrint(TokenIterator& start, TokenIterator end) const;
+	Designtime::BluePrint createBluePrint(TokenIterator& start, TokenIterator end, bool isInterface = false) const;
 	std::string createLibraryReference(TokenIterator& start, TokenIterator end) const;
 	void createMember(TokenIterator& start, TokenIterator end);
 	void createMethod(TokenIterator& start, TokenIterator end);

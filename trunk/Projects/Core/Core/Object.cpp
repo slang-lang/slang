@@ -545,7 +545,7 @@ ObjectiveScript::MethodSymbol* Object::resolveMethod(const std::string& name, co
 	for ( Inheritance::const_reverse_iterator it = mInheritance.rbegin(); it != mInheritance.rend(); ++it ) {
 		ObjectiveScript::MethodSymbol *tmp = it->second->resolveMethod(name, params, onlyCurrentScope);
 
-		if ( tmp && !tmp->isAbstract() && (tmp->getVisibility() == Visibility::Protected || tmp->getVisibility() == Visibility::Public) ) {
+		if ( tmp && (tmp->getVisibility() == Visibility::Protected || tmp->getVisibility() == Visibility::Public) ) {
 			result = tmp;
 		}
 
@@ -559,10 +559,6 @@ ObjectiveScript::MethodSymbol* Object::resolveMethod(const std::string& name, co
 		ObjectiveScript::MethodSymbol *tmp = MethodScope::resolveMethod(name, params, onlyCurrentScope);
 
 		if ( tmp ) {
-			if ( tmp->isAbstract() ) {
-				throw Utils::Exceptions::Exception(tmp->getName() + " is abstract");
-			}
-
 			result = tmp;
 		}
 	}
