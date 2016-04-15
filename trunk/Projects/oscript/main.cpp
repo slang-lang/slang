@@ -164,7 +164,7 @@ int main(int argc, const char* argv[])
 	mVirtualMachine.setBaseFolder(mRoot);
 
 	// add extensions
-	mVirtualMachine.addExtension(new ObjectiveScript::Extensions::Mysql::MysqlExtension());
+	//mVirtualMachine.addExtension(new ObjectiveScript::Extensions::Mysql::MysqlExtension());
 	mVirtualMachine.addExtension(new ObjectiveScript::Extensions::System());
 
 	try {

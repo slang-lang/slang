@@ -111,7 +111,7 @@ ControlFlow::E Method::execute(const ParameterList& params, Object *result, cons
 	}
 
 	if ( isAbstract() ) {
-		throw Utils::Exceptions::AbstractException(getName() + " is abstract");
+		throw Utils::Exceptions::AbstractException("cannot execute abstract method '" + getName() + "'");
 	}
 	if ( !isSignatureValid(params) ) {
 		throw Utils::Exceptions::ParameterCountMissmatch("incorrect number or type of parameters", token->position());
@@ -123,10 +123,6 @@ ControlFlow::E Method::execute(const ParameterList& params, Object *result, cons
 		case LanguageFeatureState::Stable: /* this is the normal language feature state, so there is no need to log anything here */ break;
 		case LanguageFeatureState::Unknown: OSerror("unknown language feature state set for method '" + getName() + "'"); break;
 		case LanguageFeatureState::Unstable: OSwarn("method '" + getName() + "' is marked as unstable"); break;
-	}
-
-	if ( isAbstract() ) {
-		throw Utils::Exceptions::AbstractException("cannot execute abstract method '" + getName() + "'");
 	}
 
 	Interpreter interpreter(this, getName());
