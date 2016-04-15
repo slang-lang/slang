@@ -21,6 +21,7 @@ if( "${BUILD}" STREQUAL "" OR "${BUILD}" MATCHES "Debug")
     # by default we build debug!
     # MESSAGE("Setting default build to: Debug")
     SET(CMAKE_BUILD_TYPE "Debug")
+    SET(CMAKE_CXX_FLAGS "")
 
     # do more logging
     add_definitions(-DDEBUG)

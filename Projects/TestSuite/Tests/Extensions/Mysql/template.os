@@ -4,9 +4,13 @@ public object Main
 {
 	public void Main(int argc, string argv)
 	{
-		writeln("mysql_()");
+		int error = 0;
+		int handle = 0;
 
-		mysql_();
+		handle = mysql_init();
+		writeln("mysql_init() = " + handle);
+
+
 
 		writeln("done.");
 	}
