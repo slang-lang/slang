@@ -67,8 +67,8 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				AdditionalDependencies="&quot;$(MYSQL)\lib\libmysql.lib&quot;"
-				OutputFile="$(OutDir)\$(ProjectName)_debug.lib"
+				AdditionalDependencies="&quot;$(JSON)\Libs\Json.lib&quot; &quot;$(MYSQL)\lib\libmysql.lib&quot;"
+				OutputFile="$(OutDir)\$(ProjectName).lib"
 				AdditionalLibraryDirectories="..\Externals; ..\Libs"
 			/>
 			<Tool
@@ -374,6 +374,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\Mysql\FreeResult.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\FreeResult.h"
+			>
+		</File>
+		<File
 			RelativePath=".\Mysql\FreeResult.h"
 			>
 		</File>
@@ -386,66 +394,6 @@
 			>
 		</File>
 		<File
-			RelativePath=".\Mysql\GetClientInfo.h"
-			>
-		</File>
-		<File
-			RelativePath=".\Mysql\Info.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\Mysql\Info.h"
-			>
-		</File>
-		<File
-			RelativePath=".\Mysql\Init.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\Mysql\Init.h"
-			>
-		</File>
-		<File
-			RelativePath=".\Mysql\MysqlExtension.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\Mysql\MysqlExtension.h"
-			>
-		</File>
-		<File
-			RelativePath=".\Mysql\NextResult.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\Mysql\NextResult.h"
-			>
-		</File>
-		<File
-			RelativePath=".\Mysql\NumFields.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\Mysql\NumFields.h"
-			>
-		</File>
-		<File
-			RelativePath=".\Mysql\NumRows.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\Mysql\NumRows.h"
-			>
-		</File>
-		<File
-			RelativePath=".\Mysql\FreeResult.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\Mysql\FreeResult.h"
-			>
-		</File>
-		<File
 			RelativePath=".\Mysql\GetClientInfo.cpp"
 			>
 		</File>
@@ -454,7 +402,19 @@
 			>
 		</File>
 		<File
+			RelativePath=".\Mysql\GetClientInfo.h"
+			>
+		</File>
+		<File
 			RelativePath=".\Mysql\Info.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\Info.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\Info.h"
 			>
 		</File>
 		<File
@@ -466,7 +426,19 @@
 			>
 		</File>
 		<File
+			RelativePath=".\Mysql\Init.cpp"
+			>
+		</File>
+		<File
 			RelativePath=".\Mysql\Init.h"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\Init.h"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\MysqlExtension.cpp"
 			>
 		</File>
 		<File
@@ -478,7 +450,19 @@
 			>
 		</File>
 		<File
+			RelativePath=".\Mysql\MysqlExtension.h"
+			>
+		</File>
+		<File
 			RelativePath=".\Mysql\NextResult.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\NextResult.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\NextResult.h"
 			>
 		</File>
 		<File
@@ -490,11 +474,27 @@
 			>
 		</File>
 		<File
+			RelativePath=".\Mysql\NumFields.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\NumFields.h"
+			>
+		</File>
+		<File
 			RelativePath=".\Mysql\NumFields.h"
 			>
 		</File>
 		<File
 			RelativePath=".\Mysql\NumRows.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\NumRows.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\NumRows.h"
 			>
 		</File>
 		<File
