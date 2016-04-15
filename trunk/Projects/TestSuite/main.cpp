@@ -74,7 +74,7 @@ int main(int argc, const char* argv[])
 			if ( Utils::Tools::StringCompare(argv[i], "--help") ) {
 				printUsage();
 
-				exit(0);
+				return 0;
 			}
 			else if ( Utils::Tools::StringCompare(argv[i], "-q") || Utils::Tools::StringCompare(argv[i], "--quiet") ) {
 				mLogger->setLoudness(Utils::Common::ILogger::LoudnessMute);

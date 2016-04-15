@@ -100,19 +100,16 @@ function(_handle_modules_pre_linker modules)
     #    _handle_pre_qttest()
     #endif()
 
-    # always include json
-    _handle_pre_json()
-
     # always include boost
     list(FIND modules "boost" found)
     if ( ${found} GREATER -1 )
         _handle_pre_boost()
     endif()
 
-    list(FIND modules "json" found)
-    if ( ${found} GREATER -1 )
+    #list(FIND modules "json" found)
+    #if ( ${found} GREATER -1 )
         _handle_pre_json()
-    endif()
+    #endif()
 
     list(FIND modules "mysql" found)
     if ( ${found} GREATER -1 )
@@ -142,13 +139,10 @@ function(_handle_modules_post_linker modules target)
     #    _handle_post_qttest(${target})
     #endif()
 
-    # always include json
-    _handle_post_json(${target})
-
-    list(FIND modules "json" found)
-    if ( ${found} GREATER -1 )
+    #list(FIND modules "json" found)
+    #if ( ${found} GREATER -1 )
         _handle_post_json(${target})
-    endif()
+    #endif()
 
     list(FIND modules "mysql" found)
     if ( ${found} GREATER -1 )
@@ -196,7 +190,7 @@ endfunction()
 function(_handle_post_json target)
 
     _json_check_existence()
-    target_link_libraries(${target} json)
+    target_link_libraries(${target} Json)
 
 endfunction()
 
