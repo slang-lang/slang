@@ -40,6 +40,7 @@ private:	// Tokenizer
 	void mergeInfixPostfixOperators();
 	void removeWhiteSpaces();
 	void replaceAssignments();
+	void replaceConstDataTypes();
 	void replaceOperators();
 	void replacePrototypes();
 

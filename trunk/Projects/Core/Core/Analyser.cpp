@@ -162,11 +162,20 @@ std::string Analyser::createLibraryReference(TokenIterator& start, TokenIterator
 {
 	std::string reference;
 
-	start++;
+	expect(Token::Type::RESERVED_WORD, start++);
 
-	while ( start->type() != Token::Type::SEMICOLON && start != end ) {
+	while ( start->type() == Token::Type::IDENTIFER && start != end ) {
 		reference += (*start++).content();
+
+		if ( start->type() != Token::Type::SCOPE ) {
+			break;
+		}
+
+		reference += ".";
+		start++;
 	}
+
+	expect(Token::Type::SEMICOLON, start);
 
 	return reference;
 }

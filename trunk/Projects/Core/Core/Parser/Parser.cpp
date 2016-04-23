@@ -60,7 +60,9 @@ bool Parser::isLibraryReference(TokenIterator start)
 
 	tokens.push_back(Token(Token::Type::RESERVED_WORD, std::string(RESERVED_WORD_IMPORT)));
 	tokens.push_back(Token(Token::Type::IDENTIFER));
-	tokens.push_back(Token(Token::Type::SEMICOLON));
+	//tokens.push_back(Token(Token::Type::SCOPE, true));
+	//tokens.push_back(Token(Token::Type::IDENTIFER, true));
+	//tokens.push_back(Token(Token::Type::SEMICOLON));
 
 	return checkSynthax(start, tokens);
 }

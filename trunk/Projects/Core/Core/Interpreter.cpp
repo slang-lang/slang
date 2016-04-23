@@ -104,9 +104,82 @@ void Interpreter::garbageCollector()
 	mSymbols.clear();
 }
 
+const ExceptionData& Interpreter::getExceptionData() const
+{
+	return mExceptionData;
+}
+
 const TokenList& Interpreter::getTokens() const
 {
 	return mTokenStack.back();
+}
+
+Symbol* Interpreter::identify(TokenIterator& token) const
+{
+	Symbol *result = 0;
+
+	while ( token->type() == Token::Type::IDENTIFER || token->type() == Token::Type::TYPE ) {
+		std::string identifier = token->content();
+
+		if ( !result ) {
+			result = resolve(identifier, false);
+		}
+		else {
+			result = static_cast<Object*>(result)->resolve(identifier, false);
+		}
+
+		if ( lookahead(token)->type() != Token::Type::SCOPE ) {
+			break;
+		}
+
+		token++;
+
+		TokenIterator tmp = token;
+		tmp++;
+		if ( tmp->type() != Token::Type::IDENTIFER && tmp->type() != Token::Type::TYPE ) {
+			break;
+		}
+
+		token++;
+	}
+
+	return result;
+}
+
+Symbol* Interpreter::identifyMethod(TokenIterator& token, const ParameterList& params) const
+{
+	Symbol *result = 0;
+
+	while ( token->type() == Token::Type::IDENTIFER || token->type() == Token::Type::TYPE ) {
+		std::string identifier = token->content();
+
+		if ( !result ) {
+			result = resolve(identifier, false);
+			if ( result->getType() == Symbol::IType::MethodSymbol ) {
+				result = resolveMethod(identifier, params, false);
+				break;
+			}
+		}
+		else {
+			result = static_cast<Object*>(result)->resolveMethod(identifier, params, false);
+		}
+
+		if ( lookahead(token)->type() != Token::Type::SCOPE ) {
+			break;
+		}
+
+		token++;
+
+		TokenIterator tmp = token;
+		tmp++;
+		if ( tmp->type() != Token::Type::IDENTIFER && tmp->type() != Token::Type::TYPE ) {
+			break;
+		}
+
+		token++;
+	}
+
+	return result;
 }
 
 ControlFlow::E Interpreter::interpret(const TokenList& tokens, Object* result)
@@ -123,11 +196,6 @@ ControlFlow::E Interpreter::interpret(const TokenList& tokens, Object* result)
 	ControlFlow::E controlflow = interpreter.execute(result);
 
 	return controlflow;
-}
-
-const ExceptionData& Interpreter::getExceptionData() const
-{
-	return mExceptionData;
 }
 
 void Interpreter::parseCondition(Object *result, TokenIterator& start)
@@ -349,14 +417,16 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 			// find out if we have to execute a method
 			// or simply get a stored variable
 
-			Symbol *symbol = resolve(start->content());
+			TokenIterator tmp = start;
+			Symbol *symbol = identify(start);
 			if ( !symbol ) {
 				throw Utils::Exceptions::UnknownIdentifer("unknown/unexpected identifier '" + start->content() + "' found", start->position());
 			}
 
 			switch ( symbol->getType() ) {
 				case Symbol::IType::MethodSymbol:
-					process_method(start, result);
+					process_method(tmp, result);
+					start = tmp;
 					break;
 				case Symbol::IType::ObjectSymbol:
 					operator_assign(result, static_cast<Object*>(symbol));
@@ -471,7 +541,7 @@ void Interpreter::process_delete(TokenIterator& token)
 {
 	TokenIterator end = findNext(token, Token::Type::SEMICOLON);
 
-	Symbol *symbol = resolve(token->content());
+	Symbol* symbol = identify(token);
 	if ( !symbol ) {
 		throw Utils::Exceptions::UnknownIdentifer(token->content(), token->position());
 	}
@@ -592,9 +662,9 @@ void Interpreter::process_for(TokenIterator& token, Object *result)
 // executes a method or processes an assign statement
 void Interpreter::process_identifier(TokenIterator& token, Object* /*result*/, Token::Type::E terminator)
 {
-	// try to find assignment token
+	// try to find an assignment token
 	TokenIterator assign = findNext(token, Token::Type::ASSIGN, terminator);
-	// find next semicolon
+	// find next terminator token
 	TokenIterator end = findNext(assign, terminator);
 
 	std::string identifier = token->content();
@@ -619,6 +689,7 @@ void Interpreter::process_identifier(TokenIterator& token, Object* /*result*/, T
 		throw Utils::Exceptions::ConstCorrectnessViolated("tried to modify member '" + identifier + "' in const method '" + getScopeName() + "'", token->position());
 	}
 
+	symbol = static_cast<Object*>(identify(token));
 	expression(symbol, ++assign);
 
 	if ( !symbol->isConst() && symbol->isFinal() ) {
@@ -800,17 +871,14 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 		tmp++;
 	}
 
-	token = closed;
-
-
-	Method *symbol = static_cast<Method*>(resolveMethod(method, params));
+	Method* symbol = static_cast<Method*>(identifyMethod(token, params));
 
 	if ( !symbol) {
-		throw Utils::Exceptions::UnknownIdentifer("could not resolve method '" + method + "'");
+		throw Utils::Exceptions::UnknownIdentifer("could not resolve identifier '" + method + "'");
 	}
 
-	// check target method's const-ness
-	if ( isConst() && !symbol->isConst() ) {	// this is a const method and we want to call a non-const method... neeeeey!
+	if ( isConst() && !symbol->isConst() ) {	// check target method's const-ness
+		// this is a const method and we want to call a non-const method... neeeeey!
 		throw Utils::Exceptions::ConstCorrectnessViolated("only calls to const methods are allowed in const method '" + getScopeName() + "'", token->position());
 	}
 
@@ -819,6 +887,8 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 	if ( controlflow == ControlFlow::Throw ) {
 		mControlFlow = ControlFlow::Throw;
 	}
+
+	token = closed;
 }
 
 // syntax:

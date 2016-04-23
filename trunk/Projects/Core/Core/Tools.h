@@ -52,6 +52,10 @@ namespace Tools {
 bool checkSynthax(TokenIterator start, const TokenList& expected);
 void expect(Token::Type::E expected, TokenIterator found);
 
+inline TokenIterator lookahead(TokenIterator token, int numLooks = 1) {
+	do { ++token; --numLooks; } while ( numLooks > 0 ); return token;
+}
+
 TokenIterator findNext(TokenIterator start, Token::Type::E type, Token::Type::E terminator = Token::Type::NIL);
 TokenIterator findNextBalancedBracket(TokenIterator start, int generateErrorAfter = 0, Token::Type::E terminator = Token::Type::NIL);
 TokenIterator findNextBalancedCurlyBracket(TokenIterator start, TokenIterator end, int generateErrorAfter = 0, Token::Type::E terminator = Token::Type::NIL);
