@@ -6,7 +6,7 @@ public namespace Math {
 
 	public double abs(double value)
 	{
-		if ( value >= 0.d ) {
+		if ( value >= 0.0d ) {
 			return value;
 		}
 
@@ -15,7 +15,7 @@ public namespace Math {
 
 	public float abs(float value)
 	{
-		if ( value >= 0.f ) {
+		if ( value >= 0.0f ) {
 			return value;
 		}
 

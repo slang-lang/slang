@@ -29,6 +29,8 @@ public:
 			Assignment,
 			Comparator,
 			Constant,
+			Ignorable,
+			Identifier,
 			Keyword,
 			Modifier,
 			ReservedWord,
@@ -109,6 +111,7 @@ public:
 	};
 
 public:
+	Token();
 	Token(Type::E type, bool isOptional = false);
 	Token(Type::E type, const std::string& content);
 	Token(Category::E category, Type::E type, const std::string& content, const Utils::Position& pos);

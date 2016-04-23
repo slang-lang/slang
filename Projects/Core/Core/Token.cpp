@@ -12,6 +12,14 @@
 namespace ObjectiveScript {
 
 
+Token::Token()
+: mCategory(Category::None),
+  mIsOptional(true),
+  mType(Type::UNKNOWN)
+{
+	// invalid token
+}
+
 Token::Token(Type::E type, bool isOptional)
 : mCategory(Category::None),
   mIsOptional(isOptional),

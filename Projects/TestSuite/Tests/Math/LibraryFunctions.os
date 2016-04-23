@@ -16,6 +16,11 @@ public object Main
 	{
 		print("TestCase 1: abs");
 
+		double doubleValue = -17.31d;
+		print("abs(double: " + doubleValue + ") = " + abs(doubleValue));
+		doubleValue = doubleValue * -1;
+		print("abs(double: " + doubleValue + ") = " + abs(doubleValue));
+
 		float floatValue = -17.31f;
 		print("abs(float: " + floatValue + ") = " + abs(floatValue));
 		floatValue = floatValue * -1;

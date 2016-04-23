@@ -41,15 +41,19 @@ public namespace ThisTest
 			print("TestCase3()");
 
 			mNumber = 1;
+			print("this.mNumber == " + this.mNumber);
 			assert( mNumber == 1 );
 
 			ModifyThisInMethod1(2);
+			print("this.mNumber == " + this.mNumber);
 			assert( mNumber == 2);
 
 			ModifyThisInMethod2(3);
+			print("this.mNumber == " + this.mNumber);
 			assert( mNumber == 3 );
 
 			this.mNumber = 4;
+			print("this.mNumber == " + this.mNumber);
 			assert( mNumber == 4 );
 
 			return true;

@@ -37,19 +37,19 @@ public namespace ConstCorrectness1
 
 		private void ModifyByReferenceParameter(int value ref) modify
 		{
-			mNumber = 1;	// valid
+			mNumber = 1;		// valid
 			value = 1;		// valid
 		}
 
 		private void ModifyByValueParameter(int value val) modify
 		{
-			mNumber = 1;	// valid
+			mNumber = 1;		// valid
 			value = 1;		// valid, but argh...
 		}
 
 		private void ModifyConstParameter(int value const) modify
 		{
-			mNumber = 2;	// valid
+			mNumber = 2;		// valid
 			value = 2;		// invalid, throws a ConstCorrectnessViolated exception
 			
 			assert( false );
@@ -58,7 +58,7 @@ public namespace ConstCorrectness1
 		private void ModifyMemberInConstMethod(int value const) const
 		{
 			mNumber = value;	// invalid, throws a ConstCorrectnessViolated exception
-			value = 2;			// invalid, throws a ConstCorrectnessViolated exception
+			value = 2;		// invalid, throws a ConstCorrectnessViolated exception
 			
 			assert( false );
 		}

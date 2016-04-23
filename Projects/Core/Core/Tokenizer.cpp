@@ -6,6 +6,7 @@
 
 // Project includes
 #include <Core/Consts.h>
+#include <Core/Tools.h>
 #include <Core/Utils/Exceptions.h>
 
 // Namespace declarations
@@ -14,7 +15,7 @@
 namespace ObjectiveScript {
 
 
-const std::string CONTROLCHARS	= "#,;:=()[]{}!<>+-*/%&|~'\" ";
+const std::string CONTROLCHARS	= "#.,;:=()[]{}!<>+-*/%&|~'\" ";
 const std::string WHITESPACES	= "\t\n\r ";
 const std::string DELIMITERS	= CONTROLCHARS + WHITESPACES;
 
@@ -105,7 +106,7 @@ Token Tokenizer::createToken(const std::string& con, const Utils::Position& posi
 		// remove trailing 'f' character
 		content = con.substr(0, con.length() - 1);
 	}
-	else if ( isIdentifer(content) ) { type = Token::Type::IDENTIFER; }
+	else if ( isIdentifer(content) ) { category = Token::Category::Identifier; type = Token::Type::IDENTIFER; }
 	else if ( isInteger(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_INTEGER; }
 	else if ( isKeyword(content) ) { category = Token::Category::Keyword; type = Token::Type::KEYWORD; }
 	else if ( isLanguageFeature(content) ) { category = Token::Category::Modifier; type = Token::Type::LANGUAGEFEATURE; }
@@ -119,9 +120,9 @@ Token Tokenizer::createToken(const std::string& con, const Utils::Position& posi
 		content = con.substr(0, con.length() - 1);
 	}
 	else if ( isReservedWord(content) ) { category = Token::Category::ReservedWord; type = Token::Type::RESERVED_WORD; }
-	else if ( isType(content) ) { type = Token::Type::TYPE; }
+	else if ( isType(content) ) { category = Token::Category::Identifier; type = Token::Type::TYPE; }
 	else if ( isVisibility(content) ) { type = Token::Type::VISIBILITY; }
-	else if ( isWhiteSpace(content) ) { type = Token::Type::WHITESPACE; }
+	else if ( isWhiteSpace(content) ) { category = Token::Category::Ignorable; type = Token::Type::WHITESPACE; }
 
 	Token token(category, type, content, position);
 	token.setOptional(type == Token::Type::LANGUAGEFEATURE);
@@ -150,16 +151,8 @@ bool Tokenizer::isDouble(const std::string& token) const
 		return false;
 	}
 
-	int numOfDots = 0;
-
 	for ( unsigned int c = 0; c < token.size() - 1; c++ ) {
 		switch ( token[c] ) {
-			case '.':
-				numOfDots++;
-				if ( numOfDots > 1 ) {
-					return false;
-				}
-				break;
 			case '1':
 			case '2':
 			case '3':
@@ -176,8 +169,8 @@ bool Tokenizer::isDouble(const std::string& token) const
 		}
 	}
 
-	// the last char of our token has to be an 'f'
-	if ( token[token.size() - 1] == 'd' && token.size() > 1 ) {
+	// the last char of our token has to be an 'd'
+	if ( token[token.size() - 1] == 'd' ) {
 		return true;
 	}
 
@@ -190,16 +183,8 @@ bool Tokenizer::isFloat(const std::string& token) const
 		return false;
 	}
 
-	int numOfDots = 0;
-
 	for ( unsigned int c = 0; c < token.size() - 1; c++ ) {
 		switch ( token[c] ) {
-			case '.':
-				numOfDots++;
-				if ( numOfDots > 1 ) {
-					return false;
-				}
-				break;
 			case '1':
 			case '2':
 			case '3':
@@ -217,7 +202,7 @@ bool Tokenizer::isFloat(const std::string& token) const
 	}
 
 	// the last char of our token has to be an 'f'
-	if ( token[token.size() - 1] == 'f' && token.size() > 1 ) {
+	if ( token[token.size() - 1] == 'f' ) {
 		return true;
 	}
 
@@ -317,16 +302,8 @@ bool Tokenizer::isNumber(const std::string& token) const
 		return false;
 	}
 
-	int numOfDots = 0;
-
 	for ( unsigned int c = 0; c < token.size() - 1; c++ ) {
 		switch ( token[c] ) {
-			case '.':
-				numOfDots++;
-				if ( numOfDots > 1 ) {
-					return false;
-				}
-				break;
 			case '1':
 			case '2':
 			case '3':
@@ -344,7 +321,7 @@ bool Tokenizer::isNumber(const std::string& token) const
 	}
 
 	// the last char of our token has to be an 'n'
-	if ( token[token.size() - 1] == 'n' && token.size() > 1 ) {
+	if ( token[token.size() - 1] == 'n' ) {
 		return true;
 	}
 
@@ -642,6 +619,7 @@ void Tokenizer::process()
 	mergeBooleanOperators();		// merge '&' '&' into '&&'
 	mergeDestructors();				// merge '~' & typename into '~<typename>'
 	mergeInfixPostfixOperators();	// merge '+' '+' into '++'
+	replaceConstDataTypes();		// combines CONST_INTEGER '.' CONST_INTEGER <data type> into a CONST_FLOAT or CONST_DOUBLE
 	replaceOperators();				// combine 'operator' identifiers with the next following token i.e. 'operator' '+' => 'operator+'
 	replacePrototypes();			//
 }
@@ -763,6 +741,106 @@ void Tokenizer::replaceAssignments()
 	}
 
 	mTokens = tmp;
+}
+
+/*
+ * This merges all integer consts with their following data type (also looks at the scope token to produce doubles and floats i.e. 17.3f)
+ * CONST_INTEGER 'f': 17 'f'
+ * CONST_INTEGER '.' 'f': 17 '.' 'f'
+ * CONST_INTEGER '.' CONST_INTEGER 'f': 17 '.' 3 'f'
+ */
+void Tokenizer::replaceConstDataTypes()
+{
+	TokenList::iterator token = mTokens.begin();
+
+	// try to combine all operator tokens
+	while ( token != mTokens.end() ) {
+		// all our consts start with a CONST_INTEGER token
+		if ( token->type() == Token::Type::CONST_INTEGER ) {
+			int numCombines = 0;
+
+			if ( lookahead(token, numCombines + 1)->type() == Token::Type::SCOPE ) {
+				// CONST_INTEGER '.'
+				numCombines++;
+
+				if ( lookahead(token, numCombines + 1)->type() == Token::Type::CONST_INTEGER ) {
+					// CONST_INTEGER '.' CONST_INTEGER
+					numCombines++;
+
+					if ( lookahead(token, numCombines + 1)->type() == Token::Type::CONST_DOUBLE ) {
+						// CONST_INTEGER '.' CONST_INTEGER 'd'
+						numCombines++;
+					}
+					else if ( lookahead(token, numCombines + 1)->type() == Token::Type::CONST_FLOAT ) {
+						// CONST_INTEGER '.' CONST_INTEGER 'f'
+						numCombines++;
+					}
+				}
+				else if ( lookahead(token, numCombines + 1)->type() == Token::Type::CONST_DOUBLE ) {
+					// CONST_INTEGER '.' 'd'
+					numCombines++;
+				}
+				else if ( lookahead(token, numCombines + 1)->type() == Token::Type::CONST_FLOAT ) {
+					// CONST_INTEGER '.' 'f'
+					numCombines++;
+				}
+			}
+			else if ( lookahead(token, numCombines + 1)->type() == Token::Type::CONST_DOUBLE ) {
+				// CONST_DOUBLE 'd'
+				numCombines++;
+			}
+			else if ( lookahead(token, numCombines + 1)->type() == Token::Type::CONST_FLOAT ) {
+				// CONST_FLOAT 'f'
+				numCombines++;
+			}
+/*
+ * this would allow us to use hex or octal consts as well by just looking at the last token's type
+ *
+			else if ( lookahead(token, numCombines + 1)->type() == Token::Type::CONST_<DATA TYPE> ) {
+				// CONST_<DATA TYPE> '<DATA TYPE SHORTCUT>'
+				numCombines++;
+			}
+*/
+
+			if ( numCombines > 0 ) {
+				// we found an operator
+				TokenList::iterator opToken = token;
+				token++;	// advance to next token
+
+				while ( numCombines > 0 ) {
+					numCombines--;	// decrement combinations
+
+					(*opToken).resetContentTo((*opToken).content() + (*token).content());	// combine token contents
+					(*opToken).resetTypeTo(token->type());    // and reset our opToken's type
+
+					mTokens.erase(token++);	// remove the following 'operator'-token
+				}
+
+				continue;
+			}
+		}
+		// if we find any other data type with an empty content we convert it to an identifier
+		else if ( token->type() == Token::Type::CONST_DOUBLE ) {
+			if ( token->content().empty() ) {
+				token->resetContentTo("d");
+				token->resetTypeTo(Token::Type::IDENTIFER);
+			}
+		}
+		else if ( token->type() == Token::Type::CONST_FLOAT ) {
+			if ( token->content().empty() ) {
+				token->resetContentTo("f");
+				token->resetTypeTo(Token::Type::IDENTIFER);
+			}
+		}
+		else if ( token->type() == Token::Type::CONST_NUMBER ) {
+			if ( token->content().empty() ) {
+				token->resetContentTo("n");
+				token->resetTypeTo(Token::Type::IDENTIFER);
+			}
+		}
+
+		token++;
+	}
 }
 
 /*
