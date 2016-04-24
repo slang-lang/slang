@@ -45,7 +45,7 @@ Runtime::ControlFlow::E MysqlNumRows::execute(const ParameterList& params, Runti
 
 		MYSQL_RES *myResult = mMysqlResults[param_handle];
 
-		int my_result = mysql_num_rows(myResult);
+		int my_result = (int)mysql_num_rows(myResult);
 
 		*result = Runtime::IntegerObject(my_result);
 	}
