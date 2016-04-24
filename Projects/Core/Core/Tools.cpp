@@ -110,10 +110,10 @@ double stringToNumber(const std::string &value)
 std::string toString(bool value)
 {
 	if ( value ) {
-		return TRUE;
+		return BOOL_TRUE;
 	}
 
-	return FALSE;
+	return BOOL_FALSE;
 }
 
 std::string toString(double value)
@@ -276,12 +276,12 @@ TokenIterator findNextBalancedParenthesis(TokenIterator start, int generateError
 
 bool isBooleanConst(const std::string& value)
 {
-	return ( value == FALSE || value == TRUE );
+	return ( value == BOOL_FALSE || value == BOOL_TRUE );
 }
 
 bool isTrue(const std::string& value)
 {
-	return ( value != FALSE && value != "0" && value != "0.f" && value != "0.0" );
+	return ( value != BOOL_FALSE && value != "0" && value != "0.f" && value != "0.0" );
 }
 
 bool isTrue(const Runtime::Object& object)

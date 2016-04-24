@@ -18,8 +18,8 @@ namespace ObjectiveScript {
 
 
 // Boolean values
-static const char* FALSE = "false";
-static const char* TRUE = "true";
+static const char* BOOL_FALSE = "false";
+static const char* BOOL_TRUE = "true";
 
 // Predefined identifiers
 static const char* IDENTIFIER_BASE = "base";
