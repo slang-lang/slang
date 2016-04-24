@@ -131,7 +131,7 @@ Token Tokenizer::createToken(const std::string& con, const Utils::Position& posi
 
 bool Tokenizer::isBoolean(const std::string& token) const
 {
-	return ( token == FALSE || token == TRUE );
+	return ( token == BOOL_FALSE || token == BOOL_TRUE );
 }
 
 bool Tokenizer::isDefined(const std::string& token) const
