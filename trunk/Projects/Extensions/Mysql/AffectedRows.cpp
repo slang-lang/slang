@@ -46,7 +46,7 @@ Runtime::ControlFlow::E MysqlAffectedRows::execute(const ParameterList& params, 
 
 		MYSQL *myConn = mMysqlConnections[param_handle];
 
-		*result = Runtime::IntegerObject(mysql_affected_rows(myConn));
+		*result = Runtime::IntegerObject((int)mysql_affected_rows(myConn));
 	}
 	catch ( std::exception &e ) {
 		Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
