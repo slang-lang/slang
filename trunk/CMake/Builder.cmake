@@ -100,7 +100,6 @@ function(_handle_modules_pre_linker modules)
     #    _handle_pre_qttest()
     #endif()
 
-    # always include boost
     list(FIND modules "boost" found)
     if ( ${found} GREATER -1 )
         _handle_pre_boost()
