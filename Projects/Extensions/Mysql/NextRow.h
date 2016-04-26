@@ -18,10 +18,10 @@ namespace Extensions {
 namespace Mysql {
 
 
-class MysqlFetchRow : public Runtime::Method
+class MysqlNextRow : public Runtime::Method
 {
 public:
-	MysqlFetchRow();
+	MysqlNextRow();
 
 	Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token);
 };

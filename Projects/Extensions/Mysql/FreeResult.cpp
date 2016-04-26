@@ -11,8 +11,6 @@
 #include <Core/Designtime/BuildInTypes/VoidObject.h>
 #include <Core/Repository.h>
 #include <Core/Tools.h>
-#include <Core/Utils/Exceptions.h>
-#include <Tools/Strings.h>
 #include "Types.h"
 
 // Namespace declarations

@@ -10,8 +10,6 @@
 #include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/Repository.h>
 #include <Core/Tools.h>
-#include <Core/Utils/Exceptions.h>
-#include <Tools/Strings.h>
 
 // Namespace declarations
 

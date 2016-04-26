@@ -1,13 +1,15 @@
 
 // Header
-#include "Error.h"
+#include "NextRow.h"
 
 // Library includes
 
 // Project includes
+#include <Core/BuildInObjects/BoolObject.h>
+#include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/BuildInObjects/StringObject.h>
+#include <Core/Designtime/BuildInTypes/BoolObject.h>
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
-#include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/Repository.h>
 #include <Core/Tools.h>
 #include "Types.h"
@@ -20,8 +22,8 @@ namespace Extensions {
 namespace Mysql {
 
 
-MysqlError::MysqlError()
-: Runtime::Method(0, "mysql_error", Designtime::StringObject::TYPENAME)
+MysqlNextRow::MysqlNextRow()
+: Runtime::Method(0, "mysql_next_row", Designtime::BoolObject::TYPENAME)
 {
 	ParameterList params;
 	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, VALUE_NONE));
@@ -29,9 +31,8 @@ MysqlError::MysqlError()
 	setSignature(params);
 }
 
-Runtime::ControlFlow::E MysqlError::execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token)
+Runtime::ControlFlow::E MysqlNextRow::execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token)
 {
-(void)params;
 (void)token;
 
 	try {
@@ -42,11 +43,12 @@ Runtime::ControlFlow::E MysqlError::execute(const ParameterList& params, Runtime
 		int param_handle = Tools::stringToInt((*it++).value());
 		// }
 
-		MYSQL *myConn = mMysqlConnections[param_handle];
+		MYSQL_RES *myResult = mMysqlResults[param_handle];
+		MYSQL_ROW myRow = mysql_fetch_row(myResult);
 
-		std::string my_result = mysql_error(myConn);
+		bool my_result = myRow ? true : false;
 
-		*result = Runtime::StringObject(my_result);
+		*result = Runtime::BoolObject(my_result);
 	}
 	catch ( std::exception &e ) {
 		Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
