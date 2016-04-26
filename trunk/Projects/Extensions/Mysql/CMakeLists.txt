@@ -6,14 +6,16 @@ SET(SOURCES
 	Connect.cpp
 	ConnectionTest.cpp
 	Error.cpp
-	FetchRow.cpp
 	FieldCount.cpp
 	FreeResult.cpp
 	GetClientInfo.cpp
+	GetFieldName.cpp
+	GetFieldValue.cpp
 	Info.cpp
 	Init.cpp
 	MysqlExtension.cpp
 	NextResult.cpp
+	NextRow.cpp
 	NumFields.cpp
 	NumRows.cpp
 	Query.cpp
@@ -28,14 +30,16 @@ SET(HEADERS
 	Connect.h
 	ConnectionTest.h
 	Error.h
-	FetchRow.h
 	FieldCount.h
 	FreeResult.h
 	GetClientInfo.h
+	GetFieldName.h
+	GetFieldValue.h
 	Info.h
 	Init.h
 	MysqlExtension.h
 	NextResult.h
+	NextRow.h
 	NumFields.h
 	NumRows.h
 	Query.h

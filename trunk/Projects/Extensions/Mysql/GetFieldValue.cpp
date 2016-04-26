@@ -1,6 +1,6 @@
 
 // Header
-#include "Error.h"
+#include "GetFieldValue.h"
 
 // Library includes
 
@@ -10,6 +10,7 @@
 #include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/Repository.h>
 #include <Core/Tools.h>
+#include <Core/Utils/Exceptions.h>
 #include "Types.h"
 
 // Namespace declarations
@@ -20,18 +21,18 @@ namespace Extensions {
 namespace Mysql {
 
 
-MysqlError::MysqlError()
-: Runtime::Method(0, "mysql_error", Designtime::StringObject::TYPENAME)
+MysqlGetFieldValue::MysqlGetFieldValue()
+: Runtime::Method(0, "mysql_get_field_value", Designtime::StringObject::TYPENAME)
 {
 	ParameterList params;
 	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, VALUE_NONE));
+	params.push_back(Parameter("field_id", Designtime::IntegerObject::TYPENAME, VALUE_NONE));
 
 	setSignature(params);
 }
 
-Runtime::ControlFlow::E MysqlError::execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token)
+Runtime::ControlFlow::E MysqlGetFieldValue::execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token)
 {
-(void)params;
 (void)token;
 
 	try {
@@ -40,11 +41,17 @@ Runtime::ControlFlow::E MysqlError::execute(const ParameterList& params, Runtime
 		ParameterList::const_iterator it = params.begin();
 
 		int param_handle = Tools::stringToInt((*it++).value());
+		int param_field_id = Tools::stringToInt((*it++).value());
 		// }
 
-		MYSQL *myConn = mMysqlConnections[param_handle];
+		MYSQL_RES *myResult = mMysqlResults[param_handle];
 
-		std::string my_result = mysql_error(myConn);
+		if ( !myResult ) {
+			throw Utils::Exceptions::Exception("no valid result handle: " + Tools::toString(param_handle));
+		}
+
+		MYSQL_ROW row = myResult->current_row;
+		std::string my_result(row[param_field_id]);
 
 		*result = Runtime::StringObject(my_result);
 	}

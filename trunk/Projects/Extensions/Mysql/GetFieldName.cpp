@@ -1,17 +1,15 @@
 
 // Header
-#include "FetchRow.h"
+#include "GetFieldName.h"
 
 // Library includes
 
 // Project includes
-#include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
+#include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/Repository.h>
 #include <Core/Tools.h>
-#include <Core/Utils/Exceptions.h>
-#include <Tools/Strings.h>
 #include "Types.h"
 
 // Namespace declarations
@@ -22,16 +20,17 @@ namespace Extensions {
 namespace Mysql {
 
 
-MysqlFetchRow::MysqlFetchRow()
-: Runtime::Method(0, "mysql_fetch_row", Designtime::IntegerObject::TYPENAME)
+MysqlGetFieldName::MysqlGetFieldName()
+: Runtime::Method(0, "mysql_get_field_name", Designtime::StringObject::TYPENAME)
 {
 	ParameterList params;
 	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, VALUE_NONE));
+	params.push_back(Parameter("field_id", Designtime::IntegerObject::TYPENAME, VALUE_NONE));
 
 	setSignature(params);
 }
 
-Runtime::ControlFlow::E MysqlFetchRow::execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token)
+Runtime::ControlFlow::E MysqlGetFieldName::execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token)
 {
 (void)token;
 
@@ -41,16 +40,14 @@ Runtime::ControlFlow::E MysqlFetchRow::execute(const ParameterList& params, Runt
 		ParameterList::const_iterator it = params.begin();
 
 		int param_handle = Tools::stringToInt((*it++).value());
+		int param_field_id = Tools::stringToInt((*it++).value());
 		// }
 
 		MYSQL_RES *myResult = mMysqlResults[param_handle];
-		MYSQL_ROW myRow = mysql_fetch_row(myResult);
 
-		(void)myRow;
+		std::string my_result(myResult->fields[param_field_id].name);
 
-		int my_result = 0;
-
-		*result = Runtime::IntegerObject(my_result);
+		*result = Runtime::StringObject(my_result);
 	}
 	catch ( std::exception &e ) {
 		Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
