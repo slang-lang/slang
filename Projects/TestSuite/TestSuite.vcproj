@@ -62,7 +62,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Json.lib ObjectiveScript.lib Utils.lib"
+				AdditionalDependencies="Json_debug.lib ObjectiveScript.lib Utils.lib"
 				OutputFile="$(OutDir)\$(ProjectName).exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\Libs;&quot;$(JSON)&quot;\Libs"
