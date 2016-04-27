@@ -278,6 +278,7 @@ ControlFlow::E Method::processControlFlow(ControlFlow::E controlflow, Object *re
 			// correct behaviour detected, override control flow with normal state
 			controlflow = ControlFlow::Normal;
 			break;
+		case ControlFlow::ExitProgram:
 		case ControlFlow::Throw:
 			// an ObjectiveScript exception has been thrown
 			break;

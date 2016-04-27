@@ -33,6 +33,7 @@ static const char* KEYWORD_CATCH = "catch";
 static const char* KEYWORD_CONTINUE = "continue";
 static const char* KEYWORD_DELETE = "delete";
 static const char* KEYWORD_ELSE = "else";
+static const char* KEYWORD_EXIT = "exit";
 static const char* KEYWORD_FINALLY = "finally";
 static const char* KEYWORD_FOR = "for";
 static const char* KEYWORD_IF = "if";

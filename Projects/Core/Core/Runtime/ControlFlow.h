@@ -22,6 +22,7 @@ public:
 	typedef enum {
 		Break,
 		Continue,
+		ExitProgram,
 		Normal,
 		Return,
 		Throw

@@ -516,6 +516,10 @@ void Interpreter::process_assert(TokenIterator& token)
     Object condition;
 	expression(&condition, token);
 
+	if ( mControlFlow == ControlFlow::ExitProgram ) {
+		return;
+	}
+
 	System::Assert(condition, token->position());
 
 	expect(Token::Type::PARENTHESIS_CLOSE, token++);
@@ -563,6 +567,13 @@ void Interpreter::process_delete(TokenIterator& token)
 	}
 
 	token = end;
+}
+
+// syntax:
+// exit;
+void Interpreter::process_exit(TokenIterator& /*token*/)
+{
+	mControlFlow = ControlFlow::ExitProgram;
 }
 
 // syntax:
@@ -630,6 +641,7 @@ void Interpreter::process_for(TokenIterator& token, Object *result)
 		switch ( controlflow ) {
 			case ControlFlow::Break: mControlFlow = ControlFlow::Normal; return;
 			case ControlFlow::Continue: mControlFlow = ControlFlow::Normal; continue;
+			case ControlFlow::ExitProgram: mControlFlow = ControlFlow::ExitProgram; return;
 			case ControlFlow::Normal: mControlFlow = ControlFlow::Normal; break;
 			case ControlFlow::Return: mControlFlow = ControlFlow::Return; return;
 			case ControlFlow::Throw: mControlFlow = ControlFlow::Throw; return;
@@ -806,6 +818,9 @@ void Interpreter::process_keyword(TokenIterator& token, Object *result)
 	else if ( keyword == KEYWORD_DELETE ) {
 		process_delete(token);
 	}
+	else if ( keyword == KEYWORD_EXIT ) {
+		process_exit(token);
+	}
 	else if ( keyword == KEYWORD_FOR ) {
 		process_for(token, result);
 	}
@@ -884,8 +899,10 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 
 	ControlFlow::E controlflow = static_cast<Method*>(symbol)->execute(params, result, token);
 
-	if ( controlflow == ControlFlow::Throw ) {
-		mControlFlow = ControlFlow::Throw;
+	switch ( controlflow ) {
+		case ControlFlow::ExitProgram: mControlFlow = ControlFlow::ExitProgram; break;
+		case ControlFlow::Throw: mControlFlow = ControlFlow::Throw; break;
+		default: break;
 	}
 
 	token = closed;
@@ -1230,6 +1247,7 @@ void Interpreter::process_while(TokenIterator& token, Object *result)
 		switch ( controlflow ) {
 			case ControlFlow::Break: mControlFlow = ControlFlow::Normal; return;
 			case ControlFlow::Continue: mControlFlow = ControlFlow::Normal; continue;
+			case ControlFlow::ExitProgram: mControlFlow = ControlFlow::ExitProgram; return;
 			case ControlFlow::Normal: mControlFlow = ControlFlow::Normal; break;
 			case ControlFlow::Return: mControlFlow = ControlFlow::Return; return;
 			case ControlFlow::Throw: mControlFlow = ControlFlow::Throw; return;
