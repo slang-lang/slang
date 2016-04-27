@@ -63,6 +63,7 @@ private: // Execution
 	void process_break(TokenIterator& token);
 	void process_continue(TokenIterator& token);
 	void process_delete(TokenIterator& token);
+	void process_exit(TokenIterator& token);
 	void process_for(TokenIterator& token, Object *result);
 	void process_identifier(TokenIterator& token, Object *result, Token::Type::E terminator = Token::Type::SEMICOLON);
 	void process_if(TokenIterator& token, Object *result);

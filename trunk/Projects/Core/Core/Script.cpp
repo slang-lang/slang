@@ -53,7 +53,7 @@ void Script::construct(const ParameterList& params)
 	try {
 		Runtime::ControlFlow::E controlflow = mObject->Constructor(params);
 
-		if ( controlflow != Runtime::ControlFlow::Normal ) {
+		if ( controlflow == Runtime::ControlFlow::Throw ) {
 			throw Utils::Exceptions::Exception("Exception raised in " + mObject->getFullName() + "::" + mObject->Typename());
 		}
 	}
@@ -90,7 +90,8 @@ Runtime::Object Script::execute(const std::string& method, const ParameterList& 
 		}
 
 		Runtime::ControlFlow::E controlflow = static_cast<Runtime::Method*>(symbol)->execute(params, &returnValue, TokenIterator());
-		if ( controlflow != Runtime::ControlFlow::Normal ) {
+
+		if ( controlflow == Runtime::ControlFlow::Throw ) {
 			throw Utils::Exceptions::Exception("Exception raised in " + mObject->getFullName() + "::" + mObject->Typename());
 		}
 	}
