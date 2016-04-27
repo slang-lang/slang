@@ -115,7 +115,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="3"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories=".\;..\Externals"
+				AdditionalIncludeDirectories=".\;..\Externals;..\Utils;&quot;$(JSON)&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
 				StringPooling="true"
 				MinimalRebuild="false"
@@ -232,10 +232,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\BoolObject.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\Core\Designtime\BuildInTypes\BoolObject.cpp"
 				>
 				<FileConfiguration
@@ -254,6 +250,10 @@
 						ObjectFile="$(IntDir)\Core\Designtime\BuildInTypes\"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\Core\BuildInObjects\BoolObject.cpp"
+				>
 			</File>
 			<File
 				RelativePath=".\Core\BuildInObjects\DoubleObject.cpp"
@@ -320,6 +320,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\Core\BuildInObjects\FloatObject.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\Designtime\BuildInTypes\FloatObject.cpp"
 				>
 				<FileConfiguration
@@ -338,10 +342,6 @@
 						ObjectFile="$(IntDir)\Core\Designtime\BuildInTypes\"
 					/>
 				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\Core\BuildInObjects\FloatObject.cpp"
-				>
 			</File>
 			<File
 				RelativePath=".\Core\Designtime\BuildInTypes\GenericObject.cpp"
@@ -368,6 +368,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Core\BuildInObjects\IntegerObject.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\BuildInObjects\IntegerObject.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\Designtime\BuildInTypes\IntegerObject.cpp"
 				>
 				<FileConfiguration
@@ -386,14 +394,6 @@
 						ObjectFile="$(IntDir)\Core\Designtime\BuildInTypes\"
 					/>
 				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\Core\BuildInObjects\IntegerObject.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Core\BuildInObjects\IntegerObject.cpp"
-				>
 			</File>
 			<File
 				RelativePath=".\Core\Interpreter.cpp"
@@ -428,6 +428,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Core\BuildInObjects\NumberObject.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\Designtime\BuildInTypes\NumberObject.cpp"
 				>
 				<FileConfiguration
@@ -446,10 +450,6 @@
 						ObjectFile="$(IntDir)\Core\Designtime\BuildInTypes\"
 					/>
 				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\Core\BuildInObjects\NumberObject.cpp"
-				>
 			</File>
 			<File
 				RelativePath=".\Core\Object.cpp"
@@ -580,10 +580,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\StringObject.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\Core\Designtime\BuildInTypes\StringObject.cpp"
 				>
 				<FileConfiguration
@@ -602,6 +598,10 @@
 						ObjectFile="$(IntDir)\Core\Designtime\BuildInTypes\"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\Core\BuildInObjects\StringObject.cpp"
+				>
 			</File>
 			<File
 				RelativePath=".\Core\Symbol.cpp"
@@ -716,10 +716,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\VoidObject.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\Core\Designtime\BuildInTypes\VoidObject.cpp"
 				>
 				<FileConfiguration
@@ -738,6 +734,10 @@
 						ObjectFile="$(IntDir)\Core\Designtime\BuildInTypes\"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\Core\BuildInObjects\VoidObject.cpp"
+				>
 			</File>
 		</Filter>
 		<Filter
@@ -762,11 +762,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\BoolObject.h"
+				RelativePath=".\Core\BuildInObjects\BoolObject.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\BoolObject.h"
+				RelativePath=".\Core\Designtime\BuildInTypes\BoolObject.h"
 				>
 			</File>
 			<File
@@ -778,11 +778,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\DoubleObject.h"
+				RelativePath=".\Core\Designtime\BuildInTypes\DoubleObject.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\DoubleObject.h"
+				RelativePath=".\Core\BuildInObjects\DoubleObject.h"
 				>
 			</File>
 			<File
@@ -790,11 +790,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Utils\Exceptions.h"
+				RelativePath=".\Core\Exceptions.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Exceptions.h"
+				RelativePath=".\Core\Utils\Exceptions.h"
 				>
 			</File>
 			<File
@@ -806,23 +806,23 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\GenericObject.h"
-				>
-			</File>
-			<File
 				RelativePath=".\Core\Designtime\BuildInTypes\GenericObject.h"
 				>
 			</File>
 			<File
+				RelativePath=".\Core\BuildInObjects\GenericObject.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\BuildInObjects\IntegerObject.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\BuildInObjects\IntegerObject.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\Designtime\BuildInTypes\IntegerObject.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Core\BuildInObjects\IntegerObject.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Core\BuildInObjects\IntegerObject.h"
 				>
 			</File>
 			<File
@@ -850,11 +850,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\NumberObject.h"
+				RelativePath=".\Core\Designtime\BuildInTypes\NumberObject.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\NumberObject.h"
+				RelativePath=".\Core\BuildInObjects\NumberObject.h"
 				>
 			</File>
 			<File
@@ -910,11 +910,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\StringObject.h"
+				RelativePath=".\Core\Designtime\BuildInTypes\StringObject.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\StringObject.h"
+				RelativePath=".\Core\BuildInObjects\StringObject.h"
 				>
 			</File>
 			<File
@@ -966,11 +966,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\VoidObject.h"
+				RelativePath=".\Core\BuildInObjects\VoidObject.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\VoidObject.h"
+				RelativePath=".\Core\Designtime\BuildInTypes\VoidObject.h"
 				>
 			</File>
 		</Filter>

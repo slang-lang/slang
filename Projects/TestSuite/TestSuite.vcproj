@@ -123,7 +123,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="3"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories=".\;..\Core;..\Extensions;..\Externals;..\Utils"
+				AdditionalIncludeDirectories=".\;..\Core;..\Extensions;..\Externals;..\Utils;&quot;$(JSON)&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				StringPooling="true"
 				RuntimeLibrary="0"

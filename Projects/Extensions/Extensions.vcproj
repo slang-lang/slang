@@ -114,7 +114,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="3"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories=".\;..\Core;..\Externals;..\Utils;&quot;$(JSON)\include&quot;;&quot;$(MYSQL)\include&quot;"
+				AdditionalIncludeDirectories=".\;..\Core;..\Externals;..\Utils;&quot;$(JSON)&quot;;&quot;$(MYSQL)\include&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
 				StringPooling="true"
 				MinimalRebuild="false"
@@ -139,7 +139,8 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				AdditionalLibraryDirectories="..\Externals"
+				AdditionalDependencies="&quot;$(JSON)\Libs\Json.lib&quot; &quot;$(MYSQL)\lib\libmysql.lib&quot;"
+				AdditionalLibraryDirectories="..\Externals; ..\Libs"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -231,14 +232,6 @@
 		</File>
 		<File
 			RelativePath=".\Mysql\Error.h"
-			>
-		</File>
-		<File
-			RelativePath=".\Mysql\FetchRow.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\Mysql\FetchRow.h"
 			>
 		</File>
 		<File
@@ -406,6 +399,22 @@
 			>
 		</File>
 		<File
+			RelativePath=".\Mysql\GetFieldName.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\GetFieldName.h"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\GetFieldValue.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\GetFieldValue.h"
+			>
+		</File>
+		<File
 			RelativePath=".\Mysql\Info.cpp"
 			>
 		</File>
@@ -467,6 +476,14 @@
 		</File>
 		<File
 			RelativePath=".\Mysql\NextResult.h"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\NextRow.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\NextRow.h"
 			>
 		</File>
 		<File
