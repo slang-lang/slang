@@ -123,7 +123,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="3"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories=".\;..\Core;..\Extensions;..\Externals;..\Utils"
+				AdditionalIncludeDirectories=".\;..\Core;..\Externals;..\Utils;&quot;$(JSON)&quot;;&quot;$(MYSQL)\include&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				StringPooling="true"
 				RuntimeLibrary="0"
@@ -145,7 +145,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Extensions.lib Json.lib mysqlclient.lib ObjectiveScript.lib Utils.lib"
+				AdditionalDependencies="Extensions.lib Json.lib libmysql.lib ObjectiveScript.lib Utils.lib"
 				LinkIncremental="0"
 				AdditionalLibraryDirectories="..\Libs;&quot;$(JSON)&quot;\lib;&quot;$(MYSQL)&quot;\lib"
 				GenerateManifest="false"
