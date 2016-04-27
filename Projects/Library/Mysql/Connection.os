@@ -1,5 +1,6 @@
 
-//import Query;
+import Exceptions;
+import Query;
 import Result;
 
 public namespace Mysql {
@@ -21,7 +22,7 @@ public namespace Mysql {
 		public void Connection(string hostname, int port, string user, string password, string database) {
 			writeln("Connection::Connection(" + hostname + ", " + port + ", " + user + ", " + password + ", " + database +")");
 
-			open(filename, mode);
+			open(hostname, port, user, password, database);
 		}
 
 		public void ~Connection() {
@@ -58,9 +59,7 @@ public namespace Mysql {
 		}
 
 		public Query createQuery() const {
-			Query query = new Query(this);
-
-			return query;
+			return new Query(this);
 		}
 
 		public int descriptor() const {
@@ -88,7 +87,7 @@ public namespace Mysql {
 
 			if ( mHandle != 0 ) {
 				// we already have a connection handle
-				throw new string("mysql descriptor still points to an open connection!");
+				throw new Exception("mysql descriptor still points to an open connection!");
 			}
 
 			mHandle = mysql_init();
@@ -102,6 +101,16 @@ public namespace Mysql {
 			mUserName = user;
 
 			return (mHandle != 0);
+		}
+
+		public Result query(string queryStr) modify {
+			int error = mysql_query(mHandle, queryStr);
+			if ( error != 0 ) {
+				// error while query execution
+			}
+
+			int resultHandle = mysql_store_result(mHandle);
+			return new Result(resultHandle);;
 		}
 	}
 }
