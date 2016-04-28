@@ -1,23 +1,25 @@
 INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
 SET(SOURCES
-	main.cpp
+	ApacheExtension.cpp
+	Defs.cpp
 )
 
 SET(HEADERS
+	ApacheExtension.h
+	Defs.h
+	Get.h
+	Post.h
 )
 
 SET(DEPENDENCIES
-	ExtensionsSystem
-	ExtensionsMysql
-	ExtensionsApache
-	Core
+	ExtensionsSystemIO
 	Utils
+	Core
 )
 
 add_include(Projects/Core)
 add_include(Projects/Extensions)
 add_include(Projects/Utils)
 
-SET(EXECUTABLE_OUTPUT_PATH ${EXECUTABLE_OUTPUT_PATH}/oscript)
-build_app(oscript "mysql")
+build_static_lib(ExtensionsApache "")

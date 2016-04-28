@@ -11,6 +11,9 @@
 #include <Tools/Strings.h>
 
 // Extension includes
+#ifdef USE_APACHE_EXTENSION
+#	include <Apache/ApacheExtension.h>
+#endif
 #ifdef USE_MYSQL_EXTENSION
 #	include <Mysql/MysqlExtension.h>
 #endif
@@ -168,6 +171,9 @@ int main(int argc, const char* argv[])
 	mVirtualMachine.setBaseFolder(mRoot);
 
 	// add extensions
+#ifdef USE_APACHE_EXTENSION
+	mVirtualMachine.addExtension(new ObjectiveScript::Extensions::Apache::ApacheExtension());
+#endif
 #ifdef USE_MYSQL_EXTENSION
 	mVirtualMachine.addExtension(new ObjectiveScript::Extensions::Mysql::MysqlExtension());
 #endif
