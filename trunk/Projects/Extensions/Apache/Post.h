@@ -4,6 +4,7 @@
 
 
 // Library includes
+#include <stdlib.h>
 
 // Project includes
 #include <Core/BuildInObjects/StringObject.h>

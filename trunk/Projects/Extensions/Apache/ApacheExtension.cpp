@@ -4,6 +4,8 @@
 
 // Library includes
 #include <list>
+#include <stdlib.h>
+#include <string.h>
 
 // Project includes
 #include "Defs.h"
