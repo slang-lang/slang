@@ -1,11 +1,13 @@
 
+//import System.GDI.IConnection;
 import Exceptions;
 import Query;
 import Result;
 
-public namespace Mysql {
-
-	public object Connection {
+public namespace Mysql
+{
+	public object Connection //implements System.GDI.IConnection
+	{
 		private string mDatabase;
 		private int mHandle;
 		private string mHostName;
@@ -90,9 +92,10 @@ public namespace Mysql {
 				throw new Exception("mysql descriptor still points to an open connection!");
 			}
 
+			// request a mysql handle
 			mHandle = mysql_init();
-
-			mysql_real_connect(mHandle, hostname, port, user, password, database);
+			// connect to mysql database and update our handle
+			mHandle = mysql_real_connect(mHandle, hostname, port, user, password, database);
 
 			mDatabase = database;
 			mHostName = hostname;
