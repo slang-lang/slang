@@ -9,6 +9,7 @@ SET(SOURCES
 
 SET(HEADERS
 	AssertMsg.h
+	GetEnv.h
 	FromJson.h
 	Print.h
 	System.h
