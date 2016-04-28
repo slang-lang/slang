@@ -8,7 +8,12 @@ public object Boolean
 	}
 
 	public void FromString(string value) {
-		mValue = (bool value);
+		if ( value ) {
+			mValue = true;
+			return;
+		}
+		
+		mValue = false;
 	}
 
 	public string ToString() const {

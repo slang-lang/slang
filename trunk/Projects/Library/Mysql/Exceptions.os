@@ -1,5 +1,7 @@
 
 import System.Exception;
 
-public object OutOfBoundsException replicates Exception;
-
+public namespace Mysql
+{
+	public object OutOfBoundsException replicates Exception;
+}

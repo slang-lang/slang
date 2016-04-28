@@ -22,6 +22,10 @@ public object Double
 		mValue = value;
 	}
 
+	public bool operator!() const {
+		return !mValue;
+	}
+
 	public bool operator==(double other) const {
 		return (mValue == other);
 	}

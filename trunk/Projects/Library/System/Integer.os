@@ -22,6 +22,10 @@ public object Integer
 		mValue = value;
 	}
 
+	public bool operator!() const {
+		return !mValue;
+	}
+
 	public bool operator==(int other) const {
 		return (mValue == other);
 	}

@@ -22,6 +22,10 @@ public object Float
 		mValue = value;
 	}
 
+	public bool operator!() const {
+		return !mValue;
+	}
+
 	public bool operator==(float other) const {
 		return (mValue == other);
 	}

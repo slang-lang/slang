@@ -3,12 +3,8 @@ public object String
 {
 	private string mValue;
 
-	public void String(string value = 0) {
+	public void String(string value = "") {
 		mValue = value;
-	}
-
-	public void FromString(string value) {
-		mValue = (string value);
 	}
 
 	public string ToString() const {
@@ -20,6 +16,10 @@ public object String
 	}
 	public void Value(string value) modify {
 		mValue = value;
+	}
+
+	public bool operator!() const {
+		return !mValue;
 	}
 
 	public void operator=(string other) modify {
@@ -34,6 +34,13 @@ public object String
 	}
 	public bool operator==(String other) const {
 		return (mValue == other.mValue);
+	}
+
+	public void operator+(string other) modify {
+		mValue = mValue + other;
+	}
+	public void operator+(String other) modify {
+		mValue = mValue + other.mValue;
 	}
 }
 
