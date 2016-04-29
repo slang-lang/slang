@@ -31,6 +31,8 @@ public:
 
 private:
 	void initialize();
+	void readGetData();
+	void readPostData();
 };
 
 

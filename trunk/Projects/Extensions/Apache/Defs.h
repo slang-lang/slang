@@ -23,7 +23,8 @@ typedef std::map<std::string, std::string> StringMap;
 
 
 extern const char* QUERY_STRING;
-extern StringMap mQueryString;
+extern StringMap mGetQueryString;
+extern StringMap mPostQueryString;
 
 
 }
