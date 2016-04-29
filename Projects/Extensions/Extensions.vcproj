@@ -175,6 +175,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\Apache\ApacheExtension.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Apache\ApacheExtension.h"
+			>
+		</File>
+		<File
 			RelativePath=".\System\AssertMsg.cpp"
 			>
 			<FileConfiguration
@@ -224,6 +232,14 @@
 		</File>
 		<File
 			RelativePath=".\Mysql\ConnectionTest.h"
+			>
+		</File>
+		<File
+			RelativePath=".\Apache\Defs.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Apache\Defs.h"
 			>
 		</File>
 		<File
@@ -383,6 +399,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\Apache\Get.h"
+			>
+		</File>
+		<File
 			RelativePath=".\Mysql\GetClientInfo.cpp"
 			>
 		</File>
@@ -516,6 +536,10 @@
 		</File>
 		<File
 			RelativePath=".\Mysql\NumRows.h"
+			>
+		</File>
+		<File
+			RelativePath=".\Apache\Post.h"
 			>
 		</File>
 		<File

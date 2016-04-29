@@ -30,7 +30,6 @@ public:
 	void provideMethods(ExtensionMethods &methods);
 
 private:
-	std::string convert(const std::string& str) const;
 	void initialize();
 };
 
