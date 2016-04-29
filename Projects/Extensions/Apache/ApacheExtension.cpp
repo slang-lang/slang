@@ -83,14 +83,11 @@ std::string UriDecode(const std::string & sSrc)
     char * const pStart = new char[SRC_LEN];
     char * pEnd = pStart;
 
-    while (pSrc < SRC_LAST_DEC)
-	{
-		if (*pSrc == '%')
-        {
+    while ( pSrc < SRC_LAST_DEC ) {
+		if ( *pSrc == '%' ) {
             char dec1, dec2;
-            if (-1 != (dec1 = HEX2DEC[*(pSrc + 1)])
-                && -1 != (dec2 = HEX2DEC[*(pSrc + 2)]))
-            {
+            if ( -1 != (dec1 = HEX2DEC[*(pSrc + 1)])
+                && -1 != (dec2 = HEX2DEC[*(pSrc + 2)]) ) {
                 *pEnd++ = (dec1 << 4) + dec2;
                 pSrc += 3;
                 continue;
@@ -101,8 +98,9 @@ std::string UriDecode(const std::string & sSrc)
 	}
 
     // the last 2- chars
-    while (pSrc < SRC_END)
-        *pEnd++ = *pSrc++;
+    while ( pSrc < SRC_END ) {
+		*pEnd++ = *pSrc++;
+	}
 
     std::string sResult(pStart, pEnd);
     delete [] pStart;
@@ -118,12 +116,11 @@ std::string UriEncode(const std::string & sSrc)
     unsigned char * pEnd = pStart;
     const unsigned char * const SRC_END = pSrc + SRC_LEN;
 
-    for (; pSrc < SRC_END; ++pSrc)
-	{
-		if (SAFE[*pSrc]) 
-            *pEnd++ = *pSrc;
-        else
-        {
+    for ( ; pSrc < SRC_END; ++pSrc ) {
+		if ( SAFE[*pSrc] ) {
+			*pEnd++ = *pSrc;
+		}
+        else {
             // escape this char
             *pEnd++ = '%';
             *pEnd++ = DEC2HEX[*pSrc >> 4];
@@ -145,6 +142,20 @@ ApacheExtension::ApacheExtension()
 
 void ApacheExtension::initialize()
 {
+	readGetData();
+	readPostData();
+}
+
+void ApacheExtension::provideMethods(ExtensionMethods &methods)
+{
+	assert(methods.empty());
+
+	methods.push_back(new Get());
+	methods.push_back(new Post());
+}
+
+void ApacheExtension::readGetData()
+{
 	char *query = getenv(QUERY_STRING);
 	if ( !query ) {
 		// ups
@@ -163,21 +174,49 @@ void ApacheExtension::initialize()
 	for ( std::list<char*>::reverse_iterator it = stringlist.rbegin(); it != stringlist.rend(); ++it ) {
 		char* key = strtok((*it), "=");
 		char* value = strtok(NULL, "");
-		mQueryString.insert(std::make_pair(
+
+		mGetQueryString.insert(std::make_pair(
 			std::string(key),
 			UriDecode(std::string(value)))
 		);
 	}
 }
 
-void ApacheExtension::provideMethods(ExtensionMethods &methods)
+void ApacheExtension::readPostData()
 {
-	assert(methods.empty());
+	char* len_ = getenv("CONTENT_LENGTH");
+	int len = strtol(len_, NULL, 10);
 
-	methods.push_back(new Get());
-	methods.push_back(new Post());
+	char* postdata = (char*)malloc(len + 1);
+
+	if ( !postdata ) {
+		/* handle error or */
+		exit(EXIT_FAILURE);
+	}
+
+	fgets(postdata, len + 1, stdin);
+
+	std::list<char*> stringlist;
+
+	char* base = strtok(postdata, "&");
+	while ( base != NULL ) {
+		stringlist.push_back(base);
+
+		base = strtok(NULL, "&");
+	}
+
+	for ( std::list<char*>::reverse_iterator it = stringlist.rbegin(); it != stringlist.rend(); ++it ) {
+		char* key = strtok((*it), "=");
+		char* value = strtok(NULL, "");
+
+		mPostQueryString.insert(std::make_pair(
+				std::string(key),
+				UriDecode(std::string(value)))
+		);
+	}
+
+	free(postdata);
 }
-
 
 }
 }

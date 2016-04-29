@@ -42,16 +42,16 @@ public:
 	{
 		std::string text;
 
-		if (params.size() != 1) {
+		if ( params.size() != 1 ) {
 			throw Utils::Exceptions::ParameterCountMissmatch("1 parameter expected, but " + ::Utils::Tools::toString(params.size()) + " parameter(s) found", token->position());
 		}
 
 		std::string param_name = params.front().value();
 		std::string result_value;
 
-		char *val = getenv(param_name.c_str());
-		if ( val ) {
-			result_value = std::string(val);
+		StringMap::const_iterator it = mGetQueryString.find(param_name);
+		if ( it != mPostQueryString.end() ) {
+			result_value = it->second;
 		}
 
 		*result = Runtime::StringObject(result_value);

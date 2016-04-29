@@ -49,8 +49,8 @@ public:
 		std::string param_name = params.front().value();
 		std::string result_value;
 
-		StringMap::const_iterator it = mQueryString.find(param_name);
-		if ( it != mQueryString.end() ) {
+		StringMap::const_iterator it = mGetQueryString.find(param_name);
+		if ( it != mGetQueryString.end() ) {
 			result_value = it->second;
 		}
 

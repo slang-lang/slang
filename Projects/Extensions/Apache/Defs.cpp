@@ -15,7 +15,8 @@ namespace Apache {
 
 
 const char* QUERY_STRING = "QUERY_STRING";
-StringMap mQueryString;
+StringMap mGetQueryString;
+StringMap mPostQueryString;
 
 
 }
