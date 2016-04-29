@@ -1,6 +1,6 @@
 
 EXCLUDE=*.sh
-RELEASE="ObjectiveScript-`cat version`.tar.gz"
+RELEASE="ObjectiveScript-`cat version`_`svnversion`.tar.gz"
 
 echo "Packing files for release ${RELEASE} ..."
 
