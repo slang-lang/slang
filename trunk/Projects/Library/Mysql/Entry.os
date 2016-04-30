@@ -6,6 +6,11 @@ public namespace Mysql
 		private string mName;
 		private string mValue;
 
+		public void Entry() {
+			mName = "null";
+			mValue = "null";
+		}
+
 		public void Entry(string name, string value) {
 			mName = name;
 			mValue = value;

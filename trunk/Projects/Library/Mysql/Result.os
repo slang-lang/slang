@@ -15,10 +15,10 @@ public namespace Mysql
 		private int mNumRows;
 
 		public void Result() {
-			writeln("Result::Result()");
+			//writeln("Result::Result()");
 		}
 		public void Result(int handle) {
-			writeln("Result::Result(" + handle + ")");
+			//writeln("Result::Result(" + handle + ")");
 
 			mHandle = handle;
 
@@ -26,7 +26,7 @@ public namespace Mysql
 		}
 
 		public void ~Result() {
-			writeln("Result::~Result()");
+			//writeln("Result::~Result()");
 		}
 
 		public Row GetCurrentRow() const {
@@ -44,6 +44,16 @@ public namespace Mysql
 			string value = mysql_get_field_value(mHandle, fieldIdx);
 
 			return new Entry(name, value);
+		}
+
+		public Entry GetField(string name) const {
+			for ( int idx = 0; idx < mNumFields; idx = idx + 1 ) {
+				if ( mysql_get_field_name(mHandle, idx) == name ) {
+					return new Entry(name, mysql_get_field_value(mHandle, idx));
+				}
+			}
+
+			return new Entry();
 		}
 
 		public bool HasNext() const {

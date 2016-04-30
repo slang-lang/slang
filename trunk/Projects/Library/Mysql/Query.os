@@ -13,7 +13,7 @@ public namespace Mysql
 		private int mResultHandle;
 
 		public void Query(Connection connection) {
-			writeln("Query::Query()");
+			//writeln("Query::Query()");
 
 			mConnection = connection;
 			mExecutedQuery = "";
@@ -22,7 +22,7 @@ public namespace Mysql
 		}
 
 		public void ~Query() {
-			writeln("Query::~Query()");
+			//writeln("Query::~Query()");
 
 			if ( mResultHandle ) {
 				mysql_free_result(mResultHandle);
@@ -59,7 +59,7 @@ public namespace Mysql
 				mExecutedQuery = query;
 			}
 
-			writeln("mExecutedQuery = " + mExecutedQuery);
+			//writeln("mExecutedQuery = " + mExecutedQuery);
 			int result = mysql_query(mConnection.descriptor(), mExecutedQuery);
 			return (result == 0);
 		}
@@ -70,7 +70,7 @@ public namespace Mysql
 
 /*
 		public Result execute() const {
-			writeln("mPreparedQuery = " + mPreparedQuery");
+			//writeln("mPreparedQuery = " + mPreparedQuery");
 
 			mysql_query(mConnection.descriptor(), mPreparedQuery);
 
