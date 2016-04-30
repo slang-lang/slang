@@ -33,7 +33,6 @@ public:
 
 public:	// Setup
 	void assign(Runtime::Object *object);
-
 	void connectRepository(Repository *r);
 
 public:	// Constructor & Destructor
@@ -41,9 +40,9 @@ public:	// Constructor & Destructor
 	void destruct();
 
 public:	//Helpers
-	Symbol* getSymbol(const std::string& symbol);
-	bool hasMethod(const std::string& m);
-	bool hasMethod(const std::string& m, const ParameterList& params);
+	bool hasBeenConstructed() const;
+	Symbol* resolve(const std::string &symbol);
+	Symbol* resolveMethod(const std::string &method, const ParameterList &params);
 
 public:	// Execution
 	Runtime::Object execute(const std::string& method, const ParameterList& params = ParameterList());
@@ -51,6 +50,7 @@ public:	// Execution
 protected:
 
 private:
+	bool mHasBeenConstructed;
 	Runtime::Object *mObject;
 	Repository *mRepository;
 };

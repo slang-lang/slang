@@ -6,6 +6,7 @@
 #include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Script.h>
+#include <Core/Utils/Exceptions.h>
 #include <Core/VirtualMachine.h>
 #include <Tools/Printer.h>
 #include <Tools/Strings.h>
@@ -67,7 +68,7 @@ void printUsage()
 
 void printVersion()
 {
-	std::cout << "ObjectiveScript Interpreter 0.0.1 (cli)" << std::endl;
+	std::cout << "ObjectiveScript Interpreter 0.0.2 (cli)" << std::endl;
 	std::cout << "Copyright (c) 2014-2016 Michael Adelmann" << std::endl;
 	std::cout << "" << std::endl;
 }
@@ -183,8 +184,12 @@ int main(int argc, const char* argv[])
 
 	try {
 		ObjectiveScript::Script *script = mVirtualMachine.createScriptFromFile(mFilename, mParameters);
-
 		assert(script);
+
+		if ( !mStructuredExecution && !script->hasBeenConstructed() ) {
+			throw ::ObjectiveScript::Utils::Exceptions::Exception("error during script execution!");
+		}
+
 		if ( mStructuredExecution ) {
 			ObjectiveScript::Runtime::IntegerObject result = script->execute("Main", mParameters);
 			return result.getNativeValue();

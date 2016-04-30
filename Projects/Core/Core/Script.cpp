@@ -18,7 +18,8 @@ namespace ObjectiveScript {
 
 
 Script::Script()
-: mObject(0),
+: mHasBeenConstructed(false),
+  mObject(0),
   mRepository(0)
 {
 }
@@ -56,6 +57,8 @@ void Script::construct(const ParameterList& params)
 		if ( controlflow == Runtime::ControlFlow::Throw ) {
 			throw Utils::Exceptions::Exception("Exception raised in " + mObject->getFullName() + "::" + mObject->Typename());
 		}
+
+		mHasBeenConstructed = true;
 	}
 	catch ( std::exception &e ) {
 		// catch and log all errors that occurred during execution
@@ -80,8 +83,6 @@ void Script::destruct()
 
 Runtime::Object Script::execute(const std::string& method, const ParameterList& params)
 {
-	assert(mObject);
-
 	Runtime::Object returnValue;
 	try {
 		Symbol *symbol = mRepository->getGlobalScope()->resolveMethod(method, params, false);
@@ -105,33 +106,23 @@ Runtime::Object Script::execute(const std::string& method, const ParameterList& 
 	return returnValue;
 }
 
-Symbol* Script::getSymbol(const std::string& symbol)
+bool Script::hasBeenConstructed() const
+{
+	return mHasBeenConstructed;
+}
+
+Symbol* Script::resolve(const std::string &symbol)
 {
 	assert(mObject);
 
 	return mObject->resolve(symbol, false);
 }
 
-bool Script::hasMethod(const std::string& m)
+Symbol* Script::resolveMethod(const std::string &method, const ParameterList &params)
 {
 	assert(mObject);
 
-	if ( mObject->resolve(m, false) ) {
-		return true;
-	}
-
-	return false;
-}
-
-bool Script::hasMethod(const std::string& m, const ParameterList& params)
-{
-	assert(mObject);
-
-	if ( mObject->resolveMethod(m, params, false) ) {
-		return true;
-	}
-
-	return false;
+	return mObject->resolveMethod(method, params, false);
 }
 
 
