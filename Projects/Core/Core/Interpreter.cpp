@@ -1150,6 +1150,8 @@ void Interpreter::process_try(TokenIterator& token, Object *result)
 	}
 }
 
+// syntax:
+// <type> <varname> [= <initialization>]
 void Interpreter::process_type(TokenIterator& token)
 {
 	bool isConst = false;
@@ -1198,10 +1200,10 @@ void Interpreter::process_type(TokenIterator& token)
 	}
 	else {
 		// call default constructor if one is present
-		mControlFlow = object->Constructor(ParameterList());
+		//mControlFlow = object->Constructor(ParameterList());
 	}
 
-	expect(Token::Type::SEMICOLON, token);	// make sure everything went exactly the way we want it
+	expect(Token::Type::SEMICOLON, token);	// make sure everything went exactly the way we wanted
 }
 
 // syntax:
