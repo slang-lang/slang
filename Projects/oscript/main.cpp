@@ -60,7 +60,6 @@ void printUsage()
 	std::cout << "-h | --help           This help" << std::endl;
 	std::cout << "-l | --library        Library root path" << std::endl;
 	std::cout << "-q | --quiet          Quiet mode, chats as less as possible" << std::endl;
-	std::cout << "-s                    (deactivated) Structured execution mode" << std::endl;
 	std::cout << "-v | --verbose        Verbose output" << std::endl;
 	std::cout << "--version             Version information" << std::endl;
 	std::cout << std::endl;
@@ -114,9 +113,6 @@ void processParameters(int argc, const char* argv[])
 				mLogger.setLoudness(Utils::Common::ILogger::LoudnessMute);
 
 				mPrinter->ActivatePrinter = false;
-			}
-			else if ( Utils::Tools::StringCompare(argv[i], "-s") ) {
-				mStructuredExecution = true;
 			}
 			else if ( Utils::Tools::StringCompare(argv[i], "-v") || Utils::Tools::StringCompare(argv[i], "--verbose") ) {
 				mLogger.setLoudness(Utils::Common::ILogger::LoudnessInfo);
@@ -186,11 +182,7 @@ int main(int argc, const char* argv[])
 		ObjectiveScript::Script *script = mVirtualMachine.createScriptFromFile(mFilename, mParameters);
 		assert(script);
 
-		if ( !mStructuredExecution && !script->hasBeenConstructed() ) {
-			throw ::ObjectiveScript::Utils::Exceptions::Exception("error during script execution!");
-		}
-
-		if ( mStructuredExecution ) {
+		if ( !script->hasBeenConstructed() ) {	// Fallback execution
 			ObjectiveScript::Runtime::IntegerObject result = script->execute("Main", mParameters);
 			return result.getNativeValue();
 		}
