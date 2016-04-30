@@ -10,14 +10,14 @@ public namespace Mysql
 		private int mResultHandle;
 
 		public void Row(int handle) {
-			writeln("Row::Row(" + handle + ")");
+			//writeln("Row::Row(" + handle + ")");
 
 			mResultHandle = handle;
 
 			mNumFields = mysql_num_fields(mResultHandle);
 		}
 		public void ~Row() {
-			writeln("Row::~Row()");
+			//writeln("Row::~Row()");
 		}
 
 		public Entry Get(int fieldIdx) {

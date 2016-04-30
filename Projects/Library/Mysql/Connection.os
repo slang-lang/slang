@@ -16,19 +16,19 @@ public namespace Mysql
 		private string mUserName;
 
 		public void Connection() {
-			writeln("Connection::Connection()");
+			//writeln("Connection::Connection()");
 
 			cleanup();
 		}
 
 		public void Connection(string hostname, int port, string user, string password, string database) {
-			writeln("Connection::Connection(" + hostname + ", " + port + ", " + user + ", " + password + ", " + database +")");
+			//writeln("Connection::Connection(" + hostname + ", " + port + ", " + user + ", " + password + ", " + database +")");
 
 			open(hostname, port, user, password, database);
 		}
 
 		public void ~Connection() {
-			writeln("Connection::~Connection()");
+			//writeln("Connection::~Connection()");
 
 			if ( mHandle != 0 ) {
 				close();
@@ -49,7 +49,7 @@ public namespace Mysql
 		}
 
 		public void close() modify {
-			writeln("Connection::close()");
+			//writeln("Connection::close()");
 
 			if ( mHandle == 0 ) {
 				return false;
@@ -85,7 +85,7 @@ public namespace Mysql
 		}
 
 		public bool open(string hostname, int port, string user, string password, string database) modify {
-			writeln("Connection::open(\"" + hostname + "\", " + port + ", \"" + user + "\", <password>, \"" + database + "\")");
+			//writeln("Connection::open(\"" + hostname + "\", " + port + ", \"" + user + "\", <password>, \"" + database + "\")");
 
 			if ( mHandle != 0 ) {
 				// we already have a connection handle
