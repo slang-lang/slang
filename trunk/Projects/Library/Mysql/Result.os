@@ -14,19 +14,10 @@ public namespace Mysql
 		private int mNumFields;
 		private int mNumRows;
 
-		public void Result() {
-			//writeln("Result::Result()");
-		}
 		public void Result(int handle) {
-			//writeln("Result::Result(" + handle + ")");
-
 			mHandle = handle;
 
 			Initialize();
-		}
-
-		public void ~Result() {
-			//writeln("Result::~Result()");
 		}
 
 		public Row GetCurrentRow() const {

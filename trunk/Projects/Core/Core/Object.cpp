@@ -232,7 +232,7 @@ ControlFlow::E Object::Constructor(const ParameterList& params)
 		}
 	}
 
-/*	// doesn't work properly yes
+/*	// doesn't work properly yet
 	// check if all base objects have been constructed correctly
 	for ( Inheritance::iterator it = mInheritance.begin(); it != mInheritance.end(); ++it ) {
 		if ( !it->second->mIsConstructed ) {

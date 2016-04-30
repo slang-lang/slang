@@ -1081,8 +1081,7 @@ void operator_unary_not(Object *base)
 		*base = BoolObject(!tmp.isValid());
 	}
 	else {
-		Object tmp;
-		base->execute(&tmp, "operator!", ParameterList(), 0);
+		*base = BoolObject(!base->isValid());
 	}
 }
 

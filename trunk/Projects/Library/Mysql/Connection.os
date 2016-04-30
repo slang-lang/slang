@@ -16,20 +16,14 @@ public namespace Mysql
 		private string mUserName;
 
 		public void Connection() {
-			//writeln("Connection::Connection()");
-
 			cleanup();
 		}
 
 		public void Connection(string hostname, int port, string user, string password, string database) {
-			//writeln("Connection::Connection(" + hostname + ", " + port + ", " + user + ", " + password + ", " + database +")");
-
 			open(hostname, port, user, password, database);
 		}
 
 		public void ~Connection() {
-			//writeln("Connection::~Connection()");
-
 			if ( mHandle != 0 ) {
 				close();
 			}
@@ -49,8 +43,6 @@ public namespace Mysql
 		}
 
 		public void close() modify {
-			//writeln("Connection::close()");
-
 			if ( mHandle == 0 ) {
 				return false;
 			}
@@ -85,8 +77,6 @@ public namespace Mysql
 		}
 
 		public bool open(string hostname, int port, string user, string password, string database) modify {
-			//writeln("Connection::open(\"" + hostname + "\", " + port + ", \"" + user + "\", <password>, \"" + database + "\")");
-
 			if ( mHandle != 0 ) {
 				// we already have a connection handle
 				throw new Exception("mysql descriptor still points to an open connection!");
@@ -107,13 +97,16 @@ public namespace Mysql
 		}
 
 		public Result query(string queryStr) modify {
+			Result result;	// null object
+
 			int error = mysql_query(mHandle, queryStr);
 			if ( error != 0 ) {
 				// error while query execution
+				return result;	// return uninitialized result object
 			}
 
 			int resultHandle = mysql_store_result(mHandle);
-			return new Result(resultHandle);;
+			return new Result(resultHandle);
 		}
 	}
 }
