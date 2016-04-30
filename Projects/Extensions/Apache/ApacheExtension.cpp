@@ -3,6 +3,7 @@
 #include "ApacheExtension.h"
 
 // Library includes
+#include <cstdio>
 #include <list>
 #include <stdlib.h>
 #include <string.h>
