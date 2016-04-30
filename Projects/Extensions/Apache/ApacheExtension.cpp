@@ -186,6 +186,11 @@ void ApacheExtension::readGetData()
 void ApacheExtension::readPostData()
 {
 	char* len_ = getenv("CONTENT_LENGTH");
+	if ( !len_ ) {
+		// no CONTENT_LENGTH received
+		return;
+	}
+
 	int len = strtol(len_, NULL, 10);
 
 	char* postdata = (char*)malloc(len + 1);
