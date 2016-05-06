@@ -18,7 +18,8 @@ namespace ObjectiveScript {
 
 SymbolScope::SymbolScope(const std::string& name, IScope *parent)
 : mParent(parent),
-  mScopeName(name)
+  mScopeName(name),
+  mScopeType(IType::SymbolScope)
 {
 }
 
@@ -64,6 +65,11 @@ const std::string& SymbolScope::getScopeName() const
 	return mScopeName;
 }
 
+IScope::IType::E SymbolScope::getType() const
+{
+	return mScopeType;
+}
+
 Symbol* SymbolScope::resolve(const std::string& name, bool onlyCurrentScope) const
 {
 	Symbols::const_iterator it = mSymbols.find(name);
@@ -94,6 +100,7 @@ void SymbolScope::undefine(const std::string& name, Symbol *symbol)
 MethodScope::MethodScope(const std::string& name, IScope *parent)
 : SymbolScope(name, parent)
 {
+	mScopeType = IType::MethodScope;
 }
 
 MethodScope::~MethodScope()
