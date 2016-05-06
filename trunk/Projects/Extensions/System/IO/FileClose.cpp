@@ -15,9 +15,9 @@
 // Project includes
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
 #include <Core/BuildInObjects/IntegerObject.h>
+#include <Core/BuildInObjects/StringObject.h>
+#include <Core/Repository.h>
 #include <Core/Tools.h>
-#include <Core/Utils/Exceptions.h>
-#include <Tools/Strings.h>
 
 // Namespace declarations
 
@@ -38,16 +38,12 @@ FileClose::FileClose()
 
 Runtime::ControlFlow::E FileClose::execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token)
 {
-	if ( params.size() != 1 ) {
-		throw Utils::Exceptions::ParameterCountMissmatch("1 parameter expected, but " + ::Utils::Tools::toString(params.size()) + " parameter(s) found", token->position());
-	}
-
-	Runtime::ControlFlow::E controlFlow = Runtime::ControlFlow::Normal;
-
-	std::string filehandle = params.front().pointer()->getValue();
-
 	try {
-		int handle = Tools::stringToInt(filehandle);
+		ParameterList::const_iterator it = params.begin();
+
+		std::string param_handle = (*it++).pointer()->getValue();
+
+		int handle = Tools::stringToInt(param_handle);
 
 		int fileResult = close(handle);
 		if ( fileResult == -1 ) {
@@ -56,11 +52,15 @@ Runtime::ControlFlow::E FileClose::execute(const ParameterList& params, Runtime:
 
 		*result = Runtime::IntegerObject(fileResult);
 	}
-	catch ( ... ) {
-		controlFlow = Runtime::ControlFlow::Throw;
+	catch ( std::exception& e ) {
+		Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+		*data = Runtime::StringObject(e.what());
+
+		mExceptionData = Runtime::ExceptionData(data, token->position());
+		return Runtime::ControlFlow::Throw;
 	}
 
-	return controlFlow;
+	return Runtime::ControlFlow::Normal;
 }
 
 

@@ -40,21 +40,27 @@ public:
 public:
 	Runtime::ControlFlow::E execute(const ParameterList &params, Runtime::Object *result, const TokenIterator &token)
 	{
-		std::string text;
+		try {
+			ParameterList::const_iterator it = params.begin();
 
-		if ( params.size() != 1 ) {
-			throw Utils::Exceptions::ParameterCountMissmatch("1 parameter expected, but " + ::Utils::Tools::toString(params.size()) + " parameter(s) found", token->position());
+			std::string param_name = (*it++).value();
+
+			std::string result_value;
+
+			StringMap::const_iterator postIt = mGetQueryString.find(param_name);
+			if ( postIt != mPostQueryString.end() ) {
+				result_value = postIt->second;
+			}
+
+			*result = Runtime::StringObject(result_value);
 		}
+		catch ( std::exception& e ) {
+			Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+			*data = Runtime::StringObject(e.what());
 
-		std::string param_name = params.front().value();
-		std::string result_value;
-
-		StringMap::const_iterator it = mGetQueryString.find(param_name);
-		if ( it != mPostQueryString.end() ) {
-			result_value = it->second;
+			mExceptionData = Runtime::ExceptionData(data, token->position());
+			return Runtime::ControlFlow::Throw;
 		}
-
-		*result = Runtime::StringObject(result_value);
 
 		return Runtime::ControlFlow::Normal;
 	}

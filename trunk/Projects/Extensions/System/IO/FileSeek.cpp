@@ -15,6 +15,8 @@
 // Project includes
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
 #include <Core/BuildInObjects/IntegerObject.h>
+#include <Core/BuildInObjects/StringObject.h>
+#include <Core/Repository.h>
 #include <Core/Tools.h>
 #include <Core/Utils/Exceptions.h>
 #include <Tools/Strings.h>
@@ -33,38 +35,37 @@ FileSeek::FileSeek()
 	ParameterList params;
 	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, VALUE_NONE));
 	params.push_back(Parameter("offset", Designtime::IntegerObject::TYPENAME, VALUE_NONE));
-	//params.push_back(Parameter("whence", Designtime::IntegerObject::TYPENAME, "0", true));
 
 	setSignature(params);
 }
 
 Runtime::ControlFlow::E FileSeek::execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token)
 {
-	if ( params.size() != 2 ) {
-		throw Utils::Exceptions::ParameterCountMissmatch("2 parameters expected, but " + ::Utils::Tools::toString(params.size()) + " parameter(s) found", token->position());
-	}
-
-	Runtime::ControlFlow::E controlFlow = Runtime::ControlFlow::Normal;
-
-	std::string fileHandle = params.front().pointer()->getValue();
-	std::string fileOffset = params.back().pointer()->getValue();
-
 	try {
-		int handle = Tools::stringToInt(fileHandle);
-		int offset = Tools::stringToInt(fileOffset);
+		ParameterList::const_iterator it = params.begin();
+
+		std::string param_handle = params.front().pointer()->getValue();
+		std::string param_offset = params.back().pointer()->getValue();
+
+		int handle = Tools::stringToInt(param_handle);
+		int offset = Tools::stringToInt(param_offset);
 
 		long size = lseek(handle, offset, SEEK_SET);
 		if ( size == -1 ) {    // error while reading
 			return Runtime::ControlFlow::Throw;
 		}
 
-		*result = Runtime::IntegerObject(size);
+		*result = Runtime::IntegerObject((int)size);
 	}
-	catch ( ... ) {
-		controlFlow =  Runtime::ControlFlow::Throw;
+	catch ( std::exception& e ) {
+		Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+		*data = Runtime::StringObject(e.what());
+
+		mExceptionData = Runtime::ExceptionData(data, token->position());
+		return Runtime::ControlFlow::Throw;
 	}
 
-	return controlFlow;
+	return Runtime::ControlFlow::Normal;
 }
 
 

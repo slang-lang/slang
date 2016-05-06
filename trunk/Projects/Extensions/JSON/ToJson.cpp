@@ -10,11 +10,8 @@
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Designtime/BuildInTypes/GenericObject.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
-#include <Core/Method.h>
 #include <Core/Repository.h>
 #include <Core/Tools.h>
-#include <Core/Utils/Exceptions.h>
-#include <Tools/Strings.h>
 
 // Forward declarations
 
@@ -39,7 +36,9 @@ Runtime::ControlFlow::E ToJson::execute(const ParameterList &params, Runtime::Ob
 	try {
 		ParameterList::const_iterator it = params.begin();
 
-		Json::Value value = (*it).pointer()->ToJson();
+		Runtime::Object *param_object = (*it++).pointer();
+
+		Json::Value value = param_object->ToJson();
 
 		*result = Runtime::StringObject(value.toString());
 	}
