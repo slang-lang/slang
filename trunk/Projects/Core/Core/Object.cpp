@@ -238,7 +238,7 @@ ControlFlow::E Object::Constructor(const ParameterList& params)
 		if ( !it->second->mIsConstructed ) {
 			System::Print("C++ (Constructor): " + getName() + "::" + Typename() + "()");
 
-			throw Utils::Exceptions::Exception(getName() + "::" + Typename() + "(): not all base objects have been instantiated");
+			throw Utils::Exceptions::Exception(getName() + "::" + Typename() + "(): not all base objects have been constructed correctly");
 		}
 	}
 */

@@ -50,7 +50,6 @@
 std::string mFilename;
 Utils::Common::StdOutLogger mLogger;
 ObjectiveScript::ParameterList mParameters;
-Utils::Printer *mPrinter;
 std::string mRoot;
 bool mStructuredExecution;
 
@@ -115,13 +114,13 @@ void processParameters(int argc, const char* argv[])
 			else if ( Utils::Tools::StringCompare(argv[i], "-q") || Utils::Tools::StringCompare(argv[i], "--quiet") ) {
 				mLogger.setLoudness(Utils::Common::ILogger::LoudnessMute);
 
-				mPrinter->ActivatePrinter = false;
+				Utils::PrinterDriver::getInstance()->ActivatePrinter = false;
 			}
 			else if ( Utils::Tools::StringCompare(argv[i], "-v") || Utils::Tools::StringCompare(argv[i], "--verbose") ) {
 				mLogger.setLoudness(Utils::Common::ILogger::LoudnessInfo);
 
-				mPrinter->ActivatePrinter = true;
-				mPrinter->PrintFileAndLine = true;
+				Utils::PrinterDriver::getInstance()->ActivatePrinter = true;
+				Utils::PrinterDriver::getInstance()->PrintFileAndLine = true;
 			}
 			else if ( Utils::Tools::StringCompare(argv[i], "--version") ) {
 				printVersion();
@@ -156,7 +155,6 @@ int main(int argc, const char* argv[])
 	// Memory leak detection
 #endif
 
-	mPrinter = Utils::PrinterDriver::getInstance();
 	mStructuredExecution = false;
 
 	processParameters(argc, argv);
@@ -192,10 +190,21 @@ int main(int argc, const char* argv[])
 			ObjectiveScript::Runtime::IntegerObject result = script->execute("Main", mParameters);
 			return result.getNativeValue();
 		}
-
 	}
-	catch ( std::exception& e ) {
+	catch ( ObjectiveScript::Runtime::ControlFlow::E e ) {
+		switch ( e ) {
+			case ObjectiveScript::Runtime::ControlFlow::ExitProgram:
+				break;
+			default:
+				std::cout << "Exited program with control flow " << e << std::endl;
+				break;
+		}
+	}
+	catch ( std::exception& e ) {	// catch every std::exception and all derived exception types
 		std::cout << e.what() << std::endl;
+	}
+	catch ( ... ) {	// catch everything
+		std::cout << "uncaught exception detected" << std::endl;
 	}
 
 	return 0;
