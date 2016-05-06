@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_System_System_h
-#define ObjectiveScript_Extensions_System_System_h
+#ifndef ObjectiveScript_Extensions_System_SystemExtension_h
+#define ObjectiveScript_Extensions_System_SystemExtension_h
 
 
 // Library includes
@@ -17,7 +17,7 @@ namespace ObjectiveScript {
 namespace Extensions {
 
 
-class System : public IExtension
+class SystemExtension : public IExtension
 {
 public:
 	std::string getName() const {

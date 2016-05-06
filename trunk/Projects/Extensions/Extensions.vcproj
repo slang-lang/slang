@@ -183,14 +183,14 @@
 			>
 		</File>
 		<File
-			RelativePath=".\System\AssertMsg.cpp"
+			RelativePath=".\SystemExtension\AssertMsg.cpp"
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
-					ObjectFile="$(IntDir)\System\"
+					ObjectFile="$(IntDir)\SystemExtension\"
 				/>
 			</FileConfiguration>
 			<FileConfiguration
@@ -198,12 +198,12 @@
 				>
 				<Tool
 					Name="VCCLCompilerTool"
-					ObjectFile="$(IntDir)\System\"
+					ObjectFile="$(IntDir)\SystemExtension\"
 				/>
 			</FileConfiguration>
 		</File>
 		<File
-			RelativePath=".\System\AssertMsg.h"
+			RelativePath=".\SystemExtension\AssertMsg.h"
 			>
 		</File>
 		<File
@@ -259,14 +259,14 @@
 			>
 		</File>
 		<File
-			RelativePath=".\System\IO\FileClose.cpp"
+			RelativePath=".\SystemExtension\IO\FileClose.cpp"
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
-					ObjectFile="$(IntDir)\System\IO\"
+					ObjectFile="$(IntDir)\SystemExtension\IO\"
 				/>
 			</FileConfiguration>
 			<FileConfiguration
@@ -274,23 +274,23 @@
 				>
 				<Tool
 					Name="VCCLCompilerTool"
-					ObjectFile="$(IntDir)\System\IO\"
+					ObjectFile="$(IntDir)\SystemExtension\IO\"
 				/>
 			</FileConfiguration>
 		</File>
 		<File
-			RelativePath=".\System\IO\FileClose.h"
+			RelativePath=".\SystemExtension\IO\FileClose.h"
 			>
 		</File>
 		<File
-			RelativePath=".\System\IO\FileOpen.cpp"
+			RelativePath=".\SystemExtension\IO\FileOpen.cpp"
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
-					ObjectFile="$(IntDir)\System\IO\"
+					ObjectFile="$(IntDir)\SystemExtension\IO\"
 				/>
 			</FileConfiguration>
 			<FileConfiguration
@@ -298,23 +298,23 @@
 				>
 				<Tool
 					Name="VCCLCompilerTool"
-					ObjectFile="$(IntDir)\System\IO\"
+					ObjectFile="$(IntDir)\SystemExtension\IO\"
 				/>
 			</FileConfiguration>
 		</File>
 		<File
-			RelativePath=".\System\IO\FileOpen.h"
+			RelativePath=".\SystemExtension\IO\FileOpen.h"
 			>
 		</File>
 		<File
-			RelativePath=".\System\IO\FileRead.cpp"
+			RelativePath=".\SystemExtension\IO\FileRead.cpp"
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
-					ObjectFile="$(IntDir)\System\IO\"
+					ObjectFile="$(IntDir)\SystemExtension\IO\"
 				/>
 			</FileConfiguration>
 			<FileConfiguration
@@ -322,23 +322,23 @@
 				>
 				<Tool
 					Name="VCCLCompilerTool"
-					ObjectFile="$(IntDir)\System\IO\"
+					ObjectFile="$(IntDir)\SystemExtension\IO\"
 				/>
 			</FileConfiguration>
 		</File>
 		<File
-			RelativePath=".\System\IO\FileRead.h"
+			RelativePath=".\SystemExtension\IO\FileRead.h"
 			>
 		</File>
 		<File
-			RelativePath=".\System\IO\FileSeek.cpp"
+			RelativePath=".\SystemExtension\IO\FileSeek.cpp"
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
-					ObjectFile="$(IntDir)\System\IO\"
+					ObjectFile="$(IntDir)\SystemExtension\IO\"
 				/>
 			</FileConfiguration>
 			<FileConfiguration
@@ -346,23 +346,23 @@
 				>
 				<Tool
 					Name="VCCLCompilerTool"
-					ObjectFile="$(IntDir)\System\IO\"
+					ObjectFile="$(IntDir)\SystemExtension\IO\"
 				/>
 			</FileConfiguration>
 		</File>
 		<File
-			RelativePath=".\System\IO\FileSeek.h"
+			RelativePath=".\SystemExtension\IO\FileSeek.h"
 			>
 		</File>
 		<File
-			RelativePath=".\System\IO\FileWrite.cpp"
+			RelativePath=".\SystemExtension\IO\FileWrite.cpp"
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
-					ObjectFile="$(IntDir)\System\IO\"
+					ObjectFile="$(IntDir)\SystemExtension\IO\"
 				/>
 			</FileConfiguration>
 			<FileConfiguration
@@ -370,12 +370,12 @@
 				>
 				<Tool
 					Name="VCCLCompilerTool"
-					ObjectFile="$(IntDir)\System\IO\"
+					ObjectFile="$(IntDir)\SystemExtension\IO\"
 				/>
 			</FileConfiguration>
 		</File>
 		<File
-			RelativePath=".\System\IO\FileWrite.h"
+			RelativePath=".\SystemExtension\IO\FileWrite.h"
 			>
 		</File>
 		<File
@@ -395,7 +395,7 @@
 			>
 		</File>
 		<File
-			RelativePath=".\System\FromJson.h"
+			RelativePath=".\JsonExtension\FromJson.h"
 			>
 		</File>
 		<File
@@ -543,7 +543,7 @@
 			>
 		</File>
 		<File
-			RelativePath=".\System\Print.h"
+			RelativePath=".\SystemExtension\Print.h"
 			>
 		</File>
 		<File
@@ -563,14 +563,14 @@
 			>
 		</File>
 		<File
-			RelativePath=".\System\System.cpp"
+			RelativePath=".\SystemExtension\SystemExtension.cpp"
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
-					ObjectFile="$(IntDir)\System\"
+					ObjectFile="$(IntDir)\SystemExtension\"
 				/>
 			</FileConfiguration>
 			<FileConfiguration
@@ -578,16 +578,16 @@
 				>
 				<Tool
 					Name="VCCLCompilerTool"
-					ObjectFile="$(IntDir)\System\"
+					ObjectFile="$(IntDir)\SystemExtension\"
 				/>
 			</FileConfiguration>
 		</File>
 		<File
-			RelativePath=".\System\System.h"
+			RelativePath=".\SystemExtension\SystemExtension.h"
 			>
 		</File>
 		<File
-			RelativePath=".\System\ToJson.h"
+			RelativePath=".\JsonExtension\ToJson.h"
 			>
 		</File>
 		<File
@@ -607,11 +607,11 @@
 			>
 		</File>
 		<File
-			RelativePath=".\System\Write.h"
+			RelativePath=".\SystemExtension\Write.h"
 			>
 		</File>
 		<File
-			RelativePath=".\System\WriteLn.h"
+			RelativePath=".\SystemExtension\WriteLn.h"
 			>
 		</File>
 	</Files>
