@@ -41,15 +41,20 @@ public:
 public:
 	Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* /*result*/, const TokenIterator& token)
 	{
-		std::string text;
+		try {
+			ParameterList::const_iterator it = params.begin();
 
-		if ( params.size() != 1 ) {
-			throw Utils::Exceptions::ParameterCountMissmatch("1 parameter expected, but " + ::Utils::Tools::toString(params.size()) + " parameter(s) found", token->position());
+			std::string param_text = (*it++).value();
+
+			std::cout << param_text;
 		}
+		catch ( std::exception& e ) {
+			Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+			*data = Runtime::StringObject(e.what());
 
-		text = params.front().value();
-
-		std::cout << text;
+			mExceptionData = Runtime::ExceptionData(data, token->position());
+			return Runtime::ControlFlow::Throw;
+		}
 
 		return Runtime::ControlFlow::Normal;
 	}

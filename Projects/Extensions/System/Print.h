@@ -37,11 +37,22 @@ public:
 	}
 
 public:
-	Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* /*result*/, const TokenIterator& /*token*/)
+	Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* /*result*/, const TokenIterator& token)
 	{
-		std::string text = params.front().value();
+		try {
+			ParameterList::const_iterator it = params.begin();
 
-		std::cout << "printf: " << text;
+			std::string param_text = (*it++).value();
+
+			std::cout << "printf: " << param_text;
+		}
+		catch ( std::exception& e ) {
+			Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+			*data = Runtime::StringObject(e.what());
+
+			mExceptionData = Runtime::ExceptionData(data, token->position());
+			return Runtime::ControlFlow::Throw;
+		}
 
 		return Runtime::ControlFlow::Normal;
 	}
