@@ -4,14 +4,14 @@ ADD_SUBDIRECTORY(IO)
 
 SET(SOURCES
 	AssertMsg.cpp
-	System.cpp
+	SystemExtension.cpp
 )
 
 SET(HEADERS
 	AssertMsg.h
 	GetEnv.h
 	Print.h
-	System.h
+	SystemExtension.h
 	Write.h
 	WriteLn.h
 )

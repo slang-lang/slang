@@ -1,6 +1,6 @@
 
 // Header
-#include "System.h"
+#include "SystemExtension.h"
 
 // Library includes
 
@@ -23,7 +23,7 @@ namespace ObjectiveScript {
 namespace Extensions {
 
 
-void System::provideMethods(ExtensionMethods &methods)
+void SystemExtension::provideMethods(ExtensionMethods &methods)
 {
 	assert(methods.empty());
 
