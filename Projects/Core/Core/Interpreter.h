@@ -45,6 +45,7 @@ public: // Execution
 	const ExceptionData& getExceptionData() const;
 
 private: // private types
+	typedef std::list<SymbolScope*> ScopeStack;
 	typedef std::list<TokenList> TokenStack;
 
 private: // Deinit
@@ -88,6 +89,13 @@ private: // Execution
 	void parseTerm(Object *result, TokenIterator& start);
 	// }
 
+	// Scope stack
+	// {
+	SymbolScope* getScope() const;
+	void pushScope();
+	void popScope();
+	// }
+
 	// Token stack
 	// {
 	const TokenList& getTokens() const;
@@ -101,6 +109,7 @@ private:
 	ControlFlow::E mControlFlow;
 	ExceptionData mExceptionData;
 	Repository *mRepository;
+	ScopeStack mScopeStack;
 	TokenList mTokens;
 	TokenStack mTokenStack;
 };

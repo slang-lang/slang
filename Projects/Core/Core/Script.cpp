@@ -90,10 +90,13 @@ Runtime::Object Script::execute(const std::string& method, const ParameterList& 
 			throw Utils::Exceptions::Exception("Could not resolve method '" + method + "(" + toString(params) + ")'");
 		}
 
-		Runtime::ControlFlow::E controlflow = static_cast<Runtime::Method*>(symbol)->execute(params, &returnValue, TokenIterator());
+		Runtime::Method* method = static_cast<Runtime::Method*>(symbol);
+		Runtime::ControlFlow::E controlflow = method->execute(params, &returnValue, TokenIterator());
 
 		if ( controlflow == Runtime::ControlFlow::Throw ) {
-			throw Utils::Exceptions::Exception("Exception raised in " + mObject->getFullName() + "::" + mObject->Typename());
+			throw Utils::Exceptions::Exception(
+				"Exception raised in " + mObject->getFullName() + "::" + mObject->Typename() + "::" + method->getName()
+			);
 		}
 	}
 	catch ( std::exception &e ) {

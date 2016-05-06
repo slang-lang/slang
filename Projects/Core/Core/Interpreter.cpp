@@ -109,6 +109,15 @@ const ExceptionData& Interpreter::getExceptionData() const
 	return mExceptionData;
 }
 
+SymbolScope* Interpreter::getScope() const
+{
+	if ( !mScopeStack.empty() ) {
+		return mScopeStack.back();
+	}
+
+	return (SymbolScope*)this;
+}
+
 const TokenList& Interpreter::getTokens() const
 {
 	return mTokenStack.back();
@@ -122,7 +131,7 @@ Symbol* Interpreter::identify(TokenIterator& token) const
 		std::string identifier = token->content();
 
 		if ( !result ) {
-			result = resolve(identifier, false);
+			result = getScope()->resolve(identifier, false);
 		}
 		else {
 			result = static_cast<Object*>(result)->resolve(identifier, false);
@@ -154,7 +163,7 @@ Symbol* Interpreter::identifyMethod(TokenIterator& token, const ParameterList& p
 		std::string identifier = token->content();
 
 		if ( !result ) {
-			result = resolve(identifier, false);
+			result = getScope()->resolve(identifier, false);
 
 			if ( result->getType() == Symbol::IType::MethodSymbol ) {
 				switch ( result->getType() ) {
@@ -198,8 +207,8 @@ Symbol* Interpreter::identifyMethod(TokenIterator& token, const ParameterList& p
 ControlFlow::E Interpreter::interpret(const TokenList& tokens, Object* result)
 {
 	// this creates a new scope
-
-	Interpreter interpreter(this, getScopeName());
+/*
+	Interpreter interpreter(mParent, getScopeName());
 	interpreter.setConst(isConst());
 	interpreter.setFinal(isFinal());
 	interpreter.setLanguageFeatureState(getLanguageFeatureState());
@@ -209,6 +218,21 @@ ControlFlow::E Interpreter::interpret(const TokenList& tokens, Object* result)
 	ControlFlow::E controlflow = interpreter.execute(result);
 
 	return controlflow;
+*/
+
+	// reset control flow to normal
+	mControlFlow = ControlFlow::Normal;
+
+	pushScope();
+	pushTokens(tokens);
+		TokenIterator start = getTokens().begin();
+		TokenIterator end = getTokens().end();
+
+		process(result, start, end);
+	popTokens();
+	popScope();
+
+	return mControlFlow;
 }
 
 void Interpreter::parseCondition(Object *result, TokenIterator& start)
@@ -469,6 +493,19 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 	start++;
 }
 
+void Interpreter::popScope()
+{
+	if ( mScopeStack.empty() ) {
+		throw Utils::Exceptions::Exception("tried to pop beyond stack");
+	}
+
+	SymbolScope* scope = mScopeStack.back();
+
+	mScopeStack.pop_back();
+
+	delete scope;
+}
+
 void Interpreter::popTokens()
 {
 	mTokenStack.pop_back();
@@ -586,7 +623,8 @@ void Interpreter::process_delete(TokenIterator& token)
 // exit;
 void Interpreter::process_exit(TokenIterator& /*token*/)
 {
-	mControlFlow = ControlFlow::ExitProgram;
+	//mControlFlow = ControlFlow::ExitProgram;
+	throw ControlFlow::ExitProgram;
 }
 
 // syntax:
@@ -703,7 +741,7 @@ void Interpreter::process_identifier(TokenIterator& token, Object* /*result*/, T
         return;
     }
 
-	Object *symbol = static_cast<Object*>(resolve(identifier, false));
+	Object *symbol = static_cast<Object*>(getScope()->resolve(identifier, false));
 	if ( !symbol ) {	// we tried to access an unknown symbol
 		throw Utils::Exceptions::UnknownIdentifer("identifier '" + identifier + "' not found", token->position());
 	}
@@ -711,7 +749,7 @@ void Interpreter::process_identifier(TokenIterator& token, Object* /*result*/, T
 		throw Utils::Exceptions::ConstCorrectnessViolated("tried to modify const symbol '" + identifier + "'", token->position());
 	}
 	if ( symbol->isMember() && this->isConst() ) {	// we tried to modify a member in a const method
-		throw Utils::Exceptions::ConstCorrectnessViolated("tried to modify member '" + identifier + "' in const method '" + getScopeName() + "'", token->position());
+		throw Utils::Exceptions::ConstCorrectnessViolated("tried to modify member '" + identifier + "' in const method '" + getScope()->getScopeName() + "'", token->position());
 	}
 
 	symbol = static_cast<Object*>(identify(token));
@@ -907,7 +945,7 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 
 	if ( isConst() && !symbol->isConst() ) {	// check target method's const-ness
 		// this is a const method and we want to call a non-const method... neeeeey!
-		throw Utils::Exceptions::ConstCorrectnessViolated("only calls to const methods are allowed in const method '" + getScopeName() + "'", token->position());
+		throw Utils::Exceptions::ConstCorrectnessViolated("only calls to const methods are allowed in const method '" + getScope()->getScopeName() + "'", token->position());
 	}
 
 	ControlFlow::E controlflow = static_cast<Method*>(symbol)->execute(params, result, token);
@@ -1110,13 +1148,13 @@ void Interpreter::process_try(TokenIterator& token, Object *result)
 		TokenIterator catchEnd = findNextBalancedCurlyBracket(catchBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
 
 		token = catchEnd;
-		if (catchEnd != getTokens().end()) {
+		if ( catchEnd != getTokens().end() ) {
 			catchEnd++;
 		}
 
 		// collect catch-block tokens
 		TokenList catchTokens;
-		while (catchBegin != catchEnd) {
+		while ( catchBegin != catchEnd ) {
 			catchTokens.push_back((*catchBegin));
 			catchBegin++;
 		}
@@ -1194,7 +1232,7 @@ void Interpreter::process_type(TokenIterator& token)
 		assign = ++token;
 	}
 
-	Object *object = static_cast<Object*>(resolve(name, true));
+	Object *object = static_cast<Object*>(getScope()->resolve(name, true));
 	if ( object ) {
 		throw Utils::Exceptions::DuplicateIdentifer("process_type: " + name, token->position());
 	}
@@ -1202,7 +1240,7 @@ void Interpreter::process_type(TokenIterator& token)
 	// TODO: create a shallow object if we have an assignment statement to prevent duplicate object instantiation
 	object = mRepository->createInstance(type, name);
 
-	define(name, object);
+	getScope()->define(name, object);
 
 	if ( isConst ) object->setConst(true);
 	if ( isFinal ) object->setFinal(true);
@@ -1268,6 +1306,13 @@ void Interpreter::process_while(TokenIterator& token, Object *result)
 			case ControlFlow::Throw: mControlFlow = ControlFlow::Throw; return;
 		}
 	}
+}
+
+void Interpreter::pushScope()
+{
+	SymbolScope* scope = new SymbolScope("", getScope());
+
+	mScopeStack.push_back(scope);
 }
 
 void Interpreter::pushTokens(const TokenList& tokens)
