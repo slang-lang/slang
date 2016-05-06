@@ -15,13 +15,6 @@ public namespace ObjectEqualityTest
 		{
 			mValue = value;
 		}
-
-/*
-		public bool operator==(TestObject other const) const
-		{
-			return mValue == other.mValue;
-		}
-*/
 	}
 
 	public object Main
