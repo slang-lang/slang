@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_System_System_h
-#define ObjectiveScript_Extensions_System_System_h
+#ifndef ObjectiveScript_Extensions_Json_JsonExtension_h
+#define ObjectiveScript_Extensions_Json_JsonExtension_h
 
 
 // Library includes
@@ -15,19 +15,21 @@
 
 namespace ObjectiveScript {
 namespace Extensions {
+namespace Json {
 
 
-class System : public IExtension
+class JsonExtension : public IExtension
 {
 public:
 	std::string getName() const {
-		return "System";
+		return "Json";
 	}
 
 	void provideMethods(ExtensionMethods &methods);
 };
 
 
+}
 }
 }
 
