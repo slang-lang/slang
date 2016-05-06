@@ -1,23 +1,18 @@
 INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
-ADD_SUBDIRECTORY(IO)
-
 SET(SOURCES
-	AssertMsg.cpp
-	System.cpp
+	FromJson.cpp
+	JsonExtension.cpp
+	ToJson.cpp
 )
 
 SET(HEADERS
-	AssertMsg.h
-	GetEnv.h
-	Print.h
-	System.h
-	Write.h
-	WriteLn.h
+	FromJson.h
+	JsonExtension.h
+	ToJson.h
 )
 
 SET(DEPENDENCIES
-	ExtensionsSystemIO
 	Utils
 	Core
 )
@@ -26,4 +21,4 @@ add_include(Projects/Core)
 add_include(Projects/Extensions)
 add_include(Projects/Utils)
 
-build_static_lib(ExtensionsSystem "")
+build_static_lib(ExtensionsJson "")
