@@ -31,12 +31,14 @@ public:	// IScope implementation
 	virtual IScope* getEnclosingScope() const;
 	virtual std::string getFullName() const;
 	virtual const std::string& getScopeName() const;
+	virtual IScope::IType::E getType() const;
 	virtual Symbol* resolve(const std::string& name, bool onlyCurrentScope) const;
 	virtual void undefine(const std::string& name, Symbol *symbol);
 
 protected:
 	IScope *mParent;
 	std::string mScopeName;
+	IType::E mScopeType;
 	Symbols mSymbols;
 };
 

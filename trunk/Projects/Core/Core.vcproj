@@ -608,7 +608,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\System.cpp"
+				RelativePath=".\Core\SystemExtension.cpp"
 				>
 			</File>
 			<File
@@ -922,7 +922,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\System.h"
+				RelativePath=".\Core\SystemExtension.h"
 				>
 			</File>
 			<File
