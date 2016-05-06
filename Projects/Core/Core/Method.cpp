@@ -109,7 +109,6 @@ ControlFlow::E Method::execute(const ParameterList& params, Object *result, cons
 	if ( !mRepository ) {
 		throw Utils::Exceptions::Exception("mRepository not set");
 	}
-
 	if ( isAbstract() ) {
 		throw Utils::Exceptions::AbstractException("cannot execute abstract method '" + getName() + "'");
 	}
@@ -292,66 +291,19 @@ const ParameterList& Method::provideSignature() const
 	return mSignature;
 }
 
-Symbol* Method::resolve(const std::string& name, bool onlyCurrentScope) const
-{
-	std::string member, parent;
-	Tools::split(name, parent, member);
-
-	if ( member.empty() && mMethodType != MethodType::Function ) {
-		member = parent;
-		parent = IDENTIFIER_THIS;
-	}
-
-	Symbol *result = SymbolScope::resolve(parent, onlyCurrentScope);
-
-	while ( result && !member.empty() ) {
-		switch ( result->getType() ) {
-			case Symbol::IType::NamespaceSymbol:
-			case Symbol::IType::ObjectSymbol:
-				result = static_cast<Object*>(result)->resolve(member, onlyCurrentScope);
-				break;
-			case Symbol::IType::MethodSymbol:
-				return result;
-			case Symbol::IType::BluePrintSymbol:
-			case Symbol::IType::UnknownSymbol:
-				throw Utils::Exceptions::SyntaxError("unknown symbol '" + name + "' requested");
-		}
-
-		Tools::split(member, parent, member);
-	}
-
-	return result;
-}
-
 Symbol* Method::resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope) const
 {
-	std::string member, parent;
-	Tools::split(name, parent, member);
-
-	if ( member.empty() && mMethodType != MethodType::Function ) {
-		member = parent;
-		parent = IDENTIFIER_THIS;
-	}
-
-	Symbol *result = SymbolScope::resolve(parent, onlyCurrentScope);
-
-	while ( result && !member.empty() ) {
-		switch ( result->getType() ) {
-			case Symbol::IType::MethodSymbol:
-				return result;
-			case Symbol::IType::NamespaceSymbol:
-			case Symbol::IType::ObjectSymbol:
-				result = static_cast<Object*>(result)->resolveMethod(member, params, onlyCurrentScope);
-				break;
-			case Symbol::IType::BluePrintSymbol:
-			case Symbol::IType::UnknownSymbol:
-				throw Utils::Exceptions::SyntaxError("cannot directly access locales of method/namespace");
+	if ( mMethodType != MethodType::Function ) {
+		switch ( mParent->getType() ) {
+			case IScope::IType::MethodScope:
+				return static_cast<MethodScope*>(mParent)->resolveMethod(name, params, onlyCurrentScope);
+			case IScope::IType::SymbolScope:
+			case IScope::IType::UnknownScope:
+				throw Utils::Exceptions::Exception("invalid/unknown scope type detected!");
 		}
-
-		Tools::split(member, parent, member);
 	}
 
-	return result;
+	return SymbolScope::resolve(name, onlyCurrentScope);
 }
 
 void Method::setParent(IScope *scope)

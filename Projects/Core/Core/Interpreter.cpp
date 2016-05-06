@@ -155,9 +155,22 @@ Symbol* Interpreter::identifyMethod(TokenIterator& token, const ParameterList& p
 
 		if ( !result ) {
 			result = resolve(identifier, false);
+
 			if ( result->getType() == Symbol::IType::MethodSymbol ) {
-				result = resolveMethod(identifier, params, false);
-				break;
+				switch ( result->getType() ) {
+					case Symbol::IType::MethodSymbol:
+						result = static_cast<Method*>(mParent)->resolveMethod(identifier, params, false);
+						break;
+					case Symbol::IType::NamespaceSymbol:
+						throw Utils::Exceptions::NotImplemented("namespace symbol");
+						break;
+					case Symbol::IType::ObjectSymbol:
+						result = static_cast<Object*>(result)->resolveMethod(identifier, params, false);
+						break;
+					case Symbol::IType::BluePrintSymbol:
+					case Symbol::IType::UnknownSymbol:
+						throw Utils::Exceptions::SyntaxError("cannot directly access locales of method/namespace");
+				}
 			}
 		}
 		else {
@@ -690,7 +703,7 @@ void Interpreter::process_identifier(TokenIterator& token, Object* /*result*/, T
         return;
     }
 
-	Object *symbol = static_cast<Object*>(resolve(identifier));
+	Object *symbol = static_cast<Object*>(resolve(identifier, false));
 	if ( !symbol ) {	// we tried to access an unknown symbol
 		throw Utils::Exceptions::UnknownIdentifer("identifier '" + identifier + "' not found", token->position());
 	}
@@ -889,7 +902,7 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 	Method* symbol = static_cast<Method*>(identifyMethod(token, params));
 
 	if ( !symbol) {
-		throw Utils::Exceptions::UnknownIdentifer("could not resolve identifier '" + method + "'");
+		throw Utils::Exceptions::UnknownIdentifer("could not resolve identifier '" + method + "' with parameters '" + toString(params) + "'", token->position());
 	}
 
 	if ( isConst() && !symbol->isConst() ) {	// check target method's const-ness
@@ -1260,65 +1273,6 @@ void Interpreter::process_while(TokenIterator& token, Object *result)
 void Interpreter::pushTokens(const TokenList& tokens)
 {
 	mTokenStack.push_back(tokens);
-}
-
-Symbol* Interpreter::resolve(const std::string& name, bool onlyCurrentScope) const
-{
-	std::string member, parent;
-	Tools::split(name, parent, member);
-
-	Symbol *result = SymbolScope::resolve(parent, onlyCurrentScope);
-	if ( !result ) {
-		// no symbol found with this name
-		return 0;
-	}
-
-	while ( result && !member.empty() ) {
-		switch ( result->getType() ) {
-			case Symbol::IType::MethodSymbol:
-				return result;
-			case Symbol::IType::NamespaceSymbol:
-				throw Utils::Exceptions::NotImplemented("namespace symbol");
-			case Symbol::IType::ObjectSymbol:
-				result = static_cast<Object*>(result)->resolve(member, onlyCurrentScope);
-				break;
-			case Symbol::IType::BluePrintSymbol:
-			case Symbol::IType::UnknownSymbol:
-				throw Utils::Exceptions::SyntaxError("cannot directly access locales of method/namespace");
-		}
-
-		Tools::split(member, parent, member);
-	}
-
-	return result;
-}
-
-Symbol* Interpreter::resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope) const
-{
-	std::string member, parent;
-	Tools::split(name, parent, member);
-
-	Symbol *result = SymbolScope::resolve(parent, onlyCurrentScope);
-	if ( !result ) {
-		// no symbol found with this name
-		return 0;
-	}
-
-	switch ( result->getType() ) {
-		case Symbol::IType::MethodSymbol:
-			result = static_cast<Method*>(mParent)->resolveMethod(parent, params, onlyCurrentScope);
-			break;
-		case Symbol::IType::NamespaceSymbol:
-			throw Utils::Exceptions::NotImplemented("namespace symbol");
-		case Symbol::IType::ObjectSymbol:
-			result = static_cast<Object*>(result)->resolveMethod(member, params, onlyCurrentScope);
-			break;
-		case Symbol::IType::BluePrintSymbol:
-		case Symbol::IType::UnknownSymbol:
-			throw Utils::Exceptions::SyntaxError("cannot directly access locales of method/namespace");
-	}
-
-	return result;
 }
 
 void Interpreter::setRepository(Repository *repository)

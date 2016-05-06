@@ -53,8 +53,6 @@ private: // Deinit
 private: // Execution
 	Symbol* identify(TokenIterator& token) const;
 	Symbol* identifyMethod(TokenIterator& token, const ParameterList& params) const;
-	Symbol* resolve(const std::string& name, bool onlyCurrentScope = false) const;
-	Symbol* resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope = false) const;
 
 	// token processing
 	// {
