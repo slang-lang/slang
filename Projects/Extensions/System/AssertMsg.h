@@ -29,7 +29,7 @@ class Assert : public Runtime::Method
 public:
 	Assert();
 
-	Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* /*result*/, const TokenIterator& token);
+	Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token);
 };
 
 
@@ -38,7 +38,7 @@ class AssertMsg : public Runtime::Method
 public:
 	AssertMsg();
 
-	Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* /*result*/, const TokenIterator& token);
+	Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token);
 };
 
 
