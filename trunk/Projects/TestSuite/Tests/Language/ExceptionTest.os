@@ -8,6 +8,7 @@ public namespace ExceptionTest
 
 		private void Exception(string ex)
 		{
+			print("Exception(\"" + ex + "\")");
 			_exception = ex;
 		}
 

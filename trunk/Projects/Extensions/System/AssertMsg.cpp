@@ -56,10 +56,6 @@ AssertMsg::AssertMsg()
 
 Runtime::ControlFlow::E AssertMsg::execute(const ParameterList& params, Runtime::Object* /*result*/, const TokenIterator& token)
 {
-	if ( params.size() != 2 ) {
-		throw Utils::Exceptions::ParameterCountMissmatch("1 parameter expected, but " + ::Utils::Tools::toString(params.size()) + " parameter(s) found", token->position());
-	}
-
 	Runtime::Object condition = *params.front().pointer();
 	std::string msg = params.back().value();
 
