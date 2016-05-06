@@ -15,11 +15,14 @@
 #ifdef USE_APACHE_EXTENSION
 #	include <Apache/ApacheExtension.h>
 #endif
+#ifdef USE_JSON_EXTENSION
+#	include <Json/JsonExtension.h>
+#endif
 #ifdef USE_MYSQL_EXTENSION
 #	include <Mysql/MysqlExtension.h>
 #endif
 #ifdef USE_SYSTEM_EXTENSION
-#	include <System/System.h>
+#	include <System/SystemExtension.h>
 #endif
 
 // Namespace declarations
@@ -171,11 +174,14 @@ int main(int argc, const char* argv[])
 #ifdef USE_APACHE_EXTENSION
 	mVirtualMachine.addExtension(new ObjectiveScript::Extensions::Apache::ApacheExtension());
 #endif
+#ifdef USE_JSON_EXTENSION
+	mVirtualMachine.addExtension(new ObjectiveScript::Extensions::Json::JsonExtension());
+#endif
 #ifdef USE_MYSQL_EXTENSION
 	mVirtualMachine.addExtension(new ObjectiveScript::Extensions::Mysql::MysqlExtension());
 #endif
 #ifdef USE_SYSTEM_EXTENSION
-	mVirtualMachine.addExtension(new ObjectiveScript::Extensions::System());
+	mVirtualMachine.addExtension(new ObjectiveScript::Extensions::SystemExtension());
 #endif
 
 	try {

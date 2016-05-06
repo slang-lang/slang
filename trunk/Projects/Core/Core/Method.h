@@ -53,8 +53,7 @@ public: // Execution
 	virtual ControlFlow::E execute(const ParameterList& params, Object *result, const TokenIterator& token);
 	virtual const ExceptionData& getExceptionData() const;
 
-	Symbol* resolve(const std::string& name, bool onlyCurrentScope = false) const;
-	Symbol* resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope = false) const;
+	virtual Symbol* resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope = false) const;
 
 public: // Signature
 	bool isSignatureValid(const ParameterList& params) const;
