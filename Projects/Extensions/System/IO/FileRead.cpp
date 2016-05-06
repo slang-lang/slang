@@ -24,6 +24,7 @@
 #include <Core/BuildInObjects/FloatObject.h>
 #include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/BuildInObjects/StringObject.h>
+#include <Core/Repository.h>
 #include <Core/Tools.h>
 #include <Core/Utils/Exceptions.h>
 #include <Tools/Strings.h>

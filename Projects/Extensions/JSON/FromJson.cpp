@@ -41,16 +41,13 @@ FromJson::FromJson()
 
 Runtime::ControlFlow::E FromJson::execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token)
 {
-	(void)result;
-	(void)token;
-
 	try {
 		ParameterList::const_iterator it = params.begin();
 
-		Runtime::Object *obj = (*it++).pointer();
-		std::string jsonStr = (*it++).value();
+		Runtime::Object *param_object = (*it++).pointer();
+		std::string param_value = (*it++).value();
 
-		bool success = obj->FromJson(Json::Parser::parse(jsonStr));
+		bool success = param_object->FromJson(Json::Parser::parse(param_value));
 
 		*result = Runtime::BoolObject(success);
 	}
