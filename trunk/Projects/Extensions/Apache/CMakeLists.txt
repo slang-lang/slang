@@ -13,7 +13,6 @@ SET(HEADERS
 )
 
 SET(DEPENDENCIES
-	ExtensionsSystemIO
 	Utils
 	Core
 )
