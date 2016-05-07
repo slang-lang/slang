@@ -34,9 +34,6 @@ MysqlRealEscapeString::MysqlRealEscapeString()
 
 Runtime::ControlFlow::E MysqlRealEscapeString::execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token)
 {
-(void)params;
-(void)token;
-
 	try {
 		// Parameter processing
 		// {
@@ -47,19 +44,11 @@ Runtime::ControlFlow::E MysqlRealEscapeString::execute(const ParameterList& para
 		// }
 
 		MYSQL *myConn = mMysqlConnections[param_handle];
-		char* from = 0;
-		char* to = 0;
+		char* to = new char[(param_from.length() * 2) + 1];
 
-		char * writable = new char[param_from.size() + 1];
-		std::copy(param_from.begin(), param_from.end(), writable);
-		writable[param_from.size()] = '\0'; // don't forget the terminating 0
+		long mysql_result = mysql_real_escape_string(myConn, to, param_from.c_str(), param_from.length());
 
-		mysql_real_escape_string(myConn, writable, to, strlen(writable));
-
-		// don't forget to free the string after finished using it
-		delete[] writable;
-
-		if ( to ) {
+		if ( mysql_result ) {
 			*result = Runtime::StringObject(to);
 		}
 	}

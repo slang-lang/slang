@@ -11,39 +11,35 @@ public namespace IO {
 		private int mHandle;
 
 		public void File() {
-			mAccessMode = "";
-			mFilename = "";
-			mHandle = 0;
+			cleanup();
 		}
 
 		public void File(string filename, string mode) {
+			cleanup();
+
 			open(filename, mode);
 		}
 
 		public void ~File() {
-			if ( mHandle != 0 ) {
-				close();
-			}
+			close();
+		}
+
+		private void cleanup() modify {
+			mAccessMode = "";
+			mFilename = "";
+			mHandle = 0;
 		}
 
 		public bool close() modify {
-			writeln("File::close()");
-
-			if ( mHandle == 0 ) {
-				return false;
+			if ( !mHandle ) {
+				return true;
 			}
 
 			int result = fclose(mHandle);
 
-			mAccessMode = "";
-			mFilename = "";
-			mHandle = 0;
+			cleanup();
 
 			return (result == 0);
-		}
-
-		public int getDescriptor() const {
-			return mHandle;
 		}
 
 		public bool isOpen() const {
@@ -51,9 +47,7 @@ public namespace IO {
 		}
 
 		public bool open(string filename, string mode) modify {
-			writeln("File::open(\"" + filename + "\", \"" + mode + "\")");
-
-			if ( mHandle != 0 ) {
+			if ( mHandle ) {
 				// we already have an open file handle
 				throw new Exception("file descriptor still points to an open file!");
 			}
@@ -62,7 +56,7 @@ public namespace IO {
 			mFilename = filename;
 			mHandle = fopen(mFilename, mAccessMode);
 
-			return true;
+			return (mHandle != 0);
 		}
 
 		public bool readBool() const {
