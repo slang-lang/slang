@@ -33,8 +33,10 @@ public:
 private:	// Tests
 	void testBasicExpressionParsing();
 	void testDataTypeBool();
+	void testDataTypeDouble();
 	void testDataTypeFloat();
 	void testDataTypeInt();
+	void testSimpleMath();
 };
 
 

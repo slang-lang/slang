@@ -13,8 +13,6 @@ public object Main
 		print("TestCase 1: simple recursion");
 
 		return TestRecursion(10);
-
-		return true;
 	}
 
 	private bool TestCase2() const
