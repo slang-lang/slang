@@ -32,8 +32,10 @@ void MathTest::process()
 {
 	TEST(testBasicExpressionParsing);
 	TEST(testDataTypeBool);
+	TEST(testDataTypeDouble);
 	TEST(testDataTypeFloat);
 	TEST(testDataTypeInt);
+	TEST(testSimpleMath);
 }
 
 void MathTest::setup()
@@ -79,6 +81,20 @@ void MathTest::testDataTypeBool()
 	}
 }
 
+void MathTest::testDataTypeDouble()
+{
+	try {
+		VirtualMachine vm;
+		vm.createScriptFromFile("Tests/Math/DataTypeDouble.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
 void MathTest::testDataTypeFloat()
 {
 	try {
@@ -103,6 +119,20 @@ void MathTest::testDataTypeInt()
 	}
 	catch ( std::exception& e ) {
 		// exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void MathTest::testSimpleMath()
+{
+	try {
+		VirtualMachine vm;
+		vm.createScriptFromFile("Tests/Math/SimpleMath.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed
 		TFAIL(e.what());
 	}
 }
