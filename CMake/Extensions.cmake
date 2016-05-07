@@ -3,6 +3,10 @@
 	add_definitions(-DUSE_APACHE_EXTENSION)
 #endif()
 
+#if( "${USE_JSON_EXTENSION}" STREQUAL "" OR "${USE_JSON_EXTENSION}" STREQUAL "1" )
+	add_definitions(-DUSE_JSON_EXTENSION)
+#endif()
+
 #if( "${USE_MYSQL_EXTENSION}" STREQUAL "" OR "${USE_MYSQL_EXTENSION}" STREQUAL "1" )
 	add_definitions(-DUSE_MYSQL_EXTENSION)
 #endif()
