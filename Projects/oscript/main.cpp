@@ -16,7 +16,7 @@
 #	include <Apache/ApacheExtension.h>
 #endif
 #ifdef USE_JSON_EXTENSION
-#	include <Json/JsonExtension.h>
+#	include <JSON/JsonExtension.h>
 #endif
 #ifdef USE_MYSQL_EXTENSION
 #	include <Mysql/MysqlExtension.h>
