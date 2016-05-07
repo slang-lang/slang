@@ -1,8 +1,10 @@
 
 //import System.GDI.IConnection;
+import Debug;
 import Exceptions;
 import Query;
 import Result;
+import Settings;
 
 public namespace Mysql
 {
@@ -13,13 +15,18 @@ public namespace Mysql
 		private string mHostName;
 		private string mPassword;
 		private int mPort;
+		private Settings mSettings;
 		private string mUserName;
 
 		public void Connection() {
+			initialize();
+
 			cleanup();
 		}
 
 		public void Connection(string hostname, int port, string user, string password, string database) {
+			initialize();
+
 			open(hostname, port, user, password, database);
 		}
 
@@ -52,20 +59,26 @@ public namespace Mysql
 			cleanup();
 		}
 
-		public Query createQuery() const {
-			return new Query(this);
-		}
-
-		public int descriptor() const {
-			return mHandle;
+		public Query createQuery(string queryStr = "") const {
+			return new Query(this, queryStr);
 		}
 
 		public string error() const {
 			return mysql_error(mHandle);
 		}
 
+		public int handle() const {
+			return mHandle;
+		}
+
 		public string info() const {
 			return mysql_info(mHandle);
+		}
+
+		private void initialize() modify {
+			assert(!mSettings);
+
+			mSettings = new Settings();
 		}
 
 		public bool isOpen() const {
@@ -79,7 +92,7 @@ public namespace Mysql
 		public bool open(string hostname, int port, string user, string password, string database) modify {
 			if ( mHandle != 0 ) {
 				// we already have a connection handle
-				throw new Exception("mysql descriptor still points to an open connection!");
+				throw new Exception("mysql handle still points to an open connection!");
 			}
 
 			// request a mysql handle
@@ -96,8 +109,21 @@ public namespace Mysql
 			return (mHandle != 0);
 		}
 
+		public Settings settings() const {
+			return mSettings;
+		}
+
 		public Result query(string queryStr) modify {
 			Result result;	// null object
+
+			if ( MysqlDebugMode ) {
+				writeln("Mysql debug mode is enabled.");
+			}
+
+			if ( mSettings.getAutoEscaping() ) {
+				// auto escaping for strings is active
+				queryStr = mysql_real_escape_string(mHandle, queryStr);
+			}
 
 			int error = mysql_query(mHandle, queryStr);
 			if ( error != 0 ) {

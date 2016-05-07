@@ -7,4 +7,5 @@ import Exceptions;
 import Query;
 import Result;
 import Row;
+import Settings;
 

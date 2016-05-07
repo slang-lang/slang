@@ -10,17 +10,14 @@ public namespace Mysql
 		private int mResultHandle;
 
 		public void Row(int handle) {
-			//writeln("Row::Row(" + handle + ")");
-
 			mResultHandle = handle;
 
 			mNumFields = mysql_num_fields(mResultHandle);
 		}
 		public void ~Row() {
-			//writeln("Row::~Row()");
 		}
 
-		public Entry Get(int fieldIdx) {
+		public Entry GetEntry(int fieldIdx) {
 /*
 			if ( fieldIdx < 0 || fieldIdx > mNumFields ) {
 				throw new OutOfBoundsException("fieldIdx out of bounds");
@@ -70,7 +67,8 @@ public namespace Mysql
 			string result = "|";
 
 			for ( int i = 0; i < mNumFields; i = i++ ) {
-				result = result + " " + GetName(i) + ": " + GetValue(i) + " |";
+				Entry e = GetEntry(i);
+				result = result + " " + e.name() + ": " + e.value() + " |";
 			}
 
 			return result;

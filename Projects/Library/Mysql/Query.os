@@ -1,6 +1,7 @@
 
 //import System.GDI.IQuery;
 import Connection;
+import Debug;
 import Result;
 
 public namespace Mysql
@@ -12,18 +13,14 @@ public namespace Mysql
 		private string mPreparedQuery;
 		private int mResultHandle;
 
-		public void Query(Connection connection) {
-			//writeln("Query::Query()");
-
+		public void Query(Connection connection, string queryStr = "") {
 			mConnection = connection;
 			mExecutedQuery = "";
-			mPreparedQuery = "";
+			mPreparedQuery = queryStr;
 			mResultHandle = 0;
 		}
 
 		public void ~Query() {
-			//writeln("Query::~Query()");
-
 			if ( mResultHandle ) {
 				mysql_free_result(mResultHandle);
 			}
@@ -59,8 +56,11 @@ public namespace Mysql
 				mExecutedQuery = query;
 			}
 
-			//writeln("mExecutedQuery = " + mExecutedQuery);
-			int result = mysql_query(mConnection.descriptor(), mExecutedQuery);
+			if ( MysqlDebugMode ) {
+				writeln("mExecutedQuery = " + mExecutedQuery);
+			}
+
+			int result = mysql_query(mConnection.handle(), mExecutedQuery);
 			return (result == 0);
 		}
 
