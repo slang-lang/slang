@@ -2,7 +2,7 @@
 
 public object Main
 {
-	public void Main(int argc, string argv)
+	public void Main(int argc = 1, string argv = "")
 	{
 		int myInt = 100;
 		print("myInt = " + myInt);
