@@ -10,6 +10,12 @@ public object Main {
 			return;
 		}
 
+		MysqlDebugMode = true;
+
+		//conn.settings().setAutoEscaping(true);
+		Settings s = conn.settings();
+		s.setAutoEscaping(true);
+
 		Result result = conn.query("Select * from parking_zones");
 
 		writeln("result.NumRows() = " + result.NumRows());

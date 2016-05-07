@@ -370,8 +370,7 @@ void Repository::initializeObject(Runtime::Object *object, Designtime::BluePrint
 	// create and define all symbols based on given blueprint
 	Symbols symbols = blueprint->provideSymbols();
 	for ( Symbols::const_iterator it = symbols.begin(); it != symbols.end(); ++it ) {
-		if ( !it->second ||
-			 it->second->getType() != Symbol::IType::BluePrintSymbol ) {
+		if ( it->second->getType() != Symbol::IType::BluePrintSymbol ) {
 			continue;
 		}
 
