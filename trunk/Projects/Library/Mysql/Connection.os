@@ -24,7 +24,7 @@ public namespace Mysql
 			cleanup();
 		}
 
-		public void Connection(string hostname, int port, string user, string password, string database) {
+		public void Connection(string hostname, int port, string user, string password, string database = "") {
 			initialize();
 
 			open(hostname, port, user, password, database);
@@ -133,6 +133,10 @@ public namespace Mysql
 
 			int resultHandle = mysql_store_result(mHandle);
 			return new Result(resultHandle);
+		}
+
+		public int selectDB(string database) modify {
+			return mysql_select_db(mHandle, database);
 		}
 	}
 }

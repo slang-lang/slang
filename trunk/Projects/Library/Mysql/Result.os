@@ -20,13 +20,11 @@ public namespace Mysql
 			Initialize();
 		}
 
-		public Row GetCurrentRow() const {
-			Row row = new Row(mHandle);
-
-			return row;
+		public Row getCurrentRow() const {
+			return new Row(mHandle);
 		}
 
-		public Entry GetField(int fieldIdx) const {
+		public Entry getField(int fieldIdx) const {
 			if ( fieldIdx < 0 || fieldIdx > mNumFields ) {
 				throw new OutOfBoundsException("fieldIdx out of bounds");
 			}
@@ -37,17 +35,19 @@ public namespace Mysql
 			return new Entry(name, value);
 		}
 
-		public Entry GetField(string name) const {
+		public Entry getField(string name) const {
+			Entry entry;	// null object
+
 			for ( int idx = 0; idx < mNumFields; idx = idx + 1 ) {
 				if ( mysql_get_field_name(mHandle, idx) == name ) {
 					return new Entry(name, mysql_get_field_value(mHandle, idx));
 				}
 			}
 
-			return new Entry();
+			return entry;
 		}
 
-		public bool HasNext() const {
+		public bool hasNext() const {
 			return mCurrentRowIdx < mNumRows;
 		}
 
@@ -60,19 +60,21 @@ public namespace Mysql
 			return true;
 		}
 
-		public void Next() modify {
-			if ( !mysql_next_row(mHandle) ) {
-				throw new OutOfBoundsException("iterator exceeded result");
+		public bool next() modify {
+			bool hasNext = mysql_next_row(mHandle);
+
+			if ( hasNext ) {
+				mCurrentRowIdx = mCurrentRowIdx + 1;
 			}
 
-			mCurrentRowIdx = mCurrentRowIdx + 1;
+			return hasNext;
 		}
 
-		public int NumFields() const {
+		public int numFields() const {
 			return mNumFields;
 		}
 
-		public int NumRows() const {
+		public int numRows() const {
 			return mNumRows;
 		}
 	}

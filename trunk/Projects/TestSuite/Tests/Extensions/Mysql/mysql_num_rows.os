@@ -29,9 +29,6 @@ public object Main {
 		int numRows = mysql_num_rows(result_handle);
 		writeln("mysql_num_rows(" + result_handle + ") = " + numRows);
 
-		mysql_fetch_row(handle);
-		writeln("mysq_fetch_row(" + handle + ")");
-
 		mysql_free_result(result_handle);
 		writeln("mysql_free_result(" + result_handle + ")");
 
