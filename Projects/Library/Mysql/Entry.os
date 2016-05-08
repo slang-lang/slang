@@ -19,7 +19,7 @@ public namespace Mysql
 		public void ~Entry() {
 		}
 
-		public string ToString() const {
+		public string toString() const {
 			return mName + ": " + mValue;
 		}
 

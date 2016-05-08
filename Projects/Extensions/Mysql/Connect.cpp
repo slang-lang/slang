@@ -37,9 +37,6 @@ MysqlRealConnect::MysqlRealConnect()
 
 Runtime::ControlFlow::E MysqlRealConnect::execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token)
 {
-(void)result;
-(void)token;
-
 	try {
 		// Parameter processing
 		// {
@@ -57,7 +54,20 @@ Runtime::ControlFlow::E MysqlRealConnect::execute(const ParameterList& params, R
 
 		MYSQL *myConn = mMysqlConnections[param_handle];
 
-		myConn = mysql_real_connect(myConn, param_host.c_str(), param_user.c_str(), param_passwd.c_str(), param_db.c_str(), param_port, param_socket.c_str(), param_clientflag);
+		if ( param_port == 0 ) {	// use default port
+			param_port = MYSQL_PORT_DEFAULT;
+		}
+
+		myConn = mysql_real_connect(
+				myConn,
+				param_host.c_str(),
+				param_user.c_str(),
+				param_passwd.c_str(),
+				param_db.c_str(),
+				param_port,
+				param_socket.c_str(),
+				param_clientflag
+		);
 
 		mMysqlConnections[param_handle] = myConn;
 

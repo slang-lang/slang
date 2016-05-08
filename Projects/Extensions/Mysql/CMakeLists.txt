@@ -19,7 +19,8 @@ SET(SOURCES
 	NumFields.cpp
 	NumRows.cpp
 	Query.cpp
-		MysqlRealEscapeString.cpp
+	MysqlRealEscapeString.cpp
+	MysqlSelectDB.cpp
 	StoreResult.cpp
 	Types.cpp
 	UseResult.cpp
@@ -44,7 +45,8 @@ SET(HEADERS
 	NumFields.h
 	NumRows.h
 	Query.h
-		MysqlRealEscapeString.h
+	MysqlRealEscapeString.h
+	MysqlSelectDB.h
 	StoreResult.h
 	Types.h
 	UseResult.h

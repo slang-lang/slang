@@ -4,9 +4,14 @@ import Mysql.All;
 
 public object Main {
 	public void Main(int argc, string args) {
-		Connection conn = new Connection("192.168.0.22", 3306, "oscript", "oscript", "ts_parking");
+		Connection conn = new Connection("192.168.0.22", 0, "oscript", "oscript");
 		if ( !conn.isOpen() ) {
 			writeln("error while opening Mysql connection: " + conn.error());
+			return;
+		}
+
+		if ( conn.selectDB("ts_parking") != 0 ) {
+			writeln("error while selecting database!");
 			return;
 		}
 
@@ -18,17 +23,14 @@ public object Main {
 
 		Result result = conn.query("Select * from parking_zones");
 
-		writeln("result.NumRows() = " + result.NumRows());
-		writeln("result.NumFields() = " + result.NumFields());
+		writeln("result.numRows() = " + result.numRows());
+		writeln("result.numFields() = " + result.numFields());
 
-		while ( result.HasNext() ) {
-			result.Next();
+		while ( result.hasNext() ) {
+			result.next();
 
-			Row row = result.GetCurrentRow();
-			writeln(row.ToString());
-
-			//Entry e = result.GetField(0);
-			//writeln("e = " + e.ToString());
+			Row row = result.getCurrentRow();
+			writeln(row.toString());
 		}
 
 		conn.close();

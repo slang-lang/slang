@@ -17,7 +17,7 @@ public namespace Mysql
 		public void ~Row() {
 		}
 
-		public Entry GetEntry(int fieldIdx) {
+		public Entry getEntry(int fieldIdx) {
 /*
 			if ( fieldIdx < 0 || fieldIdx > mNumFields ) {
 				throw new OutOfBoundsException("fieldIdx out of bounds");
@@ -30,7 +30,7 @@ public namespace Mysql
 			return new Entry(name, value);
 		}
 
-		public string GetName(int fieldIdx) {
+		public string getName(int fieldIdx) {
 /*
 			if ( fieldIdx < 0 || fieldIdx > mNumFields ) {
 				throw new OutOfBoundsException("fieldIdx out of bounds");
@@ -40,7 +40,7 @@ public namespace Mysql
 			return mysql_get_field_name(mResultHandle, fieldIdx);
 		}
 
-		public string GetType(int fieldIdx) {
+		public string getType(int fieldIdx) {
 /*
 			if ( fieldIdx < 0 || fieldIdx > mNumFields ) {
 				throw new OutOfBoundsException("fieldIdx out of bounds");
@@ -49,7 +49,7 @@ public namespace Mysql
 			assert(!"not implemented");
 		}
 
-		public string GetValue(int fieldIdx) {
+		public string getValue(int fieldIdx) {
 /*
 			if ( fieldIdx < 0 || fieldIdx > mNumFields ) {
 				throw new OutOfBoundsException("fieldIdx out of bounds");
@@ -59,15 +59,15 @@ public namespace Mysql
 			return mysql_get_field_value(mResultHandle, fieldIdx);
 		}
 
-		public int NumFields() const {
+		public int numFields() const {
 			return mNumFields;
 		}
 
-		public string ToString() const {
+		public string toString() const {
 			string result = "|";
 
 			for ( int i = 0; i < mNumFields; i = i++ ) {
-				Entry e = GetEntry(i);
+				Entry e = getEntry(i);
 				result = result + " " + e.name() + ": " + e.value() + " |";
 			}
 
