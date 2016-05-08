@@ -172,7 +172,6 @@ Symbol* Interpreter::identifyMethod(TokenIterator& token, const ParameterList& p
 						break;
 					case Symbol::IType::NamespaceSymbol:
 						throw Utils::Exceptions::NotImplemented("namespace symbol");
-						break;
 					case Symbol::IType::ObjectSymbol:
 						result = static_cast<Object*>(result)->resolveMethod(identifier, params, false);
 						break;
