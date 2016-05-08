@@ -67,7 +67,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				AdditionalDependencies="&quot;$(JSON)\Libs\Json.lib&quot; &quot;$(MYSQL)\lib\libmysql.lib&quot;"
+				AdditionalDependencies="&quot;$(JSON)\Libs\Json_debug.lib&quot; &quot;$(MYSQL)\lib\libmysql.lib&quot;"
 				OutputFile="$(OutDir)\$(ProjectName).lib"
 				AdditionalLibraryDirectories="..\Externals; ..\Libs"
 			/>

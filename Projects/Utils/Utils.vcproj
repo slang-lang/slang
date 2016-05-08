@@ -113,6 +113,8 @@
 				Name="VCCLCompilerTool"
 				Optimization="3"
 				EnableIntrinsicFunctions="true"
+				FavorSizeOrSpeed="1"
+				EnableFiberSafeOptimizations="true"
 				AdditionalIncludeDirectories=".\;..\Externals"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
 				StringPooling="true"
@@ -445,26 +447,6 @@
 			>
 		</File>
 		<File
-			RelativePath=".\Math\Tools.cpp"
-			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					ObjectFile="$(IntDir)\Math\"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					ObjectFile="$(IntDir)\Math\"
-				/>
-			</FileConfiguration>
-		</File>
-		<File
 			RelativePath=".\Tools\Tools.cpp"
 			>
 			<FileConfiguration
@@ -485,11 +467,31 @@
 			</FileConfiguration>
 		</File>
 		<File
-			RelativePath=".\Math\Tools.h"
+			RelativePath=".\Math\Tools.cpp"
 			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					ObjectFile="$(IntDir)\Math\"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					ObjectFile="$(IntDir)\Math\"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath=".\Tools\Tools.h"
+			>
+		</File>
+		<File
+			RelativePath=".\Math\Tools.h"
 			>
 		</File>
 		<File
