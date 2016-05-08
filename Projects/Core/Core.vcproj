@@ -67,7 +67,6 @@
 			<Tool
 				Name="VCLibrarianTool"
 				LinkLibraryDependencies="false"
-				AdditionalDependencies="Json_debug.lib"
 				OutputFile="$(OutDir)\$(ProjectName).lib"
 				AdditionalLibraryDirectories="..\Externals;..\Libs;&quot;$(JSON)&quot;\Libs"
 				IgnoreDefaultLibraryNames=""
@@ -372,6 +371,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Core\BuildInObjects\IntegerObject.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\Designtime\BuildInTypes\IntegerObject.cpp"
 				>
 				<FileConfiguration
@@ -390,10 +393,6 @@
 						ObjectFile="$(IntDir)\Core\Designtime\BuildInTypes\"
 					/>
 				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\Core\BuildInObjects\IntegerObject.cpp"
-				>
 			</File>
 			<File
 				RelativePath=".\Core\Interpreter.cpp"
@@ -608,7 +607,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\SystemExtension.cpp"
+				RelativePath=".\Core\System.cpp"
 				>
 			</File>
 			<File
@@ -648,10 +647,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\UserObject.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\Core\Designtime\BuildInTypes\UserObject.cpp"
 				>
 				<FileConfiguration
@@ -670,6 +665,10 @@
 						ObjectFile="$(IntDir)\Core\Designtime\BuildInTypes\"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\Core\BuildInObjects\UserObject.cpp"
+				>
 			</File>
 			<File
 				RelativePath=".\Core\Utils\Utils.cpp"
@@ -818,11 +817,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\IntegerObject.h"
+				RelativePath=".\Core\BuildInObjects\IntegerObject.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\IntegerObject.h"
+				RelativePath=".\Core\Designtime\BuildInTypes\IntegerObject.h"
 				>
 			</File>
 			<File
@@ -919,6 +918,10 @@
 			</File>
 			<File
 				RelativePath=".\Core\Symbol.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\System.h"
 				>
 			</File>
 			<File
