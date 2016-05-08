@@ -42,7 +42,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".\;..\Core;..\Externals;..\Utils;&quot;$(JSON)&quot;;&quot;$(MYSQL)\include&quot;"
+				AdditionalIncludeDirectories=".\;..\Core;..\Extensions;..\Externals;..\Utils;&quot;$(JSON)&quot;;&quot;$(MYSQL)\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
 				StringPooling="true"
 				MinimalRebuild="true"
@@ -183,27 +183,11 @@
 			>
 		</File>
 		<File
-			RelativePath=".\SystemExtension\AssertMsg.cpp"
+			RelativePath=".\System\AssertMsg.cpp"
 			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					ObjectFile="$(IntDir)\SystemExtension\"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					ObjectFile="$(IntDir)\SystemExtension\"
-				/>
-			</FileConfiguration>
 		</File>
 		<File
-			RelativePath=".\SystemExtension\AssertMsg.h"
+			RelativePath=".\System\AssertMsg.h"
 			>
 		</File>
 		<File
@@ -212,10 +196,6 @@
 		</File>
 		<File
 			RelativePath=".\Mysql\Close.h"
-			>
-		</File>
-		<File
-			RelativePath=".\CMakeLists.txt"
 			>
 		</File>
 		<File
@@ -259,127 +239,43 @@
 			>
 		</File>
 		<File
-			RelativePath=".\SystemExtension\IO\FileClose.cpp"
-			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					ObjectFile="$(IntDir)\SystemExtension\IO\"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					ObjectFile="$(IntDir)\SystemExtension\IO\"
-				/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath=".\SystemExtension\IO\FileClose.h"
+			RelativePath=".\System\IO\FileClose.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\SystemExtension\IO\FileOpen.cpp"
-			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					ObjectFile="$(IntDir)\SystemExtension\IO\"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					ObjectFile="$(IntDir)\SystemExtension\IO\"
-				/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath=".\SystemExtension\IO\FileOpen.h"
+			RelativePath=".\System\IO\FileClose.h"
 			>
 		</File>
 		<File
-			RelativePath=".\SystemExtension\IO\FileRead.cpp"
-			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					ObjectFile="$(IntDir)\SystemExtension\IO\"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					ObjectFile="$(IntDir)\SystemExtension\IO\"
-				/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath=".\SystemExtension\IO\FileRead.h"
+			RelativePath=".\System\IO\FileOpen.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\SystemExtension\IO\FileSeek.cpp"
-			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					ObjectFile="$(IntDir)\SystemExtension\IO\"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					ObjectFile="$(IntDir)\SystemExtension\IO\"
-				/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath=".\SystemExtension\IO\FileSeek.h"
+			RelativePath=".\System\IO\FileOpen.h"
 			>
 		</File>
 		<File
-			RelativePath=".\SystemExtension\IO\FileWrite.cpp"
-			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					ObjectFile="$(IntDir)\SystemExtension\IO\"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					ObjectFile="$(IntDir)\SystemExtension\IO\"
-				/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath=".\SystemExtension\IO\FileWrite.h"
+			RelativePath=".\System\IO\FileRead.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\Mysql\FreeResult.cpp"
+			RelativePath=".\System\IO\FileRead.h"
+			>
+		</File>
+		<File
+			RelativePath=".\System\IO\FileSeek.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\System\IO\FileSeek.h"
+			>
+		</File>
+		<File
+			RelativePath=".\System\IO\FileWrite.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\System\IO\FileWrite.h"
 			>
 		</File>
 		<File
@@ -391,11 +287,11 @@
 			>
 		</File>
 		<File
-			RelativePath=".\Mysql\FreeResult.h"
+			RelativePath=".\JSON\FromJson.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\JsonExtension\FromJson.h"
+			RelativePath=".\JSON\FromJson.h"
 			>
 		</File>
 		<File
@@ -407,15 +303,11 @@
 			>
 		</File>
 		<File
-			RelativePath=".\Mysql\GetClientInfo.cpp"
-			>
-		</File>
-		<File
 			RelativePath=".\Mysql\GetClientInfo.h"
 			>
 		</File>
 		<File
-			RelativePath=".\Mysql\GetClientInfo.h"
+			RelativePath=".\System\GetEnv.h"
 			>
 		</File>
 		<File
@@ -439,19 +331,7 @@
 			>
 		</File>
 		<File
-			RelativePath=".\Mysql\Info.cpp"
-			>
-		</File>
-		<File
 			RelativePath=".\Mysql\Info.h"
-			>
-		</File>
-		<File
-			RelativePath=".\Mysql\Info.h"
-			>
-		</File>
-		<File
-			RelativePath=".\Mysql\Init.cpp"
 			>
 		</File>
 		<File
@@ -463,11 +343,11 @@
 			>
 		</File>
 		<File
-			RelativePath=".\Mysql\Init.h"
+			RelativePath=".\JSON\JsonExtension.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\Mysql\MysqlExtension.cpp"
+			RelativePath=".\JSON\JsonExtension.h"
 			>
 		</File>
 		<File
@@ -479,19 +359,15 @@
 			>
 		</File>
 		<File
-			RelativePath=".\Mysql\MysqlExtension.h"
+			RelativePath=".\Mysql\MysqlRealEscapeString.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\MysqlRealEscapeString.h"
 			>
 		</File>
 		<File
 			RelativePath=".\Mysql\NextResult.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\Mysql\NextResult.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\Mysql\NextResult.h"
 			>
 		</File>
 		<File
@@ -511,27 +387,11 @@
 			>
 		</File>
 		<File
-			RelativePath=".\Mysql\NumFields.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\Mysql\NumFields.h"
-			>
-		</File>
-		<File
 			RelativePath=".\Mysql\NumFields.h"
 			>
 		</File>
 		<File
 			RelativePath=".\Mysql\NumRows.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\Mysql\NumRows.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\Mysql\NumRows.h"
 			>
 		</File>
 		<File
@@ -543,7 +403,7 @@
 			>
 		</File>
 		<File
-			RelativePath=".\SystemExtension\Print.h"
+			RelativePath=".\System\Print.h"
 			>
 		</File>
 		<File
@@ -563,31 +423,19 @@
 			>
 		</File>
 		<File
-			RelativePath=".\SystemExtension\SystemExtension.cpp"
-			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					ObjectFile="$(IntDir)\SystemExtension\"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					ObjectFile="$(IntDir)\SystemExtension\"
-				/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath=".\SystemExtension\SystemExtension.h"
+			RelativePath=".\System\SystemExtension.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\JsonExtension\ToJson.h"
+			RelativePath=".\System\SystemExtension.h"
+			>
+		</File>
+		<File
+			RelativePath=".\JSON\ToJson.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\JSON\ToJson.h"
 			>
 		</File>
 		<File
@@ -607,11 +455,11 @@
 			>
 		</File>
 		<File
-			RelativePath=".\SystemExtension\Write.h"
+			RelativePath=".\System\Write.h"
 			>
 		</File>
 		<File
-			RelativePath=".\SystemExtension\WriteLn.h"
+			RelativePath=".\System\WriteLn.h"
 			>
 		</File>
 	</Files>
