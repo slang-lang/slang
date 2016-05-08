@@ -2,43 +2,47 @@
 
 public object Main {
 	public void Main(int argc, string argv) {
+		int error;
 		int result;
-		int result_handle;
 
 		int handle = mysql_init();
 		writeln("mysq_init() = " + handle);
 
-		writeln("mysql_real_connect()");
-		mysql_real_connect(handle, "192.168.0.22", 3306, "oscript", "oscript", "ts_parking");
+		handle = mysql_real_connect(handle, "192.168.0.22", 3306, "oscript", "oscript", "");
+		writeln("mysql_real_connect() = " + handle);
 
-		string query = "SELECT * FROM parking_zones";
-
-		result = mysql_query(handle, query);
-		writeln("mysql_query(" + handle + ", \"" + query + "\") = " + result);
-
-		if ( result != 0 ) {
-			writeln("mysql_error(" + handle + ") = " + mysql_error(handle));
-			writeln("failed.");
+		error = mysql_select_db(handle, "ts_parking");
+		if ( error ) {
+			writeln("error while selecting database: " + error);
 			return;
 		}
 
-		result_handle = mysql_store_result(handle);
-		writeln("mysql_store_result(" + handle + ") = " + result_handle);
+		string query = "SELECT * FROM parking_zones";
 
-		int numRows = mysql_num_rows(result_handle);
-		writeln("mysql_num_rows(" + result_handle + ") = " + numRows);
+		error = mysql_query(handle, query);
+		writeln("mysql_query(" + handle + ", \"" + query + "\") = " + error);
+		if ( error ) {
+			writeln("mysql_error(" + handle + ") = " + mysql_error(handle));
+			return;
+		}
 
-		int numFields = mysql_num_fields(result_handle);
-		writeln("mysql_num_fields(" + result_handle + ") = " + numFields);
+		result = mysql_store_result(handle);
+		writeln("mysql_store_result(" + handle + ") = " + result);
+
+		int numRows = mysql_num_rows(result);
+		writeln("mysql_num_rows(" + result + ") = " + numRows);
+
+		int numFields = mysql_num_fields(result);
+		writeln("mysql_num_fields(" + result + ") = " + numFields);
 
 		bool printHeader = true;
-		while ( mysql_next_row(result_handle) ) {
+		while ( mysql_next_row(result) ) {
 			string fields;
 			string values;
 
 			for ( int fieldId = 0; fieldId < numFields; fieldId = fieldId + 1) {
-				fields = fields + " | " +  mysql_get_field_name(result_handle, fieldId);
-				values = values + " | " +  mysql_get_field_value(result_handle, fieldId);
+				fields = fields + " | " +  mysql_get_field_name(result, fieldId);
+				values = values + " | " +  mysql_get_field_value(result, fieldId);
 			}
 
 			if ( printHeader ) {
