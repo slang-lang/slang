@@ -17,13 +17,14 @@
 #include "GetFieldValue.h"
 #include "Info.h"
 #include "Init.h"
+#include "MysqlRealEscapeString.h"
+#include "MysqlSelectDB.h"
+#include "MysqlStat.h"
 #include "NextResult.h"
 #include "NextRow.h"
 #include "NumFields.h"
 #include "NumRows.h"
 #include "Query.h"
-#include "MysqlRealEscapeString.h"
-#include "MysqlSelectDB.h"
 #include "StoreResult.h"
 #include "UseResult.h"
 
@@ -62,6 +63,7 @@ void MysqlExtension::provideMethods(ExtensionMethods &methods)
 	methods.push_back(new MysqlRealEscapeString());
 	methods.push_back(new MysqlRealConnect());
 	methods.push_back(new MysqlSelectDB());
+	methods.push_back(new MysqlStat());
 	methods.push_back(new MysqlStoreResult());
 	methods.push_back(new MysqlUseResult());
 }

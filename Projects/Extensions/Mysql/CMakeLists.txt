@@ -14,13 +14,13 @@ SET(SOURCES
 	Info.cpp
 	Init.cpp
 	MysqlExtension.cpp
+	MysqlRealEscapeString.cpp
+	MysqlSelectDB.cpp
 	NextResult.cpp
 	NextRow.cpp
 	NumFields.cpp
 	NumRows.cpp
 	Query.cpp
-	MysqlRealEscapeString.cpp
-	MysqlSelectDB.cpp
 	StoreResult.cpp
 	Types.cpp
 	UseResult.cpp
@@ -40,13 +40,14 @@ SET(HEADERS
 	Info.h
 	Init.h
 	MysqlExtension.h
+	MysqlRealEscapeString.h
+	MysqlSelectDB.h
+	MysqlStat.h
 	NextResult.h
 	NextRow.h
 	NumFields.h
 	NumRows.h
 	Query.h
-	MysqlRealEscapeString.h
-	MysqlSelectDB.h
 	StoreResult.h
 	Types.h
 	UseResult.h

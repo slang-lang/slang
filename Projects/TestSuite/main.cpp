@@ -157,8 +157,11 @@ int main(int argc, const char* argv[])
 
 		mFixtures.clear();
 	}
-	catch ( std::exception &e ) {
-		std::cout << "unhandled exception: " << e.what() << std::endl;
+	catch ( std::exception& e ) {	// catch every std::exception and all derived exception types
+		std::cout << e.what() << std::endl;
+	}
+	catch ( ... ) {	// catch everything
+		std::cout << "uncaught exception detected" << std::endl;
 	}
 
 	if ( !executed && !show ) {

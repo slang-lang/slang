@@ -21,6 +21,8 @@ public object Main {
 		Settings s = conn.settings();
 		s.setAutoEscaping(true);
 
+		writeln("conn.stat() = " + conn.stat());
+
 		Result result = conn.query("Select * from parking_zones");
 
 		writeln("result.numRows() = " + result.numRows());

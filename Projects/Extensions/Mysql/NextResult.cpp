@@ -31,9 +31,6 @@ MysqlNextResult::MysqlNextResult()
 
 Runtime::ControlFlow::E MysqlNextResult::execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token)
 {
-(void)params;
-(void)token;
-
 	try {
 		// Parameter processing
 		// {
