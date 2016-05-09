@@ -190,6 +190,7 @@ bool VirtualMachine::loadExtensions()
 				OSinfo("adding extension '" + (*extIt)->getName() + "." + (*it)->getName() + "'");
 
 				(*it)->setParent(mRepository->getGlobalScope());
+				(*it)->setRepository(mRepository);
 
 				mRepository->getGlobalScope()->defineMethod((*it)->getName(), (*it));
 			}
