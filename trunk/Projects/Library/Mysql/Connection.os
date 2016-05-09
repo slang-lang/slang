@@ -109,10 +109,6 @@ public namespace Mysql
 			return (mHandle != 0);
 		}
 
-		public Settings settings() const {
-			return mSettings;
-		}
-
 		public Result query(string queryStr) modify {
 			Result result;	// null object
 
@@ -137,6 +133,14 @@ public namespace Mysql
 
 		public int selectDB(string database) modify {
 			return mysql_select_db(mHandle, database);
+		}
+
+		public Settings settings() const {
+			return mSettings;
+		}
+
+		public string stat() const {
+			return mysql_stat(mHandle);
 		}
 	}
 }
