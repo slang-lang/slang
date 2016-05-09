@@ -8,7 +8,6 @@
 #include "AffectedRows.h"
 #include "Close.h"
 #include "Connect.h"
-#include "ConnectionTest.h"
 #include "Error.h"
 #include "FieldCount.h"
 #include "FreeResult.h"
@@ -17,6 +16,7 @@
 #include "GetFieldValue.h"
 #include "Info.h"
 #include "Init.h"
+#include "MysqlDataSeek.h"
 #include "MysqlRealEscapeString.h"
 #include "MysqlSelectDB.h"
 #include "MysqlStat.h"
@@ -40,17 +40,13 @@ void MysqlExtension::provideMethods(ExtensionMethods &methods)
 {
 	assert(methods.empty());
 
-	// Testing
-	// {
-	methods.push_back(new ConnectionTest());
-	// }
-
 	methods.push_back(new MysqlAffectedRows());
 	methods.push_back(new MysqlClose());
-	methods.push_back(new MysqlGetClientInfo());
+	methods.push_back(new MysqlDataSeek());
 	methods.push_back(new MysqlError());
 	methods.push_back(new MysqlFieldCount());
 	methods.push_back(new MysqlFreeResult());
+	methods.push_back(new MysqlGetClientInfo());
 	methods.push_back(new MysqlGetFieldName());
 	methods.push_back(new MysqlGetFieldValue());
 	methods.push_back(new MysqlInfo());

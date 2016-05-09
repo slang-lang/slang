@@ -193,11 +193,8 @@ int main(int argc, const char* argv[])
 	}
 	catch ( ObjectiveScript::Runtime::ControlFlow::E e ) {
 		switch ( e ) {
-			case ObjectiveScript::Runtime::ControlFlow::ExitProgram:
-				break;
-			default:
-				std::cout << "Exited program with control flow " << e << std::endl;
-				break;
+			case ObjectiveScript::Runtime::ControlFlow::ExitProgram: break;
+			default: std::cout << "Exited program with control flow " << e << std::endl; break;
 		}
 	}
 	catch ( std::exception& e ) {	// catch every std::exception and all derived exception types

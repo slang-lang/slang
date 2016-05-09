@@ -19,8 +19,8 @@ namespace Extensions {
 namespace Mysql {
 
 
-typedef std::map<int, MYSQL*> MysqlConnectionMap;
-typedef std::map<int, MYSQL_RES*> MysqlResultMap;
+typedef std::map<int /*connection handle*/, MYSQL*> MysqlConnectionMap;
+typedef std::map<int /*result handle*/, MYSQL_RES*> MysqlResultMap;
 
 extern MysqlConnectionMap mMysqlConnections;
 extern int mNumMysqlConnections;

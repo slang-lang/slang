@@ -33,8 +33,6 @@ MysqlGetFieldValue::MysqlGetFieldValue()
 
 Runtime::ControlFlow::E MysqlGetFieldValue::execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token)
 {
-(void)token;
-
 	try {
 		// Parameter processing
 		// {
@@ -51,6 +49,10 @@ Runtime::ControlFlow::E MysqlGetFieldValue::execute(const ParameterList& params,
 		}
 
 		MYSQL_ROW row = myResult->current_row;
+		if ( !row ) {
+			throw Utils::Exceptions::Exception("no valid row");
+		}
+
 		std::string my_result(row[param_field_id]);
 
 		*result = Runtime::StringObject(my_result);

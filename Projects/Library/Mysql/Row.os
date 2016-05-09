@@ -46,7 +46,7 @@ public namespace Mysql
 				throw new OutOfBoundsException("fieldIdx out of bounds");
 			}
 */
-			assert(!"not implemented");
+			assertmsg(!"not implemented", "string getType(int fieldIdx) is not implemented");
 		}
 
 		public string getValue(int fieldIdx) {

@@ -1,7 +1,7 @@
 
 public namespace System {
 
-	public void assertmsg(string message, bool condition)
+	public void assert(bool condition, string message)
 	{
 		if ( !condition ) {
 			writeln("failed with message \"" + message + "\"");

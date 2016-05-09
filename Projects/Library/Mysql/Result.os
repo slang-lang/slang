@@ -8,6 +8,7 @@ public namespace Mysql
 {
 	public object Result //implements System.GDI.IResult
 	{
+	    private int mAffectedRows;
 		private int mCurrentFieldIdx;
 		private int mCurrentRowIdx;
 		private int mHandle;
@@ -19,6 +20,10 @@ public namespace Mysql
 
 			Initialize();
 		}
+
+        public int affectedRows() const {
+            return mAffectedRows;
+        }
 
 		public Row getCurrentRow() const {
 			return new Row(mHandle);
@@ -47,11 +52,20 @@ public namespace Mysql
 			return entry;
 		}
 
+        public void seekRow(int rowIdx) {
+            if ( rowIdx < 0 || rowIdx >= mNumRows ) {
+                throw new OutOfBoundsException("rowIdx out of bounds");
+            }
+
+            mysql_data_seek(mHandle, rowIdx);
+        }
+
 		public bool hasNext() const {
 			return mCurrentRowIdx < mNumRows;
 		}
 
 		private bool Initialize() modify {
+		    mAffectedRows = 0;
 			mCurrentFieldIdx = 0;
 			mCurrentRowIdx = 0;
 			mNumFields = mysql_num_fields(mHandle);
