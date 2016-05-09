@@ -60,7 +60,7 @@ Runtime::ControlFlow::E AssertMsg::execute(const ParameterList& params, Runtime:
 	std::string msg = params.back().value();
 
 	if ( !isTrue(condition) ) {
-		throw Utils::Exceptions::AssertionFailed("with message \"" + msg + "\"", token->position());
+		throw Utils::Exceptions::AssertionFailed("failed with message \"" + msg + "\"", token->position());
 	}
 
 	return Runtime::ControlFlow::Normal;

@@ -32,8 +32,6 @@ MysqlGetFieldName::MysqlGetFieldName()
 
 Runtime::ControlFlow::E MysqlGetFieldName::execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token)
 {
-(void)token;
-
 	try {
 		// Parameter processing
 		// {

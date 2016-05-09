@@ -4,7 +4,6 @@ SET(SOURCES
 	AffectedRows.cpp
 	Close.cpp
 	Connect.cpp
-	ConnectionTest.cpp
 	Error.cpp
 	FieldCount.cpp
 	FreeResult.cpp
@@ -30,7 +29,6 @@ SET(HEADERS
 	AffectedRows.h
 	Close.h
 	Connect.h
-	ConnectionTest.h
 	Error.h
 	FieldCount.h
 	FreeResult.h
@@ -39,6 +37,7 @@ SET(HEADERS
 	GetFieldValue.h
 	Info.h
 	Init.h
+	MysqlDataSeek.h
 	MysqlExtension.h
 	MysqlRealEscapeString.h
 	MysqlSelectDB.h

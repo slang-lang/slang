@@ -127,8 +127,8 @@ public namespace Mysql
 				return result;	// return uninitialized result object
 			}
 
-			int resultHandle = mysql_store_result(mHandle);
-			return new Result(resultHandle);
+			int result_handle = mysql_store_result(mHandle);
+			return new Result(result_handle);
 		}
 
 		public int selectDB(string database) modify {

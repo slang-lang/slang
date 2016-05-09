@@ -1,0 +1,74 @@
+
+#ifndef ObjectiveScript_Extensions_MySQL_MysqlDataSeek_h
+#define ObjectiveScript_Extensions_MySQL_MysqlDataSeek_h
+
+
+// Library includes
+
+// Project includes
+#include <Core/BuildInObjects/StringObject.h>
+#include <Core/BuildInObjects/VoidObject.h>
+#include <Core/Designtime/BuildInTypes/IntegerObject.h>
+#include <Core/Designtime/BuildInTypes/VoidObject.h>
+#include <Core/Method.h>
+#include <Core/Repository.h>
+#include <Core/Tools.h>
+#include "Types.h"
+
+// Forward declarations
+
+// Namespace declarations
+
+
+namespace ObjectiveScript {
+namespace Extensions {
+namespace Mysql {
+
+
+class MysqlDataSeek : public Runtime::Method
+{
+public:
+	MysqlDataSeek()
+	: Runtime::Method(0, "mysql_data_seek", Designtime::VoidObject::TYPENAME)
+	{
+		ParameterList params;
+		params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, VALUE_NONE));
+		params.push_back(Parameter("rowIdx", Designtime::IntegerObject::TYPENAME, VALUE_NONE));
+
+		setSignature(params);
+	}
+
+	Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* /*result*/, const TokenIterator& token)
+	{
+		try {
+			// Parameter processing
+			// {
+			ParameterList::const_iterator it = params.begin();
+
+			int param_handle = Tools::stringToInt((*it++).value());
+			int param_rowIdx = Tools::stringToInt((*it++).value());
+			// }
+
+			MYSQL_RES *myResult = mMysqlResults[param_handle];
+
+			mysql_data_seek(myResult, param_rowIdx);
+		}
+		catch ( std::exception &e ) {
+			Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+			*data = Runtime::StringObject(e.what());
+
+			mExceptionData = Runtime::ExceptionData(data, token->position());
+			return Runtime::ControlFlow::Throw;
+		}
+
+		return Runtime::ControlFlow::Normal;
+	}
+};
+
+
+}
+}
+}
+
+
+#endif
