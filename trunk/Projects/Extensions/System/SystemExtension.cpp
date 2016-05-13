@@ -10,6 +10,8 @@
 #include <System/IO/FileRead.h>
 #include <System/IO/FileSeek.h>
 #include <System/IO/FileWrite.h>
+#include <System/Strings/StrLen.h>
+#include <System/Strings/SubStr.h>
 #include "AssertMsg.h"
 #include "GetEnv.h"
 #include "Print.h"
@@ -21,10 +23,10 @@
 
 namespace ObjectiveScript {
 namespace Extensions {
+namespace System {
 
 
-void SystemExtension::provideMethods(ExtensionMethods &methods)
-{
+void SystemExtension::provideMethods(ExtensionMethods &methods) {
 	assert(methods.empty());
 
 	methods.push_back(new AssertMsg());
@@ -46,8 +48,12 @@ void SystemExtension::provideMethods(ExtensionMethods &methods)
 	methods.push_back(new IO::FileWriteFloat());
 	methods.push_back(new IO::FileWriteInt());
 	methods.push_back(new IO::FileWriteString());
+
+	methods.push_back(new Strings::StrLen());
+	methods.push_back(new Strings::SubStr());
 }
 
 
+}
 }
 }

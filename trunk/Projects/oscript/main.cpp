@@ -179,7 +179,7 @@ int main(int argc, const char* argv[])
 	mVirtualMachine.addExtension(new ObjectiveScript::Extensions::Mysql::MysqlExtension());
 #endif
 #ifdef USE_SYSTEM_EXTENSION
-	mVirtualMachine.addExtension(new ObjectiveScript::Extensions::SystemExtension());
+	mVirtualMachine.addExtension(new ObjectiveScript::Extensions::System::SystemExtension());
 #endif
 
 	try {
