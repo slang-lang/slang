@@ -15,6 +15,7 @@
 
 namespace ObjectiveScript {
 namespace Extensions {
+namespace System {
 
 
 class SystemExtension : public IExtension
@@ -28,6 +29,7 @@ public:
 };
 
 
+}
 }
 }
 

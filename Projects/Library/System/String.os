@@ -7,6 +7,22 @@ public object String
 		mValue = value;
 	}
 
+	public string At(int index) const {
+		return substr(mValue, index, 1);
+	}
+
+	public int Size() const {
+		return strlen(mValue);
+	}
+
+	public string SubString(int start) {
+		return substr(mValue, start);
+	}
+
+	public string SubString(int start, int length) {
+		return substr(mValue, start, length);
+	}
+
 	public string ToString() const {
 		return (string mValue);
 	}
