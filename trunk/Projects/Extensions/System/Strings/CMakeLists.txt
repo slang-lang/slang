@@ -7,6 +7,8 @@ SET(SOURCES
 SET(HEADERS
 	StrLen.h
 	SubStr.h
+	ToLower.h
+	ToUpper.h
 )
 
 SET(DEPENDENCIES
