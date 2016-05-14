@@ -17,6 +17,7 @@ public object Main
 		print("TestCase 1: String.StartsWith");
 
 		String str = new String("This is a string");
+		print("str.StartsWith(\"This\") = " + str.StartsWith("This"));
 
 		return str.StartsWith("This");
 	}
@@ -26,6 +27,7 @@ public object Main
 		print("TestCase 2: String.EndsWith");
 
 		String str = new String("This is a string");
+		print("str.EndsWith(\"ring\") = " + str.EndsWith("ring"));
 
 		return str.EndsWith("ring");
 	}
@@ -35,6 +37,7 @@ public object Main
 		print("TestCase 3: String.ToLowerCase");
 
 		String str = new String("This is a string");
+		print("str.ToLowerCase() = " + (str.ToLowerCase() == "this is a string"));
 
 		return str.ToLowerCase() == "this is a string";
 	}
@@ -44,6 +47,7 @@ public object Main
 		print("TestCase 4: String.ToUpperCase");
 
 		String str = new String("This is a string");
+		print("str.ToUpperCase() = " + (str.ToUpperCase() == "THIS IS A STRING"));
 
 		return str.ToUpperCase() == "THIS IS A STRING";
 	}
