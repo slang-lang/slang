@@ -16,6 +16,7 @@ public object Main
 
 		string str = "This is a string";
 		int length = strlen(str);
+		print("strlen(str) = " + length);
 
 		return length == 16;
 	}
@@ -25,6 +26,7 @@ public object Main
 		print("TestCase 2: String.Size()");
 
 		String str = new String("This is a string");
+		print("str.Size() = "+ str.Size());
 
 		return str.Size() == 16;
 	}
