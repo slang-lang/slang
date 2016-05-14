@@ -12,6 +12,8 @@
 #include <System/IO/FileWrite.h>
 #include <System/Strings/StrLen.h>
 #include <System/Strings/SubStr.h>
+#include <System/Strings/ToLower.h>
+#include <System/Strings/ToUpper.h>
 #include "AssertMsg.h"
 #include "GetEnv.h"
 #include "Print.h"
@@ -51,6 +53,8 @@ void SystemExtension::provideMethods(ExtensionMethods &methods) {
 
 	methods.push_back(new Strings::StrLen());
 	methods.push_back(new Strings::SubStr());
+	methods.push_back(new Strings::ToLower());
+	methods.push_back(new Strings::ToUpper());
 }
 
 

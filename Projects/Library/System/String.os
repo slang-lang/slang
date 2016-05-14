@@ -11,8 +11,19 @@ public object String
 		return substr(mValue, index, 1);
 	}
 
+	public bool EndsWith(string str) const {
+		int strLength = strlen(str);
+		string end = substr(mValue, strlen(mValue) - strLength, strLength);
+		return str == end;
+	}
+
 	public int Size() const {
 		return strlen(mValue);
+	}
+
+	public bool StartsWith(string str) {
+		string start = substr(mValue, 0, strlen(str));
+		return str == start;
 	}
 
 	public string SubString(int start) {
@@ -23,8 +34,16 @@ public object String
 		return substr(mValue, start, length);
 	}
 
+	public string ToLowerCase() const {
+		return toLower(mValue);
+	}
+
 	public string ToString() const {
 		return (string mValue);
+	}
+
+	public string ToUpperCase() const {
+		return toUpper(mValue);
 	}
 
 	public string Value() const {
