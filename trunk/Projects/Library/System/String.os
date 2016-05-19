@@ -1,6 +1,6 @@
 
-public object String
-{
+public object String {
+
 	private string mValue;
 
 	public void String(string value = "") {
@@ -17,8 +17,45 @@ public object String
 		return str == end;
 	}
 
-	public int Size() const {
+	public int Length() const {
 		return strlen(mValue);
+	}
+
+	public bool Replace(string oldStr, string newStr) modify {
+		int curPos = 0;
+		int oldLen = strlen(oldStr);
+		int origLen = strlen(mValue) - oldLen;
+
+		while ( curPos < origLen ) {
+print("curPos = " + curPos + ", oldLen = " + oldLen + ", origLen = " + origLen);
+			string str = substr(mValue, curPos, oldLen);
+print("old vs str: " + oldStr + " vs " + str);
+
+			bool found = (str == oldStr);
+			if ( found ) {
+print("found!");
+				string oldValue = substr(mValue, 0, curPos);
+				oldValue = oldValue + newStr;
+				mValue = oldValue + substr(mValue, curPos + oldLen);
+
+				return true;
+			}
+
+			curPos = curPos + 1;
+		}
+
+		return false;
+	}
+
+	public bool ReplaceAll(string oldStr, string newStr) modify {
+		bool hasFound = false;
+		bool result = true;
+
+		while ( result = Replace(oldStr, newStr) ) {
+			hasFound = true;
+		}
+
+		return hasFound;
 	}
 
 	public bool StartsWith(string str) const {
