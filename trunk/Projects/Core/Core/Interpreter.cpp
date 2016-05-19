@@ -256,22 +256,22 @@ void Interpreter::parseCondition(Object *result, TokenIterator& start)
 
 		switch ( op ) {
 			case Token::Type::COMPARE_EQUAL:
-				*result = BoolObject(operator_equal(result, &v2));
+				*result = BoolObject(operator_binary_equal(result, &v2));
 				break;
 			case Token::Type::COMPARE_GREATER:
-				*result = BoolObject(operator_greater(result, &v2));
+				*result = BoolObject(operator_binary_greater(result, &v2));
 				break;
 			case Token::Type::COMPARE_GREATER_EQUAL:
-				*result = BoolObject(operator_greater_equal(result, &v2));
+				*result = BoolObject(operator_binary_greater_equal(result, &v2));
 				break;
 			case Token::Type::COMPARE_LESS:
-				*result = BoolObject(operator_less(result, &v2));
+				*result = BoolObject(operator_binary_less(result, &v2));
 				break;
 			case Token::Type::COMPARE_LESS_EQUAL:
-				*result = BoolObject(operator_less_equal(result, &v2));
+				*result = BoolObject(operator_binary_less_equal(result, &v2));
 				break;
 			case Token::Type::COMPARE_UNEQUAL:
-				*result = BoolObject(!operator_equal(result, &v2));
+				*result = BoolObject(!operator_binary_equal(result, &v2));
 				break;
 			default:
 				break;
@@ -300,19 +300,19 @@ void Interpreter::parseExpression(Object *result, TokenIterator& start)
 
 		switch ( op ) {
 			case Token::Type::BITAND:
-				operator_bitand(result, &v2);
+				operator_binary_bitand(result, &v2);
 				break;
 			case Token::Type::BITCOMPLEMENT:
-				operator_bitcomplement(result, &v2);
+				operator_binary_bitcomplement(result, &v2);
 				break;
 			case Token::Type::BITOR:
-				operator_bitor(result, &v2);
+				operator_binary_bitor(result, &v2);
 				break;
 			case Token::Type::MATH_ADDITION:
-				operator_plus(result, &v2);
+				operator_binary_plus(result, &v2);
 				break;
 			case Token::Type::MATH_SUBTRACT:
-				operator_subtract(result, &v2);
+				operator_binary_subtract(result, &v2);
 				break;
 			default:
 				break;
@@ -360,13 +360,13 @@ void Interpreter::parseFactors(Object *result, TokenIterator& start)
 
 		switch ( op ) {
 			case Token::Type::MATH_DIVIDE:
-				operator_divide(result, &v2);
+				operator_binary_divide(result, &v2);
 				break;
 			case Token::Type::MATH_MODULO:
-				operator_modulo(result, &v2);
+				operator_binary_modulo(result, &v2);
 				break;
 			case Token::Type::MATH_MULTIPLY:
-				operator_multiply(result, &v2);
+				operator_binary_multiply(result, &v2);
 				break;
 			default:
 				break;
@@ -427,31 +427,30 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 	switch ( start->type() ) {
 		case Token::Type::CONST_BOOLEAN: {
 			BoolObject tmp(Tools::stringToBool(start->content()));
-			operator_assign(result, &tmp);
+			operator_binary_assign(result, &tmp);
 		} break;
 		case Token::Type::CONST_DOUBLE: {
 			DoubleObject tmp(Tools::stringToDouble(start->content()));
-			operator_assign(result, &tmp);
+			operator_binary_assign(result, &tmp);
 		} break;
 		case Token::Type::CONST_FLOAT: {
 			FloatObject tmp(Tools::stringToFloat(start->content()));
-			operator_assign(result, &tmp);
+			operator_binary_assign(result, &tmp);
 		} break;
 		case Token::Type::CONST_INTEGER: {
 			IntegerObject tmp(Tools::stringToInt(start->content()));
-			operator_assign(result, &tmp);
+			operator_binary_assign(result, &tmp);
 		} break;
 		case Token::Type::CONST_LITERAL: {
 			StringObject tmp(start->content());
-			operator_assign(result, &tmp);
+			operator_binary_assign(result, &tmp);
 		} break;
 		case Token::Type::CONST_NUMBER: {
 			NumberObject tmp(Tools::stringToNumber(start->content()));
-			operator_assign(result, &tmp);
+			operator_binary_assign(result, &tmp);
 		} break;
 		case Token::Type::IDENTIFER: {
-			// find out if we have to execute a method
-			// or simply get a stored variable
+			// find out if we have to execute a method or simply get a stored variable
 
 			TokenIterator tmp = start;
 			Symbol *symbol = identify(start);
@@ -465,7 +464,7 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 					start = tmp;
 					break;
 				case Symbol::IType::ObjectSymbol:
-					operator_assign(result, static_cast<Object*>(symbol));
+					operator_binary_assign(result, static_cast<Object *>(symbol));
 					break;
 				case Symbol::IType::BluePrintSymbol:
 				case Symbol::IType::NamespaceSymbol:
