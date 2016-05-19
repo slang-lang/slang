@@ -35,11 +35,6 @@ void typecast(Object *base, const std::string& type)
 	}
 
 	if ( type == GenericObject::TYPENAME ) {
-/*
-		GenericObject tmp(*base);
-
-		*base = tmp;
-*/
 		base->overrideTypename(GenericObject::TYPENAME);
 	}
 	else if ( type == BoolObject::TYPENAME ) {
