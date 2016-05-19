@@ -4,6 +4,7 @@ ADD_SUBDIRECTORY(Attributes)
 ADD_SUBDIRECTORY(Inheritance)
 ADD_SUBDIRECTORY(Interfaces)
 ADD_SUBDIRECTORY(Language)
+ADD_SUBDIRECTORY(Library)
 ADD_SUBDIRECTORY(Math)
 ADD_SUBDIRECTORY(Operator)
 ADD_SUBDIRECTORY(Prototype)
@@ -22,6 +23,7 @@ SET(DEPENDENCIES
 	Test_Prototype
 	Test_Operator
 	Test_Math
+	Test_Library
 	Test_Language
 	Test_Interfaces
 	Test_Inheritance
