@@ -1,7 +1,9 @@
+#!/usr/local/bin/oscript
 
 import System.Object;
 
 public object IObjectImplementation implements /*System.*/IObject {
+
 	public void IObjectImplementation() {
 	}
 	
@@ -12,6 +14,15 @@ public object IObjectImplementation implements /*System.*/IObject {
 	public string ToString() const {
 		return "IObjectImplementation.ToString()";
 	}
+
+}
+
+public object TObjectDerivate extends /*System.*/TObject {
+
+	public string ToString() const {
+		return "TObjectDerivate.ToString()";
+	}
+
 }
 
 public object Main {
@@ -29,7 +40,7 @@ public object Main {
 	}
 
 	public bool TestCase2() const {
-		TObject obj = new TObject();
+		TObjectDerivate obj = new TObjectDerivate();
 
 		print(obj.ToString());
 

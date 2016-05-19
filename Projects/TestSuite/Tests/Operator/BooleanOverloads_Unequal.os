@@ -15,22 +15,6 @@ private namespace BooleanOverloads
 		{
 			return mValue;
 		}
-
-		/////////////////////////////////////////////////////////////////////
-
-		public bool operator_equal(int other const) const
-		{
-			print("operator==(int)");
-
-			return mValue == other;
-		}
-
-		public bool operator_equal(UserObject other const) const
-		{
-			print("operator==(UserObject)");
-
-			return mValue == other.GetValue();
-		}
 	}
 
 	public object Main
