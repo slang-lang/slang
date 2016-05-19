@@ -21,16 +21,16 @@ public object String
 		return strlen(mValue);
 	}
 
-	public bool StartsWith(string str) {
+	public bool StartsWith(string str) const {
 		string start = substr(mValue, 0, strlen(str));
 		return str == start;
 	}
 
-	public string SubString(int start) {
+	public string SubString(int start) const {
 		return substr(mValue, start);
 	}
 
-	public string SubString(int start, int length) {
+	public string SubString(int start, int length) const {
 		return substr(mValue, start, length);
 	}
 
@@ -57,18 +57,18 @@ public object String
 		return !mValue;
 	}
 
-	public void operator=(string other) modify {
-		mValue = other;
-	}
-	public void operator=(String other) modify {
-		mValue = other.mValue;
-	}
-
 	public bool operator==(string other) const {
 		return (mValue == other);
 	}
 	public bool operator==(String other) const {
 		return (mValue == other.mValue);
+	}
+
+	public void operator=(string other) modify {
+		mValue = other;
+	}
+	public void operator=(String other) modify {
+		mValue = other.mValue;
 	}
 
 	public void operator+(string other) modify {

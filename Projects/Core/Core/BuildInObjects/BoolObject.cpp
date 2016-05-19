@@ -51,7 +51,7 @@ BoolObject::BoolObject(const Object& object)
 	mIsAtomicType = true;
 	mIsConstructed = true;
 
-	setValue(object.getValue());
+	setNativeValue(object.isValid());
 }
 
 BoolObject::operator bool() const

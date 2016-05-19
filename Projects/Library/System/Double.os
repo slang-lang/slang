@@ -3,16 +3,16 @@ public object Double
 {
 	private double mValue;
 
-	public void Double(double value = 0.d) {
+	public void Double(double value = 0d) {
 		mValue = value;
 	}
 
-	public void FromString(string value) {
-		mValue = (double value);
+	public void FromString(string value) modify {
+		mValue = double value;
 	}
 
 	public string ToString() const {
-		return (string mValue);
+		return string mValue;
 	}
 
 	public double Value() const {
@@ -27,10 +27,10 @@ public object Double
 	}
 
 	public bool operator==(double other) const {
-		return (mValue == other);
+		return mValue == other;
 	}
 	public bool operator==(Double other) const {
-		return (mValue == other.mValue);
+		return mValue == other.mValue;
 	}
 
 	public void operator=(double other) modify {
@@ -44,7 +44,7 @@ public object Double
 		mValue = mValue + other;
 	}
 	public void operator+(Double other) modify {
-		mValue = other.mValue;
+		mValue = mValue + other.mValue;
 	}
 
 	public void operator-(double other) modify {

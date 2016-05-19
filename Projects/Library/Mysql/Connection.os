@@ -76,7 +76,7 @@ public namespace Mysql
 		}
 
 		private void initialize() modify {
-			assert(!mSettings);
+			assert(!mSettings);	// prevent multiple initializations
 
 			mSettings = new Settings();
 		}
@@ -89,7 +89,7 @@ public namespace Mysql
 			return mysql_num_rows(mHandle);
 		}
 
-		public bool open(string hostname, int port, string user, string password, string database) modify {
+		public bool open(string hostname, int port, string user, string password, string database = "") modify {
 			if ( mHandle != 0 ) {
 				// we already have a connection handle
 				throw new Exception("mysql handle still points to an open connection!");
@@ -127,12 +127,19 @@ public namespace Mysql
 				return result;	// return uninitialized result object
 			}
 
-			int result_handle = mysql_store_result(mHandle);
-			return new Result(result_handle);
+			int handle = mysql_store_result(mHandle);
+			return new Result(handle);
 		}
 
 		public int selectDB(string database) modify {
-			return mysql_select_db(mHandle, database);
+			int result = mysql_select_db(mHandle, database);
+
+			if ( !result ) {
+				// success! so we can update our database
+				mDatabase = database;
+			}
+
+			return result;
 		}
 
 		public Settings settings() const {

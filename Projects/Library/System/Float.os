@@ -3,16 +3,16 @@ public object Float
 {
 	private float mValue;
 
-	public void Float(float value = 0.f) {
+	public void Float(float value = 0f) {
 		mValue = value;
 	}
 
-	public void FromString(string value) {
-		mValue = (float value);
+	public void FromString(string value) modify {
+		mValue = float value;
 	}
 
 	public string ToString() const {
-		return (string mValue);
+		return string mValue;
 	}
 
 	public float Value() const {
@@ -27,10 +27,10 @@ public object Float
 	}
 
 	public bool operator==(float other) const {
-		return (mValue == other);
+		return mValue == other;
 	}
 	public bool operator==(Float other) const {
-		return (mValue == other.mValue);
+		return mValue == other.mValue;
 	}
 
 	public void operator=(float other) modify {
@@ -44,7 +44,7 @@ public object Float
 		mValue = mValue + other;
 	}
 	public void operator+(Float other) modify {
-		mValue = other.mValue;
+		mValue = mValue + other.mValue;
 	}
 
 	public void operator-(float other) modify {

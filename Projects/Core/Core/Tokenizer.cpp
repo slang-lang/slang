@@ -775,6 +775,10 @@ void Tokenizer::replaceConstDataTypes()
 						// CONST_INTEGER '.' CONST_INTEGER 'f'
 						numCombines++;
 					}
+					else if ( lookahead(token, numCombines + 1)->type() == Token::Type::CONST_INTEGER ) {
+						// CONST_INTEGER '.' CONST_INTEGER 'i'
+						numCombines++;
+					}
 				}
 				else if ( lookahead(token, numCombines + 1)->type() == Token::Type::CONST_DOUBLE ) {
 					// CONST_INTEGER '.' 'd'
@@ -791,6 +795,10 @@ void Tokenizer::replaceConstDataTypes()
 			}
 			else if ( lookahead(token, numCombines + 1)->type() == Token::Type::CONST_FLOAT ) {
 				// CONST_FLOAT 'f'
+				numCombines++;
+			}
+			else if ( lookahead(token, numCombines + 1)->type() == Token::Type::CONST_INTEGER ) {
+				// CONST_INTEGER 'i'
 				numCombines++;
 			}
 /*
@@ -810,8 +818,8 @@ void Tokenizer::replaceConstDataTypes()
 				while ( numCombines > 0 ) {
 					numCombines--;	// decrement combinations
 
-					(*opToken).resetContentTo((*opToken).content() + (*token).content());	// combine token contents
-					(*opToken).resetTypeTo(token->type());    // and reset our opToken's type
+					opToken->resetContentTo((*opToken).content() + token->content());	// combine token contents
+					opToken->resetTypeTo(token->type());    // and reset our opToken's type
 
 					mTokens.erase(token++);	// remove the following 'operator'-token
 				}
@@ -829,6 +837,12 @@ void Tokenizer::replaceConstDataTypes()
 		else if ( token->type() == Token::Type::CONST_FLOAT ) {
 			if ( token->content().empty() ) {
 				token->resetContentTo("f");
+				token->resetTypeTo(Token::Type::IDENTIFER);
+			}
+		}
+		else if ( token->type() == Token::Type::CONST_INTEGER ) {
+			if ( token->content().empty() ) {
+				token->resetContentTo("i");
 				token->resetTypeTo(Token::Type::IDENTIFER);
 			}
 		}
