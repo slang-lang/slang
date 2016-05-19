@@ -8,6 +8,7 @@
 // Project includes
 #include <Core/BuildInObjects/VoidObject.h>
 #include <Core/Consts.h>
+#include <Core/Runtime/TypeCast.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Utils/Utils.h>
 #include "Object.h"
@@ -271,7 +272,8 @@ ControlFlow::E Method::processControlFlow(ControlFlow::E controlflow, Object *re
 		case ControlFlow::Return:
 			// validate return value
 			if ( result->Typename() != Typename() ) {
-				throw Utils::Exceptions::Exception("invalid return of type '" + result->Typename() + "' in '" + getName() + "'");
+				//throw Utils::Exceptions::Exception("invalid return of type '" + result->Typename() + "' in '" + getName() + "'");
+				typecast(result, Typename());
 			}
 
 			// correct behaviour detected, override control flow with normal state

@@ -7,7 +7,7 @@ public object Boolean
 		mValue = value;
 	}
 
-	public void FromString(string value) {
+	public void FromString(string value) modify {
 		if ( value ) {
 			mValue = true;
 			return;
@@ -17,7 +17,7 @@ public object Boolean
 	}
 
 	public string ToString() const {
-		return (string mValue);
+		return string mValue;
 	}
 
 	public bool Value() const {
@@ -32,10 +32,10 @@ public object Boolean
 	}
 
 	public bool operator==(bool other) const {
-		return (mValue == other);
+		return mValue == other;
 	}
 	public bool operator==(Boolean other) const {
-		return (mValue == other.mValue);
+		return mValue == other.mValue;
 	}
 
 	public void operator=(bool other) modify {

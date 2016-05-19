@@ -114,14 +114,18 @@ Designtime::BluePrint Analyser::createBluePrint(TokenIterator& start, TokenItera
 	// collect inheritance (if present)
 	Designtime::Ancestors inheritance = collectInheritance(++start);
 
-	bool isReplication = false;
+	bool isImplemented = true;
 	if ( !inheritance.empty() ) {
-		isReplication = (inheritance.begin()->type() == Designtime::Ancestor::Type::Replicates);
+		isImplemented = (inheritance.begin()->type() != Designtime::Ancestor::Type::Replicates);
+	}
+
+	if ( isImplemented ) {
+		isImplemented = (start->type() != Token::Type::SEMICOLON);
 	}
 
 	TokenList tokens;
 
-	if ( !isReplication ) {	// only collect all tokens of this object if it's not a replication
+	if ( isImplemented ) {	// only collect all tokens of this object it is implemented
 		// object or interface declarations have to start with an '{' token
 		expect(Token::Type::BRACKET_CURLY_OPEN, start);
 
