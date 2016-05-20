@@ -10,6 +10,7 @@ public object Main {
 		assert( TestCase3() );
 		assert( TestCase4() );
 		assert( TestCase5() );
+		assert( TestCase6() );
 	}
 
 	private bool TestCase1() const {
@@ -53,11 +54,21 @@ public object Main {
 
 		String str = new String("This is a string");
 		str.Replace("is", "was");
+
 		print(str.Value());
 
-		print("str.Replace() = " + str.Value() == "This was a string");
+		return str == "Thwas is a string";
+	}
 
-		return str == "This was a string";
+	private bool TestCase6() modify {
+		print("TestCase 6: String.ReplaceAll");
+
+		String str = new String("This is a string");
+		str.ReplaceAll("is", "was");
+
+		print(str.Value());
+
+		return str.Value() == "Thwas was a string";
 	}
 
 }
