@@ -12,9 +12,7 @@ public object String {
 	}
 
 	public bool EndsWith(string str) const {
-		int strLength = strlen(str);
-		string end = substr(mValue, strlen(mValue) - strLength, strLength);
-		return str == end;
+		return str == substr(mValue, strlen(mValue) - strlen(str));
 	}
 
 	public int Length() const {
@@ -27,16 +25,11 @@ public object String {
 		int origLen = strlen(mValue) - oldLen;
 
 		while ( curPos < origLen ) {
-print("curPos = " + curPos + ", oldLen = " + oldLen + ", origLen = " + origLen);
 			string str = substr(mValue, curPos, oldLen);
-print("old vs str: " + oldStr + " vs " + str);
 
-			bool found = (str == oldStr);
-			if ( found ) {
-print("found!");
-				string oldValue = substr(mValue, 0, curPos);
-				oldValue = oldValue + newStr;
-				mValue = oldValue + substr(mValue, curPos + oldLen);
+			if ( str == oldStr ) {
+				string oldValue = substr(mValue, 0, curPos) + newStr + substr(mValue, curPos + oldLen);
+				mValue = oldValue;
 
 				return true;
 			}
@@ -49,9 +42,8 @@ print("found!");
 
 	public bool ReplaceAll(string oldStr, string newStr) modify {
 		bool hasFound = false;
-		bool result = true;
 
-		while ( result = Replace(oldStr, newStr) ) {
+		while ( Replace(oldStr, newStr) ) {
 			hasFound = true;
 		}
 
@@ -59,8 +51,7 @@ print("found!");
 	}
 
 	public bool StartsWith(string str) const {
-		string start = substr(mValue, 0, strlen(str));
-		return str == start;
+		return str == substr(mValue, 0, strlen(str));
 	}
 
 	public string SubString(int start) const {
@@ -76,7 +67,7 @@ print("found!");
 	}
 
 	public string ToString() const {
-		return (string mValue);
+		return mValue;
 	}
 
 	public string ToUpperCase() const {
