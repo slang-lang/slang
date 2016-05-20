@@ -133,7 +133,7 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 
 Script* VirtualMachine::createScriptFromFile(const std::string& filename, const ParameterList& params)
 {
-	OSinfo("processing script '" + filename + "'...");
+	OSdebug("processing script '" + filename + "'...");
 
 	if ( filename.empty() ) {
 		OSerror("invalid filename '" + filename + "' provided!");
@@ -157,7 +157,7 @@ Script* VirtualMachine::createScriptFromFile(const std::string& filename, const 
 
 Script* VirtualMachine::createScriptFromString(const std::string& content, const ParameterList& params)
 {
-	OSinfo("processing string...");
+	OSdebug("processing string...");
 
 	mBaseFolder = "";
 	mScriptFile = "";
@@ -187,7 +187,7 @@ bool VirtualMachine::loadExtensions()
 			(*extIt)->provideMethods(methods);
 
 			for (Extensions::ExtensionMethods::const_iterator it = methods.begin(); it != methods.end(); ++it) {
-				OSinfo("adding extension '" + (*extIt)->getName() + "." + (*it)->getName() + "'");
+				OSdebug("adding extension '" + (*extIt)->getName() + "." + (*it)->getName() + "'");
 
 				(*it)->setParent(mRepository->getGlobalScope());
 				(*it)->setRepository(mRepository);
@@ -205,7 +205,7 @@ bool VirtualMachine::loadExtensions()
 
 bool VirtualMachine::loadLibrary(const std::string& library)
 {
-	OSinfo("loading additional library file '" + library + "'...");
+	OSdebug("loading additional library file '" + library + "'...");
 
 	if ( !::Utils::Tools::Files::exists(library) ) {
 		// provided library file doesn't exist!

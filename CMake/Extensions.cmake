@@ -1,4 +1,7 @@
 
+add_definitions(-DLOG_LEVEL=2)
+#add_definitions(-DLOG_FILE_AND_POSITION)
+
 #if( "${USE_APACHE_EXTENSION}" STREQUAL "" OR "${USE_APACHE_EXTENSION}" STREQUAL "1" )
 	add_definitions(-DUSE_APACHE_EXTENSION)
 #endif()
