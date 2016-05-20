@@ -83,7 +83,7 @@ Repository::~Repository()
  */
 void Repository::addBlueprint(const Designtime::BluePrint& blueprint, bool doPreProcessing)
 {
-	OSinfo("addBlueprint('" + blueprint.Typename() + "')");
+	OSdebug("addBlueprint('" + blueprint.Typename() + "')");
 
 	Designtime::BluePrintMap::iterator it = mBluePrints.find(blueprint.Typename());
 	if ( it != mBluePrints.end() ) {

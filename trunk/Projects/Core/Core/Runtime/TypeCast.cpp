@@ -15,8 +15,8 @@
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/BuildInObjects/UserObject.h>
 #include <Core/BuildInObjects/VoidObject.h>
-#include <Core/Object.h>
 #include <Core/Utils/Exceptions.h>
+#include <Core/Utils/Utils.h>
 
 // Namespace declarations
 
@@ -28,9 +28,11 @@ namespace Runtime {
 void typecast(Object *base, const std::string& type)
 {
 	if ( !base ) {
+		OSerror("cannot cast null pointer");
 		throw Utils::Exceptions::NullPointer("cannot cast null pointer");
 	}
 	if ( type.empty() ) {
+		OSerror("invalid cast target type");
 		throw Utils::Exceptions::Exception("invalid cast target type");
 	}
 

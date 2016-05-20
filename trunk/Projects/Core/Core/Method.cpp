@@ -3,11 +3,9 @@
 #include "Method.h"
 
 // Library includes
-#include <cassert>
 
 // Project includes
 #include <Core/BuildInObjects/VoidObject.h>
-#include <Core/Consts.h>
 #include <Core/Runtime/TypeCast.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Utils/Utils.h>
@@ -257,12 +255,15 @@ bool Method::isSignatureValid(const ParameterList& params) const
 ControlFlow::E Method::processControlFlow(ControlFlow::E controlflow, Object *result)
 {
 	// detect unnatural control flow
+
 	switch ( controlflow ) {
 		case ControlFlow::Break:
 		case ControlFlow::Continue:
 		case ControlFlow::Normal:
 			// verify method return reason
 			if ( result->Typename() != VoidObject::TYPENAME ) {
+				OSerror("unnatural method return at '" + getName() + "'");
+
 				throw Utils::Exceptions::Exception("unnatural method return at '" + getName() + "'");
 			}
 
@@ -272,7 +273,8 @@ ControlFlow::E Method::processControlFlow(ControlFlow::E controlflow, Object *re
 		case ControlFlow::Return:
 			// validate return value
 			if ( result->Typename() != Typename() ) {
-				//throw Utils::Exceptions::Exception("invalid return of type '" + result->Typename() + "' in '" + getName() + "'");
+				OSwarn("implicit type conversion from " + result->Typename() + " to " + Typename() + " in " + getName());
+
 				typecast(result, Typename());
 			}
 

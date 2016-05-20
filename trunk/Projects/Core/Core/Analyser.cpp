@@ -407,7 +407,7 @@ void Analyser::process(const TokenList& tokens)
 	mLibraries.clear();
 	mPrototypes.clear();
 
-	OSinfo("Processing string data...");
+	OSdebug("Processing string data...");
 
 	// execute basic sanity checks
 	Designtime::SanityChecker sanity;
@@ -419,7 +419,7 @@ void Analyser::process(const TokenList& tokens)
 
 void Analyser::processFile(const std::string& filename)
 {
-	OSinfo("Preparing file '" + filename + "'...");
+	OSdebug("Preparing file '" + filename + "'...");
 
 	mFilename = filename;
 
@@ -439,7 +439,7 @@ void Analyser::processFile(const std::string& filename)
 
 void Analyser::processString(const std::string& content, const std::string& filename)
 {
-	OSinfo("Preparing string data...");
+	OSdebug("Preparing string data...");
 
 	mFilename = filename;
 
@@ -452,7 +452,7 @@ void Analyser::processString(const std::string& content, const std::string& file
 
 void Analyser::processTokens(const TokenList& tokens)
 {
-	OSinfo("Preparing token data...");
+	OSdebug("Preparing token data...");
 
 	// start the real processing
 	process(tokens);
