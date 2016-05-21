@@ -6,7 +6,9 @@
 #include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Script.h>
+#include <Core/StackTrace.h>
 #include <Core/Utils/Exceptions.h>
+#include <Core/Utils/Utils.h>
 #include <Core/VirtualMachine.h>
 #include <Tools/Printer.h>
 #include <Tools/Strings.h>
@@ -69,7 +71,7 @@ void printUsage()
 
 void printVersion()
 {
-	std::cout << "ObjectiveScript Interpreter 0.2.3 (cli)" << std::endl;
+	std::cout << "ObjectiveScript Interpreter 0.2.5 (cli)" << std::endl;
 	std::cout << "Copyright (c) 2014-2016 Michael Adelmann" << std::endl;
 	std::cout << "" << std::endl;
 }
@@ -198,10 +200,9 @@ int main(int argc, const char* argv[])
 		}
 	}
 	catch ( std::exception& e ) {	// catch every std::exception and all derived exception types
-		std::cout << e.what() << std::endl;
-	}
-	catch ( ... ) {	// catch everything
-		std::cout << "uncaught exception detected" << std::endl;
+		OSerror(e.what());
+
+		ObjectiveScript::StackTrace::GetInstance().print();
 	}
 
 	return 0;

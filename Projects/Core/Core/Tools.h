@@ -37,9 +37,7 @@ namespace Tools {
 	std::string toString(int value);
 	std::string toString(const std::string& value);
 
-	template <class T>
-	inline std::string ConvertToString(const T& t)
-	{
+	template <class T> inline std::string ConvertToString(const T& t) {
 		std::stringstream ss;
 		ss << t;
 		return ss.str();

@@ -51,59 +51,38 @@ void Script::construct(const ParameterList& params)
 
 	mObject->setRepository(mRepository);
 
-	try {
-		Runtime::ControlFlow::E controlflow = mObject->Constructor(params);
+	Runtime::ControlFlow::E controlflow = mObject->Constructor(params);
 
-		if ( controlflow == Runtime::ControlFlow::Throw ) {
-			throw Utils::Exceptions::Exception("Exception raised in " + mObject->getFullName() + "::" + mObject->Typename());
-		}
-
-		mHasBeenConstructed = true;
+	if ( controlflow == Runtime::ControlFlow::Throw ) {
+		throw Utils::Exceptions::Exception("Exception raised in " + mObject->getFullName() + "::" + mObject->Typename());
 	}
-	catch ( std::exception &e ) {
-		// catch and log all errors that occurred during execution
-		OSerror(e.what());
 
-		throw;
-	}
+	mHasBeenConstructed = true;
 }
 
 void Script::destruct()
 {
-	try {
-		mRepository->removeReference(mObject);
-	}
-	catch ( std::exception &e ) {
-		// catch and log all errors that occurred during execution
-		OSerror(e.what());
+	mRepository->removeReference(mObject);
 
-		throw;
-	}
+	mHasBeenConstructed = false;
 }
 
 Runtime::Object Script::execute(const std::string& method, const ParameterList& params)
 {
-	Runtime::Object returnValue;
-	try {
-		Symbol *symbol = mRepository->getGlobalScope()->resolveMethod(method, params, false);
-		if ( !symbol ) {			
-			throw Utils::Exceptions::Exception("Could not resolve method '" + method + "(" + toString(params) + ")'");
-		}
-
-		Runtime::Method* method = static_cast<Runtime::Method*>(symbol);
-		Runtime::ControlFlow::E controlflow = method->execute(params, &returnValue, TokenIterator());
-
-		if ( controlflow == Runtime::ControlFlow::Throw ) {
-			throw Utils::Exceptions::Exception(
-				"Exception raised in " + mObject->getFullName() + "::" + mObject->Typename() + "::" + method->getName()
-			);
-		}
+	Symbol *symbol = mRepository->getGlobalScope()->resolveMethod(method, params, false);
+	if ( !symbol ) {
+		throw Utils::Exceptions::Exception("Could not resolve method '" + method + "(" + toString(params) + ")'");
 	}
-	catch ( std::exception &e ) {
-		// catch and log all errors that occurred during execution
-		OSerror(e.what());
 
-		throw;
+	Runtime::Object returnValue;
+
+	Runtime::Method* methodSymbol = static_cast<Runtime::Method*>(symbol);
+	Runtime::ControlFlow::E controlflow = methodSymbol->execute(params, &returnValue, TokenIterator());
+
+	if ( controlflow == Runtime::ControlFlow::Throw ) {
+		throw Utils::Exceptions::Exception(
+			"Exception raised in " + mObject->getFullName() + "::" + mObject->Typename() + "::" + methodSymbol->getName()
+		);
 	}
 
 	return returnValue;

@@ -5,6 +5,8 @@
 
 // Project includes
 #include <Common/StdOutLogger.h>
+#include <Core/StackTrace.h>
+#include <Core/Utils/Utils.h>
 #include <Tools/Printer.h>
 #include <Tools/Strings.h>
 
@@ -162,7 +164,9 @@ int main(int argc, const char* argv[])
 		mFixtures.clear();
 	}
 	catch ( std::exception& e ) {	// catch every std::exception and all derived exception types
-		std::cout << e.what() << std::endl;
+		OSerror(e.what());
+
+		ObjectiveScript::StackTrace::GetInstance().print();
 	}
 	catch ( ... ) {	// catch everything
 		std::cout << "uncaught exception detected" << std::endl;
