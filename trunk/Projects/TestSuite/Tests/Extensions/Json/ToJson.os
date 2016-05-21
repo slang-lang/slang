@@ -55,12 +55,12 @@ public object Main
 	{
 		Replica replica;
 
-		string jsonString = "{\"base\":{\"mIntValue\":42},\"mStringValue\":\"this is a string\"}";
+		string jsonString = "{\"base\":{\"base\":{\"mIntValue\":\"42\"},\"mStringValue\":\"this is a string\"}}";
 
 		bool result = FromJsonString(Object replica, jsonString);
 		result = result && jsonString == ToJsonString(Object replica);
 
-		writeln("replica = " + ToJsonString(Object replicat));
+		writeln("replica = " + ToJsonString(Object replica));
 
 		return result;
 	}

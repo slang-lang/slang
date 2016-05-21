@@ -10,7 +10,7 @@ private object DerivedObject extends BaseObject
 
 public object Main
 {
-	public void Main(int argc, string argv)
+	public void Main(int argc = 0, string args = "")
 	{
 		DerivedObject derived;
 	}

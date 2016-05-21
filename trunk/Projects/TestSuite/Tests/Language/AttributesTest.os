@@ -7,12 +7,13 @@ public stable namespace AttributeTest
 		print("Function1");
 
 		SubFunction1();
-		SubFunction2();
 	}
 
 	public void SubFunction1()
 	{
 		print("SubFunction1");
+
+		SubFunction2();
 	}
 
 	public void SubFunction2()
