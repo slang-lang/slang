@@ -125,8 +125,8 @@ Designtime::BluePrint Analyser::createBluePrint(TokenIterator& start, TokenItera
 
 	TokenList tokens;
 
-	if ( isImplemented ) {	// only collect all tokens of this object it is implemented
-		// object or interface declarations have to start with an '{' token
+	if ( isImplemented ) {	// only collect all tokens of this object if it is implemented
+		// interface, object or prototype declarations have to start with an '{' token
 		expect(Token::Type::BRACKET_CURLY_OPEN, start);
 
 		// look for the next opening curly brackets
@@ -140,9 +140,6 @@ Designtime::BluePrint Analyser::createBluePrint(TokenIterator& start, TokenItera
 
 		start = closed;
 	}
-
-	Designtime::SanityChecker sanity;
-	sanity.process(tokens);
 
 	Designtime::BluePrint blue(name, mFilename);
 	blue.setAbstract(isAbstract || isInterface);
@@ -267,10 +264,6 @@ void Analyser::createMethod(TokenIterator &start, TokenIterator end)
 		tokens.push_back((*it));
 	}
 
-	Designtime::SanityChecker sanity;
-	sanity.process(tokens);
-
-
 	// create a new method with the corresponding return value
 	Runtime::Method *method = new Runtime::Method(mScope, name, type);
 	method->setAbstract(isAbstract);
@@ -322,9 +315,6 @@ void Analyser::createNamespace(TokenIterator& start, TokenIterator end)
 	for ( TokenIterator it = ++open; it != closed && it != end; ++it ) {
 		tokens.push_back((*it));
 	}
-
-	Designtime::SanityChecker sanity;
-	sanity.process(tokens);
 
 	if ( !mScopeName.empty() ) {
 		mScopeName += RESERVED_WORD_SCOPE_OPERATOR;

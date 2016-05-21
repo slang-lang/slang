@@ -23,36 +23,36 @@
 #	if LOG_LEVEL >= 1
 #		undef OSerror
 #		ifdef LOG_FILE_AND_POSITION
-#			define OSerror(message) std::cout << "[ERROR] " << message << "   " << __FILE__ << ":" << __LINE__ << std::endl;
+#			define OSerror(message) std::cerr << "[ERROR] " << message << "   " << __FILE__ << ":" << __LINE__ << std::endl;
 #		else
-#			define OSerror(message) std::cout << "[ERROR] " << message << std::endl;
+#			define OSerror(message) std::cerr << "[ERROR] " << message << std::endl;
 #		endif
 #	endif
 #
 #	if LOG_LEVEL >= 2
 #		undef OSwarn
 #		ifdef LOG_FILE_AND_POSITION
-#			define OSwarn(message)  std::cout << "[WARN ] " << message << "   " << __FILE__ << ":" << __LINE__ << std::endl;
+#			define OSwarn(message)  std::cerr << "[WARN ] " << message << "   " << __FILE__ << ":" << __LINE__ << std::endl;
 #		else
-#			define OSwarn(message)  std::cout << "[WARN ] " << message << std::endl;
+#			define OSwarn(message)  std::cerr << "[WARN ] " << message << std::endl;
 #		endif
 #	endif
 #
 #	if LOG_LEVEL >= 3
 #		undef OSinfo
 #		ifdef LOG_FILE_AND_POSITION
-#			define OSinfo(message)  std::cout << "[INFO ] " << message << "   " << __FILE__ << ":" << __LINE__ << std::endl;
+#			define OSinfo(message)  std::cerr << "[INFO ] " << message << "   " << __FILE__ << ":" << __LINE__ << std::endl;
 #		else
-#			define OSinfo(message)  std::cout << "[INFO ] " << message << std::endl;
+#			define OSinfo(message)  std::cerr << "[INFO ] " << message << std::endl;
 #		endif
 #	endif
 #
 #	if LOG_LEVEL >= 4
 #		undef OSdebug
 #		ifdef LOG_FILE_AND_POSITION
-#			define OSdebug(message) std::cout << "[DEBUG] " << message << "   " << __FILE__ << ":" << __LINE__ << std::endl;
+#			define OSdebug(message) std::cerr << "[DEBUG] " << message << "   " << __FILE__ << ":" << __LINE__ << std::endl;
 #		else
-#			define OSdebug(message) std::cout << "[DEBUG] " << message << std::endl;
+#			define OSdebug(message) std::cerr << "[DEBUG] " << message << std::endl;
 #		endif
 #	endif
 #endif

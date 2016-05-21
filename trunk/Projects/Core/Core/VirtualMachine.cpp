@@ -13,7 +13,6 @@
 #include <Tools/Files.h>
 #include "Analyser.h"
 #include "Repository.h"
-#include "Scope.h"
 #include "Script.h"
 #include "Tools.h"
 

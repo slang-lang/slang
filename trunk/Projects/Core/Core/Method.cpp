@@ -9,10 +9,10 @@
 #include <Core/Runtime/TypeCast.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Utils/Utils.h>
-#include "Object.h"
 #include "Repository.h"
-#include "System.h"
+#include "StackTrace.h"
 #include "Tools.h"
+#include "Types.h"
 
 // Namespace declarations
 
@@ -35,19 +35,18 @@ Method::~Method()
 
 bool Method::operator() (const Method& first, const Method& second) const
 {
-	if (first.getName() == second.getName()) {
+	if ( first.getName() == second.getName() ) {
 		ParameterList firstList = first.provideSignature();
 		ParameterList secondList = second.provideSignature();
 		// unable to identify return value during method call
 		//if ( this->type() != other.type() ) {
 		//	return this->type() < other.type();
 		//}
-		if (firstList.size() == secondList.size()) {
+		if ( firstList.size() == secondList.size() ) {
 			ParameterList::const_iterator fIt = firstList.begin();
 			ParameterList::const_iterator sIt = secondList.begin();
-			for (; fIt != firstList.end() && sIt != secondList.end();
-					++fIt, ++sIt) {
-				if (fIt->type() != sIt->type()) {
+			for ( ; fIt != firstList.end() && sIt != secondList.end(); ++fIt, ++sIt) {
+				if ( fIt->type() != sIt->type() ) {
 					return fIt->type() < sIt->type();
 				}
 			}
@@ -109,7 +108,7 @@ ControlFlow::E Method::execute(const ParameterList& params, Object *result, cons
 		throw Utils::Exceptions::Exception("mRepository not set");
 	}
 	if ( isAbstract() ) {
-		throw Utils::Exceptions::AbstractException("cannot execute abstract method '" + getName() + "'");
+		throw Utils::Exceptions::AbstractException("cannot execute abstract method '" + getName() + "'", token->position());
 	}
 	if ( !isSignatureValid(params) ) {
 		throw Utils::Exceptions::ParameterCountMissmatch("incorrect number or type of parameters", token->position());
@@ -131,6 +130,8 @@ ControlFlow::E Method::execute(const ParameterList& params, Object *result, cons
 	interpreter.setTokens(mTokens);
 	interpreter.setVisibility(getVisibility());
 
+	ParameterList executedParams;
+
 	// add parameters as locale variables
 	ParameterList::const_iterator paramIt = params.begin();
 	for ( ParameterList::const_iterator sigIt = mSignature.begin(); sigIt != mSignature.end(); ++sigIt ) {
@@ -138,13 +139,13 @@ ControlFlow::E Method::execute(const ParameterList& params, Object *result, cons
 		Parameter param(sigIt->name(), sigIt->type(), sigIt->value(), sigIt->hasDefaultValue(), sigIt->isConst(), sigIt->access());
 
 		if ( paramIt != params.end() ) {
-			Parameter::AccessMode::E access = sigIt->access();
-
 			// override parameter with correct value
-			param = Parameter(sigIt->name(), sigIt->type(), paramIt->value(), sigIt->hasDefaultValue(), sigIt->isConst(), access, paramIt->pointer());
+			param = Parameter(sigIt->name(), sigIt->type(), paramIt->value(), sigIt->hasDefaultValue(), sigIt->isConst(), sigIt->access(), paramIt->pointer());
 			// next iteration
 			paramIt++;
 		}
+
+		executedParams.push_back(param);
 
 		switch ( param.access() ) {
 			case Parameter::AccessMode::Unspecified: {
@@ -175,7 +176,9 @@ ControlFlow::E Method::execute(const ParameterList& params, Object *result, cons
 		}
 	}
 
-	result->overrideTypename(Typename());
+	StackTrace::GetInstance().pushStack(getFullName(), executedParams);
+
+	//result->overrideTypename(Typename());
 	result->setRepository(mRepository);
 	//result->setValue(/*get default value for return type*/);
 
@@ -209,7 +212,7 @@ bool Method::isSignatureValid(const ParameterList& params) const
 	// check method signature by:
 	// 1) comparing the number of parameters
 	//	  by expecting the same number of parameters or less, we can make use of default parameters
-	if ( mSignature.size() < params.size() ) {
+	if ( params.size() > mSignature.size() ) {
 		// we received more parameters than we expected
 		return false;
 	}
@@ -261,9 +264,7 @@ ControlFlow::E Method::processControlFlow(ControlFlow::E controlflow, Object *re
 		case ControlFlow::Continue:
 		case ControlFlow::Normal:
 			// verify method return reason
-			if ( result->Typename() != VoidObject::TYPENAME ) {
-				OSerror("unnatural method return at '" + getName() + "'");
-
+			if ( Typename() != VoidObject::TYPENAME && result->Typename() != VoidObject::TYPENAME ) {
 				throw Utils::Exceptions::Exception("unnatural method return at '" + getName() + "'");
 			}
 
@@ -272,7 +273,7 @@ ControlFlow::E Method::processControlFlow(ControlFlow::E controlflow, Object *re
 			break;
 		case ControlFlow::Return:
 			// validate return value
-			if ( result->Typename() != Typename() ) {
+			if ( Typename() != VoidObject::TYPENAME && result->Typename() != Typename() ) {
 				OSwarn("implicit type conversion from " + result->Typename() + " to " + Typename() + " in " + getName());
 
 				typecast(result, Typename());
@@ -286,6 +287,8 @@ ControlFlow::E Method::processControlFlow(ControlFlow::E controlflow, Object *re
 			// an ObjectiveScript exception has been thrown
 			break;
 	}
+
+	StackTrace::GetInstance().popStack();
 
 	return controlflow;
 }

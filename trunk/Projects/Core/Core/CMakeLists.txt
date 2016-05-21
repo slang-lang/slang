@@ -21,6 +21,7 @@ SET(SOURCES
 	Repository.cpp
 	Scope.cpp
 	Script.cpp
+	StackTrace.cpp
 	Symbol.cpp
 	System.cpp
 	Token.cpp
@@ -44,6 +45,7 @@ SET(HEADERS
 	Repository.h
 	Scope.h
 	Script.h
+	StackTrace.h
 	System.h
 	Symbol.h
 	Token.h
