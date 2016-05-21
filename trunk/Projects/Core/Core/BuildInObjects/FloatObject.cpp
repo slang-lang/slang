@@ -60,7 +60,7 @@ FloatObject::FloatObject(const Object& other)
 		 source == FloatObject::TYPENAME ||
 		 source == IntegerObject::TYPENAME ||
 		 source == NumberObject::TYPENAME ||
-		 source == StringObject::TYPENAME) {
+		 source == StringObject::TYPENAME ) {
 		setValue(other.getValue());
 	}
 	else {
@@ -105,7 +105,7 @@ void FloatObject::operator_assign(Object *other)
 	if ( target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
-		 target == NumberObject::TYPENAME) {
+		 target == NumberObject::TYPENAME ) {
 		FloatObject tmp(Tools::stringToFloat(other->getValue()));
 
 		operator_assign(&tmp);
@@ -127,7 +127,7 @@ void FloatObject::operator_divide(Object *other)
 	if ( target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
-		 target == NumberObject::TYPENAME) {
+		 target == NumberObject::TYPENAME ) {
 		FloatObject tmp(Tools::stringToFloat(other->getValue()));
 
 		operator_divide(&tmp);
@@ -149,7 +149,7 @@ bool FloatObject::operator_equal(Object *other)
 	if ( target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
-		 target == NumberObject::TYPENAME) {
+		 target == NumberObject::TYPENAME ) {
 		FloatObject tmp(Tools::stringToFloat(other->getValue()));
 
 		return operator_equal(&tmp);
@@ -170,7 +170,7 @@ bool FloatObject::operator_greater(Object *other)
 	if ( target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
-		 target == NumberObject::TYPENAME) {
+		 target == NumberObject::TYPENAME ) {
 		FloatObject tmp(Tools::stringToFloat(other->getValue()));
 
 		return operator_greater(&tmp);
@@ -191,7 +191,7 @@ bool FloatObject::operator_greater_equal(Object *other)
 	if ( target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
-		 target == NumberObject::TYPENAME) {
+		 target == NumberObject::TYPENAME ) {
 		FloatObject tmp(Tools::stringToFloat(other->getValue()));
 
 		return operator_greater_equal(&tmp);
@@ -212,7 +212,7 @@ bool FloatObject::operator_less(Object *other)
 	if ( target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
-		 target == NumberObject::TYPENAME) {
+		 target == NumberObject::TYPENAME ) {
 		FloatObject tmp(Tools::stringToFloat(other->getValue()));
 
 		return operator_less(&tmp);
@@ -233,7 +233,7 @@ bool FloatObject::operator_less_equal(Object *other)
 	if ( target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
-		 target == NumberObject::TYPENAME) {
+		 target == NumberObject::TYPENAME ) {
 		FloatObject tmp(Tools::stringToFloat(other->getValue()));
 
 		return operator_less_equal(&tmp);
@@ -254,7 +254,7 @@ void FloatObject::operator_multiply(Object *other)
 	if ( target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
-		 target == NumberObject::TYPENAME) {
+		 target == NumberObject::TYPENAME ) {
 		FloatObject tmp(Tools::stringToFloat(other->getValue()));
 
 		operator_multiply(&tmp);
@@ -276,7 +276,7 @@ void FloatObject::operator_plus(Object *other)
 	if ( target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
-		 target == NumberObject::TYPENAME) {
+		 target == NumberObject::TYPENAME ) {
 		FloatObject tmp(Tools::stringToFloat(other->getValue()));
 
 		operator_plus(&tmp);
@@ -298,7 +298,7 @@ void FloatObject::operator_subtract(Object *other)
 	if ( target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
-		 target == NumberObject::TYPENAME) {
+		 target == NumberObject::TYPENAME ) {
 		FloatObject tmp(Tools::stringToFloat(other->getValue()));
 
 		operator_subtract(&tmp);
