@@ -1,35 +1,28 @@
 
-public namespace System
-{
-	public object Logger
-	{
+public namespace System {
+	public object Logger {
 		// Members
 		private string mKey final;
 
 		// Specialised constructor
-		public void Logger(string key const)
-		{
+		public void Logger(string key const) {
 			mKey = key;
 		}
 
 		// Public methods
-		public void debug(string message const)
-		{
+		public void debug(string message const) {
 			writeln("[DEBUG] " + mKey + "::" + message);
 		}
 
-		public void error(string message const)
-		{
+		public void error(string message const) {
 			writeln("[ERROR] " + mKey + "::" + message);
 		}
 
-		public void info(string message const)
-		{
+		public void info(string message const) {
 			writeln("[INFO ] " + mKey + "::" + message);
 		}
 
-		public void warning(string message const)
-		{
+		public void warning(string message const) {
 			writeln("[WARN ] " + mKey + "::" + message);
 		}
 	}

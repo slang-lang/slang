@@ -4,8 +4,7 @@ import System.Exception;
 public namespace System {
 public namespace IO {
 
-	public object File
-	{
+	public object File {
 		private string mAccessMode;
 		private string mFilename;
 		private int mHandle;
