@@ -1,22 +1,17 @@
 
-public namespace System
-{
-	public interface IException
-	{
+public namespace System {
+	public interface IException {
 		public string what() const;
 	}
 
-	public object Exception //implements IException
-	{
+	public object Exception //implements IException {
 		private string _exception;
 
-		public void Exception(string ex const)
-		{
+		public void Exception(string ex const) {
 			_exception = ex;
 		}
 
-		public string what() const
-		{
+		public string what() const {
 			return _exception;
 		}
 	}
