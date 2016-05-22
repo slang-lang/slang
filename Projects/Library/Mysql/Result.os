@@ -4,11 +4,9 @@ import Entry;
 import Exceptions;
 import Row;
 
-public namespace Mysql
-{
-	public object Result //implements System.GDI.IResult
-	{
-	    private int mAffectedRows;
+public namespace Mysql {
+	public object Result /*implements System.GDI.IResult*/ {
+		private int mAffectedRows;
 		private int mCurrentFieldIdx;
 		private int mCurrentRowIdx;
 		private int mHandle;
@@ -21,9 +19,20 @@ public namespace Mysql
 			Initialize();
 		}
 
-        public int affectedRows() const {
-            return mAffectedRows;
-        }
+		public string ToString() const {
+			return	"Result { " +
+					"Handle=" + mHandle + ", " +
+					"AffectedRows=" + mAffectedRows + ", " +
+					"NumRows=" + mNumRows + ", " +
+					"NumFields=" + mNumFields + ", " +
+					"CurrentRowIdx=" + mCurrentRowIdx + ", " +
+					"CurrentFieldIdx=" + mCurrentFieldIdx +
+				" }";
+		}
+
+		public int affectedRows() const {
+			return mAffectedRows;
+		}
 
 		public Row getCurrentRow() const {
 			return new Row(mHandle);
@@ -52,13 +61,13 @@ public namespace Mysql
 			return entry;
 		}
 
-        public void seekRow(int rowIdx) {
-            if ( rowIdx < 0 || rowIdx >= mNumRows ) {
-                throw new OutOfBoundsException("rowIdx out of bounds");
-            }
+		public void seekRow(int rowIdx) {
+			if ( rowIdx < 0 || rowIdx >= mNumRows ) {
+				throw new OutOfBoundsException("rowIdx out of bounds");
+			}
 
-            mysql_data_seek(mHandle, rowIdx);
-        }
+			mysql_data_seek(mHandle, rowIdx);
+		}
 
 		public bool hasNext() const {
 			return mCurrentRowIdx < mNumRows;

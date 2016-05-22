@@ -3,20 +3,19 @@
 import Connection;
 import Debug;
 import Result;
+import System.String;
 
-public namespace Mysql
-{
-	public object Query //implements System.GDI.IQuery
-	{
-		private Connection mConnection;
-		private string mExecutedString;
-		private string mPreparedQuery;
+public namespace Mysql {
+	public object Query /*implements System.GDI.IQuery*/ {
+		private int mConnectionHandle;
+		private String mExecutedString;
+		private String mPreparedQuery;
 		private int mResultHandle;
 
-		public void Query(Connection connection, string queryStr = "") {
-			mConnection = connection;
-			mExecutedQuery = "";
-			mPreparedQuery = queryStr;
+		public void Query(int connectionHandle, string queryStr = "") {
+			mConnectionHandle = connectionHandle;
+			mExecutedQuery = new String();
+			mPreparedQuery = new String(queryStr);
 			mResultHandle = 0;
 		}
 
@@ -26,61 +25,63 @@ public namespace Mysql
 			}
 		}
 
+		public string ToString() const {
+			return	"Query { " +
+					"prepared: " + mPreparedQuery.Value() + " " +
+					"executed: " + mExecutedQuery.Value() + " " +
+				"}";
+		}
+
 		public bool bind(string field, bool value) modify {
-			// replace field with value
-			return false;
+			// replace all occurances of field with value
+			return mPreparedQuery.ReplaceAll(field, string value);
 		}
 
 		public bool bind(string field, double value) modify {
 			// replace field with value
-			return false;
+			return mPreparedQuery.ReplaceAll(field, string value);
 		}
 
 		public bool bind(string field, float value) modify {
 			// replace field with value
-			return false;
+			return mPreparedQuery.ReplaceAll(field, string value);
 		}
 
 		public bool bind(string field, int value) modify {
 			// replace field with value
-			return false;
+			return mPreparedQuery.ReplaceAll(field, string value);
 		}
 
 		public bool bind(string field, string value) modify {
 			// replace field with value
-			return false;
+			return mPreparedQuery.ReplaceAll(field, value);
 		}
 
-		public bool execute(string query = "") modify {
+		public Result execute(string query = "") modify {
+			Result result;	// invalid object
+
 			if ( query ) {
-				mExecutedQuery = query;
+				mPreparedQuery.Value(query);
 			}
+
+			mExecutedQuery.Value(mPreparedQuery.Value());
 
 			if ( MysqlDebugMode ) {
-				writeln("mExecutedQuery = " + mExecutedQuery);
+				writeln("mExecutedQuery = " + mExecutedQuery.Value());
 			}
 
-			int result = mysql_query(mConnection.handle(), mExecutedQuery);
-			return (result == 0);
-		}
-
-		public void prepare(string query) modify {
-			mPreparedQuery = query;
-		}
-
-/*
-		public Result execute() const {
-			//writeln("mPreparedQuery = " + mPreparedQuery");
-
-			mysql_query(mConnection.descriptor(), mPreparedQuery);
-
-			mResultHandle = mysql_store_result(mConnection.descriptor());
-
-			Result result = new Result();
+			int result_handle = mysql_query(mConnectionHandle, mExecutedQuery.Value());
+			if ( result_handle != 0 ) {
+				result_handle = mysql_store_result(mConnectionHandle);
+				result = new Result(result_handle);
+			}
 
 			return result;
 		}
-*/
+
+		public void prepare(string query) modify {
+			mPreparedQuery.Value(query);
+		}
 	}
 }
 
