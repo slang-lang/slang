@@ -6,17 +6,15 @@ import Query;
 import Result;
 import Settings;
 
-public namespace Mysql
-{
-	public object Connection //implements System.GDI.IConnection
-	{
+public namespace Mysql {
+	public object Connection /*implements System.GDI.IConnection*/ {
 		private string mDatabase;
 		private int mHandle;
-		private string mHostName;
+		private string mHostname;
 		private string mPassword;
 		private int mPort;
 		private Settings mSettings;
-		private string mUserName;
+		private string mUsername;
 
 		public void Connection() {
 			initialize();
@@ -36,6 +34,10 @@ public namespace Mysql
 			}
 		}
 
+		public string ToString() const {
+			return "Hostname=" + mHostname + ", Port=" + mPort + ", Username=" + mUsername + ", Database=" + mDatabase;
+		}
+
 		public int affectedRows() const {
 			return mysql_affected_rows();
 		}
@@ -43,10 +45,10 @@ public namespace Mysql
 		private void cleanup() modify {
 			mDatabase = "";
 			mHandle = 0;
-			mHostName = "";
+			mHostname = "";
 			mPassword = "";
 			mPort = 0;
-			mUserName = "";
+			mUsername = "";
 		}
 
 		public void close() modify {
@@ -60,7 +62,7 @@ public namespace Mysql
 		}
 
 		public Query createQuery(string queryStr = "") const {
-			return new Query(this, queryStr);
+			return new Query(mHandle, queryStr);
 		}
 
 		public string error() const {
@@ -101,10 +103,10 @@ public namespace Mysql
 			mHandle = mysql_real_connect(mHandle, hostname, port, user, password, database);
 
 			mDatabase = database;
-			mHostName = hostname;
+			mHostname = hostname;
 			mPassword = password;
 			mPort = port;
-			mUserName = user;
+			mUsername = user;
 
 			return (mHandle != 0);
 		}

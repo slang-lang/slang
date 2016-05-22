@@ -4,7 +4,7 @@ public namespace System {
 		public string what() const;
 	}
 
-	public object Exception //implements IException {
+	public object Exception /*implements IException*/ {
 		private string _exception;
 
 		public void Exception(string ex const) {
