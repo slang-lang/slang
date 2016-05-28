@@ -380,21 +380,21 @@ void Interpreter::parseInfixPostfix(Object *result, TokenIterator& start)
 
 	// infix
 	switch ( op ) {
-		case Token::Type::NOT: {
-			start++;
-			parseTerm(result, start);
-			operator_unary_not(result);
-		} break;
 		case Token::Type::MATH_SUBTRACT: {
 			start++;
 			parseTerm(result, start);
 			operator_unary_minus(result);
 		} break;
+		case Token::Type::NOT: {
+			start++;
+			parseTerm(result, start);
+			operator_unary_not(result);
+		} break;
 		case Token::Type::TYPE: {
 			std::string newType = start->content();
 			start++;
 			expression(result, start);
-			typecast(result, newType);
+			typecast(result, newType, mRepository);
 		} break;
 		default: {
 			parseTerm(result, start);
@@ -1232,7 +1232,7 @@ void Interpreter::process_type(TokenIterator& token)
 
 	Object *object = static_cast<Object*>(getScope()->resolve(name, true));
 	if ( object ) {
-		throw Utils::Exceptions::DuplicateIdentifer("process_type: " + name, token->position());
+		throw Utils::Exceptions::DuplicateIdentifer("duplicate identifier '" + name + "' created", token->position());
 	}
 
 	// TODO: create a shallow object if we have an assignment statement to prevent duplicate object instantiation

@@ -15,6 +15,7 @@
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/BuildInObjects/UserObject.h>
 #include <Core/BuildInObjects/VoidObject.h>
+#include <Core/Repository.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Utils/Utils.h>
 
@@ -25,11 +26,15 @@ namespace ObjectiveScript {
 namespace Runtime {
 
 
-void typecast(Object *base, const std::string& type)
+void typecast(Object *base, const std::string& type, Repository *repository)
 {
 	if ( !base ) {
 		OSerror("cannot cast null pointer");
 		throw Utils::Exceptions::NullPointer("cannot cast null pointer");
+	}
+	if ( !repository ) {
+		OSerror("invalid repository provided");
+		throw Utils::Exceptions::NullPointer("invalid repository provided");
 	}
 	if ( type.empty() ) {
 		OSerror("invalid cast target type");
@@ -65,7 +70,14 @@ void typecast(Object *base, const std::string& type)
 		*base = tmp;
 	}
 	else if ( type == StringObject::TYPENAME ) {
-		StringObject tmp(*base);
+		StringObject tmp;
+
+		if ( base->isAtomicType() ) {
+			tmp = StringObject(*base);
+		}
+		else {
+			base->execute(&tmp, "ToString", ParameterList());
+		}
 
 		*base = tmp;
 	}
@@ -75,17 +87,16 @@ void typecast(Object *base, const std::string& type)
 		*base = tmp;
 	}
 	else {
-		throw Utils::Exceptions::NotImplemented("type cast from type " + base->Typename() + " to type " + type);
+//		throw Utils::Exceptions::NotImplemented("type cast from type " + base->Typename() + " to type " + type);
 
-/*
+		Object *obj = repository->createInstance(type);
 		ParameterList params;
 		params.push_back(
 			Parameter(base->getName(), base->Typename(), base->getValue(), false, base->isConst(), Parameter::AccessMode::ByReference, base)
 		);
+		obj->Constructor(params);
 
-		Object other;
-		other.execute(base, "operator=", params, 0);
-*/
+		*base = *obj;
 	}
 }
 }

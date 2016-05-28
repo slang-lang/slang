@@ -276,7 +276,7 @@ ControlFlow::E Method::processControlFlow(ControlFlow::E controlflow, Object *re
 			if ( Typename() != VoidObject::TYPENAME && result->Typename() != Typename() ) {
 				OSwarn("implicit type conversion from " + result->Typename() + " to " + Typename() + " in " + getName());
 
-				typecast(result, Typename());
+				typecast(result, Typename(), mRepository);
 			}
 
 			// correct behaviour detected, override control flow with normal state
