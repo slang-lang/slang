@@ -6,6 +6,9 @@ public namespace System {
 		public void Boolean(bool value = false) {
 			mValue = value;
 		}
+		public void Boolean(Boolean copy) {
+			mValue = copy.mValue;
+		}
 
 		public void FromString(string value) modify {
 			if ( value ) {
