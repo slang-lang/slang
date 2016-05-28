@@ -20,7 +20,7 @@ public object Main
 	}
 
 	private bool TestCase1() const {
-		print("TestCase 1");
+		print("TestCase 1: Reference");
 
 		int value = 173;
 
@@ -28,18 +28,19 @@ public object Main
 		Reference(value);
 		print("value = " + value);
 
-		return true;
+		Integer intVal = new Integer(173);
+		print("intVal = " + intVal.ToString());
+		Reference(intVal);
+		print("intVal = " + intVal.ToString());
+
+		return value == 173 && intVal == 175;
 	}
 
 	private bool TestCase2() const {
-		print("TestCase 2");
+		print("TestCase 2: Integer");
 
 		Integer value = new Integer(173);
 		value = 17;
-
-		print("value = " + value.ToString());
-		Reference(value);
-		print("value = " + value.ToString());
 
 		value = value * 2;
 		print("value = " + value.ToString());
@@ -50,14 +51,18 @@ public object Main
 		value = value / 2;
 		print("value = " + value.ToString());
 
-		return true;
+		return value == 16;
 	}
 
 	private bool TestCase3() const {
+		print("TestCase 3: Boolean");
+
 		Boolean value = new Boolean(true);
+		value = !false;
 
 		print("value = " + value.ToString());
-		value = !value;
+		print("!value = " + !value.ToString());
+		value = Boolean !value;
 		print("value = " + value.ToString());
 
 		return true;
