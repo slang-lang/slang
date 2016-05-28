@@ -213,7 +213,7 @@ bool VirtualMachine::loadLibrary(const std::string& library)
 
 	if ( mImportedLibraries.find(library) != mImportedLibraries.end() ) {
 		// circular import => abort
-		OSwarn("circular imports detected in file '" + library + "'");
+		OSinfo("circular imports detected in file '" + library + "'");
 		return true;
 	}
 
