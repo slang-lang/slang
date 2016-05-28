@@ -13,11 +13,15 @@ public namespace ThisTest
 			assert( TestCase3() );
 		}
 
+		private string ToString() const {
+			return "Main";
+		}
+
 		private bool TestCase1() const
 		{
 			print("TestCase1()");
 
-			print(this);
+			//print(this);
 
 			return true;
 		}

@@ -10,7 +10,7 @@ public object Main {
 			exit(1);
 		}
 
-		Query query = new Query(conn);
+		Query query = conn.createQuery();
 		if ( !query ) {
 			print("error while creating query!");
 			exit(2);
