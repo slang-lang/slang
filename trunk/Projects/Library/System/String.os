@@ -6,6 +6,9 @@ public namespace System {
 		public void String(string value = "") {
 			mValue = value;
 		}
+		public void String(String copy) {
+			mValue = copy.mValue;
+		}
 
 		public string At(int index) const {
 			return substr(mValue, index, 1);

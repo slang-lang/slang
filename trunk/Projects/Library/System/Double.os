@@ -6,6 +6,9 @@ public namespace System {
 		public void Double(double value = 0d) {
 			mValue = value;
 		}
+		public void Double(Double copy) {
+			mValue = copy.mValue;
+		}
 
 		public void FromString(string value) modify {
 			mValue = double value;

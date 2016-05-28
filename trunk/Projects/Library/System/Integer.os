@@ -6,6 +6,9 @@ public namespace System {
 		public void Integer(int value = 0i) {
 			mValue = value;
 		}
+		public void Integer(Integer copy) {
+			mValue = copy.mValue;
+		}
 
 		public void FromString(string value) modify {
 			mValue = int value;
