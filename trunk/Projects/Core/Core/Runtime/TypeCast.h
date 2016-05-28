@@ -14,12 +14,16 @@
 
 
 namespace ObjectiveScript {
+
+// Forward declarations
+class Repository;
+
 namespace Runtime {
 
 // Forward declarations
 class Object;
 
-void typecast(Object *base, const std::string& type);
+void typecast(Object *base, const std::string& type, Repository *repository);
 
 
 }
