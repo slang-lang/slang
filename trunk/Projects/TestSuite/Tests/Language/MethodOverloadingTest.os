@@ -18,11 +18,11 @@ public namespace
 			i = returnSum(3, 4, 5);
 			print("i = " + i);
 
-			i = returnSum("6+", "7");
-			print("i = " + i);
+			string s = returnSum("6+", "7");
+			print("s = " + s);
 
-			i = returnSum("" + 8, "9");
-			print("i = " + i);
+			s = returnSum("" + 8, "9");
+			print("s = " + s);
 		}
 
 		private int returnNumber(int param1) const
