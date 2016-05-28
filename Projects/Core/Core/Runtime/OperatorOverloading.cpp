@@ -1081,7 +1081,16 @@ void operator_unary_not(Object *base)
 		*base = BoolObject(!tmp.isValid());
 	}
 	else {
-		*base = BoolObject(!base->isValid());
+		MethodSymbol *op_not = base->resolveMethod("operator!", ParameterList(), true);
+		if ( op_not ) {
+			Object tmp;
+			static_cast<Method*>(op_not)->execute(ParameterList(), &tmp, TokenIterator());
+
+			operator_binary_assign(base, &tmp);
+		}
+		else {
+			*base = BoolObject(!base->isValid());
+		}
 	}
 }
 
