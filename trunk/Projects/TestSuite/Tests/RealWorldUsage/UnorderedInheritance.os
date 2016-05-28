@@ -12,7 +12,7 @@ public object Main
 {
 	public void Main(int argc = 0, string args = "")
 	{
-		DerivedObject derived;
+		DerivedObject derived = new DerivedObject();
 	}
 }
 
