@@ -1,6 +1,6 @@
 
 // Header
-#include "StoreResult.h"
+#include "MysqlPing.h"
 
 // Library includes
 
@@ -20,8 +20,8 @@ namespace Extensions {
 namespace Mysql {
 
 
-MysqlStoreResult::MysqlStoreResult()
-: Runtime::Method(0, "mysql_store_result", Designtime::IntegerObject::TYPENAME)
+MysqlPing::MysqlPing()
+: Runtime::Method(0, "mysql_ping", Designtime::IntegerObject::TYPENAME)
 {
 	ParameterList params;
 	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, VALUE_NONE));
@@ -29,7 +29,7 @@ MysqlStoreResult::MysqlStoreResult()
 	setSignature(params);
 }
 
-Runtime::ControlFlow::E MysqlStoreResult::execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token)
+Runtime::ControlFlow::E MysqlPing::execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token)
 {
 	try {
 		// Parameter processing
@@ -41,13 +41,7 @@ Runtime::ControlFlow::E MysqlStoreResult::execute(const ParameterList& params, R
 
 		MYSQL *myConn = mMysqlConnections[param_handle];
 
-		MYSQL_RES *myResult = mysql_store_result(myConn);
-
-		int my_result = 0;
-		if ( myResult ) {
-			my_result = ++mNumMysqlResults;
-			mMysqlResults.insert(std::make_pair(my_result, myResult));
-		}
+		int my_result = mysql_ping(myConn);
 
 		*result = Runtime::IntegerObject(my_result);
 	}
