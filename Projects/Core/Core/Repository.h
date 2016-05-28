@@ -39,7 +39,7 @@ public:
 	void addBlueprint(const Designtime::BluePrint& object, bool doPreProcessing = true);
 	void addPrototype(const Designtime::Prototype& prototype, bool doPreProcessing = true);
 
-	Runtime::Object* createInstance(const std::string& type, const std::string& name, const std::string& prototype = "");
+	Runtime::Object* createInstance(const std::string& type, const std::string& name = ANONYMOUS_OBJECT, const std::string& prototype = "");
 
 	void addReference(Runtime::Object *object);
 	void removeReference(Runtime::Object *object);
