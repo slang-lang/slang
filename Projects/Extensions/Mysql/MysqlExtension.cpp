@@ -17,6 +17,7 @@
 #include "Info.h"
 #include "Init.h"
 #include "MysqlDataSeek.h"
+#include "MysqlPing.h"
 #include "MysqlRealEscapeString.h"
 #include "MysqlSelectDB.h"
 #include "MysqlStat.h"
@@ -55,6 +56,7 @@ void MysqlExtension::provideMethods(ExtensionMethods &methods)
 	methods.push_back(new MysqlNextRow());
 	methods.push_back(new MysqlNumFields());
 	methods.push_back(new MysqlNumRows());
+	methods.push_back(new MysqlPing());
 	methods.push_back(new MysqlQuery());
 	methods.push_back(new MysqlRealEscapeString());
 	methods.push_back(new MysqlRealConnect());

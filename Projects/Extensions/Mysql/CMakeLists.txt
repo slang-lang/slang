@@ -13,6 +13,7 @@ SET(SOURCES
 	Info.cpp
 	Init.cpp
 	MysqlExtension.cpp
+	MysqlPing.cpp
 	MysqlRealEscapeString.cpp
 	MysqlSelectDB.cpp
 	NextResult.cpp
@@ -39,6 +40,7 @@ SET(HEADERS
 	Init.h
 	MysqlDataSeek.h
 	MysqlExtension.h
+	MysqlPing.cpp
 	MysqlRealEscapeString.h
 	MysqlSelectDB.h
 	MysqlStat.h
