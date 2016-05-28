@@ -39,6 +39,34 @@ TokenList Parser::collectScopeTokens(TokenIterator& token)
 	return tokens;
 }
 
+// syntax:
+// <visibility> <identifier> <identifier> ;
+bool Parser::isAlternateMemberDeclaration(TokenIterator start)
+{
+	TokenList tokens;
+
+	tokens.push_back(Token(Token::Type::VISIBILITY));
+	tokens.push_back(Token(Token::Type::IDENTIFER));
+	tokens.push_back(Token(Token::Type::IDENTIFER));
+	tokens.push_back(Token(Token::Type::SEMICOLON));
+
+	return checkSynthax(start, tokens);
+}
+
+// syntax:
+// <visibility> <type> <type> (
+bool Parser::isAlternateMethodDeclaration(TokenIterator start)
+{
+	TokenList tokens;
+
+	tokens.push_back(Token(Token::Type::VISIBILITY));
+	tokens.push_back(Token(Token::Type::TYPE));
+	tokens.push_back(Token(Token::Type::TYPE));
+	tokens.push_back(Token(Token::Type::PARENTHESIS_OPEN));
+
+	return checkSynthax(start, tokens);
+}
+
 // interface declaration:
 // <visibility> [language feature] interface <identifier> { ... }
 bool Parser::isInterfaceDeclaration(TokenIterator start)
@@ -83,16 +111,11 @@ bool Parser::isLocalDeclaration(TokenIterator start)
 // <visibility> <type> <identifier> ;
 bool Parser::isMemberDeclaration(TokenIterator start)
 {
-	// initialization is not allowed during member creation
-
 	TokenList tokens;
 
 	tokens.push_back(Token(Token::Type::VISIBILITY));
 	tokens.push_back(Token(Token::Type::TYPE));
 	tokens.push_back(Token(Token::Type::IDENTIFER));
-	//tokens.push_back(Token(Token::Type::LANGUAGEFEATURE, true));
-	//tokens.push_back(Token(Token::Type::ASSIGN, true));
-	//tokens.push_back(Token(Token::Type::IDENTIFER, true));
 	tokens.push_back(Token(Token::Type::SEMICOLON));
 
 	return checkSynthax(start, tokens);
