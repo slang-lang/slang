@@ -37,5 +37,6 @@ public object Main
 	public void Main(int argc = 0, string argv = "")
 	{
 		DerivedObject derived = new DerivedObject(5);
+		print("derived.mValue = " + derived.mValue);
 	}
 }
