@@ -12,6 +12,8 @@ public object Main {
 	}
 
 	private bool TestCase1() modify {
+		print("TestCase 1: Double");
+
 		Double value = new Double();
 
 		assert( !value.Value() );
@@ -23,6 +25,8 @@ public object Main {
 	}
 
 	private bool TestCase2() const {
+		print("TestCase 2");
+
 		assert( false );
 		return false;
 	}

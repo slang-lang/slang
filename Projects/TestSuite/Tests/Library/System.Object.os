@@ -29,9 +29,12 @@ public object Main {
 	public void Main(int argc, string args) {
 		assert( TestCase1() );
 		assert( TestCase2() );
+		assert( ! TestCase3() );
 	}
 
-	public bool TestCase1() const {
+	private bool TestCase1() const {
+		print("TestCase 1");
+
 		IObjectImplementation obj = new IObjectImplementation();
 
 		print(obj.ToString());
@@ -39,10 +42,20 @@ public object Main {
 		return obj;
 	}
 
-	public bool TestCase2() const {
+	private bool TestCase2() const {
+		print("TestCase 2");
+
 		TObjectDerivate obj = new TObjectDerivate();
 
 		print(obj.ToString());
+
+		return obj;
+	}
+
+	private bool TestCase3() const {
+		print("TestCase 3");
+
+		TObjectDerivate obj;
 
 		return obj;
 	}
