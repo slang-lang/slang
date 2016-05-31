@@ -11,6 +11,7 @@ public object Main {
 		assert( TestCase4() );
 		assert( TestCase5() );
 		assert( TestCase6() );
+		assert( TestCase7() );
 	}
 
 	private bool TestCase1() const {
@@ -69,6 +70,18 @@ public object Main {
 		print(str.Value());
 
 		return str.Value() == "Thwas was a string";
+	}
+
+	private bool TestCase7() modify {
+		print("TestCase 7: String.ReplaceAll(\"SELECT * FROM parking_tickets WHERE valid_thru >= :valid_thru\", \"2016-05-31\")");
+
+		String str = new String("SELECT * FROM parking_tickets WHERE valid_thru >= :valid_thru");
+		assert(str.EndsWith(":valid_thru"));
+
+		bool result = str.ReplaceAll(":valid_thru", "2016-05-31");
+		print(str.Value());
+
+		return result;
 	}
 
 }
