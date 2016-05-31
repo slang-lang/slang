@@ -1,24 +1,27 @@
 
-public namespace Mysql
-{
-	public object Settings
-	{
+public namespace Mysql {
+
+	public object Settings {
 		private bool mAutoEscaping;
 
-		public void Settings()
-		{
+		public void Settings() {
 			mAutoEscaping = false;
 		}
 
-		public bool getAutoEscaping() const
-		{
+		public string ToString() const {
+			return "Settings={" +
+					"mAutoEscaping=" + mAutoEscaping + " " +
+				"}";
+		}
+
+		public bool getAutoEscaping() const {
 			return mAutoEscaping;
 		}
 
-		public void setAutoEscaping(bool state) modify
-		{
+		public void setAutoEscaping(bool state) modify {
 			mAutoEscaping = state;
 		}
 	}
+
 }
 

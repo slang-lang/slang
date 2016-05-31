@@ -5,6 +5,7 @@ import Exceptions;
 import Row;
 
 public namespace Mysql {
+
 	public object Result /*implements System.GDI.IResult*/ {
 		private int mAffectedRows;
 		private int mCurrentFieldIdx;
@@ -20,7 +21,7 @@ public namespace Mysql {
 		}
 
 		public string ToString() const {
-			return	"Result { " +
+			return	"Result={ " +
 					"Handle=" + mHandle + ", " +
 					"AffectedRows=" + mAffectedRows + ", " +
 					"NumRows=" + mNumRows + ", " +
@@ -101,5 +102,6 @@ public namespace Mysql {
 			return mNumRows;
 		}
 	}
+
 }
 
