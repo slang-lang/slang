@@ -6,9 +6,10 @@ import Result;
 import System.String;
 
 public namespace Mysql {
+
 	public object Query /*implements System.GDI.IQuery*/ {
 		private int mConnectionHandle;
-		private String mExecutedString;
+		private String mExecutedQuery;
 		private String mPreparedQuery;
 		private int mResultHandle;
 
@@ -27,32 +28,37 @@ public namespace Mysql {
 
 		public string ToString() const {
 			return	"Query { " +
-					"prepared: " + mPreparedQuery.Value() + " " +
-					"executed: " + mExecutedQuery.Value() + " " +
+					"prepared statement: \"" + mPreparedQuery.Value() + "\" " +
+					"executed statement: \"" + mExecutedQuery.Value() + "\" " +
 				"}";
 		}
 
 		public bool bind(string field, bool value) modify {
+			print("bind '" + field + "' with '" + value + "'");
 			// replace all occurances of field with value
 			return mPreparedQuery.ReplaceAll(field, string value);
 		}
 
 		public bool bind(string field, double value) modify {
+			print("bind '" + field + "' with '" + value + "'");
 			// replace field with value
 			return mPreparedQuery.ReplaceAll(field, string value);
 		}
 
 		public bool bind(string field, float value) modify {
+			print("bind '" + field + "' with '" + value + "'");
 			// replace field with value
 			return mPreparedQuery.ReplaceAll(field, string value);
 		}
 
 		public bool bind(string field, int value) modify {
+			print("bind '" + field + "' with '" + value + "'");
 			// replace field with value
 			return mPreparedQuery.ReplaceAll(field, string value);
 		}
 
 		public bool bind(string field, string value) modify {
+			print("bind '" + field + "' with '" + value + "'");
 			// replace field with value
 			return mPreparedQuery.ReplaceAll(field, value);
 		}

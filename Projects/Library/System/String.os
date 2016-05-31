@@ -1,6 +1,8 @@
 
 public namespace System {
+
 	public object String {
+
 		private string mValue;
 
 		public void String(string value = "") {
@@ -25,7 +27,7 @@ public namespace System {
 		public bool Replace(string oldStr, string newStr) modify {
 			int curPos = 0;
 			int oldLen = strlen(oldStr);
-			int origLen = strlen(mValue) - oldLen;
+			int origLen = strlen(mValue) - oldLen + 1;
 
 			while ( curPos < origLen ) {
 				string str = substr(mValue, curPos, oldLen);
@@ -109,5 +111,6 @@ public namespace System {
 			mValue = mValue + other.mValue;
 		}
 	}
+
 }
 

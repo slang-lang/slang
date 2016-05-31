@@ -17,7 +17,7 @@ public object Main {
 
 		MysqlDebugMode = true;
 
-		//conn.settings().setAutoEscaping(true);
+		//conn.settings().setAutoEscaping(true);	// caining is not supported (yet)
 		Settings s = conn.settings();
 		s.setAutoEscaping(true);
 

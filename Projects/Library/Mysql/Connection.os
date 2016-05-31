@@ -111,6 +111,11 @@ public namespace Mysql {
 			return (mHandle != 0);
 		}
 
+		public bool ping() const {
+			int error = mysql_ping(mHandle);
+			return error == 0;
+		}
+
 		public Result query(string queryStr) modify {
 			Result result;	// null object
 

@@ -18,7 +18,12 @@ public object Main {
 
 		query.prepare("SELECT * FROM parking_tickets WHERE valid_thru >= :valid_thru");
 		print(query.ToString());
-		query.bind(":valid_thru", "2016-05-21");
+
+		bool bind = query.bind(":valid_thru", "2016-05-21");
+		if ( !bind ) {
+			print("error while binding string");
+			exit(3);
+		}
 		print(query.ToString());
 
 		query.execute();

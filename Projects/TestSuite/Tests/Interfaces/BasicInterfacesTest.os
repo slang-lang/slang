@@ -1,43 +1,51 @@
 #!/usr/local/bin/oscript
 
-public namespace InterfacesTest
+public interface IGetBox {
+	public int GetBox() const;
+}
+
+public object Boxhouse implements IGetBox {
+	public int GetBox() const {
+		return 173;
+	}
+}
+
+public interface IGetBoxType {
+	public string GetBoxType(int boxId) const;
+}
+
+public object Warehouse
+	extends Boxhouse
+	implements IGetBoxType
 {
-	public interface IWarehouse
-	{
-		public int GetBox() const;
-		public string GetBoxType(int boxId) const;
+//	public string GetBoxType(int boxId) const { return "bla"; }
+}
+
+public object Main {
+	public void Main(int argc = 0, string argv = "") {
+		assert( TestCase1() );
+		assert( TestCase2() );
 	}
 
-	public object Warehouse implements IWarehouse
-	{
-		public int GetBox() const
-		{
-			// either this..
-			return int 1;
-			// or that..
-			//return 1;
-		}
+	private bool TestCase1() {
+		Boxhouse boxhouse = new Boxhouse();
 
-		//public string GetBoxType(int boxId) const { return "bla"; }
+		print("boxhouse.GetBox() = " + boxhouse.GetBox());
+
+		delete boxhouse;	// this is not necessary but perfectly valid
+
+		return true;
 	}
 
-	public object Main
-	{
-		public void Main(int argc = 0, string argv = "")
-		{
-			test();
-		}
+	private bool TestCase2() {
+		Warehouse warehouse = new Warehouse();
 
-		private void test()
-		{
-			Warehouse warehouse = new Warehouse();
+		print("warehouse.GetBox() = " + warehouse.GetBox());
+		print("warehouse.GetBoxType(1389) = " + warehouse.GetBoxType(1389) );
 
-			print("IWarehouse.GetBox() = " + warehouse.GetBox());
+		delete warehouse;	// this is not necessary but perfectly valid
 
-			warehouse.GetBoxType(17);
-
-			delete warehouse;	// this is not necessary but perfectly valid
-		}
+		return false;
 	}
 }
 
