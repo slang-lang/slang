@@ -1,6 +1,9 @@
 
-public namespace Mysql
-{
+import System.Exception;
+
+public namespace Mysql {
+
+/*
 	public object Exception {
 		private string mMessage;
 
@@ -12,7 +15,9 @@ public namespace Mysql
 			return mMessage;
 		}
 	}
+*/
 
 	public object OutOfBoundsException replicates Exception;
+
 }
 

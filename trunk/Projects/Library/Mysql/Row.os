@@ -2,10 +2,9 @@
 import Entry;
 import Exceptions;
 
-public namespace Mysql
-{
-	public object Row
-	{
+public namespace Mysql {
+
+	public object Row {
 		private int mNumFields;
 		private int mResultHandle;
 
@@ -15,6 +14,13 @@ public namespace Mysql
 			mNumFields = mysql_num_fields(mResultHandle);
 		}
 		public void ~Row() {
+		}
+
+		public string ToString() const {
+			return "Row={" +
+					"mNumFields=" + mNumFields + ", " +
+					"mResultHandle=" + mResultHandle + " " +
+				"}";
 		}
 
 		public Entry getEntry(int fieldIdx) {
@@ -74,4 +80,5 @@ public namespace Mysql
 			return result;
 		}
 	}
+
 }

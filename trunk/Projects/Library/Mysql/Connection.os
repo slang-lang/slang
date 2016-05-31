@@ -62,7 +62,7 @@ public namespace Mysql {
 		}
 
 		public Query createQuery(string queryStr = "") const {
-			return new Query(mHandle, queryStr);
+			return new Query(this, queryStr);
 		}
 
 		public string error() const {
