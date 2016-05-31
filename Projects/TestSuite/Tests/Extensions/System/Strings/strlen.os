@@ -23,12 +23,12 @@ public object Main
 
 	private bool TestCase2() const
 	{
-		print("TestCase 2: String.Size()");
+		print("TestCase 2: String.Length()");
 
 		String str = new String("This is a string");
-		print("str.Size() = "+ str.Size());
+		print("str.Length() = "+ str.Length());
 
-		return str.Size() == 16;
+		return str.Length() == 16;
 	}
 }
 
