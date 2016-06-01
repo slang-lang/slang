@@ -29,6 +29,7 @@ public namespace Mysql {
 		}
 
 		public void ~Connection() {
+			print("~Connection()");
 			if ( mHandle != 0 ) {
 				close();
 			}

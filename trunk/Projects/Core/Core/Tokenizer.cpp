@@ -95,7 +95,7 @@ Token Tokenizer::createToken(const std::string& con, const Utils::Position& posi
 	else if ( content == "%" ) { category = Token::Category::Operator; type = Token::Type::MATH_MODULO; }
 	else if ( content == "*" ) { category = Token::Category::Operator; type = Token::Type::MATH_MULTIPLY; }
 	else if ( content == "-" ) { category = Token::Category::Operator; type = Token::Type::MATH_SUBTRACT; }
-	else if ( content == "!" ) { category = Token::Category::Operator; type = Token::Type::NOT; }
+	else if ( content == "!" ) { category = Token::Category::Operator; type = Token::Type::OPERATOR_NOT; }
 	else if ( content == "~" ) { category = Token::Category::Operator; type = Token::Type::TILDE; }
 	else if ( isBoolean(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_BOOLEAN; }
 	else if ( isDouble(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_DOUBLE;
@@ -420,7 +420,7 @@ void Tokenizer::mergeBooleanOperators()
 			// ... and add OR instead
 			tmp.push_back(Token(Token::Category::Operator, Token::Type::OR, "||", token->position()));
 		}
-		else if ( (lastType == Token::Type::NOT) && (activeType == Token::Type::BITAND) ) {
+		else if ( (lastType == Token::Type::OPERATOR_NOT) && (activeType == Token::Type::BITAND) ) {
 			// !& negative and
 			changed = true;
 			// remove last added token ...
@@ -428,7 +428,7 @@ void Tokenizer::mergeBooleanOperators()
 			// ... and add OR instead
 			tmp.push_back(Token(Token::Category::Operator, Token::Type::NAND, "!&", token->position()));
 		}
-		else if ( (lastType == Token::Type::NOT) && (activeType == Token::Type::BITOR) ) {
+		else if ( (lastType == Token::Type::OPERATOR_NOT) && (activeType == Token::Type::BITOR) ) {
 			// !| negative or
 			changed = true;
 			// remove last added token ...
@@ -502,7 +502,7 @@ void Tokenizer::mergeInfixPostfixOperators()
 			// remove last added token ...
 			tmp.pop_back();
 			// ... and add OR instead
-			tmp.push_back(Token(Token::Category::Operator, Token::Type::DECREMENT, "--", token->position()));
+			tmp.push_back(Token(Token::Category::Operator, Token::Type::OPERATOR_DECREMENT, "--", token->position()));
 		}
 		else if ( (lastType == Token::Type::MATH_ADDITION) && (activeType == Token::Type::MATH_ADDITION) ) {
 			// ++
@@ -510,7 +510,7 @@ void Tokenizer::mergeInfixPostfixOperators()
 			// remove last added token ...
 			tmp.pop_back();
 			// ... and add AND instead
-			tmp.push_back(Token(Token::Category::Operator, Token::Type::INCREMENT, "++", token->position()));
+			tmp.push_back(Token(Token::Category::Operator, Token::Type::OPERATOR_INCREMENT, "++", token->position()));
 		}
 
 		lastType = token->type();
@@ -667,7 +667,7 @@ void Tokenizer::replaceAssignments()
 			// ... and add ASSIGN_ADD instead
 			tmp.push_back(Token(Token::Category::Assignment, Token::Type::ASSIGN_BITCOMPLEMENT, "~=", token->position()));
 		}
-		else if ( (lastType == Token::Type::NOT) && (activeType == Token::Type::ASSIGN) ) {
+		else if ( (lastType == Token::Type::OPERATOR_NOT) && (activeType == Token::Type::ASSIGN) ) {
 			// !=
 			changed = true;
 			// remove last added token ...

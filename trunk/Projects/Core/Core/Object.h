@@ -61,16 +61,10 @@ public:
 	void operator= (const Object& other);
 
 public:	// Symbol::IType implementation & RTTI
-	const std::string& Filename() const {
-		return mFilename;
-	}
-	const std::string& Typename() const {
-		return mTypename;
-	}
+	const std::string& Filename() const { return mFilename; }
+	const std::string& Typename() const { return mTypename; }
 
-	void overrideTypename(const std::string& type) {
-		mTypename = type;
-	}
+	void overrideTypename(const std::string& type) { mTypename = type; }
 
 public:	// Setup
 	void addInheritance(const Designtime::Ancestor& ancestor, Object* inheritance);
@@ -104,12 +98,13 @@ public:	// Operators
 	virtual void operator_bitand(Object *other);
 	virtual void operator_bitcomplement(Object *other);
 	virtual void operator_bitor(Object *other);
+	virtual bool operator_bool() const;
 	virtual void operator_divide(Object *other);
-	virtual bool operator_equal(Object *other);
-	virtual bool operator_greater(Object *other);
-	virtual bool operator_greater_equal(Object *other);
-	virtual bool operator_less(Object *other);
-	virtual bool operator_less_equal(Object *other);
+	virtual bool operator_equal(Object *other) const;
+	virtual bool operator_greater(Object *other) const;
+	virtual bool operator_greater_equal(Object *other) const;
+	virtual bool operator_less(Object *other) const;
+	virtual bool operator_less_equal(Object *other) const;
 	virtual void operator_modulo(Object *other);
 	virtual void operator_multiply(Object *other);
 	virtual void operator_plus(Object *other);

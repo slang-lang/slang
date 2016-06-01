@@ -32,28 +32,28 @@ public:	// Symbol::IType implementation
 	const std::string& getTypeName() const;
 
 public:	// Operators
-	virtual operator bool() const;
-
 	virtual void operator_assign(IntegerObject *other);
 	virtual void operator_assign(Object *other);
+
+	virtual bool operator_bool() const;
 
 	virtual void operator_divide(IntegerObject *other);
 	virtual void operator_divide(Object *other);
 
-	virtual bool operator_equal(IntegerObject *other);
-	virtual bool operator_equal(Object *other);
+	virtual bool operator_equal(IntegerObject *other) const;
+	virtual bool operator_equal(Object *other) const;
 
-	virtual bool operator_greater(IntegerObject *other);
-	virtual bool operator_greater(Object *other);
+	virtual bool operator_greater(IntegerObject *other) const;
+	virtual bool operator_greater(Object *other) const;
 
-	virtual bool operator_greater_equal(IntegerObject *other);
-	virtual bool operator_greater_equal(Object *other);
+	virtual bool operator_greater_equal(IntegerObject *other) const;
+	virtual bool operator_greater_equal(Object *other) const;
 
-	virtual bool operator_less(IntegerObject *other);
-	virtual bool operator_less(Object *other);
+	virtual bool operator_less(IntegerObject *other) const;
+	virtual bool operator_less(Object *other) const;
 
-	virtual bool operator_less_equal(IntegerObject *other);
-	virtual bool operator_less_equal(Object *other);
+	virtual bool operator_less_equal(IntegerObject *other) const;
+	virtual bool operator_less_equal(Object *other) const;
 
 	virtual void operator_modulo(IntegerObject *other);
 	virtual void operator_modulo(Object *other);

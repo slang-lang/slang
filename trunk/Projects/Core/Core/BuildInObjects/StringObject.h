@@ -32,13 +32,13 @@ public:	// Symbol::IType implementation
 	const std::string& getTypeName() const;
 
 public:	// Operators
-	virtual operator bool() const;
-
 	virtual void operator_assign(Object *other);
 	virtual void operator_assign(StringObject *other);
 
-	virtual bool operator_equal(Object *other);
-	virtual bool operator_equal(StringObject *other);
+	virtual bool operator_bool() const;
+
+	virtual bool operator_equal(Object *other) const;
+	virtual bool operator_equal(StringObject *other) const;
 
 	virtual void operator_plus(Object *other);
 	virtual void operator_plus(StringObject *other);

@@ -68,11 +68,6 @@ NumberObject::NumberObject(const Object& other)
 	}
 }
 
-NumberObject::operator bool() const
-{
-	return mNativeValue != 0.0;
-}
-
 double NumberObject::getNativeValue() const
 {
 	return mNativeValue;
@@ -85,12 +80,13 @@ const std::string& NumberObject::getTypeName() const
 
 std::string NumberObject::getValue() const
 {
-	return mValue;
+	//return mValue;
+	return Tools::toString(mNativeValue);
 }
 
 bool NumberObject::isValid() const
 {
-	return mNativeValue != 0.0;
+	return mIsConstructed;
 }
 
 void NumberObject::operator_assign(NumberObject *other)
@@ -102,7 +98,10 @@ void NumberObject::operator_assign(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == DoubleObject::TYPENAME ||
+	if ( target == BoolObject::TYPENAME ) {
+		setNativeValue(other->isValid());
+	}
+	else if ( target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ) {
@@ -113,6 +112,11 @@ void NumberObject::operator_assign(Object *other)
 	else {
 		Object::operator_assign(other);
 	}
+}
+
+bool NumberObject::operator_bool() const
+{
+	return mNativeValue != 0.0;
 }
 
 void NumberObject::operator_divide(NumberObject *other)
@@ -137,12 +141,12 @@ void NumberObject::operator_divide(Object *other)
 	}
 }
 
-bool NumberObject::operator_equal(NumberObject *other)
+bool NumberObject::operator_equal(NumberObject *other) const
 {
 	return (mNativeValue == other->getNativeValue());
 }
 
-bool NumberObject::operator_equal(Object *other)
+bool NumberObject::operator_equal(Object *other) const
 {
 	std::string target = other->Typename();
 
@@ -158,12 +162,12 @@ bool NumberObject::operator_equal(Object *other)
 	return Object::operator_equal(other);
 }
 
-bool NumberObject::operator_greater(NumberObject *other)
+bool NumberObject::operator_greater(NumberObject *other) const
 {
 	return (mNativeValue > other->getNativeValue());
 }
 
-bool NumberObject::operator_greater(Object *other)
+bool NumberObject::operator_greater(Object *other) const
 {
 	std::string target = other->Typename();
 
@@ -179,12 +183,12 @@ bool NumberObject::operator_greater(Object *other)
 	return Object::operator_greater(other);
 }
 
-bool NumberObject::operator_greater_equal(NumberObject *other)
+bool NumberObject::operator_greater_equal(NumberObject *other) const
 {
 	return (mNativeValue >= other->getNativeValue());
 }
 
-bool NumberObject::operator_greater_equal(Object *other)
+bool NumberObject::operator_greater_equal(Object *other) const
 {
 	std::string target = other->Typename();
 
@@ -200,12 +204,12 @@ bool NumberObject::operator_greater_equal(Object *other)
 	return Object::operator_greater_equal(other);
 }
 
-bool NumberObject::operator_less(NumberObject *other)
+bool NumberObject::operator_less(NumberObject *other) const
 {
 	return (mNativeValue < other->getNativeValue());
 }
 
-bool NumberObject::operator_less(Object *other)
+bool NumberObject::operator_less(Object *other) const
 {
 	std::string target = other->Typename();
 
@@ -221,12 +225,12 @@ bool NumberObject::operator_less(Object *other)
 	return Object::operator_less(other);
 }
 
-bool NumberObject::operator_less_equal(NumberObject *other)
+bool NumberObject::operator_less_equal(NumberObject *other) const
 {
 	return (mNativeValue <= other->getNativeValue());
 }
 
-bool NumberObject::operator_less_equal(Object *other)
+bool NumberObject::operator_less_equal(Object *other) const
 {
 	std::string target = other->Typename();
 
@@ -331,13 +335,13 @@ void NumberObject::operator_unary_not()
 void NumberObject::setNativeValue(double value)
 {
 	mNativeValue = value;
-	mValue = Tools::toString(value);
+	//mValue = Tools::toString(value);
 }
 
 void NumberObject::setValue(const std::string& value)
 {
 	mNativeValue = Tools::stringToNumber(value);
-	mValue = Tools::toString(mNativeValue);		// this conversion is necessary because these two values could drift apart because std::string can also hold floating point values
+	//mValue = Tools::toString(mNativeValue);		// this conversion is necessary because these two values could drift apart because std::string can also hold floating point values
 }
 
 std::string NumberObject::ToString() const

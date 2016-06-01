@@ -36,8 +36,8 @@ public:
 	GlobalScope* getGlobalScope() const;
 
 public:
-	void addBlueprint(const Designtime::BluePrint& object, bool doPreProcessing = true);
-	void addPrototype(const Designtime::Prototype& prototype, bool doPreProcessing = true);
+	void addBlueprint(const Designtime::BluePrint& object);
+	void addPrototype(const Designtime::Prototype& prototype);
 
 	Runtime::Object* createInstance(const std::string& type, const std::string& name = ANONYMOUS_OBJECT, const std::string& prototype = "");
 
@@ -45,6 +45,8 @@ public:
 	void removeReference(Runtime::Object *object);
 
 	bool isAlreadyKnown(const std::string& name) const;
+
+	void rebuildBluePrints();
 
 protected:
 

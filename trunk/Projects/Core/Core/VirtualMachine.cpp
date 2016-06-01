@@ -99,7 +99,7 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 	}
 */
 
-	bool foundMainObject = false;
+	Designtime::BluePrintList::iterator mainIt;
 
 	Designtime::BluePrintList objects = analyser.getBluePrints();
 	for ( Designtime::BluePrintList::iterator it = objects.begin(); it != objects.end(); ++it ) {
@@ -107,23 +107,24 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 		mRepository->addBlueprint((*it));
 
 		if ( it->Filename() == mScriptFile && it->Typename() == "Main" ) {
-			foundMainObject = true;
-
-			// create an instance of our Main object
-			mObjects.insert(std::make_pair(
-				it->Typename(), mRepository->createInstance(it->Typename(), "main")
-			));
-
-			ObjectCollection::iterator objIt = mObjects.find(it->Typename());
-			assert(objIt != mObjects.end());
-
-			// ... and assign it to our script
-			script->assign(objIt->second);
+			mainIt = it;
 		}
 	}
 
-	if ( foundMainObject ) {
-		// execute this script's main object constructor
+	mRepository->rebuildBluePrints();
+
+	if ( mainIt != objects.end() ) {
+		// create an instance of our Main object ...
+		Runtime::Object *main = mRepository->createInstance(mainIt->Typename(), "main");
+		assert(main);
+
+		// ... store it ...
+		mObjects.insert(std::make_pair(mainIt->Typename(), main));
+
+		// ... and assign it to our script
+		script->assign(main);
+
+		// ... and finally execute this script's main object constructor
 		script->construct(params);
 	}
 

@@ -68,11 +68,6 @@ FloatObject::FloatObject(const Object& other)
 	}
 }
 
-FloatObject::operator bool() const
-{
-	return mNativeValue != 0.f;
-}
-
 float FloatObject::getNativeValue() const
 {
 	return mNativeValue;
@@ -85,12 +80,13 @@ const std::string& FloatObject::getTypeName() const
 
 std::string FloatObject::getValue() const
 {
-	return mValue;
+	//return mValue;
+	return Tools::toString(mNativeValue);
 }
 
 bool FloatObject::isValid() const
 {
-	return mNativeValue != 0.f;
+	return mIsConstructed;
 }
 
 void FloatObject::operator_assign(FloatObject *other)
@@ -102,7 +98,10 @@ void FloatObject::operator_assign(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == DoubleObject::TYPENAME ||
+	if ( target == BoolObject::TYPENAME ) {
+		setNativeValue(other->isValid());
+	}
+	else if ( target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ) {
@@ -113,6 +112,11 @@ void FloatObject::operator_assign(Object *other)
 	else {
 		Object::operator_assign(other);
 	}
+}
+
+bool FloatObject::operator_bool() const
+{
+	return mNativeValue != 0.f;
 }
 
 void FloatObject::operator_divide(FloatObject *other)
@@ -137,12 +141,12 @@ void FloatObject::operator_divide(Object *other)
 	}
 }
 
-bool FloatObject::operator_equal(FloatObject *other)
+bool FloatObject::operator_equal(FloatObject *other) const
 {
 	return (mNativeValue == other->getNativeValue());
 }
 
-bool FloatObject::operator_equal(Object *other)
+bool FloatObject::operator_equal(Object *other) const
 {
 	std::string target = other->Typename();
 
@@ -158,12 +162,12 @@ bool FloatObject::operator_equal(Object *other)
 	return Object::operator_equal(other);
 }
 
-bool FloatObject::operator_greater(FloatObject *other)
+bool FloatObject::operator_greater(FloatObject *other) const
 {
 	return (mNativeValue > other->getNativeValue());
 }
 
-bool FloatObject::operator_greater(Object *other)
+bool FloatObject::operator_greater(Object *other) const
 {
 	std::string target = other->Typename();
 
@@ -179,12 +183,12 @@ bool FloatObject::operator_greater(Object *other)
 	return Object::operator_greater(other);
 }
 
-bool FloatObject::operator_greater_equal(FloatObject *other)
+bool FloatObject::operator_greater_equal(FloatObject *other) const
 {
 	return (mNativeValue >= other->getNativeValue());
 }
 
-bool FloatObject::operator_greater_equal(Object *other)
+bool FloatObject::operator_greater_equal(Object *other) const
 {
 	std::string target = other->Typename();
 
@@ -200,12 +204,12 @@ bool FloatObject::operator_greater_equal(Object *other)
 	return Object::operator_greater_equal(other);
 }
 
-bool FloatObject::operator_less(FloatObject *other)
+bool FloatObject::operator_less(FloatObject *other) const
 {
 	return (mNativeValue < other->getNativeValue());
 }
 
-bool FloatObject::operator_less(Object *other)
+bool FloatObject::operator_less(Object *other) const
 {
 	std::string target = other->Typename();
 
@@ -221,12 +225,12 @@ bool FloatObject::operator_less(Object *other)
 	return Object::operator_less(other);
 }
 
-bool FloatObject::operator_less_equal(FloatObject *other)
+bool FloatObject::operator_less_equal(FloatObject *other) const
 {
 	return (mNativeValue <= other->getNativeValue());
 }
 
-bool FloatObject::operator_less_equal(Object *other)
+bool FloatObject::operator_less_equal(Object *other) const
 {
 	std::string target = other->Typename();
 
@@ -331,13 +335,13 @@ void FloatObject::operator_unary_not()
 void FloatObject::setNativeValue(float value)
 {
 	mNativeValue = value;
-	mValue = Tools::toString(value);
+	//mValue = Tools::toString(value);
 }
 
 void FloatObject::setValue(const std::string& value)
 {
 	mNativeValue = Tools::stringToFloat(value);
-	mValue = Tools::toString(mNativeValue);		// this conversion is necessary because these two values could drift apart because std::string can also hold floating point values
+	//mValue = Tools::toString(mNativeValue);		// this conversion is necessary because these two values could drift apart because std::string can also hold floating point values
 }
 
 std::string FloatObject::ToString() const

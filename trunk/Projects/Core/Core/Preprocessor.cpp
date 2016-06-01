@@ -191,8 +191,8 @@ void Preprocessor::generateObject()
 {
 	assert(mBluePrint);
 
-	typedef std::list<TokenIterator> TokenList;
-	TokenList visList;
+	typedef std::list<TokenIterator> TokenIteratorList;
+	TokenIteratorList visList;
 
 	// find all visibility keywords which we use as starting point for our interpreter
 	for ( TokenIterator it = mTokens.begin(); it != mTokens.end(); ++it ) {
@@ -202,13 +202,13 @@ void Preprocessor::generateObject()
 	}
 
 	// loop over all visibility declarations and check if we have a member declaration or a method declaration
-	for ( TokenList::const_iterator it = visList.begin(); it != visList.end(); ++it ) {
-		if ( Parser::isMemberDeclaration((*it)) ) {
+	for ( TokenIteratorList::const_iterator it = visList.begin(); it != visList.end(); ++it ) {
+		if ( Parser::isMemberDeclaration((*it)) || Parser::isAlternateMemberDeclaration((*it)) ) {
 			Designtime::BluePrint *member = createMember((*it));
 
 			mBluePrint->define(member->getName(), member);
 		}
-		else if ( Parser::isMethodDeclaration((*it)) ) {
+		else if ( Parser::isMethodDeclaration((*it)) || Parser::isAlternateMethodDeclaration((*it)) ) {
 			Runtime::Method *method = createMethod((*it));
 
 			mBluePrint->defineMethod(method->getName(), method);

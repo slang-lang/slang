@@ -46,7 +46,7 @@ UserObject::UserObject(const Object& object)
 	setValue(object.getValue());
 }
 
-UserObject::operator bool()
+bool UserObject::operator_bool() const
 {
 	return isValid();
 }

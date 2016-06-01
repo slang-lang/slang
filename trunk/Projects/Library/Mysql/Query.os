@@ -14,7 +14,7 @@ public namespace Mysql {
 		private String mPreparedQuery;
 		private int mResultHandle;
 
-		public void Query(Connection connection, string queryStr = "") {
+		public void Query(Connection connection ref, string queryStr = "") {
 			mConnection = connection;
 			mExecutedQuery = new String();
 			mPreparedQuery = new String();
@@ -24,6 +24,7 @@ public namespace Mysql {
 		}
 
 		public void ~Query() {
+			print("~Query()");
 			if ( mResultHandle ) {
 				mysql_free_result(mResultHandle);
 			}
@@ -66,12 +67,12 @@ public namespace Mysql {
 			return mExecutedQuery.ReplaceAll(field, value);
 		}
 
-		public Result execute(string query = "") modify {
+		public Result execute(string queryStr = "") modify {
 			Result result;	// invalid object
 
-			if ( query != "" ) {
+			if ( queryStr != "" ) {
 				assert(false);
-				prepare(query);
+				prepare(queryStr);
 			}
 
 			if ( MysqlDebugMode ) {
@@ -88,7 +89,16 @@ public namespace Mysql {
 			return result;
 */
 
-			return mConnection.query(mExecutedQuery.Value());
+                        int error = mysql_query(mConnection.mHandle, queryStr);
+                        if ( error != 0 ) {
+                                // error while query execution
+                                return result;  // return uninitialized result object
+                        }
+
+print(mConnection.ToString());
+
+                        int handle = mysql_store_result(mConnection.mHandle);
+                        return new Result(handle);
 		}
 
 		public void prepare(string query) modify {
