@@ -30,6 +30,15 @@ private object TestObject {
 		return mValue;
 	}
 
+	public void operator+(int other) modify {
+		print("operator+");
+		mValue = mValue + other;
+	}
+	public int +operator() const {
+		print("+operator");
+		return mValue;
+	}
+
 	public void operator++() modify {
 		print("operator++");
 		mValue = mValue++;
@@ -45,6 +54,9 @@ public object Main {
 	public void Main(int argc = 0, string args = "") {
 		assert( TestCase1() );
 		assert( TestCase2() );
+		assert( TestCase3() );
+		assert( TestCase4() );
+		assert( TestCase5() );
 	}
 
 	private bool TestCase1() const {
@@ -71,5 +83,52 @@ public object Main {
 		print(obj.ToString());
 
 		return true;
+	}
+
+	private bool TestCase3() const {
+		print("TestCase 3: modern value operator");
+
+		TestObject obj = new TestObject(1);
+		print(obj.ToString());
+
+		int value = obj;
+
+		print("value = " + value);
+
+		return value == 1;
+	}
+
+	private bool TestCase4() const {
+		print("TestCase 4: modern + operator");
+
+		TestObject obj = new TestObject(1);
+		print(obj.ToString());
+
+		int value = 5 + obj;
+
+		print("value = " + value);
+
+		return value == 6;
+	}
+
+	private bool TestCase5() const {
+		print("TestCase 5: modern compare operator");
+
+		TestObject obj = new TestObject(1);
+		print(obj.ToString());
+
+		int value = 4;
+		print("value = " + value);
+
+		print("value == obj: " + (value == obj));
+		print("value > obj: " + (value > obj));
+		print("value >= obj: " + (value >= obj));
+		print("value < obj: " + (value < obj));
+		print("value <= obj: " + (value <= obj));
+
+		print("value - 3 == obj: " + (value - 3 == obj));
+		print("value == obj + 3: " + (value == obj + 3));
+
+		return obj;
 	}
 }

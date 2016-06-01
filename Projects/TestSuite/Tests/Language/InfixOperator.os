@@ -7,8 +7,8 @@ public namespace InfixOperator
 		public void Main(int argc = 0, string argv = "")
 		{
 			assert( TestCase1() );
-			//assert( TestCase2() );
-			//assert( TestCase3() );
+			assert( TestCase2() );
+			assert( TestCase3() );
 			assert( TestCase4() );
 		}
 
@@ -17,6 +17,12 @@ public namespace InfixOperator
 			print("TestCase1: unary ! operator");
 
 			bool value = false;
+			print(value);
+			print(!value);
+
+			int intVal = 0;
+			print(intVal);
+			print(!intVal);
 
 			return !value;
 		}
@@ -26,7 +32,7 @@ public namespace InfixOperator
 			print("TestCase2: infix -- operator");
 
 			int value = 2;
-			--value;
+			value = --value;
 
 			return value == 1;
 		}
@@ -36,7 +42,7 @@ public namespace InfixOperator
 			print("TestCase3: infix ++ operator");
 
 			int value = 2;
-			++value;
+			value = ++value;
 
 			return value == 3;
 		}

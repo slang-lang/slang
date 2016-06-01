@@ -9,7 +9,8 @@ print("Starting performance test (by counting from " . $lowerbound . " to " . $u
 
 while ( $lowerbound < $upperbound ) {
 	//print("lowerbound = " . $lowerbound);
-	$lowerbound = $lowerbound + 1;
+	//$lowerbound = $lowerbound + 1;
+	$lowerbound++;
 }
 
 print("Finished performance test.\n");
