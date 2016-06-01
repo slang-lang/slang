@@ -862,7 +862,8 @@ void Tokenizer::replaceConstDataTypes()
  */
 void Tokenizer::replaceOperators()
 {
-	TokenList::iterator token = mTokens.begin();
+/*
+	TokenIteratorMutable token = mTokens.begin();
 
 	// try to combine all operator tokens
 	while ( token != mTokens.end() ) {
@@ -882,6 +883,38 @@ void Tokenizer::replaceOperators()
 		}
 
 		token++;
+	}
+}
+*/
+
+	TokenIteratorMutable token = mTokens.begin();
+	TokenIterator last = mTokens.end();
+
+	// try to combine all operator tokens
+	while ( token != mTokens.end() ) {
+		if ( last != mTokens.end() && (last->category() == Token::Category::Assignment || last->category() == Token::Category::Operator) &&
+				  token->type() == Token::Type::RESERVED_WORD && token->content() == RESERVED_WORD_OPERATOR ) {
+			// we found an operator
+
+			// retype current token ...
+			token->resetTypeTo(Token::Type::IDENTIFER);
+			token->resetContentTo(last->content() + RESERVED_WORD_OPERATOR);
+
+			// ... and erase the previous one
+			mTokens.erase(last);
+		}
+		else if ( last != mTokens.end() && last->type() == Token::Type::RESERVED_WORD && last->content() == RESERVED_WORD_OPERATOR ) {
+			// previous token was an "operator" token
+
+			// erase it ...
+			mTokens.erase(last);
+
+			// ... and retype current token
+			token->resetTypeTo(Token::Type::IDENTIFER);
+			token->resetContentTo(RESERVED_WORD_OPERATOR + (*token).content());
+		}
+
+		last = token++;
 	}
 }
 

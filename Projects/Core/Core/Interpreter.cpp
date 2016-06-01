@@ -203,22 +203,11 @@ Symbol* Interpreter::identifyMethod(TokenIterator& token, const ParameterList& p
 	return result;
 }
 
+/*
+ * executes the given tokens in a seperate scope
+ */
 ControlFlow::E Interpreter::interpret(const TokenList& tokens, Object* result)
 {
-	// this creates a new scope
-/*
-	Interpreter interpreter(mParent, getScopeName());
-	interpreter.setConst(isConst());
-	interpreter.setFinal(isFinal());
-	interpreter.setLanguageFeatureState(getLanguageFeatureState());
-	interpreter.setRepository(mRepository);
-	interpreter.setTokens(tokens);
-
-	ControlFlow::E controlflow = interpreter.execute(result);
-
-	return controlflow;
-*/
-
 	// reset control flow to normal
 	mControlFlow = ControlFlow::Normal;
 
@@ -380,6 +369,14 @@ void Interpreter::parseInfixPostfix(Object *result, TokenIterator& start)
 
 	// infix
 	switch ( op ) {
+		case Token::Type::DECREMENT: {
+			operator_unary_infix_decrement(result);
+			start++;
+		} break;
+		case Token::Type::INCREMENT: {
+			operator_unary_infix_increment(result);
+			start++;
+		} break;
 		case Token::Type::MATH_SUBTRACT: {
 			start++;
 			parseTerm(result, start);
@@ -406,11 +403,11 @@ void Interpreter::parseInfixPostfix(Object *result, TokenIterator& start)
 	// postfix
 	switch ( op ) {
 		case Token::Type::DECREMENT: {
-			operator_unary_decrement(result);
+			operator_unary_postfix_decrement(result);
 			start++;
 		} break;
 		case Token::Type::INCREMENT: {
-			operator_unary_increment(result);
+			operator_unary_postfix_increment(result);
 			start++;
 		} break;
 		case Token::Type::NOT: {
