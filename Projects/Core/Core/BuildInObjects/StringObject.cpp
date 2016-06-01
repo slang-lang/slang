@@ -67,11 +67,6 @@ StringObject::StringObject(const Object& other)
 	}
 }
 
-StringObject::operator bool() const
-{
-	return !mNativeValue.empty();
-}
-
 std::string StringObject::getNativeValue() const
 {
 	return mNativeValue;
@@ -89,7 +84,7 @@ std::string StringObject::getValue() const
 
 bool StringObject::isValid() const
 {
-	return !mNativeValue.empty();
+	return mIsConstructed;
 }
 
 void StringObject::operator_assign(Object *other)
@@ -114,7 +109,12 @@ void StringObject::operator_assign(StringObject *other)
 	setNativeValue(other->getNativeValue());
 }
 
-bool StringObject::operator_equal(Object *other)
+bool StringObject::operator_bool() const
+{
+	return !mNativeValue.empty();
+}
+
+bool StringObject::operator_equal(Object *other) const
 {
 	std::string target = other->Typename();
 
@@ -127,7 +127,7 @@ bool StringObject::operator_equal(Object *other)
 	return Object::operator_equal(other);
 }
 
-bool StringObject::operator_equal(StringObject *other)
+bool StringObject::operator_equal(StringObject *other) const
 {
 	return (mNativeValue == other->getNativeValue());
 }

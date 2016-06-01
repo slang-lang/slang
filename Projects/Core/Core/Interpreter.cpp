@@ -369,11 +369,11 @@ void Interpreter::parseInfixPostfix(Object *result, TokenIterator& start)
 
 	// infix
 	switch ( op ) {
-		case Token::Type::DECREMENT: {
+		case Token::Type::OPERATOR_DECREMENT: {
 			operator_unary_infix_decrement(result);
 			start++;
 		} break;
-		case Token::Type::INCREMENT: {
+		case Token::Type::OPERATOR_INCREMENT: {
 			operator_unary_infix_increment(result);
 			start++;
 		} break;
@@ -382,7 +382,7 @@ void Interpreter::parseInfixPostfix(Object *result, TokenIterator& start)
 			parseTerm(result, start);
 			operator_unary_minus(result);
 		} break;
-		case Token::Type::NOT: {
+		case Token::Type::OPERATOR_NOT: {
 			start++;
 			parseTerm(result, start);
 			operator_unary_not(result);
@@ -402,15 +402,15 @@ void Interpreter::parseInfixPostfix(Object *result, TokenIterator& start)
 
 	// postfix
 	switch ( op ) {
-		case Token::Type::DECREMENT: {
+		case Token::Type::OPERATOR_DECREMENT: {
 			operator_unary_postfix_decrement(result);
 			start++;
 		} break;
-		case Token::Type::INCREMENT: {
+		case Token::Type::OPERATOR_INCREMENT: {
 			operator_unary_postfix_increment(result);
 			start++;
 		} break;
-		case Token::Type::NOT: {
+		case Token::Type::OPERATOR_NOT: {
 			operator_unary_validate(result);
 			start++;
 		} break;
@@ -545,7 +545,6 @@ void Interpreter::process(Object *result, TokenIterator& token, TokenIterator en
 				break;
 			default:
 				throw Utils::Exceptions::SyntaxError("invalid token '" + token->content() + "' found", token->position());
-				break;
 		}
 
 		token++;	// consume token
@@ -600,7 +599,8 @@ void Interpreter::process_delete(TokenIterator& token)
 			Object *object = static_cast<Object*>(symbol);
 			assert(object);
 
-			mControlFlow = object->Destructor();
+			//mControlFlow = object->Destructor();
+			mRepository->removeReference(object);
 
 			*object = Object(object->getName(), object->Filename(), object->Typename(), VALUE_NONE);
 		} break;
@@ -1012,7 +1012,7 @@ void Interpreter::process_print(TokenIterator& token)
 {
 	expect(Token::Type::PARENTHESIS_OPEN, token++);
 
-	StringObject text;
+	Object text;
 	expression(&text, token);
 
 	System::Print(text.getValue(), token->position());
@@ -1244,10 +1244,10 @@ void Interpreter::process_type(TokenIterator& token)
 		// execute assignment statement
 		expression(object, token);
 	}
-	else {
-		// call default constructor if one is present
-		//mControlFlow = object->Constructor(ParameterList());
-	}
+	//else {
+	//	// call default constructor if one is present
+	//	mControlFlow = object->Constructor(ParameterList());
+	//}
 
 	expect(Token::Type::SEMICOLON, token);	// make sure everything went exactly the way we wanted
 }

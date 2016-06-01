@@ -14,7 +14,7 @@
 #include <Core/BuildInObjects/UserObject.h>
 #include <Core/BuildInObjects/VoidObject.h>
 #include <Core/Consts.h>
-#include <Core/Object.h>
+#include <Core/Symbol.h>
 #include <Core/Tools.h>
 #include <Core/Utils/Exceptions.h>
 
@@ -91,9 +91,7 @@ void operator_binary_assign(Object *base, Object *other)
 			Parameter(other->getName(), other->Typename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
 		);
 
-		//std::cout << "operator=(" << toString(params) << ")" << std::endl;
-
-		Object tmp;
+		VoidObject tmp;
 		base->execute(&tmp, "operator=", params, 0);
 	}
 }
@@ -157,7 +155,7 @@ void operator_binary_bitand(Object *base, Object *other)
 			Parameter(other->getName(), other->Typename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
 		);
 
-		Object tmp;
+		VoidObject tmp;
 		base->execute(&tmp, "operator&", params, 0);
 	}
 }
@@ -221,7 +219,7 @@ void operator_binary_bitcomplement(Object *base, Object *other)
 			Parameter(other->getName(), other->Typename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
 		);
 
-		Object tmp;
+		VoidObject tmp;
 		base->execute(&tmp, "operator~", params, 0);
 	}
 }
@@ -285,7 +283,7 @@ void operator_binary_bitor(Object *base, Object *other)
 			Parameter(other->getName(), other->Typename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
 		);
 
-		Object tmp;
+		VoidObject tmp;
 		base->execute(&tmp, "operator|", params, 0);
 	}
 }
@@ -349,7 +347,7 @@ void operator_binary_divide(Object *base, Object *other)
 			Parameter(other->getName(), other->Typename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
 		);
 
-		Object tmp;
+		VoidObject tmp;
 		base->execute(&tmp, "operator/", params, 0);
 	}
 }
@@ -670,7 +668,7 @@ void operator_binary_modulo(Object *base, Object *other)
 			Parameter(other->getName(), other->Typename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
 		);
 
-		Object tmp;
+		VoidObject tmp;
 		base->execute(&tmp, "operator%", params, 0);
 	}
 }
@@ -734,7 +732,7 @@ void operator_binary_multiply(Object *base, Object *other)
 			Parameter(other->getName(), other->Typename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
 		);
 
-		Object tmp;
+		VoidObject tmp;
 		base->execute(&tmp, "operator*", params, 0);
 	}
 }
@@ -798,7 +796,7 @@ void operator_binary_plus(Object *base, Object *other)
 			Parameter(other->getName(), other->Typename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
 		);
 
-		Object tmp;
+		VoidObject tmp;
 		base->execute(&tmp, "operator+", params, 0);
 	}
 }
@@ -862,7 +860,7 @@ void operator_binary_subtract(Object *base, Object *other)
 			Parameter(other->getName(), other->Typename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
 		);
 
-		Object tmp;
+		VoidObject tmp;
 		base->execute(&tmp, "operator-", params, 0);
 	}
 }
@@ -918,7 +916,7 @@ void operator_unary_infix_decrement(Object *base)
 		*base = tmp;
 	}
 	else {
-		Object tmp;
+		VoidObject tmp;
 		base->execute(&tmp, "--operator", ParameterList(), 0);
 	}
 }
@@ -974,7 +972,7 @@ void operator_unary_infix_increment(Object *base)
 		*base = tmp;
 	}
 	else {
-		Object tmp;
+		VoidObject tmp;
 		base->execute(&tmp, "++operator", ParameterList(), 0);
 	}
 }
@@ -1048,37 +1046,37 @@ void operator_unary_not(Object *base)
 	if ( source == BoolObject::TYPENAME ) {
 		BoolObject tmp(Tools::stringToBool(base->getValue()));
 
-		*base = BoolObject(!tmp.isValid());
+		*base = BoolObject(!tmp.operator_bool());
 	}
 	else if ( source == DoubleObject::TYPENAME ) {
 		DoubleObject tmp(Tools::stringToDouble(base->getValue()));
 
-		*base = BoolObject(!tmp.isValid());
+		*base = BoolObject(!tmp.operator_bool());
 	}
 	else if ( source == FloatObject::TYPENAME ) {
 		FloatObject tmp(Tools::stringToFloat(base->getValue()));
 
-		*base = BoolObject(!tmp.isValid());
+		*base = BoolObject(!tmp.operator_bool());
 	}
 	else if ( source == IntegerObject::TYPENAME ) {
 		IntegerObject tmp(Tools::stringToInt(base->getValue()));
 
-		*base = BoolObject(!tmp.isValid());
+		*base = BoolObject(!tmp.operator_bool());
 	}
 	else if ( source == NumberObject::TYPENAME ) {
 		NumberObject tmp(Tools::stringToNumber(base->getValue()));
 
-		*base = BoolObject(!tmp.isValid());
+		*base = BoolObject(!tmp.operator_bool());
 	}
 	else if ( source == StringObject::TYPENAME ) {
 		StringObject tmp(base->getValue());
 
-		*base = BoolObject(!tmp.isValid());
+		*base = BoolObject(!tmp.operator_bool());
 	}
 	else if ( source == VoidObject::TYPENAME ) {
 		VoidObject tmp;
 
-		*base = BoolObject(!tmp.isValid());
+		*base = BoolObject(!tmp.operator_bool());
 	}
 	else {
 		MethodSymbol *op_not = base->resolveMethod("operator!", ParameterList(), true);
@@ -1145,7 +1143,7 @@ void operator_unary_postfix_decrement(Object *base)
 		*base = tmp;
 	}
 	else {
-		Object tmp;
+		VoidObject tmp;
 		base->execute(&tmp, "operator--", ParameterList(), 0);
 	}
 }
@@ -1201,7 +1199,7 @@ void operator_unary_postfix_increment(Object *base)
 		*base = tmp;
 	}
 	else {
-		Object tmp;
+		VoidObject tmp;
 		base->execute(&tmp, "operator++", ParameterList(), 0);
 	}
 }

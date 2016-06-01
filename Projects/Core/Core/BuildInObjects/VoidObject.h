@@ -32,7 +32,7 @@ public:	// Symbol::IType implementation
 	const std::string& getTypeName() const;
 
 public:	// Operators
-	virtual operator bool() const;
+	virtual bool operator_bool() const;
 
 public: // Value
 	virtual void getNativeValue() const;

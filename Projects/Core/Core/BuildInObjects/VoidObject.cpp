@@ -40,9 +40,9 @@ VoidObject::VoidObject(const Object& object)
 	mIsConstructed = true;
 }
 
-VoidObject::operator bool() const
+bool VoidObject::operator_bool() const
 {
-	return false;
+	return mIsConstructed;
 }
 
 void VoidObject::getNativeValue() const

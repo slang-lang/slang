@@ -54,7 +54,7 @@ BoolObject::BoolObject(const Object& object)
 	setNativeValue(object.isValid());
 }
 
-BoolObject::operator bool() const
+bool BoolObject::operator_bool() const
 {
 	return mNativeValue;
 }
@@ -76,7 +76,7 @@ std::string BoolObject::getValue() const
 
 bool BoolObject::isValid() const
 {
-	return mNativeValue;
+	return mIsConstructed;
 }
 
 void BoolObject::operator_assign(BoolObject *other)
@@ -137,12 +137,12 @@ void BoolObject::operator_bitor(Object *other)
 	}
 }
 
-bool BoolObject::operator_equal(BoolObject *other)
+bool BoolObject::operator_equal(BoolObject *other) const
 {
 	return (mNativeValue == other->getNativeValue());
 }
 
-bool BoolObject::operator_equal(Object *other)
+bool BoolObject::operator_equal(Object *other) const
 {
 	std::string target = other->Typename();
 

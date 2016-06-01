@@ -38,14 +38,14 @@ Repository::Repository()
 {
 	mScope = new GlobalScope();
 
-	addBlueprint(Designtime::BoolObject(), false);
-	addBlueprint(Designtime::DoubleObject(), false);
-	addBlueprint(Designtime::FloatObject(), false);
-	addBlueprint(Designtime::GenericObject(), false);
-	addBlueprint(Designtime::IntegerObject(), false);
-	addBlueprint(Designtime::NumberObject(), false);
-	addBlueprint(Designtime::StringObject(), false);
-	addBlueprint(Designtime::VoidObject(), false);
+	addBlueprint(Designtime::BoolObject());
+	addBlueprint(Designtime::DoubleObject());
+	addBlueprint(Designtime::FloatObject());
+	addBlueprint(Designtime::GenericObject());
+	addBlueprint(Designtime::IntegerObject());
+	addBlueprint(Designtime::NumberObject());
+	addBlueprint(Designtime::StringObject());
+	addBlueprint(Designtime::VoidObject());
 }
 
 Repository::~Repository()
@@ -81,7 +81,7 @@ Repository::~Repository()
 /*
  * adds new blue print to our repository
  */
-void Repository::addBlueprint(const Designtime::BluePrint& blueprint, bool doPreProcessing)
+void Repository::addBlueprint(const Designtime::BluePrint& blueprint)
 {
 	OSdebug("addBlueprint('" + blueprint.Typename() + "')");
 
@@ -91,42 +91,12 @@ void Repository::addBlueprint(const Designtime::BluePrint& blueprint, bool doPre
 	}
 
 	mBluePrints.insert(std::make_pair(blueprint.Typename(), blueprint));
-
-	Designtime::BluePrintMap::iterator blueIt = mBluePrints.find(blueprint.Typename());
-
-	// loop over all tokens of a blueprint object
-	// and retype all identifier tokens with object names as values with type
-	// {
-	bool replaced = false;
-	TokenList tokens = blueIt->second.getTokens();
-
-	for ( TokenList::iterator tokenIt = tokens.begin(); tokenIt != tokens.end(); ++tokenIt ) {
-		// we found an identifier token
-		if ( tokenIt->type() == Token::Type::IDENTIFER ) {
-			// check if its content is one of our newly added blueprint objects
-			if ( tokenIt->content() != blueprint.Typename() && mBluePrints.find(tokenIt->content()) != mBluePrints.end() ) {
-				tokenIt->resetTypeTo(Token::Type::TYPE);
-
-				replaced = true;
-			}
-		}
-	}
-
-	if ( replaced ) {
-		blueIt->second.setTokens(tokens);
-	}
-	// }
-
-	if ( doPreProcessing ) {
-		Preprocessor preprocessor(this);
-		preprocessor.process(&blueIt->second);
-	}
 }
 
 /*
  * DEPRECATED: adds a new prototype (= generic) to our repository
  */
-void Repository::addPrototype(const Designtime::Prototype& prototype, bool /*doPreProcessing*/)
+void Repository::addPrototype(const Designtime::Prototype& prototype)
 {
 	std::string type = prototype.type();
 
@@ -186,47 +156,49 @@ void Repository::CollectGarbage()
 	}
 }
 
+/*
+ * this does not work because extension methods can not get copied :-(
+ */
 void Repository::createDefaultMethods(Runtime::Object *object)
 {
 	assert(object);
-
-	class ToString : public Runtime::Method
 	{
-	public:
-		ToString()
-		: Runtime::Method(0, "ToString", Designtime::StringObject::TYPENAME)
-		{
-			ParameterList params;
+		class ToString : public Runtime::Method {
+		public:
+			ToString()
+			: Runtime::Method(0, "ToString", Designtime::StringObject::TYPENAME)
+			{
+				ParameterList params;
 
-			setSignature(params);
-		}
-
-		Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token)
-		{
-			(void)token;
-
-			try {
-				ParameterList::const_iterator it = params.begin();
-				(void)it;
-
-				*result = Runtime::StringObject("blablabla");
-			}
-			catch ( std::exception &e ) {
-				Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
-				*data = Runtime::StringObject(e.what());
-
-				mExceptionData = Runtime::ExceptionData(data, token->position());
-				return Runtime::ControlFlow::Throw;
+				setSignature(params);
 			}
 
-			return Runtime::ControlFlow::Normal;
-		}
-	};
+			Runtime::ControlFlow::E execute(const ParameterList &params, Runtime::Object *result, const TokenIterator &token)
+			{
+				try {
+					ParameterList::const_iterator it = params.begin();
+					(void) it;
 
-	ToString *toString = new ToString();
-	toString->setRepository(this);
+					*result = Runtime::StringObject("blablabla");
+				}
+				catch (std::exception &e) {
+					Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME,
+																		ANONYMOUS_OBJECT);
+					*data = Runtime::StringObject(e.what());
 
-	object->defineMethod(toString->getName(), toString);
+					mExceptionData = Runtime::ExceptionData(data, token->position());
+					return Runtime::ControlFlow::Throw;
+				}
+
+				return Runtime::ControlFlow::Normal;
+			}
+		};
+
+		ToString *toString = new ToString();
+		toString->setRepository(this);
+
+		object->defineMethod(toString->getName(), toString);
+	}
 }
 
 /*
@@ -251,7 +223,7 @@ Runtime::Object* Repository::createInstance(const std::string& type, const std::
 			blueprint = it->second;
 		}
 		else {
-			throw Utils::Exceptions::Exception("trying to create instance of unknown object '" + type + "'");
+			throw Utils::Exceptions::Exception("could not create instance of unknown type '" + type + "'");
 		}
 /*	Not part of this release
 	}
@@ -406,6 +378,44 @@ bool Repository::isAlreadyKnown(const std::string& name) const
 }
 
 /*
+ * loop over all tokens of a blueprint object and retype all identifier tokens with object names as values with type
+ */
+void Repository::rebuildBluePrints()
+{
+	for ( Designtime::BluePrintMap::iterator blueIt = mBluePrints.begin(); blueIt != mBluePrints.end(); ++blueIt ) {
+		TokenList tokens = blueIt->second.getTokens();
+
+		if ( tokens.empty() ) {
+			continue;
+		}
+
+		// loop over all tokens of a blueprint object and retype all identifier tokens with object names as values with type
+		// {
+		bool replaced = false;
+
+		for ( TokenList::iterator tokenIt = tokens.begin(); tokenIt != tokens.end(); ++tokenIt ) {
+			// we found an identifier token
+			if ( tokenIt->type() == Token::Type::IDENTIFER ) {
+				// check if its content is one of our added blueprint objects
+				if ( mBluePrints.find(tokenIt->content()) != mBluePrints.end() ) {
+					tokenIt->resetTypeTo(Token::Type::TYPE);
+
+					replaced = true;
+				}
+			}
+		}
+
+		if ( replaced ) {
+			blueIt->second.setTokens(tokens);
+		}
+		// }
+
+		Preprocessor preprocessor(this);
+		preprocessor.process(&blueIt->second);
+	}
+}
+
+/*
  * updates (decreases) an object's reference count
  */
 void Repository::removeReference(Runtime::Object *object)
@@ -417,6 +427,7 @@ void Repository::removeReference(Runtime::Object *object)
 	ReferenceCountedObjects::iterator it = mInstances.find(object);
 	if ( it == mInstances.end() ) {
 		return;
+		//throw Utils::Exceptions::AccessViolation("possible double delete for '" + object->getFullName() + "'");
 	}
 
 	// decrement reference count

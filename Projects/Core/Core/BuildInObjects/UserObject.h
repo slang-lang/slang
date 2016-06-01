@@ -33,9 +33,8 @@ public:	// Symbol::IType implementation
 	const std::string& getTypeName() const;
 
 public: // Operators
-	virtual operator bool();
-
 	virtual void operator_assign(Object *other);
+	virtual bool operator_bool() const;
 	virtual void operator_divide(Object *other);
 	virtual bool operator_equal(Object *other);
 	virtual bool operator_greater(Object *other);
