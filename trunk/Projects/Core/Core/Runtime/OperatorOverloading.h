@@ -33,10 +33,12 @@ void operator_binary_modulo(Object *base, Object *other);
 void operator_binary_multiply(Object *base, Object *other);
 void operator_binary_plus(Object *base, Object *other);
 void operator_binary_subtract(Object *base, Object *other);
-void operator_unary_decrement(Object *base);
-void operator_unary_increment(Object *base);
+void operator_unary_infix_decrement(Object *base);
+void operator_unary_infix_increment(Object *base);
 void operator_unary_minus(Object *base);
 void operator_unary_not(Object *base);
+void operator_unary_postfix_decrement(Object *base);
+void operator_unary_postfix_increment(Object *base);
 void operator_unary_validate(Object *base);
 
 
