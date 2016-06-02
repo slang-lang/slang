@@ -17,16 +17,14 @@
 namespace ObjectiveScript {
 
 
-Script::Script()
-: mHasBeenConstructed(false),
-  mObject(0),
-  mRepository(0)
+Script::Script(Repository *repository)
+: mObject(0),
+  mRepository(repository)
 {
 }
 
 Script::~Script()
 {
-	destruct();
 }
 
 void Script::assign(Runtime::Object *object)
@@ -37,39 +35,9 @@ void Script::assign(Runtime::Object *object)
 	mObject = object;
 }
 
-void Script::connectRepository(Repository *r)
-{
-	assert(r);
-	assert(!mRepository);
-
-	mRepository = r;
-}
-
-void Script::construct(const ParameterList& params)
-{
-	assert(mObject);
-
-	mObject->setRepository(mRepository);
-
-	Runtime::ControlFlow::E controlflow = mObject->Constructor(params);
-
-	if ( controlflow == Runtime::ControlFlow::Throw ) {
-		throw Utils::Exceptions::Exception("Exception raised in " + mObject->getFullName() + "::" + mObject->Typename());
-	}
-
-	mHasBeenConstructed = true;
-}
-
-void Script::destruct()
-{
-	mRepository->removeReference(mObject);
-
-	mHasBeenConstructed = false;
-}
-
 Runtime::Object Script::execute(const std::string& method, const ParameterList& params)
 {
-	Symbol *symbol = mRepository->getGlobalScope()->resolveMethod(method, params, false);
+	MethodSymbol *symbol = mRepository->getGlobalScope()->resolveMethod(method, params, false);
 	if ( !symbol ) {
 		throw Utils::Exceptions::Exception("Could not resolve method '" + method + "(" + toString(params) + ")'");
 	}
@@ -86,11 +54,6 @@ Runtime::Object Script::execute(const std::string& method, const ParameterList& 
 	}
 
 	return returnValue;
-}
-
-bool Script::hasBeenConstructed() const
-{
-	return mHasBeenConstructed;
 }
 
 Symbol* Script::resolve(const std::string &symbol)

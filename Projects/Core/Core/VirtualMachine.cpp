@@ -23,9 +23,8 @@ namespace ObjectiveScript {
 
 
 VirtualMachine::VirtualMachine()
-: mRepository(0)
+: mRepository(new Repository())
 {
-	mRepository = new Repository();
 }
 
 VirtualMachine::~VirtualMachine()
@@ -63,18 +62,15 @@ std::string VirtualMachine::buildPath(const std::string& basefolder, const std::
 		}
 	} while ( npos != std::string::npos );
 
-	result = basefolder + result + ".os";
-	return result;
+	return basefolder + result + ".os";
 }
 
 Script* VirtualMachine::createScript(const std::string& content, const ParameterList& params)
 {
 	init();
 
-	Script *script = new Script();
+	Script *script = new Script(mRepository);
 	mScripts.insert(script);
-
-	script->connectRepository(mRepository);
 
 	Analyser analyser(mRepository);
 	analyser.processString(content, mScriptFile);
@@ -99,33 +95,38 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 	}
 */
 
-	Designtime::BluePrintList::iterator mainIt;
-
 	Designtime::BluePrintList objects = analyser.getBluePrints();
+	Designtime::BluePrintList::iterator mainIt = objects.end();
+
 	for ( Designtime::BluePrintList::iterator it = objects.begin(); it != objects.end(); ++it ) {
 		// add blue prints to our object repository
 		mRepository->addBlueprint((*it));
 
+		// collect Main object if there is any
 		if ( it->Filename() == mScriptFile && it->Typename() == "Main" ) {
 			mainIt = it;
 		}
 	}
 
+	// rebuild all blue prints to update/retype their type declarations
 	mRepository->rebuildBluePrints();
 
+	// initialize Main object
 	if ( mainIt != objects.end() ) {
 		// create an instance of our Main object ...
 		Runtime::Object *main = mRepository->createInstance(mainIt->Typename(), "main");
 		assert(main);
 
+		Runtime::ControlFlow::E controlflow = main->Constructor(params);
+		if ( controlflow == Runtime::ControlFlow::Throw ) {
+			throw Utils::Exceptions::Exception("Exception raised in " + main->getFullName() + "::" + main->Typename());
+		}
+
 		// ... store it ...
 		mObjects.insert(std::make_pair(mainIt->Typename(), main));
 
-		// ... and assign it to our script
+		// ... assign it to our script ...
 		script->assign(main);
-
-		// ... and finally execute this script's main object constructor
-		script->construct(params);
 	}
 
 	return script;
@@ -261,7 +262,7 @@ void VirtualMachine::setBaseFolder(const std::string& base)
 
 	mBaseFolder = base + "/";
 
-	OSinfo("root = " + mBaseFolder);
+	OSinfo("interpreter root = " + mBaseFolder);
 }
 
 void VirtualMachine::setLibraryFolder(const std::string& library)

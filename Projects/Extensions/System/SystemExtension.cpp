@@ -10,6 +10,7 @@
 #include <System/IO/FileRead.h>
 #include <System/IO/FileSeek.h>
 #include <System/IO/FileWrite.h>
+#include <System/Strings/StrFind.h>
 #include <System/Strings/StrLen.h>
 #include <System/Strings/SubStr.h>
 #include <System/Strings/ToLower.h>
@@ -51,6 +52,7 @@ void SystemExtension::provideMethods(ExtensionMethods &methods) {
 	methods.push_back(new IO::FileWriteInt());
 	methods.push_back(new IO::FileWriteString());
 
+	methods.push_back(new Strings::StrFind());
 	methods.push_back(new Strings::StrLen());
 	methods.push_back(new Strings::SubStr());
 	methods.push_back(new Strings::ToLower());

@@ -5,6 +5,7 @@ SET(SOURCES
 )
 
 SET(HEADERS
+	StrFind.h
 	StrLen.h
 	SubStr.h
 	ToLower.h
