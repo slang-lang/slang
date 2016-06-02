@@ -2,7 +2,6 @@
 public namespace System {
 
 	public object String {
-
 		private string mValue;
 
 		public void String(string value = "") {
@@ -12,6 +11,9 @@ public namespace System {
 			mValue = copy.mValue;
 		}
 
+		/*
+		 * Returns the character at the given position
+		 */
 		public string At(int index) const {
 			return substr(mValue, index, 1);
 		}
@@ -20,38 +22,27 @@ public namespace System {
 			return str == substr(mValue, strlen(mValue) - strlen(str));
 		}
 
+		/*
+		 * Returns the start position of the searched string
+		 */
 		public int Find(string target) const {
 			return strfind(mValue, target);
 		}
 
+		/*
+		 * Returns the length of the held string
+		 */
 		public int Length() const {
 			return strlen(mValue);
 		}
 
+		/*
+		 * Replaces the first occurance of the given string with the provided new string
+		 */
 		public bool Replace(string oldStr, string newStr) modify {
-/*
-			int curPos = 0;
-			int oldLen = strlen(oldStr);
-			int origLen = strlen(mValue) - oldLen + 1;
-
-			while ( curPos < origLen ) {
-				string str = substr(mValue, curPos, oldLen);
-
-				if ( str == oldStr ) {
-					string oldValue = substr(mValue, 0, curPos) + newStr + substr(mValue, curPos + oldLen);
-					mValue = oldValue;
-
-					return true;
-				}
-
-				curPos = curPos + 1;
-			}
-
-			return false;
-*/
-			int position = strfind(mValue, oldstr);
+			int position = strfind(mValue, oldStr);
 			if ( position > 0 ) {
-				string tmp = substr(0, position) + newStr + substr(position + strlen(newStr));
+				string tmp = substr(mValue, 0, position) + newStr + substr(mValue, position + strlen(oldStr));
 				mValue = tmp;
 				return true;
 			}
@@ -59,6 +50,9 @@ public namespace System {
 			return false;
 		}
 
+		/*
+		 * Replaces all occurances of a given string with a new string
+		 */
 		public bool ReplaceAll(string oldStr, string newStr) modify {
 			bool hasFound = false;
 
@@ -69,26 +63,44 @@ public namespace System {
 			return hasFound;
 		}
 
+		/*
+		 * Returns true if the held string starts with the given string
+		 */
 		public bool StartsWith(string str) const {
 			return str == substr(mValue, 0, strlen(str));
 		}
 
+		/*
+		 * Returns all characters beginning with start until the end of the held string
+		 */
 		public string SubString(int start) const {
 			return substr(mValue, start);
 		}
 
+		/*
+		 * Returns all characters of the held string between the given start and end position
+		 */
 		public string SubString(int start, int length) const {
 			return substr(mValue, start, length);
 		}
 
+		/*
+		 * Returns the held string in lower case letters
+		 */
 		public string ToLowerCase() const {
 			return toLower(mValue);
 		}
 
+		/*
+		 * Returns the held string as it is
+		 */
 		public string ToString() const {
 			return mValue;
 		}
 
+		/*
+		 * Returns the held string in capital letters
+		 */
 		public string ToUpperCase() const {
 			return toUpper(mValue);
 		}
