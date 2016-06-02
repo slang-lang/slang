@@ -261,7 +261,7 @@ ControlFlow::E Method::processControlFlow(ControlFlow::E controlflow, Object *re
 		case ControlFlow::Normal:
 			// verify method return reason
 			if ( Typename() != VoidObject::TYPENAME && result->Typename() != VoidObject::TYPENAME ) {
-				throw Utils::Exceptions::Exception("unnatural method return at '" + getName() + "'");
+				throw Utils::Exceptions::Exception("unnatural method return at '" + getFullName() + "'");
 			}
 
 			// correct behaviour detected, override control flow with normal state
@@ -270,7 +270,7 @@ ControlFlow::E Method::processControlFlow(ControlFlow::E controlflow, Object *re
 		case ControlFlow::Return:
 			// validate return value
 			if ( Typename() != VoidObject::TYPENAME && result->Typename() != Typename() ) {
-				OSwarn("implicit type conversion from " + result->Typename() + " to " + Typename() + " in " + getName());
+				OSwarn("implicit type conversion from " + result->Typename() + " to " + Typename() + " in " + getFullName());
 
 				typecast(result, Typename(), mRepository);
 			}

@@ -28,14 +28,12 @@ private object TestObject {
 	}
 
 	public int =operator(int value) const {
-		//print("int =operator(int " + value + ")");
-		print("int =operator(int)");
+		print("int =operator(int " + value + ")");
 		return mValue;
 	}
 
 	public string =operator(string value) const {
-		//print("string =operator(string " + value + ")");
-		print("string =operator(string)");
+		print("string =operator(string " + value + ")");
 		return string mValue;
 	}
 
@@ -45,13 +43,17 @@ private object TestObject {
 	}
 
 	public int +operator(int other) const {
-		print("int +operator(int)");
+		print("int +operator(int " + other + ")");
 		return mValue;
 	}
 	public string +operator(string other) const {
-		//print("string +operator(string " + other + ")");
-		print("string +operator(string)");
+		print("string +operator(string " + other + ")");
 		return string mValue;
+	}
+
+	public int -operator(int other) const {
+		print("int -operator(int " + other + ")");
+		return mValue;
 	}
 
 	public void operator++() modify {
