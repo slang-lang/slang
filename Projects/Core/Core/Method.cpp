@@ -178,10 +178,6 @@ ControlFlow::E Method::execute(const ParameterList& params, Object *result, cons
 
 	StackTrace::GetInstance().pushStack(getFullName(), executedParams);
 
-	//result->overrideTypename(Typename());
-	result->setRepository(mRepository);
-	//result->setValue(/*get default value for return type*/);
-
 	ControlFlow::E controlflow = interpreter.execute(result);	// execute method code
 
 	mExceptionData = interpreter.getExceptionData();	// collect exception data no matter what

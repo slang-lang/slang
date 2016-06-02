@@ -308,9 +308,9 @@ void IntegerObject::operator_plus(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == DoubleObject::TYPENAME ||
+	if ( target == IntegerObject::TYPENAME ||
+		 target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
-		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ) {
 		IntegerObject tmp(Tools::stringToInt(other->getValue()));
 

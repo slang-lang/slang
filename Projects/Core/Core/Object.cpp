@@ -299,7 +299,7 @@ ControlFlow::E Object::execute(Object *result, const std::string& name, const Pa
 
 	Method *method = static_cast<Method*>(resolveMethod(name, params, false));
 	if ( !method ) {
-		throw Utils::Exceptions::UnknownIdentifer("unknown method '" + name + "' or method with invalid parameter count called!");
+		throw Utils::Exceptions::UnknownIdentifer("unknown method '" + getName() + "." + name + "' or method with invalid parameter count called!");
 	}
 
 /*
@@ -397,10 +397,15 @@ bool Object::isValid() const
 
 void Object::operator_assign(Object *other)
 {
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", ParameterList(), true);
+	ParameterList params;
+	params.push_back(
+		Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
+	);
+
+	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", params, true);
 	if ( value_operator ) {
 		Object tmp;
-		static_cast<Method*>(value_operator)->execute(ParameterList(), &tmp, TokenIterator());
+		static_cast<Method*>(value_operator)->execute(params, &tmp, TokenIterator());
 
 		operator_assign(&tmp);
 		return;
@@ -408,15 +413,20 @@ void Object::operator_assign(Object *other)
 
 	std::string target = other->Typename();
 
-	throw Utils::Exceptions::NotImplemented("operator=: conversion from " + target + " to " + Typename() + " not supported");
+	throw Utils::Exceptions::NotImplemented(Typename() + ".operator=: conversion from " + target + " to " + Typename() + " not supported");
 }
 
 void Object::operator_bitand(Object *other)
 {
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", ParameterList(), true);
+	ParameterList params;
+	params.push_back(
+			Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
+	);
+
+	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", params, true);
 	if ( value_operator ) {
 		Object tmp;
-		static_cast<Method*>(value_operator)->execute(ParameterList(), &tmp, TokenIterator());
+		static_cast<Method*>(value_operator)->execute(params, &tmp, TokenIterator());
 
 		operator_bitand(&tmp);
 		return;
@@ -424,15 +434,20 @@ void Object::operator_bitand(Object *other)
 
 	std::string target = other->Typename();
 
-	throw Utils::Exceptions::NotImplemented("operator&: conversion from " + target + " to " + Typename() + " not supported");
+	throw Utils::Exceptions::NotImplemented(Typename() + ".operator&: conversion from " + target + " to " + Typename() + " not supported");
 }
 
 void Object::operator_bitcomplement(Object *other)
 {
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", ParameterList(), true);
+	ParameterList params;
+	params.push_back(
+			Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
+	);
+
+	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", params, true);
 	if ( value_operator ) {
 		Object tmp;
-		static_cast<Method*>(value_operator)->execute(ParameterList(), &tmp, TokenIterator());
+		static_cast<Method*>(value_operator)->execute(params, &tmp, TokenIterator());
 
 		operator_bitcomplement(&tmp);
 		return;
@@ -440,15 +455,20 @@ void Object::operator_bitcomplement(Object *other)
 
 	std::string target = other->Typename();
 
-	throw Utils::Exceptions::NotImplemented("operator~: conversion from " + target + " to " + Typename() + " not supported");
+	throw Utils::Exceptions::NotImplemented(Typename() + ".operator~: conversion from " + target + " to " + Typename() + " not supported");
 }
 
 void Object::operator_bitor(Object *other)
 {
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", ParameterList(), true);
+	ParameterList params;
+	params.push_back(
+			Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
+	);
+
+	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", params, true);
 	if ( value_operator ) {
 		Object tmp;
-		static_cast<Method*>(value_operator)->execute(ParameterList(), &tmp, TokenIterator());
+		static_cast<Method*>(value_operator)->execute(params, &tmp, TokenIterator());
 
 		operator_bitor(&tmp);
 		return;
@@ -456,20 +476,25 @@ void Object::operator_bitor(Object *other)
 
 	std::string target = other->Typename();
 
-	throw Utils::Exceptions::NotImplemented("operator|: conversion from " + target + " to " + Typename() + " not supported");
+	throw Utils::Exceptions::NotImplemented(Typename() + ".operator|: conversion from " + target + " to " + Typename() + " not supported");
 }
 
 bool Object::operator_bool() const
 {
-	throw Utils::Exceptions::NotImplemented("operator bool(): for " + Typename() + " not supported");
+	throw Utils::Exceptions::NotImplemented(Typename() + ".operator bool(): for " + Typename() + " not supported");
 }
 
 void Object::operator_divide(Object *other)
 {
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", ParameterList(), true);
+	ParameterList params;
+	params.push_back(
+			Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
+	);
+
+	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", params, true);
 	if ( value_operator ) {
 		Object tmp;
-		static_cast<Method*>(value_operator)->execute(ParameterList(), &tmp, TokenIterator());
+		static_cast<Method*>(value_operator)->execute(params, &tmp, TokenIterator());
 
 		operator_divide(&tmp);
 		return;
@@ -477,90 +502,120 @@ void Object::operator_divide(Object *other)
 
 	std::string target = other->Typename();
 
-	throw Utils::Exceptions::NotImplemented("operator/: conversion from " + target + " to " + Typename() + " not supported");
+	throw Utils::Exceptions::NotImplemented(Typename() + ".operator/: conversion from " + target + " to " + Typename() + " not supported");
 }
 
 bool Object::operator_equal(Object *other) const
 {
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", ParameterList(), true);
+	ParameterList params;
+	params.push_back(
+			Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
+	);
+
+	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", params, true);
 	if ( value_operator ) {
 		Object tmp;
-		static_cast<Method*>(value_operator)->execute(ParameterList(), &tmp, TokenIterator());
+		static_cast<Method*>(value_operator)->execute(params, &tmp, TokenIterator());
 
 		return operator_equal(&tmp);
 	}
 
 	std::string target = other->Typename();
 
-	throw Utils::Exceptions::NotImplemented("operator==: conversion from " + target + " to " + Typename() + " not supported");
+	throw Utils::Exceptions::NotImplemented(Typename() + ".operator==: conversion from " + target + " to " + Typename() + " not supported");
 }
 
 bool Object::operator_greater(Object *other) const
 {
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", ParameterList(), true);
+	ParameterList params;
+	params.push_back(
+			Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
+	);
+
+	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", params, true);
 	if ( value_operator ) {
 		Object tmp;
-		static_cast<Method*>(value_operator)->execute(ParameterList(), &tmp, TokenIterator());
+		static_cast<Method*>(value_operator)->execute(params, &tmp, TokenIterator());
 
 		return operator_greater(&tmp);
 	}
 
 	std::string target = other->Typename();
 
-	throw Utils::Exceptions::NotImplemented("operator>: conversion from " + target + " to " + Typename() + " not supported");
+	throw Utils::Exceptions::NotImplemented(Typename() + ".operator>: conversion from " + target + " to " + Typename() + " not supported");
 }
 
 bool Object::operator_greater_equal(Object *other) const
 {
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", ParameterList(), true);
+	ParameterList params;
+	params.push_back(
+			Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
+	);
+
+	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", params, true);
 	if ( value_operator ) {
 		Object tmp;
-		static_cast<Method*>(value_operator)->execute(ParameterList(), &tmp, TokenIterator());
+		static_cast<Method*>(value_operator)->execute(params, &tmp, TokenIterator());
 
 		return operator_greater_equal(&tmp);
 	}
 
 	std::string target = other->Typename();
 
-	throw Utils::Exceptions::NotImplemented("operator>=: conversion from " + target + " to " + Typename() + " not supported");
+	throw Utils::Exceptions::NotImplemented(Typename() + ".operator>=: conversion from " + target + " to " + Typename() + " not supported");
 }
 
 bool Object::operator_less(Object *other) const
 {
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", ParameterList(), true);
+	ParameterList params;
+	params.push_back(
+			Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
+	);
+
+	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", params, true);
 	if ( value_operator ) {
 		Object tmp;
-		static_cast<Method*>(value_operator)->execute(ParameterList(), &tmp, TokenIterator());
+		static_cast<Method*>(value_operator)->execute(params, &tmp, TokenIterator());
 
 		return operator_less(&tmp);
 	}
 
 	std::string target = other->Typename();
 
-	throw Utils::Exceptions::NotImplemented("operator<: conversion from " + target + " to " + Typename() + " not supported");
+	throw Utils::Exceptions::NotImplemented(Typename() + ".operator<: conversion from " + target + " to " + Typename() + " not supported");
 }
 
 bool Object::operator_less_equal(Object *other) const
 {
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", ParameterList(), true);
+	ParameterList params;
+	params.push_back(
+			Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
+	);
+
+	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", params, true);
 	if ( value_operator ) {
 		Object tmp;
-		static_cast<Method*>(value_operator)->execute(ParameterList(), &tmp, TokenIterator());
+		static_cast<Method*>(value_operator)->execute(params, &tmp, TokenIterator());
 
 		return operator_less_equal(&tmp);
 	}
 
 	std::string target = other->Typename();
 
-	throw Utils::Exceptions::NotImplemented("operator<=: conversion from " + target + " to " + Typename() + " not supported");
+	throw Utils::Exceptions::NotImplemented(Typename() + ".operator<=: conversion from " + target + " to " + Typename() + " not supported");
 }
 
 void Object::operator_modulo(Object *other)
 {
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", ParameterList(), true);
+	ParameterList params;
+	params.push_back(
+			Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
+	);
+
+	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", params, true);
 	if ( value_operator ) {
 		Object tmp;
-		static_cast<Method*>(value_operator)->execute(ParameterList(), &tmp, TokenIterator());
+		static_cast<Method*>(value_operator)->execute(params, &tmp, TokenIterator());
 
 		operator_modulo(&tmp);
 		return;
@@ -568,15 +623,20 @@ void Object::operator_modulo(Object *other)
 
 	std::string target = other->Typename();
 
-	throw Utils::Exceptions::NotImplemented("operator%: conversion from " + target + " to " + Typename() + " not supported");
+	throw Utils::Exceptions::NotImplemented(Typename() + ".operator%: conversion from " + target + " to " + Typename() + " not supported");
 }
 
 void Object::operator_multiply(Object *other)
 {
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", ParameterList(), true);
+	ParameterList params;
+	params.push_back(
+			Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
+	);
+
+	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", params, true);
 	if ( value_operator ) {
 		Object tmp;
-		static_cast<Method*>(value_operator)->execute(ParameterList(), &tmp, TokenIterator());
+		static_cast<Method*>(value_operator)->execute(params, &tmp, TokenIterator());
 
 		operator_multiply(&tmp);
 		return;
@@ -584,15 +644,20 @@ void Object::operator_multiply(Object *other)
 
 	std::string target = other->Typename();
 
-	throw Utils::Exceptions::NotImplemented("operator*: conversion from " + target + " to " + Typename() + " not supported");
+	throw Utils::Exceptions::NotImplemented(Typename() + ".operator*: conversion from " + target + " to " + Typename() + " not supported");
 }
 
 void Object::operator_plus(Object *other)
 {
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", ParameterList(), true);
+	ParameterList params;
+	params.push_back(
+			Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
+	);
+
+	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", params, true);
 	if ( value_operator ) {
 		Object tmp;
-		static_cast<Method*>(value_operator)->execute(ParameterList(), &tmp, TokenIterator());
+		static_cast<Method*>(value_operator)->execute(params, &tmp, TokenIterator());
 
 		operator_plus(&tmp);
 		return;
@@ -600,15 +665,20 @@ void Object::operator_plus(Object *other)
 
 	std::string target = other->Typename();
 
-	throw Utils::Exceptions::NotImplemented("operator+: conversion from " + target + " to " + Typename() + " not supported");
+	throw Utils::Exceptions::NotImplemented(Typename() + ".operator+: conversion from " + target + " to " + Typename() + " not supported");
 }
 
 void Object::operator_subtract(Object *other)
 {
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", ParameterList(), true);
+	ParameterList params;
+	params.push_back(
+			Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
+	);
+
+	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", params, true);
 	if ( value_operator ) {
 		Object tmp;
-		static_cast<Method*>(value_operator)->execute(ParameterList(), &tmp, TokenIterator());
+		static_cast<Method*>(value_operator)->execute(params, &tmp, TokenIterator());
 
 		operator_subtract(&tmp);
 		return;
@@ -616,27 +686,27 @@ void Object::operator_subtract(Object *other)
 
 	std::string target = other->Typename();
 
-	throw Utils::Exceptions::NotImplemented("operator-: conversion from " + target + " to " + Typename() + " not supported");
+	throw Utils::Exceptions::NotImplemented(Typename() + ".operator-: conversion from " + target + " to " + Typename() + " not supported");
 }
 
 void Object::operator_unary_decrement()
 {
-	throw Utils::Exceptions::NotImplemented("operator--: for " + Typename() + " not supported");
+	throw Utils::Exceptions::NotImplemented(Typename() + ".operator--: for " + Typename() + " not supported");
 }
 
 void Object::operator_unary_increment()
 {
-	throw Utils::Exceptions::NotImplemented("operator++: for " + Typename() + " not supported");
+	throw Utils::Exceptions::NotImplemented(Typename() + ".operator++: for " + Typename() + " not supported");
 }
 
 void Object::operator_unary_minus()
 {
-	throw Utils::Exceptions::NotImplemented("operator unary -: for " + Typename() + " not supported");
+	throw Utils::Exceptions::NotImplemented(Typename() + ".operator unary -: for " + Typename() + " not supported");
 }
 
 void Object::operator_unary_not()
 {
-	throw Utils::Exceptions::NotImplemented("operator unary !: for " + Typename() + " not supported");
+	throw Utils::Exceptions::NotImplemented(Typename() + ".operator unary !: for " + Typename() + " not supported");
 }
 
 Symbol* Object::resolve(const std::string& name, bool onlyCurrentScope) const

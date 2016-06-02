@@ -1,5 +1,7 @@
 #!/usr/local/bin/oscript
 
+import System.Integer;
+
 private object TestObject {
 	private int mValue;
 
@@ -25,18 +27,31 @@ private object TestObject {
 		mValue = other;
 	}
 
-	public int =operator() const {
-		print("int =operator()");
+	public int =operator(int value) const {
+		//print("int =operator(int " + value + ")");
+		print("int =operator(int)");
 		return mValue;
+	}
+
+	public string =operator(string value) const {
+		//print("string =operator(string " + value + ")");
+		print("string =operator(string)");
+		return string mValue;
 	}
 
 	public void operator+(int other) modify {
 		print("operator+");
 		mValue = mValue + other;
 	}
-	public int +operator() const {
-		print("+operator");
+
+	public int +operator(int other) const {
+		print("int +operator(int)");
 		return mValue;
+	}
+	public string +operator(string other) const {
+		//print("string +operator(string " + other + ")");
+		print("string +operator(string)");
+		return string mValue;
 	}
 
 	public void operator++() modify {
@@ -128,6 +143,9 @@ public object Main {
 
 		print("value - 3 == obj: " + (value - 3 == obj));
 		print("value == obj + 3: " + (value == obj + 3));
+		print("value == 8 - obj: " + (value == 8 - obj));
+
+		print("obj = " + 1 + obj);
 
 		return obj;
 	}
