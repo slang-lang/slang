@@ -34,10 +34,8 @@ namespace ObjectiveScript {
 
 
 Repository::Repository()
-: mScope(0)
+: mScope(new GlobalScope())
 {
-	mScope = new GlobalScope();
-
 	addBlueprint(Designtime::BoolObject());
 	addBlueprint(Designtime::DoubleObject());
 	addBlueprint(Designtime::FloatObject());
@@ -79,12 +77,10 @@ Repository::~Repository()
 }
 
 /*
- * adds new blue print to our repository
+ * adds a new blue print to our repository
  */
 void Repository::addBlueprint(const Designtime::BluePrint& blueprint)
 {
-	OSdebug("addBlueprint('" + blueprint.Typename() + "')");
-
 	Designtime::BluePrintMap::iterator it = mBluePrints.find(blueprint.Typename());
 	if ( it != mBluePrints.end() ) {
 		throw Utils::Exceptions::Exception("duplicate object '" + blueprint.Typename() + "' added to repository");
@@ -438,9 +434,9 @@ void Repository::removeReference(Runtime::Object *object)
 		// call object's destructor ...
 		it->first->Destructor();
 		// ... and delete it
-		//delete it->first;
+		delete it->first;
 
-		//mInstances.erase(it);
+		mInstances.erase(it);
 	}
 }
 
