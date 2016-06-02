@@ -399,7 +399,8 @@ void Object::operator_assign(Object *other)
 {
 	ParameterList params;
 	params.push_back(
-		Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
+		Parameter(ANONYMOUS_OBJECT, Typename(), VALUE_NONE)
+		//Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
 	);
 
 	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", params, true);
@@ -420,10 +421,11 @@ void Object::operator_bitand(Object *other)
 {
 	ParameterList params;
 	params.push_back(
-			Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
+		Parameter(ANONYMOUS_OBJECT, Typename(), VALUE_NONE)
+		//Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
 	);
 
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", params, true);
+	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("&operator", params, true);
 	if ( value_operator ) {
 		Object tmp;
 		static_cast<Method*>(value_operator)->execute(params, &tmp, TokenIterator());
@@ -441,10 +443,11 @@ void Object::operator_bitcomplement(Object *other)
 {
 	ParameterList params;
 	params.push_back(
-			Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
+		Parameter(ANONYMOUS_OBJECT, Typename(), VALUE_NONE)
+		//Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
 	);
 
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", params, true);
+	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("~operator", params, true);
 	if ( value_operator ) {
 		Object tmp;
 		static_cast<Method*>(value_operator)->execute(params, &tmp, TokenIterator());
@@ -462,10 +465,11 @@ void Object::operator_bitor(Object *other)
 {
 	ParameterList params;
 	params.push_back(
-			Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
+		Parameter(ANONYMOUS_OBJECT, Typename(), VALUE_NONE)
+		//Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
 	);
 
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", params, true);
+	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("|operator", params, true);
 	if ( value_operator ) {
 		Object tmp;
 		static_cast<Method*>(value_operator)->execute(params, &tmp, TokenIterator());
@@ -488,10 +492,11 @@ void Object::operator_divide(Object *other)
 {
 	ParameterList params;
 	params.push_back(
-			Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
+		Parameter(ANONYMOUS_OBJECT, Typename(), VALUE_NONE)
+		//Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
 	);
 
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", params, true);
+	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("/operator", params, true);
 	if ( value_operator ) {
 		Object tmp;
 		static_cast<Method*>(value_operator)->execute(params, &tmp, TokenIterator());
@@ -509,7 +514,8 @@ bool Object::operator_equal(Object *other) const
 {
 	ParameterList params;
 	params.push_back(
-			Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
+		Parameter(ANONYMOUS_OBJECT, Typename(), VALUE_NONE)
+		//Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
 	);
 
 	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", params, true);
@@ -529,7 +535,8 @@ bool Object::operator_greater(Object *other) const
 {
 	ParameterList params;
 	params.push_back(
-			Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
+		Parameter(ANONYMOUS_OBJECT, Typename(), VALUE_NONE)
+		//Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
 	);
 
 	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", params, true);
@@ -549,7 +556,8 @@ bool Object::operator_greater_equal(Object *other) const
 {
 	ParameterList params;
 	params.push_back(
-			Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
+		Parameter(ANONYMOUS_OBJECT, Typename(), VALUE_NONE)
+		//Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
 	);
 
 	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", params, true);
@@ -569,7 +577,8 @@ bool Object::operator_less(Object *other) const
 {
 	ParameterList params;
 	params.push_back(
-			Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
+		Parameter(ANONYMOUS_OBJECT, Typename(), VALUE_NONE)
+		//Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
 	);
 
 	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", params, true);
@@ -589,7 +598,8 @@ bool Object::operator_less_equal(Object *other) const
 {
 	ParameterList params;
 	params.push_back(
-			Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
+		Parameter(ANONYMOUS_OBJECT, Typename(), VALUE_NONE)
+		//Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
 	);
 
 	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", params, true);
@@ -609,10 +619,11 @@ void Object::operator_modulo(Object *other)
 {
 	ParameterList params;
 	params.push_back(
-			Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
+		Parameter(ANONYMOUS_OBJECT, Typename(), VALUE_NONE)
+		//Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
 	);
 
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", params, true);
+	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("%operator", params, true);
 	if ( value_operator ) {
 		Object tmp;
 		static_cast<Method*>(value_operator)->execute(params, &tmp, TokenIterator());
@@ -630,10 +641,11 @@ void Object::operator_multiply(Object *other)
 {
 	ParameterList params;
 	params.push_back(
-			Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
+		Parameter(ANONYMOUS_OBJECT, Typename(), VALUE_NONE)
+		//Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
 	);
 
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", params, true);
+	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("*operator", params, true);
 	if ( value_operator ) {
 		Object tmp;
 		static_cast<Method*>(value_operator)->execute(params, &tmp, TokenIterator());
@@ -651,10 +663,11 @@ void Object::operator_plus(Object *other)
 {
 	ParameterList params;
 	params.push_back(
-			Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
+		Parameter(ANONYMOUS_OBJECT, Typename(), VALUE_NONE)
+		//Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
 	);
 
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", params, true);
+	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("+operator", params, true);
 	if ( value_operator ) {
 		Object tmp;
 		static_cast<Method*>(value_operator)->execute(params, &tmp, TokenIterator());
@@ -672,10 +685,11 @@ void Object::operator_subtract(Object *other)
 {
 	ParameterList params;
 	params.push_back(
-			Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
+		Parameter(ANONYMOUS_OBJECT, Typename(), VALUE_NONE)
+		//Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
 	);
 
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", params, true);
+	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("-operator", params, true);
 	if ( value_operator ) {
 		Object tmp;
 		static_cast<Method*>(value_operator)->execute(params, &tmp, TokenIterator());

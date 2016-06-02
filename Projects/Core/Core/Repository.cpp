@@ -434,9 +434,9 @@ void Repository::removeReference(Runtime::Object *object)
 		// call object's destructor ...
 		it->first->Destructor();
 		// ... and delete it
-		delete it->first;
+		//delete it->first;
 
-		mInstances.erase(it);
+		//mInstances.erase(it);
 	}
 }
 
