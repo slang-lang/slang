@@ -20,11 +20,16 @@ public namespace System {
 			return str == substr(mValue, strlen(mValue) - strlen(str));
 		}
 
+		public int Find(string target) const {
+			return strfind(mValue, target);
+		}
+
 		public int Length() const {
 			return strlen(mValue);
 		}
 
 		public bool Replace(string oldStr, string newStr) modify {
+/*
 			int curPos = 0;
 			int oldLen = strlen(oldStr);
 			int origLen = strlen(mValue) - oldLen + 1;
@@ -42,6 +47,15 @@ public namespace System {
 				curPos = curPos + 1;
 			}
 
+			return false;
+*/
+			int position = strfind(mValue, oldstr);
+			if ( position > 0 ) {
+				string tmp = substr(0, position) + newStr + substr(position + strlen(newStr));
+				mValue = tmp;
+				return true;
+			}
+			
 			return false;
 		}
 

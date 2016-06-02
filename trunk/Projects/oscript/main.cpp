@@ -188,7 +188,7 @@ int main(int argc, const char* argv[])
 		ObjectiveScript::Script *script = mVirtualMachine.createScriptFromFile(mFilename, mParameters);
 		assert(script);
 
-		if ( !script->hasBeenConstructed() ) {	// Fallback execution
+		if ( !script->resolve("Main") ) {
 			ObjectiveScript::Runtime::IntegerObject result = script->execute("Main", mParameters);
 			return result.getNativeValue();
 		}
@@ -196,7 +196,7 @@ int main(int argc, const char* argv[])
 	catch ( ObjectiveScript::Runtime::ControlFlow::E e ) {
 		switch ( e ) {
 			case ObjectiveScript::Runtime::ControlFlow::ExitProgram: break;
-			default: std::cout << "Exited program with control flow " << e << std::endl; break;
+			default: std::cout << "Exited program with control flow " << ObjectiveScript::Runtime::ControlFlow::toString(e) << std::endl; break;
 		}
 	}
 	catch ( std::exception& e ) {	// catch every std::exception and all derived exception types

@@ -351,6 +351,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\Mysql\MysqlDataSeek.h"
+			>
+		</File>
+		<File
 			RelativePath=".\Mysql\MysqlExtension.cpp"
 			>
 		</File>
@@ -359,11 +363,31 @@
 			>
 		</File>
 		<File
+			RelativePath=".\Mysql\MysqlPing.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\MysqlPing.h"
+			>
+		</File>
+		<File
 			RelativePath=".\Mysql\MysqlRealEscapeString.cpp"
 			>
 		</File>
 		<File
 			RelativePath=".\Mysql\MysqlRealEscapeString.h"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\MysqlSelectDB.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\MysqlSelectDB.h"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\MysqlStat.h"
 			>
 		</File>
 		<File
@@ -423,6 +447,22 @@
 			>
 		</File>
 		<File
+			RelativePath=".\System\Strings\StrFind.h"
+			>
+		</File>
+		<File
+			RelativePath=".\System\Strings\StrLen.h"
+			>
+		</File>
+		<File
+			RelativePath=".\System\Strings\SubStr.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\System\Strings\SubStr.h"
+			>
+		</File>
+		<File
 			RelativePath=".\System\SystemExtension.cpp"
 			>
 		</File>
@@ -436,6 +476,14 @@
 		</File>
 		<File
 			RelativePath=".\JSON\ToJson.h"
+			>
+		</File>
+		<File
+			RelativePath=".\System\Strings\ToLower.h"
+			>
+		</File>
+		<File
+			RelativePath=".\System\Strings\ToUpper.h"
 			>
 		</File>
 		<File

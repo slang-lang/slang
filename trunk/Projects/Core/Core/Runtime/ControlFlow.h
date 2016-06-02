@@ -6,6 +6,7 @@
 // Library includes
 
 // Project includes
+#include <string>
 
 // Forward declarations
 
@@ -27,6 +28,19 @@ public:
 		Return,
 		Throw
 	} E;
+
+	static std::string toString(E e) {
+		switch ( e ) {
+			case Break: return "Break";
+			case Continue: return "Continue";
+			case ExitProgram: return "ExitProgram";
+			case Normal: return "Normal";
+			case Return: return "Return";
+			case Throw: return "Throw";
+		}
+
+		return "Undefined";
+	}
 };
 
 

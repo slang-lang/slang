@@ -21,7 +21,6 @@
 #include <Tools/Printer.h>
 #include "Object.h"
 #include "Repository.h"
-#include "System.h"
 #include "Tools.h"
 
 // Namespace declarations
@@ -467,7 +466,6 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 				case Symbol::IType::NamespaceSymbol:
 				case Symbol::IType::UnknownSymbol:
 					throw Utils::Exceptions::SyntaxError("unexpected symbol resolved", start->position());
-					break;
 			}
 		} break;
 		case Token::Type::KEYWORD: {
@@ -564,7 +562,9 @@ void Interpreter::process_assert(TokenIterator& token)
 		return;
 	}
 
-	System::Assert(condition, token->position());
+	if ( !isTrue(condition) ) {
+		throw Utils::Exceptions::AssertionFailed(condition.ToString(), token->position());
+	}
 
 	expect(Token::Type::PARENTHESIS_CLOSE, token++);
 }
@@ -599,8 +599,8 @@ void Interpreter::process_delete(TokenIterator& token)
 			Object *object = static_cast<Object*>(symbol);
 			assert(object);
 
-			//mControlFlow = object->Destructor();
-			mRepository->removeReference(object);
+			mControlFlow = object->Destructor();
+			//mRepository->removeReference(object);
 
 			*object = Object(object->getName(), object->Filename(), object->Typename(), VALUE_NONE);
 		} break;
@@ -1015,7 +1015,7 @@ void Interpreter::process_print(TokenIterator& token)
 	Object text;
 	expression(&text, token);
 
-	System::Print(text.getValue(), token->position());
+	::Utils::PrinterDriver::getInstance()->print(text.getValue(), token->position().mFile, token->position().mLine);
 
 	expect(Token::Type::PARENTHESIS_CLOSE, token++);
 }
