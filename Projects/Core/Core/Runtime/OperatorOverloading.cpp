@@ -1214,49 +1214,49 @@ void operator_unary_validate(Object *base)
 
 	if ( source == BoolObject::TYPENAME ) {
 		BoolObject tmp(Tools::stringToBool(base->getValue()));
-		if ( !tmp.isValid() ) {
-			throw Utils::Exceptions::AccessViolation(base->getFullName() + " is not valid");
+		if ( !tmp.operator_bool() ) {
+			throw ControlFlow::Throw;
 		}
 	}
 	else if ( source == DoubleObject::TYPENAME ) {
 		DoubleObject tmp(Tools::stringToDouble(base->getValue()));
-		if ( !tmp.isValid() ) {
-			throw Utils::Exceptions::AccessViolation(base->getFullName() + " is not valid");
+		if ( !tmp.operator_bool() ) {
+			throw ControlFlow::Throw;
 		}
 	}
 	else if ( source == FloatObject::TYPENAME ) {
 		FloatObject tmp(Tools::stringToFloat(base->getValue()));
-		if ( !tmp.isValid() ) {
-			throw Utils::Exceptions::AccessViolation(base->getFullName() + " is not valid");
+		if ( !tmp.operator_bool() ) {
+			throw ControlFlow::Throw;
 		}
 	}
 	else if ( source == IntegerObject::TYPENAME ) {
 		IntegerObject tmp(Tools::stringToInt(base->getValue()));
-		if ( !tmp.isValid() ) {
-			throw Utils::Exceptions::AccessViolation(base->getFullName() + " is not valid");
+		if ( !tmp.operator_bool() ) {
+			throw ControlFlow::Throw;
 		}
 	}
 	else if ( source == NumberObject::TYPENAME ) {
 		NumberObject tmp(Tools::stringToNumber(base->getValue()));
-		if ( !tmp.isValid() ) {
-			throw Utils::Exceptions::AccessViolation(base->getFullName() + " is not valid");
+		if ( !tmp.operator_bool() ) {
+			throw ControlFlow::Throw;
 		}
 	}
 	else if ( source == StringObject::TYPENAME ) {
 		StringObject tmp(base->getValue());
-		if ( !tmp.isValid() ) {
-			throw Utils::Exceptions::AccessViolation(base->getFullName() + " is not valid");
+		if ( !tmp.operator_bool() ) {
+			throw ControlFlow::Throw;
 		}
 	}
 	else if ( source == VoidObject::TYPENAME ) {
 		VoidObject tmp;
-		if ( !tmp.isValid() ) {
-			throw Utils::Exceptions::AccessViolation(base->getFullName() + " is not valid");
+		if ( !tmp.operator_bool() ) {
+			throw ControlFlow::Throw;
 		}
 	}
 	else {
 		if ( !base->isValid() ) {
-			throw Utils::Exceptions::AccessViolation(base->getFullName() + " is not valid");
+			throw ControlFlow::Throw;
 		}
 	}
 }

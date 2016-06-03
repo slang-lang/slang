@@ -1,15 +1,13 @@
 #!/usr/local/bin/oscript
 
 private object TestObject {
-/*
-	public void TestObject(int value)
-	{
-	}
-*/
-
 	public int getValue() const {
 		assert(false);
 		return "bla";
+	}
+
+	public string =operator(string value) const {
+		return "TestObject";
 	}
 }
 
@@ -21,9 +19,10 @@ public object Main {
 	}
 
 	private bool TestCase1() const {
-		print("TestCase 1");
+		print("TestCase 1: bool(true)");
 
 		bool value = true;
+		print("value = " + value);
 
 		value!;
 
@@ -31,26 +30,36 @@ public object Main {
 	}
 
 	private bool TestCase2() const {
-		print("TestCase 2");
+		print("TestCase 2: TestObject(null)");
 
 		try {
 			TestObject obj;
+			print(obj!);
 			obj!.getValue();
 
 			assert(!"obj validation failed");
 		}
 		catch {
+			print("caught validation exception");
+			return true;
 		}
 
-		return true;
+		return false;
 	}
 
 	private bool TestCase3() const {
-		print("TestCase 3");
+		print("TestCase 3: int(0)");
 
-		int value = 0;
+		try {
+			int value;
+			print("value = " + value);
 
-		value!;
+			value!;
+		}
+		catch {
+			print("caugth validation exception");
+			return true;
+		}
 
 		return false;
 	}
