@@ -426,6 +426,9 @@ void Object::operator_bitand(Object *other)
 	);
 
 	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("&operator", params, true);
+	if ( !value_operator ) {
+		value_operator = other->resolveMethod("=operator", params, true);
+	}
 	if ( value_operator ) {
 		Object tmp;
 		static_cast<Method*>(value_operator)->execute(params, &tmp, TokenIterator());
@@ -448,6 +451,9 @@ void Object::operator_bitcomplement(Object *other)
 	);
 
 	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("~operator", params, true);
+	if ( !value_operator ) {
+		value_operator = other->resolveMethod("=operator", params, true);
+	}
 	if ( value_operator ) {
 		Object tmp;
 		static_cast<Method*>(value_operator)->execute(params, &tmp, TokenIterator());
@@ -470,6 +476,9 @@ void Object::operator_bitor(Object *other)
 	);
 
 	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("|operator", params, true);
+	if ( !value_operator ) {
+		value_operator = other->resolveMethod("=operator", params, true);
+	}
 	if ( value_operator ) {
 		Object tmp;
 		static_cast<Method*>(value_operator)->execute(params, &tmp, TokenIterator());
@@ -497,6 +506,9 @@ void Object::operator_divide(Object *other)
 	);
 
 	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("/operator", params, true);
+	if ( !value_operator ) {
+		value_operator = other->resolveMethod("=operator", params, true);
+	}
 	if ( value_operator ) {
 		Object tmp;
 		static_cast<Method*>(value_operator)->execute(params, &tmp, TokenIterator());
@@ -518,7 +530,10 @@ bool Object::operator_equal(Object *other) const
 		//Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
 	);
 
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", params, true);
+	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("==operator", params, true);
+	if ( !value_operator ) {
+		value_operator = other->resolveMethod("=operator", params, true);
+	}
 	if ( value_operator ) {
 		Object tmp;
 		static_cast<Method*>(value_operator)->execute(params, &tmp, TokenIterator());
@@ -539,7 +554,10 @@ bool Object::operator_greater(Object *other) const
 		//Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
 	);
 
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", params, true);
+	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod(">operator", params, true);
+	if ( !value_operator ) {
+		value_operator = other->resolveMethod("=operator", params, true);
+	}
 	if ( value_operator ) {
 		Object tmp;
 		static_cast<Method*>(value_operator)->execute(params, &tmp, TokenIterator());
@@ -560,7 +578,10 @@ bool Object::operator_greater_equal(Object *other) const
 		//Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
 	);
 
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", params, true);
+	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod(">=operator", params, true);
+	if ( !value_operator ) {
+		value_operator = other->resolveMethod("=operator", params, true);
+	}
 	if ( value_operator ) {
 		Object tmp;
 		static_cast<Method*>(value_operator)->execute(params, &tmp, TokenIterator());
@@ -581,7 +602,10 @@ bool Object::operator_less(Object *other) const
 		//Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
 	);
 
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", params, true);
+	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("<operator", params, true);
+	if ( !value_operator ) {
+		value_operator = other->resolveMethod("=operator", params, true);
+	}
 	if ( value_operator ) {
 		Object tmp;
 		static_cast<Method*>(value_operator)->execute(params, &tmp, TokenIterator());
@@ -602,7 +626,10 @@ bool Object::operator_less_equal(Object *other) const
 		//Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
 	);
 
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", params, true);
+	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("<=operator", params, true);
+	if ( !value_operator ) {
+		value_operator = other->resolveMethod("=operator", params, true);
+	}
 	if ( value_operator ) {
 		Object tmp;
 		static_cast<Method*>(value_operator)->execute(params, &tmp, TokenIterator());
@@ -624,6 +651,9 @@ void Object::operator_modulo(Object *other)
 	);
 
 	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("%operator", params, true);
+	if ( !value_operator ) {
+		value_operator = other->resolveMethod("=operator", params, true);
+	}
 	if ( value_operator ) {
 		Object tmp;
 		static_cast<Method*>(value_operator)->execute(params, &tmp, TokenIterator());
@@ -646,6 +676,9 @@ void Object::operator_multiply(Object *other)
 	);
 
 	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("*operator", params, true);
+	if ( !value_operator ) {
+		value_operator = other->resolveMethod("=operator", params, true);
+	}
 	if ( value_operator ) {
 		Object tmp;
 		static_cast<Method*>(value_operator)->execute(params, &tmp, TokenIterator());
@@ -668,6 +701,9 @@ void Object::operator_plus(Object *other)
 	);
 
 	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("+operator", params, true);
+	if ( !value_operator ) {
+		value_operator = other->resolveMethod("=operator", params, true);
+	}
 	if ( value_operator ) {
 		Object tmp;
 		static_cast<Method*>(value_operator)->execute(params, &tmp, TokenIterator());
@@ -690,6 +726,9 @@ void Object::operator_subtract(Object *other)
 	);
 
 	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("-operator", params, true);
+	if ( !value_operator ) {
+		value_operator = other->resolveMethod("=operator", params, true);
+	}
 	if ( value_operator ) {
 		Object tmp;
 		static_cast<Method*>(value_operator)->execute(params, &tmp, TokenIterator());
