@@ -41,7 +41,7 @@ private object TestObject {
 		print("operator+");
 		mValue = mValue + other;
 	}
-
+/*
 	public int +operator(int other) const {
 		print("int +operator(int " + other + ")");
 		return mValue;
@@ -55,7 +55,7 @@ private object TestObject {
 		print("int -operator(int " + other + ")");
 		return mValue;
 	}
-
+*/
 	public void operator++() modify {
 		print("operator++");
 		mValue = mValue++;
@@ -64,6 +64,11 @@ private object TestObject {
 	public void ++operator() modify {
 		print("++operator");
 		mValue = mValue++;
+	}
+
+	public int <operator(int value) const {
+		print("<operator(int " + value + ")");
+		return mValue;
 	}
 }
 
