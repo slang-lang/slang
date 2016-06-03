@@ -59,7 +59,8 @@ StringObject::StringObject(const Object& other)
 		 source == DoubleObject::TYPENAME ||
 		 source == FloatObject::TYPENAME ||
 		 source == IntegerObject::TYPENAME ||
-		 source == NumberObject::TYPENAME ) {
+		 source == NumberObject::TYPENAME ||
+		 source == StringObject::TYPENAME ) {
 		setValue(other.getValue());
 	}
 	else {
