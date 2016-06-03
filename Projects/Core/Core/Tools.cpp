@@ -140,29 +140,6 @@ std::string toString(const std::string& value)
 }
 
 
-bool checkSynthax(TokenIterator start, const TokenList& expected)
-{
-	if ( expected.empty() ) {
-		return false;
-	}
-
-	for ( TokenIterator it = expected.begin(); it != expected.end(); ++it, ++start ) {
-		if ( start->isOptional() ) {
-			// optional tokens have to be skipped during syntax check
-			start++;
-		}
-
-		if ( it->type() != start->type() ) {
-			return false;
-		}
-		if ( !it->content().empty() && it->content() != start->content() ) {
-			return false;
-		}
-	}
-
-	return true;
-}
-
 void expect(Token::Type::E expected, TokenIterator found)
 {
 	if ( found->type() != expected ) {

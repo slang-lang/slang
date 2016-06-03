@@ -7,12 +7,35 @@
 // Project includes
 #include <Core/Consts.h>
 #include <Core/Utils/Exceptions.h>
-#include <Core/Tools.h>
 
 // Namespace declarations
 
 
 namespace ObjectiveScript {
+
+
+bool checkSyntax(TokenIterator start, const TokenList &expected)
+{
+	if ( expected.empty() ) {
+		return false;
+	}
+
+	for ( TokenIterator it = expected.begin(); it != expected.end(); ++it, ++start ) {
+		if ( start->isOptional() ) {
+			// optional tokens have to be skipped during syntax check
+			start++;
+		}
+
+		if ( it->type() != start->type() ) {
+			return false;
+		}
+		if ( !it->content().empty() && it->content() != start->content() ) {
+			return false;
+		}
+	}
+
+	return true;
+}
 
 
 TokenList Parser::collectScopeTokens(TokenIterator& token)
@@ -50,7 +73,7 @@ bool Parser::isAlternateMemberDeclaration(TokenIterator start)
 	tokens.push_back(Token(Token::Type::IDENTIFER));
 	tokens.push_back(Token(Token::Type::SEMICOLON));
 
-	return checkSynthax(start, tokens);
+	return checkSyntax(start, tokens);
 }
 
 // syntax:
@@ -64,7 +87,7 @@ bool Parser::isAlternateMethodDeclaration(TokenIterator start)
 	tokens.push_back(Token(Token::Type::TYPE));
 	tokens.push_back(Token(Token::Type::PARENTHESIS_OPEN));
 
-	return checkSynthax(start, tokens);
+	return checkSyntax(start, tokens);
 }
 
 // interface declaration:
@@ -77,7 +100,7 @@ bool Parser::isInterfaceDeclaration(TokenIterator start)
 	tokens.push_back(Token(Token::Type::RESERVED_WORD, std::string(RESERVED_WORD_INTERFACE)));
 	tokens.push_back(Token(Token::Type::IDENTIFER));
 
-	return checkSynthax(start, tokens);
+	return checkSyntax(start, tokens);
 }
 
 // library declaration:
@@ -92,7 +115,7 @@ bool Parser::isLibraryReference(TokenIterator start)
 	//tokens.push_back(Token(Token::Type::IDENTIFER, true));
 	//tokens.push_back(Token(Token::Type::SEMICOLON));
 
-	return checkSynthax(start, tokens);
+	return checkSyntax(start, tokens);
 }
 
 // syntax:
@@ -104,7 +127,7 @@ bool Parser::isLocalDeclaration(TokenIterator start)
 	tokens.push_back(Token(Token::Type::TYPE));
 	tokens.push_back(Token(Token::Type::IDENTIFER));
 
-	return checkSynthax(start, tokens);
+	return checkSyntax(start, tokens);
 }
 
 // syntax:
@@ -118,7 +141,7 @@ bool Parser::isMemberDeclaration(TokenIterator start)
 	tokens.push_back(Token(Token::Type::IDENTIFER));
 	tokens.push_back(Token(Token::Type::SEMICOLON));
 
-	return checkSynthax(start, tokens);
+	return checkSyntax(start, tokens);
 }
 
 // syntax:
@@ -132,7 +155,7 @@ bool Parser::isMethodDeclaration(TokenIterator start)
 	tokens.push_back(Token(Token::Type::IDENTIFER));
 	tokens.push_back(Token(Token::Type::PARENTHESIS_OPEN));
 
-	return checkSynthax(start, tokens);
+	return checkSyntax(start, tokens);
 }
 
 // namespace declaration:
@@ -145,7 +168,7 @@ bool Parser::isNamespaceDeclaration(TokenIterator start)
 	tokens.push_back(Token(Token::Type::RESERVED_WORD, std::string(RESERVED_WORD_NAMESPACE)));
 	tokens.push_back(Token(Token::Type::IDENTIFER));
 
-	return checkSynthax(start, tokens);
+	return checkSyntax(start, tokens);
 }
 
 // object declaration:
@@ -158,7 +181,7 @@ bool Parser::isObjectDeclaration(TokenIterator start)
 	tokens.push_back(Token(Token::Type::RESERVED_WORD, std::string(RESERVED_WORD_OBJECT)));
 	tokens.push_back(Token(Token::Type::IDENTIFER));
 
-	return checkSynthax(start, tokens);
+	return checkSyntax(start, tokens);
 }
 
 // syntax:
@@ -170,7 +193,7 @@ bool Parser::isParameterDeclaration(TokenIterator start)
 	tokens.push_back(Token(Token::Type::IDENTIFER));
 	tokens.push_back(Token(Token::Type::IDENTIFER));
 
-	return checkSynthax(start, tokens);
+	return checkSyntax(start, tokens);
 }
 
 // prototype declaration:
@@ -183,7 +206,7 @@ bool Parser::isPrototypeDeclaration(TokenIterator start)
 	tokens.push_back(Token(Token::Type::RESERVED_WORD, std::string(RESERVED_WORD_PROTOTYPE)));
 	tokens.push_back(Token(Token::Type::IDENTIFER));
 
-	return checkSynthax(start, tokens);
+	return checkSyntax(start, tokens);
 }
 
 ParameterList Parser::parseParameters(TokenIterator &token)

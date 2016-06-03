@@ -17,6 +17,9 @@
 namespace ObjectiveScript {
 
 
+bool checkSyntax(TokenIterator start, const TokenList &expected);
+
+
 class Parser
 {
 public:
