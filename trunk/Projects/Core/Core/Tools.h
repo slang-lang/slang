@@ -38,16 +38,13 @@ namespace Tools {
 	std::string toString(const std::string& value);
 
 	template <class T> inline std::string ConvertToString(const T& t) {
-		std::stringstream ss;
-		ss << t;
-		return ss.str();
+		std::stringstream ss; ss << t; return ss.str();
 	}
 
 
 }
 
 
-bool checkSynthax(TokenIterator start, const TokenList& expected);
 void expect(Token::Type::E expected, TokenIterator found);
 
 inline TokenIterator lookahead(TokenIterator token, int numLooks = 1) {

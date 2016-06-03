@@ -292,9 +292,11 @@ ControlFlow::E Object::execute(Object *result, const std::string& name, const Pa
 {
 	OSdebug("execute('" + name + "', [" + toString(params) + "])");
 
+	ControlFlow::E controlflow = ControlFlow::Normal;
+
 	if ( !mIsConstructed ) {
 		// a method is being called although our object has not yet been constructed?
-		throw Utils::Exceptions::AccessViolation("while accessing " + Typename() + "." + name);
+		return ControlFlow::Throw;
 	}
 
 	Method *method = static_cast<Method*>(resolveMethod(name, params, false));
@@ -318,7 +320,7 @@ ControlFlow::E Object::execute(Object *result, const std::string& name, const Pa
 	method->setRepository(mRepository);
 
 	// execute our member method
-	ControlFlow::E controlflow = method->execute(params, result, TokenIterator());
+	controlflow = method->execute(params, result, TokenIterator());
 
 	if ( controlflow == ControlFlow::Normal ) {
 		switch ( method->getMethodType() ) {

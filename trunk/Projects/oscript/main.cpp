@@ -71,7 +71,7 @@ void printUsage()
 
 void printVersion()
 {
-	std::cout << "ObjectiveScript Interpreter 0.3.0 (cli)" << std::endl;
+	std::cout << "ObjectiveScript Interpreter 0.3.1 (cli)" << std::endl;
 	std::cout << "Copyright (c) 2014-2016 Michael Adelmann" << std::endl;
 	std::cout << "" << std::endl;
 }
@@ -193,16 +193,17 @@ int main(int argc, const char* argv[])
 			return result.getNativeValue();
 		}
 	}
-	catch ( ObjectiveScript::Runtime::ControlFlow::E e ) {
-		switch ( e ) {
-			case ObjectiveScript::Runtime::ControlFlow::ExitProgram: break;
-			default: std::cout << "Exited program with control flow " << ObjectiveScript::Runtime::ControlFlow::toString(e) << std::endl; break;
-		}
-	}
 	catch ( std::exception& e ) {	// catch every std::exception and all derived exception types
 		OSerror(e.what());
 
 		ObjectiveScript::StackTrace::GetInstance().print();
+	}
+	catch ( ObjectiveScript::Runtime::ControlFlow::E e ) {
+		if ( e != ObjectiveScript::Runtime::ControlFlow::ExitProgram ) {
+			OSerror("abnormal program termination!");
+
+			ObjectiveScript::StackTrace::GetInstance().print();
+		}
 	}
 
 	return 0;

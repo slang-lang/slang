@@ -4,9 +4,9 @@
 
 
 // Library includes
+#include <string>
 
 // Project includes
-#include <string>
 
 // Forward declarations
 

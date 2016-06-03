@@ -23,7 +23,7 @@ SET(SOURCES
 	Script.cpp
 	StackTrace.cpp
 	Symbol.cpp
-	System.cpp
+#	System.cpp
 	Token.cpp
 	Tokenizer.cpp
 	Tools.cpp
@@ -46,7 +46,7 @@ SET(HEADERS
 	Scope.h
 	Script.h
 	StackTrace.h
-	System.h
+#	System.h
 	Symbol.h
 	Token.h
 	Tokenizer.h
