@@ -6,7 +6,7 @@ public object Main {
 	}
 
 	private bool TestCase1() const {
-		writeln("TestCase1()");
+		writeln("TestCase1: exit");
 
 		exit;
 

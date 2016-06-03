@@ -13,13 +13,11 @@
 #include <Core/BuildInObjects/NumberObject.h>
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/BuildInObjects/VoidObject.h>
-#include <Core/Consts.h>
 #include <Core/Runtime/OperatorOverloading.h>
 #include <Core/Runtime/TypeCast.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Utils/Utils.h>
 #include <Tools/Printer.h>
-#include "Object.h"
 #include "Repository.h"
 #include "Tools.h"
 
@@ -556,9 +554,12 @@ void Interpreter::process_assert(TokenIterator& token)
 	expect(Token::Type::PARENTHESIS_OPEN, token++);
 
     Object condition;
-	expression(&condition, token);
 
-	if ( mControlFlow == ControlFlow::ExitProgram ) {
+	try {
+		expression(&condition, token);
+	}
+	catch ( ControlFlow::E e ) {
+		mControlFlow = e;
 		return;
 	}
 
@@ -618,7 +619,6 @@ void Interpreter::process_delete(TokenIterator& token)
 // exit;
 void Interpreter::process_exit(TokenIterator& /*token*/)
 {
-	//mControlFlow = ControlFlow::ExitProgram;
 	throw ControlFlow::ExitProgram;
 }
 
@@ -673,7 +673,13 @@ void Interpreter::process_for(TokenIterator& token, Object *result)
 		TokenIterator condBegin = conditionBegin;
 
 		Object condition;
-		expression(&condition, condBegin);
+		try {
+			expression(&condition, condBegin);
+		}
+		catch ( ControlFlow::E e ) {
+			mControlFlow = e;
+			return;
+		}
 
 		if ( !isTrue(condition) ) {
 			break;
@@ -730,7 +736,13 @@ void Interpreter::process_identifier(TokenIterator& token, Object* /*result*/, T
     if ( assign == token ) {
         // we don't have an assignment but a method call
 		Object tmp;
-		expression(&tmp, token);
+		try {
+			expression(&tmp, token);
+		}
+		catch ( ControlFlow::E e ) {
+			mControlFlow = e;
+			return;
+		}
 
         token = end;
         return;
@@ -748,7 +760,13 @@ void Interpreter::process_identifier(TokenIterator& token, Object* /*result*/, T
 	}
 
 	symbol = static_cast<Object*>(identify(token));
-	expression(symbol, ++assign);
+	try {
+		expression(symbol, ++assign);
+	}
+	catch ( ControlFlow::E e ) {
+		mControlFlow = e;
+		return;
+	}
 
 	if ( !symbol->isConst() && symbol->isFinal() ) {
 		// we have modified a final symbol for the first time, we now have to set it so const
@@ -838,7 +856,13 @@ void Interpreter::process_if(TokenIterator& token, Object *result)
 
 
     Object condition;
-	expression(&condition, condBegin);
+	try {
+		expression(&condition, condBegin);
+	}
+	catch ( ControlFlow::E e ) {
+		mControlFlow = e;
+		return;
+	}
 
 	if ( isTrue(condition) ) {
 		mControlFlow = interpret(ifTokens, result);
@@ -916,7 +940,13 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 		objectList.push_back(Object());
 
 		Object *obj = &objectList.back();
-		expression(obj, tmp);
+		try {
+			expression(obj, tmp);
+		}
+		catch ( ControlFlow::E e ) {
+			mControlFlow = e;
+			return;
+		}
 
 		params.push_back(
 			Parameter(obj->getName(), obj->Typename(), obj->getValue(), false, obj->isConst(), Parameter::AccessMode::Unspecified, obj)
@@ -982,7 +1012,13 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 		objectList.push_back(Object());
 
 		Object *obj = &objectList.back();
-		expression(obj, tmp);
+		try {
+			expression(obj, tmp);
+		}
+		catch ( ControlFlow::E e ) {
+			mControlFlow = e;
+			return;
+		}
 
 		params.push_back(
 			Parameter(obj->getName(), obj->Typename(), obj->getValue(), false, obj->isConst(), Parameter::AccessMode::Unspecified, obj)
@@ -1013,7 +1049,13 @@ void Interpreter::process_print(TokenIterator& token)
 	expect(Token::Type::PARENTHESIS_OPEN, token++);
 
 	Object text;
-	expression(&text, token);
+	try {
+		expression(&text, token);
+	}
+	catch ( ControlFlow::E e ) {
+		mControlFlow = e;
+		return;
+	}
 
 	::Utils::PrinterDriver::getInstance()->print(text.getValue(), token->position().mFile, token->position().mLine);
 
@@ -1024,7 +1066,13 @@ void Interpreter::process_print(TokenIterator& token)
 // return <expression>;
 void Interpreter::process_return(TokenIterator& token, Object *result)
 {
-	expression(result, token);
+	try {
+		expression(result, token);
+	}
+	catch ( ControlFlow::E e ) {
+		mControlFlow = e;
+		return;
+	}
 
 	mControlFlow = ControlFlow::Return;
 }
@@ -1097,7 +1145,13 @@ assert(!"not implemented");
 // throw;
 void Interpreter::process_throw(TokenIterator& token, Object* result)
 {
-	expression(result, token);
+	try {
+		expression(result, token);
+	}
+	catch ( ControlFlow::E e ) {
+		mControlFlow = e;
+		return;
+	}
 
 	mControlFlow = ControlFlow::Throw;
 	mExceptionData = ExceptionData(result, token->position());
@@ -1242,7 +1296,13 @@ void Interpreter::process_type(TokenIterator& token)
 
 	if ( assign != getTokens().end() ) {
 		// execute assignment statement
-		expression(object, token);
+		try {
+			expression(object, token);
+		}
+		catch ( ControlFlow::E e ) {
+			mControlFlow = e;
+			return;
+		}
 	}
 	//else {
 	//	// call default constructor if one is present
@@ -1284,7 +1344,13 @@ void Interpreter::process_while(TokenIterator& token, Object *result)
 		TokenIterator tmp = condBegin;
 
 		Object condition;
-		expression(&condition, tmp);
+		try {
+			expression(&condition, tmp);
+		}
+		catch ( ControlFlow::E e ) {
+			mControlFlow = e;
+			return;
+		}
 
 		if ( !isTrue(condition) ) {
 			break;

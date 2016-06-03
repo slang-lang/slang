@@ -54,7 +54,10 @@ std::string SymbolScope::getFullName() const
 {
 	std::string scope;
 	if ( mParent ) {
-		scope = mParent->getFullName() + RESERVED_WORD_SCOPE_OPERATOR;
+		scope = mParent->getFullName();
+		if ( !scope.empty() ) {
+			scope += RESERVED_WORD_SCOPE_OPERATOR;
+		}
 	}
 
 	return scope + getScopeName();
@@ -160,7 +163,7 @@ void MethodScope::undefineMethod(Runtime::Method* method)
 
 
 GlobalScope::GlobalScope()
-: MethodScope("global", 0)
+: MethodScope("", 0)
 {
 }
 
