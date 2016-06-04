@@ -18,8 +18,7 @@ namespace ObjectiveScript {
 
 
 Script::Script(Repository *repository)
-: mObject(0),
-  mRepository(repository)
+: mRepository(repository)
 {
 }
 
@@ -27,47 +26,29 @@ Script::~Script()
 {
 }
 
-void Script::assign(Runtime::Object *object)
-{
-	assert(object);
-	assert(!mObject);
-
-	mObject = object;
-}
-
-Runtime::Object Script::execute(const std::string& method, const ParameterList& params)
+void Script::execute(const std::string& method, const ParameterList& params, Runtime::Object* result)
 {
 	MethodSymbol *symbol = mRepository->getGlobalScope()->resolveMethod(method, params, false);
 	if ( !symbol ) {
-		throw Utils::Exceptions::Exception("Could not resolve method '" + method + "(" + toString(params) + ")'");
+		throw Utils::Exceptions::Exception("could not resolve method '" + method + "(" + toString(params) + ")'");
 	}
-
-	Runtime::Object returnValue;
 
 	Runtime::Method* methodSymbol = static_cast<Runtime::Method*>(symbol);
-	Runtime::ControlFlow::E controlflow = methodSymbol->execute(params, &returnValue, TokenIterator());
+	Runtime::ControlFlow::E controlflow = methodSymbol->execute(params, result, TokenIterator());
 
 	if ( controlflow == Runtime::ControlFlow::Throw ) {
-		throw Utils::Exceptions::Exception(
-			"Exception raised in " + mObject->getFullName() + "::" + mObject->Typename() + "::" + methodSymbol->getName()
-		);
+		throw Utils::Exceptions::Exception("exception raised in method '" + method + "(" + toString(params) + ")'");
 	}
-
-	return returnValue;
 }
 
 Symbol* Script::resolve(const std::string &symbol)
 {
-	assert(mObject);
-
-	return mObject->resolve(symbol, false);
+	return mRepository->getGlobalScope()->resolve(symbol);
 }
 
 Symbol* Script::resolveMethod(const std::string &method, const ParameterList &params)
 {
-	assert(mObject);
-
-	return mObject->resolveMethod(method, params, false);
+	return mRepository->getGlobalScope()->resolveMethod(method, params);
 }
 
 
