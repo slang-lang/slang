@@ -117,16 +117,16 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 		Runtime::Object *main = mRepository->createInstance(mainIt->Typename(), "main");
 		assert(main);
 
+		// ... define it in our global scope ...
+		mRepository->getGlobalScope()->define("main", main);
+
 		Runtime::ControlFlow::E controlflow = main->Constructor(params);
 		if ( controlflow == Runtime::ControlFlow::Throw ) {
 			throw Utils::Exceptions::Exception("Exception raised in " + main->getFullName() + "::" + main->Typename());
 		}
 
-		// ... store it ...
+		// ... and store it
 		mObjects.insert(std::make_pair(mainIt->Typename(), main));
-
-		// ... assign it to our script ...
-		script->assign(main);
 	}
 
 	return script;

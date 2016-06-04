@@ -50,17 +50,6 @@ public:
 };
 
 
-class IObjectScope : public IScope
-{
-public:
-    virtual ~IObjectScope() { }
-
-	virtual void defineMethod(const std::string& name, Runtime::Method* method) = 0;
-	virtual MethodSymbol* resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope) const = 0;
-	virtual void undefineMethod(Runtime::Method* method) = 0;
-};
-
-
 }
 
 

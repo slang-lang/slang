@@ -188,8 +188,13 @@ int main(int argc, const char* argv[])
 		ObjectiveScript::Script *script = mVirtualMachine.createScriptFromFile(mFilename, mParameters);
 		assert(script);
 
-		if ( !script->resolve("Main") ) {
-			ObjectiveScript::Runtime::IntegerObject result = script->execute("Main", mParameters);
+		// check if an instance ("main") of a Main object exists
+		ObjectiveScript::Runtime::Object *main = static_cast<ObjectiveScript::Runtime::Object*>(script->resolve("main"));
+
+		//if ( !script->resolve("main") ) {
+		if ( !main || main->isAtomicType() ) {
+			ObjectiveScript::Runtime::IntegerObject result;
+			script->execute("Main", mParameters, &result);
 			return result.getNativeValue();
 		}
 	}
