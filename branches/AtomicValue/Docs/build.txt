@@ -8,5 +8,5 @@ Prerequisities:
 
 
 
-cmake -G "Eclipse CDT4 - Unix Makefiles" -DISC_BUILD=Debug ../src/
+cmake -G "Eclipse CDT4 - Unix Makefiles" -DBUILD=Debug ../src/
 
