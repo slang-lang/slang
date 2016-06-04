@@ -1,0 +1,66 @@
+INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
+
+SET(SOURCES
+	AffectedRows.cpp
+	Close.cpp
+	Connect.cpp
+	Error.cpp
+	FieldCount.cpp
+	FreeResult.cpp
+	GetClientInfo.cpp
+	GetFieldName.cpp
+	GetFieldValue.cpp
+	Info.cpp
+	Init.cpp
+	MysqlExtension.cpp
+	MysqlPing.cpp
+	MysqlRealEscapeString.cpp
+	MysqlSelectDB.cpp
+	NextResult.cpp
+	NextRow.cpp
+	NumFields.cpp
+	NumRows.cpp
+	Query.cpp
+	StoreResult.cpp
+	Types.cpp
+	UseResult.cpp
+)
+
+SET(HEADERS
+	AffectedRows.h
+	Close.h
+	Connect.h
+	Error.h
+	FieldCount.h
+	FreeResult.h
+	GetClientInfo.h
+	GetFieldName.h
+	GetFieldValue.h
+	Info.h
+	Init.h
+	MysqlDataSeek.h
+	MysqlExtension.h
+	MysqlPing.cpp
+	MysqlRealEscapeString.h
+	MysqlSelectDB.h
+	MysqlStat.h
+	NextResult.h
+	NextRow.h
+	NumFields.h
+	NumRows.h
+	Query.h
+	StoreResult.h
+	Types.h
+	UseResult.h
+)
+
+SET(DEPENDENCIES
+	Utils
+	Core
+)
+
+add_include(Projects/Core)
+add_include(Projects/Extensions)
+add_include(Projects/Utils)
+
+build_static_lib(ExtensionsMysql "mysql")

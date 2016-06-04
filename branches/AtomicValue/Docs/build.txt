@@ -1,0 +1,12 @@
+Prerequisities:
+---------------
+
+- a C++ json library;
+	currently libMyJson C++ is used but should be easily replaceable by the library of your choice (i.e. json-cpp)
+	libMyJson C++: https://sourceforge.net/projects/libmyjson/
+- MySQL Connector/C (https://dev.mysql.com/downloads/connector/)
+
+
+
+cmake -G "Eclipse CDT4 - Unix Makefiles" -DISC_BUILD=Debug ../src/
+

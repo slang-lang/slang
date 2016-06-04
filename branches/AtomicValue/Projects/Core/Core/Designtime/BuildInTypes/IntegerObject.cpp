@@ -1,0 +1,33 @@
+
+// Header
+#include "IntegerObject.h"
+
+// Library includes
+
+// Project includes
+#include <Core/Consts.h>
+
+// Namespace declarations
+
+
+namespace ObjectiveScript {
+namespace Designtime {
+
+
+int IntegerObject::DEFAULTVALUE = 0;
+std::string IntegerObject::TYPENAME = "int";
+
+
+IntegerObject::IntegerObject()
+: BluePrint(TYPENAME, SYSTEM_LIBRARY)
+{
+}
+
+const std::string& IntegerObject::getTypeName() const
+{
+	return TYPENAME;
+}
+
+
+}
+}
