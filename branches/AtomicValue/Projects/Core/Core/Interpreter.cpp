@@ -28,7 +28,7 @@ namespace ObjectiveScript {
 namespace Runtime {
 
 
-Interpreter::Interpreter(IScope *scope, const std::string& name)
+Interpreter::Interpreter(::ObjectiveScript::IScope *scope, const std::string& name)
 : SymbolScope(name, scope),
   mControlFlow(ControlFlow::Normal),
   mRepository(0)
@@ -1057,7 +1057,7 @@ void Interpreter::process_print(TokenIterator& token)
 		return;
 	}
 
-	::Utils::PrinterDriver::getInstance()->print(text.getValue(), token->position().mFile, token->position().mLine);
+	::Utils::PrinterDriver::getInstance()->print(text.getValue().toStdString(), token->position().mFile, token->position().mLine);
 
 	expect(Token::Type::PARENTHESIS_CLOSE, token++);
 }

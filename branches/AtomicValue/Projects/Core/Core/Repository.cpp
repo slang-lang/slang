@@ -175,12 +175,12 @@ void Repository::createDefaultMethods(Runtime::Object *object)
 					ParameterList::const_iterator it = params.begin();
 					(void) it;
 
-					*result = Runtime::StringObject("blablabla");
+					*result = Runtime::StringObject(std::string("blablabla"));
 				}
 				catch (std::exception &e) {
 					Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME,
 																		ANONYMOUS_OBJECT);
-					*data = Runtime::StringObject(e.what());
+					*data = Runtime::StringObject(std::string(e.what()));
 
 					mExceptionData = Runtime::ExceptionData(data, token->position());
 					return Runtime::ControlFlow::Throw;
@@ -290,7 +290,7 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 	assert(blueprint);
 
 	// create the base object
-	Runtime::Object *object = new Runtime::UserObject(name, blueprint->Filename(), blueprint->Typename(), Runtime::UserObject::DEFAULTVALUE);
+	Runtime::Object *object = new Runtime::UserObject(name, blueprint->Filename(), blueprint->Typename(), 0);
 
 	Designtime::Ancestors ancestors = blueprint->getInheritance();
 

@@ -25,6 +25,7 @@ public:
 
 public:
 	NumberObject(double value = 0.0);
+	NumberObject(AtomicValue value);
 	NumberObject(const std::string& name, double value);
 	NumberObject(const Object& object);
 
@@ -72,9 +73,6 @@ public:	// Operators
 public: // Values
 	virtual double getNativeValue() const;
 	virtual void setNativeValue(double value);
-
-	virtual std::string getValue() const;
-	virtual void setValue(const std::string& value);
 
 	virtual bool isValid() const;
 

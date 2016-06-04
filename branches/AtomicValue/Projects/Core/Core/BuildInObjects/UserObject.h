@@ -26,7 +26,7 @@ public:
 
 public:
 	UserObject();
-	UserObject(const std::string& name, const std::string& filename, const std::string& type, const std::string& value);
+	UserObject(const std::string& name, const std::string& filename, const std::string& type, AtomicValue value);
 	UserObject(const Object& object);
 
 public:	// Symbol::IType implementation

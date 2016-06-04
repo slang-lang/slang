@@ -28,7 +28,7 @@ UserObject::UserObject()
 	//setValue(VALUE_NONE);
 }
 
-UserObject::UserObject(const std::string& name, const std::string& filename, const std::string& type, const std::string& value)
+UserObject::UserObject(const std::string& name, const std::string& filename, const std::string& type, AtomicValue value)
 : Object(name, filename, type, value)
 {
 	mIsAtomicType = false;

@@ -221,7 +221,7 @@ ParameterList Parser::parseParameters(TokenIterator &token)
 		Parameter::AccessMode::E accessmode = Parameter::AccessMode::ByValue;
 		bool hasDefaultValue = false;
 		bool isConst = false;
-		std::string value;
+		Runtime::AtomicValue value;
 
 		std::string type = token->content();
 		token++;
@@ -251,7 +251,7 @@ ParameterList Parser::parseParameters(TokenIterator &token)
 		if ( token->type() == Token::Type::ASSIGN ) {
 			hasDefaultValue = true;
 			token++;
-			value = token->content();
+			value = token->content().c_str();
 			token++;
 		}
 

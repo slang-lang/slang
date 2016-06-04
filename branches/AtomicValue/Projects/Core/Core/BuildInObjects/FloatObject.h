@@ -21,10 +21,12 @@ class FloatObject : public Object
 {
 public:
 	static float DEFAULTVALUE;
+	static AtomicValue ATOMIC_DEFAULTVALUE;
 	static std::string TYPENAME;
 
 public:
 	FloatObject(float value = 0.f);
+	FloatObject(AtomicValue value);
 	FloatObject(const std::string& name, float value);
 	FloatObject(const Object& object);
 
@@ -72,9 +74,6 @@ public:	// Operators
 public: // Values
 	virtual float getNativeValue() const;
 	virtual void setNativeValue(float value);
-
-	virtual std::string getValue() const;
-	virtual void setValue(const std::string& value);
 
 	virtual bool isValid() const;
 

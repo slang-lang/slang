@@ -22,29 +22,26 @@ namespace Runtime {
 
 
 double DoubleObject::DEFAULTVALUE = 0.0;
+AtomicValue DoubleObject::ATOMIC_DEFAULTVALUE = 0.0;
 std::string DoubleObject::TYPENAME = "double";
 
 
-DoubleObject::DoubleObject(double value)
-: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, VALUE_NONE)
+DoubleObject::DoubleObject(AtomicValue value)
+: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, value)
 {
 	mIsAtomicType = true;
 	mIsConstructed = true;
-
-	setNativeValue(value);
 }
 
 DoubleObject::DoubleObject(const std::string& name, double value)
-: Object(name, SYSTEM_LIBRARY, TYPENAME, VALUE_NONE)
+: Object(name, SYSTEM_LIBRARY, TYPENAME, value)
 {
 	mIsAtomicType = true;
 	mIsConstructed = true;
-
-	setNativeValue(value);
 }
 
 DoubleObject::DoubleObject(const Object& other)
-: Object(other.getName(), SYSTEM_LIBRARY, TYPENAME, VALUE_NONE)
+: Object(other.getName(), SYSTEM_LIBRARY, TYPENAME, other.getValue())
 {
 	// generic type cast
 
@@ -54,34 +51,23 @@ DoubleObject::DoubleObject(const Object& other)
 	std::string source = other.Typename();
 
 	if ( source == BoolObject::TYPENAME ) {
-		setNativeValue(other.isValid());
+		mValue = other.getValue().toBool();
 	}
 	else if ( source == DoubleObject::TYPENAME ||
 		 source == FloatObject::TYPENAME ||
 		 source == IntegerObject::TYPENAME ||
 		 source == NumberObject::TYPENAME ||
 		 source == StringObject::TYPENAME ) {
-		setValue(other.getValue());
+		mValue = other.getValue();
 	}
 	else {
 		throw Utils::Exceptions::InvalidTypeCast("from " + source + " to " + TYPENAME);
 	}
 }
 
-double DoubleObject::getNativeValue() const
-{
-	return mNativeValue;
-}
-
 const std::string& DoubleObject::getTypeName() const
 {
 	return TYPENAME;
-}
-
-std::string DoubleObject::getValue() const
-{
-	//return mValue;
-	return Tools::toString(mNativeValue);
 }
 
 bool DoubleObject::isValid() const
@@ -91,7 +77,7 @@ bool DoubleObject::isValid() const
 
 void DoubleObject::operator_assign(DoubleObject *other)
 {
-	setNativeValue(other->getNativeValue());
+	mValue = other->getValue().toDouble();
 }
 
 void DoubleObject::operator_assign(Object *other)
@@ -99,13 +85,13 @@ void DoubleObject::operator_assign(Object *other)
 	std::string target = other->Typename();
 
 	if ( target == BoolObject::TYPENAME ) {
-		setNativeValue(other->isValid());
+		mValue = other->getValue().toBool();
 	}
 	else if ( target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ) {
-		DoubleObject tmp(Tools::stringToDouble(other->getValue()));
+		DoubleObject tmp(other->getValue().toDouble());
 
 		operator_assign(&tmp);
 	}
@@ -116,12 +102,12 @@ void DoubleObject::operator_assign(Object *other)
 
 bool DoubleObject::operator_bool() const
 {
-	return mNativeValue != 0.0;
+	return mValue.toDouble();
 }
 
 void DoubleObject::operator_divide(DoubleObject *other)
 {
-	setNativeValue(mNativeValue / other->getNativeValue());
+	mValue = mValue.toDouble() / other->getValue().toDouble();
 }
 
 void DoubleObject::operator_divide(Object *other)
@@ -132,7 +118,7 @@ void DoubleObject::operator_divide(Object *other)
 		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ) {
-		DoubleObject tmp(Tools::stringToDouble(other->getValue()));
+		DoubleObject tmp(other->getValue());
 
 		operator_divide(&tmp);
 	}
@@ -143,7 +129,7 @@ void DoubleObject::operator_divide(Object *other)
 
 bool DoubleObject::operator_equal(DoubleObject *other) const
 {
-	return (mNativeValue == other->getNativeValue());
+	return mValue.toDouble() == other->getValue().toDouble();
 }
 
 bool DoubleObject::operator_equal(Object *other) const
@@ -154,7 +140,7 @@ bool DoubleObject::operator_equal(Object *other) const
 		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ) {
-		DoubleObject tmp(Tools::stringToDouble(other->getValue()));
+		DoubleObject tmp(other->getValue());
 
 		return operator_equal(&tmp);
 	}
@@ -164,7 +150,7 @@ bool DoubleObject::operator_equal(Object *other) const
 
 bool DoubleObject::operator_greater(DoubleObject *other) const
 {
-	return (mNativeValue > other->getNativeValue());
+	return mValue.toDouble() > other->getValue().toDouble();
 }
 
 bool DoubleObject::operator_greater(Object *other) const
@@ -175,7 +161,7 @@ bool DoubleObject::operator_greater(Object *other) const
 		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ) {
-		DoubleObject tmp(Tools::stringToDouble(other->getValue()));
+		DoubleObject tmp(other->getValue());
 
 		return operator_greater(&tmp);
 	}
@@ -185,7 +171,7 @@ bool DoubleObject::operator_greater(Object *other) const
 
 bool DoubleObject::operator_greater_equal(DoubleObject *other) const
 {
-	return (mNativeValue >= other->getNativeValue());
+	return mValue.toDouble() >= other->getValue().toDouble();
 }
 
 bool DoubleObject::operator_greater_equal(Object *other) const
@@ -196,7 +182,7 @@ bool DoubleObject::operator_greater_equal(Object *other) const
 		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ) {
-		DoubleObject tmp(Tools::stringToDouble(other->getValue()));
+		DoubleObject tmp(other->getValue());
 
 		return operator_greater_equal(&tmp);
 	}
@@ -206,7 +192,7 @@ bool DoubleObject::operator_greater_equal(Object *other) const
 
 bool DoubleObject::operator_less(DoubleObject *other) const
 {
-	return (mNativeValue < other->getNativeValue());
+	return mValue.toDouble() < other->getValue().toDouble();
 }
 
 bool DoubleObject::operator_less(Object *other) const
@@ -217,7 +203,7 @@ bool DoubleObject::operator_less(Object *other) const
 		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ) {
-		DoubleObject tmp(Tools::stringToDouble(other->getValue()));
+		DoubleObject tmp(other->getValue());
 
 		return operator_less(&tmp);
 	}
@@ -227,7 +213,7 @@ bool DoubleObject::operator_less(Object *other) const
 
 bool DoubleObject::operator_less_equal(DoubleObject *other) const
 {
-	return (mNativeValue <= other->getNativeValue());
+	return mValue.toDouble() <= other->getValue().toDouble();
 }
 
 bool DoubleObject::operator_less_equal(Object *other) const
@@ -238,7 +224,7 @@ bool DoubleObject::operator_less_equal(Object *other) const
 		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ) {
-		DoubleObject tmp(Tools::stringToDouble(other->getValue()));
+		DoubleObject tmp(other->getValue());
 
 		return operator_less_equal(&tmp);
 	}
@@ -248,7 +234,7 @@ bool DoubleObject::operator_less_equal(Object *other) const
 
 void DoubleObject::operator_multiply(DoubleObject *other)
 {
-	setNativeValue(mNativeValue * other->getNativeValue());
+	mValue = mValue.toDouble() * other->getValue().toDouble();
 }
 
 void DoubleObject::operator_multiply(Object *other)
@@ -259,7 +245,7 @@ void DoubleObject::operator_multiply(Object *other)
 		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ) {
-		DoubleObject tmp(Tools::stringToDouble(other->getValue()));
+		DoubleObject tmp(other->getValue());
 
 		operator_multiply(&tmp);
 	}
@@ -270,7 +256,7 @@ void DoubleObject::operator_multiply(Object *other)
 
 void DoubleObject::operator_plus(DoubleObject *other)
 {
-	setNativeValue(mNativeValue + other->getNativeValue());
+	mValue = mValue.toDouble() + other->getValue().toDouble();
 }
 
 void DoubleObject::operator_plus(Object *other)
@@ -281,7 +267,7 @@ void DoubleObject::operator_plus(Object *other)
 		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ) {
-		DoubleObject tmp(Tools::stringToDouble(other->getValue()));
+		DoubleObject tmp(other->getValue());
 
 		operator_plus(&tmp);
 	}
@@ -292,7 +278,7 @@ void DoubleObject::operator_plus(Object *other)
 
 void DoubleObject::operator_subtract(DoubleObject *other)
 {
-	setNativeValue(mNativeValue - other->getNativeValue());
+	mValue = mValue.toDouble() - other->getValue().toDouble();
 }
 
 void DoubleObject::operator_subtract(Object *other)
@@ -303,7 +289,7 @@ void DoubleObject::operator_subtract(Object *other)
 		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ) {
-		DoubleObject tmp(Tools::stringToDouble(other->getValue()));
+		DoubleObject tmp(other->getValue());
 
 		operator_subtract(&tmp);
 	}
@@ -314,39 +300,27 @@ void DoubleObject::operator_subtract(Object *other)
 
 void DoubleObject::operator_unary_decrement()
 {
-	setNativeValue(mNativeValue - 1);
+	mValue = mValue.toDouble() - 1.0;
 }
 
 void DoubleObject::operator_unary_increment()
 {
-	setNativeValue(mNativeValue + 1);
+	mValue = mValue.toDouble() + 1.0;
 }
 
 void DoubleObject::operator_unary_minus()
 {
-	setNativeValue(mNativeValue * -1);
+	mValue = mValue.toDouble() * -1.0;
 }
 
 void DoubleObject::operator_unary_not()
 {
-	setNativeValue(!mNativeValue);
-}
-
-void DoubleObject::setNativeValue(double value)
-{
-	mNativeValue = value;
-	//mValue = Tools::toString(value);
-}
-
-void DoubleObject::setValue(const std::string& value)
-{
-	mNativeValue = Tools::stringToDouble(value);
-	//mValue = Tools::toString(mNativeValue);		// this conversion is necessary because these two values could drift apart because std::string can also hold floating point values
+	mValue = (double)!mValue.toDouble();
 }
 
 std::string DoubleObject::ToString() const
 {
-	return Typename() + " " + getName() + " = " + getValue();
+	return Typename() + " " + getName() + " = " + Tools::ConvertToString(getValue().value.double_);
 }
 
 

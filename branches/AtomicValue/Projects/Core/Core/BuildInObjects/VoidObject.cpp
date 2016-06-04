@@ -55,24 +55,14 @@ const std::string& VoidObject::getTypeName() const
 	return TYPENAME;
 }
 
-std::string VoidObject::getValue() const
-{
-	return VALUE_NONE;
-}
-
 void VoidObject::setNativeValue(void)
-{
-	// this makes absolutely no sense but hey :-)
-}
-
-void VoidObject::setValue(const std::string&)
 {
 	// this makes absolutely no sense but hey :-)
 }
 
 std::string VoidObject::ToString() const
 {
-	return Typename() + " " + getName() + " = " + getValue();
+	return Typename() + " " + getName();
 }
 
 

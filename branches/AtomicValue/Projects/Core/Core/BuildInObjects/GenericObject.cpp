@@ -29,7 +29,7 @@ GenericObject::GenericObject()
 	//setValue(VALUE_NULL);
 }
 
-GenericObject::GenericObject(const std::string& name, const std::string& filename, const std::string& type, const std::string& value)
+GenericObject::GenericObject(const std::string& name, const std::string& filename, const std::string& type, AtomicValue value)
 : Object(name, filename, type, value)
 {
 	mIsAtomicType = false;

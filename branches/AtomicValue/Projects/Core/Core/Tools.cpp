@@ -263,7 +263,7 @@ bool isTrue(const std::string& value)
 
 bool isTrue(const Runtime::Object& object)
 {
-	if ( !object.isValid() || !isTrue(object.getValue()) ) {
+	if ( !object.isValid() || !object.getValue().toBool() ) {
 		return false;
 	}
 
@@ -273,7 +273,7 @@ bool isTrue(const Runtime::Object& object)
 
 bool isTrue(const Runtime::Object* object)
 {
-	if ( !object || !object->isValid() || !isTrue(object->getValue()) ) {
+	if ( !object || !object->isValid() || !object->getValue().toBool() ) {
 		return false;
 	}
 

@@ -27,26 +27,29 @@ std::string StringObject::DEFAULTVALUE = "";
 std::string StringObject::TYPENAME = "string";
 
 
-StringObject::StringObject(const std::string& value)
-: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, VALUE_NONE)
+StringObject::StringObject(AtomicValue value)
+: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, value)
 {
 	mIsAtomicType = true;
 	mIsConstructed = true;
+}
 
-	setNativeValue(value);
+StringObject::StringObject(const std::string& value)
+: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, value.c_str())
+{
+	mIsAtomicType = true;
+	mIsConstructed = true;
 }
 
 StringObject::StringObject(const std::string& name, const std::string& value)
-: Object(name, SYSTEM_LIBRARY, TYPENAME, VALUE_NONE)
+: Object(name, SYSTEM_LIBRARY, TYPENAME, value.c_str())
 {
 	mIsAtomicType = true;
 	mIsConstructed = true;
-
-	setNativeValue(value);
 }
 
 StringObject::StringObject(const Object& other)
-: Object(other.getName(), SYSTEM_LIBRARY, TYPENAME, VALUE_NONE)
+: Object(other.getName(), SYSTEM_LIBRARY, TYPENAME, other.getValue())
 {
 	// generic type cast
 
@@ -68,19 +71,9 @@ StringObject::StringObject(const Object& other)
 	}
 }
 
-std::string StringObject::getNativeValue() const
-{
-	return mNativeValue;
-}
-
 const std::string& StringObject::getTypeName() const
 {
 	return TYPENAME;
-}
-
-std::string StringObject::getValue() const
-{
-	return mValue;
 }
 
 bool StringObject::isValid() const
@@ -98,7 +91,7 @@ void StringObject::operator_assign(Object *other)
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ||
 		 target == StringObject::TYPENAME ) {
-		setNativeValue(other->getValue());
+		mValue = other->getValue().toString();
 	}
 	else {
 		Object::operator_assign(other);
@@ -107,12 +100,12 @@ void StringObject::operator_assign(Object *other)
 
 void StringObject::operator_assign(StringObject *other)
 {
-	setNativeValue(other->getNativeValue());
+	mValue = other->getValue().toString();
 }
 
 bool StringObject::operator_bool() const
 {
-	return !mNativeValue.empty();
+	return !mValue.toString();
 }
 
 bool StringObject::operator_equal(Object *other) const
@@ -130,7 +123,7 @@ bool StringObject::operator_equal(Object *other) const
 
 bool StringObject::operator_equal(StringObject *other) const
 {
-	return (mNativeValue == other->getNativeValue());
+	return mValue.toStdString() == other->getValue().toStdString();
 }
 
 void StringObject::operator_plus(Object *other)
@@ -154,24 +147,12 @@ void StringObject::operator_plus(Object *other)
 
 void StringObject::operator_plus(StringObject *other)
 {
-	setNativeValue(mNativeValue + other->getNativeValue());
-}
-
-void StringObject::setNativeValue(const std::string& value)
-{
-	mNativeValue = value;
-	mValue = value;
-}
-
-void StringObject::setValue(const std::string& value)
-{
-	mNativeValue = value;
-	mValue = value;
+	mValue = std::string(mValue.toStdString() + other->getValue().toStdString()).c_str();
 }
 
 std::string StringObject::ToString() const
 {
-	return Typename() + " " + getName() + " = " + getValue();
+	return Typename() + " " + getName() + " = " + getValue().toStdString();
 }
 
 
