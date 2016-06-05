@@ -27,7 +27,7 @@ std::string BoolObject::TYPENAME = "bool";
 
 
 BoolObject::BoolObject(AtomicValue value)
-: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, value)
+: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, value.toBool())
 {
 	mIsAtomicType = true;
 	mIsConstructed = true;
@@ -40,13 +40,27 @@ BoolObject::BoolObject(const std::string& name, bool value)
 	mIsConstructed = true;
 }
 
-BoolObject::BoolObject(const Object& object)
-: Object(object.getName(), SYSTEM_LIBRARY, TYPENAME, DEFAULTVALUE)
+BoolObject::BoolObject(const Object& other)
+: Object(other.getName(), SYSTEM_LIBRARY, TYPENAME, DEFAULTVALUE)
 {
 	// generic type cast
 
 	mIsAtomicType = true;
 	mIsConstructed = true;
+
+	std::string target = other.Typename();
+
+	if ( target == BoolObject::TYPENAME ||
+		 target == DoubleObject::TYPENAME ||
+		 target == FloatObject::TYPENAME ||
+		 target == IntegerObject::TYPENAME ||
+		 target == NumberObject::TYPENAME ||
+		 target == StringObject::TYPENAME ) {
+		mValue = other.getValue().toBool();
+	}
+	else {
+		throw Utils::Exceptions::InvalidTypeCast("from " + target + " to " + TYPENAME);
+	}
 }
 
 bool BoolObject::operator_bool() const
@@ -89,9 +103,7 @@ void BoolObject::operator_bitand(Object *other)
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ||
 		 target == StringObject::TYPENAME ) {
-		BoolObject tmp(other->getValue());
-
-		operator_bitand(&tmp);
+		mValue.value.bool_ &= other->getValue().toBool();
 	}
 	else {
 		Object::operator_bitand(other);
@@ -113,9 +125,7 @@ void BoolObject::operator_bitor(Object *other)
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ||
 		 target == StringObject::TYPENAME ) {
-		BoolObject tmp(other->getValue());
-
-		operator_bitor(&tmp);
+		mValue.value.bool_ |= other->getValue().toBool();
 	}
 	else {
 		Object::operator_bitor(other);
@@ -137,9 +147,7 @@ bool BoolObject::operator_equal(Object *other) const
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ||
 		 target == StringObject::TYPENAME ) {
-		BoolObject tmp(other->getValue());
-
-		return operator_equal(&tmp);
+		return mValue.toBool() == other->getValue().toBool();
 	}
 
 	return Object::operator_equal(other);

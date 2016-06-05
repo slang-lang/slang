@@ -26,7 +26,7 @@ std::string IntegerObject::TYPENAME = "int";
 
 
 IntegerObject::IntegerObject(AtomicValue value)
-: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, value)
+: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, value.toInt())
 {
 	mIsAtomicType = true;
 	mIsConstructed = true;
@@ -40,7 +40,7 @@ IntegerObject::IntegerObject(const std::string& name, int value)
 }
 
 IntegerObject::IntegerObject(const Object& other)
-: Object(other.getName(), SYSTEM_LIBRARY, TYPENAME, other.getValue())
+: Object(other.getName(), SYSTEM_LIBRARY, TYPENAME, DEFAULTVALUE)
 {
 	// generic type cast
 
@@ -49,15 +49,13 @@ IntegerObject::IntegerObject(const Object& other)
 
 	std::string target = other.Typename();
 
-	if ( target == BoolObject::TYPENAME ) {
-		mValue = other.getValue().toBool();
-	}
-	else if ( target == IntegerObject::TYPENAME ||
-			  target == DoubleObject::TYPENAME ||
-			  target == FloatObject::TYPENAME ||
-			  target == NumberObject::TYPENAME ||
-			  target == StringObject::TYPENAME ) {
-		setValue(other.getValue());	// this could probably speed things up a litte
+	if ( target == IntegerObject::TYPENAME ||
+		 target == BoolObject::TYPENAME ||
+		 target == DoubleObject::TYPENAME ||
+		 target == FloatObject::TYPENAME ||
+		 target == NumberObject::TYPENAME ||
+		 target == StringObject::TYPENAME ) {
+		mValue = other.getValue().toInt();
 	}
 	else {
 		throw Utils::Exceptions::InvalidTypeCast("from " + target + " to " + TYPENAME);
@@ -83,14 +81,12 @@ void IntegerObject::operator_assign(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == BoolObject::TYPENAME ) {
-		mValue = other->getValue().toBool();
-	}
-	else if ( target == IntegerObject::TYPENAME ||
+	if ( target == IntegerObject::TYPENAME ||
+		 target == BoolObject::TYPENAME ||
 		 target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ) {
-		setValue(other->getValue());	// this could probably speed things up a litte
+		mValue = other->getValue().toInt();
 	}
 	else {
 		Object::operator_assign(other);
@@ -112,12 +108,11 @@ void IntegerObject::operator_divide(Object *other)
 	std::string target = other->Typename();
 
 	if ( target == IntegerObject::TYPENAME ||
+		 target == BoolObject::TYPENAME ||
 		 target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ) {
-		IntegerObject tmp(other->getValue());
-
-		operator_divide(&tmp);
+		mValue = mValue.toInt() / other->getValue().toInt();
 	}
 	else {
 		Object::operator_divide(other);
@@ -134,12 +129,11 @@ bool IntegerObject::operator_equal(Object *other) const
 	std::string target = other->Typename();
 
 	if ( target == IntegerObject::TYPENAME ||
+		 target == BoolObject::TYPENAME ||
 		 target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ) {
-		IntegerObject tmp(other->getValue());
-
-		return operator_equal(&tmp);
+		return mValue.toInt() == other->getValue().toInt();
 	}
 
 	return Object::operator_equal(other);
@@ -155,12 +149,11 @@ bool IntegerObject::operator_greater(Object *other) const
 	std::string target = other->Typename();
 
 	if ( target == IntegerObject::TYPENAME ||
+		 target == BoolObject::TYPENAME ||
 		 target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ) {
-		IntegerObject tmp(other->getValue());
-
-		return operator_greater(&tmp);
+		return mValue.toInt() > other->getValue().toInt();
 	}
 
 	return Object::operator_greater(other);
@@ -176,12 +169,11 @@ bool IntegerObject::operator_greater_equal(Object *other) const
 	std::string target = other->Typename();
 
 	if ( target == IntegerObject::TYPENAME ||
+		 target == BoolObject::TYPENAME ||
 		 target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ) {
-		IntegerObject tmp(other->getValue());
-
-		return operator_greater_equal(&tmp);
+		return mValue.toInt() >= other->getValue().toInt();
 	}
 
 	return Object::operator_greater_equal(other);
@@ -197,12 +189,11 @@ bool IntegerObject::operator_less(Object *other) const
 	std::string target = other->Typename();
 
 	if ( target == IntegerObject::TYPENAME ||
+		 target == BoolObject::TYPENAME ||
 		 target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ) {
-		IntegerObject tmp(other->getValue());
-
-		return operator_less(&tmp);
+		return mValue.toInt() < other->getValue().toInt();
 	}
 
 	return Object::operator_less(other);
@@ -218,12 +209,11 @@ bool IntegerObject::operator_less_equal(Object *other) const
 	std::string target = other->Typename();
 
 	if ( target == IntegerObject::TYPENAME ||
+		 target == BoolObject::TYPENAME ||
 		 target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ) {
-		IntegerObject tmp(other->getValue());
-
-		return operator_less_equal(&tmp);
+		return mValue.toInt() <= other->getValue().toInt();
 	}
 
 	return Object::operator_less_equal(other);
@@ -239,12 +229,11 @@ void IntegerObject::operator_modulo(Object *other)
 	std::string target = other->Typename();
 
 	if ( target == IntegerObject::TYPENAME ||
+		 target == BoolObject::TYPENAME ||
 		 target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ) {
-		IntegerObject tmp(other->getValue());
-
-		operator_modulo(&tmp);
+		mValue = mValue.toInt() % other->getValue().toInt();
 	}
 	else {
 		Object::operator_modulo(other);
@@ -261,12 +250,11 @@ void IntegerObject::operator_multiply(Object *other)
 	std::string target = other->Typename();
 
 	if ( target == IntegerObject::TYPENAME ||
+		 target == BoolObject::TYPENAME ||
 		 target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ) {
-		IntegerObject tmp(other->getValue());
-
-		operator_multiply(&tmp);
+		mValue = mValue.toInt() * other->getValue().toInt();
 	}
 	else {
 		Object::operator_multiply(other);
@@ -283,12 +271,11 @@ void IntegerObject::operator_plus(Object *other)
 	std::string target = other->Typename();
 
 	if ( target == IntegerObject::TYPENAME ||
+		 target == BoolObject::TYPENAME ||
 		 target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ) {
-		IntegerObject tmp(other->getValue());
-
-		operator_plus(&tmp);
+		mValue = mValue.toInt() + other->getValue().toInt();
 	}
 	else {
 		Object::operator_plus(other);
@@ -305,12 +292,11 @@ void IntegerObject::operator_subtract(Object *other)
 	std::string target = other->Typename();
 
 	if ( target == IntegerObject::TYPENAME ||
+		 target == BoolObject::TYPENAME ||
 		 target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ) {
-		IntegerObject tmp(other->getValue());
-
-		operator_subtract(&tmp);
+		mValue = mValue.toInt() - other->getValue().toInt();
 	}
 	else {
 		Object::operator_subtract(other);

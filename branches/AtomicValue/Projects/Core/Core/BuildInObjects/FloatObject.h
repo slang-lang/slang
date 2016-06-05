@@ -25,8 +25,7 @@ public:
 	static std::string TYPENAME;
 
 public:
-	FloatObject(float value = 0.f);
-	FloatObject(AtomicValue value);
+	FloatObject(AtomicValue value = 0.f);
 	FloatObject(const std::string& name, float value);
 	FloatObject(const Object& object);
 
@@ -72,9 +71,6 @@ public:	// Operators
 	virtual void operator_unary_not();
 
 public: // Values
-	virtual float getNativeValue() const;
-	virtual void setNativeValue(float value);
-
 	virtual bool isValid() const;
 
 	virtual std::string ToString() const;
@@ -82,7 +78,7 @@ public: // Values
 protected:
 
 private:
-	float mNativeValue;
+
 };
 
 

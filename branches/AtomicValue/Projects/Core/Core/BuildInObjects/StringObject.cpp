@@ -28,28 +28,28 @@ std::string StringObject::TYPENAME = "string";
 
 
 StringObject::StringObject(AtomicValue value)
-: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, value)
+: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, value.toString())
 {
 	mIsAtomicType = true;
 	mIsConstructed = true;
 }
 
 StringObject::StringObject(const std::string& value)
-: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, value.c_str())
+: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, value)
 {
 	mIsAtomicType = true;
 	mIsConstructed = true;
 }
 
 StringObject::StringObject(const std::string& name, const std::string& value)
-: Object(name, SYSTEM_LIBRARY, TYPENAME, value.c_str())
+: Object(name, SYSTEM_LIBRARY, TYPENAME, value)
 {
 	mIsAtomicType = true;
 	mIsConstructed = true;
 }
 
 StringObject::StringObject(const Object& other)
-: Object(other.getName(), SYSTEM_LIBRARY, TYPENAME, other.getValue())
+: Object(other.getName(), SYSTEM_LIBRARY, TYPENAME, DEFAULTVALUE)
 {
 	// generic type cast
 
@@ -58,13 +58,13 @@ StringObject::StringObject(const Object& other)
 
 	std::string source = other.Typename();
 
-	if ( source == BoolObject::TYPENAME ||
+	if ( source == StringObject::TYPENAME ||
+		 source == BoolObject::TYPENAME ||
 		 source == DoubleObject::TYPENAME ||
 		 source == FloatObject::TYPENAME ||
 		 source == IntegerObject::TYPENAME ||
-		 source == NumberObject::TYPENAME ||
-		 source == StringObject::TYPENAME ) {
-		setValue(other.getValue());
+		 source == NumberObject::TYPENAME ) {
+		mValue = other.getValue().toString();
 	}
 	else {
 		throw Utils::Exceptions::InvalidTypeCast("from " + source + " to " + TYPENAME);
@@ -105,7 +105,7 @@ void StringObject::operator_assign(StringObject *other)
 
 bool StringObject::operator_bool() const
 {
-	return !mValue.toString();
+	return !mValue.toStdString().empty();
 }
 
 bool StringObject::operator_equal(Object *other) const
@@ -113,9 +113,7 @@ bool StringObject::operator_equal(Object *other) const
 	std::string target = other->Typename();
 
 	if ( target == StringObject::TYPENAME ) {
-		StringObject tmp(other->getValue());
-
-		return operator_equal(&tmp);
+		return mValue.toStdString() == other->getValue().toStdString();
 	}
 
 	return Object::operator_equal(other);
@@ -136,9 +134,7 @@ void StringObject::operator_plus(Object *other)
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ||
 		 target == StringObject::TYPENAME ) {
-		StringObject tmp(other->getValue());
-
-		operator_plus(&tmp);
+		mValue = mValue.toStdString() + other->getValue().toStdString();
 	}
 	else {
 		Object::operator_plus(other);
@@ -147,7 +143,7 @@ void StringObject::operator_plus(Object *other)
 
 void StringObject::operator_plus(StringObject *other)
 {
-	mValue = std::string(mValue.toStdString() + other->getValue().toStdString()).c_str();
+	mValue = mValue.toStdString() + other->getValue().toStdString();
 }
 
 std::string StringObject::ToString() const

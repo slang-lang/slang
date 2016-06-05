@@ -44,12 +44,14 @@ struct AtomicValue
 	AtomicValue(float val);
 	AtomicValue(int val);
 	AtomicValue(const char* val);
+	AtomicValue(const std::string& val);
 
 	void operator=(bool v);
 	void operator=(double v);
 	void operator=(float v);
 	void operator=(int v);
 	void operator=(const char* v);
+	void operator=(const std::string& v);
 
 	bool toBool() const;
 	double toDouble() const;

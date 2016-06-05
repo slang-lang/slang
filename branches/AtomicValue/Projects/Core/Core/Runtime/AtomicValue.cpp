@@ -79,6 +79,17 @@ AtomicValue::AtomicValue(const char* val)
 	value.string_ = val;
 }
 
+AtomicValue::AtomicValue(const std::string& val)
+{
+	value.bool_ = false;
+	value.double_ = 0.0;
+	value.float_ = 0.f;
+	value.int_ = 0;
+
+	type = STRING;
+	value.string_ = val.c_str();
+}
+
 void AtomicValue::operator=(bool v)
 {
 	type = BOOL;
@@ -109,6 +120,12 @@ void AtomicValue::operator=(const char* v)
 	value.string_ = v;
 }
 
+void AtomicValue::operator=(const std::string& v)
+{
+	type = STRING;
+	value.string_ = v.c_str();
+}
+
 bool AtomicValue::toBool() const
 {
 	switch ( type ) {
@@ -116,7 +133,7 @@ bool AtomicValue::toBool() const
 		case DOUBLE: return (bool)value.double_;
 		case FLOAT: return (bool)value.float_;
 		case INT: return (bool)value.int_;
-		case STRING: return Tools::stringToBool(value.string_);
+		case STRING: return (bool)value.string_;
 		default: break;
 	}
 
