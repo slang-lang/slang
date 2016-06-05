@@ -12,6 +12,7 @@ public object Main {
 
 	private bool TestCase1() const {
 		print("TestCase 1: unary not");
+
 		// default value is false
 		Boolean value;// = new Boolean();
 

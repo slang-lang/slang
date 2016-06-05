@@ -105,7 +105,7 @@ void StringObject::operator_assign(StringObject *other)
 
 bool StringObject::operator_bool() const
 {
-	return !mValue.toStdString().empty();
+	return mValue.toBool();
 }
 
 bool StringObject::operator_equal(Object *other) const

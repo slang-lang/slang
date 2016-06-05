@@ -43,7 +43,7 @@ public:
 		try {
 			ParameterList::const_iterator it = params.begin();
 
-			std::string param_name = (*it++).value();
+			std::string param_name = (*it++).value().toStdString();
 
 			std::string result_value;
 
@@ -56,7 +56,7 @@ public:
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringObject(e.what());
+			*data = Runtime::StringObject(std::string(e.what()));
 
 			mExceptionData = Runtime::ExceptionData(data, token->position());
 			return Runtime::ControlFlow::Throw;

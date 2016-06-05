@@ -1,9 +1,10 @@
 
 public namespace System {
+
 	public object Integer {
 		private int mValue;
 
-		public void Integer(int value = 0i) {
+		public void Integer(int value = 0) {
 			mValue = value;
 		}
 		public void Integer(Integer copy) {
@@ -71,5 +72,6 @@ public namespace System {
 			mValue = mValue / other.mValue;
 		}
 	}
+
 }
 

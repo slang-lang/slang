@@ -38,8 +38,8 @@ Runtime::ControlFlow::E MysqlSelectDB::execute(const ParameterList& params, Runt
 		// {
 		ParameterList::const_iterator it = params.begin();
 
-		int param_handle = Tools::stringToInt((*it++).value());
-		std::string param_db = (*it++).value();
+		int param_handle = (*it++).value().toInt();
+		std::string param_db = (*it++).value().toStdString();
 		// }
 
 		MYSQL *myConn = mMysqlConnections[param_handle];
@@ -50,7 +50,7 @@ Runtime::ControlFlow::E MysqlSelectDB::execute(const ParameterList& params, Runt
 	}
 	catch ( std::exception &e ) {
 		Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
-		*data = Runtime::StringObject(e.what());
+		*data = Runtime::StringObject(std::string(e.what()));
 
 		mExceptionData = Runtime::ExceptionData(data, token->position());
 		return Runtime::ControlFlow::Throw;

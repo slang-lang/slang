@@ -42,12 +42,12 @@ Runtime::ControlFlow::E MysqlRealConnect::execute(const ParameterList& params, R
 		// {
 		ParameterList::const_iterator it = params.begin();
 
-		int param_handle = Tools::stringToInt((*it++).value());
-		std::string param_host = (*it++).value();
-		int param_port = Tools::stringToInt((*it++).value());
-		std::string param_user = (*it++).value();
-		std::string param_passwd = (*it++).value();
-		std::string param_db = (*it++).value();
+		int param_handle = (*it++).value().toInt();
+		std::string param_host = (*it++).value().toString();
+		int param_port = (*it++).value().toInt();
+		std::string param_user = (*it++).value().toString();
+		std::string param_passwd = (*it++).value().toString();
+		std::string param_db = (*it++).value().toString();
 		std::string param_socket;
 		long param_clientflag = 0;
 		// }
@@ -80,7 +80,7 @@ Runtime::ControlFlow::E MysqlRealConnect::execute(const ParameterList& params, R
 	}
 	catch ( std::exception &e ) {
 		Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
-		*data = Runtime::StringObject(e.what());
+		*data = Runtime::StringObject(std::string(e.what()));
 
 		mExceptionData = Runtime::ExceptionData(data, token->position());
 		return Runtime::ControlFlow::Throw;

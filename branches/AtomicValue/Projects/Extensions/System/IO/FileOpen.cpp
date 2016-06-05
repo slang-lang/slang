@@ -71,8 +71,8 @@ Runtime::ControlFlow::E FileOpen::execute(const ParameterList& params, Runtime::
 
 	Runtime::ControlFlow::E controlFlow = Runtime::ControlFlow::Normal;
 
-	std::string filename = params.front().pointer()->getValue();
-	std::string accessmode = params.back().pointer()->getValue();
+	std::string filename = params.front().value().toString();
+	std::string accessmode = params.back().value().toString();
 
 	int handle = 0;
 	int mode = parseAccessMode(accessmode);

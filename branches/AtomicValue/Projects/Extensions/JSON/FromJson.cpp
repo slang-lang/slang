@@ -45,7 +45,7 @@ Runtime::ControlFlow::E FromJson::execute(const ParameterList& params, Runtime::
 		ParameterList::const_iterator it = params.begin();
 
 		Runtime::Object *param_object = (*it++).pointer();
-		std::string param_value = (*it++).value();
+		std::string param_value = (*it++).value().toStdString();
 
 		bool success = param_object->FromJson(Json::Parser::parse(param_value));
 
@@ -53,7 +53,7 @@ Runtime::ControlFlow::E FromJson::execute(const ParameterList& params, Runtime::
 	}
 	catch ( std::exception &e ) {
 		Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
-		*data = Runtime::StringObject(e.what());
+		*data = Runtime::StringObject(std::string(e.what()));
 
 		mExceptionData = Runtime::ExceptionData(data, token->position());
 		return Runtime::ControlFlow::Throw;

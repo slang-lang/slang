@@ -14,6 +14,8 @@ public namespace IfTest
 
 		private bool TestCase1()
 		{
+			print("TestCase 1");
+
 			int one = 1;
 			print("one = " + one);
 
@@ -34,6 +36,8 @@ public namespace IfTest
 
 		private bool TestCase2(int param1 = 2)
 		{
+			print("TestCase 2 (param1 = " + param1 + ")");
+
 			int one = 0;
 			print("one = " + one);
 
@@ -63,6 +67,8 @@ public namespace IfTest
 
 		private bool TestCase3()
 		{
+			print("TestCase 3");
+
 			// comparison operators are stickier than boolean operators
 			if ( true == true && false == false ) {
 				print("TestCase3: true");
@@ -76,6 +82,8 @@ public namespace IfTest
 
 		private bool TestCase4()
 		{
+			print("TestCase 4");
+
 			// comparison operators are stickier than boolean operators but parenthesis are even better :-)
 			if ( true == (true && false) == false ) {
 				print("TestCase4: true");

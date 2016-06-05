@@ -18,6 +18,7 @@ public object Main {
 		print("TestCase 1: String.StartsWith");
 
 		String str = new String("This is a string");
+		print(str.ToString());
 		print("str.StartsWith(\"This\") = " + str.StartsWith("This"));
 
 		return str.StartsWith("This");

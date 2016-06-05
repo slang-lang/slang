@@ -30,8 +30,6 @@ MysqlGetClientInfo::MysqlGetClientInfo()
 Runtime::ControlFlow::E MysqlGetClientInfo::execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token)
 {
 (void)params;
-(void)token;
-
 	try {
 		std::string my_result = mysql_get_client_info();
 
@@ -39,7 +37,7 @@ Runtime::ControlFlow::E MysqlGetClientInfo::execute(const ParameterList& params,
 	}
 	catch ( std::exception &e ) {
 		Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
-		*data = Runtime::StringObject(e.what());
+		*data = Runtime::StringObject(std::string(e.what()));
 
 		mExceptionData = Runtime::ExceptionData(data, token->position());
 		return Runtime::ControlFlow::Throw;

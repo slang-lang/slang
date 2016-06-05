@@ -197,6 +197,7 @@ const char* AtomicValue::toString() const
 		default: break;
 	}
 
+	assert(!"invalid data type");
 	return "";
 }
 
@@ -211,6 +212,7 @@ std::string AtomicValue::toStdString() const
 		default: break;
 	}
 
+	assert(!"invalid data type");
 	return "";
 }
 

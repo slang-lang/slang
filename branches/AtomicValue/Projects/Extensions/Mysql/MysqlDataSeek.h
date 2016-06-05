@@ -45,8 +45,8 @@ public:
 			// {
 			ParameterList::const_iterator it = params.begin();
 
-			int param_handle = Tools::stringToInt((*it++).value());
-			int param_rowIdx = Tools::stringToInt((*it++).value());
+			int param_handle = (*it++).value().toInt();
+			int param_rowIdx = (*it++).value().toInt();
 			// }
 
 			MYSQL_RES *myResult = mMysqlResults[param_handle];
@@ -55,7 +55,7 @@ public:
 		}
 		catch ( std::exception &e ) {
 			Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringObject(e.what());
+			*data = Runtime::StringObject(std::string(e.what()));
 
 			mExceptionData = Runtime::ExceptionData(data, token->position());
 			return Runtime::ControlFlow::Throw;
