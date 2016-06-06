@@ -296,7 +296,7 @@ void DoubleObject::operator_unary_not()
 
 std::string DoubleObject::ToString() const
 {
-	return Typename() + " " + getName() + " = " + Tools::ConvertToString(getValue().value.double_);
+	return Typename() + " " + getName() + " = " + getValue().toStdString();
 }
 
 
