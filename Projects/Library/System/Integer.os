@@ -1,9 +1,10 @@
 
 public namespace System {
+
 	public object Integer {
 		private int mValue;
 
-		public void Integer(int value = 0i) {
+		public void Integer(int value = 0) {
 			mValue = value;
 		}
 		public void Integer(Integer copy) {
@@ -18,10 +19,10 @@ public namespace System {
 			return string mValue;
 		}
 
-		public int Value() const {
+		public deprecated int Value() const {
 			return mValue;
 		}
-		public void Value(int value) modify {
+		public deprecated void Value(int value) modify {
 			mValue = value;
 		}
 
@@ -71,5 +72,6 @@ public namespace System {
 			mValue = mValue / other.mValue;
 		}
 	}
+
 }
 

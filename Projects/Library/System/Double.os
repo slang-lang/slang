@@ -18,10 +18,10 @@ public namespace System {
 			return string mValue;
 		}
 
-		public double Value() const {
+		public deprecated double Value() const {
 			return mValue;
 		}
-		public void Value(double value) modify {
+		public deprecated void Value(double value) modify {
 			mValue = value;
 		}
 
