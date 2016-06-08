@@ -224,6 +224,7 @@ ParameterList Parser::parseParameters(TokenIterator &token)
 		bool isConst = false;
 		Runtime::AtomicValue value;
 
+		expect(Token::Type::TYPE, token);
 		std::string type = token->content();
 		token++;
 
@@ -254,26 +255,13 @@ ParameterList Parser::parseParameters(TokenIterator &token)
 			token++;
 
 			switch ( token->type() ) {
-				case Token::Type::CONST_BOOLEAN: {
-					value = Tools::stringToBool(token->content());
-				} break;
-				case Token::Type::CONST_DOUBLE: {
-					value = Tools::stringToDouble(token->content());
-				} break;
-				case Token::Type::CONST_FLOAT: {
-					value = Tools::stringToFloat(token->content());
-				} break;
-				case Token::Type::CONST_INTEGER: {
-					value = Tools::stringToInt(token->content());
-				} break;
-				case Token::Type::CONST_LITERAL: {
-					value = token->content();
-				} break;
-				case Token::Type::CONST_NUMBER: {
-					value = Tools::stringToNumber(token->content());
-				} break;
-				default:
-					throw Utils::Exceptions::NotSupported("only atomic data types are allowed as default parameters", token->position());
+				case Token::Type::CONST_BOOLEAN: value = Tools::stringToBool(token->content()); break;
+				case Token::Type::CONST_DOUBLE: value = Tools::stringToDouble(token->content()); break;
+				case Token::Type::CONST_FLOAT: value = Tools::stringToFloat(token->content()); break;
+				case Token::Type::CONST_INTEGER: value = Tools::stringToInt(token->content()); break;
+				case Token::Type::CONST_LITERAL: value = token->content(); break;
+				case Token::Type::CONST_NUMBER: value = Tools::stringToNumber(token->content()); break;
+				default: throw Utils::Exceptions::NotSupported("only atomic data types are allowed as default parameters", token->position());
 			}
 
 			token++;

@@ -395,7 +395,7 @@ bool Object::isValid() const
 	return mIsConstructed;
 }
 
-void Object::operator_assign(Object *other)
+void Object::operator_assign(const Object *other)
 {
 	ParameterList params;
 	params.push_back(
@@ -849,31 +849,24 @@ std::string Object::ToString() const
 	std::string result = Typename() + " " + getName() + " = " + getValue().toStdString();
 
 	if ( !isAtomicType() ) {
-		result += " { ";
+		result += " {\n";
 
 		for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
-			result += (*it)->ToString();
-
-			MethodCollection::const_iterator copy = it;
-			if ( ++copy != mMethods.end() ) {
-				result += ", \n";
-			}
+			result += "\t" + (*it)->ToString() + "\n";
 		}
+
+		result += "\n";
+
 		for ( Symbols::const_iterator it = mSymbols.begin(); it != mSymbols.end(); ++it ) {
 			if ( it->first == IDENTIFIER_BASE || it->first == IDENTIFIER_THIS ||
 				 !it->second || it->second->getType() != Symbol::IType::ObjectSymbol ) {
 				continue;
 			}
 
-			result += it->second->ToString();
-
-			Symbols::const_iterator copy = it;
-			if ( ++copy != mSymbols.end() ) {
-				result += ", ";
-			}
+			result += "\t" + it->second->ToString() + "\n";
 		}
 
-		result += " }";
+		result += "}";
 	}
 
 	return result;

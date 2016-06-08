@@ -387,7 +387,9 @@ void Interpreter::parseInfixPostfix(Object *result, TokenIterator& start)
 		case Token::Type::TYPE: {
 			std::string newType = start->content();
 			start++;
+			// here we could demand a '('
 			expression(result, start);
+			// here we could demand a ')'
 			typecast(result, newType, mRepository);
 		} break;
 		default: {
@@ -554,7 +556,6 @@ void Interpreter::process_assert(TokenIterator& token)
 	expect(Token::Type::PARENTHESIS_OPEN, token++);
 
     Object condition;
-
 	try {
 		expression(&condition, token);
 	}
@@ -772,6 +773,8 @@ void Interpreter::process_identifier(TokenIterator& token, Object* /*result*/, T
 		// we have modified a final symbol for the first time, we now have to set it so const
 		symbol->setConst(true);
 		symbol->setFinal(false);
+
+		symbol->setMutability(Mutability::Const);
 	}
 
 	// assign == end should now be true

@@ -27,6 +27,7 @@ Preprocessor::Preprocessor(Repository *repo)
 Designtime::BluePrint* Preprocessor::createMember(TokenIterator token) const
 {
 	std::string languageFeature;
+	Mutability::E mutability;
 	std::string name;
 	std::string type;
 	std::string visibility;
@@ -52,12 +53,16 @@ Designtime::BluePrint* Preprocessor::createMember(TokenIterator token) const
 	}
 
 	if ( token->category() == Token::Category::Modifier ) {
+		mutability = Mutability::convert((*token).content());
+
+///*
 		if ( (*token).content() == MODIFIER_CONST ) {
 			isConst = true;
 		}
 		else if ( (*token).content() == MODIFIER_FINAL ) {
 			isFinal = true;
 		}
+//*/
 
 		token++;
 	}
@@ -70,6 +75,7 @@ Designtime::BluePrint* Preprocessor::createMember(TokenIterator token) const
 	blue->setConst(isConst);
 	blue->setFinal(isFinal);
 	blue->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
+	blue->setMutability(mutability);
 	blue->setMember(true);		// every object created here is a member object
 	blue->setVisibility(Visibility::convert(visibility));
 
@@ -84,6 +90,7 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token) const
 	bool isRecursive = false;
 	std::string languageFeature;
 	MethodAttributes::MethodType::E methodType = MethodAttributes::MethodType::Method;
+	Mutability::E mutability = Mutability::Const;
 	std::string name;
 	std::string type;
 	std::string visibility;
@@ -106,6 +113,7 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token) const
 		// they can never ever be const, ever
 		isConst = false;
 		methodType = MethodAttributes::MethodType::Constructor;
+		mutability = Mutability::Modify;
 	}
 	else if ( name == "~" + mBluePrint->Typename() ) {
 		// these methods have the same name as their containing object,
@@ -113,6 +121,7 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token) const
 		// they can never ever be const, ever
 		isConst = false;
 		methodType = MethodAttributes::MethodType::Destructor;
+		mutability = Mutability::Modify;
 	}
 
 	// look for the next opening parenthesis
@@ -134,6 +143,7 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token) const
 			}
 			else if ( token->content() == MODIFIER_CONST ) {
 				isConst = true;
+				mutability = Mutability::Const;
 				numConstModifiers++;
 			}
 			else if ( token->content() == MODIFIER_FINAL ) {
@@ -141,6 +151,7 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token) const
 			}
 			else if ( token->content() == MODIFIER_MODIFY ) {
 				isConst = false;
+				mutability = Mutability::Modify;
 				numConstModifiers++;
 			}
 			else if ( token->content() == MODIFIER_RECURSIVE ) {
@@ -178,6 +189,7 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token) const
 	method->setFinal(isFinal);
 	method->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
 	method->setMethodType(methodType);
+	method->setMutability(mutability);
 	method->setRecursive(isRecursive);
 	method->setRepository(mRepository);
 	method->setSignature(params);

@@ -95,7 +95,7 @@ public:	// Usage
 	ControlFlow::E execute(Object *result, const std::string& method, const ParameterList& params, const Method* caller = 0);		// throws VisibilityError exception
 
 public:	// Operators
-	virtual void operator_assign(Object *other);
+	virtual void operator_assign(const Object *other);
 	virtual void operator_bitand(Object *other);
 	virtual void operator_bitcomplement(Object *other);
 	virtual void operator_bitor(Object *other);

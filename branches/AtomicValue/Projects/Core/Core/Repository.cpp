@@ -275,6 +275,7 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 	object->setFinal(blueprint->isFinal());
 	object->setLanguageFeatureState(blueprint->getLanguageFeatureState());
 	object->setMember(blueprint->isMember());
+	object->setMutability(blueprint->getMutability());
 	object->setParent(mScope);
 	object->setRepository(this);
 	object->setVisibility(blueprint->getVisibility());
@@ -349,6 +350,7 @@ void Repository::initializeObject(Runtime::Object *object, Designtime::BluePrint
 		symbol->setFinal(blue->isFinal());
 		symbol->setLanguageFeatureState(blue->getLanguageFeatureState());
 		symbol->setMember(blue->isMember());
+		symbol->setMutability(blue->getMutability());
 		symbol->setParent(object);
 		symbol->setRepository(this);
 		symbol->setVisibility(blue->getVisibility());
