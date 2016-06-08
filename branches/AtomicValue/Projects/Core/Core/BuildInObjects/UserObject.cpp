@@ -24,8 +24,6 @@ UserObject::UserObject()
 {
 	mIsAtomicType = false;
 	mIsConstructed = false;
-
-	//setValue(VALUE_NONE);
 }
 
 UserObject::UserObject(const std::string& name, const std::string& filename, const std::string& type, AtomicValue value)
@@ -33,17 +31,13 @@ UserObject::UserObject(const std::string& name, const std::string& filename, con
 {
 	mIsAtomicType = false;
 	mIsConstructed = false;
-
-	//setValue(value);
 }
 
 UserObject::UserObject(const Object& object)
-: Object(object.getName(), object.Filename(), object.Typename(), VALUE_NONE)
+: Object(object.getName(), object.Filename(), object.Typename(), object.getValue())
 {
 	mIsAtomicType = false;
 	mIsConstructed = false;
-
-	setValue(object.getValue());
 }
 
 bool UserObject::operator_bool() const

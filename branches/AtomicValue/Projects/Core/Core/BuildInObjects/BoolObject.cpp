@@ -41,7 +41,7 @@ BoolObject::BoolObject(const std::string& name, bool value)
 }
 
 BoolObject::BoolObject(const Object& other)
-: Object(other.getName(), SYSTEM_LIBRARY, TYPENAME, DEFAULTVALUE)
+: Object(other.getName(), SYSTEM_LIBRARY, TYPENAME, other.getValue())
 {
 	// generic type cast
 
@@ -90,7 +90,7 @@ void BoolObject::operator_assign(Object *other)
 
 void BoolObject::operator_bitand(BoolObject *other)
 {
-	mValue.value.bool_ &= other->getValue().toBool();
+	mValue = mValue.toBool() & other->getValue().toBool();
 }
 
 void BoolObject::operator_bitand(Object *other)
@@ -103,7 +103,7 @@ void BoolObject::operator_bitand(Object *other)
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ||
 		 target == StringObject::TYPENAME ) {
-		mValue.value.bool_ &= other->getValue().toBool();
+		mValue = mValue.toBool() & other->getValue().toBool();
 	}
 	else {
 		Object::operator_bitand(other);
@@ -112,7 +112,7 @@ void BoolObject::operator_bitand(Object *other)
 
 void BoolObject::operator_bitor(BoolObject *other)
 {
-	mValue.value.bool_ |= other->getValue().toBool();
+	mValue = mValue.toBool() | other->getValue().toBool();
 }
 
 void BoolObject::operator_bitor(Object *other)
@@ -125,7 +125,7 @@ void BoolObject::operator_bitor(Object *other)
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ||
 		 target == StringObject::TYPENAME ) {
-		mValue.value.bool_ |= other->getValue().toBool();
+		mValue = mValue.toBool() | other->getValue().toBool();
 	}
 	else {
 		Object::operator_bitor(other);

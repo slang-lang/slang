@@ -29,7 +29,7 @@ GenericObject::GenericObject()
 }
 
 GenericObject::GenericObject(const std::string& name, const std::string& filename, const std::string& type, AtomicValue value)
-: Object(name, filename, type, value.toString())
+: Object(name, filename, type, value)
 {
 	mIsAtomicType = false;
 	mIsConstructed = false;

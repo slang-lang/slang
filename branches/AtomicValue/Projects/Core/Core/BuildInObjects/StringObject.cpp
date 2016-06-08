@@ -28,7 +28,7 @@ std::string StringObject::TYPENAME = "string";
 
 
 StringObject::StringObject(AtomicValue value)
-: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, value.toString())
+: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, value.toStdString())
 {
 	mIsAtomicType = true;
 	mIsConstructed = true;
@@ -58,13 +58,15 @@ StringObject::StringObject(const Object& other)
 
 	std::string source = other.Typename();
 
-	if ( source == StringObject::TYPENAME ||
-		 source == BoolObject::TYPENAME ||
+	if ( source == BoolObject::TYPENAME ) {
+		mValue = Tools::toString(other.getValue().toBool());
+	}
+	else if ( source == StringObject::TYPENAME ||
 		 source == DoubleObject::TYPENAME ||
 		 source == FloatObject::TYPENAME ||
 		 source == IntegerObject::TYPENAME ||
 		 source == NumberObject::TYPENAME ) {
-		mValue = other.getValue().toString();
+		mValue = other.getValue().toStdString();
 	}
 	else {
 		throw Utils::Exceptions::InvalidTypeCast("from " + source + " to " + TYPENAME);
@@ -91,7 +93,7 @@ void StringObject::operator_assign(Object *other)
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ||
 		 target == StringObject::TYPENAME ) {
-		mValue = other->getValue().toString();
+		mValue = other->getValue().toStdString();
 	}
 	else {
 		Object::operator_assign(other);
@@ -100,7 +102,7 @@ void StringObject::operator_assign(Object *other)
 
 void StringObject::operator_assign(StringObject *other)
 {
-	mValue = other->getValue().toString();
+	mValue = other->getValue().toStdString();
 }
 
 bool StringObject::operator_bool() const
