@@ -55,8 +55,10 @@ Runtime::ControlFlow::E FileWriteBool::execute(const ParameterList& params, Runt
 
 	Runtime::ControlFlow::E controlFlow = Runtime::ControlFlow::Normal;
 
-	int fileHandle = params.front().value().toInt();
-	bool value = params.back().value().toString();
+	ParameterList::const_iterator it = params.begin();
+
+	int fileHandle = (*it++).value().toInt();
+	bool value = (*it++).value().toBool();
 
 	try {
 		long size = write(fileHandle, &value, sizeof(bool));
@@ -201,7 +203,7 @@ Runtime::ControlFlow::E FileWriteString::execute(const ParameterList& params, Ru
 	Runtime::ControlFlow::E controlFlow = Runtime::ControlFlow::Normal;
 
 	int fileHandle = params.front().value().toInt();
-	std::string value = params.back().value().toString();
+	std::string value = params.back().value().toStdString();
 
 	try {
 		long size = write(fileHandle, (void*)value.c_str(), strlen(value.c_str()));

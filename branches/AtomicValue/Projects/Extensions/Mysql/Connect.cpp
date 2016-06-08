@@ -43,11 +43,11 @@ Runtime::ControlFlow::E MysqlRealConnect::execute(const ParameterList& params, R
 		ParameterList::const_iterator it = params.begin();
 
 		int param_handle = (*it++).value().toInt();
-		std::string param_host = (*it++).value().toString();
+		std::string param_host = (*it++).value().toStdString();
 		int param_port = (*it++).value().toInt();
-		std::string param_user = (*it++).value().toString();
-		std::string param_passwd = (*it++).value().toString();
-		std::string param_db = (*it++).value().toString();
+		std::string param_user = (*it++).value().toStdString();
+		std::string param_passwd = (*it++).value().toStdString();
+		std::string param_db = (*it++).value().toStdString();
 		std::string param_socket;
 		long param_clientflag = 0;
 		// }

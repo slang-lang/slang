@@ -41,7 +41,7 @@ Runtime::ControlFlow::E FileClose::execute(const ParameterList& params, Runtime:
 	try {
 		ParameterList::const_iterator it = params.begin();
 
-		std::string param_handle = (*it++).value().toString();
+		std::string param_handle = (*it++).value().toStdString();
 
 		int handle = Tools::stringToInt(param_handle);
 

@@ -44,8 +44,8 @@ Runtime::ControlFlow::E FileSeek::execute(const ParameterList& params, Runtime::
 	try {
 		ParameterList::const_iterator it = params.begin();
 
-		std::string param_handle = params.front().value().toString();
-		std::string param_offset = params.back().value().toString();
+		std::string param_handle = params.front().value().toStdString();
+		std::string param_offset = params.back().value().toStdString();
 
 		int handle = Tools::stringToInt(param_handle);
 		int offset = Tools::stringToInt(param_offset);

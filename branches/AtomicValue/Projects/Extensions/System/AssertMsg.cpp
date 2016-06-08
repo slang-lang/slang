@@ -57,7 +57,7 @@ AssertMsg::AssertMsg()
 Runtime::ControlFlow::E AssertMsg::execute(const ParameterList& params, Runtime::Object* /*result*/, const TokenIterator& token)
 {
 	Runtime::Object condition = *params.front().pointer();
-	std::string msg = params.back().value().toString();
+	std::string msg = params.back().value().toStdString();
 
 	if ( !isTrue(condition) ) {
 		throw Utils::Exceptions::AssertionFailed("failed with message \"" + msg + "\"", token->position());
