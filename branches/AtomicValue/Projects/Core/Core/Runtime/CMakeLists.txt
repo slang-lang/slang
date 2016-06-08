@@ -16,6 +16,7 @@ SET(HEADERS
 )
 
 SET(DEPENDENCIES
+	CoreCommon
 )
 
 add_include(Projects/Core)

@@ -44,7 +44,6 @@ bool stringToBool(const std::string &value)
 		return false;
 	}
 
-    //std::transform(value.begin(), value.end(), value.begin(), ::tolower);
     std::istringstream is(value);
     bool result;
     is >> std::boolalpha >> result;
@@ -118,17 +117,17 @@ std::string toString(bool value)
 
 std::string toString(double value)
 {
-	return ConvertToString(value);
+	return ConvertToStdString(value);
 }
 
 std::string toString(float value)
 {
-	return ConvertToString(value);
+	return ConvertToStdString(value);
 }
 
 std::string toString(int value)
 {
-	return ConvertToString(value);
+	return ConvertToStdString(value);
 }
 
 std::string toString(const std::string& value)

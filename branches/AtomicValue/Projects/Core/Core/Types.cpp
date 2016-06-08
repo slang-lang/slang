@@ -138,7 +138,7 @@ std::string toString(const Parameter& param)
 		case Parameter::AccessMode::Unspecified: break;
 	}
 	result += " = ";
-	result += param.value().toString();
+	result += param.value().toStdString();
 
 	return result;
 }

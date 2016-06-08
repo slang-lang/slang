@@ -2,7 +2,7 @@ INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
 ADD_SUBDIRECTORY(Attributes)
 ADD_SUBDIRECTORY(BuildInObjects)
-#ADD_SUBDIRECTORY(Common)
+ADD_SUBDIRECTORY(Common)
 ADD_SUBDIRECTORY(Designtime)
 #ADD_SUBDIRECTORY(Interfaces)
 ADD_SUBDIRECTORY(Parser)
@@ -62,7 +62,7 @@ SET(DEPENDENCIES
 #	CoreHelpers
 	CoreDesigntimeBuildInTypes
 	CoreDesigntime
-#	CoreCommon
+	CoreCommon
 	CoreBuildInObjects
 	CoreAttributes
 	Utils
