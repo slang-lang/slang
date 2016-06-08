@@ -26,7 +26,7 @@ public:
 
 public:
 	GenericObject();
-	GenericObject(const std::string& name, const std::string& filename, const std::string& type, const std::string& value);
+	GenericObject(const std::string& name, const std::string& filename, const std::string& type, AtomicValue value);
 	GenericObject(const Object& object);
 
 public:	// Symbol::IType implementation

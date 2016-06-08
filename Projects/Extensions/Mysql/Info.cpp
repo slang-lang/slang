@@ -38,7 +38,7 @@ Runtime::ControlFlow::E MysqlInfo::execute(const ParameterList& params, Runtime:
 		// {
 		ParameterList::const_iterator it = params.begin();
 
-		int param_handle = Tools::stringToInt((*it++).value());
+		int param_handle = (*it++).value().toInt();
 		// }
 
 		MYSQL *myConn = mMysqlConnections[param_handle];
@@ -56,7 +56,7 @@ Runtime::ControlFlow::E MysqlInfo::execute(const ParameterList& params, Runtime:
 	}
 	catch ( std::exception &e ) {
 		Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
-		*data = Runtime::StringObject(e.what());
+		*data = Runtime::StringObject(std::string(e.what()));
 
 		mExceptionData = Runtime::ExceptionData(data, token->position());
 		return Runtime::ControlFlow::Throw;

@@ -34,9 +34,9 @@ public:
 	: Runtime::Method(0, "substr", Designtime::StringObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter("value", Designtime::StringObject::TYPENAME, VALUE_NONE));
-		params.push_back(Parameter("start", Designtime::IntegerObject::TYPENAME, VALUE_NONE));
-		params.push_back(Parameter("length", Designtime::IntegerObject::TYPENAME, "-1", true));
+		params.push_back(Parameter("value", Designtime::StringObject::TYPENAME, 0));
+		params.push_back(Parameter("start", Designtime::IntegerObject::TYPENAME, 0));
+		params.push_back(Parameter("length", Designtime::IntegerObject::TYPENAME, -1, true));
 
 		setSignature(params);
 	}
@@ -50,12 +50,12 @@ public:
 
 			ParameterList::const_iterator it = params.begin();
 
-			std::string param_value = (*it++).value();
-			std::string param_start = (*it++).value();
+			std::string param_value = (*it++).value().toStdString();
+			std::string param_start = (*it++).value().toStdString();
 			startIdx = Tools::stringToInt(param_start);
 
 			if ( params.size() >= 3 ) {
-				std::string param_end = (*it++).value();
+				std::string param_end = (*it++).value().toStdString();
 				endIdx = Tools::stringToInt(param_end);
 			}
 
@@ -65,7 +65,7 @@ public:
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
-			*data = Runtime::StringObject(e.what());
+			*data = Runtime::StringObject(std::string(e.what()));
 
 			mExceptionData = Runtime::ExceptionData(data, token->position());
 			return Runtime::ControlFlow::Throw;

@@ -44,7 +44,7 @@ Runtime::ControlFlow::E ToJson::execute(const ParameterList &params, Runtime::Ob
 	}
 	catch (std::exception &e) {
 		Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
-		*data = Runtime::StringObject(e.what());
+		*data = Runtime::StringObject(std::string(e.what()));
 
 		mExceptionData = Runtime::ExceptionData(data, token->position());
 		return Runtime::ControlFlow::Throw;

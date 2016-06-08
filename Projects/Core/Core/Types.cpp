@@ -137,8 +137,10 @@ std::string toString(const Parameter& param)
 		case Parameter::AccessMode::ByValue: result += " "; result += RESERVED_WORD_BY_VALUE; break;
 		case Parameter::AccessMode::Unspecified: break;
 	}
-	result += " = ";
-	result += param.value();
+	if ( param.hasDefaultValue() ) {
+		result += " = ";
+		result += param.value().toStdString();
+	}
 
 	return result;
 }

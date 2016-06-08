@@ -27,8 +27,7 @@ Object::Object()
   mIsConstructed(false),
   mRepository(0),
   mThis(0),
-  mTypename(ANONYMOUS_OBJECT),
-  mValue(VALUE_NONE)
+  mTypename(ANONYMOUS_OBJECT)
 {
 }
 
@@ -42,12 +41,12 @@ Object::Object(const Object& other)
 	mParent = other.mParent;
 	mRepository = other.mRepository;
 	mTypename = other.mTypename;
+	mValue = other.mValue;
 
 	setConst(other.isConst());
 	setFinal(other.isFinal());
 	setLanguageFeatureState(other.getLanguageFeatureState());
 	setMember(other.isMember());
-	setValue(other.getValue());
 
 	if ( !mIsAtomicType ) {
 		// register this
@@ -78,7 +77,7 @@ Object::Object(const Object& other)
 	//mThis = mInheritance.begin()->second;
 }
 
-Object::Object(const std::string& name, const std::string& filename, const std::string& type, const std::string& value)
+Object::Object(const std::string& name, const std::string& filename, const std::string& type, AtomicValue value)
 : MethodScope(name, 0),
   ObjectSymbol(name),
   mFilename(filename),
@@ -105,8 +104,7 @@ void Object::operator= (const Object& other)
 		mParent = other.mParent ? other.mParent : mParent;
 		mRepository = other.mRepository ? other.mRepository : mRepository;
 		mTypename = other.mTypename;
-
-		setValue(other.getValue());
+		mValue = other.mValue;
 
 		garbageCollector();
 
@@ -352,7 +350,7 @@ bool Object::FromJson(const Json::Value& value)
 
 		Object *obj = static_cast<Object*>(symbol);
 		if ( obj->isAtomicType() ) {
-			obj->setValue(sub.asString());
+			obj->setValue(sub.asString().c_str());
 		}
 		else {
 			obj->FromJson(sub);
@@ -382,7 +380,7 @@ void Object::garbageCollector()
 	mSymbols.clear();
 }
 
-std::string Object::getValue() const
+AtomicValue Object::getValue() const
 {
 	return mValue;
 }
@@ -397,7 +395,7 @@ bool Object::isValid() const
 	return mIsConstructed;
 }
 
-void Object::operator_assign(Object *other)
+void Object::operator_assign(const Object *other)
 {
 	ParameterList params;
 	params.push_back(
@@ -819,7 +817,7 @@ void Object::setRepository(Repository *repository)
 	mRepository = repository;
 }
 
-void Object::setValue(const std::string& value)
+void Object::setValue(AtomicValue value)
 {
 	mValue = value;
 }
@@ -840,7 +838,7 @@ Json::Value Object::ToJson() const
 
 		Object *obj = static_cast<Object*>(it->second);
 
-		result.addMember(it->first, obj->getValue());
+		result.addMember(it->first, obj->getValue().toStdString());
 	}
 
 	return result;
@@ -848,34 +846,27 @@ Json::Value Object::ToJson() const
 
 std::string Object::ToString() const
 {
-	std::string result = Typename() + " " + getName() + " = " + getValue();
+	std::string result = Typename() + " " + getName() + " = " + getValue().toStdString();
 
 	if ( !isAtomicType() ) {
-		result += " { ";
+		result += " {\n";
 
 		for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
-			result += (*it)->ToString();
-
-			MethodCollection::const_iterator copy = it;
-			if ( ++copy != mMethods.end() ) {
-				result += ", \n";
-			}
+			result += "\t" + (*it)->ToString() + "\n";
 		}
+
+		result += "\n";
+
 		for ( Symbols::const_iterator it = mSymbols.begin(); it != mSymbols.end(); ++it ) {
 			if ( it->first == IDENTIFIER_BASE || it->first == IDENTIFIER_THIS ||
 				 !it->second || it->second->getType() != Symbol::IType::ObjectSymbol ) {
 				continue;
 			}
 
-			result += it->second->ToString();
-
-			Symbols::const_iterator copy = it;
-			if ( ++copy != mSymbols.end() ) {
-				result += ", ";
-			}
+			result += "\t" + it->second->ToString() + "\n";
 		}
 
-		result += " }";
+		result += "}";
 	}
 
 	return result;

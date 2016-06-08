@@ -7,6 +7,7 @@
 
 // Project includes
 #include "LanguageFeatureState.h"
+#include "Mutability.h"
 #include "Visibility.h"
 
 // Forward declarations
@@ -33,6 +34,9 @@ public:
 	virtual LanguageFeatureState::E getLanguageFeatureState() const;
 	virtual void setLanguageFeatureState(LanguageFeatureState::E s);
 
+	virtual Mutability::E getMutability() const;
+	virtual void setMutability(Mutability::E m);
+
 	virtual Visibility::E getVisibility() const;
 	virtual void setVisibility(Visibility::E v);
 
@@ -44,6 +48,7 @@ protected:
 	bool mIsFinal;
 	bool mIsSealed;
 	LanguageFeatureState::E mLanguageFeatureState;
+	Mutability::E mMutability;
 	Visibility::E mVisibility;
 };
 

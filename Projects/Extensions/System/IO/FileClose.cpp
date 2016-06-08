@@ -41,7 +41,7 @@ Runtime::ControlFlow::E FileClose::execute(const ParameterList& params, Runtime:
 	try {
 		ParameterList::const_iterator it = params.begin();
 
-		std::string param_handle = (*it++).pointer()->getValue();
+		std::string param_handle = (*it++).value().toStdString();
 
 		int handle = Tools::stringToInt(param_handle);
 
@@ -54,7 +54,7 @@ Runtime::ControlFlow::E FileClose::execute(const ParameterList& params, Runtime:
 	}
 	catch ( std::exception& e ) {
 		Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
-		*data = Runtime::StringObject(e.what());
+		*data = Runtime::StringObject(std::string(e.what()));
 
 		mExceptionData = Runtime::ExceptionData(data, token->position());
 		return Runtime::ControlFlow::Throw;

@@ -21,10 +21,11 @@ class DoubleObject : public Object
 {
 public:
 	static double DEFAULTVALUE;
+	static AtomicValue ATOMIC_DEFAULTVALUE;
 	static std::string TYPENAME;
 
 public:
-	DoubleObject(double value = 0.0);
+	DoubleObject(AtomicValue value = 0.0);
 	DoubleObject(const std::string& name, double value);
 	DoubleObject(const Object& object);
 
@@ -33,7 +34,7 @@ public:	// Symbol::IType implementation
 
 public:	// Operators
 	virtual void operator_assign(DoubleObject *other);
-	virtual void operator_assign(Object *other);
+	virtual void operator_assign(const Object *other);
 
 	virtual bool operator_bool() const;
 
@@ -70,12 +71,6 @@ public:	// Operators
 	virtual void operator_unary_not();
 
 public: // Values
-	virtual double getNativeValue() const;
-	virtual void setNativeValue(double value);
-
-	virtual std::string getValue() const;
-	virtual void setValue(const std::string& value);
-
 	virtual bool isValid() const;
 
 	virtual std::string ToString() const;
@@ -83,7 +78,7 @@ public: // Values
 protected:
 
 private:
-	double mNativeValue;
+
 };
 
 

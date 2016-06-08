@@ -145,8 +145,8 @@ void processParameters(int argc, const char* argv[])
 		}
 	}
 
-	mParameters.push_back(ObjectiveScript::Parameter("argc", ObjectiveScript::Runtime::IntegerObject::TYPENAME, Utils::Tools::toString(params.size())));
-	mParameters.push_back(ObjectiveScript::Parameter("argv", ObjectiveScript::Runtime::StringObject::TYPENAME, paramStr));
+	mParameters.push_back(ObjectiveScript::Parameter("argc", ObjectiveScript::Runtime::IntegerObject::TYPENAME, (int)params.size()));
+	mParameters.push_back(ObjectiveScript::Parameter("argv", ObjectiveScript::Runtime::StringObject::TYPENAME, paramStr.c_str()));
 }
 
 int main(int argc, const char* argv[])
@@ -195,7 +195,7 @@ int main(int argc, const char* argv[])
 		if ( !main || main->isAtomicType() ) {
 			ObjectiveScript::Runtime::IntegerObject result;
 			script->execute("Main", mParameters, &result);
-			return result.getNativeValue();
+			return result.getValue().toInt();
 		}
 	}
 	catch ( std::exception& e ) {	// catch every std::exception and all derived exception types

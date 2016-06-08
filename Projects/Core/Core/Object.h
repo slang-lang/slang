@@ -13,6 +13,7 @@
 #include <Core/Attributes/Attributes.h>
 #include <Core/Designtime/Ancestor.h>
 #include <Core/Designtime/BluePrint.h>
+#include <Core/Runtime/AtomicValue.h>
 #include <Core/Runtime/ControlFlow.h>
 #include "Interpreter.h"
 #include "Method.h"
@@ -53,7 +54,7 @@ class Object : public MethodScope,
 {
 public:
 	Object();
-	Object(const std::string& name, const std::string& filename, const std::string& type, const std::string& value);
+	Object(const std::string& name, const std::string& filename, const std::string& type, AtomicValue value);
 	Object(const Object& other);
 	virtual ~Object();
 
@@ -76,8 +77,8 @@ public: // Symbol
 	ObjectiveScript::MethodSymbol* resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope) const;
 
 public:	// Value
-	virtual std::string getValue() const;
-	virtual void setValue(const std::string& value);
+	virtual AtomicValue getValue() const;
+	virtual void setValue(AtomicValue value);
 
 	virtual bool isAtomicType() const;
 	virtual bool isValid() const;
@@ -94,7 +95,7 @@ public:	// Usage
 	ControlFlow::E execute(Object *result, const std::string& method, const ParameterList& params, const Method* caller = 0);		// throws VisibilityError exception
 
 public:	// Operators
-	virtual void operator_assign(Object *other);
+	virtual void operator_assign(const Object *other);
 	virtual void operator_bitand(Object *other);
 	virtual void operator_bitcomplement(Object *other);
 	virtual void operator_bitor(Object *other);
@@ -129,7 +130,7 @@ protected:
 	Repository *mRepository;
 	Object *mThis;
 	std::string mTypename;
-	std::string mValue;
+	AtomicValue mValue;
 
 private:
 };

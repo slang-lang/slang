@@ -5,15 +5,18 @@ import System.Boolean;
 public object Main {
 
 	public void Main(int argc = 0, string args = "") {
-		//assert( TestCase1() );
+		assert( TestCase1() );
 		assert( TestCase2() );
 		assert( TestCase3() );
 	}
 
 	private bool TestCase1() const {
 		print("TestCase 1: unary not");
+
 		// default value is false
 		Boolean value;// = new Boolean();
+
+		print(!value!);
 
 		return !value!;	// this is a really crazy test..
 	}
@@ -22,9 +25,9 @@ public object Main {
 		print("TestCase 2: automatic type convertion");
 
 		Boolean value = new Boolean(true);
-		print(value.ToString());
+		print(string value);
 
-		return value.ToString();
+		return value;
 	}
 
 	private bool TestCase3() modify {
@@ -32,12 +35,8 @@ public object Main {
 
 		Boolean value = new Boolean();
 		value.FromString("foo bar");
-		print(value.ToString());
-		assert(value.Value());
-
-		value.FromString(string 0);
-		print(value.ToString());
-		assert(!value.Value());
+		print(string value);
+		assert(bool value);
 
 		return true;
 	}

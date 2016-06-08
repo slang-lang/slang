@@ -24,31 +24,20 @@ UserObject::UserObject()
 {
 	mIsAtomicType = false;
 	mIsConstructed = false;
-
-	//setValue(VALUE_NONE);
 }
 
-UserObject::UserObject(const std::string& name, const std::string& filename, const std::string& type, const std::string& value)
+UserObject::UserObject(const std::string& name, const std::string& filename, const std::string& type, AtomicValue value)
 : Object(name, filename, type, value)
 {
 	mIsAtomicType = false;
 	mIsConstructed = false;
-
-	//setValue(value);
 }
 
 UserObject::UserObject(const Object& object)
-: Object(object.getName(), object.Filename(), object.Typename(), VALUE_NONE)
+: Object(object.getName(), object.Filename(), object.Typename(), object.getValue())
 {
 	mIsAtomicType = false;
 	mIsConstructed = false;
-
-	setValue(object.getValue());
-}
-
-bool UserObject::operator_bool() const
-{
-	return isValid();
 }
 
 const std::string& UserObject::getTypeName() const
@@ -56,7 +45,7 @@ const std::string& UserObject::getTypeName() const
 	return TYPENAME;
 }
 
-void UserObject::operator_assign(Object *other)
+void UserObject::operator_assign(const Object *other)
 {
 	ParameterList params;
 	params.push_back(
@@ -65,6 +54,11 @@ void UserObject::operator_assign(Object *other)
 
 	Object tmp;
 	this->execute(&tmp, "operator=", params, 0);
+}
+
+bool UserObject::operator_bool() const
+{
+	return isValid();
 }
 
 void UserObject::operator_divide(Object *other)

@@ -22,56 +22,55 @@ namespace Runtime {
 
 
 bool BoolObject::DEFAULTVALUE = false;
+AtomicValue BoolObject::ATOMIC_DEFAULTVALUE = false;
 std::string BoolObject::TYPENAME = "bool";
 
 
-BoolObject::BoolObject(bool value)
-: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, VALUE_NONE)
+BoolObject::BoolObject(AtomicValue value)
+: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, value.toBool())
 {
 	mIsAtomicType = true;
 	mIsConstructed = true;
-
-	setNativeValue(value);
 }
 
 BoolObject::BoolObject(const std::string& name, bool value)
-: Object(name, SYSTEM_LIBRARY, TYPENAME, VALUE_NONE)
+: Object(name, SYSTEM_LIBRARY, TYPENAME, value)
 {
 	mIsAtomicType = true;
 	mIsConstructed = true;
-
-	setNativeValue(value);
 }
 
-BoolObject::BoolObject(const Object& object)
-: Object(object.getName(), SYSTEM_LIBRARY, TYPENAME, VALUE_NONE)
+BoolObject::BoolObject(const Object& other)
+: Object(other.getName(), SYSTEM_LIBRARY, TYPENAME, DEFAULTVALUE)
 {
 	// generic type cast
 
 	mIsAtomicType = true;
 	mIsConstructed = true;
 
-	setNativeValue(object.isValid());
+	std::string target = other.Typename();
+
+	if ( target == BoolObject::TYPENAME ||
+		 target == DoubleObject::TYPENAME ||
+		 target == FloatObject::TYPENAME ||
+		 target == IntegerObject::TYPENAME ||
+		 target == NumberObject::TYPENAME ||
+		 target == StringObject::TYPENAME ) {
+		mValue = other.getValue().toBool();
+	}
+	else {
+		Object::operator_assign(&other);
+	}
 }
 
 bool BoolObject::operator_bool() const
 {
-	return mNativeValue;
-}
-
-bool BoolObject::getNativeValue() const
-{
-	return mNativeValue;
+	return mValue.toBool();
 }
 
 const std::string& BoolObject::getTypeName() const
 {
 	return TYPENAME;
-}
-
-std::string BoolObject::getValue() const
-{
-	return mValue;
 }
 
 bool BoolObject::isValid() const
@@ -81,17 +80,29 @@ bool BoolObject::isValid() const
 
 void BoolObject::operator_assign(BoolObject *other)
 {
-	setNativeValue(other->getNativeValue());
+	mValue = other->getValue().toBool();
 }
 
-void BoolObject::operator_assign(Object *other)
+void BoolObject::operator_assign(const Object *other)
 {
-	setNativeValue(isTrue(*other));
+	std::string target = other->Typename();
+
+	if ( target == BoolObject::TYPENAME ||
+		 target == DoubleObject::TYPENAME ||
+		 target == FloatObject::TYPENAME ||
+		 target == IntegerObject::TYPENAME ||
+		 target == NumberObject::TYPENAME ||
+		 target == StringObject::TYPENAME ) {
+		mValue = other->getValue().toBool();
+	}
+	else {
+		Object::operator_assign(other);
+	}
 }
 
 void BoolObject::operator_bitand(BoolObject *other)
 {
-	setNativeValue(mNativeValue & other->getNativeValue());
+	mValue = mValue.toBool() & other->getValue().toBool();
 }
 
 void BoolObject::operator_bitand(Object *other)
@@ -104,9 +115,7 @@ void BoolObject::operator_bitand(Object *other)
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ||
 		 target == StringObject::TYPENAME ) {
-		BoolObject tmp(Tools::stringToBool(other->getValue()));
-
-		operator_bitand(&tmp);
+		mValue = mValue.toBool() & other->getValue().toBool();
 	}
 	else {
 		Object::operator_bitand(other);
@@ -115,7 +124,7 @@ void BoolObject::operator_bitand(Object *other)
 
 void BoolObject::operator_bitor(BoolObject *other)
 {
-	setNativeValue(mNativeValue | other->getNativeValue());
+	mValue = mValue.toBool() | other->getValue().toBool();
 }
 
 void BoolObject::operator_bitor(Object *other)
@@ -128,9 +137,7 @@ void BoolObject::operator_bitor(Object *other)
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ||
 		 target == StringObject::TYPENAME ) {
-		BoolObject tmp(Tools::stringToBool(other->getValue()));
-
-		operator_bitor(&tmp);
+		mValue = mValue.toBool() | other->getValue().toBool();
 	}
 	else {
 		Object::operator_bitor(other);
@@ -139,7 +146,7 @@ void BoolObject::operator_bitor(Object *other)
 
 bool BoolObject::operator_equal(BoolObject *other) const
 {
-	return (mNativeValue == other->getNativeValue());
+	return mValue.toBool() == other->getValue().toBool();
 }
 
 bool BoolObject::operator_equal(Object *other) const
@@ -152,9 +159,7 @@ bool BoolObject::operator_equal(Object *other) const
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ||
 		 target == StringObject::TYPENAME ) {
-		BoolObject tmp(Tools::stringToBool(other->getValue()));
-
-		return operator_equal(&tmp);
+		return mValue.toBool() == other->getValue().toBool();
 	}
 
 	return Object::operator_equal(other);
@@ -162,24 +167,12 @@ bool BoolObject::operator_equal(Object *other) const
 
 void BoolObject::operator_unary_not()
 {
-	setNativeValue(!mNativeValue);
-}
-
-void BoolObject::setNativeValue(bool value)
-{
-	mNativeValue = value;
-	mValue = Tools::toString(value);
-}
-
-void BoolObject::setValue(const std::string& value)
-{
-	mNativeValue = isTrue(value);
-	mValue = Tools::toString(isTrue(value));
+	mValue = !mValue.toBool();
 }
 
 std::string BoolObject::ToString() const
 {
-	return Typename() + " " + getName() + " = " + getValue();
+	return Typename() + " " + getName() + " = " + getValue().toStdString();
 }
 
 

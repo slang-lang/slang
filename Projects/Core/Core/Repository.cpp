@@ -175,12 +175,12 @@ void Repository::createDefaultMethods(Runtime::Object *object)
 					ParameterList::const_iterator it = params.begin();
 					(void) it;
 
-					*result = Runtime::StringObject("blablabla");
+					*result = Runtime::StringObject(std::string("blablabla"));
 				}
 				catch (std::exception &e) {
 					Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME,
 																		ANONYMOUS_OBJECT);
-					*data = Runtime::StringObject(e.what());
+					*data = Runtime::StringObject(std::string(e.what()));
 
 					mExceptionData = Runtime::ExceptionData(data, token->position());
 					return Runtime::ControlFlow::Throw;
@@ -275,6 +275,7 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 	object->setFinal(blueprint->isFinal());
 	object->setLanguageFeatureState(blueprint->getLanguageFeatureState());
 	object->setMember(blueprint->isMember());
+	object->setMutability(blueprint->getMutability());
 	object->setParent(mScope);
 	object->setRepository(this);
 	object->setVisibility(blueprint->getVisibility());
@@ -290,7 +291,7 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 	assert(blueprint);
 
 	// create the base object
-	Runtime::Object *object = new Runtime::UserObject(name, blueprint->Filename(), blueprint->Typename(), Runtime::UserObject::DEFAULTVALUE);
+	Runtime::Object *object = new Runtime::UserObject(name, blueprint->Filename(), blueprint->Typename(), 0);
 
 	Designtime::Ancestors ancestors = blueprint->getInheritance();
 
@@ -349,6 +350,7 @@ void Repository::initializeObject(Runtime::Object *object, Designtime::BluePrint
 		symbol->setFinal(blue->isFinal());
 		symbol->setLanguageFeatureState(blue->getLanguageFeatureState());
 		symbol->setMember(blue->isMember());
+		symbol->setMutability(blue->getMutability());
 		symbol->setParent(object);
 		symbol->setRepository(this);
 		symbol->setVisibility(blue->getVisibility());

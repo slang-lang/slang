@@ -55,14 +55,13 @@ Runtime::ControlFlow::E FileWriteBool::execute(const ParameterList& params, Runt
 
 	Runtime::ControlFlow::E controlFlow = Runtime::ControlFlow::Normal;
 
-	std::string fileHandle = params.front().pointer()->getValue();
-	std::string value = params.back().pointer()->getValue();
+	ParameterList::const_iterator it = params.begin();
+
+	int fileHandle = (*it++).value().toInt();
+	bool value = (*it++).value().toBool();
 
 	try {
-		int handle = Tools::stringToInt(fileHandle);
-		bool boolValue = Tools::stringToBool(value);
-
-		long size = write(handle, &boolValue, sizeof(bool));
+		long size = write(fileHandle, &value, sizeof(bool));
 		if ( size == -1 ) {    // error while reading
 			return Runtime::ControlFlow::Throw;
 		}
@@ -95,14 +94,11 @@ Runtime::ControlFlow::E FileWriteDouble::execute(const ParameterList& params, Ru
 
 	Runtime::ControlFlow::E controlFlow = Runtime::ControlFlow::Normal;
 
-	std::string fileHandle = params.front().pointer()->getValue();
-	std::string value = params.back().pointer()->getValue();
+	int fileHandle = params.front().value().toInt();
+	double value = params.back().value().toDouble();
 
 	try {
-		int handle = Tools::stringToInt(fileHandle);
-		double doubleValue = Tools::stringToDouble(value);
-
-		long size = write(handle, &doubleValue, sizeof(double));
+		long size = write(fileHandle, &value, sizeof(double));
 		if ( size == -1 ) {    // error while reading
 			return Runtime::ControlFlow::Throw;
 		}
@@ -134,14 +130,11 @@ Runtime::ControlFlow::E FileWriteFloat::execute(const ParameterList& params, Run
 
 	Runtime::ControlFlow::E controlFlow = Runtime::ControlFlow::Normal;
 
-	std::string fileHandle = params.front().pointer()->getValue();
-	std::string value = params.back().pointer()->getValue();
+	int fileHandle = params.front().value().toInt();
+	float value = params.back().value().toFloat();
 
 	try {
-		int handle = Tools::stringToInt(fileHandle);
-		float floatValue = Tools::stringToFloat(value);
-
-		long size = write(handle, &floatValue, sizeof(float));
+		long size = write(fileHandle, &value, sizeof(float));
 		if ( size == -1 ) {    // error while reading
 			return Runtime::ControlFlow::Throw;
 		}
@@ -173,14 +166,11 @@ Runtime::ControlFlow::E FileWriteInt::execute(const ParameterList& params, Runti
 
 	Runtime::ControlFlow::E controlFlow = Runtime::ControlFlow::Normal;
 
-	std::string fileHandle = params.front().pointer()->getValue();
-	std::string value = params.back().pointer()->getValue();
+	int fileHandle = params.front().value().toInt();
+	int value = params.back().value().toInt();
 
 	try {
-		int handle = Tools::stringToInt(fileHandle);
-		int intValue = Tools::stringToInt(value);
-
-		long size = write(handle, &intValue, sizeof(int));
+		long size = write(fileHandle, &value, sizeof(int));
 		if ( size == -1 ) {    // error while reading
 			return Runtime::ControlFlow::Throw;
 		}
@@ -212,13 +202,11 @@ Runtime::ControlFlow::E FileWriteString::execute(const ParameterList& params, Ru
 
 	Runtime::ControlFlow::E controlFlow = Runtime::ControlFlow::Normal;
 
-	std::string fileHandle = params.front().pointer()->getValue();
-	std::string value = params.back().pointer()->getValue();
+	int fileHandle = params.front().value().toInt();
+	std::string value = params.back().value().toStdString();
 
 	try {
-		int handle = Tools::stringToInt(fileHandle);
-
-		long size = write(handle, (void*)value.c_str(), strlen(value.c_str()));
+		long size = write(fileHandle, (void*)value.c_str(), strlen(value.c_str()));
 		if ( size == -1 ) {    // error while reading
 			return Runtime::ControlFlow::Throw;
 		}
