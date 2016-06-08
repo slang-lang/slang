@@ -18,6 +18,7 @@ GenericAttributes::GenericAttributes()
   mIsFinal(false),
   mIsSealed(false),
   mLanguageFeatureState(LanguageFeatureState::Stable),
+  mMutability(Mutability::Const),
   mVisibility(Visibility::Private)
 {
 }
@@ -38,9 +39,20 @@ LanguageFeatureState::E GenericAttributes::getLanguageFeatureState() const
 	return mLanguageFeatureState;
 }
 
+Mutability::E GenericAttributes::getMutability() const
+{
+	return mMutability;
+}
+
+Visibility::E GenericAttributes::getVisibility() const
+{
+	return mVisibility;
+}
+
 bool GenericAttributes::isConst() const
 {
 	return mIsConst;
+	//return mMutability == Mutability::Const;
 }
 
 bool GenericAttributes::isFinal() const
@@ -67,9 +79,9 @@ void GenericAttributes::setLanguageFeatureState(LanguageFeatureState::E s)
 	mLanguageFeatureState = s;
 }
 
-Visibility::E GenericAttributes::getVisibility() const
+void GenericAttributes::setMutability(Mutability::E m)
 {
-	return mVisibility;
+	mMutability = m;
 }
 
 void GenericAttributes::setVisibility(Visibility::E v)

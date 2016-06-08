@@ -87,7 +87,7 @@ void typecast(Object *base, const std::string& type, Repository *repository)
 		*base = tmp;
 	}
 	else {
-//		throw Utils::Exceptions::NotImplemented("type cast from type " + base->Typename() + " to type " + type);
+		throw Utils::Exceptions::NotImplemented("typecast to complex type not implemented!");
 
 		Object *obj = repository->createInstance(type);
 		ParameterList params;

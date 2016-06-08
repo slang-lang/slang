@@ -26,14 +26,14 @@ public:
 
 public:
 	UserObject();
-	UserObject(const std::string& name, const std::string& filename, const std::string& type, const std::string& value);
+	UserObject(const std::string& name, const std::string& filename, const std::string& type, AtomicValue value);
 	UserObject(const Object& object);
 
 public:	// Symbol::IType implementation
 	const std::string& getTypeName() const;
 
 public: // Operators
-	virtual void operator_assign(Object *other);
+	virtual void operator_assign(const Object *other);
 	virtual bool operator_bool() const;
 	virtual void operator_divide(Object *other);
 	virtual bool operator_equal(Object *other);

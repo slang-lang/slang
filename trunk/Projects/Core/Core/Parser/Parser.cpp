@@ -6,6 +6,7 @@
 
 // Project includes
 #include <Core/Consts.h>
+#include <Core/Tools.h>
 #include <Core/Utils/Exceptions.h>
 
 // Namespace declarations
@@ -221,8 +222,9 @@ ParameterList Parser::parseParameters(TokenIterator &token)
 		Parameter::AccessMode::E accessmode = Parameter::AccessMode::ByValue;
 		bool hasDefaultValue = false;
 		bool isConst = false;
-		std::string value;
+		Runtime::AtomicValue value;
 
+		expect(Token::Type::TYPE, token);
 		std::string type = token->content();
 		token++;
 
@@ -251,7 +253,17 @@ ParameterList Parser::parseParameters(TokenIterator &token)
 		if ( token->type() == Token::Type::ASSIGN ) {
 			hasDefaultValue = true;
 			token++;
-			value = token->content();
+
+			switch ( token->type() ) {
+				case Token::Type::CONST_BOOLEAN: value = Tools::stringToBool(token->content()); break;
+				case Token::Type::CONST_DOUBLE: value = Tools::stringToDouble(token->content()); break;
+				case Token::Type::CONST_FLOAT: value = Tools::stringToFloat(token->content()); break;
+				case Token::Type::CONST_INTEGER: value = Tools::stringToInt(token->content()); break;
+				case Token::Type::CONST_LITERAL: value = token->content(); break;
+				case Token::Type::CONST_NUMBER: value = Tools::stringToNumber(token->content()); break;
+				default: throw Utils::Exceptions::NotSupported("only atomic data types are allowed as default parameters", token->position());
+			}
+
 			token++;
 		}
 

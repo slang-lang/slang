@@ -54,13 +54,12 @@ Runtime::ControlFlow::E FileReadBool::execute(const ParameterList& params, Runti
 
 	Runtime::ControlFlow::E controlFlow = Runtime::ControlFlow::Normal;
 
-	std::string fileHandle = params.front().pointer()->getValue();
+	int fileHandle = params.front().value().toInt();
 
 	try {
-		int handle = Tools::stringToInt(fileHandle);
 		bool value = false;
 
-		long size = read(handle, &value, sizeof(bool));
+		long size = read(fileHandle, &value, sizeof(bool));
 		if ( size == -1 ) {    // error while reading
 			return Runtime::ControlFlow::Throw;
 		}
@@ -92,13 +91,12 @@ Runtime::ControlFlow::E FileReadDouble::execute(const ParameterList& params, Run
 
 	Runtime::ControlFlow::E controlFlow = Runtime::ControlFlow::Normal;
 
-	std::string fileHandle = params.front().pointer()->getValue();
+	int fileHandle = params.front().value().toInt();
 
 	try {
-		int handle = Tools::stringToInt(fileHandle);
 		double value = 0.0;
 
-		long size = read(handle, &value, sizeof(double));
+		long size = read(fileHandle, &value, sizeof(double));
 		if ( size == -1 ) {    // error while reading
 			return Runtime::ControlFlow::Throw;
 		}
@@ -129,13 +127,12 @@ Runtime::ControlFlow::E FileReadFloat::execute(const ParameterList& params, Runt
 
 	Runtime::ControlFlow::E controlFlow = Runtime::ControlFlow::Normal;
 
-	std::string fileHandle = params.front().pointer()->getValue();
+	int fileHandle = params.front().value().toInt();
 
 	try {
-		int handle = Tools::stringToInt(fileHandle);
 		float value = 0.f;
 
-		long size = read(handle, &value, sizeof(float));
+		long size = read(fileHandle, &value, sizeof(float));
 		if ( size == -1 ) {    // error while reading
 			return Runtime::ControlFlow::Throw;
 		}
@@ -166,13 +163,12 @@ Runtime::ControlFlow::E FileReadInt::execute(const ParameterList& params, Runtim
 
 	Runtime::ControlFlow::E controlFlow = Runtime::ControlFlow::Normal;
 
-	std::string fileHandle = params.front().pointer()->getValue();
+	int fileHandle = params.front().value().toInt();
 
 	try {
-		int handle = Tools::stringToInt(fileHandle);
 		int value = 0;
 
-		long size = read(handle, &value, sizeof(int));
+		long size = read(fileHandle, &value, sizeof(int));
 		if ( size == -1 ) {    // error while reading
 			return Runtime::ControlFlow::Throw;
 		}
@@ -191,7 +187,7 @@ FileReadString::FileReadString()
 {
 	ParameterList params;
 	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, VALUE_NONE));
-	params.push_back(Parameter("count", Designtime::IntegerObject::TYPENAME, "1", true));
+	params.push_back(Parameter("count", Designtime::IntegerObject::TYPENAME, 1, true));
 
 	setSignature(params);
 }
@@ -204,18 +200,17 @@ Runtime::ControlFlow::E FileReadString::execute(const ParameterList& params, Run
 
 	Runtime::ControlFlow::E controlFlow = Runtime::ControlFlow::Normal;
 
-	std::string fileHandle = params.front().pointer()->getValue();
-	std::string fileCount = params.back().pointer()->getValue();
+	int fileHandle = params.front().value().toInt();
+	int fileCount = params.back().value().toInt();
 
 	try {
-		int handle = Tools::stringToInt(fileHandle);
-		int count = Tools::stringToInt(fileCount);
+		int count = fileCount;
 		std::string value;
 
 		while ( count > 0 ) {
 			char charValue;
 
-			long size = read(handle, &charValue, 1);
+			long size = read(fileHandle, &charValue, 1);
 			if ( size == -1 ) {    // error while reading
 				return Runtime::ControlFlow::Throw;
 			}

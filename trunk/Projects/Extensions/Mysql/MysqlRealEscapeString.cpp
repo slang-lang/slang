@@ -39,8 +39,8 @@ Runtime::ControlFlow::E MysqlRealEscapeString::execute(const ParameterList& para
 		// {
 		ParameterList::const_iterator it = params.begin();
 
-		int param_handle = Tools::stringToInt((*it++).value());
-		std::string param_from = (*it++).value();
+		int param_handle = (*it++).value().toInt();
+		std::string param_from = (*it++).value().toStdString();
 		// }
 
 		MYSQL *myConn = mMysqlConnections[param_handle];
@@ -49,12 +49,12 @@ Runtime::ControlFlow::E MysqlRealEscapeString::execute(const ParameterList& para
 		long mysql_result = mysql_real_escape_string(myConn, to, param_from.c_str(), param_from.length());
 
 		if ( mysql_result ) {
-			*result = Runtime::StringObject(to);
+			*result = Runtime::StringObject(std::string(to));
 		}
 	}
 	catch ( std::exception &e ) {
 		Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
-		*data = Runtime::StringObject(e.what());
+		*data = Runtime::StringObject(std::string(e.what()));
 
 		mExceptionData = Runtime::ExceptionData(data, token->position());
 		return Runtime::ControlFlow::Throw;

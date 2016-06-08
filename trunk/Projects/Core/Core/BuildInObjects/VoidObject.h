@@ -38,9 +38,6 @@ public: // Value
 	virtual void getNativeValue() const;
 	virtual void setNativeValue(void);
 
-	virtual std::string getValue() const;
-	virtual void setValue(const std::string& value);
-
 	virtual std::string ToString() const;
 };
 

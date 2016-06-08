@@ -21,10 +21,11 @@ class BoolObject : public Object
 {
 public:
 	static bool DEFAULTVALUE;
+	static AtomicValue ATOMIC_DEFAULTVALUE;
 	static std::string TYPENAME;
 
 public:
-	BoolObject(bool value = false);
+	BoolObject(AtomicValue value = DEFAULTVALUE);
 	BoolObject(const std::string& name, bool value);
 	BoolObject(const Object& other);
 
@@ -33,7 +34,7 @@ public:	// Symbol::IType implementation
 
 public:	// Operators
 	virtual void operator_assign(BoolObject *other);
-	virtual void operator_assign(Object *other);
+	virtual void operator_assign(const Object *other);
 
 	virtual bool operator_bool() const;
 
@@ -49,18 +50,12 @@ public:	// Operators
 	virtual void operator_unary_not();
 
 public: // Value
-	virtual bool getNativeValue() const;
-	virtual void setNativeValue(bool value);
-
-	virtual std::string getValue() const;
-	virtual void setValue(const std::string& value);
-
 	virtual bool isValid() const;
 
 	virtual std::string ToString() const;
 
 private:
-	bool mNativeValue;
+
 };
 
 

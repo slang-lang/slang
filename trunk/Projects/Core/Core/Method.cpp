@@ -38,21 +38,25 @@ bool Method::operator() (const Method& first, const Method& second) const
 	if ( first.getName() == second.getName() ) {
 		ParameterList firstList = first.provideSignature();
 		ParameterList secondList = second.provideSignature();
+
 		// unable to identify return value during method call
 		//if ( this->type() != other.type() ) {
 		//	return this->type() < other.type();
 		//}
+
 		if ( firstList.size() == secondList.size() ) {
 			ParameterList::const_iterator fIt = firstList.begin();
 			ParameterList::const_iterator sIt = secondList.begin();
-			for ( ; fIt != firstList.end() && sIt != secondList.end(); ++fIt, ++sIt) {
+			for ( ; fIt != firstList.end() && sIt != secondList.end(); ++fIt, ++sIt ) {
 				if ( fIt->type() != sIt->type() ) {
 					return fIt->type() < sIt->type();
 				}
 			}
 		}
+
 		return firstList.size() < secondList.size();
 	}
+
 	return first.getName() < second.getName();
 }
 
@@ -94,6 +98,7 @@ void Method::operator= (const Method& other)
 		mIsSealed = other.mIsSealed;
 		mLanguageFeatureState = other.mLanguageFeatureState;
 		mMethodType = other.mMethodType;
+		mMutability = other.mMutability;
 		mRepository = other.mRepository;
 		mSignature = other.mSignature;
 		mTokens = other.mTokens;
@@ -126,6 +131,7 @@ ControlFlow::E Method::execute(const ParameterList& params, Object *result, cons
 	interpreter.setConst(isConst());
 	interpreter.setFinal(isFinal());
 	interpreter.setLanguageFeatureState(getLanguageFeatureState());
+	interpreter.setMutability(getMutability());
 	interpreter.setRepository(mRepository);
 	interpreter.setTokens(mTokens);
 	interpreter.setVisibility(getVisibility());
@@ -159,6 +165,7 @@ ControlFlow::E Method::execute(const ParameterList& params, Object *result, cons
 				}
 
 				object->setConst(param.isConst());	// const references are not supported atm so this should always be false
+				object->setMutability(param.isConst() ? Mutability::Const : Mutability::Modify);
 
 				interpreter.define(param.name(), object);
 			} break;
@@ -170,6 +177,7 @@ ControlFlow::E Method::execute(const ParameterList& params, Object *result, cons
 					*object = *param.pointer();
 				}
 				object->setConst(param.isConst());
+				object->setMutability(param.isConst() ? Mutability::Const : Mutability::Modify);
 
 				interpreter.define(param.name(), object);
 			} break;
@@ -331,7 +339,14 @@ void Method::setTokens(const TokenList& tokens)
 
 std::string Method::ToString() const
 {
-	return Typename() + " " + getName() + "(" + toString(mSignature) + ")";
+	std::string result;
+
+	result += Visibility::convert(mVisibility);
+	result += " " + LanguageFeatureState::convert(mLanguageFeatureState);
+	result += " " + Typename() + " " + getName() + "(" + toString(mSignature) + ")";
+	result += " " + Mutability::convert(mMutability);
+
+	return result;
 }
 
 const std::string& Method::Typename() const

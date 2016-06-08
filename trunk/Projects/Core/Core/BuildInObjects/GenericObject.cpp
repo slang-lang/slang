@@ -26,17 +26,15 @@ GenericObject::GenericObject()
 	mIsConstructed = false;
 
 	setAbstract(true);
-	//setValue(VALUE_NULL);
 }
 
-GenericObject::GenericObject(const std::string& name, const std::string& filename, const std::string& type, const std::string& value)
+GenericObject::GenericObject(const std::string& name, const std::string& filename, const std::string& type, AtomicValue value)
 : Object(name, filename, type, value)
 {
 	mIsAtomicType = false;
 	mIsConstructed = false;
 
 	setAbstract(true);
-	//setValue(value);
 }
 
 GenericObject::GenericObject(const Object& object)
@@ -46,7 +44,6 @@ GenericObject::GenericObject(const Object& object)
 	mIsConstructed = false;
 
 	setAbstract(true);
-	setValue(object.getValue());
 }
 
 const std::string& GenericObject::getTypeName() const

@@ -5,7 +5,6 @@
 // Library includes
 
 // Project includes
-#include <Core/Object.h>
 
 // Namespace declarations
 
@@ -21,7 +20,7 @@ Parameter::Parameter()
 {
 }
 
-Parameter::Parameter(const std::string& name, const std::string& type, const std::string& value, bool hasDefaultValue,
+Parameter::Parameter(const std::string& name, const std::string& type, Runtime::AtomicValue value, bool hasDefaultValue,
 					 bool isConst, AccessMode::E access, Reference reference)
 : mAccessMode(access),
   mHasDefaultValue(hasDefaultValue),
@@ -34,7 +33,7 @@ Parameter::Parameter(const std::string& name, const std::string& type, const std
 {
 }
 
-Parameter::Parameter(const std::string& name, const std::string& type, const std::string& value, bool hasDefaultValue,
+Parameter::Parameter(const std::string& name, const std::string& type, Runtime::AtomicValue value, bool hasDefaultValue,
 		 	 	 	 bool isConst, AccessMode::E access, Runtime::Object* pointer)
 : mAccessMode(access),
   mHasDefaultValue(hasDefaultValue),
@@ -81,7 +80,7 @@ const std::string& Parameter::type() const
 	return mType;
 }
 
-const std::string& Parameter::value() const
+Runtime::AtomicValue Parameter::value() const
 {
 	return mValue;
 }

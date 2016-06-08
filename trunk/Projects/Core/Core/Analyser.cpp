@@ -184,9 +184,9 @@ std::string Analyser::createLibraryReference(TokenIterator& start, TokenIterator
 void Analyser::createMember(TokenIterator& start, TokenIterator /*end*/)
 {
 	std::string fullyQualifiedName;
-	bool isConst = false;
 	bool isFinal = false;
 	std::string languageFeature;
+	Mutability::E mutability = Mutability::Modify;
 	std::string name;
 	std::string type;
 	std::string visibility;
@@ -211,26 +211,26 @@ void Analyser::createMember(TokenIterator& start, TokenIterator /*end*/)
 		throw Utils::Exceptions::Exception("initialization not allowed during declaration", start->position());
 	}
 
-	Runtime::Object *symbol = mRepository->createInstance(type, name);
-	symbol->setConst(isConst);
-	symbol->setFinal(isFinal);
-	symbol->setMember(false);
-	symbol->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
-	symbol->setParent(mScope);
-	symbol->setRepository(mRepository);
-	symbol->setVisibility(Visibility::convert(visibility));
+	Runtime::Object *member = mRepository->createInstance(type, name);
+	member->setFinal(isFinal);
+	member->setMember(false);
+	member->setMutability(mutability);
+	member->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
+	member->setParent(mScope);
+	member->setRepository(mRepository);
+	member->setVisibility(Visibility::convert(visibility));
 
-	mScope->define(name, symbol);
+	mScope->define(name, member);
 }
 
 void Analyser::createMethod(TokenIterator &start, TokenIterator end)
 {
 	bool isAbstract = false;
-	bool isConst = true;
 	bool isFinal = false;
 	bool isRecursive = false;
 	std::string languageFeature;
 	MethodAttributes::MethodType::E methodType = MethodAttributes::MethodType::Function;
+	Mutability::E mutability = Mutability::Const;
 	std::string name;
 	std::string type;
 	std::string visibility;
@@ -267,10 +267,10 @@ void Analyser::createMethod(TokenIterator &start, TokenIterator end)
 	// create a new method with the corresponding return value
 	Runtime::Method *method = new Runtime::Method(mScope, name, type);
 	method->setAbstract(isAbstract);
-	method->setConst(isConst);
 	method->setFinal(isFinal);
 	method->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
 	method->setMethodType(methodType);
+	method->setMutability(mutability);
 	method->setParent(mScope);
 	method->setRecursive(isRecursive);
 	method->setRepository(mRepository);

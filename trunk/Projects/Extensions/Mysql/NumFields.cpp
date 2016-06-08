@@ -38,7 +38,7 @@ Runtime::ControlFlow::E MysqlNumFields::execute(const ParameterList& params, Run
 		// {
 		ParameterList::const_iterator it = params.begin();
 
-		int param_handle = Tools::stringToInt((*it++).value());
+		int param_handle = (*it++).value().toInt();
 		// }
 
 		MYSQL_RES *myResult = mMysqlResults[param_handle];
@@ -49,7 +49,7 @@ Runtime::ControlFlow::E MysqlNumFields::execute(const ParameterList& params, Run
 	}
 	catch ( std::exception &e ) {
 		Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
-		*data = Runtime::StringObject(e.what());
+		*data = Runtime::StringObject(std::string(e.what()));
 
 		mExceptionData = Runtime::ExceptionData(data, token->position());
 		return Runtime::ControlFlow::Throw;

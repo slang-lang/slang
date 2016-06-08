@@ -28,7 +28,7 @@ namespace ObjectiveScript {
 namespace Runtime {
 
 
-Interpreter::Interpreter(IScope *scope, const std::string& name)
+Interpreter::Interpreter(::ObjectiveScript::IScope *scope, const std::string& name)
 : SymbolScope(name, scope),
   mControlFlow(ControlFlow::Normal),
   mRepository(0)
@@ -387,7 +387,9 @@ void Interpreter::parseInfixPostfix(Object *result, TokenIterator& start)
 		case Token::Type::TYPE: {
 			std::string newType = start->content();
 			start++;
+			// here we could demand a '('
 			expression(result, start);
+			// here we could demand a ')'
 			typecast(result, newType, mRepository);
 		} break;
 		default: {
@@ -554,7 +556,6 @@ void Interpreter::process_assert(TokenIterator& token)
 	expect(Token::Type::PARENTHESIS_OPEN, token++);
 
     Object condition;
-
 	try {
 		expression(&condition, token);
 	}
@@ -772,6 +773,8 @@ void Interpreter::process_identifier(TokenIterator& token, Object* /*result*/, T
 		// we have modified a final symbol for the first time, we now have to set it so const
 		symbol->setConst(true);
 		symbol->setFinal(false);
+
+		symbol->setMutability(Mutability::Const);
 	}
 
 	// assign == end should now be true
@@ -1057,7 +1060,7 @@ void Interpreter::process_print(TokenIterator& token)
 		return;
 	}
 
-	::Utils::PrinterDriver::getInstance()->print(text.getValue(), token->position().mFile, token->position().mLine);
+	::Utils::PrinterDriver::getInstance()->print(text.getValue().toStdString(), token->position().mFile, token->position().mLine);
 
 	expect(Token::Type::PARENTHESIS_CLOSE, token++);
 }

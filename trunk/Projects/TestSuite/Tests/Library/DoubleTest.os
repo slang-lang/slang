@@ -20,6 +20,7 @@ public object Main {
 
 		value.Value(double 1);
 		assert( value.Value() );
+		//assert( bool value );
 
 		return true;
 	}

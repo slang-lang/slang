@@ -33,7 +33,7 @@ Runtime::ControlFlow::E Assert::execute(const ParameterList& params, Runtime::Ob
 	std::string text;
 
 	if ( params.size() == 2 ) {
-		text = "with message \"" + params.back().value() + "\"";
+		text = "with message \"" + params.back().value().toStdString() + "\"";
 	}
 
 	if ( !isTrue(condition) ) {
@@ -57,7 +57,7 @@ AssertMsg::AssertMsg()
 Runtime::ControlFlow::E AssertMsg::execute(const ParameterList& params, Runtime::Object* /*result*/, const TokenIterator& token)
 {
 	Runtime::Object condition = *params.front().pointer();
-	std::string msg = params.back().value();
+	std::string msg = params.back().value().toStdString();
 
 	if ( !isTrue(condition) ) {
 		throw Utils::Exceptions::AssertionFailed("failed with message \"" + msg + "\"", token->position());
