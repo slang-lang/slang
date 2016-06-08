@@ -1,3 +1,0 @@
-
-// Header
-#include "SubStr.h"
