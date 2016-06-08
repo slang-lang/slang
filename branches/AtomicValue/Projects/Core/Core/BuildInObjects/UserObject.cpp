@@ -40,17 +40,12 @@ UserObject::UserObject(const Object& object)
 	mIsConstructed = false;
 }
 
-bool UserObject::operator_bool() const
-{
-	return isValid();
-}
-
 const std::string& UserObject::getTypeName() const
 {
 	return TYPENAME;
 }
 
-void UserObject::operator_assign(Object *other)
+void UserObject::operator_assign(const Object *other)
 {
 	ParameterList params;
 	params.push_back(
@@ -59,6 +54,11 @@ void UserObject::operator_assign(Object *other)
 
 	Object tmp;
 	this->execute(&tmp, "operator=", params, 0);
+}
+
+bool UserObject::operator_bool() const
+{
+	return isValid();
 }
 
 void UserObject::operator_divide(Object *other)

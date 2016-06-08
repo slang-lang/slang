@@ -59,7 +59,7 @@ FloatObject::FloatObject(const Object& other)
 		mValue = other.getValue().toFloat();
 	}
 	else {
-		throw Utils::Exceptions::InvalidTypeCast("from " + source + " to " + TYPENAME);
+		Object::operator_assign(&other);
 	}
 }
 
@@ -78,13 +78,13 @@ void FloatObject::operator_assign(FloatObject *other)
 	mValue = other->getValue().toFloat();
 }
 
-void FloatObject::operator_assign(Object *other)
+void FloatObject::operator_assign(const Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == BoolObject::TYPENAME ||
+	if ( target == FloatObject::TYPENAME ||
+		 target == BoolObject::TYPENAME ||
 		 target == DoubleObject::TYPENAME ||
-		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ) {
 		mValue = other->getValue().toFloat();
@@ -108,8 +108,8 @@ void FloatObject::operator_divide(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == DoubleObject::TYPENAME ||
-		 target == FloatObject::TYPENAME ||
+	if ( target == FloatObject::TYPENAME ||
+		 target == DoubleObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ) {
 		mValue = mValue.toFloat() / other->getValue().toFloat();
@@ -128,8 +128,8 @@ bool FloatObject::operator_equal(Object *other) const
 {
 	std::string target = other->Typename();
 
-	if ( target == DoubleObject::TYPENAME ||
-		 target == FloatObject::TYPENAME ||
+	if ( target == FloatObject::TYPENAME ||
+		 target == DoubleObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ) {
 		return mValue.toFloat() == other->getValue().toFloat();
@@ -147,8 +147,8 @@ bool FloatObject::operator_greater(Object *other) const
 {
 	std::string target = other->Typename();
 
-	if ( target == DoubleObject::TYPENAME ||
-		 target == FloatObject::TYPENAME ||
+	if ( target == FloatObject::TYPENAME ||
+		 target == DoubleObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ) {
 		return mValue.toFloat() > other->getValue().toFloat();
@@ -166,8 +166,8 @@ bool FloatObject::operator_greater_equal(Object *other) const
 {
 	std::string target = other->Typename();
 
-	if ( target == DoubleObject::TYPENAME ||
-		 target == FloatObject::TYPENAME ||
+	if ( target == FloatObject::TYPENAME ||
+		 target == DoubleObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ) {
 		return mValue.toFloat() >= other->getValue().toFloat();
@@ -185,8 +185,8 @@ bool FloatObject::operator_less(Object *other) const
 {
 	std::string target = other->Typename();
 
-	if ( target == DoubleObject::TYPENAME ||
-		 target == FloatObject::TYPENAME ||
+	if ( target == FloatObject::TYPENAME ||
+		 target == DoubleObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ) {
 		return mValue.toFloat() < other->getValue().toFloat();
@@ -204,8 +204,8 @@ bool FloatObject::operator_less_equal(Object *other) const
 {
 	std::string target = other->Typename();
 
-	if ( target == DoubleObject::TYPENAME ||
-		 target == FloatObject::TYPENAME ||
+	if ( target == FloatObject::TYPENAME ||
+		 target == DoubleObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ) {
 		return mValue.toFloat() <= other->getValue().toFloat();
@@ -223,8 +223,8 @@ void FloatObject::operator_multiply(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == DoubleObject::TYPENAME ||
-		 target == FloatObject::TYPENAME ||
+	if ( target == FloatObject::TYPENAME ||
+		 target == DoubleObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ) {
 		mValue = mValue.toFloat() * other->getValue().toFloat();
@@ -243,8 +243,8 @@ void FloatObject::operator_plus(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == DoubleObject::TYPENAME ||
-		 target == FloatObject::TYPENAME ||
+	if ( target == FloatObject::TYPENAME ||
+		 target == DoubleObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ) {
 		mValue = mValue.toFloat() + other->getValue().toFloat();
@@ -263,8 +263,8 @@ void FloatObject::operator_subtract(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == DoubleObject::TYPENAME ||
-		 target == FloatObject::TYPENAME ||
+	if ( target == FloatObject::TYPENAME ||
+		 target == DoubleObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
 		 target == NumberObject::TYPENAME ) {
 		mValue = mValue.toFloat() - other->getValue().toFloat();

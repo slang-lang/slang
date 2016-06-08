@@ -58,7 +58,7 @@ IntegerObject::IntegerObject(const Object& other)
 		mValue = other.getValue().toInt();
 	}
 	else {
-		throw Utils::Exceptions::InvalidTypeCast("from " + target + " to " + TYPENAME);
+		Object::operator_assign(&other);
 	}
 }
 
@@ -77,7 +77,7 @@ void IntegerObject::operator_assign(IntegerObject *other)
 	mValue = other->getValue().toInt();
 }
 
-void IntegerObject::operator_assign(Object *other)
+void IntegerObject::operator_assign(const Object *other)
 {
 	std::string target = other->Typename();
 

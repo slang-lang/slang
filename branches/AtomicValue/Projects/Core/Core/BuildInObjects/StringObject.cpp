@@ -34,13 +34,6 @@ StringObject::StringObject(AtomicValue value)
 	mIsConstructed = true;
 }
 
-StringObject::StringObject(const std::string& value)
-: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, value)
-{
-	mIsAtomicType = true;
-	mIsConstructed = true;
-}
-
 StringObject::StringObject(const std::string& name, const std::string& value)
 : Object(name, SYSTEM_LIBRARY, TYPENAME, value)
 {
@@ -62,14 +55,14 @@ StringObject::StringObject(const Object& other)
 		mValue = Tools::toString(other.getValue().toBool());
 	}
 	else if ( source == StringObject::TYPENAME ||
-		 source == DoubleObject::TYPENAME ||
-		 source == FloatObject::TYPENAME ||
-		 source == IntegerObject::TYPENAME ||
-		 source == NumberObject::TYPENAME ) {
+			  source == DoubleObject::TYPENAME ||
+			  source == FloatObject::TYPENAME ||
+			  source == IntegerObject::TYPENAME ||
+			  source == NumberObject::TYPENAME ) {
 		mValue = other.getValue().toStdString();
 	}
 	else {
-		throw Utils::Exceptions::InvalidTypeCast("from " + source + " to " + TYPENAME);
+		Object::operator_assign(&other);
 	}
 }
 
@@ -83,16 +76,16 @@ bool StringObject::isValid() const
 	return mIsConstructed;
 }
 
-void StringObject::operator_assign(Object *other)
+void StringObject::operator_assign(const Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == BoolObject::TYPENAME ||
+	if ( target == StringObject::TYPENAME ||
+		 target == BoolObject::TYPENAME ||
 		 target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
-		 target == NumberObject::TYPENAME ||
-		 target == StringObject::TYPENAME ) {
+		 target == NumberObject::TYPENAME ) {
 		mValue = other->getValue().toStdString();
 	}
 	else {
@@ -130,12 +123,12 @@ void StringObject::operator_plus(Object *other)
 {
 	std::string target = other->Typename();
 
-	if ( target == BoolObject::TYPENAME ||
+	if ( target == StringObject::TYPENAME ||
+		 target == BoolObject::TYPENAME ||
 		 target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
-		 target == NumberObject::TYPENAME ||
-		 target == StringObject::TYPENAME ) {
+		 target == NumberObject::TYPENAME ) {
 		mValue = mValue.toStdString() + other->getValue().toStdString();
 	}
 	else {

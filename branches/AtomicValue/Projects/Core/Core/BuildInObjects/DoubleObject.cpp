@@ -59,7 +59,7 @@ DoubleObject::DoubleObject(const Object& other)
 		mValue = other.getValue().toDouble();
 	}
 	else {
-		throw Utils::Exceptions::InvalidTypeCast("from " + source + " to " + TYPENAME);
+		Object::operator_assign(&other);
 	}
 }
 
@@ -78,7 +78,7 @@ void DoubleObject::operator_assign(DoubleObject *other)
 	mValue = other->getValue().toDouble();
 }
 
-void DoubleObject::operator_assign(Object *other)
+void DoubleObject::operator_assign(const Object *other)
 {
 	std::string target = other->Typename();
 

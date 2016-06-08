@@ -41,7 +41,7 @@ BoolObject::BoolObject(const std::string& name, bool value)
 }
 
 BoolObject::BoolObject(const Object& other)
-: Object(other.getName(), SYSTEM_LIBRARY, TYPENAME, other.getValue())
+: Object(other.getName(), SYSTEM_LIBRARY, TYPENAME, DEFAULTVALUE)
 {
 	// generic type cast
 
@@ -59,7 +59,7 @@ BoolObject::BoolObject(const Object& other)
 		mValue = other.getValue().toBool();
 	}
 	else {
-		throw Utils::Exceptions::InvalidTypeCast("from " + target + " to " + TYPENAME);
+		Object::operator_assign(&other);
 	}
 }
 
@@ -83,9 +83,21 @@ void BoolObject::operator_assign(BoolObject *other)
 	mValue = other->getValue().toBool();
 }
 
-void BoolObject::operator_assign(Object *other)
+void BoolObject::operator_assign(const Object *other)
 {
-	mValue = other->isValid();
+	std::string target = other->Typename();
+
+	if ( target == BoolObject::TYPENAME ||
+		 target == DoubleObject::TYPENAME ||
+		 target == FloatObject::TYPENAME ||
+		 target == IntegerObject::TYPENAME ||
+		 target == NumberObject::TYPENAME ||
+		 target == StringObject::TYPENAME ) {
+		mValue = other->getValue().toBool();
+	}
+	else {
+		Object::operator_assign(other);
+	}
 }
 
 void BoolObject::operator_bitand(BoolObject *other)

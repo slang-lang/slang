@@ -34,7 +34,7 @@ public:	// Symbol::IType implementation
 
 public:	// Operators
 	virtual void operator_assign(FloatObject *other);
-	virtual void operator_assign(Object *other);
+	virtual void operator_assign(const Object *other);
 
 	virtual bool operator_bool() const;
 
