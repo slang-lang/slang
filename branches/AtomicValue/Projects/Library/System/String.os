@@ -4,9 +4,16 @@ public namespace System {
 	public object String {
 		private string mValue;
 
+		/*
+		 * Standard & default constructor
+		 */
 		public void String(string value = "") {
 			mValue = value;
 		}
+
+		/*
+		 * Copy constructor
+		 */
 		public void String(String copy) {
 			mValue = copy.mValue;
 		}
@@ -18,15 +25,18 @@ public namespace System {
 			return substr(mValue, index, 1);
 		}
 
+		/*
+		 * Returns true if the held string ends with the given string
+		 */
 		public bool EndsWith(string str) const {
 			return str == substr(mValue, strlen(mValue) - strlen(str));
 		}
 
 		/*
-		 * Returns the start position of the searched string
+		 * Returns the start position of the given string
 		 */
-		public int Find(string target) const {
-			return strfind(mValue, target);
+		public int Find(string str) const {
+			return strfind(mValue, str);
 		}
 
 		/*
@@ -41,6 +51,7 @@ public namespace System {
 		 */
 		public bool Replace(string oldStr, string newStr) modify {
 			int position = strfind(mValue, oldStr);
+
 			if ( position > 0 ) {
 				string tmp = substr(mValue, 0, position) + newStr + substr(mValue, position + strlen(oldStr));
 				mValue = tmp;
@@ -95,7 +106,7 @@ public namespace System {
 		 * Returns the held string as it is
 		 */
 		public string ToString() const {
-			return mValue;
+			return "String: " + mValue;
 		}
 
 		/*
@@ -105,11 +116,24 @@ public namespace System {
 			return toUpper(mValue);
 		}
 
-		public string Value() const {
+		/*
+		 * Deprecated: use (active) value operator instead
+		 * returns String.mValue as string
+		 */
+		public deprecated string Value() const {
 			return mValue;
 		}
-		public void Value(string value) modify {
+
+		/*
+		 * Deprecated: use (passive) assignment operator instead
+		 * sets String.mValue from a string
+		 */
+		public deprecated void Value(string value) modify {
 			mValue = value;
+		}
+
+		public string =operator(string value) const {
+			return mValue;
 		}
 
 		public bool operator!() const {

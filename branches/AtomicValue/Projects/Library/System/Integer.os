@@ -16,13 +16,13 @@ public namespace System {
 		}
 
 		public string ToString() const {
-			return string mValue;
+			return "Integer: " +  mValue;
 		}
 
-		public int Value() const {
+		public deprecated int Value() const {
 			return mValue;
 		}
-		public void Value(int value) modify {
+		public deprecated void Value(int value) modify {
 			mValue = value;
 		}
 
@@ -42,6 +42,10 @@ public namespace System {
 		}
 		public void operator=(Integer other) modify {
 			mValue = other.mValue;
+		}
+
+		public int =operator(int other) const {
+			return mValue;
 		}
 
 		public void operator+(int other) modify {

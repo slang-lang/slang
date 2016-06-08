@@ -1,5 +1,6 @@
 
 public namespace System {
+
 	public object Boolean {
 		private bool mValue;
 
@@ -11,7 +12,9 @@ public namespace System {
 		}
 
 		public void FromString(string value) modify {
-			if ( value ) {
+			print("FromString('" + value + "')");
+
+			if ( value != "" ) {
 				mValue = true;
 				return;
 			}
@@ -20,13 +23,13 @@ public namespace System {
 		}
 
 		public string ToString() const {
-			return string mValue;
+			return "Boolean: " + mValue;
 		}
 
-		public bool Value() const {
+		public deprectated bool Value() const {
 			return mValue;
 		}
-		public void Value(bool value) modify {
+		public deprectated void Value(bool value) modify {
 			mValue = value;
 		}
 
@@ -47,6 +50,17 @@ public namespace System {
 		public void operator=(Boolean other) modify {
 			mValue = other.mValue;
 		}
+
+		public bool =operator(bool other) const {
+			print("bool =operator(bool)");
+			return mValue;
+		}
+
+		public string =operator(string other) const {
+			print("string =operator(string)");
+			return string mValue;
+		}
 	}
+
 }
 

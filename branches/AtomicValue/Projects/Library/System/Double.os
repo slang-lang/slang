@@ -15,13 +15,13 @@ public namespace System {
 		}
 
 		public string ToString() const {
-			return string mValue;
+			return "Double: " + mValue;
 		}
 
-		public double Value() const {
+		public deprecated double Value() const {
 			return mValue;
 		}
-		public void Value(double value) modify {
+		public deprecated void Value(double value) modify {
 			mValue = value;
 		}
 
@@ -41,6 +41,13 @@ public namespace System {
 		}
 		public void operator=(Double other) modify {
 			mValue = other.mValue;
+		}
+
+		public bool =operator(bool other) const {
+			return mValue;
+		}
+		public double =operator(double other) const {
+			return mValue;
 		}
 
 		public void operator+(double other) modify {
