@@ -15,7 +15,7 @@ public namespace System {
 		}
 
 		public string ToString() const {
-			return string mValue;
+			return "Float: " + mValue;
 		}
 
 		public deprecated float Value() const {
@@ -41,6 +41,10 @@ public namespace System {
 		}
 		public void operator=(Float other) modify {
 			mValue = other.mValue;
+		}
+
+		public float =operator(float other) const {
+			return mValue;
 		}
 
 		public void operator+(float other) modify {

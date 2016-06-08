@@ -33,10 +33,10 @@ public namespace System {
 		}
 
 		/*
-		 * Returns the start position of the searched string
+		 * Returns the start position of the given string
 		 */
-		public int Find(string target) const {
-			return strfind(mValue, target);
+		public int Find(string str) const {
+			return strfind(mValue, str);
 		}
 
 		/*
@@ -51,6 +51,7 @@ public namespace System {
 		 */
 		public bool Replace(string oldStr, string newStr) modify {
 			int position = strfind(mValue, oldStr);
+
 			if ( position > 0 ) {
 				string tmp = substr(mValue, 0, position) + newStr + substr(mValue, position + strlen(oldStr));
 				mValue = tmp;
@@ -105,7 +106,7 @@ public namespace System {
 		 * Returns the held string as it is
 		 */
 		public string ToString() const {
-			return mValue;
+			return "String: " + mValue;
 		}
 
 		/*
