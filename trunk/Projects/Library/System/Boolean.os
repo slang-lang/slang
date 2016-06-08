@@ -52,7 +52,13 @@ public namespace System {
 		}
 
 		public bool =operator(bool other) const {
+			print("bool =operator(bool)");
 			return mValue;
+		}
+
+		public string =operator(string other) const {
+			print("string =operator(string)");
+			return string mValue;
 		}
 	}
 
