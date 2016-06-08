@@ -57,7 +57,7 @@ public object Main {
 		String str = new String("This is a string");
 		str.Replace("is", "was");
 
-		print(str.Value());
+		print(string str);
 
 		return str == "Thwas is a string";
 	}
@@ -68,9 +68,9 @@ public object Main {
 		String str = new String("This is a string");
 		str.ReplaceAll("is", "was");
 
-		print(str.Value());
+		print(string str);
 
-		return str.Value() == "Thwas was a string";
+		return str == "Thwas was a string";
 	}
 
 	private bool TestCase7() modify {
@@ -80,7 +80,7 @@ public object Main {
 		assert(str.EndsWith(":valid_thru"));
 
 		bool result = str.ReplaceAll(":valid_thru", "2016-05-31");
-		print(str.Value());
+		print(string str);
 
 		return result;
 	}
