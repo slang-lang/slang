@@ -14,7 +14,7 @@ public namespace System {
 		public void FromString(string value) modify {
 			print("FromString('" + value + "')");
 
-			if ( value ) {
+			if ( value != "" ) {
 				mValue = true;
 				return;
 			}
@@ -23,7 +23,7 @@ public namespace System {
 		}
 
 		public string ToString() const {
-			return string mValue;
+			return "Boolean: " + mValue;
 		}
 
 		public deprectated bool Value() const {
@@ -49,6 +49,10 @@ public namespace System {
 		}
 		public void operator=(Boolean other) modify {
 			mValue = other.mValue;
+		}
+
+		public bool =operator(bool other) const {
+			return mValue;
 		}
 	}
 
