@@ -1,5 +1,7 @@
 #!/usr/local/bin/oscript
 
+import System.Boolean;
+
 public namespace TypeCastTest
 {
 	public object Main
@@ -12,6 +14,7 @@ public namespace TypeCastTest
 			assert( TestCase4() );
 			assert( TestCase5() );
 			assert( TestCase6() );
+			//assert( TestCase7() );
 		}
 
 		private bool TestCase1() const
@@ -86,6 +89,18 @@ public namespace TypeCastTest
 
 			string str = "bla";
 			print("string = " + int str);
+
+			return true;
+		}
+
+		private bool TestCase7() const
+		{
+			print("TestCase 7: value to object type cast");
+
+			Boolean boolVal = new Boolean(true);
+			int intVal = 17;
+
+			print(Boolean intVal);
 
 			return true;
 		}
