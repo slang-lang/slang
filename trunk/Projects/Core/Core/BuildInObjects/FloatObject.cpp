@@ -73,7 +73,7 @@ bool FloatObject::isValid() const
 	return mIsConstructed;
 }
 
-void FloatObject::operator_assign(FloatObject *other)
+void FloatObject::operator_assign(const FloatObject *other)
 {
 	mValue = other->getValue().toFloat();
 }
@@ -99,12 +99,12 @@ bool FloatObject::operator_bool() const
 	return mValue.toFloat() != 0.f;
 }
 
-void FloatObject::operator_divide(FloatObject *other)
+void FloatObject::operator_divide(const FloatObject *other)
 {
 	mValue = mValue.toFloat() / other->getValue().toFloat();
 }
 
-void FloatObject::operator_divide(Object *other)
+void FloatObject::operator_divide(const Object *other)
 {
 	std::string target = other->Typename();
 
@@ -119,12 +119,12 @@ void FloatObject::operator_divide(Object *other)
 	}
 }
 
-bool FloatObject::operator_equal(FloatObject *other) const
+bool FloatObject::operator_equal(const FloatObject *other)
 {
 	return mValue.toFloat() == other->getValue().toFloat();
 }
 
-bool FloatObject::operator_equal(Object *other) const
+bool FloatObject::operator_equal(const Object *other)
 {
 	std::string target = other->Typename();
 
@@ -138,12 +138,12 @@ bool FloatObject::operator_equal(Object *other) const
 	return Object::operator_equal(other);
 }
 
-bool FloatObject::operator_greater(FloatObject *other) const
+bool FloatObject::operator_greater(const FloatObject *other)
 {
 	return mValue.toFloat() > other->getValue().toFloat();
 }
 
-bool FloatObject::operator_greater(Object *other) const
+bool FloatObject::operator_greater(const Object *other)
 {
 	std::string target = other->Typename();
 
@@ -157,12 +157,12 @@ bool FloatObject::operator_greater(Object *other) const
 	return Object::operator_greater(other);
 }
 
-bool FloatObject::operator_greater_equal(FloatObject *other) const
+bool FloatObject::operator_greater_equal(const FloatObject *other)
 {
 	return mValue.toFloat() >= other->getValue().toFloat();
 }
 
-bool FloatObject::operator_greater_equal(Object *other) const
+bool FloatObject::operator_greater_equal(const Object *other)
 {
 	std::string target = other->Typename();
 
@@ -176,12 +176,12 @@ bool FloatObject::operator_greater_equal(Object *other) const
 	return Object::operator_greater_equal(other);
 }
 
-bool FloatObject::operator_less(FloatObject *other) const
+bool FloatObject::operator_less(const FloatObject *other)
 {
 	return mValue.toFloat() < other->getValue().toFloat();
 }
 
-bool FloatObject::operator_less(Object *other) const
+bool FloatObject::operator_less(const Object *other)
 {
 	std::string target = other->Typename();
 
@@ -195,12 +195,12 @@ bool FloatObject::operator_less(Object *other) const
 	return Object::operator_less(other);
 }
 
-bool FloatObject::operator_less_equal(FloatObject *other) const
+bool FloatObject::operator_less_equal(const FloatObject *other)
 {
 	return mValue.toFloat() <= other->getValue().toFloat();
 }
 
-bool FloatObject::operator_less_equal(Object *other) const
+bool FloatObject::operator_less_equal(const Object *other)
 {
 	std::string target = other->Typename();
 
@@ -214,12 +214,12 @@ bool FloatObject::operator_less_equal(Object *other) const
 	return Object::operator_less_equal(other);
 }
 
-void FloatObject::operator_multiply(FloatObject *other)
+void FloatObject::operator_multiply(const FloatObject *other)
 {
 	mValue = mValue.toFloat() * other->getValue().toFloat();
 }
 
-void FloatObject::operator_multiply(Object *other)
+void FloatObject::operator_multiply(const Object *other)
 {
 	std::string target = other->Typename();
 
@@ -234,12 +234,12 @@ void FloatObject::operator_multiply(Object *other)
 	}
 }
 
-void FloatObject::operator_plus(FloatObject *other)
+void FloatObject::operator_plus(const FloatObject *other)
 {
 	mValue = mValue.toFloat() + other->getValue().toFloat();
 }
 
-void FloatObject::operator_plus(Object *other)
+void FloatObject::operator_plus(const Object *other)
 {
 	std::string target = other->Typename();
 
@@ -254,12 +254,12 @@ void FloatObject::operator_plus(Object *other)
 	}
 }
 
-void FloatObject::operator_subtract(FloatObject *other)
+void FloatObject::operator_subtract(const FloatObject *other)
 {
 	mValue = mValue.toFloat() - other->getValue().toFloat();
 }
 
-void FloatObject::operator_subtract(Object *other)
+void FloatObject::operator_subtract(const Object *other)
 {
 	std::string target = other->Typename();
 

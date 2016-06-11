@@ -33,15 +33,15 @@ public:	// Symbol::IType implementation
 
 public:	// Operators
 	virtual void operator_assign(const Object *other);
-	virtual void operator_assign(StringObject *other);
+	virtual void operator_assign(const StringObject *other);
 
 	virtual bool operator_bool() const;
 
-	virtual bool operator_equal(Object *other) const;
-	virtual bool operator_equal(StringObject *other) const;
+	virtual bool operator_equal(const Object *other);
+	virtual bool operator_equal(const StringObject *other);
 
-	virtual void operator_plus(Object *other);
-	virtual void operator_plus(StringObject *other);
+	virtual void operator_plus(const Object *other);
+	virtual void operator_plus(const StringObject *other);
 
 public: // Value
 	virtual bool isValid() const;

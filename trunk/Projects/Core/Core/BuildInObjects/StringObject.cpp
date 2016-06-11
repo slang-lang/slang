@@ -93,7 +93,7 @@ void StringObject::operator_assign(const Object *other)
 	}
 }
 
-void StringObject::operator_assign(StringObject *other)
+void StringObject::operator_assign(const StringObject *other)
 {
 	mValue = other->getValue().toStdString();
 }
@@ -103,7 +103,7 @@ bool StringObject::operator_bool() const
 	return mValue.toBool();
 }
 
-bool StringObject::operator_equal(Object *other) const
+bool StringObject::operator_equal(const Object *other)
 {
 	std::string target = other->Typename();
 
@@ -114,12 +114,12 @@ bool StringObject::operator_equal(Object *other) const
 	return Object::operator_equal(other);
 }
 
-bool StringObject::operator_equal(StringObject *other) const
+bool StringObject::operator_equal(const StringObject *other)
 {
 	return mValue.toStdString() == other->getValue().toStdString();
 }
 
-void StringObject::operator_plus(Object *other)
+void StringObject::operator_plus(const Object *other)
 {
 	std::string target = other->Typename();
 
@@ -136,7 +136,7 @@ void StringObject::operator_plus(Object *other)
 	}
 }
 
-void StringObject::operator_plus(StringObject *other)
+void StringObject::operator_plus(const StringObject *other)
 {
 	mValue = mValue.toStdString() + other->getValue().toStdString();
 }
