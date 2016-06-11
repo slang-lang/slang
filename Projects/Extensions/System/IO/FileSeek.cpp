@@ -42,10 +42,10 @@ FileSeek::FileSeek()
 Runtime::ControlFlow::E FileSeek::execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token)
 {
 	try {
-		ParameterList::const_iterator it = params.begin();
+		ParameterList::const_iterator paramIt = params.begin();
 
-		std::string param_handle = params.front().value().toStdString();
-		std::string param_offset = params.back().value().toStdString();
+		std::string param_handle = (*paramIt++).value().toStdString();
+		std::string param_offset = (*paramIt++).value().toStdString();
 
 		int handle = Tools::stringToInt(param_handle);
 		int offset = Tools::stringToInt(param_offset);

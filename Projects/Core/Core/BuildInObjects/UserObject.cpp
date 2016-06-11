@@ -61,7 +61,7 @@ bool UserObject::operator_bool() const
 	return isValid();
 }
 
-void UserObject::operator_divide(Object *other)
+void UserObject::operator_divide(const Object *other)
 {
 	ParameterList params;
 	params.push_back(
@@ -72,7 +72,7 @@ void UserObject::operator_divide(Object *other)
 	this->execute(&tmp, "operator/", params, 0);
 }
 
-bool UserObject::operator_equal(Object *other)
+bool UserObject::operator_equal(const Object *other)
 {
 	ParameterList params;
 	params.push_back(Parameter(other->getName(), other->Typename(), other->getValue()));
@@ -83,7 +83,7 @@ bool UserObject::operator_equal(Object *other)
 	return tmp.isValid();
 }
 
-bool UserObject::operator_greater(Object *other)
+bool UserObject::operator_greater(const Object *other)
 {
 	ParameterList params;
 	params.push_back(Parameter(other->getName(), other->Typename(), other->getValue()));
@@ -94,7 +94,7 @@ bool UserObject::operator_greater(Object *other)
 	return tmp.isValid();
 }
 
-bool UserObject::operator_greater_equal(Object *other)
+bool UserObject::operator_greater_equal(const Object *other)
 {
 	ParameterList params;
 	params.push_back(Parameter(other->getName(), other->Typename(), other->getValue()));
@@ -105,7 +105,7 @@ bool UserObject::operator_greater_equal(Object *other)
 	return tmp.isValid();
 }
 
-bool UserObject::operator_less(Object *other)
+bool UserObject::operator_less(const Object *other)
 {
 	ParameterList params;
 	params.push_back(Parameter(other->getName(), other->Typename(), other->getValue()));
@@ -116,7 +116,7 @@ bool UserObject::operator_less(Object *other)
 	return tmp.isValid();
 }
 
-bool UserObject::operator_less_equal(Object *other)
+bool UserObject::operator_less_equal(const Object *other)
 {
 	ParameterList params;
 	params.push_back(Parameter(other->getName(), other->Typename(), other->getValue()));
@@ -127,7 +127,7 @@ bool UserObject::operator_less_equal(Object *other)
 	return tmp.isValid();
 }
 
-void UserObject::operator_multiply(Object *other)
+void UserObject::operator_multiply(const Object *other)
 {
 	ParameterList params;
 	params.push_back(
@@ -138,7 +138,7 @@ void UserObject::operator_multiply(Object *other)
 	this->execute(&tmp, "operator*", params, 0);
 }
 
-void UserObject::operator_plus(Object *other)
+void UserObject::operator_plus(const Object *other)
 {
 	ParameterList params;
 	params.push_back(
@@ -149,7 +149,7 @@ void UserObject::operator_plus(Object *other)
 	this->execute(&tmp, "operator+", params, 0);
 }
 
-void UserObject::operator_subtract(Object *other)
+void UserObject::operator_subtract(const Object *other)
 {
 	ParameterList params;
 	params.push_back(

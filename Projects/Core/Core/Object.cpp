@@ -417,7 +417,7 @@ void Object::operator_assign(const Object *other)
 	throw Utils::Exceptions::NotImplemented(Typename() + ".operator=: conversion from " + target + " to " + Typename() + " not supported");
 }
 
-void Object::operator_bitand(Object *other)
+void Object::operator_bitand(const Object *other)
 {
 	ParameterList params;
 	params.push_back(
@@ -442,7 +442,7 @@ void Object::operator_bitand(Object *other)
 	throw Utils::Exceptions::NotImplemented(Typename() + ".operator&: conversion from " + target + " to " + Typename() + " not supported");
 }
 
-void Object::operator_bitcomplement(Object *other)
+void Object::operator_bitcomplement(const Object *other)
 {
 	ParameterList params;
 	params.push_back(
@@ -467,7 +467,7 @@ void Object::operator_bitcomplement(Object *other)
 	throw Utils::Exceptions::NotImplemented(Typename() + ".operator~: conversion from " + target + " to " + Typename() + " not supported");
 }
 
-void Object::operator_bitor(Object *other)
+void Object::operator_bitor(const Object *other)
 {
 	ParameterList params;
 	params.push_back(
@@ -497,7 +497,7 @@ bool Object::operator_bool() const
 	throw Utils::Exceptions::NotImplemented(Typename() + ".operator bool(): for " + Typename() + " not supported");
 }
 
-void Object::operator_divide(Object *other)
+void Object::operator_divide(const Object *other)
 {
 	ParameterList params;
 	params.push_back(
@@ -522,7 +522,7 @@ void Object::operator_divide(Object *other)
 	throw Utils::Exceptions::NotImplemented(Typename() + ".operator/: conversion from " + target + " to " + Typename() + " not supported");
 }
 
-bool Object::operator_equal(Object *other) const
+bool Object::operator_equal(const Object *other)
 {
 	ParameterList params;
 	params.push_back(
@@ -546,7 +546,7 @@ bool Object::operator_equal(Object *other) const
 	throw Utils::Exceptions::NotImplemented(Typename() + ".operator==: conversion from " + target + " to " + Typename() + " not supported");
 }
 
-bool Object::operator_greater(Object *other) const
+bool Object::operator_greater(const Object *other)
 {
 	ParameterList params;
 	params.push_back(
@@ -570,7 +570,7 @@ bool Object::operator_greater(Object *other) const
 	throw Utils::Exceptions::NotImplemented(Typename() + ".operator>: conversion from " + target + " to " + Typename() + " not supported");
 }
 
-bool Object::operator_greater_equal(Object *other) const
+bool Object::operator_greater_equal(const Object *other)
 {
 	ParameterList params;
 	params.push_back(
@@ -594,7 +594,7 @@ bool Object::operator_greater_equal(Object *other) const
 	throw Utils::Exceptions::NotImplemented(Typename() + ".operator>=: conversion from " + target + " to " + Typename() + " not supported");
 }
 
-bool Object::operator_less(Object *other) const
+bool Object::operator_less(const Object *other)
 {
 	ParameterList params;
 	params.push_back(
@@ -618,7 +618,7 @@ bool Object::operator_less(Object *other) const
 	throw Utils::Exceptions::NotImplemented(Typename() + ".operator<: conversion from " + target + " to " + Typename() + " not supported");
 }
 
-bool Object::operator_less_equal(Object *other) const
+bool Object::operator_less_equal(const Object *other)
 {
 	ParameterList params;
 	params.push_back(
@@ -642,7 +642,7 @@ bool Object::operator_less_equal(Object *other) const
 	throw Utils::Exceptions::NotImplemented(Typename() + ".operator<=: conversion from " + target + " to " + Typename() + " not supported");
 }
 
-void Object::operator_modulo(Object *other)
+void Object::operator_modulo(const Object *other)
 {
 	ParameterList params;
 	params.push_back(
@@ -667,7 +667,7 @@ void Object::operator_modulo(Object *other)
 	throw Utils::Exceptions::NotImplemented(Typename() + ".operator%: conversion from " + target + " to " + Typename() + " not supported");
 }
 
-void Object::operator_multiply(Object *other)
+void Object::operator_multiply(const Object *other)
 {
 	ParameterList params;
 	params.push_back(
@@ -692,7 +692,7 @@ void Object::operator_multiply(Object *other)
 	throw Utils::Exceptions::NotImplemented(Typename() + ".operator*: conversion from " + target + " to " + Typename() + " not supported");
 }
 
-void Object::operator_plus(Object *other)
+void Object::operator_plus(const Object *other)
 {
 	ParameterList params;
 	params.push_back(
@@ -717,7 +717,7 @@ void Object::operator_plus(Object *other)
 	throw Utils::Exceptions::NotImplemented(Typename() + ".operator+: conversion from " + target + " to " + Typename() + " not supported");
 }
 
-void Object::operator_subtract(Object *other)
+void Object::operator_subtract(const Object *other)
 {
 	ParameterList params;
 	params.push_back(

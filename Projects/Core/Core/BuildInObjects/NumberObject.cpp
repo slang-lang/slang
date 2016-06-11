@@ -72,7 +72,7 @@ bool NumberObject::isValid() const
 	return mIsConstructed;
 }
 
-void NumberObject::operator_assign(NumberObject *other)
+void NumberObject::operator_assign(const NumberObject *other)
 {
 	mValue = other->getValue().toDouble();
 }
@@ -98,12 +98,12 @@ bool NumberObject::operator_bool() const
 	return mValue.toDouble() != 0.0;
 }
 
-void NumberObject::operator_divide(NumberObject *other)
+void NumberObject::operator_divide(const NumberObject *other)
 {
 	mValue = mValue.toDouble() / other->getValue().toDouble();
 }
 
-void NumberObject::operator_divide(Object *other)
+void NumberObject::operator_divide(const Object *other)
 {
 	std::string target = other->Typename();
 
@@ -118,12 +118,12 @@ void NumberObject::operator_divide(Object *other)
 	}
 }
 
-bool NumberObject::operator_equal(NumberObject *other) const
+bool NumberObject::operator_equal(const NumberObject *other)
 {
 	return mValue.toDouble() == other->getValue().toDouble();
 }
 
-bool NumberObject::operator_equal(Object *other) const
+bool NumberObject::operator_equal(const Object *other)
 {
 	std::string target = other->Typename();
 
@@ -137,12 +137,12 @@ bool NumberObject::operator_equal(Object *other) const
 	return Object::operator_equal(other);
 }
 
-bool NumberObject::operator_greater(NumberObject *other) const
+bool NumberObject::operator_greater(const NumberObject *other)
 {
 	return mValue.toDouble() > other->getValue().toDouble();
 }
 
-bool NumberObject::operator_greater(Object *other) const
+bool NumberObject::operator_greater(const Object *other)
 {
 	std::string target = other->Typename();
 
@@ -156,12 +156,12 @@ bool NumberObject::operator_greater(Object *other) const
 	return Object::operator_greater(other);
 }
 
-bool NumberObject::operator_greater_equal(NumberObject *other) const
+bool NumberObject::operator_greater_equal(const NumberObject *other)
 {
 	return mValue.toDouble() >= other->getValue().toDouble();
 }
 
-bool NumberObject::operator_greater_equal(Object *other) const
+bool NumberObject::operator_greater_equal(const Object *other)
 {
 	std::string target = other->Typename();
 
@@ -175,12 +175,12 @@ bool NumberObject::operator_greater_equal(Object *other) const
 	return Object::operator_greater_equal(other);
 }
 
-bool NumberObject::operator_less(NumberObject *other) const
+bool NumberObject::operator_less(const NumberObject *other)
 {
 	return mValue.toDouble() < other->getValue().toDouble();
 }
 
-bool NumberObject::operator_less(Object *other) const
+bool NumberObject::operator_less(const Object *other)
 {
 	std::string target = other->Typename();
 
@@ -194,12 +194,12 @@ bool NumberObject::operator_less(Object *other) const
 	return Object::operator_less(other);
 }
 
-bool NumberObject::operator_less_equal(NumberObject *other) const
+bool NumberObject::operator_less_equal(const NumberObject *other)
 {
 	return mValue.toDouble() <= other->getValue().toDouble();
 }
 
-bool NumberObject::operator_less_equal(Object *other) const
+bool NumberObject::operator_less_equal(const Object *other)
 {
 	std::string target = other->Typename();
 
@@ -213,12 +213,12 @@ bool NumberObject::operator_less_equal(Object *other) const
 	return Object::operator_less_equal(other);
 }
 
-void NumberObject::operator_multiply(NumberObject *other)
+void NumberObject::operator_multiply(const NumberObject *other)
 {
 	mValue = mValue.toDouble() * other->getValue().toDouble();
 }
 
-void NumberObject::operator_multiply(Object *other)
+void NumberObject::operator_multiply(const Object *other)
 {
 	std::string target = other->Typename();
 
@@ -233,12 +233,12 @@ void NumberObject::operator_multiply(Object *other)
 	}
 }
 
-void NumberObject::operator_plus(NumberObject *other)
+void NumberObject::operator_plus(const NumberObject *other)
 {
 	mValue = mValue.toDouble() + other->getValue().toDouble();
 }
 
-void NumberObject::operator_plus(Object *other)
+void NumberObject::operator_plus(const Object *other)
 {
 	std::string target = other->Typename();
 
@@ -253,12 +253,12 @@ void NumberObject::operator_plus(Object *other)
 	}
 }
 
-void NumberObject::operator_subtract(NumberObject *other)
+void NumberObject::operator_subtract(const NumberObject *other)
 {
 	mValue = mValue.toDouble() - other->getValue().toDouble();
 }
 
-void NumberObject::operator_subtract(Object *other)
+void NumberObject::operator_subtract(const Object *other)
 {
 	std::string target = other->Typename();
 

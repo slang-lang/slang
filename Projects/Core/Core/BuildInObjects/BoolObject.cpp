@@ -78,7 +78,7 @@ bool BoolObject::isValid() const
 	return mIsConstructed;
 }
 
-void BoolObject::operator_assign(BoolObject *other)
+void BoolObject::operator_assign(const BoolObject *other)
 {
 	mValue = other->getValue().toBool();
 }
@@ -100,12 +100,12 @@ void BoolObject::operator_assign(const Object *other)
 	}
 }
 
-void BoolObject::operator_bitand(BoolObject *other)
+void BoolObject::operator_bitand(const BoolObject *other)
 {
 	mValue = mValue.toBool() & other->getValue().toBool();
 }
 
-void BoolObject::operator_bitand(Object *other)
+void BoolObject::operator_bitand(const Object *other)
 {
 	std::string target = other->Typename();
 
@@ -122,12 +122,12 @@ void BoolObject::operator_bitand(Object *other)
 	}
 }
 
-void BoolObject::operator_bitor(BoolObject *other)
+void BoolObject::operator_bitor(const BoolObject *other)
 {
 	mValue = mValue.toBool() | other->getValue().toBool();
 }
 
-void BoolObject::operator_bitor(Object *other)
+void BoolObject::operator_bitor(const Object *other)
 {
 	std::string target = other->Typename();
 
@@ -144,12 +144,12 @@ void BoolObject::operator_bitor(Object *other)
 	}
 }
 
-bool BoolObject::operator_equal(BoolObject *other) const
+bool BoolObject::operator_equal(const BoolObject *other)
 {
 	return mValue.toBool() == other->getValue().toBool();
 }
 
-bool BoolObject::operator_equal(Object *other) const
+bool BoolObject::operator_equal(const Object *other)
 {
 	std::string target = other->Typename();
 

@@ -33,37 +33,37 @@ public:	// Symbol::IType implementation
 	const std::string& getTypeName() const;
 
 public:	// Operators
-	virtual void operator_assign(FloatObject *other);
+	virtual void operator_assign(const FloatObject *other);
 	virtual void operator_assign(const Object *other);
 
 	virtual bool operator_bool() const;
 
-	virtual void operator_divide(FloatObject *other);
-	virtual void operator_divide(Object *other);
+	virtual void operator_divide(const FloatObject *other);
+	virtual void operator_divide(const Object *other);
 
-	virtual bool operator_equal(FloatObject *other) const;
-	virtual bool operator_equal(Object *other) const;
+	virtual bool operator_equal(const FloatObject *other);
+	virtual bool operator_equal(const Object *other);
 
-	virtual bool operator_greater(FloatObject *other) const;
-	virtual bool operator_greater(Object *other) const;
+	virtual bool operator_greater(const FloatObject *other);
+	virtual bool operator_greater(const Object *other);
 
-	virtual bool operator_greater_equal(FloatObject *other) const;
-	virtual bool operator_greater_equal(Object *other) const;
+	virtual bool operator_greater_equal(const FloatObject *other);
+	virtual bool operator_greater_equal(const Object *other);
 
-	virtual bool operator_less(FloatObject *other) const;
-	virtual bool operator_less(Object *other) const;
+	virtual bool operator_less(const FloatObject *other);
+	virtual bool operator_less(const Object *other);
 
-	virtual bool operator_less_equal(FloatObject *other) const;
-	virtual bool operator_less_equal(Object *other) const;
+	virtual bool operator_less_equal(const FloatObject *other);
+	virtual bool operator_less_equal(const Object *other);
 
-	virtual void operator_multiply(FloatObject *other);
-	virtual void operator_multiply(Object *other);
+	virtual void operator_multiply(const FloatObject *other);
+	virtual void operator_multiply(const Object *other);
 
-	virtual void operator_plus(FloatObject *other);
-	virtual void operator_plus(Object *other);
+	virtual void operator_plus(const FloatObject *other);
+	virtual void operator_plus(const Object *other);
 
-	virtual void operator_subtract(FloatObject *other);
-	virtual void operator_subtract(Object *other);
+	virtual void operator_subtract(const FloatObject *other);
+	virtual void operator_subtract(const Object *other);
 
 	virtual void operator_unary_decrement();
 	virtual void operator_unary_increment();

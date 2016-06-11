@@ -33,40 +33,40 @@ public:	// Symbol::IType implementation
 	const std::string& getTypeName() const;
 
 public:	// Operators
-	virtual void operator_assign(IntegerObject *other);
+	virtual void operator_assign(const IntegerObject *other);
 	virtual void operator_assign(const Object *other);
 
 	virtual bool operator_bool() const;
 
-	virtual void operator_divide(IntegerObject *other);
-	virtual void operator_divide(Object *other);
+	virtual void operator_divide(const IntegerObject *other);
+	virtual void operator_divide(const Object *other);
 
-	virtual bool operator_equal(IntegerObject *other) const;
-	virtual bool operator_equal(Object *other) const;
+	virtual bool operator_equal(const IntegerObject *other);
+	virtual bool operator_equal(const Object *other);
 
-	virtual bool operator_greater(IntegerObject *other) const;
-	virtual bool operator_greater(Object *other) const;
+	virtual bool operator_greater(const IntegerObject *other);
+	virtual bool operator_greater(const Object *other);
 
-	virtual bool operator_greater_equal(IntegerObject *other) const;
-	virtual bool operator_greater_equal(Object *other) const;
+	virtual bool operator_greater_equal(const IntegerObject *other);
+	virtual bool operator_greater_equal(const Object *other);
 
-	virtual bool operator_less(IntegerObject *other) const;
-	virtual bool operator_less(Object *other) const;
+	virtual bool operator_less(const IntegerObject *other);
+	virtual bool operator_less(const Object *other);
 
-	virtual bool operator_less_equal(IntegerObject *other) const;
-	virtual bool operator_less_equal(Object *other) const;
+	virtual bool operator_less_equal(const IntegerObject *other);
+	virtual bool operator_less_equal(const Object *other);
 
-	virtual void operator_modulo(IntegerObject *other);
-	virtual void operator_modulo(Object *other);
+	virtual void operator_modulo(const IntegerObject *other);
+	virtual void operator_modulo(const Object *other);
 
-	virtual void operator_multiply(IntegerObject *other);
-	virtual void operator_multiply(Object *other);
+	virtual void operator_multiply(const IntegerObject *other);
+	virtual void operator_multiply(const Object *other);
 
-	virtual void operator_plus(IntegerObject *other);
-	virtual void operator_plus(Object *other);
+	virtual void operator_plus(const IntegerObject *other);
+	virtual void operator_plus(const Object *other);
 
-	virtual void operator_subtract(IntegerObject *other);
-	virtual void operator_subtract(Object *other);
+	virtual void operator_subtract(const IntegerObject *other);
+	virtual void operator_subtract(const Object *other);
 
 	virtual void operator_unary_decrement();
 	virtual void operator_unary_increment();

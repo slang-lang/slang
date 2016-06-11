@@ -53,7 +53,6 @@ std::string mFilename;
 Utils::Common::StdOutLogger mLogger;
 ObjectiveScript::ParameterList mParameters;
 std::string mRoot;
-bool mStructuredExecution;
 
 
 void printUsage()
@@ -157,8 +156,6 @@ int main(int argc, const char* argv[])
 	// Memory leak detection
 #endif
 
-	mStructuredExecution = false;
-
 	processParameters(argc, argv);
 
 	if ( mFilename.empty() ) {
@@ -191,7 +188,6 @@ int main(int argc, const char* argv[])
 		// check if an instance ("main") of a Main object exists
 		ObjectiveScript::Runtime::Object *main = static_cast<ObjectiveScript::Runtime::Object*>(script->resolve("main"));
 
-		//if ( !script->resolve("main") ) {
 		if ( !main || main->isAtomicType() ) {
 			ObjectiveScript::Runtime::IntegerObject result;
 			script->execute("Main", mParameters, &result);
