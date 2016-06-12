@@ -54,7 +54,7 @@ void LibraryTest::testBoolean()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/Library/BooleanTest.os");
+		vm.createScriptFromFile("Tests/Library/System/BooleanTest.os");
 
 		// automatic success
 	}
@@ -68,7 +68,7 @@ void LibraryTest::testDouble()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/Library/DoubleTest.os");
+		vm.createScriptFromFile("Tests/Library/System/DoubleTest.os");
 
 		// automatic success
 	}
@@ -82,7 +82,7 @@ void LibraryTest::testFloat()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/Library/FloatTest.os");
+		vm.createScriptFromFile("Tests/Library/System/FloatTest.os");
 
 		// automatic success
 	}
@@ -97,7 +97,7 @@ void LibraryTest::testInteger()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/Library/IntegerTest.os");
+		vm.createScriptFromFile("Tests/Library/System/IntegerTest.os");
 
 		// automatic success
 	}
@@ -115,7 +115,7 @@ void LibraryTest::testString()
 #ifdef USE_SYSTEM_EXTENSION
 		vm.addExtension(new ObjectiveScript::Extensions::System::SystemExtension());
 #endif
-		vm.createScriptFromFile("Tests/Library/StringTest.os");
+		vm.createScriptFromFile("Tests/Library/System/StringTest.os");
 
 		// automatic success
 	}

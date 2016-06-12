@@ -206,6 +206,9 @@ int main(int argc, const char* argv[])
 			ObjectiveScript::StackTrace::GetInstance().print();
 		}
 	}
+	catch ( ... ) {	// catch everything
+		std::cout << "uncaught exception detected" << std::endl;
+	}
 
 	return 0;
 }

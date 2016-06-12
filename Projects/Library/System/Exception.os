@@ -15,5 +15,7 @@ public namespace System {
 			return _exception;
 		}
 	}
+
+	public object OutOfBoundsException replicates Exception;
 }
 
