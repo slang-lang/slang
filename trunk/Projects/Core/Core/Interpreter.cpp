@@ -1148,8 +1148,11 @@ assert(!"not implemented");
 // throw;
 void Interpreter::process_throw(TokenIterator& token, Object* result)
 {
+	(void)result;
+
+	Object* data = mRepository->createInstance(GENERIC_OBJECT);
 	try {
-		expression(result, token);
+		expression(data, token);
 	}
 	catch ( ControlFlow::E e ) {
 		mControlFlow = e;
@@ -1157,7 +1160,7 @@ void Interpreter::process_throw(TokenIterator& token, Object* result)
 	}
 
 	mControlFlow = ControlFlow::Throw;
-	mExceptionData = ExceptionData(result, token->position());
+	mExceptionData = ExceptionData(data, token->position());
 
 	expect(Token::Type::SEMICOLON, token);
 }

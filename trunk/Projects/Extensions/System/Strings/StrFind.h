@@ -37,6 +37,7 @@ public:
 		ParameterList params;
 		params.push_back(Parameter("source", Designtime::StringObject::TYPENAME, VALUE_NONE));
 		params.push_back(Parameter("target", Designtime::StringObject::TYPENAME, VALUE_NONE));
+		params.push_back(Parameter("position", Designtime::IntegerObject::TYPENAME, 0));
 
 		setSignature(params);
 	}
@@ -49,8 +50,14 @@ public:
 
 			std::string param_source = (*it++).value().toStdString();
 			std::string param_target = (*it++).value().toStdString();
+			int param_position = -1;
 
-			int my_result = param_source.find(param_target);
+			if ( params.size() >= 3 ) {
+				// TODO: this does not work with default parameters, we would need something like a parameter walker that also can return  default values
+				param_position = (*it++).value().toInt();
+			}
+
+			int my_result = param_source.find(param_target, param_position);
 
 			*result = Runtime::IntegerObject(my_result);
 		}

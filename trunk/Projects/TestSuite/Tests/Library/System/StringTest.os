@@ -12,6 +12,7 @@ public object Main {
 		assert( TestCase5() );
 		assert( TestCase6() );
 		assert( TestCase7() );
+		assert( TestCase8() );
 	}
 
 	private bool TestCase1() const {
@@ -83,6 +84,20 @@ public object Main {
 		print(string str);
 
 		return result;
+	}
+
+	private bool TestCase8() modify {
+		print("TestCase 8: String.Find");
+
+		String str = new String("This is a string");
+
+		int find = str.Find("is");
+		print("str.Find(\"is\") = " + find);
+
+		find = str.Find("is", find + 1);
+		print("str.Find(\"is\") = " + find);
+
+		return find != -1;
 	}
 
 }

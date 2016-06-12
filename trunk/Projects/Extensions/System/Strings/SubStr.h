@@ -45,21 +45,17 @@ public:
 	Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token)
 	{
 		try {
-			int startIdx = -1;
-			int endIdx = -1;
-
 			ParameterList::const_iterator it = params.begin();
 
 			std::string param_value = (*it++).value().toStdString();
-			std::string param_start = (*it++).value().toStdString();
-			startIdx = Tools::stringToInt(param_start);
+			int param_start = (*it++).value().toInt();
+			int param_end = -1;
 
 			if ( params.size() >= 3 ) {
-				std::string param_end = (*it++).value().toStdString();
-				endIdx = Tools::stringToInt(param_end);
+				param_end = (*it++).value().toInt();
 			}
 
-			std::string result_value = param_value.substr(startIdx, endIdx);
+			std::string result_value = param_value.substr(param_start, param_end);
 
 			*result = Runtime::StringObject(result_value);
 		}

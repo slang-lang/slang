@@ -35,8 +35,8 @@ public namespace System {
 		/*
 		 * Returns the start position of the given string
 		 */
-		public int Find(string str) const {
-			return strfind(mValue, str);
+		public int Find(string str, int startpos = 0) const {
+			return strfind(mValue, str, startpos);
 		}
 
 		/*
@@ -50,7 +50,7 @@ public namespace System {
 		 * Replaces the first occurance of the given string with the provided new string
 		 */
 		public bool Replace(string oldStr, string newStr) modify {
-			int position = strfind(mValue, oldStr);
+			int position = strfind(mValue, oldStr, 0);
 
 			if ( position > 0 ) {
 				string tmp = substr(mValue, 0, position) + newStr + substr(mValue, position + strlen(oldStr));
@@ -106,7 +106,7 @@ public namespace System {
 		 * Returns the held string as it is
 		 */
 		public string ToString() const {
-			return "String: " + mValue;
+			return "String: \"" + mValue + "\"";
 		}
 
 		/*
