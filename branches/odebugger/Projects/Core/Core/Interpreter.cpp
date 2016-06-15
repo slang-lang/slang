@@ -17,6 +17,7 @@
 #include <Core/Runtime/TypeCast.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Utils/Utils.h>
+#include <Debugger/Debugger.h>
 #include <Tools/Printer.h>
 #include "Repository.h"
 #include "Tools.h"
@@ -42,12 +43,26 @@ Interpreter::~Interpreter()
 
 ControlFlow::E Interpreter::execute(Object *result)
 {
+#ifdef DEBUG_HOOK
+	//if ( Core::Debugger::GetInstance()->nextAction() == Core::IDebugger::NextAction::StepInto ) {
+	//	Core::Debugger::GetInstance()->stepInto();
+	//	Core::Debugger::GetInstance()->notify(Core::Debugger::immediateBreak);
+	//}
+#endif
+
 	pushTokens(mTokens);
 		TokenIterator start = getTokens().begin();
 		TokenIterator end = getTokens().end();
 
 		process(result, start, end);
 	popTokens();
+
+#ifdef DEBUG_HOOK
+	//if ( Core::Debugger::GetInstance()->nextAction() == Core::IDebugger::NextAction::StepOut ) {
+	//	Core::Debugger::GetInstance()->stepOut();
+	//	Core::Debugger::GetInstance()->notify(Core::Debugger::immediateBreak);
+	//}
+#endif
 
 	// let the garbage collector do it's magic after we gathered our result
 	garbageCollector();
@@ -514,6 +529,9 @@ void Interpreter::process(Object *result, TokenIterator& token, TokenIterator en
 			// a return command has been triggered, time to stop processing
 			break;
 		}
+
+		// notify debugger
+		Core::Debugger::GetInstance().notify(token->position());
 
 		// decide what we want to do according to the type of token we have
 		switch ( token->type() ) {

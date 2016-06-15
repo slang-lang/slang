@@ -9,6 +9,7 @@
 #include <Core/Runtime/TypeCast.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Utils/Utils.h>
+#include <Debugger/Debugger.h>
 #include "Repository.h"
 #include "StackTrace.h"
 #include "Tools.h"
@@ -184,9 +185,16 @@ ControlFlow::E Method::execute(const ParameterList& params, Object *result, cons
 		}
 	}
 
+	// record stack
 	StackTrace::GetInstance().pushStack(getFullName(), executedParams);
 
+	// notify debugger (if present)
+	Core::Debugger::GetInstance().notify(Core::Debugger::immediateBreak);
+
 	ControlFlow::E controlflow = interpreter.execute(result);	// execute method code
+
+	// notify debugger (if present)
+	Core::Debugger::GetInstance().notify(Core::Debugger::immediateBreak);
 
 	mExceptionData = interpreter.getExceptionData();	// collect exception data no matter what
 

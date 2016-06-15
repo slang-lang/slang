@@ -27,9 +27,24 @@ public:
 // }
 
 public:
+	class StackLevel
+	{
+	public:
+		StackLevel(const std::string& method, const ParameterList& params);
+
+	public:
+		std::string toString() const;
+
+	public:
+		const std::string mMethod;
+		const ParameterList mParameters;
+	};
+
+public:
 	~StackTrace();
 
 public:
+	StackLevel currentStackLevel() const;
 	void popStack();
 	void print();
 	void pushStack(const std::string& method, const ParameterList& params);
@@ -42,7 +57,7 @@ private:
 		ParameterList mParameters;
 	};
 
-	typedef std::list<Trace> Stack;
+	typedef std::list<StackLevel> Stack;
 
 private:
 	StackTrace();
