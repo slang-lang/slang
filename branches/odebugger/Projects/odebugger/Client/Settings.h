@@ -21,7 +21,7 @@ class Settings
 public:
 	Settings()
 	{
-		mPrompt = "odebugger> ";
+		mPrompt = "(odebugger) ";
 	}
 
 public:

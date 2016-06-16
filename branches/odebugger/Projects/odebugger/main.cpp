@@ -36,7 +36,6 @@ int main(int argc, const char* argv[])
 
 	ObjectiveScript::Client client;
 	client.init(argc, argv);
-	client.exec();
 
-	return 0;
+	return client.exec();
 }

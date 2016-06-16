@@ -6,8 +6,8 @@
 // Library includes
 
 // Project includes
-#include <Core/VirtualMachine.h>
-#include <Debugger/Debugger.h>
+#include <Core/Parameter.h>
+#include <Core/Types.h>
 #include "Settings.h"
 
 // Forward declarations
@@ -17,6 +17,11 @@
 
 namespace ObjectiveScript {
 
+// Forward declarations
+namespace Core {
+	class Debugger;
+}
+class VirtualMachine;
 
 class Client
 {
@@ -26,15 +31,19 @@ public:
 
 public:
 	void init(int argc, const char* argv[]);
-	void exec();
-	void printUsage();
-	void printVersion();
+	int exec();
 	void shutdown();
 
+	void printHelp();
+	void printUsage();
+	void printVersion();
+
 private:
-	std::string execute(const std::string& cmd);
+	std::string execute(const std::string& commands);
 	void processParameters(int argc, const char* argv[]);
+	void prepare(const StringList& tokens);
 	void start();
+	void stop();
 
 private:
 	Core::Debugger* mDebugger;
@@ -43,7 +52,7 @@ private:
 	std::string mRoot;
 	bool mRunning;
 	Settings mSettings;
-	VirtualMachine mVirtualMachine;
+	VirtualMachine* mVirtualMachine;
 };
 
 

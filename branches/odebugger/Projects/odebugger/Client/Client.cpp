@@ -7,6 +7,10 @@
 // Project includes
 #include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/BuildInObjects/StringObject.h>
+#include <Core/Utils/Utils.h>
+#include <Core/VirtualMachine.h>
+#include <Debugger/Debugger.h>
+#include <Tools/Files.h>
 #include <Tools/Strings.h>
 
 // Extension includes
@@ -30,65 +34,43 @@ namespace ObjectiveScript {
 
 
 Client::Client()
-: mRunning(false)
+: mDebugger(0),
+  mRunning(false),
+  mVirtualMachine(0)
 {
 	mDebugger = &ObjectiveScript::Core::Debugger::GetInstance();
-	mDebugger->stepInto();
 }
 
 Client::~Client()
 {
+	shutdown();
+
 	mDebugger = 0;
 }
 
-void Client::init(int argc, const char* argv[])
+int Client::exec()
 {
-	mRunning = true;
-
-/*
-	StringList params;
-
-	// read in parameters
-	for ( int i = 0; i < argc; i++ ) {
-		params.push_back(argv[i]);
+	// only start if we have a filename set
+	if ( mFilename.empty() ) {
+		printUsage();
+		return 0;
 	}
 
-	// analyse parameters
-	StringList::const_iterator it = params.begin();
-	it++;
-	while (  it != params.end() ) {
-		// TODO: parse parameters
+	// initial checks
+	if ( !::Utils::Tools::Files::exists(mFilename) ) {
+		OSerror("File '" + mFilename + "' does not exist!");
+		return -1;
 	}
-*/
 
-	processParameters(argc, argv);
-
-	mVirtualMachine.setBaseFolder(mRoot);
-
-	// add extensions
-#ifdef USE_APACHE_EXTENSION
-	mVirtualMachine.addExtension(new ObjectiveScript::Extensions::Apache::ApacheExtension());
-#endif
-#ifdef USE_JSON_EXTENSION
-	mVirtualMachine.addExtension(new ObjectiveScript::Extensions::Json::JsonExtension());
-#endif
-#ifdef USE_MYSQL_EXTENSION
-	mVirtualMachine.addExtension(new ObjectiveScript::Extensions::Mysql::MysqlExtension());
-#endif
-#ifdef USE_SYSTEM_EXTENSION
-	mVirtualMachine.addExtension(new ObjectiveScript::Extensions::System::SystemExtension());
-#endif
-}
-
-void Client::exec()
-{
 	assert(mDebugger);
+	assert(!mVirtualMachine);
 
 	// add dummy break point
 	mDebugger->addBreakPoint(ObjectiveScript::Core::BreakPoint(
 			ObjectiveScript::Utils::Position(mFilename, 7)
 	));
 
+	// start program execution
 	while ( mRunning ) {
 		std::string command;
 
@@ -97,35 +79,111 @@ void Client::exec()
 		getline(std::cin >> std::ws, command);
 		std::cin.clear();
 
-		std::string result = execute(command);
-		if ( !result.empty() ) {
-			std::cout << result << std::endl;
-		}
+		execute(command);
 	}
+
+	return 0;
 }
 
-std::string Client::execute(const std::string& cmd)
+void Client::init(int argc, const char* argv[])
 {
-	if ( cmd == "into" ) {
-		mDebugger->stepInto();
+	mRunning = true;
+
+	processParameters(argc, argv);
+}
+
+std::string Client::execute(const std::string& commands)
+{
+	StringList params;
+
+	// read in parameters
+	unsigned count = 0;
+	std::string token;
+
+	while ( count < commands.size() ) {
+		char c = commands[count];
+
+		if ( c == ' ' ) {
+			if ( !token.empty() ) {
+				params.push_back(token);
+			}
+			token = "";
+		}
+		else {
+			token += c;
+		}
+
+		count++;
 	}
-	else if ( cmd == "out" ) {
-		mDebugger->stepOut();
+
+	// add last token
+	if ( !token.empty() ) {
+		params.push_back(token);
 	}
-	else if ( cmd == "over" ) {
-		mDebugger->stepOut();
-	}
-	else if ( cmd == "quit" ) {
-		mRunning = false;
-	}
-	else if ( cmd == "resume" ) {
-		mDebugger->resume();
-	}
-	else if ( cmd == "start" ) {
-		start();
+
+	// analyse parameters
+	StringList::const_iterator it = params.begin();
+	if ( it != params.end() ) {
+		std::string cmd = (*it++);
+
+		if ( cmd == "break" || cmd == "b" ) {
+			//addBreakPoint(params);
+		}
+		else if ( cmd == "breakpoints" ) {
+			//printBreakPoints();
+		}
+		else if ( cmd == "continue" || cmd == "c" ) {
+			mDebugger->resume();
+		}
+		else if ( cmd == "delete" || cmd == "d" ) {
+			//deleteBreakPoint(params);
+		}
+		else if ( cmd == "help" ) {
+			printHelp();
+		}
+		else if ( cmd == "into" || cmd == "i" ) {
+			mDebugger->stepInto();
+		}
+		else if ( cmd == "next" || cmd == "n" ) {
+			mDebugger->stepOver();
+		}
+		else if ( cmd == "out" || cmd == "o" ) {
+			mDebugger->stepOut();
+		}
+		else if ( cmd == "print" || cmd == "p" ) {
+			//printSymbol(params);
+		}
+		else if ( cmd == "quit" || cmd == "q" ) {
+			shutdown();
+		}
+		else if ( cmd == "run" || cmd == "r" ) {
+			prepare(params);
+			start();
+		}
+		else if ( cmd == "stop" ) {
+			stop();
+		}
+		else {
+			std::cout << "unknown command '" << cmd << "'" << std::endl;
+		}
 	}
 
 	return "";
+}
+
+void Client::prepare(const StringList& tokens)
+{
+	std::string paramStr = mFilename;
+
+	StringList::const_iterator it = tokens.begin();
+	it++;	// skip first token
+	while ( it != tokens.end() ) {
+		paramStr += " " + (*it++);
+	}
+
+	mParameters.clear();
+	mParameters.push_back(ObjectiveScript::Parameter("argc", ObjectiveScript::Runtime::IntegerObject::TYPENAME, 1));
+	mParameters.push_back(ObjectiveScript::Parameter("argv", ObjectiveScript::Runtime::StringObject::TYPENAME, paramStr));
 }
 
 void Client::processParameters(int argc, const char* argv[])
@@ -133,7 +191,7 @@ void Client::processParameters(int argc, const char* argv[])
 	for ( int i = 1; i < argc; i++ ) {
 		if ( ::Utils::Tools::StringCompare(argv[i], "-f") || ::Utils::Tools::StringCompare(argv[i], "--file") ) {
 			if ( argc <= ++i ) {
-				std::cout << "invalid number of parameters provided!" << std::endl;
+				OSerror("invalid number of parameters provided!");
 
 				exit(-1);
 			}
@@ -147,7 +205,7 @@ void Client::processParameters(int argc, const char* argv[])
 		}
 		else if ( ::Utils::Tools::StringCompare(argv[i], "-l") || ::Utils::Tools::StringCompare(argv[i], "--library") ) {
 			if ( argc <= ++i ) {
-				std::cout << "invalid number of parameters provided!" << std::endl;
+				OSerror("invalid number of parameters provided!");
 
 				exit(-1);
 			}
@@ -163,9 +221,24 @@ void Client::processParameters(int argc, const char* argv[])
 			mFilename = argv[i];
 		}
 	}
+}
 
-	mParameters.push_back(ObjectiveScript::Parameter("argc", ObjectiveScript::Runtime::IntegerObject::TYPENAME, 1));
-	mParameters.push_back(ObjectiveScript::Parameter("argv", ObjectiveScript::Runtime::StringObject::TYPENAME, mFilename));
+void Client::printHelp()
+{
+	std::cout << "Commands:" << std::endl;
+	std::cout << "\tbreak (b)" << std::endl;
+	std::cout << "\tbreakpoints" << std::endl;
+	std::cout << "\tcontinue (c)" << std::endl;
+	std::cout << "\tdelete (d)" << std::endl;
+	std::cout << "\thelp" << std::endl;
+	std::cout << "\tinto (i)" << std::endl;
+	std::cout << "\tnext (n)" << std::endl;
+	std::cout << "\tout (o)" << std::endl;
+	std::cout << "\tprint (p)" << std::endl;
+	std::cout << "\tquit (q)" << std::endl;
+	std::cout << "\trun (r)" << std::endl;
+	std::cout << "\tstop" << std::endl;
+	std::cout << std::endl;
 }
 
 void Client::printUsage()
@@ -188,14 +261,42 @@ void Client::printVersion()
 
 void Client::shutdown()
 {
+	stop();
 
+	mRunning = false;
 }
 
 void Client::start()
 {
-	mVirtualMachine.createScriptFromFile(mFilename, mParameters);
+	if ( mVirtualMachine ) {
+		stop();
+	}
+
+	mVirtualMachine = new VirtualMachine();
+	mVirtualMachine->setBaseFolder(mRoot);
+
+	// add extensions
+#ifdef USE_APACHE_EXTENSION
+	mVirtualMachine->addExtension(new ObjectiveScript::Extensions::Apache::ApacheExtension());
+#endif
+#ifdef USE_JSON_EXTENSION
+	mVirtualMachine->addExtension(new ObjectiveScript::Extensions::Json::JsonExtension());
+#endif
+#ifdef USE_MYSQL_EXTENSION
+	mVirtualMachine->addExtension(new ObjectiveScript::Extensions::Mysql::MysqlExtension());
+#endif
+#ifdef USE_SYSTEM_EXTENSION
+	mVirtualMachine->addExtension(new ObjectiveScript::Extensions::System::SystemExtension());
+#endif
+
+	mVirtualMachine->createScriptFromFile(mFilename, mParameters);
 }
 
+void Client::stop()
+{
+	delete mVirtualMachine;
+	mVirtualMachine = 0;
+}
 
 
 }
