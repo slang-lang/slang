@@ -50,6 +50,22 @@ Client::~Client()
 	mDebugger = 0;
 }
 
+void Client::addBreakPoint(const StringList& tokens)
+{
+	if ( tokens.size() != 3 ) {
+		std::cout << "invalid number of arguments!" << std::endl;
+		return;
+	}
+
+	StringList::const_iterator it = tokens.begin();
+	it++;	// skip first token
+
+	std::string file = (*it++);
+	unsigned line = ::Utils::Tools::stringToInt((*it));
+
+	mDebugger->addBreakPoint(Utils::Position(file, line));
+}
+
 void Client::continueExecution()
 {
 	mContinue = true;
@@ -72,10 +88,12 @@ int Client::exec()
 	assert(mDebugger);
 	assert(!mVirtualMachine);
 
+/*
 	// add dummy break point
-	mDebugger->addBreakPoint(ObjectiveScript::Core::BreakPoint(
-			ObjectiveScript::Utils::Position(mFilename, 7)
+	mDebugger->addBreakPoint(Core::BreakPoint(
+		Utils::Position(mFilename, 7)
 	));
+*/
 
 	// start program execution
 	while ( mRunning ) {
@@ -129,17 +147,17 @@ std::string Client::execute(const std::string& commands)
 		std::string cmd = (*it++);
 
 		if ( cmd == "break" || cmd == "b" ) {
-			//addBreakPoint(params);
+			addBreakPoint(params);
 		}
 		else if ( cmd == "breakpoints" ) {
-			//printBreakPoints();
+			printBreakPoints();
 		}
 		else if ( cmd == "continue" || cmd == "c" ) {
 			mDebugger->resume();
 			continueExecution();
 		}
 		else if ( cmd == "delete" || cmd == "d" ) {
-			//deleteBreakPoint(params);
+			removeBreakPoint(params);
 		}
 		else if ( cmd == "help" ) {
 			printHelp();
@@ -192,6 +210,19 @@ void Client::prepare(const StringList& tokens)
 	mParameters.clear();
 	mParameters.push_back(ObjectiveScript::Parameter("argc", ObjectiveScript::Runtime::IntegerObject::TYPENAME, 1));
 	mParameters.push_back(ObjectiveScript::Parameter("argv", ObjectiveScript::Runtime::StringObject::TYPENAME, paramStr));
+}
+
+void Client::printBreakPoints()
+{
+	Core::BreakPointList list = mDebugger->getBreakPoints();
+
+	std::cout << "BreakPoints:" << std::endl;
+
+	int idx = 1;
+	for ( Core::BreakPointList::const_iterator it = list.begin(); it != list.end(); ++it ) {
+		std::cout << idx << ": " << it->getFilename() << ":" << it->getLine() << std::endl;
+		idx++;
+	}
 }
 
 void Client::printHelp()
@@ -287,6 +318,29 @@ void Client::processParameters(int argc, const char* argv[])
 		}
 		else if ( mFilename.empty() ){
 			mFilename = argv[i];
+		}
+	}
+}
+
+void Client::removeBreakPoint(const StringList& tokens)
+{
+	if ( tokens.size() != 2 ) {
+		std::cout << "invalid number of arguments!" << std::endl;
+		return;
+	}
+
+	StringList::const_iterator it = tokens.begin();
+	it++;	// skip first token
+
+	int idx = ::Utils::Tools::stringToInt((*it));
+
+	Core::BreakPointList points = mDebugger->getBreakPoints();
+
+	int count = 1;
+	for ( Core::BreakPointList::const_iterator it = points.begin(); it != points.end(); ++it, ++count ) {
+		if ( count == idx ) {
+			mDebugger->removeBreakPoint((*it));
+			break;
 		}
 	}
 }

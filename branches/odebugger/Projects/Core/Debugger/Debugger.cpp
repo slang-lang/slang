@@ -53,6 +53,11 @@ BreakPointList::const_iterator Debugger::find(const BreakPoint& breakpoint) cons
 	return mBreakPoints.end();
 }
 
+const BreakPointList& Debugger::getBreakPoints() const
+{
+	return mBreakPoints;
+}
+
 Debugger& Debugger::GetInstance()
 {
 	static Debugger mDebugger;
@@ -84,18 +89,21 @@ void Debugger::notify(SymbolScope* scope, const BreakPoint& breakpoint)
 		return;
 	}
 
+	bool stop = false;
+
 	if ( breakpoint == immediateBreak ) {
 		switch ( mNextAction ) {
-			case NextAction::StepInto: std::cout << "Stepping into " << StackTrace::GetInstance().currentStackLevel().toString() << std::endl; break;
-			case NextAction::StepOut: std::cout << "Stepping out " << StackTrace::GetInstance().currentStackLevel().toString() << std::endl; break;
+			case NextAction::StepInto: stop = true; std::cout << "Stepping into " << StackTrace::GetInstance().currentStackLevel().toString() << std::endl; break;
+			case NextAction::StepOut: stop = true; std::cout << "Stepping out " << StackTrace::GetInstance().currentStackLevel().toString() << std::endl; break;
 			default: break;
 		}
 	}
 	else {
+		stop = true;
 		std::cout << "Breakpoint " << breakpoint.getFilename() << ", " << breakpoint.getLine() << " reached" << std::endl;
 	}
 
-	if ( mReceiver ) {
+	if ( stop && mReceiver ) {
 		mReceiver->runCLI(scope);
 	}
 }

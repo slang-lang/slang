@@ -10,6 +10,7 @@
 #include <Core/Types.h>
 #include <Debugger/IReceiver.h>
 #include <Core/Scope.h>
+#include <Debugger/BreakPoint.h>
 #include "Settings.h"
 
 // Forward declarations
@@ -44,11 +45,14 @@ private:	// IReceiver implementation
 	int runCLI(SymbolScope* scope);
 
 private:
+	void addBreakPoint(const StringList& tokens);
 	void continueExecution();
 	std::string execute(const std::string& commands);
+	void printBreakPoints();
 	void printSymbol(const StringList& tokens);
 	void processParameters(int argc, const char* argv[]);
 	void prepare(const StringList& tokens);
+	void removeBreakPoint(const StringList& tokens);
 	void start();
 	void stop();
 
