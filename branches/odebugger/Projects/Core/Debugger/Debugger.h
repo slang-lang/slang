@@ -17,6 +17,8 @@
 namespace ObjectiveScript {
 namespace Core {
 
+// Forward declarations
+class IReceiver;
 
 class Debugger : public IDebugger
 {
@@ -36,12 +38,16 @@ public:	// IDebugger implementation
 	bool isBreakPoint(const BreakPoint& breakpoint) const;
 	NextAction::E nextAction() const;
 
-	void notify(const BreakPoint& breakpoint = BreakPoint());
+	void notify(SymbolScope* scope, const BreakPoint& breakpoint = BreakPoint());
 
 	void stepInto() { mNextAction = NextAction::StepInto; }
 	void stepOut() { mNextAction = NextAction::StepOut; }
 	void stepOver() { mNextAction = NextAction::StepOver; }
 	void resume() { mNextAction = NextAction::WaitForBreakPoint; }
+
+public:
+	void registerReceiver(Core::IReceiver* receiver);
+	void unregisterReceiver(Core::IReceiver* receiver);
 
 private:
 	BreakPointList::const_iterator find(const BreakPoint& breakpoint) const;
@@ -54,6 +60,7 @@ private:
 
 private:
 	BreakPointList mBreakPoints;
+	Core::IReceiver* mReceiver;
 	NextAction::E mNextAction;
 };
 

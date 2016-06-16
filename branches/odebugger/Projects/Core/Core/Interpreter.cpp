@@ -531,7 +531,7 @@ void Interpreter::process(Object *result, TokenIterator& token, TokenIterator en
 		}
 
 		// notify debugger
-		Core::Debugger::GetInstance().notify(token->position());
+		Core::Debugger::GetInstance().notify(this, token->position());
 
 		// decide what we want to do according to the type of token we have
 		switch ( token->type() ) {

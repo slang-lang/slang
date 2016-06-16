@@ -6,7 +6,9 @@
 #include <iostream>
 
 // Project includes
+#include <Core/Scope.h>
 #include <Core/StackTrace.h>
+#include "IReceiver.h"
 
 // Namespace declarations
 
@@ -19,7 +21,8 @@ BreakPoint Debugger::immediateBreak = BreakPoint();
 
 
 Debugger::Debugger()
-: mNextAction(NextAction::None)
+: mNextAction(NextAction::None),
+  mReceiver(0)
 {
 }
 
@@ -69,7 +72,7 @@ IDebugger::NextAction::E Debugger::nextAction() const
 	return mNextAction;
 }
 
-void Debugger::notify(const BreakPoint& breakpoint)
+void Debugger::notify(SymbolScope* scope, const BreakPoint& breakpoint)
 {
 	if ( mNextAction == NextAction::None ) {
 		// no planned action
@@ -91,6 +94,20 @@ void Debugger::notify(const BreakPoint& breakpoint)
 	else {
 		std::cout << "Breakpoint " << breakpoint.getFilename() << ", " << breakpoint.getLine() << " reached" << std::endl;
 	}
+
+	if ( mReceiver ) {
+		mReceiver->runCLI(scope);
+	}
+}
+
+void Debugger::registerReceiver(Core::IReceiver* receiver)
+{
+	mReceiver = receiver;
+}
+
+void Debugger::unregisterReceiver(Core::IReceiver* /*receiver*/)
+{
+	mReceiver = 0;
 }
 
 bool Debugger::removeBreakPoint(const BreakPoint& breakpoint)

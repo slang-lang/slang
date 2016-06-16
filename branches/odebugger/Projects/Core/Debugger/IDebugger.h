@@ -13,6 +13,10 @@
 
 
 namespace ObjectiveScript {
+
+// Forward declarations
+class SymbolScope;
+
 namespace Core {
 
 
@@ -43,7 +47,7 @@ public:
 	virtual bool isBreakPoint(const BreakPoint& breakpoint) const = 0;
 	virtual NextAction::E nextAction() const = 0;
 
-	virtual void notify(const BreakPoint& breakpoint = BreakPoint()) = 0;
+	virtual void notify(SymbolScope* scope, const BreakPoint& breakpoint = BreakPoint()) = 0;
 
 	virtual void stepInto() = 0;
 	virtual void stepOut() = 0;
