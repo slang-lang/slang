@@ -88,13 +88,6 @@ int Client::exec()
 	assert(mDebugger);
 	assert(!mVirtualMachine);
 
-/*
-	// add dummy break point
-	mDebugger->addBreakPoint(Core::BreakPoint(
-		Utils::Position(mFilename, 7)
-	));
-*/
-
 	// start program execution
 	while ( mRunning ) {
 		runCLI(0);

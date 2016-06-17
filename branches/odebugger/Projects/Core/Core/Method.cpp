@@ -189,12 +189,12 @@ ControlFlow::E Method::execute(const ParameterList& params, Object *result, cons
 	StackTrace::GetInstance().pushStack(getFullName(), executedParams);
 
 	// notify debugger (if present)
-	Core::Debugger::GetInstance().notify(this, Core::Debugger::immediateBreak);
+	Core::Debugger::GetInstance().notify(&interpreter, Core::Debugger::immediateBreak);
 
 	ControlFlow::E controlflow = interpreter.execute(result);	// execute method code
 
 	// notify debugger (if present)
-	Core::Debugger::GetInstance().notify(this, Core::Debugger::immediateBreak);
+	Core::Debugger::GetInstance().notify(&interpreter, Core::Debugger::immediateBreak);
 
 	mExceptionData = interpreter.getExceptionData();	// collect exception data no matter what
 
