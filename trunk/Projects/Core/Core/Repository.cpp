@@ -169,7 +169,7 @@ void Repository::createDefaultMethods(Runtime::Object *object)
 				setSignature(params);
 			}
 
-			Runtime::ControlFlow::E execute(const ParameterList &params, Runtime::Object *result, const TokenIterator &token)
+			Runtime::ControlFlow::E execute(const ParameterList &params, Runtime::Object *result, const Token& token)
 			{
 				try {
 					ParameterList::const_iterator it = params.begin();
@@ -182,7 +182,7 @@ void Repository::createDefaultMethods(Runtime::Object *object)
 																		ANONYMOUS_OBJECT);
 					*data = Runtime::StringObject(std::string(e.what()));
 
-					mExceptionData = Runtime::ExceptionData(data, token->position());
+					mExceptionData = Runtime::ExceptionData(data, token.position());
 					return Runtime::ControlFlow::Throw;
 				}
 

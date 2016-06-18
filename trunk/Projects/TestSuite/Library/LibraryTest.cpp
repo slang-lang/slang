@@ -125,6 +125,23 @@ void LibraryTest::testString()
 	}
 }
 
+void LibraryTest::testStringIterator()
+{
+	try {
+		VirtualMachine vm;
+#ifdef USE_SYSTEM_EXTENSION
+		vm.addExtension(new ObjectiveScript::Extensions::System::SystemExtension());
+#endif
+		vm.createScriptFromFile("Tests/Library/System/StringIteratorTest.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed
+		TFAIL(e.what());
+	}
+}
+
 
 }
 }

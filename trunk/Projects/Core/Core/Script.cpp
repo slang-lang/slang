@@ -34,7 +34,7 @@ void Script::execute(const std::string& method, const ParameterList& params, Run
 	}
 
 	Runtime::Method* methodSymbol = static_cast<Runtime::Method*>(symbol);
-	Runtime::ControlFlow::E controlflow = methodSymbol->execute(params, result, TokenIterator());
+	Runtime::ControlFlow::E controlflow = methodSymbol->execute(params, result, Token());
 
 	if ( controlflow == Runtime::ControlFlow::Throw ) {
 		throw Utils::Exceptions::Exception("exception raised in method '" + method + "(" + toString(params) + ")'");

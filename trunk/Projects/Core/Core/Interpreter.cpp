@@ -17,6 +17,7 @@
 #include <Core/Runtime/TypeCast.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Utils/Utils.h>
+#include <Debugger/Debugger.h>
 #include <Tools/Printer.h>
 #include "Repository.h"
 #include "Tools.h"
@@ -515,6 +516,9 @@ void Interpreter::process(Object *result, TokenIterator& token, TokenIterator en
 			break;
 		}
 
+		// notify debugger
+		Core::Debugger::GetInstance().notify(this, (*token));
+
 		// decide what we want to do according to the type of token we have
 		switch ( token->type() ) {
 			case Token::Type::CONST_BOOLEAN:
@@ -976,7 +980,7 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 		throw Utils::Exceptions::ConstCorrectnessViolated("only calls to const methods are allowed in const method '" + getScope()->getScopeName() + "'", token->position());
 	}
 
-	ControlFlow::E controlflow = symbol->execute(params, result, token);
+	ControlFlow::E controlflow = symbol->execute(params, result, (*token));
 
 	switch ( controlflow ) {
 		case ControlFlow::ExitProgram: mControlFlow = ControlFlow::ExitProgram; break;

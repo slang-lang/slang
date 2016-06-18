@@ -24,12 +24,12 @@ MysqlNextResult::MysqlNextResult()
 : Runtime::Method(0, "mysql_next_result", Designtime::IntegerObject::TYPENAME)
 {
 	ParameterList params;
-	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, VALUE_NONE));
+	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));
 
 	setSignature(params);
 }
 
-Runtime::ControlFlow::E MysqlNextResult::execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token)
+Runtime::ControlFlow::E MysqlNextResult::execute(const ParameterList& params, Runtime::Object* result, const Token& token)
 {
 	try {
 		// Parameter processing
@@ -49,7 +49,7 @@ Runtime::ControlFlow::E MysqlNextResult::execute(const ParameterList& params, Ru
 		Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
 		*data = Runtime::StringObject(std::string(e.what()));
 
-		mExceptionData = Runtime::ExceptionData(data, token->position());
+		mExceptionData = Runtime::ExceptionData(data, token.position());
 		return Runtime::ControlFlow::Throw;
 	}
 

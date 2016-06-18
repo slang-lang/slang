@@ -36,7 +36,7 @@ FileClose::FileClose()
 	setSignature(params);
 }
 
-Runtime::ControlFlow::E FileClose::execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token)
+Runtime::ControlFlow::E FileClose::execute(const ParameterList& params, Runtime::Object* result, const Token& token)
 {
 	try {
 		ParameterList::const_iterator it = params.begin();
@@ -56,7 +56,7 @@ Runtime::ControlFlow::E FileClose::execute(const ParameterList& params, Runtime:
 		Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
 		*data = Runtime::StringObject(std::string(e.what()));
 
-		mExceptionData = Runtime::ExceptionData(data, token->position());
+		mExceptionData = Runtime::ExceptionData(data, token.position());
 		return Runtime::ControlFlow::Throw;
 	}
 
