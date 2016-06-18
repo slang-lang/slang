@@ -47,7 +47,9 @@ private:	// IReceiver implementation
 private:
 	void addBreakPoint(const StringList& tokens);
 	void continueExecution();
-	std::string execute(const std::string& commands);
+	std::string executeCommand(const StringList &tokens);
+	void executeSymbol(const StringList& tokens);
+	StringList parseCommands(const std::string& commands) const;
 	void printBreakPoints();
 	void printSymbol(const StringList& tokens);
 	void processParameters(int argc, const char* argv[]);

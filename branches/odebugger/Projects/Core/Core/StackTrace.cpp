@@ -34,6 +34,13 @@ StackTrace::~StackTrace()
 {
 }
 
+void StackTrace::clear()
+{
+	while ( !mStack.empty() ) {
+		mStack.pop_back();
+	}
+}
+
 StackTrace::StackLevel StackTrace::currentStackLevel() const
 {
 	return mStack.back();

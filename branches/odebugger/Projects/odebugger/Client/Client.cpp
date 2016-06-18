@@ -7,26 +7,16 @@
 // Project includes
 #include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/BuildInObjects/StringObject.h>
+#include <Core/StackTrace.h>
+#include <Core/Tools.h>
 #include <Core/Utils/Utils.h>
 #include <Core/VirtualMachine.h>
 #include <Debugger/Debugger.h>
-#include <Debugger/IReceiver.h>
 #include <Tools/Files.h>
 #include <Tools/Strings.h>
 
 // Extension includes
-#ifdef USE_APACHE_EXTENSION
-#	include <Apache/ApacheExtension.h>
-#endif
-#ifdef USE_JSON_EXTENSION
-#	include <JSON/JsonExtension.h>
-#endif
-#ifdef USE_MYSQL_EXTENSION
-#	include <Mysql/MysqlExtension.h>
-#endif
-#ifdef USE_SYSTEM_EXTENSION
-#	include <System/SystemExtension.h>
-#endif
+#include <Extensions.h>
 
 // Namespace declarations
 
@@ -96,6 +86,120 @@ int Client::exec()
 	return 0;
 }
 
+std::string Client::executeCommand(const StringList &tokens)
+{
+	StringList::const_iterator it = tokens.begin();
+
+	if ( it != tokens.end() ) {
+		std::string cmd = (*it++);
+
+		if ( cmd == "break" || cmd == "b" ) {
+			addBreakPoint(tokens);
+		}
+		else if ( cmd == "breakpoints" ) {
+			printBreakPoints();
+		}
+		else if ( cmd == "continue" || cmd == "c" ) {
+			mDebugger->resume();
+			continueExecution();
+		}
+		else if ( cmd == "delete" || cmd == "d" ) {
+			removeBreakPoint(tokens);
+		}
+		else if ( cmd == "execute" || cmd == "e" ) {
+			executeSymbol(tokens);
+		}
+		else if ( cmd == "help" ) {
+			printHelp();
+		}
+		else if ( cmd == "into" || cmd == "i" ) {
+			mDebugger->stepInto();
+			continueExecution();
+		}
+		else if ( cmd == "kill" ) {
+			stop();
+		}
+		else if ( cmd == "next" || cmd == "n" ) {
+			mDebugger->stepOver();
+			continueExecution();
+		}
+		else if ( cmd == "out" || cmd == "o" ) {
+			mDebugger->stepOut();
+			continueExecution();
+		}
+		else if ( cmd == "print" || cmd == "p" ) {
+			printSymbol(tokens);
+		}
+		else if ( cmd == "quit" || cmd == "q" ) {
+			shutdown();
+		}
+		else if ( cmd == "resume" || cmd == "r" ) {
+			mDebugger->resumeWithoutBreaks();
+			continueExecution();
+		}
+		else if ( cmd == "run" ) {
+			prepare(tokens);
+			start();
+			std::cout << "program terminated successfully" << std::endl;
+			stop();
+		}
+		else {
+			std::cout << "unknown command '" << cmd << "'" << std::endl;
+		}
+	}
+
+	return "";
+}
+
+void Client::executeSymbol(const StringList& tokens)
+{
+	if ( !mScope ) {
+		std::cout << "no scope available!" << std::endl;
+		return;
+	}
+
+	std::string name;
+
+	StringList::const_iterator it = tokens.begin();
+	it++;	// skip first token
+	if ( it != tokens.end() ) {
+		name = (*it);
+	}
+
+	std::string child;
+	std::string parent;
+	Symbol* symbol = 0;
+	SymbolScope* scope = mScope;
+
+	do {
+		Tools::split(name, parent, child);
+
+		if ( !parent.empty() && !child.empty() ) {
+			scope = static_cast<ObjectiveScript::Runtime::Object*>(scope->resolve(parent, false));
+		}
+		else {
+			symbol = scope->resolve(parent, false);
+			if ( !symbol ) {
+				std::cout << "could not resolve symbol '" << name << "'!" << std::endl;
+				return;
+			}
+
+			if ( symbol->getType() != Symbol::IType::MethodSymbol ) {
+				std::cout << "could not execute non-method symbol '" << name << "'!";
+				return;
+			}
+
+			Runtime::Object result;
+			Runtime::Method* method = static_cast<Runtime::Method*>(symbol);
+			method->execute(ParameterList(), &result, TokenIterator());
+
+			std::cout << result.ToString() << std::endl;
+		}
+
+		name = child;
+	} while ( !name.empty() );
+}
+
 void Client::init(int argc, const char* argv[])
 {
 	mDebugger->registerReceiver(this);
@@ -105,7 +209,7 @@ void Client::init(int argc, const char* argv[])
 	processParameters(argc, argv);
 }
 
-std::string Client::execute(const std::string& commands)
+StringList Client::parseCommands(const std::string& commands) const
 {
 	StringList params;
 
@@ -134,60 +238,7 @@ std::string Client::execute(const std::string& commands)
 		params.push_back(token);
 	}
 
-	// analyse parameters
-	StringList::const_iterator it = params.begin();
-	if ( it != params.end() ) {
-		std::string cmd = (*it++);
-
-		if ( cmd == "break" || cmd == "b" ) {
-			addBreakPoint(params);
-		}
-		else if ( cmd == "breakpoints" ) {
-			printBreakPoints();
-		}
-		else if ( cmd == "continue" || cmd == "c" ) {
-			mDebugger->resume();
-			continueExecution();
-		}
-		else if ( cmd == "delete" || cmd == "d" ) {
-			removeBreakPoint(params);
-		}
-		else if ( cmd == "help" ) {
-			printHelp();
-		}
-		else if ( cmd == "into" || cmd == "i" ) {
-			mDebugger->stepInto();
-			continueExecution();
-		}
-		else if ( cmd == "kill" ) {
-			stop();
-		}
-		else if ( cmd == "next" || cmd == "n" ) {
-			mDebugger->stepOver();
-			continueExecution();
-		}
-		else if ( cmd == "out" || cmd == "o" ) {
-			mDebugger->stepOut();
-			continueExecution();
-		}
-		else if ( cmd == "print" || cmd == "p" ) {
-			printSymbol(params);
-		}
-		else if ( cmd == "quit" || cmd == "q" ) {
-			shutdown();
-		}
-		else if ( cmd == "run" || cmd == "r" ) {
-			prepare(params);
-			start();
-			std::cout << "program terminated successfully" << std::endl;
-			stop();
-		}
-		else {
-			std::cout << "unknown command '" << cmd << "'" << std::endl;
-		}
-	}
-
-	return "";
+	return params;
 }
 
 void Client::prepare(const StringList& tokens)
@@ -213,7 +264,7 @@ void Client::printBreakPoints()
 
 	int idx = 1;
 	for ( Core::BreakPointList::const_iterator it = list.begin(); it != list.end(); ++it ) {
-		std::cout << idx << ": " << it->getFilename() << ":" << it->getLine() << std::endl;
+		std::cout << idx << ": " << it->toString() << std::endl;
 		idx++;
 	}
 }
@@ -221,19 +272,27 @@ void Client::printBreakPoints()
 void Client::printHelp()
 {
 	std::cout << "Commands:" << std::endl;
+
 	std::cout << "\tbreak (b)" << std::endl;
 	std::cout << "\tbreakpoints" << std::endl;
-	std::cout << "\tcontinue (c)" << std::endl;
 	std::cout << "\tdelete (d)" << std::endl;
 	std::cout << "\thelp" << std::endl;
-	std::cout << "\tinto (i)" << std::endl;
-	std::cout << "\tkill" << std::endl;
-	std::cout << "\tnext (n)" << std::endl;
-	std::cout << "\tout (o)" << std::endl;
-	std::cout << "\tprint (p)" << std::endl;
 	std::cout << "\tquit (q)" << std::endl;
-	std::cout << "\trun (r)" << std::endl;
-	std::cout << std::endl;
+	std::cout << "\trun" << std::endl;
+
+	if ( mScope ) {
+		std::cout << "During debugging:" << std::endl;
+		std::cout << "\tcontinue (c)" << std::endl;
+		std::cout << "\texecute (e)" << std::endl;
+		std::cout << "\tinto (i)" << std::endl;
+		std::cout << "\tkill" << std::endl;
+		std::cout << "\tnext (n)" << std::endl;
+		std::cout << "\tout (o)" << std::endl;
+		std::cout << "\tprint (p)" << std::endl;
+		std::cout << "\tresume (r)" << std::endl;
+	}
+
+	//std::cout << std::endl;
 }
 
 void Client::printSymbol(const StringList& tokens)
@@ -251,13 +310,29 @@ void Client::printSymbol(const StringList& tokens)
 		name = (*it);
 	}
 
-	Symbol* symbol = mScope->resolve(name, false);
-	if ( !symbol ) {
-		std::cout << "could not resolve symbol '" << name << "'!" << std::endl;
-		return;
-	}
+	std::string child;
+	std::string parent;
+	Symbol* symbol = 0;
+	SymbolScope* scope = mScope;
 
-	std::cout << symbol->ToString() << std::endl;
+	do {
+		Tools::split(name, parent, child);
+
+		if ( !parent.empty() && !child.empty() ) {
+			scope = static_cast<ObjectiveScript::Runtime::Object*>(scope->resolve(parent, false));
+		}
+		else {
+			symbol = scope->resolve(parent, false);
+			if ( !symbol ) {
+				std::cout << "could not resolve symbol '" << name << "'!" << std::endl;
+				return;
+			}
+
+			std::cout << symbol->ToString() << std::endl;
+		}
+
+		name = child;
+	} while ( !name.empty() );
 }
 
 void Client::printUsage()
@@ -351,7 +426,9 @@ int Client::runCLI(SymbolScope* scope)
 		getline(std::cin >> std::ws, command);
 		std::cin.clear();
 
-		execute(command);
+		executeCommand(
+				parseCommands(command)
+		);
 	}
 
 	mScope = 0;
@@ -374,6 +451,9 @@ void Client::start()
 	if ( mVirtualMachine ) {
 		stop();
 	}
+
+	mDebugger->resume();
+	StackTrace::GetInstance().clear();
 
 	mVirtualMachine = new VirtualMachine();
 	mVirtualMachine->setBaseFolder(mRoot);

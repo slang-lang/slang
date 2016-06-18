@@ -45,6 +45,7 @@ public:	// IDebugger implementation
 	void stepOut() { mNextAction = NextAction::StepOut; }
 	void stepOver() { mNextAction = NextAction::StepOver; }
 	void resume() { mNextAction = NextAction::WaitForBreakPoint; }
+	void resumeWithoutBreaks() { mNextAction = NextAction::None; }
 
 public:
 	void registerReceiver(Core::IReceiver* receiver);

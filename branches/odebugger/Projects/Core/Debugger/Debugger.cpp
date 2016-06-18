@@ -21,7 +21,7 @@ BreakPoint Debugger::immediateBreak = BreakPoint();
 
 
 Debugger::Debugger()
-: mNextAction(NextAction::None),
+: mNextAction(NextAction::WaitForBreakPoint),
   mReceiver(0)
 {
 }
@@ -95,10 +95,11 @@ void Debugger::notify(SymbolScope* scope, const BreakPoint& breakpoint)
 		switch ( mNextAction ) {
 			case NextAction::StepInto: stop = true; std::cout << "Stepping into " << StackTrace::GetInstance().currentStackLevel().toString() << std::endl; break;
 			case NextAction::StepOut: stop = true; std::cout << "Stepping out " << StackTrace::GetInstance().currentStackLevel().toString() << std::endl; break;
+			case NextAction::StepOver: stop = true; std::cout << "Stepping over " << StackTrace::GetInstance().currentStackLevel().toString() << std::endl; break;
 			default: break;
 		}
 	}
-	else {
+	else if ( mNextAction == NextAction::WaitForBreakPoint ) {
 		stop = true;
 		std::cout << "Breakpoint " << breakpoint.getFilename() << ", " << breakpoint.getLine() << " reached" << std::endl;
 	}

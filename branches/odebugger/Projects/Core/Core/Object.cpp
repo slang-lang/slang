@@ -846,9 +846,12 @@ Json::Value Object::ToJson() const
 
 std::string Object::ToString() const
 {
-	std::string result = Typename() + " " + getName() + " = " + getValue().toStdString();
+	std::string result = Typename() + " " + getName();
 
-	if ( !isAtomicType() ) {
+	if ( isAtomicType() ) {
+		result += " = " + getValue().toStdString();
+	}
+	else {
 		result += " {\n";
 
 		for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {

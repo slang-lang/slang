@@ -31,6 +31,8 @@ public:
 	const std::string& getFilename() const;
 	unsigned int getLine() const;
 
+	std::string toString() const;
+
 public:
 	bool operator<(const BreakPoint& other) const;
 	bool operator==(const BreakPoint& other) const;

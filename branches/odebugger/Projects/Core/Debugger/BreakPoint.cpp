@@ -3,6 +3,7 @@
 #include "BreakPoint.h"
 
 // Library includes
+#include <sstream>
 
 // Project includes
 
@@ -36,6 +37,13 @@ const std::string& BreakPoint::getFilename() const
 unsigned int BreakPoint::getLine() const
 {
 	return mLine;
+}
+
+std::string BreakPoint::toString() const
+{
+	std::stringstream ss;
+	ss << mFilename << " " << mLine;
+	return ss.str();
 }
 
 bool BreakPoint::operator<(const BreakPoint& other) const
