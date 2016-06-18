@@ -185,15 +185,23 @@ void Client::executeSymbol(const StringList& tokens)
 			}
 
 			if ( symbol->getType() != Symbol::IType::MethodSymbol ) {
-				std::cout << "could not execute non-method symbol '" << name << "'!";
+				std::cout << "could not execute non-method symbol '" << name << "'!" << std::endl;
 				return;
 			}
 
-			Runtime::Object result;
 			Runtime::Method* method = static_cast<Runtime::Method*>(symbol);
-			method->execute(ParameterList(), &result, TokenIterator());
+			try {
+				Runtime::Object result;
+				method->execute(ParameterList(), &result, Token());
 
-			std::cout << result.ToString() << std::endl;
+				std::cout << result.ToString() << std::endl;
+			}
+			catch ( std::exception &e ) {
+				std::cout << e.what() << std::endl;
+			}
+			catch ( ... ) {
+				std::cout << "unknown exception occured" << std::endl;
+			}
 		}
 
 		name = child;
@@ -271,7 +279,7 @@ void Client::printBreakPoints()
 
 void Client::printHelp()
 {
-	std::cout << "Commands:" << std::endl;
+	std::cout << "Generic commands:" << std::endl;
 
 	std::cout << "\tbreak (b)" << std::endl;
 	std::cout << "\tbreakpoints" << std::endl;
@@ -281,7 +289,7 @@ void Client::printHelp()
 	std::cout << "\trun" << std::endl;
 
 	if ( mScope ) {
-		std::cout << "During debugging:" << std::endl;
+		std::cout << "Debugging commands:" << std::endl;
 		std::cout << "\tcontinue (c)" << std::endl;
 		std::cout << "\texecute (e)" << std::endl;
 		std::cout << "\tinto (i)" << std::endl;

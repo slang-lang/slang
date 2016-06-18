@@ -23,7 +23,7 @@ public:
 	ToJson();
 
 public:
-	Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token);
+	Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* result, const Token& token);
 };
 
 

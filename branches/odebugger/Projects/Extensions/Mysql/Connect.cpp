@@ -27,7 +27,7 @@ MysqlRealConnect::MysqlRealConnect()
 	ParameterList params;
 	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, VALUE_NONE));
 	params.push_back(Parameter("host", Designtime::StringObject::TYPENAME, VALUE_NONE));
-	params.push_back(Parameter("port", Designtime::IntegerObject::TYPENAME, VALUE_NONE));
+	params.push_back(Parameter("port", Designtime::IntegerObject::TYPENAME, 0));
 	params.push_back(Parameter("user", Designtime::StringObject::TYPENAME, VALUE_NONE));
 	params.push_back(Parameter("passwd", Designtime::StringObject::TYPENAME, VALUE_NONE));
 	params.push_back(Parameter("db", Designtime::StringObject::TYPENAME, VALUE_NONE));
@@ -35,7 +35,7 @@ MysqlRealConnect::MysqlRealConnect()
 	setSignature(params);
 }
 
-Runtime::ControlFlow::E MysqlRealConnect::execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token)
+Runtime::ControlFlow::E MysqlRealConnect::execute(const ParameterList& params, Runtime::Object* result, const Token& token)
 {
 	try {
 		// Parameter processing
@@ -82,7 +82,7 @@ Runtime::ControlFlow::E MysqlRealConnect::execute(const ParameterList& params, R
 		Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
 		*data = Runtime::StringObject(std::string(e.what()));
 
-		mExceptionData = Runtime::ExceptionData(data, token->position());
+		mExceptionData = Runtime::ExceptionData(data, token.position());
 		return Runtime::ControlFlow::Throw;
 	}
 

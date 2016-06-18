@@ -26,13 +26,13 @@ MysqlQuery::MysqlQuery()
 : Runtime::Method(0, "mysql_query", Designtime::IntegerObject::TYPENAME)
 {
 	ParameterList params;
-	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, VALUE_NONE));
+	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));
 	params.push_back(Parameter("query", Designtime::StringObject::TYPENAME, VALUE_NONE));
 
 	setSignature(params);
 }
 
-Runtime::ControlFlow::E MysqlQuery::execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token)
+Runtime::ControlFlow::E MysqlQuery::execute(const ParameterList& params, Runtime::Object* result, const Token& token)
 {
 (void)token;
 
@@ -58,7 +58,7 @@ Runtime::ControlFlow::E MysqlQuery::execute(const ParameterList& params, Runtime
 		Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
 		*data = Runtime::StringObject(std::string(e.what()));
 
-		mExceptionData = Runtime::ExceptionData(data, token->position());
+		mExceptionData = Runtime::ExceptionData(data, token.position());
 		return Runtime::ControlFlow::Throw;
 	}
 
