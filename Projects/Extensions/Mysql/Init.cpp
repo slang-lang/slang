@@ -28,10 +28,9 @@ MysqlInit::MysqlInit()
 	setSignature(params);
 }
 
-Runtime::ControlFlow::E MysqlInit::execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token)
+Runtime::ControlFlow::E MysqlInit::execute(const ParameterList& params, Runtime::Object* result, const Token& token)
 {
 (void)params;
-(void)token;
 
 	try {
 		MYSQL *myHandle = mysql_init(0);
@@ -48,7 +47,7 @@ Runtime::ControlFlow::E MysqlInit::execute(const ParameterList& params, Runtime:
 		Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
 		*data = Runtime::StringObject(std::string(e.what()));
 
-		mExceptionData = Runtime::ExceptionData(data, token->position());
+		mExceptionData = Runtime::ExceptionData(data, token.position());
 		return Runtime::ControlFlow::Throw;
 	}
 

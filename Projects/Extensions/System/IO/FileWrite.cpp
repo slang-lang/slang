@@ -41,18 +41,14 @@ FileWriteBool::FileWriteBool()
 : Runtime::Method(0, "fwriteb", Designtime::IntegerObject::TYPENAME)
 {
 	ParameterList params;
-	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, VALUE_NONE));
-	params.push_back(Parameter("value", Designtime::BoolObject::TYPENAME, VALUE_NONE));
+	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));
+	params.push_back(Parameter("value", Designtime::BoolObject::TYPENAME, false));
 
 	setSignature(params);
 }
 
-Runtime::ControlFlow::E FileWriteBool::execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token)
+Runtime::ControlFlow::E FileWriteBool::execute(const ParameterList& params, Runtime::Object* result, const Token& /*token*/)
 {
-	if ( params.size() != 2 ) {
-		throw Utils::Exceptions::ParameterCountMissmatch("2 parameters expected, but " + ::Utils::Tools::toString(params.size()) + " parameter(s) found", token->position());
-	}
-
 	Runtime::ControlFlow::E controlFlow = Runtime::ControlFlow::Normal;
 
 	ParameterList::const_iterator it = params.begin();
@@ -80,18 +76,14 @@ FileWriteDouble::FileWriteDouble()
 : Runtime::Method(0, "fwrited", Designtime::IntegerObject::TYPENAME)
 {
 	ParameterList params;
-	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, VALUE_NONE));
-	params.push_back(Parameter("value", Designtime::DoubleObject::TYPENAME, VALUE_NONE));
+	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));
+	params.push_back(Parameter("value", Designtime::DoubleObject::TYPENAME, 0.0));
 
 	setSignature(params);
 }
 
-Runtime::ControlFlow::E FileWriteDouble::execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token)
+Runtime::ControlFlow::E FileWriteDouble::execute(const ParameterList& params, Runtime::Object* result, const Token& /*token*/)
 {
-	if ( params.size() != 2 ) {
-		throw Utils::Exceptions::ParameterCountMissmatch("2 parameters expected, but " + ::Utils::Tools::toString(params.size()) + " parameter(s) found", token->position());
-	}
-
 	Runtime::ControlFlow::E controlFlow = Runtime::ControlFlow::Normal;
 
 	int fileHandle = params.front().value().toInt();
@@ -116,18 +108,14 @@ FileWriteFloat::FileWriteFloat()
 : Runtime::Method(0, "fwritef", Designtime::IntegerObject::TYPENAME)
 {
 	ParameterList params;
-	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, VALUE_NONE));
-	params.push_back(Parameter("value", Designtime::FloatObject::TYPENAME, VALUE_NONE));
+	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));
+	params.push_back(Parameter("value", Designtime::FloatObject::TYPENAME, 0.f));
 
 	setSignature(params);
 }
 
-Runtime::ControlFlow::E FileWriteFloat::execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token)
+Runtime::ControlFlow::E FileWriteFloat::execute(const ParameterList& params, Runtime::Object* result, const Token& /*token*/)
 {
-	if ( params.size() != 2 ) {
-		throw Utils::Exceptions::ParameterCountMissmatch("2 parameters expected, but " + ::Utils::Tools::toString(params.size()) + " parameter(s) found", token->position());
-	}
-
 	Runtime::ControlFlow::E controlFlow = Runtime::ControlFlow::Normal;
 
 	int fileHandle = params.front().value().toInt();
@@ -152,18 +140,14 @@ FileWriteInt::FileWriteInt()
 : Runtime::Method(0, "fwritei", Designtime::IntegerObject::TYPENAME)
 {
 	ParameterList params;
-	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, VALUE_NONE));
-	params.push_back(Parameter("value", Designtime::IntegerObject::TYPENAME, VALUE_NONE));
+	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));
+	params.push_back(Parameter("value", Designtime::IntegerObject::TYPENAME, 0));
 
 	setSignature(params);
 }
 
-Runtime::ControlFlow::E FileWriteInt::execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token)
+Runtime::ControlFlow::E FileWriteInt::execute(const ParameterList& params, Runtime::Object* result, const Token& /*token*/)
 {
-	if ( params.size() != 2 ) {
-		throw Utils::Exceptions::ParameterCountMissmatch("2 parameters expected, but " + ::Utils::Tools::toString(params.size()) + " parameter(s) found", token->position());
-	}
-
 	Runtime::ControlFlow::E controlFlow = Runtime::ControlFlow::Normal;
 
 	int fileHandle = params.front().value().toInt();
@@ -188,18 +172,14 @@ FileWriteString::FileWriteString()
 : Runtime::Method(0, "fwrites", Designtime::IntegerObject::TYPENAME)
 {
 	ParameterList params;
-	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, VALUE_NONE));
+	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));
 	params.push_back(Parameter("value", Designtime::StringObject::TYPENAME, VALUE_NONE));
 
 	setSignature(params);
 }
 
-Runtime::ControlFlow::E FileWriteString::execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token)
+Runtime::ControlFlow::E FileWriteString::execute(const ParameterList& params, Runtime::Object* result, const Token& /*token*/)
 {
-	if ( params.size() != 2 ) {
-		throw Utils::Exceptions::ParameterCountMissmatch("2 parameters expected, but " + ::Utils::Tools::toString(params.size()) + " parameter(s) found", token->position());
-	}
-
 	Runtime::ControlFlow::E controlFlow = Runtime::ControlFlow::Normal;
 
 	int fileHandle = params.front().value().toInt();

@@ -27,22 +27,31 @@ public:
 // }
 
 public:
+	class StackLevel
+	{
+	public:
+		StackLevel(const std::string& method, const ParameterList& params);
+
+	public:
+		std::string toString() const;
+
+	public:
+		const std::string mMethod;
+		const ParameterList mParameters;
+	};
+
+public:
 	~StackTrace();
 
 public:
+	void clear();
+	StackLevel currentStackLevel() const;
 	void popStack();
 	void print();
 	void pushStack(const std::string& method, const ParameterList& params);
 
 private:
-	class Trace
-	{
-	public:
-		std::string mMethod;
-		ParameterList mParameters;
-	};
-
-	typedef std::list<Trace> Stack;
+	typedef std::list<StackLevel> Stack;
 
 private:
 	StackTrace();

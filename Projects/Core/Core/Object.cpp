@@ -214,7 +214,7 @@ ControlFlow::E Object::Constructor(const ParameterList& params)
 		Method *constructor = static_cast<Method*>(resolveMethod(Typename(), params, true));
 		if ( constructor ) {
 			VoidObject tmp;
-			controlflow = constructor->execute(params, &tmp, TokenIterator());
+			controlflow = constructor->execute(params, &tmp, Token());
 
 			if ( controlflow != ControlFlow::Normal ) {
 				return controlflow;
@@ -256,7 +256,7 @@ ControlFlow::E Object::Destructor()
 		Method *destructor = static_cast<Method*>(resolveMethod("~" + Typename(), params, true));
 		if ( destructor ) {
 			VoidObject tmp;
-			controlflow = destructor->execute(params, &tmp, TokenIterator());
+			controlflow = destructor->execute(params, &tmp, Token());
 
 			if ( controlflow != ControlFlow::Normal ) {
 				return controlflow;
@@ -318,7 +318,7 @@ ControlFlow::E Object::execute(Object *result, const std::string& name, const Pa
 	method->setRepository(mRepository);
 
 	// execute our member method
-	controlflow = method->execute(params, result, TokenIterator());
+	controlflow = method->execute(params, result, Token());
 
 	if ( controlflow == ControlFlow::Normal ) {
 		switch ( method->getMethodType() ) {
@@ -406,7 +406,7 @@ void Object::operator_assign(const Object *other)
 	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", params, true);
 	if ( value_operator ) {
 		Object tmp;
-		static_cast<Method*>(value_operator)->execute(params, &tmp, TokenIterator());
+		static_cast<Method*>(value_operator)->execute(params, &tmp, Token());
 
 		operator_assign(&tmp);
 		return;
@@ -431,7 +431,7 @@ void Object::operator_bitand(const Object *other)
 	}
 	if ( value_operator ) {
 		Object tmp;
-		static_cast<Method*>(value_operator)->execute(params, &tmp, TokenIterator());
+		static_cast<Method*>(value_operator)->execute(params, &tmp, Token());
 
 		operator_bitand(&tmp);
 		return;
@@ -456,7 +456,7 @@ void Object::operator_bitcomplement(const Object *other)
 	}
 	if ( value_operator ) {
 		Object tmp;
-		static_cast<Method*>(value_operator)->execute(params, &tmp, TokenIterator());
+		static_cast<Method*>(value_operator)->execute(params, &tmp, Token());
 
 		operator_bitcomplement(&tmp);
 		return;
@@ -481,7 +481,7 @@ void Object::operator_bitor(const Object *other)
 	}
 	if ( value_operator ) {
 		Object tmp;
-		static_cast<Method*>(value_operator)->execute(params, &tmp, TokenIterator());
+		static_cast<Method*>(value_operator)->execute(params, &tmp, Token());
 
 		operator_bitor(&tmp);
 		return;
@@ -511,7 +511,7 @@ void Object::operator_divide(const Object *other)
 	}
 	if ( value_operator ) {
 		Object tmp;
-		static_cast<Method*>(value_operator)->execute(params, &tmp, TokenIterator());
+		static_cast<Method*>(value_operator)->execute(params, &tmp, Token());
 
 		operator_divide(&tmp);
 		return;
@@ -536,7 +536,7 @@ bool Object::operator_equal(const Object *other)
 	}
 	if ( value_operator ) {
 		Object tmp;
-		static_cast<Method*>(value_operator)->execute(params, &tmp, TokenIterator());
+		static_cast<Method*>(value_operator)->execute(params, &tmp, Token());
 
 		return operator_equal(&tmp);
 	}
@@ -560,7 +560,7 @@ bool Object::operator_greater(const Object *other)
 	}
 	if ( value_operator ) {
 		Object tmp;
-		static_cast<Method*>(value_operator)->execute(params, &tmp, TokenIterator());
+		static_cast<Method*>(value_operator)->execute(params, &tmp, Token());
 
 		return operator_greater(&tmp);
 	}
@@ -584,7 +584,7 @@ bool Object::operator_greater_equal(const Object *other)
 	}
 	if ( value_operator ) {
 		Object tmp;
-		static_cast<Method*>(value_operator)->execute(params, &tmp, TokenIterator());
+		static_cast<Method*>(value_operator)->execute(params, &tmp, Token());
 
 		return operator_greater_equal(&tmp);
 	}
@@ -608,7 +608,7 @@ bool Object::operator_less(const Object *other)
 	}
 	if ( value_operator ) {
 		Object tmp;
-		static_cast<Method*>(value_operator)->execute(params, &tmp, TokenIterator());
+		static_cast<Method*>(value_operator)->execute(params, &tmp, Token());
 
 		return operator_less(&tmp);
 	}
@@ -632,7 +632,7 @@ bool Object::operator_less_equal(const Object *other)
 	}
 	if ( value_operator ) {
 		Object tmp;
-		static_cast<Method*>(value_operator)->execute(params, &tmp, TokenIterator());
+		static_cast<Method*>(value_operator)->execute(params, &tmp, Token());
 
 		return operator_less_equal(&tmp);
 	}
@@ -656,7 +656,7 @@ void Object::operator_modulo(const Object *other)
 	}
 	if ( value_operator ) {
 		Object tmp;
-		static_cast<Method*>(value_operator)->execute(params, &tmp, TokenIterator());
+		static_cast<Method*>(value_operator)->execute(params, &tmp, Token());
 
 		operator_modulo(&tmp);
 		return;
@@ -681,7 +681,7 @@ void Object::operator_multiply(const Object *other)
 	}
 	if ( value_operator ) {
 		Object tmp;
-		static_cast<Method*>(value_operator)->execute(params, &tmp, TokenIterator());
+		static_cast<Method*>(value_operator)->execute(params, &tmp, Token());
 
 		operator_multiply(&tmp);
 		return;
@@ -706,7 +706,7 @@ void Object::operator_plus(const Object *other)
 	}
 	if ( value_operator ) {
 		Object tmp;
-		static_cast<Method*>(value_operator)->execute(params, &tmp, TokenIterator());
+		static_cast<Method*>(value_operator)->execute(params, &tmp, Token());
 
 		operator_plus(&tmp);
 		return;
@@ -731,7 +731,7 @@ void Object::operator_subtract(const Object *other)
 	}
 	if ( value_operator ) {
 		Object tmp;
-		static_cast<Method*>(value_operator)->execute(params, &tmp, TokenIterator());
+		static_cast<Method*>(value_operator)->execute(params, &tmp, Token());
 
 		operator_subtract(&tmp);
 		return;
@@ -846,9 +846,12 @@ Json::Value Object::ToJson() const
 
 std::string Object::ToString() const
 {
-	std::string result = Typename() + " " + getName() + " = " + getValue().toStdString();
+	std::string result = Typename() + " " + getName();
 
-	if ( !isAtomicType() ) {
+	if ( isAtomicType() ) {
+		result += " = " + getValue().toStdString();
+	}
+	else {
 		result += " {\n";
 
 		for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {

@@ -38,9 +38,11 @@
 #endif
 
 // Project includes
+#include <Core/BuildInObjects/StringObject.h>
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/BuildInObjects/IntegerObject.h>
+#include <Core/Repository.h>
 #include <Core/Tools.h>
 #include <Core/Utils/Exceptions.h>
 #include <Tools/Strings.h>
@@ -63,10 +65,10 @@ FileOpen::FileOpen()
 	setSignature(params);
 }
 
-Runtime::ControlFlow::E FileOpen::execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token)
+Runtime::ControlFlow::E FileOpen::execute(const ParameterList& params, Runtime::Object* result, const Token& token)
 {
 	if ( params.size() != 2 ) {
-		throw Utils::Exceptions::ParameterCountMissmatch("2 parameter expected, but " + ::Utils::Tools::toString(params.size()) + " parameter(s) found", token->position());
+		throw Utils::Exceptions::ParameterCountMissmatch("2 parameter expected, but " + ::Utils::Tools::toString(params.size()) + " parameter(s) found", token.position());
 	}
 
 	Runtime::ControlFlow::E controlFlow = Runtime::ControlFlow::Normal;
@@ -88,8 +90,12 @@ Runtime::ControlFlow::E FileOpen::execute(const ParameterList& params, Runtime::
 
 		*result = Runtime::IntegerObject(handle);
 	}
-	catch ( ... ) {
-		controlFlow =  Runtime::ControlFlow::Throw;
+	catch ( std::exception& e ) {
+		Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+		*data = Runtime::StringObject(std::string(e.what()));
+
+		mExceptionData = Runtime::ExceptionData(data, token.position());
+		return Runtime::ControlFlow::Throw;
 	}
 
 	return controlFlow;

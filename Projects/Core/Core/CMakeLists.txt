@@ -60,6 +60,7 @@ SET(DEPENDENCIES
 	CoreRuntime
 	CoreParser
 #	CoreHelpers
+	CoreDebugger
 	CoreDesigntimeBuildInTypes
 	CoreDesigntime
 	CoreCommon
@@ -69,6 +70,7 @@ SET(DEPENDENCIES
 )
 
 add_include(Projects/Core)
+add_include(Projects/Debugger)
 add_include(Projects/Utils)
 
 build_static_lib(Core "")

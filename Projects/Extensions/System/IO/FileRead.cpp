@@ -41,17 +41,13 @@ FileReadBool::FileReadBool()
 : Runtime::Method(0, "freadb", Designtime::BoolObject::TYPENAME)
 {
 	ParameterList params;
-	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, VALUE_NONE));
+	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));
 
 	setSignature(params);
 }
 
-Runtime::ControlFlow::E FileReadBool::execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token)
+Runtime::ControlFlow::E FileReadBool::execute(const ParameterList& params, Runtime::Object* result, const Token& /*token*/)
 {
-	if ( params.size() != 1 ) {
-		throw Utils::Exceptions::ParameterCountMissmatch("1 parameter expected, but " + ::Utils::Tools::toString(params.size()) + " parameter(s) found", token->position());
-	}
-
 	Runtime::ControlFlow::E controlFlow = Runtime::ControlFlow::Normal;
 
 	int fileHandle = params.front().value().toInt();
@@ -78,17 +74,13 @@ FileReadDouble::FileReadDouble()
 : Runtime::Method(0, "freadd", Designtime::DoubleObject::TYPENAME)
 {
 	ParameterList params;
-	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, VALUE_NONE));
+	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));
 
 	setSignature(params);
 }
 
-Runtime::ControlFlow::E FileReadDouble::execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token)
+Runtime::ControlFlow::E FileReadDouble::execute(const ParameterList& params, Runtime::Object* result, const Token& /*token*/)
 {
-	if ( params.size() != 1 ) {
-		throw Utils::Exceptions::ParameterCountMissmatch("1 parameter expected, but " + ::Utils::Tools::toString(params.size()) + " parameter(s) found", token->position());
-	}
-
 	Runtime::ControlFlow::E controlFlow = Runtime::ControlFlow::Normal;
 
 	int fileHandle = params.front().value().toInt();
@@ -114,17 +106,13 @@ FileReadFloat::FileReadFloat()
 : Runtime::Method(0, "freadf", Designtime::FloatObject::TYPENAME)
 {
 	ParameterList params;
-	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, VALUE_NONE));
+	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));
 
 	setSignature(params);
 }
 
-Runtime::ControlFlow::E FileReadFloat::execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token)
+Runtime::ControlFlow::E FileReadFloat::execute(const ParameterList& params, Runtime::Object* result, const Token& /*token*/)
 {
-	if ( params.size() != 1 ) {
-		throw Utils::Exceptions::ParameterCountMissmatch("1 parameter expected, but " + ::Utils::Tools::toString(params.size()) + " parameter(s) found", token->position());
-	}
-
 	Runtime::ControlFlow::E controlFlow = Runtime::ControlFlow::Normal;
 
 	int fileHandle = params.front().value().toInt();
@@ -150,17 +138,13 @@ FileReadInt::FileReadInt()
 : Runtime::Method(0, "freadi", Designtime::IntegerObject::TYPENAME)
 {
 	ParameterList params;
-	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, VALUE_NONE));
+	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));
 
 	setSignature(params);
 }
 
-Runtime::ControlFlow::E FileReadInt::execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token)
+Runtime::ControlFlow::E FileReadInt::execute(const ParameterList& params, Runtime::Object* result, const Token& /*token*/)
 {
-	if ( params.size() != 1 ) {
-		throw Utils::Exceptions::ParameterCountMissmatch("1 parameter expected, but " + ::Utils::Tools::toString(params.size()) + " parameter(s) found", token->position());
-	}
-
 	Runtime::ControlFlow::E controlFlow = Runtime::ControlFlow::Normal;
 
 	int fileHandle = params.front().value().toInt();
@@ -186,18 +170,14 @@ FileReadString::FileReadString()
 : Runtime::Method(0, "freads", Designtime::StringObject::TYPENAME)
 {
 	ParameterList params;
-	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, VALUE_NONE));
+	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));
 	params.push_back(Parameter("count", Designtime::IntegerObject::TYPENAME, 1, true));
 
 	setSignature(params);
 }
 
-Runtime::ControlFlow::E FileReadString::execute(const ParameterList& params, Runtime::Object* result, const TokenIterator& token)
+Runtime::ControlFlow::E FileReadString::execute(const ParameterList& params, Runtime::Object* result, const Token& /*token*/)
 {
-	if ( params.size() != 2 ) {
-		throw Utils::Exceptions::ParameterCountMissmatch("2 parameters expected, but " + ::Utils::Tools::toString(params.size()) + " parameter(s) found", token->position());
-	}
-
 	Runtime::ControlFlow::E controlFlow = Runtime::ControlFlow::Normal;
 
 	int fileHandle = params.front().value().toInt();

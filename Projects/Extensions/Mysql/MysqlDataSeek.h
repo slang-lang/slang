@@ -32,13 +32,13 @@ public:
 	: Runtime::Method(0, "mysql_data_seek", Designtime::VoidObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, VALUE_NONE));
-		params.push_back(Parameter("rowIdx", Designtime::IntegerObject::TYPENAME, VALUE_NONE));
+		params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));
+		params.push_back(Parameter("rowIdx", Designtime::IntegerObject::TYPENAME, 0));
 
 		setSignature(params);
 	}
 
-	Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* /*result*/, const TokenIterator& token)
+	Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* /*result*/, const Token& token)
 	{
 		try {
 			// Parameter processing
@@ -57,7 +57,7 @@ public:
 			Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
 			*data = Runtime::StringObject(std::string(e.what()));
 
-			mExceptionData = Runtime::ExceptionData(data, token->position());
+			mExceptionData = Runtime::ExceptionData(data, token.position());
 			return Runtime::ControlFlow::Throw;
 		}
 

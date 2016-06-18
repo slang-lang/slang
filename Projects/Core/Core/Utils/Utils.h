@@ -1,4 +1,3 @@
-
 #ifndef ObjectiveScript_Utils_Utils_h
 #define ObjectiveScript_Utils_Utils_h
 
