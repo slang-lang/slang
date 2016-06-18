@@ -188,7 +188,7 @@ ControlFlow::E Method::execute(const ParameterList& params, Object *result, cons
 	// record stack
 	StackTrace::GetInstance().pushStack(getFullName(), executedParams);
 	// notify debugger
-	Core::Debugger::GetInstance().notify(&interpreter, Core::Debugger::immediateBreakToken);
+	Core::Debugger::GetInstance().notifyEnter(&interpreter, Core::Debugger::immediateBreakToken);
 
 	ControlFlow::E controlflow = interpreter.execute(result);	// execute method code
 
@@ -197,7 +197,7 @@ ControlFlow::E Method::execute(const ParameterList& params, Object *result, cons
 	controlflow = processControlFlow(controlflow, result);
 
 	// notify debugger
-	Core::Debugger::GetInstance().notify(&interpreter, Core::Debugger::immediateBreakToken);
+	Core::Debugger::GetInstance().notifyExit(&interpreter, Core::Debugger::immediateBreakToken);
 	// unwind stack
 	StackTrace::GetInstance().popStack();
 

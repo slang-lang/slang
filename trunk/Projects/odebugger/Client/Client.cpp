@@ -210,7 +210,8 @@ void Client::executeSymbol(const StringList& tokens)
 
 void Client::init(int argc, const char* argv[])
 {
-	mDebugger->registerReceiver(this);
+	bool registered = mDebugger->registerReceiver(this);
+	assert(registered);
 
 	mRunning = true;
 

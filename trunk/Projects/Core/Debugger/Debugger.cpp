@@ -81,44 +81,49 @@ void Debugger::notify(SymbolScope* scope, const Token& token)
 {
 	BreakPoint breakpoint(token.position());
 
-	if ( mNextAction == NextAction::None ) {
-		// no planned action
-		return;
-	}
-
-	if ( !isBreakPoint(breakpoint) && !(breakpoint == immediateBreakPoint) ) {
-		// this is no (immediate) breakpoint
-		return;
-	}
-
 	bool stop = false;
 
-	if ( breakpoint == immediateBreakPoint ) {
-		switch ( mNextAction ) {
-			case NextAction::StepInto: stop = true; std::cout << "Stepping into " << StackTrace::GetInstance().currentStackLevel().toString() << std::endl; break;
-			case NextAction::StepOut: stop = true; std::cout << "Stepping out " << StackTrace::GetInstance().currentStackLevel().toString() << std::endl; break;
-			case NextAction::StepOver: stop = true; std::cout << "Stepping over " << StackTrace::GetInstance().currentStackLevel().toString() << std::endl; break;
-			default: break;
-		}
-	}
-	else if ( mNextAction == NextAction::WaitForBreakPoint ) {
-		stop = true;
-		std::cout << "Breakpoint " << breakpoint.toString() << " reached" << std::endl;
+	switch ( mNextAction ) {
+		case NextAction::StepOver: stop = true; std::cout << "Stepping in " << StackTrace::GetInstance().currentStackLevel().toString() << std::endl; break;
+		case NextAction::WaitForBreakPoint: stop = isBreakPoint(breakpoint); break;
+		default: break;
 	}
 
 	if ( stop && mReceiver ) {
+		std::cout << "Breakpoint " << breakpoint.toString() << " reached" << std::endl;
+
 		mReceiver->runCLI(scope);
 	}
 }
 
-void Debugger::registerReceiver(Core::IReceiver* receiver)
+void Debugger::notifyEnter(SymbolScope* scope, const Token& /*token*/)
 {
-	mReceiver = receiver;
+	if ( mReceiver && mNextAction == NextAction::StepInto ) {
+		std::cout << "Stepping into " << StackTrace::GetInstance().currentStackLevel().toString() << std::endl;
+
+		mReceiver->runCLI(scope);
+	}
 }
 
-void Debugger::unregisterReceiver(Core::IReceiver* /*receiver*/)
+void Debugger::notifyExit(SymbolScope* scope, const Token& /*token*/)
 {
-	mReceiver = 0;
+	if ( mReceiver && mNextAction == NextAction::StepOut ) {
+		std::cout << "Stepping out of " << StackTrace::GetInstance().currentStackLevel().toString() << std::endl;
+
+		mReceiver->runCLI(scope);
+	}
+}
+
+bool Debugger::registerReceiver(Core::IReceiver* receiver)
+{
+	// only one receiver can be registered at a time
+
+	if ( !mReceiver ) {
+		mReceiver = receiver;
+		return true;
+	}
+
+	return false;
 }
 
 bool Debugger::removeBreakPoint(const BreakPoint& breakpoint)
@@ -128,6 +133,18 @@ bool Debugger::removeBreakPoint(const BreakPoint& breakpoint)
 	mBreakPoints.remove(breakpoint);
 
 	return size > mBreakPoints.size();
+}
+
+bool Debugger::unregisterReceiver(Core::IReceiver* receiver)
+{
+	// only the original receiver is allowed to unregister itself
+
+	if ( mReceiver == receiver ) {
+		mReceiver = 0;
+		return true;
+	}
+
+	return false;
 }
 
 
