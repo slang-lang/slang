@@ -43,6 +43,8 @@ public:	// IDebugger implementation
 	NextAction::E nextAction() const;
 
 	void notify(SymbolScope* scope, const Token& token = Token());
+	void notifyEnter(SymbolScope* scope, const Token& token = Token());
+	void notifyExit(SymbolScope* scope, const Token& token = Token());
 
 	void stepInto() { mNextAction = NextAction::StepInto; }
 	void stepOut() { mNextAction = NextAction::StepOut; }
@@ -51,8 +53,8 @@ public:	// IDebugger implementation
 	void resumeWithoutBreaks() { mNextAction = NextAction::None; }
 
 public:
-	void registerReceiver(Core::IReceiver* receiver);
-	void unregisterReceiver(Core::IReceiver* receiver);
+	bool registerReceiver(Core::IReceiver* receiver);
+	bool unregisterReceiver(Core::IReceiver* receiver);
 
 private:
 	BreakPointList::const_iterator find(const BreakPoint& breakpoint) const;

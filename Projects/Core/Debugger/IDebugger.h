@@ -48,6 +48,8 @@ public:
 	virtual NextAction::E nextAction() const = 0;
 
 	virtual void notify(SymbolScope* scope, const Token& token = Token()) = 0;
+	virtual void notifyEnter(SymbolScope* scope, const Token& token = Token()) = 0;
+	virtual void notifyExit(SymbolScope* scope, const Token& token = Token()) = 0;
 
 	virtual void stepInto() = 0;
 	virtual void stepOut() = 0;
