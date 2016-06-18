@@ -356,7 +356,7 @@ void Client::printUsage()
 
 void Client::printVersion()
 {
-	std::cout << "ObjectiveScript Debugger 0.0.0 (cli)" << std::endl;
+	std::cout << "ObjectiveScript Debugger 0.3.3 (cli)" << std::endl;
 	std::cout << "Copyright (c) 2014-2016 Michael Adelmann" << std::endl;
 	std::cout << "" << std::endl;
 }
