@@ -2,10 +2,8 @@
 
 import System.Types;
 
-public object Main
-{
-	public void Main(int argc, string args)
-	{
+public object Main {
+	public void Main(int argc, string args) {
 		assert( TestCase1() );
 		assert( TestCase2() );
 		assert( TestCase3() );
@@ -62,8 +60,8 @@ public object Main
 
 		print("value = " + value.ToString());
 		print("!value = " + !value.ToString());
-		value = Boolean !value;
-		print("value = " + value.ToString());
+		//value = Boolean !value;
+		//print("value = " + value.ToString());
 
 		return true;
 	}
