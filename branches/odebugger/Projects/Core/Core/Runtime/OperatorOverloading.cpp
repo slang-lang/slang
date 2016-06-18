@@ -1082,7 +1082,7 @@ void operator_unary_not(Object *base)
 		MethodSymbol *op_not = base->resolveMethod("operator!", ParameterList(), true);
 		if ( op_not ) {
 			Object tmp;
-			static_cast<Method*>(op_not)->execute(ParameterList(), &tmp, TokenIterator());
+			static_cast<Method*>(op_not)->execute(ParameterList(), &tmp, Token());
 
 			operator_binary_assign(base, &tmp);
 		}

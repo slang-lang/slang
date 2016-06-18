@@ -43,26 +43,12 @@ Interpreter::~Interpreter()
 
 ControlFlow::E Interpreter::execute(Object *result)
 {
-#ifdef DEBUG_HOOK
-	//if ( Core::Debugger::GetInstance()->nextAction() == Core::IDebugger::NextAction::StepInto ) {
-	//	Core::Debugger::GetInstance()->stepInto();
-	//	Core::Debugger::GetInstance()->notify(Core::Debugger::immediateBreak);
-	//}
-#endif
-
 	pushTokens(mTokens);
 		TokenIterator start = getTokens().begin();
 		TokenIterator end = getTokens().end();
 
 		process(result, start, end);
 	popTokens();
-
-#ifdef DEBUG_HOOK
-	//if ( Core::Debugger::GetInstance()->nextAction() == Core::IDebugger::NextAction::StepOut ) {
-	//	Core::Debugger::GetInstance()->stepOut();
-	//	Core::Debugger::GetInstance()->notify(Core::Debugger::immediateBreak);
-	//}
-#endif
 
 	// let the garbage collector do it's magic after we gathered our result
 	garbageCollector();
@@ -531,7 +517,7 @@ void Interpreter::process(Object *result, TokenIterator& token, TokenIterator en
 		}
 
 		// notify debugger
-		Core::Debugger::GetInstance().notify(this, token->position());
+		Core::Debugger::GetInstance().notify(this, (*token));
 
 		// decide what we want to do according to the type of token we have
 		switch ( token->type() ) {
@@ -994,7 +980,7 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 		throw Utils::Exceptions::ConstCorrectnessViolated("only calls to const methods are allowed in const method '" + getScope()->getScopeName() + "'", token->position());
 	}
 
-	ControlFlow::E controlflow = symbol->execute(params, result, token);
+	ControlFlow::E controlflow = symbol->execute(params, result, (*token));
 
 	switch ( controlflow ) {
 		case ControlFlow::ExitProgram: mControlFlow = ControlFlow::ExitProgram; break;

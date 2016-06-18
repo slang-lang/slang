@@ -6,7 +6,6 @@
 #include <iostream>
 
 // Project includes
-#include <Core/Scope.h>
 #include <Core/StackTrace.h>
 #include "IReceiver.h"
 
@@ -17,7 +16,8 @@ namespace ObjectiveScript {
 namespace Core {
 
 
-BreakPoint Debugger::immediateBreak = BreakPoint();
+BreakPoint Debugger::immediateBreakPoint = BreakPoint();
+Token Debugger::immediateBreakToken = Token();
 
 
 Debugger::Debugger()
@@ -77,21 +77,23 @@ IDebugger::NextAction::E Debugger::nextAction() const
 	return mNextAction;
 }
 
-void Debugger::notify(SymbolScope* scope, const BreakPoint& breakpoint)
+void Debugger::notify(SymbolScope* scope, const Token& token)
 {
+	BreakPoint breakpoint(token.position());
+
 	if ( mNextAction == NextAction::None ) {
 		// no planned action
 		return;
 	}
 
-	if ( !isBreakPoint(breakpoint) && !(breakpoint == immediateBreak) ) {
+	if ( !isBreakPoint(breakpoint) && !(breakpoint == immediateBreakPoint) ) {
 		// this is no (immediate) breakpoint
 		return;
 	}
 
 	bool stop = false;
 
-	if ( breakpoint == immediateBreak ) {
+	if ( breakpoint == immediateBreakPoint ) {
 		switch ( mNextAction ) {
 			case NextAction::StepInto: stop = true; std::cout << "Stepping into " << StackTrace::GetInstance().currentStackLevel().toString() << std::endl; break;
 			case NextAction::StepOut: stop = true; std::cout << "Stepping out " << StackTrace::GetInstance().currentStackLevel().toString() << std::endl; break;
@@ -101,7 +103,7 @@ void Debugger::notify(SymbolScope* scope, const BreakPoint& breakpoint)
 	}
 	else if ( mNextAction == NextAction::WaitForBreakPoint ) {
 		stop = true;
-		std::cout << "Breakpoint " << breakpoint.getFilename() << ", " << breakpoint.getLine() << " reached" << std::endl;
+		std::cout << "Breakpoint " << breakpoint.toString() << " reached" << std::endl;
 	}
 
 	if ( stop && mReceiver ) {

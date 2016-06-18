@@ -6,6 +6,8 @@
 // Library includes
 
 // Project includes
+#include <Core/Scope.h>
+#include <Core/Token.h>
 #include "BreakPoint.h"
 #include "IDebugger.h"
 
@@ -23,7 +25,8 @@ class IReceiver;
 class Debugger : public IDebugger
 {
 public:
-	static BreakPoint immediateBreak;
+	static BreakPoint immediateBreakPoint;
+	static Token immediateBreakToken;
 
 // Singleton
 // {
@@ -39,7 +42,7 @@ public:	// IDebugger implementation
 	bool isBreakPoint(const BreakPoint& breakpoint) const;
 	NextAction::E nextAction() const;
 
-	void notify(SymbolScope* scope, const BreakPoint& breakpoint = BreakPoint());
+	void notify(SymbolScope* scope, const Token& token = Token());
 
 	void stepInto() { mNextAction = NextAction::StepInto; }
 	void stepOut() { mNextAction = NextAction::StepOut; }
@@ -62,8 +65,8 @@ private:
 
 private:
 	BreakPointList mBreakPoints;
-	Core::IReceiver* mReceiver;
 	NextAction::E mNextAction;
+	Core::IReceiver* mReceiver;
 };
 
 
