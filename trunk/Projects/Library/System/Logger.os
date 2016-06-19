@@ -1,5 +1,6 @@
 
 public namespace System {
+
 	public object Logger {
 		// Members
 		private string mKey final;
@@ -26,5 +27,6 @@ public namespace System {
 			writeln("[WARN ] " + mKey + "::" + message);
 		}
 	}
+
 }
 

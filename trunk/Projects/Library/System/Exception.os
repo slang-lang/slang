@@ -1,5 +1,6 @@
 
 public namespace System {
+
 	public interface IException {
 		public string what() const;
 	}
@@ -17,5 +18,6 @@ public namespace System {
 	}
 
 	public object OutOfBoundsException replicates Exception;
+
 }
 

@@ -1,5 +1,6 @@
 
 public namespace System {
+
 	public object Double {
 		private double mValue;
 
@@ -78,5 +79,6 @@ public namespace System {
 			mValue = mValue / other.mValue;
 		}
 	}
+
 }
 

@@ -1,6 +1,6 @@
 
-import Exception;
-import String;
+import System.Exception;
+import System.String;
 
 public namespace System {
 
