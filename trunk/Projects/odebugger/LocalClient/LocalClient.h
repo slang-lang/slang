@@ -4,14 +4,12 @@
 
 
 // Library includes
+#include <string>
 
 // Project includes
-#include <Core/Parameter.h>
-#include <Core/Scope.h>
+#include <Common/Settings.h>
 #include <Core/Types.h>
-#include <Debugger/BreakPoint.h>
-#include <Debugger/IReceiver.h>
-#include "Settings.h"
+#include <Interfaces/ITerminal.h>
 
 // Forward declarations
 
@@ -21,54 +19,33 @@
 namespace ObjectiveScript {
 
 // Forward declarations
-namespace Core {
-	class Debugger;
-}
-class VirtualMachine;
+class IBackend;
 
-class LocalClient : private Core::IReceiver
+class LocalClient : public ITerminal
 {
 public:
 	LocalClient();
 	~LocalClient();
 
+public:		// ITerminal implementation
+	std::string read() const;
+	void write(const std::string& text);
+	void writeln(const std::string& text);
+
 public:
-	void init(int argc, const char* argv[]);
+	void connectBackend(IBackend* backend);
+	void connectSettings(Settings* settings);
 	int exec();
-	void shutdown();
-
 	void printHelp();
-	void printUsage();
-	void printVersion();
-
-private:	// IReceiver implementation
-	int runCLI(SymbolScope* scope);
 
 private:
-	void addBreakPoint(const StringList& tokens);
-	void continueExecution();
 	std::string executeCommand(const StringList &tokens);
-	void executeSymbol(const StringList& tokens);
-	void modifySymbol(const StringList& tokens);
 	StringList parseCommands(const std::string& commands) const;
-	void printBreakPoints();
-	void printSymbol(const StringList& tokens);
-	void processParameters(int argc, const char* argv[]);
-	void prepare(const StringList& tokens);
-	void removeBreakPoint(const StringList& tokens);
-	void start();
-	void stop();
 
 private:
-	bool mContinue;
-	Core::Debugger* mDebugger;
-	std::string mFilename;
-	ParameterList mParameters;
-	std::string mRoot;
+	IBackend* mBackend;
 	bool mRunning;
-	SymbolScope* mScope;
-	Settings mSettings;
-	VirtualMachine* mVirtualMachine;
+	Settings* mSettings;
 };
 
 

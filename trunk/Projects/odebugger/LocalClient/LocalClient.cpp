@@ -3,21 +3,10 @@
 #include "LocalClient.h"
 
 // Library includes
+#include <iostream>
 
 // Project includes
-#include <Core/BuildInObjects/IntegerObject.h>
-#include <Core/BuildInObjects/StringObject.h>
-#include <Core/Script.h>
-#include <Core/StackTrace.h>
-#include <Core/Tools.h>
-#include <Core/Utils/Utils.h>
-#include <Core/VirtualMachine.h>
-#include <Debugger/Debugger.h>
-#include <Tools/Files.h>
-#include <Tools/Strings.h>
-
-// Extension includes
-#include <Extensions.h>
+#include <Backend/IBackend.h>
 
 // Namespace declarations
 
@@ -26,63 +15,47 @@ namespace ObjectiveScript {
 
 
 LocalClient::LocalClient()
-: mContinue(false),
-  mDebugger(0),
+: mBackend(0),
   mRunning(false),
-  mScope(0),
-  mVirtualMachine(0)
+  mSettings(0)
 {
-	mDebugger = &ObjectiveScript::Core::Debugger::GetInstance();
 }
 
 LocalClient::~LocalClient()
 {
-	shutdown();
-
-	mDebugger = 0;
 }
 
-void LocalClient::addBreakPoint(const StringList& tokens)
+void LocalClient::connectBackend(IBackend* backend)
 {
-	if ( tokens.size() != 3 ) {
-		std::cout << "invalid number of arguments!" << std::endl;
-		return;
-	}
+	assert(backend);
+	assert(!mBackend);
 
-	StringList::const_iterator it = tokens.begin();
-	it++;	// skip first token
-
-	std::string file = (*it++);
-	unsigned line = ::Utils::Tools::stringToInt((*it));
-
-	mDebugger->addBreakPoint(Utils::Position(file, line));
+	mBackend = backend;
 }
 
-void LocalClient::continueExecution()
+void LocalClient::connectSettings(Settings* settings)
 {
-	mContinue = true;
+	assert(settings);
+	assert(!mSettings);
+
+	mSettings = settings;
 }
 
 int LocalClient::exec()
 {
-	// only start if we have a filename set
-	if ( mFilename.empty() ) {
-		printUsage();
-		return 0;
-	}
+	mRunning = true;
 
-	// initial checks
-	if ( !::Utils::Tools::Files::exists(mFilename) ) {
-		OSerror("File '" + mFilename + "' does not exist!");
-		return -1;
-	}
-
-	assert(mDebugger);
-	assert(!mVirtualMachine);
-
-	// start program execution
 	while ( mRunning ) {
-		runCLI(0);
+		std::string command;
+
+		std::cout << mSettings->prompt() << std::endl;
+
+		getline(std::cin >> std::ws, command);
+		std::cin.clear();
+
+		executeCommand(
+				parseCommands(command)
+		);
 	}
 
 	return 0;
@@ -96,56 +69,50 @@ std::string LocalClient::executeCommand(const StringList &tokens)
 		std::string cmd = (*it++);
 
 		if ( cmd == "break" || cmd == "b" ) {
-			addBreakPoint(tokens);
+			mBackend->addBreakPoint(tokens);
 		}
 		else if ( cmd == "breakpoints" ) {
-			printBreakPoints();
+			mBackend->printBreakPoints();
 		}
 		else if ( cmd == "continue" || cmd == "c" ) {
-			mDebugger->resume();
-			continueExecution();
+			mBackend->continueExecution();
 		}
 		else if ( cmd == "delete" || cmd == "d" ) {
-			removeBreakPoint(tokens);
+			mBackend->removeBreakPoint(tokens);
 		}
 		else if ( cmd == "execute" || cmd == "e" ) {
-			executeSymbol(tokens);
+			mBackend->executeSymbol(tokens);
 		}
 		else if ( cmd == "help" ) {
 			printHelp();
 		}
 		else if ( cmd == "into" || cmd == "i" ) {
-			mDebugger->stepInto();
-			continueExecution();
+			mBackend->continueExecution();
 		}
 		else if ( cmd == "kill" ) {
-			stop();
+			mBackend->stop();
 		}
 		else if ( cmd == "modify" || cmd == "m" ) {
-			modifySymbol(tokens);
+			mBackend->modifySymbol(tokens);
 		}
 		else if ( cmd == "next" || cmd == "n" ) {
-			mDebugger->stepOver();
-			continueExecution();
+			mBackend->continueExecution();
 		}
 		else if ( cmd == "out" || cmd == "o" ) {
-			mDebugger->stepOut();
-			continueExecution();
+			mBackend->continueExecution();
 		}
 		else if ( cmd == "print" || cmd == "p" ) {
-			printSymbol(tokens);
+			mBackend->printSymbol(tokens);
 		}
 		else if ( cmd == "quit" || cmd == "q" ) {
-			shutdown();
+			mRunning = false;
 		}
 		else if ( cmd == "resume" || cmd == "r" ) {
-			mDebugger->resumeWithoutBreaks();
-			continueExecution();
+			mBackend->continueExecution();
 		}
 		else if ( cmd == "run" ) {
-			prepare(tokens);
-			start();
-			stop();
+			mBackend->run(tokens);
+			mBackend->stop();
 		}
 		else {
 			std::cout << "unknown command '" << cmd << "'" << std::endl;
@@ -153,124 +120,6 @@ std::string LocalClient::executeCommand(const StringList &tokens)
 	}
 
 	return "";
-}
-
-void LocalClient::executeSymbol(const StringList& tokens)
-{
-	if ( !mScope ) {
-		std::cout << "no scope available!" << std::endl;
-		return;
-	}
-
-	std::string name;
-
-	StringList::const_iterator it = tokens.begin();
-	it++;	// skip first token
-	if ( it != tokens.end() ) {
-		name = (*it);
-	}
-
-	std::string child;
-	std::string parent;
-	Symbol* symbol = 0;
-	SymbolScope* scope = mScope;
-
-	do {
-		Tools::split(name, parent, child);
-
-		if ( !parent.empty() && !child.empty() ) {
-			scope = static_cast<ObjectiveScript::Runtime::Object*>(scope->resolve(parent, false));
-		}
-		else {
-			symbol = scope->resolve(parent, false);
-			if ( !symbol ) {
-				std::cout << "could not resolve symbol '" << name << "'!" << std::endl;
-				return;
-			}
-
-			if ( symbol->getType() != Symbol::IType::MethodSymbol ) {
-				std::cout << "could not execute non-method symbol '" << name << "'!" << std::endl;
-				return;
-			}
-
-			Runtime::Method* method = static_cast<Runtime::Method*>(symbol);
-			try {
-				Runtime::Object result;
-				method->execute(ParameterList(), &result, Token());
-
-				std::cout << result.ToString() << std::endl;
-			}
-			catch ( std::exception &e ) {
-				std::cout << e.what() << std::endl;
-			}
-			catch ( ... ) {
-				std::cout << "unknown exception occured" << std::endl;
-			}
-		}
-
-		name = child;
-	} while ( !name.empty() );
-}
-
-void LocalClient::modifySymbol(const StringList& tokens)
-{
-	if ( !mScope ) {
-		std::cout << "no scope available!" << std::endl;
-		return;
-	}
-
-	if ( tokens.size() != 3 ) {
-		std::cout << "invalid number of arguments!" << std::endl;
-		return;
-	}
-
-	std::string name;
-
-	StringList::const_iterator it = tokens.begin();
-	it++;	// skip first token
-	if ( it != tokens.end() ) {
-		name = (*it++);
-	}
-
-	std::string child;
-	std::string parent;
-	Symbol* symbol = 0;
-	SymbolScope* scope = mScope;
-
-	do {
-		Tools::split(name, parent, child);
-
-		if ( !parent.empty() && !child.empty() ) {
-			scope = static_cast<ObjectiveScript::Runtime::Object*>(scope->resolve(parent, false));
-		}
-		else {
-			symbol = scope->resolve(parent, false);
-			if ( !symbol ) {
-				std::cout << "could not resolve symbol '" << name << "'!" << std::endl;
-				return;
-			}
-
-			Runtime::Object* object = static_cast<Runtime::Object*>(symbol);
-			if ( !object->isAtomicType() ) {
-				std::cout << "can not modify complex type '" << object->Typename() << "' " << std::endl;
-				return;
-			}
-
-			object->setValue(Runtime::AtomicValue((*it)));
-		}
-
-		name = child;
-	} while ( !name.empty() );
-}
-
-void LocalClient::init(int argc, const char* argv[])
-{
-	bool registered = mDebugger->registerReceiver(this);
-	assert(registered);
-
-	mRunning = true;
-
-	processParameters(argc, argv);
 }
 
 StringList LocalClient::parseCommands(const std::string& commands) const
@@ -305,34 +154,6 @@ StringList LocalClient::parseCommands(const std::string& commands) const
 	return params;
 }
 
-void LocalClient::prepare(const StringList& tokens)
-{
-	std::string paramStr = mFilename;
-
-	StringList::const_iterator it = tokens.begin();
-	it++;	// skip first token
-	while ( it != tokens.end() ) {
-		paramStr += " " + (*it++);
-	}
-
-	mParameters.clear();
-	mParameters.push_back(ObjectiveScript::Parameter("argc", ObjectiveScript::Runtime::IntegerObject::TYPENAME, 1));
-	mParameters.push_back(ObjectiveScript::Parameter("argv", ObjectiveScript::Runtime::StringObject::TYPENAME, paramStr));
-}
-
-void LocalClient::printBreakPoints()
-{
-	Core::BreakPointList list = mDebugger->getBreakPoints();
-
-	std::cout << "BreakPoints:" << std::endl;
-
-	int idx = 1;
-	for ( Core::BreakPointList::const_iterator it = list.begin(); it != list.end(); ++it ) {
-		std::cout << idx << ": " << it->toString() << std::endl;
-		idx++;
-	}
-}
-
 void LocalClient::printHelp()
 {
 	std::cout << "Generic commands:" << std::endl;
@@ -344,6 +165,7 @@ void LocalClient::printHelp()
 	std::cout << "\tquit (q)" << std::endl;
 	std::cout << "\trun" << std::endl;
 
+/*
 	if ( mScope ) {
 		std::cout << "Debugging commands:" << std::endl;
 		std::cout << "\tcontinue (c)" << std::endl;
@@ -356,214 +178,27 @@ void LocalClient::printHelp()
 		std::cout << "\tprint (p)" << std::endl;
 		std::cout << "\tresume (r)" << std::endl;
 	}
+*/
 }
 
-void LocalClient::printSymbol(const StringList& tokens)
+std::string LocalClient::read() const
 {
-	if ( !mScope ) {
-		std::cout << "no scope available!" << std::endl;
-		return;
-	}
+	std::string result;
 
-	std::string name;
+	getline(std::cin >> std::ws, result);
+	std::cin.clear();
 
-	StringList::const_iterator it = tokens.begin();
-	it++;	// skip first token
-	if ( it != tokens.end() ) {
-		name = (*it);
-	}
-
-	std::string child;
-	std::string parent;
-	Symbol* symbol = 0;
-	SymbolScope* scope = mScope;
-
-	do {
-		Tools::split(name, parent, child);
-
-		if ( !parent.empty() && !child.empty() ) {
-			scope = static_cast<ObjectiveScript::Runtime::Object*>(scope->resolve(parent, false));
-		}
-		else {
-			symbol = scope->resolve(parent, false);
-			if ( !symbol ) {
-				std::cout << "could not resolve symbol '" << name << "'!" << std::endl;
-				return;
-			}
-
-			std::cout << symbol->ToString() << std::endl;
-		}
-
-		name = child;
-	} while ( !name.empty() );
+	return result;
 }
 
-void LocalClient::printUsage()
+void LocalClient::write(const std::string& text)
 {
-	std::cout << "Usage: odebugger [options] [-f] <file> [args...]" << std::endl;
-	std::cout << std::endl;
-	std::cout << "-f | --file <file>    Parse and execute <file>" << std::endl;
-	std::cout << "-h | --help           This help" << std::endl;
-	std::cout << "-l | --library        Library root path" << std::endl;
-	std::cout << "--version             Version information" << std::endl;
-	std::cout << std::endl;
+	std::cout << text;
 }
 
-void LocalClient::printVersion()
+void LocalClient::writeln(const std::string& text)
 {
-	std::cout << "ObjectiveScript Debugger 0.3.3 (cli)" << std::endl;
-	std::cout << "Copyright (c) 2014-2016 Michael Adelmann" << std::endl;
-	std::cout << "" << std::endl;
-}
-
-void LocalClient::processParameters(int argc, const char* argv[])
-{
-	for ( int i = 1; i < argc; i++ ) {
-		if ( ::Utils::Tools::StringCompare(argv[i], "-f") || ::Utils::Tools::StringCompare(argv[i], "--file") ) {
-			if ( argc <= ++i ) {
-				OSerror("invalid number of parameters provided!");
-
-				exit(-1);
-			}
-
-			mFilename = argv[i];
-		}
-		else if ( ::Utils::Tools::StringCompare(argv[i], "-h") || ::Utils::Tools::StringCompare(argv[i], "--help") ) {
-			printUsage();
-
-			exit(0);
-		}
-		else if ( ::Utils::Tools::StringCompare(argv[i], "-l") || ::Utils::Tools::StringCompare(argv[i], "--library") ) {
-			if ( argc <= ++i ) {
-				OSerror("invalid number of parameters provided!");
-
-				exit(-1);
-			}
-
-			mRoot = argv[i];
-		}
-		else if ( ::Utils::Tools::StringCompare(argv[i], "--version") ) {
-			printVersion();
-
-			exit(0);
-		}
-		else if ( mFilename.empty() ){
-			mFilename = argv[i];
-		}
-	}
-}
-
-void LocalClient::removeBreakPoint(const StringList& tokens)
-{
-	if ( tokens.size() != 2 ) {
-		std::cout << "invalid number of arguments!" << std::endl;
-		return;
-	}
-
-	StringList::const_iterator it = tokens.begin();
-	it++;	// skip first token
-
-	int idx = ::Utils::Tools::stringToInt((*it));
-
-	Core::BreakPointList points = mDebugger->getBreakPoints();
-
-	int count = 1;
-	for ( Core::BreakPointList::const_iterator it = points.begin(); it != points.end(); ++it, ++count ) {
-		if ( count == idx ) {
-			mDebugger->removeBreakPoint((*it));
-			break;
-		}
-	}
-}
-
-int LocalClient::runCLI(SymbolScope* scope)
-{
-	mContinue = false;
-	mScope = scope;
-
-	while ( mRunning && !mContinue ) {
-		std::string command;
-
-		std::cout << mSettings.prompt();
-
-		getline(std::cin >> std::ws, command);
-		std::cin.clear();
-
-		executeCommand(
-			parseCommands(command)
-		);
-	}
-
-	mScope = 0;
-
-	return 0;
-}
-
-void LocalClient::shutdown()
-{
-	stop();
-
-	mContinue = false;
-	mDebugger->unregisterReceiver(this);
-	mRunning = false;
-	mScope = 0;
-}
-
-void LocalClient::start()
-{
-	if ( mVirtualMachine ) {
-		stop();
-	}
-
-	mDebugger->resume();
-	StackTrace::GetInstance().clear();
-
-	mVirtualMachine = new VirtualMachine();
-	mVirtualMachine->setBaseFolder(mRoot);
-
-	// add extensions
-#ifdef USE_APACHE_EXTENSION
-	mVirtualMachine->addExtension(new ObjectiveScript::Extensions::Apache::ApacheExtension());
-#endif
-#ifdef USE_JSON_EXTENSION
-	mVirtualMachine->addExtension(new ObjectiveScript::Extensions::Json::JsonExtension());
-#endif
-#ifdef USE_MYSQL_EXTENSION
-	mVirtualMachine->addExtension(new ObjectiveScript::Extensions::Mysql::MysqlExtension());
-#endif
-#ifdef USE_SYSTEM_EXTENSION
-	mVirtualMachine->addExtension(new ObjectiveScript::Extensions::System::SystemExtension());
-#endif
-
-	try {
-		std::cout << "[Starting program: " << mFilename << "]" << std::endl;
-
-		ObjectiveScript::Script *script = mVirtualMachine->createScriptFromFile(mFilename, mParameters);
-		assert(script);
-
-		// check if an instance ("main") of a Main object exists
-		ObjectiveScript::Runtime::Object *main = static_cast<ObjectiveScript::Runtime::Object*>(script->resolve("main"));
-
-		if ( !main || main->isAtomicType() ) {
-			std::cout << "[Using structured execution mode]" << std::endl;
-
-			ObjectiveScript::Runtime::IntegerObject result;
-			script->execute("Main", mParameters, &result);
-
-			std::cout << "[Process finished with exit code " << result.getValue().toStdString() << "]" <<  std::endl;
-		}
-
-		std::cout << "[Process exited normally]" << std::endl;
-	}
-	catch ( std::exception& e ) {
-		std::cout << e.what() << std::endl;
-	}
-}
-
-void LocalClient::stop()
-{
-	delete mVirtualMachine;
-	mVirtualMachine = 0;
+	std::cout << text << std::endl;
 }
 
 
