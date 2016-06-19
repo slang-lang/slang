@@ -22,6 +22,7 @@
 
 namespace ObjectiveScript {
 namespace Extensions {
+namespace System {
 
 
 class Assert : public Runtime::Method
@@ -44,5 +45,7 @@ public:
 
 }
 }
+}
+
 
 #endif

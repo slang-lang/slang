@@ -22,6 +22,7 @@
 
 namespace ObjectiveScript {
 namespace Extensions {
+namespace System {
 
 
 class Printf : public Runtime::Method
@@ -61,5 +62,7 @@ public:
 
 }
 }
+}
+
 
 #endif

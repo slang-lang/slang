@@ -11,6 +11,7 @@
 
 namespace ObjectiveScript {
 namespace Extensions {
+namespace System {
 
 
 Assert::Assert()
@@ -67,5 +68,6 @@ Runtime::ControlFlow::E AssertMsg::execute(const ParameterList& params, Runtime:
 }
 
 
+}
 }
 }

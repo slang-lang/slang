@@ -12,6 +12,7 @@ SET(HEADERS
 	AssertMsg.h
 	GetEnv.h
 	Print.h
+	Sleep.h
 	SystemExtension.h
 	Write.h
 	WriteLn.h
