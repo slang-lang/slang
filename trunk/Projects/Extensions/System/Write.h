@@ -24,6 +24,7 @@
 
 namespace ObjectiveScript {
 namespace Extensions {
+namespace System {
 
 
 class Write : public Runtime::Method
@@ -63,5 +64,7 @@ public:
 
 }
 }
+}
+
 
 #endif

@@ -7,6 +7,7 @@
 // Project includes
 #include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/BuildInObjects/StringObject.h>
+#include <Core/Script.h>
 #include <Core/StackTrace.h>
 #include <Core/Tools.h>
 #include <Core/Utils/Utils.h>
@@ -119,6 +120,9 @@ std::string Client::executeCommand(const StringList &tokens)
 		else if ( cmd == "kill" ) {
 			stop();
 		}
+		else if ( cmd == "modify" || cmd == "m" ) {
+			modifySymbol(tokens);
+		}
 		else if ( cmd == "next" || cmd == "n" ) {
 			mDebugger->stepOver();
 			continueExecution();
@@ -140,7 +144,6 @@ std::string Client::executeCommand(const StringList &tokens)
 		else if ( cmd == "run" ) {
 			prepare(tokens);
 			start();
-			std::cout << "program terminated successfully" << std::endl;
 			stop();
 		}
 		else {
@@ -202,6 +205,57 @@ void Client::executeSymbol(const StringList& tokens)
 			catch ( ... ) {
 				std::cout << "unknown exception occured" << std::endl;
 			}
+		}
+
+		name = child;
+	} while ( !name.empty() );
+}
+
+void Client::modifySymbol(const StringList& tokens)
+{
+	if ( !mScope ) {
+		std::cout << "no scope available!" << std::endl;
+		return;
+	}
+
+	if ( tokens.size() != 3 ) {
+		std::cout << "invalid number of arguments!" << std::endl;
+		return;
+	}
+
+	std::string name;
+
+	StringList::const_iterator it = tokens.begin();
+	it++;	// skip first token
+	if ( it != tokens.end() ) {
+		name = (*it++);
+	}
+
+	std::string child;
+	std::string parent;
+	Symbol* symbol = 0;
+	SymbolScope* scope = mScope;
+
+	do {
+		Tools::split(name, parent, child);
+
+		if ( !parent.empty() && !child.empty() ) {
+			scope = static_cast<ObjectiveScript::Runtime::Object*>(scope->resolve(parent, false));
+		}
+		else {
+			symbol = scope->resolve(parent, false);
+			if ( !symbol ) {
+				std::cout << "could not resolve symbol '" << name << "'!" << std::endl;
+				return;
+			}
+
+			Runtime::Object* object = static_cast<Runtime::Object*>(symbol);
+			if ( !object->isAtomicType() ) {
+				std::cout << "can not modify complex type '" << object->Typename() << "' " << std::endl;
+				return;
+			}
+
+			object->setValue(Runtime::AtomicValue((*it)));
 		}
 
 		name = child;
@@ -295,13 +349,12 @@ void Client::printHelp()
 		std::cout << "\texecute (e)" << std::endl;
 		std::cout << "\tinto (i)" << std::endl;
 		std::cout << "\tkill" << std::endl;
+		std::cout << "\tmodify (m)" << std::endl;
 		std::cout << "\tnext (n)" << std::endl;
 		std::cout << "\tout (o)" << std::endl;
 		std::cout << "\tprint (p)" << std::endl;
 		std::cout << "\tresume (r)" << std::endl;
 	}
-
-	//std::cout << std::endl;
 }
 
 void Client::printSymbol(const StringList& tokens)
@@ -436,7 +489,7 @@ int Client::runCLI(SymbolScope* scope)
 		std::cin.clear();
 
 		executeCommand(
-				parseCommands(command)
+			parseCommands(command)
 		);
 	}
 
@@ -481,7 +534,29 @@ void Client::start()
 	mVirtualMachine->addExtension(new ObjectiveScript::Extensions::System::SystemExtension());
 #endif
 
-	mVirtualMachine->createScriptFromFile(mFilename, mParameters);
+	try {
+		std::cout << "[Starting program: " << mFilename << "]" << std::endl;
+
+		ObjectiveScript::Script *script = mVirtualMachine->createScriptFromFile(mFilename, mParameters);
+		assert(script);
+
+		// check if an instance ("main") of a Main object exists
+		ObjectiveScript::Runtime::Object *main = static_cast<ObjectiveScript::Runtime::Object*>(script->resolve("main"));
+
+		if ( !main || main->isAtomicType() ) {
+			std::cout << "[Using structured execution mode]" << std::endl;
+
+			ObjectiveScript::Runtime::IntegerObject result;
+			script->execute("Main", mParameters, &result);
+
+			std::cout << "[Process finished with exit code " << result.getValue().toStdString() << "]" <<  std::endl;
+		}
+
+		std::cout << "[Process exited normally]" << std::endl;
+	}
+	catch ( std::exception& e ) {
+		std::cout << e.what() << std::endl;
+	}
 }
 
 void Client::stop()

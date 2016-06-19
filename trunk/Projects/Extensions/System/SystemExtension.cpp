@@ -18,6 +18,7 @@
 #include "AssertMsg.h"
 #include "GetEnv.h"
 #include "Print.h"
+#include "Sleep.h"
 #include "Write.h"
 #include "WriteLn.h"
 
@@ -29,12 +30,14 @@ namespace Extensions {
 namespace System {
 
 
-void SystemExtension::provideMethods(ExtensionMethods &methods) {
+void SystemExtension::provideMethods(ExtensionMethods &methods)
+{
 	assert(methods.empty());
 
 	methods.push_back(new AssertMsg());
 	methods.push_back(new GetEnv());
 	methods.push_back(new Printf());
+	methods.push_back(new Sleep());
 	methods.push_back(new Write());
 	methods.push_back(new WriteLn());
 

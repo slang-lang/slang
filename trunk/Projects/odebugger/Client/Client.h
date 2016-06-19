@@ -49,6 +49,7 @@ private:
 	void continueExecution();
 	std::string executeCommand(const StringList &tokens);
 	void executeSymbol(const StringList& tokens);
+	void modifySymbol(const StringList& tokens);
 	StringList parseCommands(const std::string& commands) const;
 	void printBreakPoints();
 	void printSymbol(const StringList& tokens);

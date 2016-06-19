@@ -1,14 +1,15 @@
 
-#ifndef ObjectiveScript_Extensions_System_GetEnv_h
-#define ObjectiveScript_Extensions_System_GetEnv_h
+#ifndef ObjectiveScript_Extensions_System_Sleep_h
+#define ObjectiveScript_Extensions_System_Sleep_h
 
 
 // Library includes
-#include <stdlib.h>
+#include <chrono>
+#include <thread>
 
 // Project includes
 #include <Core/BuildInObjects/StringObject.h>
-#include <Core/Designtime/BuildInTypes/StringObject.h>
+#include <Core/Designtime/BuildInTypes/IntegerObject.h>
 #include <Core/Method.h>
 #include <Core/Repository.h>
 #include <Core/Tools.h>
@@ -25,34 +26,26 @@ namespace Extensions {
 namespace System {
 
 
-class GetEnv : public Runtime::Method
+class Sleep : public Runtime::Method
 {
 public:
-	GetEnv()
-	: Runtime::Method(0, "getenv", Designtime::StringObject::TYPENAME)
+	Sleep()
+	: Runtime::Method(0, "sleep", Designtime::VoidObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter("name", Designtime::StringObject::TYPENAME, VALUE_NONE));
+		params.push_back(Parameter("millis", Designtime::IntegerObject::TYPENAME, 0));
 
 		setSignature(params);
 	}
 
 public:
-	Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* result, const Token& token)
-	{
+	Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* /*result*/, const Token& token) {
 		try {
 			ParameterList::const_iterator it = params.begin();
 
-			std::string param_name = (*it++).value().toStdString();
+			long param_millis = (*it++).value().toInt();
 
-			std::string result_value;
-
-			char *val = getenv(param_name.c_str());
-			if (val) {
-				result_value = std::string(val);
-			}
-
-			*result = Runtime::StringObject(result_value);
+			std::this_thread::sleep_for(std::chrono::milliseconds(param_millis));
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
