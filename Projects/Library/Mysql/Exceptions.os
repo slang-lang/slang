@@ -17,7 +17,5 @@ public namespace Mysql {
 	}
 */
 
-	public object OutOfBoundsException replicates Exception;
-
 }
 

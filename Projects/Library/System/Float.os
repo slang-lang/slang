@@ -1,5 +1,6 @@
 
 public namespace System {
+
 	public object Float {
 		private float mValue;
 
@@ -75,5 +76,6 @@ public namespace System {
 			mValue = mValue / other.mValue;
 		}
 	}
+
 }
 

@@ -4,8 +4,7 @@ public namespace Math {
 
 	public float PI;// = 3.14159265359f;
 
-	public double abs(double value)
-	{
+	public double abs(double value) {
 		if ( value >= 0.0d ) {
 			return value;
 		}
@@ -13,8 +12,7 @@ public namespace Math {
 		return value * -1;
 	}
 
-	public float abs(float value)
-	{
+	public float abs(float value) {
 		if ( value >= 0.0f ) {
 			return value;
 		}
@@ -22,8 +20,7 @@ public namespace Math {
 		return value * -1;
 	}
 
-	public int abs(int value)
-	{
+	public int abs(int value) {
 		if ( value >= 0 ) {
 			return value;
 		}
@@ -31,23 +28,19 @@ public namespace Math {
 		return value * -1;
 	}
 
-	public double power(double value)
-	{
+	public double power(double value) {
 		return value * value;
 	}
 
-	public float power(float value)
-	{
+	public float power(float value) {
 		return value * value;
 	}
 
-	public int power(int value)
-	{
+	public int power(int value) {
 		return value * value;
 	}
 
-	public int power(int value, int exp)
-	{
+	public int power(int value, int exp) {
 		int result = value;
 
 		while ( exp > 1 ) {
@@ -58,18 +51,15 @@ public namespace Math {
 		return result;
 	}
 
-	public double sqr(double value)
-	{
+	public double sqr(double value) {
 		return power(value);
 	}
 
-	public float sqr(float value)
-	{
+	public float sqr(float value) {
 		return power(value);
 	}
 
-	public int sqr(int value)
-	{
+	public int sqr(int value) {
 		return power(value);
 	}
 

@@ -9,3 +9,4 @@ public namespace System {
 	public object TObject implements IObject;
 
 }
+
