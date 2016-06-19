@@ -11,8 +11,6 @@ public int Main(int argc = 0, string args = "") modify {
 
 		//lowerbound = lowerbound + 1;
 		lowerbound = lowerbound++;
-
-		sleep(1);
 	}
 
 	print("Finished performance test.");
