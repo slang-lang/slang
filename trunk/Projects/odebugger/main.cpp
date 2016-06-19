@@ -2,7 +2,7 @@
 // Library includes
 
 // Project includes
-#include <Client/Client.h>
+#include <LocalClient/LocalClient.h>
 
 // Namespace declarations
 
@@ -34,7 +34,7 @@ int main(int argc, const char* argv[])
 	// Memory leak detection
 #endif
 
-	ObjectiveScript::Client client;
+	ObjectiveScript::LocalClient client;
 	client.init(argc, argv);
 
 	return client.exec();

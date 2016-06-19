@@ -1,12 +1,12 @@
 INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
 SET(SOURCES
-	Client.cpp
+	LocalClient.cpp
 	Settings.h
 )
 
 SET(HEADERS
-	Client.h
+	LocalClient.h
 )
 
 SET(DEPENDENCIES
@@ -17,4 +17,4 @@ add_include(Projects/Extensions)
 add_include(Projects/odebugger)
 add_include(Projects/Utils)
 
-build_static_lib(DebuggerClient "")
+build_static_lib(DebuggerLocalClient "")

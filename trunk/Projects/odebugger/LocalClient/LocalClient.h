@@ -1,16 +1,16 @@
 
-#ifndef Client_Client_h
-#define Client_Client_h
+#ifndef ObjectiveScript_Debugger_LocalClient_LocalClient_h
+#define ObjectiveScript_Debugger_LocalClient_LocalClient_h
 
 
 // Library includes
 
 // Project includes
 #include <Core/Parameter.h>
-#include <Core/Types.h>
-#include <Debugger/IReceiver.h>
 #include <Core/Scope.h>
+#include <Core/Types.h>
 #include <Debugger/BreakPoint.h>
+#include <Debugger/IReceiver.h>
 #include "Settings.h"
 
 // Forward declarations
@@ -26,11 +26,11 @@ namespace Core {
 }
 class VirtualMachine;
 
-class Client : private Core::IReceiver
+class LocalClient : private Core::IReceiver
 {
 public:
-	Client();
-	~Client();
+	LocalClient();
+	~LocalClient();
 
 public:
 	void init(int argc, const char* argv[]);

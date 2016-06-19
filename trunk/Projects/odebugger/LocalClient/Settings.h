@@ -1,6 +1,6 @@
 
-#ifndef Console_Settings_h
-#define Console_Settings_h
+#ifndef ObjectiveScript_Debugger_LocalClient_Settings_h
+#define ObjectiveScript_Debugger_LocalClient_Settings_h
 
 
 // Library includes

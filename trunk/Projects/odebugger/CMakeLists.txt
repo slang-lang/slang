@@ -1,6 +1,8 @@
 INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
-ADD_SUBDIRECTORY(Client)
+ADD_SUBDIRECTORY(Backend)
+ADD_SUBDIRECTORY(LocalClient)
+#ADD_SUBDIRECTORY(Interfaces)
 
 SET(SOURCES
 	main.cpp
@@ -14,7 +16,8 @@ SET(DEPENDENCIES
 	ExtensionsMysql
 	ExtensionsJson
 	ExtensionsApache
-	DebuggerClient
+	DebuggerLocalClient
+	DebuggerBackend
 	CoreDebugger
 	Core
 	Utils

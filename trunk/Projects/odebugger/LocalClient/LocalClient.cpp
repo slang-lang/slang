@@ -1,6 +1,6 @@
 
 // Header
-#include "Client.h"
+#include "LocalClient.h"
 
 // Library includes
 
@@ -25,8 +25,9 @@
 namespace ObjectiveScript {
 
 
-Client::Client()
-: mDebugger(0),
+LocalClient::LocalClient()
+: mContinue(false),
+  mDebugger(0),
   mRunning(false),
   mScope(0),
   mVirtualMachine(0)
@@ -34,14 +35,14 @@ Client::Client()
 	mDebugger = &ObjectiveScript::Core::Debugger::GetInstance();
 }
 
-Client::~Client()
+LocalClient::~LocalClient()
 {
 	shutdown();
 
 	mDebugger = 0;
 }
 
-void Client::addBreakPoint(const StringList& tokens)
+void LocalClient::addBreakPoint(const StringList& tokens)
 {
 	if ( tokens.size() != 3 ) {
 		std::cout << "invalid number of arguments!" << std::endl;
@@ -57,12 +58,12 @@ void Client::addBreakPoint(const StringList& tokens)
 	mDebugger->addBreakPoint(Utils::Position(file, line));
 }
 
-void Client::continueExecution()
+void LocalClient::continueExecution()
 {
 	mContinue = true;
 }
 
-int Client::exec()
+int LocalClient::exec()
 {
 	// only start if we have a filename set
 	if ( mFilename.empty() ) {
@@ -87,7 +88,7 @@ int Client::exec()
 	return 0;
 }
 
-std::string Client::executeCommand(const StringList &tokens)
+std::string LocalClient::executeCommand(const StringList &tokens)
 {
 	StringList::const_iterator it = tokens.begin();
 
@@ -154,7 +155,7 @@ std::string Client::executeCommand(const StringList &tokens)
 	return "";
 }
 
-void Client::executeSymbol(const StringList& tokens)
+void LocalClient::executeSymbol(const StringList& tokens)
 {
 	if ( !mScope ) {
 		std::cout << "no scope available!" << std::endl;
@@ -211,7 +212,7 @@ void Client::executeSymbol(const StringList& tokens)
 	} while ( !name.empty() );
 }
 
-void Client::modifySymbol(const StringList& tokens)
+void LocalClient::modifySymbol(const StringList& tokens)
 {
 	if ( !mScope ) {
 		std::cout << "no scope available!" << std::endl;
@@ -262,7 +263,7 @@ void Client::modifySymbol(const StringList& tokens)
 	} while ( !name.empty() );
 }
 
-void Client::init(int argc, const char* argv[])
+void LocalClient::init(int argc, const char* argv[])
 {
 	bool registered = mDebugger->registerReceiver(this);
 	assert(registered);
@@ -272,7 +273,7 @@ void Client::init(int argc, const char* argv[])
 	processParameters(argc, argv);
 }
 
-StringList Client::parseCommands(const std::string& commands) const
+StringList LocalClient::parseCommands(const std::string& commands) const
 {
 	StringList params;
 
@@ -304,7 +305,7 @@ StringList Client::parseCommands(const std::string& commands) const
 	return params;
 }
 
-void Client::prepare(const StringList& tokens)
+void LocalClient::prepare(const StringList& tokens)
 {
 	std::string paramStr = mFilename;
 
@@ -319,7 +320,7 @@ void Client::prepare(const StringList& tokens)
 	mParameters.push_back(ObjectiveScript::Parameter("argv", ObjectiveScript::Runtime::StringObject::TYPENAME, paramStr));
 }
 
-void Client::printBreakPoints()
+void LocalClient::printBreakPoints()
 {
 	Core::BreakPointList list = mDebugger->getBreakPoints();
 
@@ -332,7 +333,7 @@ void Client::printBreakPoints()
 	}
 }
 
-void Client::printHelp()
+void LocalClient::printHelp()
 {
 	std::cout << "Generic commands:" << std::endl;
 
@@ -357,7 +358,7 @@ void Client::printHelp()
 	}
 }
 
-void Client::printSymbol(const StringList& tokens)
+void LocalClient::printSymbol(const StringList& tokens)
 {
 	if ( !mScope ) {
 		std::cout << "no scope available!" << std::endl;
@@ -397,7 +398,7 @@ void Client::printSymbol(const StringList& tokens)
 	} while ( !name.empty() );
 }
 
-void Client::printUsage()
+void LocalClient::printUsage()
 {
 	std::cout << "Usage: odebugger [options] [-f] <file> [args...]" << std::endl;
 	std::cout << std::endl;
@@ -408,14 +409,14 @@ void Client::printUsage()
 	std::cout << std::endl;
 }
 
-void Client::printVersion()
+void LocalClient::printVersion()
 {
 	std::cout << "ObjectiveScript Debugger 0.3.3 (cli)" << std::endl;
 	std::cout << "Copyright (c) 2014-2016 Michael Adelmann" << std::endl;
 	std::cout << "" << std::endl;
 }
 
-void Client::processParameters(int argc, const char* argv[])
+void LocalClient::processParameters(int argc, const char* argv[])
 {
 	for ( int i = 1; i < argc; i++ ) {
 		if ( ::Utils::Tools::StringCompare(argv[i], "-f") || ::Utils::Tools::StringCompare(argv[i], "--file") ) {
@@ -452,7 +453,7 @@ void Client::processParameters(int argc, const char* argv[])
 	}
 }
 
-void Client::removeBreakPoint(const StringList& tokens)
+void LocalClient::removeBreakPoint(const StringList& tokens)
 {
 	if ( tokens.size() != 2 ) {
 		std::cout << "invalid number of arguments!" << std::endl;
@@ -475,7 +476,7 @@ void Client::removeBreakPoint(const StringList& tokens)
 	}
 }
 
-int Client::runCLI(SymbolScope* scope)
+int LocalClient::runCLI(SymbolScope* scope)
 {
 	mContinue = false;
 	mScope = scope;
@@ -498,7 +499,7 @@ int Client::runCLI(SymbolScope* scope)
 	return 0;
 }
 
-void Client::shutdown()
+void LocalClient::shutdown()
 {
 	stop();
 
@@ -508,7 +509,7 @@ void Client::shutdown()
 	mScope = 0;
 }
 
-void Client::start()
+void LocalClient::start()
 {
 	if ( mVirtualMachine ) {
 		stop();
@@ -559,7 +560,7 @@ void Client::start()
 	}
 }
 
-void Client::stop()
+void LocalClient::stop()
 {
 	delete mVirtualMachine;
 	mVirtualMachine = 0;
