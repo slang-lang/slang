@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Debugger_LocalClient_LocalClient_h
-#define ObjectiveScript_Debugger_LocalClient_LocalClient_h
+#ifndef ObjectiveScript_odebugger_LocalClient_LocalClient_h
+#define ObjectiveScript_odebugger_LocalClient_LocalClient_h
 
 
 // Library includes
@@ -19,7 +19,7 @@
 namespace ObjectiveScript {
 
 // Forward declarations
-class IBackend;
+//class IBackend;
 
 class LocalClient : public ITerminal
 {
@@ -33,18 +33,11 @@ public:		// ITerminal implementation
 	void writeln(const std::string& text);
 
 public:
-	void connectBackend(IBackend* backend);
+	//void connectBackend(IBackend* backend);
 	void connectSettings(Settings* settings);
-	int exec();
-	void printHelp();
 
 private:
-	std::string executeCommand(const StringList &tokens);
-	StringList parseCommands(const std::string& commands) const;
-
-private:
-	IBackend* mBackend;
-	bool mRunning;
+	//IBackend* mBackend;
 	Settings* mSettings;
 };
 

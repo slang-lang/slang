@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Debugger_Backend_IBackend_h
-#define ObjectiveScript_Debugger_Backend_IBackend_h
+#ifndef ObjectiveScript_odebugger_Backend_IBackend_h
+#define ObjectiveScript_odebugger_Backend_IBackend_h
 
 
 // Library includes

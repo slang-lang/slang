@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Debugger_Application_Application_h
-#define ObjectiveScript_Debugger_Application_Application_h
+#ifndef ObjectiveScript_odebugger_Application_Application_h
+#define ObjectiveScript_odebugger_Application_Application_h
 
 
 // Library includes

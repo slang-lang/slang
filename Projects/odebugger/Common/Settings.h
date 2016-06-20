@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Debugger_Common_Settings_h
-#define ObjectiveScript_Debugger_Common_Settings_h
+#ifndef ObjectiveScript_odebugger_Common_Settings_h
+#define ObjectiveScript_odebugger_Common_Settings_h
 
 
 // Library includes
