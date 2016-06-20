@@ -40,6 +40,16 @@ public namespace System {
 		}
 
 		/*
+		 * Returns the start position of the given string
+		 */
+/*
+		public int Find(string str, int startpos) const {
+			string val = substr(mValue, startpos);
+
+			return strfind(val, str);
+		}
+*/
+		/*
 		 * Returns the length of the held string
 		 */
 		public int Length() const {

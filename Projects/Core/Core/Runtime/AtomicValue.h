@@ -37,7 +37,7 @@ public:	// Construction
 	AtomicValue(double val);
 	AtomicValue(float val);
 	AtomicValue(int val);
-	//AtomicValue(const char* val);
+	AtomicValue(const char* val);
 	AtomicValue(const std::string& val);
 
 	~AtomicValue();
@@ -47,7 +47,7 @@ public:	// Assignment
 	void operator=(double val);
 	void operator=(float val);
 	void operator=(int val);
-	//void operator=(const char* val);
+	void operator=(const char* val);
 	void operator=(const std::string& val);
 
 public:	// Conversion

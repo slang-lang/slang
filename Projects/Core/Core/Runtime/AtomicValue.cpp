@@ -69,7 +69,6 @@ AtomicValue::AtomicValue(int val)
 	mValue.int_ = val;
 }
 
-/*
 AtomicValue::AtomicValue(const char* val)
 {
 	mValue.bool_ = false;
@@ -78,9 +77,9 @@ AtomicValue::AtomicValue(const char* val)
 	mValue.int_ = 0;
 
 	type = STRING;
-	mValue.string_ = Common::Strings::duplicateStringValue(val, strlen(val));
+	//mValue.string_ = std::string(val);
+	mStringValue = std::string(val);
 }
-*/
 
 AtomicValue::AtomicValue(const std::string& val)
 {
@@ -96,11 +95,6 @@ AtomicValue::AtomicValue(const std::string& val)
 
 AtomicValue::~AtomicValue()
 {
-/*
-	if ( type == STRING ) {
-		Common::Strings::releaseStringValue(mValue.string_, strlen(mValue.string_));
-	}
-*/
 }
 
 void AtomicValue::operator=(bool val)
@@ -135,15 +129,14 @@ void AtomicValue::operator=(int val)
 	mValue.int_ = val;
 }
 
-/*
 void AtomicValue::operator=(const char* val)
 {
-	mStringValue = "";
+	mValue.double_ = 0.0;
 
 	type = STRING;
-	mValue.string_ = Common::Strings::duplicateStringValue(val, strlen(val));
+	//mValue.string_ = val.c_str();
+	mStringValue = std::string(val);
 }
-*/
 
 void AtomicValue::operator=(const std::string& val)
 {
@@ -158,9 +151,9 @@ bool AtomicValue::toBool() const
 {
 	switch ( type ) {
 		case BOOL: return mValue.bool_;
-		case DOUBLE: return (bool)mValue.double_;
-		case FLOAT: return (bool)mValue.float_;
-		case INT: return (bool)mValue.int_;
+		case DOUBLE: return (mValue.double_ != 0.0);
+		case FLOAT: return (mValue.float_ != 0.f);
+		case INT: return (mValue.int_ != 0);
 		//case STRING: return (bool)mValue.string_;
 		case STRING: return Tools::stringToBool(mStringValue);
 		default: break;

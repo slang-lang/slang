@@ -96,7 +96,7 @@ void DoubleObject::operator_assign(const Object *other)
 
 bool DoubleObject::operator_bool() const
 {
-	return mValue.toDouble();
+	return mValue.toBool();
 }
 
 void DoubleObject::operator_divide(const DoubleObject *other)

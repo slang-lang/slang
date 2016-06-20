@@ -15,7 +15,7 @@ namespace Core {
 
 
 BreakPoint::BreakPoint()
-: mLine(-1)
+: mLine((unsigned int)-1)
 {
 }
 

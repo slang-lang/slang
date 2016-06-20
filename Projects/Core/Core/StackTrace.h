@@ -38,6 +38,9 @@ public:
 	public:
 		const std::string mMethod;
 		const ParameterList mParameters;
+
+	private:
+		void operator=(const StackLevel&)/* = delete*/;
 	};
 
 public:

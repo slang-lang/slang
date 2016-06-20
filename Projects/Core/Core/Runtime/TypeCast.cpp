@@ -89,6 +89,7 @@ void typecast(Object *base, const std::string& type, Repository *repository)
 	else {
 		throw Utils::Exceptions::NotImplemented("typecast to complex type not implemented!");
 
+/*	// not supported by now
 		Object *obj = repository->createInstance(type);
 		ParameterList params;
 		params.push_back(
@@ -97,6 +98,7 @@ void typecast(Object *base, const std::string& type, Repository *repository)
 		obj->Constructor(params);
 
 		*base = *obj;
+*/
 	}
 }
 }
