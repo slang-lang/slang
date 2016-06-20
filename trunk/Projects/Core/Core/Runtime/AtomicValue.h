@@ -8,7 +8,6 @@
 #include <string>
 
 // Project includes
-//#include <Core/Tools.h>
 
 // Forward declarations
 
@@ -28,7 +27,8 @@ public:
 		DOUBLE,
 		FLOAT,
 		INT,
-		STRING
+		STRING,
+		UINT
 	} type;
 
 public:	// Construction
@@ -39,6 +39,7 @@ public:	// Construction
 	AtomicValue(int val);
 	AtomicValue(const char* val);
 	AtomicValue(const std::string& val);
+	AtomicValue(unsigned int val);
 
 	~AtomicValue();
 
@@ -49,14 +50,15 @@ public:	// Assignment
 	void operator=(int val);
 	void operator=(const char* val);
 	void operator=(const std::string& val);
+	void operator=(unsigned int val);
 
 public:	// Conversion
 	bool toBool() const;
 	double toDouble() const;
 	float toFloat() const;
 	int toInt() const;
-	//const char* toString() const;
 	std::string toStdString() const;
+	unsigned int toUInt() const;
 
 private:
 	union ValueHolder {
@@ -65,6 +67,7 @@ private:
 		float float_;
 		int int_;
 		//const char* string_;
+		unsigned int uint_;
 	};
 
 private:
