@@ -37,7 +37,7 @@ public:
 		ParameterList params;
 		params.push_back(Parameter("source", Designtime::StringObject::TYPENAME, VALUE_NONE));
 		params.push_back(Parameter("target", Designtime::StringObject::TYPENAME, VALUE_NONE));
-		params.push_back(Parameter("position", Designtime::IntegerObject::TYPENAME, 0));
+		params.push_back(Parameter("position", Designtime::IntegerObject::TYPENAME, 0, true));
 
 		setSignature(params);
 	}

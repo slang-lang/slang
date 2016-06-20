@@ -27,7 +27,7 @@ Preprocessor::Preprocessor(Repository *repo)
 Designtime::BluePrint* Preprocessor::createMember(TokenIterator token) const
 {
 	std::string languageFeature;
-	Mutability::E mutability;
+	Mutability::E mutability = Mutability::Modify;
 	std::string name;
 	std::string type;
 	std::string visibility;

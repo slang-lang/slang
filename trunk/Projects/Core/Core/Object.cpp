@@ -350,7 +350,7 @@ bool Object::FromJson(const Json::Value& value)
 
 		Object *obj = static_cast<Object*>(symbol);
 		if ( obj->isAtomicType() ) {
-			obj->setValue(sub.asString().c_str());
+			obj->setValue(sub.asString());
 		}
 		else {
 			obj->FromJson(sub);

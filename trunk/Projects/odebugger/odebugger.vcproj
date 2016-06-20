@@ -2,8 +2,8 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="oscript"
-	ProjectGUID="{F60E42A5-1C6A-47E5-A040-977BE67C310D}"
+	Name="odebugger"
+	ProjectGUID="{64729D9C-A0BA-4DBE-AC19-15FC85AFCB61}"
 	RootNamespace="MyTest"
 	TargetFrameworkVersion="196613"
 	>
@@ -188,6 +188,18 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\Application\Application.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Backend\Backend.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\LocalClient\LocalClient.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\main.cpp"
 				>
 			</File>
@@ -197,6 +209,30 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath=".\Application\Application.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Backend\Backend.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Backend\IBackend.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Interfaces\ITerminal.h"
+				>
+			</File>
+			<File
+				RelativePath=".\LocalClient\LocalClient.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Common\Settings.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"
