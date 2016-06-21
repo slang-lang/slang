@@ -79,38 +79,43 @@ IDebugger::NextAction::E Debugger::nextAction() const
 
 void Debugger::notify(SymbolScope* scope, const Token& token)
 {
+	if ( !mReceiver || mNextAction == NextAction::None ) {
+		return;
+	}
+
 	BreakPoint breakpoint(token.position());
 
 	bool stop = false;
 
 	switch ( mNextAction ) {
-		case NextAction::StepOver: stop = true; std::cout << "Stepping in " << StackTrace::GetInstance().currentStackLevel().toString() << std::endl; break;
-		case NextAction::WaitForBreakPoint: stop = isBreakPoint(breakpoint); break;
-		default: break;
+		case NextAction::StepOver:
+			stop = true;
+			break;
+		case NextAction::WaitForBreakPoint:
+			stop = isBreakPoint(breakpoint);
+			break;
+		default:
+			break;
 	}
 
 	if ( stop && mReceiver ) {
 		std::cout << "Breakpoint " << breakpoint.toString() << " reached" << std::endl;
 
-		mReceiver->runCLI(scope);
+		mReceiver->notify(scope);
 	}
 }
 
 void Debugger::notifyEnter(SymbolScope* scope, const Token& /*token*/)
 {
 	if ( mReceiver && mNextAction == NextAction::StepInto ) {
-		std::cout << "Stepping into " << StackTrace::GetInstance().currentStackLevel().toString() << std::endl;
-
-		mReceiver->runCLI(scope);
+		mReceiver->notifyEnter(scope);
 	}
 }
 
 void Debugger::notifyExit(SymbolScope* scope, const Token& /*token*/)
 {
 	if ( mReceiver && mNextAction == NextAction::StepOut ) {
-		std::cout << "Stepping out of " << StackTrace::GetInstance().currentStackLevel().toString() << std::endl;
-
-		mReceiver->runCLI(scope);
+		mReceiver->notifyExit(scope);
 	}
 }
 

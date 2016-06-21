@@ -25,7 +25,9 @@ class IReceiver
 public:
 	virtual ~IReceiver() { }
 
-	virtual int runCLI(SymbolScope* scope) = 0;
+	virtual int notify(SymbolScope* scope) = 0;
+	virtual int notifyEnter(SymbolScope* scope) = 0;
+	virtual int notifyExit(SymbolScope* scope) = 0;
 };
 
 

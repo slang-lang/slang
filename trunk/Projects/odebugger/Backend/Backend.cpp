@@ -26,7 +26,8 @@ namespace ObjectiveScript {
 
 
 Backend::Backend()
-: mContinue(false),
+: mAutoWatch(false),
+  mContinue(false),
   mDebugger(0),
   mRunning(true),
   mScope(0),
@@ -62,6 +63,21 @@ bool Backend::addBreakPoint(const StringList& tokens)
 	return true;
 }
 
+bool Backend::addWatch(const StringList& tokens)
+{
+	if ( tokens.size() != 2 ) {
+		mTerminal->writeln("invalid number of arguments!");
+		return false;
+	}
+
+	StringList::const_iterator it = tokens.begin();
+	it++;	// skip first token
+
+	mWatches.insert(Watch((*it)));
+
+	return true;
+}
+
 void Backend::connectSettings(Settings *settings)
 {
 	assert(settings);
@@ -90,7 +106,7 @@ int Backend::exec()
 
 	// start program execution
 	while ( mRunning ) {
-		runCLI(0);
+		notify(0);
 	}
 
 	return 0;
@@ -103,7 +119,10 @@ std::string Backend::executeCommand(const StringList &tokens)
 	if ( it != tokens.end() ) {
 		std::string cmd = (*it++);
 
-		if ( cmd == "break" || cmd == "b" ) {
+		if ( cmd == "autowatch" ) {
+			mAutoWatch = !mAutoWatch;
+		}
+		else if ( cmd == "break" || cmd == "b" ) {
 			addBreakPoint(tokens);
 		}
 		else if ( cmd == "breakpoints" ) {
@@ -121,6 +140,10 @@ std::string Backend::executeCommand(const StringList &tokens)
 		}
 		else if ( cmd == "help" ) {
 			printHelp();
+		}
+		else if ( cmd == "ignore" ) {
+			mDebugger->resumeWithoutBreaks();
+			continueExecution();
 		}
 		else if ( cmd == "into" || cmd == "i" ) {
 			mDebugger->stepInto();
@@ -147,9 +170,14 @@ std::string Backend::executeCommand(const StringList &tokens)
 				throw Runtime::ControlFlow::ExitProgram;
 			}
 		}
-		else if ( cmd == "resume" || cmd == "r" ) {
-			mDebugger->resumeWithoutBreaks();
-			continueExecution();
+		else if ( cmd == "unwatch" ) {
+			removeWatch(tokens);
+		}
+		else if ( cmd == "watch" || cmd == "w" ) {
+			addWatch(tokens);
+		}
+		else if ( cmd == "watches" ) {
+			refreshWatches();
 		}
 		else if ( cmd == "run" ) {
 			run(tokens);
@@ -177,9 +205,40 @@ void Backend::executeSymbol(const StringList& tokens)
 		name = (*it);
 	}
 
+	Symbol* symbol = getSymbol(name);
+	if ( !symbol ) {
+		mTerminal->writeln("could not resolve symbol '" + name + "'!");
+		return;
+	}
+
+	if ( symbol->getType() != Symbol::IType::MethodSymbol ) {
+		mTerminal->writeln("could not execute non-method symbol '" + name + "'!");
+		return;
+	}
+
+	Runtime::Method* method = static_cast<Runtime::Method*>(symbol);
+	try {
+		Runtime::Object result;
+		method->execute(ParameterList(), &result, Token());
+
+		mTerminal->writeln(result.ToString());
+	}
+	catch ( std::exception &e ) {
+		mTerminal->writeln(e.what());
+	}
+	catch ( ... ) {
+		mTerminal->writeln("unknown exception occured");
+	}
+}
+
+Symbol* Backend::getSymbol(std::string name) const
+{
+	if ( !mScope ) {
+		return 0;
+	}
+
 	std::string child;
 	std::string parent;
-	Symbol* symbol = 0;
 	SymbolScope* scope = mScope;
 
 	do {
@@ -189,43 +248,17 @@ void Backend::executeSymbol(const StringList& tokens)
 			scope = static_cast<ObjectiveScript::Runtime::Object*>(scope->resolve(parent, false));
 		}
 		else {
-			symbol = scope->resolve(parent, false);
-			if ( !symbol ) {
-				mTerminal->writeln("could not resolve symbol '" + name + "'!");
-				return;
-			}
-
-			if ( symbol->getType() != Symbol::IType::MethodSymbol ) {
-				mTerminal->writeln("could not execute non-method symbol '" + name + "'!");
-				return;
-			}
-
-			Runtime::Method* method = static_cast<Runtime::Method*>(symbol);
-			try {
-				Runtime::Object result;
-				method->execute(ParameterList(), &result, Token());
-
-				mTerminal->writeln(result.ToString());
-			}
-			catch ( std::exception &e ) {
-				mTerminal->writeln(e.what());
-			}
-			catch ( ... ) {
-				mTerminal->writeln("unknown exception occured");
-			}
+			return scope->resolve(parent, false);
 		}
 
 		name = child;
 	} while ( !name.empty() );
+
+	return 0;
 }
 
 bool Backend::modifySymbol(const StringList& tokens)
 {
-	if ( !mScope ) {
-		mTerminal->writeln("no scope available!");
-		return false;
-	}
-
 	if ( tokens.size() != 3 ) {
 		mTerminal->writeln("invalid number of arguments!");
 		return false;
@@ -239,38 +272,59 @@ bool Backend::modifySymbol(const StringList& tokens)
 		name = (*it++);
 	}
 
-	std::string child;
-	std::string parent;
-	Symbol* symbol = 0;
-	SymbolScope* scope = mScope;
+	Symbol* symbol = getSymbol(name);
+	if ( !symbol ) {
+		mTerminal->writeln("could not resolve symbol '" + name + "'!");
+		return false;
+	}
 
-	do {
-		Tools::split(name, parent, child);
+	Runtime::Object* object = static_cast<Runtime::Object*>(symbol);
+	if ( !object->isAtomicType() ) {
+		mTerminal->writeln("can not modify complex type '" + object->Typename() + "' ");
+		return false;
+	}
 
-		if ( !parent.empty() && !child.empty() ) {
-			scope = static_cast<ObjectiveScript::Runtime::Object*>(scope->resolve(parent, false));
-		}
-		else {
-			symbol = scope->resolve(parent, false);
-			if ( !symbol ) {
-				mTerminal->writeln("could not resolve symbol '" + name + "'!");
-				return false;
-			}
+	object->setValue(Runtime::AtomicValue((*it)));
+	return true;
+}
 
-			Runtime::Object* object = static_cast<Runtime::Object*>(symbol);
-			if ( !object->isAtomicType() ) {
-				mTerminal->writeln("can not modify complex type '" + object->Typename() + "' ");
-				return false;
-			}
+int Backend::notify(SymbolScope* scope)
+{
+	mContinue = false;
+	mScope = scope;
 
-			object->setValue(Runtime::AtomicValue((*it)));
-			return true;
-		}
+	// automatically update watches
+	if ( mAutoWatch && mScope ) {
+		refreshWatches();
+	}
 
-		name = child;
-	} while ( !name.empty() );
+	while ( mRunning && !mContinue ) {
+		mTerminal->write(mSettings->prompt());
 
-	return false;
+		std::string command = mTerminal->read();
+
+		executeCommand(
+			parseCommands(command)
+		);
+	}
+
+	mScope = 0;
+
+	return 0;
+}
+
+int Backend::notifyEnter(SymbolScope* scope)
+{
+	mTerminal->writeln("Stepping into " + StackTrace::GetInstance().currentStackLevel().toString());
+
+	return notify(scope);
+}
+
+int Backend::notifyExit(SymbolScope* scope)
+{
+	mTerminal->writeln("Stepping out of " + StackTrace::GetInstance().currentStackLevel().toString());
+
+	return notify(scope);
 }
 
 StringList Backend::parseCommands(const std::string& commands) const
@@ -337,23 +391,27 @@ void Backend::printHelp()
 {
 	mTerminal->writeln("Generic commands:");
 
-	mTerminal->writeln("\tbreak (b)");
-	mTerminal->writeln("\tbreakpoints");
-	mTerminal->writeln("\tdelete (d)");
-	mTerminal->writeln("\thelp");
-	mTerminal->writeln("\tquit (q)");
-	mTerminal->writeln("\trun");
+	mTerminal->writeln("\tautowatch     automatically show watches after reaching breakpoint");
+	mTerminal->writeln("\tbreak (b)     add breakpoint");
+	mTerminal->writeln("\tbreakpoints   print breakpoints");
+	mTerminal->writeln("\tdelete (d)    delete breakpoint");
+	mTerminal->writeln("\thelp          print help message");
+	mTerminal->writeln("\tquit (q)      quit odebugger");
+	mTerminal->writeln("\trun           run program");
+	mTerminal->writeln("\tunwatch        remove symbol watch");
+	mTerminal->writeln("\twatch (w)      add symbol watch");
 
 	if ( mScope ) {
-		mTerminal->writeln("Debugging commands:");
-		mTerminal->writeln("\tcontinue (c)");
-		mTerminal->writeln("\texecute (e)");
-		mTerminal->writeln("\tinto (i)");
-		mTerminal->writeln("\tmodify (m)");
-		mTerminal->writeln("\tnext (n)");
-		mTerminal->writeln("\tout (o)");
-		mTerminal->writeln("\tprint (p)");
-		mTerminal->writeln("\tresume (r)");
+	mTerminal->writeln("Debugging commands:");
+	mTerminal->writeln("\tcontinue (c)   continue program execution");
+	mTerminal->writeln("\texecute (e)    execute program function");
+	mTerminal->writeln("\tignore         ignore all breakpoints and continue program execution");
+	mTerminal->writeln("\tinto (i)       break on next function call");
+	mTerminal->writeln("\tmodify (m)     modify (atomic) symbol");
+	mTerminal->writeln("\tnext (n)       step over");
+	mTerminal->writeln("\tout (o)        break on next function exit");
+	mTerminal->writeln("\tprint (p)      print symbol");
+	mTerminal->writeln("\twatches (p)    print watched symbols");
 	}
 }
 
@@ -372,29 +430,29 @@ void Backend::printSymbol(const StringList& tokens)
 		name = (*it);
 	}
 
-	std::string child;
-	std::string parent;
-	Symbol* symbol = 0;
-	SymbolScope* scope = mScope;
+	Symbol* symbol = getSymbol(name);
+	if ( !symbol ) {
+		mTerminal->writeln("could not resolve symbol '" + name + "'!");
+		return;
+	}
 
-	do {
-		Tools::split(name, parent, child);
+	mTerminal->writeln(symbol->ToString());
+}
 
-		if ( !parent.empty() && !child.empty() ) {
-			scope = static_cast<ObjectiveScript::Runtime::Object*>(scope->resolve(parent, false));
-		}
-		else {
-			symbol = scope->resolve(parent, false);
-			if ( !symbol ) {
-				mTerminal->writeln("could not resolve symbol '" + name + "'!");
-				return;
-			}
+void Backend::refreshWatches()
+{
+	for ( WatchSet::iterator it = mWatches.begin(); it != mWatches.end(); ++it ) {
+		std::string value = "<not accessible>";
 
-			mTerminal->writeln(symbol->ToString());
+		Symbol* symbol = getSymbol(it->symbol());
+		if ( symbol ) {
+			value = symbol->ToString();
 		}
 
-		name = child;
-	} while ( !name.empty() );
+		it->value(value);
+
+		mTerminal->writeln("[Watch] " + it->toString());
+	}
 }
 
 bool Backend::removeBreakPoint(const StringList& tokens)
@@ -422,6 +480,25 @@ bool Backend::removeBreakPoint(const StringList& tokens)
 	return false;
 }
 
+bool Backend::removeWatch(const StringList& tokens)
+{
+	if ( tokens.size() != 2 ) {
+		mTerminal->writeln("invalid number of arguments!");
+		return false;
+	}
+
+	StringList::const_iterator it = tokens.begin();
+	it++;	// skip first token
+	
+	WatchSet::const_iterator watchIt = mWatches.find(Watch((*it)));
+	if ( watchIt != mWatches.end() ) {
+		mWatches.erase(watchIt);
+		return true;
+	}
+
+	return false;
+}
+
 void Backend::run(const StringList& tokens)
 {
 	prepare(tokens);
@@ -429,26 +506,6 @@ void Backend::run(const StringList& tokens)
 	start();
 
 	stop();
-}
-
-int Backend::runCLI(SymbolScope* scope)
-{
-	mContinue = false;
-	mScope = scope;
-
-	while ( mRunning && !mContinue ) {
-		mTerminal->write(mSettings->prompt());
-
-		std::string command = mTerminal->read();
-
-		executeCommand(
-			parseCommands(command)
-		);
-	}
-
-	mScope = 0;
-
-	return 0;
 }
 
 void Backend::shutdown()
