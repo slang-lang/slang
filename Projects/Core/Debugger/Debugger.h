@@ -38,7 +38,7 @@ public:	// IDebugger implementation
 	bool addBreakPoint(const BreakPoint& breakpoint);
 	bool removeBreakPoint(const BreakPoint& breakpoint);
 
-	const BreakPointList& getBreakPoints() const;
+	const BreakPointCollection& getBreakPoints() const;
 	bool isBreakPoint(const BreakPoint& breakpoint) const;
 	NextAction::E nextAction() const;
 
@@ -57,16 +57,13 @@ public:
 	bool unregisterReceiver(Core::IReceiver* receiver);
 
 private:
-	BreakPointList::const_iterator find(const BreakPoint& breakpoint) const;
-
-private:
 	Debugger();
 	Debugger(const Debugger& );
 	Debugger operator=(const Debugger& );
 	~Debugger();
 
 private:
-	BreakPointList mBreakPoints;
+	BreakPointCollection mBreakPoints;
 	NextAction::E mNextAction;
 	Core::IReceiver* mReceiver;
 };

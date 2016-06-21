@@ -565,6 +565,10 @@ void Interpreter::process_assert(TokenIterator& token)
 	}
 	catch ( ControlFlow::E e ) {
 		mControlFlow = e;
+	}
+
+	// this prevents exceptions from being thrown if someone (maybe the debugger..) has set our control flow to ExitProgram
+	if ( mControlFlow == ControlFlow::ExitProgram ) {
 		return;
 	}
 

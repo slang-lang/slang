@@ -37,23 +37,12 @@ bool Debugger::addBreakPoint(const BreakPoint& breakpoint)
 		return false;
 	}
 
-	mBreakPoints.push_back(breakpoint);
+	mBreakPoints.insert(breakpoint);
 
 	return true;
 }
 
-BreakPointList::const_iterator Debugger::find(const BreakPoint& breakpoint) const
-{
-	for ( BreakPointList::const_iterator it = mBreakPoints.begin(); it != mBreakPoints.end(); ++it ) {
-		if ( (*it) == breakpoint ) {
-			return it;
-		}
-	}
-
-	return mBreakPoints.end();
-}
-
-const BreakPointList& Debugger::getBreakPoints() const
+const BreakPointCollection& Debugger::getBreakPoints() const
 {
 	return mBreakPoints;
 }
@@ -67,9 +56,7 @@ Debugger& Debugger::GetInstance()
 
 bool Debugger::isBreakPoint(const BreakPoint& breakpoint) const
 {
-	BreakPointList::const_iterator it = find(breakpoint);
-
-	return it != mBreakPoints.end();
+	return mBreakPoints.find(breakpoint) != mBreakPoints.end();
 }
 
 IDebugger::NextAction::E Debugger::nextAction() const
@@ -99,23 +86,21 @@ void Debugger::notify(SymbolScope* scope, const Token& token)
 	}
 
 	if ( stop && mReceiver ) {
-		std::cout << "Breakpoint " << breakpoint.toString() << " reached" << std::endl;
-
-		mReceiver->notify(scope);
+		mReceiver->notify(scope, token);
 	}
 }
 
-void Debugger::notifyEnter(SymbolScope* scope, const Token& /*token*/)
+void Debugger::notifyEnter(SymbolScope* scope, const Token& token)
 {
 	if ( mReceiver && mNextAction == NextAction::StepInto ) {
-		mReceiver->notifyEnter(scope);
+		mReceiver->notifyEnter(scope, token);
 	}
 }
 
-void Debugger::notifyExit(SymbolScope* scope, const Token& /*token*/)
+void Debugger::notifyExit(SymbolScope* scope, const Token& token)
 {
 	if ( mReceiver && mNextAction == NextAction::StepOut ) {
-		mReceiver->notifyExit(scope);
+		mReceiver->notifyExit(scope, token);
 	}
 }
 
@@ -135,7 +120,8 @@ bool Debugger::removeBreakPoint(const BreakPoint& breakpoint)
 {
 	size_t size = mBreakPoints.size();
 
-	mBreakPoints.remove(breakpoint);
+	//mBreakPoints.remove(breakpoint);
+	mBreakPoints.erase(mBreakPoints.find(breakpoint));
 
 	return size > mBreakPoints.size();
 }

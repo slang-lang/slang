@@ -58,9 +58,9 @@ public:		// IBackend implementation
 	void stop();
 
 public:	// IReceiver implementation
-	int notify(SymbolScope* scope);
-	int notifyEnter(SymbolScope* scope);
-	int notifyExit(SymbolScope* scope);
+	int notify(SymbolScope* scope, const Token& token = Token());
+	int notifyEnter(SymbolScope* scope, const Token& token = Token());
+	int notifyExit(SymbolScope* scope, const Token& token = Token());
 
 private:
 	std::string executeCommand(const StringList &tokens);
@@ -68,6 +68,7 @@ private:
 	void prepare(const StringList& tokens);
 	void printHelp();
 	void start();
+	void toggleAutoWatch();
 
 private:	// Watches
 	bool addWatch(const StringList &tokens);

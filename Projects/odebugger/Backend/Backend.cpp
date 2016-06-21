@@ -120,7 +120,7 @@ std::string Backend::executeCommand(const StringList &tokens)
 		std::string cmd = (*it++);
 
 		if ( cmd == "autowatch" ) {
-			mAutoWatch = !mAutoWatch;
+			toggleAutoWatch();
 		}
 		else if ( cmd == "backtrace" || cmd == "bt" ) {
 			printStackTrace();
@@ -291,8 +291,14 @@ bool Backend::modifySymbol(const StringList& tokens)
 	return true;
 }
 
-int Backend::notify(SymbolScope* scope)
+int Backend::notify(SymbolScope* scope, const Token& token)
 {
+	Core::BreakPoint breakpoint(token.position());
+
+	if ( scope && !(token.position() == Core::Debugger::immediateBreakToken.position()) ) {
+		mTerminal->writeln("[Breakpoint " + breakpoint.toString() + " reached]");
+	}
+
 	mContinue = false;
 	mScope = scope;
 
@@ -316,16 +322,16 @@ int Backend::notify(SymbolScope* scope)
 	return 0;
 }
 
-int Backend::notifyEnter(SymbolScope* scope)
+int Backend::notifyEnter(SymbolScope* scope, const Token& token)
 {
-	mTerminal->writeln("Stepping into " + StackTrace::GetInstance().currentStackLevel().toString());
+	mTerminal->writeln("[Stepping into " + StackTrace::GetInstance().currentStackLevel().toString() + "]");
 
-	return notify(scope);
+	return notify(scope, token);
 }
 
-int Backend::notifyExit(SymbolScope* scope)
+int Backend::notifyExit(SymbolScope* scope, const Token& /*token*/)
 {
-	mTerminal->writeln("Stepping out of " + StackTrace::GetInstance().currentStackLevel().toString());
+	mTerminal->writeln("[Stepping out of " + StackTrace::GetInstance().currentStackLevel().toString() + "]");
 
 	return notify(scope);
 }
@@ -379,12 +385,12 @@ void Backend::prepare(const StringList& tokens)
 
 void Backend::printBreakPoints()
 {
-	Core::BreakPointList list = mDebugger->getBreakPoints();
+	Core::BreakPointCollection list = mDebugger->getBreakPoints();
 
 	mTerminal->writeln("BreakPoints:");
 
 	int idx = 1;
-	for ( Core::BreakPointList::const_iterator it = list.begin(); it != list.end(); ++it ) {
+	for ( Core::BreakPointCollection::const_iterator it = list.begin(); it != list.end(); ++it ) {
 		mTerminal->writeln(Tools::toString(idx) + ": " + it->toString());
 		idx++;
 	}
@@ -481,10 +487,10 @@ bool Backend::removeBreakPoint(const StringList& tokens)
 
 	int idx = ::Utils::Tools::stringToInt((*it));
 
-	Core::BreakPointList points = mDebugger->getBreakPoints();
+	Core::BreakPointCollection points = mDebugger->getBreakPoints();
 
 	int count = 1;
-	for ( Core::BreakPointList::const_iterator it = points.begin(); it != points.end(); ++it, ++count ) {
+	for ( Core::BreakPointCollection::const_iterator it = points.begin(); it != points.end(); ++it, ++count ) {
 		if ( count == idx ) {
 			mDebugger->removeBreakPoint((*it));
 			return true;
@@ -586,6 +592,19 @@ void Backend::stop()
 	if ( mVirtualMachine ) {
 		delete mVirtualMachine;
 		mVirtualMachine = 0;
+	}
+}
+
+void Backend::toggleAutoWatch()
+{
+	mAutoWatch = !mAutoWatch;
+
+	mTerminal->write("Autowatch is ");
+	if ( mAutoWatch ) {
+		mTerminal->writeln("on");
+	}
+	else {
+		mTerminal->writeln("off");
 	}
 }
 
