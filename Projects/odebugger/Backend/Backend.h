@@ -13,6 +13,7 @@
 #include <Debugger/IReceiver.h>
 #include <Interfaces/ITerminal.h>
 #include "IBackend.h"
+#include "Watch.h"
 
 // Forward declarations
 
@@ -47,6 +48,7 @@ public:		// IBackend implementation
 
 	void continueExecution();
 	void executeSymbol(const StringList& tokens);
+	Symbol* getSymbol(std::string name) const;
 	bool modifySymbol(const StringList& tokens);
 	void printBreakPoints();
 	void printSymbol(const StringList& tokens);
@@ -55,7 +57,9 @@ public:		// IBackend implementation
 	void stop();
 
 public:	// IReceiver implementation
-	int runCLI(SymbolScope* scope);
+	int notify(SymbolScope* scope);
+	int notifyEnter(SymbolScope* scope);
+	int notifyExit(SymbolScope* scope);
 
 private:
 	std::string executeCommand(const StringList &tokens);
@@ -64,7 +68,13 @@ private:
 	void printHelp();
 	void start();
 
+private:	// Watches
+	bool addWatch(const StringList &tokens);
+	void refreshWatches();
+	bool removeWatch(const StringList &tokens);
+
 private:
+	bool mAutoWatch;
 	bool mContinue;
 	Core::Debugger* mDebugger;
 	ParameterList mParameters;
@@ -73,6 +83,7 @@ private:
 	Settings* mSettings;
 	ITerminal* mTerminal;
 	VirtualMachine* mVirtualMachine;
+	WatchSet mWatches;
 };
 
 
