@@ -51,6 +51,7 @@ public:		// IBackend implementation
 	Symbol* getSymbol(std::string name) const;
 	bool modifySymbol(const StringList& tokens);
 	void printBreakPoints();
+	void printStackTrace();
 	void printSymbol(const StringList& tokens);
 
 	void run(const StringList &tokens);

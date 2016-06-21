@@ -122,6 +122,9 @@ std::string Backend::executeCommand(const StringList &tokens)
 		if ( cmd == "autowatch" ) {
 			mAutoWatch = !mAutoWatch;
 		}
+		else if ( cmd == "backtrace" || cmd == "bt" ) {
+			printStackTrace();
+		}
 		else if ( cmd == "break" || cmd == "b" ) {
 			addBreakPoint(tokens);
 		}
@@ -403,15 +406,26 @@ void Backend::printHelp()
 
 	if ( mScope ) {
 	mTerminal->writeln("Debugging commands:");
-	mTerminal->writeln("\tcontinue (c)   continue program execution");
-	mTerminal->writeln("\texecute (e)    execute program function");
-	mTerminal->writeln("\tignore         ignore all breakpoints and continue program execution");
-	mTerminal->writeln("\tinto (i)       break on next function call");
-	mTerminal->writeln("\tmodify (m)     modify (atomic) symbol");
-	mTerminal->writeln("\tnext (n)       step over");
-	mTerminal->writeln("\tout (o)        break on next function exit");
-	mTerminal->writeln("\tprint (p)      print symbol");
-	mTerminal->writeln("\twatches (p)    print watched symbols");
+	mTerminal->writeln("\tbacktrace (bt)   print stack trace");
+	mTerminal->writeln("\tcontinue (c)     continue program execution");
+	mTerminal->writeln("\texecute (e)      execute program function");
+	mTerminal->writeln("\tignore           ignore all breakpoints and continue program execution");
+	mTerminal->writeln("\tinto (i)         break on next function call");
+	mTerminal->writeln("\tmodify (m)       modify (atomic) symbol");
+	mTerminal->writeln("\tnext (n)         step over");
+	mTerminal->writeln("\tout (o)          break on next function exit");
+	mTerminal->writeln("\tprint (p)        print symbol");
+	mTerminal->writeln("\twatches (p)      print watched symbols");
+	}
+}
+
+void Backend::printStackTrace()
+{
+	StackTrace::Stack stack = StackTrace::GetInstance().getStack();
+
+	int stackLevel = 0;
+	for ( StackTrace::Stack::const_iterator it = stack.begin(); it != stack.end(); ++it ) {
+		mTerminal->writeln(Tools::toString(stackLevel++) + ": " + it->toString());
 	}
 }
 
@@ -449,9 +463,9 @@ void Backend::refreshWatches()
 			value = symbol->ToString();
 		}
 
-		it->value(value);
+		//it->value(value);
 
-		mTerminal->writeln("[Watch] " + it->toString());
+		mTerminal->writeln("[Watch] " + it->symbol() + ": " + value);
 	}
 }
 

@@ -46,6 +46,11 @@ StackTrace::StackLevel StackTrace::currentStackLevel() const
 	return mStack.back();
 }
 
+const StackTrace::Stack& StackTrace::getStack() const
+{
+	return mStack;
+}
+
 StackTrace& StackTrace::GetInstance()
 {
 	static StackTrace instance;

@@ -43,18 +43,18 @@ public:
 		void operator=(const StackLevel&)/* = delete*/;
 	};
 
+	typedef std::list<StackLevel> Stack;
+
 public:
 	~StackTrace();
 
 public:
 	void clear();
 	StackLevel currentStackLevel() const;
+	const Stack& getStack() const;
 	void popStack();
 	void print();
 	void pushStack(const std::string& method, const ParameterList& params);
-
-private:
-	typedef std::list<StackLevel> Stack;
 
 private:
 	StackTrace();
