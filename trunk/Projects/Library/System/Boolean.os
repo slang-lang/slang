@@ -22,6 +22,15 @@ public namespace System {
 			mValue = false;
 		}
 
+		/*
+		 * Returns a JSON-formatted string
+		 */
+		public string ToJsonString() const {
+			return "{ " +
+						"mValue: " + mValue + +
+				" }";
+		}
+
 		public string ToString() const {
 			return "Boolean: " + mValue;
 		}

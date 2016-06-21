@@ -15,6 +15,15 @@ public namespace System {
 			mValue = int value;
 		}
 
+		/*
+		 * Returns a JSON-formatted string
+		 */
+		public string ToJsonString() const {
+			return "{ " +
+						"mValue: " + mValue + +
+				" }";
+		}
+
 		public string ToString() const {
 			return "Integer: " +  mValue;
 		}

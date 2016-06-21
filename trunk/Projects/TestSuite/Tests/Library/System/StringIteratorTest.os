@@ -25,7 +25,7 @@ public object Main {
 	}
 
 	private bool TestCase2() modify {
-		print("TestCase 2: invalid interation");
+		print("TestCase 2: invalid iteration");
 
 		StringIterator strIt = new StringIterator("This is a string", " ");
 
@@ -45,7 +45,7 @@ public object Main {
 			return false;
 		}
 		catch {
-			print("caught out of bounds execption");
+			print("caught out of bounds exception");
 			return true;
 		}
 	}
