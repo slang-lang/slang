@@ -15,6 +15,15 @@ public namespace System {
 			mValue = float value;
 		}
 
+		/*
+		 * Returns a JSON-formatted string
+		 */
+		public string ToJsonString() const {
+			return "{ " +
+						"mValue: " + mValue + +
+				" }";
+		}
+
 		public string ToString() const {
 			return "Float: " + mValue;
 		}

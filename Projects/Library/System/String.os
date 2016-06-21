@@ -40,16 +40,6 @@ public namespace System {
 		}
 
 		/*
-		 * Returns the start position of the given string
-		 */
-/*
-		public int Find(string str, int startpos) const {
-			string val = substr(mValue, startpos);
-
-			return strfind(val, str);
-		}
-*/
-		/*
 		 * Returns the length of the held string
 		 */
 		public int Length() const {
@@ -57,7 +47,7 @@ public namespace System {
 		}
 
 		/*
-		 * Replaces the first occurance of the given string with the provided new string
+		 * Replaces the first occurrences of the given string with the provided new string
 		 */
 		public bool Replace(string oldStr, string newStr) modify {
 			int position = strfind(mValue, oldStr, 0);
@@ -72,7 +62,7 @@ public namespace System {
 		}
 
 		/*
-		 * Replaces all occurances of a given string with a new string
+		 * Replaces all occurrences of a given string with a new string
 		 */
 		public bool ReplaceAll(string oldStr, string newStr) modify {
 			bool hasFound = false;
@@ -110,6 +100,15 @@ public namespace System {
 		 */
 		public string ToLowerCase() const {
 			return toLower(mValue);
+		}
+
+		/*
+		 * Returns a JSON-formatted string
+		 */
+		public string ToJsonString() const {
+			return "{ " +
+						"mValue: \"" + mValue + "\"" +
+				" }";
 		}
 
 		/*

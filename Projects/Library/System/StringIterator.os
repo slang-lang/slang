@@ -28,14 +28,6 @@ public namespace System {
 		}
 
 		/*
-		 * Change separator token (resets iterator to start)
-		 */
-		public void setSeparator(string separator) modify {
-			mCurrentPosition = 0;
-			mSeparator = separator;
-		}
-
-		/*
 		 * HasNext returns true if the iteration did not reach the end of the held String value
 		 */
 		public bool HasNext() const {
@@ -63,6 +55,28 @@ public namespace System {
 			return mValue.SubString(oldPos);
 		}
 
+		/*
+		 * Change separator token (resets iterator to start)
+		 */
+		public void SetSeparator(string separator) modify {
+			mCurrentPosition = 0;
+			mSeparator = separator;
+		}
+
+		/*
+		 * Returns a JSON-like formatted string
+		 */
+		public string ToJsonString() const {
+			return "{ " +
+					"mCurrentPosition: " + mCurrentPosition + ", " +
+					"mSeparator: \"" + mSeparator + "\", " +
+					"mValue: " + mValue.ToJsonString() + " " +
+				" }";
+		}
+
+		/*
+		 * Returns a JSON-like formatted string
+		 */
 		public string ToString() const {
 			return "StringIterator: { " +
 					"mCurrentPosition: " + mCurrentPosition + ", " +
