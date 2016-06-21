@@ -5,8 +5,8 @@
 
 // Library includes
 #include <list>
+#include <set>
 #include <string>
-#include <vector>
 
 // Project includes
 #include <Core/Utils/Position.h>
@@ -44,7 +44,8 @@ private:
 };
 
 
-typedef std::list<BreakPoint> BreakPointList;
+//typedef std::list<BreakPoint> BreakPointCollection;
+typedef std::set<BreakPoint> BreakPointCollection;
 
 
 }

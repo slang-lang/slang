@@ -25,9 +25,9 @@ class IReceiver
 public:
 	virtual ~IReceiver() { }
 
-	virtual int notify(SymbolScope* scope) = 0;
-	virtual int notifyEnter(SymbolScope* scope) = 0;
-	virtual int notifyExit(SymbolScope* scope) = 0;
+	virtual int notify(SymbolScope* scope, const Token& token = Token()) = 0;
+	virtual int notifyEnter(SymbolScope* scope, const Token& token = Token()) = 0;
+	virtual int notifyExit(SymbolScope* scope, const Token& token = Token()) = 0;
 };
 
 
