@@ -4,8 +4,12 @@
 
 
 // Library includes
-#include <chrono>
-#include <thread>
+#ifdef _WIN32
+#	include <stdlib.h>
+#else
+	#include <chrono>
+	#include <thread>
+#endif
 
 // Project includes
 #include <Core/BuildInObjects/StringObject.h>
@@ -45,7 +49,11 @@ public:
 
 			long param_millis = (*it++).value().toInt();
 
+#ifdef _WIN32
+			_sleep(param_millis);
+#else
 			std::this_thread::sleep_for(std::chrono::milliseconds(param_millis));
+#endif
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
