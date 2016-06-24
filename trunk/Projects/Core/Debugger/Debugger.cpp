@@ -42,6 +42,11 @@ bool Debugger::addBreakPoint(const BreakPoint& breakpoint)
 	return true;
 }
 
+BreakPointCollection::iterator Debugger::findBreakPoint(const Token& token)
+{
+	return mBreakPoints.find(BreakPoint(token.position()));
+}
+
 const BreakPointCollection& Debugger::getBreakPoints() const
 {
 	return mBreakPoints;
@@ -70,7 +75,8 @@ void Debugger::notify(SymbolScope* scope, const Token& token)
 		return;
 	}
 
-	BreakPoint breakpoint(token.position());
+	BreakPoint breakpoint = BreakPoint(token.position());
+	BreakPointCollection::iterator breakIt = mBreakPoints.find(breakpoint);
 
 	bool stop = false;
 
@@ -79,28 +85,31 @@ void Debugger::notify(SymbolScope* scope, const Token& token)
 			stop = true;
 			break;
 		case NextAction::WaitForBreakPoint:
-			stop = isBreakPoint(breakpoint);
+			if ( breakIt != mBreakPoints.end() ) {
+				stop = true;
+				breakpoint = *breakIt;
+			}
 			break;
 		default:
 			break;
 	}
 
 	if ( stop && mReceiver ) {
-		mReceiver->notify(scope, token);
+		mReceiver->notify(scope, breakpoint);
 	}
 }
 
-void Debugger::notifyEnter(SymbolScope* scope, const Token& token)
+void Debugger::notifyEnter(SymbolScope* scope, const Token& /*token*/)
 {
 	if ( mReceiver && mNextAction == NextAction::StepInto ) {
-		mReceiver->notifyEnter(scope, token);
+		mReceiver->notifyEnter(scope, immediateBreakPoint);
 	}
 }
 
-void Debugger::notifyExit(SymbolScope* scope, const Token& token)
+void Debugger::notifyExit(SymbolScope* scope, const Token& /*token*/)
 {
 	if ( mReceiver && mNextAction == NextAction::StepOut ) {
-		mReceiver->notifyExit(scope, token);
+		mReceiver->notifyExit(scope, immediateBreakPoint);
 	}
 }
 
@@ -120,10 +129,34 @@ bool Debugger::removeBreakPoint(const BreakPoint& breakpoint)
 {
 	size_t size = mBreakPoints.size();
 
-	//mBreakPoints.remove(breakpoint);
 	mBreakPoints.erase(mBreakPoints.find(breakpoint));
 
 	return size > mBreakPoints.size();
+}
+
+void Debugger::resume()
+{
+	mNextAction = NextAction::WaitForBreakPoint;
+}
+
+void Debugger::resumeWithoutBreaks()
+{
+	mNextAction = NextAction::None;
+}
+
+void Debugger::stepInto()
+{
+	mNextAction = NextAction::StepInto;
+}
+
+void Debugger::stepOut()
+{
+	mNextAction = NextAction::StepOut;
+}
+
+void Debugger::stepOver()
+{
+	mNextAction = NextAction::StepOver;
 }
 
 bool Debugger::unregisterReceiver(Core::IReceiver* receiver)

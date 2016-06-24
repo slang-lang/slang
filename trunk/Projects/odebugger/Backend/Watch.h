@@ -42,7 +42,7 @@ private:
 };
 
 
-typedef std::set<Watch> WatchSet;
+typedef std::set<Watch> WatchCollection;
 
 
 }

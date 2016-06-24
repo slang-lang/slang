@@ -4,12 +4,12 @@
 
 
 // Library includes
-#include <list>
 #include <set>
 #include <string>
 
 // Project includes
 #include <Core/Utils/Position.h>
+#include "Condition.h"
 
 // Forward declarations
 
@@ -28,6 +28,9 @@ public:
 	~BreakPoint();
 
 public:
+	const Condition& getCondition() const;
+	void setCondition(const Condition& condition);
+
 	const std::string& getFilename() const;
 	unsigned int getLine() const;
 
@@ -39,12 +42,12 @@ public:
 	bool operator==(const Utils::Position& other) const;
 
 private:
+	Condition mCondition;
 	std::string mFilename;
 	unsigned int mLine;
 };
 
 
-//typedef std::list<BreakPoint> BreakPointCollection;
 typedef std::set<BreakPoint> BreakPointCollection;
 
 

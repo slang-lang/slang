@@ -19,15 +19,17 @@ class SymbolScope;
 
 namespace Core {
 
+// Forward declaration
+class BreakPoint;
 
 class IReceiver
 {
 public:
 	virtual ~IReceiver() { }
 
-	virtual int notify(SymbolScope* scope, const Token& token = Token()) = 0;
-	virtual int notifyEnter(SymbolScope* scope, const Token& token = Token()) = 0;
-	virtual int notifyExit(SymbolScope* scope, const Token& token = Token()) = 0;
+	virtual int notify(SymbolScope* scope, const BreakPoint& breakpoint) = 0;
+	virtual int notifyEnter(SymbolScope* scope, const BreakPoint& breakpoint) = 0;
+	virtual int notifyExit(SymbolScope* scope, const BreakPoint& breakpoint) = 0;
 };
 
 
