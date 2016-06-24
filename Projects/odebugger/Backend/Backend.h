@@ -36,9 +36,11 @@ public:
 	Backend();
 	~Backend();
 
-public:
+public:	// Setup
 	void connectSettings(Settings* settings);
 	void connectTerminal(ITerminal* terminal);
+
+public:
 	int exec();
 	void shutdown();
 
@@ -58,9 +60,15 @@ public:		// IBackend implementation
 	void stop();
 
 public:	// IReceiver implementation
-	int notify(SymbolScope* scope, const Token& token = Token());
-	int notifyEnter(SymbolScope* scope, const Token& token = Token());
-	int notifyExit(SymbolScope* scope, const Token& token = Token());
+	int notify(SymbolScope* scope, const Core::BreakPoint& breakpoint);
+	int notifyEnter(SymbolScope* scope, const Core::BreakPoint& breakpoint);
+	int notifyExit(SymbolScope* scope, const Core::BreakPoint& breakpoint);
+
+private:	// Watches
+	bool addWatch(const StringList &tokens);
+	void refreshWatches();
+	bool removeWatch(const StringList &tokens);
+	void toggleAutoWatch();
 
 private:
 	std::string executeCommand(const StringList &tokens);
@@ -68,12 +76,6 @@ private:
 	void prepare(const StringList& tokens);
 	void printHelp();
 	void start();
-	void toggleAutoWatch();
-
-private:	// Watches
-	bool addWatch(const StringList &tokens);
-	void refreshWatches();
-	bool removeWatch(const StringList &tokens);
 
 private:
 	bool mAutoWatch;
@@ -85,7 +87,7 @@ private:
 	Settings* mSettings;
 	ITerminal* mTerminal;
 	VirtualMachine* mVirtualMachine;
-	WatchSet mWatches;
+	WatchCollection mWatches;
 };
 
 

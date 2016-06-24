@@ -12,6 +12,7 @@
 #include <Core/StackTrace.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine.h>
+#include <Debugger/Condition.h>
 #include <Debugger/Debugger.h>
 #include <Tools/Files.h>
 #include <Tools/Strings.h>
@@ -26,7 +27,7 @@ namespace ObjectiveScript {
 
 
 Backend::Backend()
-: mAutoWatch(false),
+: mAutoWatch(true),
   mContinue(false),
   mDebugger(0),
   mRunning(true),
@@ -47,7 +48,7 @@ Backend::~Backend()
 
 bool Backend::addBreakPoint(const StringList& tokens)
 {
-	if ( tokens.size() != 3 ) {
+	if ( tokens.size() != 3 && tokens.size() != 6 ) {
 		mTerminal->writeln("invalid number of arguments!");
 		return false;
 	}
@@ -56,9 +57,21 @@ bool Backend::addBreakPoint(const StringList& tokens)
 	it++;	// skip first token
 
 	std::string file = (*it++);
-	unsigned line = ::Utils::Tools::stringToInt((*it));
+	unsigned line = ::Utils::Tools::stringToInt((*it++));
 
-	mDebugger->addBreakPoint(Utils::Position(file, line));
+	Core::BreakPoint breakpoint(Utils::Position(file, line));
+
+	if ( tokens.size() == 6 ) {
+		std::string left = (*it++);
+		std::string op = (*it++);
+		std::string right = (*it++);
+
+		Core::Condition condition(left, Core::Condition::Type::Equals, right);
+
+		breakpoint.setCondition(condition);
+	}
+
+	mDebugger->addBreakPoint(breakpoint);
 
 	return true;
 }
@@ -106,7 +119,7 @@ int Backend::exec()
 
 	// start program execution
 	while ( mRunning ) {
-		notify(0);
+		notify(0, Core::Debugger::immediateBreakPoint);
 	}
 
 	return 0;
@@ -183,7 +196,12 @@ std::string Backend::executeCommand(const StringList &tokens)
 			refreshWatches();
 		}
 		else if ( cmd == "run" ) {
-			run(tokens);
+			if ( mScope ) {
+				mTerminal->writeln("stop current debugging session before starting a new one!");
+			}
+			else {
+				run(tokens);
+			}
 		}
 		else {
 			mTerminal->writeln("unknown command '" + cmd + "'");
@@ -291,16 +309,24 @@ bool Backend::modifySymbol(const StringList& tokens)
 	return true;
 }
 
-int Backend::notify(SymbolScope* scope, const Token& token)
+int Backend::notify(SymbolScope* scope, const Core::BreakPoint& breakpoint)
 {
-	Core::BreakPoint breakpoint(token.position());
-
-	if ( scope && !(token.position() == Core::Debugger::immediateBreakToken.position()) ) {
-		mTerminal->writeln("[Breakpoint " + breakpoint.toString() + " reached]");
-	}
-
 	mContinue = false;
 	mScope = scope;
+
+// Condition check
+// {
+	Core::Condition condition = breakpoint.getCondition();
+	if ( !condition.evaluate(getSymbol(condition.lhs()), getSymbol(condition.rhs())) ) {
+		mContinue = true;
+		mScope = 0;
+		return 0;
+	}
+// }
+
+	if ( scope && !(breakpoint == Core::Debugger::immediateBreakPoint) ) {
+		mTerminal->writeln("[Breakpoint " + breakpoint.toString() + " reached]");
+	}
 
 	// automatically update watches
 	if ( mAutoWatch && mScope ) {
@@ -322,18 +348,18 @@ int Backend::notify(SymbolScope* scope, const Token& token)
 	return 0;
 }
 
-int Backend::notifyEnter(SymbolScope* scope, const Token& token)
+int Backend::notifyEnter(SymbolScope* scope, const Core::BreakPoint& breakpoint)
 {
 	mTerminal->writeln("[Stepping into " + StackTrace::GetInstance().currentStackLevel().toString() + "]");
 
-	return notify(scope, token);
+	return notify(scope, breakpoint);
 }
 
-int Backend::notifyExit(SymbolScope* scope, const Token& /*token*/)
+int Backend::notifyExit(SymbolScope* scope, const Core::BreakPoint& breakpoint)
 {
 	mTerminal->writeln("[Stepping out of " + StackTrace::GetInstance().currentStackLevel().toString() + "]");
 
-	return notify(scope);
+	return notify(scope, breakpoint);
 }
 
 StringList Backend::parseCommands(const std::string& commands) const
@@ -392,6 +418,7 @@ void Backend::printBreakPoints()
 	int idx = 1;
 	for ( Core::BreakPointCollection::const_iterator it = list.begin(); it != list.end(); ++it ) {
 		mTerminal->writeln(Tools::toString(idx) + ": " + it->toString());
+
 		idx++;
 	}
 }
@@ -461,7 +488,7 @@ void Backend::printSymbol(const StringList& tokens)
 
 void Backend::refreshWatches()
 {
-	for ( WatchSet::iterator it = mWatches.begin(); it != mWatches.end(); ++it ) {
+	for ( WatchCollection::iterator it = mWatches.begin(); it != mWatches.end(); ++it ) {
 		std::string value = "<not accessible>";
 
 		Symbol* symbol = getSymbol(it->symbol());
@@ -509,8 +536,8 @@ bool Backend::removeWatch(const StringList& tokens)
 
 	StringList::const_iterator it = tokens.begin();
 	it++;	// skip first token
-	
-	WatchSet::const_iterator watchIt = mWatches.find(Watch((*it)));
+
+	WatchCollection::const_iterator watchIt = mWatches.find(Watch((*it)));
 	if ( watchIt != mWatches.end() ) {
 		mWatches.erase(watchIt);
 		return true;

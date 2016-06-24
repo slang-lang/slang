@@ -247,6 +247,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\Extensions.h"
+			>
+		</File>
+		<File
 			RelativePath=".\Mysql\FieldCount.cpp"
 			>
 		</File>

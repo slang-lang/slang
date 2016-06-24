@@ -29,6 +29,11 @@ BreakPoint::~BreakPoint()
 {
 }
 
+const Condition& BreakPoint::getCondition() const
+{
+	return mCondition;
+}
+
 const std::string& BreakPoint::getFilename() const
 {
 	return mFilename;
@@ -37,6 +42,11 @@ const std::string& BreakPoint::getFilename() const
 unsigned int BreakPoint::getLine() const
 {
 	return mLine;
+}
+
+void BreakPoint::setCondition(const Condition& condition)
+{
+	mCondition = condition;
 }
 
 std::string BreakPoint::toString() const

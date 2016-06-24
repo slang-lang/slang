@@ -46,15 +46,18 @@ public:	// IDebugger implementation
 	void notifyEnter(SymbolScope* scope, const Token& token = Token());
 	void notifyExit(SymbolScope* scope, const Token& token = Token());
 
-	void stepInto() { mNextAction = NextAction::StepInto; }
-	void stepOut() { mNextAction = NextAction::StepOut; }
-	void stepOver() { mNextAction = NextAction::StepOver; }
-	void resume() { mNextAction = NextAction::WaitForBreakPoint; }
-	void resumeWithoutBreaks() { mNextAction = NextAction::None; }
+	void resume();
+	void resumeWithoutBreaks();
+	void stepInto();
+	void stepOut();
+	void stepOver();
 
 public:
 	bool registerReceiver(Core::IReceiver* receiver);
 	bool unregisterReceiver(Core::IReceiver* receiver);
+
+private:
+	BreakPointCollection::iterator findBreakPoint(const Token& token);
 
 private:
 	Debugger();
