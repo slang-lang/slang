@@ -54,6 +54,8 @@ bool Condition::evaluate(Symbol* lhs, Symbol* rhs) const
 			return operator_binary_less(left, right);
 		case Type::LessEqual:
 			return operator_binary_less_equal(left, right);
+		case Type::Unequal:
+			return !operator_binary_equal(left, right);
 		case Type::Invalid:
 			return true;
 	}
@@ -82,6 +84,7 @@ std::string Condition::toString() const
 		case Type::GreaterEqual: result += " >= "; break;
 		case Type::Less: result += " < "; break;
 		case Type::LessEqual: result += " <= "; break;
+		case Type::Unequal: result += " != "; break;
 		case Type::Invalid: result += " "; break;
 	}
 	result += mRight;
