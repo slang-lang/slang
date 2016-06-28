@@ -2,10 +2,8 @@
 
 import System.Exception;
 
-private object TestObject
-{
-	public void TestObject()
-	{
+private object TestObject {
+	public void TestObject() {
 		print("TestObject()");
 
 		print("throw in constructor");
@@ -13,18 +11,15 @@ private object TestObject
 		throw new Exception("42");
 	}
 
-	public void ~TestObject()
-	{
+	public void ~TestObject() {
 		print("~TestObject()");
 	}
 }
 
-public object Main
-{
-	public void Main(int argc = 0, string argv = "")
-	{
+public object Main {
+	public void Main(int argc = 0, string argv = "") {
 		try {
-			TestObject obj;
+			TestObject obj = new TestObject();
 		}
 	}
 }

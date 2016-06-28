@@ -74,7 +74,7 @@ public object Main
 {
 	public void Main(int argc, string argv)
 	{
-		Level4Replica replica;
+		Level4Replica replica = new Level4Replica();
 		print(replica.mLevel1);
 		print(replica.mLevel2);
 		print(replica.mLevel3);
