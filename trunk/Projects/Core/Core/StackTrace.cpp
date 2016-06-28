@@ -7,6 +7,7 @@
 #include <iostream>
 
 // Project includes
+#include <Core/Tools.h>
 #include <Core/Types.h>
 
 // Namespace declarations
@@ -15,15 +16,16 @@
 namespace ObjectiveScript {
 
 
-StackTrace::StackLevel::StackLevel(const std::string& method, const ParameterList& params)
-: mMethod(method),
+StackTrace::StackLevel::StackLevel(const unsigned long level, const std::string& method, const ParameterList& params)
+: mLevel(level),
+  mMethod(method),
   mParameters(params)
 {
 }
 
 std::string StackTrace::StackLevel::toString() const
 {
-	return mMethod + "(" + ObjectiveScript::toString(mParameters) + ")";
+	return Tools::ConvertToStdString(mLevel) + ": " + mMethod + "(" + ObjectiveScript::toString(mParameters) + ")";
 }
 
 StackTrace::StackTrace()
@@ -65,17 +67,15 @@ void StackTrace::popStack()
 
 void StackTrace::print()
 {
-	int stackLevel = 0;
-
 	for ( Stack::const_iterator it = mStack.begin(); it != mStack.end(); ++it ) {
-		std::cout << stackLevel++ << ": " << (*it).toString() << std::endl;
+		std::cout << (*it).toString() << std::endl;
 	}
 }
 
 void StackTrace::pushStack(const std::string &method, const ParameterList &params)
 {
 	mStack.push_back(
-		StackLevel(method, params)
+		StackLevel(mStack.size(), method, params)
 	);
 }
 

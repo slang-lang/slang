@@ -456,9 +456,8 @@ void Backend::printStackTrace()
 {
 	StackTrace::Stack stack = StackTrace::GetInstance().getStack();
 
-	int stackLevel = 0;
 	for ( StackTrace::Stack::const_iterator it = stack.begin(); it != stack.end(); ++it ) {
-		mTerminal->writeln(Tools::toString(stackLevel++) + ": " + it->toString());
+		mTerminal->writeln(it->toString());
 	}
 }
 

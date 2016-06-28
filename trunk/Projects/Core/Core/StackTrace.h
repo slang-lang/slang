@@ -30,12 +30,13 @@ public:
 	class StackLevel
 	{
 	public:
-		StackLevel(const std::string& method, const ParameterList& params);
+		StackLevel(const unsigned long level, const std::string& method, const ParameterList& params);
 
 	public:
 		std::string toString() const;
 
 	public:
+		const unsigned long mLevel;
 		const std::string mMethod;
 		const ParameterList mParameters;
 

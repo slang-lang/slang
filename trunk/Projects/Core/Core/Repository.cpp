@@ -48,14 +48,6 @@ Repository::Repository()
 
 Repository::~Repository()
 {
-	// Cleanup blue prints
-	// {
-	for ( Designtime::BluePrintMap::iterator it = mBluePrints.begin(); it != mBluePrints.end(); ++it ) {
-		it->second.cleanup();
-	}
-	mBluePrints.clear();
-	// }
-
 	// Cleanup instances
 	// {
 	for ( ReferenceCountedObjects::iterator it = mInstances.begin(); it != mInstances.end(); ++it ) {
@@ -71,6 +63,14 @@ Repository::~Repository()
 	// Cleanup prototypes
 	// {
 	mPrototypes.clear();
+	// }
+
+	// Cleanup blue prints
+	// {
+	for ( Designtime::BluePrintMap::iterator it = mBluePrints.begin(); it != mBluePrints.end(); ++it ) {
+		it->second.cleanup();
+	}
+	mBluePrints.clear();
 	// }
 
 	delete mScope;

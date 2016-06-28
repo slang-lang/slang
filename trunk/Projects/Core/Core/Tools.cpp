@@ -262,22 +262,29 @@ bool isTrue(const std::string& value)
 
 bool isTrue(const Runtime::Object& object)
 {
-	if ( !object.isValid() || !object.getValue().toBool() ) {
-		return false;
+	if ( object.isAtomicType() ) {
+		return object.getValue().toBool();
 	}
 
-	// everything that's not false has to be true
-	return true;
+	return object.isValid();
 }
 
 bool isTrue(const Runtime::Object* object)
 {
+	if ( object->isAtomicType() ) {
+		return object->getValue().toBool();
+	}
+
+	return object->isValid();
+
+/*
 	if ( !object || !object->isValid() || !object->getValue().toBool() ) {
 		return false;
 	}
 
 	// everything that's not false has to be true
 	return true;
+*/
 }
 
 
