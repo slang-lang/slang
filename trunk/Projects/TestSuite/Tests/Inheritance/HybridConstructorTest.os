@@ -17,12 +17,14 @@ private object BaseObject {
 private object DerivedObject extends BaseObject {
 	public void DerivedObject() {
 		print("DerivedObject()");
+		print("mValue = " + mValue);
 
 		base.BaseObject(5);
 	}
 
 	public void ~DerivedObject() {
-		print("~DerivedObject(" + mValue + ")");
+		print("mValue = " + mValue);
+		print("~DerivedObject()");
 	}
 }
 

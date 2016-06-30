@@ -26,8 +26,8 @@ UserObject::UserObject()
 	mIsConstructed = false;
 }
 
-UserObject::UserObject(const std::string& name, const std::string& filename, const std::string& type, AtomicValue value)
-: Object(name, filename, type, value)
+UserObject::UserObject(const std::string& name, const std::string& filename, const std::string& type)
+: Object(name, filename, type, 0)
 {
 	mIsAtomicType = false;
 	mIsConstructed = false;

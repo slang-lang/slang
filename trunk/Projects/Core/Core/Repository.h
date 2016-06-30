@@ -39,7 +39,7 @@ public:
 	void addBlueprint(const Designtime::BluePrint& object);
 	void addPrototype(const Designtime::Prototype& prototype);
 
-	Runtime::Object* createInstance(const std::string& type, const std::string& name = ANONYMOUS_OBJECT, const std::string& prototype = "");
+	Runtime::Object* createInstance(const std::string& type, const std::string& name = ANONYMOUS_OBJECT, bool initialize = true);
 
 	void addReference(Runtime::Object *object);
 	void removeReference(Runtime::Object *object);
@@ -57,8 +57,8 @@ private: // hide me from public
 	void CollectGarbage();
 
 private:
-	Runtime::Object* createObject(const std::string& name, Designtime::BluePrint* blueprint);
-	Runtime::Object* createUserObject(const std::string& name, Designtime::BluePrint* blueprint);
+	Runtime::Object* createObject(const std::string& name, Designtime::BluePrint* blueprint, bool initialize);
+	Runtime::Object* createUserObject(const std::string& name, Designtime::BluePrint* blueprint, bool initialize);
 
 	void createDefaultMethods(Runtime::Object *object);
 	void initializeObject(Runtime::Object *object, Designtime::BluePrint* blueprint);
