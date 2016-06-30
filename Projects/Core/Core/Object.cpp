@@ -290,8 +290,6 @@ ControlFlow::E Object::execute(Object *result, const std::string& name, const Pa
 {
 	OSdebug("execute('" + name + "', [" + toString(params) + "])");
 
-	ControlFlow::E controlflow = ControlFlow::Normal;
-
 	if ( !mIsConstructed ) {
 		// a method is being called although our object has not yet been constructed?
 		return ControlFlow::Throw;
@@ -314,28 +312,11 @@ ControlFlow::E Object::execute(Object *result, const std::string& name, const Pa
 	}
 */
 
-	result->setRepository(mRepository);
 	method->setRepository(mRepository);
+	result->setRepository(mRepository);
 
 	// execute our member method
-	controlflow = method->execute(params, result, Token());
-
-	if ( controlflow == ControlFlow::Normal ) {
-		switch ( method->getMethodType() ) {
-			case MethodAttributes::MethodType::Constructor:
-				assert(!"constructor");
-				mIsConstructed = true;
-				break;
-			case MethodAttributes::MethodType::Destructor:
-				assert(!"destructor");
-				mIsConstructed = false;
-				break;
-			default:
-				break;
-		}
-	}
-
-	return controlflow;
+	return method->execute(params, result, Token());
 }
 
 bool Object::FromJson(const Json::Value& value)
@@ -764,8 +745,10 @@ void Object::operator_unary_not()
 
 Symbol* Object::resolve(const std::string& name, bool onlyCurrentScope) const
 {
-	Symbol *result = MethodScope::resolve(name, onlyCurrentScope);
+	// (1) look only in current scope
+	Symbol *result = MethodScope::resolve(name, true);
 
+	// (2) check inheritance
 	if ( !result && !onlyCurrentScope ) {
 		for ( Inheritance::const_iterator it = mInheritance.begin(); it != mInheritance.end(); ++it ) {
 			result = it->second->resolve(name, onlyCurrentScope);
@@ -774,6 +757,11 @@ Symbol* Object::resolve(const std::string& name, bool onlyCurrentScope) const
 				break;
 			}
 		}
+	}
+
+	// (3) if we still haven't found something also look in other scopes
+	if ( !onlyCurrentScope && !result ) {
+		result = MethodScope::resolve(name, false);
 	}
 
 	return result;
@@ -805,6 +793,11 @@ ObjectiveScript::MethodSymbol* Object::resolveMethod(const std::string& name, co
 	}
 
 	return result;
+}
+
+void Object::setConstructed(bool state)
+{
+	mIsConstructed = state;
 }
 
 void Object::setParent(IScope *scope)

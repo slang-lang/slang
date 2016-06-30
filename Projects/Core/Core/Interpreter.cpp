@@ -1047,8 +1047,7 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 
 	token = closed;
 
-	*result = *mRepository->createInstance(type, name, prototype);
-	result->setRepository(mRepository);
+	*result = *mRepository->createInstance(type, name, true);
 
 	mControlFlow = result->Constructor(params);
 }
@@ -1301,7 +1300,7 @@ void Interpreter::process_type(TokenIterator& token)
 	}
 
 	// TODO: create a shallow object if we have an assignment statement to prevent duplicate object instantiation
-	object = mRepository->createInstance(type, name);
+	object = mRepository->createInstance(type, name, true);
 
 	getScope()->define(name, object);
 

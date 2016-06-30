@@ -200,32 +200,17 @@ void Repository::createDefaultMethods(Runtime::Object *object)
 /*
  * single point of contact for outsiders to create and instantiate new objects (no matter if atomic or not)
  */
-Runtime::Object* Repository::createInstance(const std::string& type, const std::string& name, const std::string& prototype)
+Runtime::Object* Repository::createInstance(const std::string& type, const std::string& name, bool initialize)
 {
 	// non-reference-based instantiation
-	OSdebug("createInstance('" + type + "', '" + name + "', '" + prototype + "')");
+	OSdebug("createInstance('" + type + "', '" + name + "', " + (initialize ? "true" : "false") + ")");
 
-	Designtime::BluePrint blueprint;
-
-/*	Not part of this release
-	Prototypes::iterator it = mPrototypes.find(prototype);
-	if ( it != mPrototypes.end() ) {
-		blueprint = it->second.generateBluePrint(type);
+	Designtime::BluePrintMap::iterator it = mBluePrints.find(type);
+	if ( it == mBluePrints.end() ) {
+		throw Utils::Exceptions::Exception("could not create instance of unknown type '" + type + "'");
 	}
-	else {
-*/
-		Designtime::BluePrintMap::iterator it = mBluePrints.find(type);
-		if ( it != mBluePrints.end() ) {
-			blueprint = it->second;
-		}
-		else {
-			throw Utils::Exceptions::Exception("could not create instance of unknown type '" + type + "'");
-		}
-/*	Not part of this release
-	}
-*/
 
-	Runtime::Object *object = createObject(name, &blueprint);
+	Runtime::Object *object = createObject(name, &it->second, initialize);
 
 	addReference(object);
 
@@ -235,7 +220,7 @@ Runtime::Object* Repository::createInstance(const std::string& type, const std::
 /*
  * creates (and initializes) atomic types and triggers the user defined object creation process
  */
-Runtime::Object* Repository::createObject(const std::string& name, Designtime::BluePrint* blueprint)
+Runtime::Object* Repository::createObject(const std::string& name, Designtime::BluePrint* blueprint, bool initialize)
 {
 	Runtime::Object *object = 0;
 
@@ -263,7 +248,7 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 	}
 	// instantiate user defined types
 	else {
-		object = createUserObject(name, blueprint);
+		object = createUserObject(name, blueprint, initialize);
 	}
 
 	// TODO: this is no real check, one would have to check every method in an object to verify an objects abstractness
@@ -286,12 +271,12 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 /*
  * creates and initializes a user defined object type and initializes its base classes
  */
-Runtime::Object* Repository::createUserObject(const std::string& name, Designtime::BluePrint* blueprint)
+Runtime::Object* Repository::createUserObject(const std::string& name, Designtime::BluePrint* blueprint, bool initialize)
 {
 	assert(blueprint);
 
 	// create the base object
-	Runtime::Object *object = new Runtime::UserObject(name, blueprint->Filename(), blueprint->Typename(), 0);
+	Runtime::Object *object = new Runtime::UserObject(name, blueprint->Filename(), blueprint->Typename());
 
 	Designtime::Ancestors ancestors = blueprint->getInheritance();
 
@@ -304,24 +289,24 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 				throw Utils::Exceptions::Exception("trying to initialize unknown object '" + ancestorIt->name() + "'");
 			}
 
-			// create base object
-			Runtime::Object *ancestor = createObject(name, &blueIt->second);
-
 			// undefine previous base (while using single inheritance none should exist yet)
 			object->undefine(IDENTIFIER_BASE, object->resolve(IDENTIFIER_BASE, false));
+
+			// create base object
+			Runtime::Object *ancestor = createInstance(blueIt->first, name, initialize);
+
 			// define new base
 			object->define(IDENTIFIER_BASE, ancestor);
-
-			// update our reference counter
-			addReference(ancestor);
 
 			// add our newly created ancestor to our inheritance
 			object->addInheritance((*ancestorIt), ancestor);
 		}
 	}
 
-	// initialize the base object
-	initializeObject(object, blueprint);
+	if ( initialize ) {
+		// initialize the base object
+		initializeObject(object, blueprint);
+	}
 
 	return object;
 }

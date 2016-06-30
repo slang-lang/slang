@@ -303,6 +303,19 @@ ControlFlow::E Method::processControlFlow(ControlFlow::E controlflow, Object *re
 			break;
 	}
 
+	if ( controlflow == ControlFlow::Normal ) {
+		switch ( getMethodType() ) {
+			case MethodAttributes::MethodType::Constructor:
+				static_cast<Object*>(mParent)->setConstructed(true);
+				break;
+			case MethodAttributes::MethodType::Destructor:
+				static_cast<Object*>(mParent)->setConstructed(false);
+				break;
+			default:
+				break;
+		}
+	}
+
 	return controlflow;
 }
 

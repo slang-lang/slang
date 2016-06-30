@@ -114,7 +114,7 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 	// initialize Main object
 	if ( mainIt != objects.end() ) {
 		// create an instance of our Main object ...
-		Runtime::Object *main = mRepository->createInstance(mainIt->Typename(), "main");
+		Runtime::Object *main = mRepository->createInstance(mainIt->Typename(), "main", true);
 		assert(main);
 
 		// ... define it in our global scope ...
