@@ -37,7 +37,7 @@ void SystemExtension::provideMethods(ExtensionMethods &methods)
 	methods.push_back(new AssertMsg());
 	methods.push_back(new GetEnv());
 	methods.push_back(new Printf());
-	//methods.push_back(new Sleep());
+	methods.push_back(new Sleep());
 	methods.push_back(new Write());
 	methods.push_back(new WriteLn());
 
