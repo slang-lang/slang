@@ -124,15 +124,17 @@ const TokenList& Interpreter::getTokens() const
 Symbol* Interpreter::identify(TokenIterator& token) const
 {
 	Symbol *result = 0;
+	bool onlyCurrentScope = false;
 
 	while ( token->type() == Token::Type::IDENTIFER || token->type() == Token::Type::TYPE ) {
 		std::string identifier = token->content();
 
 		if ( !result ) {
-			result = getScope()->resolve(identifier, false);
+			result = getScope()->resolve(identifier, onlyCurrentScope);
 		}
 		else {
-			result = static_cast<Object*>(result)->resolve(identifier, false);
+			result = static_cast<Object*>(result)->resolve(identifier, onlyCurrentScope);
+			onlyCurrentScope = true;
 		}
 
 		if ( lookahead(token)->type() != Token::Type::SCOPE ) {
@@ -156,22 +158,23 @@ Symbol* Interpreter::identify(TokenIterator& token) const
 Symbol* Interpreter::identifyMethod(TokenIterator& token, const ParameterList& params) const
 {
 	Symbol *result = 0;
+	bool onlyCurrentScope = false;
 
 	while ( token->type() == Token::Type::IDENTIFER || token->type() == Token::Type::TYPE ) {
 		std::string identifier = token->content();
 
 		if ( !result ) {
-			result = getScope()->resolve(identifier, false);
+			result = getScope()->resolve(identifier, onlyCurrentScope);
 
 			if ( result->getType() == Symbol::IType::MethodSymbol ) {
 				switch ( result->getType() ) {
 					case Symbol::IType::MethodSymbol:
-						result = static_cast<Method*>(mParent)->resolveMethod(identifier, params, false);
+						result = static_cast<Method*>(mParent)->resolveMethod(identifier, params, onlyCurrentScope);
 						break;
 					case Symbol::IType::NamespaceSymbol:
 						throw Utils::Exceptions::NotImplemented("namespace symbol");
 					case Symbol::IType::ObjectSymbol:
-						result = static_cast<Object*>(result)->resolveMethod(identifier, params, false);
+						result = static_cast<Object*>(result)->resolveMethod(identifier, params, onlyCurrentScope);
 						break;
 					case Symbol::IType::BluePrintSymbol:
 					case Symbol::IType::UnknownSymbol:
@@ -180,7 +183,8 @@ Symbol* Interpreter::identifyMethod(TokenIterator& token, const ParameterList& p
 			}
 		}
 		else {
-			result = static_cast<Object*>(result)->resolveMethod(identifier, params, false);
+			result = static_cast<Object*>(result)->resolveMethod(identifier, params, onlyCurrentScope);
+			onlyCurrentScope = true;
 		}
 
 		if ( lookahead(token)->type() != Token::Type::SCOPE ) {
