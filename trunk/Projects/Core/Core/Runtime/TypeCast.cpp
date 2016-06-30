@@ -26,7 +26,7 @@ namespace ObjectiveScript {
 namespace Runtime {
 
 
-void typecast(Object *base, const std::string& type, Repository *repository)
+void typecast(Object *base, const std::string& targetType, Repository *repository)
 {
 	if ( !base ) {
 		OSerror("cannot cast null pointer");
@@ -36,40 +36,42 @@ void typecast(Object *base, const std::string& type, Repository *repository)
 		OSerror("invalid repository provided");
 		throw Utils::Exceptions::NullPointer("invalid repository provided");
 	}
-	if ( type.empty() ) {
+	if ( targetType.empty() ) {
 		OSerror("invalid cast target type");
 		throw Utils::Exceptions::Exception("invalid cast target type");
 	}
 
-	if ( type == GenericObject::TYPENAME ) {
+	std::string sourceType = base->Typename();
+
+	if ( targetType == GenericObject::TYPENAME ) {
 		base->overrideTypename(GenericObject::TYPENAME);
 	}
-	else if ( type == BoolObject::TYPENAME ) {
+	else if ( targetType == BoolObject::TYPENAME ) {
 		BoolObject tmp(*base);
 
 		*base = tmp;
 	}
-	else if ( type == DoubleObject::TYPENAME ) {
+	else if ( targetType == DoubleObject::TYPENAME ) {
 		DoubleObject tmp(*base);
 
 		*base = tmp;
 	}
-	else if ( type == FloatObject::TYPENAME ) {
+	else if ( targetType == FloatObject::TYPENAME ) {
 		FloatObject tmp(*base);
 
 		*base = tmp;
 	}
-	else if ( type == IntegerObject::TYPENAME ) {
+	else if ( targetType == IntegerObject::TYPENAME ) {
 		IntegerObject tmp(*base);
 
 		*base = tmp;
 	}
-	else if ( type == NumberObject::TYPENAME ) {
+	else if ( targetType == NumberObject::TYPENAME ) {
 		NumberObject tmp(*base);
 
 		*base = tmp;
 	}
-	else if ( type == StringObject::TYPENAME ) {
+	else if ( targetType == StringObject::TYPENAME ) {
 		StringObject tmp;
 
 		if ( base->isAtomicType() ) {
@@ -81,7 +83,7 @@ void typecast(Object *base, const std::string& type, Repository *repository)
 
 		*base = tmp;
 	}
-	else if ( type == VoidObject::TYPENAME ) {
+	else if ( targetType == VoidObject::TYPENAME ) {
 		VoidObject tmp(*base);
 
 		*base = tmp;
@@ -90,7 +92,7 @@ void typecast(Object *base, const std::string& type, Repository *repository)
 		throw Utils::Exceptions::NotImplemented("typecast to complex type not implemented!");
 
 /*	// not supported by now
-		Object *obj = repository->createInstance(type);
+		Object *obj = repository->createInstance(targetType);
 		ParameterList params;
 		params.push_back(
 			Parameter(base->getName(), base->Typename(), base->getValue(), false, base->isConst(), Parameter::AccessMode::ByReference, base)

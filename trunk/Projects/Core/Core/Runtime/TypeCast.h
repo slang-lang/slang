@@ -23,7 +23,7 @@ namespace Runtime {
 // Forward declarations
 class Object;
 
-void typecast(Object *base, const std::string& type, Repository *repository);
+void typecast(Object *base, const std::string& targetType, Repository *repository);
 
 
 }

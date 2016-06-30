@@ -59,7 +59,9 @@ BoolObject::BoolObject(const Object& other)
 		mValue = other.getValue().toBool();
 	}
 	else {
-		Object::operator_assign(&other);
+		//Object::operator_assign(&other);
+
+		mValue = other.isValid();
 	}
 }
 
