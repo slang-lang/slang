@@ -35,6 +35,7 @@ private:	// Tests
 	void testDefaultConstructorTest();
 	void testExceptionDuringConstructorTest();
 	void testExceptionDuringDestructorTest();
+	void testFinalMethodTest();
 	void testHybridConstructorTest();
 	void testKeywordBase();
 	void testSpecializedConstructorTest();

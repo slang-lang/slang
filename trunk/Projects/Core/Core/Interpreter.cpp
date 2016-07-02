@@ -1051,9 +1051,14 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 
 	token = closed;
 
-	*result = *mRepository->createInstance(type, name, true);
+	// create instance of new object
+	Object* tmpObj = mRepository->createInstance(type, name, true);
 
-	mControlFlow = result->Constructor(params);
+	// execute new object's constructor
+	mControlFlow = tmpObj->Constructor(params);
+
+	// and assign to result
+	*result = *tmpObj;
 }
 
 // syntax:
@@ -1275,7 +1280,6 @@ void Interpreter::process_type(TokenIterator& token)
 	bool isFinal = false;
 	std::string name;
 	std::string type;
-	std::string value;
 
 	type = token->content();
 	token++;
@@ -1304,7 +1308,7 @@ void Interpreter::process_type(TokenIterator& token)
 	}
 
 	// TODO: create a shallow object if we have an assignment statement to prevent duplicate object instantiation
-	object = mRepository->createInstance(type, name, true);
+	object = mRepository->createInstance(type, name, false);
 
 	getScope()->define(name, object);
 

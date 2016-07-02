@@ -4,25 +4,28 @@ public interface IGetBox {
 	public int GetBox() const;
 }
 
-public object Boxhouse implements IGetBox {
-	public int GetBox() const {
-		return 173;
-	}
-}
-
 public interface IGetBoxType {
 	public string GetBoxType(int boxId) const;
 }
 
+public object Boxhouse implements IGetBox {
+	public int GetBox() const final {
+		return 173;
+	}
+}
+
 public object Warehouse
 	extends Boxhouse
-	implements IGetBoxType
+	implements IGetBoxType, IGetBox
 {
-/*
 	public string GetBoxType(int boxId) const {
 		return "bla";
 	}
-*/
+
+	public int GetBox() const {
+		assert(0);
+		return 0;
+	}
 }
 
 public object Main {
@@ -53,7 +56,7 @@ public object Main {
 
 		delete warehouse;	// this is not necessary but perfectly valid
 
-		return false;
+		return true;
 	}
 }
 

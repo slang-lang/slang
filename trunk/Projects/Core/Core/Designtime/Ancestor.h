@@ -26,7 +26,6 @@ public:
 	{
 	public:
 		enum E {
-			Base,
 			Extends,
 			Implements,
 			Replicates,

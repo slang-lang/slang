@@ -15,15 +15,22 @@ private object BaseObject {
 }
 
 private object DerivedObject extends BaseObject {
+	private int mValue;
+
 	public void DerivedObject() {
 		print("DerivedObject()");
 		print("mValue = " + mValue);
+		print("base.mValue = " + base.mValue);
 
 		base.BaseObject(5);
+
+		print("mValue = " + mValue);
+		print("base.mValue = " + base.mValue);
 	}
 
 	public void ~DerivedObject() {
 		print("mValue = " + mValue);
+		print("base.mValue = " + base.mValue);
 		print("~DerivedObject()");
 	}
 }

@@ -1,107 +1,86 @@
 #!/usr/local/bin/oscript
 
-public namespace Inheritance
-{
-	private object BaseObject
-	{
+public namespace Inheritance {
+
+	private object BaseObject {
 		private int mValue;
 
-		public void BaseObject(int value)
-		{
+		public void BaseObject(int value) {
 			print("BaseObject(" + value + ")");
 			mValue = value;
 		}
 
-		public void ~BaseObject()
-		{
+		public void ~BaseObject() {
 			print("~BaseObject()");
 		}
 
-		public int getValue() const
-		{
+		public int getValue() const {
 			return mValue;
 		}
 
-		public void setValue(int value) modify
-		{
+		public void setValue(int value) modify {
 			mValue = value;
 		}
 
-		public void ThisMethodOnlyExistsInBaseObject()
-		{
+		public void ThisMethodOnlyExistsInBaseObject() {
 			print("ThisMethodOnlyExistsInBaseObject");
 		}
 	}
 
-	private object DerivedObject extends BaseObject
-	{
-		public void DerivedObject(int value)
-		{
+	private object DerivedObject extends BaseObject {
+		public void DerivedObject(int value) {
 			print("DerivedObject(" + value + ")");
 
 			base.BaseObject(value);
 		}
 
-		public void ~DerivedObject()
-		{
+		public void ~DerivedObject() {
 			print("~DerivedObject()");
 		}
 
-		public int getBaseValue() const
-		{
+		public int getBaseValue() const {
 			return base.getValue();
 		}
 
-		public int getValue() const
-		{
+		public int getValue() const {
 			return 1 + base.getValue();
 		}
 
-		public void ThisMethodOnlyExistsInDerivedObject()
-		{
+		public void ThisMethodOnlyExistsInDerivedObject() {
 			print("ThisMethodOnlyExistsInDerivedObject");
 		}
 	}
 
-	private object ExtendedObject extends DerivedObject
-	{
-		public void ExtendedObject(int value)
-		{
+	private object ExtendedObject extends DerivedObject {
+		public void ExtendedObject(int value) {
 			print("ExtendedObject(" + value + ")");
 
 			base.DerivedObject(value);
 		}
 
-		public void ~ExtendedObject()
-		{
+		public void ~ExtendedObject() {
 			print("~ExtendedObject()");
 		}
 
-		public int getValue() const
-		{
+		public int getValue() const {
 			return 1 + base.getValue();
 		}
 
-		public int getBaseValue() const
-		{
+		public int getBaseValue() const {
 			return base.getValue();
 		}
 
-		public void ThisMethodOnlyExistsInExtendedObject()
-		{
+		public void ThisMethodOnlyExistsInExtendedObject() {
 			print("ThisMethodOnlyExistsInExtendedObject");
 		}
 	}
 
-	public object Main
-	{
-		public void Main(int argc = 0, string argv = "")
-		{
+	public object Main {
+		public void Main(int argc = 0, string argv = "") {
 			assert( TestCase1() );
 		}
 
-		private bool TestCase1() const
-		{
+		private bool TestCase1() const {
 			BaseObject b = new BaseObject(1);
 			DerivedObject d = new DerivedObject(1);
 			ExtendedObject e = new ExtendedObject(1);
@@ -133,3 +112,4 @@ public namespace Inheritance
 		}
 	}
 }
+
