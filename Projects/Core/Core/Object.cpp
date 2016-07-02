@@ -160,7 +160,6 @@ bool Object::CanExecuteDefaultConstructor() const
 
 	Symbol* defaultConstructor = resolveMethod(Typename(), ParameterList(), true);
 
-	//return !anyConstructor || defaultConstructor;
 	return defaultConstructor && (anyConstructor == defaultConstructor);
 }
 
@@ -181,19 +180,11 @@ ControlFlow::E Object::Constructor(const ParameterList& params)
 	}
 
 	if ( mIsConstructed ) {	// prevent multiple instantiations
-		throw Utils::Exceptions::Exception("can not construct object '" + getName() + "' multiple times");
+		throw Utils::Exceptions::Exception("can not construct object '" + getFullName() + "' multiple times");
 	}
 
 	// execute parent object constructors
 	for ( Inheritance::iterator it = mInheritance.begin(); it != mInheritance.end(); ++it ) {
-/*
-		Symbol* anyConstructor = it->second->resolve(Typename(), false);
-		Symbol* defaultConstructor = it->second->resolveMethod(Typename(), ParameterList(), true);
-
-		if ( anyConstructor && !defaultConstructor ) {
-			break;
-		}
-*/
 		if ( !it->second->CanExecuteDefaultConstructor() ) {
 			break;
 		}
@@ -288,8 +279,6 @@ ControlFlow::E Object::Destructor()
 
 ControlFlow::E Object::execute(Object *result, const std::string& name, const ParameterList& params, const Method* /*caller*/)
 {
-	OSdebug("execute('" + name + "', [" + toString(params) + "])");
-
 	if ( !mIsConstructed ) {
 		// a method is being called although our object has not yet been constructed?
 		return ControlFlow::Throw;
@@ -297,7 +286,7 @@ ControlFlow::E Object::execute(Object *result, const std::string& name, const Pa
 
 	Method *method = static_cast<Method*>(resolveMethod(name, params, false));
 	if ( !method ) {
-		throw Utils::Exceptions::UnknownIdentifer("unknown method '" + getName() + "." + name + "' or method with invalid parameter count called!");
+		throw Utils::Exceptions::UnknownIdentifer("unknown method '" + getFullName() + "." + name + "' or method with invalid parameter count called!");
 	}
 
 /*
@@ -364,6 +353,19 @@ void Object::garbageCollector()
 AtomicValue Object::getValue() const
 {
 	return mValue;
+}
+
+bool Object::isAbstract() const
+{
+	bool result = false;
+
+	for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
+		if ( (*it)->isAbstract() ) {
+			result = true;
+		}
+	}
+
+	return result || ObjectAttributes::isAbstract();
 }
 
 bool Object::isAtomicType() const
@@ -749,18 +751,15 @@ Symbol* Object::resolve(const std::string& name, bool onlyCurrentScope) const
 	Symbol *result = MethodScope::resolve(name, true);
 
 	// (2) check inheritance
-	if ( !result && !onlyCurrentScope ) {
-		for ( Inheritance::const_iterator it = mInheritance.begin(); it != mInheritance.end(); ++it ) {
-			result = it->second->resolve(name, onlyCurrentScope);
-
-			if ( result ) {
-				break;
-			}
+	if ( !result ) {
+		Symbol* base = MethodScope::resolve("base", true);
+		if ( base && !onlyCurrentScope ) {
+			result = static_cast<Object*>(base)->resolve(name, onlyCurrentScope);
 		}
 	}
 
 	// (3) if we still haven't found something also look in other scopes
-	if ( !onlyCurrentScope && !result ) {
+	if ( !result && !onlyCurrentScope ) {
 		result = MethodScope::resolve(name, false);
 	}
 
@@ -769,26 +768,24 @@ Symbol* Object::resolve(const std::string& name, bool onlyCurrentScope) const
 
 ObjectiveScript::MethodSymbol* Object::resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope) const
 {
-	ObjectiveScript::MethodSymbol *result = 0;
+	// (1) look in current scope
+	ObjectiveScript::MethodSymbol *result = MethodScope::resolveMethod(name, params, true);
 
-	for ( Inheritance::const_reverse_iterator it = mInheritance.rbegin(); it != mInheritance.rend(); ++it ) {
-		ObjectiveScript::MethodSymbol *tmp = it->second->resolveMethod(name, params, onlyCurrentScope);
-
-		if ( tmp && (tmp->getVisibility() == Visibility::Protected || tmp->getVisibility() == Visibility::Public) ) {
-			result = tmp;
-		}
-
-		if ( result && result->isFinal() ) {
-			// we found a method that is not allowed to be overwritten, so this is the one we have to use
-			break;
-		}
+	// (2) check inheritance
+	// we cannot go the short is-result-already-set way here because one of our ancestor methods could be marked as final
+	Symbol* base = MethodScope::resolve("base", true);
+	if ( base && !onlyCurrentScope ) {
+		result = static_cast<Object*>(base)->resolveMethod(name, params, onlyCurrentScope);
 	}
 
+	// (3) if we still haven't found something also look in other scopes
 	if ( !result || !result->isFinal() ) {
-		ObjectiveScript::MethodSymbol *tmp = MethodScope::resolveMethod(name, params, onlyCurrentScope);
+		if ( !onlyCurrentScope ) {
+			ObjectiveScript::MethodSymbol *tmp = MethodScope::resolveMethod(name, params, false);
 
-		if ( tmp ) {
-			result = tmp;
+			if ( tmp ) {
+				result = tmp;
+			}
 		}
 	}
 

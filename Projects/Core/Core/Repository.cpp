@@ -251,7 +251,6 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 		object = createUserObject(name, blueprint, initialize);
 	}
 
-	// TODO: this is no real check, one would have to check every method in an object to verify an objects abstractness
 	if ( object->isAbstract() ) {
 		throw Utils::Exceptions::AbstractException("cannot instantiate abstract object '" + blueprint->Typename() + "'");
 	}
@@ -289,17 +288,30 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 				throw Utils::Exceptions::Exception("trying to initialize unknown object '" + ancestorIt->name() + "'");
 			}
 
-			// undefine previous base (while using single inheritance none should exist yet)
-			object->undefine(IDENTIFIER_BASE, object->resolve(IDENTIFIER_BASE, false));
+			switch ( ancestorIt->type() ) {
+				case Designtime::Ancestor::Type::Extends:
+				case Designtime::Ancestor::Type::Replicates: {
+					// undefine previous base (while using single inheritance none should exist yet)
+					object->undefine(IDENTIFIER_BASE, object->resolve(IDENTIFIER_BASE, true));
 
-			// create base object
-			Runtime::Object *ancestor = createInstance(blueIt->first, name, initialize);
+					// create base object
+					Runtime::Object *ancestor = createInstance(blueIt->first, name, initialize);
 
-			// define new base
-			object->define(IDENTIFIER_BASE, ancestor);
+					// define new base
+					object->define(IDENTIFIER_BASE, ancestor);
 
-			// add our newly created ancestor to our inheritance
-			object->addInheritance((*ancestorIt), ancestor);
+					// add our newly created ancestor to our inheritance
+					object->addInheritance((*ancestorIt), ancestor);
+				} break;
+				case Designtime::Ancestor::Type::Implements:
+					// implement interface
+					if ( initialize ) {
+						initializeObject(object, &blueIt->second);
+					}
+					break;
+				case Designtime::Ancestor::Type::Unknown:
+					break;
+			}
 		}
 	}
 
@@ -321,6 +333,8 @@ GlobalScope* Repository::getGlobalScope() const
  */
 void Repository::initializeObject(Runtime::Object *object, Designtime::BluePrint* blueprint)
 {
+	object->undefine(IDENTIFIER_THIS, object->resolve(IDENTIFIER_THIS, true));
+
 	// create and define all symbols based on given blueprint
 	Symbols symbols = blueprint->provideSymbols();
 	for ( Symbols::const_iterator it = symbols.begin(); it != symbols.end(); ++it ) {
@@ -348,6 +362,12 @@ void Repository::initializeObject(Runtime::Object *object, Designtime::BluePrint
 	for ( MethodScope::MethodCollection::const_iterator it = methods.begin(); it != methods.end(); ++it ) {
 		Runtime::Method* method = new Runtime::Method(object, (*it)->getName(), (*it)->Typename());
 		*method = *(*it);
+
+		// try to override abstract methods a.k.a. implement an interface method
+		Runtime::Method* old = static_cast<Runtime::Method*>(object->resolveMethod((*it)->getName(), method->provideSignature(), true));
+		if ( old && old->isAbstract() ) {
+			object->undefineMethod(old);
+		}
 
 		object->defineMethod((*it)->getName(), method);
 	}

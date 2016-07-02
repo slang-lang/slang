@@ -38,6 +38,7 @@ void InheritanceTest::process()
 	TEST(testDefaultConstructorTest);
 	TEST(testExceptionDuringConstructorTest);
 	TEST(testExceptionDuringDestructorTest);
+    TEST(testFinalMethodTest);
 	TEST(testHybridConstructorTest);
 	TEST(testKeywordBase);
 	TEST(testSpecializedConstructorTest);
@@ -98,6 +99,20 @@ void InheritanceTest::testExceptionDuringDestructorTest()
     try {
         VirtualMachine vm;
         vm.createScriptFromFile("Tests/Inheritance/ExceptionDuringDestructor.os");
+
+        // automatic success
+    }
+    catch ( std::exception& e ) {
+        // exception has been thrown: test failed!
+        TFAIL(e.what());
+    }
+}
+
+void InheritanceTest::testFinalMethodTest()
+{
+    try {
+        VirtualMachine vm;
+        vm.createScriptFromFile("Tests/Inheritance/FinalMethodTest.os");
 
         // automatic success
     }

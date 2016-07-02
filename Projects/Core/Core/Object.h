@@ -81,6 +81,7 @@ public:	// Value
 	virtual AtomicValue getValue() const;
 	virtual void setValue(AtomicValue value);
 
+	virtual bool isAbstract() const;
 	virtual bool isAtomicType() const;
 	virtual bool isValid() const;
 	virtual std::string ToString() const;
