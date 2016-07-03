@@ -5,7 +5,7 @@
 
 // Library includes
 #include <stdlib.h>
-#include <string>
+#include <string.h>
 
 // Project includes
 
