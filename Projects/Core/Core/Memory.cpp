@@ -3,6 +3,7 @@
 #include "Memory.h"
 
 // Library includes
+#include <stdint.h>
 
 // Project includes
 #include <Core/Utils/Exceptions.h>
