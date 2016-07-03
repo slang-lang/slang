@@ -60,7 +60,6 @@ SET(DEPENDENCIES
 	CoreDebugger
 	CoreDesigntimeBuildInTypes
 	CoreDesigntime
-#	CoreCommon
 	CoreBuildInObjects
 	CoreAttributes
 	Utils
