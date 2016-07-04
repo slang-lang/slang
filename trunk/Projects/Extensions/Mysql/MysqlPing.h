@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_MySQL_MysqlPing_h
-#define ObjectiveScript_Extensions_MySQL_MysqlPing_h
+#ifndef ObjectiveScript_Extensions_Mysql_MysqlPing_h
+#define ObjectiveScript_Extensions_Mysql_MysqlPing_h
 
 
 // Library include

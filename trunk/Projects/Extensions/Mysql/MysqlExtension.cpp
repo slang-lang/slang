@@ -5,21 +5,24 @@
 // Library includes
 
 // Project includes
-#include "AffectedRows.h"
-#include "Connect.h"
-#include "Error.h"
-#include "FreeResult.h"
-#include "GetClientInfo.h"
-#include "GetFieldName.h"
-#include "GetFieldValue.h"
+#include "MysqlAffectedRows.h"
 #include "MysqlClose.h"
+#include "MysqlConnect.h"
 #include "MysqlDataSeek.h"
+#include "MysqlError.h"
 #include "MysqlFieldCount.h"
 #include "MysqlFieldSeek.h"
 #include "MysqlFieldTell.h"
+#include "MysqlFreeResult.h"
+#include "MysqlGetClientInfo.h"
+#include "MysqlGetFieldName.h"
+#include "MysqlGetFieldValue.h"
 #include "MysqlInfo.h"
 #include "MysqlInit.h"
+#include "MysqlNextResult.h"
+#include "MysqlNextRow.h"
 #include "MysqlNumFields.h"
+#include "MysqlNumRows.h"
 #include "MysqlPing.h"
 #include "MysqlQuery.h"
 #include "MysqlRealEscapeString.h"
@@ -27,9 +30,6 @@
 #include "MysqlStat.h"
 #include "MysqlStoreResult.h"
 #include "MysqlUseResult.h"
-#include "NextResult.h"
-#include "NextRow.h"
-#include "NumRows.h"
 
 // Namespace declarations
 

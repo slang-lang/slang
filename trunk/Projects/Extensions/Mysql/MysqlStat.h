@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_MySQL_MysqlStat_h
-#define ObjectiveScript_Extensions_MySQL_MysqlStat_h
+#ifndef ObjectiveScript_Extensions_Mysql_MysqlStat_h
+#define ObjectiveScript_Extensions_Mysql_MysqlStat_h
 
 
 // Library includes

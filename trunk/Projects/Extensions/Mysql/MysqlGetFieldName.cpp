@@ -1,6 +1,6 @@
 
 // Header
-#include "Error.h"
+#include "MysqlGetFieldName.h"
 
 // Library includes
 
@@ -20,31 +20,30 @@ namespace Extensions {
 namespace Mysql {
 
 
-MysqlError::MysqlError()
-: Runtime::Method(0, "mysql_error", Designtime::StringObject::TYPENAME)
+MysqlGetFieldName::MysqlGetFieldName()
+: Runtime::Method(0, "mysql_get_field_name", Designtime::StringObject::TYPENAME)
 {
 	ParameterList params;
-	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, VALUE_NONE));
+	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));
+	params.push_back(Parameter("field_id", Designtime::IntegerObject::TYPENAME, 0));
 
 	setSignature(params);
 }
 
-Runtime::ControlFlow::E MysqlError::execute(const ParameterList& params, Runtime::Object* result, const Token& token)
+Runtime::ControlFlow::E MysqlGetFieldName::execute(const ParameterList& params, Runtime::Object* result, const Token& token)
 {
-(void)params;
-(void)token;
-
 	try {
 		// Parameter processing
 		// {
 		ParameterList::const_iterator it = params.begin();
 
 		int param_handle = (*it++).value().toInt();
+		int param_field_id = (*it++).value().toInt();
 		// }
 
-		MYSQL *myConn = mMysqlConnections[param_handle];
+		MYSQL_RES *myResult = mMysqlResults[param_handle];
 
-		std::string my_result = mysql_error(myConn);
+		std::string my_result(myResult->fields[param_field_id].name);
 
 		*result = Runtime::StringObject(my_result);
 	}

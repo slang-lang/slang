@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_MySQL_GetClientInfo_h
-#define ObjectiveScript_Extensions_MySQL_GetClientInfo_h
+#ifndef ObjectiveScript_Extensions_Mysql_MysqlError_h
+#define ObjectiveScript_Extensions_Mysql_MysqlError_h
 
 
 // Library includes
@@ -18,10 +18,10 @@ namespace Extensions {
 namespace Mysql {
 
 
-class MysqlGetClientInfo : public Runtime::Method
+class MysqlError : public Runtime::Method
 {
 public:
-	MysqlGetClientInfo();
+	MysqlError();
 
 	Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* result, const Token& token);
 };

@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_MySQL_FetchRow_h
-#define ObjectiveScript_Extensions_MySQL_FetchRow_h
+#ifndef ObjectiveScript_Extensions_Mysql_MysqlNumRows_h
+#define ObjectiveScript_Extensions_Mysql_MysqlNumRows_h
 
 
 // Library includes
@@ -18,10 +18,10 @@ namespace Extensions {
 namespace Mysql {
 
 
-class MysqlNextRow : public Runtime::Method
+class MysqlNumRows : public Runtime::Method
 {
 public:
-	MysqlNextRow();
+	MysqlNumRows();
 
 	Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* result, const Token& token);
 };

@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_MySQL_GetFieldName_h
-#define ObjectiveScript_Extensions_MySQL_GetFieldName_h
+#ifndef ObjectiveScript_Extensions_Mysql_MysqlFetchRow_h
+#define ObjectiveScript_Extensions_Mysql_MysqlFetchRow_h
 
 
 // Library includes
@@ -18,10 +18,10 @@ namespace Extensions {
 namespace Mysql {
 
 
-class MysqlGetFieldName : public Runtime::Method
+class MysqlNextRow : public Runtime::Method
 {
 public:
-	MysqlGetFieldName();
+	MysqlNextRow();
 
 	Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* result, const Token& token);
 };

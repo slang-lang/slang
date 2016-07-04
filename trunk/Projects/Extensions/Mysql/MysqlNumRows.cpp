@@ -1,6 +1,6 @@
 
 // Header
-#include "AffectedRows.h"
+#include "MysqlNumRows.h"
 
 // Library includes
 
@@ -20,18 +20,17 @@ namespace Extensions {
 namespace Mysql {
 
 
-MysqlAffectedRows::MysqlAffectedRows()
-: Runtime::Method(0, "mysql_affected_rows", Designtime::IntegerObject::TYPENAME)
+MysqlNumRows::MysqlNumRows()
+: Runtime::Method(0, "mysql_num_rows", Designtime::IntegerObject::TYPENAME)
 {
 	ParameterList params;
-	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, VALUE_NONE));
+	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));
 
 	setSignature(params);
 }
 
-Runtime::ControlFlow::E MysqlAffectedRows::execute(const ParameterList& params, Runtime::Object* result, const Token& token)
+Runtime::ControlFlow::E MysqlNumRows::execute(const ParameterList& params, Runtime::Object* result, const Token& token)
 {
-(void)params;
 (void)token;
 
 	try {
@@ -42,9 +41,11 @@ Runtime::ControlFlow::E MysqlAffectedRows::execute(const ParameterList& params, 
 		int param_handle = (*it++).value().toInt();
 		// }
 
-		MYSQL *myConn = mMysqlConnections[param_handle];
+		MYSQL_RES *myResult = mMysqlResults[param_handle];
 
-		*result = Runtime::IntegerObject((int)mysql_affected_rows(myConn));
+		int my_result = (int)mysql_num_rows(myResult);
+
+		*result = Runtime::IntegerObject(my_result);
 	}
 	catch ( std::exception &e ) {
 		Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
