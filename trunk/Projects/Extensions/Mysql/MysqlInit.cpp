@@ -1,6 +1,6 @@
 
 // Header
-#include "Init.h"
+#include "MysqlInit.h"
 
 // Library includes
 

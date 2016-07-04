@@ -2,17 +2,17 @@ INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
 SET(SOURCES
 	AffectedRows.cpp
-	Close.cpp
 	Connect.cpp
 	Error.cpp
-	FieldCount.cpp
 	FreeResult.cpp
 	GetClientInfo.cpp
 	GetFieldName.cpp
 	GetFieldValue.cpp
-	Info.cpp
-	Init.cpp
+	MysqlClose.cpp
 	MysqlExtension.cpp
+	MysqlFieldCount.cpp
+	MysqlInfo.cpp
+	MysqlInit.cpp
 	MysqlPing.cpp
 	MysqlRealEscapeString.cpp
 	MysqlSelectDB.cpp
@@ -28,18 +28,20 @@ SET(SOURCES
 
 SET(HEADERS
 	AffectedRows.h
-	Close.h
 	Connect.h
 	Error.h
-	FieldCount.h
 	FreeResult.h
 	GetClientInfo.h
 	GetFieldName.h
 	GetFieldValue.h
-	Info.h
-	Init.h
+	MysqlClose.h
 	MysqlDataSeek.h
 	MysqlExtension.h
+	MysqlFieldCount.h
+	MysqlFieldSeek.h
+	MysqlFieldTell.h
+	MysqlInfo.h
+	MysqlInit.h
 	MysqlPing.cpp
 	MysqlRealEscapeString.h
 	MysqlSelectDB.h

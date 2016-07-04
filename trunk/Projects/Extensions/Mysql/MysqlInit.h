@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_Mysql_Close_h
-#define ObjectiveScript_Extensions_Mysql_Close_h
+#ifndef ObjectiveScript_Extensions_MySQL_MysqlInit_h
+#define ObjectiveScript_Extensions_MySQL_MysqlInit_h
 
 
 // Library include
@@ -18,10 +18,10 @@ namespace Extensions {
 namespace Mysql {
 
 
-class MysqlClose: public Runtime::Method
+class MysqlInit: public Runtime::Method
 {
 public:
-	MysqlClose();
+	MysqlInit();
 
 	Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* result, const Token& token);
 };

@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_MySQL_FieldCount_h
-#define ObjectiveScript_Extensions_MySQL_FieldCount_h
+#ifndef ObjectiveScript_Extensions_MySQL_MysqlFieldCount_h
+#define ObjectiveScript_Extensions_MySQL_MysqlFieldCount_h
 
 
 // Library includes
