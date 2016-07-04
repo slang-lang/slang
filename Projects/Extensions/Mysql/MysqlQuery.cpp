@@ -1,6 +1,6 @@
 
 // Header
-#include "StoreResult.h"
+#include "MysqlQuery.h"
 
 // Library includes
 
@@ -8,8 +8,10 @@
 #include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
+#include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/Repository.h>
 #include <Core/Tools.h>
+#include <Core/Utils/Exceptions.h>
 #include "Types.h"
 
 // Namespace declarations
@@ -20,34 +22,35 @@ namespace Extensions {
 namespace Mysql {
 
 
-MysqlStoreResult::MysqlStoreResult()
-: Runtime::Method(0, "mysql_store_result", Designtime::IntegerObject::TYPENAME)
+MysqlQuery::MysqlQuery()
+: Runtime::Method(0, "mysql_query", Designtime::IntegerObject::TYPENAME)
 {
 	ParameterList params;
 	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));
+	params.push_back(Parameter("query", Designtime::StringObject::TYPENAME, VALUE_NONE));
 
 	setSignature(params);
 }
 
-Runtime::ControlFlow::E MysqlStoreResult::execute(const ParameterList& params, Runtime::Object* result, const Token& token)
+Runtime::ControlFlow::E MysqlQuery::execute(const ParameterList& params, Runtime::Object* result, const Token& token)
 {
+(void)token;
+
 	try {
 		// Parameter processing
 		// {
 		ParameterList::const_iterator it = params.begin();
 
 		int param_handle = (*it++).value().toInt();
+		std::string query = (*it++).value().toStdString();
 		// }
 
 		MYSQL *myConn = mMysqlConnections[param_handle];
-
-		MYSQL_RES *myResult = mysql_store_result(myConn);
-
-		int my_result = 0;
-		if ( myResult ) {
-			my_result = ++mNumMysqlResults;
-			mMysqlResults.insert(std::make_pair(my_result, myResult));
+		if ( !myConn ) {
+			throw Utils::Exceptions::Exception("no database connection found for connection handle " + Tools::toString(param_handle));
 		}
+
+		int my_result = mysql_query(myConn, query.c_str());
 
 		*result = Runtime::IntegerObject(my_result);
 	}

@@ -1,6 +1,6 @@
 
 // Header
-#include "UseResult.h"
+#include "MysqlStoreResult.h"
 
 // Library includes
 
@@ -20,8 +20,8 @@ namespace Extensions {
 namespace Mysql {
 
 
-MysqlUseResult::MysqlUseResult()
-: Runtime::Method(0, "mysql_use_result", Designtime::IntegerObject::TYPENAME)
+MysqlStoreResult::MysqlStoreResult()
+: Runtime::Method(0, "mysql_store_result", Designtime::IntegerObject::TYPENAME)
 {
 	ParameterList params;
 	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));
@@ -29,10 +29,8 @@ MysqlUseResult::MysqlUseResult()
 	setSignature(params);
 }
 
-Runtime::ControlFlow::E MysqlUseResult::execute(const ParameterList& params, Runtime::Object* result, const Token& token)
+Runtime::ControlFlow::E MysqlStoreResult::execute(const ParameterList& params, Runtime::Object* result, const Token& token)
 {
-(void)token;
-
 	try {
 		// Parameter processing
 		// {
@@ -43,7 +41,7 @@ Runtime::ControlFlow::E MysqlUseResult::execute(const ParameterList& params, Run
 
 		MYSQL *myConn = mMysqlConnections[param_handle];
 
-		MYSQL_RES *myResult = mysql_use_result(myConn);
+		MYSQL_RES *myResult = mysql_store_result(myConn);
 
 		int my_result = 0;
 		if ( myResult ) {

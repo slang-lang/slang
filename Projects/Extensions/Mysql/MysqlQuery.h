@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_MySQL_StoreResult_h
-#define ObjectiveScript_Extensions_MySQL_StoreResult_h
+#ifndef ObjectiveScript_Extensions_Mysql_MysqlQuery_h
+#define ObjectiveScript_Extensions_Mysql_MysqlQuery_h
 
 
 // Library include
@@ -18,10 +18,10 @@ namespace Extensions {
 namespace Mysql {
 
 
-class MysqlStoreResult: public Runtime::Method
+class MysqlQuery: public Runtime::Method
 {
 public:
-	MysqlStoreResult();
+	MysqlQuery();
 
 	Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* result, const Token& token);
 };
