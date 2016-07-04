@@ -13,17 +13,17 @@ SET(SOURCES
 	MysqlFieldCount.cpp
 	MysqlInfo.cpp
 	MysqlInit.cpp
+	MysqlNumFields.cpp
 	MysqlPing.cpp
+	MysqlQuery.cpp
 	MysqlRealEscapeString.cpp
 	MysqlSelectDB.cpp
+	MysqlStoreResult.cpp
+	MysqlUseResult.cpp
 	NextResult.cpp
 	NextRow.cpp
-	NumFields.cpp
 	NumRows.cpp
-	Query.cpp
-	StoreResult.cpp
 	Types.cpp
-	UseResult.cpp
 )
 
 SET(HEADERS
@@ -42,18 +42,18 @@ SET(HEADERS
 	MysqlFieldTell.h
 	MysqlInfo.h
 	MysqlInit.h
+	MysqlNumFields.h
 	MysqlPing.cpp
+	MysqlQuery.h
 	MysqlRealEscapeString.h
 	MysqlSelectDB.h
 	MysqlStat.h
+	MysqlStoreResult.h
+	MysqlUseResult.h
 	NextResult.h
 	NextRow.h
-	NumFields.h
 	NumRows.h
-	Query.h
-	StoreResult.h
 	Types.h
-	UseResult.h
 )
 
 SET(DEPENDENCIES

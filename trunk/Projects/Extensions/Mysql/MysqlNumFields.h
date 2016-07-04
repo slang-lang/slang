@@ -1,9 +1,9 @@
 
-#ifndef ObjectiveScript_Extensions_MySQL_UseResult_h
-#define ObjectiveScript_Extensions_MySQL_UseResult_h
+#ifndef ObjectiveScript_Extensions_MySQL_MysqlNumFields_h
+#define ObjectiveScript_Extensions_MySQL_MysqlNumFields_h
 
 
-// Library include
+// Library includes
 
 // Project includes
 #include <Core/Method.h>
@@ -18,10 +18,10 @@ namespace Extensions {
 namespace Mysql {
 
 
-class MysqlUseResult: public Runtime::Method
+class MysqlNumFields : public Runtime::Method
 {
 public:
-	MysqlUseResult();
+	MysqlNumFields();
 
 	Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* result, const Token& token);
 };

@@ -1,6 +1,6 @@
 
 // Header
-#include "NumFields.h"
+#include "MysqlUseResult.h"
 
 // Library includes
 
@@ -20,8 +20,8 @@ namespace Extensions {
 namespace Mysql {
 
 
-MysqlNumFields::MysqlNumFields()
-: Runtime::Method(0, "mysql_num_fields", Designtime::IntegerObject::TYPENAME)
+MysqlUseResult::MysqlUseResult()
+: Runtime::Method(0, "mysql_use_result", Designtime::IntegerObject::TYPENAME)
 {
 	ParameterList params;
 	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));
@@ -29,8 +29,10 @@ MysqlNumFields::MysqlNumFields()
 	setSignature(params);
 }
 
-Runtime::ControlFlow::E MysqlNumFields::execute(const ParameterList& params, Runtime::Object* result, const Token& token)
+Runtime::ControlFlow::E MysqlUseResult::execute(const ParameterList& params, Runtime::Object* result, const Token& token)
 {
+(void)token;
+
 	try {
 		// Parameter processing
 		// {
@@ -39,9 +41,15 @@ Runtime::ControlFlow::E MysqlNumFields::execute(const ParameterList& params, Run
 		int param_handle = (*it++).value().toInt();
 		// }
 
-		MYSQL_RES *myResult = mMysqlResults[param_handle];
+		MYSQL *myConn = mMysqlConnections[param_handle];
 
-		int my_result = mysql_num_fields(myResult);
+		MYSQL_RES *myResult = mysql_use_result(myConn);
+
+		int my_result = 0;
+		if ( myResult ) {
+			my_result = ++mNumMysqlResults;
+			mMysqlResults.insert(std::make_pair(my_result, myResult));
+		}
 
 		*result = Runtime::IntegerObject(my_result);
 	}

@@ -19,17 +19,17 @@
 #include "MysqlFieldTell.h"
 #include "MysqlInfo.h"
 #include "MysqlInit.h"
+#include "MysqlNumFields.h"
 #include "MysqlPing.h"
+#include "MysqlQuery.h"
 #include "MysqlRealEscapeString.h"
 #include "MysqlSelectDB.h"
 #include "MysqlStat.h"
+#include "MysqlStoreResult.h"
+#include "MysqlUseResult.h"
 #include "NextResult.h"
 #include "NextRow.h"
-#include "NumFields.h"
 #include "NumRows.h"
-#include "Query.h"
-#include "StoreResult.h"
-#include "UseResult.h"
 
 // Namespace declarations
 
