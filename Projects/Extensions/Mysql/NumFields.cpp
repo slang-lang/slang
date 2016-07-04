@@ -31,8 +31,6 @@ MysqlNumFields::MysqlNumFields()
 
 Runtime::ControlFlow::E MysqlNumFields::execute(const ParameterList& params, Runtime::Object* result, const Token& token)
 {
-(void)token;
-
 	try {
 		// Parameter processing
 		// {

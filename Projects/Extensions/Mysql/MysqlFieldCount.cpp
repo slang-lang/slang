@@ -1,13 +1,13 @@
 
 // Header
-#include "Info.h"
+#include "MysqlFieldCount.h"
 
 // Library includes
 
 // Project includes
+#include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
-#include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/Repository.h>
 #include <Core/Tools.h>
 #include "Types.h"
@@ -20,8 +20,8 @@ namespace Extensions {
 namespace Mysql {
 
 
-MysqlInfo::MysqlInfo()
-: Runtime::Method(0, "mysql_info", Designtime::StringObject::TYPENAME)
+MysqlFieldCount::MysqlFieldCount()
+: Runtime::Method(0, "mysql_field_count", Designtime::IntegerObject::TYPENAME)
 {
 	ParameterList params;
 	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));
@@ -29,8 +29,9 @@ MysqlInfo::MysqlInfo()
 	setSignature(params);
 }
 
-Runtime::ControlFlow::E MysqlInfo::execute(const ParameterList& params, Runtime::Object* result, const Token& token)
+Runtime::ControlFlow::E MysqlFieldCount::execute(const ParameterList& params, Runtime::Object* result, const Token& token)
 {
+(void)params;
 (void)token;
 
 	try {
@@ -43,16 +44,9 @@ Runtime::ControlFlow::E MysqlInfo::execute(const ParameterList& params, Runtime:
 
 		MYSQL *myConn = mMysqlConnections[param_handle];
 
-		std::string my_result;
-		if ( myConn ) {
-			const char* my_info = mysql_info(myConn);
+		int my_result = mysql_field_count(myConn);
 
-			if ( my_info ) {
-				my_result = std::string(my_info);
-			}
-		}
-
-		*result = Runtime::StringObject(my_result);
+		*result = Runtime::IntegerObject(my_result);
 	}
 	catch ( std::exception &e ) {
 		Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);

@@ -1,6 +1,6 @@
 
 // Header
-#include "Close.h"
+#include "MysqlClose.h"
 
 // Library includes
 

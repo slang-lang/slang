@@ -1,9 +1,9 @@
 
-#ifndef ObjectiveScript_Extensions_MySQL_Info_h
-#define ObjectiveScript_Extensions_MySQL_Info_h
+#ifndef ObjectiveScript_Extensions_Mysql_MysqlClose_h
+#define ObjectiveScript_Extensions_Mysql_MysqlClose_h
 
 
-// Library includes
+// Library include
 
 // Project includes
 #include <Core/Method.h>
@@ -18,10 +18,10 @@ namespace Extensions {
 namespace Mysql {
 
 
-class MysqlInfo : public Runtime::Method
+class MysqlClose: public Runtime::Method
 {
 public:
-	MysqlInfo();
+	MysqlClose();
 
 	Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* result, const Token& token);
 };

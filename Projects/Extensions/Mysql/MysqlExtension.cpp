@@ -6,17 +6,19 @@
 
 // Project includes
 #include "AffectedRows.h"
-#include "Close.h"
 #include "Connect.h"
 #include "Error.h"
-#include "FieldCount.h"
 #include "FreeResult.h"
 #include "GetClientInfo.h"
 #include "GetFieldName.h"
 #include "GetFieldValue.h"
-#include "Info.h"
-#include "Init.h"
+#include "MysqlClose.h"
 #include "MysqlDataSeek.h"
+#include "MysqlFieldCount.h"
+#include "MysqlFieldSeek.h"
+#include "MysqlFieldTell.h"
+#include "MysqlInfo.h"
+#include "MysqlInit.h"
 #include "MysqlPing.h"
 #include "MysqlRealEscapeString.h"
 #include "MysqlSelectDB.h"
@@ -46,6 +48,8 @@ void MysqlExtension::provideMethods(ExtensionMethods &methods)
 	methods.push_back(new MysqlDataSeek());
 	methods.push_back(new MysqlError());
 	methods.push_back(new MysqlFieldCount());
+	methods.push_back(new MysqlFieldSeek());
+	methods.push_back(new MysqlFieldTell());
 	methods.push_back(new MysqlFreeResult());
 	methods.push_back(new MysqlGetClientInfo());
 	methods.push_back(new MysqlGetFieldName());

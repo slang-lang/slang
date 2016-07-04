@@ -1,9 +1,9 @@
 
-#ifndef ObjectiveScript_Extensions_MySQL_Init_h
-#define ObjectiveScript_Extensions_MySQL_Init_h
+#ifndef ObjectiveScript_Extensions_MySQL_MysqlInfo_h
+#define ObjectiveScript_Extensions_MySQL_MysqlInfo_h
 
 
-// Library include
+// Library includes
 
 // Project includes
 #include <Core/Method.h>
@@ -18,10 +18,10 @@ namespace Extensions {
 namespace Mysql {
 
 
-class MysqlInit: public Runtime::Method
+class MysqlInfo : public Runtime::Method
 {
 public:
-	MysqlInit();
+	MysqlInfo();
 
 	Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* result, const Token& token);
 };
