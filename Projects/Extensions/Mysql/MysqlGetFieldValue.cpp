@@ -1,6 +1,6 @@
 
 // Header
-#include "GetFieldName.h"
+#include "MysqlGetFieldValue.h"
 
 // Library includes
 
@@ -10,6 +10,7 @@
 #include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/Repository.h>
 #include <Core/Tools.h>
+#include <Core/Utils/Exceptions.h>
 #include "Types.h"
 
 // Namespace declarations
@@ -20,8 +21,8 @@ namespace Extensions {
 namespace Mysql {
 
 
-MysqlGetFieldName::MysqlGetFieldName()
-: Runtime::Method(0, "mysql_get_field_name", Designtime::StringObject::TYPENAME)
+MysqlGetFieldValue::MysqlGetFieldValue()
+: Runtime::Method(0, "mysql_get_field_value", Designtime::StringObject::TYPENAME)
 {
 	ParameterList params;
 	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));
@@ -30,7 +31,7 @@ MysqlGetFieldName::MysqlGetFieldName()
 	setSignature(params);
 }
 
-Runtime::ControlFlow::E MysqlGetFieldName::execute(const ParameterList& params, Runtime::Object* result, const Token& token)
+Runtime::ControlFlow::E MysqlGetFieldValue::execute(const ParameterList& params, Runtime::Object* result, const Token& token)
 {
 	try {
 		// Parameter processing
@@ -43,7 +44,16 @@ Runtime::ControlFlow::E MysqlGetFieldName::execute(const ParameterList& params, 
 
 		MYSQL_RES *myResult = mMysqlResults[param_handle];
 
-		std::string my_result(myResult->fields[param_field_id].name);
+		if ( !myResult ) {
+			throw Utils::Exceptions::Exception("no valid result handle: " + Tools::toString(param_handle));
+		}
+
+		MYSQL_ROW row = myResult->current_row;
+		if ( !row ) {
+			throw Utils::Exceptions::Exception("no valid row");
+		}
+
+		std::string my_result(row[param_field_id]);
 
 		*result = Runtime::StringObject(my_result);
 	}

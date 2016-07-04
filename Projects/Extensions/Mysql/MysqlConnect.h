@@ -1,9 +1,9 @@
 
-#ifndef ObjectiveScript_Extensions_Mysql_Error_h
-#define ObjectiveScript_Extensions_Mysql_Error_h
+#ifndef ObjectiveScript_Extensions_Mysql_MysqlConnect_h
+#define ObjectiveScript_Extensions_Mysql_MysqlConnect_h
 
 
-// Library includes
+// Library include
 
 // Project includes
 #include <Core/Method.h>
@@ -18,10 +18,10 @@ namespace Extensions {
 namespace Mysql {
 
 
-class MysqlError : public Runtime::Method
+class MysqlRealConnect: public Runtime::Method
 {
 public:
-	MysqlError();
+	MysqlRealConnect();
 
 	Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* result, const Token& token);
 };

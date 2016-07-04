@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_MySQL_MysqlNumFields_h
-#define ObjectiveScript_Extensions_MySQL_MysqlNumFields_h
+#ifndef ObjectiveScript_Extensions_Mysql_MysqlNumFields_h
+#define ObjectiveScript_Extensions_Mysql_MysqlNumFields_h
 
 
 // Library includes

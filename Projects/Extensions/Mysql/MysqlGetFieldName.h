@@ -1,9 +1,9 @@
 
-#ifndef ObjectiveScript_Extensions_MySQL_FreeResult_h
-#define ObjectiveScript_Extensions_MySQL_FreeResult_h
+#ifndef ObjectiveScript_Extensions_Mysql_MysqlGetFieldName_h
+#define ObjectiveScript_Extensions_Mysql_MysqlGetFieldName_h
 
 
-// Library include
+// Library includes
 
 // Project includes
 #include <Core/Method.h>
@@ -18,10 +18,10 @@ namespace Extensions {
 namespace Mysql {
 
 
-class MysqlFreeResult: public Runtime::Method
+class MysqlGetFieldName : public Runtime::Method
 {
 public:
-	MysqlFreeResult();
+	MysqlGetFieldName();
 
 	Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* result, const Token& token);
 };

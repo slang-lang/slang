@@ -1,6 +1,6 @@
 
 // Header
-#include "FreeResult.h"
+#include "MysqlAffectedRows.h"
 
 // Library includes
 
@@ -8,7 +8,6 @@
 #include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
-#include <Core/Designtime/BuildInTypes/VoidObject.h>
 #include <Core/Repository.h>
 #include <Core/Tools.h>
 #include "Types.h"
@@ -21,18 +20,18 @@ namespace Extensions {
 namespace Mysql {
 
 
-MysqlFreeResult::MysqlFreeResult()
-: Runtime::Method(0, "mysql_free_result", Designtime::VoidObject::TYPENAME)
+MysqlAffectedRows::MysqlAffectedRows()
+: Runtime::Method(0, "mysql_affected_rows", Designtime::IntegerObject::TYPENAME)
 {
 	ParameterList params;
-	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));
+	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, VALUE_NONE));
 
 	setSignature(params);
 }
 
-Runtime::ControlFlow::E MysqlFreeResult::execute(const ParameterList& params, Runtime::Object* result, const Token& token)
+Runtime::ControlFlow::E MysqlAffectedRows::execute(const ParameterList& params, Runtime::Object* result, const Token& token)
 {
-(void)result;
+(void)params;
 (void)token;
 
 	try {
@@ -43,9 +42,9 @@ Runtime::ControlFlow::E MysqlFreeResult::execute(const ParameterList& params, Ru
 		int param_handle = (*it++).value().toInt();
 		// }
 
-		MYSQL_RES *myResult = mMysqlResults[param_handle];
+		MYSQL *myConn = mMysqlConnections[param_handle];
 
-		mysql_free_result(myResult);
+		*result = Runtime::IntegerObject((int)mysql_affected_rows(myConn));
 	}
 	catch ( std::exception &e ) {
 		Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);

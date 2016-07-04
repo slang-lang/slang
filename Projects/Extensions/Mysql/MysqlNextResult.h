@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_MySQL_NextResult_h
-#define ObjectiveScript_Extensions_MySQL_NextResult_h
+#ifndef ObjectiveScript_Extensions_Mysql_MysqlNextResult_h
+#define ObjectiveScript_Extensions_Mysql_MysqlNextResult_h
 
 
 // Library includes

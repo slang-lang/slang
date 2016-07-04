@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_MySQL_NumRows_h
-#define ObjectiveScript_Extensions_MySQL_NumRows_h
+#ifndef ObjectiveScript_Extensions_Mysql_MysqlGetFieldValue_h
+#define ObjectiveScript_Extensions_Mysql_MysqlGetFieldValue_h
 
 
 // Library includes
@@ -18,10 +18,10 @@ namespace Extensions {
 namespace Mysql {
 
 
-class MysqlNumRows : public Runtime::Method
+class MysqlGetFieldValue : public Runtime::Method
 {
 public:
-	MysqlNumRows();
+	MysqlGetFieldValue();
 
 	Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* result, const Token& token);
 };

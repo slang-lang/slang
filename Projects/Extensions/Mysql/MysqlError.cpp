@@ -1,13 +1,13 @@
 
 // Header
-#include "NumRows.h"
+#include "MysqlError.h"
 
 // Library includes
 
 // Project includes
-#include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
+#include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/Repository.h>
 #include <Core/Tools.h>
 #include "Types.h"
@@ -20,17 +20,18 @@ namespace Extensions {
 namespace Mysql {
 
 
-MysqlNumRows::MysqlNumRows()
-: Runtime::Method(0, "mysql_num_rows", Designtime::IntegerObject::TYPENAME)
+MysqlError::MysqlError()
+: Runtime::Method(0, "mysql_error", Designtime::StringObject::TYPENAME)
 {
 	ParameterList params;
-	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));
+	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, VALUE_NONE));
 
 	setSignature(params);
 }
 
-Runtime::ControlFlow::E MysqlNumRows::execute(const ParameterList& params, Runtime::Object* result, const Token& token)
+Runtime::ControlFlow::E MysqlError::execute(const ParameterList& params, Runtime::Object* result, const Token& token)
 {
+(void)params;
 (void)token;
 
 	try {
@@ -41,11 +42,11 @@ Runtime::ControlFlow::E MysqlNumRows::execute(const ParameterList& params, Runti
 		int param_handle = (*it++).value().toInt();
 		// }
 
-		MYSQL_RES *myResult = mMysqlResults[param_handle];
+		MYSQL *myConn = mMysqlConnections[param_handle];
 
-		int my_result = (int)mysql_num_rows(myResult);
+		std::string my_result = mysql_error(myConn);
 
-		*result = Runtime::IntegerObject(my_result);
+		*result = Runtime::StringObject(my_result);
 	}
 	catch ( std::exception &e ) {
 		Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);

@@ -1,6 +1,6 @@
 
 // Header
-#include "GetClientInfo.h"
+#include "MysqlGetClientInfo.h"
 
 // Library includes
 #include <mysql.h>

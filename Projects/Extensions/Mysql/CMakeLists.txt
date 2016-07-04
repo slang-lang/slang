@@ -1,48 +1,51 @@
 INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
 SET(SOURCES
-	AffectedRows.cpp
-	Connect.cpp
-	Error.cpp
-	FreeResult.cpp
-	GetClientInfo.cpp
-	GetFieldName.cpp
-	GetFieldValue.cpp
+	MysqlAffectedRows.cpp
 	MysqlClose.cpp
+	MysqlConnect.cpp
+	MysqlError.cpp
 	MysqlExtension.cpp
 	MysqlFieldCount.cpp
+	MysqlFreeResult.cpp
+	MysqlGetClientInfo.cpp
+	MysqlGetFieldName.cpp
+	MysqlGetFieldValue.cpp
 	MysqlInfo.cpp
 	MysqlInit.cpp
+	MysqlNextResult.cpp
+	MysqlNextRow.cpp
 	MysqlNumFields.cpp
+	MysqlNumRows.cpp
 	MysqlPing.cpp
 	MysqlQuery.cpp
 	MysqlRealEscapeString.cpp
 	MysqlSelectDB.cpp
 	MysqlStoreResult.cpp
 	MysqlUseResult.cpp
-	NextResult.cpp
-	NextRow.cpp
-	NumRows.cpp
 	Types.cpp
 )
 
 SET(HEADERS
-	AffectedRows.h
-	Connect.h
-	Error.h
-	FreeResult.h
-	GetClientInfo.h
-	GetFieldName.h
-	GetFieldValue.h
+	MysqlAffectedRows.h
 	MysqlClose.h
+	MysqlConnect.h
 	MysqlDataSeek.h
+	MysqlError.h
 	MysqlExtension.h
 	MysqlFieldCount.h
 	MysqlFieldSeek.h
 	MysqlFieldTell.h
+	MysqlFreeResult.h
+	MysqlGetClientInfo.h
+	MysqlGetFieldName.h
+	MysqlGetFieldValue.h
 	MysqlInfo.h
 	MysqlInit.h
+	MysqlNextResult.h
+	MysqlNextRow.h
 	MysqlNumFields.h
+	MysqlNumRows.h
 	MysqlPing.cpp
 	MysqlQuery.h
 	MysqlRealEscapeString.h
@@ -50,9 +53,6 @@ SET(HEADERS
 	MysqlStat.h
 	MysqlStoreResult.h
 	MysqlUseResult.h
-	NextResult.h
-	NextRow.h
-	NumRows.h
 	Types.h
 )
 
