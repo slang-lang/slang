@@ -14,6 +14,8 @@ SET(HEADERS
 )
 
 SET(DEPENDENCIES
+	CoreRuntime
+	Core
 )
 
 add_include(Projects/Core)

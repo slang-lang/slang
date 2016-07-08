@@ -12,6 +12,10 @@ SET(HEADERS
 )
 
 SET(DEPENDENCIES
+	ExtensionsSystem
+	ExtensionsMysql
+	ExtensionsJson
+	ExtensionsApache
 )
 
 add_include(Projects/Core)

@@ -63,6 +63,19 @@ std::string SymbolScope::getFullName() const
 	return scope + getScopeName();
 }
 
+std::string SymbolScope::getFullScopeName() const
+{
+	std::string scope;
+	if ( mParent ) {
+		scope = mParent->getFullScopeName();
+		if ( !scope.empty() ) {
+			scope += RESERVED_WORD_SCOPE_OPERATOR;
+		}
+	}
+
+	return scope + getScopeName();
+}
+
 const std::string& SymbolScope::getScopeName() const
 {
 	return mScopeName;

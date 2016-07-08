@@ -5,7 +5,6 @@
 // Library includes
 
 // Project includes
-#include <Core/Common/StringTools.h>
 #include <Core/Tools.h>
 
 // Namespace declarations

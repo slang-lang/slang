@@ -862,33 +862,8 @@ void Tokenizer::replaceConstDataTypes()
  */
 void Tokenizer::replaceOperators()
 {
-/*
 	TokenIteratorMutable token = mTokens.begin();
-
-	// try to combine all operator tokens
-	while ( token != mTokens.end() ) {
-		if ( (*token).type() == Token::Type::RESERVED_WORD && (*token).content() == RESERVED_WORD_OPERATOR ) {
-			// we found an operator
-			TokenList::iterator opToken = token;
-
-			// remove the following 'operator'-token
-			token++;
-
-			// and reset our opToken's type
-			(*opToken).resetTypeTo(Token::Type::IDENTIFER);
-			(*opToken).resetContentTo(RESERVED_WORD_OPERATOR + (*token).content());
-
-			mTokens.erase(token++);
-			continue;
-		}
-
-		token++;
-	}
-}
-*/
-
-	TokenIteratorMutable token = mTokens.begin();
-	TokenIterator last = mTokens.end();
+	TokenIteratorMutable last = mTokens.end();
 
 	// try to combine all operator tokens
 	while ( token != mTokens.end() ) {

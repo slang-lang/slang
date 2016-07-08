@@ -9,6 +9,10 @@ SET(HEADERS
 )
 
 SET(DEPENDENCIES
+	DebuggerLocalClient
+	DebuggerBackend
+	CoreBuildInObjects
+	Core
 )
 
 add_include(Projects/Core)

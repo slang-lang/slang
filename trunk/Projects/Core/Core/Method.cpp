@@ -186,7 +186,7 @@ ControlFlow::E Method::execute(const ParameterList& params, Object *result, cons
 	}
 
 	// record stack
-	StackTrace::GetInstance().pushStack(getFullName(), executedParams);
+	StackTrace::GetInstance().pushStack(getFullScopeName(), executedParams);
 	// notify debugger
 	Core::Debugger::GetInstance().notifyEnter(&interpreter, Core::Debugger::immediateBreakToken);
 
@@ -280,7 +280,7 @@ ControlFlow::E Method::processControlFlow(ControlFlow::E controlflow, Object *re
 		case ControlFlow::Normal:
 			// verify method return reason
 			if ( Typename() != VoidObject::TYPENAME && result->Typename() != VoidObject::TYPENAME ) {
-				throw Utils::Exceptions::Exception("unnatural method return at '" + getFullName() + "'");
+				throw Utils::Exceptions::Exception("unnatural method return at '" + getFullScopeName() + "'");
 			}
 
 			// correct behaviour detected, override control flow with normal state
@@ -289,7 +289,7 @@ ControlFlow::E Method::processControlFlow(ControlFlow::E controlflow, Object *re
 		case ControlFlow::Return:
 			// validate return value
 			if ( Typename() != VoidObject::TYPENAME && result->Typename() != Typename() ) {
-				OSwarn("implicit type conversion from " + result->Typename() + " to " + Typename() + " in " + getFullName());
+				OSwarn("implicit type conversion from " + result->Typename() + " to " + Typename() + " in " + getFullScopeName());
 
 				typecast(result, Typename(), mRepository);
 			}

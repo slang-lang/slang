@@ -122,7 +122,7 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 
 		Runtime::ControlFlow::E controlflow = main->Constructor(params);
 		if ( controlflow == Runtime::ControlFlow::Throw ) {
-			throw Utils::Exceptions::Exception("Exception raised in " + main->getFullName() + "::" + main->Typename());
+			throw Utils::Exceptions::Exception("Exception raised in " + main->getFullScopeName() + "::" + main->Typename());
 		}
 
 		// ... and store it
