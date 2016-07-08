@@ -167,14 +167,6 @@
 			>
 		</Filter>
 		<File
-			RelativePath=".\Mysql\AffectedRows.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\Mysql\AffectedRows.h"
-			>
-		</File>
-		<File
 			RelativePath=".\Apache\ApacheExtension.cpp"
 			>
 		</File>
@@ -207,30 +199,6 @@
 			>
 		</File>
 		<File
-			RelativePath=".\Mysql\Close.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\Mysql\Close.h"
-			>
-		</File>
-		<File
-			RelativePath=".\Mysql\Connect.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\Mysql\Connect.h"
-			>
-		</File>
-		<File
-			RelativePath=".\Mysql\ConnectionTest.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\Mysql\ConnectionTest.h"
-			>
-		</File>
-		<File
 			RelativePath=".\Apache\Defs.cpp"
 			>
 		</File>
@@ -239,23 +207,7 @@
 			>
 		</File>
 		<File
-			RelativePath=".\Mysql\Error.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\Mysql\Error.h"
-			>
-		</File>
-		<File
 			RelativePath=".\Extensions.h"
-			>
-		</File>
-		<File
-			RelativePath=".\Mysql\FieldCount.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\Mysql\FieldCount.h"
 			>
 		</File>
 		<File
@@ -299,14 +251,6 @@
 			>
 		</File>
 		<File
-			RelativePath=".\Mysql\FreeResult.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\Mysql\FreeResult.h"
-			>
-		</File>
-		<File
 			RelativePath=".\JSON\FromJson.cpp"
 			>
 		</File>
@@ -319,47 +263,7 @@
 			>
 		</File>
 		<File
-			RelativePath=".\Mysql\GetClientInfo.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\Mysql\GetClientInfo.h"
-			>
-		</File>
-		<File
 			RelativePath=".\System\GetEnv.h"
-			>
-		</File>
-		<File
-			RelativePath=".\Mysql\GetFieldName.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\Mysql\GetFieldName.h"
-			>
-		</File>
-		<File
-			RelativePath=".\Mysql\GetFieldValue.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\Mysql\GetFieldValue.h"
-			>
-		</File>
-		<File
-			RelativePath=".\Mysql\Info.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\Mysql\Info.h"
-			>
-		</File>
-		<File
-			RelativePath=".\Mysql\Init.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\Mysql\Init.h"
 			>
 		</File>
 		<File
@@ -371,7 +275,39 @@
 			>
 		</File>
 		<File
+			RelativePath=".\Mysql\MysqlAffectedRows.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\MysqlAffectedRows.h"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\MysqlClose.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\MysqlClose.h"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\MysqlConnect.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\MysqlConnect.h"
+			>
+		</File>
+		<File
 			RelativePath=".\Mysql\MysqlDataSeek.h"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\MysqlError.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\MysqlError.h"
 			>
 		</File>
 		<File
@@ -383,11 +319,115 @@
 			>
 		</File>
 		<File
+			RelativePath=".\Mysql\MysqlFieldCount.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\MysqlFieldCount.h"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\MysqlFieldSeek.h"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\MysqlFieldTell.h"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\MysqlFreeResult.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\MysqlFreeResult.h"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\MysqlGetClientInfo.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\MysqlGetClientInfo.h"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\MysqlGetFieldName.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\MysqlGetFieldName.h"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\MysqlGetFieldValue.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\MysqlGetFieldValue.h"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\MysqlInfo.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\MysqlInfo.h"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\MysqlInit.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\MysqlInit.h"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\MysqlNextResult.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\MysqlNextResult.h"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\MysqlNextRow.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\MysqlNextRow.h"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\MysqlNumFields.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\MysqlNumFields.h"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\MysqlNumRows.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\MysqlNumRows.h"
+			>
+		</File>
+		<File
 			RelativePath=".\Mysql\MysqlPing.cpp"
 			>
 		</File>
 		<File
 			RelativePath=".\Mysql\MysqlPing.h"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\MysqlQuery.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Mysql\MysqlQuery.h"
 			>
 		</File>
 		<File
@@ -411,35 +451,19 @@
 			>
 		</File>
 		<File
-			RelativePath=".\Mysql\NextResult.cpp"
+			RelativePath=".\Mysql\MysqlStoreResult.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\Mysql\NextResult.h"
+			RelativePath=".\Mysql\MysqlStoreResult.h"
 			>
 		</File>
 		<File
-			RelativePath=".\Mysql\NextRow.cpp"
+			RelativePath=".\Mysql\MysqlUseResult.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\Mysql\NextRow.h"
-			>
-		</File>
-		<File
-			RelativePath=".\Mysql\NumFields.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\Mysql\NumFields.h"
-			>
-		</File>
-		<File
-			RelativePath=".\Mysql\NumRows.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\Mysql\NumRows.h"
+			RelativePath=".\Mysql\MysqlUseResult.h"
 			>
 		</File>
 		<File
@@ -451,23 +475,7 @@
 			>
 		</File>
 		<File
-			RelativePath=".\Mysql\Query.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\Mysql\Query.h"
-			>
-		</File>
-		<File
 			RelativePath=".\System\Sleep.h"
-			>
-		</File>
-		<File
-			RelativePath=".\Mysql\StoreResult.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\Mysql\StoreResult.h"
 			>
 		</File>
 		<File
@@ -528,14 +536,6 @@
 		</File>
 		<File
 			RelativePath=".\Mysql\Types.h"
-			>
-		</File>
-		<File
-			RelativePath=".\Mysql\UseResult.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\Mysql\UseResult.h"
 			>
 		</File>
 		<File
