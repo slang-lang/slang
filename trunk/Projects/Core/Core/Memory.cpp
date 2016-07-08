@@ -3,7 +3,10 @@
 #include "Memory.h"
 
 // Library includes
-#include <stdint.h>
+#ifdef _WIN32
+#else
+#	include <stdint.h>
+#endif
 
 // Project includes
 #include <Core/Utils/Exceptions.h>
