@@ -288,7 +288,7 @@ void Analyser::createNamespace(TokenIterator& start, TokenIterator end)
 	std::string languageFeature;
 	std::string name;
 	std::string visibility;
-	bool isSealed = false;
+	//bool isSealed = false;
 
 	// look for the visibility token
 	visibility = (*start++).content();
@@ -301,9 +301,9 @@ void Analyser::createNamespace(TokenIterator& start, TokenIterator end)
 	// look for the identifier token
 	name = (*start++).content();
 
-	if ( (*start).content() == MODIFIER_SEALED ) {
-		isSealed = true;
-	}
+	//if ( (*start).content() == MODIFIER_SEALED ) {
+	//	isSealed = true;
+	//}
 
 	// look for the next opening curly brackets
 	TokenIterator open = findNext(start, Token::Type::BRACKET_CURLY_OPEN);
