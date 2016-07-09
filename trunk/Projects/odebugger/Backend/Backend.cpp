@@ -232,7 +232,7 @@ void Backend::executeSymbol(const StringList& tokens)
 		return;
 	}
 
-	if ( symbol->getType() != Symbol::IType::MethodSymbol ) {
+	if (symbol->getSymbolType() != Symbol::IType::MethodSymbol ) {
 		mTerminal->writeln("could not execute non-method symbol '" + name + "'!");
 		return;
 	}

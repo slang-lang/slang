@@ -34,10 +34,9 @@ public object Main {
 
 		try {
 			TestObject obj;
-			print(obj!);
 			obj!.getValue();
 
-			assert(!"obj validation failed");
+			assert(!"obj validation failed!");
 		}
 		catch {
 			print("caught validation exception");
@@ -55,6 +54,8 @@ public object Main {
 			print("value = " + value);
 
 			value!;
+
+			assert(!"int validation failed!");
 		}
 		catch {
 			print("caugth validation exception");
