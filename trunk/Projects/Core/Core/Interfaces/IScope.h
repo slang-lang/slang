@@ -19,7 +19,7 @@ namespace ObjectiveScript {
 
 // Forward declarations
 namespace Runtime {
-    class Method;
+	class Method;
 }
 class MethodSymbol;
 class Symbol;
@@ -38,16 +38,15 @@ public:
 	};
 
 public:
-    virtual ~IScope() { }
+	virtual ~IScope() { }
 
-    virtual void define(const std::string& name, Symbol *symbol) = 0;
-    virtual IScope* getEnclosingScope() const = 0;
-    virtual std::string getFullName() const = 0;
-    virtual std::string getFullScopeName() const = 0;
-    virtual const std::string& getScopeName() const = 0;
-	virtual IScope::IType::E getType() const = 0;
-    virtual Symbol* resolve(const std::string& name, bool onlyCurrentScope = false) const = 0;
-    virtual void undefine(const std::string& name, Symbol *symbol) = 0;
+	virtual void define(const std::string& name, Symbol *symbol) = 0;
+	virtual IScope* getEnclosingScope() const = 0;
+	virtual std::string getFullScopeName() const = 0;
+	virtual const std::string& getScopeName() const = 0;
+	virtual IScope::IType::E getScopeType() const = 0;
+	virtual Symbol* resolve(const std::string& name, bool onlyCurrentScope = false) const = 0;
+	virtual void undefine(const std::string& name, Symbol *symbol) = 0;
 };
 
 

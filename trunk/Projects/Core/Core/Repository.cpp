@@ -226,22 +226,22 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 
 	// instantiate atomic types
 	if ( blueprint->Typename() == Runtime::BoolObject::TYPENAME ) {
-		object = new Runtime::BoolObject(name, Runtime::BoolObject::DEFAULTVALUE);
+		object = new Runtime::BoolObject(name, Runtime::BoolObject::DEFAULTVALUE.toBool());
 	}
 	else if ( blueprint->Typename() == Runtime::DoubleObject::TYPENAME ) {
-		object = new Runtime::DoubleObject(name, Runtime::DoubleObject::DEFAULTVALUE);
+		object = new Runtime::DoubleObject(name, Runtime::DoubleObject::DEFAULTVALUE.toDouble());
 	}
 	else if ( blueprint->Typename() == Runtime::FloatObject::TYPENAME ) {
-		object = new Runtime::FloatObject(name, Runtime::FloatObject::DEFAULTVALUE);
+		object = new Runtime::FloatObject(name, Runtime::FloatObject::DEFAULTVALUE.toFloat());
 	}
 	else if ( blueprint->Typename() == Runtime::IntegerObject::TYPENAME ) {
-		object = new Runtime::IntegerObject(name, Runtime::IntegerObject::DEFAULTVALUE);
+		object = new Runtime::IntegerObject(name, Runtime::IntegerObject::DEFAULTVALUE.toInt());
 	}
 	else if ( blueprint->Typename() == Runtime::NumberObject::TYPENAME ) {
 		object = new Runtime::NumberObject(name, Runtime::NumberObject::DEFAULTVALUE);
 	}
 	else if ( blueprint->Typename() == Runtime::StringObject::TYPENAME ) {
-		object = new Runtime::StringObject(name, Runtime::StringObject::DEFAULTVALUE);
+		object = new Runtime::StringObject(name, Runtime::StringObject::DEFAULTVALUE.toStdString());
 	}
 	else if ( blueprint->Typename() == Runtime::VoidObject::TYPENAME ) {
 		object = new Runtime::VoidObject(name);
@@ -338,7 +338,7 @@ void Repository::initializeObject(Runtime::Object *object, Designtime::BluePrint
 	// create and define all symbols based on given blueprint
 	Symbols symbols = blueprint->provideSymbols();
 	for ( Symbols::const_iterator it = symbols.begin(); it != symbols.end(); ++it ) {
-		if ( it->second->getType() != Symbol::IType::BluePrintSymbol ) {
+		if (it->second->getSymbolType() != Symbol::IType::BluePrintSymbol ) {
 			continue;
 		}
 

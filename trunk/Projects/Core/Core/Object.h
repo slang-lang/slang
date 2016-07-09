@@ -60,6 +60,7 @@ public:
 
 public:
 	void operator= (const Object& other);
+	void copy(const Object& other);
 
 public:	// Symbol::IType implementation & RTTI
 	const std::string& Filename() const { return mFilename; }
@@ -97,6 +98,7 @@ public:	// Usage
 	ControlFlow::E execute(Object *result, const std::string& method, const ParameterList& params, const Method* caller = 0);		// throws VisibilityError exception
 
 public:	// Operators
+	virtual const Object* operator_array(const Object *index);
 	virtual void operator_assign(const Object *other);
 	virtual void operator_bitand(const Object *other);
 	virtual void operator_bitcomplement(const Object *other);
@@ -130,7 +132,6 @@ protected:
 	bool mIsAtomicType;
 	bool mIsConstructed;
 	Repository *mRepository;
-	Object *mThis;
 	std::string mTypename;
 	AtomicValue mValue;
 

@@ -94,7 +94,6 @@ void operator_binary_assign(Object *base, Object *other)
 		Runtime::Method* method = static_cast<Runtime::Method*>(base->resolveMethod("operator=", params, false));
 		if ( method ) {
 			VoidObject tmp;
-			//base->execute(&tmp, "operator=", params, 0);
 			method->execute(params, &tmp, Token());
 		}
 		else {
@@ -403,8 +402,6 @@ bool operator_binary_equal(Object *base, Object *other)
 	params.push_back(
 		Parameter(other->getName(), other->Typename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
 	);
-
-	//std::cout << "operator=(" << toString(params) << ")" << std::endl;
 
 	if ( base->resolveMethod("operator==", params, false) ) {
 		Object tmp;
@@ -872,6 +869,34 @@ void operator_binary_subtract(Object *base, Object *other)
 	}
 }
 
+void operator_trinary_array(Object *base, Object *index, Object* other)
+{
+assert(!"work in progress");
+
+	if ( !base ) {
+		throw Utils::Exceptions::AccessViolation("cannot use null pointer: base");
+	}
+	if ( !index ) {
+		throw Utils::Exceptions::AccessViolation("cannot use null pointer: index");
+	}
+	if ( !other ) {
+		throw Utils::Exceptions::AccessViolation("cannot use null pointer: other");
+	}
+
+	std::string source = base->Typename();
+//	std::string subscript = index->Typename();
+//	std::string target = other->Typename();
+
+	if ( source == BoolObject::TYPENAME ) {
+		BoolObject tmp(base->getValue());
+
+		*other = *tmp.operator_array(index);
+	}
+	else {
+assert(!"not implemented!");
+	}
+}
+
 void operator_unary_infix_decrement(Object *base)
 {
 	if ( !base ) {
@@ -1217,6 +1242,11 @@ void operator_unary_validate(Object *base)
 		throw Utils::Exceptions::AccessViolation("null pointer access");
 	}
 
+	if ( !base->isValid() ) {
+		throw ControlFlow::Throw;
+	}
+
+/*
 	std::string source = base->Typename();
 
 	if ( source == BoolObject::TYPENAME ) {
@@ -1266,6 +1296,7 @@ void operator_unary_validate(Object *base)
 			throw ControlFlow::Throw;
 		}
 	}
+*/
 }
 
 

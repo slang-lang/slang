@@ -237,11 +237,6 @@ ParameterList Parser::parseParameters(TokenIterator &token)
 		}
 
 		if ( token->content() == RESERVED_WORD_BY_REFERENCE ) {
-			if ( isConst ) {
-				// const reference parameters are not supported, they won't make sense
-				throw Utils::Exceptions::NotSupported("const reference parameters are not supported");
-			}
-
 			accessmode = Parameter::AccessMode::ByReference;
 			token++;
 		}

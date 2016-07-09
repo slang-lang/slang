@@ -37,7 +37,7 @@ const std::string& Symbol::getName() const
 	return mName;
 }
 
-Symbol::IType::E Symbol::getType() const
+Symbol::IType::E Symbol::getSymbolType() const
 {
 	return mType;
 }

@@ -29,9 +29,6 @@ VirtualMachine::VirtualMachine()
 
 VirtualMachine::~VirtualMachine()
 {
-	mBluePrints.clear();
-	mObjects.clear();
-
 	for ( Extensions::ExtensionList::iterator it = mExtensions.begin(); it != mExtensions.end(); ++it ) {
 		delete (*it);
 	}
@@ -41,6 +38,9 @@ VirtualMachine::~VirtualMachine()
 	mScripts.clear();
 
 	delete mRepository;
+
+	mObjects.clear();
+	mBluePrints.clear();
 }
 
 void VirtualMachine::addExtension(Extensions::IExtension *extension)
