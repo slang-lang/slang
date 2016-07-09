@@ -38,6 +38,7 @@ void LanguageTest::process()
 	TEST(testConstCorrectness1);
 	TEST(testConstCorrectness2);
 	TEST(testConstCorrectness3);
+	TEST(testConstCorrectness4);
 	TEST(testDefaultParameter);
 	TEST(testException);
 	TEST(testFinal);
@@ -152,6 +153,21 @@ void LanguageTest::testConstCorrectness3()
 		VirtualMachine vm;
 
 		TTHROWS(vm.createScriptFromFile("Tests/Language/ConstCorrectness3.os"), ObjectiveScript::Utils::Exceptions::ConstCorrectnessViolated);
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// unexpected exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void LanguageTest::testConstCorrectness4()
+{
+	try {
+		VirtualMachine vm;
+
+		TTHROWS(vm.createScriptFromFile("Tests/Language/ConstCorrectness4.os"), ObjectiveScript::Utils::Exceptions::ConstCorrectnessViolated);
 
 		// automatic success
 	}

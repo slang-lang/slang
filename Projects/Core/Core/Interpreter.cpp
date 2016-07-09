@@ -1002,7 +1002,7 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 
 	// check callers constness
 	if ( static_cast<Method*>(mOwner)->isConst() ) {
-		if ( mOwner == symbol->getEnclosingScope() && !symbol->isConst() ) {
+		if ( mOwner->getEnclosingScope() == symbol->getEnclosingScope() && !symbol->isConst() ) {
 			// check target method's constness
 			// this is a const method and we want to call a non-const method... neeeeey!
 			throw Utils::Exceptions::ConstCorrectnessViolated("only calls to const methods are allowed in const method '" + getScope()->getFullScopeName() + "'", token->position());
