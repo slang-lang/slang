@@ -43,9 +43,12 @@ public:
 	}
 
 public:
-	Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* /*result*/, const Token& token) {
+	Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* /*result*/, const Token& token)
+	{
+		ParameterList list = mergeParameters(params);
+
 		try {
-			ParameterList::const_iterator it = params.begin();
+			ParameterList::const_iterator it = list.begin();
 
 			long param_millis = (*it++).value().toInt();
 

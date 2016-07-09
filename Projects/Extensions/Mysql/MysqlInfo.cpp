@@ -31,15 +31,12 @@ MysqlInfo::MysqlInfo()
 
 Runtime::ControlFlow::E MysqlInfo::execute(const ParameterList& params, Runtime::Object* result, const Token& token)
 {
-(void)token;
+	ParameterList list = mergeParameters(params);
 
 	try {
-		// Parameter processing
-		// {
-		ParameterList::const_iterator it = params.begin();
+		ParameterList::const_iterator it = list.begin();
 
 		int param_handle = (*it++).value().toInt();
-		// }
 
 		MYSQL *myConn = mMysqlConnections[param_handle];
 

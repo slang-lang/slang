@@ -41,16 +41,15 @@ FileSeek::FileSeek()
 
 Runtime::ControlFlow::E FileSeek::execute(const ParameterList& params, Runtime::Object* result, const Token& token)
 {
+	ParameterList list = mergeParameters(params);
+
 	try {
-		ParameterList::const_iterator paramIt = params.begin();
+		ParameterList::const_iterator it = list.begin();
 
-		std::string param_handle = (*paramIt++).value().toStdString();
-		std::string param_offset = (*paramIt++).value().toStdString();
+		int param_handle = (*it++).value().toInt();
+		int param_offset = (*it++).value().toInt();
 
-		int handle = Tools::stringToInt(param_handle);
-		int offset = Tools::stringToInt(param_offset);
-
-		long size = lseek(handle, offset, SEEK_SET);
+		long size = lseek(param_handle, param_offset, SEEK_SET);
 		if ( size == -1 ) {    // error while reading
 			return Runtime::ControlFlow::Throw;
 		}

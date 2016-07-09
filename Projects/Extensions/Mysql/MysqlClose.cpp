@@ -22,7 +22,7 @@ namespace Mysql {
 
 
 MysqlClose::MysqlClose()
-: Runtime::Method(0, "mysql_close", Designtime::VoidObject::TYPENAME)
+: Runtime::Method(0, "mysql_close", Designtime::IntegerObject::TYPENAME)
 {
 	ParameterList params;
 	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, VALUE_NONE));
@@ -32,20 +32,18 @@ MysqlClose::MysqlClose()
 
 Runtime::ControlFlow::E MysqlClose::execute(const ParameterList& params, Runtime::Object* result, const Token& token)
 {
-(void)result;
-(void)token;
+	ParameterList list = mergeParameters(params);
 
 	try {
-		// Parameter processing
-		// {
-		ParameterList::const_iterator it = params.begin();
+		ParameterList::const_iterator it = list.begin();
 
 		int param_handle = (*it++).value().toInt();
-		// }
 
 		MYSQL *myConn = mMysqlConnections[param_handle];
 
 		mysql_close(myConn);
+
+		*result = Runtime::IntegerObject(0);
 	}
 	catch ( std::exception &e ) {
 		Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);

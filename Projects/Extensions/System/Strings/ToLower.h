@@ -42,8 +42,10 @@ public:
 public:
 	Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* result, const Token& token)
 	{
+		ParameterList list = mergeParameters(params);
+
 		try {
-			ParameterList::const_iterator it = params.begin();
+			ParameterList::const_iterator it = list.begin();
 
 			std::string param_value = (*it++).value().toStdString();
 
