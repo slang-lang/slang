@@ -21,8 +21,7 @@ namespace ObjectiveScript {
 namespace Runtime {
 
 
-float FloatObject::DEFAULTVALUE = 0.f;
-AtomicValue FloatObject::ATOMIC_DEFAULTVALUE = 0.f;
+AtomicValue FloatObject::DEFAULTVALUE = 0.f;
 std::string FloatObject::TYPENAME = "float";
 
 
@@ -61,11 +60,6 @@ FloatObject::FloatObject(const Object& other)
 	else {
 		Object::operator_assign(&other);
 	}
-}
-
-const std::string& FloatObject::getTypeName() const
-{
-	return TYPENAME;
 }
 
 bool FloatObject::isValid() const

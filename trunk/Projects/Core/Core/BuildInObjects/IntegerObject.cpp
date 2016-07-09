@@ -20,8 +20,7 @@ namespace ObjectiveScript {
 namespace Runtime {
 
 
-int IntegerObject::DEFAULTVALUE = 0;
-AtomicValue IntegerObject::ATOMIC_DEFAULTVALUE = 0;
+AtomicValue IntegerObject::DEFAULTVALUE = 0;
 std::string IntegerObject::TYPENAME = "int";
 
 

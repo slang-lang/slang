@@ -46,11 +46,6 @@ GenericObject::GenericObject(const Object& object)
 	setAbstract(true);
 }
 
-const std::string& GenericObject::getTypeName() const
-{
-	return TYPENAME;
-}
-
 
 }
 }

@@ -20,12 +20,11 @@ namespace Runtime {
 class IntegerObject : public Object
 {
 public:
-	static int DEFAULTVALUE;
-	static AtomicValue ATOMIC_DEFAULTVALUE;
+	static AtomicValue DEFAULTVALUE;
 	static std::string TYPENAME;
 
 public:
-	IntegerObject(AtomicValue value = 0);
+	IntegerObject(AtomicValue value = DEFAULTVALUE);
 	IntegerObject(const std::string& name, int value);
 	IntegerObject(const Object& object);
 

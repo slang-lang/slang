@@ -20,17 +20,13 @@ namespace Runtime {
 class BoolObject : public Object
 {
 public:
-	static bool DEFAULTVALUE;
-	static AtomicValue ATOMIC_DEFAULTVALUE;
+	static AtomicValue DEFAULTVALUE;
 	static std::string TYPENAME;
 
 public:
 	BoolObject(AtomicValue value = DEFAULTVALUE);
 	BoolObject(const std::string& name, bool value);
 	BoolObject(const Object& other);
-
-public:	// Symbol::IType implementation
-	const std::string& getTypeName() const;
 
 public:	// Operators
 	virtual void operator_assign(const BoolObject *other);

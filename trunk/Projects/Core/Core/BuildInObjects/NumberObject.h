@@ -28,9 +28,6 @@ public:
 	NumberObject(const std::string& name, double value);
 	NumberObject(const Object& object);
 
-public:	// Symbol::IType implementation
-	const std::string& getTypeName() const;
-
 public:	// Operators
 	virtual void operator_assign(const NumberObject *other);
 	virtual void operator_assign(const Object *other);
