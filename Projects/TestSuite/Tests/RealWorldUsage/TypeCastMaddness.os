@@ -10,7 +10,7 @@ public object Main {
 	public void Main(int argc, string argv) {
 		writeln("type cast madness: go!");
 
-		OTmp tmp;
+		OTmp tmp = new OTmp();
 
 		writeln("tmp = " + tmp.getInt());
 		writeln("value = " + (string getIntValue()));
