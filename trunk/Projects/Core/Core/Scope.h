@@ -19,6 +19,10 @@
 
 namespace ObjectiveScript {
 
+// Forward declarations
+namespace Runtime {
+	class Method;
+}
 
 class SymbolScope : public IScope
 {
@@ -29,6 +33,7 @@ public:
 public:	// IScope implementation
 	virtual void define(const std::string& name, Symbol *symbol);
 	virtual IScope* getEnclosingScope() const;
+	virtual void exportSymbols(Symbols& symbols);
 	virtual std::string getFullScopeName() const;
 	virtual const std::string& getScopeName() const;
 	virtual IScope::IType::E getScopeType() const;

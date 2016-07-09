@@ -12,7 +12,7 @@
 #include <Core/StackTrace.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine.h>
-#include <Debugger/Condition.h>
+//#include <Debugger/Condition.h>
 #include <Debugger/Debugger.h>
 #include <Tools/Files.h>
 #include <Tools/Strings.h>
@@ -314,16 +314,15 @@ int Backend::notify(SymbolScope* scope, const Core::BreakPoint& breakpoint)
 	mContinue = false;
 	mScope = scope;
 
-// Condition check
-// {
+	// Condition check
 	Core::Condition condition = breakpoint.getCondition();
 	if ( !condition.evaluate(getSymbol(condition.lhs()), getSymbol(condition.rhs())) ) {
 		mContinue = true;
 		mScope = 0;
 		return 0;
 	}
-// }
 
+	// Breakpoint check
 	if ( scope && !(breakpoint == Core::Debugger::immediateBreakPoint) ) {
 		mTerminal->writeln("[Breakpoint " + breakpoint.toString() + " reached]");
 	}
