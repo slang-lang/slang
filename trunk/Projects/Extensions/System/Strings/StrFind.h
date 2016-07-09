@@ -45,17 +45,14 @@ public:
 public:
 	Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* result, const Token& token)
 	{
+		ParameterList list = mergeParameters(params);
+
 		try {
-			ParameterList::const_iterator it = params.begin();
+			ParameterList::const_iterator it = list.begin();
 
 			std::string param_source = (*it++).value().toStdString();
 			std::string param_target = (*it++).value().toStdString();
-			int param_position = -1;
-
-			if ( params.size() >= 3 ) {
-				// TODO: this does not work with default parameters, we would need something like a parameter walker that also can return  default values
-				param_position = (*it++).value().toInt();
-			}
+			int param_position = (*it).value().toInt();
 
 			int my_result = param_source.find(param_target, param_position);
 

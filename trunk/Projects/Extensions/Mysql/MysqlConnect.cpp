@@ -37,10 +37,10 @@ MysqlRealConnect::MysqlRealConnect()
 
 Runtime::ControlFlow::E MysqlRealConnect::execute(const ParameterList& params, Runtime::Object* result, const Token& token)
 {
+	ParameterList list = mergeParameters(params);
+
 	try {
-		// Parameter processing
-		// {
-		ParameterList::const_iterator it = params.begin();
+		ParameterList::const_iterator it = list.begin();
 
 		int param_handle = (*it++).value().toInt();
 		std::string param_host = (*it++).value().toStdString();
@@ -50,7 +50,6 @@ Runtime::ControlFlow::E MysqlRealConnect::execute(const ParameterList& params, R
 		std::string param_db = (*it++).value().toStdString();
 		std::string param_socket;
 		long param_clientflag = 0;
-		// }
 
 		MYSQL *myConn = mMysqlConnections[param_handle];
 

@@ -26,10 +26,6 @@ Assert::Assert()
 
 Runtime::ControlFlow::E Assert::execute(const ParameterList& params, Runtime::Object* /*result*/, const Token& token)
 {
-	if ( params.size() < 1 && params.size() > 2 ) {
-		throw Utils::Exceptions::ParameterCountMissmatch("2 parameters expected, but " + ::Utils::Tools::toString(params.size()) + " parameter(s) found", token.position());
-	}
-
 	Runtime::Object condition = *params.front().pointer();
 	std::string text;
 

@@ -34,16 +34,13 @@ MysqlQuery::MysqlQuery()
 
 Runtime::ControlFlow::E MysqlQuery::execute(const ParameterList& params, Runtime::Object* result, const Token& token)
 {
-(void)token;
+	ParameterList list = mergeParameters(params);
 
 	try {
-		// Parameter processing
-		// {
-		ParameterList::const_iterator it = params.begin();
+		ParameterList::const_iterator it = list.begin();
 
 		int param_handle = (*it++).value().toInt();
 		std::string query = (*it++).value().toStdString();
-		// }
 
 		MYSQL *myConn = mMysqlConnections[param_handle];
 		if ( !myConn ) {

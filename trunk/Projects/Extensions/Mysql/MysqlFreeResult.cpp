@@ -33,15 +33,13 @@ MysqlFreeResult::MysqlFreeResult()
 Runtime::ControlFlow::E MysqlFreeResult::execute(const ParameterList& params, Runtime::Object* result, const Token& token)
 {
 (void)result;
-(void)token;
+
+	ParameterList list = mergeParameters(params);
 
 	try {
-		// Parameter processing
-		// {
-		ParameterList::const_iterator it = params.begin();
+		ParameterList::const_iterator it = list.begin();
 
 		int param_handle = (*it++).value().toInt();
-		// }
 
 		MYSQL_RES *myResult = mMysqlResults[param_handle];
 

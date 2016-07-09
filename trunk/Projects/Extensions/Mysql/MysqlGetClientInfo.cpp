@@ -30,6 +30,7 @@ MysqlGetClientInfo::MysqlGetClientInfo()
 Runtime::ControlFlow::E MysqlGetClientInfo::execute(const ParameterList& params, Runtime::Object* result, const Token& token)
 {
 (void)params;
+
 	try {
 		std::string my_result = mysql_get_client_info();
 

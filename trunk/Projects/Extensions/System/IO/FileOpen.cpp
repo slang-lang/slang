@@ -60,29 +60,23 @@ FileOpen::FileOpen()
 {
 	ParameterList params;
 	params.push_back(Parameter("filename", Designtime::StringObject::TYPENAME, VALUE_NONE));
-	params.push_back(Parameter("handle", Designtime::StringObject::TYPENAME, VALUE_NONE));
+	params.push_back(Parameter("accessmode", Designtime::StringObject::TYPENAME, VALUE_NONE));
 
 	setSignature(params);
 }
 
 Runtime::ControlFlow::E FileOpen::execute(const ParameterList& params, Runtime::Object* result, const Token& token)
 {
-	if ( params.size() != 2 ) {
-		throw Utils::Exceptions::ParameterCountMissmatch("2 parameter expected, but " + ::Utils::Tools::toString(params.size()) + " parameter(s) found", token.position());
-	}
-
-	Runtime::ControlFlow::E controlFlow = Runtime::ControlFlow::Normal;
-
-	ParameterList::const_iterator it = params.begin();
-
-	std::string filename = (*it++).value().toStdString();
-	std::string accessmode = (*it++).value().toStdString();
-
-	int handle = 0;
-	int mode = parseAccessMode(accessmode);
+	ParameterList list = mergeParameters(params);
 
 	try {
-		handle = open(filename.c_str(), mode, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+		ParameterList::const_iterator it = list.begin();
+
+		std::string param_filename = (*it++).value().toStdString();
+		std::string param_accessmode = (*it++).value().toStdString();
+
+		int mode = parseAccessMode(param_accessmode);
+		int handle = open(param_filename.c_str(), mode, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 
 		if ( handle == -1 ) {
 			return Runtime::ControlFlow::Throw;
@@ -98,7 +92,7 @@ Runtime::ControlFlow::E FileOpen::execute(const ParameterList& params, Runtime::
 		return Runtime::ControlFlow::Throw;
 	}
 
-	return controlFlow;
+	return Runtime::ControlFlow::Normal;
 }
 
 int FileOpen::parseAccessMode(std::string accessmode) const
