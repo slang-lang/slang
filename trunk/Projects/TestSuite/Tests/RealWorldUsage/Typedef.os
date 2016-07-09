@@ -50,14 +50,14 @@ private object RetypedProto replicates Proto<int>;
 
 private object Main {
 	public void Main(int argc, string argv) {
-		DerivedObject derived;
+		DerivedObject derived = new DerivedObject();
 		print("derived.getValue() = " + derived.getValue());
 		derived.setValue(2);
 		print("derived.getValue() = " + derived.getValue());
 		derived = 3;
 		print("derived.getValue() = " + derived.getValue());
 
-		Retyped retyped;
+		Retyped retyped = new Retyped();
 		print("retyped.getValue() = " + retyped.getValue());
 		retyped.setValue(2);
 		print("retyped.getValue() = " + retyped.getValue());
