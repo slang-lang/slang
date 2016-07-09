@@ -121,37 +121,30 @@ ControlFlow::E Method::execute(const ParameterList& params, Object *result, cons
 	}
 
 	switch ( getLanguageFeatureState() ) {
-		case LanguageFeatureState::Deprecated: OSwarn("method '" + getName() + "' is marked as deprecated"); break;
-		case LanguageFeatureState::NotImplemented: OSerror("method '" + getName() + "' is marked as not implemented"); throw Utils::Exceptions::NotImplemented(getName()); break;
+		case LanguageFeatureState::Deprecated: OSwarn("method '" + getFullScopeName() + "' is marked as deprecated"); break;
+		case LanguageFeatureState::NotImplemented: OSerror("method '" + getFullScopeName() + "' is marked as not implemented"); throw Utils::Exceptions::NotImplemented(getFullScopeName()); break;
 		case LanguageFeatureState::Stable: /* this is the normal language feature state, so there is no need to log anything here */ break;
-		case LanguageFeatureState::Unknown: OSerror("unknown language feature state set for method '" + getName() + "'"); break;
-		case LanguageFeatureState::Unstable: OSwarn("method '" + getName() + "' is marked as unstable"); break;
+		case LanguageFeatureState::Unknown: OSerror("unknown language feature state set for method '" + getFullScopeName() + "'"); break;
+		case LanguageFeatureState::Unstable: OSwarn("method '" + getFullScopeName() + "' is marked as unstable"); break;
 	}
 
-	Interpreter interpreter(this, getName());
-	interpreter.setConst(isConst());
-	interpreter.setFinal(isFinal());
-	interpreter.setLanguageFeatureState(getLanguageFeatureState());
-	interpreter.setMutability(getMutability());
+	Interpreter interpreter(this);
 	interpreter.setRepository(mRepository);
 	interpreter.setTokens(mTokens);
-	interpreter.setVisibility(getVisibility());
 
 	ParameterList executedParams = mergeParameters(params);
 
 	// add parameters as locale variables
 	for ( ParameterList::const_iterator it = executedParams.begin(); it != executedParams.end(); ++it ) {
 		switch ( it->access() ) {
-			case Parameter::AccessMode::Unspecified: {
-				throw Utils::Exceptions::AccessMode("unspecified access mode");
-			} break;
 			case Parameter::AccessMode::ByReference: {
 				Object *object = it->pointer();
 
 				object->setConst(it->isConst());
 				object->setMutability(it->isConst() ? Mutability::Const : Mutability::Modify);
 
-				interpreter.define(it->name(), object);
+				//interpreter.define(it->name(), object);
+				define(it->name(), object);
 			} break;
 			case Parameter::AccessMode::ByValue: {
 				Object *object = mRepository->createInstance(it->type(), it->name());
@@ -163,7 +156,11 @@ ControlFlow::E Method::execute(const ParameterList& params, Object *result, cons
 				object->setConst(it->isConst());
 				object->setMutability(it->isConst() ? Mutability::Const : Mutability::Modify);
 
-				interpreter.define(it->name(), object);
+				//interpreter.define(it->name(), object);
+				define(it->name(), object);
+			} break;
+			case Parameter::AccessMode::Unspecified: {
+				throw Utils::Exceptions::AccessMode("unspecified access mode");
 			} break;
 		}
 	}
@@ -171,7 +168,7 @@ ControlFlow::E Method::execute(const ParameterList& params, Object *result, cons
 	// record stack trace
 	StackTrace::GetInstance().pushStack(getFullScopeName(), executedParams);
 	// notify debugger
-	Core::Debugger::GetInstance().notifyEnter(&interpreter, Core::Debugger::immediateBreakToken);
+	Core::Debugger::GetInstance().notifyEnter(this, Core::Debugger::immediateBreakToken);
 
 	// do the real method execution
 	ControlFlow::E controlflow = interpreter.execute(result);
@@ -183,9 +180,11 @@ ControlFlow::E Method::execute(const ParameterList& params, Object *result, cons
 	controlflow = processControlFlow(controlflow, result);
 
 	// notify debugger
-	Core::Debugger::GetInstance().notifyExit(&interpreter, Core::Debugger::immediateBreakToken);
+	Core::Debugger::GetInstance().notifyExit(this, Core::Debugger::immediateBreakToken);
 	// unwind stack trace
 	StackTrace::GetInstance().popStack();
+
+	garbageCollector();
 
 	return controlflow;
 }

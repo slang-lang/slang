@@ -41,6 +41,11 @@ void SymbolScope::define(const std::string& name, Symbol *symbol)
 	));
 }
 
+void SymbolScope::exportSymbols(Symbols& symbols)
+{
+	symbols = mSymbols;
+}
+
 IScope* SymbolScope::getEnclosingScope() const
 {
 	return mParent;

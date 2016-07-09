@@ -7,7 +7,6 @@
 #include <string>
 
 // Project includes
-#include <Core/Parameter.h>
 
 // Forward declarations
 
@@ -18,10 +17,6 @@ namespace ObjectiveScript {
 
 
 // Forward declarations
-namespace Runtime {
-	class Method;
-}
-class MethodSymbol;
 class Symbol;
 
 

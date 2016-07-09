@@ -29,29 +29,23 @@ namespace ObjectiveScript {
 namespace Runtime {
 
 
-Interpreter::Interpreter(::ObjectiveScript::IScope *scope, const std::string& name)
-: SymbolScope(name, scope),
-  mControlFlow(ControlFlow::Normal),
+Interpreter::Interpreter(SymbolScope *scope)
+: mControlFlow(ControlFlow::Normal),
+  mOwner(scope),
   mRepository(0)
 {
 }
 
 Interpreter::~Interpreter()
 {
-	garbageCollector();
 }
 
+/*
+ * executes tokens and updates the given result
+ */
 ControlFlow::E Interpreter::execute(Object *result)
 {
-	pushTokens(mTokens);
-		TokenIterator start = getTokens().begin();
-		TokenIterator end = getTokens().end();
-
-		process(result, start, end);
-	popTokens();
-
-	// let the garbage collector do it's magic after we gathered our result
-	garbageCollector();
+	mControlFlow = interpret(mTokens, result);
 
 	return mControlFlow;
 }
@@ -91,20 +85,28 @@ void Interpreter::expression(Object *result, TokenIterator& start)
 
 void Interpreter::garbageCollector()
 {
-	for ( Symbols::reverse_iterator it = mSymbols.rbegin(); it != mSymbols.rend(); ) {
+	Symbols symbols;
+	getScope()->exportSymbols(symbols);
+
+	for ( Symbols::reverse_iterator it = symbols.rbegin(); it != symbols.rend(); ++it ) {
 		if ( it->first != IDENTIFIER_BASE && it->first != IDENTIFIER_THIS &&
 			 it->second && it->second->getSymbolType() == Symbol::IType::ObjectSymbol ) {
-			mRepository->removeReference(static_cast<Object*>(it->second));
+			getRepository()->removeReference(static_cast<Object*>(it->second));
 		}
 
-		undefine(it->first, it->second);
+		//getScope()->undefine(it->first, it->second);
 	}
-	mSymbols.clear();
+	symbols.clear();
 }
 
 const ExceptionData& Interpreter::getExceptionData() const
 {
 	return mExceptionData;
+}
+
+Repository* Interpreter::getRepository() const
+{
+	return mRepository;
 }
 
 SymbolScope* Interpreter::getScope() const
@@ -113,7 +115,7 @@ SymbolScope* Interpreter::getScope() const
 		return mScopeStack.back();
 	}
 
-	return (SymbolScope*)this;
+	return mOwner;
 }
 
 const TokenList& Interpreter::getTokens() const
@@ -167,9 +169,9 @@ Symbol* Interpreter::identifyMethod(TokenIterator& token, const ParameterList& p
 			result = getScope()->resolve(identifier, onlyCurrentScope);
 
 			if ( result->getSymbolType() == Symbol::IType::MethodSymbol ) {
-				switch (result->getSymbolType() ) {
+				switch ( result->getSymbolType() ) {
 					case Symbol::IType::MethodSymbol:
-						result = static_cast<Method*>(mParent)->resolveMethod(identifier, params, onlyCurrentScope);
+						result = static_cast<Method*>(mOwner)->resolveMethod(identifier, params, onlyCurrentScope);
 						break;
 					case Symbol::IType::NamespaceSymbol:
 						throw Utils::Exceptions::NotImplemented("namespace symbol");
@@ -206,7 +208,7 @@ Symbol* Interpreter::identifyMethod(TokenIterator& token, const ParameterList& p
 }
 
 /*
- * executes the given tokens in a seperate scope
+ * executes the given tokens in a separate scope
  */
 ControlFlow::E Interpreter::interpret(const TokenList& tokens, Object* result)
 {
@@ -214,12 +216,15 @@ ControlFlow::E Interpreter::interpret(const TokenList& tokens, Object* result)
 	mControlFlow = ControlFlow::Normal;
 
 	pushScope();
-	pushTokens(tokens);
-		TokenIterator start = getTokens().begin();
-		TokenIterator end = getTokens().end();
+		pushTokens(tokens);
+			TokenIterator start = getTokens().begin();
+			TokenIterator end = getTokens().end();
 
-		process(result, start, end);
-	popTokens();
+			process(result, start, end);
+		popTokens();
+
+		// let the garbage collector do it's magic after we gathered our result
+		garbageCollector();
 	popScope();
 
 	return mControlFlow;
@@ -401,7 +406,7 @@ void Interpreter::parseInfixPostfix(Object *result, TokenIterator& start)
 			// here we could demand a ')'
 			//expect(Token::Type::PARENTHESIS_CLOSE, start++);
 
-			typecast(result, newType, mRepository);
+			typecast(result, newType, getRepository());
 		} break;
 		default: {
 			parseTerm(result, start);
@@ -500,7 +505,7 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 void Interpreter::popScope()
 {
 	if ( mScopeStack.empty() ) {
-		throw Utils::Exceptions::Exception("tried to pop beyond stack");
+		throw Utils::Exceptions::Exception("tried to pop beyond stack!");
 	}
 
 	SymbolScope* scope = mScopeStack.back();
@@ -527,7 +532,7 @@ void Interpreter::process(Object *result, TokenIterator& token, TokenIterator en
 		}
 
 		// notify debugger
-		Core::Debugger::GetInstance().notify(this, (*token));
+		Core::Debugger::GetInstance().notify(getScope(), (*token));
 
 		// decide what we want to do according to the type of token we have
 		switch ( token->type() ) {
@@ -773,7 +778,7 @@ void Interpreter::process_identifier(TokenIterator& token, Object* /*result*/, T
 	if ( symbol->isConst() ) {	// we tried to modify a const symbol (i.e. member, parameter or constant local variable)
 		throw Utils::Exceptions::ConstCorrectnessViolated("tried to modify const symbol '" + identifier + "'", token->position());
 	}
-	if ( symbol->isMember() && this->isConst() ) {	// we tried to modify a member in a const method
+	if ( symbol->isMember() && static_cast<Method*>(mOwner)->isConst() ) {	// we tried to modify a member in a const method
 		throw Utils::Exceptions::ConstCorrectnessViolated("tried to modify member '" + identifier + "' in const method '" + getScope()->getScopeName() + "'", token->position());
 	}
 
@@ -996,23 +1001,8 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 	}
 
 	// check callers constness
-	if ( isConst() ) {
-/*
-		if ( calleeParent && calleeParent->getSymbolType() == Symbol::IType::ObjectSymbol ) {
-			Object* tmp = static_cast<Object*>(resolve(calleeParent->getName(), true));
-
-			// check if our callee's parent is a member of us
-			if ( calleeParent && tmp && tmp->isMember() && calleeParent == tmp ) {
-				if ( !symbol->isConst() ) {
-					// check target method's constness
-					// this is a const method and we want to call a non-const method... neeeeey!
-					throw Utils::Exceptions::ConstCorrectnessViolated("only calls to const methods are allowed in const method '" + getScope()->getFullScopeName() + "'", token->position());
-				}
-			}
-		}
-*/
-
-		if ( getEnclosingScope() == symbol->getEnclosingScope() && !symbol->isConst() ) {
+	if ( static_cast<Method*>(mOwner)->isConst() ) {
+		if ( mOwner == symbol->getEnclosingScope() && !symbol->isConst() ) {
 			// check target method's constness
 			// this is a const method and we want to call a non-const method... neeeeey!
 			throw Utils::Exceptions::ConstCorrectnessViolated("only calls to const methods are allowed in const method '" + getScope()->getFullScopeName() + "'", token->position());
@@ -1083,7 +1073,7 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 	token = closed;
 
 	// create instance of new object
-	Object* tmpObj = mRepository->createInstance(type, name, true);
+	Object* tmpObj = getRepository()->createInstance(type, name, true);
 
 	// execute new object's constructor
 	mControlFlow = tmpObj->Constructor(params);
@@ -1197,7 +1187,7 @@ void Interpreter::process_throw(TokenIterator& token, Object* result)
 {
 	(void)result;
 
-	Object* data = mRepository->createInstance(GENERIC_OBJECT);
+	Object* data = getRepository()->createInstance(GENERIC_OBJECT);
 	try {
 		expression(data, token);
 	}
@@ -1339,7 +1329,7 @@ void Interpreter::process_type(TokenIterator& token)
 	}
 
 	// TODO: create a shallow object if we have an assignment statement to prevent duplicate object instantiation
-	object = mRepository->createInstance(type, name, false);
+	object = getRepository()->createInstance(type, name, false);
 
 	getScope()->define(name, object);
 

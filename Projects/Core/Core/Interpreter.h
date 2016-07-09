@@ -12,6 +12,7 @@
 #include "Parameter.h"
 #include "Scope.h"
 #include "Token.h"
+#include "Repository.h"
 
 // Forward declarations
 
@@ -29,11 +30,10 @@ namespace Runtime {
 class Object;
 
 
-class Interpreter : public SymbolScope,
-					public GenericAttributes
+class Interpreter
 {
 public:
-	Interpreter(IScope *scope, const std::string& name);
+	Interpreter(SymbolScope *scope);
 	virtual ~Interpreter();
 
 public:
@@ -89,6 +89,11 @@ private: // Execution
 	void parseTerm(Object *result, TokenIterator& start);
 	// }
 
+	// Repository
+	// {
+	Repository* getRepository() const;
+	// }
+
 	// Scope stack
 	// {
 	SymbolScope* getScope() const;
@@ -108,6 +113,7 @@ private: // Execution
 private:
 	ControlFlow::E mControlFlow;
 	ExceptionData mExceptionData;
+	SymbolScope* mOwner;
 	Repository *mRepository;
 	ScopeStack mScopeStack;
 	TokenList mTokens;
