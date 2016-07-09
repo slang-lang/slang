@@ -50,11 +50,6 @@ void VoidObject::getNativeValue() const
 	return;	// this makes absolutely no sense but hey :-)
 }
 
-const std::string& VoidObject::getTypeName() const
-{
-	return TYPENAME;
-}
-
 void VoidObject::setNativeValue(void)
 {
 	// this makes absolutely no sense but hey :-)

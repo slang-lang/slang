@@ -20,17 +20,13 @@ namespace Runtime {
 class DoubleObject : public Object
 {
 public:
-	static double DEFAULTVALUE;
-	static AtomicValue ATOMIC_DEFAULTVALUE;
+	static AtomicValue DEFAULTVALUE;
 	static std::string TYPENAME;
 
 public:
-	DoubleObject(AtomicValue value = 0.0);
+	DoubleObject(AtomicValue value = DEFAULTVALUE);
 	DoubleObject(const std::string& name, double value);
 	DoubleObject(const Object& object);
-
-public:	// Symbol::IType implementation
-	const std::string& getTypeName() const;
 
 public:	// Operators
 	virtual void operator_assign(const DoubleObject *other);

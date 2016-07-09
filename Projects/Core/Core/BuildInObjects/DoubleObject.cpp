@@ -21,8 +21,7 @@ namespace ObjectiveScript {
 namespace Runtime {
 
 
-double DoubleObject::DEFAULTVALUE = 0.0;
-AtomicValue DoubleObject::ATOMIC_DEFAULTVALUE = 0.0;
+AtomicValue DoubleObject::DEFAULTVALUE = 0.0;
 std::string DoubleObject::TYPENAME = "double";
 
 
@@ -61,11 +60,6 @@ DoubleObject::DoubleObject(const Object& other)
 	else {
 		Object::operator_assign(&other);
 	}
-}
-
-const std::string& DoubleObject::getTypeName() const
-{
-	return TYPENAME;
 }
 
 bool DoubleObject::isValid() const

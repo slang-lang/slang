@@ -40,11 +40,6 @@ UserObject::UserObject(const Object& object)
 	mIsConstructed = false;
 }
 
-const std::string& UserObject::getTypeName() const
-{
-	return TYPENAME;
-}
-
 void UserObject::operator_assign(const Object *other)
 {
 	ParameterList params;

@@ -20,17 +20,13 @@ namespace Runtime {
 class FloatObject : public Object
 {
 public:
-	static float DEFAULTVALUE;
-	static AtomicValue ATOMIC_DEFAULTVALUE;
+	static AtomicValue DEFAULTVALUE;
 	static std::string TYPENAME;
 
 public:
-	FloatObject(AtomicValue value = 0.f);
+	FloatObject(AtomicValue value = DEFAULTVALUE);
 	FloatObject(const std::string& name, float value);
 	FloatObject(const Object& object);
-
-public:	// Symbol::IType implementation
-	const std::string& getTypeName() const;
 
 public:	// Operators
 	virtual void operator_assign(const FloatObject *other);

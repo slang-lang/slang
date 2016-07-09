@@ -20,16 +20,13 @@ namespace Runtime {
 class StringObject : public Object
 {
 public:
-	static std::string DEFAULTVALUE;
+	static AtomicValue DEFAULTVALUE;
 	static std::string TYPENAME;
 
 public:
-	StringObject(AtomicValue value = "");
+	StringObject(AtomicValue value = DEFAULTVALUE);
 	StringObject(const std::string& name, const std::string& value);
 	StringObject(const Object& other);
-
-public:	// Symbol::IType implementation
-	const std::string& getTypeName() const;
 
 public:	// Operators
 	virtual void operator_assign(const Object *other);

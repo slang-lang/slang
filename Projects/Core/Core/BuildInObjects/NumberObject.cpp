@@ -62,11 +62,6 @@ NumberObject::NumberObject(const Object& other)
 	}
 }
 
-const std::string& NumberObject::getTypeName() const
-{
-	return TYPENAME;
-}
-
 bool NumberObject::isValid() const
 {
 	return mIsConstructed;

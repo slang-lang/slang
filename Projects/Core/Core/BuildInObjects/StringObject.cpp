@@ -23,7 +23,7 @@ namespace ObjectiveScript {
 namespace Runtime {
 
 
-std::string StringObject::DEFAULTVALUE = "";
+AtomicValue StringObject::DEFAULTVALUE = "";
 std::string StringObject::TYPENAME = "string";
 
 
@@ -64,11 +64,6 @@ StringObject::StringObject(const Object& other)
 	else {
 		Object::operator_assign(&other);
 	}
-}
-
-const std::string& StringObject::getTypeName() const
-{
-	return TYPENAME;
 }
 
 bool StringObject::isValid() const

@@ -21,8 +21,7 @@ namespace ObjectiveScript {
 namespace Runtime {
 
 
-bool BoolObject::DEFAULTVALUE = false;
-AtomicValue BoolObject::ATOMIC_DEFAULTVALUE = false;
+AtomicValue BoolObject::DEFAULTVALUE = false;
 std::string BoolObject::TYPENAME = "bool";
 
 
@@ -68,11 +67,6 @@ BoolObject::BoolObject(const Object& other)
 bool BoolObject::operator_bool() const
 {
 	return mValue.toBool();
-}
-
-const std::string& BoolObject::getTypeName() const
-{
-	return TYPENAME;
 }
 
 bool BoolObject::isValid() const
