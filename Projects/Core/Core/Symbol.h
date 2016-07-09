@@ -47,7 +47,7 @@ public:
 
 public:
 	const std::string& getName() const;
-	IType::E getType() const;
+	IType::E getSymbolType() const;
 
 	virtual std::string ToString() const = 0;
 

@@ -137,68 +137,54 @@ ControlFlow::E Method::execute(const ParameterList& params, Object *result, cons
 	interpreter.setTokens(mTokens);
 	interpreter.setVisibility(getVisibility());
 
-	ParameterList executedParams;
+	ParameterList executedParams = mergeParameters(params);
 
 	// add parameters as locale variables
-	ParameterList::const_iterator paramIt = params.begin();
-	for ( ParameterList::const_iterator sigIt = mSignature.begin(); sigIt != mSignature.end(); ++sigIt ) {
-		// initialize parameter with default value
-		Parameter param(sigIt->name(), sigIt->type(), sigIt->value(), sigIt->hasDefaultValue(), sigIt->isConst(), sigIt->access());
-
-		if ( paramIt != params.end() ) {
-			// override parameter with correct value
-			param = Parameter(sigIt->name(), sigIt->type(), paramIt->value(), sigIt->hasDefaultValue(), sigIt->isConst(), sigIt->access(), paramIt->pointer());
-			// next iteration
-			paramIt++;
-		}
-
-		executedParams.push_back(param);
-
-		switch ( param.access() ) {
+	for ( ParameterList::const_iterator it = executedParams.begin(); it != executedParams.end(); ++it ) {
+		switch ( it->access() ) {
 			case Parameter::AccessMode::Unspecified: {
 				throw Utils::Exceptions::AccessMode("unspecified access mode");
 			} break;
 			case Parameter::AccessMode::ByReference: {
-				Object *object = param.pointer();
+				Object *object = it->pointer();
 
-				if ( param.isConst() ) {
-					throw Utils::Exceptions::NotImplemented("const reference parameters not supported");
-				}
+				object->setConst(it->isConst());
+				object->setMutability(it->isConst() ? Mutability::Const : Mutability::Modify);
 
-				object->setConst(param.isConst());	// const references are not supported atm so this should always be false
-				object->setMutability(param.isConst() ? Mutability::Const : Mutability::Modify);
-
-				interpreter.define(param.name(), object);
+				interpreter.define(it->name(), object);
 			} break;
 			case Parameter::AccessMode::ByValue: {
-				Object *object = mRepository->createInstance(param.type(), param.name());
+				Object *object = mRepository->createInstance(it->type(), it->name());
 
-				object->setValue(param.value());	// in case we have a default value
-				if ( param.pointer() ) {
-					*object = *param.pointer();
+				object->setValue(it->value());	// in case we have a default value
+				if ( it->pointer() ) {
+					*object = *(it->pointer());
 				}
-				object->setConst(param.isConst());
-				object->setMutability(param.isConst() ? Mutability::Const : Mutability::Modify);
+				object->setConst(it->isConst());
+				object->setMutability(it->isConst() ? Mutability::Const : Mutability::Modify);
 
-				interpreter.define(param.name(), object);
+				interpreter.define(it->name(), object);
 			} break;
 		}
 	}
 
-	// record stack
+	// record stack trace
 	StackTrace::GetInstance().pushStack(getFullScopeName(), executedParams);
 	// notify debugger
 	Core::Debugger::GetInstance().notifyEnter(&interpreter, Core::Debugger::immediateBreakToken);
 
-	ControlFlow::E controlflow = interpreter.execute(result);	// execute method code
+	// do the real method execution
+	ControlFlow::E controlflow = interpreter.execute(result);
 
-	mExceptionData = interpreter.getExceptionData();	// collect exception data no matter what
+	// collect exception data no matter what
+	mExceptionData = interpreter.getExceptionData();
 
+	// process & update control flow
 	controlflow = processControlFlow(controlflow, result);
 
 	// notify debugger
 	Core::Debugger::GetInstance().notifyExit(&interpreter, Core::Debugger::immediateBreakToken);
-	// unwind stack
+	// unwind stack trace
 	StackTrace::GetInstance().popStack();
 
 	return controlflow;
@@ -208,7 +194,7 @@ void Method::garbageCollector()
 {
 	for ( Symbols::reverse_iterator it = mSymbols.rbegin(); it != mSymbols.rend(); ) {
 		if ( it->first != IDENTIFIER_BASE && it->first != IDENTIFIER_THIS &&
-			 it->second && it->second->getType() == Symbol::IType::ObjectSymbol ) {
+			 it->second && it->second->getSymbolType() == Symbol::IType::ObjectSymbol ) {
 			mRepository->removeReference(static_cast<Object*>(it->second));
 		}
 
@@ -270,6 +256,30 @@ bool Method::isSignatureValid(const ParameterList& params) const
 	return true;
 }
 
+ParameterList Method::mergeParameters(const ParameterList& params) const
+{
+	ParameterList result;
+
+	ParameterList::const_iterator paramIt = params.begin();
+	ParameterList::const_iterator sigIt = mSignature.begin();
+
+	for ( ; sigIt != mSignature.end(); ++sigIt ) {
+		// initialize parameter with default value
+		Parameter param(sigIt->name(), sigIt->type(), sigIt->value(), sigIt->hasDefaultValue(), sigIt->isConst(), sigIt->access());
+
+		if ( paramIt != params.end() ) {
+			// override parameter with correct value
+			param = Parameter(sigIt->name(), sigIt->type(), paramIt->value(), sigIt->hasDefaultValue(), sigIt->isConst(), sigIt->access(), paramIt->pointer());
+			// next iteration
+			paramIt++;
+		}
+
+		result.push_back(param);
+	}
+
+	return result;
+}
+
 ControlFlow::E Method::processControlFlow(ControlFlow::E controlflow, Object *result)
 {
 	// detect unnatural control flow
@@ -327,7 +337,7 @@ const ParameterList& Method::provideSignature() const
 Symbol* Method::resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope) const
 {
 	if ( mMethodType != MethodType::Function ) {
-		switch ( mParent->getType() ) {
+		switch ( mParent->getScopeType() ) {
 			case IScope::IType::MethodScope:
 				return static_cast<MethodScope*>(mParent)->resolveMethod(name, params, onlyCurrentScope);
 			case IScope::IType::SymbolScope:

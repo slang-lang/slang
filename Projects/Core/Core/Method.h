@@ -66,6 +66,9 @@ public: // Setup
 	void setTokens(const TokenList& tokens);
 
 protected:
+	ParameterList mergeParameters(const ParameterList& params) const;
+
+protected:
 	ExceptionData mExceptionData;
 	Repository *mRepository;
 

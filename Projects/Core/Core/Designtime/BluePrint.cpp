@@ -68,7 +68,7 @@ void BluePrint::cleanup()
 			continue;
 		}
 
-		if ( it->second->getType() == Symbol::IType::BluePrintSymbol ) {
+		if ( it->second->getSymbolType() == Symbol::IType::BluePrintSymbol ) {
 			static_cast<BluePrint*>(it->second)->cleanup();
 		}
 

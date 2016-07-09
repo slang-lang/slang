@@ -29,10 +29,9 @@ public:
 public:	// IScope implementation
 	virtual void define(const std::string& name, Symbol *symbol);
 	virtual IScope* getEnclosingScope() const;
-	virtual std::string getFullName() const;
 	virtual std::string getFullScopeName() const;
 	virtual const std::string& getScopeName() const;
-	virtual IScope::IType::E getType() const;
+	virtual IScope::IType::E getScopeType() const;
 	virtual Symbol* resolve(const std::string& name, bool onlyCurrentScope = false) const;
 	virtual void undefine(const std::string& name, Symbol *symbol);
 

@@ -26,7 +26,6 @@ Object::Object()
   mIsAtomicType(false),
   mIsConstructed(false),
   mRepository(0),
-  mThis(0),
   mTypename(ANONYMOUS_OBJECT)
 {
 }
@@ -58,7 +57,7 @@ Object::Object(const Object& other)
 				continue;
 			}
 
-			if ( it->second && it->second->getType() == Symbol::IType::ObjectSymbol ) {
+			if ( it->second && it->second->getSymbolType() == Symbol::IType::ObjectSymbol ) {
 				mRepository->addReference(static_cast<Object*>(it->second));
 			}
 
@@ -73,8 +72,6 @@ Object::Object(const Object& other)
 			defineMethod((*it)->getName(), method);
 		}
 	}
-
-	//mThis = mInheritance.begin()->second;
 }
 
 Object::Object(const std::string& name, const std::string& filename, const std::string& type, AtomicValue value)
@@ -84,7 +81,6 @@ Object::Object(const std::string& name, const std::string& filename, const std::
   mIsAtomicType(false),
   mIsConstructed(false),
   mRepository(0),
-  mThis(0),
   mTypename(type),
   mValue(value)
 {
@@ -118,7 +114,7 @@ void Object::operator= (const Object& other)
 					continue;
 				}
 
-				if ( it->second && it->second->getType() == Symbol::IType::ObjectSymbol ) {
+				if ( it->second && it->second->getSymbolType() == Symbol::IType::ObjectSymbol ) {
 					mRepository->addReference(static_cast<Object*>(it->second));
 				}
 
@@ -133,8 +129,50 @@ void Object::operator= (const Object& other)
 				defineMethod((*it)->getName(), method);
 			}
 		}
+	}
+}
 
-		//mThis = mInheritance.begin()->second;
+void Object::copy(const Object& other)
+{
+	if ( this != &other ) {
+		mIsAtomicType = other.mIsAtomicType;
+		mIsConstructed = other.mIsConstructed;// ? other.mIsConstructed : mIsConstructed;
+		mFilename = other.mFilename;
+		mParent = other.mParent ? other.mParent : mParent;
+		mRepository = other.mRepository ? other.mRepository : mRepository;
+		mTypename = other.mTypename;
+		mValue = other.mValue;
+
+		garbageCollector();
+
+		if ( !mIsAtomicType ) {
+			// register this
+			define(IDENTIFIER_THIS, this);
+
+			// register new members
+			for ( Symbols::const_iterator it = other.mSymbols.begin(); it != other.mSymbols.end(); ++it ) {
+				if ( /*it->first == IDENTIFIER_BASE ||*/
+					it->first == IDENTIFIER_THIS ||
+					!it->second ||
+							it->second->getSymbolType() != Symbol::IType::ObjectSymbol) {
+					continue;
+				}
+
+				Object* source = static_cast<Object*>(it->second);
+				Object* target = mRepository->createInstance(source->Typename(), source->getName(), false);
+				target->copy(*source);
+
+				define(source->getName(), source);
+			}
+
+			// register new methods
+			for ( MethodCollection::const_iterator it = other.mMethods.begin(); it != other.mMethods.end(); ++it ) {
+				Method *method = new Method(this, (*it)->getName(), (*it)->Typename());
+				*method = *(*it);
+
+				defineMethod((*it)->getName(), method);
+			}
+		}
 	}
 }
 
@@ -180,7 +218,7 @@ ControlFlow::E Object::Constructor(const ParameterList& params)
 	}
 
 	if ( mIsConstructed ) {	// prevent multiple instantiations
-		throw Utils::Exceptions::Exception("can not construct object '" + getFullName() + "' multiple times");
+		throw Utils::Exceptions::Exception("can not construct object '" + getFullScopeName() + "' multiple times");
 	}
 
 	// execute parent object constructors
@@ -286,7 +324,7 @@ ControlFlow::E Object::execute(Object *result, const std::string& name, const Pa
 
 	Method *method = static_cast<Method*>(resolveMethod(name, params, false));
 	if ( !method ) {
-		throw Utils::Exceptions::UnknownIdentifer("unknown method '" + getFullName() + "." + name + "' or method with invalid parameter count called!");
+		throw Utils::Exceptions::UnknownIdentifer("unknown method '" + getFullScopeName() + "." + name + "' or method with invalid parameter count called!");
 	}
 
 /*
@@ -341,7 +379,7 @@ void Object::garbageCollector()
 
 	for ( Symbols::reverse_iterator it = mSymbols.rbegin(); it != mSymbols.rend(); ) {
 		if ( it->first != IDENTIFIER_BASE && it->first != IDENTIFIER_THIS &&
-			 it->second && it->second->getType() == Symbol::IType::ObjectSymbol ) {
+			 it->second && it->second->getSymbolType() == Symbol::IType::ObjectSymbol ) {
 			mRepository->removeReference(static_cast<Object*>(it->second));
 		}
 
@@ -376,6 +414,13 @@ bool Object::isAtomicType() const
 bool Object::isValid() const
 {
 	return mIsConstructed;
+}
+
+const Object* Object::operator_array(const Object *index)
+{
+	std::string subscript = index->Typename();
+
+	throw Utils::Exceptions::NotImplemented(Typename() + ".operator[]: no array subscript operator for " + subscript + " implemented");
 }
 
 void Object::operator_assign(const Object *other)
@@ -822,7 +867,7 @@ Json::Value Object::ToJson() const
 		}
 
 		if ( it->first == IDENTIFIER_BASE || it->first == IDENTIFIER_THIS ||
-			 !it->second || it->second->getType() != Symbol::IType::ObjectSymbol ) {
+			 !it->second || it->second->getSymbolType() != Symbol::IType::ObjectSymbol ) {
 			continue;
 		}
 
@@ -848,11 +893,11 @@ std::string Object::ToString() const
 			result += "\t" + (*it)->ToString() + "\n";
 		}
 
-		result += "\n";
+		//result += "\n";
 
 		for ( Symbols::const_iterator it = mSymbols.begin(); it != mSymbols.end(); ++it ) {
 			if ( it->first == IDENTIFIER_BASE || it->first == IDENTIFIER_THIS ||
-				 !it->second || it->second->getType() != Symbol::IType::ObjectSymbol ) {
+				 !it->second || it->second->getSymbolType() != Symbol::IType::ObjectSymbol ) {
 				continue;
 			}
 

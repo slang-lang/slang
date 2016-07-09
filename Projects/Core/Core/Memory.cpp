@@ -74,7 +74,7 @@ const Reference& Memory::reserveAddress()
 	//    reused and we accidentally make a forgotten reference
 	//    valid again although its object has been deleted
 	//    long ago;
-	if ( mNextAddress >= SIZE_MAX ) {
+	if ( mNextAddress >= SIZE_MAX - 1 ) {
 		// 2) the more sophisticated way:
 		//    as soon as we run out of fresh addresses reuse
 		//    one that's not actually referencing a valid object

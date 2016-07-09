@@ -43,24 +43,7 @@ void SymbolScope::define(const std::string& name, Symbol *symbol)
 
 IScope* SymbolScope::getEnclosingScope() const
 {
-	if ( mParent ) {
-		return mParent;
-	}
-
-	return 0;
-}
-
-std::string SymbolScope::getFullName() const
-{
-	std::string scope;
-	if ( mParent ) {
-		scope = mParent->getFullName();
-		if ( !scope.empty() ) {
-			scope += RESERVED_WORD_SCOPE_OPERATOR;
-		}
-	}
-
-	return scope + getScopeName();
+	return mParent;
 }
 
 std::string SymbolScope::getFullScopeName() const
@@ -68,7 +51,7 @@ std::string SymbolScope::getFullScopeName() const
 	std::string scope;
 	if ( mParent ) {
 		scope = mParent->getFullScopeName();
-		if ( !scope.empty() ) {
+		if ( !scope.empty() && !mScopeName.empty() ) {
 			scope += RESERVED_WORD_SCOPE_OPERATOR;
 		}
 	}
@@ -81,7 +64,7 @@ const std::string& SymbolScope::getScopeName() const
 	return mScopeName;
 }
 
-IScope::IType::E SymbolScope::getType() const
+IScope::IType::E SymbolScope::getScopeType() const
 {
 	return mScopeType;
 }

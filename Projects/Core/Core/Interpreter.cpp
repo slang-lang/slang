@@ -93,7 +93,7 @@ void Interpreter::garbageCollector()
 {
 	for ( Symbols::reverse_iterator it = mSymbols.rbegin(); it != mSymbols.rend(); ) {
 		if ( it->first != IDENTIFIER_BASE && it->first != IDENTIFIER_THIS &&
-			 it->second && it->second->getType() == Symbol::IType::ObjectSymbol ) {
+			 it->second && it->second->getSymbolType() == Symbol::IType::ObjectSymbol ) {
 			mRepository->removeReference(static_cast<Object*>(it->second));
 		}
 
@@ -166,8 +166,8 @@ Symbol* Interpreter::identifyMethod(TokenIterator& token, const ParameterList& p
 		if ( !result ) {
 			result = getScope()->resolve(identifier, onlyCurrentScope);
 
-			if ( result->getType() == Symbol::IType::MethodSymbol ) {
-				switch ( result->getType() ) {
+			if ( result->getSymbolType() == Symbol::IType::MethodSymbol ) {
+				switch (result->getSymbolType() ) {
 					case Symbol::IType::MethodSymbol:
 						result = static_cast<Method*>(mParent)->resolveMethod(identifier, params, onlyCurrentScope);
 						break;
@@ -392,9 +392,15 @@ void Interpreter::parseInfixPostfix(Object *result, TokenIterator& start)
 		case Token::Type::TYPE: {
 			std::string newType = start->content();
 			start++;
+
 			// here we could demand a '('
+			//expect(Token::Type::PARENTHESIS_OPEN, start++);
+
 			expression(result, start);
+
 			// here we could demand a ')'
+			//expect(Token::Type::PARENTHESIS_CLOSE, start++);
+
 			typecast(result, newType, mRepository);
 		} break;
 		default: {
@@ -459,13 +465,13 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 				throw Utils::Exceptions::UnknownIdentifer("unknown/unexpected identifier '" + start->content() + "' found", start->position());
 			}
 
-			switch ( symbol->getType() ) {
+			switch ( symbol->getSymbolType() ) {
 				case Symbol::IType::MethodSymbol:
 					process_method(tmp, result);
 					start = tmp;
 					break;
 				case Symbol::IType::ObjectSymbol:
-					operator_binary_assign(result, static_cast<Object *>(symbol));
+					operator_binary_assign(result, static_cast<Object*>(symbol));
 					break;
 				case Symbol::IType::BluePrintSymbol:
 				case Symbol::IType::NamespaceSymbol:
@@ -608,13 +614,12 @@ void Interpreter::process_delete(TokenIterator& token)
 		throw Utils::Exceptions::UnknownIdentifer(token->content(), token->position());
 	}
 
-	switch ( symbol->getType() ) {
+	switch ( symbol->getSymbolType() ) {
 		case Symbol::IType::ObjectSymbol: {
 			Object *object = static_cast<Object*>(symbol);
 			assert(object);
 
 			mControlFlow = object->Destructor();
-			//mRepository->removeReference(object);
 
 			*object = Object(object->getName(), object->Filename(), object->Typename(), VALUE_NONE);
 		} break;
@@ -983,9 +988,35 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 		throw Utils::Exceptions::UnknownIdentifer("could not resolve identifier '" + method + "' with parameters '" + toString(params) + "'", token->position());
 	}
 
-	if ( isConst() && !symbol->isConst() ) {	// check target method's const-ness
-		// this is a const method and we want to call a non-const method... neeeeey!
-		throw Utils::Exceptions::ConstCorrectnessViolated("only calls to const methods are allowed in const method '" + getScope()->getScopeName() + "'", token->position());
+	// compare callee's constness with its parent's constness
+	Object* calleeParent = dynamic_cast<Object*>(symbol->getEnclosingScope());
+	if ( calleeParent && calleeParent->isConst() && !symbol->isConst() ) {
+		// we want to call a non-const method of a const object... neeeeey!
+		throw Utils::Exceptions::ConstCorrectnessViolated("only calls to const methods are allowed for const object '" + calleeParent->getFullScopeName() + "'", token->position());
+	}
+
+	// check callers constness
+	if ( isConst() ) {
+/*
+		if ( calleeParent && calleeParent->getSymbolType() == Symbol::IType::ObjectSymbol ) {
+			Object* tmp = static_cast<Object*>(resolve(calleeParent->getName(), true));
+
+			// check if our callee's parent is a member of us
+			if ( calleeParent && tmp && tmp->isMember() && calleeParent == tmp ) {
+				if ( !symbol->isConst() ) {
+					// check target method's constness
+					// this is a const method and we want to call a non-const method... neeeeey!
+					throw Utils::Exceptions::ConstCorrectnessViolated("only calls to const methods are allowed in const method '" + getScope()->getFullScopeName() + "'", token->position());
+				}
+			}
+		}
+*/
+
+		if ( getEnclosingScope() == symbol->getEnclosingScope() && !symbol->isConst() ) {
+			// check target method's constness
+			// this is a const method and we want to call a non-const method... neeeeey!
+			throw Utils::Exceptions::ConstCorrectnessViolated("only calls to const methods are allowed in const method '" + getScope()->getFullScopeName() + "'", token->position());
+		}
 	}
 
 	ControlFlow::E controlflow = symbol->execute(params, result, (*token));
