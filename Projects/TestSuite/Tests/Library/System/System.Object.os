@@ -3,26 +3,30 @@
 import System.Object;
 
 public object IObjectImplementation implements /*System.*/IObject {
-
 	public void IObjectImplementation() {
 	}
 	
 	public string GetObjectType() const {
 		return "IObjectImplementation";
 	}
+
+	public string ToJsonString() const {
+		return "{ }";
+	}
 	
 	public string ToString() const {
 		return "IObjectImplementation.ToString()";
 	}
-
 }
 
 public object TObjectDerivate extends /*System.*/TObject {
+	public string GetObjectType() const {
+		return "TObjectDerivate";
+	}
 
 	public string ToString() const {
 		return "TObjectDerivate.ToString()";
 	}
-
 }
 
 public object Main {
@@ -56,6 +60,7 @@ public object Main {
 		print("TestCase 3");
 
 		TObjectDerivate obj;
+		print(obj);
 
 		return obj;
 	}

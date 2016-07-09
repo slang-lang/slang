@@ -24,7 +24,7 @@ public object Main {
 		return true;
 	}
 
-	private bool TestCase2() modify {
+	private bool TestCase2() const {
 		print("TestCase 2: invalid iteration");
 
 		StringIterator strIt = new StringIterator("This is a string", " ");
@@ -32,9 +32,10 @@ public object Main {
 		try {
 			int count;
 			string str;
+
 			//while ( str = strIt.GetNext() ) {
-			while ( count < 10 ) {
 				//print("strIt.GetNext() = " + strIt.GetNext());
+			while ( count < 10 ) {
 				string str = strIt.GetNext();
 				print("strIt.GetNext() = " + str);
 
