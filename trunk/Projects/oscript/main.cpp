@@ -48,12 +48,12 @@ void printUsage()
 {
 	std::cout << "Usage: oscript [options] [-f] <file> [args...]" << std::endl;
 	std::cout << std::endl;
-	std::cout << "-f | --file <file>    Parse and execute <file>" << std::endl;
-	std::cout << "-h | --help           This help" << std::endl;
-	std::cout << "-l | --library        Library root path" << std::endl;
-	std::cout << "-q | --quiet          Quiet mode, chats as less as possible" << std::endl;
-	std::cout << "-v | --verbose        Verbose output" << std::endl;
-	std::cout << "--version             Version information" << std::endl;
+	std::cout << "-f | --file <file>         Parse and execute <file>" << std::endl;
+	std::cout << "-h | --help                This help" << std::endl;
+	std::cout << "-l | --library <library>   Library root path" << std::endl;
+	std::cout << "-q | --quiet               Quiet mode, chats as less as possible" << std::endl;
+	std::cout << "-v | --verbose             Verbose output" << std::endl;
+	std::cout << "--version                  Version information" << std::endl;
 	std::cout << std::endl;
 }
 

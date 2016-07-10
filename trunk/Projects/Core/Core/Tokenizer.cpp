@@ -606,10 +606,16 @@ void Tokenizer::process()
 			isSingleLineComment = false;
 			pos.mLine++;
 			pos.mColumn = 1;
+
+			thisChar = 0;
 		}
 
 		// keep track of our last char (i.e. for escape sequences)
 		lastChar = thisChar;
+	}
+
+	if ( lastChar != 0 ) {
+		addToken(createToken(token, pos));
 	}
 
 	addToken(Token(Token::Type::ENDOFFILE));	// add end of file token
