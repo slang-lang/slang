@@ -70,10 +70,10 @@ void Application::printUsage()
 {
 	std::cout << "Usage: odebugger [options] [-f] <file> [args...]" << std::endl;
 	std::cout << std::endl;
-	std::cout << "-f | --file <file>    Parse and execute <file>" << std::endl;
-	std::cout << "-h | --help           This help" << std::endl;
-	std::cout << "-l | --library        Library root path" << std::endl;
-	std::cout << "--version             Version information" << std::endl;
+	std::cout << "-f | --file <file>         Parse and execute <file>" << std::endl;
+	std::cout << "-h | --help                This help" << std::endl;
+	std::cout << "-l | --library <library>   Library root path" << std::endl;
+	std::cout << "--version                  Version information" << std::endl;
 	std::cout << std::endl;
 }
 
