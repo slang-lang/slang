@@ -26,12 +26,14 @@ Method::Method(IScope *parent, const std::string& name, const std::string& type)
 : SymbolScope(name, parent),
   MethodSymbol(name),
   mRepository(0),
+  mOwner(parent),
   mTypeName(type)
 {
 }
 
 Method::~Method()
 {
+	garbageCollector();
 }
 
 bool Method::operator() (const Method& first, const Method& second) const
@@ -128,7 +130,9 @@ ControlFlow::E Method::execute(const ParameterList& params, Object *result, cons
 		case LanguageFeatureState::Unstable: OSwarn("method '" + getFullScopeName() + "' is marked as unstable"); break;
 	}
 
-	Interpreter interpreter(this);
+	Method scope(*this);
+
+	Interpreter interpreter(&scope);
 	interpreter.setRepository(mRepository);
 	interpreter.setTokens(mTokens);
 
@@ -143,8 +147,7 @@ ControlFlow::E Method::execute(const ParameterList& params, Object *result, cons
 				object->setConst(it->isConst());
 				object->setMutability(it->isConst() ? Mutability::Const : Mutability::Modify);
 
-				//interpreter.define(it->name(), object);
-				define(it->name(), object);
+				scope.define(it->name(), object);
 			} break;
 			case Parameter::AccessMode::ByValue: {
 				Object *object = mRepository->createInstance(it->type(), it->name());
@@ -156,8 +159,7 @@ ControlFlow::E Method::execute(const ParameterList& params, Object *result, cons
 				object->setConst(it->isConst());
 				object->setMutability(it->isConst() ? Mutability::Const : Mutability::Modify);
 
-				//interpreter.define(it->name(), object);
-				define(it->name(), object);
+				scope.define(it->name(), object);
 			} break;
 			case Parameter::AccessMode::Unspecified: {
 				throw Utils::Exceptions::AccessMode("unspecified access mode");
@@ -168,7 +170,7 @@ ControlFlow::E Method::execute(const ParameterList& params, Object *result, cons
 	// record stack trace
 	StackTrace::GetInstance().pushStack(getFullScopeName(), executedParams);
 	// notify debugger
-	Core::Debugger::GetInstance().notifyEnter(this, Core::Debugger::immediateBreakToken);
+	Core::Debugger::GetInstance().notifyEnter(&scope, Core::Debugger::immediateBreakToken);
 
 	// do the real method execution
 	ControlFlow::E controlflow = interpreter.execute(result);
@@ -180,11 +182,9 @@ ControlFlow::E Method::execute(const ParameterList& params, Object *result, cons
 	controlflow = processControlFlow(controlflow, result);
 
 	// notify debugger
-	Core::Debugger::GetInstance().notifyExit(this, Core::Debugger::immediateBreakToken);
+	Core::Debugger::GetInstance().notifyExit(&scope, Core::Debugger::immediateBreakToken);
 	// unwind stack trace
 	StackTrace::GetInstance().popStack();
-
-	garbageCollector();
 
 	return controlflow;
 }

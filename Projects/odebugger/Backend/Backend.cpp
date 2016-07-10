@@ -66,7 +66,8 @@ bool Backend::addBreakPoint(const StringList& tokens)
 		std::string op = (*it++);
 		std::string right = (*it++);
 
-		Core::Condition condition(left, Core::Condition::Type::Equals, right);
+		//Core::Condition condition(left, Core::Condition::Type::Equals, right);
+		Core::Condition condition(left, op, right);
 
 		breakpoint.setCondition(condition);
 	}

@@ -52,7 +52,7 @@ void BreakPoint::setCondition(const Condition& condition)
 std::string BreakPoint::toString() const
 {
 	std::stringstream ss;
-	ss << mFilename << " " << mLine;
+	ss << mFilename << " " << mLine << " [" << mCondition.toString() << "]";
 	return ss.str();
 }
 

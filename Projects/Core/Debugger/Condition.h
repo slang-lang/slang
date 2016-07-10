@@ -41,6 +41,7 @@ public:
 public:
 	Condition();
 	Condition(const std::string& lhs, Type::E type, const std::string& rhs);
+	Condition(const std::string& lhs, const std::string& type, const std::string& rhs);
 	~Condition();
 
 public:
@@ -50,6 +51,9 @@ public:
 	const std::string& rhs() const;
 	std::string toString() const;
 	Type::E type() const;
+
+private:
+	Type::E ConditionFromString(const std::string& type) const;
 
 private:
 	std::string mLeft;

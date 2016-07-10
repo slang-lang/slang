@@ -29,8 +29,26 @@ Condition::Condition(const std::string& lhs, Type::E type, const std::string& rh
 {
 }
 
+Condition::Condition(const std::string& lhs, const std::string& type, const std::string& rhs)
+: mLeft(lhs),
+  mRight(rhs)
+{
+	mType = ConditionFromString(type);
+}
+
 Condition::~Condition()
 {
+}
+
+Condition::Type::E Condition::ConditionFromString(const std::string& type) const
+{
+	if ( type == "==" ) return Type::Equals;
+	else if ( type == ">" ) return Type::Greater;
+	else if ( type == ">=" ) return Type::GreaterEqual;
+	else if ( type == "<" ) return Type::Less;
+	else if ( type == "<=" ) return Type::LessEqual;
+	else if ( type == "!=" ) return Type::Unequal;
+	else return Type::Invalid;
 }
 
 bool Condition::evaluate(Symbol* lhs, Symbol* rhs) const
