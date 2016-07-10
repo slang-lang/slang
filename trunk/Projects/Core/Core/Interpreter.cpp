@@ -41,7 +41,7 @@ Interpreter::~Interpreter()
 }
 
 /*
- * executes tokens and updates the given result
+ * processes tokens and updates the given result
  */
 ControlFlow::E Interpreter::execute(Object *result)
 {

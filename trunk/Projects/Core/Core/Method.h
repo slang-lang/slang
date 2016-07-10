@@ -81,6 +81,7 @@ private: // Deinit
 	ControlFlow::E processControlFlow(ControlFlow::E controlflow, Object *result);
 
 private:
+	IScope* mOwner;
 	ParameterList mSignature;
 	TokenList mTokens;
 	std::string mTypeName;
