@@ -6,13 +6,17 @@
 
 // Project includes
 #include <Common/Settings.h>
+#include <Core/BuildInObjects/BoolObject.h>
+#include <Core/BuildInObjects/DoubleObject.h>
+#include <Core/BuildInObjects/FloatObject.h>
 #include <Core/BuildInObjects/IntegerObject.h>
+#include <Core/BuildInObjects/NumberObject.h>
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Script.h>
 #include <Core/StackTrace.h>
+#include <Core/Tokenizer.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine.h>
-//#include <Debugger/Condition.h>
 #include <Debugger/Debugger.h>
 #include <Tools/Files.h>
 #include <Tools/Strings.h>
@@ -77,6 +81,56 @@ bool Backend::addBreakPoint(const StringList& tokens)
 	return true;
 }
 
+bool Backend::addLiteralSymbol(const std::string& name, const std::string& value)
+{
+	Symbols::iterator it = mSymbolCollection.find(name);
+	if ( it != mSymbolCollection.end() ) {
+		// symbol already cached
+		return true;
+	}
+
+	Tokenizer t("", value);
+	t.process();
+
+	Symbol* symbol = 0;
+
+	TokenList list = t.tokens();
+	if ( list.size() > 1 ) {
+		Token token = list.front();
+
+		switch ( token.type() ) {
+			case Token::Type::CONST_BOOLEAN:
+				symbol = new Runtime::BoolObject(token.content());
+				break;
+			case Token::Type::CONST_DOUBLE:
+				symbol = new Runtime::DoubleObject(token.content());
+				break;
+			case Token::Type::CONST_FLOAT:
+				symbol = new Runtime::FloatObject(token.content());
+				break;
+			case Token::Type::CONST_INTEGER:
+				symbol = new Runtime::IntegerObject(token.content());
+				break;
+			case Token::Type::CONST_LITERAL:
+				symbol = new Runtime::StringObject(token.content());
+				break;
+			case Token::Type::CONST_NUMBER:
+				symbol = new Runtime::NumberObject(token.content());
+				break;
+			default:
+				break;
+		}
+	}
+
+	if ( !symbol ) {
+		return false;
+	}
+
+	mSymbolCollection.insert(std::make_pair(name, symbol));
+
+	return true;
+}
+
 bool Backend::addWatch(const StringList& tokens)
 {
 	if ( tokens.size() != 2 ) {
@@ -90,6 +144,14 @@ bool Backend::addWatch(const StringList& tokens)
 	mWatches.insert(Watch((*it)));
 
 	return true;
+}
+
+void Backend::clearSymbolCache()
+{
+	for ( Symbols::iterator it = mSymbolCollection.begin(); it != mSymbolCollection.end(); ++it ) {
+		delete it->second;
+	}
+	mSymbolCollection.clear();
 }
 
 void Backend::connectSettings(Settings *settings)
@@ -115,6 +177,7 @@ void Backend::continueExecution()
 
 int Backend::exec()
 {
+	// initial checks
 	assert(mDebugger);
 	assert(!mVirtualMachine);
 
@@ -123,6 +186,7 @@ int Backend::exec()
 		notify(0, Core::Debugger::immediateBreakPoint);
 	}
 
+	// program exection is done
 	return 0;
 }
 
@@ -229,11 +293,14 @@ void Backend::executeSymbol(const StringList& tokens)
 
 	Symbol* symbol = getSymbol(name);
 	if ( !symbol ) {
+		symbol = getCachedSymbol(name);
+	}
+	if ( !symbol ) {
 		mTerminal->writeln("could not resolve symbol '" + name + "'!");
 		return;
 	}
 
-	if (symbol->getSymbolType() != Symbol::IType::MethodSymbol ) {
+	if ( symbol->getSymbolType() != Symbol::IType::MethodSymbol ) {
 		mTerminal->writeln("could not execute non-method symbol '" + name + "'!");
 		return;
 	}
@@ -253,17 +320,28 @@ void Backend::executeSymbol(const StringList& tokens)
 	}
 }
 
-Symbol* Backend::getSymbol(std::string name) const
+Symbol* Backend::getCachedSymbol(const std::string& name) const
 {
-	if ( !mScope ) {
-		return 0;
+	for ( Symbols::const_iterator it = mSymbolCollection.begin(); it != mSymbolCollection.end(); ++it ) {
+		if ( it->first == name ) {
+			return it->second;
+		}
 	}
 
+	return 0;
+}
+
+Symbol* Backend::getSymbol(std::string name) const
+{
 	std::string child;
 	std::string parent;
 	SymbolScope* scope = mScope;
 
 	do {
+		if ( !scope ) {
+			return 0;
+		}
+
 		Tools::split(name, parent, child);
 
 		if ( !parent.empty() && !child.empty() ) {
@@ -317,7 +395,21 @@ int Backend::notify(SymbolScope* scope, const Core::BreakPoint& breakpoint)
 
 	// Condition check
 	Core::Condition condition = breakpoint.getCondition();
-	if ( !condition.evaluate(getSymbol(condition.lhs()), getSymbol(condition.rhs())) ) {
+	Symbol* lhs = getSymbol(condition.lhs());
+	Symbol* rhs = getSymbol(condition.rhs());
+
+	if ( !condition.lhs().empty() && !lhs ) {
+		if ( addLiteralSymbol(condition.lhs(), condition.lhs()) ) {
+			lhs = getCachedSymbol(condition.lhs());
+		}
+	}
+	if ( !condition.rhs().empty() && !rhs ) {
+		if ( addLiteralSymbol(condition.rhs(), condition.rhs()) ) {
+			rhs = getCachedSymbol(condition.rhs());
+		}
+	}
+
+	if ( !condition.evaluate(lhs, rhs) ) {
 		mContinue = true;
 		mScope = 0;
 		return 0;
@@ -463,11 +555,6 @@ void Backend::printStackTrace()
 
 void Backend::printSymbol(const StringList& tokens)
 {
-	if ( !mScope ) {
-		mTerminal->writeln("no scope available!");
-		return;
-	}
-
 	std::string name;
 
 	StringList::const_iterator it = tokens.begin();
@@ -494,8 +581,6 @@ void Backend::refreshWatches()
 		if ( symbol ) {
 			value = symbol->ToString();
 		}
-
-		//it->value(value);
 
 		mTerminal->writeln("[Watch] " + it->symbol() + ": " + value);
 	}
@@ -562,6 +647,8 @@ void Backend::shutdown()
 	mDebugger->unregisterReceiver(this);
 	mRunning = false;
 	mScope = 0;
+
+	clearSymbolCache();
 }
 
 void Backend::start()

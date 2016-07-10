@@ -70,6 +70,11 @@ private:	// Watches
 	bool removeWatch(const StringList &tokens);
 	void toggleAutoWatch();
 
+private:	// Symbol cache
+	bool addLiteralSymbol(const std::string& name, const std::string& value);
+	Symbol* getCachedSymbol(const std::string& name) const;
+	void clearSymbolCache();
+
 private:
 	std::string executeCommand(const StringList &tokens);
 	StringList parseCommands(const std::string& commands) const;
@@ -84,6 +89,7 @@ private:
 	ParameterList mParameters;
 	bool mRunning;
 	SymbolScope* mScope;
+	Symbols mSymbolCollection;
 	Settings* mSettings;
 	ITerminal* mTerminal;
 	VirtualMachine* mVirtualMachine;
