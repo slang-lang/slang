@@ -20,7 +20,6 @@ namespace ObjectiveScript {
 
 Application::Application()
 {
-
 }
 
 Application::~Application()
