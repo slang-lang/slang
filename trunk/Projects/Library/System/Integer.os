@@ -4,9 +4,16 @@ public namespace System {
 	public object Integer {
 		private int mValue;
 
+		/*
+		 * Standard & default constructor
+		 */
 		public void Integer(int value = 0) {
 			mValue = value;
 		}
+
+		/*
+		 * Copy constructor
+		 */
 		public void Integer(Integer copy) {
 			mValue = copy.mValue;
 		}
@@ -19,9 +26,9 @@ public namespace System {
 		 * Returns a JSON-formatted string
 		 */
 		public string ToJsonString() const {
-			return "{ " +
-						"mValue: " + mValue + +
-				" }";
+			return "{ "
+			     + "mValue: " + mValue + +
+			     + " }";
 		}
 
 		public string ToString() const {
@@ -46,13 +53,23 @@ public namespace System {
 			return mValue == other.mValue;
 		}
 
+		/*
+		 * int assignment operator
+		 */
 		public void operator=(int other) modify {
 			mValue = other;
 		}
+
+		/*
+		 * Integer assignment operator
+		 */
 		public void operator=(Integer other) modify {
 			mValue = other.mValue;
 		}
 
+		/*
+		 * int value operator
+		 */
 		public int =operator(int other) const {
 			return mValue;
 		}

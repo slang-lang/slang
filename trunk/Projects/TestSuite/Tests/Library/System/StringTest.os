@@ -13,6 +13,7 @@ public object Main {
 		assert( TestCase6() );
 		assert( TestCase7() );
 		assert( TestCase8() );
+		assert( TestCase9() );
 	}
 
 	private bool TestCase1() const {
@@ -52,7 +53,7 @@ public object Main {
 		return str.ToUpperCase() == "THIS IS A STRING";
 	}
 
-	private bool TestCase5() modify {
+	private bool TestCase5() const {
 		print("TestCase 5: String.Replace");
 
 		String str = new String("This is a string");
@@ -63,7 +64,7 @@ public object Main {
 		return str == "Thwas is a string";
 	}
 
-	private bool TestCase6() modify {
+	private bool TestCase6() const {
 		print("TestCase 6: String.ReplaceAll");
 
 		String str = new String("This is a string");
@@ -74,7 +75,7 @@ public object Main {
 		return str == "Thwas was a string";
 	}
 
-	private bool TestCase7() modify {
+	private bool TestCase7() const {
 		print("TestCase 7: String.ReplaceAll(\"SELECT * FROM parking_tickets WHERE valid_thru >= :valid_thru\", \"2016-05-31\")");
 
 		String str = new String("SELECT * FROM parking_tickets WHERE valid_thru >= :valid_thru");
@@ -86,7 +87,7 @@ public object Main {
 		return result;
 	}
 
-	private bool TestCase8() modify {
+	private bool TestCase8() const {
 		print("TestCase 8: String.Find");
 
 		String str = new String("This is a string");
@@ -98,6 +99,17 @@ public object Main {
 		print("str.Find(\"is\") = " + find);
 
 		return find != -1;
+	}
+
+	private bool TestCase9() const {
+		print("TestCase 9: String.Contains");
+
+		String str = new String("This is a string");
+
+		bool contains = str.Contains("is a");
+		print("str.Contains(\"is a\") = " + contains);
+
+		return contains;
 	}
 
 }

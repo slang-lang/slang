@@ -8,10 +8,16 @@ public namespace Mysql {
 			mAutoEscaping = false;
 		}
 
+		public string ToJsonString() const {
+			return "{ "
+			     + "mAutoEscaping: " + mAutoEscaping
+			     + " }";
+		}
+
 		public string ToString() const {
-			return "Settings={" +
-					"mAutoEscaping=" + mAutoEscaping + " " +
-				"}";
+			return "Settings={"
+			     + "mAutoEscaping=" + mAutoEscaping + " "
+			     + "}";
 		}
 
 		public bool getAutoEscaping() const {

@@ -26,6 +26,13 @@ public namespace System {
 		}
 
 		/*
+		 * Returns true if the given string is part of the held string
+		 */
+		public bool Contains(string value) const {
+			return strfind(mValue, value, 0) >= 0;
+		}
+
+		/*
 		 * Returns true if the held string ends with the given string
 		 */
 		public bool EndsWith(string str) const {
@@ -106,9 +113,9 @@ public namespace System {
 		 * Returns a JSON-formatted string
 		 */
 		public string ToJsonString() const {
-			return "{ " +
-						"mValue: \"" + mValue + "\"" +
-				" }";
+			return "{ "
+			     + "mValue: \"" + mValue + "\""
+			     + " }";
 		}
 
 		/*
@@ -126,21 +133,24 @@ public namespace System {
 		}
 
 		/*
+		 * Returns String.mValue as string
 		 * Deprecated: use (active) value operator instead
-		 * returns String.mValue as string
 		 */
 		public deprecated string Value() const {
 			return mValue;
 		}
 
 		/*
+		 * Sets String.mValue from a string
 		 * Deprecated: use (passive) assignment operator instead
-		 * sets String.mValue from a string
 		 */
 		public deprecated void Value(string value) modify {
 			mValue = value;
 		}
 
+		/*
+		 * String value operator
+		 */
 		public string =operator(string value) const {
 			return mValue;
 		}
@@ -149,23 +159,41 @@ public namespace System {
 			return !mValue;
 		}
 
+		/*
+		 * string compare operator
+		 */
 		public bool operator==(string other) const {
 			return (mValue == other);
 		}
+		/*
+		 * String compare operator
+		 */
 		public bool operator==(String other) const {
 			return (mValue == other.mValue);
 		}
 
+		/*
+		 * string assignment operator
+		 */
 		public void operator=(string other) modify {
 			mValue = other;
 		}
+		/*
+		 * String assignment operator
+		 */
 		public void operator=(String other) modify {
 			mValue = other.mValue;
 		}
 
+		/*
+		 * string concatenation operator
+		 */
 		public void operator+(string other) modify {
 			mValue = mValue + other;
 		}
+		/*
+		 * String concatenation operator
+		 */
 		public void operator+(String other) modify {
 			mValue = mValue + other.mValue;
 		}

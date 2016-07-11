@@ -1,7 +1,7 @@
 #!/bin/bash
 
-COMMAND="/home/madelmann/workspace/ObjectiveScript/trunk/release/bin/oscript/oscript"
-LIBRARY="/home/madelmann/workspace/ObjectiveScript/Library"
+COMMAND="/path/to/ObjectiveScript/trunk/release/bin/oscript/oscript"
+LIBRARY="/path/to/ObjectiveScript/Library"
 USER=`whoami`
 
 if [ ${USER} == "www-data" ]; then
