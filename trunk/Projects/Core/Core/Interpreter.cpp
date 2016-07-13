@@ -13,6 +13,7 @@
 #include <Core/BuildInObjects/NumberObject.h>
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/BuildInObjects/VoidObject.h>
+#include <Core/Runtime/Namespace.h>
 #include <Core/Runtime/OperatorOverloading.h>
 #include <Core/Runtime/TypeCast.h>
 #include <Core/Utils/Exceptions.h>
@@ -135,7 +136,19 @@ Symbol* Interpreter::identify(TokenIterator& token) const
 			result = getScope()->resolve(identifier, onlyCurrentScope);
 		}
 		else {
-			result = static_cast<Object*>(result)->resolve(identifier, onlyCurrentScope);
+			switch ( result->getSymbolType() ) {
+				case Symbol::IType::NamespaceSymbol:
+					result = static_cast<Namespace*>(result)->resolve(identifier, onlyCurrentScope);
+					break;
+				case Symbol::IType::ObjectSymbol:
+					result = static_cast<Object*>(result)->resolve(identifier, onlyCurrentScope);
+					break;
+				case Symbol::IType::BluePrintSymbol:
+				case Symbol::IType::MethodSymbol:
+				case Symbol::IType::UnknownSymbol:
+					throw Utils::Exceptions::SyntaxError("cannot directly access locales of blueprint or method");
+			}
+
 			onlyCurrentScope = true;
 		}
 
@@ -168,24 +181,25 @@ Symbol* Interpreter::identifyMethod(TokenIterator& token, const ParameterList& p
 		if ( !result ) {
 			result = getScope()->resolve(identifier, onlyCurrentScope);
 
+			// look for an overloaded method
 			if ( result->getSymbolType() == Symbol::IType::MethodSymbol ) {
-				switch ( result->getSymbolType() ) {
-					case Symbol::IType::MethodSymbol:
-						result = static_cast<Method*>(mOwner)->resolveMethod(identifier, params, onlyCurrentScope);
-						break;
-					case Symbol::IType::NamespaceSymbol:
-						throw Utils::Exceptions::NotImplemented("namespace symbol");
-					case Symbol::IType::ObjectSymbol:
-						result = static_cast<Object*>(result)->resolveMethod(identifier, params, onlyCurrentScope);
-						break;
-					case Symbol::IType::BluePrintSymbol:
-					case Symbol::IType::UnknownSymbol:
-						throw Utils::Exceptions::SyntaxError("cannot directly access locales of method/namespace");
-				}
+				result = static_cast<Method*>(mOwner)->resolveMethod(identifier, params, onlyCurrentScope);
 			}
 		}
 		else {
-			result = static_cast<Object*>(result)->resolveMethod(identifier, params, onlyCurrentScope);
+			switch ( result->getSymbolType() ) {
+				case Symbol::IType::NamespaceSymbol:
+					result = static_cast<Namespace*>(result)->resolveMethod(identifier, params, onlyCurrentScope);
+					break;
+				case Symbol::IType::ObjectSymbol:
+					result = static_cast<Object*>(result)->resolveMethod(identifier, params, onlyCurrentScope);
+					break;
+				case Symbol::IType::BluePrintSymbol:
+				case Symbol::IType::MethodSymbol:
+				case Symbol::IType::UnknownSymbol:
+					throw Utils::Exceptions::SyntaxError("cannot directly access locales of blueprint or method");
+			}
+
 			onlyCurrentScope = true;
 		}
 
@@ -771,32 +785,41 @@ void Interpreter::process_identifier(TokenIterator& token, Object* /*result*/, T
         return;
     }
 
-	Object *symbol = static_cast<Object*>(getScope()->resolve(identifier, false));
-	if ( !symbol ) {	// we tried to access an unknown symbol
+/*
+	Symbol* symbol = identify(token);
+	if ( !symbol ) {
 		throw Utils::Exceptions::UnknownIdentifer("identifier '" + identifier + "' not found", token->position());
 	}
-	if ( symbol->isConst() ) {	// we tried to modify a const symbol (i.e. member, parameter or constant local variable)
+
+	Object* object = dynamic_cast<Object*>(symbol);
+*/
+
+	Object* object = dynamic_cast<Object*>(getScope()->resolve(identifier, false));
+	if ( !object ) {	// we tried to access an unknown symbol
+		throw Utils::Exceptions::UnknownIdentifer("identifier '" + identifier + "' not found", token->position());
+	}
+	if ( object->isConst() ) {	// we tried to modify a const symbol (i.e. member, parameter or constant local variable)
 		throw Utils::Exceptions::ConstCorrectnessViolated("tried to modify const symbol '" + identifier + "'", token->position());
 	}
-	if ( symbol->isMember() && static_cast<Method*>(mOwner)->isConst() ) {	// we tried to modify a member in a const method
+	if ( object->isMember() && static_cast<Method*>(mOwner)->isConst() ) {	// we tried to modify a member in a const method
 		throw Utils::Exceptions::ConstCorrectnessViolated("tried to modify member '" + identifier + "' in const method '" + getScope()->getScopeName() + "'", token->position());
 	}
 
-	symbol = static_cast<Object*>(identify(token));
+	object = static_cast<Object*>(identify(token));
 	try {
-		expression(symbol, ++assign);
+		expression(object, ++assign);
 	}
 	catch ( ControlFlow::E e ) {
 		mControlFlow = e;
 		return;
 	}
 
-	if ( !symbol->isConst() && symbol->isFinal() ) {
+	if ( !object->isConst() && object->isFinal() ) {
 		// we have modified a final symbol for the first time, we now have to set it so const
-		symbol->setConst(true);
-		symbol->setFinal(false);
+		object->setConst(true);
+		object->setFinal(false);
 
-		symbol->setMutability(Mutability::Const);
+		object->setMutability(Mutability::Const);
 	}
 
 	// assign == end should now be true

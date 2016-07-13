@@ -10,6 +10,7 @@
 // Project includes
 #include <Core/Designtime/SanityChecker.h>
 #include <Core/Parser/Parser.h>
+#include <Core/Runtime/Namespace.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Utils/Utils.h>
 #include <Tools/Files.h>
@@ -288,22 +289,22 @@ void Analyser::createNamespace(TokenIterator& start, TokenIterator end)
 	std::string languageFeature;
 	std::string name;
 	std::string visibility;
-	//bool isSealed = false;
+	bool isSealed = false;
 
 	// look for the visibility token
 	visibility = (*start++).content();
-	// look for the object token
-	(*start++).content();
 	// look for an optional language feature token
 	if ( start->isOptional() ) {
 		languageFeature = (*start++).content();
 	}
+	// look for the "namespace" token
+	expect(Token::Type::RESERVED_WORD, start++);
 	// look for the identifier token
 	name = (*start++).content();
 
-	//if ( (*start).content() == MODIFIER_SEALED ) {
-	//	isSealed = true;
-	//}
+	if ( (*start).content() == MODIFIER_SEALED ) {
+		isSealed = true;
+	}
 
 	// look for the next opening curly brackets
 	TokenIterator open = findNext(start, Token::Type::BRACKET_CURLY_OPEN);
@@ -321,7 +322,18 @@ void Analyser::createNamespace(TokenIterator& start, TokenIterator end)
 	}
 	mScopeName += name;
 
+	Runtime::Namespace* space = new Runtime::Namespace(name, mScope);
+	space->setVisibility(Visibility::convert(visibility));
+	space->setSealed(isSealed);		// seal has to be the last attribute to be set
+
+	mScope->define(mScopeName, space);
+
+	MethodScope* tmpScope = mScope;
+	mScope = space;
+
 	generate(tokens);
+
+	mScope = tmpScope;
 
 	start = closed;
 }
