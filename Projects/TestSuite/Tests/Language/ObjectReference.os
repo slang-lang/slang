@@ -21,6 +21,7 @@ public namespace Language
 			mValue = value;
 		}
 	}
+}
 
 	public object Main
 	{
@@ -36,7 +37,7 @@ public namespace Language
 		{
 			print("TestCase1: parameter by value");
 
-			TestObject obj = new TestObject(1);
+			TestObject obj = new Language.TestObject(1);
 
 			ParameterByValue(obj.mValue);
 
@@ -47,7 +48,7 @@ public namespace Language
 		{
 			print("TestCase2: parameter as object by value");
 
-			TestObject obj = new TestObject(1);
+			TestObject obj = new Language.TestObject(1);
 
 			ParameterByValue(obj);
 
@@ -58,7 +59,7 @@ public namespace Language
 		{
 			print("TestCase3: parameter by reference");
 
-			TestObject obj = new TestObject(1);
+			TestObject obj = new Language.TestObject(1);
 
 			ParameterByReference(obj.mValue);
 
@@ -69,7 +70,7 @@ public namespace Language
 		{
 			print("TestCase4: parameter as object by reference");
 
-			TestObject obj = new TestObject(1);
+			TestObject obj = new Language.TestObject(1);
 
 			ParameterByReference(obj);
 
@@ -113,5 +114,3 @@ public namespace Language
 		}
 	}
 
-
-}

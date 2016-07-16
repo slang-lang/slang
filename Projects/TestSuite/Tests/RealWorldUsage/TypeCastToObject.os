@@ -37,14 +37,14 @@ public object Main {
 		print("obj = " + obj);
 	}
 
-	private DerivedObject ObjectProvider() {
+	private DerivedObject ObjectProvider() modify {
 		DerivedObject obj = new DerivedObject();
 		obj.mText = "bla";
 
 		return obj;
 	}
 
-	private bool ObjectReceiver(Object obj ref) {
+	private bool ObjectReceiver(Object obj ref) modify {
 		assert(obj);
 
 		print("obj = " + obj);

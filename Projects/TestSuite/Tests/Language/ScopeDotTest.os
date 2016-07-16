@@ -22,7 +22,7 @@ public object Main
 
 	private bool TestCase1() modify
 	{
-		TestObject obj;
+		TestObject obj = new TestObject();
 
 		obj.mValue = 1;
 		print("obj.mValue = " + obj.mValue);

@@ -68,14 +68,14 @@ public stable object Main {
 
 		bla(1);
 
-		mTest = new TestObject();
+		mTest = new AttributeTest.TestObject();
 
 		mTest.deprecatedMethod();
 		//mTest.notimplementedMethod();
 		mTest.stableMethod();
 		mTest.unstableMethod();
 
-		ConstObject value = new ConstObject();
+		ConstObject value = new AttributeTest.ConstObject();
 		print("value.GetNumber() = " + value.GetNumber());
 		value.SetNumber(2);
 		print("value.GetNumber() = " + value.GetNumber());
