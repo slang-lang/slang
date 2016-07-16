@@ -90,10 +90,10 @@ Designtime::Ancestors Analyser::collectInheritance(TokenIterator &start) const
 
 Designtime::BluePrint Analyser::createBluePrint(TokenIterator& start, TokenIterator end, bool isInterface) const
 {
-	std::string fullyQualifiedName;
+	std::string fullyQualifiedTypeName;
 	bool isAbstract = false;
 	std::string languageFeature;
-	std::string name;
+	std::string type;
 	std::string visibility;
 
 	// look for the visibility token
@@ -105,12 +105,12 @@ Designtime::BluePrint Analyser::createBluePrint(TokenIterator& start, TokenItera
 	// look for the object token
 	(*start++).content();
 	// look for the identifier token
-	name = (*start).content();
+	type = (*start).content();
 
 	if ( !mScopeName.empty() ) {
-		fullyQualifiedName = mScopeName + RESERVED_WORD_SCOPE_OPERATOR;
+		fullyQualifiedTypeName = mScopeName + RESERVED_WORD_SCOPE_OPERATOR;
 	}
-	fullyQualifiedName += name;
+	fullyQualifiedTypeName += type;
 
 	// collect inheritance (if present)
 	Designtime::Ancestors inheritance = collectInheritance(++start);
@@ -142,9 +142,9 @@ Designtime::BluePrint Analyser::createBluePrint(TokenIterator& start, TokenItera
 		start = closed;
 	}
 
-	Designtime::BluePrint blue(name, mFilename);
+	Designtime::BluePrint blue(type, mFilename);
 	blue.setAbstract(isAbstract || isInterface);
-	blue.setFullyQualifiedTypename(fullyQualifiedName);
+	blue.setFullyQualifiedTypename(fullyQualifiedTypeName);
 	blue.setInterface(isInterface);
 	blue.setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
 	blue.setTokens(tokens);
@@ -286,6 +286,7 @@ void Analyser::createMethod(TokenIterator &start, TokenIterator end)
 
 void Analyser::createNamespace(TokenIterator& start, TokenIterator end)
 {
+	std::string fullyQualifiedName;
 	std::string languageFeature;
 	std::string name;
 	std::string visibility;
@@ -317,16 +318,37 @@ void Analyser::createNamespace(TokenIterator& start, TokenIterator end)
 		tokens.push_back((*it));
 	}
 
+	fullyQualifiedName = mScopeName;
+
 	if ( !mScopeName.empty() ) {
 		mScopeName += RESERVED_WORD_SCOPE_OPERATOR;
 	}
 	mScopeName += name;
 
-	Runtime::Namespace* space = new Runtime::Namespace(name, mScope);
-	space->setVisibility(Visibility::convert(visibility));
-	space->setSealed(isSealed);		// seal has to be the last attribute to be set
+	Runtime::Namespace* space = 0;
 
-	mScope->define(mScopeName, space);
+	// check for an existing namespace with this name
+	Symbol* symbol = mScope->resolve(name, true);
+	if ( !symbol ) {
+		space = new Runtime::Namespace(name, mScope);
+		space->setVisibility(Visibility::convert(visibility));
+		space->setSealed(isSealed);		// seal has to be the last attribute to be set
+
+		mScope->define(name, space);
+	}
+	else {
+		switch ( symbol->getSymbolType() ) {
+			case Symbol::IType::NamespaceSymbol:
+				space = static_cast<Runtime::Namespace*>(symbol);
+				break;
+			case Symbol::IType::BluePrintSymbol:
+			case Symbol::IType::MethodSymbol:
+			case Symbol::IType::ObjectSymbol:
+			case Symbol::IType::UnknownSymbol:
+				throw Utils::Exceptions::Exception("cannot extend non-namespace symbol");
+				break;
+		}
+	}
 
 	MethodScope* tmpScope = mScope;
 	mScope = space;
@@ -334,6 +356,8 @@ void Analyser::createNamespace(TokenIterator& start, TokenIterator end)
 	generate(tokens);
 
 	mScope = tmpScope;
+
+	mScopeName = fullyQualifiedName;
 
 	start = closed;
 }

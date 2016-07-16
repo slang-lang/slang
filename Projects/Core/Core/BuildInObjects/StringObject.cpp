@@ -138,7 +138,14 @@ void StringObject::operator_plus(const StringObject *other)
 
 std::string StringObject::ToString() const
 {
-	return Typename() + " " + getName() + " = " + getValue().toStdString();
+	std::string result;
+	result += Visibility::convert(mVisibility);
+//	result += " " + LanguageFeatureState::convert(mLanguageFeatureState);
+	result += " " + Typename() + " " + getName();
+//	result += " " + Mutability::convert(mMutability);
+	result += " = \"" + getValue().toStdString() + "\"";
+
+	return result;
 }
 
 
