@@ -1,5 +1,6 @@
 
 public namespace System {
+}
 
 	public object String {
 		private string mValue;
@@ -198,6 +199,4 @@ public namespace System {
 			mValue = mValue + other.mValue;
 		}
 	}
-
-}
 

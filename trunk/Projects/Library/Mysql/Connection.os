@@ -63,7 +63,7 @@ public namespace Mysql {
 		}
 
 		public Query createQuery(string queryStr = "") const {
-			return new Query(this, queryStr);
+			return new Mysql.Query(this, queryStr);
 		}
 
 		public string error() const {
@@ -81,7 +81,7 @@ public namespace Mysql {
 		private void initialize() modify {
 			assert(!mSettings);	// prevent multiple initializations
 
-			mSettings = new Settings();
+			mSettings = new Mysql.Settings();
 		}
 
 		public bool isOpen() const {
@@ -95,7 +95,7 @@ public namespace Mysql {
 		public bool open(string hostname, int port, string user, string password, string database = "") modify {
 			if ( mHandle != 0 ) {
 				// we already have a connection handle
-				throw new Exception("mysql handle still points to an open connection!");
+				throw new System.Exception("mysql handle still points to an open connection!");
 			}
 
 			// request a mysql handle
@@ -136,7 +136,7 @@ public namespace Mysql {
 			}
 
 			int handle = mysql_store_result(mHandle);
-			return new Result(handle);
+			return new Mysql.Result(handle);
 		}
 
 		public int selectDB(string database) modify {

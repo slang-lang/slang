@@ -36,11 +36,11 @@ public namespace System {
 
 		/*
 		 * GetNext returns the next sub string of the held String value
-		 * throws OutOfBoundsException
+		 * throws System.OutOfBoundsException
 		 */
 		public string GetNext() modify {
 			if ( mCurrentPosition >= mValue.Length() ) {
-				throw new OutOfBoundsException("out of bounds");
+				throw new System.OutOfBoundsException("out of bounds");
 			}
 
 			int oldPos = mCurrentPosition;
@@ -56,11 +56,19 @@ public namespace System {
 		}
 
 		/*
+		 * Resets the current iteration
+		 */
+		public void Reset() modify {
+			mCurrentPosition = 0;
+		}
+
+		/*
 		 * Change separator token (resets iterator to start)
 		 */
 		public void SetSeparator(string separator) modify {
-			mCurrentPosition = 0;
 			mSeparator = separator;
+
+			Reset();
 		}
 
 		/*
