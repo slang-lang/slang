@@ -1,7 +1,5 @@
 #!/usr/local/bin/oscript
 
-public namespace Language
-{
 	public object Main
 	{
 		public void Main(int argc = 0, string argv = "")
@@ -103,4 +101,4 @@ public namespace Language
 			return false;
 		}
 	}
-}
+

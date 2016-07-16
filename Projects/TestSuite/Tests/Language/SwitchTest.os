@@ -1,7 +1,5 @@
 #!/usr/local/bin/oscript
 
-public namespace SwitchTest
-{
 	public object Main
 	{
 		public void Main(int argc = 0, string argv = "")
@@ -60,5 +58,4 @@ public namespace SwitchTest
 			return true;
 		}
 	}
-}
 

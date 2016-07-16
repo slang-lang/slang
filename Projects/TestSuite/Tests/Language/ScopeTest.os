@@ -1,7 +1,5 @@
 #!/usr/local/bin/oscript
 
-public namespace ScopeTest
-{
 	public object Main
 	{
 		public void Main(int argc = 0, string argv = "")
@@ -65,5 +63,4 @@ public namespace ScopeTest
 			return one == 1 && two == 2;
 		}
 	}
-}
 

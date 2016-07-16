@@ -31,7 +31,7 @@ public object Main {
 	}
 
 	private bool TestCase1() const {
-		OuterObject outer = new InstanciationTest.OuterObject();
+		InstanciationTest.OuterObject outer = new InstanciationTest.OuterObject();
 		print("outer.mValue = " + outer.mValue);
 
 /*

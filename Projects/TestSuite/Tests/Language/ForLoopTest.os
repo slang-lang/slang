@@ -1,7 +1,5 @@
 #!/usr/local/bin/oscript
 
-public namespace ForLoopTest
-{
 	public object Main
 	{
 		public void Main(int argc = 0, string argv = "")
@@ -67,4 +65,4 @@ public namespace ForLoopTest
 			return false;
 		}
 	}
-}
+

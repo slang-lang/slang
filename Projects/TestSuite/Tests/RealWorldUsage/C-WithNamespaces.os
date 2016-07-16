@@ -27,7 +27,6 @@ public int Main(int argc, string args) {
 
 	This.Init();
 
-	print(This);
 	print(This.mStringValue);
 
 	return 0;

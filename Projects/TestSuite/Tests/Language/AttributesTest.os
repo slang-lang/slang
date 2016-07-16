@@ -61,9 +61,11 @@ public stable namespace AttributeTest {
 }
 
 public stable object Main {
-	private TestObject mTest;
+//	private TestObject mTest;
 
 	public void Main(int argc = 0, string argv = "") {
+		AttributeTest.TestObject mTest;
+
 		AttributeTest.Function1();
 
 		bla(1);
@@ -83,10 +85,6 @@ public stable object Main {
 		print(getTwo());
 	}
 
-	public void ~Main() {
-		delete mTest;
-	}
-	
 	private int getTwo() const {
 		return 2;
 	}

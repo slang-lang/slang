@@ -1,7 +1,5 @@
 #!/usr/local/bin/oscript
 
-public namespace InfixOperator
-{
 	public object Main
 	{
 		public void Main(int argc = 0, string argv = "")
@@ -59,4 +57,4 @@ public namespace InfixOperator
 			return value == -1;
 		}
 	}
-}
+
