@@ -46,7 +46,7 @@ private namespace BooleanOverloads
 		{
 			print("TestCase1: less operator with atomic type");
 
-			UserObject obj1 = new BooleanOverloads.UserObject(1);
+			BooleanOverloads.UserObject obj1 = new BooleanOverloads.UserObject(1);
 
 			//assert(obj1 < 2);
 			if ( obj1 < 2 ) {
@@ -61,8 +61,8 @@ private namespace BooleanOverloads
 		{
 			print("TestCase2: less operator with object");
 
-			UserObject obj1 = new BooleanOverloads.UserObject(1);
-			UserObject obj2 = new BooleanOverloads.UserObject(2);
+			BooleanOverloads.UserObject obj1 = new BooleanOverloads.UserObject(1);
+			BooleanOverloads.UserObject obj2 = new BooleanOverloads.UserObject(2);
 
 			//assert(obj1 < obj2);
 			if ( obj1 < obj2 ) {
