@@ -1,29 +1,23 @@
 #!/usr/local/bin/oscript
 
-public namespace Language
-{
-	public object Main
-	{
-		public void Main(int argc = 0, string argv = "")
-		{
-			print("argc = " + argc);
-			print("argv = " + argv);
+public object Main {
+	public void Main(int argc = 0, string argv = "") {
+		print("argc = " + argc);
+		print("argv = " + argv);
 
-			//assert( TestCase1() );
-		}
+		//assert( TestCase1() );
+	}
 
-		private bool TestCase1() const
-		{
-			int bla final = 1;
+	private bool TestCase1() const {
+		int bla final = 1;
 
-			ModifyInt(bla);
+		ModifyInt(bla);
 
-			return false;
-		}
-		
-		private void ModifyInt(int value ref) const
-		{
-			value = value++;
-		}
+		return false;
+	}
+	
+	private void ModifyInt(int value ref) const {
+		value = value++;
 	}
 }
+

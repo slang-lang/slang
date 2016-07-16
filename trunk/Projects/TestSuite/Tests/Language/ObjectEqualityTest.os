@@ -30,8 +30,8 @@ public namespace ObjectEqualityTest
 		{
 			print("TestCase 1: comparing different references");
 
-			TestObject obj1 = new ObjectEqualityTest.TestObject();
-			TestObject obj2 = new ObjectEqualityTest.TestObject();
+			ObjectEqualityTest.TestObject obj1 = new ObjectEqualityTest.TestObject();
+			ObjectEqualityTest.TestObject obj2 = new ObjectEqualityTest.TestObject();
 			
 			return obj1 != obj2;
 		}
@@ -40,8 +40,8 @@ public namespace ObjectEqualityTest
 		{
 			print("TestCase 2: comparing same references");
 
-			TestObject obj1 = new ObjectEqualityTest.TestObject();
-			TestObject obj2 = obj1;
+			ObjectEqualityTest.TestObject obj1 = new ObjectEqualityTest.TestObject();
+			ObjectEqualityTest.TestObject obj2 = obj1;
 
 			//return obj1 == obj1;			
 			return obj1 == obj2;

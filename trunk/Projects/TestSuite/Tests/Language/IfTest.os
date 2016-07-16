@@ -1,7 +1,5 @@
 #!/usr/local/bin/oscript
 
-public namespace IfTest
-{
 	public object Main
 	{
 		public void Main(int argc = 0, string argv = "")
@@ -95,4 +93,4 @@ public namespace IfTest
 			return false;
 		}
 	}
-}
+

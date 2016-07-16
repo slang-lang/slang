@@ -11,7 +11,7 @@ public object Main {
 	private bool TestCase1() modify {
 		print("TestCase 1: valid iteration");
 
-		StringIterator strIt = new System.StringIterator("This is a string", " ");
+		System.StringIterator strIt = new System.StringIterator("This is a string", " ");
 
 		int count;
 		while ( strIt.HasNext() && count < 10 ) {
@@ -27,7 +27,7 @@ public object Main {
 	private bool TestCase2() const {
 		print("TestCase 2: invalid iteration");
 
-		StringIterator strIt = new System.StringIterator("This is a string", " ");
+		System.StringIterator strIt = new System.StringIterator("This is a string", " ");
 
 		try {
 			int count;

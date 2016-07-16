@@ -16,7 +16,7 @@ public namespace NamespaceTests sealed {
 
 public object Main {
 	public void Main(int argc = 0, string argv = "") {
-		Test1 test1 = new NamespaceTests.Test1();
+		NamespaceTests.Test1 test1 = new NamespaceTests.Test1();
 		print(test1.getName());
 	}
 }

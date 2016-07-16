@@ -1,7 +1,5 @@
 #!/usr/local/bin/oscript
 
-public namespace ThisTest
-{
 	public object Main
 	{
 		private int mNumber;
@@ -73,5 +71,4 @@ public namespace ThisTest
 			this.mNumber = value;
 		}
 	}
-}
 

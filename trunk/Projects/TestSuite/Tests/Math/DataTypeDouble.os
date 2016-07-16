@@ -1,20 +1,16 @@
 #!/usr/local/bin/oscript
 
-public namespace Math
-{
-	public object Main
-	{
-		public void Main(int argc = 0, string argv = "")
-		{
-			double value = 100000000000000000000d;
-			print("value = " + value);
+public object Main {
+	public void Main(int argc = 0, string argv = "") {
+		double value = 100000000000000000000d;
+		print("value = " + value);
 
-			double mNumber = 1.731389d;
+		double mNumber = 1.731389d;
 
-			print("mNumber = " + mNumber);
+		print("mNumber = " + mNumber);
 
-			//assert( (string mNumber) == "1.731389" );
-			assert( mNumber == 1.731389d );
-		}
+		//assert( (string mNumber) == "1.731389" );
+		assert( mNumber == 1.731389d );
 	}
 }
+
