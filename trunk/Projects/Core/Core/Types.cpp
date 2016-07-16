@@ -139,7 +139,12 @@ std::string toString(const Parameter& param)
 	}
 	if ( param.hasDefaultValue() ) {
 		result += " = ";
-		result += param.value().toStdString();
+		if ( param.type() == "string" ) {
+			result += "\"" + param.value().toStdString() + "\"";
+		}
+		else {
+			result += param.value().toStdString();
+		}
 	}
 
 	return result;

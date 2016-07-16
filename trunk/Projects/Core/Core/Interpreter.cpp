@@ -13,6 +13,7 @@
 #include <Core/BuildInObjects/NumberObject.h>
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/BuildInObjects/VoidObject.h>
+#include <Core/Designtime/BluePrint.h>
 #include <Core/Runtime/Namespace.h>
 #include <Core/Runtime/OperatorOverloading.h>
 #include <Core/Runtime/TypeCast.h>
@@ -137,13 +138,15 @@ Symbol* Interpreter::identify(TokenIterator& token) const
 		}
 		else {
 			switch ( result->getSymbolType() ) {
+				case Symbol::IType::BluePrintSymbol:
+					// cannot resolve any further
+					break;
 				case Symbol::IType::NamespaceSymbol:
 					result = static_cast<Namespace*>(result)->resolve(identifier, onlyCurrentScope);
 					break;
 				case Symbol::IType::ObjectSymbol:
 					result = static_cast<Object*>(result)->resolve(identifier, onlyCurrentScope);
 					break;
-				case Symbol::IType::BluePrintSymbol:
 				case Symbol::IType::MethodSymbol:
 				case Symbol::IType::UnknownSymbol:
 					throw Utils::Exceptions::SyntaxError("cannot directly access locales of blueprint or method");
@@ -195,6 +198,7 @@ Symbol* Interpreter::identifyMethod(TokenIterator& token, const ParameterList& p
 					result = static_cast<Object*>(result)->resolveMethod(identifier, params, onlyCurrentScope);
 					break;
 				case Symbol::IType::BluePrintSymbol:
+					throw Utils::Exceptions::NotImplemented("static method usage not implemented!");
 				case Symbol::IType::MethodSymbol:
 				case Symbol::IType::UnknownSymbol:
 					throw Utils::Exceptions::SyntaxError("cannot directly access locales of blueprint or method");
@@ -760,7 +764,9 @@ void Interpreter::process_for(TokenIterator& token, Object *result)
 	}
 }
 
-// executes a method or processes an assign statement
+/*
+ * executes a method or processes an assign statement
+ */
 void Interpreter::process_identifier(TokenIterator& token, Object* /*result*/, Token::Type::E terminator)
 {
 	// try to find an assignment token
@@ -770,60 +776,57 @@ void Interpreter::process_identifier(TokenIterator& token, Object* /*result*/, T
 
 	std::string identifier = token->content();
 
-    if ( assign == token ) {
-        // we don't have an assignment but a method call
-		Object tmp;
+
+	TokenIterator tmpToken = token;
+
+	Symbol* symbol = identify(token);
+	if ( !symbol ) {
+		throw Utils::Exceptions::UnknownIdentifer("identifier '" + identifier + "' not found", token->position());
+	}
+
+	if ( symbol->getSymbolType() == Symbol::IType::MethodSymbol ) {
+		token = tmpToken;	// reset token after call to identify
+
 		try {
-			expression(&tmp, token);
+			Object tmp;
+			process_method(token, &tmp);
+		}
+		catch ( ControlFlow::E e ) {
+			mControlFlow = e;
+			return;
+		}
+	}
+	else if ( symbol->getSymbolType() == Symbol::IType::ObjectSymbol ) {
+		Object* object = static_cast<Object*>(symbol);
+		if ( object->isConst() ) {	// we tried to modify a const symbol (i.e. member, parameter or constant local variable)
+			throw Utils::Exceptions::ConstCorrectnessViolated("tried to modify const symbol '" + object->getFullScopeName() + "'", token->position());
+		}
+		if ( object->isMember() && static_cast<Method*>(mOwner)->isConst() ) {	// we tried to modify a member in a const method
+			throw Utils::Exceptions::ConstCorrectnessViolated("tried to modify member '" + object->getFullScopeName() + "' in const method '" + getScope()->getScopeName() + "'", token->position());
+		}
+
+		try {
+			expression(object, ++assign);
 		}
 		catch ( ControlFlow::E e ) {
 			mControlFlow = e;
 			return;
 		}
 
-        token = end;
-        return;
-    }
+		if ( !object->isConst() && object->isFinal() ) {
+			// we have modified a final symbol for the first time, we now have to set it so const
+			object->setConst(true);
+			object->setFinal(false);
 
-/*
-	Symbol* symbol = identify(token);
-	if ( !symbol ) {
-		throw Utils::Exceptions::UnknownIdentifer("identifier '" + identifier + "' not found", token->position());
-	}
+			object->setMutability(Mutability::Const);
+		}
 
-	Object* object = dynamic_cast<Object*>(symbol);
-*/
-
-	Object* object = dynamic_cast<Object*>(getScope()->resolve(identifier, false));
-	if ( !object ) {	// we tried to access an unknown symbol
-		throw Utils::Exceptions::UnknownIdentifer("identifier '" + identifier + "' not found", token->position());
+		// assign == end should now be true
+		token = end;
 	}
-	if ( object->isConst() ) {	// we tried to modify a const symbol (i.e. member, parameter or constant local variable)
-		throw Utils::Exceptions::ConstCorrectnessViolated("tried to modify const symbol '" + identifier + "'", token->position());
+	else {
+		throw Utils::Exceptions::Exception("invalid symbol type found!");
 	}
-	if ( object->isMember() && static_cast<Method*>(mOwner)->isConst() ) {	// we tried to modify a member in a const method
-		throw Utils::Exceptions::ConstCorrectnessViolated("tried to modify member '" + identifier + "' in const method '" + getScope()->getScopeName() + "'", token->position());
-	}
-
-	object = static_cast<Object*>(identify(token));
-	try {
-		expression(object, ++assign);
-	}
-	catch ( ControlFlow::E e ) {
-		mControlFlow = e;
-		return;
-	}
-
-	if ( !object->isConst() && object->isFinal() ) {
-		// we have modified a final symbol for the first time, we now have to set it so const
-		object->setConst(true);
-		object->setFinal(false);
-
-		object->setMutability(Mutability::Const);
-	}
-
-	// assign == end should now be true
-	token = end;
 }
 
 // syntax:
@@ -1059,6 +1062,14 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 
 	std::string type = token->content();
 
+	Symbol* symbol = identify(token);
+	if ( !symbol ) {
+		throw Utils::Exceptions::UnknownIdentifer("unknown identifier '" + type + "'");
+	}
+	if ( symbol->getSymbolType() != Symbol::IType::BluePrintSymbol ) {
+		throw Utils::Exceptions::Exception("blue print symbol expected!");
+	}
+
 	TokenIterator opened = findNext(tmp, Token::Type::PARENTHESIS_OPEN);
 	TokenIterator closed = findNextBalancedParenthesis(++opened);
 
@@ -1096,7 +1107,7 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 	token = closed;
 
 	// create instance of new object
-	Object* tmpObj = getRepository()->createInstance(type, name, true);
+	Object* tmpObj = getRepository()->createInstance(static_cast<Designtime::BluePrint*>(symbol), name, true);
 
 	// execute new object's constructor
 	mControlFlow = tmpObj->Constructor(params);

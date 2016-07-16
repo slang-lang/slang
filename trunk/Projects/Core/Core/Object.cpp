@@ -153,8 +153,7 @@ void Object::copy(const Object& other)
 			for ( Symbols::const_iterator it = other.mSymbols.begin(); it != other.mSymbols.end(); ++it ) {
 				if ( /*it->first == IDENTIFIER_BASE ||*/
 					it->first == IDENTIFIER_THIS ||
-					!it->second ||
-							it->second->getSymbolType() != Symbol::IType::ObjectSymbol) {
+					!it->second || it->second->getSymbolType() != Symbol::IType::ObjectSymbol) {
 					continue;
 				}
 
@@ -881,7 +880,11 @@ Json::Value Object::ToJson() const
 
 std::string Object::ToString() const
 {
-	std::string result = Typename() + " " + getName();
+	std::string result;
+	result += Visibility::convert(mVisibility);
+//	result += " " + LanguageFeatureState::convert(mLanguageFeatureState);
+	result += " " + Typename() + " " + getName();
+//	result += " " + Mutability::convert(mMutability);
 
 	if ( isAtomicType() ) {
 		result += " = " + getValue().toStdString();
@@ -892,8 +895,6 @@ std::string Object::ToString() const
 		for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
 			result += "\t" + (*it)->ToString() + "\n";
 		}
-
-		//result += "\n";
 
 		for ( Symbols::const_iterator it = mSymbols.begin(); it != mSymbols.end(); ++it ) {
 			if ( it->first == IDENTIFIER_BASE || it->first == IDENTIFIER_THIS ||

@@ -217,6 +217,22 @@ Runtime::Object* Repository::createInstance(const std::string& type, const std::
 	return object;
 }
 
+Runtime::Object* Repository::createInstance(Designtime::BluePrint* blueprint, const std::string& name, bool initialize)
+{
+	if ( !blueprint ) {
+		throw Utils::Exceptions::Exception("invalid blueprint provided!");
+	}
+
+	// non-reference-based instantiation
+	OSdebug("createInstance('" + blueprint->Typename() + "', '" + name + "', " + (initialize ? "true" : "false") + ")");
+
+	Runtime::Object *object = createObject(name, static_cast<Designtime::BluePrint*>(blueprint), initialize);
+
+	addReference(object);
+
+	return object;
+}
+
 /*
  * creates (and initializes) atomic types and triggers the user defined object creation process
  */
@@ -338,7 +354,7 @@ void Repository::initializeObject(Runtime::Object *object, Designtime::BluePrint
 	// create and define all symbols based on given blueprint
 	Symbols symbols = blueprint->provideSymbols();
 	for ( Symbols::const_iterator it = symbols.begin(); it != symbols.end(); ++it ) {
-		if (it->second->getSymbolType() != Symbol::IType::BluePrintSymbol ) {
+		if ( it->second->getSymbolType() != Symbol::IType::BluePrintSymbol ) {
 			continue;
 		}
 
@@ -373,6 +389,31 @@ void Repository::initializeObject(Runtime::Object *object, Designtime::BluePrint
 	}
 
 	object->define(IDENTIFIER_THIS, object);	// define this-symbol
+}
+
+void Repository::insertBluePrintsIntoScopes()
+{
+	for ( Designtime::BluePrintMap::iterator it = mBluePrints.begin(); it != mBluePrints.end(); ++it ) {
+		SymbolScope* scope = mScope;
+
+		std::string name = it->second.getFullyQualifiedTypename();
+		std::string parent;
+		std::string type;
+
+		while ( true ) {
+			Tools::split(name, parent, type);
+
+			if ( type.empty() ) {
+				break;
+			}
+
+			scope = dynamic_cast<SymbolScope*>(scope->resolve(parent, true));
+
+			name = type;
+		}
+
+		scope->define(parent, &it->second);
+	}
 }
 
 bool Repository::isAlreadyKnown(const std::string& name) const
@@ -416,6 +457,8 @@ void Repository::rebuildBluePrints()
 		Preprocessor preprocessor(this);
 		preprocessor.process(&blueIt->second);
 	}
+
+	insertBluePrintsIntoScopes();
 }
 
 /*

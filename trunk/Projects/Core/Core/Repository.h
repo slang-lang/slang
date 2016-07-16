@@ -40,6 +40,7 @@ public:
 	void addPrototype(const Designtime::Prototype& prototype);
 
 	Runtime::Object* createInstance(const std::string& type, const std::string& name = ANONYMOUS_OBJECT, bool initialize = true);
+	Runtime::Object* createInstance(Designtime::BluePrint* blueprint, const std::string& name = ANONYMOUS_OBJECT, bool initialize = true);
 
 	void addReference(Runtime::Object *object);
 	void removeReference(Runtime::Object *object);
@@ -62,6 +63,7 @@ private:
 
 	void createDefaultMethods(Runtime::Object *object);
 	void initializeObject(Runtime::Object *object, Designtime::BluePrint* blueprint);
+	void insertBluePrintsIntoScopes();
 
 private:
 	Designtime::BluePrintMap mBluePrints;

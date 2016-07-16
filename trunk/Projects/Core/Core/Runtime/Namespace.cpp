@@ -27,15 +27,28 @@ Namespace::~Namespace()
 
 std::string Namespace::ToString() const
 {
-	std::string result;
+	std::string result = Visibility::convert(mVisibility) + " " + Typename() + " " + getName();
+
+	result += " {\n";
 
 	for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
-		result += (*it)->ToString();
+		result += "\t" + (*it)->ToString() + "\n";
 	}
 
-	for ( Symbols::const_iterator it = mSymbols.begin(); it != mSymbols.end(); ) {
-		result += (*it).second->ToString();
+	for ( Symbols::const_iterator it = mSymbols.begin(); it != mSymbols.end(); ++it ) {
+		switch ( it->second->getSymbolType() ) {
+			case Symbol::IType::BluePrintSymbol:
+			case Symbol::IType::MethodSymbol:
+			case Symbol::IType::UnknownSymbol:
+				continue;
+			case Symbol::IType::NamespaceSymbol:
+			case Symbol::IType::ObjectSymbol:
+				result += "\t" + it->second->ToString() + "\n";
+				break;
+		}
 	}
+
+	result += "}";
 
 	return result;
 }
