@@ -57,7 +57,7 @@ private namespace BooleanOverloads
 		{
 			print("TestCase1: bitand operator with atomic type");
 
-			UserObject obj1 = new BooleanOverloads.UserObject(true);
+			BooleanOverloads.UserObject obj1 = new BooleanOverloads.UserObject(true);
 
 			obj1 = obj1 & true;
 			//assert( obj1 == true );
@@ -73,8 +73,8 @@ private namespace BooleanOverloads
 		{
 			print("TestCase2: bitand operator with object");
 
-			UserObject obj1 = new BooleanOverloads.UserObject(true);
-			UserObject obj2 = new BooleanOverloads.UserObject(false);
+			BooleanOverloads.UserObject obj1 = new BooleanOverloads.UserObject(true);
+			BooleanOverloads.UserObject obj2 = new BooleanOverloads.UserObject(false);
 
 			obj1 = obj2;
 			//assert( obj1 == obj2 );

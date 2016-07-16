@@ -82,9 +82,9 @@ public object Main {
 	}
 
 	private bool TestCase1() const {
-		BaseObject b = new Inheritance.BaseObject(1);
-		DerivedObject d = new Inheritance.DerivedObject(1);
-		ExtendedObject e = new Inheritance.ExtendedObject(1);
+		Inheritance.BaseObject b = new Inheritance.BaseObject(1);
+		Inheritance.DerivedObject d = new Inheritance.DerivedObject(1);
+		Inheritance.ExtendedObject e = new Inheritance.ExtendedObject(1);
 
 		print("b.getValue() = " + b.getValue());
 		assert( b.getValue() == 1 );

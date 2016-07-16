@@ -75,7 +75,7 @@ public stable object Main {
 		mTest.stableMethod();
 		mTest.unstableMethod();
 
-		ConstObject value = new AttributeTest.ConstObject();
+		AttributeTest.ConstObject value = new AttributeTest.ConstObject();
 		print("value.GetNumber() = " + value.GetNumber());
 		value.SetNumber(2);
 		print("value.GetNumber() = " + value.GetNumber());

@@ -32,6 +32,7 @@ public namespace ExceptionTest
 			throw new ExceptionTest.Exception("MethodThatThrows");
 		}
 	}
+}
 
 	public object Main
 	{
@@ -110,7 +111,7 @@ public namespace ExceptionTest
 		{
 			print("TestCase4()");
 
-			ObjectThatThrows obj = new ExceptionTest.ObjectThatThrows();
+			ExceptionTest.ObjectThatThrows obj = new ExceptionTest.ObjectThatThrows();
 
 			try {
 				print("try");
@@ -181,4 +182,4 @@ public namespace ExceptionTest
 			return true;
 		}
 	}
-}
+

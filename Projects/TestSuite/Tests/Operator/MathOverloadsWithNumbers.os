@@ -95,7 +95,7 @@ public namespace MathOverloads
 		{
 			print("TestCase1: using the overloaded plus operator");
 
-			OverloadedObject obj1 = new MathOverloads.OverloadedObject(1);
+			MathOverloads.OverloadedObject obj1 = new MathOverloads.OverloadedObject(1);
 
 			obj1 = obj1 + 2;
 			//assert(obj1 == 3);
@@ -112,7 +112,7 @@ public namespace MathOverloads
 		{
 			print("TestCase2: using the overloaded subtract operator");
 
-			OverloadedObject obj1 = new MathOverloads.OverloadedObject(1);
+			MathOverloads.OverloadedObject obj1 = new MathOverloads.OverloadedObject(1);
 
 			obj1 = obj1 - 2;
 			//assert( obj1 == -1 );
@@ -129,7 +129,7 @@ public namespace MathOverloads
 		{
 			print("TestCase3: using the overloaded multiply operator");
 
-			OverloadedObject obj1 = new MathOverloads.OverloadedObject(1);
+			MathOverloads.OverloadedObject obj1 = new MathOverloads.OverloadedObject(1);
 
 			obj1 = obj1 * 2;
 			//assert( obj1 == 2 );
@@ -146,7 +146,7 @@ public namespace MathOverloads
 		{
 			print("TestCase4: using the overloaded divide operator");
 
-			OverloadedObject obj1 = new MathOverloads.OverloadedObject(4);
+			MathOverloads.OverloadedObject obj1 = new MathOverloads.OverloadedObject(4);
 
 			obj1 = obj1 / 2;
 			//assert( obj1 == 0.5 );
@@ -163,7 +163,7 @@ public namespace MathOverloads
 		{
 			print("TestCase5: using the overloaded modulo operator");
 
-			OverloadedObject obj1 = new MathOverloads.OverloadedObject(5);
+			MathOverloads.OverloadedObject obj1 = new MathOverloads.OverloadedObject(5);
 
 			obj1 = obj1 % 2;
 			//assert( obj1 == 0.5 );
@@ -180,7 +180,7 @@ public namespace MathOverloads
 		{
 			print("TestCase6: using the overloaded decrement operator");
 
-			OverloadedObject obj1 = new MathOverloads.OverloadedObject(5);
+			MathOverloads.OverloadedObject obj1 = new MathOverloads.OverloadedObject(5);
 
 			obj1--;
 			//assert( obj1 == 4 );
@@ -197,7 +197,7 @@ public namespace MathOverloads
 		{
 			print("TestCase7: using the overloaded increment operator");
 
-			OverloadedObject obj1 = new MathOverloads.OverloadedObject(5);
+			MathOverloads.OverloadedObject obj1 = new MathOverloads.OverloadedObject(5);
 
 			obj1++;
 			//assert( obj1 == 6 );

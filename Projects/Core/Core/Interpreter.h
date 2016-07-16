@@ -74,7 +74,7 @@ private: // Execution
 	void process_scope(TokenIterator& token, Object *result);
 	void process_throw(TokenIterator& token, Object *result);
 	void process_try(TokenIterator& token, Object *result);
-	void process_type(TokenIterator& token);
+	void process_type(TokenIterator& token, Symbol* symbol);
 	void process_switch(TokenIterator& token, Object *result);
 	void process_while(TokenIterator& token, Object *result);
 	// }

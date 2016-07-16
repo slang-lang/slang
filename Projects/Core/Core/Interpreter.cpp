@@ -563,14 +563,12 @@ void Interpreter::process(Object *result, TokenIterator& token, TokenIterator en
 				parseTerm(result, token);
 				break;
 			case Token::Type::IDENTIFER:
+			case Token::Type::PROTOTYPE:
+			case Token::Type::TYPE:
 				process_identifier(token, result, terminator == Token::Type::NIL ? Token::Type::SEMICOLON : terminator);
 				break;
 			case Token::Type::KEYWORD:
 				process_keyword(token, result);
-				break;
-			case Token::Type::PROTOTYPE:
-			case Token::Type::TYPE:
-				process_type(token);
 				break;
 			case Token::Type::BRACKET_CURLY_OPEN: {
 				// this opens a new scope
@@ -765,17 +763,11 @@ void Interpreter::process_for(TokenIterator& token, Object *result)
 }
 
 /*
- * executes a method or processes an assign statement
+ * executes a method, processes an assign statement and instatiates new types
  */
 void Interpreter::process_identifier(TokenIterator& token, Object* /*result*/, Token::Type::E terminator)
 {
-	// try to find an assignment token
-	TokenIterator assign = findNext(token, Token::Type::ASSIGN, terminator);
-	// find next terminator token
-	TokenIterator end = findNext(assign, terminator);
-
 	std::string identifier = token->content();
-
 
 	TokenIterator tmpToken = token;
 
@@ -784,12 +776,15 @@ void Interpreter::process_identifier(TokenIterator& token, Object* /*result*/, T
 		throw Utils::Exceptions::UnknownIdentifer("identifier '" + identifier + "' not found", token->position());
 	}
 
-	if ( symbol->getSymbolType() == Symbol::IType::MethodSymbol ) {
+	if ( symbol->getSymbolType() == Symbol::IType::BluePrintSymbol ) {
+		process_type(token, symbol);
+	}
+	else if ( symbol->getSymbolType() == Symbol::IType::MethodSymbol ) {
 		token = tmpToken;	// reset token after call to identify
 
 		try {
-			Object tmp;
-			process_method(token, &tmp);
+			Object tmpObject;
+			process_method(token, &tmpObject);
 		}
 		catch ( ControlFlow::E e ) {
 			mControlFlow = e;
@@ -797,6 +792,11 @@ void Interpreter::process_identifier(TokenIterator& token, Object* /*result*/, T
 		}
 	}
 	else if ( symbol->getSymbolType() == Symbol::IType::ObjectSymbol ) {
+		// try to find an assignment token
+		TokenIterator assign = findNext(token, Token::Type::ASSIGN, terminator);
+		// find next terminator token
+		TokenIterator end = findNext(assign, terminator);
+
 		Object* object = static_cast<Object*>(symbol);
 		if ( object->isConst() ) {	// we tried to modify a const symbol (i.e. member, parameter or constant local variable)
 			throw Utils::Exceptions::ConstCorrectnessViolated("tried to modify const symbol '" + object->getFullScopeName() + "'", token->position());
@@ -1329,14 +1329,12 @@ void Interpreter::process_try(TokenIterator& token, Object *result)
 
 // syntax:
 // <type> <varname> [= <initialization>]
-void Interpreter::process_type(TokenIterator& token)
+void Interpreter::process_type(TokenIterator& token, Symbol* symbol)
 {
 	bool isConst = false;
 	bool isFinal = false;
 	std::string name;
-	std::string type;
 
-	type = token->content();
 	token++;
 	name = token->content();
 
@@ -1357,13 +1355,13 @@ void Interpreter::process_type(TokenIterator& token)
 		assign = ++token;
 	}
 
-	Object *object = static_cast<Object*>(getScope()->resolve(name, true));
+	Object *object = dynamic_cast<Object*>(getScope()->resolve(name, true));
 	if ( object ) {
 		throw Utils::Exceptions::DuplicateIdentifer("duplicate identifier '" + name + "' created", token->position());
 	}
 
 	// TODO: create a shallow object if we have an assignment statement to prevent duplicate object instantiation
-	object = getRepository()->createInstance(type, name, false);
+	object = getRepository()->createInstance(static_cast<Designtime::BluePrint*>(symbol)->Typename(), name, false);
 
 	getScope()->define(name, object);
 
