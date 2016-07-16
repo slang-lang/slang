@@ -4,7 +4,7 @@ import Mysql.All;
 
 public object Main {
 	public void Main(int argc, string args) {
-		Connection conn = new Connection("192.168.0.23", 0, "oscript", "oscript");
+		Connection conn = new Mysql.Connection("192.168.0.23", 0, "oscript", "oscript");
 		if ( !conn.isOpen() ) {
 			writeln("error while opening Mysql connection: " + conn.error());
 			return;

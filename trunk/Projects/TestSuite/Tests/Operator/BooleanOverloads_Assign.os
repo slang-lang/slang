@@ -48,6 +48,7 @@ private namespace BooleanOverloads
 			return (string mValue);
 		}
 	}
+}
 
 	public object Main
 	{
@@ -61,7 +62,7 @@ private namespace BooleanOverloads
 		{
 			print("TestCase1: assign operator with atomic type");
 
-			UserObject obj1 = new UserObject(1);
+			UserObject obj1 = new BooleanOverloads.UserObject(1);
 
 			obj1 = 2;
 			assert( obj1 == 2 );
@@ -78,8 +79,8 @@ private namespace BooleanOverloads
 		{
 			print("TestCase2: assign operator with object");
 
-			UserObject obj1 = new UserObject(1);
-			UserObject obj2 = new UserObject(1);
+			UserObject obj1 = new BooleanOverloads.UserObject(1);
+			UserObject obj2 = new BooleanOverloads.UserObject(1);
 
 			obj1 = obj2;
 			assert( obj1 == obj2 );
@@ -92,4 +93,3 @@ private namespace BooleanOverloads
 			return false;
 		}
 	}
-}

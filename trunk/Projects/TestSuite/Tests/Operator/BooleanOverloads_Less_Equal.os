@@ -32,6 +32,7 @@ private namespace BooleanOverloads
 			return mValue <= other.GetValue();
 		}
 	}
+}
 
 	public object Main
 	{
@@ -45,7 +46,7 @@ private namespace BooleanOverloads
 		{
 			print("TestCase1: less-equal operator with atomic type");
 
-			UserObject obj1 = new UserObject(1);
+			UserObject obj1 = new BooleanOverloads.UserObject(1);
 
 			//assert(obj1 <= 2);
 			if ( obj1 <= 2 ) {
@@ -60,8 +61,8 @@ private namespace BooleanOverloads
 		{
 			print("TestCase2: less-equal operator with object");
 
-			UserObject obj1 = new UserObject(1);
-			UserObject obj2 = new UserObject(2);
+			UserObject obj1 = new BooleanOverloads.UserObject(1);
+			UserObject obj2 = new BooleanOverloads.UserObject(2);
 
 			//assert(obj1 <= obj2);
 			if ( obj1 <= obj2 ) {
@@ -72,4 +73,4 @@ private namespace BooleanOverloads
 			return false;
 		}
 	}
-}
+

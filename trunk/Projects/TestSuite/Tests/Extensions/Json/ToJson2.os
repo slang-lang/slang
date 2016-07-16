@@ -79,7 +79,7 @@ public object Main
 	private bool TestCase3() const {
 		writeln("TestCase 3");
 
-		Exception ex = new Exception("this is an exception");
+		Exception ex = new System.Exception("this is an exception");
 
 		writeln(ToJsonString(Object ex));
 

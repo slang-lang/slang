@@ -4,9 +4,9 @@ import Mysql.All;
 
 public object Main {
 	public void Main(int argc = 0, string args = "") {
-		MysqlDebugMode = true;
+		Mysql.MysqlDebugMode = true;
 
-		Connection conn = new Connection("192.168.0.23", 0, "oscript", "oscript", "ts_parking");
+		Connection conn = new Mysql.Connection("192.168.0.23", 0, "oscript", "oscript", "ts_parking");
 		if ( !conn.isOpen() ) {
 			print("error while connecting to database!");
 			exit(1);

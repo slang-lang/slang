@@ -29,7 +29,7 @@ public namespace ExceptionTest
 		{
 			print("MethodThatThrows()");
 
-			throw new Exception("MethodThatThrows");
+			throw new ExceptionTest.Exception("MethodThatThrows");
 		}
 	}
 
@@ -110,7 +110,7 @@ public namespace ExceptionTest
 		{
 			print("TestCase4()");
 
-			ObjectThatThrows obj = new ObjectThatThrows();
+			ObjectThatThrows obj = new ExceptionTest.ObjectThatThrows();
 
 			try {
 				print("try");
@@ -169,7 +169,7 @@ public namespace ExceptionTest
 				print("try");
 
 				print("throw new Exception()");
-				throw new Exception("standard exception");
+				throw new ExceptionTest.Exception("standard exception");
 			}
 			catch ( Exception exception ) {
 				print("catch " + exception.what());

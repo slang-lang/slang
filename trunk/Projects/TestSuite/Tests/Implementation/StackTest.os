@@ -50,7 +50,7 @@ public namespace StackTest
 				return temp;
 			}
 
-			throw new Exception("cannot pop beyond first node");
+			throw new System.Exception("cannot pop beyond first node");
 		}
 
 		public void push(int value) modify
@@ -58,18 +58,17 @@ public namespace StackTest
 			first = new Node(value, first);
 		}
 	}
+}
 
-	public object Main
-	{
-		public void Main(int argc = 0, string argv = "")
-		{
-			Stack stack = new Stack();
+public object Main {
+	public void Main(int argc = 0, string argv = "") {
+		Stack stack = new Stack();
 			
-			for ( int bla = 0; bla < 10; bla = bla + 1 ) {
-				stack.push(bla);
-			}
-			
-			delete stack;
+		for ( int bla = 0; bla < 10; bla = bla + 1 ) {
+			stack.push(bla);
 		}
+			
+		delete stack;
 	}
 }
+

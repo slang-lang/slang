@@ -8,7 +8,7 @@ private object TestObject {
 
 		print("throw in constructor");
 		//throw 42;
-		throw new Exception("42");
+		throw new System.Exception("42");
 	}
 
 	public void ~TestObject() {

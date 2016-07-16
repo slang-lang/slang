@@ -30,6 +30,7 @@ private namespace BooleanOverloads
 			return mValue > other.GetValue();
 		}
 	}
+}
 
 	public object Main
 	{
@@ -43,7 +44,7 @@ private namespace BooleanOverloads
 		{
 			print("TestCase1: greater operator with atomic type");
 
-			UserObject obj1 = new UserObject(2);
+			UserObject obj1 = new BooleanOverloads.UserObject(2);
 
 			//assert(obj1 > 1);
 			if ( obj1 > 1 ) {
@@ -58,8 +59,8 @@ private namespace BooleanOverloads
 		{
 			print("TestCase2: greater operator with object");
 
-			UserObject obj1 = new UserObject(1);
-			UserObject obj2 = new UserObject(2);
+			UserObject obj1 = new BooleanOverloads.UserObject(1);
+			UserObject obj2 = new BooleanOverloads.UserObject(2);
 
 			//assert(obj2 > obj1);
 			if ( obj2 > obj1 ) {
@@ -70,4 +71,4 @@ private namespace BooleanOverloads
 			return false;
 		}
 	}
-}
+

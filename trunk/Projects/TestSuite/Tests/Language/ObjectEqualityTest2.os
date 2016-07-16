@@ -28,6 +28,7 @@ public namespace ObjectEqualityTest
 			return mValue == other.mValue;
 		}
 	}
+}
 
 	public object Main
 	{
@@ -41,9 +42,9 @@ public namespace ObjectEqualityTest
 		{
 			print("TestCase 1: comparing different references");
 
-			TestObject obj1 = new TestObject();
+			TestObject obj1 = new ObjectEqualityTest.TestObject();
 			//obj1.mValue = 1;
-			TestObject obj2 = new TestObject();
+			TestObject obj2 = new ObjectEqualityTest.TestObject();
 			//obj2.mValue = 2;
 			
 			return obj1 == obj2;
@@ -53,7 +54,7 @@ public namespace ObjectEqualityTest
 		{
 			print("TestCase 2: comparing same references");
 
-			TestObject obj1 = new TestObject();
+			TestObject obj1 = new ObjectEqualityTest.TestObject();
 			obj1.mValue = 1;
 			TestObject obj2 = obj1;
 			obj2.mValue = 2;
@@ -61,4 +62,4 @@ public namespace ObjectEqualityTest
 			return obj1 == obj1;			
 		}
 	}
-}
+

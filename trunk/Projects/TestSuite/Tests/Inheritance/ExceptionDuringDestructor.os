@@ -12,7 +12,7 @@ private object TestObject {
 
 		print("throw in destructor");
 		//throw 42;
-		throw new Exception(string 42);
+		throw new System.Exception(string 42);
 	}
 }
 
