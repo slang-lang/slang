@@ -26,20 +26,20 @@ public namespace Mysql {
 		public Entry getEntry(int fieldIdx) {
 /*
 			if ( fieldIdx < 0 || fieldIdx > mNumFields ) {
-				throw new OutOfBoundsException("fieldIdx out of bounds");
+				throw new System.OutOfBoundsException("fieldIdx out of bounds");
 			}
 */
 
 			string name = mysql_get_field_name(mResultHandle, fieldIdx);
 			string value = mysql_get_field_value(mResultHandle, fieldIdx);
 
-			return new Entry(name, value);
+			return new Mysql.Entry(name, value);
 		}
 
 		public string getName(int fieldIdx) {
 /*
 			if ( fieldIdx < 0 || fieldIdx > mNumFields ) {
-				throw new OutOfBoundsException("fieldIdx out of bounds");
+				throw new System.OutOfBoundsException("fieldIdx out of bounds");
 			}
 */
 
@@ -49,7 +49,7 @@ public namespace Mysql {
 		public string getType(int fieldIdx) {
 /*
 			if ( fieldIdx < 0 || fieldIdx > mNumFields ) {
-				throw new OutOfBoundsException("fieldIdx out of bounds");
+				throw new System.OutOfBoundsException("fieldIdx out of bounds");
 			}
 */
 			assertmsg(!"not implemented", "string getType(int fieldIdx) is not implemented");
@@ -58,7 +58,7 @@ public namespace Mysql {
 		public string getValue(int fieldIdx) {
 /*
 			if ( fieldIdx < 0 || fieldIdx > mNumFields ) {
-				throw new OutOfBoundsException("fieldIdx out of bounds");
+				throw new System.OutOfBoundsException("fieldIdx out of bounds");
 			}
 */
 

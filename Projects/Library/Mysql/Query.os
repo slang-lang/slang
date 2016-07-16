@@ -83,7 +83,7 @@ public namespace Mysql {
 			int result_handle = mysql_query(mConnection.handle(), mExecutedQuery.Value());
 			if ( result_handle != 0 ) {
 				result_handle = mysql_store_result(mConnection.handle());
-				result = new Result(result_handle);
+				result = new Mysql.Result(result_handle);
 			}
 
 			return result;
@@ -98,7 +98,7 @@ public namespace Mysql {
 print(mConnection.ToString());
 
                         int handle = mysql_store_result(mConnection.mHandle);
-                        return new Result(handle);
+                        return new Mysql.Result(handle);
 		}
 
 		public void prepare(string query) modify {

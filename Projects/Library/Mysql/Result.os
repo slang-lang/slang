@@ -36,18 +36,18 @@ public namespace Mysql {
 		}
 
 		public Row getCurrentRow() const {
-			return new Row(mHandle);
+			return new Mysql.Row(mHandle);
 		}
 
 		public Entry getField(int fieldIdx) const {
 			if ( fieldIdx < 0 || fieldIdx > mNumFields ) {
-				throw new OutOfBoundsException("fieldIdx out of bounds");
+				throw new System.OutOfBoundsException("fieldIdx out of bounds");
 			}
 
 			string name = mysql_get_field_name(mHandle, fieldIdx);
 			string value = mysql_get_field_value(mHandle, fieldIdx);
 
-			return new Entry(name, value);
+			return new Mysql.Entry(name, value);
 		}
 
 		public Entry getField(string name) const {
@@ -55,7 +55,7 @@ public namespace Mysql {
 
 			for ( int idx = 0; idx < mNumFields; idx = idx + 1 ) {
 				if ( mysql_get_field_name(mHandle, idx) == name ) {
-					return new Entry(name, mysql_get_field_value(mHandle, idx));
+					return new Mysql.Entry(name, mysql_get_field_value(mHandle, idx));
 				}
 			}
 
@@ -64,7 +64,7 @@ public namespace Mysql {
 
 		public void seekRow(int rowIdx) {
 			if ( rowIdx < 0 || rowIdx >= mNumRows ) {
-				throw new OutOfBoundsException("rowIdx out of bounds");
+				throw new System.OutOfBoundsException("rowIdx out of bounds");
 			}
 
 			mysql_data_seek(mHandle, rowIdx);
