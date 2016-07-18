@@ -36,12 +36,14 @@ public object Boolean {
 		return "Boolean: " + mValue;
 	}
 
+/*
 	public deprectated bool Value() const {
 		return mValue;
 	}
 	public deprectated void Value(bool value) modify {
 		mValue = value;
 	}
+*/
 
 	public bool operator!() const {
 		return !mValue;

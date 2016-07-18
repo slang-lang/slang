@@ -63,34 +63,6 @@ TokenList Parser::collectScopeTokens(TokenIterator& token)
 	return tokens;
 }
 
-// syntax:
-// <visibility> <identifier> <identifier> ;
-bool Parser::isAlternateMemberDeclaration(TokenIterator start)
-{
-	TokenList tokens;
-
-	tokens.push_back(Token(Token::Type::VISIBILITY));
-	tokens.push_back(Token(Token::Type::IDENTIFER));
-	tokens.push_back(Token(Token::Type::IDENTIFER));
-	tokens.push_back(Token(Token::Type::SEMICOLON));
-
-	return checkSyntax(start, tokens);
-}
-
-// syntax:
-// <visibility> <type> <type> (
-bool Parser::isAlternateMethodDeclaration(TokenIterator start)
-{
-	TokenList tokens;
-
-	tokens.push_back(Token(Token::Type::VISIBILITY));
-	tokens.push_back(Token(Token::Type::TYPE));
-	tokens.push_back(Token(Token::Type::TYPE));
-	tokens.push_back(Token(Token::Type::PARENTHESIS_OPEN));
-
-	return checkSyntax(start, tokens);
-}
-
 // interface declaration:
 // <visibility> [language feature] interface <identifier> { ... }
 bool Parser::isInterfaceDeclaration(TokenIterator start)
@@ -206,6 +178,21 @@ bool Parser::isPrototypeDeclaration(TokenIterator start)
 	tokens.push_back(Token(Token::Type::VISIBILITY));
 	tokens.push_back(Token(Token::Type::RESERVED_WORD, std::string(RESERVED_WORD_PROTOTYPE)));
 	tokens.push_back(Token(Token::Type::IDENTIFER));
+
+	return checkSyntax(start, tokens);
+}
+
+// syntax:
+// <visibility> <type> <type> (
+// used to detect con- or destructor declarations
+bool Parser::isStructorDeclaration(TokenIterator start)
+{
+	TokenList tokens;
+
+	tokens.push_back(Token(Token::Type::VISIBILITY));
+	tokens.push_back(Token(Token::Type::TYPE));
+	tokens.push_back(Token(Token::Type::TYPE));
+	tokens.push_back(Token(Token::Type::PARENTHESIS_OPEN));
 
 	return checkSyntax(start, tokens);
 }

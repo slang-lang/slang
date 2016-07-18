@@ -398,6 +398,9 @@ void Analyser::generate(const TokenList& tokens)
 			Designtime::Prototype p = createPrototype(it, tokens.end());
 			mPrototypes.push_back(p);
 		}
+		else {
+			throw Utils::Exceptions::SyntaxError("invalid token '" + it->content() + "' found at " + it->position().toString());
+		};
 
 		it++;
 	}

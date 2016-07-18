@@ -10,6 +10,7 @@
 #include <Core/Utils/Exceptions.h>
 #include "Repository.h"
 #include "Tokenizer.h"
+#include "Tools.h"
 
 // Namespace declarations
 
@@ -22,6 +23,44 @@ Preprocessor::Preprocessor(Repository *repo)
   mRepository(repo),
   mScope(0)
 {
+}
+
+/*
+ * Replaces all 'scoped' tokens with 'concatenated' tokens
+ */
+bool Preprocessor::buildQualifiedNames(TokenIteratorMutable token)
+{
+	expect(Token::Type::VISIBILITY, token++);
+
+	std::string type = token->content();
+	bool update = false;
+
+	while ( token->type() == Token::Type::IDENTIFER ) {
+		if ( lookahead(token)->type() != Token::Type::SCOPE ) {
+			break;
+		}
+
+		// erase token
+		token = mTokens.erase(token);
+
+		// add scope token to type definition
+		type += ".";
+
+		// erase scope token
+		token = mTokens.erase(token);
+
+		// add next token to type definition
+		type += (token)->content();
+	}
+
+	// only update token if something has changed
+	if ( token->content() != type ) {
+		token->resetContentTo(type);
+
+		update = true;
+	}
+
+	return update;
 }
 
 Designtime::BluePrint* Preprocessor::createMember(TokenIterator token) const
@@ -215,15 +254,18 @@ void Preprocessor::generateObject()
 
 	// loop over all visibility declarations and check if we have a member declaration or a method declaration
 	for ( TokenIteratorList::const_iterator it = visList.begin(); it != visList.end(); ++it ) {
-		if ( Parser::isMemberDeclaration((*it)) || Parser::isAlternateMemberDeclaration((*it)) ) {
+		if ( Parser::isMemberDeclaration((*it)) ) {
 			Designtime::BluePrint *member = createMember((*it));
 
 			mBluePrint->define(member->getName(), member);
 		}
-		else if ( Parser::isMethodDeclaration((*it)) || Parser::isAlternateMethodDeclaration((*it)) ) {
+		else if ( Parser::isMethodDeclaration((*it)) || Parser::isStructorDeclaration((*it)) ) {
 			Runtime::Method *method = createMethod((*it));
 
 			mBluePrint->defineMethod(method->getName(), method);
+		}
+		else {
+			throw Utils::Exceptions::SyntaxError("invalid token '" + (*it)->content() + "' found at " + (*it)->position().toString());
 		}
 	}
 }
@@ -244,10 +286,32 @@ void Preprocessor::process(Designtime::BluePrint* blueprint)
 	mFilename = mBluePrint->Filename();
 	mTokens = mBluePrint->getTokens();
 
+	// rebuild object tokens
+	//rebuildObject();
+
 	// build object from tokens
 	generateObject();
 
 	mBluePrint = 0;
+}
+
+void Preprocessor::rebuildObject()
+{
+	assert(mBluePrint);
+
+	typedef std::list<TokenIteratorMutable> TokenIteratorList;
+	TokenIteratorList visList;
+
+	// find all visibility keywords which we use as starting point for our interpreter
+	for ( TokenIteratorMutable it = mTokens.begin(); it != mTokens.end(); ++it ) {
+		if ( it->type() == Token::Type::VISIBILITY ) {
+			visList.push_back(it);
+		}
+	}
+
+	for ( TokenIteratorList::iterator it = visList.begin(); it != visList.end(); ++it ) {
+		buildQualifiedNames((*it));
+	}
 }
 
 
