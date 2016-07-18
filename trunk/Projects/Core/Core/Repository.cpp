@@ -360,7 +360,7 @@ void Repository::initializeObject(Runtime::Object *object, Designtime::BluePrint
 
 		Designtime::BluePrint *blue = static_cast<Designtime::BluePrint*>(it->second);
 
-		Runtime::Object *symbol = createInstance(blue->Typename(), blue->getName(), "");
+		Runtime::Object *symbol = createInstance(blue->Typename(), blue->getName(), false);
 		symbol->setConst(blue->isConst());
 		symbol->setFinal(blue->isFinal());
 		symbol->setLanguageFeatureState(blue->getLanguageFeatureState());

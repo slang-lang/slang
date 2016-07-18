@@ -39,11 +39,13 @@ public:
 	void process(Designtime::BluePrint* blueprint);
 
 private:
+	bool buildQualifiedNames(TokenIteratorMutable token);
 	Designtime::BluePrint* createMember(TokenIterator start) const;
 	Runtime::Method* createMethod(TokenIterator start) const;
 
 	void generateObject();
 	void generateTokens(const std::string& content);
+	void rebuildObject();
 
 private:
 	std::string mFilename;

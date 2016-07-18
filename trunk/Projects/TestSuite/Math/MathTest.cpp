@@ -66,8 +66,8 @@ void MathTest::testDataTypeBool()
 		VirtualMachine vm;
 		vm.createScriptFromString(
 			"public object Main {\
-				public void Main() {\
-					number one = 1;\
+				public void Main(int argc = 0, string args = \"\") {\
+					int one = 1;\
 					print(\"one = \" + one);\
 				}\
 			}"

@@ -25,8 +25,6 @@ class Parser
 public:
 	static TokenList collectScopeTokens(TokenIterator& token);
 
-	static bool isAlternateMemberDeclaration(TokenIterator start);
-	static bool isAlternateMethodDeclaration(TokenIterator start);
 	static bool isInterfaceDeclaration(TokenIterator start);
 	static bool isLibraryReference(TokenIterator start);
 	static bool isLocalDeclaration(TokenIterator start);
@@ -36,6 +34,7 @@ public:
 	static bool isObjectDeclaration(TokenIterator start);
 	static bool isParameterDeclaration(TokenIterator start);
 	static bool isPrototypeDeclaration(TokenIterator start);
+	static bool isStructorDeclaration(TokenIterator start);
 
 	static ParameterList parseParameters(TokenIterator &token);
 };
