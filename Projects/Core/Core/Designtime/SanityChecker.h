@@ -27,6 +27,7 @@ public:
 	bool process(const TokenList &tokens);
 
 private:
+	bool checkBalancedBrackets() const;
 	bool checkBalancedCurlyBrackets() const;
 	bool checkBalancedParenthesis() const;
 	bool checkBalancedQuotes() const;
