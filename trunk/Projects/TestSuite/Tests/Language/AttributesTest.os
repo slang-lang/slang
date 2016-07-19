@@ -61,11 +61,9 @@ public stable namespace AttributeTest {
 }
 
 public stable object Main {
-//	private TestObject mTest;
+	private AttributeTest.TestObject mTest;
 
 	public void Main(int argc = 0, string argv = "") {
-		AttributeTest.TestObject mTest;
-
 		AttributeTest.Function1();
 
 		bla(1);
