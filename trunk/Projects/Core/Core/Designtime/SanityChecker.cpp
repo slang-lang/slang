@@ -23,12 +23,31 @@ SanityChecker::~SanityChecker()
 {
 }
 
+bool SanityChecker::checkBalancedBrackets() const
+{
+	int openBrackets = 0;
+	TokenIterator token = mTokens.begin();
+
+	while ( token != mTokens.end() ) {
+		if (token->type() == Token::Type::BRACKET_OPEN) {
+			openBrackets++;
+		}
+		if (token->type() == Token::Type::BRACKET_CLOSE) {
+			openBrackets--;
+		}
+
+		token++;
+	}
+
+	return (openBrackets == 0);
+}
+
 bool SanityChecker::checkBalancedCurlyBrackets() const
 {
 	int openBrackets = 0;
 	TokenIterator token = mTokens.begin();
 
-	while (token != mTokens.end()) {
+	while ( token != mTokens.end() ) {
 		if (token->type() == Token::Type::BRACKET_CURLY_OPEN) {
 			openBrackets++;
 		}
@@ -47,7 +66,7 @@ bool SanityChecker::checkBalancedParenthesis() const
 	int openParenthesis = 0;
 	TokenIterator token = mTokens.begin();
 
-	while (token != mTokens.end()) {
+	while ( token != mTokens.end() ) {
 		if (token->type() == Token::Type::PARENTHESIS_OPEN) {
 			openParenthesis++;
 		}
@@ -66,7 +85,7 @@ bool SanityChecker::checkBalancedQuotes() const
 	bool openQuote = false;
 	TokenIterator token = mTokens.begin();
 
-	while (token != mTokens.end()) {
+	while ( token != mTokens.end() ) {
 		if (token->type() == Token::Type::QUOTATION_DOUBLE) {
 			openQuote = !openQuote;
 		}
@@ -81,13 +100,16 @@ bool SanityChecker::process(const TokenList &tokens)
 {
 	mTokens = tokens;
 
-	if (!checkBalancedCurlyBrackets()) {
+	if ( !checkBalancedBrackets() ) {
+		throw Utils::Exceptions::SyntaxError("SanityCheck: unbalanced brackets found", mTokens.begin()->position());
+	}
+	if ( !checkBalancedCurlyBrackets() ) {
 		throw Utils::Exceptions::SyntaxError("SanityCheck: unbalanced curly brackets found", mTokens.begin()->position());
 	}
-	if (!checkBalancedParenthesis()) {
+	if ( !checkBalancedParenthesis() ) {
 		throw Utils::Exceptions::SyntaxError("SanityCheck: unbalanced parenthesis found", mTokens.begin()->position());
 	}
-	if (!checkBalancedQuotes()) {
+	if ( !checkBalancedQuotes() ) {
 		throw Utils::Exceptions::SyntaxError("SanityCheck: unbalanced quotes found", mTokens.begin()->position());
 	}
 
