@@ -86,7 +86,7 @@ public namespace Language
 			assert(value == 2);
 		}
 
-		private void ParameterByReference(TestObject value ref) modify
+		private void ParameterByReference(Language.TestObject value ref) modify
 		{
 			assert(value.mValue == 1);
 			print("ParameterByReference(TestObject): mValue = " + value.mValue);
@@ -104,7 +104,7 @@ public namespace Language
 			assert(value == 2);
 		}
 
-		private void ParameterByValue(TestObject value const) const
+		private void ParameterByValue(Language.TestObject value const) const
 		{
 			assert(value.mValue == 1);
 			print("ParameterByValue(TestObject): mValue = " + value.mValue);
