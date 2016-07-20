@@ -32,6 +32,9 @@ public:
 
 private:	// Tests
 	void testAlternateMemberDeclaration();
+	void testAutoBoxing();
+	void testCWithNamespace();
+	void testCreateScriptFromString();
 };
 
 

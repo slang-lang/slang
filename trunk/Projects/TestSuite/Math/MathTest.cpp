@@ -65,16 +65,7 @@ void MathTest::testDataTypeBool()
 	try {
 		VirtualMachine vm;
 		vm.createScriptFromFile("Tests/Math/DataTypeBool.os");
-/*
-		vm.createScriptFromString(
-			"public object Main {\
-				public void Main(int argc = 0, string args = \"\") {\
-					int one = 1;\
-					print(\"one = \" + one);\
-				}\
-			}"
-		);
-*/
+
 		// automatic success
 	}
 	catch ( std::exception& e ) {
