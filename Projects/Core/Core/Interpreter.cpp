@@ -140,7 +140,7 @@ Symbol* Interpreter::identify(TokenIterator& token) const
 			switch ( result->getSymbolType() ) {
 				case Symbol::IType::BluePrintSymbol:
 					// cannot resolve any further
-					break;
+					throw Utils::Exceptions::NotSupported("static member usage not supported!");
 				case Symbol::IType::NamespaceSymbol:
 					result = static_cast<Namespace*>(result)->resolve(identifier, onlyCurrentScope);
 					break;
@@ -198,7 +198,7 @@ Symbol* Interpreter::identifyMethod(TokenIterator& token, const ParameterList& p
 					result = static_cast<Object*>(result)->resolveMethod(identifier, params, onlyCurrentScope);
 					break;
 				case Symbol::IType::BluePrintSymbol:
-					throw Utils::Exceptions::NotImplemented("static method usage not implemented!");
+					throw Utils::Exceptions::NotSupported("static method usage not supported!");
 				case Symbol::IType::MethodSymbol:
 				case Symbol::IType::UnknownSymbol:
 					throw Utils::Exceptions::SyntaxError("cannot directly access locales of blueprint or method");
@@ -1000,7 +1000,7 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 		}
 
 		params.push_back(
-			Parameter(obj->getName(), obj->Typename(), obj->getValue(), false, obj->isConst(), Parameter::AccessMode::Unspecified, obj)
+			Parameter(obj->getName(), obj->QualifiedTypename(), obj->getValue(), false, obj->isConst(), Parameter::AccessMode::Unspecified, obj)
 		);
 
 		if ( std::distance(tmp, closed) <= 0 ) {
@@ -1091,7 +1091,7 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 		}
 
 		params.push_back(
-			Parameter(obj->getName(), obj->Typename(), obj->getValue(), false, obj->isConst(), Parameter::AccessMode::Unspecified, obj)
+			Parameter(obj->getName(), obj->QualifiedTypename(), obj->getValue(), false, obj->isConst(), Parameter::AccessMode::Unspecified, obj)
 		);
 
 		if ( std::distance(tmp, closed) <= 0 ) {

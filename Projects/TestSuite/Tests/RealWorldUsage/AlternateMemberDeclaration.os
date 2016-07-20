@@ -27,6 +27,14 @@ private object AnotherObject {
 		return mObject;
 	}
 
+	public void setObject(TestSpace.TestObject obj ref) modify {
+		print("setObject(" + obj.ToString() + ")");
+
+		print("mObject vs obj = " + mObject.ToString() + " vs " + obj.ToString());
+		mObject = obj;
+		print("mObject vs obj = " + mObject.ToString() + " vs " + obj.ToString());
+	}
+
 	public string ToString() const {
 		return "mObject = " + mObject.ToString();
 	}
@@ -38,7 +46,8 @@ public object Main {
 
 		print(obj.ToString());
 
-		TestSpace.TestObject obj2 = obj.getObject();
+		TestSpace.TestObject testObj = new TestSpace.TestObject(173);
+		obj.setObject(testObj);
 	}
 }
 

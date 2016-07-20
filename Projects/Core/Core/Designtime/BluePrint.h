@@ -44,12 +44,9 @@ public:
 	void cleanup();
 
 public:	// RTTI
-	const std::string& Filename() const {
-		return mFilename;
-	}
-	const std::string& Typename() const {
-		return mTypename;
-	}
+	const std::string& Filename() const { return mFilename; }
+	const std::string& QualifiedTypename() const { return mQualifiedTypeName; }
+	const std::string& Typename() const { return mTypename; }
 
 public:
 	// Inheritance
@@ -60,11 +57,6 @@ public:
 
 	void addInheritance(const Designtime::Ancestor& inheritance);
 	// }
-
-	const std::string& getFullyQualifiedTypename() const;
-	void setFullyQualifiedTypename(const std::string& name);
-
-	const std::string& getName() const;
 
 	const TokenList& getTokens() const;
 	void setTokens(const TokenList& tokens);
@@ -77,6 +69,8 @@ public:
 
 	bool isInterface() const;
 	void setInterface(bool state);
+
+	void setQualifiedTypename(const std::string &name);
 
 	virtual std::string ToString() const;
 
@@ -95,10 +89,9 @@ protected:
 
 private:
 	std::string mFilename;
-	std::string mFullyQualifiedTypeName;
 	Ancestors mInheritance;
 	bool mIsInterface;
-	std::string mName;
+	std::string mQualifiedTypeName;
 	TokenList mTokens;
 	std::string mTypename;
 	Visibility::E mVisibility;

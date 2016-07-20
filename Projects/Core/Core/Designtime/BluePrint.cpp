@@ -21,24 +21,24 @@ BluePrint::BluePrint()
 : MethodScope(ANONYMOUS_OBJECT, 0),
   BluePrintSymbol(ANONYMOUS_OBJECT),
   mFilename(ANONYMOUS_OBJECT),
-  mFullyQualifiedTypeName(ANONYMOUS_OBJECT),
   mIsInterface(false),
-  mName(ANONYMOUS_OBJECT),
+  mQualifiedTypeName(ANONYMOUS_OBJECT),
   mTypename(ANONYMOUS_OBJECT),
   mVisibility(Visibility::Public)
 {
+	mName = ANONYMOUS_OBJECT;
 }
 
 BluePrint::BluePrint(const std::string& type, const std::string& filename, const std::string& name)
 : MethodScope(type, 0),
   BluePrintSymbol(type),
   mFilename(filename),
-  mFullyQualifiedTypeName(type),
   mIsInterface(false),
-  mName(name),
+  mQualifiedTypeName(type),
   mTypename(type),
   mVisibility(Visibility::Public)
 {
+	mName = name;
 }
 
 BluePrint::~BluePrint()
@@ -90,11 +90,6 @@ Designtime::Ancestors BluePrint::getAncestors() const
 	return ancestors;
 }
 
-const std::string& BluePrint::getFullyQualifiedTypename() const
-{
-	return mFullyQualifiedTypeName;
-}
-
 Designtime::Ancestors BluePrint::getInheritance() const
 {
 	return mInheritance;
@@ -111,11 +106,6 @@ Designtime::Ancestors BluePrint::getImplementations() const
 	}
 
 	return implementations;
-}
-
-const std::string& BluePrint::getName() const
-{
-	return mName;
 }
 
 const TokenList& BluePrint::getTokens() const
@@ -149,9 +139,9 @@ void BluePrint::setAbstract(bool state)
 	mIsAbstract = state;
 }
 
-void BluePrint::setFullyQualifiedTypename(const std::string& name)
+void BluePrint::setQualifiedTypename(const std::string &name)
 {
-	mFullyQualifiedTypeName = name;
+	mQualifiedTypeName = name;
 }
 
 void BluePrint::setInterface(bool state)

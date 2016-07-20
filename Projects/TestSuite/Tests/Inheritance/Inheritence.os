@@ -22,43 +22,43 @@ public namespace Inheritance
 	}
 }
 
-	public object Main extends Inheritance.BaseObject
+public object Main extends Inheritance.BaseObject
+{
+	//private int mPrivateNumber;
+
+	public void Main(int argc = 0, string argv = "")
 	{
-		//private int mPrivateNumber;
+		base.BaseObject();
 
-		public void Main(int argc = 0, string argv = "")
-		{
-			base.BaseObject();
+		print(ToString());
+		print(ToString2());
 
-			print(ToString());
-			print(ToString2());
+		test();
 
-			test();
-
-			print(ToString());
-			print(ToString2());
-		}
-
-		public int GetBox() const
-		{
-			return int(1);
-		}
-
-		public string GetIdentifier() const
-		{
-			return "bla";
-		}
-
-		public string ToString2() const
-		{
-			return base.ToString() + "	mPublicNumber = " + mPublicNumber + ", mProtectedNumber = " + mProtectedNumber + ", mPrivateNumber = " + mPrivateNumber;
-		}
-
-		private void test() modify
-		{
-			mPublicNumber = 2;
-			mProtectedNumber = 2;
-			mPrivateNumber = 2;
-		}
+		print(ToString());
+		print(ToString2());
 	}
+
+	public int GetBox() const
+	{
+		return int(1);
+	}
+
+	public string GetIdentifier() const
+	{
+		return "bla";
+	}
+
+	public string ToString2() const
+	{
+		return base.ToString() + "	mPublicNumber = " + mPublicNumber + ", mProtectedNumber = " + mProtectedNumber + ", mPrivateNumber = " + mPrivateNumber;
+	}
+
+	private void test() modify
+	{
+		mPublicNumber = 2;
+		mProtectedNumber = 2;
+		mPrivateNumber = 2;
+	}
+}
 

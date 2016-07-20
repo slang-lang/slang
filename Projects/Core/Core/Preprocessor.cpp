@@ -28,9 +28,11 @@ Preprocessor::Preprocessor(Repository *repo)
 /*
  * Replaces all 'scoped' tokens with 'concatenated' tokens
  */
-bool Preprocessor::buildQualifiedNames(TokenIteratorMutable token)
+bool Preprocessor::buildQualifiedNames(TokenIteratorMutable token, bool skipFirstToken)
 {
-	expect(Token::Type::VISIBILITY, token++);
+	if ( !skipFirstToken ) {
+		expect(Token::Type::VISIBILITY, token++);
+	}
 
 	std::string type = token->content();
 	bool update = false;
@@ -56,6 +58,7 @@ bool Preprocessor::buildQualifiedNames(TokenIteratorMutable token)
 	// only update token if something has changed
 	if ( token->content() != type ) {
 		token->resetContentTo(type);
+		token->resetTypeTo(Token::Type::TYPE);
 
 		update = true;
 	}
@@ -287,7 +290,7 @@ void Preprocessor::process(Designtime::BluePrint* blueprint)
 	mTokens = mBluePrint->getTokens();
 
 	// rebuild object tokens
-	//rebuildObject();
+	rebuildObject();
 
 	// build object from tokens
 	generateObject();
@@ -310,7 +313,15 @@ void Preprocessor::rebuildObject()
 	}
 
 	for ( TokenIteratorList::iterator it = visList.begin(); it != visList.end(); ++it ) {
-		buildQualifiedNames((*it));
+		TokenIteratorMutable token = (*it);
+
+		// handle members or method result types
+		buildQualifiedNames(token, false);
+
+		// handle parameter types
+		while ( token->type() != Token::Type::SEMICOLON && token->type() != Token::Type::PARENTHESIS_CLOSE ) {
+			buildQualifiedNames(token++, true);
+		}
 	}
 }
 

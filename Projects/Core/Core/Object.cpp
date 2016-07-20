@@ -25,6 +25,7 @@ Object::Object()
   mFilename(ANONYMOUS_OBJECT),
   mIsAtomicType(false),
   mIsConstructed(false),
+  mQualifiedTypename(ANONYMOUS_OBJECT),
   mRepository(0),
   mTypename(ANONYMOUS_OBJECT)
 {
@@ -38,6 +39,7 @@ Object::Object(const Object& other)
 	mIsAtomicType = other.mIsAtomicType;
 	mIsConstructed = other.mIsConstructed;
 	mParent = other.mParent;
+	mQualifiedTypename = other.mQualifiedTypename;
 	mRepository = other.mRepository;
 	mTypename = other.mTypename;
 	mValue = other.mValue;
@@ -80,6 +82,7 @@ Object::Object(const std::string& name, const std::string& filename, const std::
   mFilename(filename),
   mIsAtomicType(false),
   mIsConstructed(false),
+  mQualifiedTypename(type),
   mRepository(0),
   mTypename(type),
   mValue(value)
@@ -98,6 +101,7 @@ void Object::operator= (const Object& other)
 		mIsConstructed = other.mIsConstructed;// ? other.mIsConstructed : mIsConstructed;
 		mFilename = other.mFilename;
 		mParent = other.mParent ? other.mParent : mParent;
+		mQualifiedTypename = other.mQualifiedTypename;
 		mRepository = other.mRepository ? other.mRepository : mRepository;
 		mTypename = other.mTypename;
 		mValue = other.mValue;
@@ -139,6 +143,7 @@ void Object::copy(const Object& other)
 		mIsConstructed = other.mIsConstructed;// ? other.mIsConstructed : mIsConstructed;
 		mFilename = other.mFilename;
 		mParent = other.mParent ? other.mParent : mParent;
+		mQualifiedTypename = other.mQualifiedTypename;
 		mRepository = other.mRepository ? other.mRepository : mRepository;
 		mTypename = other.mTypename;
 		mValue = other.mValue;

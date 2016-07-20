@@ -82,7 +82,9 @@ Designtime::Ancestors Analyser::collectInheritance(TokenIterator &start) const
 			break;
 		}
 
-		ancestors.insert(Designtime::Ancestor((start++)->content(), type, visibility));
+		ancestors.insert(
+			Designtime::Ancestor(getQualifiedTypename((start++)->content()), type, visibility)
+		);
 	}
 
 	return ancestors;
@@ -90,7 +92,6 @@ Designtime::Ancestors Analyser::collectInheritance(TokenIterator &start) const
 
 Designtime::BluePrint Analyser::createBluePrint(TokenIterator& start, TokenIterator end, bool isInterface) const
 {
-	std::string fullyQualifiedTypeName;
 	bool isAbstract = false;
 	std::string languageFeature;
 	std::string type;
@@ -106,11 +107,6 @@ Designtime::BluePrint Analyser::createBluePrint(TokenIterator& start, TokenItera
 	(*start++).content();
 	// look for the identifier token
 	type = (*start).content();
-
-	if ( !mScopeName.empty() ) {
-		fullyQualifiedTypeName = mScopeName + RESERVED_WORD_SCOPE_OPERATOR;
-	}
-	fullyQualifiedTypeName += type;
 
 	// collect inheritance (if present)
 	Designtime::Ancestors inheritance = collectInheritance(++start);
@@ -144,7 +140,7 @@ Designtime::BluePrint Analyser::createBluePrint(TokenIterator& start, TokenItera
 
 	Designtime::BluePrint blue(type, mFilename);
 	blue.setAbstract(isAbstract || isInterface);
-	blue.setFullyQualifiedTypename(fullyQualifiedTypeName);
+	blue.setQualifiedTypename(getQualifiedTypename(type));
 	blue.setInterface(isInterface);
 	blue.setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
 	blue.setTokens(tokens);
@@ -184,7 +180,6 @@ std::string Analyser::createLibraryReference(TokenIterator& start, TokenIterator
 
 void Analyser::createMember(TokenIterator& start, TokenIterator /*end*/)
 {
-	std::string fullyQualifiedName;
 	bool isFinal = false;
 	std::string languageFeature;
 	Mutability::E mutability = Mutability::Modify;
@@ -203,11 +198,6 @@ void Analyser::createMember(TokenIterator& start, TokenIterator /*end*/)
 	// look for the identifier token
 	name = (*start++).content();
 
-	if ( !mScopeName.empty() ) {
-		fullyQualifiedName = mScopeName + RESERVED_WORD_SCOPE_OPERATOR;
-	}
-	fullyQualifiedName += name;
-
 	if ( (*start).type() != Token::Type::SEMICOLON ) {
 		throw Utils::Exceptions::Exception("initialization not allowed during declaration", start->position());
 	}
@@ -218,6 +208,7 @@ void Analyser::createMember(TokenIterator& start, TokenIterator /*end*/)
 	member->setMutability(mutability);
 	member->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
 	member->setParent(mScope);
+	//member->setQualifiedTypename(getQualifiedTypename(type));
 	member->setRepository(mRepository);
 	member->setVisibility(Visibility::convert(visibility));
 
@@ -286,7 +277,6 @@ void Analyser::createMethod(TokenIterator &start, TokenIterator end)
 
 void Analyser::createNamespace(TokenIterator& start, TokenIterator end)
 {
-	std::string fullyQualifiedName;
 	std::string languageFeature;
 	std::string name;
 	std::string visibility;
@@ -317,8 +307,6 @@ void Analyser::createNamespace(TokenIterator& start, TokenIterator end)
 	for ( TokenIterator it = ++open; it != closed && it != end; ++it ) {
 		tokens.push_back((*it));
 	}
-
-	fullyQualifiedName = mScopeName;
 
 	if ( !mScopeName.empty() ) {
 		mScopeName += RESERVED_WORD_SCOPE_OPERATOR;
@@ -357,7 +345,7 @@ void Analyser::createNamespace(TokenIterator& start, TokenIterator end)
 
 	mScope = tmpScope;
 
-	mScopeName = fullyQualifiedName;
+	mScopeName = mScope->getScopeName();
 
 	start = closed;
 }
@@ -427,6 +415,18 @@ const StringList& Analyser::getLibraryReferences() const
 const Designtime::PrototypeList& Analyser::getPrototypes() const
 {
 	return mPrototypes;
+}
+
+std::string Analyser::getQualifiedTypename(const std::string& type) const
+{
+	std::string result;
+
+	if ( !mScopeName.empty() ) {
+		result = mScopeName + RESERVED_WORD_SCOPE_OPERATOR;
+	}
+	result += type;
+
+	return result;
 }
 
 void Analyser::process(const TokenList& tokens)
