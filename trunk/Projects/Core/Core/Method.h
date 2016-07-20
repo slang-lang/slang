@@ -46,7 +46,8 @@ public: // overloaded operators
 	void operator= (const Method& other);
 
 public:	// Symbol::IType implementation
-	const std::string& Typename() const;
+	const std::string& QualifiedTypename() const { return mQualifiedTypename; }
+	const std::string& Typename() const { return mTypeName; }
 	std::string ToString() const;
 
 public: // Execution
@@ -82,6 +83,7 @@ private: // Deinit
 
 private:
 	IScope* mOwner;
+	std::string mQualifiedTypename;
 	ParameterList mSignature;
 	TokenList mTokens;
 	std::string mTypeName;

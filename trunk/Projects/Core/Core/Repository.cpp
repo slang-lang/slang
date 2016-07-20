@@ -82,7 +82,7 @@ Repository::~Repository()
 void Repository::addBlueprint(const Designtime::BluePrint& blueprint)
 {
 	//std::string type = blueprint.Typename();
-	std::string type = blueprint.getFullyQualifiedTypename();
+	std::string type = blueprint.QualifiedTypename();
 
 	Designtime::BluePrintMap::iterator it = mBluePrints.find(type);
 	if ( it != mBluePrints.end() ) {
@@ -228,7 +228,7 @@ Runtime::Object* Repository::createInstance(Designtime::BluePrint* blueprint, co
 
 	Designtime::BluePrintMap::iterator it = mBluePrints.find(blueprint->Typename());
 	if ( it == mBluePrints.end() ) {
-		it = mBluePrints.find(blueprint->getFullyQualifiedTypename());
+		it = mBluePrints.find(blueprint->QualifiedTypename());
 	}
 	if ( it == mBluePrints.end() ) {
 		throw Utils::Exceptions::Exception("could not create instance of unknown type '" + blueprint->Typename() + "'");
@@ -285,6 +285,7 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 	object->setMember(blueprint->isMember());
 	object->setMutability(blueprint->getMutability());
 	object->setParent(mScope);
+	object->setQualifiedTypename(blueprint->QualifiedTypename());
 	object->setRepository(this);
 	object->setVisibility(blueprint->getVisibility());
 
@@ -375,6 +376,7 @@ void Repository::initializeObject(Runtime::Object *object, Designtime::BluePrint
 		symbol->setMember(blue->isMember());
 		symbol->setMutability(blue->getMutability());
 		symbol->setParent(object);
+		symbol->setQualifiedTypename(object->QualifiedTypename());
 		symbol->setRepository(this);
 		symbol->setVisibility(blue->getVisibility());
 
@@ -404,7 +406,7 @@ void Repository::insertBluePrintsIntoScopes()
 	for ( Designtime::BluePrintMap::iterator it = mBluePrints.begin(); it != mBluePrints.end(); ++it ) {
 		SymbolScope* scope = mScope;
 
-		std::string name = it->second.getFullyQualifiedTypename();
+		std::string name = it->second.QualifiedTypename();
 		std::string parent;
 		std::string type;
 

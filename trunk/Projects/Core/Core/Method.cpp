@@ -380,11 +380,6 @@ std::string Method::ToString() const
 	return result;
 }
 
-const std::string& Method::Typename() const
-{
-	return mTypeName;
-}
-
 
 }
 }

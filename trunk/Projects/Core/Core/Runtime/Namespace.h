@@ -30,6 +30,8 @@ public:	// Symbol::IType implementation & RTTI
 	const std::string& Filename() const { return mFilename; }
 	const std::string& Typename() const { return mTypename; }
 
+	const std::string& QualifiedTypename() const { return mQualifiedTypename; }
+
 public:	// Value
 	virtual std::string ToString() const;
 
@@ -37,6 +39,7 @@ protected:
 
 private:
 	std::string mFilename;
+	std::string mQualifiedTypename;
 	std::string mTypename;
 };
 
