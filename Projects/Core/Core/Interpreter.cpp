@@ -139,7 +139,6 @@ Symbol* Interpreter::identify(TokenIterator& token) const
 		else {
 			switch ( result->getSymbolType() ) {
 				case Symbol::IType::BluePrintSymbol:
-					// cannot resolve any further
 					throw Utils::Exceptions::NotSupported("static member usage not supported!");
 				case Symbol::IType::NamespaceSymbol:
 					result = static_cast<Namespace*>(result)->resolve(identifier, onlyCurrentScope);
