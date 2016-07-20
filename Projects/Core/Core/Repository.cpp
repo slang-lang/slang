@@ -81,12 +81,15 @@ Repository::~Repository()
  */
 void Repository::addBlueprint(const Designtime::BluePrint& blueprint)
 {
-	Designtime::BluePrintMap::iterator it = mBluePrints.find(blueprint.Typename());
+	//std::string type = blueprint.Typename();
+	std::string type = blueprint.getFullyQualifiedTypename();
+
+	Designtime::BluePrintMap::iterator it = mBluePrints.find(type);
 	if ( it != mBluePrints.end() ) {
-		throw Utils::Exceptions::Exception("duplicate object '" + blueprint.Typename() + "' added to repository");
+		throw Utils::Exceptions::Exception("duplicate object '" + type + "' added to repository");
 	}
 
-	mBluePrints.insert(std::make_pair(blueprint.Typename(), blueprint));
+	mBluePrints.insert(std::make_pair(type, blueprint));
 }
 
 /*
@@ -223,10 +226,15 @@ Runtime::Object* Repository::createInstance(Designtime::BluePrint* blueprint, co
 		throw Utils::Exceptions::Exception("invalid blueprint provided!");
 	}
 
-	// non-reference-based instantiation
-	OSdebug("createInstance('" + blueprint->Typename() + "', '" + name + "', " + (initialize ? "true" : "false") + ")");
+	Designtime::BluePrintMap::iterator it = mBluePrints.find(blueprint->Typename());
+	if ( it == mBluePrints.end() ) {
+		it = mBluePrints.find(blueprint->getFullyQualifiedTypename());
+	}
+	if ( it == mBluePrints.end() ) {
+		throw Utils::Exceptions::Exception("could not create instance of unknown type '" + blueprint->Typename() + "'");
+	}
 
-	Runtime::Object *object = createObject(name, static_cast<Designtime::BluePrint*>(blueprint), initialize);
+	Runtime::Object *object = createObject(name, &it->second, initialize);
 
 	addReference(object);
 
@@ -360,7 +368,7 @@ void Repository::initializeObject(Runtime::Object *object, Designtime::BluePrint
 
 		Designtime::BluePrint *blue = static_cast<Designtime::BluePrint*>(it->second);
 
-		Runtime::Object *symbol = createInstance(blue->Typename(), blue->getName(), false);
+		Runtime::Object *symbol = createInstance(blue, blue->getName(), false);
 		symbol->setConst(blue->isConst());
 		symbol->setFinal(blue->isFinal());
 		symbol->setLanguageFeatureState(blue->getLanguageFeatureState());

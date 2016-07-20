@@ -1361,7 +1361,7 @@ void Interpreter::process_type(TokenIterator& token, Symbol* symbol)
 	}
 
 	// TODO: create a shallow object if we have an assignment statement to prevent duplicate object instantiation
-	object = getRepository()->createInstance(static_cast<Designtime::BluePrint*>(symbol)->Typename(), name, false);
+	object = getRepository()->createInstance(static_cast<Designtime::BluePrint*>(symbol), name, false);
 
 	getScope()->define(name, object);
 

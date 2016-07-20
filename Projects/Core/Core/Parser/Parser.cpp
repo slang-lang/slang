@@ -15,22 +15,26 @@
 namespace ObjectiveScript {
 
 
-bool checkSyntax(TokenIterator start, const TokenList &expected)
+bool checkSyntax(TokenIterator foundIt, const TokenList &expected)
 {
 	if ( expected.empty() ) {
 		return false;
 	}
 
-	for ( TokenIterator it = expected.begin(); it != expected.end(); ++it, ++start ) {
-		if ( start->isOptional() ) {
+	for ( TokenIterator expectedIt = expected.begin(); expectedIt != expected.end(); ++expectedIt, ++foundIt ) {
+		if ( expectedIt->isOptional() ) {
 			// optional tokens have to be skipped during syntax check
-			start++;
+			expectedIt++;
+		}
+		if ( foundIt->isOptional() ) {
+			// optional tokens have to be skipped during syntax check
+			foundIt++;
 		}
 
-		if ( it->type() != start->type() ) {
+		if ( expectedIt->type() != foundIt->type() ) {
 			return false;
 		}
-		if ( !it->content().empty() && it->content() != start->content() ) {
+		if ( !expectedIt->content().empty() && expectedIt->content() != foundIt->content() ) {
 			return false;
 		}
 	}
