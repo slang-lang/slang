@@ -8,6 +8,7 @@ ADD_SUBDIRECTORY(Library)
 ADD_SUBDIRECTORY(Math)
 ADD_SUBDIRECTORY(Operator)
 ADD_SUBDIRECTORY(Prototype)
+ADD_SUBDIRECTORY(RealWorldUsage)
 ADD_SUBDIRECTORY(TestFramework)
 
 SET(SOURCES
@@ -20,6 +21,7 @@ SET(HEADERS
 SET(DEPENDENCIES
 	Utils
 	Test_TestFramework
+	Test_RealWorldUsage
 	Test_Prototype
 	Test_Operator
 	Test_Math

@@ -47,6 +47,7 @@ void LanguageTest::process()
 	TEST(testInfixOperator);
 	TEST(testLawOfDemeter);
 	TEST(testMethodOverloading);
+	TEST(testNamespaces);
 	TEST(testObjectEquality);
 	TEST(testObjectReference);
 	TEST(testParameters);
@@ -59,7 +60,6 @@ void LanguageTest::process()
 	TEST(testWhile);
 
 // not implemented
-	//TEST(testNamespaces);
 	//TEST(testStaticLocalVariable);	// static methods or variables are not supported any more
 	//TEST(testSwitch);
 }
