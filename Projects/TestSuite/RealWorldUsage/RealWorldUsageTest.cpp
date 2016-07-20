@@ -31,6 +31,9 @@ RealWorldUsageTest::RealWorldUsageTest(const ::Utils::Common::ILogger *p)
 void RealWorldUsageTest::process()
 {
 	TEST(testAlternateMemberDeclaration);
+	TEST(testAutoBoxing);
+	TEST(testCWithNamespace);
+	TEST(testCreateScriptFromString);
 }
 
 void RealWorldUsageTest::setup()
@@ -46,6 +49,55 @@ void RealWorldUsageTest::testAlternateMemberDeclaration()
 	try {
 		VirtualMachine vm;
 		vm.createScriptFromFile("Tests/RealWorldUsage/AlternateMemberDeclaration.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void RealWorldUsageTest::testAutoBoxing()
+{
+	try {
+		VirtualMachine vm;
+		vm.createScriptFromFile("Tests/RealWorldUsage/AutoBoxing.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void RealWorldUsageTest::testCWithNamespace()
+{
+	try {
+		VirtualMachine vm;
+		vm.createScriptFromFile("Tests/RealWorldUsage/C-WithNamespaces.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void RealWorldUsageTest::testCreateScriptFromString()
+{
+	try {
+		VirtualMachine vm;
+		vm.createScriptFromString(
+			"public object Main {\
+				public void Main(int argc = 0, string args = \"\") {\
+					int one = 1;\
+					print(\"one = \" + one);\
+				}\
+			}"
+		);
 
 		// automatic success
 	}
