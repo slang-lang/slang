@@ -23,6 +23,10 @@ private object AnotherObject {
 		mObject = new TestSpace.TestObject(value);
 	}
 
+	public TestSpace.TestObject getObject() const {
+		return mObject;
+	}
+
 	public string ToString() const {
 		return "mObject = " + mObject.ToString();
 	}
@@ -33,6 +37,8 @@ public object Main {
 		AnotherObject obj = new AnotherObject(1);
 
 		print(obj.ToString());
+
+		TestSpace.TestObject obj2 = obj.getObject();
 	}
 }
 

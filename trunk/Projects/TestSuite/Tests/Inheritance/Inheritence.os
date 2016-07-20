@@ -20,8 +20,9 @@ public namespace Inheritance
 			return "mPublicNumber = " + mPublicNumber + ", mProtectedNumber = " + mProtectedNumber + ", mPrivateNumber = " + mPrivateNumber;
 		}
 	}
+}
 
-	public object Main extends BaseObject
+	public object Main extends Inheritance.BaseObject
 	{
 		//private int mPrivateNumber;
 
@@ -60,4 +61,4 @@ public namespace Inheritance
 			mPrivateNumber = 2;
 		}
 	}
-}
+
