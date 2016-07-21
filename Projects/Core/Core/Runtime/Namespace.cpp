@@ -23,6 +23,17 @@ Namespace::Namespace(const std::string& name, IScope* parent)
 
 Namespace::~Namespace()
 {
+	for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
+		undefine((*it)->getName(), (*it));
+
+		delete (*it);
+	}
+	mMethods.clear();
+
+	for ( Symbols::reverse_iterator it = mSymbols.rbegin(); it != mSymbols.rend(); ) {
+		undefine(it->first, it->second);
+	}
+	mSymbols.clear();
 }
 
 std::string Namespace::ToString() const

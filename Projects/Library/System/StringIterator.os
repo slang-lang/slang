@@ -21,7 +21,7 @@ public namespace System {
 		/*
 		 * Copy constructor
 		 */
-		public void StringIterator(StringIterator copy) {
+		public void StringIterator(System.StringIterator copy) {
 			mCurrentPosition = copy.mCurrentPosition;
 			mSeparator = copy.mSeparator;
 			mValue = new String(copy.mValue);

@@ -39,7 +39,7 @@ public:
 	void process(Designtime::BluePrint* blueprint);
 
 private:
-	bool buildQualifiedNames(TokenIteratorMutable token, bool skipFirstToken);
+	bool buildQualifiedNames(TokenIteratorMutable& token, bool skipFirstToken);
 	Designtime::BluePrint* createMember(TokenIterator start) const;
 	Runtime::Method* createMethod(TokenIterator start) const;
 

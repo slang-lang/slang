@@ -28,7 +28,7 @@ Preprocessor::Preprocessor(Repository *repo)
 /*
  * Replaces all 'scoped' tokens with 'concatenated' tokens
  */
-bool Preprocessor::buildQualifiedNames(TokenIteratorMutable token, bool skipFirstToken)
+bool Preprocessor::buildQualifiedNames(TokenIteratorMutable& token, bool skipFirstToken)
 {
 	if ( !skipFirstToken ) {
 		expect(Token::Type::VISIBILITY, token++);
@@ -319,8 +319,12 @@ void Preprocessor::rebuildObject()
 		buildQualifiedNames(token, false);
 
 		// handle parameter types
-		while ( token->type() != Token::Type::SEMICOLON && token->type() != Token::Type::PARENTHESIS_CLOSE ) {
-			buildQualifiedNames(token++, true);
+		while ( token != mTokens.end() && token->type() != Token::Type::SEMICOLON && token->type() != Token::Type::PARENTHESIS_CLOSE ) {
+			buildQualifiedNames(token, true);
+
+			if ( token != mTokens.end() ) {
+				token++;
+			}
 		}
 	}
 }

@@ -422,6 +422,7 @@ void Repository::insertBluePrintsIntoScopes()
 			name = type;
 		}
 
+		assert(scope);
 		scope->define(parent, &it->second);
 	}
 }
