@@ -141,6 +141,8 @@ bool NamespaceAttributes::isSealed() const
 
 void NamespaceAttributes::setSealed(bool state)
 {
+	checkSealState();
+
 	// after seal has been called no language feature can get modified anymore
 	mIsSealed = state;
 }
