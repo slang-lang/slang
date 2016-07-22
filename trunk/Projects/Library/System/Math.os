@@ -1,5 +1,7 @@
 
 public namespace System {
+}
+
 public namespace Math {
 
 	public float PI;// = 3.14159265359f;
@@ -63,6 +65,5 @@ public namespace Math {
 		return power(value);
 	}
 
-}
 }
 
