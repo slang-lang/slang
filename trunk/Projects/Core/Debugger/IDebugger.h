@@ -44,6 +44,8 @@ public:
 	virtual bool addBreakPoint(const BreakPoint& breakpoint) = 0;
 	virtual bool removeBreakPoint(const BreakPoint& breakpoint) = 0;
 
+	virtual void breakOnException(bool state) = 0;
+
 	virtual bool isBreakPoint(const BreakPoint& breakpoint) const = 0;
 	virtual NextAction::E nextAction() const = 0;
 

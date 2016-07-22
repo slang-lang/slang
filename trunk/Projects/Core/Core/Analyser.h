@@ -48,14 +48,14 @@ private:
 	TokenList generateTokens(const std::string& content);
 	void process(const TokenList& tokens);
 
-	Designtime::BluePrint createBluePrint(TokenIterator& start, TokenIterator end, bool isInterface = false) const;
-	std::string createLibraryReference(TokenIterator& start, TokenIterator end) const;
-	void createMember(TokenIterator& start, TokenIterator end);
-	void createMethod(TokenIterator& start, TokenIterator end);
-	void createNamespace(TokenIterator& start, TokenIterator end);
-	Designtime::Prototype createPrototype(TokenIterator& start, TokenIterator end) const;
+	Designtime::BluePrint createBluePrint(TokenIterator& token, TokenIterator end, bool isInterface = false) const;
+	std::string createLibraryReference(TokenIterator& token, TokenIterator end) const;
+	void createMember(TokenIterator& token, TokenIterator end);
+	void createMethod(TokenIterator& token, TokenIterator end);
+	void createNamespace(TokenIterator& token, TokenIterator end);
+	Designtime::Prototype createPrototype(TokenIterator& token, TokenIterator end) const;
 
-	Designtime::Ancestors collectInheritance(TokenIterator &start) const;
+	Designtime::Ancestors collectInheritance(TokenIterator& token) const;
 	std::string getQualifiedTypename(const std::string& name) const;
 
 private:

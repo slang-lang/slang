@@ -38,6 +38,8 @@ public:	// IDebugger implementation
 	bool addBreakPoint(const BreakPoint& breakpoint);
 	bool removeBreakPoint(const BreakPoint& breakpoint);
 
+	void breakOnException(bool state);
+
 	const BreakPointCollection& getBreakPoints() const;
 	bool isBreakPoint(const BreakPoint& breakpoint) const;
 	NextAction::E nextAction() const;
