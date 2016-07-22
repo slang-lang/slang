@@ -6,8 +6,13 @@ public namespace System {
 		private string mKey final;
 
 		// Specialised constructor
-		public void Logger(string key const) {
-			mKey = key;
+		public void Logger(string key const, int keyLength = 0) {
+			if ( keyLength ) {
+				mKey = substr(key, strlen(key) - keyLength, keyLength);
+			}
+			else {
+				mKey = key;
+			}
 		}
 
 		// Public methods

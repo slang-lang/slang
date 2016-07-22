@@ -21,7 +21,7 @@ private namespace OutterSpace {
 
 			mIntValue = value;
 
-			InnerSpace.InnerObject inner = new InnerSpace.InnerObject(string value);
+			OutterSpace.InnerSpace.InnerObject inner = new OutterSpace.InnerSpace.InnerObject(string value * 2);
 		}
 	}
 }
