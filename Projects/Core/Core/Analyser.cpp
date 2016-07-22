@@ -34,11 +34,11 @@ Analyser::~Analyser()
 {
 }
 
-Designtime::Ancestors Analyser::collectInheritance(TokenIterator &start) const
+Designtime::Ancestors Analyser::collectInheritance(TokenIterator& token) const
 {
 	Designtime::Ancestors ancestors;
 
-	if ( start->type() != Token::Type::RESERVED_WORD ) {
+	if ( token->type() != Token::Type::RESERVED_WORD ) {
 		// no reserved word, no ancestors
 		return ancestors;
 	}
@@ -48,49 +48,49 @@ Designtime::Ancestors Analyser::collectInheritance(TokenIterator &start) const
 	Visibility::E visibility = Visibility::Public;
 
 	for ( ; ; ) {
-		if ( start->content() == RESERVED_WORD_EXTENDS ) {
+		if ( token->content() == RESERVED_WORD_EXTENDS ) {
 			if ( replicates ) {
 				throw Utils::Exceptions::Exception("combinations with 'replicates' are not allowed");
 			}
 
-			start++;	// consume token
+			token++;	// consume token
 
 			type = Designtime::Ancestor::Type::Extends;
 		}
-		else if ( start->content() == RESERVED_WORD_IMPLEMENTS ) {
+		else if ( token->content() == RESERVED_WORD_IMPLEMENTS ) {
 			if ( replicates ) {
 				throw Utils::Exceptions::Exception("combinations with 'replicates' are not allowed");
 			}
 
-			start++;	// consume token
+			token++;	// consume token
 
 			type = Designtime::Ancestor::Type::Implements;
 		}
-		else if ( start->content() == RESERVED_WORD_REPLICATES ) {
-			start++;	// consume token
+		else if ( token->content() == RESERVED_WORD_REPLICATES ) {
+			token++;	// consume token
 
 			replicates = true;
 			type = Designtime::Ancestor::Type::Replicates;
 		}
-		else if ( start->type() == Token::Type::COLON ) {
-			start++;	// consume token
+		else if ( token->type() == Token::Type::COLON ) {
+			token++;	// consume token
 
 			continue;
 		}
 
-		if ( start->type() != Token::Type::IDENTIFER ) {
+		if ( token->type() != Token::Type::IDENTIFER ) {
 			break;
 		}
 
 		ancestors.insert(
-			Designtime::Ancestor(getQualifiedTypename((start++)->content()), type, visibility)
+			Designtime::Ancestor(getQualifiedTypename((token++)->content()), type, visibility)
 		);
 	}
 
 	return ancestors;
 }
 
-Designtime::BluePrint Analyser::createBluePrint(TokenIterator& start, TokenIterator end, bool isInterface) const
+Designtime::BluePrint Analyser::createBluePrint(TokenIterator& token, TokenIterator end, bool isInterface) const
 {
 	bool isAbstract = false;
 	std::string languageFeature;
@@ -98,18 +98,18 @@ Designtime::BluePrint Analyser::createBluePrint(TokenIterator& start, TokenItera
 	std::string visibility;
 
 	// look for the visibility token
-	visibility = (*start++).content();
+	visibility = (*token++).content();
 	// look for an optional language feature token
-	if ( start->isOptional() ) {
-		languageFeature = (*start++).content();
+	if ( token->isOptional() ) {
+		languageFeature = (*token++).content();
 	}
 	// look for the object token
-	(*start++).content();
+	(*token++).content();
 	// look for the identifier token
-	type = (*start).content();
+	type = (*token).content();
 
 	// collect inheritance (if present)
-	Designtime::Ancestors inheritance = collectInheritance(++start);
+	Designtime::Ancestors inheritance = collectInheritance(++token);
 
 	bool isImplemented = true;
 	if ( !inheritance.empty() ) {
@@ -117,17 +117,17 @@ Designtime::BluePrint Analyser::createBluePrint(TokenIterator& start, TokenItera
 	}
 
 	if ( isImplemented ) {
-		isImplemented = (start->type() != Token::Type::SEMICOLON);
+		isImplemented = (token->type() != Token::Type::SEMICOLON);
 	}
 
 	TokenList tokens;
 
 	if ( isImplemented ) {	// only collect all tokens of this object if it is implemented
 		// interface, object or prototype declarations have to start with an '{' token
-		expect(Token::Type::BRACKET_CURLY_OPEN, start);
+		expect(Token::Type::BRACKET_CURLY_OPEN, token);
 
 		// look for the next opening curly brackets
-		TokenIterator open = start;
+		TokenIterator open = token;
 		// look for balanced curly brackets
 		TokenIterator closed = findNextBalancedCurlyBracket(open, end, 0, Token::Type::BRACKET_CURLY_CLOSE);
 
@@ -135,7 +135,7 @@ Designtime::BluePrint Analyser::createBluePrint(TokenIterator& start, TokenItera
 			tokens.push_back((*it));
 		}
 
-		start = closed;
+		token = closed;
 	}
 
 	Designtime::BluePrint blue(type, mFilename);
@@ -156,24 +156,24 @@ Designtime::BluePrint Analyser::createBluePrint(TokenIterator& start, TokenItera
 	return blue;
 }
 
-std::string Analyser::createLibraryReference(TokenIterator& start, TokenIterator end) const
+std::string Analyser::createLibraryReference(TokenIterator& token, TokenIterator end) const
 {
 	std::string reference;
 
-	expect(Token::Type::RESERVED_WORD, start++);
+	expect(Token::Type::RESERVED_WORD, token++);
 
-	while ( start->type() == Token::Type::IDENTIFER && start != end ) {
-		reference += (*start++).content();
+	while ( token->type() == Token::Type::IDENTIFER && token != end ) {
+		reference += (*token++).content();
 
-		if ( start->type() != Token::Type::SCOPE ) {
+		if ( token->type() != Token::Type::SCOPE ) {
 			break;
 		}
 
 		reference += ".";
-		start++;
+		token++;
 	}
 
-	expect(Token::Type::SEMICOLON, start);
+	expect(Token::Type::SEMICOLON, token);
 
 	return reference;
 }
@@ -215,7 +215,7 @@ void Analyser::createMember(TokenIterator& start, TokenIterator /*end*/)
 	mScope->define(name, member);
 }
 
-void Analyser::createMethod(TokenIterator &start, TokenIterator end)
+void Analyser::createMethod(TokenIterator& token, TokenIterator end)
 {
 	bool isAbstract = false;
 	bool isFinal = false;
@@ -228,25 +228,25 @@ void Analyser::createMethod(TokenIterator &start, TokenIterator end)
 	std::string visibility;
 
 	// look for the visibility token
-	visibility = (*start++).content();
+	visibility = (*token++).content();
 	// look for an optional language feature token
-	if ( start->isOptional() ) {
-		languageFeature = (*start++).content();
+	if ( token->isOptional() ) {
+		languageFeature = (*token++).content();
 	}
 	// look for the type token
-	type = (*start++).content();
+	type = (*token++).content();
 	// look for the identifier token
-	name = (*start++).content();
+	name = (*token++).content();
 
 	// look for the next opening parenthesis
-	if ( (*start).type() != Token::Type::PARENTHESIS_OPEN ) {
+	if ( (*token).type() != Token::Type::PARENTHESIS_OPEN ) {
 		throw Utils::Exceptions::SyntaxError("parameter declaration expected");
 	}
 
-	ParameterList params = Parser::parseParameters(start);
+	ParameterList params = Parser::parseParameters(token);
 
 	// look for the next opening curly brackets
-	TokenIterator open = findNext(start, Token::Type::BRACKET_CURLY_OPEN);
+	TokenIterator open = findNext(token, Token::Type::BRACKET_CURLY_OPEN);
 	// look for balanced curly brackets
 	TokenIterator closed = findNextBalancedCurlyBracket(open, end, 0, Token::Type::BRACKET_CURLY_CLOSE);
 
@@ -272,33 +272,71 @@ void Analyser::createMethod(TokenIterator &start, TokenIterator end)
 
 	mScope->defineMethod(name, method);
 
-	start = closed;
+	token = closed;
 }
 
-void Analyser::createNamespace(TokenIterator& start, TokenIterator end)
+void Analyser::createNamespace(TokenIterator& token, TokenIterator end)
 {
 	std::string languageFeature;
 	std::string name;
 	std::string visibility;
-	bool isSealed = false;
 
 	// look for the visibility token
-	visibility = (*start++).content();
+	visibility = (*token++).content();
 	// look for an optional language feature token
-	if ( start->isOptional() ) {
-		languageFeature = (*start++).content();
+	if ( token->isOptional() ) {
+		languageFeature = (*token++).content();
 	}
 	// look for the "namespace" token
-	expect(Token::Type::RESERVED_WORD, start++);
-	// look for the identifier token
-	name = (*start++).content();
+	expect(Token::Type::RESERVED_WORD, token++);
 
-	if ( (*start).content() == MODIFIER_SEALED ) {
-		isSealed = true;
+	MethodScope* tmpScope = mScope;
+
+	while ( token->type() == Token::Type::IDENTIFER ) {
+		// look for the identifier token
+		name = (*token++).content();
+
+		if ( !mScopeName.empty() ) {
+			mScopeName += RESERVED_WORD_SCOPE_OPERATOR;
+		}
+		mScopeName += name;
+
+		if ( token->type() == Token::Type::SCOPE ) {
+			token++;
+		}
+
+		Runtime::Namespace* space = 0;
+
+		// check for an existing namespace with this name
+		Symbol* symbol = mScope->resolve(name, true);
+		if ( !symbol ) {
+			space = new Runtime::Namespace(name, mScope);
+			space->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
+			space->setQualifiedTypename(mScopeName);
+			space->setVisibility(Visibility::convert(visibility));
+			space->setSealed(space->getVisibility() == Visibility::Private);		// seal has to be the last attribute to be set
+
+			mScope->define(name, space);
+		}
+		else {
+			switch ( symbol->getSymbolType() ) {
+				case Symbol::IType::NamespaceSymbol:
+					space = static_cast<Runtime::Namespace*>(symbol);
+					break;
+				case Symbol::IType::BluePrintSymbol:
+				case Symbol::IType::MethodSymbol:
+				case Symbol::IType::ObjectSymbol:
+				case Symbol::IType::UnknownSymbol:
+					throw Utils::Exceptions::Exception("cannot extend non-namespace symbol '" + symbol->getName() + "'");
+			}
+		}
+
+		mScope = space;
 	}
 
-	// look for the next opening curly brackets
-	TokenIterator open = findNext(start, Token::Type::BRACKET_CURLY_OPEN);
+	expect(Token::Type::BRACKET_CURLY_OPEN, token);
+
+	TokenIterator open = token;
 	// look for balanced curly brackets
 	TokenIterator closed = findNextBalancedCurlyBracket(open, end, 0, Token::Type::BRACKET_CURLY_CLOSE);
 
@@ -308,46 +346,13 @@ void Analyser::createNamespace(TokenIterator& start, TokenIterator end)
 		tokens.push_back((*it));
 	}
 
-	if ( !mScopeName.empty() ) {
-		mScopeName += RESERVED_WORD_SCOPE_OPERATOR;
-	}
-	mScopeName += name;
-
-	Runtime::Namespace* space = 0;
-
-	// check for an existing namespace with this name
-	Symbol* symbol = mScope->resolve(name, true);
-	if ( !symbol ) {
-		space = new Runtime::Namespace(name, mScope);
-		space->setVisibility(Visibility::convert(visibility));
-		space->setSealed(isSealed);		// seal has to be the last attribute to be set
-
-		mScope->define(name, space);
-	}
-	else {
-		switch ( symbol->getSymbolType() ) {
-			case Symbol::IType::NamespaceSymbol:
-				space = static_cast<Runtime::Namespace*>(symbol);
-				break;
-			case Symbol::IType::BluePrintSymbol:
-			case Symbol::IType::MethodSymbol:
-			case Symbol::IType::ObjectSymbol:
-			case Symbol::IType::UnknownSymbol:
-				throw Utils::Exceptions::Exception("cannot extend non-namespace symbol");
-				break;
-		}
-	}
-
-	MethodScope* tmpScope = mScope;
-	mScope = space;
-
 	generate(tokens);
 
 	mScope = tmpScope;
 
 	mScopeName = mScope->getScopeName();
 
-	start = closed;
+	token = closed;
 }
 
 Designtime::Prototype Analyser::createPrototype(TokenIterator& start, TokenIterator end) const
@@ -436,7 +441,7 @@ void Analyser::process(const TokenList& tokens)
 	mLibraries.clear();
 	mPrototypes.clear();
 
-	OSdebug("Processing string data...");
+	OSdebug("Processing tokens...");
 
 	// execute basic sanity checks
 	Designtime::SanityChecker sanity;

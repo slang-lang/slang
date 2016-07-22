@@ -29,10 +29,10 @@ bool SanityChecker::checkBalancedBrackets() const
 	TokenIterator token = mTokens.begin();
 
 	while ( token != mTokens.end() ) {
-		if (token->type() == Token::Type::BRACKET_OPEN) {
+		if ( token->type() == Token::Type::BRACKET_OPEN ) {
 			openBrackets++;
 		}
-		if (token->type() == Token::Type::BRACKET_CLOSE) {
+		if ( token->type() == Token::Type::BRACKET_CLOSE ) {
 			openBrackets--;
 		}
 
@@ -48,10 +48,10 @@ bool SanityChecker::checkBalancedCurlyBrackets() const
 	TokenIterator token = mTokens.begin();
 
 	while ( token != mTokens.end() ) {
-		if (token->type() == Token::Type::BRACKET_CURLY_OPEN) {
+		if ( token->type() == Token::Type::BRACKET_CURLY_OPEN ) {
 			openBrackets++;
 		}
-		if (token->type() == Token::Type::BRACKET_CURLY_CLOSE) {
+		if ( token->type() == Token::Type::BRACKET_CURLY_CLOSE ) {
 			openBrackets--;
 		}
 
@@ -67,10 +67,10 @@ bool SanityChecker::checkBalancedParenthesis() const
 	TokenIterator token = mTokens.begin();
 
 	while ( token != mTokens.end() ) {
-		if (token->type() == Token::Type::PARENTHESIS_OPEN) {
+		if ( token->type() == Token::Type::PARENTHESIS_OPEN ) {
 			openParenthesis++;
 		}
-		if (token->type() == Token::Type::PARENTHESIS_CLOSE) {
+		if ( token->type() == Token::Type::PARENTHESIS_CLOSE ) {
 			openParenthesis--;
 		}
 
@@ -86,7 +86,7 @@ bool SanityChecker::checkBalancedQuotes() const
 	TokenIterator token = mTokens.begin();
 
 	while ( token != mTokens.end() ) {
-		if (token->type() == Token::Type::QUOTATION_DOUBLE) {
+		if ( token->type() == Token::Type::QUOTATION_DOUBLE ) {
 			openQuote = !openQuote;
 		}
 

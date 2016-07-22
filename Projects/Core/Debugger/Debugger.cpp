@@ -42,6 +42,11 @@ bool Debugger::addBreakPoint(const BreakPoint& breakpoint)
 	return true;
 }
 
+void Debugger::breakOnException(bool state)
+{
+	(void)state;
+}
+
 BreakPointCollection::iterator Debugger::findBreakPoint(const Token& token)
 {
 	return mBreakPoints.find(BreakPoint(token.position()));

@@ -32,6 +32,9 @@ public:	// Symbol::IType implementation & RTTI
 
 	const std::string& QualifiedTypename() const { return mQualifiedTypename; }
 
+public:
+	void setQualifiedTypename(const std::string& type) { mQualifiedTypename = type; }
+
 public:	// Value
 	virtual std::string ToString() const;
 
