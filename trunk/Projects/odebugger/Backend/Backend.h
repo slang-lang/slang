@@ -62,6 +62,7 @@ public:		// IBackend implementation
 public:	// IReceiver implementation
 	int notify(SymbolScope* scope, const Core::BreakPoint& breakpoint);
 	int notifyEnter(SymbolScope* scope, const Core::BreakPoint& breakpoint);
+	int notifyException(SymbolScope* scope, const Core::BreakPoint& breakpoint);
 	int notifyExit(SymbolScope* scope, const Core::BreakPoint& breakpoint);
 
 private:	// Watches
@@ -84,6 +85,7 @@ private:
 
 private:
 	bool mAutoWatch;
+	bool mBreakOnException;
 	bool mContinue;
 	Core::Debugger* mDebugger;
 	ParameterList mParameters;

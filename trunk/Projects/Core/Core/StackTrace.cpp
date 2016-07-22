@@ -16,6 +16,11 @@
 namespace ObjectiveScript {
 
 
+StackTrace::StackLevel::StackLevel()
+: mLevel(0)
+{
+}
+
 StackTrace::StackLevel::StackLevel(const unsigned long level, const std::string& method, const ParameterList& params)
 : mLevel(level),
   mMethod(method),
@@ -25,7 +30,7 @@ StackTrace::StackLevel::StackLevel(const unsigned long level, const std::string&
 
 std::string StackTrace::StackLevel::toString() const
 {
-	return Tools::ConvertToStdString(mLevel) + ": " + mMethod + "(" + ObjectiveScript::toString(mParameters) + ")";
+	return "Frame " + Tools::ConvertToStdString(mLevel) + ": " + mMethod + "(" + ObjectiveScript::toString(mParameters) + ")";
 }
 
 StackTrace::StackTrace()
@@ -45,6 +50,10 @@ void StackTrace::clear()
 
 StackTrace::StackLevel StackTrace::currentStackLevel() const
 {
+	if ( mStack.empty() ) {
+		return StackTrace::StackLevel();
+	}
+
 	return mStack.back();
 }
 

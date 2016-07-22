@@ -29,6 +29,7 @@ public:
 
 	virtual int notify(SymbolScope* scope, const BreakPoint& breakpoint) = 0;
 	virtual int notifyEnter(SymbolScope* scope, const BreakPoint& breakpoint) = 0;
+	virtual int notifyException(SymbolScope* scope, const BreakPoint& breakpoint) = 0;
 	virtual int notifyExit(SymbolScope* scope, const BreakPoint& breakpoint) = 0;
 };
 
