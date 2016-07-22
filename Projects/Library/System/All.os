@@ -8,7 +8,6 @@ import Exception;
 import Float;
 import Integer;
 import IO.All;
-import Logger;
 import Math;
 import String;
 import Types;

@@ -34,6 +34,7 @@ void RealWorldUsageTest::process()
 	TEST(testAutoBoxing);
 	TEST(testCWithNamespace);
 	TEST(testCreateScriptFromString);
+	TEST(testDeeperNamespaces);
 }
 
 void RealWorldUsageTest::setup()
@@ -98,6 +99,20 @@ void RealWorldUsageTest::testCreateScriptFromString()
 				}\
 			}"
 		);
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void RealWorldUsageTest::testDeeperNamespaces()
+{
+	try {
+		VirtualMachine vm;
+		vm.createScriptFromFile("Tests/RealWorldUsage/DeeperNamespaces.os");
 
 		// automatic success
 	}

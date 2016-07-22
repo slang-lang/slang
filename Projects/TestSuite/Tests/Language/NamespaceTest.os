@@ -1,6 +1,6 @@
 #!/usr/local/bin/oscript
 
-public namespace NamespaceTests sealed {
+public namespace NamespaceTests {
 	public object Test1 {
 		private string mName;
 
