@@ -1,5 +1,6 @@
 
 public namespace System {
+public namespace IO {
 
 	public object Logger {
 		// Members
@@ -33,5 +34,6 @@ public namespace System {
 		}
 	}
 
+}
 }
 

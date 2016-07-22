@@ -35,6 +35,7 @@ private:	// Tests
 	void testAutoBoxing();
 	void testCWithNamespace();
 	void testCreateScriptFromString();
+	void testDeeperNamespaces();
 };
 
 
