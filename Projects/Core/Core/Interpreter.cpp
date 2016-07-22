@@ -1233,6 +1233,9 @@ void Interpreter::process_throw(TokenIterator& token, Object* result)
 	mExceptionData = ExceptionData(data, token->position());
 
 	expect(Token::Type::SEMICOLON, token);
+
+	// notify our debugger that an exception has been thrown
+	Core::Debugger::GetInstance().notifyException(getScope(), (*token));
 }
 
 // syntax:

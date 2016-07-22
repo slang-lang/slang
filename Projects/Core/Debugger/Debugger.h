@@ -46,6 +46,7 @@ public:	// IDebugger implementation
 
 	void notify(SymbolScope* scope, const Token& token = Token());
 	void notifyEnter(SymbolScope* scope, const Token& token = Token());
+	void notifyException(SymbolScope* scope, const Token& token = Token());
 	void notifyExit(SymbolScope* scope, const Token& token = Token());
 
 	void resume();
@@ -68,6 +69,7 @@ private:
 	~Debugger();
 
 private:
+	bool mBreakOnException;
 	BreakPointCollection mBreakPoints;
 	NextAction::E mNextAction;
 	Core::IReceiver* mReceiver;

@@ -14,6 +14,7 @@
 #include "Analyser.h"
 #include "Repository.h"
 #include "Script.h"
+#include "StackTrace.h"
 #include "Tools.h"
 
 // Namespace declarations
@@ -122,7 +123,7 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 
 		Runtime::ControlFlow::E controlflow = main->Constructor(params);
 		if ( controlflow == Runtime::ControlFlow::Throw ) {
-			throw Utils::Exceptions::Exception("Exception raised in " + main->getFullScopeName() + "::" + main->Typename());
+			throw Utils::Exceptions::Exception("Exception raised in " + main->getFullScopeName() + "." + main->Typename());
 		}
 
 		// ... and store it
@@ -182,18 +183,20 @@ void VirtualMachine::init()
 
 bool VirtualMachine::loadExtensions()
 {
-	for (Extensions::ExtensionList::const_iterator extIt = mExtensions.begin(); extIt != mExtensions.end(); ++extIt) {
+	for ( Extensions::ExtensionList::const_iterator extIt = mExtensions.begin(); extIt != mExtensions.end(); ++extIt ) {
 		try {
 			Extensions::ExtensionMethods methods;
 			(*extIt)->provideMethods(methods);
 
-			for (Extensions::ExtensionMethods::const_iterator it = methods.begin(); it != methods.end(); ++it) {
+			MethodScope* scope = mRepository->getGlobalScope();
+
+			for ( Extensions::ExtensionMethods::const_iterator it = methods.begin(); it != methods.end(); ++it ) {
 				OSdebug("adding extension '" + (*extIt)->getName() + "." + (*it)->getName() + "'");
 
-				(*it)->setParent(mRepository->getGlobalScope());
+				(*it)->setParent(scope);
 				(*it)->setRepository(mRepository);
 
-				mRepository->getGlobalScope()->defineMethod((*it)->getName(), (*it));
+				scope->defineMethod((*it)->getName(), (*it));
 			}
 		}
 		catch ( ... ) {

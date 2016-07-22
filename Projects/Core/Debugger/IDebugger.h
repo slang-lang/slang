@@ -51,6 +51,7 @@ public:
 
 	virtual void notify(SymbolScope* scope, const Token& token = Token()) = 0;
 	virtual void notifyEnter(SymbolScope* scope, const Token& token = Token()) = 0;
+	virtual void notifyException(SymbolScope* scope, const Token& token = Token()) = 0;
 	virtual void notifyExit(SymbolScope* scope, const Token& token = Token()) = 0;
 
 	virtual void stepInto() = 0;

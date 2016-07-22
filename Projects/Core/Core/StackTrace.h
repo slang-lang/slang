@@ -30,6 +30,7 @@ public:
 	class StackLevel
 	{
 	public:
+		StackLevel();
 		StackLevel(const unsigned long level, const std::string& method, const ParameterList& params);
 
 	public:

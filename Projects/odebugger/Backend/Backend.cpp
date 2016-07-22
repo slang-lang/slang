@@ -32,6 +32,7 @@ namespace ObjectiveScript {
 
 Backend::Backend()
 : mAutoWatch(true),
+  mBreakOnException(true),
   mContinue(false),
   mDebugger(0),
   mRunning(true),
@@ -248,6 +249,7 @@ std::string Backend::executeCommand(const StringList &tokens)
 			mRunning = false;
 
 			if ( mScope ) {
+				// hack to exit debugger during an active debugging session
 				throw Runtime::ControlFlow::ExitProgram;
 			}
 		}
@@ -443,6 +445,13 @@ int Backend::notify(SymbolScope* scope, const Core::BreakPoint& breakpoint)
 int Backend::notifyEnter(SymbolScope* scope, const Core::BreakPoint& breakpoint)
 {
 	mTerminal->writeln("[Stepping into " + StackTrace::GetInstance().currentStackLevel().toString() + "]");
+
+	return notify(scope, breakpoint);
+}
+
+int Backend::notifyException(SymbolScope* scope, const Core::BreakPoint& breakpoint)
+{
+	mTerminal->writeln("[Exception has been thrown in " + StackTrace::GetInstance().currentStackLevel().toString() + "]");
 
 	return notify(scope, breakpoint);
 }
@@ -655,6 +664,7 @@ void Backend::start()
 {
 	stop();
 
+	mDebugger->breakOnException(mBreakOnException);
 	mDebugger->resume();
 	StackTrace::GetInstance().clear();
 
