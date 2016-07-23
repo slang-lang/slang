@@ -28,7 +28,7 @@ public object Main
 
 	private bool TestCase1() /*const*/ modify
 	{
-		BaseObject baseObject;
+		BaseObject baseObject = new BaseObject();
 		baseObject.mIntValue = 173;
 
 		string jsonString = ToJsonString(Object baseObject);
@@ -39,7 +39,7 @@ public object Main
 
 	private bool TestCase2() /*const*/ modify
 	{
-		Derived derived;
+		Derived derived = new Derived();
 
 		string jsonString = "{\"base\":{\"mIntValue\":\"42\"},\"mStringValue\":\"this is a string\"}";
 
