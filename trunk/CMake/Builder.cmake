@@ -290,3 +290,4 @@ function(_handle_post_qttest target)
     target_link_libraries(${target} ${QT_QTTEST_LIBRARY})
 
 endfunction()
+
