@@ -70,6 +70,8 @@ public:
 	bool isInterface() const;
 	void setInterface(bool state);
 
+	void setParent(IScope* parent);
+
 	void setQualifiedTypename(const std::string &name);
 
 	virtual std::string ToString() const;

@@ -140,9 +140,10 @@ Designtime::BluePrint Analyser::createBluePrint(TokenIterator& token, TokenItera
 
 	Designtime::BluePrint blue(type, mFilename);
 	blue.setAbstract(isAbstract || isInterface);
-	blue.setQualifiedTypename(getQualifiedTypename(type));
 	blue.setInterface(isInterface);
 	blue.setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
+	blue.setParent(mScope);
+	blue.setQualifiedTypename(getQualifiedTypename(type));
 	blue.setTokens(tokens);
 	blue.setVisibility(Visibility::convert(visibility));
 
@@ -178,7 +179,7 @@ std::string Analyser::createLibraryReference(TokenIterator& token, TokenIterator
 	return reference;
 }
 
-void Analyser::createMember(TokenIterator& start, TokenIterator /*end*/)
+void Analyser::createMember(TokenIterator& token, TokenIterator /*end*/)
 {
 	bool isFinal = false;
 	std::string languageFeature;
@@ -188,19 +189,17 @@ void Analyser::createMember(TokenIterator& start, TokenIterator /*end*/)
 	std::string visibility;
 
 	// look for the visibility token
-	visibility = (*start++).content();
+	visibility = (*token++).content();
 	// look for an optional language feature token
-	if ( start->isOptional() ) {
-		languageFeature = (*start++).content();
+	if ( token->isOptional() ) {
+		languageFeature = (*token++).content();
 	}
 	// look for the type token
-	type = (*start++).content();
+	type = (*token++).content();
 	// look for the identifier token
-	name = (*start++).content();
+	name = (*token++).content();
 
-	if ( (*start).type() != Token::Type::SEMICOLON ) {
-		throw Utils::Exceptions::Exception("initialization not allowed during declaration", start->position());
-	}
+	expect(Token::Type::SEMICOLON, token);
 
 	Runtime::Object *member = mRepository->createInstance(type, name);
 	member->setFinal(isFinal);
@@ -238,10 +237,7 @@ void Analyser::createMethod(TokenIterator& token, TokenIterator end)
 	// look for the identifier token
 	name = (*token++).content();
 
-	// look for the next opening parenthesis
-	if ( (*token).type() != Token::Type::PARENTHESIS_OPEN ) {
-		throw Utils::Exceptions::SyntaxError("parameter declaration expected");
-	}
+	expect(Token::Type::PARENTHESIS_OPEN, token);
 
 	ParameterList params = Parser::parseParameters(token);
 
@@ -296,10 +292,7 @@ void Analyser::createNamespace(TokenIterator& token, TokenIterator end)
 		// look for the identifier token
 		name = (*token++).content();
 
-		if ( !mScopeName.empty() ) {
-			mScopeName += RESERVED_WORD_SCOPE_OPERATOR;
-		}
-		mScopeName += name;
+		mScopeName = getQualifiedTypename(name);
 
 		if ( token->type() == Token::Type::SCOPE ) {
 			token++;

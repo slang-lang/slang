@@ -109,9 +109,7 @@ Designtime::BluePrint* Preprocessor::createMember(TokenIterator token) const
 		token++;
 	}
 
-	if ( (*token).type() != Token::Type::SEMICOLON ) {
-		throw Utils::Exceptions::Exception("initialization not allowed during member declaration", token->position());
-	}
+	expect(Token::Type::SEMICOLON, token);
 
 	Designtime::BluePrint* blue = new Designtime::BluePrint(type, mFilename, name);
 	blue->setConst(isConst);
@@ -119,6 +117,8 @@ Designtime::BluePrint* Preprocessor::createMember(TokenIterator token) const
 	blue->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
 	blue->setMutability(mutability);
 	blue->setMember(true);		// every object created here is a member object
+	blue->setParent(mScope);
+	blue->setQualifiedTypename(type);
 	blue->setVisibility(Visibility::convert(visibility));
 
 	return blue;
@@ -166,10 +166,7 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token) const
 		mutability = Mutability::Modify;
 	}
 
-	// look for the next opening parenthesis
-	if ( (*token).type() != Token::Type::PARENTHESIS_OPEN ) {
-		throw Utils::Exceptions::SyntaxError("parameter declaration expected");
-	}
+	expect(Token::Type::PARENTHESIS_OPEN, token);
 
 	ParameterList params = Parser::parseParameters(token);
 
