@@ -73,10 +73,10 @@ std::string ConfigParser::readLine()
 
 bool ConfigParser::load(const std::string& filename)
 {
-	debug("load('" + filename + "')");
+	//debug("load('" << filename << "')");
 
 	if ( !Tools::Files::exists(filename) ) {
-		warn("File '" << filename << "' does not exist");
+		//warn("File '" << filename << "' does not exist");
 		return false;
 	}
 

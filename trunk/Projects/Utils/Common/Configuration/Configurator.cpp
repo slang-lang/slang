@@ -88,10 +88,10 @@ bool Configurator::load(const std::string& file)
 	unload();
 
 	mConfigFile = mHomePath + file;
-	debug("load('" + mConfigFile + "')");
+	//debug("load('" + mConfigFile + "')");
 
 	if ( !Tools::Files::exists(mConfigFile) ) {
-		warn("invalid file '" + mConfigFile + "' provided!");
+		//warn("invalid file '" + mConfigFile + "' provided!");
 		return mSuccess;
 	}
 
@@ -100,7 +100,7 @@ bool Configurator::load(const std::string& file)
 	mFile.close();
 
 	if ( data.empty() ) {
-		warn("could not load configuration file '" + mConfigFile + "'!");
+		//warn("could not load configuration file '" + mConfigFile + "'!");
 		return mSuccess;
 	}
 

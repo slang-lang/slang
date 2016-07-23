@@ -14,7 +14,7 @@ endif()
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)   # binary root
 SET(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)      # library root
 
-SET(CMAKE_CXX_FLAGS "-pedantic -fPIC -Wall -Werror -Wextra -Wunused -Wno-long-long -Wnon-virtual-dtor -std=c++0x") # -std=c++0x -std=c++11 ;-(
+SET(CMAKE_CXX_FLAGS "-pedantic -fPIC -Wall -Werror -Wextra -Wunused -Wno-long-long -Wnon-virtual-dtor -std=c++14") # -std=c++0x -std=c++11 ;-(
 
 if( "${BUILD}" STREQUAL "" OR "${BUILD}" MATCHES "Debug")
 
@@ -27,7 +27,7 @@ if( "${BUILD}" STREQUAL "" OR "${BUILD}" MATCHES "Debug")
     add_definitions(-DDEBUG)
 
     # suppress "veraltete Konvertierung von Zeichenkettenkonstante in »char*« [-Werror=write-strings]"
-    add_definitions(-Wno-write-strings)
+    add_definitions(-Wno-write-strings -Wno-unused-variable)
 
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wextra -g")
 
@@ -37,7 +37,7 @@ elseif("${BUILD}" MATCHES "Release")
     SET(CMAKE_BUILD_TYPE "Release")
 
     # suppress "veraltete Konvertierung von Zeichenkettenkonstante in »char*« [-Werror=write-strings]"
-    add_definitions(-Wno-write-strings)
+    add_definitions(-Wno-write-strings -Wno-unused-varaible)
 
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-strict-aliasing -O3")
 

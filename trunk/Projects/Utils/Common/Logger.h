@@ -105,7 +105,7 @@ namespace Common {
 class Logger : public ILogger
 {
 public:
-	Logger(char* logfile = "logger.log");
+	Logger(char* logfile);
 	Logger(const ILogger *parent, const std::string& className, const std::string& key = "");
 	virtual ~Logger();
 

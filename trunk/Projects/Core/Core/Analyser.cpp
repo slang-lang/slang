@@ -466,7 +466,7 @@ void Analyser::processFile(const std::string& filename)
 
 void Analyser::processString(const std::string& content, const std::string& filename)
 {
-	OSdebug("Preparing string data...");
+//	OSdebug("Preparing string data...");
 
 	mFilename = filename;
 
@@ -479,7 +479,7 @@ void Analyser::processString(const std::string& content, const std::string& file
 
 void Analyser::processTokens(const TokenList& tokens)
 {
-	OSdebug("Preparing token data...");
+//	OSdebug("Preparing token data...");
 
 	// start the real processing
 	process(tokens);
