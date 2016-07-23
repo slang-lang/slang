@@ -14,6 +14,7 @@ private namespace OutterSpace {
 	}
 
 	public object OutterObject {
+		private InnerSpace.InnerObject mInnerObject;
 		private int mIntValue;
 
 		public void OutterObject(int value) {
@@ -21,8 +22,14 @@ private namespace OutterSpace {
 
 			mIntValue = value;
 
-			OutterSpace.InnerSpace.InnerObject inner = new OutterSpace.InnerSpace.InnerObject(string value * 2);
+			InnerSpace.InnerObject inner = new InnerSpace.InnerObject(string value * 2);
+			mInnerObject = inner;
 		}
+/*
+		public InnerSpace.InnerObject getInnerObject() const {
+			return mInnerObject;
+		}
+*/
 	}
 }
 

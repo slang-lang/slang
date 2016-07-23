@@ -149,6 +149,11 @@ void BluePrint::setInterface(bool state)
 	mIsInterface = state;
 }
 
+void BluePrint::setParent(IScope* parent)
+{
+	mParent = parent;
+}
+
 void BluePrint::setTokens(const TokenList& tokens)
 {
 	mTokens = tokens;

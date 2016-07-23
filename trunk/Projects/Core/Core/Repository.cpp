@@ -284,7 +284,7 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 	object->setLanguageFeatureState(blueprint->getLanguageFeatureState());
 	object->setMember(blueprint->isMember());
 	object->setMutability(blueprint->getMutability());
-	object->setParent(mScope);
+	object->setParent(blueprint->getEnclosingScope());
 	object->setQualifiedTypename(blueprint->QualifiedTypename());
 	object->setRepository(this);
 	object->setVisibility(blueprint->getVisibility());

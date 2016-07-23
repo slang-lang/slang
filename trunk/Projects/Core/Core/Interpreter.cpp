@@ -106,6 +106,28 @@ const ExceptionData& Interpreter::getExceptionData() const
 	return mExceptionData;
 }
 
+Namespace* Interpreter::getEnclosingSpace() const
+{
+	IScope* scope = mOwner->getEnclosingScope();
+
+	while ( scope ) {
+		IScope* outter = scope->getEnclosingScope();
+
+		if ( !outter || outter->getScopeType() != IScope::IType::MethodScope ) {
+			return 0;
+		}
+
+		Namespace* result = dynamic_cast<Namespace*>(outter);
+		if ( result ) {
+			return result;
+		}
+
+		scope = outter;
+	}
+
+	return 0;
+}
+
 Repository* Interpreter::getRepository() const
 {
 	return mRepository;
@@ -135,6 +157,13 @@ Symbol* Interpreter::identify(TokenIterator& token) const
 
 		if ( !result ) {
 			result = getScope()->resolve(identifier, onlyCurrentScope);
+
+			if ( !result ) {
+				Namespace* space = getEnclosingSpace();
+				if ( space ) {
+					result = getScope()->resolve(space->QualifiedTypename() + "." + identifier, onlyCurrentScope);
+				}
+			}
 		}
 		else {
 			switch ( result->getSymbolType() ) {
@@ -1051,7 +1080,7 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 {
 	TokenIterator tmp = token;
 
-	std::string name = ANONYMOUS_OBJECT;
+	std::string name;// = ANONYMOUS_OBJECT;
 	std::string prototype;
 
 	if ( token->type() == Token::Type::PROTOTYPE ) {

@@ -32,7 +32,7 @@ Object::Object()
 }
 
 Object::Object(const Object& other)
-: MethodScope(other.getName(), 0),
+: MethodScope(other.getName(), other.mParent),
   ObjectSymbol(other.getName())
 {
 	mFilename = other.mFilename;
@@ -41,6 +41,8 @@ Object::Object(const Object& other)
 	mParent = other.mParent;
 	mQualifiedTypename = other.mQualifiedTypename;
 	mRepository = other.mRepository;
+	mScopeName = other.mScopeName;
+	mScopeType = other.mScopeType;
 	mTypename = other.mTypename;
 	mValue = other.mValue;
 
@@ -97,12 +99,14 @@ Object::~Object()
 void Object::operator= (const Object& other)
 {
 	if ( this != &other ) {
+		mFilename = other.mFilename;
 		mIsAtomicType = other.mIsAtomicType;
 		mIsConstructed = other.mIsConstructed;// ? other.mIsConstructed : mIsConstructed;
-		mFilename = other.mFilename;
 		mParent = other.mParent ? other.mParent : mParent;
 		mQualifiedTypename = other.mQualifiedTypename;
 		mRepository = other.mRepository ? other.mRepository : mRepository;
+		mScopeName = other.mScopeName;
+		mScopeType = other.mScopeType;
 		mTypename = other.mTypename;
 		mValue = other.mValue;
 
@@ -145,6 +149,8 @@ void Object::copy(const Object& other)
 		mParent = other.mParent ? other.mParent : mParent;
 		mQualifiedTypename = other.mQualifiedTypename;
 		mRepository = other.mRepository ? other.mRepository : mRepository;
+		mScopeName = other.mScopeName;
+		mScopeType = other.mScopeType;
 		mTypename = other.mTypename;
 		mValue = other.mValue;
 

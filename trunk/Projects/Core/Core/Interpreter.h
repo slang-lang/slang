@@ -27,6 +27,7 @@ class Repository;
 namespace Runtime {
 
 // Forward declarations
+class Namespace;
 class Object;
 
 
@@ -109,6 +110,8 @@ private: // Execution
 	// }
 
 	ControlFlow::E interpret(const TokenList& tokens, Object* result);
+
+	Namespace* getEnclosingSpace() const;
 
 private:
 	ControlFlow::E mControlFlow;

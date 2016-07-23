@@ -216,6 +216,7 @@ ParameterList Parser::parseParameters(TokenIterator &token)
 		Runtime::AtomicValue value;
 
 		expect(Token::Type::TYPE, token);
+
 		std::string type = token->content();
 		token++;
 

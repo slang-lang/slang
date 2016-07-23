@@ -17,7 +17,7 @@ namespace Runtime {
 Namespace::Namespace(const std::string& name, IScope* parent)
 : MethodScope(name, parent),
   NamespaceSymbol(name),
-  mTypename(RESERVED_WORD_NAMESPACE)
+  mTypename(name)
 {
 }
 
@@ -38,7 +38,7 @@ Namespace::~Namespace()
 
 std::string Namespace::ToString() const
 {
-	std::string result = Visibility::convert(mVisibility) + " " + Typename() + " " + getName();
+	std::string result = Visibility::convert(mVisibility) + " " + RESERVED_WORD_NAMESPACE + " " + getName();
 
 	result += " {\n";
 
