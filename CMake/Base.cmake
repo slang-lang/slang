@@ -37,7 +37,7 @@ elseif("${BUILD}" MATCHES "Release")
     SET(CMAKE_BUILD_TYPE "Release")
 
     # suppress "veraltete Konvertierung von Zeichenkettenkonstante in »char*« [-Werror=write-strings]"
-    add_definitions(-Wno-write-strings -Wno-unused-varaible)
+    add_definitions(-Wno-write-strings -Wno-unused-variable -Wno-unused-result)
 
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-strict-aliasing -O3")
 
