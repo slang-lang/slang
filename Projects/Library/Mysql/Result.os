@@ -35,11 +35,11 @@ public namespace Mysql {
 			return mAffectedRows;
 		}
 
-		public Row getCurrentRow() const {
+		public Mysql.Row getCurrentRow() const {
 			return new Mysql.Row(mHandle);
 		}
 
-		public Entry getField(int fieldIdx) const {
+		public Mysql.Entry getField(int fieldIdx) const {
 			if ( fieldIdx < 0 || fieldIdx > mNumFields ) {
 				throw new System.OutOfBoundsException("fieldIdx out of bounds");
 			}
@@ -50,8 +50,8 @@ public namespace Mysql {
 			return new Mysql.Entry(name, value);
 		}
 
-		public Entry getField(string name) const {
-			Entry entry;	// null object
+		public Mysql.Entry getField(string name) const {
+			Mysql.Entry entry;	// null object
 
 			for ( int idx = 0; idx < mNumFields; idx = idx + 1 ) {
 				if ( mysql_get_field_name(mHandle, idx) == name ) {
@@ -75,7 +75,7 @@ public namespace Mysql {
 		}
 
 		private bool Initialize() modify {
-		    mAffectedRows = 0;
+			mAffectedRows = 0;
 			mCurrentFieldIdx = 0;
 			mCurrentRowIdx = 0;
 			mNumFields = mysql_num_fields(mHandle);

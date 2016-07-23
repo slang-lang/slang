@@ -9,12 +9,12 @@ import System.String;
 public namespace Mysql {
 
 	public object Query /*implements System.GDI.IQuery*/ {
-		private Connection mConnection;
+		private Mysql.Connection mConnection;
 		private String mExecutedQuery;
 		private String mPreparedQuery;
 		private int mResultHandle;
 
-		public void Query(Connection connection ref, string queryStr = "") {
+		public void Query(Mysql.Connection connection ref, string queryStr = "") {
 			mConnection = connection;
 			mExecutedQuery = new String();
 			mPreparedQuery = new String();
@@ -38,44 +38,44 @@ public namespace Mysql {
 		}
 
 		public bool bind(string field, bool value) modify {
-			if ( MysqlDebugMode ) { print("bind '" + field + "' with '" + value + "'"); }
+			if ( Mysql.MysqlDebugMode ) { print("bind '" + field + "' with '" + value + "'"); }
 			// replace all occurances of field with value
 			return mExecutedQuery.ReplaceAll(field, string value);
 		}
 
 		public bool bind(string field, double value) modify {
-			if ( MysqlDebugMode ) { print("bind '" + field + "' with '" + value + "'"); }
+			if ( Mysql.MysqlDebugMode ) { print("bind '" + field + "' with '" + value + "'"); }
 			// replace field with value
 			return mExecutedQuery.ReplaceAll(field, string value);
 		}
 
 		public bool bind(string field, float value) modify {
-			if ( MysqlDebugMode ) { print("bind '" + field + "' with '" + value + "'"); }
+			if ( Mysql.MysqlDebugMode ) { print("bind '" + field + "' with '" + value + "'"); }
 			// replace field with value
 			return mExecutedQuery.ReplaceAll(field, string value);
 		}
 
 		public bool bind(string field, int value) modify {
-			if ( MysqlDebugMode ) { print("bind '" + field + "' with '" + value + "'"); }
+			if ( Mysql.MysqlDebugMode ) { print("bind '" + field + "' with '" + value + "'"); }
 			// replace field with value
 			return mExecutedQuery.ReplaceAll(field, string value);
 		}
 
 		public bool bind(string field, string value) modify {
-			if ( MysqlDebugMode ) { print("bind '" + field + "' with '" + value + "'"); }
+			if ( Mysql.MysqlDebugMode ) { print("bind '" + field + "' with '" + value + "'"); }
 			// replace field with value
 			return mExecutedQuery.ReplaceAll(field, value);
 		}
 
-		public Result execute(string queryStr = "") modify {
-			Result result;	// invalid object
+		public Mysql.Result execute(string queryStr = "") modify {
+			Mysql.Result result;	// invalid object
 
 			if ( queryStr != "" ) {
 				assert(false);
 				prepare(queryStr);
 			}
 
-			if ( MysqlDebugMode ) {
+			if ( Mysql.MysqlDebugMode ) {
 				print(ToString());
 			}
 

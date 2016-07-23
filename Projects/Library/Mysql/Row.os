@@ -23,7 +23,7 @@ public namespace Mysql {
 				"}";
 		}
 
-		public Entry getEntry(int fieldIdx) {
+		public Mysql.Entry getEntry(int fieldIdx) {
 /*
 			if ( fieldIdx < 0 || fieldIdx > mNumFields ) {
 				throw new System.OutOfBoundsException("fieldIdx out of bounds");
@@ -73,7 +73,7 @@ public namespace Mysql {
 			string result = "|";
 
 			for ( int i = 0; i < mNumFields; i = i++ ) {
-				Entry e = getEntry(i);
+				Mysql.Entry e = getEntry(i);
 				result = result + " " + e.name() + ": " + e.value() + " |";
 			}
 

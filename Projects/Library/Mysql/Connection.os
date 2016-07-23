@@ -13,7 +13,7 @@ public namespace Mysql {
 		private string mHostname;
 		private string mPassword;
 		private int mPort;
-		private Settings mSettings;
+		private Mysql.Settings mSettings;
 		private string mUsername;
 
 		public void Connection() {
@@ -62,7 +62,7 @@ public namespace Mysql {
 			cleanup();
 		}
 
-		public Query createQuery(string queryStr = "") const {
+		public Mysql.Query createQuery(string queryStr = "") const {
 			return new Mysql.Query(this, queryStr);
 		}
 
@@ -117,10 +117,10 @@ public namespace Mysql {
 			return error == 0;
 		}
 
-		public Result query(string queryStr) modify {
-			Result result;	// null object
+		public Mysql.Result query(string queryStr) modify {
+			Mysql.Result result;	// null object
 
-			if ( MysqlDebugMode ) {
+			if ( Mysql.MysqlDebugMode ) {
 				writeln("Mysql debug mode is enabled.");
 			}
 
@@ -150,7 +150,7 @@ public namespace Mysql {
 			return result;
 		}
 
-		public Settings settings() const {
+		public Mysql.Settings settings() const {
 			return mSettings;
 		}
 
