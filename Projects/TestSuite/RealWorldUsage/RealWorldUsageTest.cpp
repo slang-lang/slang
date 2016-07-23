@@ -49,7 +49,7 @@ void RealWorldUsageTest::testAlternateMemberDeclaration()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/RealWorldUsage/AlternateMemberDeclaration.os");
+		vm.createScriptFromFile("Tests/RealWorldUsage/Namespaces/AlternateMemberDeclaration.os");
 
 		// automatic success
 	}
@@ -77,7 +77,7 @@ void RealWorldUsageTest::testCWithNamespace()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/RealWorldUsage/C-WithNamespaces.os");
+		vm.createScriptFromFile("Tests/RealWorldUsage/Namespaces/C-WithNamespaces.os");
 
 		// automatic success
 	}
@@ -112,7 +112,7 @@ void RealWorldUsageTest::testDeeperNamespaces()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/RealWorldUsage/DeeperNamespaces.os");
+		vm.createScriptFromFile("Tests/RealWorldUsage/Namespaces/DeeperNamespaces.os");
 
 		// automatic success
 	}
