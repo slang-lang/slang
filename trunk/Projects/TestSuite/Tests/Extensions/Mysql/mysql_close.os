@@ -7,7 +7,7 @@ public object Main {
 		int handle = mysql_init();
 
 		writeln("mysql_real_connect()");
-		mysql_real_connect(handle, "192.168.0.22", 3306, "oscript", "oscript", "ts_parking");
+		mysql_real_connect(handle, "192.168.0.23", 3306, "oscript", "oscript", "ts_parking");
 
 		mysql_close(handle);
 		writeln("mysql_close()");

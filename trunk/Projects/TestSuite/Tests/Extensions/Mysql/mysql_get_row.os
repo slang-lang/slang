@@ -9,7 +9,7 @@ public object Main {
 		writeln("mysq_init() = " + handle);
 
 		writeln("mysql_real_connect()");
-		mysql_real_connect(handle, "192.168.0.22", 3306, "oscript", "oscript", "ts_parking");
+		mysql_real_connect(handle, "192.168.0.23", 3306, "oscript", "oscript", "ts_parking");
 
 		string query = "SELECT * FROM parking_zones";
 

@@ -6,7 +6,7 @@ public object Main {
 		int handle = mysql_init();
 		int result_handle = 0;
 
-		handle = mysql_real_connect(handle, "192.168.0.22", 0, "oscript", "oscript", "");
+		handle = mysql_real_connect(handle, "192.168.0.23", 0, "oscript", "oscript", "");
 		if ( !handle ) {
 			writeln("error while connecting to database!");
 			return;
