@@ -791,17 +791,15 @@ void Interpreter::process_for(TokenIterator& token, Object *result)
 }
 
 /*
- * executes a method, processes an assign statement and instatiates new types
+ * executes a method, processes an assign statement and instanciates new types
  */
 void Interpreter::process_identifier(TokenIterator& token, Object* /*result*/, Token::Type::E terminator)
 {
-	std::string identifier = token->content();
-
 	TokenIterator tmpToken = token;
 
 	Symbol* symbol = identify(token);
 	if ( !symbol ) {
-		throw Utils::Exceptions::UnknownIdentifer("identifier '" + identifier + "' not found", token->position());
+		throw Utils::Exceptions::UnknownIdentifer("identifier '" + token->content() + "' not found", token->position());
 	}
 
 	if ( symbol->getSymbolType() == Symbol::IType::BluePrintSymbol ) {
@@ -1044,7 +1042,7 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 	Method* symbol = static_cast<Method*>(identifyMethod(token, params));
 
 	if ( !symbol) {
-		throw Utils::Exceptions::UnknownIdentifer("could not resolve identifier '" + method + "' with parameters '" + toString(params) + "'", token->position());
+		throw Utils::Exceptions::UnknownIdentifer("could not resolve identifier '" + token->content() + "' with parameters '" + toString(params) + "'", token->position());
 	}
 
 	// compare callee's constness with its parent's constness

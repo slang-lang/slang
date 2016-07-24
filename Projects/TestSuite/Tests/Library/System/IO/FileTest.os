@@ -5,7 +5,7 @@ import System.IO.File;
 public object Main {
 	public void Main(int argc, string argv) {
 		try {
-			File file = new File("file", "crtw");
+			System.IO.File file = new System.IO.File("file", "crtw");
 			assert( file.isOpen() );
 
 			file.write(1731389);
@@ -18,7 +18,7 @@ public object Main {
 		}
 
 		try {
-			File file = new File("file", "r");
+			System.IO.File file = new System.IO.File("file", "r");
 			//file.open("file", "r");	// this throws an exception as long as the file is still open
 			assert( file.isOpen() );
 
