@@ -279,7 +279,6 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 		throw Utils::Exceptions::AbstractException("cannot instantiate abstract object '" + blueprint->Typename() + "'");
 	}
 
-	object->setConst(blueprint->isConst());
 	object->setFinal(blueprint->isFinal());
 	object->setLanguageFeatureState(blueprint->getLanguageFeatureState());
 	object->setMember(blueprint->isMember());
@@ -287,6 +286,7 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 	object->setParent(blueprint->getEnclosingScope());
 	object->setQualifiedTypename(blueprint->QualifiedTypename());
 	object->setRepository(this);
+	//object->setValue(blueprint->getValue());
 	object->setVisibility(blueprint->getVisibility());
 
 	return object;
@@ -370,7 +370,7 @@ void Repository::initializeObject(Runtime::Object *object, Designtime::BluePrint
 		Designtime::BluePrint *blue = static_cast<Designtime::BluePrint*>(it->second);
 
 		Runtime::Object *symbol = createInstance(blue, blue->getName(), false);
-		symbol->setConst(blue->isConst());
+		//symbol->setConst(blue->isConst());
 		symbol->setFinal(blue->isFinal());
 		symbol->setLanguageFeatureState(blue->getLanguageFeatureState());
 		symbol->setMember(blue->isMember());
@@ -378,6 +378,7 @@ void Repository::initializeObject(Runtime::Object *object, Designtime::BluePrint
 		symbol->setParent(object);
 		symbol->setQualifiedTypename(object->QualifiedTypename());
 		symbol->setRepository(this);
+		symbol->setValue(blue->getValue());
 		symbol->setVisibility(blue->getVisibility());
 
 		object->define(symbol->getName(), symbol);

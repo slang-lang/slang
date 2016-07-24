@@ -113,6 +113,11 @@ const TokenList& BluePrint::getTokens() const
 	return mTokens;
 }
 
+Runtime::AtomicValue BluePrint::getValue() const
+{
+	return mValue;
+}
+
 Visibility::E BluePrint::getVisibility() const
 {
 	return mVisibility;
@@ -139,11 +144,6 @@ void BluePrint::setAbstract(bool state)
 	mIsAbstract = state;
 }
 
-void BluePrint::setQualifiedTypename(const std::string &name)
-{
-	mQualifiedTypeName = name;
-}
-
 void BluePrint::setInterface(bool state)
 {
 	mIsInterface = state;
@@ -152,6 +152,16 @@ void BluePrint::setInterface(bool state)
 void BluePrint::setParent(IScope* parent)
 {
 	mParent = parent;
+}
+
+void BluePrint::setQualifiedTypename(const std::string &name)
+{
+	mQualifiedTypeName = name;
+}
+
+void BluePrint::setValue(Runtime::AtomicValue value)
+{
+	mValue = value;
 }
 
 void BluePrint::setTokens(const TokenList& tokens)

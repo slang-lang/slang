@@ -181,15 +181,15 @@ std::string Analyser::createLibraryReference(TokenIterator& token, TokenIterator
 
 void Analyser::createMember(TokenIterator& token, TokenIterator /*end*/)
 {
-	bool isFinal = false;
 	std::string languageFeature;
 	Mutability::E mutability = Mutability::Modify;
 	std::string name;
 	std::string type;
-	std::string visibility;
+	Runtime::AtomicValue value = 0;
+	Visibility::E visibility;
 
 	// look for the visibility token
-	visibility = (*token++).content();
+	visibility = Visibility::convert((*token++).content());
 	// look for an optional language feature token
 	if ( token->isOptional() ) {
 		languageFeature = (*token++).content();
@@ -199,17 +199,39 @@ void Analyser::createMember(TokenIterator& token, TokenIterator /*end*/)
 	// look for the identifier token
 	name = (*token++).content();
 
+	// look for a mutability keyword
+	if ( token->category() == Token::Category::Modifier ) {
+		mutability = Mutability::convert(token->content());
+		token++;
+	}
+
+	if ( token->type() == Token::Type::ASSIGN ) {
+		token++;
+
+		switch ( token->type() ) {
+			case Token::Type::CONST_BOOLEAN: value = Tools::stringToBool(token->content()); break;
+			case Token::Type::CONST_DOUBLE: value = Tools::stringToDouble(token->content()); break;
+			case Token::Type::CONST_FLOAT: value = Tools::stringToFloat(token->content()); break;
+			case Token::Type::CONST_INTEGER: value = Tools::stringToInt(token->content()); break;
+			case Token::Type::CONST_LITERAL: value = token->content(); break;
+			case Token::Type::CONST_NUMBER: value = Tools::stringToNumber(token->content()); break;
+			default: throw Utils::Exceptions::NotSupported("initialization is only allowed for atomic data types", token->position());
+		}
+
+		token++;
+	}
+
 	expect(Token::Type::SEMICOLON, token);
 
 	Runtime::Object *member = mRepository->createInstance(type, name);
-	member->setFinal(isFinal);
 	member->setMember(false);
 	member->setMutability(mutability);
 	member->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
 	member->setParent(mScope);
-	//member->setQualifiedTypename(getQualifiedTypename(type));
+	member->setQualifiedTypename(getQualifiedTypename(type));
 	member->setRepository(mRepository);
-	member->setVisibility(Visibility::convert(visibility));
+	member->setValue(value);
+	member->setVisibility(visibility);
 
 	mScope->define(name, member);
 }
@@ -217,7 +239,6 @@ void Analyser::createMember(TokenIterator& token, TokenIterator /*end*/)
 void Analyser::createMethod(TokenIterator& token, TokenIterator end)
 {
 	bool isAbstract = false;
-	bool isFinal = false;
 	bool isRecursive = false;
 	std::string languageFeature;
 	MethodAttributes::MethodType::E methodType = MethodAttributes::MethodType::Function;
@@ -255,7 +276,6 @@ void Analyser::createMethod(TokenIterator& token, TokenIterator end)
 	// create a new method with the corresponding return value
 	Runtime::Method *method = new Runtime::Method(mScope, name, type);
 	method->setAbstract(isAbstract);
-	method->setFinal(isFinal);
 	method->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
 	method->setMethodType(methodType);
 	method->setMutability(mutability);
@@ -367,7 +387,7 @@ void Analyser::generate(const TokenList& tokens)
 			std::string reference = createLibraryReference(it, tokens.end());
 			mLibraries.push_back(reference);
 		}
-		else if ( Parser::isMemberDeclaration(it) ) {
+		else if ( Parser::isMemberDeclaration(it) || Parser::isMemberDeclarationWithModifier(it) ) {
 			createMember(it, tokens.end());
 		}
 		else if ( Parser::isMethodDeclaration(it) ) {

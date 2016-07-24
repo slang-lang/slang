@@ -1,10 +1,10 @@
 
-public namespace System {
-}
+// declare 'System' namespace to prevent a user defined private 'System' namespace
+public namespace System { }
 
 public namespace Math {
 
-	public float PI;// = 3.14159265359f;
+	public float PI const = 3.14159265359f;
 
 	public double abs(double value) {
 		if ( value >= 0.0d ) {
