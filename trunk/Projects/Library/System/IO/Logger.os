@@ -29,7 +29,7 @@ public namespace IO {
 			writeln("[INFO ] " + mKey + "::" + message);
 		}
 
-		public void warning(string message const) {
+		public void warn(string message const) {
 			writeln("[WARN ] " + mKey + "::" + message);
 		}
 	}

@@ -34,6 +34,8 @@ private:	// Tests
 	void testDouble();
 	void testFloat();
 	void testInteger();
+	void testIOFile();
+	void testIOLogger();
 	void testString();
 	void testStringIterator();
 };

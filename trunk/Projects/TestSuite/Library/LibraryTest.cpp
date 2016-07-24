@@ -39,7 +39,10 @@ void LibraryTest::process()
 	TEST(testDouble);
 	TEST(testFloat);
 	TEST(testInteger);
+	TEST(testIOFile);
+	TEST(testIOLogger);
 	TEST(testString);
+	TEST(testStringIterator);
 }
 
 void LibraryTest::setup()
@@ -107,6 +110,39 @@ void LibraryTest::testInteger()
 	}
 }
 
+void LibraryTest::testIOFile()
+{
+	try {
+		VirtualMachine vm;
+#ifdef USE_SYSTEM_EXTENSION
+		vm.addExtension(new ObjectiveScript::Extensions::System::SystemExtension());
+#endif
+		vm.createScriptFromFile("Tests/Library/System/IO/FileTest.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed
+		TFAIL(e.what());
+	}
+}
+
+void LibraryTest::testIOLogger()
+{
+	try {
+		VirtualMachine vm;
+#ifdef USE_SYSTEM_EXTENSION
+		vm.addExtension(new ObjectiveScript::Extensions::System::SystemExtension());
+#endif
+		vm.createScriptFromFile("Tests/Library/System/IO/LoggerTest.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed
+		TFAIL(e.what());
+	}
+}
 
 void LibraryTest::testString()
 {
