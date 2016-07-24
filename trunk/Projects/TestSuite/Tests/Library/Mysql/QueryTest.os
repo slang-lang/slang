@@ -6,13 +6,13 @@ public object Main {
 	public void Main(int argc = 0, string args = "") {
 		Mysql.MysqlDebugMode = true;
 
-		Connection conn = new Mysql.Connection("192.168.0.23", 0, "oscript", "oscript", "ts_parking");
+		Mysql.Connection conn = new Mysql.Connection("192.168.0.23", 0, "oscript", "oscript", "ts_parking");
 		if ( !conn.isOpen() ) {
 			print("error while connecting to database!");
 			exit(1);
 		}
 
-		Query query = conn.createQuery();
+		Mysql.Query query = conn.createQuery();
 		if ( !query ) {
 			print("error while creating query!");
 			exit(2);
@@ -28,17 +28,15 @@ public object Main {
 
 		query.prepare("Select * from parking_zones");
 
-		//print(conn.stat());
+		print(conn.stat());
 
 		try {
-			Result result = query.execute();
+			Mysql.Result result = query.execute();
 
 			while ( result.hasNext() ) {
-assert(0);
 				result.next();
 
-assert(0);
-				Row row = result.getCurrentRow();
+				Mysql.Row row = result.getCurrentRow();
 				print(row.ToString());
 			}
 		}

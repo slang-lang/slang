@@ -4,7 +4,7 @@ import Mysql.All;
 
 public object Main {
 	public void Main(int argc, string args) {
-		Connection conn = new Mysql.Connection("192.168.0.23", 0, "oscript", "oscript");
+		Mysql.Connection conn = new Mysql.Connection("192.168.0.23", 0, "oscript", "oscript");
 		if ( !conn.isOpen() ) {
 			writeln("error while opening Mysql connection: " + conn.error());
 			return;
@@ -15,15 +15,15 @@ public object Main {
 			return;
 		}
 
-		MysqlDebugMode = true;
+		Mysql.MysqlDebugMode = true;
 
 		//conn.settings().setAutoEscaping(true);	// caining is not supported (yet)
-		Settings s = conn.settings();
+		Mysql.Settings s = conn.settings();
 		s.setAutoEscaping(true);
 
 		writeln("conn.stat() = " + conn.stat());
 
-		Result result = conn.query("Select * from parking_zones");
+		Mysql.Result result = conn.query("Select * from parking_zones");
 
 		writeln("result.numRows() = " + result.numRows());
 		writeln("result.numFields() = " + result.numFields());
@@ -31,7 +31,7 @@ public object Main {
 		while ( result.hasNext() ) {
 			result.next();
 
-			Row row = result.getCurrentRow();
+			Mysql.Row row = result.getCurrentRow();
 			writeln(row.toString());
 		}
 
