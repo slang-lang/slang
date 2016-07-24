@@ -3,7 +3,11 @@
 import System.IO.File;
 
 public object Main {
-	public void Main(int argc, string argv) {
+	public void Main(int argc = 0, string argv = "") {
+		assert( TestCase1() );
+	}
+
+	private bool TestCase1() const {
 		try {
 			System.IO.File file = new System.IO.File("file", "crtw");
 			assert( file.isOpen() );
@@ -15,6 +19,8 @@ public object Main {
 		}
 		catch {
 			writeln("error during fwrite");
+
+			return false;
 		}
 
 		try {
@@ -34,7 +40,11 @@ public object Main {
 		}
 		catch {
 			writeln("error during fread");
+
+			return false;
 		}
+
+		return true;
 	}
 }
 
