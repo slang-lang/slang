@@ -29,6 +29,7 @@ public:
 	static bool isLibraryReference(TokenIterator start);
 	static bool isLocalDeclaration(TokenIterator start);
 	static bool isMemberDeclaration(TokenIterator start);
+	static bool isMemberDeclarationWithModifier(TokenIterator start);
 	static bool isMethodDeclaration(TokenIterator start);
 	static bool isNamespaceDeclaration(TokenIterator start);
 	static bool isObjectDeclaration(TokenIterator start);

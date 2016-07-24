@@ -44,7 +44,6 @@ protected:
 	void checkSealState();
 
 protected:
-	bool mIsConst;
 	bool mIsFinal;
 	bool mIsSealed;
 	LanguageFeatureState::E mLanguageFeatureState;

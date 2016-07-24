@@ -95,7 +95,6 @@ void Method::operator= (const Method& other)
 {
 	if ( this != &other ) {
 		mIsAbstract = other.mIsAbstract;
-		mIsConst = other.mIsConst;
 		mIsFinal = other.mIsFinal;
 		mIsRecursive = other.mIsRecursive;
 		mIsSealed = other.mIsSealed;

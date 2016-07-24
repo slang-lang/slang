@@ -213,7 +213,7 @@ Symbol* Interpreter::identifyMethod(TokenIterator& token, const ParameterList& p
 			result = getScope()->resolve(identifier, onlyCurrentScope);
 
 			// look for an overloaded method
-			if ( result->getSymbolType() == Symbol::IType::MethodSymbol ) {
+			if ( result && result->getSymbolType() == Symbol::IType::MethodSymbol ) {
 				result = static_cast<Method*>(mOwner)->resolveMethod(identifier, params, onlyCurrentScope);
 			}
 		}

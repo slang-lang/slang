@@ -11,6 +11,7 @@
 // Project includes
 #include <Core/Attributes/Attributes.h>
 #include <Core/Attributes/Visibility.h>
+#include <Core/Runtime/AtomicValue.h>
 #include <Core/Consts.h>
 #include <Core/Scope.h>
 #include <Core/Symbol.h>
@@ -74,6 +75,9 @@ public:
 
 	void setQualifiedTypename(const std::string &name);
 
+	Runtime::AtomicValue getValue() const;
+	void setValue(Runtime::AtomicValue value);
+
 	virtual std::string ToString() const;
 
 public:
@@ -96,6 +100,7 @@ private:
 	std::string mQualifiedTypeName;
 	TokenList mTokens;
 	std::string mTypename;
+	Runtime::AtomicValue mValue;
 	Visibility::E mVisibility;
 };
 

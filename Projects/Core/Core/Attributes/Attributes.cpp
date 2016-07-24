@@ -14,7 +14,7 @@ namespace ObjectiveScript {
 
 
 GenericAttributes::GenericAttributes()
-: mIsConst(true),
+: //mIsConst(true),
   mIsFinal(false),
   mIsSealed(false),
   mLanguageFeatureState(LanguageFeatureState::Stable),
@@ -51,25 +51,28 @@ Visibility::E GenericAttributes::getVisibility() const
 
 bool GenericAttributes::isConst() const
 {
-	return mIsConst;
-	//return mMutability == Mutability::Const;
+	return mMutability == Mutability::Const;
 }
 
 bool GenericAttributes::isFinal() const
 {
 	return mIsFinal;
+	//return mMutability == Mutability::Final;
 }
 
 void GenericAttributes::setConst(bool state)
 {
 	checkSealState();
 
-	mIsConst = state;
+	mMutability = state ? Mutability::Const : Mutability::Modify;
 }
 
 void GenericAttributes::setFinal(bool state)
 {
+	checkSealState();
+
 	mIsFinal = state;
+	//mMutability = state ? Mutability::Final : Mutability::Modify;
 }
 
 void GenericAttributes::setLanguageFeatureState(LanguageFeatureState::E s)
@@ -81,6 +84,8 @@ void GenericAttributes::setLanguageFeatureState(LanguageFeatureState::E s)
 
 void GenericAttributes::setMutability(Mutability::E m)
 {
+	checkSealState();
+
 	mMutability = m;
 }
 
@@ -182,6 +187,8 @@ void ObjectAttributes::setMember(bool state)
 
 void ObjectAttributes::setSealed(bool state)
 {
+	checkSealState();
+
 	// after seal has been called no language feature can get modified anymore
 	mIsSealed = state;
 }

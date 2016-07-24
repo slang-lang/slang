@@ -121,6 +121,18 @@ bool Parser::isMemberDeclaration(TokenIterator start)
 	return checkSyntax(start, tokens);
 }
 
+bool Parser::isMemberDeclarationWithModifier(TokenIterator start)
+{
+	TokenList tokens;
+
+	tokens.push_back(Token(Token::Type::VISIBILITY));
+	tokens.push_back(Token(Token::Type::TYPE));
+	tokens.push_back(Token(Token::Type::IDENTIFER));
+	tokens.push_back(Token(Token::Type::ASSIGN));
+
+	return checkSyntax(start, tokens);
+}
+
 // syntax:
 // <visibility> <type> <identifier> (
 bool Parser::isMethodDeclaration(TokenIterator start)

@@ -68,13 +68,14 @@ bool Preprocessor::buildQualifiedNames(TokenIteratorMutable& token, bool skipFir
 
 Designtime::BluePrint* Preprocessor::createMember(TokenIterator token) const
 {
+	bool isConst = false;
+	bool isFinal = false;
 	std::string languageFeature;
 	Mutability::E mutability = Mutability::Modify;
 	std::string name;
 	std::string type;
+	Runtime::AtomicValue value = 0;
 	std::string visibility;
-	bool isConst = false;
-	bool isFinal = false;
 
 	// look for the visibility token
 	visibility = (*token++).content();
@@ -94,17 +95,30 @@ Designtime::BluePrint* Preprocessor::createMember(TokenIterator token) const
 		throw Utils::Exceptions::LawOfDemeterViolated("public member " + name + " violates \"Law of Demeter\"", token->position());
 	}
 
+	// look for a mutability token
 	if ( token->category() == Token::Category::Modifier ) {
 		mutability = Mutability::convert((*token).content());
 
-///*
-		if ( (*token).content() == MODIFIER_CONST ) {
-			isConst = true;
-		}
-		else if ( (*token).content() == MODIFIER_FINAL ) {
+		if ( (*token).content() == MODIFIER_FINAL ) {
 			isFinal = true;
 		}
-//*/
+
+		token++;
+	}
+
+	// look for an assignment token
+	if ( token->type() == Token::Type::ASSIGN ) {
+		token++;
+
+		switch ( token->type() ) {
+			case Token::Type::CONST_BOOLEAN: value = Tools::stringToBool(token->content()); break;
+			case Token::Type::CONST_DOUBLE: value = Tools::stringToDouble(token->content()); break;
+			case Token::Type::CONST_FLOAT: value = Tools::stringToFloat(token->content()); break;
+			case Token::Type::CONST_INTEGER: value = Tools::stringToInt(token->content()); break;
+			case Token::Type::CONST_LITERAL: value = token->content(); break;
+			case Token::Type::CONST_NUMBER: value = Tools::stringToNumber(token->content()); break;
+			default: throw Utils::Exceptions::NotSupported("initialization is only allowed for atomic data types", token->position());
+		}
 
 		token++;
 	}
@@ -112,13 +126,13 @@ Designtime::BluePrint* Preprocessor::createMember(TokenIterator token) const
 	expect(Token::Type::SEMICOLON, token);
 
 	Designtime::BluePrint* blue = new Designtime::BluePrint(type, mFilename, name);
-	blue->setConst(isConst);
 	blue->setFinal(isFinal);
 	blue->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
 	blue->setMutability(mutability);
 	blue->setMember(true);		// every object created here is a member object
 	blue->setParent(mScope);
 	blue->setQualifiedTypename(type);
+	blue->setValue(value);
 	blue->setVisibility(Visibility::convert(visibility));
 
 	return blue;
@@ -187,6 +201,8 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token) const
 			}
 			else if ( token->content() == MODIFIER_FINAL ) {
 				isFinal = true;
+				//mutability = Mutability::Final;
+				//numConstModifiers++;
 			}
 			else if ( token->content() == MODIFIER_MODIFY ) {
 				isConst = false;
@@ -224,7 +240,6 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token) const
 	// create a new method with the corresponding return value
 	Runtime::Method *method = new Runtime::Method(mScope, name, type);
 	method->setAbstract(isAbstract || mBluePrint->isInterface());
-	method->setConst(isConst);
 	method->setFinal(isFinal);
 	method->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
 	method->setMethodType(methodType);
@@ -254,7 +269,7 @@ void Preprocessor::generateObject()
 
 	// loop over all visibility declarations and check if we have a member declaration or a method declaration
 	for ( TokenIteratorList::const_iterator it = visList.begin(); it != visList.end(); ++it ) {
-		if ( Parser::isMemberDeclaration((*it)) ) {
+		if ( Parser::isMemberDeclaration((*it)) || Parser::isMemberDeclarationWithModifier((*it)) ) {
 			Designtime::BluePrint *member = createMember((*it));
 
 			mBluePrint->define(member->getName(), member);
