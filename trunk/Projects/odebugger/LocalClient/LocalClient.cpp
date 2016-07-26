@@ -6,7 +6,6 @@
 #include <iostream>
 
 // Project includes
-//#include <Backend/IBackend.h>
 
 // Namespace declarations
 
@@ -15,31 +14,11 @@ namespace ObjectiveScript {
 
 
 LocalClient::LocalClient()
-: //mBackend(0),
-  mSettings(0)
 {
 }
 
 LocalClient::~LocalClient()
 {
-}
-
-/*
-void LocalClient::connectBackend(IBackend* backend)
-{
-	assert(backend);
-	assert(!mBackend);
-
-	mBackend = backend;
-}
-*/
-
-void LocalClient::connectSettings(Settings* settings)
-{
-	assert(settings);
-	assert(!mSettings);
-
-	mSettings = settings;
 }
 
 std::string LocalClient::read() const

@@ -33,9 +33,6 @@ void Application::init(int argc, const char* argv[])
 	mBackend.connectSettings(&mSettings);
 	mBackend.connectTerminal(&mLocalClient);
 
-	//mLocalClient.connectBackend(&mBackend);
-	mLocalClient.connectSettings(&mSettings);
-
 	Core::Debugger::GetInstance().registerReceiver(&mBackend);
 }
 

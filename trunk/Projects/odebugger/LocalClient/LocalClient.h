@@ -7,7 +7,6 @@
 #include <string>
 
 // Project includes
-#include <Common/Settings.h>
 #include <Core/Types.h>
 #include <Interfaces/ITerminal.h>
 
@@ -18,8 +17,6 @@
 
 namespace ObjectiveScript {
 
-// Forward declarations
-//class IBackend;
 
 class LocalClient : public ITerminal
 {
@@ -32,13 +29,8 @@ public:		// ITerminal implementation
 	void write(const std::string& text);
 	void writeln(const std::string& text);
 
-public:
-	//void connectBackend(IBackend* backend);
-	void connectSettings(Settings* settings);
-
 private:
-	//IBackend* mBackend;
-	Settings* mSettings;
+
 };
 
 

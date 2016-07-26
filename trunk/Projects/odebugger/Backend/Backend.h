@@ -76,6 +76,10 @@ private:	// Symbol cache
 	Symbol* getCachedSymbol(const std::string& name) const;
 	void clearSymbolCache();
 
+private:	// Terminal
+	void write(std::string text);
+	void writeln(std::string text);
+
 private:
 	std::string executeCommand(const StringList &tokens);
 	StringList parseCommands(const std::string& commands) const;
