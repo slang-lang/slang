@@ -33,9 +33,13 @@ Debugger::~Debugger()
 
 bool Debugger::addBreakPoint(const BreakPoint& breakpoint)
 {
-	if ( isBreakPoint(breakpoint) ) {
-		// duplicate break point
-		return false;
+	BreakPointCollection::iterator it = mBreakPoints.find(breakpoint);
+
+	if ( it != mBreakPoints.end() ) {
+		// duplicate break point, so we only update the breakpoint's condition
+		it->setCondition(breakpoint.getCondition());
+
+		return true;
 	}
 
 	mBreakPoints.insert(breakpoint);
