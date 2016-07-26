@@ -54,7 +54,7 @@ Backend::~Backend()
 bool Backend::addBreakPoint(const StringList& tokens)
 {
 	if ( tokens.size() != 3 && tokens.size() != 6 ) {
-		mTerminal->writeln("invalid number of arguments!");
+		writeln("invalid number of arguments!");
 		return false;
 	}
 
@@ -135,7 +135,7 @@ bool Backend::addLiteralSymbol(const std::string& name, const std::string& value
 bool Backend::addWatch(const StringList& tokens)
 {
 	if ( tokens.size() != 2 ) {
-		mTerminal->writeln("invalid number of arguments!");
+		writeln("invalid number of arguments!");
 		return false;
 	}
 
@@ -264,14 +264,14 @@ std::string Backend::executeCommand(const StringList &tokens)
 		}
 		else if ( cmd == "run" ) {
 			if ( mScope ) {
-				mTerminal->writeln("stop current debugging session before starting a new one!");
+				writeln("stop current debugging session before starting a new one!");
 			}
 			else {
 				run(tokens);
 			}
 		}
 		else {
-			mTerminal->writeln("unknown command '" + cmd + "'");
+			writeln("unknown command '" + cmd + "'");
 		}
 	}
 
@@ -281,7 +281,7 @@ std::string Backend::executeCommand(const StringList &tokens)
 void Backend::executeSymbol(const StringList& tokens)
 {
 	if ( !mScope ) {
-		mTerminal->writeln("no scope available!");
+		writeln("no scope available!");
 		return;
 	}
 
@@ -298,12 +298,12 @@ void Backend::executeSymbol(const StringList& tokens)
 		symbol = getCachedSymbol(name);
 	}
 	if ( !symbol ) {
-		mTerminal->writeln("could not resolve symbol '" + name + "'!");
+		writeln("could not resolve symbol '" + name + "'!");
 		return;
 	}
 
 	if ( symbol->getSymbolType() != Symbol::IType::MethodSymbol ) {
-		mTerminal->writeln("could not execute non-method symbol '" + name + "'!");
+		writeln("could not execute non-method symbol '" + name + "'!");
 		return;
 	}
 
@@ -312,13 +312,13 @@ void Backend::executeSymbol(const StringList& tokens)
 		Runtime::Object result;
 		method->execute(ParameterList(), &result, Token());
 
-		mTerminal->writeln(result.ToString());
+		writeln(result.ToString());
 	}
 	catch ( std::exception &e ) {
-		mTerminal->writeln(e.what());
+		writeln(e.what());
 	}
 	catch ( ... ) {
-		mTerminal->writeln("unknown exception occured");
+		writeln("unknown exception occured");
 	}
 }
 
@@ -362,7 +362,7 @@ Symbol* Backend::getSymbol(std::string name) const
 bool Backend::modifySymbol(const StringList& tokens)
 {
 	if ( tokens.size() != 3 ) {
-		mTerminal->writeln("invalid number of arguments!");
+		writeln("invalid number of arguments!");
 		return false;
 	}
 
@@ -376,13 +376,13 @@ bool Backend::modifySymbol(const StringList& tokens)
 
 	Symbol* symbol = getSymbol(name);
 	if ( !symbol ) {
-		mTerminal->writeln("could not resolve symbol '" + name + "'!");
+		writeln("could not resolve symbol '" + name + "'!");
 		return false;
 	}
 
 	Runtime::Object* object = static_cast<Runtime::Object*>(symbol);
 	if ( !object->isAtomicType() ) {
-		mTerminal->writeln("can not modify complex type '" + object->Typename() + "' ");
+		writeln("can not modify complex type '" + object->Typename() + "' ");
 		return false;
 	}
 
@@ -419,7 +419,7 @@ int Backend::notify(SymbolScope* scope, const Core::BreakPoint& breakpoint)
 
 	// Breakpoint check
 	if ( scope && !(breakpoint == Core::Debugger::immediateBreakPoint) ) {
-		mTerminal->writeln("[Breakpoint " + breakpoint.toString() + " reached]");
+		writeln("[Breakpoint " + breakpoint.toString() + " reached]");
 	}
 
 	// automatically update watches
@@ -428,7 +428,7 @@ int Backend::notify(SymbolScope* scope, const Core::BreakPoint& breakpoint)
 	}
 
 	while ( mRunning && !mContinue ) {
-		mTerminal->write(mSettings->prompt());
+		write(mSettings->prompt());
 
 		std::string command = mTerminal->read();
 
@@ -444,21 +444,21 @@ int Backend::notify(SymbolScope* scope, const Core::BreakPoint& breakpoint)
 
 int Backend::notifyEnter(SymbolScope* scope, const Core::BreakPoint& breakpoint)
 {
-	mTerminal->writeln("[Stepping into " + StackTrace::GetInstance().currentStackLevel().toString() + "]");
+	writeln("[Stepping into " + StackTrace::GetInstance().currentStackLevel().toString() + "]");
 
 	return notify(scope, breakpoint);
 }
 
 int Backend::notifyException(SymbolScope* scope, const Core::BreakPoint& breakpoint)
 {
-	mTerminal->writeln("[Exception has been thrown in " + StackTrace::GetInstance().currentStackLevel().toString() + "]");
+	writeln("[Exception has been thrown in " + StackTrace::GetInstance().currentStackLevel().toString() + "]");
 
 	return notify(scope, breakpoint);
 }
 
 int Backend::notifyExit(SymbolScope* scope, const Core::BreakPoint& breakpoint)
 {
-	mTerminal->writeln("[Stepping out of " + StackTrace::GetInstance().currentStackLevel().toString() + "]");
+	writeln("[Stepping out of " + StackTrace::GetInstance().currentStackLevel().toString() + "]");
 
 	return notify(scope, breakpoint);
 }
@@ -514,11 +514,11 @@ void Backend::printBreakPoints()
 {
 	Core::BreakPointCollection list = mDebugger->getBreakPoints();
 
-	mTerminal->writeln("BreakPoints:");
+	writeln("BreakPoints:");
 
 	int idx = 1;
 	for ( Core::BreakPointCollection::const_iterator it = list.begin(); it != list.end(); ++it ) {
-		mTerminal->writeln(Tools::toString(idx) + ": " + it->toString());
+		writeln(Tools::toString(idx) + ": " + it->toString());
 
 		idx++;
 	}
@@ -526,30 +526,30 @@ void Backend::printBreakPoints()
 
 void Backend::printHelp()
 {
-	mTerminal->writeln("Generic commands:");
+	writeln("Generic commands:");
 
-	mTerminal->writeln("\tautowatch     automatically show watches after reaching breakpoint");
-	mTerminal->writeln("\tbreak (b)     add breakpoint");
-	mTerminal->writeln("\tbreakpoints   print breakpoints");
-	mTerminal->writeln("\tdelete (d)    delete breakpoint");
-	mTerminal->writeln("\thelp          print help message");
-	mTerminal->writeln("\tquit (q)      quit odebugger");
-	mTerminal->writeln("\trun           run program");
-	mTerminal->writeln("\tunwatch        remove symbol watch");
-	mTerminal->writeln("\twatch (w)      add symbol watch");
+	writeln("\tautowatch     automatically show watches after reaching breakpoint");
+	writeln("\tbreak (b)     add breakpoint");
+	writeln("\tbreakpoints   print breakpoints");
+	writeln("\tdelete (d)    delete breakpoint");
+	writeln("\thelp          print help message");
+	writeln("\tquit (q)      quit odebugger");
+	writeln("\trun           run program");
+	writeln("\tunwatch        remove symbol watch");
+	writeln("\twatch (w)      add symbol watch");
 
 	if ( mScope ) {
-	mTerminal->writeln("Debugging commands:");
-	mTerminal->writeln("\tbacktrace (bt)   print stack trace");
-	mTerminal->writeln("\tcontinue (c)     continue program execution");
-	mTerminal->writeln("\texecute (e)      execute program function");
-	mTerminal->writeln("\tignore           ignore all breakpoints and continue program execution");
-	mTerminal->writeln("\tinto (i)         break on next function call");
-	mTerminal->writeln("\tmodify (m)       modify (atomic) symbol");
-	mTerminal->writeln("\tnext (n)         step over");
-	mTerminal->writeln("\tout (o)          break on next function exit");
-	mTerminal->writeln("\tprint (p)        print symbol");
-	mTerminal->writeln("\twatches (p)      print watched symbols");
+	writeln("Debugging commands:");
+	writeln("\tbacktrace (bt)   print stack trace");
+	writeln("\tcontinue (c)     continue program execution");
+	writeln("\texecute (e)      execute program function");
+	writeln("\tignore           ignore all breakpoints and continue program execution");
+	writeln("\tinto (i)         break on next function call");
+	writeln("\tmodify (m)       modify (atomic) symbol");
+	writeln("\tnext (n)         step over");
+	writeln("\tout (o)          break on next function exit");
+	writeln("\tprint (p)        print symbol");
+	writeln("\twatches (p)      print watched symbols");
 	}
 }
 
@@ -558,7 +558,7 @@ void Backend::printStackTrace()
 	StackTrace::Stack stack = StackTrace::GetInstance().getStack();
 
 	for ( StackTrace::Stack::const_iterator it = stack.begin(); it != stack.end(); ++it ) {
-		mTerminal->writeln(it->toString());
+		writeln(it->toString());
 	}
 }
 
@@ -574,11 +574,11 @@ void Backend::printSymbol(const StringList& tokens)
 
 	Symbol* symbol = getSymbol(name);
 	if ( !symbol ) {
-		mTerminal->writeln("could not resolve symbol '" + name + "'!");
+		writeln("could not resolve symbol '" + name + "'!");
 		return;
 	}
 
-	mTerminal->writeln(symbol->ToString());
+	writeln(symbol->ToString());
 }
 
 void Backend::refreshWatches()
@@ -591,14 +591,14 @@ void Backend::refreshWatches()
 			value = symbol->ToString();
 		}
 
-		mTerminal->writeln("[Watch] " + it->symbol() + ": " + value);
+		writeln("[Watch] " + it->symbol() + ": " + value);
 	}
 }
 
 bool Backend::removeBreakPoint(const StringList& tokens)
 {
 	if ( tokens.size() != 2 ) {
-		mTerminal->writeln("invalid number of arguments!");
+		writeln("invalid number of arguments!");
 		return false;
 	}
 
@@ -623,7 +623,7 @@ bool Backend::removeBreakPoint(const StringList& tokens)
 bool Backend::removeWatch(const StringList& tokens)
 {
 	if ( tokens.size() != 2 ) {
-		mTerminal->writeln("invalid number of arguments!");
+		writeln("invalid number of arguments!");
 		return false;
 	}
 
@@ -686,7 +686,7 @@ void Backend::start()
 #endif
 
 	try {
-		mTerminal->writeln("[Starting program: " + mSettings->filename() + "]");
+		writeln("[Starting program: " + mSettings->filename() + "]");
 
 		ObjectiveScript::Script *script = mVirtualMachine->createScriptFromFile(mSettings->filename(), mParameters);
 		assert(script);
@@ -695,18 +695,18 @@ void Backend::start()
 		ObjectiveScript::Runtime::Object *main = static_cast<ObjectiveScript::Runtime::Object*>(script->resolve("main"));
 
 		if ( !main || main->isAtomicType() ) {
-			mTerminal->writeln("[Using structured execution mode]");
+			writeln("[Using structured execution mode]");
 
 			ObjectiveScript::Runtime::IntegerObject result;
 			script->execute("Main", mParameters, &result);
 
-			mTerminal->writeln("[Process finished with exit code " + result.getValue().toStdString() + "]");
+			writeln("[Process finished with exit code " + result.getValue().toStdString() + "]");
 		}
 
-		mTerminal->writeln("[Process exited normally]");
+		writeln("[Process exited normally]");
 	}
 	catch ( std::exception& e ) {
-		mTerminal->writeln(e.what());
+		writeln(e.what());
 	}
 }
 
@@ -722,12 +722,26 @@ void Backend::toggleAutoWatch()
 {
 	mAutoWatch = !mAutoWatch;
 
-	mTerminal->write("Autowatch is ");
+	write("Autowatch is ");
 	if ( mAutoWatch ) {
-		mTerminal->writeln("on");
+		writeln("on");
 	}
 	else {
-		mTerminal->writeln("off");
+		writeln("off");
+	}
+}
+
+void Backend::write(std::string text)
+{
+	if ( mTerminal ) {
+		mTerminal->write(text);
+	}
+}
+
+void Backend::writeln(std::string text)
+{
+	if ( mTerminal ) {
+		mTerminal->writeln(text);
 	}
 }
 
