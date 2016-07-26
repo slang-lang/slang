@@ -182,6 +182,19 @@ GlobalScope::~GlobalScope()
 	mMethods.clear();
 
 	for ( Symbols::reverse_iterator it = mSymbols.rbegin(); it != mSymbols.rend(); ) {
+		if ( !it->second ) {
+			// ignore invalid pointers
+			continue;
+		}
+
+		switch ( it->second->getSymbolType() ) {
+			case Symbol::IType::NamespaceSymbol:
+				delete it->second;
+				break;
+			default:
+				break;
+		}
+
 		undefine(it->first, it->second);
 	}
 	mSymbols.clear();
