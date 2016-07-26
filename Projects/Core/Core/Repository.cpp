@@ -48,6 +48,8 @@ Repository::Repository()
 
 Repository::~Repository()
 {
+	delete mScope;
+
 	// Cleanup instances
 	// {
 	for ( ReferenceCountedObjects::iterator it = mInstances.begin(); it != mInstances.end(); ++it ) {
@@ -72,8 +74,6 @@ Repository::~Repository()
 	}
 	mBluePrints.clear();
 	// }
-
-	delete mScope;
 }
 
 /*

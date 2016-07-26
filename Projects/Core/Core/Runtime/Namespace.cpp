@@ -31,6 +31,10 @@ Namespace::~Namespace()
 	mMethods.clear();
 
 	for ( Symbols::reverse_iterator it = mSymbols.rbegin(); it != mSymbols.rend(); ) {
+		if ( it->second && it->second->getSymbolType() == Symbol::IType::NamespaceSymbol )  {
+			delete it->second;
+		}
+		
 		undefine(it->first, it->second);
 	}
 	mSymbols.clear();
