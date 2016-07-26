@@ -71,15 +71,12 @@ bool Backend::addBreakPoint(const StringList& tokens)
 		std::string op = (*it++);
 		std::string right = (*it++);
 
-		//Core::Condition condition(left, Core::Condition::Type::Equals, right);
-		Core::Condition condition(left, op, right);
-
-		breakpoint.setCondition(condition);
+		breakpoint.setCondition(
+			Core::Condition(left, op, right)
+		);
 	}
 
-	mDebugger->addBreakPoint(breakpoint);
-
-	return true;
+	return mDebugger->addBreakPoint(breakpoint);
 }
 
 bool Backend::addLiteralSymbol(const std::string& name, const std::string& value)
@@ -253,6 +250,15 @@ std::string Backend::executeCommand(const StringList &tokens)
 				throw Runtime::ControlFlow::ExitProgram;
 			}
 		}
+		else if ( cmd == "run" || cmd == "r" ) {
+			if ( mScope ) {
+				mDebugger->resume();
+				continueExecution();
+			}
+			else {
+				run(tokens);
+			}
+		}
 		else if ( cmd == "unwatch" ) {
 			removeWatch(tokens);
 		}
@@ -261,14 +267,6 @@ std::string Backend::executeCommand(const StringList &tokens)
 		}
 		else if ( cmd == "watches" ) {
 			refreshWatches();
-		}
-		else if ( cmd == "run" ) {
-			if ( mScope ) {
-				writeln("stop current debugging session before starting a new one!");
-			}
-			else {
-				run(tokens);
-			}
 		}
 		else {
 			writeln("unknown command '" + cmd + "'");
@@ -534,9 +532,9 @@ void Backend::printHelp()
 	writeln("\tdelete (d)    delete breakpoint");
 	writeln("\thelp          print help message");
 	writeln("\tquit (q)      quit odebugger");
-	writeln("\trun           run program");
-	writeln("\tunwatch        remove symbol watch");
-	writeln("\twatch (w)      add symbol watch");
+	writeln("\trun (r)       run program");
+	writeln("\tunwatch       remove symbol watch");
+	writeln("\twatch (w)     add symbol watch");
 
 	if ( mScope ) {
 	writeln("Debugging commands:");
