@@ -31,10 +31,17 @@ Namespace::~Namespace()
 	mMethods.clear();
 
 	for ( Symbols::reverse_iterator it = mSymbols.rbegin(); it != mSymbols.rend(); ) {
-		if ( it->second && it->second->getSymbolType() == Symbol::IType::NamespaceSymbol )  {
-			delete it->second;
+		if ( it->second ) {
+			switch ( it->second->getSymbolType() ) {
+				case Symbol::IType::NamespaceSymbol:
+					delete it->second;
+					it->second = 0;
+					break;
+				default:
+					break;
+			}
 		}
-		
+
 		undefine(it->first, it->second);
 	}
 	mSymbols.clear();
