@@ -25,9 +25,10 @@ SymbolScope::SymbolScope(const std::string& name, IScope *parent)
 
 SymbolScope::~SymbolScope()
 {
+	mParent = 0;
 }
 
-void SymbolScope::define(const std::string& name, Symbol *symbol)
+void SymbolScope::define(const std::string& name, Symbol* symbol)
 {
 	assert(symbol);
 
@@ -88,24 +89,16 @@ Symbol* SymbolScope::resolve(const std::string& name, bool onlyCurrentScope) con
 	return 0;
 }
 
-void SymbolScope::undefine(const std::string& name, Symbol *symbol)
+void SymbolScope::undefine(const std::string& name, Symbol* /*symbol*/)
 {
 	Symbols::iterator it = mSymbols.find(name);
 	if ( it != mSymbols.end() ) {
 		mSymbols.erase(it);
 	}
-
-(void)symbol;
-/*
-	else if ( mParent ) {
-		return mParent->undefine(name, symbol);
-	}
-*/
 }
 
 
-
-MethodScope::MethodScope(const std::string& name, IScope *parent)
+MethodScope::MethodScope(const std::string& name, IScope* parent)
 : SymbolScope(name, parent)
 {
 	mScopeType = IType::MethodScope;
@@ -182,17 +175,15 @@ GlobalScope::~GlobalScope()
 	mMethods.clear();
 
 	for ( Symbols::reverse_iterator it = mSymbols.rbegin(); it != mSymbols.rend(); ) {
-		if ( !it->second ) {
-			// ignore invalid pointers
-			continue;
-		}
-
-		switch ( it->second->getSymbolType() ) {
-			case Symbol::IType::NamespaceSymbol:
-				delete it->second;
-				break;
-			default:
-				break;
+		if ( it->second ) {
+			switch ( it->second->getSymbolType() ) {
+				case Symbol::IType::NamespaceSymbol:
+					delete it->second;
+					it->second = 0;
+					break;
+				default:
+					break;
+			}
 		}
 
 		undefine(it->first, it->second);

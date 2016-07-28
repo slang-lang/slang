@@ -27,18 +27,18 @@ namespace Runtime {
 class SymbolScope : public IScope
 {
 public:
-	SymbolScope(const std::string& name, IScope *parent = 0);
+	SymbolScope(const std::string& name, IScope* parent = 0);
 	virtual ~SymbolScope();
 
 public:	// IScope implementation
-	virtual void define(const std::string& name, Symbol *symbol);
+	virtual void define(const std::string& name, Symbol* symbol);
 	virtual IScope* getEnclosingScope() const;
 	virtual void exportSymbols(Symbols& symbols);
 	virtual std::string getFullScopeName() const;
 	virtual const std::string& getScopeName() const;
 	virtual IScope::IType::E getScopeType() const;
 	virtual Symbol* resolve(const std::string& name, bool onlyCurrentScope = false) const;
-	virtual void undefine(const std::string& name, Symbol *symbol);
+	virtual void undefine(const std::string& name, Symbol* symbol);
 
 protected:
 	IScope *mParent;
@@ -54,7 +54,7 @@ public:
 	typedef std::set<Runtime::Method*> MethodCollection;
 
 public:
-	MethodScope(const std::string& name, IScope *parent = 0);
+	MethodScope(const std::string& name, IScope* parent = 0);
 	virtual ~MethodScope();
 
 public:

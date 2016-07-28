@@ -60,6 +60,8 @@ Repository::~Repository()
 	mInstances.clear();
 	// }
 
+	delete mScope;
+
 	// Cleanup prototypes
 	// {
 	mPrototypes.clear();
@@ -72,8 +74,6 @@ Repository::~Repository()
 	}
 	mBluePrints.clear();
 	// }
-
-	delete mScope;
 }
 
 /*
