@@ -25,11 +25,10 @@ private namespace OutterSpace {
 			InnerSpace.InnerObject inner = new InnerSpace.InnerObject(string value * 2);
 			mInnerObject = inner;
 		}
-/*
+
 		public InnerSpace.InnerObject getInnerObject() const {
 			return mInnerObject;
 		}
-*/
 	}
 }
 
