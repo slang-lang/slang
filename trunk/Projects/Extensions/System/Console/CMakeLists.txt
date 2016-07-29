@@ -7,6 +7,7 @@ SET(SOURCES
 SET(HEADERS
 	Cerr.h
 	Cin.h
+	Console.h
 	Cout.h
 	Endl.h
 )
