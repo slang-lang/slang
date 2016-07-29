@@ -6,6 +6,7 @@ SET(SOURCES
 	FileRead.cpp
 	FileSeek.cpp
 	FileWrite.cpp
+	IO.cpp
 )
 
 SET(HEADERS
