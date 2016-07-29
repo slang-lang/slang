@@ -199,11 +199,35 @@
 			>
 		</File>
 		<File
+			RelativePath=".\System\Console\Cerr.h"
+			>
+		</File>
+		<File
+			RelativePath=".\System\Console\Cin.h"
+			>
+		</File>
+		<File
+			RelativePath=".\System\Console\Console.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\System\Console\Console.h"
+			>
+		</File>
+		<File
+			RelativePath=".\System\Console\Cout.h"
+			>
+		</File>
+		<File
 			RelativePath=".\Apache\Defs.cpp"
 			>
 		</File>
 		<File
 			RelativePath=".\Apache\Defs.h"
+			>
+		</File>
+		<File
+			RelativePath=".\System\Console\Endl.h"
 			>
 		</File>
 		<File
@@ -260,6 +284,10 @@
 		</File>
 		<File
 			RelativePath=".\Apache\Get.h"
+			>
+		</File>
+		<File
+			RelativePath=".\System\GetChar.h"
 			>
 		</File>
 		<File
