@@ -20,6 +20,7 @@
 #include <System/Strings/ToLower.h>
 #include <System/Strings/ToUpper.h>
 #include "AssertMsg.h"
+#include "GetChar.h"
 #include "GetEnv.h"
 //#include "Print.h"
 #include "Sleep.h"
@@ -39,6 +40,7 @@ void SystemExtension::provideMethods(ExtensionMethods &methods)
 	assert(methods.empty());
 
 	methods.push_back(new AssertMsg());
+	methods.push_back(new GetChar());
 	methods.push_back(new GetEnv());
 	//methods.push_back(new Printf());
 	methods.push_back(new Sleep());

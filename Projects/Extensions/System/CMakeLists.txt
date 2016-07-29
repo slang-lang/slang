@@ -11,6 +11,7 @@ SET(SOURCES
 
 SET(HEADERS
 	AssertMsg.h
+	GetChar.h
 	GetEnv.h
 #	Print.h
 	Sleep.h
