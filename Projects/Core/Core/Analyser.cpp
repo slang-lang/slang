@@ -228,7 +228,7 @@ void Analyser::createMember(TokenIterator& token, TokenIterator /*end*/)
 	member->setMutability(mutability);
 	member->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
 	member->setParent(mScope);
-	member->setQualifiedTypename(getQualifiedTypename(type));
+	member->setQualifiedTypename(type);
 	member->setRepository(mRepository);
 	member->setValue(value);
 	member->setVisibility(visibility);

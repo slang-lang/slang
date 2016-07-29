@@ -376,7 +376,7 @@ void Repository::initializeObject(Runtime::Object *object, Designtime::BluePrint
 		symbol->setMember(blue->isMember());
 		symbol->setMutability(blue->getMutability());
 		symbol->setParent(object);
-		symbol->setQualifiedTypename(object->QualifiedTypename());
+		symbol->setQualifiedTypename(blue->QualifiedTypename());
 		symbol->setRepository(this);
 		symbol->setValue(blue->getValue());
 		symbol->setVisibility(blue->getVisibility());

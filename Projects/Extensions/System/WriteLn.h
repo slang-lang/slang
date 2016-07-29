@@ -6,12 +6,9 @@
 // Library includes
 
 // Project includes
-#include <Core/Interfaces/IExtension.h>
-#include <Core/Method.h>
-
-#include <Core/Designtime/BuildInTypes/BoolObject.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/Designtime/BuildInTypes/VoidObject.h>
+#include <Core/Method.h>
 #include <Core/Repository.h>
 #include <Core/Tools.h>
 #include <Core/Utils/Exceptions.h>
@@ -34,7 +31,7 @@ public:
 	: Runtime::Method(0, "writeln", Designtime::VoidObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter("text", Designtime::StringObject::TYPENAME, VALUE_NONE));
+		params.push_back(Parameter("text", Designtime::StringObject::TYPENAME, VALUE_NONE, true));
 
 		setSignature(params);
 	}
