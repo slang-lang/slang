@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_System_Print_h
-#define ObjectiveScript_Extensions_System_Print_h
+#ifndef ObjectiveScript_Extensions_System_Console_Cout_h
+#define ObjectiveScript_Extensions_System_Console_Cout_h
 
 
 // Library includes
@@ -8,7 +8,6 @@
 // Project includes
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
-#include <Core/Designtime/BuildInTypes/VoidObject.h>
 #include <Core/Method.h>
 #include <Core/Repository.h>
 #include <Core/Tools.h>
@@ -23,13 +22,14 @@
 namespace ObjectiveScript {
 namespace Extensions {
 namespace System {
+namespace Console {
 
 
-class Printf : public Runtime::Method
+class Cout : public Runtime::Method
 {
 public:
-	Printf()
-	: Runtime::Method(0, "printf", Designtime::VoidObject::TYPENAME)
+	Cout()
+	: Runtime::Method(0, "cout", Designtime::StringObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter("text", Designtime::StringObject::TYPENAME, VALUE_NONE));
@@ -62,6 +62,7 @@ public:
 };
 
 
+}
 }
 }
 }

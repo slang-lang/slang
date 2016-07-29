@@ -1,5 +1,6 @@
 INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
+ADD_SUBDIRECTORY(Console)
 ADD_SUBDIRECTORY(IO)
 ADD_SUBDIRECTORY(Strings)
 
@@ -11,7 +12,7 @@ SET(SOURCES
 SET(HEADERS
 	AssertMsg.h
 	GetEnv.h
-	Print.h
+#	Print.h
 	Sleep.h
 	SystemExtension.h
 	Write.h
@@ -21,6 +22,7 @@ SET(HEADERS
 SET(DEPENDENCIES
 	ExtensionsSystemStrings
 	ExtensionsSystemIO
+    ExtensionsSystemConsole
 	Utils
 	Core
 )

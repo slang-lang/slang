@@ -5,6 +5,10 @@
 // Library includes
 
 // Project includes
+#include <System/Console/Cerr.h>
+#include <System/Console/Cin.h>
+#include <System/Console/Cout.h>
+#include <System/Console/Endl.h>
 #include <System/IO/FileClose.h>
 #include <System/IO/FileOpen.h>
 #include <System/IO/FileRead.h>
@@ -17,7 +21,7 @@
 #include <System/Strings/ToUpper.h>
 #include "AssertMsg.h"
 #include "GetEnv.h"
-#include "Print.h"
+//#include "Print.h"
 #include "Sleep.h"
 #include "Write.h"
 #include "WriteLn.h"
@@ -36,10 +40,15 @@ void SystemExtension::provideMethods(ExtensionMethods &methods)
 
 	methods.push_back(new AssertMsg());
 	methods.push_back(new GetEnv());
-	methods.push_back(new Printf());
+	//methods.push_back(new Printf());
 	methods.push_back(new Sleep());
 	methods.push_back(new Write());
 	methods.push_back(new WriteLn());
+
+	methods.push_back(new Console::Cerr());
+	methods.push_back(new Console::Cin());
+	methods.push_back(new Console::Cout());
+	methods.push_back(new Console::Endl());
 
 	methods.push_back(new IO::FileClose());
 	methods.push_back(new IO::FileOpen());

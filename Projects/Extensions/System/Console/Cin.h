@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_System_Print_h
-#define ObjectiveScript_Extensions_System_Print_h
+#ifndef ObjectiveScript_Extensions_System_Console_Cin_h
+#define ObjectiveScript_Extensions_System_Console_Cin_h
 
 
 // Library includes
@@ -8,7 +8,6 @@
 // Project includes
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
-#include <Core/Designtime/BuildInTypes/VoidObject.h>
 #include <Core/Method.h>
 #include <Core/Repository.h>
 #include <Core/Tools.h>
@@ -23,31 +22,34 @@
 namespace ObjectiveScript {
 namespace Extensions {
 namespace System {
+namespace Console {
 
 
-class Printf : public Runtime::Method
+class Cin : public Runtime::Method
 {
 public:
-	Printf()
-	: Runtime::Method(0, "printf", Designtime::VoidObject::TYPENAME)
+	Cin()
+	: Runtime::Method(0, "cin", Designtime::StringObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter("text", Designtime::StringObject::TYPENAME, VALUE_NONE));
 
 		setSignature(params);
 	}
 
 public:
-	Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* /*result*/, const Token& token)
+	Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* result, const Token& token)
 	{
 		ParameterList list = mergeParameters(params);
 
 		try {
 			ParameterList::const_iterator it = list.begin();
 
-			std::string param_text = (*it++).value().toStdString();
+			std::string text;
 
-			std::cout << param_text;
+			getline(std::cin >> std::ws, text);
+			std::cin.clear();
+
+			*result = Runtime::StringObject(text);
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
@@ -62,6 +64,7 @@ public:
 };
 
 
+}
 }
 }
 }
