@@ -15,6 +15,12 @@ public object Main {
 	public void Main(int argc, string args) {
 		printIntro();
 
+		runGame();
+
+		printOutro();
+	}
+
+	private void runGame() modify {
 		float time = 0.f;
 
 		while ( mHeight > 0.f ) {
@@ -22,7 +28,8 @@ public object Main {
 
 			int burn = -1;
 			while ( burn < 0 ) {
-				burn = int cin();
+				cout("Booster: ");
+				burn = Math.abs(int cin());
 			}
 
 			// only burn as much fuel as we have
@@ -35,10 +42,9 @@ public object Main {
 				burn = MAXBURN;
 			}
 
-/*
+			/*
 			distance = G * s^2 / 2 + v0 * t
-			distance = mGravity * mTimeStep * mTimeStep / 2.f + mVelocity * mTimeStep
-*/
+			*/
 
 			float distance = (mGravity * mTimeStep * mTimeStep / 2.f) + (mVelocity * mTimeStep - (float burn * mTimeStep * 1.f));
 			mVelocity = distance / mTimeStep;
@@ -46,14 +52,12 @@ public object Main {
 			mHeight = mHeight - distance;
 			mFuel = mFuel - Math.abs(burn);
 
-			time = time + mTimeStep;
+			time = time + mTimeStep;	// count time to touchdown
 
-			//sleep(mTimeStep * 1000);
+			//sleep(mTimeStep * 1000);	// really wait for (mTimeStep) seconds
 		}
 
 		writeln("ON THE MOON AFTER " + time + " SECONDS");
-
-		printOutro();
 	}
 
 	private void printIntro() {
@@ -78,13 +82,13 @@ public object Main {
 			writeln("GOOD LANDING (COULD BE BETTER)");
 		}
 		else {
-			writeln("SORRY THERE NERE NO SURVIVORS. YOU BLOW IT!");
-			writeln("IN FACT, YOU BLASTED A NEW LUNAR CRATER " + mVelocity * 0.227f + " FEET DEEP!");
+			writeln("SORRY THERE ARE NO SURVIVORS. YOU BLOW IT!");
+			writeln("IN FACT, YOU BLASTED A NEW LUNAR CRATER " + mVelocity * 0.227f + " METERS DEEP!");
 		}
 	}
 
 	private void printStats() {
-		writeln("Height: " + mHeight / 1000.f + "km, Velocity: " + mVelocity * 3.6f + "km/h, Fuel: " + mFuel + "kg, Capsule Weight: " + mCapsuleWeight + "kg, Gravity: " + mGravity + "m/s2");
+		writeln("Height: " + mHeight / 1000.f + "km, Velocity: " + mVelocity * 3.6f + "km/h, Fuel: " + mFuel + "kg, Gravity: " + mGravity + "m/s2");
 	}
 }
 

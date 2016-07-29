@@ -13,6 +13,7 @@
 #include <Core/Tools.h>
 #include <Core/Utils/Exceptions.h>
 #include <Tools/Strings.h>
+#include "Console.h"
 
 // Forward declarations
 
@@ -40,7 +41,12 @@ public:
 	Runtime::ControlFlow::E execute(const ParameterList& /*params*/, Runtime::Object* /*result*/, const Token& token)
 	{
 		try {
-			std::cout << std::endl;
+			if ( mOutMode == CERR ) {
+				std::cerr << std::endl;
+			}
+			else if ( mOutMode == COUT ) {
+				std::cout << std::endl;
+			}
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);

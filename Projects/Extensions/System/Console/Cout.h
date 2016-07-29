@@ -13,6 +13,7 @@
 #include <Core/Tools.h>
 #include <Core/Utils/Exceptions.h>
 #include <Tools/Strings.h>
+#include "Console.h"
 
 // Forward declarations
 
@@ -45,9 +46,9 @@ public:
 		try {
 			ParameterList::const_iterator it = list.begin();
 
-			std::string param_text = (*it++).value().toStdString();
+			std::cout << (*it++).value().toStdString();
 
-			std::cout << param_text;
+			mOutMode = COUT;
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
