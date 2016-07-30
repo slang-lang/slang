@@ -9,6 +9,7 @@
 			assert( TestCase3() );
 			assert( TestCase4() );
 			assert( TestCase5() );
+			assert( TestCase6() );
 		}
 
 		private bool TestCase1() const
@@ -70,9 +71,21 @@
 		{
 			print("TestCase 5");
 
+			switch ( 0 ) {
+				case 1: return false;
+				case 2: return false;
+			}
+
+			return true;
+		} 
+
+		private bool TestCase6() const
+		{
+			print("TestCase 6");
+
 			int one = 1;
 			switch ( 2 ) {
-				case (one + 1): print("case one + 1"); return true;
+				case (one + 1): print("case one + 1"); break;
 				case 2: print("case 2"); return true;
 			}
 

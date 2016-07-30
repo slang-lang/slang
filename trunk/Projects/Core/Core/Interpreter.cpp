@@ -1216,8 +1216,9 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 	bodyBegin++;	// don't collect scope token
 	token = bodyEnd;
 
+	TokenIterator defaultToken = getTokens().end();
+
 	std::list<TokenIterator> caseTokens;
-	TokenIterator defaultToken;
 	while ( bodyBegin != bodyEnd ) {
 		if ( bodyBegin->type() == Token::Type::KEYWORD && bodyBegin->content() == KEYWORD_CASE ) {
 			caseTokens.push_back(bodyBegin);
@@ -1237,9 +1238,10 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 		try {
 			expression(&condition, caseIt);
 		}
-		catch ( ... ) {
-
-		};
+		catch ( ControlFlow::E e ) {
+			mControlFlow = e;
+			return;
+		}
 
 		if ( operator_binary_equal(&expr, &condition) ) {
 			foundMatchingCase = true;
@@ -1250,9 +1252,9 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 			process(result, caseIt, (*++tmpIt));
 
 			switch ( mControlFlow ) {
-				case ControlFlow::Break: mControlFlow = ControlFlow::Normal; return;
-				case ControlFlow::Continue: mControlFlow = ControlFlow::Normal; return;
-				case ControlFlow::Normal: return;
+				case ControlFlow::Break: mControlFlow = ControlFlow::Normal; break;
+				case ControlFlow::Continue: throw Utils::Exceptions::ControlFlowException("invalid control flow detected!");
+				case ControlFlow::Normal: break;
 				case ControlFlow::ExitProgram: return;
 				case ControlFlow::Return: return;
 				case ControlFlow::Throw: return;
@@ -1260,16 +1262,16 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 		}
 	}
 
-	if ( !foundMatchingCase ) {
+	if ( !foundMatchingCase && defaultToken != getTokens().end() ) {
 		defaultToken++;
 		expect(Token::Type::COLON, defaultToken++);
 
 		process(result, defaultToken, bodyEnd);
 
 		switch ( mControlFlow ) {
-			case ControlFlow::Break: mControlFlow = ControlFlow::Normal; return;
-			case ControlFlow::Continue: mControlFlow = ControlFlow::Normal; return;
-			case ControlFlow::Normal: return;
+			case ControlFlow::Break: mControlFlow = ControlFlow::Normal; break;
+			case ControlFlow::Continue: throw Utils::Exceptions::ControlFlowException("invalid control flow detected!");
+			case ControlFlow::Normal: break;
 			case ControlFlow::ExitProgram: return;
 			case ControlFlow::Return: return;
 			case ControlFlow::Throw: return;
