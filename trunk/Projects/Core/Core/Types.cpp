@@ -56,6 +56,7 @@ StringList provideKeyWords()
 	keywords.push_back(KEYWORD_CASE);
 	keywords.push_back(KEYWORD_CATCH);
 	keywords.push_back(KEYWORD_CONTINUE);
+	keywords.push_back(KEYWORD_DEFAULT);
 	keywords.push_back(KEYWORD_DELETE);
 	keywords.push_back(KEYWORD_ELSE);
 	keywords.push_back(KEYWORD_EXIT);

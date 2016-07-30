@@ -60,6 +60,7 @@ public:
 			BITOR,
 			CASE,
 			COLON,
+			COMMA,
 			COMPARE_EQUAL,
 			COMPARE_LESS,
 			COMPARE_LESS_EQUAL,
