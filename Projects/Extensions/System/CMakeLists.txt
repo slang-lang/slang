@@ -6,6 +6,7 @@ ADD_SUBDIRECTORY(Strings)
 
 SET(SOURCES
 	AssertMsg.cpp
+	System.cpp
 	SystemExtension.cpp
 )
 
@@ -14,7 +15,9 @@ SET(HEADERS
 	GetChar.h
 	GetEnv.h
 #	Print.h
+	SetKeyboardBlockingMode.h
 	Sleep.h
+	System.h
 	SystemExtension.h
 	Write.h
 	WriteLn.h
