@@ -40,14 +40,11 @@ void split(const std::string& str, std::string& p, std::string& c)
 
 bool stringToBool(const std::string &value)
 {
-	if ( value.empty() || value == BOOL_FALSE ) {
+	if ( value.empty() || value == "\n" || value == BOOL_FALSE ) {
 		return false;
 	}
 
-    std::istringstream is(value);
-    bool result;
-    is >> std::boolalpha >> result;
-    return result;
+    return true;
 }
 
 double stringToDouble(const std::string &value)
