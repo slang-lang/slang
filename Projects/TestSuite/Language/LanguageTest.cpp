@@ -60,7 +60,7 @@ void LanguageTest::process()
 	TEST(testWhile);
 
 // not implemented
-	//TEST(testStaticLocalVariable);	// static methods or variables are not supported any more
+	//TEST(testStaticLocalVariable);	// static methods or variables are not supported anymore
 	//TEST(testSwitch);
 }
 
