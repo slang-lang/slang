@@ -10,6 +10,9 @@
 			assert( TestCase4() );
 			assert( TestCase5() );
 			assert( TestCase6() );
+			//assert( TestCase7() );	// this should fail
+			assert( TestCase8() );
+			assert( TestCase9() );
 		}
 
 		private bool TestCase1() const
@@ -90,6 +93,42 @@
 			}
 
 			return false;
+		}
+
+		private bool TestCase7() const
+		{
+			print("TestCase 7");
+
+			switch ( 1 ) {
+				default: return true;
+				default: return false;
+			}
+
+			return false;
+		}
+
+		private bool TestCase8() const
+		{
+			print("TestCase 8");
+
+			int value;
+			switch ( value ) {
+				default: return true;
+				case 1: return false;
+				case 2: return false;
+			}
+
+			return false;
+		}
+
+		private bool TestCase9() const
+		{
+			print("TestCase 9");
+
+			switch ( 0 ) {
+			}
+
+			return true;
 		}
 	}
 
