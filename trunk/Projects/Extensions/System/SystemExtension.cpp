@@ -23,7 +23,9 @@
 #include "GetChar.h"
 #include "GetEnv.h"
 //#include "Print.h"
+#include "SetKeyboardBlockingMode.h"
 #include "Sleep.h"
+#include "System.h"
 #include "Write.h"
 #include "WriteLn.h"
 
@@ -35,6 +37,18 @@ namespace Extensions {
 namespace System {
 
 
+SystemExtension::SystemExtension()
+{
+	// store keyboard blocking mode
+	storeKeyboardBlockingMode();
+}
+
+SystemExtension::~SystemExtension()
+{
+	// not restoring the keyboard settings causes the input from the terminal to not work right
+	restoreKeyboardBlockingMode();
+}
+
 void SystemExtension::provideMethods(ExtensionMethods &methods)
 {
 	assert(methods.empty());
@@ -43,6 +57,7 @@ void SystemExtension::provideMethods(ExtensionMethods &methods)
 	methods.push_back(new GetChar());
 	methods.push_back(new GetEnv());
 	//methods.push_back(new Printf());
+	methods.push_back(new SetKeyboardBlockingMode());
 	methods.push_back(new Sleep());
 	methods.push_back(new Write());
 	methods.push_back(new WriteLn());

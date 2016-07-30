@@ -21,6 +21,10 @@ namespace System {
 class SystemExtension : public IExtension
 {
 public:
+	SystemExtension();
+	~SystemExtension();
+
+public:
 	std::string getName() const {
 		return "System";
 	}

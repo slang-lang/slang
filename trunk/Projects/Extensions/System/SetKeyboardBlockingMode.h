@@ -1,20 +1,20 @@
 
-#ifndef ObjectiveScript_Extensions_System_GetChar_h
-#define ObjectiveScript_Extensions_System_GetChar_h
+#ifndef ObjectiveScript_Extensions_System_SetKeyboardBlockingMode_h
+#define ObjectiveScript_Extensions_System_SetKeyboardBlockingMode_h
 
 
 // Library includes
-#include <stdlib.h>
 
 // Project includes
 #include <Core/BuildInObjects/StringObject.h>
+#include <Core/Designtime/BuildInTypes/BoolObject.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/Method.h>
 #include <Core/Repository.h>
 #include <Core/Tools.h>
 #include <Core/Utils/Exceptions.h>
 #include <Tools/Strings.h>
-#include <ncurses.h>
+#include "System.h"
 
 // Forward declarations
 
@@ -26,29 +26,29 @@ namespace Extensions {
 namespace System {
 
 
-class GetChar : public Runtime::Method
+class SetKeyboardBlockingMode : public Runtime::Method
 {
 public:
-	GetChar()
-	: Runtime::Method(0, "getchar", Designtime::StringObject::TYPENAME)
+	SetKeyboardBlockingMode()
+	: Runtime::Method(0, "setKeyboardBlocking", Designtime::StringObject::TYPENAME)
 	{
 		ParameterList params;
+		params.push_back(Parameter("mode", Designtime::BoolObject::TYPENAME, 0));
 
 		setSignature(params);
 	}
 
 public:
-	Runtime::ControlFlow::E execute(const ParameterList& /*params*/, Runtime::Object* result, const Token& token)
+	Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* /*result*/, const Token& token)
 	{
+		ParameterList list = mergeParameters(params);
+
 		try {
-			std::string value;
+			ParameterList::const_iterator it = list.begin();
 
-			int c = getchar();
-			if ( c ) {
-				value = c;
-			}
+			bool param_mode = (*it++).value().toBool();
 
-			*result = Runtime::StringObject(value);
+			setKeyboardBlockingMode(param_mode);
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
