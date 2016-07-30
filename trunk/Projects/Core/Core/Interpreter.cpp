@@ -13,7 +13,6 @@
 #include <Core/BuildInObjects/NumberObject.h>
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/BuildInObjects/VoidObject.h>
-#include <Core/Designtime/BluePrint.h>
 #include <Core/Runtime/Namespace.h>
 #include <Core/Runtime/OperatorOverloading.h>
 #include <Core/Runtime/TypeCast.h>
@@ -691,12 +690,12 @@ void Interpreter::process_exit(TokenIterator& /*token*/)
 
 // syntax:
 // for ( <expression>; <condition>; <expression> ) { }
-void Interpreter::process_for(TokenIterator& token, Object *result)
+void Interpreter::process_for(TokenIterator& token, Object* result)
 {
-	expect(Token::Type::PARENTHESIS_OPEN, token);
+	expect(Token::Type::PARENTHESIS_OPEN, token++);
 
 	// initialization-begin
-	TokenIterator initializationBegin = ++findNext(token, Token::Type::PARENTHESIS_OPEN);
+	TokenIterator initializationBegin = token;//++findNext(token, Token::Type::PARENTHESIS_OPEN);
 	// initialization-end
 
 	// condition-begin
@@ -710,23 +709,20 @@ void Interpreter::process_for(TokenIterator& token, Object *result)
 	// find next open curly bracket '{'
 	TokenIterator expressionEnd = findNext(increaseBegin, Token::Type::PARENTHESIS_CLOSE);
 
-
-	if ( expressionEnd != getTokens().end() ) {
-		expressionEnd++;
-	}
+	expect(Token::Type::BRACKET_CURLY_OPEN, ++expressionEnd);
 
 	// find next balanced '{' & '}' pair for loop-body
-	TokenIterator bodyBegin = findNext(increaseBegin, Token::Type::BRACKET_CURLY_OPEN);
+	TokenIterator bodyBegin = expressionEnd;
 	TokenIterator bodyEnd = findNextBalancedCurlyBracket(bodyBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
 
 	// process our declaration part
-	Object declaration;
-	process(&declaration, initializationBegin, conditionBegin, Token::Type::SEMICOLON);
+	// {
+	Object declarationTmp;
+	process(&declarationTmp, initializationBegin, conditionBegin, Token::Type::SEMICOLON);
+	// }
 
+	bodyBegin++;		// don't collect scope token
 	token = bodyEnd;
-	if ( bodyEnd != getTokens().end() ) {
-		bodyEnd++;
-	}
 
 	TokenList loopTokens;
 	while ( bodyBegin != bodyEnd ) {
@@ -770,22 +766,9 @@ void Interpreter::process_for(TokenIterator& token, Object *result)
 		// Expression parsing
 		// {
 		TokenIterator exprBegin = increaseBegin;
-		TokenList exprTokens;
 
-		while ( exprBegin != expressionEnd ) {
-			exprTokens.push_back((*exprBegin));
-			exprBegin++;
-		}
-
-		pushTokens(exprTokens);
-		{
-			TokenIterator tmpBegin = getTokens().begin();
-			TokenIterator tmpEnd = getTokens().end();
-
-			Object result;
-			process(&result, tmpBegin, tmpEnd, Token::Type::PARENTHESIS_CLOSE);
-		}
-		popTokens();
+		Object expressionTmp;
+		process(&expressionTmp, exprBegin, expressionEnd, Token::Type::PARENTHESIS_CLOSE);
 		// }
 	}
 }
@@ -866,27 +849,29 @@ void Interpreter::process_if(TokenIterator& token, Object *result)
 {
 	expect(Token::Type::PARENTHESIS_OPEN, token++);
 
-	// find next open parenthesis
-	//TokenIterator condBegin = ++findNext(token, Token::Type::PARENTHESIS_OPEN);
 	TokenIterator condBegin = token;
 	// find next balanced '(' & ')' pair
 	TokenIterator condEnd = findNextBalancedParenthesis(condBegin);
+
+	expect(Token::Type::BRACKET_CURLY_OPEN, ++condEnd);
+
 	// find next open curly bracket '{'
-	TokenIterator bodyBegin = findNext(condEnd, Token::Type::BRACKET_CURLY_OPEN);
+	TokenIterator bodyBegin = condEnd;
 	// find next balanced '{' & '}' pair
 	TokenIterator bodyEnd = findNextBalancedCurlyBracket(bodyBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
 
-	// no matter what, at least set our token to our if-block's end
-	token = bodyEnd;
-	if ( bodyEnd != getTokens().end() ) {
-		bodyEnd++;
-	}
+	bodyBegin++;		// don't collect our scope token
+	token = bodyEnd;	// no matter what, at least set our token to our if-block's end
 
 	// collect all tokens for our if-block
 	TokenList ifTokens;
 	while ( bodyBegin != bodyEnd ) {
 		ifTokens.push_back((*bodyBegin));
 		bodyBegin++;
+	}
+
+	if ( bodyEnd != getTokens().end() ) {
+		bodyEnd++;
 	}
 
 	bool targetReached = true;	// initially don't collect else-block tokens
@@ -1181,8 +1166,12 @@ void Interpreter::process_return(TokenIterator& token, Object *result)
 // { <statement> }
 void Interpreter::process_scope(TokenIterator& token, Object* result)
 {
-	TokenIterator scopeBegin = ++token;
+	expect(Token::Type::BRACKET_CURLY_OPEN, token++);
+
+	TokenIterator scopeBegin = token;
 	TokenIterator scopeEnd = findNextBalancedCurlyBracket(scopeBegin, getTokens().end());
+
+	token = scopeEnd;
 
 	TokenList scopeTokens;
 	while ( scopeBegin != scopeEnd ) {
@@ -1191,8 +1180,6 @@ void Interpreter::process_scope(TokenIterator& token, Object* result)
 	}
 
 	mControlFlow = interpret(scopeTokens, result);
-
-	token = scopeEnd;
 }
 
 // syntax:
@@ -1201,20 +1188,23 @@ void Interpreter::process_scope(TokenIterator& token, Object* result)
 //			...
 //		break;
 // }
-void Interpreter::process_switch(TokenIterator& token, Object *result)
+void Interpreter::process_switch(TokenIterator& token, Object* result)
 {
-assert(!"not implemented");
-//throw Utils::Exceptions::NotImplemented("switch-case");
+	expect(Token::Type::PARENTHESIS_OPEN, token++);
 
-	// find next open parenthesis
-	TokenIterator expressionBegin = ++findNext(token, Token::Type::PARENTHESIS_OPEN);
+	// find next open parenthesis '('
+	TokenIterator condBegin = token;
 	// find next balanced '(' & ')' pair
-	TokenIterator expressionEnd = findNextBalancedParenthesis(expressionBegin);
+	TokenIterator condEnd = findNextBalancedParenthesis(condBegin);
+
+	expect(Token::Type::BRACKET_CURLY_OPEN, ++condEnd);
+
 	// find next open curly bracket '{'
-	TokenIterator bodyBegin = findNext(expressionEnd, Token::Type::BRACKET_CURLY_OPEN);
+	TokenIterator bodyBegin = condEnd;
 	// find next balanced '{' & '}' pair
 	TokenIterator bodyEnd = findNextBalancedCurlyBracket(bodyBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
 
+	bodyBegin++;	// don't collect scope token
 	token = bodyEnd;
 	if ( bodyEnd != getTokens().end() ) {
 		bodyEnd++;
@@ -1226,19 +1216,9 @@ assert(!"not implemented");
 		bodyBegin++;
 	}
 
-	TokenIterator tmp = expressionBegin;
-
-	Object value;
-	expression(&value, tmp);
-
-	pushTokens(switchTokens);
-	{
-		TokenIterator tmpBegin = getTokens().begin();
-		TokenIterator tmpEnd = getTokens().end();
-
-		process(result, tmpBegin, tmpEnd);
-	}
-	popTokens();
+assert(!"not implemented");
+//throw Utils::Exceptions::NotImplemented("switch-case");
+(void)result;
 }
 
 // syntax:
@@ -1267,14 +1247,12 @@ void Interpreter::process_throw(TokenIterator& token, Object* result)
 
 // syntax:
 // try { } [ catch { } ] [ finally { } ]
-void Interpreter::process_try(TokenIterator& token, Object *result)
+void Interpreter::process_try(TokenIterator& token, Object* result)
 {
 	expect(Token::Type::BRACKET_CURLY_OPEN, token);
 
-	TokenIterator tmp = token;
-
 	// find next open curly bracket '{'
-	TokenIterator tryBegin = findNext(tmp, Token::Type::BRACKET_CURLY_OPEN);
+	TokenIterator tryBegin = token;
 	// find next balanced '{' & '}' pair
 	TokenIterator tryEnd = findNextBalancedCurlyBracket(tryBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
 
@@ -1288,24 +1266,24 @@ void Interpreter::process_try(TokenIterator& token, Object *result)
 		tryBegin++;
 	}
 
+	// process try-block
 	mControlFlow = interpret(tryTokens, result);
 
-	tmp = token;
+	TokenIterator tmp = token;
 	tmp++;	// look ahead
 
+	// process catch-block
 	if ( tmp != getTokens().end() && tmp->content() == KEYWORD_CATCH ) {
 		tmp++;
 		expect(Token::Type::BRACKET_CURLY_OPEN, tmp);
 
 		// find next open curly bracket '{'
-		TokenIterator catchBegin = tmp; //findNext(tmp, Token::Type::BRACKET_CURLY_OPEN);
+		TokenIterator catchBegin = tmp;
 		// find next balanced '{' & '}' pair
 		TokenIterator catchEnd = findNextBalancedCurlyBracket(catchBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
 
+		catchBegin++;		// don't collect scope token
 		token = catchEnd;
-		if ( catchEnd != getTokens().end() ) {
-			catchEnd++;
-		}
 
 		// collect catch-block tokens
 		TokenList catchTokens;
@@ -1327,20 +1305,18 @@ void Interpreter::process_try(TokenIterator& token, Object *result)
 	tmp = token;
 	tmp++;	// look ahead
 
-	// execute finally if present
+	// process finally-block
 	if ( tmp != getTokens().end() && tmp->content() == KEYWORD_FINALLY ) {
 		tmp++;
 		expect(Token::Type::BRACKET_CURLY_OPEN, tmp);
 
 		// find next open curly bracket '{'
-		TokenIterator finallyBegin = tmp; //findNext(tmp, Token::Type::BRACKET_CURLY_OPEN);
+		TokenIterator finallyBegin = tmp;
 		// find next balanced '{' & '}' pair
 		TokenIterator finallyEnd = findNextBalancedCurlyBracket(finallyBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
 
+		finallyBegin++;		// don't collect scope token;
 		token = finallyEnd;
-		if ( finallyEnd != getTokens().end() ) {
-			finallyEnd++;
-		}
 
 		// collect finally-block tokens
 		TokenList finallyTokens;
@@ -1357,7 +1333,7 @@ void Interpreter::process_try(TokenIterator& token, Object *result)
 }
 
 // syntax:
-// <type> <varname> [= <initialization>]
+// <type> <identifier> [= <initialization>]
 void Interpreter::process_type(TokenIterator& token, Symbol* symbol)
 {
 	bool isConst = false;
@@ -1419,23 +1395,24 @@ void Interpreter::process_type(TokenIterator& token, Symbol* symbol)
 // while ( <condition> ) {
 // ...
 // }
-void Interpreter::process_while(TokenIterator& token, Object *result)
+void Interpreter::process_while(TokenIterator& token, Object* result)
 {
-	expect(Token::Type::PARENTHESIS_OPEN, token);
+	expect(Token::Type::PARENTHESIS_OPEN, token++);
 
-	// find next open parenthesis
-	TokenIterator condBegin = ++findNext(token, Token::Type::PARENTHESIS_OPEN);
+	// find next open parenthesis '('
+	TokenIterator condBegin = token;
 	// find next balanced '(' & ')' pair
 	TokenIterator condEnd = findNextBalancedParenthesis(condBegin);
+
+	expect(Token::Type::BRACKET_CURLY_OPEN, ++condEnd);
+
 	// find next open curly bracket '{'
-	TokenIterator bodyBegin = findNext(condEnd, Token::Type::BRACKET_CURLY_OPEN);
+	TokenIterator bodyBegin = condEnd;
 	// find next balanced '{' & '}' pair
 	TokenIterator bodyEnd = findNextBalancedCurlyBracket(bodyBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
 
+	bodyBegin++;	// don't collect scope token;
 	token = bodyEnd;
-	if ( bodyEnd != getTokens().end() ) {
-		bodyEnd++;
-	}
 
 	TokenList statementTokens;
 	while ( bodyBegin != bodyEnd ) {
