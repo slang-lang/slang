@@ -72,7 +72,7 @@ Designtime::Ancestors Analyser::collectInheritance(TokenIterator& token) const
 			replicates = true;
 			type = Designtime::Ancestor::Type::Replicates;
 		}
-		else if ( token->type() == Token::Type::COLON ) {
+		else if ( token->type() == Token::Type::COMMA ) {
 			token++;	// consume token
 
 			continue;

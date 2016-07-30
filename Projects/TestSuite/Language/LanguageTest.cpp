@@ -55,13 +55,13 @@ void LanguageTest::process()
 	TEST(testPrint);
 	TEST(testSanityChecker);
 	TEST(testScope);
+	TEST(testSwitch);
 	TEST(testThis);
 	TEST(testTypeCast);
 	TEST(testWhile);
 
 // not implemented
 	//TEST(testStaticLocalVariable);	// static methods or variables are not supported anymore
-	//TEST(testSwitch);
 }
 
 void LanguageTest::setup()

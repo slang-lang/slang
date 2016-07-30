@@ -77,9 +77,10 @@ Token Tokenizer::createToken(const std::string& con, const Utils::Position& posi
 	if ( content == "=" ) { category = Token::Category::Assignment; type = Token::Type::ASSIGN; }
 	else if ( content == "&" ) { category = Token::Category::Operator; type = Token::Type::BITAND; }
 	else if ( content == "|" ) { category = Token::Category::Operator; type = Token::Type::BITOR; }
-	else if ( content == "," ) { type = Token::Type::COLON; }
+	else if ( content == "," ) { type = Token::Type::COMMA; }
 	else if ( content == "." ) { type = Token::Type::SCOPE; }
 	else if ( content == ";" ) { type = Token::Type::SEMICOLON; }
+	else if ( content == ":" ) { type = Token::Type::COLON; }
 	else if ( content == "'" ) { type = Token::Type::QUOTATION_SINGLE; }
 	else if ( content == "\"" ) { type = Token::Type::QUOTATION_DOUBLE; }
 	else if ( content == "[" ) { type = Token::Type::BRACKET_OPEN; }

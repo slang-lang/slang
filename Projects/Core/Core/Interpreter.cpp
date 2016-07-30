@@ -1017,7 +1017,7 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 		if ( std::distance(tmp, closed) <= 0 ) {
 			break;
 		}
-		tmp = findNext(tmp, Token::Type::COLON);
+		tmp = findNext(tmp, Token::Type::COMMA);
 		if ( std::distance(tmp, closed) < 0 ) {
 			break;
 		}
@@ -1108,7 +1108,7 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 		if ( std::distance(tmp, closed) <= 0 ) {
 			break;
 		}
-		tmp = findNext(tmp, Token::Type::COLON);
+		tmp = findNext(tmp, Token::Type::COMMA);
 		if ( std::distance(tmp, closed) < 0 ) {
 			break;
 		}
@@ -1197,6 +1197,15 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 	// find next balanced '(' & ')' pair
 	TokenIterator condEnd = findNextBalancedParenthesis(condBegin);
 
+	Object expr;
+	try {
+		expression(&expr, token);
+	}
+	catch ( ControlFlow::E e ) {
+		mControlFlow = e;
+		return;
+	}
+
 	expect(Token::Type::BRACKET_CURLY_OPEN, ++condEnd);
 
 	// find next open curly bracket '{'
@@ -1206,27 +1215,72 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 
 	bodyBegin++;	// don't collect scope token
 	token = bodyEnd;
-	if ( bodyEnd != getTokens().end() ) {
-		bodyEnd++;
-	}
 
-	TokenList switchTokens;
+	std::list<TokenIterator> caseTokens;
+	TokenIterator defaultToken;
 	while ( bodyBegin != bodyEnd ) {
-		switchTokens.push_back((*bodyBegin));
+		if ( bodyBegin->type() == Token::Type::KEYWORD && bodyBegin->content() == KEYWORD_CASE ) {
+			caseTokens.push_back(bodyBegin);
+		}
+		else if ( bodyBegin->type() == Token::Type::KEYWORD && bodyBegin->content() == KEYWORD_DEFAULT ) {
+			defaultToken = bodyBegin;
+		}
 		bodyBegin++;
 	}
 
-assert(!"not implemented");
-//throw Utils::Exceptions::NotImplemented("switch-case");
-(void)result;
+	bool foundMatchingCase = false;
+
+	for ( std::list<TokenIterator>::const_iterator it = caseTokens.begin(); it != caseTokens.end(); ++it ) {
+		TokenIterator caseIt = lookahead((*it), 1)++;
+
+		Object condition;
+		try {
+			expression(&condition, caseIt);
+		}
+		catch ( ... ) {
+
+		};
+
+		if ( operator_binary_equal(&expr, &condition) ) {
+			foundMatchingCase = true;
+
+			expect(Token::Type::COLON, caseIt++);
+
+			std::list<TokenIterator>::const_iterator tmpIt = it;
+			process(result, caseIt, (*++tmpIt));
+
+			switch ( mControlFlow ) {
+				case ControlFlow::Break: mControlFlow = ControlFlow::Normal; return;
+				case ControlFlow::Continue: mControlFlow = ControlFlow::Normal; return;
+				case ControlFlow::Normal: return;
+				case ControlFlow::ExitProgram: return;
+				case ControlFlow::Return: return;
+				case ControlFlow::Throw: return;
+			}
+		}
+	}
+
+	if ( !foundMatchingCase ) {
+		defaultToken++;
+		expect(Token::Type::COLON, defaultToken++);
+
+		process(result, defaultToken, bodyEnd);
+
+		switch ( mControlFlow ) {
+			case ControlFlow::Break: mControlFlow = ControlFlow::Normal; return;
+			case ControlFlow::Continue: mControlFlow = ControlFlow::Normal; return;
+			case ControlFlow::Normal: return;
+			case ControlFlow::ExitProgram: return;
+			case ControlFlow::Return: return;
+			case ControlFlow::Throw: return;
+		}
+	}
 }
 
 // syntax:
 // throw;
-void Interpreter::process_throw(TokenIterator& token, Object* result)
+void Interpreter::process_throw(TokenIterator& token, Object* /*result*/)
 {
-	(void)result;
-
 	Object* data = getRepository()->createInstance(GENERIC_OBJECT);
 	try {
 		expression(data, token);
