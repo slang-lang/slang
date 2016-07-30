@@ -1224,6 +1224,10 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 			caseTokens.push_back(bodyBegin);
 		}
 		else if ( bodyBegin->type() == Token::Type::KEYWORD && bodyBegin->content() == KEYWORD_DEFAULT ) {
+			if ( defaultToken != getTokens().end() ) {
+				throw Utils::Exceptions::SyntaxError("duplicate default entry for switch statement");
+			}
+
 			defaultToken = bodyBegin;
 		}
 		bodyBegin++;
