@@ -172,9 +172,12 @@ public namespace ExceptionTest
 				print("throw new Exception()");
 				throw new ExceptionTest.Exception("standard exception");
 			}
+			catch ( int ex ) {
+				print("FAIL!!!");
+				return false;
+			}
 			catch ( ExceptionTest.Exception exception ) {
-				//print("catch " + exception.what());
-				print("catch");
+				print("catch " + exception.what());
 			}
 			finally {
 				print("finally");

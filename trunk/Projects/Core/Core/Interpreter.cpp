@@ -1049,9 +1049,15 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 	ControlFlow::E controlflow = symbol->execute(params, result, (*token));
 
 	switch ( controlflow ) {
-		case ControlFlow::ExitProgram: mControlFlow = ControlFlow::ExitProgram; break;
-		case ControlFlow::Throw: mControlFlow = ControlFlow::Throw; break;
-		default: break;
+		case ControlFlow::ExitProgram:
+			mControlFlow = ControlFlow::ExitProgram;
+			break;
+		case ControlFlow::Throw:
+			mControlFlow = ControlFlow::Throw;
+			mExceptionData = symbol->getExceptionData();
+			break;
+		default:
+			break;
 	}
 
 	token = closed;
@@ -1359,65 +1365,100 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 	TokenIterator tmp = token;
 	tmp++;	// look ahead
 
-	// process catch-block
-	if ( tmp != getTokens().end() && tmp->content() == KEYWORD_CATCH ) {
+
+	std::list<TokenIterator> catchTokens;
+	TokenIterator finallyToken;
+
+	for ( ; ; ) {
+		if ( tmp != getTokens().end() && tmp->content() == KEYWORD_CATCH ) {
+			catchTokens.push_back(tmp);
+
+			tmp = findNextBalancedCurlyBracket(tmp, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
+
+			token = tmp;	// set exit token
+		}
+		else if ( tmp != getTokens().end() && tmp->content() == KEYWORD_FINALLY ) {
+			if ( finallyToken != TokenIterator() ) {
+				throw Utils::Exceptions::SyntaxError("multiple finally blocks are not allowed");
+			}
+
+			finallyToken = tmp;
+			tmp = findNextBalancedCurlyBracket(tmp, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
+
+			token = tmp;	// set exit token
+		}
+		else {
+			// reached end of try-catch-finally-block
+			break;
+		}
+
 		tmp++;
-
-		if ( tmp->type() == Token::Type::PARENTHESIS_OPEN ) {
-			tmp++;
-
-			Symbol* symbol = identify(tmp);
-			if ( !symbol ) {
-				throw Utils::Exceptions::UnknownIdentifer("identifier '" + token->content() + "' not found", token->position());
-			}
-			if ( symbol->getSymbolType() != Symbol::IType::BluePrintSymbol ) {
-				throw Utils::Exceptions::SyntaxError("invalid symbol type '" + symbol->getName() + "' found");
-			}
-
-			process_type(tmp, symbol);
-
-			expect(Token::Type::PARENTHESIS_CLOSE, tmp++);
-
-			// TODO: assign the exceptions value to our newly created symbol
-		}
-
-		expect(Token::Type::BRACKET_CURLY_OPEN, tmp);
-
-		// find next open curly bracket '{'
-		TokenIterator catchBegin = tmp;
-		// find next balanced '{' & '}' pair
-		TokenIterator catchEnd = findNextBalancedCurlyBracket(catchBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
-
-		catchBegin++;		// don't collect scope token
-		token = catchEnd;
-
-		// collect catch-block tokens
-		TokenList catchTokens;
-		while ( catchBegin != catchEnd ) {
-			catchTokens.push_back((*catchBegin));
-			catchBegin++;
-		}
-
-		// execute catch-block if an exception has been thrown
-		if ( mControlFlow == ControlFlow::Throw ) {
-			mControlFlow = interpret(catchTokens, result);
-		}
 	}
-	else {
-		// reset control flow after try block
+
+	if ( mControlFlow == ControlFlow::Throw ) {
 		mControlFlow = ControlFlow::Normal;
+
+		for ( std::list<TokenIterator>::const_iterator it = catchTokens.begin(); it != catchTokens.end(); ++it ) {
+			TokenIterator catchIt = (*it);
+			catchIt++;
+
+			// parse exception type (if present)
+			if ( catchIt->type() == Token::Type::PARENTHESIS_OPEN ) {
+				catchIt++;
+
+				Symbol* symbol = identify(catchIt);
+				if ( !symbol ) {
+					throw Utils::Exceptions::UnknownIdentifer("identifier '" + token->content() + "' not found", catchIt->position());
+				}
+				if ( symbol->getSymbolType() != Symbol::IType::BluePrintSymbol ) {
+					throw Utils::Exceptions::SyntaxError("invalid symbol type '" + symbol->getName() + "' found", catchIt->position());
+				}
+
+				Object* type = process_type(catchIt, symbol);
+
+				expect(Token::Type::PARENTHESIS_CLOSE, catchIt++);
+
+				if ( !type || !mExceptionData.getData() ) {
+					throw Utils::Exceptions::Exception("could not create exception type instance", catchIt->position());
+				}
+
+				if ( type->QualifiedTypename() != mExceptionData.getData()->QualifiedTypename() &&
+					 type->Typename() != mExceptionData.getData()->Typename() ) {
+					continue;
+				}
+
+				operator_binary_assign(type, mExceptionData.getData());
+			}
+
+			expect(Token::Type::BRACKET_CURLY_OPEN, catchIt);
+
+			// find next open curly bracket '{'
+			TokenIterator catchBegin = catchIt;
+			// find next balanced '{' & '}' pair
+			TokenIterator catchEnd = findNextBalancedCurlyBracket(catchBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
+
+			catchBegin++;		// don't collect scope token
+			token = catchEnd;
+
+			// collect catch-block tokens
+			TokenList catchTokens;
+			while ( catchBegin != catchEnd ) {
+				catchTokens.push_back((*catchBegin));
+				catchBegin++;
+			}
+
+			// execute catch-block if an exception has been thrown
+			mControlFlow = interpret(catchTokens, result);
+			break;
+		}
 	}
 
-	tmp = token;
-	tmp++;	// look ahead
-
-	// process finally-block
-	if ( tmp != getTokens().end() && tmp->content() == KEYWORD_FINALLY ) {
-		tmp++;
-		expect(Token::Type::BRACKET_CURLY_OPEN, tmp);
+	if ( finallyToken != TokenIterator() ) {
+		finallyToken++;
+		expect(Token::Type::BRACKET_CURLY_OPEN, finallyToken);
 
 		// find next open curly bracket '{'
-		TokenIterator finallyBegin = tmp;
+		TokenIterator finallyBegin = finallyToken;
 		// find next balanced '{' & '}' pair
 		TokenIterator finallyEnd = findNextBalancedCurlyBracket(finallyBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
 
@@ -1440,7 +1481,7 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 
 // syntax:
 // <type> <identifier> [= <initialization>]
-void Interpreter::process_type(TokenIterator& token, Symbol* symbol)
+Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol)
 {
 	bool isConst = false;
 	bool isFinal = false;
@@ -1471,7 +1512,6 @@ void Interpreter::process_type(TokenIterator& token, Symbol* symbol)
 		throw Utils::Exceptions::DuplicateIdentifer("duplicate identifier '" + name + "' created", token->position());
 	}
 
-	// TODO: create a shallow object if we have an assignment statement to prevent duplicate object instantiation
 	object = getRepository()->createInstance(static_cast<Designtime::BluePrint*>(symbol), name, false);
 
 	getScope()->define(name, object);
@@ -1486,15 +1526,13 @@ void Interpreter::process_type(TokenIterator& token, Symbol* symbol)
 		}
 		catch ( ControlFlow::E e ) {
 			mControlFlow = e;
-			return;
+			return 0;
 		}
 	}
-	//else {
-	//	// call default constructor if one is present
-	//	mControlFlow = object->Constructor(ParameterList());
-	//}
 
 	//expect(Token::Type::SEMICOLON, token);	// make sure everything went exactly the way we wanted
+
+	return object;
 }
 
 // syntax:
