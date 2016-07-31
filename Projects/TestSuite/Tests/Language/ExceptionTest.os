@@ -43,7 +43,7 @@ public namespace ExceptionTest
 			assert( TestCase3() );
 			assert( TestCase4() );
 			assert( TestCase5() );
-			//assert( TestCase6() );	// not supported atm
+			assert( TestCase6() );	// not supported atm
 		}
 
 		private bool TestCase1()
@@ -172,8 +172,9 @@ public namespace ExceptionTest
 				print("throw new Exception()");
 				throw new ExceptionTest.Exception("standard exception");
 			}
-			catch ( Exception exception ) {
-				print("catch " + exception.what());
+			catch ( ExceptionTest.Exception exception ) {
+				//print("catch " + exception.what());
+				print("catch");
 			}
 			finally {
 				print("finally");

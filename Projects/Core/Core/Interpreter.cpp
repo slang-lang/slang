@@ -1362,6 +1362,25 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 	// process catch-block
 	if ( tmp != getTokens().end() && tmp->content() == KEYWORD_CATCH ) {
 		tmp++;
+
+		if ( tmp->type() == Token::Type::PARENTHESIS_OPEN ) {
+			tmp++;
+
+			Symbol* symbol = identify(tmp);
+			if ( !symbol ) {
+				throw Utils::Exceptions::UnknownIdentifer("identifier '" + token->content() + "' not found", token->position());
+			}
+			if ( symbol->getSymbolType() != Symbol::IType::BluePrintSymbol ) {
+				throw Utils::Exceptions::SyntaxError("invalid symbol type '" + symbol->getName() + "' found");
+			}
+
+			process_type(tmp, symbol);
+
+			expect(Token::Type::PARENTHESIS_CLOSE, tmp++);
+
+			// TODO: assign the exceptions value to our newly created symbol
+		}
+
 		expect(Token::Type::BRACKET_CURLY_OPEN, tmp);
 
 		// find next open curly bracket '{'
@@ -1475,7 +1494,7 @@ void Interpreter::process_type(TokenIterator& token, Symbol* symbol)
 	//	mControlFlow = object->Constructor(ParameterList());
 	//}
 
-	expect(Token::Type::SEMICOLON, token);	// make sure everything went exactly the way we wanted
+	//expect(Token::Type::SEMICOLON, token);	// make sure everything went exactly the way we wanted
 }
 
 // syntax:
