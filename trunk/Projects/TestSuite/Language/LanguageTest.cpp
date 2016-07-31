@@ -441,7 +441,7 @@ void LanguageTest::testSwitch()
 	try {
 		VirtualMachine vm;
 
-		TTHROWS(vm.createScriptFromFile("Tests/Language/SwitchTest.os"), ObjectiveScript::Utils::Exceptions::NotImplemented);
+		vm.createScriptFromFile("Tests/Language/SwitchTest.os");
 
 		// automatic success
 	}

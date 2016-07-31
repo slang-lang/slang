@@ -88,7 +88,7 @@
 
 			int one = 1;
 			switch ( 2 ) {
-				case (one + 1): print("case one + 1"); break;
+				case (one + 1): print("case (one + 1)"); continue;
 				case 2: print("case 2"); return true;
 			}
 
@@ -126,9 +126,11 @@
 			print("TestCase 9");
 
 			switch ( 0 ) {
+				case 0: print("case 0");
+				default: print("default"); return true;
 			}
 
-			return true;
+			return false;
 		}
 	}
 

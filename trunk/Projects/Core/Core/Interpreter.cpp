@@ -567,7 +567,7 @@ void Interpreter::popTokens()
 
 void Interpreter::process(Object *result, TokenIterator& token, TokenIterator end, Token::Type::E terminator)
 {
-	// loop through all keywords and redirect to the corresponding method
+	// loop through all tokens and redirect to the corresponding method
 	while ( ( (token != getTokens().end()) && (token != end) ) &&
 			( (token->type() != terminator) && (token->type() != Token::Type::ENDOFFILE) ) ) {
 
@@ -1197,6 +1197,7 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 	// find next balanced '(' & ')' pair
 	TokenIterator condEnd = findNextBalancedParenthesis(condBegin);
 
+	// evaluate switch-expression
 	Object expr;
 	try {
 		expression(&expr, token);
@@ -1218,6 +1219,7 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 
 	TokenIterator defaultToken = getTokens().end();
 
+	// collect case-label positions & default-block
 	std::list<TokenIterator> caseTokens;
 	while ( bodyBegin != bodyEnd ) {
 		if ( bodyBegin->type() == Token::Type::KEYWORD && bodyBegin->content() == KEYWORD_CASE ) {
@@ -1235,7 +1237,8 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 
 	bool foundMatchingCase = false;
 
-	for ( std::list<TokenIterator>::const_iterator it = caseTokens.begin(); it != caseTokens.end(); ++it ) {
+	// loop through all case-labels and match their expressions against the switch-expression
+	for ( std::list<TokenIterator>::iterator it = caseTokens.begin(); it != caseTokens.end(); ++it ) {
 		TokenIterator caseIt = lookahead((*it), 1)++;
 
 		Object condition;
@@ -1252,33 +1255,57 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 
 			expect(Token::Type::COLON, caseIt++);
 
-			std::list<TokenIterator>::const_iterator tmpIt = it;
-			process(result, caseIt, (*++tmpIt));
+			std::list<TokenIterator>::iterator tmpIt = it;
+			tmpIt++;	// advance to next case-label
+
+			// if this case-label is the last one, set the last switch-token as end token
+			if ( tmpIt == caseTokens.end() ) {
+				(*tmpIt) = bodyEnd;
+			}
+
+			// execute case-block in same scope
+			process(result, caseIt, (*tmpIt));
 
 			switch ( mControlFlow ) {
-				case ControlFlow::Break: mControlFlow = ControlFlow::Normal; break;
-				case ControlFlow::Continue: throw Utils::Exceptions::ControlFlowException("invalid control flow detected!");
-				case ControlFlow::Normal: break;
-				case ControlFlow::ExitProgram: return;
-				case ControlFlow::Return: return;
-				case ControlFlow::Throw: return;
+				case ControlFlow::Break:
+					// stop matching the remaining case-statements
+					mControlFlow = ControlFlow::Normal;
+					return;
+				case ControlFlow::Continue:
+				case ControlFlow::Normal:
+					// continue matching the remaining case-statements
+					mControlFlow = ControlFlow::Normal;
+					break;
+				case ControlFlow::ExitProgram:
+				case ControlFlow::Return:
+				case ControlFlow::Throw:
+					// no further processing, keep current control flow state
+					return;
 			}
 		}
 	}
 
+	// in case none of the given case-expressions matches the switch-expression
+	// execute the default block (if present)
 	if ( !foundMatchingCase && defaultToken != getTokens().end() ) {
 		defaultToken++;
 		expect(Token::Type::COLON, defaultToken++);
 
+		// execute default-block in same scope
 		process(result, defaultToken, bodyEnd);
 
 		switch ( mControlFlow ) {
-			case ControlFlow::Break: mControlFlow = ControlFlow::Normal; break;
-			case ControlFlow::Continue: throw Utils::Exceptions::ControlFlowException("invalid control flow detected!");
-			case ControlFlow::Normal: break;
-			case ControlFlow::ExitProgram: return;
-			case ControlFlow::Return: return;
-			case ControlFlow::Throw: return;
+			case ControlFlow::Break:
+			case ControlFlow::Continue:
+			case ControlFlow::Normal:
+				// statement has no effect because the default section is the last parsed section
+				mControlFlow = ControlFlow::Normal;
+				break;
+			case ControlFlow::ExitProgram:
+			case ControlFlow::Return:
+			case ControlFlow::Throw:
+				// no further processing, keep current control flow state
+				return;
 		}
 	}
 }
