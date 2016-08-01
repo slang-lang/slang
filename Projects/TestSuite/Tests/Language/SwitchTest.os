@@ -13,6 +13,7 @@
 			//assert( TestCase7() );	// this should fail
 			assert( TestCase8() );
 			assert( TestCase9() );
+			assert( TestCase10() );
 		}
 
 		private bool TestCase1() const
@@ -21,8 +22,12 @@
 
 			int one = 1;
 			switch ( one ) {
-				case 1: return true;
-				default: return false;
+				case 1: {
+					return true;
+				}
+				default: {
+					return false;
+				}
 			}
 
 			return false;
@@ -34,10 +39,10 @@
 
 			int one = 1;
 			switch ( one + 2 ) {
-				case 1: return false;
-				case 2: return false;
-				case 3: return true;
-				default: return false;
+				case 1: { return false; }
+				case 2: { return false; }
+				case 3: { return true; }
+				default: { return false; }
 			}
 
 			return false;
@@ -49,10 +54,10 @@
 
 			int one = 1;
 			switch ( one ) {
-				case 1: print("case 1"); print("some other commands"); print("bla");
-				case 2: print("case 2"); break;
-				case 3: assert( false ); break;
-				default: assert( false ); break;
+				case 1: { print("case 1"); print("some other commands"); print("bla"); }
+				case 2: { print("case 2"); break; }
+				case 3: { assert( false ); break; }
+				default: { print("default"); break; }
 			}
 
 			return true;
@@ -63,8 +68,8 @@
 
 			int one  = 1;
 			switch ( one ) {
-				case 0: return false;
-				default: return true;
+				case 0: { return false; }
+				default: { return true; }
 			}
 
 			return false;
@@ -75,8 +80,8 @@
 			print("TestCase 5");
 
 			switch ( 0 ) {
-				case 1: return false;
-				case 2: return false;
+				case 1: { return false; }
+				case 2: { return false; }
 			}
 
 			return true;
@@ -88,8 +93,8 @@
 
 			int one = 1;
 			switch ( 2 ) {
-				case (one + 1): print("case (one + 1)"); continue;
-				case 2: print("case 2"); return true;
+				case (one + 1): { print("case (one + 1)"); continue; }
+				case 2: { print("case 2"); return true; }
 			}
 
 			return false;
@@ -100,8 +105,8 @@
 			print("TestCase 7");
 
 			switch ( 1 ) {
-				default: return true;
-				default: return false;
+				default: { return true; }
+				default: { return false; }
 			}
 
 			return false;
@@ -113,9 +118,9 @@
 
 			int value;
 			switch ( value ) {
-				default: return true;
-				case 1: return false;
-				case 2: return false;
+				default: { return true; }
+				case 1: { return false; }
+				case 2: { return false; }
 			}
 
 			return false;
@@ -126,11 +131,33 @@
 			print("TestCase 9");
 
 			switch ( 0 ) {
-				case 0: print("case 0");
-				default: print("default"); return true;
+				case 0: { print("case 0"); }
+				default: { print("default"); return true; }
 			}
 
 			return false;
+		}
+
+		private bool TestCase10() const
+		{
+			print("TestCase 10");
+
+			int one;
+			switch ( 0 ) {
+				case 1: { return false; }
+				case 0: {
+					print("case 0");
+
+					int one = 1;
+					switch ( one ) {
+						case 0: { return false; }
+						case 1: { print("inner case 1"); return true; }
+					}
+				}
+				default: { return false; }
+			}
+
+			return true;
 		}
 	}
 
