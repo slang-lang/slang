@@ -4,6 +4,7 @@
 
 // Library includes
 #include <cassert>
+#include <map>
 
 // Project includes
 #include <Core/BuildInObjects/BoolObject.h>
@@ -1223,33 +1224,51 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 	bodyBegin++;	// don't collect scope token
 	token = bodyEnd;
 
-	TokenIterator defaultToken = getTokens().end();
+	class CaseBlock
+	{
+	public:
+		CaseBlock(TokenIterator begin, TokenIterator end)
+		: mBegin(begin),
+		  mEnd(end)
+		{ }
 
-	// collect case-label positions & default-block
-	std::list<TokenIterator> caseTokens;
+		TokenIterator mBegin;
+		TokenIterator mEnd;
+	};
+	typedef std::list<CaseBlock> CaseBlocks;
+
+	CaseBlocks caseBlocks;
+	CaseBlock defaultBlock = CaseBlock(getTokens().end(), getTokens().end());
+
 	while ( bodyBegin != bodyEnd ) {
 		if ( bodyBegin->type() == Token::Type::KEYWORD && bodyBegin->content() == KEYWORD_CASE ) {
-			caseTokens.push_back(bodyBegin);
+			TokenIterator tmp = findNextBalancedCurlyBracket(bodyBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
+
+			caseBlocks.push_back(CaseBlock(bodyBegin, tmp));
+
+			bodyBegin = tmp;
 		}
 		else if ( bodyBegin->type() == Token::Type::KEYWORD && bodyBegin->content() == KEYWORD_DEFAULT ) {
-			if ( defaultToken != getTokens().end() ) {
+			if ( defaultBlock.mBegin != getTokens().end() ) {
 				throw Utils::Exceptions::SyntaxError("duplicate default entry for switch statement");
 			}
 
-			defaultToken = bodyBegin;
+			TokenIterator tmp = findNextBalancedCurlyBracket(bodyBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
+
+			defaultBlock = CaseBlock(bodyBegin, tmp);
+
+			bodyBegin = tmp;
 		}
 		bodyBegin++;
 	}
 
-	bool foundMatchingCase = false;
-
 	// loop through all case-labels and match their expressions against the switch-expression
-	for ( std::list<TokenIterator>::iterator it = caseTokens.begin(); it != caseTokens.end(); ++it ) {
-		TokenIterator caseIt = lookahead((*it), 1)++;
+	for ( CaseBlocks::iterator it = caseBlocks.begin(); it != caseBlocks.end(); ++it ) {
+		it->mBegin++;
 
 		Object condition;
 		try {
-			expression(&condition, caseIt);
+			expression(&condition, it->mBegin);
 		}
 		catch ( ControlFlow::E e ) {
 			mControlFlow = e;
@@ -1257,20 +1276,17 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 		}
 
 		if ( operator_binary_equal(&expr, &condition) ) {
-			foundMatchingCase = true;
+			expect(Token::Type::COLON, it->mBegin++);
+			expect(Token::Type::BRACKET_CURLY_OPEN, it->mBegin++);
 
-			expect(Token::Type::COLON, caseIt++);
-
-			std::list<TokenIterator>::iterator tmpIt = it;
-			tmpIt++;	// advance to next case-label
-
-			// if this case-label is the last one, set the last switch-token as end token
-			if ( tmpIt == caseTokens.end() ) {
-				(*tmpIt) = bodyEnd;
+			// collect case-block tokens
+			TokenList caseTokens;
+			while ( it->mBegin != it->mEnd ) {
+				caseTokens.push_back((*it->mBegin));
+				it->mBegin++;
 			}
 
-			// execute case-block in same scope
-			process(result, caseIt, (*tmpIt));
+			mControlFlow = interpret(caseTokens, result);
 
 			switch ( mControlFlow ) {
 				case ControlFlow::Break:
@@ -1293,12 +1309,19 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 
 	// in case none of the given case-expressions matches the switch-expression
 	// execute the default block (if present)
-	if ( !foundMatchingCase && defaultToken != getTokens().end() ) {
-		defaultToken++;
-		expect(Token::Type::COLON, defaultToken++);
+	if ( defaultBlock.mBegin != getTokens().end() ) {
+		defaultBlock.mBegin++;
+		expect(Token::Type::COLON, defaultBlock.mBegin++);
+		expect(Token::Type::BRACKET_CURLY_OPEN, defaultBlock.mBegin++);
 
-		// execute default-block in same scope
-		process(result, defaultToken, bodyEnd);
+		// collect default-block tokens
+		TokenList defaultTokens;
+		while ( defaultBlock.mBegin != defaultBlock.mEnd ) {
+			defaultTokens.push_back((*defaultBlock.mBegin));
+			defaultBlock.mBegin++;
+		}
+
+		mControlFlow = interpret(defaultTokens, result);
 
 		switch ( mControlFlow ) {
 			case ControlFlow::Break:

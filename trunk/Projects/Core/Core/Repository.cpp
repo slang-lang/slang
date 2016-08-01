@@ -81,7 +81,6 @@ Repository::~Repository()
  */
 void Repository::addBlueprint(const Designtime::BluePrint& blueprint)
 {
-	//std::string type = blueprint.Typename();
 	std::string type = blueprint.QualifiedTypename();
 
 	Designtime::BluePrintMap::iterator it = mBluePrints.find(type);
