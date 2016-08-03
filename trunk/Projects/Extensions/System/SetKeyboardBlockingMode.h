@@ -26,6 +26,8 @@ namespace Extensions {
 namespace System {
 
 
+#ifdef _WIN32
+#else
 class SetKeyboardBlockingMode : public Runtime::Method
 {
 public:
@@ -61,6 +63,7 @@ public:
 		return Runtime::ControlFlow::Normal;
 	}
 };
+#endif
 
 
 }

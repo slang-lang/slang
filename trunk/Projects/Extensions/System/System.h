@@ -4,8 +4,11 @@
 
 
 // Library includes
-#include <termios.h>
-#include <stdlib.h>
+#ifdef _WIN32
+#else
+#	include <termios.h>
+#	include <stdlib.h>
+#endif
 
 // Project includes
 
@@ -18,10 +21,12 @@ namespace ObjectiveScript {
 namespace Extensions {
 namespace System {
 
-
+#ifdef _WIN32
+#else
 extern void restoreKeyboardBlockingMode();
 extern void setKeyboardBlockingMode(bool blocking);
 extern void storeKeyboardBlockingMode();
+#endif
 
 
 }

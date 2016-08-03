@@ -14,8 +14,9 @@ namespace Extensions {
 namespace System {
 
 
+#ifdef _WIN32
+#else
 struct termios mTerminalSettings;
-
 
 void restoreKeyboardBlockingMode()
 {
@@ -64,6 +65,7 @@ void setKeyboardBlockingMode(bool blocking)
 		SetKeyboardNonBlocking();
 	}
 }
+#endif
 
 
 }

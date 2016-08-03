@@ -39,25 +39,31 @@ namespace System {
 
 SystemExtension::SystemExtension()
 {
+#ifdef _WIN32
+#else
 	// store keyboard blocking mode
 	storeKeyboardBlockingMode();
+#endif
 }
 
 SystemExtension::~SystemExtension()
 {
+#ifdef _WIN32
+#else
 	// not restoring the keyboard settings causes the input from the terminal to not work right
 	restoreKeyboardBlockingMode();
+#endif
 }
 
 void SystemExtension::provideMethods(ExtensionMethods &methods)
 {
 	assert(methods.empty());
 
+	// Generic methods
 	methods.push_back(new AssertMsg());
 	methods.push_back(new GetChar());
 	methods.push_back(new GetEnv());
 	//methods.push_back(new Printf());
-	methods.push_back(new SetKeyboardBlockingMode());
 	methods.push_back(new Sleep());
 	methods.push_back(new Write());
 	methods.push_back(new WriteLn());
@@ -86,6 +92,14 @@ void SystemExtension::provideMethods(ExtensionMethods &methods)
 	methods.push_back(new Strings::SubStr());
 	methods.push_back(new Strings::ToLower());
 	methods.push_back(new Strings::ToUpper());
+
+	
+#ifdef _WIN32
+	// Win32 only methods
+#else
+	// Unix/Linux only methods
+	methods.push_back(new SetKeyboardBlockingMode());
+#endif
 }
 
 

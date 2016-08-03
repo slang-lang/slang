@@ -503,6 +503,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\System\SetKeyboardBlockingMode.h"
+			>
+		</File>
+		<File
 			RelativePath=".\System\Sleep.h"
 			>
 		</File>
@@ -516,6 +520,30 @@
 		</File>
 		<File
 			RelativePath=".\System\Strings\SubStr.h"
+			>
+		</File>
+		<File
+			RelativePath=".\System\System.cpp"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					ObjectFile="$(IntDir)\System\"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					ObjectFile="$(IntDir)\System\"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath=".\System\System.h"
 			>
 		</File>
 		<File
