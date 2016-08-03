@@ -29,7 +29,7 @@ Tokenizer::Tokenizer(const std::string& filename, const std::string& content)
 	mKeywords = provideKeyWords();
 	mModifiers = provideModifiers();
 	mReservedWords = provideReservedWords();
-	mTypes = provideAtomarTypes();
+	mTypes = provideAtomicTypes();
 }
 
 void Tokenizer::addIdentifier(const std::string& identifier)

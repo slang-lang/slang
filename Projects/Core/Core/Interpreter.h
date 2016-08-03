@@ -53,7 +53,7 @@ private: // Deinit
 	void garbageCollector();
 
 private: // Execution
-	Symbol* identify(TokenIterator& token) const;
+	inline Symbol* identify(TokenIterator& token) const;
 	Symbol* identifyMethod(TokenIterator& token, const ParameterList& params) const;
 
 	// token processing

@@ -247,16 +247,6 @@ TokenIterator findNextBalancedParenthesis(TokenIterator start, int generateError
 	return start;
 }
 
-bool isBooleanConst(const std::string& value)
-{
-	return ( value == BOOL_FALSE || value == BOOL_TRUE );
-}
-
-bool isTrue(const std::string& value)
-{
-	return ( value != BOOL_FALSE && value != "0" && value != "0.f" && value != "0.0" );
-}
-
 bool isTrue(const Runtime::Object& object)
 {
 	if ( object.isAtomicType() ) {
@@ -273,15 +263,6 @@ bool isTrue(const Runtime::Object* object)
 	}
 
 	return object->isValid();
-
-/*
-	if ( !object || !object->isValid() || !object->getValue().toBool() ) {
-		return false;
-	}
-
-	// everything that's not false has to be true
-	return true;
-*/
 }
 
 

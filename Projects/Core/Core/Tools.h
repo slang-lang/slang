@@ -56,8 +56,6 @@ TokenIterator findNextBalancedBracket(TokenIterator start, int generateErrorAfte
 TokenIterator findNextBalancedCurlyBracket(TokenIterator start, TokenIterator end, int generateErrorAfter = 0, Token::Type::E terminator = Token::Type::NIL);
 TokenIterator findNextBalancedParenthesis(TokenIterator start, int generateErrorAfter = 0, Token::Type::E terminator = Token::Type::NIL);
 
-bool isBooleanConst(const std::string& value);
-bool isTrue(const std::string& value);
 bool isTrue(const Runtime::Object& object);
 bool isTrue(const Runtime::Object* object);
 
