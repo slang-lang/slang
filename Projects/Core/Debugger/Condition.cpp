@@ -6,7 +6,6 @@
 
 // Project includes
 #include <Core/Object.h>
-#include <Core/Symbol.h>
 #include <Core/Runtime/OperatorOverloading.h>
 #include <Tools/Strings.h>
 

@@ -135,14 +135,14 @@ public:
 };
 
 
-class DuplicateIdentifer : public Exception
+class DuplicateIdentifier : public Exception
 {
 public:
-	DuplicateIdentifer(const std::string& text, const Utils::Position& position = Utils::Position())
-	: Exception("Exception.DuplicateIdentifer: " + text, position)
+	DuplicateIdentifier(const std::string& text, const Utils::Position& position = Utils::Position())
+	: Exception("Exception.DuplicateIdentifier: " + text, position)
 	{ }
 
-	virtual ~DuplicateIdentifer() throw() { }
+	virtual ~DuplicateIdentifier() throw() { }
 };
 
 

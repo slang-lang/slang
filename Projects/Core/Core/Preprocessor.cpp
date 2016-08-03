@@ -68,7 +68,6 @@ bool Preprocessor::buildQualifiedNames(TokenIteratorMutable& token, bool skipFir
 
 Designtime::BluePrint* Preprocessor::createMember(TokenIterator token) const
 {
-	bool isConst = false;
 	bool isFinal = false;
 	std::string languageFeature;
 	Mutability::E mutability = Mutability::Modify;

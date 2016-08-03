@@ -34,7 +34,7 @@ void SymbolScope::define(const std::string& name, Symbol* symbol)
 
 	if ( resolve(name, true) ) {
 		// duplicate symbol defined
-		throw Utils::Exceptions::DuplicateIdentifer("duplicate identifier defined: " + symbol->getName());
+		throw Utils::Exceptions::DuplicateIdentifier("duplicate identifier defined: " + symbol->getName());
 	}
 
 	mSymbols.insert(std::make_pair(
@@ -114,7 +114,7 @@ void MethodScope::defineMethod(const std::string& name, Runtime::Method* method)
 
 	if ( MethodScope::resolveMethod(name, method->provideSignature(), true) ) {
 		// duplicate method defined
-		throw Utils::Exceptions::DuplicateIdentifer("duplicate method '" + method->getName() + "' added with same signature");
+		throw Utils::Exceptions::DuplicateIdentifier("duplicate method '" + method->getName() + "' added with same signature");
 	}
 
 	Symbols::iterator it = mSymbols.find(name);

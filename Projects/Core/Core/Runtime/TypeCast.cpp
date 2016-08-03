@@ -3,7 +3,6 @@
 #include "TypeCast.h"
 
 // Library includes
-#include <string>
 
 // Project includes
 #include <Core/BuildInObjects/BoolObject.h>
@@ -15,7 +14,6 @@
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/BuildInObjects/UserObject.h>
 #include <Core/BuildInObjects/VoidObject.h>
-#include <Core/Repository.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Utils/Utils.h>
 
@@ -41,7 +39,6 @@ void typecast(Object *base, const std::string& targetType, Repository *repositor
 		throw Utils::Exceptions::Exception("invalid cast target type");
 	}
 
-	std::string sourceType = base->Typename();
 
 	if ( targetType == GenericObject::TYPENAME ) {
 		base->overrideTypename(GenericObject::TYPENAME);

@@ -89,7 +89,7 @@ public:
 	}
 
 protected:
-	const std::string& getTypeName() const {
+	virtual const std::string& getTypeName() const {
 		return Typename();
 	}
 

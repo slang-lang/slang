@@ -31,17 +31,13 @@ bool Ancestor::operator<(const Ancestor& other) const
 {
 	if ( type() == other.type() ) {
 		if ( name() == other.name() ) {
-			if ( visibility() < other.visibility() ) {
-				return true;
-			}
-
-			return (visibility() < other.visibility());
+			return visibility() < other.visibility();
 		}
 
-		return (name() < other.name());
+		return name() < other.name();
 	}
 
-	return (type() > other.type());
+	return type() < other.type();
 }
 
 bool Ancestor::operator==(const Ancestor& other) const
@@ -52,11 +48,8 @@ bool Ancestor::operator==(const Ancestor& other) const
 	if ( type() != other.type() ) {
 		return false;
 	}
-	if ( visibility() != other.visibility() ) {
-		return false;
-	}
 
-	return true;
+	return visibility() == other.visibility();
 }
 
 const std::string& Ancestor::name() const
