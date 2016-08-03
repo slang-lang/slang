@@ -25,7 +25,7 @@ namespace ObjectiveScript {
 namespace Runtime {
 
 
-void operator_binary_assign(Object *base, Object *other)
+inline void operator_binary_assign(Object *base, Object *other)
 {
 	if ( !base ) {
 		throw Utils::Exceptions::AccessViolation("cannot assign value to null pointer");

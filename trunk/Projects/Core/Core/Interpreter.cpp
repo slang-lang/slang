@@ -95,8 +95,6 @@ void Interpreter::garbageCollector()
 			 it->second && it->second->getSymbolType() == Symbol::IType::ObjectSymbol ) {
 			getRepository()->removeReference(static_cast<Object*>(it->second));
 		}
-
-		//getScope()->undefine(it->first, it->second);
 	}
 	symbols.clear();
 }
@@ -147,7 +145,7 @@ const TokenList& Interpreter::getTokens() const
 	return mTokenStack.back();
 }
 
-Symbol* Interpreter::identify(TokenIterator& token) const
+inline Symbol* Interpreter::identify(TokenIterator& token) const
 {
 	Symbol *result = 0;
 	bool onlyCurrentScope = false;
@@ -861,7 +859,7 @@ void Interpreter::process_if(TokenIterator& token, Object *result)
 	// find next balanced '{' & '}' pair
 	TokenIterator bodyEnd = findNextBalancedCurlyBracket(bodyBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
 
-	bodyBegin++;		// don't collect our scope token
+	bodyBegin++;		// don't collect scope token
 	token = bodyEnd;	// no matter what, at least set our token to our if-block's end
 
 	// collect all tokens for our if-block
@@ -994,11 +992,11 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 	TokenIterator opened = findNext(tmp, Token::Type::PARENTHESIS_OPEN);
 	TokenIterator closed = findNextBalancedParenthesis(++opened);
 
-	std::list<Object> objectList;
+	std::list<Object> objectList;	// this is a hack to prevent that the provided object parameters run out of scope
 	ParameterList params;
 
 	tmp = opened;
-	// loop through all parameters seperated by colons
+	// loop through all parameters separated by commas
 	while ( tmp != closed ) {
 		objectList.push_back(Object());
 
@@ -1070,7 +1068,7 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 {
 	TokenIterator tmp = token;
 
-	std::string name;// = ANONYMOUS_OBJECT;
+	std::string name;
 	std::string prototype;
 
 	if ( token->type() == Token::Type::PROTOTYPE ) {
@@ -1091,11 +1089,11 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 	TokenIterator opened = findNext(tmp, Token::Type::PARENTHESIS_OPEN);
 	TokenIterator closed = findNextBalancedParenthesis(++opened);
 
-	std::list<Object> objectList;	// this is a hack to prevent the provided object parameters to run out of scope after our while-loop
+	std::list<Object> objectList;	// this is a hack to prevent that the provided object parameters run out of scope
 	ParameterList params;
 
 	tmp = opened;
-	// loop through all parameters separated by colons
+	// loop through all parameters separated by commas
 	while ( tmp != closed ) {
 		objectList.push_back(Object());
 
@@ -1304,7 +1302,6 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 		}
 	}
 
-	// in case none of the given case-expressions matches the switch-expression
 	// execute the default block (if present)
 	if ( defaultBlock.mBegin != getTokens().end() ) {
 		defaultBlock.mBegin++;
@@ -1335,7 +1332,7 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 }
 
 // syntax:
-// throw;
+// throw [<expression>];
 void Interpreter::process_throw(TokenIterator& token, Object* /*result*/)
 {
 	Object* data = getRepository()->createInstance(GENERIC_OBJECT);
@@ -1380,9 +1377,7 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 	// process try-block
 	mControlFlow = interpret(tryTokens, result);
 
-	TokenIterator tmp = token;
-	tmp++;	// look ahead
-
+	TokenIterator tmp = lookahead(token, 1);
 
 	std::list<TokenIterator> catchTokens;
 	TokenIterator finallyToken = getTokens().end();
@@ -1406,8 +1401,7 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 			token = tmp;	// set exit token
 		}
 		else {
-			// reached end of try-catch-finally-block
-			break;
+			break;	// reached end of try-catch-finally-block
 		}
 
 		tmp++;
@@ -1548,6 +1542,7 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol)
 		}
 	}
 
+	// this has to be removed to allow type declarations without a trailing semicolon (like in "catch ( Exception e )" )
 	//expect(Token::Type::SEMICOLON, token);	// make sure everything went exactly the way we wanted
 
 	return object;

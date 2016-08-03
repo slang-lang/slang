@@ -20,7 +20,7 @@
 namespace ObjectiveScript {
 
 
-StringList provideAtomarTypes()
+StringList provideAtomicTypes()
 {
 	StringList types;
 
