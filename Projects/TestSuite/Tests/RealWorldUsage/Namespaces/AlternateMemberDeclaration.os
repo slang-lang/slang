@@ -2,17 +2,17 @@
 
 private namespace TestSpace {
 
-private object TestObject {
-	private int mValue;
+	private object TestObject {
+		private int mValue;
 
-	public void TestObject(int value) {
-		mValue = value;
-	}
+		public void TestObject(int value) {
+			mValue = value;
+		}
 
-	public string ToString() const {
-		return string mValue;
+		public string ToString() const {
+			return string mValue;
+		}
 	}
-}
 
 }
 

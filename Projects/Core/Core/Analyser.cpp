@@ -44,7 +44,7 @@ Designtime::Ancestors Analyser::collectInheritance(TokenIterator& token) const
 	}
 
 	bool replicates = false;
-	Designtime::Ancestor::Type::E type = Designtime::Ancestor::Type::Unknown;
+	Designtime::Ancestor::Type::E inheritance = Designtime::Ancestor::Type::Unknown;
 	Visibility::E visibility = Visibility::Public;
 
 	for ( ; ; ) {
@@ -55,7 +55,7 @@ Designtime::Ancestors Analyser::collectInheritance(TokenIterator& token) const
 
 			token++;	// consume token
 
-			type = Designtime::Ancestor::Type::Extends;
+			inheritance = Designtime::Ancestor::Type::Extends;
 		}
 		else if ( token->content() == RESERVED_WORD_IMPLEMENTS ) {
 			if ( replicates ) {
@@ -64,13 +64,17 @@ Designtime::Ancestors Analyser::collectInheritance(TokenIterator& token) const
 
 			token++;	// consume token
 
-			type = Designtime::Ancestor::Type::Implements;
+			inheritance = Designtime::Ancestor::Type::Implements;
 		}
 		else if ( token->content() == RESERVED_WORD_REPLICATES ) {
+			if ( replicates ) {
+				throw Utils::Exceptions::Exception("combinations with 'replicates' are not allowed");
+			}
+
 			token++;	// consume token
 
 			replicates = true;
-			type = Designtime::Ancestor::Type::Replicates;
+			inheritance = Designtime::Ancestor::Type::Replicates;
 		}
 		else if ( token->type() == Token::Type::COMMA ) {
 			token++;	// consume token
@@ -82,9 +86,14 @@ Designtime::Ancestors Analyser::collectInheritance(TokenIterator& token) const
 			break;
 		}
 
+		//std::string type = identify(token, TokenIterator());
+
 		ancestors.insert(
-			Designtime::Ancestor(getQualifiedTypename((token++)->content()), type, visibility)
+			Designtime::Ancestor(getQualifiedTypename((token++)->content()), inheritance, visibility)
+			//Designtime::Ancestor(type, inheritance, visibility)
 		);
+
+		//token++;
 	}
 
 	return ancestors;
@@ -445,6 +454,25 @@ std::string Analyser::getQualifiedTypename(const std::string& type) const
 	result += type;
 
 	return result;
+}
+
+std::string Analyser::identify(TokenIterator& start, TokenIterator /*end*/) const
+{
+	std::string type = start->content();
+
+	while ( start->type() == Token::Type::IDENTIFER ) {
+		if ( lookahead(start)->type() != Token::Type::SCOPE ) {
+			break;
+		}
+
+		start++;
+
+		// add next token to type definition
+		type += (start++)->content();
+		type += (start++)->content();
+	}
+
+	return type;
 }
 
 void Analyser::process(const TokenList& tokens)

@@ -14,7 +14,6 @@
 #include <Core/Tools.h>
 #include <Core/Utils/Exceptions.h>
 #include <Tools/Strings.h>
-#include <ncurses.h>
 
 // Forward declarations
 
@@ -45,7 +44,7 @@ public:
 
 			int c = getchar();
 			if ( c ) {
-				value = c;
+				value = (char)c;
 			}
 
 			*result = Runtime::StringObject(value);

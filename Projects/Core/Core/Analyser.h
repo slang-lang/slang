@@ -57,6 +57,7 @@ private:
 
 	Designtime::Ancestors collectInheritance(TokenIterator& token) const;
 	std::string getQualifiedTypename(const std::string& name) const;
+	std::string identify(TokenIterator& start, TokenIterator end) const;
 
 private:
 	Designtime::BluePrintList mBluePrints;

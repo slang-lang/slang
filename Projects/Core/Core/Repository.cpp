@@ -285,7 +285,6 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 	object->setParent(blueprint->getEnclosingScope());
 	object->setQualifiedTypename(blueprint->QualifiedTypename());
 	object->setRepository(this);
-	//object->setValue(blueprint->getValue());
 	object->setVisibility(blueprint->getVisibility());
 
 	return object;
@@ -410,7 +409,7 @@ void Repository::insertBluePrintsIntoScopes()
 		std::string parent;
 		std::string type;
 
-		while ( true ) {
+		for ( ; ; ) {
 			Tools::split(name, parent, type);
 
 			if ( type.empty() ) {

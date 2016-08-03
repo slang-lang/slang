@@ -1277,7 +1277,7 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 
 		if ( operator_binary_equal(&expr, &condition) ) {
 			expect(Token::Type::COLON, it->mBegin++);
-			expect(Token::Type::BRACKET_CURLY_OPEN, it->mBegin++);
+			expect(Token::Type::BRACKET_CURLY_OPEN, it->mBegin++);	// don't collect scope token
 
 			// collect case-block tokens
 			TokenList caseTokens;
@@ -1290,19 +1290,16 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 
 			switch ( mControlFlow ) {
 				case ControlFlow::Break:
-					// stop matching the remaining case-statements
 					mControlFlow = ControlFlow::Normal;
-					return;
+					return;	// stop matching the remaining case-statements
 				case ControlFlow::Continue:
 				case ControlFlow::Normal:
-					// continue matching the remaining case-statements
 					mControlFlow = ControlFlow::Normal;
-					break;
+					break;	// continue matching the remaining case-statements
 				case ControlFlow::ExitProgram:
 				case ControlFlow::Return:
 				case ControlFlow::Throw:
-					// no further processing, keep current control flow state
-					return;
+					return;	// no further processing, keep current control flow state
 			}
 		}
 	}
@@ -1327,14 +1324,12 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 			case ControlFlow::Break:
 			case ControlFlow::Continue:
 			case ControlFlow::Normal:
-				// statement has no effect because the default section is the last parsed section
 				mControlFlow = ControlFlow::Normal;
-				break;
+				break;	// statement has no effect because the default section is the last executed section
 			case ControlFlow::ExitProgram:
 			case ControlFlow::Return:
 			case ControlFlow::Throw:
-				// no further processing, keep current control flow state
-				return;
+				return;	// no further processing, keep current control flow state
 		}
 	}
 }
@@ -1390,7 +1385,7 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 
 
 	std::list<TokenIterator> catchTokens;
-	TokenIterator finallyToken;
+	TokenIterator finallyToken = getTokens().end();
 
 	for ( ; ; ) {
 		if ( tmp != getTokens().end() && tmp->content() == KEYWORD_CATCH ) {
@@ -1401,7 +1396,7 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 			token = tmp;	// set exit token
 		}
 		else if ( tmp != getTokens().end() && tmp->content() == KEYWORD_FINALLY ) {
-			if ( finallyToken != TokenIterator() ) {
+			if ( finallyToken != getTokens().end() ) {
 				throw Utils::Exceptions::SyntaxError("multiple finally blocks are not allowed");
 			}
 
@@ -1476,7 +1471,7 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 		}
 	}
 
-	if ( finallyToken != TokenIterator() ) {
+	if ( finallyToken != getTokens().end() ) {
 		finallyToken++;
 		expect(Token::Type::BRACKET_CURLY_OPEN, finallyToken);
 
