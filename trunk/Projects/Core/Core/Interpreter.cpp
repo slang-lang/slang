@@ -987,8 +987,6 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 {
 	TokenIterator tmp = token;
 
-	std::string method = token->content();
-
 	TokenIterator opened = findNext(tmp, Token::Type::PARENTHESIS_OPEN);
 	TokenIterator closed = findNextBalancedParenthesis(++opened);
 
@@ -1069,13 +1067,14 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 	TokenIterator tmp = token;
 
 	std::string name;
+/*
 	std::string prototype;
 
 	if ( token->type() == Token::Type::PROTOTYPE ) {
 		prototype = token->content();
 		token++;
 	}
-
+*/
 	std::string type = token->content();
 
 	Symbol* symbol = identify(token);
@@ -1453,14 +1452,14 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 			token = catchEnd;
 
 			// collect catch-block tokens
-			TokenList catchTokens;
+			TokenList tokens;
 			while ( catchBegin != catchEnd ) {
-				catchTokens.push_back((*catchBegin));
+				tokens.push_back((*catchBegin));
 				catchBegin++;
 			}
 
 			// execute catch-block if an exception has been thrown
-			mControlFlow = interpret(catchTokens, result);
+			mControlFlow = interpret(tokens, result);
 			break;
 		}
 	}
@@ -1521,7 +1520,7 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol)
 
 	Object *object = dynamic_cast<Object*>(getScope()->resolve(name, true));
 	if ( object ) {
-		throw Utils::Exceptions::DuplicateIdentifer("duplicate identifier '" + name + "' created", token->position());
+		throw Utils::Exceptions::DuplicateIdentifier("duplicate identifier '" + name + "' created", token->position());
 	}
 
 	object = getRepository()->createInstance(static_cast<Designtime::BluePrint*>(symbol), name, false);

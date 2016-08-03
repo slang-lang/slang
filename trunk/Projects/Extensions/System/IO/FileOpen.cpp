@@ -107,6 +107,7 @@ int FileOpen::parseAccessMode(std::string accessmode) const
 			case 't': mode |= O_TRUNC; break;
 			case 'w': mode |= O_WRONLY; break;
 			case 'x': mode |= O_EXCL; break;
+			default: break;
 		}
 
 		accessmode = accessmode.substr(1, accessmode.size());

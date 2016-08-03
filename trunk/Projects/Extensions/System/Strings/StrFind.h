@@ -52,9 +52,9 @@ public:
 
 			std::string param_source = (*it++).value().toStdString();
 			std::string param_target = (*it++).value().toStdString();
-			int param_position = (*it).value().toInt();
+			long param_position = (*it).value().toInt();
 
-			int my_result = param_source.find(param_target, param_position);
+			int my_result = (int)param_source.find(param_target, param_position);
 
 			*result = Runtime::IntegerObject(my_result);
 		}

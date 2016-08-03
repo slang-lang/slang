@@ -608,9 +608,9 @@ bool Backend::removeBreakPoint(const StringList& tokens)
 	Core::BreakPointCollection points = mDebugger->getBreakPoints();
 
 	int count = 1;
-	for ( Core::BreakPointCollection::const_iterator it = points.begin(); it != points.end(); ++it, ++count ) {
+	for ( Core::BreakPointCollection::const_iterator breakIt = points.begin(); breakIt != points.end(); ++breakIt, ++count ) {
 		if ( count == idx ) {
-			mDebugger->removeBreakPoint((*it));
+			mDebugger->removeBreakPoint((*breakIt));
 			return true;
 		}
 	}

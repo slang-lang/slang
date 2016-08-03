@@ -254,6 +254,22 @@ std::string AtomicValue::toStdString() const
 	return "";
 }
 
+unsigned int AtomicValue::toUInt() const
+{
+	switch ( type ) {
+		case BOOL: return (unsigned int)mValue.bool_;
+		case DOUBLE: return (unsigned int)mValue.double_;
+		case FLOAT: return (unsigned int)mValue.float_;
+		case INT: return (unsigned int)mValue.int_;
+		case STRING: return (unsigned int)Tools::stringToInt(mStringValue);
+		case UINT: return mValue.uint_;
+		default: break;
+	}
+
+	assert(!"invalid data type");
+	return 0;
+}
+
 
 }
 }

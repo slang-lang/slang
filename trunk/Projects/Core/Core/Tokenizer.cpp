@@ -171,11 +171,7 @@ bool Tokenizer::isDouble(const std::string& token) const
 	}
 
 	// the last char of our token has to be an 'd'
-	if ( token[token.size() - 1] == 'd' ) {
-		return true;
-	}
-
-	return false;
+	return token[token.size() - 1] == 'd';
 }
 
 bool Tokenizer::isFloat(const std::string& token) const
@@ -203,11 +199,7 @@ bool Tokenizer::isFloat(const std::string& token) const
 	}
 
 	// the last char of our token has to be an 'f'
-	if ( token[token.size() - 1] == 'f' ) {
-		return true;
-	}
-
-	return false;
+	return token[token.size() - 1] == 'f';
 }
 
 bool Tokenizer::isIdentifer(const std::string& token) const
@@ -322,11 +314,7 @@ bool Tokenizer::isNumber(const std::string& token) const
 	}
 
 	// the last char of our token has to be an 'n'
-	if ( token[token.size() - 1] == 'n' ) {
-		return true;
-	}
-
-	return false;
+	return token[token.size() - 1] == 'n';
 }
 
 bool Tokenizer::isPrototype(TokenIterator token) const
@@ -348,11 +336,7 @@ bool Tokenizer::isPrototype(TokenIterator token) const
 
 	// TODO: to allow more complex prototype declarations one would have to allow more tokens here (i.e. Identifier, Identifier, ...)
 
-	if ( token->type() != Token::Type::COMPARE_GREATER ) {
-		return false;
-	}
-
-	return true;
+	return token->type() == Token::Type::COMPARE_GREATER;
 }
 
 bool Tokenizer::isReservedWord(const std::string& token) const
@@ -379,11 +363,7 @@ bool Tokenizer::isType(const std::string& token) const
 
 bool Tokenizer::isVisibility(const std::string& token) const
 {
-	if ( token == PRIVATE || token == PROTECTED || token == PUBLIC ) {
-		return true;
-	}
-
-	return false;
+	return token == PRIVATE || token == PROTECTED || token == PUBLIC;
 }
 
 bool Tokenizer::isWhiteSpace(const std::string& token) const

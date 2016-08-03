@@ -30,7 +30,7 @@ void split(const std::string& str, std::string& p, std::string& c)
 	p = "";
 	c = "";
 
-	unsigned int pos = str.find_first_of('.');
+	unsigned long pos = str.find_first_of('.');
 
 	p = str.substr(0, pos);
 	if ( p.size() != str.size() ) {
@@ -40,11 +40,7 @@ void split(const std::string& str, std::string& p, std::string& c)
 
 bool stringToBool(const std::string &value)
 {
-	if ( value.empty() || value == "\n" || value == BOOL_FALSE ) {
-		return false;
-	}
-
-    return true;
+	return !(value.empty() || value == "\n" || value == BOOL_FALSE);
 }
 
 double stringToDouble(const std::string &value)
