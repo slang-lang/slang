@@ -7,7 +7,6 @@
 // Project includes
 #include <Core/Consts.h>
 #include <Core/Tools.h>
-#include <Core/Utils/Exceptions.h>
 
 // Namespace declarations
 
@@ -51,7 +50,7 @@ void Tokenizer::addToken(const Token& token)
 		return;
 	}
 
-	// add only valid tokens to our token list
+	// only add valid tokens to our token list
 	mTokens.push_back(token);
 }
 
@@ -108,7 +107,10 @@ Token Tokenizer::createToken(const std::string& con, const Utils::Position& posi
 		content = con.substr(0, con.length() - 1);
 	}
 	else if ( isIdentifer(content) ) { category = Token::Category::Identifier; type = Token::Type::IDENTIFER; }
-	else if ( isInteger(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_INTEGER; }
+	else if ( isInteger(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_INTEGER;
+		// remove trailing 'i' character
+		//content = con.substr(0, con.length() - 1);
+	}
 	else if ( isKeyword(content) ) { category = Token::Category::Keyword; type = Token::Type::KEYWORD; }
 	else if ( isLanguageFeature(content) ) { category = Token::Category::Modifier; type = Token::Type::LANGUAGEFEATURE; }
 	else if ( isLiteral(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_LITERAL;
@@ -236,6 +238,9 @@ bool Tokenizer::isInteger(const std::string& token) const
 				return false;
 		}
 	}
+
+	// [optional] the last char of our token has to be an 'i'
+	//return token[token.size() - 1] == 'i' || true;
 
 	return true;
 }

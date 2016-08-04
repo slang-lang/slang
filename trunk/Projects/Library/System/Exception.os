@@ -1,11 +1,7 @@
 
 public namespace System {
 
-	public interface IException {
-		public string what() const;
-	}
-
-	public object Exception /*implements IException*/ {
+	public object Exception {
 		private string _exception;
 
 		public void Exception(string ex const) {
@@ -17,7 +13,9 @@ public namespace System {
 		}
 	}
 
+	public object NullPointerException replicates Exception;
 	public object OutOfBoundsException replicates Exception;
+	public object SecurityEcxeption replicates Exception;
 
 }
 
