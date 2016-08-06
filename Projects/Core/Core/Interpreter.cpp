@@ -47,9 +47,7 @@ Interpreter::~Interpreter()
  */
 ControlFlow::E Interpreter::execute(Object *result)
 {
-	mControlFlow = interpret(mTokens, result);
-
-	return mControlFlow;
+	return interpret(mTokens, result);
 }
 
 void Interpreter::expression(Object *result, TokenIterator& start)
@@ -571,23 +569,12 @@ void Interpreter::process(Object *result, TokenIterator& token, TokenIterator en
 			( (token->type() != terminator) && (token->type() != Token::Type::ENDOFFILE) ) ) {
 
 		if ( mControlFlow != ControlFlow::Normal ) {
-			// a return command has been triggered, time to stop processing
-			break;
+			break;		// a return command has been triggered, time to stop processing
 		}
 
-		// notify debugger
-		Core::Debugger::GetInstance().notify(getScope(), (*token));
+		Core::Debugger::GetInstance().notify(getScope(), (*token));		// notify debugger
 
-		// decide what we want to do according to the type of token we have
-		switch ( token->type() ) {
-			case Token::Type::CONST_BOOLEAN:
-			case Token::Type::CONST_DOUBLE:
-			case Token::Type::CONST_FLOAT:
-			case Token::Type::CONST_INTEGER:
-			case Token::Type::CONST_LITERAL:
-			case Token::Type::CONST_NUMBER:
-				parseTerm(result, token);
-				break;
+		switch ( token->type() ) {			// decide what we want to do according to the type of token we have
 			case Token::Type::IDENTIFER:
 			case Token::Type::PROTOTYPE:
 			case Token::Type::TYPE:
@@ -622,13 +609,14 @@ void Interpreter::process_assert(TokenIterator& token)
 	}
 	catch ( ControlFlow::E e ) {
 		mControlFlow = e;
+		return;
 	}
-
+/*
 	// this prevents exceptions from being thrown if someone (maybe the debugger..) has set our control flow to ExitProgram
 	if ( mControlFlow == ControlFlow::ExitProgram ) {
 		return;
 	}
-
+*/
 	if ( !isTrue(condition) ) {
 		throw Utils::Exceptions::AssertionFailed(condition.ToString(), token->position());
 	}
@@ -1064,17 +1052,7 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 // new <Typename>([<parameter list>]);
 void Interpreter::process_new(TokenIterator& token, Object *result)
 {
-	TokenIterator tmp = token;
-
 	std::string name;
-/*
-	std::string prototype;
-
-	if ( token->type() == Token::Type::PROTOTYPE ) {
-		prototype = token->content();
-		token++;
-	}
-*/
 	std::string type = token->content();
 
 	Symbol* symbol = identify(token);
@@ -1085,13 +1063,17 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 		throw Utils::Exceptions::Exception("blue print symbol expected!");
 	}
 
-	TokenIterator opened = findNext(tmp, Token::Type::PARENTHESIS_OPEN);
+	expect(Token::Type::PARENTHESIS_OPEN, ++token);
+
+	TokenIterator opened = token;
 	TokenIterator closed = findNextBalancedParenthesis(++opened);
+
+	token = closed;
 
 	std::list<Object> objectList;	// this is a hack to prevent that the provided object parameters run out of scope
 	ParameterList params;
 
-	tmp = opened;
+	TokenIterator tmp = opened;
 	// loop through all parameters separated by commas
 	while ( tmp != closed ) {
 		objectList.push_back(Object());
@@ -1119,9 +1101,8 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 		tmp++;
 	}
 
-	token = closed;
-
-	// create instance of new object
+/*
+	// create initialized instance of new object
 	Object* tmpObj = getRepository()->createInstance(static_cast<Designtime::BluePrint*>(symbol), name, true);
 
 	// execute new object's constructor
@@ -1129,6 +1110,13 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 
 	// and assign to result
 	*result = *tmpObj;
+*/
+
+	// create initialized instance of new object
+	*result = *getRepository()->createInstance(static_cast<Designtime::BluePrint*>(symbol), name, true);
+
+	// execute new object's constructor
+	mControlFlow = result->Constructor(params);
 }
 
 // syntax:
@@ -1184,6 +1172,8 @@ void Interpreter::process_scope(TokenIterator& token, Object* result)
 	}
 
 	mControlFlow = interpret(scopeTokens, result);
+
+	expect(Token::Type::BRACKET_CURLY_CLOSE, token);
 }
 
 // syntax:
@@ -1541,7 +1531,7 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol)
 		}
 	}
 
-	// this has to be removed to allow type declarations without a trailing semicolon (like in "catch ( Exception e )" )
+	// this has been removed to allow type declarations without a trailing semicolon (like in "catch ( Exception e )" )
 	//expect(Token::Type::SEMICOLON, token);	// make sure everything went exactly the way we wanted
 
 	return object;
