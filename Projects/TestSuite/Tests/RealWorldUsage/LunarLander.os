@@ -61,17 +61,20 @@ public object Main {
 	}
 
 	private void printIntro() {
-		writeln("LUNAR LANDER v0.0.1");
-		writeln("THIS IS A COMPUTER SIMULATION OF AN APOLLO");
-		writeln("LUNAR LANDING CAPSULE.");
+		writeln("==============");
+		writeln("|LUNAR LANDER|");
+		writeln("==============");
 		writeln();
-		writeln("THE ON-BOARD COMPUTER HAS FAILED (IT WAS MADE");
-		writeln("BY XEROX) SO YOU HAVE TO LAND THE CAPSULE MANUALLY.");
-		writeln("SET BURN RATE OF RETRO ROCKETS TO ANY VALUE BETWEEN");
-		writeln("0 (FREE FALL) AND 200 (MAXIMUM BURN) POUNDS PER SECOND.");
+		writeln("THIS IS A COMPUTER SIMULATION OF AN APOLLO LUNAR LANDING CAPSULE.");
+		writeln();
+		writeln("THE ON-BOARD COMPUTER HAS FAILED (IT WAS MADE BY XEROX) SO YOU ");
+		writeln("HAVE TO LAND THE CAPSULE MANUALLY.");
+		writeln("SET BURN RATE OF RETRO ROCKETS TO ANY VALUE BETWEEN 0 (FREE FALL)");
+		writeln("AND " + MAXBURN + " (MAXIMUM BURN) POUNDS PER SECOND.");
 		writeln("SET NEW BURN RATE EVERY 10 SECONDS.");
 		writeln("CAPSULE WEIGHT " + mCapsuleWeight + " KG; FUEL WEIGHT " + mFuel + " KG.");
 		writeln("GOOD LUCK");
+		writeln();
 	}
 
 	private void printOutro() {
