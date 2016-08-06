@@ -33,7 +33,7 @@ public:
 	: Runtime::Method(0, "cout", Designtime::StringObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter("text", Designtime::StringObject::TYPENAME, VALUE_NONE));
+		params.push_back(Parameter("text", Designtime::StringObject::TYPENAME, VALUE_NONE, true));
 
 		setSignature(params);
 	}
