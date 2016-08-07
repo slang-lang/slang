@@ -13,10 +13,10 @@ public object Main {
 	}
 
 	private void Startup() modify {
-		mConnection = new Mysql.Connection("192.168.0.23", 0, "oscript", "oscript", "ts_parking");
+		mConnection = new Mysql.Connection("192.168.0.20", 0, "oscript", "oscript", "ts_parking");
 		if ( !mConnection.isOpen() ) {
-			writeln("error while connection to database!");
-			throw new System.Exception("error while connection to database!");
+			writeln("error while connecting to database!");
+			throw new System.Exception("error while connecting to database!");
 		}
 	}
 
