@@ -289,6 +289,7 @@ void Analyser::createMethod(TokenIterator& token, TokenIterator end)
 	method->setMethodType(methodType);
 	method->setMutability(mutability);
 	method->setParent(mScope);
+	method->setQualifiedTypename(type);
 	method->setRecursive(isRecursive);
 	method->setRepository(mRepository);
 	method->setSignature(params);
@@ -461,11 +462,11 @@ std::string Analyser::identify(TokenIterator& start, TokenIterator /*end*/) cons
 	std::string type = start->content();
 
 	while ( start->type() == Token::Type::IDENTIFER ) {
-		if ( lookahead(start)->type() != Token::Type::SCOPE ) {
+		if ( lookahead(start++)->type() != Token::Type::SCOPE ) {
 			break;
 		}
 
-		start++;
+		//start++;
 
 		// add next token to type definition
 		type += (start++)->content();

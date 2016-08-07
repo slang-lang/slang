@@ -243,6 +243,7 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token) const
 	method->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
 	method->setMethodType(methodType);
 	method->setMutability(mutability);
+	method->setQualifiedTypename(type);
 	method->setRecursive(isRecursive);
 	method->setRepository(mRepository);
 	method->setSignature(params);

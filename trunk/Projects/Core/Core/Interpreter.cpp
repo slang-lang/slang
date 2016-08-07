@@ -583,10 +583,9 @@ void Interpreter::process(Object *result, TokenIterator& token, TokenIterator en
 			case Token::Type::KEYWORD:
 				process_keyword(token, result);
 				break;
-			case Token::Type::BRACKET_CURLY_OPEN: {
-				// this opens a new scope
-				process_scope(token, result);
-			} break;
+			case Token::Type::BRACKET_CURLY_OPEN:
+				process_scope(token, result);	// this opens a new scope
+				break;
 			case Token::Type::SEMICOLON:
 				break;
 			default:
@@ -611,12 +610,14 @@ void Interpreter::process_assert(TokenIterator& token)
 		mControlFlow = e;
 		return;
 	}
+
 /*
 	// this prevents exceptions from being thrown if someone (maybe the debugger..) has set our control flow to ExitProgram
 	if ( mControlFlow == ControlFlow::ExitProgram ) {
 		return;
 	}
 */
+
 	if ( !isTrue(condition) ) {
 		throw Utils::Exceptions::AssertionFailed(condition.ToString(), token->position());
 	}
