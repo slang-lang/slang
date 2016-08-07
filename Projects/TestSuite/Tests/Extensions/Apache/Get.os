@@ -1,9 +1,7 @@
 #!/usr/local/bin/oscript
 
-public object Main
-{
-	public void Main(int argv, string args)
-	{
+public object Main {
+	public void Main(int argv, string args) {
 		writeln("getenv(\"QUERY_STRING\") = " + getenv("QUERY_STRING"));
 
 		writeln("get(\"name\") = " + get("name"));

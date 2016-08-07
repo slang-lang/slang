@@ -200,9 +200,7 @@ bool Object::CanExecuteDefaultConstructor() const
 {
 	Symbol* anyConstructor = resolve(Typename(), false);
 	if ( !anyConstructor ) {
-		// no constructor found at all
-		// we can call our default constructor but it won't do anything besides
-		// setting our object to constructed
+		// no constructor found at all, so we can call our default constructor but it won't do anything besides setting our object to constructed
 		return true;
 	}
 

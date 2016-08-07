@@ -218,7 +218,7 @@ ParameterList Parser::parseParameters(TokenIterator &token)
 	ParameterList params;
 
 	while ( (*++token).type() != Token::Type::PARENTHESIS_CLOSE ) {
-		if ( !isLocalDeclaration(token) && !isParameterDeclaration(token) ) {
+		if ( !isLocalDeclaration(token) /*&& !isParameterDeclaration(token)*/ ) {
 			throw Utils::Exceptions::SyntaxError("could not parse parameter declaration", token->position());
 		}
 

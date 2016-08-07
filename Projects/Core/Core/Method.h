@@ -50,6 +50,8 @@ public:	// Symbol::IType implementation
 	const std::string& Typename() const { return mTypeName; }
 	std::string ToString() const;
 
+	void setQualifiedTypename(const std::string& type) { mQualifiedTypename = type; }
+
 public: // Execution
 	virtual ControlFlow::E execute(const ParameterList& params, Object *result, const Token& token);
 	virtual const ExceptionData& getExceptionData() const;

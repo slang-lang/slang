@@ -318,7 +318,7 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 					object->undefine(IDENTIFIER_BASE, object->resolve(IDENTIFIER_BASE, true));
 
 					// create base object
-					Runtime::Object *ancestor = createInstance(blueIt->first, name, initialize);
+					Runtime::Object *ancestor = createInstance(&blueIt->second, name, initialize);
 
 					// define new base
 					object->define(IDENTIFIER_BASE, ancestor);
@@ -333,7 +333,7 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 					}
 					break;
 				case Designtime::Ancestor::Type::Unknown:
-					break;
+					throw Utils::Exceptions::Exception("invalid inheritance detected");
 			}
 		}
 	}
@@ -449,8 +449,15 @@ void Repository::rebuildBluePrints()
 		for ( TokenList::iterator tokenIt = tokens.begin(); tokenIt != tokens.end(); ++tokenIt ) {
 			// we found an identifier token
 			if ( tokenIt->type() == Token::Type::IDENTIFER ) {
+				std::string scope = blueIt->second.getEnclosingScope()->getScopeName();
+
 				// check if its content is one of our added blueprint objects
 				if ( mBluePrints.find(tokenIt->content()) != mBluePrints.end() ) {
+					tokenIt->resetTypeTo(Token::Type::TYPE);
+
+					replaced = true;
+				}
+				else if ( mBluePrints.find(scope + "." + tokenIt->content()) != mBluePrints.end() ) {
 					tokenIt->resetTypeTo(Token::Type::TYPE);
 
 					replaced = true;
