@@ -9,8 +9,8 @@
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
-#include <Core/Repository.h>
 #include <Core/Tools.h>
+#include <Core/Utils/Exceptions.h>
 #include "Types.h"
 
 // Namespace declarations
@@ -52,6 +52,9 @@ Runtime::ControlFlow::E MysqlRealConnect::execute(const ParameterList& params, R
 		long param_clientflag = 0;
 
 		MYSQL *myConn = mMysqlConnections[param_handle];
+		if ( !myConn ) {
+			throw Utils::Exceptions::Exception("no valid mysql connection!");
+		}
 
 		if ( param_port == 0 ) {	// use default port
 			param_port = MYSQL_PORT_DEFAULT;

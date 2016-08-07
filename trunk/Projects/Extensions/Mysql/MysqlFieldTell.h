@@ -43,6 +43,9 @@ public:
 			// }
 
 			MYSQL_RES *myResult = mMysqlResults[param_handle];
+			if ( !myResult ) {
+				throw Utils::Exceptions::Exception("no valid mysql result!");
+			}
 
 			int my_result = mysql_field_tell(myResult);
 
