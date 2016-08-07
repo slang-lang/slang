@@ -10,6 +10,7 @@
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
 #include <Core/Repository.h>
 #include <Core/Tools.h>
+#include <Core/Utils/Exceptions.h>
 #include "Types.h"
 
 // Namespace declarations
@@ -44,6 +45,9 @@ public:
 			int param_offset = (*it++).value().toInt();
 
 			MYSQL_RES *myResult = mMysqlResults[param_handle];
+			if ( !myResult ) {
+				throw Utils::Exceptions::Exception("no valid mysql result!");
+			}
 
 			int my_result = mysql_field_seek(myResult, param_offset);
 

@@ -1,15 +1,7 @@
 INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
 SET(SOURCES
-	MysqlAffectedRows.cpp
-	MysqlClose.cpp
-	MysqlError.cpp
 	MysqlExtension.cpp
-	MysqlFieldCount.cpp
-	MysqlFreeResult.cpp
-	MysqlGetClientInfo.cpp
-	MysqlGetFieldName.cpp
-	MysqlGetFieldValue.cpp
 	MysqlInfo.cpp
 	MysqlInit.cpp
 	MysqlNextResult.cpp

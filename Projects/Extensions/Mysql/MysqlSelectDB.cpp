@@ -11,6 +11,7 @@
 #include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/Repository.h>
 #include <Core/Tools.h>
+#include <Core/Utils/Exceptions.h>
 #include "Types.h"
 
 // Namespace declarations
@@ -42,6 +43,9 @@ Runtime::ControlFlow::E MysqlSelectDB::execute(const ParameterList& params, Runt
 		std::string param_db = (*it++).value().toStdString();
 
 		MYSQL *myConn = mMysqlConnections[param_handle];
+		if ( !myConn ) {
+			throw Utils::Exceptions::Exception("no valid mysql connection!");
+		}
 
 		int mysql_result = mysql_select_db(myConn, param_db.c_str());
 

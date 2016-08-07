@@ -4,9 +4,12 @@
 
 
 // Library includes
+#include <mysql.h>
 
 // Project includes
-#include <Core/Method.h>
+#include <Core/BuildInObjects/StringObject.h>
+#include <Core/Designtime/BuildInTypes/StringObject.h>
+#include <Core/Tools.h>
 
 // Forward declarations
 
@@ -21,9 +24,31 @@ namespace Mysql {
 class MysqlGetClientInfo : public Runtime::Method
 {
 public:
-	MysqlGetClientInfo();
+	MysqlGetClientInfo()
+	: Runtime::Method(0, "mysql_get_client_info", Designtime::StringObject::TYPENAME)
+	{
+		ParameterList params;
 
-	Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* result, const Token& token);
+		setSignature(params);
+	}
+
+	Runtime::ControlFlow::E execute(const ParameterList& /*params*/, Runtime::Object* result, const Token& token)
+	{
+		try {
+			std::string my_result = mysql_get_client_info();
+
+			*result = Runtime::StringObject(my_result);
+		}
+		catch ( std::exception &e ) {
+			Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+			*data = Runtime::StringObject(std::string(e.what()));
+
+			mExceptionData = Runtime::ExceptionData(data, token.position());
+			return Runtime::ControlFlow::Throw;
+		}
+
+		return Runtime::ControlFlow::Normal;
+	}
 };
 
 
