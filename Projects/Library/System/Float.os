@@ -1,6 +1,6 @@
 
-public namespace System {
-}
+// declare 'System' namespace to prevent a user defined private 'System' namespace
+public namespace System { }
 
 public object Float {
 	private float mValue;
