@@ -78,7 +78,7 @@ public namespace IO {
 			return value;
 		}
 
-		public string readString(int length const) {
+		public string readString(int length) {
 			string value = freads(mHandle, length);
 			return value;
 		}
@@ -88,32 +88,32 @@ public namespace IO {
 			return (result == 0);
 		}
 
-		public bool seek(int address const) {
+		public bool seek(int address) {
 			int result = fseek(mHandle, address);
 			return (result == 0);
 		}
 
-		public bool write(bool value const) {
+		public bool write(bool value) {
 			int result = fwriteb(mHandle, value);
 			return (result == 0);
 		}
 
-		public bool write(double value const) {
+		public bool write(double value) {
 			int result = fwrited(mHandle, value);
 			return (result == 0);
 		}
 
-		public bool write(float value const) {
+		public bool write(float value) {
 			int result = fwritef(mHandle, value);
 			return (result == 0);
 		}
 
-		public bool write(int value const) {
+		public bool write(int value) {
 			int result = fwritei(mHandle, value);
 			return (result == 0);
 		}
 
-		public bool write(string value const) {
+		public bool write(string value) {
 			int result = fwrites(mHandle, value);
 			return (result == 0);
 		}

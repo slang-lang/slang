@@ -7,7 +7,7 @@ public namespace IO {
 		private string mKey final;
 
 		// Specialised constructor
-		public void Logger(string key const, int keyLength = 0) {
+		public void Logger(string key, int keyLength = 0) {
 			if ( keyLength ) {
 				mKey = substr(key, strlen(key) - keyLength, keyLength);
 			}
@@ -17,19 +17,19 @@ public namespace IO {
 		}
 
 		// Public methods
-		public void debug(string message const) {
+		public void debug(string message) {
 			writeln("[DEBUG] " + mKey + "::" + message);
 		}
 
-		public void error(string message const) {
+		public void error(string message) {
 			writeln("[ERROR] " + mKey + "::" + message);
 		}
 
-		public void info(string message const) {
+		public void info(string message) {
 			writeln("[INFO ] " + mKey + "::" + message);
 		}
 
-		public void warn(string message const) {
+		public void warn(string message) {
 			writeln("[WARN ] " + mKey + "::" + message);
 		}
 	}

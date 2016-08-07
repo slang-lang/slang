@@ -1,6 +1,6 @@
 
-public namespace System {
-}
+// declare 'System' namespace to prevent a user defined private 'System' namespace
+public namespace System { }
 
 public object Double {
 	private double mValue;
