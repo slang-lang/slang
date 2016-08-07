@@ -10,6 +10,7 @@
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
 #include <Core/Repository.h>
 #include <Core/Tools.h>
+#include <Core/Utils/Exceptions.h>
 #include "Types.h"
 
 // Namespace declarations
@@ -39,6 +40,9 @@ Runtime::ControlFlow::E MysqlPing::execute(const ParameterList& params, Runtime:
 		int param_handle = (*it++).value().toInt();
 
 		MYSQL *myConn = mMysqlConnections[param_handle];
+		if ( !myConn ) {
+			throw Utils::Exceptions::Exception("no valid mysql connection!");
+		}
 
 		int my_result = mysql_ping(myConn);
 

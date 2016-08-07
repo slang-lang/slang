@@ -10,6 +10,7 @@
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
 #include <Core/Repository.h>
 #include <Core/Tools.h>
+#include <Core/Utils/Exceptions.h>
 #include "Types.h"
 
 // Namespace declarations
@@ -39,8 +40,14 @@ Runtime::ControlFlow::E MysqlUseResult::execute(const ParameterList& params, Run
 		int param_handle = (*it++).value().toInt();
 
 		MYSQL *myConn = mMysqlConnections[param_handle];
+		if ( !myConn ) {
+			throw Utils::Exceptions::Exception("no valid mysql connection!");
+		}
 
 		MYSQL_RES *myResult = mysql_use_result(myConn);
+		if ( !myResult ) {
+			throw Utils::Exceptions::Exception("no valid mysql result!");
+		}
 
 		int my_result = 0;
 		if ( myResult ) {

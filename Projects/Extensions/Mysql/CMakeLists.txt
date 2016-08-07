@@ -2,11 +2,6 @@ INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
 SET(SOURCES
 	MysqlExtension.cpp
-	MysqlInfo.cpp
-	MysqlInit.cpp
-	MysqlNextResult.cpp
-	MysqlNextRow.cpp
-	MysqlNumFields.cpp
 	MysqlNumRows.cpp
 	MysqlPing.cpp
 	MysqlQuery.cpp
