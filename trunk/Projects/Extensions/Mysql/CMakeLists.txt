@@ -3,7 +3,6 @@ INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 SET(SOURCES
 	MysqlAffectedRows.cpp
 	MysqlClose.cpp
-	MysqlConnect.cpp
 	MysqlError.cpp
 	MysqlExtension.cpp
 	MysqlFieldCount.cpp
@@ -19,6 +18,7 @@ SET(SOURCES
 	MysqlNumRows.cpp
 	MysqlPing.cpp
 	MysqlQuery.cpp
+	MysqlRealConnect.cpp
 	MysqlRealEscapeString.cpp
 	MysqlSelectDB.cpp
 	MysqlStoreResult.cpp
@@ -29,7 +29,6 @@ SET(SOURCES
 SET(HEADERS
 	MysqlAffectedRows.h
 	MysqlClose.h
-	MysqlConnect.h
 	MysqlDataSeek.h
 	MysqlError.h
 	MysqlExtension.h
@@ -48,6 +47,7 @@ SET(HEADERS
 	MysqlNumRows.h
 	MysqlPing.cpp
 	MysqlQuery.h
+	MysqlRealConnect.h
 	MysqlRealEscapeString.h
 	MysqlSelectDB.h
 	MysqlStat.h

@@ -7,7 +7,6 @@
 // Project includes
 #include "MysqlAffectedRows.h"
 #include "MysqlClose.h"
-#include "MysqlConnect.h"
 #include "MysqlDataSeek.h"
 #include "MysqlError.h"
 #include "MysqlFieldCount.h"
@@ -25,6 +24,7 @@
 #include "MysqlNumRows.h"
 #include "MysqlPing.h"
 #include "MysqlQuery.h"
+#include "MysqlRealConnect.h"
 #include "MysqlRealEscapeString.h"
 #include "MysqlSelectDB.h"
 #include "MysqlStat.h"
