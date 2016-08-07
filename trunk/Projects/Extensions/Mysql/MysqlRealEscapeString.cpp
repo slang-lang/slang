@@ -12,6 +12,7 @@
 #include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/Repository.h>
 #include <Core/Tools.h>
+#include <Core/Utils/Exceptions.h>
 #include "Types.h"
 
 // Namespace declarations
@@ -43,6 +44,10 @@ Runtime::ControlFlow::E MysqlRealEscapeString::execute(const ParameterList& para
 		std::string param_from = (*it++).value().toStdString();
 
 		MYSQL *myConn = mMysqlConnections[param_handle];
+		if ( !myConn ) {
+			throw Utils::Exceptions::Exception("no valid mysql connection!");
+		}
+
 		char* to = new char[(param_from.length() * 2) + 1];
 
 		long mysql_result = mysql_real_escape_string(myConn, to, param_from.c_str(), param_from.length());

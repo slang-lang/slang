@@ -10,6 +10,7 @@
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
 #include <Core/Repository.h>
 #include <Core/Tools.h>
+#include <Core/Utils/Exceptions.h>
 #include "Types.h"
 
 // Namespace declarations
@@ -39,6 +40,9 @@ Runtime::ControlFlow::E MysqlNumRows::execute(const ParameterList& params, Runti
 		int param_handle = (*it++).value().toInt();
 
 		MYSQL_RES *myResult = mMysqlResults[param_handle];
+		if ( !myResult ) {
+			throw Utils::Exceptions::Exception("no valid mysql result!");
+		}
 
 		int my_result = (int)mysql_num_rows(myResult);
 
