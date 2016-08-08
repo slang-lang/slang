@@ -1,0 +1,75 @@
+
+#ifndef ObjectiveScript_Extensions_System_Strings_ToLower_h
+#define ObjectiveScript_Extensions_System_Strings_ToLower_h
+
+
+// Library includes
+#include <algorithm>
+#include <string>
+
+// Project includes
+#include <Core/BuildInObjects/StringObject.h>
+#include <Core/Designtime/BuildInTypes/StringObject.h>
+#include <Core/Method.h>
+#include <Core/Repository.h>
+#include <Core/Tools.h>
+#include <Core/Utils/Exceptions.h>
+#include <Tools/Strings.h>
+
+// Forward declarations
+
+// Namespace declarations
+
+
+namespace ObjectiveScript {
+namespace Extensions {
+namespace System {
+namespace Strings {
+
+
+class ToLower : public Runtime::Method
+{
+public:
+	ToLower()
+	: Runtime::Method(0, "toLower", Designtime::StringObject::TYPENAME)
+	{
+		ParameterList params;
+		params.push_back(Parameter("value", Designtime::StringObject::TYPENAME, VALUE_NONE));
+
+		setSignature(params);
+	}
+
+public:
+	Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* result, const Token& token)
+	{
+		ParameterList list = mergeParameters(params);
+
+		try {
+			ParameterList::const_iterator it = list.begin();
+
+			std::string param_value = (*it++).value().toStdString();
+
+			std::transform(param_value.begin(), param_value.end(), param_value.begin(), ::tolower);
+
+			*result = Runtime::StringObject(param_value);
+		}
+		catch ( std::exception& e ) {
+			Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+			*data = Runtime::StringObject(std::string(e.what()));
+
+			mExceptionData = Runtime::ExceptionData(data, token.position());
+			return Runtime::ControlFlow::Throw;
+		}
+
+		return Runtime::ControlFlow::Normal;
+	}
+};
+
+
+}
+}
+}
+}
+
+
+#endif

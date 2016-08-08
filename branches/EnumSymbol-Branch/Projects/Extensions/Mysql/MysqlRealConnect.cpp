@@ -1,0 +1,96 @@
+
+// Header
+#include "MysqlRealConnect.h"
+
+// Library includes
+
+// Project includes
+#include <Core/BuildInObjects/IntegerObject.h>
+#include <Core/BuildInObjects/StringObject.h>
+#include <Core/Designtime/BuildInTypes/IntegerObject.h>
+#include <Core/Designtime/BuildInTypes/StringObject.h>
+#include <Core/Tools.h>
+#include <Core/Utils/Exceptions.h>
+#include "Types.h"
+
+// Namespace declarations
+
+
+namespace ObjectiveScript {
+namespace Extensions {
+namespace Mysql {
+
+
+MysqlRealConnect::MysqlRealConnect()
+: Runtime::Method(0, "mysql_real_connect", Designtime::IntegerObject::TYPENAME)
+{
+	ParameterList params;
+	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, VALUE_NONE));
+	params.push_back(Parameter("host", Designtime::StringObject::TYPENAME, VALUE_NONE));
+	params.push_back(Parameter("port", Designtime::IntegerObject::TYPENAME, 0));
+	params.push_back(Parameter("user", Designtime::StringObject::TYPENAME, VALUE_NONE));
+	params.push_back(Parameter("passwd", Designtime::StringObject::TYPENAME, VALUE_NONE));
+	params.push_back(Parameter("db", Designtime::StringObject::TYPENAME, VALUE_NONE));
+
+	setSignature(params);
+}
+
+Runtime::ControlFlow::E MysqlRealConnect::execute(const ParameterList& params, Runtime::Object* result, const Token& token)
+{
+	ParameterList list = mergeParameters(params);
+
+	try {
+		ParameterList::const_iterator it = list.begin();
+
+		int param_handle = (*it++).value().toInt();
+		std::string param_host = (*it++).value().toStdString();
+		int param_port = (*it++).value().toInt();
+		std::string param_user = (*it++).value().toStdString();
+		std::string param_passwd = (*it++).value().toStdString();
+		std::string param_db = (*it++).value().toStdString();
+		std::string param_socket;
+		long param_clientflag = 0;
+
+		MYSQL *myConn = mMysqlConnections[param_handle];
+		if ( !myConn ) {
+			throw Utils::Exceptions::Exception("no valid mysql connection!");
+		}
+
+		if ( param_port == 0 ) {	// use default port
+			param_port = MYSQL_PORT_DEFAULT;
+		}
+
+		myConn = mysql_real_connect(
+				myConn,
+				param_host.c_str(),
+				param_user.c_str(),
+				param_passwd.c_str(),
+				param_db.c_str(),
+				param_port,
+				param_socket.c_str(),
+				param_clientflag
+		);
+
+		mMysqlConnections[param_handle] = myConn;
+
+		int my_result = 0;
+		if ( myConn ) {
+			my_result = param_handle;
+		}
+
+		*result = Runtime::IntegerObject(my_result);
+	}
+	catch ( std::exception &e ) {
+		Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+		*data = Runtime::StringObject(std::string(e.what()));
+
+		mExceptionData = Runtime::ExceptionData(data, token.position());
+		return Runtime::ControlFlow::Throw;
+	}
+
+	return Runtime::ControlFlow::Normal;
+}
+
+}
+}
+}
