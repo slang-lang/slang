@@ -1,6 +1,6 @@
 #!/usr/local/bin/oscript
 
-/*
+
 public enum Day {
 	Monday = 0,
 	Tuesday = 1,
@@ -10,19 +10,20 @@ public enum Day {
 	Saturday = 5,
 	Sunday = 6
 }
-*/
 
+/*
 public enum DayTime {
 	Morning = 0;
 	Day = 1;
 	Evening = 2;
 	Night = 3;
 }
+*/
 
 public object Main {
 	public void Main(int argc = 0, string args = "") {
-		//assert( TestCase1() );
-		assert( TestCase2() );
+		assert( TestCase1() );
+		//assert( TestCase2() );
 	}
 
 	private bool TestCase1() const {

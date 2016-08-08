@@ -6,6 +6,7 @@
 
 // Project includes
 #include <Core/Designtime/BluePrint.h>
+#include <Core/Designtime/BluePrintEnum.h>
 #include <Core/Parser/Parser.h>
 #include <Core/Utils/Exceptions.h>
 #include "Repository.h"
@@ -261,22 +262,22 @@ void Preprocessor::generateBluePrintEnum()
 	assert(mBluePrint);
 	assert(mBluePrint->getSymbolType() == Symbol::IType::EnumSymbol);
 
+//	Designtime::BluePrintEnum* bluePrintEnum = static_cast<Designtime::BluePrintEnum*>(mBluePrint);
+
 	TokenIterator token = mTokens.begin();
 
 	// Format: <identifier> = <value>[,]
 	while ( token != mTokens.end() ) {
-		expect(Token::Type::IDENTIFER, token++);
-		expect(Token::Type::ASSIGN, token++);
+		std::string name;
+		std::string value;
 
-		// enum value
-		// {
+		expect(Token::Type::IDENTIFER, token);
+		name = (token++)->content();
+
+		expect(Token::Type::ASSIGN, token);
+
 		expect(Token::Type::CONST_INTEGER, token);
-
-		Runtime::AtomicValue value = Tools::stringToInt(token->content());
-		(void)value;
-
-		token++;
-		// }
+		value = (token++)->content();
 
 		if ( token->type() == Token::Type::COMMA ) {
 			token++;

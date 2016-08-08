@@ -27,6 +27,8 @@ namespace ObjectiveScript {
 namespace Designtime {
 
 
+// TODO: derive BluePrintEnum from BluePrintGeneric
+
 class BluePrintEnum : public EnumSymbol
 {
 public:
@@ -50,9 +52,6 @@ public:
 
 	void setQualifiedTypename(const std::string& name);
 
-	Runtime::AtomicValue getValue() const;
-	void setValue(Runtime::AtomicValue value);
-
 	virtual std::string ToString() const;
 
 protected:
@@ -63,8 +62,12 @@ private:
 	std::string mQualifiedTypeName;
 	TokenList mTokens;
 	std::string mTypename;
-	Runtime::AtomicValue mValue;
 	Visibility::E mVisibility;
+
+private:
+	Runtime::AtomicValue getValue() const;
+	void setValue(Runtime::AtomicValue value);
+	Runtime::AtomicValue mValue;
 };
 
 typedef std::list<BluePrintEnum> EnumList;
