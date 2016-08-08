@@ -202,6 +202,7 @@ std::string GlobalScope::ToString() const
 	for ( Symbols::const_iterator it = mSymbols.begin(); it != mSymbols.end(); ++it ) {
 		switch ( it->second->getSymbolType() ) {
 			case Symbol::IType::BluePrintSymbol:
+			case Symbol::IType::EnumSymbol:
 			case Symbol::IType::MethodSymbol:
 			case Symbol::IType::UnknownSymbol:
 				continue;

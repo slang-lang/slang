@@ -27,6 +27,7 @@ public:
 		typedef enum {
 			UnknownSymbol,
 			BluePrintSymbol,
+			EnumSymbol,
 			MethodSymbol,
 			NamespaceSymbol,
 			ObjectSymbol
@@ -71,6 +72,17 @@ public:
 	: Symbol(name, Symbol::IType::BluePrintSymbol)
 	{ }
 	virtual ~BluePrintSymbol() { }
+};
+
+class EnumSymbol : public Symbol,
+				   public Symbol::IType,
+				   public GenericAttributes
+{
+public:
+	EnumSymbol(const std::string& name)
+	: Symbol(name, Symbol::IType::EnumSymbol)
+	{ }
+	virtual ~EnumSymbol() { }
 };
 
 class MethodSymbol : public Symbol,

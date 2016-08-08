@@ -166,6 +166,50 @@ Designtime::BluePrint Analyser::createBluePrint(TokenIterator& token, TokenItera
 	return blue;
 }
 
+Designtime::BluePrint Analyser::createEnum(TokenIterator& token, TokenIterator end) const
+{
+	std::string languageFeature;
+	std::string type;
+	std::string visibility;
+
+	// look for the visibility token
+	visibility = (*token++).content();
+	// look for an optional language feature token
+	if ( token->isOptional() ) {
+		languageFeature = (*token++).content();
+	}
+	// look for the object token
+	(*token++).content();
+	// look for the identifier token
+	type = (*token++).content();
+
+	// interface, object or prototype declarations have to start with an '{' token
+	expect(Token::Type::BRACKET_CURLY_OPEN, token);
+
+	// look for the next opening curly brackets
+	TokenIterator open = token;
+	// look for balanced curly brackets
+	TokenIterator closed = findNextBalancedCurlyBracket(open, end, 0, Token::Type::BRACKET_CURLY_CLOSE);
+
+	TokenList tokens;
+	for ( TokenIterator it = ++open; it != closed && it != end; ++it ) {
+		tokens.push_back((*it));
+	}
+
+	token = closed;
+
+	Designtime::BluePrint blue(type, mFilename);
+	blue.setAbstract(false);
+	blue.setInterface(false);
+	blue.setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
+	blue.setParent(mScope);
+	blue.setQualifiedTypename(getQualifiedTypename(type));
+	blue.setTokens(tokens);
+	blue.setVisibility(Visibility::convert(visibility));
+
+	return blue;
+}
+
 std::string Analyser::createLibraryReference(TokenIterator& token, TokenIterator end) const
 {
 	std::string reference;
@@ -347,6 +391,7 @@ void Analyser::createNamespace(TokenIterator& token, TokenIterator end)
 					space = static_cast<Runtime::Namespace*>(symbol);
 					break;
 				case Symbol::IType::BluePrintSymbol:
+				case Symbol::IType::EnumSymbol:
 				case Symbol::IType::MethodSymbol:
 				case Symbol::IType::ObjectSymbol:
 				case Symbol::IType::UnknownSymbol:
@@ -391,6 +436,10 @@ void Analyser::generate(const TokenList& tokens)
 	while ( it != tokens.end() && it->type() != Token::Type::ENDOFFILE ) {
 		if ( Parser::isInterfaceDeclaration(it) ) {
 			Designtime::BluePrint i = createBluePrint(it, tokens.end(), true);
+			mBluePrints.push_back(i);
+		}
+		else if ( Parser::isEnumDeclaration(it) ) {
+			Designtime::BluePrint i = createEnum(it, tokens.end());
 			mBluePrints.push_back(i);
 		}
 		else if ( Parser::isLibraryReference(it) ) {

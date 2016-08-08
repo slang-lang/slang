@@ -49,6 +49,7 @@ private:
 	void process(const TokenList& tokens);
 
 	Designtime::BluePrint createBluePrint(TokenIterator& token, TokenIterator end, bool isInterface = false) const;
+	Designtime::BluePrint createEnum(TokenIterator& token, TokenIterator end) const;
 	std::string createLibraryReference(TokenIterator& token, TokenIterator end) const;
 	void createMember(TokenIterator& token, TokenIterator end);
 	void createMethod(TokenIterator& token, TokenIterator end);

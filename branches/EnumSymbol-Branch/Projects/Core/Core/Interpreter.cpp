@@ -164,6 +164,7 @@ inline Symbol* Interpreter::identify(TokenIterator& token) const
 		else {
 			switch ( result->getSymbolType() ) {
 				case Symbol::IType::BluePrintSymbol:
+				case Symbol::IType::EnumSymbol:
 					throw Utils::Exceptions::NotSupported("static member usage not supported!");
 				case Symbol::IType::NamespaceSymbol:
 					result = static_cast<Namespace*>(result)->resolve(identifier, onlyCurrentScope);
@@ -222,6 +223,7 @@ Symbol* Interpreter::identifyMethod(TokenIterator& token, const ParameterList& p
 					result = static_cast<Object*>(result)->resolveMethod(identifier, params, onlyCurrentScope);
 					break;
 				case Symbol::IType::BluePrintSymbol:
+				case Symbol::IType::EnumSymbol:
 					throw Utils::Exceptions::NotSupported("static method usage not supported!");
 				case Symbol::IType::MethodSymbol:
 				case Symbol::IType::UnknownSymbol:
@@ -521,6 +523,7 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 					operator_binary_assign(result, static_cast<Object*>(symbol));
 					break;
 				case Symbol::IType::BluePrintSymbol:
+				case Symbol::IType::EnumSymbol:
 				case Symbol::IType::NamespaceSymbol:
 				case Symbol::IType::UnknownSymbol:
 					throw Utils::Exceptions::SyntaxError("unexpected symbol resolved", start->position());
@@ -660,6 +663,7 @@ void Interpreter::process_delete(TokenIterator& token)
 			*object = Object(object->getName(), object->Filename(), object->Typename(), VALUE_NONE);
 		} break;
 		case Symbol::IType::BluePrintSymbol:
+		case Symbol::IType::EnumSymbol:
 		case Symbol::IType::MethodSymbol:
 		case Symbol::IType::NamespaceSymbol:
 		case Symbol::IType::UnknownSymbol:
