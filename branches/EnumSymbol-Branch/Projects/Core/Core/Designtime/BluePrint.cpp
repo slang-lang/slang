@@ -153,7 +153,7 @@ void BluePrint::setParent(IScope* parent)
 	mParent = parent;
 }
 
-void BluePrint::setQualifiedTypename(const std::string &name)
+void BluePrint::setQualifiedTypename(const std::string& name)
 {
 	mQualifiedTypeName = name;
 }

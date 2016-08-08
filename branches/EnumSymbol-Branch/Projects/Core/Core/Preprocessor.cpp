@@ -253,9 +253,45 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token) const
 	return method;
 }
 
-void Preprocessor::generateObject()
+/*
+ * Process all enum tokens and create const symbols
+ */
+void Preprocessor::generateBluePrintEnum()
 {
 	assert(mBluePrint);
+	assert(mBluePrint->getSymbolType() == Symbol::IType::EnumSymbol);
+
+	TokenIterator token = mTokens.begin();
+
+	// Format: <identifier> = <value>[,]
+	while ( token != mTokens.end() ) {
+		expect(Token::Type::IDENTIFER, token++);
+		expect(Token::Type::ASSIGN, token++);
+
+		// enum value
+		// {
+		expect(Token::Type::CONST_INTEGER, token);
+
+		Runtime::AtomicValue value = Tools::stringToInt(token->content());
+		(void)value;
+
+		token++;
+		// }
+
+		if ( token->type() == Token::Type::COMMA ) {
+			token++;
+
+			if ( lookahead(token) == mTokens.end() ) {
+				throw Utils::Exceptions::Exception("new enum value expected but none found!", token->position());
+			}
+		}
+	}
+}
+
+void Preprocessor::generateBluePrintObject()
+{
+	assert(mBluePrint);
+	assert(mBluePrint->getSymbolType() == Symbol::IType::BluePrintSymbol);
 
 	typedef std::list<TokenIterator> TokenIteratorList;
 	TokenIteratorList visList;
@@ -301,16 +337,23 @@ void Preprocessor::process(Designtime::BluePrint* blueprint)
 	mFilename = mBluePrint->Filename();
 	mTokens = mBluePrint->getTokens();
 
-	// rebuild object tokens
-	rebuildObject();
-
-	// build object from tokens
-	generateObject();
+	switch ( blueprint->getSymbolType() ) {
+		case Symbol::IType::BluePrintSymbol:
+			rebuildBluePrintObject();	// rebuild object tokens
+			generateBluePrintObject();	// build object from tokens
+			break;
+		case Symbol::IType::EnumSymbol:
+			assert(!"EnumSymbol");
+			generateBluePrintEnum();
+			break;
+		default:
+			throw Utils::Exceptions::Exception("invalid symbol type provided");
+	}
 
 	mBluePrint = 0;
 }
 
-void Preprocessor::rebuildObject()
+void Preprocessor::rebuildBluePrintObject()
 {
 	assert(mBluePrint);
 

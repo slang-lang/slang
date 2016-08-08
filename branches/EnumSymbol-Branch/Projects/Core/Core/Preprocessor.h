@@ -43,9 +43,10 @@ private:
 	Designtime::BluePrint* createMember(TokenIterator start) const;
 	Runtime::Method* createMethod(TokenIterator start) const;
 
-	void generateObject();
+	void generateBluePrintObject();
+	void generateBluePrintEnum();
 	void generateTokens(const std::string& content);
-	void rebuildObject();
+	void rebuildBluePrintObject();
 
 private:
 	std::string mFilename;

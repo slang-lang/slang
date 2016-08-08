@@ -166,7 +166,7 @@ Designtime::BluePrint Analyser::createBluePrint(TokenIterator& token, TokenItera
 	return blue;
 }
 
-Designtime::BluePrint Analyser::createEnum(TokenIterator& token, TokenIterator end) const
+Designtime::BluePrintEnum Analyser::createEnum(TokenIterator& token, TokenIterator end) const
 {
 	std::string languageFeature;
 	std::string type;
@@ -198,16 +198,14 @@ Designtime::BluePrint Analyser::createEnum(TokenIterator& token, TokenIterator e
 
 	token = closed;
 
-	Designtime::BluePrint blue(type, mFilename);
-	blue.setAbstract(false);
-	blue.setInterface(false);
-	blue.setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
-	blue.setParent(mScope);
-	blue.setQualifiedTypename(getQualifiedTypename(type));
-	blue.setTokens(tokens);
-	blue.setVisibility(Visibility::convert(visibility));
+	Designtime::BluePrintEnum symbol(type, mFilename);
+	symbol.setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
+	symbol.setParent(mScope);
+	symbol.setQualifiedTypename(getQualifiedTypename(type));
+	symbol.setTokens(tokens);
+	symbol.setVisibility(Visibility::convert(visibility));
 
-	return blue;
+	return symbol;
 }
 
 std::string Analyser::createLibraryReference(TokenIterator& token, TokenIterator end) const
@@ -439,8 +437,8 @@ void Analyser::generate(const TokenList& tokens)
 			mBluePrints.push_back(i);
 		}
 		else if ( Parser::isEnumDeclaration(it) ) {
-			Designtime::BluePrint i = createEnum(it, tokens.end());
-			mBluePrints.push_back(i);
+			Designtime::BluePrintEnum e = createEnum(it, tokens.end());
+			mEnumList.push_back(e);
 		}
 		else if ( Parser::isLibraryReference(it) ) {
 			std::string reference = createLibraryReference(it, tokens.end());

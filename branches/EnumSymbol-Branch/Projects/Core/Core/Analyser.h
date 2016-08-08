@@ -9,6 +9,7 @@
 // Project includes
 #include <Core/Designtime/Ancestor.h>
 #include <Core/Designtime/BluePrint.h>
+#include <Core/Designtime/BluePrintEnum.h>
 #include <Core/Designtime/Prototype.h>
 #include "Token.h"
 
@@ -49,7 +50,7 @@ private:
 	void process(const TokenList& tokens);
 
 	Designtime::BluePrint createBluePrint(TokenIterator& token, TokenIterator end, bool isInterface = false) const;
-	Designtime::BluePrint createEnum(TokenIterator& token, TokenIterator end) const;
+	Designtime::BluePrintEnum createEnum(TokenIterator& token, TokenIterator end) const;
 	std::string createLibraryReference(TokenIterator& token, TokenIterator end) const;
 	void createMember(TokenIterator& token, TokenIterator end);
 	void createMethod(TokenIterator& token, TokenIterator end);
@@ -62,6 +63,7 @@ private:
 
 private:
 	Designtime::BluePrintList mBluePrints;
+	Designtime::EnumList mEnumList;
 	std::string mFilename;
 	StringList mLibraries;
 	Designtime::PrototypeList mPrototypes;

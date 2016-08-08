@@ -36,14 +36,14 @@ namespace ObjectiveScript {
 Repository::Repository()
 : mScope(new GlobalScope())
 {
-	addBlueprint(Designtime::BoolObject());
-	addBlueprint(Designtime::DoubleObject());
-	addBlueprint(Designtime::FloatObject());
-	addBlueprint(Designtime::GenericObject());
-	addBlueprint(Designtime::IntegerObject());
-	addBlueprint(Designtime::NumberObject());
-	addBlueprint(Designtime::StringObject());
-	addBlueprint(Designtime::VoidObject());
+	addBluePrint(Designtime::BoolObject());
+	addBluePrint(Designtime::DoubleObject());
+	addBluePrint(Designtime::FloatObject());
+	addBluePrint(Designtime::GenericObject());
+	addBluePrint(Designtime::IntegerObject());
+	addBluePrint(Designtime::NumberObject());
+	addBluePrint(Designtime::StringObject());
+	addBluePrint(Designtime::VoidObject());
 }
 
 Repository::~Repository()
@@ -79,7 +79,7 @@ Repository::~Repository()
 /*
  * adds a new blue print to our repository
  */
-void Repository::addBlueprint(const Designtime::BluePrint& blueprint)
+void Repository::addBluePrint(const Designtime::BluePrint &blueprint)
 {
 	std::string type = blueprint.QualifiedTypename();
 

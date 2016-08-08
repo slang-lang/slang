@@ -101,7 +101,7 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 
 	for ( Designtime::BluePrintList::iterator it = objects.begin(); it != objects.end(); ++it ) {
 		// add blue prints to our object repository
-		mRepository->addBlueprint((*it));
+		mRepository->addBluePrint((*it));
 
 		// collect Main object if there is any
 		if ( it->Filename() == mScriptFile && it->Typename() == "Main" ) {
@@ -251,7 +251,7 @@ bool VirtualMachine::loadLibrary(const std::string& library)
 
 	Designtime::BluePrintList blueprints = analyser.getBluePrints();
 	for ( Designtime::BluePrintList::iterator it = blueprints.begin(); it != blueprints.end(); ++it ) {
-		mRepository->addBlueprint((*it));
+		mRepository->addBluePrint((*it));
 	}
 
 	return true;

@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_BluePrint_h
-#define ObjectiveScript_BluePrint_h
+#ifndef ObjectiveScript_Designtime_BluePrint_h
+#define ObjectiveScript_Designtime_BluePrint_h
 
 
 // Library includes
@@ -73,7 +73,7 @@ public:
 
 	void setParent(IScope* parent);
 
-	void setQualifiedTypename(const std::string &name);
+	void setQualifiedTypename(const std::string& name);
 
 	Runtime::AtomicValue getValue() const;
 	void setValue(Runtime::AtomicValue value);
@@ -86,11 +86,6 @@ public:
 	}
 	Symbols provideSymbols() const {
 		return mSymbols;
-	}
-
-protected:
-	virtual const std::string& getTypeName() const {
-		return Typename();
 	}
 
 private:

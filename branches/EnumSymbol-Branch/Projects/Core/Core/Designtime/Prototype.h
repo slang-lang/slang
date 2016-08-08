@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Prototype_h
-#define ObjectiveScript_Prototype_h
+#ifndef ObjectiveScript_Designtime_Prototype_h
+#define ObjectiveScript_Designtime_Prototype_h
 
 
 // Library includes
