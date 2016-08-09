@@ -19,22 +19,17 @@ namespace Designtime {
 BluePrint::BluePrint()
 : MethodScope(ANONYMOUS_OBJECT, 0),
   BluePrintSymbol(ANONYMOUS_OBJECT),
-  mFilename(ANONYMOUS_OBJECT),
   mIsInterface(false),
-  mQualifiedTypename(ANONYMOUS_OBJECT),
-  mTypename(ANONYMOUS_OBJECT),
   mVisibility(Visibility::Public)
 {
 	mName = ANONYMOUS_OBJECT;
 }
 
 BluePrint::BluePrint(const std::string& type, const std::string& filename, const std::string& name)
-: MethodScope(type, 0),
+: BluePrintGeneric(type, filename),
+  MethodScope(type, 0),
   BluePrintSymbol(type),
-  mFilename(filename),
   mIsInterface(false),
-  mQualifiedTypename(type),
-  mTypename(type),
   mVisibility(Visibility::Public)
 {
 	mName = name;
@@ -107,11 +102,6 @@ Designtime::Ancestors BluePrint::getImplementations() const
 	return implementations;
 }
 
-const TokenList& BluePrint::getTokens() const
-{
-	return mTokens;
-}
-
 Runtime::AtomicValue BluePrint::getValue() const
 {
 	return mValue;
@@ -153,19 +143,9 @@ void BluePrint::setParent(IScope* parent)
 	mParent = parent;
 }
 
-void BluePrint::setQualifiedTypename(const std::string& name)
-{
-	mQualifiedTypename = name;
-}
-
 void BluePrint::setValue(Runtime::AtomicValue value)
 {
 	mValue = value;
-}
-
-void BluePrint::setTokens(const TokenList& tokens)
-{
-	mTokens = tokens;
 }
 
 void BluePrint::setVisibility(Visibility::E v)

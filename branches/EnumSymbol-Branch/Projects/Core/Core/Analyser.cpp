@@ -199,9 +199,12 @@ Designtime::BluePrintEnum Analyser::createEnum(TokenIterator& token, TokenIterat
 	token = closed;
 
 	Designtime::BluePrintEnum symbol(type, mFilename);
+	symbol.setFinal(true);
 	symbol.setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
+	symbol.setMutability(Mutability::Const);
 	symbol.setParent(mScope);
 	symbol.setQualifiedTypename(getQualifiedTypename(type));
+	//symbol.setSealed(true);
 	symbol.setTokens(tokens);
 	symbol.setVisibility(Visibility::convert(visibility));
 

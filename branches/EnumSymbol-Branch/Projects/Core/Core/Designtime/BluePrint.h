@@ -17,6 +17,7 @@
 #include <Core/Symbol.h>
 #include <Core/Types.h>
 #include "Ancestor.h"
+#include "BluePrintGeneric.h"
 
 // Forward declarations
 
@@ -33,13 +34,17 @@ namespace Runtime {
 namespace Designtime {
 
 
-class BluePrint : public MethodScope,
+class BluePrint : public BluePrintGeneric,
+				  public MethodScope,
 				  public BluePrintSymbol
 {
 public:
 	BluePrint();
 	BluePrint(const std::string& type, const std::string& filename, const std::string& name = ANONYMOUS_OBJECT);
 	virtual ~BluePrint();
+
+public:
+	virtual ISymbol::IType::E getSymbolType() const { return ISymbol::IType::BluePrintSymbol; }
 
 public:
 	void cleanup();
@@ -59,9 +64,6 @@ public:
 	void addInheritance(const Designtime::Ancestor& inheritance);
 	// }
 
-	const TokenList& getTokens() const;
-	void setTokens(const TokenList& tokens);
-
 	Visibility::E getVisibility() const;
 	void setVisibility(Visibility::E v);
 
@@ -72,8 +74,6 @@ public:
 	void setInterface(bool state);
 
 	void setParent(IScope* parent);
-
-	void setQualifiedTypename(const std::string& name);
 
 	Runtime::AtomicValue getValue() const;
 	void setValue(Runtime::AtomicValue value);
@@ -89,12 +89,8 @@ public:
 	}
 
 private:
-	std::string mFilename;
 	Ancestors mInheritance;
 	bool mIsInterface;
-	std::string mQualifiedTypename;
-	TokenList mTokens;
-	std::string mTypename;
 	Runtime::AtomicValue mValue;
 	Visibility::E mVisibility;
 };

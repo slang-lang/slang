@@ -14,20 +14,27 @@ namespace Designtime {
 
 
 BluePrintEnum::BluePrintEnum()
-: EnumSymbol(ANONYMOUS_OBJECT)
+: EnumSymbol(ANONYMOUS_OBJECT),
+  mParent(0)
 {
 	mName = ANONYMOUS_OBJECT;
 }
 
 BluePrintEnum::BluePrintEnum(const std::string& type, const std::string& filename, const std::string& name)
 : BluePrintGeneric(type, filename),
-  EnumSymbol(type)
+  EnumSymbol(type),
+  mParent(0)
 {
 	mName = name;
 }
 
 BluePrintEnum::~BluePrintEnum()
 {
+}
+
+IScope* BluePrintEnum::getParent() const
+{
+	return mParent;
 }
 
 ISymbol::IType::E BluePrintEnum::getSymbolType() const
@@ -38,6 +45,11 @@ ISymbol::IType::E BluePrintEnum::getSymbolType() const
 const std::string& BluePrintEnum::QualifiedTypename() const
 {
 	return mQualifiedTypename;
+}
+
+void BluePrintEnum::setParent(IScope* parent)
+{
+	mParent = parent;
 }
 
 const std::string& BluePrintEnum::Typename() const

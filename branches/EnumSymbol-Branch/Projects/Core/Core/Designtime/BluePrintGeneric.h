@@ -44,9 +44,6 @@ public:
 	virtual std::string ToString() const = 0;
 
 public:
-	IScope* getParent() const;
-	void setParent(IScope* parent);
-
 	void setQualifiedTypename(const std::string& name);
 
 	const TokenList& getTokens() const;
@@ -54,7 +51,6 @@ public:
 
 protected:
 	std::string mFilename;
-	IScope* mParent;
 	std::string mQualifiedTypename;
 	TokenList mTokens;
 	std::string mTypename;

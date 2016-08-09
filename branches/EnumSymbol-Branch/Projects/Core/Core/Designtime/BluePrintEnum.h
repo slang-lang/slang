@@ -37,7 +37,14 @@ public:
 	virtual const std::string& Typename() const;
 	virtual std::string ToString() const;
 
+public:
+	IScope* getParent() const;
+	void setParent(IScope* parent);
+
 protected:
+
+private:
+	IScope* mParent;
 
 private:
 	Runtime::AtomicValue getValue() const;

@@ -55,6 +55,9 @@ Repository::~Repository()
 	}
 
 	for ( ReferenceCountedObjects::iterator it = mInstances.begin(); it != mInstances.end(); ++it ) {
+		// prevent double deletes
+		mScope->undefine(it->first->getName(), it->first);
+
 		delete it->first;
 	}
 	mInstances.clear();
@@ -449,18 +452,20 @@ void Repository::rebuildBluePrints()
 		for ( TokenList::iterator tokenIt = tokens.begin(); tokenIt != tokens.end(); ++tokenIt ) {
 			// we found an identifier token
 			if ( tokenIt->type() == Token::Type::IDENTIFER ) {
-				std::string scope = blueIt->second.getEnclosingScope()->getScopeName();
-
 				// check if its content is one of our added blueprint objects
 				if ( mBluePrints.find(tokenIt->content()) != mBluePrints.end() ) {
 					tokenIt->resetTypeTo(Token::Type::TYPE);
 
 					replaced = true;
 				}
-				else if ( mBluePrints.find(scope + "." + tokenIt->content()) != mBluePrints.end() ) {
-					tokenIt->resetTypeTo(Token::Type::TYPE);
+				else if ( blueIt->second.getEnclosingScope() ) {
+					std::string scope = blueIt->second.getEnclosingScope()->getScopeName();
 
-					replaced = true;
+					if ( mBluePrints.find(scope + "." + tokenIt->content()) != mBluePrints.end() ) {
+						tokenIt->resetTypeTo(Token::Type::TYPE);
+
+						replaced = true;
+					}
 				}
 			}
 		}
