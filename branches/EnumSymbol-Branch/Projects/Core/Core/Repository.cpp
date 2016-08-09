@@ -437,7 +437,33 @@ void Repository::initializeObject(Runtime::Object *object, Designtime::BluePrint
 	object->define(IDENTIFIER_THIS, object);	// define this-symbol
 }
 
-void Repository::insertBluePrintsIntoScopes()
+void Repository::insertBluePrintEnumsIntoScopes()
+{
+	for ( BluePrintEnumMap::iterator it = mBluePrintEnums.begin(); it != mBluePrintEnums.end(); ++it ) {
+		SymbolScope* scope = mScope;
+
+		std::string name = it->second->QualifiedTypename();
+		std::string parent;
+		std::string type;
+
+		for ( ; ; ) {
+			Tools::split(name, parent, type);
+
+			if ( type.empty() ) {
+				break;
+			}
+
+			scope = dynamic_cast<SymbolScope*>(scope->resolve(parent, true));
+
+			name = type;
+		}
+
+		assert(scope);
+		scope->define(parent, it->second);
+	}
+}
+
+void Repository::insertBluePrintObjectsIntoScopes()
 {
 	for ( BluePrintObjectMap::iterator it = mBluePrintObjects.begin(); it != mBluePrintObjects.end(); ++it ) {
 		SymbolScope* scope = mScope;
@@ -473,6 +499,60 @@ bool Repository::isAlreadyKnown(const std::string& name) const
  */
 void Repository::rebuildBluePrints()
 {
+	rebuildBluePrintEnums();
+	rebuildBluePrintObjects();
+}
+
+void Repository::rebuildBluePrintEnums()
+{
+	for ( BluePrintEnumMap::iterator blueIt = mBluePrintEnums.begin(); blueIt != mBluePrintEnums.end(); ++blueIt ) {
+		TokenList tokens = blueIt->second->getTokens();
+
+		if ( tokens.empty() ) {
+			continue;
+		}
+
+		// loop over all tokens of a blueprint object and retype all identifier tokens with object names as values with type
+		// {
+		bool replaced = false;
+
+		for ( TokenList::iterator tokenIt = tokens.begin(); tokenIt != tokens.end(); ++tokenIt ) {
+			// we found an identifier token
+			if ( tokenIt->type() == Token::Type::IDENTIFER ) {
+				// check if its content is one of our added blueprint objects
+				if ( mBluePrintEnums.find(tokenIt->content()) != mBluePrintEnums.end() ) {
+					tokenIt->resetTypeTo(Token::Type::TYPE);
+
+					replaced = true;
+				}
+/*
+				else if ( blueIt->second->getEnclosingScope() ) {
+					std::string scope = blueIt->second->getEnclosingScope()->getScopeName();
+
+					if ( mBluePrintEnums.find(scope + "." + tokenIt->content()) != mBluePrintEnums.end()) {
+						tokenIt->resetTypeTo(Token::Type::TYPE);
+
+						replaced = true;
+					}
+				}
+*/
+			}
+		}
+
+		if ( replaced ) {
+			blueIt->second->setTokens(tokens);
+		}
+		// }
+
+		Preprocessor preprocessor(this);
+		preprocessor.process(blueIt->second);
+	}
+
+	insertBluePrintEnumsIntoScopes();
+}
+
+void Repository::rebuildBluePrintObjects()
+{
 	for ( BluePrintObjectMap::iterator blueIt = mBluePrintObjects.begin(); blueIt != mBluePrintObjects.end(); ++blueIt ) {
 		TokenList tokens = blueIt->second->getTokens();
 
@@ -496,7 +576,7 @@ void Repository::rebuildBluePrints()
 				else if ( blueIt->second->getEnclosingScope() ) {
 					std::string scope = blueIt->second->getEnclosingScope()->getScopeName();
 
-					if ( mBluePrintObjects.find(scope + "." + tokenIt->content()) != mBluePrintObjects.end() ) {
+					if ( mBluePrintObjects.find(scope + "." + tokenIt->content()) != mBluePrintObjects.end()) {
 						tokenIt->resetTypeTo(Token::Type::TYPE);
 
 						replaced = true;
@@ -514,7 +594,7 @@ void Repository::rebuildBluePrints()
 		preprocessor.process(blueIt->second);
 	}
 
-	insertBluePrintsIntoScopes();
+	insertBluePrintObjectsIntoScopes();
 }
 
 /*

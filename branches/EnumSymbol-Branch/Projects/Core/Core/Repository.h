@@ -68,7 +68,10 @@ private:
 
 	void createDefaultMethods(Runtime::Object *object);
 	void initializeObject(Runtime::Object *object, Designtime::BluePrintObject* blueprint);
-	void insertBluePrintsIntoScopes();
+	void insertBluePrintEnumsIntoScopes();
+	void insertBluePrintObjectsIntoScopes();
+	void rebuildBluePrintEnums();
+	void rebuildBluePrintObjects();
 
 private:
 	typedef std::map<std::string, Designtime::BluePrintEnum*> BluePrintEnumMap;

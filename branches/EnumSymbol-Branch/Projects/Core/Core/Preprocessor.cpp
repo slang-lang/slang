@@ -140,6 +140,8 @@ Designtime::BluePrintObject* Preprocessor::createMember(TokenIterator token) con
 
 Runtime::Method* Preprocessor::createMethod(TokenIterator token) const
 {
+	Designtime::BluePrintObject* blueprint = static_cast<Designtime::BluePrintObject*>(mBluePrint);
+
 	bool isAbstract = false;
 	bool isConst = true;		// extreme const correctness: all methods are const by default
 	bool isFinal = false;
@@ -163,7 +165,7 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token) const
 	// look for the identifier token
 	name = (*token++).content();
 
-	if ( name == mBluePrint->Typename() ) {
+	if ( name == blueprint->Typename() ) {
 		// these methods have the same name as their containing object,
 		// so this has to be a constructor or a destructor;
 		// they can never ever be const, ever
@@ -171,7 +173,7 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token) const
 		methodType = MethodAttributes::MethodType::Constructor;
 		mutability = Mutability::Modify;
 	}
-	else if ( name == "~" + mBluePrint->Typename() ) {
+	else if ( name == "~" + blueprint->Typename() ) {
 		// these methods have the same name as their containing object,
 		// so this has to be a constructor or a destructor;
 		// they can never ever be const, ever
@@ -239,7 +241,7 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token) const
 
 	// create a new method with the corresponding return value
 	Runtime::Method *method = new Runtime::Method(mScope, name, type);
-	method->setAbstract(isAbstract || mBluePrint->isInterface());
+	method->setAbstract(isAbstract || blueprint->isInterface());
 	method->setFinal(isFinal);
 	method->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
 	method->setMethodType(methodType);
@@ -262,7 +264,8 @@ void Preprocessor::generateBluePrintEnum()
 	assert(mBluePrint);
 	assert(mBluePrint->getSymbolType() == Symbol::IType::EnumSymbol);
 
-//	Designtime::BluePrintEnum* bluePrintEnum = static_cast<Designtime::BluePrintEnum*>(mBluePrint);
+	Designtime::BluePrintEnum* blueprint = static_cast<Designtime::BluePrintEnum*>(mBluePrint);
+	(void)blueprint;
 
 	TokenIterator token = mTokens.begin();
 
@@ -274,7 +277,7 @@ void Preprocessor::generateBluePrintEnum()
 		expect(Token::Type::IDENTIFER, token);
 		name = (token++)->content();
 
-		expect(Token::Type::ASSIGN, token);
+		expect(Token::Type::ASSIGN, token++);
 
 		expect(Token::Type::CONST_INTEGER, token);
 		value = (token++)->content();
@@ -294,6 +297,8 @@ void Preprocessor::generateBluePrintObject()
 	assert(mBluePrint);
 	assert(mBluePrint->getSymbolType() == Symbol::IType::BluePrintSymbol);
 
+	Designtime::BluePrintObject* blueprint = static_cast<Designtime::BluePrintObject*>(mBluePrint);
+
 	typedef std::list<TokenIterator> TokenIteratorList;
 	TokenIteratorList visList;
 
@@ -309,12 +314,12 @@ void Preprocessor::generateBluePrintObject()
 		if ( Parser::isMemberDeclaration((*it)) || Parser::isMemberDeclarationWithModifier((*it)) ) {
 			Designtime::BluePrintObject *member = createMember((*it));
 
-			mBluePrint->define(member->getName(), member);
+			blueprint->define(member->getName(), member);
 		}
 		else if ( Parser::isMethodDeclaration((*it)) || Parser::isStructorDeclaration((*it)) ) {
 			Runtime::Method *method = createMethod((*it));
 
-			mBluePrint->defineMethod(method->getName(), method);
+			blueprint->defineMethod(method->getName(), method);
 		}
 		else {
 			throw Utils::Exceptions::SyntaxError("invalid token '" + (*it)->content() + "' found at " + (*it)->position().toString());
@@ -330,23 +335,29 @@ void Preprocessor::generateTokens(const std::string& content)
 	mTokens = t.tokens();
 }
 
-void Preprocessor::process(Designtime::BluePrintObject* blueprint)
+void Preprocessor::process(Designtime::BluePrintGeneric* blueprint)
 {
 	assert(blueprint);
 	mBluePrint = blueprint;
 
-	mFilename = mBluePrint->Filename();
-	mTokens = mBluePrint->getTokens();
-
 	switch ( blueprint->getSymbolType() ) {
-		case Symbol::IType::BluePrintSymbol:
+		case Symbol::IType::BluePrintSymbol: {
+			Designtime::BluePrintObject* obj = static_cast<Designtime::BluePrintObject*>(blueprint);
+
+			mFilename = obj->Filename();
+			mTokens = obj->getTokens();
+
 			rebuildBluePrintObject();	// rebuild object tokens
 			generateBluePrintObject();	// build object from tokens
-			break;
-		case Symbol::IType::EnumSymbol:
-			assert(!"EnumSymbol");
+		} break;
+		case Symbol::IType::EnumSymbol: {
+			Designtime::BluePrintEnum* obj = static_cast<Designtime::BluePrintEnum*>(blueprint);
+
+			//mFilename = obj->Filename();
+			mTokens = obj->getTokens();
+
 			generateBluePrintEnum();
-			break;
+		} break;
 		default:
 			throw Utils::Exceptions::Exception("invalid symbol type provided");
 	}

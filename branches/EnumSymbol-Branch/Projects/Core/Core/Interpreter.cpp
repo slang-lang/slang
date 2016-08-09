@@ -777,7 +777,7 @@ void Interpreter::process_identifier(TokenIterator& token, Object* /*result*/, T
 		throw Utils::Exceptions::UnknownIdentifer("identifier '" + token->content() + "' not found", token->position());
 	}
 
-	if ( symbol->getSymbolType() == Symbol::IType::BluePrintSymbol ) {
+	if ( symbol->getSymbolType() == Symbol::IType::BluePrintSymbol /*|| symbol->getSymbolType() == Symbol::IType::EnumSymbol*/ ) {
 		process_type(token, symbol);
 	}
 	else if ( symbol->getSymbolType() == Symbol::IType::MethodSymbol ) {

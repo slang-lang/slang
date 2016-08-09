@@ -24,12 +24,6 @@
 
 
 namespace ObjectiveScript {
-
-// Forward declarations
-namespace Runtime {
-	class Object;
-}
-
 namespace Designtime {
 
 
@@ -42,8 +36,6 @@ public:
 
 public:
 	virtual void cleanup();
-
-	virtual std::string ToString() const = 0;
 
 public:
 	void setQualifiedTypename(const std::string& name);
