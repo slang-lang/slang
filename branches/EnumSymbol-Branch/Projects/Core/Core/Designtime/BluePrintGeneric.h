@@ -41,6 +41,8 @@ public:
 	virtual ~BluePrintGeneric();
 
 public:
+	virtual void cleanup();
+
 	virtual std::string ToString() const = 0;
 
 public:
@@ -57,9 +59,6 @@ protected:
 
 private:
 };
-
-typedef std::list<BluePrintGeneric> BluePrintGenericList;
-typedef std::map<std::string, BluePrintGeneric> BluePrintGenericMap;
 
 
 }

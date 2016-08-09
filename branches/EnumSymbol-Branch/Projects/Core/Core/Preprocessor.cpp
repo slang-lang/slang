@@ -5,7 +5,7 @@
 // Library includes
 
 // Project includes
-#include <Core/Designtime/BluePrint.h>
+#include <Core/Designtime/BluePrintObject.h>
 #include <Core/Designtime/BluePrintEnum.h>
 #include <Core/Parser/Parser.h>
 #include <Core/Utils/Exceptions.h>
@@ -67,7 +67,7 @@ bool Preprocessor::buildQualifiedNames(TokenIteratorMutable& token, bool skipFir
 	return update;
 }
 
-Designtime::BluePrint* Preprocessor::createMember(TokenIterator token) const
+Designtime::BluePrintObject* Preprocessor::createMember(TokenIterator token) const
 {
 	bool isFinal = false;
 	std::string languageFeature;
@@ -125,7 +125,7 @@ Designtime::BluePrint* Preprocessor::createMember(TokenIterator token) const
 
 	expect(Token::Type::SEMICOLON, token);
 
-	Designtime::BluePrint* blue = new Designtime::BluePrint(type, mFilename, name);
+	Designtime::BluePrintObject* blue = new Designtime::BluePrintObject(type, mFilename, name);
 	blue->setFinal(isFinal);
 	blue->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
 	blue->setMutability(mutability);
@@ -307,7 +307,7 @@ void Preprocessor::generateBluePrintObject()
 	// loop over all visibility declarations and check if we have a member declaration or a method declaration
 	for ( TokenIteratorList::const_iterator it = visList.begin(); it != visList.end(); ++it ) {
 		if ( Parser::isMemberDeclaration((*it)) || Parser::isMemberDeclarationWithModifier((*it)) ) {
-			Designtime::BluePrint *member = createMember((*it));
+			Designtime::BluePrintObject *member = createMember((*it));
 
 			mBluePrint->define(member->getName(), member);
 		}
@@ -330,7 +330,7 @@ void Preprocessor::generateTokens(const std::string& content)
 	mTokens = t.tokens();
 }
 
-void Preprocessor::process(Designtime::BluePrint* blueprint)
+void Preprocessor::process(Designtime::BluePrintObject* blueprint)
 {
 	assert(blueprint);
 	mBluePrint = blueprint;

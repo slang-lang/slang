@@ -31,6 +31,11 @@ BluePrintGeneric::~BluePrintGeneric()
 {
 }
 
+void BluePrintGeneric::cleanup()
+{
+	// nothing to do here
+}
+
 const TokenList& BluePrintGeneric::getTokens() const
 {
 	return mTokens;

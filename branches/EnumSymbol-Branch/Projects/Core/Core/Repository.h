@@ -8,8 +8,6 @@
 #include <string>
 
 // Project includes
-#include <Core/Designtime/BluePrint.h>
-#include <Core/Designtime/Prototype.h>
 #include "Object.h"
 #include "Reference.h"
 
@@ -21,6 +19,12 @@
 namespace ObjectiveScript {
 
 // Forward declarations
+namespace Designtime {
+	class BluePrintEnum;
+	class BluePrintGeneric;
+	class BluePrintObject;
+	class Prototype;
+}
 namespace Runtime {
 	class Object;
 }
@@ -36,11 +40,12 @@ public:
 	GlobalScope* getGlobalScope() const;
 
 public:
-	void addBluePrint(const Designtime::BluePrint &object);
-	void addPrototype(const Designtime::Prototype& prototype);
+	void addBluePrint(Designtime::BluePrintEnum* blueprint);
+	void addBluePrint(Designtime::BluePrintObject* object);
+	void addPrototype(Designtime::Prototype* prototype);
 
 	Runtime::Object* createInstance(const std::string& type, const std::string& name = ANONYMOUS_OBJECT, bool initialize = true);
-	Runtime::Object* createInstance(Designtime::BluePrint* blueprint, const std::string& name = ANONYMOUS_OBJECT, bool initialize = true);
+	Runtime::Object* createInstance(Designtime::BluePrintObject* blueprint, const std::string& name = ANONYMOUS_OBJECT, bool initialize = true);
 
 	void addReference(Runtime::Object *object);
 	void removeReference(Runtime::Object *object);
@@ -58,17 +63,22 @@ private: // hide me from public
 	void CollectGarbage();
 
 private:
-	Runtime::Object* createObject(const std::string& name, Designtime::BluePrint* blueprint, bool initialize);
-	Runtime::Object* createUserObject(const std::string& name, Designtime::BluePrint* blueprint, bool initialize);
+	Runtime::Object* createObject(const std::string& name, Designtime::BluePrintObject* blueprint, bool initialize);
+	Runtime::Object* createUserObject(const std::string& name, Designtime::BluePrintObject* blueprint, bool initialize);
 
 	void createDefaultMethods(Runtime::Object *object);
-	void initializeObject(Runtime::Object *object, Designtime::BluePrint* blueprint);
+	void initializeObject(Runtime::Object *object, Designtime::BluePrintObject* blueprint);
 	void insertBluePrintsIntoScopes();
 
 private:
-	Designtime::BluePrintMap mBluePrints;
+	typedef std::map<std::string, Designtime::BluePrintEnum*> BluePrintEnumMap;
+	typedef std::map<std::string, Designtime::BluePrintObject*> BluePrintObjectMap;
+
+private:
+	BluePrintEnumMap mBluePrintEnums;
+	BluePrintObjectMap mBluePrintObjects;
 	ReferenceCountedObjects mInstances;
-	Designtime::PrototypeMap mPrototypes;
+	//Designtime::PrototypeMap mPrototypes;
 	GlobalScope *mScope;
 };
 

@@ -8,7 +8,7 @@
 #include <map>
 
 // Project includes
-#include <Core/Designtime/BluePrint.h>
+#include <Core/Designtime/BluePrintObject.h>
 
 // Forward declarations
 
@@ -22,18 +22,18 @@ namespace Designtime {
 class Prototype
 {
 public:
-	Prototype(const Designtime::BluePrint& blue);
+	Prototype(const Designtime::BluePrintObject& blue);
 	~Prototype();
 
 public:
-	Designtime::BluePrint generateBluePrint(const std::string& type);
+	Designtime::BluePrintObject generateBluePrint(const std::string& type);
 
 	const std::string& type() const;
 
 protected:
 
 private:
-	Designtime::BluePrint mBluePrint;
+	Designtime::BluePrintObject mBluePrint;
 };
 
 typedef std::list<Prototype> PrototypeList;

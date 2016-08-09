@@ -18,7 +18,7 @@ std::string VoidObject::TYPENAME = "void";
 
 
 VoidObject::VoidObject()
-: BluePrint(TYPENAME, SYSTEM_LIBRARY)
+: BluePrintObject(TYPENAME, SYSTEM_LIBRARY)
 {
 }
 

@@ -1,6 +1,6 @@
 
 // Header
-#include "BluePrint.h"
+#include "BluePrintObject.h"
 
 // Library includes
 
@@ -16,7 +16,7 @@ namespace ObjectiveScript {
 namespace Designtime {
 
 
-BluePrint::BluePrint()
+BluePrintObject::BluePrintObject()
 : MethodScope(ANONYMOUS_OBJECT, 0),
   BluePrintSymbol(ANONYMOUS_OBJECT),
   mIsInterface(false),
@@ -25,7 +25,7 @@ BluePrint::BluePrint()
 	mName = ANONYMOUS_OBJECT;
 }
 
-BluePrint::BluePrint(const std::string& type, const std::string& filename, const std::string& name)
+BluePrintObject::BluePrintObject(const std::string& type, const std::string& filename, const std::string& name)
 : BluePrintGeneric(type, filename),
   MethodScope(type, 0),
   BluePrintSymbol(type),
@@ -35,11 +35,11 @@ BluePrint::BluePrint(const std::string& type, const std::string& filename, const
 	mName = name;
 }
 
-BluePrint::~BluePrint()
+BluePrintObject::~BluePrintObject()
 {
 }
 
-void BluePrint::addInheritance(const Designtime::Ancestor& inheritance)
+void BluePrintObject::addInheritance(const Designtime::Ancestor& inheritance)
 {
 	if ( inheritance.name().empty() ) {
 		throw Utils::Exceptions::Exception("invalid inheritance added");
@@ -48,7 +48,7 @@ void BluePrint::addInheritance(const Designtime::Ancestor& inheritance)
 	mInheritance.insert(inheritance);
 }
 
-void BluePrint::cleanup()
+void BluePrintObject::cleanup()
 {
 	for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
 		undefine((*it)->getName(), (*it));
@@ -63,7 +63,7 @@ void BluePrint::cleanup()
 		}
 
 		if ( it->second->getSymbolType() == Symbol::IType::BluePrintSymbol ) {
-			static_cast<BluePrint*>(it->second)->cleanup();
+			static_cast<BluePrintObject*>(it->second)->cleanup();
 		}
 
 		delete it->second;
@@ -71,7 +71,7 @@ void BluePrint::cleanup()
 	mSymbols.clear();
 }
 
-Designtime::Ancestors BluePrint::getAncestors() const
+Designtime::Ancestors BluePrintObject::getAncestors() const
 {
 	Designtime::Ancestors ancestors;
 
@@ -84,12 +84,12 @@ Designtime::Ancestors BluePrint::getAncestors() const
 	return ancestors;
 }
 
-Designtime::Ancestors BluePrint::getInheritance() const
+Designtime::Ancestors BluePrintObject::getInheritance() const
 {
 	return mInheritance;
 }
 
-Designtime::Ancestors BluePrint::getImplementations() const
+Designtime::Ancestors BluePrintObject::getImplementations() const
 {
 	Designtime::Ancestors implementations;
 
@@ -102,17 +102,17 @@ Designtime::Ancestors BluePrint::getImplementations() const
 	return implementations;
 }
 
-Runtime::AtomicValue BluePrint::getValue() const
+Runtime::AtomicValue BluePrintObject::getValue() const
 {
 	return mValue;
 }
 
-Visibility::E BluePrint::getVisibility() const
+Visibility::E BluePrintObject::getVisibility() const
 {
 	return mVisibility;
 }
 
-bool BluePrint::isAbstract() const
+bool BluePrintObject::isAbstract() const
 {
 	for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
 		if ( (*it)->isAbstract() ) {
@@ -123,37 +123,37 @@ bool BluePrint::isAbstract() const
 	return ObjectAttributes::isAbstract();
 }
 
-bool BluePrint::isInterface() const
+bool BluePrintObject::isInterface() const
 {
 	return mIsInterface;
 }
 
-void BluePrint::setAbstract(bool state)
+void BluePrintObject::setAbstract(bool state)
 {
 	mIsAbstract = state;
 }
 
-void BluePrint::setInterface(bool state)
+void BluePrintObject::setInterface(bool state)
 {
 	mIsInterface = state;
 }
 
-void BluePrint::setParent(IScope* parent)
+void BluePrintObject::setParent(IScope* parent)
 {
 	mParent = parent;
 }
 
-void BluePrint::setValue(Runtime::AtomicValue value)
+void BluePrintObject::setValue(Runtime::AtomicValue value)
 {
 	mValue = value;
 }
 
-void BluePrint::setVisibility(Visibility::E v)
+void BluePrintObject::setVisibility(Visibility::E v)
 {
 	mVisibility = v;
 }
 
-std::string BluePrint::ToString() const
+std::string BluePrintObject::ToString() const
 {
 	return Typename() + " " + getName();
 }

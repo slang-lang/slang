@@ -19,7 +19,7 @@ std::string IntegerObject::TYPENAME = "int";
 
 
 IntegerObject::IntegerObject()
-: BluePrint(TYPENAME, SYSTEM_LIBRARY)
+: BluePrintObject(TYPENAME, SYSTEM_LIBRARY)
 {
 }
 

@@ -52,9 +52,6 @@ private:
 	Runtime::AtomicValue mValue;
 };
 
-typedef std::list<BluePrintEnum> EnumList;
-typedef std::map<std::string, BluePrintEnum> EnumMap;
-
 
 }
 }

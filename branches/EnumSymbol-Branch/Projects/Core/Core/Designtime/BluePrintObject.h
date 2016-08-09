@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Designtime_BluePrint_h
-#define ObjectiveScript_Designtime_BluePrint_h
+#ifndef ObjectiveScript_Designtime_BluePrintObject_h
+#define ObjectiveScript_Designtime_BluePrintObject_h
 
 
 // Library includes
@@ -34,14 +34,14 @@ namespace Runtime {
 namespace Designtime {
 
 
-class BluePrint : public BluePrintGeneric,
-				  public MethodScope,
-				  public BluePrintSymbol
+class BluePrintObject : public BluePrintGeneric,
+						public MethodScope,
+						public BluePrintSymbol
 {
 public:
-	BluePrint();
-	BluePrint(const std::string& type, const std::string& filename, const std::string& name = ANONYMOUS_OBJECT);
-	virtual ~BluePrint();
+	BluePrintObject();
+	BluePrintObject(const std::string& type, const std::string& filename, const std::string& name = ANONYMOUS_OBJECT);
+	virtual ~BluePrintObject();
 
 public:
 	virtual ISymbol::IType::E getSymbolType() const { return ISymbol::IType::BluePrintSymbol; }
@@ -94,9 +94,6 @@ private:
 	Runtime::AtomicValue mValue;
 	Visibility::E mVisibility;
 };
-
-typedef std::list<BluePrint> BluePrintList;
-typedef std::map<std::string, BluePrint> BluePrintMap;
 
 
 }

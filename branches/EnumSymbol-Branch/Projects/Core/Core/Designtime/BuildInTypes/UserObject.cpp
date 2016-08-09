@@ -19,7 +19,7 @@ std::string UserObject::TYPENAME = "void";
 
 
 UserObject::UserObject()
-: BluePrint(TYPENAME, SYSTEM_LIBRARY)
+: BluePrintObject(TYPENAME, SYSTEM_LIBRARY)
 {
 }
 

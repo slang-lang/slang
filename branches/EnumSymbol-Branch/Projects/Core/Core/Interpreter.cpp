@@ -1108,7 +1108,7 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 
 /*
 	// create initialized instance of new object
-	Object* tmpObj = getRepository()->createInstance(static_cast<Designtime::BluePrint*>(symbol), name, true);
+	Object* tmpObj = getRepository()->createInstance(static_cast<Designtime::BluePrintObject*>(symbol), name, true);
 
 	// execute new object's constructor
 	mControlFlow = tmpObj->Constructor(params);
@@ -1118,7 +1118,7 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 */
 
 	// create initialized instance of new object
-	*result = *getRepository()->createInstance(static_cast<Designtime::BluePrint*>(symbol), name, true);
+	*result = *getRepository()->createInstance(static_cast<Designtime::BluePrintObject*>(symbol), name, true);
 
 	// execute new object's constructor
 	mControlFlow = result->Constructor(params);
@@ -1518,7 +1518,7 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol)
 		throw Utils::Exceptions::DuplicateIdentifier("duplicate identifier '" + name + "' created", token->position());
 	}
 
-	object = getRepository()->createInstance(static_cast<Designtime::BluePrint*>(symbol), name, false);
+	object = getRepository()->createInstance(static_cast<Designtime::BluePrintObject*>(symbol), name, false);
 
 	getScope()->define(name, object);
 

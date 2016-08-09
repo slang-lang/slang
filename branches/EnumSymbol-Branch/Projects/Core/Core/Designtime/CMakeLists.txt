@@ -4,16 +4,18 @@ ADD_SUBDIRECTORY(BuildInTypes)
 
 SET(SOURCES
 	Ancestor.cpp
-	BluePrint.cpp
+	BluePrintGeneric.cpp
 	BluePrintEnum.cpp
+	BluePrintObject.cpp
 	Prototype.cpp
 	SanityChecker.cpp
 )
 
 SET(HEADERS
 	Ancestor.h
-	BluePrint.h
+	BluePrintGeneric.h
 	BluePrintEnum.h
+	BluePrintObject.h
 	Prototype.h
 	SanityChecker.h
 )

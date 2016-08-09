@@ -20,7 +20,7 @@ namespace ObjectiveScript {
 
 // Forward declarations
 namespace Designtime {
-	class BluePrint;
+	class BluePrintObject;
 }
 class IScope;
 class MethodScope;
@@ -36,11 +36,11 @@ public:
 	Preprocessor(Repository *repo);
 
 public:
-	void process(Designtime::BluePrint* blueprint);
+	void process(Designtime::BluePrintObject* blueprint);
 
 private:
 	bool buildQualifiedNames(TokenIteratorMutable& token, bool skipFirstToken);
-	Designtime::BluePrint* createMember(TokenIterator start) const;
+	Designtime::BluePrintObject* createMember(TokenIterator start) const;
 	Runtime::Method* createMethod(TokenIterator start) const;
 
 	void generateBluePrintObject();
@@ -50,7 +50,7 @@ private:
 
 private:
 	std::string mFilename;
-	Designtime::BluePrint *mBluePrint;
+	Designtime::BluePrintObject *mBluePrint;
 	Repository *mRepository;
 	IScope *mScope;
 	TokenList mTokens;

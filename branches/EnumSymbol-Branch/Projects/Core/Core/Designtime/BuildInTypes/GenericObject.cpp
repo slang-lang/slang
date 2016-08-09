@@ -19,7 +19,7 @@ std::string GenericObject::TYPENAME = GENERIC_OBJECT;
 
 
 GenericObject::GenericObject()
-: BluePrint(TYPENAME, SYSTEM_LIBRARY)
+: BluePrintObject(TYPENAME, SYSTEM_LIBRARY)
 {
 	setAbstract(true);
 }

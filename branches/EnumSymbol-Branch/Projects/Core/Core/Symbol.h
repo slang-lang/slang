@@ -48,27 +48,6 @@ public:
 class Symbol : public ISymbol
 {
 public:
-/*
-	class IType
-	{
-	public:
-		typedef enum {
-			UnknownSymbol,
-			BluePrintSymbol,
-			EnumSymbol,
-			MethodSymbol,
-			NamespaceSymbol,
-			ObjectSymbol
-		} E;
-
-		virtual ~IType() { }
-
-		virtual const std::string& QualifiedTypename() const = 0;
-		virtual const std::string& Typename() const = 0;
-	};
-*/
-
-public:
 	Symbol(const std::string& name, IType::E type);
 	virtual ~Symbol();
 

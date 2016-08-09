@@ -8,7 +8,7 @@
 
 // Project includes
 #include <Core/Designtime/Ancestor.h>
-#include <Core/Designtime/BluePrint.h>
+#include <Core/Designtime/BluePrintObject.h>
 #include <Core/Designtime/BluePrintEnum.h>
 #include <Core/Designtime/Prototype.h>
 #include "Token.h"
@@ -31,7 +31,6 @@ public:
 	~Analyser();
 
 public:
-	const Designtime::BluePrintList& getBluePrints() const;
 	const StringList& getLibraryReferences() const;
 
 public:	// Entry points
@@ -41,32 +40,26 @@ public:	// Entry points
 
 protected:
 
-private:	// moved to private to prevent usage in this release
-	const Designtime::PrototypeList& getPrototypes() const;
-
 private:
 	void generate(const TokenList& tokens);
 	TokenList generateTokens(const std::string& content);
 	void process(const TokenList& tokens);
 
-	Designtime::BluePrint createBluePrint(TokenIterator& token, TokenIterator end, bool isInterface = false) const;
-	Designtime::BluePrintEnum createEnum(TokenIterator& token, TokenIterator end) const;
+	bool createBluePrint(TokenIterator& token, TokenIterator end, bool isInterface = false) const;
+	bool createEnum(TokenIterator& token, TokenIterator end) const;
 	std::string createLibraryReference(TokenIterator& token, TokenIterator end) const;
-	void createMember(TokenIterator& token, TokenIterator end);
-	void createMethod(TokenIterator& token, TokenIterator end);
-	void createNamespace(TokenIterator& token, TokenIterator end);
-	Designtime::Prototype createPrototype(TokenIterator& token, TokenIterator end) const;
+	bool createMember(TokenIterator& token, TokenIterator end);
+	bool createMethod(TokenIterator& token, TokenIterator end);
+	bool createNamespace(TokenIterator& token, TokenIterator end);
+	bool createPrototype(TokenIterator& token, TokenIterator end) const;
 
 	Designtime::Ancestors collectInheritance(TokenIterator& token) const;
 	std::string getQualifiedTypename(const std::string& name) const;
 	std::string identify(TokenIterator& start, TokenIterator end) const;
 
 private:
-	Designtime::BluePrintList mBluePrints;
-	Designtime::EnumList mEnumList;
 	std::string mFilename;
 	StringList mLibraries;
-	Designtime::PrototypeList mPrototypes;
 	Repository *mRepository;
 	MethodScope *mScope;
 	std::string mScopeName;

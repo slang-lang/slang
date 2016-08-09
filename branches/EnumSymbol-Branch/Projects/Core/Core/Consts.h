@@ -82,6 +82,7 @@ static const char* RESERVED_WORD_USING = "using";
 // System
 static const char* ANONYMOUS_OBJECT = "<anonymous>";
 static const char* GENERIC_OBJECT = "Object";
+static const char* OBJECTIVESCRIPT_LIBRARY = "OBJECTIVESCRIPT_LIBRARY";
 static const char* SYSTEM_LIBRARY = "SYSTEM.OS";
 
 // Types
