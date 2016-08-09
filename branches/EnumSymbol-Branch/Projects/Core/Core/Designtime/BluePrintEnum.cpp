@@ -14,23 +14,14 @@ namespace Designtime {
 
 
 BluePrintEnum::BluePrintEnum()
-: EnumSymbol(ANONYMOUS_OBJECT),
-  mFilename(ANONYMOUS_OBJECT),
-  mParent(0),
-  mQualifiedTypeName(ANONYMOUS_OBJECT),
-  mTypename(ANONYMOUS_OBJECT),
-  mVisibility(Visibility::Public)
+: EnumSymbol(ANONYMOUS_OBJECT)
 {
 	mName = ANONYMOUS_OBJECT;
 }
 
 BluePrintEnum::BluePrintEnum(const std::string& type, const std::string& filename, const std::string& name)
-: EnumSymbol(type),
-  mFilename(filename),
-  mParent(0),
-  mQualifiedTypeName(type),
-  mTypename(type),
-  mVisibility(Visibility::Public)
+: BluePrintGeneric(type, filename),
+  EnumSymbol(type)
 {
 	mName = name;
 }
@@ -39,49 +30,19 @@ BluePrintEnum::~BluePrintEnum()
 {
 }
 
-IScope* BluePrintEnum::getParent() const
+ISymbol::IType::E BluePrintEnum::getSymbolType() const
 {
-	return mParent;
+	return ISymbol::IType::EnumSymbol;
 }
 
-const TokenList& BluePrintEnum::getTokens() const
+const std::string& BluePrintEnum::QualifiedTypename() const
 {
-	return mTokens;
+	return mQualifiedTypename;
 }
 
-void BluePrintEnum::setTokens(const TokenList& tokens)
+const std::string& BluePrintEnum::Typename() const
 {
-	mTokens = tokens;
-}
-
-Runtime::AtomicValue BluePrintEnum::getValue() const
-{
-	return mValue;
-}
-
-Visibility::E BluePrintEnum::getVisibility() const
-{
-	return mVisibility;
-}
-
-void BluePrintEnum::setParent(IScope* parent)
-{
-	mParent = parent;
-}
-
-void BluePrintEnum::setQualifiedTypename(const std::string& name)
-{
-	mQualifiedTypeName = name;
-}
-
-void BluePrintEnum::setValue(Runtime::AtomicValue value)
-{
-	mValue = value;
-}
-
-void BluePrintEnum::setVisibility(Visibility::E v)
-{
-	mVisibility = v;
+	return mTypename;
 }
 
 std::string BluePrintEnum::ToString() const

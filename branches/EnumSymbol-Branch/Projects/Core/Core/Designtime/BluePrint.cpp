@@ -21,7 +21,7 @@ BluePrint::BluePrint()
   BluePrintSymbol(ANONYMOUS_OBJECT),
   mFilename(ANONYMOUS_OBJECT),
   mIsInterface(false),
-  mQualifiedTypeName(ANONYMOUS_OBJECT),
+  mQualifiedTypename(ANONYMOUS_OBJECT),
   mTypename(ANONYMOUS_OBJECT),
   mVisibility(Visibility::Public)
 {
@@ -33,7 +33,7 @@ BluePrint::BluePrint(const std::string& type, const std::string& filename, const
   BluePrintSymbol(type),
   mFilename(filename),
   mIsInterface(false),
-  mQualifiedTypeName(type),
+  mQualifiedTypename(type),
   mTypename(type),
   mVisibility(Visibility::Public)
 {
@@ -155,7 +155,7 @@ void BluePrint::setParent(IScope* parent)
 
 void BluePrint::setQualifiedTypename(const std::string& name)
 {
-	mQualifiedTypeName = name;
+	mQualifiedTypename = name;
 }
 
 void BluePrint::setValue(Runtime::AtomicValue value)

@@ -46,7 +46,7 @@ public:
 
 public:	// RTTI
 	const std::string& Filename() const { return mFilename; }
-	const std::string& QualifiedTypename() const { return mQualifiedTypeName; }
+	const std::string& QualifiedTypename() const { return mQualifiedTypename; }
 	const std::string& Typename() const { return mTypename; }
 
 public:
@@ -92,7 +92,7 @@ private:
 	std::string mFilename;
 	Ancestors mInheritance;
 	bool mIsInterface;
-	std::string mQualifiedTypeName;
+	std::string mQualifiedTypename;
 	TokenList mTokens;
 	std::string mTypename;
 	Runtime::AtomicValue mValue;

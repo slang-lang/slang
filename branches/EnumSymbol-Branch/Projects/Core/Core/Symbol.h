@@ -18,7 +18,7 @@
 namespace ObjectiveScript {
 
 
-class Symbol
+class ISymbol
 {
 public:
 	class IType
@@ -33,11 +33,40 @@ public:
 			ObjectSymbol
 		} E;
 
-        virtual ~IType() { }
+		virtual ~IType() { }
 
 		virtual const std::string& QualifiedTypename() const = 0;
 		virtual const std::string& Typename() const = 0;
 	};
+
+public:
+	virtual ~ISymbol() { }
+
+	virtual IType::E getSymbolType() const = 0;
+};
+
+class Symbol : public ISymbol
+{
+public:
+/*
+	class IType
+	{
+	public:
+		typedef enum {
+			UnknownSymbol,
+			BluePrintSymbol,
+			EnumSymbol,
+			MethodSymbol,
+			NamespaceSymbol,
+			ObjectSymbol
+		} E;
+
+		virtual ~IType() { }
+
+		virtual const std::string& QualifiedTypename() const = 0;
+		virtual const std::string& Typename() const = 0;
+	};
+*/
 
 public:
 	Symbol(const std::string& name, IType::E type);
