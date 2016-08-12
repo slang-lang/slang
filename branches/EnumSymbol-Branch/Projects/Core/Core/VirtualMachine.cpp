@@ -96,7 +96,7 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 
 	// initialize Main object
 	Symbol* mainSymbol = mRepository->getGlobalScope()->resolve("Main");
-	if ( mainSymbol && mainSymbol->getSymbolType() == ISymbol::IType::BluePrintSymbol ) {
+	if ( mainSymbol && mainSymbol->getSymbolType() == Symbol::IType::BluePrintObjectSymbol ) {
 		// create an instance of our Main object ...
 		Runtime::Object *main = mRepository->createInstance(static_cast<Designtime::BluePrintObject*>(mainSymbol), "main", true);
 		assert(main);

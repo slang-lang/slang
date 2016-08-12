@@ -27,12 +27,17 @@ namespace ObjectiveScript {
 namespace Designtime {
 
 
-class BluePrintGeneric : public ISymbol
+class BluePrintGeneric : public BluePrintSymbol
 {
 public:
 	BluePrintGeneric();
 	BluePrintGeneric(const std::string& type, const std::string& filename);
 	virtual ~BluePrintGeneric();
+
+public:
+	const std::string& Filename() const { return mFilename; }
+	const std::string& QualifiedTypename() const { return mQualifiedTypename; }
+	const std::string& Typename() const { return mTypename; }
 
 public:
 	virtual void cleanup();

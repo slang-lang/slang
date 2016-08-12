@@ -18,21 +18,21 @@ namespace Designtime {
 
 BluePrintObject::BluePrintObject()
 : MethodScope(ANONYMOUS_OBJECT, 0),
-  BluePrintSymbol(ANONYMOUS_OBJECT),
   mIsInterface(false),
   mVisibility(Visibility::Public)
 {
 	mName = ANONYMOUS_OBJECT;
+	mType = Symbol::IType::BluePrintObjectSymbol;
 }
 
 BluePrintObject::BluePrintObject(const std::string& type, const std::string& filename, const std::string& name)
 : BluePrintGeneric(type, filename),
   MethodScope(type, 0),
-  BluePrintSymbol(type),
   mIsInterface(false),
   mVisibility(Visibility::Public)
 {
 	mName = name;
+	mType = Symbol::IType::BluePrintObjectSymbol;
 }
 
 BluePrintObject::~BluePrintObject()
@@ -62,7 +62,7 @@ void BluePrintObject::cleanup()
 			continue;
 		}
 
-		if ( it->second->getSymbolType() == Symbol::IType::BluePrintSymbol ) {
+		if ( it->second->getSymbolType() == Symbol::IType::BluePrintObjectSymbol ) {
 			static_cast<BluePrintObject*>(it->second)->cleanup();
 		}
 

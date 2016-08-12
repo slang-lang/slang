@@ -23,8 +23,7 @@ namespace ObjectiveScript {
 namespace Designtime {
 
 
-class BluePrintEnum : public BluePrintGeneric,
-					  public EnumSymbol
+class BluePrintEnum : public BluePrintGeneric
 {
 public:
 	BluePrintEnum();
@@ -32,14 +31,10 @@ public:
 	virtual ~BluePrintEnum();
 
 public:
-	virtual ISymbol::IType::E getSymbolType() const;
-	virtual const std::string& QualifiedTypename() const;
-	virtual const std::string& Typename() const;
-	virtual std::string ToString() const;
-
-public:
 	IScope* getParent() const;
 	void setParent(IScope* parent);
+
+	std::string ToString() const;
 
 protected:
 

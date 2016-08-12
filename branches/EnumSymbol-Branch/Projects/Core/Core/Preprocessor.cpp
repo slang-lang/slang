@@ -262,7 +262,7 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token) const
 void Preprocessor::generateBluePrintEnum()
 {
 	assert(mBluePrint);
-	assert(mBluePrint->getSymbolType() == Symbol::IType::EnumSymbol);
+	assert(mBluePrint->getSymbolType() == Symbol::IType::BluePrintEnumSymbol);
 
 	Designtime::BluePrintEnum* blueprint = static_cast<Designtime::BluePrintEnum*>(mBluePrint);
 	(void)blueprint;
@@ -289,13 +289,16 @@ void Preprocessor::generateBluePrintEnum()
 				throw Utils::Exceptions::Exception("new enum value expected but none found!", token->position());
 			}
 		}
+		else if ( token->type() == Token::Type::SEMICOLON ) {
+			token++;
+		}
 	}
 }
 
 void Preprocessor::generateBluePrintObject()
 {
 	assert(mBluePrint);
-	assert(mBluePrint->getSymbolType() == Symbol::IType::BluePrintSymbol);
+	assert(mBluePrint->getSymbolType() == Symbol::IType::BluePrintObjectSymbol);
 
 	Designtime::BluePrintObject* blueprint = static_cast<Designtime::BluePrintObject*>(mBluePrint);
 
@@ -322,7 +325,7 @@ void Preprocessor::generateBluePrintObject()
 			blueprint->defineMethod(method->getName(), method);
 		}
 		else {
-			throw Utils::Exceptions::SyntaxError("invalid token '" + (*it)->content() + "' found at " + (*it)->position().toString());
+			throw Utils::Exceptions::SyntaxError("invalid token '" + (*it)->content() + "'", (*it)->position());
 		}
 	}
 }
@@ -341,7 +344,15 @@ void Preprocessor::process(Designtime::BluePrintGeneric* blueprint)
 	mBluePrint = blueprint;
 
 	switch ( blueprint->getSymbolType() ) {
-		case Symbol::IType::BluePrintSymbol: {
+		case Symbol::IType::BluePrintEnumSymbol: {
+			Designtime::BluePrintEnum* obj = static_cast<Designtime::BluePrintEnum*>(blueprint);
+
+			//mFilename = obj->Filename();
+			mTokens = obj->getTokens();
+
+			generateBluePrintEnum();
+		} break;
+		case Symbol::IType::BluePrintObjectSymbol: {
 			Designtime::BluePrintObject* obj = static_cast<Designtime::BluePrintObject*>(blueprint);
 
 			mFilename = obj->Filename();
@@ -349,14 +360,6 @@ void Preprocessor::process(Designtime::BluePrintGeneric* blueprint)
 
 			rebuildBluePrintObject();	// rebuild object tokens
 			generateBluePrintObject();	// build object from tokens
-		} break;
-		case Symbol::IType::EnumSymbol: {
-			Designtime::BluePrintEnum* obj = static_cast<Designtime::BluePrintEnum*>(blueprint);
-
-			//mFilename = obj->Filename();
-			mTokens = obj->getTokens();
-
-			generateBluePrintEnum();
 		} break;
 		default:
 			throw Utils::Exceptions::Exception("invalid symbol type provided");

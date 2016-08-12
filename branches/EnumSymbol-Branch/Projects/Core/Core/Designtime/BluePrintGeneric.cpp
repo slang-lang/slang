@@ -14,14 +14,16 @@ namespace Designtime {
 
 
 BluePrintGeneric::BluePrintGeneric()
-: mFilename(ANONYMOUS_OBJECT),
+: BluePrintSymbol(ANONYMOUS_OBJECT),
+  mFilename(ANONYMOUS_OBJECT),
   mQualifiedTypename(ANONYMOUS_OBJECT),
   mTypename(ANONYMOUS_OBJECT)
 {
 }
 
 BluePrintGeneric::BluePrintGeneric(const std::string& type, const std::string& filename)
-: mFilename(filename),
+: BluePrintSymbol(type),
+  mFilename(filename),
   mQualifiedTypename(type),
   mTypename(type)
 {

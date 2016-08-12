@@ -45,7 +45,7 @@ public:
 	void addPrototype(Designtime::Prototype* prototype);
 
 	Runtime::Object* createInstance(const std::string& type, const std::string& name = ANONYMOUS_OBJECT, bool initialize = true);
-	Runtime::Object* createInstance(Designtime::BluePrintObject* blueprint, const std::string& name = ANONYMOUS_OBJECT, bool initialize = true);
+	Runtime::Object* createInstance(Designtime::BluePrintGeneric* blueprint, const std::string& name = ANONYMOUS_OBJECT, bool initialize = true);
 
 	void addReference(Runtime::Object *object);
 	void removeReference(Runtime::Object *object);
@@ -63,6 +63,7 @@ private: // hide me from public
 	void CollectGarbage();
 
 private:
+	Runtime::Object* createEnum(const std::string& name, Designtime::BluePrintEnum* blueprint, bool initialize);
 	Runtime::Object* createObject(const std::string& name, Designtime::BluePrintObject* blueprint, bool initialize);
 	Runtime::Object* createUserObject(const std::string& name, Designtime::BluePrintObject* blueprint, bool initialize);
 

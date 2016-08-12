@@ -18,7 +18,7 @@
 namespace ObjectiveScript {
 
 
-class ISymbol
+class Symbol
 {
 public:
 	class IType
@@ -26,8 +26,8 @@ public:
 	public:
 		typedef enum {
 			UnknownSymbol,
-			BluePrintSymbol,
-			EnumSymbol,
+			BluePrintEnumSymbol,
+			BluePrintObjectSymbol,
 			MethodSymbol,
 			NamespaceSymbol,
 			ObjectSymbol
@@ -39,14 +39,6 @@ public:
 		virtual const std::string& Typename() const = 0;
 	};
 
-public:
-	virtual ~ISymbol() { }
-
-	virtual IType::E getSymbolType() const = 0;
-};
-
-class Symbol : public ISymbol
-{
 public:
 	Symbol(const std::string& name, IType::E type);
 	virtual ~Symbol();
@@ -77,20 +69,9 @@ class BluePrintSymbol : public Symbol,
 {
 public:
 	BluePrintSymbol(const std::string& name)
-	: Symbol(name, Symbol::IType::BluePrintSymbol)
+	: Symbol(name, Symbol::IType::BluePrintObjectSymbol)
 	{ }
 	virtual ~BluePrintSymbol() { }
-};
-
-class EnumSymbol : public Symbol,
-				   public Symbol::IType,
-				   public GenericAttributes
-{
-public:
-	EnumSymbol(const std::string& name)
-	: Symbol(name, Symbol::IType::EnumSymbol)
-	{ }
-	virtual ~EnumSymbol() { }
 };
 
 class MethodSymbol : public Symbol,

@@ -35,8 +35,7 @@ namespace Designtime {
 
 
 class BluePrintObject : public BluePrintGeneric,
-						public MethodScope,
-						public BluePrintSymbol
+						public MethodScope
 {
 public:
 	BluePrintObject();
@@ -44,15 +43,7 @@ public:
 	virtual ~BluePrintObject();
 
 public:
-	virtual ISymbol::IType::E getSymbolType() const { return ISymbol::IType::BluePrintSymbol; }
-
-public:
 	void cleanup();
-
-public:	// RTTI
-	const std::string& Filename() const { return mFilename; }
-	const std::string& QualifiedTypename() const { return mQualifiedTypename; }
-	const std::string& Typename() const { return mTypename; }
 
 public:
 	// Inheritance

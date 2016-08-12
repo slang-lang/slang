@@ -163,8 +163,8 @@ inline Symbol* Interpreter::identify(TokenIterator& token) const
 		}
 		else {
 			switch ( result->getSymbolType() ) {
-				case Symbol::IType::BluePrintSymbol:
-				case Symbol::IType::EnumSymbol:
+				case Symbol::IType::BluePrintEnumSymbol:
+				case Symbol::IType::BluePrintObjectSymbol:
 					throw Utils::Exceptions::NotSupported("static member usage not supported!");
 				case Symbol::IType::NamespaceSymbol:
 					result = static_cast<Namespace*>(result)->resolve(identifier, onlyCurrentScope);
@@ -222,8 +222,8 @@ Symbol* Interpreter::identifyMethod(TokenIterator& token, const ParameterList& p
 				case Symbol::IType::ObjectSymbol:
 					result = static_cast<Object*>(result)->resolveMethod(identifier, params, onlyCurrentScope);
 					break;
-				case Symbol::IType::BluePrintSymbol:
-				case Symbol::IType::EnumSymbol:
+				case Symbol::IType::BluePrintEnumSymbol:
+				case Symbol::IType::BluePrintObjectSymbol:
 					throw Utils::Exceptions::NotSupported("static method usage not supported!");
 				case Symbol::IType::MethodSymbol:
 				case Symbol::IType::UnknownSymbol:
@@ -522,8 +522,8 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 				case Symbol::IType::ObjectSymbol:
 					operator_binary_assign(result, static_cast<Object*>(symbol));
 					break;
-				case Symbol::IType::BluePrintSymbol:
-				case Symbol::IType::EnumSymbol:
+				case Symbol::IType::BluePrintEnumSymbol:
+				case Symbol::IType::BluePrintObjectSymbol:
 				case Symbol::IType::NamespaceSymbol:
 				case Symbol::IType::UnknownSymbol:
 					throw Utils::Exceptions::SyntaxError("unexpected symbol resolved", start->position());
@@ -662,8 +662,8 @@ void Interpreter::process_delete(TokenIterator& token)
 
 			*object = Object(object->getName(), object->Filename(), object->Typename(), VALUE_NONE);
 		} break;
-		case Symbol::IType::BluePrintSymbol:
-		case Symbol::IType::EnumSymbol:
+		case Symbol::IType::BluePrintEnumSymbol:
+		case Symbol::IType::BluePrintObjectSymbol:
 		case Symbol::IType::MethodSymbol:
 		case Symbol::IType::NamespaceSymbol:
 		case Symbol::IType::UnknownSymbol:
@@ -777,7 +777,7 @@ void Interpreter::process_identifier(TokenIterator& token, Object* /*result*/, T
 		throw Utils::Exceptions::UnknownIdentifer("identifier '" + token->content() + "' not found", token->position());
 	}
 
-	if ( symbol->getSymbolType() == Symbol::IType::BluePrintSymbol /*|| symbol->getSymbolType() == Symbol::IType::EnumSymbol*/ ) {
+	if ( symbol->getSymbolType() == Symbol::IType::BluePrintEnumSymbol || symbol->getSymbolType() == Symbol::IType::BluePrintObjectSymbol ) {
 		process_type(token, symbol);
 	}
 	else if ( symbol->getSymbolType() == Symbol::IType::MethodSymbol ) {
@@ -1064,7 +1064,7 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 	if ( !symbol ) {
 		throw Utils::Exceptions::UnknownIdentifer("unknown identifier '" + type + "'");
 	}
-	if ( symbol->getSymbolType() != Symbol::IType::BluePrintSymbol ) {
+	if ( symbol->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
 		throw Utils::Exceptions::Exception("blue print symbol expected!");
 	}
 
@@ -1416,7 +1416,7 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 				if ( !symbol ) {
 					throw Utils::Exceptions::UnknownIdentifer("identifier '" + token->content() + "' not found", catchIt->position());
 				}
-				if ( symbol->getSymbolType() != Symbol::IType::BluePrintSymbol ) {
+				if ( symbol->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
 					throw Utils::Exceptions::SyntaxError("invalid symbol type '" + symbol->getName() + "' found", catchIt->position());
 				}
 
@@ -1518,7 +1518,7 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol)
 		throw Utils::Exceptions::DuplicateIdentifier("duplicate identifier '" + name + "' created", token->position());
 	}
 
-	object = getRepository()->createInstance(static_cast<Designtime::BluePrintObject*>(symbol), name, false);
+	object = getRepository()->createInstance(static_cast<Designtime::BluePrintGeneric*>(symbol), name, false);
 
 	getScope()->define(name, object);
 

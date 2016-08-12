@@ -399,8 +399,8 @@ bool Analyser::createNamespace(TokenIterator& token, TokenIterator end)
 				case Symbol::IType::NamespaceSymbol:
 					space = static_cast<Runtime::Namespace*>(symbol);
 					break;
-				case Symbol::IType::BluePrintSymbol:
-				case Symbol::IType::EnumSymbol:
+				case Symbol::IType::BluePrintEnumSymbol:
+				case Symbol::IType::BluePrintObjectSymbol:
 				case Symbol::IType::MethodSymbol:
 				case Symbol::IType::ObjectSymbol:
 				case Symbol::IType::UnknownSymbol:
