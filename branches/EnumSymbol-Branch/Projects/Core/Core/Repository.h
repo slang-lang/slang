@@ -67,6 +67,10 @@ private:
 	Runtime::Object* createObject(const std::string& name, Designtime::BluePrintObject* blueprint, bool initialize);
 	Runtime::Object* createUserObject(const std::string& name, Designtime::BluePrintObject* blueprint, bool initialize);
 
+	Designtime::BluePrintGeneric* findBluePrint(const std::string& type) const;
+	Designtime::BluePrintEnum* findBluePrintEnum(const std::string& type) const;
+	Designtime::BluePrintObject* findBluePrintObject(const std::string& type) const;
+
 	void createDefaultMethods(Runtime::Object *object);
 	void initializeObject(Runtime::Object *object, Designtime::BluePrintObject* blueprint);
 	void insertBluePrintEnumsIntoScopes();

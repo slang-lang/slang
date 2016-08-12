@@ -9,6 +9,7 @@
 #include <Core/Designtime/BluePrintEnum.h>
 #include <Core/Parser/Parser.h>
 #include <Core/Utils/Exceptions.h>
+#include <BuildInObjects/IntegerObject.h>
 #include "Repository.h"
 #include "Tokenizer.h"
 #include "Tools.h"
@@ -267,6 +268,12 @@ void Preprocessor::generateBluePrintEnum()
 	Designtime::BluePrintEnum* blueprint = static_cast<Designtime::BluePrintEnum*>(mBluePrint);
 	(void)blueprint;
 
+	Designtime::BluePrintObject* symbol = new Designtime::BluePrintObject(blueprint->Typename(), blueprint->Filename(), blueprint->getName());
+	symbol->setMutability(blueprint->getMutability());
+	symbol->setParent(blueprint->getParent());
+	symbol->setQualifiedTypename(blueprint->QualifiedTypename());
+	symbol->setVisibility(blueprint->getVisibility());
+
 	TokenIterator token = mTokens.begin();
 
 	// Format: <identifier> = <value>[,]
@@ -282,6 +289,16 @@ void Preprocessor::generateBluePrintEnum()
 		expect(Token::Type::CONST_INTEGER, token);
 		value = (token++)->content();
 
+		Runtime::Object* entry = mRepository->createInstance(Runtime::IntegerObject::TYPENAME, name, true);
+		entry->setMember(true);
+		entry->setMutability(Mutability::Const);
+		entry->setParent(symbol);
+		entry->setRepository(mRepository);
+		entry->setValue(value);
+		entry->setVisibility(Visibility::Public);
+
+		symbol->define(name, entry);
+
 		if ( token->type() == Token::Type::COMMA ) {
 			token++;
 
@@ -293,6 +310,8 @@ void Preprocessor::generateBluePrintEnum()
 			token++;
 		}
 	}
+
+	mRepository->addBluePrint(symbol);
 }
 
 void Preprocessor::generateBluePrintObject()

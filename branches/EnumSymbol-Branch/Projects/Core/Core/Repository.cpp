@@ -86,7 +86,7 @@ Repository::~Repository()
 	// Cleanup blue prints
 	// {
 	for ( BluePrintObjectMap::iterator it = mBluePrintObjects.begin(); it != mBluePrintObjects.end(); ++it ) {
-		it->second->cleanup();
+		//it->second->cleanup();
 
 		delete it->second;
 	}
@@ -306,23 +306,14 @@ Runtime::Object* Repository::createInstance(Designtime::BluePrintGeneric* bluepr
 
 Runtime::Object* Repository::createEnum(const std::string& name, Designtime::BluePrintEnum* blueprint, bool initialize)
 {
-(void)initialize;
-
 	assert(blueprint);
 
-	// create the base object
-	Runtime::Object *object = new Runtime::UserObject(name, blueprint->Filename(), blueprint->Typename());
+	Designtime::BluePrintObject* blue = findBluePrintObject(Runtime::IntegerObject::TYPENAME);
+	if ( !blue ) {
+		return 0;
+	}
 
-	object->setFinal(blueprint->isFinal());
-	object->setLanguageFeatureState(blueprint->getLanguageFeatureState());
-	object->setMember(blueprint->isMember());
-	object->setMutability(blueprint->getMutability());
-	object->setParent(blueprint->getParent());
-	object->setQualifiedTypename(blueprint->QualifiedTypename());
-	object->setRepository(this);
-	object->setVisibility(blueprint->getVisibility());
-
-	return object;
+	return createObject(name, blue, initialize);
 }
 
 /*
@@ -429,6 +420,39 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 	}
 
 	return object;
+}
+
+Designtime::BluePrintGeneric* Repository::findBluePrint(const std::string& type) const
+{
+	Designtime::BluePrintGeneric* blueprint = findBluePrintEnum(type);
+
+	if ( !blueprint ) {
+		blueprint = findBluePrintObject(type);
+	}
+
+	return blueprint;
+}
+
+Designtime::BluePrintEnum* Repository::findBluePrintEnum(const std::string& type) const
+{
+	BluePrintEnumMap::const_iterator it = mBluePrintEnums.find(type);
+
+	if ( it != mBluePrintEnums.end() ) {
+		return it->second;
+	}
+
+	return 0;
+}
+
+Designtime::BluePrintObject* Repository::findBluePrintObject(const std::string& type) const
+{
+	BluePrintObjectMap::const_iterator it = mBluePrintObjects.find(type);
+
+	if ( it != mBluePrintObjects.end() ) {
+		return it->second;
+	}
+
+	return 0;
 }
 
 GlobalScope* Repository::getGlobalScope() const
@@ -595,7 +619,7 @@ void Repository::rebuildBluePrintEnums()
 		preprocessor.process(blueIt->second);
 	}
 
-	insertBluePrintEnumsIntoScopes();
+	//insertBluePrintEnumsIntoScopes();
 }
 
 void Repository::rebuildBluePrintObjects()

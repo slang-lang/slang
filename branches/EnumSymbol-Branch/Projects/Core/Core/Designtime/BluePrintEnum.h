@@ -40,11 +40,6 @@ protected:
 
 private:
 	IScope* mParent;
-
-private:
-	Runtime::AtomicValue getValue() const;
-	void setValue(Runtime::AtomicValue value);
-	Runtime::AtomicValue mValue;
 };
 
 

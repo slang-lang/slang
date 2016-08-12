@@ -164,8 +164,11 @@ inline Symbol* Interpreter::identify(TokenIterator& token) const
 		else {
 			switch ( result->getSymbolType() ) {
 				case Symbol::IType::BluePrintEnumSymbol:
+					result = static_cast<Designtime::BluePrintObject*>(result)->resolve(identifier, onlyCurrentScope);
+					break;
 				case Symbol::IType::BluePrintObjectSymbol:
-					throw Utils::Exceptions::NotSupported("static member usage not supported!");
+					result = static_cast<Designtime::BluePrintObject*>(result)->resolve(identifier, onlyCurrentScope);
+					break;
 				case Symbol::IType::NamespaceSymbol:
 					result = static_cast<Namespace*>(result)->resolve(identifier, onlyCurrentScope);
 					break;
@@ -439,6 +442,38 @@ void Interpreter::parseInfixPostfix(Object *result, TokenIterator& start)
 			operator_unary_not(result);
 		} break;
 		case Token::Type::TYPE: {
+			Symbol* symbol = identify(start);
+			if ( !symbol ) {
+				throw Utils::Exceptions::UnknownIdentifer("unkown identifier '" + start->content() + "' found", start->position());
+			}
+
+			switch ( symbol->getSymbolType() ) {
+				case Symbol::IType::ObjectSymbol:
+					operator_binary_assign(result, static_cast<Object*>(symbol));
+					start++;
+					break;
+				case Symbol::IType::BluePrintEnumSymbol:
+				case Symbol::IType::BluePrintObjectSymbol: {
+					std::string newType = static_cast<Designtime::BluePrintGeneric*>(symbol)->QualifiedTypename();
+					start++;
+
+					// here we could demand a '('
+					//expect(Token::Type::PARENTHESIS_OPEN, start++);
+
+					expression(result, start);
+
+					// here we could demand a ')'
+					//expect(Token::Type::PARENTHESIS_CLOSE, start++);
+
+					typecast(result, newType, getRepository());
+				} break;
+				case Symbol::IType::MethodSymbol:
+				case Symbol::IType::NamespaceSymbol:
+				case Symbol::IType::UnknownSymbol:
+					throw Utils::Exceptions::Exception("unexpected symbol found", start->position());
+			}
+
+/*
 			std::string newType = start->content();
 			start++;
 
@@ -451,6 +486,7 @@ void Interpreter::parseInfixPostfix(Object *result, TokenIterator& start)
 			//expect(Token::Type::PARENTHESIS_CLOSE, start++);
 
 			typecast(result, newType, getRepository());
+*/
 		} break;
 		default: {
 			parseTerm(result, start);
@@ -505,7 +541,8 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 			NumberObject tmp(Tools::stringToNumber(start->content()));
 			operator_binary_assign(result, &tmp);
 		} break;
-		case Token::Type::IDENTIFER: {
+		case Token::Type::IDENTIFER:
+		case Token::Type::TYPE: {
 			// find out if we have to execute a method or simply get a stored variable
 
 			TokenIterator tmp = start;

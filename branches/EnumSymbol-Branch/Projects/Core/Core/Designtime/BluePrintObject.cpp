@@ -37,6 +37,7 @@ BluePrintObject::BluePrintObject(const std::string& type, const std::string& fil
 
 BluePrintObject::~BluePrintObject()
 {
+	cleanup();
 }
 
 void BluePrintObject::addInheritance(const Designtime::Ancestor& inheritance)
@@ -66,7 +67,7 @@ void BluePrintObject::cleanup()
 			static_cast<BluePrintObject*>(it->second)->cleanup();
 		}
 
-		delete it->second;
+		//delete it->second;
 	}
 	mSymbols.clear();
 }
