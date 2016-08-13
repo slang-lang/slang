@@ -18,7 +18,7 @@ std::string BoolObject::TYPENAME = "bool";
 
 
 BoolObject::BoolObject()
-: BluePrint(TYPENAME, SYSTEM_LIBRARY)
+: BluePrintObject(TYPENAME, SYSTEM_LIBRARY)
 {
 }
 

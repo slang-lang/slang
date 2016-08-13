@@ -3,8 +3,6 @@
 #include "VirtualMachine.h"
 
 // Library includes
-#include <stdlib.h>
-#include <iostream>
 #include <fstream>
 
 // Project includes
@@ -12,9 +10,9 @@
 #include <Core/Utils/Utils.h>
 #include <Tools/Files.h>
 #include "Analyser.h"
+#include "Consts.h"
 #include "Repository.h"
 #include "Script.h"
-#include "StackTrace.h"
 #include "Tools.h"
 
 // Namespace declarations
@@ -24,8 +22,8 @@ namespace ObjectiveScript {
 
 
 VirtualMachine::VirtualMachine()
-: mRepository(new Repository())
 {
+	mRepository = new Repository();
 }
 
 VirtualMachine::~VirtualMachine()
@@ -39,9 +37,6 @@ VirtualMachine::~VirtualMachine()
 	mScripts.clear();
 
 	delete mRepository;
-
-	mObjects.clear();
-	mBluePrints.clear();
 }
 
 void VirtualMachine::addExtension(Extensions::IExtension *extension)
@@ -96,26 +91,14 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 	}
 */
 
-	Designtime::BluePrintList objects = analyser.getBluePrints();
-	Designtime::BluePrintList::iterator mainIt = objects.end();
-
-	for ( Designtime::BluePrintList::iterator it = objects.begin(); it != objects.end(); ++it ) {
-		// add blue prints to our object repository
-		mRepository->addBlueprint((*it));
-
-		// collect Main object if there is any
-		if ( it->Filename() == mScriptFile && it->Typename() == "Main" ) {
-			mainIt = it;
-		}
-	}
-
 	// rebuild all blue prints to update/retype their type declarations
 	mRepository->rebuildBluePrints();
 
 	// initialize Main object
-	if ( mainIt != objects.end() ) {
+	Symbol* mainSymbol = mRepository->getGlobalScope()->resolve("Main");
+	if ( mainSymbol && mainSymbol->getSymbolType() == Symbol::IType::BluePrintObjectSymbol ) {
 		// create an instance of our Main object ...
-		Runtime::Object *main = mRepository->createInstance(mainIt->Typename(), "main", true);
+		Runtime::Object *main = mRepository->createInstance(static_cast<Designtime::BluePrintObject*>(mainSymbol), "main", true);
 		assert(main);
 
 		// ... define it in our global scope ...
@@ -123,11 +106,8 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 
 		Runtime::ControlFlow::E controlflow = main->Constructor(params);
 		if ( controlflow == Runtime::ControlFlow::Throw ) {
-			throw Utils::Exceptions::Exception("Exception raised in " + main->getFullScopeName() + "." + main->Typename());
+			throw Utils::Exceptions::Exception("Exception raised in " + main->getFullScopeName() + "." + main->QualifiedTypename());
 		}
-
-		// ... and store it
-		mObjects.insert(std::make_pair(mainIt->Typename(), main));
 	}
 
 	return script;
@@ -173,7 +153,7 @@ void VirtualMachine::init()
 		return;
 	}
 
-	const char* homepath = getenv("OBJECTIVESCRIPT_LIBRARY");
+	const char* homepath = getenv(OBJECTIVESCRIPT_LIBRARY);
 	if ( homepath ) {
 		setLibraryFolder(homepath);
 	}
@@ -183,6 +163,8 @@ void VirtualMachine::init()
 
 bool VirtualMachine::loadExtensions()
 {
+	OSdebug("loading extensions...");
+
 	for ( Extensions::ExtensionList::const_iterator extIt = mExtensions.begin(); extIt != mExtensions.end(); ++extIt ) {
 		try {
 			Extensions::ExtensionMethods methods;
@@ -209,7 +191,7 @@ bool VirtualMachine::loadExtensions()
 
 bool VirtualMachine::loadLibrary(const std::string& library)
 {
-	OSdebug("loading additional library file '" + library + "'...");
+	OSdebug("loading library file '" + library + "'...");
 
 	if ( !::Utils::Tools::Files::exists(library) ) {
 		// provided library file doesn't exist!
@@ -248,11 +230,6 @@ bool VirtualMachine::loadLibrary(const std::string& library)
 		mRepository->addPrototype((*it));
 	}
 */
-
-	Designtime::BluePrintList blueprints = analyser.getBluePrints();
-	for ( Designtime::BluePrintList::iterator it = blueprints.begin(); it != blueprints.end(); ++it ) {
-		mRepository->addBlueprint((*it));
-	}
 
 	return true;
 }

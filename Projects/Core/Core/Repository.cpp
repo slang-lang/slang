@@ -13,6 +13,9 @@
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/BuildInObjects/UserObject.h>
 #include <Core/BuildInObjects/VoidObject.h>
+#include <Core/Designtime/BluePrintEnum.h>
+#include <Core/Designtime/BluePrintGeneric.h>
+#include <Core/Designtime/BluePrintObject.h>
 #include <Core/Designtime/BuildInTypes/BoolObject.h>
 #include <Core/Designtime/BuildInTypes/DoubleObject.h>
 #include <Core/Designtime/BuildInTypes/FloatObject.h>
@@ -21,10 +24,10 @@
 #include <Core/Designtime/BuildInTypes/NumberObject.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/Designtime/BuildInTypes/VoidObject.h>
+#include <Core/Designtime/Prototype.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Utils/Utils.h>
 #include "Preprocessor.h"
-#include "Scope.h"
 #include "Tools.h"
 
 // Namespace declarations
@@ -36,14 +39,14 @@ namespace ObjectiveScript {
 Repository::Repository()
 : mScope(new GlobalScope())
 {
-	addBlueprint(Designtime::BoolObject());
-	addBlueprint(Designtime::DoubleObject());
-	addBlueprint(Designtime::FloatObject());
-	addBlueprint(Designtime::GenericObject());
-	addBlueprint(Designtime::IntegerObject());
-	addBlueprint(Designtime::NumberObject());
-	addBlueprint(Designtime::StringObject());
-	addBlueprint(Designtime::VoidObject());
+	addBluePrint(new Designtime::BoolObject());
+	addBluePrint(new Designtime::DoubleObject());
+	addBluePrint(new Designtime::FloatObject());
+	addBluePrint(new Designtime::GenericObject());
+	addBluePrint(new Designtime::IntegerObject());
+	addBluePrint(new Designtime::NumberObject());
+	addBluePrint(new Designtime::StringObject());
+	addBluePrint(new Designtime::VoidObject());
 }
 
 Repository::~Repository()
@@ -55,6 +58,9 @@ Repository::~Repository()
 	}
 
 	for ( ReferenceCountedObjects::iterator it = mInstances.begin(); it != mInstances.end(); ++it ) {
+		// prevent double deletes
+		mScope->undefine(it->first->getName(), it->first);
+
 		delete it->first;
 	}
 	mInstances.clear();
@@ -64,38 +70,67 @@ Repository::~Repository()
 
 	// Cleanup prototypes
 	// {
-	mPrototypes.clear();
+	//mPrototypes.clear();
 	// }
 
 	// Cleanup blue prints
 	// {
-	for ( Designtime::BluePrintMap::iterator it = mBluePrints.begin(); it != mBluePrints.end(); ++it ) {
-		it->second.cleanup();
+	for ( BluePrintEnumMap::iterator it = mBluePrintEnums.begin(); it != mBluePrintEnums.end(); ++it ) {
+		it->second->cleanup();
+
+		delete it->second;
 	}
-	mBluePrints.clear();
+	mBluePrintEnums.clear();
 	// }
+
+	// Cleanup blue prints
+	// {
+	for ( BluePrintObjectMap::iterator it = mBluePrintObjects.begin(); it != mBluePrintObjects.end(); ++it ) {
+		//it->second->cleanup();
+
+		delete it->second;
+	}
+	mBluePrintObjects.clear();
+	// }
+}
+
+/*
+ * add a new blue print to our repository
+ */
+void Repository::addBluePrint(Designtime::BluePrintEnum* blueprint)
+{
+	std::string type = blueprint->QualifiedTypename();
+
+	BluePrintEnumMap::iterator it = mBluePrintEnums.find(type);
+	if ( it != mBluePrintEnums.end() ) {
+		throw Utils::Exceptions::Exception("duplicate object '" + type + "' added to repository");
+	}
+
+	mBluePrintEnums.insert(std::make_pair(type, blueprint));
 }
 
 /*
  * adds a new blue print to our repository
  */
-void Repository::addBlueprint(const Designtime::BluePrint& blueprint)
+void Repository::addBluePrint(Designtime::BluePrintObject* blueprint)
 {
-	std::string type = blueprint.QualifiedTypename();
+	std::string type = blueprint->QualifiedTypename();
 
-	Designtime::BluePrintMap::iterator it = mBluePrints.find(type);
-	if ( it != mBluePrints.end() ) {
+	BluePrintObjectMap::iterator it = mBluePrintObjects.find(type);
+	if ( it != mBluePrintObjects.end() ) {
 		throw Utils::Exceptions::Exception("duplicate object '" + type + "' added to repository");
 	}
 
-	mBluePrints.insert(std::make_pair(type, blueprint));
+	mBluePrintObjects.insert(std::make_pair(type, blueprint));
 }
 
 /*
  * DEPRECATED: adds a new prototype (= generic) to our repository
  */
-void Repository::addPrototype(const Designtime::Prototype& prototype)
+void Repository::addPrototype(Designtime::Prototype* /*prototype*/)
 {
+assert(!"prototypes not supported!");
+/*
 	std::string type = prototype.type();
 
 	Designtime::PrototypeMap::iterator it = mPrototypes.find(type);
@@ -104,6 +139,7 @@ void Repository::addPrototype(const Designtime::Prototype& prototype)
 	}
 
 	mPrototypes.insert(std::make_pair(type, prototype));
+*/
 }
 
 /*
@@ -180,8 +216,7 @@ void Repository::createDefaultMethods(Runtime::Object *object)
 					*result = Runtime::StringObject(std::string("blablabla"));
 				}
 				catch (std::exception &e) {
-					Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME,
-																		ANONYMOUS_OBJECT);
+					Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
 					*data = Runtime::StringObject(std::string(e.what()));
 
 					mExceptionData = Runtime::ExceptionData(data, token.position());
@@ -207,43 +242,84 @@ Runtime::Object* Repository::createInstance(const std::string& type, const std::
 	// non-reference-based instantiation
 	OSdebug("createInstance('" + type + "', '" + name + "', " + (initialize ? "true" : "false") + ")");
 
-	Designtime::BluePrintMap::iterator it = mBluePrints.find(type);
-	if ( it == mBluePrints.end() ) {
+	BluePrintObjectMap::iterator it = mBluePrintObjects.find(type);
+	if ( it == mBluePrintObjects.end() ) {
 		throw Utils::Exceptions::Exception("could not create instance of unknown type '" + type + "'");
 	}
 
-	Runtime::Object *object = createObject(name, &it->second, initialize);
+	Runtime::Object *object = createObject(name, it->second, initialize);
 
 	addReference(object);
 
 	return object;
 }
 
-Runtime::Object* Repository::createInstance(Designtime::BluePrint* blueprint, const std::string& name, bool initialize)
+Runtime::Object* Repository::createInstance(Designtime::BluePrintGeneric* blueprint, const std::string& name, bool initialize)
 {
+	// non-reference-based instantiation
+
 	if ( !blueprint ) {
 		throw Utils::Exceptions::Exception("invalid blueprint provided!");
 	}
 
-	Designtime::BluePrintMap::iterator it = mBluePrints.find(blueprint->Typename());
-	if ( it == mBluePrints.end() ) {
-		it = mBluePrints.find(blueprint->QualifiedTypename());
-	}
-	if ( it == mBluePrints.end() ) {
-		throw Utils::Exceptions::Exception("could not create instance of unknown type '" + blueprint->Typename() + "'");
-	}
+	Runtime::Object* object = 0;
 
-	Runtime::Object *object = createObject(name, &it->second, initialize);
+	switch ( blueprint->getSymbolType() ) {
+		case Symbol::IType::BluePrintEnumSymbol: {
+			Designtime::BluePrintEnum* symbol = static_cast<Designtime::BluePrintEnum*>(blueprint);
+
+			OSdebug("createInstance('" + symbol->QualifiedTypename() + "', '" + name + "', " + (initialize ? "true" : "false") + ")");
+
+			BluePrintEnumMap::iterator it = mBluePrintEnums.find(symbol->Typename());
+			if ( it == mBluePrintEnums.end() ) {
+				it = mBluePrintEnums.find(symbol->QualifiedTypename());
+			}
+			if ( it == mBluePrintEnums.end() ) {
+				throw Utils::Exceptions::Exception("could not create instance of unknown type '" + symbol->Typename() + "'");
+			}
+
+			object = createEnum(name, it->second, initialize);
+		} break;
+		case Symbol::IType::BluePrintObjectSymbol: {
+			Designtime::BluePrintObject* symbol = static_cast<Designtime::BluePrintObject*>(blueprint);
+
+			OSdebug("createInstance('" + symbol->QualifiedTypename() + "', '" + name + "', " + (initialize ? "true" : "false") + ")");
+
+			BluePrintObjectMap::iterator it = mBluePrintObjects.find(symbol->Typename());
+			if ( it == mBluePrintObjects.end() ) {
+				it = mBluePrintObjects.find(symbol->QualifiedTypename());
+			}
+			if ( it == mBluePrintObjects.end() ) {
+				throw Utils::Exceptions::Exception("could not create instance of unknown type '" + symbol->Typename() + "'");
+			}
+
+			object = createObject(name, it->second, initialize);
+		} break;
+		default:
+			throw Utils::Exceptions::Exception("invalid symbol type");
+	}
 
 	addReference(object);
 
 	return object;
+}
+
+Runtime::Object* Repository::createEnum(const std::string& name, Designtime::BluePrintEnum* blueprint, bool initialize)
+{
+	assert(blueprint);
+
+	Designtime::BluePrintObject* blue = findBluePrintObject(Runtime::IntegerObject::TYPENAME);
+	if ( !blue ) {
+		return 0;
+	}
+
+	return createObject(name, blue, initialize);
 }
 
 /*
  * creates (and initializes) atomic types and triggers the user defined object creation process
  */
-Runtime::Object* Repository::createObject(const std::string& name, Designtime::BluePrint* blueprint, bool initialize)
+Runtime::Object* Repository::createObject(const std::string& name, Designtime::BluePrintObject* blueprint, bool initialize)
 {
 	Runtime::Object *object = 0;
 
@@ -293,7 +369,7 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 /*
  * creates and initializes a user defined object type and initializes its base classes
  */
-Runtime::Object* Repository::createUserObject(const std::string& name, Designtime::BluePrint* blueprint, bool initialize)
+Runtime::Object* Repository::createUserObject(const std::string& name, Designtime::BluePrintObject* blueprint, bool initialize)
 {
 	assert(blueprint);
 
@@ -305,9 +381,9 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 	if ( !ancestors.empty() ) {
 		// walk through the inheritance and create (and initialize) all base objects
 		for ( Designtime::Ancestors::const_iterator ancestorIt = ancestors.begin(); ancestorIt != ancestors.end(); ++ancestorIt ) {
-			Designtime::BluePrintMap::iterator blueIt = mBluePrints.find(ancestorIt->name());
+			BluePrintObjectMap::iterator blueIt = mBluePrintObjects.find(ancestorIt->name());
 
-			if ( blueIt == mBluePrints.end() ) {
+			if ( blueIt == mBluePrintObjects.end() ) {
 				throw Utils::Exceptions::Exception("trying to initialize unknown object '" + ancestorIt->name() + "'");
 			}
 
@@ -318,7 +394,7 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 					object->undefine(IDENTIFIER_BASE, object->resolve(IDENTIFIER_BASE, true));
 
 					// create base object
-					Runtime::Object *ancestor = createInstance(&blueIt->second, name, initialize);
+					Runtime::Object *ancestor = createInstance(blueIt->second, name, initialize);
 
 					// define new base
 					object->define(IDENTIFIER_BASE, ancestor);
@@ -329,7 +405,7 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 				case Designtime::Ancestor::Type::Implements:
 					// implement interface
 					if ( initialize ) {
-						initializeObject(object, &blueIt->second);
+						initializeObject(object, blueIt->second);
 					}
 					break;
 				case Designtime::Ancestor::Type::Unknown:
@@ -346,6 +422,39 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 	return object;
 }
 
+Designtime::BluePrintGeneric* Repository::findBluePrint(const std::string& type) const
+{
+	Designtime::BluePrintGeneric* blueprint = findBluePrintEnum(type);
+
+	if ( !blueprint ) {
+		blueprint = findBluePrintObject(type);
+	}
+
+	return blueprint;
+}
+
+Designtime::BluePrintEnum* Repository::findBluePrintEnum(const std::string& type) const
+{
+	BluePrintEnumMap::const_iterator it = mBluePrintEnums.find(type);
+
+	if ( it != mBluePrintEnums.end() ) {
+		return it->second;
+	}
+
+	return 0;
+}
+
+Designtime::BluePrintObject* Repository::findBluePrintObject(const std::string& type) const
+{
+	BluePrintObjectMap::const_iterator it = mBluePrintObjects.find(type);
+
+	if ( it != mBluePrintObjects.end() ) {
+		return it->second;
+	}
+
+	return 0;
+}
+
 GlobalScope* Repository::getGlobalScope() const
 {
 	return mScope;
@@ -354,18 +463,18 @@ GlobalScope* Repository::getGlobalScope() const
 /*
  * creates and defines all members and methods of an object
  */
-void Repository::initializeObject(Runtime::Object *object, Designtime::BluePrint* blueprint)
+void Repository::initializeObject(Runtime::Object *object, Designtime::BluePrintObject* blueprint)
 {
 	object->undefine(IDENTIFIER_THIS, object->resolve(IDENTIFIER_THIS, true));
 
 	// create and define all symbols based on given blueprint
 	Symbols symbols = blueprint->provideSymbols();
 	for ( Symbols::const_iterator it = symbols.begin(); it != symbols.end(); ++it ) {
-		if ( it->second->getSymbolType() != Symbol::IType::BluePrintSymbol ) {
+		if ( it->second->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
 			continue;
 		}
 
-		Designtime::BluePrint *blue = static_cast<Designtime::BluePrint*>(it->second);
+		Designtime::BluePrintObject *blue = static_cast<Designtime::BluePrintObject*>(it->second);
 
 		Runtime::Object *symbol = createInstance(blue, blue->getName(), false);
 		symbol->setFinal(blue->isFinal());
@@ -399,12 +508,12 @@ void Repository::initializeObject(Runtime::Object *object, Designtime::BluePrint
 	object->define(IDENTIFIER_THIS, object);	// define this-symbol
 }
 
-void Repository::insertBluePrintsIntoScopes()
+void Repository::insertBluePrintEnumsIntoScopes()
 {
-	for ( Designtime::BluePrintMap::iterator it = mBluePrints.begin(); it != mBluePrints.end(); ++it ) {
+	for ( BluePrintEnumMap::iterator it = mBluePrintEnums.begin(); it != mBluePrintEnums.end(); ++it ) {
 		SymbolScope* scope = mScope;
 
-		std::string name = it->second.QualifiedTypename();
+		std::string name = it->second->QualifiedTypename();
 		std::string parent;
 		std::string type;
 
@@ -421,13 +530,39 @@ void Repository::insertBluePrintsIntoScopes()
 		}
 
 		assert(scope);
-		scope->define(parent, &it->second);
+		scope->define(parent, it->second);
+	}
+}
+
+void Repository::insertBluePrintObjectsIntoScopes()
+{
+	for ( BluePrintObjectMap::iterator it = mBluePrintObjects.begin(); it != mBluePrintObjects.end(); ++it ) {
+		SymbolScope* scope = mScope;
+
+		std::string name = it->second->QualifiedTypename();
+		std::string parent;
+		std::string type;
+
+		for ( ; ; ) {
+			Tools::split(name, parent, type);
+
+			if ( type.empty() ) {
+				break;
+			}
+
+			scope = dynamic_cast<SymbolScope*>(scope->resolve(parent, true));
+
+			name = type;
+		}
+
+		assert(scope);
+		scope->define(parent, it->second);
 	}
 }
 
 bool Repository::isAlreadyKnown(const std::string& name) const
 {
-	return mBluePrints.find(name) != mBluePrints.end();
+	return mBluePrintObjects.find(name) != mBluePrintObjects.end();
 }
 
 /*
@@ -435,8 +570,14 @@ bool Repository::isAlreadyKnown(const std::string& name) const
  */
 void Repository::rebuildBluePrints()
 {
-	for ( Designtime::BluePrintMap::iterator blueIt = mBluePrints.begin(); blueIt != mBluePrints.end(); ++blueIt ) {
-		TokenList tokens = blueIt->second.getTokens();
+	rebuildBluePrintEnums();
+	rebuildBluePrintObjects();
+}
+
+void Repository::rebuildBluePrintEnums()
+{
+	for ( BluePrintEnumMap::iterator blueIt = mBluePrintEnums.begin(); blueIt != mBluePrintEnums.end(); ++blueIt ) {
+		TokenList tokens = blueIt->second->getTokens();
 
 		if ( tokens.empty() ) {
 			continue;
@@ -449,32 +590,82 @@ void Repository::rebuildBluePrints()
 		for ( TokenList::iterator tokenIt = tokens.begin(); tokenIt != tokens.end(); ++tokenIt ) {
 			// we found an identifier token
 			if ( tokenIt->type() == Token::Type::IDENTIFER ) {
-				std::string scope = blueIt->second.getEnclosingScope()->getScopeName();
-
 				// check if its content is one of our added blueprint objects
-				if ( mBluePrints.find(tokenIt->content()) != mBluePrints.end() ) {
+				if ( mBluePrintEnums.find(tokenIt->content()) != mBluePrintEnums.end() ) {
 					tokenIt->resetTypeTo(Token::Type::TYPE);
 
 					replaced = true;
 				}
-				else if ( mBluePrints.find(scope + "." + tokenIt->content()) != mBluePrints.end() ) {
+/*
+				else if ( blueIt->second->getEnclosingScope() ) {
+					std::string scope = blueIt->second->getEnclosingScope()->getScopeName();
+
+					if ( mBluePrintEnums.find(scope + "." + tokenIt->content()) != mBluePrintEnums.end()) {
+						tokenIt->resetTypeTo(Token::Type::TYPE);
+
+						replaced = true;
+					}
+				}
+*/
+			}
+		}
+
+		if ( replaced ) {
+			blueIt->second->setTokens(tokens);
+		}
+		// }
+
+		Preprocessor preprocessor(this);
+		preprocessor.process(blueIt->second);
+	}
+
+	//insertBluePrintEnumsIntoScopes();
+}
+
+void Repository::rebuildBluePrintObjects()
+{
+	for ( BluePrintObjectMap::iterator blueIt = mBluePrintObjects.begin(); blueIt != mBluePrintObjects.end(); ++blueIt ) {
+		TokenList tokens = blueIt->second->getTokens();
+
+		if ( tokens.empty() ) {
+			continue;
+		}
+
+		// loop over all tokens of a blueprint object and retype all identifier tokens with object names as values with type
+		// {
+		bool replaced = false;
+
+		for ( TokenList::iterator tokenIt = tokens.begin(); tokenIt != tokens.end(); ++tokenIt ) {
+			// we found an identifier token
+			if ( tokenIt->type() == Token::Type::IDENTIFER ) {
+				// check if its content is one of our added blueprint objects
+				if ( mBluePrintObjects.find(tokenIt->content()) != mBluePrintObjects.end() ) {
 					tokenIt->resetTypeTo(Token::Type::TYPE);
 
 					replaced = true;
+				}
+				else if ( blueIt->second->getEnclosingScope() ) {
+					std::string scope = blueIt->second->getEnclosingScope()->getScopeName();
+
+					if ( mBluePrintObjects.find(scope + "." + tokenIt->content()) != mBluePrintObjects.end()) {
+						tokenIt->resetTypeTo(Token::Type::TYPE);
+
+						replaced = true;
+					}
 				}
 			}
 		}
 
 		if ( replaced ) {
-			blueIt->second.setTokens(tokens);
+			blueIt->second->setTokens(tokens);
 		}
 		// }
 
 		Preprocessor preprocessor(this);
-		preprocessor.process(&blueIt->second);
+		preprocessor.process(blueIt->second);
 	}
 
-	insertBluePrintsIntoScopes();
+	insertBluePrintObjectsIntoScopes();
 }
 
 /*

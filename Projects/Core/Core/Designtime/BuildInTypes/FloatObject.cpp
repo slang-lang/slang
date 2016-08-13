@@ -19,7 +19,7 @@ std::string FloatObject::TYPENAME = "float";
 
 
 FloatObject::FloatObject()
-: BluePrint(TYPENAME, SYSTEM_LIBRARY)
+: BluePrintObject(TYPENAME, SYSTEM_LIBRARY)
 {
 }
 

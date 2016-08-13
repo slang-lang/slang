@@ -1,6 +1,6 @@
 
 // Header
-#include "BluePrint.h"
+#include "BluePrintObject.h"
 
 // Library includes
 
@@ -16,35 +16,31 @@ namespace ObjectiveScript {
 namespace Designtime {
 
 
-BluePrint::BluePrint()
+BluePrintObject::BluePrintObject()
 : MethodScope(ANONYMOUS_OBJECT, 0),
-  BluePrintSymbol(ANONYMOUS_OBJECT),
-  mFilename(ANONYMOUS_OBJECT),
   mIsInterface(false),
-  mQualifiedTypeName(ANONYMOUS_OBJECT),
-  mTypename(ANONYMOUS_OBJECT),
   mVisibility(Visibility::Public)
 {
 	mName = ANONYMOUS_OBJECT;
+	mType = Symbol::IType::BluePrintObjectSymbol;
 }
 
-BluePrint::BluePrint(const std::string& type, const std::string& filename, const std::string& name)
-: MethodScope(type, 0),
-  BluePrintSymbol(type),
-  mFilename(filename),
+BluePrintObject::BluePrintObject(const std::string& type, const std::string& filename, const std::string& name)
+: BluePrintGeneric(type, filename),
+  MethodScope(type, 0),
   mIsInterface(false),
-  mQualifiedTypeName(type),
-  mTypename(type),
   mVisibility(Visibility::Public)
 {
 	mName = name;
+	mType = Symbol::IType::BluePrintObjectSymbol;
 }
 
-BluePrint::~BluePrint()
+BluePrintObject::~BluePrintObject()
 {
+	cleanup();
 }
 
-void BluePrint::addInheritance(const Designtime::Ancestor& inheritance)
+void BluePrintObject::addInheritance(const Designtime::Ancestor& inheritance)
 {
 	if ( inheritance.name().empty() ) {
 		throw Utils::Exceptions::Exception("invalid inheritance added");
@@ -53,7 +49,7 @@ void BluePrint::addInheritance(const Designtime::Ancestor& inheritance)
 	mInheritance.insert(inheritance);
 }
 
-void BluePrint::cleanup()
+void BluePrintObject::cleanup()
 {
 	for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
 		undefine((*it)->getName(), (*it));
@@ -67,16 +63,16 @@ void BluePrint::cleanup()
 			continue;
 		}
 
-		if ( it->second->getSymbolType() == Symbol::IType::BluePrintSymbol ) {
-			static_cast<BluePrint*>(it->second)->cleanup();
+		if ( it->second->getSymbolType() == Symbol::IType::BluePrintObjectSymbol ) {
+			static_cast<BluePrintObject*>(it->second)->cleanup();
 		}
 
-		delete it->second;
+		//delete it->second;
 	}
 	mSymbols.clear();
 }
 
-Designtime::Ancestors BluePrint::getAncestors() const
+Designtime::Ancestors BluePrintObject::getAncestors() const
 {
 	Designtime::Ancestors ancestors;
 
@@ -89,12 +85,12 @@ Designtime::Ancestors BluePrint::getAncestors() const
 	return ancestors;
 }
 
-Designtime::Ancestors BluePrint::getInheritance() const
+Designtime::Ancestors BluePrintObject::getInheritance() const
 {
 	return mInheritance;
 }
 
-Designtime::Ancestors BluePrint::getImplementations() const
+Designtime::Ancestors BluePrintObject::getImplementations() const
 {
 	Designtime::Ancestors implementations;
 
@@ -107,22 +103,17 @@ Designtime::Ancestors BluePrint::getImplementations() const
 	return implementations;
 }
 
-const TokenList& BluePrint::getTokens() const
-{
-	return mTokens;
-}
-
-Runtime::AtomicValue BluePrint::getValue() const
+Runtime::AtomicValue BluePrintObject::getValue() const
 {
 	return mValue;
 }
 
-Visibility::E BluePrint::getVisibility() const
+Visibility::E BluePrintObject::getVisibility() const
 {
 	return mVisibility;
 }
 
-bool BluePrint::isAbstract() const
+bool BluePrintObject::isAbstract() const
 {
 	for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
 		if ( (*it)->isAbstract() ) {
@@ -133,47 +124,37 @@ bool BluePrint::isAbstract() const
 	return ObjectAttributes::isAbstract();
 }
 
-bool BluePrint::isInterface() const
+bool BluePrintObject::isInterface() const
 {
 	return mIsInterface;
 }
 
-void BluePrint::setAbstract(bool state)
+void BluePrintObject::setAbstract(bool state)
 {
 	mIsAbstract = state;
 }
 
-void BluePrint::setInterface(bool state)
+void BluePrintObject::setInterface(bool state)
 {
 	mIsInterface = state;
 }
 
-void BluePrint::setParent(IScope* parent)
+void BluePrintObject::setParent(IScope* parent)
 {
 	mParent = parent;
 }
 
-void BluePrint::setQualifiedTypename(const std::string &name)
-{
-	mQualifiedTypeName = name;
-}
-
-void BluePrint::setValue(Runtime::AtomicValue value)
+void BluePrintObject::setValue(Runtime::AtomicValue value)
 {
 	mValue = value;
 }
 
-void BluePrint::setTokens(const TokenList& tokens)
-{
-	mTokens = tokens;
-}
-
-void BluePrint::setVisibility(Visibility::E v)
+void BluePrintObject::setVisibility(Visibility::E v)
 {
 	mVisibility = v;
 }
 
-std::string BluePrint::ToString() const
+std::string BluePrintObject::ToString() const
 {
 	return Typename() + " " + getName();
 }
