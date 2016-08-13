@@ -8,6 +8,7 @@
 			assert( TestCase2() );
 			assert( TestCase3() );
 			assert( TestCase4() );
+			assert( TestCase5() );
 		}
 
 		private bool TestCase1() const
@@ -58,6 +59,23 @@
 				print("loop4 = " + loop4);
 
 				if ( loop4 > 2 ) {
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		private bool TestCase5() const
+		{
+			print("TestCase 5: continue");
+
+			for ( int loop5 = 0; loop5 < 10; loop5 = loop5 + 1 ) {
+				if ( loop5 == 2 ) {
+					continue;
+				}
+
+				if ( loop5 == 4 ) {
 					return true;
 				}
 			}

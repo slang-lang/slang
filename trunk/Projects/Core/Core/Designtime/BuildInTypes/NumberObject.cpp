@@ -19,7 +19,7 @@ std::string NumberObject::TYPENAME = "number";
 
 
 NumberObject::NumberObject()
-: BluePrint(TYPENAME, SYSTEM_LIBRARY)
+: BluePrintObject(TYPENAME, SYSTEM_LIBRARY)
 {
 }
 

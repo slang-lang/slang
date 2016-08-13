@@ -67,6 +67,20 @@ TokenList Parser::collectScopeTokens(TokenIterator& token)
 	return tokens;
 }
 
+
+// enum declaration:
+// <visibility> [language feature] enum <identifier> { ... }
+bool Parser::isEnumDeclaration(TokenIterator start)
+{
+	TokenList tokens;
+
+	tokens.push_back(Token(Token::Type::VISIBILITY));
+	tokens.push_back(Token(Token::Type::RESERVED_WORD, std::string(RESERVED_WORD_ENUM)));
+	tokens.push_back(Token(Token::Type::IDENTIFER));
+
+	return checkSyntax(start, tokens);
+}
+
 // interface declaration:
 // <visibility> [language feature] interface <identifier> { ... }
 bool Parser::isInterfaceDeclaration(TokenIterator start)

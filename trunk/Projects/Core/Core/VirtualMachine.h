@@ -9,7 +9,7 @@
 #include <string>
 
 // Project includes
-#include <Core/Designtime/BluePrint.h>
+#include <Core/Designtime/BluePrintObject.h>
 #include <Core/Interfaces/IExtension.h>
 #include "Parameter.h"
 
@@ -45,9 +45,7 @@ public:
 	Script* createScriptFromString(const std::string& content, const ParameterList& params = ParameterList());
 
 private:
-	typedef std::map<std::string, Designtime::BluePrint> BluePrintCollection;
 	typedef std::set<std::string> ImportedLibraries;
-	typedef std::map<std::string, Runtime::Object*> ObjectCollection;
 	typedef std::set<Script*> ScriptCollection;
 
 private:
@@ -60,11 +58,9 @@ private:
 
 private:
 	std::string mBaseFolder;
-	BluePrintCollection mBluePrints;
 	Extensions::ExtensionList mExtensions;
 	ImportedLibraries mImportedLibraries;
 	std::string mLibraryFolder;
-	ObjectCollection mObjects;
 	Repository *mRepository;
 	std::string mScriptFile;
 	ScriptCollection mScripts;

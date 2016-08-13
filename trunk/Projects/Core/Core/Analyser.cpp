@@ -99,7 +99,7 @@ Designtime::Ancestors Analyser::collectInheritance(TokenIterator& token) const
 	return ancestors;
 }
 
-Designtime::BluePrint Analyser::createBluePrint(TokenIterator& token, TokenIterator end, bool isInterface) const
+bool Analyser::createBluePrint(TokenIterator& token, TokenIterator end, bool isInterface) const
 {
 	bool isAbstract = false;
 	std::string languageFeature;
@@ -147,23 +147,72 @@ Designtime::BluePrint Analyser::createBluePrint(TokenIterator& token, TokenItera
 		token = closed;
 	}
 
-	Designtime::BluePrint blue(type, mFilename);
-	blue.setAbstract(isAbstract || isInterface);
-	blue.setInterface(isInterface);
-	blue.setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
-	blue.setParent(mScope);
-	blue.setQualifiedTypename(getQualifiedTypename(type));
-	blue.setTokens(tokens);
-	blue.setVisibility(Visibility::convert(visibility));
+	Designtime::BluePrintObject* symbol = new Designtime::BluePrintObject(type, mFilename);
+	symbol->setAbstract(isAbstract || isInterface);
+	symbol->setInterface(isInterface);
+	symbol->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
+	symbol->setParent(mScope);
+	symbol->setQualifiedTypename(getQualifiedTypename(type));
+	symbol->setTokens(tokens);
+	symbol->setVisibility(Visibility::convert(visibility));
 
 	// set up inheritance (if present)
 	if ( !inheritance.empty() ) {
 		for ( Designtime::Ancestors::const_iterator it = inheritance.begin(); it != inheritance.end(); ++it ) {
-			blue.addInheritance((*it));
+			symbol->addInheritance((*it));
 		}
 	}
 
-	return blue;
+	mRepository->addBluePrint(symbol);
+
+	return true;
+}
+
+bool Analyser::createEnum(TokenIterator& token, TokenIterator end) const
+{
+	std::string languageFeature;
+	std::string type;
+	std::string visibility;
+
+	// look for the visibility token
+	visibility = (*token++).content();
+	// look for an optional language feature token
+	if ( token->isOptional() ) {
+		languageFeature = (*token++).content();
+	}
+	// look for the object token
+	(*token++).content();
+	// look for the identifier token
+	type = (*token++).content();
+
+	// interface, object or prototype declarations have to start with an '{' token
+	expect(Token::Type::BRACKET_CURLY_OPEN, token);
+
+	// look for the next opening curly brackets
+	TokenIterator open = token;
+	// look for balanced curly brackets
+	TokenIterator closed = findNextBalancedCurlyBracket(open, end, 0, Token::Type::BRACKET_CURLY_CLOSE);
+
+	TokenList tokens;
+	for ( TokenIterator it = ++open; it != closed && it != end; ++it ) {
+		tokens.push_back((*it));
+	}
+
+	token = closed;
+
+	Designtime::BluePrintEnum* symbol = new Designtime::BluePrintEnum(type, mFilename);
+	symbol->setFinal(true);
+	symbol->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
+	symbol->setMutability(Mutability::Modify);
+	symbol->setParent(mScope);
+	symbol->setQualifiedTypename(getQualifiedTypename(type));
+	symbol->setTokens(tokens);
+	symbol->setVisibility(Visibility::convert(visibility));
+	symbol->setSealed(true);
+
+	mRepository->addBluePrint(symbol);
+
+	return symbol;
 }
 
 std::string Analyser::createLibraryReference(TokenIterator& token, TokenIterator end) const
@@ -188,7 +237,7 @@ std::string Analyser::createLibraryReference(TokenIterator& token, TokenIterator
 	return reference;
 }
 
-void Analyser::createMember(TokenIterator& token, TokenIterator /*end*/)
+bool Analyser::createMember(TokenIterator& token, TokenIterator /*end*/)
 {
 	std::string languageFeature;
 	Mutability::E mutability = Mutability::Modify;
@@ -243,9 +292,11 @@ void Analyser::createMember(TokenIterator& token, TokenIterator /*end*/)
 	member->setVisibility(visibility);
 
 	mScope->define(name, member);
+
+	return true;
 }
 
-void Analyser::createMethod(TokenIterator& token, TokenIterator end)
+bool Analyser::createMethod(TokenIterator& token, TokenIterator end)
 {
 	bool isAbstract = false;
 	bool isRecursive = false;
@@ -282,6 +333,8 @@ void Analyser::createMethod(TokenIterator& token, TokenIterator end)
 		tokens.push_back((*it));
 	}
 
+	token = closed;
+
 	// create a new method with the corresponding return value
 	Runtime::Method *method = new Runtime::Method(mScope, name, type);
 	method->setAbstract(isAbstract);
@@ -298,10 +351,10 @@ void Analyser::createMethod(TokenIterator& token, TokenIterator end)
 
 	mScope->defineMethod(name, method);
 
-	token = closed;
+	return true;
 }
 
-void Analyser::createNamespace(TokenIterator& token, TokenIterator end)
+bool Analyser::createNamespace(TokenIterator& token, TokenIterator end)
 {
 	std::string languageFeature;
 	std::string name;
@@ -346,7 +399,8 @@ void Analyser::createNamespace(TokenIterator& token, TokenIterator end)
 				case Symbol::IType::NamespaceSymbol:
 					space = static_cast<Runtime::Namespace*>(symbol);
 					break;
-				case Symbol::IType::BluePrintSymbol:
+				case Symbol::IType::BluePrintEnumSymbol:
+				case Symbol::IType::BluePrintObjectSymbol:
 				case Symbol::IType::MethodSymbol:
 				case Symbol::IType::ObjectSymbol:
 				case Symbol::IType::UnknownSymbol:
@@ -376,11 +430,18 @@ void Analyser::createNamespace(TokenIterator& token, TokenIterator end)
 	mScopeName = mScope->getScopeName();
 
 	token = closed;
+
+	return true;
 }
 
-Designtime::Prototype Analyser::createPrototype(TokenIterator& start, TokenIterator end) const
+bool Analyser::createPrototype(TokenIterator& start, TokenIterator end) const
 {
-	return Designtime::Prototype(createBluePrint(start, end));
+assert(!"prototypes not supported!");
+
+(void)end;
+(void)start;
+
+	return false;
 }
 
 void Analyser::generate(const TokenList& tokens)
@@ -390,8 +451,10 @@ void Analyser::generate(const TokenList& tokens)
 	// loop over all tokens and look for imports and object declarations
 	while ( it != tokens.end() && it->type() != Token::Type::ENDOFFILE ) {
 		if ( Parser::isInterfaceDeclaration(it) ) {
-			Designtime::BluePrint i = createBluePrint(it, tokens.end(), true);
-			mBluePrints.push_back(i);
+			createBluePrint(it, tokens.end(), true);
+		}
+		else if ( Parser::isEnumDeclaration(it) ) {
+			createEnum(it, tokens.end());
 		}
 		else if ( Parser::isLibraryReference(it) ) {
 			std::string reference = createLibraryReference(it, tokens.end());
@@ -407,12 +470,10 @@ void Analyser::generate(const TokenList& tokens)
 			createNamespace(it, tokens.end());
 		}
 		else if ( Parser::isObjectDeclaration(it) ) {
-			Designtime::BluePrint o = createBluePrint(it, tokens.end());
-			mBluePrints.push_back(o);
+			createBluePrint(it, tokens.end());
 		}
 		else if ( Parser::isPrototypeDeclaration(it) ) {
-			Designtime::Prototype p = createPrototype(it, tokens.end());
-			mPrototypes.push_back(p);
+			createPrototype(it, tokens.end());
 		}
 		else {
 			throw Utils::Exceptions::SyntaxError("invalid token '" + it->content() + "' found at " + it->position().toString());
@@ -430,19 +491,9 @@ TokenList Analyser::generateTokens(const std::string& content)
 	return t.tokens();
 }
 
-const Designtime::BluePrintList& Analyser::getBluePrints() const
-{
-	return mBluePrints;
-}
-
 const StringList& Analyser::getLibraryReferences() const
 {
 	return mLibraries;
-}
-
-const Designtime::PrototypeList& Analyser::getPrototypes() const
-{
-	return mPrototypes;
 }
 
 std::string Analyser::getQualifiedTypename(const std::string& type) const
@@ -479,9 +530,7 @@ std::string Analyser::identify(TokenIterator& start, TokenIterator /*end*/) cons
 void Analyser::process(const TokenList& tokens)
 {
 	// factory reset
-	mBluePrints.clear();
 	mLibraries.clear();
-	mPrototypes.clear();
 
 	OSdebug("Processing tokens...");
 

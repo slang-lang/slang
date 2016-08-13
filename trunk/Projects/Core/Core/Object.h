@@ -12,7 +12,7 @@
 // Project includes
 #include <Core/Attributes/Attributes.h>
 #include <Core/Designtime/Ancestor.h>
-#include <Core/Designtime/BluePrint.h>
+#include <Core/Designtime/BluePrintObject.h>
 #include <Core/Runtime/AtomicValue.h>
 #include <Core/Runtime/ControlFlow.h>
 #include "Interpreter.h"

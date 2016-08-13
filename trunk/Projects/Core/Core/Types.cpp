@@ -103,6 +103,7 @@ StringList provideReservedWords()
 
 	reservedWords.push_back(RESERVED_WORD_BY_REFERENCE);
 	reservedWords.push_back(RESERVED_WORD_BY_VALUE);
+	reservedWords.push_back(RESERVED_WORD_ENUM);
 	reservedWords.push_back(RESERVED_WORD_EXTENDS);
 	reservedWords.push_back(RESERVED_WORD_IMPLEMENTS);
 	reservedWords.push_back(RESERVED_WORD_IMPORT);

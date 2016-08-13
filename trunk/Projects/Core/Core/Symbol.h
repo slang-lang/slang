@@ -26,13 +26,14 @@ public:
 	public:
 		typedef enum {
 			UnknownSymbol,
-			BluePrintSymbol,
+			BluePrintEnumSymbol,
+			BluePrintObjectSymbol,
 			MethodSymbol,
 			NamespaceSymbol,
 			ObjectSymbol
 		} E;
 
-        virtual ~IType() { }
+		virtual ~IType() { }
 
 		virtual const std::string& QualifiedTypename() const = 0;
 		virtual const std::string& Typename() const = 0;
@@ -68,7 +69,7 @@ class BluePrintSymbol : public Symbol,
 {
 public:
 	BluePrintSymbol(const std::string& name)
-	: Symbol(name, Symbol::IType::BluePrintSymbol)
+	: Symbol(name, Symbol::IType::BluePrintObjectSymbol)
 	{ }
 	virtual ~BluePrintSymbol() { }
 };

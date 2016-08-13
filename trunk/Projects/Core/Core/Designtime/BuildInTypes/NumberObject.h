@@ -6,7 +6,7 @@
 // Library includes
 
 // Project includes
-#include <Core/Designtime/BluePrint.h>
+#include <Core/Designtime/BluePrintObject.h>
 
 // Forward declarations
 
@@ -17,7 +17,7 @@ namespace ObjectiveScript {
 namespace Designtime {
 
 
-class NumberObject : public BluePrint
+class NumberObject : public BluePrintObject
 {
 public:
 	static double DEFAULTVALUE;

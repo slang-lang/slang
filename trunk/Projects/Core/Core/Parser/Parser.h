@@ -25,6 +25,7 @@ class Parser
 public:
 	static TokenList collectScopeTokens(TokenIterator& token);
 
+	static bool isEnumDeclaration(TokenIterator start);
 	static bool isInterfaceDeclaration(TokenIterator start);
 	static bool isLibraryReference(TokenIterator start);
 	static bool isLocalDeclaration(TokenIterator start);

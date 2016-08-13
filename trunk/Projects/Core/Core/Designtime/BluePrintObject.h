@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_BluePrint_h
-#define ObjectiveScript_BluePrint_h
+#ifndef ObjectiveScript_Designtime_BluePrintObject_h
+#define ObjectiveScript_Designtime_BluePrintObject_h
 
 
 // Library includes
@@ -17,6 +17,7 @@
 #include <Core/Symbol.h>
 #include <Core/Types.h>
 #include "Ancestor.h"
+#include "BluePrintGeneric.h"
 
 // Forward declarations
 
@@ -33,21 +34,16 @@ namespace Runtime {
 namespace Designtime {
 
 
-class BluePrint : public MethodScope,
-				  public BluePrintSymbol
+class BluePrintObject : public BluePrintGeneric,
+						public MethodScope
 {
 public:
-	BluePrint();
-	BluePrint(const std::string& type, const std::string& filename, const std::string& name = ANONYMOUS_OBJECT);
-	virtual ~BluePrint();
+	BluePrintObject();
+	BluePrintObject(const std::string& type, const std::string& filename, const std::string& name = ANONYMOUS_OBJECT);
+	virtual ~BluePrintObject();
 
 public:
 	void cleanup();
-
-public:	// RTTI
-	const std::string& Filename() const { return mFilename; }
-	const std::string& QualifiedTypename() const { return mQualifiedTypeName; }
-	const std::string& Typename() const { return mTypename; }
 
 public:
 	// Inheritance
@@ -59,9 +55,6 @@ public:
 	void addInheritance(const Designtime::Ancestor& inheritance);
 	// }
 
-	const TokenList& getTokens() const;
-	void setTokens(const TokenList& tokens);
-
 	Visibility::E getVisibility() const;
 	void setVisibility(Visibility::E v);
 
@@ -72,8 +65,6 @@ public:
 	void setInterface(bool state);
 
 	void setParent(IScope* parent);
-
-	void setQualifiedTypename(const std::string &name);
 
 	Runtime::AtomicValue getValue() const;
 	void setValue(Runtime::AtomicValue value);
@@ -88,24 +79,12 @@ public:
 		return mSymbols;
 	}
 
-protected:
-	virtual const std::string& getTypeName() const {
-		return Typename();
-	}
-
 private:
-	std::string mFilename;
 	Ancestors mInheritance;
 	bool mIsInterface;
-	std::string mQualifiedTypeName;
-	TokenList mTokens;
-	std::string mTypename;
 	Runtime::AtomicValue mValue;
 	Visibility::E mVisibility;
 };
-
-typedef std::list<BluePrint> BluePrintList;
-typedef std::map<std::string, BluePrint> BluePrintMap;
 
 
 }

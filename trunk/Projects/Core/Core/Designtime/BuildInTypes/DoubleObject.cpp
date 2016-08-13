@@ -19,7 +19,7 @@ std::string DoubleObject::TYPENAME = "double";
 
 
 DoubleObject::DoubleObject()
-: BluePrint(TYPENAME, SYSTEM_LIBRARY)
+: BluePrintObject(TYPENAME, SYSTEM_LIBRARY)
 {
 }
 
