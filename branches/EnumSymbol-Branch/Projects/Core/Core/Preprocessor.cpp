@@ -289,9 +289,11 @@ void Preprocessor::generateBluePrintEnum()
 		expect(Token::Type::CONST_INTEGER, token);
 		value = (token++)->content();
 
+		// define enum entries as parent type
 		//Runtime::Object* entry = mRepository->createInstance(mBluePrint->QualifiedTypename(), name, true);
 		//entry->setConstructed(true);
 
+		// define enum entries as integer type
 		Runtime::Object* entry = mRepository->createInstance(Runtime::IntegerObject::TYPENAME, name, true);
 		entry->setMember(true);
 		entry->setMutability(Mutability::Const);
@@ -299,9 +301,11 @@ void Preprocessor::generateBluePrintEnum()
 		entry->setValue(value.toInt());
 		entry->setVisibility(Visibility::Public);
 
+		// define enum entries in current scope
 		entry->setParent(symbol);
 		symbol->define(name, entry);
 
+		// define enum entries in parent scope
 		//entry->setParent(symbol->getEnclosingScope());
 		//symbol->getEnclosingScope()->define(name, entry);
 
