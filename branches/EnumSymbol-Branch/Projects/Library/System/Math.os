@@ -4,7 +4,7 @@ public namespace System { }
 
 public namespace Math {
 
-	public float PI_float const 3.14159265359f;
+	public float PI_float const = 3.14159265359f;
 	public double PI const = 3.14159265359d;
 
 	public double abs(double value) {
