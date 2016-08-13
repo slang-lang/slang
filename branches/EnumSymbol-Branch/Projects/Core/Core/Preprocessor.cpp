@@ -10,7 +10,6 @@
 #include <Core/Parser/Parser.h>
 #include <Core/Utils/Exceptions.h>
 #include <BuildInObjects/IntegerObject.h>
-#include "Repository.h"
 #include "Tokenizer.h"
 #include "Tools.h"
 
@@ -266,7 +265,6 @@ void Preprocessor::generateBluePrintEnum()
 	assert(mBluePrint->getSymbolType() == Symbol::IType::BluePrintEnumSymbol);
 
 	Designtime::BluePrintEnum* blueprint = static_cast<Designtime::BluePrintEnum*>(mBluePrint);
-	(void)blueprint;
 
 	Designtime::BluePrintObject* symbol = new Designtime::BluePrintObject(blueprint->Typename(), blueprint->Filename(), blueprint->getName());
 	symbol->setMutability(blueprint->getMutability());
@@ -274,12 +272,14 @@ void Preprocessor::generateBluePrintEnum()
 	symbol->setQualifiedTypename(blueprint->QualifiedTypename());
 	symbol->setVisibility(blueprint->getVisibility());
 
+	mRepository->addBluePrint(symbol);
+
 	TokenIterator token = mTokens.begin();
 
-	// Format: <identifier> = <value>[,]
+	// Format: <identifier> = <value>[, or ;]
 	while ( token != mTokens.end() ) {
 		std::string name;
-		std::string value;
+		Runtime::AtomicValue value;
 
 		expect(Token::Type::IDENTIFER, token);
 		name = (token++)->content();
@@ -289,15 +289,21 @@ void Preprocessor::generateBluePrintEnum()
 		expect(Token::Type::CONST_INTEGER, token);
 		value = (token++)->content();
 
+		//Runtime::Object* entry = mRepository->createInstance(mBluePrint->QualifiedTypename(), name, true);
+		//entry->setConstructed(true);
+
 		Runtime::Object* entry = mRepository->createInstance(Runtime::IntegerObject::TYPENAME, name, true);
 		entry->setMember(true);
 		entry->setMutability(Mutability::Const);
-		entry->setParent(symbol);
 		entry->setRepository(mRepository);
-		entry->setValue(value);
+		entry->setValue(value.toInt());
 		entry->setVisibility(Visibility::Public);
 
+		entry->setParent(symbol);
 		symbol->define(name, entry);
+
+		//entry->setParent(symbol->getEnclosingScope());
+		//symbol->getEnclosingScope()->define(name, entry);
 
 		if ( token->type() == Token::Type::COMMA ) {
 			token++;
@@ -310,8 +316,6 @@ void Preprocessor::generateBluePrintEnum()
 			token++;
 		}
 	}
-
-	mRepository->addBluePrint(symbol);
 }
 
 void Preprocessor::generateBluePrintObject()

@@ -11,6 +11,19 @@ public enum Day {
 	Sunday = 6;
 }
 
+public enum WeekDay {
+	Monday = 99;
+}
+
+/*
+public object Days {
+	public enum E {
+		Monday = 0,
+		Tuesday = 1;
+	}
+}
+*/
+
 public object Main {
 	public void Main(int argc = 0, string args = "") {
 		assert( TestCase1() );
@@ -19,9 +32,18 @@ public object Main {
 
 	private bool TestCase1() const {
 		Day e = Day.Friday;
-
 		print("e = " + e);
 
+		e = Day.Wednesday;
+		print("e = " + e);
+
+		e = WeekDay.Monday;
+		print("e = " + e);
+
+		e = 17;
+		print("e = " + e);
+
+		e = Day.Friday;
 		return e == Day.Friday;
 	}
 
@@ -30,7 +52,7 @@ public object Main {
 
 		switch ( e ) {
 			case Day.Monday: { return false; }
-			case Day.Tuesday: { writeln("Day.Tuesday = " + e); break; }
+			case Day.Tuesday: { writeln("e = " + e); break; }
 			case Day.Wednesday: { return false; }
 			default: { return false; }
 		}

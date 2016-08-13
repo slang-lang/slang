@@ -163,9 +163,6 @@ inline Symbol* Interpreter::identify(TokenIterator& token) const
 		}
 		else {
 			switch ( result->getSymbolType() ) {
-				case Symbol::IType::BluePrintEnumSymbol:
-					result = static_cast<Designtime::BluePrintObject*>(result)->resolve(identifier, onlyCurrentScope);
-					break;
 				case Symbol::IType::BluePrintObjectSymbol:
 					result = static_cast<Designtime::BluePrintObject*>(result)->resolve(identifier, onlyCurrentScope);
 					break;
@@ -175,9 +172,11 @@ inline Symbol* Interpreter::identify(TokenIterator& token) const
 				case Symbol::IType::ObjectSymbol:
 					result = static_cast<Object*>(result)->resolve(identifier, onlyCurrentScope);
 					break;
+				case Symbol::IType::BluePrintEnumSymbol:
 				case Symbol::IType::MethodSymbol:
+					throw Utils::Exceptions::NotSupported("cannot directly access locales of blueprint or method");
 				case Symbol::IType::UnknownSymbol:
-					throw Utils::Exceptions::SyntaxError("cannot directly access locales of blueprint or method");
+					throw Utils::Exceptions::SyntaxError("unexpected symbol found");
 			}
 
 			onlyCurrentScope = true;
@@ -227,10 +226,10 @@ Symbol* Interpreter::identifyMethod(TokenIterator& token, const ParameterList& p
 					break;
 				case Symbol::IType::BluePrintEnumSymbol:
 				case Symbol::IType::BluePrintObjectSymbol:
-					throw Utils::Exceptions::NotSupported("static method usage not supported!");
+					throw Utils::Exceptions::NotSupported("static method usage not supported");
 				case Symbol::IType::MethodSymbol:
 				case Symbol::IType::UnknownSymbol:
-					throw Utils::Exceptions::SyntaxError("cannot directly access locales of blueprint or method");
+					throw Utils::Exceptions::SyntaxError("unexpected symbol found");
 			}
 
 			onlyCurrentScope = true;
@@ -472,21 +471,6 @@ void Interpreter::parseInfixPostfix(Object *result, TokenIterator& start)
 				case Symbol::IType::UnknownSymbol:
 					throw Utils::Exceptions::Exception("unexpected symbol found", start->position());
 			}
-
-/*
-			std::string newType = start->content();
-			start++;
-
-			// here we could demand a '('
-			//expect(Token::Type::PARENTHESIS_OPEN, start++);
-
-			expression(result, start);
-
-			// here we could demand a ')'
-			//expect(Token::Type::PARENTHESIS_CLOSE, start++);
-
-			typecast(result, newType, getRepository());
-*/
 		} break;
 		default: {
 			parseTerm(result, start);
@@ -602,19 +586,21 @@ void Interpreter::popTokens()
 	mTokenStack.pop_back();
 }
 
+/*
+ * loop through all tokens and redirect to the corresponding method
+ */
 void Interpreter::process(Object *result, TokenIterator& token, TokenIterator end, Token::Type::E terminator)
 {
-	// loop through all tokens and redirect to the corresponding method
 	while ( ( (token != getTokens().end()) && (token != end) ) &&
 			( (token->type() != terminator) && (token->type() != Token::Type::ENDOFFILE) ) ) {
 
 		if ( mControlFlow != ControlFlow::Normal ) {
-			break;		// a return command has been triggered, time to stop processing
+			break;		// control flow has been broken, time to stop processing
 		}
 
 		Core::Debugger::GetInstance().notify(getScope(), (*token));		// notify debugger
 
-		switch ( token->type() ) {			// decide what we want to do according to the type of token we have
+		switch ( token->type() ) {
 			case Token::Type::IDENTIFER:
 			case Token::Type::PROTOTYPE:
 			case Token::Type::TYPE:
@@ -636,8 +622,10 @@ void Interpreter::process(Object *result, TokenIterator& token, TokenIterator en
 	}
 }
 
-// syntax:
-// assert [(] <expression> [)];
+/*
+ * syntax:
+ * assert( <expression> );
+ */
 void Interpreter::process_assert(TokenIterator& token)
 {
 	expect(Token::Type::PARENTHESIS_OPEN, token++);
@@ -651,13 +639,6 @@ void Interpreter::process_assert(TokenIterator& token)
 		return;
 	}
 
-/*
-	// this prevents exceptions from being thrown if someone (maybe the debugger..) has set our control flow to ExitProgram
-	if ( mControlFlow == ControlFlow::ExitProgram ) {
-		return;
-	}
-*/
-
 	if ( !isTrue(condition) ) {
 		throw Utils::Exceptions::AssertionFailed(condition.ToString(), token->position());
 	}
@@ -665,22 +646,28 @@ void Interpreter::process_assert(TokenIterator& token)
 	expect(Token::Type::PARENTHESIS_CLOSE, token++);
 }
 
-// syntax:
-// break;
+/*
+ * syntax:
+ * break;
+ */
 void Interpreter::process_break(TokenIterator& /*token*/)
 {
 	mControlFlow = ControlFlow::Break;
 }
 
-// syntax:
-// continue;
+/*
+ * syntax:
+ * continue;
+ */
 void Interpreter::process_continue(TokenIterator& /*token*/)
 {
 	mControlFlow = ControlFlow::Continue;
 }
 
-// syntax:
-// delete <identifier>;
+/*
+ * syntax:
+ * delete <identifier>;
+ */
 void Interpreter::process_delete(TokenIterator& token)
 {
 	TokenIterator end = findNext(token, Token::Type::SEMICOLON);
@@ -710,30 +697,28 @@ void Interpreter::process_delete(TokenIterator& token)
 	token = end;
 }
 
-// syntax:
-// exit;
+/*
+ * syntax:
+ * exit;
+ */
 void Interpreter::process_exit(TokenIterator& /*token*/)
 {
 	throw ControlFlow::ExitProgram;
 }
 
-// syntax:
-// for ( <expression>; <condition>; <expression> ) { }
+/*
+ * syntax:
+ * for ( <expression>; <condition>; <expression> ) { ... }
+ */
 void Interpreter::process_for(TokenIterator& token, Object* result)
 {
 	expect(Token::Type::PARENTHESIS_OPEN, token++);
 
-	// initialization-begin
-	TokenIterator initializationBegin = token;//++findNext(token, Token::Type::PARENTHESIS_OPEN);
-	// initialization-end
+	TokenIterator initializationBegin = token;
 
-	// condition-begin
 	const TokenIterator conditionBegin = ++findNext(initializationBegin, Token::Type::SEMICOLON);
-	// condition-end
 
-	// increase-begin
 	const TokenIterator increaseBegin = ++findNext(conditionBegin, Token::Type::SEMICOLON);
-	// increase-end
 
 	// find next open curly bracket '{'
 	TokenIterator expressionEnd = findNext(increaseBegin, Token::Type::PARENTHESIS_CLOSE);
@@ -784,7 +769,7 @@ void Interpreter::process_for(TokenIterator& token, Object* result)
 
 		switch ( controlflow ) {
 			case ControlFlow::Break: mControlFlow = ControlFlow::Normal; return;
-			case ControlFlow::Continue: mControlFlow = ControlFlow::Normal; continue;
+			case ControlFlow::Continue: mControlFlow = ControlFlow::Normal; break;
 			case ControlFlow::ExitProgram: mControlFlow = ControlFlow::ExitProgram; return;
 			case ControlFlow::Normal: mControlFlow = ControlFlow::Normal; break;
 			case ControlFlow::Return: mControlFlow = ControlFlow::Return; return;
@@ -867,13 +852,11 @@ void Interpreter::process_identifier(TokenIterator& token, Object* /*result*/, T
 	}
 }
 
-// syntax:
-// if ( <expression> ) {
-// ...
-// }
-// else {
-// ...
-// }
+/*
+ * syntax:
+ * if ( <expression> ) { ... }
+ * else { ... }
+ */
 void Interpreter::process_if(TokenIterator& token, Object *result)
 {
 	expect(Token::Type::PARENTHESIS_OPEN, token++);
@@ -1011,8 +994,10 @@ void Interpreter::process_keyword(TokenIterator& token, Object *result)
 	}
 }
 
-// syntax:
-// type method(<parameter list>);
+/*
+ * syntax:
+ * <type> <identifier>(<parameter list>);
+ */
 void Interpreter::process_method(TokenIterator& token, Object *result)
 {
 	TokenIterator tmp = token;
@@ -1090,8 +1075,10 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 	token = closed;
 }
 
-// syntax:
-// new <Typename>([<parameter list>]);
+/*
+ * syntax:
+ * new <Typename>([<parameter list>]);
+ */
 void Interpreter::process_new(TokenIterator& token, Object *result)
 {
 	std::string name;
@@ -1143,17 +1130,6 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 		tmp++;
 	}
 
-/*
-	// create initialized instance of new object
-	Object* tmpObj = getRepository()->createInstance(static_cast<Designtime::BluePrintObject*>(symbol), name, true);
-
-	// execute new object's constructor
-	mControlFlow = tmpObj->Constructor(params);
-
-	// and assign to result
-	*result = *tmpObj;
-*/
-
 	// create initialized instance of new object
 	*result = *getRepository()->createInstance(static_cast<Designtime::BluePrintObject*>(symbol), name, true);
 
@@ -1161,8 +1137,10 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 	mControlFlow = result->Constructor(params);
 }
 
-// syntax:
-// print(<expression>);
+/*
+ * syntax:
+ * print(<expression>);
+ */
 void Interpreter::process_print(TokenIterator& token)
 {
 	expect(Token::Type::PARENTHESIS_OPEN, token++);
@@ -1181,8 +1159,10 @@ void Interpreter::process_print(TokenIterator& token)
 	expect(Token::Type::PARENTHESIS_CLOSE, token++);
 }
 
-// syntax:
-// return <expression>;
+/*
+ * syntax:
+ * return [<expression>];
+ */
 void Interpreter::process_return(TokenIterator& token, Object *result)
 {
 	try {
@@ -1218,12 +1198,13 @@ void Interpreter::process_scope(TokenIterator& token, Object* result)
 	expect(Token::Type::BRACKET_CURLY_CLOSE, token);
 }
 
-// syntax:
-// switch ( <expression> ) {
-//		case <identifier>:
-//			...
-//		break;
-// }
+/*
+ * syntax:
+ * switch ( <expression> ) {
+ *		[ case <identifier>: { ... } ]
+ *		[ default: { ... } ]
+ * }
+ */
 void Interpreter::process_switch(TokenIterator& token, Object* result)
 {
 	expect(Token::Type::PARENTHESIS_OPEN, token++);
@@ -1362,8 +1343,10 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 	}
 }
 
-// syntax:
-// throw [<expression>];
+/*
+ * syntax:
+ * throw [<expression>];
+ */
 void Interpreter::process_throw(TokenIterator& token, Object* /*result*/)
 {
 	Object* data = getRepository()->createInstance(GENERIC_OBJECT);
@@ -1384,8 +1367,12 @@ void Interpreter::process_throw(TokenIterator& token, Object* /*result*/)
 	Core::Debugger::GetInstance().notifyException(getScope(), (*token));
 }
 
-// syntax:
-// try { } [ catch { } ] [ finally { } ]
+/*
+ * syntax:
+ * try { ... }
+ * [ catch { ... } ]
+ * [ finally { ... } ]
+ */
 void Interpreter::process_try(TokenIterator& token, Object* result)
 {
 	expect(Token::Type::BRACKET_CURLY_OPEN, token);
@@ -1522,8 +1509,10 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 	}
 }
 
-// syntax:
-// <type> <identifier> [= <initialization>]
+/*
+ * syntax:
+ * <type> <identifier> [= <initialization>]
+ */
 Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol)
 {
 	bool isConst = false;
@@ -1579,10 +1568,10 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol)
 	return object;
 }
 
-// syntax:
-// while ( <condition> ) {
-// ...
-// }
+/*
+ * syntax:
+ * while ( <condition> ) { ... }
+ */
 void Interpreter::process_while(TokenIterator& token, Object* result)
 {
 	expect(Token::Type::PARENTHESIS_OPEN, token++);
@@ -1628,7 +1617,7 @@ void Interpreter::process_while(TokenIterator& token, Object* result)
 
 		switch ( controlflow ) {
 			case ControlFlow::Break: mControlFlow = ControlFlow::Normal; return;
-			case ControlFlow::Continue: mControlFlow = ControlFlow::Normal; continue;
+			case ControlFlow::Continue: mControlFlow = ControlFlow::Normal; break;
 			case ControlFlow::ExitProgram: mControlFlow = ControlFlow::ExitProgram; return;
 			case ControlFlow::Normal: mControlFlow = ControlFlow::Normal; break;
 			case ControlFlow::Return: mControlFlow = ControlFlow::Return; return;

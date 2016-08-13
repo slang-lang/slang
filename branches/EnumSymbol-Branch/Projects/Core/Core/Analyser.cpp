@@ -203,12 +203,12 @@ bool Analyser::createEnum(TokenIterator& token, TokenIterator end) const
 	Designtime::BluePrintEnum* symbol = new Designtime::BluePrintEnum(type, mFilename);
 	symbol->setFinal(true);
 	symbol->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
-	symbol->setMutability(Mutability::Const);
+	symbol->setMutability(Mutability::Modify);
 	symbol->setParent(mScope);
 	symbol->setQualifiedTypename(getQualifiedTypename(type));
-	//symbol->setSealed(true);
 	symbol->setTokens(tokens);
 	symbol->setVisibility(Visibility::convert(visibility));
+	symbol->setSealed(true);
 
 	mRepository->addBluePrint(symbol);
 
