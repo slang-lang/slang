@@ -39,6 +39,7 @@ private:	// Tests
 	void testConstCorrectness3();
 	void testConstCorrectness4();
 	void testDefaultParameter();
+	void testEnum();
 	void testException();
 	void testFinal();
 	void testFor();

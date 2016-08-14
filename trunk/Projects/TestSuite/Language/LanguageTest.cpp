@@ -40,6 +40,7 @@ void LanguageTest::process()
 	TEST(testConstCorrectness3);
 	TEST(testConstCorrectness4);
 	TEST(testDefaultParameter);
+	TEST(testEnum);
 	TEST(testException);
 	TEST(testFinal);
 	TEST(testFor);
@@ -183,6 +184,21 @@ void LanguageTest::testDefaultParameter()
 		VirtualMachine vm;
 
 		vm.createScriptFromFile("Tests/Language/DefaultParameter.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// unexpected exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void LanguageTest::testEnum()
+{
+	try {
+		VirtualMachine vm;
+
+		vm.createScriptFromFile("Tests/Language/EnumTest.os");
 
 		// automatic success
 	}

@@ -239,7 +239,6 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token) const
 		throw Utils::Exceptions::SyntaxError("abstract methods cannot have an implementation");
 	}
 
-	// create a new method with the corresponding return value
 	Runtime::Method *method = new Runtime::Method(mScope, name, type);
 	method->setAbstract(isAbstract || blueprint->isInterface());
 	method->setFinal(isFinal);
@@ -374,10 +373,10 @@ void Preprocessor::process(Designtime::BluePrintGeneric* blueprint)
 		case Symbol::IType::BluePrintEnumSymbol: {
 			Designtime::BluePrintEnum* obj = static_cast<Designtime::BluePrintEnum*>(blueprint);
 
-			//mFilename = obj->Filename();
+			mFilename = obj->Filename();
 			mTokens = obj->getTokens();
 
-			generateBluePrintEnum();
+			generateBluePrintEnum();	// build enum from tokens
 		} break;
 		case Symbol::IType::BluePrintObjectSymbol: {
 			Designtime::BluePrintObject* obj = static_cast<Designtime::BluePrintObject*>(blueprint);

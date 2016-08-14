@@ -254,7 +254,7 @@ Runtime::Object* Repository::createInstance(const std::string& type, const std::
 	return object;
 }
 
-Runtime::Object* Repository::createInstance(Designtime::BluePrintGeneric* blueprint, const std::string& name, bool initialize)
+Runtime::Object* Repository::createInstance(Designtime::BluePrintObject* blueprint, const std::string& name, bool initialize)
 {
 	// non-reference-based instantiation
 
@@ -262,42 +262,17 @@ Runtime::Object* Repository::createInstance(Designtime::BluePrintGeneric* bluepr
 		throw Utils::Exceptions::Exception("invalid blueprint provided!");
 	}
 
-	Runtime::Object* object = 0;
+	OSdebug("createInstance('" + blueprint->QualifiedTypename() + "', '" + name + "', " + (initialize ? "true" : "false") + ")");
 
-	switch ( blueprint->getSymbolType() ) {
-		case Symbol::IType::BluePrintEnumSymbol: {
-			Designtime::BluePrintEnum* symbol = static_cast<Designtime::BluePrintEnum*>(blueprint);
-
-			OSdebug("createInstance('" + symbol->QualifiedTypename() + "', '" + name + "', " + (initialize ? "true" : "false") + ")");
-
-			BluePrintEnumMap::iterator it = mBluePrintEnums.find(symbol->Typename());
-			if ( it == mBluePrintEnums.end() ) {
-				it = mBluePrintEnums.find(symbol->QualifiedTypename());
-			}
-			if ( it == mBluePrintEnums.end() ) {
-				throw Utils::Exceptions::Exception("could not create instance of unknown type '" + symbol->Typename() + "'");
-			}
-
-			object = createEnum(name, it->second, initialize);
-		} break;
-		case Symbol::IType::BluePrintObjectSymbol: {
-			Designtime::BluePrintObject* symbol = static_cast<Designtime::BluePrintObject*>(blueprint);
-
-			OSdebug("createInstance('" + symbol->QualifiedTypename() + "', '" + name + "', " + (initialize ? "true" : "false") + ")");
-
-			BluePrintObjectMap::iterator it = mBluePrintObjects.find(symbol->Typename());
-			if ( it == mBluePrintObjects.end() ) {
-				it = mBluePrintObjects.find(symbol->QualifiedTypename());
-			}
-			if ( it == mBluePrintObjects.end() ) {
-				throw Utils::Exceptions::Exception("could not create instance of unknown type '" + symbol->Typename() + "'");
-			}
-
-			object = createObject(name, it->second, initialize);
-		} break;
-		default:
-			throw Utils::Exceptions::Exception("invalid symbol type");
+	BluePrintObjectMap::iterator it = mBluePrintObjects.find(blueprint->Typename());
+	if ( it == mBluePrintObjects.end() ) {
+		it = mBluePrintObjects.find(blueprint->QualifiedTypename());
 	}
+	if ( it == mBluePrintObjects.end() ) {
+		throw Utils::Exceptions::Exception("could not create instance of unknown type '" + blueprint->Typename() + "'");
+	}
+
+	Runtime::Object* object = createObject(name, it->second, initialize);
 
 	addReference(object);
 
