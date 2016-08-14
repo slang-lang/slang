@@ -52,7 +52,7 @@ public object Main {
 
 		switch ( e ) {
 			case Day.Monday: { return false; }
-			case Day.Tuesday: { writeln("e = " + e); break; }
+			case Day.Tuesday: { print("e = " + e); break; }
 			case Day.Wednesday: { return false; }
 			default: { return false; }
 		}

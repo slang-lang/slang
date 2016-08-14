@@ -375,8 +375,6 @@ bool Analyser::createNamespace(TokenIterator& token, TokenIterator end)
 		// look for the identifier token
 		name = (*token++).content();
 
-		mScopeName = getQualifiedTypename(name);
-
 		if ( token->type() == Token::Type::SCOPE ) {
 			token++;
 		}
@@ -388,7 +386,7 @@ bool Analyser::createNamespace(TokenIterator& token, TokenIterator end)
 		if ( !symbol ) {
 			space = new Runtime::Namespace(name, mScope);
 			space->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
-			space->setQualifiedTypename(mScopeName);
+			space->setQualifiedTypename(getQualifiedTypename(name));
 			space->setVisibility(Visibility::convert(visibility));
 			space->setSealed(space->getVisibility() == Visibility::Private);		// seal has to be the last attribute to be set
 
@@ -427,8 +425,6 @@ bool Analyser::createNamespace(TokenIterator& token, TokenIterator end)
 
 	mScope = tmpScope;
 
-	mScopeName = mScope->getScopeName();
-
 	token = closed;
 
 	return true;
@@ -444,11 +440,13 @@ assert(!"prototypes not supported!");
 	return false;
 }
 
+/*
+ * loop over all tokens and look for imports and object declarations
+ */
 void Analyser::generate(const TokenList& tokens)
 {
 	TokenList::const_iterator it = tokens.begin();
 
-	// loop over all tokens and look for imports and object declarations
 	while ( it != tokens.end() && it->type() != Token::Type::ENDOFFILE ) {
 		if ( Parser::isInterfaceDeclaration(it) ) {
 			createBluePrint(it, tokens.end(), true);
@@ -476,7 +474,7 @@ void Analyser::generate(const TokenList& tokens)
 			createPrototype(it, tokens.end());
 		}
 		else {
-			throw Utils::Exceptions::SyntaxError("invalid token '" + it->content() + "' found at " + it->position().toString());
+			throw Utils::Exceptions::SyntaxError("invalid token '" + it->content() + "' found", it->position());
 		};
 
 		it++;
@@ -498,10 +496,10 @@ const StringList& Analyser::getLibraryReferences() const
 
 std::string Analyser::getQualifiedTypename(const std::string& type) const
 {
-	std::string result;
+	std::string result = mScope->getFullScopeName();
 
-	if ( !mScopeName.empty() ) {
-		result = mScopeName + RESERVED_WORD_SCOPE_OPERATOR;
+	if ( !result.empty() && !type.empty() ) {
+		result += RESERVED_WORD_SCOPE_OPERATOR;
 	}
 	result += type;
 
@@ -516,8 +514,6 @@ std::string Analyser::identify(TokenIterator& start, TokenIterator /*end*/) cons
 		if ( lookahead(start++)->type() != Token::Type::SCOPE ) {
 			break;
 		}
-
-		//start++;
 
 		// add next token to type definition
 		type += (start++)->content();

@@ -1544,7 +1544,7 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol)
 		throw Utils::Exceptions::DuplicateIdentifier("duplicate identifier '" + name + "' created", token->position());
 	}
 
-	object = getRepository()->createInstance(static_cast<Designtime::BluePrintGeneric*>(symbol), name, false);
+	object = getRepository()->createInstance(static_cast<Designtime::BluePrintObject*>(symbol), name, false);
 
 	getScope()->define(name, object);
 

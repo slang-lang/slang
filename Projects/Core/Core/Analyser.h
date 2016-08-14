@@ -62,7 +62,6 @@ private:
 	StringList mLibraries;
 	Repository *mRepository;
 	MethodScope *mScope;
-	std::string mScopeName;
 };
 
 
