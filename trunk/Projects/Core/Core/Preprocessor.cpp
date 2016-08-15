@@ -275,18 +275,24 @@ void Preprocessor::generateBluePrintEnum()
 
 	TokenIterator token = mTokens.begin();
 
+	Runtime::AtomicValue value = 0;
+
 	// Format: <identifier> = <value>[, or ;]
 	while ( token != mTokens.end() ) {
 		std::string name;
-		Runtime::AtomicValue value;
 
 		expect(Token::Type::IDENTIFER, token);
 		name = (token++)->content();
 
-		expect(Token::Type::ASSIGN, token++);
+		if ( token->type() == Token::Type::ASSIGN ) {
+			expect(Token::Type::ASSIGN, token++);
 
-		expect(Token::Type::CONST_INTEGER, token);
-		value = (token++)->content();
+			expect(Token::Type::CONST_INTEGER, token);
+			value = (token++)->content();
+		}
+		else {
+			value = value.toInt() + 1;
+		}
 
 		// define enum entries as parent type
 		//Runtime::Object* entry = mRepository->createInstance(mBluePrint->QualifiedTypename(), name, true);
@@ -316,7 +322,10 @@ void Preprocessor::generateBluePrintEnum()
 			}
 		}
 		else if ( token->type() == Token::Type::SEMICOLON ) {
-			token++;
+			return;
+		}
+		else {
+			throw Utils::Exceptions::Exception("unexpected token '" + token->content() + "' found", token->position());
 		}
 	}
 }
