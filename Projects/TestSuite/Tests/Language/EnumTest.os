@@ -3,16 +3,12 @@
 
 public enum Day {
 	Monday = 0,
-	Tuesday = 1,
-	Wednesday = 2,
-	Thursday = 3,
-	Friday = 4,
-	Saturday = 5,
-	Sunday = 6;
-}
-
-public enum WeekDay {
-	Monday = 99;
+	Tuesday,
+	Wednesday,
+	Thursday,
+	Friday,
+	Saturday,
+	Sunday;
 }
 
 /*
@@ -35,9 +31,6 @@ public object Main {
 		print("e = " + e);
 
 		e = Day.Wednesday;
-		print("e = " + e);
-
-		e = WeekDay.Monday;
 		print("e = " + e);
 
 		e = 17;

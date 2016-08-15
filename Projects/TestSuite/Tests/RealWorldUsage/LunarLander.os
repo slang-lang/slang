@@ -3,10 +3,10 @@
 import System.Math;
 
 public object Main {
-	private int MAXBURN const = 30;
+	private float MAXBURN const = 30.f;
 
 	private float mCapsuleWeight = 14741.f; /*kg*/
-	private int mFuel = 120; /*kg*/
+	private float mFuel = 120.f; /*kg*/
 	private float mGravity = 1.62f;	/*m/s2*/
 	private float mHeight = 500.f; /*m*/
 	private int mTimeStep = 10; /*s*/
@@ -26,29 +26,28 @@ public object Main {
 		while ( mHeight > 0.f ) {
 			printStats();
 
-			int burn = -1;
-			while ( burn < 0 ) {
-				cout("Booster: ");
-				burn = Math.abs(int cin());
+			int percent = -1;
+			while ( percent < 0 || percent > 100 ) {
+				cout("Booster (%): ");
+				percent = Math.abs(int cin());
 			}
+
+			float burn = (float percent / 100.f) * MAXBURN;
 
 			// only burn as much fuel as we have
 			if ( burn > mFuel ) {
 				burn = mFuel;
 			}
 
-			// our booster can only process MAXBURN units of fuel at a time
-			if ( burn > MAXBURN ) {
-				burn = MAXBURN;
-			}
-
 			/*
 			distance = G * s^2 / 2 + v0 * t
 			*/
 
-			float distance = (mGravity * mTimeStep * mTimeStep / 2.f) + (mVelocity * mTimeStep - (float burn * mTimeStep * 1.f));
-			mVelocity = distance / mTimeStep;
+			float decceleration = burn / 10.f;
+			float acceleration = mGravity - decceleration;
+			float distance = (acceleration * mTimeStep * mTimeStep * 0.5f) + mVelocity * mTimeStep;
 
+			mVelocity = distance / mTimeStep;
 			mHeight = mHeight - distance;
 			mFuel = mFuel - Math.abs(burn);
 
@@ -61,8 +60,9 @@ public object Main {
 	}
 
 	private void printIntro() {
+		writeln();
 		writeln("==============");
-		writeln("|LUNAR LANDER|");
+		writeln("*LUNAR LANDER*");
 		writeln("==============");
 		writeln();
 		writeln("THIS IS A COMPUTER SIMULATION OF AN APOLLO LUNAR LANDING CAPSULE.");
