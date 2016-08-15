@@ -31,6 +31,8 @@ public:
 	void teardown();
 
 private:	// Tests
+	void GlobalVariableTest();
+
 	void testAssert();
 	void testBooleanOperators();
 	void testComment();

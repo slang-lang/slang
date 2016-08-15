@@ -24,6 +24,7 @@ class Parser
 {
 public:
 	static TokenList collectScopeTokens(TokenIterator& token);
+	static std::string identify(TokenIterator& start);
 
 	static bool isEnumDeclaration(TokenIterator start);
 	static bool isInterfaceDeclaration(TokenIterator start);

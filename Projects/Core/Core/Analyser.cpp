@@ -253,7 +253,7 @@ bool Analyser::createMember(TokenIterator& token, TokenIterator /*end*/)
 		languageFeature = (*token++).content();
 	}
 	// look for the type token
-	type = (*token++).content();
+	type = Parser::identify(token);
 	// look for the identifier token
 	name = (*token++).content();
 
@@ -314,7 +314,8 @@ bool Analyser::createMethod(TokenIterator& token, TokenIterator end)
 		languageFeature = (*token++).content();
 	}
 	// look for the type token
-	type = (*token++).content();
+	//type = (*token++).content();
+	type = Parser::identify(token);
 	// look for the identifier token
 	name = (*token++).content();
 
@@ -504,23 +505,6 @@ std::string Analyser::getQualifiedTypename(const std::string& type) const
 	result += type;
 
 	return result;
-}
-
-std::string Analyser::identify(TokenIterator& start, TokenIterator /*end*/) const
-{
-	std::string type = start->content();
-
-	while ( start->type() == Token::Type::IDENTIFER ) {
-		if ( lookahead(start++)->type() != Token::Type::SCOPE ) {
-			break;
-		}
-
-		// add next token to type definition
-		type += (start++)->content();
-		type += (start++)->content();
-	}
-
-	return type;
 }
 
 void Analyser::process(const TokenList& tokens)

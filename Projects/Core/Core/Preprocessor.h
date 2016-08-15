@@ -37,7 +37,6 @@ public:
 	Preprocessor(Repository *repo);
 
 public:
-	//void process(Designtime::BluePrintObject* blueprint);
 	void process(Designtime::BluePrintGeneric* blueprint);
 
 private:
@@ -52,7 +51,6 @@ private:
 
 private:
 	std::string mFilename;
-	//Designtime::BluePrintObject* mBluePrint;
 	Designtime::BluePrintGeneric* mBluePrint;
 	Repository *mRepository;
 	IScope *mScope;

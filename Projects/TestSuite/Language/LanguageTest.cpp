@@ -44,6 +44,7 @@ void LanguageTest::process()
 	TEST(testException);
 	TEST(testFinal);
 	TEST(testFor);
+	TEST(GlobalVariableTest);
 	TEST(testIf);
 	TEST(testInfixOperator);
 	TEST(testLawOfDemeter);
@@ -71,6 +72,21 @@ void LanguageTest::setup()
 
 void LanguageTest::teardown()
 {
+}
+
+void LanguageTest::GlobalVariableTest()
+{
+	try {
+		VirtualMachine vm;
+
+		vm.createScriptFromFile("Tests/Language/GlobalVariableTest.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// unexpected exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
 }
 
 void LanguageTest::testAssert()

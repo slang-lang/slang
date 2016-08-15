@@ -67,6 +67,22 @@ TokenList Parser::collectScopeTokens(TokenIterator& token)
 	return tokens;
 }
 
+std::string Parser::identify(TokenIterator& start)
+{
+	std::string type = start->content();
+
+	while ( (start++)->type() == Token::Type::IDENTIFER ) {
+		if ( lookahead(start)->type() != Token::Type::SCOPE ) {
+			break;
+		}
+
+		// add next token to type definition
+		type += (start++)->content();
+		type += (start++)->content();
+	}
+
+	return type;
+}
 
 // enum declaration:
 // <visibility> [language feature] enum <identifier> { ... }
