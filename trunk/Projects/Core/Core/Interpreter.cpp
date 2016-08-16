@@ -1089,7 +1089,7 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 		throw Utils::Exceptions::UnknownIdentifer("unknown identifier '" + type + "'");
 	}
 	if ( symbol->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
-		throw Utils::Exceptions::Exception("blue print symbol expected!");
+		throw Utils::Exceptions::Exception("blueprint symbol expected!");
 	}
 
 	expect(Token::Type::PARENTHESIS_OPEN, ++token);
