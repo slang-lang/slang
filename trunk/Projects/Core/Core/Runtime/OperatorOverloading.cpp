@@ -613,6 +613,18 @@ bool operator_binary_less_equal(Object *base, Object *other)
 	return isTrue(tmp);
 }
 
+bool operator_binary_is(Object* base, Symbol* other)
+{
+	if ( !base ) {
+		throw Utils::Exceptions::AccessViolation("cannot compare null pointer to object");
+	}
+	if ( !other ) {
+		throw Utils::Exceptions::AccessViolation("cannot compare object to null pointer");
+	}
+
+	return base->operator_is(other);
+}
+
 void operator_binary_modulo(Object *base, Object *other)
 {
 	if ( !base ) {

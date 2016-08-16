@@ -13,11 +13,14 @@
 
 
 namespace ObjectiveScript {
+
+// Forward declarations
+class Symbol;
+
 namespace Runtime {
 
 // Forward declarations
 class Object;
-
 
 void operator_binary_assign(Object *base, Object *other);
 void operator_binary_bitand(Object *base, Object *other);
@@ -29,6 +32,7 @@ bool operator_binary_greater(Object *base, Object *other);
 bool operator_binary_greater_equal(Object *base, Object *other);
 bool operator_binary_less(Object *base, Object *other);
 bool operator_binary_less_equal(Object *base, Object *other);
+bool operator_binary_is(Object* base, Symbol* other);
 void operator_binary_modulo(Object *base, Object *other);
 void operator_binary_multiply(Object *base, Object *other);
 void operator_binary_plus(Object *base, Object *other);

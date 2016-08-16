@@ -63,6 +63,9 @@ static const char* MODIFIER_RECURSIVE = "recursive";
 static const char* MODIFIER_SEALED = "sealed";
 static const char* MODIFIER_UNKNOWN = "unknown";
 
+// Operators
+static const char* OPERATOR_IS = "is";
+
 // Reserved words
 static const char* RESERVED_WORD_BY_REFERENCE = "ref";
 static const char* RESERVED_WORD_BY_VALUE = "val";
