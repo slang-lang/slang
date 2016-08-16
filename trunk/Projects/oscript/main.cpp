@@ -183,12 +183,12 @@ int main(int argc, const char* argv[])
 			return result.getValue().toInt();
 		}
 	}
-	catch ( std::exception& e ) {	// catch every std::exception and all derived exception types
+	catch ( std::exception &e ) {	// catch every std::exception and all derived exception types
 		OSerror(e.what());
 
 		ObjectiveScript::StackTrace::GetInstance().print();
 	}
-	catch ( ObjectiveScript::Runtime::ControlFlow::E e ) {
+	catch ( ObjectiveScript::Runtime::ControlFlow::E &e ) {
 		if ( e != ObjectiveScript::Runtime::ControlFlow::ExitProgram ) {
 			OSerror("abnormal program termination!");
 

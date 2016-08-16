@@ -55,7 +55,7 @@ int Application::exec()
 	try {
 		result = mBackend.exec();
 	}
-	catch ( Runtime::ControlFlow::E /*e*/ ) {
+	catch ( Runtime::ControlFlow::E &/*e*/ ) {
 		//
 	}
 
