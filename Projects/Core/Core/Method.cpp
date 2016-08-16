@@ -293,7 +293,7 @@ ControlFlow::E Method::processControlFlow(ControlFlow::E controlflow, Object *re
 				throw Utils::Exceptions::Exception("unnatural method return at '" + getFullScopeName() + "'");
 			}
 
-			// correct behaviour detected, override control flow with normal state
+			// correct behavior detected, override control flow with normal state
 			controlflow = ControlFlow::Normal;
 			break;
 		case ControlFlow::Return:
@@ -304,7 +304,7 @@ ControlFlow::E Method::processControlFlow(ControlFlow::E controlflow, Object *re
 				typecast(result, Typename(), mRepository);
 			}
 
-			// correct behaviour detected, override control flow with normal state
+			// correct behavior detected, override control flow with normal state
 			controlflow = ControlFlow::Normal;
 			break;
 		case ControlFlow::ExitProgram:

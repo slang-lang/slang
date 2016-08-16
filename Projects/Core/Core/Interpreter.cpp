@@ -644,7 +644,7 @@ void Interpreter::process_assert(TokenIterator& token)
 	try {
 		expression(&condition, token);
 	}
-	catch ( ControlFlow::E e ) {
+	catch ( ControlFlow::E &e ) {
 		mControlFlow = e;
 		return;
 	}
@@ -763,7 +763,7 @@ void Interpreter::process_for(TokenIterator& token, Object* result)
 		try {
 			expression(&condition, condBegin);
 		}
-		catch ( ControlFlow::E e ) {
+		catch ( ControlFlow::E &e ) {
 			mControlFlow = e;
 			return;
 		}
@@ -819,7 +819,7 @@ void Interpreter::process_identifier(TokenIterator& token, Object* /*result*/, T
 			Object tmpObject;
 			process_method(token, &tmpObject);
 		}
-		catch ( ControlFlow::E e ) {
+		catch ( ControlFlow::E &e ) {
 			mControlFlow = e;
 			return;
 		}
@@ -841,7 +841,7 @@ void Interpreter::process_identifier(TokenIterator& token, Object* /*result*/, T
 		try {
 			expression(object, ++assign);
 		}
-		catch ( ControlFlow::E e ) {
+		catch ( ControlFlow::E &e ) {
 			mControlFlow = e;
 			return;
 		}
@@ -943,7 +943,7 @@ void Interpreter::process_if(TokenIterator& token, Object *result)
 	try {
 		expression(&condition, condBegin);
 	}
-	catch ( ControlFlow::E e ) {
+	catch ( ControlFlow::E &e ) {
 		mControlFlow = e;
 		return;
 	}
@@ -1027,7 +1027,7 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 		try {
 			expression(obj, tmp);
 		}
-		catch ( ControlFlow::E e ) {
+		catch ( ControlFlow::E &e ) {
 			mControlFlow = e;
 			return;
 		}
@@ -1121,7 +1121,7 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 		try {
 			expression(obj, tmp);
 		}
-		catch ( ControlFlow::E e ) {
+		catch ( ControlFlow::E &e ) {
 			mControlFlow = e;
 			return;
 		}
@@ -1159,7 +1159,7 @@ void Interpreter::process_print(TokenIterator& token)
 	try {
 		expression(&text, token);
 	}
-	catch ( ControlFlow::E e ) {
+	catch ( ControlFlow::E &e ) {
 		mControlFlow = e;
 		return;
 	}
@@ -1178,7 +1178,7 @@ void Interpreter::process_return(TokenIterator& token, Object *result)
 	try {
 		expression(result, token);
 	}
-	catch ( ControlFlow::E e ) {
+	catch ( ControlFlow::E &e ) {
 		mControlFlow = e;
 		return;
 	}
@@ -1229,7 +1229,7 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 	try {
 		expression(&expr, token);
 	}
-	catch ( ControlFlow::E e ) {
+	catch ( ControlFlow::E &e ) {
 		mControlFlow = e;
 		return;
 	}
@@ -1290,7 +1290,7 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 		try {
 			expression(&condition, it->mBegin);
 		}
-		catch ( ControlFlow::E e ) {
+		catch ( ControlFlow::E &e ) {
 			mControlFlow = e;
 			return;
 		}
@@ -1363,7 +1363,7 @@ void Interpreter::process_throw(TokenIterator& token, Object* /*result*/)
 	try {
 		expression(data, token);
 	}
-	catch ( ControlFlow::E e ) {
+	catch ( ControlFlow::E &e ) {
 		mControlFlow = e;
 		return;
 	}
@@ -1566,7 +1566,7 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol)
 		try {
 			expression(object, token);
 		}
-		catch ( ControlFlow::E e ) {
+		catch ( ControlFlow::E &e ) {
 			mControlFlow = e;
 			return 0;
 		}
@@ -1614,7 +1614,7 @@ void Interpreter::process_while(TokenIterator& token, Object* result)
 		try {
 			expression(&condition, tmp);
 		}
-		catch ( ControlFlow::E e ) {
+		catch ( ControlFlow::E &e ) {
 			mControlFlow = e;
 			return;
 		}
