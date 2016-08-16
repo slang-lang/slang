@@ -423,12 +423,14 @@ void Interpreter::parseInfixPostfix(Object *result, TokenIterator& start)
 	// infix
 	switch ( op ) {
 		case Token::Type::OPERATOR_DECREMENT: {
-			operator_unary_infix_decrement(result);
 			start++;
+			parseTerm(result, start);
+			operator_unary_decrement(result);
 		} break;
 		case Token::Type::OPERATOR_INCREMENT: {
-			operator_unary_infix_increment(result);
 			start++;
+			parseTerm(result, start);
+			operator_unary_increment(result);
 		} break;
 		case Token::Type::MATH_SUBTRACT: {
 			start++;
@@ -485,11 +487,11 @@ void Interpreter::parseInfixPostfix(Object *result, TokenIterator& start)
 	// postfix
 	switch ( op ) {
 		case Token::Type::OPERATOR_DECREMENT: {
-			operator_unary_postfix_decrement(result);
+			operator_unary_decrement(result);
 			start++;
 		} break;
 		case Token::Type::OPERATOR_INCREMENT: {
-			operator_unary_postfix_increment(result);
+			operator_unary_increment(result);
 			start++;
 		} break;
 		case Token::Type::OPERATOR_IS: {

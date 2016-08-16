@@ -10,7 +10,7 @@ public int Main(int argc = 0, string args = "") modify {
 		//print("lowerbound = " + lowerbound);
 
 		//lowerbound = lowerbound + 1;
-		lowerbound = lowerbound++;
+		lowerbound++;
 	}
 
 	print("Finished performance test.");
