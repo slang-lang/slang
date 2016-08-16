@@ -459,12 +459,15 @@ void Interpreter::parseInfixPostfix(Object *result, TokenIterator& start)
 					// here we could demand a '('
 					//expect(Token::Type::PARENTHESIS_OPEN, start++);
 
-					expression(result, start);
+					Object tmp;
+					expression(&tmp, start);
 
 					// here we could demand a ')'
 					//expect(Token::Type::PARENTHESIS_CLOSE, start++);
 
-					typecast(result, newType, getRepository());
+					typecast(&tmp, newType, getRepository());
+
+					operator_binary_assign(result, &tmp);
 				} break;
 				case Symbol::IType::MethodSymbol:
 				case Symbol::IType::NamespaceSymbol:
@@ -487,6 +490,18 @@ void Interpreter::parseInfixPostfix(Object *result, TokenIterator& start)
 		} break;
 		case Token::Type::OPERATOR_INCREMENT: {
 			operator_unary_postfix_increment(result);
+			start++;
+		} break;
+		case Token::Type::OPERATOR_IS: {
+			start++;
+
+			Symbol* symbol = identify(start);
+			if ( !symbol ) {
+				throw Utils::Exceptions::UnknownIdentifer("unkown identifier '" + start->content() + "' found", start->position());
+			}
+
+			*result = BoolObject(operator_binary_is(result, symbol));
+
 			start++;
 		} break;
 		case Token::Type::OPERATOR_NOT: {

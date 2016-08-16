@@ -36,6 +36,7 @@ Object::Object(const Object& other)
   ObjectSymbol(other.getName())
 {
 	mFilename = other.mFilename;
+	mInheritance = other.mInheritance;
 	mIsAtomicType = other.mIsAtomicType;
 	mIsConstructed = other.mIsConstructed;
 	mParent = other.mParent;
@@ -100,6 +101,7 @@ void Object::operator= (const Object& other)
 {
 	if ( this != &other ) {
 		mFilename = other.mFilename;
+		mInheritance = other.mInheritance;
 		mIsAtomicType = other.mIsAtomicType;
 		mIsConstructed = other.mIsConstructed;// ? other.mIsConstructed : mIsConstructed;
 		mParent = other.mParent ? other.mParent : mParent;
@@ -628,6 +630,24 @@ bool Object::operator_greater_equal(const Object *other)
 	std::string target = other->Typename();
 
 	throw Utils::Exceptions::NotImplemented(Typename() + ".operator>=: conversion from " + target + " to " + Typename() + " not supported");
+}
+
+bool Object::operator_is(const Symbol *other)
+{
+	if ( !other || other->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
+		throw Utils::Exceptions::Exception("invalid symbol provided");
+	}
+
+	for ( Inheritance::const_iterator it = mInheritance.begin(); it != mInheritance.end(); ++it ) {
+		if ( it->first.name() == static_cast<const Designtime::BluePrintObject*>(other)->QualifiedTypename() ) {
+			return true;
+		}
+		else if ( it->second->operator_is(other) ) {
+			return true;
+		}
+	}
+
+	return QualifiedTypename() == static_cast<const Designtime::BluePrintObject*>(other)->QualifiedTypename();
 }
 
 bool Object::operator_less(const Object *other)
