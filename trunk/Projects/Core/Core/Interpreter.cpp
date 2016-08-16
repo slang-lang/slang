@@ -364,18 +364,7 @@ void Interpreter::parseExpression(Object *result, TokenIterator& start)
 
 void Interpreter::parseFactors(Object *result, TokenIterator& start)
 {
-	if ( start->type() == Token::Type::PARENTHESIS_OPEN) {
-		start++;	// consume operator token
-
-		expression(result, start);
-
-		expect(Token::Type::PARENTHESIS_CLOSE, start);
-
-		start++;	// consume operator token
-	}
-	else {
-		parseInfixPostfix(result, start);
-	}
+	parseInfixPostfix(result, start);
 
 	for ( ; ; ) {
 		Token::Type::E op = start->type();
@@ -388,17 +377,7 @@ void Interpreter::parseFactors(Object *result, TokenIterator& start)
 		start++;	// consume operator token
 
 		Object v2;
-		if ( start->type() == Token::Type::PARENTHESIS_OPEN) {
-			start++;	// consume operator token
-			expression(&v2, start);
-
-			expect(Token::Type::PARENTHESIS_CLOSE, start);
-
-			start++;	// consume operator token
-		}
-		else {
-			parseInfixPostfix(&v2, start);
-		}
+		parseInfixPostfix(&v2, start);
 
 		switch ( op ) {
 			case Token::Type::MATH_DIVIDE:
@@ -422,25 +401,39 @@ void Interpreter::parseInfixPostfix(Object *result, TokenIterator& start)
 
 	// infix
 	switch ( op ) {
+		case Token::Type::MATH_SUBTRACT: {
+			start++;
+
+			Object tmp;
+			parseExpression(&tmp, start);
+
+			operator_unary_minus(&tmp);
+
+			operator_binary_assign(result, &tmp);
+		} break;
 		case Token::Type::OPERATOR_DECREMENT: {
 			start++;
-			parseTerm(result, start);
+			parseExpression(result, start);
 			operator_unary_decrement(result);
 		} break;
 		case Token::Type::OPERATOR_INCREMENT: {
 			start++;
-			parseTerm(result, start);
+			parseExpression(result, start);
 			operator_unary_increment(result);
-		} break;
-		case Token::Type::MATH_SUBTRACT: {
-			start++;
-			parseTerm(result, start);
-			operator_unary_minus(result);
 		} break;
 		case Token::Type::OPERATOR_NOT: {
 			start++;
-			parseTerm(result, start);
+			expression(result, start);
 			operator_unary_not(result);
+		} break;
+		case Token::Type::PARENTHESIS_OPEN: {
+			start++;	// consume operator token
+
+			expression(result, start);
+
+			expect(Token::Type::PARENTHESIS_CLOSE, start);
+
+			start++;	// consume operator token
 		} break;
 		case Token::Type::TYPE: {
 			Symbol* symbol = identify(start);

@@ -16,9 +16,9 @@ public object Main {
 		// default value is false
 		Boolean value;// = new Boolean();
 
-		print(!value!);
+		print("value = " + (!value)!);
 
-		return !value!;	// this is a really crazy test..
+		return (!value)!;	// this is a really crazy test..
 	}
 
 	private bool TestCase2() const {
