@@ -91,7 +91,7 @@ public object Main {
 
 		print(obj.ToString());
 
-		return true;
+		return obj == 2;
 	}
 
 	private bool TestCase2() const {

@@ -86,6 +86,10 @@ void typecast(Object *base, const std::string& targetType, Repository *repositor
 		*base = tmp;
 	}
 	else {
+		if ( base->isAtomicType() ) {
+			throw Utils::Exceptions::Exception("cannot cast atomic type to complex type");
+		}
+
 		throw Utils::Exceptions::NotImplemented("typecast to complex type not implemented!");
 
 /*	// not supported by now

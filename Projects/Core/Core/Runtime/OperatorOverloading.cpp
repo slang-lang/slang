@@ -909,7 +909,7 @@ assert(!"not implemented!");
 	}
 }
 
-void operator_unary_infix_decrement(Object *base)
+void operator_unary_decrement(Object *base)
 {
 	if ( !base ) {
 		throw Utils::Exceptions::AccessViolation("cannot decrement null pointer");
@@ -961,11 +961,11 @@ void operator_unary_infix_decrement(Object *base)
 	}
 	else {
 		VoidObject tmp;
-		base->execute(&tmp, "--operator", ParameterList(), 0);
+		base->execute(&tmp, "operator--", ParameterList(), 0);
 	}
 }
 
-void operator_unary_infix_increment(Object *base)
+void operator_unary_increment(Object *base)
 {
 	if ( !base ) {
 		throw Utils::Exceptions::AccessViolation("cannot increment null pointer");
@@ -1017,7 +1017,7 @@ void operator_unary_infix_increment(Object *base)
 	}
 	else {
 		VoidObject tmp;
-		base->execute(&tmp, "++operator", ParameterList(), 0);
+		base->execute(&tmp, "operator++", ParameterList(), 0);
 	}
 }
 
@@ -1133,118 +1133,6 @@ void operator_unary_not(Object *base)
 		else {
 			*base = BoolObject(!base->isValid());
 		}
-	}
-}
-
-void operator_unary_postfix_decrement(Object *base)
-{
-	if ( !base ) {
-		throw Utils::Exceptions::AccessViolation("cannot decrement null pointer");
-	}
-
-	std::string source = base->Typename();
-
-	if ( source == BoolObject::TYPENAME ) {
-		BoolObject tmp(base->getValue());
-		tmp.operator_unary_decrement();
-
-		*base = tmp;
-	}
-	else if ( source == DoubleObject::TYPENAME ) {
-		DoubleObject tmp(base->getValue());
-		tmp.operator_unary_decrement();
-
-		*base = tmp;
-	}
-	else if ( source == FloatObject::TYPENAME ) {
-		FloatObject tmp(base->getValue());
-		tmp.operator_unary_decrement();
-
-		*base = tmp;
-	}
-	else if ( source == IntegerObject::TYPENAME ) {
-		IntegerObject tmp(base->getValue());
-		tmp.operator_unary_decrement();
-
-		*base = tmp;
-	}
-	else if ( source == NumberObject::TYPENAME ) {
-		NumberObject tmp(base->getValue());
-		tmp.operator_unary_decrement();
-
-		*base = tmp;
-	}
-	else if ( source == StringObject::TYPENAME ) {
-		StringObject tmp(base->getValue());
-		tmp.operator_unary_decrement();
-
-		*base = tmp;
-	}
-	else if ( source == VoidObject::TYPENAME ) {
-		VoidObject tmp;
-		tmp.operator_unary_decrement();
-
-		*base = tmp;
-	}
-	else {
-		VoidObject tmp;
-		base->execute(&tmp, "operator--", ParameterList(), 0);
-	}
-}
-
-void operator_unary_postfix_increment(Object *base)
-{
-	if ( !base ) {
-		throw Utils::Exceptions::AccessViolation("cannot increment null pointer");
-	}
-
-	std::string source = base->Typename();
-
-	if ( source == BoolObject::TYPENAME ) {
-		BoolObject tmp(base->getValue());
-		tmp.operator_unary_increment();
-
-		*base = tmp;
-	}
-	else if ( source == DoubleObject::TYPENAME ) {
-		DoubleObject tmp(base->getValue());
-		tmp.operator_unary_increment();
-
-		*base = tmp;
-	}
-	else if ( source == FloatObject::TYPENAME ) {
-		FloatObject tmp(base->getValue());
-		tmp.operator_unary_increment();
-
-		*base = tmp;
-	}
-	else if ( source == IntegerObject::TYPENAME ) {
-		IntegerObject tmp(base->getValue());
-		tmp.operator_unary_increment();
-
-		*base = tmp;
-	}
-	else if ( source == NumberObject::TYPENAME ) {
-		NumberObject tmp(base->getValue());
-		tmp.operator_unary_increment();
-
-		*base = tmp;
-	}
-	else if ( source == StringObject::TYPENAME ) {
-		StringObject tmp(base->getValue());
-		tmp.operator_unary_increment();
-
-		*base = tmp;
-	}
-	else if ( source == VoidObject::TYPENAME ) {
-		VoidObject tmp;
-		tmp.operator_unary_increment();
-
-		*base = tmp;
-	}
-	else {
-		VoidObject tmp;
-		base->execute(&tmp, "operator++", ParameterList(), 0);
 	}
 }
 
