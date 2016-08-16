@@ -86,7 +86,7 @@ Repository::~Repository()
 	// Cleanup blue prints
 	// {
 	for ( BluePrintObjectMap::iterator it = mBluePrintObjects.begin(); it != mBluePrintObjects.end(); ++it ) {
-		//it->second->cleanup();
+		it->second->cleanup();
 
 		delete it->second;
 	}
@@ -264,31 +264,11 @@ Runtime::Object* Repository::createInstance(Designtime::BluePrintObject* bluepri
 
 	OSdebug("createInstance('" + blueprint->QualifiedTypename() + "', '" + name + "', " + (initialize ? "true" : "false") + ")");
 
-	BluePrintObjectMap::iterator it = mBluePrintObjects.find(blueprint->Typename());
-	if ( it == mBluePrintObjects.end() ) {
-		it = mBluePrintObjects.find(blueprint->QualifiedTypename());
-	}
-	if ( it == mBluePrintObjects.end() ) {
-		throw Utils::Exceptions::Exception("could not create instance of unknown type '" + blueprint->Typename() + "'");
-	}
-
-	Runtime::Object* object = createObject(name, it->second, initialize);
+	Runtime::Object* object = createObject(name, blueprint, initialize);
 
 	addReference(object);
 
 	return object;
-}
-
-Runtime::Object* Repository::createEnum(const std::string& name, Designtime::BluePrintEnum* blueprint, bool initialize)
-{
-	assert(blueprint);
-
-	Designtime::BluePrintObject* blue = findBluePrintObject(Runtime::IntegerObject::TYPENAME);
-	if ( !blue ) {
-		return 0;
-	}
-
-	return createObject(name, blue, initialize);
 }
 
 /*

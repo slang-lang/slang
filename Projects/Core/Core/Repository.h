@@ -63,7 +63,6 @@ private: // hide me from public
 	void CollectGarbage();
 
 private:
-	Runtime::Object* createEnum(const std::string& name, Designtime::BluePrintEnum* blueprint, bool initialize);
 	Runtime::Object* createObject(const std::string& name, Designtime::BluePrintObject* blueprint, bool initialize);
 	Runtime::Object* createUserObject(const std::string& name, Designtime::BluePrintObject* blueprint, bool initialize);
 
