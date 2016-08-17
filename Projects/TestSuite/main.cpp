@@ -9,6 +9,7 @@
 #include <Core/Utils/Utils.h>
 #include <Tools/Printer.h>
 #include <Tools/Strings.h>
+#include <Tools/Tools.h>
 
 // Fixtures
 #include <Attributes/Fixture.h>
@@ -176,10 +177,7 @@ int main(int argc, const char* argv[])
 		std::cout << "could not find fixture '" << toRun << "'!" << std::endl;
 	}
 
-	if ( mLogger ) {
-		delete mLogger;
-		mLogger = 0;
-	}
+	SafeDelete( mLogger );
 
 	return 0;
 }

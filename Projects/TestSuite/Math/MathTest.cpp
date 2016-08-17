@@ -36,6 +36,7 @@ void MathTest::process()
 	TEST(testDataTypeFloat);
 	TEST(testDataTypeInt);
 	TEST(testSimpleMath);
+	TEST(testUnaryMinus);
 }
 
 void MathTest::setup()
@@ -121,6 +122,20 @@ void MathTest::testSimpleMath()
 	try {
 		VirtualMachine vm;
 		vm.createScriptFromFile("Tests/Math/SimpleMath.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed
+		TFAIL(e.what());
+	}
+}
+
+void MathTest::testUnaryMinus()
+{
+	try {
+		VirtualMachine vm;
+		vm.createScriptFromFile("Tests/Math/UnaryMinus.os");
 
 		// automatic success
 	}

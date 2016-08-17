@@ -42,11 +42,7 @@ std::string extract(const std::string& source)
 
 bool StringCompare(std::string s1, std::string s2)
 {
-	if ( s1.size() != s2.size() ) {
-		return false;
-	}
-
-	return !(s1 != s2);
+	return s1.size() == s2.size() && !(s1 != s2);
 }
 
 bool StringCompareI(const std::string & s1, const std::string& s2)
@@ -59,7 +55,7 @@ bool StringCompareI(const std::string & s1, const std::string& s2)
 	std::string::const_iterator it2 = s2.begin();
 
 	while ( (it1 != s1.end()) && (it2 != s2.end()) ) {
-		if ( ::toupper(*it1) != ::toupper(*it2) ) {// letters differ?
+		if ( ::toupper(*it1) != ::toupper(*it2) ) {	// letters differ?
 			return false;
 		}
 

@@ -54,7 +54,7 @@ public:
 				throw Utils::Exceptions::Exception("no valid mysql result!");
 			}
 
-			mysql_data_seek(myResult, param_rowIdx);
+			mysql_data_seek(myResult, (my_ulonglong)param_rowIdx);
 		}
 		catch ( std::exception &e ) {
 			Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);

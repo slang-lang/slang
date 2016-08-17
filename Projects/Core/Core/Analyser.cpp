@@ -212,7 +212,7 @@ bool Analyser::createEnum(TokenIterator& token, TokenIterator end) const
 
 	mRepository->addBluePrint(symbol);
 
-	return symbol;
+	return (bool)symbol;
 }
 
 std::string Analyser::createLibraryReference(TokenIterator& token, TokenIterator end) const

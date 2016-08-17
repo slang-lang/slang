@@ -45,11 +45,8 @@ bool Ancestor::operator==(const Ancestor& other) const
 	if ( name() != other.name() ) {
 		return false;
 	}
-	if ( type() != other.type() ) {
-		return false;
-	}
 
-	return visibility() == other.visibility();
+	return type() == other.type() && visibility() == other.visibility();
 }
 
 const std::string& Ancestor::name() const
