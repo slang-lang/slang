@@ -66,9 +66,9 @@ Runtime::ControlFlow::E MysqlRealConnect::execute(const ParameterList& params, R
 				param_user.c_str(),
 				param_passwd.c_str(),
 				param_db.c_str(),
-				param_port,
+				(unsigned int) param_port,
 				param_socket.c_str(),
-				param_clientflag
+				(unsigned long) param_clientflag
 		);
 
 		mMysqlConnections[param_handle] = myConn;

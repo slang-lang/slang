@@ -50,7 +50,7 @@ Runtime::ControlFlow::E MysqlUseResult::execute(const ParameterList& params, Run
 		}
 
 		int my_result = 0;
-		if ( myResult ) {
+		if ( myResult != NULL ) {
 			my_result = ++mNumMysqlResults;
 			mMysqlResults.insert(std::make_pair(my_result, myResult));
 		}

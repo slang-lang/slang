@@ -62,7 +62,7 @@ bool Backend::addBreakPoint(const StringList& tokens)
 	it++;	// skip first token
 
 	std::string file = (*it++);
-	unsigned line = ::Utils::Tools::stringToInt((*it++));
+	unsigned int line = (unsigned int)::Utils::Tools::stringToInt((*it++));
 
 	Core::BreakPoint breakpoint(Utils::Position(file, line));
 

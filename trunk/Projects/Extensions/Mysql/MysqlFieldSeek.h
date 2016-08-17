@@ -49,7 +49,7 @@ public:
 				throw Utils::Exceptions::Exception("no valid mysql result!");
 			}
 
-			int my_result = mysql_field_seek(myResult, param_offset);
+			int my_result = mysql_field_seek(myResult, (MYSQL_FIELD_OFFSET) param_offset);
 
 			*result = Runtime::IntegerObject(my_result);
 		}

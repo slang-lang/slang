@@ -37,6 +37,7 @@ private:	// Tests
 	void testDataTypeFloat();
 	void testDataTypeInt();
 	void testSimpleMath();
+	void testUnaryMinus();
 };
 
 

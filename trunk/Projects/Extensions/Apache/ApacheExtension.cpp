@@ -191,7 +191,7 @@ void ApacheExtension::readPostData()
 		return;
 	}
 
-	int len = strtol(len_, NULL, 10);
+	size_t len = strtol(len_, NULL, 10);
 
 	char* postdata = (char*)malloc(len + 1);
 

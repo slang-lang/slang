@@ -50,8 +50,8 @@ public:
 			ParameterList::const_iterator it = list.begin();
 
 			std::string param_value = (*it++).value().toStdString();
-			int param_start = (*it++).value().toInt();
-			int param_end = -1;
+			unsigned long param_start = (*it++).value().toInt();
+			unsigned long param_end = -1;
 
 			if ( params.size() >= 3 ) {
 				param_end = (*it++).value().toInt();

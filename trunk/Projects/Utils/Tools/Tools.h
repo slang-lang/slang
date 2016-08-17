@@ -16,7 +16,7 @@
 
 #define BIT(x) (1<<(x))
 
-#define aeDelete( p )	\
+#define SafeDelete( p )	\
 	if ( p ) {			\
 		delete p;		\
 		p = 0;			\
