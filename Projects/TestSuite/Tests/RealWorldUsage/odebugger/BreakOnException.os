@@ -6,8 +6,8 @@ private void BreakOnException() const {
 	try {
 		throw 1;
 	}
-	catch {
-		print("catch");
+	catch (int e) {
+		print("catch: " + e);
 	}
 	finally {
 		print("finally");
@@ -15,6 +15,7 @@ private void BreakOnException() const {
 }
 
 /*
+// object orientated entry point
 public object Main {
 	public void Main(int argc, string args) {
 		BreakOnException();
@@ -22,6 +23,7 @@ public object Main {
 }
 */
 
+// structured execution entry point
 public int Main(int argc, string args) {
 	BreakOnException();
 
