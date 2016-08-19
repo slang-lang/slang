@@ -11,7 +11,7 @@ public object Main {
  
 		endl();
 
-		cout("Fibonacci series upto " + value +" numbers : ");
+		cout("Fibonacci series upto " + value +" numbers: ");
 		endl();
 
 		//printing Fibonacci series upto number
