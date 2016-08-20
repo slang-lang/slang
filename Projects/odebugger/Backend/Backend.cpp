@@ -3,6 +3,7 @@
 #include "Backend.h"
 
 // Library includes
+#include <fstream>
 
 // Project includes
 #include <Common/Settings.h>
@@ -75,6 +76,8 @@ bool Backend::addBreakPoint(const StringList& tokens)
 			Core::Condition(left, op, right)
 		);
 	}
+
+	mConfiguration["breakpoints"].addElement(breakpoint.toString());
 
 	return mDebugger->addBreakPoint(breakpoint);
 }
@@ -179,8 +182,16 @@ int Backend::exec()
 	assert(mDebugger);
 	assert(!mVirtualMachine);
 
+	loadConfig();
+
 	// start program execution
 	while ( mRunning ) {
+		if ( mSettings->autoStart() ) {
+			mSettings->autoStart(false);
+
+			run(StringList());
+		}
+
 		notify(0, Core::Debugger::immediateBreakPoint);
 	}
 
@@ -228,6 +239,9 @@ std::string Backend::executeCommand(const StringList &tokens)
 			mDebugger->stepInto();
 			continueExecution();
 		}
+		else if ( cmd == "load" ) {
+			loadConfig();
+		}
 		else if ( cmd == "modify" || cmd == "m" ) {
 			modifySymbol(tokens);
 		}
@@ -258,6 +272,9 @@ std::string Backend::executeCommand(const StringList &tokens)
 			else {
 				run(tokens);
 			}
+		}
+		else if ( cmd == "store" ) {
+			saveConfig();
 		}
 		else if ( cmd == "unwatch" ) {
 			removeWatch(tokens);
@@ -355,6 +372,43 @@ Symbol* Backend::getSymbol(std::string name) const
 	} while ( !name.empty() );
 
 	return 0;
+}
+
+void Backend::loadConfig()
+{
+	std::string filename = mSettings->filename() + ".dbg";
+
+	if ( !::Utils::Tools::Files::exists(filename) ) {
+		// no configuration file exists
+		return;
+	}
+
+	std::fstream stream;
+	stream.open(filename.c_str(), std::ios::in);	// open for reading
+	std::string data((std::istreambuf_iterator<char>(stream)), std::istreambuf_iterator<char>());	// read stream
+	stream.close();
+
+	mConfiguration = Json::Parser::parse(data);
+
+	if ( !mConfiguration.isMember("breakpoints") ) {
+		mConfiguration.addMember("breakpoints", Json::Value());
+	}
+	if ( !mConfiguration.isMember("watches") ) {
+		mConfiguration.addMember("watches", Json::Value());
+	}
+}
+
+void Backend::saveConfig()
+{
+	Json::Writer writer;
+	std::string data = writer.toString(mConfiguration);
+
+	std::string filename = mSettings->filename() + ".dbg";
+
+	std::fstream stream;
+	stream.open(filename.c_str(), std::ios::out);    // open file for writing
+	stream.write(data.c_str(), data.size());
+	stream.close();
 }
 
 bool Backend::modifySymbol(const StringList& tokens)

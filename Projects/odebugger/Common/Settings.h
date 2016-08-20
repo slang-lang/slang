@@ -21,10 +21,18 @@ class Settings
 public:
 	Settings()
 	{
+		mAutoStart = false;
 		mPrompt = "odebugger> ";
 	}
 
 public:
+	bool autoStart() const {
+		return mAutoStart;
+	}
+	void autoStart(bool value) {
+		mAutoStart = value;
+	}
+
 	const std::string& filename() const {
 		return mFilename;
 	}
@@ -44,6 +52,7 @@ public:
 	}
 
 private:
+	bool mAutoStart;
 	std::string mFilename;
 	std::string mPrompt;
 	std::string mRoot;

@@ -4,6 +4,7 @@
 
 
 // Library includes
+#include <Json/Json.h>
 
 // Project includes
 #include <Core/Parameter.h>
@@ -65,6 +66,10 @@ public:	// IReceiver implementation
 	int notifyException(SymbolScope* scope, const Core::BreakPoint& breakpoint);
 	int notifyExit(SymbolScope* scope, const Core::BreakPoint& breakpoint);
 
+private:	// Configuration
+	void loadConfig();
+	void saveConfig();
+
 private:	// Watches
 	bool addWatch(const StringList &tokens);
 	void refreshWatches();
@@ -90,6 +95,7 @@ private:
 private:
 	bool mAutoWatch;
 	bool mBreakOnException;
+	Json::Value mConfiguration;
 	bool mContinue;
 	Core::Debugger* mDebugger;
 	ParameterList mParameters;
