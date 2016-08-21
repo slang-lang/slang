@@ -9,9 +9,13 @@
 #include <System/Console/Cin.h>
 #include <System/Console/Cout.h>
 #include <System/Console/Endl.h>
+#include <System/Math/Abs.h>
 #include <System/Math/Ceil.h>
 #include <System/Math/Floor.h>
+#include <System/Math/Rand.h>
 #include <System/Math/Round.h>
+#include <System/Math/Sqrt.h>
+#include <System/Math/Srand.h>
 #include <System/Math/Trunc.h>
 #include <System/IO/FileClose.h>
 #include <System/IO/FileOpen.h>
@@ -76,12 +80,18 @@ void SystemExtension::provideMethods(ExtensionMethods &methods)
 	methods.push_back(new Console::Cout());
 	methods.push_back(new Console::Endl());
 
+	methods.push_back(new Math::AbsDouble());
+	methods.push_back(new Math::AbsFloat());
 	methods.push_back(new Math::CeilDouble());
 	methods.push_back(new Math::CeilFloat());
 	methods.push_back(new Math::FloorDouble());
 	methods.push_back(new Math::FloorFloat());
+	methods.push_back(new Math::Rand());
 	methods.push_back(new Math::RoundDouble());
 	methods.push_back(new Math::RoundFloat());
+	methods.push_back(new Math::SqrtDouble());
+	methods.push_back(new Math::SqrtFloat());
+	methods.push_back(new Math::Srand());
 	methods.push_back(new Math::TruncDouble());
 	methods.push_back(new Math::TruncFloat());
 
