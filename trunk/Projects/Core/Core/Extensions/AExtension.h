@@ -15,6 +15,7 @@
 
 
 namespace ObjectiveScript {
+
 // Forward declarations
 class IScope;
 namespace Runtime {
