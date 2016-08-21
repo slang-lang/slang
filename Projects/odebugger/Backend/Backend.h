@@ -92,8 +92,6 @@ private:
 	void start();
 
 private:
-	bool mAutoWatch;
-	bool mBreakOnException;
 	bool mContinue;
 	Core::Debugger* mDebugger;
 	ParameterList mParameters;

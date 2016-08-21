@@ -33,9 +33,7 @@ namespace ObjectiveScript {
 
 
 Backend::Backend()
-: mAutoWatch(true),
-  mBreakOnException(true),
-  mContinue(false),
+: mContinue(false),
   mDebugger(0),
   mRunning(true),
   mScope(0),
@@ -393,6 +391,7 @@ void Backend::loadConfig()
 
 	Json::Value config = Json::Parser::parse(data);
 
+	// breakpoints
 	if ( config.isMember("breakpoints") ) {
 		// parse breakpoints
 		Json::Value::Members breakpoints = config["breakpoints"].members();
@@ -405,6 +404,7 @@ void Backend::loadConfig()
 		}
 	}
 
+	// watches
 	if ( config.isMember("watches") ) {
 		// parse watches
 		Json::Value::Members watches = config["watches"].members();
@@ -416,38 +416,17 @@ void Backend::loadConfig()
 			);
 		}
 	}
-}
 
-void Backend::saveConfig()
-{
-	Json::Value config;
-
-	// (1) write breakpoints to config
-	Json::Value breakpoints;
-	Core::BreakPointCollection breakpointList = mDebugger->getBreakPoints();
-	for ( Core::BreakPointCollection::const_iterator it = breakpointList.begin(); it != breakpointList.end(); ++it ) {
-		breakpoints.addElement(it->toConfigString());
+	// odebugger config
+	if ( config.isMember("autostart") ) {
+		mSettings->autoStart(config["autostart"].asBool());
 	}
-	config.addMember("breakpoints", breakpoints);
-
-	// (2) write watches to config
-	Json::Value watches;
-	for ( WatchCollection::const_iterator it = mWatches.begin(); it != mWatches.end(); ++it ) {
-		watches.addElement(it->symbol());
+	if ( config.isMember("autowatch") ) {
+		mSettings->autoWatch(config["autowatch"].asBool());
 	}
-	config.addMember("watches", watches);
-
-	// serialize config to string
-	Json::StyledWriter writer;
-	std::string data = writer.toString(config);
-
-	std::string filename = mSettings->filename() + ".dbg";
-
-	// write config string to file
-	std::fstream stream;
-	stream.open(filename.c_str(), std::ios::out);    // open file for writing
-	stream.write(data.c_str(), data.size());
-	stream.close();
+	if ( config.isMember("breakonexception") ) {
+		mSettings->breakOnException(config["breakonexception"].asBool());
+	}
 }
 
 bool Backend::modifySymbol(const StringList& tokens)
@@ -514,7 +493,7 @@ int Backend::notify(SymbolScope* scope, const Core::BreakPoint& breakpoint)
 	}
 
 	// automatically update watches
-	if ( mAutoWatch && mScope ) {
+	if ( mSettings->autoWatch() && mScope ) {
 		refreshWatches();
 	}
 
@@ -624,8 +603,10 @@ void Backend::printHelp()
 	writeln("\tbreakpoints   print breakpoints");
 	writeln("\tdelete (d)    delete breakpoint");
 	writeln("\thelp          print help message");
+	writeln("\tload          load configuration");
 	writeln("\tquit (q)      quit odebugger");
 	writeln("\trun (r)       run program");
+	writeln("\tsave          save configuration");
 	writeln("\tunwatch       remove symbol watch");
 	writeln("\twatch (w)     add symbol watch");
 
@@ -739,6 +720,43 @@ void Backend::run(const StringList& tokens)
 	stop();
 }
 
+void Backend::saveConfig()
+{
+	Json::Value config;
+
+	// (1) write breakpoints to config
+	Json::Value breakpoints;
+	Core::BreakPointCollection breakpointList = mDebugger->getBreakPoints();
+	for ( Core::BreakPointCollection::const_iterator it = breakpointList.begin(); it != breakpointList.end(); ++it ) {
+		breakpoints.addElement(it->toConfigString());
+	}
+	config.addMember("breakpoints", breakpoints);
+
+	// (2) write watches to config
+	Json::Value watches;
+	for ( WatchCollection::const_iterator it = mWatches.begin(); it != mWatches.end(); ++it ) {
+		watches.addElement(it->symbol());
+	}
+	config.addMember("watches", watches);
+
+	// odebugger config
+	config.addMember("autostart", Json::Value(mSettings->autoStart()));
+	config.addMember("autowatch", Json::Value(mSettings->autoWatch()));
+	config.addMember("breakonexception", Json::Value(mSettings->breakOnException()));
+
+	// serialize config to string
+	Json::StyledWriter writer;
+	std::string data = writer.toString(config);
+
+	std::string filename = mSettings->filename() + ".dbg";
+
+	// write config string to file
+	std::fstream stream;
+	stream.open(filename.c_str(), std::ios::out);    // open file for writing
+	stream.write(data.c_str(), data.size());
+	stream.close();
+}
+
 void Backend::shutdown()
 {
 	stop();
@@ -757,7 +775,7 @@ void Backend::start()
 {
 	stop();
 
-	mDebugger->breakOnException(mBreakOnException);
+	mDebugger->breakOnException(mSettings->breakOnException());
 	mDebugger->resume();
 	StackTrace::GetInstance().clear();
 
@@ -813,10 +831,10 @@ void Backend::stop()
 
 void Backend::toggleAutoWatch()
 {
-	mAutoWatch = !mAutoWatch;
+	mSettings->autoWatch(!mSettings->autoWatch());
 
 	write("Autowatch is ");
-	if ( mAutoWatch ) {
+	if ( mSettings->autoWatch() ) {
 		writeln("on");
 	}
 	else {
