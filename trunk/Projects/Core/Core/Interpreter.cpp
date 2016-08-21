@@ -759,17 +759,19 @@ void Interpreter::process_for(TokenIterator& token, Object* result)
 		// {
 		TokenIterator condBegin = conditionBegin;
 
-		Object condition;
-		try {
-			expression(&condition, condBegin);
-		}
-		catch ( ControlFlow::E &e ) {
-			mControlFlow = e;
-			return;
-		}
+		if ( std::distance(condBegin, increaseBegin) > 1 ) {
+			Object condition;
+			try {
+				expression(&condition, condBegin);
+			}
+			catch ( ControlFlow::E &e ) {
+				mControlFlow = e;
+				return;
+			}
 
-		if ( !isTrue(condition) ) {
-			break;
+			if ( !isTrue(condition) ) {
+				break;
+			}
 		}
 		// }
 

@@ -9,6 +9,7 @@
 			assert( TestCase3() );
 			assert( TestCase4() );
 			assert( TestCase5() );
+			assert( TestCase6() );
 		}
 
 		private bool TestCase1() const
@@ -81,6 +82,24 @@
 			}
 
 			return false;
+		}
+
+		private bool TestCase6() const
+		{
+			print("TestCase 6: for ( ; ; )");
+
+			int i = 0;
+			for ( ; ; ) {
+				print("" + i + ": for loop without condition");
+
+				if ( i == 3 ) {
+					break;
+				}
+
+				i++;
+			}
+
+			return true;
 		}
 	}
 
