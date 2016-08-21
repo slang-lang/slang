@@ -192,18 +192,20 @@ int Backend::exec()
 	assert(mDebugger);
 	assert(!mVirtualMachine);
 
+	// store previous autostart value
 	bool autostart = mSettings->autoStart();
 
 	loadConfig();
 
-	autostart = autostart || mSettings->autoStart();
+	// set autostart even though disabled by configuration
+	mSettings->autoStart(autostart || mSettings->autoStart());
 
 	// register SIGINT handle
 	signal(SIGINT, handleSIGINT);
 
 	// start program execution
 	while ( mRunning ) {
-		if ( autostart ) {
+		if ( mSettings->autoStart() ) {
 			run(StringList());
 		}
 
