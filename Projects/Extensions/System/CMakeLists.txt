@@ -2,6 +2,7 @@ INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
 ADD_SUBDIRECTORY(Console)
 ADD_SUBDIRECTORY(IO)
+ADD_SUBDIRECTORY(Math)
 ADD_SUBDIRECTORY(Strings)
 
 SET(SOURCES
@@ -24,6 +25,7 @@ SET(HEADERS
 
 SET(DEPENDENCIES
 	ExtensionsSystemStrings
+	ExtensionsSystemMath
 	ExtensionsSystemIO
     ExtensionsSystemConsole
 	Utils

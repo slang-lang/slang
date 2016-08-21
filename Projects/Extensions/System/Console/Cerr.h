@@ -13,7 +13,7 @@
 #include <Core/Tools.h>
 #include <Core/Utils/Exceptions.h>
 #include <Tools/Strings.h>
-#include "Console.h"
+#include "Math.h"
 
 // Forward declarations
 
