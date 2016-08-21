@@ -5,10 +5,14 @@ SET(SOURCES
 )
 
 SET(HEADERS
+	Abs.h
 	Ceil.h
 	Floor.h
 	Math.h
+	Rand.h
 	Round.h
+	Sqrt.h
+	Srand.h
 	Trunc.h
 )
 
