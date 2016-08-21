@@ -4,6 +4,7 @@
 
 // Library includes
 #include <fstream>
+#include <signal.h>
 #include <Json/Json.h>
 
 // Project includes
@@ -30,6 +31,18 @@
 
 
 namespace ObjectiveScript {
+
+
+/*
+ * SIGINT handler: sets debugger to immediately break on next command
+ */
+void handleSIGINT(int signal)
+{
+	std::cout << "Caught signal SIGINT " << signal << std::endl;
+
+	// set debugger to break on next command
+	Core::Debugger::GetInstance().stepOver();
+}
 
 
 Backend::Backend()
@@ -179,18 +192,26 @@ int Backend::exec()
 	assert(mDebugger);
 	assert(!mVirtualMachine);
 
+	bool autostart = mSettings->autoStart();
+
 	loadConfig();
+
+	autostart = autostart || mSettings->autoStart();
+
+	// register SIGINT handle
+	signal(SIGINT, handleSIGINT);
 
 	// start program execution
 	while ( mRunning ) {
-		if ( mSettings->autoStart() ) {
-			mSettings->autoStart(false);
-
+		if ( autostart ) {
 			run(StringList());
 		}
 
 		notify(0, Core::Debugger::immediateBreakPoint);
 	}
+
+	// unregister SIGINT handler
+	signal(SIGINT, 0);
 
 	// program exection is done
 	return 0;
