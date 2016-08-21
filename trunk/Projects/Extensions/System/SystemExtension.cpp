@@ -9,6 +9,9 @@
 #include <System/Console/Cin.h>
 #include <System/Console/Cout.h>
 #include <System/Console/Endl.h>
+#include <System/Math/Ceil.h>
+#include <System/Math/Floor.h>
+#include <System/Math/Round.h>
 #include <System/IO/FileClose.h>
 #include <System/IO/FileOpen.h>
 #include <System/IO/FileRead.h>
@@ -71,6 +74,13 @@ void SystemExtension::provideMethods(ExtensionMethods &methods)
 	methods.push_back(new Console::Cin());
 	methods.push_back(new Console::Cout());
 	methods.push_back(new Console::Endl());
+
+	methods.push_back(new Math::CeilDouble());
+	methods.push_back(new Math::CeilFloat());
+	methods.push_back(new Math::FloorDouble());
+	methods.push_back(new Math::FloorFloat());
+	methods.push_back(new Math::RoundDouble());
+	methods.push_back(new Math::RoundFloat());
 
 	methods.push_back(new IO::FileClose());
 	methods.push_back(new IO::FileOpen());
