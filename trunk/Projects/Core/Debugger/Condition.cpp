@@ -80,6 +80,11 @@ bool Condition::evaluate(Symbol* lhs, Symbol* rhs) const
 	return false;
 }
 
+bool Condition::isValid() const
+{
+	return mType != Type::Invalid;
+}
+
 const std::string& Condition::lhs() const
 {
 	return mLeft;

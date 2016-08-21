@@ -49,10 +49,23 @@ void BreakPoint::setCondition(const Condition& condition)
 	mCondition = condition;
 }
 
+std::string BreakPoint::toConfigString() const
+{
+	std::stringstream ss;
+	ss << mFilename << " " << mLine;
+	if ( mCondition.isValid() ) {
+		ss << " " << mCondition.toString();
+	}
+	return ss.str();
+}
+
 std::string BreakPoint::toString() const
 {
 	std::stringstream ss;
-	ss << mFilename << " " << mLine << " [" << mCondition.toString() << "]";
+	ss << mFilename << " " << mLine;
+	if ( mCondition.isValid() ) {
+		ss << " [" << mCondition.toString() << "]";
+	}
 	return ss.str();
 }
 

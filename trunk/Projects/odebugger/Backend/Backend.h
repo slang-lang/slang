@@ -4,7 +4,6 @@
 
 
 // Library includes
-#include <Json/Json.h>
 
 // Project includes
 #include <Core/Parameter.h>
@@ -95,7 +94,6 @@ private:
 private:
 	bool mAutoWatch;
 	bool mBreakOnException;
-	Json::Value mConfiguration;
 	bool mContinue;
 	Core::Debugger* mDebugger;
 	ParameterList mParameters;

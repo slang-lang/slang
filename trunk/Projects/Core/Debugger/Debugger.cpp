@@ -49,6 +49,11 @@ void Debugger::breakOnException(bool state)
 	mBreakOnException = state;
 }
 
+void Debugger::clearBreakPoints()
+{
+	mBreakPoints.clear();
+}
+
 BreakPointCollection::iterator Debugger::findBreakPoint(const Token& token)
 {
 	return mBreakPoints.find(BreakPoint(token.position()));

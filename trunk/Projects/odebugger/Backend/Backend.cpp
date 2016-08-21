@@ -4,6 +4,7 @@
 
 // Library includes
 #include <fstream>
+#include <Json/Json.h>
 
 // Project includes
 #include <Common/Settings.h>
@@ -76,8 +77,6 @@ bool Backend::addBreakPoint(const StringList& tokens)
 			Core::Condition(left, op, right)
 		);
 	}
-
-	mConfiguration["breakpoints"].addElement(breakpoint.toString());
 
 	return mDebugger->addBreakPoint(breakpoint);
 }
@@ -383,28 +382,68 @@ void Backend::loadConfig()
 		return;
 	}
 
+	// reset current configuration
+	mDebugger->clearBreakPoints();
+	mWatches.clear();
+
 	std::fstream stream;
 	stream.open(filename.c_str(), std::ios::in);	// open for reading
 	std::string data((std::istreambuf_iterator<char>(stream)), std::istreambuf_iterator<char>());	// read stream
 	stream.close();
 
-	mConfiguration = Json::Parser::parse(data);
+	Json::Value config = Json::Parser::parse(data);
 
-	if ( !mConfiguration.isMember("breakpoints") ) {
-		mConfiguration.addMember("breakpoints", Json::Value());
+	if ( config.isMember("breakpoints") ) {
+		// parse breakpoints
+		Json::Value::Members breakpoints = config["breakpoints"].members();
+		for ( Json::Value::Members::const_iterator it = breakpoints.begin(); it != breakpoints.end(); ++it ) {
+			std::string command = "breakpoint " + it->asString();
+
+			addBreakPoint(
+				parseCommands(command)
+			);
+		}
 	}
-	if ( !mConfiguration.isMember("watches") ) {
-		mConfiguration.addMember("watches", Json::Value());
+
+	if ( config.isMember("watches") ) {
+		// parse watches
+		Json::Value::Members watches = config["watches"].members();
+		for ( Json::Value::Members::const_iterator it = watches.begin(); it != watches.end(); ++it ) {
+			std::string command = "watch " + it->asString();
+
+			addWatch(
+				parseCommands(command)
+			);
+		}
 	}
 }
 
 void Backend::saveConfig()
 {
-	Json::Writer writer;
-	std::string data = writer.toString(mConfiguration);
+	Json::Value config;
+
+	// (1) write breakpoints to config
+	Json::Value breakpoints;
+	Core::BreakPointCollection breakpointList = mDebugger->getBreakPoints();
+	for ( Core::BreakPointCollection::const_iterator it = breakpointList.begin(); it != breakpointList.end(); ++it ) {
+		breakpoints.addElement(it->toConfigString());
+	}
+	config.addMember("breakpoints", breakpoints);
+
+	// (2) write watches to config
+	Json::Value watches;
+	for ( WatchCollection::const_iterator it = mWatches.begin(); it != mWatches.end(); ++it ) {
+		watches.addElement(it->symbol());
+	}
+	config.addMember("watches", watches);
+
+	// serialize config to string
+	Json::StyledWriter writer;
+	std::string data = writer.toString(config);
 
 	std::string filename = mSettings->filename() + ".dbg";
 
+	// write config string to file
 	std::fstream stream;
 	stream.open(filename.c_str(), std::ios::out);    // open file for writing
 	stream.write(data.c_str(), data.size());
@@ -463,7 +502,7 @@ int Backend::notify(SymbolScope* scope, const Core::BreakPoint& breakpoint)
 		}
 	}
 
-	if ( !condition.evaluate(lhs, rhs) ) {
+	if ( condition.isValid() && !condition.evaluate(lhs, rhs) ) {
 		mContinue = true;
 		mScope = 0;
 		return 0;
@@ -705,9 +744,11 @@ void Backend::shutdown()
 	stop();
 
 	mContinue = false;
+	mDebugger->clearBreakPoints();
 	mDebugger->unregisterReceiver(this);
 	mRunning = false;
 	mScope = 0;
+	mWatches.clear();
 
 	clearSymbolCache();
 }
