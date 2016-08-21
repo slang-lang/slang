@@ -167,6 +167,10 @@ bool VirtualMachine::loadExtensions()
 
 	for ( Extensions::ExtensionList::const_iterator extIt = mExtensions.begin(); extIt != mExtensions.end(); ++extIt ) {
 		try {
+			OSdebug("adding extension '" + (*extIt)->getName() + "'");
+
+			(*extIt)->initialize(mRepository->getGlobalScope());
+
 			Extensions::ExtensionMethods methods;
 			(*extIt)->provideMethods(methods);
 
