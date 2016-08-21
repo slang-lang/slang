@@ -6,7 +6,7 @@
 // Library includes
 
 // Project includes
-#include <Core/Interfaces/IExtension.h>
+#include <Core/Extensions/AExtension.h>
 
 // Forward declarations
 
@@ -18,17 +18,13 @@ namespace Extensions {
 namespace System {
 
 
-class SystemExtension : public IExtension
+class SystemExtension : public AExtension
 {
 public:
 	SystemExtension();
 	~SystemExtension();
 
 public:
-	std::string getName() const {
-		return "System";
-	}
-
 	void provideMethods(ExtensionMethods &methods);
 };
 

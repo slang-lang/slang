@@ -10,7 +10,7 @@
 
 // Project includes
 #include <Core/Designtime/BluePrintObject.h>
-#include <Core/Interfaces/IExtension.h>
+#include <Core/Extensions/AExtension.h>
 #include "Parameter.h"
 
 // Forward declarations
@@ -36,7 +36,7 @@ public:
 	~VirtualMachine();
 
 public:	// Setup
-	void addExtension(Extensions::IExtension *extension);
+	void addExtension(Extensions::AExtension *extension);
 	void setBaseFolder(const std::string& base);
 	void setLibraryFolder(const std::string& library);
 

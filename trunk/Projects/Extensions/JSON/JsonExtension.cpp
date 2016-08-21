@@ -16,6 +16,11 @@ namespace Extensions {
 namespace Json {
 
 
+JsonExtension::JsonExtension()
+: AExtension("Json")
+{
+}
+
 void JsonExtension::provideMethods(ExtensionMethods &methods)
 {
 	assert(methods.empty());

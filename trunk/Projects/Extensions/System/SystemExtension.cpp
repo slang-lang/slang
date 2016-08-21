@@ -38,6 +38,7 @@ namespace System {
 
 
 SystemExtension::SystemExtension()
+: AExtension("System")
 {
 #ifdef _WIN32
 #else
