@@ -36,6 +36,7 @@ public:
 
 public:	// IDebugger implementation
 	bool addBreakPoint(const BreakPoint& breakpoint);
+	void clearBreakPoints();
 	bool removeBreakPoint(const BreakPoint& breakpoint);
 
 	void breakOnException(bool state);

@@ -47,6 +47,7 @@ public:
 public:
 	bool evaluate(Symbol* lhs, Symbol* rhs) const;
 
+	bool isValid() const;
 	const std::string& lhs() const;
 	const std::string& rhs() const;
 	std::string toString() const;
