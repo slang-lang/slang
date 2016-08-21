@@ -7,6 +7,9 @@ SET(SOURCES
 SET(HEADERS
 	StrFind.h
 	StrLen.h
+	StrLTrim.h
+	StrRTrim.h
+	StrTrim.h
 	SubStr.h
 	ToLower.h
 	ToUpper.h

@@ -6,13 +6,10 @@ public object Main {
 	}
 
 	private bool TestCase1() const {
-		print("TestCase 1: srand()");
+		print("TestCase1: time()");
 
-		srand(time());
-
-		int value = rand() % 100 + 1;
-
-		print("rand() = " + value);
+		int value = time();
+		print("time() = " + value);
 
 		return value > 0;
 	}
