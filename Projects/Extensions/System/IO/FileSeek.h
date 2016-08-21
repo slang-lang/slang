@@ -6,7 +6,6 @@
 // Library includes
 
 // Project includes
-#include <Core/Interfaces/IExtension.h>
 #include <Core/Method.h>
 
 // Forward declarations

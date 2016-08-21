@@ -137,12 +137,14 @@ std::string UriEncode(const std::string & sSrc)
 
 
 ApacheExtension::ApacheExtension()
+: AExtension("Apache")
 {
-	initialize();
 }
 
-void ApacheExtension::initialize()
+void ApacheExtension::initialize(IScope* scope)
 {
+	AExtension::initialize(scope);
+
 	readGetData();
 	readPostData();
 }

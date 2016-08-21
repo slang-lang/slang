@@ -39,6 +39,11 @@ namespace Extensions {
 namespace Mysql {
 
 
+MysqlExtension::MysqlExtension()
+: AExtension("Mysql")
+{
+}
+
 void MysqlExtension::provideMethods(ExtensionMethods &methods)
 {
 	assert(methods.empty());

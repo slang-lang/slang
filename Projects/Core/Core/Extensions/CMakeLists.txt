@@ -1,15 +1,14 @@
 INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
 SET(SOURCES
+	AExtension.cpp
 )
 
 SET(HEADERS
-	IExtension.h
-	IExternalCommand.h
-	IScope.h
+	AExtension.h
 )
 
 SET(DEPENDENCIES
 )
 
-build_static_lib(CoreInterfaces "")
+build_static_lib(CoreExtensions "")

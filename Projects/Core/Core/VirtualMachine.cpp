@@ -39,7 +39,7 @@ VirtualMachine::~VirtualMachine()
 	delete mRepository;
 }
 
-void VirtualMachine::addExtension(Extensions::IExtension *extension)
+void VirtualMachine::addExtension(Extensions::AExtension *extension)
 {
 	assert(extension);
 

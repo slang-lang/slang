@@ -6,7 +6,8 @@
 // Library includes
 
 // Project includes
-#include <Core/Interfaces/IExtension.h>
+#include <Core/Extensions/AExtension.h>
+#include <Core/Interfaces/IScope.h>
 
 // Forward declarations
 
@@ -18,19 +19,15 @@ namespace Extensions {
 namespace Apache {
 
 
-class ApacheExtension : public IExtension
+class ApacheExtension : public AExtension
 {
 public:
 	ApacheExtension();
 
-	std::string getName() const {
-		return "Apache";
-	}
-
+	void initialize(IScope* scope);
 	void provideMethods(ExtensionMethods &methods);
 
 private:
-	void initialize();
 	void readGetData();
 	void readPostData();
 };

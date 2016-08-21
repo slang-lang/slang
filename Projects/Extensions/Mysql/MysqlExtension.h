@@ -6,7 +6,7 @@
 // Library includes
 
 // Project includes
-#include <Core/Interfaces/IExtension.h>
+#include <Core/Extensions/AExtension.h>
 
 // Forward declarations
 
@@ -18,13 +18,12 @@ namespace Extensions {
 namespace Mysql {
 
 
-class MysqlExtension : public IExtension
+class MysqlExtension : public AExtension
 {
 public:
-	std::string getName() const {
-		return "Mysql";
-	}
+	MysqlExtension();
 
+public:
 	void provideMethods(ExtensionMethods &methods);
 };
 

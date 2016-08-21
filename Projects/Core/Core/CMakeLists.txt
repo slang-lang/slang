@@ -4,6 +4,7 @@ ADD_SUBDIRECTORY(Attributes)
 ADD_SUBDIRECTORY(BuildInObjects)
 #ADD_SUBDIRECTORY(Common)
 ADD_SUBDIRECTORY(Designtime)
+ADD_SUBDIRECTORY(Extensions)
 #ADD_SUBDIRECTORY(Interfaces)
 ADD_SUBDIRECTORY(Parser)
 ADD_SUBDIRECTORY(Runtime)
@@ -57,6 +58,7 @@ SET(DEPENDENCIES
 	CoreUtils
 	CoreRuntime
 	CoreParser
+	CoreExtensions
 	CoreDebugger
 	CoreDesigntimeBuildInTypes
 	CoreDesigntime
