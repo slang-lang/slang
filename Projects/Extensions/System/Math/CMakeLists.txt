@@ -9,6 +9,7 @@ SET(HEADERS
 	Floor.h
 	Math.h
 	Round.h
+	Trunc.h
 )
 
 SET(DEPENDENCIES
