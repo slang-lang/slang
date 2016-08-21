@@ -1,14 +1,14 @@
 
-#ifndef ObjectiveScript_Extensions_System_Math_Srand_h
-#define ObjectiveScript_Extensions_System_Math_Srand_h
+#ifndef ObjectiveScript_Extensions_System_StdTime_h
+#define ObjectiveScript_Extensions_System_StdTime_h
 
 
 // Library includes
-#include <math.h>
+#include <time.h>
 
 // Project includes
+#include <Core/BuildInObjects/StringObject.h>
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
-#include <Core/Designtime/BuildInTypes/VoidObject.h>
 #include <Core/Method.h>
 #include <Core/Repository.h>
 #include <Core/Tools.h>
@@ -23,32 +23,28 @@
 namespace ObjectiveScript {
 namespace Extensions {
 namespace System {
-namespace Math {
 
 
-class Srand: public Runtime::Method
+class StdTime : public Runtime::Method
 {
 public:
-	Srand()
-	: Runtime::Method(0, "srand", Designtime::VoidObject::TYPENAME)
+	StdTime()
+	: Runtime::Method(0, "time", Designtime::IntegerObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter("value", Designtime::IntegerObject::TYPENAME, VALUE_NONE));
 
 		setSignature(params);
 	}
 
 public:
-	Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* /*result*/, const Token& token)
+	Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* result, const Token& token)
 	{
 		ParameterList list = mergeParameters(params);
 
 		try {
 			ParameterList::const_iterator it = list.begin();
 
-			int param_value = (it++)->value().toInt();
-
-			srand(param_value);
+			*result = Runtime::IntegerObject((int)time(NULL));
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
@@ -63,7 +59,6 @@ public:
 };
 
 
-}
 }
 }
 }

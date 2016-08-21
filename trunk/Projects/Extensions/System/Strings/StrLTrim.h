@@ -1,14 +1,15 @@
 
-#ifndef ObjectiveScript_Extensions_System_Math_Srand_h
-#define ObjectiveScript_Extensions_System_Math_Srand_h
+#ifndef ObjectiveScript_Extensions_System_Strings_StrLTrim_h
+#define ObjectiveScript_Extensions_System_Strings_StrLTrim_h
 
 
 // Library includes
-#include <math.h>
+#include <stdlib.h>
 
 // Project includes
+#include <Core/BuildInObjects/StringObject.h>
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
-#include <Core/Designtime/BuildInTypes/VoidObject.h>
+#include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/Method.h>
 #include <Core/Repository.h>
 #include <Core/Tools.h>
@@ -23,32 +24,32 @@
 namespace ObjectiveScript {
 namespace Extensions {
 namespace System {
-namespace Math {
+namespace Strings {
 
 
-class Srand: public Runtime::Method
+class StrLTrim : public Runtime::Method
 {
 public:
-	Srand()
-	: Runtime::Method(0, "srand", Designtime::VoidObject::TYPENAME)
+	StrLTrim()
+	: Runtime::Method(0, "strltrim", Designtime::StringObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter("value", Designtime::IntegerObject::TYPENAME, VALUE_NONE));
+		params.push_back(Parameter("value", Designtime::StringObject::TYPENAME, 0));
 
 		setSignature(params);
 	}
 
 public:
-	Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* /*result*/, const Token& token)
+	Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* result, const Token& token)
 	{
 		ParameterList list = mergeParameters(params);
 
 		try {
 			ParameterList::const_iterator it = list.begin();
 
-			int param_value = (it++)->value().toInt();
+			std::string param_value = (*it++).value().toStdString();
 
-			srand(param_value);
+			*result = Runtime::StringObject(::Utils::Tools::stringTrimLeft(param_value));
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);

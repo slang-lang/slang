@@ -17,6 +17,7 @@ SET(HEADERS
 	GetEnv.h
 	SetKeyboardBlockingMode.h
 	Sleep.h
+	StdTime.h
 	System.h
 	SystemExtension.h
 	Write.h

@@ -24,6 +24,9 @@
 #include <System/IO/FileWrite.h>
 #include <System/Strings/StrFind.h>
 #include <System/Strings/StrLen.h>
+#include <System/Strings/StrLTrim.h>
+#include <System/Strings/StrRTrim.h>
+#include <System/Strings/StrTrim.h>
 #include <System/Strings/SubStr.h>
 #include <System/Strings/ToLower.h>
 #include <System/Strings/ToUpper.h>
@@ -32,6 +35,7 @@
 #include "GetEnv.h"
 #include "SetKeyboardBlockingMode.h"
 #include "Sleep.h"
+#include "StdTime.h"
 #include "System.h"
 #include "Write.h"
 #include "WriteLn.h"
@@ -72,6 +76,7 @@ void SystemExtension::provideMethods(ExtensionMethods &methods)
 	methods.push_back(new GetChar());
 	methods.push_back(new GetEnv());
 	methods.push_back(new Sleep());
+	methods.push_back(new StdTime());
 	methods.push_back(new Write());
 	methods.push_back(new WriteLn());
 
@@ -111,6 +116,9 @@ void SystemExtension::provideMethods(ExtensionMethods &methods)
 
 	methods.push_back(new Strings::StrFind());
 	methods.push_back(new Strings::StrLen());
+	methods.push_back(new Strings::StrLTrim());
+	methods.push_back(new Strings::StrRTrim());
+	methods.push_back(new Strings::StrTrim());
 	methods.push_back(new Strings::SubStr());
 	methods.push_back(new Strings::ToLower());
 	methods.push_back(new Strings::ToUpper());
