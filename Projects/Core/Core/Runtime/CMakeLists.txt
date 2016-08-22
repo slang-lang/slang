@@ -12,6 +12,7 @@ SET(HEADERS
 	AtomicValue.h
 	ControlFlow.h
 	ExceptionData.h
+	Exceptions.h
 	Namespace.h
 	OperatorOverloading.h
 	TypeCast.h

@@ -26,8 +26,8 @@ public object Main {
 
 			assert(!"we should never get here!");
 		}
-		catch {
-			print("caught exception");
+		catch ( string e ) {
+			print("caught exception: " + e);
 			return true;
 		}
 

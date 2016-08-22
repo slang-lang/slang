@@ -21,7 +21,6 @@
 #include <Core/Utils/Utils.h>
 #include <Debugger/Debugger.h>
 #include <Tools/Printer.h>
-#include "Repository.h"
 #include "Tools.h"
 
 // Namespace declarations
@@ -1061,7 +1060,7 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 		throw Utils::Exceptions::ConstCorrectnessViolated("only calls to const methods are allowed for const object '" + calleeParent->getFullScopeName() + "'", token->position());
 	}
 
-	// check callers constness
+	// check caller's constness
 	if ( static_cast<Method*>(mOwner)->isConst() ) {
 		if ( mOwner->getEnclosingScope() == symbol->getEnclosingScope() && !symbol->isConst() ) {
 			// check target method's constness
@@ -1079,7 +1078,7 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 		case ControlFlow::Throw:
 			mControlFlow = ControlFlow::Throw;
 			mExceptionData = symbol->getExceptionData();
-			throw ControlFlow::Throw;		// throw even further
+			throw ControlFlow::Throw;			// throw even further
 		default:
 			break;
 	}
@@ -1452,10 +1451,11 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 				if ( !symbol ) {
 					throw Utils::Exceptions::UnknownIdentifer("identifier '" + token->content() + "' not found", catchIt->position());
 				}
-				if ( symbol->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
+				if ( symbol->getSymbolType() != Symbol::IType::BluePrintEnumSymbol && symbol->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
 					throw Utils::Exceptions::SyntaxError("invalid symbol type '" + symbol->getName() + "' found", catchIt->position());
 				}
 
+				// create new exception type instance
 				Object* type = process_type(catchIt, symbol);
 
 				expect(Token::Type::PARENTHESIS_CLOSE, catchIt++);
@@ -1466,6 +1466,9 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 
 				if ( type->QualifiedTypename() != mExceptionData.getData()->QualifiedTypename() &&
 					 type->Typename() != mExceptionData.getData()->Typename() ) {
+					// get rid of our newly created exception type instance
+					getScope()->undefine(type->getName(), type);
+					mRepository->removeReference(type);
 					continue;
 				}
 

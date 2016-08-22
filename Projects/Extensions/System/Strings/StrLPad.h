@@ -12,6 +12,7 @@
 #include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/Method.h>
 #include <Core/Repository.h>
+#include <Core/Runtime/Exceptions.h>
 #include <Core/Tools.h>
 #include <Core/Utils/Exceptions.h>
 #include <Tools/Strings.h>
@@ -52,6 +53,13 @@ public:
 			std::string param_value = (*it++).value().toStdString();
 			int param_length = (*it++).value().toInt();
 			std::string param_pattern = (*it++).value().toStdString();
+
+			if ( param_length < 0 ) {
+				throw Runtime::SizeException("invalid length");
+			}
+			if ( param_pattern.size() != 1 ) {
+				throw Runtime::SizeException("invalid pattern size");
+			}
 
 			param_value.insert(param_value.begin(), param_length, param_pattern[0]);
 
