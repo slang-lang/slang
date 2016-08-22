@@ -24,7 +24,9 @@
 #include <System/IO/FileWrite.h>
 #include <System/Strings/StrFind.h>
 #include <System/Strings/StrLen.h>
+#include <System/Strings/StrLPad.h>
 #include <System/Strings/StrLTrim.h>
+#include <System/Strings/StrRPad.h>
 #include <System/Strings/StrRTrim.h>
 #include <System/Strings/StrTrim.h>
 #include <System/Strings/SubStr.h>
@@ -80,11 +82,13 @@ void SystemExtension::provideMethods(ExtensionMethods &methods)
 	methods.push_back(new Write());
 	methods.push_back(new WriteLn());
 
+	// Console
 	methods.push_back(new Console::Cerr());
 	methods.push_back(new Console::Cin());
 	methods.push_back(new Console::Cout());
 	methods.push_back(new Console::Endl());
 
+	// Math
 	methods.push_back(new Math::AbsDouble());
 	methods.push_back(new Math::AbsFloat());
 	methods.push_back(new Math::AbsInt());
@@ -101,6 +105,7 @@ void SystemExtension::provideMethods(ExtensionMethods &methods)
 	methods.push_back(new Math::TruncDouble());
 	methods.push_back(new Math::TruncFloat());
 
+	// IO
 	methods.push_back(new IO::FileClose());
 	methods.push_back(new IO::FileOpen());
 	methods.push_back(new IO::FileReadBool());
@@ -115,9 +120,12 @@ void SystemExtension::provideMethods(ExtensionMethods &methods)
 	methods.push_back(new IO::FileWriteInt());
 	methods.push_back(new IO::FileWriteString());
 
+	// Strings
 	methods.push_back(new Strings::StrFind());
 	methods.push_back(new Strings::StrLen());
+	methods.push_back(new Strings::StrLPad());
 	methods.push_back(new Strings::StrLTrim());
+	methods.push_back(new Strings::StrRPad());
 	methods.push_back(new Strings::StrRTrim());
 	methods.push_back(new Strings::StrTrim());
 	methods.push_back(new Strings::SubStr());
