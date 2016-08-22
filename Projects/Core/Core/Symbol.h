@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Symbol_h
-#define ObjectiveScript_Symbol_h
+#ifndef ObjectiveScript_Core_Symbol_h
+#define ObjectiveScript_Core_Symbol_h
 
 
 // Library includes

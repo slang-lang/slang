@@ -30,6 +30,7 @@ NumberObject::NumberObject(AtomicValue value)
 {
 	mIsAtomicType = true;
 	mIsConstructed = true;
+	mLanguageFeatureState = LanguageFeatureState::Deprecated;
 }
 
 NumberObject::NumberObject(const std::string& name, double value)
@@ -37,6 +38,7 @@ NumberObject::NumberObject(const std::string& name, double value)
 {
 	mIsAtomicType = true;
 	mIsConstructed = true;
+	mLanguageFeatureState = LanguageFeatureState::Deprecated;
 }
 
 NumberObject::NumberObject(const Object& other)
@@ -46,6 +48,7 @@ NumberObject::NumberObject(const Object& other)
 
 	mIsAtomicType = true;
 	mIsConstructed = true;
+	mLanguageFeatureState = LanguageFeatureState::Deprecated;
 
 	std::string source = other.Typename();
 

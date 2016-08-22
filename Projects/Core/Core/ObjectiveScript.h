@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_ObjectiveScript_h
-#define ObjectiveScript_ObjectiveScript_h
+#ifndef ObjectiveScript_Core_ObjectiveScript_h
+#define ObjectiveScript_Core_ObjectiveScript_h
 
 
 // Library includes

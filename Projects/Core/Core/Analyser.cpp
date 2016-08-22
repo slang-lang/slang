@@ -8,8 +8,8 @@
 #include <iostream>
 
 // Project includes
+#include <Core/Designtime/Parser/Parser.h>
 #include <Core/Designtime/SanityChecker.h>
-#include <Core/Parser/Parser.h>
 #include <Core/Runtime/Namespace.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Utils/Utils.h>

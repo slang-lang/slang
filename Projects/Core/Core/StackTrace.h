@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Stacktrace_h
-#define ObjectiveScript_Stacktrace_h
+#ifndef ObjectiveScript_Core_Stacktrace_h
+#define ObjectiveScript_Core_Stacktrace_h
 
 
 // Library includes

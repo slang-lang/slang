@@ -13,4 +13,4 @@ SET(DEPENDENCIES
 
 add_include(Projects/Core)
 
-build_static_lib(CoreParser "")
+build_static_lib(CoreDesigntimeParser "")

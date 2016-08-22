@@ -1,6 +1,7 @@
 INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
 ADD_SUBDIRECTORY(BuildInTypes)
+ADD_SUBDIRECTORY(Parser)
 
 SET(SOURCES
 	Ancestor.cpp
@@ -22,6 +23,7 @@ SET(HEADERS
 )
 
 SET(DEPENDENCIES
+	CoreDesigntimeParser
 	CoreDesigntimeBuildInTypes
 	CoreAttributes
 )

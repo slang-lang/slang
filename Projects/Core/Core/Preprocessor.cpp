@@ -8,7 +8,7 @@
 #include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/Designtime/BluePrintObject.h>
 #include <Core/Designtime/BluePrintEnum.h>
-#include <Core/Parser/Parser.h>
+#include <Core/Designtime/Parser/Parser.h>
 #include <Core/Utils/Exceptions.h>
 #include "Tokenizer.h"
 #include "Tools.h"

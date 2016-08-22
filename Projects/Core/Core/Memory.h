@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Memory_h
-#define ObjectiveScript_Memory_h
+#ifndef ObjectiveScript_Core_Memory_h
+#define ObjectiveScript_Core_Memory_h
 
 
 // Library includes

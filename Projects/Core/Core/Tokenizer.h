@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Tokenizer_h
-#define ObjectiveScript_Tokenizer_h
+#ifndef ObjectiveScript_Core_Tokenizer_h
+#define ObjectiveScript_Core_Tokenizer_h
 
 
 // Library includes
