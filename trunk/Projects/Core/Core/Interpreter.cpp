@@ -1079,7 +1079,7 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 		case ControlFlow::Throw:
 			mControlFlow = ControlFlow::Throw;
 			mExceptionData = symbol->getExceptionData();
-			break;
+			throw ControlFlow::Throw;		// throw even further
 		default:
 			break;
 	}
