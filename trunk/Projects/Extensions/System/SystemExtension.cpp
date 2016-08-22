@@ -87,6 +87,7 @@ void SystemExtension::provideMethods(ExtensionMethods &methods)
 
 	methods.push_back(new Math::AbsDouble());
 	methods.push_back(new Math::AbsFloat());
+	methods.push_back(new Math::AbsInt());
 	methods.push_back(new Math::CeilDouble());
 	methods.push_back(new Math::CeilFloat());
 	methods.push_back(new Math::FloorDouble());

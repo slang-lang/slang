@@ -7,30 +7,6 @@ public namespace Math {
 	public float PI_float const = 3.14159265359f;
 	public double PI const = 3.14159265359d;
 
-	public double abs(double value) {
-		if ( value >= 0.0d ) {
-			return value;
-		}
-
-		return value * -1;
-	}
-
-	public float abs(float value) {
-		if ( value >= 0.0f ) {
-			return value;
-		}
-
-		return value * -1;
-	}
-
-	public int abs(int value) {
-		if ( value >= 0 ) {
-			return value;
-		}
-
-		return value * -1;
-	}
-
 	public double power(double value) {
 		return value * value;
 	}
