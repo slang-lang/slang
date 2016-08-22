@@ -16,6 +16,7 @@ SET(HEADERS
 	BluePrintGeneric.h
 	BluePrintEnum.h
 	BluePrintObject.h
+	Exceptions.h
 	Prototype.h
 	SanityChecker.h
 )

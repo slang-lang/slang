@@ -53,6 +53,13 @@ public:
 			int param_length = (*it++).value().toInt();
 			std::string param_pattern = (*it++).value().toStdString();
 
+			if ( param_length < 0 ) {
+				throw Runtime::SizeException("invalid length");
+			}
+			if ( param_pattern.size() != 1 ) {
+				throw Runtime::SizeException("invalid pattern size");
+			}
+
 			param_value.append(param_length, param_pattern[0]);
 
 			*result = Runtime::StringObject(param_value);

@@ -26,8 +26,11 @@ public object Main {
 
 			assert(!"we should never get here!");
 		}
-		catch {
-			print("caught exception");
+		catch ( int e ) {
+			assert(!"caught wrong exception type!");
+		}
+		catch ( string e ) {
+			print("caught exception: " + e);
 
 			return true;
 		}
