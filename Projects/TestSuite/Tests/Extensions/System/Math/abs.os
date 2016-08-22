@@ -4,6 +4,7 @@ public object Main {
 	public void Main(int argc = 0, string args = "") {
 		assert( TestCase1() );
 		assert( TestCase2() );
+		assert( TestCase3() );
 	}
 
 	private bool TestCase1() const {
@@ -24,6 +25,16 @@ public object Main {
 		print("abs(" + value + ") = " + abs(value));
 
 		return abs(value) == 1.23f;
+	}
+
+	private bool TestCase3() const {
+		print("TestCase 3: abs(int)");
+
+		int value = -123;
+
+		print("abs(" + value + ") = " + abs(value));
+
+		return abs(value) == 123;
 	}
 }
 
