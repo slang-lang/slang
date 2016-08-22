@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Analyser_h
-#define ObjectiveScript_Analyser_h
+#ifndef ObjectiveScript_Core_Analyser_h
+#define ObjectiveScript_Core_Analyser_h
 
 
 // Library includes

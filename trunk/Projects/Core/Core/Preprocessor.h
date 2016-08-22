@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Preprocessor_h
-#define ObjectiveScript_Preprocessor_h
+#ifndef ObjectiveScript_Core_Preprocessor_h
+#define ObjectiveScript_Core_Preprocessor_h
 
 
 // Library includes

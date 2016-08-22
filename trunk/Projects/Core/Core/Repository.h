@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Repository_h
-#define ObjectiveScript_Repository_h
+#ifndef ObjectiveScript_Core_Repository_h
+#define ObjectiveScript_Core_Repository_h
 
 
 // Library includes

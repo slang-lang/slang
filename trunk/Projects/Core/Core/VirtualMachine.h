@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_VirtualMachine_h
-#define ObjectiveScript_VirtualMachine_h
+#ifndef ObjectiveScript_Core_VirtualMachine_h
+#define ObjectiveScript_Core_VirtualMachine_h
 
 
 // Library include

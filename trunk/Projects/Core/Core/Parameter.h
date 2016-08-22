@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Parameter_h
-#define ObjectiveScript_Parameter_h
+#ifndef ObjectiveScript_Core_Parameter_h
+#define ObjectiveScript_Core_Parameter_h
 
 
 // Library includes
