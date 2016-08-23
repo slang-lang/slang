@@ -67,8 +67,8 @@ public:	// Symbol::IType implementation & RTTI
 	const std::string& QualifiedTypename() const { return mQualifiedTypename; }
 	const std::string& Typename() const { return mTypename; }
 
-	void overrideTypename(const std::string& type) { mTypename = type; }
 	void setQualifiedTypename(const std::string& type) { mQualifiedTypename = type; }
+	void setTypename(const std::string &type) { mTypename = type; }
 
 public:	// Setup
 	void addInheritance(const Designtime::Ancestor& ancestor, Object* inheritance);
@@ -129,7 +129,6 @@ protected:
 	void garbageCollector();
 
 protected:
-	//std::string mCurrentOuterface;
 	std::string mFilename;
 	Inheritance mInheritance;
 	bool mIsAtomicType;

@@ -378,21 +378,14 @@ void Preprocessor::process(Designtime::BluePrintGeneric* blueprint)
 	assert(blueprint);
 	mBluePrint = blueprint;
 
+	mFilename = blueprint->Filename();
+	mTokens = blueprint->getTokens();
+
 	switch ( blueprint->getSymbolType() ) {
 		case Symbol::IType::BluePrintEnumSymbol: {
-			Designtime::BluePrintEnum* obj = static_cast<Designtime::BluePrintEnum*>(blueprint);
-
-			mFilename = obj->Filename();
-			mTokens = obj->getTokens();
-
 			generateBluePrintEnum();	// build enum from tokens
 		} break;
 		case Symbol::IType::BluePrintObjectSymbol: {
-			Designtime::BluePrintObject* obj = static_cast<Designtime::BluePrintObject*>(blueprint);
-
-			mFilename = obj->Filename();
-			mTokens = obj->getTokens();
-
 			rebuildBluePrintObject();	// rebuild object tokens
 			generateBluePrintObject();	// build object from tokens
 		} break;
