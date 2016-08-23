@@ -8,8 +8,17 @@ public object Main {
 	private bool TestCase1() const {
 		print("TestCase1: time()");
 
-		int value = time();
-		print("time() = " + value);
+		int count = 0;
+		int value = 0;
+
+		while ( count < 5 ) {
+			value = time();
+			print("time() = " + value);
+
+			sleep(1000);
+
+			count++;
+		}
 
 		return value > 0;
 	}

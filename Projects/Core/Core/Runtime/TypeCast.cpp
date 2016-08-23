@@ -41,7 +41,8 @@ void typecast(Object *base, const std::string& targetType, Repository *repositor
 
 
 	if ( targetType == GenericObject::TYPENAME ) {
-		base->overrideTypename(GenericObject::TYPENAME);
+		base->setQualifiedTypename(GenericObject::TYPENAME);
+		base->setTypename(GenericObject::TYPENAME);
 	}
 	else if ( targetType == BoolObject::TYPENAME ) {
 		BoolObject tmp(*base);
@@ -69,6 +70,7 @@ void typecast(Object *base, const std::string& targetType, Repository *repositor
 		*base = tmp;
 	}
 	else if ( targetType == StringObject::TYPENAME ) {
+/*
 		StringObject tmp;
 
 		if ( base->isAtomicType() ) {
@@ -77,6 +79,11 @@ void typecast(Object *base, const std::string& targetType, Repository *repositor
 		else {
 			base->execute(&tmp, "ToString", ParameterList());
 		}
+
+		*base = tmp;
+*/
+
+		StringObject tmp(*base);
 
 		*base = tmp;
 	}

@@ -434,41 +434,6 @@ void Interpreter::parseInfixPostfix(Object *result, TokenIterator& start)
 
 			start++;	// consume operator token
 		} break;
-		case Token::Type::TYPE: {
-			Symbol* symbol = identify(start);
-			if ( !symbol ) {
-				throw Utils::Exceptions::UnknownIdentifer("unkown identifier '" + start->content() + "' found", start->position());
-			}
-
-			switch ( symbol->getSymbolType() ) {
-				case Symbol::IType::ObjectSymbol:
-					operator_binary_assign(result, static_cast<Object*>(symbol));
-					start++;
-					break;
-				case Symbol::IType::BluePrintEnumSymbol:
-				case Symbol::IType::BluePrintObjectSymbol: {
-					std::string newType = static_cast<Designtime::BluePrintGeneric*>(symbol)->QualifiedTypename();
-					start++;
-
-					// here we could demand a '('
-					//expect(Token::Type::PARENTHESIS_OPEN, start++);
-
-					Object tmp;
-					expression(&tmp, start);
-
-					// here we could demand a ')'
-					//expect(Token::Type::PARENTHESIS_CLOSE, start++);
-
-					typecast(&tmp, newType, getRepository());
-
-					operator_binary_assign(result, &tmp);
-				} break;
-				case Symbol::IType::MethodSymbol:
-				case Symbol::IType::NamespaceSymbol:
-				case Symbol::IType::UnknownSymbol:
-					throw Utils::Exceptions::Exception("unexpected symbol found", start->position());
-			}
-		} break;
 		default: {
 			parseTerm(result, start);
 		} break;
@@ -513,32 +478,38 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 		case Token::Type::CONST_BOOLEAN: {
 			BoolObject tmp(Tools::stringToBool(start->content()));
 			operator_binary_assign(result, &tmp);
+			start++;
 		} break;
 		case Token::Type::CONST_DOUBLE: {
 			DoubleObject tmp(Tools::stringToDouble(start->content()));
 			operator_binary_assign(result, &tmp);
+			start++;
 		} break;
 		case Token::Type::CONST_FLOAT: {
 			FloatObject tmp(Tools::stringToFloat(start->content()));
 			operator_binary_assign(result, &tmp);
+			start++;
 		} break;
 		case Token::Type::CONST_INTEGER: {
 			IntegerObject tmp(Tools::stringToInt(start->content()));
 			operator_binary_assign(result, &tmp);
+			start++;
 		} break;
 		case Token::Type::CONST_LITERAL: {
 			StringObject tmp(start->content());
 			operator_binary_assign(result, &tmp);
+			start++;
 		} break;
 		case Token::Type::CONST_NUMBER: {
 			NumberObject tmp(Tools::stringToNumber(start->content()));
 			operator_binary_assign(result, &tmp);
+			start++;
 		} break;
 		case Token::Type::IDENTIFER:
 		case Token::Type::TYPE: {
 			// find out if we have to execute a method or simply get a stored variable
 
-			TokenIterator tmp = start;
+			TokenIterator tmpToken = start;
 			Symbol *symbol = identify(start);
 			if ( !symbol ) {
 				throw Utils::Exceptions::UnknownIdentifer("unknown/unexpected identifier '" + start->content() + "' found", start->position());
@@ -546,14 +517,26 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 
 			switch ( symbol->getSymbolType() ) {
 				case Symbol::IType::MethodSymbol:
-					process_method(tmp, result);
-					start = tmp;
+					process_method(tmpToken, result);
+					start = tmpToken;
+					start++;
 					break;
 				case Symbol::IType::ObjectSymbol:
 					operator_binary_assign(result, static_cast<Object*>(symbol));
+					start++;
 					break;
 				case Symbol::IType::BluePrintEnumSymbol:
-				case Symbol::IType::BluePrintObjectSymbol:
+				case Symbol::IType::BluePrintObjectSymbol: {
+					std::string newType = static_cast<Designtime::BluePrintGeneric*>(symbol)->QualifiedTypename();
+					start++;
+
+					Object tmp;
+					expression(&tmp, start);
+
+					typecast(&tmp, newType, getRepository());
+
+					operator_binary_assign(result, &tmp);
+				} break;
 				case Symbol::IType::NamespaceSymbol:
 				case Symbol::IType::UnknownSymbol:
 					throw Utils::Exceptions::SyntaxError("unexpected symbol resolved", start->position());
@@ -563,18 +546,13 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 			TokenIterator semicolon = findNext(start, Token::Type::SEMICOLON);
 
 			process(result, start, semicolon, Token::Type::SEMICOLON);
-
-			return;
 		} break;
 		case Token::Type::SEMICOLON: {
-			return;
 		} break;
 		default: {
 			throw Utils::Exceptions::SyntaxError("identifier, literal or number expected but " + start->content() + " found", start->position());
 		} break;
 	}
-
-	start++;
 }
 
 void Interpreter::popScope()
