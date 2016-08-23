@@ -18,6 +18,7 @@ namespace Designtime {
 
 BluePrintObject::BluePrintObject()
 : MethodScope(ANONYMOUS_OBJECT, 0),
+  mIsForwardDeclaration(false),
   mIsInterface(false),
   mVisibility(Visibility::Public)
 {
@@ -28,6 +29,7 @@ BluePrintObject::BluePrintObject()
 BluePrintObject::BluePrintObject(const std::string& type, const std::string& filename, const std::string& name)
 : BluePrintGeneric(type, filename),
   MethodScope(type, 0),
+  mIsForwardDeclaration(false),
   mIsInterface(false),
   mVisibility(Visibility::Public)
 {
@@ -124,6 +126,11 @@ bool BluePrintObject::isAbstract() const
 	return ObjectAttributes::isAbstract();
 }
 
+bool BluePrintObject::isForwardDeclaration() const
+{
+	return mIsForwardDeclaration;
+}
+
 bool BluePrintObject::isInterface() const
 {
 	return mIsInterface;
@@ -132,6 +139,11 @@ bool BluePrintObject::isInterface() const
 void BluePrintObject::setAbstract(bool state)
 {
 	mIsAbstract = state;
+}
+
+void BluePrintObject::setForwardDeclaration(bool state)
+{
+	mIsForwardDeclaration = state;
 }
 
 void BluePrintObject::setInterface(bool state)

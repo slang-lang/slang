@@ -103,6 +103,7 @@ void Repository::addBluePrint(Designtime::BluePrintEnum* blueprint)
 
 	BluePrintEnumMap::iterator it = mBluePrintEnums.find(type);
 	if ( it != mBluePrintEnums.end() ) {
+
 		throw Utils::Exceptions::Exception("duplicate object '" + type + "' added to repository");
 	}
 
@@ -118,7 +119,16 @@ void Repository::addBluePrint(Designtime::BluePrintObject* blueprint)
 
 	BluePrintObjectMap::iterator it = mBluePrintObjects.find(type);
 	if ( it != mBluePrintObjects.end() ) {
-		throw Utils::Exceptions::Exception("duplicate object '" + type + "' added to repository");
+		if ( !it->second->isForwardDeclaration() ) {
+			throw Utils::Exceptions::Exception("duplicate object '" + type + "' added to repository");
+		}
+
+		// delete forward declaration
+		BluePrintSymbol* symbol = it->second;
+
+		mBluePrintObjects.erase(it);
+
+		delete symbol;
 	}
 
 	mBluePrintObjects.insert(std::make_pair(type, blueprint));
