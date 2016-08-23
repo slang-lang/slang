@@ -115,51 +115,58 @@ bool Analyser::createBluePrint(TokenIterator& token, TokenIterator end, bool isI
 	// look for the object token
 	(*token++).content();
 	// look for the identifier token
-	type = (*token).content();
-
-	// collect inheritance (if present)
-	Designtime::Ancestors inheritance = collectInheritance(++token);
-
-	bool isImplemented = true;
-	if ( !inheritance.empty() ) {
-		isImplemented = (inheritance.begin()->type() != Designtime::Ancestor::Type::Replicates);
-	}
-
-	if ( isImplemented ) {
-		isImplemented = (token->type() != Token::Type::SEMICOLON);
-	}
-
-	TokenList tokens;
-
-	if ( isImplemented ) {	// only collect all tokens of this object if it is implemented
-		// interface, object or prototype declarations have to start with an '{' token
-		expect(Token::Type::BRACKET_CURLY_OPEN, token);
-
-		// look for the next opening curly brackets
-		TokenIterator open = token;
-		// look for balanced curly brackets
-		TokenIterator closed = findNextBalancedCurlyBracket(open, end, 0, Token::Type::BRACKET_CURLY_CLOSE);
-
-		for ( TokenIterator it = ++open; it != closed && it != end; ++it ) {
-			tokens.push_back((*it));
-		}
-
-		token = closed;
-	}
+	type = (*token++).content();
 
 	Designtime::BluePrintObject* symbol = new Designtime::BluePrintObject(type, mFilename);
-	symbol->setAbstract(isAbstract || isInterface);
-	symbol->setInterface(isInterface);
-	symbol->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
 	symbol->setParent(mScope);
 	symbol->setQualifiedTypename(getQualifiedTypename(type));
-	symbol->setTokens(tokens);
 	symbol->setVisibility(Visibility::convert(visibility));
 
-	// set up inheritance (if present)
-	if ( !inheritance.empty() ) {
-		for ( Designtime::Ancestors::const_iterator it = inheritance.begin(); it != inheritance.end(); ++it ) {
-			symbol->addInheritance((*it));
+	if ( token->type() == Token::Type::SEMICOLON ) {
+		symbol->setForwardDeclaration(true);
+	}
+	else {
+		// collect inheritance (if present)
+		Designtime::Ancestors inheritance = collectInheritance(token);
+
+		bool isImplemented = true;
+		if ( !inheritance.empty() ) {
+			isImplemented = (inheritance.begin()->type() != Designtime::Ancestor::Type::Replicates);
+		}
+
+		if ( isImplemented ) {
+			isImplemented = (token->type() != Token::Type::SEMICOLON);
+		}
+
+		TokenList tokens;
+
+		if ( isImplemented ) {	// only collect all tokens of this object if it is implemented
+			// interface, object or prototype declarations have to start with an '{' token
+			expect(Token::Type::BRACKET_CURLY_OPEN, token);
+
+			// look for the next opening curly brackets
+			TokenIterator open = token;
+			// look for balanced curly brackets
+			TokenIterator closed = findNextBalancedCurlyBracket(open, end, 0, Token::Type::BRACKET_CURLY_CLOSE);
+
+			for ( TokenIterator it = ++open; it != closed && it != end; ++it ) {
+				tokens.push_back((*it));
+			}
+
+			token = closed;
+		}
+
+		symbol->setAbstract(isAbstract || isInterface);
+		symbol->setForwardDeclaration(false);
+		symbol->setInterface(isInterface);
+		symbol->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
+		symbol->setTokens(tokens);
+
+		// set up inheritance (if present)
+		if ( !inheritance.empty() ) {
+			for ( Designtime::Ancestors::const_iterator it = inheritance.begin(); it != inheritance.end(); ++it ) {
+				symbol->addInheritance((*it));
+			}
 		}
 	}
 
