@@ -5,6 +5,7 @@
 
 // Library includes
 #include <list>
+#include <set>
 #include <string>
 
 // Project includes
@@ -18,6 +19,7 @@
 
 
 typedef std::list<std::string> StringList;
+typedef std::set<std::string> StringSet;
 
 
 namespace ObjectiveScript {

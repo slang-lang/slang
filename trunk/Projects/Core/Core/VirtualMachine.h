@@ -12,6 +12,7 @@
 #include <Core/Designtime/BluePrintObject.h>
 #include <Core/Extensions/AExtension.h>
 #include "Parameter.h"
+#include "Types.h"
 
 // Forward declarations
 
@@ -37,15 +38,13 @@ public:
 
 public:	// Setup
 	void addExtension(Extensions::AExtension *extension);
-	void setBaseFolder(const std::string& base);
-	void setLibraryFolder(const std::string& library);
+	void addLibraryFolder(const std::string &library);
 
 public:
 	Script* createScriptFromFile(const std::string& filename, const ParameterList& params = ParameterList());
 	Script* createScriptFromString(const std::string& content, const ParameterList& params = ParameterList());
 
 private:
-	typedef std::set<std::string> ImportedLibraries;
 	typedef std::set<Script*> ScriptCollection;
 
 private:
@@ -55,12 +54,12 @@ private:
 	void init();
 	bool loadExtensions();
 	bool loadLibrary(const std::string& library);
+	void printLibraryFolders();
 
 private:
-	std::string mBaseFolder;
 	Extensions::ExtensionList mExtensions;
-	ImportedLibraries mImportedLibraries;
-	std::string mLibraryFolder;
+	StringSet mImportedLibraries;
+	StringSet mLibraryFolders;
 	Repository *mRepository;
 	std::string mScriptFile;
 	ScriptCollection mScripts;

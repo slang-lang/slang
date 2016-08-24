@@ -41,7 +41,7 @@
 std::string mFilename;
 Utils::Common::StdOutLogger mLogger;
 ObjectiveScript::ParameterList mParameters;
-std::string mRoot;
+StringSet mLibraryFolders;
 
 
 void printUsage()
@@ -99,7 +99,7 @@ void processParameters(int argc, const char* argv[])
 					exit(-1);
 				}
 
-				mRoot = argv[i];
+				mLibraryFolders.insert(argv[i]);
 			}
 			else if ( Utils::Tools::StringCompare(argv[i], "-q") || Utils::Tools::StringCompare(argv[i], "--quiet") ) {
 				mLogger.setLoudness(Utils::Common::ILogger::LoudnessMute);
@@ -154,7 +154,9 @@ int main(int argc, const char* argv[])
 	}
 
 	ObjectiveScript::VirtualMachine mVirtualMachine;
-	mVirtualMachine.setBaseFolder(mRoot);
+	for ( StringSet::const_iterator it = mLibraryFolders.begin(); it != mLibraryFolders.end(); ++it ) {
+		mVirtualMachine.addLibraryFolder((*it));
+	}
 
 	// add extensions
 #ifdef USE_APACHE_EXTENSION
