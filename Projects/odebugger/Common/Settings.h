@@ -7,6 +7,7 @@
 #include <string>
 
 // Project includes
+#include <Core/Types.h>
 
 // Forward declarations
 
@@ -63,11 +64,11 @@ public:
 		mPrompt = value;
 	}
 
-	const std::string root() const {
-		return mRoot;
+	const StringSet& libraryFolders() const {
+		return mLibraryFolders;
 	}
-	void root(const std::string& value) {
-		mRoot = value;
+	void addLibraryFolder(const std::string& value) {
+		mLibraryFolders.insert(value);
 	}
 
 private:
@@ -75,8 +76,8 @@ private:
 	bool mAutoWatch;
 	bool mBreakOnException;
 	std::string mFilename;
+	StringSet mLibraryFolders;
 	std::string mPrompt;
-	std::string mRoot;
 };
 
 

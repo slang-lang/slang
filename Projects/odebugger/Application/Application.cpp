@@ -105,7 +105,7 @@ void Application::processParameters(int argc, const char* argv[])
 				exit(-1);
 			}
 
-			mSettings.root(argv[i]);
+			mSettings.addLibraryFolder(argv[i]);
 		}
 		else if ( ::Utils::Tools::StringCompare(argv[i], "--version") ) {
 			printVersion();

@@ -46,6 +46,15 @@ void VirtualMachine::addExtension(Extensions::AExtension *extension)
 	mExtensions.push_back(extension);
 }
 
+void VirtualMachine::addLibraryFolder(const std::string &library)
+{
+	if ( library.empty() ) {
+		return;
+	}
+
+	mLibraryFolders.insert(library + "/");
+}
+
 std::string VirtualMachine::buildPath(const std::string& basefolder, const std::string& library) const
 {
 	std::string result = library;
@@ -72,15 +81,20 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 	analyser.processString(content, mScriptFile);
 
 	StringList libraries = analyser.getLibraryReferences();
-	for ( StringList::const_iterator it = libraries.begin(); it != libraries.end(); ++it ) {
-		std::string filename = buildPath(mBaseFolder, (*it));
+	for ( StringList::const_iterator libIt = libraries.begin(); libIt != libraries.end(); ++libIt ) {
+		bool imported = false;
 
-		if ( !loadLibrary(filename) ) {
-			filename = buildPath(mLibraryFolder, (*it));
+		for ( StringSet::const_iterator folderIt = mLibraryFolders.begin(); folderIt != mLibraryFolders.end(); ++folderIt ) {
+			std::string filename = buildPath((*folderIt), (*libIt));
 
-			if ( !loadLibrary(filename) ) {
-				throw Utils::Exceptions::Exception("could not resolve import '" + (*it) + "'");
+			if ( loadLibrary(filename) ) {
+				imported = true;
+				break;
 			}
+		}
+
+		if ( !imported ) {
+			throw Utils::Exceptions::Exception("could not resolve import '" + (*libIt) + "'");
 		}
 	}
 
@@ -126,13 +140,13 @@ Script* VirtualMachine::createScriptFromFile(const std::string& filename, const 
 		throw Utils::Exceptions::Exception("file '" + filename + "' not found!");
 	}
 
-	mBaseFolder = ::Utils::Tools::Files::ExtractPathname(filename);
-	mScriptFile = filename;
-
 	// read file content
 	std::ifstream in(filename.c_str(), std::ios_base::binary);
 
 	std::string content = std::string(std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>());
+
+	addLibraryFolder(::Utils::Tools::Files::ExtractPathname(filename));
+	mScriptFile = filename;
 
 	return createScript(content, params);
 }
@@ -141,7 +155,6 @@ Script* VirtualMachine::createScriptFromString(const std::string& content, const
 {
 	OSdebug("processing string...");
 
-	mBaseFolder = "";
 	mScriptFile = "";
 
 	return createScript(content, params);
@@ -149,13 +162,9 @@ Script* VirtualMachine::createScriptFromString(const std::string& content, const
 
 void VirtualMachine::init()
 {
-	if ( !mLibraryFolder.empty() ) {
-		return;
-	}
-
 	const char* homepath = getenv(OBJECTIVESCRIPT_LIBRARY);
 	if ( homepath ) {
-		setLibraryFolder(homepath);
+		addLibraryFolder(homepath);
 	}
 
 	loadExtensions();
@@ -208,7 +217,7 @@ bool VirtualMachine::loadLibrary(const std::string& library)
 		return true;
 	}
 
-	std::string baseFolder = ::Utils::Tools::Files::ExtractPathname(library);
+	mLibraryFolders.insert(::Utils::Tools::Files::ExtractPathname(library));
 
 	Analyser analyser(mRepository);
 	analyser.processFile(library);
@@ -216,15 +225,20 @@ bool VirtualMachine::loadLibrary(const std::string& library)
 	mImportedLibraries.insert(library);
 
 	const std::list<std::string>& libraries = analyser.getLibraryReferences();
-	for ( std::list<std::string>::const_iterator it = libraries.begin(); it != libraries.end(); ++it ) {
-		std::string filename = buildPath(baseFolder, (*it));
+	for ( std::list<std::string>::const_iterator libIt = libraries.begin(); libIt != libraries.end(); ++libIt ) {
+		bool imported = false;
 
-		if ( !loadLibrary(filename) ) {
-			filename = buildPath(mLibraryFolder, (*it));
+		for ( StringSet::const_iterator folderIt = mLibraryFolders.begin(); folderIt != mLibraryFolders.end(); ++folderIt ) {
+			std::string filename = buildPath((*folderIt), (*libIt));
 
-			if ( !loadLibrary(filename) ) {
-				throw Utils::Exceptions::Exception("could not resolve import '" + (*it) + "'");
+			if ( loadLibrary(filename) ) {
+				imported = true;
+				break;
 			}
+		}
+
+		if ( !imported ) {
+			throw Utils::Exceptions::Exception("could not resolve import '" + (*libIt) + "'");
 		}
 	}
 
@@ -238,26 +252,11 @@ bool VirtualMachine::loadLibrary(const std::string& library)
 	return true;
 }
 
-void VirtualMachine::setBaseFolder(const std::string& base)
+void VirtualMachine::printLibraryFolders()
 {
-	if ( base.empty() ) {
-		return;
+	for ( StringSet::const_iterator it = mLibraryFolders.begin(); it != mLibraryFolders.end(); ++it ) {
+		OSinfo("Library: " + (*it));
 	}
-
-	mBaseFolder = base + "/";
-
-	OSinfo("interpreter root = " + mBaseFolder);
-}
-
-void VirtualMachine::setLibraryFolder(const std::string& library)
-{
-	if ( library.empty() ) {
-		return;
-	}
-
-	mLibraryFolder = library + "/";
-
-	OSinfo("library root = " + mLibraryFolder);
 }
 
 

@@ -803,7 +803,9 @@ void Backend::start()
 	StackTrace::GetInstance().clear();
 
 	mVirtualMachine = new VirtualMachine();
-	mVirtualMachine->setBaseFolder(mSettings->root());
+	for ( StringSet::const_iterator it = mSettings->libraryFolders().begin(); it != mSettings->libraryFolders().end(); ++it ) {
+		mVirtualMachine->addLibraryFolder((*it));
+	}
 
 	// add extensions
 #ifdef USE_APACHE_EXTENSION
