@@ -57,7 +57,10 @@ public:
 				throw Utils::Exceptions::Exception("no valid row");
 			}
 
-			std::string my_result(row[param_field_id]);
+			std::string my_result;
+			if ( row[param_field_id] ) {
+				my_result = std::string(row[param_field_id]);
+			}
 
 			*result = Runtime::StringObject(my_result);
 		}
