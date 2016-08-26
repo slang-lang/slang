@@ -38,6 +38,19 @@ void split(const std::string& str, std::string& p, std::string& c)
 	}
 }
 
+void splitBy(const std::string& str, char splitter, std::string& p, std::string& c)
+{
+	p = "";
+	c = "";
+
+	unsigned long pos = str.find_first_of(splitter);
+
+	p = str.substr(0, pos);
+	if ( p.size() != str.size() ) {
+		c = str.substr(pos + 1, str.size());
+	}
+}
+
 bool stringToBool(const std::string &value)
 {
 	return !(value.empty() || value == "\n" || value == BOOL_FALSE);
