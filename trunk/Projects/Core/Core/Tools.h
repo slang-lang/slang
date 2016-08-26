@@ -24,6 +24,7 @@ namespace Tools {
 	std::string getFirstSubString(const std::string& str);
 	std::string getLastSubString(const std::string& str);
 	void split(const std::string& str, std::string& p, std::string& c);
+	void splitBy(const std::string& str, char splitter, std::string& p, std::string& c);
 
 	bool stringToBool(const std::string &value);
 	double stringToDouble(const std::string &value);

@@ -164,7 +164,17 @@ void VirtualMachine::init()
 {
 	const char* homepath = getenv(OBJECTIVESCRIPT_LIBRARY);
 	if ( homepath ) {
-		addLibraryFolder(homepath);
+		std::string path = std::string(homepath);
+
+		while ( !path.empty() ) {
+			std::string left;
+			std::string right;
+
+			Tools::splitBy(path, ':', left, right);
+			addLibraryFolder(left);
+
+			path = right;
+		}
 	}
 
 	loadExtensions();
