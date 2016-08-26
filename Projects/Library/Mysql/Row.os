@@ -36,6 +36,16 @@ public namespace Mysql {
 			return new Mysql.Entry(name, value);
 		}
 
+		public Mysql.Entry getEntry(string name) {
+			for ( int idx = 0; idx < mNumFields; idx = idx++ ) {
+				if ( mysql_get_field_name(mResultHandle, idx) == name ) {
+					return mysql_get_field_value(mResultHandle, idx);
+				}
+			}
+
+			return "";
+		}
+
 		public string getName(int fieldIdx) {
 /*
 			if ( fieldIdx < 0 || fieldIdx > mNumFields ) {
