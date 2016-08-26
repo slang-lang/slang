@@ -52,7 +52,10 @@ public:
 				throw Utils::Exceptions::Exception("no valid mysql result!");
 			}
 
-			std::string my_result(myResult->fields[param_field_id].name);
+			std::string my_result;
+			if ( myResult->fields[param_field_id].name ) {
+				my_result = std::string(myResult->fields[param_field_id].name);
+			}
 
 			*result = Runtime::StringObject(my_result);
 		}
