@@ -58,7 +58,8 @@ void MysqlExtension::provideMethods(ExtensionMethods &methods)
 	methods.push_back(new MysqlFreeResult());
 	methods.push_back(new MysqlGetClientInfo());
 	methods.push_back(new MysqlGetFieldName());
-	methods.push_back(new MysqlGetFieldValue());
+	methods.push_back(new MysqlGetFieldValueByIndex());
+	methods.push_back(new MysqlGetFieldValueByName());
 	methods.push_back(new MysqlInfo());
 	methods.push_back(new MysqlInit());
 	methods.push_back(new MysqlNextResult());
