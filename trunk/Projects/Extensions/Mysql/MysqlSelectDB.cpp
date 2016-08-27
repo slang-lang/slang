@@ -44,7 +44,7 @@ Runtime::ControlFlow::E MysqlSelectDB::execute(const ParameterList& params, Runt
 
 		MYSQL *myConn = mMysqlConnections[param_handle];
 		if ( !myConn ) {
-			throw Utils::Exceptions::Exception("no valid mysql connection!");
+			throw Utils::Exceptions::Exception("no valid mysql connection handle: " + Tools::toString(param_handle));
 		}
 
 		int mysql_result = mysql_select_db(myConn, param_db.c_str());

@@ -41,7 +41,7 @@ Runtime::ControlFlow::E MysqlUseResult::execute(const ParameterList& params, Run
 
 		MYSQL *myConn = mMysqlConnections[param_handle];
 		if ( !myConn ) {
-			throw Utils::Exceptions::Exception("no valid mysql connection!");
+			throw Utils::Exceptions::Exception("no valid mysql connection handle: " + Tools::toString(param_handle));
 		}
 
 		MYSQL_RES *myResult = mysql_use_result(myConn);

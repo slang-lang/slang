@@ -53,7 +53,7 @@ Runtime::ControlFlow::E MysqlRealConnect::execute(const ParameterList& params, R
 
 		MYSQL *myConn = mMysqlConnections[param_handle];
 		if ( !myConn ) {
-			throw Utils::Exceptions::Exception("no valid mysql connection!");
+			throw Utils::Exceptions::Exception("no valid mysql connection handle: " + Tools::toString(param_handle));
 		}
 
 		if ( param_port == 0 ) {	// use default port

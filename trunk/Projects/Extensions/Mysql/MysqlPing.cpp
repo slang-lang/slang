@@ -41,7 +41,7 @@ Runtime::ControlFlow::E MysqlPing::execute(const ParameterList& params, Runtime:
 
 		MYSQL *myConn = mMysqlConnections[param_handle];
 		if ( !myConn ) {
-			throw Utils::Exceptions::Exception("no valid mysql connection!");
+			throw Utils::Exceptions::Exception("no valid mysql connection handle: " + Tools::toString(param_handle));
 		}
 
 		int my_result = mysql_ping(myConn);

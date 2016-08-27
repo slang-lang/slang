@@ -45,7 +45,7 @@ Runtime::ControlFlow::E MysqlRealEscapeString::execute(const ParameterList& para
 
 		MYSQL *myConn = mMysqlConnections[param_handle];
 		if ( !myConn ) {
-			throw Utils::Exceptions::Exception("no valid mysql connection!");
+			throw Utils::Exceptions::Exception("no valid mysql connection handle: " + Tools::toString(param_handle));
 		}
 
 		char* to = new char[(param_from.length() * 2) + 1];

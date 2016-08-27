@@ -46,7 +46,7 @@ public:
 
 			MYSQL *myConn = mMysqlConnections[param_handle];
 			if ( !myConn ) {
-				throw Utils::Exceptions::Exception("no valid mysql connection!");
+				throw Utils::Exceptions::Exception("no valid mysql connection handle: " + Tools::toString(param_handle));
 			}
 
 			int my_result = mysql_field_count(myConn);
