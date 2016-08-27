@@ -85,7 +85,7 @@ public:
 	{
 		ParameterList params;
 		params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));
-		params.push_back(Parameter("name", Designtime::StringObject::TYPENAME, 0));
+		params.push_back(Parameter("name", Designtime::StringObject::TYPENAME, VALUE_NONE));
 
 		setSignature(params);
 	}
@@ -109,6 +109,10 @@ public:
 			std::string my_result;
 
 			for ( unsigned int idx = 0; idx < myResult->field_count; ++idx ) {
+				if ( !myResult->fields[idx].name ) {
+					throw Utils::Exceptions::Exception("invalid field name detected at field index: " + Tools::ConvertToStdString(idx));
+				}
+
 				if ( std::string(myResult->fields[idx].name) == param_field_name ) {
 					foundField = true;
 					my_result = std::string(myResult->current_row[idx]);
