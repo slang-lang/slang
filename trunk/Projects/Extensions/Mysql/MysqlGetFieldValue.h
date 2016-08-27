@@ -32,7 +32,7 @@ public:
 	{
 		ParameterList params;
 		params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));
-		params.push_back(Parameter("field_id", Designtime::IntegerObject::TYPENAME, 0));
+		params.push_back(Parameter("field_index", Designtime::IntegerObject::TYPENAME, 0));
 
 		setSignature(params);
 	}
@@ -85,7 +85,7 @@ public:
 	{
 		ParameterList params;
 		params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));
-		params.push_back(Parameter("name", Designtime::StringObject::TYPENAME, VALUE_NONE));
+		params.push_back(Parameter("field_name", Designtime::StringObject::TYPENAME, VALUE_NONE));
 
 		setSignature(params);
 	}
