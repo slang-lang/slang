@@ -2,14 +2,6 @@ INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
 SET(SOURCES
 	MysqlExtension.cpp
-	MysqlNumRows.cpp
-	MysqlPing.cpp
-	MysqlQuery.cpp
-	MysqlRealConnect.cpp
-	MysqlRealEscapeString.cpp
-	MysqlSelectDB.cpp
-	MysqlStoreResult.cpp
-	MysqlUseResult.cpp
 	Types.cpp
 )
 
@@ -32,7 +24,7 @@ SET(HEADERS
 	MysqlNextRow.h
 	MysqlNumFields.h
 	MysqlNumRows.h
-	MysqlPing.cpp
+	MysqlPing.h
 	MysqlQuery.h
 	MysqlRealConnect.h
 	MysqlRealEscapeString.h
