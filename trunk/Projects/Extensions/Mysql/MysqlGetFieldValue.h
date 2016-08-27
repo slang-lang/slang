@@ -115,7 +115,9 @@ public:
 
 				if ( std::string(myResult->fields[idx].name) == param_field_name ) {
 					foundField = true;
-					my_result = std::string(myResult->current_row[idx]);
+					if ( myResult->current_row[idx] ) {
+						my_result = std::string(myResult->current_row[idx]);
+					}
 				}
 			}
 
