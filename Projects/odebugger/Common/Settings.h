@@ -23,6 +23,7 @@ public:
 	Settings()
 	{
 		mAutoStart = false;
+		mAutoStop = false;
 		mAutoWatch = true;
 		mBreakOnException = true;
 		mPrompt = "odebugger> ";
@@ -34,6 +35,13 @@ public:
 	}
 	void autoStart(bool value) {
 		mAutoStart = value;
+	}
+
+	bool autoStop() const {
+		return mAutoStop;
+	}
+	void autoStop(bool value) {
+		mAutoStop = value;
 	}
 
 	bool autoWatch() const {
@@ -73,6 +81,7 @@ public:
 
 private:
 	bool mAutoStart;
+	bool mAutoStop;
 	bool mAutoWatch;
 	bool mBreakOnException;
 	std::string mFilename;

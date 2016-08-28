@@ -844,6 +844,10 @@ void Backend::start()
 	catch ( std::exception& e ) {
 		writeln(e.what());
 	}
+
+	if ( mSettings->autoStop() ) {
+		mRunning = false;
+	}
 }
 
 void Backend::stop()
