@@ -204,8 +204,8 @@ bool VirtualMachine::loadExtensions()
 				scope->defineMethod((*it)->getName(), (*it));
 			}
 		}
-		catch ( ... ) {
-			std::cout << "error while loading extensions" << std::endl;
+		catch ( std::exception &e ) {
+			std::cout << "error while loading extensions: " << e.what() << std::endl;
 		}
 	}
 
