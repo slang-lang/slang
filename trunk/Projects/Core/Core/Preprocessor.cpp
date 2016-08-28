@@ -90,7 +90,7 @@ Designtime::BluePrintObject* Preprocessor::createMember(TokenIterator token) con
 
 	if ( Visibility::convert(visibility) == Visibility::Public ) {
 		// beware: public members are deprecated, remember the "Law of Demeter"
-		// consider using wrappers (getter, setter) instead of directly providing access to members to outsiders
+		// consider using wrappers (getter, setter) instead of directly providing access to members for outsiders
 		// haven't you heard? outsiders, or sometimes called strangers, are evil
 		throw Utils::Exceptions::LawOfDemeterViolated("public member " + name + " violates \"Law of Demeter\"", token->position());
 	}
