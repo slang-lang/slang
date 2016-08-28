@@ -35,7 +35,6 @@ public:
 	static bool isMethodDeclaration(TokenIterator start);
 	static bool isNamespaceDeclaration(TokenIterator start);
 	static bool isObjectDeclaration(TokenIterator start);
-	static bool isParameterDeclaration(TokenIterator start);
 	static bool isPrototypeDeclaration(TokenIterator start);
 	static bool isStructorDeclaration(TokenIterator start);
 

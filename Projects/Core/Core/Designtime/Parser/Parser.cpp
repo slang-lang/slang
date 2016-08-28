@@ -118,9 +118,6 @@ bool Parser::isLibraryReference(TokenIterator start)
 
 	tokens.push_back(Token(Token::Type::RESERVED_WORD, std::string(RESERVED_WORD_IMPORT)));
 	tokens.push_back(Token(Token::Type::IDENTIFER));
-	//tokens.push_back(Token(Token::Type::SCOPE, true));
-	//tokens.push_back(Token(Token::Type::IDENTIFER, true));
-	//tokens.push_back(Token(Token::Type::SEMICOLON));
 
 	return checkSyntax(start, tokens);
 }
@@ -203,18 +200,6 @@ bool Parser::isObjectDeclaration(TokenIterator start)
 	return checkSyntax(start, tokens);
 }
 
-// syntax:
-// <type> <identifier>
-bool Parser::isParameterDeclaration(TokenIterator start)
-{
-	TokenList tokens;
-
-	tokens.push_back(Token(Token::Type::IDENTIFER));
-	tokens.push_back(Token(Token::Type::IDENTIFER));
-
-	return checkSyntax(start, tokens);
-}
-
 // prototype declaration:
 // <visibility> [language feature] prototype <identifier> [extends <identifier> [implements <identifier>, ...]] { ... }
 bool Parser::isPrototypeDeclaration(TokenIterator start)
@@ -248,7 +233,7 @@ ParameterList Parser::parseParameters(TokenIterator &token)
 	ParameterList params;
 
 	while ( (*++token).type() != Token::Type::PARENTHESIS_CLOSE ) {
-		if ( !isLocalDeclaration(token) /*&& !isParameterDeclaration(token)*/ ) {
+		if ( !isLocalDeclaration(token) ) {
 			throw Utils::Exceptions::SyntaxError("could not parse parameter declaration", token->position());
 		}
 

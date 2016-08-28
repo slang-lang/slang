@@ -9,7 +9,6 @@
 #include <Core/Utils/Exceptions.h>
 #include <Core/Utils/Utils.h>
 #include "Repository.h"
-#include "System.h"
 #include "Tools.h"
 
 // Namespace declarations
