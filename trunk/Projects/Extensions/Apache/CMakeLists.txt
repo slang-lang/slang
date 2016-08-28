@@ -9,6 +9,7 @@ SET(HEADERS
 	ApacheExtension.h
 	Defs.h
 	Get.h
+	IsSet.h
 	Post.h
 )
 
