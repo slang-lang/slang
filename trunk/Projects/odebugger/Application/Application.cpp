@@ -70,6 +70,7 @@ void Application::printUsage()
 	std::cout << "-h | --help                This help" << std::endl;
 	std::cout << "-l | --library <library>   Library root path" << std::endl;
 	std::cout << "-r | --run                 Auto start debugging" << std::endl;
+	std::cout << "--runandquit               Auto start debugging and quit debugger after successful execution" << std::endl;
 	std::cout << "--version                  Version information" << std::endl;
 	std::cout << std::endl;
 }
@@ -114,6 +115,10 @@ void Application::processParameters(int argc, const char* argv[])
 		}
 		else if ( ::Utils::Tools::StringCompare(argv[i], "-r") || ::Utils::Tools::StringCompare(argv[i], "--run") ) {
 			mSettings.autoStart(true);
+		}
+		else if ( ::Utils::Tools::StringCompare(argv[i], "--runandquit") ) {
+			mSettings.autoStart(true);
+			mSettings.autoStop(true);
 		}
 		else if ( mSettings.filename().empty() ){
 			mSettings.filename(argv[i]);
