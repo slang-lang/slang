@@ -275,7 +275,8 @@ void Preprocessor::generateBluePrintEnum()
 
 	TokenIterator token = mTokens.begin();
 
-	Runtime::AtomicValue value = 0;
+	Runtime::AtomicValue previous_value = INT_MIN;
+	Runtime::AtomicValue value = INT_MIN;
 
 	// Format: <identifier> = <value>[, or ;]
 	while ( token != mTokens.end() ) {
@@ -293,6 +294,13 @@ void Preprocessor::generateBluePrintEnum()
 		else {
 			value = value.toInt() + 1;
 		}
+
+		// verify declaration order (this also prevents duplicate values)
+		if ( previous_value.toInt() >= value.toInt() ) {
+			throw Utils::Exceptions::Exception("enum values have to be defined in ascending order");
+		}
+
+		previous_value = value;
 
 		// define enum entries as parent type
 		//Runtime::Object* entry = mRepository->createInstance(mBluePrint->QualifiedTypename(), name, true);
