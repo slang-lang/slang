@@ -31,7 +31,7 @@ const std::string& AExtension::getName() const
 
 void AExtension::initialize(IScope* scope)
 {
-	assert(scope);
+(void)scope;
 
 	mInitialized = true;
 }
