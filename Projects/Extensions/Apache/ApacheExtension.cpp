@@ -180,9 +180,14 @@ void ApacheExtension::readGetData()
 		char* key = strtok((*it), "=");
 		char* value = strtok(NULL, "");
 
+		std::string strvalue;
+		if ( value ) {
+			strvalue = std::string(value);
+		}
+
 		mGetQueryString.insert(std::make_pair(
 			std::string(key),
-			UriDecode(std::string(value)))
+			UriDecode(strvalue))
 		);
 	}
 }
@@ -219,9 +224,14 @@ void ApacheExtension::readPostData()
 		char* key = strtok((*it), "=");
 		char* value = strtok(NULL, "");
 
+		std::string strvalue;
+		if ( value ) {
+			strvalue = std::string(value);
+		}
+
 		mPostQueryString.insert(std::make_pair(
-				std::string(key),
-				UriDecode(std::string(value)))
+			std::string(key),
+			UriDecode(strvalue))
 		);
 	}
 
