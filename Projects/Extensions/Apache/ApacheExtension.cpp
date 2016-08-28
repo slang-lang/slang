@@ -11,6 +11,7 @@
 // Project includes
 #include "Defs.h"
 #include "Get.h"
+#include "IsSet.h"
 #include "Post.h"
 
 // Namespace declarations
@@ -154,6 +155,7 @@ void ApacheExtension::provideMethods(ExtensionMethods &methods)
 	assert(methods.empty());
 
 	methods.push_back(new Get());
+	methods.push_back(new IsSet());
 	methods.push_back(new Post());
 }
 
