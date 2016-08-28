@@ -162,6 +162,8 @@ Script* VirtualMachine::createScriptFromString(const std::string& content, const
 
 void VirtualMachine::init()
 {
+	OSdebug("initializing virtual machine...");
+
 	const char* homepath = getenv(OBJECTIVESCRIPT_LIBRARY);
 	if ( homepath ) {
 		std::string path = std::string(homepath);
@@ -178,6 +180,8 @@ void VirtualMachine::init()
 	}
 
 	loadExtensions();
+
+	printLibraryFolders();
 }
 
 bool VirtualMachine::loadExtensions()
