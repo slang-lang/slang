@@ -510,6 +510,8 @@ int Backend::notify(SymbolScope* scope, const Core::BreakPoint& breakpoint)
 		return 0;
 	}
 
+	mSettings->autoStop(false);
+
 	// Breakpoint check
 	if ( scope && !(breakpoint == Core::Debugger::immediateBreakPoint) ) {
 		writeln("[Breakpoint " + breakpoint.toString() + " reached]");
@@ -840,13 +842,13 @@ void Backend::start()
 		}
 
 		writeln("[Process exited normally]");
+
+		if ( mSettings->autoStop() ) {
+			mRunning = false;
+		}
 	}
 	catch ( std::exception& e ) {
 		writeln(e.what());
-	}
-
-	if ( mSettings->autoStop() ) {
-		mRunning = false;
 	}
 }
 
