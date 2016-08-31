@@ -11,6 +11,7 @@ SET(HEADERS
 	Get.h
 	IsSet.h
 	Post.h
+	Pre.h
 )
 
 SET(DEPENDENCIES
