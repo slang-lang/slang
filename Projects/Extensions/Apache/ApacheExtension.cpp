@@ -13,6 +13,7 @@
 #include "Get.h"
 #include "IsSet.h"
 #include "Post.h"
+#include "Pre.h"
 
 // Namespace declarations
 
@@ -157,6 +158,7 @@ void ApacheExtension::provideMethods(ExtensionMethods &methods)
 	methods.push_back(new Get());
 	methods.push_back(new IsSet());
 	methods.push_back(new Post());
+	methods.push_back(new Pre());
 }
 
 void ApacheExtension::readGetData()

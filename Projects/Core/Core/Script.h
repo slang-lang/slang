@@ -16,16 +16,16 @@
 namespace ObjectiveScript {
 
 // Forward declarations
+class MethodScope;
 namespace Runtime {
 	class Object;
 }
-class Repository;
 class Symbol;
 
 class Script
 {
 public:
-	Script(Repository *repository);
+	Script(MethodScope* scope);
 	~Script();
 
 public:	//Helpers
@@ -38,7 +38,7 @@ public:	// Execution
 protected:
 
 private:
-	Repository *mRepository;
+	MethodScope* mScope;
 };
 
 

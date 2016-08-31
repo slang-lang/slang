@@ -74,7 +74,7 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 {
 	init();
 
-	Script *script = new Script(mRepository);
+	Script *script = new Script(mRepository->getGlobalScope());
 	mScripts.insert(script);
 
 	Analyser analyser(mRepository);
