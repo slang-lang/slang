@@ -28,11 +28,13 @@ SET(SOURCES
 	Tools.cpp
 	Types.cpp
 	VirtualMachine.cpp
+#	VirtualMethodTable.cpp
 )
 
 SET(HEADERS
 	Analyser.h
 	Consts.h
+	Defines.h
 	Interpreter.h
 	Memory.h
 	Method.h
@@ -51,6 +53,7 @@ SET(HEADERS
 	Tools.h
 	Types.h
 	VirtualMachine.h
+#	VirtualMethodTable.h
 )
 
 SET(DEPENDENCIES

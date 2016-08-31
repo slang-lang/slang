@@ -15,7 +15,18 @@
 
 namespace ObjectiveScript {
 namespace Runtime {
+namespace Exceptions {
 
+
+class ExplicitCastRequired : public ObjectiveScript::Utils::Exceptions::Exception
+{
+public:
+	ExplicitCastRequired(const std::string& text, const Utils::Position& position = Utils::Position())
+	: Exception("Exception.ExplicitCastRequired: " + text, position)
+	{ }
+
+	virtual ~ExplicitCastRequired() throw() { }
+};
 
 class SizeException : public ObjectiveScript::Utils::Exceptions::Exception
 {
@@ -28,7 +39,7 @@ public:
 };
 
 
-
+}
 }
 }
 

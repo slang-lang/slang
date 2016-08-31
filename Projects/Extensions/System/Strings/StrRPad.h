@@ -54,10 +54,10 @@ public:
 			std::string param_pattern = (*it++).value().toStdString();
 
 			if ( param_length < 0 ) {
-				throw Runtime::SizeException("invalid length");
+				throw Runtime::Exceptions::SizeException("invalid length");
 			}
 			if ( param_pattern.size() != 1 ) {
-				throw Runtime::SizeException("invalid pattern size");
+				throw Runtime::Exceptions::SizeException("invalid pattern size");
 			}
 
 			param_value.append(param_length, param_pattern[0]);
