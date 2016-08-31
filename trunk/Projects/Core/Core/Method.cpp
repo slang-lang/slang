@@ -6,10 +6,12 @@
 
 // Project includes
 #include <Core/BuildInObjects/VoidObject.h>
+#include <Core/Runtime/Exceptions.h>
 #include <Core/Runtime/TypeCast.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Utils/Utils.h>
 #include <Debugger/Debugger.h>
+#include "Defines.h"
 #include "Repository.h"
 #include "StackTrace.h"
 #include "Tools.h"
@@ -299,6 +301,10 @@ ControlFlow::E Method::processControlFlow(ControlFlow::E controlflow, Object *re
 		case ControlFlow::Return:
 			// validate return value
 			if ( Typename() != VoidObject::TYPENAME && result->Typename() != Typename() ) {
+				if ( !ALLOW_IMPLICIT_CASTS ) {
+					throw Runtime::Exceptions::ExplicitCastRequired("Explicit cast required for type conversion from " + result->Typename() + " to " + Typename() + " in " + getFullScopeName());
+				}
+
 				OSwarn("implicit type conversion from " + result->Typename() + " to " + Typename() + " in " + getFullScopeName());
 
 				typecast(result, Typename(), mRepository);

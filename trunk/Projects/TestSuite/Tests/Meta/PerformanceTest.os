@@ -1,6 +1,6 @@
 #!/usr/local/bin/oscript
 
-public int Main(int argc = 0, string args = "") modify {
+public int Main(int argc = 0, string args = "") {
 	int lowerbound = 1;
 	int upperbound = 100000;
 

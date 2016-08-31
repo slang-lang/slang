@@ -15,11 +15,13 @@
 
 namespace ObjectiveScript {
 namespace Designtime {
+namespace Exceptions {
 
 
 
 
 
+}
 }
 }
 
