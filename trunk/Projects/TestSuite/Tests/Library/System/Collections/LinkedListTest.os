@@ -185,14 +185,17 @@ public object Main {
 			item = new TestObject(0664);
 			list.insert(Object item, 0);
 
-			item = new TestObject(1389);
-			list.insert(Object item, 1);
-
 			item = new TestObject(173);
 			list.insert(Object item, 1);
 
+			item = new TestObject(1389);
+			list.insert(Object item, 2);
+
+			item = new TestObject(777);
+			list.insert(Object item, 3);
+
 			// Usage
-			assert( list.size() == 3 );
+			assert( list.size() == 4 );
 
 			list.erase(1);
 
@@ -203,7 +206,7 @@ public object Main {
 				print(item.ToString());
 			}
 
-			assert( list.size() == 2 );
+			assert( list.size() == 3 );
 
 			return true;
 		}
