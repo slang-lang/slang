@@ -79,6 +79,31 @@ public object Main {
 
 			assert( stack.size() == 2 );
 
+			stack.pop();
+			stack.reset();
+
+			while ( stack.hasNext() ) {
+				stack.next();
+
+				Object item = stack.current();
+				print(item);
+			}
+
+			assert( stack.size() == 1 );
+
+			stack.pop();
+			stack.reset();
+
+			while ( stack.hasNext() ) {
+				stack.next();
+
+				Object item = stack.current();
+				print(item);
+			}
+
+			assert( stack.size() == 0 );
+			assert( stack.empty() );
+
 			return true;
 		}
 		catch ( System.OutOfBoundsException e ) {
