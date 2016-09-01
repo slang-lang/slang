@@ -120,7 +120,9 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 
 		Runtime::ControlFlow::E controlflow = main->Constructor(params);
 		if ( controlflow == Runtime::ControlFlow::Throw ) {
-			throw Utils::Exceptions::Exception("Exception raised in " + main->getFullScopeName() + "." + main->QualifiedTypename());
+			std::string text = "Exception raised in method '" + main->getFullScopeName() + "." + main->QualifiedTypename() + "(" + toString(params) + ")'";
+
+			throw Utils::Exceptions::Exception(text);
 		}
 	}
 
