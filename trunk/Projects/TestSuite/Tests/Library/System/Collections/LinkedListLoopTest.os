@@ -3,7 +3,7 @@
 import System.Collections.LinkedList;
 import System.Exception;
 
-private int LOOP const = 10000;
+private int LOOP const = 1000;
 
 private object TestObject {
 	private int mValue;
@@ -36,7 +36,7 @@ private void ObjectMethod() {
 	// Setup
 	TestObject item;
 
-	item = new TestObject(0664);
+	item = new TestObject(664);
 	list.push_back(Object item);
 
 	item = new TestObject(173);
@@ -71,7 +71,7 @@ private void ValueMethod() {
 	// Setup
 	string item;
 
-	item = "0664";
+	item = "664";
 	list.push_back(Object item);
 
 	item = "173";
@@ -99,3 +99,4 @@ private void ValueMethod() {
 		}
 	}
 }
+
