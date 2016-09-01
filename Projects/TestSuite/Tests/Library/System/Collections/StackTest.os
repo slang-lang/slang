@@ -21,10 +21,10 @@ public object Main {
 			item = "0664";
 			stack.push(Object item);
 
-			item = "1389";
+			item = "173";
 			stack.push(Object item);
 
-			item = "173";
+			item = "1389";
 			stack.push(Object item);
 
 			// Usage
@@ -59,10 +59,10 @@ public object Main {
 			item = "0664";
 			stack.push(Object item);
 
-			item = "1389";
+			item = "173";
 			stack.push(Object item);
 
-			item = "173";
+			item = "1389";
 			stack.push(Object item);
 
 			// Usage
@@ -70,6 +70,7 @@ public object Main {
 
 			stack.pop();
 
+            print("(1)");
 			while ( stack.hasNext() ) {
 				stack.next();
 
@@ -82,6 +83,7 @@ public object Main {
 			stack.pop();
 			stack.reset();
 
+            print("(2)");
 			while ( stack.hasNext() ) {
 				stack.next();
 
@@ -94,6 +96,7 @@ public object Main {
 			stack.pop();
 			stack.reset();
 
+            print("(3)");
 			while ( stack.hasNext() ) {
 				stack.next();
 
