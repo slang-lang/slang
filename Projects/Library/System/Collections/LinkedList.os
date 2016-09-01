@@ -127,10 +127,10 @@ public namespace System {
             LinkedItem item = new LinkedItem();
             item.mValue = value;
 
-            if ( mSize == 0 ) {
+            if ( mSize == 0 ) {     // special handling for 1st item
                 mFirst = item;
             }
-            else {
+            else {                  // generic handling
                 mLast.mNext = item;
             }
 
