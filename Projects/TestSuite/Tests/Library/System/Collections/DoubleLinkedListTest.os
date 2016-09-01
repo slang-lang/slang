@@ -41,10 +41,12 @@ public object Main {
 				TestObject item = TestObject list.current();
 				print(item.ToString());
 			}
+
+			return true;
 		}
 		catch ( System.OutOfBoundsException e ) {
 			print(e.what());
-			return true;
+			return false;
 		}
 
 		return false;
