@@ -53,7 +53,7 @@ public object DoubleLinkedList implements IReverseIterateable {
 	}
 
 	public bool hasNext() const {
-		return mCurrentIdx < mCount;
+		return mCurrentIdx < mCount - 1;
 	}
 
 	public bool hasPrevious() const {
@@ -86,6 +86,10 @@ public object DoubleLinkedList implements IReverseIterateable {
 
 	public void reset() modify {
 		mCurrentIdx = -1;
+	}
+
+	public void resetToLast() modify {
+		mCurrentIdx = mCount;
 	}
 
 	public int size() const {
