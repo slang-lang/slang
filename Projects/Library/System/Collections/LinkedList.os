@@ -74,10 +74,11 @@ public namespace System {
                     prev = prev.mNext;
                 }
 
-                prev = prev.mNext.mNext;
-
                 if ( index == mSize - 1 ) {
                     mLast = prev;
+                }
+                else {
+                    prev = prev.mNext.mNext;
                 }
             }
 
