@@ -32,7 +32,7 @@ public object Main {
 			// Setup
 			TestObject item;
 
-			item = new TestObject(664);
+			item = new TestObject(0664);
 			list.push_back(Object item);
 
 			item = new TestObject(173);
@@ -44,12 +44,14 @@ public object Main {
 			// Usage
 			assert( list.size() == 3 );
 
-			while ( list.hasNext() ) {
-				list.next();
+            item = list.at(0);
+            assert( item.mValue == 0664 );
 
-				TestObject item = TestObject list.current();
-				print(item.ToString());
-			}
+            item = list.at(1);
+            assert( item.mValue == 173 );
+
+            item = list.at(2);
+            assert( item.mValue == 1389 );
 
 			return true;
 		}
@@ -78,12 +80,17 @@ public object Main {
 			item = new TestObject(664);
 			list.push_front(Object item);
 
-			while ( list.hasNext() ) {
-				list.next();
+			// Usage
+			assert( list.size() == 3 );
 
-				TestObject item = TestObject list.current();
-				print(item.ToString());
-			}
+            item = list.at(0);
+            assert( item.mValue == 0664 );
+
+            item = list.at(1);
+            assert( item.mValue == 173 );
+
+            item = list.at(2);
+            assert( item.mValue == 1389 );
 
 			return true;
 		}
@@ -114,14 +121,13 @@ public object Main {
 
 			list.pop_front();
 
-			while ( list.hasNext() ) {
-				list.next();
-
-				TestObject item = TestObject list.current();
-				print(item.ToString());
-			}
-
 			assert( list.size() == 2 );
+
+            item = list.at(0);
+            assert( item.mValue == 173 );
+
+            item = list.at(1);
+            assert( item.mValue == 1389 );
 
 			return true;
 		}
@@ -156,14 +162,13 @@ public object Main {
 
 			list.pop_back();
 
-			while ( list.hasNext() ) {
-				list.next();
-
-				TestObject item = TestObject list.current();
-				print(item.ToString());
-			}
-
 			assert( list.size() == 2 );
+
+            item = list.at(0);
+            assert( item.mValue == 0664 );
+
+            item = list.at(1);
+            assert( item.mValue == 173 );
 
 			return true;
 		}

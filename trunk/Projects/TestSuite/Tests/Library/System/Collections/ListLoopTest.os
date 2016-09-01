@@ -1,7 +1,6 @@
 #!/usr/local/bin/oscript
 
 import System.Collections.List;
-import System.Exception;
 
 private int LOOP const = 1000;
 

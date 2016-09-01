@@ -43,12 +43,14 @@ public object Main {
 				// Usage
 				assert( list.size() == 3 );
 
-				while ( list.hasNext() ) {
-					list.next();
+                item = list.at(0);
+                assert( item.mValue == 0664 );
 
-					TestObject item = TestObject list.current();
-					print(item.ToString());
-				}
+                item = list.at(1);
+                assert( item.mValue == 173 );
+
+                item = list.at(2);
+                assert( item.mValue == 1389 );
 
 				return true;
 			}
@@ -83,14 +85,13 @@ public object Main {
 
 				list.erase(0);
 
-				while ( list.hasNext() ) {
-					list.next();
-
-					TestObject item = TestObject list.current();
-					print(item.ToString());
-				}
-
 				assert( list.size() == 2 );
+
+                item = list.at(0);
+                assert( item.mValue == 173 );
+
+                item = list.at(1);
+                assert( item.mValue == 1389 );
 
 				return true;
 			}
@@ -125,14 +126,13 @@ public object Main {
 
 				list.erase(1);
 
-				while ( list.hasNext() ) {
-					list.next();
-
-					TestObject item = TestObject list.current();
-					print(item.ToString());
-				}
-
 				assert( list.size() == 2 );
+
+                item = list.at(0);
+                assert( item.mValue == 0664 );
+
+                item = list.at(1);
+                assert( item.mValue == 1389 );
 
 				return true;
 			}
@@ -167,14 +167,13 @@ public object Main {
 
 				list.erase(2);
 
-				while ( list.hasNext() ) {
-					list.next();
-
-					TestObject item = TestObject list.current();
-					print(item.ToString());
-				}
-
 				assert( list.size() == 2 );
+
+                item = list.at(0);
+                assert( item.mValue == 0664 );
+
+                item = list.at(1);
+                assert( item.mValue == 173 );
 
 				return true;
 			}
