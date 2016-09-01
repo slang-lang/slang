@@ -20,6 +20,8 @@ public object Main {
 		assert( TestCase1() );
 		assert( TestCase2() );
 		assert( TestCase3() );
+		assert( TestCase4() );
+		assert( TestCase5() );
 	}
 
 	private bool TestCase1() modify {
@@ -29,11 +31,13 @@ public object Main {
 			System.LinkedList list = new System.LinkedList();
 
 			// Setup
-			TestObject obj1 = new TestObject(173);
-			list.push_back(Object obj1);
+			TestObject obj;
 
-			TestObject obj2 = new TestObject(1389);
-			list.push_back(Object obj2);
+			obj = new TestObject(173);
+			list.push_back(Object obj);
+
+			obj = new TestObject(1389);
+			list.push_back(Object obj);
 
 			// Usage
 			assert( list.size() == 2 );
@@ -61,13 +65,18 @@ public object Main {
 		try {
 			System.LinkedList list = new System.LinkedList();
 
-			TestObject obj = new TestObject(2);
+			TestObject obj;
+
+			obj = new TestObject(2);
 			list.push_front(Object obj);
+
 			obj = new TestObject(1);
 			list.push_front(Object obj);
 
-			for ( int i = 0; i < list.size(); i = i++ ) {
-				TestObject item = TestObject list.at(i);
+			while ( list.hasNext() ) {
+				list.next();
+
+				TestObject item = TestObject list.current();
 				print(item.ToString());
 			}
 
@@ -84,14 +93,19 @@ public object Main {
 			System.LinkedList list = new System.LinkedList();
 
 			// Setup
-			TestObject obj1 = new TestObject(173);
-			list.insert(Object obj1, 0);
+			TestObject obj;
 
-			TestObject obj2 = new TestObject(1389);
-			list.insert(Object obj2, 0);
+			obj = new TestObject(0664);
+			list.insert(Object obj, 0);
+
+			obj = new TestObject(1389);
+			list.insert(Object obj, 1);
+
+			obj = new TestObject(173);
+			list.insert(Object obj, 1);
 
 			// Usage
-			assert( list.size() == 2 );
+			assert( list.size() == 3 );
 
 			while ( list.hasNext() ) {
 				list.next();
@@ -99,6 +113,91 @@ public object Main {
 				TestObject item = TestObject list.current();
 				print(item.ToString());
 			}
+
+			return true;
+		}
+		catch ( System.OutOfBoundsException e ) {
+			print(e.what());
+			return false;
+		}
+
+		return false;
+	}
+
+	private bool TestCase4() modify {
+		print("TestCase 4: erase first");
+
+		try {
+			System.LinkedList list = new System.LinkedList();
+
+			// Setup
+			TestObject obj;
+
+			obj = new TestObject(0664);
+			list.insert(Object obj, 0);
+
+			obj = new TestObject(1389);
+			list.insert(Object obj, 1);
+
+			obj = new TestObject(173);
+			list.insert(Object obj, 1);
+
+			// Usage
+			assert( list.size() == 3 );
+
+			list.erase(0);
+
+			while ( list.hasNext() ) {
+				list.next();
+
+				TestObject item = TestObject list.current();
+				print(item.ToString());
+			}
+
+			assert( list.size() == 2 );
+
+			return true;
+		}
+		catch ( System.OutOfBoundsException e ) {
+			print(e.what());
+			return false;
+		}
+
+		return false;
+	}
+
+
+	private bool TestCase5() modify {
+		print("TestCase 5: erase middle");
+
+		try {
+			System.LinkedList list = new System.LinkedList();
+
+			// Setup
+			TestObject obj;
+
+			obj = new TestObject(0664);
+			list.insert(Object obj, 0);
+
+			obj = new TestObject(1389);
+			list.insert(Object obj, 1);
+
+			obj = new TestObject(173);
+			list.insert(Object obj, 1);
+
+			// Usage
+			assert( list.size() == 3 );
+
+			list.erase(1);
+
+			while ( list.hasNext() ) {
+				list.next();
+
+				TestObject item = TestObject list.current();
+				print(item.ToString());
+			}
+
+			assert( list.size() == 2 );
 
 			return true;
 		}
