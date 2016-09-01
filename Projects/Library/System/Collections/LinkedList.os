@@ -85,7 +85,7 @@ public namespace System {
         }
 
         public void insert(Object value ref, int index) modify {
-            if ( index > mSize ) {
+            if ( index < 0 || index > mSize ) {
                 throw new System.OutOfBoundsException("insert index(" + index + ") beyond end of list");
             }
 

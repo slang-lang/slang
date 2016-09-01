@@ -31,16 +31,19 @@ public object Main {
 			System.LinkedList list = new System.LinkedList();
 
 			// Setup
-			TestObject obj;
+			TestObject item;
 
-			obj = new TestObject(173);
-			list.push_back(Object obj);
+			item = new TestObject(664);
+			list.push_back(Object item);
 
-			obj = new TestObject(1389);
-			list.push_back(Object obj);
+			item = new TestObject(173);
+			list.push_back(Object item);
+
+			item = new TestObject(1389);
+			list.push_back(Object item);
 
 			// Usage
-			assert( list.size() == 2 );
+			assert( list.size() == 3 );
 
 			while ( list.hasNext() ) {
 				list.next();
@@ -65,13 +68,16 @@ public object Main {
 		try {
 			System.LinkedList list = new System.LinkedList();
 
-			TestObject obj;
+			TestObject item;
 
-			obj = new TestObject(2);
-			list.push_front(Object obj);
+			item = new TestObject(1389);
+			list.push_front(Object item);
 
-			obj = new TestObject(1);
-			list.push_front(Object obj);
+			item = new TestObject(173);
+			list.push_front(Object item);
+
+			item = new TestObject(664);
+			list.push_front(Object item);
 
 			while ( list.hasNext() ) {
 				list.next();
@@ -93,16 +99,16 @@ public object Main {
 			System.LinkedList list = new System.LinkedList();
 
 			// Setup
-			TestObject obj;
+			TestObject item;
 
-			obj = new TestObject(0664);
-			list.insert(Object obj, 0);
+			item = new TestObject(0664);
+			list.insert(Object item, 0);
 
-			obj = new TestObject(1389);
-			list.insert(Object obj, 1);
+			item = new TestObject(1389);
+			list.insert(Object item, 1);
 
-			obj = new TestObject(173);
-			list.insert(Object obj, 1);
+			item = new TestObject(173);
+			list.insert(Object item, 1);
 
 			// Usage
 			assert( list.size() == 3 );
@@ -131,16 +137,16 @@ public object Main {
 			System.LinkedList list = new System.LinkedList();
 
 			// Setup
-			TestObject obj;
+			TestObject item;
 
-			obj = new TestObject(0664);
-			list.insert(Object obj, 0);
+			item = new TestObject(0664);
+			list.insert(Object item, 0);
 
-			obj = new TestObject(1389);
-			list.insert(Object obj, 1);
+			item = new TestObject(1389);
+			list.insert(Object item, 1);
 
-			obj = new TestObject(173);
-			list.insert(Object obj, 1);
+			item = new TestObject(173);
+			list.insert(Object item, 1);
 
 			// Usage
 			assert( list.size() == 3 );
@@ -174,16 +180,16 @@ public object Main {
 			System.LinkedList list = new System.LinkedList();
 
 			// Setup
-			TestObject obj;
+			TestObject item;
 
-			obj = new TestObject(0664);
-			list.insert(Object obj, 0);
+			item = new TestObject(0664);
+			list.insert(Object item, 0);
 
-			obj = new TestObject(1389);
-			list.insert(Object obj, 1);
+			item = new TestObject(1389);
+			list.insert(Object item, 1);
 
-			obj = new TestObject(173);
-			list.insert(Object obj, 1);
+			item = new TestObject(173);
+			list.insert(Object item, 1);
 
 			// Usage
 			assert( list.size() == 3 );

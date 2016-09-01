@@ -8,9 +8,6 @@ public namespace System {
 				base.ACollection();
 			}
 
-			public void ~Stack() {
-			}
-
 			public void push(Object value) modify {
 				CollectionItem item = new CollectionItem();
 				item.mValue = value;
@@ -34,12 +31,17 @@ public namespace System {
 
 				Object null;
 
-				CollectionItem item = mFirst;
-				for ( int i = 0; i < mSize - 1; i = i++ ) {
-					item = item.mNext;
+				if ( mSize == 1 ) {
+					mFirst = null;
 				}
+				else {
+					CollectionItem item = mFirst;
+					for ( int i = 0; i < mSize - 1; i = i++ ) {
+						item = item.mNext;
+					}
 
-				item.mNext = null;
+					item.mNext = null;
+				}
 
 				mSize--;
 			}
