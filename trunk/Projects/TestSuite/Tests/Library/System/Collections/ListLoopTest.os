@@ -1,6 +1,6 @@
 #!/usr/local/bin/oscript
 
-import System.Collections.LinkedList;
+import System.Collections.List;
 import System.Exception;
 
 private int LOOP const = 1000;
@@ -31,7 +31,7 @@ public object Main {
 }
 
 private void ObjectMethod() {
-	System.LinkedList list = new System.LinkedList();
+	System.List list = new System.List();
 
 	// Setup
 	TestObject item;
@@ -66,7 +66,7 @@ private void ObjectMethod() {
 }
 
 private void ValueMethod() {
-	System.LinkedList list = new System.LinkedList();
+	System.List list = new System.List();
 
 	// Setup
 	string item;

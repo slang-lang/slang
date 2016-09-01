@@ -5,13 +5,13 @@ public namespace System {
 
 	public object CollectionItem {
 			private CollectionItem mNext;
-			//private CollectionItem mPrevious;
+			private CollectionItem mPrevious;
 			private Object mValue;
 
-			public void LinkedItem() {
+			public void CollectionItem() {
 			}
 
-			public void LinkedItem(Object value ref) {
+			public void CollectionItem(Object value ref) {
 				mValue = value;
 			}
 
@@ -23,9 +23,9 @@ public namespace System {
 				return mNext;
 			}
 
-			//public CollectionItem previous() const {
-			//	return mPrevious;
-			//}
+			public CollectionItem previous() const {
+				return mPrevious;
+			}
 
 			public void set(Object value ref) modify {
 				mValue = value;
@@ -33,52 +33,52 @@ public namespace System {
 	}
 
 	public object ACollection implements IIterateable {
-			private int mCurrentIdx;
-			private CollectionItem mFirst;
-			private CollectionItem mLast;
-			private int mSize;
+		private int mCurrentIdx;
+		private CollectionItem mFirst;
+		private CollectionItem mLast;
+		private int mSize;
 
-			public void ACollection() {
-				mCurrentIdx = -1;
-				mSize = 0;
+		public void ACollection() {
+			mCurrentIdx = -1;
+			mSize = 0;
+		}
+
+		public Object at(int index) const {
+			if ( index < 0 || index >= mSize ) {
+				throw new System.OutOfBoundsException("index " + index + " out of bounds");
 			}
 
-			public Object at(int index) const {
-				if ( index < 0 || index >= mSize ) {
-					throw new System.OutOfBoundsException("index " + index + " out of bounds");
-				}
-
-				CollectionItem item = mFirst;
-				for ( int i = 0; i < index; i = i++ ) {
-					item = item.mNext;
-				}
-
-				return item.mValue;
+			CollectionItem item = mFirst;
+			for ( int i = 0; i < index; i = i++ ) {
+				item = item.mNext;
 			}
 
-			public Object current() const {
-				return at(mCurrentIdx);
-			}
+			return item.mValue;
+		}
 
-			public bool empty() const {
-				return mSize == 0;
-			}
+		public Object current() const {
+			return at(mCurrentIdx);
+		}
 
-			public bool hasNext() const {
-				return mCurrentIdx < mSize - 1;
-			}
+		public bool empty() const {
+			return mSize == 0;
+		}
 
-			public void next() modify {
-				mCurrentIdx++;
-			}
+		public bool hasNext() const {
+			return mCurrentIdx < mSize - 1;
+		}
 
-			public void reset() modify {
-				mCurrentIdx = -1;
-			}
+		public void next() modify {
+			mCurrentIdx++;
+		}
 
-			public int size() const {
-				return mSize;
-			}
+		public void reset() modify {
+			mCurrentIdx = -1;
+		}
+
+		public int size() const {
+			return mSize;
+		}
 	}
 
 }
