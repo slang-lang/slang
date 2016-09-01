@@ -443,6 +443,20 @@ void Interpreter::parseInfixPostfix(Object *result, TokenIterator& start)
 
 	// postfix
 	switch ( op ) {
+/*
+		case Token::Type::BRACKET_OPEN: {
+			start++;	// consume operator token
+
+			Object tmp;
+			expression(&tmp, start);
+
+			expect(Token::Type::BRACKET_CLOSE, start);
+
+			operator_trinary_array(result, &tmp, result);
+
+			start++;	// consume operator token
+		} break;
+*/
 		case Token::Type::OPERATOR_DECREMENT: {
 			operator_unary_decrement(result);
 			start++;
@@ -1508,9 +1522,11 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
  */
 Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol)
 {
+	bool isArray = false;
 	bool isConst = false;
 	bool isFinal = false;
 	std::string name;
+	int size = 0;
 
 	token++;
 	name = token->content();
@@ -1518,6 +1534,24 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol)
 	expect(Token::Type::IDENTIFER, token);
 
 	token++;
+
+	if (  token->type() == Token::Type::BRACKET_OPEN ) {
+		isArray = true;
+		token++;
+
+		Object tmp;
+		try {
+			expression(&tmp, token);
+		}
+		catch ( ControlFlow::E &e ) {
+			mControlFlow = e;
+			return 0;
+		}
+
+		size = tmp.getValue().toInt();
+
+		expect(Token::Type::BRACKET_CLOSE, token++);
+	}
 
 	std::string tmpStr = token->content();
 	if ( tmpStr == MODIFIER_CONST || tmpStr == MODIFIER_FINAL ) {
@@ -1541,6 +1575,7 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol)
 
 	getScope()->define(name, object);
 
+	if ( isArray ) object->setArray(true, (size_t)size);
 	if ( isConst ) object->setConst(true);
 	if ( isFinal ) object->setFinal(true);
 

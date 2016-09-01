@@ -883,8 +883,6 @@ void operator_binary_subtract(Object *base, Object *other)
 
 void operator_trinary_array(Object *base, Object *index, Object* other)
 {
-assert(!"work in progress");
-
 	if ( !base ) {
 		throw Utils::Exceptions::AccessViolation("cannot use null pointer: base");
 	}
@@ -895,18 +893,13 @@ assert(!"work in progress");
 		throw Utils::Exceptions::AccessViolation("cannot use null pointer: other");
 	}
 
+/*
 	std::string source = base->Typename();
 //	std::string subscript = index->Typename();
 //	std::string target = other->Typename();
+*/
 
-	if ( source == BoolObject::TYPENAME ) {
-		BoolObject tmp(base->getValue());
-
-		*other = *tmp.operator_array(index);
-	}
-	else {
-assert(!"not implemented!");
-	}
+	*other = *base->operator_array(index);
 }
 
 void operator_unary_decrement(Object *base)

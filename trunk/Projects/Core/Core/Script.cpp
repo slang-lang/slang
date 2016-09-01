@@ -40,7 +40,7 @@ void Script::execute(const std::string& method, const ParameterList& params, Run
 		Runtime::Object* data = methodSymbol->getExceptionData().getData();
 		//Utils::Position position = methodSymbol->getExceptionData().getPosition();
 
-		std::string text = "exception raised in method '" + method + "(" + toString(params) + ")':\n";
+		std::string text = "Exception raised in method '" + method + "(" + toString(params) + ")':\n";
 					text += data->getValue().toStdString();
 
 		throw Utils::Exceptions::Exception(text);
