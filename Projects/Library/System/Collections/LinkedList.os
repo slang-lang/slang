@@ -65,8 +65,6 @@ public namespace System {
                 throw new System.OutOfBoundsException("erase index(" + index + ") beyond end of list");
             }
 
-            LinkedItem tmp;
-
             if ( index == 0 ) {	            // special handling for 1st element
                 mFirst = mFirst.mNext;
             }
