@@ -4,144 +4,158 @@ import System.Exception;
 
 public namespace System {
 
-public object LinkedItem {
-	private LinkedItem mNext;
-	private Object mValue;
+    public object LinkedItem {
+        private LinkedItem mNext;
+        private Object mValue;
 
-	public void LinkedItem() {
-	}
+        public void LinkedItem() {
+        }
 
-	public void LinkedItem(Object value ref) {
-		mValue = value;
-	}
+        public void LinkedItem(Object value ref) {
+            mValue = value;
+        }
 
-	public Object get() const {
-		return mValue;
-	}
+        public Object get() const {
+            return mValue;
+        }
 
-	public LinkedItem next() const {
-		return mNext;
-	}
+        public LinkedItem next() const {
+            return mNext;
+        }
 
-	public void set(Object value ref) modify {
-		mValue = value;
-	}
-}
+        public void set(Object value ref) modify {
+            mValue = value;
+        }
+    }
 
-public object LinkedList implements IIterateable {
-	private int mCount;
-	private int mCurrentIdx;
-	private LinkedItem mFirst;
-	private LinkedItem mLast;
+    public object LinkedList implements IIterateable {
+        private int mCurrentIdx;
+        private LinkedItem mFirst;
+        private LinkedItem mLast;
+        private int mSize;
 
-	public void LinkedList() {
-		mCount = 0;
-		mCurrentIdx = -1;
-	}
+        public void LinkedList() {
+            mCurrentIdx = -1;
+            mSize = 0;
+        }
 
-	public Object at(int index) const {
-		if ( index < 0 || index >= mCount ) {
-			throw new System.OutOfBoundsException("index " + index + " out of bounds");
-		}
+        public Object at(int index) const {
+            if ( index < 0 || index >= mSize ) {
+                throw new System.OutOfBoundsException("index " + index + " out of bounds");
+            }
 
-		LinkedItem item = mFirst;
-		for ( int i = 0; i < index; i = i++ ) {
-			item = item.mNext;
-			//item = item.next();
-		}
+            LinkedItem item = mFirst;
+            for ( int i = 0; i < index; i = i++ ) {
+                item = item.mNext;
+            }
 
-		return item.mValue;
-		//return item.get();
-	}
+            return item.mValue;
+        }
 
-	public Object current() const {
-		return at(mCurrentIdx);
-	}
+        public Object current() const {
+            return at(mCurrentIdx);
+        }
 
-	public void erase(int index) modify {
-		if ( index > mCount ) {
-			throw new System.OutOfBoundsException("erase index(" + index + ") beyond end of list");
-		}
+        public bool empty() const {
+            return mSize == 0;
+        }
 
-		assert(!"not implemented!");
+        public void erase(int index) modify {
+            if ( index < 0 || index > mSize ) {
+                throw new System.OutOfBoundsException("erase index(" + index + ") beyond end of list");
+            }
 
-		LinkedItem item = mFirst;
-		for ( int i = 0; i < mCount; i = i++ ) {
-			if ( i == index ) {
-			}
+            LinkedItem tmp;
 
-			item = item.mNext;
-		}
-	}
+            if ( index == 0 ) {	            // special handling for 1st element
+                mFirst = mFirst.mNext;
+            }
+            else {	                        // default handling for erasing
+                LinkedItem prev = mFirst;
+                for ( int i = 0; i < index - 1; i = i++ ) {
+                    prev = prev.mNext;
+                }
 
-	public void insert(Object value ref, int index) modify {
-		if ( index > mCount ) {
-			throw new System.OutOfBoundsException("insert index(" + index + ") beyond end of list");
-		}
+                prev = prev.mNext.mNext;
 
-		LinkedItem item = new LinkedItem(value);
+                if ( index == mSize - 1 ) {
+                    mLast = prev;
+                }
+            }
 
-		if ( index == 0 ) {	// special handling for 1st element
-			item.mNext = mFirst;
-			mFirst = item;
-		}
-		else {	// default handling for insertions
-			LinkedItem tmp = mFirst;
-			for ( int i = 0; i < mCount; i = i++ ) {
-				if ( i == index ) {
-					item.next = tmp.mNext;
-					tmp.mNext = item;
-					break;
-				}
+            mSize--;
+        }
 
-				tmp = tmp.mNext;
-			}
-		}
+        public void insert(Object value ref, int index) modify {
+            if ( index > mSize ) {
+                throw new System.OutOfBoundsException("insert index(" + index + ") beyond end of list");
+            }
 
-		mCount++;
-	}
+            LinkedItem item = new LinkedItem(value);
 
-	public bool hasNext() const {
-		return mCurrentIdx < mCount - 1;
-	}
+            if ( index == 0 ) {	            // special handling for 1st element
+                item.mNext = mFirst;
+                mFirst = item;
+                mLast = item;
+            }
+            else if ( index == mSize ) {   // special handling for last element
+                mLast.mNext = item;
+                mLast = item;
+            }
+            else {	                        // default handling for insertions
+                LinkedItem tmp = mFirst;
+                for ( int i = 0; i < index - 1; i = i++ ) {
+                    tmp = tmp.mNext;
+                }
 
-	public void next() modify {
-		mCurrentIdx++;
-	}
+                item.mNext = tmp.mNext;
+                tmp.mNext = item;
+            }
 
-	public void push_back(Object value ref) modify {
-		LinkedItem item = new LinkedItem();
-		item.mValue = value;
+            mSize++;
+        }
 
-		if ( mCount == 0 ) {
-			mFirst = item;
-		}
-		else {
-			mLast.mNext = item;
-		}
+        public bool hasNext() const {
+            return mCurrentIdx < mSize - 1;
+        }
 
-		mLast = item;
+        public void next() modify {
+            mCurrentIdx++;
+        }
 
-		mCount++;
-	}
+        public void push_back(Object value ref) modify {
+            LinkedItem item = new LinkedItem();
+            item.mValue = value;
 
-	public void push_front(Object value ref) modify {
-		LinkedItem item = new LinkedItem(value);
+            if ( mSize == 0 ) {
+                mFirst = item;
+            }
+            else {
+                mLast.mNext = item;
+            }
 
-		item.mNext = mFirst;
-		mFirst = item;
+            mLast = item;
 
-		mCount++;
-	}
+            mSize++;
+        }
 
-	public void reset() modify {
-		mCurrentIdx = -1;
-	}
+        public void push_front(Object value ref) modify {
+            LinkedItem item = new LinkedItem(value);
 
-	public int size() const {
-		return mCount;
-	}
-}
+            item.mNext = mFirst;
+            mFirst = item;
+
+            mSize++;
+        }
+
+        public void reset() modify {
+            mCurrentIdx = -1;
+        }
+
+        public int size() const {
+            return mSize;
+        }
+    }
 
 }
 
