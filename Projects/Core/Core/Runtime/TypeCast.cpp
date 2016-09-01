@@ -70,19 +70,6 @@ void typecast(Object *base, const std::string& targetType, Repository *repositor
 		*base = tmp;
 	}
 	else if ( targetType == StringObject::TYPENAME ) {
-/*
-		StringObject tmp;
-
-		if ( base->isAtomicType() ) {
-			tmp = StringObject(*base);
-		}
-		else {
-			base->execute(&tmp, "ToString", ParameterList());
-		}
-
-		*base = tmp;
-*/
-
 		StringObject tmp(*base);
 
 		*base = tmp;
@@ -93,22 +80,11 @@ void typecast(Object *base, const std::string& targetType, Repository *repositor
 		*base = tmp;
 	}
 	else {
-		if ( base->isAtomicType() ) {
-			throw Utils::Exceptions::Exception("cannot cast atomic type to complex type");
-		}
+		Object tmp(*base);
+		tmp.setQualifiedTypename(targetType);
+		tmp.setTypename(targetType);
 
-		throw Utils::Exceptions::NotImplemented("typecast to complex type not implemented!");
-
-/*	// not supported by now
-		Object *obj = repository->createInstance(targetType);
-		ParameterList params;
-		params.push_back(
-			Parameter(base->getName(), base->Typename(), base->getValue(), false, base->isConst(), Parameter::AccessMode::ByReference, base)
-		);
-		obj->Constructor(params);
-
-		*base = *obj;
-*/
+		*base = tmp;
 	}
 }
 }

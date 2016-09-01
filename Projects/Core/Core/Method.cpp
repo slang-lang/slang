@@ -305,7 +305,7 @@ ControlFlow::E Method::processControlFlow(ControlFlow::E controlflow, Object *re
 					throw Runtime::Exceptions::ExplicitCastRequired("Explicit cast required for type conversion from " + result->Typename() + " to " + Typename() + " in " + getFullScopeName());
 				}
 
-				OSwarn("implicit type conversion from " + result->Typename() + " to " + Typename() + " in " + getFullScopeName());
+				OSwarn("implicit type conversion from " + result->Typename() + " to " + Typename());// + " in " + getFullScopeName());
 
 				typecast(result, Typename(), mRepository);
 			}
