@@ -167,6 +167,10 @@
 			>
 		</Filter>
 		<File
+			RelativePath=".\System\Math\Abs.h"
+			>
+		</File>
+		<File
 			RelativePath=".\Apache\ApacheExtension.cpp"
 			>
 		</File>
@@ -196,6 +200,10 @@
 		</File>
 		<File
 			RelativePath=".\System\AssertMsg.h"
+			>
+		</File>
+		<File
+			RelativePath=".\System\Math\Ceil.h"
 			>
 		</File>
 		<File
@@ -275,6 +283,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\System\Math\Floor.h"
+			>
+		</File>
+		<File
 			RelativePath=".\JSON\FromJson.cpp"
 			>
 		</File>
@@ -295,11 +307,23 @@
 			>
 		</File>
 		<File
+			RelativePath=".\System\IO\IO.cpp"
+			>
+		</File>
+		<File
 			RelativePath=".\JSON\JsonExtension.cpp"
 			>
 		</File>
 		<File
 			RelativePath=".\JSON\JsonExtension.h"
+			>
+		</File>
+		<File
+			RelativePath=".\System\Math\Math.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\System\Math\Math.h"
 			>
 		</File>
 		<File
@@ -316,10 +340,6 @@
 		</File>
 		<File
 			RelativePath=".\Mysql\MysqlError.h"
-			>
-		</File>
-		<File
-			RelativePath=".\Mysql\MysqlExtension.cpp"
 			>
 		</File>
 		<File
@@ -375,15 +395,7 @@
 			>
 		</File>
 		<File
-			RelativePath=".\Mysql\MysqlNumRows.cpp"
-			>
-		</File>
-		<File
 			RelativePath=".\Mysql\MysqlNumRows.h"
-			>
-		</File>
-		<File
-			RelativePath=".\Mysql\MysqlPing.cpp"
 			>
 		</File>
 		<File
@@ -391,15 +403,7 @@
 			>
 		</File>
 		<File
-			RelativePath=".\Mysql\MysqlQuery.cpp"
-			>
-		</File>
-		<File
 			RelativePath=".\Mysql\MysqlQuery.h"
-			>
-		</File>
-		<File
-			RelativePath=".\Mysql\MysqlRealConnect.cpp"
 			>
 		</File>
 		<File
@@ -407,15 +411,7 @@
 			>
 		</File>
 		<File
-			RelativePath=".\Mysql\MysqlRealEscapeString.cpp"
-			>
-		</File>
-		<File
 			RelativePath=".\Mysql\MysqlRealEscapeString.h"
-			>
-		</File>
-		<File
-			RelativePath=".\Mysql\MysqlSelectDB.cpp"
 			>
 		</File>
 		<File
@@ -427,15 +423,7 @@
 			>
 		</File>
 		<File
-			RelativePath=".\Mysql\MysqlStoreResult.cpp"
-			>
-		</File>
-		<File
 			RelativePath=".\Mysql\MysqlStoreResult.h"
-			>
-		</File>
-		<File
-			RelativePath=".\Mysql\MysqlUseResult.cpp"
 			>
 		</File>
 		<File
@@ -451,6 +439,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\System\Math\Rand.h"
+			>
+		</File>
+		<File
+			RelativePath=".\System\Math\Round.h"
+			>
+		</File>
+		<File
 			RelativePath=".\System\SetKeyboardBlockingMode.h"
 			>
 		</File>
@@ -459,11 +455,47 @@
 			>
 		</File>
 		<File
+			RelativePath=".\System\Math\Sqrt.h"
+			>
+		</File>
+		<File
+			RelativePath=".\System\Math\Srand.h"
+			>
+		</File>
+		<File
+			RelativePath=".\System\StdTime.h"
+			>
+		</File>
+		<File
 			RelativePath=".\System\Strings\StrFind.h"
 			>
 		</File>
 		<File
+			RelativePath=".\System\Strings\Strings.cpp"
+			>
+		</File>
+		<File
 			RelativePath=".\System\Strings\StrLen.h"
+			>
+		</File>
+		<File
+			RelativePath=".\System\Strings\StrLPad.h"
+			>
+		</File>
+		<File
+			RelativePath=".\System\Strings\StrLTrim.h"
+			>
+		</File>
+		<File
+			RelativePath=".\System\Strings\StrRPad.h"
+			>
+		</File>
+		<File
+			RelativePath=".\System\Strings\StrRTrim.h"
+			>
+		</File>
+		<File
+			RelativePath=".\System\Strings\StrTrim.h"
 			>
 		</File>
 		<File
@@ -532,6 +564,10 @@
 		</File>
 		<File
 			RelativePath=".\System\Strings\ToUpper.h"
+			>
+		</File>
+		<File
+			RelativePath=".\System\Math\Trunc.h"
 			>
 		</File>
 		<File

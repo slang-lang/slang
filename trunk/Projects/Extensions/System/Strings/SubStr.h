@@ -51,7 +51,7 @@ public:
 
 			std::string param_value = (*it++).value().toStdString();
 			unsigned long param_start = (*it++).value().toInt();
-			unsigned long param_end = -1;
+			unsigned long param_end = std::string::npos;
 
 			if ( params.size() >= 3 ) {
 				param_end = (*it++).value().toInt();

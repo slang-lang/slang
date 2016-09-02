@@ -54,7 +54,7 @@ public:
 
 			MYSQL_ROW myRow = mysql_fetch_row(myResult);
 
-			*result = Runtime::BoolObject(myRow != nullptr);
+			*result = Runtime::BoolObject(myRow != NULL);
 		}
 		catch ( std::exception &e ) {
 			Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
