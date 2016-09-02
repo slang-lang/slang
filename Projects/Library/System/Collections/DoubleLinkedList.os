@@ -13,6 +13,38 @@ public namespace System {
 			return mCurrentIdx > 0;
 		}
 
+        public void pop_back() modify {
+            if ( mSize <= 0 ) {
+                throw new System.OutOfBoundsException("cannot pop beyond ground level");
+            }
+
+            Object null;
+
+            if ( mSize == 1 ) {
+                mFirst = null;
+            }
+            else {
+                CollectionItem item = mFirst;
+                for ( int i = 0; i < mSize - 1; i = i++ ) {
+                    item = item.mNext;
+                }
+
+                item.mNext = null;
+            }
+
+            mSize--;
+        }
+
+        public void pop_front() modify {
+            if ( mSize <= 0 ) {
+                throw new System.OutOfBoundsException("pop beyond begin of list");
+            }
+
+            mFirst = mFirst.mNext;
+
+            mSize--;
+        }
+
 		public void previous() modify {
 			mCurrentIdx--;
 		}
@@ -34,7 +66,19 @@ public namespace System {
 			mSize++;
 		}
 
-        public void push_front() modify {
+        public void push_front(Object value ref) modify {
+            CollectionItem item = new CollectionItem(value);
+
+            if ( mSize == 0 ) {     // special handling for 1st element
+                mFirst = item;
+            }
+            else {                  // generic handling for all elements
+                item.mNext = mFirst;
+                mFirst.mPrevious = item;
+                mFirst = item;
+            }
+
+            mSize++;
         }
 
 		public void resetToLast() modify {
