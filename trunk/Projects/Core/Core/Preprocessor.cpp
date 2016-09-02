@@ -150,6 +150,7 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token) const
 	MethodAttributes::MethodType::E methodType = MethodAttributes::MethodType::Method;
 	Mutability::E mutability = Mutability::Const;
 	std::string name;
+	bool throws = false;
 	std::string type;
 	std::string visibility;
 	int numConstModifiers = 0;
@@ -229,6 +230,11 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token) const
 		throw Utils::Exceptions::SyntaxError("constructor or destructor cannot be const");
 	}
 
+	if ( token->type() == Token::Type::RESERVED_WORD && token->content() == RESERVED_WORD_THROWS ) {
+		throws = true;
+		token++;
+	}
+
 	// collect all tokens of this method
 	TokenList tokens;
 	if ( token->type() == Token::Type::BRACKET_CURLY_OPEN ) {
@@ -249,6 +255,7 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token) const
 	method->setRecursive(isRecursive);
 	method->setRepository(mRepository);
 	method->setSignature(params);
+	method->setThrows(throws);
 	method->setTokens(tokens);
 	method->setVisibility(Visibility::convert(visibility));
 

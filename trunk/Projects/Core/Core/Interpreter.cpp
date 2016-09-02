@@ -1354,6 +1354,8 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
  */
 void Interpreter::process_throw(TokenIterator& token, Object* /*result*/)
 {
+	// TODO: check if our parent scope is a method that is allowed to throw exceptions
+
 	Object* data = getRepository()->createInstance(GENERIC_OBJECT);
 	try {
 		expression(data, token);

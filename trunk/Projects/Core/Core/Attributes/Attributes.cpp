@@ -100,7 +100,8 @@ void GenericAttributes::setVisibility(Visibility::E v)
 MethodAttributes::MethodAttributes()
 : mIsAbstract(false),
   mIsRecursive(false),
-  mMethodType(MethodType::Method)
+  mMethodType(MethodType::Method),
+  mThrows(false)
 {
 }
 
@@ -132,6 +133,16 @@ void MethodAttributes::setRecursive(bool state)
 void MethodAttributes::setMethodType(MethodType::E type)
 {
 	mMethodType = type;
+}
+
+bool MethodAttributes::throws() const
+{
+	return mThrows;
+}
+
+void MethodAttributes::setThrows(bool state)
+{
+	mThrows = state;
 }
 
 NamespaceAttributes::NamespaceAttributes()

@@ -79,10 +79,14 @@ public:
 	virtual MethodType::E getMethodType() const;
 	virtual void setMethodType(MethodType::E type);
 
+	virtual bool throws() const;
+	virtual void setThrows(bool state);
+
 protected:
 	bool mIsAbstract;
 	bool mIsRecursive;
 	MethodType::E mMethodType;
+	bool mThrows;
 };
 
 

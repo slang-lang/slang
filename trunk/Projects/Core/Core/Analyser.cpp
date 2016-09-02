@@ -162,17 +162,22 @@ bool Analyser::createBluePrint(TokenIterator& token, TokenIterator end, bool isI
 		symbol->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
 		symbol->setTokens(tokens);
 
+		bool extends = false;
+
 		// set up inheritance (if present)
 		if ( !inheritance.empty() ) {
 			for ( Designtime::Ancestors::const_iterator it = inheritance.begin(); it != inheritance.end(); ++it ) {
+				if ( it->type() == Designtime::Ancestor::Type::Extends ) {
+					extends = true;
+				}
+
 				symbol->addInheritance((*it));
 			}
 		}
-		else {
-			// in case this object has no inheritance set, we inherit from 'Object'
-			if ( !isInterface ) {
-				symbol->addInheritance(Designtime::Ancestor(GENERIC_OBJECT, Designtime::Ancestor::Type::Extends, Visibility::Public));
-			}
+
+		// in case this object has no inheritance set, we inherit from 'Object'
+		if ( !isInterface && !extends ) {
+			symbol->addInheritance(Designtime::Ancestor(GENERIC_OBJECT, Designtime::Ancestor::Type::Extends, Visibility::Public));
 		}
 	}
 
@@ -317,6 +322,7 @@ bool Analyser::createMethod(TokenIterator& token, TokenIterator end)
 	MethodAttributes::MethodType::E methodType = MethodAttributes::MethodType::Function;
 	Mutability::E mutability = Mutability::Const;
 	std::string name;
+	bool throws = false;
 	std::string type;
 	std::string visibility;
 
@@ -335,6 +341,11 @@ bool Analyser::createMethod(TokenIterator& token, TokenIterator end)
 	expect(Token::Type::PARENTHESIS_OPEN, token);
 
 	ParameterList params = Parser::parseParameters(token);
+
+	if ( token->type() == Token::Type::RESERVED_WORD && token->content() == RESERVED_WORD_THROWS ) {
+		throws = true;
+		token++;
+	}
 
 	// look for the next opening curly brackets
 	TokenIterator open = findNext(token, Token::Type::BRACKET_CURLY_OPEN);
@@ -360,6 +371,7 @@ bool Analyser::createMethod(TokenIterator& token, TokenIterator end)
 	method->setRecursive(isRecursive);
 	method->setRepository(mRepository);
 	method->setSignature(params);
+	method->setThrows(throws);
 	method->setTokens(tokens);
 	method->setVisibility(Visibility::convert(visibility));
 
