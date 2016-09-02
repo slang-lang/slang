@@ -32,7 +32,7 @@ public object Main {
 			// Setup
 			TestObject item;
 
-			item = new TestObject(0664);
+			item = new TestObject(664);
 			list.push_back(Object item);
 
 			item = new TestObject(173);
@@ -44,14 +44,14 @@ public object Main {
 			// Usage
 			assert( list.size() == 3 );
 
-            item = list.at(0);
-            assert( item.mValue == 0664 );
+			item = list.at(0);
+			assert( item.mValue == 664 );
 
-            item = list.at(1);
-            assert( item.mValue == 173 );
+			item = list.at(1);
+			assert( item.mValue == 173 );
 
-            item = list.at(2);
-            assert( item.mValue == 1389 );
+			item = list.at(2);
+			assert( item.mValue == 1389 );
 
 			return true;
 		}
@@ -83,14 +83,14 @@ public object Main {
 			// Usage
 			assert( list.size() == 3 );
 
-            item = list.at(0);
-            assert( item.mValue == 0664 );
+			item = list.at(0);
+			assert( item.mValue == 664 );
 
-            item = list.at(1);
-            assert( item.mValue == 173 );
+			item = list.at(1);
+			assert( item.mValue == 173 );
 
-            item = list.at(2);
-            assert( item.mValue == 1389 );
+			item = list.at(2);
+			assert( item.mValue == 1389 );
 
 			return true;
 		}
@@ -123,11 +123,11 @@ public object Main {
 
 			assert( list.size() == 2 );
 
-            item = list.at(0);
-            assert( item.mValue == 173 );
+			item = list.at(0);
+			assert( item.mValue == 173 );
 
-            item = list.at(1);
-            assert( item.mValue == 1389 );
+			item = list.at(1);
+			assert( item.mValue == 1389 );
 
 			return true;
 		}
@@ -164,11 +164,11 @@ public object Main {
 
 			assert( list.size() == 2 );
 
-            item = list.at(0);
-            assert( item.mValue == 0664 );
+			item = list.at(0);
+			assert( item.mValue == 664 );
 
-            item = list.at(1);
-            assert( item.mValue == 173 );
+			item = list.at(1);
+			assert( item.mValue == 173 );
 
 			return true;
 		}

@@ -18,7 +18,7 @@ public object Main {
 			// Setup
 			string item;
 
-			item = "0664";
+			item = "664";
 			stack.push(Object item);
 
 			item = "173";
@@ -56,7 +56,7 @@ public object Main {
 			// Setup
 			string item;
 
-			item = "0664";
+			item = "664";
 			stack.push(Object item);
 
 			item = "173";

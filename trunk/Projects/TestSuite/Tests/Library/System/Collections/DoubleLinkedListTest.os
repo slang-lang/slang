@@ -21,26 +21,26 @@ public object Main {
 	}
 
 	private bool TestCase1() modify {
-		print("TestCase 1");
+		print("TestCase 1: push_back");
 
 		try {
 			System.DoubleLinkedList list = new System.DoubleLinkedList();
 
-			TestObject obj1 = new TestObject(173);
-			list.push(Object obj1);
+			TestObject item;
+			item = new TestObject(173);
+			list.push_back(Object item);
 
-			TestObject obj2 = new TestObject(1389);
-			list.push(Object obj2);
+			item = new TestObject(1389);
+			list.push_back(Object item);
 
 			// Usage
 			assert( list.size() == 2 );
 
-			while ( list.hasNext() ) {
-				list.next();
+			item = list.at(0);
+			assert(item.mValue == 173);
 
-				TestObject item = TestObject list.current();
-				print(item.ToString());
-			}
+			item = list.at(1);
+			assert(item.mValue == 1389);
 
 			return true;
 		}
