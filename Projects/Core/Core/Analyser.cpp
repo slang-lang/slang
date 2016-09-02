@@ -168,6 +168,12 @@ bool Analyser::createBluePrint(TokenIterator& token, TokenIterator end, bool isI
 				symbol->addInheritance((*it));
 			}
 		}
+		else {
+			// in case this object has no inheritance set, we inherit from 'Object'
+			if ( !isInterface ) {
+				symbol->addInheritance(Designtime::Ancestor(GENERIC_OBJECT, Designtime::Ancestor::Type::Extends, Visibility::Public));
+			}
+		}
 	}
 
 	mRepository->addBluePrint(symbol);

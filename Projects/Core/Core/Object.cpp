@@ -22,8 +22,12 @@ Object::Object()
 : MethodScope(ANONYMOUS_OBJECT, 0),
   ObjectSymbol(ANONYMOUS_OBJECT),
   mFilename(ANONYMOUS_OBJECT),
+  mIsArray(false),
+  mIsArrayDynamicallyExpanding(false),
   mIsAtomicType(false),
   mIsConstructed(false),
+  mOutterface(ANONYMOUS_OBJECT),
+  mQualifiedOutterface(ANONYMOUS_OBJECT),
   mQualifiedTypename(ANONYMOUS_OBJECT),
   mRepository(0),
   mTypename(ANONYMOUS_OBJECT)
@@ -36,9 +40,13 @@ Object::Object(const Object& other)
 {
 	mFilename = other.mFilename;
 	mInheritance = other.mInheritance;
+	mIsArray = other.mIsArray;
+	mIsArrayDynamicallyExpanding = other.mIsArrayDynamicallyExpanding;
 	mIsAtomicType = other.mIsAtomicType;
 	mIsConstructed = other.mIsConstructed;
 	mParent = other.mParent;
+	mOutterface = other.mOutterface;
+	mQualifiedOutterface = other.mQualifiedOutterface;
 	mQualifiedTypename = other.mQualifiedTypename;
 	mRepository = other.mRepository;
 	mScopeName = other.mScopeName;
@@ -82,8 +90,12 @@ Object::Object(const std::string& name, const std::string& filename, const std::
 : MethodScope(name, 0),
   ObjectSymbol(name),
   mFilename(filename),
+  mIsArray(false),
+  mIsArrayDynamicallyExpanding(false),
   mIsAtomicType(false),
   mIsConstructed(false),
+  mOutterface(type),
+  mQualifiedOutterface(type),
   mQualifiedTypename(type),
   mRepository(0),
   mTypename(type),
@@ -101,8 +113,12 @@ void Object::operator= (const Object& other)
 	if ( this != &other ) {
 		mFilename = other.mFilename;
 		mInheritance = other.mInheritance;
+		mIsArray = other.mIsArray;
+		mIsArrayDynamicallyExpanding = other.mIsArrayDynamicallyExpanding;
 		mIsAtomicType = other.mIsAtomicType;
 		mIsConstructed = other.mIsConstructed;// ? other.mIsConstructed : mIsConstructed;
+		mOutterface = other.mOutterface;
+		mQualifiedOutterface = other.mQualifiedOutterface;
 		mParent = other.mParent ? other.mParent : mParent;
 		mQualifiedTypename = other.mQualifiedTypename;
 		mRepository = other.mRepository ? other.mRepository : mRepository;
@@ -144,10 +160,14 @@ void Object::operator= (const Object& other)
 void Object::copy(const Object& other)
 {
 	if ( this != &other ) {
+		mIsArray = other.mIsArray;
+		mIsArrayDynamicallyExpanding = other.mIsArrayDynamicallyExpanding;
 		mIsAtomicType = other.mIsAtomicType;
 		mIsConstructed = other.mIsConstructed;// ? other.mIsConstructed : mIsConstructed;
 		mFilename = other.mFilename;
+		mOutterface = other.mOutterface;
 		mParent = other.mParent ? other.mParent : mParent;
+		mQualifiedOutterface = other.mQualifiedOutterface;
 		mQualifiedTypename = other.mQualifiedTypename;
 		mRepository = other.mRepository ? other.mRepository : mRepository;
 		mScopeName = other.mScopeName;
@@ -402,6 +422,11 @@ AtomicValue Object::getValue() const
 	return mValue;
 }
 
+bool Object::isArray() const
+{
+	return mIsArray;
+}
+
 bool Object::isAbstract() const
 {
 	bool result = false;
@@ -420,6 +445,28 @@ bool Object::isAtomicType() const
 	return mIsAtomicType;
 }
 
+bool Object::isInstanceOf(const std::string& type) const
+{
+	if ( type.empty() ) {
+		throw Utils::Exceptions::Exception("invalid type provided");
+	}
+
+	if ( QualifiedTypename() == type ) {
+		return true;
+	}
+
+	for ( Inheritance::const_iterator it = mInheritance.begin(); it != mInheritance.end(); ++it ) {
+		if ( it->first.name() == type ) {
+			return true;
+		}
+		else if ( it->second->isInstanceOf(type) ) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
 bool Object::isValid() const
 {
 	return mIsConstructed;
@@ -427,6 +474,10 @@ bool Object::isValid() const
 
 const Object* Object::operator_array(const Object *index)
 {
+	if ( !mIsArray ) {
+		throw Utils::Exceptions::Exception(Typename() + ".operator[]: is not an array");
+	}
+
 	std::string subscript = index->Typename();
 
 	throw Utils::Exceptions::NotImplemented(Typename() + ".operator[]: no array subscript operator for " + subscript + " implemented");
@@ -637,6 +688,7 @@ bool Object::operator_is(const Symbol *other)
 		throw Utils::Exceptions::Exception("invalid symbol provided");
 	}
 
+/*
 	for ( Inheritance::const_iterator it = mInheritance.begin(); it != mInheritance.end(); ++it ) {
 		if ( it->first.name() == static_cast<const Designtime::BluePrintObject*>(other)->QualifiedTypename() ) {
 			return true;
@@ -647,6 +699,9 @@ bool Object::operator_is(const Symbol *other)
 	}
 
 	return QualifiedTypename() == static_cast<const Designtime::BluePrintObject*>(other)->QualifiedTypename();
+*/
+
+	return isInstanceOf(static_cast<const Designtime::BluePrintObject*>(other)->QualifiedTypename());
 }
 
 bool Object::operator_less(const Object *other)
@@ -862,6 +917,12 @@ ObjectiveScript::MethodSymbol* Object::resolveMethod(const std::string& name, co
 	}
 
 	return result;
+}
+
+void Object::setArray(bool value, size_t size)
+{
+	mIsArray = value;
+	mIsArrayDynamicallyExpanding = (size == 0);
 }
 
 void Object::setConstructed(bool state)

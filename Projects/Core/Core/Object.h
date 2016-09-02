@@ -64,9 +64,13 @@ public:
 
 public:	// Symbol::IType implementation & RTTI
 	const std::string& Filename() const { return mFilename; }
+	const std::string& Outterface() const { return mOutterface; }
+	const std::string& QualifiedOutterface() const { return mQualifiedOutterface; }
 	const std::string& QualifiedTypename() const { return mQualifiedTypename; }
 	const std::string& Typename() const { return mTypename; }
 
+	void setOutterface(const std::string& type) { mOutterface = type; }
+	void setQualifiedOutterface(const std::string& type) { mQualifiedOutterface = type; }
 	void setQualifiedTypename(const std::string& type) { mQualifiedTypename = type; }
 	void setTypename(const std::string &type) { mTypename = type; }
 
@@ -80,13 +84,19 @@ public: // Symbol
 	Symbol* resolve(const std::string& name, bool onlyCurrentScope) const;
 	ObjectiveScript::MethodSymbol* resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope) const;
 
+public:	// Type
+	bool isInstanceOf(const std::string& type) const;
+
 public:	// Value
 	virtual AtomicValue getValue() const;
 	virtual void setValue(AtomicValue value);
 
 	virtual bool isAbstract() const;
+	virtual bool isArray() const;
 	virtual bool isAtomicType() const;
 	virtual bool isValid() const;
+
+	virtual void setArray(bool value, size_t size = 0);
 	virtual std::string ToString() const;
 
 public:	// Json serialization
@@ -131,8 +141,12 @@ protected:
 protected:
 	std::string mFilename;
 	Inheritance mInheritance;
+	bool mIsArray;
+	bool mIsArrayDynamicallyExpanding;
 	bool mIsAtomicType;
 	bool mIsConstructed;
+	std::string mOutterface;
+	std::string mQualifiedOutterface;
 	std::string mQualifiedTypename;
 	Repository *mRepository;
 	std::string mTypename;

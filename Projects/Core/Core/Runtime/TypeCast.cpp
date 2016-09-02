@@ -24,25 +24,20 @@ namespace ObjectiveScript {
 namespace Runtime {
 
 
-void typecast(Object *base, const std::string& targetType, Repository *repository)
+void typecast(Object *base, const std::string& targetType)
 {
 	if ( !base ) {
 		OSerror("cannot cast null pointer");
 		throw Utils::Exceptions::NullPointer("cannot cast null pointer");
-	}
-	if ( !repository ) {
-		OSerror("invalid repository provided");
-		throw Utils::Exceptions::NullPointer("invalid repository provided");
 	}
 	if ( targetType.empty() ) {
 		OSerror("invalid cast target type");
 		throw Utils::Exceptions::Exception("invalid cast target type");
 	}
 
-
 	if ( targetType == GenericObject::TYPENAME ) {
-		base->setQualifiedTypename(GenericObject::TYPENAME);
-		base->setTypename(GenericObject::TYPENAME);
+		base->setOutterface(GenericObject::TYPENAME);
+		base->setQualifiedOutterface(GenericObject::TYPENAME);
 	}
 	else if ( targetType == BoolObject::TYPENAME ) {
 		BoolObject tmp(*base);
@@ -80,9 +75,13 @@ void typecast(Object *base, const std::string& targetType, Repository *repositor
 		*base = tmp;
 	}
 	else {
+		if ( !base->isInstanceOf(targetType) ) {
+			throw Utils::Exceptions::InvalidTypeCast(targetType + " does not belong to " + base->Typename() + " object hierarchy");
+		}
+
 		Object tmp(*base);
-		tmp.setQualifiedTypename(targetType);
-		tmp.setTypename(targetType);
+		tmp.setOutterface(targetType);
+		tmp.setQualifiedOutterface(targetType);
 
 		*base = tmp;
 	}
