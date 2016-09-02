@@ -31,7 +31,7 @@ public object Main {
 				// Setup
 				TestObject item;
 
-				item = new TestObject(0664);
+				item = new TestObject(664);
 				list.insert(Object item, 0);
 
 				item = new TestObject(1389);
@@ -44,7 +44,7 @@ public object Main {
 				assert( list.size() == 3 );
 
                 item = list.at(0);
-                assert( item.mValue == 0664 );
+                assert( item.mValue == 664 );
 
                 item = list.at(1);
                 assert( item.mValue == 173 );
@@ -129,7 +129,7 @@ public object Main {
 				assert( list.size() == 2 );
 
                 item = list.at(0);
-                assert( item.mValue == 0664 );
+                assert( item.mValue == 664 );
 
                 item = list.at(1);
                 assert( item.mValue == 1389 );
@@ -170,7 +170,7 @@ public object Main {
 				assert( list.size() == 2 );
 
                 item = list.at(0);
-                assert( item.mValue == 0664 );
+                assert( item.mValue == 664 );
 
                 item = list.at(1);
                 assert( item.mValue == 173 );
