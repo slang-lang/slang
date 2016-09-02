@@ -275,8 +275,8 @@ void Preprocessor::generateBluePrintEnum()
 
 	TokenIterator token = mTokens.begin();
 
-	Runtime::AtomicValue previous_value = INT_MIN;
-	Runtime::AtomicValue value = INT_MIN;
+	Runtime::AtomicValue previous_value = (unsigned)-1;
+	Runtime::AtomicValue value = (unsigned)-1;
 
 	// Format: <identifier> = <value>[, or ;]
 	while ( token != mTokens.end() ) {
