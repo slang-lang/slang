@@ -107,6 +107,7 @@ void Method::operator= (const Method& other)
 		mScopeName = other.mScopeName;
 		mScopeType = other.mScopeType;
 		mSignature = other.mSignature;
+		mThrows = other.mThrows;
 		mTokens = other.mTokens;
 		mTypeName = other.mTypeName;
 		mVisibility = other.mVisibility;

@@ -114,6 +114,7 @@ StringList provideReservedWords()
 	reservedWords.push_back(RESERVED_WORD_PROTOTYPE);
 	reservedWords.push_back(RESERVED_WORD_REPLICATES);
 	reservedWords.push_back(RESERVED_WORD_SCOPE_OPERATOR);
+	reservedWords.push_back(RESERVED_WORD_THROWS);
 	reservedWords.push_back(RESERVED_WORD_USING);
 
 	return reservedWords;
