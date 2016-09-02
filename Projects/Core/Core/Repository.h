@@ -71,6 +71,7 @@ private:
 	Designtime::BluePrintObject* findBluePrintObject(const std::string& type) const;
 
 	void createDefaultMethods(Runtime::Object *object);
+	void initialize();
 	void initializeObject(Runtime::Object *object, Designtime::BluePrintObject* blueprint);
 	void insertBluePrintEnumsIntoScopes();
 	void insertBluePrintObjectsIntoScopes();

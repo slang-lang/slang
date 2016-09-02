@@ -39,14 +39,7 @@ namespace ObjectiveScript {
 Repository::Repository()
 : mScope(new GlobalScope())
 {
-	addBluePrint(new Designtime::BoolObject());
-	addBluePrint(new Designtime::DoubleObject());
-	addBluePrint(new Designtime::FloatObject());
-	addBluePrint(new Designtime::GenericObject());
-	addBluePrint(new Designtime::IntegerObject());
-	addBluePrint(new Designtime::NumberObject());
-	addBluePrint(new Designtime::StringObject());
-	addBluePrint(new Designtime::VoidObject());
+	initialize();
 }
 
 Repository::~Repository()
@@ -427,6 +420,26 @@ GlobalScope* Repository::getGlobalScope() const
 	return mScope;
 }
 
+void Repository::initialize()
+{
+	// add atomic types
+	addBluePrint(new Designtime::BoolObject());
+	addBluePrint(new Designtime::DoubleObject());
+	addBluePrint(new Designtime::FloatObject());
+	addBluePrint(new Designtime::GenericObject());
+	addBluePrint(new Designtime::IntegerObject());
+	addBluePrint(new Designtime::NumberObject());
+	addBluePrint(new Designtime::StringObject());
+	addBluePrint(new Designtime::VoidObject());
+
+	// add predefined runtime objects
+	{	// null
+		Runtime::Object* NullObject = new Runtime::Object(VALUE_NULL, SYSTEM_LIBRARY, ANONYMOUS_OBJECT, 0);
+
+		mScope->define(VALUE_NULL, NullObject);
+	}
+}
+
 /*
  * creates and defines all members and methods of an object
  */
@@ -647,7 +660,7 @@ void Repository::removeReference(Runtime::Object *object)
 	ReferenceCountedObjects::iterator it = mInstances.find(object);
 	if ( it == mInstances.end() ) {
 		return;
-		//throw Utils::Exceptions::AccessViolation("possible double delete for '" + object->getFullName() + "'");
+		//throw Utils::Exceptions::AccessViolation("possible double delete for '" + object->getFullScopeName() + "'");
 	}
 
 	// decrement reference count
