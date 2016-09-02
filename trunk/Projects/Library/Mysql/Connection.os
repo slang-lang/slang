@@ -118,7 +118,7 @@ public namespace Mysql {
 		}
 
 		public Mysql.Result query(string queryStr) modify {
-			Mysql.Result result;	// null object
+			//Mysql.Result result;	// null object
 
 			if ( Mysql.MysqlDebugMode ) {
 				writeln("Mysql debug mode is enabled.");
@@ -132,7 +132,8 @@ public namespace Mysql {
 			int error = mysql_query(mHandle, queryStr);
 			if ( error != 0 ) {
 				// error while query execution
-				return result;	// return uninitialized result object
+				//return result;	// return uninitialized result object
+				return null;
 			}
 
 			int handle = mysql_store_result(mHandle);
