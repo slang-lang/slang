@@ -4,6 +4,9 @@ import System.Exception;
 
 public namespace System {
 
+    /*
+     * Single linked list
+     */
     public object List extends ACollection {
         public void List() {
             base.ACollection();
