@@ -68,7 +68,7 @@ public namespace Mysql {
 		}
 
 		public Mysql.Result execute(string queryStr = "") modify {
-			Mysql.Result result;	// invalid object
+			//Mysql.Result result;	// invalid object
 
 			if ( queryStr != "" ) {
 				assert(false);
@@ -92,10 +92,9 @@ public namespace Mysql {
                         int error = mysql_query(mConnection.mHandle, queryStr);
                         if ( error != 0 ) {
                                 // error while query execution
-                                return result;  // return uninitialized result object
+				//return result;  // return uninitialized result object
+				return null;
                         }
-
-print(mConnection.ToString());
 
                         int handle = mysql_store_result(mConnection.mHandle);
                         return new Mysql.Result(handle);
