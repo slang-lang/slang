@@ -291,7 +291,7 @@ ControlFlow::E Method::processControlFlow(ControlFlow::E controlflow, Object *re
 		case ControlFlow::Continue:
 		case ControlFlow::Normal:
 			// verify method return reason
-			if ( Typename() != VoidObject::TYPENAME && result->Typename() != VoidObject::TYPENAME ) {
+			if ( Typename() != VoidObject::TYPENAME && result->Outterface() != VoidObject::TYPENAME ) {
 				throw Utils::Exceptions::Exception("unnatural method return at '" + getFullScopeName() + "'");
 			}
 
@@ -300,14 +300,14 @@ ControlFlow::E Method::processControlFlow(ControlFlow::E controlflow, Object *re
 			break;
 		case ControlFlow::Return:
 			// validate return value
-			if ( Typename() != VoidObject::TYPENAME && result->Typename() != Typename() ) {
+			if ( Typename() != VoidObject::TYPENAME && result->Outterface() != Typename() ) {
 				if ( !ALLOW_IMPLICIT_CASTS ) {
 					throw Runtime::Exceptions::ExplicitCastRequired("Explicit cast required for type conversion from " + result->Typename() + " to " + Typename() + " in " + getFullScopeName());
 				}
 
-				OSwarn("implicit type conversion from " + result->Typename() + " to " + Typename());// + " in " + getFullScopeName());
+				OSwarn("implicit type conversion from " + result->Outterface() + " to " + Typename());// + " in " + getFullScopeName());
 
-				typecast(result, Typename(), mRepository);
+				typecast(result, Typename());
 			}
 
 			// correct behavior detected, override control flow with normal state

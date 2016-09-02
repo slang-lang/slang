@@ -34,6 +34,9 @@ public namespace System {
 			mSize++;
 		}
 
+        public void push_front() modify {
+        }
+
 		public void resetToLast() modify {
 			mCurrentIdx = mSize;
 		}

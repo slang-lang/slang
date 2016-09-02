@@ -547,7 +547,7 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 					Object tmp;
 					expression(&tmp, start);
 
-					typecast(&tmp, newType, getRepository());
+					typecast(&tmp, newType);
 
 					operator_binary_assign(result, &tmp);
 				} break;
@@ -1026,7 +1026,8 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 		}
 
 		params.push_back(
-			Parameter(obj->getName(), obj->QualifiedTypename(), obj->getValue(), false, obj->isConst(), Parameter::AccessMode::Unspecified, obj)
+			//Parameter(obj->getName(), obj->QualifiedTypename(), obj->getValue(), false, obj->isConst(), Parameter::AccessMode::Unspecified, obj)
+			Parameter(obj->getName(), obj->QualifiedOutterface(), obj->getValue(), false, obj->isConst(), Parameter::AccessMode::Unspecified, obj)
 		);
 
 		if ( std::distance(tmp, closed) <= 0 ) {
@@ -1120,7 +1121,8 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 		}
 
 		params.push_back(
-			Parameter(obj->getName(), obj->QualifiedTypename(), obj->getValue(), false, obj->isConst(), Parameter::AccessMode::Unspecified, obj)
+			//Parameter(obj->getName(), obj->QualifiedTypename(), obj->getValue(), false, obj->isConst(), Parameter::AccessMode::Unspecified, obj)
+			Parameter(obj->getName(), obj->Outterface(), obj->getValue(), false, obj->isConst(), Parameter::AccessMode::Unspecified, obj)
 		);
 
 		if ( std::distance(tmp, closed) <= 0 ) {
@@ -1582,7 +1584,10 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol)
 	if ( assign != getTokens().end() ) {
 		// execute assignment statement
 		try {
-			expression(object, token);
+			Object tmp;
+			expression(&tmp, token);
+
+			operator_binary_assign(object, &tmp);
 		}
 		catch ( ControlFlow::E &e ) {
 			mControlFlow = e;
