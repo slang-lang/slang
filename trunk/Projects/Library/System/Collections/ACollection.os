@@ -3,6 +3,9 @@ import IIterateable;
 
 public namespace System {
 
+    /*
+     * Double linked collection item
+     */
 	public object CollectionItem {
 			private CollectionItem mNext;
 			private CollectionItem mPrevious;
@@ -32,6 +35,9 @@ public namespace System {
 			}
 	}
 
+    /*
+     * Abstract base for collections
+     */
 	public object ACollection implements IIterateable {
 		private int mCurrentIdx;
 		private CollectionItem mFirst;

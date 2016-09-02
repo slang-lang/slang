@@ -129,6 +129,17 @@ public object Main {
 			item = list.at(1);
 			assert( item.mValue == 1389 );
 
+			list.pop_front();
+
+			assert( list.size() == 1 );
+
+			item = list.at(0);
+			assert( item.mValue == 1389 );
+
+			list.pop_front();
+
+			assert( list.size() == 0 );
+
 			return true;
 		}
 		catch ( System.OutOfBoundsException e ) {
@@ -169,6 +180,17 @@ public object Main {
 
 			item = list.at(1);
 			assert( item.mValue == 173 );
+
+			list.pop_back();
+
+			assert( list.size() == 1 );
+
+			item = list.at(0);
+			assert( item.mValue == 664 );
+
+			list.pop_back();
+
+			assert( list.size() == 0 );
 
 			return true;
 		}
