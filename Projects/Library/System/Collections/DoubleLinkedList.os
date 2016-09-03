@@ -4,10 +4,10 @@ import System.Exception;
 
 public namespace System {
 
-    /*
-     * Double linked list
-     * allows reverse iteration
-     */
+	/*
+	 * Double linked list
+	 * allows reverse iteration
+	 */
 	public object DoubleLinkedList extends ACollection {
 		public void DoubleLinkedList() {
 			base.ACollection();
@@ -17,37 +17,35 @@ public namespace System {
 			return mCurrentIdx > 0;
 		}
 
-        public void pop_back() modify {
-            if ( mSize <= 0 ) {
-                throw new System.OutOfBoundsException("cannot pop beyond ground level");
-            }
+		public void pop_back() modify {
+			if ( mSize <= 0 ) {
+				throw new System.OutOfBoundsException("cannot pop beyond ground level");
+			}
 
-            Object null;
+			if ( mSize == 1 ) {
+				mFirst = null;
+			}
+			else {
+				CollectionItem item = mFirst;
+				for ( int i = 0; i < mSize - 1; i = i++ ) {
+					item = item.mNext;
+				}
 
-            if ( mSize == 1 ) {
-                mFirst = null;
-            }
-            else {
-                CollectionItem item = mFirst;
-                for ( int i = 0; i < mSize - 1; i = i++ ) {
-                    item = item.mNext;
-                }
+				item.mNext = null;
+			}
 
-                item.mNext = null;
-            }
+			mSize--;
+		}
 
-            mSize--;
-        }
+		public void pop_front() modify {
+			if ( mSize <= 0 ) {
+				throw new System.OutOfBoundsException("pop beyond begin of list");
+			}
 
-        public void pop_front() modify {
-            if ( mSize <= 0 ) {
-                throw new System.OutOfBoundsException("pop beyond begin of list");
-            }
+			mFirst = mFirst.mNext;
 
-            mFirst = mFirst.mNext;
-
-            mSize--;
-        }
+			mSize--;
+		}
 
 		public void previous() modify {
 			mCurrentIdx--;
@@ -70,20 +68,20 @@ public namespace System {
 			mSize++;
 		}
 
-        public void push_front(Object value ref) modify {
-            CollectionItem item = new CollectionItem(value);
+		public void push_front(Object value ref) modify {
+			CollectionItem item = new CollectionItem(value);
 
-            if ( mSize == 0 ) {     // special handling for 1st element
-                mFirst = item;
-            }
-            else {                  // generic handling for all elements
-                item.mNext = mFirst;
-                mFirst.mPrevious = item;
-                mFirst = item;
-            }
+			if ( mSize == 0 ) {     // special handling for 1st element
+				mFirst = item;
+			}
+			else {                  // generic handling for all elements
+				item.mNext = mFirst;
+				mFirst.mPrevious = item;
+				mFirst = item;
+			}
 
-            mSize++;
-        }
+			mSize++;
+		}
 
 		public void resetToLast() modify {
 			mCurrentIdx = mSize;
