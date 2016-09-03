@@ -17,8 +17,6 @@ public namespace System {
                 throw new System.OutOfBoundsException("cannot pop beyond ground level");
             }
 
-            Object null;
-
             if ( mSize == 1 ) {
                 mFirst = null;
             }
