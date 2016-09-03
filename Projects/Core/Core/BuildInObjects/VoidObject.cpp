@@ -8,6 +8,7 @@
 #include <Core/Utils/Exceptions.h>
 #include <Core/Consts.h>
 #include <Core/Tools.h>
+#include <Tools/Strings.h>
 
 // Namespace declarations
 
@@ -55,9 +56,9 @@ void VoidObject::setNativeValue(void)
 	// this makes absolutely no sense but hey :-)
 }
 
-std::string VoidObject::ToString() const
+std::string VoidObject::ToString(unsigned int indent) const
 {
-	return Typename() + " " + getName();
+	return ::Utils::Tools::indent(indent) + Typename() + " " + getName();
 }
 
 

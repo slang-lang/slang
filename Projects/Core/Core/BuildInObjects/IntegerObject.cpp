@@ -7,6 +7,7 @@
 // Project includes
 #include <Core/Utils/Exceptions.h>
 #include <Core/Tools.h>
+#include <Tools/Strings.h>
 #include "BoolObject.h"
 #include "DoubleObject.h"
 #include "FloatObject.h"
@@ -322,9 +323,9 @@ void IntegerObject::operator_unary_not()
 	mValue = (int)!mValue.toBool();
 }
 
-std::string IntegerObject::ToString() const
+std::string IntegerObject::ToString(unsigned int indent) const
 {
-	return Typename() + " " + getName() + " = " + getValue().toStdString();
+	return ::Utils::Tools::indent(indent) + Typename() + " " + getName() + " = " + getValue().toStdString();
 }
 
 

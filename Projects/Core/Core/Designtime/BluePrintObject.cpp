@@ -8,6 +8,7 @@
 #include <Core/Consts.h>
 #include <Core/Object.h>
 #include <Core/Utils/Exceptions.h>
+#include <Tools/Strings.h>
 
 // Namespace declarations
 
@@ -166,9 +167,9 @@ void BluePrintObject::setVisibility(Visibility::E v)
 	mVisibility = v;
 }
 
-std::string BluePrintObject::ToString() const
+std::string BluePrintObject::ToString(unsigned int indent) const
 {
-	return Typename() + " " + getName();
+	return ::Utils::Tools::indent(indent) + Typename() + " " + getName();
 }
 
 

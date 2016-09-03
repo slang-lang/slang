@@ -47,14 +47,14 @@ Namespace::~Namespace()
 	mSymbols.clear();
 }
 
-std::string Namespace::ToString() const
+std::string Namespace::ToString(unsigned int indent) const
 {
 	std::string result = Visibility::convert(mVisibility) + " " + RESERVED_WORD_NAMESPACE + " " + getName();
 
 	result += " {\n";
 
 	for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
-		result += "\t" + (*it)->ToString() + "\n";
+		result += "\t" + (*it)->ToString(indent) + "\n";
 	}
 
 	for ( Symbols::const_iterator it = mSymbols.begin(); it != mSymbols.end(); ++it ) {
@@ -66,7 +66,7 @@ std::string Namespace::ToString() const
 				continue;
 			case Symbol::IType::NamespaceSymbol:
 			case Symbol::IType::ObjectSymbol:
-				result += "\t" + it->second->ToString() + "\n";
+				result += "\t" + it->second->ToString(indent) + "\n";
 				break;
 		}
 	}

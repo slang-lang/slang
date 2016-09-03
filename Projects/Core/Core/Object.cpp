@@ -8,6 +8,7 @@
 #include <Core/BuildInObjects/VoidObject.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Utils/Utils.h>
+#include <Tools/Strings.h>
 #include "Repository.h"
 #include "Tools.h"
 
@@ -967,9 +968,10 @@ Json::Value Object::ToJson() const
 	return result;
 }
 
-std::string Object::ToString() const
+std::string Object::ToString(unsigned int indent) const
 {
 	std::string result;
+	result += ::Utils::Tools::indent(indent);
 	result += Visibility::convert(mVisibility);
 //	result += " " + LanguageFeatureState::convert(mLanguageFeatureState);
 	result += " " + Typename() + " " + getName();
@@ -982,7 +984,7 @@ std::string Object::ToString() const
 		result += " {\n";
 
 		for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
-			result += "\t" + (*it)->ToString() + "\n";
+			result += (*it)->ToString(indent + 1) + "\n";
 		}
 
 		for ( Symbols::const_iterator it = mSymbols.begin(); it != mSymbols.end(); ++it ) {
@@ -991,10 +993,10 @@ std::string Object::ToString() const
 				continue;
 			}
 
-			result += "\t" + it->second->ToString() + "\n";
+			result += it->second->ToString(indent + 1) + "\n";
 		}
 
-		result += "}";
+		result += ::Utils::Tools::indent(indent) + "}";
 	}
 
 	return result;

@@ -51,7 +51,7 @@ public:
 	const std::string& getName() const;
 	IType::E getSymbolType() const;
 
-	virtual std::string ToString() const = 0;
+	virtual std::string ToString(unsigned int indent = 0) const = 0;
 
 protected:
 	std::string mName;

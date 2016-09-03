@@ -40,6 +40,19 @@ std::string extract(const std::string& source)
 	return result;
 }
 
+std::string indent(unsigned int level)
+{
+	std::string result;
+
+	while ( level > 0 ) {
+		level--;
+
+		result += "\t";
+	}
+
+	return result;
+}
+
 bool StringCompare(std::string s1, std::string s2)
 {
 	return s1.size() == s2.size() && !(s1 != s2);

@@ -72,7 +72,7 @@ public:
 	Runtime::AtomicValue getValue() const;
 	void setValue(Runtime::AtomicValue value);
 
-	virtual std::string ToString() const;
+	virtual std::string ToString(unsigned int indent) const;
 
 public:
 	MethodCollection provideMethods() const {

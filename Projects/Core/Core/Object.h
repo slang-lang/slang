@@ -97,7 +97,7 @@ public:	// Value
 	virtual bool isValid() const;
 
 	virtual void setArray(bool value, size_t size = 0);
-	virtual std::string ToString() const;
+	virtual std::string ToString(unsigned int indent = 0) const;
 
 public:	// Json serialization
 	virtual bool FromJson(const Json::Value& value);

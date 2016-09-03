@@ -5,6 +5,7 @@
 // Library includes
 
 // Project includes
+#include <Tools/Strings.h>
 
 // Namespace declarations
 
@@ -42,9 +43,9 @@ void BluePrintEnum::setParent(IScope* parent)
 	mParent = parent;
 }
 
-std::string BluePrintEnum::ToString() const
+std::string BluePrintEnum::ToString(unsigned int indent) const
 {
-	return Typename() + " " + getName();
+	return ::Utils::Tools::indent(indent) + Typename() + " " + getName();
 }
 
 

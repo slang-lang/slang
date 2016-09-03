@@ -11,6 +11,7 @@
 #include <Core/Utils/Exceptions.h>
 #include <Core/Utils/Utils.h>
 #include <Debugger/Debugger.h>
+#include <Tools/Strings.h>
 #include "Defines.h"
 #include "Repository.h"
 #include "StackTrace.h"
@@ -376,10 +377,11 @@ void Method::setTokens(const TokenList& tokens)
 	mTokens = tokens;
 }
 
-std::string Method::ToString() const
+std::string Method::ToString(unsigned int indent) const
 {
 	std::string result;
 
+	result += ::Utils::Tools::indent(indent);
 	result += Visibility::convert(mVisibility);
 	result += " " + LanguageFeatureState::convert(mLanguageFeatureState);
 	result += " " + Typename() + " " + getName() + "(" + toString(mSignature) + ")";
