@@ -8,7 +8,7 @@ public namespace System {
 				base.ACollection();
 			}
 
-			public void push(Object value) modify {
+			public void push(Object value ref) modify {
 				CollectionItem item = new CollectionItem();
 				item.mValue = value;
 

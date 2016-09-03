@@ -43,7 +43,7 @@ public:	// Operators
 public: // Value
 	virtual bool isValid() const;
 
-	virtual std::string ToString() const;
+	virtual std::string ToString(unsigned int indent) const;
 
 private:
 

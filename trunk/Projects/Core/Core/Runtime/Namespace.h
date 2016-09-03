@@ -36,7 +36,7 @@ public:
 	void setQualifiedTypename(const std::string& type) { mQualifiedTypename = type; }
 
 public:	// Value
-	virtual std::string ToString() const;
+	virtual std::string ToString(unsigned int indent = 0) const;
 
 protected:
 

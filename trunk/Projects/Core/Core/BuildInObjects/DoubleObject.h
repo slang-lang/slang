@@ -69,7 +69,7 @@ public:	// Operators
 public: // Values
 	virtual bool isValid() const;
 
-	virtual std::string ToString() const;
+	virtual std::string ToString(unsigned int indent) const;
 
 protected:
 

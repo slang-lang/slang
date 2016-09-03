@@ -31,6 +31,8 @@ int stringToInt(const std::string &str);
 // Extraction
 std::string extract(const std::string& source);
 
+std::string indent(unsigned int level);
+
 // Trim
 std::string stringTrim(const std::string& source, const std::string& t = " ");
 std::string stringTrimLeft( const std::string& source, const std::string& t = " ");

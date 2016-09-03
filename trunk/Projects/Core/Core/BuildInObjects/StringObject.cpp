@@ -8,6 +8,7 @@
 #include <Core/Consts.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Tools.h>
+#include <Tools/Strings.h>
 #include "BoolObject.h"
 #include "DoubleObject.h"
 #include "FloatObject.h"
@@ -136,16 +137,9 @@ void StringObject::operator_plus(const StringObject *other)
 	mValue = mValue.toStdString() + other->getValue().toStdString();
 }
 
-std::string StringObject::ToString() const
+std::string StringObject::ToString(unsigned int indent) const
 {
-	std::string result;
-	result += Visibility::convert(mVisibility);
-//	result += " " + LanguageFeatureState::convert(mLanguageFeatureState);
-	result += " " + Typename() + " " + getName();
-//	result += " " + Mutability::convert(mMutability);
-	result += " = \"" + getValue().toStdString() + "\"";
-
-	return result;
+	return ::Utils::Tools::indent(indent) + Typename() + " " + getName() + " = " + getValue().toStdString();
 }
 
 

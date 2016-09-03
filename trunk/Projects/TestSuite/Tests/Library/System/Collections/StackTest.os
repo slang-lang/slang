@@ -30,12 +30,14 @@ public object Main {
 			// Usage
 			assert( stack.size() == 3 );
 
-			while ( stack.hasNext() ) {
-				stack.next();
+			item = stack.at(0);
+			assert( item == "664" );
 
-				Object item = stack.current();
-				print(item);
-			}
+			item = stack.at(1);
+			assert( item == "173" );
+
+			item = stack.at(2);
+			assert( item == "1389" );
 
 			return true;
 		}
@@ -68,41 +70,33 @@ public object Main {
 			// Usage
 			assert( stack.size() == 3 );
 
+			item = stack.at(0);
+			assert( item == "664" );
+
+			item = stack.at(1);
+			assert( item == "173" );
+
+			item = stack.at(2);
+			assert( item == "1389");
+
 			stack.pop();
-
-            print("(1)");
-			while ( stack.hasNext() ) {
-				stack.next();
-
-				Object item = stack.current();
-				print(item);
-			}
 
 			assert( stack.size() == 2 );
 
+			item = stack.at(0);
+			assert( item == "664" );
+
+			item = stack.at(1);
+			assert( item == "173" );
+
 			stack.pop();
-			stack.reset();
-
-            print("(2)");
-			while ( stack.hasNext() ) {
-				stack.next();
-
-				Object item = stack.current();
-				print(item);
-			}
 
 			assert( stack.size() == 1 );
 
+			item = stack.at(0);
+			assert( item == "664" );
+
 			stack.pop();
-			stack.reset();
-
-            print("(3)");
-			while ( stack.hasNext() ) {
-				stack.next();
-
-				Object item = stack.current();
-				print(item);
-			}
 
 			assert( stack.size() == 0 );
 			assert( stack.empty() );

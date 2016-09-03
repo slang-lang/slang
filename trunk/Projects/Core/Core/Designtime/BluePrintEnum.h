@@ -34,7 +34,7 @@ public:
 	IScope* getParent() const;
 	void setParent(IScope* parent);
 
-	std::string ToString() const;
+	std::string ToString(unsigned int indent) const;
 
 protected:
 

@@ -8,6 +8,7 @@
 #include <Core/Consts.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Tools.h>
+#include <Tools/Strings.h>
 #include "BoolObject.h"
 #include "DoubleObject.h"
 #include "IntegerObject.h"
@@ -288,9 +289,9 @@ void FloatObject::operator_unary_not()
 	mValue = (float)!mValue.toFloat();
 }
 
-std::string FloatObject::ToString() const
+std::string FloatObject::ToString(unsigned int indent) const
 {
-	return Typename() + " " + getName() + " = " + mValue.toStdString();
+	return ::Utils::Tools::indent(indent) + Typename() + " " + getName() + " = " + mValue.toStdString();
 }
 
 

@@ -8,6 +8,7 @@
 #include <Core/Consts.h>
 #include <Core/Utils/Exceptions.h>
 #include <Core/Tools.h>
+#include <Tools/Strings.h>
 #include "DoubleObject.h"
 #include "FloatObject.h"
 #include "IntegerObject.h"
@@ -166,9 +167,9 @@ void BoolObject::operator_unary_not()
 	mValue = !mValue.toBool();
 }
 
-std::string BoolObject::ToString() const
+std::string BoolObject::ToString(unsigned int indent) const
 {
-	return Typename() + " " + getName() + " = " + getValue().toStdString();
+	return ::Utils::Tools::indent(indent) + Typename() + " " + getName() + " = " + getValue().toStdString();
 }
 
 

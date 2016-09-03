@@ -35,7 +35,7 @@ public: // Value
 	virtual void getNativeValue() const;
 	virtual void setNativeValue(void);
 
-	virtual std::string ToString() const;
+	virtual std::string ToString(unsigned int indent) const;
 };
 
 
