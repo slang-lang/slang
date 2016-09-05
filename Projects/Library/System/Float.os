@@ -8,8 +8,8 @@ public object Float {
 	public void Float(float value = 0f) {
 		mValue = value;
 	}
-	public void Float(Float copy) {
-		mValue = copy.mValue;
+	public void Float(Float f) {
+		mValue = f.mValue;
 	}
 
 	public void FromString(string value) modify {

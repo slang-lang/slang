@@ -15,8 +15,8 @@ public object Integer {
 	/*
 	 * Copy constructor
 	 */
-	public void Integer(Integer copy) {
-		mValue = copy.mValue;
+	public void Integer(Integer i) {
+		mValue = i.mValue;
 	}
 
 	public void FromString(string value) modify {

@@ -667,6 +667,33 @@ void Interpreter::process_continue(TokenIterator& /*token*/)
 
 /*
  * syntax:
+ * copy <identifier>;
+ */
+void Interpreter::process_copy(TokenIterator& token, Object* result)
+{
+	Symbol* symbol = identify(token);
+	if ( !symbol ) {
+		throw Utils::Exceptions::UnknownIdentifer("unknown identifier '" + token->content() + "'");
+	}
+	if ( symbol->getSymbolType() != Symbol::IType::ObjectSymbol ) {
+		throw Utils::Exceptions::Exception("object symbol expected!");
+	}
+
+	if ( symbol == result ) {
+		throw Utils::Exceptions::Exception("cannot assign copy to same object");
+	}
+
+	Runtime::Object* source = static_cast<Runtime::Object*>(symbol);
+
+	if ( source->QualifiedTypename() != result->QualifiedTypename() ) {
+		throw Utils::Exceptions::Exception("object copies are only allowed to same types");
+	}
+
+	result->copy(*source);
+}
+
+/*
+ * syntax:
  * delete <identifier>;
  */
 void Interpreter::process_delete(TokenIterator& token)
@@ -961,6 +988,9 @@ void Interpreter::process_keyword(TokenIterator& token, Object *result)
 	}
 	else if ( keyword == KEYWORD_CONTINUE ) {
 		process_continue(token);
+	}
+	else if ( keyword == KEYWORD_COPY ) {
+		process_copy(token, result);
 	}
 	else if ( keyword == KEYWORD_DELETE ) {
 		process_delete(token);

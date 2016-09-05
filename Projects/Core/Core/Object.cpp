@@ -166,9 +166,9 @@ void Object::copy(const Object& other)
 		mIsAtomicType = other.mIsAtomicType;
 		mIsConstructed = other.mIsConstructed;// ? other.mIsConstructed : mIsConstructed;
 		mFilename = other.mFilename;
-		mOutterface = other.mOutterface;
+		mOutterface = other.mTypename;
 		mParent = other.mParent ? other.mParent : mParent;
-		mQualifiedOutterface = other.mQualifiedOutterface;
+		mQualifiedOutterface = other.mQualifiedTypename;
 		mQualifiedTypename = other.mQualifiedTypename;
 		mRepository = other.mRepository ? other.mRepository : mRepository;
 		mScopeName = other.mScopeName;
