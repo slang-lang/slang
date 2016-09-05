@@ -21,10 +21,10 @@ public namespace System {
 		/*
 		 * Copy constructor
 		 */
-		public void StringIterator(System.StringIterator copy) {
-			mCurrentPosition = copy.mCurrentPosition;
-			mSeparator = copy.mSeparator;
-			mValue = new String(copy.mValue);
+		public void StringIterator(System.StringIterator si) {
+			mCurrentPosition = si.mCurrentPosition;
+			mSeparator = si.mSeparator;
+			mValue = new String(si.mValue);
 		}
 
 		/*

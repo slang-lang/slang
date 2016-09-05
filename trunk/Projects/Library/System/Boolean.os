@@ -8,8 +8,8 @@ public object Boolean {
 	public void Boolean(bool value = false) {
 		mValue = value;
 	}
-	public void Boolean(Boolean copy) {
-		mValue = copy.mValue;
+	public void Boolean(Boolean b) {
+		mValue = b.mValue;
 	}
 
 	public void FromString(string value) modify {

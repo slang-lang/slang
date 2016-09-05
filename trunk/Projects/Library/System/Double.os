@@ -8,8 +8,8 @@ public object Double {
 	public void Double(double value = 0d) {
 		mValue = value;
 	}
-	public void Double(Double copy) {
-		mValue = copy.mValue;
+	public void Double(Double d) {
+		mValue = d.mValue;
 	}
 
 	public void FromString(string value) modify {

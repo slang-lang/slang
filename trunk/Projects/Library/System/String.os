@@ -15,8 +15,8 @@ public object String {
 	/*
 	 * Copy constructor
 	 */
-	public void String(String copy) {
-		mValue = copy.mValue;
+	public void String(String s) {
+		mValue = s.mValue;
 	}
 
 	/*
