@@ -194,7 +194,7 @@ void Object::copy(const Object& other)
 				Object* target = mRepository->createInstance(source->Typename(), source->getName(), false);
 				target->copy(*source);
 
-				define(source->getName(), source);
+				define(target->getName(), target);
 			}
 
 			// register new methods
@@ -408,7 +408,8 @@ void Object::garbageCollector()
 	mMethods.clear();
 
 	for ( Symbols::reverse_iterator it = mSymbols.rbegin(); it != mSymbols.rend(); ) {
-		if ( it->first != IDENTIFIER_BASE && it->first != IDENTIFIER_THIS &&
+		if ( it->first != IDENTIFIER_BASE &&
+			 it->first != IDENTIFIER_THIS &&
 			 it->second && it->second->getSymbolType() == Symbol::IType::ObjectSymbol ) {
 			mRepository->removeReference(static_cast<Object*>(it->second));
 		}
