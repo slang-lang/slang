@@ -1,51 +1,50 @@
 
 import IIterateable;
+import Iterator;
 
 public namespace System {
 
-    /*
-     * Double linked collection item
-     */
+	/*
+	 * Double linked collection item
+	 */
 	public object CollectionItem {
-			private CollectionItem mNext;
-			private CollectionItem mPrevious;
-			private Object mValue;
+		private CollectionItem mNext;
+		private CollectionItem mPrevious;
+		private Object mValue;
 
-			public void CollectionItem() {
-			}
+		public void CollectionItem() {
+		}
 
-			public void CollectionItem(Object value ref) {
-				mValue = value;
-			}
+		public void CollectionItem(Object value ref) {
+			mValue = value;
+		}
 
-			public Object get() const {
-				return mValue;
-			}
+		public Object get() const {
+			return mValue;
+		}
 
-			public CollectionItem next() const {
-				return mNext;
-			}
+		public CollectionItem next() const {
+			return mNext;
+		}
 
-			public CollectionItem previous() const {
-				return mPrevious;
-			}
+		public CollectionItem previous() const {
+			return mPrevious;
+		}
 
-			public void set(Object value ref) modify {
-				mValue = value;
-			}
+		public void set(Object value ref) modify {
+			mValue = value;
+		}
 	}
 
-    /*
-     * Abstract base for collections
-     */
-	public object ACollection implements IIterateable {
-		private int mCurrentIdx;
+	/*
+	 * Abstract base for collections
+	 */
+	public object ACollection {
 		private CollectionItem mFirst;
 		private CollectionItem mLast;
 		private int mSize;
 
 		public void ACollection() {
-			mCurrentIdx = -1;
 			mSize = 0;
 		}
 
@@ -62,24 +61,16 @@ public namespace System {
 			return item.mValue;
 		}
 
-		public Object current() const {
-			return at(mCurrentIdx);
-		}
-
 		public bool empty() const {
 			return mSize == 0;
 		}
 
-		public bool hasNext() const {
-			return mCurrentIdx < mSize - 1;
+		public Iterator getIterator() const {
+			return new System.Iterator(System.ACollection this);
 		}
 
-		public void next() modify {
-			mCurrentIdx++;
-		}
-
-		public void reset() modify {
-			mCurrentIdx = -1;
+		public ReverseIterator getReverseIterator() const {
+			return new ReverseIterator(System.ACollection this);
 		}
 
 		public int size() const {

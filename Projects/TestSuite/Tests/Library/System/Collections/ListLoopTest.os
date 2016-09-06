@@ -47,18 +47,20 @@ private void ObjectMethod() {
 	// Usage
 	assert( list.size() == 3 );
 
+	System.Iterator it = list.getIterator();
+
 	int count = 0;
 
 	while ( count < LOOP ) {
 		count++;
-		list.reset();
+		it.reset();
 
 		//print("Loop " + count);
 
-		while ( list.hasNext() ) {
-			list.next();
+		while ( it.hasNext() ) {
+			it.next();
 
-			TestObject item = TestObject list.current();
+			TestObject item = TestObject it.current();
 			//print(item.ToString());
 		}
 	}
@@ -82,18 +84,20 @@ private void ValueMethod() {
 	// Usage
 	assert( list.size() == 3 );
 
+	System.Iterator it = list.getIterator();
+
 	int count = 0;
 
 	while ( count < LOOP ) {
 		count++;
-		list.reset();
+		it.reset();
 
 		//print("Loop " + count);
 
-		while ( list.hasNext() ) {
-			list.next();
+		while ( it.hasNext() ) {
+			it.next();
 
-			Object item = list.current();
+			Object item = it.current();
 			//print(item);
 		}
 	}

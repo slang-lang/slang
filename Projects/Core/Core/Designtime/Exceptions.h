@@ -22,7 +22,7 @@ class DesigntimeException : public ObjectiveScript::Common::Exceptions::Exceptio
 {
 public:
 	DesigntimeException(const std::string& text, const Common::Position& position = Common::Position())
-	: Exception("Exception.Designtime: " + text, position)
+	: Exception("Designtime." + text, position)
 	{ }
 
 	virtual ~DesigntimeException() throw() { }
@@ -34,7 +34,7 @@ class LawOfDemeterViolated : public DesigntimeException
 {
 public:
 	LawOfDemeterViolated(const std::string& text, const Common::Position& position = Common::Position())
-	: DesigntimeException("Exception.Designtime.LawOfDemeterViolated: " + text, position)
+	: DesigntimeException("LawOfDemeterViolatedException: " + text, position)
 	{ }
 
 	virtual ~LawOfDemeterViolated() throw() { }
