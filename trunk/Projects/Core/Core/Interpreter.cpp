@@ -17,10 +17,10 @@
 #include <Core/Runtime/Namespace.h>
 #include <Core/Runtime/OperatorOverloading.h>
 #include <Core/Runtime/TypeCast.h>
-#include <Core/Utils/Exceptions.h>
-#include <Core/Utils/Utils.h>
+#include <Common/Exceptions.h>
 #include <Debugger/Debugger.h>
 #include <Tools/Printer.h>
+#include <Utils.h>
 #include "Tools.h"
 
 // Namespace declarations
@@ -173,9 +173,9 @@ inline Symbol* Interpreter::identify(TokenIterator& token) const
 					break;
 				case Symbol::IType::BluePrintEnumSymbol:
 				case Symbol::IType::MethodSymbol:
-					throw Utils::Exceptions::NotSupported("cannot directly access locales of blueprint or method");
+					throw Common::Exceptions::NotSupported("cannot directly access locales of blueprint or method");
 				case Symbol::IType::UnknownSymbol:
-					throw Utils::Exceptions::SyntaxError("unexpected symbol found");
+					throw Common::Exceptions::SyntaxError("unexpected symbol found");
 			}
 
 			onlyCurrentScope = true;
@@ -224,11 +224,13 @@ Symbol* Interpreter::identifyMethod(TokenIterator& token, const ParameterList& p
 					result = static_cast<Object*>(result)->resolveMethod(identifier, params, onlyCurrentScope);
 					break;
 				case Symbol::IType::BluePrintEnumSymbol:
+					throw Common::Exceptions::NotSupported("static method usage not supported");
 				case Symbol::IType::BluePrintObjectSymbol:
-					throw Utils::Exceptions::NotSupported("static method usage not supported");
+					result = static_cast<Designtime::BluePrintObject*>(result)->resolveMethod(identifier, params, onlyCurrentScope);
+					break;
 				case Symbol::IType::MethodSymbol:
 				case Symbol::IType::UnknownSymbol:
-					throw Utils::Exceptions::SyntaxError("unexpected symbol found");
+					throw Common::Exceptions::SyntaxError("unexpected symbol found");
 			}
 
 			onlyCurrentScope = true;
@@ -470,7 +472,7 @@ void Interpreter::parseInfixPostfix(Object *result, TokenIterator& start)
 
 			Symbol* symbol = identify(start);
 			if ( !symbol ) {
-				throw Utils::Exceptions::UnknownIdentifer("unkown identifier '" + start->content() + "' found", start->position());
+				throw Common::Exceptions::UnknownIdentifer("unkown identifier '" + start->content() + "' found", start->position());
 			}
 
 			*result = BoolObject(operator_binary_is(result, symbol));
@@ -526,7 +528,7 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 			TokenIterator tmpToken = start;
 			Symbol *symbol = identify(start);
 			if ( !symbol ) {
-				throw Utils::Exceptions::UnknownIdentifer("unknown/unexpected identifier '" + start->content() + "' found", start->position());
+				throw Common::Exceptions::UnknownIdentifer("unknown/unexpected identifier '" + start->content() + "' found", start->position());
 			}
 
 			switch ( symbol->getSymbolType() ) {
@@ -553,7 +555,7 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 				} break;
 				case Symbol::IType::NamespaceSymbol:
 				case Symbol::IType::UnknownSymbol:
-					throw Utils::Exceptions::SyntaxError("unexpected symbol resolved", start->position());
+					throw Common::Exceptions::SyntaxError("unexpected symbol resolved", start->position());
 			}
 		} break;
 		case Token::Type::KEYWORD: {
@@ -564,7 +566,7 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 		case Token::Type::SEMICOLON: {
 		} break;
 		default: {
-			throw Utils::Exceptions::SyntaxError("identifier, literal or number expected but " + start->content() + " found", start->position());
+			throw Common::Exceptions::SyntaxError("identifier, literal or number expected but " + start->content() + " found", start->position());
 		} break;
 	}
 }
@@ -572,7 +574,7 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 void Interpreter::popScope()
 {
 	if ( mScopeStack.empty() ) {
-		throw Utils::Exceptions::Exception("tried to pop beyond stack!");
+		throw Common::Exceptions::Exception("tried to pop beyond stack!");
 	}
 
 	SymbolScope* scope = mScopeStack.back();
@@ -616,7 +618,7 @@ void Interpreter::process(Object *result, TokenIterator& token, TokenIterator en
 			case Token::Type::SEMICOLON:
 				break;
 			default:
-				throw Utils::Exceptions::SyntaxError("invalid token '" + token->content() + "' found", token->position());
+				throw Common::Exceptions::SyntaxError("invalid token '" + token->content() + "' found", token->position());
 		}
 
 		token++;	// consume token
@@ -641,7 +643,7 @@ void Interpreter::process_assert(TokenIterator& token)
 	}
 
 	if ( !isTrue(condition) ) {
-		throw Utils::Exceptions::AssertionFailed(condition.ToString(), token->position());
+		throw Common::Exceptions::AssertionFailed(condition.ToString(), token->position());
 	}
 
 	expect(Token::Type::PARENTHESIS_CLOSE, token++);
@@ -673,20 +675,20 @@ void Interpreter::process_copy(TokenIterator& token, Object* result)
 {
 	Symbol* symbol = identify(token);
 	if ( !symbol ) {
-		throw Utils::Exceptions::UnknownIdentifer("unknown identifier '" + token->content() + "'");
+		throw Common::Exceptions::UnknownIdentifer("unknown identifier '" + token->content() + "'");
 	}
 	if ( symbol->getSymbolType() != Symbol::IType::ObjectSymbol ) {
-		throw Utils::Exceptions::Exception("object symbol expected!");
+		throw Common::Exceptions::Exception("object symbol expected!");
 	}
 
 	if ( symbol == result ) {
-		throw Utils::Exceptions::Exception("cannot assign copy to same object");
+		throw Common::Exceptions::Exception("cannot assign copy to same object");
 	}
 
 	Runtime::Object* source = static_cast<Runtime::Object*>(symbol);
 
 	if ( source->QualifiedTypename() != result->QualifiedTypename() ) {
-		throw Utils::Exceptions::Exception("object copies are only allowed to same types");
+		throw Common::Exceptions::Exception("object copies are only allowed to same types");
 	}
 
 	result->copy(*source);
@@ -702,7 +704,7 @@ void Interpreter::process_delete(TokenIterator& token)
 
 	Symbol* symbol = identify(token);
 	if ( !symbol ) {
-		throw Utils::Exceptions::UnknownIdentifer(token->content(), token->position());
+		throw Common::Exceptions::UnknownIdentifer(token->content(), token->position());
 	}
 
 	switch ( symbol->getSymbolType() ) {
@@ -719,7 +721,7 @@ void Interpreter::process_delete(TokenIterator& token)
 		case Symbol::IType::MethodSymbol:
 		case Symbol::IType::NamespaceSymbol:
 		case Symbol::IType::UnknownSymbol:
-			throw Utils::Exceptions::TypeMismatch("member or local variable expected but symbol '" + symbol->getName() + "' found", token->position());
+			throw Common::Exceptions::TypeMismatch("member or local variable expected but symbol '" + symbol->getName() + "' found", token->position());
 	}
 
 	token = end;
@@ -826,7 +828,7 @@ void Interpreter::process_identifier(TokenIterator& token, Object* /*result*/, T
 
 	Symbol* symbol = identify(token);
 	if ( !symbol ) {
-		throw Utils::Exceptions::UnknownIdentifer("identifier '" + token->content() + "' not found", token->position());
+		throw Common::Exceptions::UnknownIdentifer("identifier '" + token->content() + "' not found", token->position());
 	}
 
 	if ( symbol->getSymbolType() == Symbol::IType::BluePrintEnumSymbol || symbol->getSymbolType() == Symbol::IType::BluePrintObjectSymbol ) {
@@ -852,10 +854,10 @@ void Interpreter::process_identifier(TokenIterator& token, Object* /*result*/, T
 
 		Object* object = static_cast<Object*>(symbol);
 		if ( object->isConst() ) {	// we tried to modify a const symbol (i.e. member, parameter or constant local variable)
-			throw Utils::Exceptions::ConstCorrectnessViolated("tried to modify const symbol '" + object->getFullScopeName() + "'", token->position());
+			throw Common::Exceptions::ConstCorrectnessViolated("tried to modify const symbol '" + object->getFullScopeName() + "'", token->position());
 		}
 		if ( object->isMember() && static_cast<Method*>(mOwner)->isConst() ) {	// we tried to modify a member in a const method
-			throw Utils::Exceptions::ConstCorrectnessViolated("tried to modify member '" + object->getFullScopeName() + "' in const method '" + getScope()->getScopeName() + "'", token->position());
+			throw Common::Exceptions::ConstCorrectnessViolated("tried to modify member '" + object->getFullScopeName() + "' in const method '" + getScope()->getScopeName() + "'", token->position());
 		}
 
 		try {
@@ -878,7 +880,7 @@ void Interpreter::process_identifier(TokenIterator& token, Object* /*result*/, T
 		token = end;
 	}
 	else {
-		throw Utils::Exceptions::Exception("invalid symbol type found!");
+		throw Common::Exceptions::Exception("invalid symbol type found!");
 	}
 }
 
@@ -1073,14 +1075,14 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 	Method* symbol = static_cast<Method*>(identifyMethod(token, params));
 
 	if ( !symbol) {
-		throw Utils::Exceptions::UnknownIdentifer("could not resolve identifier '" + token->content() + "' with parameters '" + toString(params) + "'", token->position());
+		throw Common::Exceptions::UnknownIdentifer("could not resolve identifier '" + token->content() + "' with parameters '" + toString(params) + "'", token->position());
 	}
 
 	// compare callee's constness with its parent's constness
 	Object* calleeParent = dynamic_cast<Object*>(symbol->getEnclosingScope());
 	if ( calleeParent && calleeParent->isConst() && !symbol->isConst() ) {
 		// we want to call a non-const method of a const object... neeeeey!
-		throw Utils::Exceptions::ConstCorrectnessViolated("only calls to const methods are allowed for const object '" + calleeParent->getFullScopeName() + "'", token->position());
+		throw Common::Exceptions::ConstCorrectnessViolated("only calls to const methods are allowed for const object '" + calleeParent->getFullScopeName() + "'", token->position());
 	}
 
 	// check caller's constness
@@ -1088,7 +1090,7 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 		if ( mOwner->getEnclosingScope() == symbol->getEnclosingScope() && !symbol->isConst() ) {
 			// check target method's constness
 			// this is a const method and we want to call a non-const method... neeeeey!
-			throw Utils::Exceptions::ConstCorrectnessViolated("only calls to const methods are allowed in const method '" + getScope()->getFullScopeName() + "'", token->position());
+			throw Common::Exceptions::ConstCorrectnessViolated("only calls to const methods are allowed in const method '" + getScope()->getFullScopeName() + "'", token->position());
 		}
 	}
 
@@ -1120,10 +1122,10 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 
 	Symbol* symbol = identify(token);
 	if ( !symbol ) {
-		throw Utils::Exceptions::UnknownIdentifer("unknown identifier '" + type + "'");
+		throw Common::Exceptions::UnknownIdentifer("unknown identifier '" + type + "'");
 	}
 	if ( symbol->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
-		throw Utils::Exceptions::Exception("blueprint symbol expected!");
+		throw Common::Exceptions::Exception("blueprint symbol expected!");
 	}
 
 	expect(Token::Type::PARENTHESIS_OPEN, ++token);
@@ -1295,7 +1297,7 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 		}
 		else if ( bodyBegin->type() == Token::Type::KEYWORD && bodyBegin->content() == KEYWORD_DEFAULT ) {
 			if ( defaultBlock.mBegin != getTokens().end() ) {
-				throw Utils::Exceptions::SyntaxError("duplicate default entry for switch statement");
+				throw Common::Exceptions::SyntaxError("duplicate default entry for switch statement");
 			}
 
 			TokenIterator tmp = findNextBalancedCurlyBracket(bodyBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
@@ -1447,7 +1449,7 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 		}
 		else if ( tmp != getTokens().end() && tmp->content() == KEYWORD_FINALLY ) {
 			if ( finallyToken != getTokens().end() ) {
-				throw Utils::Exceptions::SyntaxError("multiple finally blocks are not allowed");
+				throw Common::Exceptions::SyntaxError("multiple finally blocks are not allowed");
 			}
 
 			finallyToken = tmp;
@@ -1475,10 +1477,10 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 
 				Symbol* symbol = identify(catchIt);
 				if ( !symbol ) {
-					throw Utils::Exceptions::UnknownIdentifer("identifier '" + token->content() + "' not found", catchIt->position());
+					throw Common::Exceptions::UnknownIdentifer("identifier '" + token->content() + "' not found", catchIt->position());
 				}
 				if ( symbol->getSymbolType() != Symbol::IType::BluePrintEnumSymbol && symbol->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
-					throw Utils::Exceptions::SyntaxError("invalid symbol type '" + symbol->getName() + "' found", catchIt->position());
+					throw Common::Exceptions::SyntaxError("invalid symbol type '" + symbol->getName() + "' found", catchIt->position());
 				}
 
 				// create new exception type instance
@@ -1487,7 +1489,7 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 				expect(Token::Type::PARENTHESIS_CLOSE, catchIt++);
 
 				if ( !type || !mExceptionData.getData() ) {
-					throw Utils::Exceptions::Exception("could not create exception type instance", catchIt->position());
+					throw Common::Exceptions::Exception("could not create exception type instance", catchIt->position());
 				}
 
 				if ( type->QualifiedTypename() != mExceptionData.getData()->QualifiedTypename() &&
@@ -1602,7 +1604,7 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol)
 
 	Object *object = dynamic_cast<Object*>(getScope()->resolve(name, true));
 	if ( object ) {
-		throw Utils::Exceptions::DuplicateIdentifier("duplicate identifier '" + name + "' created", token->position());
+		throw Common::Exceptions::DuplicateIdentifier("duplicate identifier '" + name + "' created", token->position());
 	}
 
 	object = getRepository()->createInstance(static_cast<Designtime::BluePrintObject*>(symbol), name, false);

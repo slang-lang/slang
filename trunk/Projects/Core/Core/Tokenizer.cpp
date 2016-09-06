@@ -5,6 +5,7 @@
 // Library includes
 
 // Project includes
+#include <Core/Common/Position.h>
 #include <Core/Consts.h>
 #include <Core/Tools.h>
 
@@ -66,7 +67,7 @@ void Tokenizer::addType(const std::string& type)
 	mTypes.push_back(type);
 }
 
-Token Tokenizer::createToken(const std::string& con, const Utils::Position& position)
+Token Tokenizer::createToken(const std::string& con, const Common::Position& position)
 {
 	std::string content = con;
 
@@ -129,7 +130,7 @@ Token Tokenizer::createToken(const std::string& con, const Utils::Position& posi
 	else if ( isWhiteSpace(content) ) { category = Token::Category::Ignorable; type = Token::Type::WHITESPACE; }
 
 	Token token(category, type, content, position);
-	token.setOptional(type == Token::Type::LANGUAGEFEATURE);
+	token.setOptional(category == Token::Category::Modifier || type == Token::Type::LANGUAGEFEATURE);
 	return token;
 }
 
@@ -522,7 +523,7 @@ void Tokenizer::process()
 	bool isString = false;
 
 	char lastChar = 0;
-	Utils::Position pos(mFilename, 1, 1);
+	Common::Position pos(mFilename, 1, 1);
 
 	while ( offset < mContent.size() ) {
 		char thisChar = mContent[offset++];

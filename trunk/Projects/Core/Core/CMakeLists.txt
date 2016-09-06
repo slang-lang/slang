@@ -2,12 +2,12 @@ INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
 ADD_SUBDIRECTORY(Attributes)
 ADD_SUBDIRECTORY(BuildInObjects)
-#ADD_SUBDIRECTORY(Common)
+ADD_SUBDIRECTORY(Common)
 ADD_SUBDIRECTORY(Designtime)
 ADD_SUBDIRECTORY(Extensions)
 #ADD_SUBDIRECTORY(Interfaces)
 ADD_SUBDIRECTORY(Runtime)
-ADD_SUBDIRECTORY(Utils)
+#ADD_SUBDIRECTORY(Utils)
 
 SET(SOURCES
 	Analyser.cpp
@@ -57,12 +57,12 @@ SET(HEADERS
 )
 
 SET(DEPENDENCIES
-	CoreUtils
 	CoreRuntime
 	CoreExtensions
 	CoreDebugger
 	CoreDesigntimeBuildInTypes
 	CoreDesigntime
+	CoreCommon
 	CoreBuildInObjects
 	CoreAttributes
 	Utils

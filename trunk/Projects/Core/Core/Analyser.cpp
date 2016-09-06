@@ -11,9 +11,9 @@
 #include <Core/Designtime/Parser/Parser.h>
 #include <Core/Designtime/SanityChecker.h>
 #include <Core/Runtime/Namespace.h>
-#include <Core/Utils/Exceptions.h>
-#include <Core/Utils/Utils.h>
+#include <Common/Exceptions.h>
 #include <Tools/Files.h>
+#include <Utils.h>
 #include "Repository.h"
 #include "Tokenizer.h"
 #include "Tools.h"
@@ -50,7 +50,7 @@ Designtime::Ancestors Analyser::collectInheritance(TokenIterator& token) const
 	for ( ; ; ) {
 		if ( token->content() == RESERVED_WORD_EXTENDS ) {
 			if ( replicates ) {
-				throw Utils::Exceptions::Exception("combinations with 'replicates' are not allowed");
+				throw Common::Exceptions::Exception("combinations with 'replicates' are not allowed");
 			}
 
 			token++;	// consume token
@@ -59,7 +59,7 @@ Designtime::Ancestors Analyser::collectInheritance(TokenIterator& token) const
 		}
 		else if ( token->content() == RESERVED_WORD_IMPLEMENTS ) {
 			if ( replicates ) {
-				throw Utils::Exceptions::Exception("combinations with 'replicates' are not allowed");
+				throw Common::Exceptions::Exception("combinations with 'replicates' are not allowed");
 			}
 
 			token++;	// consume token
@@ -68,7 +68,7 @@ Designtime::Ancestors Analyser::collectInheritance(TokenIterator& token) const
 		}
 		else if ( token->content() == RESERVED_WORD_REPLICATES ) {
 			if ( replicates ) {
-				throw Utils::Exceptions::Exception("combinations with 'replicates' are not allowed");
+				throw Common::Exceptions::Exception("combinations with 'replicates' are not allowed");
 			}
 
 			token++;	// consume token
@@ -291,7 +291,7 @@ bool Analyser::createMember(TokenIterator& token, TokenIterator /*end*/)
 			case Token::Type::CONST_INTEGER: value = Tools::stringToInt(token->content()); break;
 			case Token::Type::CONST_LITERAL: value = token->content(); break;
 			case Token::Type::CONST_NUMBER: value = Tools::stringToNumber(token->content()); break;
-			default: throw Utils::Exceptions::NotSupported("initialization is only allowed for atomic data types", token->position());
+			default: throw Common::Exceptions::NotSupported("initialization is only allowed for atomic data types", token->position());
 		}
 
 		token++;
@@ -428,7 +428,7 @@ bool Analyser::createNamespace(TokenIterator& token, TokenIterator end)
 				case Symbol::IType::MethodSymbol:
 				case Symbol::IType::ObjectSymbol:
 				case Symbol::IType::UnknownSymbol:
-					throw Utils::Exceptions::Exception("cannot extend non-namespace symbol '" + symbol->getName() + "'");
+					throw Common::Exceptions::Exception("cannot extend non-namespace symbol '" + symbol->getName() + "'");
 			}
 		}
 
@@ -500,7 +500,7 @@ void Analyser::generate(const TokenList& tokens)
 			createPrototype(it, tokens.end());
 		}
 		else {
-			throw Utils::Exceptions::SyntaxError("invalid token '" + it->content() + "' found", it->position());
+			throw Common::Exceptions::SyntaxError("invalid token '" + it->content() + "' found", it->position());
 		};
 
 		it++;
@@ -554,7 +554,7 @@ void Analyser::processFile(const std::string& filename)
 	mFilename = filename;
 
 	if ( !::Utils::Tools::Files::exists(mFilename) ) {
-		throw Utils::Exceptions::Exception("File '" + mFilename + "' not found");
+		throw Common::Exceptions::Exception("File '" + mFilename + "' not found");
 	}
 
 	// read file content

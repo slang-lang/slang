@@ -6,7 +6,6 @@
 // Library includes
 
 // Project includes
-#include <Core/Utils/Position.h>
 #include "Types.h"
 
 // Forward declarations
@@ -16,6 +15,10 @@
 
 namespace ObjectiveScript {
 
+// Forward declarations
+namespace Common {
+	class Position;
+}
 
 class Tokenizer
 {
@@ -34,7 +37,7 @@ private:	// Tokenizer
 	void addToken(const Token& token);
 	void addType(const std::string& type);
 
-	Token createToken(const std::string& con, const Utils::Position& position);
+	Token createToken(const std::string& con, const Common::Position& position);
 	void mergeBooleanOperators();
 	void mergeDestructors();
 	void mergeInfixPostfixOperators();

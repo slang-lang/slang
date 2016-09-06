@@ -34,7 +34,7 @@ Runtime::ControlFlow::E Assert::execute(const ParameterList& params, Runtime::Ob
 	}
 
 	if ( !isTrue(condition) ) {
-		throw Utils::Exceptions::AssertionFailed(text, token.position());
+		throw Common::Exceptions::AssertionFailed(text, token.position());
 	}
 
 	return Runtime::ControlFlow::Normal;
@@ -57,7 +57,7 @@ Runtime::ControlFlow::E AssertMsg::execute(const ParameterList& params, Runtime:
 	std::string msg = params.back().value().toStdString();
 
 	if ( !isTrue(condition) ) {
-		throw Utils::Exceptions::AssertionFailed("failed with message \"" + msg + "\"", token.position());
+		throw Common::Exceptions::AssertionFailed("failed with message \"" + msg + "\"", token.position());
 	}
 
 	return Runtime::ControlFlow::Normal;

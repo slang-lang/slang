@@ -6,7 +6,7 @@
 // Library includes
 
 // Project includes
-#include <Core/Utils/Exceptions.h>
+#include <Common/Exceptions.h>
 
 // Forward declarations
 
@@ -18,7 +18,15 @@ namespace Designtime {
 namespace Exceptions {
 
 
+class DesigntimeException : public ObjectiveScript::Common::Exceptions::Exception
+{
+public:
+	DesignTimeException(const std::string& text, const Common::Position& position = Common::Position())
+	: Exception("Designtime.Exception: " + text, position)
+	{ }
 
+	virtual ~DesigntimeException() throw() { }
+};
 
 
 }

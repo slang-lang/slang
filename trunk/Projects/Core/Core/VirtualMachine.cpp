@@ -6,8 +6,8 @@
 #include <fstream>
 
 // Project includes
-#include <Core/Utils/Exceptions.h>
-#include <Core/Utils/Utils.h>
+#include <Common/Exceptions.h>
+#include <Utils.h>
 #include <Tools/Files.h>
 #include "Analyser.h"
 #include "Consts.h"
@@ -94,7 +94,7 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 		}
 
 		if ( !imported ) {
-			throw Utils::Exceptions::Exception("could not resolve import '" + (*libIt) + "'");
+			throw Common::Exceptions::Exception("could not resolve import '" + (*libIt) + "'");
 		}
 	}
 
@@ -122,7 +122,7 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 		if ( controlflow == Runtime::ControlFlow::Throw ) {
 			std::string text = "Exception raised in method '" + main->getFullScopeName() + "." + main->QualifiedTypename() + "(" + toString(params) + ")'";
 
-			throw Utils::Exceptions::Exception(text);
+			throw Common::Exceptions::Exception(text);
 		}
 	}
 
@@ -135,11 +135,11 @@ Script* VirtualMachine::createScriptFromFile(const std::string& filename, const 
 
 	if ( filename.empty() ) {
 		OSerror("invalid filename '" + filename + "' provided!");
-		throw Utils::Exceptions::Exception("invalid filename '" + filename + "' provided!");
+		throw Common::Exceptions::Exception("invalid filename '" + filename + "' provided!");
 	}
 	if ( !::Utils::Tools::Files::exists(filename) ) {
 		OSerror("file '" + filename + "' not found!");
-		throw Utils::Exceptions::Exception("file '" + filename + "' not found!");
+		throw Common::Exceptions::Exception("file '" + filename + "' not found!");
 	}
 
 	// read file content
@@ -254,7 +254,7 @@ bool VirtualMachine::loadLibrary(const std::string& library)
 		}
 
 		if ( !imported ) {
-			throw Utils::Exceptions::Exception("could not resolve import '" + (*libIt) + "'");
+			throw Common::Exceptions::Exception("could not resolve import '" + (*libIt) + "'");
 		}
 	}
 

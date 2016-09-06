@@ -11,7 +11,7 @@
 #include <Core/Method.h>
 #include <Core/Repository.h>
 #include <Core/Tools.h>
-#include <Core/Utils/Exceptions.h>
+#include <Core/Common/Exceptions.h>
 #include <Tools/Strings.h>
 
 // Forward declarations
@@ -63,10 +63,10 @@ public:
 
 				Symbol* symbol = this->resolve(var, false);
 				if ( !symbol ) {
-					throw Utils::Exceptions::UnknownIdentifer("unknown identifier '" + var + "'", token.position());
+					throw Common::Exceptions::UnknownIdentifer("unknown identifier '" + var + "'", token.position());
 				}
 				if ( symbol->getSymbolType() != Symbol::IType::ObjectSymbol ) {
-					throw Utils::Exceptions::Exception("invalid symbol type found", token.position());
+					throw Common::Exceptions::Exception("invalid symbol type found", token.position());
 				}
 
 				Runtime::Object* tmp = static_cast<Runtime::Object*>(symbol);

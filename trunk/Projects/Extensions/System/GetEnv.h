@@ -12,7 +12,7 @@
 #include <Core/Method.h>
 #include <Core/Repository.h>
 #include <Core/Tools.h>
-#include <Core/Utils/Exceptions.h>
+#include <Core/Common/Exceptions.h>
 #include <Tools/Strings.h>
 
 // Forward declarations

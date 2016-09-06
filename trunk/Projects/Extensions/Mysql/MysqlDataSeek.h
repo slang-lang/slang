@@ -13,7 +13,7 @@
 #include <Core/Method.h>
 #include <Core/Repository.h>
 #include <Core/Tools.h>
-#include <Core/Utils/Exceptions.h>
+#include <Core/Common/Exceptions.h>
 #include "Types.h"
 
 // Forward declarations
@@ -51,7 +51,7 @@ public:
 
 			MYSQL_RES *myResult = mMysqlResults[param_handle];
 			if ( !myResult ) {
-				throw Utils::Exceptions::Exception("no valid mysql result!");
+				throw Common::Exceptions::Exception("no valid mysql result!");
 			}
 
 			mysql_data_seek(myResult, (my_ulonglong)param_rowIdx);

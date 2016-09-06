@@ -19,7 +19,7 @@ ExceptionData::ExceptionData()
 {
 }
 
-ExceptionData::ExceptionData(Object *data, const Utils::Position& position)
+ExceptionData::ExceptionData(Object *data, const Common::Position& position)
 : mData(data),
   mPosition(position)
 {
@@ -30,7 +30,7 @@ Object* ExceptionData::getData() const
 	return mData;
 }
 
-const Utils::Position& ExceptionData::getPosition() const
+const Common::Position& ExceptionData::getPosition() const
 {
 	return mPosition;
 }

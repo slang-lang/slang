@@ -6,7 +6,7 @@
 #include <cassert>
 
 // Project includes
-#include <Core/Utils/Exceptions.h>
+#include <Common/Exceptions.h>
 #include <Core/Tools.h>
 
 // Namespace declarations

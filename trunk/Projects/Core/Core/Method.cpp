@@ -8,10 +8,10 @@
 #include <Core/BuildInObjects/VoidObject.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Runtime/TypeCast.h>
-#include <Core/Utils/Exceptions.h>
-#include <Core/Utils/Utils.h>
+#include <Common/Exceptions.h>
 #include <Debugger/Debugger.h>
 #include <Tools/Strings.h>
+#include <Utils.h>
 #include "Defines.h"
 #include "Repository.h"
 #include "StackTrace.h"
@@ -118,24 +118,28 @@ void Method::operator= (const Method& other)
 ControlFlow::E Method::execute(const ParameterList& params, Object *result, const Token& token)
 {
 	if ( !mRepository ) {
-		throw Utils::Exceptions::Exception("mRepository not set");
+		throw Common::Exceptions::Exception("mRepository not set");
 	}
 	if ( isAbstract() ) {
-		throw Utils::Exceptions::AbstractException("cannot execute abstract method '" + getName() + "'", token.position());
+		throw Common::Exceptions::AbstractException("cannot execute abstract method '" + getName() + "'", token.position());
 	}
 	if ( !isSignatureValid(params) ) {
-		throw Utils::Exceptions::ParameterCountMissmatch("incorrect number or type of parameters", token.position());
+		throw Common::Exceptions::ParameterCountMissmatch("incorrect number or type of parameters", token.position());
 	}
 
 	switch ( getLanguageFeatureState() ) {
 		case LanguageFeatureState::Deprecated: OSwarn("method '" + getFullScopeName() + "' is marked as deprecated"); break;
-		case LanguageFeatureState::NotImplemented: OSerror("method '" + getFullScopeName() + "' is marked as not implemented"); throw Utils::Exceptions::NotImplemented(getFullScopeName()); break;
+		case LanguageFeatureState::NotImplemented: OSerror("method '" + getFullScopeName() + "' is marked as not implemented"); throw Common::Exceptions::NotImplemented(getFullScopeName()); break;
 		case LanguageFeatureState::Stable: /* this is the normal language feature state, so there is no need to log anything here */ break;
 		case LanguageFeatureState::Unknown: OSerror("unknown language feature state set for method '" + getFullScopeName() + "'"); break;
 		case LanguageFeatureState::Unstable: OSwarn("method '" + getFullScopeName() + "' is marked as unstable"); break;
 	}
 
 	Method scope(*this);
+
+	if ( isStatic() ) {		// this allows variable definitions in static methods
+		scope.mParent = mRepository->getGlobalScope();
+	}
 
 	Interpreter interpreter(&scope);
 	interpreter.setRepository(mRepository);
@@ -167,7 +171,7 @@ ControlFlow::E Method::execute(const ParameterList& params, Object *result, cons
 				scope.define(it->name(), object);
 			} break;
 			case Parameter::AccessMode::Unspecified: {
-				throw Utils::Exceptions::AccessMode("unspecified access mode");
+				throw Common::Exceptions::AccessMode("unspecified access mode");
 			} break;
 		}
 	}
@@ -294,7 +298,7 @@ ControlFlow::E Method::processControlFlow(ControlFlow::E controlflow, Object *re
 		case ControlFlow::Normal:
 			// verify method return reason
 			if ( Typename() != VoidObject::TYPENAME && result->Outterface() != VoidObject::TYPENAME ) {
-				throw Utils::Exceptions::Exception("unnatural method return at '" + getFullScopeName() + "'");
+				throw Common::Exceptions::Exception("unnatural method return at '" + getFullScopeName() + "'");
 			}
 
 			// correct behavior detected, override control flow with normal state
@@ -350,7 +354,7 @@ Symbol* Method::resolveMethod(const std::string& name, const ParameterList& para
 				return static_cast<MethodScope*>(mParent)->resolveMethod(name, params, onlyCurrentScope);
 			case IScope::IType::SymbolScope:
 			case IScope::IType::UnknownScope:
-				throw Utils::Exceptions::Exception("invalid/unknown scope type detected!");
+				throw Common::Exceptions::Exception("invalid/unknown scope type detected!");
 		}
 	}
 

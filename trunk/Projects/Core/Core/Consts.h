@@ -62,6 +62,7 @@ static const char* MODIFIER_FINAL = "final";
 static const char* MODIFIER_MODIFY = "modify";
 static const char* MODIFIER_RECURSIVE = "recursive";
 static const char* MODIFIER_SEALED = "sealed";
+static const char* MODIFIER_STATIC = "static";
 static const char* MODIFIER_UNKNOWN = "unknown";
 
 // Operators

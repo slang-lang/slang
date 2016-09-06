@@ -6,9 +6,9 @@
 
 // Project includes
 #include <Core/BuildInObjects/VoidObject.h>
-#include <Core/Utils/Exceptions.h>
-#include <Core/Utils/Utils.h>
+#include <Common/Exceptions.h>
 #include <Tools/Strings.h>
+#include <Utils.h>
 #include "Repository.h"
 #include "Tools.h"
 
@@ -212,7 +212,7 @@ void Object::addInheritance(const Designtime::Ancestor& ancestor, Object* inheri
 {
 	if ( !inheritance ) {
 		// bam!
-		throw Utils::Exceptions::Exception("invalid inheritance level added!");
+		throw Common::Exceptions::Exception("invalid inheritance level added!");
 	}
 
 	mInheritance.insert(std::make_pair(ancestor, inheritance));
@@ -238,7 +238,7 @@ ControlFlow::E Object::Constructor(const ParameterList& params)
 	if ( mIsAtomicType ) {	// hack to initialize atomic types
 		if ( !params.empty() ) {
 			if ( params.size() != 1 ) {
-				throw Utils::Exceptions::ParameterCountMissmatch("atomic types only support one constructor parameter");
+				throw Common::Exceptions::ParameterCountMissmatch("atomic types only support one constructor parameter");
 			}
 
 			setValue(params.front().value());
@@ -248,7 +248,7 @@ ControlFlow::E Object::Constructor(const ParameterList& params)
 	}
 
 	if ( mIsConstructed ) {	// prevent multiple instantiations
-		throw Utils::Exceptions::Exception("can not construct object '" + getFullScopeName() + "' multiple times");
+		throw Common::Exceptions::Exception("can not construct object '" + getFullScopeName() + "' multiple times");
 	}
 
 	// execute parent object constructors
@@ -281,7 +281,7 @@ ControlFlow::E Object::Constructor(const ParameterList& params)
 		}
 		else {
 			// no appropriate constructor found
-			throw Utils::Exceptions::Exception(Typename() + ": no appropriate constructor found");
+			throw Common::Exceptions::Exception(Typename() + ": no appropriate constructor found");
 		}
 	}
 
@@ -291,7 +291,7 @@ ControlFlow::E Object::Constructor(const ParameterList& params)
 		if ( !it->second->mIsConstructed ) {
 			System::Print("C++ (Constructor): " + getName() + "::" + Typename() + "()");
 
-			throw Utils::Exceptions::Exception(getName() + "::" + Typename() + "(): not all base objects have been constructed correctly");
+			throw Common::Exceptions::Exception(getName() + "::" + Typename() + "(): not all base objects have been constructed correctly");
 		}
 	}
 */
@@ -336,7 +336,7 @@ ControlFlow::E Object::Destructor()
 	else {
 		// either the destructor has already been executed
 		// or the constructor has never been called successfully!
-		//throw Utils::Exceptions::Exception("can not destroy object '" + Typename() + "' which has not been constructed");
+		//throw Common::Exceptions::Exception("can not destroy object '" + Typename() + "' which has not been constructed");
 	}
 
 	// set after executing destructor in case any exceptions have been thrown
@@ -349,12 +349,12 @@ ControlFlow::E Object::execute(Object *result, const std::string& name, const Pa
 {
 	if ( !mIsConstructed ) {
 		// a method is being called although our object has not yet been constructed?
-		throw Utils::Exceptions::NullPointer("executed method '" + name + "' of uninitialized object '" + QualifiedTypename() + "'");
+		throw Common::Exceptions::NullPointer("executed method '" + name + "' of uninitialized object '" + QualifiedTypename() + "'");
 	}
 
 	Method *method = static_cast<Method*>(resolveMethod(name, params, false));
 	if ( !method ) {
-		throw Utils::Exceptions::UnknownIdentifer("unknown method '" + getFullScopeName() + "." + name + "' or method with invalid parameter count called!");
+		throw Common::Exceptions::UnknownIdentifer("unknown method '" + getFullScopeName() + "." + name + "' or method with invalid parameter count called!");
 	}
 
 /*
@@ -365,7 +365,7 @@ ControlFlow::E Object::execute(Object *result, const std::string& name, const Pa
 	// colleague methods can always call us,
 	// for calls from non-member functions the method visibility must be public (or protected if they belong to the same object hierarchy)
 	if ( !callFromMethod && method->getVisibility() != Visibility::Public ) {
-		throw Utils::Exceptions::VisibilityError("invalid visibility: " + name);
+		throw Common::Exceptions::VisibilityError("invalid visibility: " + name);
 	}
 */
 
@@ -383,7 +383,7 @@ bool Object::FromJson(const Json::Value& value)
 
 		Symbol *symbol = resolve(sub.key(), true);
 		if ( !symbol ) {
-			throw Utils::Exceptions::Exception("FromJson: unknown member '" + sub.key() + "'!");
+			throw Common::Exceptions::Exception("FromJson: unknown member '" + sub.key() + "'!");
 		}
 
 		Object *obj = static_cast<Object*>(symbol);
@@ -450,7 +450,7 @@ bool Object::isAtomicType() const
 bool Object::isInstanceOf(const std::string& type) const
 {
 	if ( type.empty() ) {
-		throw Utils::Exceptions::Exception("invalid type provided");
+		throw Common::Exceptions::Exception("invalid type provided");
 	}
 
 	if ( QualifiedTypename() == type ) {
@@ -477,12 +477,12 @@ bool Object::isValid() const
 const Object* Object::operator_array(const Object *index)
 {
 	if ( !mIsArray ) {
-		throw Utils::Exceptions::Exception(Typename() + ".operator[]: is not an array");
+		throw Common::Exceptions::Exception(Typename() + ".operator[]: is not an array");
 	}
 
 	std::string subscript = index->Typename();
 
-	throw Utils::Exceptions::NotImplemented(Typename() + ".operator[]: no array subscript operator for " + subscript + " implemented");
+	throw Common::Exceptions::NotImplemented(Typename() + ".operator[]: no array subscript operator for " + subscript + " implemented");
 }
 
 void Object::operator_assign(const Object *other)
@@ -504,7 +504,7 @@ void Object::operator_assign(const Object *other)
 
 	std::string target = other->Typename();
 
-	throw Utils::Exceptions::NotImplemented(Typename() + ".operator=: conversion from " + target + " to " + Typename() + " not supported");
+	throw Common::Exceptions::NotImplemented(Typename() + ".operator=: conversion from " + target + " to " + Typename() + " not supported");
 }
 
 void Object::operator_bitand(const Object *other)
@@ -529,7 +529,7 @@ void Object::operator_bitand(const Object *other)
 
 	std::string target = other->Typename();
 
-	throw Utils::Exceptions::NotImplemented(Typename() + ".operator&: conversion from " + target + " to " + Typename() + " not supported");
+	throw Common::Exceptions::NotImplemented(Typename() + ".operator&: conversion from " + target + " to " + Typename() + " not supported");
 }
 
 void Object::operator_bitcomplement(const Object *other)
@@ -554,7 +554,7 @@ void Object::operator_bitcomplement(const Object *other)
 
 	std::string target = other->Typename();
 
-	throw Utils::Exceptions::NotImplemented(Typename() + ".operator~: conversion from " + target + " to " + Typename() + " not supported");
+	throw Common::Exceptions::NotImplemented(Typename() + ".operator~: conversion from " + target + " to " + Typename() + " not supported");
 }
 
 void Object::operator_bitor(const Object *other)
@@ -579,12 +579,12 @@ void Object::operator_bitor(const Object *other)
 
 	std::string target = other->Typename();
 
-	throw Utils::Exceptions::NotImplemented(Typename() + ".operator|: conversion from " + target + " to " + Typename() + " not supported");
+	throw Common::Exceptions::NotImplemented(Typename() + ".operator|: conversion from " + target + " to " + Typename() + " not supported");
 }
 
 bool Object::operator_bool() const
 {
-	throw Utils::Exceptions::NotImplemented(Typename() + ".operator bool(): for " + Typename() + " not supported");
+	throw Common::Exceptions::NotImplemented(Typename() + ".operator bool(): for " + Typename() + " not supported");
 }
 
 void Object::operator_divide(const Object *other)
@@ -609,7 +609,7 @@ void Object::operator_divide(const Object *other)
 
 	std::string target = other->Typename();
 
-	throw Utils::Exceptions::NotImplemented(Typename() + ".operator/: conversion from " + target + " to " + Typename() + " not supported");
+	throw Common::Exceptions::NotImplemented(Typename() + ".operator/: conversion from " + target + " to " + Typename() + " not supported");
 }
 
 bool Object::operator_equal(const Object *other)
@@ -633,7 +633,7 @@ bool Object::operator_equal(const Object *other)
 
 	std::string target = other->Typename();
 
-	throw Utils::Exceptions::NotImplemented(Typename() + ".operator==: conversion from " + target + " to " + Typename() + " not supported");
+	throw Common::Exceptions::NotImplemented(Typename() + ".operator==: conversion from " + target + " to " + Typename() + " not supported");
 }
 
 bool Object::operator_greater(const Object *other)
@@ -657,7 +657,7 @@ bool Object::operator_greater(const Object *other)
 
 	std::string target = other->Typename();
 
-	throw Utils::Exceptions::NotImplemented(Typename() + ".operator>: conversion from " + target + " to " + Typename() + " not supported");
+	throw Common::Exceptions::NotImplemented(Typename() + ".operator>: conversion from " + target + " to " + Typename() + " not supported");
 }
 
 bool Object::operator_greater_equal(const Object *other)
@@ -681,13 +681,13 @@ bool Object::operator_greater_equal(const Object *other)
 
 	std::string target = other->Typename();
 
-	throw Utils::Exceptions::NotImplemented(Typename() + ".operator>=: conversion from " + target + " to " + Typename() + " not supported");
+	throw Common::Exceptions::NotImplemented(Typename() + ".operator>=: conversion from " + target + " to " + Typename() + " not supported");
 }
 
 bool Object::operator_is(const Symbol *other)
 {
 	if ( !other || other->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
-		throw Utils::Exceptions::Exception("invalid symbol provided");
+		throw Common::Exceptions::Exception("invalid symbol provided");
 	}
 
 /*
@@ -727,7 +727,7 @@ bool Object::operator_less(const Object *other)
 
 	std::string target = other->Typename();
 
-	throw Utils::Exceptions::NotImplemented(Typename() + ".operator<: conversion from " + target + " to " + Typename() + " not supported");
+	throw Common::Exceptions::NotImplemented(Typename() + ".operator<: conversion from " + target + " to " + Typename() + " not supported");
 }
 
 bool Object::operator_less_equal(const Object *other)
@@ -751,7 +751,7 @@ bool Object::operator_less_equal(const Object *other)
 
 	std::string target = other->Typename();
 
-	throw Utils::Exceptions::NotImplemented(Typename() + ".operator<=: conversion from " + target + " to " + Typename() + " not supported");
+	throw Common::Exceptions::NotImplemented(Typename() + ".operator<=: conversion from " + target + " to " + Typename() + " not supported");
 }
 
 void Object::operator_modulo(const Object *other)
@@ -776,7 +776,7 @@ void Object::operator_modulo(const Object *other)
 
 	std::string target = other->Typename();
 
-	throw Utils::Exceptions::NotImplemented(Typename() + ".operator%: conversion from " + target + " to " + Typename() + " not supported");
+	throw Common::Exceptions::NotImplemented(Typename() + ".operator%: conversion from " + target + " to " + Typename() + " not supported");
 }
 
 void Object::operator_multiply(const Object *other)
@@ -801,7 +801,7 @@ void Object::operator_multiply(const Object *other)
 
 	std::string target = other->Typename();
 
-	throw Utils::Exceptions::NotImplemented(Typename() + ".operator*: conversion from " + target + " to " + Typename() + " not supported");
+	throw Common::Exceptions::NotImplemented(Typename() + ".operator*: conversion from " + target + " to " + Typename() + " not supported");
 }
 
 void Object::operator_plus(const Object *other)
@@ -826,7 +826,7 @@ void Object::operator_plus(const Object *other)
 
 	std::string target = other->Typename();
 
-	throw Utils::Exceptions::NotImplemented(Typename() + ".operator+: conversion from " + target + " to " + Typename() + " not supported");
+	throw Common::Exceptions::NotImplemented(Typename() + ".operator+: conversion from " + target + " to " + Typename() + " not supported");
 }
 
 void Object::operator_subtract(const Object *other)
@@ -851,27 +851,27 @@ void Object::operator_subtract(const Object *other)
 
 	std::string target = other->Typename();
 
-	throw Utils::Exceptions::NotImplemented(Typename() + ".operator-: conversion from " + target + " to " + Typename() + " not supported");
+	throw Common::Exceptions::NotImplemented(Typename() + ".operator-: conversion from " + target + " to " + Typename() + " not supported");
 }
 
 void Object::operator_unary_decrement()
 {
-	throw Utils::Exceptions::NotImplemented(Typename() + ".operator--: for " + Typename() + " not supported");
+	throw Common::Exceptions::NotImplemented(Typename() + ".operator--: for " + Typename() + " not supported");
 }
 
 void Object::operator_unary_increment()
 {
-	throw Utils::Exceptions::NotImplemented(Typename() + ".operator++: for " + Typename() + " not supported");
+	throw Common::Exceptions::NotImplemented(Typename() + ".operator++: for " + Typename() + " not supported");
 }
 
 void Object::operator_unary_minus()
 {
-	throw Utils::Exceptions::NotImplemented(Typename() + ".operator unary -: for " + Typename() + " not supported");
+	throw Common::Exceptions::NotImplemented(Typename() + ".operator unary -: for " + Typename() + " not supported");
 }
 
 void Object::operator_unary_not()
 {
-	throw Utils::Exceptions::NotImplemented(Typename() + ".operator unary !: for " + Typename() + " not supported");
+	throw Common::Exceptions::NotImplemented(Typename() + ".operator unary !: for " + Typename() + " not supported");
 }
 
 Symbol* Object::resolve(const std::string& name, bool onlyCurrentScope) const

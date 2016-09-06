@@ -6,11 +6,11 @@
 #include <iostream>
 
 // Project includes
-#include <Core/Utils/Utils.h>
+#include <Core/Runtime/ControlFlow.h>
 #include <Debugger/Debugger.h>
 #include <Tools/Files.h>
 #include <Tools/Strings.h>
-#include <Core/Runtime/ControlFlow.h>
+#include <Utils.h>
 
 // Namespace declarations
 

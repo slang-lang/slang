@@ -6,7 +6,7 @@
 
 // Project includes
 #include <Core/Consts.h>
-#include <Core/Utils/Exceptions.h>
+#include <Core/Common/Exceptions.h>
 #include <Core/Tools.h>
 #include <Tools/Strings.h>
 #include "BoolObject.h"

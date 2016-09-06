@@ -79,12 +79,16 @@ public:
 	virtual MethodType::E getMethodType() const;
 	virtual void setMethodType(MethodType::E type);
 
+	virtual bool isStatic() const;
+	virtual void setStatic(bool state);
+
 	virtual bool throws() const;
 	virtual void setThrows(bool state);
 
 protected:
 	bool mIsAbstract;
 	bool mIsRecursive;
+	bool mIsStatic;
 	MethodType::E mMethodType;
 	bool mThrows;
 };

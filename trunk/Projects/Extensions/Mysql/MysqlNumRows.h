@@ -12,7 +12,7 @@
 #include <Core/Method.h>
 #include <Core/Repository.h>
 #include <Core/Tools.h>
-#include <Core/Utils/Exceptions.h>
+#include <Core/Common/Exceptions.h>
 #include "Types.h"
 
 // Forward declarations
@@ -48,7 +48,7 @@ public:
 
 			MYSQL_RES *myResult = mMysqlResults[param_handle];
 			if ( !myResult ) {
-				throw Utils::Exceptions::Exception("no valid mysql connection handle: " + Tools::toString(param_handle));
+				throw Common::Exceptions::Exception("no valid mysql connection handle: " + Tools::toString(param_handle));
 			}
 
 			int my_result = (int)mysql_num_rows(myResult);

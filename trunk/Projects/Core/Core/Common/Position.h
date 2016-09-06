@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Utils_Position_h
-#define ObjectiveScript_Utils_Position_h
+#ifndef ObjectiveScript_Core_Common_Position_h
+#define ObjectiveScript_Core_Common_Position_h
 
 
 // Library includes
@@ -14,7 +14,7 @@
 
 
 namespace ObjectiveScript {
-namespace Utils {
+namespace Common {
 
 
 class Position

@@ -12,7 +12,7 @@
 // Project includes
 #include <Core/Script.h>
 #include <Core/VirtualMachine.h>
-#include <Core/Utils/Exceptions.h>
+#include <Core/Common/Exceptions.h>
 
 // Namespace declartations
 using namespace ObjectiveScript;

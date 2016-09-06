@@ -9,7 +9,7 @@
 #include <Core/Designtime/BluePrintObject.h>
 #include <Core/Designtime/BluePrintEnum.h>
 #include <Core/Designtime/Parser/Parser.h>
-#include <Core/Utils/Exceptions.h>
+#include <Common/Exceptions.h>
 #include "Tokenizer.h"
 #include "Tools.h"
 
@@ -92,7 +92,7 @@ Designtime::BluePrintObject* Preprocessor::createMember(TokenIterator token) con
 		// beware: public members are deprecated, remember the "Law of Demeter"
 		// consider using wrappers (getter, setter) instead of directly providing access to members for outsiders
 		// haven't you heard? outsiders, or sometimes called strangers, are evil
-		throw Utils::Exceptions::LawOfDemeterViolated("public member " + name + " violates \"Law of Demeter\"", token->position());
+		throw Common::Exceptions::LawOfDemeterViolated("public member " + name + " violates \"Law of Demeter\"", token->position());
 	}
 
 	// look for a mutability token
@@ -117,7 +117,7 @@ Designtime::BluePrintObject* Preprocessor::createMember(TokenIterator token) con
 			case Token::Type::CONST_INTEGER: value = Tools::stringToInt(token->content()); break;
 			case Token::Type::CONST_LITERAL: value = token->content(); break;
 			case Token::Type::CONST_NUMBER: value = Tools::stringToNumber(token->content()); break;
-			default: throw Utils::Exceptions::NotSupported("initialization is only allowed for atomic data types", token->position());
+			default: throw Common::Exceptions::NotSupported("initialization is only allowed for atomic data types", token->position());
 		}
 
 		token++;
@@ -146,6 +146,7 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token) const
 	bool isConst = true;		// extreme const correctness: all methods are const by default
 	bool isFinal = false;
 	bool isRecursive = false;
+	bool isStatic = true;
 	std::string languageFeature;
 	MethodAttributes::MethodType::E methodType = MethodAttributes::MethodType::Method;
 	Mutability::E mutability = Mutability::Const;
@@ -215,6 +216,9 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token) const
 			else if ( token->content() == MODIFIER_RECURSIVE ) {
 				isRecursive = true;
 			}
+			else if ( token->content() == MODIFIER_STATIC ) {
+				isStatic = true;
+			}
 		}
 		else {
 			isModifierToken = false;
@@ -222,12 +226,12 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token) const
 	} while ( isModifierToken && token->type() != Token::Type::BRACKET_CURLY_OPEN );
 
 	if ( numConstModifiers > 1 ) {
-		throw Utils::Exceptions::Exception("modifiers 'const' & 'modify' are exclusive");
+		throw Common::Exceptions::Exception("modifiers 'const' & 'modify' are exclusive");
 	}
 
 	if ( isConst &&
 		(methodType == MethodAttributes::MethodType::Constructor || methodType == MethodAttributes::MethodType::Destructor) ) {
-		throw Utils::Exceptions::SyntaxError("constructor or destructor cannot be const");
+		throw Common::Exceptions::SyntaxError("constructor or destructor cannot be const");
 	}
 
 	if ( token->type() == Token::Type::RESERVED_WORD && token->content() == RESERVED_WORD_THROWS ) {
@@ -242,7 +246,7 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token) const
 	}
 
 	if ( isAbstract && !tokens.empty() ) {
-		throw Utils::Exceptions::SyntaxError("abstract methods cannot have an implementation");
+		throw Common::Exceptions::SyntaxError("abstract methods cannot have an implementation");
 	}
 
 	Runtime::Method *method = new Runtime::Method(mScope, name, type);
@@ -255,6 +259,7 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token) const
 	method->setRecursive(isRecursive);
 	method->setRepository(mRepository);
 	method->setSignature(params);
+	method->setStatic(isStatic);
 	method->setThrows(throws);
 	method->setTokens(tokens);
 	method->setVisibility(Visibility::convert(visibility));
@@ -304,7 +309,7 @@ void Preprocessor::generateBluePrintEnum()
 
 		// verify declaration order (this also prevents duplicate values)
 		if ( previous_value.toInt() >= value.toInt() ) {
-			throw Utils::Exceptions::Exception("enum values have to be defined in ascending order");
+			throw Common::Exceptions::Exception("enum values have to be defined in ascending order");
 		}
 
 		previous_value = value;
@@ -333,14 +338,14 @@ void Preprocessor::generateBluePrintEnum()
 			token++;
 
 			if ( lookahead(token) == mTokens.end() ) {
-				throw Utils::Exceptions::Exception("new enum value expected but none found!", token->position());
+				throw Common::Exceptions::Exception("new enum value expected but none found!", token->position());
 			}
 		}
 		else if ( token->type() == Token::Type::SEMICOLON ) {
 			return;
 		}
 		else {
-			throw Utils::Exceptions::Exception("unexpected token '" + token->content() + "' found", token->position());
+			throw Common::Exceptions::Exception("unexpected token '" + token->content() + "' found", token->position());
 		}
 	}
 }
@@ -375,7 +380,7 @@ void Preprocessor::generateBluePrintObject()
 			blueprint->defineMethod(method->getName(), method);
 		}
 		else {
-			throw Utils::Exceptions::SyntaxError("invalid token '" + (*it)->content() + "'", (*it)->position());
+			throw Common::Exceptions::SyntaxError("invalid token '" + (*it)->content() + "'", (*it)->position());
 		}
 	}
 }
@@ -405,7 +410,7 @@ void Preprocessor::process(Designtime::BluePrintGeneric* blueprint)
 			generateBluePrintObject();	// build object from tokens
 		} break;
 		default:
-			throw Utils::Exceptions::Exception("invalid symbol type provided");
+			throw Common::Exceptions::Exception("invalid symbol type provided");
 	}
 
 	mBluePrint = 0;

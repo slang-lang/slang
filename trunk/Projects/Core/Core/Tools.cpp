@@ -6,7 +6,7 @@
 
 // Project includes
 #include <Core/Consts.h>
-#include <Core/Utils/Exceptions.h>
+#include <Common/Exceptions.h>
 
 // Namespace declarations
 
@@ -148,7 +148,7 @@ std::string toString(const std::string& value)
 void expect(Token::Type::E expected, TokenIterator found)
 {
 	if ( found->type() != expected ) {
-		throw Utils::Exceptions::SyntaxError("unexpected token '" + found->content() + "' found", found->position());
+		throw Common::Exceptions::SyntaxError("unexpected token '" + found->content() + "' found", found->position());
 	}
 }
 
@@ -189,7 +189,7 @@ TokenIterator findNextBalancedBracket(TokenIterator start, int generateErrorAfte
 			return tmp;
 		}
 		if ( generateErrorAfter && count >= generateErrorAfter ) {
-			throw Utils::Exceptions::SyntaxError("Closed bracket expected, but not found after " + Tools::toString(count) + " iteration(s)", start->position());
+			throw Common::Exceptions::SyntaxError("Closed bracket expected, but not found after " + Tools::toString(count) + " iteration(s)", start->position());
 		}
 
 		count++;
@@ -217,7 +217,7 @@ TokenIterator findNextBalancedCurlyBracket(TokenIterator start, TokenIterator en
 		}
 
 		if ( generateErrorAfter && count >= generateErrorAfter ) {
-			throw Utils::Exceptions::SyntaxError("Closed curly bracket expected, but not found after " + Tools::toString(count) + " iteration(s)", start->position());
+			throw Common::Exceptions::SyntaxError("Closed curly bracket expected, but not found after " + Tools::toString(count) + " iteration(s)", start->position());
 		}
 
 		count++;
@@ -246,7 +246,7 @@ TokenIterator findNextBalancedParenthesis(TokenIterator start, int generateError
 			return tmp;
 		}
 		if ( generateErrorAfter && count >= generateErrorAfter ) {
-			throw Utils::Exceptions::SyntaxError("closed parenthesis expected, but not found after " + Tools::toString(count) + " iteration(s)", start->position());
+			throw Common::Exceptions::SyntaxError("closed parenthesis expected, but not found after " + Tools::toString(count) + " iteration(s)", start->position());
 		}
 
 		count++;

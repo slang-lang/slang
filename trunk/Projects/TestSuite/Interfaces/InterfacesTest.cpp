@@ -12,7 +12,7 @@
 // Project includes
 #include <Core/Script.h>
 #include <Core/VirtualMachine.h>
-#include <Core/Utils/Exceptions.h>
+#include <Core/Common/Exceptions.h>
 
 // Namespace declarations
 using namespace ObjectiveScript;
@@ -49,7 +49,7 @@ void InterfacesTest::testBasicInterfaces()
 {
     try {
         VirtualMachine vm;
-        TTHROWS(vm.createScriptFromFile("Tests/Interfaces/BasicInterfacesTest.os"), ObjectiveScript::Utils::Exceptions::AbstractException);
+        TTHROWS(vm.createScriptFromFile("Tests/Interfaces/BasicInterfacesTest.os"), ObjectiveScript::Common::Exceptions::AbstractException);
 
         // automatic success
     }

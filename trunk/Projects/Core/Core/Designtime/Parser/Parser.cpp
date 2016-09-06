@@ -7,7 +7,7 @@
 // Project includes
 #include <Core/Consts.h>
 #include <Core/Tools.h>
-#include <Core/Utils/Exceptions.h>
+#include <Core/Common/Exceptions.h>
 
 // Namespace declarations
 
@@ -46,7 +46,7 @@ bool checkSyntax(TokenIterator foundIt, const TokenList &expected)
 TokenList Parser::collectScopeTokens(TokenIterator& token)
 {
 	if ( (*token).type() != Token::Type::BRACKET_CURLY_OPEN ) {
-		throw Utils::Exceptions::Exception("collectScopeTokens: invalid start token found");
+		throw Common::Exceptions::Exception("collectScopeTokens: invalid start token found");
 	}
 
 	int scope = 0;
@@ -234,7 +234,7 @@ ParameterList Parser::parseParameters(TokenIterator &token)
 
 	while ( (*++token).type() != Token::Type::PARENTHESIS_CLOSE ) {
 		if ( !isLocalDeclaration(token) ) {
-			throw Utils::Exceptions::SyntaxError("could not parse parameter declaration", token->position());
+			throw Common::Exceptions::SyntaxError("could not parse parameter declaration", token->position());
 		}
 
 		Parameter::AccessMode::E accessmode = Parameter::AccessMode::ByValue;
@@ -275,7 +275,7 @@ ParameterList Parser::parseParameters(TokenIterator &token)
 				case Token::Type::CONST_INTEGER: value = Tools::stringToInt(token->content()); break;
 				case Token::Type::CONST_LITERAL: value = token->content(); break;
 				case Token::Type::CONST_NUMBER: value = Tools::stringToNumber(token->content()); break;
-				default: throw Utils::Exceptions::NotSupported("only atomic data types are allowed as default parameters", token->position());
+				default: throw Common::Exceptions::NotSupported("only atomic data types are allowed as default parameters", token->position());
 			}
 
 			token++;

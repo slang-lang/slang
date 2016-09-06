@@ -5,7 +5,7 @@
 // Library includes
 
 // Project includes
-#include <Core/Utils/Exceptions.h>
+#include <Core/Common/Exceptions.h>
 
 // Namespace declarations
 
@@ -30,7 +30,7 @@ GenericAttributes::~GenericAttributes()
 void GenericAttributes::checkSealState()
 {
 	if ( mIsSealed ) {
-		throw Utils::Exceptions::Exception("can not update sealed attribute");
+		throw Common::Exceptions::Exception("can not update sealed attribute");
 	}
 }
 
@@ -100,6 +100,7 @@ void GenericAttributes::setVisibility(Visibility::E v)
 MethodAttributes::MethodAttributes()
 : mIsAbstract(false),
   mIsRecursive(false),
+  mIsStatic(false),
   mMethodType(MethodType::Method),
   mThrows(false)
 {
@@ -133,6 +134,16 @@ void MethodAttributes::setRecursive(bool state)
 void MethodAttributes::setMethodType(MethodType::E type)
 {
 	mMethodType = type;
+}
+
+bool MethodAttributes::isStatic() const
+{
+	return mIsStatic;
+}
+
+void MethodAttributes::setStatic(bool state)
+{
+	mIsStatic = state;
 }
 
 bool MethodAttributes::throws() const

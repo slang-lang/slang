@@ -5,7 +5,7 @@
 // Library includes
 
 // Project includes
-#include <Core/Utils/Exceptions.h>
+#include <Common/Exceptions.h>
 #include <Core/Token.h>
 
 // Namespace declarations

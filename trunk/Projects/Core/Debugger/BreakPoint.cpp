@@ -19,7 +19,7 @@ BreakPoint::BreakPoint()
 {
 }
 
-BreakPoint::BreakPoint(const Utils::Position &position)
+BreakPoint::BreakPoint(const Common::Position &position)
 : mFilename(position.mFile),
   mLine(position.mLine)
 {
@@ -83,7 +83,7 @@ bool BreakPoint::operator==(const BreakPoint& other) const
 	return (mFilename == other.mFilename) && (mLine == other.mLine);
 }
 
-bool BreakPoint::operator==(const Utils::Position& other) const
+bool BreakPoint::operator==(const Common::Position& other) const
 {
 	return (mFilename == other.mFile) && (mLine == other.mLine);
 }

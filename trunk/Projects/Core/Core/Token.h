@@ -8,7 +8,7 @@
 #include <string>
 
 // Project includes
-#include <Core/Utils/Position.h>
+#include <Core/Common/Position.h>
 
 // Forward declarations
 
@@ -115,14 +115,14 @@ public:
 	Token();
 	Token(Type::E type, bool isOptional = false);
 	Token(Type::E type, const std::string& content);
-	Token(Category::E category, Type::E type, const std::string& content, const Utils::Position& pos);
+	Token(Category::E category, Type::E type, const std::string& content, const Common::Position& pos);
 
 public:
 	Category::E category() const;
 	void category(Category::E category);
 
 	const std::string& content() const;
-	const Utils::Position& position() const;
+	const Common::Position& position() const;
 	Type::E type() const;
 
 public:
@@ -138,7 +138,7 @@ private:
 	Category::E mCategory;
 	std::string mContent;
 	bool mIsOptional;
-	Utils::Position mPosition;
+	Common::Position mPosition;
 	Type::E mType;
 };
 
