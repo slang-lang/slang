@@ -35,7 +35,7 @@ Token::Token(Type::E type, const std::string& content)
 {
 }
 
-Token::Token(Category::E category, Type::E type, const std::string& content, const Utils::Position& pos)
+Token::Token(Category::E category, Type::E type, const std::string& content, const Common::Position& pos)
 : mCategory(category),
   mContent(content),
   mIsOptional(false),
@@ -64,7 +64,7 @@ bool Token::isOptional() const
 	return mIsOptional;
 }
 
-const Utils::Position& Token::position() const
+const Common::Position& Token::position() const
 {
 	return mPosition;
 }

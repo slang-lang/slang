@@ -7,11 +7,11 @@
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Script.h>
 #include <Core/StackTrace.h>
-#include <Core/Utils/Exceptions.h>
-#include <Core/Utils/Utils.h>
+#include <Core/Common/Exceptions.h>
 #include <Core/VirtualMachine.h>
 #include <Tools/Printer.h>
 #include <Tools/Strings.h>
+#include <Utils.h>
 
 // Extension includes
 #include <Extensions.h>

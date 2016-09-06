@@ -6,7 +6,7 @@
 // Library includes
 
 // Project includes
-#include <Core/Utils/Position.h>
+#include <Core/Common/Position.h>
 
 // Forward declarations
 
@@ -23,15 +23,15 @@ class ExceptionData
 {
 public:
 	ExceptionData();
-	ExceptionData(Object *data, const Utils::Position& position);
+	ExceptionData(Object *data, const Common::Position& position);
 
 public:
 	Object* getData() const;
-	const Utils::Position& getPosition() const;
+	const Common::Position& getPosition() const;
 
 private:
 	Object *mData;
-	Utils::Position mPosition;
+	Common::Position mPosition;
 };
 
 

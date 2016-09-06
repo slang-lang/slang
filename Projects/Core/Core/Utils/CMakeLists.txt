@@ -1,16 +1,14 @@
 INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
 SET(SOURCES
-	Exceptions.cpp
-	Position.cpp
-	Utils.cpp
-)
+		../Common/Exceptions.cpp
+		../Common/Position.cpp
+        )
 
 SET(HEADERS
-	Exceptions.h
-	Position.h
-	Utils.h
-)
+		../Common/Exceptions.h
+		../Common/Position.h
+        )
 
 SET(DEPENDENCIES
 )

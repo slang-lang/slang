@@ -14,7 +14,7 @@
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Script.h>
 #include <Core/VirtualMachine.h>
-#include <Core/Utils/Exceptions.h>
+#include <Core/Common/Exceptions.h>
 
 // Namespace declarations
 using namespace ObjectiveScript;
@@ -94,7 +94,7 @@ void LanguageTest::testAssert()
 	try {
 		VirtualMachine vm;
 
-		TTHROWS(vm.createScriptFromFile("Tests/Language/AssertTest.os"), ObjectiveScript::Utils::Exceptions::AssertionFailed);
+		TTHROWS(vm.createScriptFromFile("Tests/Language/AssertTest.os"), ObjectiveScript::Common::Exceptions::AssertionFailed);
 
 		// automatic success
 	}
@@ -139,7 +139,7 @@ void LanguageTest::testConstCorrectness1()
 	try {
 		VirtualMachine vm;
 
-		TTHROWS(vm.createScriptFromFile("Tests/Language/ConstCorrectness1.os"), ObjectiveScript::Utils::Exceptions::ConstCorrectnessViolated);
+		TTHROWS(vm.createScriptFromFile("Tests/Language/ConstCorrectness1.os"), ObjectiveScript::Common::Exceptions::ConstCorrectnessViolated);
 
 		// automatic success
 	}
@@ -154,7 +154,7 @@ void LanguageTest::testConstCorrectness2()
 	try {
 		VirtualMachine vm;
 
-		TTHROWS(vm.createScriptFromFile("Tests/Language/ConstCorrectness2.os"), ObjectiveScript::Utils::Exceptions::ConstCorrectnessViolated);
+		TTHROWS(vm.createScriptFromFile("Tests/Language/ConstCorrectness2.os"), ObjectiveScript::Common::Exceptions::ConstCorrectnessViolated);
 
 		// automatic success
 	}
@@ -169,7 +169,7 @@ void LanguageTest::testConstCorrectness3()
 	try {
 		VirtualMachine vm;
 
-		TTHROWS(vm.createScriptFromFile("Tests/Language/ConstCorrectness3.os"), ObjectiveScript::Utils::Exceptions::ConstCorrectnessViolated);
+		TTHROWS(vm.createScriptFromFile("Tests/Language/ConstCorrectness3.os"), ObjectiveScript::Common::Exceptions::ConstCorrectnessViolated);
 
 		// automatic success
 	}
@@ -184,7 +184,7 @@ void LanguageTest::testConstCorrectness4()
 	try {
 		VirtualMachine vm;
 
-		TTHROWS(vm.createScriptFromFile("Tests/Language/ConstCorrectness4.os"), ObjectiveScript::Utils::Exceptions::ConstCorrectnessViolated);
+		TTHROWS(vm.createScriptFromFile("Tests/Language/ConstCorrectness4.os"), ObjectiveScript::Common::Exceptions::ConstCorrectnessViolated);
 
 		// automatic success
 	}
@@ -244,7 +244,7 @@ void LanguageTest::testFinal()
 	try {
 		VirtualMachine vm;
 
-		TTHROWS(vm.createScriptFromFile("Tests/Language/FinalTest.os"), ObjectiveScript::Utils::Exceptions::ConstCorrectnessViolated);
+		TTHROWS(vm.createScriptFromFile("Tests/Language/FinalTest.os"), ObjectiveScript::Common::Exceptions::ConstCorrectnessViolated);
 
 		// automatic success
 	}
@@ -304,7 +304,7 @@ void LanguageTest::testLawOfDemeter()
 	try {
 		VirtualMachine vm;
 
-		TTHROWS(vm.createScriptFromFile("Tests/Language/LawOfDemeterTest.os"), ObjectiveScript::Utils::Exceptions::LawOfDemeterViolated);
+		TTHROWS(vm.createScriptFromFile("Tests/Language/LawOfDemeterTest.os"), ObjectiveScript::Common::Exceptions::LawOfDemeterViolated);
 
 		// automatic success
 	}
@@ -428,7 +428,7 @@ void LanguageTest::testSanityChecker()
 	try {
 		VirtualMachine vm;
 
-		TTHROWS(vm.createScriptFromFile("Tests/Language/SanityCheckerTest.os"), ObjectiveScript::Utils::Exceptions::SyntaxError);
+		TTHROWS(vm.createScriptFromFile("Tests/Language/SanityCheckerTest.os"), ObjectiveScript::Common::Exceptions::SyntaxError);
 
 		// automatic success
 	}

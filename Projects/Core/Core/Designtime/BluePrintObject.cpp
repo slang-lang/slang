@@ -7,7 +7,7 @@
 // Project includes
 #include <Core/Consts.h>
 #include <Core/Object.h>
-#include <Core/Utils/Exceptions.h>
+#include <Core/Common/Exceptions.h>
 #include <Tools/Strings.h>
 
 // Namespace declarations
@@ -46,7 +46,7 @@ BluePrintObject::~BluePrintObject()
 void BluePrintObject::addInheritance(const Designtime::Ancestor& inheritance)
 {
 	if ( inheritance.name().empty() ) {
-		throw Utils::Exceptions::Exception("invalid inheritance added");
+		throw Common::Exceptions::Exception("invalid inheritance added");
 	}
 
 	mInheritance.insert(inheritance);

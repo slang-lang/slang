@@ -8,7 +8,7 @@
 #include <string>
 
 // Project includes
-#include <Core/Utils/Position.h>
+#include <Core/Common/Position.h>
 #include "Condition.h"
 
 // Forward declarations
@@ -24,7 +24,7 @@ class BreakPoint
 {
 public:
 	BreakPoint();
-	BreakPoint(const Utils::Position& position);
+	BreakPoint(const Common::Position& position);
 	~BreakPoint();
 
 public:
@@ -40,7 +40,7 @@ public:
 public:
 	bool operator<(const BreakPoint& other) const;
 	bool operator==(const BreakPoint& other) const;
-	bool operator==(const Utils::Position& other) const;
+	bool operator==(const Common::Position& other) const;
 
 private:
 	Condition mCondition;

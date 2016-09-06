@@ -9,7 +9,7 @@
 #endif
 
 // Project includes
-#include <Core/Utils/Exceptions.h>
+#include <Common/Exceptions.h>
 
 // Namespace declarations
 
@@ -36,7 +36,7 @@ void Memory::deleteObject(const Reference& ref)
 {
 	MemoryMap::iterator it = mMemory.find(ref);
 	if ( it == mMemory.end() ) {
-		throw Utils::Exceptions::Exception("invalid delete for address ");//+ std::string(ref.getAddress()));
+		throw Common::Exceptions::Exception("invalid delete for address ");//+ std::string(ref.getAddress()));
 	}
 
 	// delete it if it's valid ...
@@ -83,7 +83,7 @@ const Reference& Memory::reserveAddress()
 		//    address again);
 		//TODO: implement me
 
-		throw Utils::Exceptions::Exception("memory exhausted!");
+		throw Common::Exceptions::Exception("memory exhausted!");
 	}
 
 	// reserve address by creating a new reference

@@ -84,6 +84,8 @@ StringList provideModifiers()
 	modifiers.push_back(MODIFIER_FINAL);
 	modifiers.push_back(MODIFIER_MODIFY);
 	modifiers.push_back(MODIFIER_RECURSIVE);
+	modifiers.push_back(MODIFIER_SEALED);
+	modifiers.push_back(MODIFIER_STATIC);
 
 	return modifiers;
 }

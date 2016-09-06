@@ -11,7 +11,7 @@
 #include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/Repository.h>
 #include <Core/Tools.h>
-#include <Core/Utils/Exceptions.h>
+#include <Core/Common/Exceptions.h>
 #include "Types.h"
 
 // Forward declarations
@@ -49,12 +49,12 @@ public:
 
 			MYSQL_RES *myResult = mMysqlResults[param_handle];
 			if ( !myResult ) {
-				throw Utils::Exceptions::Exception("no valid result handle: " + Tools::toString(param_handle));
+				throw Common::Exceptions::Exception("no valid result handle: " + Tools::toString(param_handle));
 			}
 
 			MYSQL_ROW row = myResult->current_row;
 			if ( !row ) {
-				throw Utils::Exceptions::Exception("no valid row");
+				throw Common::Exceptions::Exception("no valid row");
 			}
 
 			std::string my_result;
@@ -102,7 +102,7 @@ public:
 
 			MYSQL_RES *myResult = mMysqlResults[param_handle];
 			if ( !myResult ) {
-				throw Utils::Exceptions::Exception("no valid result handle: " + Tools::toString(param_handle));
+				throw Common::Exceptions::Exception("no valid result handle: " + Tools::toString(param_handle));
 			}
 
 			bool foundField = false;
@@ -110,7 +110,7 @@ public:
 
 			for ( unsigned int idx = 0; idx < myResult->field_count; ++idx ) {
 				if ( !myResult->fields[idx].name ) {
-					throw Utils::Exceptions::Exception("invalid field name detected at field index: " + Tools::ConvertToStdString(idx));
+					throw Common::Exceptions::Exception("invalid field name detected at field index: " + Tools::ConvertToStdString(idx));
 				}
 
 				if ( std::string(myResult->fields[idx].name) == param_field_name ) {
@@ -122,7 +122,7 @@ public:
 			}
 
 			if ( !foundField ) {
-				throw Utils::Exceptions::Exception("invalid field name '" + param_field_name + "' provided!");
+				throw Common::Exceptions::Exception("invalid field name '" + param_field_name + "' provided!");
 			}
 
 			*result = Runtime::StringObject(my_result);

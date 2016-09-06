@@ -6,10 +6,10 @@
 // Project includes
 #include <Common/StdOutLogger.h>
 #include <Core/StackTrace.h>
-#include <Core/Utils/Utils.h>
 #include <Tools/Printer.h>
 #include <Tools/Strings.h>
 #include <Tools/Tools.h>
+#include <Utils.h>
 
 // Fixtures
 #include <Attributes/Fixture.h>

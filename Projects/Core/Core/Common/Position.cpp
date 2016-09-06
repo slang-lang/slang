@@ -11,7 +11,7 @@
 
 
 namespace ObjectiveScript {
-namespace Utils {
+namespace Common {
 
 
 Position::Position(const std::string& file, unsigned int line, unsigned int column)

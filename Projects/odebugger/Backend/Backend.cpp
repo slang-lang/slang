@@ -77,7 +77,7 @@ bool Backend::addBreakPoint(const StringList& tokens)
 	std::string file = (*it++);
 	unsigned int line = (unsigned int)::Utils::Tools::stringToInt((*it++));
 
-	Core::BreakPoint breakpoint(Utils::Position(file, line));
+	Core::BreakPoint breakpoint(Common::Position(file, line));
 
 	if ( tokens.size() == 6 ) {
 		std::string left = (*it++);

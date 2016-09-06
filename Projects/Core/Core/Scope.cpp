@@ -6,7 +6,7 @@
 #include <cassert>
 
 // Project includes
-#include <Core/Utils/Exceptions.h>
+#include <Common/Exceptions.h>
 #include "Method.h"
 #include "Tools.h"
 
@@ -34,7 +34,7 @@ void SymbolScope::define(const std::string& name, Symbol* symbol)
 
 	if ( resolve(name, true) ) {
 		// duplicate symbol defined
-		throw Utils::Exceptions::DuplicateIdentifier("duplicate identifier defined: " + symbol->getName());
+		throw Common::Exceptions::DuplicateIdentifier("duplicate identifier defined: " + symbol->getName());
 	}
 
 	mSymbols.insert(std::make_pair(
@@ -114,7 +114,7 @@ void MethodScope::defineMethod(const std::string& name, Runtime::Method* method)
 
 	if ( MethodScope::resolveMethod(name, method->provideSignature(), true) ) {
 		// duplicate method defined
-		throw Utils::Exceptions::DuplicateIdentifier("duplicate method '" + method->getName() + "' added with same signature");
+		throw Common::Exceptions::DuplicateIdentifier("duplicate method '" + method->getName() + "' added with same signature");
 	}
 
 	Symbols::iterator it = mSymbols.find(name);

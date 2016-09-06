@@ -25,8 +25,8 @@
 #include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/Designtime/BuildInTypes/VoidObject.h>
 #include <Core/Designtime/Prototype.h>
-#include <Core/Utils/Exceptions.h>
-#include <Core/Utils/Utils.h>
+#include <Common/Exceptions.h>
+#include <Utils.h>
 #include "Preprocessor.h"
 #include "Tools.h"
 
@@ -97,7 +97,7 @@ void Repository::addBluePrint(Designtime::BluePrintEnum* blueprint)
 	BluePrintEnumMap::iterator it = mBluePrintEnums.find(type);
 	if ( it != mBluePrintEnums.end() ) {
 
-		throw Utils::Exceptions::Exception("duplicate object '" + type + "' added to repository");
+		throw Common::Exceptions::Exception("duplicate object '" + type + "' added to repository");
 	}
 
 	mBluePrintEnums.insert(std::make_pair(type, blueprint));
@@ -113,7 +113,7 @@ void Repository::addBluePrint(Designtime::BluePrintObject* blueprint)
 	BluePrintObjectMap::iterator it = mBluePrintObjects.find(type);
 	if ( it != mBluePrintObjects.end() ) {
 		if ( !it->second->isForwardDeclaration() ) {
-			throw Utils::Exceptions::Exception("duplicate object '" + type + "' added to repository");
+			throw Common::Exceptions::Exception("duplicate object '" + type + "' added to repository");
 		}
 
 		// delete forward declaration
@@ -138,7 +138,7 @@ assert(!"prototypes not supported!");
 
 	Designtime::PrototypeMap::iterator it = mPrototypes.find(type);
 	if ( it != mPrototypes.end() ) {
-		throw Utils::Exceptions::Exception("duplicate object '" + type + "' added to repository");
+		throw Common::Exceptions::Exception("duplicate object '" + type + "' added to repository");
 	}
 
 	mPrototypes.insert(std::make_pair(type, prototype));
@@ -247,7 +247,7 @@ Runtime::Object* Repository::createInstance(const std::string& type, const std::
 
 	BluePrintObjectMap::iterator it = mBluePrintObjects.find(type);
 	if ( it == mBluePrintObjects.end() ) {
-		throw Utils::Exceptions::Exception("could not create instance of unknown type '" + type + "'");
+		throw Common::Exceptions::Exception("could not create instance of unknown type '" + type + "'");
 	}
 
 	Runtime::Object *object = createObject(name, it->second, initialize);
@@ -262,7 +262,7 @@ Runtime::Object* Repository::createInstance(Designtime::BluePrintObject* bluepri
 	// non-reference-based instantiation
 
 	if ( !blueprint ) {
-		throw Utils::Exceptions::Exception("invalid blueprint provided!");
+		throw Common::Exceptions::Exception("invalid blueprint provided!");
 	}
 
 	OSdebug("createInstance('" + blueprint->QualifiedTypename() + "', '" + name + "', " + (initialize ? "true" : "false") + ")");
@@ -309,7 +309,7 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 	}
 
 	if ( object->isAbstract() ) {
-		throw Utils::Exceptions::AbstractException("cannot instantiate abstract object '" + blueprint->Typename() + "'");
+		throw Common::Exceptions::AbstractException("cannot instantiate abstract object '" + blueprint->Typename() + "'");
 	}
 
 	object->setFinal(blueprint->isFinal());
@@ -344,7 +344,7 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 			BluePrintObjectMap::iterator blueIt = mBluePrintObjects.find(ancestorIt->name());
 
 			if ( blueIt == mBluePrintObjects.end() ) {
-				throw Utils::Exceptions::Exception("trying to initialize unknown object '" + ancestorIt->name() + "'");
+				throw Common::Exceptions::Exception("trying to initialize unknown object '" + ancestorIt->name() + "'");
 			}
 
 			switch ( ancestorIt->type() ) {
@@ -369,7 +369,7 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 					}
 					break;
 				case Designtime::Ancestor::Type::Unknown:
-					throw Utils::Exceptions::Exception("invalid inheritance detected");
+					throw Common::Exceptions::Exception("invalid inheritance detected");
 			}
 		}
 	}
@@ -660,7 +660,7 @@ void Repository::removeReference(Runtime::Object *object)
 	ReferenceCountedObjects::iterator it = mInstances.find(object);
 	if ( it == mInstances.end() ) {
 		return;
-		//throw Utils::Exceptions::AccessViolation("possible double delete for '" + object->getFullScopeName() + "'");
+		//throw Common::Exceptions::AccessViolation("possible double delete for '" + object->getFullScopeName() + "'");
 	}
 
 	// decrement reference count

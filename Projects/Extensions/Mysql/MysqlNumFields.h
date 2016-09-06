@@ -11,7 +11,7 @@
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
 #include <Core/Repository.h>
 #include <Core/Tools.h>
-#include <Core/Utils/Exceptions.h>
+#include <Core/Common/Exceptions.h>
 #include "Types.h"
 
 // Forward declarations
@@ -47,7 +47,7 @@ public:
 
 			MYSQL_RES *myResult = mMysqlResults[param_handle];
 			if ( !myResult ) {
-				throw Utils::Exceptions::Exception("no valid mysql result handle: " + Tools::toString(myResult));
+				throw Common::Exceptions::Exception("no valid mysql result handle: " + Tools::toString(myResult));
 			}
 
 			int my_result = mysql_num_fields(myResult);

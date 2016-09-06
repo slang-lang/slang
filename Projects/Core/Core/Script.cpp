@@ -6,8 +6,8 @@
 
 // Project includes
 #include <Core/Runtime/ControlFlow.h>
-#include <Core/Utils/Exceptions.h>
-#include <Core/Utils/Utils.h>
+#include <Common/Exceptions.h>
+#include <Utils.h>
 #include "Object.h"
 #include "Scope.h"
 
@@ -30,7 +30,7 @@ void Script::execute(const std::string& method, const ParameterList& params, Run
 {
 	MethodSymbol *symbol = mScope->resolveMethod(method, params, false);
 	if ( !symbol ) {
-		throw Utils::Exceptions::Exception("could not resolve method '" + method + "(" + toString(params) + ")'");
+		throw Common::Exceptions::Exception("could not resolve method '" + method + "(" + toString(params) + ")'");
 	}
 
 	Runtime::Method* methodSymbol = static_cast<Runtime::Method*>(symbol);
@@ -38,12 +38,12 @@ void Script::execute(const std::string& method, const ParameterList& params, Run
 
 	if ( controlflow == Runtime::ControlFlow::Throw ) {
 		Runtime::Object* data = methodSymbol->getExceptionData().getData();
-		//Utils::Position position = methodSymbol->getExceptionData().getPosition();
+		//Common::Position position = methodSymbol->getExceptionData().getPosition();
 
 		std::string text = "Exception raised in method '" + method + "(" + toString(params) + ")':\n";
 					text += data->getValue().toStdString();
 
-		throw Utils::Exceptions::Exception(text);
+		throw Common::Exceptions::Exception(text);
 	}
 }
 

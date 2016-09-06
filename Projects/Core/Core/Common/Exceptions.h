@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Utils_Exceptions_h
-#define ObjectiveScript_Utils_Exceptions_h
+#ifndef ObjectiveScript_Core_Common_Exceptions_h
+#define ObjectiveScript_Core_Common_Exceptions_h
 
 
 // Library includes
@@ -16,14 +16,14 @@
 
 
 namespace ObjectiveScript {
-namespace Utils {
+namespace Common {
 namespace Exceptions {
 
 
 class Exception : public std::exception
 {
 public:
-	Exception(const std::string& text, const Utils::Position& position = Utils::Position())
+	Exception(const std::string& text, const Common::Position& position = Common::Position())
 	: mMessage(text),
 	  mPosition(position)
 	{
@@ -65,14 +65,14 @@ protected:
 
 private:
 	std::string mMessage;
-	Utils::Position mPosition;
+	Common::Position mPosition;
 };
 
 
 class AbstractException : public Exception
 {
 public:
-	AbstractException(const std::string& text, const Utils::Position& position = Utils::Position())
+	AbstractException(const std::string& text, const Common::Position& position = Common::Position())
 	: Exception("Exception.AbstractException: " + text, position)
 	{ }
 
@@ -83,7 +83,7 @@ public:
 class AccessViolation : public Exception
 {
 public:
-	AccessViolation(const std::string& text, const Utils::Position& position = Utils::Position())
+	AccessViolation(const std::string& text, const Common::Position& position = Common::Position())
 	: Exception("Exception.AccessViolation: " + text, position)
 	{ }
 
@@ -94,7 +94,7 @@ public:
 class AccessMode : public Exception
 {
 public:
-	AccessMode(const std::string& text, const Utils::Position& position = Utils::Position())
+	AccessMode(const std::string& text, const Common::Position& position = Common::Position())
 	: Exception("Exception.AccessMode: " + text, position)
 	{ }
 
@@ -105,7 +105,7 @@ public:
 class AssertionFailed : public Exception
 {
 public:
-	AssertionFailed(const std::string& text, const Utils::Position& position = Utils::Position())
+	AssertionFailed(const std::string& text, const Common::Position& position = Common::Position())
 	: Exception("Exception.AssertionFailed: " + text, position)
 	{ }
 
@@ -116,7 +116,7 @@ public:
 class ControlFlowException : public Exception
 {
 public:
-	ControlFlowException(const std::string& text, const Utils::Position& position = Utils::Position())
+	ControlFlowException(const std::string& text, const Common::Position& position = Common::Position())
 	: Exception("Exception.ControlFlowException: " + text, position)
 	{ }
 
@@ -127,7 +127,7 @@ public:
 class ConstCorrectnessViolated : public Exception
 {
 public:
-	ConstCorrectnessViolated(const std::string& text, const Utils::Position& position = Utils::Position())
+	ConstCorrectnessViolated(const std::string& text, const Common::Position& position = Common::Position())
 	: Exception("Exception.ConstCorrectnessViolated: " + text, position)
 	{ }
 
@@ -138,7 +138,7 @@ public:
 class DuplicateIdentifier : public Exception
 {
 public:
-	DuplicateIdentifier(const std::string& text, const Utils::Position& position = Utils::Position())
+	DuplicateIdentifier(const std::string& text, const Common::Position& position = Common::Position())
 	: Exception("Exception.DuplicateIdentifier: " + text, position)
 	{ }
 
@@ -149,7 +149,7 @@ public:
 class InvalidTypeCast : public Exception
 {
 public:
-	InvalidTypeCast(const std::string& text, const Utils::Position& position = Utils::Position())
+	InvalidTypeCast(const std::string& text, const Common::Position& position = Common::Position())
 	: Exception("Exception.InvalidTypeCast: " + text, position)
 	{ }
 
@@ -160,7 +160,7 @@ public:
 class LawOfDemeterViolated : public Exception
 {
 public:
-	LawOfDemeterViolated(const std::string& text, const Utils::Position& position = Utils::Position())
+	LawOfDemeterViolated(const std::string& text, const Common::Position& position = Common::Position())
 	: Exception("Exception.LawOfDemeterViolated: " + text, position)
 	{ }
 
@@ -171,7 +171,7 @@ public:
 class NotImplemented : public Exception
 {
 public:
-	NotImplemented(const std::string& text, const Utils::Position& position = Utils::Position())
+	NotImplemented(const std::string& text, const Common::Position& position = Common::Position())
 	: Exception("Exception.NotImplemented: " + text, position)
 	{ }
 
@@ -182,7 +182,7 @@ public:
 class NotSupported : public Exception
 {
 public:
-	NotSupported(const std::string& text, const Utils::Position& position = Utils::Position())
+	NotSupported(const std::string& text, const Common::Position& position = Common::Position())
 	: Exception("Exception.NotSupported: " + text, position)
 	{ }
 
@@ -193,7 +193,7 @@ public:
 class NullPointer : public Exception
 {
 public:
-	NullPointer(const std::string& text, const Utils::Position& position = Utils::Position())
+	NullPointer(const std::string& text, const Common::Position& position = Common::Position())
 	: Exception("Exception.NullPointer: " + text, position)
 	{ }
 
@@ -204,7 +204,7 @@ public:
 class ParameterCountMissmatch : public Exception
 {
 public:
-	ParameterCountMissmatch(const std::string& text, const Utils::Position& position = Utils::Position())
+	ParameterCountMissmatch(const std::string& text, const Common::Position& position = Common::Position())
 	: Exception("Exception.ParameterCountMissmatch: " + text, position)
 	{ }
 
@@ -215,7 +215,7 @@ public:
 class SyntaxError : public Exception
 {
 public:
-	SyntaxError(const std::string& text, const Utils::Position& position = Utils::Position())
+	SyntaxError(const std::string& text, const Common::Position& position = Common::Position())
 	: Exception("Exception.SyntaxError: " + text, position)
 	{ }
 
@@ -226,7 +226,7 @@ public:
 class TypeMismatch : public Exception
 {
 public:
-	TypeMismatch(const std::string& text, const Utils::Position& position = Utils::Position())
+	TypeMismatch(const std::string& text, const Common::Position& position = Common::Position())
 	: Exception("Exception.TypeMismatch: " + text, position)
 	{ }
 
@@ -237,7 +237,7 @@ public:
 class UnknownIdentifer : public Exception
 {
 public:
-	UnknownIdentifer(const std::string& text, const Utils::Position& position = Utils::Position())
+	UnknownIdentifer(const std::string& text, const Common::Position& position = Common::Position())
 	: Exception("Exception.UnknownIdentifer: " + text, position)
 	{ }
 
@@ -248,7 +248,7 @@ public:
 class VisibilityError : public Exception
 {
 public:
-	VisibilityError(const std::string& text, const Utils::Position& position = Utils::Position())
+	VisibilityError(const std::string& text, const Common::Position& position = Common::Position())
 	: Exception("Exception.Visibility: " + text, position)
 	{ }
 
