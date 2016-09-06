@@ -21,11 +21,23 @@ namespace Exceptions {
 class DesigntimeException : public ObjectiveScript::Common::Exceptions::Exception
 {
 public:
-	DesignTimeException(const std::string& text, const Common::Position& position = Common::Position())
-	: Exception("Designtime.Exception: " + text, position)
+	DesigntimeException(const std::string& text, const Common::Position& position = Common::Position())
+	: Exception("Exception.Designtime: " + text, position)
 	{ }
 
 	virtual ~DesigntimeException() throw() { }
+};
+
+
+
+class LawOfDemeterViolated : public DesigntimeException
+{
+public:
+	LawOfDemeterViolated(const std::string& text, const Common::Position& position = Common::Position())
+	: DesigntimeException("Exception.Designtime.LawOfDemeterViolated: " + text, position)
+	{ }
+
+	virtual ~LawOfDemeterViolated() throw() { }
 };
 
 

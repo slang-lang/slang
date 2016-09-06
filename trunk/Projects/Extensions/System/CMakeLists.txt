@@ -6,7 +6,6 @@ ADD_SUBDIRECTORY(Math)
 ADD_SUBDIRECTORY(Strings)
 
 SET(SOURCES
-	AssertMsg.cpp
 	System.cpp
 	SystemExtension.cpp
 )

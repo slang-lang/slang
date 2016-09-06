@@ -11,8 +11,8 @@
 #include <Core/Designtime/BuildInTypes/VoidObject.h>
 #include <Core/Method.h>
 #include <Core/Repository.h>
+#include <Core/Runtime/Exceptions.h>
 #include <Core/Tools.h>
-#include <Core/Common/Exceptions.h>
 #include <Tools/Strings.h>
 
 // Forward declarations
@@ -28,18 +28,58 @@ namespace System {
 class Assert : public Runtime::Method
 {
 public:
-	Assert();
+	Assert()
+	: Runtime::Method(0, "assert", Designtime::VoidObject::TYPENAME)
+	{
+		ParameterList params;
+		params.push_back(Parameter("condition", Designtime::BoolObject::TYPENAME, false));
+		params.push_back(Parameter("message", Designtime::StringObject::TYPENAME, VALUE_NONE, true));
 
-	Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* result, const Token& token);
+		setSignature(params);
+	}
+
+	Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* /*result*/, const Token& token)
+	{
+		Runtime::Object condition = *params.front().pointer();
+		std::string text;
+
+		if ( params.size() == 2 ) {
+			text = "with message \"" + params.back().value().toStdString() + "\"";
+		}
+
+		if ( !isTrue(condition) ) {
+			throw Runtime::Exceptions::AssertionFailed(text, token.position());
+		}
+
+		return Runtime::ControlFlow::Normal;
+	}
 };
 
 
 class AssertMsg : public Runtime::Method
 {
 public:
-	AssertMsg();
+	AssertMsg()
+	: Runtime::Method(0, "assertmsg", Designtime::VoidObject::TYPENAME)
+	{
+		ParameterList params;
+		params.push_back(Parameter("condition", Designtime::BoolObject::TYPENAME, false));
+		params.push_back(Parameter("message", Designtime::StringObject::TYPENAME, VALUE_NONE));
 
-	Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* result, const Token& token);
+		setSignature(params);
+	}
+
+	Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* /*result*/, const Token& token)
+	{
+		Runtime::Object condition = *params.front().pointer();
+		std::string msg = params.back().value().toStdString();
+
+		if ( !isTrue(condition) ) {
+			throw Runtime::Exceptions::AssertionFailed("failed with message \"" + msg + "\"", token.position());
+		}
+
+		return Runtime::ControlFlow::Normal;
+	}
 };
 
 

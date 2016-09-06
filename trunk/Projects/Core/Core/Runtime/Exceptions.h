@@ -6,7 +6,7 @@
 // Library includes
 
 // Project includes
-#include <Common/Exceptions.h>
+#include <Core/Common/Exceptions.h>
 
 // Forward declarations
 
@@ -18,33 +18,78 @@ namespace Runtime {
 namespace Exceptions {
 
 
-class RuntimeException : public ObjectiveScript::Common::Exceptions::Exception
+class Exception : public ObjectiveScript::Common::Exceptions::Exception
 {
 public:
-	RuntimeException(const std::string& text, const Common::Position& position = Common::Position())
-	: Exception("Runtime.Exception: " + text, position)
+	Exception(const std::string& text, const ObjectiveScript::Common::Position& position = ObjectiveScript::Common::Position())
+	: ObjectiveScript::Common::Exceptions::Exception("Runtime.Exception: " + text, position)
 	{ }
 
-	virtual ~RuntimeException() throw() { }
+	virtual ~Exception() throw() { }
 };
 
 
 
-class ExplicitCastRequired : public RuntimeException
+class AccessViolation : public Exception
+{
+public:
+	AccessViolation(const std::string& text, const Common::Position& position = Common::Position())
+	: Exception("Runtime.AccessViolationException: " + text, position)
+	{ }
+
+	virtual ~AccessViolation() throw() { }
+};
+
+
+	class AssertionFailed : public Exception
+{
+public:
+	AssertionFailed(const std::string& text, const Common::Position& position = Common::Position())
+	: Exception("Runtime.AssertionFailedException: " + text, position)
+	{ }
+
+	virtual ~AssertionFailed() throw() { }
+};
+
+
+class ExplicitCastRequired : public Exception
 {
 public:
 	ExplicitCastRequired(const std::string& text, const Common::Position& position = Common::Position())
-	: RuntimeException("Exception.ExplicitCastRequired: " + text, position)
+	: Exception("Runtime.ExplicitCastRequiredException: " + text, position)
 	{ }
 
 	virtual ~ExplicitCastRequired() throw() { }
 };
 
-class SizeException : public RuntimeException
+
+class InvalidTypeCast : public Exception
+{
+public:
+	InvalidTypeCast(const std::string& text, const Common::Position& position = Common::Position())
+	: Exception("Runtime.InvalidTypeCastException: " + text, position)
+	{ }
+
+	virtual ~InvalidTypeCast() throw() { }
+};
+
+
+class NullPointer : public Exception
+{
+public:
+	NullPointer(const std::string& text, const Common::Position& position = Common::Position())
+	: Exception("Runtime.NullPointerException: " + text, position)
+	{ }
+
+	virtual ~NullPointer() throw() { }
+};
+
+
+	class SizeException : public Exception
 {
 public:
 	SizeException(const std::string& text, const Common::Position& position = Common::Position())
-	: RuntimeException("Exception.SizeException: " + text, position)
+	: Exception("Runtime.SizeException: " + text, position)
 	{ }
 
 	virtual ~SizeException() throw() { }

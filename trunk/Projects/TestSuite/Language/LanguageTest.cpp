@@ -15,6 +15,8 @@
 #include <Core/Script.h>
 #include <Core/VirtualMachine.h>
 #include <Core/Common/Exceptions.h>
+#include <Core/Designtime/Exceptions.h>
+#include <Core/Runtime/Exceptions.h>
 
 // Namespace declarations
 using namespace ObjectiveScript;
@@ -94,7 +96,7 @@ void LanguageTest::testAssert()
 	try {
 		VirtualMachine vm;
 
-		TTHROWS(vm.createScriptFromFile("Tests/Language/AssertTest.os"), ObjectiveScript::Common::Exceptions::AssertionFailed);
+		TTHROWS(vm.createScriptFromFile("Tests/Language/AssertTest.os"), ObjectiveScript::Runtime::Exceptions::AssertionFailed);
 
 		// automatic success
 	}
@@ -304,7 +306,7 @@ void LanguageTest::testLawOfDemeter()
 	try {
 		VirtualMachine vm;
 
-		TTHROWS(vm.createScriptFromFile("Tests/Language/LawOfDemeterTest.os"), ObjectiveScript::Common::Exceptions::LawOfDemeterViolated);
+		TTHROWS(vm.createScriptFromFile("Tests/Language/LawOfDemeterTest.os"), ObjectiveScript::Designtime::Exceptions::LawOfDemeterViolated);
 
 		// automatic success
 	}
