@@ -42,6 +42,10 @@ public namespace System {
 		public void reset() modify {
 			mCurrentIndex = -1;
 		}
+
+		public Object =operator(Object value) const {
+			return current();
+		}
 	}
 
 	public object ReverseIterator implements IIterateable {
