@@ -1,6 +1,7 @@
 #!/usr/local/bin/oscript
 
 import System.Collections.DoubleLinkedList;
+import System.Collections.Iterator;
 import System.Exception;
 
 private object TestObject {
@@ -198,19 +199,19 @@ public object Main {
 			// Usage
 			assert( list.size() == 3 );
 
-            list.reset();
+			System.Iterator it = list.getIterator();
 
-            int count = 0;
-            while ( list.hasNext() ) {
-                list.next();
+			int count = 0;
+			while ( it.hasNext() ) {
+				it.next();
 
-                count++;
+				count++;
 
-                TestObject item = TestObject list.current();
-                //print(item.ToString());
-            }
+				TestObject item = TestObject it.current();
+				//print(item.ToString());
+			}
 
-            assert( count == 3 );
+			assert( count == 3 );
 
 			return true;
 		}
@@ -243,19 +244,19 @@ public object Main {
 			// Usage
 			assert( list.size() == 3 );
 
-            list.resetToLast();
+			System.ReverseIterator it = list.getReverseIterator();
 
-            int count = 0;
-            while ( list.hasPrevious() ) {
-                list.previous();
+			int count = 0;
+			while ( it.hasNext() ) {
+				it.next();
 
-                count++;
+				count++;
 
-                TestObject item = TestObject list.current();
-                //print(item.ToString());
-            }
+				TestObject item = TestObject it.current();
+				//print(item.ToString());
+			}
 
-            assert( count == 3 );
+			assert( count == 3 );
 
 			return true;
 		}

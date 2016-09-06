@@ -22,7 +22,7 @@ class Exception : public ObjectiveScript::Common::Exceptions::Exception
 {
 public:
 	Exception(const std::string& text, const ObjectiveScript::Common::Position& position = ObjectiveScript::Common::Position())
-	: ObjectiveScript::Common::Exceptions::Exception("Runtime.Exception: " + text, position)
+	: ObjectiveScript::Common::Exceptions::Exception("Runtime." + text, position)
 	{ }
 
 	virtual ~Exception() throw() { }
@@ -34,7 +34,7 @@ class AccessViolation : public Exception
 {
 public:
 	AccessViolation(const std::string& text, const Common::Position& position = Common::Position())
-	: Exception("Runtime.AccessViolationException: " + text, position)
+	: Exception("AccessViolationException: " + text, position)
 	{ }
 
 	virtual ~AccessViolation() throw() { }
@@ -45,7 +45,7 @@ public:
 {
 public:
 	AssertionFailed(const std::string& text, const Common::Position& position = Common::Position())
-	: Exception("Runtime.AssertionFailedException: " + text, position)
+	: Exception("AssertionFailedException: " + text, position)
 	{ }
 
 	virtual ~AssertionFailed() throw() { }
@@ -56,7 +56,7 @@ class ExplicitCastRequired : public Exception
 {
 public:
 	ExplicitCastRequired(const std::string& text, const Common::Position& position = Common::Position())
-	: Exception("Runtime.ExplicitCastRequiredException: " + text, position)
+	: Exception("ExplicitCastRequiredException: " + text, position)
 	{ }
 
 	virtual ~ExplicitCastRequired() throw() { }
@@ -67,7 +67,7 @@ class InvalidTypeCast : public Exception
 {
 public:
 	InvalidTypeCast(const std::string& text, const Common::Position& position = Common::Position())
-	: Exception("Runtime.InvalidTypeCastException: " + text, position)
+	: Exception("InvalidTypeCastException: " + text, position)
 	{ }
 
 	virtual ~InvalidTypeCast() throw() { }
@@ -78,7 +78,7 @@ class NullPointer : public Exception
 {
 public:
 	NullPointer(const std::string& text, const Common::Position& position = Common::Position())
-	: Exception("Runtime.NullPointerException: " + text, position)
+	: Exception("NullPointerException: " + text, position)
 	{ }
 
 	virtual ~NullPointer() throw() { }
@@ -89,7 +89,7 @@ public:
 {
 public:
 	SizeException(const std::string& text, const Common::Position& position = Common::Position())
-	: Exception("Runtime.SizeException: " + text, position)
+	: Exception("SizeException: " + text, position)
 	{ }
 
 	virtual ~SizeException() throw() { }
