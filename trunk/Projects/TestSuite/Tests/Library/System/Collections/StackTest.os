@@ -7,6 +7,8 @@ public object Main {
 	public void Main(int argc = 0, string args = "") {
 		assert( TestCase1() );
 		assert( TestCase2() );
+		assert( TestCase3() );
+		assert( TestCase4() );
 	}
 
 	private bool TestCase1() modify {
@@ -108,6 +110,84 @@ public object Main {
 			return false;
 		}
 
+		return false;
+	}
+
+	private bool TestCase3() modify {
+		print("TestCase 3: iterate");
+
+		try {
+			System.Stack stack = new System.Stack();
+
+			stack.push(Object "1");
+			stack.push(Object "2");
+			stack.push(Object "3");
+
+			assert( stack.size() == 3 );
+
+			System.Iterator it = stack.getIterator();
+
+			it.next();
+			assert( it.current() == "1" );
+
+			it.next();
+			assert( it.current() == "2" );
+
+			it.next();
+			assert( it.current() == "3" );
+
+			it.reset();
+			while ( it . hasNext() ) {
+				it.next();
+
+				//print(it.current());
+			}
+
+			return true;
+		}
+		catch ( System.OutOfBoundsException e ) {
+			print(e.what());
+		}
+
+		return false;
+	}
+
+	private bool TestCase4() modify {
+		print("TestCase 4: reverse iterate");
+
+		try {
+			System.Stack stack = new System.Stack();
+
+			stack.push(Object "1");
+			stack.push(Object "2");
+			stack.push(Object "3");
+
+			assert( stack.size() == 3 );
+
+			System.Iterator it = stack.getReverseIterator();
+
+			it.next();
+			assert( it.current() == "3" );
+
+			it.next();
+			assert( it.current() == "2" );
+
+			it.next();
+			assert( it.current() == "1" );
+
+			it.reset();
+			while ( it.hasNext() ) {
+				it.next();
+
+				//print(it.current());
+			}
+
+			return true;
+		}
+		catch ( System.OutOfBoundsException e ) {
+			print(e.what());
+		}
+		
 		return false;
 	}
 }
