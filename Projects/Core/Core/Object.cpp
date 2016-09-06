@@ -7,6 +7,7 @@
 // Project includes
 #include <Core/BuildInObjects/VoidObject.h>
 #include <Common/Exceptions.h>
+#include <Runtime/Exceptions.h>
 #include <Tools/Strings.h>
 #include <Utils.h>
 #include "Repository.h"
@@ -349,7 +350,7 @@ ControlFlow::E Object::execute(Object *result, const std::string& name, const Pa
 {
 	if ( !mIsConstructed ) {
 		// a method is being called although our object has not yet been constructed?
-		throw Common::Exceptions::NullPointer("executed method '" + name + "' of uninitialized object '" + QualifiedTypename() + "'");
+		throw Runtime::Exceptions::NullPointer("executed method '" + name + "' of uninitialized object '" + QualifiedTypename() + "'");
 	}
 
 	Method *method = static_cast<Method*>(resolveMethod(name, params, false));

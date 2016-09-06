@@ -14,7 +14,7 @@
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/BuildInObjects/UserObject.h>
 #include <Core/BuildInObjects/VoidObject.h>
-#include <Core/Common/Exceptions.h>
+#include <Core/Runtime/Exceptions.h>
 #include <Utils.h>
 
 // Namespace declarations
@@ -28,11 +28,11 @@ void typecast(Object *base, const std::string& targetType)
 {
 	if ( !base ) {
 		OSerror("cannot cast null pointer");
-		throw Common::Exceptions::NullPointer("cannot cast null pointer");
+		throw Runtime::Exceptions::NullPointer("cannot cast null pointer");
 	}
 	if ( targetType.empty() ) {
 		OSerror("invalid cast target type");
-		throw Common::Exceptions::Exception("invalid cast target type");
+		throw Runtime::Exceptions::Exception("invalid cast target type");
 	}
 
 	if ( targetType == GenericObject::TYPENAME ) {
@@ -76,7 +76,7 @@ void typecast(Object *base, const std::string& targetType)
 	}
 	else {
 		if ( !base->isInstanceOf(targetType) ) {
-			throw Common::Exceptions::InvalidTypeCast(targetType + " does not belong to " + base->Typename() + " object hierarchy");
+			throw Runtime::Exceptions::InvalidTypeCast(targetType + " does not belong to " + base->Typename() + " object hierarchy");
 		}
 
 		Object tmp(*base);

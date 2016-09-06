@@ -14,10 +14,11 @@
 #include <Core/BuildInObjects/NumberObject.h>
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/BuildInObjects/VoidObject.h>
+#include <Core/Common/Exceptions.h>
+#include <Core/Runtime/Exceptions.h>
 #include <Core/Runtime/Namespace.h>
 #include <Core/Runtime/OperatorOverloading.h>
 #include <Core/Runtime/TypeCast.h>
-#include <Common/Exceptions.h>
 #include <Debugger/Debugger.h>
 #include <Tools/Printer.h>
 #include <Utils.h>
@@ -643,7 +644,7 @@ void Interpreter::process_assert(TokenIterator& token)
 	}
 
 	if ( !isTrue(condition) ) {
-		throw Common::Exceptions::AssertionFailed(condition.ToString(), token->position());
+		throw Runtime::Exceptions::AssertionFailed(condition.ToString(), token->position());
 	}
 
 	expect(Token::Type::PARENTHESIS_CLOSE, token++);

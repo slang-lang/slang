@@ -10,6 +10,7 @@
 #include <Core/Designtime/BluePrintEnum.h>
 #include <Core/Designtime/Parser/Parser.h>
 #include <Common/Exceptions.h>
+#include <Designtime/Exceptions.h>
 #include "Tokenizer.h"
 #include "Tools.h"
 
@@ -92,7 +93,7 @@ Designtime::BluePrintObject* Preprocessor::createMember(TokenIterator token) con
 		// beware: public members are deprecated, remember the "Law of Demeter"
 		// consider using wrappers (getter, setter) instead of directly providing access to members for outsiders
 		// haven't you heard? outsiders, or sometimes called strangers, are evil
-		throw Common::Exceptions::LawOfDemeterViolated("public member " + name + " violates \"Law of Demeter\"", token->position());
+		throw Designtime::Exceptions::LawOfDemeterViolated("public member " + name + " violates \"Law of Demeter\"", token->position());
 	}
 
 	// look for a mutability token
