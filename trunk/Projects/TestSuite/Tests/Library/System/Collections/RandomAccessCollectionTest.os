@@ -22,6 +22,8 @@ public object Main {
 		assert( TestCase4() );
 		assert( TestCase5() );
 		assert( TestCase6() );
+		assert( TestCase7() );
+		assert( TestCase8() );
 	}
 
 	private bool TestCase1() modify {
@@ -249,6 +251,52 @@ public object Main {
 
 				//print(it.current());
 			}
+
+			return true;
+		}
+
+		return false;
+	}
+
+	private bool TestCase7() modify {
+		print("TestCase 7: indexOf");
+
+		try {
+			System.RandomAccessCollection list = new System.RandomAccessCollection();
+
+			list.insert(Object "1", 0);
+			list.insert(Object "2", 1);
+			list.insert(Object "3", 2);
+
+			assert( list.size() == 3 );
+
+			assert( list.indexOf(Object "1") == 0 );
+			assert( list.indexOf(Object "2") == 1 );
+			assert( list.indexOf(Object "3") == 2 );
+
+			return true;
+		}
+
+		return false;
+	}
+
+	private bool TestCase8() modify {
+		print("TestCase 8: contains");
+
+		try {
+			System.RandomAccessCollection list = new System.RandomAccessCollection();
+			assert( list is Object );
+			assert( list is System.ACollection );
+
+			list.insert(Object 1, 0);
+			list.insert(Object 2, 1);
+			list.insert(Object 3, 2);
+
+			assert( list.size() == 3 );
+
+			assert( list.contains(Object 1) );
+			assert( list.contains(Object 2) );
+			assert( list.contains(Object 3) );
 
 			return true;
 		}

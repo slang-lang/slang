@@ -5,7 +5,7 @@ import System.Exception;
 
 public namespace System {
 
-	public object Iterator implements IIterateable {
+	public object Iterator {
 		private System.ACollection mCollection;
 		private int mCurrentIndex;
 
@@ -48,7 +48,7 @@ public namespace System {
 		}
 	}
 
-	public object ReverseIterator implements IIterateable {
+	public object ReverseIterator {
 		private System.ACollection mCollection;
 		private int mCurrentIndex;
 
