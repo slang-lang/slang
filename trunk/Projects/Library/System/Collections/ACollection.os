@@ -42,7 +42,7 @@ public namespace System {
 	public object ACollection {
 		private CollectionItem mFirst;
 		private CollectionItem mLast;
-		private int mSize;
+		private int mSize = 0;
 
 		public void ACollection() {
 			mSize = 0;
@@ -50,7 +50,7 @@ public namespace System {
 
 		public Object at(int index) const {
 			if ( index < 0 || index >= mSize ) {
-				throw new System.OutOfBoundsException("index " + index + " out of bounds");
+				throw new System.OutOfBoundsException("index(" + index + ") out of bounds");
 			}
 
 			CollectionItem item = mFirst;
@@ -61,16 +61,35 @@ public namespace System {
 			return item.mValue;
 		}
 
+		public bool contains(Object value ref) const {
+			return indexOf(value) != -1;
+		}
+
 		public bool empty() const {
 			return mSize == 0;
 		}
 
 		public Iterator getIterator() const {
+			// TODO: why do we have to cast here?
 			return new System.Iterator(System.ACollection this);
 		}
 
 		public ReverseIterator getReverseIterator() const {
+			// TODO: why do we have to cast here?
 			return new ReverseIterator(System.ACollection this);
+		}
+
+		public int indexOf(Object value ref) const {
+			CollectionItem item = mFirst;
+			for ( int i = 0; i < mSize; i = i++ ) {
+				if ( item.mValue == value ) {
+					return i;
+				}
+
+				item = item.mNext;
+			}
+
+			return -1;
 		}
 
 		public int size() const {
