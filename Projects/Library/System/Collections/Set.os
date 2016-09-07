@@ -9,10 +9,37 @@ public namespace System {
 			base.ACollection();
 		}
 
+		public void erase(int index) modify {
+			if ( index < 0 || index > mSize ) {
+				throw new System.OutOfBoundsException("erase index(" + index + ") beyond end of list");
+			}
+
+			if ( index == 0 ) {				// special handling for 1st element
+				mFirst = mFirst.mNext;
+			}
+			else {						// default handling for erasing
+				CollectionItem prev = mFirst;
+				for ( int i = 0; i < index - 1; i = i++ ) {
+					prev = prev.mNext;
+				}
+
+				if ( index == mSize - 1 ) {
+					mLast = prev;
+				}
+				else if ( prev.mNext ) {
+					prev.mNext = prev.mNext.mNext;
+				}
+			}
+
+			mSize--;
+		}
+
 		public void insert(Object value) modify {
+/*
 			if ( !value ) {
 				throw new System.Exception("invalid value provided");
 			}
+*/
 
 			CollectionItem item = new CollectionItem(value);
 

@@ -27,6 +27,7 @@ public object TestObject {
 public object Main {
 	public void Main(int argc, string args) {
 		assert( TestCase1() );
+		assert( TestCase2() );
 	}
 
 	private bool TestCase1() modify {
@@ -60,6 +61,47 @@ public object Main {
 				}
 
 				last = item;
+			}
+
+			return true;
+		}
+
+		return false;
+	}
+
+	private bool TestCase2() modify {
+		print("TestCase 2: erase");
+
+		try {
+			System.Set set = new System.Set();
+			assert( set is Object );
+
+			int count = 0;
+			while ( count < 10 ) {
+				set.insert(Object count);
+
+				count++;
+			}
+
+			System.Iterator it = set.getIterator();
+			while ( it.hasNext() ) {
+				it.next();
+
+				//print(it.current());
+			}
+
+			while ( !set.empty() ) {
+				try {
+					set.erase(Math.rand() % 10);
+					//print("set.erase");
+				}
+
+				it.reset();
+				while ( it.hasNext() ) {
+					it.next();
+
+					//print(it.current());
+				}
 			}
 
 			return true;
