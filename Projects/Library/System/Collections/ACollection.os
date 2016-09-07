@@ -80,7 +80,7 @@ public namespace System {
 
 		public Iterator getIterator() const {
 			// TODO: why do we have to cast here?
-			return new System.Iterator(System.ACollection this);
+			return new Iterator(System.ACollection this);
 		}
 
 		public ReverseIterator getReverseIterator() const {
