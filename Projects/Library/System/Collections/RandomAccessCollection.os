@@ -41,16 +41,19 @@ public namespace System {
 
 				CollectionItem item = new CollectionItem(value);
 
-				if ( index == 0 ) {	            // special handling for 1st element
-					item.mNext = mFirst;
+				if ( !mFirst ) {
 					mFirst = item;
 					mLast = item;
 				}
-				else if ( index == mSize ) {   // special handling for last element
+				else if ( index == 0 ) {			// special handling for 1st element
+					item.mNext = mFirst;
+					mFirst = item;
+				}
+				else if ( index == mSize ) {		// special handling for last element
 					mLast.mNext = item;
 					mLast = item;
 				}
-				else {	                        // default handling for insertions
+				else {					// default handling for insertions
 					CollectionItem tmp = mFirst;
 					for ( int i = 0; i < index - 1; i = i++ ) {
 						tmp = tmp.mNext;
