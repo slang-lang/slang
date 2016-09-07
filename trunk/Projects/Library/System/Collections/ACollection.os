@@ -61,6 +61,15 @@ public namespace System {
 			return item.mValue;
 		}
 
+		public void clear() modify {
+			for ( int i = 0; i < mSize; i = i++ ) {
+				mFirst.mValue = null;
+				mFirst = mFirst.mNext;
+			}
+
+			mSize = 0;
+		}
+
 		public bool contains(Object value ref) const {
 			return indexOf(value) != -1;
 		}
