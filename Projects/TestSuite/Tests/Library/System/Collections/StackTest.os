@@ -9,6 +9,8 @@ public object Main {
 		assert( TestCase2() );
 		assert( TestCase3() );
 		assert( TestCase4() );
+		assert( TestCase5() );
+		assert( TestCase6() );
 	}
 
 	private bool TestCase1() modify {
@@ -184,10 +186,53 @@ public object Main {
 
 			return true;
 		}
-		catch ( System.OutOfBoundsException e ) {
-			print(e.what());
-		}
 		
+		return false;
+	}
+
+	private bool TestCase5() modify {
+		print("TestCase 5: indexOf");
+
+		try {
+			System.Stack stack = new System.Stack();
+
+			stack.push(Object "1");
+			stack.push(Object "2");
+			stack.push(Object "3");
+
+			assert( stack.size() == 3 );
+
+			assert( stack.indexOf(Object "1") == 0 );
+			assert( stack.indexOf(Object "2") == 1 );
+			assert( stack.indexOf(Object "3") == 2 );
+
+			return true;
+		}
+
+		return false;
+	}
+
+	private bool TestCase6() modify {
+		print("TestCase 6: contains");
+
+		try {
+			System.Stack stack = new System.Stack();
+			assert( stack is Object );
+			assert( stack is System.ACollection );
+
+			stack.push(Object 1);
+			stack.push(Object 2);
+			stack.push(Object 3);
+
+			assert( stack.size() == 3 );
+
+			assert( stack.contains(Object 1) );
+			assert( stack.contains(Object 2) );
+			assert( stack.contains(Object 3) );
+
+			return true;
+		}
+
 		return false;
 	}
 }
