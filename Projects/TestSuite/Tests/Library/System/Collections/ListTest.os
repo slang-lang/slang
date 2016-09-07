@@ -21,6 +21,7 @@ public object Main {
 		assert( TestCase2() );
 		assert( TestCase3() );
 		assert( TestCase4() );
+		assert( TestCase5() );
 	}
 
 	private bool TestCase1() modify {
@@ -197,6 +198,52 @@ public object Main {
 		catch ( System.OutOfBoundsException e ) {
 			print(e.what());
 			return false;
+		}
+
+		return false;
+	}
+
+	private bool TestCase5() modify {
+		print("TestCase 5: clear");
+
+		try {
+			System.List list = new System.List();
+
+			TestObject item;
+
+			item = new TestObject(1);
+			list.push_back(Object item);
+
+			item = new TestObject(2);
+			list.push_back(Object item);
+
+			item = new TestObject(3);
+			list.push_back(Object item);
+
+			assert( list.size() == 3 );
+
+			System.Iterator it = list.getIterator();
+			while ( it.hasNext() ) {
+				it.next();
+
+				item = TestObject it.current();
+				//print(item.mValue);
+			}
+
+			list.clear();
+
+			it.reset();
+			while ( it.hasNext() ) {
+				it.next();
+
+				item = TestObject it.current();
+				//print(item.mValue);
+			}
+
+			assert( list.empty() );
+			assert( list.size() == 0 );
+
+			return true;
 		}
 
 		return false;
