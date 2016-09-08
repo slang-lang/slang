@@ -1059,7 +1059,6 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 		}
 
 		params.push_back(
-			//Parameter(obj->getName(), obj->QualifiedTypename(), obj->getValue(), false, obj->isConst(), Parameter::AccessMode::Unspecified, obj)
 			Parameter(obj->getName(), obj->QualifiedOutterface(), obj->getValue(), false, obj->isConst(), Parameter::AccessMode::Unspecified, obj)
 		);
 
@@ -1073,29 +1072,29 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 		tmp++;
 	}
 
-	Method* symbol = static_cast<Method*>(identifyMethod(token, params));
+	Method* method = static_cast<Method*>(identifyMethod(token, params));
 
-	if ( !symbol) {
+	if ( !method) {
 		throw Common::Exceptions::UnknownIdentifer("could not resolve identifier '" + token->content() + "' with parameters '" + toString(params) + "'", token->position());
 	}
 
 	// compare callee's constness with its parent's constness
-	Object* calleeParent = dynamic_cast<Object*>(symbol->getEnclosingScope());
-	if ( calleeParent && calleeParent->isConst() && !symbol->isConst() ) {
+	Object* calleeParent = dynamic_cast<Object*>(method->getEnclosingScope());
+	if ( calleeParent && calleeParent->isConst() && !method->isConst() ) {
 		// we want to call a non-const method of a const object... neeeeey!
 		throw Common::Exceptions::ConstCorrectnessViolated("only calls to const methods are allowed for const object '" + calleeParent->getFullScopeName() + "'", token->position());
 	}
 
 	// check caller's constness
 	if ( static_cast<Method*>(mOwner)->isConst() ) {
-		if ( mOwner->getEnclosingScope() == symbol->getEnclosingScope() && !symbol->isConst() ) {
+		if ( mOwner->getEnclosingScope() == method->getEnclosingScope() && !method->isConst() ) {
 			// check target method's constness
 			// this is a const method and we want to call a non-const method... neeeeey!
 			throw Common::Exceptions::ConstCorrectnessViolated("only calls to const methods are allowed in const method '" + getScope()->getFullScopeName() + "'", token->position());
 		}
 	}
 
-	ControlFlow::E controlflow = symbol->execute(params, result, (*token));
+	ControlFlow::E controlflow = method->execute(params, result, (*token));
 
 	switch ( controlflow ) {
 		case ControlFlow::ExitProgram:
@@ -1103,7 +1102,7 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 			break;
 		case ControlFlow::Throw:
 			mControlFlow = ControlFlow::Throw;
-			mExceptionData = symbol->getExceptionData();
+			mExceptionData = method->getExceptionData();
 			throw ControlFlow::Throw;			// throw even further
 		default:
 			break;

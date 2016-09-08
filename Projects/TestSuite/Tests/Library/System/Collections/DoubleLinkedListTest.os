@@ -24,6 +24,8 @@ public object Main {
 		assert( TestCase4() );
 		assert( TestCase5() );
 		assert( TestCase6() );
+		assert( TestCase7() );
+		assert( TestCase8() );
 	}
 
 	private bool TestCase1() modify {
@@ -267,5 +269,51 @@ public object Main {
 
 		return false;
     }
+
+	private bool TestCase7() modify {
+		print("TestCase 7: indexOf");
+
+		try {
+			System.DoubleLinkedList list = new System.DoubleLinkedList();
+			assert( list is Object );
+
+			list.push_back(Object "1");
+			list.push_back(Object "2");
+			list.push_back(Object "3");
+
+			assert( list.size() == 3 );
+
+			assert( list.indexOf(Object "1") == 0 );
+			assert( list.indexOf(Object "2") == 1 );
+			assert( list.indexOf(Object "3") == 2 );
+
+			return true;
+		}
+
+		return false;
+	}
+
+	private bool TestCase8() modify {
+		print("TestCase 8: contains");
+
+		try {
+			System.DoubleLinkedList list = new System.DoubleLinkedList();
+			assert( list is System.ACollection );
+
+			list.push_back(Object 1);
+			list.push_back(Object 2);
+			list.push_back(Object 3);
+
+			assert( list.size() == 3 );
+
+			assert( list.contains(Object 1) );
+			assert( list.contains(Object 2) );
+			assert( list.contains(Object 3) );
+
+			return true;
+		}
+
+		return false;
+	}
 }
 
