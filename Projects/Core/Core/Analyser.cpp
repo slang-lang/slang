@@ -112,6 +112,10 @@ bool Analyser::createBluePrint(TokenIterator& token, TokenIterator end, bool isI
 	if ( token->isOptional() ) {
 		languageFeature = (*token++).content();
 	}
+	// look for an optional modifier token
+	if ( token->isOptional() ) {
+		isAbstract = ImplementationType::convert((*token++).content());
+	}
 	// look for the object token
 	(*token++).content();
 	// look for the identifier token

@@ -2,6 +2,7 @@ INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
 SET(SOURCES
 	Attributes.cpp
+	ImplementationType.cpp
 	LanguageFeatureState.cpp
 	Mutability.cpp
 	Visibility.cpp
@@ -9,6 +10,7 @@ SET(SOURCES
 
 SET(HEADERS
 	Attributes.h
+	ImplementationType.h
 	LanguageFeatureState.h
 	Mutability.h
 	Visibility.h

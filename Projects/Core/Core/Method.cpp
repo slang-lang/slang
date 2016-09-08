@@ -97,7 +97,7 @@ bool Method::operator< (const Method& other) const
 void Method::operator= (const Method& other)
 {
 	if ( this != &other ) {
-		mIsAbstract = other.mIsAbstract;
+		mImplementationType = other.mImplementationType;
 		mIsFinal = other.mIsFinal;
 		mIsRecursive = other.mIsRecursive;
 		mIsSealed = other.mIsSealed;
