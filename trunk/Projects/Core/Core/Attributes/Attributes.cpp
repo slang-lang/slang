@@ -98,7 +98,7 @@ void GenericAttributes::setVisibility(Visibility::E v)
 
 
 MethodAttributes::MethodAttributes()
-: mIsAbstract(false),
+: mImplementationType(ImplementationType::FullyImplemented),
   mIsRecursive(false),
   mIsStatic(false),
   mMethodType(MethodType::Method),
@@ -113,7 +113,7 @@ MethodAttributes::MethodType::E MethodAttributes::getMethodType() const
 
 bool MethodAttributes::isAbstract() const
 {
-	return mIsAbstract;
+	return mImplementationType == ImplementationType::Abstract || mImplementationType == ImplementationType::Interface;
 }
 
 bool MethodAttributes::isRecursive() const
@@ -123,7 +123,7 @@ bool MethodAttributes::isRecursive() const
 
 void MethodAttributes::setAbstract(bool state)
 {
-	mIsAbstract = state;
+	mImplementationType = state ? ImplementationType::Abstract : ImplementationType::FullyImplemented;
 }
 
 void MethodAttributes::setRecursive(bool state)

@@ -6,6 +6,7 @@
 // Library includes
 
 // Project includes
+#include "ImplementationType.h"
 #include "LanguageFeatureState.h"
 #include "Mutability.h"
 #include "Visibility.h"
@@ -86,7 +87,7 @@ public:
 	virtual void setThrows(bool state);
 
 protected:
-	bool mIsAbstract;
+	ImplementationType::E mImplementationType;
 	bool mIsRecursive;
 	bool mIsStatic;
 	MethodType::E mMethodType;
