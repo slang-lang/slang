@@ -338,6 +338,10 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 {
 	assert(blueprint);
 
+	if ( blueprint->isForwardDeclaration() ) {
+		throw Common::Exceptions::NotImplemented("cannot create instance of forward declarated type '" + blueprint->QualifiedTypename() + "'");
+	}
+
 	// create the base object
 	Runtime::Object *object = new Runtime::UserObject(name, blueprint->Filename(), blueprint->Typename());
 

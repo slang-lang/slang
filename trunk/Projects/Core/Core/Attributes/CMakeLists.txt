@@ -5,6 +5,7 @@ SET(SOURCES
 	ImplementationType.cpp
 	LanguageFeatureState.cpp
 	Mutability.cpp
+	ObjectType.cpp
 	Visibility.cpp
 )
 
@@ -13,6 +14,7 @@ SET(HEADERS
 	ImplementationType.h
 	LanguageFeatureState.h
 	Mutability.h
+	ObjectType.h
 	Visibility.h
 )
 

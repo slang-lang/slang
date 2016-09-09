@@ -19,7 +19,7 @@ LanguageFeatureState::E LanguageFeatureState::convert(const std::string& v)
 	else if ( v == LANGUAGE_FEATURE_NONE ) { return LanguageFeatureState::Stable; }
 	else if ( v == LANGUAGE_FEATURE_NOTIMPLEMENTED ) { return LanguageFeatureState::NotImplemented; }
 	else if ( v == LANGUAGE_FEATURE_STABLE ) { return LanguageFeatureState::Stable; }
-	else if ( v == LANGUAGE_FEATURE_UNKNOWN ) { return LanguageFeatureState::Unknown; }
+	else if ( v == UNKNOWN ) { return LanguageFeatureState::Unknown; }
 	else if ( v == LANGUAGE_FEATURE_UNSTABLE ) { return LanguageFeatureState::Unstable; }
 
 	return LanguageFeatureState::Unknown;
@@ -31,11 +31,11 @@ std::string LanguageFeatureState::convert(LanguageFeatureState::E e)
 		case LanguageFeatureState::Deprecated: return LANGUAGE_FEATURE_DEPRECATED;
 		case LanguageFeatureState::NotImplemented: return LANGUAGE_FEATURE_NOTIMPLEMENTED;
 		case LanguageFeatureState::Stable: return LANGUAGE_FEATURE_STABLE;
-		case LanguageFeatureState::Unknown: return LANGUAGE_FEATURE_UNKNOWN;
+		case LanguageFeatureState::Unknown: return UNKNOWN;
 		case LanguageFeatureState::Unstable: return LANGUAGE_FEATURE_UNSTABLE;
 	}
 
-	return LANGUAGE_FEATURE_UNKNOWN;
+	return UNKNOWN;
 }
 
 

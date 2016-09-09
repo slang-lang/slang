@@ -176,15 +176,15 @@ void NamespaceAttributes::setSealed(bool state)
 
 
 ObjectAttributes::ObjectAttributes()
-: mIsAbstract(false),
+: mImplementationType(ImplementationType::Unknown),
   mIsMember(false)
 {
 	setConst(false);
 }
 
-bool ObjectAttributes::isAbstract() const
+ImplementationType::E ObjectAttributes::getImplementationType() const
 {
-	return mIsAbstract;
+	return mImplementationType;
 }
 
 bool ObjectAttributes::isMember() const
@@ -197,9 +197,9 @@ bool ObjectAttributes::isSealed() const
 	return mIsSealed;
 }
 
-void ObjectAttributes::setAbstract(bool state)
+void ObjectAttributes::setImplementationType(ImplementationType::E type)
 {
-	mIsAbstract = state;
+	mImplementationType = type;
 }
 
 void ObjectAttributes::setMember(bool state)

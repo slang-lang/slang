@@ -440,7 +440,7 @@ bool Object::isAbstract() const
 		}
 	}
 
-	return result || ObjectAttributes::isAbstract();
+	return result || getImplementationType() == ImplementationType::Abstract || getImplementationType() == ImplementationType::Interface;
 }
 
 bool Object::isAtomicType() const

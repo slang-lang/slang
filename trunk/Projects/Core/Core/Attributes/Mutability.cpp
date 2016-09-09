@@ -18,7 +18,7 @@ Mutability::E Mutability::convert(const std::string& v)
 	if ( v == MODIFIER_CONST ) { return Mutability::Const; }
 	else if ( v == MODIFIER_FINAL ) { return Mutability::Final; }
 	else if ( v == MODIFIER_MODIFY ) { return Mutability::Modify; }
-	else if ( v == MODIFIER_UNKNOWN ) { return Mutability::Unknown; }
+	else if ( v == UNKNOWN ) { return Mutability::Unknown; }
 
 	return Mutability::Unknown;
 }
@@ -29,10 +29,10 @@ std::string Mutability::convert(Mutability::E e)
 		case Mutability::Const: return MODIFIER_CONST;
 		case Mutability::Final: return MODIFIER_FINAL;
 		case Mutability::Modify: return MODIFIER_MODIFY;
-		case Mutability::Unknown: return MODIFIER_UNKNOWN;
+		case Mutability::Unknown: return UNKNOWN;
 	}
 
-	return MODIFIER_UNKNOWN;
+	return UNKNOWN;
 }
 
 

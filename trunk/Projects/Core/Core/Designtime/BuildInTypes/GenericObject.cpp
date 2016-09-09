@@ -15,13 +15,14 @@ namespace Designtime {
 
 
 std::string GenericObject::DEFAULTVALUE = VALUE_NULL;
-std::string GenericObject::TYPENAME = GENERIC_OBJECT;
+std::string GenericObject::TYPENAME = OBJECT;
 
 
 GenericObject::GenericObject()
 : BluePrintObject(TYPENAME, SYSTEM_LIBRARY)
 {
-	setAbstract(true);
+	// this prevents the user to create an instance of 'Object'
+	setImplementationType(ImplementationType::Abstract);
 }
 
 const std::string& GenericObject::getTypeName() const

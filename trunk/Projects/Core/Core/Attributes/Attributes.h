@@ -112,8 +112,8 @@ public:
 	ObjectAttributes();
 
 public:
-	virtual bool isAbstract() const;
-	virtual void setAbstract(bool state);
+	virtual ImplementationType::E getImplementationType() const;
+	virtual void setImplementationType(ImplementationType::E type);
 
 	virtual bool isMember() const;
 	virtual void setMember(bool state);
@@ -122,7 +122,7 @@ public:
 	virtual void setSealed(bool state);
 
 protected:
-	bool mIsAbstract;
+	ImplementationType::E mImplementationType;
 	bool mIsMember;
 };
 
