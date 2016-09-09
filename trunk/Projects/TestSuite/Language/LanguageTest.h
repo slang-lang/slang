@@ -33,6 +33,7 @@ public:
 private:	// Tests
 	void GlobalVariableTest();
 
+	void testAbstractObject();
 	void testAssert();
 	void testBooleanOperators();
 	void testComment();

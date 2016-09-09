@@ -34,6 +34,7 @@ LanguageTest::LanguageTest(const ::Utils::Common::ILogger *p)
 
 void LanguageTest::process()
 {
+	TEST(testAbstractObject);
 	TEST(testAssert);
 	TEST(testBooleanOperators);
 	TEST(testComment);
@@ -82,6 +83,21 @@ void LanguageTest::GlobalVariableTest()
 		VirtualMachine vm;
 
 		vm.createScriptFromFile("Tests/Language/GlobalVariableTest.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// unexpected exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void LanguageTest::testAbstractObject()
+{
+	try {
+		VirtualMachine vm;
+
+		vm.createScriptFromFile("Tests/Language/AbstractObjectTest.os");
 
 		// automatic success
 	}
