@@ -6,8 +6,8 @@
 
 // Project includes
 #include <Core/BuildInObjects/VoidObject.h>
-#include <Common/Exceptions.h>
-#include <Runtime/Exceptions.h>
+#include <Core/Common/Exceptions.h>
+#include <Core/Runtime/Exceptions.h>
 #include <Tools/Strings.h>
 #include <Utils.h>
 #include "Repository.h"

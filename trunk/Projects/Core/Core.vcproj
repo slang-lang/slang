@@ -311,6 +311,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\Core\BuildInObjects\BoolObject.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\Designtime\BuildInTypes\BoolObject.cpp"
 				>
 				<FileConfiguration
@@ -329,10 +333,6 @@
 						ObjectFile="$(IntDir)\Core\Designtime\BuildInTypes\"
 					/>
 				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\Core\BuildInObjects\BoolObject.cpp"
-				>
 			</File>
 			<File
 				RelativePath=".\Debugger\BreakPoint.cpp"
@@ -395,6 +395,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\Core\BuildInObjects\DoubleObject.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\Designtime\BuildInTypes\DoubleObject.cpp"
 				>
 				<FileConfiguration
@@ -413,10 +417,6 @@
 						ObjectFile="$(IntDir)\Core\Designtime\BuildInTypes\"
 					/>
 				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\Core\BuildInObjects\DoubleObject.cpp"
-				>
 			</File>
 			<File
 				RelativePath=".\Core\Runtime\ExceptionData.cpp"
@@ -439,14 +439,14 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\Utils\Exceptions.cpp"
+				RelativePath=".\Core\Common\Exceptions.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\Utils\"
+						ObjectFile="$(IntDir)\Common\"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -454,7 +454,7 @@
 					>
 					<Tool
 						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\Utils\"
+						ObjectFile="$(IntDir)\Common\"
 					/>
 				</FileConfiguration>
 			</File>
@@ -483,10 +483,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\GenericObject.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\Core\Designtime\BuildInTypes\GenericObject.cpp"
 				>
 				<FileConfiguration
@@ -507,6 +503,38 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\Core\BuildInObjects\GenericObject.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\Attributes\ImplementationType.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Attributes\"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Attributes\"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\Core\BuildInObjects\IntegerObject.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\BuildInObjects\IntegerObject.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\Designtime\BuildInTypes\IntegerObject.cpp"
 				>
 				<FileConfiguration
@@ -525,14 +553,6 @@
 						ObjectFile="$(IntDir)\Core\Designtime\BuildInTypes\"
 					/>
 				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\Core\BuildInObjects\IntegerObject.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Core\BuildInObjects\IntegerObject.cpp"
-				>
 			</File>
 			<File
 				RelativePath=".\Core\Interpreter.cpp"
@@ -679,14 +699,14 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\Utils\Position.cpp"
+				RelativePath=".\Core\Common\Position.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\Utils\"
+						ObjectFile="$(IntDir)\Common\"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -694,7 +714,7 @@
 					>
 					<Tool
 						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\Utils\"
+						ObjectFile="$(IntDir)\Common\"
 					/>
 				</FileConfiguration>
 			</File>
@@ -763,6 +783,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Core\BuildInObjects\StringObject.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\Designtime\BuildInTypes\StringObject.cpp"
 				>
 				<FileConfiguration
@@ -781,10 +805,6 @@
 						ObjectFile="$(IntDir)\Core\Designtime\BuildInTypes\"
 					/>
 				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\Core\BuildInObjects\StringObject.cpp"
-				>
 			</File>
 			<File
 				RelativePath=".\Core\Symbol.cpp"
@@ -827,6 +847,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Core\BuildInObjects\UserObject.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\Designtime\BuildInTypes\UserObject.cpp"
 				>
 				<FileConfiguration
@@ -843,30 +867,6 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						ObjectFile="$(IntDir)\Core\Designtime\BuildInTypes\"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\Core\BuildInObjects\UserObject.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Core\Utils\Utils.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\Utils\"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\Utils\"
 					/>
 				</FileConfiguration>
 			</File>
@@ -957,11 +957,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\BoolObject.h"
+				RelativePath=".\Core\Designtime\BuildInTypes\BoolObject.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\BoolObject.h"
+				RelativePath=".\Core\BuildInObjects\BoolObject.h"
 				>
 			</File>
 			<File
@@ -989,11 +989,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\DoubleObject.h"
+				RelativePath=".\Core\Designtime\BuildInTypes\DoubleObject.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\DoubleObject.h"
+				RelativePath=".\Core\BuildInObjects\DoubleObject.h"
 				>
 			</File>
 			<File
@@ -1009,15 +1009,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Utils\Exceptions.h"
-				>
-			</File>
-			<File
 				RelativePath=".\Core\Runtime\Exceptions.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\FloatObject.h"
+				RelativePath=".\Core\Common\Exceptions.h"
 				>
 			</File>
 			<File
@@ -1025,7 +1021,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\GenericObject.h"
+				RelativePath=".\Core\Designtime\BuildInTypes\FloatObject.h"
 				>
 			</File>
 			<File
@@ -1033,19 +1029,27 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Core\Designtime\BuildInTypes\GenericObject.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Debugger\IDebugger.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\IntegerObject.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Core\BuildInObjects\IntegerObject.h"
+				RelativePath=".\Core\Attributes\ImplementationType.h"
 				>
 			</File>
 			<File
 				RelativePath=".\Core\Designtime\BuildInTypes\IntegerObject.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\BuildInObjects\IntegerObject.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\BuildInObjects\IntegerObject.h"
 				>
 			</File>
 			<File
@@ -1085,11 +1089,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\NumberObject.h"
+				RelativePath=".\Core\BuildInObjects\NumberObject.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\NumberObject.h"
+				RelativePath=".\Core\Designtime\BuildInTypes\NumberObject.h"
 				>
 			</File>
 			<File
@@ -1114,6 +1118,10 @@
 			</File>
 			<File
 				RelativePath=".\Core\Utils\Position.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\Common\Position.h"
 				>
 			</File>
 			<File
@@ -1205,11 +1213,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\VoidObject.h"
+				RelativePath=".\Core\Designtime\BuildInTypes\VoidObject.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\VoidObject.h"
+				RelativePath=".\Core\BuildInObjects\VoidObject.h"
 				>
 			</File>
 		</Filter>

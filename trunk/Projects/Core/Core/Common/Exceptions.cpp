@@ -10,9 +10,12 @@
 
 
 namespace ObjectiveScript {
+namespace Common {
+namespace Exceptions {
 
 
 
 
-
+}
+}
 }
