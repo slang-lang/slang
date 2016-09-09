@@ -52,7 +52,6 @@ static const char* LANGUAGE_FEATURE_DEPRECATED = "deprecated";
 static const char* LANGUAGE_FEATURE_NONE = "";
 static const char* LANGUAGE_FEATURE_NOTIMPLEMENTED = "notimplemented";
 static const char* LANGUAGE_FEATURE_STABLE = "stable";
-static const char* LANGUAGE_FEATURE_UNKNOWN = "unknown";
 static const char* LANGUAGE_FEATURE_UNSTABLE = "unstable";
 
 // Modifiers
@@ -63,7 +62,6 @@ static const char* MODIFIER_MODIFY = "modify";
 static const char* MODIFIER_RECURSIVE = "recursive";
 static const char* MODIFIER_SEALED = "sealed";
 static const char* MODIFIER_STATIC = "static";
-static const char* MODIFIER_UNKNOWN = "unknown";
 
 // Operators
 static const char* OPERATOR_IS = "is";
@@ -87,9 +85,10 @@ static const char* RESERVED_WORD_USING = "using";
 
 // System
 static const char* ANONYMOUS_OBJECT = "<anonymous>";
-static const char* GENERIC_OBJECT = "Object";
+static const char* OBJECT = "Object";
 static const char* OBJECTIVESCRIPT_LIBRARY = "OBJECTIVESCRIPT_LIBRARY";
 static const char* SYSTEM_LIBRARY = "SYSTEM.OS";
+static const char* UNKNOWN = "unknown";
 
 // Types
 static const char* PROTOTYPE_TYPE = "UNKNOWN";

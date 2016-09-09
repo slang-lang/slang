@@ -59,13 +59,8 @@ public:
 	void setVisibility(Visibility::E v);
 
 	bool isAbstract() const;
-	void setAbstract(bool state);
-
 	bool isForwardDeclaration() const;
-	void setForwardDeclaration(bool state);
-
 	bool isInterface() const;
-	void setInterface(bool state);
 
 	void setParent(IScope* parent);
 
@@ -84,8 +79,6 @@ public:
 
 private:
 	Ancestors mInheritance;
-	bool mIsForwardDeclaration;
-	bool mIsInterface;
 	Runtime::AtomicValue mValue;
 	Visibility::E mVisibility;
 };

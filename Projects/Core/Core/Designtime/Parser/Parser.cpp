@@ -84,6 +84,41 @@ std::string Parser::identify(TokenIterator& start)
 	return type;
 }
 
+ImplementationType::E Parser::parseImplementationType(TokenIterator& token, ImplementationType::E defaultValue)
+{
+	ImplementationType::E result = defaultValue;
+
+	if ( token->isOptional() && token->type() == Token::Type::MODIFIER ) {
+		ImplementationType::E value = ImplementationType::convert((*token++).content());
+
+		if ( value != ImplementationType::Unknown ) {
+			result = value;
+		}
+	}
+
+	return result;
+}
+
+LanguageFeatureState::E Parser::parseLanguageFeatureState(TokenIterator& token, LanguageFeatureState::E defaultValue)
+{
+	LanguageFeatureState::E result = defaultValue;
+
+	if ( token->isOptional() && token->type() == Token::Type::LANGUAGEFEATURE ) {
+		LanguageFeatureState::E value = LanguageFeatureState::convert((*token++).content());
+
+		if ( value != LanguageFeatureState::Unknown ) {
+			result = value;
+		}
+	}
+
+	return result;
+}
+
+ObjectType::E Parser::parseObjectType(TokenIterator& token)
+{
+	return ObjectType::convert((*token++).content());
+}
+
 // enum declaration:
 // <visibility> [language feature] enum <identifier> { ... }
 bool Parser::isEnumDeclaration(TokenIterator start)

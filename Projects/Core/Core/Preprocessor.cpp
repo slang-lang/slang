@@ -148,25 +148,19 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token) const
 	bool isFinal = false;
 	bool isRecursive = false;
 	bool isStatic = true;
-	std::string languageFeature;
 	MethodAttributes::MethodType::E methodType = MethodAttributes::MethodType::Method;
 	Mutability::E mutability = Mutability::Const;
-	std::string name;
 	bool throws = false;
-	std::string type;
-	std::string visibility;
 	int numConstModifiers = 0;
 
 	// look for the visibility token
-	visibility = (*token++).content();
+	std::string visibility = (*token++).content();
 	// look for an optional language feature token
-	if ( token->isOptional() ) {
-		languageFeature = (*token++).content();
-	}
+	LanguageFeatureState::E languageFeatureState = Parser::parseLanguageFeatureState(token, LanguageFeatureState::Stable);
 	// look for the type token
-	type = Parser::identify(token);
+	std::string type = Parser::identify(token);
 	// look for the identifier token
-	name = (*token++).content();
+	std::string name = (*token++).content();
 
 	if ( name == blueprint->Typename() ) {
 		// these methods have the same name as their containing object,
@@ -246,14 +240,14 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token) const
 		tokens = Parser::collectScopeTokens(token);
 	}
 
-	if ( isAbstract && !tokens.empty() ) {
+	if ( (isAbstract || blueprint->isInterface()) && !tokens.empty() ) {
 		throw Common::Exceptions::SyntaxError("abstract methods cannot have an implementation");
 	}
 
 	Runtime::Method *method = new Runtime::Method(mScope, name, type);
 	method->setAbstract(isAbstract || blueprint->isInterface());
 	method->setFinal(isFinal);
-	method->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
+	method->setLanguageFeatureState(languageFeatureState);
 	method->setMethodType(methodType);
 	method->setMutability(mutability);
 	method->setQualifiedTypename(type);

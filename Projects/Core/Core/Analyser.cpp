@@ -99,35 +99,36 @@ Designtime::Ancestors Analyser::collectInheritance(TokenIterator& token) const
 	return ancestors;
 }
 
-bool Analyser::createBluePrint(TokenIterator& token, TokenIterator end, bool isInterface) const
+bool Analyser::createBluePrint(TokenIterator& token, TokenIterator end) const
 {
-	bool isAbstract = false;
-	std::string languageFeature;
-	std::string type;
-	std::string visibility;
-
 	// look for the visibility token
-	visibility = (*token++).content();
+	std::string visibility = (*token++).content();
 	// look for an optional language feature token
-	if ( token->isOptional() ) {
-		languageFeature = (*token++).content();
-	}
+	LanguageFeatureState::E languageFeatureState = Parser::parseLanguageFeatureState(token, LanguageFeatureState::Stable);
 	// look for an optional modifier token
-	if ( token->isOptional() ) {
-		isAbstract = ImplementationType::convert((*token++).content());
-	}
+	ImplementationType::E implementationType = Parser::parseImplementationType(token, ImplementationType::FullyImplemented);
 	// look for the object token
-	(*token++).content();
+	ObjectType::E objectType = Parser::parseObjectType(token);
 	// look for the identifier token
-	type = (*token++).content();
+	std::string type = (*token++).content();
 
 	Designtime::BluePrintObject* symbol = new Designtime::BluePrintObject(type, mFilename);
-	symbol->setParent(mScope);
-	symbol->setQualifiedTypename(getQualifiedTypename(type));
-	symbol->setVisibility(Visibility::convert(visibility));
+
+	// determine implementation type
+	if ( objectType == ObjectType::Interface ) {
+		if ( implementationType != ImplementationType::FullyImplemented ) {
+			throw Common::Exceptions::NotSupported("interfaces cannot be defined abstract object");
+		}
+
+		implementationType = ImplementationType::Interface;
+	}
 
 	if ( token->type() == Token::Type::SEMICOLON ) {
-		symbol->setForwardDeclaration(true);
+		if ( implementationType != ImplementationType::FullyImplemented ) {
+			throw Common::Exceptions::NotSupported("forward declarations cannot be defined as interface or abstract object");
+		}
+
+		implementationType = ImplementationType::ForwardDeclaration;
 	}
 	else {
 		// collect inheritance (if present)
@@ -160,10 +161,6 @@ bool Analyser::createBluePrint(TokenIterator& token, TokenIterator end, bool isI
 			token = closed;
 		}
 
-		symbol->setAbstract(isAbstract || isInterface);
-		symbol->setForwardDeclaration(false);
-		symbol->setInterface(isInterface);
-		symbol->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
 		symbol->setTokens(tokens);
 
 		bool extends = false;
@@ -180,10 +177,16 @@ bool Analyser::createBluePrint(TokenIterator& token, TokenIterator end, bool isI
 		}
 
 		// in case this object has no inheritance set, we inherit from 'Object'
-		if ( !isInterface && !extends ) {
-			symbol->addInheritance(Designtime::Ancestor(GENERIC_OBJECT, Designtime::Ancestor::Type::Extends, Visibility::Public));
+		if ( objectType != ObjectType::Interface && !extends ) {
+			symbol->addInheritance(Designtime::Ancestor(OBJECT, Designtime::Ancestor::Type::Extends, Visibility::Public));
 		}
 	}
+
+	symbol->setImplementationType(implementationType);
+	symbol->setLanguageFeatureState(languageFeatureState);
+	symbol->setParent(mScope);
+	symbol->setQualifiedTypename(getQualifiedTypename(type));
+	symbol->setVisibility(Visibility::convert(visibility));
 
 	mRepository->addBluePrint(symbol);
 
@@ -478,8 +481,8 @@ void Analyser::generate(const TokenList& tokens)
 	TokenList::const_iterator it = tokens.begin();
 
 	while ( it != tokens.end() && it->type() != Token::Type::ENDOFFILE ) {
-		if ( Parser::isInterfaceDeclaration(it) ) {
-			createBluePrint(it, tokens.end(), true);
+		if ( Parser::isInterfaceDeclaration(it) || Parser::isObjectDeclaration(it) ) {
+			createBluePrint(it, tokens.end());
 		}
 		else if ( Parser::isEnumDeclaration(it) ) {
 			createEnum(it, tokens.end());
@@ -496,9 +499,6 @@ void Analyser::generate(const TokenList& tokens)
 		}
 		else if ( Parser::isNamespaceDeclaration(it) ) {
 			createNamespace(it, tokens.end());
-		}
-		else if ( Parser::isObjectDeclaration(it) ) {
-			createBluePrint(it, tokens.end());
 		}
 		else if ( Parser::isPrototypeDeclaration(it) ) {
 			createPrototype(it, tokens.end());

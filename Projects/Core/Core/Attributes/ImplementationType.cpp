@@ -13,13 +13,13 @@
 namespace ObjectiveScript {
 
 
-
 ImplementationType::E ImplementationType::convert(const std::string& v)
 {
 	if ( v == MODIFIER_ABSTRACT ) { return ImplementationType::Abstract; }
+	else if ( v == "ForwardDeclaration" ) { return ImplementationType::ForwardDeclaration; }
 	else if ( v == "FullyImplemented" ) { return ImplementationType::FullyImplemented; }
 	else if ( v == "interface" ) { return ImplementationType::Interface; }
-	else if ( v == MODIFIER_UNKNOWN ) { return ImplementationType::Unknown; }
+	else if ( v == UNKNOWN ) { return ImplementationType::Unknown; }
 
 	return ImplementationType::Unknown;
 }
@@ -28,12 +28,13 @@ std::string ImplementationType::convert(ImplementationType::E e)
 {
 	switch ( e ) {
 		case ImplementationType::Abstract: return MODIFIER_ABSTRACT;
+		case ImplementationType::ForwardDeclaration: return "ForwardDeclaration";
 		case ImplementationType::FullyImplemented: return "FullyImplemented";
 		case ImplementationType::Interface: return "interface";
-		case ImplementationType::Unknown: return MODIFIER_UNKNOWN;
+		case ImplementationType::Unknown: return UNKNOWN;
 	}
 
-	return MODIFIER_UNKNOWN;
+	return UNKNOWN;
 }
 
 

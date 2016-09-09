@@ -86,6 +86,7 @@ public:
 			MATH_MODULO,
 			MATH_MULTIPLY,
 			MATH_SUBTRACT,
+			MODIFIER,
 			NAND,
 			NIL,
 			NOR,

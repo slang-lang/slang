@@ -19,8 +19,6 @@ namespace Designtime {
 
 BluePrintObject::BluePrintObject()
 : MethodScope(ANONYMOUS_OBJECT, 0),
-  mIsForwardDeclaration(false),
-  mIsInterface(false),
   mVisibility(Visibility::Public)
 {
 	mName = ANONYMOUS_OBJECT;
@@ -30,8 +28,6 @@ BluePrintObject::BluePrintObject()
 BluePrintObject::BluePrintObject(const std::string& type, const std::string& filename, const std::string& name)
 : BluePrintGeneric(type, filename),
   MethodScope(type, 0),
-  mIsForwardDeclaration(false),
-  mIsInterface(false),
   mVisibility(Visibility::Public)
 {
 	mName = name;
@@ -118,38 +114,17 @@ Visibility::E BluePrintObject::getVisibility() const
 
 bool BluePrintObject::isAbstract() const
 {
-	for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
-		if ( (*it)->isAbstract() ) {
-			return true;
-		}
-	}
-
-	return ObjectAttributes::isAbstract();
+	return getImplementationType() == ImplementationType::Abstract || getImplementationType() == ImplementationType::Interface;
 }
 
 bool BluePrintObject::isForwardDeclaration() const
 {
-	return mIsForwardDeclaration;
+	return getImplementationType() == ImplementationType::ForwardDeclaration;
 }
 
 bool BluePrintObject::isInterface() const
 {
-	return mIsInterface;
-}
-
-void BluePrintObject::setAbstract(bool state)
-{
-	mIsAbstract = state;
-}
-
-void BluePrintObject::setForwardDeclaration(bool state)
-{
-	mIsForwardDeclaration = state;
-}
-
-void BluePrintObject::setInterface(bool state)
-{
-	mIsInterface = state;
+	return getImplementationType() == ImplementationType::Interface;
 }
 
 void BluePrintObject::setParent(IScope* parent)

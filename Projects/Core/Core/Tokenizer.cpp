@@ -119,7 +119,7 @@ Token Tokenizer::createToken(const std::string& con, const Common::Position& pos
 		// remove leading and trailing (", ') quotation marks (", ')
 		content = con.substr(1, con.length() - 2);
 	}
-	else if ( isModifier(content) ) { category = Token::Category::Modifier; type = Token::Type::LANGUAGEFEATURE; }
+	else if ( isModifier(content) ) { category = Token::Category::Modifier; type = Token::Type::MODIFIER; }
 	else if ( isNumber(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_NUMBER;
 		// remove trailing 'n' character
 		content = con.substr(0, con.length() - 1);

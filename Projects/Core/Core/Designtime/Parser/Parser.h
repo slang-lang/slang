@@ -6,6 +6,9 @@
 // Library includes
 
 // Project includes
+#include <Core/Attributes/ImplementationType.h>
+#include <Core/Attributes/LanguageFeatureState.h>
+#include <Core/Attributes/ObjectType.h>
 #include <Core/Parameter.h>
 #include <Core/Token.h>
 
@@ -25,6 +28,10 @@ class Parser
 public:
 	static TokenList collectScopeTokens(TokenIterator& token);
 	static std::string identify(TokenIterator& start);
+
+	static ImplementationType::E parseImplementationType(TokenIterator& token, ImplementationType::E defaultValue);
+	static LanguageFeatureState::E parseLanguageFeatureState(TokenIterator& token, LanguageFeatureState::E defaultValue);
+	static ObjectType::E parseObjectType(TokenIterator& token);
 
 	static bool isEnumDeclaration(TokenIterator start);
 	static bool isInterfaceDeclaration(TokenIterator start);

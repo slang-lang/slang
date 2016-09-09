@@ -16,7 +16,7 @@ namespace Runtime {
 
 
 std::string GenericObject::DEFAULTVALUE = VALUE_NULL;
-std::string GenericObject::TYPENAME = GENERIC_OBJECT;
+std::string GenericObject::TYPENAME = OBJECT;
 
 
 GenericObject::GenericObject()
@@ -25,7 +25,8 @@ GenericObject::GenericObject()
 	mIsAtomicType = false;
 	mIsConstructed = false;
 
-	setAbstract(true);
+	// this prevents the user to create an instance of 'Object'
+	setImplementationType(ImplementationType::Abstract);
 }
 
 GenericObject::GenericObject(const std::string& name, const std::string& filename, const std::string& type, AtomicValue value)
@@ -34,7 +35,8 @@ GenericObject::GenericObject(const std::string& name, const std::string& filenam
 	mIsAtomicType = false;
 	mIsConstructed = false;
 
-	setAbstract(true);
+	// this prevents the user to create an instance of 'Object'
+	setImplementationType(ImplementationType::Abstract);
 }
 
 GenericObject::GenericObject(const Object& object)
@@ -43,7 +45,8 @@ GenericObject::GenericObject(const Object& object)
 	mIsAtomicType = false;
 	mIsConstructed = false;
 
-	setAbstract(true);
+	// this prevents the user to create an instance of 'Object'
+	setImplementationType(ImplementationType::Abstract);
 }
 
 

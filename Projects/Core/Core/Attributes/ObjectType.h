@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Attributes_ImplementationType_h
-#define ObjectiveScript_Attributes_ImplementationType_h
+#ifndef ObjectiveScript_Attributes_ObjectType_h
+#define ObjectiveScript_Attributes_ObjectType_h
 
 
 // Library includes
@@ -16,15 +16,14 @@
 namespace ObjectiveScript {
 
 
-class ImplementationType
+class ObjectType
 {
 public:
 	enum E {
 		Unknown = 0,
-		Abstract,
-		ForwardDeclaration,
-		FullyImplemented,
-		Interface
+		Enum,
+		Interface,
+		Object
 	};
 
 	static E convert(const std::string& v);
