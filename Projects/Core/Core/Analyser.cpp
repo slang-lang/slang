@@ -8,10 +8,10 @@
 #include <iostream>
 
 // Project includes
+#include <Core/Common/Exceptions.h>
 #include <Core/Designtime/Parser/Parser.h>
 #include <Core/Designtime/SanityChecker.h>
 #include <Core/Runtime/Namespace.h>
-#include <Common/Exceptions.h>
 #include <Tools/Files.h>
 #include <Utils.h>
 #include "Repository.h"

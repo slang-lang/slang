@@ -6,7 +6,7 @@
 #include <cassert>
 
 // Project includes
-#include <Common/Exceptions.h>
+#include <Core/Common/Exceptions.h>
 #include "Method.h"
 #include "Tools.h"
 

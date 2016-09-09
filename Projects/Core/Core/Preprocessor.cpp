@@ -6,11 +6,11 @@
 
 // Project includes
 #include <Core/BuildInObjects/IntegerObject.h>
+#include <Core/Common/Exceptions.h>
 #include <Core/Designtime/BluePrintObject.h>
 #include <Core/Designtime/BluePrintEnum.h>
+#include <Core/Designtime/Exceptions.h>
 #include <Core/Designtime/Parser/Parser.h>
-#include <Common/Exceptions.h>
-#include <Designtime/Exceptions.h>
 #include "Tokenizer.h"
 #include "Tools.h"
 

@@ -9,7 +9,7 @@
 #endif
 
 // Project includes
-#include <Common/Exceptions.h>
+#include <Core/Common/Exceptions.h>
 
 // Namespace declarations
 

@@ -13,6 +13,7 @@
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/BuildInObjects/UserObject.h>
 #include <Core/BuildInObjects/VoidObject.h>
+#include <Core/Common/Exceptions.h>
 #include <Core/Designtime/BluePrintEnum.h>
 #include <Core/Designtime/BluePrintGeneric.h>
 #include <Core/Designtime/BluePrintObject.h>
@@ -25,7 +26,6 @@
 #include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/Designtime/BuildInTypes/VoidObject.h>
 #include <Core/Designtime/Prototype.h>
-#include <Common/Exceptions.h>
 #include <Utils.h>
 #include "Preprocessor.h"
 #include "Tools.h"

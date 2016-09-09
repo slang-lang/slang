@@ -6,7 +6,7 @@
 #include <fstream>
 
 // Project includes
-#include <Common/Exceptions.h>
+#include <Core/Common/Exceptions.h>
 #include <Utils.h>
 #include <Tools/Files.h>
 #include "Analyser.h"
