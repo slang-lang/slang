@@ -37,7 +37,7 @@ class Method : public SymbolScope,
 			   public MethodSymbol
 {
 public:
-	Method(IScope *parent, const std::string& name, const std::string& type);
+	Method(IScope* parent, const std::string& name, const std::string& type);
 	~Method();
 
 public: // overloaded operators
@@ -53,7 +53,7 @@ public:	// Symbol::IType implementation
 	void setQualifiedTypename(const std::string& type) { mQualifiedTypename = type; }
 
 public: // Execution
-	virtual ControlFlow::E execute(const ParameterList& params, Object *result, const Token& token);
+	virtual ControlFlow::E execute(const ParameterList& params, Object* result, const Token& token);
 	virtual const ExceptionData& getExceptionData() const;
 
 	virtual Symbol* resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope = false) const;
@@ -63,8 +63,8 @@ public: // Signature
 	const ParameterList& provideSignature() const;
 
 public: // Setup
-	void setParent(IScope *scope);
-	void setRepository(Repository *repository);
+	void setParent(IScope* scope);
+	void setRepository(Repository* repository);
 	void setSignature(const ParameterList& params);
 	void setTokens(const TokenList& tokens);
 
@@ -81,7 +81,7 @@ private: // private types
 
 private: // Deinit
 	void garbageCollector();
-	ControlFlow::E processControlFlow(ControlFlow::E controlflow, Object *result);
+	ControlFlow::E processControlFlow(ControlFlow::E controlflow, Object* result);
 
 private:
 	IScope* mOwner;

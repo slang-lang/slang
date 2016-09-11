@@ -94,8 +94,7 @@ inline void operator_binary_assign(Object *base, Object *other)
 
 		Runtime::Method* method = static_cast<Runtime::Method*>(base->resolveMethod("operator=", params, false));
 		if ( method ) {
-			VoidObject tmp;
-			method->execute(params, &tmp, Token());
+			method->execute(params, base, Token());
 		}
 		else {
 			*base = *other;

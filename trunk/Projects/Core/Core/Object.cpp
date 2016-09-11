@@ -273,7 +273,7 @@ ControlFlow::E Object::Constructor(const ParameterList& params)
 
 		Method *constructor = static_cast<Method*>(resolveMethod(Typename(), params, true));
 		if ( constructor ) {
-			VoidObject tmp;
+			Object tmp;
 			controlflow = constructor->execute(params, &tmp, Token());
 
 			if ( controlflow != ControlFlow::Normal ) {
@@ -315,7 +315,7 @@ ControlFlow::E Object::Destructor()
 		// only execute destructor if one is present
 		Method *destructor = static_cast<Method*>(resolveMethod("~" + Typename(), params, true));
 		if ( destructor ) {
-			VoidObject tmp;
+			Object tmp;
 			controlflow = destructor->execute(params, &tmp, Token());
 
 			if ( controlflow != ControlFlow::Normal ) {

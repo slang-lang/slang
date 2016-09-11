@@ -7,8 +7,8 @@
 // Project includes
 #include <Core/BuildInObjects/VoidObject.h>
 #include <Core/Runtime/Exceptions.h>
+#include <Core/Runtime/OperatorOverloading.h>
 #include <Core/Runtime/TypeCast.h>
-#include <Common/Exceptions.h>
 #include <Debugger/Debugger.h>
 #include <Tools/Strings.h>
 #include <Utils.h>
@@ -25,7 +25,7 @@ namespace ObjectiveScript {
 namespace Runtime {
 
 
-Method::Method(IScope *parent, const std::string& name, const std::string& type)
+Method::Method(IScope* parent, const std::string& name, const std::string& type)
 : SymbolScope(name, parent),
   MethodSymbol(name),
   mRepository(0),
@@ -115,7 +115,7 @@ void Method::operator= (const Method& other)
 	}
 }
 
-ControlFlow::E Method::execute(const ParameterList& params, Object *result, const Token& token)
+ControlFlow::E Method::execute(const ParameterList& params, Object* result, const Token& token)
 {
 	if ( !mRepository ) {
 		throw Common::Exceptions::Exception("mRepository not set");
@@ -288,7 +288,7 @@ ParameterList Method::mergeParameters(const ParameterList& params) const
 	return result;
 }
 
-ControlFlow::E Method::processControlFlow(ControlFlow::E controlflow, Object *result)
+ControlFlow::E Method::processControlFlow(ControlFlow::E controlflow, Object* result)
 {
 	// detect unnatural control flow
 

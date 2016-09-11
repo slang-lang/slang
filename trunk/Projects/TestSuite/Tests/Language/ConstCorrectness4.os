@@ -12,13 +12,16 @@ private object TestObject {
 	}
 
 	public int =operator(int other) const {
+		print("=operator(int)");
 		return mValue;
 	}
 	public string =operator(string other) const {
+		print("=operator(string)");
 		return "{ mValue: " +  mValue + " }";
 	}
 
 	public void operator=(int other) modify {
+		print("operator=(int)");
 		mValue = other;
 	}
 }
