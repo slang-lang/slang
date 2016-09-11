@@ -53,17 +53,15 @@ public namespace Mysql {
 		}
 
 		public void close() modify {
-			if ( mHandle == 0 ) {
-				return false;
+			if ( mHandle ) {
+				mysql_close(mHandle);
+
+				cleanup();
 			}
-
-			mysql_close(mHandle);
-
-			cleanup();
 		}
 
 		public Mysql.Query createQuery(string queryStr = "") const {
-			return new Mysql.Query(this, queryStr);
+			return new Mysql.Query(Mysql.Connection this, queryStr);
 		}
 
 		public string error() const {
@@ -118,11 +116,7 @@ public namespace Mysql {
 		}
 
 		public Mysql.Result query(string queryStr) modify {
-			//Mysql.Result result;	// null object
-
-			if ( Mysql.MysqlDebugMode ) {
-				writeln("Mysql debug mode is enabled.");
-			}
+			if ( Mysql.MysqlDebugMode ) { writeln("Mysql debug mode is enabled."); }
 
 			if ( mSettings.getAutoEscaping() ) {
 				// auto escaping for strings is active
@@ -130,9 +124,9 @@ public namespace Mysql {
 			}
 
 			int error = mysql_query(mHandle, queryStr);
-			if ( error != 0 ) {
+			if ( error ) {
 				// error while query execution
-				//return result;	// return uninitialized result object
+				print(mysql_error(mHandle));
 				return null;
 			}
 
