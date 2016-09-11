@@ -30,6 +30,7 @@ Method::Method(IScope* parent, const std::string& name, const std::string& type)
   MethodSymbol(name),
   mRepository(0),
   mOwner(parent),
+  mQualifiedTypename(type),
   mTypeName(type)
 {
 }
@@ -104,6 +105,7 @@ void Method::operator= (const Method& other)
 		mLanguageFeatureState = other.mLanguageFeatureState;
 		mMethodType = other.mMethodType;
 		mMutability = other.mMutability;
+		mQualifiedTypename = other.mQualifiedTypename;
 		mRepository = other.mRepository;
 		mScopeName = other.mScopeName;
 		mScopeType = other.mScopeType;
@@ -297,7 +299,7 @@ ControlFlow::E Method::processControlFlow(ControlFlow::E controlflow, Object* re
 		case ControlFlow::Continue:
 		case ControlFlow::Normal:
 			// verify method return reason
-			if ( Typename() != VoidObject::TYPENAME && result->Outterface() != VoidObject::TYPENAME ) {
+			if ( QualifiedTypename() != VoidObject::TYPENAME && result->QualifiedOutterface() != VoidObject::TYPENAME ) {
 				throw Common::Exceptions::Exception("unnatural method return at '" + getFullScopeName() + "'");
 			}
 
@@ -306,14 +308,14 @@ ControlFlow::E Method::processControlFlow(ControlFlow::E controlflow, Object* re
 			break;
 		case ControlFlow::Return:
 			// validate return value
-			if ( Typename() != VoidObject::TYPENAME && result->Outterface() != Typename() ) {
+			if ( QualifiedTypename() != VoidObject::TYPENAME && result->QualifiedOutterface() != QualifiedTypename() ) {
 				if ( !ALLOW_IMPLICIT_CASTS ) {
-					throw Runtime::Exceptions::ExplicitCastRequired("Explicit cast required for type conversion from " + result->Typename() + " to " + Typename() + " in " + getFullScopeName());
+					throw Runtime::Exceptions::ExplicitCastRequired("Explicit cast required for type conversion from " + result->QualifiedOutterface() + " to " + QualifiedTypename() + " in " + getFullScopeName());
 				}
 
-				OSwarn("implicit type conversion from " + result->Outterface() + " to " + Typename());// + " in " + getFullScopeName());
+				OSwarn("implicit type conversion from " + result->QualifiedOutterface() + " to " + QualifiedTypename());// + " in " + getFullScopeName());
 
-				typecast(result, Typename());
+				typecast(result, QualifiedTypename());
 			}
 
 			// correct behavior detected, override control flow with normal state
@@ -388,7 +390,7 @@ std::string Method::ToString(unsigned int indent) const
 	result += ::Utils::Tools::indent(indent);
 	result += Visibility::convert(mVisibility);
 	result += " " + LanguageFeatureState::convert(mLanguageFeatureState);
-	result += " " + Typename() + " " + getName() + "(" + toString(mSignature) + ")";
+	result += " " + QualifiedTypename() + " " + getName() + "(" + toString(mSignature) + ")";
 	result += " " + Mutability::convert(mMutability);
 
 	return result;

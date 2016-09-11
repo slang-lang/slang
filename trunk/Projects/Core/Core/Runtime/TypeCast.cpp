@@ -32,7 +32,7 @@ void typecast(Object *base, const std::string& targetType)
 	}
 	if ( targetType.empty() ) {
 		OSerror("invalid cast target type");
-		throw Runtime::Exceptions::Exception("invalid cast target type");
+		throw Runtime::Exceptions::InvalidTypeCast("invalid cast target type");
 	}
 
 	if ( targetType == GenericObject::TYPENAME ) {
