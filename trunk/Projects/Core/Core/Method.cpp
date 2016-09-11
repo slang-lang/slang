@@ -13,10 +13,7 @@
 #include <Tools/Strings.h>
 #include <Utils.h>
 #include "Defines.h"
-#include "Repository.h"
 #include "StackTrace.h"
-#include "Tools.h"
-#include "Types.h"
 
 // Namespace declarations
 
@@ -37,6 +34,7 @@ Method::Method(IScope* parent, const std::string& name, const std::string& type)
 
 Method::~Method()
 {
+	garbageCollector();
 }
 
 bool Method::operator() (const Method& first, const Method& second) const
@@ -160,6 +158,10 @@ ControlFlow::E Method::execute(const ParameterList& params, Object* result, cons
 				scope.define(it->name(), object);
 			} break;
 			case Parameter::AccessMode::ByValue: {
+				if ( it->pointer() && !it->pointer()->isAtomicType() ) {
+					throw Common::Exceptions::NotImplemented("cannot copy objects");
+				}
+
 				Object *object = mRepository->createInstance(it->type(), it->name());
 
 				object->setValue(it->value());	// in case we have a default value
@@ -208,8 +210,6 @@ ControlFlow::E Method::execute(const ParameterList& params, Object* result, cons
 				throw Common::Exceptions::AccessMode("unspecified access mode");;
 		}
 	}
-
-	garbageCollector();
 
 	return controlflow;
 }
