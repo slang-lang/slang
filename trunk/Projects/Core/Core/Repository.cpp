@@ -443,7 +443,7 @@ void Repository::initialize()
 
 	// add predefined runtime objects
 	{	// null
-		Runtime::Object* NullObject = new Runtime::Object(VALUE_NULL, SYSTEM_LIBRARY, ANONYMOUS_OBJECT, 0);
+		Runtime::Object* NullObject = new Runtime::Object(VALUE_NULL, SYSTEM_LIBRARY, NULL_TYPE, 0);
 
 		mScope->define(VALUE_NULL, NullObject);
 	}

@@ -308,7 +308,10 @@ ControlFlow::E Method::processControlFlow(ControlFlow::E controlflow, Object* re
 			break;
 		case ControlFlow::Return:
 			// validate return value
-			if ( QualifiedTypename() != VoidObject::TYPENAME && result->QualifiedOutterface() != QualifiedTypename() ) {
+			if ( result->QualifiedOutterface() == NULL_TYPE ) {
+				// no type cast for null objects
+			}
+			else if ( QualifiedTypename() != VoidObject::TYPENAME && result->QualifiedOutterface() != QualifiedTypename() ) {
 				if ( !ALLOW_IMPLICIT_CASTS ) {
 					throw Runtime::Exceptions::ExplicitCastRequired("Explicit cast required for type conversion from " + result->QualifiedOutterface() + " to " + QualifiedTypename() + " in " + getFullScopeName());
 				}

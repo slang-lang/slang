@@ -74,14 +74,14 @@ public:
 };
 
 
-class NullPointer : public Exception
+class NullPointerException : public Exception
 {
 public:
-	NullPointer(const std::string& text, const Common::Position& position = Common::Position())
+	NullPointerException(const std::string& text, const Common::Position& position = Common::Position())
 	: Exception("NullPointerException: " + text, position)
 	{ }
 
-	virtual ~NullPointer() throw() { }
+	virtual ~NullPointerException() throw() { }
 };
 
 
