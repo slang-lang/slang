@@ -197,6 +197,20 @@ ControlFlow::E Method::execute(const ParameterList& params, Object* result, cons
 	// unwind stack trace
 	StackTrace::GetInstance().popStack();
 
+	// undefine references to prevent double deletes
+	for ( ParameterList::const_iterator it = executedParams.begin(); it != executedParams.end(); ++it ) {
+		switch ( it->access() ) {
+			case Parameter::AccessMode::ByReference:
+				scope.undefine(it->name(), it->pointer());
+				break;
+			case Parameter::AccessMode::ByValue:
+				break;
+			case Parameter::AccessMode::Unspecified:
+				throw Common::Exceptions::AccessMode("unspecified access mode");;
+		}
+	}
+
+
 	return controlflow;
 }
 
@@ -309,7 +323,7 @@ ControlFlow::E Method::processControlFlow(ControlFlow::E controlflow, Object* re
 		case ControlFlow::Return:
 			// validate return value
 			if ( result->QualifiedOutterface() == NULL_TYPE ) {
-				// no type cast for null objects
+				// no type cast necessary for null objects
 			}
 			else if ( QualifiedTypename() != VoidObject::TYPENAME && result->QualifiedOutterface() != QualifiedTypename() ) {
 				if ( !ALLOW_IMPLICIT_CASTS ) {
