@@ -28,7 +28,7 @@ void typecast(Object *base, const std::string& targetType)
 {
 	if ( !base ) {
 		OSerror("cannot cast null pointer");
-		throw Runtime::Exceptions::NullPointer("cannot cast null pointer");
+		throw Runtime::Exceptions::NullPointerException("cannot cast null pointer");
 	}
 	if ( targetType.empty() ) {
 		OSerror("invalid cast target type");

@@ -47,14 +47,17 @@ Object::Object(const Object& other)
 	mIsAtomicType = other.mIsAtomicType;
 	mIsConstructed = other.mIsConstructed;
 	mParent = other.mParent;
-	mOutterface = other.mOutterface;
-	mQualifiedOutterface = other.mQualifiedOutterface;
-	mQualifiedTypename = other.mQualifiedTypename;
 	mRepository = other.mRepository;
 	mScopeName = other.mScopeName;
 	mScopeType = other.mScopeType;
-	mTypename = other.mTypename;
 	mValue = other.mValue;
+
+	if ( other.mQualifiedOutterface != NULL_TYPE ) {
+		mOutterface = other.mOutterface;
+		mQualifiedOutterface = other.mQualifiedOutterface;
+		mQualifiedTypename = other.mQualifiedTypename;
+		mTypename = other.mTypename;
+	}
 
 	setConst(other.isConst());
 	setFinal(other.isFinal());
@@ -119,15 +122,18 @@ void Object::operator= (const Object& other)
 		mIsArrayDynamicallyExpanding = other.mIsArrayDynamicallyExpanding;
 		mIsAtomicType = other.mIsAtomicType;
 		mIsConstructed = other.mIsConstructed;// ? other.mIsConstructed : mIsConstructed;
-		mOutterface = other.mOutterface;
-		mQualifiedOutterface = other.mQualifiedOutterface;
 		mParent = other.mParent ? other.mParent : mParent;
-		mQualifiedTypename = other.mQualifiedTypename;
 		mRepository = other.mRepository ? other.mRepository : mRepository;
 		mScopeName = other.mScopeName;
 		mScopeType = other.mScopeType;
-		mTypename = other.mTypename;
 		mValue = other.mValue;
+
+		if ( other.mQualifiedOutterface != NULL_TYPE ) {
+			mOutterface = other.mOutterface;
+			mQualifiedOutterface = other.mQualifiedOutterface;
+			mQualifiedTypename = other.mQualifiedTypename;
+			mTypename = other.mTypename;
+		}
 
 		garbageCollector();
 
@@ -273,7 +279,7 @@ ControlFlow::E Object::Constructor(const ParameterList& params)
 
 		Method *constructor = static_cast<Method*>(resolveMethod(Typename(), params, true));
 		if ( constructor ) {
-			Object tmp;
+			VoidObject tmp;
 			controlflow = constructor->execute(params, &tmp, Token());
 
 			if ( controlflow != ControlFlow::Normal ) {
@@ -315,7 +321,7 @@ ControlFlow::E Object::Destructor()
 		// only execute destructor if one is present
 		Method *destructor = static_cast<Method*>(resolveMethod("~" + Typename(), params, true));
 		if ( destructor ) {
-			Object tmp;
+			VoidObject tmp;
 			controlflow = destructor->execute(params, &tmp, Token());
 
 			if ( controlflow != ControlFlow::Normal ) {
@@ -350,7 +356,7 @@ ControlFlow::E Object::execute(Object *result, const std::string& name, const Pa
 {
 	if ( !mIsConstructed ) {
 		// a method is being called although our object has not yet been constructed?
-		throw Runtime::Exceptions::NullPointer("executed method '" + name + "' of uninitialized object '" + QualifiedTypename() + "'");
+		throw Runtime::Exceptions::NullPointerException("executed method '" + name + "' of uninitialized object '" + QualifiedTypename() + "'");
 	}
 
 	Method *method = static_cast<Method*>(resolveMethod(name, params, false));
@@ -510,6 +516,10 @@ void Object::operator_assign(const Object *other)
 
 void Object::operator_bitand(const Object *other)
 {
+	if ( !other->isValid() ) {
+		throw Runtime::Exceptions::NullPointerException(QualifiedTypename() + ".operator&: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	}
+
 	ParameterList params;
 	params.push_back(
 		Parameter(ANONYMOUS_OBJECT, Typename(), VALUE_NONE)
@@ -535,6 +545,10 @@ void Object::operator_bitand(const Object *other)
 
 void Object::operator_bitcomplement(const Object *other)
 {
+	if ( !other->isValid() ) {
+		throw Runtime::Exceptions::NullPointerException(QualifiedTypename() + ".operator~: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	}
+
 	ParameterList params;
 	params.push_back(
 		Parameter(ANONYMOUS_OBJECT, Typename(), VALUE_NONE)
@@ -560,6 +574,10 @@ void Object::operator_bitcomplement(const Object *other)
 
 void Object::operator_bitor(const Object *other)
 {
+	if ( !other->isValid() ) {
+		throw Runtime::Exceptions::NullPointerException(QualifiedTypename() + ".operator|: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	}
+
 	ParameterList params;
 	params.push_back(
 		Parameter(ANONYMOUS_OBJECT, Typename(), VALUE_NONE)
@@ -590,6 +608,10 @@ bool Object::operator_bool() const
 
 void Object::operator_divide(const Object *other)
 {
+	if ( !other->isValid() ) {
+		throw Runtime::Exceptions::NullPointerException(QualifiedTypename() + ".operator/: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	}
+
 	ParameterList params;
 	params.push_back(
 		Parameter(ANONYMOUS_OBJECT, Typename(), VALUE_NONE)
@@ -615,6 +637,10 @@ void Object::operator_divide(const Object *other)
 
 bool Object::operator_equal(const Object *other)
 {
+	if ( !other->isValid() ) {
+		throw Runtime::Exceptions::NullPointerException(QualifiedTypename() + ".operator==: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	}
+
 	ParameterList params;
 	params.push_back(
 		Parameter(ANONYMOUS_OBJECT, Typename(), VALUE_NONE)
@@ -639,6 +665,10 @@ bool Object::operator_equal(const Object *other)
 
 bool Object::operator_greater(const Object *other)
 {
+	if ( !other->isValid() ) {
+		throw Runtime::Exceptions::NullPointerException(QualifiedTypename() + ".operator>: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	}
+
 	ParameterList params;
 	params.push_back(
 		Parameter(ANONYMOUS_OBJECT, Typename(), VALUE_NONE)
@@ -663,6 +693,10 @@ bool Object::operator_greater(const Object *other)
 
 bool Object::operator_greater_equal(const Object *other)
 {
+	if ( !other->isValid() ) {
+		throw Runtime::Exceptions::NullPointerException(QualifiedTypename() + ".operator>=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	}
+
 	ParameterList params;
 	params.push_back(
 		Parameter(ANONYMOUS_OBJECT, Typename(), VALUE_NONE)
@@ -709,6 +743,10 @@ bool Object::operator_is(const Symbol *other)
 
 bool Object::operator_less(const Object *other)
 {
+	if ( !other->isValid() ) {
+		throw Runtime::Exceptions::NullPointerException(QualifiedTypename() + ".operator<: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	}
+
 	ParameterList params;
 	params.push_back(
 		Parameter(ANONYMOUS_OBJECT, Typename(), VALUE_NONE)
@@ -733,6 +771,10 @@ bool Object::operator_less(const Object *other)
 
 bool Object::operator_less_equal(const Object *other)
 {
+	if ( !other->isValid() ) {
+		throw Runtime::Exceptions::NullPointerException(QualifiedTypename() + ".operator<=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	}
+
 	ParameterList params;
 	params.push_back(
 		Parameter(ANONYMOUS_OBJECT, Typename(), VALUE_NONE)
@@ -757,6 +799,10 @@ bool Object::operator_less_equal(const Object *other)
 
 void Object::operator_modulo(const Object *other)
 {
+	if ( !other->isValid() ) {
+		throw Runtime::Exceptions::NullPointerException(QualifiedTypename() + ".operator%: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	}
+
 	ParameterList params;
 	params.push_back(
 		Parameter(ANONYMOUS_OBJECT, Typename(), VALUE_NONE)
@@ -782,6 +828,10 @@ void Object::operator_modulo(const Object *other)
 
 void Object::operator_multiply(const Object *other)
 {
+	if ( !other->isValid() ) {
+		throw Runtime::Exceptions::NullPointerException(QualifiedTypename() + ".operator*: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	}
+
 	ParameterList params;
 	params.push_back(
 		Parameter(ANONYMOUS_OBJECT, Typename(), VALUE_NONE)
@@ -807,9 +857,13 @@ void Object::operator_multiply(const Object *other)
 
 void Object::operator_plus(const Object *other)
 {
+	if ( !other->isValid() ) {
+		throw Runtime::Exceptions::NullPointerException(QualifiedTypename() + ".operator+: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	}
+
 	ParameterList params;
 	params.push_back(
-		Parameter(ANONYMOUS_OBJECT, Typename(), VALUE_NONE)
+		Parameter(ANONYMOUS_OBJECT, QualifiedTypename(), VALUE_NONE)
 		//Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
 	);
 
@@ -825,13 +879,15 @@ void Object::operator_plus(const Object *other)
 		return;
 	}
 
-	std::string target = other->Typename();
-
-	throw Common::Exceptions::NotImplemented(Typename() + ".operator+: conversion from " + target + " to " + Typename() + " not supported");
+	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator+: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_subtract(const Object *other)
 {
+	if ( !other->isValid() ) {
+		throw Runtime::Exceptions::NullPointerException(QualifiedTypename() + ".operator-: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	}
+
 	ParameterList params;
 	params.push_back(
 		Parameter(ANONYMOUS_OBJECT, Typename(), VALUE_NONE)
