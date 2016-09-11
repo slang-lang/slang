@@ -26,7 +26,7 @@ private object UserObject
 		mValue = other;
 	}
 
-	public void operator=(UserObject other const) modify
+	public void operator=(UserObject other const ref) modify
 	{
 		mValue = other.getValue();
 	}
@@ -36,7 +36,7 @@ private object UserObject
 		return mValue == other;
 	}
 
-	public bool operator==(UserObject other const) const
+	public bool operator==(UserObject other const ref) const
 	{
 		return mValue == other.getValue();
 	}

@@ -22,7 +22,7 @@ private object UserObject
 		return mValue > other;
 	}
 
-	public bool operator>(UserObject other const) const
+	public bool operator>(UserObject other const ref) const
 	{
 		print("operator>(UserObject)");
 		return mValue > other.GetValue();
