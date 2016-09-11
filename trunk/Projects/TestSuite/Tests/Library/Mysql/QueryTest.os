@@ -4,9 +4,13 @@ import Mysql.All;
 
 public object Main {
 	public void Main(int argc = 0, string args = "") {
+		MysqlQueryTest();
+	}
+
+	private bool MysqlQueryTest() modify {
 		Mysql.MysqlDebugMode = true;
 
-		Mysql.Connection conn = new Mysql.Connection("192.168.0.23", 0, "oscript", "oscript", "ts_parking");
+		Mysql.Connection conn = new Mysql.Connection("0.0.0.0", 0, "root", "", "ts_parking");
 		if ( !conn.isOpen() ) {
 			print("error while connecting to database!");
 			exit(1);
@@ -32,6 +36,10 @@ public object Main {
 
 		try {
 			Mysql.Result result = query.execute();
+			if ( !result ) {
+				print("error while executing query");
+				exit(4);
+			}
 
 			while ( result.hasNext() ) {
 				result.next();
@@ -46,6 +54,8 @@ public object Main {
 		finally {
 			print("finally");
 		}
+
+		return true;
 	}
 }
 
