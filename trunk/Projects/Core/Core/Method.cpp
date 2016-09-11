@@ -37,7 +37,6 @@ Method::Method(IScope* parent, const std::string& name, const std::string& type)
 
 Method::~Method()
 {
-	garbageCollector();
 }
 
 bool Method::operator() (const Method& first, const Method& second) const
@@ -210,6 +209,7 @@ ControlFlow::E Method::execute(const ParameterList& params, Object* result, cons
 		}
 	}
 
+	garbageCollector();
 
 	return controlflow;
 }
