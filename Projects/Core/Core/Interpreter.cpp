@@ -13,7 +13,6 @@
 #include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/BuildInObjects/NumberObject.h>
 #include <Core/BuildInObjects/StringObject.h>
-#include <Core/BuildInObjects/VoidObject.h>
 #include <Core/Common/Exceptions.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Runtime/Namespace.h>
@@ -45,12 +44,12 @@ Interpreter::~Interpreter()
 /*
  * processes tokens and updates the given result
  */
-ControlFlow::E Interpreter::execute(Object *result)
+ControlFlow::E Interpreter::execute(Object* result)
 {
 	return interpret(mTokens, result);
 }
 
-void Interpreter::expression(Object *result, TokenIterator& start)
+void Interpreter::expression(Object* result, TokenIterator& start)
 {
 	parseCondition(result, start);
 
