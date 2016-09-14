@@ -51,7 +51,11 @@ public:
 
 			double param_value = (*it++).value().toDouble();
 
+#ifdef _WIN32
+			*result = Runtime::DoubleObject(floor(param_value + 0.5));
+#else
 			*result = Runtime::DoubleObject(round(param_value));
+#endif
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
@@ -86,9 +90,13 @@ public:
 		try {
 			ParameterList::const_iterator it = list.begin();
 
-			double param_value = (*it++).value().toDouble();
+			float param_value = (*it++).value().toFloat();
 
-			*result = Runtime::DoubleObject(round(param_value));
+#ifdef _WIN32
+			*result = Runtime::FloatObject(floor(param_value + 0.5f));
+#else
+			*result = Runtime::FloatObject(round(param_value));
+#endif
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
