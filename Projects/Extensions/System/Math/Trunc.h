@@ -5,6 +5,7 @@
 
 // Library includes
 #include <math.h>
+#include <cmath>
 
 // Project includes
 #include <Core/BuildInObjects/DoubleObject.h>
@@ -51,7 +52,11 @@ public:
 
 			double param_value = (*it++).value().toDouble();
 
+#ifdef _WIN32
+			*result = Runtime::DoubleObject((param_value > 0) ? floor(param_value) : ceil(param_value));
+#else
 			*result = Runtime::DoubleObject(trunc(param_value));
+#endif
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
@@ -86,9 +91,13 @@ public:
 		try {
 			ParameterList::const_iterator it = list.begin();
 
-			double param_value = (*it++).value().toDouble();
+			float param_value = (*it++).value().toFloat();
 
-			*result = Runtime::DoubleObject(trunc(param_value));
+#ifdef _WIN32
+			*result = Runtime::FloatObject((param_value > 0) ? floor(param_value) : ceil(param_value));
+#else
+			*result = Runtime::FloatObject(trunc(param_value));
+#endif
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
