@@ -313,7 +313,7 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 		object = createUserObject(name, blueprint, initialize);
 	}
 
-	if ( object->isAbstract() ) {
+	if ( initialize && object->isAbstract() ) {
 		throw Common::Exceptions::AbstractException("cannot instantiate abstract object '" + blueprint->Typename() + "'");
 	}
 
@@ -371,12 +371,18 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 					// add our newly created ancestor to our inheritance
 					object->addInheritance((*ancestorIt), ancestor);
 				} break;
-				case Designtime::Ancestor::Type::Implements:
+				case Designtime::Ancestor::Type::Implements: {
+					// create base object
+					Runtime::Object *ancestor = createInstance(blueIt->second, name, false);
+
+					// add our newly created ancestor to our inheritance
+					object->addInheritance((*ancestorIt), ancestor);
+
 					// implement interface
 					if ( initialize ) {
 						initializeObject(object, blueIt->second);
 					}
-					break;
+				} break;
 				case Designtime::Ancestor::Type::Unknown:
 					throw Common::Exceptions::Exception("invalid inheritance detected");
 			}

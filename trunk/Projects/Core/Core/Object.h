@@ -60,6 +60,8 @@ public:
 
 public:
 	void operator= (const Object& other);
+	void assign(const Object& other);
+	void assignSubType(const Object& other);
 	void copy(const Object& other);
 
 public:	// Symbol::IType implementation & RTTI
