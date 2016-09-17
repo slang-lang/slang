@@ -165,6 +165,108 @@ void Object::operator= (const Object& other)
 	}
 }
 
+void Object::assign(const Object& other)
+{
+	if ( this != &other ) {
+		mFilename = other.mFilename;
+		mInheritance = other.mInheritance;
+		mIsArray = other.mIsArray;
+		mIsArrayDynamicallyExpanding = other.mIsArrayDynamicallyExpanding;
+		mIsAtomicType = other.mIsAtomicType;
+		mIsConstructed = other.mIsConstructed;// ? other.mIsConstructed : mIsConstructed;
+		mParent = other.mParent ? other.mParent : mParent;
+		mRepository = other.mRepository ? other.mRepository : mRepository;
+		mScopeName = other.mScopeName;
+		mScopeType = other.mScopeType;
+		mValue = other.mValue;
+
+		if ( other.mQualifiedOutterface != NULL_TYPE ) {
+			mOutterface = other.mOutterface;
+			mQualifiedOutterface = other.mQualifiedOutterface;
+			mQualifiedTypename = other.mQualifiedTypename;
+			mTypename = other.mTypename;
+		}
+
+		garbageCollector();
+
+		if ( !mIsAtomicType ) {
+			// register this
+			define(IDENTIFIER_THIS, this);
+
+			// register new members
+			for ( Symbols::const_iterator it = other.mSymbols.begin(); it != other.mSymbols.end(); ++it ) {
+				if ( /*it->first == IDENTIFIER_BASE ||*/ it->first == IDENTIFIER_THIS ) {
+					continue;
+				}
+
+				if ( it->second && it->second->getSymbolType() == Symbol::IType::ObjectSymbol ) {
+					mRepository->addReference(static_cast<Object*>(it->second));
+				}
+
+				define(it->first, it->second);
+			}
+
+			// register new methods
+			for ( MethodCollection::const_iterator it = other.mMethods.begin(); it != other.mMethods.end(); ++it ) {
+				Method *method = new Method(this, (*it)->getName(), (*it)->Typename());
+				*method = *(*it);
+
+				defineMethod((*it)->getName(), method);
+			}
+		}
+	}
+}
+
+void Object::assignSubType(const Object& other)
+{
+	if ( this != &other ) {
+		mFilename = other.mFilename;
+		mInheritance = other.mInheritance;
+		mIsArray = other.mIsArray;
+		mIsArrayDynamicallyExpanding = other.mIsArrayDynamicallyExpanding;
+		mIsAtomicType = other.mIsAtomicType;
+		mIsConstructed = other.mIsConstructed;// ? other.mIsConstructed : mIsConstructed;
+		mParent = other.mParent ? other.mParent : mParent;
+		mRepository = other.mRepository ? other.mRepository : mRepository;
+		mScopeName = other.mScopeName;
+		mScopeType = other.mScopeType;
+		mValue = other.mValue;
+
+		if ( other.mQualifiedOutterface != NULL_TYPE ) {
+			mQualifiedTypename = other.mQualifiedTypename;
+			mTypename = other.mTypename;
+		}
+
+		garbageCollector();
+
+		if ( !mIsAtomicType ) {
+			// register this
+			define(IDENTIFIER_THIS, this);
+
+			// register new members
+			for ( Symbols::const_iterator it = other.mSymbols.begin(); it != other.mSymbols.end(); ++it ) {
+				if ( /*it->first == IDENTIFIER_BASE ||*/ it->first == IDENTIFIER_THIS ) {
+					continue;
+				}
+
+				if ( it->second && it->second->getSymbolType() == Symbol::IType::ObjectSymbol ) {
+					mRepository->addReference(static_cast<Object*>(it->second));
+				}
+
+				define(it->first, it->second);
+			}
+
+			// register new methods
+			for ( MethodCollection::const_iterator it = other.mMethods.begin(); it != other.mMethods.end(); ++it ) {
+				Method *method = new Method(this, (*it)->getName(), (*it)->Typename());
+				*method = *(*it);
+
+				defineMethod((*it)->getName(), method);
+			}
+		}
+	}
+}
+
 void Object::copy(const Object& other)
 {
 	if ( this != &other ) {
@@ -457,7 +559,7 @@ bool Object::isAtomicType() const
 bool Object::isInstanceOf(const std::string& type) const
 {
 	if ( type.empty() ) {
-		throw Common::Exceptions::Exception("invalid type provided");
+		return false;
 	}
 
 	if ( QualifiedTypename() == type ) {
@@ -465,10 +567,7 @@ bool Object::isInstanceOf(const std::string& type) const
 	}
 
 	for ( Inheritance::const_iterator it = mInheritance.begin(); it != mInheritance.end(); ++it ) {
-		if ( it->first.name() == type ) {
-			return true;
-		}
-		else if ( it->second->isInstanceOf(type) ) {
+		if ( it->second->isInstanceOf(type) ) {
 			return true;
 		}
 	}

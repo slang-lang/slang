@@ -32,10 +32,10 @@ inline void operator_binary_assign(Object *base, Object *other)
 	std::string source = base->Typename();
 	std::string target = other->Typename();
 
-	if ( !base->isValid() || source == target ) {
+	if ( source == "" || source == target ) {
 		// assign directly because our base has not yet been initialized
 		// or no type conversion is necessary
-		*base = *other;
+		base->assign(*other);
 	}
 	else if ( source == BoolObject::TYPENAME ) {
 		BoolObject tmp(base->getValue());
@@ -78,6 +78,10 @@ inline void operator_binary_assign(Object *base, Object *other)
 		tmp.operator_assign(other);
 
 		*base = tmp;
+	}
+	else if ( other->isInstanceOf(source) ) {
+		// We are assigning a sub type to a super type
+		base->assignSubType(*other);
 	}
 	else {
 		// no atomic data type, so we have to look if our assign operator has been overwritten

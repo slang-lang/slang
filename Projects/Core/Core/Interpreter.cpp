@@ -1470,6 +1470,8 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 			TokenIterator catchIt = (*it);
 			catchIt++;
 
+			pushScope();	// push a new scope to allow reuse of the same exception instance name
+
 			// parse exception type (if present)
 			if ( catchIt->type() == Token::Type::PARENTHESIS_OPEN ) {
 				catchIt++;
@@ -1521,6 +1523,8 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 
 			// execute catch-block if an exception has been thrown
 			mControlFlow = interpret(tokens, result);
+
+			popScope();		// pop exception instance scope
 			break;
 		}
 	}
