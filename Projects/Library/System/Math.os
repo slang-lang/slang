@@ -31,15 +31,15 @@ public namespace Math {
 	}
 
 	public double sqr(double value) {
-		return power(value);
+		return power(value, 2);
 	}
 
 	public float sqr(float value) {
-		return power(value);
+		return power(value, 2);
 	}
 
 	public int sqr(int value) {
-		return power(value);
+		return power(value, 2);
 	}
 
 }
