@@ -80,7 +80,7 @@ inline void operator_binary_assign(Object *base, Object *other)
 		*base = tmp;
 	}
 	else if ( other->isInstanceOf(source) ) {
-		// We are assigning a sub type to a super type
+		// we are assigning a sub type to a super type
 		base->assignSubType(*other);
 	}
 	else {
