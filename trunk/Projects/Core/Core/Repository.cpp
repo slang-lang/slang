@@ -450,6 +450,11 @@ void Repository::initialize()
 	// add predefined runtime objects
 	{	// null
 		Runtime::Object* NullObject = new Runtime::Object(VALUE_NULL, SYSTEM_LIBRARY, NULL_TYPE, 0);
+		NullObject->setConst(true);
+		NullObject->setFinal(true);
+		NullObject->setMutability(Mutability::Const);
+		NullObject->setVisibility(Visibility::Public);
+		NullObject->setSealed(true);
 
 		mScope->define(VALUE_NULL, NullObject);
 	}
