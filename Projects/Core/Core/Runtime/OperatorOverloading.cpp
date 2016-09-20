@@ -346,8 +346,11 @@ void operator_binary_divide(Object *base, Object *other)
 
 bool operator_binary_equal(Object *base, Object *other)
 {
-	if ( !base || !base->isValid() ) {
-		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object");
+	if ( !base ) {
+		throw Runtime::Exceptions::AccessViolation("cannot compare null pointer to object");
+	}
+	if ( !other ) {
+		throw Runtime::Exceptions::AccessViolation("cannot compare object to null pointer");
 	}
 
 	std::string source = base->Typename();
