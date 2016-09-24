@@ -50,7 +50,6 @@ LocalClient::LocalClient()
   mDebugger(0),
   mRunning(true),
   mScope(0),
-  mSettings(0),
   mVirtualMachine(0)
 {
 	mDebugger = &ObjectiveScript::Core::Debugger::GetInstance();
@@ -162,14 +161,6 @@ void LocalClient::clearSymbolCache()
 		delete it->second;
 	}
 	mSymbolCollection.clear();
-}
-
-void LocalClient::connectSettings(Settings *settings)
-{
-	assert(settings);
-	assert(!mSettings);
-
-	mSettings = settings;
 }
 
 void LocalClient::continueExecution()

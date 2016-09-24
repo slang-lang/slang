@@ -25,11 +25,10 @@ namespace ObjectiveScript {
 namespace Core {
 	class Debugger;
 }
-class Settings;
 class VirtualMachine;
 
 class LocalClient : public AClient,
-				public Core::IReceiver
+					public Core::IReceiver
 {
 public:
 	LocalClient();
@@ -97,7 +96,6 @@ private:
 	bool mRunning;
 	SymbolScope* mScope;
 	Symbols mSymbolCollection;
-	Settings* mSettings;
 	VirtualMachine* mVirtualMachine;
 	WatchCollection mWatches;
 };

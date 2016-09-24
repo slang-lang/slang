@@ -24,7 +24,6 @@ namespace ObjectiveScript {
 RemoteClient::RemoteClient()
 : mRunning(true),
   mScope(0),
-  mSettings(0),
   mVirtualMachine(0)
 {
 	mDebugger = &Core::Debugger::GetInstance();
@@ -37,11 +36,6 @@ RemoteClient::~RemoteClient()
 void RemoteClient::Attach()
 {
 	start();
-}
-
-void RemoteClient::connectSettings(Settings* s)
-{
-	mSettings = s;
 }
 
 void RemoteClient::Continue()

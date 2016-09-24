@@ -26,7 +26,6 @@ namespace ObjectiveScript {
 namespace Core {
 	class IDebugger;
 }
-class Settings;
 class VirtualMachine;
 
 class RemoteClient : public AClient,
@@ -36,9 +35,7 @@ public:
 	RemoteClient();
 	~RemoteClient();
 
-public:
-	void connectSettings(Settings* s);
-
+public:		// AClient implementation
 	int exec();
 
 public:		// ITerminal implementation
@@ -87,7 +84,6 @@ private:
 	ParameterList mParameters;
 	bool mRunning;
 	SymbolScope* mScope;
-	Settings* mSettings;
 	VirtualMachine* mVirtualMachine;
 };
 
