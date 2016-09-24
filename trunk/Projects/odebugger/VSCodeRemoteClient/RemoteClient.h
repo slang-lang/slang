@@ -70,7 +70,7 @@ private:	// Visual Studio Code debugger interface
 private:
 	void DispatchRequest(VSCodeDebug::ProtocolMessage* request);
 	void SendErrorResponse();
-	void SendResponse(const VSCodeDebug::Response& response);
+	void SendMessage(VSCodeDebug::ProtocolMessage* message);
 
 private:
 	std::string read();

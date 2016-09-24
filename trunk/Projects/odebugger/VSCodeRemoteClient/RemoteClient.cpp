@@ -38,7 +38,7 @@ void RemoteClient::Attach(const VSCodeDebug::Request& request)
 	VSCodeDebug::Response response(request);
 	response.success = true;
 
-	SendResponse(response);
+	SendMessage(&response);
 
 	start();
 }
@@ -52,7 +52,7 @@ void RemoteClient::Continue(const VSCodeDebug::Request& request)
 	VSCodeDebug::Response response(request);
 	response.success = true;
 
-	SendResponse(response);
+	SendMessage(&response);
 }
 
 void RemoteClient::Disconnect(const VSCodeDebug::Request& request)
@@ -69,7 +69,7 @@ void RemoteClient::Disconnect(const VSCodeDebug::Request& request)
 	VSCodeDebug::Response response(request);
 	response.success = true;
 
-	SendResponse(response);
+	SendMessage(&response);
 }
 
 void RemoteClient::DispatchRequest(VSCodeDebug::ProtocolMessage* request)
@@ -146,7 +146,7 @@ void RemoteClient::Evaluate(const VSCodeDebug::Request& request)
 {
 	VSCodeDebug::Response response(request);
 
-	SendResponse(response);
+	SendMessage(&response);
 }
 
 int RemoteClient::exec()
@@ -155,24 +155,10 @@ int RemoteClient::exec()
 	assert(mDebugger);
 	assert(!mVirtualMachine);
 
-	// store previous autostart value
-	bool autostart = mSettings->autoStart();
-
-	//loadConfig();
-
-	// set autostart even though disabled by configuration
-	mSettings->autoStart(autostart || mSettings->autoStart());
-
-	// register SIGINT handle
-	//signal(SIGINT, handleSIGINT);
-
 	// start program execution
 	while ( mRunning ) {
 		notify(0, Core::Debugger::immediateBreakPoint);
 	}
-
-	// unregister SIGINT handler
-	//signal(SIGINT, 0);
 
 	return 0;
 }
@@ -187,8 +173,10 @@ void RemoteClient::Initialize(const VSCodeDebug::Request& request)
 
 	VSCodeDebug::Response response(request);
 	response.success = true;
+	SendMessage(&response);
 
-	SendResponse(response);
+	VSCodeDebug::Event initialized("initialized");
+	SendMessage(&initialized);
 }
 
 void RemoteClient::Launch(const VSCodeDebug::Request& request)
@@ -196,7 +184,7 @@ void RemoteClient::Launch(const VSCodeDebug::Request& request)
 	VSCodeDebug::Response response(request);
 	response.success = true;
 
-	SendResponse(response);
+	SendMessage(&response);
 
 	start();
 }
@@ -210,7 +198,7 @@ void RemoteClient::Next(const VSCodeDebug::Request& request)
 	VSCodeDebug::Response response(request);
 	response.success = true;
 
-	SendResponse(response);
+	SendMessage(&response);
 }
 
 int RemoteClient::notify(SymbolScope* scope, const Core::BreakPoint& breakpoint)
@@ -273,7 +261,7 @@ void RemoteClient::Pause(const VSCodeDebug::Request& request)
 {
 	VSCodeDebug::Response response(request);
 
-	SendResponse(response);
+	SendMessage(&response);
 }
 
 std::string RemoteClient::read()
@@ -288,6 +276,8 @@ std::string RemoteClient::read()
 
 	DispatchRequest(request);
 
+	delete request;
+
 	return "";
 }
 
@@ -295,7 +285,7 @@ void RemoteClient::Scopes(const VSCodeDebug::Request& request)
 {
 	VSCodeDebug::Response response(request);
 
-	SendResponse(response);
+	SendMessage(&response);
 }
 
 void RemoteClient::SendErrorResponse()
@@ -303,41 +293,41 @@ void RemoteClient::SendErrorResponse()
 
 }
 
-void RemoteClient::SendResponse(const VSCodeDebug::Response& response)
+void RemoteClient::SendMessage(VSCodeDebug::ProtocolMessage* message)
 {
-	Json::Value result;
-	result.addMember("req_seq", response.seq);
-	result.addMember("success", response.success);
+	if ( ! message ) {
+		return;
+	}
 
-	std::cout << result.toString() << std::endl;
+	std::cout << message->serialize().toString() << std::endl;
 }
 
 void RemoteClient::SetBreakpoints(const VSCodeDebug::Request& request)
 {
 	VSCodeDebug::Response response(request);
 
-	SendResponse(response);
+	SendMessage(&response);
 }
 
 void RemoteClient::SetExceptionBreakpoints(const VSCodeDebug::Request& request)
 {
 	VSCodeDebug::Response response(request);
 
-	SendResponse(response);
+	SendMessage(&response);
 }
 
 void RemoteClient::SetFunctionBreakpoints(const VSCodeDebug::Request& request)
 {
 	VSCodeDebug::Response response(request);
 
-	SendResponse(response);
+	SendMessage(&response);
 }
 
 void RemoteClient::Source(const VSCodeDebug::Request& request)
 {
 	VSCodeDebug::Response response(request);
 
-	SendResponse(response);
+	SendMessage(&response);
 }
 
 void RemoteClient::start()
@@ -407,7 +397,7 @@ void RemoteClient::StepIn(const VSCodeDebug::Request& request)
 	VSCodeDebug::Response response(request);
 	response.success = true;
 
-	SendResponse(response);
+	SendMessage(&response);
 }
 
 void RemoteClient::StepOut(const VSCodeDebug::Request& request)
@@ -419,28 +409,28 @@ void RemoteClient::StepOut(const VSCodeDebug::Request& request)
 	VSCodeDebug::Response response(request);
 	response.success = true;
 
-	SendResponse(response);
+	SendMessage(&response);
 }
 
 void RemoteClient::StackTrace(const VSCodeDebug::Request& request)
 {
 	VSCodeDebug::Response response(request);
 
-	SendResponse(response);
+	SendMessage(&response);
 }
 
 void RemoteClient::Threads(const VSCodeDebug::Request& request)
 {
 	VSCodeDebug::Response response(request);
 
-	SendResponse(response);
+	SendMessage(&response);
 }
 
 void RemoteClient::Variables(const VSCodeDebug::Request& request)
 {
 	VSCodeDebug::Response response(request);
 
-	SendResponse(response);
+	SendMessage(&response);
 }
 
 

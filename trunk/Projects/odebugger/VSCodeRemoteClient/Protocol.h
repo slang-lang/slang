@@ -36,6 +36,9 @@ public:
 	{ }
 
 public:
+	virtual Json::Value serialize() const = 0;
+
+public:
 	int seq;
 	std::string type;
 };
@@ -44,10 +47,22 @@ public:
 class Event : public ProtocolMessage
 {
 public:
-	Event(const std::string type_)
+	Event(const std::string eventtype_)
 	: ProtocolMessage("event"),
-	  eventtype(type_)
+	  eventtype(eventtype_)
 	{ }
+
+public:
+	Json::Value serialize() const {
+		Json::Value result;
+
+		result.addMember("seq", seq);
+		result.addMember("type", type);
+
+		result.addMember("eventtype", eventtype);
+
+		return result;
+	}
 
 public:
 	std::string eventtype;
@@ -64,6 +79,26 @@ public:
 	{ }
 
 public:
+	Json::Value serialize() const {
+		Json::Value result;
+
+		result.addMember("seq", seq);
+		result.addMember("type", type);
+
+		result.addMember("command", command);
+
+		if ( !arguments.empty() ) {
+			Json::Value args;
+			for ( StringList::const_iterator it = arguments.begin(); it != arguments.end(); ++it ) {
+				args.addElement(Json::Value(*it));
+			}
+			result.addMember("arguments", args);
+		}
+
+		return result;
+	}
+
+public:
 	StringList arguments;
 	std::string command;
 };
@@ -73,10 +108,22 @@ class Response : public ProtocolMessage
 {
 public:
 	Response(const Request& req)
-	: ProtocolMessage("response"),
+	: ProtocolMessage("response", req.seq),
 	  request(req),
 	  success(false)
 	{ }
+
+public:
+	Json::Value serialize() const {
+		Json::Value result;
+
+		result.addMember("seq", seq);
+		result.addMember("type", type);
+
+		result.addMember("success", success);
+
+		return result;
+	}
 
 public:
 	Request request;

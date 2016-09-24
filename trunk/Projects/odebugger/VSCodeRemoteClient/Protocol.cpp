@@ -21,14 +21,18 @@ ProtocolMessage* MessageConverter::convert(const std::string& message) const
 	Json::Value msg;
 
 	if ( r.parse(message, msg) ) {
-		if ( msg.isMember("event") ) {
-			result = convertToEvent(msg["event"]);
+		if ( !msg.isMember("type") ) {
+			return 0;
 		}
-		else if ( msg.isMember("response") ) {
-			result = convertToResponse(msg["response"]);
+
+		if ( msg["type"].asString() == "event" ) {
+			result = convertToEvent(msg);
 		}
-		else if ( msg.isMember("request") ) {
-			result = convertToRequest(msg["request"]);
+		else if ( msg["type"].asString() == "response" ) {
+			result = convertToResponse(msg);
+		}
+		else if ( msg["type"].asString() == "request" ) {
+			result = convertToRequest(msg);
 		}
 	}
 
@@ -42,23 +46,23 @@ Event* MessageConverter::convertToEvent(const Json::Value& message) const
 
 Request* MessageConverter::convertToRequest(const Json::Value& message) const
 {
-	StringList args;
+	StringList arguments;
 	std::string command = message["command"].asString();
-	int id = -1;
+	int seq = -1;
 
-	if ( message.isMember("id") ) {
-		id = message["id"].asInt();
+	if ( message.isMember("seq") ) {
+		seq = message["seq"].asInt();
 	}
 
-	if ( message.isMember("args") ) {
-		Json::Value array = message["args"];
+	if ( message.isMember("arguments") ) {
+		Json::Value array = message["arguments"];
 
 		for ( Json::Value::Members::const_iterator it = array.members().begin(); it != array.members().end(); ++it ) {
-			args.push_back(it->asString());
+			arguments.push_back(it->asString());
 		}
 	}
 
-	return new Request(id, command, args);
+	return new Request(seq, command, arguments);
 }
 
 Response* MessageConverter::convertToResponse(const Json::Value& message) const
