@@ -4,9 +4,9 @@ private void BreakOnException() const {
 	print("Break on exception...");
 
 	try {
-		throw 1;
+		throw "this is an exception";
 	}
-	catch (int e) {
+	catch ( string e ) {
 		print("catch: " + e);
 	}
 	finally {
