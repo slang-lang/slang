@@ -17,6 +17,8 @@
 
 namespace ObjectiveScript {
 
+// Forward declarations
+class Settings;
 
 class AClient : public ITerminal
 {
@@ -26,6 +28,12 @@ public:
 
 public:
 	virtual int exec() = 0;
+
+public:
+	void connectSettings(Settings* s);
+
+protected:
+	Settings* mSettings;
 };
 
 }

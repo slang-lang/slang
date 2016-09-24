@@ -39,7 +39,6 @@ void Application::init(int argc, const char* argv[])
 
 	if ( mSettings.remoteClient() ) {
 		RemoteClient* client = new RemoteClient();
-		client->connectSettings(&mSettings);
 
 		Core::Debugger::GetInstance().registerReceiver(client);
 
@@ -48,12 +47,12 @@ void Application::init(int argc, const char* argv[])
 	else {
 		LocalClient* client = new LocalClient();
 
-		client->connectSettings(&mSettings);
-
 		Core::Debugger::GetInstance().registerReceiver(client);
 
 		mClient = client;
 	}
+
+	mClient->connectSettings(&mSettings);
 }
 
 int Application::exec()
