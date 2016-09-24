@@ -509,7 +509,7 @@ int LocalClient::notify(SymbolScope* scope, const Core::BreakPoint& breakpoint)
 			write(mSettings->prompt());
 		}
 
-		std::string command = read();	// read command from local or remote terminal
+		std::string command = read();				// read command from local or remote terminal
 
 		executeCommand(
 				parseCommands(command)

@@ -34,17 +34,8 @@ public:
 	LocalClient();
 	~LocalClient();
 
-public:	// Setup
-	void connectSettings(Settings* settings);
-
-public:		// ITerminal implementation
-	std::string read();
-	void write(const std::string& text);
-	void writeln(const std::string& text);
-
-public:
+public:	// AClient implementation
 	int exec();
-	void shutdown();
 
 public:
 	bool addBreakPoint(const StringList& tokens);
@@ -59,6 +50,7 @@ public:
 	void printSymbol(const StringList& tokens);
 
 	void run(const StringList &tokens);
+	void shutdown();
 	void stop();
 
 public:	// IReceiver implementation
@@ -87,7 +79,10 @@ private:
 	StringList parseCommands(const std::string& commands) const;
 	void prepare(const StringList& tokens);
 	void printHelp();
+	std::string read();
 	void start();
+	void write(const std::string& text);
+	void writeln(const std::string& text);
 
 private:
 	bool mContinue;
