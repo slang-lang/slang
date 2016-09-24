@@ -3,7 +3,6 @@
 
 // Project includes
 #include <Application/Application.h>
-#include <LocalClient/LocalClient.h>
 
 // Namespace declarations
 

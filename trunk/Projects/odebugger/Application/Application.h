@@ -6,9 +6,8 @@
 // Library includes
 
 // Project includes
-#include <Backend/Backend.h>
+#include <Common/AClient.h>
 #include <Common/Settings.h>
-#include <LocalClient/LocalClient.h>
 
 // Forward declarations
 
@@ -34,8 +33,7 @@ private:
 	void processParameters(int argc, const char* argv[]);
 
 private:
-	Backend mBackend;
-	LocalClient mLocalClient;
+	AClient* mClient;
 	Settings mSettings;
 };
 

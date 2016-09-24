@@ -8,9 +8,11 @@
 // Project includes
 #include <Core/Runtime/ControlFlow.h>
 #include <Debugger/Debugger.h>
+#include <LocalClient/LocalClient.h>
 #include <Tools/Files.h>
 #include <Tools/Strings.h>
 #include <Utils.h>
+#include <VSCodeRemoteClient/RemoteClient.h>
 
 // Namespace declarations
 
@@ -19,21 +21,39 @@ namespace ObjectiveScript {
 
 
 Application::Application()
+: mClient(0)
 {
 }
 
 Application::~Application()
 {
+	if ( mClient ) {
+		delete mClient;
+		mClient = 0;
+	}
 }
 
 void Application::init(int argc, const char* argv[])
 {
 	processParameters(argc, argv);
 
-	mBackend.connectSettings(&mSettings);
-	mBackend.connectTerminal(&mLocalClient);
+	if ( mSettings.remoteClient() ) {
+		RemoteClient* client = new RemoteClient();
+		client->connectSettings(&mSettings);
 
-	Core::Debugger::GetInstance().registerReceiver(&mBackend);
+		Core::Debugger::GetInstance().registerReceiver(client);
+
+		mClient = client;
+	}
+	else {
+		LocalClient* client = new LocalClient();
+
+		client->connectSettings(&mSettings);
+
+		Core::Debugger::GetInstance().registerReceiver(client);
+
+		mClient = client;
+	}
 }
 
 int Application::exec()
@@ -53,7 +73,7 @@ int Application::exec()
 	// start program execution
 	int result = 0;
 	try {
-		result = mBackend.exec();
+		result = mClient->exec();
 	}
 	catch ( Runtime::ControlFlow::E &/*e*/ ) {
 		//
@@ -70,6 +90,7 @@ void Application::printUsage()
 	std::cout << "-h | --help                This help" << std::endl;
 	std::cout << "-l | --library <library>   Library root path" << std::endl;
 	std::cout << "-r | --run                 Auto start debugging" << std::endl;
+	std::cout << "--remote                   Enable remote client" << std::endl;
 	std::cout << "--runandquit               Auto start debugging and quit debugger after successful execution" << std::endl;
 	std::cout << "--version                  Version information" << std::endl;
 	std::cout << std::endl;
@@ -107,6 +128,9 @@ void Application::processParameters(int argc, const char* argv[])
 			}
 
 			mSettings.addLibraryFolder(argv[i]);
+		}
+		else if ( ::Utils::Tools::StringCompare(argv[i], "--remote") ) {
+			mSettings.remoteClient(true);
 		}
 		else if ( ::Utils::Tools::StringCompare(argv[i], "--version") ) {
 			printVersion();

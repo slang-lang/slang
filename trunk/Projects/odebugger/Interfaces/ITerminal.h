@@ -20,7 +20,7 @@ class ITerminal
 public:
 	virtual ~ITerminal() { }
 
-	virtual std::string read() const = 0;
+	virtual std::string read() = 0;
 	virtual void write(const std::string& text) = 0;
 	virtual void writeln(const std::string& text) = 0;
 };

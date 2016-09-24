@@ -27,6 +27,7 @@ public:
 		mAutoWatch = true;
 		mBreakOnException = true;
 		mPrompt = "odebugger> ";
+		mRemoteClient = false;
 	}
 
 public:
@@ -72,6 +73,13 @@ public:
 		mPrompt = value;
 	}
 
+	bool remoteClient() const {
+		return mRemoteClient;
+	}
+	void remoteClient(bool value) {
+		mRemoteClient = value;
+	}
+
 	const StringSet& libraryFolders() const {
 		return mLibraryFolders;
 	}
@@ -87,6 +95,7 @@ private:
 	std::string mFilename;
 	StringSet mLibraryFolders;
 	std::string mPrompt;
+	bool mRemoteClient;
 };
 
 

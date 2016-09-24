@@ -9,8 +9,8 @@ SET(HEADERS
 )
 
 SET(DEPENDENCIES
+	DebuggerVSCodeRemoteClient
 	DebuggerLocalClient
-	DebuggerBackend
 	CoreBuildInObjects
 	Core
 )
