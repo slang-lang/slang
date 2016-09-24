@@ -4,11 +4,15 @@
 
 
 // Library includes
-#include <string>
 
 // Project includes
+#include <Common/AClient.h>
+#include <Common/Watch.h>
+#include <Core/Parameter.h>
+#include <Core/Scope.h>
 #include <Core/Types.h>
-#include <Interfaces/ITerminal.h>
+#include <Debugger/BreakPoint.h>
+#include <Debugger/IReceiver.h>
 
 // Forward declarations
 
@@ -17,20 +21,85 @@
 
 namespace ObjectiveScript {
 
+// Forward declarations
+namespace Core {
+	class Debugger;
+}
+class Settings;
+class VirtualMachine;
 
-class LocalClient : public ITerminal
+class LocalClient : public AClient,
+				public Core::IReceiver
 {
 public:
 	LocalClient();
 	~LocalClient();
 
+public:	// Setup
+	void connectSettings(Settings* settings);
+
 public:		// ITerminal implementation
-	std::string read() const;
+	std::string read();
 	void write(const std::string& text);
 	void writeln(const std::string& text);
 
-private:
+public:
+	int exec();
+	void shutdown();
 
+public:
+	bool addBreakPoint(const StringList& tokens);
+	bool removeBreakPoint(const StringList& tokens);
+
+	void continueExecution();
+	void executeSymbol(const StringList& tokens);
+	Symbol* getSymbol(std::string name) const;
+	bool modifySymbol(const StringList& tokens);
+	void printBreakPoints();
+	void printStackTrace();
+	void printSymbol(const StringList& tokens);
+
+	void run(const StringList &tokens);
+	void stop();
+
+public:	// IReceiver implementation
+	int notify(SymbolScope* scope, const Core::BreakPoint& breakpoint);
+	int notifyEnter(SymbolScope* scope, const Core::BreakPoint& breakpoint);
+	int notifyException(SymbolScope* scope, const Core::BreakPoint& breakpoint);
+	int notifyExit(SymbolScope* scope, const Core::BreakPoint& breakpoint);
+
+private:	// Configuration
+	void loadConfig();
+	void saveConfig();
+
+private:	// Watches
+	bool addWatch(const StringList &tokens);
+	void refreshWatches();
+	bool removeWatch(const StringList &tokens);
+	void toggleAutoWatch();
+
+private:	// Symbol cache
+	bool addLiteralSymbol(const std::string& name, const std::string& value);
+	Symbol* getCachedSymbol(const std::string& name) const;
+	void clearSymbolCache();
+
+private:
+	std::string executeCommand(const StringList &tokens);
+	StringList parseCommands(const std::string& commands) const;
+	void prepare(const StringList& tokens);
+	void printHelp();
+	void start();
+
+private:
+	bool mContinue;
+	Core::Debugger* mDebugger;
+	ParameterList mParameters;
+	bool mRunning;
+	SymbolScope* mScope;
+	Symbols mSymbolCollection;
+	Settings* mSettings;
+	VirtualMachine* mVirtualMachine;
+	WatchCollection mWatches;
 };
 
 

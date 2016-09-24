@@ -9,6 +9,7 @@ SET(HEADERS
 )
 
 SET(DEPENDENCIES
+	DebuggerCommon
 )
 
 add_include(Projects/Core)
