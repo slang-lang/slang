@@ -14,7 +14,10 @@
 
 // Forward declarations
 namespace VSCodeDebug {
+	class Event;
 	class ProtocolMessage;
+	class Request;
+	class Response;
 }
 
 // Namespace declarations
@@ -45,36 +48,34 @@ public:	// IReceiver implementation
 	int notifyExit(SymbolScope* scope, const Core::BreakPoint& breakpoint);
 
 private:	// Visual Studio Code debugger interface
-	void Attach();
-	void Continue();
-	void Disconnect();
-	void Evaluate();
-	void Initialize();
-	void Launch();
-	void Next();
-	void Pause();
-	void Scopes();
-	void Source();
-	void SetBreakpoints();
-	void SetExceptionBreakpoints();
-	void SetFunctionBreakpoints();
-	void StepIn();
-	void StepOut();
-	void StackTrace();
-	void Threads();
-	void Variables();
+	void Attach(const VSCodeDebug::Request& request);
+	void Continue(const VSCodeDebug::Request& request);
+	void Disconnect(const VSCodeDebug::Request& request);
+	void Evaluate(const VSCodeDebug::Request& request);
+	void Initialize(const VSCodeDebug::Request& request);
+	void Launch(const VSCodeDebug::Request& request);
+	void Next(const VSCodeDebug::Request& request);
+	void Pause(const VSCodeDebug::Request& request);
+	void Scopes(const VSCodeDebug::Request& request);
+	void Source(const VSCodeDebug::Request& request);
+	void SetBreakpoints(const VSCodeDebug::Request& request);
+	void SetExceptionBreakpoints(const VSCodeDebug::Request& request);
+	void SetFunctionBreakpoints(const VSCodeDebug::Request& request);
+	void StepIn(const VSCodeDebug::Request& request);
+	void StepOut(const VSCodeDebug::Request& request);
+	void StackTrace(const VSCodeDebug::Request& request);
+	void Threads(const VSCodeDebug::Request& request);
+	void Variables(const VSCodeDebug::Request& request);
 
 private:
 	void DispatchRequest(VSCodeDebug::ProtocolMessage* request);
 	void SendErrorResponse();
-	void SendResponse();
+	void SendResponse(const VSCodeDebug::Response& response);
 
 private:
 	std::string read();
 	void start();
 	void stop();
-	void write(const std::string& text);
-	void writeln(const std::string& text);
 
 private:
 	bool mContinue;

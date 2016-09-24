@@ -33,19 +33,29 @@ RemoteClient::~RemoteClient()
 {
 }
 
-void RemoteClient::Attach()
+void RemoteClient::Attach(const VSCodeDebug::Request& request)
 {
+	VSCodeDebug::Response response(request);
+	response.success = true;
+
+	SendResponse(response);
+
 	start();
 }
 
-void RemoteClient::Continue()
+void RemoteClient::Continue(const VSCodeDebug::Request& request)
 {
 	mDebugger->resume();
 
 	mContinue = true;
+
+	VSCodeDebug::Response response(request);
+	response.success = true;
+
+	SendResponse(response);
 }
 
-void RemoteClient::Disconnect()
+void RemoteClient::Disconnect(const VSCodeDebug::Request& request)
 {
 	stop();
 
@@ -55,6 +65,11 @@ void RemoteClient::Disconnect()
 		// hack to exit debugger during an active debugging session
 		throw Runtime::ControlFlow::ExitProgram;
 	}
+
+	VSCodeDebug::Response response(request);
+	response.success = true;
+
+	SendResponse(response);
 }
 
 void RemoteClient::DispatchRequest(VSCodeDebug::ProtocolMessage* request)
@@ -68,58 +83,58 @@ void RemoteClient::DispatchRequest(VSCodeDebug::ProtocolMessage* request)
 	VSCodeDebug::Request* r = dynamic_cast<VSCodeDebug::Request*>(request);
 	if ( r ) {
 		if ( r->command == "attach" ) {
-			Attach();
+			Attach(*r);
 		}
 		else if ( r->command == "continue" ) {
-			Continue();
+			Continue(*r);
 		}
 		else if ( r->command == "disconnect" ) {
-			Disconnect();
+			Disconnect(*r);
 		}
 		else if ( r->command == "evaluate" ) {
-			Evaluate(/*request*/);
+			Evaluate(*r);
 		}
 		else if ( r->command == "initialize" ) {
-			Initialize(/*request*/);
+			Initialize(*r);
 		}
 		else if ( r->command == "launch" ) {
-			Launch();
+			Launch(*r);
 		}
 		else if ( r->command == "next" ) {
-			Next();
+			Next(*r);
 		}
 		else if ( r->command == "pause" ) {
-			Pause();
+			Pause(*r);
 		}
 		else if ( r->command == "scopes" ) {
-			Scopes();
+			Scopes(*r);
 		}
 		else if ( r->command == "source" ) {
-			Source(/*request*/);
+			Source(*r);
 		}
 		else if ( r->command == "setBreakpoints" ) {
-			SetBreakpoints(/*request*/);
+			SetBreakpoints(*r);
 		}
 		else if ( r->command == "setExceptionBreakpoints" ) {
-			SetExceptionBreakpoints(/*request*/);
+			SetExceptionBreakpoints(*r);
 		}
 		else if ( r->command == "setFunctionBreakpoints" ) {
-			SetFunctionBreakpoints(/*request*/);
+			SetFunctionBreakpoints(*r);
 		}
 		else if ( r->command == "stepIn" ) {
-			StepIn();
+			StepIn(*r);
 		}
 		else if ( r->command == "stepOut" ) {
-			StepOut();
+			StepOut(*r);
 		}
 		else if ( r->command == "stackTrace" ) {
-			StackTrace();
+			StackTrace(*r);
 		}
 		else if ( r->command == "variables" ) {
-			Variables();
+			Variables(*r);
 		}
 		else if ( r->command == "threads" ) {
-			Threads();
+			Threads(*r);
 		}
 		else {
 			// unknown command
@@ -127,9 +142,11 @@ void RemoteClient::DispatchRequest(VSCodeDebug::ProtocolMessage* request)
 	}
 }
 
-void RemoteClient::Evaluate()
+void RemoteClient::Evaluate(const VSCodeDebug::Request& request)
 {
+	VSCodeDebug::Response response(request);
 
+	SendResponse(response);
 }
 
 int RemoteClient::exec()
@@ -160,25 +177,40 @@ int RemoteClient::exec()
 	return 0;
 }
 
-void RemoteClient::Initialize()
+void RemoteClient::Initialize(const VSCodeDebug::Request& request)
 {
 	std::string paramStr = mSettings->filename();
 
 	mParameters.clear();
 	mParameters.push_back(ObjectiveScript::Parameter("argc", ObjectiveScript::Runtime::IntegerObject::TYPENAME, 1));
 	mParameters.push_back(ObjectiveScript::Parameter("argv", ObjectiveScript::Runtime::StringObject::TYPENAME, paramStr));
+
+	VSCodeDebug::Response response(request);
+	response.success = true;
+
+	SendResponse(response);
 }
 
-void RemoteClient::Launch()
+void RemoteClient::Launch(const VSCodeDebug::Request& request)
 {
+	VSCodeDebug::Response response(request);
+	response.success = true;
+
+	SendResponse(response);
+
 	start();
 }
 
-void RemoteClient::Next()
+void RemoteClient::Next(const VSCodeDebug::Request& request)
 {
 	mDebugger->stepOver();
 
 	mContinue = true;
+
+	VSCodeDebug::Response response(request);
+	response.success = true;
+
+	SendResponse(response);
 }
 
 int RemoteClient::notify(SymbolScope* scope, const Core::BreakPoint& breakpoint)
@@ -224,28 +256,24 @@ int RemoteClient::notify(SymbolScope* scope, const Core::BreakPoint& breakpoint)
 
 int RemoteClient::notifyEnter(SymbolScope* scope, const Core::BreakPoint& breakpoint)
 {
-	writeln("[Stepping into " + StackTrace::GetInstance().currentStackLevel().toString() + "]");
-
 	return notify(scope, breakpoint);
 }
 
 int RemoteClient::notifyException(SymbolScope* scope, const Core::BreakPoint& breakpoint)
 {
-	writeln("[Exception has been thrown in " + StackTrace::GetInstance().currentStackLevel().toString() + "]");
-
 	return notify(scope, breakpoint);
 }
 
 int RemoteClient::notifyExit(SymbolScope* scope, const Core::BreakPoint& breakpoint)
 {
-	writeln("[Stepping out of " + StackTrace::GetInstance().currentStackLevel().toString() + "]");
-
 	return notify(scope, breakpoint);
 }
 
-void RemoteClient::Pause()
+void RemoteClient::Pause(const VSCodeDebug::Request& request)
 {
+	VSCodeDebug::Response response(request);
 
+	SendResponse(response);
 }
 
 std::string RemoteClient::read()
@@ -263,9 +291,11 @@ std::string RemoteClient::read()
 	return "";
 }
 
-void RemoteClient::Scopes()
+void RemoteClient::Scopes(const VSCodeDebug::Request& request)
 {
+	VSCodeDebug::Response response(request);
 
+	SendResponse(response);
 }
 
 void RemoteClient::SendErrorResponse()
@@ -273,42 +303,41 @@ void RemoteClient::SendErrorResponse()
 
 }
 
-void RemoteClient::SendResponse()
+void RemoteClient::SendResponse(const VSCodeDebug::Response& response)
 {
-/*
-	VSCodeDebug::MessageConverter converter;
-	VSCodeDebug::ProtocolMessage* response = converter.convert("response " + text);
+	Json::Value result;
+	result.addMember("req_seq", response.seq);
+	result.addMember("success", response.success);
 
-	VSCodeDebug::Response* r = dynamic_cast<VSCodeDebug::Response*>(response);
-	if ( r ) {
-		Json::Value result;
-
-		result.addMember("success", r->success);
-
-
-		std::cout << result.toString() << std::endl;
-	}
-*/
+	std::cout << result.toString() << std::endl;
 }
 
-void RemoteClient::SetBreakpoints()
+void RemoteClient::SetBreakpoints(const VSCodeDebug::Request& request)
 {
+	VSCodeDebug::Response response(request);
 
+	SendResponse(response);
 }
 
-void RemoteClient::SetExceptionBreakpoints()
+void RemoteClient::SetExceptionBreakpoints(const VSCodeDebug::Request& request)
 {
+	VSCodeDebug::Response response(request);
 
+	SendResponse(response);
 }
 
-void RemoteClient::SetFunctionBreakpoints()
+void RemoteClient::SetFunctionBreakpoints(const VSCodeDebug::Request& request)
 {
+	VSCodeDebug::Response response(request);
 
+	SendResponse(response);
 }
 
-void RemoteClient::Source()
+void RemoteClient::Source(const VSCodeDebug::Request& request)
 {
+	VSCodeDebug::Response response(request);
 
+	SendResponse(response);
 }
 
 void RemoteClient::start()
@@ -357,7 +386,7 @@ void RemoteClient::start()
 		}
 	}
 	catch ( std::exception& e ) {
-		writeln(e.what());
+		std::cout << e.what() << std::endl;
 	}
 }
 
@@ -369,43 +398,49 @@ void RemoteClient::stop()
 	}
 }
 
-void RemoteClient::StepIn()
+void RemoteClient::StepIn(const VSCodeDebug::Request& request)
 {
 	mDebugger->stepInto();
 
 	mContinue = true;
+
+	VSCodeDebug::Response response(request);
+	response.success = true;
+
+	SendResponse(response);
 }
 
-void RemoteClient::StepOut()
+void RemoteClient::StepOut(const VSCodeDebug::Request& request)
 {
 	mDebugger->stepOut();
 
 	mContinue = true;
+
+	VSCodeDebug::Response response(request);
+	response.success = true;
+
+	SendResponse(response);
 }
 
-void RemoteClient::StackTrace()
+void RemoteClient::StackTrace(const VSCodeDebug::Request& request)
 {
+	VSCodeDebug::Response response(request);
 
+	SendResponse(response);
 }
 
-void RemoteClient::Threads()
+void RemoteClient::Threads(const VSCodeDebug::Request& request)
 {
+	VSCodeDebug::Response response(request);
 
+	SendResponse(response);
 }
 
-void RemoteClient::Variables()
+void RemoteClient::Variables(const VSCodeDebug::Request& request)
 {
+	VSCodeDebug::Response response(request);
 
-}
-
-void RemoteClient::write(const std::string& text)
-{
-	(void)text;
-}
-
-void RemoteClient::writeln(const std::string& text)
-{
-	(void)text;
+	SendResponse(response);
 }
 
 
