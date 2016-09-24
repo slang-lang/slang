@@ -11,6 +11,7 @@ SET(HEADERS
 	Condition.h
 	Debugger.h
 	IDebugger.h
+	IReceiver.h
 )
 
 SET(DEPENDENCIES

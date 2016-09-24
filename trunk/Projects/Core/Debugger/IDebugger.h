@@ -42,6 +42,7 @@ public:
 	virtual ~IDebugger() { }
 
 	virtual bool addBreakPoint(const BreakPoint& breakpoint) = 0;
+	virtual void clearBreakPoints() = 0;
 	virtual bool removeBreakPoint(const BreakPoint& breakpoint) = 0;
 
 	virtual void breakOnException(bool state) = 0;
@@ -54,10 +55,11 @@ public:
 	virtual void notifyException(SymbolScope* scope, const Token& token = Token()) = 0;
 	virtual void notifyExit(SymbolScope* scope, const Token& token = Token()) = 0;
 
+	virtual void resume() = 0;
+	virtual void resumeWithoutBreaks() = 0;
 	virtual void stepInto() = 0;
 	virtual void stepOut() = 0;
 	virtual void stepOver() = 0;
-	virtual void resume() = 0;
 };
 
 

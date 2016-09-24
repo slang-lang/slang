@@ -43,6 +43,7 @@ public:	// IDebugger implementation
 
 	const BreakPointCollection& getBreakPoints() const;
 	bool isBreakPoint(const BreakPoint& breakpoint) const;
+
 	NextAction::E nextAction() const;
 
 	void notify(SymbolScope* scope, const Token& token = Token());
