@@ -208,26 +208,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Backend\Backend.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\Backend\"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\Backend\"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath=".\LocalClient\LocalClient.cpp"
 				>
 				<FileConfiguration
@@ -251,26 +231,6 @@
 				RelativePath=".\main.cpp"
 				>
 			</File>
-			<File
-				RelativePath=".\Backend\Watch.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\Backend\"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\Backend\"
-					/>
-				</FileConfiguration>
-			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -279,14 +239,6 @@
 			>
 			<File
 				RelativePath=".\Application\Application.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Backend\Backend.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Backend\IBackend.h"
 				>
 			</File>
 			<File
@@ -299,10 +251,6 @@
 			</File>
 			<File
 				RelativePath=".\Common\Settings.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Backend\Watch.h"
 				>
 			</File>
 		</Filter>
