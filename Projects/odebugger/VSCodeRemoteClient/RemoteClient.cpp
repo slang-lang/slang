@@ -398,5 +398,15 @@ void RemoteClient::Variables()
 
 }
 
+void RemoteClient::write(const std::string& text)
+{
+	(void)text;
+}
+
+void RemoteClient::writeln(const std::string& text)
+{
+	(void)text;
+}
+
 
 }

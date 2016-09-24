@@ -20,7 +20,7 @@ namespace ObjectiveScript {
 // Forward declarations
 class Settings;
 
-class AClient : public ITerminal
+class AClient
 {
 public:
 	AClient();

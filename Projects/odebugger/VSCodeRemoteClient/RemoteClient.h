@@ -38,11 +38,6 @@ public:
 public:		// AClient implementation
 	int exec();
 
-public:		// ITerminal implementation
-	std::string read();
-	void write(const std::string& /*text*/) { }
-	void writeln(const std::string& /*text*/) { }
-
 public:	// IReceiver implementation
 	int notify(SymbolScope* scope, const Core::BreakPoint& breakpoint);
 	int notifyEnter(SymbolScope* scope, const Core::BreakPoint& breakpoint);
@@ -75,8 +70,11 @@ private:
 	void SendResponse();
 
 private:
+	std::string read();
 	void start();
 	void stop();
+	void write(const std::string& text);
+	void writeln(const std::string& text);
 
 private:
 	bool mContinue;
