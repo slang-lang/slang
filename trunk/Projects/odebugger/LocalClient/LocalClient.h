@@ -7,12 +7,12 @@
 
 // Project includes
 #include <Common/AClient.h>
-#include <Common/Watch.h>
 #include <Core/Parameter.h>
 #include <Core/Scope.h>
 #include <Core/Types.h>
 #include <Debugger/BreakPoint.h>
 #include <Debugger/IReceiver.h>
+#include "Watch.h"
 
 // Forward declarations
 

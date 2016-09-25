@@ -2,10 +2,12 @@ INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
 SET(SOURCES
 	LocalClient.cpp
+	Watch.cpp
 )
 
 SET(HEADERS
 	LocalClient.h
+	Watch.h
 )
 
 SET(DEPENDENCIES
