@@ -21,7 +21,8 @@ Token Debugger::immediateBreakToken = Token();
 
 
 Debugger::Debugger()
-: mBreakOnException(false),
+: mBreakOnExceptionCatch(false),
+  mBreakOnExceptionThrow(false),
   mNextAction(NextAction::WaitForBreakPoint),
   mReceiver(0)
 {
@@ -44,9 +45,14 @@ bool Debugger::addBreakPoint(const BreakPoint& breakpoint)
 	return true;
 }
 
-void Debugger::breakOnException(bool state)
+void Debugger::breakOnExceptionCatch(bool state)
 {
-	mBreakOnException = state;
+	mBreakOnExceptionCatch = state;
+}
+
+void Debugger::breakOnExceptionThrow(bool state)
+{
+	mBreakOnExceptionThrow = state;
 }
 
 void Debugger::clearBreakPoints()
@@ -118,10 +124,17 @@ void Debugger::notifyEnter(SymbolScope* scope, const Token& /*token*/)
 	}
 }
 
-void Debugger::notifyException(SymbolScope* scope, const Token& token)
+void Debugger::notifyExceptionCatch(SymbolScope *scope, const Token &token)
 {
-	if ( mReceiver && mBreakOnException ) {
-		mReceiver->notifyException(scope, BreakPoint(token.position()));
+	if ( mReceiver && mBreakOnExceptionCatch ) {
+		mReceiver->notifyExceptionCatch(scope, BreakPoint(token.position()));
+	}
+}
+
+void Debugger::notifyExceptionThrow(SymbolScope *scope, const Token &token)
+{
+	if ( mReceiver && mBreakOnExceptionThrow ) {
+		mReceiver->notifyExceptionThrow(scope, BreakPoint(token.position()));
 	}
 }
 

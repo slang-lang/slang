@@ -247,7 +247,12 @@ int RemoteClient::notifyEnter(SymbolScope* scope, const Core::BreakPoint& breakp
 	return notify(scope, breakpoint);
 }
 
-int RemoteClient::notifyException(SymbolScope* scope, const Core::BreakPoint& breakpoint)
+int RemoteClient::notifyExceptionCatch(SymbolScope *scope, const Core::BreakPoint &breakpoint)
+{
+	return notify(scope, breakpoint);
+}
+
+int RemoteClient::notifyExceptionThrow(SymbolScope *scope, const Core::BreakPoint &breakpoint)
 {
 	return notify(scope, breakpoint);
 }
@@ -334,7 +339,7 @@ void RemoteClient::start()
 {
 	stop();
 
-	mDebugger->breakOnException(mSettings->breakOnException());
+	mDebugger->breakOnExceptionThrow(mSettings->breakOnExceptionThrow());
 	mDebugger->resume();
 	StackTrace::GetInstance().clear();
 

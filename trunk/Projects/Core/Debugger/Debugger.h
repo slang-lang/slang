@@ -39,7 +39,8 @@ public:	// IDebugger implementation
 	void clearBreakPoints();
 	bool removeBreakPoint(const BreakPoint& breakpoint);
 
-	void breakOnException(bool state);
+	void breakOnExceptionCatch(bool state);
+	void breakOnExceptionThrow(bool state);
 
 	const BreakPointCollection& getBreakPoints() const;
 	bool isBreakPoint(const BreakPoint& breakpoint) const;
@@ -48,7 +49,8 @@ public:	// IDebugger implementation
 
 	void notify(SymbolScope* scope, const Token& token = Token());
 	void notifyEnter(SymbolScope* scope, const Token& token = Token());
-	void notifyException(SymbolScope* scope, const Token& token = Token());
+	void notifyExceptionCatch(SymbolScope *scope, const Token &token = Token());
+	void notifyExceptionThrow(SymbolScope *scope, const Token &token = Token());
 	void notifyExit(SymbolScope* scope, const Token& token = Token());
 
 	void resume();
@@ -71,7 +73,8 @@ private:
 	~Debugger();
 
 private:
-	bool mBreakOnException;
+	bool mBreakOnExceptionCatch;
+	bool mBreakOnExceptionThrow;
 	BreakPointCollection mBreakPoints;
 	NextAction::E mNextAction;
 	Core::IReceiver* mReceiver;

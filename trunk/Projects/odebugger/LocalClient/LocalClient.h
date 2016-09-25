@@ -56,7 +56,8 @@ public:
 public:	// IReceiver implementation
 	int notify(SymbolScope* scope, const Core::BreakPoint& breakpoint);
 	int notifyEnter(SymbolScope* scope, const Core::BreakPoint& breakpoint);
-	int notifyException(SymbolScope* scope, const Core::BreakPoint& breakpoint);
+	int notifyExceptionCatch(SymbolScope *scope, const Core::BreakPoint &breakpoint);
+	int notifyExceptionThrow(SymbolScope *scope, const Core::BreakPoint &breakpoint);
 	int notifyExit(SymbolScope* scope, const Core::BreakPoint& breakpoint);
 
 private:	// Configuration
