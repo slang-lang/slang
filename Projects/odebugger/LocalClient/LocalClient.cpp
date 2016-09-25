@@ -404,7 +404,7 @@ void LocalClient::loadConfig()
 			std::string command = "breakpoint " + it->asString();
 
 			addBreakPoint(
-					parseCommands(command)
+				parseCommands(command)
 			);
 		}
 	}
@@ -417,7 +417,7 @@ void LocalClient::loadConfig()
 			std::string command = "watch " + it->asString();
 
 			addWatch(
-					parseCommands(command)
+				parseCommands(command)
 			);
 		}
 	}
@@ -429,8 +429,11 @@ void LocalClient::loadConfig()
 	if ( config.isMember("autowatch") ) {
 		mSettings->autoWatch(config["autowatch"].asBool());
 	}
-	if ( config.isMember("breakonexception") ) {
-		mSettings->breakOnException(config["breakonexception"].asBool());
+	if ( config.isMember("breakonexceptioncatch") ) {
+		mSettings->breakOnExceptionCatch(config["breakonexceptioncatch"].asBool());
+	}
+	if ( config.isMember("breakonexceptionthrow") ) {
+		mSettings->breakOnExceptionThrow(config["breakonexceptionthrow"].asBool());
 	}
 }
 
@@ -528,7 +531,14 @@ int LocalClient::notifyEnter(SymbolScope* scope, const Core::BreakPoint& breakpo
 	return notify(scope, breakpoint);
 }
 
-int LocalClient::notifyException(SymbolScope* scope, const Core::BreakPoint& breakpoint)
+int LocalClient::notifyExceptionCatch(SymbolScope *scope, const Core::BreakPoint &breakpoint)
+{
+	writeln("[Caught exception in " + StackTrace::GetInstance().currentStackLevel().toString() + "]");
+
+	return notify(scope, breakpoint);
+}
+
+int LocalClient::notifyExceptionThrow(SymbolScope *scope, const Core::BreakPoint &breakpoint)
 {
 	writeln("[Exception has been thrown in " + StackTrace::GetInstance().currentStackLevel().toString() + "]");
 
@@ -761,7 +771,7 @@ void LocalClient::saveConfig()
 	// odebugger config
 	config.addMember("autostart", Json::Value(mSettings->autoStart()));
 	config.addMember("autowatch", Json::Value(mSettings->autoWatch()));
-	config.addMember("breakonexception", Json::Value(mSettings->breakOnException()));
+	config.addMember("breakonexception", Json::Value(mSettings->breakOnExceptionThrow()));
 
 	// serialize config to string
 	Json::StyledWriter writer;
@@ -794,7 +804,8 @@ void LocalClient::start()
 {
 	stop();
 
-	mDebugger->breakOnException(mSettings->breakOnException());
+	mDebugger->breakOnExceptionCatch(mSettings->breakOnExceptionCatch());
+	mDebugger->breakOnExceptionThrow(mSettings->breakOnExceptionThrow());
 	mDebugger->resume();
 	StackTrace::GetInstance().clear();
 

@@ -45,14 +45,16 @@ public:
 	virtual void clearBreakPoints() = 0;
 	virtual bool removeBreakPoint(const BreakPoint& breakpoint) = 0;
 
-	virtual void breakOnException(bool state) = 0;
+	virtual void breakOnExceptionCatch(bool state) = 0;
+	virtual void breakOnExceptionThrow(bool state) = 0;
 
 	virtual bool isBreakPoint(const BreakPoint& breakpoint) const = 0;
 	virtual NextAction::E nextAction() const = 0;
 
 	virtual void notify(SymbolScope* scope, const Token& token = Token()) = 0;
 	virtual void notifyEnter(SymbolScope* scope, const Token& token = Token()) = 0;
-	virtual void notifyException(SymbolScope* scope, const Token& token = Token()) = 0;
+	virtual void notifyExceptionCatch(SymbolScope *scope, const Token &token = Token()) = 0;
+	virtual void notifyExceptionThrow(SymbolScope *scope, const Token &token = Token()) = 0;
 	virtual void notifyExit(SymbolScope* scope, const Token& token = Token()) = 0;
 
 	virtual void resume() = 0;

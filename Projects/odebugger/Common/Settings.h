@@ -25,7 +25,8 @@ public:
 		mAutoStart = false;
 		mAutoStop = false;
 		mAutoWatch = true;
-		mBreakOnException = true;
+		mBreakOnExceptionCatch = true;
+		mBreakOnExceptionThrow = true;
 		mPrompt = "odebugger> ";
 		mRemoteClient = false;
 	}
@@ -52,11 +53,18 @@ public:
 		mAutoWatch = value;
 	}
 
-	bool breakOnException() const {
-		return mBreakOnException;
+	bool breakOnExceptionCatch() const {
+		return mBreakOnExceptionCatch;
 	}
-	void breakOnException(bool value) {
-		mBreakOnException = value;
+	void breakOnExceptionCatch(bool value) {
+		mBreakOnExceptionCatch = value;
+	}
+
+	bool breakOnExceptionThrow() const {
+		return mBreakOnExceptionThrow;
+	}
+	void breakOnExceptionThrow(bool value) {
+		mBreakOnExceptionThrow = value;
 	}
 
 	const std::string& filename() const {
@@ -91,7 +99,8 @@ private:
 	bool mAutoStart;
 	bool mAutoStop;
 	bool mAutoWatch;
-	bool mBreakOnException;
+	bool mBreakOnExceptionCatch;
+	bool mBreakOnExceptionThrow;
 	std::string mFilename;
 	StringSet mLibraryFolders;
 	std::string mPrompt;

@@ -1402,7 +1402,7 @@ void Interpreter::process_throw(TokenIterator& token, Object* /*result*/)
 	expect(Token::Type::SEMICOLON, token);
 
 	// notify our debugger that an exception has been thrown
-	Core::Debugger::GetInstance().notifyException(getScope(), (*token));
+	Core::Debugger::GetInstance().notifyExceptionThrow(getScope(), (*token));
 }
 
 /*
@@ -1503,6 +1503,9 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 
 				operator_binary_assign(type, mExceptionData.getData());
 			}
+
+			// notify our debugger that an exception has been thrown
+			Core::Debugger::GetInstance().notifyExceptionCatch(getScope(), (*token));
 
 			expect(Token::Type::BRACKET_CURLY_OPEN, catchIt);
 
