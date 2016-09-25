@@ -57,8 +57,8 @@ bool Condition::evaluate(Symbol* lhs, Symbol* rhs) const
 		return true;
 	}
 
-	Runtime::Object* left = static_cast<Runtime::Object*>(lhs);
-	Runtime::Object* right = static_cast<Runtime::Object*>(rhs);
+	Runtime::Object* left = dynamic_cast<Runtime::Object*>(lhs);
+	Runtime::Object* right = dynamic_cast<Runtime::Object*>(rhs);
 
 	switch ( mType ) {
 		case Type::Equals:

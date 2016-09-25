@@ -15,6 +15,7 @@
 #include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/BuildInObjects/NumberObject.h>
 #include <Core/BuildInObjects/StringObject.h>
+#include <Core/Method.h>
 #include <Core/Script.h>
 #include <Core/StackTrace.h>
 #include <Core/Tokenizer.h>
@@ -83,7 +84,7 @@ bool LocalClient::addBreakPoint(const StringList& tokens)
 		std::string right = (*it++);
 
 		breakpoint.setCondition(
-				Core::Condition(left, op, right)
+			Core::Condition(left, op, right)
 		);
 	}
 
@@ -228,7 +229,7 @@ std::string LocalClient::executeCommand(const StringList &tokens)
 			removeBreakPoint(tokens);
 		}
 		else if ( cmd == "execute" || cmd == "e" ) {
-			executeSymbol(tokens);
+			executeMethod(tokens);
 		}
 		else if ( cmd == "help" ) {
 			printHelp();
@@ -285,7 +286,7 @@ std::string LocalClient::executeCommand(const StringList &tokens)
 			addWatch(tokens);
 		}
 		else if ( cmd == "watches" ) {
-			refreshWatches();
+			printWatches();
 		}
 		else {
 			writeln("unknown command '" + cmd + "'");
@@ -295,7 +296,7 @@ std::string LocalClient::executeCommand(const StringList &tokens)
 	return "";
 }
 
-void LocalClient::executeSymbol(const StringList& tokens)
+void LocalClient::executeMethod(const StringList &tokens)
 {
 	if ( !mScope ) {
 		writeln("no scope available!");
@@ -307,13 +308,26 @@ void LocalClient::executeSymbol(const StringList& tokens)
 	StringList::const_iterator it = tokens.begin();
 	it++;	// skip first token
 	if ( it != tokens.end() ) {
-		name = (*it);
+		name = (*it++);
 	}
 
-	Symbol* symbol = getSymbol(name);
-	if ( !symbol ) {
-		symbol = getCachedSymbol(name);
+	ParameterList params;
+
+	for ( ; it != tokens.end(); ++it ) {
+		std::string sym = (*it);
+
+		if ( addLiteralSymbol(sym, sym) ) {
+			Runtime::Object* object = dynamic_cast<Runtime::Object*>(getCachedSymbol(sym));
+
+			if ( object ) {
+				params.push_back(Parameter(
+					object->getName(), object->Typename(), object->getValue()
+				));
+			}
+		}
 	}
+
+	MethodSymbol* symbol = getMethod(name, params);
 	if ( !symbol ) {
 		writeln("could not resolve symbol '" + name + "'!");
 		return;
@@ -327,7 +341,7 @@ void LocalClient::executeSymbol(const StringList& tokens)
 	Runtime::Method* method = static_cast<Runtime::Method*>(symbol);
 	try {
 		Runtime::Object result;
-		method->execute(ParameterList(), &result, Token());
+		method->execute(params, &result, Token());
 
 		writeln(result.ToString());
 	}
@@ -345,6 +359,51 @@ Symbol* LocalClient::getCachedSymbol(const std::string& name) const
 		if ( it->first == name ) {
 			return it->second;
 		}
+	}
+
+	return 0;
+}
+
+MethodSymbol* LocalClient::getMethod(std::string name, const ParameterList& params) const
+{
+	if ( !mScope ) {
+		return 0;
+	}
+
+	std::string child;
+	std::string parent;
+	MethodScope* scope = getMethodScope(mScope);
+
+	do {
+		if ( !scope ) {
+			return 0;
+		}
+
+		Tools::split(name, parent, child);
+
+		if ( !parent.empty() && !child.empty() ) {
+			scope = static_cast<ObjectiveScript::Runtime::Object*>(scope->resolve(parent, false));
+		}
+		else {
+			return scope->resolveMethod(parent, params, false);
+		}
+
+		name = child;
+	} while ( !name.empty() );
+
+	return 0;
+}
+
+MethodScope* LocalClient::getMethodScope(IScope* scope) const
+{
+	while ( scope ) {
+		IScope* parent = scope->getEnclosingScope();
+
+		if ( parent->getScopeType() == IScope::IType::MethodScope ) {
+			return static_cast<MethodScope*>(parent);
+		}
+
+		scope = parent;
 	}
 
 	return 0;
@@ -385,6 +444,8 @@ void LocalClient::loadConfig()
 		return;
 	}
 
+	writeln("Loading configuration...");
+
 	// reset current configuration
 	mDebugger->clearBreakPoints();
 	mWatches.clear();
@@ -396,7 +457,21 @@ void LocalClient::loadConfig()
 
 	Json::Value config = Json::Parser::parse(data);
 
-	// breakpoints
+	// (1) odebugger config
+	if ( config.isMember("autostart") ) {
+		mSettings->autoStart(config["autostart"].asBool());
+	}
+	if ( config.isMember("autowatch") ) {
+		mSettings->autoWatch(config["autowatch"].asBool());
+	}
+	if ( config.isMember("breakonexceptioncatch") ) {
+		mSettings->breakOnExceptionCatch(config["breakonexceptioncatch"].asBool());
+	}
+	if ( config.isMember("breakonexceptionthrow") ) {
+		mSettings->breakOnExceptionThrow(config["breakonexceptionthrow"].asBool());
+	}
+
+	// (2) breakpoints
 	if ( config.isMember("breakpoints") ) {
 		// parse breakpoints
 		Json::Value::Members breakpoints = config["breakpoints"].members();
@@ -409,7 +484,7 @@ void LocalClient::loadConfig()
 		}
 	}
 
-	// watches
+	// (3) watches
 	if ( config.isMember("watches") ) {
 		// parse watches
 		Json::Value::Members watches = config["watches"].members();
@@ -420,20 +495,6 @@ void LocalClient::loadConfig()
 				parseCommands(command)
 			);
 		}
-	}
-
-	// odebugger config
-	if ( config.isMember("autostart") ) {
-		mSettings->autoStart(config["autostart"].asBool());
-	}
-	if ( config.isMember("autowatch") ) {
-		mSettings->autoWatch(config["autowatch"].asBool());
-	}
-	if ( config.isMember("breakonexceptioncatch") ) {
-		mSettings->breakOnExceptionCatch(config["breakonexceptioncatch"].asBool());
-	}
-	if ( config.isMember("breakonexceptionthrow") ) {
-		mSettings->breakOnExceptionThrow(config["breakonexceptionthrow"].asBool());
 	}
 }
 
@@ -458,7 +519,12 @@ bool LocalClient::modifySymbol(const StringList& tokens)
 		return false;
 	}
 
-	Runtime::Object* object = static_cast<Runtime::Object*>(symbol);
+	Runtime::Object* object = dynamic_cast<Runtime::Object*>(symbol);
+	if ( !object ) {
+		writeln("'" + name + "' is not a variable");
+		return false;
+	}
+
 	if ( !object->isAtomicType() ) {
 		writeln("can not modify complex type '" + object->Typename() + "' ");
 		return false;
@@ -619,15 +685,16 @@ void LocalClient::printHelp()
 
 	writeln("\tautowatch     automatically show watches after reaching breakpoint");
 	writeln("\tbreak (b)     add breakpoint");
-	writeln("\tbreakpoints   print breakpoints");
+	writeln("\tbreakpoints   print all breakpoints");
 	writeln("\tdelete (d)    delete breakpoint");
-	writeln("\thelp          print help message");
+	writeln("\thelp          print this help message");
 	writeln("\tload          load configuration");
 	writeln("\tquit (q)      quit odebugger");
-	writeln("\trun (r)       run program");
-	writeln("\tsave          save configuration");
+	writeln("\trun (r)       run or resume program");
+	writeln("\tstore         store configuration");
 	writeln("\tunwatch       remove symbol watch");
 	writeln("\twatch (w)     add symbol watch");
+	writeln("\twatches       print all watched symbols");
 
 	if ( mScope ) {
 		writeln("Debugging commands:");
@@ -640,7 +707,6 @@ void LocalClient::printHelp()
 		writeln("\tnext (n)         step over");
 		writeln("\tout (o)          break on next function exit");
 		writeln("\tprint (p)        print symbol");
-		writeln("\twatches (p)      print watched symbols");
 	}
 }
 
@@ -670,6 +736,13 @@ void LocalClient::printSymbol(const StringList& tokens)
 	}
 
 	writeln(symbol->ToString());
+}
+
+void LocalClient::printWatches()
+{
+	writeln("Watches:");
+
+	refreshWatches();
 }
 
 std::string LocalClient::read()
@@ -751,9 +824,17 @@ void LocalClient::run(const StringList& tokens)
 
 void LocalClient::saveConfig()
 {
+	writeln("Storing configuration...");
+
 	Json::Value config;
 
-	// (1) write breakpoints to config
+	// (1) odebugger config
+	config.addMember("autostart", Json::Value(mSettings->autoStart()));
+	config.addMember("autowatch", Json::Value(mSettings->autoWatch()));
+	config.addMember("breakonexceptioncatch", Json::Value(mSettings->breakOnExceptionCatch()));
+	config.addMember("breakonexceptionthrow", Json::Value(mSettings->breakOnExceptionThrow()));
+
+	// (2) write breakpoints to config
 	Json::Value breakpoints;
 	Core::BreakPointCollection breakpointList = mDebugger->getBreakPoints();
 	for ( Core::BreakPointCollection::const_iterator it = breakpointList.begin(); it != breakpointList.end(); ++it ) {
@@ -761,17 +842,12 @@ void LocalClient::saveConfig()
 	}
 	config.addMember("breakpoints", breakpoints);
 
-	// (2) write watches to config
+	// (3) write watches to config
 	Json::Value watches;
 	for ( WatchCollection::const_iterator it = mWatches.begin(); it != mWatches.end(); ++it ) {
 		watches.addElement(it->symbol());
 	}
 	config.addMember("watches", watches);
-
-	// odebugger config
-	config.addMember("autostart", Json::Value(mSettings->autoStart()));
-	config.addMember("autowatch", Json::Value(mSettings->autoWatch()));
-	config.addMember("breakonexception", Json::Value(mSettings->breakOnExceptionThrow()));
 
 	// serialize config to string
 	Json::StyledWriter writer;

@@ -25,7 +25,7 @@ public:
 		mAutoStart = false;
 		mAutoStop = false;
 		mAutoWatch = true;
-		mBreakOnExceptionCatch = true;
+		mBreakOnExceptionCatch = false;
 		mBreakOnExceptionThrow = true;
 		mPrompt = "odebugger> ";
 		mRemoteClient = false;

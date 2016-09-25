@@ -42,12 +42,15 @@ public:
 	bool removeBreakPoint(const StringList& tokens);
 
 	void continueExecution();
-	void executeSymbol(const StringList& tokens);
+	void executeMethod(const StringList &tokens);
+	MethodSymbol* getMethod(std::string name, const ParameterList& params) const;
+	MethodScope* getMethodScope(IScope* scope) const;
 	Symbol* getSymbol(std::string name) const;
 	bool modifySymbol(const StringList& tokens);
 	void printBreakPoints();
 	void printStackTrace();
 	void printSymbol(const StringList& tokens);
+	void printWatches();
 
 	void run(const StringList &tokens);
 	void shutdown();
