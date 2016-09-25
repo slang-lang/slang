@@ -50,7 +50,7 @@ public object BaseObject {
 	}
 
 	protected void protectedMethodCall() {
-		mLogger.warn("protectedMethodCall()");
+		mLogger.warning("protectedMethodCall()");
 		//print("protectedMethodCall()");
 	}
 

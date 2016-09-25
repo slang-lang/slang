@@ -13,6 +13,12 @@ public namespace System {
 		}
 	}
 
+	public object IOException extends Exception {
+		public void IOException(string ex) {
+			base.Exception("IOException: " + ex);
+		}
+	}
+
 	public object NullPointerException extends Exception {
 		public void NullPointerException(string ex) {
 			base.Exception("NullPointerException: " + ex);

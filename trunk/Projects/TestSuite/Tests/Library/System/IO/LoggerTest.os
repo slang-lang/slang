@@ -9,7 +9,7 @@ public object Main {
 		logger.debug("this is a debug output");
 		logger.error("this is an error");
 		logger.info("this is an information");
-		logger.warn("this is a warning");
+		logger.warning("this is a warning");
 	}
 }
 

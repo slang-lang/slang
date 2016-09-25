@@ -3,6 +3,7 @@
 
 import Assert;
 import Boolean;
+import Collections.All;
 import Double;
 import Exception;
 import Float;
