@@ -2,13 +2,11 @@ INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
 SET(SOURCES
 	AClient.cpp
-	Watch.cpp
 )
 
 SET(HEADERS
 	AClient.h
 	Settings.h
-	Watch.h
 )
 
 SET(DEPENDENCIES
