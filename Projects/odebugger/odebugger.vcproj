@@ -188,6 +188,26 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\Common\AClient.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Common\"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Common\"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath=".\Application\Application.cpp"
 				>
 				<FileConfiguration
@@ -231,12 +251,76 @@
 				RelativePath=".\main.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\VSCodeRemoteClient\Protocol.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\VSCodeRemoteClient\"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\VSCodeRemoteClient\"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\VSCodeRemoteClient\RemoteClient.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\VSCodeRemoteClient\"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\VSCodeRemoteClient\"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\LocalClient\Watch.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\LocalClient\"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\LocalClient\"
+					/>
+				</FileConfiguration>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath=".\Common\AClient.h"
+				>
+			</File>
 			<File
 				RelativePath=".\Application\Application.h"
 				>
@@ -250,7 +334,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\VSCodeRemoteClient\Protocol.h"
+				>
+			</File>
+			<File
+				RelativePath=".\VSCodeRemoteClient\RemoteClient.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Common\Settings.h"
+				>
+			</File>
+			<File
+				RelativePath=".\LocalClient\Watch.h"
 				>
 			</File>
 		</Filter>
