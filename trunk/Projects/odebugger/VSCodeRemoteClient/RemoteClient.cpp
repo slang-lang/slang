@@ -10,7 +10,9 @@
 #include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Script.h>
+#include <Core/Symbol.h>
 #include <Core/StackTrace.h>
+#include <Core/Tools.h>
 #include <Core/VirtualMachine.h>
 #include <Debugger/Debugger.h>
 #include "Protocol.h"
@@ -146,6 +148,13 @@ void RemoteClient::Evaluate(const VSCodeDebug::Request& request)
 {
 	VSCodeDebug::Response response(request);
 
+	std::string name;
+
+	Symbol* symbol = getSymbol(name);
+	if ( !symbol ) {
+
+	}
+
 	SendMessage(&response);
 }
 
@@ -159,6 +168,32 @@ int RemoteClient::exec()
 	while ( mRunning ) {
 		notify(0, Core::Debugger::immediateBreakPoint);
 	}
+
+	return 0;
+}
+
+Symbol* RemoteClient::getSymbol(std::string name) const
+{
+	std::string child;
+	std::string parent;
+	SymbolScope* scope = mScope;
+
+	do {
+		if ( !scope ) {
+			return 0;
+		}
+
+		Tools::split(name, parent, child);
+
+		if ( !parent.empty() && !child.empty() ) {
+			scope = static_cast<ObjectiveScript::Runtime::Object*>(scope->resolve(parent, false));
+		}
+		else {
+			return scope->resolve(parent, false);
+		}
+
+		name = child;
+	} while ( !name.empty() );
 
 	return 0;
 }
@@ -291,11 +326,6 @@ void RemoteClient::Scopes(const VSCodeDebug::Request& request)
 	VSCodeDebug::Response response(request);
 
 	SendMessage(&response);
-}
-
-void RemoteClient::SendErrorResponse()
-{
-
 }
 
 void RemoteClient::SendMessage(VSCodeDebug::ProtocolMessage* message)

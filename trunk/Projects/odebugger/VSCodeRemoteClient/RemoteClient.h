@@ -29,6 +29,7 @@ namespace ObjectiveScript {
 namespace Core {
 	class IDebugger;
 }
+class Symbol;
 class VirtualMachine;
 
 class RemoteClient : public AClient,
@@ -70,13 +71,15 @@ private:	// Visual Studio Code debugger interface
 
 private:
 	void DispatchRequest(VSCodeDebug::ProtocolMessage* request);
-	void SendErrorResponse();
 	void SendMessage(VSCodeDebug::ProtocolMessage* message);
 
 private:
 	std::string read();
 	void start();
 	void stop();
+
+private:
+	Symbol* getSymbol(std::string name) const;
 
 private:
 	bool mContinue;
