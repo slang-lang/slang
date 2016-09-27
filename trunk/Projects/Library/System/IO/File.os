@@ -59,63 +59,51 @@ public namespace IO {
 		}
 
 		public bool readBool() const {
-			bool value = freadb(mHandle);
-			return value;
+			return freadb(mHandle);
 		}
 
 		public double readDouble() const {
-			double value = freadd(mHandle);
-			return value;
+			return freadd(mHandle);
 		}
 
 		public float readFloat() const {
-			float value = freadf(mHandle);
-			return value;
+			return freadf(mHandle);
 		}
 
 		public int readInt() const {
-			int value = freadi(mHandle);
-			return value;
+			return freadi(mHandle);
 		}
 
-		public string readString(int length) {
-			string value = freads(mHandle, length);
-			return value;
+		public string readString(int length = 1) {
+			return freads(mHandle, length);
 		}
 
 		public bool rewind() const {
-			int result = fseek(mHandle, 0);
-			return (result == 0);
+			return (fseek(mHandle, 0) == 0);
 		}
 
 		public bool seek(int address) {
-			int result = fseek(mHandle, address);
-			return (result == 0);
+			return (fseek(mHandle, address) == 0);
 		}
 
 		public bool write(bool value) {
-			int result = fwriteb(mHandle, value);
-			return (result == 0);
+			return (fwriteb(mHandle, value) == 0);
 		}
 
 		public bool write(double value) {
-			int result = fwrited(mHandle, value);
-			return (result == 0);
+			return (fwrited(mHandle, value) == 0);
 		}
 
 		public bool write(float value) {
-			int result = fwritef(mHandle, value);
-			return (result == 0);
+			return (fwritef(mHandle, value) == 0);
 		}
 
 		public bool write(int value) {
-			int result = fwritei(mHandle, value);
-			return (result == 0);
+			return (fwritei(mHandle, value) == 0);
 		}
 
 		public bool write(string value) {
-			int result = fwrites(mHandle, value);
-			return (result == 0);
+			return (fwrites(mHandle, value) == 0);
 		}
 	}
 }
