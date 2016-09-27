@@ -1,10 +1,11 @@
 
-import System.Exception;
-import System.String;
+import Collection.IIterateable;
+import Exception;
+import String;
 
 public namespace System {
 
-	public object StringIterator {
+	public object StringIterator /*implements IIterateable*/ {
 		private int mCurrentPosition;
 		private string mSeparator;
 		private String mValue;

@@ -1,6 +1,5 @@
 
 import ACollection;
-import IIterateable;
 import System.Exception;
 
 public namespace System {
