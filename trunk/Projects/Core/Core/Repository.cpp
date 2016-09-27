@@ -457,6 +457,8 @@ void Repository::initialize()
 		NullObject->setSealed(true);
 
 		mScope->define(VALUE_NULL, NullObject);
+
+		addReference(NullObject);
 	}
 }
 

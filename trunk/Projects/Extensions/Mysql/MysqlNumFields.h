@@ -47,7 +47,7 @@ public:
 
 			MYSQL_RES *myResult = mMysqlResults[param_handle];
 			if ( !myResult ) {
-				throw Common::Exceptions::Exception("no valid mysql result handle: " + Tools::toString(myResult));
+				throw Common::Exceptions::Exception("no valid mysql result handle: " + Tools::toString(param_handle));
 			}
 
 			int my_result = mysql_num_fields(myResult);

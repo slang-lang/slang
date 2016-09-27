@@ -173,6 +173,22 @@
 		<File
 			RelativePath=".\Apache\ApacheExtension.cpp"
 			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					ObjectFile="$(IntDir)\Apache\"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					ObjectFile="$(IntDir)\Apache\"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath=".\Apache\ApacheExtension.h"
@@ -291,8 +307,28 @@
 			>
 		</File>
 		<File
+			RelativePath=".\Apache\IsSet.h"
+			>
+		</File>
+		<File
 			RelativePath=".\JSON\JsonExtension.cpp"
 			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					ObjectFile="$(IntDir)\Json\"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					ObjectFile="$(IntDir)\Json\"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath=".\JSON\JsonExtension.h"
@@ -321,6 +357,26 @@
 		<File
 			RelativePath=".\Mysql\MysqlError.h"
 			>
+		</File>
+		<File
+			RelativePath=".\Mysql\MysqlExtension.cpp"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					ObjectFile="$(IntDir)\Mysql\"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					ObjectFile="$(IntDir)\Mysql\"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath=".\Mysql\MysqlExtension.h"
@@ -412,6 +468,10 @@
 		</File>
 		<File
 			RelativePath=".\Apache\Post.h"
+			>
+		</File>
+		<File
+			RelativePath=".\Apache\Pre.h"
 			>
 		</File>
 		<File

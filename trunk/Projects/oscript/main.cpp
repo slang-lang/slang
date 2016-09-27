@@ -128,7 +128,7 @@ void processParameters(int argc, const char* argv[])
 		}
 		else {
 			params.push_back(argv[i]);
-			paramStr += ", ";
+			paramStr += " ";
 			paramStr += argv[i];
 		}
 	}
@@ -174,15 +174,15 @@ int main(int argc, const char* argv[])
 
 	try {
 		ObjectiveScript::Script *script = mVirtualMachine.createScriptFromFile(mFilename, mParameters);
-		assert(script);
+		if ( script ) {
+			// check if an instance ("main") of a Main object exists
+			ObjectiveScript::Runtime::Object *main = static_cast<ObjectiveScript::Runtime::Object*>(script->resolve("main"));
 
-		// check if an instance ("main") of a Main object exists
-		ObjectiveScript::Runtime::Object *main = static_cast<ObjectiveScript::Runtime::Object*>(script->resolve("main"));
-
-		if ( !main || main->isAtomicType() ) {
-			ObjectiveScript::Runtime::IntegerObject result;
-			script->execute("Main", mParameters, &result);
-			return result.getValue().toInt();
+			if ( !main || main->isAtomicType() ) {
+				ObjectiveScript::Runtime::IntegerObject result;
+				script->execute("Main", mParameters, &result);
+				return result.getValue().toInt();
+			}
 		}
 	}
 	catch ( std::exception &e ) {	// catch every std::exception and all derived exception types

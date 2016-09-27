@@ -53,7 +53,7 @@ public:
 
 			MYSQL_RES *myResult = mysql_use_result(myConn);
 			if ( !myResult ) {
-				throw Common::Exceptions::Exception("no valid mysql result handle: " + Tools::toString(myResult));
+				throw Common::Exceptions::Exception("no valid mysql result handle: " + Tools::toString(param_handle));
 			}
 
 			int my_result = ++mNumMysqlResults;
