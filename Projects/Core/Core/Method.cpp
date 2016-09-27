@@ -326,13 +326,13 @@ ControlFlow::E Method::processControlFlow(ControlFlow::E controlflow, Object* re
 				// no type cast necessary for null objects
 			}
 			else if ( QualifiedTypename() != VoidObject::TYPENAME && result->QualifiedOutterface() != QualifiedTypename() ) {
-				if ( !ALLOW_IMPLICIT_CASTS ) {
+#ifdef ALLOW_IMPLICIT_CASTS
 					throw Runtime::Exceptions::ExplicitCastRequired("Explicit cast required for type conversion from " + result->QualifiedOutterface() + " to " + QualifiedTypename() + " in " + getFullScopeName());
-				}
-
+#else
 				OSwarn("implicit type conversion from " + result->QualifiedOutterface() + " to " + QualifiedTypename());// + " in " + getFullScopeName());
 
 				typecast(result, QualifiedTypename());
+#endif
 			}
 
 			// correct behavior detected, override control flow with normal state

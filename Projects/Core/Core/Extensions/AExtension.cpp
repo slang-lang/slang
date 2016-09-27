@@ -29,10 +29,8 @@ const std::string& AExtension::getName() const
 	return mName;
 }
 
-void AExtension::initialize(IScope* scope)
+void AExtension::initialize(IScope* /*scope*/)
 {
-(void)scope;
-
 	mInitialized = true;
 }
 

@@ -80,6 +80,7 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 	Analyser analyser(mRepository);
 	analyser.processString(content, mScriptFile);
 
+	// load all library references
 	StringList libraries = analyser.getLibraryReferences();
 	for ( StringList::const_iterator libIt = libraries.begin(); libIt != libraries.end(); ++libIt ) {
 		bool imported = false;

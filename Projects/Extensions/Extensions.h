@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_h
-#define ObjectiveScript_Extensions_h
+#ifndef ObjectiveScript_Extensions_Extensions_h
+#define ObjectiveScript_Extensions_Extensions_h
 
 
 // Extension includes
