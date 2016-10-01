@@ -27,7 +27,7 @@ public object Main {
 		Boolean value = new Boolean(true);
 		print(string value);
 
-		return value;
+		return bool value;
 	}
 
 	private bool TestCase3() modify {
