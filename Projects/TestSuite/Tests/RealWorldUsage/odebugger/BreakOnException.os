@@ -1,6 +1,6 @@
 #!/usr/local/bin/oscript
 
-private void BreakOnException() const {
+private void BreakOnException() const throws {
 	print("Break on exception...");
 
 	try {

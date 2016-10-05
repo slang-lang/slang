@@ -21,7 +21,7 @@ public object Box {
 public object Warehouse implements IWarehouse {
 	private Box mBox;
 
-	public void insert(Box box ref) modify {
+	public void insert(Box box ref) modify throws {
 		if ( mBox ) {
 			throw new System.Exception("Warehouse is already full!");
 		}
@@ -33,7 +33,7 @@ public object Warehouse implements IWarehouse {
 		return bool mBox;
 	}
 
-	public void takeOut() modify {
+	public void takeOut() modify throws {
 		if ( !mBox ) {
 			throw new System.Exception("Warehouse is empty!");
 		}

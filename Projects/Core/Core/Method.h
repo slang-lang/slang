@@ -33,7 +33,7 @@ namespace Runtime {
 // Forward declarations
 class Object;
 
-class Method : public SymbolScope,
+class Method : public NamedScope,
 			   public MethodSymbol
 {
 public:

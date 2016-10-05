@@ -112,7 +112,8 @@ private: // Execution
 
 	ControlFlow::E interpret(const TokenList& tokens, Object* result);
 
-	Namespace* getEnclosingSpace() const;
+	NamedScope* getEnclosingMethodScope(IScope* scope) const;
+	Namespace* getEnclosingNamespace() const;
 
 private:
 	ControlFlow::E mControlFlow;

@@ -7,7 +7,7 @@ private object TestObject {
 		print("TestObject()");
 	}
 
-	public void ~TestObject() {
+	public void ~TestObject() throws {
 		print("~TestObject()");
 
 		print("throw in destructor");

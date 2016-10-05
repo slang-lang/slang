@@ -16,9 +16,8 @@
 namespace ObjectiveScript {
 
 
-SymbolScope::SymbolScope(const std::string& name, IScope *parent)
+SymbolScope::SymbolScope(IScope *parent)
 : mParent(parent),
-  mScopeName(name),
   mScopeType(IType::SymbolScope)
 {
 }
@@ -98,8 +97,20 @@ void SymbolScope::undefine(const std::string& name, Symbol* /*symbol*/)
 }
 
 
+NamedScope::NamedScope(const std::string& name, IScope* parent)
+: SymbolScope(parent)
+{
+	mScopeName = name;
+	mScopeType = IType::NamedScope;
+}
+
+NamedScope::~NamedScope()
+{
+}
+
+
 MethodScope::MethodScope(const std::string& name, IScope* parent)
-: SymbolScope(name, parent)
+: NamedScope(name, parent)
 {
 	mScopeType = IType::MethodScope;
 }

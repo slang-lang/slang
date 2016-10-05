@@ -37,7 +37,7 @@ public object Main {
 		assert( TestCase6() );	// not supported atm
 	}
 
-	private bool TestCase1() {
+	private bool TestCase1() throws {
 		print("TestCase1()");
 
 		try {
@@ -54,7 +54,7 @@ public object Main {
 		return true;
 	}
 
-	private bool TestCase2() {
+	private bool TestCase2() throws {
 		print("TestCase2()");
 
 		try {
@@ -73,7 +73,7 @@ public object Main {
 		return true;
 	}
 
-	private bool TestCase3() {
+	private bool TestCase3() throws {
 		print("TestCase3()");
 
 		try {
@@ -95,7 +95,7 @@ public object Main {
 		return true;
 	}
 
-	private bool TestCase4() {
+	private bool TestCase4() throws {
 		print("TestCase4()");
 
 		ExceptionTest.ObjectThatThrows obj = new ExceptionTest.ObjectThatThrows();
@@ -117,7 +117,7 @@ public object Main {
 		return true;
 	}
 
-	private bool TestCase5() {
+	private bool TestCase5() throws {
 		print("TestCase5()");
 
 		try {
@@ -148,7 +148,7 @@ public object Main {
 		return true;
 	}
 
-	private bool TestCase6() {
+	private bool TestCase6() throws {
 		print("TestCase6()");
 
 		try {

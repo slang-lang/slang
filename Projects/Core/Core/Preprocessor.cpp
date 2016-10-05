@@ -150,8 +150,8 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token) const
 	bool isStatic = true;
 	MethodAttributes::MethodType::E methodType = MethodAttributes::MethodType::Method;
 	Mutability::E mutability = Mutability::Const;
-	bool throws = false;
 	int numConstModifiers = 0;
+	bool throws = false;
 
 	// look for the visibility token
 	std::string visibility = (*token++).content();
@@ -180,6 +180,7 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token) const
 	}
 
 	expect(Token::Type::PARENTHESIS_OPEN, token);
+
 
 	ParameterList params = Parser::parseParameters(token);
 
