@@ -13,6 +13,12 @@ public namespace System {
 		}
 	}
 
+	public object ArithmeticException extends Exception {
+		public void ArithmeticException(string ex) {
+			base.Exception("ArithmeticException: " + ex);
+		}
+	}
+
 	public object IOException extends Exception {
 		public void IOException(string ex) {
 			base.Exception("IOException: " + ex);
