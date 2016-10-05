@@ -27,7 +27,7 @@ namespace Runtime {
 class SymbolScope : public IScope
 {
 public:
-	SymbolScope(const std::string& name, IScope* parent = 0);
+	SymbolScope(IScope* parent = 0);
 	virtual ~SymbolScope();
 
 public:	// IScope implementation
@@ -48,7 +48,14 @@ protected:
 };
 
 
-class MethodScope : public SymbolScope
+class NamedScope : public SymbolScope
+{
+public:
+	NamedScope(const std::string& name, IScope* parent = 0);
+	virtual ~NamedScope();
+};
+
+class MethodScope : public NamedScope
 {
 public:
 	typedef std::set<Runtime::Method*> MethodCollection;

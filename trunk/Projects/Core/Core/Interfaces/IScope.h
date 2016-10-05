@@ -23,10 +23,12 @@ class Symbol;
 class IScope
 {
 public:
-	class IType {
+	class IType
+	{
 	public:
 		typedef enum {
 			MethodScope,
+			NamedScope,
 			SymbolScope,
 			UnknownScope
 		} E;

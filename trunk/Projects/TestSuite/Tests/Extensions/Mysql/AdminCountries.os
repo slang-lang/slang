@@ -12,7 +12,7 @@ public object Main {
 		UI_ShowCountries();
 	}
 
-	private void Startup() modify {
+	private void Startup() modify throws {
 		mConnection = new Mysql.Connection("192.168.0.20", 0, "oscript", "oscript", "ts_parking");
 		if ( !mConnection.isOpen() ) {
 			writeln("error while connecting to database!");

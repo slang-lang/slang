@@ -96,12 +96,22 @@ void Interpreter::garbageCollector()
 	symbols.clear();
 }
 
-const ExceptionData& Interpreter::getExceptionData() const
+NamedScope* Interpreter::getEnclosingMethodScope(IScope* scope) const
 {
-	return mExceptionData;
+	while ( scope ) {
+		IScope* parent = scope->getEnclosingScope();
+
+		if ( parent && parent->getScopeType() == IScope::IType::NamedScope ) {
+			return static_cast<NamedScope*>(parent);
+		}
+
+		scope = parent;
+	}
+
+	return 0;
 }
 
-Namespace* Interpreter::getEnclosingSpace() const
+Namespace* Interpreter::getEnclosingNamespace() const
 {
 	IScope* scope = mOwner->getEnclosingScope();
 
@@ -121,6 +131,11 @@ Namespace* Interpreter::getEnclosingSpace() const
 	}
 
 	return 0;
+}
+
+const ExceptionData& Interpreter::getExceptionData() const
+{
+	return mExceptionData;
 }
 
 Repository* Interpreter::getRepository() const
@@ -154,7 +169,7 @@ inline Symbol* Interpreter::identify(TokenIterator& token) const
 			result = getScope()->resolve(identifier, onlyCurrentScope);
 
 			if ( !result ) {
-				Namespace* space = getEnclosingSpace();
+				Namespace* space = getEnclosingNamespace();
 				if ( space ) {
 					result = getScope()->resolve(space->QualifiedTypename() + "." + identifier, onlyCurrentScope);
 				}
@@ -1270,6 +1285,7 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 	bodyBegin++;	// don't collect scope token
 	token = bodyEnd;
 
+	// CaseBlock is our data holder object for each case-block, hence the name
 	class CaseBlock
 	{
 	public:
@@ -1286,6 +1302,7 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 	CaseBlocks caseBlocks;
 	CaseBlock defaultBlock = CaseBlock(getTokens().end(), getTokens().end());
 
+	// collect all case-blocks for further processing
 	while ( bodyBegin != bodyEnd ) {
 		if ( bodyBegin->type() == Token::Type::KEYWORD && bodyBegin->content() == KEYWORD_CASE ) {
 			TokenIterator tmp = findNextBalancedCurlyBracket(bodyBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
@@ -1312,6 +1329,7 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 	for ( CaseBlocks::iterator it = caseBlocks.begin(); it != caseBlocks.end(); ++it ) {
 		it->mBegin++;
 
+		// evaluate switch-expression
 		Object condition;
 		try {
 			expression(&condition, it->mBegin);
@@ -1321,6 +1339,7 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 			return;
 		}
 
+		// compare case block expression with switch-expression
 		if ( operator_binary_equal(&expr, &condition) ) {
 			expect(Token::Type::COLON, it->mBegin++);
 			expect(Token::Type::BRACKET_CURLY_OPEN, it->mBegin++);	// don't collect scope token
@@ -1332,6 +1351,7 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 				it->mBegin++;
 			}
 
+			// process/interpret case-block tokens
 			mControlFlow = interpret(caseTokens, result);
 
 			switch ( mControlFlow ) {
@@ -1363,13 +1383,14 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 			defaultBlock.mBegin++;
 		}
 
+		// process/interpret case-block tokens
 		mControlFlow = interpret(defaultTokens, result);
 
 		switch ( mControlFlow ) {
 			case ControlFlow::Break:
 			case ControlFlow::Continue:
 			case ControlFlow::Normal:
-				mControlFlow = ControlFlow::Normal;
+				mControlFlow = ControlFlow::Normal;	// reset control flow state to normal
 				break;	// statement has no effect because the default section is the last executed section
 			case ControlFlow::ExitProgram:
 			case ControlFlow::Return:
@@ -1385,7 +1406,12 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
  */
 void Interpreter::process_throw(TokenIterator& token, Object* /*result*/)
 {
-	// TODO: check if our parent scope is a method that is allowed to throw exceptions
+	// check if our parent scope is a method that is allowed to throw exceptions
+	Runtime::Method* method = dynamic_cast<Runtime::Method*>(getEnclosingMethodScope(getScope()));
+	if ( method && !method->throws() ) {
+		// this method is not marked as 'throwing', so we can't throw exceptions here
+		OSwarn(method->getFullScopeName() + " throws although it is not marked with 'throws'!");
+	}
 
 	Object* data = getRepository()->createInstance(OBJECT);
 	try {
@@ -1701,7 +1727,7 @@ void Interpreter::process_while(TokenIterator& token, Object* result)
 
 void Interpreter::pushScope()
 {
-	SymbolScope* scope = new SymbolScope("", getScope());
+	SymbolScope* scope = new SymbolScope(getScope());
 
 	mScopeStack.push_back(scope);
 }

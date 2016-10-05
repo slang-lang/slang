@@ -23,7 +23,7 @@ namespace Runtime {
 
 
 Method::Method(IScope* parent, const std::string& name, const std::string& type)
-: SymbolScope(name, parent),
+: NamedScope(name, parent),
   MethodSymbol(name),
   mRepository(0),
   mOwner(parent),
@@ -371,6 +371,7 @@ Symbol* Method::resolveMethod(const std::string& name, const ParameterList& para
 		switch ( mParent->getScopeType() ) {
 			case IScope::IType::MethodScope:
 				return static_cast<MethodScope*>(mParent)->resolveMethod(name, params, onlyCurrentScope);
+			case IScope::IType::NamedScope:
 			case IScope::IType::SymbolScope:
 			case IScope::IType::UnknownScope:
 				throw Common::Exceptions::Exception("invalid/unknown scope type detected!");

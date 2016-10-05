@@ -399,7 +399,7 @@ MethodScope* LocalClient::getMethodScope(IScope* scope) const
 	while ( scope ) {
 		IScope* parent = scope->getEnclosingScope();
 
-		if ( parent->getScopeType() == IScope::IType::MethodScope ) {
+		if ( parent && parent->getScopeType() == IScope::IType::MethodScope ) {
 			return static_cast<MethodScope*>(parent);
 		}
 

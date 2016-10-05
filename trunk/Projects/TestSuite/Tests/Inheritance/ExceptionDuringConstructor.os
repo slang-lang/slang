@@ -3,7 +3,7 @@
 import System.Exception;
 
 private object TestObject {
-	public void TestObject() {
+	public void TestObject() throws {
 		print("TestObject()");
 
 		print("throw in constructor");

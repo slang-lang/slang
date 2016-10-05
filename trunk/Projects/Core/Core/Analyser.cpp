@@ -323,12 +323,12 @@ bool Analyser::createMember(TokenIterator& token, TokenIterator /*end*/)
 
 bool Analyser::createMethod(TokenIterator& token, TokenIterator end)
 {
-	bool isAbstract = false;
 	bool isRecursive = false;
 	std::string languageFeature;
 	MethodAttributes::MethodType::E methodType = MethodAttributes::MethodType::Function;
-	Mutability::E mutability = Mutability::Const;
+	Mutability::E mutability = Mutability::Const;	// extreme const correctness: all methods are const by default
 	std::string name;
+	int numConstModifiers = 0;
 	bool throws = false;
 	std::string type;
 	std::string visibility;
@@ -347,12 +347,51 @@ bool Analyser::createMethod(TokenIterator& token, TokenIterator end)
 
 	expect(Token::Type::PARENTHESIS_OPEN, token);
 
+
 	ParameterList params = Parser::parseParameters(token);
+
+	// look at possible attributes (abstract, const, final, modify, etc.)
+	// while looking for the next opening curly bracket
+	bool isModifierToken = true;
+	do {
+		token++;
+
+		if ( token->category() == Token::Category::Modifier ) {
+			if ( token->content() == MODIFIER_ABSTRACT ) {
+				throw Common::Exceptions::NotSupported("global methods cannot be declared as abstract");
+			}
+			else if ( token->content() == MODIFIER_CONST ) {
+				mutability = Mutability::Const;
+				numConstModifiers++;
+			}
+			else if ( token->content() == MODIFIER_FINAL ) {
+				throw Common::Exceptions::NotSupported("global methods cannot be declared as final");
+			}
+			else if ( token->content() == MODIFIER_MODIFY ) {
+				mutability = Mutability::Modify;
+				numConstModifiers++;
+			}
+			else if ( token->content() == MODIFIER_RECURSIVE ) {
+				isRecursive = true;
+			}
+			else if ( token->content() == MODIFIER_STATIC ) {
+				throw Common::Exceptions::NotSupported("global methods cannot be declared as static");
+			}
+		}
+		else {
+			isModifierToken = false;
+		}
+	} while ( isModifierToken && token->type() != Token::Type::BRACKET_CURLY_OPEN );
+
+	if ( numConstModifiers > 1 ) {
+		throw Common::Exceptions::Exception("modifiers 'const' & 'modify' are exclusive");
+	}
 
 	if ( token->type() == Token::Type::RESERVED_WORD && token->content() == RESERVED_WORD_THROWS ) {
 		throws = true;
 		token++;
 	}
+
 
 	// look for the next opening curly brackets
 	TokenIterator open = findNext(token, Token::Type::BRACKET_CURLY_OPEN);
@@ -369,7 +408,7 @@ bool Analyser::createMethod(TokenIterator& token, TokenIterator end)
 
 	// create a new method with the corresponding return value
 	Runtime::Method *method = new Runtime::Method(mScope, name, type);
-	method->setAbstract(isAbstract);
+	method->setAbstract(false);
 	method->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
 	method->setMethodType(methodType);
 	method->setMutability(mutability);

@@ -10,7 +10,6 @@
 #include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Script.h>
-#include <Core/Symbol.h>
 #include <Core/StackTrace.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine.h>
@@ -236,9 +235,8 @@ void RemoteClient::Next(const VSCodeDebug::Request& request)
 	SendMessage(&response);
 }
 
-int RemoteClient::notify(SymbolScope* scope, const Core::BreakPoint& breakpoint)
+int RemoteClient::notify(SymbolScope* scope, const Core::BreakPoint& /*breakpoint*/)
 {
-(void)breakpoint;
 	mContinue = false;
 	mScope = scope;
 
