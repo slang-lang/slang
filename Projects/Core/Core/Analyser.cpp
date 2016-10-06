@@ -350,7 +350,7 @@ bool Analyser::createMethod(TokenIterator& token, TokenIterator end)
 
 	ParameterList params = Parser::parseParameters(token);
 
-	// look at possible attributes (abstract, const, final, modify, etc.)
+	// look at possible attributes (abstract, const, final, modify, throws, etc.)
 	// while looking for the next opening curly bracket
 	bool isModifierToken = true;
 	do {
@@ -376,6 +376,9 @@ bool Analyser::createMethod(TokenIterator& token, TokenIterator end)
 			}
 			else if ( token->content() == MODIFIER_STATIC ) {
 				throw Common::Exceptions::NotSupported("global methods cannot be declared as static");
+			}
+			else if ( token->content() == RESERVED_WORD_THROWS ) {
+				throws = true;
 			}
 		}
 		else {
