@@ -1410,7 +1410,7 @@ void Interpreter::process_throw(TokenIterator& token, Object* /*result*/)
 	Runtime::Method* method = dynamic_cast<Runtime::Method*>(getEnclosingMethodScope(getScope()));
 	if ( method && !method->throws() ) {
 		// this method is not marked as 'throwing', so we can't throw exceptions here
-		OSwarn(method->getFullScopeName() + " throws although it is not marked with 'throws'!");
+		OSwarn(std::string(method->getFullScopeName() + " throws although it is not marked with 'throws'!").c_str());
 	}
 
 	Object* data = getRepository()->createInstance(OBJECT);
