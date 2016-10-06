@@ -140,9 +140,7 @@ ControlFlow::E Method::execute(const ParameterList& params, Object* result, cons
 		scope.mParent = mRepository->getGlobalScope();
 	}
 
-	Interpreter interpreter(&scope);
-	interpreter.setRepository(mRepository);
-	interpreter.setTokens(mTokens);
+	Interpreter interpreter(mRepository);
 
 	ParameterList executedParams = mergeParameters(params);
 
@@ -185,7 +183,7 @@ ControlFlow::E Method::execute(const ParameterList& params, Object* result, cons
 	Core::Debugger::GetInstance().notifyEnter(&scope, Core::Debugger::immediateBreakToken);
 
 	// do the real method execution
-	ControlFlow::E controlflow = interpreter.execute(result);
+	ControlFlow::E controlflow = interpreter.execute(&scope, executedParams, result);
 
 	// collect exception data no matter what
 	mExceptionData = interpreter.getExceptionData();

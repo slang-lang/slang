@@ -68,6 +68,9 @@ public: // Setup
 	void setSignature(const ParameterList& params);
 	void setTokens(const TokenList& tokens);
 
+public:
+	const TokenList& getTokens() const { return mTokens; }
+
 protected:
 	ParameterList mergeParameters(const ParameterList& params) const;
 

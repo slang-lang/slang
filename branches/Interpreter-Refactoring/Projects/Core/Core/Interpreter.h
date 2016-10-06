@@ -34,15 +34,11 @@ class Object;
 class Interpreter
 {
 public:
-	Interpreter(SymbolScope* scope);
+	Interpreter(Repository* repository);
 	virtual ~Interpreter();
 
-public:
-	void setRepository(Repository* repository);
-	void setTokens(const TokenList& tokens);
-
 public: // Execution
-	ControlFlow::E execute(Object* result);
+	ControlFlow::E execute(Method* method, const ParameterList& params, Object* result);
 	const ExceptionData& getExceptionData() const;
 
 private: // private types
@@ -113,7 +109,7 @@ private: // Execution
 	ControlFlow::E interpret(const TokenList& tokens, Object* result);
 
 	NamedScope* getEnclosingMethodScope(IScope* scope) const;
-	Namespace* getEnclosingNamespace() const;
+	Namespace* getEnclosingNamespace(IScope* scope) const;
 
 private:
 	ControlFlow::E mControlFlow;

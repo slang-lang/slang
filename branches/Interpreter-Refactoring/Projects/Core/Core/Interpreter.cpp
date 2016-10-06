@@ -30,10 +30,10 @@ namespace ObjectiveScript {
 namespace Runtime {
 
 
-Interpreter::Interpreter(SymbolScope *scope)
+Interpreter::Interpreter(Repository* repository)
 : mControlFlow(ControlFlow::Normal),
-  mOwner(scope),
-  mRepository(0)
+  mOwner(0),
+  mRepository(repository)
 {
 }
 
@@ -44,9 +44,18 @@ Interpreter::~Interpreter()
 /*
  * processes tokens and updates the given result
  */
-ControlFlow::E Interpreter::execute(Object* result)
+ControlFlow::E Interpreter::execute(Method* method, const ParameterList& params, Object* result)
 {
-	return interpret(mTokens, result);
+	(void)params;
+	mOwner = method;
+	mTokens = method->getTokens();
+
+	ControlFlow::E controlflow = interpret(mTokens, result);
+
+	mOwner = 0;
+	mTokens.clear();
+
+	return controlflow;
 }
 
 void Interpreter::expression(Object* result, TokenIterator& start)
@@ -111,23 +120,19 @@ NamedScope* Interpreter::getEnclosingMethodScope(IScope* scope) const
 	return 0;
 }
 
-Namespace* Interpreter::getEnclosingNamespace() const
+Namespace* Interpreter::getEnclosingNamespace(IScope* scope) const
 {
-	IScope* scope = mOwner->getEnclosingScope();
-
 	while ( scope ) {
-		IScope* outter = scope->getEnclosingScope();
+		IScope* parent = scope->getEnclosingScope();
 
-		if ( !outter || outter->getScopeType() != IScope::IType::MethodScope ) {
-			return 0;
+		if ( parent && parent->getScopeType() == IScope::IType::MethodScope ) {
+			Namespace* result = dynamic_cast<Namespace*>(parent);
+			if ( result ) {
+				return result;
+			}
 		}
 
-		Namespace* result = dynamic_cast<Namespace*>(outter);
-		if ( result ) {
-			return result;
-		}
-
-		scope = outter;
+		scope = parent;
 	}
 
 	return 0;
@@ -169,7 +174,7 @@ inline Symbol* Interpreter::identify(TokenIterator& token) const
 			result = getScope()->resolve(identifier, onlyCurrentScope);
 
 			if ( !result ) {
-				Namespace* space = getEnclosingNamespace();
+				Namespace* space = getEnclosingNamespace(getScope());
 				if ( space ) {
 					result = getScope()->resolve(space->QualifiedTypename() + "." + identifier, onlyCurrentScope);
 				}
@@ -1100,8 +1105,9 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 	}
 
 	// check caller's constness
-	if ( static_cast<Method*>(mOwner)->isConst() ) {
-		if ( mOwner->getEnclosingScope() == method->getEnclosingScope() && !method->isConst() ) {
+	Method* owner = dynamic_cast<Method*>(getEnclosingMethodScope(getScope()));
+	if ( owner && owner->isConst() ) {
+		if ( owner->getEnclosingScope() == method->getEnclosingScope() && !method->isConst() ) {
 			// check target method's constness
 			// this is a const method and we want to call a non-const method... neeeeey!
 			throw Common::Exceptions::ConstCorrectnessViolated("only calls to const methods are allowed in const method '" + getScope()->getFullScopeName() + "'", token->position());
@@ -1735,16 +1741,6 @@ void Interpreter::pushScope()
 void Interpreter::pushTokens(const TokenList& tokens)
 {
 	mTokenStack.push_back(tokens);
-}
-
-void Interpreter::setRepository(Repository *repository)
-{
-	mRepository = repository;
-}
-
-void Interpreter::setTokens(const TokenList& tokens)
-{
-	mTokens = tokens;
 }
 
 
