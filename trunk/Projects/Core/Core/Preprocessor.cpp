@@ -144,12 +144,11 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token) const
 	Designtime::BluePrintObject* blueprint = static_cast<Designtime::BluePrintObject*>(mBluePrint);
 
 	bool isAbstract = false;
-	bool isConst = true;		// extreme const correctness: all methods are const by default
 	bool isFinal = false;
 	bool isRecursive = false;
 	bool isStatic = true;
 	MethodAttributes::MethodType::E methodType = MethodAttributes::MethodType::Method;
-	Mutability::E mutability = Mutability::Const;
+	Mutability::E mutability = Mutability::Const;		// extreme const correctness: all methods are const by default
 	int numConstModifiers = 0;
 	bool throws = false;
 
@@ -166,7 +165,6 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token) const
 		// these methods have the same name as their containing object,
 		// so this has to be a constructor or a destructor;
 		// they can never ever be const, ever
-		isConst = false;
 		methodType = MethodAttributes::MethodType::Constructor;
 		mutability = Mutability::Modify;
 	}
@@ -174,7 +172,6 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token) const
 		// these methods have the same name as their containing object,
 		// so this has to be a constructor or a destructor;
 		// they can never ever be const, ever
-		isConst = false;
 		methodType = MethodAttributes::MethodType::Destructor;
 		mutability = Mutability::Modify;
 	}
@@ -184,7 +181,7 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token) const
 
 	ParameterList params = Parser::parseParameters(token);
 
-	// look at possible attributes (abstract, const, final, modify, etc.)
+	// look at possible attributes (abstract, const, final, modify, throws, etc.)
 	// while looking for the next opening curly bracket
 	bool isModifierToken = true;
 	do {
@@ -195,7 +192,6 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token) const
 				isAbstract = true;
 			}
 			else if ( token->content() == MODIFIER_CONST ) {
-				isConst = true;
 				mutability = Mutability::Const;
 				numConstModifiers++;
 			}
@@ -205,7 +201,6 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token) const
 				//numConstModifiers++;
 			}
 			else if ( token->content() == MODIFIER_MODIFY ) {
-				isConst = false;
 				mutability = Mutability::Modify;
 				numConstModifiers++;
 			}
@@ -214,6 +209,9 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token) const
 			}
 			else if ( token->content() == MODIFIER_STATIC ) {
 				isStatic = true;
+			}
+			else if ( token->content() == RESERVED_WORD_THROWS ) {
+				throws = true;
 			}
 		}
 		else {
@@ -225,7 +223,7 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token) const
 		throw Common::Exceptions::Exception("modifiers 'const' & 'modify' are exclusive");
 	}
 
-	if ( isConst &&
+	if ( mutability == Mutability::Const &&
 		(methodType == MethodAttributes::MethodType::Constructor || methodType == MethodAttributes::MethodType::Destructor) ) {
 		throw Common::Exceptions::SyntaxError("constructor or destructor cannot be const");
 	}
