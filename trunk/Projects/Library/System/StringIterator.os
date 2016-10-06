@@ -38,7 +38,7 @@ public namespace System {
 		 * GetNext returns the next sub string of the held String value
 		 * throws System.OutOfBoundsException
 		 */
-		public string GetNext() modify {
+		public string GetNext() modify throws {
 			if ( mCurrentPosition >= mValue.Length() ) {
 				throw new System.OutOfBoundsException("out of bounds");
 			}
