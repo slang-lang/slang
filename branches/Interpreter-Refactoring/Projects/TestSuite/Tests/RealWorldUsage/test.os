@@ -9,8 +9,7 @@ import imported.ThirdLevelImported;
 
 private bool flag;
 
-private bool test()
-{
+private bool test() {
 	print("test");
 
 	flag = true;
@@ -18,8 +17,7 @@ private bool test()
 	return true;
 }
 
-private void SingleMethod()
-{
+private void SingleMethod() {
 	writeln("SingleMethod()");
 	writeln("flag = " + flag);
 
@@ -28,19 +26,16 @@ private void SingleMethod()
 	writeln("flag = " + flag);
 }
 
-public object Main
-{
+public object Main {
 	private int member final;
 
-	public void Main(int argc, string argv)
-	{
+	public void Main(int argc, string argv) {
 		member = 1;
 
 		doIt();
 	}
 
-	private void doIt()
-	{
+	private void doIt() {
 		BaseObjectImported baseobj = new BaseObjectImported();
                 DerivedObjectImported derivedobj = new DerivedObjectImported();
 		ThirdLevelImported thirdobj = new ThirdLevelImported();
