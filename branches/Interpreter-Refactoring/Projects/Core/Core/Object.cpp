@@ -8,6 +8,7 @@
 #include <Core/BuildInObjects/VoidObject.h>
 #include <Core/Common/Exceptions.h>
 #include <Core/Runtime/Exceptions.h>
+#include <Core/VirtualMachine/Memory.h>
 #include <Core/VirtualMachine/Repository.h>
 #include <Tools/Strings.h>
 #include <Utils.h>
@@ -129,13 +130,12 @@ void Object::assign(const Object& other)
 		mScopeType = other.mScopeType;
 		mValue = other.mValue;
 
-		if ( mTypename != NULL_TYPE ) {
+		if ( other.mQualifiedOutterface != NULL_TYPE ) {
 			mOutterface = other.mOutterface;
 			mQualifiedOutterface = other.mQualifiedOutterface;
+			mQualifiedTypename = other.mQualifiedTypename;
+			mTypename = other.mTypename;
 		}
-
-		mQualifiedTypename = other.mQualifiedTypename;
-		mTypename = other.mTypename;
 
 		if ( !mIsAtomicType ) {
 			mReference = other.mReference;
@@ -275,11 +275,24 @@ ControlFlow::E Object::Constructor(const ParameterList& params)
 	}
 
 	// check if we have implemented at least one constructor
-	Symbol *symbol = resolve(Typename(), true);
+	Symbol *symbol = 0;
+	if ( mReference.isValid() ) {
+		symbol = Memory::GetInstance().getObject(mReference)->resolve(Typename(), true);
+	}
+	else {
+		symbol = resolve(Typename(), true);
+	}
+
 	if ( symbol ) {
 		// if a specialized constructor is implemented, the default constructor cannot be used
+		Method *constructor = 0;
+		if ( mReference.isValid() ) {
+			constructor = static_cast<Method*>(Memory::GetInstance().getObject(mReference)->resolveMethod(Typename(), params, true));
+		}
+		else {
+			constructor = static_cast<Method*>(resolveMethod(Typename(), params, true));
+		}
 
-		Method *constructor = static_cast<Method*>(resolveMethod(Typename(), params, true));
 		if ( constructor ) {
 			VoidObject tmp;
 
@@ -654,6 +667,10 @@ bool Object::operator_equal(const Object *other)
 		throw Runtime::Exceptions::NullPointerException(QualifiedTypename() + ".operator==: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 	}
 
+	if ( mReference.isValid() && other->mReference.isValid() ) {
+		return mReference == other->mReference;
+	}
+
 	ParameterList params;
 	params.push_back(
 		Parameter(ANONYMOUS_OBJECT, Typename(), VALUE_NONE)
@@ -743,19 +760,6 @@ bool Object::operator_is(const Symbol *other)
 	if ( !other || other->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
 		throw Common::Exceptions::Exception("invalid symbol provided");
 	}
-
-/*
-	for ( Inheritance::const_iterator it = mInheritance.begin(); it != mInheritance.end(); ++it ) {
-		if ( it->first.name() == static_cast<const Designtime::BluePrintObject*>(other)->QualifiedTypename() ) {
-			return true;
-		}
-		else if ( it->second->operator_is(other) ) {
-			return true;
-		}
-	}
-
-	return QualifiedTypename() == static_cast<const Designtime::BluePrintObject*>(other)->QualifiedTypename();
-*/
 
 	return isInstanceOf(static_cast<const Designtime::BluePrintObject*>(other)->QualifiedTypename());
 }

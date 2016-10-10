@@ -25,6 +25,7 @@ namespace Runtime {
 Method::Method(IScope* parent, const std::string& name, const std::string& type)
 : NamedScope(name, parent),
   MethodSymbol(name),
+  mIsExtensionMethod(false),
   mQualifiedTypename(type),
   mTypeName(type)
 {
@@ -122,7 +123,7 @@ const ExceptionData& Method::getExceptionData() const
 
 bool Method::isExtensionMethod() const
 {
-	return mTokens.empty();
+	return mIsExtensionMethod;
 }
 
 bool Method::isSignatureValid(const ParameterList& params) const

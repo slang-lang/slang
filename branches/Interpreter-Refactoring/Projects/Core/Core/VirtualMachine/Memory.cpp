@@ -111,10 +111,17 @@ const Reference& Memory::reserveAddress()
 
 Runtime::Object* Memory::getObject(const Reference& ref) const
 {
+/*
 	for ( MemoryMap::const_iterator it = mMemory.begin(); it != mMemory.end(); ++it ) {
 		if ( it->first == ref ) {
 			return it->second;
 		}
+	}
+*/
+
+	MemoryMap::const_iterator it = mMemory.find(ref);
+	if ( it != mMemory.end() ) {
+		return it->second;
 	}
 
 	return 0;

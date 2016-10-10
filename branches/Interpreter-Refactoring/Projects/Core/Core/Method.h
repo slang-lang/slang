@@ -77,6 +77,7 @@ public:
 
 protected:
 	ExceptionData mExceptionData;
+	bool mIsExtensionMethod;
 
 private:
 	std::string mQualifiedTypename;

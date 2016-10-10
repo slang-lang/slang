@@ -382,7 +382,7 @@ Symbol* Interpreter::identifyMethod(TokenIterator& token, const ParameterList& p
 					result = static_cast<Namespace*>(result)->resolveMethod(identifier, params, onlyCurrentScope);
 					break;
 				case Symbol::IType::ObjectSymbol:
-					Memory::GetInstance().getObject(static_cast<Object*>(result)->getReference())->resolveMethod(identifier, params, onlyCurrentScope);
+					result = Memory::GetInstance().getObject(static_cast<Object*>(result)->getReference())->resolveMethod(identifier, params, onlyCurrentScope);
 					break;
 				case Symbol::IType::BluePrintEnumSymbol:
 					throw Common::Exceptions::NotSupported("static method usage not supported");
@@ -457,22 +457,22 @@ void Interpreter::parseCondition(Object *result, TokenIterator& start)
 
 		switch ( op ) {
 			case Token::Type::COMPARE_EQUAL:
-				*result = BoolObject(operator_binary_equal(result, &v2));
+				result->assign(BoolObject(operator_binary_equal(result, &v2)));
 				break;
 			case Token::Type::COMPARE_GREATER:
-				*result = BoolObject(operator_binary_greater(result, &v2));
+				result->assign(BoolObject(operator_binary_greater(result, &v2)));
 				break;
 			case Token::Type::COMPARE_GREATER_EQUAL:
-				*result = BoolObject(operator_binary_greater_equal(result, &v2));
+				result->assign(BoolObject(operator_binary_greater_equal(result, &v2)));
 				break;
 			case Token::Type::COMPARE_LESS:
-				*result = BoolObject(operator_binary_less(result, &v2));
+				result->assign(BoolObject(operator_binary_less(result, &v2)));
 				break;
 			case Token::Type::COMPARE_LESS_EQUAL:
-				*result = BoolObject(operator_binary_less_equal(result, &v2));
+				result->assign(BoolObject(operator_binary_less_equal(result, &v2)));
 				break;
 			case Token::Type::COMPARE_UNEQUAL:
-				*result = BoolObject(!operator_binary_equal(result, &v2));
+				result->assign(BoolObject(!operator_binary_equal(result, &v2)));
 				break;
 			default:
 				break;
