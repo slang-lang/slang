@@ -5,6 +5,7 @@ SET(SOURCES
 	Repository.cpp
 	StackLevel.cpp
 	StackTrace.cpp
+	VirtualMachine.cpp
 )
 
 SET(HEADERS
@@ -12,6 +13,7 @@ SET(HEADERS
 	Repository.h
 	StackLevel.h
 	StackTrace.h
+	VirtualMachine.h
 )
 
 SET(DEPENDENCIES

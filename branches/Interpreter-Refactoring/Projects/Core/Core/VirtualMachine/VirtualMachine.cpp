@@ -6,14 +6,14 @@
 #include <fstream>
 
 // Project includes
+#include <Core/Analyser.h>
+#include <Core/Consts.h>
 #include <Core/Common/Exceptions.h>
+#include <Core/Script.h>
+#include <Core/Tools.h>
+#include <Core/VirtualMachine/Repository.h>
 #include <Utils.h>
 #include <Tools/Files.h>
-#include "Analyser.h"
-#include "Consts.h"
-#include "Repository.h"
-#include "Script.h"
-#include "Tools.h"
 
 // Namespace declarations
 
@@ -23,7 +23,7 @@ namespace ObjectiveScript {
 
 VirtualMachine::VirtualMachine()
 {
-	mRepository = new Repository();
+	mRepository = &Repository::GetInstance();
 }
 
 VirtualMachine::~VirtualMachine()
@@ -35,8 +35,6 @@ VirtualMachine::~VirtualMachine()
 		delete (*it);
 	}
 	mScripts.clear();
-
-	delete mRepository;
 }
 
 void VirtualMachine::addExtension(Extensions::AExtension *extension)
@@ -72,12 +70,13 @@ std::string VirtualMachine::buildPath(const std::string& basefolder, const std::
 
 Script* VirtualMachine::createScript(const std::string& content, const ParameterList& params)
 {
+(void)params;
 	init();
 
 	Script *script = new Script(mRepository->getGlobalScope());
 	mScripts.insert(script);
 
-	Analyser analyser(mRepository);
+	Analyser analyser;
 	analyser.processString(content, mScriptFile);
 
 	// load all library references
@@ -109,6 +108,7 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 	// rebuild all blue prints to update/retype their type declarations
 	mRepository->rebuildBluePrints();
 
+/*
 	// initialize Main object
 	Symbol* mainSymbol = mRepository->getGlobalScope()->resolve("Main");
 	if ( mainSymbol && mainSymbol->getSymbolType() == Symbol::IType::BluePrintObjectSymbol ) {
@@ -126,7 +126,7 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 			throw Common::Exceptions::Exception(text);
 		}
 	}
-
+*/
 	return script;
 }
 
@@ -236,7 +236,7 @@ bool VirtualMachine::loadLibrary(const std::string& library)
 
 	mLibraryFolders.insert(::Utils::Tools::Files::ExtractPathname(library));
 
-	Analyser analyser(mRepository);
+	Analyser analyser;
 	analyser.processFile(library);
 
 	mImportedLibraries.insert(library);
