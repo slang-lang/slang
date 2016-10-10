@@ -8,9 +8,9 @@
 #include <Core/BuildInObjects/VoidObject.h>
 #include <Core/Common/Exceptions.h>
 #include <Core/Runtime/Exceptions.h>
+#include <Core/VirtualMachine/Repository.h>
 #include <Tools/Strings.h>
 #include <Utils.h>
-#include "Repository.h"
 #include "Tools.h"
 
 // Namespace declarations
@@ -65,29 +65,7 @@ Object::Object(const Object& other)
 	setMember(other.isMember());
 
 	if ( !mIsAtomicType ) {
-		// register this
-		define(IDENTIFIER_THIS, this);
-
-		// register new members
-		for ( Symbols::const_iterator it = other.mSymbols.begin(); it != other.mSymbols.end(); ++it ) {
-			if ( /*it->first == IDENTIFIER_BASE ||*/ it->first == IDENTIFIER_THIS ) {
-				continue;
-			}
-
-			if ( it->second && it->second->getSymbolType() == Symbol::IType::ObjectSymbol ) {
-				mRepository->addReference(static_cast<Object*>(it->second));
-			}
-
-			define(it->first, it->second);
-		}
-
-		// register new methods
-		for ( MethodCollection::const_iterator it = other.mMethods.begin(); it != other.mMethods.end(); ++it ) {
-			Method *method = new Method(this, (*it)->getName(), (*it)->Typename());
-			*method = *(*it);
-
-			defineMethod((*it)->getName(), method);
-		}
+		mReference = other.mReference;
 	}
 }
 
@@ -135,32 +113,8 @@ void Object::operator= (const Object& other)
 			mTypename = other.mTypename;
 		}
 
-		garbageCollector();
-
 		if ( !mIsAtomicType ) {
-			// register this
-			define(IDENTIFIER_THIS, this);
-
-			// register new members
-			for ( Symbols::const_iterator it = other.mSymbols.begin(); it != other.mSymbols.end(); ++it ) {
-				if ( /*it->first == IDENTIFIER_BASE ||*/ it->first == IDENTIFIER_THIS ) {
-					continue;
-				}
-
-				if ( it->second && it->second->getSymbolType() == Symbol::IType::ObjectSymbol ) {
-					mRepository->addReference(static_cast<Object*>(it->second));
-				}
-
-				define(it->first, it->second);
-			}
-
-			// register new methods
-			for ( MethodCollection::const_iterator it = other.mMethods.begin(); it != other.mMethods.end(); ++it ) {
-				Method *method = new Method(this, (*it)->getName(), (*it)->Typename());
-				*method = *(*it);
-
-				defineMethod((*it)->getName(), method);
-			}
+			mReference = other.mReference;
 		}
 	}
 }
@@ -187,32 +141,8 @@ void Object::assign(const Object& other)
 			mTypename = other.mTypename;
 		}
 
-		garbageCollector();
-
 		if ( !mIsAtomicType ) {
-			// register this
-			define(IDENTIFIER_THIS, this);
-
-			// register new members
-			for ( Symbols::const_iterator it = other.mSymbols.begin(); it != other.mSymbols.end(); ++it ) {
-				if ( /*it->first == IDENTIFIER_BASE ||*/ it->first == IDENTIFIER_THIS ) {
-					continue;
-				}
-
-				if ( it->second && it->second->getSymbolType() == Symbol::IType::ObjectSymbol ) {
-					mRepository->addReference(static_cast<Object*>(it->second));
-				}
-
-				define(it->first, it->second);
-			}
-
-			// register new methods
-			for ( MethodCollection::const_iterator it = other.mMethods.begin(); it != other.mMethods.end(); ++it ) {
-				Method *method = new Method(this, (*it)->getName(), (*it)->Typename());
-				*method = *(*it);
-
-				defineMethod((*it)->getName(), method);
-			}
+			mReference = other.mReference;
 		}
 	}
 }
@@ -240,29 +170,7 @@ void Object::assignSubType(const Object& other)
 		garbageCollector();
 
 		if ( !mIsAtomicType ) {
-			// register this
-			define(IDENTIFIER_THIS, this);
-
-			// register new members
-			for ( Symbols::const_iterator it = other.mSymbols.begin(); it != other.mSymbols.end(); ++it ) {
-				if ( /*it->first == IDENTIFIER_BASE ||*/ it->first == IDENTIFIER_THIS ) {
-					continue;
-				}
-
-				if ( it->second && it->second->getSymbolType() == Symbol::IType::ObjectSymbol ) {
-					mRepository->addReference(static_cast<Object*>(it->second));
-				}
-
-				define(it->first, it->second);
-			}
-
-			// register new methods
-			for ( MethodCollection::const_iterator it = other.mMethods.begin(); it != other.mMethods.end(); ++it ) {
-				Method *method = new Method(this, (*it)->getName(), (*it)->Typename());
-				*method = *(*it);
-
-				defineMethod((*it)->getName(), method);
-			}
+			mReference = other.mReference;
 		}
 	}
 }
@@ -382,7 +290,9 @@ ControlFlow::E Object::Constructor(const ParameterList& params)
 		Method *constructor = static_cast<Method*>(resolveMethod(Typename(), params, true));
 		if ( constructor ) {
 			VoidObject tmp;
-			controlflow = constructor->execute(params, &tmp, Token());
+
+			Interpreter interpreter;
+			controlflow = interpreter.execute(constructor, params, &tmp);
 
 			if ( controlflow != ControlFlow::Normal ) {
 				return controlflow;
@@ -424,7 +334,10 @@ ControlFlow::E Object::Destructor()
 		Method *destructor = static_cast<Method*>(resolveMethod("~" + Typename(), params, true));
 		if ( destructor ) {
 			VoidObject tmp;
-			controlflow = destructor->execute(params, &tmp, Token());
+			//controlflow = destructor->execute(params, &tmp, Token());
+
+			Interpreter interpreter;
+			controlflow = interpreter.execute(destructor, params, &tmp);
 
 			if ( controlflow != ControlFlow::Normal ) {
 				return controlflow;
@@ -481,8 +394,10 @@ ControlFlow::E Object::execute(Object *result, const std::string& name, const Pa
 	method->setRepository(mRepository);
 	result->setRepository(mRepository);
 
+	Interpreter interpreter;
+
 	// execute our member method
-	return method->execute(params, result, Token());
+	return interpreter.execute(method, params, result);
 }
 
 bool Object::FromJson(const Json::Value& value)
@@ -520,7 +435,7 @@ void Object::garbageCollector()
 		if ( it->first != IDENTIFIER_BASE &&
 			 it->first != IDENTIFIER_THIS &&
 			 it->second && it->second->getSymbolType() == Symbol::IType::ObjectSymbol ) {
-			mRepository->removeReference(static_cast<Object*>(it->second));
+			//mRepository->removeReference(static_cast<Object*>(it->second));
 		}
 
 		undefine(it->first, it->second);
@@ -602,7 +517,9 @@ void Object::operator_assign(const Object *other)
 	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", params, true);
 	if ( value_operator ) {
 		Object tmp;
-		static_cast<Method*>(value_operator)->execute(params, &tmp, Token());
+
+		Interpreter interpreter;
+		interpreter.execute(static_cast<Method*>(value_operator), params, &tmp);
 
 		operator_assign(&tmp);
 		return;
@@ -631,7 +548,9 @@ void Object::operator_bitand(const Object *other)
 	}
 	if ( value_operator ) {
 		Object tmp;
-		static_cast<Method*>(value_operator)->execute(params, &tmp, Token());
+
+		Interpreter interpreter;
+		interpreter.execute(static_cast<Method*>(value_operator), params, &tmp);
 
 		operator_bitand(&tmp);
 		return;
@@ -660,7 +579,9 @@ void Object::operator_bitcomplement(const Object *other)
 	}
 	if ( value_operator ) {
 		Object tmp;
-		static_cast<Method*>(value_operator)->execute(params, &tmp, Token());
+
+		Interpreter interpreter;
+		interpreter.execute(static_cast<Method*>(value_operator), params, &tmp);
 
 		operator_bitcomplement(&tmp);
 		return;
@@ -689,7 +610,9 @@ void Object::operator_bitor(const Object *other)
 	}
 	if ( value_operator ) {
 		Object tmp;
-		static_cast<Method*>(value_operator)->execute(params, &tmp, Token());
+
+		Interpreter interpreter;
+		interpreter.execute(static_cast<Method*>(value_operator), params, &tmp);
 
 		operator_bitor(&tmp);
 		return;
@@ -723,7 +646,9 @@ void Object::operator_divide(const Object *other)
 	}
 	if ( value_operator ) {
 		Object tmp;
-		static_cast<Method*>(value_operator)->execute(params, &tmp, Token());
+
+		Interpreter interpreter;
+		interpreter.execute(static_cast<Method*>(value_operator), params, &tmp);
 
 		operator_divide(&tmp);
 		return;
@@ -752,7 +677,9 @@ bool Object::operator_equal(const Object *other)
 	}
 	if ( value_operator ) {
 		Object tmp;
-		static_cast<Method*>(value_operator)->execute(params, &tmp, Token());
+
+		Interpreter interpreter;
+		interpreter.execute(static_cast<Method*>(value_operator), params, &tmp);
 
 		return operator_equal(&tmp);
 	}
@@ -780,7 +707,9 @@ bool Object::operator_greater(const Object *other)
 	}
 	if ( value_operator ) {
 		Object tmp;
-		static_cast<Method*>(value_operator)->execute(params, &tmp, Token());
+
+		Interpreter interpreter;
+		interpreter.execute(static_cast<Method*>(value_operator), params, &tmp);
 
 		return operator_greater(&tmp);
 	}
@@ -808,7 +737,9 @@ bool Object::operator_greater_equal(const Object *other)
 	}
 	if ( value_operator ) {
 		Object tmp;
-		static_cast<Method*>(value_operator)->execute(params, &tmp, Token());
+
+		Interpreter interpreter;
+		interpreter.execute(static_cast<Method*>(value_operator), params, &tmp);
 
 		return operator_greater_equal(&tmp);
 	}
@@ -858,7 +789,9 @@ bool Object::operator_less(const Object *other)
 	}
 	if ( value_operator ) {
 		Object tmp;
-		static_cast<Method*>(value_operator)->execute(params, &tmp, Token());
+
+		Interpreter interpreter;
+		interpreter.execute(static_cast<Method*>(value_operator), params, &tmp);
 
 		return operator_less(&tmp);
 	}
@@ -886,7 +819,9 @@ bool Object::operator_less_equal(const Object *other)
 	}
 	if ( value_operator ) {
 		Object tmp;
-		static_cast<Method*>(value_operator)->execute(params, &tmp, Token());
+
+		Interpreter interpreter;
+		interpreter.execute(static_cast<Method*>(value_operator), params, &tmp);
 
 		return operator_less_equal(&tmp);
 	}
@@ -914,7 +849,9 @@ void Object::operator_modulo(const Object *other)
 	}
 	if ( value_operator ) {
 		Object tmp;
-		static_cast<Method*>(value_operator)->execute(params, &tmp, Token());
+
+		Interpreter interpreter;
+		interpreter.execute(static_cast<Method*>(value_operator), params, &tmp);
 
 		operator_modulo(&tmp);
 		return;
@@ -943,7 +880,9 @@ void Object::operator_multiply(const Object *other)
 	}
 	if ( value_operator ) {
 		Object tmp;
-		static_cast<Method*>(value_operator)->execute(params, &tmp, Token());
+
+		Interpreter interpreter;
+		interpreter.execute(static_cast<Method*>(value_operator), params, &tmp);
 
 		operator_multiply(&tmp);
 		return;
@@ -972,7 +911,9 @@ void Object::operator_plus(const Object *other)
 	}
 	if ( value_operator ) {
 		Object tmp;
-		static_cast<Method*>(value_operator)->execute(params, &tmp, Token());
+
+		Interpreter interpreter;
+		interpreter.execute(static_cast<Method*>(value_operator), params, &tmp);
 
 		operator_plus(&tmp);
 		return;
@@ -999,7 +940,9 @@ void Object::operator_subtract(const Object *other)
 	}
 	if ( value_operator ) {
 		Object tmp;
-		static_cast<Method*>(value_operator)->execute(params, &tmp, Token());
+
+		Interpreter interpreter;
+		interpreter.execute(static_cast<Method*>(value_operator), params, &tmp);
 
 		operator_subtract(&tmp);
 		return;

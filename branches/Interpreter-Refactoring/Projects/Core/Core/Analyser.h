@@ -27,7 +27,7 @@ class Repository;
 class Analyser
 {
 public:
-	Analyser(Repository *repository);
+	Analyser();
 	~Analyser();
 
 public:

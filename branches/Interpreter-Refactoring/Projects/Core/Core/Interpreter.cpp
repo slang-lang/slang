@@ -13,11 +13,15 @@
 #include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/BuildInObjects/NumberObject.h>
 #include <Core/BuildInObjects/StringObject.h>
+#include <Core/BuildInObjects/VoidObject.h>
 #include <Core/Common/Exceptions.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Runtime/Namespace.h>
 #include <Core/Runtime/OperatorOverloading.h>
 #include <Core/Runtime/TypeCast.h>
+#include <Core/VirtualMachine/Memory.h>
+#include <Core/VirtualMachine/Repository.h>
+#include <Core/VirtualMachine/StackTrace.h>
 #include <Debugger/Debugger.h>
 #include <Tools/Printer.h>
 #include <Utils.h>
@@ -30,11 +34,11 @@ namespace ObjectiveScript {
 namespace Runtime {
 
 
-Interpreter::Interpreter(Repository* repository)
+Interpreter::Interpreter()
 : mControlFlow(ControlFlow::Normal),
-  mOwner(0),
-  mRepository(repository)
+  mOwner(0)
 {
+	mRepository = &Repository::GetInstance();
 }
 
 Interpreter::~Interpreter()
@@ -46,14 +50,138 @@ Interpreter::~Interpreter()
  */
 ControlFlow::E Interpreter::execute(Method* method, const ParameterList& params, Object* result)
 {
-	(void)params;
-	mOwner = method;
-	mTokens = method->getTokens();
+	if ( !mRepository ) {
+		throw Common::Exceptions::Exception("mRepository not set");
+	}
 
-	ControlFlow::E controlflow = interpret(mTokens, result);
+	if ( method->isAbstract() ) {
+		throw Common::Exceptions::AbstractException("cannot execute abstract method '" + method->getFullScopeName() + "'");
+	}
+	if ( !method->isSignatureValid(params) ) {
+		throw Common::Exceptions::ParameterCountMissmatch("incorrect number or type of parameters");
+	}
 
-	mOwner = 0;
-	mTokens.clear();
+	switch ( method->getLanguageFeatureState() ) {
+		case LanguageFeatureState::Deprecated: OSwarn("method '" + method->getFullScopeName() + "' is marked as deprecated"); break;
+		case LanguageFeatureState::NotImplemented: OSerror("method '" + method->getFullScopeName() + "' is marked as not implemented"); throw Common::Exceptions::NotImplemented(method->getFullScopeName()); break;
+		case LanguageFeatureState::Stable: /* this is the normal language feature state, so there is no need to log anything here */ break;
+		case LanguageFeatureState::Unknown: OSerror("unknown language feature state set for method '" + method->getFullScopeName() + "'"); break;
+		case LanguageFeatureState::Unstable: OSwarn("method '" + method->getFullScopeName() + "' is marked as unstable"); break;
+	}
+
+	Method scope(*method);
+
+	mOwner = method->getEnclosingScope();
+
+	ParameterList executedParams = method->mergeParameters(params);
+
+	// add parameters as locale variables
+	for ( ParameterList::const_iterator it = executedParams.begin(); it != executedParams.end(); ++it ) {
+		switch ( it->access() ) {
+			case Parameter::AccessMode::ByReference: {
+				Object *object = it->pointer();
+
+				object->setConst(it->isConst());
+				object->setMutability(it->isConst() ? Mutability::Const : Mutability::Modify);
+
+				scope.define(it->name(), object);
+			} break;
+			case Parameter::AccessMode::ByValue: {
+				if ( it->pointer() && !it->pointer()->isAtomicType() ) {
+					throw Common::Exceptions::NotImplemented("cannot copy objects");
+				}
+
+				Object *object = mRepository->createInstance(it->type(), it->name());
+
+				object->setValue(it->value());	// in case we have a default value
+				if ( it->pointer() ) {
+					*object = *(it->pointer());
+				}
+				object->setConst(it->isConst());
+				object->setMutability(it->isConst() ? Mutability::Const : Mutability::Modify);
+
+				scope.define(it->name(), object);
+			} break;
+			case Parameter::AccessMode::Unspecified: {
+				throw Common::Exceptions::AccessMode("unspecified access mode");
+			} break;
+		}
+	}
+
+	// record stack trace
+	StackTrace::GetInstance().push(&scope, executedParams);
+	// notify debugger
+	Core::Debugger::GetInstance().notifyEnter(&scope, Core::Debugger::immediateBreakToken);
+
+	ControlFlow::E controlflow = interpret(getTokens(), result);
+
+	// process & update control flow
+	switch ( controlflow ) {
+		case ControlFlow::Break:
+		case ControlFlow::Continue:
+		case ControlFlow::Normal:
+			// verify method return reason
+			if ( method->QualifiedTypename() != VoidObject::TYPENAME && result->QualifiedOutterface() != VoidObject::TYPENAME ) {
+				throw Common::Exceptions::Exception("unnatural method return at '" + method->getFullScopeName() + "'");
+			}
+
+			// correct behavior detected, override control flow with normal state
+			controlflow = ControlFlow::Normal;
+			break;
+		case ControlFlow::Return:
+			// validate return value
+			if ( result->QualifiedOutterface() == NULL_TYPE ) {
+				// no type cast necessary for null objects
+			}
+			else if ( method->QualifiedTypename() != VoidObject::TYPENAME && result->QualifiedOutterface() != method->QualifiedTypename() ) {
+#ifdef ALLOW_IMPLICIT_CASTS
+				throw Runtime::Exceptions::ExplicitCastRequired("Explicit cast required for type conversion from " + result->QualifiedOutterface() + " to " + QualifiedTypename() + " in " + getFullScopeName());
+#else
+				OSwarn("implicit type conversion from " + result->QualifiedOutterface() + " to " + method->QualifiedTypename());
+
+				typecast(result, method->QualifiedTypename());
+#endif
+			}
+
+			// correct behavior detected, override control flow with normal state
+			controlflow = ControlFlow::Normal;
+			break;
+		case ControlFlow::ExitProgram:
+		case ControlFlow::Throw:
+			// an ObjectiveScript exception has been thrown or we want to terminate
+			break;
+	}
+
+	if ( controlflow == ControlFlow::Normal ) {
+		switch ( method->getMethodType() ) {
+			case MethodAttributes::MethodType::Constructor:
+				static_cast<Object*>(mOwner)->setConstructed(true);
+				break;
+			case MethodAttributes::MethodType::Destructor:
+				static_cast<Object*>(mOwner)->setConstructed(false);
+				break;
+			default:
+				break;
+		}
+	}
+
+	// notify debugger
+	Core::Debugger::GetInstance().notifyExit(getScope(), Core::Debugger::immediateBreakToken);
+	// unwind stack trace
+	StackTrace::GetInstance().pop();
+
+	// undefine references to prevent double deletes
+	for ( ParameterList::const_iterator it = executedParams.begin(); it != executedParams.end(); ++it ) {
+		switch ( it->access() ) {
+			case Parameter::AccessMode::ByReference:
+				getScope()->undefine(it->name(), it->pointer());
+				break;
+			case Parameter::AccessMode::ByValue:
+				break;
+			case Parameter::AccessMode::Unspecified:
+				throw Common::Exceptions::AccessMode("unspecified access mode");;
+		}
+	}
 
 	return controlflow;
 }
@@ -91,20 +219,6 @@ void Interpreter::expression(Object* result, TokenIterator& start)
 	}
 }
 
-void Interpreter::garbageCollector()
-{
-	Symbols symbols;
-	getScope()->exportSymbols(symbols);
-
-	for ( Symbols::reverse_iterator it = symbols.rbegin(); it != symbols.rend(); ++it ) {
-		if ( it->first != IDENTIFIER_BASE && it->first != IDENTIFIER_THIS &&
-			 it->second && it->second->getSymbolType() == Symbol::IType::ObjectSymbol ) {
-			getRepository()->removeReference(static_cast<Object*>(it->second));
-		}
-	}
-	symbols.clear();
-}
-
 NamedScope* Interpreter::getEnclosingMethodScope(IScope* scope) const
 {
 	while ( scope ) {
@@ -138,6 +252,24 @@ Namespace* Interpreter::getEnclosingNamespace(IScope* scope) const
 	return 0;
 }
 
+Object* Interpreter::getEnclosingObject(IScope* scope) const
+{
+	while ( scope ) {
+		IScope* parent = scope->getEnclosingScope();
+
+		if ( parent && parent->getScopeType() == IScope::IType::MethodScope ) {
+			Object* result = dynamic_cast<Object*>(parent);
+			if ( result ) {
+				return result;
+			}
+		}
+
+		scope = parent;
+	}
+
+	return 0;
+}
+
 const ExceptionData& Interpreter::getExceptionData() const
 {
 	return mExceptionData;
@@ -148,18 +280,18 @@ Repository* Interpreter::getRepository() const
 	return mRepository;
 }
 
-SymbolScope* Interpreter::getScope() const
+IScope* Interpreter::getScope() const
 {
-	if ( !mScopeStack.empty() ) {
-		return mScopeStack.back();
-	}
+	StackLevel* stack = StackTrace::GetInstance().current();
 
-	return mOwner;
+	return stack->getScope();
 }
 
 const TokenList& Interpreter::getTokens() const
 {
-	return mTokenStack.back();
+	StackLevel* stack = StackTrace::GetInstance().current();
+
+	return stack->getTokens();
 }
 
 inline Symbol* Interpreter::identify(TokenIterator& token) const
@@ -189,7 +321,7 @@ inline Symbol* Interpreter::identify(TokenIterator& token) const
 					result = static_cast<Namespace*>(result)->resolve(identifier, onlyCurrentScope);
 					break;
 				case Symbol::IType::ObjectSymbol:
-					result = static_cast<Object*>(result)->resolve(identifier, onlyCurrentScope);
+					Memory::GetInstance().getObject(static_cast<Object*>(result)->getReference())->resolve(identifier, onlyCurrentScope);
 					break;
 				case Symbol::IType::BluePrintEnumSymbol:
 				case Symbol::IType::MethodSymbol:
@@ -232,7 +364,7 @@ Symbol* Interpreter::identifyMethod(TokenIterator& token, const ParameterList& p
 
 			// look for an overloaded method
 			if ( result && result->getSymbolType() == Symbol::IType::MethodSymbol ) {
-				result = static_cast<Method*>(mOwner)->resolveMethod(identifier, params, onlyCurrentScope);
+				result = static_cast<Object*>(mOwner)->resolveMethod(identifier, params, onlyCurrentScope);
 			}
 		}
 		else {
@@ -241,7 +373,7 @@ Symbol* Interpreter::identifyMethod(TokenIterator& token, const ParameterList& p
 					result = static_cast<Namespace*>(result)->resolveMethod(identifier, params, onlyCurrentScope);
 					break;
 				case Symbol::IType::ObjectSymbol:
-					result = static_cast<Object*>(result)->resolveMethod(identifier, params, onlyCurrentScope);
+					Memory::GetInstance().getObject(static_cast<Object*>(result)->getReference())->resolveMethod(identifier, params, onlyCurrentScope);
 					break;
 				case Symbol::IType::BluePrintEnumSymbol:
 					throw Common::Exceptions::NotSupported("static method usage not supported");
@@ -289,9 +421,6 @@ ControlFlow::E Interpreter::interpret(const TokenList& tokens, Object* result)
 
 			process(result, start, end);
 		popTokens();
-
-		// let the garbage collector do it's magic after we gathered our result
-		garbageCollector();
 	popScope();
 
 	return mControlFlow;
@@ -593,20 +722,16 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 
 void Interpreter::popScope()
 {
-	if ( mScopeStack.empty() ) {
-		throw Common::Exceptions::Exception("tried to pop beyond stack!");
-	}
+	StackLevel* stack = StackTrace::GetInstance().current();
 
-	SymbolScope* scope = mScopeStack.back();
-
-	mScopeStack.pop_back();
-
-	delete scope;
+	stack->popScope();
 }
 
 void Interpreter::popTokens()
 {
-	mTokenStack.pop_back();
+	StackLevel* stack = StackTrace::GetInstance().current();
+
+	stack->popTokens();
 }
 
 /*
@@ -876,10 +1001,11 @@ void Interpreter::process_identifier(TokenIterator& token, Object* /*result*/, T
 		if ( object->isConst() ) {	// we tried to modify a const symbol (i.e. member, parameter or constant local variable)
 			throw Common::Exceptions::ConstCorrectnessViolated("tried to modify const symbol '" + object->getFullScopeName() + "'", token->position());
 		}
+/*
 		if ( object->isMember() && static_cast<Method*>(mOwner)->isConst() ) {	// we tried to modify a member in a const method
 			throw Common::Exceptions::ConstCorrectnessViolated("tried to modify member '" + object->getFullScopeName() + "' in const method '" + getScope()->getScopeName() + "'", token->position());
 		}
-
+*/
 		try {
 			expression(object, ++assign);
 		}
@@ -1091,12 +1217,14 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 		tmp++;
 	}
 
-	Method* method = static_cast<Method*>(identifyMethod(token, params));
+	Symbol* symbol = identifyMethod(token, params);
 
+	Method* method = dynamic_cast<Method*>(symbol);
 	if ( !method) {
 		throw Common::Exceptions::UnknownIdentifer("could not resolve identifier '" + token->content() + "' with parameters '" + toString(params) + "'", token->position());
 	}
 
+/*
 	// compare callee's constness with its parent's constness
 	Object* calleeParent = dynamic_cast<Object*>(method->getEnclosingScope());
 	if ( calleeParent && calleeParent->isConst() && !method->isConst() ) {
@@ -1113,8 +1241,18 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 			throw Common::Exceptions::ConstCorrectnessViolated("only calls to const methods are allowed in const method '" + getScope()->getFullScopeName() + "'", token->position());
 		}
 	}
+*/
 
-	ControlFlow::E controlflow = method->execute(params, result, (*token));
+	ControlFlow::E controlflow;
+
+	if ( method->isExtensionMethod() ) {
+		controlflow = method->execute(params, result, (*token));
+
+		mExceptionData = method->getExceptionData();
+	}
+	else {
+		controlflow = execute(method, params, result);
+	}
 
 	switch ( controlflow ) {
 		case ControlFlow::ExitProgram:
@@ -1122,7 +1260,6 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 			break;
 		case ControlFlow::Throw:
 			mControlFlow = ControlFlow::Throw;
-			mExceptionData = method->getExceptionData();
 			throw ControlFlow::Throw;			// throw even further
 		default:
 			break;
@@ -1173,7 +1310,6 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 		}
 
 		params.push_back(
-			//Parameter(obj->getName(), obj->QualifiedTypename(), obj->getValue(), false, obj->isConst(), Parameter::AccessMode::Unspecified, obj)
 			Parameter(obj->getName(), obj->Outterface(), obj->getValue(), false, obj->isConst(), Parameter::AccessMode::Unspecified, obj)
 		);
 
@@ -1529,7 +1665,6 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 					 type->Typename() != mExceptionData.getData()->Typename() ) {
 					// get rid of our newly created exception type instance
 					getScope()->undefine(type->getName(), type);
-					mRepository->removeReference(type);
 					continue;
 				}
 
@@ -1667,9 +1802,6 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol)
 		}
 	}
 
-	// this has been removed to allow type declarations without a trailing semicolon (like in "catch ( Exception e )" )
-	//expect(Token::Type::SEMICOLON, token);	// make sure everything went exactly the way we wanted
-
 	return object;
 }
 
@@ -1731,16 +1863,24 @@ void Interpreter::process_while(TokenIterator& token, Object* result)
 	}
 }
 
-void Interpreter::pushScope()
+void Interpreter::pushScope(IScope* scope)
 {
-	SymbolScope* scope = new SymbolScope(getScope());
+	StackLevel* stack = StackTrace::GetInstance().current();
 
-	mScopeStack.push_back(scope);
+	bool allowDelete = !scope;
+
+	if ( !scope ) {
+		scope = new SymbolScope(stack->getScope());
+	}
+
+	stack->pushScope(scope, allowDelete);
 }
 
 void Interpreter::pushTokens(const TokenList& tokens)
 {
-	mTokenStack.push_back(tokens);
+	StackLevel* stack = StackTrace::GetInstance().current();
+
+	stack->pushTokens(tokens);
 }
 
 

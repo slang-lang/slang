@@ -9,11 +9,12 @@
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Runtime/OperatorOverloading.h>
 #include <Core/Runtime/TypeCast.h>
+#include <Core/VirtualMachine/Repository.h>
+#include <Core/VirtualMachine/StackTrace.h>
 #include <Debugger/Debugger.h>
 #include <Tools/Strings.h>
 #include <Utils.h>
 #include "Defines.h"
-#include "StackTrace.h"
 
 // Namespace declarations
 
@@ -34,7 +35,6 @@ Method::Method(IScope* parent, const std::string& name, const std::string& type)
 
 Method::~Method()
 {
-	garbageCollector();
 }
 
 bool Method::operator() (const Method& first, const Method& second) const
@@ -129,7 +129,7 @@ ControlFlow::E Method::execute(const ParameterList& params, Object* result, cons
 	switch ( getLanguageFeatureState() ) {
 		case LanguageFeatureState::Deprecated: OSwarn("method '" + getFullScopeName() + "' is marked as deprecated"); break;
 		case LanguageFeatureState::NotImplemented: OSerror("method '" + getFullScopeName() + "' is marked as not implemented"); throw Common::Exceptions::NotImplemented(getFullScopeName()); break;
-		case LanguageFeatureState::Stable: /* this is the normal language feature state, so there is no need to log anything here */ break;
+		case LanguageFeatureState::Stable: break;
 		case LanguageFeatureState::Unknown: OSerror("unknown language feature state set for method '" + getFullScopeName() + "'"); break;
 		case LanguageFeatureState::Unstable: OSwarn("method '" + getFullScopeName() + "' is marked as unstable"); break;
 	}
@@ -139,8 +139,6 @@ ControlFlow::E Method::execute(const ParameterList& params, Object* result, cons
 	if ( isStatic() ) {		// this allows variable definitions in static methods
 		scope.mParent = mRepository->getGlobalScope();
 	}
-
-	Interpreter interpreter(mRepository);
 
 	ParameterList executedParams = mergeParameters(params);
 
@@ -177,12 +175,11 @@ ControlFlow::E Method::execute(const ParameterList& params, Object* result, cons
 		}
 	}
 
-	// record stack trace
-	StackTrace::GetInstance().pushStack(getFullScopeName(), executedParams);
 	// notify debugger
 	Core::Debugger::GetInstance().notifyEnter(&scope, Core::Debugger::immediateBreakToken);
 
 	// do the real method execution
+	Interpreter interpreter;
 	ControlFlow::E controlflow = interpreter.execute(&scope, executedParams, result);
 
 	// collect exception data no matter what
@@ -193,8 +190,6 @@ ControlFlow::E Method::execute(const ParameterList& params, Object* result, cons
 
 	// notify debugger
 	Core::Debugger::GetInstance().notifyExit(&scope, Core::Debugger::immediateBreakToken);
-	// unwind stack trace
-	StackTrace::GetInstance().popStack();
 
 	// undefine references to prevent double deletes
 	for ( ParameterList::const_iterator it = executedParams.begin(); it != executedParams.end(); ++it ) {
@@ -212,22 +207,14 @@ ControlFlow::E Method::execute(const ParameterList& params, Object* result, cons
 	return controlflow;
 }
 
-void Method::garbageCollector()
-{
-	for ( Symbols::reverse_iterator it = mSymbols.rbegin(); it != mSymbols.rend(); ) {
-		if ( it->first != IDENTIFIER_BASE && it->first != IDENTIFIER_THIS &&
-			 it->second && it->second->getSymbolType() == Symbol::IType::ObjectSymbol ) {
-			mRepository->removeReference(static_cast<Object*>(it->second));
-		}
-
-		undefine(it->first, it->second);
-	}
-	mSymbols.clear();
-}
-
 const ExceptionData& Method::getExceptionData() const
 {
 	return mExceptionData;
+}
+
+bool Method::isExtensionMethod() const
+{
+	return mTokens.empty();
 }
 
 bool Method::isSignatureValid(const ParameterList& params) const

@@ -11,6 +11,7 @@
 #include <Core/Designtime/BluePrintEnum.h>
 #include <Core/Designtime/Exceptions.h>
 #include <Core/Designtime/Parser/Parser.h>
+#include <Core/VirtualMachine/Repository.h>
 #include "Tokenizer.h"
 #include "Tools.h"
 

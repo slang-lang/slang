@@ -145,6 +145,7 @@ private:
 
 
 typedef std::list<Token> TokenList;
+typedef std::list<TokenList> TokenStack;
 typedef TokenList::const_iterator TokenIterator;
 typedef TokenList::iterator TokenIteratorMutable;
 

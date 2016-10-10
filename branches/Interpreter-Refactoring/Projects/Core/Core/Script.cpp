@@ -8,6 +8,7 @@
 #include <Core/Common/Exceptions.h>
 #include <Core/Runtime/ControlFlow.h>
 #include <Utils.h>
+#include "Interpreter.h"
 #include "Object.h"
 #include "Scope.h"
 
@@ -34,11 +35,15 @@ void Script::execute(const std::string& method, const ParameterList& params, Run
 	}
 
 	Runtime::Method* methodSymbol = static_cast<Runtime::Method*>(symbol);
-	Runtime::ControlFlow::E controlflow = methodSymbol->execute(params, result, Token());
+
+	Runtime::Interpreter interpreter;
+	Runtime::ControlFlow::E controlflow = interpreter.execute(methodSymbol, params, result);
 
 	if ( controlflow == Runtime::ControlFlow::Throw ) {
-		Runtime::Object* data = methodSymbol->getExceptionData().getData();
+		//Runtime::Object* data = methodSymbol->getExceptionData().getData();
 		//Common::Position position = methodSymbol->getExceptionData().getPosition();
+
+		Runtime::Object* data = interpreter.getExceptionData().getData();
 
 		std::string text = "Exception raised in method '" + method + "(" + toString(params) + ")':\n";
 					text += data->getValue().toStdString();

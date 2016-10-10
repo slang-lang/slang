@@ -55,7 +55,9 @@ public:	// Symbol::IType implementation
 public: // Execution
 	virtual ControlFlow::E execute(const ParameterList& params, Object* result, const Token& token);
 	virtual const ExceptionData& getExceptionData() const;
+	virtual bool isExtensionMethod() const;
 
+public:
 	virtual Symbol* resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope = false) const;
 
 public: // Signature
@@ -71,19 +73,14 @@ public: // Setup
 public:
 	const TokenList& getTokens() const { return mTokens; }
 
-protected:
+public:
 	ParameterList mergeParameters(const ParameterList& params) const;
 
 protected:
 	ExceptionData mExceptionData;
 	Repository *mRepository;
 
-private: // private types
-	typedef std::list<IScope*> ScopeStack;
-	typedef std::list<TokenList> TokenStack;
-
-private: // Deinit
-	void garbageCollector();
+private:
 	ControlFlow::E processControlFlow(ControlFlow::E controlflow, Object* result);
 
 private:

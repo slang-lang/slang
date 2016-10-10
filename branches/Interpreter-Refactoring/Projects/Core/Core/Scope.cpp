@@ -8,6 +8,7 @@
 // Project includes
 #include <Core/Common/Exceptions.h>
 #include "Method.h"
+#include "Symbol.h"
 #include "Tools.h"
 
 // Namespace declarations
@@ -24,7 +25,7 @@ SymbolScope::SymbolScope(IScope *parent)
 
 SymbolScope::~SymbolScope()
 {
-	mParent = 0;
+	deinit();
 }
 
 void SymbolScope::define(const std::string& name, Symbol* symbol)
@@ -41,9 +42,19 @@ void SymbolScope::define(const std::string& name, Symbol* symbol)
 	));
 }
 
-void SymbolScope::exportSymbols(Symbols& symbols)
+void SymbolScope::deinit()
 {
-	symbols = mSymbols;
+/*
+	for ( Symbols::reverse_iterator it = mSymbols.rbegin(); it != mSymbols.rend(); ++it ) {
+		if ( it->second->getSymbolType() == Symbol::IType::ObjectSymbol ) {
+			if ( dynamic_cast<Runtime::Object*>(it->second) && dynamic_cast<Runtime::Object*>(it->second)->isAtomicType() ) {
+				delete it->second;
+				mSymbols.erase(it->first);
+			}
+		}
+	}
+*/
+	mParent = 0;
 }
 
 IScope* SymbolScope::getEnclosingScope() const
@@ -141,6 +152,25 @@ void MethodScope::defineMethod(const std::string& name, Runtime::Method* method)
 	mMethods.insert(method);
 }
 
+void MethodScope::deinit()
+{
+	for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
+		delete (*it);
+	}
+
+	for ( Symbols::reverse_iterator it = mSymbols.rbegin(); it != mSymbols.rend(); ++it ) {
+		if ( it->second->getSymbolType() == Symbol::IType::ObjectSymbol ) {
+			if ( dynamic_cast<Runtime::Object*>(it->second)->isAtomicType() ) {
+				delete it->second;
+			}
+
+			mSymbols.erase(it->first);
+		}
+	}
+
+	mParent = 0;
+}
+
 MethodSymbol* MethodScope::resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope) const
 {
 	for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
@@ -177,6 +207,10 @@ GlobalScope::GlobalScope()
 }
 
 GlobalScope::~GlobalScope()
+{
+}
+
+void GlobalScope::deinit()
 {
 	for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
 		undefine((*it)->getName(), (*it));

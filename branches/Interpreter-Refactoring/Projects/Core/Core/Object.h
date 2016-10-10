@@ -18,6 +18,7 @@
 #include "Interpreter.h"
 #include "Method.h"
 #include "Parameter.h"
+#include "Reference.h"
 #include "Scope.h"
 #include "Symbol.h"
 #include "Token.h"
@@ -81,6 +82,10 @@ public:	// Setup
 	void setConstructed(bool state);
 	void setParent(IScope *scope);
 	void setRepository(Repository *repository);
+
+public:	// Reference
+	const Reference& getReference() const { return mReference; }
+	void setReference(const Reference& reference) { mReference = reference; }
 
 public: // Symbol
 	Symbol* resolve(const std::string& name, bool onlyCurrentScope) const;
@@ -150,6 +155,7 @@ protected:
 	std::string mOutterface;
 	std::string mQualifiedOutterface;
 	std::string mQualifiedTypename;
+	Reference mReference;
 	Repository *mRepository;
 	std::string mTypename;
 	AtomicValue mValue;
