@@ -15,6 +15,7 @@ SET(HEADERS
 )
 
 SET(DEPENDENCIES
+	CoreVirtualMachine
 	CoreRuntime
 	Core
 )

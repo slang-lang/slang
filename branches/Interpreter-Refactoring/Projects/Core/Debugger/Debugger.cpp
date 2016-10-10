@@ -6,7 +6,7 @@
 #include <iostream>
 
 // Project includes
-#include <Core/StackTrace.h>
+#include <Core/VirtualMachine/StackTrace.h>
 #include "IReceiver.h"
 
 // Namespace declarations
@@ -87,7 +87,7 @@ IDebugger::NextAction::E Debugger::nextAction() const
 	return mNextAction;
 }
 
-void Debugger::notify(SymbolScope* scope, const Token& token)
+void Debugger::notify(IScope* scope, const Token& token)
 {
 	if ( !mReceiver || mNextAction == NextAction::None ) {
 		return;
@@ -117,28 +117,28 @@ void Debugger::notify(SymbolScope* scope, const Token& token)
 	}
 }
 
-void Debugger::notifyEnter(SymbolScope* scope, const Token& /*token*/)
+void Debugger::notifyEnter(IScope* scope, const Token& /*token*/)
 {
 	if ( mReceiver && mNextAction == NextAction::StepInto ) {
 		mReceiver->notifyEnter(scope, immediateBreakPoint);
 	}
 }
 
-void Debugger::notifyExceptionCatch(SymbolScope *scope, const Token &token)
+void Debugger::notifyExceptionCatch(IScope *scope, const Token &token)
 {
 	if ( mReceiver && mBreakOnExceptionCatch ) {
 		mReceiver->notifyExceptionCatch(scope, BreakPoint(token.position()));
 	}
 }
 
-void Debugger::notifyExceptionThrow(SymbolScope *scope, const Token &token)
+void Debugger::notifyExceptionThrow(IScope *scope, const Token &token)
 {
 	if ( mReceiver && mBreakOnExceptionThrow ) {
 		mReceiver->notifyExceptionThrow(scope, BreakPoint(token.position()));
 	}
 }
 
-void Debugger::notifyExit(SymbolScope* scope, const Token& /*token*/)
+void Debugger::notifyExit(IScope* scope, const Token& /*token*/)
 {
 	if ( mReceiver && mNextAction == NextAction::StepOut ) {
 		mReceiver->notifyExit(scope, immediateBreakPoint);

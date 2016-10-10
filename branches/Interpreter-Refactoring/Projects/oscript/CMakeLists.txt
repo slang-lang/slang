@@ -8,10 +8,10 @@ SET(HEADERS
 )
 
 SET(DEPENDENCIES
-	ExtensionsSystem
-	ExtensionsMysql
-	ExtensionsJson
-	ExtensionsApache
+#	ExtensionsSystem
+#	ExtensionsMysql
+#	ExtensionsJson
+#	ExtensionsApache
 	Core
 	Utils
 )
@@ -21,4 +21,5 @@ add_include(Projects/Extensions)
 add_include(Projects/Utils)
 
 SET(EXECUTABLE_OUTPUT_PATH ${EXECUTABLE_OUTPUT_PATH}/oscript)
-build_app(oscript "mysql")
+#build_app(oscript "mysql")
+build_app(oscript "")

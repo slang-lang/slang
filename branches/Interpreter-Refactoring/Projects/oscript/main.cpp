@@ -5,16 +5,15 @@
 #include <Common/StdOutLogger.h>
 #include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/BuildInObjects/StringObject.h>
-#include <Core/Script.h>
-#include <Core/StackTrace.h>
 #include <Core/Common/Exceptions.h>
-#include <Core/VirtualMachine.h>
+#include <Core/Script.h>
+#include <Core/VirtualMachine/VirtualMachine.h>
 #include <Tools/Printer.h>
 #include <Tools/Strings.h>
 #include <Utils.h>
 
 // Extension includes
-#include <Extensions.h>
+//#include <Extensions.h>
 
 // Namespace declarations
 
@@ -158,6 +157,7 @@ int main(int argc, const char* argv[])
 		mVirtualMachine.addLibraryFolder((*it));
 	}
 
+/*
 	// add extensions
 #ifdef USE_APACHE_EXTENSION
 	mVirtualMachine.addExtension(new ObjectiveScript::Extensions::Apache::ApacheExtension());
@@ -171,18 +171,14 @@ int main(int argc, const char* argv[])
 #ifdef USE_SYSTEM_EXTENSION
 	mVirtualMachine.addExtension(new ObjectiveScript::Extensions::System::SystemExtension());
 #endif
-
+*/
 	try {
 		ObjectiveScript::Script *script = mVirtualMachine.createScriptFromFile(mFilename, mParameters);
 		if ( script ) {
-			// check if an instance ("main") of a Main object exists
-			ObjectiveScript::Runtime::Object *main = static_cast<ObjectiveScript::Runtime::Object*>(script->resolve("main"));
+			ObjectiveScript::Runtime::IntegerObject result;
+			script->execute("Main", mParameters, &result);
 
-			if ( !main || main->isAtomicType() ) {
-				ObjectiveScript::Runtime::IntegerObject result;
-				script->execute("Main", mParameters, &result);
-				return result.getValue().toInt();
-			}
+			return result.getValue().toInt();
 		}
 	}
 	catch ( std::exception &e ) {	// catch every std::exception and all derived exception types

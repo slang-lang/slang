@@ -15,7 +15,7 @@
 namespace ObjectiveScript {
 
 // Forward declaration
-class SymbolScope;
+class IScope;
 
 namespace Core {
 
@@ -27,11 +27,11 @@ class IReceiver
 public:
 	virtual ~IReceiver() { }
 
-	virtual int notify(SymbolScope* scope, const BreakPoint& breakpoint) = 0;
-	virtual int notifyEnter(SymbolScope* scope, const BreakPoint& breakpoint) = 0;
-	virtual int notifyExceptionCatch(SymbolScope *scope, const BreakPoint &breakpoint) = 0;
-	virtual int notifyExceptionThrow(SymbolScope *scope, const BreakPoint &breakpoint) = 0;
-	virtual int notifyExit(SymbolScope* scope, const BreakPoint& breakpoint) = 0;
+	virtual int notify(IScope* scope, const BreakPoint& breakpoint) = 0;
+	virtual int notifyEnter(IScope* scope, const BreakPoint& breakpoint) = 0;
+	virtual int notifyExceptionCatch(IScope *scope, const BreakPoint &breakpoint) = 0;
+	virtual int notifyExceptionThrow(IScope *scope, const BreakPoint &breakpoint) = 0;
+	virtual int notifyExit(IScope* scope, const BreakPoint& breakpoint) = 0;
 };
 
 

@@ -47,11 +47,11 @@ public:	// IDebugger implementation
 
 	NextAction::E nextAction() const;
 
-	void notify(SymbolScope* scope, const Token& token = Token());
-	void notifyEnter(SymbolScope* scope, const Token& token = Token());
-	void notifyExceptionCatch(SymbolScope *scope, const Token &token = Token());
-	void notifyExceptionThrow(SymbolScope *scope, const Token &token = Token());
-	void notifyExit(SymbolScope* scope, const Token& token = Token());
+	void notify(IScope* scope, const Token& token = Token());
+	void notifyEnter(IScope* scope, const Token& token = Token());
+	void notifyExceptionCatch(IScope *scope, const Token &token = Token());
+	void notifyExceptionThrow(IScope *scope, const Token &token = Token());
+	void notifyExit(IScope* scope, const Token& token = Token());
 
 	void resume();
 	void resumeWithoutBreaks();

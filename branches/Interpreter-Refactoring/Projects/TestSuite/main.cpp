@@ -5,7 +5,7 @@
 
 // Project includes
 #include <Common/StdOutLogger.h>
-#include <Core/StackTrace.h>
+#include <Core/VirtualMachine/StackTrace.h>
 #include <Tools/Printer.h>
 #include <Tools/Strings.h>
 #include <Tools/Tools.h>
@@ -16,7 +16,7 @@
 #include <Inheritance/Fixture.h>
 #include <Interfaces/Fixture.h>
 #include <Language/Fixture.h>
-#include <Library/Fixture.h>
+//#include <Library/Fixture.h>
 #include <Math/Fixture.h>
 #include <Operator/Fixture.h>
 #include <Prototype/Fixture.h>
@@ -134,8 +134,10 @@ int main(int argc, const char* argv[])
 		Testing::Language::Fixture language(mLogger);
 		mFixtures.push_back(&language);
 
+/*
 		Testing::Library::Fixture library(mLogger);
 		mFixtures.push_back(&library);
+*/
 
 		Testing::Math::Fixture math(mLogger);
 		mFixtures.push_back(&math);
