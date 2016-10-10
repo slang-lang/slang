@@ -7,13 +7,13 @@
 
 // Project includes
 #include <Core/BuildInObjects/StringObject.h>
+#include <Core/Common/Exceptions.h>
 #include <Core/BuildInObjects/VoidObject.h>
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
 #include <Core/Designtime/BuildInTypes/VoidObject.h>
 #include <Core/Method.h>
-#include <Core/Repository.h>
 #include <Core/Tools.h>
-#include <Core/Common/Exceptions.h>
+#include <Core/VirtualMachine/Repository.h>
 #include "Types.h"
 
 // Forward declarations
@@ -57,7 +57,7 @@ public:
 			mysql_data_seek(myResult, (my_ulonglong)param_rowIdx);
 		}
 		catch ( std::exception &e ) {
-			Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+			Runtime::Object *data = Repository::GetInstance().createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
 			*data = Runtime::StringObject(std::string(e.what()));
 
 			mExceptionData = Runtime::ExceptionData(data, token.position());
