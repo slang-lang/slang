@@ -43,13 +43,13 @@ protected:
 	typedef std::map<std::string, Symbol*> Symbols;
 
 protected:
-	virtual void deinit();
-
-protected:
 	IScope *mParent;
 	std::string mScopeName;
 	IType::E mScopeType;
 	Symbols mSymbols;
+
+private:
+	void deinit();
 };
 
 
@@ -58,7 +58,11 @@ class NamedScope : public SymbolScope
 public:
 	NamedScope(const std::string& name, IScope* parent = 0);
 	virtual ~NamedScope();
+
+private:
+	void deinit();
 };
+
 
 class MethodScope : public NamedScope
 {
@@ -75,10 +79,10 @@ public:
 	virtual void undefineMethod(Runtime::Method* method);
 
 protected:
-	virtual void deinit();
-
-protected:
 	MethodCollection mMethods;
+
+private:
+	void deinit();
 };
 
 
@@ -91,8 +95,8 @@ public:
 public:
 	std::string ToString() const;
 
-protected:
-	virtual void deinit();
+private:
+	void deinit();
 };
 
 

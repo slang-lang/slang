@@ -316,7 +316,7 @@ ParameterList Parser::parseParameters(TokenIterator &token)
 			token++;
 		}
 
-		Parameter param(name, type, value, hasDefaultValue, isConst, accessmode, 0);
+		Parameter param(name, type, value, hasDefaultValue, isConst, accessmode, Reference());
 		params.push_back(param);
 
 		if ( token->type() == Token::Type::PARENTHESIS_CLOSE ) {

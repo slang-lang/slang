@@ -48,6 +48,7 @@ Repository::~Repository()
 	// Cleanup instances
 	// {
 	delete mScope;
+	mScope = 0;
 	// }
 
 	// Cleanup prototypes
@@ -140,49 +141,6 @@ assert(!"prototypes not supported!");
 }
 
 /*
- * this does not work because extension methods can not get copied :-(
- */
-void Repository::createDefaultMethods(Runtime::Object *object)
-{
-	assert(object);
-	{
-		class ToString : public Runtime::Method {
-		public:
-			ToString()
-			: Runtime::Method(0, "ToString", Designtime::StringObject::TYPENAME)
-			{
-				ParameterList params;
-
-				setSignature(params);
-			}
-
-			Runtime::ControlFlow::E execute(const ParameterList &params, Runtime::Object *result, const Token& token)
-			{
-				try {
-					ParameterList::const_iterator it = params.begin();
-					(void) it;
-
-					*result = Runtime::StringObject(std::string("blablabla"));
-				}
-				catch (std::exception &e) {
-					Runtime::Object *data = Repository::GetInstance().createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
-					*data = Runtime::StringObject(std::string(e.what()));
-
-					mExceptionData = Runtime::ExceptionData(data, token.position());
-					return Runtime::ControlFlow::Throw;
-				}
-
-				return Runtime::ControlFlow::Normal;
-			}
-		};
-
-		ToString *toString = new ToString();
-
-		object->defineMethod(toString->getName(), toString);
-	}
-}
-
-/*
  * single point of contact for outsiders to create and instantiate new objects (no matter if atomic or not)
  */
 Runtime::Object* Repository::createInstance(const std::string& type, const std::string& name, bool initialize)
@@ -197,9 +155,9 @@ Runtime::Object* Repository::createInstance(const std::string& type, const std::
 
 	Runtime::Object *object = createObject(name, it->second, initialize);
 
-	//addReference(object);
-
-	Memory::GetInstance().newObject(object);
+	if ( initialize ) {
+		Memory::GetInstance().newObject(object);
+	}
 
 	return object;
 }
@@ -216,9 +174,9 @@ Runtime::Object* Repository::createInstance(Designtime::BluePrintObject* bluepri
 
 	Runtime::Object* object = createObject(name, blueprint, initialize);
 
-	//addReference(object);
-
-	Memory::GetInstance().newObject(object);
+	if ( initialize ) {
+		Memory::GetInstance().newObject(object);
+	}
 
 	return object;
 }
@@ -399,14 +357,14 @@ void Repository::initialize()
 
 	// add predefined runtime objects
 	{	// null
-		Runtime::Object* NullObject = new Runtime::Object(VALUE_NULL, SYSTEM_LIBRARY, NULL_TYPE, 0);
-		NullObject->setConst(true);
-		NullObject->setFinal(true);
-		NullObject->setMutability(Mutability::Const);
-		NullObject->setVisibility(Visibility::Public);
-		NullObject->setSealed(true);
+		Runtime::Object* nullObject = new Runtime::Object(VALUE_NULL, SYSTEM_LIBRARY, NULL_TYPE, 0);
+		nullObject->setConst(true);
+		nullObject->setFinal(false);
+		nullObject->setMutability(Mutability::Const);
+		nullObject->setVisibility(Visibility::Public);
+		nullObject->setSealed(true);
 
-		mScope->define(VALUE_NULL, NullObject);
+		mScope->define(VALUE_NULL, nullObject);
 	}
 }
 

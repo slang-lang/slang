@@ -78,9 +78,17 @@ ControlFlow::E Interpreter::execute(Method* method, const ParameterList& params,
 
 	// add parameters as locale variables
 	for ( ParameterList::const_iterator it = executedParams.begin(); it != executedParams.end(); ++it ) {
+		Object *object = 0;
+
 		switch ( it->access() ) {
 			case Parameter::AccessMode::ByReference: {
-				Object *object = it->pointer();
+				object = mRepository->createInstance(it->type(), it->name(), false);
+
+				if ( it->reference().isValid() ) {
+					object->assign(
+						*Memory::GetInstance().getObject(it->reference())
+					);
+				}
 
 				object->setConst(it->isConst());
 				object->setMutability(it->isConst() ? Mutability::Const : Mutability::Modify);
@@ -88,16 +96,16 @@ ControlFlow::E Interpreter::execute(Method* method, const ParameterList& params,
 				scope.define(it->name(), object);
 			} break;
 			case Parameter::AccessMode::ByValue: {
-				if ( it->pointer() && !it->pointer()->isAtomicType() ) {
-					throw Common::Exceptions::NotImplemented("cannot copy objects");
+				object = mRepository->createInstance(it->type(), it->name(), false);
+
+				if ( it->reference().isValid() ) {
+					object->copy(
+						*Memory::GetInstance().getObject(it->reference())
+					);
 				}
 
-				Object *object = mRepository->createInstance(it->type(), it->name());
+				object->setValue(it->value());
 
-				object->setValue(it->value());	// in case we have a default value
-				if ( it->pointer() ) {
-					*object = *(it->pointer());
-				}
 				object->setConst(it->isConst());
 				object->setMutability(it->isConst() ? Mutability::Const : Mutability::Modify);
 
@@ -365,7 +373,7 @@ Symbol* Interpreter::identifyMethod(TokenIterator& token, const ParameterList& p
 
 			// look for an overloaded method
 			if ( result && result->getSymbolType() == Symbol::IType::MethodSymbol ) {
-				result = static_cast<Object*>(mOwner)->resolveMethod(identifier, params, onlyCurrentScope);
+				result = static_cast<MethodScope*>(mOwner)->resolveMethod(identifier, params, onlyCurrentScope);
 			}
 		}
 		else {
@@ -1205,7 +1213,7 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 		}
 
 		params.push_back(
-			Parameter(obj->getName(), obj->QualifiedOutterface(), obj->getValue(), false, obj->isConst(), Parameter::AccessMode::Unspecified, obj)
+			Parameter(obj->getName(), obj->QualifiedOutterface(), obj->getValue(), false, obj->isConst(), Parameter::AccessMode::Unspecified, obj->getReference())
 		);
 
 		if ( std::distance(tmp, closed) <= 0 ) {
@@ -1263,6 +1271,7 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 			mControlFlow = ControlFlow::Throw;
 			throw ControlFlow::Throw;			// throw even further
 		default:
+			mControlFlow = ControlFlow::Normal;
 			break;
 	}
 
@@ -1311,7 +1320,7 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 		}
 
 		params.push_back(
-			Parameter(obj->getName(), obj->Outterface(), obj->getValue(), false, obj->isConst(), Parameter::AccessMode::Unspecified, obj)
+			Parameter(obj->getName(), obj->Outterface(), obj->getValue(), false, obj->isConst(), Parameter::AccessMode::Unspecified, obj->getReference())
 		);
 
 		if ( std::distance(tmp, closed) <= 0 ) {
@@ -1556,7 +1565,7 @@ void Interpreter::process_throw(TokenIterator& token, Object* /*result*/)
 		OSwarn(std::string(method->getFullScopeName() + " throws although it is not marked with 'throws'!").c_str());
 	}
 
-	Object* data = getRepository()->createInstance(OBJECT);
+	Object* data = getRepository()->createInstance(OBJECT, ANONYMOUS_OBJECT, false);
 	try {
 		expression(data, token);
 	}

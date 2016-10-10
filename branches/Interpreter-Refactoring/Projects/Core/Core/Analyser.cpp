@@ -306,7 +306,7 @@ bool Analyser::createMember(TokenIterator& token, TokenIterator /*end*/)
 
 	expect(Token::Type::SEMICOLON, token);
 
-	Runtime::Object *member = mRepository->createInstance(type, name);
+	Runtime::Object *member = mRepository->createInstance(type, name, false);
 	member->setMember(false);
 	member->setMutability(mutability);
 	member->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));

@@ -44,16 +44,17 @@ void SymbolScope::define(const std::string& name, Symbol* symbol)
 
 void SymbolScope::deinit()
 {
-/*
-	for ( Symbols::reverse_iterator it = mSymbols.rbegin(); it != mSymbols.rend(); ++it ) {
+	Symbols tmp = mSymbols;
+
+	for ( Symbols::iterator it = tmp.begin(); it != tmp.end(); ++it ) {
 		if ( it->second->getSymbolType() == Symbol::IType::ObjectSymbol ) {
-			if ( dynamic_cast<Runtime::Object*>(it->second) && dynamic_cast<Runtime::Object*>(it->second)->isAtomicType() ) {
+			if ( dynamic_cast<Runtime::Object*>(it->second) ) {
 				delete it->second;
 				mSymbols.erase(it->first);
 			}
 		}
 	}
-*/
+
 	mParent = 0;
 }
 
@@ -117,8 +118,12 @@ NamedScope::NamedScope(const std::string& name, IScope* parent)
 
 NamedScope::~NamedScope()
 {
+	deinit();
 }
 
+void NamedScope::deinit()
+{
+}
 
 MethodScope::MethodScope(const std::string& name, IScope* parent)
 : NamedScope(name, parent)
@@ -128,6 +133,7 @@ MethodScope::MethodScope(const std::string& name, IScope* parent)
 
 MethodScope::~MethodScope()
 {
+	deinit();
 }
 
 void MethodScope::defineMethod(const std::string& name, Runtime::Method* method)
@@ -154,21 +160,6 @@ void MethodScope::defineMethod(const std::string& name, Runtime::Method* method)
 
 void MethodScope::deinit()
 {
-	for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
-		delete (*it);
-	}
-
-	for ( Symbols::reverse_iterator it = mSymbols.rbegin(); it != mSymbols.rend(); ++it ) {
-		if ( it->second->getSymbolType() == Symbol::IType::ObjectSymbol ) {
-			if ( dynamic_cast<Runtime::Object*>(it->second)->isAtomicType() ) {
-				delete it->second;
-			}
-
-			mSymbols.erase(it->first);
-		}
-	}
-
-	mParent = 0;
 }
 
 MethodSymbol* MethodScope::resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope) const
@@ -208,32 +199,37 @@ GlobalScope::GlobalScope()
 
 GlobalScope::~GlobalScope()
 {
+	deinit();
 }
 
 void GlobalScope::deinit()
 {
-	for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
-		undefine((*it)->getName(), (*it));
-
-		delete (*it);
-	}
-	mMethods.clear();
-
-	for ( Symbols::reverse_iterator it = mSymbols.rbegin(); it != mSymbols.rend(); ) {
-		if ( it->second ) {
-			switch ( it->second->getSymbolType() ) {
-				case Symbol::IType::NamespaceSymbol:
-					delete it->second;
-					it->second = 0;
-					break;
-				default:
-					break;
+	for ( MethodCollection::iterator methIt = mMethods.begin(); methIt != mMethods.end(); ++methIt ) {
+		for ( Symbols::iterator symIt = mSymbols.begin(); symIt != mSymbols.end(); ++symIt ) {
+			if ( symIt->second == (*methIt) ) {
+				mSymbols.erase(symIt->first);
 			}
 		}
 
-		undefine(it->first, it->second);
+		delete (*methIt);
 	}
-	mSymbols.clear();
+
+	for ( Symbols::iterator symIt = mSymbols.begin(); symIt != mSymbols.end(); ) {
+		if ( symIt->second ) {
+			switch ( symIt->second->getSymbolType() ) {
+				case Symbol::IType::NamespaceSymbol: {
+					Symbol* space = symIt->second;
+
+					undefine(symIt->first, space);
+
+					delete space;
+				} break;
+				default: {
+					symIt++;
+				} break;
+			}
+		}
+	}
 }
 
 std::string GlobalScope::ToString() const

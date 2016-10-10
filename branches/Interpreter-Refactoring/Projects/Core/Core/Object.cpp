@@ -419,18 +419,16 @@ void Object::garbageCollector()
 
 		delete (*it);
 	}
-	mMethods.clear();
 
-	for ( Symbols::reverse_iterator it = mSymbols.rbegin(); it != mSymbols.rend(); ) {
+	for ( Symbols::iterator it = mSymbols.begin(); it != mSymbols.end(); ) {
 		if ( it->first != IDENTIFIER_BASE &&
 			 it->first != IDENTIFIER_THIS &&
 			 it->second && it->second->getSymbolType() == Symbol::IType::ObjectSymbol ) {
-			//mRepository->removeReference(static_cast<Object*>(it->second));
+			delete it->second;
 		}
 
 		undefine(it->first, it->second);
 	}
-	mSymbols.clear();
 }
 
 AtomicValue Object::getValue() const

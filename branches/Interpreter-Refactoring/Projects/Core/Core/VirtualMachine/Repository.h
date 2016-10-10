@@ -50,8 +50,8 @@ public:
 	void addBluePrint(Designtime::BluePrintObject* object);
 	void addPrototype(Designtime::Prototype* prototype);
 
-	Runtime::Object* createInstance(const std::string& type, const std::string& name = ANONYMOUS_OBJECT, bool initialize = true);
-	Runtime::Object* createInstance(Designtime::BluePrintObject* blueprint, const std::string& name = ANONYMOUS_OBJECT, bool initialize = true);
+	Runtime::Object* createInstance(const std::string& type, const std::string& name, bool initialize);
+	Runtime::Object* createInstance(Designtime::BluePrintObject* blueprint, const std::string& name, bool initialize);
 
 	bool isAlreadyKnown(const std::string& name) const;
 
@@ -73,7 +73,6 @@ private:
 	Designtime::BluePrintEnum* findBluePrintEnum(const std::string& type) const;
 	Designtime::BluePrintObject* findBluePrintObject(const std::string& type) const;
 
-	void createDefaultMethods(Runtime::Object *object);
 	void initialize();
 	void initializeObject(Runtime::Object *object, Designtime::BluePrintObject* blueprint);
 	void insertBluePrintEnumsIntoScopes();

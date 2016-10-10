@@ -185,8 +185,13 @@ ParameterList Method::mergeParameters(const ParameterList& params) const
 		Parameter param(sigIt->name(), sigIt->type(), sigIt->value(), sigIt->hasDefaultValue(), sigIt->isConst(), sigIt->access());
 
 		if ( paramIt != params.end() ) {
+			Reference ref;
+			if ( paramIt->pointer() ) {
+				ref = paramIt->pointer()->getReference();
+			}
+
 			// override parameter with correct value
-			param = Parameter(sigIt->name(), sigIt->type(), paramIt->value(), sigIt->hasDefaultValue(), sigIt->isConst(), sigIt->access(), paramIt->pointer());
+			param = Parameter(sigIt->name(), sigIt->type(), paramIt->value(), sigIt->hasDefaultValue(), sigIt->isConst(), sigIt->access(), ref);
 			// next iteration
 			paramIt++;
 		}
