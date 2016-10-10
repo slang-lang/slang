@@ -85,7 +85,7 @@ Object::Object(const std::string& name, const std::string& filename, const std::
 
 Object::~Object()
 {
-	garbageCollector();
+//	garbageCollector();
 }
 
 void Object::operator= (const Object& other)
@@ -129,12 +129,13 @@ void Object::assign(const Object& other)
 		mScopeType = other.mScopeType;
 		mValue = other.mValue;
 
-		if ( other.mQualifiedOutterface != NULL_TYPE ) {
+		if ( mTypename != NULL_TYPE ) {
 			mOutterface = other.mOutterface;
 			mQualifiedOutterface = other.mQualifiedOutterface;
-			mQualifiedTypename = other.mQualifiedTypename;
-			mTypename = other.mTypename;
 		}
+
+		mQualifiedTypename = other.mQualifiedTypename;
+		mTypename = other.mTypename;
 
 		if ( !mIsAtomicType ) {
 			mReference = other.mReference;
@@ -160,8 +161,6 @@ void Object::assignSubType(const Object& other)
 			mQualifiedTypename = other.mQualifiedTypename;
 			mTypename = other.mTypename;
 		}
-
-		garbageCollector();
 
 		if ( !mIsAtomicType ) {
 			mReference = other.mReference;
@@ -420,14 +419,16 @@ void Object::garbageCollector()
 		delete (*it);
 	}
 
-	for ( Symbols::iterator it = mSymbols.begin(); it != mSymbols.end(); ) {
-		if ( it->first != IDENTIFIER_BASE &&
-			 it->first != IDENTIFIER_THIS &&
-			 it->second && it->second->getSymbolType() == Symbol::IType::ObjectSymbol ) {
-			delete it->second;
+	Symbols tmp = mSymbols;
+
+	for ( Symbols::iterator symIt = tmp.begin(); symIt != tmp.end(); ++symIt) {
+		if ( symIt->first != IDENTIFIER_BASE &&
+			 symIt->first != IDENTIFIER_THIS &&
+			 symIt->second && symIt->second->getSymbolType() == Symbol::IType::ObjectSymbol ) {
+			delete symIt->second;
 		}
 
-		undefine(it->first, it->second);
+		mSymbols.erase(symIt->first);
 	}
 }
 

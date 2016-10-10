@@ -69,7 +69,7 @@ Repository::~Repository()
 	// Cleanup blue prints
 	// {
 	for ( BluePrintObjectMap::iterator it = mBluePrintObjects.begin(); it != mBluePrintObjects.end(); ++it ) {
-		it->second->cleanup();
+		//it->second->cleanup();
 
 		delete it->second;
 	}

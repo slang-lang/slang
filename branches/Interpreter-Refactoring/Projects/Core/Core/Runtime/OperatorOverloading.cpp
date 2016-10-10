@@ -81,7 +81,8 @@ inline void operator_binary_assign(Object *base, Object *other)
 	}
 	else if ( other->isInstanceOf(source) ) {
 		// we are assigning a sub type to a super type
-		base->assignSubType(*other);
+		//base->assignSubType(*other);
+		base->assign(*other);
 	}
 	else {
 		// no atomic data type, so we have to look if our assign operator has been overwritten
@@ -96,7 +97,7 @@ inline void operator_binary_assign(Object *base, Object *other)
 			interpreter.execute(method, params, base);
 		}
 		else {
-			*base = *other;
+			base->assign(*other);
 		}
 	}
 }
@@ -731,43 +732,43 @@ void operator_binary_plus(Object *base, Object *other)
 		BoolObject tmp(base->getValue());
 		tmp.operator_plus(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == DoubleObject::TYPENAME ) {
 		DoubleObject tmp(base->getValue());
 		tmp.operator_plus(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == FloatObject::TYPENAME ) {
 		FloatObject tmp(base->getValue());
 		tmp.operator_plus(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == IntegerObject::TYPENAME ) {
 		IntegerObject tmp(base->getValue());
 		tmp.operator_plus(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == NumberObject::TYPENAME ) {
 		NumberObject tmp(base->getValue());
 		tmp.operator_plus(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == StringObject::TYPENAME ) {
 		StringObject tmp(base->getValue());
 		tmp.operator_plus(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == VoidObject::TYPENAME ) {
 		VoidObject tmp;
 		tmp.operator_plus(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else {
 		ParameterList params;

@@ -330,7 +330,7 @@ inline Symbol* Interpreter::identify(TokenIterator& token) const
 					result = static_cast<Namespace*>(result)->resolve(identifier, onlyCurrentScope);
 					break;
 				case Symbol::IType::ObjectSymbol:
-					Memory::GetInstance().getObject(static_cast<Object*>(result)->getReference())->resolve(identifier, onlyCurrentScope);
+					result = Memory::GetInstance().getObject(static_cast<Object*>(result)->getReference())->resolve(identifier, onlyCurrentScope);
 					break;
 				case Symbol::IType::BluePrintEnumSymbol:
 				case Symbol::IType::MethodSymbol:
@@ -1334,7 +1334,7 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 	}
 
 	// create initialized instance of new object
-	*result = *getRepository()->createInstance(static_cast<Designtime::BluePrintObject*>(symbol), name, true);
+	result->assign(*getRepository()->createInstance(static_cast<Designtime::BluePrintObject*>(symbol), name, true));
 
 	// execute new object's constructor
 	mControlFlow = result->Constructor(params);

@@ -55,7 +55,7 @@ void BluePrintObject::cleanup()
 
 		delete (*it);
 	}
-	mMethods.clear();
+	//mMethods.clear();
 
 	for ( Symbols::iterator it = mSymbols.begin(); it != mSymbols.end(); ++it ) {
 		if ( it->first == IDENTIFIER_BASE || it->first == IDENTIFIER_THIS || !it->second ) {
@@ -63,12 +63,12 @@ void BluePrintObject::cleanup()
 		}
 
 		if ( it->second->getSymbolType() == Symbol::IType::BluePrintObjectSymbol ) {
-			static_cast<BluePrintObject*>(it->second)->cleanup();
+			//static_cast<BluePrintObject*>(it->second)->cleanup();
+			delete it->second;
 		}
 
 		//delete it->second;
 	}
-	mSymbols.clear();
 }
 
 Designtime::Ancestors BluePrintObject::getAncestors() const
