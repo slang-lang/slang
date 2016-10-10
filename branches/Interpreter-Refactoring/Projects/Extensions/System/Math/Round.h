@@ -12,7 +12,6 @@
 #include <Core/Designtime/BuildInTypes/DoubleObject.h>
 #include <Core/Designtime/BuildInTypes/FloatObject.h>
 #include <Core/Method.h>
-#include <Core/Repository.h>
 #include <Core/Tools.h>
 #include <Core/Common/Exceptions.h>
 #include <Tools/Strings.h>
@@ -58,7 +57,7 @@ public:
 #endif
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+			Runtime::Object *data = Repository::GetInstance().createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
 			*data = Runtime::StringObject(std::string(e.what()));
 
 			mExceptionData = Runtime::ExceptionData(data, token.position());
@@ -99,7 +98,7 @@ public:
 #endif
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+			Runtime::Object *data = Repository::GetInstance().createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
 			*data = Runtime::StringObject(std::string(e.what()));
 
 			mExceptionData = Runtime::ExceptionData(data, token.position());

@@ -8,10 +8,10 @@ SET(HEADERS
 )
 
 SET(DEPENDENCIES
-#	ExtensionsSystem
-#	ExtensionsMysql
-#	ExtensionsJson
-#	ExtensionsApache
+	ExtensionsSystem
+	ExtensionsMysql
+	ExtensionsJson
+	ExtensionsApache
 	Core
 	Utils
 )

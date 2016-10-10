@@ -18,6 +18,9 @@
 
 // Namespace declarations
 
+// Extension includes
+#include <Extensions.h>
+
 
 namespace ObjectiveScript {
 

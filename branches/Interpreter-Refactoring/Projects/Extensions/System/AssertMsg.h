@@ -10,7 +10,6 @@
 #include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/Designtime/BuildInTypes/VoidObject.h>
 #include <Core/Method.h>
-#include <Core/Repository.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Tools.h>
 #include <Tools/Strings.h>
