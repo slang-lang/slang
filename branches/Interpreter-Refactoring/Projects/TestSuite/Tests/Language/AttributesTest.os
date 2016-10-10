@@ -1,6 +1,6 @@
 #!/usr/local/bin/oscript
 
-public stable namespace AttributeTest {
+//public stable namespace AttributeTest {
 	public void Function1() {
 		print("Function1");
 
@@ -58,36 +58,34 @@ public stable namespace AttributeTest {
 			mNumber = value;
 		}
 	}
+//}
+
+//private TestObject mTest;
+
+public void Main(int argc = 0, string argv = "") {
+	AttributeTest.Function1();
+
+	bla(1);
+
+	TestObject mTest = new AttributeTest.TestObject();
+
+	mTest.deprecatedMethod();
+	//mTest.notimplementedMethod();
+	mTest.stableMethod();
+	mTest.unstableMethod();
+
+	AttributeTest.ConstObject value = new AttributeTest.ConstObject();
+	print("value.GetNumber() = " + value.GetNumber());
+	value.SetNumber(2);
+	print("value.GetNumber() = " + value.GetNumber());
+
+	print(getTwo());
 }
 
-public stable object Main {
-	private AttributeTest.TestObject mTest;
-
-	public void Main(int argc = 0, string argv = "") {
-		AttributeTest.Function1();
-
-		bla(1);
-
-		mTest = new AttributeTest.TestObject();
-
-		mTest.deprecatedMethod();
-		//mTest.notimplementedMethod();
-		mTest.stableMethod();
-		mTest.unstableMethod();
-
-		AttributeTest.ConstObject value = new AttributeTest.ConstObject();
-		print("value.GetNumber() = " + value.GetNumber());
-		value.SetNumber(2);
-		print("value.GetNumber() = " + value.GetNumber());
-
-		print(getTwo());
-	}
-
-	private int getTwo() const {
-		return 2;
-	}
-	
-	private void bla() { }
-	private void bla(int num) { }
+private int getTwo() const {
+	return 2;
 }
+
+private void bla() { }
+private void bla(int num) { }
 

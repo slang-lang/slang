@@ -13,7 +13,7 @@
 #include <Utils.h>
 
 // Extension includes
-//#include <Extensions.h>
+#include <Extensions.h>
 
 // Namespace declarations
 
@@ -157,7 +157,6 @@ int main(int argc, const char* argv[])
 		mVirtualMachine.addLibraryFolder((*it));
 	}
 
-/*
 	// add extensions
 #ifdef USE_APACHE_EXTENSION
 	mVirtualMachine.addExtension(new ObjectiveScript::Extensions::Apache::ApacheExtension());
@@ -171,7 +170,7 @@ int main(int argc, const char* argv[])
 #ifdef USE_SYSTEM_EXTENSION
 	mVirtualMachine.addExtension(new ObjectiveScript::Extensions::System::SystemExtension());
 #endif
-*/
+
 	try {
 		ObjectiveScript::Script *script = mVirtualMachine.createScriptFromFile(mFilename, mParameters);
 		if ( script ) {

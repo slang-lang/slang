@@ -50,8 +50,8 @@ public:
 	void addBluePrint(Designtime::BluePrintObject* object);
 	void addPrototype(Designtime::Prototype* prototype);
 
-	Runtime::Object* createInstance(const std::string& type, const std::string& name, bool initialize);
-	Runtime::Object* createInstance(Designtime::BluePrintObject* blueprint, const std::string& name, bool initialize);
+	Runtime::Object* createInstance(const std::string& type, const std::string& name, bool initialize = false);
+	Runtime::Object* createInstance(Designtime::BluePrintObject* blueprint, const std::string& name, bool initialize = false);
 
 	bool isAlreadyKnown(const std::string& name) const;
 

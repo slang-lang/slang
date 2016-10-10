@@ -26,51 +26,49 @@ private object TestObject {
 	}
 }
 
-public object Main {
-	public void Main(int argc = 0, string args = "") {
-		assert( TestCase1() );
-		assert( TestCase2() );
-		assert( TestCase3() );
+public void Main(int argc = 0, string args = "") {
+	assert( TestCase1() );
+	assert( TestCase2() );
+	assert( TestCase3() );
+}
+
+private bool TestCase1() const {
+	print("TestCase 1");
+
+	TestObject obj = new TestObject();
+
+	print("obj = " + obj);
+
+	obj = 1;
+
+	print("obj = " + obj);
+
+	return true;
+}
+
+private bool TestCase2() const {
+	print("TestCase 2");
+
+	TestObject obj = new TestObject();
+
+	print("obj = " + obj);
+	{
+		obj.setValue(6);
 	}
+	print("obj = " + obj);
 
-	private bool TestCase1() const {
-		print("TestCase 1");
+	return true;
+}
 
-		TestObject obj = new TestObject();
+private bool TestCase3() const {
+	print("TestCase 3");
 
-		print("obj = " + obj);
+	NonConstMethod();
 
-		obj = 1;
+	return false;
+}
 
-		print("obj = " + obj);
-
-		return true;
-	}
-
-	private bool TestCase2() const {
-		print("TestCase 2");
-
-		TestObject obj = new TestObject();
-
-		print("obj = " + obj);
-		{
-			obj.setValue(6);
-		}
-		print("obj = " + obj);
-
-		return true;
-	}
-
-	private bool TestCase3() const {
-		print("TestCase 3");
-
-		NonConstMethod();
-
-		return false;
-	}
-
-	private bool NonConstMethod() modify {
-		return false;
-	}
+private bool NonConstMethod() modify {
+	return false;
 }
 

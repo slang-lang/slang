@@ -17,10 +17,10 @@
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Method.h>
 #include <Core/Script.h>
-#include <Core/StackTrace.h>
 #include <Core/Tokenizer.h>
 #include <Core/Tools.h>
-#include <Core/VirtualMachine.h>
+#include <Core/VirtualMachine/StackTrace.h>
+#include <Core/VirtualMachine/VirtualMachine.h>
 #include <Debugger/Debugger.h>
 #include <Tools/Files.h>
 #include <Tools/Strings.h>
@@ -413,7 +413,7 @@ Symbol* LocalClient::getSymbol(std::string name) const
 {
 	std::string child;
 	std::string parent;
-	SymbolScope* scope = mScope;
+	IScope* scope = mScope;
 
 	do {
 		if ( !scope ) {
@@ -534,7 +534,7 @@ bool LocalClient::modifySymbol(const StringList& tokens)
 	return true;
 }
 
-int LocalClient::notify(SymbolScope* scope, const Core::BreakPoint& breakpoint)
+int LocalClient::notify(IScope* scope, const Core::BreakPoint& breakpoint)
 {
 	mContinue = false;
 	mScope = scope;
@@ -590,30 +590,30 @@ int LocalClient::notify(SymbolScope* scope, const Core::BreakPoint& breakpoint)
 	return 0;
 }
 
-int LocalClient::notifyEnter(SymbolScope* scope, const Core::BreakPoint& breakpoint)
+int LocalClient::notifyEnter(IScope* scope, const Core::BreakPoint& breakpoint)
 {
-	writeln("[Stepping into " + StackTrace::GetInstance().currentStackLevel().toString() + "]");
+	writeln("[Stepping into " + StackTrace::GetInstance().current()->toString() + "]");
 
 	return notify(scope, breakpoint);
 }
 
-int LocalClient::notifyExceptionCatch(SymbolScope *scope, const Core::BreakPoint &breakpoint)
+int LocalClient::notifyExceptionCatch(IScope *scope, const Core::BreakPoint &breakpoint)
 {
-	writeln("[Caught exception in " + StackTrace::GetInstance().currentStackLevel().toString() + "]");
+	writeln("[Caught exception in " + StackTrace::GetInstance().current()->toString() + "]");
 
 	return notify(scope, breakpoint);
 }
 
-int LocalClient::notifyExceptionThrow(SymbolScope *scope, const Core::BreakPoint &breakpoint)
+int LocalClient::notifyExceptionThrow(IScope *scope, const Core::BreakPoint &breakpoint)
 {
-	writeln("[Exception has been thrown in " + StackTrace::GetInstance().currentStackLevel().toString() + "]");
+	writeln("[Exception has been thrown in " + StackTrace::GetInstance().current()->toString() + "]");
 
 	return notify(scope, breakpoint);
 }
 
-int LocalClient::notifyExit(SymbolScope* scope, const Core::BreakPoint& breakpoint)
+int LocalClient::notifyExit(IScope* scope, const Core::BreakPoint& breakpoint)
 {
-	writeln("[Stepping out of " + StackTrace::GetInstance().currentStackLevel().toString() + "]");
+	writeln("[Stepping out of " + StackTrace::GetInstance().current()->toString() + "]");
 
 	return notify(scope, breakpoint);
 }
@@ -712,11 +712,14 @@ void LocalClient::printHelp()
 
 void LocalClient::printStackTrace()
 {
+/*
 	StackTrace::Stack stack = StackTrace::GetInstance().getStack();
 
 	for ( StackTrace::Stack::const_iterator it = stack.begin(); it != stack.end(); ++it ) {
-		writeln(it->toString());
+		writeln((*it)->toString());
 	}
+*/
+	StackTrace::GetInstance().print();
 }
 
 void LocalClient::printSymbol(const StringList& tokens)
@@ -883,7 +886,7 @@ void LocalClient::start()
 	mDebugger->breakOnExceptionCatch(mSettings->breakOnExceptionCatch());
 	mDebugger->breakOnExceptionThrow(mSettings->breakOnExceptionThrow());
 	mDebugger->resume();
-	StackTrace::GetInstance().clear();
+	StackTrace::GetInstance().print();
 
 	mVirtualMachine = new VirtualMachine();
 	for ( StringSet::const_iterator it = mSettings->libraryFolders().begin(); it != mSettings->libraryFolders().end(); ++it ) {

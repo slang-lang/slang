@@ -10,9 +10,9 @@
 #include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Script.h>
-#include <Core/StackTrace.h>
 #include <Core/Tools.h>
-#include <Core/VirtualMachine.h>
+#include <Core/VirtualMachine/StackTrace.h>
+#include <Core/VirtualMachine/VirtualMachine.h>
 #include <Debugger/Debugger.h>
 #include "Protocol.h"
 
@@ -175,7 +175,7 @@ Symbol* RemoteClient::getSymbol(std::string name) const
 {
 	std::string child;
 	std::string parent;
-	SymbolScope* scope = mScope;
+	IScope* scope = mScope;
 
 	do {
 		if ( !scope ) {
@@ -235,7 +235,7 @@ void RemoteClient::Next(const VSCodeDebug::Request& request)
 	SendMessage(&response);
 }
 
-int RemoteClient::notify(SymbolScope* scope, const Core::BreakPoint& /*breakpoint*/)
+int RemoteClient::notify(IScope* scope, const Core::BreakPoint& /*breakpoint*/)
 {
 	mContinue = false;
 	mScope = scope;
@@ -275,22 +275,22 @@ int RemoteClient::notify(SymbolScope* scope, const Core::BreakPoint& /*breakpoin
 	return 0;
 }
 
-int RemoteClient::notifyEnter(SymbolScope* scope, const Core::BreakPoint& breakpoint)
+int RemoteClient::notifyEnter(IScope* scope, const Core::BreakPoint& breakpoint)
 {
 	return notify(scope, breakpoint);
 }
 
-int RemoteClient::notifyExceptionCatch(SymbolScope *scope, const Core::BreakPoint &breakpoint)
+int RemoteClient::notifyExceptionCatch(IScope *scope, const Core::BreakPoint &breakpoint)
 {
 	return notify(scope, breakpoint);
 }
 
-int RemoteClient::notifyExceptionThrow(SymbolScope *scope, const Core::BreakPoint &breakpoint)
+int RemoteClient::notifyExceptionThrow(IScope *scope, const Core::BreakPoint &breakpoint)
 {
 	return notify(scope, breakpoint);
 }
 
-int RemoteClient::notifyExit(SymbolScope* scope, const Core::BreakPoint& breakpoint)
+int RemoteClient::notifyExit(IScope* scope, const Core::BreakPoint& breakpoint)
 {
 	return notify(scope, breakpoint);
 }
@@ -369,14 +369,13 @@ void RemoteClient::start()
 
 	mDebugger->breakOnExceptionThrow(mSettings->breakOnExceptionThrow());
 	mDebugger->resume();
-	StackTrace::GetInstance().clear();
+	StackTrace::GetInstance().print();
 
 	mVirtualMachine = new VirtualMachine();
 	for ( StringSet::const_iterator it = mSettings->libraryFolders().begin(); it != mSettings->libraryFolders().end(); ++it ) {
 		mVirtualMachine->addLibraryFolder((*it));
 	}
 
-/*
 	// add extensions
 #ifdef USE_APACHE_EXTENSION
 	mVirtualMachine->addExtension(new ObjectiveScript::Extensions::Apache::ApacheExtension());
@@ -390,7 +389,6 @@ void RemoteClient::start()
 #ifdef USE_SYSTEM_EXTENSION
 	mVirtualMachine->addExtension(new ObjectiveScript::Extensions::System::SystemExtension());
 #endif
-*/
 
 	try {
 		ObjectiveScript::Script *script = mVirtualMachine->createScriptFromFile(mSettings->filename(), mParameters);

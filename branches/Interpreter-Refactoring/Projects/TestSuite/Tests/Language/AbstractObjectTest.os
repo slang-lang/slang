@@ -10,22 +10,20 @@ public object ImplementedObject extends AbstractObject {
 	}
 }
 
-public object Main {
-	public void Main(int argc = 0, string args = "") {
-		assert( TestCase1() );
-	}
+public void Main(int argc = 0, string args = "") {
+	assert( TestCase1() );
+}
 
-	private bool TestCase1() const {
-		AbstractObject obj = new ImplementedObject();
+private bool TestCase1() const {
+	AbstractObject obj = new ImplementedObject();
 
-		print("obj.isAbstract() = " + obj.isAbstract());
+	print("obj.isAbstract() = " + obj.isAbstract());
 
-		assert( obj is Object );
-		assert( obj is AbstractObject );
-		assert( obj is ImplementedObject );
-		assert( !obj.isAbstract() );
+	assert( obj is Object );
+	assert( obj is AbstractObject );
+	assert( obj is ImplementedObject );
+	assert( !obj.isAbstract() );
 
-		return true;
-	}
+	return true;
 }
 
