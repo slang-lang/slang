@@ -22,27 +22,18 @@ StackTrace::StackTrace()
 
 StackTrace::~StackTrace()
 {
-}
-
-void StackTrace::clear()
-{
 	while ( !mStack.empty() ) {
-		popStack();
+		pop();
 	}
 }
 
-StackLevel* StackTrace::currentStackLevel() const
+StackLevel* StackTrace::current() const
 {
 	if ( mStack.empty() ) {
 		return 0;
 	}
 
 	return mStack.back();
-}
-
-const StackTrace::Stack& StackTrace::getStack() const
-{
-	return mStack;
 }
 
 StackTrace& StackTrace::GetInstance()
@@ -52,9 +43,11 @@ StackTrace& StackTrace::GetInstance()
 	return instance;
 }
 
-void StackTrace::popStack()
+void StackTrace::pop()
 {
 	StackLevel* level = mStack.back();
+	level->popTokens();
+	level->popScope();
 
 	mStack.pop_back();
 
@@ -68,11 +61,13 @@ void StackTrace::print()
 	}
 }
 
-void StackTrace::pushStack(Runtime::Method* method, const ParameterList &params)
+void StackTrace::push(Runtime::Method *method, const ParameterList &params)
 {
-	mStack.push_back(
-		new StackLevel(mStack.size(), method, params)
-	);
+	StackLevel* level = new StackLevel(mStack.size(), method, params);
+	level->pushScope(method, false);
+	level->pushTokens(method->getTokens());
+
+	mStack.push_back(level);
 }
 
 

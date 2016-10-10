@@ -33,13 +33,10 @@ public:
 	~StackTrace();
 
 public:
-	void clear();
+	StackLevel* current() const;
 
-	StackLevel* currentStackLevel() const;
-
-	const Stack& getStack() const;
-	void popStack();
-	void pushStack(Runtime::Method* method, const ParameterList& params);
+	void pop();
+	void push(Runtime::Method *method, const ParameterList &params);
 
 	void print();
 
