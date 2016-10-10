@@ -81,7 +81,6 @@ public:	// Setup
 	void addInheritance(const Designtime::Ancestor& ancestor, Object* inheritance);
 	void setConstructed(bool state);
 	void setParent(IScope *scope);
-	void setRepository(Repository *repository);
 
 public:	// Reference
 	const Reference& getReference() const { return mReference; }
@@ -156,7 +155,6 @@ protected:
 	std::string mQualifiedOutterface;
 	std::string mQualifiedTypename;
 	Reference mReference;
-	Repository *mRepository;
 	std::string mTypename;
 	AtomicValue mValue;
 

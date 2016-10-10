@@ -66,7 +66,6 @@ public: // Signature
 
 public: // Setup
 	void setParent(IScope* scope);
-	void setRepository(Repository* repository);
 	void setSignature(const ParameterList& params);
 	void setTokens(const TokenList& tokens);
 
@@ -78,13 +77,8 @@ public:
 
 protected:
 	ExceptionData mExceptionData;
-	Repository *mRepository;
 
 private:
-	ControlFlow::E processControlFlow(ControlFlow::E controlflow, Object* result);
-
-private:
-	IScope* mOwner;
 	std::string mQualifiedTypename;
 	ParameterList mSignature;
 	TokenList mTokens;

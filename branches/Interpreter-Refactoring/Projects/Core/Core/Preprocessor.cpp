@@ -21,9 +21,8 @@
 namespace ObjectiveScript {
 
 
-Preprocessor::Preprocessor(Repository *repo)
+Preprocessor::Preprocessor()
 : mBluePrint(0),
-  mRepository(repo),
   mScope(0)
 {
 }
@@ -252,7 +251,6 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token) const
 	method->setMutability(mutability);
 	method->setQualifiedTypename(type);
 	method->setRecursive(isRecursive);
-	method->setRepository(mRepository);
 	method->setSignature(params);
 	method->setStatic(isStatic);
 	method->setThrows(throws);
@@ -278,7 +276,7 @@ void Preprocessor::generateBluePrintEnum()
 	symbol->setQualifiedTypename(blueprint->QualifiedTypename());
 	symbol->setVisibility(blueprint->getVisibility());
 
-	mRepository->addBluePrint(symbol);
+	Repository::GetInstance().addBluePrint(symbol);
 
 	TokenIterator token = mTokens.begin();
 
@@ -314,10 +312,9 @@ void Preprocessor::generateBluePrintEnum()
 		//entry->setConstructed(true);
 
 		// define enum entries as integer type
-		Runtime::Object* entry = mRepository->createInstance(Runtime::IntegerObject::TYPENAME, name, true);
+		Runtime::Object* entry = Repository::GetInstance().createInstance(Runtime::IntegerObject::TYPENAME, name, true);
 		entry->setMember(true);
 		entry->setMutability(Mutability::Const);
-		entry->setRepository(mRepository);
 		entry->setValue(value.toInt());
 		entry->setVisibility(Visibility::Public);
 

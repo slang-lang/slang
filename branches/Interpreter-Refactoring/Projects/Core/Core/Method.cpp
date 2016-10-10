@@ -14,7 +14,6 @@
 #include <Debugger/Debugger.h>
 #include <Tools/Strings.h>
 #include <Utils.h>
-#include "Defines.h"
 
 // Namespace declarations
 
@@ -26,8 +25,6 @@ namespace Runtime {
 Method::Method(IScope* parent, const std::string& name, const std::string& type)
 : NamedScope(name, parent),
   MethodSymbol(name),
-  mRepository(0),
-  mOwner(parent),
   mQualifiedTypename(type),
   mTypeName(type)
 {
@@ -103,7 +100,6 @@ void Method::operator= (const Method& other)
 		mMethodType = other.mMethodType;
 		mMutability = other.mMutability;
 		mQualifiedTypename = other.mQualifiedTypename;
-		mRepository = other.mRepository;
 		mScopeName = other.mScopeName;
 		mScopeType = other.mScopeType;
 		mSignature = other.mSignature;
@@ -114,97 +110,9 @@ void Method::operator= (const Method& other)
 	}
 }
 
-ControlFlow::E Method::execute(const ParameterList& params, Object* result, const Token& token)
+ControlFlow::E Method::execute(const ParameterList& /*params*/, Object* /*result*/, const Token& token)
 {
-	if ( !mRepository ) {
-		throw Common::Exceptions::Exception("mRepository not set");
-	}
-	if ( isAbstract() ) {
-		throw Common::Exceptions::AbstractException("cannot execute abstract method '" + getName() + "'", token.position());
-	}
-	if ( !isSignatureValid(params) ) {
-		throw Common::Exceptions::ParameterCountMissmatch("incorrect number or type of parameters", token.position());
-	}
-
-	switch ( getLanguageFeatureState() ) {
-		case LanguageFeatureState::Deprecated: OSwarn("method '" + getFullScopeName() + "' is marked as deprecated"); break;
-		case LanguageFeatureState::NotImplemented: OSerror("method '" + getFullScopeName() + "' is marked as not implemented"); throw Common::Exceptions::NotImplemented(getFullScopeName()); break;
-		case LanguageFeatureState::Stable: break;
-		case LanguageFeatureState::Unknown: OSerror("unknown language feature state set for method '" + getFullScopeName() + "'"); break;
-		case LanguageFeatureState::Unstable: OSwarn("method '" + getFullScopeName() + "' is marked as unstable"); break;
-	}
-
-	Method scope(*this);
-
-	if ( isStatic() ) {		// this allows variable definitions in static methods
-		scope.mParent = mRepository->getGlobalScope();
-	}
-
-	ParameterList executedParams = mergeParameters(params);
-
-	// add parameters as locale variables
-	for ( ParameterList::const_iterator it = executedParams.begin(); it != executedParams.end(); ++it ) {
-		switch ( it->access() ) {
-			case Parameter::AccessMode::ByReference: {
-				Object *object = it->pointer();
-
-				object->setConst(it->isConst());
-				object->setMutability(it->isConst() ? Mutability::Const : Mutability::Modify);
-
-				scope.define(it->name(), object);
-			} break;
-			case Parameter::AccessMode::ByValue: {
-				if ( it->pointer() && !it->pointer()->isAtomicType() ) {
-					throw Common::Exceptions::NotImplemented("cannot copy objects");
-				}
-
-				Object *object = mRepository->createInstance(it->type(), it->name());
-
-				object->setValue(it->value());	// in case we have a default value
-				if ( it->pointer() ) {
-					*object = *(it->pointer());
-				}
-				object->setConst(it->isConst());
-				object->setMutability(it->isConst() ? Mutability::Const : Mutability::Modify);
-
-				scope.define(it->name(), object);
-			} break;
-			case Parameter::AccessMode::Unspecified: {
-				throw Common::Exceptions::AccessMode("unspecified access mode");
-			} break;
-		}
-	}
-
-	// notify debugger
-	Core::Debugger::GetInstance().notifyEnter(&scope, Core::Debugger::immediateBreakToken);
-
-	// do the real method execution
-	Interpreter interpreter;
-	ControlFlow::E controlflow = interpreter.execute(&scope, executedParams, result);
-
-	// collect exception data no matter what
-	mExceptionData = interpreter.getExceptionData();
-
-	// process & update control flow
-	controlflow = processControlFlow(controlflow, result);
-
-	// notify debugger
-	Core::Debugger::GetInstance().notifyExit(&scope, Core::Debugger::immediateBreakToken);
-
-	// undefine references to prevent double deletes
-	for ( ParameterList::const_iterator it = executedParams.begin(); it != executedParams.end(); ++it ) {
-		switch ( it->access() ) {
-			case Parameter::AccessMode::ByReference:
-				scope.undefine(it->name(), it->pointer());
-				break;
-			case Parameter::AccessMode::ByValue:
-				break;
-			case Parameter::AccessMode::Unspecified:
-				throw Common::Exceptions::AccessMode("unspecified access mode");;
-		}
-	}
-
-	return controlflow;
+	throw Common::Exceptions::NotSupported("executing methods directly is not supported!", token.position());
 }
 
 const ExceptionData& Method::getExceptionData() const
@@ -289,62 +197,6 @@ ParameterList Method::mergeParameters(const ParameterList& params) const
 	return result;
 }
 
-ControlFlow::E Method::processControlFlow(ControlFlow::E controlflow, Object* result)
-{
-	// detect unnatural control flow
-
-	switch ( controlflow ) {
-		case ControlFlow::Break:
-		case ControlFlow::Continue:
-		case ControlFlow::Normal:
-			// verify method return reason
-			if ( QualifiedTypename() != VoidObject::TYPENAME && result->QualifiedOutterface() != VoidObject::TYPENAME ) {
-				throw Common::Exceptions::Exception("unnatural method return at '" + getFullScopeName() + "'");
-			}
-
-			// correct behavior detected, override control flow with normal state
-			controlflow = ControlFlow::Normal;
-			break;
-		case ControlFlow::Return:
-			// validate return value
-			if ( result->QualifiedOutterface() == NULL_TYPE ) {
-				// no type cast necessary for null objects
-			}
-			else if ( QualifiedTypename() != VoidObject::TYPENAME && result->QualifiedOutterface() != QualifiedTypename() ) {
-#ifdef ALLOW_IMPLICIT_CASTS
-					throw Runtime::Exceptions::ExplicitCastRequired("Explicit cast required for type conversion from " + result->QualifiedOutterface() + " to " + QualifiedTypename() + " in " + getFullScopeName());
-#else
-				OSwarn("implicit type conversion from " + result->QualifiedOutterface() + " to " + QualifiedTypename());// + " in " + getFullScopeName());
-
-				typecast(result, QualifiedTypename());
-#endif
-			}
-
-			// correct behavior detected, override control flow with normal state
-			controlflow = ControlFlow::Normal;
-			break;
-		case ControlFlow::ExitProgram:
-		case ControlFlow::Throw:
-			// an ObjectiveScript exception has been thrown or we want to terminate
-			break;
-	}
-
-	if ( controlflow == ControlFlow::Normal ) {
-		switch ( getMethodType() ) {
-			case MethodAttributes::MethodType::Constructor:
-				static_cast<Object*>(mParent)->setConstructed(true);
-				break;
-			case MethodAttributes::MethodType::Destructor:
-				static_cast<Object*>(mParent)->setConstructed(false);
-				break;
-			default:
-				break;
-		}
-	}
-
-	return controlflow;
-}
-
 const ParameterList& Method::provideSignature() const
 {
 	return mSignature;
@@ -369,11 +221,6 @@ Symbol* Method::resolveMethod(const std::string& name, const ParameterList& para
 void Method::setParent(IScope *scope)
 {
 	mParent = scope;
-}
-
-void Method::setRepository(Repository *repository)
-{
-	mRepository = repository;
 }
 
 void Method::setSignature(const ParameterList& params)

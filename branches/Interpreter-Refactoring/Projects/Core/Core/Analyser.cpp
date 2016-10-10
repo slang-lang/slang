@@ -312,7 +312,6 @@ bool Analyser::createMember(TokenIterator& token, TokenIterator /*end*/)
 	member->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
 	member->setParent(mScope);
 	member->setQualifiedTypename(type);
-	member->setRepository(mRepository);
 	member->setValue(value);
 	member->setVisibility(visibility);
 
@@ -418,7 +417,6 @@ bool Analyser::createMethod(TokenIterator& token, TokenIterator end)
 	method->setParent(mScope);
 	method->setQualifiedTypename(type);
 	method->setRecursive(isRecursive);
-	method->setRepository(mRepository);
 	method->setSignature(params);
 	method->setThrows(throws);
 	method->setTokens(tokens);

@@ -165,7 +165,7 @@ void Repository::createDefaultMethods(Runtime::Object *object)
 					*result = Runtime::StringObject(std::string("blablabla"));
 				}
 				catch (std::exception &e) {
-					Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+					Runtime::Object *data = Repository::GetInstance().createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
 					*data = Runtime::StringObject(std::string(e.what()));
 
 					mExceptionData = Runtime::ExceptionData(data, token.position());
@@ -177,7 +177,6 @@ void Repository::createDefaultMethods(Runtime::Object *object)
 		};
 
 		ToString *toString = new ToString();
-		toString->setRepository(this);
 
 		object->defineMethod(toString->getName(), toString);
 	}
@@ -270,7 +269,6 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 	object->setParent(blueprint->getEnclosingScope());
 	object->setQualifiedOutterface(blueprint->QualifiedTypename());
 	object->setQualifiedTypename(blueprint->QualifiedTypename());
-	object->setRepository(this);
 	object->setVisibility(blueprint->getVisibility());
 
 	return object;
@@ -435,7 +433,6 @@ void Repository::initializeObject(Runtime::Object *object, Designtime::BluePrint
 		symbol->setMutability(blue->getMutability());
 		symbol->setParent(object);
 		symbol->setQualifiedTypename(blue->QualifiedTypename());
-		symbol->setRepository(this);
 		symbol->setValue(blue->getValue());
 		symbol->setVisibility(blue->getVisibility());
 
@@ -567,7 +564,7 @@ void Repository::rebuildBluePrintEnums()
 		}
 		// }
 
-		Preprocessor preprocessor(this);
+		Preprocessor preprocessor;
 		preprocessor.process(blueIt->second);
 	}
 
@@ -613,7 +610,7 @@ void Repository::rebuildBluePrintObjects()
 		}
 		// }
 
-		Preprocessor preprocessor(this);
+		Preprocessor preprocessor;
 		preprocessor.process(blueIt->second);
 	}
 

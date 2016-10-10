@@ -31,7 +31,6 @@ Object::Object()
   mOutterface(ANONYMOUS_OBJECT),
   mQualifiedOutterface(ANONYMOUS_OBJECT),
   mQualifiedTypename(ANONYMOUS_OBJECT),
-  mRepository(0),
   mTypename(ANONYMOUS_OBJECT)
 {
 }
@@ -47,7 +46,6 @@ Object::Object(const Object& other)
 	mIsAtomicType = other.mIsAtomicType;
 	mIsConstructed = other.mIsConstructed;
 	mParent = other.mParent;
-	mRepository = other.mRepository;
 	mScopeName = other.mScopeName;
 	mScopeType = other.mScopeType;
 	mValue = other.mValue;
@@ -80,7 +78,6 @@ Object::Object(const std::string& name, const std::string& filename, const std::
   mOutterface(type),
   mQualifiedOutterface(type),
   mQualifiedTypename(type),
-  mRepository(0),
   mTypename(type),
   mValue(value)
 {
@@ -101,7 +98,6 @@ void Object::operator= (const Object& other)
 		mIsAtomicType = other.mIsAtomicType;
 		mIsConstructed = other.mIsConstructed;// ? other.mIsConstructed : mIsConstructed;
 		mParent = other.mParent ? other.mParent : mParent;
-		mRepository = other.mRepository ? other.mRepository : mRepository;
 		mScopeName = other.mScopeName;
 		mScopeType = other.mScopeType;
 		mValue = other.mValue;
@@ -129,7 +125,6 @@ void Object::assign(const Object& other)
 		mIsAtomicType = other.mIsAtomicType;
 		mIsConstructed = other.mIsConstructed;// ? other.mIsConstructed : mIsConstructed;
 		mParent = other.mParent ? other.mParent : mParent;
-		mRepository = other.mRepository ? other.mRepository : mRepository;
 		mScopeName = other.mScopeName;
 		mScopeType = other.mScopeType;
 		mValue = other.mValue;
@@ -157,7 +152,6 @@ void Object::assignSubType(const Object& other)
 		mIsAtomicType = other.mIsAtomicType;
 		mIsConstructed = other.mIsConstructed;// ? other.mIsConstructed : mIsConstructed;
 		mParent = other.mParent ? other.mParent : mParent;
-		mRepository = other.mRepository ? other.mRepository : mRepository;
 		mScopeName = other.mScopeName;
 		mScopeType = other.mScopeType;
 		mValue = other.mValue;
@@ -187,7 +181,6 @@ void Object::copy(const Object& other)
 		mParent = other.mParent ? other.mParent : mParent;
 		mQualifiedOutterface = other.mQualifiedTypename;
 		mQualifiedTypename = other.mQualifiedTypename;
-		mRepository = other.mRepository ? other.mRepository : mRepository;
 		mScopeName = other.mScopeName;
 		mScopeType = other.mScopeType;
 		mTypename = other.mTypename;
@@ -208,7 +201,7 @@ void Object::copy(const Object& other)
 				}
 
 				Object* source = static_cast<Object*>(it->second);
-				Object* target = mRepository->createInstance(source->Typename(), source->getName(), false);
+				Object* target = Repository::GetInstance().createInstance(source->Typename(), source->getName(), false);
 				target->copy(*source);
 
 				define(target->getName(), target);
@@ -390,9 +383,6 @@ ControlFlow::E Object::execute(Object *result, const std::string& name, const Pa
 		throw Common::Exceptions::VisibilityError("invalid visibility: " + name);
 	}
 */
-
-	method->setRepository(mRepository);
-	result->setRepository(mRepository);
 
 	Interpreter interpreter;
 
@@ -1034,11 +1024,6 @@ void Object::setConstructed(bool state)
 void Object::setParent(IScope *scope)
 {
 	mParent = scope;
-}
-
-void Object::setRepository(Repository *repository)
-{
-	mRepository = repository;
 }
 
 void Object::setValue(AtomicValue value)

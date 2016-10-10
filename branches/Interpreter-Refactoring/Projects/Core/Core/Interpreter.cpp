@@ -25,6 +25,7 @@
 #include <Debugger/Debugger.h>
 #include <Tools/Printer.h>
 #include <Utils.h>
+#include "Defines.h"
 #include "Tools.h"
 
 // Namespace declarations
@@ -135,7 +136,7 @@ ControlFlow::E Interpreter::execute(Method* method, const ParameterList& params,
 			}
 			else if ( method->QualifiedTypename() != VoidObject::TYPENAME && result->QualifiedOutterface() != method->QualifiedTypename() ) {
 #ifdef ALLOW_IMPLICIT_CASTS
-				throw Runtime::Exceptions::ExplicitCastRequired("Explicit cast required for type conversion from " + result->QualifiedOutterface() + " to " + QualifiedTypename() + " in " + getFullScopeName());
+				throw Runtime::Exceptions::ExplicitCastRequired("Explicit cast required for type conversion from " + result->QualifiedOutterface() + " to " + method->QualifiedTypename() + " in " + method->getFullScopeName());
 #else
 				OSwarn("implicit type conversion from " + result->QualifiedOutterface() + " to " + method->QualifiedTypename());
 

@@ -206,7 +206,6 @@ bool VirtualMachine::loadExtensions()
 				OSdebug("adding extension '" + (*extIt)->getName() + "." + (*it)->getName() + "'");
 
 				(*it)->setParent(scope);
-				(*it)->setRepository(mRepository);
 
 				scope->defineMethod((*it)->getName(), (*it));
 			}
