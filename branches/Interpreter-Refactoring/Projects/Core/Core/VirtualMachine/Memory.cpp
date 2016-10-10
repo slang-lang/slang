@@ -25,11 +25,19 @@ Memory::Memory()
 
 Memory::~Memory()
 {
+/*
 	for ( MemoryMap::iterator it = mMemory.begin(); it != mMemory.end(); ++it ) {
 		delete it->second;
 		it->second = 0;
 	}
 	mMemory.clear();
+*/
+
+	MemoryMap tmp = mMemory;
+
+	for ( MemoryMap::iterator it = tmp.begin(); it != tmp.end(); ++it ) {
+		deleteObject(it->first);
+	}
 }
 
 void Memory::deleteObject(const Reference& ref)
@@ -60,6 +68,13 @@ const Reference& Memory::getAddress(Runtime::Object *obj) const
 	}
 
 	return mNull;
+}
+
+Memory& Memory::GetInstance()
+{
+	static Memory instance;
+
+	return instance;
 }
 
 const Reference& Memory::getNullReference() const
@@ -107,9 +122,12 @@ Runtime::Object* Memory::getObject(const Reference& ref) const
 
 const Reference& Memory::newObject(Runtime::Object *obj)
 {
-	mMemory[reserveAddress()] = obj;
+	const Reference& ref = reserveAddress();
 
-	return mMemory.rbegin()->first;
+	mMemory[ref] = obj;
+	obj->setReference(ref);
+
+	return ref;
 }
 
 

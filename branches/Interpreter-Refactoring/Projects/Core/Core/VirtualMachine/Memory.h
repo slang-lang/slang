@@ -1,14 +1,14 @@
 
-#ifndef ObjectiveScript_Core_Memory_h
-#define ObjectiveScript_Core_Memory_h
+#ifndef ObjectiveScript_Core_VirtualMachine_Memory_h
+#define ObjectiveScript_Core_VirtualMachine_Memory_h
 
 
 // Library includes
 #include <map>
 
 // Project includes
-#include "Object.h"
-#include "Reference.h"
+#include <Core/Object.h>
+#include <Core/Reference.h>
 
 // Forward declarations
 
@@ -21,7 +21,13 @@ namespace ObjectiveScript {
 class Memory
 {
 public:
-	Memory();
+// Singleton
+// {
+public:
+	static Memory& GetInstance();
+// }
+
+public:
 	~Memory();
 
 public:
@@ -37,6 +43,13 @@ protected:
 
 private:
 	typedef std::map<Reference, Runtime::Object*> MemoryMap;
+
+
+private:
+	Memory();
+
+	Memory(Memory const&)/* = delete*/;
+	void operator=(Memory const&)/* = delete*/;
 
 private:
 	const Reference& reserveAddress();

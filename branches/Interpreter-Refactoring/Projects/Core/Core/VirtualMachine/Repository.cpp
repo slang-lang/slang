@@ -26,10 +26,10 @@
 #include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/Designtime/BuildInTypes/VoidObject.h>
 #include <Core/Designtime/Prototype.h>
-#include <Core/Memory.h>
 #include <Core/Preprocessor.h>
 #include <Core/Tools.h>
 #include <Utils.h>
+#include "Memory.h"
 
 // Namespace declarations
 

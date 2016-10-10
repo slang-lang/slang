@@ -1,12 +1,14 @@
 INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
 SET(SOURCES
+	Memory.cpp
 	Repository.cpp
 	StackLevel.cpp
 	StackTrace.cpp
 )
 
 SET(HEADERS
+	Memory.h
 	Repository.h
 	StackLevel.h
 	StackTrace.h
