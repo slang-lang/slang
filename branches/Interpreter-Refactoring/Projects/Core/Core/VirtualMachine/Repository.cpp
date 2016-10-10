@@ -26,9 +26,10 @@
 #include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/Designtime/BuildInTypes/VoidObject.h>
 #include <Core/Designtime/Prototype.h>
+#include <Core/Memory.h>
+#include <Core/Preprocessor.h>
+#include <Core/Tools.h>
 #include <Utils.h>
-#include "Preprocessor.h"
-#include "Tools.h"
 
 // Namespace declarations
 
@@ -46,20 +47,8 @@ Repository::~Repository()
 {
 	// Cleanup instances
 	// {
-	for ( ReferenceCountedObjects::iterator it = mInstances.begin(); it != mInstances.end(); ++it ) {
-		it->first->Destructor();
-	}
-
-	for ( ReferenceCountedObjects::iterator it = mInstances.begin(); it != mInstances.end(); ++it ) {
-		// prevent double deletes
-		mScope->undefine(it->first->getName(), it->first);
-
-		delete it->first;
-	}
-	mInstances.clear();
-	// }
-
 	delete mScope;
+	// }
 
 	// Cleanup prototypes
 	// {
@@ -151,54 +140,6 @@ assert(!"prototypes not supported!");
 }
 
 /*
- * updates (increases) an object's reference count
- */
-void Repository::addReference(Runtime::Object *object)
-{
-	if ( !object ) {
-		return;
-	}
-
-	ReferenceCountedObjects::iterator it = mInstances.find(object);
-	if ( it != mInstances.end() ) {
-		// increment reference count
-		it->second++;
-		return;
-	}
-
-	mInstances.insert(std::make_pair(object, 1));
-}
-
-void Repository::CollectGarbage()
-{
-	bool success = true;
-
-	while ( success ) {
-		success = false;
-
-		for ( ReferenceCountedObjects::iterator it = mInstances.begin(); it != mInstances.end(); ) {
-			if ( it->second > 0 ) {
-				++it;
-				continue;
-			}
-
-			// as soon as we've lost all references, we can destroy our object
-			if ( it->first && it->second <= 0 ) {
-				// call object's destructor ...
-				it->first->Destructor();
-				// ... and delete it
-/*
-				delete it->first;
-
-				it = mInstances.erase(it);
-*/
-				success = true;
-			}
-		}
-	}
-}
-
-/*
  * this does not work because extension methods can not get copied :-(
  */
 void Repository::createDefaultMethods(Runtime::Object *object)
@@ -257,7 +198,9 @@ Runtime::Object* Repository::createInstance(const std::string& type, const std::
 
 	Runtime::Object *object = createObject(name, it->second, initialize);
 
-	addReference(object);
+	//addReference(object);
+
+	Memory::GetInstance().newObject(object);
 
 	return object;
 }
@@ -274,7 +217,9 @@ Runtime::Object* Repository::createInstance(Designtime::BluePrintObject* bluepri
 
 	Runtime::Object* object = createObject(name, blueprint, initialize);
 
-	addReference(object);
+	//addReference(object);
+
+	Memory::GetInstance().newObject(object);
 
 	return object;
 }
@@ -435,6 +380,13 @@ GlobalScope* Repository::getGlobalScope() const
 	return mScope;
 }
 
+Repository& Repository::GetInstance()
+{
+	static Repository instance;
+
+	return instance;
+}
+
 void Repository::initialize()
 {
 	// add atomic types
@@ -457,8 +409,6 @@ void Repository::initialize()
 		NullObject->setSealed(true);
 
 		mScope->define(VALUE_NULL, NullObject);
-
-		addReference(NullObject);
 	}
 }
 
@@ -668,35 +618,6 @@ void Repository::rebuildBluePrintObjects()
 	}
 
 	insertBluePrintObjectsIntoScopes();
-}
-
-/*
- * updates (decreases) an object's reference count
- */
-void Repository::removeReference(Runtime::Object *object)
-{
-	if ( !object ) {
-		return;
-	}
-
-	ReferenceCountedObjects::iterator it = mInstances.find(object);
-	if ( it == mInstances.end() ) {
-		return;
-		//throw Common::Exceptions::AccessViolation("possible double delete for '" + object->getFullScopeName() + "'");
-	}
-
-	// decrement reference count
-	it->second--;
-
-	// as soon as we removed all references, we can destroy our object
-	if ( it->first && it->second <= 0 ) {
-		// call object's destructor ...
-		it->first->Destructor();
-		// ... and delete it
-		//delete it->first;
-
-		//mInstances.erase(it);
-	}
 }
 
 

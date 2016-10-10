@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Core_Repository_h
-#define ObjectiveScript_Core_Repository_h
+#ifndef ObjectiveScript_Core_VirtualMachine_Repository_h
+#define ObjectiveScript_Core_VirtualMachine_Repository_h
 
 
 // Library includes
@@ -8,8 +8,8 @@
 #include <string>
 
 // Project includes
-#include "Object.h"
-#include "Reference.h"
+#include <Core/Object.h>
+#include <Core/Reference.h>
 
 // Forward declarations
 
@@ -33,7 +33,13 @@ class GlobalScope;
 class Repository
 {
 public:
-	Repository();
+// Singleton
+// {
+public:
+	static Repository& GetInstance();
+// }
+
+public:
 	~Repository();
 
 public:
@@ -47,9 +53,6 @@ public:
 	Runtime::Object* createInstance(const std::string& type, const std::string& name = ANONYMOUS_OBJECT, bool initialize = true);
 	Runtime::Object* createInstance(Designtime::BluePrintObject* blueprint, const std::string& name = ANONYMOUS_OBJECT, bool initialize = true);
 
-	void addReference(Runtime::Object *object);
-	void removeReference(Runtime::Object *object);
-
 	bool isAlreadyKnown(const std::string& name) const;
 
 	void rebuildBluePrints();
@@ -59,8 +62,8 @@ protected:
 private:
 	typedef std::map<Runtime::Object*, int> ReferenceCountedObjects;
 
-private: // hide me from public
-	void CollectGarbage();
+private:
+	Repository();
 
 private:
 	Runtime::Object* createObject(const std::string& name, Designtime::BluePrintObject* blueprint, bool initialize);
@@ -85,7 +88,6 @@ private:
 private:
 	BluePrintEnumMap mBluePrintEnums;
 	BluePrintObjectMap mBluePrintObjects;
-	ReferenceCountedObjects mInstances;
 	//Designtime::PrototypeMap mPrototypes;
 	GlobalScope *mScope;
 };
