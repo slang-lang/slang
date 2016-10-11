@@ -60,61 +60,55 @@ public object BaseObject {
 	}
 }
 
-private object Main /*extends System.IO.Logger*/
-{
 /////////////////////////////////// Member Declarations \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
-	private BaseObject mBaseObject;
-	private System.IO.Logger mLogger;
+private BaseObject mBaseObject;
+private System.IO.Logger mLogger;
 
-	private float mLastUpdate;
-	private string mName;
-	private float mValue;
+private float mLastUpdate;
+private string mName;
+private float mValue;
 
 /////////////////////////////////// Public Methods \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
-	public void Main(int argc, string argv) {
-		print("Main(" + argc + ", \"" + argv + "\")");
+public void Main(int argc, string argv) {
+	print("Main(" + argc + ", \"" + argv + "\")");
 
-		mLogger = new System.IO.Logger("Main");
-		mLogger.info("Constructor");
+	mLogger = new System.IO.Logger("Main");
+	mLogger.info("Constructor");
 
-		mBaseObject = new BaseObject("\"this is a test\"");
-		//mBaseObject.setLogger(mLogger);
-		//mBaseObject.constMethod();	// handled correctly
-		mBaseObject.privateMethodCall();
-		mBaseObject.protectedMethodCall();
-		mBaseObject.publicMethodCall();
-		//mBaseObject.staticMethod();	// access to members in static method is not yet handled correctly
+	mBaseObject = new BaseObject("\"this is a test\"");
+	//mBaseObject.setLogger(mLogger);
+	//mBaseObject.constMethod();	// handled correctly
+	mBaseObject.privateMethodCall();
+	mBaseObject.protectedMethodCall();
+	mBaseObject.publicMethodCall();
+	//mBaseObject.staticMethod();	// access to members in static method is not yet handled correctly
 
-		mName = "Main";
-		mValue = 0.f;
+	mName = "Main";
+	mValue = 0.f;
 
-		//assertmsg("failed", true);
-	}
+	//assertmsg("failed", true);
+}
 
-	public void ~Main() {
-		mLogger.info("Destructor");
-	}
+public string getName() const {
+	return mName;
+}
 
-	public string getName() const {
-		return mName;
-	}
+public void setName(string name) modify {
+	mName = name;
+}
 
-	public void setName(string name) modify {
-		mName = name;
-	}
+public void update(float elapsedTime) modify {
+	mLastUpdate = elapsedTime;
+}
 
-	public void update(float elapsedTime) modify {
-		mLastUpdate = elapsedTime;
-	}
-
-	public void test_scope() {
-		string var = "outer";
-		{
-			string var = "inner";
-			print(var);
-		}
+public void test_scope() {
+	string var = "outer";
+	{
+		string var = "inner";
 		print(var);
 	}
+	print(var);
 }
+

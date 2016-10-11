@@ -38,26 +38,24 @@ public object DerivedObject extends BaseObject {
 	}
 }
 
-private object Main {
-	private BaseObject baseobj;
-	private DerivedObject derived;
+private BaseObject baseobj;
+private DerivedObject derived;
 
-	public void Main(int argc, string argv) {
-		baseobj = new BaseObject("baseobj");
-		print("name = " + baseobj.getName());
-		print("type = " + baseobj.getType());
-		print("value = " + baseobj.getValue());
+public void Main(int argc, string argv) {
+	baseobj = new BaseObject("baseobj");
+	print("name = " + baseobj.getName());
+	print("type = " + baseobj.getType());
+	print("value = " + baseobj.getValue());
 
-		derived = new DerivedObject("derived", "DerivedObject", 2.f);
-		print("name = " + derived.getName());
-		print("type = " + derived.getType());
-		print("value = " + derived.getValue());
-	}
+	derived = new DerivedObject("derived", "DerivedObject", 2.f);
+	print("name = " + derived.getName());
+	print("type = " + derived.getType());
+	print("value = " + derived.getValue());
+}
 
-	public void test1() const {
-		print("name = " + baseobj.mValue);
-		print("type = " + baseobj.mValue);
-		print("value = " + baseobj.mValue);
-	}
+public void test1() const {
+	print("name = " + baseobj.mValue);
+	print("type = " + baseobj.mValue);
+	print("value = " + baseobj.mValue);
 }
 

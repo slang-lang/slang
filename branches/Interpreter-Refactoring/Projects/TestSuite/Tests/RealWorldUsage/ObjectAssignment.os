@@ -33,18 +33,16 @@ private object Vector2D {
 	}
 }
 
-public object Main {
-	public void Main(int argc, string args) {
-		Vector2D v1 = new Vector2D(1, 1);
-		print(v1.ToString());
+public void Main(int argc, string args) {
+	Vector2D v1 = new Vector2D(1, 1);
+	print(v1.ToString());
 
-		Vector2D v2 = new Vector2D(2, 2);
-		print(v2.ToString());
+	Vector2D v2 = new Vector2D(2, 2);
+	print(v2.ToString());
 
-		v1 = v2;
-		print(v1.ToString());
+	v1 = v2;
+	print(v1.ToString());
 
-		assert( v1 == v2 );
-	}
+	assert( v1 == v2 );
 }
 

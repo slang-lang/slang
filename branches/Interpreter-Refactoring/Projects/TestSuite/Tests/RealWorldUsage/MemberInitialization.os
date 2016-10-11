@@ -10,15 +10,13 @@ private object TestObject {
 	}
 }
 
-public object Main {
-	public void Main(int argc = 0, string args = "") {
-		assert( TestCase1() );
-	}
+public void Main(int argc = 0, string args = "") {
+	assert( TestCase1() );
+}
 
-	private bool TestCase1() const {
-		TestObject obj1 = new TestObject();
+private bool TestCase1() const {
+	TestObject obj1 = new TestObject();
 
-		return obj1.mMutableValue == 173;
-	}
+	return obj1.mMutableValue == 173;
 }
 

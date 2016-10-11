@@ -12,14 +12,12 @@ public object TestObject {
 	}
 }
 
-public object Main {
-	public void Main(int argc, string args) {
-		TestObject obj = new TestObject(173);
+public void Main(int argc, string args) {
+	TestObject obj = new TestObject(173);
 
-		print(obj.mValue);
-		obj = null;
+	print(obj.mValue);
+	obj = null;
 
-		assert(!obj);
-	}
+	assert(!obj);
 }
 
