@@ -14,10 +14,8 @@ public namespace NamespaceTests {
 	}
 }
 
-public object Main {
-	public void Main(int argc = 0, string argv = "") {
-		NamespaceTests.Test1 test1 = new NamespaceTests.Test1();
-		print(test1.getName());
-	}
+public void Main(int argc = 0, string argv = "") {
+	NamespaceTests.Test1 test1 = new NamespaceTests.Test1();
+	print(test1.getName());
 }
 

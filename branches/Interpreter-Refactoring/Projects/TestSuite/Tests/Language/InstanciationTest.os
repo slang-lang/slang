@@ -25,21 +25,19 @@ public namespace InstanciationTest
 	}
 }
 
-public object Main {
-	public void Main(int arc = 0, string argv = "") {
-		assert( TestCase1() );
-	}
+public void Main(int arc = 0, string argv = "") {
+	assert( TestCase1() );
+}
 
-	private bool TestCase1() const {
-		InstanciationTest.OuterObject outer = new InstanciationTest.OuterObject();
-		print("outer.mValue = " + outer.mValue);
+private bool TestCase1() const {
+	InstanciationTest.OuterObject outer = new InstanciationTest.OuterObject();
+	print("outer.mValue = " + outer.mValue);
 
 /*
-		OuterObject.InnerObject inner = new InstanciationTest.OuterObject.InnerObject();
-		print("inner.mValue = " + inner.mValue);
+	OuterObject.InnerObject inner = new InstanciationTest.OuterObject.InnerObject();
+	print("inner.mValue = " + inner.mValue);
 */
 
-		return true;
-	}
+	return true;
 }
 

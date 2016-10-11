@@ -24,32 +24,30 @@ public namespace ObjectEqualityTest {
 	}
 }
 
-public object Main {
-	public void Main(int argc = 0, string argv = "") {
-		assert( TestCase1() );
-		assert( TestCase2() );
-	}
+public void Main(int argc = 0, string argv = "") {
+	assert( TestCase1() );
+	assert( TestCase2() );
+}
 
-	private bool TestCase1() const {
-		print("TestCase 1: comparing different references");
+private bool TestCase1() const {
+	print("TestCase 1: comparing different references");
 
-		ObjectEqualityTest.TestObject obj1 = new ObjectEqualityTest.TestObject();
-		//obj1.mValue = 1;
-		ObjectEqualityTest.TestObject obj2 = new ObjectEqualityTest.TestObject();
-		//obj2.mValue = 2;
-		
-		return obj1 == obj2;
-	}
+	ObjectEqualityTest.TestObject obj1 = new ObjectEqualityTest.TestObject();
+	//obj1.mValue = 1;
+	ObjectEqualityTest.TestObject obj2 = new ObjectEqualityTest.TestObject();
+	//obj2.mValue = 2;
+	
+	return obj1 == obj2;
+}
 
-	private bool TestCase2() const {
-		print("TestCase 2: comparing same references");
+private bool TestCase2() const {
+	print("TestCase 2: comparing same references");
 
-		ObjectEqualityTest.TestObject obj1 = new ObjectEqualityTest.TestObject();
-		obj1.mValue = 1;
-		ObjectEqualityTest.TestObject obj2 = obj1;
-		obj2.mValue = 2;
+	ObjectEqualityTest.TestObject obj1 = new ObjectEqualityTest.TestObject();
+	obj1.mValue = 1;
+	ObjectEqualityTest.TestObject obj2 = obj1;
+	obj2.mValue = 2;
 
-		return obj1 == obj2;
-	}
+	return obj1 == obj2;
 }
 

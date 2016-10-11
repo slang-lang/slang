@@ -1,7 +1,5 @@
 #!/usr/local/bin/oscript
 
-	public object Main
-	{
 		private int mNumber;
 
 		public void Main(int argc = 0, string argv = "")
@@ -70,5 +68,4 @@
 		{
 			this.mNumber = value;
 		}
-	}
 

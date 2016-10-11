@@ -1,7 +1,5 @@
 #!/usr/local/bin/oscript
 
-	public object Main
-	{
 		public void Main(int argc = 0, string argv = "")
 		{
 			assert( TestCase1() );
@@ -56,5 +54,4 @@
 
 			return value == -1;
 		}
-	}
 

@@ -22,22 +22,20 @@ public object TestObject {
 	}
 }
 
-public object Main {
-	public void Main(int argc, string args) {
-		assert( TestCase1() );
-		assert( TestCase2() );
-	}
+public void Main(int argc, string args) {
+	assert( TestCase1() );
+	assert( TestCase2() );
+}
 
-	private bool TestCase1() const {
-		TestObject.staticPrint();
+private bool TestCase1() const {
+	TestObject.staticPrint();
 
-		return true;
-	}
+	return true;
+}
 
-	private bool TestCase2() const {
-		TestObject.staticPrint(true);
+private bool TestCase2() const {
+	TestObject.staticPrint(true);
 
-		return false;
-	}
+	return false;
 }
 
