@@ -9,7 +9,7 @@
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Common/Exceptions.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
-#include <Core/Method.h>
+#include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Tools.h>
 #include <Tools/Strings.h>
 #include "Math.h"
@@ -25,11 +25,11 @@ namespace System {
 namespace Console {
 
 
-class Endl : public Runtime::Method
+class Endl : public ExtensionMethod
 {
 public:
 	Endl()
-	: Runtime::Method(0, "endl", Designtime::StringObject::TYPENAME)
+	: ExtensionMethod(0, "endl", Designtime::StringObject::TYPENAME)
 	{
 		ParameterList params;
 

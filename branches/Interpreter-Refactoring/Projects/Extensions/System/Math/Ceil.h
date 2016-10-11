@@ -11,7 +11,7 @@
 #include <Core/BuildInObjects/FloatObject.h>
 #include <Core/Designtime/BuildInTypes/DoubleObject.h>
 #include <Core/Designtime/BuildInTypes/FloatObject.h>
-#include <Core/Method.h>
+#include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Repository.h>
 #include <Tools/Strings.h>
@@ -28,11 +28,11 @@ namespace System {
 namespace Math {
 
 
-class CeilDouble: public Runtime::Method
+class CeilDouble: public ExtensionMethod
 {
 public:
 	CeilDouble()
-	: Runtime::Method(0, "ceil", Designtime::DoubleObject::TYPENAME)
+	: ExtensionMethod(0, "ceil", Designtime::DoubleObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter("value", Designtime::DoubleObject::TYPENAME, VALUE_NONE));
@@ -65,11 +65,11 @@ public:
 };
 
 
-class CeilFloat: public Runtime::Method
+class CeilFloat: public ExtensionMethod
 {
 public:
 	CeilFloat()
-	: Runtime::Method(0, "ceil", Designtime::FloatObject::TYPENAME)
+	: ExtensionMethod(0, "ceil", Designtime::FloatObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter("value", Designtime::FloatObject::TYPENAME, VALUE_NONE));

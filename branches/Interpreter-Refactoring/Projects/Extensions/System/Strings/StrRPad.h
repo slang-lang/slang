@@ -10,7 +10,7 @@
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
-#include <Core/Method.h>
+#include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Tools.h>
 #include <Tools/Strings.h>
 
@@ -25,11 +25,11 @@ namespace System {
 namespace Strings {
 
 
-class StrRPad : public Runtime::Method
+class StrRPad : public ExtensionMethod
 {
 public:
 	StrRPad()
-	: Runtime::Method(0, "strrpad", Designtime::StringObject::TYPENAME)
+	: ExtensionMethod(0, "strrpad", Designtime::StringObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter("value", Designtime::StringObject::TYPENAME, 0));

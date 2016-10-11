@@ -38,7 +38,7 @@ namespace IO {
 
 
 FileReadBool::FileReadBool()
-: Runtime::Method(0, "freadb", Designtime::BoolObject::TYPENAME)
+: ExtensionMethod(0, "freadb", Designtime::BoolObject::TYPENAME)
 {
 	ParameterList params;
 	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));
@@ -71,7 +71,7 @@ Runtime::ControlFlow::E FileReadBool::execute(const ParameterList& params, Runti
 
 
 FileReadDouble::FileReadDouble()
-: Runtime::Method(0, "freadd", Designtime::DoubleObject::TYPENAME)
+: ExtensionMethod(0, "freadd", Designtime::DoubleObject::TYPENAME)
 {
 	ParameterList params;
 	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));
@@ -103,7 +103,7 @@ Runtime::ControlFlow::E FileReadDouble::execute(const ParameterList& params, Run
 }
 
 FileReadFloat::FileReadFloat()
-: Runtime::Method(0, "freadf", Designtime::FloatObject::TYPENAME)
+: ExtensionMethod(0, "freadf", Designtime::FloatObject::TYPENAME)
 {
 	ParameterList params;
 	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));
@@ -135,7 +135,7 @@ Runtime::ControlFlow::E FileReadFloat::execute(const ParameterList& params, Runt
 }
 
 FileReadInt::FileReadInt()
-: Runtime::Method(0, "freadi", Designtime::IntegerObject::TYPENAME)
+: ExtensionMethod(0, "freadi", Designtime::IntegerObject::TYPENAME)
 {
 	ParameterList params;
 	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));
@@ -167,7 +167,7 @@ Runtime::ControlFlow::E FileReadInt::execute(const ParameterList& params, Runtim
 }
 
 FileReadString::FileReadString()
-: Runtime::Method(0, "freads", Designtime::StringObject::TYPENAME)
+: ExtensionMethod(0, "freads", Designtime::StringObject::TYPENAME)
 {
 	ParameterList params;
 	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));

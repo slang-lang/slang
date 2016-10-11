@@ -38,7 +38,7 @@ namespace IO {
 
 
 FileWriteBool::FileWriteBool()
-: Runtime::Method(0, "fwriteb", Designtime::IntegerObject::TYPENAME)
+: ExtensionMethod(0, "fwriteb", Designtime::IntegerObject::TYPENAME)
 {
 	ParameterList params;
 	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));
@@ -73,7 +73,7 @@ Runtime::ControlFlow::E FileWriteBool::execute(const ParameterList& params, Runt
 
 
 FileWriteDouble::FileWriteDouble()
-: Runtime::Method(0, "fwrited", Designtime::IntegerObject::TYPENAME)
+: ExtensionMethod(0, "fwrited", Designtime::IntegerObject::TYPENAME)
 {
 	ParameterList params;
 	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));
@@ -105,7 +105,7 @@ Runtime::ControlFlow::E FileWriteDouble::execute(const ParameterList& params, Ru
 }
 
 FileWriteFloat::FileWriteFloat()
-: Runtime::Method(0, "fwritef", Designtime::IntegerObject::TYPENAME)
+: ExtensionMethod(0, "fwritef", Designtime::IntegerObject::TYPENAME)
 {
 	ParameterList params;
 	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));
@@ -137,7 +137,7 @@ Runtime::ControlFlow::E FileWriteFloat::execute(const ParameterList& params, Run
 }
 
 FileWriteInt::FileWriteInt()
-: Runtime::Method(0, "fwritei", Designtime::IntegerObject::TYPENAME)
+: ExtensionMethod(0, "fwritei", Designtime::IntegerObject::TYPENAME)
 {
 	ParameterList params;
 	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));
@@ -169,7 +169,7 @@ Runtime::ControlFlow::E FileWriteInt::execute(const ParameterList& params, Runti
 }
 
 FileWriteString::FileWriteString()
-: Runtime::Method(0, "fwrites", Designtime::IntegerObject::TYPENAME)
+: ExtensionMethod(0, "fwrites", Designtime::IntegerObject::TYPENAME)
 {
 	ParameterList params;
 	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));

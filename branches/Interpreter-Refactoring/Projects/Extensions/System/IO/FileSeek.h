@@ -6,7 +6,7 @@
 // Library includes
 
 // Project includes
-#include <Core/Method.h>
+#include <Core/Extensions/ExtensionMethod.h>
 
 // Forward declarations
 
@@ -18,7 +18,7 @@ namespace Extensions {
 namespace IO {
 
 
-class FileSeek : public Runtime::Method
+class FileSeek : public ExtensionMethod
 {
 public:
 	FileSeek();

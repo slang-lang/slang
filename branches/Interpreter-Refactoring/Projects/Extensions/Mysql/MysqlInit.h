@@ -9,6 +9,7 @@
 #include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
+#include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Tools.h>
 #include "Types.h"
 
@@ -22,11 +23,11 @@ namespace Extensions {
 namespace Mysql {
 
 
-class MysqlInit: public Runtime::Method
+class MysqlInit: public ExtensionMethod
 {
 public:
 	MysqlInit()
-	: Runtime::Method(0, "mysql_init", Designtime::IntegerObject::TYPENAME)
+	: ExtensionMethod(0, "mysql_init", Designtime::IntegerObject::TYPENAME)
 	{
 		ParameterList params;
 

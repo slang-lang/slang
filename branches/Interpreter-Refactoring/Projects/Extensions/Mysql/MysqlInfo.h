@@ -9,6 +9,7 @@
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
+#include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Tools.h>
 #include "Types.h"
 
@@ -22,11 +23,11 @@ namespace Extensions {
 namespace Mysql {
 
 
-class MysqlInfo : public Runtime::Method
+class MysqlInfo : public ExtensionMethod
 {
 public:
 	MysqlInfo()
-	: Runtime::Method(0, "mysql_info", Designtime::StringObject::TYPENAME)
+	: ExtensionMethod(0, "mysql_info", Designtime::StringObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));

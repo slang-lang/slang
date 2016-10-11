@@ -6,7 +6,7 @@
 // Library includes
 
 // Project includes
-#include <Core/Method.h>
+#include <Core/Extensions/ExtensionMethod.h>
 
 // Forward declarations
 
@@ -17,7 +17,7 @@ namespace ObjectiveScript {
 namespace Extensions {
 
 
-class ToJson : public Runtime::Method
+class ToJson : public ExtensionMethod
 {
 public:
 	ToJson();

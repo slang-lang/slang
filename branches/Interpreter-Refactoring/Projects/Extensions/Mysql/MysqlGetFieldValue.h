@@ -10,6 +10,7 @@
 #include <Core/Common/Exceptions.h>
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
+#include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Tools.h>
 #include "Types.h"
 
@@ -23,11 +24,11 @@ namespace Extensions {
 namespace Mysql {
 
 
-class MysqlGetFieldValueByIndex : public Runtime::Method
+class MysqlGetFieldValueByIndex : public ExtensionMethod
 {
 public:
 	MysqlGetFieldValueByIndex()
-	: Runtime::Method(0, "mysql_get_field_value", Designtime::StringObject::TYPENAME)
+	: ExtensionMethod(0, "mysql_get_field_value", Designtime::StringObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));
@@ -76,11 +77,11 @@ public:
 };
 
 
-class MysqlGetFieldValueByName : public Runtime::Method
+class MysqlGetFieldValueByName : public ExtensionMethod
 {
 public:
 	MysqlGetFieldValueByName()
-	: Runtime::Method(0, "mysql_get_field_value", Designtime::StringObject::TYPENAME)
+	: ExtensionMethod(0, "mysql_get_field_value", Designtime::StringObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));

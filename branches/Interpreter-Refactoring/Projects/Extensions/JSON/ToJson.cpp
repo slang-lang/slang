@@ -23,7 +23,7 @@ namespace Extensions {
 
 
 ToJson::ToJson()
-: Runtime::Method(0, "ToJsonString", Designtime::StringObject::TYPENAME)
+: ExtensionMethod(0, "ToJsonString", Designtime::StringObject::TYPENAME)
 {
 	ParameterList params;
 	params.push_back(Parameter("object", Designtime::GenericObject::TYPENAME, VALUE_NONE));

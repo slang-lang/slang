@@ -28,7 +28,7 @@ namespace IO {
 
 
 FileClose::FileClose()
-: Runtime::Method(0, "fclose", Designtime::IntegerObject::TYPENAME)
+: ExtensionMethod(0, "fclose", Designtime::IntegerObject::TYPENAME)
 {
 	ParameterList params;
 	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, VALUE_NONE));

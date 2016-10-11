@@ -1,16 +1,14 @@
 #!/usr/local/bin/oscript
 
-public object Main {
-	public void Main(int argc, string args) {
-		assert( TestCase1() );
-	}
+public void Main(int argc, string args) {
+	assert( TestCase1() );
+}
 
-	private bool TestCase1() const {
-		writeln("TestCase1: exit");
+private bool TestCase1() const {
+	writeln("TestCase1: exit");
 
-		exit;
+	exit;
 
-		assert(!"this should not happen");
-	}
+	assert(!"this should not happen");
 }
 

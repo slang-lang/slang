@@ -10,6 +10,7 @@
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Common/Exceptions.h>
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
+#include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Tools.h>
 #include "Types.h"
 
@@ -23,11 +24,11 @@ namespace Extensions {
 namespace Mysql {
 
 
-class MysqlNextResult : public Runtime::Method
+class MysqlNextResult : public ExtensionMethod
 {
 public:
 	MysqlNextResult()
-	: Runtime::Method(0, "mysql_next_result", Designtime::IntegerObject::TYPENAME)
+	: ExtensionMethod(0, "mysql_next_result", Designtime::IntegerObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));

@@ -30,7 +30,7 @@ namespace Extensions {
 
 
 FromJson::FromJson()
-: Runtime::Method(0, "FromJsonString", Designtime::BoolObject::TYPENAME)
+: ExtensionMethod(0, "FromJsonString", Designtime::BoolObject::TYPENAME)
 {
 	ParameterList params;
 	params.push_back(Parameter("object", Designtime::GenericObject::TYPENAME, VALUE_NONE));

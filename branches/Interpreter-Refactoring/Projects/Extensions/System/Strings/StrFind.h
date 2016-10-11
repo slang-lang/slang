@@ -11,7 +11,7 @@
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
-#include <Core/Method.h>
+#include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Tools.h>
 #include <Tools/Strings.h>
 
@@ -26,11 +26,11 @@ namespace System {
 namespace Strings {
 
 
-class StrFind : public Runtime::Method
+class StrFind : public ExtensionMethod
 {
 public:
 	StrFind()
-	: Runtime::Method(0, "strfind", Designtime::IntegerObject::TYPENAME)
+	: ExtensionMethod(0, "strfind", Designtime::IntegerObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter("source", Designtime::StringObject::TYPENAME, VALUE_NONE));

@@ -11,7 +11,7 @@
 #include <Core/Common/Exceptions.h>
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
-#include <Core/Method.h>
+#include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Tools.h>
 #include "Types.h"
 
@@ -25,11 +25,11 @@ namespace Extensions {
 namespace Mysql {
 
 
-class MysqlQuery: public Runtime::Method
+class MysqlQuery: public ExtensionMethod
 {
 public:
 	MysqlQuery()
-	: Runtime::Method(0, "mysql_query", Designtime::IntegerObject::TYPENAME)
+	: ExtensionMethod(0, "mysql_query", Designtime::IntegerObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));

@@ -10,6 +10,7 @@
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Common/Exceptions.h>
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
+#include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Repository.h>
 #include "Types.h"
@@ -24,11 +25,11 @@ namespace Extensions {
 namespace Mysql {
 
 
-class MysqlClose: public Runtime::Method
+class MysqlClose: public ExtensionMethod
 {
 public:
 	MysqlClose()
-	: Runtime::Method(0, "mysql_close", Designtime::IntegerObject::TYPENAME)
+	: ExtensionMethod(0, "mysql_close", Designtime::IntegerObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, VALUE_NONE));

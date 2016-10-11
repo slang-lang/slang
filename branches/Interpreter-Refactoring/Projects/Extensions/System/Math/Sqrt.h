@@ -11,10 +11,9 @@
 #include <Core/BuildInObjects/FloatObject.h>
 #include <Core/Designtime/BuildInTypes/DoubleObject.h>
 #include <Core/Designtime/BuildInTypes/FloatObject.h>
-#include <Core/Method.h>
+#include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Tools.h>
 #include <Tools/Strings.h>
-#include "Math.h"
 
 // Forward declarations
 
@@ -27,11 +26,11 @@ namespace System {
 namespace Math {
 
 
-class SqrtDouble: public Runtime::Method
+class SqrtDouble: public ExtensionMethod
 {
 public:
 	SqrtDouble()
-	: Runtime::Method(0, "sqrt", Designtime::DoubleObject::TYPENAME)
+	: ExtensionMethod(0, "sqrt", Designtime::DoubleObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter("value", Designtime::DoubleObject::TYPENAME, VALUE_NONE));
@@ -64,11 +63,11 @@ public:
 };
 
 
-class SqrtFloat: public Runtime::Method
+class SqrtFloat: public ExtensionMethod
 {
 public:
 	SqrtFloat()
-	: Runtime::Method(0, "sqrt", Designtime::FloatObject::TYPENAME)
+	: ExtensionMethod(0, "sqrt", Designtime::FloatObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter("value", Designtime::FloatObject::TYPENAME, VALUE_NONE));

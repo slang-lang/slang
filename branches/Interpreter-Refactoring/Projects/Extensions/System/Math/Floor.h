@@ -11,7 +11,7 @@
 #include <Core/BuildInObjects/FloatObject.h>
 #include <Core/Designtime/BuildInTypes/DoubleObject.h>
 #include <Core/Designtime/BuildInTypes/FloatObject.h>
-#include <Core/Method.h>
+#include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Repository.h>
 #include <Tools/Strings.h>
@@ -28,11 +28,11 @@ namespace System {
 namespace Math {
 
 
-class FloorDouble: public Runtime::Method
+class FloorDouble: public ExtensionMethod
 {
 public:
 	FloorDouble()
-	: Runtime::Method(0, "floor", Designtime::DoubleObject::TYPENAME)
+	: ExtensionMethod(0, "floor", Designtime::DoubleObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter("value", Designtime::DoubleObject::TYPENAME, VALUE_NONE));
@@ -65,11 +65,11 @@ public:
 };
 
 
-class FloorFloat: public Runtime::Method
+class FloorFloat: public ExtensionMethod
 {
 public:
 	FloorFloat()
-	: Runtime::Method(0, "floor", Designtime::FloatObject::TYPENAME)
+	: ExtensionMethod(0, "floor", Designtime::FloatObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter("value", Designtime::FloatObject::TYPENAME, VALUE_NONE));

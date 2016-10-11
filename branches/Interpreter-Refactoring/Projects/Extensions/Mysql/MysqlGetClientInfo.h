@@ -9,6 +9,7 @@
 // Project includes
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
+#include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Tools.h>
 
 // Forward declarations
@@ -21,11 +22,11 @@ namespace Extensions {
 namespace Mysql {
 
 
-class MysqlGetClientInfo : public Runtime::Method
+class MysqlGetClientInfo : public ExtensionMethod
 {
 public:
 	MysqlGetClientInfo()
-	: Runtime::Method(0, "mysql_get_client_info", Designtime::StringObject::TYPENAME)
+	: ExtensionMethod(0, "mysql_get_client_info", Designtime::StringObject::TYPENAME)
 	{
 		ParameterList params;
 

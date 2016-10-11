@@ -9,7 +9,7 @@
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Common/Exceptions.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
-#include <Core/Method.h>
+#include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Tools.h>
 #include <Tools/Strings.h>
 #include "Math.h"
@@ -25,11 +25,11 @@ namespace System {
 namespace Console {
 
 
-class Cout : public Runtime::Method
+class Cout : public ExtensionMethod
 {
 public:
 	Cout()
-	: Runtime::Method(0, "cout", Designtime::StringObject::TYPENAME)
+	: ExtensionMethod(0, "cout", Designtime::StringObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter("text", Designtime::StringObject::TYPENAME, VALUE_NONE, true));

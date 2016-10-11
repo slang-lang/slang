@@ -54,7 +54,7 @@ namespace IO {
 
 
 FileOpen::FileOpen()
-: Runtime::Method(0, "fopen", Designtime::IntegerObject::TYPENAME)
+: ExtensionMethod(0, "fopen", Designtime::IntegerObject::TYPENAME)
 {
 	ParameterList params;
 	params.push_back(Parameter("filename", Designtime::StringObject::TYPENAME, VALUE_NONE));

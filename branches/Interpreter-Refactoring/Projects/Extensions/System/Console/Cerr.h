@@ -9,7 +9,7 @@
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Common/Exceptions.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
-#include <Core/Method.h>
+#include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Repository.h>
 #include <Tools/Strings.h>
@@ -26,11 +26,11 @@ namespace System {
 namespace Console {
 
 
-class Cerr : public Runtime::Method
+class Cerr : public ExtensionMethod
 {
 public:
 	Cerr()
-	: Runtime::Method(0, "cerr", Designtime::StringObject::TYPENAME)
+	: ExtensionMethod(0, "cerr", Designtime::StringObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter("text", Designtime::StringObject::TYPENAME, VALUE_NONE, true));

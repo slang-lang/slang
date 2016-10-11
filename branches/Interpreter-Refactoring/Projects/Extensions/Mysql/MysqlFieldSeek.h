@@ -7,9 +7,10 @@
 // Project includes
 #include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/BuildInObjects/StringObject.h>
-#include <Core/Designtime/BuildInTypes/IntegerObject.h>
-#include <Core/Tools.h>
 #include <Core/Common/Exceptions.h>
+#include <Core/Designtime/BuildInTypes/IntegerObject.h>
+#include <Core/Extensions/ExtensionMethod.h>
+#include <Core/Tools.h>
 #include "Types.h"
 
 // Namespace declarations
@@ -20,11 +21,11 @@ namespace Extensions {
 namespace Mysql {
 
 
-class MysqlFieldSeek : public Runtime::Method
+class MysqlFieldSeek : public ExtensionMethod
 {
 public:
 	MysqlFieldSeek()
-	: Runtime::Method(0, "mysql_field_seek", Designtime::IntegerObject::TYPENAME)
+	: ExtensionMethod(0, "mysql_field_seek", Designtime::IntegerObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));

@@ -11,7 +11,7 @@
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Designtime/BuildInTypes/BoolObject.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
-#include <Core/Method.h>
+#include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Repository.h>
 #include <Tools/Strings.h>
@@ -27,11 +27,11 @@ namespace Extensions {
 namespace Apache {
 
 
-class IsSet : public Runtime::Method
+class IsSet : public ExtensionMethod
 {
 public:
 	IsSet()
-	: Runtime::Method(0, "isSet", Designtime::BoolObject::TYPENAME)
+	: ExtensionMethod(0, "isSet", Designtime::BoolObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter("name", Designtime::StringObject::TYPENAME, VALUE_NONE));

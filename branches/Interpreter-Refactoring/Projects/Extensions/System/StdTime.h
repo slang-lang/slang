@@ -10,7 +10,7 @@
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Common/Exceptions.h>
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
-#include <Core/Method.h>
+#include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Tools.h>
 #include <Tools/Strings.h>
 
@@ -24,11 +24,11 @@ namespace Extensions {
 namespace System {
 
 
-class StdTime : public Runtime::Method
+class StdTime : public ExtensionMethod
 {
 public:
 	StdTime()
-	: Runtime::Method(0, "time", Designtime::IntegerObject::TYPENAME)
+	: ExtensionMethod(0, "time", Designtime::IntegerObject::TYPENAME)
 	{
 		ParameterList params;
 

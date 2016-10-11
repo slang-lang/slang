@@ -10,7 +10,7 @@
 // Project includes
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
-#include <Core/Method.h>
+#include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Tools.h>
 #include <Tools/Strings.h>
 
@@ -25,11 +25,11 @@ namespace System {
 namespace Strings {
 
 
-class ToLower : public Runtime::Method
+class ToLower : public ExtensionMethod
 {
 public:
 	ToLower()
-	: Runtime::Method(0, "toLower", Designtime::StringObject::TYPENAME)
+	: ExtensionMethod(0, "toLower", Designtime::StringObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter("value", Designtime::StringObject::TYPENAME, VALUE_NONE));

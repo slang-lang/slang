@@ -10,6 +10,7 @@
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
 #include <Core/Designtime/BuildInTypes/VoidObject.h>
+#include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Tools.h>
 #include "Types.h"
 
@@ -23,11 +24,11 @@ namespace Extensions {
 namespace Mysql {
 
 
-class MysqlFreeResult: public Runtime::Method
+class MysqlFreeResult: public ExtensionMethod
 {
 public:
 	MysqlFreeResult()
-	: Runtime::Method(0, "mysql_free_result", Designtime::VoidObject::TYPENAME)
+	: ExtensionMethod(0, "mysql_free_result", Designtime::VoidObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));

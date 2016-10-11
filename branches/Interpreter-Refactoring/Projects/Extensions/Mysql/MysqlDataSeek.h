@@ -11,7 +11,7 @@
 #include <Core/BuildInObjects/VoidObject.h>
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
 #include <Core/Designtime/BuildInTypes/VoidObject.h>
-#include <Core/Method.h>
+#include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Repository.h>
 #include "Types.h"
@@ -26,11 +26,11 @@ namespace Extensions {
 namespace Mysql {
 
 
-class MysqlDataSeek : public Runtime::Method
+class MysqlDataSeek : public ExtensionMethod
 {
 public:
 	MysqlDataSeek()
-	: Runtime::Method(0, "mysql_data_seek", Designtime::VoidObject::TYPENAME)
+	: ExtensionMethod(0, "mysql_data_seek", Designtime::VoidObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));

@@ -9,7 +9,7 @@
 #include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/Designtime/BuildInTypes/VoidObject.h>
 #include <Core/Common/Exceptions.h>
-#include <Core/Method.h>
+#include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Repository.h>
 #include <Tools/Strings.h>
@@ -27,11 +27,11 @@ namespace Extensions {
 namespace Apache {
 
 
-class Pre : public Runtime::Method
+class Pre : public ExtensionMethod
 {
 public:
 	Pre()
-	: Runtime::Method(0, "pre", Designtime::VoidObject::TYPENAME)
+	: ExtensionMethod(0, "pre", Designtime::VoidObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter("text", Designtime::StringObject::TYPENAME, VALUE_NONE, true));

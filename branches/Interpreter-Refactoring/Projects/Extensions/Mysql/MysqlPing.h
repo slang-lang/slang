@@ -10,7 +10,7 @@
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Common/Exceptions.h>
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
-#include <Core/Method.h>
+#include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Tools.h>
 #include "Types.h"
 
@@ -24,11 +24,11 @@ namespace Extensions {
 namespace Mysql {
 
 
-class MysqlPing: public Runtime::Method
+class MysqlPing: public ExtensionMethod
 {
 public:
 	MysqlPing()
-	: Runtime::Method(0, "mysql_ping", Designtime::IntegerObject::TYPENAME)
+	: ExtensionMethod(0, "mysql_ping", Designtime::IntegerObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));

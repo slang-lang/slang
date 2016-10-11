@@ -9,7 +9,7 @@
 #include <Core/Designtime/BuildInTypes/BoolObject.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/Designtime/BuildInTypes/VoidObject.h>
-#include <Core/Method.h>
+#include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Tools.h>
 #include <Tools/Strings.h>
@@ -24,11 +24,11 @@ namespace Extensions {
 namespace System {
 
 
-class Assert : public Runtime::Method
+class Assert : public ExtensionMethod
 {
 public:
 	Assert()
-	: Runtime::Method(0, "assert", Designtime::VoidObject::TYPENAME)
+	: ExtensionMethod(0, "assert", Designtime::VoidObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter("condition", Designtime::BoolObject::TYPENAME, false));
@@ -55,11 +55,11 @@ public:
 };
 
 
-class AssertMsg : public Runtime::Method
+class AssertMsg : public ExtensionMethod
 {
 public:
 	AssertMsg()
-	: Runtime::Method(0, "assertmsg", Designtime::VoidObject::TYPENAME)
+	: ExtensionMethod(0, "assertmsg", Designtime::VoidObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter("condition", Designtime::BoolObject::TYPENAME, false));

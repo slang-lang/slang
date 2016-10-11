@@ -12,7 +12,7 @@
 #include <Core/BuildInObjects/FloatObject.h>
 #include <Core/Designtime/BuildInTypes/DoubleObject.h>
 #include <Core/Designtime/BuildInTypes/FloatObject.h>
-#include <Core/Method.h>
+#include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Tools.h>
 #include <Tools/Strings.h>
 #include "Math.h"
@@ -28,11 +28,11 @@ namespace System {
 namespace Math {
 
 
-class TruncDouble: public Runtime::Method
+class TruncDouble: public ExtensionMethod
 {
 public:
 	TruncDouble()
-	: Runtime::Method(0, "trunc", Designtime::DoubleObject::TYPENAME)
+	: ExtensionMethod(0, "trunc", Designtime::DoubleObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter("value", Designtime::DoubleObject::TYPENAME, VALUE_NONE));
@@ -69,11 +69,11 @@ public:
 };
 
 
-class TruncFloat: public Runtime::Method
+class TruncFloat: public ExtensionMethod
 {
 public:
 	TruncFloat()
-	: Runtime::Method(0, "trunc", Designtime::FloatObject::TYPENAME)
+	: ExtensionMethod(0, "trunc", Designtime::FloatObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter("value", Designtime::FloatObject::TYPENAME, VALUE_NONE));

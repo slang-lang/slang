@@ -9,7 +9,7 @@
 // Project includes
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
 #include <Core/Designtime/BuildInTypes/VoidObject.h>
-#include <Core/Method.h>
+#include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Tools.h>
 #include <Tools/Strings.h>
 
@@ -24,11 +24,11 @@ namespace System {
 namespace Math {
 
 
-class Srand: public Runtime::Method
+class Srand: public ExtensionMethod
 {
 public:
 	Srand()
-	: Runtime::Method(0, "srand", Designtime::VoidObject::TYPENAME)
+	: ExtensionMethod(0, "srand", Designtime::VoidObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter("value", Designtime::IntegerObject::TYPENAME, VALUE_NONE));

@@ -6,7 +6,7 @@
 // Library includes
 
 // Project includes
-#include <Core/Method.h>
+#include <Core/Extensions/ExtensionMethod.h>
 
 // Forward declarations
 
@@ -18,7 +18,7 @@ namespace Extensions {
 namespace IO {
 
 
-class FileWriteBool : public Runtime::Method
+class FileWriteBool : public ExtensionMethod
 {
 public:
 	FileWriteBool();
@@ -27,7 +27,7 @@ public:
 };
 
 
-class FileWriteDouble : public Runtime::Method
+class FileWriteDouble : public ExtensionMethod
 {
 public:
 	FileWriteDouble();
@@ -36,7 +36,7 @@ public:
 };
 
 
-class FileWriteFloat : public Runtime::Method
+class FileWriteFloat : public ExtensionMethod
 {
 public:
 	FileWriteFloat();
@@ -45,7 +45,7 @@ public:
 };
 
 
-class FileWriteInt : public Runtime::Method
+class FileWriteInt : public ExtensionMethod
 {
 public:
 	FileWriteInt();
@@ -54,7 +54,7 @@ public:
 };
 
 
-class FileWriteString : public Runtime::Method
+class FileWriteString : public ExtensionMethod
 {
 public:
 	FileWriteString();

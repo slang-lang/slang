@@ -15,7 +15,7 @@
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Common/Exceptions.h>
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
-#include <Core/Method.h>
+#include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Tools.h>
 #include <Tools/Strings.h>
 
@@ -29,11 +29,11 @@ namespace Extensions {
 namespace System {
 
 
-class Sleep : public Runtime::Method
+class Sleep : public ExtensionMethod
 {
 public:
 	Sleep()
-	: Runtime::Method(0, "sleep", Designtime::VoidObject::TYPENAME)
+	: ExtensionMethod(0, "sleep", Designtime::VoidObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter("millis", Designtime::IntegerObject::TYPENAME, 0));

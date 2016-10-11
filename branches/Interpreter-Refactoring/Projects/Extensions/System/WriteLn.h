@@ -9,7 +9,7 @@
 #include <Core/Common/Exceptions.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/Designtime/BuildInTypes/VoidObject.h>
-#include <Core/Method.h>
+#include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Tools.h>
 #include <Tools/Strings.h>
 
@@ -23,11 +23,11 @@ namespace Extensions {
 namespace System {
 
 
-class WriteLn : public Runtime::Method
+class WriteLn : public ExtensionMethod
 {
 public:
 	WriteLn()
-	: Runtime::Method(0, "writeln", Designtime::VoidObject::TYPENAME)
+	: ExtensionMethod(0, "writeln", Designtime::VoidObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter("text", Designtime::StringObject::TYPENAME, VALUE_NONE, true));

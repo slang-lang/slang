@@ -14,7 +14,7 @@
 #include <Core/Designtime/BuildInTypes/DoubleObject.h>
 #include <Core/Designtime/BuildInTypes/FloatObject.h>
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
-#include <Core/Method.h>
+#include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Repository.h>
 #include <Tools/Strings.h>
@@ -31,11 +31,11 @@ namespace System {
 namespace Math {
 
 
-class AbsDouble: public Runtime::Method
+class AbsDouble: public ExtensionMethod
 {
 public:
 	AbsDouble()
-	: Runtime::Method(0, "abs", Designtime::DoubleObject::TYPENAME)
+	: ExtensionMethod(0, "abs", Designtime::DoubleObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter("value", Designtime::DoubleObject::TYPENAME, VALUE_NONE));
@@ -68,11 +68,11 @@ public:
 };
 
 
-class AbsFloat: public Runtime::Method
+class AbsFloat: public ExtensionMethod
 {
 public:
 	AbsFloat()
-	: Runtime::Method(0, "abs", Designtime::FloatObject::TYPENAME)
+	: ExtensionMethod(0, "abs", Designtime::FloatObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter("value", Designtime::FloatObject::TYPENAME, VALUE_NONE));
@@ -105,11 +105,11 @@ public:
 };
 
 
-class AbsInt: public Runtime::Method
+class AbsInt: public ExtensionMethod
 {
 public:
 	AbsInt()
-	: Runtime::Method(0, "abs", Designtime::IntegerObject::TYPENAME)
+	: ExtensionMethod(0, "abs", Designtime::IntegerObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter("value", Designtime::IntegerObject::TYPENAME, VALUE_NONE));

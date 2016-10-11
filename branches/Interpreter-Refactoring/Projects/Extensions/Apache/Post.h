@@ -10,7 +10,7 @@
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Common/Exceptions.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
-#include <Core/Method.h>
+#include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Repository.h>
 #include <Tools/Strings.h>
@@ -25,11 +25,11 @@ namespace Extensions {
 namespace Apache {
 
 
-class Post : public Runtime::Method
+class Post : public ExtensionMethod
 {
 public:
 	Post()
-	: Runtime::Method(0, "post", Designtime::StringObject::TYPENAME)
+	: ExtensionMethod(0, "post", Designtime::StringObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter("name", Designtime::StringObject::TYPENAME, VALUE_NONE));

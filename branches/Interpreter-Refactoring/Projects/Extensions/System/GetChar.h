@@ -10,7 +10,7 @@
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Common/Exceptions.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
-#include <Core/Method.h>
+#include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Tools.h>
 #include <Tools/Strings.h>
 
@@ -24,11 +24,11 @@ namespace Extensions {
 namespace System {
 
 
-class GetChar : public Runtime::Method
+class GetChar : public ExtensionMethod
 {
 public:
 	GetChar()
-	: Runtime::Method(0, "getchar", Designtime::StringObject::TYPENAME)
+	: ExtensionMethod(0, "getchar", Designtime::StringObject::TYPENAME)
 	{
 		ParameterList params;
 

@@ -28,7 +28,7 @@ namespace IO {
 
 
 FileSeek::FileSeek()
-: Runtime::Method(0, "fseek", Designtime::IntegerObject::TYPENAME)
+: ExtensionMethod(0, "fseek", Designtime::IntegerObject::TYPENAME)
 {
 	ParameterList params;
 	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, VALUE_NONE));

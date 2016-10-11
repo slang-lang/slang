@@ -9,11 +9,10 @@
 // Project includes
 #include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
-#include <Core/Method.h>
+#include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Repository.h>
 #include <Tools/Strings.h>
-#include "Math.h"
 
 // Forward declarations
 
@@ -26,11 +25,11 @@ namespace System {
 namespace Math {
 
 
-class Rand: public Runtime::Method
+class Rand: public ExtensionMethod
 {
 public:
 	Rand()
-	: Runtime::Method(0, "rand", Designtime::IntegerObject::TYPENAME)
+	: ExtensionMethod(0, "rand", Designtime::IntegerObject::TYPENAME)
 	{
 		ParameterList params;
 

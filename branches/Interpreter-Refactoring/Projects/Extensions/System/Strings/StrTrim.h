@@ -10,7 +10,7 @@
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
-#include <Core/Method.h>
+#include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Tools.h>
 #include <Tools/Strings.h>
 
@@ -25,11 +25,11 @@ namespace System {
 namespace Strings {
 
 
-class StrTrim : public Runtime::Method
+class StrTrim : public ExtensionMethod
 {
 public:
 	StrTrim()
-	: Runtime::Method(0, "strtrim", Designtime::StringObject::TYPENAME)
+	: ExtensionMethod(0, "strtrim", Designtime::StringObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter("value", Designtime::StringObject::TYPENAME, 0));

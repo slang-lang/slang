@@ -12,6 +12,7 @@
 #include <Core/Common/Exceptions.h>
 #include <Core/Designtime/BuildInTypes/BoolObject.h>
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
+#include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Tools.h>
 #include "Types.h"
 
@@ -25,11 +26,11 @@ namespace Extensions {
 namespace Mysql {
 
 
-class MysqlNextRow : public Runtime::Method
+class MysqlNextRow : public ExtensionMethod
 {
 public:
 	MysqlNextRow()
-	: Runtime::Method(0, "mysql_next_row", Designtime::BoolObject::TYPENAME)
+	: ExtensionMethod(0, "mysql_next_row", Designtime::BoolObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));
