@@ -10,7 +10,7 @@
 #include <Core/Runtime/OperatorOverloading.h>
 #include <Core/Runtime/TypeCast.h>
 #include <Core/VirtualMachine/Repository.h>
-#include <Core/VirtualMachine/StackTrace.h>
+#include <Core/VirtualMachine/Stack.h>
 #include <Debugger/Debugger.h>
 #include <Tools/Strings.h>
 #include <Utils.h>

@@ -21,7 +21,7 @@
 #include <Core/Runtime/TypeCast.h>
 #include <Core/VirtualMachine/Memory.h>
 #include <Core/VirtualMachine/Repository.h>
-#include <Core/VirtualMachine/StackTrace.h>
+#include <Core/VirtualMachine/Stack.h>
 #include <Debugger/Debugger.h>
 #include <Tools/Printer.h>
 #include <Utils.h>

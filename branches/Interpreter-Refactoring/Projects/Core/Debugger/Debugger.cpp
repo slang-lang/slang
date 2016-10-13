@@ -6,7 +6,7 @@
 #include <iostream>
 
 // Project includes
-#include <Core/VirtualMachine/StackTrace.h>
+#include <Core/VirtualMachine/Stack.h>
 #include "IReceiver.h"
 
 // Namespace declarations

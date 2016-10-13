@@ -1,6 +1,6 @@
 
 // Header
-#include "StackTrace.h"
+#include "Stack.h"
 
 // Library includes
 #include <cassert>

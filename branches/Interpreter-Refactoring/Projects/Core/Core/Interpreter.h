@@ -9,7 +9,7 @@
 // Project includes
 #include <Core/Runtime/ControlFlow.h>
 #include <Core/Runtime/ExceptionData.h>
-#include <Core/VirtualMachine/StackTrace.h>
+#include <Core/VirtualMachine/Stack.h>
 #include "Parameter.h"
 #include "Scope.h"
 #include "Token.h"

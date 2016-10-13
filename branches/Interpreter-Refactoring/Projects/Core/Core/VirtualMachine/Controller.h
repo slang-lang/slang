@@ -8,7 +8,7 @@
 // Project includes
 #include "Memory.h"
 #include "Repository.h"
-#include "StackTrace.h"
+#include "Stack.h"
 
 // Forward declarations
 

@@ -11,7 +11,7 @@
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Script.h>
 #include <Core/Tools.h>
-#include <Core/VirtualMachine/StackTrace.h>
+#include <Core/VirtualMachine/Stack.h>
 #include <Core/VirtualMachine/VirtualMachine.h>
 #include <Debugger/Debugger.h>
 #include "Protocol.h"

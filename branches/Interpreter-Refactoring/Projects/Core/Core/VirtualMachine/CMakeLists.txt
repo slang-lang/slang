@@ -4,8 +4,8 @@ SET(SOURCES
 	Controller.cpp
 	Memory.cpp
 	Repository.cpp
+	Stack.cpp
 	StackLevel.cpp
-	StackTrace.cpp
 	VirtualMachine.cpp
 )
 
@@ -13,8 +13,8 @@ SET(HEADERS
 	Controller.h
 	Memory.h
 	Repository.h
+	Stack.h
 	StackLevel.h
-	StackTrace.h
 	VirtualMachine.h
 )
 

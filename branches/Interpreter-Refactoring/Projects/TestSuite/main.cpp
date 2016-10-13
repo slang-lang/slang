@@ -5,7 +5,7 @@
 
 // Project includes
 #include <Common/StdOutLogger.h>
-#include <Core/VirtualMachine/StackTrace.h>
+#include <Core/VirtualMachine/Stack.h>
 #include <Tools/Printer.h>
 #include <Tools/Strings.h>
 #include <Tools/Tools.h>

@@ -19,7 +19,7 @@
 #include <Core/Script.h>
 #include <Core/Tokenizer.h>
 #include <Core/Tools.h>
-#include <Core/VirtualMachine/StackTrace.h>
+#include <Core/VirtualMachine/Stack.h>
 #include <Core/VirtualMachine/VirtualMachine.h>
 #include <Debugger/Debugger.h>
 #include <Tools/Files.h>
