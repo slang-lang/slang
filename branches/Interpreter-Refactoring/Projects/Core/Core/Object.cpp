@@ -64,6 +64,13 @@ Object::Object(const Object& other)
 
 	if ( !mIsAtomicType ) {
 		mReference = other.mReference;
+
+		Object* otherbase = dynamic_cast<Object*>(other.resolve("base", true));
+		if ( otherbase ) {
+			Object* base = new Object(*otherbase);
+
+			define(otherbase->getName(), base);
+		}
 	}
 }
 
@@ -117,9 +124,16 @@ void Object::operator= (const Object& other)
 			mTypename = other.mTypename;
 		}
 
-		if ( !mIsAtomicType ) {
+		if ( other.mReference.isValid() ) {
 			Controller::Instance().memory()->add(other.mReference);
 			mReference = other.mReference;
+
+			Object* base = dynamic_cast<Object*>(resolve("base", true));
+			if ( base ) {
+				Object* otherbase = dynamic_cast<Object*>(other.resolve("base", true));
+				Controller::Instance().memory()->add(otherbase->mReference);
+				base->mReference = otherbase->mReference;
+			}
 		}
 	}
 }
@@ -145,7 +159,7 @@ void Object::assign(const Object& other)
 			mTypename = other.mTypename;
 		}
 
-		if ( !mIsAtomicType ) {
+		if ( other.mReference.isValid() ) {
 			Controller::Instance().memory()->add(other.mReference);
 			mReference = other.mReference;
 		}
@@ -171,7 +185,7 @@ void Object::assignSubType(const Object& other)
 			mTypename = other.mTypename;
 		}
 
-		if ( !mIsAtomicType ) {
+		if ( other.mReference.isValid() ) {
 			Controller::Instance().memory()->add(other.mReference);
 			mReference = other.mReference;
 		}

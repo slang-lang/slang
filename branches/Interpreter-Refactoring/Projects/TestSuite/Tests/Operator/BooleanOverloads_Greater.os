@@ -29,44 +29,40 @@ private object UserObject
 	}
 }
 
-
-public object Main
+public void Main(int argc = 0, string argv = "")
 {
-	public void Main(int argc = 0, string argv = "")
-	{
-		assert(TestCase1());
-		assert(TestCase2());
+	assert(TestCase1());
+	assert(TestCase2());
+}
+
+private bool TestCase1() const
+{
+	print("TestCase1: greater operator with atomic type");
+
+	UserObject obj1 = new UserObject(2);
+
+	//assert(obj1 > 1);
+	if ( obj1 > 1 ) {
+		print("obj1 > 1");
+		return true;
 	}
 
-	private bool TestCase1() const
-	{
-		print("TestCase1: greater operator with atomic type");
+	return false;
+}
 
-		UserObject obj1 = new UserObject(2);
+private bool TestCase2() const
+{
+	print("TestCase2: greater operator with object");
 
-		//assert(obj1 > 1);
-		if ( obj1 > 1 ) {
-			print("obj1 > 1");
-			return true;
-		}
+	UserObject obj1 = new UserObject(1);
+	UserObject obj2 = new UserObject(2);
 
-		return false;
+	//assert(obj2 > obj1);
+	if ( obj2 > obj1 ) {
+		print("obj2 > obj1");
+		return true;
 	}
 
-	private bool TestCase2() const
-	{
-		print("TestCase2: greater operator with object");
-
-		UserObject obj1 = new UserObject(1);
-		UserObject obj2 = new UserObject(2);
-
-		//assert(obj2 > obj1);
-		if ( obj2 > obj1 ) {
-			print("obj2 > obj1");
-			return true;
-		}
-
-		return false;
-	}
+	return false;
 }
 

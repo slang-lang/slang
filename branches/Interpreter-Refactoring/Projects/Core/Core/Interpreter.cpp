@@ -423,11 +423,11 @@ ControlFlow::E Interpreter::interpret(const TokenList& tokens, Object* result)
 
 	pushScope();
 		pushTokens(tokens);
-			//TokenIterator start = getTokens().begin();
-			//TokenIterator end = getTokens().end();
+			TokenIterator start = getTokens().begin();
+			TokenIterator end = getTokens().end();
 
-			TokenIterator start = tokens.begin();
-			TokenIterator end = tokens.end();
+			//TokenIterator start = tokens.begin();
+			//TokenIterator end = tokens.end();
 
 			process(result, start, end);
 		popTokens();
@@ -867,9 +867,9 @@ void Interpreter::process_delete(TokenIterator& token)
 			Object *object = static_cast<Object*>(symbol);
 			assert(object);
 
-			mControlFlow = object->Destructor();
+			//mControlFlow = object->Destructor();
 
-			*object = Object(object->getName(), object->Filename(), object->Typename(), VALUE_NONE);
+			object->assign(Object(object->getName(), object->Filename(), object->Typename(), VALUE_NONE));
 		} break;
 		case Symbol::IType::BluePrintEnumSymbol:
 		case Symbol::IType::BluePrintObjectSymbol:

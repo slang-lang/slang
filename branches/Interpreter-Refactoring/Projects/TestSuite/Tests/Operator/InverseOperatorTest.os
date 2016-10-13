@@ -72,88 +72,86 @@ private object TestObject {
 	}
 }
 
-public object Main {
-	public void Main(int argc = 0, string args = "") {
-		assert( TestCase1() );
-		assert( TestCase2() );
-		assert( TestCase3() );
-		assert( TestCase4() );
-		assert( TestCase5() );
-	}
+public void Main(int argc = 0, string args = "") {
+	assert( TestCase1() );
+	assert( TestCase2() );
+	assert( TestCase3() );
+	assert( TestCase4() );
+	assert( TestCase5() );
+}
 
-	private bool TestCase1() const {
-		print("TestCase 1: classic operator");
+private bool TestCase1() const {
+	print("TestCase 1: classic operator");
 
-		TestObject obj = new TestObject(1);
-		print(obj.ToString());
+	TestObject obj = new TestObject(1);
+	print(obj.ToString());
 
-		obj++;
+	obj++;
 
-		print(obj.ToString());
+	print(obj.ToString());
 
-		return obj == 2;
-	}
+	return obj == 2;
+}
 
-	private bool TestCase2() const {
-		print("TestCase 2: modern operator");
+private bool TestCase2() const {
+	print("TestCase 2: modern operator");
 
-		TestObject obj = new TestObject(1);
-		print(obj.ToString());
+	TestObject obj = new TestObject(1);
+	print(obj.ToString());
 
-		obj=++obj;
+	obj=++obj;
 
-		print(obj.ToString());
+	print(obj.ToString());
 
-		return true;
-	}
+	return true;
+}
 
-	private bool TestCase3() const {
-		print("TestCase 3: modern value operator");
+private bool TestCase3() const {
+	print("TestCase 3: modern value operator");
 
-		TestObject obj = new TestObject(1);
-		print(obj.ToString());
+	TestObject obj = new TestObject(1);
+	print(obj.ToString());
 
-		int value = obj;
+	int value = obj;
 
-		print("value = " + value);
+	print("value = " + value);
 
-		return value == 1;
-	}
+	return value == 1;
+}
 
-	private bool TestCase4() const {
-		print("TestCase 4: modern + operator");
+private bool TestCase4() const {
+	print("TestCase 4: modern + operator");
 
-		TestObject obj = new TestObject(1);
-		print(obj.ToString());
+	TestObject obj = new TestObject(1);
+	print(obj.ToString());
 
-		int value = 5 + obj;
+	int value = 5 + obj;
 
-		print("value = " + value);
+	print("value = " + value);
 
-		return value == 6;
-	}
+	return value == 6;
+}
 
-	private bool TestCase5() const {
-		print("TestCase 5: modern compare operator");
+private bool TestCase5() const {
+	print("TestCase 5: modern compare operator");
 
-		TestObject obj = new TestObject(1);
-		print(obj.ToString());
+	TestObject obj = new TestObject(1);
+	print(obj.ToString());
 
-		int value = 4;
-		print("value = " + value);
+	int value = 4;
+	print("value = " + value);
 
-		print("value == obj: " + (value == obj));
-		print("value > obj: " + (value > obj));
-		print("value >= obj: " + (value >= obj));
-		print("value < obj: " + (value < obj));
-		print("value <= obj: " + (value <= obj));
+	print("value == obj: " + (value == obj));
+	print("value > obj: " + (value > obj));
+	print("value >= obj: " + (value >= obj));
+	print("value < obj: " + (value < obj));
+	print("value <= obj: " + (value <= obj));
 
-		print("value - 3 == obj: " + (value - 3 == obj));
-		print("value == obj + 3: " + (value == obj + 3));
-		print("value == 8 - obj: " + (value == 8 - obj));
+	print("value - 3 == obj: " + (value - 3 == obj));
+	print("value == obj + 3: " + (value == obj + 3));
+	print("value == 8 - obj: " + (value == 8 - obj));
 
-		print("obj = " + 1 + obj);
+	print("obj = " + 1 + obj);
 
-		return obj;
-	}
+	return obj;
 }

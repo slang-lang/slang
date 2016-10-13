@@ -47,7 +47,9 @@ void SymbolScope::deinit()
 	Symbols tmp = mSymbols;
 
 	for ( Symbols::iterator it = tmp.begin(); it != tmp.end(); ++it ) {
-		if ( it->second->getSymbolType() == Symbol::IType::ObjectSymbol ) {
+		if ( it->first != "base" &&
+			 it->first != "this" &&
+			 it->second->getSymbolType() == Symbol::IType::ObjectSymbol ) {
 			delete it->second;
 			mSymbols.erase(it->first);
 		}
@@ -202,8 +204,10 @@ GlobalScope::~GlobalScope()
 
 void GlobalScope::deinit()
 {
+	Symbols tmp = mSymbols;
+
 	for ( MethodCollection::iterator methIt = mMethods.begin(); methIt != mMethods.end(); ++methIt ) {
-		for ( Symbols::iterator symIt = mSymbols.begin(); symIt != mSymbols.end(); ++symIt ) {
+		for ( Symbols::iterator symIt = tmp.begin(); symIt != tmp.end(); ++symIt ) {
 			if ( symIt->second == (*methIt) ) {
 				mSymbols.erase(symIt->first);
 			}
@@ -212,8 +216,7 @@ void GlobalScope::deinit()
 		delete (*methIt);
 	}
 
-	Symbols tmp = mSymbols;
-
+	tmp = mSymbols;
 	for ( Symbols::iterator symIt = tmp.begin(); symIt != tmp.end(); ++symIt ) {
 		switch ( symIt->second->getSymbolType() ) {
 			case Symbol::IType::NamespaceSymbol: {
