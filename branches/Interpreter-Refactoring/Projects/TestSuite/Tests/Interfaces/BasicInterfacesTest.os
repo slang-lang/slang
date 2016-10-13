@@ -25,35 +25,33 @@ public object Warehouse
 */
 }
 
-public object Main {
-	public void Main(int argc = 0, string argv = "") {
-		assert( TestCase1() );
-		assert( TestCase2() );
-	}
+public void Main(int argc = 0, string argv = "") {
+	assert( TestCase1() );
+	assert( TestCase2() );
+}
 
-	private bool TestCase1() {
-		print("TestCase 1: Boxhouse");
+private bool TestCase1() {
+	print("TestCase 1: Boxhouse");
 
-		Boxhouse boxhouse = new Boxhouse();
+	Boxhouse boxhouse = new Boxhouse();
 
-		print("boxhouse.GetBox() = " + boxhouse.GetBox());
+	print("boxhouse.GetBox() = " + boxhouse.GetBox());
 
-		delete boxhouse;	// this is not necessary but perfectly valid
+	delete boxhouse;	// this is not necessary but perfectly valid
 
-		return true;
-	}
+	return true;
+}
 
-	private bool TestCase2() {
-		print("TestCase 2: Warehouse");
+private bool TestCase2() {
+	print("TestCase 2: Warehouse");
 
-		Warehouse warehouse = new Warehouse();
+	Warehouse warehouse = new Warehouse();
 
-		print("warehouse.GetBox() = " + warehouse.GetBox());
-		print("warehouse.GetBoxType(1389) = " + warehouse.GetBoxType(1389) );
+	print("warehouse.GetBox() = " + warehouse.GetBox());
+	print("warehouse.GetBoxType(1389) = " + warehouse.GetBoxType(1389) );
 
-		delete warehouse;	// this is not necessary but perfectly valid
+	delete warehouse;	// this is not necessary but perfectly valid
 
-		return false;
-	}
+	return false;
 }
 

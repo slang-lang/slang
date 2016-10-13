@@ -54,36 +54,34 @@ public object Observer {
 	}
 }
 
-public object Main {
-	public void Main(int argc = 0, string args = "") {
-		IWarehouse wh = new Warehouse();
-		Observer o = new Observer(wh);
+public void Main(int argc = 0, string args = "") {
+	IWarehouse wh = new Warehouse();
+	Observer o = new Observer(wh);
 
-		Box b = new Box(173);
+	Box b = new Box(173);
 
-		try {
-			print("o.isFull() = " + o.isFull());
-			wh.insert(b);
-			print("o.isFull() = " + o.isFull());
-			wh.takeOut();
-			print("o.isFull() = " + o.isFull());
-			wh.takeOut();
-		}
-		catch ( System.Exception e ) {
-			print(e.what());
-		}
+	try {
+		print("o.isFull() = " + o.isFull());
+		wh.insert(b);
+		print("o.isFull() = " + o.isFull());
+		wh.takeOut();
+		print("o.isFull() = " + o.isFull());
+		wh.takeOut();
+	}
+	catch ( System.Exception e ) {
+		print(e.what());
+	}
 
-		try {
-			print("o.isFull() = " + o.isFull());
-			wh.insert(b);
-			print("o.isFull() = " + o.isFull());
-			wh.insert(b);
-			print("o.isFull() = " + o.isFull());
-			wh.takeOut();
-		}
-		catch ( System.Exception e ) {
-			print(e.what());
-		}
+	try {
+		print("o.isFull() = " + o.isFull());
+		wh.insert(b);
+		print("o.isFull() = " + o.isFull());
+		wh.insert(b);
+		print("o.isFull() = " + o.isFull());
+		wh.takeOut();
+	}
+	catch ( System.Exception e ) {
+		print(e.what());
 	}
 }
 
