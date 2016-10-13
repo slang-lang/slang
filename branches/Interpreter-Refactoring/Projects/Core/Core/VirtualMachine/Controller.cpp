@@ -36,6 +36,8 @@ void Controller::deinit()
 {
 	assert(mInitialized);
 
+	mStack->deinit();
+
 	delete mStack;
 	delete mMemory;
 	delete mRepository;
@@ -50,6 +52,8 @@ void Controller::init()
 	mMemory = new Memory();
 	mRepository = new Repository();
 	mStack = new Stack();
+
+	mStack->init();
 
 	mInitialized = true;
 }

@@ -5,7 +5,7 @@
 
 // Project includes
 #include <Common/StdOutLogger.h>
-#include <Core/VirtualMachine/Stack.h>
+#include <Core/VirtualMachine/Controller.h>
 #include <Tools/Printer.h>
 #include <Tools/Strings.h>
 #include <Tools/Tools.h>
@@ -169,7 +169,7 @@ int main(int argc, const char* argv[])
 	catch ( std::exception& e ) {	// catch every std::exception and all derived exception types
 		OSerror(e.what());
 
-		ObjectiveScript::Stack::Instance().print();
+		ObjectiveScript::Controller::Instance().stack()->print();
 	}
 	catch ( ... ) {	// catch everything
 		std::cout << "uncaught exception detected" << std::endl;

@@ -14,6 +14,7 @@
 #include <Core/VirtualMachine/Repository.h>
 #include <Utils.h>
 #include <Tools/Files.h>
+#include "Controller.h"
 
 // Namespace declarations
 
@@ -23,10 +24,13 @@ namespace ObjectiveScript {
 
 VirtualMachine::VirtualMachine()
 {
+	Controller::Instance().init();
 }
 
 VirtualMachine::~VirtualMachine()
 {
+	Controller::Instance().deinit();
+
 	for ( Extensions::ExtensionList::iterator it = mExtensions.begin(); it != mExtensions.end(); ++it ) {
 		delete (*it);
 	}

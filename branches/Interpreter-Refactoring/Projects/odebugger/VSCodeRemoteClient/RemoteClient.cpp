@@ -11,7 +11,7 @@
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Script.h>
 #include <Core/Tools.h>
-#include <Core/VirtualMachine/Stack.h>
+#include <Core/VirtualMachine/Controller.h>
 #include <Core/VirtualMachine/VirtualMachine.h>
 #include <Debugger/Debugger.h>
 #include "Protocol.h"
@@ -372,7 +372,7 @@ void RemoteClient::start()
 
 	mDebugger->breakOnExceptionThrow(mSettings->breakOnExceptionThrow());
 	mDebugger->resume();
-	Stack::Instance().print();
+	Controller::Instance().stack()->print();
 
 	mVirtualMachine = new VirtualMachine();
 	for ( StringSet::const_iterator it = mSettings->libraryFolders().begin(); it != mSettings->libraryFolders().end(); ++it ) {

@@ -8,6 +8,7 @@
 #include <string>
 
 // Project includes
+#include <Core/Scope.h>
 #include "StackLevel.h"
 
 // Forward declarations
@@ -20,18 +21,13 @@ namespace ObjectiveScript {
 
 class Stack
 {
-// Singleton
-// {
-public:
-	static Stack& Instance();
-// }
-
-public:
-	typedef std::list<StackLevel*> StackTrace;
-
 public:
 	Stack();
 	~Stack();
+
+public:
+	void deinit();
+	void init();
 
 public:
 	StackLevel* current() const;
@@ -40,6 +36,12 @@ public:
 	void push(Runtime::Method *method, const ParameterList &params);
 
 	void print();
+
+public:
+	IScope* globalScope() const;
+
+private:
+	typedef std::list<StackLevel*> StackTrace;
 
 private:
 	Stack(Stack const&)/* = delete*/;

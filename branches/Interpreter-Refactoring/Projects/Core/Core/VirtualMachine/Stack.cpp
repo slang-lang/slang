@@ -22,9 +22,7 @@ Stack::Stack()
 
 Stack::~Stack()
 {
-	while ( !mStack.empty() ) {
-		pop();
-	}
+	deinit();
 }
 
 StackLevel* Stack::current() const
@@ -36,11 +34,29 @@ StackLevel* Stack::current() const
 	return mStack.back();
 }
 
-Stack& Stack::Instance()
+void Stack::deinit()
 {
-	static Stack instance;
+	assert( !mStack.empty() );
 
-	return instance;
+	while ( !mStack.empty() ) {
+		pop();
+	}
+}
+
+IScope* Stack::globalScope() const
+{
+	return mStack.front()->getScope();
+}
+
+void Stack::init()
+{
+	IScope* scope = new GlobalScope();
+
+	StackLevel* level = new StackLevel(mStack.size(), 0, ParameterList());
+	level->pushScope(scope, false);
+	level->pushTokens(TokenList());
+
+	mStack.push_back(level);
 }
 
 void Stack::pop()

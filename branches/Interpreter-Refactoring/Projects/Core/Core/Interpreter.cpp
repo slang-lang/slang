@@ -19,9 +19,7 @@
 #include <Core/Runtime/Namespace.h>
 #include <Core/Runtime/OperatorOverloading.h>
 #include <Core/Runtime/TypeCast.h>
-#include <Core/VirtualMachine/Memory.h>
-#include <Core/VirtualMachine/Repository.h>
-#include <Core/VirtualMachine/Stack.h>
+#include <Core/VirtualMachine/Controller.h>
 #include <Debugger/Debugger.h>
 #include <Tools/Printer.h>
 #include <Utils.h>
@@ -118,7 +116,7 @@ ControlFlow::E Interpreter::execute(Method* method, const ParameterList& params,
 	}
 
 	// record stack trace
-	Stack::Instance().push(&scope, executedParams);
+	Controller::Instance().stack()->push(&scope, executedParams);
 	// notify debugger
 	Core::Debugger::GetInstance().notifyEnter(&scope, Core::Debugger::immediateBreakToken);
 
@@ -177,7 +175,7 @@ ControlFlow::E Interpreter::execute(Method* method, const ParameterList& params,
 	// notify debugger
 	Core::Debugger::GetInstance().notifyExit(getScope(), Core::Debugger::immediateBreakToken);
 	// unwind stack trace
-	Stack::Instance().pop();
+	Controller::Instance().stack()->pop();
 
 	// undefine references to prevent double deletes
 	for ( ParameterList::const_iterator it = executedParams.begin(); it != executedParams.end(); ++it ) {
@@ -291,14 +289,14 @@ Repository* Interpreter::getRepository() const
 
 IScope* Interpreter::getScope() const
 {
-	StackLevel* stack = Stack::Instance().current();
+	StackLevel* stack = Controller::Instance().stack()->current();
 
 	return stack->getScope();
 }
 
 const TokenList& Interpreter::getTokens() const
 {
-	StackLevel* stack = Stack::Instance().current();
+	StackLevel* stack = Controller::Instance().stack()->current();
 
 	return stack->getTokens();
 }
@@ -731,14 +729,14 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 
 void Interpreter::popScope()
 {
-	StackLevel* stack = Stack::Instance().current();
+	StackLevel* stack = Controller::Instance().stack()->current();
 
 	stack->popScope();
 }
 
 void Interpreter::popTokens()
 {
-	StackLevel* stack = Stack::Instance().current();
+	StackLevel* stack = Controller::Instance().stack()->current();
 
 	stack->popTokens();
 }
@@ -1875,7 +1873,7 @@ void Interpreter::process_while(TokenIterator& token, Object* result)
 
 void Interpreter::pushScope(IScope* scope)
 {
-	StackLevel* stack = Stack::Instance().current();
+	StackLevel* stack = Controller::Instance().stack()->current();
 
 	bool allowDelete = !scope;
 
@@ -1888,7 +1886,7 @@ void Interpreter::pushScope(IScope* scope)
 
 void Interpreter::pushTokens(const TokenList& tokens)
 {
-	StackLevel* stack = Stack::Instance().current();
+	StackLevel* stack = Controller::Instance().stack()->current();
 
 	stack->pushTokens(tokens);
 }

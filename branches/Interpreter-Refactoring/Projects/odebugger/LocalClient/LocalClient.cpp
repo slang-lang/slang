@@ -19,7 +19,7 @@
 #include <Core/Script.h>
 #include <Core/Tokenizer.h>
 #include <Core/Tools.h>
-#include <Core/VirtualMachine/Stack.h>
+#include <Core/VirtualMachine/Controller.h>
 #include <Core/VirtualMachine/VirtualMachine.h>
 #include <Debugger/Debugger.h>
 #include <Tools/Files.h>
@@ -592,28 +592,28 @@ int LocalClient::notify(IScope* scope, const Core::BreakPoint& breakpoint)
 
 int LocalClient::notifyEnter(IScope* scope, const Core::BreakPoint& breakpoint)
 {
-	writeln("[Stepping into " + Stack::Instance().current()->toString() + "]");
+	writeln("[Stepping into " + Controller::Instance().stack()->current()->toString() + "]");
 
 	return notify(scope, breakpoint);
 }
 
 int LocalClient::notifyExceptionCatch(IScope *scope, const Core::BreakPoint &breakpoint)
 {
-	writeln("[Caught exception in " + Stack::Instance().current()->toString() + "]");
+	writeln("[Caught exception in " + Controller::Instance().stack()->current()->toString() + "]");
 
 	return notify(scope, breakpoint);
 }
 
 int LocalClient::notifyExceptionThrow(IScope *scope, const Core::BreakPoint &breakpoint)
 {
-	writeln("[Exception has been thrown in " + Stack::Instance().current()->toString() + "]");
+	writeln("[Exception has been thrown in " + Controller::Instance().stack()->current()->toString() + "]");
 
 	return notify(scope, breakpoint);
 }
 
 int LocalClient::notifyExit(IScope* scope, const Core::BreakPoint& breakpoint)
 {
-	writeln("[Stepping out of " + Stack::Instance().current()->toString() + "]");
+	writeln("[Stepping out of " + Controller::Instance().stack()->current()->toString() + "]");
 
 	return notify(scope, breakpoint);
 }
@@ -712,14 +712,7 @@ void LocalClient::printHelp()
 
 void LocalClient::printStackTrace()
 {
-/*
-	Stack::Stack stack = Stack::Instance().getStack();
-
-	for ( Stack::Stack::const_iterator it = stack.begin(); it != stack.end(); ++it ) {
-		writeln((*it)->toString());
-	}
-*/
-	Stack::Instance().print();
+	Controller::Instance().stack()->print();
 }
 
 void LocalClient::printSymbol(const StringList& tokens)
@@ -886,7 +879,7 @@ void LocalClient::start()
 	mDebugger->breakOnExceptionCatch(mSettings->breakOnExceptionCatch());
 	mDebugger->breakOnExceptionThrow(mSettings->breakOnExceptionThrow());
 	mDebugger->resume();
-	Stack::Instance().print();
+	Controller::Instance().stack()->print();
 
 	mVirtualMachine = new VirtualMachine();
 	for ( StringSet::const_iterator it = mSettings->libraryFolders().begin(); it != mSettings->libraryFolders().end(); ++it ) {

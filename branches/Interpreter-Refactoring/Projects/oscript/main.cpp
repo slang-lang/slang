@@ -7,6 +7,7 @@
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Common/Exceptions.h>
 #include <Core/Script.h>
+#include <Core/VirtualMachine/Controller.h>
 #include <Core/VirtualMachine/VirtualMachine.h>
 #include <Tools/Printer.h>
 #include <Tools/Strings.h>
@@ -172,27 +173,18 @@ int main(int argc, const char* argv[])
 #endif
 
 	try {
-/*
-		ObjectiveScript::Script *script = mVirtualMachine.createScriptFromFile(mFilename, mParameters);
-		if ( script ) {
-			ObjectiveScript::Runtime::IntegerObject result;
-			script->execute("Main", mParameters, &result);
-
-			return result.getValue().toInt();
-		}
-*/
 		mVirtualMachine.createScriptFromFile(mFilename, mParameters);
 	}
 	catch ( std::exception &e ) {	// catch every std::exception and all derived exception types
 		OSerror(e.what());
 
-		ObjectiveScript::Stack::Instance().print();
+		ObjectiveScript::Controller::Instance().stack()->print();
 	}
 	catch ( ObjectiveScript::Runtime::ControlFlow::E &e ) {
 		if ( e != ObjectiveScript::Runtime::ControlFlow::ExitProgram ) {
 			OSerror("abnormal program termination!");
 
-			ObjectiveScript::Stack::Instance().print();
+			ObjectiveScript::Controller::Instance().stack()->print();
 		}
 	}
 	catch ( ... ) {	// catch everything
