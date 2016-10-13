@@ -107,6 +107,11 @@ const Reference& Memory::newObject(Runtime::Object *obj)
 
 void Memory::remove(const Reference &ref)
 {
+	if ( !ref.getAddress() ) {
+		// cannot delete address 0
+		return;
+	}
+
 	MemoryMap::iterator it = mMemory.find(ref);
 	if ( it == mMemory.end() ) {
 		throw Common::Exceptions::Exception("invalid access for address " + Tools::ConvertToStdString(ref.getAddress()));

@@ -48,10 +48,8 @@ void SymbolScope::deinit()
 
 	for ( Symbols::iterator it = tmp.begin(); it != tmp.end(); ++it ) {
 		if ( it->second->getSymbolType() == Symbol::IType::ObjectSymbol ) {
-			if ( it->second ) {
-				delete it->second;
-				mSymbols.erase(it->first);
-			}
+			delete it->second;
+			mSymbols.erase(it->first);
 		}
 	}
 
@@ -214,20 +212,19 @@ void GlobalScope::deinit()
 		delete (*methIt);
 	}
 
-	for ( Symbols::iterator symIt = mSymbols.begin(); symIt != mSymbols.end(); ) {
-		if ( symIt->second ) {
-			switch ( symIt->second->getSymbolType() ) {
-				case Symbol::IType::NamespaceSymbol: {
-					Symbol* space = symIt->second;
+	Symbols tmp = mSymbols;
 
-					undefine(symIt->first, space);
+	for ( Symbols::iterator symIt = tmp.begin(); symIt != tmp.end(); ++symIt ) {
+		switch ( symIt->second->getSymbolType() ) {
+			case Symbol::IType::NamespaceSymbol: {
+				Symbol* space = symIt->second;
 
-					delete space;
-				} break;
-				default: {
-					symIt++;
-				} break;
-			}
+				undefine(symIt->first, space);
+
+				delete space;
+			} break;
+			default:
+				break;
 		}
 	}
 }

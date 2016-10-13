@@ -8,25 +8,23 @@ public object DerivedObject extends BaseObject {
 	protected string mStringValue;
 }
 
-public object Main {
-	public void Main(int argc = 0, string args = "") {
-		DerivedObject derived = new DerivedObject();
+public void Main(int argc = 0, string args = "") {
+	DerivedObject derived = new DerivedObject();
 
-		assert(derived is DerivedObject);
-		print("derived is DerivedObject");
+	assert(derived is DerivedObject);
+	print("derived is DerivedObject");
 
-		assert(derived is BaseObject);
-		print("derived is BaseObject");
+	assert(derived is BaseObject);
+	print("derived is BaseObject");
 
-		if ( derived is BaseObject ) {
-			print("positive is in if");
-		}
-		if ( !(derived is BaseObject) ) {
-			print("negative is in if");
-		}
-
-		bool result = derived is BaseObject;
-		assert(result);
+	if ( derived is BaseObject ) {
+		print("positive is in if");
 	}
+	if ( !(derived is BaseObject) ) {
+		print("negative is in if");
+	}
+
+	bool result = derived is BaseObject;
+	assert(result);
 }
 

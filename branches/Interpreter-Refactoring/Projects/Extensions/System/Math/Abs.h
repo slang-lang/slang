@@ -127,7 +127,7 @@ public:
 
 			int param_value = (*it++).value().toInt();
 
-			*result = Runtime::IntegerObject(std::abs(param_value));
+			result->assign(Runtime::IntegerObject(std::abs(param_value)));
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
