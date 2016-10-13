@@ -38,43 +38,11 @@ namespace ObjectiveScript {
 
 
 Repository::Repository()
-: mScope(new GlobalScope())
 {
-	initialize();
 }
 
 Repository::~Repository()
 {
-	// Cleanup instances
-	// {
-	delete mScope;
-	mScope = 0;
-	// }
-
-	// Cleanup prototypes
-	// {
-	//mPrototypes.clear();
-	// }
-
-	// Cleanup blue prints
-	// {
-	for ( BluePrintEnumMap::iterator it = mBluePrintEnums.begin(); it != mBluePrintEnums.end(); ++it ) {
-		it->second->cleanup();
-
-		delete it->second;
-	}
-	mBluePrintEnums.clear();
-	// }
-
-	// Cleanup blue prints
-	// {
-	for ( BluePrintObjectMap::iterator it = mBluePrintObjects.begin(); it != mBluePrintObjects.end(); ++it ) {
-		//it->second->cleanup();
-
-		delete it->second;
-	}
-	mBluePrintObjects.clear();
-	// }
 }
 
 /*
@@ -298,6 +266,34 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 	return object;
 }
 
+void Repository::deinit()
+{
+	// Cleanup prototypes
+	// {
+	//mPrototypes.clear();
+	// }
+
+	// Cleanup blue prints
+	// {
+	for ( BluePrintEnumMap::iterator it = mBluePrintEnums.begin(); it != mBluePrintEnums.end(); ++it ) {
+		it->second->cleanup();
+
+		delete it->second;
+	}
+	mBluePrintEnums.clear();
+	// }
+
+	// Cleanup blue prints
+	// {
+	for ( BluePrintObjectMap::iterator it = mBluePrintObjects.begin(); it != mBluePrintObjects.end(); ++it ) {
+		//it->second->cleanup();
+
+		delete it->second;
+	}
+	mBluePrintObjects.clear();
+	// }
+}
+
 Designtime::BluePrintGeneric* Repository::findBluePrint(const std::string& type) const
 {
 	Designtime::BluePrintGeneric* blueprint = findBluePrintEnum(type);
@@ -331,11 +327,9 @@ Designtime::BluePrintObject* Repository::findBluePrintObject(const std::string& 
 	return 0;
 }
 
-GlobalScope* Repository::getGlobalScope() const
+void Repository::init()
 {
-	//return mScope;
-
-	return Controller::Instance().stack()->globalScope();
+	initialize();
 }
 
 void Repository::initialize()
@@ -359,7 +353,7 @@ void Repository::initialize()
 		nullObject->setVisibility(Visibility::Public);
 		nullObject->setSealed(true);
 
-		mScope->define(VALUE_NULL, nullObject);
+		Controller::Instance().stack()->globalScope()->define(VALUE_NULL, nullObject);
 	}
 }
 
@@ -413,7 +407,7 @@ void Repository::initializeObject(Runtime::Object *object, Designtime::BluePrint
 void Repository::insertBluePrintEnumsIntoScopes()
 {
 	for ( BluePrintEnumMap::iterator it = mBluePrintEnums.begin(); it != mBluePrintEnums.end(); ++it ) {
-		SymbolScope* scope = mScope;
+		SymbolScope* scope = Controller::Instance().stack()->globalScope();
 
 		std::string name = it->second->QualifiedTypename();
 		std::string parent;
@@ -439,7 +433,7 @@ void Repository::insertBluePrintEnumsIntoScopes()
 void Repository::insertBluePrintObjectsIntoScopes()
 {
 	for ( BluePrintObjectMap::iterator it = mBluePrintObjects.begin(); it != mBluePrintObjects.end(); ++it ) {
-		SymbolScope* scope = mScope;
+		SymbolScope* scope = Controller::Instance().stack()->globalScope();
 
 		std::string name = it->second->QualifiedTypename();
 		std::string parent;

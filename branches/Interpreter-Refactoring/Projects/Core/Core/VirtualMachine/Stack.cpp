@@ -23,7 +23,6 @@ Stack::Stack()
 
 Stack::~Stack()
 {
-	deinit();
 }
 
 StackLevel* Stack::current() const
@@ -44,6 +43,7 @@ void Stack::deinit()
 	}
 
 	delete mGlobalScope;
+	mGlobalScope = 0;
 }
 
 GlobalScope* Stack::globalScope() const

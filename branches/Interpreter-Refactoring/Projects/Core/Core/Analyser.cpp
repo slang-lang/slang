@@ -27,7 +27,7 @@ namespace ObjectiveScript {
 Analyser::Analyser()
 {
 	mRepository = Controller::Instance().repository();
-	mScope = mRepository->getGlobalScope();
+	mScope = Controller::Instance().stack()->globalScope();
 }
 
 Analyser::~Analyser()

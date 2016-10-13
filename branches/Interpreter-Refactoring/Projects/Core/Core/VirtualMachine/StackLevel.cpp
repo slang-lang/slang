@@ -15,6 +15,13 @@
 namespace ObjectiveScript {
 
 
+StackLevel::Scope::Scope(IScope* scope, bool allowDelete)
+: mAllowDelete(allowDelete),
+  mScope(scope)
+{
+}
+
+
 StackLevel::StackLevel(unsigned long level, Runtime::Method* method, const ParameterList& params)
 : mLevel(level),
   mMethod(method),
@@ -34,7 +41,7 @@ const ParameterList& StackLevel::getParameters() const
 
 IScope* StackLevel::getScope() const
 {
-	return mScopeStack.back().scope;
+	return mScopeStack.back().mScope;
 }
 
 const TokenList& StackLevel::getTokens() const
@@ -48,8 +55,8 @@ void StackLevel::popScope()
 
 	mScopeStack.pop_back();
 
-	if ( s.allowDelete ) {
-		delete s.scope;
+	if ( s.mAllowDelete ) {
+		delete s.mScope;
 	}
 }
 
@@ -60,21 +67,25 @@ void StackLevel::popTokens()
 
 void StackLevel::pushScope(IScope* scope, bool allowDelete)
 {
-	Scope s;
-	s.allowDelete = allowDelete;
-	s.scope = scope;
-
-	mScopeStack.push_back(s);
+	mScopeStack.push_back(
+		Scope(scope, allowDelete)
+	);
 }
 
 void StackLevel::pushTokens(const TokenList& tokens)
 {
-	mTokenStack.push_back(tokens);
+	mTokenStack.push_back(
+		tokens
+	);
 }
 
 std::string StackLevel::toString() const
 {
-	return "Frame " + Tools::ConvertToStdString(mLevel) + ": " + mMethod->getFullScopeName() + "(" + ObjectiveScript::toString(mParameters) + ")";
+	if ( mMethod ) {
+		return "Frame " + Tools::ConvertToStdString(mLevel) + ": " + mMethod->getFullScopeName() + "(" + ObjectiveScript::toString(mParameters) + ")";
+	}
+
+	return "Frame " + Tools::ConvertToStdString(mLevel);
 }
 
 

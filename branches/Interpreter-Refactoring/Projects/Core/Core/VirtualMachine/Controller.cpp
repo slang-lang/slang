@@ -22,7 +22,6 @@ Controller::Controller()
 
 Controller::~Controller()
 {
-	deinit();
 }
 
 Controller& Controller::Instance()
@@ -36,7 +35,9 @@ void Controller::deinit()
 {
 	assert(mInitialized);
 
+	mMemory->deinit();
 	mStack->deinit();
+	mRepository->deinit();
 
 	delete mStack;
 	delete mMemory;
@@ -53,7 +54,9 @@ void Controller::init()
 	mRepository = new Repository();
 	mStack = new Stack();
 
+	mMemory->init();
 	mStack->init();
+	mRepository->init();
 
 	mInitialized = true;
 }

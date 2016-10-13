@@ -28,7 +28,6 @@ namespace Designtime {
 namespace Runtime {
 	class Object;
 }
-class GlobalScope;
 
 class Repository
 {
@@ -37,7 +36,8 @@ public:
 	~Repository();
 
 public:
-	GlobalScope* getGlobalScope() const;
+	void deinit();
+	void init();
 
 public:
 	void addBluePrint(Designtime::BluePrintEnum* blueprint);
@@ -79,7 +79,6 @@ private:
 	BluePrintEnumMap mBluePrintEnums;
 	BluePrintObjectMap mBluePrintObjects;
 	//Designtime::PrototypeMap mPrototypes;
-	GlobalScope *mScope;
 };
 
 

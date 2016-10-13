@@ -110,7 +110,7 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 	Controller::Instance().repository()->rebuildBluePrints();
 
 	// Startup
-	MethodSymbol* main = Controller::Instance().repository()->getGlobalScope()->resolveMethod("Main", params, false);
+	MethodSymbol* main = Controller::Instance().stack()->globalScope()->resolveMethod("Main", params, false);
 	if ( !main ) {
 		throw Common::Exceptions::Exception("could not resolve method 'Main(" + toString(params) + ")'");
 	}
@@ -198,12 +198,12 @@ bool VirtualMachine::loadExtensions()
 		try {
 			OSdebug("adding extension '" + (*extIt)->getName() + "'");
 
-			(*extIt)->initialize(Controller::Instance().repository()->getGlobalScope());
+			(*extIt)->initialize(Controller::Instance().stack()->globalScope());
 
 			Extensions::ExtensionMethods methods;
 			(*extIt)->provideMethods(methods);
 
-			MethodScope* scope = Controller::Instance().repository()->getGlobalScope();
+			MethodScope* scope = Controller::Instance().stack()->globalScope();
 
 			for ( Extensions::ExtensionMethods::const_iterator it = methods.begin(); it != methods.end(); ++it ) {
 				OSdebug("adding extension '" + (*extIt)->getName() + "." + (*it)->getName() + "'");

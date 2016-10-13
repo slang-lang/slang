@@ -33,8 +33,11 @@ public:
 	class Scope
 	{
 	public:
-		IScope* scope;
-		bool allowDelete;
+		Scope(IScope* scope, bool allowDelete);
+
+	public:
+		bool mAllowDelete;
+		IScope* mScope;
 	};
 	typedef std::list<Scope> Scopes;
 

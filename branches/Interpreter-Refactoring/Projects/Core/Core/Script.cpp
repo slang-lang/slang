@@ -29,7 +29,7 @@ Script::~Script()
 
 void Script::execute(const std::string& method, const ParameterList& params, Runtime::Object* result)
 {
-	MethodSymbol *symbol = Controller::Instance().repository()->getGlobalScope()->resolveMethod(method, params, false);
+	MethodSymbol *symbol = Controller::Instance().stack()->globalScope()->resolveMethod(method, params, false);
 	if ( !symbol ) {
 		throw Common::Exceptions::Exception("could not resolve method '" + method + "(" + toString(params) + ")'");
 	}
@@ -54,12 +54,12 @@ void Script::execute(const std::string& method, const ParameterList& params, Run
 
 Symbol* Script::resolve(const std::string &symbol)
 {
-	return Controller::Instance().repository()->getGlobalScope()->resolve(symbol);
+	return Controller::Instance().stack()->globalScope()->resolve(symbol);
 }
 
 Symbol* Script::resolveMethod(const std::string &method, const ParameterList &params)
 {
-	return Controller::Instance().repository()->getGlobalScope()->resolveMethod(method, params);
+	return Controller::Instance().stack()->globalScope()->resolveMethod(method, params);
 }
 
 

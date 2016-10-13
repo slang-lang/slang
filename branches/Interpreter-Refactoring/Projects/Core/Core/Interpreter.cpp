@@ -423,8 +423,11 @@ ControlFlow::E Interpreter::interpret(const TokenList& tokens, Object* result)
 
 	pushScope();
 		pushTokens(tokens);
-			TokenIterator start = getTokens().begin();
-			TokenIterator end = getTokens().end();
+			//TokenIterator start = getTokens().begin();
+			//TokenIterator end = getTokens().end();
+
+			TokenIterator start = tokens.begin();
+			TokenIterator end = tokens.end();
 
 			process(result, start, end);
 		popTokens();
