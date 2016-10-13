@@ -35,10 +35,8 @@ private object DerivedObject extends BaseObject {
 	}
 }
 
-public object Main {
-	public void Main(int argc = 0, string argv = "") {
-		DerivedObject derived = new DerivedObject();
-		assert(derived);
-	}
+public void Main(int argc = 0, string argv = "") {
+	DerivedObject derived = new DerivedObject();
+	assert(derived);
 }
 

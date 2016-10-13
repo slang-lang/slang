@@ -22,3 +22,4 @@ public object BaseObject {
 		return "BaseObject { mValue = " + mValue + " }";
 	}
 }
+

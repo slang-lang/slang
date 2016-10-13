@@ -76,40 +76,38 @@ public namespace Inheritance {
 	}
 }
 
-public object Main {
-	public void Main(int argc = 0, string argv = "") {
-		assert( TestCase1() );
-	}
+public void Main(int argc = 0, string argv = "") {
+	assert( TestCase1() );
+}
 
-	private bool TestCase1() const {
-		Inheritance.BaseObject b = new Inheritance.BaseObject(1);
-		Inheritance.DerivedObject d = new Inheritance.DerivedObject(1);
-		Inheritance.ExtendedObject e = new Inheritance.ExtendedObject(1);
+private bool TestCase1() const {
+	Inheritance.BaseObject b = new Inheritance.BaseObject(1);
+	Inheritance.DerivedObject d = new Inheritance.DerivedObject(1);
+	Inheritance.ExtendedObject e = new Inheritance.ExtendedObject(1);
 
-		print("b.getValue() = " + b.getValue());
-		assert( b.getValue() == 1 );
+	print("b.getValue() = " + b.getValue());
+	assert( b.getValue() == 1 );
 
-		print("d.getValue() = " + d.getValue());
-		assert( d.getValue() == 2 );
+	print("d.getValue() = " + d.getValue());
+	assert( d.getValue() == 2 );
 
-		print("d.getBaseValue() = " + d.getBaseValue() );
-		assert( d.getBaseValue() == 1 );
+	print("d.getBaseValue() = " + d.getBaseValue() );
+	assert( d.getBaseValue() == 1 );
 
-		print("e.getValue() = " + e.getValue() );
-		assert( e.getValue() == 3 );
+	print("e.getValue() = " + e.getValue() );
+	assert( e.getValue() == 3 );
 
-		print("e.getBaseValue() = " + e.getBaseValue() );
-		assert( e.getBaseValue() == 2 );
+	print("e.getBaseValue() = " + e.getBaseValue() );
+	assert( e.getBaseValue() == 2 );
 
-		e.ThisMethodOnlyExistsInBaseObject();
-		e.ThisMethodOnlyExistsInDerivedObject();
-		e.ThisMethodOnlyExistsInExtendedObject();
+	e.ThisMethodOnlyExistsInBaseObject();
+	e.ThisMethodOnlyExistsInDerivedObject();
+	e.ThisMethodOnlyExistsInExtendedObject();
 
-		delete e;
-		delete d;
-		delete b;
+	delete e;
+	delete d;
+	delete b;
 
-		return true;
-	}
+	return true;
 }
 

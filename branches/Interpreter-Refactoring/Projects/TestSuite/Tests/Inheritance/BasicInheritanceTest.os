@@ -22,25 +22,23 @@ public object ExtendedObject extends BaseObject {
 	}
 }
 
-public object Main {
-	public void Main(int argc = 0, string argv = "") {
-		assert( TestCase1() );
-	}
+public void Main(int argc = 0, string argv = "") {
+	assert( TestCase1() );
+}
 
-	private bool TestCase1() {
-		print("TestCase 1: ");
+private bool TestCase1() {
+	print("TestCase 1: ");
 
-		BaseObject b = new BaseObject();
-		ExtendedObject e = new ExtendedObject();
+	BaseObject b = new BaseObject();
+	ExtendedObject e = new ExtendedObject();
 
-		print("b.getName() = " + b.getName());
-		print("e.getName() = " + e.getName());
-		print("e.getExtendedName() = " + e.getExtendedName());
+	print("b.getName() = " + b.getName());
+	print("e.getName() = " + e.getName());
+	print("e.getExtendedName() = " + e.getExtendedName());
 
-		delete e;
-		delete b;
+	delete e;
+	delete b;
 
-		return true;
-	}
+	return true;
 }
 

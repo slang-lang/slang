@@ -58,13 +58,11 @@ private object Level4 extends Level3 {
 
 private object Level4Replica replicates Level4;
 
-public object Main {
-	public void Main(int argc, string argv) {
-		Level4Replica replica = new Level4Replica();
-		print(replica.mLevel1);
-		print(replica.mLevel2);
-		print(replica.mLevel3);
-		print(replica.mLevel4);
-	}
+public void Main(int argc, string argv) {
+	Level4Replica replica = new Level4Replica();
+	print(replica.mLevel1);
+	print(replica.mLevel2);
+	print(replica.mLevel3);
+	print(replica.mLevel4);
 }
 

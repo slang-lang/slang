@@ -1,33 +1,25 @@
 #!/usr/local/bin/oscript
 
-public namespace Inheritance
-{
-	public object BaseObject
-	{
-		protected int mPublicNumber;	// public members are not allowed, remember the "Law of Demeter"
-		protected int mProtectedNumber;
-		private int mPrivateNumber;
+public object BaseObject {
+	protected int mPublicNumber;	// public members are not allowed, remember the "Law of Demeter"
+	protected int mProtectedNumber;
+	private int mPrivateNumber;
 
-		public void BaseObject()
-		{
-			mPublicNumber = 1;
-			mProtectedNumber = 1;
-			mPrivateNumber = 1;
-		}
+	public void BaseObject() {
+		mPublicNumber = 1;
+		mProtectedNumber = 1;
+		mPrivateNumber = 1;
+	}
 
-		public string ToString() const
-		{
-			return "mPublicNumber = " + mPublicNumber + ", mProtectedNumber = " + mProtectedNumber + ", mPrivateNumber = " + mPrivateNumber;
-		}
+	public string ToString() const {
+		return "mPublicNumber = " + mPublicNumber + ", mProtectedNumber = " + mProtectedNumber + ", mPrivateNumber = " + mPrivateNumber;
 	}
 }
 
-public object Main extends Inheritance.BaseObject
-{
+public object DerivedObject extends BaseObject {
 	//private int mPrivateNumber;
 
-	public void Main(int argc = 0, string argv = "")
-	{
+	public void Main(int argc = 0, string argv = "") {
 		base.BaseObject();
 
 		print(ToString());
@@ -39,26 +31,34 @@ public object Main extends Inheritance.BaseObject
 		print(ToString2());
 	}
 
-	public int GetBox() const
-	{
+	public int GetBox() const {
 		return int(1);
 	}
 
-	public string GetIdentifier() const
-	{
+	public string GetIdentifier() const {
 		return "bla";
 	}
 
-	public string ToString2() const
-	{
+	public string ToString2() const {
 		return base.ToString() + "	mPublicNumber = " + mPublicNumber + ", mProtectedNumber = " + mProtectedNumber + ", mPrivateNumber = " + mPrivateNumber;
 	}
 
-	private void test() modify
-	{
+	private void test() modify {
 		mPublicNumber = 2;
 		mProtectedNumber = 2;
 		mPrivateNumber = 2;
 	}
+}
+
+public void Main(int argc = 0, string argv = "") {
+	DerivedObject d = new DerivedObject();
+
+	print(d.ToString());
+	print(d.ToString2());
+
+	d.test();
+
+	print(d.ToString());
+	print(d.ToString2());
 }
 

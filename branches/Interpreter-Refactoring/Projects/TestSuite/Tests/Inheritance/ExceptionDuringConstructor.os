@@ -16,11 +16,9 @@ private object TestObject {
 	}
 }
 
-public object Main {
-	public void Main(int argc = 0, string argv = "") {
-		try {
-			TestObject obj = new TestObject();
-		}
+public void Main(int argc = 0, string argv = "") {
+	try {
+		TestObject obj = new TestObject();
 	}
 }
 
