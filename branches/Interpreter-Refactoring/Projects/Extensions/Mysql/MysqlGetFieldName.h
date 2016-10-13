@@ -60,7 +60,7 @@ public:
 			*result = Runtime::StringObject(my_result);
 		}
 		catch ( std::exception &e ) {
-			Runtime::Object *data = Repository::Instance().createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
 			*data = Runtime::StringObject(std::string(e.what()));
 
 			mExceptionData = Runtime::ExceptionData(data, token.position());

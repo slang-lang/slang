@@ -8,8 +8,7 @@
 #include <Core/BuildInObjects/VoidObject.h>
 #include <Core/Common/Exceptions.h>
 #include <Core/Runtime/Exceptions.h>
-#include <Core/VirtualMachine/Memory.h>
-#include <Core/VirtualMachine/Repository.h>
+#include <Core/VirtualMachine/Controller.h>
 #include <Tools/Strings.h>
 #include <Utils.h>
 #include "Tools.h"
@@ -87,12 +86,12 @@ Object::Object(const std::string& name, const std::string& filename, const std::
 Object::~Object()
 {
 	if ( mReference.isValid() ) {
-		Memory::Instance().remove(mReference);
+		Controller::Instance().memory()->remove(mReference);
 	}
 	else {
 		Object* base = dynamic_cast<Object*>(resolve("base", true));
 		if ( base ) {
-			Memory::Instance().remove(base->mReference);
+			Controller::Instance().memory()->remove(base->mReference);
 		}
 	}
 }
@@ -119,7 +118,7 @@ void Object::operator= (const Object& other)
 		}
 
 		if ( !mIsAtomicType ) {
-			Memory::Instance().add(other.mReference);
+			Controller::Instance().memory()->add(other.mReference);
 			mReference = other.mReference;
 		}
 	}
@@ -147,7 +146,7 @@ void Object::assign(const Object& other)
 		}
 
 		if ( !mIsAtomicType ) {
-			Memory::Instance().add(other.mReference);
+			Controller::Instance().memory()->add(other.mReference);
 			mReference = other.mReference;
 		}
 	}
@@ -173,7 +172,7 @@ void Object::assignSubType(const Object& other)
 		}
 
 		if ( !mIsAtomicType ) {
-			Memory::Instance().add(other.mReference);
+			Controller::Instance().memory()->add(other.mReference);
 			mReference = other.mReference;
 		}
 	}
@@ -211,7 +210,7 @@ void Object::copy(const Object& other)
 				}
 
 				Object* source = static_cast<Object*>(it->second);
-				Object* target = Repository::Instance().createInstance(source->Typename(), source->getName(), false);
+				Object* target = Controller::Instance().repository()->createInstance(source->Typename(), source->getName(), false);
 				target->copy(*source);
 
 				define(target->getName(), target);
@@ -288,7 +287,7 @@ ControlFlow::E Object::Constructor(const ParameterList& params)
 	// check if we have implemented at least one constructor
 	Symbol *symbol = 0;
 	if ( mReference.isValid() ) {
-		symbol = Memory::Instance().get(mReference)->resolve(Typename(), true);
+		symbol = Controller::Instance().memory()->get(mReference)->resolve(Typename(), true);
 	}
 	else {
 		symbol = resolve(Typename(), true);
@@ -298,7 +297,7 @@ ControlFlow::E Object::Constructor(const ParameterList& params)
 		// if a specialized constructor is implemented, the default constructor cannot be used
 		Method *constructor = 0;
 		if ( mReference.isValid() ) {
-			constructor = static_cast<Method*>(Memory::Instance().get(mReference)->resolveMethod(Typename(), params, true));
+			constructor = static_cast<Method*>(Controller::Instance().memory()->get(mReference)->resolveMethod(Typename(), params, true));
 		}
 		else {
 			constructor = static_cast<Method*>(resolveMethod(Typename(), params, true));

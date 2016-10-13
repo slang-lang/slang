@@ -12,7 +12,7 @@
 #include <Core/Designtime/Parser/Parser.h>
 #include <Core/Designtime/SanityChecker.h>
 #include <Core/Runtime/Namespace.h>
-#include <Core/VirtualMachine/Repository.h>
+#include <Core/VirtualMachine/Controller.h>
 #include <Tools/Files.h>
 #include <Utils.h>
 #include "Tokenizer.h"
@@ -26,7 +26,7 @@ namespace ObjectiveScript {
 
 Analyser::Analyser()
 {
-	mRepository = &Repository::Instance();
+	mRepository = Controller::Instance().repository();
 	mScope = mRepository->getGlobalScope();
 }
 

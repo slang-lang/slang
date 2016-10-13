@@ -7,6 +7,7 @@
 // Project includes
 #include <Core/Common/Exceptions.h>
 #include <Core/Runtime/ControlFlow.h>
+#include <Core/VirtualMachine/Controller.h>
 #include <Utils.h>
 #include "Interpreter.h"
 #include "Object.h"
@@ -18,8 +19,7 @@
 namespace ObjectiveScript {
 
 
-Script::Script(MethodScope* scope)
-: mScope(scope)
+Script::Script()
 {
 }
 
@@ -29,7 +29,7 @@ Script::~Script()
 
 void Script::execute(const std::string& method, const ParameterList& params, Runtime::Object* result)
 {
-	MethodSymbol *symbol = mScope->resolveMethod(method, params, false);
+	MethodSymbol *symbol = Controller::Instance().repository()->getGlobalScope()->resolveMethod(method, params, false);
 	if ( !symbol ) {
 		throw Common::Exceptions::Exception("could not resolve method '" + method + "(" + toString(params) + ")'");
 	}
@@ -54,12 +54,12 @@ void Script::execute(const std::string& method, const ParameterList& params, Run
 
 Symbol* Script::resolve(const std::string &symbol)
 {
-	return mScope->resolve(symbol);
+	return Controller::Instance().repository()->getGlobalScope()->resolve(symbol);
 }
 
 Symbol* Script::resolveMethod(const std::string &method, const ParameterList &params)
 {
-	return mScope->resolveMethod(method, params);
+	return Controller::Instance().repository()->getGlobalScope()->resolveMethod(method, params);
 }
 
 

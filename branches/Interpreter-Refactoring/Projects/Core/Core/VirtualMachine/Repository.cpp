@@ -29,7 +29,7 @@
 #include <Core/Preprocessor.h>
 #include <Core/Tools.h>
 #include <Utils.h>
-#include "Memory.h"
+#include "Controller.h"
 
 // Namespace declarations
 
@@ -156,7 +156,7 @@ Runtime::Object* Repository::createInstance(const std::string& type, const std::
 	Runtime::Object *object = createObject(name, it->second, initialize);
 
 	if ( initialize ) {
-		Memory::Instance().newObject(object);
+		Controller::Instance().memory()->newObject(object);
 	}
 
 	return object;
@@ -175,7 +175,7 @@ Runtime::Object* Repository::createInstance(Designtime::BluePrintObject* bluepri
 	Runtime::Object* object = createObject(name, blueprint, initialize);
 
 	if ( initialize ) {
-		Memory::Instance().newObject(object);
+		Controller::Instance().memory()->newObject(object);
 	}
 
 	return object;
@@ -333,14 +333,9 @@ Designtime::BluePrintObject* Repository::findBluePrintObject(const std::string& 
 
 GlobalScope* Repository::getGlobalScope() const
 {
-	return mScope;
-}
+	//return mScope;
 
-Repository& Repository::Instance()
-{
-	static Repository instance;
-
-	return instance;
+	return Controller::Instance().stack()->globalScope();
 }
 
 void Repository::initialize()

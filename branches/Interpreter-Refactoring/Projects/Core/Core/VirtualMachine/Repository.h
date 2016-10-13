@@ -33,13 +33,6 @@ class GlobalScope;
 class Repository
 {
 public:
-// Singleton
-// {
-public:
-	static Repository& Instance();
-// }
-
-public:
 	Repository();
 	~Repository();
 

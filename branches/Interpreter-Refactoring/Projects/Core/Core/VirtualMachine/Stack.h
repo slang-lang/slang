@@ -38,7 +38,7 @@ public:
 	void print();
 
 public:
-	IScope* globalScope() const;
+	GlobalScope* globalScope() const;
 
 private:
 	typedef std::list<StackLevel*> StackTrace;
@@ -48,6 +48,7 @@ private:
 	void operator=(Stack const&)/* = delete*/;
 
 private:
+	GlobalScope* mGlobalScope;
 	StackTrace mStack;
 };
 

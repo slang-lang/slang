@@ -26,7 +26,7 @@
 #include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Tools.h>
-#include <Core/VirtualMachine/Repository.h>
+#include <Core/VirtualMachine/Controller.h>
 #include <Tools/Strings.h>
 
 // Namespace declarations

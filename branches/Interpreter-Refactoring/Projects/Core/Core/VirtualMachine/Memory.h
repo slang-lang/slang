@@ -21,15 +21,12 @@ namespace ObjectiveScript {
 class Memory
 {
 public:
-// Singleton
-// {
-public:
-	static Memory& Instance();
-// }
-
-public:
 	Memory();
 	~Memory();
+
+public:
+	void deinit();
+	void init();
 
 public:
 	const Reference& getNullReference() const;
@@ -38,8 +35,6 @@ public:
 
 	void add(const Reference &ref);
 	void remove(const Reference &ref);
-
-protected:
 
 private:
 	class RefCount

@@ -13,7 +13,7 @@
 #include <Core/Designtime/BuildInTypes/FloatObject.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Tools.h>
-#include <Core/VirtualMachine/Repository.h>
+#include <Core/VirtualMachine/Controller.h>
 #include <Tools/Strings.h>
 #include "Math.h"
 
@@ -53,7 +53,7 @@ public:
 			*result = Runtime::DoubleObject(ceil(param_value));
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = Repository::Instance().createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
 			*data = Runtime::StringObject(std::string(e.what()));
 
 			mExceptionData = Runtime::ExceptionData(data, token.position());
@@ -90,7 +90,7 @@ public:
 			*result = Runtime::DoubleObject(ceil(param_value));
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = Repository::Instance().createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
 			*data = Runtime::StringObject(std::string(e.what()));
 
 			mExceptionData = Runtime::ExceptionData(data, token.position());

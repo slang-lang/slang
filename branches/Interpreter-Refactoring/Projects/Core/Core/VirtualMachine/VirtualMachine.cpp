@@ -11,9 +11,8 @@
 #include <Core/Common/Exceptions.h>
 #include <Core/Script.h>
 #include <Core/Tools.h>
-#include <Core/VirtualMachine/Repository.h>
-#include <Utils.h>
 #include <Tools/Files.h>
+#include <Utils.h>
 #include "Controller.h"
 
 // Namespace declarations
@@ -75,7 +74,7 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 {
 	init();
 
-	Script *script = new Script(Repository::Instance().getGlobalScope());
+	Script *script = new Script();
 	mScripts.insert(script);
 
 	Analyser analyser;
@@ -108,10 +107,10 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 */
 
 	// rebuild all blue prints to update/retype their type declarations
-	Repository::Instance().rebuildBluePrints();
+	Controller::Instance().repository()->rebuildBluePrints();
 
 	// Startup
-	MethodSymbol* main = Repository::Instance().getGlobalScope()->resolveMethod("Main", params, false);
+	MethodSymbol* main = Controller::Instance().repository()->getGlobalScope()->resolveMethod("Main", params, false);
 	if ( !main ) {
 		throw Common::Exceptions::Exception("could not resolve method 'Main(" + toString(params) + ")'");
 	}
@@ -199,12 +198,12 @@ bool VirtualMachine::loadExtensions()
 		try {
 			OSdebug("adding extension '" + (*extIt)->getName() + "'");
 
-			(*extIt)->initialize(Repository::Instance().getGlobalScope());
+			(*extIt)->initialize(Controller::Instance().repository()->getGlobalScope());
 
 			Extensions::ExtensionMethods methods;
 			(*extIt)->provideMethods(methods);
 
-			MethodScope* scope = Repository::Instance().getGlobalScope();
+			MethodScope* scope = Controller::Instance().repository()->getGlobalScope();
 
 			for ( Extensions::ExtensionMethods::const_iterator it = methods.begin(); it != methods.end(); ++it ) {
 				OSdebug("adding extension '" + (*extIt)->getName() + "." + (*it)->getName() + "'");

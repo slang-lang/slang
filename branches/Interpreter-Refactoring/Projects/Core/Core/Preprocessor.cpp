@@ -11,7 +11,7 @@
 #include <Core/Designtime/BluePrintEnum.h>
 #include <Core/Designtime/Exceptions.h>
 #include <Core/Designtime/Parser/Parser.h>
-#include <Core/VirtualMachine/Repository.h>
+#include <Core/VirtualMachine/Controller.h>
 #include "Tokenizer.h"
 #include "Tools.h"
 
@@ -276,7 +276,7 @@ void Preprocessor::generateBluePrintEnum()
 	symbol->setQualifiedTypename(blueprint->QualifiedTypename());
 	symbol->setVisibility(blueprint->getVisibility());
 
-	Repository::Instance().addBluePrint(symbol);
+	Controller::Instance().repository()->addBluePrint(symbol);
 
 	TokenIterator token = mTokens.begin();
 
@@ -312,7 +312,7 @@ void Preprocessor::generateBluePrintEnum()
 		//entry->setConstructed(true);
 
 		// define enum entries as integer type
-		Runtime::Object* entry = Repository::Instance().createInstance(Runtime::IntegerObject::TYPENAME, name, true);
+		Runtime::Object* entry = Controller::Instance().repository()->createInstance(Runtime::IntegerObject::TYPENAME, name, true);
 		entry->setMember(true);
 		entry->setMutability(Mutability::Const);
 		entry->setValue(value.toInt());

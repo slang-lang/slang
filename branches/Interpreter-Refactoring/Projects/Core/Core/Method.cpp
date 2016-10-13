@@ -9,8 +9,7 @@
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Runtime/OperatorOverloading.h>
 #include <Core/Runtime/TypeCast.h>
-#include <Core/VirtualMachine/Repository.h>
-#include <Core/VirtualMachine/Stack.h>
+#include <Core/VirtualMachine/Controller.h>
 #include <Debugger/Debugger.h>
 #include <Tools/Strings.h>
 #include <Utils.h>

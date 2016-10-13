@@ -17,6 +17,7 @@ namespace ObjectiveScript {
 
 
 Stack::Stack()
+: mGlobalScope(0)
 {
 }
 
@@ -41,19 +42,21 @@ void Stack::deinit()
 	while ( !mStack.empty() ) {
 		pop();
 	}
+
+	delete mGlobalScope;
 }
 
-IScope* Stack::globalScope() const
+GlobalScope* Stack::globalScope() const
 {
-	return mStack.front()->getScope();
+	return mGlobalScope;
 }
 
 void Stack::init()
 {
-	IScope* scope = new GlobalScope();
+	mGlobalScope = new GlobalScope();
 
 	StackLevel* level = new StackLevel(mStack.size(), 0, ParameterList());
-	level->pushScope(scope, false);
+	level->pushScope(mGlobalScope, false);
 	level->pushTokens(TokenList());
 
 	mStack.push_back(level);

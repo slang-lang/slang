@@ -37,7 +37,7 @@ Interpreter::Interpreter()
 : mControlFlow(ControlFlow::Normal),
   mOwner(0)
 {
-	mRepository = &Repository::Instance();
+	mRepository = Controller::Instance().repository();
 }
 
 Interpreter::~Interpreter()
@@ -84,7 +84,7 @@ ControlFlow::E Interpreter::execute(Method* method, const ParameterList& params,
 
 				if ( it->reference().isValid() ) {
 					object->assign(
-						*Memory::Instance().get(it->reference())
+						*Controller::Instance().memory()->get(it->reference())
 					);
 				}
 
@@ -98,7 +98,7 @@ ControlFlow::E Interpreter::execute(Method* method, const ParameterList& params,
 
 				if ( it->reference().isValid() ) {
 					object->copy(
-						*Memory::Instance().get(it->reference())
+						*Controller::Instance().memory()->get(it->reference())
 					);
 				}
 
@@ -328,7 +328,7 @@ inline Symbol* Interpreter::identify(TokenIterator& token) const
 					result = static_cast<Namespace*>(result)->resolve(identifier, onlyCurrentScope);
 					break;
 				case Symbol::IType::ObjectSymbol:
-					result = Memory::Instance().get(static_cast<Object *>(result)->getReference())->resolve(identifier, onlyCurrentScope);
+					result = Controller::Instance().memory()->get(static_cast<Object *>(result)->getReference())->resolve(identifier, onlyCurrentScope);
 					break;
 				case Symbol::IType::BluePrintEnumSymbol:
 				case Symbol::IType::MethodSymbol:
@@ -380,7 +380,7 @@ Symbol* Interpreter::identifyMethod(TokenIterator& token, const ParameterList& p
 					result = static_cast<Namespace*>(result)->resolveMethod(identifier, params, onlyCurrentScope);
 					break;
 				case Symbol::IType::ObjectSymbol:
-					result = Memory::Instance().get(static_cast<Object *>(result)->getReference())->resolveMethod(identifier, params, onlyCurrentScope);
+					result = Controller::Instance().memory()->get(static_cast<Object *>(result)->getReference())->resolveMethod(identifier, params, onlyCurrentScope);
 					break;
 				case Symbol::IType::BluePrintEnumSymbol:
 					throw Common::Exceptions::NotSupported("static method usage not supported");
