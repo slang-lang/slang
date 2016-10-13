@@ -172,6 +172,7 @@ int main(int argc, const char* argv[])
 #endif
 
 	try {
+/*
 		ObjectiveScript::Script *script = mVirtualMachine.createScriptFromFile(mFilename, mParameters);
 		if ( script ) {
 			ObjectiveScript::Runtime::IntegerObject result;
@@ -179,17 +180,19 @@ int main(int argc, const char* argv[])
 
 			return result.getValue().toInt();
 		}
+*/
+		mVirtualMachine.createScriptFromFile(mFilename, mParameters);
 	}
 	catch ( std::exception &e ) {	// catch every std::exception and all derived exception types
 		OSerror(e.what());
 
-		ObjectiveScript::StackTrace::GetInstance().print();
+		ObjectiveScript::Stack::Instance().print();
 	}
 	catch ( ObjectiveScript::Runtime::ControlFlow::E &e ) {
 		if ( e != ObjectiveScript::Runtime::ControlFlow::ExitProgram ) {
 			OSerror("abnormal program termination!");
 
-			ObjectiveScript::StackTrace::GetInstance().print();
+			ObjectiveScript::Stack::Instance().print();
 		}
 	}
 	catch ( ... ) {	// catch everything

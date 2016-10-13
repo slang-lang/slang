@@ -10,6 +10,7 @@
 
 // Project includes
 #include <Core/Common/Exceptions.h>
+#include <Core/Tools.h>
 
 // Namespace declarations
 
@@ -26,51 +27,59 @@ Memory::Memory()
 Memory::~Memory()
 {
 /*
-	for ( MemoryMap::iterator it = mMemory.begin(); it != mMemory.end(); ++it ) {
-		delete it->second;
-		it->second = 0;
-	}
-	mMemory.clear();
-*/
-
 	MemoryMap tmp = mMemory;
 
 	for ( MemoryMap::iterator it = tmp.begin(); it != tmp.end(); ++it ) {
 		deleteObject(it->first);
 	}
+*/
+}
+
+void Memory::add(const Reference &ref)
+{
+	MemoryMap::iterator it = mMemory.find(ref);
+	if ( it == mMemory.end() ) {
+		throw Common::Exceptions::Exception("invalid access for address " + Tools::ConvertToStdString(ref.getAddress()));
+	}
+
+	it->second.mCount += 1;
 }
 
 void Memory::deleteObject(const Reference& ref)
 {
 	MemoryMap::iterator it = mMemory.find(ref);
 	if ( it == mMemory.end() ) {
-		throw Common::Exceptions::Exception("invalid delete for address ");//+ std::string(ref.getAddress()));
+		throw Common::Exceptions::Exception("invalid delete for address " + Tools::ConvertToStdString(ref.getAddress()));
 	}
 
 	// delete it if it's valid ...
-	if ( it->second ) {
-		it->second->Destructor();
+	if ( it->second.mObject ) {
+		it->second.mObject->Destructor();
 
-		delete it->second;
-		it->second = 0;
+		it->second.mObject->setReference(0);
+
+		delete it->second.mObject;
+		it->second.mObject = 0;
 	}
+
+	// reset reference counter
+	it->second.mCount = 0;
 
 	// ... and remove address from memory
-	mMemory.erase(it);
+	//mMemory.erase(it);
 }
 
-const Reference& Memory::getAddress(Runtime::Object *obj) const
+Runtime::Object* Memory::get(const Reference &ref) const
 {
-	for ( MemoryMap::const_iterator it = mMemory.begin(); it != mMemory.end(); ++it ) {
-		if ( it->second == obj ) {
-			return it->first;
-		}
+	MemoryMap::const_iterator it = mMemory.find(ref);
+	if ( it != mMemory.end() ) {
+		return it->second.mObject;
 	}
 
-	return mNull;
+	return 0;
 }
 
-Memory& Memory::GetInstance()
+Memory& Memory::Instance()
 {
 	static Memory instance;
 
@@ -80,6 +89,31 @@ Memory& Memory::GetInstance()
 const Reference& Memory::getNullReference() const
 {
 	return mNull;
+}
+
+const Reference& Memory::newObject(Runtime::Object *obj)
+{
+	const Reference& ref = reserveAddress();
+
+	mMemory[ref].mCount = 0;
+	mMemory[ref].mObject = obj;
+
+	obj->setReference(ref);
+
+	return ref;
+}
+
+void Memory::remove(const Reference &ref)
+{
+	MemoryMap::iterator it = mMemory.find(ref);
+	if ( it == mMemory.end() ) {
+		throw Common::Exceptions::Exception("invalid access for address " + Tools::ConvertToStdString(ref.getAddress()));
+	}
+
+	it->second.mCount -= 1;
+	if ( it->second.mCount == 0 ) {
+		deleteObject(it->first);
+	}
 }
 
 const Reference& Memory::reserveAddress()
@@ -107,34 +141,6 @@ const Reference& Memory::reserveAddress()
 	mMemory[ref] = 0;
 
 	return mMemory.rbegin()->first;
-}
-
-Runtime::Object* Memory::getObject(const Reference& ref) const
-{
-/*
-	for ( MemoryMap::const_iterator it = mMemory.begin(); it != mMemory.end(); ++it ) {
-		if ( it->first == ref ) {
-			return it->second;
-		}
-	}
-*/
-
-	MemoryMap::const_iterator it = mMemory.find(ref);
-	if ( it != mMemory.end() ) {
-		return it->second;
-	}
-
-	return 0;
-}
-
-const Reference& Memory::newObject(Runtime::Object *obj)
-{
-	const Reference& ref = reserveAddress();
-
-	mMemory[ref] = obj;
-	obj->setReference(ref);
-
-	return ref;
 }
 
 

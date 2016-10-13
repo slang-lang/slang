@@ -276,7 +276,7 @@ void Preprocessor::generateBluePrintEnum()
 	symbol->setQualifiedTypename(blueprint->QualifiedTypename());
 	symbol->setVisibility(blueprint->getVisibility());
 
-	Repository::GetInstance().addBluePrint(symbol);
+	Repository::Instance().addBluePrint(symbol);
 
 	TokenIterator token = mTokens.begin();
 
@@ -312,7 +312,7 @@ void Preprocessor::generateBluePrintEnum()
 		//entry->setConstructed(true);
 
 		// define enum entries as integer type
-		Runtime::Object* entry = Repository::GetInstance().createInstance(Runtime::IntegerObject::TYPENAME, name, true);
+		Runtime::Object* entry = Repository::Instance().createInstance(Runtime::IntegerObject::TYPENAME, name, true);
 		entry->setMember(true);
 		entry->setMutability(Mutability::Const);
 		entry->setValue(value.toInt());

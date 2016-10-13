@@ -26,7 +26,7 @@ namespace ObjectiveScript {
 
 Analyser::Analyser()
 {
-	mRepository = &Repository::GetInstance();
+	mRepository = &Repository::Instance();
 	mScope = mRepository->getGlobalScope();
 }
 

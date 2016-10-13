@@ -1,6 +1,7 @@
 INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
 SET(SOURCES
+	Controller.cpp
 	Memory.cpp
 	Repository.cpp
 	StackLevel.cpp
@@ -9,6 +10,7 @@ SET(SOURCES
 )
 
 SET(HEADERS
+	Controller.h
 	Memory.h
 	Repository.h
 	StackLevel.h

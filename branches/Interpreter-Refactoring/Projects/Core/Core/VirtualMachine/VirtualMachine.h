@@ -60,7 +60,6 @@ private:
 	Extensions::ExtensionList mExtensions;
 	StringSet mImportedLibraries;
 	StringSet mLibraryFolders;
-	Repository *mRepository;
 	std::string mScriptFile;
 	ScriptCollection mScripts;
 };

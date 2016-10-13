@@ -36,10 +36,11 @@ public:
 // Singleton
 // {
 public:
-	static Repository& GetInstance();
+	static Repository& Instance();
 // }
 
 public:
+	Repository();
 	~Repository();
 
 public:
@@ -61,9 +62,6 @@ protected:
 
 private:
 	typedef std::map<Runtime::Object*, int> ReferenceCountedObjects;
-
-private:
-	Repository();
 
 private:
 	Runtime::Object* createObject(const std::string& name, Designtime::BluePrintObject* blueprint, bool initialize);

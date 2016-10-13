@@ -23,7 +23,6 @@ namespace ObjectiveScript {
 
 VirtualMachine::VirtualMachine()
 {
-	mRepository = &Repository::GetInstance();
 }
 
 VirtualMachine::~VirtualMachine()
@@ -70,10 +69,9 @@ std::string VirtualMachine::buildPath(const std::string& basefolder, const std::
 
 Script* VirtualMachine::createScript(const std::string& content, const ParameterList& params)
 {
-(void)params;
 	init();
 
-	Script *script = new Script(mRepository->getGlobalScope());
+	Script *script = new Script(Repository::Instance().getGlobalScope());
 	mScripts.insert(script);
 
 	Analyser analyser;
@@ -106,27 +104,29 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 */
 
 	// rebuild all blue prints to update/retype their type declarations
-	mRepository->rebuildBluePrints();
+	Repository::Instance().rebuildBluePrints();
 
-/*
-	// initialize Main object
-	Symbol* mainSymbol = mRepository->getGlobalScope()->resolve("Main");
-	if ( mainSymbol && mainSymbol->getSymbolType() == Symbol::IType::BluePrintObjectSymbol ) {
-		// create an instance of our Main object ...
-		Runtime::Object *main = mRepository->createInstance(static_cast<Designtime::BluePrintObject*>(mainSymbol), "main", true);
-		assert(main);
-
-		// ... define it in our global scope ...
-		mRepository->getGlobalScope()->define("main", main);
-
-		Runtime::ControlFlow::E controlflow = main->Constructor(params);
-		if ( controlflow == Runtime::ControlFlow::Throw ) {
-			std::string text = "Exception raised in method '" + main->getFullScopeName() + "." + main->QualifiedTypename() + "(" + toString(params) + ")'";
-
-			throw Common::Exceptions::Exception(text);
-		}
+	// Startup
+	MethodSymbol* main = Repository::Instance().getGlobalScope()->resolveMethod("Main", params, false);
+	if ( !main ) {
+		throw Common::Exceptions::Exception("could not resolve method 'Main(" + toString(params) + ")'");
 	}
-*/
+
+	Runtime::Method* methodSymbol = static_cast<Runtime::Method*>(main);
+
+	Runtime::Object tmp;
+	Runtime::Interpreter interpreter;
+	Runtime::ControlFlow::E controlflow = interpreter.execute(methodSymbol, params, &tmp);
+
+	if ( controlflow == Runtime::ControlFlow::Throw ) {
+		Runtime::Object* data = interpreter.getExceptionData().getData();
+
+		std::string text = "Exception raised in method 'Main(" + toString(params) + ")':\n";
+		text += data->getValue().toStdString();
+
+		throw Common::Exceptions::Exception(text);
+	}
+
 	return script;
 }
 
@@ -195,12 +195,12 @@ bool VirtualMachine::loadExtensions()
 		try {
 			OSdebug("adding extension '" + (*extIt)->getName() + "'");
 
-			(*extIt)->initialize(mRepository->getGlobalScope());
+			(*extIt)->initialize(Repository::Instance().getGlobalScope());
 
 			Extensions::ExtensionMethods methods;
 			(*extIt)->provideMethods(methods);
 
-			MethodScope* scope = mRepository->getGlobalScope();
+			MethodScope* scope = Repository::Instance().getGlobalScope();
 
 			for ( Extensions::ExtensionMethods::const_iterator it = methods.begin(); it != methods.end(); ++it ) {
 				OSdebug("adding extension '" + (*extIt)->getName() + "." + (*it)->getName() + "'");

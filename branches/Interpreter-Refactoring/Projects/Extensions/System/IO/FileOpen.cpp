@@ -83,7 +83,7 @@ Runtime::ControlFlow::E FileOpen::execute(const ParameterList& params, Runtime::
 		*result = Runtime::IntegerObject(handle);
 	}
 	catch ( std::exception& e ) {
-		Runtime::Object *data = Repository::GetInstance().createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+		Runtime::Object *data = Repository::Instance().createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
 		*data = Runtime::StringObject(std::string(e.what()));
 
 		mExceptionData = Runtime::ExceptionData(data, token.position());

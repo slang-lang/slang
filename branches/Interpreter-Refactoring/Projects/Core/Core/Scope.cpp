@@ -48,7 +48,7 @@ void SymbolScope::deinit()
 
 	for ( Symbols::iterator it = tmp.begin(); it != tmp.end(); ++it ) {
 		if ( it->second->getSymbolType() == Symbol::IType::ObjectSymbol ) {
-			if ( dynamic_cast<Runtime::Object*>(it->second) ) {
+			if ( it->second ) {
 				delete it->second;
 				mSymbols.erase(it->first);
 			}

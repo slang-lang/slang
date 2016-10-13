@@ -28,7 +28,9 @@ public int Main(int argc, string args) {
 
 	print("obj.getValue() = " + obj.getValue());
 
-	assert( obj == obj );
+	TestObject obj2 = obj;
+
+	assert( obj == obj2 );
 
 	return 0;
 }

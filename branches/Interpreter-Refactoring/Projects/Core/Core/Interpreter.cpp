@@ -39,7 +39,7 @@ Interpreter::Interpreter()
 : mControlFlow(ControlFlow::Normal),
   mOwner(0)
 {
-	mRepository = &Repository::GetInstance();
+	mRepository = &Repository::Instance();
 }
 
 Interpreter::~Interpreter()
@@ -86,7 +86,7 @@ ControlFlow::E Interpreter::execute(Method* method, const ParameterList& params,
 
 				if ( it->reference().isValid() ) {
 					object->assign(
-						*Memory::GetInstance().getObject(it->reference())
+						*Memory::Instance().get(it->reference())
 					);
 				}
 
@@ -100,7 +100,7 @@ ControlFlow::E Interpreter::execute(Method* method, const ParameterList& params,
 
 				if ( it->reference().isValid() ) {
 					object->copy(
-						*Memory::GetInstance().getObject(it->reference())
+						*Memory::Instance().get(it->reference())
 					);
 				}
 
@@ -118,7 +118,7 @@ ControlFlow::E Interpreter::execute(Method* method, const ParameterList& params,
 	}
 
 	// record stack trace
-	StackTrace::GetInstance().push(&scope, executedParams);
+	Stack::Instance().push(&scope, executedParams);
 	// notify debugger
 	Core::Debugger::GetInstance().notifyEnter(&scope, Core::Debugger::immediateBreakToken);
 
@@ -177,7 +177,7 @@ ControlFlow::E Interpreter::execute(Method* method, const ParameterList& params,
 	// notify debugger
 	Core::Debugger::GetInstance().notifyExit(getScope(), Core::Debugger::immediateBreakToken);
 	// unwind stack trace
-	StackTrace::GetInstance().pop();
+	Stack::Instance().pop();
 
 	// undefine references to prevent double deletes
 	for ( ParameterList::const_iterator it = executedParams.begin(); it != executedParams.end(); ++it ) {
@@ -291,14 +291,14 @@ Repository* Interpreter::getRepository() const
 
 IScope* Interpreter::getScope() const
 {
-	StackLevel* stack = StackTrace::GetInstance().current();
+	StackLevel* stack = Stack::Instance().current();
 
 	return stack->getScope();
 }
 
 const TokenList& Interpreter::getTokens() const
 {
-	StackLevel* stack = StackTrace::GetInstance().current();
+	StackLevel* stack = Stack::Instance().current();
 
 	return stack->getTokens();
 }
@@ -330,7 +330,7 @@ inline Symbol* Interpreter::identify(TokenIterator& token) const
 					result = static_cast<Namespace*>(result)->resolve(identifier, onlyCurrentScope);
 					break;
 				case Symbol::IType::ObjectSymbol:
-					result = Memory::GetInstance().getObject(static_cast<Object*>(result)->getReference())->resolve(identifier, onlyCurrentScope);
+					result = Memory::Instance().get(static_cast<Object *>(result)->getReference())->resolve(identifier, onlyCurrentScope);
 					break;
 				case Symbol::IType::BluePrintEnumSymbol:
 				case Symbol::IType::MethodSymbol:
@@ -382,7 +382,7 @@ Symbol* Interpreter::identifyMethod(TokenIterator& token, const ParameterList& p
 					result = static_cast<Namespace*>(result)->resolveMethod(identifier, params, onlyCurrentScope);
 					break;
 				case Symbol::IType::ObjectSymbol:
-					result = Memory::GetInstance().getObject(static_cast<Object*>(result)->getReference())->resolveMethod(identifier, params, onlyCurrentScope);
+					result = Memory::Instance().get(static_cast<Object *>(result)->getReference())->resolveMethod(identifier, params, onlyCurrentScope);
 					break;
 				case Symbol::IType::BluePrintEnumSymbol:
 					throw Common::Exceptions::NotSupported("static method usage not supported");
@@ -731,14 +731,14 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 
 void Interpreter::popScope()
 {
-	StackLevel* stack = StackTrace::GetInstance().current();
+	StackLevel* stack = Stack::Instance().current();
 
 	stack->popScope();
 }
 
 void Interpreter::popTokens()
 {
-	StackLevel* stack = StackTrace::GetInstance().current();
+	StackLevel* stack = Stack::Instance().current();
 
 	stack->popTokens();
 }
@@ -1875,7 +1875,7 @@ void Interpreter::process_while(TokenIterator& token, Object* result)
 
 void Interpreter::pushScope(IScope* scope)
 {
-	StackLevel* stack = StackTrace::GetInstance().current();
+	StackLevel* stack = Stack::Instance().current();
 
 	bool allowDelete = !scope;
 
@@ -1888,7 +1888,7 @@ void Interpreter::pushScope(IScope* scope)
 
 void Interpreter::pushTokens(const TokenList& tokens)
 {
-	StackLevel* stack = StackTrace::GetInstance().current();
+	StackLevel* stack = Stack::Instance().current();
 
 	stack->pushTokens(tokens);
 }

@@ -592,28 +592,28 @@ int LocalClient::notify(IScope* scope, const Core::BreakPoint& breakpoint)
 
 int LocalClient::notifyEnter(IScope* scope, const Core::BreakPoint& breakpoint)
 {
-	writeln("[Stepping into " + StackTrace::GetInstance().current()->toString() + "]");
+	writeln("[Stepping into " + Stack::Instance().current()->toString() + "]");
 
 	return notify(scope, breakpoint);
 }
 
 int LocalClient::notifyExceptionCatch(IScope *scope, const Core::BreakPoint &breakpoint)
 {
-	writeln("[Caught exception in " + StackTrace::GetInstance().current()->toString() + "]");
+	writeln("[Caught exception in " + Stack::Instance().current()->toString() + "]");
 
 	return notify(scope, breakpoint);
 }
 
 int LocalClient::notifyExceptionThrow(IScope *scope, const Core::BreakPoint &breakpoint)
 {
-	writeln("[Exception has been thrown in " + StackTrace::GetInstance().current()->toString() + "]");
+	writeln("[Exception has been thrown in " + Stack::Instance().current()->toString() + "]");
 
 	return notify(scope, breakpoint);
 }
 
 int LocalClient::notifyExit(IScope* scope, const Core::BreakPoint& breakpoint)
 {
-	writeln("[Stepping out of " + StackTrace::GetInstance().current()->toString() + "]");
+	writeln("[Stepping out of " + Stack::Instance().current()->toString() + "]");
 
 	return notify(scope, breakpoint);
 }
@@ -713,13 +713,13 @@ void LocalClient::printHelp()
 void LocalClient::printStackTrace()
 {
 /*
-	StackTrace::Stack stack = StackTrace::GetInstance().getStack();
+	Stack::Stack stack = Stack::Instance().getStack();
 
-	for ( StackTrace::Stack::const_iterator it = stack.begin(); it != stack.end(); ++it ) {
+	for ( Stack::Stack::const_iterator it = stack.begin(); it != stack.end(); ++it ) {
 		writeln((*it)->toString());
 	}
 */
-	StackTrace::GetInstance().print();
+	Stack::Instance().print();
 }
 
 void LocalClient::printSymbol(const StringList& tokens)
@@ -886,7 +886,7 @@ void LocalClient::start()
 	mDebugger->breakOnExceptionCatch(mSettings->breakOnExceptionCatch());
 	mDebugger->breakOnExceptionThrow(mSettings->breakOnExceptionThrow());
 	mDebugger->resume();
-	StackTrace::GetInstance().print();
+	Stack::Instance().print();
 
 	mVirtualMachine = new VirtualMachine();
 	for ( StringSet::const_iterator it = mSettings->libraryFolders().begin(); it != mSettings->libraryFolders().end(); ++it ) {

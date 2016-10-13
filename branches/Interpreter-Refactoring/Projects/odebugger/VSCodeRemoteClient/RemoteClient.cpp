@@ -372,7 +372,7 @@ void RemoteClient::start()
 
 	mDebugger->breakOnExceptionThrow(mSettings->breakOnExceptionThrow());
 	mDebugger->resume();
-	StackTrace::GetInstance().print();
+	Stack::Instance().print();
 
 	mVirtualMachine = new VirtualMachine();
 	for ( StringSet::const_iterator it = mSettings->libraryFolders().begin(); it != mSettings->libraryFolders().end(); ++it ) {

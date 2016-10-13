@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Core_VirtualMachine_StackTrace_h
-#define ObjectiveScript_Core_VirtualMachine_StackTrace_h
+#ifndef ObjectiveScript_Core_VirtualMachine_Stack_h
+#define ObjectiveScript_Core_VirtualMachine_Stack_h
 
 
 // Library includes
@@ -18,19 +18,20 @@
 namespace ObjectiveScript {
 
 
-class StackTrace
+class Stack
 {
 // Singleton
 // {
 public:
-	static StackTrace& GetInstance();
+	static Stack& Instance();
 // }
 
 public:
-	typedef std::list<StackLevel*> Stack;
+	typedef std::list<StackLevel*> StackTrace;
 
 public:
-	~StackTrace();
+	Stack();
+	~Stack();
 
 public:
 	StackLevel* current() const;
@@ -41,13 +42,11 @@ public:
 	void print();
 
 private:
-	StackTrace();
-
-	StackTrace(StackTrace const&)/* = delete*/;
-	void operator=(StackTrace const&)/* = delete*/;
+	Stack(Stack const&)/* = delete*/;
+	void operator=(Stack const&)/* = delete*/;
 
 private:
-	Stack mStack;
+	StackTrace mStack;
 };
 
 

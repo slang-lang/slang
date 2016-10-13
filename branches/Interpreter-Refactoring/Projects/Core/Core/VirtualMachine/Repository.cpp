@@ -156,7 +156,7 @@ Runtime::Object* Repository::createInstance(const std::string& type, const std::
 	Runtime::Object *object = createObject(name, it->second, initialize);
 
 	if ( initialize ) {
-		Memory::GetInstance().newObject(object);
+		Memory::Instance().newObject(object);
 	}
 
 	return object;
@@ -175,7 +175,7 @@ Runtime::Object* Repository::createInstance(Designtime::BluePrintObject* bluepri
 	Runtime::Object* object = createObject(name, blueprint, initialize);
 
 	if ( initialize ) {
-		Memory::GetInstance().newObject(object);
+		Memory::Instance().newObject(object);
 	}
 
 	return object;
@@ -336,7 +336,7 @@ GlobalScope* Repository::getGlobalScope() const
 	return mScope;
 }
 
-Repository& Repository::GetInstance()
+Repository& Repository::Instance()
 {
 	static Repository instance;
 

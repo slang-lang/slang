@@ -16,18 +16,18 @@
 namespace ObjectiveScript {
 
 
-StackTrace::StackTrace()
+Stack::Stack()
 {
 }
 
-StackTrace::~StackTrace()
+Stack::~Stack()
 {
 	while ( !mStack.empty() ) {
 		pop();
 	}
 }
 
-StackLevel* StackTrace::current() const
+StackLevel* Stack::current() const
 {
 	if ( mStack.empty() ) {
 		return 0;
@@ -36,14 +36,14 @@ StackLevel* StackTrace::current() const
 	return mStack.back();
 }
 
-StackTrace& StackTrace::GetInstance()
+Stack& Stack::Instance()
 {
-	static StackTrace instance;
+	static Stack instance;
 
 	return instance;
 }
 
-void StackTrace::pop()
+void Stack::pop()
 {
 	StackLevel* level = mStack.back();
 	level->popTokens();
@@ -54,14 +54,14 @@ void StackTrace::pop()
 	delete level;
 }
 
-void StackTrace::print()
+void Stack::print()
 {
-	for ( Stack::const_iterator it = mStack.begin(); it != mStack.end(); ++it ) {
+	for ( StackTrace::const_iterator it = mStack.begin(); it != mStack.end(); ++it ) {
 		std::cout << (*it)->toString() << std::endl;
 	}
 }
 
-void StackTrace::push(Runtime::Method *method, const ParameterList &params)
+void Stack::push(Runtime::Method *method, const ParameterList &params)
 {
 	StackLevel* level = new StackLevel(mStack.size(), method, params);
 	level->pushScope(method, false);
