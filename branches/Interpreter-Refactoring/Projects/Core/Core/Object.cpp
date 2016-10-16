@@ -125,7 +125,7 @@ void Object::operator= (const Object& other)
 	}
 }
 
-void Object::assign(const Object& other)
+void Object::assign(const Object& other, bool overrideType)
 {
 	if ( this != &other ) {
 		mFilename = other.mFilename;
@@ -139,7 +139,7 @@ void Object::assign(const Object& other)
 		mScopeType = other.mScopeType;
 		mValue = other.mValue;
 
-		if ( mQualifiedOutterface == NULL_TYPE ) {
+		if ( mQualifiedOutterface == NULL_TYPE || overrideType ) {
 			mOutterface = other.mOutterface;
 			mQualifiedOutterface = other.mQualifiedOutterface;
 		}
@@ -153,8 +153,8 @@ void Object::assign(const Object& other)
 void Object::assignReference(const Reference& ref)
 {
 	if ( !ref.isValid() ) {
-		mBase = 0;
 		mThis = this;
+		mBase = 0;
 	}
 	else {
 		Controller::Instance().memory()->add(ref);
@@ -165,37 +165,11 @@ void Object::assignReference(const Reference& ref)
 	}
 }
 
-void Object::assignSubType(const Object& other)
+void Object::copy(const Object& other)
 {
 	if ( this != &other ) {
 		mFilename = other.mFilename;
 		mInheritance = other.mInheritance;
-		mIsArray = other.mIsArray;
-		mIsArrayDynamicallyExpanding = other.mIsArrayDynamicallyExpanding;
-		mIsAtomicType = other.mIsAtomicType;
-		mIsConstructed = other.mIsConstructed;// ? other.mIsConstructed : mIsConstructed;
-		mParent = other.mParent ? other.mParent : mParent;
-		mScopeName = other.mScopeName;
-		mScopeType = other.mScopeType;
-		mValue = other.mValue;
-
-		if ( mQualifiedOutterface == NULL_TYPE ) {
-			mOutterface = other.mOutterface;
-			mQualifiedOutterface = other.mQualifiedOutterface;
-		}
-		mQualifiedTypename = other.mQualifiedTypename;
-		mTypename = other.mTypename;
-
-		if ( other.mReference.isValid() ) {
-			Controller::Instance().memory()->add(other.mReference);
-			mReference = other.mReference;
-		}
-	}
-}
-
-void Object::copy(const Object& other)
-{
-	if ( this != &other ) {
 		mIsArray = other.mIsArray;
 		mIsArrayDynamicallyExpanding = other.mIsArrayDynamicallyExpanding;
 		mIsAtomicType = other.mIsAtomicType;
