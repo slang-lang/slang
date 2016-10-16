@@ -70,6 +70,8 @@ ControlFlow::E Interpreter::execute(Method* method, const ParameterList& params,
 
 	Method scope(*method);
 
+	IScope* previousOwner = mOwner;
+
 	mOwner = method->getEnclosingScope();
 
 	ParameterList executedParams = method->mergeParameters(params);
@@ -189,6 +191,8 @@ ControlFlow::E Interpreter::execute(Method* method, const ParameterList& params,
 				throw Common::Exceptions::AccessMode("unspecified access mode");;
 		}
 	}
+
+	mOwner = previousOwner;
 
 	return controlflow;
 }
@@ -1234,7 +1238,6 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 		throw Common::Exceptions::UnknownIdentifer("could not resolve identifier '" + token->content() + "' with parameters '" + toString(params) + "'", token->position());
 	}
 
-/*
 	// compare callee's constness with its parent's constness
 	Object* calleeParent = dynamic_cast<Object*>(method->getEnclosingScope());
 	if ( calleeParent && calleeParent->isConst() && !method->isConst() ) {
@@ -1251,7 +1254,6 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 			throw Common::Exceptions::ConstCorrectnessViolated("only calls to const methods are allowed in const method '" + getScope()->getFullScopeName() + "'", token->position());
 		}
 	}
-*/
 
 	ControlFlow::E controlflow;
 
