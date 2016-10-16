@@ -46,6 +46,8 @@ public object Observer {
 	private IWarehouse mWarehouse;
 
 	public void Observer(IWarehouse wh ref) {
+		print("Observer(IWarehouse)");
+
 		mWarehouse = wh;
 	}
 

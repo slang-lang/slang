@@ -24,6 +24,7 @@
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
 #include <Core/Designtime/BuildInTypes/NumberObject.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
+#include <Core/Designtime/BuildInTypes/UserObject.h>
 #include <Core/Designtime/BuildInTypes/VoidObject.h>
 #include <Core/Designtime/Prototype.h>
 #include <Core/Preprocessor.h>

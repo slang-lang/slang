@@ -144,11 +144,11 @@ ControlFlow::E Interpreter::execute(Method* method, const ParameterList& params,
 			}
 			else if ( method->QualifiedTypename() != VoidObject::TYPENAME && result->QualifiedOutterface() != method->QualifiedTypename() ) {
 #ifdef ALLOW_IMPLICIT_CASTS
-				throw Runtime::Exceptions::ExplicitCastRequired("Explicit cast required for type conversion from " + result->QualifiedOutterface() + " to " + method->QualifiedTypename() + " in " + method->getFullScopeName());
-#else
 				OSwarn("implicit type conversion from " + result->QualifiedOutterface() + " to " + method->QualifiedTypename());
 
 				typecast(result, method->QualifiedTypename());
+#else
+				throw Runtime::Exceptions::ExplicitCastRequired("Explicit cast required for type conversion from " + result->QualifiedOutterface() + " to " + method->QualifiedTypename() + " in " + method->getFullScopeName());
 #endif
 			}
 
@@ -179,6 +179,7 @@ ControlFlow::E Interpreter::execute(Method* method, const ParameterList& params,
 	// unwind stack trace
 	Controller::Instance().stack()->pop();
 
+/*
 	// undefine references to prevent double deletes
 	for ( ParameterList::const_iterator it = executedParams.begin(); it != executedParams.end(); ++it ) {
 		switch ( it->access() ) {
@@ -191,7 +192,7 @@ ControlFlow::E Interpreter::execute(Method* method, const ParameterList& params,
 				throw Common::Exceptions::AccessMode("unspecified access mode");;
 		}
 	}
-
+*/
 	mOwner = previousOwner;
 
 	return controlflow;
@@ -332,7 +333,7 @@ inline Symbol* Interpreter::identify(TokenIterator& token) const
 					result = static_cast<Namespace*>(result)->resolve(identifier, onlyCurrentScope);
 					break;
 				case Symbol::IType::ObjectSymbol:
-					result = Controller::Instance().memory()->get(static_cast<Object *>(result)->getReference())->resolve(identifier, onlyCurrentScope);
+					result = dynamic_cast<Object*>(result)->resolve(identifier, onlyCurrentScope);
 					break;
 				case Symbol::IType::BluePrintEnumSymbol:
 				case Symbol::IType::MethodSymbol:
@@ -384,7 +385,7 @@ Symbol* Interpreter::identifyMethod(TokenIterator& token, const ParameterList& p
 					result = static_cast<Namespace*>(result)->resolveMethod(identifier, params, onlyCurrentScope);
 					break;
 				case Symbol::IType::ObjectSymbol:
-					result = Controller::Instance().memory()->get(static_cast<Object *>(result)->getReference())->resolveMethod(identifier, params, onlyCurrentScope);
+					result = dynamic_cast<Object*>(result)->resolveMethod(identifier, params, onlyCurrentScope);
 					break;
 				case Symbol::IType::BluePrintEnumSymbol:
 					throw Common::Exceptions::NotSupported("static method usage not supported");
@@ -429,9 +430,6 @@ ControlFlow::E Interpreter::interpret(const TokenList& tokens, Object* result)
 		pushTokens(tokens);
 			TokenIterator start = getTokens().begin();
 			TokenIterator end = getTokens().end();
-
-			//TokenIterator start = tokens.begin();
-			//TokenIterator end = tokens.end();
 
 			process(result, start, end);
 		popTokens();
@@ -1323,7 +1321,7 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 		}
 
 		params.push_back(
-			Parameter(obj->getName(), obj->Outterface(), obj->getValue(), false, obj->isConst(), Parameter::AccessMode::Unspecified, obj->getReference())
+			Parameter(obj->getName(), obj->QualifiedOutterface(), obj->getValue(), false, obj->isConst(), Parameter::AccessMode::Unspecified, obj->getReference())
 		);
 
 		if ( std::distance(tmp, closed) <= 0 ) {

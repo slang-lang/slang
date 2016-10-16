@@ -159,6 +159,11 @@ protected:
 	AtomicValue mValue;
 
 private:
+	void assignReference(const Reference& ref);
+
+private:
+	Object* mBase;
+	Object* mThis;
 };
 
 

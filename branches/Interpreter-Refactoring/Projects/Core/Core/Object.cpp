@@ -31,13 +31,17 @@ Object::Object()
   mOutterface(ANONYMOUS_OBJECT),
   mQualifiedOutterface(ANONYMOUS_OBJECT),
   mQualifiedTypename(ANONYMOUS_OBJECT),
-  mTypename(ANONYMOUS_OBJECT)
+  mTypename(ANONYMOUS_OBJECT),
+  mBase(0),
+  mThis(this)
 {
 }
 
 Object::Object(const Object& other)
 : MethodScope(other.getName(), other.mParent),
-  ObjectSymbol(other.getName())
+  ObjectSymbol(other.getName()),
+  mBase(0),
+  mThis(this)
 {
 	mFilename = other.mFilename;
 	mInheritance = other.mInheritance;
@@ -50,28 +54,19 @@ Object::Object(const Object& other)
 	mScopeType = other.mScopeType;
 	mValue = other.mValue;
 
-	if ( other.mQualifiedOutterface != NULL_TYPE ) {
+	//if ( other.mQualifiedOutterface != NULL_TYPE ) {
 		mOutterface = other.mOutterface;
 		mQualifiedOutterface = other.mQualifiedOutterface;
 		mQualifiedTypename = other.mQualifiedTypename;
 		mTypename = other.mTypename;
-	}
+	//}
 
 	setConst(other.isConst());
 	setFinal(other.isFinal());
 	setLanguageFeatureState(other.getLanguageFeatureState());
 	setMember(other.isMember());
 
-	if ( !mIsAtomicType ) {
-		mReference = other.mReference;
-
-		Object* otherbase = dynamic_cast<Object*>(other.resolve("base", true));
-		if ( otherbase ) {
-			Object* base = new Object(*otherbase);
-
-			define(otherbase->getName(), base);
-		}
-	}
+	assignReference(other.mReference);
 }
 
 Object::Object(const std::string& name, const std::string& filename, const std::string& type, AtomicValue value)
@@ -86,7 +81,9 @@ Object::Object(const std::string& name, const std::string& filename, const std::
   mQualifiedOutterface(type),
   mQualifiedTypename(type),
   mTypename(type),
-  mValue(value)
+  mValue(value),
+  mBase(0),
+  mThis(this)
 {
 }
 
@@ -117,24 +114,14 @@ void Object::operator= (const Object& other)
 		mScopeType = other.mScopeType;
 		mValue = other.mValue;
 
-		if ( other.mQualifiedOutterface != NULL_TYPE ) {
+		if ( mQualifiedOutterface == NULL_TYPE ) {
 			mOutterface = other.mOutterface;
 			mQualifiedOutterface = other.mQualifiedOutterface;
-			mQualifiedTypename = other.mQualifiedTypename;
-			mTypename = other.mTypename;
 		}
+		mQualifiedTypename = other.mQualifiedTypename;
+		mTypename = other.mTypename;
 
-		if ( other.mReference.isValid() ) {
-			Controller::Instance().memory()->add(other.mReference);
-			mReference = other.mReference;
-
-			Object* base = dynamic_cast<Object*>(resolve("base", true));
-			if ( base ) {
-				Object* otherbase = dynamic_cast<Object*>(other.resolve("base", true));
-				Controller::Instance().memory()->add(otherbase->mReference);
-				base->mReference = otherbase->mReference;
-			}
-		}
+		assignReference(other.mReference);
 	}
 }
 
@@ -152,17 +139,29 @@ void Object::assign(const Object& other)
 		mScopeType = other.mScopeType;
 		mValue = other.mValue;
 
-		if ( other.mQualifiedOutterface != NULL_TYPE ) {
+		if ( mQualifiedOutterface == NULL_TYPE ) {
 			mOutterface = other.mOutterface;
 			mQualifiedOutterface = other.mQualifiedOutterface;
-			mQualifiedTypename = other.mQualifiedTypename;
-			mTypename = other.mTypename;
 		}
+		mQualifiedTypename = other.mQualifiedTypename;
+		mTypename = other.mTypename;
 
-		if ( other.mReference.isValid() ) {
-			Controller::Instance().memory()->add(other.mReference);
-			mReference = other.mReference;
-		}
+		assignReference(other.mReference);
+	}
+}
+
+void Object::assignReference(const Reference& ref)
+{
+	if ( !ref.isValid() ) {
+		mBase = 0;
+		mThis = this;
+	}
+	else {
+		Controller::Instance().memory()->add(ref);
+		mReference = ref;
+
+		mThis = Controller::Instance().memory()->get(ref);
+		mBase = dynamic_cast<Object*>(mThis->resolve("base", true));
 	}
 }
 
@@ -180,10 +179,12 @@ void Object::assignSubType(const Object& other)
 		mScopeType = other.mScopeType;
 		mValue = other.mValue;
 
-		if ( other.mQualifiedOutterface != NULL_TYPE ) {
-			mQualifiedTypename = other.mQualifiedTypename;
-			mTypename = other.mTypename;
+		if ( mQualifiedOutterface == NULL_TYPE ) {
+			mOutterface = other.mOutterface;
+			mQualifiedOutterface = other.mQualifiedOutterface;
 		}
+		mQualifiedTypename = other.mQualifiedTypename;
+		mTypename = other.mTypename;
 
 		if ( other.mReference.isValid() ) {
 			Controller::Instance().memory()->add(other.mReference);
@@ -309,14 +310,17 @@ ControlFlow::E Object::Constructor(const ParameterList& params)
 
 	if ( symbol ) {
 		// if a specialized constructor is implemented, the default constructor cannot be used
+/*
 		Method *constructor = 0;
 		if ( mReference.isValid() ) {
-			constructor = static_cast<Method*>(Controller::Instance().memory()->get(mReference)->resolveMethod(Typename(), params, true));
+			constructor = dynamic_cast<Method*>(Controller::Instance().memory()->get(mReference)->resolveMethod(Typename(), params, true));
 		}
 		else {
-			constructor = static_cast<Method*>(resolveMethod(Typename(), params, true));
+			constructor = dynamic_cast<Method*>(resolveMethod(Typename(), params, true));
 		}
+*/
 
+		Method *constructor = dynamic_cast<Method*>(resolveMethod(Typename(), params, true));
 		if ( constructor ) {
 			VoidObject tmp;
 
@@ -992,14 +996,17 @@ void Object::operator_unary_not()
 
 Symbol* Object::resolve(const std::string& name, bool onlyCurrentScope) const
 {
+	if ( mThis != this ) {
+		return mThis->resolve(name, true);
+	}
+
 	// (1) look only in current scope
 	Symbol *result = MethodScope::resolve(name, true);
 
 	// (2) check inheritance
 	if ( !result ) {
-		Symbol* base = MethodScope::resolve("base", true);
-		if ( base && !onlyCurrentScope ) {
-			result = static_cast<Object*>(base)->resolve(name, onlyCurrentScope);
+		if ( mBase && !onlyCurrentScope ) {
+			result = mBase->resolve(name, onlyCurrentScope);
 		}
 	}
 
@@ -1013,14 +1020,17 @@ Symbol* Object::resolve(const std::string& name, bool onlyCurrentScope) const
 
 ObjectiveScript::MethodSymbol* Object::resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope) const
 {
+	if ( mThis != this ) {
+		return mThis->resolveMethod(name, params, true);
+	}
+
 	// (1) look in current scope
 	ObjectiveScript::MethodSymbol *result = MethodScope::resolveMethod(name, params, true);
 
 	// (2) check inheritance
 	// we cannot go the short is-result-already-set way here because one of our ancestor methods could be marked as final
-	Symbol* base = MethodScope::resolve("base", true);
-	if ( base && !onlyCurrentScope ) {
-		result = static_cast<Object*>(base)->resolveMethod(name, params, onlyCurrentScope);
+	if ( mBase && !onlyCurrentScope ) {
+		result = mBase->resolveMethod(name, params, onlyCurrentScope);
 	}
 
 	// (3) if we still haven't found something also look in other scopes

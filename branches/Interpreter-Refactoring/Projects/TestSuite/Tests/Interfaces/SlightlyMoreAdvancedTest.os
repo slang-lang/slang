@@ -16,7 +16,7 @@ public object Boxhouse implements IGetBox {
 
 public object Warehouse
 	extends Boxhouse
-	implements IGetBoxType, IGetBox
+	implements IGetBoxType/*, IGetBox*/
 {
 	public string GetBoxType(int boxId) const {
 		return "bla";
@@ -29,7 +29,7 @@ public object Warehouse
 }
 
 public void Main(int argc = 0, string argv = "") {
-	assert( TestCase1() );
+//	assert( TestCase1() );
 	assert( TestCase2() );
 }
 

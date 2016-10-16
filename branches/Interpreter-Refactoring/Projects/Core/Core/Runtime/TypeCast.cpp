@@ -42,37 +42,37 @@ void typecast(Object *base, const std::string& targetType)
 	else if ( targetType == BoolObject::TYPENAME ) {
 		BoolObject tmp(*base);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( targetType == DoubleObject::TYPENAME ) {
 		DoubleObject tmp(*base);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( targetType == FloatObject::TYPENAME ) {
 		FloatObject tmp(*base);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( targetType == IntegerObject::TYPENAME ) {
 		IntegerObject tmp(*base);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( targetType == NumberObject::TYPENAME ) {
 		NumberObject tmp(*base);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( targetType == StringObject::TYPENAME ) {
 		StringObject tmp(*base);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( targetType == VoidObject::TYPENAME ) {
 		VoidObject tmp(*base);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else {
 		if ( !base->isInstanceOf(targetType) ) {
@@ -83,7 +83,7 @@ void typecast(Object *base, const std::string& targetType)
 		tmp.setOutterface(targetType);
 		tmp.setQualifiedOutterface(targetType);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 }
 }

@@ -185,8 +185,9 @@ ParameterList Method::mergeParameters(const ParameterList& params) const
 		Parameter param(sigIt->name(), sigIt->type(), sigIt->value(), sigIt->hasDefaultValue(), sigIt->isConst(), sigIt->access());
 
 		if ( paramIt != params.end() ) {
-			Reference ref;
-			if ( paramIt->pointer() ) {
+			Reference ref = paramIt->reference();
+
+			if ( !ref.isValid() && paramIt->pointer() ) {
 				ref = paramIt->pointer()->getReference();
 			}
 

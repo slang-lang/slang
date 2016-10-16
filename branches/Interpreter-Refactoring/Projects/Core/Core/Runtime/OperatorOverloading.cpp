@@ -79,16 +79,11 @@ inline void operator_binary_assign(Object *base, Object *other)
 
 		base->assign(tmp);
 	}
-	else if ( other->isInstanceOf(source) ) {
-		// we are assigning a sub type to a super type
-		//base->assignSubType(*other);
-		base->assign(*other);
-	}
 	else {
 		// no atomic data type, so we have to look if our assign operator has been overwritten
 		ParameterList params;
 		params.push_back(
-				Parameter(other->getName(), other->QualifiedTypename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
+			Parameter(other->getName(), other->QualifiedOutterface(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
 		);
 
 		Runtime::Method* method = static_cast<Runtime::Method*>(base->resolveMethod("operator=", params, false));
@@ -96,8 +91,15 @@ inline void operator_binary_assign(Object *base, Object *other)
 			Interpreter interpreter;
 			interpreter.execute(method, params, base);
 		}
+/*
+		else if ( other->isInstanceOf(source) ) {
+			// we are assigning a sub type to a super type
+			base->assign(*other);
+		}
+*/
 		else {
 			base->assign(*other);
+			//throw Runtime::Exceptions::InvalidAssignment("Could not assign type '" + source + "' to type '" + target + "'");
 		}
 	}
 }
@@ -1082,7 +1084,7 @@ void operator_unary_not(Object *base)
 			Object tmp;
 
 			Interpreter interpreter;
-			interpreter.execute(static_cast<Method*>(op_not), ParameterList(), base);
+			interpreter.execute(dynamic_cast<Method*>(op_not), ParameterList(), base);
 
 			operator_binary_assign(base, &tmp);
 		}
