@@ -1,71 +1,65 @@
 #!/usr/local/bin/oscript
 
-		private int mNumber;
+private int mNumber;
 
-		public void Main(int argc = 0, string argv = "")
-		{
-			assert( TestCase1() );
-			assert( TestCase2() );
-			assert( TestCase3() );
-		}
+public void Main(int argc = 0, string argv = "") {
+	assert( TestCase1() );
+	assert( TestCase2() );
+	assert( TestCase3() );
+}
 
-		private string ToString() const {
-			return "Main";
-		}
+private string ToString() const {
+	return "Main";
+}
 
-		private bool TestCase1() const
-		{
-			print("TestCase1()");
+private bool TestCase1() const {
+	print("TestCase1()");
 
-			//print(this);
+	//print(this);
 
-			return true;
-		}
-		
-		private bool TestCase2() modify
-		{
-			print("TestCase2()");
+	return true;
+}
 
-			mNumber = 1;
-			print("mNumber = " + mNumber);
-			assert( mNumber == 1 );
+private bool TestCase2() modify {
+	print("TestCase2()");
 
-			print("this.mNumber = " + this.mNumber);
-			assert( this.mNumber == 1 );
+	mNumber = 1;
+	print("mNumber = " + mNumber);
+	assert( mNumber == 1 );
 
-			return true;
-		}
+	print("this.mNumber = " + this.mNumber);
+	assert( this.mNumber == 1 );
 
-		private bool TestCase3() modify
-		{
-			print("TestCase3()");
+	return true;
+}
 
-			mNumber = 1;
-			print("this.mNumber == " + this.mNumber);
-			assert( mNumber == 1 );
+private bool TestCase3() modify {
+	print("TestCase3()");
 
-			ModifyThisInMethod1(2);
-			print("this.mNumber == " + this.mNumber);
-			assert( mNumber == 2);
+	mNumber = 1;
+	print("this.mNumber == " + this.mNumber);
+	assert( mNumber == 1 );
 
-			ModifyThisInMethod2(3);
-			print("this.mNumber == " + this.mNumber);
-			assert( mNumber == 3 );
+	ModifyThisInMethod1(2);
+	print("this.mNumber == " + this.mNumber);
+	assert( mNumber == 2);
 
-			this.mNumber = 4;
-			print("this.mNumber == " + this.mNumber);
-			assert( mNumber == 4 );
+	ModifyThisInMethod2(3);
+	print("this.mNumber == " + this.mNumber);
+	assert( mNumber == 3 );
 
-			return true;
-		}
+	this.mNumber = 4;
+	print("this.mNumber == " + this.mNumber);
+	assert( mNumber == 4 );
 
-		private void ModifyThisInMethod1(int value) modify
-		{
-			mNumber = value;
-		}
+	return true;
+}
 
-		private void ModifyThisInMethod2(int value) modify
-		{
-			this.mNumber = value;
-		}
+private void ModifyThisInMethod1(int value) modify {
+	mNumber = value;
+}
+
+private void ModifyThisInMethod2(int value) modify {
+	this.mNumber = value;
+}
 
