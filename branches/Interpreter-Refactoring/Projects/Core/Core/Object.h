@@ -99,6 +99,7 @@ public:	// Value
 	virtual bool isAbstract() const;
 	virtual bool isArray() const;
 	virtual bool isAtomicType() const;
+	virtual bool isConstructed() const;
 	virtual bool isValid() const;
 
 	virtual void setArray(bool value, size_t size = 0);

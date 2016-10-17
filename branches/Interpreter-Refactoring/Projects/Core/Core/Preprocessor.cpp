@@ -76,10 +76,10 @@ Designtime::BluePrintObject* Preprocessor::createMember(TokenIterator token) con
 	std::string name;
 	std::string type;
 	Runtime::AtomicValue value = 0;
-	std::string visibility;
+	Visibility::E visibility;
 
 	// look for the visibility token
-	visibility = (*token++).content();
+	visibility = Visibility::convert((*token++).content());
 	// look for an optional language feature token
 	if ( token->isOptional() ) {
 		languageFeature = (*token++).content();
@@ -89,7 +89,7 @@ Designtime::BluePrintObject* Preprocessor::createMember(TokenIterator token) con
 	// look for the identifier token
 	name = (*token++).content();
 
-	if ( Visibility::convert(visibility) == Visibility::Public ) {
+	if ( visibility == Visibility::Public ) {
 		// beware: public members are deprecated, remember the "Law of Demeter"
 		// consider using wrappers (getter, setter) instead of directly providing access to members for outsiders
 		// haven't you heard? outsiders, or sometimes called strangers, are evil
@@ -134,7 +134,7 @@ Designtime::BluePrintObject* Preprocessor::createMember(TokenIterator token) con
 	blue->setParent(mScope);
 	blue->setQualifiedTypename(type);
 	blue->setValue(value);
-	blue->setVisibility(Visibility::convert(visibility));
+	blue->setVisibility(visibility);
 
 	return blue;
 }
@@ -276,7 +276,7 @@ void Preprocessor::generateBluePrintEnum()
 	symbol->setQualifiedTypename(blueprint->QualifiedTypename());
 	symbol->setVisibility(blueprint->getVisibility());
 
-	Controller::Instance().repository()->addBluePrint(symbol);
+	Controller::Instance().repository()->addBluePrint(symbol, mScope);
 
 	TokenIterator token = mTokens.begin();
 

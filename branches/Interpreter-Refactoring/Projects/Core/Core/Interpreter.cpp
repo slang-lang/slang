@@ -327,10 +327,10 @@ inline Symbol* Interpreter::identify(TokenIterator& token) const
 		else {
 			switch ( result->getSymbolType() ) {
 				case Symbol::IType::BluePrintObjectSymbol:
-					result = static_cast<Designtime::BluePrintObject*>(result)->resolve(identifier, onlyCurrentScope);
+					result = dynamic_cast<Designtime::BluePrintObject*>(result)->resolve(identifier, onlyCurrentScope);
 					break;
 				case Symbol::IType::NamespaceSymbol:
-					result = static_cast<Namespace*>(result)->resolve(identifier, onlyCurrentScope);
+					result = dynamic_cast<Namespace*>(result)->resolve(identifier, onlyCurrentScope);
 					break;
 				case Symbol::IType::ObjectSymbol:
 					result = dynamic_cast<Object*>(result)->resolve(identifier, onlyCurrentScope);
@@ -376,13 +376,13 @@ Symbol* Interpreter::identifyMethod(TokenIterator& token, const ParameterList& p
 
 			// look for an overloaded method
 			if ( result && result->getSymbolType() == Symbol::IType::MethodSymbol ) {
-				result = static_cast<MethodScope*>(mOwner)->resolveMethod(identifier, params, onlyCurrentScope);
+				result = dynamic_cast<MethodScope*>(mOwner)->resolveMethod(identifier, params, onlyCurrentScope);
 			}
 		}
 		else {
 			switch ( result->getSymbolType() ) {
 				case Symbol::IType::NamespaceSymbol:
-					result = static_cast<Namespace*>(result)->resolveMethod(identifier, params, onlyCurrentScope);
+					result = dynamic_cast<Namespace*>(result)->resolveMethod(identifier, params, onlyCurrentScope);
 					break;
 				case Symbol::IType::ObjectSymbol:
 					result = dynamic_cast<Object*>(result)->resolveMethod(identifier, params, onlyCurrentScope);
@@ -390,7 +390,7 @@ Symbol* Interpreter::identifyMethod(TokenIterator& token, const ParameterList& p
 				case Symbol::IType::BluePrintEnumSymbol:
 					throw Common::Exceptions::NotSupported("static method usage not supported");
 				case Symbol::IType::BluePrintObjectSymbol:
-					result = static_cast<Designtime::BluePrintObject*>(result)->resolveMethod(identifier, params, onlyCurrentScope);
+					result = dynamic_cast<Designtime::BluePrintObject*>(result)->resolveMethod(identifier, params, onlyCurrentScope);
 					break;
 				case Symbol::IType::MethodSymbol:
 				case Symbol::IType::UnknownSymbol:

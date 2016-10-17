@@ -49,7 +49,7 @@ Repository::~Repository()
 /*
  * add a new blue print to our repository
  */
-void Repository::addBluePrint(Designtime::BluePrintEnum* blueprint)
+void Repository::addBluePrint(Designtime::BluePrintEnum* blueprint, IScope* /*scope*/)
 {
 	std::string type = blueprint->QualifiedTypename();
 
@@ -65,9 +65,10 @@ void Repository::addBluePrint(Designtime::BluePrintEnum* blueprint)
 /*
  * adds a new blue print to our repository
  */
-void Repository::addBluePrint(Designtime::BluePrintObject* blueprint)
+void Repository::addBluePrint(Designtime::BluePrintObject* blueprint, IScope* scope)
 {
-	std::string type = blueprint->QualifiedTypename();
+	//std::string type = blueprint->QualifiedTypename();
+	std::string type = blueprint->Typename();
 
 	BluePrintObjectMap::iterator it = mBluePrintObjects.find(type);
 	if ( it != mBluePrintObjects.end() ) {
@@ -89,12 +90,14 @@ void Repository::addBluePrint(Designtime::BluePrintObject* blueprint)
 	}
 
 	mBluePrintObjects.insert(std::make_pair(type, blueprint));
+
+	scope->define(type, blueprint);
 }
 
 /*
  * DEPRECATED: adds a new prototype (= generic) to our repository
  */
-void Repository::addPrototype(Designtime::Prototype* /*prototype*/)
+void Repository::addPrototype(Designtime::Prototype* /*prototype*/, IScope* /*scope*/)
 {
 assert(!"prototypes not supported!");
 /*
@@ -335,15 +338,17 @@ void Repository::init()
 
 void Repository::initialize()
 {
+	SymbolScope* scope = Controller::Instance().stack()->globalScope();
+
 	// add atomic types
-	addBluePrint(new Designtime::BoolObject());
-	addBluePrint(new Designtime::DoubleObject());
-	addBluePrint(new Designtime::FloatObject());
-	addBluePrint(new Designtime::GenericObject());
-	addBluePrint(new Designtime::IntegerObject());
-	addBluePrint(new Designtime::NumberObject());
-	addBluePrint(new Designtime::StringObject());
-	addBluePrint(new Designtime::VoidObject());
+	addBluePrint(new Designtime::BoolObject(), scope);
+	addBluePrint(new Designtime::DoubleObject(), scope);
+	addBluePrint(new Designtime::FloatObject(), scope);
+	addBluePrint(new Designtime::GenericObject(), scope);
+	addBluePrint(new Designtime::IntegerObject(), scope);
+	addBluePrint(new Designtime::NumberObject(), scope);
+	addBluePrint(new Designtime::StringObject(), scope);
+	addBluePrint(new Designtime::VoidObject(), scope);
 
 	// add predefined runtime objects
 	{	// null
@@ -354,7 +359,7 @@ void Repository::initialize()
 		nullObject->setVisibility(Visibility::Public);
 		nullObject->setSealed(true);
 
-		Controller::Instance().stack()->globalScope()->define(VALUE_NULL, nullObject);
+		scope->define(VALUE_NULL, nullObject);
 	}
 }
 
@@ -558,11 +563,11 @@ void Repository::rebuildBluePrintObjects()
 		}
 		// }
 
-		Preprocessor preprocessor;
-		preprocessor.process(blueIt->second);
+		//Preprocessor preprocessor;
+		//preprocessor.process(blueIt->second);
 	}
 
-	insertBluePrintObjectsIntoScopes();
+	//insertBluePrintObjectsIntoScopes();
 }
 
 

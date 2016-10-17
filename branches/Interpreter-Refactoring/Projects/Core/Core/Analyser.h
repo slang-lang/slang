@@ -45,8 +45,8 @@ private:
 	TokenList generateTokens(const std::string& content);
 	void process(const TokenList& tokens);
 
-	bool createBluePrint(TokenIterator& token, TokenIterator end) const;
-	bool createEnum(TokenIterator& token, TokenIterator end) const;
+	bool createBluePrint(TokenIterator& token, TokenIterator end);
+	bool createEnum(TokenIterator& token, TokenIterator end);
 	std::string createLibraryReference(TokenIterator& token, TokenIterator end) const;
 	bool createMember(TokenIterator& token, TokenIterator end);
 	bool createMethod(TokenIterator& token, TokenIterator end);

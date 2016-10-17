@@ -9,6 +9,7 @@
 
 // Project includes
 #include <Core/Common/Exceptions.h>
+#include <Core/Designtime/Exceptions.h>
 #include <Core/Designtime/Parser/Parser.h>
 #include <Core/Designtime/SanityChecker.h>
 #include <Core/Runtime/Namespace.h>
@@ -99,7 +100,7 @@ Designtime::Ancestors Analyser::collectInheritance(TokenIterator& token) const
 	return ancestors;
 }
 
-bool Analyser::createBluePrint(TokenIterator& token, TokenIterator end) const
+bool Analyser::createBluePrint(TokenIterator& token, TokenIterator end)
 {
 	// look for the visibility token
 	std::string visibility = (*token++).content();
@@ -123,6 +124,8 @@ bool Analyser::createBluePrint(TokenIterator& token, TokenIterator end) const
 		implementationType = ImplementationType::Interface;
 	}
 
+	TokenList tokens;
+
 	if ( token->type() == Token::Type::SEMICOLON ) {
 		if ( implementationType != ImplementationType::FullyImplemented ) {
 			throw Common::Exceptions::NotSupported("forward declarations cannot be defined as interface or abstract object");
@@ -142,8 +145,6 @@ bool Analyser::createBluePrint(TokenIterator& token, TokenIterator end) const
 		if ( isImplemented ) {
 			isImplemented = (token->type() != Token::Type::SEMICOLON);
 		}
-
-		TokenList tokens;
 
 		if ( isImplemented ) {	// only collect all tokens of this object if it is implemented
 			// interface, object or prototype declarations have to start with an '{' token
@@ -188,12 +189,21 @@ bool Analyser::createBluePrint(TokenIterator& token, TokenIterator end) const
 	symbol->setQualifiedTypename(getQualifiedTypename(type));
 	symbol->setVisibility(Visibility::convert(visibility));
 
-	mRepository->addBluePrint(symbol);
+	mRepository->addBluePrint(symbol, mScope);
 
-	return true;
+
+	MethodScope* tmpScope = mScope;
+
+	mScope = symbol;
+
+	generate(tokens);
+
+	mScope = tmpScope;
+
+	return symbol != 0;
 }
 
-bool Analyser::createEnum(TokenIterator& token, TokenIterator end) const
+bool Analyser::createEnum(TokenIterator& token, TokenIterator end)
 {
 	std::string languageFeature;
 	std::string type;
@@ -235,8 +245,17 @@ bool Analyser::createEnum(TokenIterator& token, TokenIterator end) const
 	symbol->setVisibility(Visibility::convert(visibility));
 	symbol->setSealed(true);
 
-	mRepository->addBluePrint(symbol);
+	mRepository->addBluePrint(symbol, mScope);
 
+/*
+	MethodScope* tmpScope = mScope;
+
+	mScope = symbol;
+
+	generate(tokens);
+
+	mScope = tmpScope;
+*/
 	return symbol != 0;
 }
 
@@ -264,6 +283,9 @@ std::string Analyser::createLibraryReference(TokenIterator& token, TokenIterator
 
 bool Analyser::createMember(TokenIterator& token, TokenIterator /*end*/)
 {
+	assert( mScope->getScopeType() == IScope::IType::MethodScope );
+
+	bool isFinal = false;
 	std::string languageFeature;
 	Mutability::E mutability = Mutability::Modify;
 	std::string name;
@@ -282,9 +304,21 @@ bool Analyser::createMember(TokenIterator& token, TokenIterator /*end*/)
 	// look for the identifier token
 	name = (*token++).content();
 
+	if ( visibility == Visibility::Public ) {
+		// beware: public members are deprecated, remember the "Law of Demeter"
+		// consider using wrappers (getter, setter) instead of directly providing access to members for outsiders
+		// haven't you heard? outsiders, or sometimes called strangers, are evil
+		throw Designtime::Exceptions::LawOfDemeterViolated("public member " + name + " violates \"Law of Demeter\"", token->position());
+	}
+
 	// look for a mutability keyword
 	if ( token->category() == Token::Category::Modifier ) {
 		mutability = Mutability::convert(token->content());
+
+		if ( (*token).content() == MODIFIER_FINAL ) {
+			isFinal = true;
+		}
+
 		token++;
 	}
 
@@ -306,23 +340,44 @@ bool Analyser::createMember(TokenIterator& token, TokenIterator /*end*/)
 
 	expect(Token::Type::SEMICOLON, token);
 
-	Runtime::Object *member = mRepository->createInstance(type, name, false);
-	member->setMember(false);
-	member->setMutability(mutability);
-	member->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
-	member->setParent(mScope);
-	member->setQualifiedTypename(type);
-	member->setValue(value);
-	member->setVisibility(visibility);
+	if ( dynamic_cast<Runtime::Namespace*>(mScope) ) {
+		Runtime::Object *member = mRepository->createInstance(type, name, false);
+		member->setMember(false);
+		member->setMutability(mutability);
+		member->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
+		member->setParent(mScope);
+		member->setQualifiedTypename(type);
+		member->setValue(value);
+		member->setVisibility(visibility);
 
-	mScope->define(name, member);
+		mScope->define(name, member);
+	}
+	else if ( dynamic_cast<Designtime::BluePrintObject*>(mScope) ){
+		Designtime::BluePrintObject* blue = new Designtime::BluePrintObject(type, mFilename, name);
+		blue->setFinal(isFinal);
+		blue->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
+		blue->setMutability(mutability);
+		blue->setMember(true);		// every object created here is a member object
+		blue->setParent(mScope);
+		blue->setQualifiedTypename(type);
+		blue->setValue(value);
+		blue->setVisibility(visibility);
+
+		mScope->define(name, blue);
+	}
+	else {
+		throw Common::Exceptions::Exception("invalid parent scope type detected for symbol '" + name + "'", token->position());
+	}
 
 	return true;
 }
 
 bool Analyser::createMethod(TokenIterator& token, TokenIterator end)
 {
+	bool isAbstract = false;
+	bool isFinal = false;
 	bool isRecursive = false;
+	bool isStatic = true;
 	std::string languageFeature;
 	MethodAttributes::MethodType::E methodType = MethodAttributes::MethodType::Function;
 	Mutability::E mutability = Mutability::Const;	// extreme const correctness: all methods are const by default
@@ -357,14 +412,20 @@ bool Analyser::createMethod(TokenIterator& token, TokenIterator end)
 
 		if ( token->category() == Token::Category::Modifier ) {
 			if ( token->content() == MODIFIER_ABSTRACT ) {
-				throw Common::Exceptions::NotSupported("global methods cannot be declared as abstract");
+				isAbstract = true;
+
+				//throw Common::Exceptions::NotSupported("global methods cannot be declared as abstract");
 			}
 			else if ( token->content() == MODIFIER_CONST ) {
 				mutability = Mutability::Const;
 				numConstModifiers++;
 			}
 			else if ( token->content() == MODIFIER_FINAL ) {
-				throw Common::Exceptions::NotSupported("global methods cannot be declared as final");
+				isFinal = true;
+				//mutability = Mutability::Final;
+				//numConstModifiers++;
+
+				//throw Common::Exceptions::NotSupported("global methods cannot be declared as final");
 			}
 			else if ( token->content() == MODIFIER_MODIFY ) {
 				mutability = Mutability::Modify;
@@ -374,7 +435,9 @@ bool Analyser::createMethod(TokenIterator& token, TokenIterator end)
 				isRecursive = true;
 			}
 			else if ( token->content() == MODIFIER_STATIC ) {
-				throw Common::Exceptions::NotSupported("global methods cannot be declared as static");
+				isStatic = true;
+
+				//throw Common::Exceptions::NotSupported("global methods cannot be declared as static");
 			}
 			else if ( token->content() == RESERVED_WORD_THROWS ) {
 				throws = true;
@@ -410,7 +473,8 @@ bool Analyser::createMethod(TokenIterator& token, TokenIterator end)
 
 	// create a new method with the corresponding return value
 	Runtime::Method *method = new Runtime::Method(mScope, name, type);
-	method->setAbstract(false);
+	method->setAbstract(isAbstract);
+	method->setFinal(isFinal);
 	method->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
 	method->setMethodType(methodType);
 	method->setMutability(mutability);
@@ -418,6 +482,7 @@ bool Analyser::createMethod(TokenIterator& token, TokenIterator end)
 	method->setQualifiedTypename(type);
 	method->setRecursive(isRecursive);
 	method->setSignature(params);
+	method->setStatic(isStatic);
 	method->setThrows(throws);
 	method->setTokens(tokens);
 	method->setVisibility(Visibility::convert(visibility));

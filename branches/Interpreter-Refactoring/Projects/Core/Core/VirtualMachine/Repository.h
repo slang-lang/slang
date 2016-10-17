@@ -40,9 +40,9 @@ public:
 	void init();
 
 public:
-	void addBluePrint(Designtime::BluePrintEnum* blueprint);
-	void addBluePrint(Designtime::BluePrintObject* object);
-	void addPrototype(Designtime::Prototype* prototype);
+	void addBluePrint(Designtime::BluePrintEnum* blueprint, IScope* scope);
+	void addBluePrint(Designtime::BluePrintObject* object, IScope* scope);
+	void addPrototype(Designtime::Prototype* prototype, IScope* scope);
 
 	Runtime::Object* createInstance(const std::string& type, const std::string& name, bool initialize = false);
 	Runtime::Object* createInstance(Designtime::BluePrintObject* blueprint, const std::string& name, bool initialize = false);
@@ -50,11 +50,6 @@ public:
 	bool isAlreadyKnown(const std::string& name) const;
 
 	void rebuildBluePrints();
-
-protected:
-
-private:
-	typedef std::map<Runtime::Object*, int> ReferenceCountedObjects;
 
 private:
 	Runtime::Object* createObject(const std::string& name, Designtime::BluePrintObject* blueprint, bool initialize);

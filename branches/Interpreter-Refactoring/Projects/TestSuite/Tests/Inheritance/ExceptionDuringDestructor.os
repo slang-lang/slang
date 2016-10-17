@@ -19,6 +19,11 @@ private object TestObject {
 public void Main(int argc = 0, string argv = "") {
 	try {
 		TestObject obj = new TestObject();
+
+		delete obj;
+	}
+	catch ( string e ) {
+		print("caugth exception: " + e);
 	}
 }
 

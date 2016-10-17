@@ -93,7 +93,7 @@ Object::~Object()
 		Controller::Instance().memory()->remove(mReference);
 	}
 	else {
-		Object* base = dynamic_cast<Object*>(resolve("base", true));
+		Object* base = dynamic_cast<Object*>(mThis->resolve("base", true));
 		if ( base ) {
 			Controller::Instance().memory()->remove(base->mReference);
 		}
@@ -150,72 +150,6 @@ void Object::assign(const Object& other, bool overrideType)
 	}
 }
 
-void Object::assignReference(const Reference& ref)
-{
-	if ( !ref.isValid() ) {
-		mThis = this;
-		mBase = 0;
-	}
-	else {
-		Controller::Instance().memory()->add(ref);
-		mReference = ref;
-
-		mThis = Controller::Instance().memory()->get(ref);
-		mBase = dynamic_cast<Object*>(mThis->resolve("base", true));
-	}
-}
-
-void Object::copy(const Object& other)
-{
-	if ( this != &other ) {
-		mFilename = other.mFilename;
-		mInheritance = other.mInheritance;
-		mIsArray = other.mIsArray;
-		mIsArrayDynamicallyExpanding = other.mIsArrayDynamicallyExpanding;
-		mIsAtomicType = other.mIsAtomicType;
-		mIsConstructed = other.mIsConstructed;// ? other.mIsConstructed : mIsConstructed;
-		mFilename = other.mFilename;
-		mOutterface = other.mTypename;
-		mParent = other.mParent ? other.mParent : mParent;
-		mQualifiedOutterface = other.mQualifiedTypename;
-		mQualifiedTypename = other.mQualifiedTypename;
-		mScopeName = other.mScopeName;
-		mScopeType = other.mScopeType;
-		mTypename = other.mTypename;
-		mValue = other.mValue;
-
-		garbageCollector();
-
-		if ( !mIsAtomicType ) {
-			// register this
-			define(IDENTIFIER_THIS, this);
-
-			// register new members
-			for ( Symbols::const_iterator it = other.mSymbols.begin(); it != other.mSymbols.end(); ++it ) {
-				if ( /*it->first == IDENTIFIER_BASE ||*/
-					it->first == IDENTIFIER_THIS ||
-					!it->second || it->second->getSymbolType() != Symbol::IType::ObjectSymbol) {
-					continue;
-				}
-
-				Object* source = static_cast<Object*>(it->second);
-				Object* target = Controller::Instance().repository()->createInstance(source->Typename(), source->getName(), false);
-				target->copy(*source);
-
-				define(target->getName(), target);
-			}
-
-			// register new methods
-			for ( MethodCollection::const_iterator it = other.mMethods.begin(); it != other.mMethods.end(); ++it ) {
-				Method *method = new Method(this, (*it)->getName(), (*it)->Typename());
-				*method = *(*it);
-
-				defineMethod((*it)->getName(), method);
-			}
-		}
-	}
-}
-
 void Object::addInheritance(const Designtime::Ancestor& ancestor, Object* inheritance)
 {
 	if ( !inheritance ) {
@@ -224,6 +158,22 @@ void Object::addInheritance(const Designtime::Ancestor& ancestor, Object* inheri
 	}
 
 	mInheritance.insert(std::make_pair(ancestor, inheritance));
+}
+
+void Object::assignReference(const Reference& ref)
+{
+	if ( !ref.isValid() ) {
+		mThis = this;
+		//mBase = 0;
+	}
+	else {
+		Controller::Instance().memory()->add(ref);
+		mReference = ref;
+
+		mThis = Controller::Instance().memory()->get(ref);
+	}
+
+	mBase = dynamic_cast<Object*>(SymbolScope::resolve("base", true));
 }
 
 bool Object::CanExecuteDefaultConstructor() const
@@ -255,7 +205,7 @@ ControlFlow::E Object::Constructor(const ParameterList& params)
 		return controlflow;
 	}
 
-	if ( mIsConstructed ) {	// prevent multiple instantiations
+	if ( isConstructed() ) {	// prevent multiple instantiations
 		throw Common::Exceptions::Exception("can not construct object '" + getFullScopeName() + "' multiple times");
 	}
 
@@ -274,26 +224,9 @@ ControlFlow::E Object::Constructor(const ParameterList& params)
 	}
 
 	// check if we have implemented at least one constructor
-	Symbol *symbol = 0;
-	if ( mReference.isValid() ) {
-		symbol = Controller::Instance().memory()->get(mReference)->resolve(Typename(), true);
-	}
-	else {
-		symbol = resolve(Typename(), true);
-	}
-
+	Symbol *symbol = resolve(Typename(), true);
 	if ( symbol ) {
 		// if a specialized constructor is implemented, the default constructor cannot be used
-/*
-		Method *constructor = 0;
-		if ( mReference.isValid() ) {
-			constructor = dynamic_cast<Method*>(Controller::Instance().memory()->get(mReference)->resolveMethod(Typename(), params, true));
-		}
-		else {
-			constructor = dynamic_cast<Method*>(resolveMethod(Typename(), params, true));
-		}
-*/
-
 		Method *constructor = dynamic_cast<Method*>(resolveMethod(Typename(), params, true));
 		if ( constructor ) {
 			VoidObject tmp;
@@ -323,17 +256,68 @@ ControlFlow::E Object::Constructor(const ParameterList& params)
 */
 
 	// set after executing constructor in case any exceptions have been thrown
-	mIsConstructed = true;
+	setConstructed(true);
 
 	return controlflow;
+}
+
+void Object::copy(const Object& other)
+{
+	if ( this != &other ) {
+		mFilename = other.mFilename;
+		mInheritance = other.mInheritance;
+		mIsArray = other.mIsArray;
+		mIsArrayDynamicallyExpanding = other.mIsArrayDynamicallyExpanding;
+		mIsAtomicType = other.mIsAtomicType;
+		mIsConstructed = other.mIsConstructed;// ? other.mIsConstructed : mIsConstructed;
+		mFilename = other.mFilename;
+		mOutterface = other.mTypename;
+		mParent = other.mParent ? other.mParent : mParent;
+		mQualifiedOutterface = other.mQualifiedTypename;
+		mQualifiedTypename = other.mQualifiedTypename;
+		mScopeName = other.mScopeName;
+		mScopeType = other.mScopeType;
+		mTypename = other.mTypename;
+		mValue = other.mValue;
+
+		garbageCollector();
+
+		if ( !mIsAtomicType ) {
+			// register this
+			define(IDENTIFIER_THIS, this);
+
+			// register new members
+			for ( Symbols::const_iterator it = other.mSymbols.begin(); it != other.mSymbols.end(); ++it ) {
+				if ( /*it->first == IDENTIFIER_BASE ||*/
+						it->first == IDENTIFIER_THIS ||
+						!it->second || it->second->getSymbolType() != Symbol::IType::ObjectSymbol) {
+					continue;
+				}
+
+				Object* source = static_cast<Object*>(it->second);
+				Object* target = Controller::Instance().repository()->createInstance(source->Typename(), source->getName(), false);
+				target->copy(*source);
+
+				define(target->getName(), target);
+			}
+
+			// register new methods
+			for ( MethodCollection::const_iterator it = other.mMethods.begin(); it != other.mMethods.end(); ++it ) {
+				Method *method = new Method(this, (*it)->getName(), (*it)->Typename());
+				*method = *(*it);
+
+				defineMethod((*it)->getName(), method);
+			}
+		}
+	}
 }
 
 ControlFlow::E Object::Destructor()
 {
 	ControlFlow::E controlflow = ControlFlow::Normal;
 
-	if ( mIsConstructed && !mIsAtomicType ) {
-		mIsConstructed = false;
+	if ( isConstructed() && !mIsAtomicType ) {
+		//setConstructed(false);
 
 		ParameterList params;
 
@@ -341,7 +325,6 @@ ControlFlow::E Object::Destructor()
 		Method *destructor = static_cast<Method*>(resolveMethod("~" + Typename(), params, true));
 		if ( destructor ) {
 			VoidObject tmp;
-			//controlflow = destructor->execute(params, &tmp, Token());
 
 			Interpreter interpreter;
 			controlflow = interpreter.execute(destructor, params, &tmp);
@@ -369,14 +352,14 @@ ControlFlow::E Object::Destructor()
 	}
 
 	// set after executing destructor in case any exceptions have been thrown
-	mIsConstructed = false;
+	setConstructed(false);
 
 	return controlflow;
 }
 
 ControlFlow::E Object::execute(Object *result, const std::string& name, const ParameterList& params, const Method* /*caller*/)
 {
-	if ( !mIsConstructed ) {
+	if ( !isConstructed() ) {
 		// a method is being called although our object has not yet been constructed?
 		throw Runtime::Exceptions::NullPointerException("executed method '" + name + "' of uninitialized object '" + QualifiedTypename() + "'");
 	}
@@ -475,6 +458,15 @@ bool Object::isAtomicType() const
 	return mIsAtomicType;
 }
 
+bool Object::isConstructed() const
+{
+	if ( mThis != this ) {
+		return Controller::Instance().memory()->get(mReference)->isConstructed();
+	}
+
+	return mIsConstructed;
+}
+
 bool Object::isInstanceOf(const std::string& type) const
 {
 	if ( type.empty() ) {
@@ -496,7 +488,7 @@ bool Object::isInstanceOf(const std::string& type) const
 
 bool Object::isValid() const
 {
-	return mIsConstructed;
+	return isConstructed();
 }
 
 const Object* Object::operator_array(const Object *index)
@@ -971,17 +963,23 @@ void Object::operator_unary_not()
 Symbol* Object::resolve(const std::string& name, bool onlyCurrentScope) const
 {
 	if ( mThis != this ) {
-		return mThis->resolve(name, true);
+		return mThis->resolve(name, onlyCurrentScope);
 	}
 
 	// (1) look only in current scope
-	Symbol *result = MethodScope::resolve(name, true);
+	Symbol *result = SymbolScope::resolve(name, true);
 
 	// (2) check inheritance
+/*
 	if ( !result ) {
 		if ( mBase && !onlyCurrentScope ) {
 			result = mBase->resolve(name, onlyCurrentScope);
 		}
+	}
+*/
+
+	if ( !result && mBase ) {
+		result = mBase->resolve(name, onlyCurrentScope);
 	}
 
 	// (3) if we still haven't found something also look in other scopes
@@ -1029,6 +1027,11 @@ void Object::setArray(bool value, size_t size)
 
 void Object::setConstructed(bool state)
 {
+	if ( mThis != this ) {
+		Controller::Instance().memory()->get(mReference)->setConstructed(state);
+		return;
+	}
+
 	mIsConstructed = state;
 }
 
