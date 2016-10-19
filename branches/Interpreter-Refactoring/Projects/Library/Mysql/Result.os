@@ -41,7 +41,7 @@ public namespace Mysql {
 
 		public Mysql.Entry getField(int fieldIdx) const {
 			if ( fieldIdx < 0 || fieldIdx > mNumFields ) {
-				throw new System.OutOfBoundsException("fieldIdx out of bounds");
+				throw new OutOfBoundsException("fieldIdx out of bounds");
 			}
 
 			string name = mysql_get_field_name(mHandle, fieldIdx);
@@ -64,7 +64,7 @@ public namespace Mysql {
 
 		public void seekRow(int rowIdx) {
 			if ( rowIdx < 0 || rowIdx >= mNumRows ) {
-				throw new System.OutOfBoundsException("rowIdx out of bounds");
+				throw new OutOfBoundsException("rowIdx out of bounds");
 			}
 
 			mysql_data_seek(mHandle, rowIdx);

@@ -26,7 +26,7 @@ public namespace Mysql {
 		public Mysql.Entry getEntry(int fieldIdx) {
 /*
 			if ( fieldIdx < 0 || fieldIdx > mNumFields ) {
-				throw new System.OutOfBoundsException("fieldIdx out of bounds");
+				throw new OutOfBoundsException("fieldIdx out of bounds");
 			}
 */
 
@@ -49,7 +49,7 @@ public namespace Mysql {
 		public string getName(int fieldIdx) {
 /*
 			if ( fieldIdx < 0 || fieldIdx > mNumFields ) {
-				throw new System.OutOfBoundsException("fieldIdx out of bounds");
+				throw new OutOfBoundsException("fieldIdx out of bounds");
 			}
 */
 
@@ -59,7 +59,7 @@ public namespace Mysql {
 		public string getType(int fieldIdx) {
 /*
 			if ( fieldIdx < 0 || fieldIdx > mNumFields ) {
-				throw new System.OutOfBoundsException("fieldIdx out of bounds");
+				throw new OutOfBoundsException("fieldIdx out of bounds");
 			}
 */
 			assertmsg(!"not implemented", "string getType(int fieldIdx) is not implemented");
@@ -68,7 +68,7 @@ public namespace Mysql {
 		public string getValue(int fieldIdx) {
 /*
 			if ( fieldIdx < 0 || fieldIdx > mNumFields ) {
-				throw new System.OutOfBoundsException("fieldIdx out of bounds");
+				throw new OutOfBoundsException("fieldIdx out of bounds");
 			}
 */
 

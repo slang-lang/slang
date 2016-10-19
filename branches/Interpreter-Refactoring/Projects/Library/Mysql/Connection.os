@@ -93,7 +93,7 @@ public namespace Mysql {
 		public bool open(string hostname, int port, string user, string password, string database = "") modify {
 			if ( mHandle != 0 ) {
 				// we already have a connection handle
-				throw new System.Exception("mysql handle still points to an open connection!");
+				throw new Exception("mysql handle still points to an open connection!");
 			}
 
 			// request a mysql handle
