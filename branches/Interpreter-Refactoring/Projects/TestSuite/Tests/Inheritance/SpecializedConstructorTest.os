@@ -23,13 +23,13 @@ private object DerivedObject extends BaseObject {
 	}
 
 	public void ~DerivedObject() {
-		print("mValue = " + base.mValue);
-		print("~DerivedObject(" + base.mValue + ")");
+		print("mValue = " + mValue);
+		print("~DerivedObject(" + mValue + ")");
 	}
 }
 
 public void Main(int argc = 0, string argv = "") {
 	DerivedObject derived = new DerivedObject(5);
-	print("derived.mValue = " + derived.base.mValue);
+	print("derived.mValue = " + derived.mValue);
 }
 

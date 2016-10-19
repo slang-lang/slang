@@ -55,11 +55,15 @@ void Stack::init()
 {
 	mGlobalScope = new GlobalScope();
 
+/*
 	StackLevel* level = new StackLevel(mStack.size(), mGlobalScope, ParameterList());
 	level->pushScope(mGlobalScope, false);
 	level->pushTokens(TokenList());
 
 	mStack.push_back(level);
+*/
+
+	push(mGlobalScope, ParameterList());
 }
 
 void Stack::pop()
@@ -82,14 +86,17 @@ void Stack::print()
 
 void Stack::push(IScope* scope, const ParameterList &params)
 {
+	TokenList tokens;
+	if ( dynamic_cast<Runtime::Method*>(scope) ) {
+		tokens = dynamic_cast<Runtime::Method*>(scope)->getTokens();
+	}
+
 	// create new stack level
 	StackLevel* level = new StackLevel(mStack.size(), scope, params);
-	// push its scope
+	// push scope
 	level->pushScope(scope, false);
-	// in case its a method also push its tokens
-	if ( dynamic_cast<Runtime::Method*>(scope) ) {
-		level->pushTokens(dynamic_cast<Runtime::Method*>(scope)->getTokens());
-	}
+	// push tokens (although maybe none are present)
+	level->pushTokens(tokens);
 
 	mStack.push_back(level);
 }

@@ -81,7 +81,8 @@ std::string StackLevel::toString() const
 		result += ": " + mScope->getFullScopeName();
 
 		if ( dynamic_cast<Runtime::Method*>(mScope) ) {
-			result += "(" + ObjectiveScript::toString(mParameters) + ")";
+			//result += "(" + ObjectiveScript::toString(mParameters) + ")";
+			result += dynamic_cast<Runtime::Method*>(mScope)->ToString();
 		}
 	}
 
