@@ -1,5 +1,7 @@
 #!/usr/local/bin/oscript
 
+// THIS WILL FAIL
+
 public void Main(int argc = 0, string argv = "") {
 	assert( TestCase1() );
 }
