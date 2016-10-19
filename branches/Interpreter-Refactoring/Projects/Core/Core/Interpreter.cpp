@@ -179,20 +179,6 @@ ControlFlow::E Interpreter::execute(Method* method, const ParameterList& params,
 	// unwind stack trace
 	Controller::Instance().stack()->pop();
 
-/*
-	// undefine references to prevent double deletes
-	for ( ParameterList::const_iterator it = executedParams.begin(); it != executedParams.end(); ++it ) {
-		switch ( it->access() ) {
-			case Parameter::AccessMode::ByReference:
-				getScope()->undefine(it->name(), it->pointer());
-				break;
-			case Parameter::AccessMode::ByValue:
-				break;
-			case Parameter::AccessMode::Unspecified:
-				throw Common::Exceptions::AccessMode("unspecified access mode");;
-		}
-	}
-*/
 	mOwner = previousOwner;
 
 	return controlflow;
@@ -464,22 +450,22 @@ void Interpreter::parseCondition(Object *result, TokenIterator& start)
 
 		switch ( op ) {
 			case Token::Type::COMPARE_EQUAL:
-				result->assign(BoolObject(operator_binary_equal(result, &v2)));
+				*result = BoolObject(operator_binary_equal(result, &v2));
 				break;
 			case Token::Type::COMPARE_GREATER:
-				result->assign(BoolObject(operator_binary_greater(result, &v2)));
+				*result = BoolObject(operator_binary_greater(result, &v2));
 				break;
 			case Token::Type::COMPARE_GREATER_EQUAL:
-				result->assign(BoolObject(operator_binary_greater_equal(result, &v2)));
+				*result = BoolObject(operator_binary_greater_equal(result, &v2));
 				break;
 			case Token::Type::COMPARE_LESS:
-				result->assign(BoolObject(operator_binary_less(result, &v2)));
+				*result = BoolObject(operator_binary_less(result, &v2));
 				break;
 			case Token::Type::COMPARE_LESS_EQUAL:
-				result->assign(BoolObject(operator_binary_less_equal(result, &v2)));
+				*result = BoolObject(operator_binary_less_equal(result, &v2));
 				break;
 			case Token::Type::COMPARE_UNEQUAL:
-				result->assign(BoolObject(!operator_binary_equal(result, &v2)));
+				*result = BoolObject(!operator_binary_equal(result, &v2));
 				break;
 			default:
 				break;

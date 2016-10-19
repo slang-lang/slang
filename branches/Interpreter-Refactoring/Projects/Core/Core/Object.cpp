@@ -396,7 +396,7 @@ ControlFlow::E Object::execute(Object *result, const std::string& name, const Pa
 
 	Method *method = static_cast<Method*>(resolveMethod(name, params, false));
 	if ( !method ) {
-		throw Common::Exceptions::UnknownIdentifer("unknown method '" + getFullScopeName() + "." + name + "' or method with invalid parameter count called!");
+		throw Common::Exceptions::UnknownIdentifer("unknown method '" + QualifiedTypename() + "." + name + "' or method with invalid parameter count called!");
 	}
 
 /*
@@ -551,9 +551,7 @@ void Object::operator_assign(const Object *other)
 		return;
 	}
 
-	std::string target = other->Typename();
-
-	throw Common::Exceptions::NotImplemented(Typename() + ".operator=: conversion from " + target + " to " + Typename() + " not supported");
+	throw Common::Exceptions::NotImplemented(Typename() + ".operator=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_bitand(const Object *other)
@@ -582,9 +580,7 @@ void Object::operator_bitand(const Object *other)
 		return;
 	}
 
-	std::string target = other->Typename();
-
-	throw Common::Exceptions::NotImplemented(Typename() + ".operator&: conversion from " + target + " to " + Typename() + " not supported");
+	throw Common::Exceptions::NotImplemented(Typename() + ".operator&: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_bitcomplement(const Object *other)
@@ -613,9 +609,7 @@ void Object::operator_bitcomplement(const Object *other)
 		return;
 	}
 
-	std::string target = other->Typename();
-
-	throw Common::Exceptions::NotImplemented(Typename() + ".operator~: conversion from " + target + " to " + Typename() + " not supported");
+	throw Common::Exceptions::NotImplemented(Typename() + ".operator~: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_bitor(const Object *other)
@@ -644,14 +638,12 @@ void Object::operator_bitor(const Object *other)
 		return;
 	}
 
-	std::string target = other->Typename();
-
-	throw Common::Exceptions::NotImplemented(Typename() + ".operator|: conversion from " + target + " to " + Typename() + " not supported");
+	throw Common::Exceptions::NotImplemented(Typename() + ".operator|: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool Object::operator_bool() const
 {
-	throw Common::Exceptions::NotImplemented(Typename() + ".operator bool(): for " + Typename() + " not supported");
+	throw Common::Exceptions::NotImplemented(Typename() + ".operator bool(): for " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_divide(const Object *other)
@@ -680,9 +672,7 @@ void Object::operator_divide(const Object *other)
 		return;
 	}
 
-	std::string target = other->Typename();
-
-	throw Common::Exceptions::NotImplemented(Typename() + ".operator/: conversion from " + target + " to " + Typename() + " not supported");
+	throw Common::Exceptions::NotImplemented(Typename() + ".operator/: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool Object::operator_equal(const Object *other)
@@ -714,9 +704,7 @@ bool Object::operator_equal(const Object *other)
 		return operator_equal(&tmp);
 	}
 
-	std::string target = other->Typename();
-
-	throw Common::Exceptions::NotImplemented(Typename() + ".operator==: conversion from " + target + " to " + Typename() + " not supported");
+	throw Common::Exceptions::NotImplemented(Typename() + ".operator==: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool Object::operator_greater(const Object *other)
@@ -744,9 +732,7 @@ bool Object::operator_greater(const Object *other)
 		return operator_greater(&tmp);
 	}
 
-	std::string target = other->Typename();
-
-	throw Common::Exceptions::NotImplemented(Typename() + ".operator>: conversion from " + target + " to " + Typename() + " not supported");
+	throw Common::Exceptions::NotImplemented(Typename() + ".operator>: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool Object::operator_greater_equal(const Object *other)
@@ -774,9 +760,7 @@ bool Object::operator_greater_equal(const Object *other)
 		return operator_greater_equal(&tmp);
 	}
 
-	std::string target = other->Typename();
-
-	throw Common::Exceptions::NotImplemented(Typename() + ".operator>=: conversion from " + target + " to " + Typename() + " not supported");
+	throw Common::Exceptions::NotImplemented(Typename() + ".operator>=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool Object::operator_is(const Symbol *other)
@@ -813,9 +797,7 @@ bool Object::operator_less(const Object *other)
 		return operator_less(&tmp);
 	}
 
-	std::string target = other->Typename();
-
-	throw Common::Exceptions::NotImplemented(Typename() + ".operator<: conversion from " + target + " to " + Typename() + " not supported");
+	throw Common::Exceptions::NotImplemented(Typename() + ".operator<: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool Object::operator_less_equal(const Object *other)
@@ -843,9 +825,7 @@ bool Object::operator_less_equal(const Object *other)
 		return operator_less_equal(&tmp);
 	}
 
-	std::string target = other->Typename();
-
-	throw Common::Exceptions::NotImplemented(Typename() + ".operator<=: conversion from " + target + " to " + Typename() + " not supported");
+	throw Common::Exceptions::NotImplemented(Typename() + ".operator<=: conversion from " + other->QualifiedTypename() + " to " + Typename() + " not supported");
 }
 
 void Object::operator_modulo(const Object *other)
@@ -874,9 +854,7 @@ void Object::operator_modulo(const Object *other)
 		return;
 	}
 
-	std::string target = other->Typename();
-
-	throw Common::Exceptions::NotImplemented(Typename() + ".operator%: conversion from " + target + " to " + Typename() + " not supported");
+	throw Common::Exceptions::NotImplemented(Typename() + ".operator%: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_multiply(const Object *other)
@@ -905,9 +883,7 @@ void Object::operator_multiply(const Object *other)
 		return;
 	}
 
-	std::string target = other->Typename();
-
-	throw Common::Exceptions::NotImplemented(Typename() + ".operator*: conversion from " + target + " to " + Typename() + " not supported");
+	throw Common::Exceptions::NotImplemented(Typename() + ".operator*: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_plus(const Object *other)
@@ -965,29 +941,27 @@ void Object::operator_subtract(const Object *other)
 		return;
 	}
 
-	std::string target = other->Typename();
-
-	throw Common::Exceptions::NotImplemented(Typename() + ".operator-: conversion from " + target + " to " + Typename() + " not supported");
+	throw Common::Exceptions::NotImplemented(Typename() + ".operator-: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_unary_decrement()
 {
-	throw Common::Exceptions::NotImplemented(Typename() + ".operator--: for " + Typename() + " not supported");
+	throw Common::Exceptions::NotImplemented(Typename() + ".operator--: for " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_unary_increment()
 {
-	throw Common::Exceptions::NotImplemented(Typename() + ".operator++: for " + Typename() + " not supported");
+	throw Common::Exceptions::NotImplemented(Typename() + ".operator++: for " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_unary_minus()
 {
-	throw Common::Exceptions::NotImplemented(Typename() + ".operator unary -: for " + Typename() + " not supported");
+	throw Common::Exceptions::NotImplemented(Typename() + ".operator unary -: for " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_unary_not()
 {
-	throw Common::Exceptions::NotImplemented(Typename() + ".operator unary !: for " + Typename() + " not supported");
+	throw Common::Exceptions::NotImplemented(Typename() + ".operator unary !: for " + QualifiedTypename() + " not supported");
 }
 
 Symbol* Object::resolve(const std::string& name, bool onlyCurrentScope) const

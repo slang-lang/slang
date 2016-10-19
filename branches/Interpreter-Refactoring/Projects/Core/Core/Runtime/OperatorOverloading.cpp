@@ -157,7 +157,7 @@ void operator_binary_bitand(Object *base, Object *other)
 	else {
 		ParameterList params;
 		params.push_back(
-			Parameter(other->getName(), other->QualifiedTypename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
+			Parameter(other->getName(), other->QualifiedOutterface(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
 		);
 
 		VoidObject tmp;
@@ -218,7 +218,7 @@ void operator_binary_bitcomplement(Object *base, Object *other)
 	else {
 		ParameterList params;
 		params.push_back(
-			Parameter(other->getName(), other->QualifiedTypename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
+			Parameter(other->getName(), other->QualifiedOutterface(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
 		);
 
 		VoidObject tmp;
@@ -279,7 +279,7 @@ void operator_binary_bitor(Object *base, Object *other)
 	else {
 		ParameterList params;
 		params.push_back(
-			Parameter(other->getName(), other->QualifiedTypename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
+			Parameter(other->getName(), other->QualifiedOutterface(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
 		);
 
 		VoidObject tmp;
@@ -340,7 +340,7 @@ void operator_binary_divide(Object *base, Object *other)
 	else {
 		ParameterList params;
 		params.push_back(
-			Parameter(other->getName(), other->QualifiedTypename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
+			Parameter(other->getName(), other->QualifiedOutterface(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
 		);
 
 		VoidObject tmp;
@@ -390,7 +390,7 @@ bool operator_binary_equal(Object *base, Object *other)
 
 	ParameterList params;
 	params.push_back(
-		Parameter(other->getName(), other->QualifiedTypename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
+		Parameter(other->getName(), other->QualifiedOutterface(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
 	);
 
 	if ( base->resolveMethod("operator==", params, false) ) {
@@ -442,7 +442,7 @@ bool operator_binary_greater(Object *base, Object *other)
 
 	ParameterList params;
 	params.push_back(
-		Parameter(other->getName(), other->QualifiedTypename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
+		Parameter(other->getName(), other->QualifiedOutterface(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
 	);
 
 	Object tmp;
@@ -489,7 +489,7 @@ bool operator_binary_greater_equal(Object *base, Object *other)
 
 	ParameterList params;
 	params.push_back(
-		Parameter(other->getName(), other->QualifiedTypename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
+		Parameter(other->getName(), other->QualifiedOutterface(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
 	);
 
 	Object tmp;
@@ -536,7 +536,7 @@ bool operator_binary_less(Object *base, Object *other)
 
 	ParameterList params;
 	params.push_back(
-		Parameter(other->getName(), other->QualifiedTypename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
+		Parameter(other->getName(), other->QualifiedOutterface(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
 	);
 
 	Object tmp;
@@ -583,7 +583,7 @@ bool operator_binary_less_equal(Object *base, Object *other)
 
 	ParameterList params;
 	params.push_back(
-		Parameter(other->getName(), other->QualifiedTypename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
+		Parameter(other->getName(), other->QualifiedOutterface(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
 	);
 
 	Object tmp;
@@ -653,7 +653,7 @@ void operator_binary_modulo(Object *base, Object *other)
 	else {
 		ParameterList params;
 		params.push_back(
-			Parameter(other->getName(), other->QualifiedTypename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
+			Parameter(other->getName(), other->QualifiedOutterface(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
 		);
 
 		VoidObject tmp;
@@ -714,7 +714,7 @@ void operator_binary_multiply(Object *base, Object *other)
 	else {
 		ParameterList params;
 		params.push_back(
-			Parameter(other->getName(), other->QualifiedTypename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
+			Parameter(other->getName(), other->QualifiedOutterface(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
 		);
 
 		VoidObject tmp;
@@ -775,7 +775,7 @@ void operator_binary_plus(Object *base, Object *other)
 	else {
 		ParameterList params;
 		params.push_back(
-			Parameter(other->getName(), other->QualifiedTypename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
+			Parameter(other->getName(), other->QualifiedOutterface(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
 		);
 
 		VoidObject tmp;
@@ -836,7 +836,7 @@ void operator_binary_subtract(Object *base, Object *other)
 	else {
 		ParameterList params;
 		params.push_back(
-			Parameter(other->getName(), other->QualifiedTypename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
+			Parameter(other->getName(), other->QualifiedOutterface(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
 		);
 
 		VoidObject tmp;

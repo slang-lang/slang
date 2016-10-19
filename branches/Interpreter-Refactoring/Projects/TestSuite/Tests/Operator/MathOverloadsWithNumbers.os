@@ -1,67 +1,55 @@
 #!/usr/local/bin/oscript
 
-public namespace MathOverloads
-{
-	private object OverloadedObject
-	{
+public namespace MathOverloads {
+	private object OverloadedObject {
 		private int mNumber;
 
-		public void OverloadedObject(int one const)
-		{
+		public void OverloadedObject(int one const) {
 			mNumber = one;
 		}
 
-		public int GetNumber() const
-		{
+		public int GetNumber() const {
 			return mNumber;
 		}
 
 		/////////////////////////////////////////////////////////////////////
 
-		public void operator/(int other const) modify
-		{
+		public void operator/(int other const) modify {
 			print("operator/");
 			mNumber = mNumber / other;
 		}
 
-		public bool operator==(int other const) const
-		{
+		public bool operator==(int other const) const {
 			print("operator==(int)");
 			return mNumber == other;
 		}
 
-		public void operator*(int other const) modify
-		{
+		public void operator*(int other const) modify {
 			print("operator*");
 			mNumber = mNumber * other;
 		}
 
-		public void operator%(int other const) modify
-		{
+		public void operator%(int other const) modify {
 			print("operator%");
 			mNumber = mNumber % other;
 		}
 
-		public void operator+(int other const) modify
-		{
+		public void operator+(int other const) modify {
 			print("operator+");
 			mNumber = mNumber + other;
 		}
 
-		public void operator-(int other const) modify
-		{
+		public void operator-(int other const) modify {
 			print("operator-");
 			mNumber = mNumber - other;
 		}
 
-		public void operator++() modify
-		{
+		public void operator++() modify {
 			print("operator++");
 			mNumber = mNumber++;
 		}
 
-		public void operator--() modify
-		{
+		public void operator--() modify {
 			print("operator--");
 			mNumber = mNumber--;
 		}
@@ -78,8 +66,7 @@ public namespace MathOverloads
 	}
 }
 
-public void Main(int argc const = 0, string argv const = "")
-{
+public void Main(int argc const = 0, string argv const = "") {
 	assert( TestCase1() );
 	assert( TestCase2() );
 	assert( TestCase3() );
@@ -89,8 +76,7 @@ public void Main(int argc const = 0, string argv const = "")
 	assert( TestCase7() );
 }
 
-private bool TestCase1() const
-{
+private bool TestCase1() const {
 	print("TestCase1: using the overloaded plus operator");
 
 	MathOverloads.OverloadedObject obj1 = new MathOverloads.OverloadedObject(1);
@@ -106,8 +92,7 @@ private bool TestCase1() const
 	return false;
 }
 
-private bool TestCase2() const
-{
+private bool TestCase2() const {
 	print("TestCase2: using the overloaded subtract operator");
 
 	MathOverloads.OverloadedObject obj1 = new MathOverloads.OverloadedObject(1);
@@ -123,8 +108,7 @@ private bool TestCase2() const
 	return false;
 }
 
-private bool TestCase3() const
-{
+private bool TestCase3() const {
 	print("TestCase3: using the overloaded multiply operator");
 
 	MathOverloads.OverloadedObject obj1 = new MathOverloads.OverloadedObject(1);
@@ -140,8 +124,7 @@ private bool TestCase3() const
 	return false;
 }
 
-private bool TestCase4() const
-{
+private bool TestCase4() const {
 	print("TestCase4: using the overloaded divide operator");
 
 	MathOverloads.OverloadedObject obj1 = new MathOverloads.OverloadedObject(4);
@@ -157,8 +140,7 @@ private bool TestCase4() const
 	return false;
 }
 
-private bool TestCase5() const
-{
+private bool TestCase5() const {
 	print("TestCase5: using the overloaded modulo operator");
 
 	MathOverloads.OverloadedObject obj1 = new MathOverloads.OverloadedObject(5);
@@ -174,8 +156,7 @@ private bool TestCase5() const
 	return false;
 }
 
-private bool TestCase6() const
-{
+private bool TestCase6() const {
 	print("TestCase6: using the overloaded decrement operator");
 
 	MathOverloads.OverloadedObject obj1 = new MathOverloads.OverloadedObject(5);
@@ -191,8 +172,7 @@ private bool TestCase6() const
 	return false;
 }
 
-private bool TestCase7() const
-{
+private bool TestCase7() const {
 	print("TestCase7: using the overloaded increment operator");
 
 	MathOverloads.OverloadedObject obj1 = new MathOverloads.OverloadedObject(5);

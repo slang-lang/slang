@@ -51,17 +51,15 @@ Repository::~Repository()
  */
 void Repository::addBluePrint(Designtime::BluePrintEnum* blueprint, IScope* scope)
 {
-	std::string type = blueprint->QualifiedTypename();
-
-	BluePrintEnumMap::iterator it = mBluePrintEnums.find(type);
+	BluePrintEnumMap::iterator it = mBluePrintEnums.find(blueprint->QualifiedTypename());
 	if ( it != mBluePrintEnums.end() ) {
 
-		throw Common::Exceptions::Exception("duplicate enum '" + type + "' added to repository");
+		throw Common::Exceptions::Exception("duplicate enum '" + blueprint->QualifiedTypename() + "' added to repository");
 	}
 
-	mBluePrintEnums.insert(std::make_pair(type, blueprint));
+	mBluePrintEnums.insert(std::make_pair(blueprint->QualifiedTypename(), blueprint));
 
-	scope->define(type, blueprint);
+	scope->define(blueprint->Typename(), blueprint);
 }
 
 /*
@@ -69,10 +67,7 @@ void Repository::addBluePrint(Designtime::BluePrintEnum* blueprint, IScope* scop
  */
 void Repository::addBluePrint(Designtime::BluePrintObject* blueprint, IScope* scope)
 {
-	//std::string type = blueprint->QualifiedTypename();
-	std::string type = blueprint->Typename();
-
-	BluePrintObjectMap::iterator it = mBluePrintObjects.find(type);
+	BluePrintObjectMap::iterator it = mBluePrintObjects.find(blueprint->QualifiedTypename());
 	if ( it != mBluePrintObjects.end() ) {
 		if ( blueprint->isForwardDeclaration() ) {
 			// adding additional forward declarations doesn't matter
@@ -80,7 +75,7 @@ void Repository::addBluePrint(Designtime::BluePrintObject* blueprint, IScope* sc
 		}
 
 		if ( !it->second->isForwardDeclaration() ) {
-			throw Common::Exceptions::Exception("duplicate object '" + type + "' added to repository");
+			throw Common::Exceptions::Exception("duplicate object '" + blueprint->QualifiedTypename() + "' added to repository");
 		}
 
 		// delete forward declaration
@@ -91,9 +86,9 @@ void Repository::addBluePrint(Designtime::BluePrintObject* blueprint, IScope* sc
 		delete symbol;
 	}
 
-	mBluePrintObjects.insert(std::make_pair(type, blueprint));
+	mBluePrintObjects.insert(std::make_pair(blueprint->QualifiedTypename(), blueprint));
 
-	scope->define(type, blueprint);
+	scope->define(blueprint->Typename(), blueprint);
 }
 
 /*

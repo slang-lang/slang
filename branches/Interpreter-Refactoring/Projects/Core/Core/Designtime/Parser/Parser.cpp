@@ -279,8 +279,11 @@ ParameterList Parser::parseParameters(TokenIterator &token)
 {
 	ParameterList params;
 
+	std::string type;
+
 	while ( (*++token).type() != Token::Type::PARENTHESIS_CLOSE ) {
-		if ( !isLocalDeclaration(token) /*|| !isParameterDeclaration(token)*/ ) {
+/*
+		if ( !isLocalDeclaration(token) && !isParameterDeclaration(token) ) {
 			throw Common::Exceptions::SyntaxError("could not parse parameter declaration", token->position());
 		}
 
@@ -293,6 +296,41 @@ ParameterList Parser::parseParameters(TokenIterator &token)
 
 		std::string type = token->content();
 		token++;
+*/
+
+		if ( token->type() == Token::Type::IDENTIFER ) {
+			type += token->content();
+
+			if ( lookahead(token)->type() == Token::Type::SCOPE ) {
+				token++;
+				type += ".";
+				continue;
+			}
+		}
+
+		if ( !isLocalDeclaration(token) && !isParameterDeclaration(token) ) {
+			throw Common::Exceptions::SyntaxError("could not parse parameter declaration", token->position());
+		}
+
+		Parameter::AccessMode::E accessmode = Parameter::AccessMode::ByValue;
+		bool hasDefaultValue = false;
+		bool isConst = false;
+		Runtime::AtomicValue value;
+
+		if ( token->type() == Token::Type::IDENTIFER ) {
+			// already set type
+		}
+		else if ( token->type() == Token::Type::TYPE ) {
+			// combine type with already gathered type
+			type += token->content();
+		}
+		else {
+			throw Common::Exceptions::SyntaxError("unexpected token '" + token->content() + "' found", token->position());
+		}
+
+		token++;
+
+
 
 		std::string name = token->content();
 		token++;
@@ -330,6 +368,8 @@ ParameterList Parser::parseParameters(TokenIterator &token)
 
 		Parameter param(name, type, value, hasDefaultValue, isConst, accessmode, Reference());
 		params.push_back(param);
+
+		type = "";	// reset type for next parameter
 
 		if ( token->type() == Token::Type::PARENTHESIS_CLOSE ) {
 			break;
