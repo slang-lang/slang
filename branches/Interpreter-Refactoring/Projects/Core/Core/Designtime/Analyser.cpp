@@ -427,8 +427,7 @@ bool Analyser::createMember(TokenIterator& token, TokenIterator /*end*/)
 		blue->setMember(true);
 		blue->setMutability(mutability);
 		blue->setParent(mScope);
-		//blue->setQualifiedTypename(type);
-		blue->setQualifiedTypename(getQualifiedTypename(type));
+		blue->setQualifiedTypename(type);
 		blue->setValue(value);
 		blue->setVisibility(visibility);
 
