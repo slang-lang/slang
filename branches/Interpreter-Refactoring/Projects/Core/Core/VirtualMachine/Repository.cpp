@@ -498,7 +498,6 @@ void Repository::rebuildBluePrintEnums()
 
 					replaced = true;
 				}
-/*
 				else if ( blueIt->second->getEnclosingScope() ) {
 					std::string scope = blueIt->second->getEnclosingScope()->getScopeName();
 
@@ -508,7 +507,6 @@ void Repository::rebuildBluePrintEnums()
 						replaced = true;
 					}
 				}
-*/
 			}
 		}
 
@@ -517,11 +515,9 @@ void Repository::rebuildBluePrintEnums()
 		}
 		// }
 
-		Preprocessor preprocessor;
-		preprocessor.process(blueIt->second);
+		//Preprocessor preprocessor;
+		//preprocessor.process(blueIt->second);
 	}
-
-	//insertBluePrintEnumsIntoScopes();
 }
 
 void Repository::rebuildBluePrintObjects()
@@ -562,12 +558,7 @@ void Repository::rebuildBluePrintObjects()
 			blueIt->second->setTokens(tokens);
 		}
 		// }
-
-		//Preprocessor preprocessor;
-		//preprocessor.process(blueIt->second);
 	}
-
-	//insertBluePrintObjectsIntoScopes();
 }
 
 

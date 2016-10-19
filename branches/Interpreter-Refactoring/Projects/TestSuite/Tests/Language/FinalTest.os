@@ -2,7 +2,7 @@
 
 private int mNumber final;
 
-public void Main(int argv = 0, string args = "") {
+public void Main(int argv = 0, string args = "") modify {
 	mNumber = 1;
 
 	assert( TestCase1() );

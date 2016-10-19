@@ -19,13 +19,6 @@ namespace ObjectiveScript {
 
 // Forward declarations
 class IScope;
-namespace Runtime {
-	class Method;
-}
-
-
-typedef std::list<IScope*> ScopeStack;
-
 
 class StackLevel
 {
@@ -42,13 +35,10 @@ public:
 	typedef std::list<Scope> Scopes;
 
 public:
-	StackLevel(unsigned long level, Runtime::Method* method, const ParameterList& params);
+	StackLevel(unsigned long level, IScope* scope, const ParameterList& params);
+	~StackLevel();
 
 public:
-	Runtime::Method* getMethod() const;
-
-	const ParameterList& getParameters() const;
-
 	IScope* getScope() const;
 	void popScope();
 	void pushScope(IScope* scope, bool allowDelete);
@@ -64,8 +54,8 @@ private:
 
 private:
 	unsigned long mLevel;
-	Runtime::Method* mMethod;
 	ParameterList mParameters;
+	IScope* mScope;
 	Scopes mScopeStack;
 	TokenStack mTokenStack;
 };

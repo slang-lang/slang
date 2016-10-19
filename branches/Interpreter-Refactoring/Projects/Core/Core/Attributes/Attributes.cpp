@@ -56,8 +56,8 @@ bool GenericAttributes::isConst() const
 
 bool GenericAttributes::isFinal() const
 {
-	return mIsFinal;
-	//return mMutability == Mutability::Final;
+	//return mIsFinal;
+	return mMutability == Mutability::Final;
 }
 
 void GenericAttributes::setConst(bool state)

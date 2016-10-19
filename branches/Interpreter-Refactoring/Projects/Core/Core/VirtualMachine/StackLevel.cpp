@@ -22,21 +22,15 @@ StackLevel::Scope::Scope(IScope* scope, bool allowDelete)
 }
 
 
-StackLevel::StackLevel(unsigned long level, Runtime::Method* method, const ParameterList& params)
+StackLevel::StackLevel(unsigned long level, IScope* scope, const ParameterList& params)
 : mLevel(level),
-  mMethod(method),
-  mParameters(params)
+  mParameters(params),
+  mScope(scope)
 {
 }
 
-Runtime::Method* StackLevel::getMethod() const
+StackLevel::~StackLevel()
 {
-	return mMethod;
-}
-
-const ParameterList& StackLevel::getParameters() const
-{
-	return mParameters;
 }
 
 IScope* StackLevel::getScope() const
@@ -81,11 +75,17 @@ void StackLevel::pushTokens(const TokenList& tokens)
 
 std::string StackLevel::toString() const
 {
-	if ( mMethod ) {
-		return "Frame " + Tools::ConvertToStdString(mLevel) + ": " + mMethod->getFullScopeName() + "(" + ObjectiveScript::toString(mParameters) + ")";
+	std::string result = "Frame " + Tools::ConvertToStdString(mLevel);
+
+	if ( mScope && mScope->getScopeType() == IScope::IType::NamedScope ) {
+		result += ": " + mScope->getFullScopeName();
+
+		if ( dynamic_cast<Runtime::Method*>(mScope) ) {
+			result += "(" + ObjectiveScript::toString(mParameters) + ")";
+		}
 	}
 
-	return "Frame " + Tools::ConvertToStdString(mLevel);
+	return result;
 }
 
 

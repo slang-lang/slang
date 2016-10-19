@@ -33,7 +33,7 @@ public:
 	StackLevel* current() const;
 
 	void pop();
-	void push(Runtime::Method *method, const ParameterList &params);
+	void push(IScope* scope, const ParameterList &params);
 
 	void print();
 

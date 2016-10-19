@@ -8,7 +8,6 @@
 // Project includes
 #include <Core/Common/Exceptions.h>
 #include "Method.h"
-#include "Symbol.h"
 #include "Tools.h"
 
 // Namespace declarations

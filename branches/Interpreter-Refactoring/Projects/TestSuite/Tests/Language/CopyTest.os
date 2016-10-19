@@ -8,7 +8,7 @@ public object TestObject {
 	}
 }
 
-public void Main(int argc, string args) {
+public void Main(int argc, string args) modify {
 	assert( TestCase1() );
 }
 

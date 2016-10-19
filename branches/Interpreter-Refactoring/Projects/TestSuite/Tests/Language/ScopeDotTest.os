@@ -16,7 +16,7 @@ public void Main(int argc, string args) {
 	assert( TestCase1() );
 }
 
-private bool TestCase1() modify {
+private bool TestCase1() {
 	TestObject obj = new TestObject();
 
 	obj.mValue = 1;

@@ -235,6 +235,18 @@ bool Parser::isObjectDeclaration(TokenIterator start)
 	return checkSyntax(start, tokens);
 }
 
+// syntax:
+// <identifier> <identifier>
+bool Parser::isParameterDeclaration(TokenIterator start)
+{
+	TokenList tokens;
+
+	tokens.push_back(Token(Token::Type::IDENTIFER));
+	tokens.push_back(Token(Token::Type::IDENTIFER));
+
+	return checkSyntax(start, tokens);
+}
+
 // prototype declaration:
 // <visibility> [language feature] prototype <identifier> [extends <identifier> [implements <identifier>, ...]] { ... }
 bool Parser::isPrototypeDeclaration(TokenIterator start)
@@ -268,7 +280,7 @@ ParameterList Parser::parseParameters(TokenIterator &token)
 	ParameterList params;
 
 	while ( (*++token).type() != Token::Type::PARENTHESIS_CLOSE ) {
-		if ( !isLocalDeclaration(token) ) {
+		if ( !isLocalDeclaration(token) /*|| !isParameterDeclaration(token)*/ ) {
 			throw Common::Exceptions::SyntaxError("could not parse parameter declaration", token->position());
 		}
 

@@ -1,5 +1,7 @@
 #!/usr/local/bin/oscript
 
+// THIS WILL FAIL
+
 public object ForwardObject;
 
 public object ForwardObject {

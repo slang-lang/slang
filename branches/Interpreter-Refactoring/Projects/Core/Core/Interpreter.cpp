@@ -1253,6 +1253,11 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 		}
 	}
 
+	// static method check
+	if ( owner && owner->isStatic() && !method->isStatic() ) {
+		throw Runtime::Exceptions::StaticException("non-static method \"" + method->ToString() + "\" called from static method \"" + owner->ToString() + "\"", token->position());
+	}
+
 	ControlFlow::E controlflow;
 
 	if ( method->isExtensionMethod() ) {
@@ -1335,7 +1340,8 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 	}
 
 	// create initialized instance of new object
-	result->assign(*getRepository()->createInstance(static_cast<Designtime::BluePrintObject*>(symbol), name, true));
+	//result->assign(*getRepository()->createInstance(static_cast<Designtime::BluePrintObject*>(symbol), name, true));
+	*result = *getRepository()->createInstance(static_cast<Designtime::BluePrintObject*>(symbol), name, true);
 
 	// execute new object's constructor
 	mControlFlow = result->Constructor(params);

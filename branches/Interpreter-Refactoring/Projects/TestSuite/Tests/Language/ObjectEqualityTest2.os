@@ -11,6 +11,9 @@ public namespace ObjectEqualityTest {
 		public string ToString() const {
 			return "TestObject { mValue = " + mValue + " }";
 		}
+		public string =operator(string none) const {
+			return "TestObject { mValue = " + mValue + " }";
+		}
 
 		public void operator=(TestObject other const) modify {
 			print("operator=(" + other.ToString() + ")");

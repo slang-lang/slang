@@ -96,6 +96,7 @@ void Method::operator= (const Method& other)
 		mIsFinal = other.mIsFinal;
 		mIsRecursive = other.mIsRecursive;
 		mIsSealed = other.mIsSealed;
+		mIsStatic = other.mIsStatic;
 		mLanguageFeatureState = other.mLanguageFeatureState;
 		mMethodType = other.mMethodType;
 		mMutability = other.mMutability;
@@ -248,6 +249,9 @@ std::string Method::ToString(unsigned int indent) const
 	result += " " + LanguageFeatureState::convert(mLanguageFeatureState);
 	result += " " + QualifiedTypename() + " " + getName() + "(" + toString(mSignature) + ")";
 	result += " " + Mutability::convert(mMutability);
+	if ( isStatic() ) {
+		result += " static";
+	}
 
 	return result;
 }

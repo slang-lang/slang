@@ -96,7 +96,7 @@ public:
 };
 
 
-	class SizeException : public Exception
+class SizeException : public Exception
 {
 public:
 	SizeException(const std::string& text, const Common::Position& position = Common::Position())
@@ -104,6 +104,17 @@ public:
 	{ }
 
 	virtual ~SizeException() throw() { }
+};
+
+
+class StaticException : public Exception
+{
+public:
+	StaticException(const std::string& text, const Common::Position& position = Common::Position())
+	: Exception("StaticException: " + text, position)
+	{ }
+
+	virtual ~StaticException() throw() { }
 };
 
 

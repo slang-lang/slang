@@ -36,10 +36,9 @@ BluePrintObject::BluePrintObject(const std::string& type, const std::string& fil
 
 BluePrintObject::~BluePrintObject()
 {
-	cleanup();
 }
 
-void BluePrintObject::addInheritance(const Designtime::Ancestor& inheritance)
+void BluePrintObject::addInheritance(const Ancestor& inheritance)
 {
 	if ( inheritance.name().empty() ) {
 		throw Common::Exceptions::Exception("invalid inheritance added");
@@ -48,35 +47,12 @@ void BluePrintObject::addInheritance(const Designtime::Ancestor& inheritance)
 	mInheritance.insert(inheritance);
 }
 
-void BluePrintObject::cleanup()
+Ancestors BluePrintObject::getAncestors() const
 {
-	for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
-		undefine((*it)->getName(), (*it));
+	Ancestors ancestors;
 
-		delete (*it);
-	}
-	//mMethods.clear();
-
-	for ( Symbols::iterator it = mSymbols.begin(); it != mSymbols.end(); ++it ) {
-		if ( it->first == IDENTIFIER_BASE || it->first == IDENTIFIER_THIS || !it->second ) {
-			continue;
-		}
-
-		if ( it->second->getSymbolType() == Symbol::IType::BluePrintObjectSymbol ) {
-			//static_cast<BluePrintObject*>(it->second)->cleanup();
-			delete it->second;
-		}
-
-		//delete it->second;
-	}
-}
-
-Designtime::Ancestors BluePrintObject::getAncestors() const
-{
-	Designtime::Ancestors ancestors;
-
-	for ( Designtime::Ancestors::const_iterator it = mInheritance.begin(); it != mInheritance.end(); ++it ) {
-		if ( it->type() == Designtime::Ancestor::Type::Extends ) {
+	for ( Ancestors::const_iterator it = mInheritance.begin(); it != mInheritance.end(); ++it ) {
+		if ( it->type() == Ancestor::Type::Extends ) {
 			ancestors.insert((*it));
 		}
 	}
@@ -84,17 +60,17 @@ Designtime::Ancestors BluePrintObject::getAncestors() const
 	return ancestors;
 }
 
-Designtime::Ancestors BluePrintObject::getInheritance() const
+Ancestors BluePrintObject::getInheritance() const
 {
 	return mInheritance;
 }
 
-Designtime::Ancestors BluePrintObject::getImplementations() const
+Ancestors BluePrintObject::getImplementations() const
 {
-	Designtime::Ancestors implementations;
+	Ancestors implementations;
 
-	for ( Designtime::Ancestors::const_iterator it = mInheritance.begin(); it != mInheritance.end(); ++it ) {
-		if ( it->type() == Designtime::Ancestor::Type::Implements ) {
+	for ( Ancestors::const_iterator it = mInheritance.begin(); it != mInheritance.end(); ++it ) {
+		if ( it->type() == Ancestor::Type::Implements ) {
 			implementations.insert((*it));
 		}
 	}

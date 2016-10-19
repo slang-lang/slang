@@ -272,7 +272,7 @@ void Preprocessor::generateBluePrintEnum()
 
 	Designtime::BluePrintObject* symbol = new Designtime::BluePrintObject(blueprint->Typename(), blueprint->Filename(), blueprint->getName());
 	symbol->setMutability(blueprint->getMutability());
-	symbol->setParent(blueprint->getParent());
+	symbol->setParent(blueprint->getEnclosingScope());
 	symbol->setQualifiedTypename(blueprint->QualifiedTypename());
 	symbol->setVisibility(blueprint->getVisibility());
 

@@ -43,16 +43,13 @@ public:
 	virtual ~BluePrintObject();
 
 public:
-	void cleanup();
-
-public:
 	// Inheritance
 	// {
-	Designtime::Ancestors getAncestors() const;
-	Designtime::Ancestors getInheritance() const;
-	Designtime::Ancestors getImplementations() const;
+	Ancestors getAncestors() const;
+	Ancestors getInheritance() const;
+	Ancestors getImplementations() const;
 
-	void addInheritance(const Designtime::Ancestor& inheritance);
+	void addInheritance(const Ancestor& inheritance);
 	// }
 
 	Visibility::E getVisibility() const;

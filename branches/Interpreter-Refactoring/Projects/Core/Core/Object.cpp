@@ -54,12 +54,10 @@ Object::Object(const Object& other)
 	mScopeType = other.mScopeType;
 	mValue = other.mValue;
 
-	//if ( other.mQualifiedOutterface != NULL_TYPE ) {
-		mOutterface = other.mOutterface;
-		mQualifiedOutterface = other.mQualifiedOutterface;
-		mQualifiedTypename = other.mQualifiedTypename;
-		mTypename = other.mTypename;
-	//}
+	mOutterface = other.mOutterface;
+	mQualifiedOutterface = other.mQualifiedOutterface;
+	mQualifiedTypename = other.mQualifiedTypename;
+	mTypename = other.mTypename;
 
 	setConst(other.isConst());
 	setFinal(other.isFinal());
@@ -103,6 +101,7 @@ Object::~Object()
 void Object::operator= (const Object& other)
 {
 	if ( this != &other ) {
+/*
 		mFilename = other.mFilename;
 		mInheritance = other.mInheritance;
 		mIsArray = other.mIsArray;
@@ -122,6 +121,38 @@ void Object::operator= (const Object& other)
 		mTypename = other.mTypename;
 
 		assignReference(other.mReference);
+*/
+
+		mFilename = other.mFilename;
+		mInheritance = other.mInheritance;
+		mIsArray = other.mIsArray;
+		mIsArrayDynamicallyExpanding = other.mIsArrayDynamicallyExpanding;
+		mIsAtomicType = other.mIsAtomicType;
+		mIsConstructed = other.mIsConstructed;
+		mParent = other.mParent;
+		mScopeName = other.mScopeName;
+		mScopeType = other.mScopeType;
+		mValue = other.mValue;
+
+		mOutterface = other.mOutterface;
+		mQualifiedOutterface = other.mQualifiedOutterface;
+		mQualifiedTypename = other.mQualifiedTypename;
+		mTypename = other.mTypename;
+
+		setConst(other.isConst());
+		setFinal(other.isFinal());
+		setLanguageFeatureState(other.getLanguageFeatureState());
+		setMember(other.isMember());
+
+		//assignReference(other.mReference);
+
+		if ( other.mReference.isValid() ) {
+			Controller::Instance().memory()->add(other.mReference);
+			mReference = other.mReference;
+
+			mThis = Controller::Instance().memory()->get(mReference);
+			mBase = mThis->mBase;
+		}
 	}
 }
 
@@ -164,16 +195,15 @@ void Object::assignReference(const Reference& ref)
 {
 	if ( !ref.isValid() ) {
 		mThis = this;
-		//mBase = 0;
+		mBase = dynamic_cast<Object*>(SymbolScope::resolve("base", true));
 	}
 	else {
 		Controller::Instance().memory()->add(ref);
 		mReference = ref;
 
 		mThis = Controller::Instance().memory()->get(ref);
+		mBase = mThis->mBase;
 	}
-
-	mBase = dynamic_cast<Object*>(SymbolScope::resolve("base", true));
 }
 
 bool Object::CanExecuteDefaultConstructor() const
@@ -967,17 +997,9 @@ Symbol* Object::resolve(const std::string& name, bool onlyCurrentScope) const
 	}
 
 	// (1) look only in current scope
-	Symbol *result = SymbolScope::resolve(name, true);
+	Symbol *result = MethodScope::resolve(name, true);
 
 	// (2) check inheritance
-/*
-	if ( !result ) {
-		if ( mBase && !onlyCurrentScope ) {
-			result = mBase->resolve(name, onlyCurrentScope);
-		}
-	}
-*/
-
 	if ( !result && mBase ) {
 		result = mBase->resolve(name, onlyCurrentScope);
 	}

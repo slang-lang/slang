@@ -11,6 +11,7 @@
 // Project includes
 #include <Core/Runtime/AtomicValue.h>
 #include <Core/Consts.h>
+#include <Core/Scope.h>
 #include <Core/Symbol.h>
 #include "BluePrintGeneric.h"
 
@@ -23,7 +24,8 @@ namespace ObjectiveScript {
 namespace Designtime {
 
 
-class BluePrintEnum : public BluePrintGeneric
+class BluePrintEnum : public BluePrintGeneric,
+					  public MethodScope
 {
 public:
 	BluePrintEnum();
@@ -31,15 +33,40 @@ public:
 	virtual ~BluePrintEnum();
 
 public:
-	IScope* getParent() const;
+	// Inheritance
+	// {
+	Designtime::Ancestors getAncestors() const;
+	Designtime::Ancestors getInheritance() const;
+	Designtime::Ancestors getImplementations() const;
+
+	void addInheritance(const Designtime::Ancestor& inheritance);
+	// }
+
+	Visibility::E getVisibility() const;
+	void setVisibility(Visibility::E v);
+
+	bool isAbstract() const;
+	bool isForwardDeclaration() const;
+	bool isInterface() const;
+
 	void setParent(IScope* parent);
 
-	std::string ToString(unsigned int indent) const;
+	virtual std::string ToString(unsigned int indent) const;
+
 
 protected:
 
+public:
+	MethodCollection provideMethods() const {
+		return mMethods;
+	}
+	Symbols provideSymbols() const {
+		return mSymbols;
+	}
+
 private:
-	IScope* mParent;
+	Ancestors mInheritance;
+	Visibility::E mVisibility;
 };
 
 
