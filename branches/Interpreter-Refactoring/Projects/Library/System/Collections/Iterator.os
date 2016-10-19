@@ -16,7 +16,7 @@ public namespace System {
 
 		public Object current() const {
 			if ( !mCollection ) {
-				throw new System.Exception("invalid iterator access");
+				throw new Exception("invalid iterator access");
 			}
 
 			return mCollection.at(mCurrentIndex);
@@ -24,7 +24,7 @@ public namespace System {
 
 		public bool hasNext() const {
 			if ( !mCollection ) {
-				throw new System.Exception("invalid iterator access");
+				throw new Exception("invalid iterator access");
 			}
 
 			return mCurrentIndex < mCollection.size() - 1;
@@ -32,7 +32,7 @@ public namespace System {
 
 		public void next() modify {
 			if ( !hasNext() ) {
-				throw new System.OutOfBoundsException("index out of bounds");
+				throw new OutOfBoundsException("index out of bounds");
 			}
 
 			mCurrentIndex++;
@@ -42,7 +42,7 @@ public namespace System {
 			mCurrentIndex = -1;
 		}
 
-		public Object =operator(Object value) const {
+		public Object =operator(Object none ref) const {
 			return current();
 		}
 	}
@@ -59,7 +59,7 @@ public namespace System {
 
 		public Object current() const {
 			if ( !mCollection ) {
-				throw new System.Exception("invalid iterator access");
+				throw new Exception("invalid iterator access");
 			}
 
 			return mCollection.at(mCurrentIndex);
@@ -67,7 +67,7 @@ public namespace System {
 
 		public bool hasNext() const {
 			if ( !mCollection ) {
-				throw new System.Exception("invalid iterator access");
+				throw new Exception("invalid iterator access");
 			}
 
 			return mCurrentIndex > 0;
@@ -75,7 +75,7 @@ public namespace System {
 
 		public void next() modify {
 			if ( !hasNext() ) {
-				throw new System.OutOfBoundsException("index out of bounds");
+				throw new OutOfBoundsException("index out of bounds");
 			}
 
 			mCurrentIndex--;
@@ -83,6 +83,10 @@ public namespace System {
 
 		public void reset() modify {
 			mCurrentIndex = mCollection.size();
+		}
+
+		public Object =operator(Object none ref) const {
+			return current();
 		}
 	}
 

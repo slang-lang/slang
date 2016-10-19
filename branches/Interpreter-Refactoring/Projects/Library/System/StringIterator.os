@@ -36,11 +36,11 @@ public namespace System {
 
 		/*
 		 * GetNext returns the next sub string of the held String value
-		 * throws System.OutOfBoundsException
+		 * throws OutOfBoundsException
 		 */
 		public string GetNext() modify throws {
 			if ( mCurrentPosition >= mValue.Length() ) {
-				throw new System.OutOfBoundsException("out of bounds");
+				throw new OutOfBoundsException("out of bounds");
 			}
 
 			int oldPos = mCurrentPosition;

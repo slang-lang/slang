@@ -26,7 +26,7 @@ public namespace System {
 
 			public void pop() modify {
 				if ( mSize <= 0 ) {
-					throw new System.OutOfBoundsException("cannot pop beyond ground level");
+					throw new OutOfBoundsException("cannot pop beyond ground level");
 				}
 
 				if ( mSize == 1 ) {

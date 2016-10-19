@@ -50,7 +50,7 @@ public namespace System {
 
 		public Object at(int index) const {
 			if ( index < 0 || index >= mSize ) {
-				throw new System.OutOfBoundsException("index(" + index + ") out of bounds");
+				throw new OutOfBoundsException("index(" + index + ") out of bounds");
 			}
 
 			CollectionItem item = mFirst;

@@ -11,7 +11,7 @@ public namespace System {
 
 			public void erase(int index) modify {
 				if ( index < 0 || index > mSize ) {
-					throw new System.OutOfBoundsException("erase index(" + index + ") beyond end of list");
+					throw new OutOfBoundsException("erase index(" + index + ") beyond end of list");
 				}
 
 				if ( index == 0 ) {	            // special handling for 1st element
@@ -36,7 +36,7 @@ public namespace System {
 
 			public void insert(Object value ref, int index) modify {
 				if ( index < 0 || index > mSize ) {
-					throw new System.OutOfBoundsException("insert index(" + index + ") beyond end of list");
+					throw new OutOfBoundsException("insert index(" + index + ") beyond end of list");
 				}
 
 				CollectionItem item = new CollectionItem(value);
