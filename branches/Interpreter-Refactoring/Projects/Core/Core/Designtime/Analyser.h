@@ -1,17 +1,17 @@
 
-#ifndef ObjectiveScript_Core_Analyser_h
-#define ObjectiveScript_Core_Analyser_h
+#ifndef ObjectiveScript_Core_Designtime_Analyser_h
+#define ObjectiveScript_Core_Designtime_Analyser_h
 
 
 // Library includes
 #include <string>
 
 // Project includes
-#include <Core/Designtime/Ancestor.h>
-#include <Core/Designtime/BluePrintObject.h>
-#include <Core/Designtime/BluePrintEnum.h>
-#include <Core/Designtime/Prototype.h>
-#include "Token.h"
+#include <Core/Token.h>
+#include "Ancestor.h"
+#include "BluePrintObject.h"
+#include "BluePrintEnum.h"
+#include "Prototype.h"
 
 // Forward declarations
 
@@ -23,6 +23,9 @@ namespace ObjectiveScript {
 // Forward declarations
 class MethodScope;
 class Repository;
+
+namespace Designtime {
+
 
 class Analyser
 {
@@ -66,6 +69,7 @@ private:
 };
 
 
+}
 }
 
 

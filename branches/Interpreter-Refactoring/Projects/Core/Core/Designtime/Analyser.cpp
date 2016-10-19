@@ -10,20 +10,21 @@
 // Project includes
 #include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/Common/Exceptions.h>
-#include <Core/Designtime/Exceptions.h>
 #include <Core/Designtime/Parser/Parser.h>
-#include <Core/Designtime/SanityChecker.h>
 #include <Core/Runtime/Namespace.h>
+#include <Core/Tokenizer.h>
+#include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
 #include <Tools/Files.h>
 #include <Utils.h>
-#include "Tokenizer.h"
-#include "Tools.h"
+#include "Exceptions.h"
+#include "SanityChecker.h"
 
 // Namespace declarations
 
 
 namespace ObjectiveScript {
+namespace Designtime {
 
 
 Analyser::Analyser()
@@ -660,7 +661,7 @@ void Analyser::generate(const TokenList& tokens)
 			std::string reference = createLibraryReference(it, tokens.end());
 			mLibraries.push_back(reference);
 		}
-		else if ( Parser::isMemberDeclaration(it) || Parser::isMemberDeclarationWithModifier(it) ) {
+		else if ( Parser::isMemberDeclaration(it) ) {
 			createMember(it, tokens.end());
 		}
 		else if ( Parser::isMethodDeclaration(it) ) {
@@ -762,4 +763,5 @@ void Analyser::processTokens(const TokenList& tokens)
 }
 
 
+}
 }

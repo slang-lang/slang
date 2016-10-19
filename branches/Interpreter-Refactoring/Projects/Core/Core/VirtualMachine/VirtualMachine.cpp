@@ -6,9 +6,9 @@
 #include <fstream>
 
 // Project includes
-#include <Core/Analyser.h>
 #include <Core/Consts.h>
 #include <Core/Common/Exceptions.h>
+#include <Core/Designtime/Analyser.h>
 #include <Core/Script.h>
 #include <Core/Tools.h>
 #include <Tools/Files.h>
@@ -77,7 +77,7 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 	Script *script = new Script();
 	mScripts.insert(script);
 
-	Analyser analyser;
+	Designtime::Analyser analyser;
 	analyser.processString(content, mScriptFile);
 
 	// load all library references
@@ -238,7 +238,7 @@ bool VirtualMachine::loadLibrary(const std::string& library)
 
 	mLibraryFolders.insert(::Utils::Tools::Files::ExtractPathname(library));
 
-	Analyser analyser;
+	Designtime::Analyser analyser;
 	analyser.processFile(library);
 
 	mImportedLibraries.insert(library);

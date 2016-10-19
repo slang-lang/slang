@@ -4,6 +4,7 @@ ADD_SUBDIRECTORY(BuildInTypes)
 ADD_SUBDIRECTORY(Parser)
 
 SET(SOURCES
+	Analyser.cpp
 	Ancestor.cpp
 	BluePrintGeneric.cpp
 	BluePrintEnum.cpp
@@ -13,6 +14,7 @@ SET(SOURCES
 )
 
 SET(HEADERS
+	Analyser.h
 	Ancestor.h
 	BluePrintGeneric.h
 	BluePrintEnum.h

@@ -10,12 +10,11 @@ ADD_SUBDIRECTORY(Runtime)
 ADD_SUBDIRECTORY(VirtualMachine)
 
 SET(SOURCES
-	Analyser.cpp
 	Interpreter.cpp
 	Method.cpp
 	Object.cpp
 	Parameter.cpp
-	Preprocessor.cpp
+#	Preprocessor.cpp
 	Reference.cpp
 	Scope.cpp
 	Script.cpp
@@ -27,7 +26,6 @@ SET(SOURCES
 )
 
 SET(HEADERS
-	Analyser.h
 	Consts.h
 	Defines.h
 	Interpreter.h
@@ -35,7 +33,7 @@ SET(HEADERS
 	Object.h
 	ObjectiveScript.h
 	Parameter.h
-	Preprocessor.h
+#	Preprocessor.h
 	Reference.h
 	Scope.h
 	Script.h
