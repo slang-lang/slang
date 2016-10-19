@@ -49,7 +49,7 @@ Repository::~Repository()
 /*
  * add a new blue print to our repository
  */
-void Repository::addBluePrint(Designtime::BluePrintEnum* blueprint, IScope* /*scope*/)
+void Repository::addBluePrint(Designtime::BluePrintEnum* blueprint, IScope* scope)
 {
 	std::string type = blueprint->QualifiedTypename();
 
@@ -60,6 +60,8 @@ void Repository::addBluePrint(Designtime::BluePrintEnum* blueprint, IScope* /*sc
 	}
 
 	mBluePrintEnums.insert(std::make_pair(type, blueprint));
+
+	scope->define(type, blueprint);
 }
 
 /*
@@ -274,14 +276,15 @@ void Repository::deinit()
 {
 	// Cleanup prototypes
 	// {
+	//for ( PrototypeMap::iterator it = mPrototypes.begin(); it != mPrototypes.end(); ++it ) {
+	//	delete it->second;
+	//}
 	//mPrototypes.clear();
 	// }
 
 	// Cleanup blue prints
 	// {
 	for ( BluePrintEnumMap::iterator it = mBluePrintEnums.begin(); it != mBluePrintEnums.end(); ++it ) {
-		it->second->cleanup();
-
 		delete it->second;
 	}
 	mBluePrintEnums.clear();
@@ -290,8 +293,6 @@ void Repository::deinit()
 	// Cleanup blue prints
 	// {
 	for ( BluePrintObjectMap::iterator it = mBluePrintObjects.begin(); it != mBluePrintObjects.end(); ++it ) {
-		//it->second->cleanup();
-
 		delete it->second;
 	}
 	mBluePrintObjects.clear();

@@ -8,6 +8,7 @@
 #include <iostream>
 
 // Project includes
+#include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/Common/Exceptions.h>
 #include <Core/Designtime/Exceptions.h>
 #include <Core/Designtime/Parser/Parser.h>
@@ -34,6 +35,75 @@ Analyser::Analyser()
 
 Analyser::~Analyser()
 {
+}
+
+bool Analyser::buildEnum(Designtime::BluePrintEnum* symbol, const TokenList& tokens)
+{
+	TokenIterator token = tokens.begin();
+
+	Runtime::AtomicValue previous_value = (unsigned)-1;
+	Runtime::AtomicValue value = (unsigned)-1;
+
+	// Format: <identifier> = <value>[, or ;]
+	while ( token != tokens.end() ) {
+		std::string name;
+
+		expect(Token::Type::IDENTIFER, token);
+		name = (token++)->content();
+
+		if ( token->type() == Token::Type::ASSIGN ) {
+			expect(Token::Type::ASSIGN, token++);
+
+			expect(Token::Type::CONST_INTEGER, token);
+			value = (token++)->content();
+		}
+		else {
+			value = value.toInt() + 1;
+		}
+
+		// verify declaration order (this also prevents duplicate values)
+		if ( previous_value.toInt() >= value.toInt() ) {
+			throw Common::Exceptions::Exception("enum values have to be defined in ascending order");
+		}
+
+		previous_value = value;
+
+		// define enum entries as parent type
+		//Runtime::Object* entry = mRepository->createInstance(mBluePrint->QualifiedTypename(), name, true);
+		//entry->setConstructed(true);
+
+		// define enum entries as integer type
+		//Runtime::Object* entry = Controller::Instance().repository()->createInstance(Runtime::IntegerObject::TYPENAME, name, true);
+		Runtime::Object* entry = new Runtime::IntegerObject(name, value.toInt());	// this prevents a double delete because all instances are freed by their surrounding scope
+		entry->setMember(true);
+		entry->setMutability(Mutability::Const);
+		entry->setValue(value.toInt());
+		entry->setVisibility(Visibility::Public);
+
+		// define enum entries in current scope
+		entry->setParent(symbol);
+		symbol->define(name, entry);
+
+		// define enum entries in parent scope
+		//entry->setParent(symbol->getEnclosingScope());
+		//symbol->getEnclosingScope()->define(name, entry);
+
+		if ( token->type() == Token::Type::COMMA ) {
+			token++;
+
+			if ( lookahead(token) == tokens.end() ) {
+				throw Common::Exceptions::Exception("new enum value expected but none found!", token->position());
+			}
+		}
+		else if ( token->type() == Token::Type::SEMICOLON ) {
+			return true;
+		}
+		else {
+			throw Common::Exceptions::Exception("unexpected token '" + token->content() + "' found", token->position());
+		}
+	}
+
+	throw Common::Exceptions::SyntaxError("invalid enum declaration", token->position());
 }
 
 Designtime::Ancestors Analyser::collectInheritance(TokenIterator& token) const
@@ -207,8 +277,6 @@ bool Analyser::createBluePrint(TokenIterator& token, TokenIterator end)
 
 bool Analyser::createEnum(TokenIterator& token, TokenIterator end)
 {
-assert(!"temporarily not supported");
-
 	std::string languageFeature;
 	std::string type;
 	std::string visibility;
@@ -251,16 +319,7 @@ assert(!"temporarily not supported");
 
 	mRepository->addBluePrint(symbol, mScope);
 
-/*
-	MethodScope* tmpScope = mScope;
-
-	mScope = symbol;
-
-	generate(tokens);
-
-	mScope = tmpScope;
-*/
-	return symbol != 0;
+	return buildEnum(symbol, tokens);
 }
 
 std::string Analyser::createLibraryReference(TokenIterator& token, TokenIterator end) const
@@ -380,7 +439,7 @@ bool Analyser::createMember(TokenIterator& token, TokenIterator /*end*/)
 	return true;
 }
 
-bool Analyser::createMethod(TokenIterator& token, TokenIterator end)
+bool Analyser::createMethod(TokenIterator& token, TokenIterator /*end*/)
 {
 	bool isAbstract = false;
 	bool isFinal = false;
@@ -475,13 +534,6 @@ bool Analyser::createMethod(TokenIterator& token, TokenIterator end)
 
 		tokens = Parser::collectScopeTokens(token);
 	}
-
-/*
-	if ( token != end ) {
-		throw Common::Exceptions::SyntaxError("invalid scope end", token->position());
-	}
-*/
-(void)end;
 
 	// create a new method with the corresponding return value
 	Runtime::Method *method = new Runtime::Method(mScope, name, type);

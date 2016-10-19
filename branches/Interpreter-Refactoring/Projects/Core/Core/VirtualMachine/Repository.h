@@ -73,7 +73,7 @@ private:
 private:
 	BluePrintEnumMap mBluePrintEnums;
 	BluePrintObjectMap mBluePrintObjects;
-	//Designtime::PrototypeMap mPrototypes;
+	//PrototypeMap mPrototypes;
 };
 
 

@@ -53,6 +53,7 @@ private:
 	bool createNamespace(TokenIterator& token, TokenIterator end);
 	bool createPrototype(TokenIterator& token, TokenIterator end) const;
 
+	bool buildEnum(Designtime::BluePrintEnum* symbol, const TokenList& tokens);
 	Designtime::Ancestors collectInheritance(TokenIterator& token) const;
 	std::string getQualifiedTypename(const std::string& name) const;
 

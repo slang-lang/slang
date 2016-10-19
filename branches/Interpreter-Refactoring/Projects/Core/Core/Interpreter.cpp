@@ -4,7 +4,6 @@
 
 // Library includes
 #include <cassert>
-#include <map>
 
 // Project includes
 #include <Core/BuildInObjects/BoolObject.h>
@@ -15,6 +14,7 @@
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/BuildInObjects/VoidObject.h>
 #include <Core/Common/Exceptions.h>
+#include <Core/Designtime/BluePrintEnum.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Runtime/Namespace.h>
 #include <Core/Runtime/OperatorOverloading.h>
@@ -326,6 +326,9 @@ inline Symbol* Interpreter::identify(TokenIterator& token) const
 		}
 		else {
 			switch ( result->getSymbolType() ) {
+				case Symbol::IType::BluePrintEnumSymbol:
+					result = dynamic_cast<Designtime::BluePrintEnum*>(result)->resolve(identifier, onlyCurrentScope);
+					break;
 				case Symbol::IType::BluePrintObjectSymbol:
 					result = dynamic_cast<Designtime::BluePrintObject*>(result)->resolve(identifier, onlyCurrentScope);
 					break;
@@ -335,9 +338,8 @@ inline Symbol* Interpreter::identify(TokenIterator& token) const
 				case Symbol::IType::ObjectSymbol:
 					result = dynamic_cast<Object*>(result)->resolve(identifier, onlyCurrentScope);
 					break;
-				case Symbol::IType::BluePrintEnumSymbol:
 				case Symbol::IType::MethodSymbol:
-					throw Common::Exceptions::NotSupported("cannot directly access locales of blueprint or method");
+					throw Common::Exceptions::NotSupported("cannot directly access locales of method");
 				case Symbol::IType::UnknownSymbol:
 					throw Common::Exceptions::SyntaxError("unexpected symbol found");
 			}
@@ -381,18 +383,20 @@ Symbol* Interpreter::identifyMethod(TokenIterator& token, const ParameterList& p
 		}
 		else {
 			switch ( result->getSymbolType() ) {
+				case Symbol::IType::BluePrintEnumSymbol:
+					result = dynamic_cast<Designtime::BluePrintEnum*>(result)->resolveMethod(identifier, params, onlyCurrentScope);
+					break;
+				case Symbol::IType::BluePrintObjectSymbol:
+					result = dynamic_cast<Designtime::BluePrintObject*>(result)->resolveMethod(identifier, params, onlyCurrentScope);
+					break;
 				case Symbol::IType::NamespaceSymbol:
 					result = dynamic_cast<Namespace*>(result)->resolveMethod(identifier, params, onlyCurrentScope);
 					break;
 				case Symbol::IType::ObjectSymbol:
 					result = dynamic_cast<Object*>(result)->resolveMethod(identifier, params, onlyCurrentScope);
 					break;
-				case Symbol::IType::BluePrintEnumSymbol:
-					throw Common::Exceptions::NotSupported("static method usage not supported");
-				case Symbol::IType::BluePrintObjectSymbol:
-					result = dynamic_cast<Designtime::BluePrintObject*>(result)->resolveMethod(identifier, params, onlyCurrentScope);
-					break;
 				case Symbol::IType::MethodSymbol:
+					throw Common::Exceptions::NotSupported("cannot directly access locales of method");
 				case Symbol::IType::UnknownSymbol:
 					throw Common::Exceptions::SyntaxError("unexpected symbol found");
 			}

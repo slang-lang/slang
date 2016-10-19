@@ -55,14 +55,6 @@ void Stack::init()
 {
 	mGlobalScope = new GlobalScope();
 
-/*
-	StackLevel* level = new StackLevel(mStack.size(), mGlobalScope, ParameterList());
-	level->pushScope(mGlobalScope, false);
-	level->pushTokens(TokenList());
-
-	mStack.push_back(level);
-*/
-
 	push(mGlobalScope, ParameterList());
 }
 
@@ -80,7 +72,7 @@ void Stack::pop()
 void Stack::print()
 {
 	StackTrace::const_iterator it = mStack.begin();
-	it++;	// skip frame 0
+	it++;	// skip frame 0 (global scope)
 
 	for ( ; it != mStack.end(); ++it ) {
 		std::cout << (*it)->toString() << std::endl;

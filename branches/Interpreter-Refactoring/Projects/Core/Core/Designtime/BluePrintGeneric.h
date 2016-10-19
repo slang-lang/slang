@@ -40,9 +40,6 @@ public:
 	const std::string& Typename() const { return mTypename; }
 
 public:
-	virtual void cleanup();
-
-public:
 	void setQualifiedTypename(const std::string& name);
 
 	const TokenList& getTokens() const;

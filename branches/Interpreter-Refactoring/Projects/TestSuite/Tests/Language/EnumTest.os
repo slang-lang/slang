@@ -1,6 +1,5 @@
 #!/usr/local/bin/oscript
 
-
 public enum Day {
 	Monday = 0,
 	Tuesday,
