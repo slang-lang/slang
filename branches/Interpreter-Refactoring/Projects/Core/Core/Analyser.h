@@ -59,8 +59,9 @@ private:
 private:
 	std::string mFilename;
 	StringList mLibraries;
-	Repository *mRepository;
-	MethodScope *mScope;
+	bool mProcessingInterface;
+	Repository* mRepository;
+	MethodScope* mScope;
 };
 
 

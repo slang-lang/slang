@@ -26,6 +26,7 @@ namespace ObjectiveScript {
 
 
 Analyser::Analyser()
+: mProcessingInterface(false)
 {
 	mRepository = Controller::Instance().repository();
 	mScope = Controller::Instance().stack()->globalScope();
@@ -191,14 +192,15 @@ bool Analyser::createBluePrint(TokenIterator& token, TokenIterator end)
 
 	mRepository->addBluePrint(symbol, mScope);
 
-
 	MethodScope* tmpScope = mScope;
 
+	mProcessingInterface = implementationType == ImplementationType::Interface;
 	mScope = symbol;
 
 	generate(tokens);
 
 	mScope = tmpScope;
+	mProcessingInterface = false;
 
 	return symbol != 0;
 }
@@ -464,22 +466,26 @@ bool Analyser::createMethod(TokenIterator& token, TokenIterator end)
 	}
 
 
-	// look for the next opening curly brackets
-	TokenIterator open = findNext(token, Token::Type::BRACKET_CURLY_OPEN);
-	// look for balanced curly brackets
-	TokenIterator closed = findNextBalancedCurlyBracket(open, end, 0, Token::Type::BRACKET_CURLY_CLOSE);
-
-	// collect all tokens of this object
+	// collect all tokens of this method
 	TokenList tokens;
-	for ( TokenIterator it = ++open; it != closed && it != end; ++it ) {
-		tokens.push_back((*it));
+	if ( token->type() == Token::Type::BRACKET_CURLY_OPEN ) {
+		if ( mProcessingInterface ) {
+			throw Common::Exceptions::SyntaxError("interface methods are not allowed to be implemented", token->position());
+		}
+
+		tokens = Parser::collectScopeTokens(token);
 	}
 
-	token = closed;
+/*
+	if ( token != end ) {
+		throw Common::Exceptions::SyntaxError("invalid scope end", token->position());
+	}
+*/
+(void)end;
 
 	// create a new method with the corresponding return value
 	Runtime::Method *method = new Runtime::Method(mScope, name, type);
-	method->setAbstract(isAbstract);
+	method->setAbstract(isAbstract || mProcessingInterface);
 	method->setFinal(isFinal);
 	method->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
 	method->setMethodType(methodType);

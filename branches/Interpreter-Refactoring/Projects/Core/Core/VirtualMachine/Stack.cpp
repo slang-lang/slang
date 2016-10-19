@@ -79,7 +79,10 @@ void Stack::pop()
 
 void Stack::print()
 {
-	for ( StackTrace::const_iterator it = mStack.begin(); it != mStack.end(); ++it ) {
+	StackTrace::const_iterator it = mStack.begin();
+	it++;	// skip frame 0
+
+	for ( ; it != mStack.end(); ++it ) {
 		std::cout << (*it)->toString() << std::endl;
 	}
 }

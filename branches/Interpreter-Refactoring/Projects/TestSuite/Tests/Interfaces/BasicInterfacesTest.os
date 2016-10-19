@@ -18,11 +18,9 @@ public object Warehouse
 	extends Boxhouse
 	implements IGetBoxType
 {
-/*
 	public string GetBoxType(int boxId) const {
 		return "bla";
 	}
-*/
 }
 
 public void Main(int argc = 0, string argv = "") {

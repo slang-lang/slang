@@ -29,7 +29,7 @@ public object Warehouse
 }
 
 public void Main(int argc = 0, string argv = "") {
-//	assert( TestCase1() );
+	assert( TestCase1() );
 	assert( TestCase2() );
 }
 
