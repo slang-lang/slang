@@ -18,6 +18,7 @@ public void Main(int argc, string args) {
 	print(obj.mValue);
 	obj = null;
 
+	print(obj);
 	assert(!obj);
 }
 

@@ -11,7 +11,7 @@ private float mHeight = 500.f; /*m*/
 private int mTimeStep = 10; /*s*/
 private float mVelocity = 0.f; /*m/s*/
 
-public void Main(int argc, string args) {
+public void Main(int argc, string args) modify {
 	printIntro();
 
 	runGame();

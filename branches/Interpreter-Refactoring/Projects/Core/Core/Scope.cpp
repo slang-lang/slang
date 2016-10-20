@@ -46,11 +46,11 @@ void SymbolScope::deinit()
 	Symbols tmp = mSymbols;
 
 	for ( Symbols::iterator it = tmp.begin(); it != tmp.end(); ++it ) {
-		if ( it->first != "base" &&
+		if ( //it->first != "base" &&
 			 it->first != "this" &&
 			 it->second->getSymbolType() == Symbol::IType::ObjectSymbol ) {
-			delete it->second;
 			mSymbols.erase(it->first);
+			delete it->second;
 		}
 	}
 
@@ -214,6 +214,7 @@ void GlobalScope::deinit()
 
 		delete (*methIt);
 	}
+	mMethods.clear();
 
 	tmp = mSymbols;
 	for ( Symbols::iterator symIt = tmp.begin(); symIt != tmp.end(); ++symIt ) {

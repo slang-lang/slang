@@ -1,13 +1,22 @@
 #!/usr/local/bin/oscript
 
-private object TestObject {
-	private int mConstValue = 1389;
-	private int mMutableValue = 173;
+private namespace Space {
+	private object TestObject {
+		private int mConstValue = 1389;
+		private int mMutableValue = 173;
 
-	public void TestObject() {
-		print("mConstValue = " + mConstValue);
-		print("mMutableValue = " + mMutableValue);
+		public void TestObject() {
+			print("mConstValue = " + mConstValue);
+			print("mMutableValue = " + mMutableValue);
+		}
 	}
+}
+
+private int mNumber = 173;
+private Space.TestObject mTestObject;
+
+private Space.TestObject createTestObject() const {
+	return new TestObject();
 }
 
 public void Main(int argc = 0, string args = "") {
@@ -15,7 +24,7 @@ public void Main(int argc = 0, string args = "") {
 }
 
 private bool TestCase1() const {
-	TestObject obj1 = new TestObject();
+	Space.TestObject obj1 = new Space.TestObject();
 
 	return obj1.mMutableValue == 173;
 }

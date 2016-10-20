@@ -223,7 +223,7 @@ NamedScope* Interpreter::getEnclosingMethodScope(IScope* scope) const
 		IScope* parent = scope->getEnclosingScope();
 
 		if ( parent && parent->getScopeType() == IScope::IType::NamedScope ) {
-			return static_cast<NamedScope*>(parent);
+			return dynamic_cast<NamedScope*>(parent);
 		}
 
 		scope = parent;
@@ -689,12 +689,12 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 					start++;
 					break;
 				case Symbol::IType::ObjectSymbol:
-					operator_binary_assign(result, static_cast<Object*>(symbol));
+					operator_binary_assign(result, dynamic_cast<Object*>(symbol));
 					start++;
 					break;
 				case Symbol::IType::BluePrintEnumSymbol:
 				case Symbol::IType::BluePrintObjectSymbol: {
-					std::string newType = static_cast<Designtime::BluePrintGeneric*>(symbol)->QualifiedTypename();
+					std::string newType = dynamic_cast<Designtime::BluePrintGeneric*>(symbol)->QualifiedTypename();
 					start++;
 
 					Object tmp;
@@ -832,8 +832,10 @@ void Interpreter::process_copy(TokenIterator& token, Object* result)
 		throw Common::Exceptions::Exception("cannot assign copy to same object");
 	}
 
-	Runtime::Object* source = static_cast<Runtime::Object*>(symbol);
-
+	Runtime::Object* source = dynamic_cast<Runtime::Object*>(symbol);
+	if ( !source ) {
+		throw Common::Exceptions::Exception("nullptr access!");
+	}
 	if ( source->QualifiedTypename() != result->QualifiedTypename() ) {
 		throw Common::Exceptions::Exception("object copies are only allowed to same types");
 	}
@@ -999,12 +1001,12 @@ void Interpreter::process_identifier(TokenIterator& token, Object* /*result*/, T
 		// find next terminator token
 		TokenIterator end = findNext(assign, terminator);
 
-		Object* object = static_cast<Object*>(symbol);
+		Object* object = dynamic_cast<Object*>(symbol);
 		if ( object->isConst() ) {	// we tried to modify a const symbol (i.e. member, parameter or constant local variable)
 			throw Common::Exceptions::ConstCorrectnessViolated("tried to modify const symbol '" + object->getFullScopeName() + "'", token->position());
 		}
 /*
-		if ( object->isMember() && static_cast<Method*>(mOwner)->isConst() ) {	// we tried to modify a member in a const method
+		if ( object->isMember() && dynamic_cast<Method*>(mOwner)->isConst() ) {	// we tried to modify a member in a const method
 			throw Common::Exceptions::ConstCorrectnessViolated("tried to modify member '" + object->getFullScopeName() + "' in const method '" + getScope()->getScopeName() + "'", token->position());
 		}
 */
@@ -1330,7 +1332,6 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 	}
 
 	// create initialized instance of new object
-	//result->assign(*getRepository()->createInstance(static_cast<Designtime::BluePrintObject*>(symbol), name, true));
 	*result = *getRepository()->createInstance(static_cast<Designtime::BluePrintObject*>(symbol), name, true);
 
 	// execute new object's constructor

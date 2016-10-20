@@ -23,7 +23,7 @@ namespace ObjectiveScript {
 namespace Runtime {
 
 
-inline void operator_binary_assign(Object *base, Object *other)
+void operator_binary_assign(Object *base, Object *other)
 {
 	if ( !base ) {
 		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object");
@@ -1079,14 +1079,20 @@ void operator_unary_not(Object *base)
 		*base = BoolObject(!tmp.operator_bool());
 	}
 	else {
-		MethodSymbol *op_not = base->resolveMethod("operator!", ParameterList(), true);
-		if ( op_not ) {
+		ParameterList params;
+		params.push_back(
+			Parameter(ANONYMOUS_OBJECT, BoolObject::TYPENAME, false, false, false, Parameter::AccessMode::ByValue)
+		);
+
+		MethodSymbol* value_op = base->resolveMethod("=operator", params, true);
+		if ( value_op ) {
 			Object tmp;
 
 			Interpreter interpreter;
-			interpreter.execute(dynamic_cast<Method*>(op_not), ParameterList(), base);
+			interpreter.execute(dynamic_cast<Method*>(value_op), params, &tmp);
 
-			operator_binary_assign(base, &tmp);
+			//operator_binary_assign(base, &tmp);
+			*base = BoolObject(!tmp.isValid());
 		}
 		else {
 			*base = BoolObject(!base->isValid());

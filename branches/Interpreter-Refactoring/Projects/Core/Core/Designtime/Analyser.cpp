@@ -462,7 +462,6 @@ bool Analyser::createMethod(TokenIterator& token, TokenIterator /*end*/)
 		languageFeature = (*token++).content();
 	}
 	// look for the type token
-	//type = (*token++).content();
 	type = Parser::identify(token);
 	// look for the identifier token
 	name = (*token++).content();

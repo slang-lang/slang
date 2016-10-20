@@ -350,6 +350,7 @@ void Repository::initialize()
 	{	// null
 		Runtime::Object* nullObject = new Runtime::Object(VALUE_NULL, SYSTEM_LIBRARY, NULL_TYPE, 0);
 		nullObject->setConst(true);
+		nullObject->setConstructed(false);
 		nullObject->setFinal(false);
 		nullObject->setMutability(Mutability::Const);
 		nullObject->setVisibility(Visibility::Public);

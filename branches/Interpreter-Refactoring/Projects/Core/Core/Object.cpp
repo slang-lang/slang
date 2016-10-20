@@ -101,28 +101,6 @@ Object::~Object()
 void Object::operator= (const Object& other)
 {
 	if ( this != &other ) {
-/*
-		mFilename = other.mFilename;
-		mInheritance = other.mInheritance;
-		mIsArray = other.mIsArray;
-		mIsArrayDynamicallyExpanding = other.mIsArrayDynamicallyExpanding;
-		mIsAtomicType = other.mIsAtomicType;
-		mIsConstructed = other.mIsConstructed;// ? other.mIsConstructed : mIsConstructed;
-		mParent = other.mParent ? other.mParent : mParent;
-		mScopeName = other.mScopeName;
-		mScopeType = other.mScopeType;
-		mValue = other.mValue;
-
-		if ( mQualifiedOutterface == NULL_TYPE ) {
-			mOutterface = other.mOutterface;
-			mQualifiedOutterface = other.mQualifiedOutterface;
-		}
-		mQualifiedTypename = other.mQualifiedTypename;
-		mTypename = other.mTypename;
-
-		assignReference(other.mReference);
-*/
-
 		mFilename = other.mFilename;
 		mInheritance = other.mInheritance;
 		mIsArray = other.mIsArray;
@@ -164,7 +142,7 @@ void Object::assign(const Object& other, bool overrideType)
 		mIsArray = other.mIsArray;
 		mIsArrayDynamicallyExpanding = other.mIsArrayDynamicallyExpanding;
 		mIsAtomicType = other.mIsAtomicType;
-		mIsConstructed = other.mIsConstructed;// ? other.mIsConstructed : mIsConstructed;
+		mIsConstructed = other.mIsConstructed;
 		mParent = other.mParent ? other.mParent : mParent;
 		mScopeName = other.mScopeName;
 		mScopeType = other.mScopeType;
@@ -193,13 +171,14 @@ void Object::addInheritance(const Designtime::Ancestor& ancestor, Object* inheri
 
 void Object::assignReference(const Reference& ref)
 {
+	mReference = ref;
+
 	if ( !ref.isValid() ) {
 		mThis = this;
 		mBase = dynamic_cast<Object*>(SymbolScope::resolve("base", true));
 	}
 	else {
 		Controller::Instance().memory()->add(ref);
-		mReference = ref;
 
 		mThis = Controller::Instance().memory()->get(ref);
 		mBase = mThis->mBase;
