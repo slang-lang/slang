@@ -4,7 +4,7 @@ import System.Exception;
 
 public namespace System {
 
-	public object Set extends ACollection {
+	public object Set extends System.ACollection {
 		public void Set() {
 			base.ACollection();
 		}

@@ -8,7 +8,7 @@ public namespace System {
 	 * Double linked list
 	 * allows reverse iteration
 	 */
-	public object DoubleLinkedList extends ACollection {
+	public object DoubleLinkedList extends System.ACollection {
 		public void DoubleLinkedList() {
 			base.ACollection();
 		}

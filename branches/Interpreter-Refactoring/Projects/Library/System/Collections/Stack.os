@@ -3,7 +3,7 @@ import ACollection;
 
 public namespace System {
 
-	public object Stack extends ACollection {
+	public object Stack extends System.ACollection {
 			public void Stack() {
 				base.ACollection();
 			}

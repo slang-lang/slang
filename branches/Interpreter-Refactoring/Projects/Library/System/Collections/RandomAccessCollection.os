@@ -4,7 +4,7 @@ import System.Exception;
 
 public namespace System {
 
-	public object RandomAccessCollection extends ACollection {
+	public object RandomAccessCollection extends System.ACollection {
 			public void RandomAccessCollection() {
 				base.ACollection();
 			}

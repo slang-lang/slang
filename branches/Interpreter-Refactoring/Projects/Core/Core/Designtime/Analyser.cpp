@@ -107,9 +107,9 @@ bool Analyser::buildEnum(Designtime::BluePrintEnum* symbol, const TokenList& tok
 	throw Common::Exceptions::SyntaxError("invalid enum declaration", token->position());
 }
 
-Designtime::Ancestors Analyser::collectInheritance(TokenIterator& token) const
+Ancestors Analyser::collectInheritance(TokenIterator& token) const
 {
-	Designtime::Ancestors ancestors;
+	Ancestors ancestors;
 
 	if ( token->type() != Token::Type::RESERVED_WORD ) {
 		// no reserved word, no ancestors
@@ -117,7 +117,7 @@ Designtime::Ancestors Analyser::collectInheritance(TokenIterator& token) const
 	}
 
 	bool replicates = false;
-	Designtime::Ancestor::Type::E inheritance = Designtime::Ancestor::Type::Unknown;
+	Ancestor::Type::E inheritance = Ancestor::Type::Unknown;
 	Visibility::E visibility = Visibility::Public;
 
 	for ( ; ; ) {
@@ -128,7 +128,7 @@ Designtime::Ancestors Analyser::collectInheritance(TokenIterator& token) const
 
 			token++;	// consume token
 
-			inheritance = Designtime::Ancestor::Type::Extends;
+			inheritance = Ancestor::Type::Extends;
 		}
 		else if ( token->content() == RESERVED_WORD_IMPLEMENTS ) {
 			if ( replicates ) {
@@ -137,7 +137,7 @@ Designtime::Ancestors Analyser::collectInheritance(TokenIterator& token) const
 
 			token++;	// consume token
 
-			inheritance = Designtime::Ancestor::Type::Implements;
+			inheritance = Ancestor::Type::Implements;
 		}
 		else if ( token->content() == RESERVED_WORD_REPLICATES ) {
 			if ( replicates ) {
@@ -147,7 +147,7 @@ Designtime::Ancestors Analyser::collectInheritance(TokenIterator& token) const
 			token++;	// consume token
 
 			replicates = true;
-			inheritance = Designtime::Ancestor::Type::Replicates;
+			inheritance = Ancestor::Type::Replicates;
 		}
 		else if ( token->type() == Token::Type::COMMA ) {
 			token++;	// consume token
@@ -159,11 +159,11 @@ Designtime::Ancestors Analyser::collectInheritance(TokenIterator& token) const
 			break;
 		}
 
-		//std::string type = identify(token, TokenIterator());
+		std::string type = Parser::identify(token);
 
 		ancestors.insert(
-			Designtime::Ancestor(getQualifiedTypename((token++)->content()), inheritance, visibility)
-			//Designtime::Ancestor(type, inheritance, visibility)
+			//Ancestor(getQualifiedTypename((token++)->content()), inheritance, visibility)
+			Ancestor(type, inheritance, visibility)
 		);
 
 		//token++;
@@ -185,7 +185,7 @@ bool Analyser::createBluePrint(TokenIterator& token, TokenIterator end)
 	// look for the identifier token
 	std::string type = (*token++).content();
 
-	Designtime::BluePrintObject* symbol = new Designtime::BluePrintObject(type, mFilename);
+	BluePrintObject* symbol = new BluePrintObject(type, mFilename);
 
 	// determine implementation type
 	if ( objectType == ObjectType::Interface ) {
@@ -207,11 +207,11 @@ bool Analyser::createBluePrint(TokenIterator& token, TokenIterator end)
 	}
 	else {
 		// collect inheritance (if present)
-		Designtime::Ancestors inheritance = collectInheritance(token);
+		Ancestors inheritance = collectInheritance(token);
 
 		bool isImplemented = true;
 		if ( !inheritance.empty() ) {
-			isImplemented = (inheritance.begin()->type() != Designtime::Ancestor::Type::Replicates);
+			isImplemented = (inheritance.begin()->type() != Ancestor::Type::Replicates);
 		}
 
 		if ( isImplemented ) {
@@ -240,8 +240,8 @@ bool Analyser::createBluePrint(TokenIterator& token, TokenIterator end)
 
 		// set up inheritance (if present)
 		if ( !inheritance.empty() ) {
-			for ( Designtime::Ancestors::const_iterator it = inheritance.begin(); it != inheritance.end(); ++it ) {
-				if ( it->type() == Designtime::Ancestor::Type::Extends ) {
+			for ( Ancestors::const_iterator it = inheritance.begin(); it != inheritance.end(); ++it ) {
+				if ( it->type() == Ancestor::Type::Extends ) {
 					extends = true;
 				}
 
@@ -251,7 +251,7 @@ bool Analyser::createBluePrint(TokenIterator& token, TokenIterator end)
 
 		// in case this object has no inheritance set, we inherit from 'Object'
 		if ( objectType != ObjectType::Interface && !extends ) {
-			symbol->addInheritance(Designtime::Ancestor(OBJECT, Designtime::Ancestor::Type::Extends, Visibility::Public));
+			symbol->addInheritance(Ancestor(OBJECT, Ancestor::Type::Extends, Visibility::Public));
 		}
 	}
 
@@ -312,7 +312,7 @@ bool Analyser::createEnum(TokenIterator& token, TokenIterator end)
 
 	token = closed;
 
-	Designtime::BluePrintEnum* symbol = new Designtime::BluePrintEnum(type, mFilename);
+	BluePrintEnum* symbol = new BluePrintEnum(type, mFilename);
 	symbol->setFinal(true);
 	symbol->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
 	symbol->setMutability(Mutability::Modify);
@@ -329,7 +329,7 @@ bool Analyser::createEnum(TokenIterator& token, TokenIterator end)
 	return buildEnum(symbol, tokens);
 }
 
-std::string Analyser::createLibraryReference(TokenIterator& token, TokenIterator end) const
+bool Analyser::createLibraryReference(TokenIterator& token, TokenIterator end)
 {
 	std::string reference;
 
@@ -348,7 +348,9 @@ std::string Analyser::createLibraryReference(TokenIterator& token, TokenIterator
 
 	expect(Token::Type::SEMICOLON, token);
 
-	return reference;
+	mLibraries.push_back(reference);
+
+	return true;
 }
 
 bool Analyser::createMember(TokenIterator& token, TokenIterator /*end*/)
@@ -379,7 +381,7 @@ bool Analyser::createMember(TokenIterator& token, TokenIterator /*end*/)
 			// beware: public members are deprecated, remember the "Law of Demeter"
 			// consider using wrappers (getter, setter) instead of directly providing access to members for outsiders
 			// haven't you heard? outsiders, or sometimes called strangers, are evil
-			throw Designtime::Exceptions::LawOfDemeterViolated("public member " + name + " violates \"Law of Demeter\"", token->position());
+			throw Exceptions::LawOfDemeterViolated("public member " + name + " violates \"Law of Demeter\"", token->position());
 		}
 	}
 
@@ -425,8 +427,8 @@ bool Analyser::createMember(TokenIterator& token, TokenIterator /*end*/)
 
 		mScope->define(name, member);
 	}
-	else if ( dynamic_cast<Designtime::BluePrintObject*>(mScope) ){
-		Designtime::BluePrintObject* blue = new Designtime::BluePrintObject(type, mFilename, name);
+	else if ( dynamic_cast<BluePrintObject*>(mScope) ){
+		BluePrintObject* blue = new BluePrintObject(type, mFilename, name);
 		blue->setFinal(isFinal);
 		blue->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
 		blue->setMember(true);
@@ -648,7 +650,7 @@ bool Analyser::createNamespace(TokenIterator& token, TokenIterator end)
 	return true;
 }
 
-bool Analyser::createPrototype(TokenIterator& start, TokenIterator end) const
+bool Analyser::createPrototype(TokenIterator& start, TokenIterator end)
 {
 assert(!"prototypes not supported!");
 
@@ -673,8 +675,7 @@ void Analyser::generate(const TokenList& tokens)
 			createEnum(it, tokens.end());
 		}
 		else if ( Parser::isLibraryReference(it) ) {
-			std::string reference = createLibraryReference(it, tokens.end());
-			mLibraries.push_back(reference);
+			createLibraryReference(it, tokens.end());
 		}
 		else if ( Parser::isMemberDeclaration(it) ) {
 			createMember(it, tokens.end());
@@ -729,7 +730,7 @@ void Analyser::process(const TokenList& tokens)
 	OSdebug("Processing tokens...");
 
 	// execute basic sanity checks
-	Designtime::SanityChecker sanity;
+	SanityChecker sanity;
 	sanity.process(tokens);
 
 	// generate objects from tokens

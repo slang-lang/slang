@@ -7,7 +7,7 @@ public namespace System {
     /*
      * Single linked list
      */
-    public object List extends ACollection {
+    public object List extends System.ACollection {
         public void List() {
             base.ACollection();
         }
