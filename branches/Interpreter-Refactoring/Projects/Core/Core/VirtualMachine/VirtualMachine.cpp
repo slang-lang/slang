@@ -106,9 +106,6 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 	}
 */
 
-	// rebuild all blue prints to update/retype their type declarations
-	Controller::Instance().repository()->rebuildBluePrints();
-
 	// Startup
 	MethodSymbol* main = Controller::Instance().stack()->globalScope()->resolveMethod("Main", params, false);
 	if ( !main ) {

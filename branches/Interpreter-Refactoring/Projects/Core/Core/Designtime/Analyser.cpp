@@ -190,7 +190,7 @@ bool Analyser::createBluePrint(TokenIterator& token, TokenIterator end)
 	// determine implementation type
 	if ( objectType == ObjectType::Interface ) {
 		if ( implementationType != ImplementationType::FullyImplemented ) {
-			throw Common::Exceptions::NotSupported("interfaces cannot be defined abstract object");
+			throw Common::Exceptions::NotSupported("interfaces cannot be defined as abstract object");
 		}
 
 		implementationType = ImplementationType::Interface;

@@ -27,7 +27,7 @@ public namespace Inheritance {
 		}
 	}
 
-	private object DerivedObject extends BaseObject {
+	private object DerivedObject extends Inheritance.BaseObject {
 		public void DerivedObject(int value) {
 			print("DerivedObject(" + value + ")");
 
@@ -51,7 +51,7 @@ public namespace Inheritance {
 		}
 	}
 
-	private object ExtendedObject extends DerivedObject {
+	private object ExtendedObject extends Inheritance.DerivedObject {
 		public void ExtendedObject(int value) {
 			print("ExtendedObject(" + value + ")");
 
@@ -81,6 +81,8 @@ public void Main(int argc = 0, string argv = "") {
 }
 
 private bool TestCase1() const {
+	print("TestCase 1");
+
 	Inheritance.BaseObject b = new Inheritance.BaseObject(1);
 	Inheritance.DerivedObject d = new Inheritance.DerivedObject(1);
 	Inheritance.ExtendedObject e = new Inheritance.ExtendedObject(1);

@@ -16,7 +16,7 @@ public object Boxhouse implements IGetBox {
 
 public object Warehouse
 	extends Boxhouse
-	implements IGetBoxType/*, IGetBox*/
+	implements IGetBoxType
 {
 	public string GetBoxType(int boxId) const {
 		return "bla";

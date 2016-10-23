@@ -26,35 +26,40 @@ VirtualMethodTable::~VirtualMethodTable()
 
 		for ( MethodCollection::iterator methodIt = tmpMethods.begin(); methodIt != tmpMethods.end(); ++methodIt ) {
 			parentIt->second.erase(methodIt);
-
-			delete (*methodIt);
 		}
 
 		mMethods.erase(parentIt->first);
 	}
 }
 
-void VirtualMethodTable::addMethod(const std::string& parent, Runtime::Method* method)
+void VirtualMethodTable::addMethod(const std::string& currentObject, Runtime::Method* method, const std::string& parentObject)
 {
-	MethodTable::iterator parentIt = mMethods.find(parent);
-	if ( parentIt == mMethods.end() ) {
-		mMethods.insert(std::make_pair(parent, MethodCollection()));
+	MethodTable::iterator ownerIt = mMethods.find(currentObject);
+	if ( ownerIt == mMethods.end() ) {
+		mMethods.insert(std::make_pair(currentObject, MethodCollection()));
 
-		parentIt = mMethods.find(parent);
+		ownerIt = mMethods.find(currentObject);
 	}
 
-	parentIt->second.insert(method);
+	ownerIt->second.push_back(MethodAndParent(method, parentObject));
 }
 
 Runtime::Method* VirtualMethodTable::lookup(const std::string& parent, const std::string& name, const ParameterList& params) const
 {
-	MethodTable::const_iterator parentIt = mMethods.find(parent);
-	if ( parentIt != mMethods.end() ) {
-		for ( MethodCollection::const_iterator methodIt = parentIt->second.begin(); methodIt != parentIt->second.end(); ++methodIt ) {
-			Runtime::Method *method = (*methodIt);
+	MethodTable::const_iterator ownerIt = mMethods.find(parent);
+	if ( ownerIt != mMethods.end() ) {
+		MethodCollection owner = ownerIt->second;
 
-			if ( method->getName() == name && method->isSignatureValid(params) ) {
-				return method;
+		for ( MethodCollection::const_iterator methodIt = owner.begin(); methodIt != owner.end(); ++methodIt ) {
+			MethodAndParent mp = (*methodIt);
+
+			if ( mp.mMethod->getName() == name && mp.mMethod->isSignatureValid(params) ) {
+				Runtime::Method* tmp = lookup(mp.mParent, name, params);
+				if ( tmp && tmp->isFinal() ) {
+					return tmp;
+				}
+
+				return mp.mMethod;
 			}
 		}
 	}

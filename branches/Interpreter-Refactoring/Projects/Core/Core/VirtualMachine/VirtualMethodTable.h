@@ -29,12 +29,24 @@ public:
 	~VirtualMethodTable();
 
 public:
-	void addMethod(const std::string& parent, Runtime::Method* method);
+	void addMethod(const std::string& currentObject, Runtime::Method* method, const std::string& parentObject);
 
 	Runtime::Method* lookup(const std::string& parent, const std::string& name, const ParameterList& params) const;
 
 private:
-	typedef std::set<Runtime::Method*> MethodCollection;
+	class MethodAndParent
+	{
+	public:
+		MethodAndParent(Runtime::Method* method, const std::string& parent)
+		: mMethod(method),
+		  mParent(parent)
+		{ }
+
+		Runtime::Method* mMethod;
+		std::string mParent;
+	};
+
+	typedef std::list<MethodAndParent> MethodCollection;
 	typedef std::map<std::string /*parent*/, MethodCollection> MethodTable;
 
 private:

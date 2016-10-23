@@ -97,7 +97,7 @@ void LanguageTest::testAbstractObject()
 	try {
 		VirtualMachine vm;
 
-		vm.createScriptFromFile("Tests/Language/AbstractObjectTest.os");
+		TTHROWS(vm.createScriptFromFile("Tests/Language/AbstractObjectTest.os"), ObjectiveScript::Common::Exceptions::AbstractException);
 
 		// automatic success
 	}

@@ -2,10 +2,10 @@
 
 import System.Exception;
 
-//public object Box;	// forward declarations are not needed
+public object Box;	// forward declarations are not needed
 
 public interface IWarehouse {
-	public void insert(Box b ref);
+	public void insert(Box box ref);
 	public bool isFull() const;
 	public void takeOut();
 }
@@ -23,7 +23,7 @@ public object Warehouse implements IWarehouse {
 
 	public void insert(Box box ref) modify throws {
 		if ( mBox ) {
-			throw new System.Exception("Warehouse is already full!");
+			throw new Exception("Warehouse is already full!");
 		}
 
 		mBox = box;
@@ -35,7 +35,7 @@ public object Warehouse implements IWarehouse {
 
 	public void takeOut() modify throws {
 		if ( !mBox ) {
-			throw new System.Exception("Warehouse is empty!");
+			throw new Exception("Warehouse is empty!");
 		}
 
 		mBox = null;
@@ -70,7 +70,7 @@ public void Main(int argc = 0, string args = "") {
 		print("o.isFull() = " + o.isFull());
 		wh.takeOut();
 	}
-	catch ( System.Exception e ) {
+	catch ( Exception e ) {
 		print(e.what());
 	}
 
@@ -82,7 +82,7 @@ public void Main(int argc = 0, string args = "") {
 		print("o.isFull() = " + o.isFull());
 		wh.takeOut();
 	}
-	catch ( System.Exception e ) {
+	catch ( Exception e ) {
 		print(e.what());
 	}
 }

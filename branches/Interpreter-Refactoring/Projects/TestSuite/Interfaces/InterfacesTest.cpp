@@ -35,6 +35,9 @@ InterfacesTest::~InterfacesTest()
 void InterfacesTest::process()
 {
     TEST(testBasicInterfaces);
+    TEST(testFail_MethodImplemented);
+    TEST(testInterfaceAsParameter);
+    TEST(testSlightlyMoreAdvancedTest);
 }
 
 void InterfacesTest::setup()
@@ -49,7 +52,7 @@ void InterfacesTest::testBasicInterfaces()
 {
     try {
         VirtualMachine vm;
-        TTHROWS(vm.createScriptFromFile("Tests/Interfaces/BasicInterfacesTest.os"), ObjectiveScript::Common::Exceptions::AbstractException);
+        vm.createScriptFromFile("Tests/Interfaces/BasicInterfacesTest.os");
 
         // automatic success
     }
@@ -58,6 +61,49 @@ void InterfacesTest::testBasicInterfaces()
         TFAIL(e.what());
     }
 }
+
+void InterfacesTest::testFail_MethodImplemented()
+{
+    try {
+        VirtualMachine vm;
+        TTHROWS(vm.createScriptFromFile("Tests/Interfaces/Fail_MethodImplented.os"), ObjectiveScript::Common::Exceptions::SyntaxError);
+
+        // automatic success
+    }
+    catch ( std::exception& e ) {
+        // exception has been thrown: test failed!
+        TFAIL(e.what());
+    }
+}
+
+void InterfacesTest::testInterfaceAsParameter()
+{
+    try {
+        VirtualMachine vm;
+        vm.createScriptFromFile("Tests/Interfaces/InterfaceAsParameter.os");
+
+        // automatic success
+    }
+    catch ( std::exception& e ) {
+        // exception has been thrown: test failed!
+        TFAIL(e.what());
+    }
+}
+
+void InterfacesTest::testSlightlyMoreAdvancedTest()
+{
+    try {
+        VirtualMachine vm;
+        vm.createScriptFromFile("Tests/Interfaces/SlightlyMoreAdvancedTest.os");
+
+        // automatic success
+    }
+    catch ( std::exception& e ) {
+        // exception has been thrown: test failed!
+        TFAIL(e.what());
+    }
+}
+
 
 
 }

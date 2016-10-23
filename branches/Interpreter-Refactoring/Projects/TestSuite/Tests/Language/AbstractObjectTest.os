@@ -36,5 +36,7 @@ private bool TestCase2() const {
 	AbstractObject obj = new AbstractObject();
 
 	print("obj.isAbstract() = " + obj.isAbstract());
+
+	return false;
 }
 

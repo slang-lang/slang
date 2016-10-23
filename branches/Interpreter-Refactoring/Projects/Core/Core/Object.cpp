@@ -44,6 +44,7 @@ Object::Object(const Object& other)
   mThis(this)
 {
 	mFilename = other.mFilename;
+	mImplementationType = other.mImplementationType;
 	mInheritance = other.mInheritance;
 	mIsArray = other.mIsArray;
 	mIsArrayDynamicallyExpanding = other.mIsArrayDynamicallyExpanding;
@@ -102,6 +103,7 @@ void Object::operator= (const Object& other)
 {
 	if ( this != &other ) {
 		mFilename = other.mFilename;
+		mImplementationType = other.mImplementationType;
 		mInheritance = other.mInheritance;
 		mIsArray = other.mIsArray;
 		mIsArrayDynamicallyExpanding = other.mIsArrayDynamicallyExpanding;
@@ -138,6 +140,7 @@ void Object::assign(const Object& other, bool overrideType)
 {
 	if ( this != &other ) {
 		mFilename = other.mFilename;
+		mImplementationType = other.mImplementationType;
 		mInheritance = other.mInheritance;
 		mIsArray = other.mIsArray;
 		mIsArrayDynamicallyExpanding = other.mIsArrayDynamicallyExpanding;
@@ -274,6 +277,7 @@ void Object::copy(const Object& other)
 {
 	if ( this != &other ) {
 		mFilename = other.mFilename;
+		mImplementationType = other.mImplementationType;
 		mInheritance = other.mInheritance;
 		mIsArray = other.mIsArray;
 		mIsArrayDynamicallyExpanding = other.mIsArrayDynamicallyExpanding;
@@ -443,7 +447,7 @@ bool Object::isArray() const
 bool Object::isAbstract() const
 {
 	if ( mThis != this ) {
-		return Controller::Instance().memory()->get(mReference)->isAbstract();
+		return mThis->isAbstract();
 	}
 
 	bool result = mBase ? mBase->isAbstract() : false;
@@ -946,14 +950,12 @@ Symbol* Object::resolve(const std::string& name, bool onlyCurrentScope) const
 	Symbol *result = MethodScope::resolve(name, true);
 
 	// (2) check inheritance
-/*
 	if ( !result ) {
 		Object* base = dynamic_cast<Object*>(MethodScope::resolve("base", true));
-		if ( base ) {
+		if ( base && !onlyCurrentScope ) {
 			result = base->resolve(name, onlyCurrentScope);
 		}
 	}
-*/
 
 	// (3) if we still haven't found something also look in other scopes
 	if ( !result && !onlyCurrentScope ) {
@@ -966,7 +968,7 @@ Symbol* Object::resolve(const std::string& name, bool onlyCurrentScope) const
 ObjectiveScript::MethodSymbol* Object::resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope) const
 {
 	if ( mThis != this ) {
-		return mThis->resolveMethod(name, params, true);
+		return mThis->resolveMethod(name, params, onlyCurrentScope);
 	}
 
 	// (1) look in current scope
@@ -974,9 +976,9 @@ ObjectiveScript::MethodSymbol* Object::resolveMethod(const std::string& name, co
 
 	// (2) check inheritance
 	// we cannot go the short is-result-already-set way here because one of our ancestor methods could be marked as final
-	Object* base = dynamic_cast<Object*>(MethodScope::resolve("base", true));
+	Symbol* base = MethodScope::resolve("base", true);
 	if ( base && !onlyCurrentScope ) {
-		result = base->resolveMethod(name, params, onlyCurrentScope);
+		result = dynamic_cast<Object*>(base)->resolveMethod(name, params, onlyCurrentScope);
 	}
 
 	// (3) if we still haven't found something also look in other scopes
@@ -991,6 +993,33 @@ ObjectiveScript::MethodSymbol* Object::resolveMethod(const std::string& name, co
 	}
 
 	return result;
+
+/*
+	if ( mThis != this ) {
+		return mThis->resolveMethod(name, params, onlyCurrentScope);
+	}
+
+	ObjectiveScript::MethodSymbol* result = 0;
+
+	// (2) check inheritance
+	// we cannot go the short is-result-already-set way here because one of our ancestor methods could be marked as final
+	Symbol* base = MethodScope::resolve("base", true);
+	if ( base ) {
+		result = dynamic_cast<Object*>(base)->resolveMethod(name, params, true);
+	}
+
+	// (1) look in current scope
+	if ( !result || !result->isFinal() ) {
+		result = MethodScope::resolveMethod(name, params, true);
+	}
+
+	// (3) if we still haven't found something also look in other scopes
+	if ( !result && !onlyCurrentScope ) {
+		result = MethodScope::resolveMethod(name, params, false);
+	}
+
+	return result;
+*/
 }
 
 void Object::setArray(bool value, size_t size)

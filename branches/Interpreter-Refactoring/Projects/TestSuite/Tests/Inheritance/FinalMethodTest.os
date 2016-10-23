@@ -7,7 +7,7 @@ private object BaseObject {
 }
 
 private object DerivedObject extends BaseObject {
-	public string ToString() const final {
+	public string ToString() const {
 		return "DerivedObject";
 	}
 }

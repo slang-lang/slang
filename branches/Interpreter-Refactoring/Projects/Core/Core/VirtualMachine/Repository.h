@@ -49,8 +49,6 @@ public:
 
 	bool isAlreadyKnown(const std::string& name) const;
 
-	void rebuildBluePrints();
-
 private:
 	Runtime::Object* createObject(const std::string& name, Designtime::BluePrintObject* blueprint, bool initialize);
 	Runtime::Object* createUserObject(const std::string& name, Designtime::BluePrintObject* blueprint, bool initialize);
@@ -61,10 +59,6 @@ private:
 
 	void initialize();
 	void initializeObject(Runtime::Object *object, Designtime::BluePrintObject* blueprint);
-	void insertBluePrintEnumsIntoScopes();
-	void insertBluePrintObjectsIntoScopes();
-	void rebuildBluePrintEnums();
-	void rebuildBluePrintObjects();
 
 private:
 	typedef std::map<std::string, Designtime::BluePrintEnum*> BluePrintEnumMap;

@@ -140,6 +140,10 @@ Runtime::Object* Repository::createInstance(Designtime::BluePrintObject* bluepri
 	Runtime::Object* object = createObject(name, blueprint, initialize);
 
 	if ( initialize ) {
+		if ( object->isAbstract() ) {
+			throw Common::Exceptions::AbstractException("cannot instantiate abstract object '" + blueprint->Typename() + "'");
+		}
+
 		Controller::Instance().memory()->newObject(object);
 	}
 
@@ -180,9 +184,11 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 		object = createUserObject(name, blueprint, initialize);
 	}
 
+/*
 	if ( initialize && object->isAbstract() ) {
 		throw Common::Exceptions::AbstractException("cannot instantiate abstract object '" + blueprint->Typename() + "'");
 	}
+*/
 
 	object->setFinal(blueprint->isFinal());
 	object->setLanguageFeatureState(blueprint->getLanguageFeatureState());
@@ -229,7 +235,8 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 					object->undefine(IDENTIFIER_BASE, object->resolve(IDENTIFIER_BASE, true));
 
 					// create base object
-					Runtime::Object *ancestor = createInstance(blueIt->second, name, initialize);
+					//Runtime::Object *ancestor = createInstance(blueIt->second, name, initialize);
+					Runtime::Object *ancestor = createUserObject(name, blueIt->second, initialize);
 
 					// define new base
 					object->define(IDENTIFIER_BASE, ancestor);
@@ -446,155 +453,9 @@ void Repository::initializeObject(Runtime::Object *object, Designtime::BluePrint
 	object->define(IDENTIFIER_THIS, object);	// define this-symbol
 }
 
-void Repository::insertBluePrintEnumsIntoScopes()
-{
-	for ( BluePrintEnumMap::iterator it = mBluePrintEnums.begin(); it != mBluePrintEnums.end(); ++it ) {
-		SymbolScope* scope = Controller::Instance().stack()->globalScope();
-
-		std::string name = it->second->QualifiedTypename();
-		std::string parent;
-		std::string type;
-
-		for ( ; ; ) {
-			Tools::split(name, parent, type);
-
-			if ( type.empty() ) {
-				break;
-			}
-
-			scope = dynamic_cast<SymbolScope*>(scope->resolve(parent, true));
-
-			name = type;
-		}
-
-		assert(scope);
-		scope->define(parent, it->second);
-	}
-}
-
-void Repository::insertBluePrintObjectsIntoScopes()
-{
-	for ( BluePrintObjectMap::iterator it = mBluePrintObjects.begin(); it != mBluePrintObjects.end(); ++it ) {
-		SymbolScope* scope = Controller::Instance().stack()->globalScope();
-
-		std::string name = it->second->QualifiedTypename();
-		std::string parent;
-		std::string type;
-
-		for ( ; ; ) {
-			Tools::split(name, parent, type);
-
-			if ( type.empty() ) {
-				break;
-			}
-
-			scope = dynamic_cast<SymbolScope*>(scope->resolve(parent, true));
-
-			name = type;
-		}
-
-		assert(scope);
-		scope->define(parent, it->second);
-	}
-}
-
 bool Repository::isAlreadyKnown(const std::string& name) const
 {
 	return mBluePrintObjects.find(name) != mBluePrintObjects.end();
-}
-
-/*
- * loop over all tokens of a blueprint object and retype all identifier tokens with object names as values with type
- */
-void Repository::rebuildBluePrints()
-{
-	rebuildBluePrintEnums();
-	rebuildBluePrintObjects();
-}
-
-void Repository::rebuildBluePrintEnums()
-{
-	for ( BluePrintEnumMap::iterator blueIt = mBluePrintEnums.begin(); blueIt != mBluePrintEnums.end(); ++blueIt ) {
-		TokenList tokens = blueIt->second->getTokens();
-
-		if ( tokens.empty() ) {
-			continue;
-		}
-
-		// loop over all tokens of a blueprint object and retype all identifier tokens with object names as values with type
-		// {
-		bool replaced = false;
-
-		for ( TokenList::iterator tokenIt = tokens.begin(); tokenIt != tokens.end(); ++tokenIt ) {
-			// we found an identifier token
-			if ( tokenIt->type() == Token::Type::IDENTIFER ) {
-				// check if its content is one of our added blueprint objects
-				if ( mBluePrintEnums.find(tokenIt->content()) != mBluePrintEnums.end() ) {
-					tokenIt->resetTypeTo(Token::Type::TYPE);
-
-					replaced = true;
-				}
-				else if ( blueIt->second->getEnclosingScope() ) {
-					std::string scope = blueIt->second->getEnclosingScope()->getScopeName();
-
-					if ( mBluePrintEnums.find(scope + "." + tokenIt->content()) != mBluePrintEnums.end()) {
-						tokenIt->resetTypeTo(Token::Type::TYPE);
-
-						replaced = true;
-					}
-				}
-			}
-		}
-
-		if ( replaced ) {
-			blueIt->second->setTokens(tokens);
-		}
-		// }
-
-		//Preprocessor preprocessor;
-		//preprocessor.process(blueIt->second);
-	}
-}
-
-void Repository::rebuildBluePrintObjects()
-{
-	for ( BluePrintObjectMap::iterator blueIt = mBluePrintObjects.begin(); blueIt != mBluePrintObjects.end(); ++blueIt ) {
-		TokenList tokens = blueIt->second->getTokens();
-
-		if ( tokens.empty() ) {
-			continue;
-		}
-
-		// loop over all tokens of a blueprint object and retype all identifier tokens with object names as values with type
-		// {
-		bool replaced = false;
-
-		for ( TokenList::iterator tokenIt = tokens.begin(); tokenIt != tokens.end(); ++tokenIt ) {
-			// we found an identifier token
-			if ( tokenIt->type() == Token::Type::IDENTIFER ) {
-				// check if its content is one of our added blueprint objects
-				if ( mBluePrintObjects.find(tokenIt->content()) != mBluePrintObjects.end() ) {
-					tokenIt->resetTypeTo(Token::Type::TYPE);
-
-					replaced = true;
-				}
-				else if ( blueIt->second->getEnclosingScope() ) {
-					std::string scope = blueIt->second->getEnclosingScope()->getScopeName();
-
-					if ( mBluePrintObjects.find(scope + "." + tokenIt->content()) != mBluePrintObjects.end()) {
-						tokenIt->resetTypeTo(Token::Type::TYPE);
-
-						replaced = true;
-					}
-				}
-			}
-		}
-
-		if ( replaced ) {
-			blueIt->second->setTokens(tokens);
-		}
-		// }
-	}
 }
 
 

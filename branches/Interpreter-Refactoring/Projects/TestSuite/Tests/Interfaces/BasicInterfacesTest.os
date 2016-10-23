@@ -50,6 +50,6 @@ private bool TestCase2() {
 
 	delete warehouse;	// this is not necessary but perfectly valid
 
-	return false;
+	return true;
 }
 
