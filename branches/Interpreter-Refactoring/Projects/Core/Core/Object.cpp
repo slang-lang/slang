@@ -741,11 +741,16 @@ bool Object::operator_greater_equal(const Object *other)
 
 bool Object::operator_is(const Symbol *other)
 {
-	if ( !other || other->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
-		throw Common::Exceptions::Exception("invalid symbol provided");
+	std::string type;
+
+	if ( other && other->getSymbolType() == Symbol::IType::BluePrintObjectSymbol ) {
+		type = static_cast<const Designtime::BluePrintObject*>(other)->QualifiedTypename();
+	}
+	else if ( other && other->getSymbolType() == Symbol::IType::ObjectSymbol ) {
+		type = static_cast<const Object*>(other)->QualifiedTypename();
 	}
 
-	return isInstanceOf(static_cast<const Designtime::BluePrintObject*>(other)->QualifiedTypename());
+	return isInstanceOf(type);
 }
 
 bool Object::operator_less(const Object *other)

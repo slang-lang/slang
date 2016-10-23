@@ -9,13 +9,20 @@ public object DerivedObject extends BaseObject {
 }
 
 public void Main(int argc = 0, string args = "") {
+	BaseObject baseObject = new BaseObject();
 	DerivedObject derived = new DerivedObject();
+
+	assert(baseObject is BaseObject);
+	print("baseObject is BaseObject");
 
 	assert(derived is DerivedObject);
 	print("derived is DerivedObject");
 
 	assert(derived is BaseObject);
 	print("derived is BaseObject");
+
+	print("derived is baseObject");
+	assert(derived is baseObject);
 
 	if ( derived is BaseObject ) {
 		print("positive is in if");

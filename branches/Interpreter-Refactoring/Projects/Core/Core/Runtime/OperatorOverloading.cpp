@@ -91,12 +91,6 @@ void operator_binary_assign(Object *base, Object *other)
 			Interpreter interpreter;
 			interpreter.execute(method, params, base);
 		}
-/*
-		else if ( other->isInstanceOf(source) ) {
-			// we are assigning a sub type to a super type
-			base->assign(*other);
-		}
-*/
 		else {
 			base->assign(*other);
 			//throw Runtime::Exceptions::InvalidAssignment("Could not assign type '" + source + "' to type '" + target + "'");
