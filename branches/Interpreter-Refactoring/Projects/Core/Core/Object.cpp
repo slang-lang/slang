@@ -946,9 +946,14 @@ Symbol* Object::resolve(const std::string& name, bool onlyCurrentScope) const
 	Symbol *result = MethodScope::resolve(name, true);
 
 	// (2) check inheritance
-	if ( !result && mBase ) {
-		result = mBase->resolve(name, onlyCurrentScope);
+/*
+	if ( !result ) {
+		Object* base = dynamic_cast<Object*>(MethodScope::resolve("base", true));
+		if ( base ) {
+			result = base->resolve(name, onlyCurrentScope);
+		}
 	}
+*/
 
 	// (3) if we still haven't found something also look in other scopes
 	if ( !result && !onlyCurrentScope ) {
@@ -969,8 +974,9 @@ ObjectiveScript::MethodSymbol* Object::resolveMethod(const std::string& name, co
 
 	// (2) check inheritance
 	// we cannot go the short is-result-already-set way here because one of our ancestor methods could be marked as final
-	if ( mBase && !onlyCurrentScope ) {
-		result = mBase->resolveMethod(name, params, onlyCurrentScope);
+	Object* base = dynamic_cast<Object*>(MethodScope::resolve("base", true));
+	if ( base && !onlyCurrentScope ) {
+		result = base->resolveMethod(name, params, onlyCurrentScope);
 	}
 
 	// (3) if we still haven't found something also look in other scopes

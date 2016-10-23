@@ -374,15 +374,14 @@ bool Analyser::createMember(TokenIterator& token, TokenIterator /*end*/)
 	// look for the identifier token
 	name = (*token++).content();
 
-/*
- * temporarily out of order
-	if ( visibility == Visibility::Public ) {
-		// beware: public members are deprecated, remember the "Law of Demeter"
-		// consider using wrappers (getter, setter) instead of directly providing access to members for outsiders
-		// haven't you heard? outsiders, or sometimes called strangers, are evil
-		throw Designtime::Exceptions::LawOfDemeterViolated("public member " + name + " violates \"Law of Demeter\"", token->position());
+	if ( !dynamic_cast<GlobalScope*>(mScope) ) {
+		if ( visibility == Visibility::Public ) {
+			// beware: public members are deprecated, remember the "Law of Demeter"
+			// consider using wrappers (getter, setter) instead of directly providing access to members for outsiders
+			// haven't you heard? outsiders, or sometimes called strangers, are evil
+			throw Designtime::Exceptions::LawOfDemeterViolated("public member " + name + " violates \"Law of Demeter\"", token->position());
+		}
 	}
-*/
 
 	// look for a mutability keyword
 	if ( token->category() == Token::Category::Modifier ) {
@@ -471,6 +470,22 @@ bool Analyser::createMethod(TokenIterator& token, TokenIterator /*end*/)
 	type = Parser::identify(token);
 	// look for the identifier token
 	name = (*token++).content();
+
+	BluePrintGeneric* blueprint = dynamic_cast<BluePrintGeneric*>(mScope);
+	if ( blueprint && name == blueprint->Typename() ) {
+		// these methods have the same name as their containing object,
+		// so this has to be a constructor or a destructor;
+		// they can never ever be const, ever
+		methodType = MethodAttributes::MethodType::Constructor;
+		mutability = Mutability::Modify;
+	}
+	else if ( blueprint && name == "~" + blueprint->Typename() ) {
+		// these methods have the same name as their containing object,
+		// so this has to be a constructor or a destructor;
+		// they can never ever be const, ever
+		methodType = MethodAttributes::MethodType::Destructor;
+		mutability = Mutability::Modify;
+	}
 
 	expect(Token::Type::PARENTHESIS_OPEN, token);
 
