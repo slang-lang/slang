@@ -210,7 +210,7 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token) const
 			else if ( token->content() == MODIFIER_STATIC ) {
 				isStatic = true;
 			}
-			else if ( token->content() == RESERVED_WORD_THROWS ) {
+			else if ( token->content() == MODIFIER_THROWS ) {
 				throws = true;
 			}
 		}
