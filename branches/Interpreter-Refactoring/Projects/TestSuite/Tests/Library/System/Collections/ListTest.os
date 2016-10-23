@@ -15,7 +15,6 @@ private object TestObject {
 	}
 }
 
-public object Main {
 	public void Main(int argc = 0, string args = "") {
 		assert( TestCase1() );
 		assert( TestCase2() );
@@ -248,4 +247,4 @@ public object Main {
 
 		return false;
 	}
-}
+

@@ -16,16 +16,14 @@ private object TestObject {
 	}
 }
 
-public object Main {
-	public void Main(int argc = 0, string args = "") {
-		print("LinkedList loop test");
+public void Main(int argc = 0, string args = "") {
+	print("LinkedList loop test");
 
-		try {
-			ObjectMethod();
-		}
-		catch ( System.OutOfBoundsException e ) {
-			print(e.what());
-		}
+	try {
+		ObjectMethod();
+	}
+	catch ( System.OutOfBoundsException e ) {
+		print(e.what());
 	}
 }
 
