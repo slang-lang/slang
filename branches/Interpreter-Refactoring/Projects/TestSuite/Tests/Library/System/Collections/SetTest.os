@@ -24,90 +24,88 @@ public object TestObject {
 	}
 }
 
-public object Main {
-	public void Main(int argc, string args) {
-		assert( TestCase1() );
-		assert( TestCase2() );
-	}
+public void Main(int argc, string args) {
+	assert( TestCase1() );
+	assert( TestCase2() );
+}
 
-	private bool TestCase1() modify {
-		print("TestCase 1: insert");
+private bool TestCase1() modify {
+	print("TestCase 1: insert");
 
-		try {
-			System.Set set = new System.Set();
-			assert( set is System.ACollection );
+	try {
+		System.Set set = new System.Set();
+		assert( set is System.ACollection );
 
-			TestObject item;
+		TestObject item;
 
-			int count = 0;
-			while ( count < 10 ) {
-				item = new TestObject(int Math.rand());
-				set.insert(Object item);
+		int count = 0;
+		while ( count < 10 ) {
+			item = new TestObject(int Math.rand());
+			set.insert(Object item);
 
-				count++;
-			}
-
-			TestObject last;
-
-			System.Iterator it = set.getIterator();
-			while ( it.hasNext() ) {
-				it.next();
-
-				item = TestObject it.current();
-				//print(item.mValue);
-
-				if ( last ) {
-					assert( last <= item );
-				}
-
-				last = item;
-			}
-
-			return true;
+			count++;
 		}
 
-		return false;
-	}
+		TestObject last;
 
-	private bool TestCase2() modify {
-		print("TestCase 2: erase");
+		System.Iterator it = set.getIterator();
+		while ( it.hasNext() ) {
+			it.next();
 
-		try {
-			System.Set set = new System.Set();
-			assert( set is Object );
+			item = TestObject it.current();
+			//print(item.mValue);
 
-			int count = 0;
-			while ( count < 10 ) {
-				set.insert(Object count);
-
-				count++;
+			if ( last ) {
+				assert( last <= item );
 			}
 
-			System.Iterator it = set.getIterator();
+			last = item;
+		}
+
+		return true;
+	}
+
+	return false;
+}
+
+private bool TestCase2() modify {
+	print("TestCase 2: erase");
+
+	try {
+		System.Set set = new System.Set();
+		assert( set is Object );
+
+		int count = 0;
+		while ( count < 10 ) {
+			set.insert(Object count);
+
+			count++;
+		}
+
+		System.Iterator it = set.getIterator();
+		while ( it.hasNext() ) {
+			it.next();
+
+			//print(it.current());
+		}
+
+		while ( !set.empty() ) {
+			try {
+				set.erase(Math.rand() % 10);
+				//print("set.erase");
+			}
+
+			it.reset();
 			while ( it.hasNext() ) {
 				it.next();
 
 				//print(it.current());
 			}
-
-			while ( !set.empty() ) {
-				try {
-					set.erase(Math.rand() % 10);
-					//print("set.erase");
-				}
-
-				it.reset();
-				while ( it.hasNext() ) {
-					it.next();
-
-					//print(it.current());
-				}
-			}
-
-			return true;
 		}
 
-		return false;
+		return true;
 	}
+
+	return false;
 }
 

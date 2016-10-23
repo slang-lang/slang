@@ -1,7 +1,6 @@
 #!/usr/local/bin/oscript
 
-public object Observer
-{
+public object Observer {
 	private string mTypeName;
 
 	public void Observer() {
@@ -13,8 +12,7 @@ public object Observer
 	}
 }
 
-public prototype TestPrototype extends Observer
-{
+public prototype TestPrototype extends Observer {
 	private UNKNOWN mValue;
 
 	public void TestPrototype() {
@@ -36,20 +34,16 @@ public prototype TestPrototype extends Observer
 }
 
 
-public object Main
-{
-	public void Main(int argc = 0, string argv = "")
-	{
-		test();
-	}
-
-	public void test()
-	{
-		TestPrototype of int prototype = new TestPrototype of int(100);
-
-		print("Observer = " & prototype.getTypeName());
-
-		// up- or downcast:
-		//Observer o = prototype as Observer;
-	}
+public void Main(int argc = 0, string argv = "") {
+	test();
 }
+
+public void test() {
+	TestPrototype of int prototype = new TestPrototype of int(100);
+
+	print("Observer = " & prototype.getTypeName());
+
+	// up- or downcast:
+	//Observer o = prototype as Observer;
+}
+

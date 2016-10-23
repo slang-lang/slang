@@ -14,68 +14,66 @@ private object Derived extends BaseObject {
 
 private object Replica replicates Derived;
 
-public object Main {
-	public void Main(int argc, string args) {
-		assert( TestCase1() );
-		assert( TestCase2() );
-		assert( TestCase3() );
+public void Main(int argc, string args) modify {
+	assert( TestCase1() );
+	assert( TestCase2() );
+	assert( TestCase3() );
+}
+
+private bool TestCase1() /*const*/ modify {
+	try {
+		BaseObject baseObject = new BaseObject();
+		baseObject.mIntValue = 173;
+
+		string jsonString = ToJsonString(Object baseObject);
+		writeln("baseObject = " + jsonString);
+
+		return true;
+	}
+	catch ( string e ) {
+		print(e);
 	}
 
-	private bool TestCase1() /*const*/ modify {
-		try {
-			BaseObject baseObject = new BaseObject();
-			baseObject.mIntValue = 173;
+	return false;
+}
 
-			string jsonString = ToJsonString(Object baseObject);
-			writeln("baseObject = " + jsonString);
+private bool TestCase2() /*const*/ modify {
+	try {
+		Derived derived = new Derived();
 
-			return true;
-		}
-		catch ( string e ) {
-			print(e);
-		}
+		string jsonString = "{\"base\":{\"mIntValue\":\"42\"},\"mStringValue\":\"this is a string\"}";
 
-		return false;
+		bool result = FromJsonString(Object derived, jsonString);
+		result = result && jsonString == ToJsonString(Object derived);
+
+		writeln("derived = " + ToJsonString(Object derived));
+
+		return result;
+	}
+	catch ( string e ) {
+		print(e);
 	}
 
-	private bool TestCase2() /*const*/ modify {
-		try {
-			Derived derived = new Derived();
+	return false;
+}
 
-			string jsonString = "{\"base\":{\"mIntValue\":\"42\"},\"mStringValue\":\"this is a string\"}";
+private bool TestCase3() /*const*/ modify {
+	try {
+		Replica replica;
 
-			bool result = FromJsonString(Object derived, jsonString);
-			result = result && jsonString == ToJsonString(Object derived);
+		string jsonString = "{\"base\":{\"mIntValue\":\"42\"},\"mStringValue\":\"this is a string\"}";
 
-			writeln("derived = " + ToJsonString(Object derived));
+		bool result = FromJsonString(Object replica, jsonString);
+		result = result && jsonString == ToJsonString(Object replica);
 
-			return result;
-		}
-		catch ( string e ) {
-			print(e);
-		}
+		writeln("replica = " + ToJsonString(Object replica));
 
-		return false;
+		return result;
+	}
+	catch ( string e ) {
+		print(e);
 	}
 
-	private bool TestCase3() /*const*/ modify {
-		try {
-			Replica replica;
-
-			string jsonString = "{\"base\":{\"mIntValue\":\"42\"},\"mStringValue\":\"this is a string\"}";
-
-			bool result = FromJsonString(Object replica, jsonString);
-			result = result && jsonString == ToJsonString(Object replica);
-
-			writeln("replica = " + ToJsonString(Object replica));
-
-			return result;
-		}
-		catch ( string e ) {
-			print(e);
-		}
-
-		return false;
-	}
+	return false;
 }
 

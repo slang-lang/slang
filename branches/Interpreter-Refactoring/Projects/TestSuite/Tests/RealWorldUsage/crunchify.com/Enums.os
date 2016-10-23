@@ -64,21 +64,20 @@ public object CrunchifyEnumExample {
 	}
 }
 
-public object Main {
-	public void Main(int argc, string args) {
-		CrunchifyEnumExample ebay = new CrunchifyEnumExample(Company.EBAY);
-		ebay.companyDetails();
+public void Main(int argc, string args) {
+	CrunchifyEnumExample ebay = new CrunchifyEnumExample(Company.EBAY);
+	ebay.companyDetails();
 
-		CrunchifyEnumExample paypal = new CrunchifyEnumExample(Company.PAYPAL);
-		paypal.companyDetails();
+	CrunchifyEnumExample paypal = new CrunchifyEnumExample(Company.PAYPAL);
+	paypal.companyDetails();
 
-		CrunchifyEnumExample google = new CrunchifyEnumExample(Company.GOOGLE);
-		google.companyDetails();
+	CrunchifyEnumExample google = new CrunchifyEnumExample(Company.GOOGLE);
+	google.companyDetails();
 
-		CrunchifyEnumExample yahoo = new CrunchifyEnumExample(Company.YAHOO);
-		yahoo.companyDetails();
+	CrunchifyEnumExample yahoo = new CrunchifyEnumExample(Company.YAHOO);
+	yahoo.companyDetails();
 
-		CrunchifyEnumExample att = new CrunchifyEnumExample(Company.ATT);
-		att.companyDetails();
-	}
+	CrunchifyEnumExample att = new CrunchifyEnumExample(Company.ATT);
+	att.companyDetails();
 }
+

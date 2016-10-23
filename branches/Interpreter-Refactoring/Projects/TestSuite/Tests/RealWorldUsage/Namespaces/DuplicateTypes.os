@@ -28,12 +28,8 @@ private namespace NS2 {
 
 }
 
-public object Main {
-	public void Main(int argc, string args) {
-
-		NS1.TestObject ns1 = new NS1.TestObject(1);
-		NS2.TestObject ns2 = new NS2.TestObject("bla");
-
-	}
+public void Main(int argc, string args) {
+	NS1.TestObject ns1 = new NS1.TestObject(1);
+	NS2.TestObject ns2 = new NS2.TestObject("bla");
 }
 
