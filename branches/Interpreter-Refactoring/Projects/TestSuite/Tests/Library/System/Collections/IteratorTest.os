@@ -3,7 +3,7 @@
 import System.Collections.Iterator;
 import System.Collections.List;
 
-	public void Main(int argc, string args) {
+	public void Main(int argc, string args) modify {
 		assert( TestCase1() );
 		assert( TestCase2() );
 		assert( TestCase3() );

@@ -15,7 +15,7 @@ private object TestObject {
 	}
 }
 
-	public void Main(int argc = 0, string args = "") {
+	public void Main(int argc = 0, string args = "") modify {
 		assert( TestCase1() );
 		assert( TestCase2() );
 		assert( TestCase3() );

@@ -326,8 +326,6 @@ ControlFlow::E Object::Destructor()
 	ControlFlow::E controlflow = ControlFlow::Normal;
 
 	if ( isConstructed() && !mIsAtomicType ) {
-		//setConstructed(false);
-
 		ParameterList params;
 
 		// only execute destructor if one is present
@@ -351,11 +349,6 @@ ControlFlow::E Object::Destructor()
 				return controlflow;
 			}
 		}
-	}
-	else {
-		// either the destructor has already been executed
-		// or the constructor has never been called successfully!
-		//throw Common::Exceptions::Exception("can not destroy object '" + Typename() + "' which has not been constructed");
 	}
 
 	// set after executing destructor in case any exceptions have been thrown
@@ -449,7 +442,11 @@ bool Object::isArray() const
 
 bool Object::isAbstract() const
 {
-	bool result = false;
+	if ( mThis != this ) {
+		return Controller::Instance().memory()->get(mReference)->isAbstract();
+	}
+
+	bool result = mBase ? mBase->isAbstract() : false;
 
 	for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
 		if ( (*it)->isAbstract() ) {
@@ -514,7 +511,6 @@ void Object::operator_assign(const Object *other)
 	ParameterList params;
 	params.push_back(
 		Parameter(ANONYMOUS_OBJECT, Typename(), VALUE_NONE)
-		//Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
 	);
 
 	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", params, true);
@@ -540,7 +536,6 @@ void Object::operator_bitand(const Object *other)
 	ParameterList params;
 	params.push_back(
 		Parameter(ANONYMOUS_OBJECT, Typename(), VALUE_NONE)
-		//Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
 	);
 
 	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("&operator", params, true);

@@ -22,7 +22,7 @@ public void Main(int argc = 0, string args = "") {
 	try {
 		ObjectMethod();
 	}
-	catch ( System.OutOfBoundsException e ) {
+	catch ( OutOfBoundsException e ) {
 		print(e.what());
 	}
 }

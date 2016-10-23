@@ -49,7 +49,7 @@ Repository::~Repository()
 /*
  * add a new blue print to our repository
  */
-void Repository::addBluePrint(Designtime::BluePrintEnum* blueprint, IScope* scope)
+void Repository::addBluePrint(Designtime::BluePrintEnum* blueprint)
 {
 	BluePrintEnumMap::iterator it = mBluePrintEnums.find(blueprint->QualifiedTypename());
 	if ( it != mBluePrintEnums.end() ) {
@@ -58,14 +58,12 @@ void Repository::addBluePrint(Designtime::BluePrintEnum* blueprint, IScope* scop
 	}
 
 	mBluePrintEnums.insert(std::make_pair(blueprint->QualifiedTypename(), blueprint));
-
-	scope->define(blueprint->Typename(), blueprint);
 }
 
 /*
  * adds a new blue print to our repository
  */
-void Repository::addBluePrint(Designtime::BluePrintObject* blueprint, IScope* scope)
+void Repository::addBluePrint(Designtime::BluePrintObject* blueprint)
 {
 	BluePrintObjectMap::iterator it = mBluePrintObjects.find(blueprint->QualifiedTypename());
 	if ( it != mBluePrintObjects.end() ) {
@@ -87,14 +85,12 @@ void Repository::addBluePrint(Designtime::BluePrintObject* blueprint, IScope* sc
 	}
 
 	mBluePrintObjects.insert(std::make_pair(blueprint->QualifiedTypename(), blueprint));
-
-	scope->define(blueprint->Typename(), blueprint);
 }
 
 /*
  * DEPRECATED: adds a new prototype (= generic) to our repository
  */
-void Repository::addPrototype(Designtime::Prototype* /*prototype*/, IScope* /*scope*/)
+void Repository::addPrototype(Designtime::Prototype* /*prototype*/)
 {
 assert(!"prototypes not supported!");
 /*
@@ -248,10 +244,12 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 					// add our newly created ancestor to our inheritance
 					object->addInheritance((*ancestorIt), ancestor);
 
+/*
 					// implement interface
 					if ( initialize ) {
 						initializeObject(object, blueIt->second);
 					}
+*/
 				} break;
 				case Designtime::Ancestor::Type::Unknown:
 					throw Common::Exceptions::Exception("invalid inheritance detected");
@@ -337,14 +335,54 @@ void Repository::initialize()
 	SymbolScope* scope = Controller::Instance().stack()->globalScope();
 
 	// add atomic types
-	addBluePrint(new Designtime::BoolObject(), scope);
-	addBluePrint(new Designtime::DoubleObject(), scope);
-	addBluePrint(new Designtime::FloatObject(), scope);
-	addBluePrint(new Designtime::GenericObject(), scope);
-	addBluePrint(new Designtime::IntegerObject(), scope);
-	addBluePrint(new Designtime::NumberObject(), scope);
-	addBluePrint(new Designtime::StringObject(), scope);
-	addBluePrint(new Designtime::VoidObject(), scope);
+	{	// "bool" type
+		Designtime::BoolObject* obj = new Designtime::BoolObject();
+		addBluePrint(obj);
+
+		scope->define(Designtime::BoolObject::TYPENAME, obj);
+	}
+	{	// "double" type
+		Designtime::DoubleObject* obj = new Designtime::DoubleObject();
+		addBluePrint(obj);
+
+		scope->define(Designtime::DoubleObject::TYPENAME, obj);
+	}
+	{	// "float" type
+		Designtime::FloatObject* obj = new Designtime::FloatObject();
+		addBluePrint(obj);
+
+		scope->define(Designtime::FloatObject::TYPENAME, obj);
+	}
+	{	// "Object" type
+		Designtime::GenericObject* obj = new Designtime::GenericObject();
+		addBluePrint(obj);
+
+		scope->define(Designtime::GenericObject::TYPENAME, obj);
+	}
+	{	// "int" type
+		Designtime::IntegerObject* obj = new Designtime::IntegerObject();
+		addBluePrint(obj);
+
+		scope->define(Designtime::IntegerObject::TYPENAME, obj);
+	}
+	{	// "number" type
+		Designtime::NumberObject* obj = new Designtime::NumberObject();
+		addBluePrint(obj);
+
+		scope->define(Designtime::NumberObject::TYPENAME, obj);
+	}
+	{	// "string" type
+		Designtime::StringObject* obj = new Designtime::StringObject();
+		addBluePrint(obj);
+
+		scope->define(Designtime::StringObject::TYPENAME, obj);
+	}
+	{	// "void" type
+		Designtime::VoidObject* obj = new Designtime::VoidObject();
+		addBluePrint(obj);
+
+		scope->define(Designtime::VoidObject::TYPENAME, obj);
+	}
 
 	// add predefined runtime objects
 	{	// null

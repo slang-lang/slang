@@ -372,12 +372,13 @@ void RemoteClient::start()
 
 	mDebugger->breakOnExceptionThrow(mSettings->breakOnExceptionThrow());
 	mDebugger->resume();
-	Controller::Instance().stack()->print();
 
 	mVirtualMachine = new VirtualMachine();
 	for ( StringSet::const_iterator it = mSettings->libraryFolders().begin(); it != mSettings->libraryFolders().end(); ++it ) {
 		mVirtualMachine->addLibraryFolder((*it));
 	}
+
+	Controller::Instance().stack()->print();
 
 	// add extensions
 #ifdef USE_APACHE_EXTENSION

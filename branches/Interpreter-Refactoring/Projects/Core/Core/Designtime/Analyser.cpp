@@ -261,7 +261,11 @@ bool Analyser::createBluePrint(TokenIterator& token, TokenIterator end)
 	symbol->setQualifiedTypename(getQualifiedTypename(type));
 	symbol->setVisibility(Visibility::convert(visibility));
 
-	mRepository->addBluePrint(symbol, mScope);
+	mRepository->addBluePrint(symbol);
+
+	if ( implementationType != ImplementationType::ForwardDeclaration ) {
+		mScope->define(symbol->Typename(), symbol);
+	}
 
 	MethodScope* tmpScope = mScope;
 
@@ -318,7 +322,9 @@ bool Analyser::createEnum(TokenIterator& token, TokenIterator end)
 	symbol->setVisibility(Visibility::convert(visibility));
 	symbol->setSealed(true);
 
-	mRepository->addBluePrint(symbol, mScope);
+	mRepository->addBluePrint(symbol);
+
+	mScope->define(symbol->Typename(), symbol);
 
 	return buildEnum(symbol, tokens);
 }
@@ -407,7 +413,7 @@ bool Analyser::createMember(TokenIterator& token, TokenIterator /*end*/)
 
 	expect(Token::Type::SEMICOLON, token);
 
-	if ( dynamic_cast<GlobalScope*>(mScope) ||dynamic_cast<Runtime::Namespace*>(mScope) ) {
+	if ( dynamic_cast<GlobalScope*>(mScope) || dynamic_cast<Runtime::Namespace*>(mScope) ) {
 		Runtime::Object *member = mRepository->createInstance(type, name, false);
 		member->setFinal(isFinal);
 		member->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
@@ -442,7 +448,7 @@ bool Analyser::createMember(TokenIterator& token, TokenIterator /*end*/)
 
 bool Analyser::createMethod(TokenIterator& token, TokenIterator /*end*/)
 {
-	bool isAbstract = false;
+	bool isAbstract = mProcessingInterface;
 	bool isFinal = false;
 	bool isRecursive = false;
 	bool isStatic = false;
@@ -503,10 +509,8 @@ bool Analyser::createMethod(TokenIterator& token, TokenIterator /*end*/)
 			}
 			else if ( token->content() == MODIFIER_STATIC ) {
 				isStatic = true;
-
-				//throw Common::Exceptions::NotSupported("global methods cannot be declared as static");
 			}
-			else if ( token->content() == RESERVED_WORD_THROWS ) {
+			else if ( token->content() == MODIFIER_THROWS ) {
 				throws = true;
 			}
 		}
@@ -519,12 +523,6 @@ bool Analyser::createMethod(TokenIterator& token, TokenIterator /*end*/)
 		throw Common::Exceptions::Exception("modifiers 'const' & 'modify' are exclusive");
 	}
 
-	if ( token->type() == Token::Type::RESERVED_WORD && token->content() == RESERVED_WORD_THROWS ) {
-		throws = true;
-		token++;
-	}
-
-
 	// collect all tokens of this method
 	TokenList tokens;
 	if ( token->type() == Token::Type::BRACKET_CURLY_OPEN ) {
@@ -533,6 +531,9 @@ bool Analyser::createMethod(TokenIterator& token, TokenIterator /*end*/)
 		}
 
 		tokens = Parser::collectScopeTokens(token);
+	}
+	else if ( !isAbstract ) {
+		throw Common::Exceptions::SyntaxError("method '" + name + "' is not declared as abstract but has no implementation", token->position());
 	}
 
 	// create a new method with the corresponding return value

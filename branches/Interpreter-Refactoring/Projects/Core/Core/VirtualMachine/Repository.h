@@ -40,9 +40,9 @@ public:
 	void init();
 
 public:
-	void addBluePrint(Designtime::BluePrintEnum* blueprint, IScope* scope);
-	void addBluePrint(Designtime::BluePrintObject* object, IScope* scope);
-	void addPrototype(Designtime::Prototype* prototype, IScope* scope);
+	void addBluePrint(Designtime::BluePrintEnum* blueprint);
+	void addBluePrint(Designtime::BluePrintObject* object);
+	void addPrototype(Designtime::Prototype* prototype);
 
 	Runtime::Object* createInstance(const std::string& type, const std::string& name, bool initialize = false);
 	Runtime::Object* createInstance(Designtime::BluePrintObject* blueprint, const std::string& name, bool initialize = false);

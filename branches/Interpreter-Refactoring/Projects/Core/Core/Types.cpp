@@ -86,6 +86,7 @@ StringList provideModifiers()
 	modifiers.push_back(MODIFIER_RECURSIVE);
 	modifiers.push_back(MODIFIER_SEALED);
 	modifiers.push_back(MODIFIER_STATIC);
+	modifiers.push_back(MODIFIER_THROWS);
 
 	return modifiers;
 }
@@ -117,7 +118,6 @@ StringList provideReservedWords()
 	reservedWords.push_back(RESERVED_WORD_PROTOTYPE);
 	reservedWords.push_back(RESERVED_WORD_REPLICATES);
 	reservedWords.push_back(RESERVED_WORD_SCOPE_OPERATOR);
-	reservedWords.push_back(RESERVED_WORD_THROWS);
 	reservedWords.push_back(RESERVED_WORD_USING);
 
 	return reservedWords;
