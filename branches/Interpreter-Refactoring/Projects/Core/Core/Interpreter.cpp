@@ -1800,6 +1800,10 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol)
 		// execute assignment statement
 		try {
 			Object tmp;
+			tmp.setArray(isArray);
+			tmp.setConst(isConst);
+			tmp.setFinal(isFinal);
+
 			expression(&tmp, token);
 
 			operator_binary_assign(object, &tmp);

@@ -55,10 +55,6 @@ public:
 	Visibility::E getVisibility() const;
 	void setVisibility(Visibility::E v);
 
-	bool isAbstract() const;
-	bool isForwardDeclaration() const;
-	bool isInterface() const;
-
 	void setParent(IScope* parent);
 
 	Runtime::AtomicValue getValue() const;

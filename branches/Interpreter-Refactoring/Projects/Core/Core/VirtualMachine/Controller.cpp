@@ -42,6 +42,7 @@ void Controller::deinit()
 	delete mStack;
 	delete mMemory;
 	delete mRepository;
+	delete mVirtualMethodTable;
 
 	mInitialized = false;
 }
@@ -53,6 +54,7 @@ void Controller::init()
 	mMemory = new Memory();
 	mRepository = new Repository();
 	mStack = new Stack();
+	mVirtualMethodTable = new VirtualMethodTable();
 
 	mMemory->init();
 	mStack->init();
@@ -80,6 +82,13 @@ Stack* Controller::stack() const
 	assert(mStack);
 
 	return mStack;
+}
+
+VirtualMethodTable* Controller::virtualMethodTable() const
+{
+	assert(mVirtualMethodTable);
+
+	return mVirtualMethodTable;
 }
 
 

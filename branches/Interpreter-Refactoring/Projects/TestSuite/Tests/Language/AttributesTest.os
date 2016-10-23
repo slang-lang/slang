@@ -1,6 +1,6 @@
 #!/usr/local/bin/oscript
 
-//public stable namespace AttributeTest {
+public stable namespace AttributeTest {
 	public void Function1() {
 		print("Function1");
 
@@ -58,16 +58,14 @@
 			mNumber = value;
 		}
 	}
-//}
-
-//private TestObject mTest;
+}
 
 public void Main(int argc = 0, string argv = "") {
 	AttributeTest.Function1();
 
 	bla(1);
 
-	TestObject mTest = new AttributeTest.TestObject();
+	AttributeTest.TestObject mTest = new AttributeTest.TestObject();
 
 	mTest.deprecatedMethod();
 	//mTest.notimplementedMethod();

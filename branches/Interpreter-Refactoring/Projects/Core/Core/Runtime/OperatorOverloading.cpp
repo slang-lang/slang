@@ -106,7 +106,7 @@ void operator_binary_assign(Object *base, Object *other)
 
 void operator_binary_bitand(Object *base, Object *other)
 {
-	if ( !base || !base->isValid() ) {
+	if ( !base /*|| !base->isValid()*/ ) {
 		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object");
 	}
 
@@ -167,7 +167,7 @@ void operator_binary_bitand(Object *base, Object *other)
 
 void operator_binary_bitcomplement(Object *base, Object *other)
 {
-	if ( !base || !base->isValid() ) {
+	if ( !base /*|| !base->isValid()*/ ) {
 		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object");
 	}
 
@@ -228,7 +228,7 @@ void operator_binary_bitcomplement(Object *base, Object *other)
 
 void operator_binary_bitor(Object *base, Object *other)
 {
-	if ( !base || !base->isValid() ) {
+	if ( !base /*|| !base->isValid()*/ ) {
 		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object");
 	}
 
@@ -289,7 +289,7 @@ void operator_binary_bitor(Object *base, Object *other)
 
 void operator_binary_divide(Object *base, Object *other)
 {
-	if ( !base || !base->isValid() ) {
+	if ( !base /*|| !base->isValid()*/ ) {
 		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object");
 	}
 
@@ -405,7 +405,7 @@ bool operator_binary_equal(Object *base, Object *other)
 
 bool operator_binary_greater(Object *base, Object *other)
 {
-	if ( !base || !base->isValid() ) {
+	if ( !base /*|| !base->isValid()*/ ) {
 		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object");
 	}
 
@@ -452,7 +452,7 @@ bool operator_binary_greater(Object *base, Object *other)
 
 bool operator_binary_greater_equal(Object *base, Object *other)
 {
-	if ( !base || !base->isValid() ) {
+	if ( !base /*|| !base->isValid()*/ ) {
 		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object");
 	}
 
@@ -499,7 +499,7 @@ bool operator_binary_greater_equal(Object *base, Object *other)
 
 bool operator_binary_less(Object *base, Object *other)
 {
-	if ( !base || !base->isValid() ) {
+	if ( !base /*|| !base->isValid()*/ ) {
 		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object");
 	}
 
@@ -546,7 +546,7 @@ bool operator_binary_less(Object *base, Object *other)
 
 bool operator_binary_less_equal(Object *base, Object *other)
 {
-	if ( !base || !base->isValid() ) {
+	if ( !base /*|| !base->isValid()*/ ) {
 		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object");
 	}
 
@@ -593,7 +593,7 @@ bool operator_binary_less_equal(Object *base, Object *other)
 
 bool operator_binary_is(Object* base, Symbol* other)
 {
-	if ( !base || !base->isValid() ) {
+	if ( !base /*|| !base->isValid()*/ ) {
 		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object");
 	}
 
@@ -602,7 +602,7 @@ bool operator_binary_is(Object* base, Symbol* other)
 
 void operator_binary_modulo(Object *base, Object *other)
 {
-	if ( !base || !base->isValid() ) {
+	if ( !base /*|| !base->isValid()*/ ) {
 		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object");
 	}
 
@@ -663,7 +663,7 @@ void operator_binary_modulo(Object *base, Object *other)
 
 void operator_binary_multiply(Object *base, Object *other)
 {
-	if ( !base || !base->isValid() ) {
+	if ( !base /*|| !base->isValid()*/ ) {
 		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object");
 	}
 
@@ -724,7 +724,7 @@ void operator_binary_multiply(Object *base, Object *other)
 
 void operator_binary_plus(Object *base, Object *other)
 {
-	if ( !base || !base->isValid() ) {
+	if ( !base /*|| !base->isValid()*/ ) {
 		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object");
 	}
 
@@ -1091,7 +1091,6 @@ void operator_unary_not(Object *base)
 			Interpreter interpreter;
 			interpreter.execute(dynamic_cast<Method*>(value_op), params, &tmp);
 
-			//operator_binary_assign(base, &tmp);
 			*base = BoolObject(!tmp.isValid());
 		}
 		else {

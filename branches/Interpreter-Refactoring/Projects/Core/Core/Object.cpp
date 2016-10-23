@@ -351,8 +351,6 @@ ControlFlow::E Object::Destructor()
 				return controlflow;
 			}
 		}
-
-		garbageCollector();
 	}
 	else {
 		// either the destructor has already been executed

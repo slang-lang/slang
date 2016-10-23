@@ -69,12 +69,12 @@ void Repository::addBluePrint(Designtime::BluePrintObject* blueprint, IScope* sc
 {
 	BluePrintObjectMap::iterator it = mBluePrintObjects.find(blueprint->QualifiedTypename());
 	if ( it != mBluePrintObjects.end() ) {
-		if ( blueprint->isForwardDeclaration() ) {
+		if ( blueprint->getImplementationType() == ImplementationType::ForwardDeclaration ) {
 			// adding additional forward declarations doesn't matter
 			return;
 		}
 
-		if ( !it->second->isForwardDeclaration() ) {
+		if ( it->second->getImplementationType() != ImplementationType::ForwardDeclaration ) {
 			throw Common::Exceptions::Exception("duplicate object '" + blueprint->QualifiedTypename() + "' added to repository");
 		}
 
@@ -208,8 +208,8 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 {
 	assert(blueprint);
 
-	if ( blueprint->isForwardDeclaration() ) {
-		throw Common::Exceptions::NotImplemented("cannot create instance of forward declarated type '" + blueprint->QualifiedTypename() + "'");
+	if ( blueprint->getImplementationType() == ImplementationType::ForwardDeclaration ) {
+		throw Common::Exceptions::NotImplemented("cannot create instance of forward declared type '" + blueprint->QualifiedTypename() + "'");
 	}
 
 	// create the base object
@@ -399,6 +399,7 @@ void Repository::initializeObject(Runtime::Object *object, Designtime::BluePrint
 		Runtime::Method* old = static_cast<Runtime::Method*>(object->resolveMethod((*it)->getName(), method->provideSignature(), true));
 		if ( old && old->isAbstract() ) {
 			object->undefineMethod(old);
+			delete old;
 		}
 
 		object->defineMethod((*it)->getName(), method);

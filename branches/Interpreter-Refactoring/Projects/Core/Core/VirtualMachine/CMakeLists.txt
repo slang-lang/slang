@@ -7,6 +7,7 @@ SET(SOURCES
 	Stack.cpp
 	StackLevel.cpp
 	VirtualMachine.cpp
+	VirtualMethodTable.cpp
 )
 
 SET(HEADERS
@@ -16,6 +17,7 @@ SET(HEADERS
 	Stack.h
 	StackLevel.h
 	VirtualMachine.h
+	VirtualMethodTable.h
 )
 
 SET(DEPENDENCIES

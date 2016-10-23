@@ -46,7 +46,7 @@ void SymbolScope::deinit()
 	Symbols tmp = mSymbols;
 
 	for ( Symbols::iterator it = tmp.begin(); it != tmp.end(); ++it ) {
-		if ( //it->first != "base" &&
+		if ( it->first != "base" &&
 			 it->first != "this" &&
 			 it->second->getSymbolType() == Symbol::IType::ObjectSymbol ) {
 			mSymbols.erase(it->first);
@@ -159,6 +159,19 @@ void MethodScope::defineMethod(const std::string& name, Runtime::Method* method)
 
 void MethodScope::deinit()
 {
+	MethodCollection tmpMethods = mMethods;
+	Symbols tmpSymbols = mSymbols;
+
+	for ( MethodCollection::iterator methIt = tmpMethods.begin(); methIt != tmpMethods.end(); ++methIt ) {
+		for ( Symbols::iterator symIt = tmpSymbols.begin(); symIt != tmpSymbols.end(); ++symIt ) {
+			if ( symIt->second == (*methIt) ) {
+				mSymbols.erase(symIt->first);
+			}
+		}
+
+		mMethods.erase((*methIt));
+		delete (*methIt);
+	}
 }
 
 MethodSymbol* MethodScope::resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope) const
@@ -203,21 +216,22 @@ GlobalScope::~GlobalScope()
 
 void GlobalScope::deinit()
 {
-	Symbols tmp = mSymbols;
+	MethodCollection tmpMethods = mMethods;
+	Symbols tmpSymbols = mSymbols;
 
-	for ( MethodCollection::iterator methIt = mMethods.begin(); methIt != mMethods.end(); ++methIt ) {
-		for ( Symbols::iterator symIt = tmp.begin(); symIt != tmp.end(); ++symIt ) {
+	for ( MethodCollection::iterator methIt = tmpMethods.begin(); methIt != tmpMethods.end(); ++methIt ) {
+		for ( Symbols::iterator symIt = tmpSymbols.begin(); symIt != tmpSymbols.end(); ++symIt ) {
 			if ( symIt->second == (*methIt) ) {
 				mSymbols.erase(symIt->first);
 			}
 		}
 
+		mMethods.erase((*methIt));
 		delete (*methIt);
 	}
-	mMethods.clear();
 
-	tmp = mSymbols;
-	for ( Symbols::iterator symIt = tmp.begin(); symIt != tmp.end(); ++symIt ) {
+	tmpSymbols = mSymbols;
+	for ( Symbols::iterator symIt = tmpSymbols.begin(); symIt != tmpSymbols.end(); ++symIt ) {
 		switch ( symIt->second->getSymbolType() ) {
 			case Symbol::IType::NamespaceSymbol: {
 				Symbol* space = symIt->second;

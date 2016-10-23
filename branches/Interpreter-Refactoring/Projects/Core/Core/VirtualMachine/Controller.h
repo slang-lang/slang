@@ -9,6 +9,7 @@
 #include "Memory.h"
 #include "Repository.h"
 #include "Stack.h"
+#include "VirtualMethodTable.h"
 
 // Forward declarations
 
@@ -38,6 +39,7 @@ public:
 	Memory* memory() const;
 	Repository* repository() const;
 	Stack* stack() const;
+	VirtualMethodTable* virtualMethodTable() const;
 
 private:
 	Controller();
@@ -49,6 +51,7 @@ private:
 	Memory* mMemory;
 	Repository* mRepository;
 	Stack* mStack;
+	VirtualMethodTable* mVirtualMethodTable;
 };
 
 

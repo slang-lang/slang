@@ -23,28 +23,35 @@ Namespace::Namespace(const std::string& name, IScope* parent)
 
 Namespace::~Namespace()
 {
-	for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
-		undefine((*it)->getName(), (*it));
+	MethodCollection tmpMethods = mMethods;
+	Symbols tmpSymbols = mSymbols;
 
-		delete (*it);
+	for ( MethodCollection::iterator methIt = tmpMethods.begin(); methIt != tmpMethods.end(); ++methIt ) {
+		for ( Symbols::iterator symIt = tmpSymbols.begin(); symIt != tmpSymbols.end(); ++symIt ) {
+			if ( symIt->second == (*methIt) ) {
+				mSymbols.erase(symIt->first);
+			}
+		}
+
+		mMethods.erase((*methIt));
+		delete (*methIt);
 	}
-	mMethods.clear();
 
-	for ( Symbols::reverse_iterator it = mSymbols.rbegin(); it != mSymbols.rend(); ) {
-		if ( it->second ) {
-			switch ( it->second->getSymbolType() ) {
+	tmpSymbols = mSymbols;
+	for ( Symbols::iterator symIt = tmpSymbols.begin(); symIt != tmpSymbols.end(); ++symIt) {
+		if ( symIt->second ) {
+			switch ( symIt->second->getSymbolType() ) {
 				case Symbol::IType::NamespaceSymbol:
-					delete it->second;
-					it->second = 0;
+					delete symIt->second;
+					symIt->second = 0;
+
+					mSymbols.erase(symIt->first);
 					break;
 				default:
 					break;
 			}
 		}
-
-		undefine(it->first, it->second);
 	}
-	mSymbols.clear();
 }
 
 std::string Namespace::ToString(unsigned int indent) const

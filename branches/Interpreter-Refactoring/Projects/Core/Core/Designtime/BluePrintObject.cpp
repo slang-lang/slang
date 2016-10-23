@@ -88,21 +88,6 @@ Visibility::E BluePrintObject::getVisibility() const
 	return mVisibility;
 }
 
-bool BluePrintObject::isAbstract() const
-{
-	return getImplementationType() == ImplementationType::Abstract || getImplementationType() == ImplementationType::Interface;
-}
-
-bool BluePrintObject::isForwardDeclaration() const
-{
-	return getImplementationType() == ImplementationType::ForwardDeclaration;
-}
-
-bool BluePrintObject::isInterface() const
-{
-	return getImplementationType() == ImplementationType::Interface;
-}
-
 void BluePrintObject::setParent(IScope* parent)
 {
 	mParent = parent;
