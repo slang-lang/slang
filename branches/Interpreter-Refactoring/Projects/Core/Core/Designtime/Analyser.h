@@ -50,10 +50,12 @@ private:
 
 	bool createBluePrint(TokenIterator& token, TokenIterator end);
 	bool createEnum(TokenIterator& token, TokenIterator end);
+	//bool createFunction(TokenIterator& token, TokenIterator end);
 	bool createLibraryReference(TokenIterator& token, TokenIterator end);
 	bool createMember(TokenIterator& token, TokenIterator end);
 	bool createMethod(TokenIterator& token, TokenIterator end);
 	bool createNamespace(TokenIterator& token, TokenIterator end);
+	//bool createNamespaceMember(TokenIterator& token, TokenIterator end);
 	bool createPrototype(TokenIterator& token, TokenIterator end);
 
 	bool buildEnum(Designtime::BluePrintEnum* symbol, const TokenList& tokens);

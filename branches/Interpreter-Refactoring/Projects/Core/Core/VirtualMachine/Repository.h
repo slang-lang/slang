@@ -47,8 +47,6 @@ public:
 	Runtime::Object* createInstance(const std::string& type, const std::string& name, bool initialize = false);
 	Runtime::Object* createInstance(Designtime::BluePrintObject* blueprint, const std::string& name, bool initialize = false);
 
-	bool isAlreadyKnown(const std::string& name) const;
-
 private:
 	Runtime::Object* createObject(const std::string& name, Designtime::BluePrintObject* blueprint, bool initialize);
 	Runtime::Object* createUserObject(const std::string& name, Designtime::BluePrintObject* blueprint, bool initialize);

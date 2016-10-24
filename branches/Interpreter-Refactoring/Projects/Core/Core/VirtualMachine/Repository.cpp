@@ -47,21 +47,34 @@ Repository::~Repository()
 }
 
 /*
- * add a new blue print to our repository
+ * add a new blue print enum to the repository
  */
 void Repository::addBluePrint(Designtime::BluePrintEnum* blueprint)
 {
 	BluePrintEnumMap::iterator it = mBluePrintEnums.find(blueprint->QualifiedTypename());
 	if ( it != mBluePrintEnums.end() ) {
+		if ( blueprint->getImplementationType() == ImplementationType::ForwardDeclaration ) {
+			// adding additional forward declarations doesn't matter
+			return;
+		}
 
-		throw Common::Exceptions::Exception("duplicate enum '" + blueprint->QualifiedTypename() + "' added to repository");
+		if ( it->second->getImplementationType() != ImplementationType::ForwardDeclaration ) {
+			throw Common::Exceptions::Exception("duplicate object '" + blueprint->QualifiedTypename() + "' added to repository");
+		}
+
+		// delete forward declaration
+		BluePrintSymbol* symbol = it->second;
+
+		mBluePrintEnums.erase(it);
+
+		delete symbol;
 	}
 
 	mBluePrintEnums.insert(std::make_pair(blueprint->QualifiedTypename(), blueprint));
 }
 
 /*
- * adds a new blue print to our repository
+ * adds a new blue print object to the repository
  */
 void Repository::addBluePrint(Designtime::BluePrintObject* blueprint)
 {
@@ -88,7 +101,7 @@ void Repository::addBluePrint(Designtime::BluePrintObject* blueprint)
 }
 
 /*
- * DEPRECATED: adds a new prototype (= generic) to our repository
+ * DEPRECATED: adds a new prototype (= generic) to the repository
  */
 void Repository::addPrototype(Designtime::Prototype* /*prototype*/)
 {
@@ -451,11 +464,6 @@ void Repository::initializeObject(Runtime::Object *object, Designtime::BluePrint
 	}
 
 	object->define(IDENTIFIER_THIS, object);	// define this-symbol
-}
-
-bool Repository::isAlreadyKnown(const std::string& name) const
-{
-	return mBluePrintObjects.find(name) != mBluePrintObjects.end();
 }
 
 

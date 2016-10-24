@@ -1792,7 +1792,7 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol)
 
 	getScope()->define(name, object);
 
-	if ( isArray ) object->setArray(true, (size_t)size);
+	//if ( isArray ) object->setArray(true, (size_t)size);
 	if ( isConst ) object->setConst(true);
 	if ( isFinal ) object->setFinal(true);
 
@@ -1800,7 +1800,7 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol)
 		// execute assignment statement
 		try {
 			Object tmp;
-			tmp.setArray(isArray);
+			//tmp.setArray(true, (size_t)size);
 			tmp.setConst(isConst);
 			tmp.setFinal(isFinal);
 
