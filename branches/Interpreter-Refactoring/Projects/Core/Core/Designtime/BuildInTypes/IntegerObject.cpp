@@ -21,6 +21,7 @@ std::string IntegerObject::TYPENAME = "int";
 IntegerObject::IntegerObject()
 : BluePrintObject(TYPENAME, SYSTEM_LIBRARY)
 {
+	addInheritance(Ancestor(OBJECT, Ancestor::Type::Extends, Visibility::Public));
 }
 
 const std::string& IntegerObject::getTypeName() const

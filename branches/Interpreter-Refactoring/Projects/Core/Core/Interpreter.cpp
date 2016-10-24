@@ -710,9 +710,13 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 			}
 		} break;
 		case Token::Type::KEYWORD: {
+/*
 			TokenIterator semicolon = findNext(start, Token::Type::SEMICOLON);
 
 			process(result, start, semicolon, Token::Type::SEMICOLON);
+*/
+			process_keyword(start, result);
+			start++;
 		} break;
 		case Token::Type::SEMICOLON: {
 		} break;
@@ -1331,8 +1335,8 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 		tmp++;
 	}
 
-	// create initialized instance of new object
-	*result = *getRepository()->createInstance(static_cast<Designtime::BluePrintObject*>(symbol), name, true);
+	// create initialized reference of new object
+	*result = *getRepository()->createReference(static_cast<Designtime::BluePrintObject*>(symbol), name, true);
 
 	// execute new object's constructor
 	mControlFlow = result->Constructor(params);

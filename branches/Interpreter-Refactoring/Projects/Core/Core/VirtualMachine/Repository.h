@@ -46,6 +46,7 @@ public:
 
 	Runtime::Object* createInstance(const std::string& type, const std::string& name, bool initialize = false);
 	Runtime::Object* createInstance(Designtime::BluePrintObject* blueprint, const std::string& name, bool initialize = false);
+	Runtime::Object* createReference(Designtime::BluePrintObject* blueprint, const std::string& name, bool initialize = false);
 
 private:
 	Runtime::Object* createObject(const std::string& name, Designtime::BluePrintObject* blueprint, bool initialize);

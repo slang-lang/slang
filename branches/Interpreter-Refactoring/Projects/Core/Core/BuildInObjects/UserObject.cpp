@@ -16,7 +16,7 @@ namespace Runtime {
 
 
 std::string UserObject::DEFAULTVALUE = VALUE_NONE;
-std::string UserObject::TYPENAME = "UserObject";
+std::string UserObject::TYPENAME = OBJECT;
 
 
 UserObject::UserObject()

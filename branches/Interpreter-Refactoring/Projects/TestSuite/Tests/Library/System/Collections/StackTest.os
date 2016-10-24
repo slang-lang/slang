@@ -3,235 +3,245 @@
 import System.Collections.Stack;
 import System.Exception;
 
-	public void Main(int argc = 0, string args = "") modify {
-		assert( TestCase1() );
-		assert( TestCase2() );
-		assert( TestCase3() );
-		assert( TestCase4() );
-		assert( TestCase5() );
-		assert( TestCase6() );
+private object CollectionObject {
+	private string mValue;
+
+	public void CollectionObject(string value) {
+		mValue = value;
 	}
+}
 
-	private bool TestCase1() modify {
-		print("TestCase 1: push");
+public void Main(int argc = 0, string args = "") modify {
+	assert( TestCase1() );
+	assert( TestCase2() );
+	assert( TestCase3() );
+	assert( TestCase4() );
+	assert( TestCase5() );
+	assert( TestCase6() );
+}
 
-		try {
-			System.Stack stack = new System.Stack();
+private bool TestCase1() modify {
+	print("TestCase 1: push");
 
-			// Setup
-			string item;
+	try {
+		System.Stack stack = new System.Stack();
 
-			item = "664";
-			stack.push(Object item);
+		CollectionObject item;
 
-			item = "173";
-			stack.push(Object item);
+		item = new CollectionObject("664");
+		stack.push(Object item);
 
-			item = "1389";
-			stack.push(Object item);
+		item = new CollectionObject("173");
+		stack.push(Object item);
 
-			// Usage
-			assert( stack.size() == 3 );
+		item = new CollectionObject("1389");
+		stack.push(Object item);
 
-			item = stack.at(0);
-			assert( item == "664" );
+		// Usage
+		assert( stack.size() == 3 );
 
-			item = stack.at(1);
-			assert( item == "173" );
+		item = stack.at(0);
+		assert( item.mValue == "664" );
 
-			item = stack.at(2);
-			assert( item == "1389" );
+		item = stack.at(1);
+		assert( item.mValue == "173" );
 
-			return true;
-		}
-		catch ( System.OutOfBoundsException e ) {
-			print(e.what());
-			return false;
-		}
+		item = stack.at(2);
+		assert( item.mValue == "1389" );
+
+		assert( stack.size() == 3 );
+
+		return true;
+	}
+	catch ( OutOfBoundsException e ) {
+		print(e.what());
 
 		return false;
 	}
 
-	private bool TestCase2() modify {
-		print("TestCase 2: pop");
+	return false;
+}
 
-		try {
-			System.Stack stack = new System.Stack();
+private bool TestCase2() modify {
+	print("TestCase 2: pop");
 
-			// Setup
-			string item;
+	try {
+		System.Stack stack = new System.Stack();
 
-			item = "664";
-			stack.push(Object item);
+		// Setup
+		string item;
 
-			item = "173";
-			stack.push(Object item);
+		item = new string("664");
+		stack.push(Object item);
 
-			item = "1389";
-			stack.push(Object item);
+		item = new string("173");
+		stack.push(Object item);
 
-			// Usage
-			assert( stack.size() == 3 );
+		item = new string("1389");
+		stack.push(Object item);
 
-			item = stack.at(0);
-			assert( item == "664" );
+		// Usage
+		assert( stack.size() == 3 );
 
-			item = stack.at(1);
-			assert( item == "173" );
+		item = stack.at(0);
+		assert( item == "664" );
 
-			item = stack.at(2);
-			assert( item == "1389");
+		item = stack.at(1);
+		assert( item == "173" );
 
-			stack.pop();
+		item = stack.at(2);
+		assert( item == "1389");
 
-			assert( stack.size() == 2 );
+		stack.pop();
 
-			item = stack.at(0);
-			assert( item == "664" );
+		assert( stack.size() == 2 );
 
-			item = stack.at(1);
-			assert( item == "173" );
+		item = stack.at(0);
+		assert( item == "664" );
 
-			stack.pop();
+		item = stack.at(1);
+		assert( item == "173" );
 
-			assert( stack.size() == 1 );
+		stack.pop();
 
-			item = stack.at(0);
-			assert( item == "664" );
+		assert( stack.size() == 1 );
 
-			stack.pop();
+		item = stack.at(0);
+		assert( item == "664" );
 
-			assert( stack.size() == 0 );
-			assert( stack.empty() );
+		stack.pop();
 
-			return true;
-		}
-		catch ( System.OutOfBoundsException e ) {
-			print(e.what());
-			return false;
-		}
+		assert( stack.size() == 0 );
+		assert( stack.empty() );
 
+		return true;
+	}
+	catch ( System.OutOfBoundsException e ) {
+		print(e.what());
 		return false;
 	}
 
-	private bool TestCase3() modify {
-		print("TestCase 3: iterate");
+	return false;
+}
 
-		try {
-			System.Stack stack = new System.Stack();
+private bool TestCase3() modify {
+	print("TestCase 3: iterate");
 
-			stack.push(Object "1");
-			stack.push(Object "2");
-			stack.push(Object "3");
+	try {
+		System.Stack stack = new System.Stack();
 
-			assert( stack.size() == 3 );
+		stack.push(Object "1");
+		stack.push(Object "2");
+		stack.push(Object "3");
 
-			System.Iterator it = stack.getIterator();
+		assert( stack.size() == 3 );
 
+		System.Iterator it = stack.getIterator();
+
+		it.next();
+		assert( it.current() == "1" );
+
+		it.next();
+		assert( it.current() == "2" );
+
+		it.next();
+		assert( it.current() == "3" );
+
+		it.reset();
+		while ( it . hasNext() ) {
 			it.next();
-			assert( it.current() == "1" );
 
-			it.next();
-			assert( it.current() == "2" );
-
-			it.next();
-			assert( it.current() == "3" );
-
-			it.reset();
-			while ( it . hasNext() ) {
-				it.next();
-
-				//print(it.current());
-			}
-
-			return true;
-		}
-		catch ( System.OutOfBoundsException e ) {
-			print(e.what());
+			//print(it.current());
 		}
 
-		return false;
+		return true;
+	}
+	catch ( System.OutOfBoundsException e ) {
+		print(e.what());
 	}
 
-	private bool TestCase4() modify {
-		print("TestCase 4: reverse iterate");
+	return false;
+}
 
-		try {
-			System.Stack stack = new System.Stack();
+private bool TestCase4() modify {
+	print("TestCase 4: reverse iterate");
 
-			stack.push(Object "1");
-			stack.push(Object "2");
-			stack.push(Object "3");
+	try {
+		System.Stack stack = new System.Stack();
 
-			assert( stack.size() == 3 );
+		stack.push(Object "1");
+		stack.push(Object "2");
+		stack.push(Object "3");
 
-			System.Iterator it = stack.getReverseIterator();
+		assert( stack.size() == 3 );
 
+		System.Iterator it = stack.getReverseIterator();
+
+		it.next();
+		assert( it.current() == "3" );
+
+		it.next();
+		assert( it.current() == "2" );
+
+		it.next();
+		assert( it.current() == "1" );
+
+		it.reset();
+		while ( it.hasNext() ) {
 			it.next();
-			assert( it.current() == "3" );
 
-			it.next();
-			assert( it.current() == "2" );
-
-			it.next();
-			assert( it.current() == "1" );
-
-			it.reset();
-			while ( it.hasNext() ) {
-				it.next();
-
-				//print(it.current());
-			}
-
-			return true;
-		}
-		
-		return false;
-	}
-
-	private bool TestCase5() modify {
-		print("TestCase 5: indexOf");
-
-		try {
-			System.Stack stack = new System.Stack();
-
-			stack.push(Object "1");
-			stack.push(Object "2");
-			stack.push(Object "3");
-
-			assert( stack.size() == 3 );
-
-			assert( stack.indexOf(Object "1") == 0 );
-			assert( stack.indexOf(Object "2") == 1 );
-			assert( stack.indexOf(Object "3") == 2 );
-
-			return true;
+			//print(it.current());
 		}
 
-		return false;
+		return true;
+	}
+	
+	return false;
+}
+
+private bool TestCase5() modify {
+	print("TestCase 5: indexOf");
+
+	try {
+		System.Stack stack = new System.Stack();
+
+		stack.push(Object "1");
+		stack.push(Object "2");
+		stack.push(Object "3");
+
+		assert( stack.size() == 3 );
+
+		assert( stack.indexOf(Object "1") == 0 );
+		assert( stack.indexOf(Object "2") == 1 );
+		assert( stack.indexOf(Object "3") == 2 );
+
+		return true;
 	}
 
-	private bool TestCase6() modify {
-		print("TestCase 6: contains");
+	return false;
+}
 
-		try {
-			System.Stack stack = new System.Stack();
-			assert( stack is Object );
-			assert( stack is System.ACollection );
+private bool TestCase6() modify {
+	print("TestCase 6: contains");
 
-			stack.push(Object 1);
-			stack.push(Object 2);
-			stack.push(Object 3);
+	try {
+		System.Stack stack = new System.Stack();
+		assert( stack is Object );
+		assert( stack is System.ACollection );
 
-			assert( stack.size() == 3 );
+		stack.push(Object 1);
+		stack.push(Object 2);
+		stack.push(Object 3);
 
-			assert( stack.contains(Object 1) );
-			assert( stack.contains(Object 2) );
-			assert( stack.contains(Object 3) );
+		assert( stack.size() == 3 );
 
-			return true;
-		}
+		assert( stack.contains(Object 1) );
+		assert( stack.contains(Object 2) );
+		assert( stack.contains(Object 3) );
 
-		return false;
+		return true;
 	}
+
+	return false;
+}
 

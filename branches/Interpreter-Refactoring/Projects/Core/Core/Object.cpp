@@ -31,18 +31,19 @@ Object::Object()
   mOutterface(ANONYMOUS_OBJECT),
   mQualifiedOutterface(ANONYMOUS_OBJECT),
   mQualifiedTypename(ANONYMOUS_OBJECT),
-  mTypename(ANONYMOUS_OBJECT),
-  mBase(0),
-  mThis(this)
+  mTypename(ANONYMOUS_OBJECT)
 {
+	mBase = 0;
+	mThis = this;
 }
 
 Object::Object(const Object& other)
 : MethodScope(other.getName(), other.mParent),
-  ObjectSymbol(other.getName()),
-  mBase(0),
-  mThis(this)
+  ObjectSymbol(other.getName())
 {
+	mBase = 0;
+	mThis = this;
+
 	mFilename = other.mFilename;
 	mImplementationType = other.mImplementationType;
 	mInheritance = other.mInheritance;
@@ -80,10 +81,10 @@ Object::Object(const std::string& name, const std::string& filename, const std::
   mQualifiedOutterface(type),
   mQualifiedTypename(type),
   mTypename(type),
-  mValue(value),
-  mBase(0),
-  mThis(this)
+  mValue(value)
 {
+	mBase = 0;
+	mThis = this;
 }
 
 Object::~Object()

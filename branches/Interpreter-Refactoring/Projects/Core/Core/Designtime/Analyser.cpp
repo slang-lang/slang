@@ -263,9 +263,11 @@ bool Analyser::createBluePrint(TokenIterator& token, TokenIterator end)
 
 	mRepository->addBluePrint(symbol);
 
-	if ( implementationType != ImplementationType::ForwardDeclaration ) {
-		mScope->define(symbol->Typename(), symbol);
+	if ( implementationType == ImplementationType::ForwardDeclaration ) {
+		return symbol != 0;
 	}
+
+	mScope->define(symbol->Typename(), symbol);
 
 	MethodScope* tmpScope = mScope;
 

@@ -140,6 +140,9 @@ Runtime::Object* Repository::createInstance(const std::string& type, const std::
 	return object;
 }
 
+/*
+ * Creates an instance of the given blueprint WITHOUT adding it to the heap memory
+ */
 Runtime::Object* Repository::createInstance(Designtime::BluePrintObject* blueprint, const std::string& name, bool initialize)
 {
 	// non-reference-based instantiation
@@ -156,8 +159,6 @@ Runtime::Object* Repository::createInstance(Designtime::BluePrintObject* bluepri
 		if ( object->isAbstract() ) {
 			throw Common::Exceptions::AbstractException("cannot instantiate abstract object '" + blueprint->Typename() + "'");
 		}
-
-		Controller::Instance().memory()->newObject(object);
 	}
 
 	return object;
@@ -197,21 +198,46 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 		object = createUserObject(name, blueprint, initialize);
 	}
 
-/*
-	if ( initialize && object->isAbstract() ) {
-		throw Common::Exceptions::AbstractException("cannot instantiate abstract object '" + blueprint->Typename() + "'");
+	IScope* parent = blueprint->getEnclosingScope();
+	if ( !parent ) {
+		parent = Controller::Instance().stack()->globalScope();
 	}
-*/
 
 	object->setFinal(blueprint->isFinal());
 	object->setLanguageFeatureState(blueprint->getLanguageFeatureState());
 	object->setMember(blueprint->isMember());
 	object->setMutability(blueprint->getMutability());
 	object->setOutterface(blueprint->Typename());
-	object->setParent(blueprint->getEnclosingScope());
+	object->setParent(parent);
 	object->setQualifiedOutterface(blueprint->QualifiedTypename());
 	object->setQualifiedTypename(blueprint->QualifiedTypename());
 	object->setVisibility(blueprint->getVisibility());
+
+	return object;
+}
+
+/*
+ * Creates an instance of the given blueprint and adds a reference to it in the heap memory
+ */
+Runtime::Object* Repository::createReference(Designtime::BluePrintObject* blueprint, const std::string& name, bool initialize)
+{
+	// reference-based instantiation
+
+	if ( !blueprint ) {
+		throw Common::Exceptions::Exception("invalid blueprint provided!");
+	}
+
+	OSdebug("createInstance('" + blueprint->QualifiedTypename() + "', '" + name + "', " + (initialize ? "true" : "false") + ")");
+
+	Runtime::Object* object = createObject(name, blueprint, initialize);
+
+	if ( initialize ) {
+		if ( object->isAbstract() ) {
+			throw Common::Exceptions::AbstractException("cannot instantiate abstract object '" + blueprint->Typename() + "'");
+		}
+
+		Controller::Instance().memory()->newObject(object);
+	}
 
 	return object;
 }
@@ -248,8 +274,8 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 					object->undefine(IDENTIFIER_BASE, object->resolve(IDENTIFIER_BASE, true));
 
 					// create base object
-					//Runtime::Object *ancestor = createInstance(blueIt->second, name, initialize);
 					Runtime::Object *ancestor = createUserObject(name, blueIt->second, initialize);
+					ancestor->setParent(blueprint->getEnclosingScope());
 
 					// define new base
 					object->define(IDENTIFIER_BASE, ancestor);
@@ -259,17 +285,10 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 				} break;
 				case Designtime::Ancestor::Type::Implements: {
 					// create base object
-					Runtime::Object *ancestor = createInstance(blueIt->second, name, false);
+					Runtime::Object *ancestor = createUserObject(name, blueIt->second, initialize);
 
 					// add our newly created ancestor to our inheritance
 					object->addInheritance((*ancestorIt), ancestor);
-
-/*
-					// implement interface
-					if ( initialize ) {
-						initializeObject(object, blueIt->second);
-					}
-*/
 				} break;
 				case Designtime::Ancestor::Type::Unknown:
 					throw Common::Exceptions::Exception("invalid inheritance detected");

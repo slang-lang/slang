@@ -35,11 +35,14 @@ void typecast(Object *base, const std::string& targetType)
 		throw Runtime::Exceptions::InvalidTypeCast("invalid cast target type");
 	}
 
+/*
 	if ( targetType == GenericObject::TYPENAME ) {
 		base->setOutterface(GenericObject::TYPENAME);
 		base->setQualifiedOutterface(GenericObject::TYPENAME);
 	}
-	else if ( targetType == BoolObject::TYPENAME ) {
+	else
+*/
+	if ( targetType == BoolObject::TYPENAME ) {
 		BoolObject tmp(*base);
 
 		base->assign(tmp, true);
@@ -79,8 +82,8 @@ void typecast(Object *base, const std::string& targetType)
 			throw Runtime::Exceptions::InvalidTypeCast(targetType + " does not belong to " + base->Typename() + " object hierarchy");
 		}
 
-		Object tmp(*base);
-		base->assign(tmp, true);
+		base->setOutterface(targetType);
+		base->setQualifiedOutterface(targetType);
 	}
 }
 }
