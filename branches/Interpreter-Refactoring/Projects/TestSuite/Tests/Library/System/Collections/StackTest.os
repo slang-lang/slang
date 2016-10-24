@@ -2,14 +2,8 @@
 
 import System.Collections.Stack;
 import System.Exception;
-
-private object CollectionObject {
-	private string mValue;
-
-	public void CollectionObject(string value) {
-		mValue = value;
-	}
-}
+import System.Integer;
+import System.String;
 
 public void Main(int argc = 0, string args = "") modify {
 	assert( TestCase1() );
@@ -26,27 +20,27 @@ private bool TestCase1() modify {
 	try {
 		System.Stack stack = new System.Stack();
 
-		CollectionObject item;
+		String item;
 
-		item = new CollectionObject("664");
+		item = new String("664");
 		stack.push(Object item);
 
-		item = new CollectionObject("173");
+		item = new String("173");
 		stack.push(Object item);
 
-		item = new CollectionObject("1389");
+		item = new String("1389");
 		stack.push(Object item);
 
 		// Usage
 		assert( stack.size() == 3 );
 
-		item = stack.at(0);
+		item = String stack.at(0);
 		assert( item.mValue == "664" );
 
-		item = stack.at(1);
+		item = String stack.at(1);
 		assert( item.mValue == "173" );
 
-		item = stack.at(2);
+		item = String stack.at(2);
 		assert( item.mValue == "1389" );
 
 		assert( stack.size() == 3 );
@@ -69,45 +63,45 @@ private bool TestCase2() modify {
 		System.Stack stack = new System.Stack();
 
 		// Setup
-		string item;
+		String item;
 
-		item = new string("664");
+		item = new String("664");
 		stack.push(Object item);
 
-		item = new string("173");
+		item = new String("173");
 		stack.push(Object item);
 
-		item = new string("1389");
+		item = new String("1389");
 		stack.push(Object item);
 
 		// Usage
 		assert( stack.size() == 3 );
 
-		item = stack.at(0);
-		assert( item == "664" );
+		item = String stack.at(0);
+		assert( item.mValue == "664" );
 
-		item = stack.at(1);
-		assert( item == "173" );
+		item = String stack.at(1);
+		assert( item.mValue == "173" );
 
-		item = stack.at(2);
-		assert( item == "1389");
+		item = String stack.at(2);
+		assert( item.mValue == "1389");
 
 		stack.pop();
 
 		assert( stack.size() == 2 );
 
-		item = stack.at(0);
-		assert( item == "664" );
+		item = String stack.at(0);
+		assert( item.mValue == "664" );
 
-		item = stack.at(1);
-		assert( item == "173" );
+		item = String stack.at(1);
+		assert( item.mValue == "173" );
 
 		stack.pop();
 
 		assert( stack.size() == 1 );
 
-		item = stack.at(0);
-		assert( item == "664" );
+		item = String stack.at(0);
+		assert( item.mValue == "664" );
 
 		stack.pop();
 
@@ -116,7 +110,7 @@ private bool TestCase2() modify {
 
 		return true;
 	}
-	catch ( System.OutOfBoundsException e ) {
+	catch ( OutOfBoundsException e ) {
 		print(e.what());
 		return false;
 	}
@@ -130,9 +124,9 @@ private bool TestCase3() modify {
 	try {
 		System.Stack stack = new System.Stack();
 
-		stack.push(Object "1");
-		stack.push(Object "2");
-		stack.push(Object "3");
+		stack.push(Object new String("1"));
+		stack.push(Object new String("2"));
+		stack.push(Object new String("3"));
 
 		assert( stack.size() == 3 );
 
@@ -156,7 +150,7 @@ private bool TestCase3() modify {
 
 		return true;
 	}
-	catch ( System.OutOfBoundsException e ) {
+	catch ( OutOfBoundsException e ) {
 		print(e.what());
 	}
 
@@ -169,9 +163,9 @@ private bool TestCase4() modify {
 	try {
 		System.Stack stack = new System.Stack();
 
-		stack.push(Object "1");
-		stack.push(Object "2");
-		stack.push(Object "3");
+		stack.push(Object new String("1"));
+		stack.push(Object new String("2"));
+		stack.push(Object new String("3"));
 
 		assert( stack.size() == 3 );
 
@@ -227,7 +221,7 @@ private bool TestCase6() modify {
 	try {
 		System.Stack stack = new System.Stack();
 		assert( stack is Object );
-		assert( stack is System.ACollection );
+		assert( stack is System.AbstractCollection );
 
 		stack.push(Object 1);
 		stack.push(Object 2);

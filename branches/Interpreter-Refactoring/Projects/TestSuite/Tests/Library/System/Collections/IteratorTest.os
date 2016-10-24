@@ -14,7 +14,7 @@ import System.Collections.List;
 
 		try {
 			System.List list = new System.List();
-			assert(list is System.ACollection);
+			assert(list is System.AbstractCollection);
 
 			list.push_back(Object "1");
 			list.push_back(Object "2");
@@ -45,7 +45,7 @@ import System.Collections.List;
 
 		try {
 			System.List list = new System.List();
-			assert(list is System.ACollection);
+			assert(list is System.AbstractCollection);
 
 			list.push_back(Object "1");
 			list.push_back(Object "2");

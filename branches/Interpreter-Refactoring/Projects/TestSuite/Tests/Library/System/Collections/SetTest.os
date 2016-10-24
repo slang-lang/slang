@@ -34,7 +34,7 @@ private bool TestCase1() modify {
 
 	try {
 		System.Set set = new System.Set();
-		assert( set is System.ACollection );
+		assert( set is System.AbstractCollection );
 
 		TestObject item;
 

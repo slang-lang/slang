@@ -44,19 +44,20 @@ private object TestObject {
 			// Usage
 			assert( list.size() == 3 );
 
-			item = list.at(0);
+			item = TestObject list.at(0);
 			assert( item.mValue == 664 );
 
-			item = list.at(1);
+			item = TestObject list.at(1);
 			assert( item.mValue == 173 );
 
-			item = list.at(2);
+			item = TestObject list.at(2);
 			assert( item.mValue == 1389 );
 
 			return true;
 		}
-		catch ( System.OutOfBoundsException e ) {
+		catch ( OutOfBoundsException e ) {
 			print(e.what());
+
 			return false;
 		}
 
@@ -83,13 +84,13 @@ private object TestObject {
 			// Usage
 			assert( list.size() == 3 );
 
-			item = list.at(0);
+			item = TestObject list.at(0);
 			assert( item.mValue == 664 );
 
-			item = list.at(1);
+			item = TestObject list.at(1);
 			assert( item.mValue == 173 );
 
-			item = list.at(2);
+			item = TestObject list.at(2);
 			assert( item.mValue == 1389 );
 
 			return true;
@@ -123,17 +124,17 @@ private object TestObject {
 
 			assert( list.size() == 2 );
 
-			item = list.at(0);
+			item = TestObject list.at(0);
 			assert( item.mValue == 173 );
 
-			item = list.at(1);
+			item = TestObject list.at(1);
 			assert( item.mValue == 1389 );
 
 			list.pop_front();
 
 			assert( list.size() == 1 );
 
-			item = list.at(0);
+			item = TestObject list.at(0);
 			assert( item.mValue == 1389 );
 
 			list.pop_front();
@@ -142,8 +143,9 @@ private object TestObject {
 
 			return true;
 		}
-		catch ( System.OutOfBoundsException e ) {
+		catch ( OutOfBoundsException e ) {
 			print(e.what());
+
 			return false;
 		}
 
@@ -175,17 +177,17 @@ private object TestObject {
 
 			assert( list.size() == 2 );
 
-			item = list.at(0);
+			item = TestObject list.at(0);
 			assert( item.mValue == 664 );
 
-			item = list.at(1);
+			item = TestObject list.at(1);
 			assert( item.mValue == 173 );
 
 			list.pop_back();
 
 			assert( list.size() == 1 );
 
-			item = list.at(0);
+			item = TestObject list.at(0);
 			assert( item.mValue == 664 );
 
 			list.pop_back();
@@ -194,8 +196,9 @@ private object TestObject {
 
 			return true;
 		}
-		catch ( System.OutOfBoundsException e ) {
+		catch ( OutOfBoundsException e ) {
 			print(e.what());
+
 			return false;
 		}
 

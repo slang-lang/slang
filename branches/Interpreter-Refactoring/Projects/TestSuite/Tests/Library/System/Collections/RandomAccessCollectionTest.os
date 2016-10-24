@@ -14,7 +14,7 @@ private object TestObject {
 	}
 }
 
-	public void Main(int argc = 0, string args = "") {
+	public void Main(int argc = 0, string args = "") modify {
 		assert( TestCase1() );
 		assert( TestCase2() );
 		assert( TestCase3() );
@@ -46,19 +46,20 @@ private object TestObject {
 			// Usage
 			assert( list.size() == 3 );
 
-			item = list.at(0);
+			item = TestObject list.at(0);
 			assert( item.mValue == 664 );
 
-			item = list.at(1);
+			item = TestObject list.at(1);
 			assert( item.mValue == 173 );
 
-			item = list.at(2);
+			item = TestObject list.at(2);
 			assert( item.mValue == 1389 );
 
 			return true;
 		}
-		catch ( System.OutOfBoundsException e ) {
+		catch ( OutOfBoundsException e ) {
 			print(e.what());
+
 			return false;
 		}
 
@@ -90,16 +91,17 @@ private object TestObject {
 
 			assert( list.size() == 2 );
 
-			item = list.at(0);
+			item = TestObject list.at(0);
 			assert( item.mValue == 173 );
 
-			item = list.at(1);
+			item = TestObject list.at(1);
 			assert( item.mValue == 1389 );
 
 			return true;
 		}
-		catch ( System.OutOfBoundsException e ) {
+		catch ( OutOfBoundsException e ) {
 			print(e.what());
+
 			return false;
 		}
 
@@ -131,16 +133,17 @@ private object TestObject {
 
 			assert( list.size() == 2 );
 
-			item = list.at(0);
+			item = TestObject list.at(0);
 			assert( item.mValue == 664 );
 
-			item = list.at(1);
+			item = TestObject list.at(1);
 			assert( item.mValue == 1389 );
 
 			return true;
 		}
-		catch ( System.OutOfBoundsException e ) {
+		catch ( OutOfBoundsException e ) {
 			print(e.what());
+
 			return false;
 		}
 
@@ -172,16 +175,17 @@ private object TestObject {
 
 			assert( list.size() == 2 );
 
-			item = list.at(0);
+			item = TestObject list.at(0);
 			assert( item.mValue == 664 );
 
-			item = list.at(1);
+			item = TestObject list.at(1);
 			assert( item.mValue == 173 );
 
 			return true;
 		}
-		catch ( System.OutOfBoundsException e ) {
+		catch ( OutOfBoundsException e ) {
 			print(e.what());
+
 			return false;
 		}
 
@@ -285,7 +289,7 @@ private object TestObject {
 		try {
 			System.RandomAccessCollection list = new System.RandomAccessCollection();
 			assert( list is Object );
-			assert( list is System.ACollection );
+			assert( list is System.AbstractCollection );
 
 			list.insert(Object 1, 0);
 			list.insert(Object 2, 1);
