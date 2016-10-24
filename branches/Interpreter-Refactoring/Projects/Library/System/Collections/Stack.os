@@ -1,11 +1,18 @@
 
-import ACollection;
+import AbstractCollection;
 
 public namespace System {
 
-	public object Stack extends System.ACollection {
-			public void Stack() {
-				base.ACollection();
+	public object StackIterator extends System.Iterator {
+		public void StackIterator(System.Stack stack) {
+			mCollection = stack;
+		}
+	}
+
+	public object Stack extends System.AbstractCollection {
+			public Iterator getIterator() const {
+				// TODO: why do we have to cast here?
+				return new Iterator(AbstractCollection this);
 			}
 
 			public void push(Object value ref) modify {

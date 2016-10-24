@@ -1,5 +1,5 @@
 
-import ACollection;
+import AbstractCollection;
 import System.Exception;
 
 public namespace System {
@@ -8,9 +8,9 @@ public namespace System {
 	 * Double linked list
 	 * allows reverse iteration
 	 */
-	public object DoubleLinkedList extends System.ACollection {
+	public object DoubleLinkedList extends System.AbstractCollection {
 		public void DoubleLinkedList() {
-			base.ACollection();
+			base.AbstractCollection();
 		}
 
 		public bool hasPrevious() const {

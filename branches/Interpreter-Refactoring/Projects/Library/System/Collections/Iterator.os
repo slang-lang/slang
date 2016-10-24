@@ -1,14 +1,14 @@
 
-import ACollection;
+import AbstractCollection;
 import System.Exception;
 
 public namespace System {
 
 	public object Iterator {
-		private System.ACollection mCollection;
+		private System.AbstractCollection mCollection;
 		private int mCurrentIndex;
 
-		public void Iterator(System.ACollection collection) {
+		public void Iterator(System.AbstractCollection collection) {
 			mCollection = collection;
 
 			reset();
@@ -48,10 +48,10 @@ public namespace System {
 	}
 
 	public object ReverseIterator {
-		private System.ACollection mCollection;
+		private System.AbstractCollection mCollection;
 		private int mCurrentIndex;
 
-		public void ReverseIterator(System.ACollection collection) {
+		public void ReverseIterator(System.AbstractCollection collection) {
 			mCollection = collection;
 
 			reset();

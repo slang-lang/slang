@@ -39,12 +39,12 @@ public namespace System {
 	/*
 	 * Abstract base for collections
 	 */
-	public object ACollection {
+	public abstract object AbstractCollection {
 		private CollectionItem mFirst;
 		private CollectionItem mLast;
 		private int mSize = 0;
 
-		public void ACollection() {
+		public void AbstractCollection() {
 			mSize = 0;
 		}
 
@@ -80,12 +80,12 @@ public namespace System {
 
 		public Iterator getIterator() const {
 			// TODO: why do we have to cast here?
-			return new Iterator(System.ACollection this);
+			return new Iterator(AbstractCollection this);
 		}
 
 		public ReverseIterator getReverseIterator() const {
 			// TODO: why do we have to cast here?
-			return new ReverseIterator(System.ACollection this);
+			return new ReverseIterator(AbstractCollection this);
 		}
 
 		public int indexOf(Object value ref) const {

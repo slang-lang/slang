@@ -1,12 +1,12 @@
 
-import ACollection;
+import AbstractCollection;
 import System.Exception;
 
 public namespace System {
 
-	public object RandomAccessCollection extends System.ACollection {
+	public object RandomAccessCollection extends System.AbstractCollection {
 			public void RandomAccessCollection() {
-				base.ACollection();
+				base.AbstractCollection();
 			}
 
 			public void erase(int index) modify {

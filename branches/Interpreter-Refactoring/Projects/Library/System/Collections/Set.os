@@ -1,12 +1,12 @@
 
-import ACollection;
+import AbstractCollection;
 import System.Exception;
 
 public namespace System {
 
-	public object Set extends System.ACollection {
+	public object Set extends System.AbstractCollection {
 		public void Set() {
-			base.ACollection();
+			base.AbstractCollection();
 		}
 
 		public void erase(int index) modify {

@@ -1,5 +1,5 @@
 
-import ACollection;
+import AbstractCollection;
 import System.Exception;
 
 public namespace System {
@@ -7,9 +7,9 @@ public namespace System {
     /*
      * Single linked list
      */
-    public object List extends System.ACollection {
+    public object List extends System.AbstractCollection {
         public void List() {
-            base.ACollection();
+            base.AbstractCollection();
         }
 
         public void pop_back() modify {
