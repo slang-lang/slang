@@ -77,11 +77,13 @@ std::string StackLevel::toString() const
 {
 	std::string result = "Frame " + Tools::ConvertToStdString(mLevel);
 
-	if ( mScope && mScope->getScopeType() == IScope::IType::NamedScope ) {
-		result += ": " + mScope->getFullScopeName();
+	SymbolScope* scope = dynamic_cast<SymbolScope*>(mScope);
 
-		if ( dynamic_cast<Runtime::Method*>(mScope) ) {
-			result += dynamic_cast<Runtime::Method*>(mScope)->ToString();
+	if ( scope && scope->getScopeType() == IScope::IType::NamedScope ) {
+		result += ": " + scope->getFullScopeName();
+
+		if ( dynamic_cast<Runtime::Method*>(scope) ) {
+			result += dynamic_cast<Runtime::Method*>(scope)->ToString();
 		}
 	}
 

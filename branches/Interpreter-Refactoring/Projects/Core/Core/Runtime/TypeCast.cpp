@@ -79,7 +79,7 @@ void typecast(Object *base, const std::string& targetType)
 	}
 	else {
 		if ( !base->isInstanceOf(targetType) ) {
-			throw Runtime::Exceptions::InvalidTypeCast(targetType + " does not belong to " + base->Typename() + " object hierarchy");
+			throw Runtime::Exceptions::InvalidTypeCast(targetType + " does not belong to " + base->QualifiedTypename() + " object hierarchy");
 		}
 
 		base->setOutterface(targetType);

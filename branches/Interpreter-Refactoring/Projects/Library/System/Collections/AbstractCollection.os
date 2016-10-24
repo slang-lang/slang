@@ -78,7 +78,7 @@ public namespace System {
 			return mSize == 0;
 		}
 
-		public Iterator getIterator() const {
+		public System.Iterator getIterator() const {
 			// TODO: why do we have to cast here?
 			return new Iterator(AbstractCollection this);
 		}
