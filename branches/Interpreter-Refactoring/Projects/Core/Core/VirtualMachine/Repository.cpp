@@ -123,7 +123,6 @@ assert(!"prototypes not supported!");
  */
 Runtime::Object* Repository::createInstance(const std::string& type, const std::string& name, bool initialize)
 {
-	// non-reference-based instantiation
 	OSdebug("createInstance('" + type + "', '" + name + "', " + (initialize ? "true" : "false") + ")");
 
 	BluePrintObjectMap::iterator it = mBluePrintObjects.find(type);
@@ -145,8 +144,6 @@ Runtime::Object* Repository::createInstance(const std::string& type, const std::
  */
 Runtime::Object* Repository::createInstance(Designtime::BluePrintObject* blueprint, const std::string& name, bool initialize)
 {
-	// non-reference-based instantiation
-
 	if ( !blueprint ) {
 		throw Common::Exceptions::Exception("invalid blueprint provided!");
 	}
