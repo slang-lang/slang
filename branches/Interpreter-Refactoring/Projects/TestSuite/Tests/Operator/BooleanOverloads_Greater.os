@@ -4,7 +4,7 @@ private object UserObject
 {
 	private int mValue;
 
-	public void UserObject(int value const)
+	public void Constructor(int value const)
 	{
 		mValue = value;
 	}

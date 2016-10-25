@@ -4,7 +4,7 @@ public namespace NamespaceTests {
 	public object Test1 {
 		private string mName;
 
-		public void Test1(string name const = "Test1") {
+		public void Constructor(string name const = "Test1") {
 			mName = name;
 		}
 

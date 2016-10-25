@@ -16,19 +16,19 @@ public namespace Mysql {
 		private Mysql.Settings mSettings;
 		private string mUsername;
 
-		public void Connection() modify {
+		public void Constructor() modify {
 			initialize();
 
 			cleanup();
 		}
 
-		public void Connection(string hostname, int port, string user, string password, string database = "") modify {
+		public void Constructor(string hostname, int port, string user, string password, string database = "") modify {
 			initialize();
 
 			open(hostname, port, user, password, database);
 		}
 
-		public void ~Connection() modify {
+		public void Destructor() modify {
 			print("~Connection()");
 			if ( mHandle != 0 ) {
 				close();

@@ -2,18 +2,7 @@
 
 import System.Collections.List;
 import System.Exception;
-
-private object TestObject {
-	private int mValue;
-
-	public void TestObject(int value) {
-		mValue = value;
-	}
-
-	public string ToString() const {
-		return "mValue = " + mValue;
-	}
-}
+import System.Integer;
 
 	public void Main(int argc = 0, string args = "") modify {
 		assert( TestCase1() );
@@ -30,27 +19,27 @@ private object TestObject {
 			System.List list = new System.List();
 
 			// Setup
-			TestObject item;
+			Integer item;
 
-			item = new TestObject(664);
+			item = new Integer(664);
 			list.push_back(Object item);
 
-			item = new TestObject(173);
+			item = new Integer(173);
 			list.push_back(Object item);
 
-			item = new TestObject(1389);
+			item = new Integer(1389);
 			list.push_back(Object item);
 
 			// Usage
 			assert( list.size() == 3 );
 
-			item = TestObject list.at(0);
+			item = Integer list.at(0);
 			assert( item.mValue == 664 );
 
-			item = TestObject list.at(1);
+			item = Integer list.at(1);
 			assert( item.mValue == 173 );
 
-			item = TestObject list.at(2);
+			item = Integer list.at(2);
 			assert( item.mValue == 1389 );
 
 			return true;
@@ -70,27 +59,27 @@ private object TestObject {
 		try {
 			System.List list = new System.List();
 
-			TestObject item;
+			Integer item;
 
-			item = new TestObject(1389);
+			item = new Integer(1389);
 			list.push_front(Object item);
 
-			item = new TestObject(173);
+			item = new Integer(173);
 			list.push_front(Object item);
 
-			item = new TestObject(664);
+			item = new Integer(664);
 			list.push_front(Object item);
 
 			// Usage
 			assert( list.size() == 3 );
 
-			item = TestObject list.at(0);
+			item = Integer list.at(0);
 			assert( item.mValue == 664 );
 
-			item = TestObject list.at(1);
+			item = Integer list.at(1);
 			assert( item.mValue == 173 );
 
-			item = TestObject list.at(2);
+			item = Integer list.at(2);
 			assert( item.mValue == 1389 );
 
 			return true;
@@ -106,15 +95,15 @@ private object TestObject {
 			System.List list = new System.List();
 
 			// Setup
-			TestObject item;
+			Integer item;
 
-			item = new TestObject(664);
+			item = new Integer(664);
 			list.push_back(Object item);
 
-			item = new TestObject(173);
+			item = new Integer(173);
 			list.push_back(Object item);
 
-			item = new TestObject(1389);
+			item = new Integer(1389);
 			list.push_back(Object item);
 
 			// Usage
@@ -124,17 +113,17 @@ private object TestObject {
 
 			assert( list.size() == 2 );
 
-			item = TestObject list.at(0);
+			item = Integer list.at(0);
 			assert( item.mValue == 173 );
 
-			item = TestObject list.at(1);
+			item = Integer list.at(1);
 			assert( item.mValue == 1389 );
 
 			list.pop_front();
 
 			assert( list.size() == 1 );
 
-			item = TestObject list.at(0);
+			item = Integer list.at(0);
 			assert( item.mValue == 1389 );
 
 			list.pop_front();
@@ -159,15 +148,15 @@ private object TestObject {
 			System.List list = new System.List();
 
 			// Setup
-			TestObject item;
+			Integer item;
 
-			item = new TestObject(664);
+			item = new Integer(664);
 			list.push_back(Object item);
 
-			item = new TestObject(173);
+			item = new Integer(173);
 			list.push_back(Object item);
 
-			item = new TestObject(1389);
+			item = new Integer(1389);
 			list.push_back(Object item);
 
 			// Usage
@@ -177,17 +166,17 @@ private object TestObject {
 
 			assert( list.size() == 2 );
 
-			item = TestObject list.at(0);
+			item = Integer list.at(0);
 			assert( item.mValue == 664 );
 
-			item = TestObject list.at(1);
+			item = Integer list.at(1);
 			assert( item.mValue == 173 );
 
 			list.pop_back();
 
 			assert( list.size() == 1 );
 
-			item = TestObject list.at(0);
+			item = Integer list.at(0);
 			assert( item.mValue == 664 );
 
 			list.pop_back();
@@ -211,15 +200,15 @@ private object TestObject {
 		try {
 			System.List list = new System.List();
 
-			TestObject item;
+			Integer item;
 
-			item = new TestObject(1);
+			item = new Integer(1);
 			list.push_back(Object item);
 
-			item = new TestObject(2);
+			item = new Integer(2);
 			list.push_back(Object item);
 
-			item = new TestObject(3);
+			item = new Integer(3);
 			list.push_back(Object item);
 
 			assert( list.size() == 3 );
@@ -228,7 +217,7 @@ private object TestObject {
 			while ( it.hasNext() ) {
 				it.next();
 
-				item = TestObject it.current();
+				item = Integer it.current();
 				//print(item.mValue);
 			}
 
@@ -238,7 +227,7 @@ private object TestObject {
 			while ( it.hasNext() ) {
 				it.next();
 
-				item = TestObject it.current();
+				item = Integer it.current();
 				//print(item.mValue);
 			}
 

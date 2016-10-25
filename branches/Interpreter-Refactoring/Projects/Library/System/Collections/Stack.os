@@ -4,8 +4,8 @@ import AbstractCollection;
 public namespace System {
 
 	public object Stack extends System.AbstractCollection {
-		public void Stack() {
-			base.AbstractCollection();
+		public void Constructor() {
+			base.Constructor();
 		}
 
 		public void push(Object value ref) modify {

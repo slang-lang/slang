@@ -12,7 +12,7 @@ public namespace System {
 		/*
 		 * Standard constructor
 		 */
-		public void StringIterator(string value, string separator = " ") {
+		public void Constructor(string value, string separator = " ") {
 			mCurrentPosition = 0;
 			mSeparator = separator;
 			mValue = new String(value);
@@ -21,7 +21,7 @@ public namespace System {
 		/*
 		 * Copy constructor
 		 */
-		public void StringIterator(System.StringIterator si) {
+		public void Constructor(System.StringIterator si) {
 			mCurrentPosition = si.mCurrentPosition;
 			mSeparator = si.mSeparator;
 			mValue = new String(si.mValue);

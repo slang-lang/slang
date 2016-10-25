@@ -8,12 +8,12 @@ public namespace Mysql {
 		private int mNumFields;
 		private int mResultHandle;
 
-		public void Row(int handle) {
+		public void Constructor(int handle) {
 			mResultHandle = handle;
 
 			mNumFields = mysql_num_fields(mResultHandle);
 		}
-		public void ~Row() {
+		public void Destructor() {
 		}
 
 		public string ToString() const {

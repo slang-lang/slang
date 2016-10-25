@@ -5,10 +5,10 @@ public namespace System { }
 public object Float {
 	private float mValue;
 
-	public void Float(float value = 0f) {
+	public void Constructor(float value = 0f) {
 		mValue = value;
 	}
-	public void Float(Float f) {
+	public void Constructor(Float f) {
 		mValue = f.mValue;
 	}
 

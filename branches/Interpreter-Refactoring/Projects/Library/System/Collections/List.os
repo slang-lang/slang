@@ -8,8 +8,8 @@ public namespace System {
      * Single linked list
      */
     public object List extends System.AbstractCollection {
-        public void List() {
-            base.AbstractCollection();
+        public void Constructor() {
+            base.Constructor();
         }
 
         public void pop_back() modify {

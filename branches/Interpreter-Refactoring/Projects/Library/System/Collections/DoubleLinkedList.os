@@ -9,8 +9,8 @@ public namespace System {
 	 * allows reverse iteration
 	 */
 	public object DoubleLinkedList extends System.AbstractCollection {
-		public void DoubleLinkedList() {
-			base.AbstractCollection();
+		public void Constructor() {
+			base.Constructor();
 		}
 
 		public bool hasPrevious() const {

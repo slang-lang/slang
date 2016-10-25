@@ -44,8 +44,10 @@ public namespace System {
 		private CollectionItem mLast;
 		private int mSize = 0;
 
-		public void AbstractCollection() {
+		public void Constructor() {
 			mSize = 0;
+		}
+		public void Destructor() {
 		}
 
 		public Object at(int index) const {

@@ -8,14 +8,14 @@ public object Integer {
 	/*
 	 * Standard & default constructor
 	 */
-	public void Integer(int value = 0) {
+	public void Constructor(int value = 0) {
 		mValue = value;
 	}
 
 	/*
 	 * Copy constructor
 	 */
-	public void Integer(Integer i) {
+	public void Constructor(Integer i) {
 		mValue = i.mValue;
 	}
 

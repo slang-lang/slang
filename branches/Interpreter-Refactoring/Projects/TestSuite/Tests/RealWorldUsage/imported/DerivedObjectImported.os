@@ -2,12 +2,12 @@
 import BaseObjectImported;
 
 public object DerivedObjectImported extends BaseObjectImported {
-	public void DerivedObjectImported() {
-		print("DerivedObjectImported()");
+	public void Constructor() {
+		print("Constructor()");
 	}
 
-	public void ~DerivedObjectImported() {
-		print("~DerivedObjectImported()");
+	public void Destructor() {
+		print("Destructor()");
 	}
 
 	public string ToString() const {

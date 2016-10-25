@@ -3,18 +3,7 @@
 import System.Collections.DoubleLinkedList;
 import System.Collections.Iterator;
 import System.Exception;
-
-private object TestObject {
-	private int mValue;
-
-	public void TestObject(int value) {
-		mValue = value;
-	}
-
-	public string ToString() const {
-		return "mValue = " + mValue;
-	}
-}
+import System.Integer;
 
 	public void Main(int argc = 0, string args = "") modify {
 		assert( TestCase1() );
@@ -33,20 +22,20 @@ private object TestObject {
 		try {
 			System.DoubleLinkedList list = new System.DoubleLinkedList();
 
-			TestObject item;
-			item = new TestObject(173);
+			Integer item;
+			item = new Integer(173);
 			list.push_back(Object item);
 
-			item = new TestObject(1389);
+			item = new Integer(1389);
 			list.push_back(Object item);
 
 			// Usage
 			assert( list.size() == 2 );
 
-			item = TestObject list.at(0);
+			item = Integer list.at(0);
 			assert(item.mValue == 173);
 
-			item = TestObject list.at(1);
+			item = Integer list.at(1);
 			assert(item.mValue == 1389);
 
 			return true;
@@ -66,26 +55,26 @@ private object TestObject {
 		try {
 			System.DoubleLinkedList list = new System.DoubleLinkedList();
 
-			TestObject item;
-			item = new TestObject(1389);
+			Integer item;
+			item = new Integer(1389);
 			list.push_front(Object item);
 
-			item = new TestObject(173);
+			item = new Integer(173);
 			list.push_front(Object item);
 
-			item = new TestObject(664);
+			item = new Integer(664);
 			list.push_front(Object item);
 
 			// Usage
 			assert( list.size() == 3 );
 
-			item = TestObject list.at(0);
+			item = Integer list.at(0);
 			assert(item.mValue == 664);
 
-			item = TestObject list.at(1);
+			item = Integer list.at(1);
 			assert(item.mValue == 173);
 
-			item = TestObject list.at(2);
+			item = Integer list.at(2);
 			assert(item.mValue == 1389);
 
 			return true;
@@ -106,15 +95,15 @@ private object TestObject {
 			System.DoubleLinkedList list = new System.DoubleLinkedList();
 
 			// Setup
-			TestObject item;
+			Integer item;
 
-			item = new TestObject(664);
+			item = new Integer(664);
 			list.push_back(Object item);
 
-			item = new TestObject(173);
+			item = new Integer(173);
 			list.push_back(Object item);
 
-			item = new TestObject(1389);
+			item = new Integer(1389);
 			list.push_back(Object item);
 
 			// Usage
@@ -124,10 +113,10 @@ private object TestObject {
 
 			assert( list.size() == 2 );
 
-			item = TestObject list.at(0);
+			item = Integer list.at(0);
 			assert( item.mValue == 173 );
 
-			item = TestObject list.at(1);
+			item = Integer list.at(1);
 			assert( item.mValue == 1389 );
 
 			return true;
@@ -148,15 +137,15 @@ private object TestObject {
 			System.DoubleLinkedList list = new System.DoubleLinkedList();
 
 			// Setup
-			TestObject item;
+			Integer item;
 
-			item = new TestObject(664);
+			item = new Integer(664);
 			list.push_back(Object item);
 
-			item = new TestObject(173);
+			item = new Integer(173);
 			list.push_back(Object item);
 
-			item = new TestObject(1389);
+			item = new Integer(1389);
 			list.push_back(Object item);
 
 			// Usage
@@ -166,10 +155,10 @@ private object TestObject {
 
 			assert( list.size() == 2 );
 
-			item = TestObject list.at(0);
+			item = Integer list.at(0);
 			assert( item.mValue == 664 );
 
-			item = TestObject list.at(1);
+			item = Integer list.at(1);
 			assert( item.mValue == 173 );
 
 			return true;
@@ -190,15 +179,15 @@ private object TestObject {
 			System.DoubleLinkedList list = new System.DoubleLinkedList();
 
 			// Setup
-			TestObject item;
+			Integer item;
 
-			item = new TestObject(664);
+			item = new Integer(664);
 			list.push_back(Object item);
 
-			item = new TestObject(173);
+			item = new Integer(173);
 			list.push_back(Object item);
 
-			item = new TestObject(1389);
+			item = new Integer(1389);
 			list.push_back(Object item);
 
 			// Usage
@@ -212,7 +201,7 @@ private object TestObject {
 
 				count++;
 
-				TestObject item = TestObject it.current();
+				Integer item = Integer it.current();
 				//print(item.ToString());
 			}
 
@@ -236,15 +225,15 @@ private object TestObject {
 			System.DoubleLinkedList list = new System.DoubleLinkedList();
 
 			// Setup
-			TestObject item;
+			Integer item;
 
-			item = new TestObject(664);
+			item = new Integer(664);
 			list.push_back(Object item);
 
-			item = new TestObject(173);
+			item = new Integer(173);
 			list.push_back(Object item);
 
-			item = new TestObject(1389);
+			item = new Integer(1389);
 			list.push_back(Object item);
 
 			// Usage
@@ -258,7 +247,7 @@ private object TestObject {
 
 				count++;
 
-				TestObject item = TestObject it.current();
+				Integer item = Integer it.current();
 				//print(item.ToString());
 			}
 

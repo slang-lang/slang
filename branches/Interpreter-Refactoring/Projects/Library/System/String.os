@@ -8,14 +8,14 @@ public object String {
 	/*
 	 * Standard & default constructor
 	 */
-	public void String(string value = "") {
+	public void Constructor(string value = "") {
 		mValue = value;
 	}
 
 	/*
 	 * Copy constructor
 	 */
-	public void String(String s) {
+	public void Constructor(String s) {
 		mValue = s.mValue;
 	}
 

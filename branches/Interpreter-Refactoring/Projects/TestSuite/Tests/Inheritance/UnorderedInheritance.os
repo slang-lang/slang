@@ -1,12 +1,12 @@
 #!/usr/local/bin/oscript
 
 private object DerivedObject extends BaseObject {
-	public void DerivedObject() {
-		print("DerivedObject");
+	public void Constructor() {
+		print("Constructor");
 	}
 
-	public void ~DerivedObject() {
-		print("~DerivedObject");
+	public void Destructor() {
+		print("Destructor");
 	}
 }
 
@@ -15,12 +15,12 @@ public void Main(int argc = 0, string args = "") {
 }
 
 private object BaseObject {
-	public void BaseObject() {
-		print("BaseObject");
+	public void Constructor() {
+		print("Constructor");
 	}
 
-	public void ~BaseObject() {
-		print("~BaseObject");
+	public void Destructor() {
+		print("Destructor");
 	}
 }
 

@@ -1,7 +1,8 @@
 #!/usr/local/bin/oscript
 
 public object BaseObject {
-	public void ~BaseObject() {
+	public void Destructor() {
+		print("BaseObject.Destructor()");
 	}
 
 	public string getName() const {
@@ -10,7 +11,8 @@ public object BaseObject {
 }
 
 public object ExtendedObject extends BaseObject {
-	public void ~ExtendedObject() {
+	public void Destructor() {
+		print("ExtendedObject.Destructor()");
 	}
 
 	public string getExtendedName() const {

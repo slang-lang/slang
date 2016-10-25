@@ -4,7 +4,7 @@ public namespace ExceptionTest {
 	private object Exception {
 		private string _exception;
 
-		private void Exception(string ex) {
+		private void Constructor(string ex) {
 			print("Exception(\"" + ex + "\")");
 			_exception = ex;
 		}

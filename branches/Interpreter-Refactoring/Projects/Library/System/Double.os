@@ -5,10 +5,10 @@ public namespace System { }
 public object Double {
 	private double mValue;
 
-	public void Double(double value = 0d) {
+	public void Constructor(double value = 0d) {
 		mValue = value;
 	}
-	public void Double(Double d) {
+	public void Constructor(Double d) {
 		mValue = d.mValue;
 	}
 

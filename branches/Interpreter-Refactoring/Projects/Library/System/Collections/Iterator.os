@@ -8,7 +8,7 @@ public namespace System {
 		private System.AbstractCollection mCollection;
 		private int mCurrentIndex;
 
-		public void Iterator(System.AbstractCollection collection) {
+		public void Constructor(System.AbstractCollection collection) {
 			mCollection = collection;
 
 			reset();

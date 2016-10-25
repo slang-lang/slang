@@ -15,12 +15,12 @@ public namespace ObjectEqualityTest {
 			return "TestObject { mValue = " + mValue + " }";
 		}
 
-		public void operator=(TestObject other const) modify {
+		public void operator=(TestObject other const ref) modify {
 			print("operator=(" + other.ToString() + ")");
 			mValue = value;
 		}
 
-		public bool operator==(TestObject other const) const {
+		public bool operator==(TestObject other const ref) const {
 			print("operator==(" + other.ToString() + ")");
 			return mValue == other.mValue;
 		}

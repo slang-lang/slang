@@ -5,17 +5,17 @@ public namespace Mysql {
 		private string mName;
 		private string mValue;
 
-		public void Entry() {
+		public void Constructor() {
 			mName = "null";
 			mValue = "null";
 		}
 
-		public void Entry(string name, string value) {
+		public void Constructor(string name, string value) {
 			mName = name;
 			mValue = value;
 		}
 
-		public void ~Entry() {
+		public void Destructor() {
 		}
 
 		public string ToString() const {

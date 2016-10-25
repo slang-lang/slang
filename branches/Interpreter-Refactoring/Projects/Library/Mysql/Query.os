@@ -14,7 +14,7 @@ public namespace Mysql {
 		private String mPreparedQuery;
 		private int mResultHandle;
 
-		public void Query(Mysql.Connection connection ref, string queryStr = "") {
+		public void Constructor(Mysql.Connection connection ref, string queryStr = "") {
 			mConnection = connection;
 			mExecutedQuery = new String();
 			mPreparedQuery = new String();
@@ -23,7 +23,7 @@ public namespace Mysql {
 			prepare(queryStr);
 		}
 
-		public void ~Query() {
+		public void Destructor() {
 			print("~Query()");
 			if ( mResultHandle ) {
 				mysql_free_result(mResultHandle);

@@ -2,12 +2,12 @@
 public object BaseObject {
 	private int mValue;
 
-	public void BaseObject() {
-		print("BaseObject::BaseObject()");
+	public void Constructor() {
+		print("BaseObject.Constructor()");
 	}
 
-	public void ~BaseObject() {
-		print("BaseObject::~BaseObject()");
+	public void Destructor() {
+		print("BaseObject.Destructor()");
 	}
 
 	public int getValue() const {

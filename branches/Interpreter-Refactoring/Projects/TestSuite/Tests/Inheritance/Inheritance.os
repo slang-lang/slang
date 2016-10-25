@@ -5,7 +5,7 @@ public object BaseObject {
 	protected int mProtectedNumber;
 	private int mPrivateNumber;
 
-	public void BaseObject() {
+	public void Constructor() {
 		mPublicNumber = 1;
 		mProtectedNumber = 1;
 		mPrivateNumber = 1;
@@ -20,7 +20,7 @@ public object DerivedObject extends BaseObject {
 	//private int mPrivateNumber;
 
 	public void Main(int argc = 0, string argv = "") {
-		base.BaseObject();
+		base.Constructor();
 
 		print(ToString());
 		print(ToString2());

@@ -2,12 +2,12 @@
 import BaseObject;
 
 private object DerivedObject extends BaseObject {
-	public void DerivedObject() {
-		print("DerivedObject::DerivedObject()");
+	public void Constructor() {
+		print("DerivedObject.Constructor()");
 	}
 
-	public void ~DerivedObject() {
-		print("DerivedObject::~DerivedObject()");
+	public void Destructor() {
+		print("DerivedObject.Destructor()");
 	}
 	
 	public string ToString() const {

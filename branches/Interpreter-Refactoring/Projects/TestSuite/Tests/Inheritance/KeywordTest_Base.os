@@ -5,13 +5,13 @@ public namespace Inheritance {
 	private object BaseObject {
 		private int mValue;
 
-		public void BaseObject(int value) {
-			print("BaseObject(" + value + ")");
+		public void Constructor(int value) {
+			print("Constructor(" + value + ")");
 			mValue = value;
 		}
 
-		public void ~BaseObject() {
-			print("~BaseObject()");
+		public void Destructor() {
+			print("Destructor()");
 		}
 
 		public int getValue() const {
@@ -28,14 +28,14 @@ public namespace Inheritance {
 	}
 
 	private object DerivedObject extends Inheritance.BaseObject {
-		public void DerivedObject(int value) {
-			print("DerivedObject(" + value + ")");
+		public void Constructor(int value) {
+			print("Constructor(" + value + ")");
 
-			base.BaseObject(value);
+			base.Constructor(value);
 		}
 
-		public void ~DerivedObject() {
-			print("~DerivedObject()");
+		public void Destructor() {
+			print("Destructor()");
 		}
 
 		public int getBaseValue() const {
@@ -52,14 +52,14 @@ public namespace Inheritance {
 	}
 
 	private object ExtendedObject extends Inheritance.DerivedObject {
-		public void ExtendedObject(int value) {
-			print("ExtendedObject(" + value + ")");
+		public void Constructor(int value) {
+			print("Constructor(" + value + ")");
 
-			base.DerivedObject(value);
+			base.Constructor(value);
 		}
 
-		public void ~ExtendedObject() {
-			print("~ExtendedObject()");
+		public void Destructor() {
+			print("Destructor()");
 		}
 
 		public int getValue() const {

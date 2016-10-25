@@ -4,30 +4,30 @@ public namespace InstanciationTest {
 	public object OuterObject {
 
 		public object InnerObject {
-			public string mValue;
+			private string mValue;
 
-			public void InnerObject(string value) {
-				print("InnerObject(\"" + value + "\")");
+			public void Constructor(string value) {
+				print("Constructor(\"" + value + "\")");
 
 				mValue = value;
 			}
 
-			public void ~InnerObject() {
-				print("~InnerObject()");
+			public void Destructor() {
+				print("Destructor()");
 			}
 		}
 
 
 		private string mValue;
 
-		public void OuterObject(string value) {
-			print("OuterObject(\"" + value + "\")");
+		public void Constructor(string value) {
+			print("Constructor(\"" + value + "\")");
 
 			mValue = value;
 		}
 
-		public void ~OuterObject() {
-			print("~OuterObject()");
+		public void Destructor() {
+			print("Destructor()");
 		}
 	}
 }

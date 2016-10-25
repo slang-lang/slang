@@ -3,13 +3,14 @@
 private object TestObject {
 	private int mValue;
 
-	public void TestObject(int value) {
-		print("TestObject(" + value + ")");
+	public void Constructor(int value) {
+		print("Constructor(" + value + ")");
 
 		mValue = value;
 	}
-	public void ~TestObject() {
-		print("~TestObject()");
+
+	public void Destructor() {
+		print("Destructor()");
 	}
 
 	public int getValue() const {

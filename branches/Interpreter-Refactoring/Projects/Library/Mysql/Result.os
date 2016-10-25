@@ -14,7 +14,7 @@ public namespace Mysql {
 		private int mNumFields;
 		private int mNumRows;
 
-		public void Result(int handle) {
+		public void Constructor(int handle) {
 			mHandle = handle;
 
 			Initialize();

@@ -18,12 +18,12 @@ public stable namespace AttributeTest {
 	}
 
 	public unstable object TestObject {
-		public void TestObject() {
-			print("TestObject()");
+		public void Constructor() {
+			print("Constructor()");
 		}
 
-		public void ~TestObject() {
-			print("~TestObject()");
+		public void Destructor() {
+			print("Destructor()");
 		}
 
 		public deprecated void deprecatedMethod() {
@@ -46,7 +46,7 @@ public stable namespace AttributeTest {
 	public object ConstObject {
 		private int mNumber;
 
-		public void ConstObject() {
+		public void Constructor() {
 			mNumber = 1;
 		}
 

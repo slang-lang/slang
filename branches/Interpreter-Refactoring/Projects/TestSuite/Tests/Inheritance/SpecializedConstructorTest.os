@@ -3,28 +3,28 @@
 private object BaseObject {
 	protected int mValue;
 
-	public void BaseObject(int value) {
-		print("BaseObject(" + value + ")");
+	public void Constructor(int value) {
+		print("Constructor(" + value + ")");
 
 		mValue = value;
 	}
 
-	public void ~BaseObject() {
-		print("~BaseObject(" + mValue + ")");
+	public void Destructor() {
+		print("Destructor(" + mValue + ")");
 	}
 }
 
 private object DerivedObject extends BaseObject {
-	public void DerivedObject(int value) {
-		print("DerivedObject(" + value + ")");
+	public void Constructor(int value) {
+		print("Constructor(" + value + ")");
 		print("mValue = " + mValue);
 
-		base.BaseObject(value);
+		base.Constructor(value);
 	}
 
-	public void ~DerivedObject() {
+	public void Destructor() {
 		print("mValue = " + mValue);
-		print("~DerivedObject(" + mValue + ")");
+		print("Destructor(" + mValue + ")");
 	}
 }
 

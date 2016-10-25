@@ -5,7 +5,7 @@ public namespace System { }
 public object Exception {
 	private string _exception;
 
-	public void Exception(string ex) {
+	public void Constructor(string ex) {
 		_exception = ex;
 	}
 
@@ -15,32 +15,32 @@ public object Exception {
 }
 
 public object ArithmeticException extends Exception {
-	public void ArithmeticException(string ex) {
-		base.Exception("ArithmeticException: " + ex);
+	public void Constructor(string ex) {
+		base.Constructor("ArithmeticException: " + ex);
 	}
 }
 
 public object IOException extends Exception {
-	public void IOException(string ex) {
-		base.Exception("IOException: " + ex);
+	public void Constructor(string ex) {
+		base.Constructor("IOException: " + ex);
 	}
 }
 
 public object NullPointerException extends Exception {
-	public void NullPointerException(string ex) {
-		base.Exception("NullPointerException: " + ex);
+	public void Constructor(string ex) {
+		base.Constructor("NullPointerException: " + ex);
 	}
 }
 
 public object OutOfBoundsException extends Exception {
-	public void OutOfBoundsException(string ex) {
-		base.Exception("OutOfBoundsException: " + ex);
+	public void Constructor(string ex) {
+		base.Constructor("OutOfBoundsException: " + ex);
 	}
 }
 
 public object SecurityException extends Exception {
-	public void SecurityException(string ex) {
-		base.Exception("SecurityException: " + ex);
+	public void Constructor(string ex) {
+		base.Constructor("SecurityException: " + ex);
 	}
 }
 

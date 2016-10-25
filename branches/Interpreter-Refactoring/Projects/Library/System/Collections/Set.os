@@ -5,8 +5,8 @@ import System.Exception;
 public namespace System {
 
 	public object Set extends System.AbstractCollection {
-		public void Set() {
-			base.AbstractCollection();
+		public void Constructor() {
+			base.Constructor();
 		}
 
 		public void erase(int index) modify {

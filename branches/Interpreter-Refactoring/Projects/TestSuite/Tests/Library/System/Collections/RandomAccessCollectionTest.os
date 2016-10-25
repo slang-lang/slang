@@ -1,18 +1,7 @@
 #!/usr/local/bin/oscript
 
 import System.Collections.RandomAccessCollection;
-
-private object TestObject {
-	private int mValue;
-
-	public void TestObject(int value) {
-		mValue = value;
-	}
-
-	public string ToString() const {
-		return "mValue = " + mValue;
-	}
-}
+import System.Integer;
 
 	public void Main(int argc = 0, string args = "") modify {
 		assert( TestCase1() );
@@ -32,27 +21,27 @@ private object TestObject {
 			System.RandomAccessCollection list = new System.RandomAccessCollection();
 
 			// Setup
-			TestObject item;
+			Integer item;
 
-			item = new TestObject(664);
+			item = new Integer(664);
 			list.insert(Object item, 0);
 
-			item = new TestObject(1389);
+			item = new Integer(1389);
 			list.insert(Object item, 1);
 
-			item = new TestObject(173);
+			item = new Integer(173);
 			list.insert(Object item, 1);
 
 			// Usage
 			assert( list.size() == 3 );
 
-			item = TestObject list.at(0);
+			item = Integer list.at(0);
 			assert( item.mValue == 664 );
 
-			item = TestObject list.at(1);
+			item = Integer list.at(1);
 			assert( item.mValue == 173 );
 
-			item = TestObject list.at(2);
+			item = Integer list.at(2);
 			assert( item.mValue == 1389 );
 
 			return true;
@@ -73,15 +62,15 @@ private object TestObject {
 			System.RandomAccessCollection list = new System.RandomAccessCollection();
 
 			// Setup
-			TestObject item;
+			Integer item;
 
-			item = new TestObject(664);
+			item = new Integer(664);
 			list.insert(Object item, 0);
 
-			item = new TestObject(173);
+			item = new Integer(173);
 			list.insert(Object item, 1);
 
-			item = new TestObject(1389);
+			item = new Integer(1389);
 			list.insert(Object item, 2);
 
 			// Usage
@@ -91,10 +80,10 @@ private object TestObject {
 
 			assert( list.size() == 2 );
 
-			item = TestObject list.at(0);
+			item = Integer list.at(0);
 			assert( item.mValue == 173 );
 
-			item = TestObject list.at(1);
+			item = Integer list.at(1);
 			assert( item.mValue == 1389 );
 
 			return true;
@@ -115,15 +104,15 @@ private object TestObject {
 			System.RandomAccessCollection list = new System.RandomAccessCollection();
 
 			// Setup
-			TestObject item;
+			Integer item;
 
-			item = new TestObject(664);
+			item = new Integer(664);
 			list.insert(Object item, 0);
 
-			item = new TestObject(173);
+			item = new Integer(173);
 			list.insert(Object item, 1);
 
-			item = new TestObject(1389);
+			item = new Integer(1389);
 			list.insert(Object item, 2);
 
 			// Usage
@@ -133,10 +122,10 @@ private object TestObject {
 
 			assert( list.size() == 2 );
 
-			item = TestObject list.at(0);
+			item = Integer list.at(0);
 			assert( item.mValue == 664 );
 
-			item = TestObject list.at(1);
+			item = Integer list.at(1);
 			assert( item.mValue == 1389 );
 
 			return true;
@@ -157,15 +146,15 @@ private object TestObject {
 			System.RandomAccessCollection list = new System.RandomAccessCollection();
 
 			// Setup
-			TestObject item;
+			Integer item;
 
-			item = new TestObject(664);
+			item = new Integer(664);
 			list.insert(Object item, 0);
 
-			item = new TestObject(173);
+			item = new Integer(173);
 			list.insert(Object item, 1);
 
-			item = new TestObject(1389);
+			item = new Integer(1389);
 			list.insert(Object item, 2);
 
 			// Usage
@@ -175,10 +164,10 @@ private object TestObject {
 
 			assert( list.size() == 2 );
 
-			item = TestObject list.at(0);
+			item = Integer list.at(0);
 			assert( item.mValue == 664 );
 
-			item = TestObject list.at(1);
+			item = Integer list.at(1);
 			assert( item.mValue == 173 );
 
 			return true;
@@ -198,26 +187,26 @@ private object TestObject {
 		try {
 			System.RandomAccessCollection list = new System.RandomAccessCollection();
 
-			TestObject item;
+			Integer item;
 
-			item = new TestObject(664);
+			item = new Integer(664);
 			list.insert(Object item, 0);
 
-			item = new TestObject(173);
+			item = new Integer(173);
 			list.insert(Object item, 1);
 
-			item = new TestObject(1389);
+			item = new Integer(1389);
 			list.insert(Object item, 2);
 
 			assert( list.size() == 3 );
 
-			item = TestObject list.at(0);
+			item = Integer list.at(0);
 			assert( item.mValue == 664 );
 
-			item = TestObject list.at(1);
+			item = Integer list.at(1);
 			assert( item.mValue == 173 );
 
-			item = TestObject list.at(2);
+			item = Integer list.at(2);
 			assert( item.mValue == 1389 );
 
 			System.Iterator it = list.getIterator();

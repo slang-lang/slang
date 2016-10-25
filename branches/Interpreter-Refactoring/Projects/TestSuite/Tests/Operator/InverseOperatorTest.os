@@ -5,7 +5,7 @@ import System.Integer;
 private object TestObject {
 	private int mValue;
 
-	private void TestObject(int value) {
+	private void Constructor(int value) {
 		mValue = value;
 	}
 

@@ -3,11 +3,11 @@
 private object UserObject {
 	private int mValue;
 
-	public void UserObject(int value) {
+	public void Constructor(int value) {
 		mValue = value;
 	}
 
-	public void ~UserObject() {
+	public void Destructor() {
 	}
 
 	public int getValue() const {

@@ -13,7 +13,7 @@ public interface IWarehouse {
 public object Box {
 	private int mId;
 
-	public void Box(int id) {
+	public void Constructor(int id) {
 		mId = id;
 	}
 }
@@ -45,8 +45,8 @@ public object Warehouse implements IWarehouse {
 public object Observer {
 	private IWarehouse mWarehouse;
 
-	public void Observer(IWarehouse wh ref) {
-		print("Observer(IWarehouse)");
+	public void Constructor(IWarehouse wh ref) {
+		print("Constructor(IWarehouse)");
 
 		mWarehouse = wh;
 	}

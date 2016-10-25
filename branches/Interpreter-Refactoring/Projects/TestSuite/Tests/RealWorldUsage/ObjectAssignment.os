@@ -4,15 +4,15 @@ private object Vector2D {
 	private int x;
 	private int y;
 
-	public void Vector2D(int x, int y) {
-		print("Vector2D(" + x + ", " + y + ")");
+	public void Constructor(int x, int y) {
+		print("Constructor(" + x + ", " + y + ")");
 
 		this.x = x;
 		this.y = y;
 	}
 
-	public void ~Vector2D() {
-		print("~Vector2D(" + x + ", " + y + ")");
+	public void Destructor() {
+		print("Destructor(" + x + ", " + y + ")");
 	}
 
 	public string ToString() const {

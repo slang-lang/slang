@@ -3,12 +3,12 @@
 public object TestObject {
 	private int mValue;
 
-	public void TestObject(int value) {
+	public void Constructor(int value) {
 		mValue = value;
 	}
 
-	public void ~TestObject() {
-		print("~TestObject()");
+	public void Destructor() {
+		print("Destructor()");
 	}
 }
 

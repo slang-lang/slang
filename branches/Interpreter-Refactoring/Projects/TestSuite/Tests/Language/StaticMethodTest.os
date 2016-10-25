@@ -3,7 +3,7 @@
 public object TestObject {
 	private int mValue;
 
-	public void TestObject(int value) {
+	public void Constrcutor(int value) {
 		mValue = value;
 	}
 

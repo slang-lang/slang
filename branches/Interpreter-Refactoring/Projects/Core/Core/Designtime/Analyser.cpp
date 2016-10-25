@@ -476,14 +476,16 @@ bool Analyser::createMethod(TokenIterator& token, TokenIterator /*end*/)
 	name = (*token++).content();
 
 	BluePrintGeneric* blueprint = dynamic_cast<BluePrintGeneric*>(mScope);
-	if ( blueprint && name == blueprint->Typename() ) {
+	//if ( blueprint && name == blueprint->Typename() ) {
+	if ( blueprint && name == "Constructor" ) {
 		// these methods have the same name as their containing object,
 		// so this has to be a constructor or a destructor;
 		// they can never ever be const, ever
 		methodType = MethodAttributes::MethodType::Constructor;
 		mutability = Mutability::Modify;
 	}
-	else if ( blueprint && name == "~" + blueprint->Typename() ) {
+	//else if ( blueprint && name == "~" + blueprint->Typename() ) {
+	else if ( blueprint && name == "Destructor" ) {
 		// these methods have the same name as their containing object,
 		// so this has to be a constructor or a destructor;
 		// they can never ever be const, ever

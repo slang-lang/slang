@@ -3,12 +3,12 @@
 import System.Exception;
 
 private object TestObject {
-	public void TestObject() {
-		print("TestObject()");
+	public void Constructor() {
+		print("Constructor()");
 	}
 
-	public void ~TestObject() throws {
-		print("~TestObject()");
+	public void Destructor() throws {
+		print("Destructor()");
 
 		print("throw in destructor");
 		//throw 42;

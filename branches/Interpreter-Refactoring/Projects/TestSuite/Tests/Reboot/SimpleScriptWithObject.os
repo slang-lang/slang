@@ -3,9 +3,13 @@
 private object TestObject {
 	private int mValue;
 
-	public void TestObject(int value) {
-		print("TestObject(" + value + ")");
+	public void Constructor(int value) {
+		print("Constructor(" + value + ")");
 		mValue = value;
+	}
+
+	public void Destructor() {
+		print("Destructor()");
 	}
 }
 
@@ -23,6 +27,11 @@ public int Main(int argc, string args) {
 	TestObject obj = new TestObject(result * 10000 + 1389);
 
 	print("obj.mValue = " + obj.mValue);
+
+	delete obj;
+	assert(!obj);
+
+	print("fine.");
 
 	return 0;
 }

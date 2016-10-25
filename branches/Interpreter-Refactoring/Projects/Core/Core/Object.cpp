@@ -237,10 +237,10 @@ ControlFlow::E Object::Constructor(const ParameterList& params)
 	}
 
 	// check if we have implemented at least one constructor
-	Symbol *symbol = resolve(Typename(), true);
+	Symbol *symbol = resolve("Constructor", true);
 	if ( symbol ) {
 		// if a specialized constructor is implemented, the default constructor cannot be used
-		Method *constructor = dynamic_cast<Method*>(resolveMethod(Typename(), params, true));
+		Method *constructor = dynamic_cast<Method*>(resolveMethod("Constructor", params, true));
 		if ( constructor ) {
 			VoidObject tmp;
 
@@ -334,7 +334,7 @@ ControlFlow::E Object::Destructor()
 		ParameterList params;
 
 		// only execute destructor if one is present
-		Method *destructor = static_cast<Method*>(resolveMethod("~" + Typename(), params, true));
+		Method *destructor = static_cast<Method*>(resolveMethod("Destructor", params, true));
 		if ( destructor ) {
 			VoidObject tmp;
 

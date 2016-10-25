@@ -5,10 +5,10 @@ public namespace System { }
 public object Boolean {
 	private bool mValue;
 
-	public void Boolean(bool value = false) {
+	public void Constructor(bool value = false) {
 		mValue = value;
 	}
-	public void Boolean(Boolean b) {
+	public void Constructor(Boolean b) {
 		mValue = b.mValue;
 	}
 

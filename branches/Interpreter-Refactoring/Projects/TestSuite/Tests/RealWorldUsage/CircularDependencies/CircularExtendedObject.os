@@ -1,18 +1,17 @@
 
 import CircularBaseObject;
 
-public object InnerObject
-{
-	public void InnerObject() {
-		writeln("InnerObject(): Start");
+public object InnerObject {
+	public void Constructor() {
+		writeln("Constructor(): Start");
 
-		writeln("InnerObject(): End");
+		writeln("Constructor(): End");
 	}
 
-	public void ~InnerObject() {
-		writeln("~InnerObject(): Start");
+	public void Destructor() {
+		writeln("Destructor(): Start");
 
-		writeln("~InnerObject(): End");
+		writeln("Destructor(): End");
 	}
 
 	public string ToString() const {
@@ -20,28 +19,24 @@ public object InnerObject
 	}
 }
 
-public object CircularExtendedObject extends CircularBaseObject
-{
+public object CircularExtendedObject extends CircularBaseObject {
 	//private InnerObject mInner;
 
-	public void CircularExtendedObject()
-	{
-		writeln("CircularExtendedObject(): Start");
+	public void Constructor() {
+		writeln("Constructor(): Start");
 
 		//mInner = new InnerObject();
 
-		writeln("CircularExtendedObject(): End");
+		writeln("Constructor(): End");
 	}
 
-	public void ~CircularExtendedObject()
-	{
-		writeln("~CircularExtendedObject(): Start");
+	public void Destructor() {
+		writeln("Destructor(): Start");
 
-		writeln("~CircularExtendedObject(): End");
+		writeln("Destructor(): End");
 	}
 
-	public string ToString() const
-	{
+	public string ToString() const {
 		return "ToString(): CircularExtendedObject extends " + base.ToString();
 	}
 }

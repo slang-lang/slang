@@ -2,12 +2,12 @@
 import DerivedObjectImported;
 
 public object ThirdLevelImported extends DerivedObjectImported {
-	public void ThirdLevelImported() {
-		print("ThirdLevelImported()");
+	public void Constructor() {
+		print("Constructor()");
 	}
 
-	public void ~ThirdLevelImported() {
-		print("~ThirdLevelImported()");
+	public void Destructor() {
+		print("Destructor()");
 	}
 
 	public string ToString() const {

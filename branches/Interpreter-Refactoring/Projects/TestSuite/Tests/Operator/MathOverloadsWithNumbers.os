@@ -4,7 +4,7 @@ public namespace MathOverloads {
 	private object OverloadedObject {
 		private int mNumber;
 
-		public void OverloadedObject(int one const) {
+		public void Constructor(int one const) {
 			mNumber = one;
 		}
 

@@ -30,10 +30,10 @@ import System.Collections.List;
 
 			return true;
 		}
-		catch ( System.Exception e ) {
+		catch ( Exception e ) {
 			print(e.what());
 		}
-		catch ( System.OutOfBoundsException e ) {
+		catch ( OutOfBoundsException e ) {
 			print(e.what());
 		}
 
@@ -61,10 +61,10 @@ import System.Collections.List;
 
 			return true;
 		}
-		catch ( System.Exception e ) {
+		catch ( Exception e ) {
 			print(e.what());
 		}
-		catch ( System.OutOfBoundsException e ) {
+		catch ( OutOfBoundsException e ) {
 			print(e.what());
 		}
 
