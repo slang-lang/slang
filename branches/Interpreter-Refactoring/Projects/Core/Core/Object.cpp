@@ -89,9 +89,7 @@ Object::Object(const std::string& name, const std::string& filename, const std::
 
 Object::~Object()
 {
-	if ( mReference.isValid() ) {
-		Controller::Instance().memory()->remove(mReference);
-	}
+	Controller::Instance().memory()->remove(mReference);
 
 	mBase = 0;
 	mThis = 0;
