@@ -8,15 +8,13 @@ import System.String;
 
 	public void Main(int argc = 0, string args = "") modify {
 		assert( TestCase1() );
-		//assert( TestCase2() );
+		assert( TestCase2() );
 		assert( TestCase3() );
 		assert( TestCase4() );
 		assert( TestCase5() );
 		assert( TestCase6() );
 		assert( TestCase7() );
 		assert( TestCase8() );
-
-		assert( TestCase2() );
 	}
 
 	private bool TestCase1() modify {
@@ -60,16 +58,25 @@ import System.String;
 
 			Integer item;
 			item = new Integer(1389);
-			list.push_back(Object item);
+			list.push_front(Object item);
 
 			item = new Integer(173);
-			list.push_back(Object item);
+			list.push_front(Object item);
 
 			item = new Integer(664);
 			list.push_front(Object item);
 
 			// Usage
 			assert( list.size() == 3 );
+
+/*
+			System.Iterator it = list.getIterator();
+			while ( it.hasNext() ) {
+				it.next();
+
+				print(string it.current());
+			}
+*/
 
 			item = Integer list.at(0);
 			assert(item.mValue == 664);

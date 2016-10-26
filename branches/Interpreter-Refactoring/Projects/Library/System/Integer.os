@@ -19,16 +19,12 @@ public object Integer {
 		mValue = i.mValue;
 	}
 
-	public void FromString(string value) modify {
-		mValue = int value;
-	}
-
 	/*
 	 * Returns a JSON-formatted string
 	 */
 	public string ToJsonString() const {
 		return "{ "
-		     + "mValue: " + mValue + +
+		     + "mValue: " + mValue
 		     + " }";
 	}
 
@@ -50,15 +46,22 @@ public object Integer {
 	public bool operator==(int other) const {
 		return mValue == other;
 	}
-	public bool operator==(Integer other) const {
+	public bool operator==(Integer other ref) const {
 		return mValue == other.mValue;
 	}
 
-	public bool operator<(Integer other) const {
-		return mValue < other.mValue;
-	}
 	public bool operator<(int other) const {
 		return mValue < other;
+	}
+	public bool operator<(Integer other ref) const {
+		return mValue < other.mValue;
+	}
+
+	public bool operator>(int other) const {
+		return mValue > other;
+	}
+	public bool operator>(Integer other ref) const {
+		return mValue > other.mValue;
 	}
 
 	/*
@@ -92,28 +95,28 @@ public object Integer {
 	public void operator+(int other) modify {
 		mValue = mValue + other;
 	}
-	public void operator+(Integer other) modify {
+	public void operator+(Integer other ref) modify {
 		mValue = mValue + other.mValue;
 	}
 
 	public void operator-(int other) modify {
 		mValue = mValue - other;
 	}
-	public void operator-(Integer other) modify {
+	public void operator-(Integer other ref) modify {
 		mValue = mValue - other.mValue;
 	}
 
 	public void operator*(int other) modify {
 		mValue = mValue * other;
 	}
-	public void operator*(Integer other) modify {
+	public void operator*(Integer other ref) modify {
 		mValue = mValue * other.mValue;
 	}
 
 	public void operator/(int other) modify {
 		mValue = mValue / other;
 	}
-	public void operator/(Integer other) modify {
+	public void operator/(Integer other ref) modify {
 		mValue = mValue / other.mValue;
 	}
 }

@@ -8,13 +8,15 @@ public object Float {
 	public void Constructor(float value = 0f) {
 		mValue = value;
 	}
-	public void Constructor(Float f) {
+	public void Constructor(Float f ref) {
 		mValue = f.mValue;
 	}
 
+/*
 	public void FromString(string value) modify {
 		mValue = float value;
 	}
+*/
 
 	/*
 	 * Returns a JSON-formatted string
@@ -29,12 +31,14 @@ public object Float {
 		return "Float: " + mValue;
 	}
 
+/*
 	public deprecated float Value() const {
 		return mValue;
 	}
 	public deprecated void Value(float value) modify {
 		mValue = value;
 	}
+*/
 
 	public bool operator!() const {
 		return !mValue;
@@ -43,14 +47,14 @@ public object Float {
 	public bool operator==(float other) const {
 		return mValue == other;
 	}
-	public bool operator==(Float other) const {
+	public bool operator==(Float other ref) const {
 		return mValue == other.mValue;
 	}
 
 	public void operator=(float other) modify {
 		mValue = other;
 	}
-	public void operator=(Float other) modify {
+	public void operator=(Float other ref) modify {
 		mValue = other.mValue;
 	}
 
@@ -61,28 +65,28 @@ public object Float {
 	public void operator+(float other) modify {
 		mValue = mValue + other;
 	}
-	public void operator+(Float other) modify {
+	public void operator+(Float other ref) modify {
 		mValue = mValue + other.mValue;
 	}
 
 	public void operator-(float other) modify {
 		mValue = mValue - other;
 	}
-	public void operator-(Float other) modify {
+	public void operator-(Float other ref) modify {
 		mValue = mValue - other.mValue;
 	}
 
 	public void operator*(float other) modify {
 		mValue = mValue * other;
 	}
-	public void operator*(Float other) modify {
+	public void operator*(Float other ref) modify {
 		mValue = mValue * other.mValue;
 	}
 
 	public void operator/(float other) modify {
 		mValue = mValue / other;
 	}
-	public void operator/(Float other) modify {
+	public void operator/(Float other ref) modify {
 		mValue = mValue / other.mValue;
 	}
 }

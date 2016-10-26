@@ -8,13 +8,15 @@ public object Double {
 	public void Constructor(double value = 0d) {
 		mValue = value;
 	}
-	public void Constructor(Double d) {
+	public void Constructor(Double d ref) {
 		mValue = d.mValue;
 	}
 
+/*
 	public void FromString(string value) modify {
 		mValue = double value;
 	}
+*/
 
 	/*
 	 * Returns a JSON-formatted string
@@ -43,14 +45,14 @@ public object Double {
 	public bool operator==(double other) const {
 		return mValue == other;
 	}
-	public bool operator==(Double other) const {
+	public bool operator==(Double other ref) const {
 		return mValue == other.mValue;
 	}
 
 	public void operator=(double other) modify {
 		mValue = other;
 	}
-	public void operator=(Double other) modify {
+	public void operator=(Double other ref) modify {
 		mValue = other.mValue;
 	}
 
@@ -64,28 +66,28 @@ public object Double {
 	public void operator+(double other) modify {
 		mValue = mValue + other;
 	}
-	public void operator+(Double other) modify {
+	public void operator+(Double other ref) modify {
 		mValue = mValue + other.mValue;
 	}
 
 	public void operator-(double other) modify {
 		mValue = mValue - other;
 	}
-	public void operator-(Double other) modify {
+	public void operator-(Double other ref) modify {
 		mValue = mValue - other.mValue;
 	}
 
 	public void operator*(double other) modify {
 		mValue = mValue * other;
 	}
-	public void operator*(Double other) modify {
+	public void operator*(Double other ref) modify {
 		mValue = mValue * other.mValue;
 	}
 
 	public void operator/(double other) modify {
 		mValue = mValue / other;
 	}
-	public void operator/(Double other) modify {
+	public void operator/(Double other ref) modify {
 		mValue = mValue / other.mValue;
 	}
 }

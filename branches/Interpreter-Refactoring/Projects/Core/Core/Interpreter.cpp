@@ -99,9 +99,15 @@ ControlFlow::E Interpreter::execute(Method* method, const ParameterList& params,
 				object = mRepository->createInstance(it->type(), it->name(), false);
 
 				if ( it->reference().isValid() ) {
+#ifdef ALLOW_BY_VALUE_COPY
+					OSwarn("by value call for object in " + scope.ToString());
+
 					object->copy(
 						*Controller::Instance().memory()->get(it->reference())
 					);
+#else
+					throw Common::Exceptions::NotSupported("by value calls not allowed for objects", getTokens().begin()->position());
+#endif
 				}
 
 				object->setValue(it->value());
