@@ -29,7 +29,6 @@ public namespace Mysql {
 		}
 
 		public void Destructor() modify {
-			print("~Connection()");
 			if ( mHandle != 0 ) {
 				close();
 			}
@@ -61,7 +60,7 @@ public namespace Mysql {
 		}
 
 		public Mysql.Query createQuery(string queryStr = "") const {
-			return new Mysql.Query(Mysql.Connection this, queryStr);
+			return new Query(Connection this, queryStr);
 		}
 
 		public string error() const {
@@ -79,7 +78,7 @@ public namespace Mysql {
 		private void initialize() modify {
 			assert(!mSettings);	// prevent multiple initializations
 
-			mSettings = new Mysql.Settings();
+			mSettings = new Settings();
 		}
 
 		public bool isOpen() const {
@@ -116,7 +115,7 @@ public namespace Mysql {
 		}
 
 		public Mysql.Result query(string queryStr) modify {
-			if ( Mysql.MysqlDebugMode ) { writeln("Mysql debug mode is enabled."); }
+			if ( MysqlDebugMode ) { print("Mysql debug mode is enabled."); }
 
 			if ( mSettings.getAutoEscaping() ) {
 				// auto escaping for strings is active
@@ -131,7 +130,7 @@ public namespace Mysql {
 			}
 
 			int handle = mysql_store_result(mHandle);
-			return new Mysql.Result(handle);
+			return new Result(handle);
 		}
 
 		public int selectDB(string database) modify {

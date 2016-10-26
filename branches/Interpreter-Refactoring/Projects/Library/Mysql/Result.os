@@ -1,12 +1,11 @@
 
-//import System.GDI.IResult;
 import Entry;
 import Exceptions;
 import Row;
 
 public namespace Mysql {
 
-	public object Result /*implements System.GDI.IResult*/ {
+	public object Result {
 		private int mAffectedRows;
 		private int mCurrentFieldIdx;
 		private int mCurrentRowIdx;
@@ -17,7 +16,7 @@ public namespace Mysql {
 		public void Constructor(int handle) {
 			mHandle = handle;
 
-			Initialize();
+			initialize();
 		}
 
 		public string ToString() const {
@@ -36,7 +35,7 @@ public namespace Mysql {
 		}
 
 		public Mysql.Row getCurrentRow() const {
-			return new Mysql.Row(mHandle);
+			return new Row(mHandle);
 		}
 
 		public Mysql.Entry getField(int fieldIdx) const {
@@ -47,15 +46,15 @@ public namespace Mysql {
 			string name = mysql_get_field_name(mHandle, fieldIdx);
 			string value = mysql_get_field_value(mHandle, fieldIdx);
 
-			return new Mysql.Entry(name, value);
+			return new Entry(name, value);
 		}
 
 		public Mysql.Entry getField(string name) const {
-			Mysql.Entry entry;	// null object
+			Entry entry;	// null object
 
 			for ( int idx = 0; idx < mNumFields; idx = idx + 1 ) {
 				if ( mysql_get_field_name(mHandle, idx) == name ) {
-					return new Mysql.Entry(name, mysql_get_field_value(mHandle, idx));
+					return new Entry(name, mysql_get_field_value(mHandle, idx));
 				}
 			}
 
@@ -74,7 +73,7 @@ public namespace Mysql {
 			return mCurrentRowIdx < mNumRows;
 		}
 
-		private bool Initialize() modify {
+		private bool initialize() modify {
 			mAffectedRows = 0;
 			mCurrentFieldIdx = 0;
 			mCurrentRowIdx = 0;

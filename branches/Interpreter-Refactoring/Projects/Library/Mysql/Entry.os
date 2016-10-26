@@ -15,9 +15,6 @@ public namespace Mysql {
 			mValue = value;
 		}
 
-		public void Destructor() {
-		}
-
 		public string ToString() const {
 			return "Entry={" +
 					"mName=" + mName + ", " +
