@@ -29,10 +29,10 @@ private bool TestCase2() const {
 }
 
 private bool TestCase3() modify {
-	print("TestCase 3: Boolean.FromString");
+	print("TestCase 3: Boolean.operator=()");
 
 	Boolean value = new Boolean();
-	value.FromString("foo bar");
+	value = bool "foo bar";
 	print(string value);
 	assert(bool value);
 
