@@ -4,13 +4,13 @@ import System.Collections.Iterator;
 import System.Collections.List;
 import System.String;
 
-	public void Main(int argc, string args) modify {
+	public void Main(int argc, string args) const {
 		assert( TestCase1() );
 		assert( TestCase2() );
 		assert( TestCase3() );
 	}
 
-	private bool TestCase1() modify {
+	private bool TestCase1() const {
 		print("TestCase 1: iterate");
 
 		try {
@@ -41,7 +41,7 @@ import System.String;
 		return false;
 	}
 
-	private bool TestCase2() modify {
+	private bool TestCase2() const {
 		print("TestCase 2: reverse iterate");
 
 		try {
@@ -72,7 +72,7 @@ import System.String;
 		return false;
 	}
 
-	private bool TestCase3() modify {
+	private bool TestCase3() const {
 		print("TestCase 3: multiple iterators");
 
 		try {

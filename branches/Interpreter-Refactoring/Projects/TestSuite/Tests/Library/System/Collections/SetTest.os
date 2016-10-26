@@ -38,12 +38,12 @@ public object TestObject {
 	}
 }
 
-public void Main(int argc, string args) modify {
+public void Main(int argc, string args) const {
 	assert( TestCase1() );
 	assert( TestCase2() );
 }
 
-private bool TestCase1() modify {
+private bool TestCase1() const {
 	print("TestCase 1: insert");
 
 	try {
@@ -84,7 +84,7 @@ private bool TestCase1() modify {
 	return false;
 }
 
-private bool TestCase2() modify {
+private bool TestCase2() const {
 	print("TestCase 2: erase");
 
 	try {

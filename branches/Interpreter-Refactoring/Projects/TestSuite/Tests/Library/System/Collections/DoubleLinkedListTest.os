@@ -6,7 +6,7 @@ import System.Exception;
 import System.Integer;
 import System.String;
 
-	public void Main(int argc = 0, string args = "") modify {
+	public void Main(int argc = 0, string args = "") const {
 		assert( TestCase1() );
 		assert( TestCase2() );
 		assert( TestCase3() );
@@ -17,7 +17,7 @@ import System.String;
 		assert( TestCase8() );
 	}
 
-	private bool TestCase1() modify {
+	private bool TestCase1() const {
 		print("TestCase 1: push_back");
 
 		try {
@@ -50,7 +50,7 @@ import System.String;
 		return false;
 	}
 
-	private bool TestCase2() modify {
+	private bool TestCase2() const {
 		print("TestCase 2: push_front");
 
 		try {
@@ -98,7 +98,7 @@ import System.String;
 		return false;
 	}
 
-	private bool TestCase3() modify {
+	private bool TestCase3() const {
 		print("TestCase 3: pop_front");
 
 		try {
@@ -140,7 +140,7 @@ import System.String;
 		return false;
 	}
 
-	private bool TestCase4() modify {
+	private bool TestCase4() const {
 		print("TestCase 4: pop_back");
 
 		try {
@@ -182,7 +182,7 @@ import System.String;
 		return false;
 	}
 
-	private bool TestCase5() modify {
+	private bool TestCase5() const {
 		print("TestCase 5: iterate");
 
 		try {
@@ -228,7 +228,7 @@ import System.String;
 		return false;
     }
 
-	private bool TestCase6() modify {
+	private bool TestCase6() const {
 		print("TestCase 6: reverse iterate");
 
 		try {
@@ -274,7 +274,7 @@ import System.String;
 		return false;
     }
 
-	private bool TestCase7() modify {
+	private bool TestCase7() const {
 		print("TestCase 7: indexOf");
 
 		try {
@@ -297,7 +297,7 @@ import System.String;
 		return false;
 	}
 
-	private bool TestCase8() modify {
+	private bool TestCase8() const {
 		print("TestCase 8: contains");
 
 		try {

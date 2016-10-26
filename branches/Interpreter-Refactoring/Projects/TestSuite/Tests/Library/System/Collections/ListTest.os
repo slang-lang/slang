@@ -4,7 +4,7 @@ import System.Collections.List;
 import System.Exception;
 import System.Integer;
 
-	public void Main(int argc = 0, string args = "") modify {
+	public void Main(int argc = 0, string args = "") const {
 		assert( TestCase1() );
 		assert( TestCase2() );
 		assert( TestCase3() );
@@ -12,7 +12,7 @@ import System.Integer;
 		assert( TestCase5() );
 	}
 
-	private bool TestCase1() modify {
+	private bool TestCase1() const {
 		print("TestCase 1: push_back");
 
 		try {
@@ -53,7 +53,7 @@ import System.Integer;
 		return false;
 	}
 
-	private bool TestCase2() modify {
+	private bool TestCase2() const {
 		print("TestCase 2: push_front");
 
 		try {
@@ -88,7 +88,7 @@ import System.Integer;
 		return false;
 	}
 
-	private bool TestCase3() modify {
+	private bool TestCase3() const {
 		print("TestCase 3: pop_front");
 
 		try {
@@ -141,7 +141,7 @@ import System.Integer;
 		return false;
 	}
 
-	private bool TestCase4() modify {
+	private bool TestCase4() const {
 		print("TestCase 4: pop_back");
 
 		try {
@@ -194,7 +194,7 @@ import System.Integer;
 		return false;
 	}
 
-	private bool TestCase5() modify {
+	private bool TestCase5() const {
 		print("TestCase 5: clear");
 
 		try {

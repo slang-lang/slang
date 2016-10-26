@@ -5,7 +5,7 @@ import System.Exception;
 import System.Integer;
 import System.String;
 
-public void Main(int argc = 0, string args = "") modify {
+public void Main(int argc = 0, string args = "") const {
 	assert( TestCase1() );
 	assert( TestCase2() );
 	assert( TestCase3() );
@@ -14,7 +14,7 @@ public void Main(int argc = 0, string args = "") modify {
 	assert( TestCase6() );
 }
 
-private bool TestCase1() modify {
+private bool TestCase1() const {
 	print("TestCase 1: push");
 
 	try {
@@ -56,7 +56,7 @@ private bool TestCase1() modify {
 	return false;
 }
 
-private bool TestCase2() modify {
+private bool TestCase2() const {
 	print("TestCase 2: pop");
 
 	try {
@@ -118,7 +118,7 @@ private bool TestCase2() modify {
 	return false;
 }
 
-private bool TestCase3() modify {
+private bool TestCase3() const {
 	print("TestCase 3: iterate");
 
 	try {
@@ -157,7 +157,7 @@ private bool TestCase3() modify {
 	return false;
 }
 
-private bool TestCase4() modify {
+private bool TestCase4() const {
 	print("TestCase 4: reverse iterate");
 
 	try {
@@ -193,7 +193,7 @@ private bool TestCase4() modify {
 	return false;
 }
 
-private bool TestCase5() modify {
+private bool TestCase5() const {
 	print("TestCase 5: indexOf");
 
 	try {
@@ -215,7 +215,7 @@ private bool TestCase5() modify {
 	return false;
 }
 
-private bool TestCase6() modify {
+private bool TestCase6() const {
 	print("TestCase 6: contains");
 
 	try {
