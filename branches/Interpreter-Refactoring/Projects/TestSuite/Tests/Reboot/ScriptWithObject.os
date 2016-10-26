@@ -36,6 +36,8 @@ public int Main(int argc, string args) {
 
 	assert( obj == obj2 );
 
+	print("fine.");
+
 	return 0;
 }
 

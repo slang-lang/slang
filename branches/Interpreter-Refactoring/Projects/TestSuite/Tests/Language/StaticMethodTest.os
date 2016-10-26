@@ -3,7 +3,7 @@
 public object TestObject {
 	private int mValue;
 
-	public void Constrcutor(int value) {
+	public void Constructor(int value) {
 		mValue = value;
 	}
 
@@ -22,7 +22,7 @@ public object TestObject {
 	}
 }
 
-public void Main(int argc, string args) {
+public void Main(int argc = 0 , string args = "") {
 	assert( TestCase1() );
 	assert( TestCase2() );
 }

@@ -58,6 +58,7 @@ private:	// Tests
 	void testPrint();
 	void testSanityChecker();
 	void testScope();
+	void testStaticMethod();
 	void testStaticLocalVariable();
 	void testSwitch();
 	void testThis();
