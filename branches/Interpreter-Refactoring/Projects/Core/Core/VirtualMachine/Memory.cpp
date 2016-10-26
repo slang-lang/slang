@@ -30,6 +30,11 @@ Memory::~Memory()
 
 void Memory::add(const Reference &ref)
 {
+	if ( !ref.isValid() ) {
+		// cannot add address 0
+		return;
+	}
+
 	MemoryMap::iterator it = mMemory.find(ref);
 	if ( it == mMemory.end() ) {
 		throw Common::Exceptions::Exception("invalid access for address " + Tools::ConvertToStdString(ref.getAddress()));
@@ -40,13 +45,6 @@ void Memory::add(const Reference &ref)
 
 void Memory::deinit()
 {
-/*
-	MemoryMap tmp = mMemory;
-
-	for ( MemoryMap::iterator it = tmp.begin(); it != tmp.end(); ++it ) {
-		deleteObject(it->first);
-	}
-*/
 }
 
 void Memory::deleteObject(const Reference& ref)
@@ -90,7 +88,6 @@ const Reference& Memory::getNullReference() const
 
 void Memory::init()
 {
-
 }
 
 const Reference& Memory::newObject(Runtime::Object *obj)
@@ -107,7 +104,7 @@ const Reference& Memory::newObject(Runtime::Object *obj)
 
 void Memory::remove(const Reference &ref)
 {
-	if ( !ref.getAddress() ) {
+	if ( !ref.isValid() ) {
 		// cannot delete address 0
 		return;
 	}

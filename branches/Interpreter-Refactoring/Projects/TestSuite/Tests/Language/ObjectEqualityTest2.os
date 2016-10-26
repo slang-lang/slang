@@ -40,6 +40,7 @@ private bool TestCase1() const {
 	ObjectEqualityTest.TestObject obj2 = new ObjectEqualityTest.TestObject();
 	//obj2.mValue = 2;
 	
+	assert( obj1 == obj2 );
 	return obj1 == obj2;
 }
 

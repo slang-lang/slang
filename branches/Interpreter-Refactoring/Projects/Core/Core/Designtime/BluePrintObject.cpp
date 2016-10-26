@@ -18,8 +18,7 @@ namespace Designtime {
 
 
 BluePrintObject::BluePrintObject()
-: MethodScope(ANONYMOUS_OBJECT, 0),
-  mVisibility(Visibility::Public)
+: MethodScope(ANONYMOUS_OBJECT, 0)
 {
 	mName = ANONYMOUS_OBJECT;
 	mType = Symbol::IType::BluePrintObjectSymbol;
@@ -27,8 +26,7 @@ BluePrintObject::BluePrintObject()
 
 BluePrintObject::BluePrintObject(const std::string& type, const std::string& filename, const std::string& name)
 : BluePrintGeneric(type, filename),
-  MethodScope(type, 0),
-  mVisibility(Visibility::Public)
+  MethodScope(type, 0)
 {
 	mName = name;
 	mType = Symbol::IType::BluePrintObjectSymbol;
@@ -83,11 +81,6 @@ Runtime::AtomicValue BluePrintObject::getValue() const
 	return mValue;
 }
 
-Visibility::E BluePrintObject::getVisibility() const
-{
-	return mVisibility;
-}
-
 void BluePrintObject::setParent(IScope* parent)
 {
 	mParent = parent;
@@ -96,11 +89,6 @@ void BluePrintObject::setParent(IScope* parent)
 void BluePrintObject::setValue(Runtime::AtomicValue value)
 {
 	mValue = value;
-}
-
-void BluePrintObject::setVisibility(Visibility::E v)
-{
-	mVisibility = v;
 }
 
 std::string BluePrintObject::ToString(unsigned int indent) const

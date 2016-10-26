@@ -188,7 +188,7 @@ Symbol* RemoteClient::getSymbol(std::string name) const
 		Tools::split(name, parent, child);
 
 		if ( !parent.empty() && !child.empty() ) {
-			scope = static_cast<ObjectiveScript::Runtime::Object*>(scope->resolve(parent, false));
+			scope = dynamic_cast<ObjectiveScript::Runtime::Object*>(scope->resolve(parent, false));
 		}
 		else {
 			return scope->resolve(parent, false);
@@ -398,13 +398,8 @@ void RemoteClient::start()
 		ObjectiveScript::Script *script = mVirtualMachine->createScriptFromFile(mSettings->filename(), mParameters);
 		assert(script);
 
-		// check if an instance ("main") of a Main object exists
-		ObjectiveScript::Runtime::Object *main = static_cast<ObjectiveScript::Runtime::Object*>(script->resolve("main"));
-
-		if ( !main || main->isAtomicType() ) {
-			ObjectiveScript::Runtime::IntegerObject result;
-			script->execute("Main", mParameters, &result);
-		}
+		ObjectiveScript::Runtime::IntegerObject result;
+		script->execute("Main", mParameters, &result);
 
 		if ( mSettings->autoStop() ) {
 			mRunning = false;

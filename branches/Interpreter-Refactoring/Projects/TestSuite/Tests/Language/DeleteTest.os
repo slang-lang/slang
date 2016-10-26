@@ -10,7 +10,7 @@ private object TestObject {
 	}
 
 	public void Destructor() {
-		print("Destructor()");
+		print("Destructor(" + mValue + ")");
 	}
 
 	public int getValue() const {
@@ -48,10 +48,14 @@ public void Main(int argc = 1, string args = "") {
 		assert( obj1.getValue() == 2 );
 	}
 
+	print("obj1 = " + string obj1);
+	print("obj2 = " + string obj2);
+
 	delete obj1;
 	delete obj1;
 	delete obj1;
 
+	//print("obj1 = " + string obj1);
 	print("obj2 = " + string obj2);
 }
 

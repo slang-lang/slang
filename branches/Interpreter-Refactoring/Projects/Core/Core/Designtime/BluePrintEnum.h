@@ -42,9 +42,6 @@ public:
 	void addInheritance(const Designtime::Ancestor& inheritance);
 	// }
 
-	Visibility::E getVisibility() const;
-	void setVisibility(Visibility::E v);
-
 	bool isAbstract() const;
 	bool isForwardDeclaration() const;
 	bool isInterface() const;
@@ -52,9 +49,6 @@ public:
 	void setParent(IScope* parent);
 
 	virtual std::string ToString(unsigned int indent) const;
-
-
-protected:
 
 public:
 	MethodCollection provideMethods() const {
@@ -66,7 +60,6 @@ public:
 
 private:
 	Ancestors mInheritance;
-	Visibility::E mVisibility;
 };
 
 

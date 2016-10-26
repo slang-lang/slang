@@ -33,16 +33,16 @@ Object::Object()
   mQualifiedTypename(ANONYMOUS_OBJECT),
   mTypename(ANONYMOUS_OBJECT)
 {
-	mBase = 0;
 	mThis = this;
+	mBase = 0;
 }
 
 Object::Object(const Object& other)
 : MethodScope(other.getName(), other.mParent),
   ObjectSymbol(other.getName())
 {
-	mBase = 0;
 	mThis = this;
+	mBase = 0;
 
 	mFilename = other.mFilename;
 	mImplementationType = other.mImplementationType;
@@ -92,12 +92,9 @@ Object::~Object()
 	if ( mReference.isValid() ) {
 		Controller::Instance().memory()->remove(mReference);
 	}
-	else {
-		Object* base = dynamic_cast<Object*>(mThis->resolve("base", true));
-		if ( base ) {
-			Controller::Instance().memory()->remove(base->mReference);
-		}
-	}
+
+	mBase = 0;
+	mThis = 0;
 }
 
 void Object::operator= (const Object& other)
@@ -125,15 +122,7 @@ void Object::operator= (const Object& other)
 		setLanguageFeatureState(other.getLanguageFeatureState());
 		setMember(other.isMember());
 
-		//assignReference(other.mReference);
-
-		if ( other.mReference.isValid() ) {
-			Controller::Instance().memory()->add(other.mReference);
-			mReference = other.mReference;
-
-			mThis = Controller::Instance().memory()->get(mReference);
-			mBase = mThis->mBase;
-		}
+		assignReference(other.mReference);
 	}
 }
 
@@ -175,29 +164,32 @@ void Object::addInheritance(const Designtime::Ancestor& ancestor, Object* inheri
 
 void Object::assignReference(const Reference& ref)
 {
-	mReference = ref;
+	Reference old = mReference;
 
-	if ( !ref.isValid() ) {
+	mReference = ref;
+	Controller::Instance().memory()->add(mReference);
+
+	if ( mReference.isValid() ) {
+		mThis = Controller::Instance().memory()->get(mReference);
+		mBase = mThis->mBase;
+	}
+	else {
 		mThis = this;
 		mBase = dynamic_cast<Object*>(SymbolScope::resolve("base", true));
 	}
-	else {
-		Controller::Instance().memory()->add(ref);
 
-		mThis = Controller::Instance().memory()->get(ref);
-		mBase = mThis->mBase;
-	}
+	Controller::Instance().memory()->remove(old);
 }
 
 bool Object::CanExecuteDefaultConstructor() const
 {
-	Symbol* anyConstructor = resolve(Typename(), false);
+	Symbol* anyConstructor = resolve(RESERVED_WORD_CONSTRUCTOR, false);
 	if ( !anyConstructor ) {
 		// no constructor found at all, so we can call our default constructor but it won't do anything besides setting our object to constructed
 		return true;
 	}
 
-	Symbol* defaultConstructor = resolveMethod(Typename(), ParameterList(), true);
+	Symbol* defaultConstructor = resolveMethod(RESERVED_WORD_CONSTRUCTOR, ParameterList(), true);
 
 	return defaultConstructor && (anyConstructor == defaultConstructor);
 }
@@ -237,10 +229,10 @@ ControlFlow::E Object::Constructor(const ParameterList& params)
 	}
 
 	// check if we have implemented at least one constructor
-	Symbol *symbol = resolve(RESERVED_CONSTRUCTOR, true);
+	Symbol *symbol = resolve(RESERVED_WORD_CONSTRUCTOR, true);
 	if ( symbol ) {
 		// if a specialized constructor is implemented, the default constructor cannot be used
-		Method *constructor = dynamic_cast<Method*>(resolveMethod(RESERVED_CONSTRUCTOR, params, true));
+		Method *constructor = dynamic_cast<Method*>(resolveMethod(RESERVED_WORD_CONSTRUCTOR, params, true));
 		if ( constructor ) {
 			VoidObject tmp;
 
@@ -334,7 +326,7 @@ ControlFlow::E Object::Destructor()
 		ParameterList params;
 
 		// only execute destructor if one is present
-		Method *destructor = static_cast<Method*>(resolveMethod(RESERVED_DESTRUCTOR, params, true));
+		Method *destructor = static_cast<Method*>(resolveMethod(RESERVED_WORD_DESTRUCTOR, params, true));
 		if ( destructor ) {
 			VoidObject tmp;
 
@@ -389,8 +381,6 @@ ControlFlow::E Object::execute(Object *result, const std::string& name, const Pa
 */
 
 	Interpreter interpreter;
-
-	// execute our member method
 	return interpreter.execute(method, params, result);
 }
 
@@ -531,7 +521,7 @@ void Object::operator_assign(const Object *other)
 		return;
 	}
 
-	throw Common::Exceptions::NotImplemented(Typename() + ".operator=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_bitand(const Object *other)
@@ -559,7 +549,7 @@ void Object::operator_bitand(const Object *other)
 		return;
 	}
 
-	throw Common::Exceptions::NotImplemented(Typename() + ".operator&: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator&: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_bitcomplement(const Object *other)
@@ -588,7 +578,7 @@ void Object::operator_bitcomplement(const Object *other)
 		return;
 	}
 
-	throw Common::Exceptions::NotImplemented(Typename() + ".operator~: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator~: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_bitor(const Object *other)
@@ -617,12 +607,12 @@ void Object::operator_bitor(const Object *other)
 		return;
 	}
 
-	throw Common::Exceptions::NotImplemented(Typename() + ".operator|: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator|: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool Object::operator_bool() const
 {
-	throw Common::Exceptions::NotImplemented(Typename() + ".operator bool(): for " + QualifiedTypename() + " not supported");
+	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator bool(): for " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_divide(const Object *other)
@@ -651,7 +641,7 @@ void Object::operator_divide(const Object *other)
 		return;
 	}
 
-	throw Common::Exceptions::NotImplemented(Typename() + ".operator/: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator/: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool Object::operator_equal(const Object *other)
@@ -683,7 +673,7 @@ bool Object::operator_equal(const Object *other)
 		return operator_equal(&tmp);
 	}
 
-	throw Common::Exceptions::NotImplemented(Typename() + ".operator==: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator==: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool Object::operator_greater(const Object *other)
@@ -711,7 +701,7 @@ bool Object::operator_greater(const Object *other)
 		return operator_greater(&tmp);
 	}
 
-	throw Common::Exceptions::NotImplemented(Typename() + ".operator>: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator>: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool Object::operator_greater_equal(const Object *other)
@@ -739,17 +729,21 @@ bool Object::operator_greater_equal(const Object *other)
 		return operator_greater_equal(&tmp);
 	}
 
-	throw Common::Exceptions::NotImplemented(Typename() + ".operator>=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator>=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool Object::operator_is(const Symbol *other)
 {
+	if ( !other ) {
+		return false;
+	}
+
 	std::string type;
 
-	if ( other && other->getSymbolType() == Symbol::IType::BluePrintObjectSymbol ) {
-		type = static_cast<const Designtime::BluePrintObject*>(other)->QualifiedTypename();
+	if ( other->getSymbolType() == Symbol::IType::BluePrintEnumSymbol || other->getSymbolType() == Symbol::IType::BluePrintObjectSymbol ) {
+		type = static_cast<const Designtime::BluePrintGeneric*>(other)->QualifiedTypename();
 	}
-	else if ( other && other->getSymbolType() == Symbol::IType::ObjectSymbol ) {
+	else if ( other->getSymbolType() == Symbol::IType::ObjectSymbol ) {
 		type = static_cast<const Object*>(other)->QualifiedTypename();
 	}
 
@@ -781,7 +775,7 @@ bool Object::operator_less(const Object *other)
 		return operator_less(&tmp);
 	}
 
-	throw Common::Exceptions::NotImplemented(Typename() + ".operator<: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator<: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool Object::operator_less_equal(const Object *other)
@@ -809,7 +803,7 @@ bool Object::operator_less_equal(const Object *other)
 		return operator_less_equal(&tmp);
 	}
 
-	throw Common::Exceptions::NotImplemented(Typename() + ".operator<=: conversion from " + other->QualifiedTypename() + " to " + Typename() + " not supported");
+	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator<=: conversion from " + other->QualifiedTypename() + " to " + Typename() + " not supported");
 }
 
 void Object::operator_modulo(const Object *other)
@@ -838,7 +832,7 @@ void Object::operator_modulo(const Object *other)
 		return;
 	}
 
-	throw Common::Exceptions::NotImplemented(Typename() + ".operator%: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator%: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_multiply(const Object *other)
@@ -867,7 +861,7 @@ void Object::operator_multiply(const Object *other)
 		return;
 	}
 
-	throw Common::Exceptions::NotImplemented(Typename() + ".operator*: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator*: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_plus(const Object *other)
@@ -925,27 +919,27 @@ void Object::operator_subtract(const Object *other)
 		return;
 	}
 
-	throw Common::Exceptions::NotImplemented(Typename() + ".operator-: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator-: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_unary_decrement()
 {
-	throw Common::Exceptions::NotImplemented(Typename() + ".operator--: for " + QualifiedTypename() + " not supported");
+	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator--: for " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_unary_increment()
 {
-	throw Common::Exceptions::NotImplemented(Typename() + ".operator++: for " + QualifiedTypename() + " not supported");
+	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator++: for " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_unary_minus()
 {
-	throw Common::Exceptions::NotImplemented(Typename() + ".operator unary -: for " + QualifiedTypename() + " not supported");
+	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator unary -: for " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_unary_not()
 {
-	throw Common::Exceptions::NotImplemented(Typename() + ".operator unary !: for " + QualifiedTypename() + " not supported");
+	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator unary !: for " + QualifiedTypename() + " not supported");
 }
 
 Symbol* Object::resolve(const std::string& name, bool onlyCurrentScope) const
@@ -960,7 +954,7 @@ Symbol* Object::resolve(const std::string& name, bool onlyCurrentScope) const
 	// (2) check inheritance
 	if ( !result ) {
 		Object* base = dynamic_cast<Object*>(MethodScope::resolve("base", true));
-		if ( base && !onlyCurrentScope ) {
+		if ( base && base->getSymbolType() == Symbol::IType::ObjectSymbol && !onlyCurrentScope ) {
 			result = base->resolve(name, onlyCurrentScope);
 		}
 	}
@@ -985,7 +979,7 @@ ObjectiveScript::MethodSymbol* Object::resolveMethod(const std::string& name, co
 	// (2) check inheritance
 	// we cannot go the short is-result-already-set way here because one of our ancestor methods could be marked as final
 	Symbol* base = MethodScope::resolve("base", true);
-	if ( base && !onlyCurrentScope ) {
+	if ( base && base->getSymbolType() == Symbol::IType::ObjectSymbol && !onlyCurrentScope ) {
 		result = dynamic_cast<Object*>(base)->resolveMethod(name, params, onlyCurrentScope);
 	}
 
@@ -1001,33 +995,6 @@ ObjectiveScript::MethodSymbol* Object::resolveMethod(const std::string& name, co
 	}
 
 	return result;
-
-/*
-	if ( mThis != this ) {
-		return mThis->resolveMethod(name, params, onlyCurrentScope);
-	}
-
-	ObjectiveScript::MethodSymbol* result = 0;
-
-	// (2) check inheritance
-	// we cannot go the short is-result-already-set way here because one of our ancestor methods could be marked as final
-	Symbol* base = MethodScope::resolve("base", true);
-	if ( base ) {
-		result = dynamic_cast<Object*>(base)->resolveMethod(name, params, true);
-	}
-
-	// (1) look in current scope
-	if ( !result || !result->isFinal() ) {
-		result = MethodScope::resolveMethod(name, params, true);
-	}
-
-	// (3) if we still haven't found something also look in other scopes
-	if ( !result && !onlyCurrentScope ) {
-		result = MethodScope::resolveMethod(name, params, false);
-	}
-
-	return result;
-*/
 }
 
 void Object::setArray(bool value, size_t size)
@@ -1062,7 +1029,7 @@ Json::Value Object::ToJson() const
 
 	for ( Symbols::const_iterator it = mSymbols.begin(); it != mSymbols.end(); ++it ) {
 		if ( it->first == IDENTIFIER_BASE ) {
-			result.addMember(it->first, static_cast<Object*>(it->second)->ToJson());
+			result.addMember(it->first, dynamic_cast<Object*>(it->second)->ToJson());
 		}
 
 		if ( it->first == IDENTIFIER_BASE || it->first == IDENTIFIER_THIS ||
@@ -1070,7 +1037,7 @@ Json::Value Object::ToJson() const
 			continue;
 		}
 
-		Object *obj = static_cast<Object*>(it->second);
+		Object *obj = dynamic_cast<Object*>(it->second);
 
 		result.addMember(it->first, obj->getValue().toStdString());
 	}
@@ -1098,7 +1065,7 @@ std::string Object::ToString(unsigned int indent) const
 		}
 
 		for ( Symbols::const_iterator it = mSymbols.begin(); it != mSymbols.end(); ++it ) {
-			if ( it->first == IDENTIFIER_BASE || it->first == IDENTIFIER_THIS ||
+			if ( /*it->first == IDENTIFIER_BASE ||*/ it->first == IDENTIFIER_THIS ||
 				 !it->second || it->second->getSymbolType() != Symbol::IType::ObjectSymbol ) {
 				continue;
 			}

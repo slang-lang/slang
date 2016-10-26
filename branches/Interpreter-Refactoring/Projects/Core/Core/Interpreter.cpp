@@ -170,10 +170,10 @@ ControlFlow::E Interpreter::execute(Method* method, const ParameterList& params,
 	if ( controlflow == ControlFlow::Normal ) {
 		switch ( method->getMethodType() ) {
 			case MethodAttributes::MethodType::Constructor:
-				static_cast<Object*>(mOwner)->setConstructed(true);
+				dynamic_cast<Object*>(mOwner)->setConstructed(true);
 				break;
 			case MethodAttributes::MethodType::Destructor:
-				static_cast<Object*>(mOwner)->setConstructed(false);
+				dynamic_cast<Object*>(mOwner)->setConstructed(false);
 				break;
 			default:
 				break;
@@ -716,11 +716,6 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 			}
 		} break;
 		case Token::Type::KEYWORD: {
-/*
-			TokenIterator semicolon = findNext(start, Token::Type::SEMICOLON);
-
-			process(result, start, semicolon, Token::Type::SEMICOLON);
-*/
 			process_keyword(start, result);
 			start++;
 		} break;
@@ -869,11 +864,9 @@ void Interpreter::process_delete(TokenIterator& token)
 	switch ( symbol->getSymbolType() ) {
 		case Symbol::IType::ObjectSymbol: {
 			Object *object = static_cast<Object*>(symbol);
-			assert(object);
 
-			//mControlFlow = object->Destructor();
-
-			object->assign(Object(object->getName(), object->Filename(), object->Typename(), VALUE_NONE));
+			//object->assign(Object(object->getName(), object->Filename(), object->Typename(), VALUE_NONE));
+			object->assign(Object());
 		} break;
 		case Symbol::IType::BluePrintEnumSymbol:
 		case Symbol::IType::BluePrintObjectSymbol:
@@ -1793,12 +1786,8 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol)
 		assign = ++token;
 	}
 
-	Object *object = dynamic_cast<Object*>(getScope()->resolve(name, true));
-	if ( object ) {
-		throw Common::Exceptions::DuplicateIdentifier("duplicate identifier '" + name + "' created", token->position());
-	}
 
-	object = getRepository()->createInstance(static_cast<Designtime::BluePrintObject*>(symbol), name, false);
+	Object* object = getRepository()->createInstance(static_cast<Designtime::BluePrintObject*>(symbol), name, false);
 
 	getScope()->define(name, object);
 

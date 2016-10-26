@@ -185,7 +185,7 @@ MethodSymbol* MethodScope::resolveMethod(const std::string& name, const Paramete
 	}
 
 	if ( mParent && !onlyCurrentScope ) {
-		return static_cast<MethodScope*>(mParent)->resolveMethod(name, params, onlyCurrentScope);
+		return dynamic_cast<MethodScope*>(mParent)->resolveMethod(name, params, onlyCurrentScope);
 	}
 
 	return 0;

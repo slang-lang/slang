@@ -52,9 +52,6 @@ public:
 	void addInheritance(const Ancestor& inheritance);
 	// }
 
-	Visibility::E getVisibility() const;
-	void setVisibility(Visibility::E v);
-
 	void setParent(IScope* parent);
 
 	Runtime::AtomicValue getValue() const;
@@ -73,7 +70,6 @@ public:
 private:
 	Ancestors mInheritance;
 	Runtime::AtomicValue mValue;
-	Visibility::E mVisibility;
 };
 
 

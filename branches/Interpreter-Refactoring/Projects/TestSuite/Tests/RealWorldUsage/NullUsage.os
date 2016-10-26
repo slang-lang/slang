@@ -4,6 +4,7 @@ public object TestObject {
 	private int mValue;
 
 	public void Constructor(int value) {
+		print("Constructor(" + value + ")");
 		mValue = value;
 	}
 

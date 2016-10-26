@@ -18,8 +18,7 @@ namespace Designtime {
 
 
 BluePrintEnum::BluePrintEnum()
-: MethodScope(ANONYMOUS_OBJECT, 0),
-  mVisibility(Visibility::Public)
+: MethodScope(ANONYMOUS_OBJECT, 0)
 {
 	mName = ANONYMOUS_OBJECT;
 	mType = Symbol::IType::BluePrintEnumSymbol;
@@ -27,8 +26,7 @@ BluePrintEnum::BluePrintEnum()
 
 BluePrintEnum::BluePrintEnum(const std::string& type, const std::string& filename, const std::string& name)
 : BluePrintGeneric(type, filename),
-  MethodScope(type, 0),
-  mVisibility(Visibility::Public)
+  MethodScope(type, 0)
 {
 	mName = name;
 	mType = Symbol::IType::BluePrintEnumSymbol;
@@ -78,11 +76,6 @@ Ancestors BluePrintEnum::getImplementations() const
 	return implementations;
 }
 
-Visibility::E BluePrintEnum::getVisibility() const
-{
-	return mVisibility;
-}
-
 bool BluePrintEnum::isAbstract() const
 {
 	return getImplementationType() == ImplementationType::Abstract || getImplementationType() == ImplementationType::Interface;
@@ -101,11 +94,6 @@ bool BluePrintEnum::isInterface() const
 void BluePrintEnum::setParent(IScope* parent)
 {
 	mParent = parent;
-}
-
-void BluePrintEnum::setVisibility(Visibility::E v)
-{
-	mVisibility = v;
 }
 
 std::string BluePrintEnum::ToString(unsigned int indent) const

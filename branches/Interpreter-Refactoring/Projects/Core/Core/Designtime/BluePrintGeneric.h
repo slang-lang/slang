@@ -45,6 +45,9 @@ public:
 	const TokenList& getTokens() const;
 	void setTokens(const TokenList& tokens);
 
+	Visibility::E getVisibility() const;
+	void setVisibility(Visibility::E v);
+
 protected:
 	std::string mFilename;
 	std::string mQualifiedTypename;
@@ -52,6 +55,7 @@ protected:
 	std::string mTypename;
 
 private:
+	Visibility::E mVisibility;
 };
 
 

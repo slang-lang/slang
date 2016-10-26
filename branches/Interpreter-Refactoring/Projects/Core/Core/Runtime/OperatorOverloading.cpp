@@ -79,8 +79,8 @@ void operator_binary_assign(Object *base, Object *other)
 
 		base->assign(tmp);
 	}
+	// no atomic data type, so we have to look if our assign operator has been overwritten
 	else {
-		// no atomic data type, so we have to look if our assign operator has been overwritten
 		ParameterList params;
 		params.push_back(
 			Parameter(other->getName(), other->QualifiedTypename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
@@ -93,7 +93,6 @@ void operator_binary_assign(Object *base, Object *other)
 		}
 		else {
 			base->assign(*other);
-			//throw Runtime::Exceptions::InvalidAssignment("Could not assign type '" + source + "' to type '" + target + "'");
 		}
 	}
 }
@@ -389,7 +388,18 @@ bool operator_binary_equal(Object *base, Object *other)
 
 	if ( base->resolveMethod("operator==", params, false) ) {
 		Object tmp;
-		base->execute(&tmp, "operator==", params, 0);
+		base->execute(&tmp, "operator==", params);
+		return isTrue(tmp);
+	}
+
+	params.clear();
+	params.push_back(
+		Parameter(other->getName(), other->QualifiedOutterface(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
+	);
+
+	if ( base->resolveMethod("operator==", params, false) ) {
+		Object tmp;
+		base->execute(&tmp, "operator==", params);
 		return isTrue(tmp);
 	}
 
@@ -440,7 +450,7 @@ bool operator_binary_greater(Object *base, Object *other)
 	);
 
 	Object tmp;
-	base->execute(&tmp, "operator>", params, 0);
+	base->execute(&tmp, "operator>", params);
 	return isTrue(tmp);
 }
 

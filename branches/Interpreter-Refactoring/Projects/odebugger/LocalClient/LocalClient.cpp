@@ -382,7 +382,7 @@ MethodSymbol* LocalClient::getMethod(std::string name, const ParameterList& para
 		Tools::split(name, parent, child);
 
 		if ( !parent.empty() && !child.empty() ) {
-			scope = static_cast<ObjectiveScript::Runtime::Object*>(scope->resolve(parent, false));
+			scope = dynamic_cast<ObjectiveScript::Runtime::Object*>(scope->resolve(parent, false));
 		}
 		else {
 			return scope->resolveMethod(parent, params, false);
@@ -423,7 +423,7 @@ Symbol* LocalClient::getSymbol(std::string name) const
 		Tools::split(name, parent, child);
 
 		if ( !parent.empty() && !child.empty() ) {
-			scope = static_cast<ObjectiveScript::Runtime::Object*>(scope->resolve(parent, false));
+			scope = dynamic_cast<ObjectiveScript::Runtime::Object*>(scope->resolve(parent, false));
 		}
 		else {
 			return scope->resolve(parent, false);
@@ -907,19 +907,12 @@ void LocalClient::start()
 		ObjectiveScript::Script *script = mVirtualMachine->createScriptFromFile(mSettings->filename(), mParameters);
 		assert(script);
 
-		// check if an instance ("main") of a Main object exists
-		ObjectiveScript::Runtime::Object *main = static_cast<ObjectiveScript::Runtime::Object*>(script->resolve("main"));
+		writeln("[Using structured execution mode]");
 
-		if ( !main || main->isAtomicType() ) {
-			writeln("[Using structured execution mode]");
+		ObjectiveScript::Runtime::IntegerObject result;
+		script->execute("Main", mParameters, &result);
 
-			ObjectiveScript::Runtime::IntegerObject result;
-			script->execute("Main", mParameters, &result);
-
-			writeln("[Process finished with exit code " + result.getValue().toStdString() + "]");
-		}
-
-		writeln("[Process exited normally]");
+		writeln("[Process finished with exit code " + result.getValue().toStdString() + "]");
 
 		if ( mSettings->autoStop() ) {
 			mRunning = false;
