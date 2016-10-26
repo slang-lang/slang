@@ -253,47 +253,47 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 	// create the base object
 	Runtime::Object *object = new Runtime::UserObject(name, blueprint->Filename(), blueprint->Typename());
 
-	Designtime::Ancestors ancestors = blueprint->getInheritance();
+	if ( initialize ) {
+		Designtime::Ancestors ancestors = blueprint->getInheritance();
 
-	if ( !ancestors.empty() ) {
-		// walk through the inheritance and create (and initialize) all base objects
-		for ( Designtime::Ancestors::const_iterator ancestorIt = ancestors.begin(); ancestorIt != ancestors.end(); ++ancestorIt ) {
-			BluePrintObjectMap::iterator blueIt = mBluePrintObjects.find(ancestorIt->name());
+		if ( !ancestors.empty() ) {
+			// walk through the inheritance and create (and initialize) all base objects
+			for ( Designtime::Ancestors::const_iterator ancestorIt = ancestors.begin(); ancestorIt != ancestors.end(); ++ancestorIt ) {
+				BluePrintObjectMap::iterator blueIt = mBluePrintObjects.find(ancestorIt->name());
 
-			if ( blueIt == mBluePrintObjects.end() ) {
-				throw Common::Exceptions::Exception("trying to initialize unknown object '" + ancestorIt->name() + "'");
-			}
+				if ( blueIt == mBluePrintObjects.end() ) {
+					throw Common::Exceptions::Exception("trying to initialize unknown object '" + ancestorIt->name() + "'");
+				}
 
-			switch ( ancestorIt->type() ) {
-				case Designtime::Ancestor::Type::Extends:
-				case Designtime::Ancestor::Type::Replicates: {
-					// undefine previous base (while using single inheritance none should exist yet)
-					object->undefine(IDENTIFIER_BASE, object->resolve(IDENTIFIER_BASE, true));
+				switch ( ancestorIt->type() ) {
+					case Designtime::Ancestor::Type::Extends:
+					case Designtime::Ancestor::Type::Replicates: {
+						// undefine previous base (while using single inheritance none should exist yet)
+						object->undefine(IDENTIFIER_BASE, object->resolve(IDENTIFIER_BASE, true));
 
-					// create base object
-					Runtime::Object *ancestor = createUserObject(name, blueIt->second, initialize);
-					ancestor->setParent(blueprint->getEnclosingScope());
+						// create base object
+						Runtime::Object *ancestor = createReference(blueIt->second, name, initialize);
+						ancestor->setParent(blueprint->getEnclosingScope());
 
-					// define new base
-					object->define(IDENTIFIER_BASE, ancestor);
+						// define new base
+						object->define(IDENTIFIER_BASE, ancestor);
 
-					// add our newly created ancestor to our inheritance
-					object->addInheritance((*ancestorIt), ancestor);
-				} break;
-				case Designtime::Ancestor::Type::Implements: {
-					// create base object
-					Runtime::Object *ancestor = createUserObject(name, blueIt->second, initialize);
+						// add our newly created ancestor to our inheritance
+						object->addInheritance((*ancestorIt), ancestor);
+					} break;
+					case Designtime::Ancestor::Type::Implements: {
+						// create base object
+						Runtime::Object *ancestor = createUserObject(name, blueIt->second, initialize);
 
-					// add our newly created ancestor to our inheritance
-					object->addInheritance((*ancestorIt), ancestor);
-				} break;
-				case Designtime::Ancestor::Type::Unknown:
-					throw Common::Exceptions::Exception("invalid inheritance detected");
+						// add our newly created ancestor to our inheritance
+						object->addInheritance((*ancestorIt), ancestor);
+					} break;
+					case Designtime::Ancestor::Type::Unknown:
+						throw Common::Exceptions::Exception("invalid inheritance detected");
+				}
 			}
 		}
-	}
 
-	if ( initialize ) {
 		// initialize the base object
 		initializeObject(object, blueprint);
 	}

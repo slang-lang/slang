@@ -219,7 +219,7 @@ ControlFlow::E Object::Constructor(const ParameterList& params)
 	}
 
 	if ( isConstructed() ) {	// prevent multiple instantiations
-		throw Common::Exceptions::Exception("can not construct object '" + getFullScopeName() + "' multiple times");
+		throw Common::Exceptions::Exception("can not construct '" + QualifiedTypename() + "' multiple times");
 	}
 
 	// execute parent object constructors
@@ -237,10 +237,10 @@ ControlFlow::E Object::Constructor(const ParameterList& params)
 	}
 
 	// check if we have implemented at least one constructor
-	Symbol *symbol = resolve("Constructor", true);
+	Symbol *symbol = resolve(RESERVED_CONSTRUCTOR, true);
 	if ( symbol ) {
 		// if a specialized constructor is implemented, the default constructor cannot be used
-		Method *constructor = dynamic_cast<Method*>(resolveMethod("Constructor", params, true));
+		Method *constructor = dynamic_cast<Method*>(resolveMethod(RESERVED_CONSTRUCTOR, params, true));
 		if ( constructor ) {
 			VoidObject tmp;
 
@@ -253,7 +253,7 @@ ControlFlow::E Object::Constructor(const ParameterList& params)
 		}
 		else {
 			// no appropriate constructor found
-			throw Common::Exceptions::Exception(Typename() + ": no appropriate constructor found");
+			throw Common::Exceptions::Exception(QualifiedTypename() + ": no appropriate constructor found");
 		}
 	}
 
@@ -309,7 +309,7 @@ void Object::copy(const Object& other)
 				}
 
 				Object* source = static_cast<Object*>(it->second);
-				Object* target = Controller::Instance().repository()->createInstance(source->Typename(), source->getName(), false);
+				Object* target = Controller::Instance().repository()->createInstance(source->QualifiedTypename(), source->getName(), false);
 				target->copy(*source);
 
 				define(target->getName(), target);
@@ -334,7 +334,7 @@ ControlFlow::E Object::Destructor()
 		ParameterList params;
 
 		// only execute destructor if one is present
-		Method *destructor = static_cast<Method*>(resolveMethod("Destructor", params, true));
+		Method *destructor = static_cast<Method*>(resolveMethod(RESERVED_DESTRUCTOR, params, true));
 		if ( destructor ) {
 			VoidObject tmp;
 
@@ -346,6 +346,7 @@ ControlFlow::E Object::Destructor()
 			}
 		}
 
+/*
 		// execute parent object destructors
 		for ( Inheritance::iterator it = mInheritance.begin(); it != mInheritance.end(); ++it ) {
 			controlflow = it->second->Destructor();
@@ -354,6 +355,7 @@ ControlFlow::E Object::Destructor()
 				return controlflow;
 			}
 		}
+*/
 	}
 
 	// set after executing destructor in case any exceptions have been thrown

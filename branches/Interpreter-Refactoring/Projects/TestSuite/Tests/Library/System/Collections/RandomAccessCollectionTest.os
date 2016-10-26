@@ -2,6 +2,7 @@
 
 import System.Collections.RandomAccessCollection;
 import System.Integer;
+import System.String;
 
 	public void Main(int argc = 0, string args = "") modify {
 		assert( TestCase1() );
@@ -214,7 +215,7 @@ import System.Integer;
 			while ( it.hasNext() ) {
 				it.next();
 
-				item = it.current();
+				item = Integer it.current();
 				//print(item.mValue);
 			}
 
@@ -230,9 +231,9 @@ import System.Integer;
 		try {
 			System.RandomAccessCollection list = new System.RandomAccessCollection();
 
-			list.insert(Object "1", 0);
-			list.insert(Object "2", 1);
-			list.insert(Object "3", 2);
+			list.insert(Object new String("1"), 0);
+			list.insert(Object new String("2"), 1);
+			list.insert(Object new String("3"), 2);
 
 			assert( list.size() == 3 );
 
@@ -256,15 +257,15 @@ import System.Integer;
 		try {
 			System.RandomAccessCollection list = new System.RandomAccessCollection();
 
-			list.insert(Object "1", 0);
-			list.insert(Object "2", 1);
-			list.insert(Object "3", 2);
+			list.insert(Object new String("1"), 0);
+			list.insert(Object new String("2"), 1);
+			list.insert(Object new String("3"), 2);
 
 			assert( list.size() == 3 );
 
-			assert( list.indexOf(Object "1") == 0 );
-			assert( list.indexOf(Object "2") == 1 );
-			assert( list.indexOf(Object "3") == 2 );
+			assert( list.indexOf(Object new String("1")) == 0 );
+			assert( list.indexOf(Object new String("2")) == 1 );
+			assert( list.indexOf(Object new String("3")) == 2 );
 
 			return true;
 		}
@@ -280,15 +281,15 @@ import System.Integer;
 			assert( list is Object );
 			assert( list is System.AbstractCollection );
 
-			list.insert(Object 1, 0);
-			list.insert(Object 2, 1);
-			list.insert(Object 3, 2);
+			list.insert(Object new Integer(1), 0);
+			list.insert(Object new Integer(2), 1);
+			list.insert(Object new Integer(3), 2);
 
 			assert( list.size() == 3 );
 
-			assert( list.contains(Object 1) );
-			assert( list.contains(Object 2) );
-			assert( list.contains(Object 3) );
+			assert( list.contains(Object new Integer(1)) );
+			assert( list.contains(Object new Integer(2)) );
+			assert( list.contains(Object new Integer(3)) );
 
 			return true;
 		}

@@ -205,9 +205,9 @@ private bool TestCase5() modify {
 
 		assert( stack.size() == 3 );
 
-		assert( stack.indexOf(Object "1") == 0 );
-		assert( stack.indexOf(Object "2") == 1 );
-		assert( stack.indexOf(Object "3") == 2 );
+		assert( stack.indexOf(Object new String("1")) == 0 );
+		assert( stack.indexOf(Object new String("2")) == 1 );
+		assert( stack.indexOf(Object new String("3")) == 2 );
 
 		return true;
 	}
@@ -223,15 +223,15 @@ private bool TestCase6() modify {
 		assert( stack is Object );
 		assert( stack is System.AbstractCollection );
 
-		stack.push(Object 1);
-		stack.push(Object 2);
-		stack.push(Object 3);
+		stack.push(Object new Integer(1));
+		stack.push(Object new Integer(2));
+		stack.push(Object new Integer(3));
 
 		assert( stack.size() == 3 );
 
-		assert( stack.contains(Object 1) );
-		assert( stack.contains(Object 2) );
-		assert( stack.contains(Object 3) );
+		assert( stack.contains(Object new Integer(1)) );
+		assert( stack.contains(Object new Integer(2)) );
+		assert( stack.contains(Object new Integer(3)) );
 
 		return true;
 	}

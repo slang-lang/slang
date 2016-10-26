@@ -3,7 +3,7 @@
 import System.Object;
 
 public object IObjectImplementation implements /*System.*/IObject {
-	public void IObjectImplementation() {
+	public void Constructor() {
 	}
 	
 	public string GetObjectType() const {

@@ -416,20 +416,7 @@ bool Analyser::createMember(TokenIterator& token, TokenIterator /*end*/)
 
 	expect(Token::Type::SEMICOLON, token);
 
-	if ( dynamic_cast<GlobalScope*>(mScope) || dynamic_cast<Runtime::Namespace*>(mScope) ) {
-		Runtime::Object *member = mRepository->createInstance(type, name, false);
-		member->setFinal(isFinal);
-		member->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
-		member->setMember(true);
-		member->setMutability(mutability);
-		member->setParent(mScope);
-		member->setQualifiedTypename(type);
-		member->setValue(value);
-		member->setVisibility(visibility);
-
-		mScope->define(name, member);
-	}
-	else if ( dynamic_cast<BluePrintObject*>(mScope) ){
+	if ( dynamic_cast<BluePrintGeneric*>(mScope) ){
 		BluePrintObject* blue = new BluePrintObject(type, mFilename, name);
 		blue->setFinal(isFinal);
 		blue->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
@@ -443,7 +430,17 @@ bool Analyser::createMember(TokenIterator& token, TokenIterator /*end*/)
 		mScope->define(name, blue);
 	}
 	else {
-		throw Common::Exceptions::Exception("invalid parent scope type detected for symbol '" + name + "'", token->position());
+		Runtime::Object *member = mRepository->createInstance(type, name, false);
+		member->setFinal(isFinal);
+		member->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
+		member->setMember(true);
+		member->setMutability(mutability);
+		member->setParent(mScope);
+		member->setQualifiedTypename(type);
+		member->setValue(value);
+		member->setVisibility(visibility);
+
+		mScope->define(name, member);
 	}
 
 	return true;
@@ -476,16 +473,14 @@ bool Analyser::createMethod(TokenIterator& token, TokenIterator /*end*/)
 	name = (*token++).content();
 
 	BluePrintGeneric* blueprint = dynamic_cast<BluePrintGeneric*>(mScope);
-	//if ( blueprint && name == blueprint->Typename() ) {
-	if ( blueprint && name == "Constructor" ) {
+	if ( blueprint && name == RESERVED_CONSTRUCTOR ) {
 		// these methods have the same name as their containing object,
 		// so this has to be a constructor or a destructor;
 		// they can never ever be const, ever
 		methodType = MethodAttributes::MethodType::Constructor;
 		mutability = Mutability::Modify;
 	}
-	//else if ( blueprint && name == "~" + blueprint->Typename() ) {
-	else if ( blueprint && name == "Destructor" ) {
+	else if ( blueprint && name == RESERVED_DESTRUCTOR ) {
 		// these methods have the same name as their containing object,
 		// so this has to be a constructor or a destructor;
 		// they can never ever be const, ever

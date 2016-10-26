@@ -70,6 +70,8 @@ static const char* OPERATOR_IS = "is";
 // Reserved words
 static const char* RESERVED_WORD_BY_REFERENCE = "ref";
 static const char* RESERVED_WORD_BY_VALUE = "val";
+static const char* RESERVED_CONSTRUCTOR = "Constructor";
+static const char* RESERVED_DESTRUCTOR = "Destructor";
 static const char* RESERVED_WORD_ENUM = "enum";
 static const char* RESERVED_WORD_EXTENDS = "extends";
 static const char* RESERVED_WORD_IMPLEMENTS = "implements";

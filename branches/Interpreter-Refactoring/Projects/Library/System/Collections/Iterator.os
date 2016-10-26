@@ -8,7 +8,7 @@ public namespace System {
 		private System.AbstractCollection mCollection;
 		private int mCurrentIndex;
 
-		public void Constructor(System.AbstractCollection collection) {
+		public void Constructor(System.AbstractCollection collection ref) {
 			mCollection = collection;
 
 			reset();
@@ -51,7 +51,7 @@ public namespace System {
 		private System.AbstractCollection mCollection;
 		private int mCurrentIndex;
 
-		public void ReverseIterator(System.AbstractCollection collection) {
+		public void Constructor(System.AbstractCollection collection ref) {
 			mCollection = collection;
 
 			reset();

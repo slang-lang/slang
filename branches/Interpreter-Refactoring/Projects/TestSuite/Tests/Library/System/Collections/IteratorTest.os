@@ -2,6 +2,7 @@
 
 import System.Collections.Iterator;
 import System.Collections.List;
+import System.String;
 
 	public void Main(int argc, string args) modify {
 		assert( TestCase1() );
@@ -16,9 +17,9 @@ import System.Collections.List;
 			System.List list = new System.List();
 			assert(list is System.AbstractCollection);
 
-			list.push_back(Object "1");
-			list.push_back(Object "2");
-			list.push_back(Object "3");
+			list.push_back(Object new String("1"));
+			list.push_back(Object new String("2"));
+			list.push_back(Object new String("3"));
 
 			System.Iterator it = list.getIterator();
 
@@ -47,9 +48,9 @@ import System.Collections.List;
 			System.List list = new System.List();
 			assert(list is System.AbstractCollection);
 
-			list.push_back(Object "1");
-			list.push_back(Object "2");
-			list.push_back(Object "3");
+			list.push_back(Object new String("1"));
+			list.push_back(Object new String("2"));
+			list.push_back(Object new String("3"));
 
 			System.ReverseIterator it = list.getReverseIterator();
 
@@ -78,9 +79,9 @@ import System.Collections.List;
 			System.List list = new System.List();
 			assert( list is System.List );
 
-			list.push_back(Object "1");
-			list.push_back(Object "2");
-			list.push_back(Object "3");
+			list.push_back(Object new String("1"));
+			list.push_back(Object new String("2"));
+			list.push_back(Object new String("3"));
 
 			System.Iterator iterator = list.getIterator();
 			System.ReverseIterator reverse = list.getReverseIterator();
