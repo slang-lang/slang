@@ -2,9 +2,9 @@
 
 import System.Math;
 
+private float CAPSULE_WEIGHT = 14741.f; /*kg*/
 private float MAXBURN const = 30.f;
 
-private float mCapsuleWeight = 14741.f; /*kg*/
 private float mFuel = 120.f; /*kg*/
 private float mGravity = 1.62f;	/*m/s2*/
 private float mHeight = 500.f; /*m*/
@@ -32,6 +32,7 @@ private void runGame() modify {
 		}
 
 		float burn = (float percent / 100.f) * MAXBURN;
+print("burn = " + burn);
 
 		// only burn as much fuel as we have
 		if ( burn > mFuel ) {
@@ -71,7 +72,7 @@ private void printIntro() {
 	writeln("SET BURN RATE OF RETRO ROCKETS TO ANY VALUE BETWEEN 0 (FREE FALL)");
 	writeln("AND " + MAXBURN + " (MAXIMUM BURN) POUNDS PER SECOND.");
 	writeln("SET NEW BURN RATE EVERY 10 SECONDS.");
-	writeln("CAPSULE WEIGHT " + mCapsuleWeight + " KG; FUEL WEIGHT " + mFuel + " KG.");
+	writeln("CAPSULE WEIGHT " + CAPSULE_WEIGHT + " KG; FUEL WEIGHT " + mFuel + " KG.");
 	writeln("GOOD LUCK");
 	writeln();
 }
