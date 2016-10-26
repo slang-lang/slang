@@ -1742,11 +1742,9 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
  */
 Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol)
 {
-	bool isArray = false;
 	bool isConst = false;
 	bool isFinal = false;
 	std::string name;
-	int size = 0;
 
 	token++;
 	name = token->content();
@@ -1754,6 +1752,10 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol)
 	expect(Token::Type::IDENTIFER, token);
 
 	token++;
+
+/*	Array handling
+	bool isArray = false;
+	int size = 0;
 
 	if (  token->type() == Token::Type::BRACKET_OPEN ) {
 		isArray = true;
@@ -1772,6 +1774,7 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol)
 
 		expect(Token::Type::BRACKET_CLOSE, token++);
 	}
+*/
 
 	std::string tmpStr = token->content();
 	if ( tmpStr == MODIFIER_CONST || tmpStr == MODIFIER_FINAL ) {
