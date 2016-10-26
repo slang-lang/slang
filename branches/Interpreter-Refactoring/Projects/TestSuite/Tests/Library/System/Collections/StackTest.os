@@ -199,9 +199,9 @@ private bool TestCase5() modify {
 	try {
 		System.Stack stack = new System.Stack();
 
-		stack.push(Object "1");
-		stack.push(Object "2");
-		stack.push(Object "3");
+		stack.push(Object new String("1"));
+		stack.push(Object new String("2"));
+		stack.push(Object new String("3"));
 
 		assert( stack.size() == 3 );
 

@@ -8,13 +8,15 @@ import System.String;
 
 	public void Main(int argc = 0, string args = "") modify {
 		assert( TestCase1() );
-		assert( TestCase2() );
+		//assert( TestCase2() );
 		assert( TestCase3() );
 		assert( TestCase4() );
 		assert( TestCase5() );
 		assert( TestCase6() );
 		assert( TestCase7() );
 		assert( TestCase8() );
+
+		assert( TestCase2() );
 	}
 
 	private bool TestCase1() modify {
@@ -70,16 +72,13 @@ import System.String;
 			assert( list.size() == 3 );
 
 			item = Integer list.at(0);
-			print("item.mValue = " + item.mValue);
 			assert(item.mValue == 664);
 
 			item = Integer list.at(1);
-			print("item.mValue = " + item.mValue);
-			//assert(item.mValue == 173);
+			assert(item.mValue == 173);
 
 			item = Integer list.at(2);
-			print("item.mValue = " + item.mValue);
-			//assert(item.mValue == 1389);
+			assert(item.mValue == 1389);
 
 			return true;
 		}

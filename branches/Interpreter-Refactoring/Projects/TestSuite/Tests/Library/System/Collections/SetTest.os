@@ -3,6 +3,7 @@
 import System.Collections.Set;
 import System.Exception;
 import System.Math;
+import System.Integer;
 
 public object TestObject {
 	private int mValue;
@@ -14,13 +15,26 @@ public object TestObject {
 	public bool operator<(TestObject other ref) const {
 		return mValue < other.mValue;
 	}
+	public bool operator<(int other) const {
+		return mValue < other;
+	}
 
 	public bool operator<=(TestObject other ref) const {
 		return mValue <= other.mValue;
 	}
+	public bool operator<=(int other) const {
+		return mValue <= other;
+	}
 
 	public bool operator==(TestObject other ref) const {
 		return mValue == other.mValue;
+	}
+	public bool operator==(int other) const {
+		return mValue == other;
+	}
+
+	public string =operator(string none) const {
+		return string mValue;
 	}
 }
 
@@ -40,6 +54,8 @@ private bool TestCase1() modify {
 
 		int count = 0;
 		while ( count < 10 ) {
+			//use Math.srand(time()); for real random numbers
+
 			item = new TestObject(int Math.rand());
 			set.insert(Object item);
 
@@ -62,7 +78,7 @@ private bool TestCase1() modify {
 			last = item;
 		}
 
-		return true;
+		return set.size() == 10;
 	}
 
 	return false;
@@ -77,33 +93,40 @@ private bool TestCase2() modify {
 
 		int count = 0;
 		while ( count < 10 ) {
-			set.insert(Object count);
+			set.insert(Object new Integer(count));
 
 			count++;
 		}
+
+		//print("before erase: set has " + set.size() + " item(s)");
 
 		System.Iterator it = set.getIterator();
 		while ( it.hasNext() ) {
 			it.next();
 
-			//print(it.current());
+			//print("item = " + it.current());
 		}
 
 		while ( !set.empty() ) {
 			try {
-				set.erase(Math.rand() % 10);
-				//print("set.erase");
+				Math.srand(time());
+				set.erase(Math.rand() % set.size());
 			}
+			catch ( OutOfBoundsException e ) {
+				print(e.what());
+			}
+
+			//print("after erase: set has " + set.size() + " item(s)");
 
 			it.reset();
 			while ( it.hasNext() ) {
 				it.next();
 
-				//print(it.current());
+				//print(string it.current());
 			}
 		}
 
-		return true;
+		return set.empty();
 	}
 
 	return false;

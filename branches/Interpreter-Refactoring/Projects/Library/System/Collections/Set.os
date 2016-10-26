@@ -9,7 +9,7 @@ public namespace System {
 			base.Constructor();
 		}
 
-		public void erase(int index) modify {
+		public void erase(int index) modify throws {
 			if ( index < 0 || index > mSize ) {
 				throw new OutOfBoundsException("erase index(" + index + ") beyond end of list");
 			}

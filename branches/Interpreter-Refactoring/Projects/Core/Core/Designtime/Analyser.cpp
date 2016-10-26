@@ -162,11 +162,8 @@ Ancestors Analyser::collectInheritance(TokenIterator& token) const
 		std::string type = Parser::identify(token);
 
 		ancestors.insert(
-			//Ancestor(getQualifiedTypename((token++)->content()), inheritance, visibility)
 			Ancestor(type, inheritance, visibility)
 		);
-
-		//token++;
 	}
 
 	return ancestors;
@@ -378,7 +375,7 @@ bool Analyser::createMember(TokenIterator& token, TokenIterator /*end*/)
 	// look for the identifier token
 	name = (*token++).content();
 
-	if ( !dynamic_cast<GlobalScope*>(mScope) ) {
+	if ( !dynamic_cast<GlobalScope*>(mScope) && !dynamic_cast<Runtime::Namespace*>(mScope) ) {
 		if ( visibility == Visibility::Public ) {
 			// beware: public members are deprecated, remember the "Law of Demeter"
 			// consider using wrappers (getter, setter) instead of directly providing access to members for outsiders

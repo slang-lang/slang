@@ -54,6 +54,13 @@ public object Integer {
 		return mValue == other.mValue;
 	}
 
+	public bool operator<(Integer other) const {
+		return mValue < other.mValue;
+	}
+	public bool operator<(int other) const {
+		return mValue < other;
+	}
+
 	/*
 	 * int assignment operator
 	 */
@@ -73,6 +80,13 @@ public object Integer {
 	 */
 	public int =operator(int other) const {
 		return mValue;
+	}
+
+	/*
+	 * string value operator
+	 */
+	public string =operator(string none) const {
+		return string mValue;
 	}
 
 	public void operator+(int other) modify {
