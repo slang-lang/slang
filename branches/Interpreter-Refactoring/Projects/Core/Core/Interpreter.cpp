@@ -1705,6 +1705,11 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 			// execute catch-block if an exception has been thrown
 			mControlFlow = interpret(tokens, result);
 
+			Object* ex = getExceptionData().getData();
+			if ( ex ) {
+				getScope()->define(ex->getName(), ex);
+			}
+
 			popScope();		// pop exception instance scope
 			break;
 		}
