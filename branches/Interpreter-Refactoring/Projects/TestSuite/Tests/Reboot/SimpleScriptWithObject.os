@@ -1,5 +1,6 @@
 #!/usr/local/bin/oscript
 
+private namespace NS {
 private object TestObject {
 	private int mValue;
 
@@ -11,6 +12,7 @@ private object TestObject {
 	public void Destructor() {
 		print("Destructor()");
 	}
+}
 }
 
 private int Function1(int value) {
@@ -24,7 +26,7 @@ public int Main(int argc, string args) {
 
 	int result = Function1(173);
 
-	TestObject obj = new TestObject(result * 10000 + 1389);
+	NS.TestObject obj = new NS.TestObject(result * 10000 + 1389);
 
 	print("obj.mValue = " + obj.mValue);
 

@@ -305,25 +305,16 @@ void Repository::deinit()
 {
 	// Cleanup prototypes
 	// {
-	//for ( PrototypeMap::iterator it = mPrototypes.begin(); it != mPrototypes.end(); ++it ) {
-	//	delete it->second;
-	//}
 	//mPrototypes.clear();
 	// }
 
 	// Cleanup blue prints
 	// {
-	for ( BluePrintEnumMap::iterator it = mBluePrintEnums.begin(); it != mBluePrintEnums.end(); ++it ) {
-		delete it->second;
-	}
 	mBluePrintEnums.clear();
 	// }
 
 	// Cleanup blue prints
 	// {
-	for ( BluePrintObjectMap::iterator it = mBluePrintObjects.begin(); it != mBluePrintObjects.end(); ++it ) {
-		delete it->second;
-	}
 	mBluePrintObjects.clear();
 	// }
 }

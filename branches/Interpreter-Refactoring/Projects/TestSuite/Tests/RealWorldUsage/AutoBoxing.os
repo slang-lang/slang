@@ -57,8 +57,8 @@ private bool TestCase3() const {
 	Boolean value = new Boolean(true);
 	value = !false;
 
-	print("value = " + value.ToString());
-	print("!value = " + !value.ToString());
+	print("value = " + value);
+	print("!value = " + !value);
 	//value = Boolean !value;
 	//print("value = " + value.ToString());
 

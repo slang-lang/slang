@@ -43,15 +43,16 @@ void SymbolScope::define(const std::string& name, Symbol* symbol)
 
 void SymbolScope::deinit()
 {
-	Symbols tmp = mSymbols;
+	Symbols tmpSymbols = mSymbols;
 
-	for ( Symbols::iterator it = tmp.begin(); it != tmp.end(); ++it ) {
-		if ( it->first != "base" &&
-			 it->first != "this" &&
-			 it->second->getSymbolType() == Symbol::IType::ObjectSymbol ) {
-			mSymbols.erase(it->first);
-			delete it->second;
+	for ( Symbols::iterator symIt = tmpSymbols.begin(); symIt != tmpSymbols.end(); ++symIt ) {
+		if ( symIt->first == "this" ) {
+			mSymbols.erase(symIt->first);
+			continue;
 		}
+
+		mSymbols.erase(symIt->first);
+		delete symIt->second;
 	}
 
 	mParent = 0;
@@ -216,34 +217,6 @@ GlobalScope::~GlobalScope()
 
 void GlobalScope::deinit()
 {
-	MethodCollection tmpMethods = mMethods;
-	Symbols tmpSymbols = mSymbols;
-
-	for ( MethodCollection::iterator methIt = tmpMethods.begin(); methIt != tmpMethods.end(); ++methIt ) {
-		for ( Symbols::iterator symIt = tmpSymbols.begin(); symIt != tmpSymbols.end(); ++symIt ) {
-			if ( symIt->second == (*methIt) ) {
-				mSymbols.erase(symIt->first);
-			}
-		}
-
-		mMethods.erase((*methIt));
-		delete (*methIt);
-	}
-
-	tmpSymbols = mSymbols;
-	for ( Symbols::iterator symIt = tmpSymbols.begin(); symIt != tmpSymbols.end(); ++symIt ) {
-		switch ( symIt->second->getSymbolType() ) {
-			case Symbol::IType::NamespaceSymbol: {
-				Symbol* space = symIt->second;
-
-				undefine(symIt->first, space);
-
-				delete space;
-			} break;
-			default:
-				break;
-		}
-	}
 }
 
 std::string GlobalScope::ToString() const
