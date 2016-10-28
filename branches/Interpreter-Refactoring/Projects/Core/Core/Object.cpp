@@ -89,6 +89,10 @@ Object::Object(const std::string& name, const std::string& filename, const std::
 
 Object::~Object()
 {
+	if ( mThis == this ) {
+		undefine(IDENTIFIER_THIS, this);
+	}
+
 	Controller::Instance().memory()->remove(mReference);
 
 	mBase = 0;

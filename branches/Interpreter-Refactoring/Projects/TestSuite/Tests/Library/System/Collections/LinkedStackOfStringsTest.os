@@ -1,0 +1,71 @@
+#!/usr/local/bin/oscript
+
+import System.Collections.LinkedStackOfStrings;
+import System.Collections.Iterator;
+import System.String;
+
+public void Main(int argc = 0, string args = "") {
+	assert( TestCase1() );
+	assert( TestCase2() );
+}
+
+private bool TestCase1() {
+	print("TestCase 1");
+
+	LinkedStackOfStrings stack = new LinkedStackOfStrings();
+
+	assert( stack.isEmpty() );
+
+	stack.push(new String("1"));
+	stack.push(new String("2"));
+	stack.push(new String("3"));
+
+	assert( stack.size() == 3 );
+	assert( stack.peek() == "3" );
+
+	assert( stack.pop() == "3" );
+	assert( stack.size() == 2 );
+
+	assert( stack.pop() == "2" );
+	assert( stack.size() == 1 );
+
+	assert( stack.pop() == "1" );
+	assert( stack.isEmpty() );
+
+	return true;
+}
+
+private bool TestCase2() {
+	print("TestCase 2");
+
+	try {
+		LinkedStackOfStrings stack = new LinkedStackOfStrings();
+
+		assert( stack.isEmpty() );
+
+		stack.push(new String("1"));
+		stack.push(new String("2"));
+		stack.push(new String("3"));
+
+		assert( stack.size() == 3 );
+		assert( stack.peek() == "3" );
+
+		System.Iterator it = stack.getIterator();
+		while ( it.current() ) {
+			print("" + it.current());
+
+			it.next();
+		}
+
+		return true;
+	}
+	catch ( OutOfBoundsException e ) {
+		print(e.what());
+	}
+	catch ( string e ) {
+		print(e);
+	}
+
+	return false;
+}
+

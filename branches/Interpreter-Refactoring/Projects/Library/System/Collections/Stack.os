@@ -8,9 +8,12 @@ public namespace System {
 			base.Constructor();
 		}
 
+		public bool empty() const {
+			return mSize == 0;
+		}
+
 		public void push(Object value ref) modify {
-			CollectionItem item = new CollectionItem();
-			item.mValue = value;
+			CollectionItem item = new CollectionItem(value);
 
 			if ( mSize == 0 ) {		// special handling for 1st item
 				mFirst = item;

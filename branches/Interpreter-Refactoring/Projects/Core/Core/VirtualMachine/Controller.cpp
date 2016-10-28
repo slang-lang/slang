@@ -16,7 +16,8 @@ Controller::Controller()
 : mInitialized(false),
   mMemory(0),
   mRepository(0),
-  mStack(0)
+  mStack(0),
+  mVirtualMethodTable(0)
 {
 }
 
@@ -35,9 +36,10 @@ void Controller::deinit()
 {
 	assert(mInitialized);
 
-	mMemory->deinit();
 	mStack->deinit();
+	mMemory->deinit();
 	mRepository->deinit();
+	//mVirtualMethodTable->deinit();
 
 	delete mStack;
 	delete mMemory;
@@ -56,6 +58,7 @@ void Controller::init()
 	mStack = new Stack();
 	mVirtualMethodTable = new VirtualMethodTable();
 
+	//mVirtualMethodTable->init();
 	mMemory->init();
 	mStack->init();
 	mRepository->init();

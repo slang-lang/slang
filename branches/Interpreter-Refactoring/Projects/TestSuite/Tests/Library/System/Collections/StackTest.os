@@ -142,10 +142,10 @@ private bool TestCase3() const {
 		assert( it.current() == "3" );
 
 		it.reset();
-		while ( it . hasNext() ) {
+		while ( it.hasNext() ) {
 			it.next();
 
-			//print(it.current());
+			//print(string it.current());
 		}
 
 		return true;

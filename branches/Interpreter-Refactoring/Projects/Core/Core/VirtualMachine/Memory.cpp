@@ -40,11 +40,16 @@ void Memory::add(const Reference &ref)
 		throw Common::Exceptions::Exception("invalid access for address " + Tools::ConvertToStdString(ref.getAddress()));
 	}
 
-	it->second.mCount += 1;
+	it->second.mCount++;
 }
 
 void Memory::deinit()
 {
+	MemoryMap tmpMemory = mMemory;
+
+	for ( MemoryMap::iterator it = tmpMemory.begin(); it != tmpMemory.end(); ++it ) {
+		deleteObject(it->first);
+	}
 }
 
 void Memory::deleteObject(const Reference& ref)
@@ -54,21 +59,23 @@ void Memory::deleteObject(const Reference& ref)
 		throw Common::Exceptions::Exception("invalid delete for address " + Tools::ConvertToStdString(ref.getAddress()));
 	}
 
-	// delete it if it's valid ...
-	if ( it->second.mObject ) {
-		it->second.mObject->Destructor();
-
-		it->second.mObject->setReference(0);
-
-		delete it->second.mObject;
-		it->second.mObject = 0;
-	}
+	Runtime::Object* object = it->second.mObject;
 
 	// reset reference counter
 	it->second.mCount = 0;
+	it->second.mObject = 0;
 
 	// ... and remove address from memory
-	//mMemory.erase(it);
+	mMemory.erase(it);
+
+	// delete it if it's valid ...
+	if ( object ) {
+		object->Destructor();
+
+		object->setReference(0);
+
+		delete object;
+	}
 }
 
 Runtime::Object* Memory::get(const Reference &ref) const
@@ -114,7 +121,7 @@ void Memory::remove(const Reference &ref)
 		throw Common::Exceptions::Exception("invalid access for address " + Tools::ConvertToStdString(ref.getAddress()));
 	}
 
-	it->second.mCount -= 1;
+	it->second.mCount--;
 	if ( it->second.mCount == 0 ) {
 		deleteObject(it->first);
 	}

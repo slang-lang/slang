@@ -7,12 +7,10 @@
 // Project includes
 #include <Core/BuildInObjects/BoolObject.h>
 #include <Core/BuildInObjects/DoubleObject.h>
-#include <Core/BuildInObjects/GenericObject.h>
 #include <Core/BuildInObjects/FloatObject.h>
 #include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/BuildInObjects/NumberObject.h>
 #include <Core/BuildInObjects/StringObject.h>
-#include <Core/BuildInObjects/UserObject.h>
 #include <Core/BuildInObjects/VoidObject.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Utils.h>
@@ -35,13 +33,6 @@ void typecast(Object *base, const std::string& targetType)
 		throw Runtime::Exceptions::InvalidTypeCast("invalid cast target type");
 	}
 
-/*
-	if ( targetType == GenericObject::TYPENAME ) {
-		base->setOutterface(GenericObject::TYPENAME);
-		base->setQualifiedOutterface(GenericObject::TYPENAME);
-	}
-	else
-*/
 	if ( targetType == BoolObject::TYPENAME ) {
 		BoolObject tmp(*base);
 

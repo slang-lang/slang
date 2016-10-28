@@ -6,317 +6,317 @@ import System.Exception;
 import System.Integer;
 import System.String;
 
-	public void Main(int argc = 0, string args = "") const {
-		assert( TestCase1() );
-		assert( TestCase2() );
-		assert( TestCase3() );
-		assert( TestCase4() );
-		assert( TestCase5() );
-		assert( TestCase6() );
-		assert( TestCase7() );
-		assert( TestCase8() );
+public void Main(int argc = 0, string args = "") const {
+	assert( TestCase1() );
+	assert( TestCase2() );
+	assert( TestCase3() );
+	assert( TestCase4() );
+	assert( TestCase5() );
+	assert( TestCase6() );
+	assert( TestCase7() );
+	assert( TestCase8() );
+}
+
+private bool TestCase1() const {
+	print("TestCase 1: push_back");
+
+	try {
+		System.DoubleLinkedList list = new System.DoubleLinkedList();
+
+		Integer item;
+		item = new Integer(173);
+		list.push_back(Object item);
+
+		item = new Integer(1389);
+		list.push_back(Object item);
+
+		// Usage
+		assert( list.size() == 2 );
+
+		item = Integer list.at(0);
+		assert(item.mValue == 173);
+
+		item = Integer list.at(1);
+		assert(item.mValue == 1389);
+
+		return true;
 	}
-
-	private bool TestCase1() const {
-		print("TestCase 1: push_back");
-
-		try {
-			System.DoubleLinkedList list = new System.DoubleLinkedList();
-
-			Integer item;
-			item = new Integer(173);
-			list.push_back(Object item);
-
-			item = new Integer(1389);
-			list.push_back(Object item);
-
-			// Usage
-			assert( list.size() == 2 );
-
-			item = Integer list.at(0);
-			assert(item.mValue == 173);
-
-			item = Integer list.at(1);
-			assert(item.mValue == 1389);
-
-			return true;
-		}
-		catch ( OutOfBoundsException e ) {
-			print(e.what());
-
-			return false;
-		}
+	catch ( OutOfBoundsException e ) {
+		print(e.what());
 
 		return false;
 	}
 
-	private bool TestCase2() const {
-		print("TestCase 2: push_front");
+	return false;
+}
 
-		try {
-			System.DoubleLinkedList list = new System.DoubleLinkedList();
+private bool TestCase2() const {
+	print("TestCase 2: push_front");
 
-			Integer item;
-			item = new Integer(1389);
-			list.push_front(Object item);
+	try {
+		System.DoubleLinkedList list = new System.DoubleLinkedList();
 
-			item = new Integer(173);
-			list.push_front(Object item);
+		Integer item;
+		item = new Integer(1389);
+		list.push_front(Object item);
 
-			item = new Integer(664);
-			list.push_front(Object item);
+		item = new Integer(173);
+		list.push_front(Object item);
 
-			// Usage
-			assert( list.size() == 3 );
+		item = new Integer(664);
+		list.push_front(Object item);
+
+		// Usage
+		assert( list.size() == 3 );
 
 /*
-			System.Iterator it = list.getIterator();
-			while ( it.hasNext() ) {
-				it.next();
+		System.Iterator it = list.getIterator();
+		while ( it.hasNext() ) {
+			it.next();
 
-				print(string it.current());
-			}
+			print(string it.current());
+		}
 */
 
-			item = Integer list.at(0);
-			assert(item.mValue == 664);
+		item = Integer list.at(0);
+		assert(item.mValue == 664);
 
-			item = Integer list.at(1);
-			assert(item.mValue == 173);
+		item = Integer list.at(1);
+		assert(item.mValue == 173);
 
-			item = Integer list.at(2);
-			assert(item.mValue == 1389);
+		item = Integer list.at(2);
+		assert(item.mValue == 1389);
 
-			return true;
-		}
-		catch ( OutOfBoundsException e ) {
-			print(e.what());
-
-			return false;
-		}
+		return true;
+	}
+	catch ( OutOfBoundsException e ) {
+		print(e.what());
 
 		return false;
 	}
 
-	private bool TestCase3() const {
-		print("TestCase 3: pop_front");
+	return false;
+}
 
-		try {
-			System.DoubleLinkedList list = new System.DoubleLinkedList();
+private bool TestCase3() const {
+	print("TestCase 3: pop_front");
 
-			// Setup
-			Integer item;
+	try {
+		System.DoubleLinkedList list = new System.DoubleLinkedList();
 
-			item = new Integer(664);
-			list.push_back(Object item);
+		// Setup
+		Integer item;
 
-			item = new Integer(173);
-			list.push_back(Object item);
+		item = new Integer(664);
+		list.push_back(Object item);
 
-			item = new Integer(1389);
-			list.push_back(Object item);
+		item = new Integer(173);
+		list.push_back(Object item);
 
-			// Usage
-			assert( list.size() == 3 );
+		item = new Integer(1389);
+		list.push_back(Object item);
 
-			list.pop_front();
+		// Usage
+		assert( list.size() == 3 );
 
-			assert( list.size() == 2 );
+		list.pop_front();
 
-			item = Integer list.at(0);
-			assert( item.mValue == 173 );
+		assert( list.size() == 2 );
 
-			item = Integer list.at(1);
-			assert( item.mValue == 1389 );
+		item = Integer list.at(0);
+		assert( item.mValue == 173 );
 
-			return true;
-		}
-		catch ( OutOfBoundsException e ) {
-			print(e.what());
+		item = Integer list.at(1);
+		assert( item.mValue == 1389 );
 
-			return false;
-		}
+		return true;
+	}
+	catch ( OutOfBoundsException e ) {
+		print(e.what());
 
 		return false;
 	}
 
-	private bool TestCase4() const {
-		print("TestCase 4: pop_back");
+	return false;
+}
 
-		try {
-			System.DoubleLinkedList list = new System.DoubleLinkedList();
+private bool TestCase4() const {
+	print("TestCase 4: pop_back");
 
-			// Setup
-			Integer item;
+	try {
+		System.DoubleLinkedList list = new System.DoubleLinkedList();
 
-			item = new Integer(664);
-			list.push_back(Object item);
+		// Setup
+		Integer item;
 
-			item = new Integer(173);
-			list.push_back(Object item);
+		item = new Integer(664);
+		list.push_back(Object item);
 
-			item = new Integer(1389);
-			list.push_back(Object item);
+		item = new Integer(173);
+		list.push_back(Object item);
 
-			// Usage
-			assert( list.size() == 3 );
+		item = new Integer(1389);
+		list.push_back(Object item);
 
-			list.pop_back();
+		// Usage
+		assert( list.size() == 3 );
 
-			assert( list.size() == 2 );
+		list.pop_back();
 
-			item = Integer list.at(0);
-			assert( item.mValue == 664 );
+		assert( list.size() == 2 );
 
-			item = Integer list.at(1);
-			assert( item.mValue == 173 );
+		item = Integer list.at(0);
+		assert( item.mValue == 664 );
 
-			return true;
-		}
-		catch ( OutOfBoundsException e ) {
-			print(e.what());
+		item = Integer list.at(1);
+		assert( item.mValue == 173 );
 
-			return false;
-		}
+		return true;
+	}
+	catch ( OutOfBoundsException e ) {
+		print(e.what());
 
 		return false;
 	}
 
-	private bool TestCase5() const {
-		print("TestCase 5: iterate");
+	return false;
+}
 
-		try {
-			System.DoubleLinkedList list = new System.DoubleLinkedList();
+private bool TestCase5() const {
+	print("TestCase 5: iterate");
 
-			// Setup
-			Integer item;
+	try {
+		System.DoubleLinkedList list = new System.DoubleLinkedList();
 
-			item = new Integer(664);
-			list.push_back(Object item);
+		// Setup
+		Integer item;
 
-			item = new Integer(173);
-			list.push_back(Object item);
+		item = new Integer(664);
+		list.push_back(Object item);
 
-			item = new Integer(1389);
-			list.push_back(Object item);
+		item = new Integer(173);
+		list.push_back(Object item);
 
-			// Usage
-			assert( list.size() == 3 );
+		item = new Integer(1389);
+		list.push_back(Object item);
 
-			System.Iterator it = list.getIterator();
+		// Usage
+		assert( list.size() == 3 );
 
-			int count = 0;
-			while ( it.hasNext() ) {
-				it.next();
+		System.Iterator it = list.getIterator();
 
-				count++;
+		int count = 0;
+		while ( it.hasNext() ) {
+			it.next();
 
-				Integer item = Integer it.current();
-				//print(item.ToString());
-			}
+			count++;
 
-			assert( count == 3 );
-
-			return true;
-		}
-		catch ( OutOfBoundsException e ) {
-			print(e.what());
-
-			return false;
+			Integer item = Integer it.current();
+			//print(item.ToString());
 		}
 
-		return false;
-    }
+		assert( count == 3 );
 
-	private bool TestCase6() const {
-		print("TestCase 6: reverse iterate");
-
-		try {
-			System.DoubleLinkedList list = new System.DoubleLinkedList();
-
-			// Setup
-			Integer item;
-
-			item = new Integer(664);
-			list.push_back(Object item);
-
-			item = new Integer(173);
-			list.push_back(Object item);
-
-			item = new Integer(1389);
-			list.push_back(Object item);
-
-			// Usage
-			assert( list.size() == 3 );
-
-			System.ReverseIterator it = list.getReverseIterator();
-
-			int count = 0;
-			while ( it.hasNext() ) {
-				it.next();
-
-				count++;
-
-				Integer item = Integer it.current();
-				//print(item.ToString());
-			}
-
-			assert( count == 3 );
-
-			return true;
-		}
-		catch ( OutOfBoundsException e ) {
-			print(e.what());
-
-			return false;
-		}
-
-		return false;
-    }
-
-	private bool TestCase7() const {
-		print("TestCase 7: indexOf");
-
-		try {
-			System.DoubleLinkedList list = new System.DoubleLinkedList();
-			assert( list is Object );
-
-			list.push_back(Object new String("1"));
-			list.push_back(Object new String("2"));
-			list.push_back(Object new String("3"));
-
-			assert( list.size() == 3 );
-
-			assert( list.indexOf(Object new String("1")) == 0 );
-			assert( list.indexOf(Object new String("2")) == 1 );
-			assert( list.indexOf(Object new String("3")) == 2 );
-
-			return true;
-		}
+		return true;
+	}
+	catch ( OutOfBoundsException e ) {
+		print(e.what());
 
 		return false;
 	}
 
-	private bool TestCase8() const {
-		print("TestCase 8: contains");
+	return false;
+}
 
-		try {
-			System.DoubleLinkedList list = new System.DoubleLinkedList();
-			assert( list is System.AbstractCollection );
+private bool TestCase6() const {
+	print("TestCase 6: reverse iterate");
 
-			list.push_back(Object new Integer(1));
-			list.push_back(Object new Integer(2));
-			list.push_back(Object new Integer(3));
+	try {
+		System.DoubleLinkedList list = new System.DoubleLinkedList();
 
-			assert( list.size() == 3 );
+		// Setup
+		Integer item;
 
-			assert( list.contains(Object new Integer(1)) );
-			assert( list.contains(Object new Integer(2)) );
-			assert( list.contains(Object new Integer(3)) );
+		item = new Integer(664);
+		list.push_back(Object item);
 
-			return true;
+		item = new Integer(173);
+		list.push_back(Object item);
+
+		item = new Integer(1389);
+		list.push_back(Object item);
+
+		// Usage
+		assert( list.size() == 3 );
+
+		System.ReverseIterator it = list.getReverseIterator();
+
+		int count = 0;
+		while ( it.hasNext() ) {
+			it.next();
+
+			count++;
+
+			Integer item = Integer it.current();
+			//print(item.ToString());
 		}
+
+		assert( count == 3 );
+
+		return true;
+	}
+	catch ( OutOfBoundsException e ) {
+		print(e.what());
 
 		return false;
 	}
+
+	return false;
+}
+
+private bool TestCase7() const {
+	print("TestCase 7: indexOf");
+
+	try {
+		System.DoubleLinkedList list = new System.DoubleLinkedList();
+		assert( list is Object );
+
+		list.push_back(Object new String("1"));
+		list.push_back(Object new String("2"));
+		list.push_back(Object new String("3"));
+
+		assert( list.size() == 3 );
+
+		assert( list.indexOf(Object new String("1")) == 0 );
+		assert( list.indexOf(Object new String("2")) == 1 );
+		assert( list.indexOf(Object new String("3")) == 2 );
+
+		return true;
+	}
+
+	return false;
+}
+
+private bool TestCase8() const {
+	print("TestCase 8: contains");
+
+	try {
+		System.DoubleLinkedList list = new System.DoubleLinkedList();
+		assert( list is System.AbstractCollection );
+
+		list.push_back(Object new Integer(1));
+		list.push_back(Object new Integer(2));
+		list.push_back(Object new Integer(3));
+
+		assert( list.size() == 3 );
+
+		assert( list.contains(Object new Integer(1)) );
+		assert( list.contains(Object new Integer(2)) );
+		assert( list.contains(Object new Integer(3)) );
+
+		return true;
+	}
+
+	return false;
+}
 

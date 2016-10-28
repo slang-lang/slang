@@ -154,7 +154,7 @@ Runtime::Object* Repository::createInstance(Designtime::BluePrintObject* bluepri
 
 	if ( initialize ) {
 		if ( object->isAbstract() ) {
-			throw Common::Exceptions::AbstractException("cannot instantiate abstract object '" + blueprint->Typename() + "'");
+			throw Common::Exceptions::AbstractException("cannot instantiate abstract object '" + blueprint->QualifiedTypename() + "'");
 		}
 	}
 
@@ -218,8 +218,6 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
  */
 Runtime::Object* Repository::createReference(Designtime::BluePrintObject* blueprint, const std::string& name, bool initialize)
 {
-	// reference-based instantiation
-
 	if ( !blueprint ) {
 		throw Common::Exceptions::Exception("invalid blueprint provided!");
 	}
@@ -230,7 +228,7 @@ Runtime::Object* Repository::createReference(Designtime::BluePrintObject* bluepr
 
 	if ( initialize ) {
 		if ( object->isAbstract() ) {
-			throw Common::Exceptions::AbstractException("cannot instantiate abstract object '" + blueprint->Typename() + "'");
+			throw Common::Exceptions::AbstractException("cannot instantiate abstract object '" + blueprint->QualifiedTypename() + "'");
 		}
 
 		Controller::Instance().memory()->newObject(object);

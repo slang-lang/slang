@@ -354,6 +354,7 @@ bool operator_binary_equal(Object *base, Object *other)
 
 	if ( source == BoolObject::TYPENAME ) {
 		BoolObject tmp(base->getValue());
+		tmp.operator_equal(other);
 		return tmp.operator_equal(other);
 	}
 	else if ( source == DoubleObject::TYPENAME ) {

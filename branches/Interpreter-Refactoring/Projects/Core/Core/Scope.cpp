@@ -7,6 +7,7 @@
 
 // Project includes
 #include <Core/Common/Exceptions.h>
+#include <Core/VirtualMachine/Controller.h>
 #include "Method.h"
 #include "Tools.h"
 
@@ -46,12 +47,12 @@ void SymbolScope::deinit()
 	Symbols tmpSymbols = mSymbols;
 
 	for ( Symbols::iterator symIt = tmpSymbols.begin(); symIt != tmpSymbols.end(); ++symIt ) {
-		if ( symIt->first == "this" ) {
-			mSymbols.erase(symIt->first);
+		mSymbols.erase(symIt->first);
+
+		if ( symIt->first == "base" || symIt->first == "this" ) {
 			continue;
 		}
 
-		mSymbols.erase(symIt->first);
 		delete symIt->second;
 	}
 
