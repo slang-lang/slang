@@ -15,9 +15,9 @@
 #include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/BuildInObjects/NumberObject.h>
 #include <Core/BuildInObjects/StringObject.h>
+#include <Core/Designtime/Parser/Tokenizer.h>
 #include <Core/Method.h>
 #include <Core/Script.h>
-#include <Core/Tokenizer.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
 #include <Core/VirtualMachine/VirtualMachine.h>

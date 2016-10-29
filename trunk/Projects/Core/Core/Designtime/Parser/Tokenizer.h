@@ -1,12 +1,12 @@
 
-#ifndef ObjectiveScript_Core_Tokenizer_h
-#define ObjectiveScript_Core_Tokenizer_h
+#ifndef ObjectiveScript_Core_Designtime_Parser_Tokenizer_h
+#define ObjectiveScript_Core_Designtime_Parser_Tokenizer_h
 
 
 // Library includes
 
 // Project includes
-#include "Types.h"
+#include <Core/Types.h>
 
 // Forward declarations
 
