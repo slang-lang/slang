@@ -353,10 +353,14 @@ ParameterList Parser::parseParameters(TokenIterator &token)
 
 		if ( token->type() == Token::Type::IDENTIFER ) {
 			// already set type
+			// set default access mode for complex types
+			accessmode = Parameter::AccessMode::ByReference;
 		}
 		else if ( token->type() == Token::Type::TYPE ) {
 			// combine type with already gathered type
 			type += token->content();
+			// set default access mode for atomic parameters
+			accessmode = Parameter::AccessMode::ByValue;
 		}
 		else {
 			throw Common::Exceptions::SyntaxError("unexpected token '" + token->content() + "' found", token->position());
@@ -370,6 +374,10 @@ ParameterList Parser::parseParameters(TokenIterator &token)
 
 		if ( token->content() == MODIFIER_CONST ) {
 			isConst = true;
+			token++;
+		}
+		else if ( token->content() == MODIFIER_MODIFY ) {
+			isConst = false;
 			token++;
 		}
 
@@ -399,10 +407,16 @@ ParameterList Parser::parseParameters(TokenIterator &token)
 			token++;
 		}
 
-		Parameter param(name, type, value, hasDefaultValue, isConst, accessmode, Reference());
-		params.push_back(param);
+		if ( hasDefaultValue && accessmode == Parameter::AccessMode::ByReference ) {
+			// parameters with default values cannot be accessed by reference
+			throw Common::Exceptions::SyntaxError("default parameters are not allowed to be accessed by reference");
+		}
 
-		type = "";	// reset type for next parameter
+		params.push_back(
+			Parameter(name, type, value, hasDefaultValue, isConst, accessmode, Reference())
+		);
+
+		type = "";	// reset type for next iteration
 
 		if ( token->type() == Token::Type::PARENTHESIS_CLOSE ) {
 			break;

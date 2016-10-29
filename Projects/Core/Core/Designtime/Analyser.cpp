@@ -500,7 +500,9 @@ bool Analyser::createMethod(TokenIterator& token, TokenIterator /*end*/)
 			if ( token->content() == MODIFIER_ABSTRACT ) {
 				isAbstract = true;
 
-				//throw Common::Exceptions::NotSupported("global methods cannot be declared as abstract");
+				if ( !blueprint ) {
+					throw Common::Exceptions::NotSupported("global methods cannot be declared as abstract");
+				}
 			}
 			else if ( token->content() == MODIFIER_CONST ) {
 				mutability = Mutability::Const;
@@ -511,7 +513,9 @@ bool Analyser::createMethod(TokenIterator& token, TokenIterator /*end*/)
 				//mutability = Mutability::Final;
 				//numConstModifiers++;
 
-				//throw Common::Exceptions::NotSupported("global methods cannot be declared as final");
+				if ( !blueprint ) {
+					throw Common::Exceptions::NotSupported("global methods cannot be declared as final");
+				}
 			}
 			else if ( token->content() == MODIFIER_MODIFY ) {
 				mutability = Mutability::Modify;
