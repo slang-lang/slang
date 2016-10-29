@@ -21,6 +21,7 @@ SET(HEADERS
 )
 
 SET(DEPENDENCIES
+	CoreDesigntimeBuildInTypes
 	CoreBuildInObjects
 )
 

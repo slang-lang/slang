@@ -156,6 +156,9 @@ public object String {
 		return mValue;
 	}
 
+    /*
+     * String validation operator
+     */
 	public bool operator!() const {
 		return !mValue;
 	}
