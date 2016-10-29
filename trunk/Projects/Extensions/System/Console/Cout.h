@@ -7,11 +7,10 @@
 
 // Project includes
 #include <Core/BuildInObjects/StringObject.h>
-#include <Core/Designtime/BuildInTypes/StringObject.h>
-#include <Core/Method.h>
-#include <Core/Repository.h>
-#include <Core/Tools.h>
 #include <Core/Common/Exceptions.h>
+#include <Core/Designtime/BuildInTypes/StringObject.h>
+#include <Core/Extensions/ExtensionMethod.h>
+#include <Core/Tools.h>
 #include <Tools/Strings.h>
 #include "Math.h"
 
@@ -26,11 +25,11 @@ namespace System {
 namespace Console {
 
 
-class Cout : public Runtime::Method
+class Cout : public ExtensionMethod
 {
 public:
 	Cout()
-	: Runtime::Method(0, "cout", Designtime::StringObject::TYPENAME)
+	: ExtensionMethod(0, "cout", Designtime::StringObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter("text", Designtime::StringObject::TYPENAME, VALUE_NONE, true));
@@ -51,7 +50,7 @@ public:
 			mOutMode = COUT;
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
 			*data = Runtime::StringObject(std::string(e.what()));
 
 			mExceptionData = Runtime::ExceptionData(data, token.position());

@@ -14,11 +14,8 @@
 #include <Core/Designtime/BuildInTypes/BoolObject.h>
 #include <Core/Designtime/BuildInTypes/GenericObject.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
-#include <Core/Designtime/BuildInTypes/VoidObject.h>
-#include <Core/Repository.h>
 #include <Core/Tools.h>
-#include <Core/Common/Exceptions.h>
-#include <Tools/Strings.h>
+#include <Core/VirtualMachine/Controller.h>
 
 // Forward declarations
 
@@ -30,7 +27,7 @@ namespace Extensions {
 
 
 FromJson::FromJson()
-: Runtime::Method(0, "FromJsonString", Designtime::BoolObject::TYPENAME)
+: ExtensionMethod(0, "FromJsonString", Designtime::BoolObject::TYPENAME)
 {
 	ParameterList params;
 	params.push_back(Parameter("object", Designtime::GenericObject::TYPENAME, VALUE_NONE));
@@ -54,7 +51,7 @@ Runtime::ControlFlow::E FromJson::execute(const ParameterList& params, Runtime::
 		*result = Runtime::BoolObject(success);
 	}
 	catch ( std::exception &e ) {
-		Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+		Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
 		*data = Runtime::StringObject(std::string(e.what()));
 
 		mExceptionData = Runtime::ExceptionData(data, token.position());

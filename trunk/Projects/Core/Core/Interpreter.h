@@ -9,10 +9,10 @@
 // Project includes
 #include <Core/Runtime/ControlFlow.h>
 #include <Core/Runtime/ExceptionData.h>
+#include <Core/VirtualMachine/Stack.h>
 #include "Parameter.h"
 #include "Scope.h"
 #include "Token.h"
-#include "Repository.h"
 
 // Forward declarations
 
@@ -34,27 +34,16 @@ class Object;
 class Interpreter
 {
 public:
-	Interpreter(SymbolScope* scope);
+	Interpreter();
 	virtual ~Interpreter();
 
-public:
-	void setRepository(Repository* repository);
-	void setTokens(const TokenList& tokens);
-
 public: // Execution
-	ControlFlow::E execute(Object* result);
+	ControlFlow::E execute(Method* method, const ParameterList& params, Object* result);
 	const ExceptionData& getExceptionData() const;
-
-private: // private types
-	typedef std::list<SymbolScope*> ScopeStack;
-	typedef std::list<TokenList> TokenStack;
-
-private: // Deinit
-	void garbageCollector();
 
 private: // Execution
 	inline Symbol* identify(TokenIterator& token) const;
-	Symbol* identifyMethod(TokenIterator& token, const ParameterList& params) const;
+	inline Symbol* identifyMethod(TokenIterator& token, const ParameterList& params) const;
 
 	// token processing
 	// {
@@ -98,9 +87,9 @@ private: // Execution
 
 	// Scope stack
 	// {
-	SymbolScope* getScope() const;
-	void pushScope();
+	IScope* getScope() const;
 	void popScope();
+	void pushScope(IScope* scope = 0);
 	// }
 
 	// Token stack
@@ -113,16 +102,15 @@ private: // Execution
 	ControlFlow::E interpret(const TokenList& tokens, Object* result);
 
 	NamedScope* getEnclosingMethodScope(IScope* scope) const;
-	Namespace* getEnclosingNamespace() const;
+	Namespace* getEnclosingNamespace(IScope* scope) const;
+	Object* getEnclosingObject(IScope* scope) const;
 
 private:
 	ControlFlow::E mControlFlow;
 	ExceptionData mExceptionData;
-	SymbolScope* mOwner;
+	IScope* mOwner;
 	Repository *mRepository;
-	ScopeStack mScopeStack;
 	TokenList mTokens;
-	TokenStack mTokenStack;
 };
 
 

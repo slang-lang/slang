@@ -10,8 +10,8 @@
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Designtime/BuildInTypes/GenericObject.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
-#include <Core/Repository.h>
 #include <Core/Tools.h>
+#include <Core/VirtualMachine/Controller.h>
 
 // Forward declarations
 
@@ -23,7 +23,7 @@ namespace Extensions {
 
 
 ToJson::ToJson()
-: Runtime::Method(0, "ToJsonString", Designtime::StringObject::TYPENAME)
+: ExtensionMethod(0, "ToJsonString", Designtime::StringObject::TYPENAME)
 {
 	ParameterList params;
 	params.push_back(Parameter("object", Designtime::GenericObject::TYPENAME, VALUE_NONE));
@@ -45,7 +45,7 @@ Runtime::ControlFlow::E ToJson::execute(const ParameterList &params, Runtime::Ob
 		*result = Runtime::StringObject(value.toString());
 	}
 	catch (std::exception &e) {
-		Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+		Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
 		*data = Runtime::StringObject(std::string(e.what()));
 
 		mExceptionData = Runtime::ExceptionData(data, token.position());

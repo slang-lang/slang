@@ -5,13 +5,14 @@ public namespace System { }
 public object Boolean {
 	private bool mValue;
 
-	public void Boolean(bool value = false) {
+	public void Constructor(bool value = false) {
 		mValue = value;
 	}
-	public void Boolean(Boolean b) {
+	public void Constructor(Boolean b ref) {
 		mValue = b.mValue;
 	}
 
+/*
 	public void FromString(string value) modify {
 		print("FromString('" + value + "')");
 
@@ -22,6 +23,7 @@ public object Boolean {
 
 		mValue = false;
 	}
+*/
 
 	/*
 	 * Returns a JSON-formatted string
@@ -36,15 +38,6 @@ public object Boolean {
 		return "Boolean: " + mValue;
 	}
 
-/*
-	public deprectated bool Value() const {
-		return mValue;
-	}
-	public deprectated void Value(bool value) modify {
-		mValue = value;
-	}
-*/
-
 	public bool operator!() const {
 		return !mValue;
 	}
@@ -52,24 +45,28 @@ public object Boolean {
 	public bool operator==(bool other) const {
 		return mValue == other;
 	}
-	public bool operator==(Boolean other) const {
+	public bool operator==(Boolean other ref) const {
 		return mValue == other.mValue;
 	}
 
 	public void operator=(bool other) modify {
 		mValue = other;
 	}
-	public void operator=(Boolean other) modify {
+	public void operator=(Boolean other ref) modify {
 		mValue = other.mValue;
 	}
 
+	/*
+	 * bool-value operator
+	 */
 	public bool =operator(bool other) const {
-		print("bool =operator(bool)");
 		return mValue;
 	}
 
+	/*
+	 * string-value operator
+	 */
 	public string =operator(string other) const {
-		print("string =operator(string)");
 		return string mValue;
 	}
 }

@@ -32,16 +32,15 @@ private namespace OutterSpace {
 	}
 }
 
-public object Main {
-	public void Main(int argc, string args) {
-		assert( TestCase1() );
-	}
-
-	private bool TestCase1() {
-		print("TestCase 1: Unqualified object instantiation");
-
-		OutterSpace.OutterObject obj = new OutterSpace.OutterObject(173);
-
-		return obj;
-	}
+public void Main(int argc, string args) {
+	assert( TestCase1() );
 }
+
+private bool TestCase1() {
+	print("TestCase 1: Unqualified object instantiation");
+
+	OutterSpace.OutterObject obj = new OutterSpace.OutterObject(173);
+
+	return obj;
+}
+

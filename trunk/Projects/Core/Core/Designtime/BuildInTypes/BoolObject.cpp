@@ -20,6 +20,7 @@ std::string BoolObject::TYPENAME = "bool";
 BoolObject::BoolObject()
 : BluePrintObject(TYPENAME, SYSTEM_LIBRARY)
 {
+	addInheritance(Ancestor(OBJECT, Ancestor::Type::Extends, Visibility::Public));
 }
 
 const std::string& BoolObject::getTypeName() const

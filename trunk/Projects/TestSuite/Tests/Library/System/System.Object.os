@@ -3,9 +3,6 @@
 import System.Object;
 
 public object IObjectImplementation implements /*System.*/IObject {
-	public void IObjectImplementation() {
-	}
-	
 	public string GetObjectType() const {
 		return "IObjectImplementation";
 	}
@@ -29,40 +26,38 @@ public object TObjectDerivate extends /*System.*/TObject {
 	}
 }
 
-public object Main {
-	public void Main(int argc, string args) {
-		assert( TestCase1() );
-		assert( TestCase2() );
-		assert( ! TestCase3() );
-	}
+public void Main(int argc, string args) {
+	assert( TestCase1() );
+	assert( TestCase2() );
+	assert( ! TestCase3() );
+}
 
-	private bool TestCase1() const {
-		print("TestCase 1");
+private bool TestCase1() const {
+	print("TestCase 1");
 
-		IObjectImplementation obj = new IObjectImplementation();
+	IObjectImplementation obj = new IObjectImplementation();
 
-		print(obj.ToString());
+	print(obj.ToString());
 
-		return obj;
-	}
+	return obj;
+}
 
-	private bool TestCase2() const {
-		print("TestCase 2");
+private bool TestCase2() const {
+	print("TestCase 2");
 
-		TObjectDerivate obj = new TObjectDerivate();
+	TObjectDerivate obj = new TObjectDerivate();
 
-		print(obj.ToString());
+	print(obj.ToString());
 
-		return obj;
-	}
+	return obj;
+}
 
-	private bool TestCase3() const {
-		print("TestCase 3");
+private bool TestCase3() const {
+	print("TestCase 3");
 
-		TObjectDerivate obj;
-		print(obj);
+	TObjectDerivate obj;
+	print(obj);
 
-		return obj;
-	}
+	return obj;
 }
 

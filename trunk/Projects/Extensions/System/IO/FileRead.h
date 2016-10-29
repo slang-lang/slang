@@ -6,7 +6,7 @@
 // Library includes
 
 // Project includes
-#include <Core/Method.h>
+#include <Core/Extensions/ExtensionMethod.h>
 
 // Forward declarations
 
@@ -18,7 +18,7 @@ namespace Extensions {
 namespace IO {
 
 
-class FileReadBool : public Runtime::Method
+class FileReadBool : public ExtensionMethod
 {
 public:
 	FileReadBool();
@@ -27,7 +27,7 @@ public:
 };
 
 
-class FileReadDouble : public Runtime::Method
+class FileReadDouble : public ExtensionMethod
 {
 public:
 	FileReadDouble();
@@ -36,7 +36,7 @@ public:
 };
 
 
-class FileReadFloat : public Runtime::Method
+class FileReadFloat : public ExtensionMethod
 {
 public:
 	FileReadFloat();
@@ -45,7 +45,7 @@ public:
 };
 
 
-class FileReadInt : public Runtime::Method
+class FileReadInt : public ExtensionMethod
 {
 public:
 	FileReadInt();
@@ -54,7 +54,7 @@ public:
 };
 
 
-class FileReadString : public Runtime::Method
+class FileReadString : public ExtensionMethod
 {
 public:
 	FileReadString();

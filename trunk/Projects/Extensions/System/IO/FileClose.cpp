@@ -16,8 +16,8 @@
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
 #include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/BuildInObjects/StringObject.h>
-#include <Core/Repository.h>
 #include <Core/Tools.h>
+#include <Core/VirtualMachine/Controller.h>
 
 // Namespace declarations
 
@@ -28,7 +28,7 @@ namespace IO {
 
 
 FileClose::FileClose()
-: Runtime::Method(0, "fclose", Designtime::IntegerObject::TYPENAME)
+: ExtensionMethod(0, "fclose", Designtime::IntegerObject::TYPENAME)
 {
 	ParameterList params;
 	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, VALUE_NONE));
@@ -55,7 +55,7 @@ Runtime::ControlFlow::E FileClose::execute(const ParameterList& params, Runtime:
 		*result = Runtime::IntegerObject(fileResult);
 	}
 	catch ( std::exception& e ) {
-		Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+		Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
 		*data = Runtime::StringObject(std::string(e.what()));
 
 		mExceptionData = Runtime::ExceptionData(data, token.position());

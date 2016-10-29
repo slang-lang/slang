@@ -7,19 +7,17 @@ private object BaseObject {
 }
 
 private object DerivedObject extends BaseObject {
-	public string ToString() const final {
+	public string ToString() const {
 		return "DerivedObject";
 	}
 }
 
-public object Main {
-	public void Main(int argc = 0, string args = "") {
-		DerivedObject derived = new DerivedObject();
+public void Main(int argc = 0, string args = "") {
+	DerivedObject derived = new DerivedObject();
 
-		string result = derived.ToString();
-		print("result = " + result);
+	string result = derived.ToString();
+	print("result = " + result);
 
-		assert( result == "BaseObject" );
-	}
+	assert( result == "BaseObject" );
 }
 

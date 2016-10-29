@@ -40,13 +40,13 @@ public:
 	const std::string& Typename() const { return mTypename; }
 
 public:
-	virtual void cleanup();
-
-public:
 	void setQualifiedTypename(const std::string& name);
 
 	const TokenList& getTokens() const;
 	void setTokens(const TokenList& tokens);
+
+	Visibility::E getVisibility() const;
+	void setVisibility(Visibility::E v);
 
 protected:
 	std::string mFilename;
@@ -55,6 +55,7 @@ protected:
 	std::string mTypename;
 
 private:
+	Visibility::E mVisibility;
 };
 
 

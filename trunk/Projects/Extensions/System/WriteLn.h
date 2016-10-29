@@ -6,12 +6,11 @@
 // Library includes
 
 // Project includes
+#include <Core/Common/Exceptions.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/Designtime/BuildInTypes/VoidObject.h>
-#include <Core/Method.h>
-#include <Core/Repository.h>
+#include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Tools.h>
-#include <Core/Common/Exceptions.h>
 #include <Tools/Strings.h>
 
 // Forward declarations
@@ -24,11 +23,11 @@ namespace Extensions {
 namespace System {
 
 
-class WriteLn : public Runtime::Method
+class WriteLn : public ExtensionMethod
 {
 public:
 	WriteLn()
-	: Runtime::Method(0, "writeln", Designtime::VoidObject::TYPENAME)
+	: ExtensionMethod(0, "writeln", Designtime::VoidObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter("text", Designtime::StringObject::TYPENAME, VALUE_NONE, true));
@@ -49,7 +48,7 @@ public:
 			std::cout << param_text << std::endl;
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
 			*data = Runtime::StringObject(std::string(e.what()));
 
 			mExceptionData = Runtime::ExceptionData(data, token.position());

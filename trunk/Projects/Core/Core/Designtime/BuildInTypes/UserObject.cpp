@@ -14,8 +14,8 @@ namespace ObjectiveScript {
 namespace Designtime {
 
 
-std::string UserObject::DEFAULTVALUE = "";
-std::string UserObject::TYPENAME = "void";
+std::string UserObject::DEFAULTVALUE = VALUE_NONE;
+std::string UserObject::TYPENAME = OBJECT;
 
 
 UserObject::UserObject()

@@ -5,14 +5,14 @@ import System.Integer;
 private namespace This {
 
 	public int mIntValue;
-	//public Integer mIntegerValue;	// this does not work because only blueprints get retyped after parsing
+	public Integer mIntegerValue;	// this does not work because only blueprints get retyped after parsing
 	public string mStringValue;
 
-	public void Init() {
+	public void Init() modify {
 		print("Init()");
 
 		mIntValue = ReturnOne();
-		//mIntegerValue = new Integer(ReturnOne());
+		mIntegerValue = new Integer(ReturnOne());
 		mStringValue = "has been initialized";
 	}
 

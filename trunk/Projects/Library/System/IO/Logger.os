@@ -7,7 +7,7 @@ public namespace IO {
 		private string mKey final;
 
 		// Specialised constructor
-		public void Logger(string key, int keyLength = 0) {
+		public void Constructor(string key, int keyLength = 0) {
 			if ( keyLength ) {
 				mKey = substr(key, strlen(key) - keyLength, keyLength);
 			}

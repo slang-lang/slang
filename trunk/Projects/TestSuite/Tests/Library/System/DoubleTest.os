@@ -2,35 +2,31 @@
 
 import System.Double;
 
-public object Main {
+public void Main(int argc = 0, string args = "") modify {
+	assert( TestCase1() );
+	//assert( TestCase2() );
 
-	public void Main(int argc = 0, string args = "") {
-		assert( TestCase1() );
-		//assert( TestCase2() );
+	//assert(!"not implemented");
+}
 
-		//assert(!"not implemented");
-	}
+private bool TestCase1() modify {
+	print("TestCase 1: Double");
 
-	private bool TestCase1() modify {
-		print("TestCase 1: Double");
+	Double value = new Double();
 
-		Double value = new Double();
+	assert( !value.Value() );
 
-		assert( !value.Value() );
+	value.Value(double 1);
+	assert( value.Value() );
+	//assert( bool value );
 
-		value.Value(double 1);
-		assert( value.Value() );
-		//assert( bool value );
+	return true;
+}
 
-		return true;
-	}
+private bool TestCase2() const {
+	print("TestCase 2");
 
-	private bool TestCase2() const {
-		print("TestCase 2");
-
-		assert( false );
-		return false;
-	}
-
+	assert( false );
+	return false;
 }
 

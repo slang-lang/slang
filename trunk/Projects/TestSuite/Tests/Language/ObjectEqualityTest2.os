@@ -11,45 +11,47 @@ public namespace ObjectEqualityTest {
 		public string ToString() const {
 			return "TestObject { mValue = " + mValue + " }";
 		}
+		public string =operator(string none) const {
+			return "TestObject { mValue = " + mValue + " }";
+		}
 
-		public void operator=(TestObject other const) modify {
+		public void operator=(TestObject other const ref) modify {
 			print("operator=(" + other.ToString() + ")");
 			mValue = value;
 		}
 
-		public bool operator==(TestObject other const) const {
+		public bool operator==(TestObject other const ref) const {
 			print("operator==(" + other.ToString() + ")");
 			return mValue == other.mValue;
 		}
 	}
 }
 
-public object Main {
-	public void Main(int argc = 0, string argv = "") {
-		assert( TestCase1() );
-		assert( TestCase2() );
-	}
+public void Main(int argc = 0, string argv = "") {
+	assert( TestCase1() );
+	assert( TestCase2() );
+}
 
-	private bool TestCase1() const {
-		print("TestCase 1: comparing different references");
+private bool TestCase1() const {
+	print("TestCase 1: comparing different references");
 
-		ObjectEqualityTest.TestObject obj1 = new ObjectEqualityTest.TestObject();
-		//obj1.mValue = 1;
-		ObjectEqualityTest.TestObject obj2 = new ObjectEqualityTest.TestObject();
-		//obj2.mValue = 2;
-		
-		return obj1 == obj2;
-	}
+	ObjectEqualityTest.TestObject obj1 = new ObjectEqualityTest.TestObject();
+	//obj1.mValue = 1;
+	ObjectEqualityTest.TestObject obj2 = new ObjectEqualityTest.TestObject();
+	//obj2.mValue = 2;
+	
+	assert( obj1 == obj2 );
+	return obj1 == obj2;
+}
 
-	private bool TestCase2() const {
-		print("TestCase 2: comparing same references");
+private bool TestCase2() const {
+	print("TestCase 2: comparing same references");
 
-		ObjectEqualityTest.TestObject obj1 = new ObjectEqualityTest.TestObject();
-		obj1.mValue = 1;
-		ObjectEqualityTest.TestObject obj2 = obj1;
-		obj2.mValue = 2;
+	ObjectEqualityTest.TestObject obj1 = new ObjectEqualityTest.TestObject();
+	obj1.mValue = 1;
+	ObjectEqualityTest.TestObject obj2 = obj1;
+	obj2.mValue = 2;
 
-		return obj1 == obj2;
-	}
+	return obj1 == obj2;
 }
 

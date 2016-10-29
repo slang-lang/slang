@@ -9,8 +9,7 @@ import imported.ThirdLevelImported;
 
 private bool flag;
 
-private bool test()
-{
+private bool test() {
 	print("test");
 
 	flag = true;
@@ -18,8 +17,7 @@ private bool test()
 	return true;
 }
 
-private void SingleMethod()
-{
+private void SingleMethod() {
 	writeln("SingleMethod()");
 	writeln("flag = " + flag);
 
@@ -28,35 +26,30 @@ private void SingleMethod()
 	writeln("flag = " + flag);
 }
 
-public object Main
-{
-	private int member final;
+private int member final;
 
-	public void Main(int argc, string argv)
-	{
-		member = 1;
+public void Main(int argc, string argv) {
+	member = 1;
 
-		doIt();
-	}
+	doIt();
+}
 
-	private void doIt()
-	{
-		BaseObjectImported baseobj = new BaseObjectImported();
-                DerivedObjectImported derivedobj = new DerivedObjectImported();
-		ThirdLevelImported thirdobj = new ThirdLevelImported();
+private void doIt() {
+	BaseObjectImported baseobj = new BaseObjectImported();
+	DerivedObjectImported derivedobj = new DerivedObjectImported();
+	ThirdLevelImported thirdobj = new ThirdLevelImported();
 
-		writeln("baseobj = " + baseobj.ToString());
-                writeln("derivedobj = " + derivedobj.ToString());
-		writeln("thirdobj = " + thirdobj.ToString());
+	writeln("baseobj = " + baseobj.ToString());
+	writeln("derivedobj = " + derivedobj.ToString());
+	writeln("thirdobj = " + thirdobj.ToString());
 
-                SingleMethod();
+	SingleMethod();
 
-                print("3^2 = " + Math.power(3));
-		print("3^2 = " + Math.power(3, 2));
+	print("3^2 = " + Math.power(3));
+	print("3^2 = " + Math.power(3, 2));
 
-		print("abs(-3) = " + Math.abs(-3));
+	print("abs(-3) = " + Math.abs(-3));
 
-                assert(flag);
-	}
+       	assert(flag);
 }
 

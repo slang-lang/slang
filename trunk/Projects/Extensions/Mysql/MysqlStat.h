@@ -9,8 +9,7 @@
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
-#include <Core/Method.h>
-#include <Core/Repository.h>
+#include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Tools.h>
 #include "Types.h"
 
@@ -24,11 +23,11 @@ namespace Extensions {
 namespace Mysql {
 
 
-class MysqlStat : public Runtime::Method
+class MysqlStat : public ExtensionMethod
 {
 public:
 	MysqlStat()
-	: Runtime::Method(0, "mysql_stat", Designtime::StringObject::TYPENAME)
+	: ExtensionMethod(0, "mysql_stat", Designtime::StringObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, VALUE_NONE));
@@ -54,7 +53,7 @@ public:
 			}
 		}
 		catch ( std::exception &e ) {
-			Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
 			*data = Runtime::StringObject(std::string(e.what()));
 
 			mExceptionData = Runtime::ExceptionData(data, token.position());

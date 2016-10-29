@@ -7,13 +7,13 @@
 
 // Project includes
 #include <Core/BuildInObjects/BoolObject.h>
+#include <Core/Common/Exceptions.h>
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Designtime/BuildInTypes/BoolObject.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
-#include <Core/Method.h>
-#include <Core/Repository.h>
+#include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Tools.h>
-#include <Core/Common/Exceptions.h>
+#include <Core/VirtualMachine/Controller.h>
 #include <Tools/Strings.h>
 #include "Defs.h"
 
@@ -27,11 +27,11 @@ namespace Extensions {
 namespace Apache {
 
 
-class IsSet : public Runtime::Method
+class IsSet : public ExtensionMethod
 {
 public:
 	IsSet()
-	: Runtime::Method(0, "isSet", Designtime::BoolObject::TYPENAME)
+	: ExtensionMethod(0, "isSet", Designtime::BoolObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter("name", Designtime::StringObject::TYPENAME, VALUE_NONE));
@@ -59,7 +59,7 @@ public:
 			*result = Runtime::BoolObject(result_value);
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
 			*data = Runtime::StringObject(std::string(e.what()));
 
 			mExceptionData = Runtime::ExceptionData(data, token.position());

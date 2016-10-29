@@ -1,6 +1,5 @@
 #!/usr/local/bin/oscript
 
-public object Main {
     public void Main(int argc, string args) {
         // default initialisierung unseres startwerts
 	    write("Startwert: ");
@@ -54,5 +53,4 @@ public object Main {
         // erinnere den user an seine ursprünglich angegebene zahl
         writeln("startzahl = " + startzahl);
     }
-}
 

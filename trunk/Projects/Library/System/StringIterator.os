@@ -12,7 +12,7 @@ public namespace System {
 		/*
 		 * Standard constructor
 		 */
-		public void StringIterator(string value, string separator = " ") {
+		public void Constructor(string value, string separator = " ") {
 			mCurrentPosition = 0;
 			mSeparator = separator;
 			mValue = new String(value);
@@ -21,7 +21,7 @@ public namespace System {
 		/*
 		 * Copy constructor
 		 */
-		public void StringIterator(System.StringIterator si) {
+		public void Constructor(System.StringIterator si) {
 			mCurrentPosition = si.mCurrentPosition;
 			mSeparator = si.mSeparator;
 			mValue = new String(si.mValue);
@@ -36,11 +36,11 @@ public namespace System {
 
 		/*
 		 * GetNext returns the next sub string of the held String value
-		 * throws System.OutOfBoundsException
+		 * throws OutOfBoundsException
 		 */
 		public string GetNext() modify throws {
 			if ( mCurrentPosition >= mValue.Length() ) {
-				throw new System.OutOfBoundsException("out of bounds");
+				throw new OutOfBoundsException("out of bounds");
 			}
 
 			int oldPos = mCurrentPosition;

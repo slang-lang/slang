@@ -1,17 +1,17 @@
 
-import ACollection;
+import AbstractCollection;
 import System.Exception;
 
 public namespace System {
 
-	public object Set extends ACollection {
-		public void Set() {
-			base.ACollection();
+	public object Set extends System.AbstractCollection {
+		public void Constructor() {
+			base.Constructor();
 		}
 
-		public void erase(int index) modify {
+		public void erase(int index) modify throws {
 			if ( index < 0 || index > mSize ) {
-				throw new System.OutOfBoundsException("erase index(" + index + ") beyond end of list");
+				throw new OutOfBoundsException("erase index(" + index + ") beyond end of list");
 			}
 
 			if ( index == 0 ) {				// special handling for 1st element
@@ -34,13 +34,7 @@ public namespace System {
 			mSize--;
 		}
 
-		public void insert(Object value) modify {
-/*
-			if ( !value ) {
-				throw new System.Exception("invalid value provided");
-			}
-*/
-
+		public void insert(Object value ref) modify {
 			CollectionItem item = new CollectionItem(value);
 
 			if ( !mFirst ) {				// special handling for 1st element

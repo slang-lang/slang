@@ -4,7 +4,7 @@ public namespace Mysql {
 	public object Settings {
 		private bool mAutoEscaping;
 
-		public void Settings() {
+		public void Constructor() {
 			mAutoEscaping = false;
 		}
 

@@ -41,7 +41,7 @@ public:
 };
 
 
-	class AssertionFailed : public Exception
+class AssertionFailed : public Exception
 {
 public:
 	AssertionFailed(const std::string& text, const Common::Position& position = Common::Position())
@@ -60,6 +60,17 @@ public:
 	{ }
 
 	virtual ~ExplicitCastRequired() throw() { }
+};
+
+
+class InvalidAssignment : public Exception
+{
+public:
+	InvalidAssignment(const std::string& text, const Common::Position& position = Common::Position())
+	: Exception("InvalidAssignment: " + text, position)
+	{ }
+
+	virtual ~InvalidAssignment() throw() { }
 };
 
 
@@ -85,7 +96,7 @@ public:
 };
 
 
-	class SizeException : public Exception
+class SizeException : public Exception
 {
 public:
 	SizeException(const std::string& text, const Common::Position& position = Common::Position())
@@ -93,6 +104,17 @@ public:
 	{ }
 
 	virtual ~SizeException() throw() { }
+};
+
+
+class StaticException : public Exception
+{
+public:
+	StaticException(const std::string& text, const Common::Position& position = Common::Position())
+	: Exception("StaticException: " + text, position)
+	{ }
+
+	virtual ~StaticException() throw() { }
 };
 
 

@@ -1,7 +1,8 @@
 #!/usr/local/bin/oscript
 
 public object BaseObject {
-	public void ~BaseObject() {
+	public void Destructor() {
+		print("BaseObject.Destructor()");
 	}
 
 	public string getName() const {
@@ -10,7 +11,8 @@ public object BaseObject {
 }
 
 public object ExtendedObject extends BaseObject {
-	public void ~ExtendedObject() {
+	public void Destructor() {
+		print("ExtendedObject.Destructor()");
 	}
 
 	public string getExtendedName() const {
@@ -22,25 +24,23 @@ public object ExtendedObject extends BaseObject {
 	}
 }
 
-public object Main {
-	public void Main(int argc = 0, string argv = "") {
-		assert( TestCase1() );
-	}
+public void Main(int argc = 0, string argv = "") {
+	assert( TestCase1() );
+}
 
-	private bool TestCase1() {
-		print("TestCase 1: ");
+private bool TestCase1() {
+	print("TestCase 1: ");
 
-		BaseObject b = new BaseObject();
-		ExtendedObject e = new ExtendedObject();
+	BaseObject b = new BaseObject();
+	ExtendedObject e = new ExtendedObject();
 
-		print("b.getName() = " + b.getName());
-		print("e.getName() = " + e.getName());
-		print("e.getExtendedName() = " + e.getExtendedName());
+	print("b.getName() = " + b.getName());
+	print("e.getName() = " + e.getName());
+	print("e.getExtendedName() = " + e.getExtendedName());
 
-		delete e;
-		delete b;
+	delete e;
+	delete b;
 
-		return true;
-	}
+	return true;
 }
 

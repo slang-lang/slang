@@ -8,6 +8,7 @@
 #include <string>
 
 // Project includes
+#include "ExtensionMethod.h"
 
 // Forward declarations
 
@@ -18,13 +19,10 @@ namespace ObjectiveScript {
 
 // Forward declarations
 class IScope;
-namespace Runtime {
-	class Method;
-}
 
 namespace Extensions {
 
-typedef std::list<Runtime::Method*> ExtensionMethods;
+typedef std::list<ExtensionMethod*> ExtensionMethods;
 
 class AExtension
 {

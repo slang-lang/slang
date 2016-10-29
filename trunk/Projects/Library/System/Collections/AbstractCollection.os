@@ -8,26 +8,31 @@ public namespace System {
 	 * Double linked collection item
 	 */
 	public object CollectionItem {
-		private CollectionItem mNext;
-		private CollectionItem mPrevious;
+		private System.CollectionItem mNext;
+		private System.CollectionItem mPrevious;
 		private Object mValue;
 
-		public void CollectionItem() {
+		public void Constructor() {
+			// this is empty by intend
 		}
 
-		public void CollectionItem(Object value ref) {
+		public void Constructor(Object value ref) {
 			mValue = value;
+		}
+
+		public void Destructor() {
+			// this is empty by intend
 		}
 
 		public Object get() const {
 			return mValue;
 		}
 
-		public CollectionItem next() const {
+		public System.CollectionItem next() const {
 			return mNext;
 		}
 
-		public CollectionItem previous() const {
+		public System.CollectionItem previous() const {
 			return mPrevious;
 		}
 
@@ -39,18 +44,21 @@ public namespace System {
 	/*
 	 * Abstract base for collections
 	 */
-	public object ACollection {
-		private CollectionItem mFirst;
-		private CollectionItem mLast;
+	public abstract object AbstractCollection {
+		private System.CollectionItem mFirst;
+		private System.CollectionItem mLast;
 		private int mSize = 0;
 
-		public void ACollection() {
+		public void Constructor() {
 			mSize = 0;
 		}
+		public void Destructor() {
+			clear();
+		}
 
-		public Object at(int index) const {
+		public Object at(int index) const throws {
 			if ( index < 0 || index >= mSize ) {
-				throw new System.OutOfBoundsException("index(" + index + ") out of bounds");
+				throw new OutOfBoundsException("index(" + index + ") out of bounds");
 			}
 
 			CollectionItem item = mFirst;
@@ -78,14 +86,14 @@ public namespace System {
 			return mSize == 0;
 		}
 
-		public Iterator getIterator() const {
+		public System.Iterator getIterator() const {
 			// TODO: why do we have to cast here?
-			return new Iterator(System.ACollection this);
+			return new Iterator(AbstractCollection this);
 		}
 
-		public ReverseIterator getReverseIterator() const {
+		public System.ReverseIterator getReverseIterator() const {
 			// TODO: why do we have to cast here?
-			return new ReverseIterator(System.ACollection this);
+			return new ReverseIterator(AbstractCollection this);
 		}
 
 		public int indexOf(Object value ref) const {

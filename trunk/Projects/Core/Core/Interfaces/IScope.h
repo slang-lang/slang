@@ -7,6 +7,7 @@
 #include <string>
 
 // Project includes
+#include <Core/Symbol.h>
 
 // Forward declarations
 

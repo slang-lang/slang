@@ -1,6 +1,5 @@
 #!/usr/local/bin/oscript
 
-public object Main {
 	public void Main(int argc, string argv) {
 		int result;
 		int result_handle;
@@ -53,5 +52,4 @@ public object Main {
 
 		writeln("done");
 	}
-}
 

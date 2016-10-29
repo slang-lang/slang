@@ -40,14 +40,12 @@ private object AnotherObject {
 	}
 }
 
-public object Main {
-	public void Main(int argc, string args) {
-		AnotherObject obj = new AnotherObject(1);
+public void Main(int argc, string args) {
+	AnotherObject obj = new AnotherObject(1);
 
-		print(obj.ToString());
+	print(obj.ToString());
 
-		TestSpace.TestObject testObj = new TestSpace.TestObject(173);
-		obj.setObject(testObj);
-	}
+	TestSpace.TestObject testObj = new TestSpace.TestObject(173);
+	obj.setObject(testObj);
 }
 

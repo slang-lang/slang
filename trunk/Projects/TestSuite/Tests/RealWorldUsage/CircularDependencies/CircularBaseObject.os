@@ -1,28 +1,24 @@
 
 import CircularExtendedObject;
 
-public object CircularBaseObject
-{
+public object CircularBaseObject {
 	private InnerObject mInner;
 
-	public void CircularBaseObject()
-	{
-		writeln("CircularBaseObject(): Start");
+	public void Constructor() {
+		writeln("Constructor(): Start");
 
 		mInner = new InnerObject();
 
-		writeln("CircularBaseObject(): End");
+		writeln("Constructor(): End");
 	}
 
-	public void ~CircularBaseObject()
-	{
-		writeln("~CircularBaseObject(): Start");
+	public void Destructor() {
+		writeln("Destructor(): Start");
 
-		writeln("~CircularBaseObject(): End");
+		writeln("Destructor(): End");
 	}
 
-	public string ToString() const
-	{
+	public string ToString() const {
 		return "ToString(): CircularBaseObject";
 	}
 }

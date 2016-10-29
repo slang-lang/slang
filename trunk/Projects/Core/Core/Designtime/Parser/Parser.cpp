@@ -72,51 +72,16 @@ std::string Parser::identify(TokenIterator& start)
 	std::string type = start->content();
 
 	while ( (start++)->type() == Token::Type::IDENTIFER ) {
-		if ( lookahead(start)->type() != Token::Type::SCOPE ) {
+		if ( (start)->type() != Token::Type::SCOPE ) {
 			break;
 		}
 
 		// add next token to type definition
 		type += (start++)->content();
-		type += (start++)->content();
+		type += (start)->content();
 	}
 
 	return type;
-}
-
-ImplementationType::E Parser::parseImplementationType(TokenIterator& token, ImplementationType::E defaultValue)
-{
-	ImplementationType::E result = defaultValue;
-
-	if ( token->isOptional() && token->type() == Token::Type::MODIFIER ) {
-		ImplementationType::E value = ImplementationType::convert((*token++).content());
-
-		if ( value != ImplementationType::Unknown ) {
-			result = value;
-		}
-	}
-
-	return result;
-}
-
-LanguageFeatureState::E Parser::parseLanguageFeatureState(TokenIterator& token, LanguageFeatureState::E defaultValue)
-{
-	LanguageFeatureState::E result = defaultValue;
-
-	if ( token->isOptional() && token->type() == Token::Type::LANGUAGEFEATURE ) {
-		LanguageFeatureState::E value = LanguageFeatureState::convert((*token++).content());
-
-		if ( value != LanguageFeatureState::Unknown ) {
-			result = value;
-		}
-	}
-
-	return result;
-}
-
-ObjectType::E Parser::parseObjectType(TokenIterator& token)
-{
-	return ObjectType::convert((*token++).content());
 }
 
 // enum declaration:
@@ -169,44 +134,94 @@ bool Parser::isLocalDeclaration(TokenIterator start)
 	return checkSyntax(start, tokens);
 }
 
-// syntax:
-// <visibility> <type> <identifier> ;
-bool Parser::isMemberDeclaration(TokenIterator start)
+// member declaration:
+// <visibility> [language feature] <identifier> <identifier> = || ;
+bool Parser::isMemberDeclaration(TokenIterator token)
 {
-	TokenList tokens;
+	if ( (token)->type() == Token::Type::VISIBILITY ) {
+		// visibility token is okay
+		token++;
+	}
 
-	tokens.push_back(Token(Token::Type::VISIBILITY));
-	tokens.push_back(Token(Token::Type::TYPE));
-	tokens.push_back(Token(Token::Type::IDENTIFER));
-	tokens.push_back(Token(Token::Type::SEMICOLON));
+	if ( (token)->isOptional() ) {
+		// language feature is okay
+		token++;
+	}
 
-	return checkSyntax(start, tokens);
-}
+	while ( (token)->type() == Token::Type::IDENTIFER ) {
+		// identifier token is okay
+		token++;
 
-bool Parser::isMemberDeclarationWithModifier(TokenIterator start)
-{
-	TokenList tokens;
+		if ( (token)->type() == Token::Type::SCOPE ) {
+			// scope token is okay
+			token++;
+			continue;
+		}
+	}
 
-	tokens.push_back(Token(Token::Type::VISIBILITY));
-	tokens.push_back(Token(Token::Type::TYPE));
-	tokens.push_back(Token(Token::Type::IDENTIFER));
-	tokens.push_back(Token(Token::Type::ASSIGN));
+	if ( (token)->type() == Token::Type::TYPE ) {
+		// type is okay
+		token++;
+	}
 
-	return checkSyntax(start, tokens);
+	if ( (token)->type() == Token::Type::IDENTIFER ) {
+		// name is okay
+		token++;
+	}
+
+	if ( (token)->isOptional() ) {
+		// modifier is okay
+		token++;
+	}
+
+	if ( (token)->type() != Token::Type::ASSIGN && (token)->type() != Token::Type::SEMICOLON ) {
+		// no assignment and no semicolon
+		return false;
+	}
+
+	return true;
 }
 
 // syntax:
 // <visibility> <type> <identifier> (
-bool Parser::isMethodDeclaration(TokenIterator start)
+// <visibility> <identifier> <identifier> (
+bool Parser::isMethodDeclaration(TokenIterator token)
 {
-	TokenList tokens;
+	if ( (token)->type() == Token::Type::VISIBILITY ) {
+		// visibility token is okay
+		token++;
+	}
 
-	tokens.push_back(Token(Token::Type::VISIBILITY));
-	tokens.push_back(Token(Token::Type::TYPE));
-	tokens.push_back(Token(Token::Type::IDENTIFER));
-	tokens.push_back(Token(Token::Type::PARENTHESIS_OPEN));
+	if ( (token)->isOptional() ) {
+		// language feature is okay
+		token++;
+	}
 
-	return checkSyntax(start, tokens);
+	while ( (token)->type() == Token::Type::IDENTIFER ) {
+		token++;
+
+		if ( (token)->type() == Token::Type::SCOPE ) {
+			token++;
+			continue;
+		}
+	}
+
+	if ( (token)->type() == Token::Type::TYPE ) {
+		// type is okay
+		token++;
+	}
+
+	if ( (token)->type() == Token::Type::IDENTIFER ) {
+		// name is okay
+		token++;
+	}
+
+	if ( (token)->type() != Token::Type::PARENTHESIS_OPEN ) {
+		// no open parenthesis
+		return false;
+	}
+
+	return true;
 }
 
 // namespace declaration:
@@ -230,6 +245,18 @@ bool Parser::isObjectDeclaration(TokenIterator start)
 
 	tokens.push_back(Token(Token::Type::VISIBILITY));
 	tokens.push_back(Token(Token::Type::RESERVED_WORD, std::string(RESERVED_WORD_OBJECT)));
+	tokens.push_back(Token(Token::Type::IDENTIFER));
+
+	return checkSyntax(start, tokens);
+}
+
+// syntax:
+// <identifier> <identifier>
+bool Parser::isParameterDeclaration(TokenIterator start)
+{
+	TokenList tokens;
+
+	tokens.push_back(Token(Token::Type::IDENTIFER));
 	tokens.push_back(Token(Token::Type::IDENTIFER));
 
 	return checkSyntax(start, tokens);
@@ -263,12 +290,59 @@ bool Parser::isStructorDeclaration(TokenIterator start)
 	return checkSyntax(start, tokens);
 }
 
+ImplementationType::E Parser::parseImplementationType(TokenIterator& token, ImplementationType::E defaultValue)
+{
+	ImplementationType::E result = defaultValue;
+
+	if ( token->isOptional() && token->type() == Token::Type::MODIFIER ) {
+		ImplementationType::E value = ImplementationType::convert((*token++).content());
+
+		if ( value != ImplementationType::Unknown ) {
+			result = value;
+		}
+	}
+
+	return result;
+}
+
+LanguageFeatureState::E Parser::parseLanguageFeatureState(TokenIterator& token, LanguageFeatureState::E defaultValue)
+{
+	LanguageFeatureState::E result = defaultValue;
+
+	if ( token->isOptional() && token->type() == Token::Type::LANGUAGEFEATURE ) {
+		LanguageFeatureState::E value = LanguageFeatureState::convert((*token++).content());
+
+		if ( value != LanguageFeatureState::Unknown ) {
+			result = value;
+		}
+	}
+
+	return result;
+}
+
+ObjectType::E Parser::parseObjectType(TokenIterator& token)
+{
+	return ObjectType::convert((*token++).content());
+}
+
 ParameterList Parser::parseParameters(TokenIterator &token)
 {
 	ParameterList params;
 
+	std::string type;
+
 	while ( (*++token).type() != Token::Type::PARENTHESIS_CLOSE ) {
-		if ( !isLocalDeclaration(token) ) {
+		if ( token->type() == Token::Type::IDENTIFER ) {
+			type += token->content();
+
+			if ( lookahead(token)->type() == Token::Type::SCOPE ) {
+				token++;
+				type += ".";
+				continue;
+			}
+		}
+
+		if ( !isLocalDeclaration(token) && !isParameterDeclaration(token) ) {
 			throw Common::Exceptions::SyntaxError("could not parse parameter declaration", token->position());
 		}
 
@@ -277,10 +351,19 @@ ParameterList Parser::parseParameters(TokenIterator &token)
 		bool isConst = false;
 		Runtime::AtomicValue value;
 
-		expect(Token::Type::TYPE, token);
+		if ( token->type() == Token::Type::IDENTIFER ) {
+			// already set type
+		}
+		else if ( token->type() == Token::Type::TYPE ) {
+			// combine type with already gathered type
+			type += token->content();
+		}
+		else {
+			throw Common::Exceptions::SyntaxError("unexpected token '" + token->content() + "' found", token->position());
+		}
 
-		std::string type = token->content();
 		token++;
+
 
 		std::string name = token->content();
 		token++;
@@ -316,8 +399,10 @@ ParameterList Parser::parseParameters(TokenIterator &token)
 			token++;
 		}
 
-		Parameter param(name, type, value, hasDefaultValue, isConst, accessmode, 0);
+		Parameter param(name, type, value, hasDefaultValue, isConst, accessmode, Reference());
 		params.push_back(param);
+
+		type = "";	// reset type for next parameter
 
 		if ( token->type() == Token::Type::PARENTHESIS_CLOSE ) {
 			break;

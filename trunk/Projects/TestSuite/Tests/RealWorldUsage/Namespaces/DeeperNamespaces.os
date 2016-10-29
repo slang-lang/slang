@@ -12,9 +12,7 @@ public namespace OutterSpace.InnerSpace.AnotherSpace {
 	}
 }
 
-public object Main {
-	public void Main(int argc, string args) {
-		OutterSpace.InnerSpace.AnotherSpace.SpacedObject obj1 = new OutterSpace.InnerSpace.AnotherSpace.SpacedObject(173);
-	}
+public void Main(int argc, string args) {
+	OutterSpace.InnerSpace.AnotherSpace.SpacedObject obj1 = new OutterSpace.InnerSpace.AnotherSpace.SpacedObject(173);
 }
 

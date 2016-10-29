@@ -48,21 +48,19 @@ private prototype Proto<value>
 private object RetypedProto replicates Proto<int>;
 */
 
-private object Main {
-	public void Main(int argc, string argv) {
-		DerivedObject derived = new DerivedObject();
-		print("derived.getValue() = " + derived.getValue());
-		derived.setValue(2);
-		print("derived.getValue() = " + derived.getValue());
-		derived = 3;
-		print("derived.getValue() = " + derived.getValue());
+public void Main(int argc, string argv) {
+	DerivedObject derived = new DerivedObject();
+	print("derived.getValue() = " + derived.getValue());
+	derived.setValue(2);
+	print("derived.getValue() = " + derived.getValue());
+	derived = 3;
+	print("derived.getValue() = " + derived.getValue());
 
-		Retyped retyped = new Retyped();
-		print("retyped.getValue() = " + retyped.getValue());
-		retyped.setValue(2);
-		print("retyped.getValue() = " + retyped.getValue());
-		retyped = 3;
-		print("retyped.getValue() = " + retyped.getValue());
-	}
+	Retyped retyped = new Retyped();
+	print("retyped.getValue() = " + retyped.getValue());
+	retyped.setValue(2);
+	print("retyped.getValue() = " + retyped.getValue());
+	retyped = 3;
+	print("retyped.getValue() = " + retyped.getValue());
 }
 

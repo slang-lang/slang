@@ -17,10 +17,10 @@
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Method.h>
 #include <Core/Script.h>
-#include <Core/StackTrace.h>
 #include <Core/Tokenizer.h>
 #include <Core/Tools.h>
-#include <Core/VirtualMachine.h>
+#include <Core/VirtualMachine/Controller.h>
+#include <Core/VirtualMachine/VirtualMachine.h>
 #include <Debugger/Debugger.h>
 #include <Tools/Files.h>
 #include <Tools/Strings.h>
@@ -382,7 +382,7 @@ MethodSymbol* LocalClient::getMethod(std::string name, const ParameterList& para
 		Tools::split(name, parent, child);
 
 		if ( !parent.empty() && !child.empty() ) {
-			scope = static_cast<ObjectiveScript::Runtime::Object*>(scope->resolve(parent, false));
+			scope = dynamic_cast<ObjectiveScript::Runtime::Object*>(scope->resolve(parent, false));
 		}
 		else {
 			return scope->resolveMethod(parent, params, false);
@@ -413,7 +413,7 @@ Symbol* LocalClient::getSymbol(std::string name) const
 {
 	std::string child;
 	std::string parent;
-	SymbolScope* scope = mScope;
+	IScope* scope = mScope;
 
 	do {
 		if ( !scope ) {
@@ -423,7 +423,7 @@ Symbol* LocalClient::getSymbol(std::string name) const
 		Tools::split(name, parent, child);
 
 		if ( !parent.empty() && !child.empty() ) {
-			scope = static_cast<ObjectiveScript::Runtime::Object*>(scope->resolve(parent, false));
+			scope = dynamic_cast<ObjectiveScript::Runtime::Object*>(scope->resolve(parent, false));
 		}
 		else {
 			return scope->resolve(parent, false);
@@ -534,7 +534,7 @@ bool LocalClient::modifySymbol(const StringList& tokens)
 	return true;
 }
 
-int LocalClient::notify(SymbolScope* scope, const Core::BreakPoint& breakpoint)
+int LocalClient::notify(IScope* scope, const Core::BreakPoint& breakpoint)
 {
 	mContinue = false;
 	mScope = scope;
@@ -590,30 +590,30 @@ int LocalClient::notify(SymbolScope* scope, const Core::BreakPoint& breakpoint)
 	return 0;
 }
 
-int LocalClient::notifyEnter(SymbolScope* scope, const Core::BreakPoint& breakpoint)
+int LocalClient::notifyEnter(IScope* scope, const Core::BreakPoint& breakpoint)
 {
-	writeln("[Stepping into " + StackTrace::GetInstance().currentStackLevel().toString() + "]");
+	writeln("[Stepping into " + Controller::Instance().stack()->current()->toString() + "]");
 
 	return notify(scope, breakpoint);
 }
 
-int LocalClient::notifyExceptionCatch(SymbolScope *scope, const Core::BreakPoint &breakpoint)
+int LocalClient::notifyExceptionCatch(IScope *scope, const Core::BreakPoint &breakpoint)
 {
-	writeln("[Caught exception in " + StackTrace::GetInstance().currentStackLevel().toString() + "]");
+	writeln("[Caught exception in " + Controller::Instance().stack()->current()->toString() + "]");
 
 	return notify(scope, breakpoint);
 }
 
-int LocalClient::notifyExceptionThrow(SymbolScope *scope, const Core::BreakPoint &breakpoint)
+int LocalClient::notifyExceptionThrow(IScope *scope, const Core::BreakPoint &breakpoint)
 {
-	writeln("[Exception has been thrown in " + StackTrace::GetInstance().currentStackLevel().toString() + "]");
+	writeln("[Exception has been thrown in " + Controller::Instance().stack()->current()->toString() + "]");
 
 	return notify(scope, breakpoint);
 }
 
-int LocalClient::notifyExit(SymbolScope* scope, const Core::BreakPoint& breakpoint)
+int LocalClient::notifyExit(IScope* scope, const Core::BreakPoint& breakpoint)
 {
-	writeln("[Stepping out of " + StackTrace::GetInstance().currentStackLevel().toString() + "]");
+	writeln("[Stepping out of " + Controller::Instance().stack()->current()->toString() + "]");
 
 	return notify(scope, breakpoint);
 }
@@ -712,11 +712,7 @@ void LocalClient::printHelp()
 
 void LocalClient::printStackTrace()
 {
-	StackTrace::Stack stack = StackTrace::GetInstance().getStack();
-
-	for ( StackTrace::Stack::const_iterator it = stack.begin(); it != stack.end(); ++it ) {
-		writeln(it->toString());
-	}
+	Controller::Instance().stack()->print();
 }
 
 void LocalClient::printSymbol(const StringList& tokens)
@@ -883,12 +879,13 @@ void LocalClient::start()
 	mDebugger->breakOnExceptionCatch(mSettings->breakOnExceptionCatch());
 	mDebugger->breakOnExceptionThrow(mSettings->breakOnExceptionThrow());
 	mDebugger->resume();
-	StackTrace::GetInstance().clear();
 
 	mVirtualMachine = new VirtualMachine();
 	for ( StringSet::const_iterator it = mSettings->libraryFolders().begin(); it != mSettings->libraryFolders().end(); ++it ) {
 		mVirtualMachine->addLibraryFolder((*it));
 	}
+
+	Controller::Instance().stack()->print();
 
 	// add extensions
 #ifdef USE_APACHE_EXTENSION
@@ -910,19 +907,12 @@ void LocalClient::start()
 		ObjectiveScript::Script *script = mVirtualMachine->createScriptFromFile(mSettings->filename(), mParameters);
 		assert(script);
 
-		// check if an instance ("main") of a Main object exists
-		ObjectiveScript::Runtime::Object *main = static_cast<ObjectiveScript::Runtime::Object*>(script->resolve("main"));
+		writeln("[Using structured execution mode]");
 
-		if ( !main || main->isAtomicType() ) {
-			writeln("[Using structured execution mode]");
+		ObjectiveScript::Runtime::IntegerObject result;
+		script->execute("Main", mParameters, &result);
 
-			ObjectiveScript::Runtime::IntegerObject result;
-			script->execute("Main", mParameters, &result);
-
-			writeln("[Process finished with exit code " + result.getValue().toStdString() + "]");
-		}
-
-		writeln("[Process exited normally]");
+		writeln("[Process finished with exit code " + result.getValue().toStdString() + "]");
 
 		if ( mSettings->autoStop() ) {
 			mRunning = false;

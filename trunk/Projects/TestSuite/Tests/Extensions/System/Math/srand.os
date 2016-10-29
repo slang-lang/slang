@@ -1,20 +1,18 @@
 #!/usr/local/bin/oscript
 
-public object Main {
-	public void Main(int argc = 0, string args = "") {
-		assert( TestCase1() );
-	}
+public void Main(int argc = 0, string args = "") {
+	assert( TestCase1() );
+}
 
-	private bool TestCase1() const {
-		print("TestCase 1: srand()");
+private bool TestCase1() const {
+	print("TestCase 1: srand()");
 
-		srand(time());
+	srand(time());
 
-		int value = rand() % 100 + 1;
+	int value = rand() % 100 + 1;
 
-		print("rand() = " + value);
+	print("rand() = " + value);
 
-		return value > 0;
-	}
+	return value > 0;
 }
 

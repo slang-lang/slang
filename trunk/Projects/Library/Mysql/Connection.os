@@ -16,20 +16,19 @@ public namespace Mysql {
 		private Mysql.Settings mSettings;
 		private string mUsername;
 
-		public void Connection() {
+		public void Constructor() modify {
 			initialize();
 
 			cleanup();
 		}
 
-		public void Connection(string hostname, int port, string user, string password, string database = "") {
+		public void Constructor(string hostname, int port, string user, string password, string database = "") modify {
 			initialize();
 
 			open(hostname, port, user, password, database);
 		}
 
-		public void ~Connection() {
-			print("~Connection()");
+		public void Destructor() modify {
 			if ( mHandle != 0 ) {
 				close();
 			}
@@ -61,7 +60,7 @@ public namespace Mysql {
 		}
 
 		public Mysql.Query createQuery(string queryStr = "") const {
-			return new Mysql.Query(Mysql.Connection this, queryStr);
+			return new Query(Connection this, queryStr);
 		}
 
 		public string error() const {
@@ -79,7 +78,7 @@ public namespace Mysql {
 		private void initialize() modify {
 			assert(!mSettings);	// prevent multiple initializations
 
-			mSettings = new Mysql.Settings();
+			mSettings = new Settings();
 		}
 
 		public bool isOpen() const {
@@ -93,7 +92,7 @@ public namespace Mysql {
 		public bool open(string hostname, int port, string user, string password, string database = "") modify {
 			if ( mHandle != 0 ) {
 				// we already have a connection handle
-				throw new System.Exception("mysql handle still points to an open connection!");
+				throw new Exception("mysql handle still points to an open connection!");
 			}
 
 			// request a mysql handle
@@ -116,7 +115,7 @@ public namespace Mysql {
 		}
 
 		public Mysql.Result query(string queryStr) modify {
-			if ( Mysql.MysqlDebugMode ) { writeln("Mysql debug mode is enabled."); }
+			if ( MysqlDebugMode ) { print("Mysql debug mode is enabled."); }
 
 			if ( mSettings.getAutoEscaping() ) {
 				// auto escaping for strings is active
@@ -131,7 +130,7 @@ public namespace Mysql {
 			}
 
 			int handle = mysql_store_result(mHandle);
-			return new Mysql.Result(handle);
+			return new Result(handle);
 		}
 
 		public int selectDB(string database) modify {

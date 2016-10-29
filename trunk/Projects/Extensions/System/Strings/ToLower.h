@@ -10,10 +10,8 @@
 // Project includes
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
-#include <Core/Method.h>
-#include <Core/Repository.h>
+#include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Tools.h>
-#include <Core/Common/Exceptions.h>
 #include <Tools/Strings.h>
 
 // Forward declarations
@@ -27,11 +25,11 @@ namespace System {
 namespace Strings {
 
 
-class ToLower : public Runtime::Method
+class ToLower : public ExtensionMethod
 {
 public:
 	ToLower()
-	: Runtime::Method(0, "toLower", Designtime::StringObject::TYPENAME)
+	: ExtensionMethod(0, "toLower", Designtime::StringObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter("value", Designtime::StringObject::TYPENAME, VALUE_NONE));
@@ -54,7 +52,7 @@ public:
 			*result = Runtime::StringObject(param_value);
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
 			*data = Runtime::StringObject(std::string(e.what()));
 
 			mExceptionData = Runtime::ExceptionData(data, token.position());

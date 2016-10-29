@@ -187,8 +187,24 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\Analyser.cpp"
+				RelativePath=".\Core\Designtime\Analyser.cpp"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Designtime\"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Designtime\"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\Core\Designtime\Ancestor.cpp"
@@ -311,6 +327,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\Core\BuildInObjects\BoolObject.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\Designtime\BuildInTypes\BoolObject.cpp"
 				>
 				<FileConfiguration
@@ -329,10 +349,6 @@
 						ObjectFile="$(IntDir)\Core\Designtime\BuildInTypes\"
 					/>
 				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\Core\BuildInObjects\BoolObject.cpp"
-				>
 			</File>
 			<File
 				RelativePath=".\Debugger\BreakPoint.cpp"
@@ -373,6 +389,10 @@
 						ObjectFile="$(IntDir)\Debugger\"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\Core\VirtualMachine\Controller.cpp"
+				>
 			</File>
 			<File
 				RelativePath=".\Debugger\Debugger.cpp"
@@ -459,6 +479,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\Core\BuildInObjects\FloatObject.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\Designtime\BuildInTypes\FloatObject.cpp"
 				>
 				<FileConfiguration
@@ -477,10 +501,6 @@
 						ObjectFile="$(IntDir)\Core\Designtime\BuildInTypes\"
 					/>
 				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\Core\BuildInObjects\FloatObject.cpp"
-				>
 			</File>
 			<File
 				RelativePath=".\Core\BuildInObjects\GenericObject.cpp"
@@ -531,10 +551,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\IntegerObject.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\Core\Designtime\BuildInTypes\IntegerObject.cpp"
 				>
 				<FileConfiguration
@@ -553,6 +569,10 @@
 						ObjectFile="$(IntDir)\Core\Designtime\BuildInTypes\"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\Core\BuildInObjects\IntegerObject.cpp"
+				>
 			</File>
 			<File
 				RelativePath=".\Core\Interpreter.cpp"
@@ -579,7 +599,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\Memory.cpp"
+				RelativePath=".\Core\VirtualMachine\Memory.cpp"
 				>
 			</File>
 			<File
@@ -627,6 +647,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\Core\BuildInObjects\NumberObject.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\Designtime\BuildInTypes\NumberObject.cpp"
 				>
 				<FileConfiguration
@@ -645,10 +669,6 @@
 						ObjectFile="$(IntDir)\Core\Designtime\BuildInTypes\"
 					/>
 				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\Core\BuildInObjects\NumberObject.cpp"
-				>
 			</File>
 			<File
 				RelativePath=".\Core\Object.cpp"
@@ -739,10 +759,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\Preprocessor.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\Core\Designtime\Prototype.cpp"
 				>
 				<FileConfiguration
@@ -767,7 +783,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Repository.cpp"
+				RelativePath=".\Core\VirtualMachine\Repository.cpp"
 				>
 			</File>
 			<File
@@ -799,7 +815,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\StackTrace.cpp"
+				RelativePath=".\Core\VirtualMachine\Stack.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\VirtualMachine\StackLevel.cpp"
 				>
 			</File>
 			<File
@@ -891,7 +911,11 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\VirtualMachine.cpp"
+				RelativePath=".\Core\VirtualMachine\VirtualMachine.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\VirtualMachine\VirtualMethodTable.cpp"
 				>
 			</File>
 			<File
@@ -949,7 +973,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Analyser.h"
+				RelativePath=".\Core\Designtime\Analyser.h"
 				>
 			</File>
 			<File
@@ -1001,6 +1025,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Core\VirtualMachine\Controller.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Debugger\Debugger.h"
 				>
 			</File>
@@ -1009,11 +1037,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\DoubleObject.h"
+				RelativePath=".\Core\Designtime\BuildInTypes\DoubleObject.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\DoubleObject.h"
+				RelativePath=".\Core\BuildInObjects\DoubleObject.h"
 				>
 			</File>
 			<File
@@ -1021,7 +1049,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Exceptions.h"
+				RelativePath=".\Core\Designtime\Exceptions.h"
 				>
 			</File>
 			<File
@@ -1033,15 +1061,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\Exceptions.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Core\BuildInObjects\FloatObject.h"
+				RelativePath=".\Core\Exceptions.h"
 				>
 			</File>
 			<File
 				RelativePath=".\Core\Designtime\BuildInTypes\FloatObject.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\BuildInObjects\FloatObject.h"
 				>
 			</File>
 			<File
@@ -1061,15 +1089,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\IntegerObject.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Core\BuildInObjects\IntegerObject.h"
-				>
-			</File>
-			<File
 				RelativePath=".\Core\Designtime\BuildInTypes\IntegerObject.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\BuildInObjects\IntegerObject.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\BuildInObjects\IntegerObject.h"
 				>
 			</File>
 			<File
@@ -1093,7 +1121,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Memory.h"
+				RelativePath=".\Core\VirtualMachine\Memory.h"
 				>
 			</File>
 			<File
@@ -1109,11 +1137,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\NumberObject.h"
+				RelativePath=".\Core\BuildInObjects\NumberObject.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\NumberObject.h"
+				RelativePath=".\Core\Designtime\BuildInTypes\NumberObject.h"
 				>
 			</File>
 			<File
@@ -1149,10 +1177,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Preprocessor.h"
-				>
-			</File>
-			<File
 				RelativePath=".\Core\Designtime\Prototype.h"
 				>
 			</File>
@@ -1161,7 +1185,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Repository.h"
+				RelativePath=".\Core\VirtualMachine\Repository.h"
 				>
 			</File>
 			<File
@@ -1177,7 +1201,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\StackTrace.h"
+				RelativePath=".\Core\VirtualMachine\Stack.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\VirtualMachine\StackLevel.h"
 				>
 			</File>
 			<File
@@ -1217,11 +1245,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\UserObject.h"
+				RelativePath=".\Core\Designtime\BuildInTypes\UserObject.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\UserObject.h"
+				RelativePath=".\Core\BuildInObjects\UserObject.h"
 				>
 			</File>
 			<File
@@ -1229,7 +1257,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\VirtualMachine.h"
+				RelativePath=".\Core\VirtualMachine\VirtualMachine.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\VirtualMachine\VirtualMethodTable.h"
 				>
 			</File>
 			<File

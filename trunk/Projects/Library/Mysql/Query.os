@@ -1,5 +1,4 @@
 
-//import System.GDI.IQuery;
 import Connection;
 import Debug;
 import Result;
@@ -8,13 +7,13 @@ import System.String;
 
 public namespace Mysql {
 
-	public object Query /*implements System.GDI.IQuery*/ {
+	public object Query {
 		private Mysql.Connection mConnection;
 		private String mExecutedQuery;
 		private String mPreparedQuery;
 		private int mResultHandle;
 
-		public void Query(Mysql.Connection connection ref, string queryStr = "") {
+		public void Constructor(Mysql.Connection connection ref, string queryStr = "") {
 			mConnection = connection;
 			mExecutedQuery = new String();
 			mPreparedQuery = new String();
@@ -23,8 +22,7 @@ public namespace Mysql {
 			prepare(queryStr);
 		}
 
-		public void ~Query() {
-			print("~Query()");
+		public void Destructor() {
 			if ( mResultHandle ) {
 				mysql_free_result(mResultHandle);
 			}
@@ -46,30 +44,35 @@ public namespace Mysql {
 
 		public bool bind(string field, bool value) modify {
 			if ( MysqlDebugMode ) { print("bind '" + field + "' with '" + value + "'"); }
+
 			// replace all occurances of field with value
 			return mExecutedQuery.ReplaceAll(field, string value);
 		}
 
 		public bool bind(string field, double value) modify {
 			if ( MysqlDebugMode ) { print("bind '" + field + "' with '" + value + "'"); }
+
 			// replace field with value
 			return mExecutedQuery.ReplaceAll(field, string value);
 		}
 
 		public bool bind(string field, float value) modify {
 			if ( MysqlDebugMode ) { print("bind '" + field + "' with '" + value + "'"); }
+
 			// replace field with value
 			return mExecutedQuery.ReplaceAll(field, string value);
 		}
 
 		public bool bind(string field, int value) modify {
 			if ( MysqlDebugMode ) { print("bind '" + field + "' with '" + value + "'"); }
+
 			// replace field with value
 			return mExecutedQuery.ReplaceAll(field, string value);
 		}
 
 		public bool bind(string field, string value) modify {
 			if ( MysqlDebugMode ) { print("bind '" + field + "' with '" + value + "'"); }
+
 			// replace field with value
 			return mExecutedQuery.ReplaceAll(field, value);
 		}
@@ -84,10 +87,10 @@ public namespace Mysql {
 
 			print(queryStr);
 
-                        int error = mysql_query(mConnection.mHandle, queryStr);
+                        int irror = mysql_query(mConnection.mHandle, queryStr);
                         if ( error ) {
                                 // error while query execution
-				writeln(mysql_error(mConnection.mHandle));
+				print(mysql_error(mConnection.mHandle));
 				return null;
                         }
 

@@ -16,7 +16,7 @@ private object DerivedObject extends TestObject {
 	private string mText;
 
 	public string =operator(string other) const {
-		return mText + " " + mValue;
+		return mText + " " + base.mValue;
 	}
 
 	public string ToString() const {
@@ -24,34 +24,32 @@ private object DerivedObject extends TestObject {
 	}
 }
 
-public object Main {
-	public void Main(int argc, string args) {
-		TestObject obj = new TestObject();
-		obj.mValue = 173;
+public void Main(int argc, string args) modify {
+	TestObject obj = new TestObject();
+	obj.mValue = 173;
 
-		print("obj = " + obj);
-		ObjectReceiver(Object obj);
-		print("obj = " + obj);
+	print("obj = " + obj);
+	ObjectReceiver(Object obj);
+	print("obj = " + obj);
 
-		obj = ObjectProvider();
-		print("obj = " + obj);
-	}
+	obj = ObjectProvider();
+	print("obj = " + obj);
+}
 
-	private DerivedObject ObjectProvider() modify {
-		DerivedObject obj = new DerivedObject();
-		obj.mText = "bla";
+private DerivedObject ObjectProvider() modify {
+	DerivedObject obj = new DerivedObject();
+	obj.mText = "bla";
 
-		return obj;
-	}
+	return obj;
+}
 
-	private bool ObjectReceiver(Object obj ref) modify {
-		assert(obj);
+private bool ObjectReceiver(Object obj ref) modify {
+	assert(obj);
 
-		print("obj = " + obj);
-		obj.mValue = obj.mValue++;
-		print("obj = " + obj);
+	print("obj = " + obj);
+	obj.mValue = obj.mValue++;
+	print("obj = " + obj);
 
-		return obj;
-	}
+	return obj;
 }
 

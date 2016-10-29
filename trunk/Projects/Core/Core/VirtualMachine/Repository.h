@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Core_Repository_h
-#define ObjectiveScript_Core_Repository_h
+#ifndef ObjectiveScript_Core_VirtualMachine_Repository_h
+#define ObjectiveScript_Core_VirtualMachine_Repository_h
 
 
 // Library includes
@@ -8,8 +8,8 @@
 #include <string>
 
 // Project includes
-#include "Object.h"
-#include "Reference.h"
+#include <Core/Object.h>
+#include <Core/Reference.h>
 
 // Forward declarations
 
@@ -28,7 +28,6 @@ namespace Designtime {
 namespace Runtime {
 	class Object;
 }
-class GlobalScope;
 
 class Repository
 {
@@ -37,30 +36,19 @@ public:
 	~Repository();
 
 public:
-	GlobalScope* getGlobalScope() const;
+	void deinit();
+	void init();
 
 public:
 	void addBluePrint(Designtime::BluePrintEnum* blueprint);
 	void addBluePrint(Designtime::BluePrintObject* object);
 	void addPrototype(Designtime::Prototype* prototype);
 
-	Runtime::Object* createInstance(const std::string& type, const std::string& name = ANONYMOUS_OBJECT, bool initialize = true);
-	Runtime::Object* createInstance(Designtime::BluePrintObject* blueprint, const std::string& name = ANONYMOUS_OBJECT, bool initialize = true);
+	void cleanupForwardDeclarations();
 
-	void addReference(Runtime::Object *object);
-	void removeReference(Runtime::Object *object);
-
-	bool isAlreadyKnown(const std::string& name) const;
-
-	void rebuildBluePrints();
-
-protected:
-
-private:
-	typedef std::map<Runtime::Object*, int> ReferenceCountedObjects;
-
-private: // hide me from public
-	void CollectGarbage();
+	Runtime::Object* createInstance(const std::string& type, const std::string& name, bool initialize = false);
+	Runtime::Object* createInstance(Designtime::BluePrintObject* blueprint, const std::string& name, bool initialize = false);
+	Runtime::Object* createReference(Designtime::BluePrintObject* blueprint, const std::string& name, bool initialize = false);
 
 private:
 	Runtime::Object* createObject(const std::string& name, Designtime::BluePrintObject* blueprint, bool initialize);
@@ -70,24 +58,19 @@ private:
 	Designtime::BluePrintEnum* findBluePrintEnum(const std::string& type) const;
 	Designtime::BluePrintObject* findBluePrintObject(const std::string& type) const;
 
-	void createDefaultMethods(Runtime::Object *object);
 	void initialize();
 	void initializeObject(Runtime::Object *object, Designtime::BluePrintObject* blueprint);
-	void insertBluePrintEnumsIntoScopes();
-	void insertBluePrintObjectsIntoScopes();
-	void rebuildBluePrintEnums();
-	void rebuildBluePrintObjects();
 
 private:
 	typedef std::map<std::string, Designtime::BluePrintEnum*> BluePrintEnumMap;
 	typedef std::map<std::string, Designtime::BluePrintObject*> BluePrintObjectMap;
+	typedef std::set<Designtime::BluePrintGeneric*> ForwardDeclarationTomb;
 
 private:
 	BluePrintEnumMap mBluePrintEnums;
 	BluePrintObjectMap mBluePrintObjects;
-	ReferenceCountedObjects mInstances;
-	//Designtime::PrototypeMap mPrototypes;
-	GlobalScope *mScope;
+	//PrototypeMap mPrototypes;
+	ForwardDeclarationTomb mForwardDeclarations;
 };
 
 

@@ -1,12 +1,15 @@
 #!/usr/local/bin/oscript
 
-public object Main
-{
-	public int mPublicMember;
+// THIS WILL FAIL
 
-	public void Main(int argc, string argv)
-	{
-		mPublicMember = 0;
-	}
+public object TestObject {
+	public int mPublicMember;
+}
+
+public void Main(int argc = 0, string args = "") {
+	TestObject obj = new TestObject();
+	obj.mPublicMember = 0;
+
+	assert(0);
 }
 

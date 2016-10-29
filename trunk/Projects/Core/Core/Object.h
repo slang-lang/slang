@@ -18,6 +18,7 @@
 #include "Interpreter.h"
 #include "Method.h"
 #include "Parameter.h"
+#include "Reference.h"
 #include "Scope.h"
 #include "Symbol.h"
 #include "Token.h"
@@ -60,8 +61,7 @@ public:
 
 public:
 	void operator= (const Object& other);
-	void assign(const Object& other);
-	void assignSubType(const Object& other);
+	void assign(const Object& other, bool overrideType = false);
 	void copy(const Object& other);
 
 public:	// Symbol::IType implementation & RTTI
@@ -80,7 +80,10 @@ public:	// Setup
 	void addInheritance(const Designtime::Ancestor& ancestor, Object* inheritance);
 	void setConstructed(bool state);
 	void setParent(IScope *scope);
-	void setRepository(Repository *repository);
+
+public:	// Reference
+	const Reference& getReference() const { return mReference; }
+	void setReference(const Reference& reference) { mReference = reference; }
 
 public: // Symbol
 	Symbol* resolve(const std::string& name, bool onlyCurrentScope) const;
@@ -96,6 +99,7 @@ public:	// Value
 	virtual bool isAbstract() const;
 	virtual bool isArray() const;
 	virtual bool isAtomicType() const;
+	virtual bool isConstructed() const;
 	virtual bool isValid() const;
 
 	virtual void setArray(bool value, size_t size = 0);
@@ -150,11 +154,16 @@ protected:
 	std::string mOutterface;
 	std::string mQualifiedOutterface;
 	std::string mQualifiedTypename;
-	Repository *mRepository;
+	Reference mReference;
 	std::string mTypename;
 	AtomicValue mValue;
 
 private:
+	void assignReference(const Reference& ref);
+
+private:
+	Object* mBase;
+	Object* mThis;
 };
 
 

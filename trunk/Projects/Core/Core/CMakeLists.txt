@@ -7,56 +7,45 @@ ADD_SUBDIRECTORY(Designtime)
 ADD_SUBDIRECTORY(Extensions)
 #ADD_SUBDIRECTORY(Interfaces)
 ADD_SUBDIRECTORY(Runtime)
-#ADD_SUBDIRECTORY(Utils)
+ADD_SUBDIRECTORY(VirtualMachine)
 
 SET(SOURCES
-	Analyser.cpp
 	Interpreter.cpp
-	Memory.cpp
 	Method.cpp
 	Object.cpp
 	Parameter.cpp
-	Preprocessor.cpp
+#	Preprocessor.cpp
 	Reference.cpp
-	Repository.cpp
 	Scope.cpp
 	Script.cpp
-	StackTrace.cpp
 	Symbol.cpp
 	Token.cpp
 	Tokenizer.cpp
 	Tools.cpp
 	Types.cpp
-	VirtualMachine.cpp
-#	VirtualMethodTable.cpp
 )
 
 SET(HEADERS
-	Analyser.h
 	Consts.h
 	Defines.h
 	Interpreter.h
-	Memory.h
 	Method.h
 	Object.h
 	ObjectiveScript.h
 	Parameter.h
-	Preprocessor.h
+#	Preprocessor.h
 	Reference.h
-	Repository.h
 	Scope.h
 	Script.h
-	StackTrace.h
 	Symbol.h
 	Token.h
 	Tokenizer.h
 	Tools.h
 	Types.h
-	VirtualMachine.h
-#	VirtualMethodTable.h
 )
 
 SET(DEPENDENCIES
+	CoreVirtualMachine
 	CoreRuntime
 	CoreExtensions
 	CoreDebugger

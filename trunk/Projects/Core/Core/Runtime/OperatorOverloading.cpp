@@ -23,7 +23,7 @@ namespace ObjectiveScript {
 namespace Runtime {
 
 
-inline void operator_binary_assign(Object *base, Object *other)
+void operator_binary_assign(Object *base, Object *other)
 {
 	if ( !base ) {
 		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object");
@@ -41,68 +41,65 @@ inline void operator_binary_assign(Object *base, Object *other)
 		BoolObject tmp(base->getValue());
 		tmp.operator_assign(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == DoubleObject::TYPENAME ) {
 		DoubleObject tmp(base->getValue());
 		tmp.operator_assign(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == FloatObject::TYPENAME ) {
 		FloatObject tmp(base->getValue());
 		tmp.operator_assign(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == IntegerObject::TYPENAME ) {
 		IntegerObject tmp(base->getValue());
 		tmp.operator_assign(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == NumberObject::TYPENAME ) {
 		NumberObject tmp(base->getValue());
 		tmp.operator_assign(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == StringObject::TYPENAME ) {
 		StringObject tmp(base->getValue());
 		tmp.operator_assign(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == VoidObject::TYPENAME ) {
 		VoidObject tmp;
 		tmp.operator_assign(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
-	else if ( other->isInstanceOf(source) ) {
-		// we are assigning a sub type to a super type
-		base->assignSubType(*other);
-	}
+	// no atomic data type, so we have to look if our assign operator has been overwritten
 	else {
-		// no atomic data type, so we have to look if our assign operator has been overwritten
 		ParameterList params;
 		params.push_back(
-				Parameter(other->getName(), other->QualifiedTypename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
+			Parameter(other->getName(), other->QualifiedTypename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
 		);
 
 		Runtime::Method* method = static_cast<Runtime::Method*>(base->resolveMethod("operator=", params, false));
 		if ( method ) {
-			method->execute(params, base, Token());
+			Interpreter interpreter;
+			interpreter.execute(method, params, base);
 		}
 		else {
-			*base = *other;
+			base->assign(*other);
 		}
 	}
 }
 
 void operator_binary_bitand(Object *base, Object *other)
 {
-	if ( !base || !base->isValid() ) {
+	if ( !base /*|| !base->isValid()*/ ) {
 		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object");
 	}
 
@@ -112,48 +109,48 @@ void operator_binary_bitand(Object *base, Object *other)
 		BoolObject tmp(base->getValue());
 		tmp.operator_bitand(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == DoubleObject::TYPENAME ) {
 		DoubleObject tmp(base->getValue());
 		tmp.operator_bitand(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == FloatObject::TYPENAME ) {
 		FloatObject tmp(base->getValue());
 		tmp.operator_bitand(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == IntegerObject::TYPENAME ) {
 		IntegerObject tmp(base->getValue());
 		tmp.operator_bitand(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == NumberObject::TYPENAME ) {
 		NumberObject tmp(base->getValue());
 		tmp.operator_bitand(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == StringObject::TYPENAME ) {
 		StringObject tmp(base->getValue());
 		tmp.operator_bitand(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == VoidObject::TYPENAME ) {
 		VoidObject tmp;
 		tmp.operator_bitand(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else {
 		ParameterList params;
 		params.push_back(
-			Parameter(other->getName(), other->QualifiedTypename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
+			Parameter(other->getName(), other->QualifiedTypename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
 		);
 
 		VoidObject tmp;
@@ -163,7 +160,7 @@ void operator_binary_bitand(Object *base, Object *other)
 
 void operator_binary_bitcomplement(Object *base, Object *other)
 {
-	if ( !base || !base->isValid() ) {
+	if ( !base /*|| !base->isValid()*/ ) {
 		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object");
 	}
 
@@ -173,48 +170,48 @@ void operator_binary_bitcomplement(Object *base, Object *other)
 		BoolObject tmp(base->getValue());
 		tmp.operator_bitcomplement(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == DoubleObject::TYPENAME ) {
 		DoubleObject tmp(base->getValue());
 		tmp.operator_bitcomplement(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == FloatObject::TYPENAME ) {
 		FloatObject tmp(base->getValue());
 		tmp.operator_bitcomplement(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == IntegerObject::TYPENAME ) {
 		IntegerObject tmp(base->getValue());
 		tmp.operator_bitcomplement(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == NumberObject::TYPENAME ) {
 		NumberObject tmp(base->getValue());
 		tmp.operator_bitcomplement(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == StringObject::TYPENAME ) {
 		StringObject tmp(base->getValue());
 		tmp.operator_bitcomplement(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == VoidObject::TYPENAME ) {
 		VoidObject tmp;
 		tmp.operator_bitcomplement(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else {
 		ParameterList params;
 		params.push_back(
-			Parameter(other->getName(), other->QualifiedTypename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
+			Parameter(other->getName(), other->QualifiedTypename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
 		);
 
 		VoidObject tmp;
@@ -224,7 +221,7 @@ void operator_binary_bitcomplement(Object *base, Object *other)
 
 void operator_binary_bitor(Object *base, Object *other)
 {
-	if ( !base || !base->isValid() ) {
+	if ( !base /*|| !base->isValid()*/ ) {
 		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object");
 	}
 
@@ -234,48 +231,48 @@ void operator_binary_bitor(Object *base, Object *other)
 		BoolObject tmp(base->getValue());
 		tmp.operator_bitor(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == DoubleObject::TYPENAME ) {
 		DoubleObject tmp(base->getValue());
 		tmp.operator_bitor(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == FloatObject::TYPENAME ) {
 		FloatObject tmp(base->getValue());
 		tmp.operator_bitor(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == IntegerObject::TYPENAME ) {
 		IntegerObject tmp(base->getValue());
 		tmp.operator_bitor(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == NumberObject::TYPENAME ) {
 		NumberObject tmp(base->getValue());
 		tmp.operator_bitor(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == StringObject::TYPENAME ) {
 		StringObject tmp(base->getValue());
 		tmp.operator_bitor(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == VoidObject::TYPENAME ) {
 		VoidObject tmp;
 		tmp.operator_bitor(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else {
 		ParameterList params;
 		params.push_back(
-			Parameter(other->getName(), other->QualifiedTypename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
+			Parameter(other->getName(), other->QualifiedTypename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
 		);
 
 		VoidObject tmp;
@@ -285,7 +282,7 @@ void operator_binary_bitor(Object *base, Object *other)
 
 void operator_binary_divide(Object *base, Object *other)
 {
-	if ( !base || !base->isValid() ) {
+	if ( !base /*|| !base->isValid()*/ ) {
 		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object");
 	}
 
@@ -295,48 +292,48 @@ void operator_binary_divide(Object *base, Object *other)
 		BoolObject tmp(base->getValue());
 		tmp.operator_divide(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == DoubleObject::TYPENAME ) {
 		DoubleObject tmp(base->getValue());
 		tmp.operator_divide(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == FloatObject::TYPENAME ) {
 		FloatObject tmp(base->getValue());
 		tmp.operator_divide(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == IntegerObject::TYPENAME ) {
 		IntegerObject tmp(base->getValue());
 		tmp.operator_divide(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == NumberObject::TYPENAME ) {
 		NumberObject tmp(base->getValue());
 		tmp.operator_divide(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == StringObject::TYPENAME ) {
 		StringObject tmp(base->getValue());
 		tmp.operator_divide(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == VoidObject::TYPENAME ) {
 		VoidObject tmp;
 		tmp.operator_divide(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else {
 		ParameterList params;
 		params.push_back(
-			Parameter(other->getName(), other->QualifiedTypename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
+			Parameter(other->getName(), other->QualifiedTypename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
 		);
 
 		VoidObject tmp;
@@ -357,6 +354,7 @@ bool operator_binary_equal(Object *base, Object *other)
 
 	if ( source == BoolObject::TYPENAME ) {
 		BoolObject tmp(base->getValue());
+		tmp.operator_equal(other);
 		return tmp.operator_equal(other);
 	}
 	else if ( source == DoubleObject::TYPENAME ) {
@@ -386,22 +384,33 @@ bool operator_binary_equal(Object *base, Object *other)
 
 	ParameterList params;
 	params.push_back(
-		Parameter(other->getName(), other->QualifiedTypename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
+		Parameter(other->getName(), other->QualifiedTypename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
 	);
 
 	if ( base->resolveMethod("operator==", params, false) ) {
 		Object tmp;
-		base->execute(&tmp, "operator==", params, 0);
+		base->execute(&tmp, "operator==", params);
+		return isTrue(tmp);
+	}
+
+	params.clear();
+	params.push_back(
+		Parameter(other->getName(), other->QualifiedOutterface(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
+	);
+
+	if ( base->resolveMethod("operator==", params, false) ) {
+		Object tmp;
+		base->execute(&tmp, "operator==", params);
 		return isTrue(tmp);
 	}
 
 	// no equality operator found, so we have to compare our references
-	return base == other;
+	return base->operator_equal(other);
 }
 
 bool operator_binary_greater(Object *base, Object *other)
 {
-	if ( !base || !base->isValid() ) {
+	if ( !base /*|| !base->isValid()*/ ) {
 		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object");
 	}
 
@@ -438,17 +447,17 @@ bool operator_binary_greater(Object *base, Object *other)
 
 	ParameterList params;
 	params.push_back(
-		Parameter(other->getName(), other->QualifiedTypename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
+		Parameter(other->getName(), other->QualifiedTypename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
 	);
 
 	Object tmp;
-	base->execute(&tmp, "operator>", params, 0);
+	base->execute(&tmp, "operator>", params);
 	return isTrue(tmp);
 }
 
 bool operator_binary_greater_equal(Object *base, Object *other)
 {
-	if ( !base || !base->isValid() ) {
+	if ( !base /*|| !base->isValid()*/ ) {
 		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object");
 	}
 
@@ -485,7 +494,7 @@ bool operator_binary_greater_equal(Object *base, Object *other)
 
 	ParameterList params;
 	params.push_back(
-		Parameter(other->getName(), other->QualifiedTypename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
+		Parameter(other->getName(), other->QualifiedTypename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
 	);
 
 	Object tmp;
@@ -495,7 +504,7 @@ bool operator_binary_greater_equal(Object *base, Object *other)
 
 bool operator_binary_less(Object *base, Object *other)
 {
-	if ( !base || !base->isValid() ) {
+	if ( !base /*|| !base->isValid()*/ ) {
 		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object");
 	}
 
@@ -532,7 +541,7 @@ bool operator_binary_less(Object *base, Object *other)
 
 	ParameterList params;
 	params.push_back(
-		Parameter(other->getName(), other->QualifiedTypename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
+		Parameter(other->getName(), other->QualifiedTypename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
 	);
 
 	Object tmp;
@@ -542,7 +551,7 @@ bool operator_binary_less(Object *base, Object *other)
 
 bool operator_binary_less_equal(Object *base, Object *other)
 {
-	if ( !base || !base->isValid() ) {
+	if ( !base /*|| !base->isValid()*/ ) {
 		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object");
 	}
 
@@ -579,7 +588,7 @@ bool operator_binary_less_equal(Object *base, Object *other)
 
 	ParameterList params;
 	params.push_back(
-		Parameter(other->getName(), other->QualifiedTypename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
+		Parameter(other->getName(), other->QualifiedTypename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
 	);
 
 	Object tmp;
@@ -589,7 +598,7 @@ bool operator_binary_less_equal(Object *base, Object *other)
 
 bool operator_binary_is(Object* base, Symbol* other)
 {
-	if ( !base || !base->isValid() ) {
+	if ( !base /*|| !base->isValid()*/ ) {
 		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object");
 	}
 
@@ -598,7 +607,7 @@ bool operator_binary_is(Object* base, Symbol* other)
 
 void operator_binary_modulo(Object *base, Object *other)
 {
-	if ( !base || !base->isValid() ) {
+	if ( !base /*|| !base->isValid()*/ ) {
 		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object");
 	}
 
@@ -608,48 +617,48 @@ void operator_binary_modulo(Object *base, Object *other)
 		BoolObject tmp(base->getValue());
 		tmp.operator_modulo(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == DoubleObject::TYPENAME ) {
 		DoubleObject tmp(base->getValue());
 		tmp.operator_modulo(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == FloatObject::TYPENAME ) {
 		FloatObject tmp(base->getValue());
 		tmp.operator_modulo(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == IntegerObject::TYPENAME ) {
 		IntegerObject tmp(base->getValue());
 		tmp.operator_modulo(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == NumberObject::TYPENAME ) {
 		NumberObject tmp(base->getValue());
 		tmp.operator_modulo(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == StringObject::TYPENAME ) {
 		StringObject tmp(base->getValue());
 		tmp.operator_modulo(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == VoidObject::TYPENAME ) {
 		VoidObject tmp;
 		tmp.operator_modulo(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else {
 		ParameterList params;
 		params.push_back(
-			Parameter(other->getName(), other->QualifiedTypename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
+			Parameter(other->getName(), other->QualifiedTypename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
 		);
 
 		VoidObject tmp;
@@ -659,7 +668,7 @@ void operator_binary_modulo(Object *base, Object *other)
 
 void operator_binary_multiply(Object *base, Object *other)
 {
-	if ( !base || !base->isValid() ) {
+	if ( !base /*|| !base->isValid()*/ ) {
 		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object");
 	}
 
@@ -669,48 +678,48 @@ void operator_binary_multiply(Object *base, Object *other)
 		BoolObject tmp(base->getValue());
 		tmp.operator_multiply(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == DoubleObject::TYPENAME ) {
 		DoubleObject tmp(base->getValue());
 		tmp.operator_multiply(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == FloatObject::TYPENAME ) {
 		FloatObject tmp(base->getValue());
 		tmp.operator_multiply(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == IntegerObject::TYPENAME ) {
 		IntegerObject tmp(base->getValue());
 		tmp.operator_multiply(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == NumberObject::TYPENAME ) {
 		NumberObject tmp(base->getValue());
 		tmp.operator_multiply(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == StringObject::TYPENAME ) {
 		StringObject tmp(base->getValue());
 		tmp.operator_multiply(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == VoidObject::TYPENAME ) {
 		VoidObject tmp;
 		tmp.operator_multiply(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else {
 		ParameterList params;
 		params.push_back(
-			Parameter(other->getName(), other->QualifiedTypename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
+			Parameter(other->getName(), other->QualifiedTypename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
 		);
 
 		VoidObject tmp;
@@ -720,7 +729,7 @@ void operator_binary_multiply(Object *base, Object *other)
 
 void operator_binary_plus(Object *base, Object *other)
 {
-	if ( !base || !base->isValid() ) {
+	if ( !base /*|| !base->isValid()*/ ) {
 		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object");
 	}
 
@@ -730,48 +739,48 @@ void operator_binary_plus(Object *base, Object *other)
 		BoolObject tmp(base->getValue());
 		tmp.operator_plus(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == DoubleObject::TYPENAME ) {
 		DoubleObject tmp(base->getValue());
 		tmp.operator_plus(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == FloatObject::TYPENAME ) {
 		FloatObject tmp(base->getValue());
 		tmp.operator_plus(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == IntegerObject::TYPENAME ) {
 		IntegerObject tmp(base->getValue());
 		tmp.operator_plus(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == NumberObject::TYPENAME ) {
 		NumberObject tmp(base->getValue());
 		tmp.operator_plus(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == StringObject::TYPENAME ) {
 		StringObject tmp(base->getValue());
 		tmp.operator_plus(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == VoidObject::TYPENAME ) {
 		VoidObject tmp;
 		tmp.operator_plus(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else {
 		ParameterList params;
 		params.push_back(
-			Parameter(other->getName(), other->QualifiedTypename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
+			Parameter(other->getName(), other->QualifiedTypename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
 		);
 
 		VoidObject tmp;
@@ -791,48 +800,48 @@ void operator_binary_subtract(Object *base, Object *other)
 		BoolObject tmp(base->getValue());
 		tmp.operator_subtract(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == DoubleObject::TYPENAME ) {
 		DoubleObject tmp(base->getValue());
 		tmp.operator_subtract(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == FloatObject::TYPENAME ) {
 		FloatObject tmp(base->getValue());
 		tmp.operator_subtract(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == IntegerObject::TYPENAME ) {
 		IntegerObject tmp(base->getValue());
 		tmp.operator_subtract(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == NumberObject::TYPENAME ) {
 		NumberObject tmp(base->getValue());
 		tmp.operator_subtract(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == StringObject::TYPENAME ) {
 		StringObject tmp(base->getValue());
 		tmp.operator_subtract(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == VoidObject::TYPENAME ) {
 		VoidObject tmp;
 		tmp.operator_subtract(other);
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else {
 		ParameterList params;
 		params.push_back(
-			Parameter(other->getName(), other->QualifiedTypename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other)
+			Parameter(other->getName(), other->QualifiedTypename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
 		);
 
 		VoidObject tmp;
@@ -873,43 +882,43 @@ void operator_unary_decrement(Object *base)
 		BoolObject tmp(base->getValue());
 		tmp.operator_unary_decrement();
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == DoubleObject::TYPENAME ) {
 		DoubleObject tmp(base->getValue());
 		tmp.operator_unary_decrement();
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == FloatObject::TYPENAME ) {
 		FloatObject tmp(base->getValue());
 		tmp.operator_unary_decrement();
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == IntegerObject::TYPENAME ) {
 		IntegerObject tmp(base->getValue());
 		tmp.operator_unary_decrement();
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == NumberObject::TYPENAME ) {
 		NumberObject tmp(base->getValue());
 		tmp.operator_unary_decrement();
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == StringObject::TYPENAME ) {
 		StringObject tmp(base->getValue());
 		tmp.operator_unary_decrement();
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == VoidObject::TYPENAME ) {
 		VoidObject tmp;
 		tmp.operator_unary_decrement();
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else {
 		VoidObject tmp;
@@ -929,43 +938,43 @@ void operator_unary_increment(Object *base)
 		BoolObject tmp(base->getValue());
 		tmp.operator_unary_increment();
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == DoubleObject::TYPENAME ) {
 		DoubleObject tmp(base->getValue());
 		tmp.operator_unary_increment();
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == FloatObject::TYPENAME ) {
 		FloatObject tmp(base->getValue());
 		tmp.operator_unary_increment();
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == IntegerObject::TYPENAME ) {
 		IntegerObject tmp(base->getValue());
 		tmp.operator_unary_increment();
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == NumberObject::TYPENAME ) {
 		NumberObject tmp(base->getValue());
 		tmp.operator_unary_increment();
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == StringObject::TYPENAME ) {
 		StringObject tmp(base->getValue());
 		tmp.operator_unary_increment();
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == VoidObject::TYPENAME ) {
 		VoidObject tmp;
 		tmp.operator_unary_increment();
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else {
 		VoidObject tmp;
@@ -985,49 +994,49 @@ void operator_unary_minus(Object *base)
 		BoolObject tmp(base->getValue());
 		tmp.operator_unary_minus();
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == DoubleObject::TYPENAME ) {
 		DoubleObject tmp(base->getValue());
 		tmp.operator_unary_minus();
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == FloatObject::TYPENAME ) {
 		FloatObject tmp(base->getValue());
 		tmp.operator_unary_minus();
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == IntegerObject::TYPENAME ) {
 		IntegerObject tmp(base->getValue());
 		tmp.operator_unary_minus();
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == NumberObject::TYPENAME ) {
 		NumberObject tmp(base->getValue());
 		tmp.operator_unary_minus();
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == StringObject::TYPENAME ) {
 		StringObject tmp(base->getValue());
 		tmp.operator_unary_minus();
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else if ( source == VoidObject::TYPENAME ) {
 		VoidObject tmp;
 		tmp.operator_unary_minus();
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 	else {
 		Object tmp;
 		tmp.operator_unary_minus();
 
-		*base = tmp;
+		base->assign(tmp);
 	}
 }
 
@@ -1075,12 +1084,19 @@ void operator_unary_not(Object *base)
 		*base = BoolObject(!tmp.operator_bool());
 	}
 	else {
-		MethodSymbol *op_not = base->resolveMethod("operator!", ParameterList(), true);
-		if ( op_not ) {
-			Object tmp;
-			static_cast<Method*>(op_not)->execute(ParameterList(), &tmp, Token());
+		ParameterList params;
+		params.push_back(
+			Parameter(ANONYMOUS_OBJECT, BoolObject::TYPENAME, false, false, false, Parameter::AccessMode::ByValue)
+		);
 
-			operator_binary_assign(base, &tmp);
+		MethodSymbol* value_op = base->resolveMethod("=operator", params, true);
+		if ( value_op ) {
+			Object tmp;
+
+			Interpreter interpreter;
+			interpreter.execute(dynamic_cast<Method*>(value_op), params, &tmp);
+
+			*base = BoolObject(!tmp.isValid());
 		}
 		else {
 			*base = BoolObject(!base->isValid());

@@ -4,7 +4,7 @@ private object UserObject
 {
 	private bool mValue;
 
-	public void UserObject(bool value const)
+	public void Constructor(bool value const)
 	{
 		mValue = value;
 	}
@@ -42,46 +42,42 @@ private object UserObject
 	}
 }
 
-
-public object Main
+public void Main(int argc = 0, string argv = "")
 {
-	public void Main(int argc = 0, string argv = "")
-	{
-		assert( TestCase1() );
-		assert( TestCase2() );
+	assert( TestCase1() );
+	assert( TestCase2() );
+}
+
+private bool TestCase1() const
+{
+	print("TestCase1: bitor operator with atomic type");
+
+	UserObject obj1 = new UserObject(true);
+
+	obj1 = obj1 | true;
+	//assert( obj1 == true );
+	if ( obj1 == true ) {
+		print("obj1 == true");
+		return true;
 	}
 
-	private bool TestCase1() const
-	{
-		print("TestCase1: bitor operator with atomic type");
+	return false;
+}
 
-		UserObject obj1 = new UserObject(true);
+private bool TestCase2() const
+{
+	print("TestCase2: bitor operator with object");
 
-		obj1 = obj1 | true;
-		//assert( obj1 == true );
-		if ( obj1 == true ) {
-			print("obj1 == true");
-			return true;
-		}
+	UserObject obj1 = new UserObject(true);
+	UserObject obj2 = new UserObject(false);
 
-		return false;
+	obj1 = obj1 | obj2;
+	//assert( obj1 == true );
+	if ( obj1 == true ) {
+		print("obj1 == true");
+		return true;
 	}
 
-	private bool TestCase2() const
-	{
-		print("TestCase2: bitor operator with object");
-
-		UserObject obj1 = new UserObject(true);
-		UserObject obj2 = new UserObject(false);
-
-		obj1 = obj1 | obj2;
-		//assert( obj1 == true );
-		if ( obj1 == true ) {
-			print("obj1 == true");
-			return true;
-		}
-
-		return false;
-	}
+	return false;
 }
 

@@ -32,7 +32,7 @@ class Repository;
 class Preprocessor
 {
 public:
-	Preprocessor(Repository *repo);
+	Preprocessor();
 
 public:
 	void process(Designtime::BluePrintGeneric* blueprint);
@@ -50,7 +50,6 @@ private:
 private:
 	std::string mFilename;
 	Designtime::BluePrintGeneric* mBluePrint;
-	Repository *mRepository;
 	IScope *mScope;
 	TokenList mTokens;
 };

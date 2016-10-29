@@ -18,12 +18,12 @@ public stable namespace AttributeTest {
 	}
 
 	public unstable object TestObject {
-		public void TestObject() {
-			print("TestObject()");
+		public void Constructor() {
+			print("Constructor()");
 		}
 
-		public void ~TestObject() {
-			print("~TestObject()");
+		public void Destructor() {
+			print("Destructor()");
 		}
 
 		public deprecated void deprecatedMethod() {
@@ -46,7 +46,7 @@ public stable namespace AttributeTest {
 	public object ConstObject {
 		private int mNumber;
 
-		public void ConstObject() {
+		public void Constructor() {
 			mNumber = 1;
 		}
 
@@ -60,34 +60,30 @@ public stable namespace AttributeTest {
 	}
 }
 
-public stable object Main {
-	private AttributeTest.TestObject mTest;
+public void Main(int argc = 0, string argv = "") {
+	AttributeTest.Function1();
 
-	public void Main(int argc = 0, string argv = "") {
-		AttributeTest.Function1();
+	bla(1);
 
-		bla(1);
+	AttributeTest.TestObject mTest = new AttributeTest.TestObject();
 
-		mTest = new AttributeTest.TestObject();
+	mTest.deprecatedMethod();
+	//mTest.notimplementedMethod();
+	mTest.stableMethod();
+	mTest.unstableMethod();
 
-		mTest.deprecatedMethod();
-		//mTest.notimplementedMethod();
-		mTest.stableMethod();
-		mTest.unstableMethod();
+	AttributeTest.ConstObject value = new AttributeTest.ConstObject();
+	print("value.GetNumber() = " + value.GetNumber());
+	value.SetNumber(2);
+	print("value.GetNumber() = " + value.GetNumber());
 
-		AttributeTest.ConstObject value = new AttributeTest.ConstObject();
-		print("value.GetNumber() = " + value.GetNumber());
-		value.SetNumber(2);
-		print("value.GetNumber() = " + value.GetNumber());
-
-		print(getTwo());
-	}
-
-	private int getTwo() const {
-		return 2;
-	}
-	
-	private void bla() { }
-	private void bla(int num) { }
+	print(getTwo());
 }
+
+private int getTwo() const {
+	return 2;
+}
+
+private void bla() { }
+private void bla(int num) { }
 

@@ -3,7 +3,6 @@
 /*
  * @author Crunchify.com
  */
-public object Main {
 	public void Main(int argc, string args) {
 		//input to print Fibonacci series upto how many numbers
 		cout("Enter number upto which Fibonacci series to print: ");
@@ -48,5 +47,4 @@ public object Main {
 
 		return fibonacci; //Fibonacci number
 	}
-}
 

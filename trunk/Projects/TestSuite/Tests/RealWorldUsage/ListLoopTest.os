@@ -1,31 +1,18 @@
 #!/usr/local/bin/oscript
 
 import System.Collections.List;
+import System.Integer;
 
 private int LOOP const = 1000;
 
-private object TestObject {
-	private int mValue;
+public void Main(int argc = 0, string args = "") {
+	print("LinkedList loop test");
 
-	public void TestObject(int value) {
-		mValue = value;
+	try {
+		ObjectMethod();
 	}
-
-	public string ToString() const {
-		return "mValue = " + mValue;
-	}
-}
-
-public object Main {
-	public void Main(int argc = 0, string args = "") {
-		print("LinkedList loop test");
-
-		try {
-			ObjectMethod();
-		}
-		catch ( System.OutOfBoundsException e ) {
-			print(e.what());
-		}
+	catch ( OutOfBoundsException e ) {
+		print(e.what());
 	}
 }
 
@@ -33,15 +20,15 @@ private void ObjectMethod() {
 	System.List list = new System.List();
 
 	// Setup
-	TestObject item;
+	Integer item;
 
-	item = new TestObject(664);
+	item = new Integer(664);
 	list.push_back(Object item);
 
-	item = new TestObject(173);
+	item = new Integer(173);
 	list.push_back(Object item);
 
-	item = new TestObject(1389);
+	item = new Integer(1389);
 	list.push_back(Object item);
 
 	// Usage
@@ -60,7 +47,7 @@ private void ObjectMethod() {
 		while ( it.hasNext() ) {
 			it.next();
 
-			TestObject item = TestObject it.current();
+			Integer item = Integer it.current();
 			//print(item.ToString());
 		}
 	}
