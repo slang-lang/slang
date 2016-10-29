@@ -1617,13 +1617,16 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 	std::list<TokenIterator> catchTokens;
 	TokenIterator finallyToken = getTokens().end();
 
+	// collect all catch- and finally-blocks
 	for ( ; ; ) {
 		if ( tmp != getTokens().end() && tmp->content() == KEYWORD_CATCH ) {
 			catchTokens.push_back(tmp);
 
 			tmp = findNextBalancedCurlyBracket(tmp, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
 
-			token = tmp;	// set exit token
+			if ( std::distance(token, tmp) ) {
+				token = tmp;	// set exit token
+			}
 		}
 		else if ( tmp != getTokens().end() && tmp->content() == KEYWORD_FINALLY ) {
 			if ( finallyToken != getTokens().end() ) {
@@ -1633,7 +1636,9 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 			finallyToken = tmp;
 			tmp = findNextBalancedCurlyBracket(tmp, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
 
-			token = tmp;	// set exit token
+			if ( std::distance(token, tmp) ) {
+				token = tmp;	// set exit token
+			}
 		}
 		else {
 			break;	// reached end of try-catch-finally-block
@@ -1642,8 +1647,12 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 		tmp++;
 	}
 
+	// process catch-blocks (if present)
 	if ( mControlFlow == ControlFlow::Throw ) {
-		mControlFlow = ControlFlow::Normal;
+		if ( catchTokens.empty() ) {
+			// reset control flow in case no catch-block has been defined
+			mControlFlow = ControlFlow::Normal;
+		}
 
 		for ( std::list<TokenIterator>::const_iterator it = catchTokens.begin(); it != catchTokens.end(); ++it ) {
 			TokenIterator catchIt = (*it);
@@ -1657,7 +1666,7 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 
 				Symbol* symbol = identify(catchIt);
 				if ( !symbol ) {
-					throw Common::Exceptions::UnknownIdentifer("identifier '" + token->content() + "' not found", catchIt->position());
+					throw Common::Exceptions::UnknownIdentifer("identifier '" + catchIt->content() + "' not found", catchIt->position());
 				}
 				if ( symbol->getSymbolType() != Symbol::IType::BluePrintEnumSymbol && symbol->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
 					throw Common::Exceptions::SyntaxError("invalid symbol type '" + symbol->getName() + "' found", catchIt->position());
@@ -1672,18 +1681,18 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 					throw Common::Exceptions::Exception("could not create exception type instance", catchIt->position());
 				}
 
-				if ( type->QualifiedTypename() != mExceptionData.getData()->QualifiedTypename() &&
-					 type->Typename() != mExceptionData.getData()->Typename() ) {
-					// get rid of our newly created exception type instance
-					getScope()->undefine(type->getName(), type);
+				// compare given exception type with thrown type inheritance
+				if ( !mExceptionData.getData()->isInstanceOf(type->QualifiedTypename()) ) {
+					popScope();		// pop exception instance scope
 					continue;
 				}
 
+				// exception type match with thrown type, start with the real exception handling
 				operator_binary_assign(type, mExceptionData.getData());
 			}
 
-			// notify our debugger that an exception has been thrown
-			Core::Debugger::GetInstance().notifyExceptionCatch(getScope(), (*token));
+			// notify our debugger that an exception has been caught
+			Core::Debugger::GetInstance().notifyExceptionCatch(getScope(), (*catchIt));
 
 			expect(Token::Type::BRACKET_CURLY_OPEN, catchIt);
 
@@ -1693,7 +1702,6 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 			TokenIterator catchEnd = findNextBalancedCurlyBracket(catchBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
 
 			catchBegin++;		// don't collect scope token
-			token = catchEnd;
 
 			// collect catch-block tokens
 			TokenList tokens;
@@ -1701,6 +1709,9 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 				tokens.push_back((*catchBegin));
 				catchBegin++;
 			}
+
+			// reset control flow to allow correct exception handling
+			mControlFlow = ControlFlow::Normal;
 
 			// execute catch-block if an exception has been thrown
 			mControlFlow = interpret(tokens, result);
@@ -1715,6 +1726,7 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 		}
 	}
 
+	// process finally-block (if present)
 	if ( finallyToken != getTokens().end() ) {
 		finallyToken++;
 		expect(Token::Type::BRACKET_CURLY_OPEN, finallyToken);
@@ -1725,7 +1737,6 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 		TokenIterator finallyEnd = findNextBalancedCurlyBracket(finallyBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
 
 		finallyBegin++;		// don't collect scope token;
-		token = finallyEnd;
 
 		// collect finally-block tokens
 		TokenList finallyTokens;

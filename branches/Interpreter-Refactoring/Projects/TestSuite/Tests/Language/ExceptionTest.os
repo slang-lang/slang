@@ -5,7 +5,7 @@ public namespace ExceptionTest {
 		private string _exception;
 
 		private void Constructor(string ex) {
-			print("Exception(\"" + ex + "\")");
+			print(ex);
 			_exception = ex;
 		}
 
@@ -20,9 +20,7 @@ public namespace ExceptionTest {
 		}
 
 		public void MethodThatThrows() throws {
-			print("MethodThatThrows()");
-
-			throw new ExceptionTest.Exception("MethodThatThrows");
+			throw new ExceptionTest.Exception("MethodThatThrows()");
 		}
 	}
 }
@@ -33,11 +31,12 @@ public void Main(int argc = 0, string argv = "") {
 	assert( TestCase3() );
 	assert( TestCase4() );
 	assert( TestCase5() );
-	assert( TestCase6() );	// not supported atm
+	assert( TestCase6() );
+	assert( TestCase7() );
 }
 
 private bool TestCase1() throws {
-	print("TestCase1()");
+	print("TestCase 1");
 
 	try {
 		print("try");
@@ -54,7 +53,7 @@ private bool TestCase1() throws {
 }
 
 private bool TestCase2() throws {
-	print("TestCase2()");
+	print("TestCase 2");
 
 	try {
 		int one = 1;
@@ -73,7 +72,7 @@ private bool TestCase2() throws {
 }
 
 private bool TestCase3() throws {
-	print("TestCase3()");
+	print("TestCase 3");
 
 	try {
 		int one = 1;
@@ -95,7 +94,7 @@ private bool TestCase3() throws {
 }
 
 private bool TestCase4() throws {
-	print("TestCase4()");
+	print("TestCase 4");
 
 	ExceptionTest.ObjectThatThrows obj = new ExceptionTest.ObjectThatThrows();
 
@@ -117,7 +116,7 @@ private bool TestCase4() throws {
 }
 
 private bool TestCase5() throws {
-	print("TestCase5()");
+	print("TestCase 5");
 
 	try {
 		print("outter try");
@@ -148,7 +147,7 @@ private bool TestCase5() throws {
 }
 
 private bool TestCase6() throws {
-	print("TestCase6()");
+	print("TestCase 6");
 
 	try {
 		print("try");
@@ -156,17 +155,47 @@ private bool TestCase6() throws {
 		print("throw new Exception()");
 		throw new ExceptionTest.Exception("standard exception");
 	}
-	catch ( int ex ) {
+	catch ( int e ) {
 		print("FAIL!!!");
 		return false;
 	}
-	catch ( ExceptionTest.Exception exception ) {
-		print("catch " + exception.what());
+	catch ( ExceptionTest.Exception e ) {
+		print("catch " + e.what());
+	}
+	catch ( Object e ) {
+		print("caugth generic exception type: " + e.what());
 	}
 	finally {
 		print("finally");
 	}
 
 	return true;
+}
+
+private bool TestCase7() throws {
+	print("TestCase 7: throw without matching catch");
+
+	try {
+		try {
+			print("try");
+
+			print("throw new ExceptionTest.Exception");
+			throw new ExceptionTest.Exception("ExceptionTest.Exception");
+		}
+		catch ( int e ) {
+			assert(false);
+		}
+
+		print("after catch");
+
+		return false;
+	}
+	catch ( ExceptionTest.Exception e ) {
+		print("correct catch: " + e.what());
+
+		return true;
+	}
+
+	return false;
 }
 

@@ -10,8 +10,6 @@ private object Node {
     private Node next;
 }
 
-public object LinkedStackOfStrings;
-
 public object StringStackIterator {
     private Node mCurrent;
     private Node mFirst;

@@ -1,6 +1,6 @@
 #!/usr/local/bin/oscript
 
-import System.Collections.LinkedStackOfStrings;
+import LinkedStackOfStrings;
 import System.Collections.Iterator;
 import System.String;
 
@@ -59,11 +59,19 @@ private bool TestCase2() {
 
 		return true;
 	}
-	catch ( OutOfBoundsException e ) {
-		print(e.what());
-	}
 	catch ( string e ) {
-		print(e);
+	}
+	catch ( IOException e ) {
+		print( "IOException: " + e.what());
+	}
+	finally {
+		print("finally!");
+	}
+	catch ( OutOfBoundsException e ) {
+		print( "OutOfBoundsException: " + e.what() );
+	}
+	catch ( Exception e ) {
+		print("caught generic exception: " + e.what());
 	}
 
 	return false;
