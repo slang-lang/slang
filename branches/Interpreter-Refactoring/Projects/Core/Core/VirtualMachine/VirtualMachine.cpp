@@ -127,6 +127,7 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 		throw Common::Exceptions::Exception(text);
 	}
 
+	// clean up the unused forward declarations (TODO: find a better solution for this)
 	Controller::Instance().repository()->cleanupForwardDeclarations();
 
 	return script;

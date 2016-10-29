@@ -36,7 +36,6 @@ public:
 	~Repository();
 
 public:
-	void cleanupForwardDeclarations();
 	void deinit();
 	void init();
 
@@ -44,6 +43,8 @@ public:
 	void addBluePrint(Designtime::BluePrintEnum* blueprint);
 	void addBluePrint(Designtime::BluePrintObject* object);
 	void addPrototype(Designtime::Prototype* prototype);
+
+	void cleanupForwardDeclarations();
 
 	Runtime::Object* createInstance(const std::string& type, const std::string& name, bool initialize = false);
 	Runtime::Object* createInstance(Designtime::BluePrintObject* blueprint, const std::string& name, bool initialize = false);
