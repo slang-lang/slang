@@ -12,6 +12,11 @@ SET(DEPENDENCIES
 	ExtensionsMysql
 	ExtensionsJson
 	ExtensionsApache
+	DebuggerVSCodeRemoteClient
+	DebuggerLocalClient
+	DebuggerCommon
+	DebuggerApplication
+	CoreDebugger
 	Core
 	Utils
 )
