@@ -45,11 +45,6 @@ void Memory::add(const Reference &ref)
 
 void Memory::deinit()
 {
-	MemoryMap tmpMemory = mMemory;
-
-	for ( MemoryMap::iterator it = tmpMemory.begin(); it != tmpMemory.end(); ++it ) {
-		deleteObject(it->first);
-	}
 }
 
 void Memory::deleteObject(const Reference& ref)

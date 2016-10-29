@@ -14,12 +14,24 @@ public object Box {
 	private int mId;
 
 	public void Constructor(int id) {
+		print("Box.Constructor(" + id + ")");
+
 		mId = id;
+	}
+	public void Destructor() {
+		print("Box.Destructor()");
 	}
 }
 
 public object Warehouse implements IWarehouse {
 	private Box mBox;
+
+	public void Constructor() {
+		print("Warehouse.Constructor()");
+	}
+	public void Destructor() {
+		print("Warehouse.Destructor()");
+	}
 
 	public void insert(Box box ref) modify throws {
 		if ( mBox ) {
@@ -46,9 +58,12 @@ public object Observer {
 	private IWarehouse mWarehouse;
 
 	public void Constructor(IWarehouse wh ref) {
-		print("Constructor(IWarehouse)");
+		print("Observer.Constructor(IWarehouse)");
 
 		mWarehouse = wh;
+	}
+	public void Destructor() {
+		print("Observer.Destructor()");
 	}
 
 	public bool isFull() const {

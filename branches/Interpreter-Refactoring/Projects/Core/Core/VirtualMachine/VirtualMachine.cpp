@@ -127,6 +127,8 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 		throw Common::Exceptions::Exception(text);
 	}
 
+	Controller::Instance().repository()->cleanupForwardDeclarations();
+
 	return script;
 }
 

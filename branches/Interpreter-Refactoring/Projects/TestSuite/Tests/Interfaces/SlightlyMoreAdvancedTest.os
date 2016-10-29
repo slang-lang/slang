@@ -10,6 +10,10 @@ public interface IGetBoxType {
 
 public object Boxhouse implements IGetBox {
 	public int GetBox() const final {
+		return GetNumber();
+	}
+
+	public int GetNumber() const {
 		return 173;
 	}
 }
@@ -25,6 +29,10 @@ public object Warehouse
 	public int GetBox() const {
 		assert(0);
 		return 0;
+	}
+
+	public int GetNumber() const {
+		return 1389;
 	}
 }
 

@@ -62,11 +62,11 @@ private bool TestCase2() const {
 
 		return true;
 	}
-	catch ( Exception e ) {
-		print(e.what());
-	}
 	catch ( OutOfBoundsException e ) {
-		print(e.what());
+		print( e.what() );
+	}
+	catch ( Exception e ) {
+		print( e.what() );
 	}
 
 	return false;
@@ -95,6 +95,12 @@ private bool TestCase3() const {
 		}
 
 		return !iterator.hasNext() && !reverse.hasNext();
+	}
+	catch ( OutOfBoundsException e ) {
+		print( e.what() );
+	}
+	catch ( Exception e ) {
+		print( e.what() );
 	}
 
 	return false;

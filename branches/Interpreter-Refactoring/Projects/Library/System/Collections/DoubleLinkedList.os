@@ -44,8 +44,7 @@ public object DoubleLinkedList extends System.AbstractCollection {
 	}
 
 	public void push_back(Object value ref) modify {
-		CollectionItem item = new CollectionItem();
-		item.mValue = value;
+		CollectionItem item = new CollectionItem(value);
 
 		if ( mSize == 0 ) {
 			mFirst = item;
@@ -54,7 +53,7 @@ public object DoubleLinkedList extends System.AbstractCollection {
 			mLast.mNext = item;
 		}
 
-		item.mPrevious = mLast;
+		//item.mPrevious = mLast;	// this leaves a mem leak... ;-(
 		mLast = item;
 
 		mSize++;
@@ -64,7 +63,7 @@ public object DoubleLinkedList extends System.AbstractCollection {
 		CollectionItem item = new CollectionItem(value);
 
 		item.mNext = mFirst;
-		//mFirst.mPrevious = item;
+		//mFirst.mPrevious = item;	// this leaves a mem leak... ;-(
 		mFirst = item;
 
 		mSize++;

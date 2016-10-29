@@ -24,6 +24,7 @@ private bool TestCase1() const {
 		System.DoubleLinkedList list = new System.DoubleLinkedList();
 
 		Integer item;
+
 		item = new Integer(173);
 		list.push_back(Object item);
 
@@ -39,12 +40,12 @@ private bool TestCase1() const {
 		item = Integer list.at(1);
 		assert(item.mValue == 1389);
 
+		//item = Integer list.at(2);
+
 		return true;
 	}
 	catch ( OutOfBoundsException e ) {
 		print(e.what());
-
-		return false;
 	}
 
 	return false;

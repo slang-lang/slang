@@ -36,6 +36,7 @@ public:
 	~Repository();
 
 public:
+	void cleanupForwardDeclarations();
 	void deinit();
 	void init();
 
@@ -62,11 +63,13 @@ private:
 private:
 	typedef std::map<std::string, Designtime::BluePrintEnum*> BluePrintEnumMap;
 	typedef std::map<std::string, Designtime::BluePrintObject*> BluePrintObjectMap;
+	typedef std::set<Designtime::BluePrintGeneric*> ForwardDeclarationTomb;
 
 private:
 	BluePrintEnumMap mBluePrintEnums;
 	BluePrintObjectMap mBluePrintObjects;
 	//PrototypeMap mPrototypes;
+	ForwardDeclarationTomb mForwardDeclarations;
 };
 
 

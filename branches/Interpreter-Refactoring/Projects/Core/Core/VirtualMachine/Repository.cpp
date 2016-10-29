@@ -55,6 +55,7 @@ void Repository::addBluePrint(Designtime::BluePrintEnum* blueprint)
 	if ( it != mBluePrintEnums.end() ) {
 		if ( blueprint->getImplementationType() == ImplementationType::ForwardDeclaration ) {
 			// adding additional forward declarations doesn't matter
+			mForwardDeclarations.insert(blueprint);
 			return;
 		}
 
@@ -62,12 +63,14 @@ void Repository::addBluePrint(Designtime::BluePrintEnum* blueprint)
 			throw Common::Exceptions::Exception("duplicate object '" + blueprint->QualifiedTypename() + "' added to repository");
 		}
 
-		// delete forward declaration
+		// clean up forward declaration
+		// {
 		BluePrintSymbol* symbol = it->second;
 
 		mBluePrintEnums.erase(it);
 
 		delete symbol;
+		// }
 	}
 
 	mBluePrintEnums.insert(std::make_pair(blueprint->QualifiedTypename(), blueprint));
@@ -82,6 +85,7 @@ void Repository::addBluePrint(Designtime::BluePrintObject* blueprint)
 	if ( it != mBluePrintObjects.end() ) {
 		if ( blueprint->getImplementationType() == ImplementationType::ForwardDeclaration ) {
 			// adding additional forward declarations doesn't matter
+			mForwardDeclarations.insert(blueprint);
 			return;
 		}
 
@@ -89,12 +93,14 @@ void Repository::addBluePrint(Designtime::BluePrintObject* blueprint)
 			throw Common::Exceptions::Exception("duplicate object '" + blueprint->QualifiedTypename() + "' added to repository");
 		}
 
-		// delete forward declaration
+		// clean up forward declaration
+		// {
 		BluePrintSymbol* symbol = it->second;
 
 		mBluePrintObjects.erase(it);
 
 		delete symbol;
+		// }
 	}
 
 	mBluePrintObjects.insert(std::make_pair(blueprint->QualifiedTypename(), blueprint));
@@ -116,6 +122,15 @@ assert(!"prototypes not supported!");
 
 	mPrototypes.insert(std::make_pair(type, prototype));
 */
+}
+
+void Repository::cleanupForwardDeclarations()
+{
+	ForwardDeclarationTomb tmp = mForwardDeclarations;
+	for ( ForwardDeclarationTomb::iterator it = tmp.begin(); it != tmp.end(); ++it ) {
+		delete (*it);
+	}
+	mForwardDeclarations.clear();
 }
 
 /*
@@ -272,6 +287,8 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 						// create base object
 						Runtime::Object *ancestor = createReference(blueIt->second, name, initialize);
 						ancestor->setParent(blueprint->getEnclosingScope());
+						ancestor->undefine(IDENTIFIER_THIS, 0);
+						ancestor->define(IDENTIFIER_THIS, object);
 
 						// define new base
 						object->define(IDENTIFIER_BASE, ancestor);

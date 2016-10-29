@@ -49,7 +49,7 @@ void SymbolScope::deinit()
 	for ( Symbols::iterator symIt = tmpSymbols.begin(); symIt != tmpSymbols.end(); ++symIt ) {
 		mSymbols.erase(symIt->first);
 
-		if ( symIt->first == "base" || symIt->first == "this" ) {
+		if ( /*symIt->first == "base" ||*/ symIt->first == "this" ) {
 			continue;
 		}
 

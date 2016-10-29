@@ -16,6 +16,7 @@ public namespace System {
 
 		public Object current() const {
 			if ( !mCollection ) {
+			//if ( mCollection != null ) {
 				throw new Exception("invalid iterator access");
 			}
 
