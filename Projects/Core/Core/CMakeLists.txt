@@ -14,13 +14,11 @@ SET(SOURCES
 	Method.cpp
 	Object.cpp
 	Parameter.cpp
-#	Preprocessor.cpp
 	Reference.cpp
 	Scope.cpp
 	Script.cpp
 	Symbol.cpp
 	Token.cpp
-	Tokenizer.cpp
 	Tools.cpp
 	Types.cpp
 )
@@ -33,13 +31,11 @@ SET(HEADERS
 	Object.h
 	ObjectiveScript.h
 	Parameter.h
-#	Preprocessor.h
 	Reference.h
 	Scope.h
 	Script.h
 	Symbol.h
 	Token.h
-	Tokenizer.h
 	Tools.h
 	Types.h
 )
@@ -49,6 +45,7 @@ SET(DEPENDENCIES
 	CoreRuntime
 	CoreExtensions
 	CoreDebugger
+	CoreDesigntimeParser
 	CoreDesigntimeBuildInTypes
 	CoreDesigntime
 	CoreCommon
