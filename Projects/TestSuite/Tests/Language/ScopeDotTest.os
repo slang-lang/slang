@@ -1,7 +1,6 @@
 #!/usr/local/bin/oscript
 
-public object TestObject
-{
+public object TestObject {
 	private int mValue;
 
 	public int getValue() const {
@@ -13,24 +12,19 @@ public object TestObject
 	}
 }
 
-public object Main
-{
-	public void Main(int argc, string args)
-	{
-		assert( TestCase1() );
-	}
+public void Main(int argc, string args) {
+	assert( TestCase1() );
+}
 
-	private bool TestCase1() modify
-	{
-		TestObject obj = new TestObject();
+private bool TestCase1() {
+	TestObject obj = new TestObject();
 
-		obj.mValue = 1;
-		print("obj.mValue = " + obj.mValue);
+	obj.mValue = 1;
+	print("obj.mValue = " + obj.mValue);
 
-		obj.setValue(2);
-		print("obj.getValue() = " + obj.getValue());
+	obj.setValue(2);
+	print("obj.getValue() = " + obj.getValue());
 
-		return obj.mValue == 2;
-	}
+	return obj.mValue == 2;
 }
 

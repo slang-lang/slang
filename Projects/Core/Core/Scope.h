@@ -10,7 +10,6 @@
 // Project includes
 #include <Core/Interfaces/IScope.h>
 #include "Parameter.h"
-#include "Symbol.h"
 
 // Forward declarations
 
@@ -20,6 +19,7 @@
 namespace ObjectiveScript {
 
 // Forward declarations
+class Symbol;
 namespace Runtime {
 	class Method;
 }
@@ -33,7 +33,6 @@ public:
 public:	// IScope implementation
 	virtual void define(const std::string& name, Symbol* symbol);
 	virtual IScope* getEnclosingScope() const;
-	virtual void exportSymbols(Symbols& symbols);
 	virtual std::string getFullScopeName() const;
 	virtual const std::string& getScopeName() const;
 	virtual IScope::IType::E getScopeType() const;
@@ -41,10 +40,16 @@ public:	// IScope implementation
 	virtual void undefine(const std::string& name, Symbol* symbol);
 
 protected:
+	typedef std::map<std::string, Symbol*> Symbols;
+
+protected:
 	IScope *mParent;
 	std::string mScopeName;
 	IType::E mScopeType;
 	Symbols mSymbols;
+
+private:
+	void deinit();
 };
 
 
@@ -53,7 +58,11 @@ class NamedScope : public SymbolScope
 public:
 	NamedScope(const std::string& name, IScope* parent = 0);
 	virtual ~NamedScope();
+
+private:
+	void deinit();
 };
+
 
 class MethodScope : public NamedScope
 {
@@ -71,6 +80,9 @@ public:
 
 protected:
 	MethodCollection mMethods;
+
+private:
+	void deinit();
 };
 
 
@@ -82,6 +94,9 @@ public:
 
 public:
 	std::string ToString() const;
+
+private:
+	void deinit();
 };
 
 

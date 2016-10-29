@@ -5,13 +5,13 @@ public namespace Inheritance {
 	private object BaseObject {
 		private int mValue;
 
-		public void BaseObject(int value) {
-			print("BaseObject(" + value + ")");
+		public void Constructor(int value) {
+			print("Constructor(" + value + ")");
 			mValue = value;
 		}
 
-		public void ~BaseObject() {
-			print("~BaseObject()");
+		public void Destructor() {
+			print("Destructor()");
 		}
 
 		public int getValue() const {
@@ -27,15 +27,15 @@ public namespace Inheritance {
 		}
 	}
 
-	private object DerivedObject extends BaseObject {
-		public void DerivedObject(int value) {
-			print("DerivedObject(" + value + ")");
+	private object DerivedObject extends Inheritance.BaseObject {
+		public void Constructor(int value) {
+			print("Constructor(" + value + ")");
 
-			base.BaseObject(value);
+			base.Constructor(value);
 		}
 
-		public void ~DerivedObject() {
-			print("~DerivedObject()");
+		public void Destructor() {
+			print("Destructor()");
 		}
 
 		public int getBaseValue() const {
@@ -51,15 +51,15 @@ public namespace Inheritance {
 		}
 	}
 
-	private object ExtendedObject extends DerivedObject {
-		public void ExtendedObject(int value) {
-			print("ExtendedObject(" + value + ")");
+	private object ExtendedObject extends Inheritance.DerivedObject {
+		public void Constructor(int value) {
+			print("Constructor(" + value + ")");
 
-			base.DerivedObject(value);
+			base.Constructor(value);
 		}
 
-		public void ~ExtendedObject() {
-			print("~ExtendedObject()");
+		public void Destructor() {
+			print("Destructor()");
 		}
 
 		public int getValue() const {
@@ -76,40 +76,40 @@ public namespace Inheritance {
 	}
 }
 
-public object Main {
-	public void Main(int argc = 0, string argv = "") {
-		assert( TestCase1() );
-	}
+public void Main(int argc = 0, string argv = "") {
+	assert( TestCase1() );
+}
 
-	private bool TestCase1() const {
-		Inheritance.BaseObject b = new Inheritance.BaseObject(1);
-		Inheritance.DerivedObject d = new Inheritance.DerivedObject(1);
-		Inheritance.ExtendedObject e = new Inheritance.ExtendedObject(1);
+private bool TestCase1() const {
+	print("TestCase 1");
 
-		print("b.getValue() = " + b.getValue());
-		assert( b.getValue() == 1 );
+	Inheritance.BaseObject b = new Inheritance.BaseObject(1);
+	Inheritance.DerivedObject d = new Inheritance.DerivedObject(1);
+	Inheritance.ExtendedObject e = new Inheritance.ExtendedObject(1);
 
-		print("d.getValue() = " + d.getValue());
-		assert( d.getValue() == 2 );
+	print("b.getValue() = " + b.getValue());
+	assert( b.getValue() == 1 );
 
-		print("d.getBaseValue() = " + d.getBaseValue() );
-		assert( d.getBaseValue() == 1 );
+	print("d.getValue() = " + d.getValue());
+	assert( d.getValue() == 2 );
 
-		print("e.getValue() = " + e.getValue() );
-		assert( e.getValue() == 3 );
+	print("d.getBaseValue() = " + d.getBaseValue() );
+	assert( d.getBaseValue() == 1 );
 
-		print("e.getBaseValue() = " + e.getBaseValue() );
-		assert( e.getBaseValue() == 2 );
+	print("e.getValue() = " + e.getValue() );
+	assert( e.getValue() == 3 );
 
-		e.ThisMethodOnlyExistsInBaseObject();
-		e.ThisMethodOnlyExistsInDerivedObject();
-		e.ThisMethodOnlyExistsInExtendedObject();
+	print("e.getBaseValue() = " + e.getBaseValue() );
+	assert( e.getBaseValue() == 2 );
 
-		delete e;
-		delete d;
-		delete b;
+	e.ThisMethodOnlyExistsInBaseObject();
+	e.ThisMethodOnlyExistsInDerivedObject();
+	e.ThisMethodOnlyExistsInExtendedObject();
 
-		return true;
-	}
+	delete e;
+	delete d;
+	delete b;
+
+	return true;
 }
 

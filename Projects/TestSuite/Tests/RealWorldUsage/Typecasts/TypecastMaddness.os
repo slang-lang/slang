@@ -6,25 +6,19 @@ private object OTmp {
 	}
 }
 
-public object Main {
-	public void Main(int argc, string argv) {
-		writeln("type cast madness: go!");
+public void Main(int argc, string argv) {
+	writeln("type cast madness: go!");
 
-		OTmp tmp = new OTmp();
+	OTmp tmp = new OTmp();
 
-		writeln("tmp = " + tmp.getInt());
-		writeln("value = " + (string getIntValue()));
-		writeln("value = " + float getIntValue());
-		writeln("value = " + (string (int (string float getIntValue()))));
-		writeln("bla = " + double string float number 1.7d);
-	}
+	writeln("tmp = " + tmp.getInt());
+	writeln("value = " + (string getIntValue()));
+	writeln("value = " + float getIntValue());
+	writeln("value = " + (string (int (string float getIntValue()))));
+	writeln("bla = " + double string float number 1.7d);
+}
 
-	public void ~Main() {
-		writeln("yippi!");
-	}
-
-	private int getIntValue() const {
-		return 1389;
-	}
+private int getIntValue() const {
+	return 1389;
 }
 

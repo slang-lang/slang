@@ -29,6 +29,7 @@ namespace ObjectiveScript {
 namespace Core {
 	class IDebugger;
 }
+class IScope;
 class Symbol;
 class VirtualMachine;
 
@@ -43,11 +44,11 @@ public:		// AClient implementation
 	int exec();
 
 public:	// IReceiver implementation
-	int notify(SymbolScope* scope, const Core::BreakPoint& breakpoint);
-	int notifyEnter(SymbolScope* scope, const Core::BreakPoint& breakpoint);
-	int notifyExceptionCatch(SymbolScope *scope, const Core::BreakPoint &breakpoint);
-	int notifyExceptionThrow(SymbolScope *scope, const Core::BreakPoint &breakpoint);
-	int notifyExit(SymbolScope* scope, const Core::BreakPoint& breakpoint);
+	int notify(IScope* scope, const Core::BreakPoint& breakpoint);
+	int notifyEnter(IScope* scope, const Core::BreakPoint& breakpoint);
+	int notifyExceptionCatch(IScope *scope, const Core::BreakPoint &breakpoint);
+	int notifyExceptionThrow(IScope *scope, const Core::BreakPoint &breakpoint);
+	int notifyExit(IScope* scope, const Core::BreakPoint& breakpoint);
 
 private:	// Visual Studio Code debugger interface
 	void Attach(const VSCodeDebug::Request& request);
@@ -86,7 +87,7 @@ private:
 	Core::IDebugger* mDebugger;
 	ParameterList mParameters;
 	bool mRunning;
-	SymbolScope* mScope;
+	IScope* mScope;
 	VirtualMachine* mVirtualMachine;
 };
 

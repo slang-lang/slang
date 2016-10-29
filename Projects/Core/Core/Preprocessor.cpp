@@ -11,6 +11,7 @@
 #include <Core/Designtime/BluePrintEnum.h>
 #include <Core/Designtime/Exceptions.h>
 #include <Core/Designtime/Parser/Parser.h>
+#include <Core/VirtualMachine/Controller.h>
 #include "Tokenizer.h"
 #include "Tools.h"
 
@@ -20,9 +21,8 @@
 namespace ObjectiveScript {
 
 
-Preprocessor::Preprocessor(Repository *repo)
+Preprocessor::Preprocessor()
 : mBluePrint(0),
-  mRepository(repo),
   mScope(0)
 {
 }
@@ -76,10 +76,10 @@ Designtime::BluePrintObject* Preprocessor::createMember(TokenIterator token) con
 	std::string name;
 	std::string type;
 	Runtime::AtomicValue value = 0;
-	std::string visibility;
+	Visibility::E visibility;
 
 	// look for the visibility token
-	visibility = (*token++).content();
+	visibility = Visibility::convert((*token++).content());
 	// look for an optional language feature token
 	if ( token->isOptional() ) {
 		languageFeature = (*token++).content();
@@ -89,7 +89,7 @@ Designtime::BluePrintObject* Preprocessor::createMember(TokenIterator token) con
 	// look for the identifier token
 	name = (*token++).content();
 
-	if ( Visibility::convert(visibility) == Visibility::Public ) {
+	if ( visibility == Visibility::Public ) {
 		// beware: public members are deprecated, remember the "Law of Demeter"
 		// consider using wrappers (getter, setter) instead of directly providing access to members for outsiders
 		// haven't you heard? outsiders, or sometimes called strangers, are evil
@@ -134,7 +134,7 @@ Designtime::BluePrintObject* Preprocessor::createMember(TokenIterator token) con
 	blue->setParent(mScope);
 	blue->setQualifiedTypename(type);
 	blue->setValue(value);
-	blue->setVisibility(Visibility::convert(visibility));
+	blue->setVisibility(visibility);
 
 	return blue;
 }
@@ -210,7 +210,7 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token) const
 			else if ( token->content() == MODIFIER_STATIC ) {
 				isStatic = true;
 			}
-			else if ( token->content() == RESERVED_WORD_THROWS ) {
+			else if ( token->content() == MODIFIER_THROWS ) {
 				throws = true;
 			}
 		}
@@ -251,7 +251,6 @@ Runtime::Method* Preprocessor::createMethod(TokenIterator token) const
 	method->setMutability(mutability);
 	method->setQualifiedTypename(type);
 	method->setRecursive(isRecursive);
-	method->setRepository(mRepository);
 	method->setSignature(params);
 	method->setStatic(isStatic);
 	method->setThrows(throws);
@@ -273,11 +272,11 @@ void Preprocessor::generateBluePrintEnum()
 
 	Designtime::BluePrintObject* symbol = new Designtime::BluePrintObject(blueprint->Typename(), blueprint->Filename(), blueprint->getName());
 	symbol->setMutability(blueprint->getMutability());
-	symbol->setParent(blueprint->getParent());
+	symbol->setParent(blueprint->getEnclosingScope());
 	symbol->setQualifiedTypename(blueprint->QualifiedTypename());
 	symbol->setVisibility(blueprint->getVisibility());
 
-	mRepository->addBluePrint(symbol);
+	Controller::Instance().repository()->addBluePrint(symbol, mScope);
 
 	TokenIterator token = mTokens.begin();
 
@@ -313,10 +312,9 @@ void Preprocessor::generateBluePrintEnum()
 		//entry->setConstructed(true);
 
 		// define enum entries as integer type
-		Runtime::Object* entry = mRepository->createInstance(Runtime::IntegerObject::TYPENAME, name, true);
+		Runtime::Object* entry = Controller::Instance().repository()->createInstance(Runtime::IntegerObject::TYPENAME, name, true);
 		entry->setMember(true);
 		entry->setMutability(Mutability::Const);
-		entry->setRepository(mRepository);
 		entry->setValue(value.toInt());
 		entry->setVisibility(Visibility::Public);
 

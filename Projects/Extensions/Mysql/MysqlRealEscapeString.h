@@ -8,12 +8,11 @@
 // Project includes
 #include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/BuildInObjects/StringObject.h>
+#include <Core/Common/Exceptions.h>
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
-#include <Core/Method.h>
-#include <Core/Repository.h>
+#include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Tools.h>
-#include <Core/Common/Exceptions.h>
 #include "Types.h"
 
 // Forward declarations
@@ -26,11 +25,11 @@ namespace Extensions {
 namespace Mysql {
 
 
-class MysqlRealEscapeString : public Runtime::Method
+class MysqlRealEscapeString : public ExtensionMethod
 {
 public:
 	MysqlRealEscapeString()
-	: Runtime::Method(0, "mysql_real_escape_string", Designtime::StringObject::TYPENAME)
+	: ExtensionMethod(0, "mysql_real_escape_string", Designtime::StringObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));
@@ -63,7 +62,7 @@ public:
 			}
 		}
 		catch ( std::exception &e ) {
-			Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
 			*data = Runtime::StringObject(std::string(e.what()));
 
 			mExceptionData = Runtime::ExceptionData(data, token.position());

@@ -40,8 +40,10 @@ public:
 	Parameter();
 	Parameter(const std::string& name, const std::string& type, Runtime::AtomicValue value, bool hasDefaultValue = false,
 			  bool isConst = false, AccessMode::E access = AccessMode::ByValue, Reference reference = Reference());
+/*
 	Parameter(const std::string& name, const std::string& type, Runtime::AtomicValue value, bool hasDefaultValue,
 			  bool isConst, AccessMode::E access, Runtime::Object* pointer);
+*/
 
 public:
 	AccessMode::E access() const;

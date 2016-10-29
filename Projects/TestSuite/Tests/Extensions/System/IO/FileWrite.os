@@ -1,26 +1,22 @@
 #!/usr/local/bin/oscript
 
-public object Main
-{
-	public void Main(int argc, string argv)
-	{
-		int file = 0;
-		int result = 0;
+public void Main(int argc, string argv) {
+	int file = 0;
+	int result = 0;
 
-		try {
-			file = fopen("file.bin", "tw");
-			writeln("handle: " + file);
+	try {
+		file = fopen("file.bin", "tw");
+		writeln("handle: " + file);
 
-			result = fwritei(file, 17);
-			writeln("result = " + result);
-		}
-		catch {
-			writeln("error during fwrite");
-		}
-		finally {
-			result = fclose(file);
-			writeln("result = " + result);
-		}
+		result = fwritei(file, 17);
+		writeln("result = " + result);
+	}
+	catch {
+		writeln("error during fwrite");
+	}
+	finally {
+		result = fclose(file);
+		writeln("result = " + result);
 	}
 }
 

@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Core_VirtualMachine_h
-#define ObjectiveScript_Core_VirtualMachine_h
+#ifndef ObjectiveScript_Core_VirtualMachine_VirtualMachine_h
+#define ObjectiveScript_Core_VirtualMachine_VirtualMachine_h
 
 
 // Library include
@@ -11,8 +11,8 @@
 // Project includes
 #include <Core/Designtime/BluePrintObject.h>
 #include <Core/Extensions/AExtension.h>
-#include "Parameter.h"
-#include "Types.h"
+#include <Core/Parameter.h>
+#include <Core/Types.h>
 
 // Forward declarations
 
@@ -60,7 +60,6 @@ private:
 	Extensions::ExtensionList mExtensions;
 	StringSet mImportedLibraries;
 	StringSet mLibraryFolders;
-	Repository *mRepository;
 	std::string mScriptFile;
 	ScriptCollection mScripts;
 };

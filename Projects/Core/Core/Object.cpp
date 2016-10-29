@@ -8,9 +8,9 @@
 #include <Core/BuildInObjects/VoidObject.h>
 #include <Core/Common/Exceptions.h>
 #include <Core/Runtime/Exceptions.h>
+#include <Core/VirtualMachine/Controller.h>
 #include <Tools/Strings.h>
 #include <Utils.h>
-#include "Repository.h"
 #include "Tools.h"
 
 // Namespace declarations
@@ -31,64 +31,42 @@ Object::Object()
   mOutterface(ANONYMOUS_OBJECT),
   mQualifiedOutterface(ANONYMOUS_OBJECT),
   mQualifiedTypename(ANONYMOUS_OBJECT),
-  mRepository(0),
   mTypename(ANONYMOUS_OBJECT)
 {
+	mThis = this;
+	mBase = 0;
 }
 
 Object::Object(const Object& other)
 : MethodScope(other.getName(), other.mParent),
   ObjectSymbol(other.getName())
 {
+	mThis = this;
+	mBase = 0;
+
 	mFilename = other.mFilename;
+	mImplementationType = other.mImplementationType;
 	mInheritance = other.mInheritance;
 	mIsArray = other.mIsArray;
 	mIsArrayDynamicallyExpanding = other.mIsArrayDynamicallyExpanding;
 	mIsAtomicType = other.mIsAtomicType;
 	mIsConstructed = other.mIsConstructed;
 	mParent = other.mParent;
-	mRepository = other.mRepository;
 	mScopeName = other.mScopeName;
 	mScopeType = other.mScopeType;
 	mValue = other.mValue;
 
-	if ( other.mQualifiedOutterface != NULL_TYPE ) {
-		mOutterface = other.mOutterface;
-		mQualifiedOutterface = other.mQualifiedOutterface;
-		mQualifiedTypename = other.mQualifiedTypename;
-		mTypename = other.mTypename;
-	}
+	mOutterface = other.mOutterface;
+	mQualifiedOutterface = other.mQualifiedOutterface;
+	mQualifiedTypename = other.mQualifiedTypename;
+	mTypename = other.mTypename;
 
 	setConst(other.isConst());
 	setFinal(other.isFinal());
 	setLanguageFeatureState(other.getLanguageFeatureState());
 	setMember(other.isMember());
 
-	if ( !mIsAtomicType ) {
-		// register this
-		define(IDENTIFIER_THIS, this);
-
-		// register new members
-		for ( Symbols::const_iterator it = other.mSymbols.begin(); it != other.mSymbols.end(); ++it ) {
-			if ( /*it->first == IDENTIFIER_BASE ||*/ it->first == IDENTIFIER_THIS ) {
-				continue;
-			}
-
-			if ( it->second && it->second->getSymbolType() == Symbol::IType::ObjectSymbol ) {
-				mRepository->addReference(static_cast<Object*>(it->second));
-			}
-
-			define(it->first, it->second);
-		}
-
-		// register new methods
-		for ( MethodCollection::const_iterator it = other.mMethods.begin(); it != other.mMethods.end(); ++it ) {
-			Method *method = new Method(this, (*it)->getName(), (*it)->Typename());
-			*method = *(*it);
-
-			defineMethod((*it)->getName(), method);
-		}
-	}
+	assignReference(other.mReference);
 }
 
 Object::Object(const std::string& name, const std::string& filename, const std::string& type, AtomicValue value)
@@ -102,218 +80,77 @@ Object::Object(const std::string& name, const std::string& filename, const std::
   mOutterface(type),
   mQualifiedOutterface(type),
   mQualifiedTypename(type),
-  mRepository(0),
   mTypename(type),
   mValue(value)
 {
+	mBase = 0;
+	mThis = this;
 }
 
 Object::~Object()
 {
-	garbageCollector();
+	if ( mThis == this ) {
+		undefine(IDENTIFIER_THIS, this);
+	}
+
+	Controller::Instance().memory()->remove(mReference);
+
+	mBase = 0;
+	mThis = 0;
 }
 
 void Object::operator= (const Object& other)
 {
 	if ( this != &other ) {
 		mFilename = other.mFilename;
+		mImplementationType = other.mImplementationType;
 		mInheritance = other.mInheritance;
 		mIsArray = other.mIsArray;
 		mIsArrayDynamicallyExpanding = other.mIsArrayDynamicallyExpanding;
 		mIsAtomicType = other.mIsAtomicType;
-		mIsConstructed = other.mIsConstructed;// ? other.mIsConstructed : mIsConstructed;
-		mParent = other.mParent ? other.mParent : mParent;
-		mRepository = other.mRepository ? other.mRepository : mRepository;
+		mIsConstructed = other.mIsConstructed;
+		mParent = other.mParent;
 		mScopeName = other.mScopeName;
 		mScopeType = other.mScopeType;
 		mValue = other.mValue;
 
-		if ( other.mQualifiedOutterface != NULL_TYPE ) {
-			mOutterface = other.mOutterface;
-			mQualifiedOutterface = other.mQualifiedOutterface;
-			mQualifiedTypename = other.mQualifiedTypename;
-			mTypename = other.mTypename;
-		}
-
-		garbageCollector();
-
-		if ( !mIsAtomicType ) {
-			// register this
-			define(IDENTIFIER_THIS, this);
-
-			// register new members
-			for ( Symbols::const_iterator it = other.mSymbols.begin(); it != other.mSymbols.end(); ++it ) {
-				if ( /*it->first == IDENTIFIER_BASE ||*/ it->first == IDENTIFIER_THIS ) {
-					continue;
-				}
-
-				if ( it->second && it->second->getSymbolType() == Symbol::IType::ObjectSymbol ) {
-					mRepository->addReference(static_cast<Object*>(it->second));
-				}
-
-				define(it->first, it->second);
-			}
-
-			// register new methods
-			for ( MethodCollection::const_iterator it = other.mMethods.begin(); it != other.mMethods.end(); ++it ) {
-				Method *method = new Method(this, (*it)->getName(), (*it)->Typename());
-				*method = *(*it);
-
-				defineMethod((*it)->getName(), method);
-			}
-		}
-	}
-}
-
-void Object::assign(const Object& other)
-{
-	if ( this != &other ) {
-		mFilename = other.mFilename;
-		mInheritance = other.mInheritance;
-		mIsArray = other.mIsArray;
-		mIsArrayDynamicallyExpanding = other.mIsArrayDynamicallyExpanding;
-		mIsAtomicType = other.mIsAtomicType;
-		mIsConstructed = other.mIsConstructed;// ? other.mIsConstructed : mIsConstructed;
-		mParent = other.mParent ? other.mParent : mParent;
-		mRepository = other.mRepository ? other.mRepository : mRepository;
-		mScopeName = other.mScopeName;
-		mScopeType = other.mScopeType;
-		mValue = other.mValue;
-
-		if ( other.mQualifiedOutterface != NULL_TYPE ) {
-			mOutterface = other.mOutterface;
-			mQualifiedOutterface = other.mQualifiedOutterface;
-			mQualifiedTypename = other.mQualifiedTypename;
-			mTypename = other.mTypename;
-		}
-
-		garbageCollector();
-
-		if ( !mIsAtomicType ) {
-			// register this
-			define(IDENTIFIER_THIS, this);
-
-			// register new members
-			for ( Symbols::const_iterator it = other.mSymbols.begin(); it != other.mSymbols.end(); ++it ) {
-				if ( /*it->first == IDENTIFIER_BASE ||*/ it->first == IDENTIFIER_THIS ) {
-					continue;
-				}
-
-				if ( it->second && it->second->getSymbolType() == Symbol::IType::ObjectSymbol ) {
-					mRepository->addReference(static_cast<Object*>(it->second));
-				}
-
-				define(it->first, it->second);
-			}
-
-			// register new methods
-			for ( MethodCollection::const_iterator it = other.mMethods.begin(); it != other.mMethods.end(); ++it ) {
-				Method *method = new Method(this, (*it)->getName(), (*it)->Typename());
-				*method = *(*it);
-
-				defineMethod((*it)->getName(), method);
-			}
-		}
-	}
-}
-
-void Object::assignSubType(const Object& other)
-{
-	if ( this != &other ) {
-		mFilename = other.mFilename;
-		mInheritance = other.mInheritance;
-		mIsArray = other.mIsArray;
-		mIsArrayDynamicallyExpanding = other.mIsArrayDynamicallyExpanding;
-		mIsAtomicType = other.mIsAtomicType;
-		mIsConstructed = other.mIsConstructed;// ? other.mIsConstructed : mIsConstructed;
-		mParent = other.mParent ? other.mParent : mParent;
-		mRepository = other.mRepository ? other.mRepository : mRepository;
-		mScopeName = other.mScopeName;
-		mScopeType = other.mScopeType;
-		mValue = other.mValue;
-
-		if ( other.mQualifiedOutterface != NULL_TYPE ) {
-			mQualifiedTypename = other.mQualifiedTypename;
-			mTypename = other.mTypename;
-		}
-
-		garbageCollector();
-
-		if ( !mIsAtomicType ) {
-			// register this
-			define(IDENTIFIER_THIS, this);
-
-			// register new members
-			for ( Symbols::const_iterator it = other.mSymbols.begin(); it != other.mSymbols.end(); ++it ) {
-				if ( /*it->first == IDENTIFIER_BASE ||*/ it->first == IDENTIFIER_THIS ) {
-					continue;
-				}
-
-				if ( it->second && it->second->getSymbolType() == Symbol::IType::ObjectSymbol ) {
-					mRepository->addReference(static_cast<Object*>(it->second));
-				}
-
-				define(it->first, it->second);
-			}
-
-			// register new methods
-			for ( MethodCollection::const_iterator it = other.mMethods.begin(); it != other.mMethods.end(); ++it ) {
-				Method *method = new Method(this, (*it)->getName(), (*it)->Typename());
-				*method = *(*it);
-
-				defineMethod((*it)->getName(), method);
-			}
-		}
-	}
-}
-
-void Object::copy(const Object& other)
-{
-	if ( this != &other ) {
-		mIsArray = other.mIsArray;
-		mIsArrayDynamicallyExpanding = other.mIsArrayDynamicallyExpanding;
-		mIsAtomicType = other.mIsAtomicType;
-		mIsConstructed = other.mIsConstructed;// ? other.mIsConstructed : mIsConstructed;
-		mFilename = other.mFilename;
-		mOutterface = other.mTypename;
-		mParent = other.mParent ? other.mParent : mParent;
-		mQualifiedOutterface = other.mQualifiedTypename;
+		mOutterface = other.mOutterface;
+		mQualifiedOutterface = other.mQualifiedOutterface;
 		mQualifiedTypename = other.mQualifiedTypename;
-		mRepository = other.mRepository ? other.mRepository : mRepository;
+		mTypename = other.mTypename;
+
+		setConst(other.isConst());
+		setFinal(other.isFinal());
+		setLanguageFeatureState(other.getLanguageFeatureState());
+		setMember(other.isMember());
+
+		assignReference(other.mReference);
+	}
+}
+
+void Object::assign(const Object& other, bool overrideType)
+{
+	if ( this != &other ) {
+		mFilename = other.mFilename;
+		mImplementationType = other.mImplementationType;
+		mInheritance = other.mInheritance;
+		mIsArray = other.mIsArray;
+		mIsArrayDynamicallyExpanding = other.mIsArrayDynamicallyExpanding;
+		mIsAtomicType = other.mIsAtomicType;
+		mIsConstructed = other.mIsConstructed;
+		mParent = other.mParent ? other.mParent : mParent;
 		mScopeName = other.mScopeName;
 		mScopeType = other.mScopeType;
-		mTypename = other.mTypename;
 		mValue = other.mValue;
 
-		garbageCollector();
-
-		if ( !mIsAtomicType ) {
-			// register this
-			define(IDENTIFIER_THIS, this);
-
-			// register new members
-			for ( Symbols::const_iterator it = other.mSymbols.begin(); it != other.mSymbols.end(); ++it ) {
-				if ( /*it->first == IDENTIFIER_BASE ||*/
-					it->first == IDENTIFIER_THIS ||
-					!it->second || it->second->getSymbolType() != Symbol::IType::ObjectSymbol) {
-					continue;
-				}
-
-				Object* source = static_cast<Object*>(it->second);
-				Object* target = mRepository->createInstance(source->Typename(), source->getName(), false);
-				target->copy(*source);
-
-				define(target->getName(), target);
-			}
-
-			// register new methods
-			for ( MethodCollection::const_iterator it = other.mMethods.begin(); it != other.mMethods.end(); ++it ) {
-				Method *method = new Method(this, (*it)->getName(), (*it)->Typename());
-				*method = *(*it);
-
-				defineMethod((*it)->getName(), method);
-			}
+		if ( mQualifiedOutterface == NULL_TYPE || overrideType ) {
+			mOutterface = other.mOutterface;
+			mQualifiedOutterface = other.mQualifiedOutterface;
 		}
+		mQualifiedTypename = other.mQualifiedTypename;
+		mTypename = other.mTypename;
+
+		assignReference(other.mReference);
 	}
 }
 
@@ -327,15 +164,34 @@ void Object::addInheritance(const Designtime::Ancestor& ancestor, Object* inheri
 	mInheritance.insert(std::make_pair(ancestor, inheritance));
 }
 
+void Object::assignReference(const Reference& ref)
+{
+	Reference old = mReference;
+
+	mReference = ref;
+	Controller::Instance().memory()->add(mReference);
+
+	if ( mReference.isValid() ) {
+		mThis = Controller::Instance().memory()->get(mReference);
+		mBase = mThis->mBase;
+	}
+	else {
+		mThis = this;
+		mBase = dynamic_cast<Object*>(SymbolScope::resolve("base", true));
+	}
+
+	Controller::Instance().memory()->remove(old);
+}
+
 bool Object::CanExecuteDefaultConstructor() const
 {
-	Symbol* anyConstructor = resolve(Typename(), false);
+	Symbol* anyConstructor = resolve(RESERVED_WORD_CONSTRUCTOR, false);
 	if ( !anyConstructor ) {
 		// no constructor found at all, so we can call our default constructor but it won't do anything besides setting our object to constructed
 		return true;
 	}
 
-	Symbol* defaultConstructor = resolveMethod(Typename(), ParameterList(), true);
+	Symbol* defaultConstructor = resolveMethod(RESERVED_WORD_CONSTRUCTOR, ParameterList(), true);
 
 	return defaultConstructor && (anyConstructor == defaultConstructor);
 }
@@ -356,8 +212,8 @@ ControlFlow::E Object::Constructor(const ParameterList& params)
 		return controlflow;
 	}
 
-	if ( mIsConstructed ) {	// prevent multiple instantiations
-		throw Common::Exceptions::Exception("can not construct object '" + getFullScopeName() + "' multiple times");
+	if ( isConstructed() ) {	// prevent multiple instantiations
+		throw Common::Exceptions::Exception("can not construct '" + QualifiedTypename() + "' multiple times");
 	}
 
 	// execute parent object constructors
@@ -375,14 +231,15 @@ ControlFlow::E Object::Constructor(const ParameterList& params)
 	}
 
 	// check if we have implemented at least one constructor
-	Symbol *symbol = resolve(Typename(), true);
+	Symbol *symbol = resolve(RESERVED_WORD_CONSTRUCTOR, true);
 	if ( symbol ) {
 		// if a specialized constructor is implemented, the default constructor cannot be used
-
-		Method *constructor = static_cast<Method*>(resolveMethod(Typename(), params, true));
+		Method *constructor = dynamic_cast<Method*>(resolveMethod(RESERVED_WORD_CONSTRUCTOR, params, true));
 		if ( constructor ) {
 			VoidObject tmp;
-			controlflow = constructor->execute(params, &tmp, Token());
+
+			Interpreter interpreter;
+			controlflow = interpreter.execute(constructor, params, &tmp);
 
 			if ( controlflow != ControlFlow::Normal ) {
 				return controlflow;
@@ -390,7 +247,7 @@ ControlFlow::E Object::Constructor(const ParameterList& params)
 		}
 		else {
 			// no appropriate constructor found
-			throw Common::Exceptions::Exception(Typename() + ": no appropriate constructor found");
+			throw Common::Exceptions::Exception(QualifiedTypename() + ": no appropriate constructor found");
 		}
 	}
 
@@ -406,31 +263,84 @@ ControlFlow::E Object::Constructor(const ParameterList& params)
 */
 
 	// set after executing constructor in case any exceptions have been thrown
-	mIsConstructed = true;
+	setConstructed(true);
 
 	return controlflow;
+}
+
+void Object::copy(const Object& other)
+{
+	if ( this != &other ) {
+		mFilename = other.mFilename;
+		mImplementationType = other.mImplementationType;
+		mInheritance = other.mInheritance;
+		mIsArray = other.mIsArray;
+		mIsArrayDynamicallyExpanding = other.mIsArrayDynamicallyExpanding;
+		mIsAtomicType = other.mIsAtomicType;
+		mIsConstructed = other.mIsConstructed;// ? other.mIsConstructed : mIsConstructed;
+		mFilename = other.mFilename;
+		mOutterface = other.mTypename;
+		mParent = other.mParent ? other.mParent : mParent;
+		mQualifiedOutterface = other.mQualifiedTypename;
+		mQualifiedTypename = other.mQualifiedTypename;
+		mScopeName = other.mScopeName;
+		mScopeType = other.mScopeType;
+		mTypename = other.mTypename;
+		mValue = other.mValue;
+
+		garbageCollector();
+
+		if ( !mIsAtomicType ) {
+			// register this
+			define(IDENTIFIER_THIS, this);
+
+			// register new members
+			for ( Symbols::const_iterator it = other.mSymbols.begin(); it != other.mSymbols.end(); ++it ) {
+				if ( /*it->first == IDENTIFIER_BASE ||*/
+						it->first == IDENTIFIER_THIS ||
+						!it->second || it->second->getSymbolType() != Symbol::IType::ObjectSymbol) {
+					continue;
+				}
+
+				Object* source = static_cast<Object*>(it->second);
+				Object* target = Controller::Instance().repository()->createInstance(source->QualifiedTypename(), source->getName(), false);
+				target->copy(*source);
+
+				define(target->getName(), target);
+			}
+
+			// register new methods
+			for ( MethodCollection::const_iterator it = other.mMethods.begin(); it != other.mMethods.end(); ++it ) {
+				Method *method = new Method(this, (*it)->getName(), (*it)->Typename());
+				*method = *(*it);
+
+				defineMethod((*it)->getName(), method);
+			}
+		}
+	}
 }
 
 ControlFlow::E Object::Destructor()
 {
 	ControlFlow::E controlflow = ControlFlow::Normal;
 
-	if ( mIsConstructed && !mIsAtomicType ) {
-		mIsConstructed = false;
-
+	if ( isConstructed() && !mIsAtomicType ) {
 		ParameterList params;
 
 		// only execute destructor if one is present
-		Method *destructor = static_cast<Method*>(resolveMethod("~" + Typename(), params, true));
+		Method *destructor = static_cast<Method*>(resolveMethod(RESERVED_WORD_DESTRUCTOR, params, true));
 		if ( destructor ) {
 			VoidObject tmp;
-			controlflow = destructor->execute(params, &tmp, Token());
+
+			Interpreter interpreter;
+			controlflow = interpreter.execute(destructor, params, &tmp);
 
 			if ( controlflow != ControlFlow::Normal ) {
 				return controlflow;
 			}
 		}
 
+/*
 		// execute parent object destructors
 		for ( Inheritance::iterator it = mInheritance.begin(); it != mInheritance.end(); ++it ) {
 			controlflow = it->second->Destructor();
@@ -439,31 +349,25 @@ ControlFlow::E Object::Destructor()
 				return controlflow;
 			}
 		}
-
-		garbageCollector();
-	}
-	else {
-		// either the destructor has already been executed
-		// or the constructor has never been called successfully!
-		//throw Common::Exceptions::Exception("can not destroy object '" + Typename() + "' which has not been constructed");
+*/
 	}
 
 	// set after executing destructor in case any exceptions have been thrown
-	mIsConstructed = false;
+	setConstructed(false);
 
 	return controlflow;
 }
 
 ControlFlow::E Object::execute(Object *result, const std::string& name, const ParameterList& params, const Method* /*caller*/)
 {
-	if ( !mIsConstructed ) {
+	if ( !isConstructed() ) {
 		// a method is being called although our object has not yet been constructed?
 		throw Runtime::Exceptions::NullPointerException("executed method '" + name + "' of uninitialized object '" + QualifiedTypename() + "'");
 	}
 
 	Method *method = static_cast<Method*>(resolveMethod(name, params, false));
 	if ( !method ) {
-		throw Common::Exceptions::UnknownIdentifer("unknown method '" + getFullScopeName() + "." + name + "' or method with invalid parameter count called!");
+		throw Common::Exceptions::UnknownIdentifer("unknown method '" + QualifiedTypename() + "." + name + "' or method with invalid parameter count called!");
 	}
 
 /*
@@ -478,11 +382,8 @@ ControlFlow::E Object::execute(Object *result, const std::string& name, const Pa
 	}
 */
 
-	method->setRepository(mRepository);
-	result->setRepository(mRepository);
-
-	// execute our member method
-	return method->execute(params, result, Token());
+	Interpreter interpreter;
+	return interpreter.execute(method, params, result);
 }
 
 bool Object::FromJson(const Json::Value& value)
@@ -514,18 +415,18 @@ void Object::garbageCollector()
 
 		delete (*it);
 	}
-	mMethods.clear();
 
-	for ( Symbols::reverse_iterator it = mSymbols.rbegin(); it != mSymbols.rend(); ) {
-		if ( it->first != IDENTIFIER_BASE &&
-			 it->first != IDENTIFIER_THIS &&
-			 it->second && it->second->getSymbolType() == Symbol::IType::ObjectSymbol ) {
-			mRepository->removeReference(static_cast<Object*>(it->second));
+	Symbols tmp = mSymbols;
+
+	for ( Symbols::iterator symIt = tmp.begin(); symIt != tmp.end(); ++symIt) {
+		if ( symIt->first != IDENTIFIER_BASE &&
+			 symIt->first != IDENTIFIER_THIS &&
+			 symIt->second && symIt->second->getSymbolType() == Symbol::IType::ObjectSymbol ) {
+			delete symIt->second;
 		}
 
-		undefine(it->first, it->second);
+		mSymbols.erase(symIt->first);
 	}
-	mSymbols.clear();
 }
 
 AtomicValue Object::getValue() const
@@ -540,7 +441,11 @@ bool Object::isArray() const
 
 bool Object::isAbstract() const
 {
-	bool result = false;
+	if ( mThis != this ) {
+		return mThis->isAbstract();
+	}
+
+	bool result = mBase ? mBase->isAbstract() : false;
 
 	for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
 		if ( (*it)->isAbstract() ) {
@@ -554,6 +459,15 @@ bool Object::isAbstract() const
 bool Object::isAtomicType() const
 {
 	return mIsAtomicType;
+}
+
+bool Object::isConstructed() const
+{
+	if ( mThis != this ) {
+		return Controller::Instance().memory()->get(mReference)->isConstructed();
+	}
+
+	return mIsConstructed;
 }
 
 bool Object::isInstanceOf(const std::string& type) const
@@ -577,7 +491,7 @@ bool Object::isInstanceOf(const std::string& type) const
 
 bool Object::isValid() const
 {
-	return mIsConstructed;
+	return isConstructed();
 }
 
 const Object* Object::operator_array(const Object *index)
@@ -596,21 +510,20 @@ void Object::operator_assign(const Object *other)
 	ParameterList params;
 	params.push_back(
 		Parameter(ANONYMOUS_OBJECT, Typename(), VALUE_NONE)
-		//Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
 	);
 
 	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", params, true);
 	if ( value_operator ) {
 		Object tmp;
-		static_cast<Method*>(value_operator)->execute(params, &tmp, Token());
+
+		Interpreter interpreter;
+		interpreter.execute(static_cast<Method*>(value_operator), params, &tmp);
 
 		operator_assign(&tmp);
 		return;
 	}
 
-	std::string target = other->Typename();
-
-	throw Common::Exceptions::NotImplemented(Typename() + ".operator=: conversion from " + target + " to " + Typename() + " not supported");
+	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_bitand(const Object *other)
@@ -622,7 +535,6 @@ void Object::operator_bitand(const Object *other)
 	ParameterList params;
 	params.push_back(
 		Parameter(ANONYMOUS_OBJECT, Typename(), VALUE_NONE)
-		//Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
 	);
 
 	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("&operator", params, true);
@@ -631,15 +543,15 @@ void Object::operator_bitand(const Object *other)
 	}
 	if ( value_operator ) {
 		Object tmp;
-		static_cast<Method*>(value_operator)->execute(params, &tmp, Token());
+
+		Interpreter interpreter;
+		interpreter.execute(static_cast<Method*>(value_operator), params, &tmp);
 
 		operator_bitand(&tmp);
 		return;
 	}
 
-	std::string target = other->Typename();
-
-	throw Common::Exceptions::NotImplemented(Typename() + ".operator&: conversion from " + target + " to " + Typename() + " not supported");
+	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator&: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_bitcomplement(const Object *other)
@@ -660,15 +572,15 @@ void Object::operator_bitcomplement(const Object *other)
 	}
 	if ( value_operator ) {
 		Object tmp;
-		static_cast<Method*>(value_operator)->execute(params, &tmp, Token());
+
+		Interpreter interpreter;
+		interpreter.execute(static_cast<Method*>(value_operator), params, &tmp);
 
 		operator_bitcomplement(&tmp);
 		return;
 	}
 
-	std::string target = other->Typename();
-
-	throw Common::Exceptions::NotImplemented(Typename() + ".operator~: conversion from " + target + " to " + Typename() + " not supported");
+	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator~: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_bitor(const Object *other)
@@ -689,20 +601,20 @@ void Object::operator_bitor(const Object *other)
 	}
 	if ( value_operator ) {
 		Object tmp;
-		static_cast<Method*>(value_operator)->execute(params, &tmp, Token());
+
+		Interpreter interpreter;
+		interpreter.execute(static_cast<Method*>(value_operator), params, &tmp);
 
 		operator_bitor(&tmp);
 		return;
 	}
 
-	std::string target = other->Typename();
-
-	throw Common::Exceptions::NotImplemented(Typename() + ".operator|: conversion from " + target + " to " + Typename() + " not supported");
+	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator|: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool Object::operator_bool() const
 {
-	throw Common::Exceptions::NotImplemented(Typename() + ".operator bool(): for " + Typename() + " not supported");
+	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator bool(): for " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_divide(const Object *other)
@@ -723,21 +635,25 @@ void Object::operator_divide(const Object *other)
 	}
 	if ( value_operator ) {
 		Object tmp;
-		static_cast<Method*>(value_operator)->execute(params, &tmp, Token());
+
+		Interpreter interpreter;
+		interpreter.execute(static_cast<Method*>(value_operator), params, &tmp);
 
 		operator_divide(&tmp);
 		return;
 	}
 
-	std::string target = other->Typename();
-
-	throw Common::Exceptions::NotImplemented(Typename() + ".operator/: conversion from " + target + " to " + Typename() + " not supported");
+	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator/: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool Object::operator_equal(const Object *other)
 {
 	if ( !other->isValid() ) {
 		throw Runtime::Exceptions::NullPointerException(QualifiedTypename() + ".operator==: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	}
+
+	if ( mReference.isValid() && other->mReference.isValid() ) {
+		return mReference == other->mReference;
 	}
 
 	ParameterList params;
@@ -752,14 +668,14 @@ bool Object::operator_equal(const Object *other)
 	}
 	if ( value_operator ) {
 		Object tmp;
-		static_cast<Method*>(value_operator)->execute(params, &tmp, Token());
+
+		Interpreter interpreter;
+		interpreter.execute(static_cast<Method*>(value_operator), params, &tmp);
 
 		return operator_equal(&tmp);
 	}
 
-	std::string target = other->Typename();
-
-	throw Common::Exceptions::NotImplemented(Typename() + ".operator==: conversion from " + target + " to " + Typename() + " not supported");
+	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator==: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool Object::operator_greater(const Object *other)
@@ -780,14 +696,14 @@ bool Object::operator_greater(const Object *other)
 	}
 	if ( value_operator ) {
 		Object tmp;
-		static_cast<Method*>(value_operator)->execute(params, &tmp, Token());
+
+		Interpreter interpreter;
+		interpreter.execute(static_cast<Method*>(value_operator), params, &tmp);
 
 		return operator_greater(&tmp);
 	}
 
-	std::string target = other->Typename();
-
-	throw Common::Exceptions::NotImplemented(Typename() + ".operator>: conversion from " + target + " to " + Typename() + " not supported");
+	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator>: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool Object::operator_greater_equal(const Object *other)
@@ -808,36 +724,32 @@ bool Object::operator_greater_equal(const Object *other)
 	}
 	if ( value_operator ) {
 		Object tmp;
-		static_cast<Method*>(value_operator)->execute(params, &tmp, Token());
+
+		Interpreter interpreter;
+		interpreter.execute(static_cast<Method*>(value_operator), params, &tmp);
 
 		return operator_greater_equal(&tmp);
 	}
 
-	std::string target = other->Typename();
-
-	throw Common::Exceptions::NotImplemented(Typename() + ".operator>=: conversion from " + target + " to " + Typename() + " not supported");
+	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator>=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool Object::operator_is(const Symbol *other)
 {
-	if ( !other || other->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
-		throw Common::Exceptions::Exception("invalid symbol provided");
+	if ( !other ) {
+		return false;
 	}
 
-/*
-	for ( Inheritance::const_iterator it = mInheritance.begin(); it != mInheritance.end(); ++it ) {
-		if ( it->first.name() == static_cast<const Designtime::BluePrintObject*>(other)->QualifiedTypename() ) {
-			return true;
-		}
-		else if ( it->second->operator_is(other) ) {
-			return true;
-		}
+	std::string type;
+
+	if ( other->getSymbolType() == Symbol::IType::BluePrintEnumSymbol || other->getSymbolType() == Symbol::IType::BluePrintObjectSymbol ) {
+		type = static_cast<const Designtime::BluePrintGeneric*>(other)->QualifiedTypename();
+	}
+	else if ( other->getSymbolType() == Symbol::IType::ObjectSymbol ) {
+		type = static_cast<const Object*>(other)->QualifiedTypename();
 	}
 
-	return QualifiedTypename() == static_cast<const Designtime::BluePrintObject*>(other)->QualifiedTypename();
-*/
-
-	return isInstanceOf(static_cast<const Designtime::BluePrintObject*>(other)->QualifiedTypename());
+	return isInstanceOf(type);
 }
 
 bool Object::operator_less(const Object *other)
@@ -858,14 +770,14 @@ bool Object::operator_less(const Object *other)
 	}
 	if ( value_operator ) {
 		Object tmp;
-		static_cast<Method*>(value_operator)->execute(params, &tmp, Token());
+
+		Interpreter interpreter;
+		interpreter.execute(static_cast<Method*>(value_operator), params, &tmp);
 
 		return operator_less(&tmp);
 	}
 
-	std::string target = other->Typename();
-
-	throw Common::Exceptions::NotImplemented(Typename() + ".operator<: conversion from " + target + " to " + Typename() + " not supported");
+	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator<: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool Object::operator_less_equal(const Object *other)
@@ -886,14 +798,14 @@ bool Object::operator_less_equal(const Object *other)
 	}
 	if ( value_operator ) {
 		Object tmp;
-		static_cast<Method*>(value_operator)->execute(params, &tmp, Token());
+
+		Interpreter interpreter;
+		interpreter.execute(static_cast<Method*>(value_operator), params, &tmp);
 
 		return operator_less_equal(&tmp);
 	}
 
-	std::string target = other->Typename();
-
-	throw Common::Exceptions::NotImplemented(Typename() + ".operator<=: conversion from " + target + " to " + Typename() + " not supported");
+	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator<=: conversion from " + other->QualifiedTypename() + " to " + Typename() + " not supported");
 }
 
 void Object::operator_modulo(const Object *other)
@@ -914,15 +826,15 @@ void Object::operator_modulo(const Object *other)
 	}
 	if ( value_operator ) {
 		Object tmp;
-		static_cast<Method*>(value_operator)->execute(params, &tmp, Token());
+
+		Interpreter interpreter;
+		interpreter.execute(static_cast<Method*>(value_operator), params, &tmp);
 
 		operator_modulo(&tmp);
 		return;
 	}
 
-	std::string target = other->Typename();
-
-	throw Common::Exceptions::NotImplemented(Typename() + ".operator%: conversion from " + target + " to " + Typename() + " not supported");
+	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator%: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_multiply(const Object *other)
@@ -943,15 +855,15 @@ void Object::operator_multiply(const Object *other)
 	}
 	if ( value_operator ) {
 		Object tmp;
-		static_cast<Method*>(value_operator)->execute(params, &tmp, Token());
+
+		Interpreter interpreter;
+		interpreter.execute(static_cast<Method*>(value_operator), params, &tmp);
 
 		operator_multiply(&tmp);
 		return;
 	}
 
-	std::string target = other->Typename();
-
-	throw Common::Exceptions::NotImplemented(Typename() + ".operator*: conversion from " + target + " to " + Typename() + " not supported");
+	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator*: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_plus(const Object *other)
@@ -972,7 +884,9 @@ void Object::operator_plus(const Object *other)
 	}
 	if ( value_operator ) {
 		Object tmp;
-		static_cast<Method*>(value_operator)->execute(params, &tmp, Token());
+
+		Interpreter interpreter;
+		interpreter.execute(static_cast<Method*>(value_operator), params, &tmp);
 
 		operator_plus(&tmp);
 		return;
@@ -999,47 +913,51 @@ void Object::operator_subtract(const Object *other)
 	}
 	if ( value_operator ) {
 		Object tmp;
-		static_cast<Method*>(value_operator)->execute(params, &tmp, Token());
+
+		Interpreter interpreter;
+		interpreter.execute(static_cast<Method*>(value_operator), params, &tmp);
 
 		operator_subtract(&tmp);
 		return;
 	}
 
-	std::string target = other->Typename();
-
-	throw Common::Exceptions::NotImplemented(Typename() + ".operator-: conversion from " + target + " to " + Typename() + " not supported");
+	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator-: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_unary_decrement()
 {
-	throw Common::Exceptions::NotImplemented(Typename() + ".operator--: for " + Typename() + " not supported");
+	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator--: for " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_unary_increment()
 {
-	throw Common::Exceptions::NotImplemented(Typename() + ".operator++: for " + Typename() + " not supported");
+	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator++: for " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_unary_minus()
 {
-	throw Common::Exceptions::NotImplemented(Typename() + ".operator unary -: for " + Typename() + " not supported");
+	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator unary -: for " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_unary_not()
 {
-	throw Common::Exceptions::NotImplemented(Typename() + ".operator unary !: for " + Typename() + " not supported");
+	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator unary !: for " + QualifiedTypename() + " not supported");
 }
 
 Symbol* Object::resolve(const std::string& name, bool onlyCurrentScope) const
 {
+	if ( mThis != this ) {
+		return mThis->resolve(name, onlyCurrentScope);
+	}
+
 	// (1) look only in current scope
 	Symbol *result = MethodScope::resolve(name, true);
 
 	// (2) check inheritance
 	if ( !result ) {
-		Symbol* base = MethodScope::resolve("base", true);
-		if ( base && !onlyCurrentScope ) {
-			result = static_cast<Object*>(base)->resolve(name, onlyCurrentScope);
+		Object* base = dynamic_cast<Object*>(MethodScope::resolve("base", true));
+		if ( base && base->getSymbolType() == Symbol::IType::ObjectSymbol && !onlyCurrentScope ) {
+			result = base->resolve(name, onlyCurrentScope);
 		}
 	}
 
@@ -1053,14 +971,18 @@ Symbol* Object::resolve(const std::string& name, bool onlyCurrentScope) const
 
 ObjectiveScript::MethodSymbol* Object::resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope) const
 {
+	if ( mThis != this ) {
+		return mThis->resolveMethod(name, params, onlyCurrentScope);
+	}
+
 	// (1) look in current scope
 	ObjectiveScript::MethodSymbol *result = MethodScope::resolveMethod(name, params, true);
 
 	// (2) check inheritance
 	// we cannot go the short is-result-already-set way here because one of our ancestor methods could be marked as final
 	Symbol* base = MethodScope::resolve("base", true);
-	if ( base && !onlyCurrentScope ) {
-		result = static_cast<Object*>(base)->resolveMethod(name, params, onlyCurrentScope);
+	if ( base && base->getSymbolType() == Symbol::IType::ObjectSymbol && !onlyCurrentScope ) {
+		result = dynamic_cast<Object*>(base)->resolveMethod(name, params, onlyCurrentScope);
 	}
 
 	// (3) if we still haven't found something also look in other scopes
@@ -1085,17 +1007,17 @@ void Object::setArray(bool value, size_t size)
 
 void Object::setConstructed(bool state)
 {
+	if ( mThis != this ) {
+		Controller::Instance().memory()->get(mReference)->setConstructed(state);
+		return;
+	}
+
 	mIsConstructed = state;
 }
 
 void Object::setParent(IScope *scope)
 {
 	mParent = scope;
-}
-
-void Object::setRepository(Repository *repository)
-{
-	mRepository = repository;
 }
 
 void Object::setValue(AtomicValue value)
@@ -1109,7 +1031,7 @@ Json::Value Object::ToJson() const
 
 	for ( Symbols::const_iterator it = mSymbols.begin(); it != mSymbols.end(); ++it ) {
 		if ( it->first == IDENTIFIER_BASE ) {
-			result.addMember(it->first, static_cast<Object*>(it->second)->ToJson());
+			result.addMember(it->first, dynamic_cast<Object*>(it->second)->ToJson());
 		}
 
 		if ( it->first == IDENTIFIER_BASE || it->first == IDENTIFIER_THIS ||
@@ -1117,7 +1039,7 @@ Json::Value Object::ToJson() const
 			continue;
 		}
 
-		Object *obj = static_cast<Object*>(it->second);
+		Object *obj = dynamic_cast<Object*>(it->second);
 
 		result.addMember(it->first, obj->getValue().toStdString());
 	}
@@ -1145,7 +1067,7 @@ std::string Object::ToString(unsigned int indent) const
 		}
 
 		for ( Symbols::const_iterator it = mSymbols.begin(); it != mSymbols.end(); ++it ) {
-			if ( it->first == IDENTIFIER_BASE || it->first == IDENTIFIER_THIS ||
+			if ( /*it->first == IDENTIFIER_BASE ||*/ it->first == IDENTIFIER_THIS ||
 				 !it->second || it->second->getSymbolType() != Symbol::IType::ObjectSymbol ) {
 				continue;
 			}

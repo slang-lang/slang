@@ -6,14 +6,14 @@
 #include <fstream>
 
 // Project includes
+#include <Core/Consts.h>
 #include <Core/Common/Exceptions.h>
-#include <Utils.h>
+#include <Core/Designtime/Analyser.h>
+#include <Core/Script.h>
+#include <Core/Tools.h>
 #include <Tools/Files.h>
-#include "Analyser.h"
-#include "Consts.h"
-#include "Repository.h"
-#include "Script.h"
-#include "Tools.h"
+#include <Utils.h>
+#include "Controller.h"
 
 // Namespace declarations
 
@@ -23,11 +23,13 @@ namespace ObjectiveScript {
 
 VirtualMachine::VirtualMachine()
 {
-	mRepository = new Repository();
+	Controller::Instance().init();
 }
 
 VirtualMachine::~VirtualMachine()
 {
+	Controller::Instance().deinit();
+
 	for ( Extensions::ExtensionList::iterator it = mExtensions.begin(); it != mExtensions.end(); ++it ) {
 		delete (*it);
 	}
@@ -35,8 +37,6 @@ VirtualMachine::~VirtualMachine()
 		delete (*it);
 	}
 	mScripts.clear();
-
-	delete mRepository;
 }
 
 void VirtualMachine::addExtension(Extensions::AExtension *extension)
@@ -74,10 +74,10 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 {
 	init();
 
-	Script *script = new Script(mRepository->getGlobalScope());
+	Script *script = new Script();
 	mScripts.insert(script);
 
-	Analyser analyser(mRepository);
+	Designtime::Analyser analyser;
 	analyser.processString(content, mScriptFile);
 
 	// load all library references
@@ -106,26 +106,29 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 	}
 */
 
-	// rebuild all blue prints to update/retype their type declarations
-	mRepository->rebuildBluePrints();
-
-	// initialize Main object
-	Symbol* mainSymbol = mRepository->getGlobalScope()->resolve("Main");
-	if ( mainSymbol && mainSymbol->getSymbolType() == Symbol::IType::BluePrintObjectSymbol ) {
-		// create an instance of our Main object ...
-		Runtime::Object *main = mRepository->createInstance(static_cast<Designtime::BluePrintObject*>(mainSymbol), "main", true);
-		assert(main);
-
-		// ... define it in our global scope ...
-		mRepository->getGlobalScope()->define("main", main);
-
-		Runtime::ControlFlow::E controlflow = main->Constructor(params);
-		if ( controlflow == Runtime::ControlFlow::Throw ) {
-			std::string text = "Exception raised in method '" + main->getFullScopeName() + "." + main->QualifiedTypename() + "(" + toString(params) + ")'";
-
-			throw Common::Exceptions::Exception(text);
-		}
+	// Startup
+	MethodSymbol* main = Controller::Instance().stack()->globalScope()->resolveMethod("Main", params, false);
+	if ( !main ) {
+		throw Common::Exceptions::Exception("could not resolve method 'Main(" + toString(params) + ")'");
 	}
+
+	Runtime::Method* methodSymbol = static_cast<Runtime::Method*>(main);
+
+	Runtime::Object tmp;
+	Runtime::Interpreter interpreter;
+	Runtime::ControlFlow::E controlflow = interpreter.execute(methodSymbol, params, &tmp);
+
+	if ( controlflow == Runtime::ControlFlow::Throw ) {
+		Runtime::Object* data = interpreter.getExceptionData().getData();
+
+		std::string text = "Exception raised in method 'Main(" + toString(params) + ")':\n";
+		text += data->getValue().toStdString();
+
+		throw Common::Exceptions::Exception(text);
+	}
+
+	// clean up the unused forward declarations (TODO: find a better solution for this)
+	Controller::Instance().repository()->cleanupForwardDeclarations();
 
 	return script;
 }
@@ -195,18 +198,17 @@ bool VirtualMachine::loadExtensions()
 		try {
 			OSdebug("adding extension '" + (*extIt)->getName() + "'");
 
-			(*extIt)->initialize(mRepository->getGlobalScope());
+			(*extIt)->initialize(Controller::Instance().stack()->globalScope());
 
 			Extensions::ExtensionMethods methods;
 			(*extIt)->provideMethods(methods);
 
-			MethodScope* scope = mRepository->getGlobalScope();
+			MethodScope* scope = Controller::Instance().stack()->globalScope();
 
 			for ( Extensions::ExtensionMethods::const_iterator it = methods.begin(); it != methods.end(); ++it ) {
 				OSdebug("adding extension '" + (*extIt)->getName() + "." + (*it)->getName() + "'");
 
 				(*it)->setParent(scope);
-				(*it)->setRepository(mRepository);
 
 				scope->defineMethod((*it)->getName(), (*it));
 			}
@@ -236,7 +238,7 @@ bool VirtualMachine::loadLibrary(const std::string& library)
 
 	mLibraryFolders.insert(::Utils::Tools::Files::ExtractPathname(library));
 
-	Analyser analyser(mRepository);
+	Designtime::Analyser analyser;
 	analyser.processFile(library);
 
 	mImportedLibraries.insert(library);

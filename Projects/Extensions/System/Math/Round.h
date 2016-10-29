@@ -11,8 +11,7 @@
 #include <Core/BuildInObjects/FloatObject.h>
 #include <Core/Designtime/BuildInTypes/DoubleObject.h>
 #include <Core/Designtime/BuildInTypes/FloatObject.h>
-#include <Core/Method.h>
-#include <Core/Repository.h>
+#include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Tools.h>
 #include <Core/Common/Exceptions.h>
 #include <Tools/Strings.h>
@@ -29,11 +28,11 @@ namespace System {
 namespace Math {
 
 
-class RoundDouble: public Runtime::Method
+class RoundDouble: public ExtensionMethod
 {
 public:
 	RoundDouble()
-	: Runtime::Method(0, "round", Designtime::DoubleObject::TYPENAME)
+	: ExtensionMethod(0, "round", Designtime::DoubleObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter("value", Designtime::DoubleObject::TYPENAME, VALUE_NONE));
@@ -58,7 +57,7 @@ public:
 #endif
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
 			*data = Runtime::StringObject(std::string(e.what()));
 
 			mExceptionData = Runtime::ExceptionData(data, token.position());
@@ -70,11 +69,11 @@ public:
 };
 
 
-class RoundFloat: public Runtime::Method
+class RoundFloat: public ExtensionMethod
 {
 public:
 	RoundFloat()
-	: Runtime::Method(0, "round", Designtime::FloatObject::TYPENAME)
+	: ExtensionMethod(0, "round", Designtime::FloatObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter("value", Designtime::FloatObject::TYPENAME, VALUE_NONE));
@@ -99,7 +98,7 @@ public:
 #endif
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
 			*data = Runtime::StringObject(std::string(e.what()));
 
 			mExceptionData = Runtime::ExceptionData(data, token.position());

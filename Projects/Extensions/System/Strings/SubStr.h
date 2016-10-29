@@ -10,10 +10,8 @@
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
-#include <Core/Method.h>
-#include <Core/Repository.h>
+#include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Tools.h>
-#include <Core/Common/Exceptions.h>
 #include <Tools/Strings.h>
 
 // Forward declarations
@@ -27,11 +25,11 @@ namespace System {
 namespace Strings {
 
 
-class SubStr : public Runtime::Method
+class SubStr : public ExtensionMethod
 {
 public:
 	SubStr()
-	: Runtime::Method(0, "substr", Designtime::StringObject::TYPENAME)
+	: ExtensionMethod(0, "substr", Designtime::StringObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter("value", Designtime::StringObject::TYPENAME, 0));
@@ -62,7 +60,7 @@ public:
 			*result = Runtime::StringObject(result_value);
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
 			*data = Runtime::StringObject(std::string(e.what()));
 
 			mExceptionData = Runtime::ExceptionData(data, token.position());

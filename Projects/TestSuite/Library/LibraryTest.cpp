@@ -10,9 +10,9 @@
 // Library includes
 
 // Project includes
-#include <Core/Script.h>
-#include <Core/VirtualMachine.h>
 #include <Core/Common/Exceptions.h>
+#include <Core/Script.h>
+#include <Core/VirtualMachine/VirtualMachine.h>
 
 // Extension includes
 #ifdef USE_SYSTEM_EXTENSION

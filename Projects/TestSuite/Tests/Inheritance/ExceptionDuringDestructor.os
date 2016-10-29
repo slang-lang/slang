@@ -3,12 +3,12 @@
 import System.Exception;
 
 private object TestObject {
-	public void TestObject() {
-		print("TestObject()");
+	public void Constructor() {
+		print("Constructor()");
 	}
 
-	public void ~TestObject() throws {
-		print("~TestObject()");
+	public void Destructor() throws {
+		print("Destructor()");
 
 		print("throw in destructor");
 		//throw 42;
@@ -16,11 +16,14 @@ private object TestObject {
 	}
 }
 
-public object Main {
-	public void Main(int argc = 0, string argv = "") {
-		try {
-			TestObject obj = new TestObject();
-		}
+public void Main(int argc = 0, string argv = "") {
+	try {
+		TestObject obj = new TestObject();
+
+		delete obj;
+	}
+	catch ( string e ) {
+		print("caugth exception: " + e);
 	}
 }
 

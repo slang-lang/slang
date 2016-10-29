@@ -7,6 +7,7 @@
 
 // Project includes
 #include <Core/Common/Exceptions.h>
+#include <Core/VirtualMachine/Controller.h>
 #include "Method.h"
 #include "Tools.h"
 
@@ -24,7 +25,7 @@ SymbolScope::SymbolScope(IScope *parent)
 
 SymbolScope::~SymbolScope()
 {
-	mParent = 0;
+	deinit();
 }
 
 void SymbolScope::define(const std::string& name, Symbol* symbol)
@@ -41,9 +42,21 @@ void SymbolScope::define(const std::string& name, Symbol* symbol)
 	));
 }
 
-void SymbolScope::exportSymbols(Symbols& symbols)
+void SymbolScope::deinit()
 {
-	symbols = mSymbols;
+	Symbols tmpSymbols = mSymbols;
+
+	for ( Symbols::iterator symIt = tmpSymbols.begin(); symIt != tmpSymbols.end(); ++symIt ) {
+		mSymbols.erase(symIt->first);
+
+		if ( /*symIt->first == "base" ||*/ symIt->first == "this" ) {
+			continue;
+		}
+
+		delete symIt->second;
+	}
+
+	mParent = 0;
 }
 
 IScope* SymbolScope::getEnclosingScope() const
@@ -106,8 +119,12 @@ NamedScope::NamedScope(const std::string& name, IScope* parent)
 
 NamedScope::~NamedScope()
 {
+	deinit();
 }
 
+void NamedScope::deinit()
+{
+}
 
 MethodScope::MethodScope(const std::string& name, IScope* parent)
 : NamedScope(name, parent)
@@ -117,6 +134,7 @@ MethodScope::MethodScope(const std::string& name, IScope* parent)
 
 MethodScope::~MethodScope()
 {
+	deinit();
 }
 
 void MethodScope::defineMethod(const std::string& name, Runtime::Method* method)
@@ -141,6 +159,23 @@ void MethodScope::defineMethod(const std::string& name, Runtime::Method* method)
 	mMethods.insert(method);
 }
 
+void MethodScope::deinit()
+{
+	MethodCollection tmpMethods = mMethods;
+	Symbols tmpSymbols = mSymbols;
+
+	for ( MethodCollection::iterator methIt = tmpMethods.begin(); methIt != tmpMethods.end(); ++methIt ) {
+		for ( Symbols::iterator symIt = tmpSymbols.begin(); symIt != tmpSymbols.end(); ++symIt ) {
+			if ( symIt->second == (*methIt) ) {
+				mSymbols.erase(symIt->first);
+			}
+		}
+
+		mMethods.erase((*methIt));
+		delete (*methIt);
+	}
+}
+
 MethodSymbol* MethodScope::resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope) const
 {
 	for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
@@ -152,7 +187,7 @@ MethodSymbol* MethodScope::resolveMethod(const std::string& name, const Paramete
 	}
 
 	if ( mParent && !onlyCurrentScope ) {
-		return static_cast<MethodScope*>(mParent)->resolveMethod(name, params, onlyCurrentScope);
+		return dynamic_cast<MethodScope*>(mParent)->resolveMethod(name, params, onlyCurrentScope);
 	}
 
 	return 0;
@@ -178,28 +213,11 @@ GlobalScope::GlobalScope()
 
 GlobalScope::~GlobalScope()
 {
-	for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
-		undefine((*it)->getName(), (*it));
+	deinit();
+}
 
-		delete (*it);
-	}
-	mMethods.clear();
-
-	for ( Symbols::reverse_iterator it = mSymbols.rbegin(); it != mSymbols.rend(); ) {
-		if ( it->second ) {
-			switch ( it->second->getSymbolType() ) {
-				case Symbol::IType::NamespaceSymbol:
-					delete it->second;
-					it->second = 0;
-					break;
-				default:
-					break;
-			}
-		}
-
-		undefine(it->first, it->second);
-	}
-	mSymbols.clear();
+void GlobalScope::deinit()
+{
 }
 
 std::string GlobalScope::ToString() const

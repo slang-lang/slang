@@ -42,10 +42,8 @@
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/BuildInObjects/IntegerObject.h>
-#include <Core/Repository.h>
 #include <Core/Tools.h>
-#include <Core/Common/Exceptions.h>
-#include <Tools/Strings.h>
+#include <Core/VirtualMachine/Controller.h>
 
 // Namespace declarations
 
@@ -56,7 +54,7 @@ namespace IO {
 
 
 FileOpen::FileOpen()
-: Runtime::Method(0, "fopen", Designtime::IntegerObject::TYPENAME)
+: ExtensionMethod(0, "fopen", Designtime::IntegerObject::TYPENAME)
 {
 	ParameterList params;
 	params.push_back(Parameter("filename", Designtime::StringObject::TYPENAME, VALUE_NONE));
@@ -85,7 +83,7 @@ Runtime::ControlFlow::E FileOpen::execute(const ParameterList& params, Runtime::
 		*result = Runtime::IntegerObject(handle);
 	}
 	catch ( std::exception& e ) {
-		Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+		Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
 		*data = Runtime::StringObject(std::string(e.what()));
 
 		mExceptionData = Runtime::ExceptionData(data, token.position());

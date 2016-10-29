@@ -14,16 +14,6 @@ private void BreakOnException() const throws {
 	}
 }
 
-/*
-// object orientated entry point
-public object Main {
-	public void Main(int argc, string args) {
-		BreakOnException();
-	}
-}
-*/
-
-// structured execution entry point
 public int Main(int argc, string args) {
 	BreakOnException();
 

@@ -32,6 +32,9 @@ public:
 
 private:	// Tests
     void testBasicInterfaces();
+	void testFail_MethodImplemented();
+	void testInterfaceAsParameter();
+	void testSlightlyMoreAdvancedTest();
 };
 
 

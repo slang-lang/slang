@@ -8,14 +8,14 @@ public object String {
 	/*
 	 * Standard & default constructor
 	 */
-	public void String(string value = "") {
+	public void Constructor(string value = "") {
 		mValue = value;
 	}
 
 	/*
 	 * Copy constructor
 	 */
-	public void String(String s) {
+	public void Constructor(String s) {
 		mValue = s.mValue;
 	}
 
@@ -169,7 +169,7 @@ public object String {
 	/*
 	 * String compare operator
 	 */
-	public bool operator==(String other) const {
+	public bool operator==(String other ref) const {
 		return (mValue == other.mValue);
 	}
 
@@ -182,7 +182,7 @@ public object String {
 	/*
 	 * String assignment operator
 	 */
-	public void operator=(String other) modify {
+	public void operator=(String other ref) modify {
 		mValue = other.mValue;
 	}
 
@@ -195,7 +195,7 @@ public object String {
 	/*
 	 * String concatenation operator
 	 */
-	public void operator+(String other) modify {
+	public void operator+(String other ref) modify {
 		mValue = mValue + other.mValue;
 	}
 }

@@ -11,6 +11,10 @@ SET(HEADERS
 )
 
 SET(DEPENDENCIES
+    ExtensionsSystem
+    ExtensionsMysql
+    ExtensionsJson
+    ExtensionsApache
     DebuggerCommon
 )
 

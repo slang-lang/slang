@@ -7,12 +7,10 @@
 // Project includes
 #include <Core/BuildInObjects/BoolObject.h>
 #include <Core/BuildInObjects/DoubleObject.h>
-#include <Core/BuildInObjects/GenericObject.h>
 #include <Core/BuildInObjects/FloatObject.h>
 #include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/BuildInObjects/NumberObject.h>
 #include <Core/BuildInObjects/StringObject.h>
-#include <Core/BuildInObjects/UserObject.h>
 #include <Core/BuildInObjects/VoidObject.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Utils.h>
@@ -35,55 +33,48 @@ void typecast(Object *base, const std::string& targetType)
 		throw Runtime::Exceptions::InvalidTypeCast("invalid cast target type");
 	}
 
-	if ( targetType == GenericObject::TYPENAME ) {
-		base->setOutterface(GenericObject::TYPENAME);
-		base->setQualifiedOutterface(GenericObject::TYPENAME);
-	}
-	else if ( targetType == BoolObject::TYPENAME ) {
+	if ( targetType == BoolObject::TYPENAME ) {
 		BoolObject tmp(*base);
 
-		*base = tmp;
+		base->assign(tmp, true);
 	}
 	else if ( targetType == DoubleObject::TYPENAME ) {
 		DoubleObject tmp(*base);
 
-		*base = tmp;
+		base->assign(tmp, true);
 	}
 	else if ( targetType == FloatObject::TYPENAME ) {
 		FloatObject tmp(*base);
 
-		*base = tmp;
+		base->assign(tmp, true);
 	}
 	else if ( targetType == IntegerObject::TYPENAME ) {
 		IntegerObject tmp(*base);
 
-		*base = tmp;
+		base->assign(tmp, true);
 	}
 	else if ( targetType == NumberObject::TYPENAME ) {
 		NumberObject tmp(*base);
 
-		*base = tmp;
+		base->assign(tmp, true);
 	}
 	else if ( targetType == StringObject::TYPENAME ) {
 		StringObject tmp(*base);
 
-		*base = tmp;
+		base->assign(tmp, true);
 	}
 	else if ( targetType == VoidObject::TYPENAME ) {
 		VoidObject tmp(*base);
 
-		*base = tmp;
+		base->assign(tmp, true);
 	}
 	else {
 		if ( !base->isInstanceOf(targetType) ) {
-			throw Runtime::Exceptions::InvalidTypeCast(targetType + " does not belong to " + base->Typename() + " object hierarchy");
+			throw Runtime::Exceptions::InvalidTypeCast(targetType + " does not belong to " + base->QualifiedTypename() + " object hierarchy");
 		}
 
-		Object tmp(*base);
-		tmp.setOutterface(targetType);
-		tmp.setQualifiedOutterface(targetType);
-
-		*base = tmp;
+		base->setOutterface(targetType);
+		base->setQualifiedOutterface(targetType);
 	}
 }
 }

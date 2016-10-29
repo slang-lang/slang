@@ -3,111 +3,132 @@
 import System.Collections.Set;
 import System.Exception;
 import System.Math;
+import System.Integer;
 
 public object TestObject {
 	private int mValue;
 
-	public void TestObject(int value) {
+	public void Constructor(int value) {
 		mValue = value;
 	}
 
 	public bool operator<(TestObject other ref) const {
 		return mValue < other.mValue;
 	}
+	public bool operator<(int other) const {
+		return mValue < other;
+	}
 
 	public bool operator<=(TestObject other ref) const {
 		return mValue <= other.mValue;
+	}
+	public bool operator<=(int other) const {
+		return mValue <= other;
 	}
 
 	public bool operator==(TestObject other ref) const {
 		return mValue == other.mValue;
 	}
+	public bool operator==(int other) const {
+		return mValue == other;
+	}
+
+	public string =operator(string none) const {
+		return string mValue;
+	}
 }
 
-public object Main {
-	public void Main(int argc, string args) {
-		assert( TestCase1() );
-		assert( TestCase2() );
-	}
+public void Main(int argc, string args) const {
+	assert( TestCase1() );
+	assert( TestCase2() );
+}
 
-	private bool TestCase1() modify {
-		print("TestCase 1: insert");
+private bool TestCase1() const {
+	print("TestCase 1: insert");
 
-		try {
-			System.Set set = new System.Set();
-			assert( set is System.ACollection );
+	try {
+		System.Set set = new System.Set();
+		assert( set is System.AbstractCollection );
 
-			TestObject item;
+		TestObject item;
 
-			int count = 0;
-			while ( count < 10 ) {
-				item = new TestObject(int Math.rand());
-				set.insert(Object item);
+		int count = 0;
+		while ( count < 10 ) {
+			//use Math.srand(time()); for real random numbers
 
-				count++;
+			item = new TestObject(int Math.rand());
+			set.insert(Object item);
+
+			count++;
+		}
+
+		TestObject last;
+
+		System.Iterator it = set.getIterator();
+		while ( it.hasNext() ) {
+			it.next();
+
+			item = TestObject it.current();
+			//print(item.mValue);
+
+			if ( last ) {
+				assert( last <= item );
 			}
 
-			TestObject last;
+			last = item;
+		}
 
-			System.Iterator it = set.getIterator();
+		return set.size() == 10;
+	}
+
+	return false;
+}
+
+private bool TestCase2() const {
+	print("TestCase 2: erase");
+
+	try {
+		System.Set set = new System.Set();
+		assert( set is Object );
+
+		int count = 0;
+		while ( count < 10 ) {
+			set.insert(Object new Integer(count));
+
+			count++;
+		}
+
+		//print("before erase: set has " + set.size() + " item(s)");
+
+		System.Iterator it = set.getIterator();
+		while ( it.hasNext() ) {
+			it.next();
+
+			//print("item = " + it.current());
+		}
+
+		while ( !set.empty() ) {
+			try {
+				Math.srand(time());
+				set.erase(Math.rand() % set.size());
+			}
+			catch ( OutOfBoundsException e ) {
+				print(e.what());
+			}
+
+			//print("after erase: set has " + set.size() + " item(s)");
+
+			it.reset();
 			while ( it.hasNext() ) {
 				it.next();
 
-				item = TestObject it.current();
-				//print(item.mValue);
-
-				if ( last ) {
-					assert( last <= item );
-				}
-
-				last = item;
+				//print(string it.current());
 			}
-
-			return true;
 		}
 
-		return false;
+		return set.empty();
 	}
 
-	private bool TestCase2() modify {
-		print("TestCase 2: erase");
-
-		try {
-			System.Set set = new System.Set();
-			assert( set is Object );
-
-			int count = 0;
-			while ( count < 10 ) {
-				set.insert(Object count);
-
-				count++;
-			}
-
-			System.Iterator it = set.getIterator();
-			while ( it.hasNext() ) {
-				it.next();
-
-				//print(it.current());
-			}
-
-			while ( !set.empty() ) {
-				try {
-					set.erase(Math.rand() % 10);
-					//print("set.erase");
-				}
-
-				it.reset();
-				while ( it.hasNext() ) {
-					it.next();
-
-					//print(it.current());
-				}
-			}
-
-			return true;
-		}
-
-		return false;
-	}
+	return false;
 }
 

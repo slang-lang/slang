@@ -62,6 +62,7 @@ static const char* MODIFIER_MODIFY = "modify";
 static const char* MODIFIER_RECURSIVE = "recursive";
 static const char* MODIFIER_SEALED = "sealed";
 static const char* MODIFIER_STATIC = "static";
+static const char* MODIFIER_THROWS = "throws";
 
 // Operators
 static const char* OPERATOR_IS = "is";
@@ -69,6 +70,8 @@ static const char* OPERATOR_IS = "is";
 // Reserved words
 static const char* RESERVED_WORD_BY_REFERENCE = "ref";
 static const char* RESERVED_WORD_BY_VALUE = "val";
+static const char* RESERVED_WORD_CONSTRUCTOR = "Constructor";
+static const char* RESERVED_WORD_DESTRUCTOR = "Destructor";
 static const char* RESERVED_WORD_ENUM = "enum";
 static const char* RESERVED_WORD_EXTENDS = "extends";
 static const char* RESERVED_WORD_IMPLEMENTS = "implements";
@@ -80,7 +83,6 @@ static const char* RESERVED_WORD_OPERATOR = "operator";
 static const char* RESERVED_WORD_PROTOTYPE = "prototype";
 static const char* RESERVED_WORD_REPLICATES = "replicates";
 static const char* RESERVED_WORD_SCOPE_OPERATOR = ".";
-static const char* RESERVED_WORD_THROWS = "throws";
 static const char* RESERVED_WORD_USING = "using";
 
 // System

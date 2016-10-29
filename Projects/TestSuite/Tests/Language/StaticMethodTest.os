@@ -3,7 +3,7 @@
 public object TestObject {
 	private int mValue;
 
-	public void TestObject(int value) {
+	public void Constructor(int value) {
 		mValue = value;
 	}
 
@@ -11,7 +11,7 @@ public object TestObject {
 		print("nonstaticPrint: " + mValue);
 	}
 
-	public void staticPrint(bool callNonStatic = false) static {
+	public void staticPrint(bool callNonStatic) static {
 		if ( callNonStatic ) {
 			nonstaticPrint();
 			return;
@@ -22,22 +22,20 @@ public object TestObject {
 	}
 }
 
-public object Main {
-	public void Main(int argc, string args) {
-		assert( TestCase1() );
-		assert( TestCase2() );
-	}
+public void Main(int argc = 0 , string args = "") {
+	assert( TestCase1() );
+	assert( TestCase2() );
+}
 
-	private bool TestCase1() const {
-		TestObject.staticPrint();
+private bool TestCase1() const {
+	TestObject.staticPrint(false);
 
-		return true;
-	}
+	return true;
+}
 
-	private bool TestCase2() const {
-		TestObject.staticPrint(true);
+private bool TestCase2() const {
+	TestObject.staticPrint(true);
 
-		return false;
-	}
+	return false;
 }
 

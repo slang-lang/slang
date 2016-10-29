@@ -33,6 +33,7 @@ Parameter::Parameter(const std::string& name, const std::string& type, Runtime::
 {
 }
 
+/*
 Parameter::Parameter(const std::string& name, const std::string& type, Runtime::AtomicValue value, bool hasDefaultValue,
 		 	 	 	 bool isConst, AccessMode::E access, Runtime::Object* pointer)
 : mAccessMode(access),
@@ -44,6 +45,7 @@ Parameter::Parameter(const std::string& name, const std::string& type, Runtime::
   mValue(value)
 {
 }
+*/
 
 Parameter::AccessMode::E Parameter::access() const
 {

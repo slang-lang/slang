@@ -9,11 +9,11 @@
 #include <Core/BuildInObjects/BoolObject.h>
 #include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/BuildInObjects/StringObject.h>
+#include <Core/Common/Exceptions.h>
 #include <Core/Designtime/BuildInTypes/BoolObject.h>
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
-#include <Core/Repository.h>
+#include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Tools.h>
-#include <Core/Common/Exceptions.h>
 #include "Types.h"
 
 // Forward declarations
@@ -26,11 +26,11 @@ namespace Extensions {
 namespace Mysql {
 
 
-class MysqlNextRow : public Runtime::Method
+class MysqlNextRow : public ExtensionMethod
 {
 public:
 	MysqlNextRow()
-	: Runtime::Method(0, "mysql_next_row", Designtime::BoolObject::TYPENAME)
+	: ExtensionMethod(0, "mysql_next_row", Designtime::BoolObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));
@@ -57,7 +57,7 @@ public:
 			*result = Runtime::BoolObject(myRow != NULL);
 		}
 		catch ( std::exception &e ) {
-			Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
 			*data = Runtime::StringObject(std::string(e.what()));
 
 			mExceptionData = Runtime::ExceptionData(data, token.position());

@@ -9,6 +9,7 @@
 // Project includes
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
+#include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Tools.h>
 
 // Forward declarations
@@ -21,11 +22,11 @@ namespace Extensions {
 namespace Mysql {
 
 
-class MysqlGetClientInfo : public Runtime::Method
+class MysqlGetClientInfo : public ExtensionMethod
 {
 public:
 	MysqlGetClientInfo()
-	: Runtime::Method(0, "mysql_get_client_info", Designtime::StringObject::TYPENAME)
+	: ExtensionMethod(0, "mysql_get_client_info", Designtime::StringObject::TYPENAME)
 	{
 		ParameterList params;
 
@@ -40,7 +41,7 @@ public:
 			*result = Runtime::StringObject(my_result);
 		}
 		catch ( std::exception &e ) {
-			Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
 			*data = Runtime::StringObject(std::string(e.what()));
 
 			mExceptionData = Runtime::ExceptionData(data, token.position());

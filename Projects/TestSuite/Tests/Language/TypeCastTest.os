@@ -2,8 +2,6 @@
 
 import System.Boolean;
 
-	public object Main
-	{
 		public void Main(int argc = 0, string argv = "")
 		{
 			assert( TestCase1() );
@@ -102,5 +100,4 @@ import System.Boolean;
 
 			return true;
 		}
-	}
 

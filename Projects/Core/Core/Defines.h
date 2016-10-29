@@ -3,7 +3,8 @@
 #define ObjectiveScript_Core_Defines_h
 
 
-#define ALLOW_IMPLICIT_CASTS 1
+//#define ALLOW_BY_VALUE_COPY
+#define ALLOW_IMPLICIT_CASTS
 
 
 #endif

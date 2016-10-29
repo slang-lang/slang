@@ -10,13 +10,16 @@
 #include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Script.h>
-#include <Core/StackTrace.h>
 #include <Core/Tools.h>
-#include <Core/VirtualMachine.h>
+#include <Core/VirtualMachine/Controller.h>
+#include <Core/VirtualMachine/VirtualMachine.h>
 #include <Debugger/Debugger.h>
 #include "Protocol.h"
 
 // Namespace declarations
+
+// Extension includes
+#include <Extensions.h>
 
 
 namespace ObjectiveScript {
@@ -175,7 +178,7 @@ Symbol* RemoteClient::getSymbol(std::string name) const
 {
 	std::string child;
 	std::string parent;
-	SymbolScope* scope = mScope;
+	IScope* scope = mScope;
 
 	do {
 		if ( !scope ) {
@@ -185,7 +188,7 @@ Symbol* RemoteClient::getSymbol(std::string name) const
 		Tools::split(name, parent, child);
 
 		if ( !parent.empty() && !child.empty() ) {
-			scope = static_cast<ObjectiveScript::Runtime::Object*>(scope->resolve(parent, false));
+			scope = dynamic_cast<ObjectiveScript::Runtime::Object*>(scope->resolve(parent, false));
 		}
 		else {
 			return scope->resolve(parent, false);
@@ -235,7 +238,7 @@ void RemoteClient::Next(const VSCodeDebug::Request& request)
 	SendMessage(&response);
 }
 
-int RemoteClient::notify(SymbolScope* scope, const Core::BreakPoint& /*breakpoint*/)
+int RemoteClient::notify(IScope* scope, const Core::BreakPoint& /*breakpoint*/)
 {
 	mContinue = false;
 	mScope = scope;
@@ -275,22 +278,22 @@ int RemoteClient::notify(SymbolScope* scope, const Core::BreakPoint& /*breakpoin
 	return 0;
 }
 
-int RemoteClient::notifyEnter(SymbolScope* scope, const Core::BreakPoint& breakpoint)
+int RemoteClient::notifyEnter(IScope* scope, const Core::BreakPoint& breakpoint)
 {
 	return notify(scope, breakpoint);
 }
 
-int RemoteClient::notifyExceptionCatch(SymbolScope *scope, const Core::BreakPoint &breakpoint)
+int RemoteClient::notifyExceptionCatch(IScope *scope, const Core::BreakPoint &breakpoint)
 {
 	return notify(scope, breakpoint);
 }
 
-int RemoteClient::notifyExceptionThrow(SymbolScope *scope, const Core::BreakPoint &breakpoint)
+int RemoteClient::notifyExceptionThrow(IScope *scope, const Core::BreakPoint &breakpoint)
 {
 	return notify(scope, breakpoint);
 }
 
-int RemoteClient::notifyExit(SymbolScope* scope, const Core::BreakPoint& breakpoint)
+int RemoteClient::notifyExit(IScope* scope, const Core::BreakPoint& breakpoint)
 {
 	return notify(scope, breakpoint);
 }
@@ -369,14 +372,14 @@ void RemoteClient::start()
 
 	mDebugger->breakOnExceptionThrow(mSettings->breakOnExceptionThrow());
 	mDebugger->resume();
-	StackTrace::GetInstance().clear();
 
 	mVirtualMachine = new VirtualMachine();
 	for ( StringSet::const_iterator it = mSettings->libraryFolders().begin(); it != mSettings->libraryFolders().end(); ++it ) {
 		mVirtualMachine->addLibraryFolder((*it));
 	}
 
-/*
+	Controller::Instance().stack()->print();
+
 	// add extensions
 #ifdef USE_APACHE_EXTENSION
 	mVirtualMachine->addExtension(new ObjectiveScript::Extensions::Apache::ApacheExtension());
@@ -390,19 +393,13 @@ void RemoteClient::start()
 #ifdef USE_SYSTEM_EXTENSION
 	mVirtualMachine->addExtension(new ObjectiveScript::Extensions::System::SystemExtension());
 #endif
-*/
 
 	try {
 		ObjectiveScript::Script *script = mVirtualMachine->createScriptFromFile(mSettings->filename(), mParameters);
 		assert(script);
 
-		// check if an instance ("main") of a Main object exists
-		ObjectiveScript::Runtime::Object *main = static_cast<ObjectiveScript::Runtime::Object*>(script->resolve("main"));
-
-		if ( !main || main->isAtomicType() ) {
-			ObjectiveScript::Runtime::IntegerObject result;
-			script->execute("Main", mParameters, &result);
-		}
+		ObjectiveScript::Runtime::IntegerObject result;
+		script->execute("Main", mParameters, &result);
 
 		if ( mSettings->autoStop() ) {
 			mRunning = false;

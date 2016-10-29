@@ -30,30 +30,28 @@ private namespace OutterSpace {
 	}
 }
 
-public object Main {
-	public void Main(int argc, string args) {
-		assert( TestCase1() );
-	}
+public void Main(int argc, string args) {
+	assert( TestCase1() );
+}
 
-	private bool TestCase1() const {
-		OutterSpace.OutterObject obj1 = new OutterSpace.OutterObject(1);
-		print("obj1.mValue = " + obj1.mValue);
+private bool TestCase1() const {
+	OutterSpace.OutterObject obj1 = new OutterSpace.OutterObject(1);
+	print("obj1.mValue = " + obj1.mValue);
 
-		OutterSpace.InnerSpace.NestedObject obj2 = new OutterSpace.InnerSpace.NestedObject(2);
-		print("obj2.mValue.mValue = " + obj2.mValue.mValue);
+	OutterSpace.InnerSpace.NestedObject obj2 = new OutterSpace.InnerSpace.NestedObject(2);
+	print("obj2.mValue.mValue = " + obj2.mValue.mValue);
 
 
-		print("OutterSpace.mPublicVar = " + OutterSpace.mPublicVar);
+	print("OutterSpace.mPublicVar = " + OutterSpace.mPublicVar);
 
-		OutterSpace.SecondOutterObject obj3 = new OutterSpace.SecondOutterObject(3);
+	OutterSpace.SecondOutterObject obj3 = new OutterSpace.SecondOutterObject(3);
 
-		print("OutterSpace.mPublicVar = " + OutterSpace.mPublicVar);
+	print("OutterSpace.mPublicVar = " + OutterSpace.mPublicVar);
 
-		obj3 = new OutterSpace.SecondOutterObject(4);
+	obj3 = new OutterSpace.SecondOutterObject(4);
 
-		print("OutterSpace.mPublicVar = " + OutterSpace.mPublicVar);
+	print("OutterSpace.mPublicVar = " + OutterSpace.mPublicVar);
 
-		return true;
-	}
+	return true;
 }
 

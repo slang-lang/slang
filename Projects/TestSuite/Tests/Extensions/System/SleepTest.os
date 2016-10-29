@@ -1,18 +1,16 @@
 #!/usr/local/bin/oscript
 
-public object Main {
-	public void Main(int argc, string args) {
-		assert( TestCase1() );
-	}
+public void Main(int argc, string args) {
+	assert( TestCase1() );
+}
 
-	private bool TestCase1() const {
-		int time = 173;
+private bool TestCase1() const {
+	int time = 173;
 
-		print("sleeping for " + time + "ms...");
+	print("sleeping for " + time + "ms...");
 
-		sleep(time);
+	sleep(time);
 
-		return true;
-	}
+	return true;
 }
 

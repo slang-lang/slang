@@ -11,7 +11,7 @@
 
 // Project includes
 #include <Core/Script.h>
-#include <Core/VirtualMachine.h>
+#include <Core/VirtualMachine/VirtualMachine.h>
 
 // Namespace declarations
 using namespace ObjectiveScript;

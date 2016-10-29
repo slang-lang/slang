@@ -4,7 +4,6 @@
 
 // Library includes
 #include <cassert>
-#include <map>
 
 // Project includes
 #include <Core/BuildInObjects/BoolObject.h>
@@ -13,14 +12,18 @@
 #include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/BuildInObjects/NumberObject.h>
 #include <Core/BuildInObjects/StringObject.h>
+#include <Core/BuildInObjects/VoidObject.h>
 #include <Core/Common/Exceptions.h>
+#include <Core/Designtime/BluePrintEnum.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Runtime/Namespace.h>
 #include <Core/Runtime/OperatorOverloading.h>
 #include <Core/Runtime/TypeCast.h>
+#include <Core/VirtualMachine/Controller.h>
 #include <Debugger/Debugger.h>
 #include <Tools/Printer.h>
 #include <Utils.h>
+#include "Defines.h"
 #include "Tools.h"
 
 // Namespace declarations
@@ -30,11 +33,11 @@ namespace ObjectiveScript {
 namespace Runtime {
 
 
-Interpreter::Interpreter(SymbolScope *scope)
+Interpreter::Interpreter()
 : mControlFlow(ControlFlow::Normal),
-  mOwner(scope),
-  mRepository(0)
+  mOwner(0)
 {
+	mRepository = Controller::Instance().repository();
 }
 
 Interpreter::~Interpreter()
@@ -44,9 +47,147 @@ Interpreter::~Interpreter()
 /*
  * processes tokens and updates the given result
  */
-ControlFlow::E Interpreter::execute(Object* result)
+ControlFlow::E Interpreter::execute(Method* method, const ParameterList& params, Object* result)
 {
-	return interpret(mTokens, result);
+	if ( !mRepository ) {
+		throw Common::Exceptions::Exception("mRepository not set");
+	}
+
+	if ( method->isAbstract() ) {
+		throw Common::Exceptions::AbstractException("cannot execute abstract method '" + method->getFullScopeName() + "'");
+	}
+	if ( !method->isSignatureValid(params) ) {
+		throw Common::Exceptions::ParameterCountMissmatch("incorrect number or type of parameters");
+	}
+
+	switch ( method->getLanguageFeatureState() ) {
+		case LanguageFeatureState::Deprecated: OSwarn("method '" + method->getFullScopeName() + "' is marked as deprecated"); break;
+		case LanguageFeatureState::NotImplemented: OSerror("method '" + method->getFullScopeName() + "' is marked as not implemented"); throw Common::Exceptions::NotImplemented(method->getFullScopeName()); break;
+		case LanguageFeatureState::Stable: /* this is the normal language feature state, so there is no need to log anything here */ break;
+		case LanguageFeatureState::Unknown: OSerror("unknown language feature state set for method '" + method->getFullScopeName() + "'"); break;
+		case LanguageFeatureState::Unstable: OSwarn("method '" + method->getFullScopeName() + "' is marked as unstable"); break;
+	}
+
+	Method scope(*method);
+
+	IScope* previousOwner = mOwner;
+
+	mOwner = method->getEnclosingScope();
+
+	ParameterList executedParams = method->mergeParameters(params);
+
+	// add parameters as locale variables
+	for ( ParameterList::const_iterator it = executedParams.begin(); it != executedParams.end(); ++it ) {
+		Object *object = 0;
+
+		switch ( it->access() ) {
+			case Parameter::AccessMode::ByReference: {
+				object = mRepository->createInstance(it->type(), it->name(), false);
+
+				if ( it->reference().isValid() ) {
+					object->assign(
+						*Controller::Instance().memory()->get(it->reference())
+					);
+				}
+
+				object->setConst(it->isConst());
+				object->setMutability(it->isConst() ? Mutability::Const : Mutability::Modify);
+
+				scope.define(it->name(), object);
+			} break;
+			case Parameter::AccessMode::ByValue: {
+				object = mRepository->createInstance(it->type(), it->name(), false);
+
+				if ( it->reference().isValid() ) {
+#ifdef ALLOW_BY_VALUE_COPY
+					OSwarn("by value call for object in " + scope.ToString());
+
+					object->copy(
+						*Controller::Instance().memory()->get(it->reference())
+					);
+#else
+					throw Common::Exceptions::NotSupported("by value calls not allowed for objects", getTokens().begin()->position());
+#endif
+				}
+
+				object->setValue(it->value());
+
+				object->setConst(it->isConst());
+				object->setMutability(it->isConst() ? Mutability::Const : Mutability::Modify);
+
+				scope.define(it->name(), object);
+			} break;
+			case Parameter::AccessMode::Unspecified: {
+				throw Common::Exceptions::AccessMode("unspecified access mode");
+			} break;
+		}
+	}
+
+	// record stack trace
+	Controller::Instance().stack()->push(&scope, executedParams);
+	// notify debugger
+	Core::Debugger::GetInstance().notifyEnter(&scope, Core::Debugger::immediateBreakToken);
+
+	ControlFlow::E controlflow = interpret(getTokens(), result);
+
+	// process & update control flow
+	switch ( controlflow ) {
+		case ControlFlow::Break:
+		case ControlFlow::Continue:
+		case ControlFlow::Normal:
+			// verify method return reason
+			if ( method->QualifiedTypename() != VoidObject::TYPENAME && result->QualifiedOutterface() != VoidObject::TYPENAME ) {
+				throw Common::Exceptions::Exception("unnatural method return at '" + method->getFullScopeName() + "'");
+			}
+
+			// correct behavior detected, override control flow with normal state
+			controlflow = ControlFlow::Normal;
+			break;
+		case ControlFlow::Return:
+			// validate return value
+			if ( result->QualifiedOutterface() == NULL_TYPE ) {
+				// no type cast necessary for null objects
+			}
+			else if ( method->QualifiedTypename() != VoidObject::TYPENAME && result->QualifiedOutterface() != method->QualifiedTypename() ) {
+#ifdef ALLOW_IMPLICIT_CASTS
+				OSwarn("implicit type conversion from " + result->QualifiedOutterface() + " to " + method->QualifiedTypename());
+
+				typecast(result, method->QualifiedTypename());
+#else
+				throw Runtime::Exceptions::ExplicitCastRequired("Explicit cast required for type conversion from " + result->QualifiedOutterface() + " to " + method->QualifiedTypename() + " in " + method->getFullScopeName());
+#endif
+			}
+
+			// correct behavior detected, override control flow with normal state
+			controlflow = ControlFlow::Normal;
+			break;
+		case ControlFlow::ExitProgram:
+		case ControlFlow::Throw:
+			// an ObjectiveScript exception has been thrown or we want to terminate
+			break;
+	}
+
+	if ( controlflow == ControlFlow::Normal ) {
+		switch ( method->getMethodType() ) {
+			case MethodAttributes::MethodType::Constructor:
+				dynamic_cast<Object*>(mOwner)->setConstructed(true);
+				break;
+			case MethodAttributes::MethodType::Destructor:
+				dynamic_cast<Object*>(mOwner)->setConstructed(false);
+				break;
+			default:
+				break;
+		}
+	}
+
+	// notify debugger
+	Core::Debugger::GetInstance().notifyExit(getScope(), Core::Debugger::immediateBreakToken);
+	// unwind stack trace
+	Controller::Instance().stack()->pop();
+
+	mOwner = previousOwner;
+
+	return controlflow;
 }
 
 void Interpreter::expression(Object* result, TokenIterator& start)
@@ -82,27 +223,13 @@ void Interpreter::expression(Object* result, TokenIterator& start)
 	}
 }
 
-void Interpreter::garbageCollector()
-{
-	Symbols symbols;
-	getScope()->exportSymbols(symbols);
-
-	for ( Symbols::reverse_iterator it = symbols.rbegin(); it != symbols.rend(); ++it ) {
-		if ( it->first != IDENTIFIER_BASE && it->first != IDENTIFIER_THIS &&
-			 it->second && it->second->getSymbolType() == Symbol::IType::ObjectSymbol ) {
-			getRepository()->removeReference(static_cast<Object*>(it->second));
-		}
-	}
-	symbols.clear();
-}
-
 NamedScope* Interpreter::getEnclosingMethodScope(IScope* scope) const
 {
 	while ( scope ) {
 		IScope* parent = scope->getEnclosingScope();
 
 		if ( parent && parent->getScopeType() == IScope::IType::NamedScope ) {
-			return static_cast<NamedScope*>(parent);
+			return dynamic_cast<NamedScope*>(parent);
 		}
 
 		scope = parent;
@@ -111,23 +238,37 @@ NamedScope* Interpreter::getEnclosingMethodScope(IScope* scope) const
 	return 0;
 }
 
-Namespace* Interpreter::getEnclosingNamespace() const
+Namespace* Interpreter::getEnclosingNamespace(IScope* scope) const
 {
-	IScope* scope = mOwner->getEnclosingScope();
-
 	while ( scope ) {
-		IScope* outter = scope->getEnclosingScope();
+		IScope* parent = scope->getEnclosingScope();
 
-		if ( !outter || outter->getScopeType() != IScope::IType::MethodScope ) {
-			return 0;
+		if ( parent && parent->getScopeType() == IScope::IType::MethodScope ) {
+			Namespace* result = dynamic_cast<Namespace*>(parent);
+			if ( result ) {
+				return result;
+			}
 		}
 
-		Namespace* result = dynamic_cast<Namespace*>(outter);
-		if ( result ) {
-			return result;
+		scope = parent;
+	}
+
+	return 0;
+}
+
+Object* Interpreter::getEnclosingObject(IScope* scope) const
+{
+	while ( scope ) {
+		IScope* parent = scope->getEnclosingScope();
+
+		if ( parent && parent->getScopeType() == IScope::IType::MethodScope ) {
+			Object* result = dynamic_cast<Object*>(parent);
+			if ( result ) {
+				return result;
+			}
 		}
 
-		scope = outter;
+		scope = parent;
 	}
 
 	return 0;
@@ -143,18 +284,18 @@ Repository* Interpreter::getRepository() const
 	return mRepository;
 }
 
-SymbolScope* Interpreter::getScope() const
+IScope* Interpreter::getScope() const
 {
-	if ( !mScopeStack.empty() ) {
-		return mScopeStack.back();
-	}
+	StackLevel* stack = Controller::Instance().stack()->current();
 
-	return mOwner;
+	return stack->getScope();
 }
 
 const TokenList& Interpreter::getTokens() const
 {
-	return mTokenStack.back();
+	StackLevel* stack = Controller::Instance().stack()->current();
+
+	return stack->getTokens();
 }
 
 inline Symbol* Interpreter::identify(TokenIterator& token) const
@@ -169,7 +310,7 @@ inline Symbol* Interpreter::identify(TokenIterator& token) const
 			result = getScope()->resolve(identifier, onlyCurrentScope);
 
 			if ( !result ) {
-				Namespace* space = getEnclosingNamespace();
+				Namespace* space = getEnclosingNamespace(getScope());
 				if ( space ) {
 					result = getScope()->resolve(space->QualifiedTypename() + "." + identifier, onlyCurrentScope);
 				}
@@ -177,18 +318,20 @@ inline Symbol* Interpreter::identify(TokenIterator& token) const
 		}
 		else {
 			switch ( result->getSymbolType() ) {
+				case Symbol::IType::BluePrintEnumSymbol:
+					result = dynamic_cast<Designtime::BluePrintEnum*>(result)->resolve(identifier, onlyCurrentScope);
+					break;
 				case Symbol::IType::BluePrintObjectSymbol:
-					result = static_cast<Designtime::BluePrintObject*>(result)->resolve(identifier, onlyCurrentScope);
+					result = dynamic_cast<Designtime::BluePrintObject*>(result)->resolve(identifier, onlyCurrentScope);
 					break;
 				case Symbol::IType::NamespaceSymbol:
-					result = static_cast<Namespace*>(result)->resolve(identifier, onlyCurrentScope);
+					result = dynamic_cast<Namespace*>(result)->resolve(identifier, onlyCurrentScope);
 					break;
 				case Symbol::IType::ObjectSymbol:
-					result = static_cast<Object*>(result)->resolve(identifier, onlyCurrentScope);
+					result = dynamic_cast<Object*>(result)->resolve(identifier, onlyCurrentScope);
 					break;
-				case Symbol::IType::BluePrintEnumSymbol:
 				case Symbol::IType::MethodSymbol:
-					throw Common::Exceptions::NotSupported("cannot directly access locales of blueprint or method");
+					throw Common::Exceptions::NotSupported("cannot directly access locales of method");
 				case Symbol::IType::UnknownSymbol:
 					throw Common::Exceptions::SyntaxError("unexpected symbol found");
 			}
@@ -227,23 +370,25 @@ Symbol* Interpreter::identifyMethod(TokenIterator& token, const ParameterList& p
 
 			// look for an overloaded method
 			if ( result && result->getSymbolType() == Symbol::IType::MethodSymbol ) {
-				result = static_cast<Method*>(mOwner)->resolveMethod(identifier, params, onlyCurrentScope);
+				result = dynamic_cast<MethodScope*>(mOwner)->resolveMethod(identifier, params, onlyCurrentScope);
 			}
 		}
 		else {
 			switch ( result->getSymbolType() ) {
+				case Symbol::IType::BluePrintEnumSymbol:
+					result = dynamic_cast<Designtime::BluePrintEnum*>(result)->resolveMethod(identifier, params, onlyCurrentScope);
+					break;
+				case Symbol::IType::BluePrintObjectSymbol:
+					result = dynamic_cast<Designtime::BluePrintObject*>(result)->resolveMethod(identifier, params, onlyCurrentScope);
+					break;
 				case Symbol::IType::NamespaceSymbol:
-					result = static_cast<Namespace*>(result)->resolveMethod(identifier, params, onlyCurrentScope);
+					result = dynamic_cast<Namespace*>(result)->resolveMethod(identifier, params, onlyCurrentScope);
 					break;
 				case Symbol::IType::ObjectSymbol:
-					result = static_cast<Object*>(result)->resolveMethod(identifier, params, onlyCurrentScope);
-					break;
-				case Symbol::IType::BluePrintEnumSymbol:
-					throw Common::Exceptions::NotSupported("static method usage not supported");
-				case Symbol::IType::BluePrintObjectSymbol:
-					result = static_cast<Designtime::BluePrintObject*>(result)->resolveMethod(identifier, params, onlyCurrentScope);
+					result = dynamic_cast<Object*>(result)->resolveMethod(identifier, params, onlyCurrentScope);
 					break;
 				case Symbol::IType::MethodSymbol:
+					throw Common::Exceptions::NotSupported("cannot directly access locales of method");
 				case Symbol::IType::UnknownSymbol:
 					throw Common::Exceptions::SyntaxError("unexpected symbol found");
 			}
@@ -284,9 +429,6 @@ ControlFlow::E Interpreter::interpret(const TokenList& tokens, Object* result)
 
 			process(result, start, end);
 		popTokens();
-
-		// let the garbage collector do it's magic after we gathered our result
-		garbageCollector();
 	popScope();
 
 	return mControlFlow;
@@ -553,12 +695,12 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 					start++;
 					break;
 				case Symbol::IType::ObjectSymbol:
-					operator_binary_assign(result, static_cast<Object*>(symbol));
+					operator_binary_assign(result, dynamic_cast<Object*>(symbol));
 					start++;
 					break;
 				case Symbol::IType::BluePrintEnumSymbol:
 				case Symbol::IType::BluePrintObjectSymbol: {
-					std::string newType = static_cast<Designtime::BluePrintGeneric*>(symbol)->QualifiedTypename();
+					std::string newType = dynamic_cast<Designtime::BluePrintGeneric*>(symbol)->QualifiedTypename();
 					start++;
 
 					Object tmp;
@@ -574,9 +716,8 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 			}
 		} break;
 		case Token::Type::KEYWORD: {
-			TokenIterator semicolon = findNext(start, Token::Type::SEMICOLON);
-
-			process(result, start, semicolon, Token::Type::SEMICOLON);
+			process_keyword(start, result);
+			start++;
 		} break;
 		case Token::Type::SEMICOLON: {
 		} break;
@@ -588,20 +729,16 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 
 void Interpreter::popScope()
 {
-	if ( mScopeStack.empty() ) {
-		throw Common::Exceptions::Exception("tried to pop beyond stack!");
-	}
+	StackLevel* stack = Controller::Instance().stack()->current();
 
-	SymbolScope* scope = mScopeStack.back();
-
-	mScopeStack.pop_back();
-
-	delete scope;
+	stack->popScope();
 }
 
 void Interpreter::popTokens()
 {
-	mTokenStack.pop_back();
+	StackLevel* stack = Controller::Instance().stack()->current();
+
+	stack->popTokens();
 }
 
 /*
@@ -700,8 +837,10 @@ void Interpreter::process_copy(TokenIterator& token, Object* result)
 		throw Common::Exceptions::Exception("cannot assign copy to same object");
 	}
 
-	Runtime::Object* source = static_cast<Runtime::Object*>(symbol);
-
+	Runtime::Object* source = dynamic_cast<Runtime::Object*>(symbol);
+	if ( !source ) {
+		throw Common::Exceptions::Exception("nullptr access!");
+	}
 	if ( source->QualifiedTypename() != result->QualifiedTypename() ) {
 		throw Common::Exceptions::Exception("object copies are only allowed to same types");
 	}
@@ -725,11 +864,9 @@ void Interpreter::process_delete(TokenIterator& token)
 	switch ( symbol->getSymbolType() ) {
 		case Symbol::IType::ObjectSymbol: {
 			Object *object = static_cast<Object*>(symbol);
-			assert(object);
 
-			mControlFlow = object->Destructor();
-
-			*object = Object(object->getName(), object->Filename(), object->Typename(), VALUE_NONE);
+			//object->assign(Object(object->getName(), object->Filename(), object->Typename(), VALUE_NONE));
+			object->assign(Object());
 		} break;
 		case Symbol::IType::BluePrintEnumSymbol:
 		case Symbol::IType::BluePrintObjectSymbol:
@@ -867,14 +1004,15 @@ void Interpreter::process_identifier(TokenIterator& token, Object* /*result*/, T
 		// find next terminator token
 		TokenIterator end = findNext(assign, terminator);
 
-		Object* object = static_cast<Object*>(symbol);
+		Object* object = dynamic_cast<Object*>(symbol);
 		if ( object->isConst() ) {	// we tried to modify a const symbol (i.e. member, parameter or constant local variable)
 			throw Common::Exceptions::ConstCorrectnessViolated("tried to modify const symbol '" + object->getFullScopeName() + "'", token->position());
 		}
-		if ( object->isMember() && static_cast<Method*>(mOwner)->isConst() ) {	// we tried to modify a member in a const method
+/*
+		if ( object->isMember() && dynamic_cast<Method*>(mOwner)->isConst() ) {	// we tried to modify a member in a const method
 			throw Common::Exceptions::ConstCorrectnessViolated("tried to modify member '" + object->getFullScopeName() + "' in const method '" + getScope()->getScopeName() + "'", token->position());
 		}
-
+*/
 		try {
 			expression(object, ++assign);
 		}
@@ -1073,7 +1211,7 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 		}
 
 		params.push_back(
-			Parameter(obj->getName(), obj->QualifiedOutterface(), obj->getValue(), false, obj->isConst(), Parameter::AccessMode::Unspecified, obj)
+			Parameter(obj->getName(), obj->QualifiedOutterface(), obj->getValue(), false, obj->isConst(), Parameter::AccessMode::Unspecified, obj->getReference())
 		);
 
 		if ( std::distance(tmp, closed) <= 0 ) {
@@ -1086,8 +1224,9 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 		tmp++;
 	}
 
-	Method* method = static_cast<Method*>(identifyMethod(token, params));
+	Symbol* symbol = identifyMethod(token, params);
 
+	Method* method = dynamic_cast<Method*>(symbol);
 	if ( !method) {
 		throw Common::Exceptions::UnknownIdentifer("could not resolve identifier '" + token->content() + "' with parameters '" + toString(params) + "'", token->position());
 	}
@@ -1100,15 +1239,30 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 	}
 
 	// check caller's constness
-	if ( static_cast<Method*>(mOwner)->isConst() ) {
-		if ( mOwner->getEnclosingScope() == method->getEnclosingScope() && !method->isConst() ) {
+	Method* owner = dynamic_cast<Method*>(getEnclosingMethodScope(getScope()));
+	if ( owner && owner->isConst() ) {
+		if ( owner->getEnclosingScope() == method->getEnclosingScope() && !method->isConst() ) {
 			// check target method's constness
 			// this is a const method and we want to call a non-const method... neeeeey!
 			throw Common::Exceptions::ConstCorrectnessViolated("only calls to const methods are allowed in const method '" + getScope()->getFullScopeName() + "'", token->position());
 		}
 	}
 
-	ControlFlow::E controlflow = method->execute(params, result, (*token));
+	// static method check
+	if ( owner && owner->isStatic() && !method->isStatic() ) {
+		throw Runtime::Exceptions::StaticException("non-static method \"" + method->ToString() + "\" called from static method \"" + owner->ToString() + "\"", token->position());
+	}
+
+	ControlFlow::E controlflow;
+
+	if ( method->isExtensionMethod() ) {
+		controlflow = method->execute(params, result, (*token));
+
+		mExceptionData = method->getExceptionData();
+	}
+	else {
+		controlflow = execute(method, params, result);
+	}
 
 	switch ( controlflow ) {
 		case ControlFlow::ExitProgram:
@@ -1116,9 +1270,9 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 			break;
 		case ControlFlow::Throw:
 			mControlFlow = ControlFlow::Throw;
-			mExceptionData = method->getExceptionData();
 			throw ControlFlow::Throw;			// throw even further
 		default:
+			mControlFlow = ControlFlow::Normal;
 			break;
 	}
 
@@ -1167,8 +1321,7 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 		}
 
 		params.push_back(
-			//Parameter(obj->getName(), obj->QualifiedTypename(), obj->getValue(), false, obj->isConst(), Parameter::AccessMode::Unspecified, obj)
-			Parameter(obj->getName(), obj->Outterface(), obj->getValue(), false, obj->isConst(), Parameter::AccessMode::Unspecified, obj)
+			Parameter(obj->getName(), obj->QualifiedOutterface(), obj->getValue(), false, obj->isConst(), Parameter::AccessMode::Unspecified, obj->getReference())
 		);
 
 		if ( std::distance(tmp, closed) <= 0 ) {
@@ -1181,8 +1334,8 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 		tmp++;
 	}
 
-	// create initialized instance of new object
-	*result = *getRepository()->createInstance(static_cast<Designtime::BluePrintObject*>(symbol), name, true);
+	// create initialized reference of new object
+	*result = *getRepository()->createReference(static_cast<Designtime::BluePrintObject*>(symbol), name, true);
 
 	// execute new object's constructor
 	mControlFlow = result->Constructor(params);
@@ -1413,7 +1566,7 @@ void Interpreter::process_throw(TokenIterator& token, Object* /*result*/)
 		OSwarn(std::string(method->getFullScopeName() + " throws although it is not marked with 'throws'!").c_str());
 	}
 
-	Object* data = getRepository()->createInstance(OBJECT);
+	Object* data = getRepository()->createInstance(OBJECT, ANONYMOUS_OBJECT, false);
 	try {
 		expression(data, token);
 	}
@@ -1464,13 +1617,16 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 	std::list<TokenIterator> catchTokens;
 	TokenIterator finallyToken = getTokens().end();
 
+	// collect all catch- and finally-blocks
 	for ( ; ; ) {
 		if ( tmp != getTokens().end() && tmp->content() == KEYWORD_CATCH ) {
 			catchTokens.push_back(tmp);
 
 			tmp = findNextBalancedCurlyBracket(tmp, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
 
-			token = tmp;	// set exit token
+			if ( std::distance(token, tmp) ) {
+				token = tmp;	// set exit token
+			}
 		}
 		else if ( tmp != getTokens().end() && tmp->content() == KEYWORD_FINALLY ) {
 			if ( finallyToken != getTokens().end() ) {
@@ -1480,7 +1636,9 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 			finallyToken = tmp;
 			tmp = findNextBalancedCurlyBracket(tmp, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
 
-			token = tmp;	// set exit token
+			if ( std::distance(token, tmp) ) {
+				token = tmp;	// set exit token
+			}
 		}
 		else {
 			break;	// reached end of try-catch-finally-block
@@ -1489,8 +1647,12 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 		tmp++;
 	}
 
+	// process catch-blocks (if present)
 	if ( mControlFlow == ControlFlow::Throw ) {
-		mControlFlow = ControlFlow::Normal;
+		if ( catchTokens.empty() ) {
+			// reset control flow in case no catch-block has been defined
+			mControlFlow = ControlFlow::Normal;
+		}
 
 		for ( std::list<TokenIterator>::const_iterator it = catchTokens.begin(); it != catchTokens.end(); ++it ) {
 			TokenIterator catchIt = (*it);
@@ -1504,7 +1666,7 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 
 				Symbol* symbol = identify(catchIt);
 				if ( !symbol ) {
-					throw Common::Exceptions::UnknownIdentifer("identifier '" + token->content() + "' not found", catchIt->position());
+					throw Common::Exceptions::UnknownIdentifer("identifier '" + catchIt->content() + "' not found", catchIt->position());
 				}
 				if ( symbol->getSymbolType() != Symbol::IType::BluePrintEnumSymbol && symbol->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
 					throw Common::Exceptions::SyntaxError("invalid symbol type '" + symbol->getName() + "' found", catchIt->position());
@@ -1519,19 +1681,18 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 					throw Common::Exceptions::Exception("could not create exception type instance", catchIt->position());
 				}
 
-				if ( type->QualifiedTypename() != mExceptionData.getData()->QualifiedTypename() &&
-					 type->Typename() != mExceptionData.getData()->Typename() ) {
-					// get rid of our newly created exception type instance
-					getScope()->undefine(type->getName(), type);
-					mRepository->removeReference(type);
+				// compare given exception type with thrown type inheritance
+				if ( !mExceptionData.getData()->isInstanceOf(type->QualifiedTypename()) ) {
+					popScope();		// pop exception instance scope
 					continue;
 				}
 
+				// exception type match with thrown type, start with the real exception handling
 				operator_binary_assign(type, mExceptionData.getData());
 			}
 
-			// notify our debugger that an exception has been thrown
-			Core::Debugger::GetInstance().notifyExceptionCatch(getScope(), (*token));
+			// notify our debugger that an exception has been caught
+			Core::Debugger::GetInstance().notifyExceptionCatch(getScope(), (*catchIt));
 
 			expect(Token::Type::BRACKET_CURLY_OPEN, catchIt);
 
@@ -1541,7 +1702,6 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 			TokenIterator catchEnd = findNextBalancedCurlyBracket(catchBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
 
 			catchBegin++;		// don't collect scope token
-			token = catchEnd;
 
 			// collect catch-block tokens
 			TokenList tokens;
@@ -1550,14 +1710,23 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 				catchBegin++;
 			}
 
+			// reset control flow to allow correct exception handling
+			mControlFlow = ControlFlow::Normal;
+
 			// execute catch-block if an exception has been thrown
 			mControlFlow = interpret(tokens, result);
+
+			Object* ex = getExceptionData().getData();
+			if ( ex ) {
+				getScope()->define(ex->getName(), ex);
+			}
 
 			popScope();		// pop exception instance scope
 			break;
 		}
 	}
 
+	// process finally-block (if present)
 	if ( finallyToken != getTokens().end() ) {
 		finallyToken++;
 		expect(Token::Type::BRACKET_CURLY_OPEN, finallyToken);
@@ -1568,7 +1737,6 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 		TokenIterator finallyEnd = findNextBalancedCurlyBracket(finallyBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
 
 		finallyBegin++;		// don't collect scope token;
-		token = finallyEnd;
 
 		// collect finally-block tokens
 		TokenList finallyTokens;
@@ -1590,11 +1758,9 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
  */
 Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol)
 {
-	bool isArray = false;
 	bool isConst = false;
 	bool isFinal = false;
 	std::string name;
-	int size = 0;
 
 	token++;
 	name = token->content();
@@ -1602,6 +1768,10 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol)
 	expect(Token::Type::IDENTIFER, token);
 
 	token++;
+
+/*	Array handling
+	bool isArray = false;
+	int size = 0;
 
 	if (  token->type() == Token::Type::BRACKET_OPEN ) {
 		isArray = true;
@@ -1620,6 +1790,7 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol)
 
 		expect(Token::Type::BRACKET_CLOSE, token++);
 	}
+*/
 
 	std::string tmpStr = token->content();
 	if ( tmpStr == MODIFIER_CONST || tmpStr == MODIFIER_FINAL ) {
@@ -1634,16 +1805,12 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol)
 		assign = ++token;
 	}
 
-	Object *object = dynamic_cast<Object*>(getScope()->resolve(name, true));
-	if ( object ) {
-		throw Common::Exceptions::DuplicateIdentifier("duplicate identifier '" + name + "' created", token->position());
-	}
 
-	object = getRepository()->createInstance(static_cast<Designtime::BluePrintObject*>(symbol), name, false);
+	Object* object = getRepository()->createInstance(static_cast<Designtime::BluePrintObject*>(symbol), name, false);
 
 	getScope()->define(name, object);
 
-	if ( isArray ) object->setArray(true, (size_t)size);
+	//if ( isArray ) object->setArray(true, (size_t)size);
 	if ( isConst ) object->setConst(true);
 	if ( isFinal ) object->setFinal(true);
 
@@ -1651,6 +1818,10 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol)
 		// execute assignment statement
 		try {
 			Object tmp;
+			//tmp.setArray(true, (size_t)size);
+			tmp.setConst(isConst);
+			tmp.setFinal(isFinal);
+
 			expression(&tmp, token);
 
 			operator_binary_assign(object, &tmp);
@@ -1660,9 +1831,6 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol)
 			return 0;
 		}
 	}
-
-	// this has been removed to allow type declarations without a trailing semicolon (like in "catch ( Exception e )" )
-	//expect(Token::Type::SEMICOLON, token);	// make sure everything went exactly the way we wanted
 
 	return object;
 }
@@ -1725,26 +1893,24 @@ void Interpreter::process_while(TokenIterator& token, Object* result)
 	}
 }
 
-void Interpreter::pushScope()
+void Interpreter::pushScope(IScope* scope)
 {
-	SymbolScope* scope = new SymbolScope(getScope());
+	StackLevel* stack = Controller::Instance().stack()->current();
 
-	mScopeStack.push_back(scope);
+	bool allowDelete = !scope;
+
+	if ( !scope ) {
+		scope = new SymbolScope(stack->getScope());
+	}
+
+	stack->pushScope(scope, allowDelete);
 }
 
 void Interpreter::pushTokens(const TokenList& tokens)
 {
-	mTokenStack.push_back(tokens);
-}
+	StackLevel* stack = Controller::Instance().stack()->current();
 
-void Interpreter::setRepository(Repository *repository)
-{
-	mRepository = repository;
-}
-
-void Interpreter::setTokens(const TokenList& tokens)
-{
-	mTokens = tokens;
+	stack->pushTokens(tokens);
 }
 
 

@@ -1,35 +1,31 @@
 #!/usr/local/bin/oscript
 
-	public object Main
-	{
-		public void Main(int argc = 0, string argv = "")
-		{
-			assert( TestCase1() );
-		}
+// THIS WILL FAIL
 
-		private bool TestCase1()
-		{
-			int i = 0;
+public void Main(int argc = 0, string argv = "") {
+	assert( TestCase1() );
+}
 
-			i = incStaticVar();
-			print("i = " + i);
+private bool TestCase1() {
+	int i = 0;
 
-			i = incStaticVar();
-			print("i = " + i);
+	i = incStaticVar();
+	print("i = " + i);
 
-			i = incStaticVar();
-			print("i = " + i);
+	i = incStaticVar();
+	print("i = " + i);
 
-			return i == 3;
-		}
+	i = incStaticVar();
+	print("i = " + i);
 
-		private int incStaticVar()
-		{
-			int var static = 0;
+	return i == 3;
+}
 
-			var = var + 1;
+private int incStaticVar() {
+	int var static = 0;
 
-			return var;
-		}
-	}
+	var = var + 1;
+
+	return var;
+}
 

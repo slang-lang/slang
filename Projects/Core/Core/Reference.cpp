@@ -34,12 +34,12 @@ bool Reference::isValid() const
 
 bool Reference::operator< (const Reference& other) const
 {
-	return this->getAddress() < other.getAddress();
+	return getAddress() < other.getAddress();
 }
 
 bool Reference::operator== (const Reference& other) const
 {
-	return this->getAddress() == other.getAddress();
+	return getAddress() == other.getAddress();
 }
 
 

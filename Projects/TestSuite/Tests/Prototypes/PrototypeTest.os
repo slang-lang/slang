@@ -1,7 +1,6 @@
 #!/usr/local/bin/oscript
 
-public prototype TestPrototype
-{
+public prototype TestPrototype {
 	private UNKNOWN mValue;
 
 	public void TestPrototype() {
@@ -21,8 +20,7 @@ public prototype TestPrototype
 	}
 }
 
-public prototype AnotherPrototype<object K, object V>
-{
+public prototype AnotherPrototype<object K, object V> {
 	private K mKey;
 	private V mValue;
 
@@ -41,29 +39,25 @@ public prototype AnotherPrototype<object K, object V>
 	}
 }
 
-public object Main
-{
-	public void Main(int argc = 0, string argv = "")
-	{
-		test();
-	}
+public void Main(int argc = 0, string argv = "") {
+	test();
+}
 
-	public void test() {
-		//TestPrototype<int> proto(100);
-		//TestPrototype < int > proto(100);
-		TestPrototype of int prototype = new TestPrototype of int(100);
+public void test() {
+	//TestPrototype<int> proto(100);
+	//TestPrototype < int > proto(100);
+	TestPrototype of int prototype = new TestPrototype of int(100);
 
 /*
-		print("Prototype value = " & prototype.getValue());
+	print("Prototype value = " & prototype.getValue());
 
-		prototype.setValue(17);
+	prototype.setValue(17);
 
-		print("Prototype value = " & prototype.getValue());
+	print("Prototype value = " & prototype.getValue());
 */
 
-		AnotherPrototype<int, string> another = new AnotherPrototype<int, string>(1, "1");
-		another.getKey();
-		another.getValue();
-	}
+	AnotherPrototype<int, string> another = new AnotherPrototype<int, string>(1, "1");
+	another.getKey();
+	another.getValue();
 }
 

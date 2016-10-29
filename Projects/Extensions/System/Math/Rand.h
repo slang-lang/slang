@@ -9,12 +9,10 @@
 // Project includes
 #include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
-#include <Core/Method.h>
-#include <Core/Repository.h>
+#include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Tools.h>
-#include <Core/Common/Exceptions.h>
+#include <Core/VirtualMachine/Controller.h>
 #include <Tools/Strings.h>
-#include "Math.h"
 
 // Forward declarations
 
@@ -27,11 +25,11 @@ namespace System {
 namespace Math {
 
 
-class Rand: public Runtime::Method
+class Rand: public ExtensionMethod
 {
 public:
 	Rand()
-	: Runtime::Method(0, "rand", Designtime::IntegerObject::TYPENAME)
+	: ExtensionMethod(0, "rand", Designtime::IntegerObject::TYPENAME)
 	{
 		ParameterList params;
 
@@ -49,7 +47,7 @@ public:
 			*result = Runtime::IntegerObject(rand());
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
 			*data = Runtime::StringObject(std::string(e.what()));
 
 			mExceptionData = Runtime::ExceptionData(data, token.position());

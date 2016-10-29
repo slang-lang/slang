@@ -1,7 +1,7 @@
 
 // import all System.IO libraries
 
-import ACollection;
+import AbstractCollection;
 import DoubleLinkedList;
 import IIterateable;
 import Iterator;

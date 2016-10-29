@@ -37,11 +37,11 @@ public:
 	static bool isInterfaceDeclaration(TokenIterator start);
 	static bool isLibraryReference(TokenIterator start);
 	static bool isLocalDeclaration(TokenIterator start);
-	static bool isMemberDeclaration(TokenIterator start);
-	static bool isMemberDeclarationWithModifier(TokenIterator start);
-	static bool isMethodDeclaration(TokenIterator start);
+	static bool isMemberDeclaration(TokenIterator token);
+	static bool isMethodDeclaration(TokenIterator token);
 	static bool isNamespaceDeclaration(TokenIterator start);
 	static bool isObjectDeclaration(TokenIterator start);
+	static bool isParameterDeclaration(TokenIterator start);
 	static bool isPrototypeDeclaration(TokenIterator start);
 	static bool isStructorDeclaration(TokenIterator start);
 

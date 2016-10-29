@@ -12,11 +12,11 @@
 // Project includes
 #include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/BuildInObjects/StringObject.h>
-#include <Core/Script.h>
-#include <Core/VirtualMachine.h>
 #include <Core/Common/Exceptions.h>
 #include <Core/Designtime/Exceptions.h>
 #include <Core/Runtime/Exceptions.h>
+#include <Core/Script.h>
+#include <Core/VirtualMachine/VirtualMachine.h>
 
 // Namespace declarations
 using namespace ObjectiveScript;
@@ -60,13 +60,14 @@ void LanguageTest::process()
 	TEST(testPrint);
 	TEST(testSanityChecker);
 	TEST(testScope);
+	TEST(testStaticMethod);
 	TEST(testSwitch);
 	TEST(testThis);
 	TEST(testTypeCast);
 	TEST(testWhile);
 
 // not implemented
-	//TEST(testStaticLocalVariable);	// static methods or variables are not supported anymore
+	//TEST(testStaticLocalVariable);	// static variables are not supported
 }
 
 void LanguageTest::setup()
@@ -97,7 +98,7 @@ void LanguageTest::testAbstractObject()
 	try {
 		VirtualMachine vm;
 
-		vm.createScriptFromFile("Tests/Language/AbstractObjectTest.os");
+		TTHROWS(vm.createScriptFromFile("Tests/Language/AbstractObjectTest.os"), ObjectiveScript::Common::Exceptions::AbstractException);
 
 		// automatic success
 	}
@@ -364,8 +365,6 @@ void LanguageTest::testNamespaces()
 
 void LanguageTest::testObjectEquality()
 {
-	TSKIP("skipping object equality test");
-
 	try {
 		VirtualMachine vm;
 
@@ -462,6 +461,21 @@ void LanguageTest::testScope()
 		VirtualMachine vm;
 
 		vm.createScriptFromFile("Tests/Language/ScopeTest.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// unexpected exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void LanguageTest::testStaticMethod()
+{
+	try {
+		VirtualMachine vm;
+
+		TTHROWS(vm.createScriptFromFile("Tests/Language/StaticMethodTest.os"), Runtime::Exceptions::StaticException);
 
 		// automatic success
 	}

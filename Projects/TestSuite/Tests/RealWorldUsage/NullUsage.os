@@ -3,23 +3,23 @@
 public object TestObject {
 	private int mValue;
 
-	public void TestObject(int value) {
+	public void Constructor(int value) {
+		print("Constructor(" + value + ")");
 		mValue = value;
 	}
 
-	public void ~TestObject() {
-		print("~TestObject()");
+	public void Destructor() {
+		print("Destructor()");
 	}
 }
 
-public object Main {
-	public void Main(int argc, string args) {
-		TestObject obj = new TestObject(173);
+public void Main(int argc, string args) {
+	TestObject obj = new TestObject(173);
 
-		print(obj.mValue);
-		obj = null;
+	print(obj.mValue);
+	obj = null;
 
-		assert(!obj);
-	}
+	print(obj);
+	assert(!obj);
 }
 

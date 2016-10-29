@@ -1,7 +1,7 @@
 #!/usr/local/bin/oscript
 
 public abstract object AbstractObject {
-	public bool isAbstract() const;
+	public bool isAbstract() const abstract;
 }
 
 public object ImplementedObject extends AbstractObject {
@@ -10,22 +10,33 @@ public object ImplementedObject extends AbstractObject {
 	}
 }
 
-public object Main {
-	public void Main(int argc = 0, string args = "") {
-		assert( TestCase1() );
-	}
+public void Main(int argc = 0, string args = "") {
+	assert( TestCase1() );
+	assert( TestCase2() );
+}
 
-	private bool TestCase1() const {
-		AbstractObject obj = new ImplementedObject();
+private bool TestCase1() const {
+	print("TestCase 1: implemented object instantiation");
 
-		print("obj.isAbstract() = " + obj.isAbstract());
+	AbstractObject obj = new ImplementedObject();
 
-		assert( obj is Object );
-		assert( obj is AbstractObject );
-		assert( obj is ImplementedObject );
-		assert( !obj.isAbstract() );
+	print("obj.isAbstract() = " + obj.isAbstract());
 
-		return true;
-	}
+	assert( obj is Object );
+	assert( obj is AbstractObject );
+	assert( obj is ImplementedObject );
+	assert( !obj.isAbstract() );
+
+	return true;
+}
+
+private bool TestCase2() const {
+	print("TestCase 2: abstract object instantiation");
+
+	AbstractObject obj = new AbstractObject();
+
+	print("obj.isAbstract() = " + obj.isAbstract());
+
+	return false;
 }
 

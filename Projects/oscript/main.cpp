@@ -5,10 +5,10 @@
 #include <Common/StdOutLogger.h>
 #include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/BuildInObjects/StringObject.h>
-#include <Core/Script.h>
-#include <Core/StackTrace.h>
 #include <Core/Common/Exceptions.h>
-#include <Core/VirtualMachine.h>
+#include <Core/Script.h>
+#include <Core/VirtualMachine/Controller.h>
+#include <Core/VirtualMachine/VirtualMachine.h>
 #include <Tools/Printer.h>
 #include <Tools/Strings.h>
 #include <Utils.h>
@@ -173,28 +173,18 @@ int main(int argc, const char* argv[])
 #endif
 
 	try {
-		ObjectiveScript::Script *script = mVirtualMachine.createScriptFromFile(mFilename, mParameters);
-		if ( script ) {
-			// check if an instance ("main") of a Main object exists
-			ObjectiveScript::Runtime::Object *main = static_cast<ObjectiveScript::Runtime::Object*>(script->resolve("main"));
-
-			if ( !main || main->isAtomicType() ) {
-				ObjectiveScript::Runtime::IntegerObject result;
-				script->execute("Main", mParameters, &result);
-				return result.getValue().toInt();
-			}
-		}
+		mVirtualMachine.createScriptFromFile(mFilename, mParameters);
 	}
 	catch ( std::exception &e ) {	// catch every std::exception and all derived exception types
 		OSerror(e.what());
 
-		ObjectiveScript::StackTrace::GetInstance().print();
+		ObjectiveScript::Controller::Instance().stack()->print();
 	}
 	catch ( ObjectiveScript::Runtime::ControlFlow::E &e ) {
 		if ( e != ObjectiveScript::Runtime::ControlFlow::ExitProgram ) {
 			OSerror("abnormal program termination!");
 
-			ObjectiveScript::StackTrace::GetInstance().print();
+			ObjectiveScript::Controller::Instance().stack()->print();
 		}
 	}
 	catch ( ... ) {	// catch everything

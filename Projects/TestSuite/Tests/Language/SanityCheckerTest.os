@@ -1,34 +1,27 @@
 #!/usr/local/bin/oscript
 
-public object Main
-{
-	public void Main(int argc = 0, string argv = "")
+public void Main(int argc = 0, string argv = "") {
+	assert( TestCase1() );
+	assert( TestCase2() );
+	assert( TestCase3() );
+}
+
+private bool TestCase1() const {
 	{
-		assert( TestCase1() );
-		assert( TestCase2() );
-		assert( TestCase3() );
-	}
+		int one = 1;
 
-	private bool TestCase1() const
-	{
-		{
-			int one = 1;
+	return false;
+}
 
-		return false;
-	}
+private bool TestCase2() const {
+	assert( true;
 
-	private bool TestCase2() const
-	{
-		assert( true;
+	return false;
+}
 
-		return false;
-	}
+private bool TestCase3() const {
+	string bla = "bla bla;
 
-	private bool TestCase3() const
-	{
-		string bla = "bla bla;
-
-		return false;
-	}
+	return false;
 }
 

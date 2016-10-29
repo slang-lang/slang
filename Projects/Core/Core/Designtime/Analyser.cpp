@@ -8,35 +8,108 @@
 #include <iostream>
 
 // Project includes
+#include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/Common/Exceptions.h>
 #include <Core/Designtime/Parser/Parser.h>
-#include <Core/Designtime/SanityChecker.h>
 #include <Core/Runtime/Namespace.h>
+#include <Core/Tokenizer.h>
+#include <Core/Tools.h>
+#include <Core/VirtualMachine/Controller.h>
 #include <Tools/Files.h>
 #include <Utils.h>
-#include "Repository.h"
-#include "Tokenizer.h"
-#include "Tools.h"
+#include "Exceptions.h"
+#include "SanityChecker.h"
 
 // Namespace declarations
 
 
 namespace ObjectiveScript {
+namespace Designtime {
 
 
-Analyser::Analyser(Repository *repository)
-: mRepository(repository)
+Analyser::Analyser()
+: mProcessingInterface(false)
 {
-	mScope = mRepository->getGlobalScope();
+	mRepository = Controller::Instance().repository();
+	mScope = Controller::Instance().stack()->globalScope();
 }
 
 Analyser::~Analyser()
 {
 }
 
-Designtime::Ancestors Analyser::collectInheritance(TokenIterator& token) const
+bool Analyser::buildEnum(Designtime::BluePrintEnum* symbol, const TokenList& tokens)
 {
-	Designtime::Ancestors ancestors;
+	TokenIterator token = tokens.begin();
+
+	Runtime::AtomicValue previous_value = (unsigned)-1;
+	Runtime::AtomicValue value = (unsigned)-1;
+
+	// Format: <identifier> = <value>[, or ;]
+	while ( token != tokens.end() ) {
+		std::string name;
+
+		expect(Token::Type::IDENTIFER, token);
+		name = (token++)->content();
+
+		if ( token->type() == Token::Type::ASSIGN ) {
+			expect(Token::Type::ASSIGN, token++);
+
+			expect(Token::Type::CONST_INTEGER, token);
+			value = (token++)->content();
+		}
+		else {
+			value = value.toInt() + 1;
+		}
+
+		// verify declaration order (this also prevents duplicate values)
+		if ( previous_value.toInt() >= value.toInt() ) {
+			throw Common::Exceptions::Exception("enum values have to be defined in ascending order");
+		}
+
+		previous_value = value;
+
+		// define enum entries as parent type
+		//Runtime::Object* entry = mRepository->createInstance(mBluePrint->QualifiedTypename(), name, true);
+		//entry->setConstructed(true);
+
+		// define enum entries as integer type
+		//Runtime::Object* entry = Controller::Instance().repository()->createInstance(Runtime::IntegerObject::TYPENAME, name, true);
+		Runtime::Object* entry = new Runtime::IntegerObject(name, value.toInt());	// this prevents a double delete because all instances are freed by their surrounding scope
+		entry->setMember(true);
+		entry->setMutability(Mutability::Const);
+		entry->setValue(value.toInt());
+		entry->setVisibility(Visibility::Public);
+
+		// define enum entries in current scope
+		entry->setParent(symbol);
+		symbol->define(name, entry);
+
+		// define enum entries in parent scope
+		//entry->setParent(symbol->getEnclosingScope());
+		//symbol->getEnclosingScope()->define(name, entry);
+
+		if ( token->type() == Token::Type::COMMA ) {
+			token++;
+
+			if ( lookahead(token) == tokens.end() ) {
+				throw Common::Exceptions::Exception("new enum value expected but none found!", token->position());
+			}
+		}
+		else if ( token->type() == Token::Type::SEMICOLON ) {
+			return true;
+		}
+		else {
+			throw Common::Exceptions::Exception("unexpected token '" + token->content() + "' found", token->position());
+		}
+	}
+
+	throw Common::Exceptions::SyntaxError("invalid enum declaration", token->position());
+}
+
+Ancestors Analyser::collectInheritance(TokenIterator& token) const
+{
+	Ancestors ancestors;
 
 	if ( token->type() != Token::Type::RESERVED_WORD ) {
 		// no reserved word, no ancestors
@@ -44,7 +117,7 @@ Designtime::Ancestors Analyser::collectInheritance(TokenIterator& token) const
 	}
 
 	bool replicates = false;
-	Designtime::Ancestor::Type::E inheritance = Designtime::Ancestor::Type::Unknown;
+	Ancestor::Type::E inheritance = Ancestor::Type::Unknown;
 	Visibility::E visibility = Visibility::Public;
 
 	for ( ; ; ) {
@@ -55,7 +128,7 @@ Designtime::Ancestors Analyser::collectInheritance(TokenIterator& token) const
 
 			token++;	// consume token
 
-			inheritance = Designtime::Ancestor::Type::Extends;
+			inheritance = Ancestor::Type::Extends;
 		}
 		else if ( token->content() == RESERVED_WORD_IMPLEMENTS ) {
 			if ( replicates ) {
@@ -64,7 +137,7 @@ Designtime::Ancestors Analyser::collectInheritance(TokenIterator& token) const
 
 			token++;	// consume token
 
-			inheritance = Designtime::Ancestor::Type::Implements;
+			inheritance = Ancestor::Type::Implements;
 		}
 		else if ( token->content() == RESERVED_WORD_REPLICATES ) {
 			if ( replicates ) {
@@ -74,7 +147,7 @@ Designtime::Ancestors Analyser::collectInheritance(TokenIterator& token) const
 			token++;	// consume token
 
 			replicates = true;
-			inheritance = Designtime::Ancestor::Type::Replicates;
+			inheritance = Ancestor::Type::Replicates;
 		}
 		else if ( token->type() == Token::Type::COMMA ) {
 			token++;	// consume token
@@ -86,20 +159,17 @@ Designtime::Ancestors Analyser::collectInheritance(TokenIterator& token) const
 			break;
 		}
 
-		//std::string type = identify(token, TokenIterator());
+		std::string type = Parser::identify(token);
 
 		ancestors.insert(
-			Designtime::Ancestor(getQualifiedTypename((token++)->content()), inheritance, visibility)
-			//Designtime::Ancestor(type, inheritance, visibility)
+			Ancestor(type, inheritance, visibility)
 		);
-
-		//token++;
 	}
 
 	return ancestors;
 }
 
-bool Analyser::createBluePrint(TokenIterator& token, TokenIterator end) const
+bool Analyser::createBluePrint(TokenIterator& token, TokenIterator end)
 {
 	// look for the visibility token
 	std::string visibility = (*token++).content();
@@ -112,16 +182,18 @@ bool Analyser::createBluePrint(TokenIterator& token, TokenIterator end) const
 	// look for the identifier token
 	std::string type = (*token++).content();
 
-	Designtime::BluePrintObject* symbol = new Designtime::BluePrintObject(type, mFilename);
+	BluePrintObject* symbol = new BluePrintObject(type, mFilename);
 
 	// determine implementation type
 	if ( objectType == ObjectType::Interface ) {
 		if ( implementationType != ImplementationType::FullyImplemented ) {
-			throw Common::Exceptions::NotSupported("interfaces cannot be defined abstract object");
+			throw Common::Exceptions::NotSupported("interfaces cannot be defined as abstract object");
 		}
 
 		implementationType = ImplementationType::Interface;
 	}
+
+	TokenList tokens;
 
 	if ( token->type() == Token::Type::SEMICOLON ) {
 		if ( implementationType != ImplementationType::FullyImplemented ) {
@@ -132,18 +204,16 @@ bool Analyser::createBluePrint(TokenIterator& token, TokenIterator end) const
 	}
 	else {
 		// collect inheritance (if present)
-		Designtime::Ancestors inheritance = collectInheritance(token);
+		Ancestors inheritance = collectInheritance(token);
 
 		bool isImplemented = true;
 		if ( !inheritance.empty() ) {
-			isImplemented = (inheritance.begin()->type() != Designtime::Ancestor::Type::Replicates);
+			isImplemented = (inheritance.begin()->type() != Ancestor::Type::Replicates);
 		}
 
 		if ( isImplemented ) {
 			isImplemented = (token->type() != Token::Type::SEMICOLON);
 		}
-
-		TokenList tokens;
 
 		if ( isImplemented ) {	// only collect all tokens of this object if it is implemented
 			// interface, object or prototype declarations have to start with an '{' token
@@ -167,8 +237,8 @@ bool Analyser::createBluePrint(TokenIterator& token, TokenIterator end) const
 
 		// set up inheritance (if present)
 		if ( !inheritance.empty() ) {
-			for ( Designtime::Ancestors::const_iterator it = inheritance.begin(); it != inheritance.end(); ++it ) {
-				if ( it->type() == Designtime::Ancestor::Type::Extends ) {
+			for ( Ancestors::const_iterator it = inheritance.begin(); it != inheritance.end(); ++it ) {
+				if ( it->type() == Ancestor::Type::Extends ) {
 					extends = true;
 				}
 
@@ -178,7 +248,7 @@ bool Analyser::createBluePrint(TokenIterator& token, TokenIterator end) const
 
 		// in case this object has no inheritance set, we inherit from 'Object'
 		if ( objectType != ObjectType::Interface && !extends ) {
-			symbol->addInheritance(Designtime::Ancestor(OBJECT, Designtime::Ancestor::Type::Extends, Visibility::Public));
+			symbol->addInheritance(Ancestor(OBJECT, Ancestor::Type::Extends, Visibility::Public));
 		}
 	}
 
@@ -190,10 +260,26 @@ bool Analyser::createBluePrint(TokenIterator& token, TokenIterator end) const
 
 	mRepository->addBluePrint(symbol);
 
-	return true;
+	if ( implementationType == ImplementationType::ForwardDeclaration ) {
+		return symbol != 0;
+	}
+
+	mScope->define(symbol->Typename(), symbol);
+
+	MethodScope* tmpScope = mScope;
+
+	mProcessingInterface = implementationType == ImplementationType::Interface;
+	mScope = symbol;
+
+	generate(tokens);
+
+	mScope = tmpScope;
+	mProcessingInterface = false;
+
+	return symbol != 0;
 }
 
-bool Analyser::createEnum(TokenIterator& token, TokenIterator end) const
+bool Analyser::createEnum(TokenIterator& token, TokenIterator end)
 {
 	std::string languageFeature;
 	std::string type;
@@ -225,7 +311,7 @@ bool Analyser::createEnum(TokenIterator& token, TokenIterator end) const
 
 	token = closed;
 
-	Designtime::BluePrintEnum* symbol = new Designtime::BluePrintEnum(type, mFilename);
+	BluePrintEnum* symbol = new BluePrintEnum(type, mFilename);
 	symbol->setFinal(true);
 	symbol->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
 	symbol->setMutability(Mutability::Modify);
@@ -237,10 +323,12 @@ bool Analyser::createEnum(TokenIterator& token, TokenIterator end) const
 
 	mRepository->addBluePrint(symbol);
 
-	return symbol != 0;
+	mScope->define(symbol->Typename(), symbol);
+
+	return buildEnum(symbol, tokens);
 }
 
-std::string Analyser::createLibraryReference(TokenIterator& token, TokenIterator end) const
+bool Analyser::createLibraryReference(TokenIterator& token, TokenIterator end)
 {
 	std::string reference;
 
@@ -259,11 +347,16 @@ std::string Analyser::createLibraryReference(TokenIterator& token, TokenIterator
 
 	expect(Token::Type::SEMICOLON, token);
 
-	return reference;
+	mLibraries.push_back(reference);
+
+	return true;
 }
 
 bool Analyser::createMember(TokenIterator& token, TokenIterator /*end*/)
 {
+	assert( mScope->getScopeType() == IScope::IType::MethodScope );
+
+	bool isFinal = false;
 	std::string languageFeature;
 	Mutability::E mutability = Mutability::Modify;
 	std::string name;
@@ -282,9 +375,23 @@ bool Analyser::createMember(TokenIterator& token, TokenIterator /*end*/)
 	// look for the identifier token
 	name = (*token++).content();
 
+	if ( !dynamic_cast<GlobalScope*>(mScope) && !dynamic_cast<Runtime::Namespace*>(mScope) ) {
+		if ( visibility == Visibility::Public ) {
+			// beware: public members are deprecated, remember the "Law of Demeter"
+			// consider using wrappers (getter, setter) instead of directly providing access to members for outsiders
+			// haven't you heard? outsiders, or sometimes called strangers, are evil
+			throw Exceptions::LawOfDemeterViolated("public member " + name + " violates \"Law of Demeter\"", token->position());
+		}
+	}
+
 	// look for a mutability keyword
 	if ( token->category() == Token::Category::Modifier ) {
 		mutability = Mutability::convert(token->content());
+
+		if ( (*token).content() == MODIFIER_FINAL ) {
+			isFinal = true;
+		}
+
 		token++;
 	}
 
@@ -306,24 +413,42 @@ bool Analyser::createMember(TokenIterator& token, TokenIterator /*end*/)
 
 	expect(Token::Type::SEMICOLON, token);
 
-	Runtime::Object *member = mRepository->createInstance(type, name);
-	member->setMember(false);
-	member->setMutability(mutability);
-	member->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
-	member->setParent(mScope);
-	member->setQualifiedTypename(type);
-	member->setRepository(mRepository);
-	member->setValue(value);
-	member->setVisibility(visibility);
+	if ( dynamic_cast<BluePrintGeneric*>(mScope) ){
+		BluePrintObject* blue = new BluePrintObject(type, mFilename, name);
+		blue->setFinal(isFinal);
+		blue->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
+		blue->setMember(true);
+		blue->setMutability(mutability);
+		blue->setParent(mScope);
+		blue->setQualifiedTypename(type);
+		blue->setValue(value);
+		blue->setVisibility(visibility);
 
-	mScope->define(name, member);
+		mScope->define(name, blue);
+	}
+	else {
+		Runtime::Object *member = mRepository->createInstance(type, name, false);
+		member->setFinal(isFinal);
+		member->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
+		member->setMember(true);
+		member->setMutability(mutability);
+		member->setParent(mScope);
+		member->setQualifiedTypename(type);
+		member->setValue(value);
+		member->setVisibility(visibility);
+
+		mScope->define(name, member);
+	}
 
 	return true;
 }
 
-bool Analyser::createMethod(TokenIterator& token, TokenIterator end)
+bool Analyser::createMethod(TokenIterator& token, TokenIterator /*end*/)
 {
+	bool isAbstract = mProcessingInterface;
+	bool isFinal = false;
 	bool isRecursive = false;
+	bool isStatic = false;
 	std::string languageFeature;
 	MethodAttributes::MethodType::E methodType = MethodAttributes::MethodType::Function;
 	Mutability::E mutability = Mutability::Const;	// extreme const correctness: all methods are const by default
@@ -340,10 +465,25 @@ bool Analyser::createMethod(TokenIterator& token, TokenIterator end)
 		languageFeature = (*token++).content();
 	}
 	// look for the type token
-	//type = (*token++).content();
 	type = Parser::identify(token);
 	// look for the identifier token
 	name = (*token++).content();
+
+	BluePrintGeneric* blueprint = dynamic_cast<BluePrintGeneric*>(mScope);
+	if ( blueprint && name == RESERVED_WORD_CONSTRUCTOR ) {
+		// these methods have the same name as their containing object,
+		// so this has to be a constructor or a destructor;
+		// they can never ever be const, ever
+		methodType = MethodAttributes::MethodType::Constructor;
+		mutability = Mutability::Modify;
+	}
+	else if ( blueprint && name == RESERVED_WORD_DESTRUCTOR ) {
+		// these methods have the same name as their containing object,
+		// so this has to be a constructor or a destructor;
+		// they can never ever be const, ever
+		methodType = MethodAttributes::MethodType::Destructor;
+		mutability = Mutability::Modify;
+	}
 
 	expect(Token::Type::PARENTHESIS_OPEN, token);
 
@@ -358,14 +498,20 @@ bool Analyser::createMethod(TokenIterator& token, TokenIterator end)
 
 		if ( token->category() == Token::Category::Modifier ) {
 			if ( token->content() == MODIFIER_ABSTRACT ) {
-				throw Common::Exceptions::NotSupported("global methods cannot be declared as abstract");
+				isAbstract = true;
+
+				//throw Common::Exceptions::NotSupported("global methods cannot be declared as abstract");
 			}
 			else if ( token->content() == MODIFIER_CONST ) {
 				mutability = Mutability::Const;
 				numConstModifiers++;
 			}
 			else if ( token->content() == MODIFIER_FINAL ) {
-				throw Common::Exceptions::NotSupported("global methods cannot be declared as final");
+				isFinal = true;
+				//mutability = Mutability::Final;
+				//numConstModifiers++;
+
+				//throw Common::Exceptions::NotSupported("global methods cannot be declared as final");
 			}
 			else if ( token->content() == MODIFIER_MODIFY ) {
 				mutability = Mutability::Modify;
@@ -375,9 +521,9 @@ bool Analyser::createMethod(TokenIterator& token, TokenIterator end)
 				isRecursive = true;
 			}
 			else if ( token->content() == MODIFIER_STATIC ) {
-				throw Common::Exceptions::NotSupported("global methods cannot be declared as static");
+				isStatic = true;
 			}
-			else if ( token->content() == RESERVED_WORD_THROWS ) {
+			else if ( token->content() == MODIFIER_THROWS ) {
 				throws = true;
 			}
 		}
@@ -390,36 +536,31 @@ bool Analyser::createMethod(TokenIterator& token, TokenIterator end)
 		throw Common::Exceptions::Exception("modifiers 'const' & 'modify' are exclusive");
 	}
 
-	if ( token->type() == Token::Type::RESERVED_WORD && token->content() == RESERVED_WORD_THROWS ) {
-		throws = true;
-		token++;
-	}
-
-
-	// look for the next opening curly brackets
-	TokenIterator open = findNext(token, Token::Type::BRACKET_CURLY_OPEN);
-	// look for balanced curly brackets
-	TokenIterator closed = findNextBalancedCurlyBracket(open, end, 0, Token::Type::BRACKET_CURLY_CLOSE);
-
-	// collect all tokens of this object
+	// collect all tokens of this method
 	TokenList tokens;
-	for ( TokenIterator it = ++open; it != closed && it != end; ++it ) {
-		tokens.push_back((*it));
-	}
+	if ( token->type() == Token::Type::BRACKET_CURLY_OPEN ) {
+		if ( mProcessingInterface ) {
+			throw Common::Exceptions::SyntaxError("interface methods are not allowed to be implemented", token->position());
+		}
 
-	token = closed;
+		tokens = Parser::collectScopeTokens(token);
+	}
+	else if ( !isAbstract ) {
+		throw Common::Exceptions::SyntaxError("method '" + name + "' is not declared as abstract but has no implementation", token->position());
+	}
 
 	// create a new method with the corresponding return value
 	Runtime::Method *method = new Runtime::Method(mScope, name, type);
-	method->setAbstract(false);
+	method->setAbstract(isAbstract || mProcessingInterface);
+	method->setFinal(isFinal);
 	method->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
 	method->setMethodType(methodType);
 	method->setMutability(mutability);
 	method->setParent(mScope);
 	method->setQualifiedTypename(type);
 	method->setRecursive(isRecursive);
-	method->setRepository(mRepository);
 	method->setSignature(params);
+	method->setStatic(isStatic);
 	method->setThrows(throws);
 	method->setTokens(tokens);
 	method->setVisibility(Visibility::convert(visibility));
@@ -505,7 +646,7 @@ bool Analyser::createNamespace(TokenIterator& token, TokenIterator end)
 	return true;
 }
 
-bool Analyser::createPrototype(TokenIterator& start, TokenIterator end) const
+bool Analyser::createPrototype(TokenIterator& start, TokenIterator end)
 {
 assert(!"prototypes not supported!");
 
@@ -530,10 +671,9 @@ void Analyser::generate(const TokenList& tokens)
 			createEnum(it, tokens.end());
 		}
 		else if ( Parser::isLibraryReference(it) ) {
-			std::string reference = createLibraryReference(it, tokens.end());
-			mLibraries.push_back(reference);
+			createLibraryReference(it, tokens.end());
 		}
-		else if ( Parser::isMemberDeclaration(it) || Parser::isMemberDeclarationWithModifier(it) ) {
+		else if ( Parser::isMemberDeclaration(it) ) {
 			createMember(it, tokens.end());
 		}
 		else if ( Parser::isMethodDeclaration(it) ) {
@@ -586,7 +726,7 @@ void Analyser::process(const TokenList& tokens)
 	OSdebug("Processing tokens...");
 
 	// execute basic sanity checks
-	Designtime::SanityChecker sanity;
+	SanityChecker sanity;
 	sanity.process(tokens);
 
 	// generate objects from tokens
@@ -635,4 +775,5 @@ void Analyser::processTokens(const TokenList& tokens)
 }
 
 
+}
 }

@@ -11,10 +11,9 @@
 #include <Core/BuildInObjects/FloatObject.h>
 #include <Core/Designtime/BuildInTypes/DoubleObject.h>
 #include <Core/Designtime/BuildInTypes/FloatObject.h>
-#include <Core/Method.h>
-#include <Core/Repository.h>
+#include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Tools.h>
-#include <Core/Common/Exceptions.h>
+#include <Core/VirtualMachine/Controller.h>
 #include <Tools/Strings.h>
 #include "Math.h"
 
@@ -29,11 +28,11 @@ namespace System {
 namespace Math {
 
 
-class FloorDouble: public Runtime::Method
+class FloorDouble: public ExtensionMethod
 {
 public:
 	FloorDouble()
-	: Runtime::Method(0, "floor", Designtime::DoubleObject::TYPENAME)
+	: ExtensionMethod(0, "floor", Designtime::DoubleObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter("value", Designtime::DoubleObject::TYPENAME, VALUE_NONE));
@@ -54,7 +53,7 @@ public:
 			*result = Runtime::DoubleObject(floor(param_value));
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
 			*data = Runtime::StringObject(std::string(e.what()));
 
 			mExceptionData = Runtime::ExceptionData(data, token.position());
@@ -66,11 +65,11 @@ public:
 };
 
 
-class FloorFloat: public Runtime::Method
+class FloorFloat: public ExtensionMethod
 {
 public:
 	FloorFloat()
-	: Runtime::Method(0, "floor", Designtime::FloatObject::TYPENAME)
+	: ExtensionMethod(0, "floor", Designtime::FloatObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter("value", Designtime::FloatObject::TYPENAME, VALUE_NONE));
@@ -91,7 +90,7 @@ public:
 			*result = Runtime::DoubleObject(floor(param_value));
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = mRepository->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
 			*data = Runtime::StringObject(std::string(e.what()));
 
 			mExceptionData = Runtime::ExceptionData(data, token.position());

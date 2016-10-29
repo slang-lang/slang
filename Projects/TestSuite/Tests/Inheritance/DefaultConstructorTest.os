@@ -1,30 +1,26 @@
 #!/usr/local/bin/oscript
 
-//import DerivedObject;
-
 private object BaseObject {
-	public void BaseObject() {
-		print("BaseObject()");
+	public void Constructor() {
+		print("BaseObject.Constructor()");
 	}
 
-	public void ~BaseObject() {
-		print("~BaseObject()");
+	public void Destructor() {
+		print("BaseObject.Destructor()");
 	}
 }
 
 private object DerivedObject extends BaseObject {
-	public void DerivedObject() {
-		print("DerivedObject()");
+	public void Constructor() {
+		print("DerivedObject.Constructor()");
 	}
 
-	public void ~DerivedObject() {
-		print("~DerivedObject()");
+	public void Destructor() {
+		print("DerivedObject.Destructor()");
 	}
 }
 
-public object Main {
-	public void Main(int argc = 0, string argv = "") {
-		DerivedObject derived = new DerivedObject();
-	}
+public void Main(int argc = 0, string argv = "") {
+	DerivedObject derived = new DerivedObject();
 }
 

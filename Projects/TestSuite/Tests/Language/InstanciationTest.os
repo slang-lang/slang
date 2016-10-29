@@ -1,45 +1,48 @@
 #!/usr/local/bin/oscript
 
-public namespace InstanciationTest
-{
-	public object OuterObject
-	{
-/*
-		public object InnerObject
-		{
-			public string mValue;
+public namespace InstanciationTest {
+	public object OuterObject {
 
-			public void InnerObject(string value = "InnerObject")
-			{
+		public object InnerObject {
+			private string mValue;
+
+			public void Constructor(string value) {
+				print("Constructor(\"" + value + "\")");
+
 				mValue = value;
 			}
+
+			public void Destructor() {
+				print("Destructor()");
+			}
 		}
-*/
+
 
 		private string mValue;
 
-		public void OuterObject(string value = "OuterObject")
-		{
+		public void Constructor(string value) {
+			print("Constructor(\"" + value + "\")");
+
 			mValue = value;
+		}
+
+		public void Destructor() {
+			print("Destructor()");
 		}
 	}
 }
 
-public object Main {
-	public void Main(int arc = 0, string argv = "") {
-		assert( TestCase1() );
-	}
+public void Main(int arc = 0, string argv = "") {
+	assert( TestCase1() );
+}
 
-	private bool TestCase1() const {
-		InstanciationTest.OuterObject outer = new InstanciationTest.OuterObject();
-		print("outer.mValue = " + outer.mValue);
+private bool TestCase1() const {
+	InstanciationTest.OuterObject outer = new InstanciationTest.OuterObject("outer");
+	print("outer.mValue = " + outer.mValue);
 
-/*
-		OuterObject.InnerObject inner = new InstanciationTest.OuterObject.InnerObject();
-		print("inner.mValue = " + inner.mValue);
-*/
+	InstanciationTest.OuterObject.InnerObject inner = new InstanciationTest.OuterObject.InnerObject("inner");
+	print("inner.mValue = " + inner.mValue);
 
-		return true;
-	}
+	return true;
 }
 
