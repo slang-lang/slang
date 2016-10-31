@@ -12,6 +12,7 @@
 #include <Core/Common/Exceptions.h>
 #include <Core/Designtime/Parser/Parser.h>
 #include <Core/Designtime/Parser/Tokenizer.h>
+#include <Core/Interfaces/IScope.h>
 #include <Core/Runtime/Namespace.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
@@ -107,68 +108,6 @@ bool Analyser::buildEnum(Designtime::BluePrintEnum* symbol, const TokenList& tok
 	throw Common::Exceptions::SyntaxError("invalid enum declaration", token->position());
 }
 
-Ancestors Analyser::collectInheritance(TokenIterator& token) const
-{
-	Ancestors ancestors;
-
-	if ( token->type() != Token::Type::RESERVED_WORD ) {
-		// no reserved word, no ancestors
-		return ancestors;
-	}
-
-	bool replicates = false;
-	Ancestor::Type::E inheritance = Ancestor::Type::Unknown;
-	Visibility::E visibility = Visibility::Public;
-
-	for ( ; ; ) {
-		if ( token->content() == RESERVED_WORD_EXTENDS ) {
-			if ( replicates ) {
-				throw Common::Exceptions::Exception("combinations with 'replicates' are not allowed");
-			}
-
-			token++;	// consume token
-
-			inheritance = Ancestor::Type::Extends;
-		}
-		else if ( token->content() == RESERVED_WORD_IMPLEMENTS ) {
-			if ( replicates ) {
-				throw Common::Exceptions::Exception("combinations with 'replicates' are not allowed");
-			}
-
-			token++;	// consume token
-
-			inheritance = Ancestor::Type::Implements;
-		}
-		else if ( token->content() == RESERVED_WORD_REPLICATES ) {
-			if ( replicates ) {
-				throw Common::Exceptions::Exception("combinations with 'replicates' are not allowed");
-			}
-
-			token++;	// consume token
-
-			replicates = true;
-			inheritance = Ancestor::Type::Replicates;
-		}
-		else if ( token->type() == Token::Type::COMMA ) {
-			token++;	// consume token
-
-			continue;
-		}
-
-		if ( token->type() != Token::Type::IDENTIFER ) {
-			break;
-		}
-
-		std::string type = Parser::identify(token);
-
-		ancestors.insert(
-			Ancestor(type, inheritance, visibility)
-		);
-	}
-
-	return ancestors;
-}
-
 bool Analyser::createBluePrint(TokenIterator& token, TokenIterator end)
 {
 	// look for the visibility token
@@ -187,7 +126,7 @@ bool Analyser::createBluePrint(TokenIterator& token, TokenIterator end)
 	// determine implementation type
 	if ( objectType == ObjectType::Interface ) {
 		if ( implementationType != ImplementationType::FullyImplemented ) {
-			throw Common::Exceptions::NotSupported("interfaces cannot be defined as abstract object");
+			throw Common::Exceptions::NotSupported("interfaces cannot be defined as abstract");
 		}
 
 		implementationType = ImplementationType::Interface;
@@ -203,8 +142,13 @@ bool Analyser::createBluePrint(TokenIterator& token, TokenIterator end)
 		implementationType = ImplementationType::ForwardDeclaration;
 	}
 	else {
+		// collect prototype constraints (if present)
+		PrototypeConstraints constraints = Parser::collectPrototypeConstraints(token);
+
+		symbol->setPrototypeConstraints(constraints);
+
 		// collect inheritance (if present)
-		Ancestors inheritance = collectInheritance(token);
+		Ancestors inheritance = Parser::collectInheritance(token);
 
 		bool isImplemented = true;
 		if ( !inheritance.empty() ) {
@@ -388,7 +332,7 @@ bool Analyser::createMember(TokenIterator& token, TokenIterator /*end*/)
 	if ( token->category() == Token::Category::Modifier ) {
 		mutability = Mutability::convert(token->content());
 
-		if ( (*token).content() == MODIFIER_FINAL ) {
+		if ( token->content() == MODIFIER_FINAL ) {
 			isFinal = true;
 		}
 
@@ -650,16 +594,6 @@ bool Analyser::createNamespace(TokenIterator& token, TokenIterator end)
 	return true;
 }
 
-bool Analyser::createPrototype(TokenIterator& start, TokenIterator end)
-{
-assert(!"prototypes not supported!");
-
-(void)end;
-(void)start;
-
-	return false;
-}
-
 /*
  * loop over all tokens and look for imports and object declarations
  */
@@ -668,7 +602,7 @@ void Analyser::generate(const TokenList& tokens)
 	TokenList::const_iterator it = tokens.begin();
 
 	while ( it != tokens.end() && it->type() != Token::Type::ENDOFFILE ) {
-		if ( Parser::isInterfaceDeclaration(it) || Parser::isObjectDeclaration(it) ) {
+		if ( Parser::isInterfaceDeclaration(it) || Parser::isObjectDeclaration(it) || Parser::isPrototypeDeclaration(it) ) {
 			createBluePrint(it, tokens.end());
 		}
 		else if ( Parser::isEnumDeclaration(it) ) {
@@ -685,9 +619,6 @@ void Analyser::generate(const TokenList& tokens)
 		}
 		else if ( Parser::isNamespaceDeclaration(it) ) {
 			createNamespace(it, tokens.end());
-		}
-		else if ( Parser::isPrototypeDeclaration(it) ) {
-			createPrototype(it, tokens.end());
 		}
 		else {
 			throw Common::Exceptions::SyntaxError("invalid token '" + it->content() + "' found", it->position());
@@ -727,8 +658,6 @@ void Analyser::process(const TokenList& tokens)
 	// factory reset
 	mLibraries.clear();
 
-	OSdebug("Processing tokens...");
-
 	// execute basic sanity checks
 	SanityChecker sanity;
 	sanity.process(tokens);
@@ -739,8 +668,6 @@ void Analyser::process(const TokenList& tokens)
 
 void Analyser::processFile(const std::string& filename)
 {
-	OSdebug("Preparing file '" + filename + "'...");
-
 	mFilename = filename;
 
 	if ( !::Utils::Tools::Files::exists(mFilename) ) {
@@ -759,8 +686,6 @@ void Analyser::processFile(const std::string& filename)
 
 void Analyser::processString(const std::string& content, const std::string& filename)
 {
-//	OSdebug("Preparing string data...");
-
 	mFilename = filename;
 
 	// create token list from string
@@ -772,8 +697,6 @@ void Analyser::processString(const std::string& content, const std::string& file
 
 void Analyser::processTokens(const TokenList& tokens)
 {
-//	OSdebug("Preparing token data...");
-
 	// start the real processing
 	process(tokens);
 }

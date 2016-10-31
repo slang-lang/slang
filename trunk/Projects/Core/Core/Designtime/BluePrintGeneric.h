@@ -17,6 +17,7 @@
 #include <Core/Symbol.h>
 #include <Core/Types.h>
 #include "Ancestor.h"
+#include "Prototype.h"
 
 // Forward declarations
 
@@ -39,8 +40,25 @@ public:
 	const std::string& QualifiedTypename() const { return mQualifiedTypename; }
 	const std::string& Typename() const { return mTypename; }
 
-public:
 	void setQualifiedTypename(const std::string& name);
+
+public:
+	// Inheritance
+	// {
+	Ancestors getAncestors() const;
+	Ancestors getInheritance() const;
+	Ancestors getImplementations() const;
+
+	void addInheritance(const Ancestor& inheritance);
+	// }
+
+	bool isAbstract() const;
+	bool isForwardDeclaration() const;
+	bool isInterface() const;
+	bool isPrototype() const;
+
+	const PrototypeConstraints& getPrototypeConstraints() const;
+	void setPrototypeConstraints(const PrototypeConstraints& constraints);
 
 	const TokenList& getTokens() const;
 	void setTokens(const TokenList& tokens);
@@ -55,6 +73,8 @@ protected:
 	std::string mTypename;
 
 private:
+	Ancestors mInheritance;
+	PrototypeConstraints mPrototypeConstraints;
 	Visibility::E mVisibility;
 };
 

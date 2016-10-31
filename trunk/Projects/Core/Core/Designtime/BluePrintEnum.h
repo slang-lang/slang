@@ -33,22 +33,9 @@ public:
 	virtual ~BluePrintEnum();
 
 public:
-	// Inheritance
-	// {
-	Designtime::Ancestors getAncestors() const;
-	Designtime::Ancestors getInheritance() const;
-	Designtime::Ancestors getImplementations() const;
-
-	void addInheritance(const Designtime::Ancestor& inheritance);
-	// }
-
-	bool isAbstract() const;
-	bool isForwardDeclaration() const;
-	bool isInterface() const;
-
 	void setParent(IScope* parent);
 
-	virtual std::string ToString(unsigned int indent) const;
+	std::string ToString(unsigned int indent) const;
 
 public:
 	MethodCollection provideMethods() const {
@@ -59,7 +46,6 @@ public:
 	}
 
 private:
-	Ancestors mInheritance;
 };
 
 

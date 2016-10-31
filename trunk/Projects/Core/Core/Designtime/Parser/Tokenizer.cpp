@@ -615,7 +615,7 @@ void Tokenizer::process()
 	mergeInfixPostfixOperators();	// merge '+' '+' into '++'
 	replaceConstDataTypes();		// combines CONST_INTEGER '.' CONST_INTEGER <data type> into a CONST_FLOAT or CONST_DOUBLE
 	replaceOperators();				// combine 'operator' identifiers with the next following token i.e. 'operator' '+' => 'operator+'
-	replacePrototypes();			//
+	//replacePrototypes();			//
 }
 
 void Tokenizer::removeWhiteSpaces()

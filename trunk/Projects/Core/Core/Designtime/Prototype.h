@@ -5,10 +5,9 @@
 
 // Library includes
 #include <list>
-#include <map>
+#include <string>
 
 // Project includes
-#include <Core/Designtime/BluePrintObject.h>
 
 // Forward declarations
 
@@ -19,25 +18,20 @@ namespace ObjectiveScript {
 namespace Designtime {
 
 
-class Prototype
+class PrototypeConstraint
 {
 public:
-	Prototype(const Designtime::BluePrintObject& blue);
-	~Prototype();
+	PrototypeConstraint(const std::string& type, const std::string& constraint)
+	: mConstraint(constraint),
+	  mType(type)
+	{ }
 
 public:
-	Designtime::BluePrintObject generateBluePrint(const std::string& type);
-
-	const std::string& type() const;
-
-protected:
-
-private:
-	Designtime::BluePrintObject mBluePrint;
+	std::string mConstraint;
+	std::string mType;
 };
 
-typedef std::list<Prototype> PrototypeList;
-typedef std::map<std::string, Prototype> PrototypeMap;
+typedef std::list<PrototypeConstraint> PrototypeConstraints;
 
 
 }

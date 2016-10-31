@@ -1,17 +1,20 @@
 #!/usr/local/bin/oscript
 
-public prototype TestPrototype {
-	private UNKNOWN mValue;
+import System.Integer;
+import System.String;
 
-	public void TestPrototype() {
+public prototype TestPrototype<T> {
+	private T mValue;
+
+	public void Constructor() {
 		mValue = 0;
 	}
 
-	public void TestPrototype(UNKNOWN value) {
+	public void Constructor(T value) {
 		mValue = value;
 	}
 
-	public UNKNOWN getValue() const {
+	public T getValue() const {
 		return mValue;
 	}
 
@@ -20,12 +23,11 @@ public prototype TestPrototype {
 	}
 }
 
-public prototype AnotherPrototype<object K, object V> {
+public prototype AnotherPrototype<K: Object, V: Object> {
 	private K mKey;
 	private V mValue;
 
-	public void AnotherPrototype(K key, V value)
-	{
+	public void Constructor(K key, V value) {
 		mKey = key;
 		mValue = value;
 	}
@@ -40,24 +42,17 @@ public prototype AnotherPrototype<object K, object V> {
 }
 
 public void Main(int argc = 0, string argv = "") {
-	test();
+	assert( TestCase1() );
 }
 
-public void test() {
-	//TestPrototype<int> proto(100);
-	//TestPrototype < int > proto(100);
-	TestPrototype of int prototype = new TestPrototype of int(100);
+public bool TestCase1() {
+	TestPrototype<int> proto = new TestPrototype<int>(173);
+	print("proto.getValue() = " & proto.getValue());
+	proto.setValue(1389);
+	print("proto.getValue() = " & proto.getValue());
 
-/*
-	print("Prototype value = " & prototype.getValue());
-
-	prototype.setValue(17);
-
-	print("Prototype value = " & prototype.getValue());
-*/
-
-	AnotherPrototype<int, string> another = new AnotherPrototype<int, string>(1, "1");
-	another.getKey();
-	another.getValue();
+	AnotherPrototype<int, string> another = new AnotherPrototype<Integer, String>(new Integer(173), new String("1389"));
+	print(string another.getKey());
+	print(string another.getValue());
 }
 

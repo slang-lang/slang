@@ -147,11 +147,13 @@ bool Method::isSignatureValid(const ParameterList& params) const
 				// we received the wrong parameter type
 				return false;
 			}
+/*
 			// compare received const-ness with expected const-ness
 			if ( paramIt->isConst() && !sigIt->isConst() ) {
 				// we received a const parameter but expect a non-const parameter
 				return false;
 			}
+*/
 /*
 			// compare access types
 			if ( paramIt->access() != sigIt->access() ) {

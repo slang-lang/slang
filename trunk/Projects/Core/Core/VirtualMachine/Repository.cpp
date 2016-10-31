@@ -106,24 +106,6 @@ void Repository::addBluePrint(Designtime::BluePrintObject* blueprint)
 	mBluePrintObjects.insert(std::make_pair(blueprint->QualifiedTypename(), blueprint));
 }
 
-/*
- * DEPRECATED: adds a new prototype (= generic) to the repository
- */
-void Repository::addPrototype(Designtime::Prototype* /*prototype*/)
-{
-assert(!"prototypes not supported!");
-/*
-	std::string type = prototype.type();
-
-	Designtime::PrototypeMap::iterator it = mPrototypes.find(type);
-	if ( it != mPrototypes.end() ) {
-		throw Common::Exceptions::Exception("duplicate object '" + type + "' added to repository");
-	}
-
-	mPrototypes.insert(std::make_pair(type, prototype));
-*/
-}
-
 void Repository::cleanupForwardDeclarations()
 {
 	ForwardDeclarationTomb tmp = mForwardDeclarations;

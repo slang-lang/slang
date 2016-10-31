@@ -15,6 +15,7 @@
 #include <Core/BuildInObjects/VoidObject.h>
 #include <Core/Common/Exceptions.h>
 #include <Core/Designtime/BluePrintEnum.h>
+#include <Core/Designtime/Parser/Parser.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Runtime/Namespace.h>
 #include <Core/Runtime/OperatorOverloading.h>
@@ -1296,7 +1297,11 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 		throw Common::Exceptions::Exception("blueprint symbol expected!");
 	}
 
-	expect(Token::Type::PARENTHESIS_OPEN, ++token);
+	token++;
+
+	Designtime::PrototypeConstraints constraints = Designtime::Parser::collectPrototypeConstraints(token);
+
+	expect(Token::Type::PARENTHESIS_OPEN, token);
 
 	TokenIterator opened = token;
 	TokenIterator closed = findNextBalancedParenthesis(++opened);
@@ -1761,8 +1766,12 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol)
 	bool isConst = false;
 	bool isFinal = false;
 	std::string name;
+	Designtime::PrototypeConstraints constraints;
 
 	token++;
+
+	constraints = Designtime::Parser::collectPrototypeConstraints(token);
+
 	name = token->content();
 
 	expect(Token::Type::IDENTIFER, token);

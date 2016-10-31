@@ -36,46 +36,6 @@ BluePrintObject::~BluePrintObject()
 {
 }
 
-void BluePrintObject::addInheritance(const Ancestor& inheritance)
-{
-	if ( inheritance.name().empty() ) {
-		throw Common::Exceptions::Exception("invalid inheritance added");
-	}
-
-	mInheritance.insert(inheritance);
-}
-
-Ancestors BluePrintObject::getAncestors() const
-{
-	Ancestors ancestors;
-
-	for ( Ancestors::const_iterator it = mInheritance.begin(); it != mInheritance.end(); ++it ) {
-		if ( it->type() == Ancestor::Type::Extends ) {
-			ancestors.insert((*it));
-		}
-	}
-
-	return ancestors;
-}
-
-Ancestors BluePrintObject::getInheritance() const
-{
-	return mInheritance;
-}
-
-Ancestors BluePrintObject::getImplementations() const
-{
-	Ancestors implementations;
-
-	for ( Ancestors::const_iterator it = mInheritance.begin(); it != mInheritance.end(); ++it ) {
-		if ( it->type() == Ancestor::Type::Implements ) {
-			implementations.insert((*it));
-		}
-	}
-
-	return implementations;
-}
-
 Runtime::AtomicValue BluePrintObject::getValue() const
 {
 	return mValue;
