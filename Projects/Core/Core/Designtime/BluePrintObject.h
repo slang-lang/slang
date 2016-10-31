@@ -43,21 +43,12 @@ public:
 	virtual ~BluePrintObject();
 
 public:
-	// Inheritance
-	// {
-	Ancestors getAncestors() const;
-	Ancestors getInheritance() const;
-	Ancestors getImplementations() const;
-
-	void addInheritance(const Ancestor& inheritance);
-	// }
-
 	void setParent(IScope* parent);
 
 	Runtime::AtomicValue getValue() const;
 	void setValue(Runtime::AtomicValue value);
 
-	virtual std::string ToString(unsigned int indent) const;
+	std::string ToString(unsigned int indent) const;
 
 public:
 	MethodCollection provideMethods() const {

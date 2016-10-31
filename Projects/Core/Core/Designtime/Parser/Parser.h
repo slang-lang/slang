@@ -9,6 +9,8 @@
 #include <Core/Attributes/ImplementationType.h>
 #include <Core/Attributes/LanguageFeatureState.h>
 #include <Core/Attributes/ObjectType.h>
+#include <Core/Designtime/Ancestor.h>
+#include <Core/Designtime/Prototype.h>
 #include <Core/Parameter.h>
 #include <Core/Token.h>
 
@@ -19,14 +21,20 @@
 
 namespace ObjectiveScript {
 
+// Forward declarations
+class IScope;
+
+namespace Designtime {
 
 bool checkSyntax(TokenIterator foundIt, const TokenList &expected);
-
 
 class Parser
 {
 public:
 	static TokenList collectScopeTokens(TokenIterator& token);
+	static Ancestors collectInheritance(TokenIterator& token);
+	static PrototypeConstraints collectPrototypeConstraints(TokenIterator& token);
+
 	static std::string identify(TokenIterator& start);
 
 	static ImplementationType::E parseImplementationType(TokenIterator& token, ImplementationType::E defaultValue);
@@ -43,12 +51,12 @@ public:
 	static bool isObjectDeclaration(TokenIterator start);
 	static bool isParameterDeclaration(TokenIterator start);
 	static bool isPrototypeDeclaration(TokenIterator start);
-	static bool isStructorDeclaration(TokenIterator start);
 
-	static ParameterList parseParameters(TokenIterator &token);
+	static ParameterList parseParameters(TokenIterator &token, IScope* scope = 0);
 };
 
 
+}
 }
 
 

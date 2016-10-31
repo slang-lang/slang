@@ -1,11 +1,13 @@
 #!/usr/local/bin/oscript
 
+import System.Collections.List;
+
 public void Main(int argc = 0, string argv = "") {
-	assert( TestCase1() );
+	assert( TestCase1() );		// not supported by now
 }
 
 private bool TestCase1() const {
-	list<int> values;
+	List<int> values = new List<int>();
 
 	print("values.size() = " + values.size());
 

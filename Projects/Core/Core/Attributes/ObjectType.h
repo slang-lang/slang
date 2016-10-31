@@ -23,7 +23,8 @@ public:
 		Unknown = 0,
 		Enum,
 		Interface,
-		Object
+		Object,
+		Prototype
 	};
 
 	static E convert(const std::string& v);

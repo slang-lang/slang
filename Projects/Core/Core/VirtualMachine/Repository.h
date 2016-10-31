@@ -23,7 +23,6 @@ namespace Designtime {
 	class BluePrintEnum;
 	class BluePrintGeneric;
 	class BluePrintObject;
-	class Prototype;
 }
 namespace Runtime {
 	class Object;
@@ -42,7 +41,6 @@ public:
 public:
 	void addBluePrint(Designtime::BluePrintEnum* blueprint);
 	void addBluePrint(Designtime::BluePrintObject* object);
-	void addPrototype(Designtime::Prototype* prototype);
 
 	void cleanupForwardDeclarations();
 
@@ -69,7 +67,6 @@ private:
 private:
 	BluePrintEnumMap mBluePrintEnums;
 	BluePrintObjectMap mBluePrintObjects;
-	//PrototypeMap mPrototypes;
 	ForwardDeclarationTomb mForwardDeclarations;
 };
 

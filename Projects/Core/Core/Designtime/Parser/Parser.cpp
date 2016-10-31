@@ -6,6 +6,7 @@
 
 // Project includes
 #include <Core/Consts.h>
+#include <Core/Interfaces/IScope.h>
 #include <Core/Tools.h>
 #include <Core/Common/Exceptions.h>
 
@@ -13,6 +14,7 @@
 
 
 namespace ObjectiveScript {
+namespace Designtime {
 
 
 bool checkSyntax(TokenIterator foundIt, const TokenList &expected)
@@ -42,6 +44,122 @@ bool checkSyntax(TokenIterator foundIt, const TokenList &expected)
 	return true;
 }
 
+
+
+Ancestors Parser::collectInheritance(TokenIterator& token)
+{
+	Ancestors ancestors;
+
+	if ( token->type() != Token::Type::RESERVED_WORD ) {
+		// no reserved word, no ancestors
+		return ancestors;
+	}
+
+	bool replicates = false;
+	Ancestor::Type::E inheritance = Ancestor::Type::Unknown;
+	Visibility::E visibility = Visibility::Public;
+
+	for ( ; ; ) {
+		if ( token->content() == RESERVED_WORD_EXTENDS ) {
+			if ( replicates ) {
+				throw Common::Exceptions::Exception("combinations with 'replicates' are not allowed");
+			}
+
+			token++;	// consume token
+
+			inheritance = Ancestor::Type::Extends;
+		}
+		else if ( token->content() == RESERVED_WORD_IMPLEMENTS ) {
+			if ( replicates ) {
+				throw Common::Exceptions::Exception("combinations with 'replicates' are not allowed");
+			}
+
+			token++;	// consume token
+
+			inheritance = Ancestor::Type::Implements;
+		}
+		else if ( token->content() == RESERVED_WORD_REPLICATES ) {
+			if ( replicates ) {
+				throw Common::Exceptions::Exception("combinations with 'replicates' are not allowed");
+			}
+
+			token++;	// consume token
+
+			replicates = true;
+			inheritance = Ancestor::Type::Replicates;
+		}
+		else if ( token->type() == Token::Type::COMMA ) {
+			token++;	// consume token
+
+			continue;
+		}
+
+		if ( token->type() != Token::Type::IDENTIFER ) {
+			break;
+		}
+
+		std::string type = Parser::identify(token);
+
+		ancestors.insert(
+			Ancestor(type, inheritance, visibility)
+		);
+	}
+
+	return ancestors;
+}
+
+PrototypeConstraints Parser::collectPrototypeConstraints(TokenIterator& token)
+{
+	PrototypeConstraints constraints;
+	
+	if ( token->type() != Token::Type::COMPARE_LESS ) {
+		// no '<' token, no constraints
+		return constraints;
+	}
+
+	token++;
+
+	std::string constraint;
+	std::string type;
+
+	while ( token->type() != Token::Type::COMPARE_GREATER ) {
+		type = token->content();
+		token++;
+
+		if ( token->type() == Token::Type::COLON ) {	// constraint
+			token++;
+
+			if ( token->type() == Token::Type::IDENTIFER ) {
+				type = token->content();
+
+			}
+			else if ( token->type() == Token::Type::TYPE ) {
+				type = token->content();
+			}
+			else {
+				throw Common::Exceptions::SyntaxError("unexpected token '" + token->content() + "' found", token->position());
+			}
+
+			token++;
+		}
+
+		constraints.push_back(
+			PrototypeConstraint(type, constraint)
+		);
+
+		// cleanup for next iteration
+		constraint = "";
+		type = "";
+
+		if ( lookahead(token)->type() == Token::Type::COMMA ) {
+			token++;
+		}
+	}
+
+	token++;
+
+	return constraints;
+}
 
 TokenList Parser::collectScopeTokens(TokenIterator& token)
 {
@@ -138,43 +256,43 @@ bool Parser::isLocalDeclaration(TokenIterator start)
 // <visibility> [language feature] <identifier> <identifier> = || ;
 bool Parser::isMemberDeclaration(TokenIterator token)
 {
-	if ( (token)->type() == Token::Type::VISIBILITY ) {
+	if ( token->type() == Token::Type::VISIBILITY ) {
 		// visibility token is okay
 		token++;
 	}
 
-	if ( (token)->isOptional() ) {
+	if ( token->isOptional() ) {
 		// language feature is okay
 		token++;
 	}
 
-	while ( (token)->type() == Token::Type::IDENTIFER ) {
+	while ( token->type() == Token::Type::IDENTIFER ) {
 		// identifier token is okay
 		token++;
 
-		if ( (token)->type() == Token::Type::SCOPE ) {
+		if ( token->type() == Token::Type::SCOPE ) {
 			// scope token is okay
 			token++;
 			continue;
 		}
 	}
 
-	if ( (token)->type() == Token::Type::TYPE ) {
+	if ( token->type() == Token::Type::TYPE ) {
 		// type is okay
 		token++;
 	}
 
-	if ( (token)->type() == Token::Type::IDENTIFER ) {
+	if ( token->type() == Token::Type::IDENTIFER ) {
 		// name is okay
 		token++;
 	}
 
-	if ( (token)->isOptional() ) {
+	if ( token->isOptional() ) {
 		// modifier is okay
 		token++;
 	}
 
-	if ( (token)->type() != Token::Type::ASSIGN && (token)->type() != Token::Type::SEMICOLON ) {
+	if ( token->type() != Token::Type::ASSIGN && token->type() != Token::Type::SEMICOLON ) {
 		// no assignment and no semicolon
 		return false;
 	}
@@ -187,36 +305,41 @@ bool Parser::isMemberDeclaration(TokenIterator token)
 // <visibility> <identifier> <identifier> (
 bool Parser::isMethodDeclaration(TokenIterator token)
 {
-	if ( (token)->type() == Token::Type::VISIBILITY ) {
+	if ( token->type() == Token::Type::VISIBILITY ) {
 		// visibility token is okay
 		token++;
 	}
 
-	if ( (token)->isOptional() ) {
+	if ( token->isOptional() ) {
 		// language feature is okay
 		token++;
 	}
 
-	while ( (token)->type() == Token::Type::IDENTIFER ) {
+	while ( token->type() == Token::Type::IDENTIFER ) {
 		token++;
 
-		if ( (token)->type() == Token::Type::SCOPE ) {
+		if ( token->type() == Token::Type::SCOPE ) {
 			token++;
 			continue;
 		}
 	}
 
-	if ( (token)->type() == Token::Type::TYPE ) {
+	if ( token->type() == Token::Type::TYPE ) {
 		// type is okay
 		token++;
 	}
 
-	if ( (token)->type() == Token::Type::IDENTIFER ) {
+	if ( token->category() == Token::Category::Modifier ) {
+		// modifier is okay
+		token++;
+	}
+
+	if ( token->type() == Token::Type::IDENTIFER ) {
 		// name is okay
 		token++;
 	}
 
-	if ( (token)->type() != Token::Type::PARENTHESIS_OPEN ) {
+	if ( token->type() != Token::Type::PARENTHESIS_OPEN ) {
 		// no open parenthesis
 		return false;
 	}
@@ -275,21 +398,6 @@ bool Parser::isPrototypeDeclaration(TokenIterator start)
 	return checkSyntax(start, tokens);
 }
 
-// syntax:
-// <visibility> <type> <type> (
-// used to detect con- or destructor declarations
-bool Parser::isStructorDeclaration(TokenIterator start)
-{
-	TokenList tokens;
-
-	tokens.push_back(Token(Token::Type::VISIBILITY));
-	tokens.push_back(Token(Token::Type::TYPE));
-	tokens.push_back(Token(Token::Type::TYPE));
-	tokens.push_back(Token(Token::Type::PARENTHESIS_OPEN));
-
-	return checkSyntax(start, tokens);
-}
-
 ImplementationType::E Parser::parseImplementationType(TokenIterator& token, ImplementationType::E defaultValue)
 {
 	ImplementationType::E result = defaultValue;
@@ -325,8 +433,10 @@ ObjectType::E Parser::parseObjectType(TokenIterator& token)
 	return ObjectType::convert((*token++).content());
 }
 
-ParameterList Parser::parseParameters(TokenIterator &token)
+ParameterList Parser::parseParameters(TokenIterator &token, IScope* scope)
 {
+(void)scope;	// scope would allow a namespace resolution
+
 	ParameterList params;
 
 	std::string type;
@@ -352,7 +462,7 @@ ParameterList Parser::parseParameters(TokenIterator &token)
 		Runtime::AtomicValue value;
 
 		if ( token->type() == Token::Type::IDENTIFER ) {
-			// already set type
+			// type has already been set
 			// set default access mode for complex types
 			accessmode = Parameter::AccessMode::ByReference;
 		}
@@ -372,13 +482,18 @@ ParameterList Parser::parseParameters(TokenIterator &token)
 		std::string name = token->content();
 		token++;
 
-		if ( token->content() == MODIFIER_CONST ) {
-			isConst = true;
-			token++;
-		}
-		else if ( token->content() == MODIFIER_MODIFY ) {
-			isConst = false;
-			token++;
+		if ( token->category() == Token::Category::Modifier ) {
+			if ( token->content() == MODIFIER_CONST ) {
+				isConst = true;
+				token++;
+			}
+			else if ( token->content() == MODIFIER_MODIFY ) {
+				isConst = false;
+				token++;
+			}
+			else {
+				throw Common::Exceptions::SyntaxError("unexpected modifier '" + token->content() + "' found", token->position());
+			}
 		}
 
 		if ( token->content() == RESERVED_WORD_BY_REFERENCE ) {
@@ -427,4 +542,5 @@ ParameterList Parser::parseParameters(TokenIterator &token)
 }
 
 
+}
 }
