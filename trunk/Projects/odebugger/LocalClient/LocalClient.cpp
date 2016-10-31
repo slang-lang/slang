@@ -16,6 +16,7 @@
 #include <Core/BuildInObjects/NumberObject.h>
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Designtime/Parser/Tokenizer.h>
+#include <Core/Interpreter.h>
 #include <Core/Method.h>
 #include <Core/Script.h>
 #include <Core/Tools.h>
@@ -329,7 +330,7 @@ void LocalClient::executeMethod(const StringList &tokens)
 
 	MethodSymbol* symbol = getMethod(name, params);
 	if ( !symbol ) {
-		writeln("could not resolve symbol '" + name + "'!");
+		writeln("could not resolve symbol '" + name + "' with parameters (" + toString(params) + ")!");
 		return;
 	}
 
@@ -341,9 +342,11 @@ void LocalClient::executeMethod(const StringList &tokens)
 	Runtime::Method* method = static_cast<Runtime::Method*>(symbol);
 	try {
 		Runtime::Object result;
-		method->execute(params, &result, Token());
 
-		writeln(result.ToString());
+		Runtime::Interpreter interpreter;
+		interpreter.execute(method, params, &result);
+
+		writeln("returned " + result.ToString());
 	}
 	catch ( std::exception &e ) {
 		writeln(e.what());
@@ -712,6 +715,10 @@ void LocalClient::printHelp()
 
 void LocalClient::printStackTrace()
 {
+	if ( !mVirtualMachine ) {
+		return;
+	}
+
 	Controller::Instance().stack()->print();
 }
 

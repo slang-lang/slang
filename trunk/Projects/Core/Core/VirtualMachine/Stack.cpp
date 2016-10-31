@@ -71,6 +71,10 @@ void Stack::pop()
 
 void Stack::print()
 {
+	if ( mStack.empty() ) {
+		return;
+	}
+
 	StackTrace::const_iterator it = mStack.begin();
 	it++;	// skip frame 0 (global scope)
 

@@ -74,7 +74,7 @@ std::string SymbolScope::getFullScopeName() const
 		}
 	}
 
-	return scope + getScopeName();
+	return scope + mScopeName;
 }
 
 const std::string& SymbolScope::getScopeName() const

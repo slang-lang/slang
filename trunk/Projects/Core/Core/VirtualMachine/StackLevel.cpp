@@ -79,11 +79,22 @@ std::string StackLevel::toString() const
 
 	SymbolScope* scope = dynamic_cast<SymbolScope*>(mScope);
 
-	if ( scope && scope->getScopeType() == IScope::IType::NamedScope ) {
-		result += ": " + scope->getFullScopeName();
+	if ( scope ) {
+		result += ": ";
 
-		if ( dynamic_cast<Runtime::Method*>(scope) ) {
-			result += dynamic_cast<Runtime::Method*>(scope)->ToString();
+		switch ( scope->getScopeType() ) {
+			case IScope::IType::MethodScope:
+				result += dynamic_cast<Runtime::Method*>(scope)->ToString();
+				break;
+			case IScope::IType::NamedScope:
+				result += scope->getScopeName();
+				break;
+			case IScope::IType::SymbolScope:
+				result += scope->getScopeName();
+				break;
+			case IScope::IType::UnknownScope:
+				result += "unknown scope";
+				break; 
 		}
 	}
 
