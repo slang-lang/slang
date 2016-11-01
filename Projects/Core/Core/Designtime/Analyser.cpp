@@ -501,7 +501,6 @@ bool Analyser::createMethod(TokenIterator& token, TokenIterator /*end*/)
 	method->setMethodType(methodType);
 	method->setMutability(mutability);
 	method->setParent(mScope);
-	method->setQualifiedTypename(type);
 	method->setRecursive(isRecursive);
 	method->setSignature(params);
 	method->setStatic(isStatic);

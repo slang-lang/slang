@@ -25,8 +25,7 @@ Method::Method(IScope* parent, const std::string& name, const std::string& type)
 : NamedScope(name, parent),
   MethodSymbol(name),
   mIsExtensionMethod(false),
-  mQualifiedTypename(type),
-  mTypeName(type)
+  mQualifiedTypename(type)
 {
 }
 
@@ -106,7 +105,6 @@ void Method::operator= (const Method& other)
 		mSignature = other.mSignature;
 		mThrows = other.mThrows;
 		mTokens = other.mTokens;
-		mTypeName = other.mTypeName;
 		mVisibility = other.mVisibility;
 	}
 }

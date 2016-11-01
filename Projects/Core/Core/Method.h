@@ -47,10 +47,11 @@ public: // overloaded operators
 
 public:	// Symbol::IType implementation
 	const std::string& QualifiedTypename() const { return mQualifiedTypename; }
-	const std::string& Typename() const { return mTypeName; }
-	std::string ToString(unsigned int indent = 0) const;
+	const std::string& Typename() const { return mQualifiedTypename; }
 
 	void setQualifiedTypename(const std::string& type) { mQualifiedTypename = type; }
+
+	std::string ToString(unsigned int indent = 0) const;
 
 public: // Execution
 	virtual ControlFlow::E execute(const ParameterList& params, Object* result, const Token& token);
@@ -83,7 +84,6 @@ private:
 	std::string mQualifiedTypename;
 	ParameterList mSignature;
 	TokenList mTokens;
-	std::string mTypeName;
 };
 
 

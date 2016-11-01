@@ -52,6 +52,9 @@ public:
 private:
 	std::string buildConstraintTypename(const std::string& name, const Designtime::PrototypeConstraints& constraints) const;
 
+	Designtime::BluePrintObject* createBluePrintFromPrototype(Designtime::BluePrintObject* blueprint, const Designtime::PrototypeConstraints& constraints);
+	std::string lookupType(const std::string& type, const Designtime::PrototypeConstraints& blueprintConstraints, const Designtime::PrototypeConstraints& implConstraints) const;
+
 	Runtime::Object* createObject(const std::string& name, Designtime::BluePrintObject* blueprint, bool initialize);
 	Runtime::Object* createUserObject(const std::string& name, Designtime::BluePrintObject* blueprint, bool initialize);
 
@@ -60,7 +63,7 @@ private:
 	Designtime::BluePrintObject* findBluePrintObject(const std::string& type) const;
 
 	void initialize();
-	void initializeObject(Runtime::Object *object, Designtime::BluePrintObject* blueprint);
+	void initializeObject(Runtime::Object* object, Designtime::BluePrintObject* blueprint);
 
 private:
 	typedef std::map<std::string, Designtime::BluePrintEnum*> BluePrintEnumMap;
