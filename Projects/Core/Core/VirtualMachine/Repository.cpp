@@ -218,8 +218,18 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 			type = lookupType(paramIt->type(), protoConstraints, constraints);
 			
 			if ( paramIt->type() != type ) {
+				Parameter::AccessMode::E access = Parameter::AccessMode::ByValue;
+
+/*
+				Designtime::BluePrintObject* tmpObj = findBluePrintObject(type);
+				if ( tmpObj && !tmpObj->isAtomicType() ) {
+					access = Parameter::AccessMode::ByReference;
+				}
+*/
+
+				(*paramIt) = Parameter(paramIt->name(), type, paramIt->value(), paramIt->hasDefaultValue(), paramIt->isConst(), access, paramIt->reference());
+
 				signatureChanged = true;
-				(*paramIt) = Parameter(paramIt->name(), type, paramIt->value(), paramIt->hasDefaultValue(), paramIt->isConst(), paramIt->access(), paramIt->reference());
 			}
 		}
 

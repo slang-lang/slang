@@ -10,7 +10,6 @@ public prototype Prototype<T> {
 	}
 
 	public T getValue() const {
-		print("mValue = " + mValue);
 		return mValue;
 	}
 }
@@ -23,7 +22,7 @@ private bool TestCase1() {
 	print("TestCase 1: basic prototype");
 
 	Prototype<int> proto = new Prototype<int>(173);
-	print(string proto.getValue());
+	print("proto.getValue() = " + proto.getValue());
 
 	assert( proto.getValue() == 173 );
 	return proto.getValue() == 173;
