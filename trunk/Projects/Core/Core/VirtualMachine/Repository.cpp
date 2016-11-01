@@ -135,6 +135,113 @@ void Repository::cleanupForwardDeclarations()
 	mForwardDeclarations.clear();
 }
 
+Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime::BluePrintObject* blueprint, const Designtime::PrototypeConstraints& constraints)
+{
+	assert(blueprint);
+
+	std::string constraintType = buildConstraintTypename(blueprint->QualifiedTypename(), constraints);
+
+	Designtime::PrototypeConstraints protoConstraints = blueprint->getPrototypeConstraints();
+
+	if ( protoConstraints != constraints ) {
+		throw Common::Exceptions::TypeMismatch("'" + blueprint->QualifiedTypename() + "' constraint missmatch");
+	}
+
+	Designtime::BluePrintObject* newBlue = new Designtime::BluePrintObject(constraintType, blueprint->Filename());
+	newBlue->setConst(blueprint->isConst());
+	newBlue->setFinal(blueprint->isFinal());
+	newBlue->setImplementationType(blueprint->getImplementationType());
+	newBlue->setLanguageFeatureState(blueprint->getLanguageFeatureState());
+	newBlue->setMember(blueprint->isMember());
+	newBlue->setMutability(blueprint->getMutability());
+	newBlue->setParent(blueprint->getEnclosingScope());
+	//newBlue->setPrototypeConstraints(blueprint->getPrototypeConstraints());
+	newBlue->setQualifiedTypename(constraintType);
+	newBlue->setSealed(blueprint->isSealed());
+	newBlue->setTokens(blueprint->getTokens());
+	newBlue->setValue(blueprint->getValue());
+	newBlue->setVisibility(blueprint->getVisibility());
+
+	// inheritance
+	Designtime::Ancestors ancestors = blueprint->getAncestors();
+	for ( Designtime::Ancestors::const_iterator it = ancestors.begin(); it != ancestors.end(); ++it ) {
+		newBlue->addInheritance((*it));
+	}
+
+	// symbols
+	Symbols symbols = blueprint->provideSymbols();
+	for ( Symbols::const_iterator symIt = symbols.begin(); symIt != symbols.end(); ++symIt ) {
+		if ( symIt->second->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
+			continue;
+		}
+
+		Designtime::BluePrintObject* blue = static_cast<Designtime::BluePrintObject*>(symIt->second);
+
+		std::string name = blue->getName();
+
+		std::string type = lookupType(blue->QualifiedTypename(), protoConstraints, constraints);
+		if ( type != blue->QualifiedTypename() ) {
+			blue = findBluePrintObject(type);
+		}
+
+		Runtime::Object *symbol = createInstance(blue, name, Designtime::PrototypeConstraints(), false);
+		symbol->setFinal(blue->isFinal());
+		symbol->setLanguageFeatureState(blue->getLanguageFeatureState());
+		symbol->setMember(blue->isMember());
+		symbol->setMutability(blue->getMutability());
+		symbol->setParent(newBlue);
+		symbol->setQualifiedTypename(blue->QualifiedTypename());
+		symbol->setValue(blue->getValue());
+		symbol->setVisibility(blue->getVisibility());
+
+		newBlue->define(name, symbol);
+	}
+
+	// methods
+	MethodScope::MethodCollection methods = blueprint->provideMethods();
+	for ( MethodScope::MethodCollection::const_iterator methIt = methods.begin(); methIt != methods.end(); ++methIt ) {
+		Runtime::Method* method = new Runtime::Method(newBlue, (*methIt)->getName(), (*methIt)->Typename());
+		*method = *(*methIt);
+
+		std::string type;
+
+		type = lookupType(method->QualifiedTypename(), protoConstraints, constraints);
+
+		// update return value type
+		method->setQualifiedTypename(type);
+
+		// update method signature
+		bool hasChanged = false;
+
+		ParameterList params = method->provideSignature();
+		for ( ParameterList::iterator paramIt = params.begin(); paramIt != params.end(); ++paramIt ) {
+			type = lookupType(paramIt->type(), protoConstraints, constraints);
+			
+			if ( paramIt->type() != type ) {
+				hasChanged = true;
+				(*paramIt) = Parameter(paramIt->name(), type, paramIt->value(), paramIt->hasDefaultValue(), paramIt->isConst(), paramIt->access(), paramIt->reference());
+			}
+		}
+
+		if ( hasChanged ) {
+			method->setSignature(params);
+		}
+
+		newBlue->defineMethod((*methIt)->getName(), method);
+	}
+
+	// add to repository
+	addBluePrint(newBlue);
+
+	// add to parent scope
+	IScope* parent = blueprint->getEnclosingScope();
+	if ( parent ) {
+		parent->define(newBlue->QualifiedTypename(), newBlue);
+	}
+
+	return newBlue;
+}
+
 /*
  * Creates an instance of the given blueprint
  */
@@ -163,12 +270,11 @@ Runtime::Object* Repository::createInstance(Designtime::BluePrintObject* bluepri
 		// we have to handle a prototyped blueprint
 		BluePrintObjectMap::iterator it = mBluePrintObjects.find(constraintType);
 		if ( it == mBluePrintObjects.end() ) {
-			// a not yet used prototype has been requested
-			Designtime::BluePrintObject* prototype = 0;
-
-			// TODO: construct the new type
-
-			blueprint = prototype;
+			// a not yet used prototype has been requested => construct the new type
+			blueprint = createBluePrintFromPrototype(blueprint, constraints);
+		}
+		else {
+			blueprint = it->second;
 		}
 	}
 
@@ -244,10 +350,22 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
  */
 Runtime::Object* Repository::createReference(Designtime::BluePrintObject* blueprint, const std::string& name, const Designtime::PrototypeConstraints& constraints, bool initialize)
 {
-(void)constraints;
-
 	if ( !blueprint ) {
 		throw Common::Exceptions::Exception("invalid blueprint provided!");
+	}
+
+	std::string constraintType = buildConstraintTypename(blueprint->QualifiedTypename(), constraints);
+
+	if ( blueprint->QualifiedTypename() != constraintType ) {
+		// we have to handle a prototyped blueprint
+		BluePrintObjectMap::iterator it = mBluePrintObjects.find(constraintType);
+		if ( it == mBluePrintObjects.end() ) {
+			// a not yet used prototype has been requested => construct the new type
+			blueprint = createBluePrintFromPrototype(blueprint, constraints);
+		}
+		else {
+			blueprint = it->second;
+		}
 	}
 
 	Runtime::Object* object = createObject(name, blueprint, initialize);
@@ -449,7 +567,7 @@ void Repository::initialize()
 /*
  * creates and defines all members and methods of an object
  */
-void Repository::initializeObject(Runtime::Object *object, Designtime::BluePrintObject* blueprint)
+void Repository::initializeObject(Runtime::Object* object, Designtime::BluePrintObject* blueprint)
 {
 	object->undefine(IDENTIFIER_THIS, object->resolve(IDENTIFIER_THIS, true));
 
@@ -492,6 +610,21 @@ void Repository::initializeObject(Runtime::Object *object, Designtime::BluePrint
 	}
 
 	object->define(IDENTIFIER_THIS, object);	// define this-symbol
+}
+
+std::string Repository::lookupType(const std::string& type, const Designtime::PrototypeConstraints& blueprintConstraints, const Designtime::PrototypeConstraints& implConstraints) const
+{
+	for ( Designtime::PrototypeConstraints::const_iterator blueConIt = blueprintConstraints.begin(); blueConIt != blueprintConstraints.end(); ++blueConIt ) {
+		if ( type == blueConIt->mType ) {
+			for ( Designtime::PrototypeConstraints::const_iterator conIt = implConstraints.begin(); conIt != implConstraints.end(); ++conIt ) {
+				if ( blueConIt->mIndex == conIt->mIndex ) {
+					return conIt->mType;
+				}
+			}
+		}
+	}
+
+	return type;
 }
 
 

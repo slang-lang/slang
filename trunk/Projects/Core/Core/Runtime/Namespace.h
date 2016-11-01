@@ -29,7 +29,6 @@ public:
 public:	// Symbol::IType implementation & RTTI
 	const std::string& Filename() const { return mFilename; }
 	const std::string& Typename() const { return mTypename; }
-
 	const std::string& QualifiedTypename() const { return mQualifiedTypename; }
 
 public:
