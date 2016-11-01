@@ -35,11 +35,12 @@ public:
 	static Ancestors collectInheritance(TokenIterator& token);
 	static PrototypeConstraints collectPrototypeConstraints(TokenIterator& token);
 
-	static std::string identify(TokenIterator& start);
+	static std::string identify(TokenIterator& token);
 
 	static ImplementationType::E parseImplementationType(TokenIterator& token, ImplementationType::E defaultValue);
 	static LanguageFeatureState::E parseLanguageFeatureState(TokenIterator& token, LanguageFeatureState::E defaultValue);
 	static ObjectType::E parseObjectType(TokenIterator& token);
+	static Runtime::AtomicValue parseValueInitialization(TokenIterator& token);
 
 	static bool isEnumDeclaration(TokenIterator start);
 	static bool isInterfaceDeclaration(TokenIterator start);

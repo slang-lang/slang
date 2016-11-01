@@ -5,10 +5,10 @@
 // Library includes
 
 // Project includes
+#include <Core/Common/Exceptions.h>
 #include <Core/Consts.h>
 #include <Core/Interfaces/IScope.h>
 #include <Core/Tools.h>
-#include <Core/Common/Exceptions.h>
 
 // Namespace declarations
 
@@ -165,7 +165,7 @@ PrototypeConstraints Parser::collectPrototypeConstraints(TokenIterator& token)
 
 TokenList Parser::collectScopeTokens(TokenIterator& token)
 {
-	if ( (*token).type() != Token::Type::BRACKET_CURLY_OPEN ) {
+	if ( token->type() != Token::Type::BRACKET_CURLY_OPEN ) {
 		throw Common::Exceptions::Exception("collectScopeTokens: invalid start token found");
 	}
 
@@ -173,11 +173,11 @@ TokenList Parser::collectScopeTokens(TokenIterator& token)
 	TokenList tokens;
 
 	// look for the corresponding closing curly bracket
-	while ( (*++token).type() != Token::Type::BRACKET_CURLY_CLOSE || scope > 0 ) {
-		if ( (*token).type() == Token::Type::BRACKET_CURLY_OPEN ) {
+	while ( (++token)->type() != Token::Type::BRACKET_CURLY_CLOSE || scope > 0 ) {
+		if ( token->type() == Token::Type::BRACKET_CURLY_OPEN ) {
 			scope++;
 		}
-		if ( (*token).type() == Token::Type::BRACKET_CURLY_CLOSE ) {
+		if ( token->type() == Token::Type::BRACKET_CURLY_CLOSE ) {
 			scope--;
 		}
 
@@ -187,18 +187,18 @@ TokenList Parser::collectScopeTokens(TokenIterator& token)
 	return tokens;
 }
 
-std::string Parser::identify(TokenIterator& start)
+std::string Parser::identify(TokenIterator& token)
 {
-	std::string type = start->content();
+	std::string type = token->content();
 
-	while ( (start++)->type() == Token::Type::IDENTIFER ) {
-		if ( (start)->type() != Token::Type::SCOPE ) {
+	while ( (token++)->type() == Token::Type::IDENTIFER ) {
+		if ( token->type() != Token::Type::SCOPE ) {
 			break;
 		}
 
 		// add next token to type definition
-		type += (start++)->content();
-		type += (start)->content();
+		type += (token++)->content();
+		type += token->content();
 	}
 
 	return type;
@@ -480,6 +480,8 @@ ParameterList Parser::parseParameters(TokenIterator &token, IScope* scope)
 
 		token++;
 
+		// collect prototype constraints (if present)
+		PrototypeConstraints constraints = Parser::collectPrototypeConstraints(token);
 
 		std::string name = token->content();
 		token++;
@@ -511,15 +513,7 @@ ParameterList Parser::parseParameters(TokenIterator &token, IScope* scope)
 			hasDefaultValue = true;
 			token++;
 
-			switch ( token->type() ) {
-				case Token::Type::CONST_BOOLEAN: value = Tools::stringToBool(token->content()); break;
-				case Token::Type::CONST_DOUBLE: value = Tools::stringToDouble(token->content()); break;
-				case Token::Type::CONST_FLOAT: value = Tools::stringToFloat(token->content()); break;
-				case Token::Type::CONST_INTEGER: value = Tools::stringToInt(token->content()); break;
-				case Token::Type::CONST_LITERAL: value = token->content(); break;
-				case Token::Type::CONST_NUMBER: value = Tools::stringToNumber(token->content()); break;
-				default: throw Common::Exceptions::NotSupported("only atomic data types are allowed as default parameters", token->position());
-			}
+			value = parseValueInitialization(token);
 
 			token++;
 		}
@@ -541,6 +535,50 @@ ParameterList Parser::parseParameters(TokenIterator &token, IScope* scope)
 	}
 
 	return params;
+}
+
+Runtime::AtomicValue Parser::parseValueInitialization(TokenIterator& token)
+{
+	Runtime::AtomicValue value;
+	std::string sign;
+
+	if ( token->type() == Token::Type::MATH_SUBTRACT ) {
+		sign += "-";
+		token++;
+	}
+
+	switch ( token->type() ) {
+		case Token::Type::CONST_BOOLEAN:
+			if ( !sign.empty() ) {
+				throw Common::Exceptions::SyntaxError("unexpected token", token->position());
+			}
+
+			value = Tools::stringToBool(token->content());
+			break;
+		case Token::Type::CONST_DOUBLE:
+			value = Tools::stringToDouble(sign + token->content());
+			break;
+		case Token::Type::CONST_FLOAT:
+			value = Tools::stringToFloat(sign + token->content());
+			break;
+		case Token::Type::CONST_INTEGER:
+			value = Tools::stringToInt(sign + token->content());
+			break;
+		case Token::Type::CONST_LITERAL:
+			if ( !sign.empty() ) {
+				throw Common::Exceptions::SyntaxError("unexpected token", token->position());
+			}
+
+			value = token->content();
+			break;
+		case Token::Type::CONST_NUMBER:
+			return Tools::stringToNumber(sign + token->content());
+			break;
+		default:
+			throw Common::Exceptions::NotSupported("only atomic data types are allowed as default parameters", token->position());
+	}
+
+	return value;
 }
 
 
