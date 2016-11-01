@@ -1,3 +1,4 @@
+#!/usr/local/bin/oscript
 
 import System.Collections.AbstractCollection;
 import System.Collections.IIterateable;
@@ -45,7 +46,7 @@ public object StringStackIterator {
     }
 }
 
-public object LinkedStackOfStrings implements System.IIterateable {
+public prototype LinkedStackOfStrings<T> {
     private int n;          // size of the stack
     private Node first;     // top of stack
 
@@ -60,16 +61,16 @@ public object LinkedStackOfStrings implements System.IIterateable {
     }
 
     // peek at last element
-    public String peek() {
+    public T peek() {
         if ( isEmpty() ) {
             throw new RuntimeException("Stack underflow");
         }
 
-        return first.item;
+        return T first.item;
     }
 
     // add an element to the stack
-    public void push(String item ref) {
+    public void push(T item ref) {
         Node oldfirst = first;
         first = new Node();
         first.item = item;
@@ -78,18 +79,35 @@ public object LinkedStackOfStrings implements System.IIterateable {
     }
 
     // delete and return the most recently added element
-    public String pop() {
+    public T pop() {
         if ( isEmpty() ) {
             throw new RuntimeException("Stack underflow");
         }
 
-        String item = first.item;      // save item to return
+        T item = first.item;      // save item to return
         first = first.next;            // delete first node
         n--;
         return item;                   // return the saved item
     }
-
-    public StringStackIterator getIterator() const {
-        return new StringStackIterator(first);
-    }
 }
+
+public void Main(int argc, string args) {
+	assert( TestCase1() );
+}
+
+private bool TestCase1() {
+	print("TestCase 1");
+
+	LinkedStackOfStrings<String> stack = new LinkedStackOfStrings<String>();
+
+	print("push");
+
+	stack.push(new String("664"));
+	stack.push(new String("173"));
+	stack.push(new String("1389"));
+
+	assert( stack.size() == 3 );
+
+	return true;
+}
+

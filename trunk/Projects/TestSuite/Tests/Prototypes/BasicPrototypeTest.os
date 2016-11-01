@@ -12,6 +12,12 @@ public prototype Prototype<T> {
 	public T getValue() const {
 		return mValue;
 	}
+
+	public void doIt() {
+		T value = mValue;
+
+		print("value = " + value);
+	}
 }
 
 public void Main(int argc = 0, string args = "") {
@@ -23,6 +29,8 @@ private bool TestCase1() {
 
 	Prototype<int> proto = new Prototype<int>(173);
 	print("proto.getValue() = " + proto.getValue());
+
+	proto.doIt();
 
 	assert( proto.getValue() == 173 );
 	return proto.getValue() == 173;

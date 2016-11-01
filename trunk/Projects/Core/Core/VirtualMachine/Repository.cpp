@@ -197,6 +197,8 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 		newBlue->define(name, member);
 	}
 
+	StringList atomicTypes = provideAtomicTypes();
+
 	// methods
 	MethodScope::MethodCollection methods = blueprint->provideMethods();
 	for ( MethodScope::MethodCollection::const_iterator methIt = methods.begin(); methIt != methods.end(); ++methIt ) {
@@ -220,12 +222,9 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 			if ( paramIt->type() != type ) {
 				Parameter::AccessMode::E access = Parameter::AccessMode::ByValue;
 
-/*
-				Designtime::BluePrintObject* tmpObj = findBluePrintObject(type);
-				if ( tmpObj && !tmpObj->isAtomicType() ) {
+				if ( std::find(atomicTypes.begin(), atomicTypes.end(), type) == atomicTypes.end() ) {
 					access = Parameter::AccessMode::ByReference;
 				}
-*/
 
 				(*paramIt) = Parameter(paramIt->name(), type, paramIt->value(), paramIt->hasDefaultValue(), paramIt->isConst(), access, paramIt->reference());
 
@@ -238,13 +237,19 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 		}
 
 		// update method tokens
-		bool tokensChanged = false;
-
 		TokenList tokens = method->getTokens();
 
-		if ( tokensChanged ) {
-			method->setTokens(tokens);
+		for ( TokenList::iterator tokIt = tokens.begin(); tokIt != tokens.end(); ++tokIt ) {
+			if ( tokIt->type() == Token::Type::IDENTIFER ) {
+				std::string type = lookupType(tokIt->content(), protoConstraints, constraints);
+
+				if ( type != tokIt->content() ) {
+					tokIt->resetContentTo(type);
+				}
+			}
 		}
+
+		method->setTokens(tokens);
 
 		newBlue->defineMethod((*methIt)->getName(), method);
 	}
