@@ -211,20 +211,29 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 		method->setQualifiedTypename(type);
 
 		// update method signature
-		bool hasChanged = false;
+		bool signatureChanged = false;
 
 		ParameterList params = method->provideSignature();
 		for ( ParameterList::iterator paramIt = params.begin(); paramIt != params.end(); ++paramIt ) {
 			type = lookupType(paramIt->type(), protoConstraints, constraints);
 			
 			if ( paramIt->type() != type ) {
-				hasChanged = true;
+				signatureChanged = true;
 				(*paramIt) = Parameter(paramIt->name(), type, paramIt->value(), paramIt->hasDefaultValue(), paramIt->isConst(), paramIt->access(), paramIt->reference());
 			}
 		}
 
-		if ( hasChanged ) {
+		if ( signatureChanged ) {
 			method->setSignature(params);
+		}
+
+		// update method tokens
+		bool tokensChanged = false;
+
+		TokenList tokens = method->getTokens();
+
+		if ( tokensChanged ) {
+			method->setTokens(tokens);
 		}
 
 		newBlue->defineMethod((*methIt)->getName(), method);

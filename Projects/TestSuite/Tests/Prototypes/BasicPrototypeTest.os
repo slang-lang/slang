@@ -4,10 +4,13 @@ public prototype Prototype<T> {
 	private T mValue;
 
 	public void Constructor(T value) {
+		print("Prototype<T>.Constructor(" + value + ")");
+
 		mValue = value;
 	}
 
 	public T getValue() const {
+		print("mValue = " + mValue);
 		return mValue;
 	}
 }
