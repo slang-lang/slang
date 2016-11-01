@@ -12,6 +12,14 @@ public namespace System {
 			return mSize == 0;
 		}
 
+		public Object peek() const {
+			if ( mSize <= 0 ) {
+				throw new OutOfBoundsException("stack underflow");
+			}
+
+			return mLast.mValue;
+		}
+
 		public void push(Object value ref) modify {
 			CollectionItem item = new CollectionItem(value);
 
@@ -29,7 +37,7 @@ public namespace System {
 
 		public void pop() modify {
 			if ( mSize <= 0 ) {
-				throw new OutOfBoundsException("cannot pop beyond ground level");
+				throw new OutOfBoundsException("stack underflow");
 			}
 
 			if ( mSize == 1 ) {
@@ -42,6 +50,8 @@ public namespace System {
 				}
 
 				item.mNext = null;
+
+				mLast = item;
 			}
 
 			mSize--;

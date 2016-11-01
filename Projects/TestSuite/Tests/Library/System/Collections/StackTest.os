@@ -12,6 +12,7 @@ public void Main(int argc = 0, string args = "") const {
 	assert( TestCase4() );
 	assert( TestCase5() );
 	assert( TestCase6() );
+	assert( TestCase7() );
 }
 
 private bool TestCase1() const {
@@ -226,6 +227,35 @@ private bool TestCase6() const {
 		stack.push(Object new Integer(1));
 		stack.push(Object new Integer(2));
 		stack.push(Object new Integer(3));
+
+		assert( stack.size() == 3 );
+
+		assert( stack.contains(Object new Integer(1)) );
+		assert( stack.contains(Object new Integer(2)) );
+		assert( stack.contains(Object new Integer(3)) );
+
+		return true;
+	}
+
+	return false;
+}
+
+private bool TestCase7() const {
+	print("TestCase 7: peek");
+
+	try {
+		System.Stack stack = new System.Stack();
+		assert( stack is Object );
+		assert( stack is System.AbstractCollection );
+
+		stack.push(Object new Integer(1));
+		assert( stack.peek() == 1 );
+
+		stack.push(Object new Integer(2));
+		assert( stack.peek() == 2 );
+
+		stack.push(Object new Integer(3));
+		assert( stack.peek() == 3 );
 
 		assert( stack.size() == 3 );
 
