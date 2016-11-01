@@ -144,7 +144,7 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 	Designtime::PrototypeConstraints protoConstraints = blueprint->getPrototypeConstraints();
 
 	if ( protoConstraints != constraints ) {
-		throw Common::Exceptions::TypeMismatch("'" + blueprint->QualifiedTypename() + "' constraint missmatch");
+		throw Common::Exceptions::TypeMismatch("'" + blueprint->QualifiedTypename() + "' prototype constraint missmatch");
 	}
 
 	Designtime::BluePrintObject* newBlue = new Designtime::BluePrintObject(constraintType, blueprint->Filename());

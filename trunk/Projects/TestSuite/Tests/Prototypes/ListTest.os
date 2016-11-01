@@ -7,7 +7,7 @@ public void Main(int argc = 0, string argv = "") {
 }
 
 private bool TestCase1() const {
-	List<int> values = new List<int>();
+	System.List<int> values = new System.List<int>();
 
 	print("values.size() = " + values.size());
 
