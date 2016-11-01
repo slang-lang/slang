@@ -70,7 +70,7 @@ const BreakPointCollection& Debugger::getBreakPoints() const
 	return mBreakPoints;
 }
 
-Debugger& Debugger::GetInstance()
+Debugger& Debugger::Instance()
 {
 	static Debugger mDebugger;
 
