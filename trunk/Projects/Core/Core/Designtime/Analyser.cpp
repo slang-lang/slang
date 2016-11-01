@@ -342,15 +342,7 @@ bool Analyser::createMember(TokenIterator& token, TokenIterator /*end*/)
 	if ( token->type() == Token::Type::ASSIGN ) {
 		token++;
 
-		switch ( token->type() ) {
-			case Token::Type::CONST_BOOLEAN: value = Tools::stringToBool(token->content()); break;
-			case Token::Type::CONST_DOUBLE: value = Tools::stringToDouble(token->content()); break;
-			case Token::Type::CONST_FLOAT: value = Tools::stringToFloat(token->content()); break;
-			case Token::Type::CONST_INTEGER: value = Tools::stringToInt(token->content()); break;
-			case Token::Type::CONST_LITERAL: value = token->content(); break;
-			case Token::Type::CONST_NUMBER: value = Tools::stringToNumber(token->content()); break;
-			default: throw Common::Exceptions::NotSupported("initialization is only allowed for atomic data types", token->position());
-		}
+		value = Parser::parseValueInitialization(token);
 
 		token++;
 	}
