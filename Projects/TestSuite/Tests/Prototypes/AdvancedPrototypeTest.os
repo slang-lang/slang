@@ -55,7 +55,7 @@ public bool TestCase1() {
 	print("proto.getValue() = " + proto.getValue());
 
 	print("AnotherPrototype<int, string>");
-	AnotherPrototype<int, string> another = new AnotherPrototype<Integer, String>(new Integer(173), new String("1389"));
+	AnotherPrototype<int, string> another = new AnotherPrototype<int, string>(173, "1389");
 	print("another.getKey() = " + another.getKey());
 	print("another.getValue() = " + another.getValue());
 
