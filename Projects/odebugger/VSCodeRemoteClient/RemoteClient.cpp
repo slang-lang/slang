@@ -30,7 +30,7 @@ RemoteClient::RemoteClient()
   mScope(0),
   mVirtualMachine(0)
 {
-	mDebugger = &Core::Debugger::GetInstance();
+	mDebugger = &Core::Debugger::Instance();
 }
 
 RemoteClient::~RemoteClient()
