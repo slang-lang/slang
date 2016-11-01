@@ -120,6 +120,7 @@ PrototypeConstraints Parser::collectPrototypeConstraints(TokenIterator& token)
 	token++;
 
 	std::string constraint;
+	unsigned int index = 0;
 	std::string type;
 
 	while ( token->type() != Token::Type::COMPARE_GREATER ) {
@@ -144,11 +145,12 @@ PrototypeConstraints Parser::collectPrototypeConstraints(TokenIterator& token)
 		}
 
 		constraints.push_back(
-			PrototypeConstraint(type, constraint)
+			PrototypeConstraint(index, type, constraint)
 		);
 
 		// cleanup for next iteration
 		constraint = "";
+		index++;
 		type = "";
 
 		if ( lookahead(token)->type() == Token::Type::COMMA ) {
