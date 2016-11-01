@@ -184,17 +184,17 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 			blue = findBluePrintObject(type);
 		}
 
-		Runtime::Object *symbol = createInstance(blue, name, Designtime::PrototypeConstraints(), false);
-		symbol->setFinal(blue->isFinal());
-		symbol->setLanguageFeatureState(blue->getLanguageFeatureState());
-		symbol->setMember(blue->isMember());
-		symbol->setMutability(blue->getMutability());
-		symbol->setParent(newBlue);
-		symbol->setQualifiedTypename(blue->QualifiedTypename());
-		symbol->setValue(blue->getValue());
-		symbol->setVisibility(blue->getVisibility());
+		Designtime::BluePrintObject* member = new Designtime::BluePrintObject(blue->QualifiedTypename(), blue->Filename(), name);
+		member->setFinal(blue->isFinal());
+		member->setLanguageFeatureState(blue->getLanguageFeatureState());
+		member->setMember(blue->isMember());
+		member->setMutability(blue->getMutability());
+		member->setParent(newBlue);
+		member->setQualifiedTypename(blue->QualifiedTypename());
+		member->setValue(blue->getValue());
+		member->setVisibility(blue->getVisibility());
 
-		newBlue->define(name, symbol);
+		newBlue->define(name, member);
 	}
 
 	// methods
