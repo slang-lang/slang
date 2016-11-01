@@ -25,12 +25,6 @@
 
 
 namespace ObjectiveScript {
-
-// Forward declarations
-namespace Runtime {
-	class Object;
-}
-
 namespace Designtime {
 
 
