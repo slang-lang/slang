@@ -3,7 +3,7 @@
 import System.Integer;
 import System.String;
 
-public prototype TestPrototype<T> {
+public prototype Prototype<T> {
 	private T mValue;
 
 	public void Constructor() {
@@ -18,12 +18,12 @@ public prototype TestPrototype<T> {
 		return mValue;
 	}
 
-	public void setValue(UNKOWN value) {
+	public void setValue(T value) {
 		mValue = value;
 	}
 }
 
-public prototype AnotherPrototype<K: Object, V: Object> {
+public prototype AnotherPrototype<K, V> {
 	private K mKey;
 	private V mValue;
 
@@ -46,13 +46,19 @@ public void Main(int argc = 0, string argv = "") {
 }
 
 public bool TestCase1() {
-	TestPrototype<int> proto = new TestPrototype<int>(173);
-	print("proto.getValue() = " & proto.getValue());
-	proto.setValue(1389);
-	print("proto.getValue() = " & proto.getValue());
+	print("TestCase 1");
 
+	print("Prototype<int>");
+	Prototype<int> proto = new Prototype<int>(173);
+	print("proto.getValue() = " + proto.getValue());
+	proto.setValue(1389);
+	print("proto.getValue() = " + proto.getValue());
+
+	print("AnotherPrototype<int, string>");
 	AnotherPrototype<int, string> another = new AnotherPrototype<Integer, String>(new Integer(173), new String("1389"));
-	print(string another.getKey());
-	print(string another.getValue());
+	print("another.getKey() = " + another.getKey());
+	print("another.getValue() = " + another.getValue());
+
+	return true;
 }
 
