@@ -40,14 +40,14 @@ void Application::init(int argc, const char* argv[])
 	if ( mSettings.remoteClient() ) {
 		RemoteClient* client = new RemoteClient();
 
-		Core::Debugger::GetInstance().registerReceiver(client);
+		Core::Debugger::Instance().registerReceiver(client);
 
 		mClient = client;
 	}
 	else {
 		LocalClient* client = new LocalClient();
 
-		Core::Debugger::GetInstance().registerReceiver(client);
+		Core::Debugger::Instance().registerReceiver(client);
 
 		mClient = client;
 	}

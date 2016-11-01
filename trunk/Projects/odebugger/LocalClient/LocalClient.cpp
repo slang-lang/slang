@@ -43,7 +43,7 @@ void handleSIGINT(int signal)
 	std::cout << "Caught signal SIGINT " << signal << std::endl;
 
 	// set debugger to break on next command
-	Core::Debugger::GetInstance().stepOver();
+	Core::Debugger::Instance().stepOver();
 }
 
 
@@ -54,7 +54,7 @@ LocalClient::LocalClient()
   mScope(0),
   mVirtualMachine(0)
 {
-	mDebugger = &ObjectiveScript::Core::Debugger::GetInstance();
+	mDebugger = &ObjectiveScript::Core::Debugger::Instance();
 }
 
 LocalClient::~LocalClient()
