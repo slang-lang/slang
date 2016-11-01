@@ -83,7 +83,7 @@ ControlFlow::E Interpreter::execute(Method* method, const ParameterList& params,
 
 		switch ( it->access() ) {
 			case Parameter::AccessMode::ByReference: {
-				object = mRepository->createInstance(it->type(), it->name(), false);
+				object = mRepository->createInstance(it->type(), it->name(), Designtime::PrototypeConstraints(), false);
 
 				if ( it->reference().isValid() ) {
 					object->assign(
@@ -97,7 +97,7 @@ ControlFlow::E Interpreter::execute(Method* method, const ParameterList& params,
 				scope.define(it->name(), object);
 			} break;
 			case Parameter::AccessMode::ByValue: {
-				object = mRepository->createInstance(it->type(), it->name(), false);
+				object = mRepository->createInstance(it->type(), it->name(), Designtime::PrototypeConstraints(), false);
 
 				if ( it->reference().isValid() ) {
 #ifdef ALLOW_BY_VALUE_COPY
@@ -127,7 +127,7 @@ ControlFlow::E Interpreter::execute(Method* method, const ParameterList& params,
 	// record stack trace
 	Controller::Instance().stack()->push(&scope, executedParams);
 	// notify debugger
-	Core::Debugger::GetInstance().notifyEnter(&scope, Core::Debugger::immediateBreakToken);
+	Core::Debugger::Instance().notifyEnter(&scope, Core::Debugger::immediateBreakToken);
 
 	ControlFlow::E controlflow = interpret(getTokens(), result);
 
@@ -182,7 +182,7 @@ ControlFlow::E Interpreter::execute(Method* method, const ParameterList& params,
 	}
 
 	// notify debugger
-	Core::Debugger::GetInstance().notifyExit(getScope(), Core::Debugger::immediateBreakToken);
+	Core::Debugger::Instance().notifyExit(getScope(), Core::Debugger::immediateBreakToken);
 	// unwind stack trace
 	Controller::Instance().stack()->pop();
 
@@ -754,7 +754,7 @@ void Interpreter::process(Object *result, TokenIterator& token, TokenIterator en
 			break;		// control flow has been broken, time to stop processing
 		}
 
-		Core::Debugger::GetInstance().notify(getScope(), (*token));		// notify debugger
+		Core::Debugger::Instance().notify(getScope(), (*token));		// notify debugger
 
 		switch ( token->type() ) {
 			case Token::Type::IDENTIFER:
@@ -1340,7 +1340,7 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 	}
 
 	// create initialized reference of new object
-	*result = *getRepository()->createReference(static_cast<Designtime::BluePrintObject*>(symbol), name, true);
+	*result = *getRepository()->createReference(static_cast<Designtime::BluePrintObject*>(symbol), name, constraints, true);
 
 	// execute new object's constructor
 	mControlFlow = result->Constructor(params);
@@ -1363,7 +1363,7 @@ void Interpreter::process_print(TokenIterator& token)
 		return;
 	}
 
-	::Utils::PrinterDriver::getInstance()->print(text.getValue().toStdString(), token->position().mFile, token->position().mLine);
+	::Utils::PrinterDriver::Instance()->print(text.getValue().toStdString(), token->position().mFile, token->position().mLine);
 
 	expect(Token::Type::PARENTHESIS_CLOSE, token++);
 }
@@ -1571,7 +1571,7 @@ void Interpreter::process_throw(TokenIterator& token, Object* /*result*/)
 		OSwarn(std::string(method->getFullScopeName() + " throws although it is not marked with 'throws'!").c_str());
 	}
 
-	Object* data = getRepository()->createInstance(OBJECT, ANONYMOUS_OBJECT, false);
+	Object* data = getRepository()->createInstance(OBJECT, ANONYMOUS_OBJECT, Designtime::PrototypeConstraints(), false);
 	try {
 		expression(data, token);
 	}
@@ -1586,7 +1586,7 @@ void Interpreter::process_throw(TokenIterator& token, Object* /*result*/)
 	expect(Token::Type::SEMICOLON, token);
 
 	// notify our debugger that an exception has been thrown
-	Core::Debugger::GetInstance().notifyExceptionThrow(getScope(), (*token));
+	Core::Debugger::Instance().notifyExceptionThrow(getScope(), (*token));
 }
 
 /*
@@ -1697,7 +1697,7 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 			}
 
 			// notify our debugger that an exception has been caught
-			Core::Debugger::GetInstance().notifyExceptionCatch(getScope(), (*catchIt));
+			Core::Debugger::Instance().notifyExceptionCatch(getScope(), (*catchIt));
 
 			expect(Token::Type::BRACKET_CURLY_OPEN, catchIt);
 
@@ -1815,7 +1815,7 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol)
 	}
 
 
-	Object* object = getRepository()->createInstance(static_cast<Designtime::BluePrintObject*>(symbol), name, false);
+	Object* object = getRepository()->createInstance(static_cast<Designtime::BluePrintObject*>(symbol), name, constraints, false);
 
 	getScope()->define(name, object);
 

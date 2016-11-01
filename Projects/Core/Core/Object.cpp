@@ -296,14 +296,12 @@ void Object::copy(const Object& other)
 
 			// register new members
 			for ( Symbols::const_iterator it = other.mSymbols.begin(); it != other.mSymbols.end(); ++it ) {
-				if ( /*it->first == IDENTIFIER_BASE ||*/
-						it->first == IDENTIFIER_THIS ||
-						!it->second || it->second->getSymbolType() != Symbol::IType::ObjectSymbol) {
+				if ( it->first == IDENTIFIER_THIS || !it->second || it->second->getSymbolType() != Symbol::IType::ObjectSymbol) {
 					continue;
 				}
 
 				Object* source = static_cast<Object*>(it->second);
-				Object* target = Controller::Instance().repository()->createInstance(source->QualifiedTypename(), source->getName(), false);
+				Object* target = Controller::Instance().repository()->createInstance(source->QualifiedTypename(), source->getName(), Designtime::PrototypeConstraints(), false);
 				target->copy(*source);
 
 				define(target->getName(), target);

@@ -67,7 +67,7 @@ int main(int argc, const char* argv[])
 #endif
 
 	Utils::Common::ILogger *mLogger = new Utils::Common::StdOutLogger();
-	Utils::Printer *mPrinter = Utils::PrinterDriver::getInstance();
+	Utils::Printer *mPrinter = Utils::PrinterDriver::Instance();
 
 	bool executed = false;
 	bool show = false;

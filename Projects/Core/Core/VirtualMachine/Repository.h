@@ -8,6 +8,7 @@
 #include <string>
 
 // Project includes
+#include <Core/Designtime/Prototype.h>
 #include <Core/Object.h>
 #include <Core/Reference.h>
 
@@ -44,11 +45,13 @@ public:
 
 	void cleanupForwardDeclarations();
 
-	Runtime::Object* createInstance(const std::string& type, const std::string& name, bool initialize = false);
-	Runtime::Object* createInstance(Designtime::BluePrintObject* blueprint, const std::string& name, bool initialize = false);
-	Runtime::Object* createReference(Designtime::BluePrintObject* blueprint, const std::string& name, bool initialize = false);
+	Runtime::Object* createInstance(const std::string& type, const std::string& name, const Designtime::PrototypeConstraints& constraints = Designtime::PrototypeConstraints(), bool initialize = false);
+	Runtime::Object* createInstance(Designtime::BluePrintObject* blueprint, const std::string& name, const Designtime::PrototypeConstraints& constraints, bool initialize = false);
+	Runtime::Object* createReference(Designtime::BluePrintObject* blueprint, const std::string& name, const Designtime::PrototypeConstraints& constraints, bool initialize = false);
 
 private:
+	std::string buildConstraintTypename(const std::string& name, const Designtime::PrototypeConstraints& constraints) const;
+
 	Runtime::Object* createObject(const std::string& name, Designtime::BluePrintObject* blueprint, bool initialize);
 	Runtime::Object* createUserObject(const std::string& name, Designtime::BluePrintObject* blueprint, bool initialize);
 

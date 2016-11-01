@@ -31,7 +31,7 @@ public:
 // Singleton
 // {
 public:
-	static Debugger& GetInstance();
+	static Debugger& Instance();
 // }
 
 public:	// IDebugger implementation

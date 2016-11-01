@@ -300,6 +300,7 @@ bool Analyser::createMember(TokenIterator& token, TokenIterator /*end*/)
 {
 	assert( mScope->getScopeType() == IScope::IType::MethodScope );
 
+	PrototypeConstraints constraints;
 	bool isFinal = false;
 	std::string languageFeature;
 	Mutability::E mutability = Mutability::Modify;
@@ -316,6 +317,8 @@ bool Analyser::createMember(TokenIterator& token, TokenIterator /*end*/)
 	}
 	// look for the type token
 	type = Parser::identify(token);
+	// collect prototype constraints (if present)
+	constraints = Parser::collectPrototypeConstraints(token);
 	// look for the identifier token
 	name = (*token++).content();
 
@@ -356,6 +359,7 @@ bool Analyser::createMember(TokenIterator& token, TokenIterator /*end*/)
 		blue->setMember(true);
 		blue->setMutability(mutability);
 		blue->setParent(mScope);
+		blue->setPrototypeConstraints(constraints);
 		blue->setQualifiedTypename(type);
 		blue->setValue(value);
 		blue->setVisibility(visibility);
@@ -363,7 +367,7 @@ bool Analyser::createMember(TokenIterator& token, TokenIterator /*end*/)
 		mScope->define(name, blue);
 	}
 	else {
-		Runtime::Object *member = mRepository->createInstance(type, name, false);
+		Runtime::Object *member = mRepository->createInstance(type, name, constraints, false);
 		member->setFinal(isFinal);
 		member->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
 		member->setMember(true);
