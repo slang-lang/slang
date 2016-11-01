@@ -21,13 +21,20 @@ namespace Designtime {
 class PrototypeConstraint
 {
 public:
-	PrototypeConstraint(const std::string& type, const std::string& constraint)
+	PrototypeConstraint(unsigned int index, const std::string& type, const std::string& constraint)
 	: mConstraint(constraint),
+	  mIndex(index),
 	  mType(type)
 	{ }
 
 public:
+	bool operator==(const PrototypeConstraint& other) const {
+		return mConstraint == other.mConstraint && mIndex == other.mIndex && mType == mType;
+	}
+
+public:
 	std::string mConstraint;
+	unsigned int mIndex;
 	std::string mType;
 };
 
