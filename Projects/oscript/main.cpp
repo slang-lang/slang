@@ -104,13 +104,13 @@ void processParameters(int argc, const char* argv[])
 			else if ( Utils::Tools::StringCompare(argv[i], "-q") || Utils::Tools::StringCompare(argv[i], "--quiet") ) {
 				mLogger.setLoudness(Utils::Common::ILogger::LoudnessMute);
 
-				Utils::PrinterDriver::getInstance()->ActivatePrinter = false;
+				Utils::PrinterDriver::Instance()->ActivatePrinter = false;
 			}
 			else if ( Utils::Tools::StringCompare(argv[i], "-v") || Utils::Tools::StringCompare(argv[i], "--verbose") ) {
 				mLogger.setLoudness(Utils::Common::ILogger::LoudnessInfo);
 
-				Utils::PrinterDriver::getInstance()->ActivatePrinter = true;
-				Utils::PrinterDriver::getInstance()->PrintFileAndLine = true;
+				Utils::PrinterDriver::Instance()->ActivatePrinter = true;
+				Utils::PrinterDriver::Instance()->PrintFileAndLine = true;
 			}
 			else if ( Utils::Tools::StringCompare(argv[i], "--version") ) {
 				printVersion();
