@@ -31,7 +31,7 @@ std::string toString(const ReferencesList& list);
 std::string toString(const StringList& list);
 std::string toString(const TokenList& list);
 
-StringList provideAtomicTypes();
+StringSet provideAtomicTypes();
 StringList provideLanguageFeatures();
 StringList provideKeyWords();
 StringList provideModifiers();

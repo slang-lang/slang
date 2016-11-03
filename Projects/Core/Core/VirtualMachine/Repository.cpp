@@ -197,7 +197,7 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 		newBlue->define(name, member);
 	}
 
-	StringList atomicTypes = provideAtomicTypes();
+	StringSet atomicTypes = provideAtomicTypes();
 
 	// methods
 	MethodScope::MethodCollection methods = blueprint->provideMethods();
@@ -222,7 +222,7 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 			if ( paramIt->type() != type ) {
 				Parameter::AccessMode::E access = Parameter::AccessMode::ByValue;
 
-				if ( std::find(atomicTypes.begin(), atomicTypes.end(), type) == atomicTypes.end() ) {
+				if ( atomicTypes.find(type) == atomicTypes.end() ) {
 					access = Parameter::AccessMode::ByReference;
 				}
 

@@ -76,7 +76,7 @@ private:
 	StringList mModifiers;
 	StringList mReservedWords;
 	TokenList mTokens;
-	StringList mTypes;
+	StringSet mTypes;
 };
 
 

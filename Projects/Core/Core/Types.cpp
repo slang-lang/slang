@@ -20,17 +20,17 @@
 namespace ObjectiveScript {
 
 
-StringList provideAtomicTypes()
+StringSet provideAtomicTypes()
 {
-	StringList types;
+	StringSet types;
 
-	types.push_back(Runtime::BoolObject::TYPENAME);
-	types.push_back(Runtime::DoubleObject::TYPENAME);
-	types.push_back(Runtime::FloatObject::TYPENAME);
-	types.push_back(Runtime::IntegerObject::TYPENAME);
-	types.push_back(Runtime::NumberObject::TYPENAME);
-	types.push_back(Runtime::StringObject::TYPENAME);
-	types.push_back(Runtime::VoidObject::TYPENAME);
+	types.insert(Runtime::BoolObject::TYPENAME);
+	types.insert(Runtime::DoubleObject::TYPENAME);
+	types.insert(Runtime::FloatObject::TYPENAME);
+	types.insert(Runtime::IntegerObject::TYPENAME);
+	types.insert(Runtime::NumberObject::TYPENAME);
+	types.insert(Runtime::StringObject::TYPENAME);
+	types.insert(Runtime::VoidObject::TYPENAME);
 
 	return types;
 }
