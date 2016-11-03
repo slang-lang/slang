@@ -5,6 +5,7 @@ SET(SOURCES
 	ExceptionData.cpp
 	Namespace.cpp
 	OperatorOverloading.cpp
+	Script.cpp
 	TypeCast.cpp
 )
 
@@ -15,6 +16,7 @@ SET(HEADERS
 	Exceptions.h
 	Namespace.h
 	OperatorOverloading.h
+	Script.h
 	TypeCast.h
 )
 

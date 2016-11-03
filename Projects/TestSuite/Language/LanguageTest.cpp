@@ -15,7 +15,7 @@
 #include <Core/Common/Exceptions.h>
 #include <Core/Designtime/Exceptions.h>
 #include <Core/Runtime/Exceptions.h>
-#include <Core/Script.h>
+#include <Core/Runtime/Script.h>
 #include <Core/VirtualMachine/VirtualMachine.h>
 
 // Namespace declarations

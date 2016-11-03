@@ -9,7 +9,7 @@
 #include <Core/Consts.h>
 #include <Core/Common/Exceptions.h>
 #include <Core/Designtime/Analyser.h>
-#include <Core/Script.h>
+#include <Core/Runtime/Script.h>
 #include <Core/Tools.h>
 #include <Tools/Files.h>
 #include <Utils.h>

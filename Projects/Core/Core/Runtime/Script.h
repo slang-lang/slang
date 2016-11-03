@@ -1,12 +1,12 @@
 
-#ifndef ObjectiveScript_Core_Script_h
-#define ObjectiveScript_Core_Script_h
+#ifndef ObjectiveScript_Core_Runtime_Script_h
+#define ObjectiveScript_Core_Runtime_Script_h
 
 
 // Library includes
 
 // Project includes
-#include "Parameter.h"
+#include <Core/Parameter.h>
 
 // Forward declarations
 

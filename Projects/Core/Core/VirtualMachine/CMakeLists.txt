@@ -21,9 +21,11 @@ SET(HEADERS
 )
 
 SET(DEPENDENCIES
+	CoreRuntime
 	CoreDesigntimeBuildInTypes
 	CoreDesigntime
 	CoreBuildInObjects
+	Utils
 )
 
 add_include(Projects/Core)
