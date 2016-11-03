@@ -9,9 +9,9 @@
 #include <Core/Runtime/ControlFlow.h>
 #include <Core/VirtualMachine/Controller.h>
 #include <Utils.h>
-#include "Interpreter.h"
-#include "Object.h"
-#include "Scope.h"
+#include <Core/Interpreter.h>
+#include <Core/Object.h>
+#include <Core/Scope.h>
 
 // Namespace declarations
 

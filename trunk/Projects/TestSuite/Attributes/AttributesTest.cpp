@@ -10,7 +10,7 @@
 // Library includes
 
 // Project includes
-#include <Core/Script.h>
+#include <Core/Runtime/Script.h>
 #include <Core/VirtualMachine/VirtualMachine.h>
 
 // Namespace declarations

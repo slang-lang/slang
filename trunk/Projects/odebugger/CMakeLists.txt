@@ -33,3 +33,4 @@ add_include(Projects/Utils)
 
 SET(EXECUTABLE_OUTPUT_PATH ${EXECUTABLE_OUTPUT_PATH}/odebugger)
 build_app(odebugger "mysql")
+
