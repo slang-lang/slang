@@ -9,7 +9,6 @@ SET(SOURCES
 	BluePrintGeneric.cpp
 	BluePrintEnum.cpp
 	BluePrintObject.cpp
-	Prototype.cpp
 	SanityChecker.cpp
 )
 
@@ -20,7 +19,6 @@ SET(HEADERS
 	BluePrintEnum.h
 	BluePrintObject.h
 	Exceptions.h
-	Prototype.h
 	SanityChecker.h
 )
 

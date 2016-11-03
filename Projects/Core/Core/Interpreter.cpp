@@ -83,7 +83,7 @@ ControlFlow::E Interpreter::execute(Method* method, const ParameterList& params,
 
 		switch ( it->access() ) {
 			case Parameter::AccessMode::ByReference: {
-				object = mRepository->createInstance(it->type(), it->name(), Designtime::PrototypeConstraints(), false);
+				object = mRepository->createInstance(it->type(), it->name(), PrototypeConstraints(), false);
 
 				if ( it->reference().isValid() ) {
 					object->assign(
@@ -97,7 +97,7 @@ ControlFlow::E Interpreter::execute(Method* method, const ParameterList& params,
 				scope.define(it->name(), object);
 			} break;
 			case Parameter::AccessMode::ByValue: {
-				object = mRepository->createInstance(it->type(), it->name(), Designtime::PrototypeConstraints(), false);
+				object = mRepository->createInstance(it->type(), it->name(), PrototypeConstraints(), false);
 
 				if ( it->reference().isValid() ) {
 #ifdef ALLOW_BY_VALUE_COPY
@@ -1299,7 +1299,7 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 
 	token++;
 
-	Designtime::PrototypeConstraints constraints = Designtime::Parser::collectPrototypeConstraints(token);
+	PrototypeConstraints constraints = Designtime::Parser::collectPrototypeConstraints(token);
 
 	expect(Token::Type::PARENTHESIS_OPEN, token);
 
@@ -1571,7 +1571,7 @@ void Interpreter::process_throw(TokenIterator& token, Object* /*result*/)
 		OSwarn(std::string(method->getFullScopeName() + " throws although it is not marked with 'throws'!").c_str());
 	}
 
-	Object* data = getRepository()->createInstance(OBJECT, ANONYMOUS_OBJECT, Designtime::PrototypeConstraints(), false);
+	Object* data = getRepository()->createInstance(OBJECT, ANONYMOUS_OBJECT, PrototypeConstraints(), false);
 	try {
 		expression(data, token);
 	}
@@ -1766,7 +1766,7 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol)
 	bool isConst = false;
 	bool isFinal = false;
 	std::string name;
-	Designtime::PrototypeConstraints constraints;
+	PrototypeConstraints constraints;
 
 	token++;
 

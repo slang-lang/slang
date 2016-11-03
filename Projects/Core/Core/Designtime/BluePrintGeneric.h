@@ -11,13 +11,13 @@
 // Project includes
 #include <Core/Attributes/Attributes.h>
 #include <Core/Attributes/Visibility.h>
-#include <Core/Runtime/AtomicValue.h>
+#include <Core/Common/PrototypeConstraint.h>
 #include <Core/Consts.h>
+#include <Core/Runtime/AtomicValue.h>
 #include <Core/Scope.h>
 #include <Core/Symbol.h>
 #include <Core/Types.h>
 #include "Ancestor.h"
-#include "Prototype.h"
 
 // Forward declarations
 

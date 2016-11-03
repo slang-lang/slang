@@ -9,8 +9,8 @@
 #include <Core/Attributes/ImplementationType.h>
 #include <Core/Attributes/LanguageFeatureState.h>
 #include <Core/Attributes/ObjectType.h>
+#include <Core/Common/PrototypeConstraint.h>
 #include <Core/Designtime/Ancestor.h>
-#include <Core/Designtime/Prototype.h>
 #include <Core/Parameter.h>
 #include <Core/Token.h>
 
