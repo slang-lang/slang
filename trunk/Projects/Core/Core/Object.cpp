@@ -301,7 +301,7 @@ void Object::copy(const Object& other)
 				}
 
 				Object* source = static_cast<Object*>(it->second);
-				Object* target = Controller::Instance().repository()->createInstance(source->QualifiedTypename(), source->getName(), Designtime::PrototypeConstraints(), false);
+				Object* target = Controller::Instance().repository()->createInstance(source->QualifiedTypename(), source->getName(), PrototypeConstraints(), false);
 				target->copy(*source);
 
 				define(target->getName(), target);

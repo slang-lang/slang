@@ -7,11 +7,11 @@
 #include <string>
 
 // Project includes
+#include <Core/Common/PrototypeConstraint.h>
 #include <Core/Token.h>
 #include "Ancestor.h"
 #include "BluePrintObject.h"
 #include "BluePrintEnum.h"
-#include "Prototype.h"
 
 // Forward declarations
 
