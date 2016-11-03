@@ -91,23 +91,3 @@ public prototype LinkedStackOfStrings<T> {
     }
 }
 
-public void Main(int argc, string args) {
-	assert( TestCase1() );
-}
-
-private bool TestCase1() {
-	print("TestCase 1");
-
-	LinkedStackOfStrings<String> stack = new LinkedStackOfStrings<String>();
-
-	print("push");
-
-	stack.push(new String("664"));
-	stack.push(new String("173"));
-	stack.push(new String("1389"));
-
-	assert( stack.size() == 3 );
-
-	return true;
-}
-
