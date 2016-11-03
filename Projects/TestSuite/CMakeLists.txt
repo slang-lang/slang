@@ -30,6 +30,16 @@ SET(DEPENDENCIES
 	Test_Interfaces
 	Test_Inheritance
 	Test_Attributes
+	CoreVirtualMachine
+	CoreRuntime
+	CoreExtensions
+	CoreDebugger
+	CoreDesigntimeParser
+	CoreDesigntimeBuildInTypes
+	CoreDesigntime
+	CoreCommon
+	CoreBuildInObjects
+	CoreAttributes
 	Core
 )
 
