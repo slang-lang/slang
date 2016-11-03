@@ -12,7 +12,7 @@ public void Main(int argc = 0, string args = "") {
 private bool TestCase1() {
 	print("TestCase 1");
 
-	LinkedStackOfStrings stack = new LinkedStackOfStrings();
+	LinkedStackOfStrings<String> stack = new LinkedStackOfStrings<String>();
 
 	assert( stack.isEmpty() );
 
@@ -39,7 +39,7 @@ private bool TestCase2() {
 	print("TestCase 2");
 
 	try {
-		LinkedStackOfStrings stack = new LinkedStackOfStrings();
+		LinkedStackOfStrings<String> stack = new LinkedStackOfStrings<String>();
 
 		assert( stack.isEmpty() );
 
