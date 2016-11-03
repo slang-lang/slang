@@ -57,14 +57,11 @@ void Tokenizer::addToken(const Token& token)
 
 void Tokenizer::addType(const std::string& type)
 {
-	for ( StringList::const_iterator it = mTypes.begin(); it != mTypes.end(); ++it ) {
-		if ( (*it) == type ) {
-			// already announced identifier
-			return;
-		}
+	if ( mTypes.find(type) != mTypes.end() ) {
+		return;
 	}
 
-	mTypes.push_back(type);
+	mTypes.insert(type);
 }
 
 Token Tokenizer::createToken(const std::string& con, const Common::Position& position)
@@ -359,13 +356,7 @@ bool Tokenizer::isReservedWord(const std::string& token) const
 
 bool Tokenizer::isType(const std::string& token) const
 {
-	for ( StringList::const_iterator it = mTypes.begin(); it != mTypes.end(); ++it ) {
-		if ( (*it) == token ) {
-			return true;
-		}
-	}
-
-	return false;
+	return mTypes.find(token) != mTypes.end();
 }
 
 bool Tokenizer::isVisibility(const std::string& token) const
