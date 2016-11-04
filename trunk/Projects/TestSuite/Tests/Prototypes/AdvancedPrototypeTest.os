@@ -43,6 +43,7 @@ public prototype AnotherPrototype<K, V> {
 
 public void Main(int argc = 0, string argv = "") {
 	assert( TestCase1() );
+	assert( TestCase2() );
 }
 
 public bool TestCase1() {
@@ -60,5 +61,20 @@ public bool TestCase1() {
 	print("another.getValue() = " + another.getValue());
 
 	return true;
+}
+
+public bool TestCase2() {
+	print("TestCase 2: this will fail");
+
+	print("AnotherPrototype<Integer, string> vs AnotherPrototype<int, string>");
+
+	AnotherPrototype<Integer, string> another = new AnotherPrototype<int, string>(173, "1389");
+
+	assert(!"we should never get here");
+
+	print("another.getKey() = " + another.getKey());
+	print("another.getValue() = " + another.getValue());
+
+	return false;
 }
 
