@@ -62,13 +62,9 @@ void UserObject::operator_assign(const Object *other)
 
 		::ObjectiveScript::MethodSymbol* operator_method = resolveMethod("operator=", params, true);
 		if ( operator_method ) {
-			//Object tmp;
-
 			Interpreter interpreter;
-			//interpreter.execute(static_cast<Method*>(operator_method), params, &tmp);
 			interpreter.execute(static_cast<Method*>(operator_method), params, mThis);
 
-			//operator_assign(&tmp);
 			return;
 		}
 	}
@@ -80,12 +76,9 @@ void UserObject::operator_assign(const Object *other)
 
 	::ObjectiveScript::MethodSymbol* operator_method = other->resolveMethod("=operator", params, true);
 	if ( operator_method ) {
-		Object tmp;
-
 		Interpreter interpreter;
-		interpreter.execute(static_cast<Method*>(operator_method), params, &tmp);
+		interpreter.execute(static_cast<Method*>(operator_method), params, mThis);
 
-		operator_assign(&tmp);
 		return;
 	}
 
