@@ -82,22 +82,6 @@ void operator_binary_assign(Object *base, Object *other)
 	// no atomic data type, so we have to look if our assign operator has been overwritten
 	else {
 		base->operator_assign(other);
-
-/*
-		ParameterList params;
-		params.push_back(
-			Parameter(other->getName(), other->QualifiedTypename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
-		);
-
-		Runtime::Method* method = static_cast<Runtime::Method*>(base->resolveMethod("operator=", params, false));
-		if ( method ) {
-			Interpreter interpreter;
-			interpreter.execute(method, params, base);
-		}
-		else {
-			base->operator_assign(other);
-		}
-*/
 	}
 }
 
