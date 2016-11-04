@@ -32,7 +32,7 @@ void operator_binary_assign(Object *base, Object *other)
 	std::string source = base->Typename();
 	std::string target = other->Typename();
 
-	if ( source == "" || source == target ) {
+	if ( source == ANONYMOUS_OBJECT || source == target ) {
 		// assign directly because our base has not yet been initialized
 		// or no type conversion is necessary
 		base->assign(*other);
@@ -81,6 +81,9 @@ void operator_binary_assign(Object *base, Object *other)
 	}
 	// no atomic data type, so we have to look if our assign operator has been overwritten
 	else {
+		base->operator_assign(other);
+
+/*
 		ParameterList params;
 		params.push_back(
 			Parameter(other->getName(), other->QualifiedTypename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
@@ -92,8 +95,9 @@ void operator_binary_assign(Object *base, Object *other)
 			interpreter.execute(method, params, base);
 		}
 		else {
-			base->assign(*other);
+			base->operator_assign(other);
 		}
+*/
 	}
 }
 

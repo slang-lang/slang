@@ -155,7 +155,6 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 	newBlue->setMember(blueprint->isMember());
 	newBlue->setMutability(blueprint->getMutability());
 	newBlue->setParent(blueprint->getEnclosingScope());
-	//newBlue->setPrototypeConstraints(blueprint->getPrototypeConstraints());
 	newBlue->setQualifiedTypename(constraintType);
 	newBlue->setSealed(blueprint->isSealed());
 	newBlue->setTokens(blueprint->getTokens());
@@ -576,7 +575,7 @@ void Repository::initialize()
 
 	// add predefined runtime objects
 	{	// null
-		Runtime::Object* nullObject = new Runtime::Object(VALUE_NULL, SYSTEM_LIBRARY, NULL_TYPE, 0);
+		Runtime::UserObject* nullObject = new Runtime::UserObject(VALUE_NULL, SYSTEM_LIBRARY, NULL_TYPE, true);
 		nullObject->setConst(true);
 		nullObject->setConstructed(false);
 		nullObject->setFinal(false);
