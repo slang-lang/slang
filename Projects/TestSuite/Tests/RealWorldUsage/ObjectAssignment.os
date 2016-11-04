@@ -42,6 +42,7 @@ public void Main(int argc, string args) {
 
 	v1 = v2;
 	print(v1.ToString());
+	print(v2.ToString());
 
 	assert( v1 == v2 );
 }

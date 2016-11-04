@@ -100,6 +100,7 @@ public:	// Value
 	virtual bool isArray() const;
 	virtual bool isAtomicType() const;
 	virtual bool isConstructed() const;
+	virtual bool isNull() const;
 	virtual bool isValid() const;
 
 	virtual void setArray(bool value, size_t size = 0);
@@ -145,25 +146,24 @@ protected:
 	void garbageCollector();
 
 protected:
+	Object* mBase;
 	std::string mFilename;
 	Inheritance mInheritance;
 	bool mIsArray;
 	bool mIsArrayDynamicallyExpanding;
 	bool mIsAtomicType;
 	bool mIsConstructed;
+	bool mIsNull;
 	std::string mOutterface;
 	std::string mQualifiedOutterface;
 	std::string mQualifiedTypename;
 	Reference mReference;
+	Object* mThis;
 	std::string mTypename;
 	AtomicValue mValue;
 
 private:
 	void assignReference(const Reference& ref);
-
-private:
-	Object* mBase;
-	Object* mThis;
 };
 
 

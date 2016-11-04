@@ -25,7 +25,7 @@ public:
 
 public:
 	UserObject();
-	UserObject(const std::string& name, const std::string& filename, const std::string& type);
+	UserObject(const std::string& name, const std::string& filename, const std::string& type, bool isNull = false);
 	UserObject(const Object& object);
 
 public: // Operators

@@ -26,11 +26,12 @@ UserObject::UserObject()
 	mIsConstructed = false;
 }
 
-UserObject::UserObject(const std::string& name, const std::string& filename, const std::string& type)
+UserObject::UserObject(const std::string& name, const std::string& filename, const std::string& type, bool isNull)
 : Object(name, filename, type, 0)
 {
 	mIsAtomicType = false;
 	mIsConstructed = false;
+	mIsNull = isNull;
 }
 
 UserObject::UserObject(const Object& object)
@@ -42,13 +43,53 @@ UserObject::UserObject(const Object& object)
 
 void UserObject::operator_assign(const Object *other)
 {
+	// special handling for null object
+	if ( other->isNull() ) {
+		assign(*other);
+		return;
+	}
+
+	if ( other->isInstanceOf(QualifiedTypename()) ) {
+		assign(*other);
+		return;
+	}
+
+	if ( isConstructed() ) {
+		ParameterList params;
+		params.push_back(
+			Parameter(ANONYMOUS_OBJECT, other->QualifiedOutterface(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByValue, other->getReference())
+		);
+
+		::ObjectiveScript::MethodSymbol* operator_method = resolveMethod("operator=", params, true);
+		if ( operator_method ) {
+			//Object tmp;
+
+			Interpreter interpreter;
+			//interpreter.execute(static_cast<Method*>(operator_method), params, &tmp);
+			interpreter.execute(static_cast<Method*>(operator_method), params, mThis);
+
+			//operator_assign(&tmp);
+			return;
+		}
+	}
+
 	ParameterList params;
 	params.push_back(
-		Parameter(other->getName(), other->Typename(), other->getValue())
+		Parameter(ANONYMOUS_OBJECT, QualifiedTypename(), getValue(), false, isConst(), Parameter::AccessMode::ByValue, getReference())
 	);
 
-	Object tmp;
-	this->execute(&tmp, "operator=", params, 0);
+	::ObjectiveScript::MethodSymbol* operator_method = other->resolveMethod("=operator", params, true);
+	if ( operator_method ) {
+		Object tmp;
+
+		Interpreter interpreter;
+		interpreter.execute(static_cast<Method*>(operator_method), params, &tmp);
+
+		operator_assign(&tmp);
+		return;
+	}
+
+	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool UserObject::operator_bool() const

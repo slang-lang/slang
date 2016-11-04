@@ -28,6 +28,7 @@ Object::Object()
   mIsArrayDynamicallyExpanding(false),
   mIsAtomicType(false),
   mIsConstructed(false),
+  mIsNull(false),
   mOutterface(ANONYMOUS_OBJECT),
   mQualifiedOutterface(ANONYMOUS_OBJECT),
   mQualifiedTypename(ANONYMOUS_OBJECT),
@@ -51,6 +52,7 @@ Object::Object(const Object& other)
 	mIsArrayDynamicallyExpanding = other.mIsArrayDynamicallyExpanding;
 	mIsAtomicType = other.mIsAtomicType;
 	mIsConstructed = other.mIsConstructed;
+	mIsNull = other.mIsNull;
 	mParent = other.mParent;
 	mScopeName = other.mScopeName;
 	mScopeType = other.mScopeType;
@@ -77,6 +79,7 @@ Object::Object(const std::string& name, const std::string& filename, const std::
   mIsArrayDynamicallyExpanding(false),
   mIsAtomicType(false),
   mIsConstructed(false),
+  mIsNull(false),
   mOutterface(type),
   mQualifiedOutterface(type),
   mQualifiedTypename(type),
@@ -109,6 +112,7 @@ void Object::operator= (const Object& other)
 		mIsArrayDynamicallyExpanding = other.mIsArrayDynamicallyExpanding;
 		mIsAtomicType = other.mIsAtomicType;
 		mIsConstructed = other.mIsConstructed;
+		mIsNull = other.mIsNull;
 		mParent = other.mParent;
 		mScopeName = other.mScopeName;
 		mScopeType = other.mScopeType;
@@ -138,6 +142,7 @@ void Object::assign(const Object& other, bool overrideType)
 		mIsArrayDynamicallyExpanding = other.mIsArrayDynamicallyExpanding;
 		mIsAtomicType = other.mIsAtomicType;
 		mIsConstructed = other.mIsConstructed;
+		mIsNull = other.mIsNull;
 		mParent = other.mParent ? other.mParent : mParent;
 		mScopeName = other.mScopeName;
 		mScopeType = other.mScopeType;
@@ -157,7 +162,6 @@ void Object::assign(const Object& other, bool overrideType)
 void Object::addInheritance(const Designtime::Ancestor& ancestor, Object* inheritance)
 {
 	if ( !inheritance ) {
-		// bam!
 		throw Common::Exceptions::Exception("invalid inheritance level added!");
 	}
 
@@ -468,6 +472,11 @@ bool Object::isConstructed() const
 	return mIsConstructed;
 }
 
+bool Object::isNull() const
+{
+	return mIsNull;
+}
+
 bool Object::isInstanceOf(const std::string& type) const
 {
 	if ( type.empty() ) {
@@ -505,9 +514,14 @@ const Object* Object::operator_array(const Object *index)
 
 void Object::operator_assign(const Object *other)
 {
+	if ( other->isInstanceOf(QualifiedTypename()) ) {
+		assign(*other);
+		return;
+	}
+
 	ParameterList params;
 	params.push_back(
-		Parameter(ANONYMOUS_OBJECT, Typename(), VALUE_NONE)
+		Parameter(ANONYMOUS_OBJECT, QualifiedTypename(), VALUE_NONE)
 	);
 
 	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", params, true);

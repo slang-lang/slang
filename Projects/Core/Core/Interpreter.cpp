@@ -582,7 +582,7 @@ void Interpreter::parseInfixPostfix(Object *result, TokenIterator& start)
 		} break;
 		case Token::Type::OPERATOR_NOT: {
 			start++;
-			expression(result, start);
+			parseExpression(result, start);
 			operator_unary_not(result);
 		} break;
 		case Token::Type::PARENTHESIS_OPEN: {
@@ -696,7 +696,7 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 					start++;
 					break;
 				case Symbol::IType::ObjectSymbol:
-					operator_binary_assign(result, dynamic_cast<Object*>(symbol));
+					operator_binary_assign(result, static_cast<Object*>(symbol));
 					start++;
 					break;
 				case Symbol::IType::BluePrintEnumSymbol:

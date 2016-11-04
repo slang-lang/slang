@@ -32,7 +32,7 @@ public:
 
 public:
 	virtual void initialize(IScope* scope);
-	virtual void provideMethods(ExtensionMethods& methods);
+	virtual void provideMethods(ExtensionMethods& methods) = 0;
 
 public:
 	const std::string& getName() const;

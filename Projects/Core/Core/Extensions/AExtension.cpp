@@ -34,9 +34,6 @@ void AExtension::initialize(IScope* /*scope*/)
 	mInitialized = true;
 }
 
-void AExtension::provideMethods(ExtensionMethods& /*methods*/)
-{
-}
 
 }
 }
