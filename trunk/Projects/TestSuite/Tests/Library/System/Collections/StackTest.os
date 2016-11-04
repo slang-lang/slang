@@ -170,7 +170,7 @@ private bool TestCase4() const {
 
 		assert( stack.size() == 3 );
 
-		System.Iterator it = stack.getReverseIterator();
+		System.ReverseIterator it = stack.getReverseIterator();
 
 		it.next();
 		assert( it.current() == "3" );
