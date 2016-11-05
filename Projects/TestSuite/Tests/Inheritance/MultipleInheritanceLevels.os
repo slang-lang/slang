@@ -1,7 +1,7 @@
 #!/usr/local/bin/oscript
 
 private object Level1 {
-	private int mLevel1;
+	protected int mLevel1;
 
 	public void Constructor() {
 		mLevel1 = 1;
@@ -15,7 +15,7 @@ private object Level1 {
 }
 
 private object Level2 extends Level1 {
-	private int mLevel2;
+	protected int mLevel2;
 
 	public void Constructor() {
 		base.Constructor();
@@ -31,7 +31,7 @@ private object Level2 extends Level1 {
 }
 
 private object Level3 extends Level2 {
-	private int mLevel3;
+	protected int mLevel3;
 
 	public void Constructor() {
 		base.Constructor();
@@ -47,7 +47,7 @@ private object Level3 extends Level2 {
 }
 
 private object Level4 extends Level3 {
-	private int mLevel4;
+	protected int mLevel4;
 
 	public void Constructor() {
 		base.Constructor();
@@ -66,9 +66,5 @@ private object Level4Replica replicates Level4;
 
 public void Main(int argc, string argv) {
 	Level4Replica replica = new Level4Replica();
-	print(replica.mLevel1);
-	print(replica.mLevel2);
-	print(replica.mLevel3);
-	print(replica.mLevel4);
 }
 

@@ -36,7 +36,7 @@ public:	// IScope implementation
 	virtual std::string getFullScopeName() const;
 	virtual const std::string& getScopeName() const;
 	virtual IScope::IType::E getScopeType() const;
-	virtual Symbol* resolve(const std::string& name, bool onlyCurrentScope = false) const;
+	virtual Symbol* resolve(const std::string& name, bool onlyCurrentScope = false, Visibility::E visibility = Visibility::Designtime) const;
 	virtual void undefine(const std::string& name, Symbol* symbol);
 
 protected:
@@ -75,7 +75,7 @@ public:
 
 public:
 	virtual void defineMethod(const std::string& name, Runtime::Method* method);
-	virtual MethodSymbol* resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope = false) const;
+	virtual MethodSymbol* resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope = false, Visibility::E visibility = Visibility::Designtime) const;
 	virtual void undefineMethod(Runtime::Method* method);
 
 protected:

@@ -2,7 +2,7 @@
 
 public namespace Language {
 	public object TestObject {
-		private int mValue;
+		public int mValue;
 
 		public void Constructor(int value) {
 			mValue = value;

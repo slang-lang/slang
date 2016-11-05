@@ -10,8 +10,8 @@
 
 // Project includes
 #include <Core/Attributes/Attributes.h>
-#include <Core/Attributes/Visibility.h>
 #include <Core/Common/PrototypeConstraint.h>
+#include <Core/Common/Visibility.h>
 #include <Core/Consts.h>
 #include <Core/Runtime/AtomicValue.h>
 #include <Core/Scope.h>

@@ -87,15 +87,17 @@ IScope::IType::E SymbolScope::getScopeType() const
 	return mScopeType;
 }
 
-Symbol* SymbolScope::resolve(const std::string& name, bool onlyCurrentScope) const
+Symbol* SymbolScope::resolve(const std::string& name, bool onlyCurrentScope, Visibility::E visibility) const
 {
 	Symbols::const_iterator it = mSymbols.find(name);
 	if ( it != mSymbols.end() ) {
-		return it->second;
+		if ( it->second->getVisibility() >= visibility ) {
+			return it->second;
+		}
 	}
 
 	if ( mParent && !onlyCurrentScope ) {
-		return mParent->resolve(name, onlyCurrentScope);
+		return mParent->resolve(name, onlyCurrentScope, visibility);
 	}
 
 	return 0;
@@ -176,18 +178,20 @@ void MethodScope::deinit()
 	}
 }
 
-MethodSymbol* MethodScope::resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope) const
+MethodSymbol* MethodScope::resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope, Visibility::E visibility) const
 {
 	for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
 		Runtime::Method *method = (*it);
 
-		if ( method->getName() == name && method->isSignatureValid(params) ) {
-			return method;
+		if ( method->getVisibility() >= visibility ) {
+			if ( method->getName() == name && method->isSignatureValid(params) ) {
+				return method;
+			}
 		}
 	}
 
 	if ( mParent && !onlyCurrentScope ) {
-		return dynamic_cast<MethodScope*>(mParent)->resolveMethod(name, params, onlyCurrentScope);
+		return dynamic_cast<MethodScope*>(mParent)->resolveMethod(name, params, onlyCurrentScope, visibility);
 	}
 
 	return 0;

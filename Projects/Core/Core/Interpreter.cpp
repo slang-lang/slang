@@ -308,28 +308,28 @@ inline Symbol* Interpreter::identify(TokenIterator& token) const
 		std::string identifier = token->content();
 
 		if ( !result ) {
-			result = getScope()->resolve(identifier, onlyCurrentScope);
+			result = getScope()->resolve(identifier, onlyCurrentScope, Visibility::Private);
 
 			if ( !result ) {
 				Namespace* space = getEnclosingNamespace(getScope());
 				if ( space ) {
-					result = getScope()->resolve(space->QualifiedTypename() + "." + identifier, onlyCurrentScope);
+					result = getScope()->resolve(space->QualifiedTypename() + "." + identifier, onlyCurrentScope, Visibility::Private);
 				}
 			}
 		}
 		else {
 			switch ( result->getSymbolType() ) {
 				case Symbol::IType::BluePrintEnumSymbol:
-					result = dynamic_cast<Designtime::BluePrintEnum*>(result)->resolve(identifier, onlyCurrentScope);
+					result = dynamic_cast<Designtime::BluePrintEnum*>(result)->resolve(identifier, onlyCurrentScope, Visibility::Public);
 					break;
 				case Symbol::IType::BluePrintObjectSymbol:
-					result = dynamic_cast<Designtime::BluePrintObject*>(result)->resolve(identifier, onlyCurrentScope);
+					result = dynamic_cast<Designtime::BluePrintObject*>(result)->resolve(identifier, onlyCurrentScope, Visibility::Public);
 					break;
 				case Symbol::IType::NamespaceSymbol:
-					result = dynamic_cast<Namespace*>(result)->resolve(identifier, onlyCurrentScope);
+					result = dynamic_cast<Namespace*>(result)->resolve(identifier, onlyCurrentScope, Visibility::Public);
 					break;
 				case Symbol::IType::ObjectSymbol:
-					result = dynamic_cast<Object*>(result)->resolve(identifier, onlyCurrentScope);
+					result = dynamic_cast<Object*>(result)->resolve(identifier, onlyCurrentScope, Visibility::Public);
 					break;
 				case Symbol::IType::MethodSymbol:
 					throw Common::Exceptions::NotSupported("cannot directly access locales of method");
@@ -367,26 +367,26 @@ Symbol* Interpreter::identifyMethod(TokenIterator& token, const ParameterList& p
 		std::string identifier = token->content();
 
 		if ( !result ) {
-			result = getScope()->resolve(identifier, onlyCurrentScope);
+			result = getScope()->resolve(identifier, onlyCurrentScope, Visibility::Private);
 
 			// look for an overloaded method
 			if ( result && result->getSymbolType() == Symbol::IType::MethodSymbol ) {
-				result = dynamic_cast<MethodScope*>(mOwner)->resolveMethod(identifier, params, onlyCurrentScope);
+				result = dynamic_cast<MethodScope*>(mOwner)->resolveMethod(identifier, params, onlyCurrentScope, Visibility::Private);
 			}
 		}
 		else {
 			switch ( result->getSymbolType() ) {
 				case Symbol::IType::BluePrintEnumSymbol:
-					result = dynamic_cast<Designtime::BluePrintEnum*>(result)->resolveMethod(identifier, params, onlyCurrentScope);
+					result = dynamic_cast<Designtime::BluePrintEnum*>(result)->resolveMethod(identifier, params, onlyCurrentScope, Visibility::Public);
 					break;
 				case Symbol::IType::BluePrintObjectSymbol:
-					result = dynamic_cast<Designtime::BluePrintObject*>(result)->resolveMethod(identifier, params, onlyCurrentScope);
+					result = dynamic_cast<Designtime::BluePrintObject*>(result)->resolveMethod(identifier, params, onlyCurrentScope, Visibility::Public);
 					break;
 				case Symbol::IType::NamespaceSymbol:
-					result = dynamic_cast<Namespace*>(result)->resolveMethod(identifier, params, onlyCurrentScope);
+					result = dynamic_cast<Namespace*>(result)->resolveMethod(identifier, params, onlyCurrentScope, Visibility::Public);
 					break;
 				case Symbol::IType::ObjectSymbol:
-					result = dynamic_cast<Object*>(result)->resolveMethod(identifier, params, onlyCurrentScope);
+					result = dynamic_cast<Object*>(result)->resolveMethod(identifier, params, onlyCurrentScope, Visibility::Public);
 					break;
 				case Symbol::IType::MethodSymbol:
 					throw Common::Exceptions::NotSupported("cannot directly access locales of method");

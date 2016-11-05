@@ -6,7 +6,6 @@ SET(SOURCES
 	LanguageFeatureState.cpp
 	Mutability.cpp
 	ObjectType.cpp
-	Visibility.cpp
 )
 
 SET(HEADERS
@@ -15,7 +14,6 @@ SET(HEADERS
 	LanguageFeatureState.h
 	Mutability.h
 	ObjectType.h
-	Visibility.h
 )
 
 SET(DEPENDENCIES

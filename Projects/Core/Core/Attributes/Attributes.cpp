@@ -14,12 +14,10 @@ namespace ObjectiveScript {
 
 
 GenericAttributes::GenericAttributes()
-: //mIsConst(true),
-  mIsFinal(false),
+: mIsFinal(false),
   mIsSealed(false),
   mLanguageFeatureState(LanguageFeatureState::Stable),
-  mMutability(Mutability::Const),
-  mVisibility(Visibility::Private)
+  mMutability(Mutability::Const)
 {
 }
 
@@ -42,11 +40,6 @@ LanguageFeatureState::E GenericAttributes::getLanguageFeatureState() const
 Mutability::E GenericAttributes::getMutability() const
 {
 	return mMutability;
-}
-
-Visibility::E GenericAttributes::getVisibility() const
-{
-	return mVisibility;
 }
 
 bool GenericAttributes::isConst() const
@@ -86,13 +79,6 @@ void GenericAttributes::setMutability(Mutability::E m)
 	checkSealState();
 
 	mMutability = m;
-}
-
-void GenericAttributes::setVisibility(Visibility::E v)
-{
-	checkSealState();
-
-	mVisibility = v;
 }
 
 

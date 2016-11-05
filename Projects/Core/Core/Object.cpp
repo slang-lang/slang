@@ -189,13 +189,13 @@ void Object::assignReference(const Reference& ref)
 
 bool Object::CanExecuteDefaultConstructor() const
 {
-	Symbol* anyConstructor = resolve(RESERVED_WORD_CONSTRUCTOR, false);
+	Symbol* anyConstructor = resolve(RESERVED_WORD_CONSTRUCTOR, false, Visibility::Private);
 	if ( !anyConstructor ) {
 		// no constructor found at all, so we can call our default constructor but it won't do anything besides setting our object to constructed
 		return true;
 	}
 
-	Symbol* defaultConstructor = resolveMethod(RESERVED_WORD_CONSTRUCTOR, ParameterList(), true);
+	Symbol* defaultConstructor = resolveMethod(RESERVED_WORD_CONSTRUCTOR, ParameterList(), true, Visibility::Private);
 
 	return defaultConstructor && (anyConstructor == defaultConstructor);
 }
@@ -235,10 +235,10 @@ ControlFlow::E Object::Constructor(const ParameterList& params)
 	}
 
 	// check if we have implemented at least one constructor
-	Symbol *symbol = resolve(RESERVED_WORD_CONSTRUCTOR, true);
+	Symbol *symbol = resolve(RESERVED_WORD_CONSTRUCTOR, true, Visibility::Private);
 	if ( symbol ) {
 		// if a specialized constructor is implemented, the default constructor cannot be used
-		Method *constructor = dynamic_cast<Method*>(resolveMethod(RESERVED_WORD_CONSTRUCTOR, params, true));
+		Method *constructor = dynamic_cast<Method*>(resolveMethod(RESERVED_WORD_CONSTRUCTOR, params, true, Visibility::Private));
 		if ( constructor ) {
 			VoidObject tmp;
 
@@ -330,7 +330,7 @@ ControlFlow::E Object::Destructor()
 		ParameterList params;
 
 		// only execute destructor if one is present
-		Method *destructor = static_cast<Method*>(resolveMethod(RESERVED_WORD_DESTRUCTOR, params, true));
+		Method *destructor = static_cast<Method*>(resolveMethod(RESERVED_WORD_DESTRUCTOR, params, true, Visibility::Private));
 		if ( destructor ) {
 			VoidObject tmp;
 
@@ -367,7 +367,7 @@ ControlFlow::E Object::execute(Object *result, const std::string& name, const Pa
 		throw Runtime::Exceptions::NullPointerException("executed method '" + name + "' of uninitialized object '" + QualifiedTypename() + "'");
 	}
 
-	Method *method = static_cast<Method*>(resolveMethod(name, params, false));
+	Method *method = static_cast<Method*>(resolveMethod(name, params, false, Visibility::Private));
 	if ( !method ) {
 		throw Common::Exceptions::UnknownIdentifer("unknown method '" + QualifiedTypename() + "." + name + "' or method with invalid parameter count called!");
 	}
@@ -393,7 +393,7 @@ bool Object::FromJson(const Json::Value& value)
 	for ( Json::Value::Members::const_iterator it = value.members().begin(); it != value.members().end(); ++it ) {
 		Json::Value sub = (*it);
 
-		Symbol *symbol = resolve(sub.key(), true);
+		Symbol *symbol = resolve(sub.key(), true, Visibility::Designtime);
 		if ( !symbol ) {
 			throw Common::Exceptions::Exception("FromJson: unknown member '" + sub.key() + "'!");
 		}
@@ -524,7 +524,7 @@ void Object::operator_assign(const Object *other)
 		Parameter(ANONYMOUS_OBJECT, QualifiedTypename(), VALUE_NONE)
 	);
 
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", params, true);
+	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", params, true, Visibility::Public);
 	if ( value_operator ) {
 		Object tmp;
 
@@ -535,7 +535,7 @@ void Object::operator_assign(const Object *other)
 		return;
 	}
 
-	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_bitand(const Object *other)
@@ -549,9 +549,9 @@ void Object::operator_bitand(const Object *other)
 		Parameter(ANONYMOUS_OBJECT, Typename(), VALUE_NONE)
 	);
 
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("&operator", params, true);
+	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("&operator", params, true, Visibility::Public);
 	if ( !value_operator ) {
-		value_operator = other->resolveMethod("=operator", params, true);
+		value_operator = other->resolveMethod("=operator", params, true, Visibility::Public);
 	}
 	if ( value_operator ) {
 		Object tmp;
@@ -563,7 +563,7 @@ void Object::operator_bitand(const Object *other)
 		return;
 	}
 
-	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator&: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator&: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_bitcomplement(const Object *other)
@@ -578,9 +578,9 @@ void Object::operator_bitcomplement(const Object *other)
 		//Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
 	);
 
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("~operator", params, true);
+	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("~operator", params, true, Visibility::Public);
 	if ( !value_operator ) {
-		value_operator = other->resolveMethod("=operator", params, true);
+		value_operator = other->resolveMethod("=operator", params, true, Visibility::Public);
 	}
 	if ( value_operator ) {
 		Object tmp;
@@ -592,7 +592,7 @@ void Object::operator_bitcomplement(const Object *other)
 		return;
 	}
 
-	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator~: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator~: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_bitor(const Object *other)
@@ -607,9 +607,9 @@ void Object::operator_bitor(const Object *other)
 		//Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
 	);
 
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("|operator", params, true);
+	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("|operator", params, true, Visibility::Public);
 	if ( !value_operator ) {
-		value_operator = other->resolveMethod("=operator", params, true);
+		value_operator = other->resolveMethod("=operator", params, true, Visibility::Public);
 	}
 	if ( value_operator ) {
 		Object tmp;
@@ -621,12 +621,12 @@ void Object::operator_bitor(const Object *other)
 		return;
 	}
 
-	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator|: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator|: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool Object::operator_bool() const
 {
-	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator bool(): for " + QualifiedTypename() + " not supported");
+	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator bool(): for " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_divide(const Object *other)
@@ -641,9 +641,9 @@ void Object::operator_divide(const Object *other)
 		//Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
 	);
 
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("/operator", params, true);
+	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("/operator", params, true, Visibility::Public);
 	if ( !value_operator ) {
-		value_operator = other->resolveMethod("=operator", params, true);
+		value_operator = other->resolveMethod("=operator", params, true, Visibility::Public);
 	}
 	if ( value_operator ) {
 		Object tmp;
@@ -655,7 +655,7 @@ void Object::operator_divide(const Object *other)
 		return;
 	}
 
-	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator/: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator/: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool Object::operator_equal(const Object *other)
@@ -674,9 +674,9 @@ bool Object::operator_equal(const Object *other)
 		//Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
 	);
 
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("==operator", params, true);
+	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("==operator", params, true, Visibility::Public);
 	if ( !value_operator ) {
-		value_operator = other->resolveMethod("=operator", params, true);
+		value_operator = other->resolveMethod("=operator", params, true, Visibility::Public);
 	}
 	if ( value_operator ) {
 		Object tmp;
@@ -687,7 +687,7 @@ bool Object::operator_equal(const Object *other)
 		return operator_equal(&tmp);
 	}
 
-	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator==: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator==: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool Object::operator_greater(const Object *other)
@@ -702,9 +702,9 @@ bool Object::operator_greater(const Object *other)
 		//Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
 	);
 
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod(">operator", params, true);
+	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod(">operator", params, true, Visibility::Public);
 	if ( !value_operator ) {
-		value_operator = other->resolveMethod("=operator", params, true);
+		value_operator = other->resolveMethod("=operator", params, true, Visibility::Public);
 	}
 	if ( value_operator ) {
 		Object tmp;
@@ -715,7 +715,7 @@ bool Object::operator_greater(const Object *other)
 		return operator_greater(&tmp);
 	}
 
-	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator>: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator>: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool Object::operator_greater_equal(const Object *other)
@@ -730,9 +730,9 @@ bool Object::operator_greater_equal(const Object *other)
 		//Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
 	);
 
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod(">=operator", params, true);
+	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod(">=operator", params, true, Visibility::Public);
 	if ( !value_operator ) {
-		value_operator = other->resolveMethod("=operator", params, true);
+		value_operator = other->resolveMethod("=operator", params, true, Visibility::Public);
 	}
 	if ( value_operator ) {
 		Object tmp;
@@ -743,7 +743,7 @@ bool Object::operator_greater_equal(const Object *other)
 		return operator_greater_equal(&tmp);
 	}
 
-	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator>=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator>=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool Object::operator_is(const Symbol *other)
@@ -776,9 +776,9 @@ bool Object::operator_less(const Object *other)
 		//Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
 	);
 
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("<operator", params, true);
+	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("<operator", params, true, Visibility::Public);
 	if ( !value_operator ) {
-		value_operator = other->resolveMethod("=operator", params, true);
+		value_operator = other->resolveMethod("=operator", params, true, Visibility::Public);
 	}
 	if ( value_operator ) {
 		Object tmp;
@@ -789,7 +789,7 @@ bool Object::operator_less(const Object *other)
 		return operator_less(&tmp);
 	}
 
-	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator<: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator<: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool Object::operator_less_equal(const Object *other)
@@ -804,9 +804,9 @@ bool Object::operator_less_equal(const Object *other)
 		//Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
 	);
 
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("<=operator", params, true);
+	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("<=operator", params, true, Visibility::Public);
 	if ( !value_operator ) {
-		value_operator = other->resolveMethod("=operator", params, true);
+		value_operator = other->resolveMethod("=operator", params, true, Visibility::Public);
 	}
 	if ( value_operator ) {
 		Object tmp;
@@ -817,7 +817,7 @@ bool Object::operator_less_equal(const Object *other)
 		return operator_less_equal(&tmp);
 	}
 
-	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator<=: conversion from " + other->QualifiedTypename() + " to " + Typename() + " not supported");
+	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator<=: conversion from " + other->QualifiedTypename() + " to " + Typename() + " not supported");
 }
 
 void Object::operator_modulo(const Object *other)
@@ -832,9 +832,9 @@ void Object::operator_modulo(const Object *other)
 		//Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
 	);
 
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("%operator", params, true);
+	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("%operator", params, true, Visibility::Public);
 	if ( !value_operator ) {
-		value_operator = other->resolveMethod("=operator", params, true);
+		value_operator = other->resolveMethod("=operator", params, true, Visibility::Public);
 	}
 	if ( value_operator ) {
 		Object tmp;
@@ -846,7 +846,7 @@ void Object::operator_modulo(const Object *other)
 		return;
 	}
 
-	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator%: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator%: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_multiply(const Object *other)
@@ -861,9 +861,9 @@ void Object::operator_multiply(const Object *other)
 		//Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
 	);
 
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("*operator", params, true);
+	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("*operator", params, true, Visibility::Public);
 	if ( !value_operator ) {
-		value_operator = other->resolveMethod("=operator", params, true);
+		value_operator = other->resolveMethod("=operator", params, true, Visibility::Public);
 	}
 	if ( value_operator ) {
 		Object tmp;
@@ -875,7 +875,7 @@ void Object::operator_multiply(const Object *other)
 		return;
 	}
 
-	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator*: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator*: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_plus(const Object *other)
@@ -890,9 +890,9 @@ void Object::operator_plus(const Object *other)
 		//Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
 	);
 
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("+operator", params, true);
+	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("+operator", params, true, Visibility::Public);
 	if ( !value_operator ) {
-		value_operator = other->resolveMethod("=operator", params, true);
+		value_operator = other->resolveMethod("=operator", params, true, Visibility::Public);
 	}
 	if ( value_operator ) {
 		Object tmp;
@@ -904,7 +904,7 @@ void Object::operator_plus(const Object *other)
 		return;
 	}
 
-	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator+: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator+: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_subtract(const Object *other)
@@ -919,9 +919,9 @@ void Object::operator_subtract(const Object *other)
 		//Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
 	);
 
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("-operator", params, true);
+	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("-operator", params, true, Visibility::Public);
 	if ( !value_operator ) {
-		value_operator = other->resolveMethod("=operator", params, true);
+		value_operator = other->resolveMethod("=operator", params, true, Visibility::Public);
 	}
 	if ( value_operator ) {
 		Object tmp;
@@ -933,17 +933,17 @@ void Object::operator_subtract(const Object *other)
 		return;
 	}
 
-	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator-: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator-: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_unary_decrement()
 {
-	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator--: for " + QualifiedTypename() + " not supported");
+	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator--: for " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_unary_increment()
 {
-	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator++: for " + QualifiedTypename() + " not supported");
+	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator++: for " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_unary_minus()
@@ -953,54 +953,54 @@ void Object::operator_unary_minus()
 
 void Object::operator_unary_not()
 {
-	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator unary !: for " + QualifiedTypename() + " not supported");
+	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator unary !: for " + QualifiedTypename() + " not supported");
 }
 
-Symbol* Object::resolve(const std::string& name, bool onlyCurrentScope) const
+Symbol* Object::resolve(const std::string& name, bool onlyCurrentScope, Visibility::E visibility) const
 {
 	if ( mThis != this ) {
-		return mThis->resolve(name, onlyCurrentScope);
+		return mThis->resolve(name, onlyCurrentScope, visibility);
 	}
 
 	// (1) look only in current scope
-	Symbol *result = MethodScope::resolve(name, true);
+	Symbol *result = MethodScope::resolve(name, true, visibility);
 
 	// (2) check inheritance
 	if ( !result ) {
 		Object* base = dynamic_cast<Object*>(MethodScope::resolve("base", true));
 		if ( base && base->getSymbolType() == Symbol::IType::ObjectSymbol && !onlyCurrentScope ) {
-			result = base->resolve(name, onlyCurrentScope);
+			result = base->resolve(name, onlyCurrentScope, visibility < Visibility::Protected ? Visibility::Protected : visibility);
 		}
 	}
 
 	// (3) if we still haven't found something also look in other scopes
 	if ( !result && !onlyCurrentScope ) {
-		result = MethodScope::resolve(name, false);
+		result = MethodScope::resolve(name, false, visibility);
 	}
 
 	return result;
 }
 
-ObjectiveScript::MethodSymbol* Object::resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope) const
+ObjectiveScript::MethodSymbol* Object::resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope, Visibility::E visibility) const
 {
 	if ( mThis != this ) {
-		return mThis->resolveMethod(name, params, onlyCurrentScope);
+		return mThis->resolveMethod(name, params, onlyCurrentScope, visibility);
 	}
 
 	// (1) look in current scope
-	ObjectiveScript::MethodSymbol *result = MethodScope::resolveMethod(name, params, true);
+	ObjectiveScript::MethodSymbol *result = MethodScope::resolveMethod(name, params, true, visibility);
 
 	// (2) check inheritance
 	// we cannot go the short is-result-already-set way here because one of our ancestor methods could be marked as final
 	Symbol* base = MethodScope::resolve("base", true);
 	if ( base && base->getSymbolType() == Symbol::IType::ObjectSymbol && !onlyCurrentScope ) {
-		result = dynamic_cast<Object*>(base)->resolveMethod(name, params, onlyCurrentScope);
+		result = dynamic_cast<Object*>(base)->resolveMethod(name, params, onlyCurrentScope, visibility < Visibility::Protected ? Visibility::Protected : visibility);
 	}
 
 	// (3) if we still haven't found something also look in other scopes
 	if ( !result || !result->isFinal() ) {
 		if ( !onlyCurrentScope ) {
-			ObjectiveScript::MethodSymbol *tmp = MethodScope::resolveMethod(name, params, false);
+			ObjectiveScript::MethodSymbol *tmp = MethodScope::resolveMethod(name, params, false, visibility);
 
 			if ( tmp ) {
 				result = tmp;
