@@ -131,11 +131,10 @@ PrototypeConstraints Parser::collectPrototypeConstraints(TokenIterator& token)
 			token++;
 
 			if ( token->type() == Token::Type::IDENTIFER ) {
-				type = token->content();
-
+				constraint = token->content();
 			}
 			else if ( token->type() == Token::Type::TYPE ) {
-				type = token->content();
+				constraint = token->content();
 			}
 			else {
 				throw Common::Exceptions::SyntaxError("unexpected token '" + token->content() + "' found", token->position());
