@@ -18,6 +18,10 @@
 
 namespace ObjectiveScript {
 
+// Forward declarations
+namespace Runtime {
+	class Namespace;
+}
 
 class Stack
 {
@@ -38,7 +42,7 @@ public:
 	void print();
 
 public:
-	GlobalScope* globalScope() const;
+	MethodScope* globalScope() const;
 
 private:
 	typedef std::list<StackLevel*> StackTrace;
@@ -48,7 +52,7 @@ private:
 	void operator=(Stack const&)/* = delete*/;
 
 private:
-	GlobalScope* mGlobalScope;
+	Runtime::Namespace* mGlobalScope;
 	StackTrace mStack;
 };
 

@@ -7,8 +7,8 @@
 #include <iostream>
 
 // Project includes
+#include <Core/Runtime/Namespace.h>
 #include <Core/Tools.h>
-#include <Core/Types.h>
 
 // Namespace declarations
 
@@ -46,14 +46,14 @@ void Stack::deinit()
 	mGlobalScope = 0;
 }
 
-GlobalScope* Stack::globalScope() const
+MethodScope* Stack::globalScope() const
 {
 	return mGlobalScope;
 }
 
 void Stack::init()
 {
-	mGlobalScope = new GlobalScope();
+	mGlobalScope = new Runtime::Namespace(VALUE_NONE, 0);
 
 	push(mGlobalScope, ParameterList());
 }
