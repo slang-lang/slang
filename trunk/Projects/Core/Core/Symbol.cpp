@@ -12,9 +12,10 @@
 namespace ObjectiveScript {
 
 
-Symbol::Symbol(const std::string& name, IType::E type)
+Symbol::Symbol(const std::string& name, IType::E type, Visibility::E visibility)
 : mName(name),
-  mType(type)
+  mType(type),
+  mVisibility(visibility)
 {
 }
 
@@ -40,6 +41,16 @@ const std::string& Symbol::getName() const
 Symbol::IType::E Symbol::getSymbolType() const
 {
 	return mType;
+}
+
+Visibility::E Symbol::getVisibility() const
+{
+	return mVisibility;
+}
+
+void Symbol::setVisibility(Visibility::E visibility)
+{
+	mVisibility = visibility;
 }
 
 

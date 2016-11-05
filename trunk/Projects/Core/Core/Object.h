@@ -86,8 +86,8 @@ public:	// Reference
 	void setReference(const Reference& reference) { mReference = reference; }
 
 public: // Symbol
-	Symbol* resolve(const std::string& name, bool onlyCurrentScope) const;
-	ObjectiveScript::MethodSymbol* resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope) const;
+	Symbol* resolve(const std::string& name, bool onlyCurrentScope, Visibility::E visibility) const;
+	ObjectiveScript::MethodSymbol* resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope, Visibility::E visibility) const;
 
 public:	// Type
 	bool isInstanceOf(const std::string& type) const;

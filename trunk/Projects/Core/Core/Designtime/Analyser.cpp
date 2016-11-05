@@ -322,6 +322,7 @@ bool Analyser::createMember(TokenIterator& token, TokenIterator /*end*/)
 	// look for the identifier token
 	name = (*token++).content();
 
+/*	temporary out of order
 	if ( !dynamic_cast<Runtime::Namespace*>(mScope) ) {
 		if ( visibility == Visibility::Public ) {
 			// beware: public members are deprecated, remember the "Law of Demeter"
@@ -330,6 +331,7 @@ bool Analyser::createMember(TokenIterator& token, TokenIterator /*end*/)
 			throw Exceptions::LawOfDemeterViolated("public member " + name + " violates \"Law of Demeter\"", token->position());
 		}
 	}
+*/
 
 	// look for a mutability keyword
 	if ( token->category() == Token::Category::Modifier ) {

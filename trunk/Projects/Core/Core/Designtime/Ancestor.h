@@ -8,7 +8,7 @@
 #include <string>
 
 // Project includes
-#include <Core/Attributes/Visibility.h>
+#include <Core/Common/Visibility.h>
 
 // Forward declarations
 
