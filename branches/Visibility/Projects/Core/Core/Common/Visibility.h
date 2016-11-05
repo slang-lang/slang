@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Attributes_Visibility_h
-#define ObjectiveScript_Attributes_Visibility_h
+#ifndef ObjectiveScript_Common_Visibility_h
+#define ObjectiveScript_Common_Visibility_h
 
 
 // Library includes
@@ -20,7 +20,8 @@ class Visibility
 {
 public:
 	enum E {
-		Private = 0,
+		Designtime = 0,
+		Private,
 		Protected,
 		Public
 	};
@@ -29,6 +30,7 @@ public:
 	static std::string convert(E e);
 
 private:
+	static const std::string DesigntimeStr;
 	static const std::string PrivateStr;
 	static const std::string ProtectedStr;
 	static const std::string PublicStr;

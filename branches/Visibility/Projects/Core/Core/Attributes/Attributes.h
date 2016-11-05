@@ -9,7 +9,6 @@
 #include "ImplementationType.h"
 #include "LanguageFeatureState.h"
 #include "Mutability.h"
-#include "Visibility.h"
 
 // Forward declarations
 
@@ -38,9 +37,6 @@ public:
 	virtual Mutability::E getMutability() const;
 	virtual void setMutability(Mutability::E m);
 
-	virtual Visibility::E getVisibility() const;
-	virtual void setVisibility(Visibility::E v);
-
 protected:
 	void checkSealState();
 
@@ -49,7 +45,6 @@ protected:
 	bool mIsSealed;
 	LanguageFeatureState::E mLanguageFeatureState;
 	Mutability::E mMutability;
-	Visibility::E mVisibility;
 };
 
 

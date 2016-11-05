@@ -375,7 +375,7 @@ bool operator_binary_equal(Object *base, Object *other)
 		Parameter(other->getName(), other->QualifiedTypename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
 	);
 
-	if ( base->resolveMethod("operator==", params, false) ) {
+	if ( base->resolveMethod("operator==", params, false, Visibility::Public) ) {
 		Object tmp;
 		base->execute(&tmp, "operator==", params);
 		return isTrue(tmp);
@@ -386,7 +386,7 @@ bool operator_binary_equal(Object *base, Object *other)
 		Parameter(other->getName(), other->QualifiedOutterface(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
 	);
 
-	if ( base->resolveMethod("operator==", params, false) ) {
+	if ( base->resolveMethod("operator==", params, false, Visibility::Public) ) {
 		Object tmp;
 		base->execute(&tmp, "operator==", params);
 		return isTrue(tmp);
@@ -1077,7 +1077,7 @@ void operator_unary_not(Object *base)
 			Parameter(ANONYMOUS_OBJECT, BoolObject::TYPENAME, false, false, false, Parameter::AccessMode::ByValue)
 		);
 
-		MethodSymbol* value_op = base->resolveMethod("=operator", params, true);
+		MethodSymbol* value_op = base->resolveMethod("=operator", params, true, Visibility::Public);
 		if ( value_op ) {
 			Object tmp;
 

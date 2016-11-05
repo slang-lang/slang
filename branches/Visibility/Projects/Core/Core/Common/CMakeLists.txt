@@ -4,12 +4,14 @@ SET(SOURCES
     Exceptions.cpp
     Position.cpp
     PrototypeConstraint.cpp
+    Visibility.cpp
 )
 
 SET(HEADERS
     Exceptions.h
     Position.h
     PrototypeConstraint.h
+    Visibility.h
 )
 
 SET(DEPENDENCIES

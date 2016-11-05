@@ -43,8 +43,7 @@ UserObject::UserObject(const Object& object)
 
 void UserObject::operator_assign(const Object *other)
 {
-	// special handling for null object
-	if ( other->isNull() ) {
+	if ( other->isNull() ) {	// special handling for null object
 		assign(*other);
 		return;
 	}
@@ -60,7 +59,7 @@ void UserObject::operator_assign(const Object *other)
 			Parameter(ANONYMOUS_OBJECT, other->QualifiedOutterface(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByValue, other->getReference())
 		);
 
-		::ObjectiveScript::MethodSymbol* operator_method = resolveMethod("operator=", params, true);
+		::ObjectiveScript::MethodSymbol* operator_method = resolveMethod("operator=", params, true, Visibility::Private);
 		if ( operator_method ) {
 			Interpreter interpreter;
 			interpreter.execute(static_cast<Method*>(operator_method), params, mThis);
@@ -74,7 +73,7 @@ void UserObject::operator_assign(const Object *other)
 		Parameter(ANONYMOUS_OBJECT, QualifiedTypename(), getValue(), false, isConst(), Parameter::AccessMode::ByValue, getReference())
 	);
 
-	::ObjectiveScript::MethodSymbol* operator_method = other->resolveMethod("=operator", params, true);
+	::ObjectiveScript::MethodSymbol* operator_method = other->resolveMethod("=operator", params, true, Visibility::Public);
 	if ( operator_method ) {
 		Interpreter interpreter;
 		interpreter.execute(static_cast<Method*>(operator_method), params, mThis);
@@ -82,7 +81,7 @@ void UserObject::operator_assign(const Object *other)
 		return;
 	}
 
-	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 bool UserObject::operator_bool() const

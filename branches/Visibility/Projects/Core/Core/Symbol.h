@@ -9,6 +9,7 @@
 
 // Project includes
 #include <Core/Attributes/Attributes.h>
+#include <Core/Common/Visibility.h>
 
 // Forward declarations
 
@@ -24,14 +25,14 @@ public:
 	class IType
 	{
 	public:
-		typedef enum {
+		enum E {
 			UnknownSymbol,
 			BluePrintEnumSymbol,
 			BluePrintObjectSymbol,
 			MethodSymbol,
 			NamespaceSymbol,
 			ObjectSymbol
-		} E;
+		};
 
 		virtual ~IType() { }
 
@@ -40,26 +41,29 @@ public:
 	};
 
 public:
-	Symbol(const std::string& name, IType::E type);
+	Symbol(const std::string& name, IType::E type, Visibility::E visibility = Visibility::Public);
 	virtual ~Symbol();
 
 public:
 	bool operator< (const Symbol& other) const;
 	bool operator< (const Symbol* other) const;
 
-public:
 	const std::string& getName() const;
 	IType::E getSymbolType() const;
+	Visibility::E getVisibility() const;
 
+	void setVisibility(Visibility::E visibility);
+
+public:
 	virtual std::string ToString(unsigned int indent = 0) const = 0;
 
 protected:
 	std::string mName;
 	IType::E mType;
+	Visibility::E mVisibility;
 };
 
-typedef std::less<std::string> StringLess;
-
+//typedef std::less<std::string> StringLess;
 typedef std::map<std::string, Symbol*> Symbols;
 
 

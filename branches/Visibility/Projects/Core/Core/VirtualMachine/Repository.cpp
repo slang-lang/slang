@@ -434,7 +434,7 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 					case Designtime::Ancestor::Type::Extends:
 					case Designtime::Ancestor::Type::Replicates: {
 						// undefine previous base (while using single inheritance none should exist yet)
-						object->undefine(IDENTIFIER_BASE, object->resolve(IDENTIFIER_BASE, true));
+						object->undefine(IDENTIFIER_BASE, object->resolve(IDENTIFIER_BASE, true, Visibility::Designtime));
 
 						// create base object
 						Runtime::Object *ancestor = createReference(blueIt->second, name, PrototypeConstraints(), initialize);
@@ -592,7 +592,7 @@ void Repository::initialize()
  */
 void Repository::initializeObject(Runtime::Object* object, Designtime::BluePrintObject* blueprint)
 {
-	object->undefine(IDENTIFIER_THIS, object->resolve(IDENTIFIER_THIS, true));
+	object->undefine(IDENTIFIER_THIS, object->resolve(IDENTIFIER_THIS, true, Visibility::Designtime));
 
 	// create and define all symbols based on given blueprint
 	Symbols symbols = blueprint->provideSymbols();
@@ -623,7 +623,7 @@ void Repository::initializeObject(Runtime::Object* object, Designtime::BluePrint
 		*method = *(*it);
 
 		// try to override abstract methods a.k.a. implement an interface method
-		Runtime::Method* old = static_cast<Runtime::Method*>(object->resolveMethod((*it)->getName(), method->provideSignature(), true));
+		Runtime::Method* old = static_cast<Runtime::Method*>(object->resolveMethod((*it)->getName(), method->provideSignature(), true, Visibility::Designtime));
 		if ( old && old->isAbstract() ) {
 			object->undefineMethod(old);
 			delete old;

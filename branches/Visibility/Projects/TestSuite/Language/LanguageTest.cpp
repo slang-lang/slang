@@ -320,6 +320,8 @@ void LanguageTest::testInfixOperator()
 
 void LanguageTest::testLawOfDemeter()
 {
+	TSKIP("skipping Law of Demeter test");
+
 	try {
 		VirtualMachine vm;
 
