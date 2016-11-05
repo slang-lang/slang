@@ -7,8 +7,8 @@ public object BaseObject {
 
 	public void Constructor() {
 		mPublicNumber = 1;
-		mProtectedNumber = 1;
-		mPrivateNumber = 1;
+		mProtectedNumber = 2;
+		mPrivateNumber = 3;
 	}
 
 	public string ToString() const {
@@ -17,7 +17,7 @@ public object BaseObject {
 }
 
 public object DerivedObject extends BaseObject {
-	//private int mPrivateNumber;
+	private int mPrivateNumber;
 
 	public void Main(int argc = 0, string argv = "") {
 		base.Constructor();
@@ -43,7 +43,7 @@ public object DerivedObject extends BaseObject {
 		return base.ToString() + "	mPublicNumber = " + mPublicNumber + ", mProtectedNumber = " + mProtectedNumber + ", mPrivateNumber = " + mPrivateNumber;
 	}
 
-	private void test() modify {
+	public void test() modify {
 		mPublicNumber = 2;
 		mProtectedNumber = 2;
 		mPrivateNumber = 2;
