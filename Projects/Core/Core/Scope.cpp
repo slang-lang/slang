@@ -206,46 +206,4 @@ void MethodScope::undefineMethod(Runtime::Method* method)
 }
 
 
-GlobalScope::GlobalScope()
-: MethodScope("", 0)
-{
-}
-
-GlobalScope::~GlobalScope()
-{
-	deinit();
-}
-
-void GlobalScope::deinit()
-{
-}
-
-std::string GlobalScope::ToString() const
-{
-	std::string result = "{\n";
-
-	for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
-		result += "\t" + (*it)->ToString() + "\n";
-	}
-
-	for ( Symbols::const_iterator it = mSymbols.begin(); it != mSymbols.end(); ++it ) {
-		switch ( it->second->getSymbolType() ) {
-			case Symbol::IType::BluePrintEnumSymbol:
-			case Symbol::IType::BluePrintObjectSymbol:
-			case Symbol::IType::MethodSymbol:
-			case Symbol::IType::UnknownSymbol:
-				continue;
-			case Symbol::IType::NamespaceSymbol:
-			case Symbol::IType::ObjectSymbol:
-				result += "\t" + it->second->ToString() + "\n";
-				break;
-		}
-	}
-
-	result += "}";
-
-	return result;
-}
-
-
 }
