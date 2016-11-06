@@ -1348,7 +1348,7 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 	}
 
 	// create initialized reference of new object
-	*result = *getRepository()->createReference(static_cast<Designtime::BluePrintObject*>(symbol), name, constraints, true);
+	*result = *getRepository()->createReference(static_cast<Designtime::BluePrintGeneric*>(symbol), name, constraints, true);
 
 	// execute new object's constructor
 	mControlFlow = result->Constructor(params);
@@ -1823,7 +1823,7 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol)
 	}
 
 
-	Object* object = getRepository()->createInstance(static_cast<Designtime::BluePrintObject*>(symbol), name, constraints, false);
+	Object* object = getRepository()->createInstance(static_cast<Designtime::BluePrintGeneric*>(symbol), name, constraints, false);
 
 	getScope()->define(name, object);
 
