@@ -13,7 +13,7 @@
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
 #include <Tools/Strings.h>
-#include "Math.h"
+#include "Console.h"
 
 // Forward declarations
 

@@ -10,7 +10,6 @@ SET(HEADERS
 	Console.h
 	Cout.h
 	Endl.h
-	Math.h
 )
 
 SET(DEPENDENCIES

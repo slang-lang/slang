@@ -12,7 +12,7 @@
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Tools.h>
 #include <Tools/Strings.h>
-#include "Math.h"
+#include "Console.h"
 
 // Forward declarations
 
