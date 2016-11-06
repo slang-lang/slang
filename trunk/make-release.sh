@@ -6,13 +6,16 @@ echo "Packing files for release ${RELEASE} ..."
 
 tar cfvz ${RELEASE} ${EXCLUDES} *
 
+echo ""
 echo "Uploading files..."
 
 scp ${RELEASE} README.TXT madelmann@frs.sourceforge.net:/home/frs/project/objectivescript/
 
+echo ""
 echo "Cleanup..."
 
 rm ${RELEASE}
 
+echo ""
 echo "done."
 
