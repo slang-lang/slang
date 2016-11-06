@@ -12,12 +12,10 @@
 #include <Core/Common/Exceptions.h>
 #include <Core/Designtime/Parser/Parser.h>
 #include <Core/Designtime/Parser/Tokenizer.h>
-#include <Core/Interfaces/IScope.h>
 #include <Core/Runtime/Namespace.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
 #include <Tools/Files.h>
-#include <Utils.h>
 #include "Exceptions.h"
 #include "SanityChecker.h"
 

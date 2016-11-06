@@ -303,12 +303,15 @@ inline Symbol* Interpreter::identify(TokenIterator& token) const
 {
 	Symbol *result = 0;
 	bool onlyCurrentScope = false;
+	std::string prev_identifier;	// hack to allow special 'this'-handling
 
 	while ( token->type() == Token::Type::IDENTIFER || token->type() == Token::Type::TYPE ) {
 		std::string identifier = token->content();
 
 		if ( !result ) {
 			result = getScope()->resolve(identifier, onlyCurrentScope, Visibility::Private);
+
+			prev_identifier = identifier;
 
 			if ( !result ) {
 				Namespace* space = getEnclosingNamespace(getScope());
@@ -329,7 +332,8 @@ inline Symbol* Interpreter::identify(TokenIterator& token) const
 					result = dynamic_cast<Namespace*>(result)->resolve(identifier, onlyCurrentScope, Visibility::Public);
 					break;
 				case Symbol::IType::ObjectSymbol:
-					result = dynamic_cast<Object*>(result)->resolve(identifier, onlyCurrentScope, Visibility::Public);
+					result = dynamic_cast<Object*>(result)->resolve(identifier, onlyCurrentScope,
+																	(prev_identifier == IDENTIFIER_THIS) ? Visibility::Private : Visibility::Public);
 					break;
 				case Symbol::IType::MethodSymbol:
 					throw Common::Exceptions::NotSupported("cannot directly access locales of method");
@@ -362,12 +366,15 @@ Symbol* Interpreter::identifyMethod(TokenIterator& token, const ParameterList& p
 {
 	Symbol *result = 0;
 	bool onlyCurrentScope = false;
+	std::string prev_identifier;	// hack to allow special 'this'-handling
 
 	while ( token->type() == Token::Type::IDENTIFER || token->type() == Token::Type::TYPE ) {
 		std::string identifier = token->content();
 
 		if ( !result ) {
 			result = getScope()->resolve(identifier, onlyCurrentScope, Visibility::Private);
+
+			prev_identifier = identifier;
 
 			// look for an overloaded method
 			if ( result && result->getSymbolType() == Symbol::IType::MethodSymbol ) {
@@ -386,7 +393,8 @@ Symbol* Interpreter::identifyMethod(TokenIterator& token, const ParameterList& p
 					result = dynamic_cast<Namespace*>(result)->resolveMethod(identifier, params, onlyCurrentScope, Visibility::Public);
 					break;
 				case Symbol::IType::ObjectSymbol:
-					result = dynamic_cast<Object*>(result)->resolveMethod(identifier, params, onlyCurrentScope, Visibility::Public);
+					result = dynamic_cast<Object*>(result)->resolveMethod(identifier, params, onlyCurrentScope,
+																		  (prev_identifier == IDENTIFIER_THIS) ? Visibility::Private : Visibility::Public);
 					break;
 				case Symbol::IType::MethodSymbol:
 					throw Common::Exceptions::NotSupported("cannot directly access locales of method");
