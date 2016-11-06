@@ -32,11 +32,11 @@ std::string toString(const StringList& list);
 std::string toString(const TokenList& list);
 
 StringSet provideAtomicTypes();
-StringList provideLanguageFeatures();
-StringList provideKeyWords();
-StringList provideModifiers();
-StringList providePredefinedIdentifiers();
-StringList provideReservedWords();
+StringSet provideLanguageFeatures();
+StringSet provideKeyWords();
+StringSet provideModifiers();
+StringSet providePredefinedIdentifiers();
+StringSet provideReservedWords();
 
 
 }

@@ -34,14 +34,9 @@ Tokenizer::Tokenizer(const std::string& filename, const std::string& content)
 
 void Tokenizer::addIdentifier(const std::string& identifier)
 {
-	for ( StringList::const_iterator it = mIdentifiers.begin(); it != mIdentifiers.end(); ++it ) {
-		if ( (*it) == identifier ) {
-			// already announced identifier
-			return;
-		}
+	if ( mIdentifiers.find(identifier) != mIdentifiers.end() ) {
+		mIdentifiers.insert(identifier);
 	}
-
-	mIdentifiers.push_back(identifier);
 }
 
 void Tokenizer::addToken(const Token& token)
@@ -106,9 +101,10 @@ Token Tokenizer::createToken(const std::string& con, const Common::Position& pos
 		content = con.substr(0, con.length() - 1);
 	}
 	else if ( isIdentifer(content) ) { category = Token::Category::Identifier; type = Token::Type::IDENTIFER; }
-	else if ( isInteger(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_INTEGER;
+	else if ( isInteger(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_INTEGER; }
+	else if ( isIntegerWithType(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_INTEGER;
 		// remove trailing 'i' character
-		//content = con.substr(0, con.length() - 1);
+		content = con.substr(0, con.length() - 1);
 	}
 	else if ( isKeyword(content) ) { category = Token::Category::Keyword; type = Token::Type::KEYWORD; }
 	else if ( isLanguageFeature(content) ) { category = Token::Category::Modifier; type = Token::Type::LANGUAGEFEATURE; }
@@ -138,18 +134,12 @@ bool Tokenizer::isBoolean(const std::string& token) const
 
 bool Tokenizer::isDefined(const std::string& token) const
 {
-	for ( StringList::const_iterator it = mDefines.begin(); it != mDefines.end(); ++it ) {
-		if ( (*it) == token ) {
-			return true;
-		}
-	}
-
-	return false;
+	return mDefines.find(token) != mDefines.end();
 }
 
 bool Tokenizer::isDouble(const std::string& token) const
 {
-	if ( token.empty() ) {
+	if ( token.size() <= 1 ) {
 		return false;
 	}
 
@@ -177,7 +167,7 @@ bool Tokenizer::isDouble(const std::string& token) const
 
 bool Tokenizer::isFloat(const std::string& token) const
 {
-	if ( token.empty() ) {
+	if ( token.size() <= 1 ) {
 		return false;
 	}
 
@@ -205,13 +195,7 @@ bool Tokenizer::isFloat(const std::string& token) const
 
 bool Tokenizer::isIdentifer(const std::string& token) const
 {
-	for ( StringList::const_iterator it = mIdentifiers.begin(); it != mIdentifiers.end(); ++it ) {
-		if ( (*it) == token ) {
-			return true;
-		}
-	}
-
-	return false;
+	return mIdentifiers.find(token) != mIdentifiers.end();
 }
 
 bool Tokenizer::isInteger(const std::string& token) const
@@ -238,32 +222,45 @@ bool Tokenizer::isInteger(const std::string& token) const
 		}
 	}
 
-	// [optional] the last char of our token has to be an 'i'
-	//return token[token.size() - 1] == 'i' || true;
-
 	return true;
+}
+
+bool Tokenizer::isIntegerWithType(const std::string& token) const
+{
+	if ( token.size() <= 1 ) {
+		return false;
+	}
+
+	for ( unsigned int c = 0; c < token.size() - 1; c++ ) {
+		switch ( token[c] ) {
+			case '1':
+			case '2':
+			case '3':
+			case '4':
+			case '5':
+			case '6':
+			case '7':
+			case '8':
+			case '9':
+			case '0':
+				break;
+			default:
+				return false;
+		}
+	}
+
+	// the last char of our token has to be an 'i'
+	return token[token.size() - 1] == 'i';
 }
 
 bool Tokenizer::isKeyword(const std::string& token) const
 {
-	for ( StringList::const_iterator it = mKeywords.begin(); it != mKeywords.end(); ++it ) {
-		if ( (*it) == token ) {
-			return true;
-		}
-	}
-
-	return false;
+	return mKeywords.find(token) != mKeywords.end();
 }
 
 bool Tokenizer::isLanguageFeature(const std::string& token) const
 {
-	for ( StringList::const_iterator it = mLanguageFeatures.begin(); it != mLanguageFeatures.end(); ++it ) {
-		if ( (*it) == token ) {
-			return true;
-		}
-	}
-
-	return false;
+	return mLanguageFeatures.find(token) != mLanguageFeatures.end();
 }
 
 bool Tokenizer::isLiteral(const std::string& token) const
@@ -284,18 +281,12 @@ bool Tokenizer::isLiteral(const std::string& token) const
 
 bool Tokenizer::isModifier(const std::string& token) const
 {
-	for ( StringList::const_iterator it = mModifiers.begin(); it != mModifiers.end(); ++it ) {
-		if ( (*it) == token ) {
-			return true;
-		}
-	}
-
-	return false;
+	return mModifiers.find(token) != mModifiers.end();
 }
 
 bool Tokenizer::isNumber(const std::string& token) const
 {
-	if ( token.empty() ) {
+	if ( token.size() <= 1 ) {
 		return false;
 	}
 
@@ -321,37 +312,9 @@ bool Tokenizer::isNumber(const std::string& token) const
 	return token[token.size() - 1] == 'n';
 }
 
-bool Tokenizer::isPrototype(TokenIterator token) const
-{
-	if ( token->type() != Token::Type::IDENTIFER ) {
-		return false;
-	}
-	token++;
-
-	if ( token->type() != Token::Type::COMPARE_LESS ) {
-		return false;
-	}
-	token++;
-
-	if ( token->type() != Token::Type::IDENTIFER ) {
-		return false;
-	}
-	token++;
-
-	// TODO: to allow more complex prototype declarations one would have to allow more tokens here (i.e. Identifier, Identifier, ...)
-
-	return token->type() == Token::Type::COMPARE_GREATER;
-}
-
 bool Tokenizer::isReservedWord(const std::string& token) const
 {
-	for ( StringList::const_iterator it = mReservedWords.begin(); it != mReservedWords.end(); ++it ) {
-		if ( (*it) == token ) {
-			return true;
-		}
-	}
-
-	return false;
+	return mReservedWords.find(token) != mReservedWords.end();
 }
 
 bool Tokenizer::isType(const std::string& token) const
@@ -812,6 +775,7 @@ void Tokenizer::replaceConstDataTypes()
 				continue;
 			}
 		}
+/*	deprecated, because number literals (except integer literals) have to have at least 2 characters (i.e. 1d, 2f, etc.)
 		// if we find any other data type with an empty content we convert it to an identifier
 		else if ( token->type() == Token::Type::CONST_DOUBLE ) {
 			if ( token->content().empty() ) {
@@ -837,7 +801,7 @@ void Tokenizer::replaceConstDataTypes()
 				token->resetTypeTo(Token::Type::IDENTIFER);
 			}
 		}
-
+*/
 		token++;
 	}
 }
@@ -875,39 +839,6 @@ void Tokenizer::replaceOperators()
 		}
 
 		last = token++;
-	}
-}
-
-/*
- *  This removes all 'of' tokens that are part of a prototype instantiation
- *  and changes the token type of the prototype from identifier to prototype.
- */
-void Tokenizer::replacePrototypes()
-{
-	TokenList::iterator token = mTokens.begin();
-
-	// try to combine all prototype tokens
-	while ( token != mTokens.end() ) {
-		// find prototype as ( identifier reserved identifier )
-		if ( isPrototype(token) ) {
-			// reset it's type
-			(*token).resetTypeTo(Token::Type::PROTOTYPE);
-
-			// and remove the following 'of'-token
-			token++;
-			mTokens.erase(token++);
-			continue;
-
-/*
-			// and remove the following 2 tokens ('of' & type)
-			token++;
-			mTokens.erase(token++);
-			mTokens.erase(token++);
-			continue;
-*/
-		}
-
-		token++;
 	}
 }
 

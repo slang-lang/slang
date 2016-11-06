@@ -35,90 +35,90 @@ StringSet provideAtomicTypes()
 	return types;
 }
 
-StringList provideLanguageFeatures()
+StringSet provideLanguageFeatures()
 {
-	StringList languageFeatures;
+	StringSet languageFeatures;
 
-	languageFeatures.push_back(LANGUAGE_FEATURE_DEPRECATED);
-	languageFeatures.push_back(LANGUAGE_FEATURE_NOTIMPLEMENTED);
-	languageFeatures.push_back(LANGUAGE_FEATURE_STABLE);
-	languageFeatures.push_back(LANGUAGE_FEATURE_UNSTABLE);
+	languageFeatures.insert(LANGUAGE_FEATURE_DEPRECATED);
+	languageFeatures.insert(LANGUAGE_FEATURE_NOTIMPLEMENTED);
+	languageFeatures.insert(LANGUAGE_FEATURE_STABLE);
+	languageFeatures.insert(LANGUAGE_FEATURE_UNSTABLE);
 
 	return languageFeatures;
 }
 
-StringList provideKeyWords()
+StringSet provideKeyWords()
 {
-	StringList keywords;
+	StringSet keywords;
 
-	keywords.push_back(KEYWORD_ASSERT);
-	keywords.push_back(KEYWORD_BREAK);
-	keywords.push_back(KEYWORD_CASE);
-	keywords.push_back(KEYWORD_CATCH);
-	keywords.push_back(KEYWORD_CONTINUE);
-	keywords.push_back(KEYWORD_COPY);
-	keywords.push_back(KEYWORD_DEFAULT);
-	keywords.push_back(KEYWORD_DELETE);
-	keywords.push_back(KEYWORD_ELSE);
-	keywords.push_back(KEYWORD_EXIT);
-	keywords.push_back(KEYWORD_FINALLY);
-	keywords.push_back(KEYWORD_FOR);
-	keywords.push_back(KEYWORD_IF);
-	keywords.push_back(KEYWORD_NEW);
-	keywords.push_back(KEYWORD_PRINT);
-	keywords.push_back(KEYWORD_RETURN);
-	keywords.push_back(KEYWORD_SWITCH);
-	keywords.push_back(KEYWORD_THROW);
-	keywords.push_back(KEYWORD_TRY);
-	keywords.push_back(KEYWORD_WHILE);
+	keywords.insert(KEYWORD_ASSERT);
+	keywords.insert(KEYWORD_BREAK);
+	keywords.insert(KEYWORD_CASE);
+	keywords.insert(KEYWORD_CATCH);
+	keywords.insert(KEYWORD_CONTINUE);
+	keywords.insert(KEYWORD_COPY);
+	keywords.insert(KEYWORD_DEFAULT);
+	keywords.insert(KEYWORD_DELETE);
+	keywords.insert(KEYWORD_ELSE);
+	keywords.insert(KEYWORD_EXIT);
+	keywords.insert(KEYWORD_FINALLY);
+	keywords.insert(KEYWORD_FOR);
+	keywords.insert(KEYWORD_IF);
+	keywords.insert(KEYWORD_NEW);
+	keywords.insert(KEYWORD_PRINT);
+	keywords.insert(KEYWORD_RETURN);
+	keywords.insert(KEYWORD_SWITCH);
+	keywords.insert(KEYWORD_THROW);
+	keywords.insert(KEYWORD_TRY);
+	keywords.insert(KEYWORD_WHILE);
 
 	return keywords;
 }
 
-StringList provideModifiers()
+StringSet provideModifiers()
 {
-	StringList modifiers;
+	StringSet modifiers;
 
-	modifiers.push_back(MODIFIER_ABSTRACT);
-	modifiers.push_back(MODIFIER_CONST);
-	modifiers.push_back(MODIFIER_FINAL);
-	modifiers.push_back(MODIFIER_MODIFY);
-	modifiers.push_back(MODIFIER_RECURSIVE);
-	modifiers.push_back(MODIFIER_SEALED);
-	modifiers.push_back(MODIFIER_STATIC);
-	modifiers.push_back(MODIFIER_THROWS);
+	modifiers.insert(MODIFIER_ABSTRACT);
+	modifiers.insert(MODIFIER_CONST);
+	modifiers.insert(MODIFIER_FINAL);
+	modifiers.insert(MODIFIER_MODIFY);
+	modifiers.insert(MODIFIER_RECURSIVE);
+	modifiers.insert(MODIFIER_SEALED);
+	modifiers.insert(MODIFIER_STATIC);
+	modifiers.insert(MODIFIER_THROWS);
 
 	return modifiers;
 }
 
-StringList providePredefinedIdentifiers()
+StringSet providePredefinedIdentifiers()
 {
-	StringList identifiers;
+	StringSet identifiers;
 
-	identifiers.push_back(IDENTIFIER_BASE);
-	identifiers.push_back(IDENTIFIER_THIS);
+	identifiers.insert(IDENTIFIER_BASE);
+	identifiers.insert(IDENTIFIER_THIS);
 
 	return identifiers;
 }
 
-StringList provideReservedWords()
+StringSet provideReservedWords()
 {
-	StringList reservedWords;
+	StringSet reservedWords;
 
-	reservedWords.push_back(RESERVED_WORD_BY_REFERENCE);
-	reservedWords.push_back(RESERVED_WORD_BY_VALUE);
-	reservedWords.push_back(RESERVED_WORD_ENUM);
-	reservedWords.push_back(RESERVED_WORD_EXTENDS);
-	reservedWords.push_back(RESERVED_WORD_IMPLEMENTS);
-	reservedWords.push_back(RESERVED_WORD_IMPORT);
-	reservedWords.push_back(RESERVED_WORD_INTERFACE);
-	reservedWords.push_back(RESERVED_WORD_NAMESPACE);
-	reservedWords.push_back(RESERVED_WORD_OBJECT);
-	reservedWords.push_back(RESERVED_WORD_OPERATOR);
-	reservedWords.push_back(RESERVED_WORD_PROTOTYPE);
-	reservedWords.push_back(RESERVED_WORD_REPLICATES);
-	reservedWords.push_back(RESERVED_WORD_SCOPE_OPERATOR);
-	reservedWords.push_back(RESERVED_WORD_USING);
+	reservedWords.insert(RESERVED_WORD_BY_REFERENCE);
+	reservedWords.insert(RESERVED_WORD_BY_VALUE);
+	reservedWords.insert(RESERVED_WORD_ENUM);
+	reservedWords.insert(RESERVED_WORD_EXTENDS);
+	reservedWords.insert(RESERVED_WORD_IMPLEMENTS);
+	reservedWords.insert(RESERVED_WORD_IMPORT);
+	reservedWords.insert(RESERVED_WORD_INTERFACE);
+	reservedWords.insert(RESERVED_WORD_NAMESPACE);
+	reservedWords.insert(RESERVED_WORD_OBJECT);
+	reservedWords.insert(RESERVED_WORD_OPERATOR);
+	reservedWords.insert(RESERVED_WORD_PROTOTYPE);
+	reservedWords.insert(RESERVED_WORD_REPLICATES);
+	reservedWords.insert(RESERVED_WORD_SCOPE_OPERATOR);
+	reservedWords.insert(RESERVED_WORD_USING);
 
 	return reservedWords;
 }
