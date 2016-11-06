@@ -5,7 +5,7 @@ public object BaseObject {
 	private string mType;
 	protected float mValue;
 
-	public void BaseObject(string name) {
+	public void Constructor(string name) {
 		mName = name;
 		mType = "BaseObject";
 		mValue = 1.f;
@@ -27,7 +27,7 @@ public object BaseObject {
 public object DerivedObject extends BaseObject {
 	private string mType;
 
-	public void DerivedObject(string name, string type, float value) {
+	public void Constructor(string name, string type, float value) {
 		mName = name;
 		mType = "DerivedObject";
 		mValue = value;

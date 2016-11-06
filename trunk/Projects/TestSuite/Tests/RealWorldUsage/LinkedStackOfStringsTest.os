@@ -54,6 +54,10 @@ private bool TestCase2() {
 		while ( it.current() ) {
 			print("" + it.current());
 
+			if ( !it.hasNext() ) {
+				break;
+			}
+
 			it.next();
 		}
 

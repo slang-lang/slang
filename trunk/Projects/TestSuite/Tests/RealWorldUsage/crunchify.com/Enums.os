@@ -1,33 +1,15 @@
 #!/usr/local/bin/oscript
 
-/* OUTPUT
-Biggest Market Place in the World.
-Simplest way to manage Money.
-1st Web 2.0 Company.
-1st Web 2.0 Company.
-Google - biggest search giant.. ATT - my carrier provider..
-*/
-
-        public enum Company {
-                EBAY = 0,
-                PAYPAL = 1,
-                GOOGLE = 2,
-                YAHOO = 3,
-                ATT = 4
-        }
+public enum Company {
+	EBAY = 0,
+	PAYPAL = 1,
+	GOOGLE = 2,
+	YAHOO = 3,
+	ATT = 4;
+}
 
 
 public object CrunchifyEnumExample {
-/*
-	public enum Company {
-		EBAY,
-		PAYPAL,
-		GOOGLE,
-		YAHOO,
-		ATT
-	}
-*/
- 
 	private Company mName;
  
 	public void CrunchifyEnumExample(int name) {
