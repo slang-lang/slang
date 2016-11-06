@@ -1,8 +1,8 @@
 #!/usr/local/bin/oscript
 
 private object Vector2D {
-	private int x;
-	private int y;
+	public int x;
+	public int y;
 
 	public void Constructor(int x, int y) {
 		print("Constructor(" + x + ", " + y + ")");

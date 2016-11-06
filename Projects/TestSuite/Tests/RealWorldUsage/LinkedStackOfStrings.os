@@ -7,11 +7,11 @@ import System.String;
 
 // helper Node class
 private object Node {
-    private String item;
-    private Node next;
+    public String item;
+    public Node next;
 }
 
-public object StringStackIterator {
+public object StringStackIterator extends System.Iterator {
     private Node mCurrent;
     private Node mFirst;
 
@@ -89,5 +89,9 @@ public prototype LinkedStackOfStrings<T> {
         n--;
         return item;                   // return the saved item
     }
+
+	public StringStackIterator getIterator() const {
+		return new StringStackIterator(first);
+	}
 }
 

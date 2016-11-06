@@ -1,7 +1,7 @@
 #!/usr/local/bin/oscript
 
 private object TestObject {
-	private int mValue;
+	protected int mValue;
 
 	public int getValue() const {
 		return mValue;
@@ -15,7 +15,7 @@ private object TestObject {
 		mValue = value;
 	}
 
-	public int operator=() const {
+	public int =operator(int none) const {
 		return mValue;
 	}
 
@@ -29,8 +29,6 @@ private object DerivedObject extends TestObject {
 		//mValue = value * value;
 		operator=(value);	// this is really caarazy but it only works if it is called from the inside of an object
 		operator+(5);
-
-		writeln("operator=() = " + string operator=());
 	}
 
 	public void operator=(int value) modify {
@@ -39,14 +37,6 @@ private object DerivedObject extends TestObject {
 }
 
 private object Retyped replicates TestObject;
-
-/*
-private prototype Proto<value>
-{
-}
-
-private object RetypedProto replicates Proto<int>;
-*/
 
 public void Main(int argc, string argv) {
 	DerivedObject derived = new DerivedObject();

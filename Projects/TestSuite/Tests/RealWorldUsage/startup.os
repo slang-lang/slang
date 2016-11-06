@@ -18,14 +18,14 @@ public object BaseObject {
 		assert(false);
 	}
 
-	public void BaseObject() {
+	public void Constructor() {
 		print("BaseObject()");
 
 		mLogger = new System.IO.Logger("BaseObject");
 		mName = "BaseObject";
 	}
 
-	public void BaseObject(string name const) {
+	public void Constructor(string name const) {
 		print("BaseObject(" + name + ")");
 
 		mLogger = new System.IO.Logger(name);
@@ -74,14 +74,14 @@ private float mValue;
 public void Main(int argc, string argv) {
 	print("Main(" + argc + ", \"" + argv + "\")");
 
-	mLogger = new System.IO.Logger("Main");
-	mLogger.info("Constructor");
+//	mLogger = new System.IO.Logger("Main");
+//	mLogger.info("Constructor");
 
 	mBaseObject = new BaseObject("\"this is a test\"");
 	//mBaseObject.setLogger(mLogger);
 	//mBaseObject.constMethod();	// handled correctly
-	mBaseObject.privateMethodCall();
-	mBaseObject.protectedMethodCall();
+	//mBaseObject.privateMethodCall();
+	//mBaseObject.protectedMethodCall();
 	mBaseObject.publicMethodCall();
 	//mBaseObject.staticMethod();	// access to members in static method is not yet handled correctly
 
