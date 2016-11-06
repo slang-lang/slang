@@ -45,13 +45,13 @@ private:	// Tokenizer
 	void replaceAssignments();
 	void replaceConstDataTypes();
 	void replaceOperators();
-	void replacePrototypes();
 
 	bool isBoolean(const std::string& token) const;
 	bool isDouble(const std::string& token) const;
 	bool isFloat(const std::string& token) const;
 	bool isIdentifer(const std::string& token) const;
 	bool isInteger(const std::string& token) const;
+	bool isIntegerWithType(const std::string& token) const;
 	bool isKeyword(const std::string& token) const;
 	bool isLanguageFeature(const std::string& token) const;
 	bool isLiteral(const std::string& token) const;
@@ -64,17 +64,16 @@ private:	// Tokenizer
 
 private:	// Preprocessor
 	bool isDefined(const std::string& token) const;
-	bool isPrototype(TokenIterator token) const;
 
 private:
 	std::string	mContent;
-	StringList mDefines;
+	StringSet mDefines;
 	std::string mFilename;
-	StringList mIdentifiers;
-	StringList mLanguageFeatures;
-	StringList mKeywords;
-	StringList mModifiers;
-	StringList mReservedWords;
+	StringSet mIdentifiers;
+	StringSet mLanguageFeatures;
+	StringSet mKeywords;
+	StringSet mModifiers;
+	StringSet mReservedWords;
 	TokenList mTokens;
 	StringSet mTypes;
 };
