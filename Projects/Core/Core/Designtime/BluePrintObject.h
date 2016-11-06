@@ -47,7 +47,6 @@ public:
 	}
 
 private:
-	Ancestors mInheritance;
 	Runtime::AtomicValue mValue;
 };
 

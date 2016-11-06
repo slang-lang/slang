@@ -60,7 +60,7 @@ void Repository::addBluePrint(Designtime::BluePrintEnum* blueprint)
 		}
 
 		if ( it->second->getImplementationType() != ImplementationType::ForwardDeclaration ) {
-			throw Common::Exceptions::Exception("duplicate object '" + blueprint->QualifiedTypename() + "' added to repository");
+			throw Common::Exceptions::Exception("duplicate enum '" + blueprint->QualifiedTypename() + "' added to repository");
 		}
 
 		// clean up forward declaration
@@ -281,10 +281,15 @@ Runtime::Object* Repository::createInstance(const std::string& type, const std::
 /*
  * Creates an instance of the given blueprint
  */
-Runtime::Object* Repository::createInstance(Designtime::BluePrintObject* blueprint, const std::string& name, const PrototypeConstraints& constraints, bool initialize)
+Runtime::Object* Repository::createInstance(Designtime::BluePrintGeneric* blueprint, const std::string& name, const PrototypeConstraints& constraints, bool initialize)
 {
 	if ( !blueprint ) {
 		throw Common::Exceptions::Exception("invalid blueprint provided!");
+	}
+
+	if ( blueprint->getSymbolType() == Symbol::IType::BluePrintEnumSymbol ) {
+		// replace blueprint with an integer blueprint
+		blueprint = findBluePrint(Runtime::IntegerObject::TYPENAME);
 	}
 
 	std::string constraintType = buildConstraintTypename(blueprint->QualifiedTypename(), constraints);
@@ -294,14 +299,14 @@ Runtime::Object* Repository::createInstance(Designtime::BluePrintObject* bluepri
 		BluePrintObjectMap::iterator it = mBluePrintObjects.find(constraintType);
 		if ( it == mBluePrintObjects.end() ) {
 			// a not yet used prototype has been requested => construct the new type
-			blueprint = createBluePrintFromPrototype(blueprint, constraints);
+			blueprint = createBluePrintFromPrototype(static_cast<Designtime::BluePrintObject*>(blueprint), constraints);
 		}
 		else {
 			blueprint = it->second;
 		}
 	}
 
-	Runtime::Object* object = createObject(name, blueprint, initialize);
+	Runtime::Object* object = createObject(name, static_cast<Designtime::BluePrintObject*>(blueprint), initialize);
 
 	if ( initialize ) {
 		if ( object->isAbstract() ) {
@@ -371,10 +376,15 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 /*
  * Creates an instance of the given blueprint and adds a reference to it in the heap memory
  */
-Runtime::Object* Repository::createReference(Designtime::BluePrintObject* blueprint, const std::string& name, const PrototypeConstraints& constraints, bool initialize)
+Runtime::Object* Repository::createReference(Designtime::BluePrintGeneric* blueprint, const std::string& name, const PrototypeConstraints& constraints, bool initialize)
 {
 	if ( !blueprint ) {
 		throw Common::Exceptions::Exception("invalid blueprint provided!");
+	}
+
+	if ( blueprint->getSymbolType() == Symbol::IType::BluePrintEnumSymbol ) {
+		// replace blueprint with an integer blueprint
+		blueprint = findBluePrint(Runtime::IntegerObject::TYPENAME);
 	}
 
 	std::string constraintType = buildConstraintTypename(blueprint->QualifiedTypename(), constraints);
@@ -384,14 +394,14 @@ Runtime::Object* Repository::createReference(Designtime::BluePrintObject* bluepr
 		BluePrintObjectMap::iterator it = mBluePrintObjects.find(constraintType);
 		if ( it == mBluePrintObjects.end() ) {
 			// a not yet used prototype has been requested => construct the new type
-			blueprint = createBluePrintFromPrototype(blueprint, constraints);
+			blueprint = createBluePrintFromPrototype(static_cast<Designtime::BluePrintObject*>(blueprint), constraints);
 		}
 		else {
 			blueprint = it->second;
 		}
 	}
 
-	Runtime::Object* object = createObject(name, blueprint, initialize);
+	Runtime::Object* object = createObject(name, static_cast<Designtime::BluePrintObject*>(blueprint), initialize);
 
 	if ( initialize ) {
 		if ( object->isAbstract() ) {

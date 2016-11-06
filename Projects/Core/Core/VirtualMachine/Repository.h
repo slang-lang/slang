@@ -46,8 +46,8 @@ public:
 	void cleanupForwardDeclarations();
 
 	Runtime::Object* createInstance(const std::string& type, const std::string& name, const PrototypeConstraints& constraints = PrototypeConstraints(), bool initialize = false);
-	Runtime::Object* createInstance(Designtime::BluePrintObject* blueprint, const std::string& name, const PrototypeConstraints& constraints, bool initialize = false);
-	Runtime::Object* createReference(Designtime::BluePrintObject* blueprint, const std::string& name, const PrototypeConstraints& constraints, bool initialize = false);
+	Runtime::Object* createInstance(Designtime::BluePrintGeneric* blueprint, const std::string& name, const PrototypeConstraints& constraints, bool initialize = false);
+	Runtime::Object* createReference(Designtime::BluePrintGeneric* blueprint, const std::string& name, const PrototypeConstraints& constraints, bool initialize = false);
 
 private:
 	std::string buildConstraintTypename(const std::string& name, const PrototypeConstraints& constraints) const;
