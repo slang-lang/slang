@@ -8,9 +8,9 @@ public namespace System {
 	 * Double linked collection item
 	 */
 	public object CollectionItem {
-		private System.CollectionItem mNext;
-		private System.CollectionItem mPrevious;
-		private Object mValue;
+		public System.CollectionItem mNext;
+		public System.CollectionItem mPrevious;
+		public Object mValue;
 
 		public void Constructor() {
 			// this is empty by intend
@@ -44,10 +44,10 @@ public namespace System {
 	/*
 	 * Abstract base for collections
 	 */
-	public abstract object AbstractCollection {
-		private System.CollectionItem mFirst;
-		private System.CollectionItem mLast;
-		private int mSize = 0;
+	public abstract object AbstractCollection implements System.IIterateable {
+		protected System.CollectionItem mFirst;
+		protected System.CollectionItem mLast;
+		protected int mSize = 0;
 
 		public void Constructor() {
 			mSize = 0;

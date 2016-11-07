@@ -981,6 +981,107 @@ void Interpreter::process_for(TokenIterator& token, Object* result)
 }
 
 /*
+ * syntax:
+ * for ( <type definition> <identifier> : <instance> ) { ... }
+ */
+void Interpreter::process_foreach(TokenIterator& token, Object* result)
+{
+	expect(Token::Type::PARENTHESIS_OPEN, token++);
+
+	TokenIterator typedefIt = token;
+
+	// identify the loop variable's type
+	Symbol* symbol = identify(token);
+	if ( !symbol ) {
+		throw Common::Exceptions::UnknownIdentifer("identifier '" + typedefIt->content() + "' not found", token->position());
+	}
+	if ( symbol->getSymbolType() != Symbol::IType::BluePrintEnumSymbol && symbol->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
+		throw Common::Exceptions::SyntaxError("invalid symbol type '" + symbol->getName() + "' found", token->position());
+	}
+	token++;
+
+	expect(Token::Type::IDENTIFER, token);
+
+	// store loop variable's name
+	TokenIterator identIt = token++;
+	std::string loopIdent = identIt->content();
+
+	expect(Token::Type::COLON, token);
+	token++;
+	expect(Token::Type::IDENTIFER, token);
+
+	// identify collection symbol
+	Object* collection = dynamic_cast<Object*>(identify(token));
+	if ( !collection ) {
+		throw Common::Exceptions::SyntaxError("invalid symbol '" + token->content() + "' found", token->position());
+	}
+	if ( !collection->isInstanceOf("IIterateable") ) {
+		throw Common::Exceptions::SyntaxError("symbol '" + collection->getName() + "' is not derived from IIteratable", token->position());
+	}
+	token++;
+
+	// get collection's forward iterator
+	Object iterator;
+	collection->execute(&iterator, "getIterator", ParameterList());
+
+	expect(Token::Type::PARENTHESIS_CLOSE, token);
+	token++;
+
+	// find next balanced '{' & '}' pair for loop-body
+	TokenIterator bodyBegin = token;
+	TokenIterator bodyEnd = findNextBalancedCurlyBracket(bodyBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
+
+	bodyBegin++;		// don't collect scope token
+	token = bodyEnd;
+
+	TokenList loopTokens;
+	while ( bodyBegin != bodyEnd ) {
+		loopTokens.push_back((*bodyBegin));
+		bodyBegin++;
+	}
+
+	for ( ; ; ) {
+		pushScope();	// needed for loop variable
+
+		// Setup
+		// {
+		Object tmp;
+		iterator.execute(&tmp, "hasNext", ParameterList());
+
+		if ( !isTrue(tmp) ) {	// do we have more items to iterate over?
+			break;
+		}
+
+		// create and define loop variable
+		TokenIterator typedefItCopy = typedefIt;
+		process_type(typedefItCopy, symbol);
+
+		// resolve loop variable
+		Object* loop = dynamic_cast<Object*>(getScope()->resolve(loopIdent));
+
+		// get current item
+		iterator.execute(loop, "next", ParameterList());
+		// }
+
+		// Body parsing
+		// {
+		ControlFlow::E controlflow = interpret(loopTokens, result);
+
+		popScope();	// needed for loop variable
+
+		switch ( controlflow ) {
+			case ControlFlow::Break: mControlFlow = ControlFlow::Normal; return;
+			case ControlFlow::Continue: mControlFlow = ControlFlow::Normal; break;
+			case ControlFlow::ExitProgram: mControlFlow = ControlFlow::ExitProgram; return;
+			case ControlFlow::Normal: mControlFlow = ControlFlow::Normal; break;
+			case ControlFlow::Return: mControlFlow = ControlFlow::Return; return;
+			case ControlFlow::Throw: mControlFlow = ControlFlow::Throw; return;
+		}
+		// }
+	}
+}
+
+/*
  * executes a method, processes an assign statement and instanciates new types
  */
 void Interpreter::process_identifier(TokenIterator& token, Object* /*result*/, Token::Type::E terminator)
@@ -1164,6 +1265,9 @@ void Interpreter::process_keyword(TokenIterator& token, Object *result)
 	}
 	else if ( keyword == KEYWORD_FOR ) {
 		process_for(token, result);
+	}
+	else if ( keyword == KEYWORD_FOREACH ) {
+		process_foreach(token, result);
 	}
 	else if ( keyword == KEYWORD_IF ) {
 		process_if(token, result);

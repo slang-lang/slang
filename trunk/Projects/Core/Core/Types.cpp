@@ -63,6 +63,7 @@ StringSet provideKeyWords()
 	keywords.insert(KEYWORD_EXIT);
 	keywords.insert(KEYWORD_FINALLY);
 	keywords.insert(KEYWORD_FOR);
+	keywords.insert(KEYWORD_FOREACH);
 	keywords.insert(KEYWORD_IF);
 	keywords.insert(KEYWORD_NEW);
 	keywords.insert(KEYWORD_PRINT);
