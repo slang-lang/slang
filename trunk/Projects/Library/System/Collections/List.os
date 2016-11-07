@@ -17,10 +17,10 @@ public namespace System {
                 throw new OutOfBoundsException("cannot pop beyond ground level");
             }
 
-            if ( mSize == 1 ) {
+            if ( mSize == 1 ) {		// special handling for 1st item
                 mFirst = null;
             }
-            else {
+            else {					// generic handling
                 CollectionItem item = mFirst;
                 for ( int i = 0; i < mSize - 1; i = i++ ) {
                     item = item.mNext;
