@@ -1001,11 +1001,7 @@ void Interpreter::process_foreach(TokenIterator& token, Object* result)
 	token++;
 
 	expect(Token::Type::IDENTIFER, token);
-
-	// store loop variable's name
-	TokenIterator identIt = token++;
-	std::string loopIdent = identIt->content();
-
+	token++;
 	expect(Token::Type::COLON, token);
 	token++;
 	expect(Token::Type::IDENTIFER, token);
@@ -1054,10 +1050,7 @@ void Interpreter::process_foreach(TokenIterator& token, Object* result)
 
 		// create and define loop variable
 		TokenIterator typedefItCopy = typedefIt;
-		process_type(typedefItCopy, symbol);
-
-		// resolve loop variable
-		Object* loop = dynamic_cast<Object*>(getScope()->resolve(loopIdent));
+		Object* loop = dynamic_cast<Object*>(process_type(typedefItCopy, symbol));
 
 		// get current item
 		iterator.execute(loop, "next", ParameterList());

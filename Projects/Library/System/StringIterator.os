@@ -5,7 +5,7 @@ import String;
 
 public namespace System {
 
-	public object StringIterator /*implements IIterateable*/ {
+	public object StringIterator /*implements System.IIterateable*/ {
 		private int mCurrentPosition;
 		private string mSeparator;
 		private String mValue;
