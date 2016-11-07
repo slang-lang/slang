@@ -38,6 +38,7 @@ static const char* KEYWORD_ELSE = "else";
 static const char* KEYWORD_EXIT = "exit";
 static const char* KEYWORD_FINALLY = "finally";
 static const char* KEYWORD_FOR = "for";
+static const char* KEYWORD_FOREACH = "foreach";
 static const char* KEYWORD_IF = "if";
 static const char* KEYWORD_NEW = "new";
 static const char* KEYWORD_PRINT = "print";

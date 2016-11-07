@@ -46,6 +46,7 @@ private:	// Tests
 	void testException();
 	void testFinal();
 	void testFor();
+	void testForeach();
 	void testIf();
 	void testInfixOperator();
 	void testLawOfDemeter();

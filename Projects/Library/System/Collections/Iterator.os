@@ -16,7 +16,6 @@ public namespace System {
 
 		public Object current() const {
 			if ( !mCollection ) {
-			//if ( mCollection != null ) {
 				throw new Exception("invalid iterator access");
 			}
 
@@ -31,12 +30,14 @@ public namespace System {
 			return mCurrentIndex < mCollection.size() - 1;
 		}
 
-		public void next() modify {
+		public Object next() modify {
 			if ( !hasNext() ) {
 				throw new OutOfBoundsException("index out of bounds");
 			}
 
 			mCurrentIndex++;
+
+			return mCollection.at(mCurrentIndex);
 		}
 
 		public void reset() modify {
@@ -74,12 +75,14 @@ public namespace System {
 			return mCurrentIndex > 0;
 		}
 
-		public void next() modify {
+		public Object next() modify {
 			if ( !hasNext() ) {
 				throw new OutOfBoundsException("index out of bounds");
 			}
 
 			mCurrentIndex--;
+
+			return mCollection.at(mCurrentIndex);
 		}
 
 		public void reset() modify {
