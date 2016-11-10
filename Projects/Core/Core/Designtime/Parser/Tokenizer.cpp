@@ -391,6 +391,40 @@ void Tokenizer::mergeBooleanOperators()
 }
 
 /*
+ * mergeOtherOperators: merges '[' ']' operators into '[]'
+ */
+void Tokenizer::mergeOtherOperators()
+{
+	TokenList tmp;
+	Token::Type::E lastType = Token::Type::UNKNOWN;
+	TokenIterator token = mTokens.begin();
+
+	// try to combine all other operator tokens
+	while ( token != mTokens.end() ) {
+		bool changed = false;
+		Token::Type::E activeType = token->type();
+
+		if ( (lastType == Token::Type::BRACKET_OPEN) && (activeType == Token::Type::BRACKET_CLOSE) ) {
+			// && and
+			changed = true;
+			// remove last added token ...
+			tmp.pop_back();
+			// ... and add AND instead
+			tmp.push_back(Token(Token::Category::Operator, Token::Type::ARRAY_SUBSCRIPT, "[]", token->position()));
+		}
+
+		lastType = token->type();
+		if ( !changed ) {
+			tmp.push_back((*token));
+		}
+
+		token++;
+	}
+
+	mTokens = tmp;
+}
+
+/*
  * mergeDestructors: merges all '~' with their corresponding typename
  */
 void Tokenizer::mergeDestructors()
@@ -565,11 +599,11 @@ void Tokenizer::process()
 	removeWhiteSpaces();			// remove all white spaces
 	replaceAssignments();			// replace assignment tokens with compare tokens (if present)
 	mergeBooleanOperators();		// merge '&' '&' into '&&'
+	mergeOtherOperators();			// megre '[' ']' into '[]'
 	mergeDestructors();				// merge '~' & typename into '~<typename>'
 	mergeInfixPostfixOperators();	// merge '+' '+' into '++'
 	replaceConstDataTypes();		// combines CONST_INTEGER '.' CONST_INTEGER <data type> into a CONST_FLOAT or CONST_DOUBLE
 	replaceOperators();				// combine 'operator' identifiers with the next following token i.e. 'operator' '+' => 'operator+'
-	//replacePrototypes();			//
 }
 
 void Tokenizer::removeWhiteSpaces()

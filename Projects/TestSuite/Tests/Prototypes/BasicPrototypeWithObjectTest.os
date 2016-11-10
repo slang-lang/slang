@@ -2,7 +2,7 @@
 
 import System.Integer;
 
-public prototype Prototype<T> {
+public object Prototype<T> {
 	private T mValue;
 
 	public void Constructor(T value) {

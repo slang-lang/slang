@@ -501,15 +501,23 @@ bool Object::isValid() const
 	return isConstructed();
 }
 
-const Object* Object::operator_array(const Object *index)
+void Object::operator_array(const Object *index, Object* result)
 {
-	if ( !mIsArray ) {
-		throw Common::Exceptions::Exception(Typename() + ".operator[]: is not an array");
+	std::string subscript = index->QualifiedTypename();
+
+	ParameterList params;
+	params.push_back(
+		Parameter(ANONYMOUS_OBJECT, subscript, index->getValue(), false, index->isConst(), index->isAtomicType() ? Parameter::AccessMode::ByValue : Parameter::AccessMode::ByReference, index->getReference())
+	);
+
+	::ObjectiveScript::MethodSymbol* opMethod = resolveMethod("operator[]", params, false, Visibility::Public);
+	if ( opMethod ) {
+		Interpreter interpreter;
+		interpreter.execute(static_cast<Method*>(opMethod), params, result);
+		return;
 	}
 
-	std::string subscript = index->Typename();
-
-	throw Common::Exceptions::NotImplemented(Typename() + ".operator[]: no array subscript operator for " + subscript + " implemented");
+	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator[]: no array subscript operator for " + subscript + " implemented");
 }
 
 void Object::operator_assign(const Object *other)
@@ -524,7 +532,7 @@ void Object::operator_assign(const Object *other)
 		Parameter(ANONYMOUS_OBJECT, QualifiedTypename(), VALUE_NONE)
 	);
 
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", params, true, Visibility::Public);
+	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", params, false, Visibility::Public);
 	if ( value_operator ) {
 		Object tmp;
 
@@ -546,12 +554,12 @@ void Object::operator_bitand(const Object *other)
 
 	ParameterList params;
 	params.push_back(
-		Parameter(ANONYMOUS_OBJECT, Typename(), VALUE_NONE)
+		Parameter(ANONYMOUS_OBJECT, QualifiedTypename(), VALUE_NONE)
 	);
 
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("&operator", params, true, Visibility::Public);
+	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("&operator", params, false, Visibility::Public);
 	if ( !value_operator ) {
-		value_operator = other->resolveMethod("=operator", params, true, Visibility::Public);
+		value_operator = other->resolveMethod("=operator", params, false, Visibility::Public);
 	}
 	if ( value_operator ) {
 		Object tmp;
@@ -574,13 +582,12 @@ void Object::operator_bitcomplement(const Object *other)
 
 	ParameterList params;
 	params.push_back(
-		Parameter(ANONYMOUS_OBJECT, Typename(), VALUE_NONE)
-		//Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
+		Parameter(ANONYMOUS_OBJECT, QualifiedTypename(), VALUE_NONE)
 	);
 
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("~operator", params, true, Visibility::Public);
+	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("~operator", params, false, Visibility::Public);
 	if ( !value_operator ) {
-		value_operator = other->resolveMethod("=operator", params, true, Visibility::Public);
+		value_operator = other->resolveMethod("=operator", params, false, Visibility::Public);
 	}
 	if ( value_operator ) {
 		Object tmp;
@@ -603,13 +610,12 @@ void Object::operator_bitor(const Object *other)
 
 	ParameterList params;
 	params.push_back(
-		Parameter(ANONYMOUS_OBJECT, Typename(), VALUE_NONE)
-		//Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
+		Parameter(ANONYMOUS_OBJECT, QualifiedTypename(), VALUE_NONE)
 	);
 
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("|operator", params, true, Visibility::Public);
+	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("|operator", params, false, Visibility::Public);
 	if ( !value_operator ) {
-		value_operator = other->resolveMethod("=operator", params, true, Visibility::Public);
+		value_operator = other->resolveMethod("=operator", params, false, Visibility::Public);
 	}
 	if ( value_operator ) {
 		Object tmp;
@@ -637,13 +643,12 @@ void Object::operator_divide(const Object *other)
 
 	ParameterList params;
 	params.push_back(
-		Parameter(ANONYMOUS_OBJECT, Typename(), VALUE_NONE)
-		//Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
+		Parameter(ANONYMOUS_OBJECT, QualifiedTypename(), VALUE_NONE)
 	);
 
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("/operator", params, true, Visibility::Public);
+	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("/operator", params, false, Visibility::Public);
 	if ( !value_operator ) {
-		value_operator = other->resolveMethod("=operator", params, true, Visibility::Public);
+		value_operator = other->resolveMethod("=operator", params, false, Visibility::Public);
 	}
 	if ( value_operator ) {
 		Object tmp;
@@ -670,13 +675,12 @@ bool Object::operator_equal(const Object *other)
 
 	ParameterList params;
 	params.push_back(
-		Parameter(ANONYMOUS_OBJECT, Typename(), VALUE_NONE)
-		//Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
+		Parameter(ANONYMOUS_OBJECT, QualifiedTypename(), VALUE_NONE)
 	);
 
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("==operator", params, true, Visibility::Public);
+	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("==operator", params, false, Visibility::Public);
 	if ( !value_operator ) {
-		value_operator = other->resolveMethod("=operator", params, true, Visibility::Public);
+		value_operator = other->resolveMethod("=operator", params, false, Visibility::Public);
 	}
 	if ( value_operator ) {
 		Object tmp;
@@ -698,13 +702,12 @@ bool Object::operator_greater(const Object *other)
 
 	ParameterList params;
 	params.push_back(
-		Parameter(ANONYMOUS_OBJECT, Typename(), VALUE_NONE)
-		//Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
+		Parameter(ANONYMOUS_OBJECT, QualifiedTypename(), VALUE_NONE)
 	);
 
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod(">operator", params, true, Visibility::Public);
+	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod(">operator", params, false, Visibility::Public);
 	if ( !value_operator ) {
-		value_operator = other->resolveMethod("=operator", params, true, Visibility::Public);
+		value_operator = other->resolveMethod("=operator", params, false, Visibility::Public);
 	}
 	if ( value_operator ) {
 		Object tmp;
@@ -726,13 +729,12 @@ bool Object::operator_greater_equal(const Object *other)
 
 	ParameterList params;
 	params.push_back(
-		Parameter(ANONYMOUS_OBJECT, Typename(), VALUE_NONE)
-		//Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
+		Parameter(ANONYMOUS_OBJECT, QualifiedTypename(), VALUE_NONE)
 	);
 
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod(">=operator", params, true, Visibility::Public);
+	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod(">=operator", params, false, Visibility::Public);
 	if ( !value_operator ) {
-		value_operator = other->resolveMethod("=operator", params, true, Visibility::Public);
+		value_operator = other->resolveMethod("=operator", params, false, Visibility::Public);
 	}
 	if ( value_operator ) {
 		Object tmp;
@@ -772,13 +774,12 @@ bool Object::operator_less(const Object *other)
 
 	ParameterList params;
 	params.push_back(
-		Parameter(ANONYMOUS_OBJECT, Typename(), VALUE_NONE)
-		//Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
+		Parameter(ANONYMOUS_OBJECT, QualifiedTypename(), VALUE_NONE)
 	);
 
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("<operator", params, true, Visibility::Public);
+	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("<operator", params, false, Visibility::Public);
 	if ( !value_operator ) {
-		value_operator = other->resolveMethod("=operator", params, true, Visibility::Public);
+		value_operator = other->resolveMethod("=operator", params, false, Visibility::Public);
 	}
 	if ( value_operator ) {
 		Object tmp;
@@ -800,13 +801,12 @@ bool Object::operator_less_equal(const Object *other)
 
 	ParameterList params;
 	params.push_back(
-		Parameter(ANONYMOUS_OBJECT, Typename(), VALUE_NONE)
-		//Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
+		Parameter(ANONYMOUS_OBJECT, QualifiedTypename(), VALUE_NONE)
 	);
 
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("<=operator", params, true, Visibility::Public);
+	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("<=operator", params, false, Visibility::Public);
 	if ( !value_operator ) {
-		value_operator = other->resolveMethod("=operator", params, true, Visibility::Public);
+		value_operator = other->resolveMethod("=operator", params, false, Visibility::Public);
 	}
 	if ( value_operator ) {
 		Object tmp;
@@ -828,13 +828,12 @@ void Object::operator_modulo(const Object *other)
 
 	ParameterList params;
 	params.push_back(
-		Parameter(ANONYMOUS_OBJECT, Typename(), VALUE_NONE)
-		//Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
+		Parameter(ANONYMOUS_OBJECT, QualifiedTypename(), VALUE_NONE)
 	);
 
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("%operator", params, true, Visibility::Public);
+	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("%operator", params, false, Visibility::Public);
 	if ( !value_operator ) {
-		value_operator = other->resolveMethod("=operator", params, true, Visibility::Public);
+		value_operator = other->resolveMethod("=operator", params, false, Visibility::Public);
 	}
 	if ( value_operator ) {
 		Object tmp;
@@ -857,13 +856,12 @@ void Object::operator_multiply(const Object *other)
 
 	ParameterList params;
 	params.push_back(
-		Parameter(ANONYMOUS_OBJECT, Typename(), VALUE_NONE)
-		//Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
+		Parameter(ANONYMOUS_OBJECT, QualifiedTypename(), VALUE_NONE)
 	);
 
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("*operator", params, true, Visibility::Public);
+	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("*operator", params, false, Visibility::Public);
 	if ( !value_operator ) {
-		value_operator = other->resolveMethod("=operator", params, true, Visibility::Public);
+		value_operator = other->resolveMethod("=operator", params, false, Visibility::Public);
 	}
 	if ( value_operator ) {
 		Object tmp;
@@ -887,12 +885,11 @@ void Object::operator_plus(const Object *other)
 	ParameterList params;
 	params.push_back(
 		Parameter(ANONYMOUS_OBJECT, QualifiedTypename(), VALUE_NONE)
-		//Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
 	);
 
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("+operator", params, true, Visibility::Public);
+	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("+operator", params, false, Visibility::Public);
 	if ( !value_operator ) {
-		value_operator = other->resolveMethod("=operator", params, true, Visibility::Public);
+		value_operator = other->resolveMethod("=operator", params, false, Visibility::Public);
 	}
 	if ( value_operator ) {
 		Object tmp;
@@ -915,13 +912,12 @@ void Object::operator_subtract(const Object *other)
 
 	ParameterList params;
 	params.push_back(
-		Parameter(ANONYMOUS_OBJECT, Typename(), VALUE_NONE)
-		//Parameter(ANONYMOUS_OBJECT, Typename(), other->getValue(), false, false, Parameter::AccessMode::ByValue, other)
+		Parameter(ANONYMOUS_OBJECT, QualifiedTypename(), VALUE_NONE)
 	);
 
-	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("-operator", params, true, Visibility::Public);
+	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("-operator", params, false, Visibility::Public);
 	if ( !value_operator ) {
-		value_operator = other->resolveMethod("=operator", params, true, Visibility::Public);
+		value_operator = other->resolveMethod("=operator", params, false, Visibility::Public);
 	}
 	if ( value_operator ) {
 		Object tmp;

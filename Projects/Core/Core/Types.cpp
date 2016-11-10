@@ -116,10 +116,8 @@ StringSet provideReservedWords()
 	reservedWords.insert(RESERVED_WORD_NAMESPACE);
 	reservedWords.insert(RESERVED_WORD_OBJECT);
 	reservedWords.insert(RESERVED_WORD_OPERATOR);
-	reservedWords.insert(RESERVED_WORD_PROTOTYPE);
 	reservedWords.insert(RESERVED_WORD_REPLICATES);
 	reservedWords.insert(RESERVED_WORD_SCOPE_OPERATOR);
-	reservedWords.insert(RESERVED_WORD_USING);
 
 	return reservedWords;
 }

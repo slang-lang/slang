@@ -81,10 +81,8 @@ static const char* RESERVED_WORD_INTERFACE = "interface";
 static const char* RESERVED_WORD_NAMESPACE = "namespace";
 static const char* RESERVED_WORD_OBJECT = "object";
 static const char* RESERVED_WORD_OPERATOR = "operator";
-static const char* RESERVED_WORD_PROTOTYPE = "prototype";
 static const char* RESERVED_WORD_REPLICATES = "replicates";
 static const char* RESERVED_WORD_SCOPE_OPERATOR = ".";
-static const char* RESERVED_WORD_USING = "using";
 
 // System
 static const char* ANONYMOUS_OBJECT = "<anonymous>";
@@ -93,9 +91,6 @@ static const char* OBJECT = "Object";
 static const char* OBJECTIVESCRIPT_LIBRARY = "OBJECTIVESCRIPT_LIBRARY";
 static const char* SYSTEM_LIBRARY = "SYSTEM.OS";
 static const char* UNKNOWN = "unknown";
-
-// Types
-static const char* PROTOTYPE_TYPE = "UNKNOWN";
 
 // Values
 static const char* VALUE_NONE = "";

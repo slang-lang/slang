@@ -43,6 +43,7 @@ public:
 	public:
 		enum E {
 			AND,
+			ARRAY_SUBSCRIPT,
 			ASSIGN,
 			ASSIGN_ADDITION,
 			ASSIGN_BITCOMPLEMENT,

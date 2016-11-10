@@ -27,6 +27,7 @@
 #include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/Designtime/BuildInTypes/UserObject.h>
 #include <Core/Designtime/BuildInTypes/VoidObject.h>
+#include <Core/Designtime/Parser/Parser.h>
 #include <Core/Preprocessor.h>
 #include <Core/Tools.h>
 #include <Utils.h>
@@ -106,26 +107,6 @@ void Repository::addBluePrint(Designtime::BluePrintObject* blueprint)
 	mBluePrintObjects.insert(std::make_pair(blueprint->QualifiedTypename(), blueprint));
 }
 
-std::string Repository::buildConstraintTypename(const std::string& name, const PrototypeConstraints& constraints) const
-{
-	if ( constraints.empty() ) {
-		return name;
-	}
-
-	std::string type = name;
-	type += "<";
-	for ( PrototypeConstraints::const_iterator it = constraints.begin(); it != constraints.end(); ++it ) {
-		type += it->mType;
-
-		if ( std::distance(it, constraints.end()) > 1 ) {
-			type += ",";
-		}
-	}
-	type += ">";
-
-	return type;
-}
-
 void Repository::cleanupForwardDeclarations()
 {
 	ForwardDeclarationTomb tmp = mForwardDeclarations;
@@ -137,9 +118,11 @@ void Repository::cleanupForwardDeclarations()
 
 Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime::BluePrintObject* blueprint, const PrototypeConstraints& constraints)
 {
-	assert(blueprint);
+	if ( !blueprint ) {
+		throw Common::Exceptions::Exception("invalid blueprint provided!");
+	}
 
-	std::string constraintType = buildConstraintTypename(blueprint->QualifiedTypename(), constraints);
+	std::string constraintType = Designtime::Parser::buildConstraintTypename(blueprint->QualifiedTypename(), constraints);
 
 	PrototypeConstraints protoConstraints = blueprint->getPrototypeConstraints();
 
@@ -288,11 +271,11 @@ Runtime::Object* Repository::createInstance(Designtime::BluePrintGeneric* bluepr
 	}
 
 	if ( blueprint->getSymbolType() == Symbol::IType::BluePrintEnumSymbol ) {
-		// replace blueprint with an integer blueprint
+		// replace enum blueprint with an integer blueprint
 		blueprint = findBluePrint(Runtime::IntegerObject::TYPENAME);
 	}
 
-	std::string constraintType = buildConstraintTypename(blueprint->QualifiedTypename(), constraints);
+	std::string constraintType = Designtime::Parser::buildConstraintTypename(blueprint->QualifiedTypename(), constraints);
 
 	if ( blueprint->QualifiedTypename() != constraintType ) {
 		// we have to handle a prototyped blueprint
@@ -357,6 +340,7 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 
 	IScope* parent = blueprint->getEnclosingScope();
 	if ( !parent ) {
+		// set global scope as fallback parent
 		parent = Controller::Instance().stack()->globalScope();
 	}
 
@@ -383,11 +367,11 @@ Runtime::Object* Repository::createReference(Designtime::BluePrintGeneric* bluep
 	}
 
 	if ( blueprint->getSymbolType() == Symbol::IType::BluePrintEnumSymbol ) {
-		// replace blueprint with an integer blueprint
+		// replace enum blueprint with an integer blueprint
 		blueprint = findBluePrint(Runtime::IntegerObject::TYPENAME);
 	}
 
-	std::string constraintType = buildConstraintTypename(blueprint->QualifiedTypename(), constraints);
+	std::string constraintType = Designtime::Parser::buildConstraintTypename(blueprint->QualifiedTypename(), constraints);
 
 	if ( blueprint->QualifiedTypename() != constraintType ) {
 		// we have to handle a prototyped blueprint
@@ -447,7 +431,7 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 						object->undefine(IDENTIFIER_BASE, 0);
 
 						// create base object
-						Runtime::Object *ancestor = createReference(blueIt->second, name, PrototypeConstraints(), initialize);
+						Runtime::Object *ancestor = createReference(blueIt->second, name, ancestorIt->constraints(), initialize);
 						ancestor->setParent(blueprint->getEnclosingScope());
 						ancestor->undefine(IDENTIFIER_THIS, 0);
 						ancestor->define(IDENTIFIER_THIS, object);

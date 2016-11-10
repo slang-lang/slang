@@ -855,7 +855,7 @@ void operator_trinary_array(Object *base, Object *index, Object* other)
 //	std::string target = other->Typename();
 */
 
-	*other = *base->operator_array(index);
+	other->operator_array(index, base);
 }
 
 void operator_unary_decrement(Object *base)

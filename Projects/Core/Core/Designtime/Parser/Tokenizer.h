@@ -41,6 +41,7 @@ private:	// Tokenizer
 	void mergeBooleanOperators();
 	void mergeDestructors();
 	void mergeInfixPostfixOperators();
+	void mergeOtherOperators();
 	void removeWhiteSpaces();
 	void replaceAssignments();
 	void replaceConstDataTypes();

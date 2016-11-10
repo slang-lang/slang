@@ -1,7 +1,7 @@
 #!/usr/local/bin/oscript
 
 private object TestObject {
-	public int operator[(int index) const {
+	public int operator[](int index) const {
 		return index;
 	}
 }
@@ -11,13 +11,11 @@ public void Main(int argc = 0, string args = "") {
 }
 
 private bool TestCase1() const {
-	int intArray[];
-	intArray[5] = 173;
+	print("TestCase 1: index operator");
 
-	int result = intArray[5];
+	TestObject obj = new TestObject();
 
-	print("intArray[5] = " + result);
+	print(string obj[173]);
 
-	return result == 173;
+	return obj[173] == 173;
 }
-

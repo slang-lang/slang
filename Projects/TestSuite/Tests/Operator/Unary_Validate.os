@@ -57,7 +57,7 @@ private bool TestCase3() const {
 		assert(!"int validation failed!");
 	}
 	catch {
-		print("caugth validation exception");
+		print("caught validation exception");
 		return true;
 	}
 

@@ -14,10 +14,10 @@ public namespace System {
 				throw new OutOfBoundsException("erase index(" + index + ") beyond end of list");
 			}
 
-			if ( index == 0 ) {				// special handling for 1st element
+			if ( index == 0 ) {						// special handling for 1st element
 				mFirst = mFirst.mNext;
 			}
-			else {						// default handling for erasing
+			else {									// default handling for erasing
 				CollectionItem prev = mFirst;
 				for ( int i = 0; i < index - 1; i = i++ ) {
 					prev = prev.mNext;
@@ -37,7 +37,7 @@ public namespace System {
 		public void insert(Object value ref) modify {
 			CollectionItem item = new CollectionItem(value);
 
-			if ( !mFirst ) {				// special handling for 1st element
+			if ( !mFirst ) {						// special handling for 1st element
 				mFirst = item;
 				mLast = item;
 			}
@@ -45,7 +45,7 @@ public namespace System {
 				item.mNext = mFirst;
 				mFirst = item;
 			}
-			else {						// default handling for insertions
+			else {									// default handling for insertions
 				CollectionItem tmp = mFirst;
 				CollectionItem previous;
 

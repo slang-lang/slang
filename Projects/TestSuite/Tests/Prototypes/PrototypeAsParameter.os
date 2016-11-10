@@ -1,6 +1,6 @@
 #!/usr/local/bin/oscript
 
-public prototype Prototype<T> {
+public object Prototype<T> {
 	private T mValue;
 
 	public void Constructor(T value) {

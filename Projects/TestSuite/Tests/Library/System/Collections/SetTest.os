@@ -98,6 +98,8 @@ private bool TestCase2() const {
 			count++;
 		}
 
+		assert( set.size() == 10 );
+
 		//print("before erase: set has " + set.size() + " item(s)");
 
 		System.Iterator it = set.getIterator();

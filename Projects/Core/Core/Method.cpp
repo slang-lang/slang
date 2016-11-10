@@ -249,6 +249,12 @@ std::string Method::ToString(unsigned int indent) const
 	result += " " + LanguageFeatureState::convert(mLanguageFeatureState);
 	result += " " + QualifiedTypename() + " " + getName() + "(" + toString(mSignature) + ")";
 	result += " " + Mutability::convert(mMutability);
+	if ( isAbstract() ) {
+		result += " abstract";
+	}
+	if ( isRecursive() ) {
+		result += " recursive";
+	}
 	if ( isStatic() ) {
 		result += " static";
 	}

@@ -34,7 +34,7 @@ public namespace System {
 			mSize--;
 		}
 
-		public void insert(Object value ref, int index) modify {
+		public void insert(int index, Object value ref) modify {
 			if ( index < 0 || index > mSize ) {
 				throw new OutOfBoundsException("insert index(" + index + ") beyond end of list");
 			}

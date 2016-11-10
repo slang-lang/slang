@@ -2,7 +2,7 @@
 
 import System.Integer;
 
-public prototype Prototype<T> {
+public object Prototype<T> {
 	private T mValue;
 
 	public void Constructor() {
@@ -20,12 +20,6 @@ public prototype Prototype<T> {
 	public void setValue(T value) {
 		mValue = value;
 	}
-
-/*
-	public void operator=(Prototype<int> other) {
-		mValue = T other.getValue();
-	}
-*/
 }
 
 public void Main(int argc = 0, string argv = "") {

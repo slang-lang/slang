@@ -38,14 +38,6 @@ class Repository;
 namespace Runtime {
 
 // Forward declarations
-class BoolObject;
-class FloatObject;
-class IntegerObject;
-class NumberObject;
-class StringObject;
-class VoidObject;
-
-// Forward declarations
 class Method;
 class Object;
 
@@ -117,7 +109,7 @@ public:	// Usage
 	ControlFlow::E execute(Object *result, const std::string& method, const ParameterList& params, const Method* caller = 0);		// throws VisibilityError exception
 
 public:	// Operators
-	virtual const Object* operator_array(const Object *index);
+	virtual void operator_array(const Object *index, Object* result);
 	virtual void operator_assign(const Object *other);
 	virtual void operator_bitand(const Object *other);
 	virtual void operator_bitcomplement(const Object *other);

@@ -46,6 +46,26 @@ bool checkSyntax(TokenIterator foundIt, const TokenList &expected)
 
 
 
+std::string Parser::buildConstraintTypename(const std::string& name, const PrototypeConstraints& constraints)
+{
+	if ( constraints.empty() ) {
+		return name;
+	}
+
+	std::string type = name;
+	type += "<";
+	for ( PrototypeConstraints::const_iterator it = constraints.begin(); it != constraints.end(); ++it ) {
+		type += it->mType;
+
+		if ( std::distance(it, constraints.end()) > 1 ) {
+			type += ",";
+		}
+	}
+	type += ">";
+
+	return type;
+}
+
 Ancestors Parser::collectInheritance(TokenIterator& token)
 {
 	Ancestors ancestors;
@@ -100,8 +120,10 @@ Ancestors Parser::collectInheritance(TokenIterator& token)
 
 		std::string type = Parser::identify(token);
 
+		PrototypeConstraints constraints = collectPrototypeConstraints(token);
+
 		ancestors.insert(
-			Ancestor(type, inheritance, visibility)
+			Ancestor(type, inheritance, visibility, constraints)
 		);
 	}
 
@@ -381,19 +403,6 @@ bool Parser::isParameterDeclaration(TokenIterator start)
 	TokenList tokens;
 
 	tokens.push_back(Token(Token::Type::IDENTIFER));
-	tokens.push_back(Token(Token::Type::IDENTIFER));
-
-	return checkSyntax(start, tokens);
-}
-
-// prototype declaration:
-// <visibility> [language feature] prototype <identifier> [extends <identifier> [implements <identifier>, ...]] { ... }
-bool Parser::isPrototypeDeclaration(TokenIterator start)
-{
-	TokenList tokens;
-
-	tokens.push_back(Token(Token::Type::VISIBILITY));
-	tokens.push_back(Token(Token::Type::RESERVED_WORD, std::string(RESERVED_WORD_PROTOTYPE)));
 	tokens.push_back(Token(Token::Type::IDENTIFER));
 
 	return checkSyntax(start, tokens);
