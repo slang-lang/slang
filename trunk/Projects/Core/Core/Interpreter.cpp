@@ -570,13 +570,8 @@ void Interpreter::parseInfixPostfix(Object *result, TokenIterator& start)
 	switch ( op ) {
 		case Token::Type::MATH_SUBTRACT: {
 			start++;
-
-			Object tmp;
-			parseExpression(&tmp, start);
-
-			operator_unary_minus(&tmp);
-
-			operator_binary_assign(result, &tmp);
+			parseExpression(result, start);
+			operator_unary_minus(result);
 		} break;
 		case Token::Type::OPERATOR_DECREMENT: {
 			start++;
@@ -999,6 +994,9 @@ void Interpreter::process_foreach(TokenIterator& token, Object* result)
 		throw Common::Exceptions::SyntaxError("invalid symbol type '" + symbol->getName() + "' found", token->position());
 	}
 	token++;
+
+	PrototypeConstraints constraints = Designtime::Parser::collectPrototypeConstraints(token);
+	(void)constraints;
 
 	expect(Token::Type::IDENTIFER, token);
 	token++;

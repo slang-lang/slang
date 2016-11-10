@@ -20,8 +20,9 @@ Ancestor::Ancestor()
 {
 }
 
-Ancestor::Ancestor(const std::string& name, Type::E type, Visibility::E visibility)
+Ancestor::Ancestor(const std::string& name, Type::E type, Visibility::E visibility, const PrototypeConstraints& constraints)
 : mName(name),
+  mPrototypeConstraints(constraints),
   mType(type),
   mVisibility(visibility)
 {
@@ -31,6 +32,10 @@ bool Ancestor::operator<(const Ancestor& other) const
 {
 	if ( type() == other.type() ) {
 		if ( name() == other.name() ) {
+			if ( visibility() == other.visibility() ) {
+				return constraints() == other.constraints();
+			}
+
 			return visibility() < other.visibility();
 		}
 
@@ -47,6 +52,11 @@ bool Ancestor::operator==(const Ancestor& other) const
 	}
 
 	return type() == other.type() && visibility() == other.visibility();
+}
+
+const PrototypeConstraints& Ancestor::constraints() const
+{
+	return mPrototypeConstraints;
 }
 
 const std::string& Ancestor::name() const

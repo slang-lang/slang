@@ -3,7 +3,7 @@
 import System.Integer;
 import System.String;
 
-public prototype Prototype<T: Object> {
+public object Prototype<T: Object> {
 	private T mValue;
 
 	public void Constructor(T value) {
@@ -41,7 +41,7 @@ private bool TestCase1() {
 }
 
 private bool TestCase2() {
-	print("TestCase 2: constraint type fail");
+	print("TestCase 2: prototype constraint type fail");
 
 	Prototype<int> proto = new Prototype<int>(173);
 

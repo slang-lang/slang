@@ -73,7 +73,6 @@ bool Analyser::buildEnum(Designtime::BluePrintEnum* symbol, const TokenList& tok
 		//entry->setConstructed(true);
 
 		// define enum entries as integer type
-		//Runtime::Object* entry = Controller::Instance().repository()->createInstance(Runtime::IntegerObject::TYPENAME, name, true);
 		Runtime::Object* entry = new Runtime::IntegerObject(name, value.toInt());	// this prevents a double delete because all instances are freed by their surrounding scope
 		entry->setMember(true);
 		entry->setMutability(Mutability::Const);
@@ -83,10 +82,6 @@ bool Analyser::buildEnum(Designtime::BluePrintEnum* symbol, const TokenList& tok
 		// define enum entries in current scope
 		entry->setParent(symbol);
 		symbol->define(name, entry);
-
-		// define enum entries in parent scope
-		//entry->setParent(symbol->getEnclosingScope());
-		//symbol->getEnclosingScope()->define(name, entry);
 
 		if ( token->type() == Token::Type::COMMA ) {
 			token++;
@@ -190,7 +185,7 @@ bool Analyser::createBluePrint(TokenIterator& token, TokenIterator end)
 
 		// in case this object has no inheritance set, we inherit from 'Object'
 		if ( objectType != ObjectType::Interface && !extends ) {
-			symbol->addInheritance(Ancestor(OBJECT, Ancestor::Type::Extends, Visibility::Public));
+			symbol->addInheritance(Ancestor(OBJECT, Ancestor::Type::Extends, Visibility::Public, PrototypeConstraints()));
 		}
 	}
 
@@ -597,7 +592,7 @@ void Analyser::generate(const TokenList& tokens)
 	TokenList::const_iterator it = tokens.begin();
 
 	while ( it != tokens.end() && it->type() != Token::Type::ENDOFFILE ) {
-		if ( Parser::isInterfaceDeclaration(it) || Parser::isObjectDeclaration(it) || Parser::isPrototypeDeclaration(it) ) {
+		if ( Parser::isInterfaceDeclaration(it) || Parser::isObjectDeclaration(it) ) {
 			createBluePrint(it, tokens.end());
 		}
 		else if ( Parser::isEnumDeclaration(it) ) {

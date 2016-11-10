@@ -31,6 +31,8 @@ bool checkSyntax(TokenIterator foundIt, const TokenList &expected);
 class Parser
 {
 public:
+	static std::string buildConstraintTypename(const std::string& name, const PrototypeConstraints& constraints);
+
 	static TokenList collectScopeTokens(TokenIterator& token);
 	static Ancestors collectInheritance(TokenIterator& token);
 	static PrototypeConstraints collectPrototypeConstraints(TokenIterator& token);
@@ -51,7 +53,6 @@ public:
 	static bool isNamespaceDeclaration(TokenIterator start);
 	static bool isObjectDeclaration(TokenIterator start);
 	static bool isParameterDeclaration(TokenIterator start);
-	static bool isPrototypeDeclaration(TokenIterator start);
 
 	static ParameterList parseParameters(TokenIterator &token, IScope* scope = 0);
 };

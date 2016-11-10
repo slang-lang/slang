@@ -3,7 +3,7 @@
 import System.Integer;
 import System.String;
 
-public prototype Prototype<T> {
+public object Prototype<T> {
 	private T mValue;
 
 	public void Constructor() {
@@ -23,7 +23,7 @@ public prototype Prototype<T> {
 	}
 }
 
-public prototype AnotherPrototype<K, V> {
+public object AnotherPrototype<K, V> {
 	private K mKey;
 	private V mValue;
 

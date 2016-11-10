@@ -21,7 +21,7 @@ std::string FloatObject::TYPENAME = "float";
 FloatObject::FloatObject()
 : BluePrintObject(TYPENAME, SYSTEM_LIBRARY)
 {
-	addInheritance(Ancestor(OBJECT, Ancestor::Type::Extends, Visibility::Public));
+	addInheritance(Ancestor(OBJECT, Ancestor::Type::Extends, Visibility::Public, PrototypeConstraints()));
 }
 
 const std::string& FloatObject::getTypeName() const

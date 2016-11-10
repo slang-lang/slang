@@ -3,10 +3,23 @@
 import System.Collections.List;
 import System.String;
 
+public object Prototype<T> {
+	public T mValue;
+
+	public void Constructor(T value) {
+		mValue = value;
+	}
+	
+	public string =operator(string none) const {
+		return string mValue;
+	}
+}
+
 public void Main(int argc = 0, string args = "") {
 	assert( TestCase1() );
 	assert( TestCase2() );
-	//assert( TestCase3() );
+	//assert( TestCase3() );	// invalid foreach-statement
+	assert( TestCase4() );
 }
 
 private bool TestCase1() {
@@ -19,8 +32,6 @@ private bool TestCase1() {
 	list.push_back(Object new String("1389"));
 
 	assert( list.size() == 3 );
-
-	//foreach ( list => Object s ) 
 
 	foreach ( Object s : list ) {
 		print(string s);
@@ -63,4 +74,22 @@ private bool TestCase3() {
 	}
 
 	return false;
+}
+
+private bool TestCase4() {
+	print("TestCase 4: foreach with prototype");
+
+	System.List list = new System.List();
+
+	list.push_back(Object new Prototype<int>(664));
+	list.push_back(Object new Prototype<int>(173));
+	list.push_back(Object new Prototype<int>(1389));
+
+	assert( list.size() == 3 );
+
+	foreach ( Prototype<int> p : list ) {
+		print(string p);
+	}
+
+	return true;
 }

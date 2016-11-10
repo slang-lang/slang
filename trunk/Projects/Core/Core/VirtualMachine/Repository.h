@@ -50,8 +50,6 @@ public:
 	Runtime::Object* createReference(Designtime::BluePrintGeneric* blueprint, const std::string& name, const PrototypeConstraints& constraints, bool initialize = false);
 
 private:
-	std::string buildConstraintTypename(const std::string& name, const PrototypeConstraints& constraints) const;
-
 	Designtime::BluePrintObject* createBluePrintFromPrototype(Designtime::BluePrintObject* blueprint, const PrototypeConstraints& constraints);
 	std::string lookupType(const std::string& type, const PrototypeConstraints& blueprintConstraints, const PrototypeConstraints& implConstraints) const;
 
