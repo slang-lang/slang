@@ -2,7 +2,7 @@
 
 import System.Math;
 
-private float CAPSULE_WEIGHT = 14741.f; /*kg*/
+private float CAPSULE_WEIGHT const = 14741.f; /*kg*/
 private float MAXBURN const = 30.f;
 
 private float mFuel = 120.f; /*kg*/

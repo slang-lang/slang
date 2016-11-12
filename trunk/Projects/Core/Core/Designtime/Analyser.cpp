@@ -315,7 +315,7 @@ bool Analyser::createMember(TokenIterator& token, TokenIterator /*end*/)
 	// look for the identifier token
 	name = (*token++).content();
 
-/*	temporary out of order
+/*	temporary deactivated
 	if ( !dynamic_cast<Runtime::Namespace*>(mScope) ) {
 		if ( visibility == Visibility::Public ) {
 			// beware: public members are deprecated, remember the "Law of Demeter"
