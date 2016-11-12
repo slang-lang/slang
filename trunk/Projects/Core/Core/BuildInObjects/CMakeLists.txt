@@ -6,7 +6,6 @@ SET(SOURCES
 	FloatObject.cpp
 	GenericObject.cpp
 	IntegerObject.cpp
-	NumberObject.cpp
 	StringObject.cpp
 	UserObject.cpp
 	VoidObject.cpp
@@ -18,7 +17,6 @@ SET(HEADERS
 	FloatObject.h
 	GenericObject.h
 	IntegerObject.h
-	NumberObject.h
 	StringObject.h
 	UserObject.h
 	VoidObject.h

@@ -9,7 +9,6 @@
 #include <Core/BuildInObjects/DoubleObject.h>
 #include <Core/BuildInObjects/FloatObject.h>
 #include <Core/BuildInObjects/IntegerObject.h>
-#include <Core/BuildInObjects/NumberObject.h>
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/BuildInObjects/UserObject.h>
 #include <Core/BuildInObjects/VoidObject.h>
@@ -61,12 +60,6 @@ void operator_binary_assign(Object *base, Object *other)
 
 		base->assign(tmp);
 	}
-	else if ( source == NumberObject::TYPENAME ) {
-		NumberObject tmp(base->getValue());
-		tmp.operator_assign(other);
-
-		base->assign(tmp);
-	}
 	else if ( source == StringObject::TYPENAME ) {
 		StringObject tmp(base->getValue());
 		tmp.operator_assign(other);
@@ -113,12 +106,6 @@ void operator_binary_bitand(Object *base, Object *other)
 	}
 	else if ( source == IntegerObject::TYPENAME ) {
 		IntegerObject tmp(base->getValue());
-		tmp.operator_bitand(other);
-
-		base->assign(tmp);
-	}
-	else if ( source == NumberObject::TYPENAME ) {
-		NumberObject tmp(base->getValue());
 		tmp.operator_bitand(other);
 
 		base->assign(tmp);
@@ -178,12 +165,6 @@ void operator_binary_bitcomplement(Object *base, Object *other)
 
 		base->assign(tmp);
 	}
-	else if ( source == NumberObject::TYPENAME ) {
-		NumberObject tmp(base->getValue());
-		tmp.operator_bitcomplement(other);
-
-		base->assign(tmp);
-	}
 	else if ( source == StringObject::TYPENAME ) {
 		StringObject tmp(base->getValue());
 		tmp.operator_bitcomplement(other);
@@ -235,12 +216,6 @@ void operator_binary_bitor(Object *base, Object *other)
 	}
 	else if ( source == IntegerObject::TYPENAME ) {
 		IntegerObject tmp(base->getValue());
-		tmp.operator_bitor(other);
-
-		base->assign(tmp);
-	}
-	else if ( source == NumberObject::TYPENAME ) {
-		NumberObject tmp(base->getValue());
 		tmp.operator_bitor(other);
 
 		base->assign(tmp);
@@ -300,12 +275,6 @@ void operator_binary_divide(Object *base, Object *other)
 
 		base->assign(tmp);
 	}
-	else if ( source == NumberObject::TYPENAME ) {
-		NumberObject tmp(base->getValue());
-		tmp.operator_divide(other);
-
-		base->assign(tmp);
-	}
 	else if ( source == StringObject::TYPENAME ) {
 		StringObject tmp(base->getValue());
 		tmp.operator_divide(other);
@@ -355,10 +324,6 @@ bool operator_binary_equal(Object *base, Object *other)
 	}
 	else if ( source == IntegerObject::TYPENAME ) {
 		IntegerObject tmp(base->getValue());
-		return tmp.operator_equal(other);
-	}
-	else if ( source == NumberObject::TYPENAME ) {
-		NumberObject tmp(base->getValue());
 		return tmp.operator_equal(other);
 	}
 	else if ( source == StringObject::TYPENAME ) {
@@ -420,10 +385,6 @@ bool operator_binary_greater(Object *base, Object *other)
 		IntegerObject tmp(base->getValue());
 		return tmp.operator_greater(other);
 	}
-	else if ( source == NumberObject::TYPENAME ) {
-		NumberObject tmp(base->getValue());
-		return tmp.operator_greater(other);
-	}
 	else if ( source == StringObject::TYPENAME ) {
 		StringObject tmp(base->getValue());
 		return tmp.operator_greater(other);
@@ -465,10 +426,6 @@ bool operator_binary_greater_equal(Object *base, Object *other)
 	}
 	else if ( source == IntegerObject::TYPENAME ) {
 		IntegerObject tmp(base->getValue());
-		return tmp.operator_greater_equal(other);
-	}
-	else if ( source == NumberObject::TYPENAME ) {
-		NumberObject tmp(base->getValue());
 		return tmp.operator_greater_equal(other);
 	}
 	else if ( source == StringObject::TYPENAME ) {
@@ -514,10 +471,6 @@ bool operator_binary_less(Object *base, Object *other)
 		IntegerObject tmp(base->getValue());
 		return tmp.operator_less(other);
 	}
-	else if ( source == NumberObject::TYPENAME ) {
-		NumberObject tmp(base->getValue());
-		return tmp.operator_less(other);
-	}
 	else if ( source == StringObject::TYPENAME ) {
 		StringObject tmp(base->getValue());
 		return tmp.operator_less(other);
@@ -559,10 +512,6 @@ bool operator_binary_less_equal(Object *base, Object *other)
 	}
 	else if ( source == IntegerObject::TYPENAME ) {
 		IntegerObject tmp(base->getValue());
-		return tmp.operator_less_equal(other);
-	}
-	else if ( source == NumberObject::TYPENAME ) {
-		NumberObject tmp(base->getValue());
 		return tmp.operator_less_equal(other);
 	}
 	else if ( source == StringObject::TYPENAME ) {
@@ -625,12 +574,6 @@ void operator_binary_modulo(Object *base, Object *other)
 
 		base->assign(tmp);
 	}
-	else if ( source == NumberObject::TYPENAME ) {
-		NumberObject tmp(base->getValue());
-		tmp.operator_modulo(other);
-
-		base->assign(tmp);
-	}
 	else if ( source == StringObject::TYPENAME ) {
 		StringObject tmp(base->getValue());
 		tmp.operator_modulo(other);
@@ -682,12 +625,6 @@ void operator_binary_multiply(Object *base, Object *other)
 	}
 	else if ( source == IntegerObject::TYPENAME ) {
 		IntegerObject tmp(base->getValue());
-		tmp.operator_multiply(other);
-
-		base->assign(tmp);
-	}
-	else if ( source == NumberObject::TYPENAME ) {
-		NumberObject tmp(base->getValue());
 		tmp.operator_multiply(other);
 
 		base->assign(tmp);
@@ -747,12 +684,6 @@ void operator_binary_plus(Object *base, Object *other)
 
 		base->assign(tmp);
 	}
-	else if ( source == NumberObject::TYPENAME ) {
-		NumberObject tmp(base->getValue());
-		tmp.operator_plus(other);
-
-		base->assign(tmp);
-	}
 	else if ( source == StringObject::TYPENAME ) {
 		StringObject tmp(base->getValue());
 		tmp.operator_plus(other);
@@ -804,12 +735,6 @@ void operator_binary_subtract(Object *base, Object *other)
 	}
 	else if ( source == IntegerObject::TYPENAME ) {
 		IntegerObject tmp(base->getValue());
-		tmp.operator_subtract(other);
-
-		base->assign(tmp);
-	}
-	else if ( source == NumberObject::TYPENAME ) {
-		NumberObject tmp(base->getValue());
 		tmp.operator_subtract(other);
 
 		base->assign(tmp);
@@ -890,12 +815,6 @@ void operator_unary_decrement(Object *base)
 
 		base->assign(tmp);
 	}
-	else if ( source == NumberObject::TYPENAME ) {
-		NumberObject tmp(base->getValue());
-		tmp.operator_unary_decrement();
-
-		base->assign(tmp);
-	}
 	else if ( source == StringObject::TYPENAME ) {
 		StringObject tmp(base->getValue());
 		tmp.operator_unary_decrement();
@@ -942,12 +861,6 @@ void operator_unary_increment(Object *base)
 	}
 	else if ( source == IntegerObject::TYPENAME ) {
 		IntegerObject tmp(base->getValue());
-		tmp.operator_unary_increment();
-
-		base->assign(tmp);
-	}
-	else if ( source == NumberObject::TYPENAME ) {
-		NumberObject tmp(base->getValue());
 		tmp.operator_unary_increment();
 
 		base->assign(tmp);
@@ -1002,12 +915,6 @@ void operator_unary_minus(Object *base)
 
 		base->assign(tmp);
 	}
-	else if ( source == NumberObject::TYPENAME ) {
-		NumberObject tmp(base->getValue());
-		tmp.operator_unary_minus();
-
-		base->assign(tmp);
-	}
 	else if ( source == StringObject::TYPENAME ) {
 		StringObject tmp(base->getValue());
 		tmp.operator_unary_minus();
@@ -1053,11 +960,6 @@ void operator_unary_not(Object *base)
 	}
 	else if ( source == IntegerObject::TYPENAME ) {
 		IntegerObject tmp(base->getValue());
-
-		*base = BoolObject(!tmp.operator_bool());
-	}
-	else if ( source == NumberObject::TYPENAME ) {
-		NumberObject tmp(base->getValue());
 
 		*base = BoolObject(!tmp.operator_bool());
 	}
@@ -1125,12 +1027,6 @@ void operator_unary_validate(Object *base)
 	}
 	else if ( source == IntegerObject::TYPENAME ) {
 		IntegerObject tmp(base->getValue());
-		if ( !tmp.operator_bool() ) {
-			throw ControlFlow::Throw;
-		}
-	}
-	else if ( source == NumberObject::TYPENAME ) {
-		NumberObject tmp(base->getValue());
 		if ( !tmp.operator_bool() ) {
 			throw ControlFlow::Throw;
 		}

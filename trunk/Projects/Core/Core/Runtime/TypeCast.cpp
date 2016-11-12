@@ -9,7 +9,6 @@
 #include <Core/BuildInObjects/DoubleObject.h>
 #include <Core/BuildInObjects/FloatObject.h>
 #include <Core/BuildInObjects/IntegerObject.h>
-#include <Core/BuildInObjects/NumberObject.h>
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/BuildInObjects/VoidObject.h>
 #include <Core/Runtime/Exceptions.h>
@@ -50,11 +49,6 @@ void typecast(Object *base, const std::string& targetType)
 	}
 	else if ( targetType == IntegerObject::TYPENAME ) {
 		IntegerObject tmp(*base);
-
-		base->assign(tmp, true);
-	}
-	else if ( targetType == NumberObject::TYPENAME ) {
-		NumberObject tmp(*base);
 
 		base->assign(tmp, true);
 	}

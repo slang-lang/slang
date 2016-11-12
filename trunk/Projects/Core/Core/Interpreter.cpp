@@ -677,11 +677,6 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 			operator_binary_assign(result, &tmp);
 			start++;
 		} break;
-		case Token::Type::CONST_NUMBER: {
-			NumberObject tmp(Tools::stringToNumber(start->content()));
-			operator_binary_assign(result, &tmp);
-			start++;
-		} break;
 		case Token::Type::IDENTIFER:
 		case Token::Type::TYPE: {
 			// find out if we have to execute a method or simply get a stored variable

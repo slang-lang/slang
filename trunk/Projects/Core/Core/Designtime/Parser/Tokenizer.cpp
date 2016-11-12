@@ -113,10 +113,6 @@ Token Tokenizer::createToken(const std::string& con, const Common::Position& pos
 		content = con.substr(1, con.length() - 2);
 	}
 	else if ( isModifier(content) ) { category = Token::Category::Modifier; type = Token::Type::MODIFIER; }
-	else if ( isNumber(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_NUMBER;
-		// remove trailing 'n' character
-		content = con.substr(0, con.length() - 1);
-	}
 	else if ( isReservedWord(content) ) { category = Token::Category::ReservedWord; type = Token::Type::RESERVED_WORD; }
 	else if ( isType(content) ) { category = Token::Category::Identifier; type = Token::Type::TYPE; }
 	else if ( isVisibility(content) ) { type = Token::Type::VISIBILITY; }
@@ -734,6 +730,7 @@ void Tokenizer::replaceAssignments()
 void Tokenizer::replaceConstDataTypes()
 {
 	TokenList::iterator token = mTokens.begin();
+	TokenList::iterator tmp;
 
 	// try to combine all operator tokens
 	while ( token != mTokens.end() ) {
@@ -741,34 +738,84 @@ void Tokenizer::replaceConstDataTypes()
 		if ( token->type() == Token::Type::CONST_INTEGER ) {
 			int numCombines = 0;
 
-			if ( lookahead(token, numCombines + 1)->type() == Token::Type::SCOPE ) {
+			tmp = lookahead(token, numCombines + 1);
+
+			if ( tmp->type() == Token::Type::SCOPE ) {
 				// CONST_INTEGER '.'
 				numCombines++;
 
-				if ( lookahead(token, numCombines + 1)->type() == Token::Type::CONST_INTEGER ) {
+				tmp = lookahead(token, numCombines + 1);
+
+				if ( tmp->type() == Token::Type::CONST_INTEGER ) {
 					// CONST_INTEGER '.' CONST_INTEGER
 					numCombines++;
 
-					if ( lookahead(token, numCombines + 1)->type() == Token::Type::CONST_DOUBLE ) {
-						// CONST_INTEGER '.' CONST_INTEGER 'd'
+					tmp = lookahead(token, numCombines + 1);
+					if ( tmp->type() == Token::Type::IDENTIFER ) {
+						if ( tmp->content() == "d" ) {
+							// CONST_INTEGER '.' CONST_INTEGER 'd'
+							numCombines++;
+							tmp->resetTypeTo(Token::Type::CONST_DOUBLE);
+						}
+						else if ( tmp->content() == "f" ) {
+							// CONST_INTEGER '.' CONST_INTEGER 'f'
+							numCombines++;
+							tmp->resetTypeTo(Token::Type::CONST_FLOAT);
+						}
+					}
+					else if ( lookahead(token, numCombines + 1)->type() == Token::Type::CONST_DOUBLE ) {
+						// CONST_DOUBLE 'd'
 						numCombines++;
 					}
 					else if ( lookahead(token, numCombines + 1)->type() == Token::Type::CONST_FLOAT ) {
-						// CONST_INTEGER '.' CONST_INTEGER 'f'
+						// CONST_FLOAT 'f'
 						numCombines++;
 					}
 					else if ( lookahead(token, numCombines + 1)->type() == Token::Type::CONST_INTEGER ) {
-						// CONST_INTEGER '.' CONST_INTEGER 'i'
+						// CONST_INTEGER 'i'
 						numCombines++;
 					}
 				}
+				else if ( tmp->type() == Token::Type::IDENTIFER ) {
+					if ( tmp->content() == "d" ) {
+						// CONST_INTEGER '.' 'd'
+						numCombines++;
+						tmp->resetTypeTo(Token::Type::CONST_DOUBLE);
+					}
+					else if ( tmp->content() == "f" ) {
+						// CONST_INTEGER '.' 'f'
+						numCombines++;
+						tmp->resetTypeTo(Token::Type::CONST_FLOAT);
+					}
+				}
 				else if ( lookahead(token, numCombines + 1)->type() == Token::Type::CONST_DOUBLE ) {
-					// CONST_INTEGER '.' 'd'
+					// CONST_DOUBLE 'd'
 					numCombines++;
 				}
 				else if ( lookahead(token, numCombines + 1)->type() == Token::Type::CONST_FLOAT ) {
-					// CONST_INTEGER '.' 'f'
+					// CONST_FLOAT 'f'
 					numCombines++;
+				}
+				else if ( lookahead(token, numCombines + 1)->type() == Token::Type::CONST_INTEGER ) {
+					// CONST_INTEGER 'i'
+					numCombines++;
+				}
+			}
+			else if ( tmp->type() == Token::Type::IDENTIFER ) {
+				if ( tmp->content() == "d" ) {
+					// CONST_INTEGER 'd'
+					numCombines++;
+					tmp->resetTypeTo(Token::Type::CONST_DOUBLE);
+				}
+				else if ( tmp->content() == "f" ) {
+					// CONST_INTEGER 'f'
+					numCombines++;
+					tmp->resetTypeTo(Token::Type::CONST_FLOAT);
+				}
+				else if ( tmp->content() == "i" ) {
+					// CONST_INTEGER 'i'
+					numCombines++;
+					tmp->resetTypeTo(Token::Type::CONST_INTEGER);
 				}
 			}
 			else if ( lookahead(token, numCombines + 1)->type() == Token::Type::CONST_DOUBLE ) {
@@ -783,14 +830,6 @@ void Tokenizer::replaceConstDataTypes()
 				// CONST_INTEGER 'i'
 				numCombines++;
 			}
-/*
- * this would allow us to use hex or octal consts as well by just looking at the last token's type
- *
-			else if ( lookahead(token, numCombines + 1)->type() == Token::Type::CONST_<DATA TYPE> ) {
-				// CONST_<DATA TYPE> '<DATA TYPE SHORTCUT>'
-				numCombines++;
-			}
-*/
 
 			if ( numCombines > 0 ) {
 				// we found an operator
@@ -803,39 +842,13 @@ void Tokenizer::replaceConstDataTypes()
 					opToken->resetContentTo((*opToken).content() + token->content());	// combine token contents
 					opToken->resetTypeTo(token->type());    // and reset our opToken's type
 
-					mTokens.erase(token++);	// remove the following 'operator'-token
+					mTokens.erase(token++);	// remove the following token
 				}
 
 				continue;
 			}
 		}
-/*	deprecated, because number literals (except integer literals) have to have at least 2 characters (i.e. 1d, 2f, etc.)
-		// if we find any other data type with an empty content we convert it to an identifier
-		else if ( token->type() == Token::Type::CONST_DOUBLE ) {
-			if ( token->content().empty() ) {
-				token->resetContentTo("d");
-				token->resetTypeTo(Token::Type::IDENTIFER);
-			}
-		}
-		else if ( token->type() == Token::Type::CONST_FLOAT ) {
-			if ( token->content().empty() ) {
-				token->resetContentTo("f");
-				token->resetTypeTo(Token::Type::IDENTIFER);
-			}
-		}
-		else if ( token->type() == Token::Type::CONST_INTEGER ) {
-			if ( token->content().empty() ) {
-				token->resetContentTo("i");
-				token->resetTypeTo(Token::Type::IDENTIFER);
-			}
-		}
-		else if ( token->type() == Token::Type::CONST_NUMBER ) {
-			if ( token->content().empty() ) {
-				token->resetContentTo("n");
-				token->resetTypeTo(Token::Type::IDENTIFER);
-			}
-		}
-*/
+
 		token++;
 	}
 }

@@ -12,7 +12,6 @@
 #include "BoolObject.h"
 #include "FloatObject.h"
 #include "IntegerObject.h"
-#include "NumberObject.h"
 #include "StringObject.h"
 
 // Namespace declarations
@@ -54,7 +53,6 @@ DoubleObject::DoubleObject(const Object& other)
 		 source == BoolObject::TYPENAME ||
 		 source == FloatObject::TYPENAME ||
 		 source == IntegerObject::TYPENAME ||
-		 source == NumberObject::TYPENAME ||
 		 source == StringObject::TYPENAME ) {
 		mValue = other.getValue().toDouble();
 	}
@@ -80,8 +78,7 @@ void DoubleObject::operator_assign(const Object *other)
 	if ( target == DoubleObject::TYPENAME ||
 		 target == BoolObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
-		 target == IntegerObject::TYPENAME ||
-		 target == NumberObject::TYPENAME ) {
+		 target == IntegerObject::TYPENAME ) {
 		mValue = other->getValue().toDouble();
 	}
 	else {
@@ -105,8 +102,7 @@ void DoubleObject::operator_divide(const Object *other)
 
 	if ( target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
-		 target == IntegerObject::TYPENAME ||
-		 target == NumberObject::TYPENAME ) {
+		 target == IntegerObject::TYPENAME ) {
 		mValue = mValue.toDouble() / other->getValue().toDouble();
 	}
 	else {
@@ -125,8 +121,7 @@ bool DoubleObject::operator_equal(const Object *other)
 
 	if ( target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
-		 target == IntegerObject::TYPENAME ||
-		 target == NumberObject::TYPENAME ) {
+		 target == IntegerObject::TYPENAME ) {
 		return mValue.toDouble() == other->getValue().toDouble();
 	}
 
@@ -144,8 +139,7 @@ bool DoubleObject::operator_greater(const Object *other)
 
 	if ( target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
-		 target == IntegerObject::TYPENAME ||
-		 target == NumberObject::TYPENAME ) {
+		 target == IntegerObject::TYPENAME ) {
 		return mValue.toDouble() > other->getValue().toDouble();
 	}
 
@@ -163,8 +157,7 @@ bool DoubleObject::operator_greater_equal(const Object *other)
 
 	if ( target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
-		 target == IntegerObject::TYPENAME ||
-		 target == NumberObject::TYPENAME ) {
+		 target == IntegerObject::TYPENAME ) {
 		return mValue.toDouble() >= other->getValue().toDouble();
 	}
 
@@ -182,8 +175,7 @@ bool DoubleObject::operator_less(const Object *other)
 
 	if ( target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
-		 target == IntegerObject::TYPENAME ||
-		 target == NumberObject::TYPENAME ) {
+		 target == IntegerObject::TYPENAME ) {
 		return mValue.toDouble() < other->getValue().toDouble();
 	}
 
@@ -201,8 +193,7 @@ bool DoubleObject::operator_less_equal(const Object *other)
 
 	if ( target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
-		 target == IntegerObject::TYPENAME ||
-		 target == NumberObject::TYPENAME ) {
+		 target == IntegerObject::TYPENAME ) {
 		return mValue.toDouble() <= other->getValue().toDouble();
 	}
 
@@ -220,8 +211,7 @@ void DoubleObject::operator_multiply(const Object *other)
 
 	if ( target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
-		 target == IntegerObject::TYPENAME ||
-		 target == NumberObject::TYPENAME ) {
+		 target == IntegerObject::TYPENAME ) {
 		mValue = mValue.toDouble() * other->getValue().toDouble();
 	}
 	else {
@@ -240,8 +230,7 @@ void DoubleObject::operator_plus(const Object *other)
 
 	if ( target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
-		 target == IntegerObject::TYPENAME ||
-		 target == NumberObject::TYPENAME ) {
+		 target == IntegerObject::TYPENAME ) {
 		mValue = mValue.toDouble() + other->getValue().toDouble();
 	}
 	else {
@@ -260,8 +249,7 @@ void DoubleObject::operator_subtract(const Object *other)
 
 	if ( target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
-		 target == IntegerObject::TYPENAME ||
-		 target == NumberObject::TYPENAME ) {
+		 target == IntegerObject::TYPENAME ) {
 		mValue = mValue.toDouble() - other->getValue().toDouble();
 	}
 	else {

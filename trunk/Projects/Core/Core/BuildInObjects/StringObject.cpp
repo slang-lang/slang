@@ -13,7 +13,6 @@
 #include "DoubleObject.h"
 #include "FloatObject.h"
 #include "IntegerObject.h"
-#include "NumberObject.h"
 #include "UserObject.h"
 #include "VoidObject.h"
 
@@ -58,8 +57,7 @@ StringObject::StringObject(const Object& other)
 	else if ( source == StringObject::TYPENAME ||
 			  source == DoubleObject::TYPENAME ||
 			  source == FloatObject::TYPENAME ||
-			  source == IntegerObject::TYPENAME ||
-			  source == NumberObject::TYPENAME ) {
+			  source == IntegerObject::TYPENAME ) {
 		mValue = other.getValue().toStdString();
 	}
 	else {
@@ -80,8 +78,7 @@ void StringObject::operator_assign(const Object *other)
 		 target == BoolObject::TYPENAME ||
 		 target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
-		 target == IntegerObject::TYPENAME ||
-		 target == NumberObject::TYPENAME ) {
+		 target == IntegerObject::TYPENAME ) {
 		mValue = other->getValue().toStdString();
 	}
 	else {
@@ -123,8 +120,7 @@ void StringObject::operator_plus(const Object *other)
 		 target == BoolObject::TYPENAME ||
 		 target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
-		 target == IntegerObject::TYPENAME ||
-		 target == NumberObject::TYPENAME ) {
+		 target == IntegerObject::TYPENAME ) {
 		mValue = mValue.toStdString() + other->getValue().toStdString();
 	}
 	else {

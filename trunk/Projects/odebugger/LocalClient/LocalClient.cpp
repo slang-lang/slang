@@ -13,7 +13,6 @@
 #include <Core/BuildInObjects/DoubleObject.h>
 #include <Core/BuildInObjects/FloatObject.h>
 #include <Core/BuildInObjects/IntegerObject.h>
-#include <Core/BuildInObjects/NumberObject.h>
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Designtime/Parser/Tokenizer.h>
 #include <Core/Interpreter.h>
@@ -124,9 +123,6 @@ bool LocalClient::addLiteralSymbol(const std::string& name, const std::string& v
 				break;
 			case Token::Type::CONST_LITERAL:
 				symbol = new Runtime::StringObject(token.content());
-				break;
-			case Token::Type::CONST_NUMBER:
-				symbol = new Runtime::NumberObject(token.content());
 				break;
 			default:
 				break;
