@@ -1,7 +1,7 @@
 #!/usr/local/bin/oscript
 
 public object TestObject {
-	private int mValue;
+	public int mValue;
 
 	public void Constructor(int value) {
 		print("Constructor(" + value + ")");
