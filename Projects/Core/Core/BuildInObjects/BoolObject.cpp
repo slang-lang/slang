@@ -12,7 +12,6 @@
 #include "DoubleObject.h"
 #include "FloatObject.h"
 #include "IntegerObject.h"
-#include "NumberObject.h"
 #include "StringObject.h"
 
 // Namespace declarations
@@ -54,7 +53,6 @@ BoolObject::BoolObject(const Object& other)
 		 target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
-		 target == NumberObject::TYPENAME ||
 		 target == StringObject::TYPENAME ) {
 		mValue = other.getValue().toBool();
 	}
@@ -88,7 +86,6 @@ void BoolObject::operator_assign(const Object *other)
 		 target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
-		 target == NumberObject::TYPENAME ||
 		 target == StringObject::TYPENAME ) {
 		mValue = other->getValue().toBool();
 	}
@@ -110,7 +107,6 @@ void BoolObject::operator_bitand(const Object *other)
 		 target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
-		 target == NumberObject::TYPENAME ||
 		 target == StringObject::TYPENAME ) {
 		mValue = mValue.toBool() & other->getValue().toBool();
 	}
@@ -132,7 +128,6 @@ void BoolObject::operator_bitor(const Object *other)
 		 target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
-		 target == NumberObject::TYPENAME ||
 		 target == StringObject::TYPENAME ) {
 		mValue = mValue.toBool() | other->getValue().toBool();
 	}
@@ -154,7 +149,6 @@ bool BoolObject::operator_equal(const Object *other)
 		 target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
 		 target == IntegerObject::TYPENAME ||
-		 target == NumberObject::TYPENAME ||
 		 target == StringObject::TYPENAME ) {
 		return mValue.toBool() == other->getValue().toBool();
 	}

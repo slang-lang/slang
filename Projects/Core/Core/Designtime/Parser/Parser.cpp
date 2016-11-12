@@ -579,9 +579,6 @@ Runtime::AtomicValue Parser::parseValueInitialization(TokenIterator& token)
 
 			value = token->content();
 			break;
-		case Token::Type::CONST_NUMBER:
-			return Tools::stringToNumber(sign + token->content());
-			break;
 		default:
 			throw Common::Exceptions::NotSupported("only atomic data types are allowed as default parameters", token->position());
 	}

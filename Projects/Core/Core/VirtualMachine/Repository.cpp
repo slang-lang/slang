@@ -9,7 +9,6 @@
 #include <Core/BuildInObjects/DoubleObject.h>
 #include <Core/BuildInObjects/FloatObject.h>
 #include <Core/BuildInObjects/IntegerObject.h>
-#include <Core/BuildInObjects/NumberObject.h>
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/BuildInObjects/UserObject.h>
 #include <Core/BuildInObjects/VoidObject.h>
@@ -23,7 +22,6 @@
 #include <Core/Designtime/BuildInTypes/FloatObject.h>
 #include <Core/Designtime/BuildInTypes/GenericObject.h>
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
-#include <Core/Designtime/BuildInTypes/NumberObject.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/Designtime/BuildInTypes/UserObject.h>
 #include <Core/Designtime/BuildInTypes/VoidObject.h>
@@ -324,9 +322,6 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 	else if ( blueprint->Typename() == Runtime::IntegerObject::TYPENAME ) {
 		object = new Runtime::IntegerObject(name, Runtime::IntegerObject::DEFAULTVALUE.toInt());
 	}
-	else if ( blueprint->Typename() == Runtime::NumberObject::TYPENAME ) {
-		object = new Runtime::NumberObject(name, Runtime::NumberObject::DEFAULTVALUE);
-	}
 	else if ( blueprint->Typename() == Runtime::StringObject::TYPENAME ) {
 		object = new Runtime::StringObject(name, Runtime::StringObject::DEFAULTVALUE.toStdString());
 	}
@@ -547,12 +542,6 @@ void Repository::initialize()
 		addBluePrint(obj);
 
 		scope->define(Designtime::IntegerObject::TYPENAME, obj);
-	}
-	{	// "number" type
-		Designtime::NumberObject* obj = new Designtime::NumberObject();
-		addBluePrint(obj);
-
-		scope->define(Designtime::NumberObject::TYPENAME, obj);
 	}
 	{	// "string" type
 		Designtime::StringObject* obj = new Designtime::StringObject();
