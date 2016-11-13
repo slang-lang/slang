@@ -16,6 +16,7 @@
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
 #include <Tools/Files.h>
+#include <Utils.h>
 #include "Exceptions.h"
 #include "SanityChecker.h"
 
@@ -63,7 +64,7 @@ bool Analyser::buildEnum(Designtime::BluePrintEnum* symbol, const TokenList& tok
 
 		// verify declaration order (this also prevents duplicate values)
 		if ( previous_value.toInt() >= value.toInt() ) {
-			throw Common::Exceptions::Exception("enum values have to be defined in ascending order");
+			throw Common::Exceptions::Exception("enum values have to be defined in ascending order", token->position());
 		}
 
 		previous_value = value;
@@ -119,7 +120,7 @@ bool Analyser::createBluePrint(TokenIterator& token, TokenIterator end)
 	// determine implementation type
 	if ( objectType == ObjectType::Interface ) {
 		if ( implementationType != ImplementationType::FullyImplemented ) {
-			throw Common::Exceptions::NotSupported("interfaces cannot be defined as abstract");
+			throw Common::Exceptions::NotSupported("interfaces cannot be defined as abstract", token->position());
 		}
 
 		implementationType = ImplementationType::Interface;
@@ -129,7 +130,7 @@ bool Analyser::createBluePrint(TokenIterator& token, TokenIterator end)
 
 	if ( token->type() == Token::Type::SEMICOLON ) {
 		if ( implementationType != ImplementationType::FullyImplemented ) {
-			throw Common::Exceptions::NotSupported("forward declarations cannot be defined as interface or abstract object");
+			throw Common::Exceptions::NotSupported("forward declarations cannot be defined as interface or abstract object", token->position());
 		}
 
 		implementationType = ImplementationType::ForwardDeclaration;
@@ -436,7 +437,7 @@ bool Analyser::createMethod(TokenIterator& token, TokenIterator /*end*/)
 				isAbstract = true;
 
 				if ( !blueprint ) {
-					throw Common::Exceptions::NotSupported("global methods cannot be declared as abstract");
+					throw Common::Exceptions::NotSupported("global methods cannot be declared as abstract", token->position());
 				}
 			}
 			else if ( token->content() == MODIFIER_CONST ) {
@@ -449,7 +450,7 @@ bool Analyser::createMethod(TokenIterator& token, TokenIterator /*end*/)
 				//numConstModifiers++;
 
 				if ( !blueprint ) {
-					throw Common::Exceptions::NotSupported("global methods cannot be declared as final");
+					throw Common::Exceptions::NotSupported("global methods cannot be declared as final", token->position());
 				}
 			}
 			else if ( token->content() == MODIFIER_MODIFY ) {
@@ -463,6 +464,10 @@ bool Analyser::createMethod(TokenIterator& token, TokenIterator /*end*/)
 				isStatic = true;
 			}
 			else if ( token->content() == MODIFIER_THROWS ) {
+				if ( methodType == MethodAttributes::MethodType::Destructor ) {
+					OSwarn("exceptions thrown in destructor cannot be caught in " + token->position().toString());
+				}
+
 				throws = true;
 			}
 		}
@@ -472,7 +477,7 @@ bool Analyser::createMethod(TokenIterator& token, TokenIterator /*end*/)
 	} while ( isModifierToken && token->type() != Token::Type::BRACKET_CURLY_OPEN );
 
 	if ( numConstModifiers > 1 ) {
-		throw Common::Exceptions::Exception("modifiers 'const' & 'modify' are exclusive");
+		throw Common::Exceptions::Exception("modifiers 'const' & 'modify' are exclusive", token->position());
 	}
 
 	// collect all tokens of this method
@@ -556,7 +561,7 @@ bool Analyser::createNamespace(TokenIterator& token, TokenIterator end)
 				case Symbol::IType::MethodSymbol:
 				case Symbol::IType::ObjectSymbol:
 				case Symbol::IType::UnknownSymbol:
-					throw Common::Exceptions::Exception("cannot extend non-namespace symbol '" + symbol->getName() + "'");
+					throw Common::Exceptions::Exception("cannot extend non-namespace symbol '" + symbol->getName() + "'", token->position());
 			}
 		}
 

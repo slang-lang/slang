@@ -16,7 +16,7 @@ private object Vector2D {
 	}
 
 	public string ToString() const {
-		return "Vector2D = { " + x + " / " + y + " }";
+		return "Vector2D = { " + x + ", " + y + " }";
 	}
 
 	public void operator=(Vector2D other ref) modify {

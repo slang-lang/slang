@@ -173,7 +173,9 @@ int main(int argc, const char* argv[])
 #endif
 
 	try {
-		mVirtualMachine.createScriptFromFile(mFilename, mParameters);
+		ObjectiveScript::Runtime::Object result;
+
+		mVirtualMachine.createScriptFromFile(mFilename, mParameters, &result);
 	}
 	catch ( std::exception &e ) {	// catch every std::exception and all derived exception types
 		OSerror(e.what());
@@ -189,6 +191,8 @@ int main(int argc, const char* argv[])
 	}
 	catch ( ... ) {	// catch everything
 		std::cout << "uncaught exception detected" << std::endl;
+
+		ObjectiveScript::Controller::Instance().stack()->print();
 	}
 
 	return 0;

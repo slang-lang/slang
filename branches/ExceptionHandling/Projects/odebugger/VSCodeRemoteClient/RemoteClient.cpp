@@ -395,11 +395,10 @@ void RemoteClient::start()
 #endif
 
 	try {
-		ObjectiveScript::Script *script = mVirtualMachine->createScriptFromFile(mSettings->filename(), mParameters);
-		assert(script);
+		Runtime::Object result;
 
-		ObjectiveScript::Runtime::IntegerObject result;
-		script->execute("Main", mParameters, &result);
+		Script *script = mVirtualMachine->createScriptFromFile(mSettings->filename(), mParameters, &result);
+		assert(script);
 
 		if ( mSettings->autoStop() ) {
 			mRunning = false;

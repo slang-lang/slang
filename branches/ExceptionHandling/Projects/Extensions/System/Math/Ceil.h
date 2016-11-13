@@ -56,7 +56,7 @@ public:
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
 			*data = Runtime::StringObject(std::string(e.what()));
 
-			mExceptionData = Runtime::ExceptionData(data, token.position());
+			Controller::Instance().stack()->exception() = Runtime::ExceptionData(data, token.position());
 			return Runtime::ControlFlow::Throw;
 		}
 
@@ -93,7 +93,7 @@ public:
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
 			*data = Runtime::StringObject(std::string(e.what()));
 
-			mExceptionData = Runtime::ExceptionData(data, token.position());
+			Controller::Instance().stack()->exception() = Runtime::ExceptionData(data, token.position());
 			return Runtime::ControlFlow::Throw;
 		}
 

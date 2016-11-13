@@ -7,8 +7,7 @@ private object TestObject {
 		print("Constructor()");
 
 		print("throw in constructor");
-		//throw 42;
-		throw new System.Exception("42");
+		throw new Exception("42");
 	}
 
 	public void Destructor() {
@@ -19,6 +18,9 @@ private object TestObject {
 public void Main(int argc = 0, string argv = "") {
 	try {
 		TestObject obj = new TestObject();
+	}
+	catch ( Exception e ) {
+		print("e.what() = " + e.what());
 	}
 }
 
