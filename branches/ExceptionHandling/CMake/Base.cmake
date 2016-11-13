@@ -57,6 +57,8 @@ SET(CMAKE_INCLUDE_CURRENT_DIR ON)
 #    ${PROJECT_SOURCE_DIR}/Utils
 #)
 
+add_definitions(-DLOG_LEVEL=3)
+
 # common used functionality and functions
 INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Common.cmake)
 

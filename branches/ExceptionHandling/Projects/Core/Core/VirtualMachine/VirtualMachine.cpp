@@ -258,7 +258,7 @@ bool VirtualMachine::loadLibrary(const std::string& library)
 void VirtualMachine::printLibraryFolders()
 {
 	for ( StringSet::const_iterator it = mLibraryFolders.begin(); it != mLibraryFolders.end(); ++it ) {
-		OSinfo("Library: " + (*it));
+		OSdebug("Library: " + (*it));
 	}
 }
 
