@@ -9,7 +9,7 @@ tar cfvz ${RELEASE} ${EXCLUDES} *
 echo ""
 echo "Uploading files..."
 
-scp ${RELEASE} README madelmann@frs.sourceforge.net:/home/frs/project/objectivescript/
+scp ${RELEASE} README.txt madelmann@frs.sourceforge.net:/home/frs/project/objectivescript/
 
 echo ""
 echo "Cleanup..."
