@@ -40,13 +40,10 @@ void Script::execute(const std::string& method, const ParameterList& params, Run
 	Runtime::ControlFlow::E controlflow = interpreter.execute(methodSymbol, params, result);
 
 	if ( controlflow == Runtime::ControlFlow::Throw ) {
-		//Runtime::Object* data = methodSymbol->getExceptionData().getData();
-		//Common::Position position = methodSymbol->getExceptionData().getPosition();
+		Runtime::ExceptionData data = Controller::Instance().stack()->exception();
 
-		Runtime::Object* data = interpreter.getExceptionData().getData();
-
-		std::string text = "Exception raised in method '" + method + "(" + toString(params) + ")':\n";
-					text += data->getValue().toStdString();
+		std::string text = "Exception raised in " + data.getPosition().toString() + ":\n";
+					text += data.getData()->ToString();
 
 		throw Common::Exceptions::Exception(text);
 	}

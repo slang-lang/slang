@@ -907,13 +907,10 @@ void LocalClient::start()
 	try {
 		writeln("[Starting program: " + mSettings->filename() + "]");
 
-		ObjectiveScript::Script *script = mVirtualMachine->createScriptFromFile(mSettings->filename(), mParameters);
+		Runtime::Object result;
+
+		Script *script = mVirtualMachine->createScriptFromFile(mSettings->filename(), mParameters, &result);
 		assert(script);
-
-		writeln("[Using structured execution mode]");
-
-		ObjectiveScript::Runtime::IntegerObject result;
-		script->execute("Main", mParameters, &result);
 
 		writeln("[Process finished with exit code " + result.getValue().toStdString() + "]");
 

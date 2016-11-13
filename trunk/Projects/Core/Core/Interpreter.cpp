@@ -3,7 +3,6 @@
 #include "Interpreter.h"
 
 // Library includes
-#include <cassert>
 
 // Project includes
 #include <Core/BuildInObjects/BoolObject.h>
@@ -273,11 +272,6 @@ Object* Interpreter::getEnclosingObject(IScope* scope) const
 	}
 
 	return 0;
-}
-
-const ExceptionData& Interpreter::getExceptionData() const
-{
-	return mExceptionData;
 }
 
 Repository* Interpreter::getRepository() const
@@ -1043,7 +1037,7 @@ void Interpreter::process_foreach(TokenIterator& token, Object* result)
 
 		// create and define loop variable
 		TokenIterator typedefItCopy = typedefIt;
-		Object* loop = dynamic_cast<Object*>(process_type(typedefItCopy, symbol));
+		Object* loop = process_type(typedefItCopy, symbol);
 
 		// get current item
 		iterator.execute(loop, "next", ParameterList());
@@ -1356,8 +1350,6 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 
 	if ( method->isExtensionMethod() ) {
 		controlflow = method->execute(params, result, (*token));
-
-		mExceptionData = method->getExceptionData();
 	}
 	else {
 		controlflow = execute(method, params, result);
@@ -1666,7 +1658,7 @@ void Interpreter::process_throw(TokenIterator& token, Object* /*result*/)
 	Runtime::Method* method = dynamic_cast<Runtime::Method*>(getEnclosingMethodScope(getScope()));
 	if ( method && !method->throws() ) {
 		// this method is not marked as 'throwing', so we can't throw exceptions here
-		OSwarn(std::string(method->getFullScopeName() + " throws although it is not marked with 'throws'!").c_str());
+		OSwarn(std::string(method->getFullScopeName() + " throws although it is not marked with 'throws' in " + token->position().toString()).c_str());
 	}
 
 	Object* data = getRepository()->createInstance(OBJECT, ANONYMOUS_OBJECT, PrototypeConstraints(), false);
@@ -1679,7 +1671,7 @@ void Interpreter::process_throw(TokenIterator& token, Object* /*result*/)
 	}
 
 	mControlFlow = ControlFlow::Throw;
-	mExceptionData = ExceptionData(data, token->position());
+	Controller::Instance().stack()->exception() = ExceptionData(data, token->position());
 
 	expect(Token::Type::SEMICOLON, token);
 
@@ -1780,18 +1772,18 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 
 				expect(Token::Type::PARENTHESIS_CLOSE, catchIt++);
 
-				if ( !type || !mExceptionData.getData() ) {
+				if ( !type || !Controller::Instance().stack()->exception().getData() ) {
 					throw Common::Exceptions::Exception("could not create exception type instance", catchIt->position());
 				}
 
 				// compare given exception type with thrown type inheritance
-				if ( !mExceptionData.getData()->isInstanceOf(type->QualifiedTypename()) ) {
+				if ( !Controller::Instance().stack()->exception().getData()->isInstanceOf(type->QualifiedTypename()) ) {
 					popScope();		// pop exception instance scope
 					continue;
 				}
 
 				// exception type match with thrown type, start with the real exception handling
-				operator_binary_assign(type, mExceptionData.getData());
+				operator_binary_assign(type, Controller::Instance().stack()->exception().getData());
 			}
 
 			// notify our debugger that an exception has been caught
@@ -1819,7 +1811,7 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 			// execute catch-block if an exception has been thrown
 			mControlFlow = interpret(tokens, result);
 
-			Object* ex = getExceptionData().getData();
+			Object* ex = Controller::Instance().stack()->exception().getData();
 			if ( ex ) {
 				getScope()->define(ex->getName(), ex);
 			}

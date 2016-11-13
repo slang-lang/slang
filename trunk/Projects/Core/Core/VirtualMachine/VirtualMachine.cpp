@@ -70,7 +70,7 @@ std::string VirtualMachine::buildPath(const std::string& basefolder, const std::
 	return basefolder + result + ".os";
 }
 
-Script* VirtualMachine::createScript(const std::string& content, const ParameterList& params)
+Script* VirtualMachine::createScript(const std::string& content, const ParameterList& params, Runtime::Object* result)
 {
 	init();
 
@@ -99,41 +99,32 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 		}
 	}
 
-/*	Not part of this release
-	PrototypeList prototypes = analyser.getPrototypes();
-	for ( PrototypeList::iterator it = prototypes.begin(); it != prototypes.end(); ++it ) {
-		mRepository->addPrototype((*it));
-	}
-*/
+	// clean up the unused forward declarations (TODO: find a better solution for this)
+	Controller::Instance().repository()->cleanupForwardDeclarations();
+
 
 	// Startup
-	MethodSymbol* main = Controller::Instance().stack()->globalScope()->resolveMethod("Main", params, false);
+	Runtime::Method* main = dynamic_cast<Runtime::Method*>(Controller::Instance().stack()->globalScope()->resolveMethod("Main", params, false));
 	if ( !main ) {
 		throw Common::Exceptions::Exception("could not resolve method 'Main(" + toString(params) + ")'");
 	}
 
-	Runtime::Method* methodSymbol = static_cast<Runtime::Method*>(main);
-
-	Runtime::Object tmp;
 	Runtime::Interpreter interpreter;
-	Runtime::ControlFlow::E controlflow = interpreter.execute(methodSymbol, params, &tmp);
+	Runtime::ControlFlow::E controlflow = interpreter.execute(main, params, result);
 
 	if ( controlflow == Runtime::ControlFlow::Throw ) {
-		Runtime::Object* data = interpreter.getExceptionData().getData();
+		Runtime::ExceptionData data = Controller::Instance().stack()->exception();
 
-		std::string text = "Exception raised in method 'Main(" + toString(params) + ")':\n";
-		text += data->getValue().toStdString();
+		std::string text = "Exception raised in " + data.getPosition().toString() + ":\n";
+					text += data.getData()->ToString();
 
 		throw Common::Exceptions::Exception(text);
 	}
 
-	// clean up the unused forward declarations (TODO: find a better solution for this)
-	Controller::Instance().repository()->cleanupForwardDeclarations();
-
 	return script;
 }
 
-Script* VirtualMachine::createScriptFromFile(const std::string& filename, const ParameterList& params)
+Script* VirtualMachine::createScriptFromFile(const std::string& filename, const ParameterList& params, Runtime::Object* result)
 {
 	OSdebug("processing script '" + filename + "'...");
 
@@ -154,16 +145,16 @@ Script* VirtualMachine::createScriptFromFile(const std::string& filename, const 
 	addLibraryFolder(::Utils::Tools::Files::ExtractPathname(filename));
 	mScriptFile = filename;
 
-	return createScript(content, params);
+	return createScript(content, params, result);
 }
 
-Script* VirtualMachine::createScriptFromString(const std::string& content, const ParameterList& params)
+Script* VirtualMachine::createScriptFromString(const std::string& content, const ParameterList& params, Runtime::Object* result)
 {
 	OSdebug("processing string...");
 
 	mScriptFile = "";
 
-	return createScript(content, params);
+	return createScript(content, params, result);
 }
 
 void VirtualMachine::init()
@@ -232,7 +223,7 @@ bool VirtualMachine::loadLibrary(const std::string& library)
 
 	if ( mImportedLibraries.find(library) != mImportedLibraries.end() ) {
 		// circular import => abort
-		OSinfo("circular imports detected in file '" + library + "'");
+		OSdebug("circular imports detected in file '" + library + "'");
 		return true;
 	}
 
@@ -261,20 +252,13 @@ bool VirtualMachine::loadLibrary(const std::string& library)
 		}
 	}
 
-/*	Not part of this release
-	PrototypeList prototypes = analyser.getPrototypes();
-	for ( PrototypeList::iterator it = prototypes.begin(); it != prototypes.end(); ++it ) {
-		mRepository->addPrototype((*it));
-	}
-*/
-
 	return true;
 }
 
 void VirtualMachine::printLibraryFolders()
 {
 	for ( StringSet::const_iterator it = mLibraryFolders.begin(); it != mLibraryFolders.end(); ++it ) {
-		OSinfo("Library: " + (*it));
+		OSdebug("Library: " + (*it));
 	}
 }
 

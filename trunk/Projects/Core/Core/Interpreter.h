@@ -39,7 +39,6 @@ public:
 
 public: // Execution
 	ControlFlow::E execute(Method* method, const ParameterList& params, Object* result);
-	const ExceptionData& getExceptionData() const;
 
 private: // Execution
 	inline Symbol* identify(TokenIterator& token) const;
@@ -108,7 +107,6 @@ private: // Execution
 
 private:
 	ControlFlow::E mControlFlow;
-	ExceptionData mExceptionData;
 	IScope* mOwner;
 	Repository *mRepository;
 	TokenList mTokens;

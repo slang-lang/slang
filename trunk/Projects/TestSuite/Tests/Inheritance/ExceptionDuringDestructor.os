@@ -1,6 +1,7 @@
 #!/usr/local/bin/oscript
 
 import System.Exception;
+import System.String;
 
 private object TestObject {
 	public void Constructor() {
@@ -11,19 +12,16 @@ private object TestObject {
 		print("Destructor()");
 
 		print("throw in destructor");
-		//throw 42;
-		throw new System.Exception(string 42);
+		throw new Exception("42");
 	}
 }
 
 public void Main(int argc = 0, string argv = "") {
 	try {
 		TestObject obj = new TestObject();
-
-		delete obj;
 	}
-	catch ( string e ) {
-		print("caugth exception: " + e);
+	catch ( Exception e ) {
+		print("e.what() = " + e.what());
 	}
 }
 
