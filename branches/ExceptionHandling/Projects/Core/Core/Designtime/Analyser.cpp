@@ -465,7 +465,7 @@ bool Analyser::createMethod(TokenIterator& token, TokenIterator /*end*/)
 			}
 			else if ( token->content() == MODIFIER_THROWS ) {
 				if ( methodType == MethodAttributes::MethodType::Destructor ) {
-					OSwarn("exceptions thrown in destructor cannot be caught in " + token->position().toString());
+					OSinfo("exceptions thrown in destructor cannot be caught in " + token->position().toString());
 				}
 
 				throws = true;
