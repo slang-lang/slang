@@ -46,6 +46,11 @@ void Stack::deinit()
 	mGlobalScope = 0;
 }
 
+Runtime::ExceptionData& Stack::exception()
+{
+	return mExceptionData;
+}
+
 MethodScope* Stack::globalScope() const
 {
 	return mGlobalScope;

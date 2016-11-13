@@ -8,6 +8,7 @@
 #include <string>
 
 // Project includes
+#include <Core/Runtime/ExceptionData.h>
 #include <Core/Scope.h>
 #include "StackLevel.h"
 
@@ -36,6 +37,8 @@ public:
 public:
 	StackLevel* current() const;
 
+	Runtime::ExceptionData& exception();
+
 	void pop();
 	void push(IScope* scope, const ParameterList &params);
 
@@ -52,6 +55,7 @@ private:
 	void operator=(Stack const&)/* = delete*/;
 
 private:
+	Runtime::ExceptionData mExceptionData;
 	Runtime::Namespace* mGlobalScope;
 	StackTrace mStack;
 };

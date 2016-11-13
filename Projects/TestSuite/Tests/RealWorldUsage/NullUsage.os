@@ -13,7 +13,7 @@ public object TestObject {
 	}
 }
 
-public void Main(int argc, string args) {
+public void Main(int argc = 0, string args = "") {
 	TestObject obj = new TestObject(173);
 
 	print(obj.mValue);

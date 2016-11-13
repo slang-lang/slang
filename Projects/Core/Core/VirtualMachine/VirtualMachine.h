@@ -41,8 +41,8 @@ public:	// Setup
 	void addLibraryFolder(const std::string &library);
 
 public:
-	Script* createScriptFromFile(const std::string& filename, const ParameterList& params = ParameterList());
-	Script* createScriptFromString(const std::string& content, const ParameterList& params = ParameterList());
+	Script* createScriptFromFile(const std::string& filename, const ParameterList& params = ParameterList(), Runtime::Object* result = 0);
+	Script* createScriptFromString(const std::string& content, const ParameterList& params = ParameterList(), Runtime::Object* result = 0);
 
 private:
 	typedef std::set<Script*> ScriptCollection;
@@ -50,7 +50,7 @@ private:
 private:
 	std::string buildPath(const std::string& basefolder, const std::string& library) const;
 
-	Script* createScript(const std::string& content, const ParameterList& params);
+	Script* createScript(const std::string& content, const ParameterList& params, Runtime::Object* result);
 	void init();
 	bool loadExtensions();
 	bool loadLibrary(const std::string& library);

@@ -55,7 +55,6 @@ public:	// Symbol::IType implementation
 
 public: // Execution
 	virtual ControlFlow::E execute(const ParameterList& params, Object* result, const Token& token);
-	virtual const ExceptionData& getExceptionData() const;
 	virtual bool isExtensionMethod() const;
 
 public:
@@ -77,7 +76,6 @@ public:
 	ParameterList mergeParameters(const ParameterList& params) const;
 
 protected:
-	ExceptionData mExceptionData;
 	bool mIsExtensionMethod;
 
 private:
