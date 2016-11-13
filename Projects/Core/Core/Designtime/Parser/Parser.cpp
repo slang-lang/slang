@@ -557,7 +557,7 @@ Runtime::AtomicValue Parser::parseValueInitialization(TokenIterator& token)
 
 	switch ( token->type() ) {
 		case Token::Type::CONST_BOOLEAN:
-			if ( !sign.empty() ) {
+			if ( sign.size() != 0 ) {
 				throw Common::Exceptions::SyntaxError("unexpected token", token->position());
 			}
 

@@ -31,8 +31,7 @@ private void runGame() modify {
 			percent = Math.abs(int cin());
 		}
 
-		float burn = (float percent / 100.f) * MAXBURN;
-print("burn = " + burn);
+		float burn = ((float percent) / 100.f) * MAXBURN;
 
 		// only burn as much fuel as we have
 		if ( burn > mFuel ) {
