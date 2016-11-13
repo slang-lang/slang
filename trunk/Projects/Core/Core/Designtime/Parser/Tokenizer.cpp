@@ -751,27 +751,30 @@ void Tokenizer::replaceConstDataTypes()
 					numCombines++;
 
 					tmp = lookahead(token, numCombines + 1);
+
 					if ( tmp->type() == Token::Type::IDENTIFER ) {
 						if ( tmp->content() == "d" ) {
 							// CONST_INTEGER '.' CONST_INTEGER 'd'
 							numCombines++;
+							tmp->resetContentTo("");
 							tmp->resetTypeTo(Token::Type::CONST_DOUBLE);
 						}
 						else if ( tmp->content() == "f" ) {
 							// CONST_INTEGER '.' CONST_INTEGER 'f'
 							numCombines++;
+							tmp->resetContentTo("");
 							tmp->resetTypeTo(Token::Type::CONST_FLOAT);
 						}
 					}
-					else if ( lookahead(token, numCombines + 1)->type() == Token::Type::CONST_DOUBLE ) {
+					else if ( tmp->type() == Token::Type::CONST_DOUBLE ) {
 						// CONST_DOUBLE 'd'
 						numCombines++;
 					}
-					else if ( lookahead(token, numCombines + 1)->type() == Token::Type::CONST_FLOAT ) {
+					else if ( tmp->type() == Token::Type::CONST_FLOAT ) {
 						// CONST_FLOAT 'f'
 						numCombines++;
 					}
-					else if ( lookahead(token, numCombines + 1)->type() == Token::Type::CONST_INTEGER ) {
+					else if ( tmp->type() == Token::Type::CONST_INTEGER ) {
 						// CONST_INTEGER 'i'
 						numCombines++;
 					}
@@ -780,23 +783,25 @@ void Tokenizer::replaceConstDataTypes()
 					if ( tmp->content() == "d" ) {
 						// CONST_INTEGER '.' 'd'
 						numCombines++;
+						tmp->resetContentTo("");
 						tmp->resetTypeTo(Token::Type::CONST_DOUBLE);
 					}
 					else if ( tmp->content() == "f" ) {
 						// CONST_INTEGER '.' 'f'
 						numCombines++;
+						tmp->resetContentTo("");
 						tmp->resetTypeTo(Token::Type::CONST_FLOAT);
 					}
 				}
-				else if ( lookahead(token, numCombines + 1)->type() == Token::Type::CONST_DOUBLE ) {
+				else if ( tmp->type() == Token::Type::CONST_DOUBLE ) {
 					// CONST_DOUBLE 'd'
 					numCombines++;
 				}
-				else if ( lookahead(token, numCombines + 1)->type() == Token::Type::CONST_FLOAT ) {
+				else if ( tmp->type() == Token::Type::CONST_FLOAT ) {
 					// CONST_FLOAT 'f'
 					numCombines++;
 				}
-				else if ( lookahead(token, numCombines + 1)->type() == Token::Type::CONST_INTEGER ) {
+				else if ( tmp->type() == Token::Type::CONST_INTEGER ) {
 					// CONST_INTEGER 'i'
 					numCombines++;
 				}
@@ -805,28 +810,31 @@ void Tokenizer::replaceConstDataTypes()
 				if ( tmp->content() == "d" ) {
 					// CONST_INTEGER 'd'
 					numCombines++;
+					tmp->resetContentTo("");
 					tmp->resetTypeTo(Token::Type::CONST_DOUBLE);
 				}
 				else if ( tmp->content() == "f" ) {
 					// CONST_INTEGER 'f'
 					numCombines++;
+					tmp->resetContentTo("");
 					tmp->resetTypeTo(Token::Type::CONST_FLOAT);
 				}
 				else if ( tmp->content() == "i" ) {
 					// CONST_INTEGER 'i'
 					numCombines++;
+					tmp->resetContentTo("");
 					tmp->resetTypeTo(Token::Type::CONST_INTEGER);
 				}
 			}
-			else if ( lookahead(token, numCombines + 1)->type() == Token::Type::CONST_DOUBLE ) {
+			else if ( tmp->type() == Token::Type::CONST_DOUBLE ) {
 				// CONST_DOUBLE 'd'
 				numCombines++;
 			}
-			else if ( lookahead(token, numCombines + 1)->type() == Token::Type::CONST_FLOAT ) {
+			else if ( tmp->type() == Token::Type::CONST_FLOAT ) {
 				// CONST_FLOAT 'f'
 				numCombines++;
 			}
-			else if ( lookahead(token, numCombines + 1)->type() == Token::Type::CONST_INTEGER ) {
+			else if ( tmp->type() == Token::Type::CONST_INTEGER ) {
 				// CONST_INTEGER 'i'
 				numCombines++;
 			}
