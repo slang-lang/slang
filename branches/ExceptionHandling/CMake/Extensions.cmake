@@ -1,0 +1,20 @@
+
+add_definitions(-DLOG_LEVEL=2)
+#add_definitions(-DLOG_FILE_AND_POSITION)
+
+#if( "${USE_APACHE_EXTENSION}" STREQUAL "" OR "${USE_APACHE_EXTENSION}" STREQUAL "1" )
+	add_definitions(-DUSE_APACHE_EXTENSION)
+#endif()
+
+#if( "${USE_JSON_EXTENSION}" STREQUAL "" OR "${USE_JSON_EXTENSION}" STREQUAL "1" )
+	add_definitions(-DUSE_JSON_EXTENSION)
+#endif()
+
+#if( "${USE_MYSQL_EXTENSION}" STREQUAL "" OR "${USE_MYSQL_EXTENSION}" STREQUAL "1" )
+	add_definitions(-DUSE_MYSQL_EXTENSION)
+#endif()
+
+#if ( "${USE_SYSTEM_EXTENSION}" STREQUAL "" OR "${USE_SYSTEM_EXTENSION}" STREQUAL "1" )
+	add_definitions(-DUSE_SYSTEM_EXTENSION)
+#endif()
+
