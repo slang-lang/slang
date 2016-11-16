@@ -10,10 +10,18 @@ public object Prototype<T> {
 	public T getValue() const {
 		return mValue;
 	}
+
+	public string toString() const {
+		return string mValue;
+	}
+
+	public string =operator(string none) const {
+		return string mValue;
+	}
 }
 
 public object TestObject {
-	private Prototype<int> mValue;
+	public Prototype<int> mValue;
 	
 	public void Constructor(int value) {
 		mValue = new Prototype<int>(value);
@@ -32,6 +40,7 @@ private bool TestCase1() {
 	print("TestCase 1: prototype as member");
 
 	TestObject obj = new TestObject(173);
+	print("obj.mValue = " + obj.mValue);
 
 	return obj.getValue() == 173;
 }

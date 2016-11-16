@@ -299,7 +299,7 @@ bool Analyser::createMember(TokenIterator& token, TokenIterator /*end*/)
 	std::string languageFeature;
 	Mutability::E mutability = Mutability::Modify;
 	std::string name;
-	std::string type;
+	TypeDeclaration type;
 	Runtime::AtomicValue value = 0;
 	Visibility::E visibility;
 
@@ -310,9 +310,7 @@ bool Analyser::createMember(TokenIterator& token, TokenIterator /*end*/)
 		languageFeature = (*token++).content();
 	}
 	// look for the type token
-	type = Parser::identify(token);
-	// collect prototype constraints (if present)
-	constraints = Parser::collectPrototypeConstraints(token);
+	type = Parser::parseTypeDeclaration(token);
 	// look for the identifier token
 	name = (*token++).content();
 
@@ -349,27 +347,27 @@ bool Analyser::createMember(TokenIterator& token, TokenIterator /*end*/)
 	expect(Token::Type::SEMICOLON, token);
 
 	if ( dynamic_cast<BluePrintGeneric*>(mScope) ){
-		BluePrintObject* blue = new BluePrintObject(type, mFilename, name);
+		BluePrintObject* blue = new BluePrintObject(type.mTypename, mFilename, name);
 		blue->setFinal(isFinal);
 		blue->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
 		blue->setMember(true);
 		blue->setMutability(mutability);
 		blue->setParent(mScope);
-		blue->setPrototypeConstraints(constraints);
-		blue->setQualifiedTypename(type);
+		blue->setPrototypeConstraints(type.mConstraints);
+		blue->setQualifiedTypename(type.mTypename);
 		blue->setValue(value);
 		blue->setVisibility(visibility);
 
 		mScope->define(name, blue);
 	}
 	else {
-		Runtime::Object *member = mRepository->createInstance(type, name, constraints, false);
+		Runtime::Object *member = mRepository->createInstance(type.mTypename, name, type.mConstraints, false);
 		member->setFinal(isFinal);
 		member->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
 		member->setMember(true);
 		member->setMutability(mutability);
 		member->setParent(mScope);
-		member->setQualifiedTypename(type);
+		member->setQualifiedTypename(type.mTypename);
 		member->setValue(value);
 		member->setVisibility(visibility);
 
@@ -391,7 +389,7 @@ bool Analyser::createMethod(TokenIterator& token, TokenIterator /*end*/)
 	std::string name;
 	int numConstModifiers = 0;
 	bool throws = false;
-	std::string type;
+	TypeDeclaration type;
 	std::string visibility;
 
 	// look for the visibility token
@@ -401,7 +399,7 @@ bool Analyser::createMethod(TokenIterator& token, TokenIterator /*end*/)
 		languageFeature = (*token++).content();
 	}
 	// look for the type token
-	type = Parser::identify(token);
+	type = Parser::parseTypeDeclaration(token);
 	// look for the identifier token
 	name = (*token++).content();
 
@@ -494,7 +492,7 @@ bool Analyser::createMethod(TokenIterator& token, TokenIterator /*end*/)
 	}
 
 	// create a new method with the corresponding return value
-	Runtime::Method *method = new Runtime::Method(mScope, name, type);
+	Runtime::Method *method = new Runtime::Method(mScope, name, type.mTypename);
 	method->setAbstract(isAbstract || mProcessingInterface);
 	method->setFinal(isFinal);
 	method->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
@@ -616,7 +614,8 @@ void Analyser::generate(const TokenList& tokens)
 			createNamespace(it, tokens.end());
 		}
 		else {
-			throw Common::Exceptions::SyntaxError("invalid token '" + it->content() + "' found", it->position());
+			createMember(it, tokens.end());
+			//throw Common::Exceptions::SyntaxError("invalid token '" + it->content() + "' found", it->position());
 		};
 
 		it++;

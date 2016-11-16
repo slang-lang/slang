@@ -28,6 +28,13 @@ namespace Designtime {
 
 bool checkSyntax(TokenIterator foundIt, const TokenList &expected);
 
+class TypeDeclaration
+{
+public:
+	PrototypeConstraints mConstraints;
+	std::string mTypename;
+};
+
 class Parser
 {
 public:
@@ -42,6 +49,7 @@ public:
 	static ImplementationType::E parseImplementationType(TokenIterator& token, ImplementationType::E defaultValue);
 	static LanguageFeatureState::E parseLanguageFeatureState(TokenIterator& token, LanguageFeatureState::E defaultValue);
 	static ObjectType::E parseObjectType(TokenIterator& token);
+	static TypeDeclaration parseTypeDeclaration(TokenIterator& token);
 	static Runtime::AtomicValue parseValueInitialization(TokenIterator& token);
 
 	static bool isEnumDeclaration(TokenIterator start);

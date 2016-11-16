@@ -545,6 +545,15 @@ ParameterList Parser::parseParameters(TokenIterator &token, IScope* scope)
 	return params;
 }
 
+TypeDeclaration Parser::parseTypeDeclaration(TokenIterator& token)
+{
+	TypeDeclaration result;
+	result.mTypename = identify(token);
+	result.mConstraints = collectPrototypeConstraints(token);
+
+	return result;
+}
+
 Runtime::AtomicValue Parser::parseValueInitialization(TokenIterator& token)
 {
 	Runtime::AtomicValue value;
