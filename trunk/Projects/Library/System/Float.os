@@ -48,14 +48,14 @@ public object Float {
 		return mValue == other;
 	}
 	public bool operator==(Float other ref) const {
-		return mValue == other.mValue;
+		return mValue == other;
 	}
 
 	public void operator=(float other) modify {
 		mValue = other;
 	}
 	public void operator=(Float other ref) modify {
-		mValue = other.mValue;
+		mValue = other;
 	}
 
 	public float =operator(float other) const {
@@ -66,28 +66,28 @@ public object Float {
 		mValue = mValue + other;
 	}
 	public void operator+(Float other ref) modify {
-		mValue = mValue + other.mValue;
+		mValue = mValue + other;
 	}
 
 	public void operator-(float other) modify {
 		mValue = mValue - other;
 	}
 	public void operator-(Float other ref) modify {
-		mValue = mValue - other.mValue;
+		mValue = mValue - other;
 	}
 
 	public void operator*(float other) modify {
 		mValue = mValue * other;
 	}
 	public void operator*(Float other ref) modify {
-		mValue = mValue * other.mValue;
+		mValue = mValue * other;
 	}
 
 	public void operator/(float other) modify {
 		mValue = mValue / other;
 	}
 	public void operator/(Float other ref) modify {
-		mValue = mValue / other.mValue;
+		mValue = mValue / other;
 	}
 }
 

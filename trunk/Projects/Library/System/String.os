@@ -173,7 +173,7 @@ public object String {
 	 * String compare operator
 	 */
 	public bool operator==(String other ref) const {
-		return (mValue == other.mValue);
+		return (mValue == other);
 	}
 
 	/*
@@ -186,7 +186,7 @@ public object String {
 	 * String assignment operator
 	 */
 	public void operator=(String other ref) modify {
-		mValue = other.mValue;
+		mValue = other;
 	}
 
 	/*
@@ -199,7 +199,7 @@ public object String {
 	 * String concatenation operator
 	 */
 	public void operator+(String other ref) modify {
-		mValue = mValue + other.mValue;
+		mValue = mValue + other;
 	}
 }
 
