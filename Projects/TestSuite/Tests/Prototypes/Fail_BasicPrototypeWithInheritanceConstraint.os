@@ -24,18 +24,15 @@ public object Prototype<T: Object> {
 }
 
 public void Main(int argc = 0, string args = "") {
-	assert( TestCase1() );	// success
+	assert( TestCase1() );	// fail
 }
 
 private bool TestCase1() {
-	print("TestCase 1: basic prototype");
+	print("TestCase 1: prototype constraint type fail");
 
-	Prototype<Integer> proto = new Prototype<Integer>(new Integer(173));
-	print("proto.getValue() = " + proto.getValue());
+	Prototype<int> proto = new Prototype<int>(173);
 
-	proto.doIt();
-
-	assert( proto.getValue() == 173 );
-	return proto.getValue() == 173;
+	assert(!"this should not be possible");
+	return false;
 }
 

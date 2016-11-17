@@ -13,7 +13,7 @@ public object Prototype<T> {
 }
 
 public void Main(int argc = 0, string args = "") {
-	assert( TestCase1() );		// not supported by now
+	assert( TestCase1() );
 }
 
 private bool TestCase1() {
@@ -26,6 +26,7 @@ private bool TestCase1() {
 }
 
 private bool MethodWithPrototypeParameter(Prototype<int> proto) {
+	print("proto.getValue() = " + proto.getValue());
 	return proto.getValue() == 173;
 }
 

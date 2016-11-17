@@ -21,7 +21,7 @@ PrototypeConstraint::PrototypeConstraint(unsigned int index, const std::string& 
 
 bool PrototypeConstraint::operator==(const PrototypeConstraint& other) const
 {
-	return mConstraint == other.mConstraint && mIndex == other.mIndex && mType == mType;
+	return /*mConstraint == other.mConstraint &&*/ mIndex == other.mIndex && mType == mType;
 }
 
 
