@@ -253,7 +253,13 @@ Runtime::Object* Repository::createInstance(const std::string& type, const std::
 {
 	BluePrintObjectMap::iterator it = mBluePrintObjects.find(type);
 	if ( it == mBluePrintObjects.end() ) {
-		throw Common::Exceptions::Exception("could not create instance of unknown type '" + type + "'");
+
+		// workaround for complex member types who's imports have not yet been analysed
+		if ( !initialize ) {
+			return new Runtime::UserObject(name, SYSTEM_LIBRARY, type, true);
+		}
+
+		throw Common::Exceptions::Exception("cannot not create instance of unknown type '" + type + "'");
 	}
 
 	return createInstance(it->second, name, constraints, initialize);
@@ -405,7 +411,7 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 	}
 
 	// create the base object
-	Runtime::Object *object = new Runtime::UserObject(name, blueprint->Filename(), blueprint->Typename());
+	Runtime::Object* object = new Runtime::UserObject(name, blueprint->Filename(), blueprint->Typename());
 
 	if ( initialize ) {
 		Designtime::Ancestors ancestors = blueprint->getInheritance();
