@@ -35,10 +35,10 @@ private bool TestCase1() const {
 		assert( list.size() == 2 );
 
 		item = Integer list.at(0);
-		assert(item.mValue == 173);
+		assert(item == 173);
 
 		item = Integer list.at(1);
-		assert(item.mValue == 1389);
+		assert(item == 1389);
 
 		//item = Integer list.at(2);
 
@@ -80,13 +80,13 @@ private bool TestCase2() const {
 */
 
 		item = Integer list.at(0);
-		assert(item.mValue == 664);
+		assert(item == 664);
 
 		item = Integer list.at(1);
-		assert(item.mValue == 173);
+		assert(item == 173);
 
 		item = Integer list.at(2);
-		assert(item.mValue == 1389);
+		assert(item == 1389);
 
 		return true;
 	}
@@ -125,10 +125,10 @@ private bool TestCase3() const {
 		assert( list.size() == 2 );
 
 		item = Integer list.at(0);
-		assert( item.mValue == 173 );
+		assert( item == 173 );
 
 		item = Integer list.at(1);
-		assert( item.mValue == 1389 );
+		assert( item == 1389 );
 
 		return true;
 	}
@@ -167,10 +167,10 @@ private bool TestCase4() const {
 		assert( list.size() == 2 );
 
 		item = Integer list.at(0);
-		assert( item.mValue == 664 );
+		assert( item == 664 );
 
 		item = Integer list.at(1);
-		assert( item.mValue == 173 );
+		assert( item == 173 );
 
 		return true;
 	}
