@@ -31,8 +31,15 @@ public:
 	void teardown();
 
 private:	// Tests
-	void testPrototypeDeclaration();
-	void testPrototypeUsage();
+	void testAdvancedPrototypeTest();
+	void testBasicPrototypeTest();
+	void testBasicPrototypeWithInheritanceConstraint();
+	void testBasicPrototypeWithObjectTest();
+	void testFail_BasicPrototypeWithInheritanceConstraint();
+	void testFail_PrototypeAssignment();
+	void testInheritFromPrototypeTest();
+	void testPrototypeAsMember();
+	void testPrototypeAsParameter();
 };
 
 

@@ -46,12 +46,6 @@ public:
 
 	static std::string identify(TokenIterator& token);
 
-	static ImplementationType::E parseImplementationType(TokenIterator& token, ImplementationType::E defaultValue);
-	static LanguageFeatureState::E parseLanguageFeatureState(TokenIterator& token, LanguageFeatureState::E defaultValue);
-	static ObjectType::E parseObjectType(TokenIterator& token);
-	static TypeDeclaration parseTypeDeclaration(TokenIterator& token);
-	static Runtime::AtomicValue parseValueInitialization(TokenIterator& token);
-
 	static bool isEnumDeclaration(TokenIterator start);
 	static bool isInterfaceDeclaration(TokenIterator start);
 	static bool isLibraryReference(TokenIterator start);
@@ -62,7 +56,12 @@ public:
 	static bool isObjectDeclaration(TokenIterator start);
 	static bool isParameterDeclaration(TokenIterator start);
 
+	static ImplementationType::E parseImplementationType(TokenIterator& token, ImplementationType::E defaultValue);
+	static LanguageFeatureState::E parseLanguageFeatureState(TokenIterator& token, LanguageFeatureState::E defaultValue);
+	static ObjectType::E parseObjectType(TokenIterator& token);
 	static ParameterList parseParameters(TokenIterator &token, IScope* scope = 0);
+	static TypeDeclaration parseTypeDeclaration(TokenIterator& token);
+	static Runtime::AtomicValue parseValueInitialization(TokenIterator& token);
 };
 
 

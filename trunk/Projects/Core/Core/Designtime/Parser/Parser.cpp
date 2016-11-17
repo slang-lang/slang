@@ -449,47 +449,25 @@ ParameterList Parser::parseParameters(TokenIterator &token, IScope* scope)
 
 	ParameterList params;
 
-	std::string type;
-
 	while ( (*++token).type() != Token::Type::PARENTHESIS_CLOSE ) {
-		if ( token->type() == Token::Type::IDENTIFER ) {
-			type += token->content();
-
-			if ( lookahead(token)->type() == Token::Type::SCOPE ) {
-				token++;
-				type += ".";
-				continue;
-			}
-		}
-
-		if ( !isLocalDeclaration(token) && !isParameterDeclaration(token) ) {
-			throw Common::Exceptions::SyntaxError("could not parse parameter declaration", token->position());
-		}
-
-		Parameter::AccessMode::E accessmode = Parameter::AccessMode::ByValue;
+		Parameter::AccessMode::E accessMode;
 		bool hasDefaultValue = false;
 		bool isConst = false;
 		Runtime::AtomicValue value;
 
 		if ( token->type() == Token::Type::IDENTIFER ) {
-			// type has already been set
 			// set default access mode for complex types
-			accessmode = Parameter::AccessMode::ByReference;
+			accessMode = Parameter::AccessMode::ByReference;
 		}
 		else if ( token->type() == Token::Type::TYPE ) {
-			// combine type with already gathered type
-			type += token->content();
 			// set default access mode for atomic parameters
-			accessmode = Parameter::AccessMode::ByValue;
+			accessMode = Parameter::AccessMode::ByValue;
 		}
 		else {
 			throw Common::Exceptions::SyntaxError("unexpected token '" + token->content() + "' found", token->position());
 		}
 
-		token++;
-
-		// collect prototype constraints (if present)
-		PrototypeConstraints constraints = Parser::collectPrototypeConstraints(token);
+		TypeDeclaration type = parseTypeDeclaration(token);
 
 		std::string name = token->content();
 		token++;
@@ -509,11 +487,11 @@ ParameterList Parser::parseParameters(TokenIterator &token, IScope* scope)
 		}
 
 		if ( token->content() == RESERVED_WORD_BY_REFERENCE ) {
-			accessmode = Parameter::AccessMode::ByReference;
+			accessMode = Parameter::AccessMode::ByReference;
 			token++;
 		}
 		else if ( token->content() == RESERVED_WORD_BY_VALUE ) {
-			accessmode = Parameter::AccessMode::ByValue;
+			accessMode = Parameter::AccessMode::ByValue;
 			token++;
 		}
 
@@ -526,16 +504,14 @@ ParameterList Parser::parseParameters(TokenIterator &token, IScope* scope)
 			token++;
 		}
 
-		if ( hasDefaultValue && accessmode == Parameter::AccessMode::ByReference ) {
+		if ( hasDefaultValue && accessMode == Parameter::AccessMode::ByReference ) {
 			// parameters with default values cannot be accessed by reference
 			throw Common::Exceptions::SyntaxError("default parameters are not allowed to be accessed by reference");
 		}
 
 		params.push_back(
-			Parameter(name, type, value, hasDefaultValue, isConst, accessmode, Reference())
+			Parameter(name, buildConstraintTypename(type.mTypename, type.mConstraints), value, hasDefaultValue, isConst, accessMode, Reference())
 		);
-
-		type = "";	// reset type for next iteration
 
 		if ( token->type() == Token::Type::PARENTHESIS_CLOSE ) {
 			break;
