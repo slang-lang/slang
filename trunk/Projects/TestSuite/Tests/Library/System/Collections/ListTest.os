@@ -34,13 +34,13 @@ private bool TestCase1() const {
 		assert( list.size() == 3 );
 
 		item = Integer list.at(0);
-		assert( item.mValue == 664 );
+		assert( item == 664 );
 
 		item = Integer list.at(1);
-		assert( item.mValue == 173 );
+		assert( item == 173 );
 
 		item = Integer list.at(2);
-		assert( item.mValue == 1389 );
+		assert( item == 1389 );
 
 		return true;
 	}
@@ -74,13 +74,13 @@ private bool TestCase2() const {
 		assert( list.size() == 3 );
 
 		item = Integer list.at(0);
-		assert( item.mValue == 664 );
+		assert( item == 664 );
 
 		item = Integer list.at(1);
-		assert( item.mValue == 173 );
+		assert( item == 173 );
 
 		item = Integer list.at(2);
-		assert( item.mValue == 1389 );
+		assert( item == 1389 );
 
 		return true;
 	}
@@ -114,17 +114,17 @@ private bool TestCase3() const {
 		assert( list.size() == 2 );
 
 		item = Integer list.at(0);
-		assert( item.mValue == 173 );
+		assert( item == 173 );
 
 		item = Integer list.at(1);
-		assert( item.mValue == 1389 );
+		assert( item == 1389 );
 
 		list.pop_front();
 
 		assert( list.size() == 1 );
 
 		item = Integer list.at(0);
-		assert( item.mValue == 1389 );
+		assert( item == 1389 );
 
 		list.pop_front();
 
@@ -167,17 +167,17 @@ private bool TestCase4() const {
 		assert( list.size() == 2 );
 
 		item = Integer list.at(0);
-		assert( item.mValue == 664 );
+		assert( item == 664 );
 
 		item = Integer list.at(1);
-		assert( item.mValue == 173 );
+		assert( item == 173 );
 
 		list.pop_back();
 
 		assert( list.size() == 1 );
 
 		item = Integer list.at(0);
-		assert( item.mValue == 664 );
+		assert( item == 664 );
 
 		list.pop_back();
 
@@ -218,7 +218,7 @@ private bool TestCase5() const {
 			it.next();
 
 			item = Integer it.current();
-			//print(item.mValue);
+			//print(string item);
 		}
 
 		list.clear();
@@ -228,7 +228,7 @@ private bool TestCase5() const {
 			it.next();
 
 			item = Integer it.current();
-			//print(item.mValue);
+			//print(string item);
 		}
 
 		assert( list.empty() );

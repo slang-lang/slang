@@ -69,7 +69,7 @@ private bool TestCase1() const {
 			it.next();
 
 			item = TestObject it.current();
-			//print(item.mValue);
+			//print(item);
 
 			if ( last ) {
 				assert( last <= item );

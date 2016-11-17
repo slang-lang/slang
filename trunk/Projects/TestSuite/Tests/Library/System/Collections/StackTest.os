@@ -36,13 +36,13 @@ private bool TestCase1() const {
 		assert( stack.size() == 3 );
 
 		item = String stack.at(0);
-		assert( item.mValue == "664" );
+		assert( item == "664" );
 
 		item = String stack.at(1);
-		assert( item.mValue == "173" );
+		assert( item == "173" );
 
 		item = String stack.at(2);
-		assert( item.mValue == "1389" );
+		assert( item == "1389" );
 
 		assert( stack.size() == 3 );
 
@@ -79,30 +79,30 @@ private bool TestCase2() const {
 		assert( stack.size() == 3 );
 
 		item = String stack.at(0);
-		assert( item.mValue == "664" );
+		assert( item == "664" );
 
 		item = String stack.at(1);
-		assert( item.mValue == "173" );
+		assert( item == "173" );
 
 		item = String stack.at(2);
-		assert( item.mValue == "1389");
+		assert( item == "1389");
 
 		stack.pop();
 
 		assert( stack.size() == 2 );
 
 		item = String stack.at(0);
-		assert( item.mValue == "664" );
+		assert( item == "664" );
 
 		item = String stack.at(1);
-		assert( item.mValue == "173" );
+		assert( item == "173" );
 
 		stack.pop();
 
 		assert( stack.size() == 1 );
 
 		item = String stack.at(0);
-		assert( item.mValue == "664" );
+		assert( item == "664" );
 
 		stack.pop();
 
