@@ -5,7 +5,7 @@ import System.Math;
 public object Circle {
 	protected int radius01;
 
-	public void Circle(int radius) {
+	public void Constructor(int radius) {
 		radius01 = radius;
 	}
 
@@ -17,8 +17,8 @@ public object Circle {
 public object Eclipse extends Circle {
 	protected int radius02;
 
-	public void Eclipse(int r1, int r2) {
-		base.Circle(r1);
+	public void Constructor(int r1, int r2) {
+		base.Constructor(r1);
 
 		radius02 = r2;
 	}
