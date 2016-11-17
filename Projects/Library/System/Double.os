@@ -46,14 +46,14 @@ public object Double {
 		return mValue == other;
 	}
 	public bool operator==(Double other ref) const {
-		return mValue == other.mValue;
+		return mValue == other;
 	}
 
 	public void operator=(double other) modify {
 		mValue = other;
 	}
 	public void operator=(Double other ref) modify {
-		mValue = other.mValue;
+		mValue = other;
 	}
 
 	public bool =operator(bool other) const {
@@ -67,28 +67,28 @@ public object Double {
 		mValue = mValue + other;
 	}
 	public void operator+(Double other ref) modify {
-		mValue = mValue + other.mValue;
+		mValue = mValue + other;
 	}
 
 	public void operator-(double other) modify {
 		mValue = mValue - other;
 	}
 	public void operator-(Double other ref) modify {
-		mValue = mValue - other.mValue;
+		mValue = mValue - other;
 	}
 
 	public void operator*(double other) modify {
 		mValue = mValue * other;
 	}
 	public void operator*(Double other ref) modify {
-		mValue = mValue * other.mValue;
+		mValue = mValue * other;
 	}
 
 	public void operator/(double other) modify {
 		mValue = mValue / other;
 	}
 	public void operator/(Double other ref) modify {
-		mValue = mValue / other.mValue;
+		mValue = mValue / other;
 	}
 }
 

@@ -47,21 +47,21 @@ public object Integer {
 		return mValue == other;
 	}
 	public bool operator==(Integer other ref) const {
-		return mValue == other.mValue;
+		return mValue == other;
 	}
 
 	public bool operator<(int other) const {
 		return mValue < other;
 	}
 	public bool operator<(Integer other ref) const {
-		return mValue < other.mValue;
+		return mValue < other;
 	}
 
 	public bool operator>(int other) const {
 		return mValue > other;
 	}
 	public bool operator>(Integer other ref) const {
-		return mValue > other.mValue;
+		return mValue > other;
 	}
 
 	/*
@@ -75,7 +75,7 @@ public object Integer {
 	 * Integer assignment operator
 	 */
 	public void operator=(Integer other) modify {
-		mValue = other.mValue;
+		mValue = other;
 	}
 
 	/*
@@ -96,28 +96,28 @@ public object Integer {
 		mValue = mValue + other;
 	}
 	public void operator+(Integer other ref) modify {
-		mValue = mValue + other.mValue;
+		mValue = mValue + other;
 	}
 
 	public void operator-(int other) modify {
 		mValue = mValue - other;
 	}
 	public void operator-(Integer other ref) modify {
-		mValue = mValue - other.mValue;
+		mValue = mValue - other;
 	}
 
 	public void operator*(int other) modify {
 		mValue = mValue * other;
 	}
 	public void operator*(Integer other ref) modify {
-		mValue = mValue * other.mValue;
+		mValue = mValue * other;
 	}
 
 	public void operator/(int other) modify {
 		mValue = mValue / other;
 	}
 	public void operator/(Integer other ref) modify {
-		mValue = mValue / other.mValue;
+		mValue = mValue / other;
 	}
 }
 

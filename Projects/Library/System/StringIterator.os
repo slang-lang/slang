@@ -25,7 +25,7 @@ public namespace System {
 		public void Constructor(System.StringIterator si) {
 			mCurrentPosition = si.mCurrentPosition;
 			mSeparator = si.mSeparator;
-			mValue = new String(si.mValue);
+			mValue = new String(string si);
 		}
 
 		/*
