@@ -35,14 +35,14 @@ LibraryTest::LibraryTest(const ::Utils::Common::ILogger *p)
 
 void LibraryTest::process()
 {
-	TEST(testBoolean);
-	TEST(testDouble);
-	TEST(testFloat);
-	TEST(testInteger);
-	TEST(testIOFile);
-	TEST(testIOLogger);
-	TEST(testString);
-	TEST(testStringIterator);
+	TEST(testSystemBoolean);
+	TEST(testSystemDouble);
+	TEST(testSystemFloat);
+	TEST(testSystemInteger);
+	TEST(testSystemIOFile);
+	TEST(testSystemIOLogger);
+	TEST(testSystemString);
+	TEST(testSystemStringIterator);
 }
 
 void LibraryTest::setup()
@@ -53,7 +53,7 @@ void LibraryTest::teardown()
 {
 }
 
-void LibraryTest::testBoolean()
+void LibraryTest::testSystemBoolean()
 {
 	try {
 		VirtualMachine vm;
@@ -67,7 +67,7 @@ void LibraryTest::testBoolean()
 	}
 }
 
-void LibraryTest::testDouble()
+void LibraryTest::testSystemDouble()
 {
 	try {
 		VirtualMachine vm;
@@ -81,7 +81,7 @@ void LibraryTest::testDouble()
 	}
 }
 
-void LibraryTest::testFloat()
+void LibraryTest::testSystemFloat()
 {
 	try {
 		VirtualMachine vm;
@@ -96,7 +96,7 @@ void LibraryTest::testFloat()
 }
 
 
-void LibraryTest::testInteger()
+void LibraryTest::testSystemInteger()
 {
 	try {
 		VirtualMachine vm;
@@ -110,7 +110,7 @@ void LibraryTest::testInteger()
 	}
 }
 
-void LibraryTest::testIOFile()
+void LibraryTest::testSystemIOFile()
 {
 	try {
 		VirtualMachine vm;
@@ -127,7 +127,7 @@ void LibraryTest::testIOFile()
 	}
 }
 
-void LibraryTest::testIOLogger()
+void LibraryTest::testSystemIOLogger()
 {
 	try {
 		VirtualMachine vm;
@@ -144,7 +144,7 @@ void LibraryTest::testIOLogger()
 	}
 }
 
-void LibraryTest::testString()
+void LibraryTest::testSystemString()
 {
 	try {
 		VirtualMachine vm;
@@ -161,7 +161,7 @@ void LibraryTest::testString()
 	}
 }
 
-void LibraryTest::testStringIterator()
+void LibraryTest::testSystemStringIterator()
 {
 	try {
 		VirtualMachine vm;

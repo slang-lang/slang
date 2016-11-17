@@ -30,14 +30,14 @@ public:
 	void teardown();
 
 private:	// Tests
-	void testBoolean();
-	void testDouble();
-	void testFloat();
-	void testInteger();
-	void testIOFile();
-	void testIOLogger();
-	void testString();
-	void testStringIterator();
+	void testSystemBoolean();
+	void testSystemDouble();
+	void testSystemFloat();
+	void testSystemInteger();
+	void testSystemIOFile();
+	void testSystemIOLogger();
+	void testSystemString();
+	void testSystemStringIterator();
 };
 
 
