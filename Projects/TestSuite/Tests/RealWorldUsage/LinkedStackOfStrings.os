@@ -46,7 +46,7 @@ public object StringStackIterator extends System.Iterator {
     }
 }
 
-public prototype LinkedStackOfStrings<T> {
+public object LinkedStackOfStrings<T> {
     private int n;          // size of the stack
     private Node first;     // top of stack
 

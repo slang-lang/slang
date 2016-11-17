@@ -30,8 +30,6 @@ public:
 	bool operator< (const Reference& other) const;
 	bool operator== (const Reference& other) const;
 
-protected:
-
 private:
 	unsigned int mAddress;
 };

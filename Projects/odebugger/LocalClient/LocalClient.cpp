@@ -912,7 +912,7 @@ void LocalClient::start()
 		Script *script = mVirtualMachine->createScriptFromFile(mSettings->filename(), mParameters, &result);
 		assert(script);
 
-		writeln("[Process finished with exit code " + result.getValue().toStdString() + "]");
+		writeln("[Process finished" + (result.getValue().type == Runtime::AtomicValue::UNKOWN ? "" : " with exit code " + result.getValue().toStdString()) + "]");
 
 		if ( mSettings->autoStop() ) {
 			mRunning = false;
