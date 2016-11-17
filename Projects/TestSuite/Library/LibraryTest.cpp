@@ -19,7 +19,7 @@
 #	include <System/SystemExtension.h>
 #endif
 
-// Namespace declartations
+// Namespace declarations
 using namespace ObjectiveScript;
 
 
@@ -36,6 +36,12 @@ LibraryTest::LibraryTest(const ::Utils::Common::ILogger *p)
 void LibraryTest::process()
 {
 	TEST(testSystemBoolean);
+	TEST(testSystemCollectionsDoubleLinkedList);
+	TEST(testSystemCollectionsIterator);
+	TEST(testSystemCollectionsList);
+	TEST(testSystemCollectionsRandomAccessCollection);
+	TEST(testSystemCollectionsSet);
+	TEST(testSystemCollectionsStack);
 	TEST(testSystemDouble);
 	TEST(testSystemFloat);
 	TEST(testSystemInteger);
@@ -58,6 +64,93 @@ void LibraryTest::testSystemBoolean()
 	try {
 		VirtualMachine vm;
 		vm.createScriptFromFile("Tests/Library/System/BooleanTest.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed
+		TFAIL(e.what());
+	}
+}
+
+void LibraryTest::testSystemCollectionsDoubleLinkedList()
+{
+	try {
+		VirtualMachine vm;
+		vm.createScriptFromFile("Tests/Library/System/Collections/DoubleLinkedListTest.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed
+		TFAIL(e.what());
+	}
+}
+
+void LibraryTest::testSystemCollectionsIterator()
+{
+	try {
+		VirtualMachine vm;
+		vm.createScriptFromFile("Tests/Library/System/Collections/IteratorTest.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed
+		TFAIL(e.what());
+	}
+}
+
+void LibraryTest::testSystemCollectionsList()
+{
+	try {
+		VirtualMachine vm;
+		vm.createScriptFromFile("Tests/Library/System/Collections/ListTest.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed
+		TFAIL(e.what());
+	}
+}
+
+void LibraryTest::testSystemCollectionsRandomAccessCollection()
+{
+	try {
+		VirtualMachine vm;
+		vm.createScriptFromFile("Tests/Library/System/Collections/RandomAccessCollectionTest.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed
+		TFAIL(e.what());
+	}
+}
+
+void LibraryTest::testSystemCollectionsSet()
+{
+	try {
+		VirtualMachine vm;
+#ifdef USE_SYSTEM_EXTENSION
+		vm.addExtension(new ObjectiveScript::Extensions::System::SystemExtension());
+#endif
+		vm.createScriptFromFile("Tests/Library/System/Collections/SetTest.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed
+		TFAIL(e.what());
+	}
+}
+
+void LibraryTest::testSystemCollectionsStack()
+{
+	try {
+		VirtualMachine vm;
+		vm.createScriptFromFile("Tests/Library/System/Collections/StackTest.os");
 
 		// automatic success
 	}

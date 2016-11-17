@@ -4,7 +4,7 @@ import System.Collections.Iterator;
 import System.Collections.List;
 import System.String;
 
-public void Main(int argc, string args) const {
+public void Main(int argc = 0, string args = "") const {
 	assert( TestCase1() );
 	assert( TestCase2() );
 	assert( TestCase3() );
