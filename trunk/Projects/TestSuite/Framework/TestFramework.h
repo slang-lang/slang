@@ -39,7 +39,7 @@
 #define TPRINT( expr ) \
 	std::cout << expr << std::endl;
 
-// Skips the active test.
+// Skip the active test.
 #define TSKIP( expr ) \
 	mSkipped++; \
 	mLastResult = GenericTest::Skipped; \
@@ -48,7 +48,7 @@
 	} \
 	return;
 
-// Verifys that the expression is true.
+// Verify that the expression is true.
 #define TVERIFY( expr ) \
 	if ( !expr ) { \
 		mFailed++; \
@@ -86,7 +86,6 @@
 // Runs the given test.
 #define TEST( func ) \
 	{ \
-		/*std::cout << std::endl << "************ New test starting ************" << std::endl;*/ \
 		mRun++; \
 		mLastResult = GenericTest::Passed; \
 		func(); \
