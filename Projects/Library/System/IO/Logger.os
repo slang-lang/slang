@@ -18,19 +18,19 @@ public namespace IO {
 
 		// Public methods
 		public void debug(string message) {
-			writeln("[DEBUG] " + mKey + "::" + message);
+			print("[DEBUG] " + mKey + "::" + message);
 		}
 
 		public void error(string message) {
-			writeln("[ERROR] " + mKey + "::" + message);
+			print("[ERROR] " + mKey + "::" + message);
 		}
 
 		public void info(string message) {
-			writeln("[INFO ] " + mKey + "::" + message);
+			print("[INFO ] " + mKey + "::" + message);
 		}
 
 		public void warning(string message) {
-			writeln("[WARN ] " + mKey + "::" + message);
+			print("[WARN ] " + mKey + "::" + message);
 		}
 	}
 

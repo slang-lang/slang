@@ -1,11 +1,10 @@
 
-import Collections.IIterateable;
 import Exception;
 import String;
 
 public namespace System {
 
-	public object StringIterator /*implements System.IIterateable*/ {
+	public object StringIterator {
 		private int mCurrentPosition;
 		private string mSeparator;
 		private String mValue;
@@ -29,17 +28,17 @@ public namespace System {
 		}
 
 		/*
-		 * HasNext returns true if the iteration did not reach the end of the held String value
+		 * hasNext returns true if the iteration did not reach the end of the held String value
 		 */
-		public bool HasNext() const {
+		public bool hasNext() const {
 			return mCurrentPosition < mValue.Length();
 		}
 
 		/*
-		 * GetNext returns the next sub string of the held String value
+		 * next returns the next sub string of the held String value
 		 * throws OutOfBoundsException
 		 */
-		public string GetNext() modify throws {
+		public string next() modify throws {
 			if ( mCurrentPosition >= mValue.Length() ) {
 				throw new OutOfBoundsException("out of bounds");
 			}
@@ -57,40 +56,40 @@ public namespace System {
 		}
 
 		/*
-		 * Resets the current iteration
+		 * resets the current iteration
 		 */
-		public void Reset() modify {
+		public void reset() modify {
 			mCurrentPosition = 0;
 		}
 
 		/*
 		 * Change separator token (resets iterator to start)
 		 */
-		public void SetSeparator(string separator) modify {
+		public void setSeparator(string separator) modify {
 			mSeparator = separator;
 
-			Reset();
+			reset();
 		}
 
 		/*
 		 * Returns a JSON-like formatted string
 		 */
-		public string ToJsonString() const {
+		public string toJsonString() const {
 			return "{ " +
 					"mCurrentPosition: " + mCurrentPosition + ", " +
 					"mSeparator: \"" + mSeparator + "\", " +
-					"mValue: " + mValue.ToJsonString() + " " +
+					"mValue: " + mValue.toJsonString() + " " +
 				" }";
 		}
 
 		/*
 		 * Returns a JSON-like formatted string
 		 */
-		public string ToString() const {
+		public string toString() const {
 			return "StringIterator: { " +
 					"mCurrentPosition: " + mCurrentPosition + ", " +
 					"mSeparator: \"" + mSeparator + "\", " +
-					"mValue: { " + mValue.ToString() + " }" +
+					"mValue: { " + mValue.toString() + " }" +
 				" }";
 		}
 	}
