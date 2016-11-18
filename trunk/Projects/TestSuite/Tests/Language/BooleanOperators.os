@@ -4,7 +4,7 @@ public void Main(int argc = 0, string argv = "") {
 	assert( false == false );
 	assert( true && true );
 	assert( true || true );
-	assert( true || false );
+	assert( true || false );
 	assert( false !& false );
 	assert( false !| false );
 	assert( (1 == 1) && (2 == 2) );
