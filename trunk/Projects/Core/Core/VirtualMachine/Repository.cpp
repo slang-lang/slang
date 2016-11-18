@@ -50,11 +50,15 @@ Repository::~Repository()
  */
 void Repository::addBluePrint(Designtime::BluePrintEnum* blueprint)
 {
+	if ( blueprint->getImplementationType() == ImplementationType::ForwardDeclaration ) {
+		// adding additional forward declarations doesn't matter
+		mForwardDeclarations.insert(blueprint);
+	}
+
 	BluePrintEnumMap::iterator it = mBluePrintEnums.find(blueprint->QualifiedTypename());
 	if ( it != mBluePrintEnums.end() ) {
 		if ( blueprint->getImplementationType() == ImplementationType::ForwardDeclaration ) {
-			// adding additional forward declarations doesn't matter
-			mForwardDeclarations.insert(blueprint);
+			// we already added this forward declaration to our forward declaration tomb
 			return;
 		}
 
@@ -62,14 +66,11 @@ void Repository::addBluePrint(Designtime::BluePrintEnum* blueprint)
 			throw Common::Exceptions::Exception("duplicate enum '" + blueprint->QualifiedTypename() + "' added to repository");
 		}
 
-		// clean up forward declaration
-		// {
-		BluePrintSymbol* symbol = it->second;
+		// insert forward declaration into forward declaration tomb ...
+		mForwardDeclarations.insert(it->second);
 
+		// ... and remove it from our blueprints
 		mBluePrintEnums.erase(it);
-
-		delete symbol;
-		// }
 	}
 
 	mBluePrintEnums.insert(std::make_pair(blueprint->QualifiedTypename(), blueprint));
@@ -80,11 +81,15 @@ void Repository::addBluePrint(Designtime::BluePrintEnum* blueprint)
  */
 void Repository::addBluePrint(Designtime::BluePrintObject* blueprint)
 {
+	if ( blueprint->getImplementationType() == ImplementationType::ForwardDeclaration ) {
+		// adding additional forward declarations doesn't matter
+		mForwardDeclarations.insert(blueprint);
+	}
+
 	BluePrintObjectMap::iterator it = mBluePrintObjects.find(blueprint->QualifiedTypename());
 	if ( it != mBluePrintObjects.end() ) {
 		if ( blueprint->getImplementationType() == ImplementationType::ForwardDeclaration ) {
-			// adding additional forward declarations doesn't matter
-			mForwardDeclarations.insert(blueprint);
+			// we already added this forward declaration to our forward declaration tomb
 			return;
 		}
 
@@ -92,14 +97,11 @@ void Repository::addBluePrint(Designtime::BluePrintObject* blueprint)
 			throw Common::Exceptions::Exception("duplicate object '" + blueprint->QualifiedTypename() + "' added to repository");
 		}
 
-		// clean up forward declaration
-		// {
-		BluePrintSymbol* symbol = it->second;
+		// insert forward declaration into forward declaration tomb ...
+		mForwardDeclarations.insert(it->second);
 
+		// ... and remove it from our blueprints
 		mBluePrintObjects.erase(it);
-
-		delete symbol;
-		// }
 	}
 
 	mBluePrintObjects.insert(std::make_pair(blueprint->QualifiedTypename(), blueprint));

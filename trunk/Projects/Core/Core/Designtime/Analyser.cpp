@@ -115,7 +115,7 @@ bool Analyser::createBluePrint(TokenIterator& token, TokenIterator end)
 	// look for the identifier token
 	std::string type = (*token++).content();
 
-	BluePrintObject* symbol = new BluePrintObject(type, mFilename);
+	BluePrintObject* blueprint = new BluePrintObject(type, mFilename);
 
 	// determine implementation type
 	if ( objectType == ObjectType::Interface ) {
@@ -139,7 +139,7 @@ bool Analyser::createBluePrint(TokenIterator& token, TokenIterator end)
 		// collect prototype constraints (if present)
 		PrototypeConstraints constraints = Parser::collectPrototypeConstraints(token);
 
-		symbol->setPrototypeConstraints(constraints);
+		blueprint->setPrototypeConstraints(constraints);
 
 		// collect inheritance (if present)
 		Ancestors inheritance = Parser::collectInheritance(token);
@@ -169,7 +169,7 @@ bool Analyser::createBluePrint(TokenIterator& token, TokenIterator end)
 			token = closed;
 		}
 
-		symbol->setTokens(tokens);
+		blueprint->setTokens(tokens);
 
 		bool extends = false;
 
@@ -180,41 +180,41 @@ bool Analyser::createBluePrint(TokenIterator& token, TokenIterator end)
 					extends = true;
 				}
 
-				symbol->addInheritance((*it));
+				blueprint->addInheritance((*it));
 			}
 		}
 
 		// in case this object has no inheritance set, we inherit from 'Object'
 		if ( objectType != ObjectType::Interface && !extends ) {
-			symbol->addInheritance(Ancestor(OBJECT, Ancestor::Type::Extends, Visibility::Public, PrototypeConstraints()));
+			blueprint->addInheritance(Ancestor(OBJECT, Ancestor::Type::Extends, Visibility::Public, PrototypeConstraints()));
 		}
 	}
 
-	symbol->setImplementationType(implementationType);
-	symbol->setLanguageFeatureState(languageFeatureState);
-	symbol->setParent(mScope);
-	symbol->setQualifiedTypename(getQualifiedTypename(type));
-	symbol->setVisibility(Visibility::convert(visibility));
+	blueprint->setImplementationType(implementationType);
+	blueprint->setLanguageFeatureState(languageFeatureState);
+	blueprint->setParent(mScope);
+	blueprint->setQualifiedTypename(getQualifiedTypename(type));
+	blueprint->setVisibility(Visibility::convert(visibility));
 
-	mRepository->addBluePrint(symbol);
+	mRepository->addBluePrint(blueprint);
 
 	if ( implementationType == ImplementationType::ForwardDeclaration ) {
-		return symbol != 0;
+		return blueprint != 0;
 	}
 
-	mScope->define(symbol->Typename(), symbol);
+	mScope->define(blueprint->Typename(), blueprint);
 
 	MethodScope* tmpScope = mScope;
 
 	mProcessingInterface = implementationType == ImplementationType::Interface;
-	mScope = symbol;
+	mScope = blueprint;
 
 	generate(tokens);
 
 	mScope = tmpScope;
 	mProcessingInterface = false;
 
-	return symbol != 0;
+	return blueprint != 0;
 }
 
 bool Analyser::createEnum(TokenIterator& token, TokenIterator end)
