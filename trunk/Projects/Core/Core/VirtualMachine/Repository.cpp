@@ -253,10 +253,11 @@ Runtime::Object* Repository::createInstance(const std::string& type, const std::
 {
 	BluePrintObjectMap::iterator it = mBluePrintObjects.find(type);
 	if ( it == mBluePrintObjects.end() ) {
-
-		// workaround for complex member types who's imports have not yet been analysed
+		// workaround for complex member types whose imports have not yet been analysed
 		if ( !initialize ) {
-			return new Runtime::UserObject(name, SYSTEM_LIBRARY, type, true);
+			Runtime::Object* object = new Runtime::UserObject(name, SYSTEM_LIBRARY, type, true);
+			Controller::Instance().memory()->newObject(object);
+			return object;
 		}
 
 		throw Common::Exceptions::Exception("cannot not create instance of unknown type '" + type + "'");
@@ -447,6 +448,10 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 						// create base object
 						Runtime::Object *ancestor = createUserObject(name, blueIt->second, initialize);
 
+// TODO: fix memleak here
+						// define ancestor to prevent memleaks
+						object->define(blueIt->second->QualifiedTypename(), ancestor);
+
 						// add our newly created ancestor to our inheritance
 						object->addInheritance((*ancestorIt), ancestor);
 					} break;
@@ -465,6 +470,9 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 
 void Repository::deinit()
 {
+	// clean up the unused forward declarations (TODO: find a better solution for this)
+	cleanupForwardDeclarations();
+
 	// Cleanup blue prints
 	// {
 	mBluePrintEnums.clear();

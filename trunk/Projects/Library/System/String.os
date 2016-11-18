@@ -1,8 +1,10 @@
 
+import Collections.IIterateable;
+
 // declare 'System' namespace to prevent a user defined private 'System' namespace
 public namespace System { }
 
-public object String {
+public object String implements System.IIterateable {
 	private string mValue;
 
 	/*
@@ -45,6 +47,13 @@ public object String {
 	 */
 	public int Find(string str, int startpos = 0) const {
 		return strfind(mValue, str, startpos);
+	}
+
+	/*
+	 * Returns a StringIterator that is not attached to this string, instead it uses a copy of this Strings string value
+	 */
+	public System.StringIterator getIterator() const {
+		return new System.StringIterator(mValue);
 	}
 
 	/*

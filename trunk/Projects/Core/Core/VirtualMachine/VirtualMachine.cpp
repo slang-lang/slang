@@ -99,10 +99,6 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 		}
 	}
 
-	// clean up the unused forward declarations (TODO: find a better solution for this)
-	Controller::Instance().repository()->cleanupForwardDeclarations();
-
-
 	// Startup
 	Runtime::Method* main = dynamic_cast<Runtime::Method*>(Controller::Instance().stack()->globalScope()->resolveMethod("Main", params, false));
 	if ( !main ) {
