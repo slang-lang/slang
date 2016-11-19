@@ -6,7 +6,7 @@ import System.Exception;
 
 public namespace System { }
 
-public object GenericStack<T> implements IIterateable {
+public object GenericStack<T> implements System.IIterateable {
     private GenericCollectionItem<T> mFirst;
     private GenericCollectionItem<T> mLast;
     private int mSize = 0;
@@ -49,12 +49,10 @@ public object GenericStack<T> implements IIterateable {
     }
 /*
     public System.Iterator getIterator() const {
-        // TODO: why do we have to cast here?
         return new Iterator(this);
     }
 
     public System.ReverseIterator getReverseIterator() const {
-        // TODO: why do we have to cast here?
         return new ReverseIterator(this);
     }
 */
