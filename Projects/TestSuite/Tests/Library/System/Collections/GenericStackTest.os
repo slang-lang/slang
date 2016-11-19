@@ -20,6 +20,9 @@ private bool TestCase1() const {
 
 	try {
 		GenericStack<String> stack = new GenericStack<String>();
+		assert( stack is Object );
+		//assert( stack is System.IIterateable );
+		//assert( stack is GenericStack<String> );
 
 		stack.push(new String("664"));
 		stack.push(new String("173"));

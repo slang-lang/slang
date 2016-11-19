@@ -164,8 +164,8 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 		std::string name = blue->getName();
 
 		type = lookupType(blue->QualifiedTypename(), protoConstraints, constraints);
-		if ( type != blue->QualifiedTypename() ) {
-			blue = findBluePrintObject(type);
+		if ( !blue->getPrototypeConstraints().empty() ) {
+			type += extractType(blue->getPrototypeConstraints(), constraints);
 		}
 
 		Designtime::BluePrintObject* member = new Designtime::BluePrintObject(type, blue->Filename(), name);
@@ -174,7 +174,7 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 		member->setMember(blue->isMember());
 		member->setMutability(blue->getMutability());
 		member->setParent(newBlue);
-		member->setPrototypeConstraints(blue->getPrototypeConstraints());
+		//member->setPrototypeConstraints(blue->getPrototypeConstraints());	// this has already been processed, so we cannot add even more constraints
 		member->setQualifiedTypename(type);
 		member->setValue(blue->getValue());
 		member->setVisibility(blue->getVisibility());
@@ -633,6 +633,24 @@ void Repository::initializeObject(Runtime::Object* object, Designtime::BluePrint
 	}
 
 	object->define(IDENTIFIER_THIS, object);	// define this-symbol
+}
+
+std::string Repository::extractType(const PrototypeConstraints& blueprintConstraints, const PrototypeConstraints& implConstraints) const
+{
+	std::string result;
+
+	for ( PrototypeConstraints::const_iterator blueConIt = blueprintConstraints.begin(); blueConIt != blueprintConstraints.end(); ++blueConIt ) {
+		for ( PrototypeConstraints::const_iterator conIt = implConstraints.begin(); conIt != implConstraints.end(); ++conIt ) {
+			if ( blueConIt->mIndex == conIt->mIndex ) {
+				if ( result.size() ) {
+					result += ",";
+				}
+				result += conIt->mType;
+			}
+		}
+	}
+
+	return "<" + result + ">";
 }
 
 std::string Repository::lookupType(const std::string& type, const PrototypeConstraints& blueprintConstraints, const PrototypeConstraints& implConstraints) const
