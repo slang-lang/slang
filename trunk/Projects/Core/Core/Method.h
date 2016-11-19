@@ -8,6 +8,7 @@
 
 // Project includes
 #include <Core/Attributes/Attributes.h>
+#include <Core/Common/PrototypeConstraint.h>
 #include <Core/Runtime/ExceptionData.h>
 #include "Interpreter.h"
 #include "Object.h"
@@ -66,10 +67,12 @@ public: // Signature
 
 public: // Setup
 	void setParent(IScope* scope);
+	void setPrototypeConstraints(const PrototypeConstraints& constraints);
 	void setSignature(const ParameterList& params);
 	void setTokens(const TokenList& tokens);
 
 public:
+	const PrototypeConstraints& getPrototypeConstraints() const { return mPrototypeConstraints; }
 	const TokenList& getTokens() const { return mTokens; }
 
 public:
@@ -79,6 +82,7 @@ protected:
 	bool mIsExtensionMethod;
 
 private:
+	PrototypeConstraints mPrototypeConstraints;
 	std::string mQualifiedTypename;
 	ParameterList mSignature;
 	TokenList mTokens;

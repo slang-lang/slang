@@ -378,16 +378,16 @@ Symbol* Interpreter::identifyMethod(TokenIterator& token, const ParameterList& p
 		else {
 			switch ( result->getSymbolType() ) {
 				case Symbol::IType::BluePrintEnumSymbol:
-					result = dynamic_cast<Designtime::BluePrintEnum*>(result)->resolveMethod(identifier, params, onlyCurrentScope, Visibility::Public);
+					result = dynamic_cast<Designtime::BluePrintEnum*>(result)->resolveMethod(identifier, params, true, Visibility::Public);
 					break;
 				case Symbol::IType::BluePrintObjectSymbol:
-					result = dynamic_cast<Designtime::BluePrintObject*>(result)->resolveMethod(identifier, params, onlyCurrentScope, Visibility::Public);
+					result = dynamic_cast<Designtime::BluePrintObject*>(result)->resolveMethod(identifier, params, true, Visibility::Public);
 					break;
 				case Symbol::IType::NamespaceSymbol:
-					result = dynamic_cast<Namespace*>(result)->resolveMethod(identifier, params, onlyCurrentScope, Visibility::Public);
+					result = dynamic_cast<Namespace*>(result)->resolveMethod(identifier, params, true, Visibility::Public);
 					break;
 				case Symbol::IType::ObjectSymbol:
-					result = dynamic_cast<Object*>(result)->resolveMethod(identifier, params, onlyCurrentScope,
+					result = dynamic_cast<Object*>(result)->resolveMethod(identifier, params, true,
 																		  (prev_identifier == IDENTIFIER_THIS) ? Visibility::Private : Visibility::Public);
 					break;
 				case Symbol::IType::MethodSymbol:
@@ -998,7 +998,7 @@ void Interpreter::process_foreach(TokenIterator& token, Object* result)
 	if ( !collection ) {
 		throw Common::Exceptions::SyntaxError("invalid symbol '" + token->content() + "' found", token->position());
 	}
-	if ( !collection->isInstanceOf("IIterateable") ) {
+	if ( !collection->isInstanceOf("System.IIterateable") ) {
 		throw Common::Exceptions::SyntaxError("symbol '" + collection->getName() + "' is not derived from IIteratable", token->position());
 	}
 	token++;
@@ -1270,6 +1270,9 @@ void Interpreter::process_keyword(TokenIterator& token, Object *result)
 	else if ( keyword == KEYWORD_TRY ) {
 		process_try(token, result);
 	}
+	else if ( keyword == KEYWORD_TYPEID ) {
+		process_typeid(token, result);
+	}
 	else if ( keyword == KEYWORD_WHILE ) {
 		process_while(token, result);
 	}
@@ -1466,6 +1469,14 @@ void Interpreter::process_return(TokenIterator& token, Object *result)
 {
 	try {
 		expression(result, token);
+
+/*
+		Object tmp(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, static_cast<Method*>(getEnclosingMethodScope(getScope()))->QualifiedTypename(), Runtime::AtomicValue());
+
+		expression(&tmp, token);
+
+		operator_binary_assign(result, &tmp);
+*/
 	}
 	catch ( ControlFlow::E &e ) {
 		mControlFlow = e;
@@ -1932,6 +1943,36 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol)
 	}
 
 	return object;
+}
+
+/*
+ * typeid ( <expression> );
+ */
+void Interpreter::process_typeid(TokenIterator& token, Object* result)
+{
+	expect(Token::Type::PARENTHESIS_OPEN, token++);
+
+	Symbol* symbol = identify(token);
+	if ( symbol ) {
+		switch ( symbol->getSymbolType() ) {
+			case Symbol::IType::BluePrintEnumSymbol:
+			case Symbol::IType::BluePrintObjectSymbol:
+				*result = StringObject(static_cast<Designtime::BluePrintGeneric*>(symbol)->QualifiedTypename());
+				break;
+			case Symbol::IType::ObjectSymbol:
+				*result = StringObject(static_cast<Object*>(symbol)->QualifiedTypename());
+				break;
+			default:
+				*result = StringObject("<not a valid symbol>");
+				break;
+		}
+	}
+	else {
+		*result = StringObject("<not a valid symbol>");
+	}
+	token++;
+
+	expect(Token::Type::PARENTHESIS_CLOSE, token);
 }
 
 /*

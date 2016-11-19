@@ -63,10 +63,11 @@ private: // Execution
 	void process_print(TokenIterator& token);
 	void process_return(TokenIterator& token, Object* result);
 	void process_scope(TokenIterator& token, Object* result);
+	void process_switch(TokenIterator& token, Object* result);
 	void process_throw(TokenIterator& token, Object* result);
 	void process_try(TokenIterator& token, Object* result);
 	Object* process_type(TokenIterator& token, Symbol* symbol);
-	void process_switch(TokenIterator& token, Object* result);
+	void process_typeid(TokenIterator& token, Object* result);
 	void process_while(TokenIterator& token, Object* result);
 	// }
 

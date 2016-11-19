@@ -989,8 +989,11 @@ ObjectiveScript::MethodSymbol* Object::resolveMethod(const std::string& name, co
 	// (2) check inheritance
 	// we cannot go the short is-result-already-set way here because one of our ancestor methods could be marked as final
 	Symbol* base = MethodScope::resolve("base", true);
-	if ( base && base->getSymbolType() == Symbol::IType::ObjectSymbol && !onlyCurrentScope ) {
-		result = dynamic_cast<Object*>(base)->resolveMethod(name, params, onlyCurrentScope, visibility < Visibility::Protected ? Visibility::Protected : visibility);
+	if ( base && base->getSymbolType() == Symbol::IType::ObjectSymbol /*&& !onlyCurrentScope*/ ) {
+		ObjectiveScript::MethodSymbol *tmp = dynamic_cast<Object*>(base)->resolveMethod(name, params, onlyCurrentScope, visibility < Visibility::Protected ? Visibility::Protected : visibility);
+		if ( !result || (tmp && tmp->isFinal()) ) {
+			result = tmp;
+		}
 	}
 
 	// (3) if we still haven't found something also look in other scopes
@@ -1060,7 +1063,7 @@ std::string Object::ToString(unsigned int indent) const
 	std::string result;
 	result += ::Utils::Tools::indent(indent);
 	result += Visibility::convert(mVisibility);
-//	result += " " + LanguageFeatureState::convert(mLanguageFeatureState);
+	result += " " + LanguageFeatureState::convert(mLanguageFeatureState);
 	result += " " + Typename() + " " + getName();
 //	result += " " + Mutability::convert(mMutability);
 
@@ -1075,8 +1078,7 @@ std::string Object::ToString(unsigned int indent) const
 		}
 
 		for ( Symbols::const_iterator it = mSymbols.begin(); it != mSymbols.end(); ++it ) {
-			if ( /*it->first == IDENTIFIER_BASE ||*/ it->first == IDENTIFIER_THIS ||
-				 !it->second || it->second->getSymbolType() != Symbol::IType::ObjectSymbol ) {
+			if ( it->first == IDENTIFIER_THIS || !it->second || it->second->getSymbolType() != Symbol::IType::ObjectSymbol ) {
 				continue;
 			}
 

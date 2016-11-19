@@ -40,6 +40,8 @@ void PrototypeTest::process()
 	TEST(testInheritFromPrototypeTest);
 	TEST(testPrototypeAsMember);
 	TEST(testPrototypeAsParameter);
+	TEST(testPrototypeAsPrototypedMember);
+	TEST(testPrototypeAsReturnValue);
 }
 
 void PrototypeTest::setup()
@@ -181,6 +183,35 @@ void PrototypeTest::testPrototypeAsParameter()
 	}
 }
 
+void PrototypeTest::testPrototypeAsPrototypedMember()
+{
+	try {
+		VirtualMachine vm;
+
+		vm.createScriptFromFile("Tests/Prototypes/PrototypeAsPrototypedMember.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void PrototypeTest::testPrototypeAsReturnValue()
+{
+	try {
+		VirtualMachine vm;
+
+		vm.createScriptFromFile("Tests/Prototypes/PrototypeAsReturnValue.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
 
 
 }

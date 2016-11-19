@@ -136,7 +136,7 @@ bool Method::isSignatureValid(const ParameterList& params) const
 	while ( sigIt != mSignature.end() ) {
 		if ( paramIt != params.end() ) {
 			// compare received type with expected type
-			if ( sigIt->type() != paramIt->type() ) {
+			if ( sigIt->type() != paramIt->type() && sigIt->type() != VALUE_NONE ) {
 				// we received the wrong parameter type
 				return false;
 			}
@@ -223,6 +223,11 @@ Symbol* Method::resolveMethod(const std::string& name, const ParameterList& para
 void Method::setParent(IScope *scope)
 {
 	mParent = scope;
+}
+
+void Method::setPrototypeConstraints(const PrototypeConstraints& constraints)
+{
+	mPrototypeConstraints = constraints;
 }
 
 void Method::setSignature(const ParameterList& params)

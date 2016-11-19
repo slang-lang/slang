@@ -6,12 +6,13 @@ public namespace Inheritance {
 		private int mValue;
 
 		public void Constructor(int value) {
-			print("Constructor(" + value + ")");
+			print("BaseObject.Constructor(" + value + ")");
+
 			mValue = value;
 		}
 
 		public void Destructor() {
-			print("Destructor()");
+			print("BaseObject.Destructor()");
 		}
 
 		public int getValue() const {
@@ -29,13 +30,13 @@ public namespace Inheritance {
 
 	private object DerivedObject extends Inheritance.BaseObject {
 		public void Constructor(int value) {
-			print("Constructor(" + value + ")");
+			print("DerivedObject.Constructor(" + value + ")");
 
 			base.Constructor(value);
 		}
 
 		public void Destructor() {
-			print("Destructor()");
+			print("DerivedObject.Destructor()");
 		}
 
 		public int getBaseValue() const {
@@ -53,13 +54,13 @@ public namespace Inheritance {
 
 	private object ExtendedObject extends Inheritance.DerivedObject {
 		public void Constructor(int value) {
-			print("Constructor(" + value + ")");
+			print("ExtendedObject.Constructor(" + value + ")");
 
 			base.Constructor(value);
 		}
 
 		public void Destructor() {
-			print("Destructor()");
+			print("ExtendedObject.Destructor()");
 		}
 
 		public int getValue() const {

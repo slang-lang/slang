@@ -69,6 +69,7 @@ StringSet provideKeyWords()
 	keywords.insert(KEYWORD_SWITCH);
 	keywords.insert(KEYWORD_THROW);
 	keywords.insert(KEYWORD_TRY);
+	keywords.insert(KEYWORD_TYPEID);
 	keywords.insert(KEYWORD_WHILE);
 
 	return keywords;
