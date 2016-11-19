@@ -763,6 +763,10 @@ bool Object::operator_is(const Symbol *other)
 		type = static_cast<const Object*>(other)->QualifiedTypename();
 	}
 
+	if ( mThis ) {
+		return mThis->isInstanceOf(type);
+	}
+
 	return isInstanceOf(type);
 }
 
