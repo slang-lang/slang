@@ -294,7 +294,6 @@ bool Analyser::createMember(TokenIterator& token, TokenIterator /*end*/)
 {
 	assert( mScope->getScopeType() == IScope::IType::MethodScope );
 
-	PrototypeConstraints constraints;
 	bool isFinal = false;
 	std::string languageFeature;
 	Mutability::E mutability = Mutability::Modify;
@@ -377,6 +376,200 @@ bool Analyser::createMember(TokenIterator& token, TokenIterator /*end*/)
 	return true;
 }
 
+bool Analyser::createMemberOrMethod(TokenIterator& token, TokenIterator /*end*/)
+{
+	assert( mScope->getScopeType() == IScope::IType::MethodScope );
+
+	bool isAbstract = mProcessingInterface;
+	bool isFinal = false;
+	bool isRecursive = false;
+	bool isStatic = false;
+	std::string languageFeature;
+	MethodAttributes::MethodType::E methodType = MethodAttributes::MethodType::Function;
+	Mutability::E mutability = Mutability::Const;	// extreme const correctness: all methods are const by default
+	std::string name;
+	int numConstModifiers = 0;
+	bool throws = false;
+	TypeDeclaration type;
+	Runtime::AtomicValue value = 0;
+	Visibility::E visibility;
+
+
+	// look for the visibility token
+	visibility = Visibility::convert((*token++).content());
+	// look for an optional language feature token
+	if ( token->isOptional() ) {
+		languageFeature = (*token++).content();
+	}
+	// look for the type token
+	type = Parser::parseTypeDeclaration(token);
+	// look for the identifier token
+	name = (*token++).content();
+
+	if ( token->type() == Token::Type::PARENTHESIS_OPEN ) {
+		BluePrintGeneric* blueprint = dynamic_cast<BluePrintGeneric*>(mScope);
+		if ( blueprint && name == RESERVED_WORD_CONSTRUCTOR ) {
+			// these methods have the same name as their containing object,
+			// so this has to be a constructor or a destructor;
+			// they can never ever be const, ever
+			methodType = MethodAttributes::MethodType::Constructor;
+			mutability = Mutability::Modify;
+		}
+		else if ( blueprint && name == RESERVED_WORD_DESTRUCTOR ) {
+			// these methods have the same name as their containing object,
+			// so this has to be a constructor or a destructor;
+			// they can never ever be const, ever
+			methodType = MethodAttributes::MethodType::Destructor;
+			mutability = Mutability::Modify;
+		}
+
+		expect(Token::Type::PARENTHESIS_OPEN, token);
+
+
+		ParameterList params = Parser::parseParameters(token);
+
+		// look at possible attributes (abstract, const, final, modify, throws, etc.)
+		// while looking for the next opening curly bracket
+		bool isModifierToken = true;
+		do {
+			token++;
+
+			if ( token->category() == Token::Category::Modifier ) {
+				if ( token->content() == MODIFIER_ABSTRACT ) {
+					isAbstract = true;
+
+					if ( !blueprint ) {
+						throw Common::Exceptions::NotSupported("global methods cannot be declared as abstract", token->position());
+					}
+				}
+				else if ( token->content() == MODIFIER_CONST ) {
+					mutability = Mutability::Const;
+					numConstModifiers++;
+				}
+				else if ( token->content() == MODIFIER_FINAL ) {
+					isFinal = true;
+					//mutability = Mutability::Final;
+					//numConstModifiers++;
+
+					if ( !blueprint ) {
+						throw Common::Exceptions::NotSupported("global methods cannot be declared as final", token->position());
+					}
+				}
+				else if ( token->content() == MODIFIER_MODIFY ) {
+					mutability = Mutability::Modify;
+					numConstModifiers++;
+				}
+				else if ( token->content() == MODIFIER_RECURSIVE ) {
+					isRecursive = true;
+				}
+				else if ( token->content() == MODIFIER_STATIC ) {
+					isStatic = true;
+				}
+				else if ( token->content() == MODIFIER_THROWS ) {
+					if ( methodType == MethodAttributes::MethodType::Destructor ) {
+						OSinfo("exceptions thrown in destructor cannot be caught in " + token->position().toString());
+					}
+
+					throws = true;
+				}
+			}
+			else {
+				isModifierToken = false;
+			}
+		} while ( isModifierToken && token->type() != Token::Type::BRACKET_CURLY_OPEN );
+
+		if ( numConstModifiers > 1 ) {
+			throw Common::Exceptions::Exception("modifiers 'const' & 'modify' are exclusive", token->position());
+		}
+
+		// collect all tokens of this method
+		TokenList tokens;
+		if ( token->type() == Token::Type::BRACKET_CURLY_OPEN ) {
+			if ( mProcessingInterface ) {
+				throw Common::Exceptions::SyntaxError("interface methods are not allowed to be implemented", token->position());
+			}
+
+			tokens = Parser::collectScopeTokens(token);
+		}
+		else if ( !isAbstract ) {
+			throw Common::Exceptions::SyntaxError("method '" + name + "' is not declared as abstract but has no implementation", token->position());
+		}
+
+		// create a new method with the corresponding return value
+		Runtime::Method *method = new Runtime::Method(mScope, name, Designtime::Parser::buildConstraintTypename(type.mTypename, type.mConstraints));
+		method->setAbstract(isAbstract || mProcessingInterface);
+		method->setFinal(isFinal);
+		method->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
+		method->setMethodType(methodType);
+		method->setMutability(mutability);
+		method->setParent(mScope);
+		method->setPrototypeConstraints(type.mConstraints);
+		method->setRecursive(isRecursive);
+		method->setSignature(params);
+		method->setStatic(isStatic);
+		method->setThrows(throws);
+		method->setTokens(tokens);
+		method->setVisibility(visibility);
+
+		mScope->defineMethod(name, method);
+	}
+	else {
+		// look for a mutability keyword
+		if ( token->category() == Token::Category::Modifier ) {
+			mutability = Mutability::convert(token->content());
+
+			if ( token->content() == MODIFIER_FINAL ) {
+				isFinal = true;
+			}
+
+			token++;
+		}
+		else {
+			mutability = Mutability::Modify;
+		}
+
+		if ( token->type() == Token::Type::ASSIGN ) {
+			token++;
+
+			value = Parser::parseValueInitialization(token);
+
+			token++;
+		}
+
+		expect(Token::Type::SEMICOLON, token);
+
+		if ( dynamic_cast<BluePrintGeneric*>(mScope) ){
+			BluePrintObject* blue = new BluePrintObject(type.mTypename, mFilename, name);
+			blue->setFinal(isFinal);
+			blue->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
+			blue->setMember(true);
+			blue->setMutability(mutability);
+			blue->setParent(mScope);
+			blue->setPrototypeConstraints(type.mConstraints);
+			blue->setQualifiedTypename(type.mTypename);
+			blue->setValue(value);
+			blue->setVisibility(visibility);
+
+			mScope->define(name, blue);
+		}
+		else {
+			Runtime::Object *member = mRepository->createInstance(type.mTypename, name, type.mConstraints, false);
+			member->setFinal(isFinal);
+			member->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
+			member->setMember(true);
+			member->setMutability(mutability);
+			member->setParent(mScope);
+			member->setQualifiedTypename(type.mTypename);
+			member->setValue(value);
+			member->setVisibility(visibility);
+
+			mScope->define(name, member);
+		}
+	}
+
+	return true;
+}
+
 bool Analyser::createMethod(TokenIterator& token, TokenIterator /*end*/)
 {
 	bool isAbstract = mProcessingInterface;
@@ -390,10 +583,10 @@ bool Analyser::createMethod(TokenIterator& token, TokenIterator /*end*/)
 	int numConstModifiers = 0;
 	bool throws = false;
 	TypeDeclaration type;
-	std::string visibility;
+	Visibility::E visibility;
 
 	// look for the visibility token
-	visibility = (*token++).content();
+	visibility = Visibility::convert((*token++).content());
 	// look for an optional language feature token
 	if ( token->isOptional() ) {
 		languageFeature = (*token++).content();
@@ -504,7 +697,7 @@ bool Analyser::createMethod(TokenIterator& token, TokenIterator /*end*/)
 	method->setStatic(isStatic);
 	method->setThrows(throws);
 	method->setTokens(tokens);
-	method->setVisibility(Visibility::convert(visibility));
+	method->setVisibility(visibility);
 
 	mScope->defineMethod(name, method);
 
@@ -614,7 +807,7 @@ void Analyser::generate(const TokenList& tokens)
 			createNamespace(it, tokens.end());
 		}
 		else {
-			createMember(it, tokens.end());
+			createMemberOrMethod(it, tokens.end());
 			//throw Common::Exceptions::SyntaxError("invalid token '" + it->content() + "' found", it->position());
 		};
 

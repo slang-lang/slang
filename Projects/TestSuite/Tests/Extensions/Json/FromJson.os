@@ -1,7 +1,7 @@
 #!/usr/local/bin/oscript
 
 private object BaseObject {
-	protected int mIntValue;
+	public int mIntValue;
 
 	public void BaseObject() {
 		mIntValue = 0;
@@ -9,7 +9,7 @@ private object BaseObject {
 }
 
 private object DerivedObject extends BaseObject {
-	protected string mStringValue;
+	public string mStringValue;
 
 	public void DerivedObject() {
 		mStringValue = "";

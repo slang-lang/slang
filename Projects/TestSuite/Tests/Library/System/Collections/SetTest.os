@@ -56,7 +56,7 @@ private bool TestCase1() const {
 		while ( count < 10 ) {
 			//use Math.srand(time()); for real random numbers
 
-			item = new TestObject(int Math.rand());
+			item = new TestObject(int rand());
 			set.insert(Object item);
 
 			count++;
@@ -111,8 +111,8 @@ private bool TestCase2() const {
 
 		while ( !set.empty() ) {
 			try {
-				Math.srand(time());
-				set.erase(Math.rand() % set.size());
+				srand(time());
+				set.erase(rand() % set.size());
 			}
 			catch ( OutOfBoundsException e ) {
 				print(e.what());

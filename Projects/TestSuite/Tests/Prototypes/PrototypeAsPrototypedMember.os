@@ -21,14 +21,14 @@ public object Prototype<T> {
 	}
 }
 
-public object TestObject {
-	public Prototype<int> mValue;
+public object TestObject<T> {
+	public Prototype<T> mValue;
 
-	public void Constructor(int value) {
-		mValue = new Prototype<int>(value);
+	public void Constructor(T value) {
+		mValue = new Prototype<T>(value);
 	}
 	
-	public int getValue() const {
+	public T getValue() const {
 		return mValue.getValue();
 	}
 
@@ -45,13 +45,13 @@ public void Main(int argc = 0, string args = "") {
 private bool TestCase1() {
 	print("TestCase 1: prototype as member");
 
-	TestObject obj = new TestObject(173);
+	TestObject<string> obj = new TestObject<string>("173");
 
 	print("obj.toString() = " + obj.toString());
 	print("obj.mValue = " + obj.mValue);
 
-	Prototype<int> value = obj.mValue;
+	Prototype<string> value = obj.mValue;
 	print("value = " + value.toString());
 
-	return obj.getValue() == 173;
+	return obj.getValue() == "173";
 }

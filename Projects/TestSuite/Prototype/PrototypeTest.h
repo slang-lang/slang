@@ -40,6 +40,8 @@ private:	// Tests
 	void testInheritFromPrototypeTest();
 	void testPrototypeAsMember();
 	void testPrototypeAsParameter();
+	void testPrototypeAsPrototypedMember();
+	void testPrototypeAsReturnValue();
 };
 
 

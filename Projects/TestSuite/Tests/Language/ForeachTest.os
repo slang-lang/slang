@@ -77,7 +77,7 @@ private bool TestCase3() {
 }
 
 private bool TestCase4() {
-	print("TestCase 4: foreach with prototype");
+	print("TestCase 4: valid foreach with prototype");
 
 	System.List list = new System.List();
 

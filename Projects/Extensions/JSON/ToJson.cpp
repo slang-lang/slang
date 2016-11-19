@@ -26,7 +26,7 @@ ToJson::ToJson()
 : ExtensionMethod(0, "ToJsonString", Designtime::StringObject::TYPENAME)
 {
 	ParameterList params;
-	params.push_back(Parameter("object", Designtime::GenericObject::TYPENAME, VALUE_NONE));
+	params.push_back(Parameter("object", VALUE_NONE, VALUE_NONE));
 
 	setSignature(params);
 }

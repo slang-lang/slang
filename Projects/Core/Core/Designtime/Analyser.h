@@ -53,6 +53,7 @@ private:
 	//bool createFunction(TokenIterator& token, TokenIterator end);
 	bool createLibraryReference(TokenIterator& token, TokenIterator end);
 	bool createMember(TokenIterator& token, TokenIterator end);
+	bool createMemberOrMethod(TokenIterator& token, TokenIterator end);
 	bool createMethod(TokenIterator& token, TokenIterator end);
 	bool createNamespace(TokenIterator& token, TokenIterator end);
 	//bool createNamespaceMember(TokenIterator& token, TokenIterator end);

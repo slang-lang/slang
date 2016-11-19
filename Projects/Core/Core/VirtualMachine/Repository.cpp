@@ -150,6 +150,8 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 		newBlue->addInheritance((*it));
 	}
 
+	std::string type;
+
 	// symbols
 	Symbols symbols = blueprint->provideSymbols();
 	for ( Symbols::const_iterator symIt = symbols.begin(); symIt != symbols.end(); ++symIt ) {
@@ -161,18 +163,19 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 
 		std::string name = blue->getName();
 
-		std::string type = lookupType(blue->QualifiedTypename(), protoConstraints, constraints);
+		type = lookupType(blue->QualifiedTypename(), protoConstraints, constraints);
 		if ( type != blue->QualifiedTypename() ) {
 			blue = findBluePrintObject(type);
 		}
 
-		Designtime::BluePrintObject* member = new Designtime::BluePrintObject(blue->QualifiedTypename(), blue->Filename(), name);
+		Designtime::BluePrintObject* member = new Designtime::BluePrintObject(type, blue->Filename(), name);
 		member->setFinal(blue->isFinal());
 		member->setLanguageFeatureState(blue->getLanguageFeatureState());
 		member->setMember(blue->isMember());
 		member->setMutability(blue->getMutability());
 		member->setParent(newBlue);
-		member->setQualifiedTypename(blue->QualifiedTypename());
+		member->setPrototypeConstraints(blue->getPrototypeConstraints());
+		member->setQualifiedTypename(type);
 		member->setValue(blue->getValue());
 		member->setVisibility(blue->getVisibility());
 
@@ -184,10 +187,8 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 	// methods
 	MethodScope::MethodCollection methods = blueprint->provideMethods();
 	for ( MethodScope::MethodCollection::const_iterator methIt = methods.begin(); methIt != methods.end(); ++methIt ) {
-		Runtime::Method* method = new Runtime::Method(newBlue, (*methIt)->getName(), (*methIt)->Typename());
+		Runtime::Method* method = new Runtime::Method(newBlue, (*methIt)->getName(), Designtime::Parser::buildConstraintTypename((*methIt)->Typename(), (*methIt)->getPrototypeConstraints()));
 		*method = *(*methIt);
-
-		std::string type;
 
 		type = lookupType(method->QualifiedTypename(), protoConstraints, constraints);
 
@@ -223,7 +224,7 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 
 		for ( TokenList::iterator tokIt = tokens.begin(); tokIt != tokens.end(); ++tokIt ) {
 			if ( tokIt->type() == Token::Type::IDENTIFER ) {
-				std::string type = lookupType(tokIt->content(), protoConstraints, constraints);
+				type = lookupType(tokIt->content(), protoConstraints, constraints);
 
 				if ( type != tokIt->content() ) {
 					tokIt->resetContentTo(type);
@@ -257,7 +258,7 @@ Runtime::Object* Repository::createInstance(const std::string& type, const std::
 	if ( it == mBluePrintObjects.end() ) {
 		// workaround for complex member types whose imports have not yet been analysed
 		if ( !initialize ) {
-			Runtime::Object* object = new Runtime::UserObject(name, SYSTEM_LIBRARY, type, true);
+			Runtime::Object* object = new Runtime::UserObject(name, SYSTEM_LIBRARY, Designtime::Parser::buildConstraintTypename(type, constraints), true);
 			Controller::Instance().memory()->newObject(object);
 			return object;
 		}
@@ -300,7 +301,7 @@ Runtime::Object* Repository::createInstance(Designtime::BluePrintGeneric* bluepr
 
 	if ( initialize ) {
 		if ( object->isAbstract() ) {
-			throw Common::Exceptions::AbstractException("cannot instantiate abstract object '" + blueprint->QualifiedTypename() + "'");
+			throw Common::Exceptions::AbstractException("cannot instantiate abstract object '" + constraintType + "'");
 		}
 
 		Controller::Instance().memory()->newObject(object);
@@ -414,7 +415,7 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 	}
 
 	// create the base object
-	Runtime::Object* object = new Runtime::UserObject(name, blueprint->Filename(), blueprint->Typename());
+	Runtime::Object* object = new Runtime::UserObject(name, blueprint->Filename(), Designtime::Parser::buildConstraintTypename(blueprint->QualifiedTypename(), blueprint->getPrototypeConstraints()));
 
 	if ( initialize ) {
 		Designtime::Ancestors ancestors = blueprint->getInheritance();
@@ -602,7 +603,7 @@ void Repository::initializeObject(Runtime::Object* object, Designtime::BluePrint
 
 		Designtime::BluePrintObject* blue = static_cast<Designtime::BluePrintObject*>(it->second);
 
-		Runtime::Object *symbol = createInstance(blue, blue->getName(), PrototypeConstraints(), false);
+		Runtime::Object *symbol = createInstance(blue->QualifiedTypename(), blue->getName(), blue->getPrototypeConstraints(), false);
 		symbol->setFinal(blue->isFinal());
 		symbol->setLanguageFeatureState(blue->getLanguageFeatureState());
 		symbol->setMember(blue->isMember());
