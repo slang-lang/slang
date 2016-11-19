@@ -1,5 +1,6 @@
 #!/usr/local/bin/oscript
 
+import System.Collections.GenericIterator;
 import System.Collections.GenericStack;
 import System.Exception;
 import System.Integer;
@@ -30,6 +31,8 @@ private bool TestCase1() const {
 
 		// Usage
 		assert( stack.size() == 3 );
+
+		System.GenericIterator<String> it = stack.getIterator();
 
 		assert( stack.at(0) == "664" );
 		assert( stack.at(1) == "173" );
