@@ -8,12 +8,12 @@ import System.String;
 
 public void Main(int argc = 0, string args = "") const {
 	assert( TestCase1() );
-//	assert( TestCase2() );
-//	assert( TestCase3() );
-//	assert( TestCase4() );
-//	assert( TestCase5() );
-//	assert( TestCase6() );
-//	assert( TestCase7() );
+	assert( TestCase2() );
+	assert( TestCase3() );
+	assert( TestCase4() );
+	assert( TestCase5() );
+	assert( TestCase6() );
+	assert( TestCase7() );
 }
 
 private bool TestCase1() const {
@@ -21,7 +21,6 @@ private bool TestCase1() const {
 
 	try {
 		GenericStack<String> stack = new GenericStack<String>();
-		assert( stack is IGenericCollection );
 
 		stack.push(new String("664"));
 		stack.push(new String("173"));
@@ -34,7 +33,7 @@ private bool TestCase1() const {
 		while ( it.hasNext() ) {
 			it.next();
 
-			print(string it.current());
+			//print(string it.current());
 		}
 
 		assert( stack.at(0) == "664" );
@@ -58,47 +57,47 @@ private bool TestCase2() const {
 	print("TestCase 2: pop");
 
 	try {
-		GenericStack stack = new GenericStack();
+		GenericStack<String> stack = new GenericStack<String>();
 
 		// Setup
 		String item;
 
 		item = new String("664");
-		stack.push(Object item);
+		stack.push(item);
 
 		item = new String("173");
-		stack.push(Object item);
+		stack.push(item);
 
 		item = new String("1389");
-		stack.push(Object item);
+		stack.push(item);
 
 		// Usage
 		assert( stack.size() == 3 );
 
-		item = String stack.at(0);
+		item = stack.at(0);
 		assert( item == "664" );
 
-		item = String stack.at(1);
+		item = stack.at(1);
 		assert( item == "173" );
 
-		item = String stack.at(2);
+		item = stack.at(2);
 		assert( item == "1389");
 
 		stack.pop();
 
 		assert( stack.size() == 2 );
 
-		item = String stack.at(0);
+		item = stack.at(0);
 		assert( item == "664" );
 
-		item = String stack.at(1);
+		item = stack.at(1);
 		assert( item == "173" );
 
 		stack.pop();
 
 		assert( stack.size() == 1 );
 
-		item = String stack.at(0);
+		item = stack.at(0);
 		assert( item == "664" );
 
 		stack.pop();
@@ -120,15 +119,15 @@ private bool TestCase3() const {
 	print("TestCase 3: iterate");
 
 	try {
-		GenericStack stack = new GenericStack();
+		GenericStack<String> stack = new GenericStack<String>();
 
-		stack.push(Object new String("1"));
-		stack.push(Object new String("2"));
-		stack.push(Object new String("3"));
+		stack.push(new String("1"));
+		stack.push(new String("2"));
+		stack.push(new String("3"));
 
 		assert( stack.size() == 3 );
 
-		Iterator it = stack.getIterator();
+		GenericIterator<String> it = stack.getIterator();
 
 		it.next();
 		assert( it.current() == "1" );
@@ -159,15 +158,15 @@ private bool TestCase4() const {
 	print("TestCase 4: reverse iterate");
 
 	try {
-		GenericStack stack = new GenericStack();
+		GenericStack<String> stack = new GenericStack<String>();
 
-		stack.push(Object new String("1"));
-		stack.push(Object new String("2"));
-		stack.push(Object new String("3"));
+		stack.push(new String("1"));
+		stack.push(new String("2"));
+		stack.push(new String("3"));
 
 		assert( stack.size() == 3 );
 
-		ReverseIterator it = stack.getReverseIterator();
+		GenericReverseIterator<String> it = stack.getReverseIterator();
 
 		it.next();
 		assert( it.current() == "3" );
@@ -195,17 +194,17 @@ private bool TestCase5() const {
 	print("TestCase 5: indexOf");
 
 	try {
-		GenericStack stack = new GenericStack();
+		GenericStack<String> stack = new GenericStack<String>();
 
-		stack.push(Object new String("1"));
-		stack.push(Object new String("2"));
-		stack.push(Object new String("3"));
+		stack.push(new String("1"));
+		stack.push(new String("2"));
+		stack.push(new String("3"));
 
 		assert( stack.size() == 3 );
 
-		assert( stack.indexOf(Object new String("1")) == 0 );
-		assert( stack.indexOf(Object new String("2")) == 1 );
-		assert( stack.indexOf(Object new String("3")) == 2 );
+		assert( stack.indexOf(new String("1")) == 0 );
+		assert( stack.indexOf(new String("2")) == 1 );
+		assert( stack.indexOf(new String("3")) == 2 );
 
 		return true;
 	}
@@ -217,18 +216,18 @@ private bool TestCase6() const {
 	print("TestCase 6: contains");
 
 	try {
-		GenericStack stack = new GenericStack();
+		GenericStack<Integer> stack = new GenericStack<Integer>();
 		assert( stack is Object );
 
-		stack.push(Object new Integer(1));
-		stack.push(Object new Integer(2));
-		stack.push(Object new Integer(3));
+		stack.push(new Integer(1));
+		stack.push(new Integer(2));
+		stack.push(new Integer(3));
 
 		assert( stack.size() == 3 );
 
-		assert( stack.contains(Object new Integer(1)) );
-		assert( stack.contains(Object new Integer(2)) );
-		assert( stack.contains(Object new Integer(3)) );
+		assert( stack.contains(new Integer(1)) );
+		assert( stack.contains(new Integer(2)) );
+		assert( stack.contains(new Integer(3)) );
 
 		return true;
 	}
@@ -240,23 +239,23 @@ private bool TestCase7() const {
 	print("TestCase 7: peek");
 
 	try {
-		GenericStack stack = new GenericStack();
+		GenericStack<Integer> stack = new GenericStack<Integer>();
 		assert( stack is Object );
 
-		stack.push(Object new Integer(1));
+		stack.push(new Integer(1));
 		assert( stack.peek() == 1 );
 
-		stack.push(Object new Integer(2));
+		stack.push(new Integer(2));
 		assert( stack.peek() == 2 );
 
-		stack.push(Object new Integer(3));
+		stack.push(new Integer(3));
 		assert( stack.peek() == 3 );
 
 		assert( stack.size() == 3 );
 
-		assert( stack.contains(Object new Integer(1)) );
-		assert( stack.contains(Object new Integer(2)) );
-		assert( stack.contains(Object new Integer(3)) );
+		assert( stack.contains(new Integer(1)) );
+		assert( stack.contains(new Integer(2)) );
+		assert( stack.contains(new Integer(3)) );
 
 		return true;
 	}
