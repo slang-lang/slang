@@ -1,7 +1,7 @@
 #!/usr/local/bin/oscript
 
 private object TestObject {
-	private int mValue;
+	public int mValue;
 
 	public string =operator(string other) const {
 		return string mValue;
@@ -13,7 +13,7 @@ private object TestObject {
 }
 
 private object DerivedObject extends TestObject {
-	private string mText;
+	public string mText;
 
 	public string =operator(string other) const {
 		return mText + " " + base.mValue;
