@@ -1,19 +1,19 @@
 #!/usr/local/bin/oscript
 
 private namespace OutterSpace {
-	private object OutterObject {
-		private int mValue;
+	public object OutterObject {
+		public int mValue;
 
-		public void OutterObject(int value) {
+		public void Constructor(int value) {
 			mValue = value;
 		}
 	}
 
-	private namespace InnerSpace {
-		private object NestedObject {
-			private OutterSpace.OutterObject mValue;
+	public namespace InnerSpace {
+		public object NestedObject {
+			public OutterSpace.OutterObject mValue;
 
-			public void NestedObject(int value) {
+			public void Constructor(int value) {
 				mValue = new OutterSpace.OutterObject(value);
 			}
 		}
@@ -21,10 +21,10 @@ private namespace OutterSpace {
 }
 
 private namespace OutterSpace {
-	private int mPublicVar;
+	public int mPublicVar;
 
-	private object SecondOutterObject {
-		public void SecondOutterObject(int value) {
+	public object SecondOutterObject {
+		public void Constructor(int value) {
 			OutterSpace.mPublicVar = value;
 		}
 	}

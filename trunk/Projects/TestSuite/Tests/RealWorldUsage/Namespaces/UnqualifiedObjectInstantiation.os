@@ -5,7 +5,7 @@ private namespace OutterSpace {
 		public object InnerObject {
 			private string mStringValue;
 
-			public void InnerObject(string value) {
+			public void Constructor(string value) {
 				print("InnerObject(" + value + ")");
 
 				mStringValue = value;
@@ -14,10 +14,10 @@ private namespace OutterSpace {
 	}
 
 	public object OutterObject {
-		private InnerSpace.InnerObject mInnerObject;
+		private OutterSpace.InnerSpace.InnerObject mInnerObject;
 		private int mIntValue;
 
-		public void OutterObject(int value) {
+		public void Constructor(int value) {
 			print("OutterObject(" + value + ")");
 
 			mIntValue = value;

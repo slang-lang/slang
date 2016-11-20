@@ -5,7 +5,7 @@ private namespace TestSpace {
 	private object TestObject {
 		private int mValue;
 
-		public void TestObject(int value) {
+		public void Constructor(int value) {
 			mValue = value;
 		}
 
@@ -19,7 +19,7 @@ private namespace TestSpace {
 private object AnotherObject {
 	private TestSpace.TestObject mObject;
 
-	public void AnotherObject(int value) {
+	public void Constructor(int value) {
 		mObject = new TestSpace.TestObject(value);
 	}
 
