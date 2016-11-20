@@ -99,6 +99,7 @@ void Method::operator= (const Method& other)
 		mLanguageFeatureState = other.mLanguageFeatureState;
 		mMethodType = other.mMethodType;
 		mMutability = other.mMutability;
+		mPrototypeConstraints = other.mPrototypeConstraints;
 		mQualifiedTypename = other.mQualifiedTypename;
 		mScopeName = other.mScopeName;
 		mScopeType = other.mScopeType;

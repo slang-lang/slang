@@ -24,7 +24,6 @@ private bool TestCase1() const {
 		System.GenericIterator<String> it = stack.getIterator();
 
 		assert( stack is Object );
-		assert( stack is BaseObject );
 		//assert( stack is System.IIterateable );
 		//assert( stack is GenericStack<String> );
 
