@@ -4,11 +4,11 @@ import System.Exception;
 
 public namespace System {
 
-	public object GenericIterator<T> {
-		private System.IGenericCollection mCollection;
+	public object GenericIterator<T: Object> {
+		private /*System.*/IGenericCollection mCollection;
 		private int mCurrentIndex;
 
-		public void Constructor(System.IGenericCollection<String> collection ref) {
+		public void Constructor(/*System.*/IGenericCollection collection) {
 			mCollection = collection;
 
 			reset();

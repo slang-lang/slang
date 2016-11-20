@@ -145,7 +145,7 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 	newBlue->setVisibility(blueprint->getVisibility());
 
 	// inheritance
-	Designtime::Ancestors ancestors = blueprint->getAncestors();
+	Designtime::Ancestors ancestors = blueprint->getInheritance();
 	for ( Designtime::Ancestors::const_iterator it = ancestors.begin(); it != ancestors.end(); ++it ) {
 		newBlue->addInheritance((*it));
 	}
@@ -191,6 +191,9 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 		*method = *(*methIt);
 
 		type = lookupType(method->QualifiedTypename(), protoConstraints, constraints);
+		if ( !method->getPrototypeConstraints().empty() ) {
+			type += extractType(method->getPrototypeConstraints(), constraints);
+		}
 
 		// update return value type
 		method->setQualifiedTypename(type);
@@ -304,7 +307,8 @@ Runtime::Object* Repository::createInstance(Designtime::BluePrintGeneric* bluepr
 			throw Common::Exceptions::AbstractException("cannot instantiate abstract object '" + constraintType + "'");
 		}
 
-		Controller::Instance().memory()->newObject(object);
+		// TODO: verify
+		//Controller::Instance().memory()->newObject(object);
 	}
 
 	return object;
@@ -449,11 +453,16 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 					} break;
 					case Designtime::Ancestor::Type::Implements: {
 						// create base object
-						Runtime::Object *ancestor = createUserObject(name, blueIt->second, initialize);
-
-// TODO: fix memleak here
+						//Runtime::Object *ancestor = createUserObject(name, blueIt->second, initialize);
 						// define ancestor to prevent memleaks
-						object->define(blueIt->second->QualifiedTypename(), ancestor);
+						//object->define(blueIt->second->QualifiedTypename(), ancestor);
+
+						Runtime::Object *ancestor = createReference(blueIt->second, name, ancestorIt->constraints(), false);
+						ancestor->setParent(blueprint->getEnclosingScope());
+
+						// TODO: fix memleak here
+						// define ancestor to prevent memleaks
+						//object->define(blueIt->second->QualifiedTypename(), ancestor);
 
 						// add our newly created ancestor to our inheritance
 						object->addInheritance((*ancestorIt), ancestor);

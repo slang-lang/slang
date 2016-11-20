@@ -21,7 +21,10 @@ private bool TestCase1() const {
 
 	try {
 		GenericStack<String> stack = new GenericStack<String>();
+		System.GenericIterator<String> it = stack.getIterator();
+
 		assert( stack is Object );
+		assert( stack is BaseObject );
 		//assert( stack is System.IIterateable );
 		//assert( stack is GenericStack<String> );
 
@@ -32,7 +35,7 @@ private bool TestCase1() const {
 		// Usage
 		assert( stack.size() == 3 );
 
-		System.GenericIterator<String> it = stack.getIterator();
+		//System.GenericIterator<String> it = stack.getIterator();
 
 		assert( stack.at(0) == "664" );
 		assert( stack.at(1) == "173" );
