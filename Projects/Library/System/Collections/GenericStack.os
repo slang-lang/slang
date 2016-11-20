@@ -50,12 +50,12 @@ public object GenericStack<T: Object> implements IGenericCollection {
         return mSize == 0;
     }
 
-    public System.GenericIterator<T> getIterator() const {
-        return new System.GenericIterator<T>(IGenericCollection this);
+    public GenericIterator<T> getIterator() const {
+        return new GenericIterator<T>(IGenericCollection this);
     }
 
-    public System.GenericReverseIterator<T> getReverseIterator() const {
-        return new System.GenericReverseIterator<T>(IGenericCollection this);
+    public GenericReverseIterator<T> getReverseIterator() const {
+        return new GenericReverseIterator<T>(IGenericCollection this);
     }
 
     public int indexOf(T value) const {

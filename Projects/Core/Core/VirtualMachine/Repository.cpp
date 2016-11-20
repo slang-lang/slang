@@ -193,6 +193,7 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 		type = lookupType(method->QualifiedTypename(), protoConstraints, constraints);
 		if ( !method->getPrototypeConstraints().empty() ) {
 			type += extractType(method->getPrototypeConstraints(), constraints);
+			method->setPrototypeConstraints(PrototypeConstraints());
 		}
 
 		// update return value type

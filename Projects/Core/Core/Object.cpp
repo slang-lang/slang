@@ -498,6 +498,10 @@ bool Object::isInstanceOf(const std::string& type) const
 
 bool Object::isValid() const
 {
+	if ( mIsAtomicType ) {
+		return getValue().toBool();
+	}
+
 	return isConstructed();
 }
 

@@ -495,8 +495,8 @@ bool Analyser::createMemberOrMethod(TokenIterator& token, TokenIterator /*end*/)
 			throw Common::Exceptions::SyntaxError("method '" + name + "' is not declared as abstract but has no implementation", token->position());
 		}
 
-		// create a new method with the corresponding return value
-		//Runtime::Method *method = new Runtime::Method(mScope, name, Designtime::Parser::buildConstraintTypename(type.mTypename, type.mConstraints));
+// TODO look up if type.mTypename is a valid type and in case it is rebuild method return type; update Interpreter::execute afterwards
+		// create a new method with the corresponding return type
 		Runtime::Method *method = new Runtime::Method(mScope, name, type.mTypename);
 		method->setAbstract(isAbstract || mProcessingInterface);
 		method->setFinal(isFinal);

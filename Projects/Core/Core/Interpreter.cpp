@@ -68,6 +68,12 @@ ControlFlow::E Interpreter::execute(Method* method, const ParameterList& params,
 		case LanguageFeatureState::Unstable: OSwarn("method '" + method->getFullScopeName() + "' is marked as unstable"); break;
 	}
 
+	// reset qualified typename if prototype constraints are present
+	if ( !method->getPrototypeConstraints().empty() ) {
+		method->setQualifiedTypename(Designtime::Parser::buildConstraintTypename(method->QualifiedTypename(), method->getPrototypeConstraints()));
+		method->setPrototypeConstraints(PrototypeConstraints());
+	}
+
 	Method scope(*method);
 
 	IScope* previousOwner = mOwner;
@@ -145,6 +151,7 @@ ControlFlow::E Interpreter::execute(Method* method, const ParameterList& params,
 			break;
 		case ControlFlow::Return:
 			// validate return value
+
 			if ( result->QualifiedOutterface() == NULL_TYPE ) {
 				// no type cast necessary for null objects
 			}
@@ -153,6 +160,7 @@ ControlFlow::E Interpreter::execute(Method* method, const ParameterList& params,
 				OSwarn("implicit type conversion from " + result->QualifiedOutterface() + " to " + method->QualifiedTypename() + " in " + getTokens().begin()->position().toString());
 
 				typecast(result, method->QualifiedTypename());
+				//typecast(result, Designtime::Parser::buildConstraintTypename(method->QualifiedTypename(), method->getPrototypeConstraints()));
 #else
 				throw Runtime::Exceptions::ExplicitCastRequired("Explicit cast required for type conversion from " + result->QualifiedOutterface() + " to " + method->QualifiedTypename() + " in " + method->getFullScopeName());
 #endif
