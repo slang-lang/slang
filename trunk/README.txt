@@ -1,2 +1,2 @@
-fixed a memleak with forward declarations
+improved prototype handling
 
