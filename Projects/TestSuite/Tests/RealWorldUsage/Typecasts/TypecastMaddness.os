@@ -15,7 +15,7 @@ public void Main(int argc, string argv) {
 	writeln("value = " + (string getIntValue()));
 	writeln("value = " + float getIntValue());
 	writeln("value = " + (string (int (string float getIntValue()))));
-	writeln("bla = " + double string float number 1.7d);
+	writeln("bla = " + double string float 1.7d);
 }
 
 private int getIntValue() const {
