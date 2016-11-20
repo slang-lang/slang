@@ -37,7 +37,7 @@ void operator_binary_assign(Object *base, Object *other)
 		base->assign(*other);
 	}
 	else if ( source == BoolObject::TYPENAME ) {
-		BoolObject tmp(base->getValue());
+		BoolObject tmp(base->isValid());
 		tmp.operator_assign(other);
 
 		base->assign(tmp);
@@ -87,7 +87,7 @@ void operator_binary_bitand(Object *base, Object *other)
 	std::string source = base->Typename();
 
 	if ( source == BoolObject::TYPENAME ) {
-		BoolObject tmp(base->getValue());
+		BoolObject tmp(base->isValid());
 		tmp.operator_bitand(other);
 
 		base->assign(tmp);
@@ -142,7 +142,7 @@ void operator_binary_bitcomplement(Object *base, Object *other)
 	std::string source = base->Typename();
 
 	if ( source == BoolObject::TYPENAME ) {
-		BoolObject tmp(base->getValue());
+		BoolObject tmp(base->isValid());
 		tmp.operator_bitcomplement(other);
 
 		base->assign(tmp);
@@ -197,7 +197,7 @@ void operator_binary_bitor(Object *base, Object *other)
 	std::string source = base->Typename();
 
 	if ( source == BoolObject::TYPENAME ) {
-		BoolObject tmp(base->getValue());
+		BoolObject tmp(base->isValid());
 		tmp.operator_bitor(other);
 
 		base->assign(tmp);
@@ -252,7 +252,7 @@ void operator_binary_divide(Object *base, Object *other)
 	std::string source = base->Typename();
 
 	if ( source == BoolObject::TYPENAME ) {
-		BoolObject tmp(base->getValue());
+		BoolObject tmp(base->isValid());
 		tmp.operator_divide(other);
 
 		base->assign(tmp);
@@ -310,7 +310,7 @@ bool operator_binary_equal(Object *base, Object *other)
 	std::string source = base->Typename();
 
 	if ( source == BoolObject::TYPENAME ) {
-		BoolObject tmp(base->getValue());
+		BoolObject tmp(base->isValid());
 		tmp.operator_equal(other);
 		return tmp.operator_equal(other);
 	}
@@ -370,7 +370,7 @@ bool operator_binary_greater(Object *base, Object *other)
 	std::string source = base->Typename();
 
 	if ( source == BoolObject::TYPENAME ) {
-		BoolObject tmp(base->getValue());
+		BoolObject tmp(base->isValid());
 		return tmp.operator_greater(other);
 	}
 	else if ( source == DoubleObject::TYPENAME ) {
@@ -413,7 +413,7 @@ bool operator_binary_greater_equal(Object *base, Object *other)
 	std::string source = base->Typename();
 
 	if ( source == BoolObject::TYPENAME ) {
-		BoolObject tmp(base->getValue());
+		BoolObject tmp(base->isValid());
 		return tmp.operator_greater_equal(other);
 	}
 	else if ( source == DoubleObject::TYPENAME ) {
@@ -456,7 +456,7 @@ bool operator_binary_less(Object *base, Object *other)
 	std::string source = base->Typename();
 
 	if ( source == BoolObject::TYPENAME ) {
-		BoolObject tmp(base->getValue());
+		BoolObject tmp(base->isValid());
 		return tmp.operator_less(other);
 	}
 	else if ( source == DoubleObject::TYPENAME ) {
@@ -499,7 +499,7 @@ bool operator_binary_less_equal(Object *base, Object *other)
 	std::string source = base->Typename();
 
 	if ( source == BoolObject::TYPENAME ) {
-		BoolObject tmp(base->getValue());
+		BoolObject tmp(base->isValid());
 		return tmp.operator_less_equal(other);
 	}
 	else if ( source == DoubleObject::TYPENAME ) {
@@ -551,7 +551,7 @@ void operator_binary_modulo(Object *base, Object *other)
 	std::string source = base->Typename();
 
 	if ( source == BoolObject::TYPENAME ) {
-		BoolObject tmp(base->getValue());
+		BoolObject tmp(base->isValid());
 		tmp.operator_modulo(other);
 
 		base->assign(tmp);
@@ -606,7 +606,7 @@ void operator_binary_multiply(Object *base, Object *other)
 	std::string source = base->Typename();
 
 	if ( source == BoolObject::TYPENAME ) {
-		BoolObject tmp(base->getValue());
+		BoolObject tmp(base->isValid());
 		tmp.operator_multiply(other);
 
 		base->assign(tmp);
@@ -661,7 +661,7 @@ void operator_binary_plus(Object *base, Object *other)
 	std::string source = base->Typename();
 
 	if ( source == BoolObject::TYPENAME ) {
-		BoolObject tmp(base->getValue());
+		BoolObject tmp(base->isValid());
 		tmp.operator_plus(other);
 
 		base->assign(tmp);
@@ -709,14 +709,14 @@ void operator_binary_plus(Object *base, Object *other)
 
 void operator_binary_subtract(Object *base, Object *other)
 {
-	if ( !base || !base->isValid() ) {
+	if ( !base /*|| !base->isValid()*/ ) {
 		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object");
 	}
 
 	std::string source = base->Typename();
 
 	if ( source == BoolObject::TYPENAME ) {
-		BoolObject tmp(base->getValue());
+		BoolObject tmp(base->isValid());
 		tmp.operator_subtract(other);
 
 		base->assign(tmp);
@@ -764,10 +764,10 @@ void operator_binary_subtract(Object *base, Object *other)
 
 void operator_trinary_array(Object *base, Object *index, Object* other)
 {
-	if ( !base || !base->isValid() ) {
+	if ( !base /*|| !base->isValid()*/ ) {
 		throw Runtime::Exceptions::NullPointerException("null pointer access");
 	}
-	if ( !index || !index->isValid() ) {
+	if ( !index /*|| !index->isValid()*/ ) {
 		throw Runtime::Exceptions::NullPointerException("null pointer access");
 	}
 	if ( !other ) {
@@ -785,14 +785,14 @@ void operator_trinary_array(Object *base, Object *index, Object* other)
 
 void operator_unary_decrement(Object *base)
 {
-	if ( !base || !base->isValid() ) {
+	if ( !base /*|| !base->isValid()*/ ) {
 		throw Runtime::Exceptions::AccessViolation("null pointer access");
 	}
 
 	std::string source = base->Typename();
 
 	if ( source == BoolObject::TYPENAME ) {
-		BoolObject tmp(base->getValue());
+		BoolObject tmp(base->isValid());
 		tmp.operator_unary_decrement();
 
 		base->assign(tmp);
@@ -835,14 +835,14 @@ void operator_unary_decrement(Object *base)
 
 void operator_unary_increment(Object *base)
 {
-	if ( !base || !base->isValid() ) {
+	if ( !base /*|| !base->isValid()*/ ) {
 		throw Runtime::Exceptions::AccessViolation("null pointer access");
 	}
 
 	std::string source = base->Typename();
 
 	if ( source == BoolObject::TYPENAME ) {
-		BoolObject tmp(base->getValue());
+		BoolObject tmp(base->isValid());
 		tmp.operator_unary_increment();
 
 		base->assign(tmp);
@@ -885,14 +885,14 @@ void operator_unary_increment(Object *base)
 
 void operator_unary_minus(Object *base)
 {
-	if ( !base || !base->isValid() ) {
+	if ( !base /*|| !base->isValid()*/ ) {
 		throw Runtime::Exceptions::AccessViolation("null pointer access");
 	}
 
 	std::string source = base->Typename();
 
 	if ( source == BoolObject::TYPENAME ) {
-		BoolObject tmp(base->getValue());
+		BoolObject tmp(base->isValid());
 		tmp.operator_unary_minus();
 
 		base->assign(tmp);
@@ -944,7 +944,7 @@ void operator_unary_not(Object *base)
 	std::string source = base->Typename();
 
 	if ( source == BoolObject::TYPENAME ) {
-		BoolObject tmp(base->getValue());
+		BoolObject tmp(base->isValid());
 
 		*base = BoolObject(!tmp.operator_bool());
 	}
