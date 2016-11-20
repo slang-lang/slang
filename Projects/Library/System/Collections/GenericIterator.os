@@ -5,10 +5,10 @@ import System.Exception;
 public namespace System {
 
 	public object GenericIterator<T: Object> {
-		private /*System.*/IGenericCollection mCollection;
+		private IGenericCollection mCollection;
 		private int mCurrentIndex;
 
-		public void Constructor(/*System.*/IGenericCollection collection) {
+		public void Constructor(IGenericCollection collection) {
 			mCollection = collection;
 
 			reset();
@@ -44,16 +44,16 @@ public namespace System {
 			mCurrentIndex = -1;
 		}
 
-		public T =operator(T none ref) const {
+		public T =operator(T none) const {
 			return current();
 		}
 	}
 
 	public object GenericReverseIterator<T> {
-		private System.AbstractCollection mCollection;
+		private IGenericCollection mCollection;
 		private int mCurrentIndex;
 
-		public void Constructor(System.AbstractCollection collection ref) {
+		public void Constructor(IGenericCollection collection) {
 			mCollection = collection;
 
 			reset();
@@ -89,7 +89,7 @@ public namespace System {
 			mCurrentIndex = mCollection.size();
 		}
 
-		public T =operator(T none ref) const {
+		public T =operator(T none) const {
 			return current();
 		}
 	}

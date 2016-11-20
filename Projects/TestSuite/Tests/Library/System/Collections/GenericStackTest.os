@@ -21,11 +21,7 @@ private bool TestCase1() const {
 
 	try {
 		GenericStack<String> stack = new GenericStack<String>();
-		System.GenericIterator<String> it = stack.getIterator();
-
-		assert( stack is Object );
-		//assert( stack is System.IIterateable );
-		//assert( stack is GenericStack<String> );
+		assert( stack is IGenericCollection );
 
 		stack.push(new String("664"));
 		stack.push(new String("173"));
@@ -34,7 +30,12 @@ private bool TestCase1() const {
 		// Usage
 		assert( stack.size() == 3 );
 
-		//System.GenericIterator<String> it = stack.getIterator();
+		System.GenericIterator<String> it = stack.getIterator();
+		while ( it.hasNext() ) {
+			it.next();
+
+			print(string it.current());
+		}
 
 		assert( stack.at(0) == "664" );
 		assert( stack.at(1) == "173" );
@@ -57,7 +58,7 @@ private bool TestCase2() const {
 	print("TestCase 2: pop");
 
 	try {
-		System.GenericStack stack = new System.GenericStack();
+		GenericStack stack = new GenericStack();
 
 		// Setup
 		String item;
@@ -119,7 +120,7 @@ private bool TestCase3() const {
 	print("TestCase 3: iterate");
 
 	try {
-		System.GenericStack stack = new System.GenericStack();
+		GenericStack stack = new GenericStack();
 
 		stack.push(Object new String("1"));
 		stack.push(Object new String("2"));
@@ -158,7 +159,7 @@ private bool TestCase4() const {
 	print("TestCase 4: reverse iterate");
 
 	try {
-		System.GenericStack stack = new System.GenericStack();
+		GenericStack stack = new GenericStack();
 
 		stack.push(Object new String("1"));
 		stack.push(Object new String("2"));
@@ -194,7 +195,7 @@ private bool TestCase5() const {
 	print("TestCase 5: indexOf");
 
 	try {
-		System.GenericStack stack = new System.GenericStack();
+		GenericStack stack = new GenericStack();
 
 		stack.push(Object new String("1"));
 		stack.push(Object new String("2"));
@@ -216,7 +217,7 @@ private bool TestCase6() const {
 	print("TestCase 6: contains");
 
 	try {
-		System.GenericStack stack = new System.GenericStack();
+		GenericStack stack = new GenericStack();
 		assert( stack is Object );
 		assert( stack is System.AbstractCollection );
 
@@ -240,7 +241,7 @@ private bool TestCase7() const {
 	print("TestCase 7: peek");
 
 	try {
-		GenericStack stack = new System.GenericStack();
+		GenericStack stack = new GenericStack();
 		assert( stack is Object );
 		assert( stack is System.AbstractCollection );
 
