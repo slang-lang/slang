@@ -4,7 +4,7 @@ public namespace OutterSpace.InnerSpace.AnotherSpace {
 	public object SpacedObject {
 		private int mValue;
 
-		public void SpacedObject(int value) {
+		public void Constructor(int value) {
 			print("SpacedObject(" + value + ")");
 
 			mValue = value;

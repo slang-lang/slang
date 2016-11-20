@@ -5,7 +5,7 @@ private namespace NS1 {
 	public object TestObject {
 		private int mValue;
 
-		public void TestObject(int value) {
+		public void Constructor(int value) {
 			mValue = value;
 
 			print("mValue = " + mValue);
@@ -19,7 +19,7 @@ private namespace NS2 {
 	public object TestObject {
 		private string mValue;
 
-		public void TestObject(string value) {
+		public void Constructor(string value) {
 			mValue = value;
 
 			print("mValue = " + mValue);
