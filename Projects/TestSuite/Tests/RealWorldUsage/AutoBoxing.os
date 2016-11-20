@@ -1,6 +1,7 @@
 #!/usr/local/bin/oscript
 
-import System.Types;
+import System.Boolean;
+import System.Integer;
 
 public void Main(int argc, string args) {
 	assert( TestCase1() );

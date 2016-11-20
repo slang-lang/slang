@@ -39,7 +39,7 @@ public object TestObject<T> {
 }
 
 public void Main(int argc = 0, string args = "") {
-	assert( TestCase1() );		// not supported by now
+	assert( TestCase1() );
 }
 
 private bool TestCase1() {
