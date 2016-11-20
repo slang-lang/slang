@@ -150,7 +150,7 @@ ControlFlow::E Interpreter::execute(Method* method, const ParameterList& params,
 			}
 			else if ( method->QualifiedTypename() != VoidObject::TYPENAME && result->QualifiedOutterface() != method->QualifiedTypename() ) {
 #ifdef ALLOW_IMPLICIT_CASTS
-				OSwarn("implicit type conversion from " + result->QualifiedOutterface() + " to " + method->QualifiedTypename());
+				OSwarn("implicit type conversion from " + result->QualifiedOutterface() + " to " + method->QualifiedTypename() + " in " + getTokens().begin()->position().toString());
 
 				typecast(result, method->QualifiedTypename());
 #else
@@ -715,7 +715,7 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 		case Token::Type::SEMICOLON: {
 		} break;
 		default: {
-			throw Common::Exceptions::SyntaxError("identifier, literal or number expected but " + start->content() + " found", start->position());
+			throw Common::Exceptions::SyntaxError("identifier, literal or constant expected but " + start->content() + " found", start->position());
 		} break;
 	}
 }

@@ -1,13 +1,14 @@
 
 import GenericCollectionItem;
 import GenericIterator;
+import IGenericCollection;
 import IIterateable;
 import Iterator;
 import System.Exception;
 
 public namespace System { }
 
-public object GenericStack<T> implements System.IGenericCollection<T> {
+public object GenericStack<T: Object> implements /*System.*/IGenericCollection {
     private GenericCollectionItem<T> mFirst;
     private GenericCollectionItem<T> mLast;
     private int mSize = 0;
@@ -50,11 +51,11 @@ public object GenericStack<T> implements System.IGenericCollection<T> {
     }
 
     public System.GenericIterator<T> getIterator() const {
-        return new System.GenericIterator<T>(this);
+        return new System.GenericIterator<T>(/*System.*/IGenericCollection this);
     }
 
     public System.GenericReverseIterator<T> getReverseIterator() const {
-        return new System.GenericReverseIterator<T>(this);
+        return new System.GenericReverseIterator<T>(/*System.*/IGenericCollection this);
     }
 
     public int indexOf(T value) const {
