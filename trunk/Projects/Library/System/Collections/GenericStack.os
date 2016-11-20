@@ -35,7 +35,7 @@ public object GenericStack<T: Object> implements IGenericCollection {
 
     public void clear() modify {
         for ( int i = 0; i < mSize; i = i++ ) {
-            mFirst.mValue = null;
+            //mFirst.mValue = null;
             mFirst = mFirst.mNext;
         }
 

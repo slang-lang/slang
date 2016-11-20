@@ -14,6 +14,7 @@ public void Main(int argc = 0, string args = "") const {
 	assert( TestCase5() );
 	assert( TestCase6() );
 	assert( TestCase7() );
+	assert( TestCase8() );
 }
 
 private bool TestCase1() const {
@@ -261,5 +262,32 @@ private bool TestCase7() const {
 	}
 
 	return false;
+}
+
+private bool TestCase8() const {
+	print("TestCase 8: atomic type");
+
+	try {
+		GenericStack<int> stack = new GenericStack<int>();
+
+		stack.push(1);
+		assert( stack.peek() == 1 );
+
+		stack.push(2);
+		assert( stack.peek() == 2 );
+
+		stack.push(3);
+		assert( stack.peek() == 3 );
+
+		GenericIterator<int> it = stack.getIterator();
+
+		while ( it.hasNext() ) {
+			it.next();
+
+			//print(it.current());
+		}
+	}
+
+	return true;
 }
 
