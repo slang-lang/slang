@@ -28,7 +28,7 @@ private void runGame() modify {
 		int percent = -1;
 		while ( percent < 0 || percent > 100 ) {
 			cout("Booster (%): ");
-			percent = Math.abs(int cin());
+			percent = abs(int cin());
 		}
 
 		float burn = ((float percent) / 100.f) * MAXBURN;
@@ -48,7 +48,7 @@ private void runGame() modify {
 
 		mVelocity = distance / mTimeStep;
 		mHeight = mHeight - distance;
-		mFuel = mFuel - Math.abs(burn);
+		mFuel = mFuel - abs(burn);
 
 		time = time + mTimeStep;	// count time to touchdown
 

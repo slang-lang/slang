@@ -3,7 +3,7 @@
 import System.Integer;
 
 private void MethodThatThrows() throws {
-	throw new int(42);
+	//throw new int(42);
 	throw new Integer(42);
 }
 

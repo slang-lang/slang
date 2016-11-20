@@ -30,7 +30,7 @@ private bool TestCase1() const {
 		// Usage
 		assert( stack.size() == 3 );
 
-		System.GenericIterator<String> it = stack.getIterator();
+		GenericIterator<String> it = stack.getIterator();
 		while ( it.hasNext() ) {
 			it.next();
 
@@ -128,7 +128,7 @@ private bool TestCase3() const {
 
 		assert( stack.size() == 3 );
 
-		System.Iterator it = stack.getIterator();
+		Iterator it = stack.getIterator();
 
 		it.next();
 		assert( it.current() == "1" );
@@ -167,7 +167,7 @@ private bool TestCase4() const {
 
 		assert( stack.size() == 3 );
 
-		System.ReverseIterator it = stack.getReverseIterator();
+		ReverseIterator it = stack.getReverseIterator();
 
 		it.next();
 		assert( it.current() == "3" );
@@ -219,7 +219,6 @@ private bool TestCase6() const {
 	try {
 		GenericStack stack = new GenericStack();
 		assert( stack is Object );
-		assert( stack is System.AbstractCollection );
 
 		stack.push(Object new Integer(1));
 		stack.push(Object new Integer(2));
@@ -243,7 +242,6 @@ private bool TestCase7() const {
 	try {
 		GenericStack stack = new GenericStack();
 		assert( stack is Object );
-		assert( stack is System.AbstractCollection );
 
 		stack.push(Object new Integer(1));
 		assert( stack.peek() == 1 );

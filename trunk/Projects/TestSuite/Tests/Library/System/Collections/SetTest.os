@@ -2,7 +2,6 @@
 
 import System.Collections.Set;
 import System.Exception;
-import System.Math;
 import System.Integer;
 
 public object TestObject {
@@ -54,7 +53,7 @@ private bool TestCase1() const {
 
 		int count = 0;
 		while ( count < 10 ) {
-			//use Math.srand(time()); for real random numbers
+			//use srand(time()); for real random numbers
 
 			item = new TestObject(int rand());
 			set.insert(Object item);

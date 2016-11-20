@@ -48,7 +48,7 @@ private void doIt() {
 	print("3^2 = " + Math.power(3));
 	print("3^2 = " + Math.power(3, 2));
 
-	print("abs(-3) = " + Math.abs(-3));
+	print("abs(-3) = " + abs(-3));
 
        	assert(flag);
 }
