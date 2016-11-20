@@ -496,7 +496,8 @@ bool Analyser::createMemberOrMethod(TokenIterator& token, TokenIterator /*end*/)
 		}
 
 		// create a new method with the corresponding return value
-		Runtime::Method *method = new Runtime::Method(mScope, name, Designtime::Parser::buildConstraintTypename(type.mTypename, type.mConstraints));
+		//Runtime::Method *method = new Runtime::Method(mScope, name, Designtime::Parser::buildConstraintTypename(type.mTypename, type.mConstraints));
+		Runtime::Method *method = new Runtime::Method(mScope, name, type.mTypename);
 		method->setAbstract(isAbstract || mProcessingInterface);
 		method->setFinal(isFinal);
 		method->setLanguageFeatureState(LanguageFeatureState::convert(languageFeature));
