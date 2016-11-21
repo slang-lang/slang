@@ -336,9 +336,6 @@ bool Analyser::createMemberStub(TokenIterator& token, Visibility::E visibility, 
 
 		token++;
 	}
-	else {
-		mutability = Mutability::Modify;
-	}
 
 	Runtime::AtomicValue value = 0;
 	if ( token->type() == Token::Type::ASSIGN ) {
