@@ -25,6 +25,7 @@ SET(HEADERS
 SET(DEPENDENCIES
 	CoreDesigntimeParser
 	CoreDesigntimeBuildInTypes
+	CoreCommon
 	CoreAttributes
 )
 

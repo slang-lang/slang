@@ -7,7 +7,7 @@
 #include <string>
 
 // Project includes
-#include <Core/Common/PrototypeConstraint.h>
+#include <Core/Common/TypeDeclaration.h>
 #include <Core/Token.h>
 #include "Ancestor.h"
 #include "BluePrintObject.h"
@@ -57,6 +57,9 @@ private:
 	bool createMethod(TokenIterator& token, TokenIterator end);
 	bool createNamespace(TokenIterator& token, TokenIterator end);
 	//bool createNamespaceMember(TokenIterator& token, TokenIterator end);
+
+	bool createMethodStub(TokenIterator& token, Visibility::E visibility, LanguageFeatureState::E languageFeature, TypeDeclaration type, const std::string& name);
+	bool createMemberStub(TokenIterator& token, Visibility::E visibility, LanguageFeatureState::E languageFeature, TypeDeclaration type, const std::string& name);
 
 	bool buildEnum(Designtime::BluePrintEnum* symbol, const TokenList& tokens);
 	std::string getQualifiedTypename(const std::string& name) const;
