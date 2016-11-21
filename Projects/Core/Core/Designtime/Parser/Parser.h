@@ -10,6 +10,7 @@
 #include <Core/Attributes/LanguageFeatureState.h>
 #include <Core/Attributes/ObjectType.h>
 #include <Core/Common/PrototypeConstraint.h>
+#include <Core/Common/TypeDeclaration.h>
 #include <Core/Designtime/Ancestor.h>
 #include <Core/Parameter.h>
 #include <Core/Token.h>
@@ -27,13 +28,6 @@ class IScope;
 namespace Designtime {
 
 bool checkSyntax(TokenIterator foundIt, const TokenList &expected);
-
-class TypeDeclaration
-{
-public:
-	PrototypeConstraints mConstraints;
-	std::string mTypename;
-};
 
 class Parser
 {

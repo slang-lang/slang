@@ -306,6 +306,7 @@ inline Symbol* Interpreter::identify(TokenIterator& token) const
 	Symbol *result = 0;
 	bool onlyCurrentScope = false;
 	std::string prev_identifier;	// hack to allow special 'this'-handling
+	PrototypeConstraints constraints;
 
 	while ( token->type() == Token::Type::IDENTIFER || token->type() == Token::Type::TYPE ) {
 		std::string identifier = token->content();

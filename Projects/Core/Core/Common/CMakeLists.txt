@@ -11,6 +11,7 @@ SET(HEADERS
     Exceptions.h
     Position.h
     PrototypeConstraint.h
+    TypeDeclaration.h
     Visibility.h
 )
 
