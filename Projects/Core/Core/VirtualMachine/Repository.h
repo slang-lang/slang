@@ -32,6 +32,16 @@ namespace Runtime {
 class Repository
 {
 public:
+	class InitilizationType {
+	public:
+		enum E {
+			None,
+			AllowAbstract,
+			Final
+		};
+	};
+
+public:
 	Repository();
 	~Repository();
 
@@ -45,9 +55,9 @@ public:
 
 	void cleanupForwardDeclarations();
 
-	Runtime::Object* createInstance(const std::string& type, const std::string& name, const PrototypeConstraints& constraints = PrototypeConstraints(), bool initialize = false);
-	Runtime::Object* createInstance(Designtime::BluePrintGeneric* blueprint, const std::string& name, const PrototypeConstraints& constraints, bool initialize = false);
-	Runtime::Object* createReference(Designtime::BluePrintGeneric* blueprint, const std::string& name, const PrototypeConstraints& constraints, bool initialize = false);
+	Runtime::Object* createInstance(const std::string& type, const std::string& name, const PrototypeConstraints& constraints = PrototypeConstraints(), InitilizationType::E initialize = InitilizationType::None);
+	Runtime::Object* createInstance(Designtime::BluePrintGeneric* blueprint, const std::string& name, const PrototypeConstraints& constraints, InitilizationType::E initialize = InitilizationType::None);
+	Runtime::Object* createReference(Designtime::BluePrintGeneric* blueprint, const std::string& name, const PrototypeConstraints& constraints, InitilizationType::E initialize = InitilizationType::None);
 
 private:
 	// Prototypes
@@ -57,8 +67,8 @@ private:
 	std::string lookupType(const std::string& type, const PrototypeConstraints& blueprintConstraints, const PrototypeConstraints& implConstraints) const;
 	// }
 
-	Runtime::Object* createObject(const std::string& name, Designtime::BluePrintObject* blueprint, bool initialize);
-	Runtime::Object* createUserObject(const std::string& name, Designtime::BluePrintObject* blueprint, bool initialize);
+	Runtime::Object* createObject(const std::string& name, Designtime::BluePrintObject* blueprint, InitilizationType::E initialize);
+	Runtime::Object* createUserObject(const std::string& name, Designtime::BluePrintObject* blueprint, InitilizationType::E initialize);
 
 	Designtime::BluePrintGeneric* findBluePrint(const std::string& type) const;
 	Designtime::BluePrintEnum* findBluePrintEnum(const std::string& type) const;

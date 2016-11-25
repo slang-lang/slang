@@ -37,7 +37,7 @@ public:	// IScope implementation
 	virtual const std::string& getScopeName() const;
 	virtual IScope::IType::E getScopeType() const;
 	virtual Symbol* resolve(const std::string& name, bool onlyCurrentScope = false, Visibility::E visibility = Visibility::Designtime) const;
-	virtual void undefine(const std::string& name, Symbol* symbol);
+	virtual void undefine(const std::string& name, bool onlyCurrentScope = true);
 
 protected:
 	typedef std::map<std::string, Symbol*> Symbols;

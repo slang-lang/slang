@@ -363,7 +363,7 @@ bool Analyser::createMemberStub(TokenIterator& token, Visibility::E visibility, 
 		mScope->define(name, blue);
 	}
 	else {
-		Runtime::Object *member = mRepository->createInstance(type.mTypename, name, type.mConstraints, false);
+		Runtime::Object *member = mRepository->createInstance(type.mTypename, name, type.mConstraints);
 		member->setFinal(isFinal);
 		member->setLanguageFeatureState(languageFeature);
 		member->setMember(true);

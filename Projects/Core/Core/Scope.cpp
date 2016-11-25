@@ -103,11 +103,16 @@ Symbol* SymbolScope::resolve(const std::string& name, bool onlyCurrentScope, Vis
 	return 0;
 }
 
-void SymbolScope::undefine(const std::string& name, Symbol* /*symbol*/)
+void SymbolScope::undefine(const std::string& name, bool onlyCurrentScope)
 {
 	Symbols::iterator it = mSymbols.find(name);
 	if ( it != mSymbols.end() ) {
 		mSymbols.erase(it);
+		return;
+	}
+
+	if ( mParent && !onlyCurrentScope ) {
+		mParent->undefine(name, onlyCurrentScope);
 	}
 }
 
