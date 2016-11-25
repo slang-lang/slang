@@ -13,7 +13,6 @@
 #include <Core/BuildInObjects/UserObject.h>
 #include <Core/BuildInObjects/VoidObject.h>
 #include <Core/Common/Exceptions.h>
-#include <Core/Common/PrototypeConstraint.h>
 #include <Core/Designtime/BluePrintEnum.h>
 #include <Core/Designtime/BluePrintGeneric.h>
 #include <Core/Designtime/BluePrintObject.h>
@@ -27,7 +26,6 @@
 #include <Core/Designtime/BuildInTypes/VoidObject.h>
 #include <Core/Designtime/Parser/Parser.h>
 #include <Core/Tools.h>
-#include <Utils.h>
 #include "Controller.h"
 
 // Namespace declarations
@@ -187,18 +185,23 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 	MethodScope::MethodCollection methods = blueprint->provideMethods();
 	for ( MethodScope::MethodCollection::const_iterator methIt = methods.begin(); methIt != methods.end(); ++methIt ) {
 		Runtime::Method* method = new Runtime::Method(newBlue, (*methIt)->getName(), Designtime::Parser::buildConstraintTypename((*methIt)->Typename(), (*methIt)->getPrototypeConstraints()));
+
+		// copy from template
 		*method = *(*methIt);
 
+		// Prepare return value
+		// {
 		type = lookupType(method->QualifiedTypename(), protoConstraints, constraints);
 		if ( !method->getPrototypeConstraints().empty() ) {
 			type += extractType(method->getPrototypeConstraints(), constraints);
 			method->setPrototypeConstraints(PrototypeConstraints());
 		}
 
-		// update return value type
 		method->setQualifiedTypename(type);
+		// }
 
-		// update method signature
+		// Update method signature
+		// {
 		bool signatureChanged = false;
 
 		ParameterList params = method->provideSignature();
@@ -221,8 +224,10 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 		if ( signatureChanged ) {
 			method->setSignature(params);
 		}
+		// }
 
-		// update method tokens
+		// Update method tokens
+		// {
 		TokenList tokens = method->getTokens();
 
 		for ( TokenList::iterator tokIt = tokens.begin(); tokIt != tokens.end(); ++tokIt ) {
@@ -236,14 +241,16 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 		}
 
 		method->setTokens(tokens);
+		// }
 
+		// add prepared method to new blueprint
 		newBlue->defineMethod((*methIt)->getName(), method);
 	}
 
-	// add to repository
+	// add new blueprint to repository
 	addBluePrint(newBlue);
 
-	// add to parent scope
+	// add new blueprint to parent scope
 	IScope* parent = blueprint->getEnclosingScope();
 	if ( parent ) {
 		parent->define(newBlue->QualifiedTypename(), newBlue);
@@ -255,12 +262,12 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 /*
  * Creates an instance of the given blueprint
  */
-Runtime::Object* Repository::createInstance(const std::string& type, const std::string& name, const PrototypeConstraints& constraints, bool initialize)
+Runtime::Object* Repository::createInstance(const std::string& type, const std::string& name, const PrototypeConstraints& constraints, InitilizationType::E initialize)
 {
 	BluePrintObjectMap::iterator it = mBluePrintObjects.find(type);
 	if ( it == mBluePrintObjects.end() ) {
 		// workaround for complex member types whose imports have not yet been analysed
-		if ( !initialize ) {
+		if ( initialize == InitilizationType::None ) {
 			Runtime::Object* object = new Runtime::UserObject(name, SYSTEM_LIBRARY, Designtime::Parser::buildConstraintTypename(type, constraints), true);
 			Controller::Instance().memory()->newObject(object);
 			return object;
@@ -275,7 +282,7 @@ Runtime::Object* Repository::createInstance(const std::string& type, const std::
 /*
  * Creates an instance of the given blueprint
  */
-Runtime::Object* Repository::createInstance(Designtime::BluePrintGeneric* blueprint, const std::string& name, const PrototypeConstraints& constraints, bool initialize)
+Runtime::Object* Repository::createInstance(Designtime::BluePrintGeneric* blueprint, const std::string& name, const PrototypeConstraints& constraints, InitilizationType::E initialize)
 {
 	if ( !blueprint ) {
 		throw Common::Exceptions::Exception("invalid blueprint provided!");
@@ -302,7 +309,7 @@ Runtime::Object* Repository::createInstance(Designtime::BluePrintGeneric* bluepr
 
 	Runtime::Object* object = createObject(name, static_cast<Designtime::BluePrintObject*>(blueprint), initialize);
 
-	if ( initialize ) {
+	if ( initialize == InitilizationType::Final ) {
 		if ( object->isAbstract() ) {
 			throw Common::Exceptions::AbstractException("cannot instantiate abstract object '" + constraintType + "'");
 		}
@@ -317,7 +324,7 @@ Runtime::Object* Repository::createInstance(Designtime::BluePrintGeneric* bluepr
 /*
  * creates (and initializes) atomic types and triggers the user defined object creation process
  */
-Runtime::Object* Repository::createObject(const std::string& name, Designtime::BluePrintObject* blueprint, bool initialize)
+Runtime::Object* Repository::createObject(const std::string& name, Designtime::BluePrintObject* blueprint, InitilizationType::E initialize)
 {
 	assert(blueprint);
 
@@ -369,7 +376,7 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 /*
  * Creates an instance of the given blueprint and adds a reference to it in the heap memory
  */
-Runtime::Object* Repository::createReference(Designtime::BluePrintGeneric* blueprint, const std::string& name, const PrototypeConstraints& constraints, bool initialize)
+Runtime::Object* Repository::createReference(Designtime::BluePrintGeneric* blueprint, const std::string& name, const PrototypeConstraints& constraints, InitilizationType::E initialize)
 {
 	if ( !blueprint ) {
 		throw Common::Exceptions::Exception("invalid blueprint provided!");
@@ -396,7 +403,7 @@ Runtime::Object* Repository::createReference(Designtime::BluePrintGeneric* bluep
 
 	Runtime::Object* object = createObject(name, static_cast<Designtime::BluePrintObject*>(blueprint), initialize);
 
-	if ( initialize ) {
+	if ( initialize == InitilizationType::Final ) {
 		if ( object->isAbstract() ) {
 			throw Common::Exceptions::AbstractException("cannot instantiate abstract object '" + blueprint->QualifiedTypename() + "'");
 		}
@@ -410,7 +417,7 @@ Runtime::Object* Repository::createReference(Designtime::BluePrintGeneric* bluep
 /*
  * creates and initializes a user defined object type and initializes its base classes
  */
-Runtime::Object* Repository::createUserObject(const std::string& name, Designtime::BluePrintObject* blueprint, bool initialize)
+Runtime::Object* Repository::createUserObject(const std::string& name, Designtime::BluePrintObject* blueprint, InitilizationType::E initialize)
 {
 	assert(blueprint);
 
@@ -421,7 +428,7 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 	// create the base object
 	Runtime::Object* object = new Runtime::UserObject(name, blueprint->Filename(), Designtime::Parser::buildConstraintTypename(blueprint->QualifiedTypename(), blueprint->getPrototypeConstraints()));
 
-	if ( initialize ) {
+	if ( initialize >= InitilizationType::AllowAbstract ) {
 		Designtime::Ancestors ancestors = blueprint->getInheritance();
 
 		if ( !ancestors.empty() ) {
@@ -440,7 +447,7 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 						object->undefine(IDENTIFIER_BASE, 0);
 
 						// create base object
-						Runtime::Object *ancestor = createReference(blueIt->second, name, ancestorIt->constraints(), initialize);
+						Runtime::Object *ancestor = createReference(blueIt->second, name, ancestorIt->constraints(), InitilizationType::AllowAbstract);
 						ancestor->setParent(blueprint->getEnclosingScope());
 						ancestor->undefine(IDENTIFIER_THIS, 0);
 						ancestor->define(IDENTIFIER_THIS, object);
@@ -457,7 +464,7 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 						// define ancestor to prevent memleaks
 						//object->define(blueIt->second->QualifiedTypename(), ancestor);
 
-						Runtime::Object *ancestor = createReference(blueIt->second, name, ancestorIt->constraints(), false);
+						Runtime::Object *ancestor = createReference(blueIt->second, name, ancestorIt->constraints(), InitilizationType::None);
 						ancestor->setParent(blueprint->getEnclosingScope());
 
 						// TODO: fix memleak here
@@ -601,7 +608,7 @@ void Repository::initialize()
  */
 void Repository::initializeObject(Runtime::Object* object, Designtime::BluePrintObject* blueprint)
 {
-	object->undefine(IDENTIFIER_THIS, 0);
+	//object->undefine(IDENTIFIER_THIS, 0);
 
 	// create and define all symbols based on given blueprint
 	Symbols symbols = blueprint->provideSymbols();
@@ -612,7 +619,7 @@ void Repository::initializeObject(Runtime::Object* object, Designtime::BluePrint
 
 		Designtime::BluePrintObject* blue = static_cast<Designtime::BluePrintObject*>(it->second);
 
-		Runtime::Object *symbol = createInstance(blue->QualifiedTypename(), blue->getName(), blue->getPrototypeConstraints(), false);
+		Runtime::Object *symbol = createInstance(blue->QualifiedTypename(), blue->getName(), blue->getPrototypeConstraints(), InitilizationType::None);
 		symbol->setFinal(blue->isFinal());
 		symbol->setLanguageFeatureState(blue->getLanguageFeatureState());
 		symbol->setMember(blue->isMember());
@@ -634,7 +641,9 @@ void Repository::initializeObject(Runtime::Object* object, Designtime::BluePrint
 		// try to override abstract methods a.k.a. implement an interface method
 		Runtime::Method* old = static_cast<Runtime::Method*>(object->resolveMethod((*it)->getName(), method->provideSignature(), true, Visibility::Designtime));
 		if ( old && old->isAbstract() ) {
-			object->undefineMethod(old);
+			Runtime::Object* base = dynamic_cast<Runtime::Object*>(object->resolve(IDENTIFIER_BASE, true, Visibility::Designtime));
+			base->undefineMethod(old);
+
 			delete old;
 		}
 

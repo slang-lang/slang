@@ -55,7 +55,7 @@ public:
 	virtual const std::string& getScopeName() const = 0;
 	virtual IScope::IType::E getScopeType() const = 0;
 	virtual Symbol* resolve(const std::string& name, bool onlyCurrentScope = false, Visibility::E visibility = Visibility::Designtime) const = 0;
-	virtual void undefine(const std::string& name, Symbol* symbol) = 0;
+	virtual void undefine(const std::string& name, bool onlyCurrentScope = true) = 0;
 };
 
 

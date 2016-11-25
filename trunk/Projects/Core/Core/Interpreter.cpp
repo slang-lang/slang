@@ -88,7 +88,7 @@ ControlFlow::E Interpreter::execute(Method* method, const ParameterList& params,
 
 		switch ( it->access() ) {
 			case Parameter::AccessMode::ByReference: {
-				object = mRepository->createInstance(it->type(), it->name(), PrototypeConstraints(), false);
+				object = mRepository->createInstance(it->type(), it->name(), PrototypeConstraints());
 
 				if ( it->reference().isValid() ) {
 					object->assign(
@@ -102,7 +102,7 @@ ControlFlow::E Interpreter::execute(Method* method, const ParameterList& params,
 				scope.define(it->name(), object);
 			} break;
 			case Parameter::AccessMode::ByValue: {
-				object = mRepository->createInstance(it->type(), it->name(), PrototypeConstraints(), false);
+				object = mRepository->createInstance(it->type(), it->name(), PrototypeConstraints());
 
 				if ( it->reference().isValid() ) {
 #ifdef ALLOW_BY_VALUE_COPY
@@ -1442,7 +1442,7 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 	}
 
 	// create initialized reference of new object
-	*result = *getRepository()->createReference(static_cast<Designtime::BluePrintGeneric*>(symbol), name, constraints, true);
+	*result = *getRepository()->createReference(static_cast<Designtime::BluePrintGeneric*>(symbol), name, constraints, Repository::InitilizationType::Final);
 
 	// execute new object's constructor
 	mControlFlow = result->Constructor(params);
@@ -1681,7 +1681,7 @@ void Interpreter::process_throw(TokenIterator& token, Object* /*result*/)
 		OSwarn(std::string(method->getFullScopeName() + " throws although it is not marked with 'throws' in " + token->position().toString()).c_str());
 	}
 
-	Object* data = getRepository()->createInstance(OBJECT, ANONYMOUS_OBJECT, PrototypeConstraints(), false);
+	Object* data = getRepository()->createInstance(OBJECT, ANONYMOUS_OBJECT, PrototypeConstraints());
 	try {
 		expression(data, token);
 	}
@@ -1925,7 +1925,7 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol)
 	}
 
 
-	Object* object = getRepository()->createInstance(static_cast<Designtime::BluePrintGeneric*>(symbol), name, constraints, false);
+	Object* object = getRepository()->createInstance(static_cast<Designtime::BluePrintGeneric*>(symbol), name, constraints);
 
 	getScope()->define(name, object);
 

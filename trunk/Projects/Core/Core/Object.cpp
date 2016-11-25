@@ -93,7 +93,7 @@ Object::Object(const std::string& name, const std::string& filename, const std::
 Object::~Object()
 {
 	if ( mThis == this ) {
-		undefine(IDENTIFIER_THIS, this);
+		undefine(IDENTIFIER_THIS);
 	}
 
 	Controller::Instance().memory()->remove(mReference);
@@ -305,7 +305,7 @@ void Object::copy(const Object& other)
 				}
 
 				Object* source = static_cast<Object*>(it->second);
-				Object* target = Controller::Instance().repository()->createInstance(source->QualifiedTypename(), source->getName(), PrototypeConstraints(), false);
+				Object* target = Controller::Instance().repository()->createInstance(source->QualifiedTypename(), source->getName(), PrototypeConstraints());
 				target->copy(*source);
 
 				define(target->getName(), target);

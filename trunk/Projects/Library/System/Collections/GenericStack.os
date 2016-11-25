@@ -79,21 +79,6 @@ public object GenericStack<T: Object> implements IGenericCollection {
         return mLast.mValue;
     }
 
-    public void push(T value) modify {
-        GenericCollectionItem<T> item = new GenericCollectionItem<T>(value);
-
-        if ( mSize == 0 ) {		// special handling for 1st item
-            mFirst = item;
-        }
-        else {					// generic handling
-            mLast.mNext = item;
-        }
-
-        mLast = item;
-
-        mSize++;
-    }
-
     public void pop() modify {
         if ( mSize <= 0 ) {
             throw new OutOfBoundsException("stack underflow");
@@ -114,6 +99,21 @@ public object GenericStack<T: Object> implements IGenericCollection {
         }
 
         mSize--;
+    }
+
+    public void push(T value) modify {
+        GenericCollectionItem<T> item = new GenericCollectionItem<T>(value);
+
+        if ( mSize == 0 ) {		// special handling for 1st item
+            mFirst = item;
+        }
+        else {					// generic handling
+            mLast.mNext = item;
+        }
+
+        mLast = item;
+
+        mSize++;
     }
 
     public int size() const {
