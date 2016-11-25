@@ -142,7 +142,7 @@ ControlFlow::E Interpreter::execute(Method* method, const ParameterList& params,
 		case ControlFlow::Continue:
 		case ControlFlow::Normal:
 			// verify method return reason
-			if ( method->QualifiedTypename() != VoidObject::TYPENAME && result->QualifiedOutterface() != VoidObject::TYPENAME ) {
+			if ( method->QualifiedTypename() != VoidObject::TYPENAME && result->QualifiedOuterface() != VoidObject::TYPENAME ) {
 				throw Common::Exceptions::Exception("unnatural method return at '" + method->getFullScopeName() + "'");
 			}
 
@@ -152,12 +152,12 @@ ControlFlow::E Interpreter::execute(Method* method, const ParameterList& params,
 		case ControlFlow::Return:
 			// validate return value
 
-			if ( result->QualifiedOutterface() == NULL_TYPE ) {
+			if (result->QualifiedOuterface() == NULL_TYPE ) {
 				// no type cast necessary for null objects
 			}
-			else if ( method->QualifiedTypename() != VoidObject::TYPENAME && result->QualifiedOutterface() != method->QualifiedTypename() ) {
+			else if ( method->QualifiedTypename() != VoidObject::TYPENAME && result->QualifiedOuterface() != method->QualifiedTypename() ) {
 #ifdef ALLOW_IMPLICIT_CASTS
-				OSwarn("implicit type conversion from " + result->QualifiedOutterface() + " to " + method->QualifiedTypename() + " in " + getTokens().begin()->position().toString());
+				OSwarn("implicit type conversion from " + result->QualifiedOuterface() + " to " + method->QualifiedTypename() + " in " + getTokens().begin()->position().toString());
 
 				typecast(result, method->QualifiedTypename());
 				//typecast(result, Designtime::Parser::buildConstraintTypename(method->QualifiedTypename(), method->getPrototypeConstraints()));
@@ -1316,7 +1316,7 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 		}
 
 		params.push_back(
-			Parameter(obj->getName(), obj->QualifiedOutterface(), obj->getValue(), false, obj->isConst(), Parameter::AccessMode::Unspecified, obj->getReference())
+			Parameter(obj->getName(), obj->QualifiedOuterface(), obj->getValue(), false, obj->isConst(), Parameter::AccessMode::Unspecified, obj->getReference())
 		);
 
 		if ( std::distance(tmp, closed) <= 0 ) {
@@ -1428,7 +1428,7 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 		}
 
 		params.push_back(
-			Parameter(obj->getName(), obj->QualifiedOutterface(), obj->getValue(), false, obj->isConst(), Parameter::AccessMode::Unspecified, obj->getReference())
+			Parameter(obj->getName(), obj->QualifiedOuterface(), obj->getValue(), false, obj->isConst(), Parameter::AccessMode::Unspecified, obj->getReference())
 		);
 
 		if ( std::distance(tmp, closed) <= 0 ) {

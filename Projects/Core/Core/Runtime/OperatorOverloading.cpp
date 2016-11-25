@@ -348,7 +348,7 @@ bool operator_binary_equal(Object *base, Object *other)
 
 	params.clear();
 	params.push_back(
-		Parameter(other->getName(), other->QualifiedOutterface(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
+		Parameter(other->getName(), other->QualifiedOuterface(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
 	);
 
 	if ( base->resolveMethod("operator==", params, false, Visibility::Public) ) {

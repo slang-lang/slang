@@ -41,7 +41,6 @@ namespace Runtime {
 class Method;
 class Object;
 
-
 class Object : public MethodScope,
 			   public ObjectSymbol
 {
@@ -58,13 +57,11 @@ public:
 
 public:	// Symbol::IType implementation & RTTI
 	const std::string& Filename() const { return mFilename; }
-	const std::string& Outterface() const { return mOutterface; }
-	const std::string& QualifiedOutterface() const { return mQualifiedOutterface; }
+	const std::string& QualifiedOuterface() const { return mQualifiedOuterface; }
 	const std::string& QualifiedTypename() const { return mQualifiedTypename; }
 	const std::string& Typename() const { return mTypename; }
 
-	void setOutterface(const std::string& type) { mOutterface = type; }
-	void setQualifiedOutterface(const std::string& type) { mQualifiedOutterface = type; }
+	void setQualifiedOuterface(const std::string &type) { mQualifiedOuterface = type; }
 	void setQualifiedTypename(const std::string& type) { mQualifiedTypename = type; }
 	void setTypename(const std::string &type) { mTypename = type; }
 
@@ -146,8 +143,7 @@ protected:
 	bool mIsAtomicType;
 	bool mIsConstructed;
 	bool mIsNull;
-	std::string mOutterface;
-	std::string mQualifiedOutterface;
+	std::string mQualifiedOuterface;
 	std::string mQualifiedTypename;
 	Reference mReference;
 	Object* mThis;

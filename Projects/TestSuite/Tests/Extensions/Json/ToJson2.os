@@ -4,38 +4,38 @@ import System.Exception;
 import System.IO.File;
 
 public object TestObject {
-	private string mName;
-	private int mType;
+	public string mName;
+	public int mType;
 
-	public void TestObject() {
+	public void Constructor() {
 		mName = "";
 		mType = 0;
 	}
 
-	public void TestObject(string name, int type) {
+	public void Constructor(string name, int type) {
 		mName = name;
 		mType = type;
 	}
 }
 
 public object DerivedObject extends TestObject {
-	private bool mFlag;
+	public bool mFlag;
 
-	public void DerivedObject() {
-		base.TestObject();
+	public void Constructor() {
+		base.Constructor();
 
 		mFlag = false;
 	}
 
-	public void DerivedObject(string name, int type, bool flag) {
-		base.TestObject(name, type);
+	public void Constructor(string name, int type, bool flag) {
+		base.Constructor(name, type);
 
 		mFlag = flag;
 	}
 }
 
 public object ExtendedObject extends DerivedObject {
-	private float mFloat;
+	public float mFloat;
 }
 
 public void Main(int argc, string argv) {
@@ -61,11 +61,11 @@ private bool TestCase2() const {
 
 	TestObject test = new TestObject("MeinName", 1731389);
 
-	string json = ToJsonString(Object test);
+	string json = ToJsonString(test);
 	writeln("json = " + json);
 
-	TestObject obj2;
-	FromJsonString(Object obj2, json);
+	TestObject obj2 = new TestObject();
+	FromJsonString(obj2, json);
 
 	writeln("obj2={" + obj2.mName + "," + obj2.mType + "}");
 
@@ -79,10 +79,10 @@ private bool TestCase3() const {
 
 	Exception ex = new System.Exception("this is an exception");
 
-	writeln(ToJsonString(Object ex));
+	writeln(ToJsonString(ex));
 
-	File file;
-	writeln(ToJsonString(Object file));
+	System.IO.File file = new System.IO.File();
+	writeln(ToJsonString(file));
 
 	writeln("");
 
@@ -94,11 +94,11 @@ private bool TestCase4() const {
 
 	DerivedObject derived = new DerivedObject("derived", 173, true);
 
-	string json = ToJsonString(Object derived);
+	string json = ToJsonString(derived);
 	writeln("json = " + json);
 
-	DerivedObject generated;
-	FromJsonString(Object generated, json);
+	DerivedObject generated = new DerivedObject();
+	FromJsonString(generated, json);
 
 	writeln("generated={" + generated.mName + "," + generated.mType + "," + generated.mFlag + "}");
 
@@ -109,7 +109,7 @@ private bool TestCase4() const {
 
 private bool Test_FromJson() const {
 	TestObject obj = new TestObject();
-	FromJsonString(Object obj, "{ \"mName\": \"test\" }");
+	FromJsonString(obj, "{ \"mName\": \"test\" }");
 
 	writeln("obj={" + obj.mName + "," + obj.mType + "}");
 
@@ -119,7 +119,7 @@ private bool Test_FromJson() const {
 private bool Test_ToJson() const {
 	TestObject obj = new TestObject("test", 17);
 
-	writeln("ToJson(obj) = " + ToJsonString(Object obj));
+	writeln("ToJson(obj) = " + ToJsonString(obj));
 
 	return true;
 }

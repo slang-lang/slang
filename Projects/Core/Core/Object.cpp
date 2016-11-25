@@ -29,8 +29,7 @@ Object::Object()
   mIsAtomicType(false),
   mIsConstructed(false),
   mIsNull(false),
-  mOutterface(ANONYMOUS_OBJECT),
-  mQualifiedOutterface(ANONYMOUS_OBJECT),
+  mQualifiedOuterface(ANONYMOUS_OBJECT),
   mQualifiedTypename(ANONYMOUS_OBJECT),
   mTypename(ANONYMOUS_OBJECT)
 {
@@ -58,8 +57,7 @@ Object::Object(const Object& other)
 	mScopeType = other.mScopeType;
 	mValue = other.mValue;
 
-	mOutterface = other.mOutterface;
-	mQualifiedOutterface = other.mQualifiedOutterface;
+	mQualifiedOuterface = other.mQualifiedOuterface;
 	mQualifiedTypename = other.mQualifiedTypename;
 	mTypename = other.mTypename;
 
@@ -80,8 +78,7 @@ Object::Object(const std::string& name, const std::string& filename, const std::
   mIsAtomicType(false),
   mIsConstructed(false),
   mIsNull(false),
-  mOutterface(type),
-  mQualifiedOutterface(type),
+  mQualifiedOuterface(type),
   mQualifiedTypename(type),
   mTypename(type),
   mValue(value)
@@ -118,8 +115,7 @@ void Object::operator= (const Object& other)
 		mScopeType = other.mScopeType;
 		mValue = other.mValue;
 
-		mOutterface = other.mOutterface;
-		mQualifiedOutterface = other.mQualifiedOutterface;
+		mQualifiedOuterface = other.mQualifiedOuterface;
 		mQualifiedTypename = other.mQualifiedTypename;
 		mTypename = other.mTypename;
 
@@ -148,9 +144,8 @@ void Object::assign(const Object& other, bool overrideType)
 		mScopeType = other.mScopeType;
 		mValue = other.mValue;
 
-		if ( mQualifiedOutterface == NULL_TYPE || overrideType ) {
-			mOutterface = other.mOutterface;
-			mQualifiedOutterface = other.mQualifiedOutterface;
+		if ( mQualifiedOuterface == NULL_TYPE || overrideType ) {
+			mQualifiedOuterface = other.mQualifiedOuterface;
 		}
 		mQualifiedTypename = other.mQualifiedTypename;
 		mTypename = other.mTypename;
@@ -283,9 +278,8 @@ void Object::copy(const Object& other)
 		mIsAtomicType = other.mIsAtomicType;
 		mIsConstructed = other.mIsConstructed;// ? other.mIsConstructed : mIsConstructed;
 		mFilename = other.mFilename;
-		mOutterface = other.mTypename;
 		mParent = other.mParent ? other.mParent : mParent;
-		mQualifiedOutterface = other.mQualifiedTypename;
+		mQualifiedOuterface = other.mQualifiedTypename;
 		mQualifiedTypename = other.mQualifiedTypename;
 		mScopeName = other.mScopeName;
 		mScopeType = other.mScopeType;

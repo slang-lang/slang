@@ -314,7 +314,7 @@ Runtime::Object* Repository::createInstance(Designtime::BluePrintGeneric* bluepr
 			throw Common::Exceptions::AbstractException("cannot instantiate abstract object '" + constraintType + "'");
 		}
 
-		// TODO: verify
+		// TODO: verify me
 		//Controller::Instance().memory()->newObject(object);
 	}
 
@@ -364,9 +364,8 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 	object->setLanguageFeatureState(blueprint->getLanguageFeatureState());
 	object->setMember(blueprint->isMember());
 	object->setMutability(blueprint->getMutability());
-	object->setOutterface(blueprint->Typename());
 	object->setParent(parent);
-	object->setQualifiedOutterface(blueprint->QualifiedTypename());
+	object->setQualifiedOuterface(blueprint->QualifiedTypename());
 	object->setQualifiedTypename(blueprint->QualifiedTypename());
 	object->setVisibility(blueprint->getVisibility());
 
