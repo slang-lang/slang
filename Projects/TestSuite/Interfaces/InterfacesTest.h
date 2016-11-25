@@ -33,6 +33,7 @@ public:
 private:	// Tests
     void testBasicInterfaces();
 	void testFail_MethodImplemented();
+	void testInterfaceObject();
 	void testInterfaceAsParameter();
 	void testSlightlyMoreAdvancedTest();
 };
