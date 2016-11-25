@@ -67,8 +67,7 @@ void typecast(Object *base, const std::string& targetType)
 			throw Runtime::Exceptions::InvalidTypeCast(targetType + " does not belong to " + base->QualifiedTypename() + " object hierarchy");
 		}
 
-		base->setOutterface(targetType);
-		base->setQualifiedOutterface(targetType);
+		base->setQualifiedOuterface(targetType);
 	}
 }
 }

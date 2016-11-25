@@ -56,7 +56,7 @@ void UserObject::operator_assign(const Object *other)
 	if ( isConstructed() ) {
 		ParameterList params;
 		params.push_back(
-			Parameter(ANONYMOUS_OBJECT, other->QualifiedOutterface(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByValue, other->getReference())
+			Parameter(ANONYMOUS_OBJECT, other->QualifiedOuterface(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByValue, other->getReference())
 		);
 
 		::ObjectiveScript::MethodSymbol* operator_method = resolveMethod("operator=", params, true, Visibility::Private);
