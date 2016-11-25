@@ -206,7 +206,7 @@ void MethodScope::undefineMethod(Runtime::Method* method)
 {
 	assert(method);
 
-	undefine(method->getName(), method);
+	undefine(method->getName());
 
 	MethodCollection::const_iterator it = mMethods.find(method);
 	if ( it != mMethods.end() ) {

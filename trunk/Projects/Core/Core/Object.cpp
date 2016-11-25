@@ -407,7 +407,7 @@ bool Object::FromJson(const Json::Value& value)
 void Object::garbageCollector()
 {
 	for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
-		undefine((*it)->getName(), (*it));
+		undefine((*it)->getName());
 
 		delete (*it);
 	}

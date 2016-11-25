@@ -283,10 +283,6 @@
 			>
 		</File>
 		<File
-			RelativePath=".\JSON\FromJson.cpp"
-			>
-		</File>
-		<File
 			RelativePath=".\JSON\FromJson.h"
 			>
 		</File>
@@ -588,10 +584,6 @@
 		</File>
 		<File
 			RelativePath=".\System\SystemExtension.h"
-			>
-		</File>
-		<File
-			RelativePath=".\JSON\ToJson.cpp"
 			>
 		</File>
 		<File
