@@ -4,7 +4,7 @@ import System.Exception;
 
 public namespace System { }
 
-public object GenericIterator<T: Object> {
+public object GenericIterator<T> {
 	private IGenericCollection mCollection;
 	private int mCurrentIndex;
 

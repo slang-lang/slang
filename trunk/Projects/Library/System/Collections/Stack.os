@@ -20,21 +20,6 @@ public namespace System {
 			return mLast.mValue;
 		}
 
-		public void push(Object value ref) modify {
-			CollectionItem item = new CollectionItem(value);
-
-			if ( mSize == 0 ) {		// special handling for 1st item
-				mFirst = item;
-			}
-			else {					// generic handling
-				mLast.mNext = item;
-			}
-
-			mLast = item;
-
-			mSize++;
-		}
-
 		public void pop() modify {
 			if ( mSize <= 0 ) {
 				throw new OutOfBoundsException("stack underflow");
@@ -55,6 +40,21 @@ public namespace System {
 			}
 
 			mSize--;
+		}
+
+		public void push(Object value ref) modify {
+			CollectionItem item = new CollectionItem(value);
+
+			if ( mSize == 0 ) {		// special handling for 1st item
+				mFirst = item;
+			}
+			else {					// generic handling
+				mLast.mNext = item;
+			}
+
+			mLast = item;
+
+			mSize++;
 		}
 	}
 
