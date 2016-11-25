@@ -307,7 +307,7 @@ private bool TestCase9() const {
 		GenericIterator<int> it = stack.getIterator();
 
 		while ( it.hasNext() ) {
-			it.next();
+			it++;
 
 			//print(it.current());
 		}

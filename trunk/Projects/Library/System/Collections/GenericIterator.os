@@ -47,6 +47,22 @@ public object GenericIterator<T: Object> {
 	public T =operator(T none) const {
 		return current();
 	}
+
+	public void operator++() modify {
+		if ( !hasNext() ) {
+			throw new OutOfBoundsException("index out of bounds");
+		}
+
+		mCurrentIndex++;
+	}
+
+	public void operator--() modify {
+		if ( mCurrentIndex <= 0 ) {
+			throw new OutOfBoundsException("index out of bounds");
+		}
+
+		mCurrentIndex--;
+	}
 }
 
 public object GenericReverseIterator<T: Object> {
@@ -91,5 +107,21 @@ public object GenericReverseIterator<T: Object> {
 
 	public T =operator(T none) const {
 		return current();
+	}
+
+	public void operator++() modify {
+		if ( mCurrentIndex <= 0 ) {
+			throw new OutOfBoundsException("index out of bounds");
+		}
+
+		mCurrentIndex--;
+	}
+
+	public void operator--() modify {
+		if ( !hasNext() ) {
+			throw new OutOfBoundsException("index out of bounds");
+		}
+
+		mCurrentIndex++;
 	}
 }

@@ -34,13 +34,12 @@ public object GenericStack<T: Object> implements IGenericCollection {
     }
 
     public void clear() modify {
-        for ( int i = 0; i < mSize; i = i++ ) {
-            //mFirst.mValue = null;
+        while ( mSize > 0 ) {
             mFirst = mFirst.mNext;
+            mSize--;
         }
 
         mFirst = null;
-        mSize = 0;
     }
 
     public bool contains(T value) const {
