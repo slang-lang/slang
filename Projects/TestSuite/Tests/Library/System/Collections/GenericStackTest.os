@@ -15,6 +15,7 @@ public void Main(int argc = 0, string args = "") const {
 	assert( TestCase6() );
 	assert( TestCase7() );
 	assert( TestCase8() );
+	assert( TestCase9() );
 }
 
 private bool TestCase1() const {
@@ -289,5 +290,39 @@ private bool TestCase8() const {
 	}
 
 	return true;
+}
+
+private bool TestCase9() const {
+	print("TestCase 9: clear");
+
+	try {
+		GenericStack<int> stack = new GenericStack<int>();
+
+		stack.push(1);
+		stack.push(2);
+		stack.push(3);
+
+		assert( stack.size() == 3 );
+
+		GenericIterator<int> it = stack.getIterator();
+
+		while ( it.hasNext() ) {
+			it.next();
+
+			//print(it.current());
+		}
+
+		stack.clear();
+
+		assert( stack.size() == 0 );
+		assert( stack.empty() );
+
+		return true;
+	}
+	catch {
+		return false;
+	}
+
+	return false;
 }
 

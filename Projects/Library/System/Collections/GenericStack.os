@@ -39,6 +39,7 @@ public object GenericStack<T: Object> implements IGenericCollection {
             mFirst = mFirst.mNext;
         }
 
+        mFirst = null;
         mSize = 0;
     }
 
