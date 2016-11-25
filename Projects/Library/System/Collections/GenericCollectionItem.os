@@ -1,7 +1,7 @@
 
 public namespace System { }
 
-public object GenericCollectionItem<T: Object> {
+public object GenericCollectionItem<T> {
     public GenericCollectionItem<T> mNext;
     public GenericCollectionItem<T> mPrevious;
     public T mValue;

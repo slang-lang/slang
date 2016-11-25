@@ -8,7 +8,7 @@ import System.Exception;
 
 public namespace System { }
 
-public object GenericStack<T: Object> implements IGenericCollection {
+public object GenericStack<T> implements IGenericCollection {
     private GenericCollectionItem<T> mFirst;
     private GenericCollectionItem<T> mLast;
     private int mSize = 0;
