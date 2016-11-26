@@ -13,6 +13,7 @@
 #include <Core/Attributes/Attributes.h>
 #include <Core/Designtime/Ancestor.h>
 #include <Core/Designtime/BluePrintObject.h>
+#include <Core/Designtime/Parser/Token.h>
 #include <Core/Runtime/AtomicValue.h>
 #include <Core/Runtime/ControlFlow.h>
 #include "Interpreter.h"
@@ -21,7 +22,6 @@
 #include "Reference.h"
 #include "Scope.h"
 #include "Symbol.h"
-#include "Token.h"
 #include "Types.h"
 
 // Forward declarations

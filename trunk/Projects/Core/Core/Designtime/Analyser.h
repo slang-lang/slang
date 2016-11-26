@@ -8,7 +8,7 @@
 
 // Project includes
 #include <Core/Common/TypeDeclaration.h>
-#include <Core/Token.h>
+#include <Core/Designtime/Parser/Token.h>
 #include "Ancestor.h"
 #include "BluePrintObject.h"
 #include "BluePrintEnum.h"

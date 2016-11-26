@@ -17,7 +17,6 @@ SET(SOURCES
 	Reference.cpp
 	Scope.cpp
 	Symbol.cpp
-	Token.cpp
 	Tools.cpp
 	Types.cpp
 )
@@ -33,7 +32,6 @@ SET(HEADERS
 	Reference.h
 	Scope.h
 	Symbol.h
-	Token.h
 	Tools.h
 	Types.h
 )
