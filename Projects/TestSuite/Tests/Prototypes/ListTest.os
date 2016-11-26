@@ -68,6 +68,9 @@ private bool TestCase2() {
 	strings.push_back("O173O");
 	print(strings.peek());
 
+	strings.push_back("O1389O");
+	print(strings.peek());
+
 	return true;
 }
 
