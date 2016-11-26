@@ -13,7 +13,7 @@
 #include <Core/Common/TypeDeclaration.h>
 #include <Core/Designtime/Ancestor.h>
 #include <Core/Parameter.h>
-#include <Core/Token.h>
+#include "Token.h"
 
 // Forward declarations
 

@@ -2,11 +2,13 @@ INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
 SET(SOURCES
 	Parser.cpp
+	Token.cpp
 	Tokenizer.cpp
 )
 
 SET(HEADERS
 	Parser.h
+	Token.h
 	Tokenizer.h
 )
 

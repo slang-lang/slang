@@ -7,12 +7,12 @@
 #include <list>
 
 // Project includes
+#include <Core/Designtime/Parser/Token.h>
 #include <Core/Runtime/ControlFlow.h>
 #include <Core/Runtime/ExceptionData.h>
 #include <Core/VirtualMachine/Stack.h>
 #include "Parameter.h"
 #include "Scope.h"
-#include "Token.h"
 
 // Forward declarations
 

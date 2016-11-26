@@ -9,9 +9,9 @@
 #include <string>
 
 // Project includes
+#include <Core/Designtime/Parser/Token.h>
 #include "Parameter.h"
 #include "Reference.h"
-#include "Token.h"
 
 // Forward declarations
 
