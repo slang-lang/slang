@@ -16,6 +16,7 @@ public void Main(int argc = 0, string args = "") const {
 	assert( TestCase7() );
 	assert( TestCase8() );
 	assert( TestCase9() );
+	assert( TestCase10() );
 }
 
 private bool TestCase1() const {
@@ -319,8 +320,27 @@ private bool TestCase9() const {
 
 		return true;
 	}
-	catch {
-		return false;
+
+	return false;
+}
+
+private bool TestCase10() const {
+	print("TestCase 10: foreach");
+
+	try {
+		GenericStack<int> stack = new GenericStack<int>();
+
+		stack.push(1);
+		stack.push(2);
+		stack.push(3);
+
+		assert( stack.size() == 3 );
+
+		foreach ( int i : stack ) {
+			//print(i);
+		}
+
+		return true;
 	}
 
 	return false;

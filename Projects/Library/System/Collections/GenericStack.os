@@ -8,7 +8,7 @@ import System.Exception;
 
 public namespace System { }
 
-public object GenericStack<T> implements IGenericCollection {
+public object GenericStack<T> implements System.IIterateable, IGenericCollection {
     private GenericCollectionItem<T> mFirst;
     private GenericCollectionItem<T> mLast;
     private int mSize = 0;

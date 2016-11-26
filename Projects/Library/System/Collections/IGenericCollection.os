@@ -1,8 +1,6 @@
 
-import IIterateable;
-
 public namespace System { }
 
-public interface IGenericCollection {
-    public Object at(int index) const;
+public interface IGenericCollection<T> {
+    public T at(int index) const;
 }
