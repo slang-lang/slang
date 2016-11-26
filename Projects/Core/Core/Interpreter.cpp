@@ -306,13 +306,22 @@ inline Symbol* Interpreter::identify(TokenIterator& token) const
 	Symbol *result = 0;
 	bool onlyCurrentScope = false;
 	std::string prev_identifier;	// hack to allow special 'this'-handling
-	PrototypeConstraints constraints;
 
 	while ( token->type() == Token::Type::IDENTIFER || token->type() == Token::Type::TYPE ) {
 		std::string identifier = token->content();
 
 		if ( !result ) {
 			result = getScope()->resolve(identifier, onlyCurrentScope, Visibility::Private);
+
+/*
+			if ( dynamic_cast<Designtime::BluePrintGeneric*>(result) && !dynamic_cast<Designtime::BluePrintGeneric*>(result)->getPrototypeConstraints().empty() ) {
+				token++;
+
+				PrototypeConstraints constraints = Designtime::Parser::collectPrototypeConstraints(token);
+
+				result = getScope()->resolve(Designtime::Parser::buildConstraintTypename(identifier, constraints), onlyCurrentScope, Visibility::Private);
+			}
+*/
 
 			prev_identifier = identifier;
 
@@ -702,8 +711,12 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 					break;
 				case Symbol::IType::BluePrintEnumSymbol:
 				case Symbol::IType::BluePrintObjectSymbol: {
-					std::string newType = dynamic_cast<Designtime::BluePrintGeneric*>(symbol)->QualifiedTypename();
 					start++;
+
+					PrototypeConstraints constraints = Designtime::Parser::collectPrototypeConstraints(start);
+
+					std::string newType = dynamic_cast<Designtime::BluePrintGeneric*>(symbol)->QualifiedTypename();
+								newType = Designtime::Parser::buildConstraintTypename(newType, constraints);
 
 					Object tmp;
 					expression(&tmp, start);
@@ -1875,14 +1888,12 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol)
 {
 	bool isConst = false;
 	bool isFinal = false;
-	std::string name;
-	PrototypeConstraints constraints;
 
 	token++;
 
-	constraints = Designtime::Parser::collectPrototypeConstraints(token);
+	PrototypeConstraints constraints = Designtime::Parser::collectPrototypeConstraints(token);
 
-	name = token->content();
+	std::string name = token->content();
 
 	expect(Token::Type::IDENTIFER, token);
 
