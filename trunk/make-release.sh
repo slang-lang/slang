@@ -1,5 +1,5 @@
 
-EXCLUDES="--exclude=*.sh"
+EXCLUDES="--exclude=*.sh --exclude=cmake-build*"
 RELEASE="ObjectiveScript-`cat version`_`svnversion`.tar.gz"
 
 echo "Packing files for release ${RELEASE} ..."
