@@ -46,7 +46,6 @@ public:
 	bool hasDefaultValue() const;
 	bool isConst() const;
 	const std::string& name() const;
-	Runtime::Object* pointer() const;
 	const Reference& reference() const;
 	const std::string& type() const;
 	Runtime::AtomicValue value() const;
@@ -56,7 +55,6 @@ private:
 	bool mHasDefaultValue;
 	bool mIsConst;
 	std::string mName;
-	Runtime::Object* mPointer;
 	Reference mReference;
 	std::string mType;
 	Runtime::AtomicValue mValue;

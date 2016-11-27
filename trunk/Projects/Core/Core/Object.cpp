@@ -746,19 +746,10 @@ bool Object::operator_greater_equal(const Object *other)
 	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator>=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
-bool Object::operator_is(const Symbol *other)
+bool Object::operator_is(const std::string& type)
 {
-	if ( !other ) {
+	if ( type.empty() ) {
 		return false;
-	}
-
-	std::string type;
-
-	if ( other->getSymbolType() == Symbol::IType::BluePrintEnumSymbol || other->getSymbolType() == Symbol::IType::BluePrintObjectSymbol ) {
-		type = static_cast<const Designtime::BluePrintGeneric*>(other)->QualifiedTypename();
-	}
-	else if ( other->getSymbolType() == Symbol::IType::ObjectSymbol ) {
-		type = static_cast<const Object*>(other)->QualifiedTypename();
 	}
 
 	if ( mThis ) {

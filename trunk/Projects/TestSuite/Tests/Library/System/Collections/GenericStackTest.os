@@ -221,6 +221,9 @@ private bool TestCase6() const {
 	try {
 		GenericStack<Integer> stack = new GenericStack<Integer>();
 		assert( stack is Object );
+		assert( stack is IGenericCollection );
+		assert( stack is System.IIterateable );
+		assert( stack is GenericStack<Integer> );
 
 		stack.push(new Integer(1));
 		stack.push(new Integer(2));
@@ -244,6 +247,7 @@ private bool TestCase7() const {
 	try {
 		GenericStack<Integer> stack = new GenericStack<Integer>();
 		assert( stack is Object );
+		assert( stack is GenericStack<Integer> );
 
 		stack.push(new Integer(1));
 		assert( stack.peek() == 1 );

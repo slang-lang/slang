@@ -9,17 +9,17 @@ public namespace IO {
 		private string mFilename;
 		private int mHandle;
 
-		public void Constructor() modify {
+		public void Constructor() {
 			cleanup();
 		}
 
-		public void Constructor(string filename, string mode) modify {
+		public void Constructor(string filename, string mode) {
 			cleanup();
 
 			open(filename, mode);
 		}
 
-		public void Destructor() modify {
+		public void Destructor() {
 			close();
 		}
 

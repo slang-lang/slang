@@ -40,8 +40,12 @@ private:	// Tests
 	void testBooleanOverloads_Less();
 	void testBooleanOverloads_Less_Equal();
 	void testBooleanOverloads_Unequal();
+	void testIndexOperator();
+	void testInverseOperator();
+	void testIsOperator();
 	void testMathOverloadsWithNumbers();
 	void testMathOverloadsWithObjects();
+	void testUnaryValidate();
 };
 
 

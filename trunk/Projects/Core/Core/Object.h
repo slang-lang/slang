@@ -116,7 +116,7 @@ public:	// Operators
 	virtual bool operator_equal(const Object *other);
 	virtual bool operator_greater(const Object *other);
 	virtual bool operator_greater_equal(const Object *other);
-	virtual bool operator_is(const Symbol *other);
+	virtual bool operator_is(const std::string& type);
 	virtual bool operator_less(const Object *other);
 	virtual bool operator_less_equal(const Object *other);
 	virtual void operator_modulo(const Object *other);

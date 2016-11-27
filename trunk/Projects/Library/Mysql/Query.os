@@ -87,14 +87,14 @@ public namespace Mysql {
 
 			print(queryStr);
 
-                        int irror = mysql_query(mConnection.mHandle, queryStr);
-                        if ( error ) {
-                                // error while query execution
+			int error = mysql_query(mConnection.mHandle, queryStr);
+			if ( error ) {
+					// error while query execution
 				print(mysql_error(mConnection.mHandle));
 				return null;
-                        }
+			}
 
-                        int handle = mysql_store_result(mConnection.mHandle);
+			int handle = mysql_store_result(mConnection.mHandle);
 			return new Mysql.Result(handle);
 		}
 

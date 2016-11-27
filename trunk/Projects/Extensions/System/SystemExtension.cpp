@@ -74,7 +74,7 @@ void SystemExtension::provideMethods(ExtensionMethods &methods)
 	assert(methods.empty());
 
 	// Generic methods
-	methods.push_back(new AssertMsg());
+	methods.push_back(new Assert());
 	methods.push_back(new GetChar());
 	methods.push_back(new GetEnv());
 	methods.push_back(new Sleep());
