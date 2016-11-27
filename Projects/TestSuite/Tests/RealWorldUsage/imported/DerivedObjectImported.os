@@ -11,8 +11,6 @@ public object DerivedObjectImported extends BaseObjectImported {
 	}
 
 	public string ToString() const {
-		//isProtected();
-		//isPrivate();
 		return "DerivedObjectImported extends " + base.ToString();
 	}
 }
