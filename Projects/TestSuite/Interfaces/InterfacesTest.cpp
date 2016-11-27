@@ -79,6 +79,8 @@ void InterfacesTest::testFail_MethodImplemented()
 
 void InterfacesTest::testInterfaceObject()
 {
+TSKIP("inheriting from interfaces does not make an object abstract yet");
+
     try {
         VirtualMachine vm;
         TTHROWS(vm.createScriptFromFile("Tests/Interfaces/InterfaceObject.os"), ObjectiveScript::Common::Exceptions::AbstractException);

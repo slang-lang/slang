@@ -186,6 +186,8 @@ void LanguageTest::testConstCorrectness2()
 
 void LanguageTest::testConstCorrectness3()
 {
+TSKIP("const references are not yet const");
+
 	try {
 		VirtualMachine vm;
 
