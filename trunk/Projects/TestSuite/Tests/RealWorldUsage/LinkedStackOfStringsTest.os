@@ -52,7 +52,7 @@ private bool TestCase2() {
 
 		System.Iterator it = stack.getIterator();
 		while ( it.current() ) {
-			print("" + it.current());
+			print(string it.current());
 
 			if ( !it.hasNext() ) {
 				break;
@@ -64,6 +64,7 @@ private bool TestCase2() {
 		return true;
 	}
 	catch ( string e ) {
+		print(e);
 	}
 	catch ( IOException e ) {
 		print( "IOException: " + e.what());
