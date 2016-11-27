@@ -25,7 +25,7 @@ private bool TestCase1() const {
 
 	value!;
 
-	return true;
+	return value!;
 }
 
 private bool TestCase2() const {

@@ -533,13 +533,13 @@ bool operator_binary_less_equal(Object *base, Object *other)
 	return isTrue(tmp);
 }
 
-bool operator_binary_is(Object* base, Symbol* other)
+bool operator_binary_is(Object* base, const std::string& type)
 {
 	if ( !base /*|| !base->isValid()*/ ) {
 		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object");
 	}
 
-	return base->operator_is(other);
+	return base->operator_is(type);
 }
 
 void operator_binary_modulo(Object *base, Object *other)

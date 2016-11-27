@@ -1,5 +1,4 @@
 
-//import System.GDI.IConnection;
 import Debug;
 import Exceptions;
 import Query;
@@ -7,7 +6,7 @@ import Result;
 import Settings;
 
 public namespace Mysql {
-	public object Connection /*implements System.GDI.IConnection*/ {
+	public object Connection {
 		private string mDatabase;
 		private int mHandle;
 		private string mHostname;

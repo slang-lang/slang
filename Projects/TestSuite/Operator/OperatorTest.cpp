@@ -39,8 +39,12 @@ void OperatorTest::process()
 	TEST(testBooleanOverloads_Less);
 	TEST(testBooleanOverloads_Less_Equal);
 	TEST(testBooleanOverloads_Unequal);
+	TEST(testIndexOperator);
+	TEST(testInverseOperator);
+	TEST(testIsOperator);
 	TEST(testMathOverloadsWithNumbers);
 	TEST(testMathOverloadsWithObjects);
+	TEST(testUnaryValidate);
 }
 
 void OperatorTest::setup()
@@ -177,11 +181,55 @@ void OperatorTest::testBooleanOverloads_Unequal()
 	}
 }
 
+void OperatorTest::testIndexOperator()
+{
+TSKIP("index operator is yet not implemented");
+
+	try {
+		VirtualMachine vm;
+		vm.createScriptFromFile("Tests/Operator/IndexOperatorTest.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void OperatorTest::testInverseOperator()
+{
+	try {
+		VirtualMachine vm;
+		vm.createScriptFromFile("Tests/Operator/InverseOperatorTest.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void OperatorTest::testIsOperator()
+{
+	try {
+		VirtualMachine vm;
+		vm.createScriptFromFile("Tests/Operator/BooleanOverloads_Unequal.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
 void OperatorTest::testMathOverloadsWithNumbers()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/Operator/MathOverloadsWithNumbers.os");
+		vm.createScriptFromFile("Tests/Operator/IsOperatorTest.os");
 
 		// automatic success
 	}
@@ -196,6 +244,22 @@ void OperatorTest::testMathOverloadsWithObjects()
 	try {
 		VirtualMachine vm;
 		vm.createScriptFromFile("Tests/Operator/MathOverloadsWithObjects.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void OperatorTest::testUnaryValidate()
+{
+TSKIP("unary validate is not yet implemented");
+
+	try {
+		VirtualMachine vm;
+		vm.createScriptFromFile("Tests/Operator/UnaryValidate.os");
 
 		// automatic success
 	}

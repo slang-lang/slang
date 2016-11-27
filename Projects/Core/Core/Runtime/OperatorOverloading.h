@@ -4,6 +4,7 @@
 
 
 // Library includes
+#include <string>
 
 // Project includes
 
@@ -32,7 +33,7 @@ bool operator_binary_greater(Object *base, Object *other);
 bool operator_binary_greater_equal(Object *base, Object *other);
 bool operator_binary_less(Object *base, Object *other);
 bool operator_binary_less_equal(Object *base, Object *other);
-bool operator_binary_is(Object* base, Symbol* other);
+bool operator_binary_is(Object* base, const std::string& type);
 void operator_binary_modulo(Object *base, Object *other);
 void operator_binary_multiply(Object *base, Object *other);
 void operator_binary_plus(Object *base, Object *other);

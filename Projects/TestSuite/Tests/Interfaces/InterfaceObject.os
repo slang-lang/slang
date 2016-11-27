@@ -15,7 +15,7 @@ public object ImplementedObject implements IInterface {
 
 public void Main(int argc = 0, string args = "") {
 	assert( TestCase1() );
-	assert( TestCase2() );
+	assert( TestCase2() );	// this test currently fails
 }
 
 private bool TestCase1() {

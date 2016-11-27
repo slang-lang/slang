@@ -6,13 +6,11 @@
 // Library includes
 
 // Project includes
-#include <Core/Designtime/BuildInTypes/BoolObject.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/Designtime/BuildInTypes/VoidObject.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Tools.h>
-#include <Tools/Strings.h>
 
 // Forward declarations
 
@@ -31,7 +29,7 @@ public:
 	: ExtensionMethod(0, "assert", Designtime::VoidObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter("condition", Designtime::BoolObject::TYPENAME, false));
+		params.push_back(Parameter("condition", VALUE_NONE, false));
 		params.push_back(Parameter("message", Designtime::StringObject::TYPENAME, VALUE_NONE, true));
 
 		setSignature(params);
@@ -39,42 +37,30 @@ public:
 
 	Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* /*result*/, const Token& token)
 	{
-		Runtime::Object condition = *params.front().pointer();
-		std::string text;
+		ParameterList list = mergeParameters(params);
 
-		if ( params.size() == 2 ) {
-			text = "with message \"" + params.back().value().toStdString() + "\"";
+		ParameterList::const_iterator it = list.begin();
+
+		Reference param_reference = (*it).reference();
+		Runtime::AtomicValue param_value = (*it++).value();
+		std::string param_text = (*it++).value().toStdString();
+
+		bool success = false;
+
+		if ( param_reference.isValid() ) {
+			Runtime::Object* condition = Controller::Instance().memory()->get(param_reference);
+
+			success = isTrue(condition);
+		}
+		else {
+			Runtime::Object tmp;
+			tmp.setValue(param_value);
+
+			success = isTrue(tmp);
 		}
 
-		if ( !isTrue(condition) ) {
-			throw Runtime::Exceptions::AssertionFailed(text, token.position());
-		}
-
-		return Runtime::ControlFlow::Normal;
-	}
-};
-
-
-class AssertMsg : public ExtensionMethod
-{
-public:
-	AssertMsg()
-	: ExtensionMethod(0, "assertmsg", Designtime::VoidObject::TYPENAME)
-	{
-		ParameterList params;
-		params.push_back(Parameter("condition", Designtime::BoolObject::TYPENAME, false));
-		params.push_back(Parameter("message", Designtime::StringObject::TYPENAME, VALUE_NONE));
-
-		setSignature(params);
-	}
-
-	Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* /*result*/, const Token& token)
-	{
-		Runtime::Object condition = *params.front().pointer();
-		std::string msg = params.back().value().toStdString();
-
-		if ( !isTrue(condition) ) {
-			throw Runtime::Exceptions::AssertionFailed("failed with message \"" + msg + "\"", token.position());
+		if ( !success ) {
+			throw Runtime::Exceptions::AssertionFailed(param_text, token.position());
 		}
 
 		return Runtime::ControlFlow::Normal;

@@ -15,8 +15,7 @@ namespace ObjectiveScript {
 Parameter::Parameter()
 : mAccessMode(AccessMode::Unspecified),
   mHasDefaultValue(false),
-  mIsConst(false),
-  mPointer(0)
+  mIsConst(false)
 {
 }
 
@@ -26,7 +25,6 @@ Parameter::Parameter(const std::string& name, const std::string& type, Runtime::
   mHasDefaultValue(hasDefaultValue),
   mIsConst(isConst),
   mName(name),
-  mPointer(0),
   mReference(reference),
   mType(type),
   mValue(value)
@@ -51,11 +49,6 @@ bool Parameter::isConst() const
 const std::string& Parameter::name() const
 {
 	return mName;
-}
-
-Runtime::Object* Parameter::pointer() const
-{
-	return mPointer;
 }
 
 const Reference& Parameter::reference() const

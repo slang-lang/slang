@@ -97,7 +97,7 @@ void Application::printUsage()
 
 void Application::printVersion()
 {
-	std::cout << "ObjectiveScript Debugger 0.5.3 (cli)" << std::endl;
+	std::cout << "ObjectiveScript Debugger 0.5.4 (cli)" << std::endl;
 	std::cout << "Copyright (c) 2014-2016 Michael Adelmann" << std::endl;
 	std::cout << "" << std::endl;
 }

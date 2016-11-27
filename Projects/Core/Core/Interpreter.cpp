@@ -648,9 +648,24 @@ void Interpreter::parseInfixPostfix(Object *result, TokenIterator& start)
 				throw Common::Exceptions::UnknownIdentifer("unkown identifier '" + start->content() + "' found", start->position());
 			}
 
-			*result = BoolObject(operator_binary_is(result, symbol));
-
 			start++;
+
+			std::string compareType;
+
+			if ( symbol->getSymbolType() == Symbol::IType::ObjectSymbol ) {
+				compareType = static_cast<Object*>(symbol)->QualifiedTypename();
+			}
+			else if ( symbol->getSymbolType() == Symbol::IType::BluePrintEnumSymbol || symbol->getSymbolType() == Symbol::IType::BluePrintObjectSymbol ) {
+				PrototypeConstraints constraints = Designtime::Parser::collectPrototypeConstraints(start);
+
+				compareType = dynamic_cast<Designtime::BluePrintGeneric*>(symbol)->QualifiedTypename();
+				compareType = Designtime::Parser::buildConstraintTypename(compareType, constraints);
+			}
+			else {
+				throw Common::Exceptions::SyntaxError("invalid symbol type found", start->position());
+			}
+
+			*result = BoolObject(operator_binary_is(result, compareType));
 		} break;
 		case Token::Type::OPERATOR_NOT: {
 			operator_unary_validate(result);

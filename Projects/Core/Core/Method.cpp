@@ -184,10 +184,6 @@ ParameterList Method::mergeParameters(const ParameterList& params) const
 		if ( paramIt != params.end() ) {
 			Reference ref = paramIt->reference();
 
-			if ( !ref.isValid() && paramIt->pointer() ) {
-				ref = paramIt->pointer()->getReference();
-			}
-
 			// override parameter with correct value
 			param = Parameter(sigIt->name(), sigIt->type(), paramIt->value(), sigIt->hasDefaultValue(), sigIt->isConst(), sigIt->access(), ref);
 			// next iteration
