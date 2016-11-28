@@ -5,7 +5,6 @@
 // Library includes
 
 // Project includes
-#include <Core/Common/Position.h>
 #include <Core/Consts.h>
 #include <Core/Tools.h>
 
@@ -24,7 +23,6 @@ Tokenizer::Tokenizer(const std::string& filename, const std::string& content)
 : mContent(content),
   mFilename(filename)
 {
-	mIdentifiers = providePredefinedIdentifiers();
 	mLanguageFeatures = provideLanguageFeatures();
 	mKeywords = provideKeyWords();
 	mModifiers = provideModifiers();
@@ -32,34 +30,7 @@ Tokenizer::Tokenizer(const std::string& filename, const std::string& content)
 	mTypes = provideAtomicTypes();
 }
 
-void Tokenizer::addIdentifier(const std::string& identifier)
-{
-	if ( mIdentifiers.find(identifier) != mIdentifiers.end() ) {
-		mIdentifiers.insert(identifier);
-	}
-}
-
-void Tokenizer::addToken(const Token& token)
-{
-	if ( token.content().empty() && token.type() == Token::Type::UNKNOWN ) {
-		// ignore this non-existing token
-		return;
-	}
-
-	// only add valid tokens to our token list
-	mTokens.push_back(token);
-}
-
-void Tokenizer::addType(const std::string& type)
-{
-	if ( mTypes.find(type) != mTypes.end() ) {
-		return;
-	}
-
-	mTypes.insert(type);
-}
-
-Token Tokenizer::createToken(const std::string& con, const Common::Position& position)
+void Tokenizer::addToken(const std::string &con, const Common::Position &position)
 {
 	std::string content = con;
 
@@ -100,7 +71,6 @@ Token Tokenizer::createToken(const std::string& con, const Common::Position& pos
 		// remove trailing 'f' character
 		content = con.substr(0, con.length() - 1);
 	}
-	else if ( isIdentifer(content) ) { category = Token::Category::Identifier; type = Token::Type::IDENTIFER; }
 	else if ( isInteger(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_INTEGER; }
 	else if ( isIntegerWithType(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_INTEGER;
 		// remove trailing 'i' character
@@ -120,17 +90,24 @@ Token Tokenizer::createToken(const std::string& con, const Common::Position& pos
 
 	Token token(category, type, content, position);
 	token.setOptional(category == Token::Category::Modifier || type == Token::Type::LANGUAGEFEATURE);
-	return token;
+
+	mTokens.push_back(token);
+}
+
+void Tokenizer::addToken(const Token& token)
+{
+	if ( token.content().empty() && token.type() == Token::Type::UNKNOWN ) {
+		// ignore this non-existing token
+		return;
+	}
+
+	// only add valid tokens to our token list
+	mTokens.push_back(token);
 }
 
 bool Tokenizer::isBoolean(const std::string& token) const
 {
 	return ( token == BOOL_FALSE || token == BOOL_TRUE );
-}
-
-bool Tokenizer::isDefined(const std::string& token) const
-{
-	return mDefines.find(token) != mDefines.end();
 }
 
 bool Tokenizer::isDouble(const std::string& token) const
@@ -187,11 +164,6 @@ bool Tokenizer::isFloat(const std::string& token) const
 
 	// the last char of our token has to be an 'f'
 	return token[token.size() - 1] == 'f';
-}
-
-bool Tokenizer::isIdentifer(const std::string& token) const
-{
-	return mIdentifiers.find(token) != mIdentifiers.end();
 }
 
 bool Tokenizer::isInteger(const std::string& token) const
@@ -262,11 +234,11 @@ bool Tokenizer::isLanguageFeature(const std::string& token) const
 bool Tokenizer::isLiteral(const std::string& token) const
 {
 	if ( token.size() > 1 ) {
-		// double quotated literals
+		// double quoted literals
 		if ( (token.at(0) == '"' && token.at(token.size() - 1) == '"')) {
 			return true;
 		}
-		// single quotated literals
+		// single quoted literals
 		if ( (token.at(0) == '\'' && token.at(token.size() - 1) == '\'') ) {
 			return true;
 		}
@@ -278,34 +250,6 @@ bool Tokenizer::isLiteral(const std::string& token) const
 bool Tokenizer::isModifier(const std::string& token) const
 {
 	return mModifiers.find(token) != mModifiers.end();
-}
-
-bool Tokenizer::isNumber(const std::string& token) const
-{
-	if ( token.size() <= 1 ) {
-		return false;
-	}
-
-	for ( unsigned int c = 0; c < token.size() - 1; c++ ) {
-		switch ( token[c] ) {
-			case '1':
-			case '2':
-			case '3':
-			case '4':
-			case '5':
-			case '6':
-			case '7':
-			case '8':
-			case '9':
-			case '0':
-				break;
-			default:
-				return false;
-		}
-	}
-
-	// the last char of our token has to be an 'n'
-	return token[token.size() - 1] == 'n';
 }
 
 bool Tokenizer::isReservedWord(const std::string& token) const
@@ -421,40 +365,6 @@ void Tokenizer::mergeOtherOperators()
 }
 
 /*
- * mergeDestructors: merges all '~' with their corresponding typename
- */
-void Tokenizer::mergeDestructors()
-{
-	TokenList tmp;
-	Token::Type::E lastType = Token::Type::UNKNOWN;
-	TokenIterator token = mTokens.begin();
-
-	// try to combine all compare tokens
-	while ( token != mTokens.end() ) {
-		bool changed = false;
-		Token::Type::E activeType = token->type();
-
-		if ( (lastType == Token::Type::TILDE) && (activeType == Token::Type::IDENTIFER) ) {
-			// ~<identifier>
-			changed = true;
-			// remove last added token ...
-			tmp.pop_back();
-			// ... and add OR instead
-			tmp.push_back(Token(Token::Category::None, Token::Type::IDENTIFER, "~" + token->content(), token->position()));
-		}
-
-		lastType = token->type();
-		if ( !changed ) {
-			tmp.push_back((*token));
-		}
-
-		token++;
-	}
-
-	mTokens = tmp;
-}
-
-/*
  * mergeInfixPostfixOperators: merges all pairs of + or - operators together (i.e. '+' '+' become '++')
  */
 void Tokenizer::mergeInfixPostfixOperators()
@@ -499,6 +409,7 @@ void Tokenizer::mergeInfixPostfixOperators()
 void Tokenizer::process()
 {
 	size_t offset = 0;
+	size_t size = mContent.size();
 	std::string token;
 
 	bool isMultiLineComment = false;
@@ -509,7 +420,7 @@ void Tokenizer::process()
 	char lastChar = 0;
 	Common::Position pos(mFilename, 1, 1);
 
-	while ( offset < mContent.size() ) {
+	while ( offset < size ) {
 		char thisChar = mContent[offset++];
 		size_t i = DELIMITERS.find_first_of(thisChar);
 
@@ -546,14 +457,14 @@ void Tokenizer::process()
 						token += thisChar;
 						thisChar = 0;
 					}
-					addToken(createToken(token, pos));
+					addToken(token, pos);
 				}
 
 				token.clear();
 				token = thisChar;
 
 				if ( !token.empty() && token.at(0) != 0 ) {
-					addToken(createToken(token, pos));
+					addToken(token, pos);
 				}
 
 				token.clear();
@@ -587,7 +498,7 @@ void Tokenizer::process()
 	}
 
 	if ( lastChar != 0 ) {
-		addToken(createToken(token, pos));
+		addToken(token, pos);
 	}
 
 	addToken(Token(Token::Type::ENDOFFILE));	// add end of file token
@@ -595,9 +506,8 @@ void Tokenizer::process()
 	removeWhiteSpaces();			// remove all white spaces
 	replaceAssignments();			// replace assignment tokens with compare tokens (if present)
 	mergeBooleanOperators();		// merge '&' '&' into '&&'
-	mergeOtherOperators();			// megre '[' ']' into '[]'
-	mergeDestructors();				// merge '~' & typename into '~<typename>'
 	mergeInfixPostfixOperators();	// merge '+' '+' into '++'
+	mergeOtherOperators();			// merge '[' ']' into '[]'
 	replaceConstDataTypes();		// combines CONST_INTEGER '.' CONST_INTEGER <data type> into a CONST_FLOAT or CONST_DOUBLE
 	replaceOperators();				// combine 'operator' identifiers with the next following token i.e. 'operator' '+' => 'operator+'
 }

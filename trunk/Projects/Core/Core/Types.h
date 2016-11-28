@@ -9,7 +9,6 @@
 #include <string>
 
 // Project includes
-#include <Core/Designtime/Parser/Token.h>
 #include "Parameter.h"
 #include "Reference.h"
 
@@ -29,13 +28,11 @@ std::string toString(const Parameter& param);
 std::string toString(const ParameterList& list);
 std::string toString(const ReferencesList& list);
 std::string toString(const StringList& list);
-std::string toString(const TokenList& list);
 
 StringSet provideAtomicTypes();
 StringSet provideLanguageFeatures();
 StringSet provideKeyWords();
 StringSet provideModifiers();
-StringSet providePredefinedIdentifiers();
 StringSet provideReservedWords();
 
 
