@@ -318,7 +318,7 @@ void LocalClient::executeMethod(const StringList &tokens)
 
 			if ( object ) {
 				params.push_back(Parameter(
-					object->getName(), object->Typename(), object->getValue()
+					object->getName(), object->QualifiedTypename(), object->getValue()
 				));
 			}
 		}
@@ -525,7 +525,7 @@ bool LocalClient::modifySymbol(const StringList& tokens)
 	}
 
 	if ( !object->isAtomicType() ) {
-		writeln("can not modify complex type '" + object->Typename() + "' ");
+		writeln("can not modify complex type '" + object->QualifiedTypename() + "' ");
 		return false;
 	}
 

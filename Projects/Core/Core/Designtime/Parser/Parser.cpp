@@ -315,12 +315,8 @@ bool Parser::isMemberDeclaration(TokenIterator token)
 		token++;
 	}
 
-	if ( token->type() != Token::Type::ASSIGN && token->type() != Token::Type::SEMICOLON ) {
-		// no assignment and no semicolon
-		return false;
-	}
-
-	return true;
+	// check for an assignment or semicolon
+	return token->type() == Token::Type::ASSIGN || token->type() == Token::Type::SEMICOLON;
 }
 
 // syntax:
@@ -362,12 +358,8 @@ bool Parser::isMethodDeclaration(TokenIterator token)
 		token++;
 	}
 
-	if ( token->type() != Token::Type::PARENTHESIS_OPEN ) {
-		// no open parenthesis
-		return false;
-	}
-
-	return true;
+	// check for open parenthesis
+	return token->type() == Token::Type::PARENTHESIS_OPEN;
 }
 
 // namespace declaration:

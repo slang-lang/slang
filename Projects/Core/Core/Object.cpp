@@ -810,7 +810,7 @@ bool Object::operator_less_equal(const Object *other)
 		return operator_less_equal(&tmp);
 	}
 
-	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator<=: conversion from " + other->QualifiedTypename() + " to " + Typename() + " not supported");
+	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator<=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 }
 
 void Object::operator_modulo(const Object *other)
@@ -1057,7 +1057,7 @@ std::string Object::ToString(unsigned int indent) const
 	result += ::Utils::Tools::indent(indent);
 	result += Visibility::convert(mVisibility);
 	result += " " + LanguageFeatureState::convert(mLanguageFeatureState);
-	result += " " + Typename() + " " + getName();
+	result += " " + QualifiedTypename() + " " + getName();
 //	result += " " + Mutability::convert(mMutability);
 
 	if ( isAtomicType() ) {

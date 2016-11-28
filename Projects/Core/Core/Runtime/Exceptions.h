@@ -18,11 +18,11 @@ namespace Runtime {
 namespace Exceptions {
 
 
-class Exception : public ObjectiveScript::Common::Exceptions::Exception
+class Exception : public ::ObjectiveScript::Common::Exceptions::Exception
 {
 public:
 	Exception(const std::string& text, const ObjectiveScript::Common::Position& position = ObjectiveScript::Common::Position())
-	: ObjectiveScript::Common::Exceptions::Exception("Runtime." + text, position)
+	: ::ObjectiveScript::Common::Exceptions::Exception("Runtime." + text, position)
 	{ }
 
 	virtual ~Exception() throw() { }

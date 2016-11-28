@@ -8,7 +8,6 @@
 // Project includes
 #include <Core/Common/Exceptions.h>
 #include <Core/VirtualMachine/Controller.h>
-#include "Method.h"
 #include "Tools.h"
 
 // Namespace declarations

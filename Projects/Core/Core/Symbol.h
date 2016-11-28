@@ -50,8 +50,8 @@ public:
 
 	const std::string& getName() const;
 	IType::E getSymbolType() const;
-	Visibility::E getVisibility() const;
 
+	Visibility::E getVisibility() const;
 	void setVisibility(Visibility::E visibility);
 
 public:

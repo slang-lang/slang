@@ -58,7 +58,7 @@ void VirtualMachine::addLibraryFolder(const std::string &library)
 std::string VirtualMachine::buildPath(const std::string& basefolder, const std::string& library) const
 {
 	std::string result = library;
-	unsigned long npos = std::string::npos;
+	unsigned long npos;// = std::string::npos;
 
 	do {
 		npos = result.find_first_of(".");

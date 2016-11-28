@@ -46,7 +46,7 @@ IntegerObject::IntegerObject(const Object& other)
 	mIsAtomicType = true;
 	mIsConstructed = true;
 
-	std::string target = other.Typename();
+	std::string target = other.QualifiedTypename();
 
 	if ( target == IntegerObject::TYPENAME ||
 		 target == BoolObject::TYPENAME ||
@@ -77,7 +77,7 @@ void IntegerObject::operator_assign(const IntegerObject *other)
 
 void IntegerObject::operator_assign(const Object *other)
 {
-	std::string target = other->Typename();
+	std::string target = other->QualifiedTypename();
 
 	if ( target == IntegerObject::TYPENAME ||
 		 target == BoolObject::TYPENAME ||
@@ -102,7 +102,7 @@ void IntegerObject::operator_divide(const IntegerObject *other)
 
 void IntegerObject::operator_divide(const Object *other)
 {
-	std::string target = other->Typename();
+	std::string target = other->QualifiedTypename();
 
 	if ( target == IntegerObject::TYPENAME ||
 		 target == BoolObject::TYPENAME ||
@@ -122,7 +122,7 @@ bool IntegerObject::operator_equal(const IntegerObject *other)
 
 bool IntegerObject::operator_equal(const Object *other)
 {
-	std::string target = other->Typename();
+	std::string target = other->QualifiedTypename();
 
 	if ( target == IntegerObject::TYPENAME ||
 		 target == BoolObject::TYPENAME ||
@@ -141,7 +141,7 @@ bool IntegerObject::operator_greater(const IntegerObject *other)
 
 bool IntegerObject::operator_greater(const Object *other)
 {
-	std::string target = other->Typename();
+	std::string target = other->QualifiedTypename();
 
 	if ( target == IntegerObject::TYPENAME ||
 		 target == BoolObject::TYPENAME ||
@@ -160,7 +160,7 @@ bool IntegerObject::operator_greater_equal(const IntegerObject *other)
 
 bool IntegerObject::operator_greater_equal(const Object *other)
 {
-	std::string target = other->Typename();
+	std::string target = other->QualifiedTypename();
 
 	if ( target == IntegerObject::TYPENAME ||
 		 target == BoolObject::TYPENAME ||
@@ -179,7 +179,7 @@ bool IntegerObject::operator_less(const IntegerObject *other)
 
 bool IntegerObject::operator_less(const Object *other)
 {
-	std::string target = other->Typename();
+	std::string target = other->QualifiedTypename();
 
 	if ( target == IntegerObject::TYPENAME ||
 		 target == BoolObject::TYPENAME ||
@@ -198,7 +198,7 @@ bool IntegerObject::operator_less_equal(const IntegerObject *other)
 
 bool IntegerObject::operator_less_equal(const Object *other)
 {
-	std::string target = other->Typename();
+	std::string target = other->QualifiedTypename();
 
 	if ( target == IntegerObject::TYPENAME ||
 		 target == BoolObject::TYPENAME ||
@@ -217,7 +217,7 @@ void IntegerObject::operator_modulo(const IntegerObject *other)
 
 void IntegerObject::operator_modulo(const Object *other)
 {
-	std::string target = other->Typename();
+	std::string target = other->QualifiedTypename();
 
 	if ( target == IntegerObject::TYPENAME ||
 		 target == BoolObject::TYPENAME ||
@@ -237,7 +237,7 @@ void IntegerObject::operator_multiply(const IntegerObject *other)
 
 void IntegerObject::operator_multiply(const Object *other)
 {
-	std::string target = other->Typename();
+	std::string target = other->QualifiedTypename();
 
 	if ( target == IntegerObject::TYPENAME ||
 		 target == BoolObject::TYPENAME ||
@@ -257,7 +257,7 @@ void IntegerObject::operator_plus(const IntegerObject *other)
 
 void IntegerObject::operator_plus(const Object *other)
 {
-	std::string target = other->Typename();
+	std::string target = other->QualifiedTypename();
 
 	if ( target == IntegerObject::TYPENAME ||
 		 target == BoolObject::TYPENAME ||
@@ -277,7 +277,7 @@ void IntegerObject::operator_subtract(const IntegerObject *other)
 
 void IntegerObject::operator_subtract(const Object *other)
 {
-	std::string target = other->Typename();
+	std::string target = other->QualifiedTypename();
 
 	if ( target == IntegerObject::TYPENAME ||
 		 target == BoolObject::TYPENAME ||
@@ -312,7 +312,7 @@ void IntegerObject::operator_unary_not()
 
 std::string IntegerObject::ToString(unsigned int indent) const
 {
-	return ::Utils::Tools::indent(indent) + Typename() + " " + getName() + " = " + getValue().toStdString();
+	return ::Utils::Tools::indent(indent) + QualifiedTypename() + " " + getName() + " = " + getValue().toStdString();
 }
 
 

@@ -47,7 +47,7 @@ FloatObject::FloatObject(const Object& other)
 	mIsAtomicType = true;
 	mIsConstructed = true;
 
-	std::string source = other.Typename();
+	std::string source = other.QualifiedTypename();
 
 	if ( source == BoolObject::TYPENAME ||
 		 source == DoubleObject::TYPENAME ||
@@ -73,7 +73,7 @@ void FloatObject::operator_assign(const FloatObject *other)
 
 void FloatObject::operator_assign(const Object *other)
 {
-	std::string target = other->Typename();
+	std::string target = other->QualifiedTypename();
 
 	if ( target == FloatObject::TYPENAME ||
 		 target == BoolObject::TYPENAME ||
@@ -98,7 +98,7 @@ void FloatObject::operator_divide(const FloatObject *other)
 
 void FloatObject::operator_divide(const Object *other)
 {
-	std::string target = other->Typename();
+	std::string target = other->QualifiedTypename();
 
 	if ( target == FloatObject::TYPENAME ||
 		 target == DoubleObject::TYPENAME ||
@@ -117,7 +117,7 @@ bool FloatObject::operator_equal(const FloatObject *other)
 
 bool FloatObject::operator_equal(const Object *other)
 {
-	std::string target = other->Typename();
+	std::string target = other->QualifiedTypename();
 
 	if ( target == FloatObject::TYPENAME ||
 		 target == DoubleObject::TYPENAME ||
@@ -135,7 +135,7 @@ bool FloatObject::operator_greater(const FloatObject *other)
 
 bool FloatObject::operator_greater(const Object *other)
 {
-	std::string target = other->Typename();
+	std::string target = other->QualifiedTypename();
 
 	if ( target == FloatObject::TYPENAME ||
 		 target == DoubleObject::TYPENAME ||
@@ -153,7 +153,7 @@ bool FloatObject::operator_greater_equal(const FloatObject *other)
 
 bool FloatObject::operator_greater_equal(const Object *other)
 {
-	std::string target = other->Typename();
+	std::string target = other->QualifiedTypename();
 
 	if ( target == FloatObject::TYPENAME ||
 		 target == DoubleObject::TYPENAME ||
@@ -171,7 +171,7 @@ bool FloatObject::operator_less(const FloatObject *other)
 
 bool FloatObject::operator_less(const Object *other)
 {
-	std::string target = other->Typename();
+	std::string target = other->QualifiedTypename();
 
 	if ( target == FloatObject::TYPENAME ||
 		 target == DoubleObject::TYPENAME ||
@@ -189,7 +189,7 @@ bool FloatObject::operator_less_equal(const FloatObject *other)
 
 bool FloatObject::operator_less_equal(const Object *other)
 {
-	std::string target = other->Typename();
+	std::string target = other->QualifiedTypename();
 
 	if ( target == FloatObject::TYPENAME ||
 		 target == DoubleObject::TYPENAME ||
@@ -207,7 +207,7 @@ void FloatObject::operator_multiply(const FloatObject *other)
 
 void FloatObject::operator_multiply(const Object *other)
 {
-	std::string target = other->Typename();
+	std::string target = other->QualifiedTypename();
 
 	if ( target == FloatObject::TYPENAME ||
 		 target == DoubleObject::TYPENAME ||
@@ -226,7 +226,7 @@ void FloatObject::operator_plus(const FloatObject *other)
 
 void FloatObject::operator_plus(const Object *other)
 {
-	std::string target = other->Typename();
+	std::string target = other->QualifiedTypename();
 
 	if ( target == FloatObject::TYPENAME ||
 		 target == DoubleObject::TYPENAME ||
@@ -245,7 +245,7 @@ void FloatObject::operator_subtract(const FloatObject *other)
 
 void FloatObject::operator_subtract(const Object *other)
 {
-	std::string target = other->Typename();
+	std::string target = other->QualifiedTypename();
 
 	if ( target == FloatObject::TYPENAME ||
 		 target == DoubleObject::TYPENAME ||
@@ -279,7 +279,7 @@ void FloatObject::operator_unary_not()
 
 std::string FloatObject::ToString(unsigned int indent) const
 {
-	return ::Utils::Tools::indent(indent) + Typename() + " " + getName() + " = " + mValue.toStdString();
+	return ::Utils::Tools::indent(indent) + QualifiedTypename() + " " + getName() + " = " + mValue.toStdString();
 }
 
 
