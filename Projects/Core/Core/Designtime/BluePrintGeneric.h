@@ -13,6 +13,7 @@
 #include <Core/Common/PrototypeConstraint.h>
 #include <Core/Common/Visibility.h>
 #include <Core/Consts.h>
+#include <Core/Designtime/Parser/Token.h>
 #include <Core/Runtime/AtomicValue.h>
 #include <Core/Scope.h>
 #include <Core/Symbol.h>

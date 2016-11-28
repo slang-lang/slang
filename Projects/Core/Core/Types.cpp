@@ -11,7 +11,6 @@
 #include <Core/BuildInObjects/FloatObject.h>
 #include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/BuildInObjects/StringObject.h>
-#include <Core/BuildInObjects/UserObject.h>
 #include <Core/BuildInObjects/VoidObject.h>
 
 // Namespace declaration
@@ -89,16 +88,6 @@ StringSet provideModifiers()
 	modifiers.insert(MODIFIER_THROWS);
 
 	return modifiers;
-}
-
-StringSet providePredefinedIdentifiers()
-{
-	StringSet identifiers;
-
-	identifiers.insert(IDENTIFIER_BASE);
-	identifiers.insert(IDENTIFIER_THIS);
-
-	return identifiers;
 }
 
 StringSet provideReservedWords()
@@ -194,22 +183,6 @@ std::string toString(const StringList& list)
 		result += (*it);
 
 		StringList::const_iterator copy = it;
-		if ( ++copy != list.end() ) {
-			result += ", ";
-		}
-	}
-
-	return result;
-}
-
-std::string toString(const TokenList& list)
-{
-	std::string result;
-
-	for ( TokenIterator it = list.begin(); it != list.end(); ++it ) {
-		result += it->content();
-
-		TokenIterator copy = it;
 		if ( ++copy != list.end() ) {
 			result += ", ";
 		}
