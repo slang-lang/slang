@@ -1,7 +1,7 @@
 #!/usr/local/bin/oscript
 
 private namespace BooleanOverloads {
-	private object UserObject {
+	public object UserObject {
 		private int mValue;
 
 		public void Constructor(int value const) {

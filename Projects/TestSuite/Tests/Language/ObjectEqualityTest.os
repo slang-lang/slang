@@ -1,7 +1,7 @@
 #!/usr/local/bin/oscript
 
 public namespace ObjectEqualityTest {
-	private object TestObject {
+	public object TestObject {
 		private int mValue;
 
 		public int getValue() const {
