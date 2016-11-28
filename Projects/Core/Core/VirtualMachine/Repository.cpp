@@ -183,7 +183,7 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 	// methods
 	MethodScope::MethodCollection methods = blueprint->provideMethods();
 	for ( MethodScope::MethodCollection::const_iterator methIt = methods.begin(); methIt != methods.end(); ++methIt ) {
-		Runtime::Method* method = new Runtime::Method(newBlue, (*methIt)->getName(), Designtime::Parser::buildConstraintTypename((*methIt)->Typename(), (*methIt)->getPrototypeConstraints()));
+		Runtime::Method* method = new Runtime::Method(newBlue, (*methIt)->getName(), Designtime::Parser::buildConstraintTypename((*methIt)->QualifiedTypename(), (*methIt)->getPrototypeConstraints()));
 
 		// copy from template
 		*method = *(*methIt);
@@ -633,7 +633,7 @@ void Repository::initializeObject(Runtime::Object* object, Designtime::BluePrint
 	// create and define all methods based on given blueprint
 	MethodScope::MethodCollection methods = blueprint->provideMethods();
 	for ( MethodScope::MethodCollection::const_iterator it = methods.begin(); it != methods.end(); ++it ) {
-		Runtime::Method* method = new Runtime::Method(object, (*it)->getName(), (*it)->Typename());
+		Runtime::Method* method = new Runtime::Method(object, (*it)->getName(), (*it)->QualifiedTypename());
 		*method = *(*it);
 
 		// try to override abstract methods a.k.a. implement an interface method

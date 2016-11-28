@@ -42,7 +42,7 @@ void BluePrintEnum::setParent(IScope* parent)
 
 std::string BluePrintEnum::ToString(unsigned int indent) const
 {
-	return ::Utils::Tools::indent(indent) + Typename() + " " + getName();
+	return ::Utils::Tools::indent(indent) + QualifiedTypename() + " " + getName();
 }
 
 
