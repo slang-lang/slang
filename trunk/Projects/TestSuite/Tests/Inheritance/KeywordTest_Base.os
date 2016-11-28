@@ -2,7 +2,7 @@
 
 public namespace Inheritance {
 
-	private object BaseObject {
+	public object BaseObject {
 		private int mValue;
 
 		public void Constructor(int value) {
@@ -28,7 +28,7 @@ public namespace Inheritance {
 		}
 	}
 
-	private object DerivedObject extends Inheritance.BaseObject {
+	public object DerivedObject extends Inheritance.BaseObject {
 		public void Constructor(int value) {
 			print("DerivedObject.Constructor(" + value + ")");
 
@@ -52,7 +52,7 @@ public namespace Inheritance {
 		}
 	}
 
-	private object ExtendedObject extends Inheritance.DerivedObject {
+	public object ExtendedObject extends Inheritance.DerivedObject {
 		public void Constructor(int value) {
 			print("ExtendedObject.Constructor(" + value + ")");
 

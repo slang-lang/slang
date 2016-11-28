@@ -1,10 +1,10 @@
 #!/usr/local/bin/oscript
 
 public namespace ExceptionTest {
-	private object Exception {
+	public object Exception {
 		private string _exception;
 
-		private void Constructor(string ex) {
+		public void Constructor(string ex) {
 			print(ex);
 			_exception = ex;
 		}
@@ -14,7 +14,7 @@ public namespace ExceptionTest {
 		}
 	}
 
-	private object ObjectThatThrows {
+	public object ObjectThatThrows {
 		public void ObjectThatThrows() {
 			// not implementing this constructor and using the default constructor would also be valid
 		}
