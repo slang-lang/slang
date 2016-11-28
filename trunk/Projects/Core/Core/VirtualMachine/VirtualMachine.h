@@ -22,9 +22,6 @@
 namespace ObjectiveScript {
 
 // Forward declarations
-class IPrinter;
-class MethodScope;
-class Repository;
 namespace Runtime {
 	class Object;
 }

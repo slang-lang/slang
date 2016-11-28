@@ -52,7 +52,7 @@ void BluePrintObject::setValue(Runtime::AtomicValue value)
 
 std::string BluePrintObject::ToString(unsigned int indent) const
 {
-	return ::Utils::Tools::indent(indent) + Typename() + " " + getName();
+	return ::Utils::Tools::indent(indent) + QualifiedTypename() + " " + getName();
 }
 
 

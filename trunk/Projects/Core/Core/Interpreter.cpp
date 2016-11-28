@@ -9,7 +9,6 @@
 #include <Core/BuildInObjects/DoubleObject.h>
 #include <Core/BuildInObjects/FloatObject.h>
 #include <Core/BuildInObjects/IntegerObject.h>
-#include <Core/BuildInObjects/NumberObject.h>
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/BuildInObjects/VoidObject.h>
 #include <Core/Common/Exceptions.h>

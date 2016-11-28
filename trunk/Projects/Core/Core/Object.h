@@ -32,14 +32,12 @@
 namespace ObjectiveScript {
 
 // Forward declaration
-class IPrinter;
 class Repository;
 
 namespace Runtime {
 
 // Forward declarations
 class Method;
-class Object;
 
 class Object : public MethodScope,
 			   public ObjectSymbol

@@ -307,7 +307,7 @@ void Object::copy(const Object& other)
 
 			// register new methods
 			for ( MethodCollection::const_iterator it = other.mMethods.begin(); it != other.mMethods.end(); ++it ) {
-				Method *method = new Method(this, (*it)->getName(), (*it)->Typename());
+				Method *method = new Method(this, (*it)->getName(), (*it)->QualifiedTypename());
 				*method = *(*it);
 
 				defineMethod((*it)->getName(), method);
