@@ -1,3 +1,4 @@
+#!/bin/bash
 
 EXCLUDES="--exclude=*.sh --exclude=cmake-build*"
 RELEASE="ObjectiveScript-`cat version`_`svnversion`.tar.gz"
