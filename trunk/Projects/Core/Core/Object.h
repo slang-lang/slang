@@ -63,7 +63,6 @@ public:	// Symbol::IType implementation & RTTI
 
 	void setQualifiedOuterface(const std::string &type) { mQualifiedOuterface = type; }
 	void setQualifiedTypename(const std::string& type) { mQualifiedTypename = type; }
-	void setTypename(const std::string &type) { mTypename = type; }
 
 public:	// Setup
 	void addInheritance(const Designtime::Ancestor& ancestor, Object* inheritance);

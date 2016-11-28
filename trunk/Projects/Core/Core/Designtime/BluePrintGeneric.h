@@ -64,9 +64,6 @@ public:
 	const TokenList& getTokens() const;
 	void setTokens(const TokenList& tokens);
 
-	Visibility::E getVisibility() const;
-	void setVisibility(Visibility::E v);
-
 protected:
 	std::string mFilename;
 	std::string mQualifiedTypename;
@@ -76,7 +73,6 @@ protected:
 private:
 	Ancestors mInheritance;
 	PrototypeConstraints mPrototypeConstraints;
-	Visibility::E mVisibility;
 };
 
 

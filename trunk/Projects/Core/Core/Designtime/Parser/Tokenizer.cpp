@@ -422,7 +422,7 @@ void Tokenizer::process()
 
 	while ( offset < size ) {
 		char thisChar = mContent[offset++];
-		size_t i = DELIMITERS.find_first_of(thisChar);
+		//size_t i = DELIMITERS.find_first_of(thisChar);
 
 		// preprocessor directives as single line comments '#'
 		if ( !isMultiLineComment && !isSingleLineComment && !isString && thisChar == '#' ) {
@@ -451,7 +451,7 @@ void Tokenizer::process()
 				isString = !isString;
 			}
 
-			if ( !isString && i != std::string::npos ) {
+			if ( !isString && DELIMITERS.find_first_of(thisChar) != std::string::npos ) {
 				if ( !token.empty() ) {
 					if ( thisChar == '"' /*|| thisChar == '\''*/ ) {
 						token += thisChar;

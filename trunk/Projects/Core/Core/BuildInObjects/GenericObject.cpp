@@ -40,12 +40,12 @@ GenericObject::GenericObject(const std::string& name, const std::string& filenam
 }
 
 GenericObject::GenericObject(const Object& object)
-: Object(object.getName(), object.Filename(), object.Typename(), VALUE_NULL)
+: Object(object.getName(), object.Filename(), object.QualifiedTypename(), VALUE_NULL)
 {
 	mIsAtomicType = false;
 	mIsConstructed = false;
 
-	// this prevents the user to create an instance of 'Object'
+	// this prevents the user from creating an instance of 'Object'
 	setImplementationType(ImplementationType::Abstract);
 }
 

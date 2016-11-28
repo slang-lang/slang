@@ -49,7 +49,7 @@ StringObject::StringObject(const Object& other)
 	mIsAtomicType = true;
 	mIsConstructed = true;
 
-	std::string source = other.Typename();
+	std::string source = other.QualifiedTypename();
 
 	if ( source == BoolObject::TYPENAME ) {
 		mValue = Tools::toString(other.getValue().toBool());
@@ -72,7 +72,7 @@ bool StringObject::isValid() const
 
 void StringObject::operator_assign(const Object *other)
 {
-	std::string target = other->Typename();
+	std::string target = other->QualifiedTypename();
 
 	if ( target == StringObject::TYPENAME ||
 		 target == BoolObject::TYPENAME ||
@@ -98,7 +98,7 @@ bool StringObject::operator_bool() const
 
 bool StringObject::operator_equal(const Object *other)
 {
-	std::string target = other->Typename();
+	std::string target = other->QualifiedTypename();
 
 	if ( target == StringObject::TYPENAME ) {
 		return mValue.toStdString() == other->getValue().toStdString();
@@ -114,7 +114,7 @@ bool StringObject::operator_equal(const StringObject *other)
 
 void StringObject::operator_plus(const Object *other)
 {
-	std::string target = other->Typename();
+	std::string target = other->QualifiedTypename();
 
 	if ( target == StringObject::TYPENAME ||
 		 target == BoolObject::TYPENAME ||
@@ -135,7 +135,7 @@ void StringObject::operator_plus(const StringObject *other)
 
 std::string StringObject::ToString(unsigned int indent) const
 {
-	return ::Utils::Tools::indent(indent) + Typename() + " " + getName() + " = " + getValue().toStdString();
+	return ::Utils::Tools::indent(indent) + QualifiedTypename() + " " + getName() + " = " + getValue().toStdString();
 }
 
 

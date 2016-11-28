@@ -5,8 +5,6 @@
 // Library includes
 
 // Project includes
-#include <Core/Common/Exceptions.h>
-#include <Core/Consts.h>
 #include <Core/Tools.h>
 #include <Tools/Strings.h>
 
@@ -58,7 +56,7 @@ void VoidObject::setNativeValue(void)
 
 std::string VoidObject::ToString(unsigned int indent) const
 {
-	return ::Utils::Tools::indent(indent) + Typename() + " " + getName();
+	return ::Utils::Tools::indent(indent) + QualifiedTypename() + " " + getName();
 }
 
 

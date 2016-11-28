@@ -28,8 +28,8 @@ void operator_binary_assign(Object *base, Object *other)
 		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object");
 	}
 
-	std::string source = base->Typename();
-	std::string target = other->Typename();
+	std::string source = base->QualifiedTypename();
+	std::string target = other->QualifiedTypename();
 
 	if ( source == ANONYMOUS_OBJECT || source == target ) {
 		// assign directly because our base has not yet been initialized
@@ -84,7 +84,7 @@ void operator_binary_bitand(Object *base, Object *other)
 		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object");
 	}
 
-	std::string source = base->Typename();
+	std::string source = base->QualifiedTypename();
 
 	if ( source == BoolObject::TYPENAME ) {
 		BoolObject tmp(base->isValid());
@@ -139,7 +139,7 @@ void operator_binary_bitcomplement(Object *base, Object *other)
 		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object");
 	}
 
-	std::string source = base->Typename();
+	std::string source = base->QualifiedTypename();
 
 	if ( source == BoolObject::TYPENAME ) {
 		BoolObject tmp(base->isValid());
@@ -194,7 +194,7 @@ void operator_binary_bitor(Object *base, Object *other)
 		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object");
 	}
 
-	std::string source = base->Typename();
+	std::string source = base->QualifiedTypename();
 
 	if ( source == BoolObject::TYPENAME ) {
 		BoolObject tmp(base->isValid());
@@ -249,7 +249,7 @@ void operator_binary_divide(Object *base, Object *other)
 		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object");
 	}
 
-	std::string source = base->Typename();
+	std::string source = base->QualifiedTypename();
 
 	if ( source == BoolObject::TYPENAME ) {
 		BoolObject tmp(base->isValid());
@@ -307,7 +307,7 @@ bool operator_binary_equal(Object *base, Object *other)
 		throw Runtime::Exceptions::AccessViolation("cannot compare object to null pointer");
 	}
 
-	std::string source = base->Typename();
+	std::string source = base->QualifiedTypename();
 
 	if ( source == BoolObject::TYPENAME ) {
 		BoolObject tmp(base->isValid());
@@ -367,7 +367,7 @@ bool operator_binary_greater(Object *base, Object *other)
 		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object");
 	}
 
-	std::string source = base->Typename();
+	std::string source = base->QualifiedTypename();
 
 	if ( source == BoolObject::TYPENAME ) {
 		BoolObject tmp(base->isValid());
@@ -410,7 +410,7 @@ bool operator_binary_greater_equal(Object *base, Object *other)
 		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object");
 	}
 
-	std::string source = base->Typename();
+	std::string source = base->QualifiedTypename();
 
 	if ( source == BoolObject::TYPENAME ) {
 		BoolObject tmp(base->isValid());
@@ -453,7 +453,7 @@ bool operator_binary_less(Object *base, Object *other)
 		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object");
 	}
 
-	std::string source = base->Typename();
+	std::string source = base->QualifiedTypename();
 
 	if ( source == BoolObject::TYPENAME ) {
 		BoolObject tmp(base->isValid());
@@ -496,7 +496,7 @@ bool operator_binary_less_equal(Object *base, Object *other)
 		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object");
 	}
 
-	std::string source = base->Typename();
+	std::string source = base->QualifiedTypename();
 
 	if ( source == BoolObject::TYPENAME ) {
 		BoolObject tmp(base->isValid());
@@ -548,7 +548,7 @@ void operator_binary_modulo(Object *base, Object *other)
 		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object");
 	}
 
-	std::string source = base->Typename();
+	std::string source = base->QualifiedTypename();
 
 	if ( source == BoolObject::TYPENAME ) {
 		BoolObject tmp(base->isValid());
@@ -603,7 +603,7 @@ void operator_binary_multiply(Object *base, Object *other)
 		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object");
 	}
 
-	std::string source = base->Typename();
+	std::string source = base->QualifiedTypename();
 
 	if ( source == BoolObject::TYPENAME ) {
 		BoolObject tmp(base->isValid());
@@ -658,7 +658,7 @@ void operator_binary_plus(Object *base, Object *other)
 		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object");
 	}
 
-	std::string source = base->Typename();
+	std::string source = base->QualifiedTypename();
 
 	if ( source == BoolObject::TYPENAME ) {
 		BoolObject tmp(base->isValid());
@@ -713,7 +713,7 @@ void operator_binary_subtract(Object *base, Object *other)
 		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object");
 	}
 
-	std::string source = base->Typename();
+	std::string source = base->QualifiedTypename();
 
 	if ( source == BoolObject::TYPENAME ) {
 		BoolObject tmp(base->isValid());
@@ -789,7 +789,7 @@ void operator_unary_decrement(Object *base)
 		throw Runtime::Exceptions::AccessViolation("null pointer access");
 	}
 
-	std::string source = base->Typename();
+	std::string source = base->QualifiedTypename();
 
 	if ( source == BoolObject::TYPENAME ) {
 		BoolObject tmp(base->isValid());
@@ -839,7 +839,7 @@ void operator_unary_increment(Object *base)
 		throw Runtime::Exceptions::AccessViolation("null pointer access");
 	}
 
-	std::string source = base->Typename();
+	std::string source = base->QualifiedTypename();
 
 	if ( source == BoolObject::TYPENAME ) {
 		BoolObject tmp(base->isValid());
@@ -889,7 +889,7 @@ void operator_unary_minus(Object *base)
 		throw Runtime::Exceptions::AccessViolation("null pointer access");
 	}
 
-	std::string source = base->Typename();
+	std::string source = base->QualifiedTypename();
 
 	if ( source == BoolObject::TYPENAME ) {
 		BoolObject tmp(base->isValid());
@@ -941,7 +941,7 @@ void operator_unary_not(Object *base)
 		throw Runtime::Exceptions::AccessViolation("null pointer access");
 	}
 
-	std::string source = base->Typename();
+	std::string source = base->QualifiedTypename();
 
 	if ( source == BoolObject::TYPENAME ) {
 		BoolObject tmp(base->isValid());

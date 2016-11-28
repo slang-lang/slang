@@ -110,7 +110,6 @@ private:
 	ControlFlow::E mControlFlow;
 	IScope* mOwner;
 	Repository *mRepository;
-	TokenList mTokens;
 };
 
 

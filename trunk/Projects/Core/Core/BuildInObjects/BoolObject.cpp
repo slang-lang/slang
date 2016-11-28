@@ -47,7 +47,7 @@ BoolObject::BoolObject(const Object& other)
 	mIsAtomicType = true;
 	mIsConstructed = true;
 
-	std::string target = other.Typename();
+	std::string target = other.QualifiedTypename();
 
 	if ( target == BoolObject::TYPENAME ||
 		 target == DoubleObject::TYPENAME ||
@@ -80,7 +80,7 @@ void BoolObject::operator_assign(const BoolObject *other)
 
 void BoolObject::operator_assign(const Object *other)
 {
-	std::string target = other->Typename();
+	std::string target = other->QualifiedTypename();
 
 	if ( target == BoolObject::TYPENAME ||
 		 target == DoubleObject::TYPENAME ||
@@ -101,7 +101,7 @@ void BoolObject::operator_bitand(const BoolObject *other)
 
 void BoolObject::operator_bitand(const Object *other)
 {
-	std::string target = other->Typename();
+	std::string target = other->QualifiedTypename();
 
 	if ( target == BoolObject::TYPENAME ||
 		 target == DoubleObject::TYPENAME ||
@@ -122,7 +122,7 @@ void BoolObject::operator_bitor(const BoolObject *other)
 
 void BoolObject::operator_bitor(const Object *other)
 {
-	std::string target = other->Typename();
+	std::string target = other->QualifiedTypename();
 
 	if ( target == BoolObject::TYPENAME ||
 		 target == DoubleObject::TYPENAME ||
@@ -143,7 +143,7 @@ bool BoolObject::operator_equal(const BoolObject *other)
 
 bool BoolObject::operator_equal(const Object *other)
 {
-	std::string target = other->Typename();
+	std::string target = other->QualifiedTypename();
 
 	if ( target == BoolObject::TYPENAME ||
 		 target == DoubleObject::TYPENAME ||
@@ -163,7 +163,7 @@ void BoolObject::operator_unary_not()
 
 std::string BoolObject::ToString(unsigned int indent) const
 {
-	return ::Utils::Tools::indent(indent) + Typename() + " " + getName() + " = " + getValue().toStdString();
+	return ::Utils::Tools::indent(indent) + QualifiedTypename() + " " + getName() + " = " + getValue().toStdString();
 }
 
 

@@ -5,7 +5,6 @@
 // Library includes
 
 // Project includes
-#include <Core/Consts.h>
 
 // Namespace declarations
 

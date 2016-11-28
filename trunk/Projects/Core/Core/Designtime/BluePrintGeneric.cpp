@@ -18,18 +18,18 @@ BluePrintGeneric::BluePrintGeneric()
 : BluePrintSymbol(ANONYMOUS_OBJECT),
   mFilename(ANONYMOUS_OBJECT),
   mQualifiedTypename(ANONYMOUS_OBJECT),
-  mTypename(ANONYMOUS_OBJECT),
-  mVisibility(Visibility::Public)
+  mTypename(ANONYMOUS_OBJECT)
 {
+	mVisibility = Visibility::Public;
 }
 
 BluePrintGeneric::BluePrintGeneric(const std::string& type, const std::string& filename)
 : BluePrintSymbol(type),
   mFilename(filename),
   mQualifiedTypename(type),
-  mTypename(type),
-  mVisibility(Visibility::Public)
+  mTypename(type)
 {
+	mVisibility = Visibility::Public;
 }
 
 BluePrintGeneric::~BluePrintGeneric()
@@ -86,11 +86,6 @@ const TokenList& BluePrintGeneric::getTokens() const
 	return mTokens;
 }
 
-Visibility::E BluePrintGeneric::getVisibility() const
-{
-	return mVisibility;
-}
-
 bool BluePrintGeneric::isAbstract() const
 {
 	return getImplementationType() == ImplementationType::Abstract || getImplementationType() == ImplementationType::Interface;
@@ -124,11 +119,6 @@ void BluePrintGeneric::setQualifiedTypename(const std::string& name)
 void BluePrintGeneric::setTokens(const TokenList& tokens)
 {
 	mTokens = tokens;
-}
-
-void BluePrintGeneric::setVisibility(Visibility::E v)
-{
-	mVisibility = v;
 }
 
 
