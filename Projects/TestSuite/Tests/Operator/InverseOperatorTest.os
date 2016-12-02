@@ -103,7 +103,7 @@ private bool TestCase2() const {
 
 	print(obj.ToString());
 
-	return true;
+	return obj == 2;
 }
 
 private bool TestCase3() const {
@@ -153,5 +153,5 @@ private bool TestCase5() const {
 
 	print("obj = " + 1 + obj);
 
-	return obj;
+	return bool obj;
 }
