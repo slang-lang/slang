@@ -48,16 +48,14 @@ void UserObject::operator_assign(const Object *other)
 		return;
 	}
 
-	if ( other->isInstanceOf(QualifiedTypename()) ) {
+	if ( other->isInstanceOf(mQualifiedTypename) ) {
 		assign(*other);
 		return;
 	}
 
 	if ( isConstructed() ) {
 		ParameterList params;
-		params.push_back(
-			Parameter(ANONYMOUS_OBJECT, other->QualifiedOuterface(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByValue, other->getReference())
-		);
+		params.push_back(Parameter::CreateRuntime(other->QualifiedOuterface(), other->getValue(), other->getReference()));
 
 		::ObjectiveScript::MethodSymbol* operator_method = resolveMethod("operator=", params, true, Visibility::Private);
 		if ( operator_method ) {
@@ -69,9 +67,7 @@ void UserObject::operator_assign(const Object *other)
 	}
 
 	ParameterList params;
-	params.push_back(
-		Parameter(ANONYMOUS_OBJECT, QualifiedTypename(), getValue(), false, isConst(), Parameter::AccessMode::ByValue, getReference())
-	);
+	params.push_back(Parameter::CreateRuntime(mQualifiedTypename, mValue, mReference));
 
 	::ObjectiveScript::MethodSymbol* operator_method = other->resolveMethod("=operator", params, true, Visibility::Public);
 	if ( operator_method ) {
@@ -81,7 +77,7 @@ void UserObject::operator_assign(const Object *other)
 		return;
 	}
 
-	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator=: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
+	throw Common::Exceptions::Exception(mQualifiedTypename + ".operator=: conversion from " + other->QualifiedTypename() + " to " + mQualifiedTypename + " not supported");
 }
 
 bool UserObject::operator_bool() const
@@ -92,9 +88,7 @@ bool UserObject::operator_bool() const
 void UserObject::operator_divide(const Object *other)
 {
 	ParameterList params;
-	params.push_back(
-		Parameter(other->getName(), other->QualifiedTypename(), other->getValue())
-	);
+	params.push_back(Parameter::CreateRuntime(other->QualifiedOuterface(), other->getValue(), other->getReference()));
 
 	Object tmp;
 	this->execute(&tmp, "operator/", params, 0);
@@ -103,7 +97,7 @@ void UserObject::operator_divide(const Object *other)
 bool UserObject::operator_equal(const Object *other)
 {
 	ParameterList params;
-	params.push_back(Parameter(other->getName(), other->QualifiedTypename(), other->getValue()));
+	params.push_back(Parameter::CreateRuntime(other->QualifiedOuterface(), other->getValue(), other->getReference()));
 
 	Object tmp;
 	this->execute(&tmp, "operator==", params, 0);
@@ -114,7 +108,7 @@ bool UserObject::operator_equal(const Object *other)
 bool UserObject::operator_greater(const Object *other)
 {
 	ParameterList params;
-	params.push_back(Parameter(other->getName(), other->QualifiedTypename(), other->getValue()));
+	params.push_back(Parameter::CreateRuntime(other->QualifiedOuterface(), other->getValue(), other->getReference()));
 
 	Object tmp;
 	this->execute(&tmp, "operator>", params, 0);
@@ -125,7 +119,7 @@ bool UserObject::operator_greater(const Object *other)
 bool UserObject::operator_greater_equal(const Object *other)
 {
 	ParameterList params;
-	params.push_back(Parameter(other->getName(), other->QualifiedTypename(), other->getValue()));
+	params.push_back(Parameter::CreateRuntime(other->QualifiedOuterface(), other->getValue(), other->getReference()));
 
 	Object tmp;
 	this->execute(&tmp, "operator>=", params, 0);
@@ -136,7 +130,7 @@ bool UserObject::operator_greater_equal(const Object *other)
 bool UserObject::operator_less(const Object *other)
 {
 	ParameterList params;
-	params.push_back(Parameter(other->getName(), other->QualifiedTypename(), other->getValue()));
+	params.push_back(Parameter::CreateRuntime(other->QualifiedOuterface(), other->getValue(), other->getReference()));
 
 	Object tmp;
 	this->execute(&tmp, "operator<", params, 0);
@@ -147,7 +141,7 @@ bool UserObject::operator_less(const Object *other)
 bool UserObject::operator_less_equal(const Object *other)
 {
 	ParameterList params;
-	params.push_back(Parameter(other->getName(), other->QualifiedTypename(), other->getValue()));
+	params.push_back(Parameter::CreateRuntime(other->QualifiedOuterface(), other->getValue(), other->getReference()));
 
 	Object tmp;
 	this->execute(&tmp, "operator<=", params, 0);
@@ -158,9 +152,7 @@ bool UserObject::operator_less_equal(const Object *other)
 void UserObject::operator_multiply(const Object *other)
 {
 	ParameterList params;
-	params.push_back(
-		Parameter(other->getName(), other->QualifiedTypename(), other->getValue())
-	);
+	params.push_back(Parameter::CreateRuntime(other->QualifiedOuterface(), other->getValue(), other->getReference()));
 
 	Object tmp;
 	this->execute(&tmp, "operator*", params, 0);
@@ -169,9 +161,7 @@ void UserObject::operator_multiply(const Object *other)
 void UserObject::operator_plus(const Object *other)
 {
 	ParameterList params;
-	params.push_back(
-		Parameter(other->getName(), other->QualifiedTypename(), other->getValue())
-	);
+	params.push_back(Parameter::CreateRuntime(other->QualifiedOuterface(), other->getValue(), other->getReference()));
 
 	Object tmp;
 	this->execute(&tmp, "operator+", params, 0);
@@ -180,9 +170,7 @@ void UserObject::operator_plus(const Object *other)
 void UserObject::operator_subtract(const Object *other)
 {
 	ParameterList params;
-	params.push_back(
-		Parameter(other->getName(), other->QualifiedTypename(), other->getValue())
-	);
+	params.push_back(Parameter::CreateRuntime(other->QualifiedOuterface(), other->getValue(), other->getReference()));
 
 	Object tmp;
 	this->execute(&tmp, "operator-", params, 0);

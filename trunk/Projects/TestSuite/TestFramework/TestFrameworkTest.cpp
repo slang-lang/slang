@@ -34,7 +34,7 @@ void TestFrameworkTest::dont_throw_std_ex()
 
 void TestFrameworkTest::preventFail(bool t, bool f, bool &result)
 {
-	int mFailed = 0;
+	TestResult mResult;
 
 	// reset result to false
 	result = false;
@@ -44,7 +44,7 @@ void TestFrameworkTest::preventFail(bool t, bool f, bool &result)
 	// this also sets mFailed (this is some sort of hack, but hey, it works)
 	TCOMPARE(t, f);
 
-	if ( mFailed > 0 ) {
+	if ( mResult.Failed > 0 ) {
 		result = false;
 		return;
 	}
@@ -144,7 +144,7 @@ void TestFrameworkTest::testTFAIL()
 // skipping fail-test
 TSKIP("");
 
-	--mFailed;
+	--mResult.Failed;
 	//std::cout << "PASSED: ";
 	TFAIL("this should fail");
 }
@@ -154,7 +154,7 @@ void TestFrameworkTest::testTSKIP()
 // skipping skip-test
 TSKIP("");
 
-	--mSkipped;
+	--mResult.Skipped;
 	std::cout << "PASSED: ";
 	TSKIP("skipping test");
 

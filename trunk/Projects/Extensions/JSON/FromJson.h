@@ -33,8 +33,8 @@ public:
 	: ExtensionMethod(0, "FromJsonString", Designtime::BoolObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter("object", VALUE_NONE, VALUE_NONE));
-		params.push_back(Parameter("value", Designtime::StringObject::TYPENAME, VALUE_NONE));
+		params.push_back(Parameter::CreateDesigntime("object", TYPE_ANY));
+		params.push_back(Parameter::CreateDesigntime("value", Designtime::StringObject::TYPENAME));
 
 		setSignature(params);
 	}

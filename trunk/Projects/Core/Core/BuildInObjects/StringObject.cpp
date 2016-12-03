@@ -70,6 +70,14 @@ bool StringObject::isValid() const
 	return mIsConstructed;
 }
 
+void StringObject::operator_array(const Object* index, Object* result)
+{
+	(void)index;
+	(void)result;
+
+	assert(!"not implemented");
+}
+
 void StringObject::operator_assign(const Object *other)
 {
 	std::string target = other->QualifiedTypename();

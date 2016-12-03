@@ -205,8 +205,8 @@ void RemoteClient::Initialize(const VSCodeDebug::Request& request)
 	std::string paramStr = mSettings->filename();
 
 	mParameters.clear();
-	mParameters.push_back(ObjectiveScript::Parameter("argc", ObjectiveScript::Runtime::IntegerObject::TYPENAME, 1));
-	mParameters.push_back(ObjectiveScript::Parameter("argv", ObjectiveScript::Runtime::StringObject::TYPENAME, paramStr));
+	mParameters.push_back(ObjectiveScript::Parameter::CreateRuntime(ObjectiveScript::Runtime::IntegerObject::TYPENAME, 1));
+	mParameters.push_back(ObjectiveScript::Parameter::CreateRuntime(ObjectiveScript::Runtime::StringObject::TYPENAME, paramStr));
 
 	VSCodeDebug::Response response(request);
 	response.success = true;

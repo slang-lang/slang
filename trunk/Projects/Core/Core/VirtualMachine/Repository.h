@@ -55,7 +55,7 @@ public:
 
 	void cleanupForwardDeclarations();
 
-	Runtime::Object* createInstance(const std::string& type, const std::string& name, const PrototypeConstraints& constraints = PrototypeConstraints(), InitilizationType::E initialize = InitilizationType::None);
+	Runtime::Object* createInstance(const std::string& type, const std::string& name = std::string(), const PrototypeConstraints& constraints = PrototypeConstraints(), InitilizationType::E initialize = InitilizationType::None);
 	Runtime::Object* createInstance(Designtime::BluePrintGeneric* blueprint, const std::string& name, const PrototypeConstraints& constraints, InitilizationType::E initialize = InitilizationType::None);
 	Runtime::Object* createReference(Designtime::BluePrintGeneric* blueprint, const std::string& name, const PrototypeConstraints& constraints, InitilizationType::E initialize = InitilizationType::None);
 

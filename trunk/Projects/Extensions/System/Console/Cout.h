@@ -32,7 +32,7 @@ public:
 	: ExtensionMethod(0, "cout", Designtime::StringObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter("text", Designtime::StringObject::TYPENAME, VALUE_NONE, true));
+		params.push_back(Parameter::CreateDesigntime("text", Designtime::StringObject::TYPENAME, VALUE_NONE, true));
 
 		setSignature(params);
 	}

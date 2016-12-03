@@ -34,7 +34,7 @@ public:
 	: ExtensionMethod(0, "isSet", Designtime::BoolObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter("name", Designtime::StringObject::TYPENAME, VALUE_NONE));
+		params.push_back(Parameter::CreateDesigntime("name", Designtime::StringObject::TYPENAME));
 
 		setSignature(params);
 	}

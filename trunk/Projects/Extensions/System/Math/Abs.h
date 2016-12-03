@@ -38,7 +38,7 @@ public:
 	: ExtensionMethod(0, "abs", Designtime::DoubleObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter("value", Designtime::DoubleObject::TYPENAME, VALUE_NONE));
+		params.push_back(Parameter::CreateDesigntime("value", Designtime::DoubleObject::TYPENAME));
 
 		setSignature(params);
 	}
@@ -56,7 +56,7 @@ public:
 			*result = Runtime::DoubleObject(std::abs(param_value));
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME);
 			*data = Runtime::StringObject(std::string(e.what()));
 
 			Controller::Instance().stack()->exception() = Runtime::ExceptionData(data, token.position());
@@ -75,7 +75,7 @@ public:
 	: ExtensionMethod(0, "abs", Designtime::FloatObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter("value", Designtime::FloatObject::TYPENAME, VALUE_NONE));
+		params.push_back(Parameter::CreateDesigntime("value", Designtime::FloatObject::TYPENAME));
 
 		setSignature(params);
 	}
@@ -93,7 +93,7 @@ public:
 			*result = Runtime::FloatObject(std::abs(param_value));
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME);
 			*data = Runtime::StringObject(std::string(e.what()));
 
 			Controller::Instance().stack()->exception() = Runtime::ExceptionData(data, token.position());
@@ -112,7 +112,7 @@ public:
 	: ExtensionMethod(0, "abs", Designtime::IntegerObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter("value", Designtime::IntegerObject::TYPENAME, VALUE_NONE));
+		params.push_back(Parameter::CreateDesigntime("value", Designtime::IntegerObject::TYPENAME));
 
 		setSignature(params);
 	}
@@ -130,7 +130,7 @@ public:
 			result->assign(Runtime::IntegerObject(std::abs(param_value)));
 		}
 		catch ( std::exception& e ) {
-			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
+			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME);
 			*data = Runtime::StringObject(std::string(e.what()));
 
 			Controller::Instance().stack()->exception() = Runtime::ExceptionData(data, token.position());

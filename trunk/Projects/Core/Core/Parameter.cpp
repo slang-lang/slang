@@ -1,6 +1,7 @@
 
 // Header
 #include "Parameter.h"
+#include "Consts.h"
 
 // Library includes
 
@@ -11,6 +12,45 @@
 
 namespace ObjectiveScript {
 
+
+Parameter Parameter::CreateDesigntime(const std::string& name, const std::string& type, Runtime::AtomicValue value,
+									  bool hasDefaultValue, bool isConst, AccessMode::E access, Reference reference)
+{
+	return Parameter(
+		name,
+		type,
+		value,
+		hasDefaultValue,
+		isConst,
+		access,
+		reference
+	);
+}
+
+Parameter Parameter::CreateRuntime(const std::string& type, Runtime::AtomicValue value, Reference reference)
+{
+	if ( reference.isValid() ) {
+		return Parameter(
+				ANONYMOUS_OBJECT,
+				type,
+				Runtime::AtomicValue(),
+				false,
+				false,
+				AccessMode::ByReference,
+				reference
+		);
+	}
+
+	return Parameter(
+		ANONYMOUS_OBJECT,
+		type,
+		value,
+		false,
+		false,
+		AccessMode::ByValue,
+		Reference()
+	);
+}
 
 Parameter::Parameter()
 : mAccessMode(AccessMode::Unspecified),
