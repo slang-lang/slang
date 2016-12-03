@@ -60,7 +60,7 @@ private:
 
 private:
 	MemoryMap mMemory;
-	size_t mNextAddress;
+	unsigned int mNextAddress;
 };
 
 
