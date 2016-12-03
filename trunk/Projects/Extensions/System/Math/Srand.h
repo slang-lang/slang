@@ -31,7 +31,7 @@ public:
 	: ExtensionMethod(0, "srand", Designtime::VoidObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter("value", Designtime::IntegerObject::TYPENAME, VALUE_NONE));
+		params.push_back(Parameter::CreateDesigntime("value", Designtime::IntegerObject::TYPENAME));
 
 		setSignature(params);
 	}

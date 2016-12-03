@@ -31,7 +31,7 @@ public:
 	: ExtensionMethod(0, "mysql_ping", Designtime::IntegerObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));
+		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME));
 
 		setSignature(params);
 	}

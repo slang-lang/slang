@@ -30,8 +30,8 @@ public:
 	: ExtensionMethod(0, "mysql_get_field_name", Designtime::StringObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));
-		params.push_back(Parameter("field_id", Designtime::IntegerObject::TYPENAME, 0));
+		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("field_id", Designtime::IntegerObject::TYPENAME));
 
 		setSignature(params);
 	}

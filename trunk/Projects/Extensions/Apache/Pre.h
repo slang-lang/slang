@@ -34,7 +34,7 @@ public:
 	: ExtensionMethod(0, "pre", Designtime::VoidObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter("text", Designtime::StringObject::TYPENAME, VALUE_NONE, true));
+		params.push_back(Parameter::CreateDesigntime("text", Designtime::StringObject::TYPENAME));
 
 		setSignature(params);
 	}

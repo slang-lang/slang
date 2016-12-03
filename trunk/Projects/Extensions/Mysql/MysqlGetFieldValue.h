@@ -31,8 +31,8 @@ public:
 	: ExtensionMethod(0, "mysql_get_field_value", Designtime::StringObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));
-		params.push_back(Parameter("field_index", Designtime::IntegerObject::TYPENAME, 0));
+		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("field_index", Designtime::IntegerObject::TYPENAME));
 
 		setSignature(params);
 	}
@@ -84,8 +84,8 @@ public:
 	: ExtensionMethod(0, "mysql_get_field_value", Designtime::StringObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));
-		params.push_back(Parameter("field_name", Designtime::StringObject::TYPENAME, VALUE_NONE));
+		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("field_name", Designtime::StringObject::TYPENAME));
 
 		setSignature(params);
 	}

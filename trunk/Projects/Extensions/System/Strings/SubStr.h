@@ -32,9 +32,9 @@ public:
 	: ExtensionMethod(0, "substr", Designtime::StringObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter("value", Designtime::StringObject::TYPENAME, 0));
-		params.push_back(Parameter("start", Designtime::IntegerObject::TYPENAME, 0));
-		params.push_back(Parameter("length", Designtime::IntegerObject::TYPENAME, -1, true));
+		params.push_back(Parameter::CreateDesigntime("value", Designtime::StringObject::TYPENAME, 0));
+		params.push_back(Parameter::CreateDesigntime("start", Designtime::IntegerObject::TYPENAME, 0));
+		params.push_back(Parameter::CreateDesigntime("length", Designtime::IntegerObject::TYPENAME, -1, true));
 
 		setSignature(params);
 	}

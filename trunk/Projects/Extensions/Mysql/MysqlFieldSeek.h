@@ -28,8 +28,8 @@ public:
 	: ExtensionMethod(0, "mysql_field_seek", Designtime::IntegerObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));
-		params.push_back(Parameter("offset", Designtime::IntegerObject::TYPENAME, 0));
+		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("offset", Designtime::IntegerObject::TYPENAME));
 
 		setSignature(params);
 	}

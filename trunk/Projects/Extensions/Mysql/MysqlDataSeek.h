@@ -33,8 +33,8 @@ public:
 	: ExtensionMethod(0, "mysql_data_seek", Designtime::VoidObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));
-		params.push_back(Parameter("rowIdx", Designtime::IntegerObject::TYPENAME, 0));
+		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("rowIdx", Designtime::IntegerObject::TYPENAME));
 
 		setSignature(params);
 	}

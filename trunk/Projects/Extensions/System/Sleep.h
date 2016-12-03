@@ -36,7 +36,7 @@ public:
 	: ExtensionMethod(0, "sleep", Designtime::VoidObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter("millis", Designtime::IntegerObject::TYPENAME, 0));
+		params.push_back(Parameter::CreateDesigntime("millis", Designtime::IntegerObject::TYPENAME));
 
 		setSignature(params);
 	}
