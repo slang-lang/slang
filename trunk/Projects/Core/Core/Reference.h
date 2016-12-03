@@ -20,10 +20,10 @@ class Reference
 {
 public:
 	Reference();
-	Reference(unsigned int address);
+	explicit Reference(size_t address);
 
 public:
-	unsigned int getAddress() const;
+	size_t getAddress() const;
 	bool isValid() const;
 
 public:
@@ -31,11 +31,14 @@ public:
 	bool operator== (const Reference& other) const;
 
 private:
-	unsigned int mAddress;
+	size_t mAddress;
 };
 
 
 typedef std::list<Reference> ReferencesList;
+
+
+static const Reference NullReference = Reference(0);
 
 
 }

@@ -29,7 +29,6 @@ public:
 	void init();
 
 public:
-	const Reference& getNullReference() const;
 	Runtime::Object* get(const Reference &ref) const;
 	const Reference& newObject(Runtime::Object *obj);
 
@@ -40,7 +39,7 @@ private:
 	class RefCount
 	{
 	public:
-		RefCount(Runtime::Object* object = 0)
+		explicit RefCount(Runtime::Object* object = 0)
 		: mCount(0),
 		  mObject(object)
 		{ }
@@ -62,7 +61,6 @@ private:
 private:
 	MemoryMap mMemory;
 	size_t mNextAddress;
-	Reference mNull;
 };
 
 

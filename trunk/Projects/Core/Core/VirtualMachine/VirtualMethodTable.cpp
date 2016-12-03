@@ -6,7 +6,6 @@
 
 // Project includes
 #include <Core/Method.h>
-#include <Common/Exceptions.h>
 
 // Namespace declarations
 
