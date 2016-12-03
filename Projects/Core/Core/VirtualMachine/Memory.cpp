@@ -19,8 +19,7 @@ namespace ObjectiveScript {
 
 
 Memory::Memory()
-: mNextAddress(1),
-  mNull(0)
+: mNextAddress(1)
 {
 }
 
@@ -67,7 +66,7 @@ void Memory::deleteObject(const Reference& ref)
 	if ( object ) {
 		object->Destructor();
 
-		object->setReference(0);
+		object->setReference(NullReference);
 
 		delete object;
 	}
@@ -81,11 +80,6 @@ Runtime::Object* Memory::get(const Reference &ref) const
 	}
 
 	return 0;
-}
-
-const Reference& Memory::getNullReference() const
-{
-	return mNull;
 }
 
 void Memory::init()
@@ -144,7 +138,7 @@ const Reference& Memory::reserveAddress()
 	// reserve address by creating a new reference
 	// and inserting it into our memory
 	Reference ref(mNextAddress++);
-	mMemory[ref] = 0;
+	mMemory[ref] = RefCount();
 
 	return mMemory.rbegin()->first;
 }

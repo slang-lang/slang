@@ -17,12 +17,12 @@ Reference::Reference()
 {
 }
 
-Reference::Reference(unsigned int address)
+Reference::Reference(size_t address)
 : mAddress(address)
 {
 }
 
-unsigned int Reference::getAddress() const
+size_t Reference::getAddress() const
 {
 	return mAddress;
 }
