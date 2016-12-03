@@ -34,7 +34,7 @@ public:
 	: ExtensionMethod(0, "setKeyboardBlocking", Designtime::StringObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter("mode", Designtime::BoolObject::TYPENAME, 0));
+		params.push_back(Parameter::CreateDesigntime("mode", Designtime::BoolObject::TYPENAME));
 
 		setSignature(params);
 	}

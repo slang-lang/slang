@@ -32,7 +32,7 @@ public:
 	: ExtensionMethod(0, "strltrim", Designtime::StringObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter("value", Designtime::StringObject::TYPENAME, 0));
+		params.push_back(Parameter::CreateDesigntime("value", Designtime::StringObject::TYPENAME, 0));
 
 		setSignature(params);
 	}

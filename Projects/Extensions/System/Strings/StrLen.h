@@ -33,7 +33,7 @@ public:
 	: ExtensionMethod(0, "strlen", Designtime::IntegerObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter("value", Designtime::StringObject::TYPENAME, VALUE_NONE));
+		params.push_back(Parameter::CreateDesigntime("value", Designtime::StringObject::TYPENAME));
 
 		setSignature(params);
 	}

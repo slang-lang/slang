@@ -32,12 +32,12 @@ public:
 	: ExtensionMethod(0, "mysql_real_connect", Designtime::IntegerObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, VALUE_NONE));
-		params.push_back(Parameter("host", Designtime::StringObject::TYPENAME, VALUE_NONE));
-		params.push_back(Parameter("port", Designtime::IntegerObject::TYPENAME, 0));
-		params.push_back(Parameter("user", Designtime::StringObject::TYPENAME, VALUE_NONE));
-		params.push_back(Parameter("passwd", Designtime::StringObject::TYPENAME, VALUE_NONE));
-		params.push_back(Parameter("db", Designtime::StringObject::TYPENAME, VALUE_NONE));
+		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("host", Designtime::StringObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("port", Designtime::IntegerObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("user", Designtime::StringObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("passwd", Designtime::StringObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("db", Designtime::StringObject::TYPENAME, VALUE_NONE, true));
 
 		setSignature(params);
 	}

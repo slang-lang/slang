@@ -33,9 +33,9 @@ public:
 	: ExtensionMethod(0, "strfind", Designtime::IntegerObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter("source", Designtime::StringObject::TYPENAME, VALUE_NONE));
-		params.push_back(Parameter("target", Designtime::StringObject::TYPENAME, VALUE_NONE));
-		params.push_back(Parameter("position", Designtime::IntegerObject::TYPENAME, 0, true));
+		params.push_back(Parameter::CreateDesigntime("source", Designtime::StringObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("target", Designtime::StringObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("position", Designtime::IntegerObject::TYPENAME, 0, true));
 
 		setSignature(params);
 	}

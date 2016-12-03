@@ -214,7 +214,7 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 					access = Parameter::AccessMode::ByReference;
 				}
 
-				(*paramIt) = Parameter(paramIt->name(), type, paramIt->value(), paramIt->hasDefaultValue(), paramIt->isConst(), access, paramIt->reference());
+				(*paramIt) = Parameter::CreateDesigntime(paramIt->name(), type, paramIt->value(), paramIt->hasDefaultValue(), paramIt->isConst(), access, paramIt->reference());
 
 				signatureChanged = true;
 			}

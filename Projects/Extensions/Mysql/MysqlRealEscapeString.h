@@ -32,8 +32,8 @@ public:
 	: ExtensionMethod(0, "mysql_real_escape_string", Designtime::StringObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));
-		params.push_back(Parameter("from", Designtime::StringObject::TYPENAME, VALUE_NONE));
+		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("from", Designtime::StringObject::TYPENAME));
 
 		setSignature(params);
 	}
