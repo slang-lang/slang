@@ -35,7 +35,7 @@ public:
 	: ExtensionMethod(0, "ceil", Designtime::DoubleObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter("value", Designtime::DoubleObject::TYPENAME, VALUE_NONE));
+		params.push_back(Parameter::CreateDesigntime("value", Designtime::DoubleObject::TYPENAME));
 
 		setSignature(params);
 	}
@@ -72,7 +72,7 @@ public:
 	: ExtensionMethod(0, "ceil", Designtime::FloatObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter("value", Designtime::FloatObject::TYPENAME, VALUE_NONE));
+		params.push_back(Parameter::CreateDesigntime("value", Designtime::FloatObject::TYPENAME));
 
 		setSignature(params);
 	}

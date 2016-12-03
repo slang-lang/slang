@@ -317,9 +317,7 @@ void LocalClient::executeMethod(const StringList &tokens)
 			Runtime::Object* object = dynamic_cast<Runtime::Object*>(getCachedSymbol(sym));
 
 			if ( object ) {
-				params.push_back(Parameter(
-					object->getName(), object->QualifiedTypename(), object->getValue()
-				));
+				params.push_back(Parameter::CreateRuntime(object->QualifiedTypename(), object->getValue()));
 			}
 		}
 	}
@@ -660,8 +658,8 @@ void LocalClient::prepare(const StringList& tokens)
 	}
 
 	mParameters.clear();
-	mParameters.push_back(ObjectiveScript::Parameter("argc", ObjectiveScript::Runtime::IntegerObject::TYPENAME, 1));
-	mParameters.push_back(ObjectiveScript::Parameter("argv", ObjectiveScript::Runtime::StringObject::TYPENAME, paramStr));
+	mParameters.push_back(ObjectiveScript::Parameter::CreateRuntime(ObjectiveScript::Runtime::IntegerObject::TYPENAME, 1));
+	mParameters.push_back(ObjectiveScript::Parameter::CreateRuntime(ObjectiveScript::Runtime::StringObject::TYPENAME, paramStr));
 }
 
 void LocalClient::printBreakPoints()

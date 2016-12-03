@@ -93,6 +93,9 @@ static const char* OBJECTIVESCRIPT_LIBRARY = "OBJECTIVESCRIPT_LIBRARY";
 static const char* SYSTEM_LIBRARY = "SYSTEM.OS";
 static const char* UNKNOWN = "unknown";
 
+// Types
+static const char* TYPE_ANY = "";
+
 // Values
 static const char* VALUE_NONE = "";
 static const char* VALUE_NULL = "null";

@@ -18,6 +18,35 @@
 namespace Testing {
 
 
+class TestResult
+{
+public:
+	TestResult()
+	: Failed(0),
+	  Run(0),
+	  Skipped(0)
+	{ }
+
+	void operator=(const TestResult& other) {
+		Failed = other.Failed;
+		Run = other.Run;
+		Skipped = other.Skipped;
+	}
+
+	const TestResult operator+(const TestResult& other) {
+		Failed += other.Failed;
+		Run += other.Run;
+		Skipped += other.Skipped;
+
+		return *this;
+	}
+
+	int Failed;
+	int Run;
+	int Skipped;
+};
+
+
 class GenericTest
 {
 public:
@@ -29,11 +58,8 @@ public:
 
 public:
 	GenericTest(const std::string& name)
-	: mFailed(0),
-	  mLastResult(Failed),
-	  mName(name),
-	  mRun(0),
-	  mSkipped(0)
+	: mLastResult(Failed),
+	  mName(name)
 	{ }
 	virtual ~GenericTest() { }
 
@@ -50,25 +76,25 @@ public:
 		std::cout << getName() << std::endl;
 	}
 
-	void run() {
+	TestResult run() {
 		setup();
 		process();
 		teardown();
 
 		printResults();
+
+		return mResult;
 	}
 
 protected:
-	int mFailed;
 	TestResult_e mLastResult;
 	std::string mName;
-	int mRun;
-	int mSkipped;
+
+	TestResult mResult;
 
 private:
 	void printResults() {
-		std::cout << "Statistics: " << getName() << " " << (mRun - mFailed - mSkipped) << " passed, " << mFailed << " failed, " << mSkipped << " skipped" << std::endl;
-		//std::cout << typeid(*this).name() << " Statistics: " << (mRun - mFailed - mSkipped) << " passed, " << mFailed << " failed, " << mSkipped << " skipped" << std::endl;
+		std::cout << "Statistics: " << getName() << " " << (mResult.Run - mResult.Failed - mResult.Skipped) << " passed, " << mResult.Failed << " failed, " << mResult.Skipped << " skipped" << std::endl;
 	}
 };
 

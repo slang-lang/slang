@@ -177,20 +177,26 @@ ParameterList Method::mergeParameters(const ParameterList& params) const
 	ParameterList::const_iterator paramIt = params.begin();
 	ParameterList::const_iterator sigIt = mSignature.begin();
 
+	Reference ref;
+	AtomicValue value;
+
 	for ( ; sigIt != mSignature.end(); ++sigIt ) {
 		// initialize parameter with default value
-		Parameter param(sigIt->name(), sigIt->type(), sigIt->value(), sigIt->hasDefaultValue(), sigIt->isConst(), sigIt->access());
+		ref = sigIt->reference();
+		value = sigIt->value();
 
 		if ( paramIt != params.end() ) {
-			Reference ref = paramIt->reference();
-
 			// override parameter with correct value
-			param = Parameter(sigIt->name(), sigIt->type(), paramIt->value(), sigIt->hasDefaultValue(), sigIt->isConst(), sigIt->access(), ref);
+			ref = paramIt->reference();
+			value = paramIt->value();
+
 			// next iteration
 			paramIt++;
 		}
 
-		result.push_back(param);
+		result.push_back(Parameter::CreateDesigntime(
+			sigIt->name(), sigIt->type(), value, sigIt->hasDefaultValue(), sigIt->isConst(), sigIt->access(), ref
+		));
 	}
 
 	return result;

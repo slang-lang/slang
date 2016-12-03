@@ -146,6 +146,8 @@ int main(int argc, const char* argv[])
 		Testing::Prototype::Fixture prototype(mLogger);
 		mFixtures.push_back(&prototype);
 
+		TestResult result;
+
 		for ( FixtureList::iterator it = mFixtures.begin(); it != mFixtures.end(); ++it ) {
 			if ( show ) {
 				if ( toRun.empty() ) {
@@ -158,9 +160,12 @@ int main(int argc, const char* argv[])
 			}
 			else if ( toRun.empty() || toRun == (*it)->getName() ) {
 				executed = true;
-				(*it)->run();
+				result = result + (*it)->run();
 			}
 		}
+
+		std::cout << std::endl;
+		std::cout << "Statistics: " << (result.Run - result.Failed - result.Skipped) << " passed, " << result.Failed << " failed, " << result.Skipped << " skipped" << std::endl;
 
 		mFixtures.clear();
 	}

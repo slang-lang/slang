@@ -80,7 +80,7 @@ void operator_binary_assign(Object *base, Object *other)
 
 void operator_binary_bitand(Object *base, Object *other)
 {
-	if ( !base /*|| !base->isValid()*/ ) {
+	if ( !base ) {
 		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object");
 	}
 
@@ -124,9 +124,7 @@ void operator_binary_bitand(Object *base, Object *other)
 	}
 	else {
 		ParameterList params;
-		params.push_back(
-			Parameter(other->getName(), other->QualifiedTypename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
-		);
+		params.push_back(Parameter::CreateRuntime(other->QualifiedTypename(), other->getValue(), other->getReference()));
 
 		VoidObject tmp;
 		base->execute(&tmp, "operator&", params, 0);
@@ -135,7 +133,7 @@ void operator_binary_bitand(Object *base, Object *other)
 
 void operator_binary_bitcomplement(Object *base, Object *other)
 {
-	if ( !base /*|| !base->isValid()*/ ) {
+	if ( !base ) {
 		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object");
 	}
 
@@ -179,9 +177,7 @@ void operator_binary_bitcomplement(Object *base, Object *other)
 	}
 	else {
 		ParameterList params;
-		params.push_back(
-			Parameter(other->getName(), other->QualifiedTypename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
-		);
+		params.push_back(Parameter::CreateRuntime(other->QualifiedTypename(), other->getValue(), other->getReference()));
 
 		VoidObject tmp;
 		base->execute(&tmp, "operator~", params, 0);
@@ -190,7 +186,7 @@ void operator_binary_bitcomplement(Object *base, Object *other)
 
 void operator_binary_bitor(Object *base, Object *other)
 {
-	if ( !base /*|| !base->isValid()*/ ) {
+	if ( !base ) {
 		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object");
 	}
 
@@ -234,9 +230,7 @@ void operator_binary_bitor(Object *base, Object *other)
 	}
 	else {
 		ParameterList params;
-		params.push_back(
-			Parameter(other->getName(), other->QualifiedTypename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
-		);
+		params.push_back(Parameter::CreateRuntime(other->QualifiedTypename(), other->getValue(), other->getReference()));
 
 		VoidObject tmp;
 		base->execute(&tmp, "operator|", params, 0);
@@ -245,7 +239,7 @@ void operator_binary_bitor(Object *base, Object *other)
 
 void operator_binary_divide(Object *base, Object *other)
 {
-	if ( !base /*|| !base->isValid()*/ ) {
+	if ( !base ) {
 		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object");
 	}
 
@@ -289,9 +283,7 @@ void operator_binary_divide(Object *base, Object *other)
 	}
 	else {
 		ParameterList params;
-		params.push_back(
-			Parameter(other->getName(), other->QualifiedTypename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
-		);
+		params.push_back(Parameter::CreateRuntime(other->QualifiedTypename(), other->getValue(), other->getReference()));
 
 		VoidObject tmp;
 		base->execute(&tmp, "operator/", params, 0);
@@ -336,9 +328,7 @@ bool operator_binary_equal(Object *base, Object *other)
 	}
 
 	ParameterList params;
-	params.push_back(
-		Parameter(other->getName(), other->QualifiedTypename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
-	);
+	params.push_back(Parameter::CreateRuntime(other->QualifiedTypename(), other->getValue(), other->getReference()));
 
 	if ( base->resolveMethod("operator==", params, false, Visibility::Public) ) {
 		Object tmp;
@@ -347,9 +337,7 @@ bool operator_binary_equal(Object *base, Object *other)
 	}
 
 	params.clear();
-	params.push_back(
-		Parameter(other->getName(), other->QualifiedOuterface(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
-	);
+	params.push_back(Parameter::CreateRuntime(other->QualifiedOuterface(), other->getValue(), other->getReference()));
 
 	if ( base->resolveMethod("operator==", params, false, Visibility::Public) ) {
 		Object tmp;
@@ -363,7 +351,7 @@ bool operator_binary_equal(Object *base, Object *other)
 
 bool operator_binary_greater(Object *base, Object *other)
 {
-	if ( !base /*|| !base->isValid()*/ ) {
+	if ( !base ) {
 		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object");
 	}
 
@@ -395,9 +383,7 @@ bool operator_binary_greater(Object *base, Object *other)
 	}
 
 	ParameterList params;
-	params.push_back(
-		Parameter(other->getName(), other->QualifiedTypename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
-	);
+	params.push_back(Parameter::CreateRuntime(other->QualifiedTypename(), other->getValue(), other->getReference()));
 
 	Object tmp;
 	base->execute(&tmp, "operator>", params);
@@ -406,7 +392,7 @@ bool operator_binary_greater(Object *base, Object *other)
 
 bool operator_binary_greater_equal(Object *base, Object *other)
 {
-	if ( !base /*|| !base->isValid()*/ ) {
+	if ( !base ) {
 		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object");
 	}
 
@@ -438,9 +424,7 @@ bool operator_binary_greater_equal(Object *base, Object *other)
 	}
 
 	ParameterList params;
-	params.push_back(
-		Parameter(other->getName(), other->QualifiedTypename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
-	);
+	params.push_back(Parameter::CreateRuntime(other->QualifiedTypename(), other->getValue(), other->getReference()));
 
 	Object tmp;
 	base->execute(&tmp, "operator>=", params, 0);
@@ -449,7 +433,7 @@ bool operator_binary_greater_equal(Object *base, Object *other)
 
 bool operator_binary_less(Object *base, Object *other)
 {
-	if ( !base /*|| !base->isValid()*/ ) {
+	if ( !base ) {
 		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object");
 	}
 
@@ -481,9 +465,7 @@ bool operator_binary_less(Object *base, Object *other)
 	}
 
 	ParameterList params;
-	params.push_back(
-		Parameter(other->getName(), other->QualifiedTypename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
-	);
+	params.push_back(Parameter::CreateRuntime(other->QualifiedTypename(), other->getValue(), other->getReference()));
 
 	Object tmp;
 	base->execute(&tmp, "operator<", params, 0);
@@ -492,7 +474,7 @@ bool operator_binary_less(Object *base, Object *other)
 
 bool operator_binary_less_equal(Object *base, Object *other)
 {
-	if ( !base /*|| !base->isValid()*/ ) {
+	if ( !base ) {
 		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object");
 	}
 
@@ -524,9 +506,7 @@ bool operator_binary_less_equal(Object *base, Object *other)
 	}
 
 	ParameterList params;
-	params.push_back(
-		Parameter(other->getName(), other->QualifiedTypename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
-	);
+	params.push_back(Parameter::CreateRuntime(other->QualifiedTypename(), other->getValue(), other->getReference()));
 
 	Object tmp;
 	base->execute(&tmp, "operator<=", params, 0);
@@ -535,7 +515,7 @@ bool operator_binary_less_equal(Object *base, Object *other)
 
 bool operator_binary_is(Object* base, const std::string& type)
 {
-	if ( !base /*|| !base->isValid()*/ ) {
+	if ( !base ) {
 		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object");
 	}
 
@@ -544,7 +524,7 @@ bool operator_binary_is(Object* base, const std::string& type)
 
 void operator_binary_modulo(Object *base, Object *other)
 {
-	if ( !base /*|| !base->isValid()*/ ) {
+	if ( !base ) {
 		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object");
 	}
 
@@ -588,9 +568,7 @@ void operator_binary_modulo(Object *base, Object *other)
 	}
 	else {
 		ParameterList params;
-		params.push_back(
-			Parameter(other->getName(), other->QualifiedTypename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
-		);
+		params.push_back(Parameter::CreateRuntime(other->QualifiedTypename(), other->getValue(), other->getReference()));
 
 		VoidObject tmp;
 		base->execute(&tmp, "operator%", params, 0);
@@ -599,7 +577,7 @@ void operator_binary_modulo(Object *base, Object *other)
 
 void operator_binary_multiply(Object *base, Object *other)
 {
-	if ( !base /*|| !base->isValid()*/ ) {
+	if ( !base ) {
 		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object");
 	}
 
@@ -643,9 +621,7 @@ void operator_binary_multiply(Object *base, Object *other)
 	}
 	else {
 		ParameterList params;
-		params.push_back(
-			Parameter(other->getName(), other->QualifiedTypename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
-		);
+		params.push_back(Parameter::CreateRuntime(other->QualifiedTypename(), other->getValue(), other->getReference()));
 
 		VoidObject tmp;
 		base->execute(&tmp, "operator*", params, 0);
@@ -654,7 +630,7 @@ void operator_binary_multiply(Object *base, Object *other)
 
 void operator_binary_plus(Object *base, Object *other)
 {
-	if ( !base /*|| !base->isValid()*/ ) {
+	if ( !base ) {
 		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object");
 	}
 
@@ -698,9 +674,7 @@ void operator_binary_plus(Object *base, Object *other)
 	}
 	else {
 		ParameterList params;
-		params.push_back(
-			Parameter(other->getName(), other->QualifiedTypename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
-		);
+		params.push_back(Parameter::CreateRuntime(other->QualifiedTypename(), other->getValue(), other->getReference()));
 
 		VoidObject tmp;
 		base->execute(&tmp, "operator+", params, 0);
@@ -709,7 +683,7 @@ void operator_binary_plus(Object *base, Object *other)
 
 void operator_binary_subtract(Object *base, Object *other)
 {
-	if ( !base /*|| !base->isValid()*/ ) {
+	if ( !base ) {
 		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object");
 	}
 
@@ -753,9 +727,7 @@ void operator_binary_subtract(Object *base, Object *other)
 	}
 	else {
 		ParameterList params;
-		params.push_back(
-			Parameter(other->getName(), other->QualifiedTypename(), other->getValue(), false, other->isConst(), Parameter::AccessMode::ByReference, other->getReference())
-		);
+		params.push_back(Parameter::CreateRuntime(other->QualifiedTypename(), other->getValue(), other->getReference()));
 
 		VoidObject tmp;
 		base->execute(&tmp, "operator-", params, 0);
@@ -764,11 +736,11 @@ void operator_binary_subtract(Object *base, Object *other)
 
 void operator_trinary_array(Object *base, Object *index, Object* other)
 {
-	if ( !base /*|| !base->isValid()*/ ) {
-		throw Runtime::Exceptions::NullPointerException("null pointer access");
+	if ( !base ) {
+		throw Runtime::Exceptions::AccessViolation("cannot use null pointer: base");
 	}
-	if ( !index /*|| !index->isValid()*/ ) {
-		throw Runtime::Exceptions::NullPointerException("null pointer access");
+	if ( !index ) {
+		throw Runtime::Exceptions::AccessViolation("cannot use null pointer: index");
 	}
 	if ( !other ) {
 		throw Runtime::Exceptions::AccessViolation("cannot use null pointer: other");
@@ -785,7 +757,7 @@ void operator_trinary_array(Object *base, Object *index, Object* other)
 
 void operator_unary_decrement(Object *base)
 {
-	if ( !base /*|| !base->isValid()*/ ) {
+	if ( !base ) {
 		throw Runtime::Exceptions::AccessViolation("null pointer access");
 	}
 
@@ -835,7 +807,7 @@ void operator_unary_decrement(Object *base)
 
 void operator_unary_increment(Object *base)
 {
-	if ( !base /*|| !base->isValid()*/ ) {
+	if ( !base ) {
 		throw Runtime::Exceptions::AccessViolation("null pointer access");
 	}
 
@@ -885,7 +857,7 @@ void operator_unary_increment(Object *base)
 
 void operator_unary_minus(Object *base)
 {
-	if ( !base /*|| !base->isValid()*/ ) {
+	if ( !base ) {
 		throw Runtime::Exceptions::AccessViolation("null pointer access");
 	}
 
@@ -975,9 +947,7 @@ void operator_unary_not(Object *base)
 	}
 	else {
 		ParameterList params;
-		params.push_back(
-			Parameter(ANONYMOUS_OBJECT, BoolObject::TYPENAME, false, false, false, Parameter::AccessMode::ByValue)
-		);
+		params.push_back(Parameter::CreateRuntime(BoolObject::TYPENAME, false));
 
 		MethodSymbol* value_op = base->resolveMethod("=operator", params, true, Visibility::Public);
 		if ( value_op ) {
@@ -1003,52 +973,6 @@ void operator_unary_validate(Object *base)
 	if ( !base->isValid() ) {
 		throw ControlFlow::Throw;
 	}
-
-/*
-	std::string source = base->Typename();
-
-	if ( source == BoolObject::TYPENAME ) {
-		BoolObject tmp(base->getValue());
-		if ( !tmp.operator_bool() ) {
-			throw ControlFlow::Throw;
-		}
-	}
-	else if ( source == DoubleObject::TYPENAME ) {
-		DoubleObject tmp(base->getValue());
-		if ( !tmp.operator_bool() ) {
-			throw ControlFlow::Throw;
-		}
-	}
-	else if ( source == FloatObject::TYPENAME ) {
-		FloatObject tmp(base->getValue());
-		if ( !tmp.operator_bool() ) {
-			throw ControlFlow::Throw;
-		}
-	}
-	else if ( source == IntegerObject::TYPENAME ) {
-		IntegerObject tmp(base->getValue());
-		if ( !tmp.operator_bool() ) {
-			throw ControlFlow::Throw;
-		}
-	}
-	else if ( source == StringObject::TYPENAME ) {
-		StringObject tmp(base->getValue());
-		if ( !tmp.operator_bool() ) {
-			throw ControlFlow::Throw;
-		}
-	}
-	else if ( source == VoidObject::TYPENAME ) {
-		VoidObject tmp;
-		if ( !tmp.operator_bool() ) {
-			throw ControlFlow::Throw;
-		}
-	}
-	else {
-		if ( !base->isValid() ) {
-			throw ControlFlow::Throw;
-		}
-	}
-*/
 }
 
 

@@ -53,19 +53,23 @@ public:
 		}
 	}
 
-	void run() {
+	TestResult run() {
+		TestResult result;
+
 		std::cout << std::endl << "********* Starting: " << getName() << " *********" << std::endl;
 
 		setup();
 
 		for ( TestList::const_iterator it = mTests.begin(); it!= mTests.end(); it++ ) {
-			(*it)->run();
+			result = result + (*it)->run();
 		}
 
 		teardown();
 		cleanup();
 
 		std::cout << "********* Finished: " << getName() << " *********" << std::endl;
+
+		return result;
 	}
 
 protected:

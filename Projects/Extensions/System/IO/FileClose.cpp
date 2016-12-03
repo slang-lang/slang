@@ -31,7 +31,7 @@ FileClose::FileClose()
 : ExtensionMethod(0, "fclose", Designtime::IntegerObject::TYPENAME)
 {
 	ParameterList params;
-	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, VALUE_NONE));
+	params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME));
 
 	setSignature(params);
 }

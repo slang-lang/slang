@@ -22,7 +22,7 @@
 // Compares to values, is not equal, test fails.
 #define TCOMPARE( exp, act ) \
 	if (  exp != act ) { \
-		mFailed++; \
+		mResult.Failed++; \
 		mLastResult = GenericTest::Failed; \
 		std::cout << __FILE__ << ":" << __LINE__ << " excepted: " << exp << ", actual: " << act << std::endl; \
 		return; \
@@ -30,7 +30,7 @@
 
 // If used, the active test automatically fails.
 #define TFAIL( expr ) \
-	mFailed++; \
+	mResult.Failed++; \
 	mLastResult = GenericTest::Failed; \
 	std::cout << __FILE__ << ":" << __LINE__ << ": \"" << expr << "\"" << std::endl; \
 	return; \
@@ -41,7 +41,7 @@
 
 // Skip the active test.
 #define TSKIP( expr ) \
-	mSkipped++; \
+	mResult.Skipped++; \
 	mLastResult = GenericTest::Skipped; \
 	if ( expr && strlen(expr) > 0 ) { \
 		std::cout << expr << std::endl; \
@@ -51,7 +51,7 @@
 // Verify that the expression is true.
 #define TVERIFY( expr ) \
 	if ( !expr ) { \
-		mFailed++; \
+		mResult.Failed++; \
 		mLastResult = GenericTest::Failed; \
 		std::cout << __FILE__ << ":" << __LINE__ << ": '" << expr << "'" << std::endl; \
 		return; \
@@ -86,7 +86,7 @@
 // Runs the given test.
 #define TEST( func ) \
 	{ \
-		mRun++; \
+		mResult.Run++; \
 		mLastResult = GenericTest::Passed; \
 		func(); \
 		switch ( mLastResult ) { \

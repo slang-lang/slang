@@ -31,7 +31,7 @@ public:
 	: ExtensionMethod(0, "getenv", Designtime::StringObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter("name", Designtime::StringObject::TYPENAME, VALUE_NONE));
+		params.push_back(Parameter::CreateDesigntime("name", Designtime::StringObject::TYPENAME));
 
 		setSignature(params);
 	}

@@ -1342,9 +1342,7 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 			return;
 		}
 
-		params.push_back(
-			Parameter(obj->getName(), obj->QualifiedOuterface(), obj->getValue(), false, obj->isConst(), Parameter::AccessMode::Unspecified, obj->getReference())
-		);
+		params.push_back(Parameter::CreateRuntime(obj->QualifiedOuterface(), obj->getValue(), obj->getReference()));
 
 		if ( std::distance(tmp, closed) <= 0 ) {
 			break;
@@ -1454,9 +1452,7 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 			return;
 		}
 
-		params.push_back(
-			Parameter(obj->getName(), obj->QualifiedOuterface(), obj->getValue(), false, obj->isConst(), Parameter::AccessMode::Unspecified, obj->getReference())
-		);
+		params.push_back(Parameter::CreateRuntime(obj->QualifiedOuterface(), obj->getValue(), obj->getReference()));
 
 		if ( std::distance(tmp, closed) <= 0 ) {
 			break;

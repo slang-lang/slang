@@ -29,24 +29,25 @@ public:
 	StringObject(const Object& other);
 
 public:	// Operators
-	virtual void operator_assign(const Object *other);
-	virtual void operator_assign(const StringObject *other);
+	void operator_array(const Object* index, Object* result);
 
-	virtual bool operator_bool() const;
+	void operator_assign(const Object* other);
+	void operator_assign(const StringObject* other);
 
-	virtual bool operator_equal(const Object *other);
-	virtual bool operator_equal(const StringObject *other);
+	bool operator_bool() const;
 
-	virtual void operator_plus(const Object *other);
-	virtual void operator_plus(const StringObject *other);
+	bool operator_equal(const Object* other);
+	bool operator_equal(const StringObject* other);
+
+	void operator_plus(const Object* other);
+	void operator_plus(const StringObject* other);
 
 public: // Value
-	virtual bool isValid() const;
+	bool isValid() const;
 
-	virtual std::string ToString(unsigned int indent) const;
+	std::string ToString(unsigned int indent) const;
 
 private:
-
 };
 
 

@@ -504,9 +504,7 @@ void Object::operator_array(const Object *index, Object* result)
 	std::string subscript = index->QualifiedTypename();
 
 	ParameterList params;
-	params.push_back(
-		Parameter(ANONYMOUS_OBJECT, subscript, index->getValue(), false, index->isConst(), index->isAtomicType() ? Parameter::AccessMode::ByValue : Parameter::AccessMode::ByReference, index->getReference())
-	);
+	params.push_back(Parameter::CreateRuntime(subscript, index->getValue(), index->getReference()));
 
 	::ObjectiveScript::MethodSymbol* opMethod = resolveMethod("operator[]", params, false, Visibility::Public);
 	if ( opMethod ) {
@@ -520,15 +518,13 @@ void Object::operator_array(const Object *index, Object* result)
 
 void Object::operator_assign(const Object *other)
 {
-	if ( other->isInstanceOf(QualifiedTypename()) ) {
+	if ( other->isInstanceOf(mQualifiedTypename) ) {
 		assign(*other);
 		return;
 	}
 
 	ParameterList params;
-	params.push_back(
-		Parameter(ANONYMOUS_OBJECT, QualifiedTypename(), VALUE_NONE)
-	);
+	params.push_back(Parameter::CreateRuntime(mQualifiedTypename, mValue, mReference));
 
 	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", params, false, Visibility::Public);
 	if ( value_operator ) {
@@ -551,9 +547,7 @@ void Object::operator_bitand(const Object *other)
 	}
 
 	ParameterList params;
-	params.push_back(
-		Parameter(ANONYMOUS_OBJECT, QualifiedTypename(), VALUE_NONE)
-	);
+	params.push_back(Parameter::CreateRuntime(mQualifiedTypename, mValue, mReference));
 
 	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("&operator", params, false, Visibility::Public);
 	if ( !value_operator ) {
@@ -579,9 +573,7 @@ void Object::operator_bitcomplement(const Object *other)
 	}
 
 	ParameterList params;
-	params.push_back(
-		Parameter(ANONYMOUS_OBJECT, QualifiedTypename(), VALUE_NONE)
-	);
+	params.push_back(Parameter::CreateRuntime(mQualifiedTypename, mValue, mReference));
 
 	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("~operator", params, false, Visibility::Public);
 	if ( !value_operator ) {
@@ -607,9 +599,7 @@ void Object::operator_bitor(const Object *other)
 	}
 
 	ParameterList params;
-	params.push_back(
-		Parameter(ANONYMOUS_OBJECT, QualifiedTypename(), VALUE_NONE)
-	);
+	params.push_back(Parameter::CreateRuntime(mQualifiedTypename, mValue, mReference));
 
 	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("|operator", params, false, Visibility::Public);
 	if ( !value_operator ) {
@@ -640,9 +630,7 @@ void Object::operator_divide(const Object *other)
 	}
 
 	ParameterList params;
-	params.push_back(
-		Parameter(ANONYMOUS_OBJECT, QualifiedTypename(), VALUE_NONE)
-	);
+	params.push_back(Parameter::CreateRuntime(mQualifiedTypename, mValue, mReference));
 
 	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("/operator", params, false, Visibility::Public);
 	if ( !value_operator ) {
@@ -672,9 +660,7 @@ bool Object::operator_equal(const Object *other)
 	}
 
 	ParameterList params;
-	params.push_back(
-		Parameter(ANONYMOUS_OBJECT, QualifiedTypename(), VALUE_NONE)
-	);
+	params.push_back(Parameter::CreateRuntime(mQualifiedTypename, mValue, mReference));
 
 	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("==operator", params, false, Visibility::Public);
 	if ( !value_operator ) {
@@ -699,9 +685,7 @@ bool Object::operator_greater(const Object *other)
 	}
 
 	ParameterList params;
-	params.push_back(
-		Parameter(ANONYMOUS_OBJECT, QualifiedTypename(), VALUE_NONE)
-	);
+	params.push_back(Parameter::CreateRuntime(mQualifiedTypename, mValue, mReference));
 
 	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod(">operator", params, false, Visibility::Public);
 	if ( !value_operator ) {
@@ -726,9 +710,7 @@ bool Object::operator_greater_equal(const Object *other)
 	}
 
 	ParameterList params;
-	params.push_back(
-		Parameter(ANONYMOUS_OBJECT, QualifiedTypename(), VALUE_NONE)
-	);
+	params.push_back(Parameter::CreateRuntime(mQualifiedTypename, mValue, mReference));
 
 	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod(">=operator", params, false, Visibility::Public);
 	if ( !value_operator ) {
@@ -766,9 +748,7 @@ bool Object::operator_less(const Object *other)
 	}
 
 	ParameterList params;
-	params.push_back(
-		Parameter(ANONYMOUS_OBJECT, QualifiedTypename(), VALUE_NONE)
-	);
+	params.push_back(Parameter::CreateRuntime(mQualifiedTypename, mValue, mReference));
 
 	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("<operator", params, false, Visibility::Public);
 	if ( !value_operator ) {
@@ -793,9 +773,7 @@ bool Object::operator_less_equal(const Object *other)
 	}
 
 	ParameterList params;
-	params.push_back(
-		Parameter(ANONYMOUS_OBJECT, QualifiedTypename(), VALUE_NONE)
-	);
+	params.push_back(Parameter::CreateRuntime(mQualifiedTypename, mValue, mReference));
 
 	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("<=operator", params, false, Visibility::Public);
 	if ( !value_operator ) {
@@ -820,9 +798,7 @@ void Object::operator_modulo(const Object *other)
 	}
 
 	ParameterList params;
-	params.push_back(
-		Parameter(ANONYMOUS_OBJECT, QualifiedTypename(), VALUE_NONE)
-	);
+	params.push_back(Parameter::CreateRuntime(mQualifiedTypename, mValue, mReference));
 
 	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("%operator", params, false, Visibility::Public);
 	if ( !value_operator ) {
@@ -848,9 +824,7 @@ void Object::operator_multiply(const Object *other)
 	}
 
 	ParameterList params;
-	params.push_back(
-		Parameter(ANONYMOUS_OBJECT, QualifiedTypename(), VALUE_NONE)
-	);
+	params.push_back(Parameter::CreateRuntime(mQualifiedTypename, mValue, mReference));
 
 	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("*operator", params, false, Visibility::Public);
 	if ( !value_operator ) {
@@ -876,9 +850,7 @@ void Object::operator_plus(const Object *other)
 	}
 
 	ParameterList params;
-	params.push_back(
-		Parameter(ANONYMOUS_OBJECT, QualifiedTypename(), VALUE_NONE)
-	);
+	params.push_back(Parameter::CreateRuntime(mQualifiedTypename, mValue, mReference));
 
 	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("+operator", params, false, Visibility::Public);
 	if ( !value_operator ) {
@@ -904,9 +876,7 @@ void Object::operator_subtract(const Object *other)
 	}
 
 	ParameterList params;
-	params.push_back(
-		Parameter(ANONYMOUS_OBJECT, QualifiedTypename(), VALUE_NONE)
-	);
+	params.push_back(Parameter::CreateRuntime(mQualifiedTypename, mValue, mReference));
 
 	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("-operator", params, false, Visibility::Public);
 	if ( !value_operator ) {

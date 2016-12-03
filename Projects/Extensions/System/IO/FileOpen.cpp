@@ -57,8 +57,8 @@ FileOpen::FileOpen()
 : ExtensionMethod(0, "fopen", Designtime::IntegerObject::TYPENAME)
 {
 	ParameterList params;
-	params.push_back(Parameter("filename", Designtime::StringObject::TYPENAME, VALUE_NONE));
-	params.push_back(Parameter("accessmode", Designtime::StringObject::TYPENAME, VALUE_NONE));
+	params.push_back(Parameter::CreateDesigntime("filename", Designtime::StringObject::TYPENAME));
+	params.push_back(Parameter::CreateDesigntime("accessmode", Designtime::StringObject::TYPENAME));
 
 	setSignature(params);
 }

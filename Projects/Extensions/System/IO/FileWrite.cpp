@@ -41,8 +41,8 @@ FileWriteBool::FileWriteBool()
 : ExtensionMethod(0, "fwriteb", Designtime::IntegerObject::TYPENAME)
 {
 	ParameterList params;
-	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));
-	params.push_back(Parameter("value", Designtime::BoolObject::TYPENAME, false));
+	params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME, 0));
+	params.push_back(Parameter::CreateDesigntime("value", Designtime::BoolObject::TYPENAME, false));
 
 	setSignature(params);
 }
@@ -76,8 +76,8 @@ FileWriteDouble::FileWriteDouble()
 : ExtensionMethod(0, "fwrited", Designtime::IntegerObject::TYPENAME)
 {
 	ParameterList params;
-	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));
-	params.push_back(Parameter("value", Designtime::DoubleObject::TYPENAME, 0.0));
+	params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME, 0));
+	params.push_back(Parameter::CreateDesigntime("value", Designtime::DoubleObject::TYPENAME, 0.0));
 
 	setSignature(params);
 }
@@ -108,8 +108,8 @@ FileWriteFloat::FileWriteFloat()
 : ExtensionMethod(0, "fwritef", Designtime::IntegerObject::TYPENAME)
 {
 	ParameterList params;
-	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));
-	params.push_back(Parameter("value", Designtime::FloatObject::TYPENAME, 0.f));
+	params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME, 0));
+	params.push_back(Parameter::CreateDesigntime("value", Designtime::FloatObject::TYPENAME, 0.f));
 
 	setSignature(params);
 }
@@ -140,8 +140,8 @@ FileWriteInt::FileWriteInt()
 : ExtensionMethod(0, "fwritei", Designtime::IntegerObject::TYPENAME)
 {
 	ParameterList params;
-	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));
-	params.push_back(Parameter("value", Designtime::IntegerObject::TYPENAME, 0));
+	params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME, 0));
+	params.push_back(Parameter::CreateDesigntime("value", Designtime::IntegerObject::TYPENAME, 0));
 
 	setSignature(params);
 }
@@ -172,8 +172,8 @@ FileWriteString::FileWriteString()
 : ExtensionMethod(0, "fwrites", Designtime::IntegerObject::TYPENAME)
 {
 	ParameterList params;
-	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));
-	params.push_back(Parameter("value", Designtime::StringObject::TYPENAME, VALUE_NONE));
+	params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME, 0));
+	params.push_back(Parameter::CreateDesigntime("value", Designtime::StringObject::TYPENAME, VALUE_NONE));
 
 	setSignature(params);
 }

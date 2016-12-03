@@ -41,7 +41,7 @@ FileReadBool::FileReadBool()
 : ExtensionMethod(0, "freadb", Designtime::BoolObject::TYPENAME)
 {
 	ParameterList params;
-	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));
+	params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME));
 
 	setSignature(params);
 }
@@ -74,7 +74,7 @@ FileReadDouble::FileReadDouble()
 : ExtensionMethod(0, "freadd", Designtime::DoubleObject::TYPENAME)
 {
 	ParameterList params;
-	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));
+	params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME));
 
 	setSignature(params);
 }
@@ -106,7 +106,7 @@ FileReadFloat::FileReadFloat()
 : ExtensionMethod(0, "freadf", Designtime::FloatObject::TYPENAME)
 {
 	ParameterList params;
-	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));
+	params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME));
 
 	setSignature(params);
 }
@@ -138,7 +138,7 @@ FileReadInt::FileReadInt()
 : ExtensionMethod(0, "freadi", Designtime::IntegerObject::TYPENAME)
 {
 	ParameterList params;
-	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));
+	params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME));
 
 	setSignature(params);
 }
@@ -170,8 +170,8 @@ FileReadString::FileReadString()
 : ExtensionMethod(0, "freads", Designtime::StringObject::TYPENAME)
 {
 	ParameterList params;
-	params.push_back(Parameter("handle", Designtime::IntegerObject::TYPENAME, 0));
-	params.push_back(Parameter("count", Designtime::IntegerObject::TYPENAME, 1, true));
+	params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME));
+	params.push_back(Parameter::CreateDesigntime("count", Designtime::IntegerObject::TYPENAME, 1, true));
 
 	setSignature(params);
 }
