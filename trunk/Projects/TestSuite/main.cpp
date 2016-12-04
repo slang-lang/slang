@@ -44,6 +44,18 @@
 
 typedef std::list<TestFixture*> FixtureList;
 
+Utils::Common::ILogger* mLogger = 0;
+Utils::Printer* mPrinter = 0;
+
+
+void cleanup() {
+	SafeDelete( mLogger );
+}
+
+void initialize() {
+	mLogger = new Utils::Common::StdOutLogger();
+	mPrinter = Utils::PrinterDriver::Instance();
+}
 
 void printUsage()
 {
@@ -66,8 +78,7 @@ int main(int argc, const char* argv[])
 	// Memory leak detection
 #endif
 
-	Utils::Common::ILogger *mLogger = new Utils::Common::StdOutLogger();
-	Utils::Printer *mPrinter = Utils::PrinterDriver::Instance();
+	initialize();
 
 	bool executed = false;
 	bool show = false;
@@ -77,6 +88,7 @@ int main(int argc, const char* argv[])
 		for (int i = 1; i < argc; i++) {
 			if ( Utils::Tools::StringCompare(argv[i], "--help") ) {
 				printUsage();
+				cleanup();
 
 				return 0;
 			}
@@ -92,6 +104,7 @@ int main(int argc, const char* argv[])
 				show = true;
 				if ( argc <= ++i ) {
 					std::cout << "invalid number of parameters provided!" << std::endl;
+					cleanup();
 					return -1;
 				}
 				toRun = argv[i];
@@ -182,7 +195,7 @@ int main(int argc, const char* argv[])
 		std::cout << "could not find fixture '" << toRun << "'!" << std::endl;
 	}
 
-	SafeDelete( mLogger );
+	cleanup();
 
 	return 0;
 }
