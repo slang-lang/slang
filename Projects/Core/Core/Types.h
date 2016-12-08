@@ -7,6 +7,7 @@
 #include <list>
 #include <set>
 #include <string>
+#include <unordered_set>
 
 // Project includes
 #include "Parameter.h"
@@ -18,7 +19,8 @@
 
 
 typedef std::list<std::string> StringList;
-typedef std::set<std::string> StringSet;
+//typedef std::set<std::string> StringSet;
+typedef std::unordered_set<std::string> StringSet;
 
 
 namespace ObjectiveScript {

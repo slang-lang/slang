@@ -5,7 +5,10 @@
 
 // Library includes
 #include <map>
+#include <set>
 #include <string>
+//#include <unordered_map>
+//#include <unordered_set>
 
 // Project includes
 #include <Core/Common/PrototypeConstraint.h>
@@ -81,6 +84,10 @@ private:
 	typedef std::map<std::string, Designtime::BluePrintEnum*> BluePrintEnumMap;
 	typedef std::map<std::string, Designtime::BluePrintObject*> BluePrintObjectMap;
 	typedef std::set<Designtime::BluePrintGeneric*> ForwardDeclarationTomb;
+
+	//typedef std::unordered_map<std::string, Designtime::BluePrintEnum*> BluePrintEnumMap;
+	//typedef std::unordered_map<std::string, Designtime::BluePrintObject*> BluePrintObjectMap;
+	//typedef std::unordered_set<Designtime::BluePrintGeneric*> ForwardDeclarationTomb;
 
 private:
 	BluePrintEnumMap mBluePrintEnums;

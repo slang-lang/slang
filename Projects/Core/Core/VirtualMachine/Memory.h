@@ -48,6 +48,7 @@ private:
 		unsigned int mCount;
 		Runtime::Object* mObject;
 	};
+
 	typedef std::map<Reference, RefCount> MemoryMap;
 
 private:

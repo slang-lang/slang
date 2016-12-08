@@ -4,8 +4,11 @@
 
 
 // Library include
-#include <set>
+#include <map>
+//#include <set>
 #include <string>
+//#include <unordered_map>
+#include <unordered_set>
 
 // Project includes
 #include <Core/Interfaces/IScope.h>
@@ -41,6 +44,7 @@ public:	// IScope implementation
 
 protected:
 	typedef std::map<std::string, Symbol*> Symbols;
+	//typedef std::unordered_map<std::string, Symbol*> Symbols;
 
 protected:
 	IScope *mParent;
@@ -67,7 +71,8 @@ private:
 class MethodScope : public NamedScope
 {
 public:
-	typedef std::set<Runtime::Method*> MethodCollection;
+	//typedef std::set<Runtime::Method*> MethodCollection;
+	typedef std::unordered_set<Runtime::Method*> MethodCollection;
 
 public:
 	MethodScope(const std::string& name, IScope* parent = 0);
