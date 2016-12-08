@@ -67,7 +67,6 @@ private:
 	Runtime::AtomicValue mValue;
 };
 
-
 typedef std::list<Parameter> ParameterList;
 
 

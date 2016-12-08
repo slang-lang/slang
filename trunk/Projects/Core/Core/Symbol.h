@@ -6,6 +6,7 @@
 // Library includes
 #include <map>
 #include <string>
+//#include <unordered_map>
 
 // Project includes
 #include <Core/Attributes/Attributes.h>
@@ -63,8 +64,8 @@ protected:
 	Visibility::E mVisibility;
 };
 
-//typedef std::less<std::string> StringLess;
 typedef std::map<std::string, Symbol*> Symbols;
+//typedef std::unordered_map<std::string, Symbol*> Symbols;
 
 
 class BluePrintSymbol : public Symbol,
