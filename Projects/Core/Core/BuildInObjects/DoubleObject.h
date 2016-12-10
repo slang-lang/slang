@@ -26,7 +26,7 @@ public:
 public:
 	DoubleObject(AtomicValue value = DEFAULTVALUE);
 	DoubleObject(const std::string& name, double value);
-	DoubleObject(const Object& object);
+	explicit DoubleObject(const Object& object);
 
 public:	// Operators
 	virtual void operator_assign(const DoubleObject *other);

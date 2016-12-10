@@ -39,27 +39,26 @@ Object::Object()
 
 Object::Object(const Object& other)
 : MethodScope(other.getName(), other.mParent),
-  ObjectSymbol(other.getName())
+  ObjectSymbol(other.getName()),
+  mBase(0),
+  mFilename(other.mFilename),
+  mInheritance(other.mInheritance),
+  mIsArray(other.mIsArray),
+  mIsArrayDynamicallyExpanding(other.mIsArrayDynamicallyExpanding),
+  mIsAtomicType(other.mIsAtomicType),
+  mIsConstructed(other.mIsConstructed),
+  mIsNull(other.mIsNull),
+  mQualifiedOuterface(other.mQualifiedOuterface),
+  mQualifiedTypename(other.mQualifiedTypename),
+  mTypename(other.mTypename),
+  mValue(other.mValue)
 {
 	mThis = this;
-	mBase = 0;
 
-	mFilename = other.mFilename;
 	mImplementationType = other.mImplementationType;
-	mInheritance = other.mInheritance;
-	mIsArray = other.mIsArray;
-	mIsArrayDynamicallyExpanding = other.mIsArrayDynamicallyExpanding;
-	mIsAtomicType = other.mIsAtomicType;
-	mIsConstructed = other.mIsConstructed;
-	mIsNull = other.mIsNull;
 	mParent = other.mParent;
 	mScopeName = other.mScopeName;
 	mScopeType = other.mScopeType;
-	mValue = other.mValue;
-
-	mQualifiedOuterface = other.mQualifiedOuterface;
-	mQualifiedTypename = other.mQualifiedTypename;
-	mTypename = other.mTypename;
 
 	setConst(other.isConst());
 	setFinal(other.isFinal());
@@ -99,7 +98,7 @@ Object::~Object()
 	mThis = 0;
 }
 
-void Object::operator= (const Object& other)
+Object& Object::operator= (const Object& other)
 {
 	if ( this != &other ) {
 		mFilename = other.mFilename;
@@ -126,6 +125,8 @@ void Object::operator= (const Object& other)
 
 		assignReference(other.mReference);
 	}
+
+	return *this;
 }
 
 void Object::assign(const Object& other, bool overrideType)

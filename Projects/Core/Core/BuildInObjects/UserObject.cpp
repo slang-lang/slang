@@ -15,19 +15,19 @@ namespace ObjectiveScript {
 namespace Runtime {
 
 
-std::string UserObject::DEFAULTVALUE = VALUE_NONE;
+AtomicValue UserObject::DEFAULTVALUE = AtomicValue(VALUE_NONE);
 std::string UserObject::TYPENAME = OBJECT;
 
 
 UserObject::UserObject()
-: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, VALUE_NONE)
+: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, DEFAULTVALUE)
 {
 	mIsAtomicType = false;
 	mIsConstructed = false;
 }
 
 UserObject::UserObject(const std::string& name, const std::string& filename, const std::string& type, bool isNull)
-: Object(name, filename, type, 0)
+: Object(name, filename, type, AtomicValue(0))
 {
 	mIsAtomicType = false;
 	mIsConstructed = false;

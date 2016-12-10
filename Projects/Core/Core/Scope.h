@@ -30,7 +30,7 @@ namespace Runtime {
 class SymbolScope : public IScope
 {
 public:
-	SymbolScope(IScope* parent = 0);
+	explicit SymbolScope(IScope* parent = 0);
 	virtual ~SymbolScope();
 
 public:	// IScope implementation

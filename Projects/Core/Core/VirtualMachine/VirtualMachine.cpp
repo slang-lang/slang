@@ -6,7 +6,6 @@
 #include <fstream>
 
 // Project includes
-#include <Core/Consts.h>
 #include <Core/Common/Exceptions.h>
 #include <Core/Designtime/Analyser.h>
 #include <Core/Runtime/Script.h>

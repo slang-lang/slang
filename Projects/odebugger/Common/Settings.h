@@ -21,15 +21,14 @@ class Settings
 {
 public:
 	Settings()
-	{
-		mAutoStart = false;
-		mAutoStop = false;
-		mAutoWatch = true;
-		mBreakOnExceptionCatch = false;
-		mBreakOnExceptionThrow = true;
-		mPrompt = "odebugger> ";
-		mRemoteClient = false;
-	}
+	: mAutoStart(false),
+	  mAutoStop(false),
+	  mAutoWatch(true),
+	  mBreakOnExceptionCatch(false),
+	  mBreakOnExceptionThrow(true),
+	  mPrompt("odebugger> "),
+	  mRemoteClient(false)
+	{ }
 
 public:
 	bool autoStart() const {

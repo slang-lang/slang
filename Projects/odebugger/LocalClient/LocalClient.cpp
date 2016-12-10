@@ -4,7 +4,7 @@
 
 // Library includes
 #include <fstream>
-#include <signal.h>
+//#include <signal.h>
 #include <Json/Json.h>
 
 // Project includes
@@ -71,7 +71,7 @@ bool LocalClient::addBreakPoint(const StringList& tokens)
 	}
 
 	StringList::const_iterator it = tokens.begin();
-	it++;	// skip first token
+	++it;	// skip first token
 
 	std::string file = (*it++);
 	unsigned int line = (unsigned int)::Utils::Tools::stringToInt((*it++));
@@ -146,7 +146,7 @@ bool LocalClient::addWatch(const StringList& tokens)
 	}
 
 	StringList::const_iterator it = tokens.begin();
-	it++;	// skip first token
+	++it;	// skip first token
 
 	mWatches.insert(Watch((*it)));
 
@@ -303,7 +303,7 @@ void LocalClient::executeMethod(const StringList &tokens)
 	std::string name;
 
 	StringList::const_iterator it = tokens.begin();
-	it++;	// skip first token
+	++it;	// skip first token
 	if ( it != tokens.end() ) {
 		name = (*it++);
 	}
@@ -505,7 +505,7 @@ bool LocalClient::modifySymbol(const StringList& tokens)
 	std::string name;
 
 	StringList::const_iterator it = tokens.begin();
-	it++;	// skip first token
+	++it;	// skip first token
 	if ( it != tokens.end() ) {
 		name = (*it++);
 	}
@@ -652,7 +652,7 @@ void LocalClient::prepare(const StringList& tokens)
 	std::string paramStr = mSettings->filename();
 
 	StringList::const_iterator it = tokens.begin();
-	it++;	// skip first token
+	++it;	// skip first token
 	while ( it != tokens.end() ) {
 		paramStr += " " + (*it++);
 	}
@@ -721,7 +721,7 @@ void LocalClient::printSymbol(const StringList& tokens)
 	std::string name;
 
 	StringList::const_iterator it = tokens.begin();
-	it++;	// skip first token
+	++it;	// skip first token
 	if ( it != tokens.end() ) {
 		name = (*it);
 	}
@@ -774,7 +774,7 @@ bool LocalClient::removeBreakPoint(const StringList& tokens)
 	}
 
 	StringList::const_iterator it = tokens.begin();
-	it++;	// skip first token
+	++it;	// skip first token
 
 	int idx = ::Utils::Tools::stringToInt((*it));
 
@@ -799,7 +799,7 @@ bool LocalClient::removeWatch(const StringList& tokens)
 	}
 
 	StringList::const_iterator it = tokens.begin();
-	it++;	// skip first token
+	++it;	// skip first token
 
 	WatchCollection::const_iterator watchIt = mWatches.find(Watch((*it)));
 	if ( watchIt != mWatches.end() ) {

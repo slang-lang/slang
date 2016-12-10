@@ -5,8 +5,6 @@
 // Library includes
 
 // Project includes
-#include <Core/Consts.h>
-#include <Core/Common/Exceptions.h>
 #include <Core/Tools.h>
 #include <Tools/Strings.h>
 #include "BoolObject.h"
@@ -21,19 +19,19 @@ namespace ObjectiveScript {
 namespace Runtime {
 
 
-AtomicValue DoubleObject::DEFAULTVALUE = 0.0;
+AtomicValue DoubleObject::DEFAULTVALUE = AtomicValue(0.0);
 std::string DoubleObject::TYPENAME = "double";
 
 
 DoubleObject::DoubleObject(AtomicValue value)
-: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, value.toDouble())
+: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, AtomicValue(value.toDouble()))
 {
 	mIsAtomicType = true;
 	mIsConstructed = true;
 }
 
 DoubleObject::DoubleObject(const std::string& name, double value)
-: Object(name, SYSTEM_LIBRARY, TYPENAME, value)
+: Object(name, SYSTEM_LIBRARY, TYPENAME, AtomicValue(value))
 {
 	mIsAtomicType = true;
 	mIsConstructed = true;

@@ -21,19 +21,19 @@ namespace ObjectiveScript {
 namespace Runtime {
 
 
-AtomicValue FloatObject::DEFAULTVALUE = 0.f;
+AtomicValue FloatObject::DEFAULTVALUE = AtomicValue(0.f);
 std::string FloatObject::TYPENAME = "float";
 
 
 FloatObject::FloatObject(AtomicValue value)
-: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, value.toFloat())
+: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, AtomicValue(value.toFloat()))
 {
 	mIsAtomicType = true;
 	mIsConstructed = true;
 }
 
 FloatObject::FloatObject(const std::string& name, float value)
-: Object(name, SYSTEM_LIBRARY, TYPENAME, value)
+: Object(name, SYSTEM_LIBRARY, TYPENAME, AtomicValue(value))
 {
 	mIsAtomicType = true;
 	mIsConstructed = true;

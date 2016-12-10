@@ -22,12 +22,12 @@ namespace VSCodeDebug {
 class ProtocolMessage
 {
 public:
-	ProtocolMessage(std::string type_)
+	ProtocolMessage(const std::string& type_)
 	: seq(-1),
 	  type(type_)
 	{ }
 
-	ProtocolMessage(std::string type_, int seq_)
+	ProtocolMessage(const std::string& type_, int seq_)
 	: seq(seq_),
 	  type(type_)
 	{ }
@@ -47,7 +47,7 @@ public:
 class Event : public ProtocolMessage
 {
 public:
-	Event(const std::string eventtype_)
+	Event(const std::string& eventtype_)
 	: ProtocolMessage("event"),
 	  eventtype(eventtype_)
 	{ }

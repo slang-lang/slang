@@ -26,7 +26,8 @@ namespace ObjectiveScript {
 
 
 RemoteClient::RemoteClient()
-: mRunning(true),
+: mContinue(false),
+  mRunning(true),
   mScope(0),
   mVirtualMachine(0)
 {
@@ -82,7 +83,7 @@ void RemoteClient::DispatchRequest(VSCodeDebug::ProtocolMessage* request)
 		return;
 	}
 
-	std::string result;
+	//std::string result;
 
 	VSCodeDebug::Request* r = dynamic_cast<VSCodeDebug::Request*>(request);
 	if ( r ) {

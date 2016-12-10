@@ -20,7 +20,7 @@ namespace Runtime {
 class UserObject : public Object
 {
 public:
-	static std::string DEFAULTVALUE;
+	static AtomicValue DEFAULTVALUE;
 	static std::string TYPENAME;
 
 public:

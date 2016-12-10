@@ -23,7 +23,8 @@ public:
 		Unknown = 0,
 		Const,
 		Final,
-		Modify
+		Modify,
+		Static
 	};
 
 	static E convert(const std::string& v);

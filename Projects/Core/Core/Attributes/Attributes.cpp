@@ -85,7 +85,6 @@ void GenericAttributes::setMutability(Mutability::E m)
 MethodAttributes::MethodAttributes()
 : mImplementationType(ImplementationType::FullyImplemented),
   mIsRecursive(false),
-  mIsStatic(false),
   mMethodType(MethodType::Method),
   mThrows(false)
 {
@@ -123,12 +122,7 @@ void MethodAttributes::setMethodType(MethodType::E type)
 
 bool MethodAttributes::isStatic() const
 {
-	return mIsStatic;
-}
-
-void MethodAttributes::setStatic(bool state)
-{
-	mIsStatic = state;
+	return mMutability == Mutability::Static;
 }
 
 bool MethodAttributes::throws() const

@@ -44,7 +44,7 @@ public:
 public: // overloaded operators
 	bool operator()(const Method& first, const Method& second) const;
 	bool operator< (const Method& other) const;
-	void operator= (const Method& other);
+	Method& operator= (const Method& other);
 
 public:	// Symbol::IType implementation
 	const std::string& QualifiedTypename() const { return mQualifiedTypename; }

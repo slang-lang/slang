@@ -42,8 +42,8 @@ bool Analyser::buildEnum(Designtime::BluePrintEnum* symbol, const TokenList& tok
 {
 	TokenIterator token = tokens.begin();
 
-	Runtime::AtomicValue previous_value = (unsigned)-1;
-	Runtime::AtomicValue value = (unsigned)-1;
+	Runtime::AtomicValue previous_value = Runtime::AtomicValue((unsigned)-1);
+	Runtime::AtomicValue value = Runtime::AtomicValue((unsigned)-1);
 
 	// Format: <identifier> = <value>[, or ;]
 	while ( token != tokens.end() ) {
@@ -313,17 +313,6 @@ bool Analyser::createMemberStub(TokenIterator& token, Visibility::E visibility, 
 {
 	assert( mScope->getScopeType() == IScope::IType::MethodScope );
 
-/*	temporary deactivated
-	if ( !dynamic_cast<Runtime::Namespace*>(mScope) ) {
-		if ( visibility == Visibility::Public ) {
-			// beware: public members are deprecated, remember the "Law of Demeter"
-			// consider using wrappers (getter, setter) instead of directly providing access to members for outsiders
-			// haven't you heard? outsiders, or sometimes called strangers, are evil
-			throw Exceptions::LawOfDemeterViolated("public member " + name + " violates \"Law of Demeter\"", token->position());
-		}
-	}
-*/
-
 	// look for a mutability keyword
 	Mutability::E mutability = Mutability::Modify;
 	bool isFinal = false;
@@ -348,7 +337,7 @@ bool Analyser::createMemberStub(TokenIterator& token, Visibility::E visibility, 
 
 	expect(Token::Type::SEMICOLON, token);
 
-	if ( dynamic_cast<BluePrintGeneric*>(mScope) ){
+	if ( dynamic_cast<BluePrintGeneric*>(mScope) ) {
 		BluePrintObject* blue = new BluePrintObject(type.mTypename, mFilename, name);
 		blue->setFinal(isFinal);
 		blue->setLanguageFeatureState(languageFeature);
@@ -400,7 +389,6 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 	bool isAbstract = mProcessingInterface;
 	bool isFinal = false;
 	bool isRecursive = false;
-	bool isStatic = false;
 	MethodAttributes::MethodType::E methodType = MethodAttributes::MethodType::Function;
 	Mutability::E mutability = Mutability::Const;	// extreme const correctness: all methods are const by default
 	int numConstModifiers = 0;
@@ -463,7 +451,7 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 				isRecursive = true;
 			}
 			else if ( token->content() == MODIFIER_STATIC ) {
-				isStatic = true;
+				mutability = Mutability::Static;
 			}
 			else if ( token->content() == MODIFIER_THROWS ) {
 				if ( methodType == MethodAttributes::MethodType::Destructor ) {
@@ -507,7 +495,6 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 	method->setPrototypeConstraints(type.mConstraints);
 	method->setRecursive(isRecursive);
 	method->setSignature(params);
-	method->setStatic(isStatic);
 	method->setThrows(throws);
 	method->setTokens(tokens);
 	method->setVisibility(visibility);
@@ -607,7 +594,7 @@ void Analyser::generate(const TokenList& tokens)
 			throw Common::Exceptions::SyntaxError("invalid token '" + it->content() + "' found", it->position());
 		};
 
-		it++;
+		++it;
 	}
 }
 

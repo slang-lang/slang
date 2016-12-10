@@ -5,7 +5,6 @@
 // Library includes
 
 // Project includes
-#include <Core/BuildInObjects/VoidObject.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Runtime/OperatorOverloading.h>
 #include <Core/Runtime/TypeCast.h>
@@ -88,14 +87,14 @@ bool Method::operator< (const Method& other) const
 	return this->getName() < other.getName();
 }
 
-void Method::operator= (const Method& other)
+Method& Method::operator= (const Method& other)
 {
 	if ( this != &other ) {
 		mImplementationType = other.mImplementationType;
+		mIsExtensionMethod = other.mIsExtensionMethod;
 		mIsFinal = other.mIsFinal;
 		mIsRecursive = other.mIsRecursive;
 		mIsSealed = other.mIsSealed;
-		mIsStatic = other.mIsStatic;
 		mLanguageFeatureState = other.mLanguageFeatureState;
 		mMethodType = other.mMethodType;
 		mMutability = other.mMutability;
@@ -108,6 +107,8 @@ void Method::operator= (const Method& other)
 		mTokens = other.mTokens;
 		mVisibility = other.mVisibility;
 	}
+
+	return *this;
 }
 
 ControlFlow::E Method::execute(const ParameterList& /*params*/, Object* /*result*/, const Token& token)
@@ -156,14 +157,14 @@ bool Method::isSignatureValid(const ParameterList& params) const
 			}
 */
 
-			paramIt++;
+			++paramIt;
 		}
 		else if ( !sigIt->hasDefaultValue() ) {
 			// we received less parameters than expected and we have no default value set
 			return false;
 		}
 
-		sigIt++;
+		++sigIt;
 	}
 
 	// no differences found, nailed it!
@@ -191,7 +192,7 @@ ParameterList Method::mergeParameters(const ParameterList& params) const
 			value = paramIt->value();
 
 			// next iteration
-			paramIt++;
+			++paramIt;
 		}
 
 		result.push_back(Parameter::CreateDesigntime(

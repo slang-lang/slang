@@ -6,7 +6,6 @@
 
 // Project includes
 #include <Core/Common/Exceptions.h>
-#include <Core/Consts.h>
 
 // Namespace declarations
 
@@ -93,20 +92,6 @@ int stringToInt(const std::string &value)
 	std::stringstream stream;
 	stream << value;
 	int result;
-	stream >> result;
-
-	return result;
-}
-
-double stringToNumber(const std::string &value)
-{
-	if ( value.empty() ) {
-		return 0.0;
-	}
-
-	std::stringstream stream;
-	stream << value;
-	double result;
 	stream >> result;
 
 	return result;

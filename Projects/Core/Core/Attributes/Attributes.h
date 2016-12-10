@@ -76,7 +76,6 @@ public:
 	virtual void setMethodType(MethodType::E type);
 
 	virtual bool isStatic() const;
-	virtual void setStatic(bool state);
 
 	virtual bool throws() const;
 	virtual void setThrows(bool state);
@@ -84,7 +83,6 @@ public:
 protected:
 	ImplementationType::E mImplementationType;
 	bool mIsRecursive;
-	bool mIsStatic;
 	MethodType::E mMethodType;
 	bool mThrows;
 };

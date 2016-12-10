@@ -21,7 +21,7 @@ namespace Runtime {
 class AtomicValue
 {
 public:
-	enum {
+	enum E {
 		UNKOWN,
 		BOOL,
 		DOUBLE,
