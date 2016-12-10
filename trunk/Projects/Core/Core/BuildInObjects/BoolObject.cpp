@@ -21,19 +21,19 @@ namespace ObjectiveScript {
 namespace Runtime {
 
 
-AtomicValue BoolObject::DEFAULTVALUE = false;
+AtomicValue BoolObject::DEFAULTVALUE = AtomicValue(false);
 std::string BoolObject::TYPENAME = "bool";
 
 
 BoolObject::BoolObject(AtomicValue value)
-: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, value.toBool())
+: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, AtomicValue(value.toBool()))
 {
 	mIsAtomicType = true;
 	mIsConstructed = true;
 }
 
 BoolObject::BoolObject(const std::string& name, bool value)
-: Object(name, SYSTEM_LIBRARY, TYPENAME, value)
+: Object(name, SYSTEM_LIBRARY, TYPENAME, AtomicValue(value))
 {
 	mIsAtomicType = true;
 	mIsConstructed = true;

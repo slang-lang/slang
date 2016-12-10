@@ -20,19 +20,19 @@ namespace ObjectiveScript {
 namespace Runtime {
 
 
-AtomicValue IntegerObject::DEFAULTVALUE = 0;
+AtomicValue IntegerObject::DEFAULTVALUE = AtomicValue(0);
 std::string IntegerObject::TYPENAME = "int";
 
 
 IntegerObject::IntegerObject(AtomicValue value)
-: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, value.toInt())
+: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, AtomicValue(value.toInt()))
 {
 	mIsAtomicType = true;
 	mIsConstructed = true;
 }
 
 IntegerObject::IntegerObject(const std::string& name, int value)
-: Object(name, SYSTEM_LIBRARY, TYPENAME, value)
+: Object(name, SYSTEM_LIBRARY, TYPENAME, AtomicValue(value))
 {
 	mIsAtomicType = true;
 	mIsConstructed = true;

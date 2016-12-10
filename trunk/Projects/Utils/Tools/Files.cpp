@@ -21,7 +21,6 @@ bool exists(const std::string& filename)
 {
 	std::ifstream file( filename.c_str() );
 
-	//return (file != 0);
 	return file.good();
 }
 
@@ -38,7 +37,7 @@ std::string _ExtractFileExt(const std::string& filename)
 		d--;
 	}
 
-	if ( d <= 0 ) {
+	if ( d == 0 ) {
 		return std::string();
 	}
 
@@ -73,7 +72,7 @@ std::string _RemoveFileExt(const std::string& filename)
 	    d--;
     }
 
-	if ( d <= 0 ) {
+	if ( d == 0 ) {
 	    return filename;
 	}
 
@@ -109,7 +108,7 @@ std::string ExtractFilename(const std::string& filename)
 		d--;
 	}
 
-	if ( d <= 0 ) {
+	if ( d == 0 ) {
 		return filename;
 	}
 
@@ -136,7 +135,7 @@ std::string ExtractPathname(const std::string& pathname)
 		d--;
 	}
 
-	if ( d <= 0 ) {
+	if ( d == 0 ) {
 		return pathname;
 	}
 

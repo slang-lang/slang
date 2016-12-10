@@ -7,7 +7,6 @@
 // Project includes
 #include <Core/Method.h>
 #include <Core/Tools.h>
-#include <Core/Types.h>
 
 // Namespace declarations
 

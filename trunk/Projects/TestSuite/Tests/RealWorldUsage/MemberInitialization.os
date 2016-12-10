@@ -1,7 +1,7 @@
 #!/usr/local/bin/oscript
 
 private namespace Space {
-	private object TestObject {
+	public object TestObject {
 		public int mConstValue const = 1389;
 		public int mMutableValue modify = -173;
 

@@ -15,12 +15,12 @@ namespace ObjectiveScript {
 namespace Runtime {
 
 
-std::string GenericObject::DEFAULTVALUE = VALUE_NULL;
+AtomicValue GenericObject::DEFAULTVALUE = AtomicValue(VALUE_NULL);
 std::string GenericObject::TYPENAME = OBJECT;
 
 
 GenericObject::GenericObject()
-: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, VALUE_NULL)
+: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, DEFAULTVALUE)
 {
 	mIsAtomicType = false;
 	mIsConstructed = false;
@@ -40,7 +40,7 @@ GenericObject::GenericObject(const std::string& name, const std::string& filenam
 }
 
 GenericObject::GenericObject(const Object& object)
-: Object(object.getName(), object.Filename(), object.QualifiedTypename(), VALUE_NULL)
+: Object(object.getName(), object.Filename(), object.QualifiedTypename(), DEFAULTVALUE)
 {
 	mIsAtomicType = false;
 	mIsConstructed = false;

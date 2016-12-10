@@ -24,7 +24,7 @@ class BreakPoint
 {
 public:
 	BreakPoint();
-	BreakPoint(const Common::Position& position);
+	explicit BreakPoint(const Common::Position& position);
 	~BreakPoint();
 
 public:

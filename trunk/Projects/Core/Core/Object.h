@@ -49,7 +49,7 @@ public:
 	virtual ~Object();
 
 public:
-	void operator= (const Object& other);
+	Object& operator= (const Object& other);
 	void assign(const Object& other, bool overrideType = false);
 	void copy(const Object& other);
 

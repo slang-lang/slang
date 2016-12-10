@@ -3,7 +3,6 @@
 #include "ObjectType.h"
 
 // Library includes
-#include <string>
 
 // Project includes
 #include <Core/Consts.h>

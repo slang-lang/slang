@@ -58,6 +58,7 @@ MethodScope* Stack::globalScope() const
 
 void Stack::init()
 {
+	assert(!mGlobalScope);
 	mGlobalScope = new Runtime::Namespace(VALUE_NONE, 0);
 
 	push(mGlobalScope, ParameterList());
@@ -81,7 +82,7 @@ void Stack::print()
 	}
 
 	StackTrace::const_iterator it = mStack.begin();
-	it++;	// skip frame 0 (global scope)
+	++it;	// skip frame 0 (global scope)
 
 	for ( ; it != mStack.end(); ++it ) {
 		std::cout << (*it)->toString() << std::endl;

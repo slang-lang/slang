@@ -36,9 +36,7 @@ void SymbolScope::define(const std::string& name, Symbol* symbol)
 		throw Common::Exceptions::DuplicateIdentifier("duplicate identifier defined: " + symbol->getName());
 	}
 
-	mSymbols.insert(std::make_pair(
-		name, symbol
-	));
+	mSymbols.insert(std::make_pair(name, symbol));
 }
 
 void SymbolScope::deinit()
@@ -156,10 +154,6 @@ void MethodScope::defineMethod(const std::string& name, Runtime::Method* method)
 	if ( it == mSymbols.end() ) {
 		// define new symbol
 		SymbolScope::define(name, method);
-	}
-	else {
-		// override existing symbol
-		it->second = method;
 	}
 
 	mMethods.insert(method);

@@ -711,10 +711,6 @@ void Tokenizer::replaceConstDataTypes()
 					// CONST_FLOAT 'f'
 					numCombines++;
 				}
-				else if ( tmp->type() == Token::Type::CONST_INTEGER ) {
-					// CONST_INTEGER 'i'
-					numCombines++;
-				}
 			}
 			else if ( tmp->type() == Token::Type::IDENTIFER ) {
 				if ( tmp->content() == "d" ) {
@@ -752,7 +748,7 @@ void Tokenizer::replaceConstDataTypes()
 			if ( numCombines > 0 ) {
 				// we found an operator
 				TokenList::iterator opToken = token;
-				token++;	// advance to next token
+				++token;	// advance to next token
 
 				while ( numCombines > 0 ) {
 					numCombines--;	// decrement combinations
@@ -767,7 +763,7 @@ void Tokenizer::replaceConstDataTypes()
 			}
 		}
 
-		token++;
+		++token;
 	}
 }
 

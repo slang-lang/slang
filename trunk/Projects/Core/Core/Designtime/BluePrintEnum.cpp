@@ -5,7 +5,6 @@
 // Library includes
 
 // Project includes
-#include <Core/Consts.h>
 #include <Core/Object.h>
 #include <Tools/Strings.h>
 

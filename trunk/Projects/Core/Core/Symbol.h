@@ -73,7 +73,7 @@ class BluePrintSymbol : public Symbol,
 						public ObjectAttributes
 {
 public:
-	BluePrintSymbol(const std::string& name)
+	explicit BluePrintSymbol(const std::string& name)
 	: Symbol(name, Symbol::IType::BluePrintObjectSymbol)
 	{ }
 	virtual ~BluePrintSymbol() { }
@@ -84,7 +84,7 @@ class MethodSymbol : public Symbol,
 					 public MethodAttributes
 {
 public:
-	MethodSymbol(const std::string& name)
+	explicit MethodSymbol(const std::string& name)
 	: Symbol(name, Symbol::IType::MethodSymbol)
 	{ }
 	virtual ~MethodSymbol() { }
@@ -95,7 +95,7 @@ class NamespaceSymbol : public Symbol,
 						public NamespaceAttributes
 {
 public:
-	NamespaceSymbol(const std::string& name)
+	explicit NamespaceSymbol(const std::string& name)
 	: Symbol(name, Symbol::IType::NamespaceSymbol)
 	{ }
 	virtual ~NamespaceSymbol() { }
@@ -106,7 +106,7 @@ class ObjectSymbol : public Symbol,
 					 public ObjectAttributes
 {
 public:
-	ObjectSymbol(const std::string& name)
+	explicit ObjectSymbol(const std::string& name)
 	: Symbol(name, Symbol::IType::ObjectSymbol)
 	{ }
 	virtual ~ObjectSymbol() { }
