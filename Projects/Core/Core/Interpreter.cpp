@@ -128,11 +128,11 @@ ControlFlow::E Interpreter::execute(Method* method, const ParameterList& params,
 		}
 	}
 
-	// record stack trace
+	// record stack
 	Controller::Instance().stack()->push(&scope, executedParams);
 	// notify debugger
 	Core::Debugger::Instance().notifyEnter(&scope, Core::Debugger::immediateBreakToken);
-
+	// interpret scope tokens
 	ControlFlow::E controlflow = interpret(getTokens(), result);
 
 	// process & update control flow
