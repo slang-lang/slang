@@ -8,6 +8,8 @@
 #include <iostream>
 
 // Project includes
+#include <Core/AST/TreeGenerator.h>
+#include <Core/AST/TreeVisitor.h>
 #include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/Common/Exceptions.h>
 #include <Core/Designtime/Parser/Parser.h>
@@ -498,6 +500,14 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 	method->setThrows(throws);
 	method->setTokens(tokens);
 	method->setVisibility(visibility);
+
+/*
+	AST::TreeGenerator tg;
+	AST::Statements* statements = tg.generate(tokens);
+	method->setRootNode(statements);
+	AST::PrintVisitor pv(statements);
+	pv.process();
+*/
 
 	mScope->defineMethod(name, method);
 

@@ -1202,7 +1202,7 @@ void Interpreter::process_if(TokenIterator& token, Object *result)
 	TokenIterator elseEnd = getTokens().end();
 
 	// look for an else-token
-	if ( bodyEnd != getTokens().end() && (bodyEnd->type() == Token::Type::KEYWORD && bodyEnd->content() == "else") ) {
+	if ( bodyEnd != getTokens().end() && (bodyEnd->type() == Token::Type::KEYWORD && bodyEnd->content() == KEYWORD_ELSE ) ) {
 		elseBegin = findNext(bodyEnd, Token::Type::BRACKET_CURLY_OPEN);
 		// find next balanced '{' & '}' pair
 		elseEnd = findNextBalancedCurlyBracket(elseBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
@@ -1211,7 +1211,7 @@ void Interpreter::process_if(TokenIterator& token, Object *result)
 			// check if there is another if after our else-block
 			TokenIterator tmpIf = elseEnd;
 			++tmpIf;
-			if ( tmpIf != getTokens().end() && tmpIf->type() == Token::Type::KEYWORD && tmpIf->content() == "else" ) {
+			if ( tmpIf != getTokens().end() && tmpIf->type() == Token::Type::KEYWORD && tmpIf->content() == KEYWORD_ELSE ) {
 				// find next balanced '{' & '}' pair
 				elseEnd = findNextBalancedCurlyBracket(tmpIf, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
 

@@ -5,6 +5,7 @@
 // Library includes
 
 // Project includes
+#include <Core/AST/Statement.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Runtime/OperatorOverloading.h>
 #include <Core/Runtime/TypeCast.h>
@@ -24,7 +25,8 @@ Method::Method(IScope* parent, const std::string& name, const std::string& type)
 : NamedScope(name, parent),
   MethodSymbol(name),
   mIsExtensionMethod(false),
-  mQualifiedTypename(type)
+  mQualifiedTypename(type),
+  mRootNode(0)
 {
 }
 
@@ -232,6 +234,11 @@ void Method::setParent(IScope *scope)
 void Method::setPrototypeConstraints(const PrototypeConstraints& constraints)
 {
 	mPrototypeConstraints = constraints;
+}
+
+void Method::setRootNode(AST::Statements* node)
+{
+	mRootNode = node;
 }
 
 void Method::setSignature(const ParameterList& params)

@@ -25,6 +25,9 @@
 namespace ObjectiveScript {
 
 // Forward declarations
+namespace AST {
+	class Statements;
+}
 class IPrinter;
 class Memory;
 class Repository;
@@ -68,6 +71,7 @@ public: // Signature
 public: // Setup
 	void setParent(IScope* scope);
 	void setPrototypeConstraints(const PrototypeConstraints& constraints);
+	void setRootNode(AST::Statements* node);
 	void setSignature(const ParameterList& params);
 	void setTokens(const TokenList& tokens);
 
@@ -84,6 +88,7 @@ protected:
 private:
 	PrototypeConstraints mPrototypeConstraints;
 	std::string mQualifiedTypename;
+	AST::Statements* mRootNode;
 	ParameterList mSignature;
 	TokenList mTokens;
 };
