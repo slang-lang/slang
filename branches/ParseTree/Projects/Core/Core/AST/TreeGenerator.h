@@ -12,6 +12,7 @@
 #include <Core/Runtime/ExceptionData.h>
 #include <Core/Scope.h>
 #include <Core/VirtualMachine/Stack.h>
+#include "Statement.h"
 
 // Forward declarations
 
@@ -31,6 +32,7 @@ namespace Runtime {
 namespace AST {
 
 // Forward declarations
+class Expression;
 class Node;
 
 class TreeGenerator
@@ -40,7 +42,7 @@ public:
 	~TreeGenerator();
 
 public:
-	AST::Node* generate(const TokenList &tokens);
+	Statements* generate(const TokenList &tokens);
 
 private: // Execution
 	inline Symbol* identify(TokenIterator& token) const;
@@ -48,39 +50,40 @@ private: // Execution
 
 	// token processing
 	// {
-	void process(Runtime::Object* result, TokenIterator& start, TokenIterator end, Token::Type::E terminator = Token::Type::NIL);
-	void process_assert(TokenIterator& token);
-	void process_break(TokenIterator& token);
-	void process_continue(TokenIterator& token);
-	void process_copy(TokenIterator& token, Runtime::Object* result);
-	void process_delete(TokenIterator& token);
-	void process_exit(TokenIterator& token);
-	void process_for(TokenIterator& token, Runtime::Object* result);
-	void process_foreach(TokenIterator& token, Runtime::Object* result);
+	Statement* process(TokenIterator& start, TokenIterator end, Token::Type::E terminator = Token::Type::NIL);
+
+	Statement* process_assert(TokenIterator& token);
+	Statement* process_break(TokenIterator& token);
+	Statement* process_continue(TokenIterator& token);
+	Expression* process_copy(TokenIterator& token);
+	Statement* process_delete(TokenIterator& token);
+	Statement* process_exit(TokenIterator& token);
+	void process_for(TokenIterator& token);
+	void process_foreach(TokenIterator& token);
 	void process_identifier(TokenIterator& token, Runtime::Object* result, Token::Type::E terminator = Token::Type::SEMICOLON);
-	void process_if(TokenIterator& token, Runtime::Object* result);
-	void process_keyword(TokenIterator& token, Runtime::Object* result);
-	void process_method(TokenIterator& token, Runtime::Object* result);
-	void process_new(TokenIterator& token, Runtime::Object* result);
-	void process_print(TokenIterator& token);
-	void process_return(TokenIterator& token, Runtime::Object* result);
-	void process_scope(TokenIterator& token, Runtime::Object* result);
-	void process_switch(TokenIterator& token, Runtime::Object* result);
-	void process_throw(TokenIterator& token, Runtime::Object* result);
-	void process_try(TokenIterator& token, Runtime::Object* result);
+	Statement* process_if(TokenIterator& token);
+	Statement* process_keyword(TokenIterator& token);
+	Statement* process_method(TokenIterator& token);
+	void process_new(TokenIterator& token);
+	Statement* process_print(TokenIterator& token);
+	Statement* process_return(TokenIterator& token);
+	void process_scope(TokenIterator& token);
+	void process_switch(TokenIterator& token);
+	Statement* process_throw(TokenIterator& token);
+	void process_try(TokenIterator& token);
 	Runtime::Object* process_type(TokenIterator& token, Symbol* symbol);
-	void process_typeid(TokenIterator& token, Runtime::Object* result);
-	void process_while(TokenIterator& token, Runtime::Object* result);
+	void process_typeid(TokenIterator& token);
+	Statement* process_while(TokenIterator& token);
 	// }
 
 	// expression parsing
 	// {
-	void expression(Runtime::Object* result, TokenIterator& start);
-	void parseCondition(Runtime::Object* result, TokenIterator& start);
-	void parseExpression(Runtime::Object* result, TokenIterator& start);
-	void parseFactors(Runtime::Object* result, TokenIterator& start);
-	void parseInfixPostfix(Runtime::Object* result, TokenIterator& start);
-	void parseTerm(Runtime::Object* result, TokenIterator& start);
+	Expression* expression(TokenIterator& start);
+	Expression* parseCondition(TokenIterator& start);
+	Expression* parseExpression(TokenIterator& start);
+	Expression* parseFactors(TokenIterator& start);
+	Expression* parseInfixPostfix(TokenIterator& start);
+	Expression* parseTerm(TokenIterator& start);
 	// }
 
 	// Repository

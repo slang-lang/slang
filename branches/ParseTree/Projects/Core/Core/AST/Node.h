@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_AST_Node_h
-#define ObjectiveScript_AST_Node_h
+#ifndef ObjectiveScript_Core_AST_Node_h
+#define ObjectiveScript_Core_AST_Node_h
 
 
 // Library includes
@@ -19,7 +19,26 @@ namespace AST {
 class Node
 {
 public:
+	class NodeType {
+	public:
+		enum E {
+			Expression,
+			Operator,
+			Statement
+		};
+	};
 
+public:
+	explicit Node(NodeType::E type)
+	: mType(type)
+	{ }
+
+	NodeType::E getNodeType() const {
+		return mType;
+	}
+
+protected:
+	NodeType::E mType;
 };
 
 

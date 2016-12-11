@@ -13,7 +13,9 @@ namespace AST {
 class Operator : public Node
 {
 public:
-
+	Operator()
+	: Node(NodeType::Operator)
+	{ }
 };
 
 

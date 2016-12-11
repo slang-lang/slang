@@ -21,9 +21,15 @@
 #include <Core/Runtime/TypeCast.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
-#include <Debugger/Debugger.h>
-#include <Tools/Printer.h>
 #include <Utils.h>
+
+// AST includes
+#include "BinaryOperator.h"
+#include "ControlStatements.h"
+#include "Expression.h"
+#include "Keywords.h"
+#include "Statement.h"
+#include "Term.h"
 
 // Namespace declarations
 
@@ -42,9 +48,9 @@ TreeGenerator::~TreeGenerator()
 {
 }
 
-void TreeGenerator::expression(Runtime::Object* result, TokenIterator& start)
+Expression* TreeGenerator::expression(TokenIterator& start)
 {
-	parseCondition(result, start);
+	Expression* expression = parseCondition(start);
 
 	for ( ; ; ) {
 		Token::Type::E op = start->type();
@@ -52,14 +58,14 @@ void TreeGenerator::expression(Runtime::Object* result, TokenIterator& start)
 			 op != Token::Type::NAND &&
 			 op != Token::Type::NOR &&
 			 op != Token::Type::OR ) {
-			return;
+			return expression;
 		}
 
-		start++;	// consume operator token
+		//++start;	// consume operator token
 
-		Runtime::Object v2;
-		parseCondition(&v2, start);
+		expression = new BinaryExpression((*start), expression, parseCondition(++start));
 
+/*
 		if ( op == Token::Type::AND && isTrue(*result) ) {
 			*result = Runtime::BoolObject(isTrue(*result) && isTrue(v2));
 		}
@@ -72,25 +78,27 @@ void TreeGenerator::expression(Runtime::Object* result, TokenIterator& start)
 		else if ( op == Token::Type::OR && !isTrue(*result) ) {
 			*result = Runtime::BoolObject(isTrue(*result) || isTrue(v2));
 		}
+*/
 	}
 }
 
 /*
  * executes the given tokens in a separate scope
  */
-AST::Node* TreeGenerator::generate(const TokenList &tokens)
+Statements* TreeGenerator::generate(const TokenList &tokens)
 {
+	Statements* statements = new Statements();
+
 	pushScope();
 		pushTokens(tokens);
 			TokenIterator start = getTokens().begin();
 			TokenIterator end = getTokens().end();
 
-			Runtime::Object result;
-			process(&result, start, end);
+			statements->mNodes.push_back(process(start, end));
 		popTokens();
 	popScope();
 
-	return 0;
+	return statements;
 }
 
 NamedScope* TreeGenerator::getEnclosingMethodScope(IScope* scope) const
@@ -287,9 +295,9 @@ Symbol* TreeGenerator::identifyMethod(TokenIterator& token, const ParameterList&
 	return result;
 }
 
-void TreeGenerator::parseCondition(Runtime::Object *result, TokenIterator& start)
+Expression* TreeGenerator::parseCondition(TokenIterator& start)
 {
-	parseExpression(result, start);
+	Expression* condition = parseExpression(start);
 
 	for ( ; ; ) {
 		Token::Type::E op = start->type();
@@ -299,14 +307,14 @@ void TreeGenerator::parseCondition(Runtime::Object *result, TokenIterator& start
 			 op != Token::Type::COMPARE_LESS &&
 			 op != Token::Type::COMPARE_LESS_EQUAL &&
 			 op != Token::Type::COMPARE_UNEQUAL ) {
-			 break;
+			 return condition;
 		}
 
-		start++;	// consume comparator token
+		//++start;	// consume comparator token
 
-		Runtime::Object v2;
-		parseExpression(&v2, start);
+		condition = new BinaryExpression((*start), condition, parseExpression(++start));
 
+/*
 		switch ( op ) {
 			case Token::Type::COMPARE_EQUAL:
 				*result = Runtime::BoolObject(Runtime::operator_binary_equal(result, &v2));
@@ -329,12 +337,13 @@ void TreeGenerator::parseCondition(Runtime::Object *result, TokenIterator& start
 			default:
 				break;
 		}
+*/
 	}
 }
 
-void TreeGenerator::parseExpression(Runtime::Object *result, TokenIterator& start)
+Expression* TreeGenerator::parseExpression(TokenIterator& start)
 {
-	parseFactors(result, start);
+	Expression* expression = parseFactors(start);
 
 	for ( ; ; ) {
 		Token::Type::E op = start->type();
@@ -343,14 +352,14 @@ void TreeGenerator::parseExpression(Runtime::Object *result, TokenIterator& star
 			 op != Token::Type::BITOR &&
 			 op != Token::Type::MATH_ADDITION &&
 			 op != Token::Type::MATH_SUBTRACT ) {
-			return;
+			return expression;
 		}
 
-		start++;	// consume operator token
+		//++start;	// consume operator token
 
-		Runtime::Object v2;
-		parseFactors(&v2, start);
+		expression = new BinaryExpression((*start), expression, parseFactors(++start));
 
+/*
 		switch ( op ) {
 			case Token::Type::BITAND:
 				Runtime::operator_binary_bitand(result, &v2);
@@ -370,26 +379,27 @@ void TreeGenerator::parseExpression(Runtime::Object *result, TokenIterator& star
 			default:
 				break;
 		}
+*/
 	}
 }
 
-void TreeGenerator::parseFactors(Runtime::Object *result, TokenIterator& start)
+Expression* TreeGenerator::parseFactors(TokenIterator& start)
 {
-	parseInfixPostfix(result, start);
+	Expression* factor = parseInfixPostfix(start);
 
 	for ( ; ; ) {
 		Token::Type::E op = start->type();
 		if ( op != Token::Type::MATH_DIVIDE &&
 			 op != Token::Type::MATH_MODULO &&
 			 op != Token::Type::MATH_MULTIPLY ) {
-			return;
+			return factor;
 		}
 
-		start++;	// consume operator token
+		//++start;	// consume operator token
 
-		Runtime::Object v2;
-		parseInfixPostfix(&v2, start);
+		factor = new BinaryExpression((*start), factor, parseInfixPostfix(++start));
 
+/*
 		switch ( op ) {
 			case Token::Type::MATH_DIVIDE:
 				Runtime::operator_binary_divide(result, &v2);
@@ -403,46 +413,57 @@ void TreeGenerator::parseFactors(Runtime::Object *result, TokenIterator& start)
 			default:
 				break;
 		}
+*/
 	}
 }
 
-void TreeGenerator::parseInfixPostfix(Runtime::Object *result, TokenIterator& start)
+Expression* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 {
+	Expression* infixPostfix = 0;
+
 	Token::Type::E op = start->type();
 
 	// infix
 	switch ( op ) {
 		case Token::Type::MATH_SUBTRACT: {
-			start++;
-			parseExpression(result, start);
-			Runtime::operator_unary_minus(result);
+			++start;
+
+			infixPostfix = parseExpression(start);
+
+			//Runtime::operator_unary_minus(result);
 		} break;
 		case Token::Type::OPERATOR_DECREMENT: {
-			start++;
-			parseExpression(result, start);
-			Runtime::operator_unary_decrement(result);
+			++start;
+
+			infixPostfix = parseExpression(start);
+
+			//Runtime::operator_unary_decrement(result);
 		} break;
 		case Token::Type::OPERATOR_INCREMENT: {
-			start++;
-			parseExpression(result, start);
-			Runtime::operator_unary_increment(result);
+			++start;
+
+			infixPostfix = parseExpression(start);
+
+			//Runtime::operator_unary_increment(result);
 		} break;
 		case Token::Type::OPERATOR_NOT: {
-			start++;
-			parseExpression(result, start);
-			Runtime::operator_unary_not(result);
+			++start;
+
+			infixPostfix = parseExpression(start);
+
+			//Runtime::operator_unary_not(result);
 		} break;
 		case Token::Type::PARENTHESIS_OPEN: {
-			start++;	// consume operator token
+			++start;	// consume operator token
 
-			expression(result, start);
+			infixPostfix = expression(start);
 
 			expect(Token::Type::PARENTHESIS_CLOSE, start);
 
-			start++;	// consume operator token
+			++start;	// consume operator token
 		} break;
 		default: {
-			parseTerm(result, start);
+			infixPostfix = parseTerm(start);
 		} break;
 	}
 
@@ -452,7 +473,7 @@ void TreeGenerator::parseInfixPostfix(Runtime::Object *result, TokenIterator& st
 	switch ( op ) {
 /*
 		case Token::Type::BRACKET_OPEN: {
-			start++;	// consume operator token
+			++start;	// consume operator token
 
 			Object tmp;
 			expression(&tmp, start);
@@ -465,22 +486,24 @@ void TreeGenerator::parseInfixPostfix(Runtime::Object *result, TokenIterator& st
 		} break;
 */
 		case Token::Type::OPERATOR_DECREMENT: {
-			Runtime::operator_unary_decrement(result);
-			start++;
+			//Runtime::operator_unary_decrement(result);
+
+			++start;
 		} break;
 		case Token::Type::OPERATOR_INCREMENT: {
-			Runtime::operator_unary_increment(result);
-			start++;
+			//Runtime::operator_unary_increment(result);
+
+			++start;
 		} break;
 		case Token::Type::OPERATOR_IS: {
-			start++;
+			++start;
 
 			Symbol* symbol = identify(start);
 			if ( !symbol ) {
 				throw Common::Exceptions::UnknownIdentifer("unkown identifier '" + start->content() + "' found", start->position());
 			}
 
-			start++;
+			++start;
 
 			std::string compareType;
 
@@ -497,44 +520,44 @@ void TreeGenerator::parseInfixPostfix(Runtime::Object *result, TokenIterator& st
 				throw Common::Exceptions::SyntaxError("invalid symbol type found", start->position());
 			}
 
-			*result = Runtime::BoolObject(operator_binary_is(result, compareType));
+			//*result = Runtime::BoolObject(operator_binary_is(result, compareType));
 		} break;
 		case Token::Type::OPERATOR_NOT: {
-			operator_unary_validate(result);
-			start++;
+			//operator_unary_validate(result);
+
+			++start;
 		} break;
 		default: {
 		} break;
 	}
+
+	return infixPostfix;
 }
 
-void TreeGenerator::parseTerm(Runtime::Object *result, TokenIterator& start)
+Expression* TreeGenerator::parseTerm(TokenIterator& start)
 {
+	Expression* term = 0;
+
 	switch ( start->type() ) {
 		case Token::Type::CONST_BOOLEAN: {
-			Runtime::BoolObject tmp(Tools::stringToBool(start->content()));
-			Runtime::operator_binary_assign(result, &tmp);
-			start++;
+			term = new BooleanLiteralExpression(Tools::stringToBool(start->content()));
+			++start;
 		} break;
 		case Token::Type::CONST_DOUBLE: {
-			Runtime::DoubleObject tmp(Tools::stringToDouble(start->content()));
-			Runtime::operator_binary_assign(result, &tmp);
-			start++;
+			term = new DoubleLiteralExpression(Tools::stringToDouble(start->content()));
+			++start;
 		} break;
 		case Token::Type::CONST_FLOAT: {
-			Runtime::FloatObject tmp(Tools::stringToFloat(start->content()));
-			Runtime::operator_binary_assign(result, &tmp);
-			start++;
+			term = new FloatLiteralExpression(Tools::stringToFloat(start->content()));
+			++start;
 		} break;
 		case Token::Type::CONST_INTEGER: {
-			Runtime::IntegerObject tmp(Tools::stringToInt(start->content()));
-			Runtime::operator_binary_assign(result, &tmp);
-			start++;
+			term = new IntegerLiteralExpression(Tools::stringToInt(start->content()));
+			++start;
 		} break;
 		case Token::Type::CONST_LITERAL: {
-			Runtime::StringObject tmp(start->content());
-			Runtime::operator_binary_assign(result, &tmp);
-			start++;
+			term = new StringLiteralExpression(start->content());
+			++start;
 		} break;
 		case Token::Type::IDENTIFER:
 		case Token::Type::TYPE: {
@@ -548,29 +571,27 @@ void TreeGenerator::parseTerm(Runtime::Object *result, TokenIterator& start)
 
 			switch ( symbol->getSymbolType() ) {
 				case Symbol::IType::MethodSymbol:
-					process_method(tmpToken, result);
+					/*term =*/ process_method(tmpToken);
 					start = tmpToken;
 					start++;
 					break;
 				case Symbol::IType::ObjectSymbol:
-					Runtime::operator_binary_assign(result, static_cast<Runtime::Object*>(symbol));
+					//Runtime::operator_binary_assign(result, static_cast<Runtime::Object*>(symbol));
+
+					//term = new Assignment();
+
 					start++;
 					break;
 				case Symbol::IType::BluePrintEnumSymbol:
 				case Symbol::IType::BluePrintObjectSymbol: {
-					start++;
+					++start;
 
 					PrototypeConstraints constraints = Designtime::Parser::collectPrototypeConstraints(start);
 
 					std::string newType = dynamic_cast<Designtime::BluePrintGeneric*>(symbol)->QualifiedTypename();
 								newType = Designtime::Parser::buildConstraintTypename(newType, constraints);
 
-					Runtime::Object tmp;
-					expression(&tmp, start);
-
-					Runtime::typecast(&tmp, newType);
-
-					operator_binary_assign(result, &tmp);
+					term = expression(start);
 				} break;
 				case Symbol::IType::NamespaceSymbol:
 				case Symbol::IType::UnknownSymbol:
@@ -578,15 +599,17 @@ void TreeGenerator::parseTerm(Runtime::Object *result, TokenIterator& start)
 			}
 		} break;
 		case Token::Type::KEYWORD: {
-			process_keyword(start, result);
-			start++;
+			/*term =*/ process_keyword(start);
+
+			++start;
 		} break;
 		case Token::Type::SEMICOLON: {
 		} break;
-		default: {
+		default:
 			throw Common::Exceptions::SyntaxError("identifier, literal or constant expected but " + start->content() + " found", start->position());
-		} break;
 	}
+
+	return term;
 }
 
 void TreeGenerator::popScope()
@@ -606,21 +629,25 @@ void TreeGenerator::popTokens()
 /*
  * loop through all tokens and redirect to the corresponding method
  */
-void TreeGenerator::process(Runtime::Object *result, TokenIterator& token, TokenIterator end, Token::Type::E terminator)
+Statement* TreeGenerator::process(TokenIterator& token, TokenIterator end, Token::Type::E terminator)
 {
+	Statements* statements = new Statements();
+
 	while ( ( (token != getTokens().end()) && (token != end) ) &&
 			( (token->type() != terminator) && (token->type() != Token::Type::ENDOFFILE) ) ) {
 		switch ( token->type() ) {
 			case Token::Type::IDENTIFER:
 			case Token::Type::PROTOTYPE:
 			case Token::Type::TYPE:
-				process_identifier(token, result, terminator == Token::Type::NIL ? Token::Type::SEMICOLON : terminator);
+				//process_identifier(token, result, terminator == Token::Type::NIL ? Token::Type::SEMICOLON : terminator);
 				break;
 			case Token::Type::KEYWORD:
-				process_keyword(token, result);
+				statements->mNodes.push_back(
+					process_keyword(token)
+				);
 				break;
 			case Token::Type::BRACKET_CURLY_OPEN:
-				process_scope(token, result);	// this opens a new scope
+				//process_scope(token, result);	// this opens a new scope
 				break;
 			case Token::Type::SEMICOLON:
 				break;
@@ -628,51 +655,50 @@ void TreeGenerator::process(Runtime::Object *result, TokenIterator& token, Token
 				throw Common::Exceptions::SyntaxError("invalid token '" + token->content() + "' found", token->position());
 		}
 
-		token++;	// consume token
+		++token;	// consume token
 	}
+
+	return statements;
 }
 
 /*
  * syntax:
  * assert( <expression> );
  */
-void TreeGenerator::process_assert(TokenIterator& token)
+Statement* TreeGenerator::process_assert(TokenIterator& token)
 {
 	expect(Token::Type::PARENTHESIS_OPEN, token++);
 
-	Runtime:: Object condition;
-	expression(&condition, token);
-
-	if ( !isTrue(condition) ) {
-		throw Runtime::Exceptions::AssertionFailed(condition.ToString(), token->position());
-	}
+	Statement* statement = new AssertStatement(expression(token));
 
 	expect(Token::Type::PARENTHESIS_CLOSE, token++);
+
+	return statement;
 }
 
 /*
  * syntax:
  * break;
  */
-void TreeGenerator::process_break(TokenIterator& /*token*/)
+Statement* TreeGenerator::process_break(TokenIterator& /*token*/)
 {
-	//mControlFlow = ControlFlow::Break;
+	return new BreakStatement();
 }
 
 /*
  * syntax:
  * continue;
  */
-void TreeGenerator::process_continue(TokenIterator& /*token*/)
+Statement* TreeGenerator::process_continue(TokenIterator& /*token*/)
 {
-	//mControlFlow = ControlFlow::Continue;
+	return new ContinueStatement();
 }
 
 /*
  * syntax:
  * copy <identifier>;
  */
-void TreeGenerator::process_copy(TokenIterator& token, Runtime::Object* result)
+Expression* TreeGenerator::process_copy(TokenIterator& token)
 {
 	Symbol* symbol = identify(token);
 	if ( !symbol ) {
@@ -682,27 +708,22 @@ void TreeGenerator::process_copy(TokenIterator& token, Runtime::Object* result)
 		throw Common::Exceptions::Exception("object symbol expected!");
 	}
 
-	if ( symbol == result ) {
-		throw Common::Exceptions::Exception("cannot assign copy to same object");
-	}
-
 	Runtime::Object* source = dynamic_cast<Runtime::Object*>(symbol);
 	if ( !source ) {
 		throw Common::Exceptions::Exception("nullptr access!");
 	}
-	if ( source->QualifiedTypename() != result->QualifiedTypename() ) {
-		throw Common::Exceptions::Exception("object copies are only allowed to same types");
-	}
 
-	result->copy(*source);
+	return new CopyExpression(new VariableExpression(token->content()));
 }
 
 /*
  * syntax:
  * delete <identifier>;
  */
-void TreeGenerator::process_delete(TokenIterator& token)
+Statement* TreeGenerator::process_delete(TokenIterator& token)
 {
+	DeleteStatement* statement = 0;
+
 	TokenIterator end = findNext(token, Token::Type::SEMICOLON);
 
 	Symbol* symbol = identify(token);
@@ -712,9 +733,7 @@ void TreeGenerator::process_delete(TokenIterator& token)
 
 	switch ( symbol->getSymbolType() ) {
 		case Symbol::IType::ObjectSymbol: {
-			Runtime::Object *object = static_cast<Runtime::Object*>(symbol);
-
-			object->assign(Runtime::Object());
+			statement = new DeleteStatement(new VariableExpression(token->content()));
 		} break;
 		case Symbol::IType::BluePrintEnumSymbol:
 		case Symbol::IType::BluePrintObjectSymbol:
@@ -725,22 +744,24 @@ void TreeGenerator::process_delete(TokenIterator& token)
 	}
 
 	token = end;
+
+	return statement;
 }
 
 /*
  * syntax:
  * exit;
  */
-void TreeGenerator::process_exit(TokenIterator& /*token*/)
+Statement* TreeGenerator::process_exit(TokenIterator& /*token*/)
 {
-	//throw ControlFlow::ExitProgram;
+	return new ExitStatement(0);
 }
 
 /*
  * syntax:
  * for ( <expression>; <condition>; <expression> ) { ... }
  */
-void TreeGenerator::process_for(TokenIterator& token, Runtime::Object* /*result*/)
+void TreeGenerator::process_for(TokenIterator& token)
 {
 	expect(Token::Type::PARENTHESIS_OPEN, token++);
 
@@ -761,8 +782,7 @@ void TreeGenerator::process_for(TokenIterator& token, Runtime::Object* /*result*
 
 	// process our declaration part
 	// {
-	Runtime::Object declarationTmp;
-	process(&declarationTmp, initializationBegin, conditionBegin, Token::Type::SEMICOLON);
+	process(initializationBegin, conditionBegin, Token::Type::SEMICOLON);
 	// }
 
 	bodyBegin++;		// don't collect scope token
@@ -774,41 +794,33 @@ void TreeGenerator::process_for(TokenIterator& token, Runtime::Object* /*result*
 		bodyBegin++;
 	}
 
-	for ( ; ; ) {
-		// Condition parsing
-		// {
-		TokenIterator condBegin = conditionBegin;
+	// Condition parsing
+	// {
+	TokenIterator condBegin = conditionBegin;
 
-		if ( std::distance(condBegin, increaseBegin) > 1 ) {
-			Runtime::Object condition;
-			expression(&condition, condBegin);
-
-			if ( !isTrue(condition) ) {
-				break;
-			}
-		}
-		// }
-
-		// Body parsing
-		// {
-		generate(loopTokens);
-		// }
-
-		// Expression parsing
-		// {
-		TokenIterator exprBegin = increaseBegin;
-
-		Runtime::Object expressionTmp;
-		process(&expressionTmp, exprBegin, expressionEnd, Token::Type::PARENTHESIS_CLOSE);
-		// }
+	if ( std::distance(condBegin, increaseBegin) > 1 ) {
+		expression(condBegin);
 	}
+	// }
+
+	// Body parsing
+	// {
+	generate(loopTokens);
+	// }
+
+	// Expression parsing
+	// {
+	TokenIterator exprBegin = increaseBegin;
+
+	process(exprBegin, expressionEnd, Token::Type::PARENTHESIS_CLOSE);
+	// }
 }
 
 /*
  * syntax:
  * for ( <type definition> <identifier> : <instance> ) { ... }
  */
-void TreeGenerator::process_foreach(TokenIterator& token, Runtime::Object* /*result*/)
+void TreeGenerator::process_foreach(TokenIterator& token)
 {
 	expect(Token::Type::PARENTHESIS_OPEN, token++);
 
@@ -910,8 +922,7 @@ void TreeGenerator::process_identifier(TokenIterator& token, Runtime::Object* /*
 	else if ( symbol->getSymbolType() == Symbol::IType::MethodSymbol ) {
 		token = tmpToken;	// reset token after call to identify
 
-		Runtime::Object tmpObject;
-		process_method(token, &tmpObject);
+		process_method(token);
 	}
 	else if ( symbol->getSymbolType() == Symbol::IType::ObjectSymbol ) {
 		// try to find an assignment token
@@ -929,15 +940,7 @@ void TreeGenerator::process_identifier(TokenIterator& token, Runtime::Object* /*
 		}
 */
 
-		expression(object, ++assign);
-
-		if ( !object->isConst() && object->isFinal() ) {
-			// we have modified a final symbol for the first time, we now have to set it so const
-			object->setConst(true);
-			object->setFinal(false);
-
-			object->setMutability(Mutability::Const);
-		}
+		expression(++assign);
 
 		// assign == end should now be true
 		token = end;
@@ -952,7 +955,7 @@ void TreeGenerator::process_identifier(TokenIterator& token, Runtime::Object* /*
  * if ( <expression> ) { ... }
  * else { ... }
  */
-void TreeGenerator::process_if(TokenIterator& token, Runtime::Object* /*result*/)
+Statement* TreeGenerator::process_if(TokenIterator& token)
 {
 	expect(Token::Type::PARENTHESIS_OPEN, token++);
 
@@ -1023,81 +1026,78 @@ void TreeGenerator::process_if(TokenIterator& token, Runtime::Object* /*result*/
 		elseBegin++;
 	}
 
-
-	Runtime::Object condition;
-	expression(&condition, condBegin);
-
-	if ( isTrue(condition) ) {
-		//mControlFlow = interpret(ifTokens, result);
-	}
-	else if ( !elseTokens.empty() ) {
-		//mControlFlow = interpret(elseTokens, result);
-	}
+	return new IfStatement(expression(condBegin), generate(ifTokens), generate(elseTokens));
 }
 
-void TreeGenerator::process_keyword(TokenIterator& token, Runtime::Object *result)
+Statement* TreeGenerator::process_keyword(TokenIterator& token)
 {
+	Statement* statement = 0;
+
 	std::string keyword = (*token++).content();
 
 	if ( keyword == KEYWORD_ASSERT ) {
-		process_assert(token);
+		statement = process_assert(token);
 	}
 	else if ( keyword == KEYWORD_BREAK ) {
-		process_break(token);
+		statement = process_break(token);
 	}
 	else if ( keyword == KEYWORD_CONTINUE ) {
-		process_continue(token);
+		statement = process_continue(token);
 	}
 	else if ( keyword == KEYWORD_COPY ) {
-		process_copy(token, result);
+		process_copy(token);
 	}
 	else if ( keyword == KEYWORD_DELETE ) {
-		process_delete(token);
+		statement = process_delete(token);
 	}
 	else if ( keyword == KEYWORD_EXIT ) {
-		process_exit(token);
+		statement = process_exit(token);
 	}
 	else if ( keyword == KEYWORD_FOR ) {
-		process_for(token, result);
+		process_for(token);
 	}
 	else if ( keyword == KEYWORD_FOREACH ) {
-		process_foreach(token, result);
+		process_foreach(token);
 	}
 	else if ( keyword == KEYWORD_IF ) {
-		process_if(token, result);
+		statement = process_if(token);
 	}
 	else if ( keyword == KEYWORD_NEW ) {
-		process_new(token, result);
+		process_new(token);
 	}
 	else if ( keyword == KEYWORD_PRINT ) {
-		process_print(token);
+		statement = process_print(token);
 	}
 	else if ( keyword == KEYWORD_RETURN ) {
-		process_return(token, result);
+		statement = process_return(token);
 	}
 	else if ( keyword == KEYWORD_SWITCH ) {
-		process_switch(token, result);
+		process_switch(token);
 	}
 	else if ( keyword == KEYWORD_THROW ) {
-		process_throw(token, result);
+		statement = process_throw(token);
 	}
 	else if ( keyword == KEYWORD_TRY ) {
-		process_try(token, result);
+		process_try(token);
 	}
 	else if ( keyword == KEYWORD_TYPEID ) {
-		process_typeid(token, result);
+		process_typeid(token);
 	}
 	else if ( keyword == KEYWORD_WHILE ) {
-		process_while(token, result);
+		statement = process_while(token);
 	}
+
+	return statement;
 }
 
 /*
  * syntax:
  * <type> <identifier>(<parameter list>);
  */
-void TreeGenerator::process_method(TokenIterator& token, Runtime::Object *result)
+Statement* TreeGenerator::process_method(TokenIterator& token)
 {
+	Statement* statement = 0;
+
 	TokenIterator tmp = token;
 
 	TokenIterator opened = findNext(tmp, Token::Type::PARENTHESIS_OPEN);
@@ -1111,10 +1111,9 @@ void TreeGenerator::process_method(TokenIterator& token, Runtime::Object *result
 	while ( tmp != closed ) {
 		objectList.push_back(Runtime::Object());
 
-		Runtime::Object *obj = &objectList.back();
-		expression(obj, tmp);
+		expression(tmp);
 
-		params.push_back(Parameter::CreateRuntime(obj->QualifiedOuterface(), obj->getValue(), obj->getReference()));
+		//params.push_back(Parameter::CreateRuntime(obj->QualifiedOuterface(), obj->getValue(), obj->getReference()));
 
 		if ( std::distance(tmp, closed) <= 0 ) {
 			break;
@@ -1156,20 +1155,22 @@ void TreeGenerator::process_method(TokenIterator& token, Runtime::Object *result
 	}
 
 	if ( method->isExtensionMethod() ) {
-		method->execute(params, result, (*token));
+		//method->execute(params, result, (*token));
 	}
 	else {
 		//execute(method, params, result);
 	}
 
 	token = closed;
+
+	return statement;
 }
 
 /*
  * syntax:
  * new <Typename>([<parameter list>]);
  */
-void TreeGenerator::process_new(TokenIterator& token, Runtime::Object *result)
+void TreeGenerator::process_new(TokenIterator& token)
 {
 	std::string name;
 	std::string type = token->content();
@@ -1201,10 +1202,9 @@ void TreeGenerator::process_new(TokenIterator& token, Runtime::Object *result)
 	while ( tmp != closed ) {
 		objectList.push_back(Runtime::Object());
 
-		Runtime::Object *obj = &objectList.back();
-		expression(obj, tmp);
+		expression(tmp);
 
-		params.push_back(Parameter::CreateRuntime(obj->QualifiedOuterface(), obj->getValue(), obj->getReference()));
+		//params.push_back(Parameter::CreateRuntime(obj->QualifiedOuterface(), obj->getValue(), obj->getReference()));
 
 		if ( std::distance(tmp, closed) <= 0 ) {
 			break;
@@ -1215,44 +1215,35 @@ void TreeGenerator::process_new(TokenIterator& token, Runtime::Object *result)
 		}
 		tmp++;
 	}
-
-	// create initialized reference of new object
-	*result = *getRepository()->createReference(static_cast<Designtime::BluePrintGeneric*>(symbol), name, constraints, Repository::InitilizationType::Final);
-
-	// execute new object's constructor
-	result->Constructor(params);
 }
 
 /*
  * syntax:
  * print(<expression>);
  */
-void TreeGenerator::process_print(TokenIterator& token)
+Statement* TreeGenerator::process_print(TokenIterator& token)
 {
 	expect(Token::Type::PARENTHESIS_OPEN, token++);
 
-	Runtime::Object text;
-	expression(&text, token);
-
-	::Utils::PrinterDriver::Instance()->print(text.getValue().toStdString(), token->position().mFile, token->position().mLine);
+	Statement* statement = new PrintStatement(expression(token));
 
 	expect(Token::Type::PARENTHESIS_CLOSE, token++);
+
+	return statement;
 }
 
 /*
  * syntax:
  * return [<expression>];
  */
-void TreeGenerator::process_return(TokenIterator& token, Runtime::Object *result)
+Statement* TreeGenerator::process_return(TokenIterator& token)
 {
-	expression(result, token);
-
-	//mControlFlow = ControlFlow::Return;
+	return new ReturnStatement(expression(token));
 }
 
 // syntax:
 // { <statement> }
-void TreeGenerator::process_scope(TokenIterator& token, Runtime::Object* /*result*/)
+void TreeGenerator::process_scope(TokenIterator& token)
 {
 	expect(Token::Type::BRACKET_CURLY_OPEN, token++);
 
@@ -1279,7 +1270,7 @@ void TreeGenerator::process_scope(TokenIterator& token, Runtime::Object* /*resul
  *		[ default: { ... } ]
  * }
  */
-void TreeGenerator::process_switch(TokenIterator& token, Runtime::Object* /*result*/)
+void TreeGenerator::process_switch(TokenIterator& token)
 {
 	expect(Token::Type::PARENTHESIS_OPEN, token++);
 
@@ -1289,8 +1280,7 @@ void TreeGenerator::process_switch(TokenIterator& token, Runtime::Object* /*resu
 	TokenIterator condEnd = findNextBalancedParenthesis(condBegin);
 
 	// evaluate switch-expression
-	Runtime::Object expr;
-	expression(&expr, token);
+	expression(token);
 
 	expect(Token::Type::BRACKET_CURLY_OPEN, ++condEnd);
 
@@ -1347,24 +1337,20 @@ void TreeGenerator::process_switch(TokenIterator& token, Runtime::Object* /*resu
 		it->mBegin++;
 
 		// evaluate switch-expression
-		Runtime::Object condition;
-		expression(&condition, it->mBegin);
+		expression(it->mBegin);
 
-		// compare case block expression with switch-expression
-		if ( operator_binary_equal(&expr, &condition) ) {
-			expect(Token::Type::COLON, it->mBegin++);
-			expect(Token::Type::BRACKET_CURLY_OPEN, it->mBegin++);	// don't collect scope token
+		expect(Token::Type::COLON, it->mBegin++);
+		expect(Token::Type::BRACKET_CURLY_OPEN, it->mBegin++);	// don't collect scope token
 
-			// collect case-block tokens
-			TokenList caseTokens;
-			while ( it->mBegin != it->mEnd ) {
-				caseTokens.push_back((*it->mBegin));
-				it->mBegin++;
-			}
-
-			// process/interpret case-block tokens
-			generate(caseTokens);
+		// collect case-block tokens
+		TokenList caseTokens;
+		while ( it->mBegin != it->mEnd ) {
+			caseTokens.push_back((*it->mBegin));
+			it->mBegin++;
 		}
+
+		// process/interpret case-block tokens
+		generate(caseTokens);
 	}
 
 	// execute the default block (if present)
@@ -1389,8 +1375,10 @@ void TreeGenerator::process_switch(TokenIterator& token, Runtime::Object* /*resu
  * syntax:
  * throw [<expression>];
  */
-void TreeGenerator::process_throw(TokenIterator& token, Runtime::Object* /*result*/)
+Statement* TreeGenerator::process_throw(TokenIterator& token)
 {
+	ThrowStatement* statement = 0;
+
 	// check if our parent scope is a method that is allowed to throw exceptions
 	Runtime::Method* method = dynamic_cast<Runtime::Method*>(getEnclosingMethodScope(getScope()));
 	if ( method && !method->throws() ) {
@@ -1398,13 +1386,11 @@ void TreeGenerator::process_throw(TokenIterator& token, Runtime::Object* /*resul
 		OSwarn(std::string(method->getFullScopeName() + " throws although it is not marked with 'throws' in " + token->position().toString()).c_str());
 	}
 
-	Runtime::Object* data = getRepository()->createInstance(OBJECT, ANONYMOUS_OBJECT, PrototypeConstraints());
-	expression(data, token);
-
-	//mControlFlow = ControlFlow::Throw;
-	Controller::Instance().stack()->exception() = Runtime::ExceptionData(data, token->position());
+	statement = new ThrowStatement(expression(token));
 
 	expect(Token::Type::SEMICOLON, token);
+
+	return statement;
 }
 
 /*
@@ -1413,7 +1399,7 @@ void TreeGenerator::process_throw(TokenIterator& token, Runtime::Object* /*resul
  * [ catch { ... } ]
  * [ finally { ... } ]
  */
-void TreeGenerator::process_try(TokenIterator& token, Runtime::Object* /*result*/)
+void TreeGenerator::process_try(TokenIterator& token)
 {
 	expect(Token::Type::BRACKET_CURLY_OPEN, token);
 
@@ -1625,15 +1611,7 @@ Runtime::Object* TreeGenerator::process_type(TokenIterator& token, Symbol* symbo
 	if ( isFinal ) object->setFinal(true);
 
 	if ( assign != getTokens().end() ) {
-		// execute assignment statement
-		Runtime::Object tmp;
-		//tmp.setArray(true, (size_t)size);
-		tmp.setConst(isConst);
-		tmp.setFinal(isFinal);
-
-		expression(&tmp, token);
-
-		Runtime::operator_binary_assign(object, &tmp);
+		expression(token);
 	}
 
 	return object;
@@ -1642,7 +1620,7 @@ Runtime::Object* TreeGenerator::process_type(TokenIterator& token, Symbol* symbo
 /*
  * typeid ( <expression> );
  */
-void TreeGenerator::process_typeid(TokenIterator& token, Runtime::Object* result)
+void TreeGenerator::process_typeid(TokenIterator& token)
 {
 	expect(Token::Type::PARENTHESIS_OPEN, token++);
 
@@ -1651,20 +1629,17 @@ void TreeGenerator::process_typeid(TokenIterator& token, Runtime::Object* result
 		switch ( symbol->getSymbolType() ) {
 			case Symbol::IType::BluePrintEnumSymbol:
 			case Symbol::IType::BluePrintObjectSymbol:
-				*result = Runtime::StringObject(static_cast<Designtime::BluePrintGeneric*>(symbol)->QualifiedTypename());
+				//*result = Runtime::StringObject(static_cast<Designtime::BluePrintGeneric*>(symbol)->QualifiedTypename());
 				break;
 			case Symbol::IType::ObjectSymbol:
-				*result = Runtime::StringObject(static_cast<Runtime::Object*>(symbol)->QualifiedTypename());
+				//*result = Runtime::StringObject(static_cast<Runtime::Object*>(symbol)->QualifiedTypename());
 				break;
 			default:
-				*result = Runtime::StringObject("<not a valid symbol>");
+				//*result = Runtime::StringObject("<not a valid symbol>");
 				break;
 		}
 	}
-	else {
-		*result = Runtime::StringObject("<not a valid symbol>");
-	}
-	token++;
+	++token;
 
 	expect(Token::Type::PARENTHESIS_CLOSE, token);
 }
@@ -1673,7 +1648,7 @@ void TreeGenerator::process_typeid(TokenIterator& token, Runtime::Object* result
  * syntax:
  * while ( <condition> ) { ... }
  */
-void TreeGenerator::process_while(TokenIterator& token, Runtime::Object* /*result*/)
+Statement* TreeGenerator::process_while(TokenIterator& token)
 {
 	expect(Token::Type::PARENTHESIS_OPEN, token++);
 
@@ -1698,18 +1673,9 @@ void TreeGenerator::process_while(TokenIterator& token, Runtime::Object* /*resul
 		bodyBegin++;
 	}
 
-	for ( ; ; ) {
-		TokenIterator tmp = condBegin;
+	TokenIterator tmp = condBegin;
 
-		Runtime::Object condition;
-		expression(&condition, tmp);
-
-		if ( !isTrue(condition) ) {
-			break;
-		}
-
-		generate(statementTokens);
-	}
+	return new WhileStatement(expression(tmp), generate(statementTokens));
 }
 
 void TreeGenerator::pushScope(IScope* scope)
