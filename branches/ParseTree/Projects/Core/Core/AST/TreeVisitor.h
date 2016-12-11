@@ -51,10 +51,14 @@ private:
 	void visitContinue(ContinueStatement* node);
 	void visitDelete(DeleteStatement* node);
 	void visitExit(ExitStatement* node);
+	void visitFor(ForStatement* node);
+	void visitForeach(ForeachStatement *node);
 	void visitIf(IfStatement* node);
 	void visitPrint(PrintStatement* node);
 	void visitReturn(ReturnStatement* node);
 	void visitThrow(ThrowStatement* node);
+	void visitTry(TryStatement* node);
+	void visitTypeDeclaration(TypeDeclaration* node);
 	void visitWhile(WhileStatement* node);
 
 private:

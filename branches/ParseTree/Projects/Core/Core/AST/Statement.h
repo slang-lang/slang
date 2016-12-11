@@ -32,11 +32,15 @@ public:
 			ContinueStatement,
 			DeleteStatement,
 			ExitStatement,
+			ForeachStatement,
+			ForStatement,
 			IfStatement,
 			PrintStatement,
 			ReturnStatement,
 			Statements,
 			ThrowStatement,
+			TryStatement,
+			TypeDeclaration,
 			WhileStatement
 		};
 	};
@@ -68,6 +72,23 @@ public:
 public:
 	Expression* mExpression;
 	std::string mName;
+};
+
+
+class TypeDeclaration : public Statement
+{
+public:
+	TypeDeclaration(const std::string& type, const std::string& name, Expression* assignment)
+	: Statement(StatementType::TypeDeclaration),
+	  mAssignment(assignment),
+	  mName(name),
+	  mType(type)
+	{ }
+
+public:
+	Expression* mAssignment;
+	std::string mName;
+	std::string mType;
 };
 
 

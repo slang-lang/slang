@@ -58,9 +58,9 @@ private: // Execution
 	Expression* process_copy(TokenIterator& token);
 	Statement* process_delete(TokenIterator& token);
 	Statement* process_exit(TokenIterator& token);
-	void process_for(TokenIterator& token);
-	void process_foreach(TokenIterator& token);
-	void process_identifier(TokenIterator& token, Runtime::Object* result, Token::Type::E terminator = Token::Type::SEMICOLON);
+	Statement* process_for(TokenIterator& token);
+	Statement* process_foreach(TokenIterator& token);
+	Statement* process_identifier(TokenIterator& token, Token::Type::E terminator = Token::Type::SEMICOLON);
 	Statement* process_if(TokenIterator& token);
 	Statement* process_keyword(TokenIterator& token);
 	Statement* process_method(TokenIterator& token);
@@ -70,8 +70,8 @@ private: // Execution
 	void process_scope(TokenIterator& token);
 	void process_switch(TokenIterator& token);
 	Statement* process_throw(TokenIterator& token);
-	void process_try(TokenIterator& token);
-	Runtime::Object* process_type(TokenIterator& token, Symbol* symbol);
+	Statement* process_try(TokenIterator& token);
+	TypeDeclaration* process_type(TokenIterator& token);
 	void process_typeid(TokenIterator& token);
 	Statement* process_while(TokenIterator& token);
 	// }

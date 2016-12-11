@@ -36,6 +36,40 @@ public:
 };
 
 
+class ForeachStatement : public Statement
+{
+public:
+	ForeachStatement(TypeDeclaration* typeDeclaration, Statements* loopBlock)
+	: Statement(StatementType::ForeachStatement),
+	  mLoopBlock(loopBlock),
+	  mTypeDeclaration(typeDeclaration)
+	{ }
+
+public:
+	Statements* mLoopBlock;
+	TypeDeclaration* mTypeDeclaration;
+};
+
+
+class ForStatement : public Statement
+{
+public:
+	ForStatement(Statement* initialization, Expression* condition, Statement* iteration, Statements* loopBlock)
+	: Statement(StatementType::ForStatement),
+	  mCondition(condition),
+	  mInitialization(initialization),
+	  mIteration(iteration),
+	  mLoopBlock(loopBlock)
+	{ }
+
+public:
+	Expression* mCondition;
+	Statement* mInitialization;
+	Statement* mIteration;
+	Statements* mLoopBlock;
+};
+
+
 class IfStatement : public Statement
 {
 public:
@@ -63,6 +97,22 @@ public:
 
 public:
 	Expression* mExpression;
+};
+
+
+class TryStatement : public Statement
+{
+public:
+	TryStatement(Statements* tryBlock, Statements* finallyBlock)
+	: Statement(StatementType::TryStatement),
+	  mFinallyBlock(finallyBlock),
+	  mTryBlock(tryBlock)
+	{ }
+
+public:
+	//CatchBlocks* mCatchBlocks;
+	Statements* mFinallyBlock;
+	Statements* mTryBlock;
 };
 
 
