@@ -210,7 +210,7 @@ void Interpreter::expression(Object* result, TokenIterator& start)
 			return;
 		}
 
-		start++;	// consume operator token
+		++start;	// consume operator token
 
 		Object v2;
 		parseCondition(&v2, start);
@@ -314,7 +314,7 @@ inline Symbol* Interpreter::identify(TokenIterator& token) const
 
 /*
 			if ( dynamic_cast<Designtime::BluePrintGeneric*>(result) && !dynamic_cast<Designtime::BluePrintGeneric*>(result)->getPrototypeConstraints().empty() ) {
-				token++;
+				++token;
 
 				PrototypeConstraints constraints = Designtime::Parser::collectPrototypeConstraints(token);
 
@@ -359,15 +359,15 @@ inline Symbol* Interpreter::identify(TokenIterator& token) const
 			break;
 		}
 
-		token++;
+		++token;
 
 		TokenIterator tmp = token;
-		tmp++;
+		++tmp;
 		if ( tmp->type() != Token::Type::IDENTIFER && tmp->type() != Token::Type::TYPE ) {
 			break;
 		}
 
-		token++;
+		++token;
 	}
 
 	return result;
@@ -420,15 +420,15 @@ Symbol* Interpreter::identifyMethod(TokenIterator& token, const ParameterList& p
 			break;
 		}
 
-		token++;
+		++token;
 
 		TokenIterator tmp = token;
-		tmp++;
+		++tmp;
 		if ( tmp->type() != Token::Type::IDENTIFER && tmp->type() != Token::Type::TYPE ) {
 			break;
 		}
 
-		token++;
+		++token;
 	}
 
 	return result;
@@ -469,7 +469,7 @@ void Interpreter::parseCondition(Object *result, TokenIterator& start)
 			 break;
 		}
 
-		start++;	// consume comparator token
+		++start;	// consume comparator token
 
 		Object v2;
 		parseExpression(&v2, start);
@@ -513,7 +513,7 @@ void Interpreter::parseExpression(Object *result, TokenIterator& start)
 			return;
 		}
 
-		start++;	// consume operator token
+		++start;	// consume operator token
 
 		Object v2;
 		parseFactors(&v2, start);
@@ -552,7 +552,7 @@ void Interpreter::parseFactors(Object *result, TokenIterator& start)
 			return;
 		}
 
-		start++;	// consume operator token
+		++start;	// consume operator token
 
 		Object v2;
 		parseInfixPostfix(&v2, start);
@@ -580,33 +580,33 @@ void Interpreter::parseInfixPostfix(Object *result, TokenIterator& start)
 	// infix
 	switch ( op ) {
 		case Token::Type::MATH_SUBTRACT: {
-			start++;
+			++start;
 			parseExpression(result, start);
 			operator_unary_minus(result);
 		} break;
 		case Token::Type::OPERATOR_DECREMENT: {
-			start++;
+			++start;
 			parseExpression(result, start);
 			operator_unary_decrement(result);
 		} break;
 		case Token::Type::OPERATOR_INCREMENT: {
-			start++;
+			++start;
 			parseExpression(result, start);
 			operator_unary_increment(result);
 		} break;
 		case Token::Type::OPERATOR_NOT: {
-			start++;
+			++start;
 			parseExpression(result, start);
 			operator_unary_not(result);
 		} break;
 		case Token::Type::PARENTHESIS_OPEN: {
-			start++;	// consume operator token
+			++start;	// consume operator token
 
 			expression(result, start);
 
 			expect(Token::Type::PARENTHESIS_CLOSE, start);
 
-			start++;	// consume operator token
+			++start;	// consume operator token
 		} break;
 		default: {
 			parseTerm(result, start);
@@ -619,7 +619,7 @@ void Interpreter::parseInfixPostfix(Object *result, TokenIterator& start)
 	switch ( op ) {
 /*
 		case Token::Type::BRACKET_OPEN: {
-			start++;	// consume operator token
+			++start;	// consume operator token
 
 			Object tmp;
 			expression(&tmp, start);
@@ -628,26 +628,26 @@ void Interpreter::parseInfixPostfix(Object *result, TokenIterator& start)
 
 			operator_trinary_array(result, &tmp, result);
 
-			start++;	// consume operator token
+			++start;	// consume operator token
 		} break;
 */
 		case Token::Type::OPERATOR_DECREMENT: {
 			operator_unary_decrement(result);
-			start++;
+			++start;
 		} break;
 		case Token::Type::OPERATOR_INCREMENT: {
 			operator_unary_increment(result);
-			start++;
+			++start;
 		} break;
 		case Token::Type::OPERATOR_IS: {
-			start++;
+			++start;
 
 			Symbol* symbol = identify(start);
 			if ( !symbol ) {
 				throw Common::Exceptions::UnknownIdentifer("unkown identifier '" + start->content() + "' found", start->position());
 			}
 
-			start++;
+			++start;
 
 			std::string compareType;
 
@@ -668,7 +668,7 @@ void Interpreter::parseInfixPostfix(Object *result, TokenIterator& start)
 		} break;
 		case Token::Type::OPERATOR_NOT: {
 			operator_unary_validate(result);
-			start++;
+			++start;
 		} break;
 		default: {
 		} break;
@@ -681,27 +681,27 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 		case Token::Type::CONST_BOOLEAN: {
 			BoolObject tmp(Tools::stringToBool(start->content()));
 			operator_binary_assign(result, &tmp);
-			start++;
+			++start;
 		} break;
 		case Token::Type::CONST_DOUBLE: {
 			DoubleObject tmp(Tools::stringToDouble(start->content()));
 			operator_binary_assign(result, &tmp);
-			start++;
+			++start;
 		} break;
 		case Token::Type::CONST_FLOAT: {
 			FloatObject tmp(Tools::stringToFloat(start->content()));
 			operator_binary_assign(result, &tmp);
-			start++;
+			++start;
 		} break;
 		case Token::Type::CONST_INTEGER: {
 			IntegerObject tmp(Tools::stringToInt(start->content()));
 			operator_binary_assign(result, &tmp);
-			start++;
+			++start;
 		} break;
 		case Token::Type::CONST_LITERAL: {
 			StringObject tmp(start->content());
 			operator_binary_assign(result, &tmp);
-			start++;
+			++start;
 		} break;
 		case Token::Type::IDENTIFER:
 		case Token::Type::TYPE: {
@@ -717,15 +717,15 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 				case Symbol::IType::MethodSymbol:
 					process_method(tmpToken, result);
 					start = tmpToken;
-					start++;
+					++start;
 					break;
 				case Symbol::IType::ObjectSymbol:
 					operator_binary_assign(result, static_cast<Object*>(symbol));
-					start++;
+					++start;
 					break;
 				case Symbol::IType::BluePrintEnumSymbol:
 				case Symbol::IType::BluePrintObjectSymbol: {
-					start++;
+					++start;
 
 					PrototypeConstraints constraints = Designtime::Parser::collectPrototypeConstraints(start);
 
@@ -746,7 +746,7 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 		} break;
 		case Token::Type::KEYWORD: {
 			process_keyword(start, result);
-			start++;
+			++start;
 		} break;
 		case Token::Type::SEMICOLON: {
 		} break;
@@ -802,7 +802,7 @@ void Interpreter::process(Object *result, TokenIterator& token, TokenIterator en
 				throw Common::Exceptions::SyntaxError("invalid token '" + token->content() + "' found", token->position());
 		}
 
-		token++;	// consume token
+		++token;	// consume token
 	}
 }
 
@@ -946,13 +946,13 @@ void Interpreter::process_for(TokenIterator& token, Object* result)
 	process(&declarationTmp, initializationBegin, conditionBegin, Token::Type::SEMICOLON);
 	// }
 
-	bodyBegin++;		// don't collect scope token
+	++bodyBegin;		// don't collect scope token
 	token = bodyEnd;
 
 	TokenList loopTokens;
 	while ( bodyBegin != bodyEnd ) {
 		loopTokens.push_back((*bodyBegin));
-		bodyBegin++;
+		++bodyBegin;
 	}
 
 	for ( ; ; ) {
@@ -1018,15 +1018,15 @@ void Interpreter::process_foreach(TokenIterator& token, Object* result)
 	if ( symbol->getSymbolType() != Symbol::IType::BluePrintEnumSymbol && symbol->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
 		throw Common::Exceptions::SyntaxError("invalid symbol type '" + symbol->getName() + "' found", token->position());
 	}
-	token++;
+	++token;
 
 	PrototypeConstraints constraints = Designtime::Parser::collectPrototypeConstraints(token);
 	(void)constraints;
 
 	expect(Token::Type::IDENTIFER, token);
-	token++;
+	++token;
 	expect(Token::Type::COLON, token);
-	token++;
+	++token;
 	expect(Token::Type::IDENTIFER, token);
 
 	// identify collection symbol
@@ -1037,26 +1037,26 @@ void Interpreter::process_foreach(TokenIterator& token, Object* result)
 	if ( !collection->isInstanceOf("System.IIterateable") ) {
 		throw Common::Exceptions::SyntaxError("symbol '" + collection->getName() + "' is not derived from IIteratable", token->position());
 	}
-	token++;
+	++token;
 
 	// get collection's forward iterator
 	Object iterator;
 	collection->execute(&iterator, "getIterator", ParameterList());
 
 	expect(Token::Type::PARENTHESIS_CLOSE, token);
-	token++;
+	++token;
 
 	// find next balanced '{' & '}' pair for loop-body
 	TokenIterator bodyBegin = token;
 	TokenIterator bodyEnd = findNextBalancedCurlyBracket(bodyBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
 
-	bodyBegin++;		// don't collect scope token
+	++bodyBegin;		// don't collect scope token
 	token = bodyEnd;
 
 	TokenList loopTokens;
 	while ( bodyBegin != bodyEnd ) {
 		loopTokens.push_back((*bodyBegin));
-		bodyBegin++;
+		++bodyBegin;
 	}
 
 	for ( ; ; ) {
@@ -1183,18 +1183,18 @@ void Interpreter::process_if(TokenIterator& token, Object *result)
 	// find next balanced '{' & '}' pair
 	TokenIterator bodyEnd = findNextBalancedCurlyBracket(bodyBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
 
-	bodyBegin++;		// don't collect scope token
+	++bodyBegin;		// don't collect scope token
 	token = bodyEnd;	// no matter what, at least set our token to our if-block's end
 
 	// collect all tokens for our if-block
 	TokenList ifTokens;
 	while ( bodyBegin != bodyEnd ) {
 		ifTokens.push_back((*bodyBegin));
-		bodyBegin++;
+		++bodyBegin;
 	}
 
 	if ( bodyEnd != getTokens().end() ) {
-		bodyEnd++;
+		++bodyEnd;
 	}
 
 	bool targetReached = true;	// initially don't collect else-block tokens
@@ -1210,7 +1210,7 @@ void Interpreter::process_if(TokenIterator& token, Object *result)
 		for ( ; ; ) {
 			// check if there is another if after our else-block
 			TokenIterator tmpIf = elseEnd;
-			tmpIf++;
+			++tmpIf;
 			if ( tmpIf != getTokens().end() && tmpIf->type() == Token::Type::KEYWORD && tmpIf->content() == "else" ) {
 				// find next balanced '{' & '}' pair
 				elseEnd = findNextBalancedCurlyBracket(tmpIf, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
@@ -1236,7 +1236,7 @@ void Interpreter::process_if(TokenIterator& token, Object *result)
 		}
 
 		elseTokens.push_back((*elseBegin));
-		elseBegin++;
+		++elseBegin;
 	}
 
 
@@ -1351,7 +1351,7 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 		if ( std::distance(tmp, closed) < 0 ) {
 			break;
 		}
-		tmp++;
+		++tmp;
 	}
 
 	Symbol* symbol = identifyMethod(token, params);
@@ -1424,7 +1424,7 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 		throw Common::Exceptions::Exception("blueprint symbol expected!");
 	}
 
-	token++;
+	++token;
 
 	PrototypeConstraints constraints = Designtime::Parser::collectPrototypeConstraints(token);
 
@@ -1532,7 +1532,7 @@ void Interpreter::process_scope(TokenIterator& token, Object* result)
 	TokenList scopeTokens;
 	while ( scopeBegin != scopeEnd ) {
 		scopeTokens.push_back((*scopeBegin));
-		scopeBegin++;
+		++scopeBegin;
 	}
 
 	mControlFlow = interpret(scopeTokens, result);
@@ -1573,7 +1573,7 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 	// find next balanced '{' & '}' pair
 	TokenIterator bodyEnd = findNextBalancedCurlyBracket(bodyBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
 
-	bodyBegin++;	// don't collect scope token
+	++bodyBegin;	// don't collect scope token
 	token = bodyEnd;
 
 	// CaseBlock is our data holder object for each case-block, hence the name
@@ -1613,7 +1613,7 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 
 			bodyBegin = tmp;
 		}
-		bodyBegin++;
+		++bodyBegin;
 	}
 
 	// loop through all case-labels and match their expressions against the switch-expression
@@ -1737,14 +1737,14 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 	// find next balanced '{' & '}' pair
 	TokenIterator tryEnd = findNextBalancedCurlyBracket(tryBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
 
-	tryBegin++;	// don't collect scope tokens
+	++tryBegin;	// don't collect scope tokens
 	token = tryEnd;
 
 	// collect try-block tokens
 	TokenList tryTokens;
 	while ( tryBegin != tryEnd ) {
 		tryTokens.push_back((*tryBegin));
-		tryBegin++;
+		++tryBegin;
 	}
 
 	// process try-block
@@ -1782,7 +1782,7 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 			break;	// reached end of try-catch-finally-block
 		}
 
-		tmp++;
+		++tmp;
 	}
 
 	// process catch-blocks (if present)
@@ -1794,13 +1794,13 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 
 		for ( std::list<TokenIterator>::const_iterator it = catchTokens.begin(); it != catchTokens.end(); ++it ) {
 			TokenIterator catchIt = (*it);
-			catchIt++;
+			++catchIt;
 
 			pushScope();	// push a new scope to allow reuse of the same exception instance name
 
 			// parse exception type (if present)
 			if ( catchIt->type() == Token::Type::PARENTHESIS_OPEN ) {
-				catchIt++;
+				++catchIt;
 
 				Symbol* symbol = identify(catchIt);
 				if ( !symbol ) {
@@ -1839,13 +1839,13 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 			// find next balanced '{' & '}' pair
 			TokenIterator catchEnd = findNextBalancedCurlyBracket(catchBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
 
-			catchBegin++;		// don't collect scope token
+			++catchBegin;		// don't collect scope token
 
 			// collect catch-block tokens
 			TokenList tokens;
 			while ( catchBegin != catchEnd ) {
 				tokens.push_back((*catchBegin));
-				catchBegin++;
+				++catchBegin;
 			}
 
 			// reset control flow to allow correct exception handling
@@ -1866,7 +1866,7 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 
 	// process finally-block (if present)
 	if ( finallyToken != getTokens().end() ) {
-		finallyToken++;
+		++finallyToken;
 		expect(Token::Type::BRACKET_CURLY_OPEN, finallyToken);
 
 		// find next open curly bracket '{'
@@ -1874,13 +1874,13 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 		// find next balanced '{' & '}' pair
 		TokenIterator finallyEnd = findNextBalancedCurlyBracket(finallyBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
 
-		finallyBegin++;		// don't collect scope token;
+		++finallyBegin;		// don't collect scope token;
 
 		// collect finally-block tokens
 		TokenList finallyTokens;
 		while ( finallyBegin != finallyEnd ) {
 			finallyTokens.push_back((*finallyBegin));
-			finallyBegin++;
+			++finallyBegin;
 		}
 
 		// TODO: should we execute the finally-block in any case (i.e. even though a return has been issued by the user)?
@@ -1899,7 +1899,7 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol)
 	bool isConst = false;
 	bool isFinal = false;
 
-	token++;
+	++token;
 
 	PrototypeConstraints constraints = Designtime::Parser::collectPrototypeConstraints(token);
 
@@ -1907,7 +1907,7 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol)
 
 	expect(Token::Type::IDENTIFER, token);
 
-	token++;
+	++token;
 
 /*	Array handling
 	bool isArray = false;
@@ -1915,7 +1915,7 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol)
 
 	if (  token->type() == Token::Type::BRACKET_OPEN ) {
 		isArray = true;
-		token++;
+		++token;
 
 		Object tmp;
 		try {
@@ -1934,7 +1934,7 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol)
 
 	std::string tmpStr = token->content();
 	if ( tmpStr == MODIFIER_CONST || tmpStr == MODIFIER_FINAL ) {
-		token++;
+		++token;
 
 		if ( tmpStr == MODIFIER_CONST ) { isConst = true; }
 		else if ( tmpStr == MODIFIER_FINAL ) { isFinal = true; }
@@ -2000,7 +2000,7 @@ void Interpreter::process_typeid(TokenIterator& token, Object* result)
 	else {
 		*result = StringObject("<not a valid symbol>");
 	}
-	token++;
+	++token;
 
 	expect(Token::Type::PARENTHESIS_CLOSE, token);
 }
@@ -2025,13 +2025,13 @@ void Interpreter::process_while(TokenIterator& token, Object* result)
 	// find next balanced '{' & '}' pair
 	TokenIterator bodyEnd = findNextBalancedCurlyBracket(bodyBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
 
-	bodyBegin++;	// don't collect scope token;
+	++bodyBegin;	// don't collect scope token;
 	token = bodyEnd;
 
 	TokenList statementTokens;
 	while ( bodyBegin != bodyEnd ) {
 		statementTokens.push_back((*bodyBegin));
-		bodyBegin++;
+		++bodyBegin;
 	}
 
 	for ( ; ; ) {

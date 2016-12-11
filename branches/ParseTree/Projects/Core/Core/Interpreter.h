@@ -4,7 +4,6 @@
 
 
 // Library includes
-#include <list>
 
 // Project includes
 #include <Core/Designtime/Parser/Token.h>
