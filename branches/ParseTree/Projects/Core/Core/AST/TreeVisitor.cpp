@@ -47,9 +47,9 @@ std::string PrintVisitor::printExpression(Expression* node) const
 			case Expression::ExpressionType::BinaryExpression: {
 				BinaryExpression* bin = static_cast<BinaryExpression*>(node);
 
-				result += printExpression(bin->mLeft);
+				result += "(" + printExpression(bin->mLeft);
 				result += " " + bin->mToken.content() + " ";
-				result += printExpression(bin->mRight);
+				result += printExpression(bin->mRight) + ")";
 			} break;
 			case Expression::ExpressionType::CopyExpression: {
 				result += "copy " + printExpression(static_cast<CopyExpression*>(node)->mExpression);
@@ -178,14 +178,12 @@ void PrintVisitor::visitIf(IfStatement* node)
 
 	std::cout << printIndentation(mIndentation) << "}" << std::endl;
 
-	if ( node->mElseBlock ) {
-		std::cout << printIndentation(mIndentation) << "else {" << std::endl;
+	if ( node->mElseBlock && node->mElseBlock->mNodes.size() > 0 ) {
+		std::cout << printIndentation(mIndentation) << "else ";
 
-		mIndentation++;
 		visitStatement(node->mElseBlock);
-		mIndentation--;
 
-		std::cout << printIndentation(mIndentation) << "}" << std::endl;
+		std::cout << printIndentation(mIndentation) << std::endl;
 	}
 }
 

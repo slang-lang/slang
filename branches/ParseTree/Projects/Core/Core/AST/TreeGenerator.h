@@ -50,7 +50,7 @@ private: // Execution
 
 	// token processing
 	// {
-	Statement* process(TokenIterator& start, TokenIterator end, Token::Type::E terminator = Token::Type::NIL);
+	Statements* process(TokenIterator& start, TokenIterator end, Token::Type::E terminator = Token::Type::NIL);
 
 	Statement* process_assert(TokenIterator& token);
 	Statement* process_break(TokenIterator& token);
@@ -63,11 +63,11 @@ private: // Execution
 	Statement* process_identifier(TokenIterator& token, Token::Type::E terminator = Token::Type::SEMICOLON);
 	Statement* process_if(TokenIterator& token);
 	Statement* process_keyword(TokenIterator& token);
-	Statement* process_method(TokenIterator& token);
-	void process_new(TokenIterator& token);
+	MethodExpression* process_method(TokenIterator& token);
+	Expression* process_new(TokenIterator& token);
 	Statement* process_print(TokenIterator& token);
 	Statement* process_return(TokenIterator& token);
-	void process_scope(TokenIterator& token);
+	Statements* process_scope(TokenIterator& token);
 	void process_switch(TokenIterator& token);
 	Statement* process_throw(TokenIterator& token);
 	Statement* process_try(TokenIterator& token);

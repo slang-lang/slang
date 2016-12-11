@@ -87,16 +87,14 @@ Expression* TreeGenerator::expression(TokenIterator& start)
  */
 Statements* TreeGenerator::generate(const TokenList &tokens)
 {
-	Statements* statements = new Statements();
+	Statements* statements = 0;
 
-	pushScope();
-		pushTokens(tokens);
-			TokenIterator start = getTokens().begin();
-			TokenIterator end = getTokens().end();
+	pushTokens(tokens);
+		TokenIterator start = getTokens().begin();
+		TokenIterator end = getTokens().end();
 
-			statements->mNodes.push_back(process(start, end));
-		popTokens();
-	popScope();
+		statements = process(start, end);
+	popTokens();
 
 	return statements;
 }
@@ -629,7 +627,7 @@ void TreeGenerator::popTokens()
 /*
  * loop through all tokens and redirect to the corresponding method
  */
-Statement* TreeGenerator::process(TokenIterator& token, TokenIterator end, Token::Type::E terminator)
+Statements* TreeGenerator::process(TokenIterator& token, TokenIterator end, Token::Type::E terminator)
 {
 	Statements* statements = new Statements();
 
@@ -639,7 +637,9 @@ Statement* TreeGenerator::process(TokenIterator& token, TokenIterator end, Token
 			case Token::Type::IDENTIFER:
 			case Token::Type::PROTOTYPE:
 			case Token::Type::TYPE:
-				process_identifier(token, terminator == Token::Type::NIL ? Token::Type::SEMICOLON : terminator);
+				statements->mNodes.push_back(
+					process_identifier(token, terminator == Token::Type::NIL ? Token::Type::SEMICOLON : terminator)
+				);
 				break;
 			case Token::Type::KEYWORD:
 				statements->mNodes.push_back(
@@ -647,7 +647,9 @@ Statement* TreeGenerator::process(TokenIterator& token, TokenIterator end, Token
 				);
 				break;
 			case Token::Type::BRACKET_CURLY_OPEN:
-				process_scope(token);	// this opens a new scope
+				statements->mNodes.push_back(
+					process_scope(token)	// this opens a new scope
+				);
 				break;
 			case Token::Type::SEMICOLON:
 				break;
@@ -978,7 +980,7 @@ Statement* TreeGenerator::process_if(TokenIterator& token)
 	TokenIterator elseEnd = getTokens().end();
 
 	// look for an else-token
-	if ( bodyEnd != getTokens().end() && (bodyEnd->type() == Token::Type::KEYWORD && bodyEnd->content() == "else") ) {
+	if ( bodyEnd != getTokens().end() && (bodyEnd->type() == Token::Type::KEYWORD && bodyEnd->content() == KEYWORD_ELSE ) ) {
 		elseBegin = findNext(bodyEnd, Token::Type::BRACKET_CURLY_OPEN);
 		// find next balanced '{' & '}' pair
 		elseEnd = findNextBalancedCurlyBracket(elseBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
@@ -987,7 +989,7 @@ Statement* TreeGenerator::process_if(TokenIterator& token)
 			// check if there is another if after our else-block
 			TokenIterator tmpIf = elseEnd;
 			tmpIf++;
-			if ( tmpIf != getTokens().end() && tmpIf->type() == Token::Type::KEYWORD && tmpIf->content() == "else" ) {
+			if ( tmpIf != getTokens().end() && tmpIf->type() == Token::Type::KEYWORD && tmpIf->content() == KEYWORD_ELSE ) {
 				// find next balanced '{' & '}' pair
 				elseEnd = findNextBalancedCurlyBracket(tmpIf, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
 
@@ -1083,10 +1085,8 @@ Statement* TreeGenerator::process_keyword(TokenIterator& token)
  * syntax:
  * <type> <identifier>(<parameter list>);
  */
-Statement* TreeGenerator::process_method(TokenIterator& token)
+MethodExpression* TreeGenerator::process_method(TokenIterator& token)
 {
-	Statement* statement = 0;
-
 	TokenIterator tmp = token;
 
 	TokenIterator opened = findNext(tmp, Token::Type::PARENTHESIS_OPEN);
@@ -1095,14 +1095,14 @@ Statement* TreeGenerator::process_method(TokenIterator& token)
 	std::list<Runtime::Object> objectList;	// this is a hack to prevent that the provided object parameters run out of scope
 	ParameterList params;
 
+	ExpressionList parameterList;
+
 	tmp = opened;
 	// loop through all parameters separated by commas
 	while ( tmp != closed ) {
 		objectList.push_back(Runtime::Object());
 
-		expression(tmp);
-
-		//params.push_back(Parameter::CreateRuntime(obj->QualifiedOuterface(), obj->getValue(), obj->getReference()));
+		parameterList.push_back(expression(tmp));
 
 		if ( std::distance(tmp, closed) <= 0 ) {
 			break;
@@ -1115,6 +1115,8 @@ Statement* TreeGenerator::process_method(TokenIterator& token)
 	}
 
 	Symbol* symbol = identifyMethod(token, params);
+
+	std::string name = token->content();
 
 	Runtime::Method* method = dynamic_cast<Runtime::Method*>(symbol);
 	if ( !method) {
@@ -1143,23 +1145,16 @@ Statement* TreeGenerator::process_method(TokenIterator& token)
 		throw Runtime::Exceptions::StaticException("non-static method \"" + method->ToString() + "\" called from static method \"" + owner->ToString() + "\"", token->position());
 	}
 
-	if ( method->isExtensionMethod() ) {
-		//method->execute(params, result, (*token));
-	}
-	else {
-		//execute(method, params, result);
-	}
-
 	token = closed;
 
-	return statement;
+	return new MethodExpression(name, parameterList);
 }
 
 /*
  * syntax:
  * new <Typename>([<parameter list>]);
  */
-void TreeGenerator::process_new(TokenIterator& token)
+Expression* TreeGenerator::process_new(TokenIterator& token)
 {
 	std::string name;
 	std::string type = token->content();
@@ -1204,6 +1199,8 @@ void TreeGenerator::process_new(TokenIterator& token)
 		}
 		tmp++;
 	}
+
+	return new NewExpression(0);
 }
 
 /*
@@ -1232,7 +1229,7 @@ Statement* TreeGenerator::process_return(TokenIterator& token)
 
 // syntax:
 // { <statement> }
-void TreeGenerator::process_scope(TokenIterator& token)
+Statements* TreeGenerator::process_scope(TokenIterator& token)
 {
 	expect(Token::Type::BRACKET_CURLY_OPEN, token++);
 
@@ -1247,9 +1244,11 @@ void TreeGenerator::process_scope(TokenIterator& token)
 		scopeBegin++;
 	}
 
-	generate(scopeTokens);
+	Statements* statements = generate(scopeTokens);
 
 	expect(Token::Type::BRACKET_CURLY_CLOSE, token);
+
+	return statements;
 }
 
 /*
