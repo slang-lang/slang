@@ -775,32 +775,14 @@ void Interpreter::popTokens()
  */
 void Interpreter::process(Object *result, TokenIterator& token, TokenIterator end, Token::Type::E terminator)
 {
-	while ( ( (token != getTokens().end()) && (token != end) ) &&
+	while ( ( (token != end) && (token != getTokens().end()) ) &&
 			( (token->type() != terminator) && (token->type() != Token::Type::ENDOFFILE) ) ) {
 
 		if ( mControlFlow != ControlFlow::Normal ) {
 			break;		// control flow has been broken, time to stop processing
 		}
 
-		Core::Debugger::Instance().notify(getScope(), (*token));		// notify debugger
-
-		switch ( token->type() ) {
-			case Token::Type::IDENTIFER:
-			case Token::Type::PROTOTYPE:
-			case Token::Type::TYPE:
-				process_identifier(token, result, terminator == Token::Type::NIL ? Token::Type::SEMICOLON : terminator);
-				break;
-			case Token::Type::KEYWORD:
-				process_keyword(token, result);
-				break;
-			case Token::Type::BRACKET_CURLY_OPEN:
-				process_scope(token, result);	// this opens a new scope
-				break;
-			case Token::Type::SEMICOLON:
-				break;
-			default:
-				throw Common::Exceptions::SyntaxError("invalid token '" + token->content() + "' found", token->position());
-		}
+		process_statement(token, result, terminator);
 
 		++token;	// consume token
 	}
@@ -1538,6 +1520,32 @@ void Interpreter::process_scope(TokenIterator& token, Object* result)
 	mControlFlow = interpret(scopeTokens, result);
 
 	expect(Token::Type::BRACKET_CURLY_CLOSE, token);
+}
+
+/*
+ * process a single statement
+ */
+void Interpreter::process_statement(TokenIterator& token, Object* result, Token::Type::E terminator)
+{
+	Core::Debugger::Instance().notify(getScope(), (*token));		// notify debugger
+
+	switch ( token->type() ) {
+		case Token::Type::IDENTIFER:
+		case Token::Type::PROTOTYPE:
+		case Token::Type::TYPE:
+			process_identifier(token, result, terminator == Token::Type::NIL ? Token::Type::SEMICOLON : terminator);
+			break;
+		case Token::Type::KEYWORD:
+			process_keyword(token, result);
+			break;
+		case Token::Type::BRACKET_CURLY_OPEN:
+			process_scope(token, result);	// this opens a new scope
+			break;
+		case Token::Type::SEMICOLON:
+			break;
+		default:
+			throw Common::Exceptions::SyntaxError("invalid token '" + token->content() + "' found", token->position());
+	}
 }
 
 /*

@@ -62,6 +62,7 @@ private: // Execution
 	void process_print(TokenIterator& token);
 	void process_return(TokenIterator& token, Object* result);
 	void process_scope(TokenIterator& token, Object* result);
+	void process_statement(TokenIterator& token, Object* result, Token::Type::E terminator = Token::Type::SEMICOLON);
 	void process_switch(TokenIterator& token, Object* result);
 	void process_throw(TokenIterator& token, Object* result);
 	void process_try(TokenIterator& token, Object* result);
