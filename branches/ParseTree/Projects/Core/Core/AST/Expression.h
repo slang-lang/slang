@@ -53,7 +53,7 @@ protected:
 
 typedef Expression BooleanExpression;
 typedef Expression Factor;
-typedef std::list<Expression*> ExpressionList;
+typedef std::list<Node*> ExpressionList;
 
 
 // Forward declarations
@@ -66,7 +66,7 @@ class VariableExpression;
 class BinaryExpression : public Expression
 {
 public:
-	BinaryExpression(const Token& token, Expression* left, Expression* right)
+	BinaryExpression(const Token& token, Node* left, Node* right)
 	: Expression(ExpressionType::BinaryExpression),
 	  mLeft(left),
 	  mRight(right),
@@ -74,8 +74,8 @@ public:
 	{ }
 
 public:
-	Expression* mLeft;
-	Expression* mRight;
+	Node* mLeft;
+	Node* mRight;
 	Token mToken;
 };
 
@@ -83,14 +83,14 @@ public:
 class UnaryExpression : public Expression
 {
 public:
-	UnaryExpression(const Token& token, Expression* exp)
+	UnaryExpression(const Token& token, Node* exp)
 	: Expression(ExpressionType::UnaryExpression),
 	  mExpression(exp),
 	  mToken(token)
 	{ }
 
 public:
-	Expression* mExpression;
+	Node* mExpression;
 	Token mToken;
 };
 
@@ -164,26 +164,28 @@ public:
 class CopyExpression : public Expression
 {
 public:
-	CopyExpression(VariableExpression* exp)
+	CopyExpression(Node* exp)
 	: Expression(ExpressionType::CopyExpression),
 	  mExpression(exp)
 	{ }
 
 public:
-	VariableExpression* mExpression;
+	Node* mExpression;
 };
 
 
 class NewExpression : public Expression
 {
 public:
-	NewExpression(VariableExpression* exp)
+	NewExpression(const std::string& type, Node* exp)
 	: Expression(ExpressionType::NewExpression),
-	  mExpression(exp)
+	  mExpression(exp),
+	  mType(type)
 	{ }
 
 public:
-	VariableExpression* mExpression;
+	Node* mExpression;
+	std::string mType;
 };
 
 
@@ -217,7 +219,7 @@ public:
 class TypecastExpression : public Expression
 {
 public:
-	TypecastExpression(const std::string& destinationType, Expression* exp)
+	TypecastExpression(const std::string& destinationType, Node* exp)
 	: Expression(ExpressionType::TypecastExpression),
 	  mDestinationType(destinationType),
 	  mExpression(exp)
@@ -225,7 +227,7 @@ public:
 
 public:
 	std::string mDestinationType;
-	Expression* mExpression;
+	Node* mExpression;
 };
 
 class VariableExpression : public Expression

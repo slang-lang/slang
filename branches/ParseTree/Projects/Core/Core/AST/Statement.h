@@ -63,14 +63,14 @@ protected:
 class Assignment : public Statement
 {
 public:
-	Assignment(const std::string& name, Expression* exp)
+	Assignment(const std::string& name, Node* exp)
 	: Statement(StatementType::Assignment),
 	  mExpression(exp),
 	  mName(name)
 	{ }
 
 public:
-	Expression* mExpression;
+	Node* mExpression;
 	std::string mName;
 };
 
@@ -78,7 +78,7 @@ public:
 class TypeDeclaration : public Statement
 {
 public:
-	TypeDeclaration(const std::string& type, const std::string& name, Expression* assignment)
+	TypeDeclaration(const std::string& type, const std::string& name, Node* assignment)
 	: Statement(StatementType::TypeDeclaration),
 	  mAssignment(assignment),
 	  mName(name),
@@ -86,7 +86,7 @@ public:
 	{ }
 
 public:
-	Expression* mAssignment;
+	Node* mAssignment;
 	std::string mName;
 	std::string mType;
 };
@@ -95,7 +95,7 @@ public:
 class Statements : public Statement
 {
 public:
-	typedef std::list<Statement*> Nodes;
+	typedef std::list<Node*> Nodes;
 
 public:
 	Statements()

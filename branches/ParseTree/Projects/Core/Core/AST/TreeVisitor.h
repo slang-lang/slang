@@ -9,6 +9,7 @@
 #include "ControlStatements.h"
 #include "Expression.h"
 #include "Keywords.h"
+#include "Operator.h"
 
 // Forward declarations
 
@@ -43,7 +44,9 @@ public:
 	void process(Statements* root = 0);
 
 private:
-	void visitStatement(Statement* node);
+	void visitExpression(Expression *expression);
+	void visitOperator(Operator* op);
+	void visitStatement(Statement *node);
 
 	void visitAssert(AssertStatement* node);
 	void visitAssignment(Assignment* node);
@@ -62,7 +65,7 @@ private:
 	void visitWhile(WhileStatement* node);
 
 private:
-	std::string printExpression(Expression* node) const;
+	std::string printExpression(Node* node) const;
 	std::string printIndentation(int indentation) const;
 
 private:

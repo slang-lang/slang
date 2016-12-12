@@ -13,26 +13,26 @@ namespace AST {
 class AssertStatement : public Statement
 {
 public:
-	AssertStatement(Expression* exp)
+	AssertStatement(Node* exp)
 	: Statement(StatementType::AssertStatement),
 	  mExpression(exp)
 	{ }
 
 public:
-	Expression* mExpression;
+	Node* mExpression;
 };
 
 
 class DeleteStatement : public Statement
 {
 public:
-	DeleteStatement(VariableExpression* exp)
+	DeleteStatement(Node* exp)
 	: Statement(StatementType::DeleteStatement),
 	  mExpression(exp)
 	{ }
 
 public:
-	VariableExpression* mExpression;
+	Node* mExpression;
 };
 
 
@@ -54,7 +54,7 @@ public:
 class ForStatement : public Statement
 {
 public:
-	ForStatement(Statement* initialization, Expression* condition, Statement* iteration, Statements* loopBlock)
+	ForStatement(Statement* initialization, Node* condition, Statement* iteration, Statements* loopBlock)
 	: Statement(StatementType::ForStatement),
 	  mCondition(condition),
 	  mInitialization(initialization),
@@ -63,7 +63,7 @@ public:
 	{ }
 
 public:
-	Expression* mCondition;
+	Node* mCondition;
 	Statement* mInitialization;
 	Statement* mIteration;
 	Statements* mLoopBlock;
@@ -73,7 +73,7 @@ public:
 class IfStatement : public Statement
 {
 public:
-	IfStatement(Expression* exp, Statements* ifBlock, Statements* elseBlock)
+	IfStatement(Node* exp, Statements* ifBlock, Statements* elseBlock)
 	: Statement(StatementType::IfStatement),
 	  mElseBlock(elseBlock),
 	  mExpression(exp),
@@ -82,7 +82,7 @@ public:
 
 public:
 	Statements* mElseBlock;
-	Expression* mExpression;
+	Node* mExpression;
 	Statements* mIfBlock;
 };
 
@@ -90,13 +90,13 @@ public:
 class PrintStatement : public Statement
 {
 public:
-	PrintStatement(Expression* exp)
+	PrintStatement(Node* exp)
 	: Statement(StatementType::PrintStatement),
 	  mExpression(exp)
 	{ }
 
 public:
-	Expression* mExpression;
+	Node* mExpression;
 };
 
 
@@ -119,14 +119,14 @@ public:
 class WhileStatement : public Statement
 {
 public:
-	WhileStatement(Expression* condition, Statement* statements)
+	WhileStatement(Node* condition, Statement* statements)
 	: Statement(StatementType::WhileStatement),
 	  mExpression(condition),
 	  mStatements(statements)
 	{ }
 
 public:
-	Expression* mExpression;
+	Node* mExpression;
 	Statement* mStatements;
 };
 

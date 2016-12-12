@@ -48,9 +48,9 @@ TreeGenerator::~TreeGenerator()
 {
 }
 
-Expression* TreeGenerator::expression(TokenIterator& start)
+	Node* TreeGenerator::expression(TokenIterator& start)
 {
-	Expression* expression = parseCondition(start);
+	Node* expression = parseCondition(start);
 
 	for ( ; ; ) {
 		Token::Type::E op = start->type();
@@ -276,9 +276,9 @@ Symbol* TreeGenerator::identifyMethod(TokenIterator& token, const ParameterList&
 	return result;
 }
 
-Expression* TreeGenerator::parseCondition(TokenIterator& start)
+Node* TreeGenerator::parseCondition(TokenIterator& start)
 {
-	Expression* condition = parseExpression(start);
+	Node* condition = parseExpression(start);
 
 	for ( ; ; ) {
 		Token::Type::E op = start->type();
@@ -295,9 +295,9 @@ Expression* TreeGenerator::parseCondition(TokenIterator& start)
 	}
 }
 
-Expression* TreeGenerator::parseExpression(TokenIterator& start)
+Node* TreeGenerator::parseExpression(TokenIterator& start)
 {
-	Expression* expression = parseFactors(start);
+	Node* expression = parseFactors(start);
 
 	for ( ; ; ) {
 		Token::Type::E op = start->type();
@@ -313,9 +313,9 @@ Expression* TreeGenerator::parseExpression(TokenIterator& start)
 	}
 }
 
-Expression* TreeGenerator::parseFactors(TokenIterator& start)
+Node* TreeGenerator::parseFactors(TokenIterator& start)
 {
-	Expression* factor = parseInfixPostfix(start);
+	Node* factor = parseInfixPostfix(start);
 
 	for ( ; ; ) {
 		Token::Type::E op = start->type();
@@ -329,34 +329,28 @@ Expression* TreeGenerator::parseFactors(TokenIterator& start)
 	}
 }
 
-Expression* TreeGenerator::parseInfixPostfix(TokenIterator& start)
+Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 {
-	Expression* infixPostfix = 0;
+	Node* infixPostfix = 0;
 
 	Token::Type::E op = start->type();
 
 	// infix
 	switch ( op ) {
+		case Token::Type::MATH_ADDITION: {
+			infixPostfix = new UnaryExpression((*start), expression(++start));
+		} break;
 		case Token::Type::MATH_SUBTRACT: {
-			infixPostfix = new UnaryExpression((*start), parseExpression(++start));
+			infixPostfix = new UnaryExpression((*start), expression(++start));
 		} break;
 		case Token::Type::OPERATOR_DECREMENT: {
-			infixPostfix = new UnaryExpression((*start), parseExpression(++start));
+			infixPostfix = new UnaryExpression((*start), expression(++start));
 		} break;
 		case Token::Type::OPERATOR_INCREMENT: {
-			infixPostfix = new UnaryExpression((*start), parseExpression(++start));
+			infixPostfix = new UnaryExpression((*start), expression(++start));
 		} break;
 		case Token::Type::OPERATOR_NOT: {
-			infixPostfix = new UnaryExpression((*start), parseExpression(++start));
-		} break;
-		case Token::Type::PARENTHESIS_OPEN: {
-			++start;	// consume operator token
-
-			infixPostfix = expression(start);
-
-			expect(Token::Type::PARENTHESIS_CLOSE, start);
-
-			++start;	// consume operator token
+			infixPostfix = new UnaryExpression((*start), expression(++start));
 		} break;
 		default: {
 			infixPostfix = parseTerm(start);
@@ -367,56 +361,24 @@ Expression* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 
 	// postfix
 	switch ( op ) {
-/*
 		case Token::Type::BRACKET_OPEN: {
-			++start;	// consume operator token
-
-			infixPostfix = new UnaryExpression((*start), expression(start));
-
-			expect(Token::Type::BRACKET_CLOSE, start);
-
-			start++;	// consume operator token
+			assert(!"[] operator not supported");
 		} break;
-*/
 		case Token::Type::OPERATOR_DECREMENT: {
-			Expression* exp = parseExpression(start);
+			Node* exp = expression(start);
 
 			infixPostfix = new UnaryExpression((*start), exp);
 		} break;
 		case Token::Type::OPERATOR_INCREMENT: {
-			Expression* exp = parseExpression(start);
+			Node* exp = expression(start);
 
 			infixPostfix = new UnaryExpression((*start), exp);
 		} break;
 		case Token::Type::OPERATOR_IS: {
-			++start;
-
-			Symbol* symbol = identify(start);
-			if ( !symbol ) {
-				throw Common::Exceptions::UnknownIdentifer("unkown identifier '" + start->content() + "' found", start->position());
-			}
-
-			++start;
-
-			std::string compareType;
-
-			if ( symbol->getSymbolType() == Symbol::IType::ObjectSymbol ) {
-				compareType = static_cast<Runtime::Object*>(symbol)->QualifiedTypename();
-			}
-			else if ( symbol->getSymbolType() == Symbol::IType::BluePrintEnumSymbol || symbol->getSymbolType() == Symbol::IType::BluePrintObjectSymbol ) {
-				PrototypeConstraints constraints = Designtime::Parser::collectPrototypeConstraints(start);
-
-				compareType = dynamic_cast<Designtime::BluePrintGeneric*>(symbol)->QualifiedTypename();
-				compareType = Designtime::Parser::buildConstraintTypename(compareType, constraints);
-			}
-			else {
-				throw Common::Exceptions::SyntaxError("invalid symbol type found", start->position());
-			}
-
-			//*result = Runtime::BoolObject(operator_binary_is(result, compareType));
+			assert(!"is operator not supported");
 		} break;
 		case Token::Type::OPERATOR_NOT: {
-			Expression* exp = parseExpression(start);
+			Node* exp = expression(start);
 
 			infixPostfix = new UnaryExpression((*start), exp);
 		} break;
@@ -427,9 +389,9 @@ Expression* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 	return infixPostfix;
 }
 
-Expression* TreeGenerator::parseTerm(TokenIterator& start)
+Node* TreeGenerator::parseTerm(TokenIterator& start)
 {
-	Expression* term = 0;
+	Node* term = 0;
 
 	switch ( start->type() ) {
 		case Token::Type::CONST_BOOLEAN: {
@@ -504,9 +466,18 @@ Expression* TreeGenerator::parseTerm(TokenIterator& start)
 */
 		} break;
 		case Token::Type::KEYWORD: {
-			/*term =*/ process_keyword(start);
+			term = process_keyword(start);
 
 			++start;
+		} break;
+		case Token::Type::PARENTHESIS_OPEN: {
+			++start;	// consume operator token
+
+			term = expression(start);
+
+			expect(Token::Type::PARENTHESIS_CLOSE, start);
+
+			++start;	// consume operator token
 		} break;
 		case Token::Type::SEMICOLON: {
 		} break;
@@ -540,29 +511,10 @@ Statements* TreeGenerator::process(TokenIterator& token, TokenIterator end, Toke
 
 	while ( ( (token != getTokens().end()) && (token != end) ) &&
 			( (token->type() != terminator) && (token->type() != Token::Type::ENDOFFILE) ) ) {
-		switch ( token->type() ) {
-			case Token::Type::IDENTIFER:
-			case Token::Type::PROTOTYPE:
-			case Token::Type::TYPE:
-				statements->mNodes.push_back(
-					process_identifier(token, terminator == Token::Type::NIL ? Token::Type::SEMICOLON : terminator)
-				);
-				break;
-			case Token::Type::KEYWORD:
-				statements->mNodes.push_back(
-					process_keyword(token)
-				);
-				break;
-			case Token::Type::BRACKET_CURLY_OPEN:
-				statements->mNodes.push_back(
-					process_scope(token)	// this opens a new scope
-				);
-				break;
-			case Token::Type::SEMICOLON:
-				break;
-			default:
-				throw Common::Exceptions::SyntaxError("invalid token '" + token->content() + "' found", token->position());
-		}
+
+		statements->mNodes.push_back(
+			process_statement(token, terminator)
+		);
 
 		++token;	// consume token
 	}
@@ -707,7 +659,7 @@ Statement* TreeGenerator::process_for(TokenIterator& token)
 	// {
 	TokenIterator condBegin = conditionBegin;
 
-	Expression* condition = 0;
+	Node* condition = 0;
 	if ( std::distance(condBegin, increaseBegin) > 1 ) {
 		condition = expression(condBegin);
 	}
@@ -801,10 +753,9 @@ Statement* TreeGenerator::process_foreach(TokenIterator& token)
 /*
  * executes a method, processes an assign statement and instanciates new types
  */
-Statement* TreeGenerator::process_identifier(TokenIterator& token, Token::Type::E terminator)
+Node* TreeGenerator::process_identifier(TokenIterator& token, Token::Type::E /*terminator*/)
 {
-	Statement* statement = 0;
-
+/*
 	TokenIterator tmpToken = token;
 
 	Symbol* symbol = identify(token);
@@ -813,12 +764,12 @@ Statement* TreeGenerator::process_identifier(TokenIterator& token, Token::Type::
 	}
 
 	if ( symbol->getSymbolType() == Symbol::IType::BluePrintEnumSymbol || symbol->getSymbolType() == Symbol::IType::BluePrintObjectSymbol ) {
-		statement = process_type(token);
+		node = process_type(token);
 	}
 	else if ( symbol->getSymbolType() == Symbol::IType::MethodSymbol ) {
 		token = tmpToken;	// reset token after call to identify
 
-		process_method(token);
+		node = process_method(token);
 	}
 	else if ( symbol->getSymbolType() == Symbol::IType::ObjectSymbol ) {
 		// try to find an assignment token
@@ -830,13 +781,8 @@ Statement* TreeGenerator::process_identifier(TokenIterator& token, Token::Type::
 		if ( object->isConst() ) {	// we tried to modify a const symbol (i.e. member, parameter or constant local variable)
 			throw Common::Exceptions::ConstCorrectnessViolated("tried to modify const symbol '" + object->getFullScopeName() + "'", token->position());
 		}
-/*
-		if ( object->isMember() && dynamic_cast<Method*>(mOwner)->isConst() ) {	// we tried to modify a member in a const method
-			throw Common::Exceptions::ConstCorrectnessViolated("tried to modify member '" + object->getFullScopeName() + "' in const method '" + getScope()->getScopeName() + "'", token->position());
-		}
-*/
 
-		expression(++assign);
+		node = expression(++assign);
 
 		// assign == end should now be true
 		token = end;
@@ -844,8 +790,28 @@ Statement* TreeGenerator::process_identifier(TokenIterator& token, Token::Type::
 	else {
 		throw Common::Exceptions::Exception("invalid symbol type found!");
 	}
+*/
 
-	return statement;
+	Node* node = 0;
+
+	// type declaration
+	if ( lookahead(token)->type() == Token::Type::IDENTIFER ) {
+		node = process_type(token);
+	}
+	// method call
+	else if ( lookahead(token)->type() == Token::Type::PARENTHESIS_OPEN ) {
+		node = process_method(token);
+	}
+	// assignment
+	else if ( lookahead(token)->category() == Token::Category::Assignment ) {
+		node = new Assignment(token->content(), expression(token));
+		++token;
+	}
+	else {
+		throw Common::Exceptions::Exception("invalid symbol type found!", token->position());
+	}
+
+	return node;
 }
 
 /*
@@ -927,65 +893,65 @@ Statement* TreeGenerator::process_if(TokenIterator& token)
 	return new IfStatement(expression(condBegin), generate(ifTokens), generate(elseTokens));
 }
 
-Statement* TreeGenerator::process_keyword(TokenIterator& token)
+Node* TreeGenerator::process_keyword(TokenIterator& token)
 {
-	Statement* statement = 0;
+	Node* node = 0;
 
 	std::string keyword = (*token++).content();
 
 	if ( keyword == KEYWORD_ASSERT ) {
-		statement = process_assert(token);
+		node = process_assert(token);
 	}
 	else if ( keyword == KEYWORD_BREAK ) {
-		statement = process_break(token);
+		node = process_break(token);
 	}
 	else if ( keyword == KEYWORD_CONTINUE ) {
-		statement = process_continue(token);
+		node = process_continue(token);
 	}
 	else if ( keyword == KEYWORD_COPY ) {
-		process_copy(token);
+		node = process_copy(token);
 	}
 	else if ( keyword == KEYWORD_DELETE ) {
-		statement = process_delete(token);
+		node = process_delete(token);
 	}
 	else if ( keyword == KEYWORD_EXIT ) {
-		statement = process_exit(token);
+		node = process_exit(token);
 	}
 	else if ( keyword == KEYWORD_FOR ) {
-		statement = process_for(token);
+		node = process_for(token);
 	}
 	else if ( keyword == KEYWORD_FOREACH ) {
-		statement = process_foreach(token);
+		node = process_foreach(token);
 	}
 	else if ( keyword == KEYWORD_IF ) {
-		statement = process_if(token);
+		node = process_if(token);
 	}
 	else if ( keyword == KEYWORD_NEW ) {
-		process_new(token);
+		node = process_new(token);
 	}
 	else if ( keyword == KEYWORD_PRINT ) {
-		statement = process_print(token);
+		node = process_print(token);
 	}
 	else if ( keyword == KEYWORD_RETURN ) {
-		statement = process_return(token);
+		node = process_return(token);
 	}
 	else if ( keyword == KEYWORD_SWITCH ) {
-		process_switch(token);
+		node = process_switch(token);
 	}
 	else if ( keyword == KEYWORD_THROW ) {
-		statement = process_throw(token);
+		node = process_throw(token);
 	}
 	else if ( keyword == KEYWORD_TRY ) {
-		statement = process_try(token);
+		node = process_try(token);
 	}
 	else if ( keyword == KEYWORD_TYPEID ) {
-		process_typeid(token);
+		node = process_typeid(token);
 	}
 	else if ( keyword == KEYWORD_WHILE ) {
-		statement = process_while(token);
+		node = process_while(token);
 	}
 
-	return statement;
+	return node;
 }
 
 /*
@@ -1065,6 +1031,7 @@ MethodExpression* TreeGenerator::process_method(TokenIterator& token)
  */
 Expression* TreeGenerator::process_new(TokenIterator& token)
 {
+/*
 	std::string name;
 	std::string type = token->content();
 
@@ -1076,7 +1043,7 @@ Expression* TreeGenerator::process_new(TokenIterator& token)
 		throw Common::Exceptions::Exception("blueprint symbol expected!");
 	}
 
-	token++;
+	++token;
 
 	PrototypeConstraints constraints = Designtime::Parser::collectPrototypeConstraints(token);
 
@@ -1108,8 +1075,9 @@ Expression* TreeGenerator::process_new(TokenIterator& token)
 		}
 		tmp++;
 	}
+*/
 
-	return new NewExpression(0);
+	return new NewExpression(token->content(), process_method(token));
 }
 
 /*
@@ -1158,6 +1126,31 @@ Statements* TreeGenerator::process_scope(TokenIterator& token)
 	expect(Token::Type::BRACKET_CURLY_CLOSE, token);
 
 	return statements;
+}
+
+Node* TreeGenerator::process_statement(TokenIterator& token, Token::Type::E terminator)
+{
+	Node* node = 0;
+
+	switch ( token->type() ) {
+		case Token::Type::IDENTIFER:
+		case Token::Type::PROTOTYPE:
+		case Token::Type::TYPE:
+			node = process_identifier(token, terminator == Token::Type::NIL ? Token::Type::SEMICOLON : terminator);
+			break;
+		case Token::Type::KEYWORD:
+			node = process_keyword(token);
+			break;
+		case Token::Type::BRACKET_CURLY_OPEN:
+			node = process_scope(token);	// this opens a new scope
+			break;
+		case Token::Type::SEMICOLON:
+			break;
+		default:
+			throw Common::Exceptions::SyntaxError("invalid token '" + token->content() + "' found", token->position());
+	}
+
+	return node;
 }
 
 /*
@@ -1490,7 +1483,7 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token)
 		assign = ++token;
 	}
 
-	Expression* assignment = 0;
+	Node* assignment = 0;
 
 	if ( assign != getTokens().end() ) {
 		assignment = expression(token);

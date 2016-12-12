@@ -60,14 +60,15 @@ private: // Execution
 	Statement* process_exit(TokenIterator& token);
 	Statement* process_for(TokenIterator& token);
 	Statement* process_foreach(TokenIterator& token);
-	Statement* process_identifier(TokenIterator& token, Token::Type::E terminator = Token::Type::SEMICOLON);
+	Node* process_identifier(TokenIterator& token, Token::Type::E terminator = Token::Type::SEMICOLON);
 	Statement* process_if(TokenIterator& token);
-	Statement* process_keyword(TokenIterator& token);
+	Node* process_keyword(TokenIterator& token);
 	MethodExpression* process_method(TokenIterator& token);
 	Expression* process_new(TokenIterator& token);
 	Statement* process_print(TokenIterator& token);
 	Statement* process_return(TokenIterator& token);
 	Statements* process_scope(TokenIterator& token);
+	Node* process_statement(TokenIterator& token, Token::Type::E terminator = Token::Type::SEMICOLON);
 	Statement* process_switch(TokenIterator& token);
 	Statement* process_throw(TokenIterator& token);
 	Statement* process_try(TokenIterator& token);
@@ -78,12 +79,12 @@ private: // Execution
 
 	// expression parsing
 	// {
-	Expression* expression(TokenIterator& start);
-	Expression* parseCondition(TokenIterator& start);
-	Expression* parseExpression(TokenIterator& start);
-	Expression* parseFactors(TokenIterator& start);
-	Expression* parseInfixPostfix(TokenIterator& start);
-	Expression* parseTerm(TokenIterator& start);
+	Node* expression(TokenIterator& start);
+	Node* parseCondition(TokenIterator& start);
+	Node* parseExpression(TokenIterator& start);
+	Node* parseFactors(TokenIterator& start);
+	Node* parseInfixPostfix(TokenIterator& start);
+	Node* parseTerm(TokenIterator& start);
 	// }
 
 	// Repository

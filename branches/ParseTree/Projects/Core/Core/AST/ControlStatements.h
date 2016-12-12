@@ -31,39 +31,39 @@ public:
 class ExitStatement : public Statement
 {
 public:
-	ExitStatement(Expression* exp)
+	ExitStatement(Node* exp)
 	: Statement(StatementType::ExitStatement),
 	  mExpression(exp)
 	{ }
 
 public:
-	Expression* mExpression;
+	Node* mExpression;
 };
 
 
 class ReturnStatement : public Statement
 {
 public:
-	ReturnStatement(Expression* exp)
+	ReturnStatement(Node* exp)
 	: Statement(StatementType::ReturnStatement),
 	  mExpression(exp)
 	{ }
 
 public:
-	Expression* mExpression;
+	Node* mExpression;
 };
 
 
 class ThrowStatement : public Statement
 {
 public:
-	ThrowStatement(Expression* exp)
+	ThrowStatement(Node* exp)
 	: Statement(StatementType::ThrowStatement),
 	  mExpression(exp)
 	{ }
 
 public:
-	Expression* mExpression;
+	Node* mExpression;
 };
 
 

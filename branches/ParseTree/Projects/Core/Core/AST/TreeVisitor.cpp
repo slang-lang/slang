@@ -38,12 +38,15 @@ PrintVisitor::~PrintVisitor()
 {
 }
 
-std::string PrintVisitor::printExpression(Expression* node) const
+std::string PrintVisitor::printExpression(Node* node) const
 {
 	std::string result;
 
 	if ( node ) {
-		switch ( node->getExpressionType() ) {
+		assert(node->getNodeType() == Node::NodeType::Expression);
+		Expression* expression = static_cast<Expression*>(node);
+
+		switch ( expression->getExpressionType() ) {
 			case Expression::ExpressionType::BinaryExpression: {
 				BinaryExpression* bin = static_cast<BinaryExpression*>(node);
 
@@ -52,34 +55,34 @@ std::string PrintVisitor::printExpression(Expression* node) const
 				result += printExpression(bin->mRight) + ")";
 			} break;
 			case Expression::ExpressionType::CopyExpression: {
-				result += "copy " + printExpression(static_cast<CopyExpression*>(node)->mExpression);
+				result += "copy " + printExpression(static_cast<CopyExpression*>(expression)->mExpression);
 			} break;
 			case Expression::ExpressionType::NewExpression: {
-				result += "new " + printExpression(static_cast<NewExpression*>(node)->mExpression);
+				result += "new " + printExpression(static_cast<NewExpression*>(expression)->mExpression);
 			} break;
 			case Expression::ExpressionType::LiteralExpression: {
-				result += static_cast<LiteralExpression*>(node)->mValue.toStdString();
+				result += static_cast<LiteralExpression*>(expression)->mValue.toStdString();
 			} break;
 			case Expression::ExpressionType::MethodExpression: {
-				result += static_cast<MethodExpression*>(node)->mName;
+				result += static_cast<MethodExpression*>(expression)->mName;
 				result += "(";
-				for ( ExpressionList::const_iterator it = static_cast<MethodExpression*>(node)->mParams.begin(); it != static_cast<MethodExpression*>(node)->mParams.end(); ++it ) {
+				for ( ExpressionList::const_iterator it = static_cast<MethodExpression*>(expression)->mParams.begin(); it != static_cast<MethodExpression*>(expression)->mParams.end(); ++it ) {
 					result += printExpression((*it));
 				}
 				result += ")";
 			} break;
 			case Expression::ExpressionType::TypecastExpression: {
-				result += static_cast<TypecastExpression*>(node)->mDestinationType + " ";
-				result += printExpression(static_cast<TypecastExpression*>(node)->mExpression);
+				result += static_cast<TypecastExpression*>(expression)->mDestinationType + " ";
+				result += printExpression(static_cast<TypecastExpression*>(expression)->mExpression);
 			} break;
 			case Expression::ExpressionType::UnaryExpression: {
-				UnaryExpression* bin = static_cast<UnaryExpression*>(node);
+				UnaryExpression* bin = static_cast<UnaryExpression*>(expression);
 
 				result += bin->mToken.content();
 				result += printExpression(bin->mExpression);
 			} break;
 			case Expression::ExpressionType::VariableExpression: {
-				result += static_cast<VariableExpression*>(node)->mName;
+				result += static_cast<VariableExpression*>(expression)->mName;
 			} break;
 		}
 	}
@@ -100,23 +103,33 @@ std::string PrintVisitor::printIndentation(int indentation) const
 
 void PrintVisitor::process(Statements* root)
 {
+	std::cout << printIndentation(mIndentation) << "{" << std::endl;
+	mIndentation++;
+
 	Statements* statements = root ? root : mRootNode;
 
-	if ( !statements ) {
-		return;
-	}
+	if ( statements ) {
+		for ( Statements::Nodes::const_iterator it = statements->mNodes.begin(); it != statements->mNodes.end(); ++it ) {
+			if ( !(*it) ) {
+				continue;
+			}
 
-	for ( Statements::Nodes::const_iterator it = statements->mNodes.begin(); it != statements->mNodes.end(); ++it ) {
-		switch ( (*it)->getNodeType() ) {
-			case Node::NodeType::Expression:
-				break;
-			case Node::NodeType::Operator:
-				break;
-			case Node::NodeType::Statement:
-				visitStatement((*it));
-				break;
+			switch ( (*it)->getNodeType() ) {
+				case Node::NodeType::Expression:
+					visitExpression(static_cast<Expression*>((*it)));
+					break;
+				case Node::NodeType::Operator:
+					visitOperator(static_cast<Operator*>((*it)));
+					break;
+				case Node::NodeType::Statement:
+					visitStatement(static_cast<Statement*>((*it)));
+					break;
+			}
 		}
 	}
+
+	mIndentation--;
+	std::cout << printIndentation(mIndentation) << "}" << std::endl;
 }
 
 void PrintVisitor::visitAssert(AssertStatement* node)
@@ -147,6 +160,11 @@ void PrintVisitor::visitDelete(DeleteStatement* node)
 void PrintVisitor::visitExit(ExitStatement* node)
 {
 	std::cout << printIndentation(mIndentation) << "exit " << printExpression(node->mExpression) << ";" << std::endl;
+}
+
+void PrintVisitor::visitExpression(Expression *expression)
+{
+	std::cout << printExpression(expression) << std::endl;
 }
 
 void PrintVisitor::visitFor(ForStatement* node)
@@ -202,6 +220,11 @@ void PrintVisitor::visitIf(IfStatement* node)
 	}
 }
 
+void PrintVisitor::visitOperator(Operator* /*op*/)
+{
+	std::cout << "Operator" << std::endl;
+}
+
 void PrintVisitor::visitPrint(PrintStatement* node)
 {
 	std::cout << printIndentation(mIndentation) << "print(" << printExpression(node->mExpression) << ");" << std::endl;
@@ -212,23 +235,7 @@ void PrintVisitor::visitReturn(ReturnStatement* node)
 	std::cout << printIndentation(mIndentation) << "return " << printExpression(node->mExpression) << ";" << std::endl;
 }
 
-void PrintVisitor::visitThrow(ThrowStatement* node)
-{
-	std::cout << printIndentation(mIndentation) << "throw " << printExpression(node->mExpression) << ";" << std::endl;
-}
-
-void PrintVisitor::visitWhile(WhileStatement* node)
-{
-	std::cout << printIndentation(mIndentation) << "while ( " << printExpression(node->mExpression) << " ) {" << std::endl;
-
-	mIndentation++;
-	visitStatement(node->mStatements);
-	mIndentation--;
-
-	std::cout << printIndentation(mIndentation) << "}" << std::endl;
-}
-
-void PrintVisitor::visitStatement(Statement* node)
+void PrintVisitor::visitStatement(Statement *node)
 {
 	assert(node);
 
@@ -284,6 +291,11 @@ void PrintVisitor::visitStatement(Statement* node)
 	}
 }
 
+void PrintVisitor::visitThrow(ThrowStatement* node)
+{
+	std::cout << printIndentation(mIndentation) << "throw " << printExpression(node->mExpression) << ";" << std::endl;
+}
+
 void PrintVisitor::visitTry(TryStatement* node)
 {
 	std::cout << printIndentation(mIndentation) << "try {" << std::endl;
@@ -314,6 +326,17 @@ void PrintVisitor::visitTypeDeclaration(TypeDeclaration* node)
 	}
 
 	std::cout << ";" << std::endl;
+}
+
+void PrintVisitor::visitWhile(WhileStatement* node)
+{
+	std::cout << printIndentation(mIndentation) << "while ( " << printExpression(node->mExpression) << " ) {" << std::endl;
+
+	mIndentation++;
+	visitStatement(node->mStatements);
+	mIndentation--;
+
+	std::cout << printIndentation(mIndentation) << "}" << std::endl;
 }
 
 
