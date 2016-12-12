@@ -327,6 +327,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\Core\BuildInObjects\BoolObject.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\Designtime\BuildInTypes\BoolObject.cpp"
 				>
 				<FileConfiguration
@@ -345,10 +349,6 @@
 						ObjectFile="$(IntDir)\Core\Designtime\BuildInTypes\"
 					/>
 				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\Core\BuildInObjects\BoolObject.cpp"
-				>
 			</File>
 			<File
 				RelativePath=".\Debugger\BreakPoint.cpp"
@@ -479,10 +479,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\FloatObject.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\Core\Designtime\BuildInTypes\FloatObject.cpp"
 				>
 				<FileConfiguration
@@ -503,7 +499,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\GenericObject.cpp"
+				RelativePath=".\Core\BuildInObjects\FloatObject.cpp"
 				>
 			</File>
 			<File
@@ -525,6 +521,10 @@
 						ObjectFile="$(IntDir)\Core\Designtime\BuildInTypes\"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\Core\BuildInObjects\GenericObject.cpp"
+				>
 			</File>
 			<File
 				RelativePath=".\Core\Attributes\ImplementationType.cpp"
@@ -843,7 +843,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Token.cpp"
+				RelativePath=".\Core\Designtime\Parser\Token.cpp"
 				>
 			</File>
 			<File
@@ -868,6 +868,14 @@
 			</File>
 			<File
 				RelativePath=".\Core\Tools.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\AST\TreeGenerator.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\AST\TreeVisitor.cpp"
 				>
 			</File>
 			<File
@@ -1009,11 +1017,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\BoolObject.h"
+				RelativePath=".\Core\BuildInObjects\BoolObject.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\BoolObject.h"
+				RelativePath=".\Core\Designtime\BuildInTypes\BoolObject.h"
 				>
 			</File>
 			<File
@@ -1037,6 +1045,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Core\AST\ControlStatements.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Debugger\Debugger.h"
 				>
 			</File>
@@ -1045,23 +1057,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\DoubleObject.h"
-				>
-			</File>
-			<File
 				RelativePath=".\Core\Designtime\BuildInTypes\DoubleObject.h"
 				>
 			</File>
 			<File
+				RelativePath=".\Core\BuildInObjects\DoubleObject.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\Runtime\ExceptionData.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Core\Exceptions.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Core\Designtime\Exceptions.h"
 				>
 			</File>
 			<File
@@ -1073,11 +1077,27 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\FloatObject.h"
+				RelativePath=".\Core\Exceptions.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\Designtime\Exceptions.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\AST\Expression.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\Extensions\ExtensionMethod.h"
 				>
 			</File>
 			<File
 				RelativePath=".\Core\Designtime\BuildInTypes\FloatObject.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\BuildInObjects\FloatObject.h"
 				>
 			</File>
 			<File
@@ -1097,15 +1117,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\IntegerObject.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Core\BuildInObjects\IntegerObject.h"
-				>
-			</File>
-			<File
 				RelativePath=".\Core\Designtime\BuildInTypes\IntegerObject.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\BuildInObjects\IntegerObject.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\BuildInObjects\IntegerObject.h"
 				>
 			</File>
 			<File
@@ -1122,6 +1142,10 @@
 			</File>
 			<File
 				RelativePath=".\Core\Interfaces\IScope.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\AST\Keywords.h"
 				>
 			</File>
 			<File
@@ -1145,6 +1169,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Core\AST\Node.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\Object.h"
 				>
 			</File>
@@ -1154,6 +1182,10 @@
 			</File>
 			<File
 				RelativePath=".\Core\Attributes\ObjectType.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\AST\Operator.h"
 				>
 			</File>
 			<File
@@ -1169,11 +1201,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Common\Position.h"
+				RelativePath=".\Core\Utils\Position.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Utils\Position.h"
+				RelativePath=".\Core\Common\Position.h"
 				>
 			</File>
 			<File
@@ -1209,6 +1241,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Core\AST\Statement.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\Designtime\BuildInTypes\StringObject.h"
 				>
 			</File>
@@ -1225,7 +1261,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Token.h"
+				RelativePath=".\Core\Designtime\Parser\Token.h"
 				>
 			</File>
 			<File
@@ -1237,7 +1273,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Core\AST\TreeGenerator.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\AST\TreeVisitor.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\Runtime\TypeCast.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\Common\TypeDeclaration.h"
 				>
 			</File>
 			<File
@@ -1245,11 +1293,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\UserObject.h"
+				RelativePath=".\Core\Designtime\BuildInTypes\UserObject.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\UserObject.h"
+				RelativePath=".\Core\BuildInObjects\UserObject.h"
 				>
 			</File>
 			<File
@@ -1269,11 +1317,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\VoidObject.h"
+				RelativePath=".\Core\Designtime\BuildInTypes\VoidObject.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\VoidObject.h"
+				RelativePath=".\Core\BuildInObjects\VoidObject.h"
 				>
 			</File>
 		</Filter>

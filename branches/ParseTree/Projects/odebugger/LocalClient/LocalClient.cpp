@@ -4,7 +4,7 @@
 
 // Library includes
 #include <fstream>
-//#include <signal.h>
+#include <signal.h>
 #include <Json/Json.h>
 
 // Project includes
