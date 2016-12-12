@@ -784,7 +784,7 @@ void Interpreter::process(Object *result, TokenIterator& token, TokenIterator en
 
 		process_statement(token, result, terminator);
 
-		++token;	// consume token
+		//++token;	// consume token
 	}
 }
 
@@ -1546,6 +1546,8 @@ void Interpreter::process_statement(TokenIterator& token, Object* result, Token:
 		default:
 			throw Common::Exceptions::SyntaxError("invalid token '" + token->content() + "' found", token->position());
 	}
+
+	++token;	// consume token
 }
 
 /*
