@@ -110,26 +110,29 @@ void PrintVisitor::process(Statements* root)
 
 	if ( statements ) {
 		for ( Statements::Nodes::const_iterator it = statements->mNodes.begin(); it != statements->mNodes.end(); ++it ) {
-			if ( !(*it) ) {
-				continue;
-			}
-
-			switch ( (*it)->getNodeType() ) {
-				case Node::NodeType::Expression:
-					visitExpression(static_cast<Expression*>((*it)));
-					break;
-				case Node::NodeType::Operator:
-					visitOperator(static_cast<Operator*>((*it)));
-					break;
-				case Node::NodeType::Statement:
-					visitStatement(static_cast<Statement*>((*it)));
-					break;
-			}
+			visit((*it));
 		}
 	}
 
 	mIndentation--;
 	std::cout << printIndentation(mIndentation) << "}" << std::endl;
+}
+
+void PrintVisitor::visit(Node* node)
+{
+	if ( node ) {
+		switch ( node->getNodeType() ) {
+			case Node::NodeType::Expression:
+				visitExpression(static_cast<Expression*>(node));
+				break;
+			case Node::NodeType::Operator:
+				visitOperator(static_cast<Operator*>(node));
+				break;
+			case Node::NodeType::Statement:
+				visitStatement(static_cast<Statement*>(node));
+				break;
+		}
+	}
 }
 
 void PrintVisitor::visitAssert(AssertStatement* node)
@@ -183,7 +186,7 @@ void PrintVisitor::visitFor(ForStatement* node)
 
 	std::cout << printIndentation(mIndentation) << ") ";
 
-	visitStatement(node->mLoopBlock);
+	visit(node->mLoopBlock);
 }
 
 void PrintVisitor::visitForeach(ForeachStatement *node)
@@ -194,19 +197,19 @@ void PrintVisitor::visitForeach(ForeachStatement *node)
 
 	std::cout << " : " << node->mLoopVariable.content() << " ) ";
 
-	visitStatement(node->mLoopBlock);
+	visit(node->mLoopBlock);
 }
 
 void PrintVisitor::visitIf(IfStatement* node)
 {
 	std::cout << printIndentation(mIndentation) << "if ( " << printExpression(node->mExpression) << " ) ";
 
-	visitStatement(static_cast<Statements*>(node->mIfBlock));
+	visit(node->mIfBlock);
 
 	if ( node->mElseBlock && static_cast<Statements*>(node->mElseBlock)->mNodes.size() > 0 ) {
 		std::cout << printIndentation(mIndentation) << "else ";
 
-		visitStatement(static_cast<Statements*>(node->mElseBlock));
+		visit(node->mElseBlock);
 	}
 }
 
@@ -312,7 +315,7 @@ void PrintVisitor::visitWhile(WhileStatement* node)
 {
 	std::cout << printIndentation(mIndentation) << "while ( " << printExpression(node->mExpression) << " ) ";
 
-	visitStatement(node->mStatements);
+	visit(node->mStatements);
 }
 
 

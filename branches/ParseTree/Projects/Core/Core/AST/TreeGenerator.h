@@ -51,7 +51,6 @@ private: // Execution
 	// token processing
 	// {
 	Statements* process(TokenIterator& start, TokenIterator end, Token::Type::E terminator = Token::Type::NIL);
-
 	Statement* process_assert(TokenIterator& token);
 	Statement* process_break(TokenIterator& token);
 	Statement* process_continue(TokenIterator& token);

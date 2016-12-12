@@ -514,8 +514,6 @@ Statements* TreeGenerator::process(TokenIterator& token, TokenIterator end, Toke
 		statements->mNodes.push_back(
 			process_statement(token, terminator)
 		);
-
-		//++token;	// consume token
 	}
 
 	return statements;
@@ -623,35 +621,20 @@ Statement* TreeGenerator::process_exit(TokenIterator& token)
  */
 Statement* TreeGenerator::process_for(TokenIterator& token)
 {
-	expect(Token::Type::PARENTHESIS_OPEN, token++);
+	expect(Token::Type::PARENTHESIS_OPEN, token);
 
-	TokenIterator initializationBegin = token;
+	TokenIterator initializationBegin = ++token;
 
 	const TokenIterator conditionBegin = ++findNext(initializationBegin, Token::Type::SEMICOLON);
 	const TokenIterator increaseBegin = ++findNext(conditionBegin, Token::Type::SEMICOLON);
 
-	// find next open curly bracket '{'
 	TokenIterator expressionEnd = findNext(increaseBegin, Token::Type::PARENTHESIS_CLOSE);
-
-	expect(Token::Type::BRACKET_CURLY_OPEN, ++expressionEnd);
-
-	// find next balanced '{' & '}' pair for loop-body
-	TokenIterator bodyBegin = expressionEnd;
-	TokenIterator bodyEnd = findNextBalancedCurlyBracket(bodyBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
+	token = ++expressionEnd;
 
 	// process our declaration part
 	// {
 	Node* initialization = process_statement(initializationBegin, Token::Type::SEMICOLON);
 	// }
-
-	bodyBegin++;		// don't collect scope token
-	token = bodyEnd;
-
-	TokenList loopTokens;
-	while ( bodyBegin != bodyEnd ) {
-		loopTokens.push_back((*bodyBegin));
-		bodyBegin++;
-	}
 
 	// Condition parsing
 	// {
@@ -672,7 +655,7 @@ Statement* TreeGenerator::process_for(TokenIterator& token)
 
 	// Body parsing
 	// {
-	Statements* loopBlock = generate(loopTokens);
+	Node* loopBlock = process_statement(token);
 	// }
 
 	return new ForStatement(initialization, condition, iteration, loopBlock);
@@ -699,21 +682,12 @@ Statement* TreeGenerator::process_foreach(TokenIterator& token)
 	expect(Token::Type::PARENTHESIS_CLOSE, token);
 	token++;
 
-	// find next balanced '{' & '}' pair for loop-body
-	TokenIterator bodyBegin = token;
-	TokenIterator bodyEnd = findNextBalancedCurlyBracket(bodyBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
-
-	bodyBegin++;		// don't collect scope token
-	token = bodyEnd;
-
-	TokenList loopTokens;
-	while ( bodyBegin != bodyEnd ) {
-		loopTokens.push_back((*bodyBegin));
-		bodyBegin++;
-	}
+	// Body parsing
+	// {
+	Node* loopBlock = process_statement(token);
 	// }
 
-	return new ForeachStatement(typeDeclaration, (*identifier), generate(loopTokens));
+	return new ForeachStatement(typeDeclaration, (*identifier), loopBlock);
 }
 
 /*
@@ -838,7 +812,8 @@ Statement* TreeGenerator::process_if(TokenIterator& token)
 	Node* ifBlock = process_statement(token);
 
 	Node* elseBlock = 0;
-	if ( token->type() == Token::Type::KEYWORD && token->content() == KEYWORD_ELSE ) {
+	if ( token != getTokens().end() &&
+		 token->type() == Token::Type::KEYWORD && token->content() == KEYWORD_ELSE ) {
 		++token;
 
 		elseBlock = process_statement(token);
@@ -974,7 +949,7 @@ MethodExpression* TreeGenerator::process_method(TokenIterator& token)
 
 	std::string name = token->content();
 
-	token = closed;
+	token = ++closed;
 
 	return new MethodExpression(name, parameterList);
 }
@@ -1097,14 +1072,14 @@ Node* TreeGenerator::process_statement(TokenIterator& token, Token::Type::E term
 			break;
 		case Token::Type::BRACKET_CURLY_OPEN:
 			node = process_scope(token);	// this opens a new scope
+			++token;
 			break;
 		case Token::Type::SEMICOLON:
+			++token;
 			break;
 		default:
 			throw Common::Exceptions::SyntaxError("invalid token '" + token->content() + "' found", token->position());
 	}
-
-	++token;	// consume token
 
 	return node;
 }
@@ -1249,9 +1224,6 @@ Statement* TreeGenerator::process_throw(TokenIterator& token)
  */
 Statement* TreeGenerator::process_try(TokenIterator& token)
 {
-	Statements* tryBlock = 0;
-	Statements* finallyBlock = 0;
-
 	expect(Token::Type::BRACKET_CURLY_OPEN, token);
 
 	// find next open curly bracket '{'
@@ -1270,7 +1242,7 @@ Statement* TreeGenerator::process_try(TokenIterator& token)
 	}
 
 	// process try-block
-	tryBlock = generate(tryTokens);
+	Statements* tryBlock = generate(tryTokens);
 
 	TokenIterator tmp = lookahead(token, 1);
 
@@ -1358,6 +1330,8 @@ Statement* TreeGenerator::process_try(TokenIterator& token)
 		break;
 	}
 
+	Statements* finallyBlock = 0;
+
 	// process finally-block (if present)
 	if ( finallyToken != getTokens().end() ) {
 		finallyToken++;
@@ -1380,6 +1354,8 @@ Statement* TreeGenerator::process_try(TokenIterator& token)
 		// TODO: should we execute the finally-block in any case (i.e. even though a return has been issued by the user)?
 		finallyBlock = generate(finallyTokens);
 	}
+
+	++token;
 
 	return new TryStatement(tryBlock, finallyBlock);
 }
@@ -1492,25 +1468,11 @@ Statement* TreeGenerator::process_while(TokenIterator& token)
 	// find next balanced '(' & ')' pair
 	TokenIterator condEnd = findNextBalancedParenthesis(condBegin);
 
-	expect(Token::Type::BRACKET_CURLY_OPEN, ++condEnd);
+	token = ++condEnd;
 
-	// find next open curly bracket '{'
-	TokenIterator bodyBegin = condEnd;
-	// find next balanced '{' & '}' pair
-	TokenIterator bodyEnd = findNextBalancedCurlyBracket(bodyBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
+	Node* whileBlock = process_statement(token);
 
-	bodyBegin++;	// don't collect scope token;
-	token = bodyEnd;
-
-	TokenList statementTokens;
-	while ( bodyBegin != bodyEnd ) {
-		statementTokens.push_back((*bodyBegin));
-		bodyBegin++;
-	}
-
-	TokenIterator tmp = condBegin;
-
-	return new WhileStatement(expression(tmp), generate(statementTokens));
+	return new WhileStatement(expression(condBegin), whileBlock);
 }
 
 void TreeGenerator::pushScope(IScope* scope)

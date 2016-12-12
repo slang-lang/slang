@@ -44,6 +44,8 @@ public:
 	void process(Statements* root = 0);
 
 private:
+	void visit(Node* node);
+
 	void visitExpression(Expression *expression);
 	void visitOperator(Operator* op);
 	void visitStatement(Statement *node);
