@@ -3,6 +3,8 @@
 #define ObjectiveScript_Core_AST_Operator_h
 
 
+#include <Core/Designtime/Parser/Token.h>
+#include "Expression.h"
 #include "Node.h"
 
 
@@ -13,10 +15,60 @@ namespace AST {
 class Operator : public Node
 {
 public:
-	Operator()
-	: Node(NodeType::Operator)
+	class OperatorType {
+	public:
+		enum E {
+			BinaryOperator,
+			UnaryOperator
+		};
+	};
+
+public:
+	Operator(OperatorType::E operatorType)
+	: Node(NodeType::Operator),
+	  mOperatorType(operatorType)
 	{ }
+
+	OperatorType::E getOperatorType() const {
+		return mOperatorType;
+	}
+
+private:
+	OperatorType::E mOperatorType;
 };
+
+
+class BinaryOperator : public Operator
+{
+public:
+	BinaryOperator(const Token& token, Expression* left, Expression* right)
+	: Operator(OperatorType::BinaryOperator),
+	  mLeft(left),
+	  mRight(right),
+	  mToken(token)
+	{ }
+
+public:
+	Expression* mLeft;
+	Expression* mRight;
+	Token mToken;
+};
+
+
+class UnaryOperator : public Operator
+{
+public:
+	UnaryOperator(const Token& token, Expression* exp)
+	: Operator(OperatorType::UnaryOperator),
+	  mExpression(exp),
+	  mToken(token)
+	{ }
+
+public:
+	Expression* mExpression;
+	Token mToken;
+};
+
 
 
 }

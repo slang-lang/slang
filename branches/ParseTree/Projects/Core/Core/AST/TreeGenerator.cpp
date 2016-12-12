@@ -24,10 +24,10 @@
 #include <Utils.h>
 
 // AST includes
-#include "BinaryOperator.h"
 #include "ControlStatements.h"
 #include "Expression.h"
 #include "Keywords.h"
+#include "Operator.h"
 #include "Statement.h"
 #include "Term.h"
 
@@ -61,24 +61,7 @@ Expression* TreeGenerator::expression(TokenIterator& start)
 			return expression;
 		}
 
-		//++start;	// consume operator token
-
 		expression = new BinaryExpression((*start), expression, parseCondition(++start));
-
-/*
-		if ( op == Token::Type::AND && isTrue(*result) ) {
-			*result = Runtime::BoolObject(isTrue(*result) && isTrue(v2));
-		}
-		else if ( op == Token::Type::NAND && !isTrue(*result) ) {
-			*result = Runtime::BoolObject(!isTrue(*result) && !isTrue(v2));
-		}
-		else if ( op == Token::Type::NOR && !isTrue(*result) ) {
-			*result = Runtime::BoolObject(!isTrue(*result) || !isTrue(v2));
-		}
-		else if ( op == Token::Type::OR && !isTrue(*result) ) {
-			*result = Runtime::BoolObject(isTrue(*result) || isTrue(v2));
-		}
-*/
 	}
 }
 
@@ -308,34 +291,7 @@ Expression* TreeGenerator::parseCondition(TokenIterator& start)
 			 return condition;
 		}
 
-		//++start;	// consume comparator token
-
 		condition = new BinaryExpression((*start), condition, parseExpression(++start));
-
-/*
-		switch ( op ) {
-			case Token::Type::COMPARE_EQUAL:
-				*result = Runtime::BoolObject(Runtime::operator_binary_equal(result, &v2));
-				break;
-			case Token::Type::COMPARE_GREATER:
-				*result = Runtime::BoolObject(Runtime::operator_binary_greater(result, &v2));
-				break;
-			case Token::Type::COMPARE_GREATER_EQUAL:
-				*result = Runtime::BoolObject(Runtime::operator_binary_greater_equal(result, &v2));
-				break;
-			case Token::Type::COMPARE_LESS:
-				*result = Runtime::BoolObject(Runtime::operator_binary_less(result, &v2));
-				break;
-			case Token::Type::COMPARE_LESS_EQUAL:
-				*result = Runtime::BoolObject(Runtime::operator_binary_less_equal(result, &v2));
-				break;
-			case Token::Type::COMPARE_UNEQUAL:
-				*result = Runtime::BoolObject(!Runtime::operator_binary_equal(result, &v2));
-				break;
-			default:
-				break;
-		}
-*/
 	}
 }
 
@@ -353,31 +309,7 @@ Expression* TreeGenerator::parseExpression(TokenIterator& start)
 			return expression;
 		}
 
-		//++start;	// consume operator token
-
 		expression = new BinaryExpression((*start), expression, parseFactors(++start));
-
-/*
-		switch ( op ) {
-			case Token::Type::BITAND:
-				Runtime::operator_binary_bitand(result, &v2);
-				break;
-			case Token::Type::BITCOMPLEMENT:
-				Runtime::operator_binary_bitcomplement(result, &v2);
-				break;
-			case Token::Type::BITOR:
-				Runtime::operator_binary_bitor(result, &v2);
-				break;
-			case Token::Type::MATH_ADDITION:
-				Runtime::operator_binary_plus(result, &v2);
-				break;
-			case Token::Type::MATH_SUBTRACT:
-				Runtime::operator_binary_subtract(result, &v2);
-				break;
-			default:
-				break;
-		}
-*/
 	}
 }
 
@@ -393,25 +325,7 @@ Expression* TreeGenerator::parseFactors(TokenIterator& start)
 			return factor;
 		}
 
-		//++start;	// consume operator token
-
 		factor = new BinaryExpression((*start), factor, parseInfixPostfix(++start));
-
-/*
-		switch ( op ) {
-			case Token::Type::MATH_DIVIDE:
-				Runtime::operator_binary_divide(result, &v2);
-				break;
-			case Token::Type::MATH_MODULO:
-				Runtime::operator_binary_modulo(result, &v2);
-				break;
-			case Token::Type::MATH_MULTIPLY:
-				Runtime::operator_binary_multiply(result, &v2);
-				break;
-			default:
-				break;
-		}
-*/
 	}
 }
 
@@ -424,32 +338,16 @@ Expression* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 	// infix
 	switch ( op ) {
 		case Token::Type::MATH_SUBTRACT: {
-			++start;
-
-			infixPostfix = parseExpression(start);
-
-			//Runtime::operator_unary_minus(result);
+			infixPostfix = new UnaryExpression((*start), parseExpression(++start));
 		} break;
 		case Token::Type::OPERATOR_DECREMENT: {
-			++start;
-
-			infixPostfix = parseExpression(start);
-
-			//Runtime::operator_unary_decrement(result);
+			infixPostfix = new UnaryExpression((*start), parseExpression(++start));
 		} break;
 		case Token::Type::OPERATOR_INCREMENT: {
-			++start;
-
-			infixPostfix = parseExpression(start);
-
-			//Runtime::operator_unary_increment(result);
+			infixPostfix = new UnaryExpression((*start), parseExpression(++start));
 		} break;
 		case Token::Type::OPERATOR_NOT: {
-			++start;
-
-			infixPostfix = parseExpression(start);
-
-			//Runtime::operator_unary_not(result);
+			infixPostfix = new UnaryExpression((*start), parseExpression(++start));
 		} break;
 		case Token::Type::PARENTHESIS_OPEN: {
 			++start;	// consume operator token
@@ -473,25 +371,22 @@ Expression* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 		case Token::Type::BRACKET_OPEN: {
 			++start;	// consume operator token
 
-			Object tmp;
-			expression(&tmp, start);
+			infixPostfix = new UnaryExpression((*start), expression(start));
 
 			expect(Token::Type::BRACKET_CLOSE, start);
-
-			operator_trinary_array(result, &tmp, result);
 
 			start++;	// consume operator token
 		} break;
 */
 		case Token::Type::OPERATOR_DECREMENT: {
-			//Runtime::operator_unary_decrement(result);
+			Expression* exp = parseExpression(start);
 
-			++start;
+			infixPostfix = new UnaryExpression((*start), exp);
 		} break;
 		case Token::Type::OPERATOR_INCREMENT: {
-			//Runtime::operator_unary_increment(result);
+			Expression* exp = parseExpression(start);
 
-			++start;
+			infixPostfix = new UnaryExpression((*start), exp);
 		} break;
 		case Token::Type::OPERATOR_IS: {
 			++start;
@@ -521,9 +416,9 @@ Expression* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 			//*result = Runtime::BoolObject(operator_binary_is(result, compareType));
 		} break;
 		case Token::Type::OPERATOR_NOT: {
-			//operator_unary_validate(result);
+			Expression* exp = parseExpression(start);
 
-			++start;
+			infixPostfix = new UnaryExpression((*start), exp);
 		} break;
 		default: {
 		} break;
@@ -561,6 +456,19 @@ Expression* TreeGenerator::parseTerm(TokenIterator& start)
 		case Token::Type::TYPE: {
 			// find out if we have to execute a method or simply get a stored variable
 
+			if ( lookahead(start)->type() == Token::Type::PARENTHESIS_OPEN ) {
+				term = process_method(start);
+			}
+			else if ( lookahead(start)->type() == Token::Type::IDENTIFER ) {
+				term = new TypecastExpression(start->content(), expression(++start));
+			}
+			else {
+				term = new VariableExpression(start->content());
+
+				++start;
+			}
+
+/*
 			TokenIterator tmpToken = start;
 			Symbol *symbol = identify(start);
 			if ( !symbol ) {
@@ -569,14 +477,12 @@ Expression* TreeGenerator::parseTerm(TokenIterator& start)
 
 			switch ( symbol->getSymbolType() ) {
 				case Symbol::IType::MethodSymbol:
-					/*term =*/ process_method(tmpToken);
+					process_method(tmpToken);
 					start = tmpToken;
 					++start;
 					break;
 				case Symbol::IType::ObjectSymbol:
-					//Runtime::operator_binary_assign(result, static_cast<Runtime::Object*>(symbol));
-
-					//term = new Assignment();
+					term = new VariableExpression(start->content());
 
 					++start;
 					break;
@@ -595,6 +501,7 @@ Expression* TreeGenerator::parseTerm(TokenIterator& start)
 				case Symbol::IType::UnknownSymbol:
 					throw Common::Exceptions::SyntaxError("unexpected symbol resolved", start->position());
 			}
+*/
 		} break;
 		case Token::Type::KEYWORD: {
 			/*term =*/ process_keyword(start);
@@ -1114,9 +1021,8 @@ MethodExpression* TreeGenerator::process_method(TokenIterator& token)
 		tmp++;
 	}
 
+/*
 	Symbol* symbol = identifyMethod(token, params);
-
-	std::string name = token->content();
 
 	Runtime::Method* method = dynamic_cast<Runtime::Method*>(symbol);
 	if ( !method) {
@@ -1144,6 +1050,9 @@ MethodExpression* TreeGenerator::process_method(TokenIterator& token)
 	if ( owner && owner->isStatic() && !method->isStatic() ) {
 		throw Runtime::Exceptions::StaticException("non-static method \"" + method->ToString() + "\" called from static method \"" + owner->ToString() + "\"", token->position());
 	}
+*/
+
+	std::string name = token->content();
 
 	token = closed;
 
@@ -1258,7 +1167,7 @@ Statements* TreeGenerator::process_scope(TokenIterator& token)
  *		[ default: { ... } ]
  * }
  */
-void TreeGenerator::process_switch(TokenIterator& token)
+Statement* TreeGenerator::process_switch(TokenIterator& token)
 {
 	expect(Token::Type::PARENTHESIS_OPEN, token++);
 
@@ -1357,6 +1266,8 @@ void TreeGenerator::process_switch(TokenIterator& token)
 		// process/interpret case-block tokens
 		generate(defaultTokens);
 	}
+
+	return 0;
 }
 
 /*
@@ -1591,7 +1502,7 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token)
 /*
  * typeid ( <expression> );
  */
-void TreeGenerator::process_typeid(TokenIterator& token)
+Expression* TreeGenerator::process_typeid(TokenIterator& token)
 {
 	expect(Token::Type::PARENTHESIS_OPEN, token++);
 
@@ -1613,6 +1524,8 @@ void TreeGenerator::process_typeid(TokenIterator& token)
 	++token;
 
 	expect(Token::Type::PARENTHESIS_CLOSE, token);
+
+	return 0;
 }
 
 /*

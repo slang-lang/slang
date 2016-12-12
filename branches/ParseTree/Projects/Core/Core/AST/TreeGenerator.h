@@ -68,11 +68,11 @@ private: // Execution
 	Statement* process_print(TokenIterator& token);
 	Statement* process_return(TokenIterator& token);
 	Statements* process_scope(TokenIterator& token);
-	void process_switch(TokenIterator& token);
+	Statement* process_switch(TokenIterator& token);
 	Statement* process_throw(TokenIterator& token);
 	Statement* process_try(TokenIterator& token);
 	TypeDeclaration* process_type(TokenIterator& token);
-	void process_typeid(TokenIterator& token);
+	Expression* process_typeid(TokenIterator& token);
 	Statement* process_while(TokenIterator& token);
 	// }
 

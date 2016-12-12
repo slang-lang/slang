@@ -62,6 +62,21 @@ std::string PrintVisitor::printExpression(Expression* node) const
 			} break;
 			case Expression::ExpressionType::MethodExpression: {
 				result += static_cast<MethodExpression*>(node)->mName;
+				result += "(";
+				for ( ExpressionList::const_iterator it = static_cast<MethodExpression*>(node)->mParams.begin(); it != static_cast<MethodExpression*>(node)->mParams.end(); ++it ) {
+					result += printExpression((*it));
+				}
+				result += ")";
+			} break;
+			case Expression::ExpressionType::TypecastExpression: {
+				result += static_cast<TypecastExpression*>(node)->mDestinationType + " ";
+				result += printExpression(static_cast<TypecastExpression*>(node)->mExpression);
+			} break;
+			case Expression::ExpressionType::UnaryExpression: {
+				UnaryExpression* bin = static_cast<UnaryExpression*>(node);
+
+				result += bin->mToken.content();
+				result += printExpression(bin->mExpression);
 			} break;
 			case Expression::ExpressionType::VariableExpression: {
 				result += static_cast<VariableExpression*>(node)->mName;

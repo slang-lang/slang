@@ -6,7 +6,6 @@ SET(SOURCES
 )
 
 SET(HEADERS
-	BinaryOperator.h
 	ControlStatements.h
 	Expression.h
 	Keywords.h

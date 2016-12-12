@@ -31,6 +31,8 @@ public:
 			LiteralExpression,
 			MethodExpression,
 			NewExpression,
+			TypecastExpression,
+			UnaryExpression,
 			VariableExpression,
 		};
 	};
@@ -76,6 +78,22 @@ public:
 	Expression* mRight;
 	Token mToken;
 };
+
+
+class UnaryExpression : public Expression
+{
+public:
+	UnaryExpression(const Token& token, Expression* exp)
+	: Expression(ExpressionType::UnaryExpression),
+	  mExpression(exp),
+	  mToken(token)
+	{ }
+
+public:
+	Expression* mExpression;
+	Token mToken;
+};
+
 
 // Binary expressions
 ///////////////////////////////////////////////////////////////////////////////
@@ -195,6 +213,20 @@ public:
 
 ///////////////////////////////////////////////////////////////////////////////
 // Variable expressions
+
+class TypecastExpression : public Expression
+{
+public:
+	TypecastExpression(const std::string& destinationType, Expression* exp)
+	: Expression(ExpressionType::TypecastExpression),
+	  mDestinationType(destinationType),
+	  mExpression(exp)
+	{ }
+
+public:
+	std::string mDestinationType;
+	Expression* mExpression;
+};
 
 class VariableExpression : public Expression
 {
