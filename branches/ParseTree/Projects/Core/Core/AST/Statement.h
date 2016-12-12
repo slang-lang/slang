@@ -63,15 +63,17 @@ protected:
 class Assignment : public Statement
 {
 public:
-	Assignment(const std::string& name, Node* exp)
+	Assignment(const Token& name, const Token& assignment, Node* exp)
 	: Statement(StatementType::Assignment),
+	  mAssignment(assignment),
 	  mExpression(exp),
 	  mName(name)
 	{ }
 
 public:
+	Token mAssignment;
 	Node* mExpression;
-	std::string mName;
+	Token mName;
 };
 
 

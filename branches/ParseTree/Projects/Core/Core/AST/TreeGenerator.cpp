@@ -516,7 +516,7 @@ Statements* TreeGenerator::process(TokenIterator& token, TokenIterator end, Toke
 			process_statement(token, terminator)
 		);
 
-		++token;	// consume token
+		//++token;	// consume token
 	}
 
 	return statements;
@@ -629,7 +629,6 @@ Statement* TreeGenerator::process_for(TokenIterator& token)
 	TokenIterator initializationBegin = token;
 
 	const TokenIterator conditionBegin = ++findNext(initializationBegin, Token::Type::SEMICOLON);
-
 	const TokenIterator increaseBegin = ++findNext(conditionBegin, Token::Type::SEMICOLON);
 
 	// find next open curly bracket '{'
@@ -643,7 +642,7 @@ Statement* TreeGenerator::process_for(TokenIterator& token)
 
 	// process our declaration part
 	// {
-	Statement* initialization = process(initializationBegin, conditionBegin, Token::Type::SEMICOLON);
+	Node* initialization = process_statement(initializationBegin, Token::Type::SEMICOLON);
 	// }
 
 	bodyBegin++;		// don't collect scope token
@@ -665,16 +664,16 @@ Statement* TreeGenerator::process_for(TokenIterator& token)
 	}
 	// }
 
-	// Body parsing
-	// {
-	Statements* loopBlock = generate(loopTokens);
-	// }
-
 	// Expression parsing
 	// {
 	TokenIterator exprBegin = increaseBegin;
 
-	Statement* iteration = process(exprBegin, expressionEnd, Token::Type::PARENTHESIS_CLOSE);
+	Node* iteration = process_statement(exprBegin, Token::Type::PARENTHESIS_CLOSE);
+	// }
+
+	// Body parsing
+	// {
+	Statements* loopBlock = generate(loopTokens);
 	// }
 
 	return new ForStatement(initialization, condition, iteration, loopBlock);
@@ -688,40 +687,15 @@ Statement* TreeGenerator::process_foreach(TokenIterator& token)
 {
 	expect(Token::Type::PARENTHESIS_OPEN, token++);
 
-	TokenIterator typedefIt = token;
+	TypeDeclaration* typeDeclaration = process_type(token);	// maybe we should prevent type initialisation here with an additional parameter
 
-	// identify the loop variable's type
-	Symbol* symbol = identify(token);
-	if ( !symbol ) {
-		throw Common::Exceptions::UnknownIdentifer("identifier '" + typedefIt->content() + "' not found", token->position());
-	}
-	if ( symbol->getSymbolType() != Symbol::IType::BluePrintEnumSymbol && symbol->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
-		throw Common::Exceptions::SyntaxError("invalid symbol type '" + symbol->getName() + "' found", token->position());
-	}
-	token++;
-
-	PrototypeConstraints constraints = Designtime::Parser::collectPrototypeConstraints(token);
-	(void)constraints;
-
-	expect(Token::Type::IDENTIFER, token);
-	token++;
 	expect(Token::Type::COLON, token);
 	token++;
 	expect(Token::Type::IDENTIFER, token);
 
-	// identify collection symbol
-	Runtime::Object* collection = dynamic_cast<Runtime::Object*>(identify(token));
-	if ( !collection ) {
-		throw Common::Exceptions::SyntaxError("invalid symbol '" + token->content() + "' found", token->position());
-	}
-	if ( !collection->isInstanceOf("System.IIterateable") ) {
-		throw Common::Exceptions::SyntaxError("symbol '" + collection->getName() + "' is not derived from IIteratable", token->position());
-	}
-	token++;
+	TokenIterator identifier = token;
 
-	// get collection's forward iterator
-	Runtime::Object iterator;
-	collection->execute(&iterator, "getIterator", ParameterList());
+	token++;
 
 	expect(Token::Type::PARENTHESIS_CLOSE, token);
 	token++;
@@ -738,16 +712,9 @@ Statement* TreeGenerator::process_foreach(TokenIterator& token)
 		loopTokens.push_back((*bodyBegin));
 		bodyBegin++;
 	}
-
-	// create and define loop variable
-	TokenIterator typedefItCopy = typedefIt;
-
-	TypeDeclaration* typeDeclaration = process_type(typedefItCopy);
 	// }
 
-	Statements* loopBlock = generate(loopTokens);
-
-	return new ForeachStatement(typeDeclaration, loopBlock);
+	return new ForeachStatement(typeDeclaration, (*identifier), generate(loopTokens));
 }
 
 /*
@@ -755,43 +722,6 @@ Statement* TreeGenerator::process_foreach(TokenIterator& token)
  */
 Node* TreeGenerator::process_identifier(TokenIterator& token, Token::Type::E /*terminator*/)
 {
-/*
-	TokenIterator tmpToken = token;
-
-	Symbol* symbol = identify(token);
-	if ( !symbol ) {
-		throw Common::Exceptions::UnknownIdentifer("identifier '" + token->content() + "' not found", token->position());
-	}
-
-	if ( symbol->getSymbolType() == Symbol::IType::BluePrintEnumSymbol || symbol->getSymbolType() == Symbol::IType::BluePrintObjectSymbol ) {
-		node = process_type(token);
-	}
-	else if ( symbol->getSymbolType() == Symbol::IType::MethodSymbol ) {
-		token = tmpToken;	// reset token after call to identify
-
-		node = process_method(token);
-	}
-	else if ( symbol->getSymbolType() == Symbol::IType::ObjectSymbol ) {
-		// try to find an assignment token
-		TokenIterator assign = findNext(token, Token::Type::ASSIGN, terminator);
-		// find next terminator token
-		TokenIterator end = findNext(assign, terminator);
-
-		Runtime::Object* object = dynamic_cast<Runtime::Object*>(symbol);
-		if ( object->isConst() ) {	// we tried to modify a const symbol (i.e. member, parameter or constant local variable)
-			throw Common::Exceptions::ConstCorrectnessViolated("tried to modify const symbol '" + object->getFullScopeName() + "'", token->position());
-		}
-
-		node = expression(++assign);
-
-		// assign == end should now be true
-		token = end;
-	}
-	else {
-		throw Common::Exceptions::Exception("invalid symbol type found!");
-	}
-*/
-
 	Node* node = 0;
 
 	// type declaration
@@ -804,8 +734,10 @@ Node* TreeGenerator::process_identifier(TokenIterator& token, Token::Type::E /*t
 	}
 	// assignment
 	else if ( lookahead(token)->category() == Token::Category::Assignment ) {
-		node = new Assignment(token->content(), expression(token));
-		++token;
+		TokenIterator identifier = token;
+		TokenIterator assignment = ++token;
+
+		node = new Assignment((*identifier), (*assignment), expression(++token));
 	}
 	else {
 		throw Common::Exceptions::Exception("invalid symbol type found!", token->position());
@@ -821,6 +753,7 @@ Node* TreeGenerator::process_identifier(TokenIterator& token, Token::Type::E /*t
  */
 Statement* TreeGenerator::process_if(TokenIterator& token)
 {
+/*
 	expect(Token::Type::PARENTHESIS_OPEN, token++);
 
 	TokenIterator condBegin = token;
@@ -891,6 +824,28 @@ Statement* TreeGenerator::process_if(TokenIterator& token)
 	}
 
 	return new IfStatement(expression(condBegin), generate(ifTokens), generate(elseTokens));
+*/
+
+	expect(Token::Type::PARENTHESIS_OPEN, token);
+
+	TokenIterator condBegin = ++token;
+	// find next balanced '(' & ')' pair
+	TokenIterator condEnd = findNextBalancedParenthesis(condBegin);
+
+	expect(Token::Type::PARENTHESIS_CLOSE, condEnd);
+
+	token = ++condEnd;
+
+	Node* ifBlock = process_statement(token);
+
+	Node* elseBlock = 0;
+	if ( token->type() == Token::Type::KEYWORD && token->content() == KEYWORD_ELSE ) {
+		++token;
+
+		elseBlock = process_statement(token);
+	}
+
+	return new IfStatement(expression(condBegin), ifBlock, elseBlock);
 }
 
 Node* TreeGenerator::process_keyword(TokenIterator& token)
@@ -1149,6 +1104,8 @@ Node* TreeGenerator::process_statement(TokenIterator& token, Token::Type::E term
 		default:
 			throw Common::Exceptions::SyntaxError("invalid token '" + token->content() + "' found", token->position());
 	}
+
+	++token;	// consume token
 
 	return node;
 }
@@ -1437,6 +1394,8 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token)
 	bool isConst = false;
 	bool isFinal = false;
 
+	std::string type = token->content();
+
 	token++;
 
 	PrototypeConstraints constraints = Designtime::Parser::collectPrototypeConstraints(token);
@@ -1489,7 +1448,7 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token)
 		assignment = expression(token);
 	}
 
-	return new TypeDeclaration("type", name, assignment);
+	return new TypeDeclaration(type, name, assignment);
 }
 
 /*

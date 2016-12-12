@@ -39,14 +39,16 @@ public:
 class ForeachStatement : public Statement
 {
 public:
-	ForeachStatement(TypeDeclaration* typeDeclaration, Statements* loopBlock)
+	ForeachStatement(TypeDeclaration* typeDeclaration, const Token& loopVariable, Statements* loopBlock)
 	: Statement(StatementType::ForeachStatement),
 	  mLoopBlock(loopBlock),
+	  mLoopVariable(loopVariable),
 	  mTypeDeclaration(typeDeclaration)
 	{ }
 
 public:
 	Statements* mLoopBlock;
+	Token mLoopVariable;
 	TypeDeclaration* mTypeDeclaration;
 };
 
@@ -54,7 +56,7 @@ public:
 class ForStatement : public Statement
 {
 public:
-	ForStatement(Statement* initialization, Node* condition, Statement* iteration, Statements* loopBlock)
+	ForStatement(Node* initialization, Node* condition, Node* iteration, Statements* loopBlock)
 	: Statement(StatementType::ForStatement),
 	  mCondition(condition),
 	  mInitialization(initialization),
@@ -64,8 +66,8 @@ public:
 
 public:
 	Node* mCondition;
-	Statement* mInitialization;
-	Statement* mIteration;
+	Node* mInitialization;
+	Node* mIteration;
 	Statements* mLoopBlock;
 };
 
@@ -73,7 +75,7 @@ public:
 class IfStatement : public Statement
 {
 public:
-	IfStatement(Node* exp, Statements* ifBlock, Statements* elseBlock)
+	IfStatement(Node* exp, Node* ifBlock, Node* elseBlock)
 	: Statement(StatementType::IfStatement),
 	  mElseBlock(elseBlock),
 	  mExpression(exp),
@@ -81,9 +83,9 @@ public:
 	{ }
 
 public:
-	Statements* mElseBlock;
+	Node* mElseBlock;
 	Node* mExpression;
-	Statements* mIfBlock;
+	Node* mIfBlock;
 };
 
 
