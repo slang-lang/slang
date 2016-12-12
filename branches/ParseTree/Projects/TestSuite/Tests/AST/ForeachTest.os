@@ -1,7 +1,11 @@
 #!/usr/local/bin/oscript
 
+import System.Collections.GenericList;
+
 public void Main(int argc, string args) {
-	foreach ( string s : mStrings ) {
+	//GenericList<string> strings;
+
+	foreach ( string s : strings ) {
 		print("i = " + i);
 	}
 }

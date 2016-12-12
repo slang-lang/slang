@@ -3,6 +3,7 @@
 public void Main(int argc, string args) {
 	while ( true || false ) {
 		print("This is a test");
+		break;
 	}
 }
 
