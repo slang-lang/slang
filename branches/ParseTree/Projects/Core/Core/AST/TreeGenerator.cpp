@@ -726,79 +726,6 @@ Node* TreeGenerator::process_identifier(TokenIterator& token, Token::Type::E /*t
  */
 Statement* TreeGenerator::process_if(TokenIterator& token)
 {
-/*
-	expect(Token::Type::PARENTHESIS_OPEN, token++);
-
-	TokenIterator condBegin = token;
-	// find next balanced '(' & ')' pair
-	TokenIterator condEnd = findNextBalancedParenthesis(condBegin);
-
-	expect(Token::Type::BRACKET_CURLY_OPEN, ++condEnd);
-
-	// find next open curly bracket '{'
-	TokenIterator bodyBegin = condEnd;
-	// find next balanced '{' & '}' pair
-	TokenIterator bodyEnd = findNextBalancedCurlyBracket(bodyBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
-
-	bodyBegin++;		// don't collect scope token
-	token = bodyEnd;	// no matter what, at least set our token to our if-block's end
-
-	// collect all tokens for our if-block
-	TokenList ifTokens;
-	while ( bodyBegin != bodyEnd ) {
-		ifTokens.push_back((*bodyBegin));
-		bodyBegin++;
-	}
-
-	if ( bodyEnd != getTokens().end() ) {
-		bodyEnd++;
-	}
-
-	bool targetReached = true;	// initially don't collect else-block tokens
-	TokenIterator elseBegin = getTokens().end();
-	TokenIterator elseEnd = getTokens().end();
-
-	// look for an else-token
-	if ( bodyEnd != getTokens().end() && (bodyEnd->type() == Token::Type::KEYWORD && bodyEnd->content() == KEYWORD_ELSE ) ) {
-		elseBegin = findNext(bodyEnd, Token::Type::BRACKET_CURLY_OPEN);
-		// find next balanced '{' & '}' pair
-		elseEnd = findNextBalancedCurlyBracket(elseBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
-
-		for ( ; ; ) {
-			// check if there is another if after our else-block
-			TokenIterator tmpIf = elseEnd;
-			tmpIf++;
-			if ( tmpIf != getTokens().end() && tmpIf->type() == Token::Type::KEYWORD && tmpIf->content() == KEYWORD_ELSE ) {
-				// find next balanced '{' & '}' pair
-				elseEnd = findNextBalancedCurlyBracket(tmpIf, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
-
-				continue;
-			}
-
-			token = elseEnd;
-			break;
-		}
-
-		// reset elseBegin to bodyEnd + 1
-		elseBegin = ++bodyEnd;
-
-		targetReached = false;
-	}
-
-	TokenList elseTokens;
-
-	while ( !targetReached ) {
-		if ( elseBegin == elseEnd ) {
-			targetReached = true;
-		}
-
-		elseTokens.push_back((*elseBegin));
-		elseBegin++;
-	}
-
-	return new IfStatement(expression(condBegin), generate(ifTokens), generate(elseTokens));
-*/
-
 	expect(Token::Type::PARENTHESIS_OPEN, token);
 
 	TokenIterator condBegin = ++token;
@@ -960,52 +887,6 @@ MethodExpression* TreeGenerator::process_method(TokenIterator& token)
  */
 Expression* TreeGenerator::process_new(TokenIterator& token)
 {
-/*
-	std::string name;
-	std::string type = token->content();
-
-	Symbol* symbol = identify(token);
-	if ( !symbol ) {
-		throw Common::Exceptions::UnknownIdentifer("unknown identifier '" + type + "'");
-	}
-	if ( symbol->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
-		throw Common::Exceptions::Exception("blueprint symbol expected!");
-	}
-
-	++token;
-
-	PrototypeConstraints constraints = Designtime::Parser::collectPrototypeConstraints(token);
-
-	expect(Token::Type::PARENTHESIS_OPEN, token);
-
-	TokenIterator opened = token;
-	TokenIterator closed = findNextBalancedParenthesis(++opened);
-
-	token = closed;
-
-	std::list<Runtime::Object> objectList;	// this is a hack to prevent that the provided object parameters run out of scope
-	ParameterList params;
-
-	TokenIterator tmp = opened;
-	// loop through all parameters separated by commas
-	while ( tmp != closed ) {
-		objectList.push_back(Runtime::Object());
-
-		expression(tmp);
-
-		//params.push_back(Parameter::CreateRuntime(obj->QualifiedOuterface(), obj->getValue(), obj->getReference()));
-
-		if ( std::distance(tmp, closed) <= 0 ) {
-			break;
-		}
-		tmp = findNext(tmp, Token::Type::COMMA);
-		if ( std::distance(tmp, closed) < 0 ) {
-			break;
-		}
-		tmp++;
-	}
-*/
-
 	return new NewExpression(token->content(), process_method(token));
 }
 
