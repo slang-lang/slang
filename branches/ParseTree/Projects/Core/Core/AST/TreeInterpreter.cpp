@@ -6,9 +6,18 @@
 #include <iostream>
 
 // Project includes
+#include <Core/BuildInObjects/BoolObject.h>
+#include <Core/BuildInObjects/DoubleObject.h>
+#include <Core/BuildInObjects/FloatObject.h>
+#include <Core/BuildInObjects/GenericObject.h>
+#include <Core/BuildInObjects/IntegerObject.h>
+#include <Core/BuildInObjects/StringObject.h>
+#include <Core/BuildInObjects/UserObject.h>
+#include <Core/BuildInObjects/VoidObject.h>
 #include <Core/Common/Exceptions.h>
 #include <Core/Designtime/Parser/Parser.h>
 #include <Core/Method.h>
+#include <Core/Runtime/Exceptions.h>
 #include <Core/Runtime/Namespace.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
@@ -36,8 +45,66 @@ TreeInterpreter::~TreeInterpreter()
 {
 }
 
+void TreeInterpreter::evaluate(Node* exp, Runtime::Object* result) const
+{
+	if ( !exp ) {
+		throw Common::Exceptions::Exception("invalid expression");
+	}
+	if ( exp->getNodeType() != Node::NodeType::Expression ) {
+		throw Common::Exceptions::Exception("not a valid expression");
+	}
+
+	Expression* expression = static_cast<Expression*>(exp);
+
+	switch ( expression->getExpressionType() ) {
+		case Expression::ExpressionType::LiteralExpression: evaluateLiteral(expression, result); break;
+		case Expression::ExpressionType::VariableExpression: evaluateVariable(expression, result); break;
+
+		case Expression::ExpressionType::BinaryExpression:
+		case Expression::ExpressionType::CopyExpression:
+		case Expression::ExpressionType::NewExpression:
+		case Expression::ExpressionType::MethodExpression:
+		case Expression::ExpressionType::TypecastExpression:
+		case Expression::ExpressionType::UnaryExpression:
+			throw Common::Exceptions::NotSupported("expression type not supported yet");
+	}
+}
+
+void TreeInterpreter::evaluateLiteral(Expression* exp, Runtime::Object* result) const
+{
+	LiteralExpression* literal = static_cast<LiteralExpression*>(exp);
+
+	switch ( literal->mValue.type() ) {
+		case Runtime::AtomicValue::Type::BOOL: *result = Runtime::BoolObject(literal->mValue); break;
+		case Runtime::AtomicValue::Type::DOUBLE: *result = Runtime::DoubleObject(literal->mValue); break;
+		case Runtime::AtomicValue::Type::FLOAT: *result = Runtime::FloatObject(literal->mValue); break;
+		case Runtime::AtomicValue::Type::INT: *result = Runtime::IntegerObject(literal->mValue); break;
+		case Runtime::AtomicValue::Type::STRING: *result = Runtime::StringObject(literal->mValue); break;
+		case Runtime::AtomicValue::Type::UINT: throw Common::Exceptions::NotSupported("UINT type");
+		case Runtime::AtomicValue::Type::UNKOWN: throw Common::Exceptions::NotSupported("UNKNOWN type");
+	}
+}
+
+void TreeInterpreter::evaluateVariable(Expression* exp, Runtime::Object* result) const
+{
+	VariableExpression* variable = static_cast<VariableExpression*>(exp);
+
+	Symbol* lvalue = getScope()->resolve(variable->mName, true, Visibility::Designtime);
+	if ( !lvalue ) {
+		throw Runtime::Exceptions::InvalidAssignment("lvalue '" + variable->mName + "' not found");
+	}
+
+	if ( lvalue->getSymbolType() != Symbol::IType::ObjectSymbol ) {
+		throw Runtime::Exceptions::Exception("invalid lvalue symbol type");
+	}
+
+	*result = *static_cast<Runtime::Object*>(lvalue);
+}
+
 Runtime::ControlFlow::E TreeInterpreter::execute(Runtime::Method* method, const ParameterList& params, Runtime::Object* result)
 {
+	(void)result;
+
 	if ( method->isAbstract() ) {
 		throw Common::Exceptions::AbstractException("cannot execute abstract method '" + method->getFullScopeName() + "'");
 	}
@@ -51,12 +118,6 @@ Runtime::ControlFlow::E TreeInterpreter::execute(Runtime::Method* method, const 
 		case LanguageFeatureState::Stable: /* this is the normal language feature state, so there is no need to log anything here */ break;
 		case LanguageFeatureState::Unknown: OSerror("unknown language feature state set for method '" + method->getFullScopeName() + "'"); break;
 		case LanguageFeatureState::Unstable: OSwarn("method '" + method->getFullScopeName() + "' is marked as unstable"); break;
-	}
-
-	// reset qualified typename if prototype constraints are present
-	if ( !method->getPrototypeConstraints().empty() ) {
-		method->setQualifiedTypename(Designtime::Parser::buildConstraintTypename(method->QualifiedTypename(), method->getPrototypeConstraints()));
-		method->setPrototypeConstraints(PrototypeConstraints());
 	}
 
 	Runtime::Method scope(*method);
@@ -357,15 +418,13 @@ std::string TreeInterpreter::printExpression(Node* node) const
 
 void TreeInterpreter::process(Statements* statements)
 {
-	std::cout << "{" << std::endl;
-
-	if ( statements ) {
-		for ( Statements::Nodes::const_iterator it = statements->mNodes.begin(); it != statements->mNodes.end(); ++it ) {
-			visit((*it));
-		}
+	if ( !statements ) {
+		return;
 	}
 
-	std::cout << "}" << std::endl;
+	for ( Statements::Nodes::const_iterator it = statements->mNodes.begin(); it != statements->mNodes.end(); ++it ) {
+		visit((*it));
+	}
 }
 
 void TreeInterpreter::pushScope(IScope* scope)
@@ -406,6 +465,17 @@ void TreeInterpreter::visitAssert(AssertStatement* node)
 void TreeInterpreter::visitAssignment(Assignment* node)
 {
 	std::cout << node->mName.content() << " " << node->mAssignment.content() << " " << printExpression(node->mExpression) << ";" << std::endl;
+
+	Symbol* lvalue = getScope()->resolve(node->mName.content(), true, Visibility::Designtime);
+	if ( !lvalue ) {
+		throw Runtime::Exceptions::InvalidAssignment("lvalue '" + node->mName.content() + "' not found");
+	}
+
+	if ( lvalue->getSymbolType() != Symbol::IType::ObjectSymbol ) {
+		throw Runtime::Exceptions::Exception("invalid lvalue symbol type");
+	}
+
+	evaluate(node->mExpression, static_cast<Runtime::Object*>(lvalue));
 }
 
 void TreeInterpreter::visitBreak(BreakStatement* /*node*/)
@@ -563,17 +633,17 @@ void TreeInterpreter::visitTry(TryStatement* node)
 
 void TreeInterpreter::visitTypeDeclaration(TypeDeclaration* node)
 {
-	std::cout << node->mType << " " << node->mName;
+	std::cout << node->mSymbol->ToString() << " " << node->mName;
 
 	if ( node->mAssignment ) {
 		std::cout << " = " << printExpression(node->mAssignment) << ";" << std::endl;
 	}
 
-/*
-	Runtime::Object* object = mRepository->createInstance(static_cast<Designtime::BluePrintGeneric*>(symbol), name, constraints);
+	Runtime::Object* object = mRepository->createInstance(static_cast<Designtime::BluePrintGeneric*>(node->mSymbol), node->mName, node->mConstraints);
 
-	getScope()->define(name, object);
-*/
+	getScope()->define(node->mName, object);
+
+	evaluate(node->mAssignment, object);
 }
 
 void TreeInterpreter::visitWhile(WhileStatement* node)

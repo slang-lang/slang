@@ -480,7 +480,8 @@ Statement* TreeGenerator::process_assert(TokenIterator& token)
 
 	Statement* statement = new AssertStatement(expression(token));
 
-	expect(Token::Type::PARENTHESIS_CLOSE, token++);
+	expect(Token::Type::PARENTHESIS_CLOSE, token);
+	++token;
 
 	return statement;
 }
@@ -563,11 +564,13 @@ Statement* TreeGenerator::process_delete(TokenIterator& token)
  */
 Statement* TreeGenerator::process_exit(TokenIterator& token)
 {
-	expect(Token::Type::PARENTHESIS_OPEN, token++);
+	expect(Token::Type::PARENTHESIS_OPEN, token);
+	++token;
 
 	Statement* statement = new ExitStatement(expression(token));
 
-	expect(Token::Type::PARENTHESIS_CLOSE, token++);
+	expect(Token::Type::PARENTHESIS_CLOSE, token);
+	++token;
 
 	return statement;
 }
@@ -643,20 +646,21 @@ Statement* TreeGenerator::process_for(TokenIterator& token)
  */
 Statement* TreeGenerator::process_foreach(TokenIterator& token)
 {
-	expect(Token::Type::PARENTHESIS_OPEN, token++);
+	expect(Token::Type::PARENTHESIS_OPEN, token);
+	++token;
 
 	TypeDeclaration* typeDeclaration = process_type(token);	// maybe we should prevent type initialisation here with an additional parameter
 
 	expect(Token::Type::COLON, token);
-	token++;
+	++token;
 	expect(Token::Type::IDENTIFER, token);
 
 	TokenIterator identifier = token;
 
-	token++;
+	++token;
 
 	expect(Token::Type::PARENTHESIS_CLOSE, token);
-	token++;
+	++token;
 
 	// Body parsing
 	// {
@@ -805,16 +809,11 @@ MethodExpression* TreeGenerator::process_method(TokenIterator& token)
 	TokenIterator opened = findNext(tmp, Token::Type::PARENTHESIS_OPEN);
 	TokenIterator closed = findNextBalancedParenthesis(++opened);
 
-	std::list<Runtime::Object> objectList;	// this is a hack to prevent that the provided object parameters run out of scope
-	ParameterList params;
-
 	ExpressionList parameterList;
 
 	tmp = opened;
 	// loop through all parameters separated by commas
 	while ( tmp != closed ) {
-		objectList.push_back(Runtime::Object());
-
 		parameterList.push_back(expression(tmp));
 
 		if ( std::distance(tmp, closed) <= 0 ) {
@@ -826,37 +825,6 @@ MethodExpression* TreeGenerator::process_method(TokenIterator& token)
 		}
 		tmp++;
 	}
-
-/*
-	Symbol* symbol = identifyMethod(token, params);
-
-	Runtime::Method* method = dynamic_cast<Runtime::Method*>(symbol);
-	if ( !method) {
-		throw Common::Exceptions::UnknownIdentifer("could not resolve identifier '" + token->content() + "' with parameters '" + toString(params) + "'", token->position());
-	}
-
-	// compare callee's constness with its parent's constness
-	Runtime::Object* calleeParent = dynamic_cast<Runtime::Object*>(method->getEnclosingScope());
-	if ( calleeParent && calleeParent->isConst() && !method->isConst() ) {
-		// we want to call a non-const method of a const object... neeeeey!
-		throw Common::Exceptions::ConstCorrectnessViolated("only calls to const methods are allowed for const object '" + calleeParent->getFullScopeName() + "'", token->position());
-	}
-
-	// check caller's constness
-	Runtime::Method* owner = dynamic_cast<Runtime::Method*>(getEnclosingMethodScope(getScope()));
-	if ( owner && owner->isConst() ) {
-		if ( owner->getEnclosingScope() == method->getEnclosingScope() && !method->isConst() ) {
-			// check target method's constness
-			// this is a const method and we want to call a non-const method... neeeeey!
-			throw Common::Exceptions::ConstCorrectnessViolated("only calls to const methods are allowed in const method '" + getScope()->getFullScopeName() + "'", token->position());
-		}
-	}
-
-	// static method check
-	if ( owner && owner->isStatic() && !method->isStatic() ) {
-		throw Runtime::Exceptions::StaticException("non-static method \"" + method->ToString() + "\" called from static method \"" + owner->ToString() + "\"", token->position());
-	}
-*/
 
 	std::string name = token->content();
 
@@ -880,11 +848,13 @@ Expression* TreeGenerator::process_new(TokenIterator& token)
  */
 Statement* TreeGenerator::process_print(TokenIterator& token)
 {
-	expect(Token::Type::PARENTHESIS_OPEN, token++);
+	expect(Token::Type::PARENTHESIS_OPEN, token);
+	++token;
 
 	Statement* statement = new PrintStatement(expression(token));
 
-	expect(Token::Type::PARENTHESIS_CLOSE, token++);
+	expect(Token::Type::PARENTHESIS_CLOSE, token);
+	++token;
 
 	return statement;
 }
@@ -902,7 +872,8 @@ Statement* TreeGenerator::process_return(TokenIterator& token)
 // { <statement> }
 Statements* TreeGenerator::process_scope(TokenIterator& token)
 {
-	expect(Token::Type::BRACKET_CURLY_OPEN, token++);
+	expect(Token::Type::BRACKET_CURLY_OPEN, token);
+	++token;
 
 	TokenIterator scopeBegin = token;
 	TokenIterator scopeEnd = findNextBalancedCurlyBracket(scopeBegin, getTokens().end());
@@ -918,6 +889,7 @@ Statements* TreeGenerator::process_scope(TokenIterator& token)
 	Statements* statements = generate(scopeTokens);
 
 	expect(Token::Type::BRACKET_CURLY_CLOSE, token);
+	++token;
 
 	return statements;
 }
@@ -937,7 +909,6 @@ Node* TreeGenerator::process_statement(TokenIterator& token, Token::Type::E term
 			break;
 		case Token::Type::BRACKET_CURLY_OPEN:
 			node = process_scope(token);	// this opens a new scope
-			++token;
 			break;
 		case Token::Type::SEMICOLON:
 			++token;
@@ -1077,6 +1048,7 @@ Statement* TreeGenerator::process_throw(TokenIterator& token)
 	statement = new ThrowStatement(expression(token));
 
 	expect(Token::Type::SEMICOLON, token);
+	++token;
 
 	return statement;
 }
@@ -1164,7 +1136,8 @@ Statement* TreeGenerator::process_try(TokenIterator& token)
 			// create new exception type instance
 			process_type(catchIt);
 
-			expect(Token::Type::PARENTHESIS_CLOSE, catchIt++);
+			expect(Token::Type::PARENTHESIS_CLOSE, catchIt);
+			++catchIt;
 		}
 
 		expect(Token::Type::BRACKET_CURLY_OPEN, catchIt);
@@ -1234,7 +1207,10 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token)
 	bool isConst = false;
 	bool isFinal = false;
 
-	std::string type = token->content();
+	Symbol* symbol = identify(token);
+	if ( !symbol ) {
+		throw Common::Exceptions::UnknownIdentifer("identifier '" + token->content() + "' not found", token->position());
+	}
 
 	token++;
 
@@ -1245,29 +1221,6 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token)
 	expect(Token::Type::IDENTIFER, token);
 
 	token++;
-
-/*	Array handling
-	bool isArray = false;
-	int size = 0;
-
-	if (  token->type() == Token::Type::BRACKET_OPEN ) {
-		isArray = true;
-		token++;
-
-		Object tmp;
-		try {
-			expression(&tmp, token);
-		}
-		catch ( ControlFlow::E &e ) {
-			mControlFlow = e;
-			return 0;
-		}
-
-		size = tmp.getValue().toInt();
-
-		expect(Token::Type::BRACKET_CLOSE, token++);
-	}
-*/
 
 	std::string tmpStr = token->content();
 	if ( tmpStr == MODIFIER_CONST || tmpStr == MODIFIER_FINAL ) {
@@ -1288,7 +1241,7 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token)
 		assignment = expression(token);
 	}
 
-	return new TypeDeclaration(type, name, assignment);
+	return new TypeDeclaration(symbol, constraints, name, assignment);
 }
 
 /*
@@ -1316,6 +1269,7 @@ Expression* TreeGenerator::process_typeid(TokenIterator& token)
 	++token;
 
 	expect(Token::Type::PARENTHESIS_CLOSE, token);
+	++token;
 
 	return 0;
 }

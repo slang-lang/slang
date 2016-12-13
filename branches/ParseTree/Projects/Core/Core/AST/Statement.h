@@ -7,7 +7,8 @@
 #include <list>
 
 // Project includes
-#include <Core/Reference.h>
+#include <Core/Common/PrototypeConstraint.h>
+#include <Core/Symbol.h>
 #include "Expression.h"
 #include "Node.h"
 
@@ -80,17 +81,19 @@ public:
 class TypeDeclaration : public Statement
 {
 public:
-	TypeDeclaration(const std::string& type, const std::string& name, Node* assignment)
+	TypeDeclaration(Symbol* symbol, const PrototypeConstraints& constraints, const std::string& name, Node* assignment)
 	: Statement(StatementType::TypeDeclaration),
 	  mAssignment(assignment),
+	  mConstraints(constraints),
 	  mName(name),
-	  mType(type)
+	  mSymbol(symbol)
 	{ }
 
 public:
 	Node* mAssignment;
+	PrototypeConstraints mConstraints;
 	std::string mName;
-	std::string mType;
+	Symbol* mSymbol;
 };
 
 

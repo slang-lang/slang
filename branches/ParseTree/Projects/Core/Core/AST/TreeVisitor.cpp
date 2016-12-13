@@ -304,7 +304,7 @@ void PrintVisitor::visitTry(TryStatement* node)
 
 void PrintVisitor::visitTypeDeclaration(TypeDeclaration* node)
 {
-	std::cout << printIndentation(mIndentation) << node->mType << " " << node->mName;
+	std::cout << printIndentation(mIndentation) << node->mSymbol << " " << node->mName;
 
 	if ( node->mAssignment ) {
 		std::cout << " = " << printExpression(node->mAssignment) << ";" << std::endl;

@@ -87,6 +87,10 @@ private:
 	void pushScope(IScope* scope = 0);
 	// }
 
+	void evaluate(Node* exp, Runtime::Object* result) const;
+	void evaluateLiteral(Expression* exp, Runtime::Object* result) const;
+	void evaluateVariable(Expression* exp, Runtime::Object* result) const;
+
 	std::string printExpression(Node* node) const;
 
 private:	// Interpreter stuff
