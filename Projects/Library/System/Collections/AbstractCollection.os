@@ -112,6 +112,10 @@ public namespace System {
 		public int size() const {
 			return mSize;
 		}
+
+		public Object operator[](int index) const throws {
+			return at(index);
+		}
 	}
 
 }
