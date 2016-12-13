@@ -415,10 +415,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\DoubleObject.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\Core\Designtime\BuildInTypes\DoubleObject.cpp"
 				>
 				<FileConfiguration
@@ -437,6 +433,10 @@
 						ObjectFile="$(IntDir)\Core\Designtime\BuildInTypes\"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\Core\BuildInObjects\DoubleObject.cpp"
+				>
 			</File>
 			<File
 				RelativePath=".\Core\Runtime\ExceptionData.cpp"
@@ -479,31 +479,11 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\FloatObject.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\Core\Designtime\BuildInTypes\"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\Core\Designtime\BuildInTypes\"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath=".\Core\BuildInObjects\FloatObject.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\GenericObject.cpp"
+				RelativePath=".\Core\Designtime\BuildInTypes\FloatObject.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -525,6 +505,26 @@
 			<File
 				RelativePath=".\Core\BuildInObjects\GenericObject.cpp"
 				>
+			</File>
+			<File
+				RelativePath=".\Core\Designtime\BuildInTypes\GenericObject.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Core\Designtime\BuildInTypes\"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Core\Designtime\BuildInTypes\"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\Core\Attributes\ImplementationType.cpp"
@@ -815,10 +815,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\StringObject.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\Core\Designtime\BuildInTypes\StringObject.cpp"
 				>
 				<FileConfiguration
@@ -837,6 +833,10 @@
 						ObjectFile="$(IntDir)\Core\Designtime\BuildInTypes\"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\Core\BuildInObjects\StringObject.cpp"
+				>
 			</File>
 			<File
 				RelativePath=".\Core\Symbol.cpp"
@@ -875,6 +875,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Core\AST\TreeInterpreter.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\AST\TreeVisitor.cpp"
 				>
 			</File>
@@ -903,6 +907,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Core\BuildInObjects\UserObject.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\Designtime\BuildInTypes\UserObject.cpp"
 				>
 				<FileConfiguration
@@ -921,10 +929,6 @@
 						ObjectFile="$(IntDir)\Core\Designtime\BuildInTypes\"
 					/>
 				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\Core\BuildInObjects\UserObject.cpp"
-				>
 			</File>
 			<File
 				RelativePath=".\Core\VirtualMachine\VirtualMachine.cpp"
@@ -955,6 +959,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\Core\BuildInObjects\VoidObject.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\Designtime\BuildInTypes\VoidObject.cpp"
 				>
 				<FileConfiguration
@@ -973,10 +981,6 @@
 						ObjectFile="$(IntDir)\Core\Designtime\BuildInTypes\"
 					/>
 				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\Core\BuildInObjects\VoidObject.cpp"
-				>
 			</File>
 		</Filter>
 		<Filter
@@ -1017,11 +1021,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\BoolObject.h"
+				RelativePath=".\Core\Designtime\BuildInTypes\BoolObject.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\BoolObject.h"
+				RelativePath=".\Core\BuildInObjects\BoolObject.h"
 				>
 			</File>
 			<File
@@ -1057,11 +1061,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\DoubleObject.h"
+				RelativePath=".\Core\BuildInObjects\DoubleObject.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\DoubleObject.h"
+				RelativePath=".\Core\Designtime\BuildInTypes\DoubleObject.h"
 				>
 			</File>
 			<File
@@ -1093,19 +1097,19 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\FloatObject.h"
-				>
-			</File>
-			<File
 				RelativePath=".\Core\BuildInObjects\FloatObject.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\GenericObject.h"
+				RelativePath=".\Core\Designtime\BuildInTypes\FloatObject.h"
 				>
 			</File>
 			<File
 				RelativePath=".\Core\BuildInObjects\GenericObject.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\Designtime\BuildInTypes\GenericObject.h"
 				>
 			</File>
 			<File
@@ -1277,6 +1281,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Core\AST\TreeInterpreter.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\AST\TreeVisitor.h"
 				>
 			</File>
@@ -1317,11 +1325,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\VoidObject.h"
+				RelativePath=".\Core\BuildInObjects\VoidObject.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\VoidObject.h"
+				RelativePath=".\Core\Designtime\BuildInTypes\VoidObject.h"
 				>
 			</File>
 		</Filter>

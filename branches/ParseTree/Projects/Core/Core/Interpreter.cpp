@@ -281,11 +281,6 @@ Object* Interpreter::getEnclosingObject(IScope* scope) const
 	return 0;
 }
 
-Repository* Interpreter::getRepository() const
-{
-	return mRepository;
-}
-
 IScope* Interpreter::getScope() const
 {
 	StackLevel* stack = Controller::Instance().stack()->current();
@@ -1447,7 +1442,7 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 	}
 
 	// create initialized reference of new object
-	*result = *getRepository()->createReference(static_cast<Designtime::BluePrintGeneric*>(symbol), name, constraints, Repository::InitilizationType::Final);
+	*result = *mRepository->createReference(static_cast<Designtime::BluePrintGeneric*>(symbol), name, constraints, Repository::InitilizationType::Final);
 
 	// execute new object's constructor
 	mControlFlow = result->Constructor(params);
@@ -1714,7 +1709,7 @@ void Interpreter::process_throw(TokenIterator& token, Object* /*result*/)
 		OSwarn(std::string(method->getFullScopeName() + " throws although it is not marked with 'throws' in " + token->position().toString()).c_str());
 	}
 
-	Object* data = getRepository()->createInstance(OBJECT, ANONYMOUS_OBJECT, PrototypeConstraints());
+	Object* data = mRepository->createInstance(OBJECT, ANONYMOUS_OBJECT, PrototypeConstraints());
 	try {
 		expression(data, token);
 	}
@@ -1956,7 +1951,7 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol)
 	}
 
 
-	Object* object = getRepository()->createInstance(static_cast<Designtime::BluePrintGeneric*>(symbol), name, constraints);
+	Object* object = mRepository->createInstance(static_cast<Designtime::BluePrintGeneric*>(symbol), name, constraints);
 
 	getScope()->define(name, object);
 

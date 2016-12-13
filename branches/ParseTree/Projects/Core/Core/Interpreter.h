@@ -81,11 +81,6 @@ private: // Execution
 	void parseTerm(Object* result, TokenIterator& start);
 	// }
 
-	// Repository
-	// {
-	Repository* getRepository() const;
-	// }
-
 	// Scope stack
 	// {
 	IScope* getScope() const;

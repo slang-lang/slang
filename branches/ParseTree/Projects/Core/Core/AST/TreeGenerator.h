@@ -57,6 +57,7 @@ private: // Execution
 	Expression* process_copy(TokenIterator& token);
 	Statement* process_delete(TokenIterator& token);
 	Statement* process_exit(TokenIterator& token);
+	Expression* process_expression_keyword(TokenIterator& token);
 	Statement* process_for(TokenIterator& token);
 	Statement* process_foreach(TokenIterator& token);
 	Node* process_identifier(TokenIterator& token, Token::Type::E terminator = Token::Type::SEMICOLON);

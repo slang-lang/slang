@@ -9,8 +9,8 @@ public int Main(int argc = 0, string args = "") {
 	while ( lowerbound < upperbound ) {
 		//print("lowerbound = " + lowerbound);
 
-		//lowerbound = lowerbound + 1;
-		lowerbound++;
+		lowerbound = lowerbound + 1;
+		//lowerbound++;
 	}
 
 	print("Finished performance test.");

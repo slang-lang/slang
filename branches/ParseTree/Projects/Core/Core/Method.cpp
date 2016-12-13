@@ -118,6 +118,11 @@ ControlFlow::E Method::execute(const ParameterList& /*params*/, Object* /*result
 	throw Common::Exceptions::NotSupported("executing methods directly is not supported!", token.position());
 }
 
+AST::Statements* Method::getRootNode() const
+{
+	return mRootNode;
+}
+
 bool Method::isExtensionMethod() const
 {
 	return mIsExtensionMethod;

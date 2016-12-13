@@ -47,7 +47,7 @@ TreeGenerator::~TreeGenerator()
 {
 }
 
-	Node* TreeGenerator::expression(TokenIterator& start)
+Node* TreeGenerator::expression(TokenIterator& start)
 {
 	Node* expression = parseCondition(start);
 
@@ -415,59 +415,10 @@ Node* TreeGenerator::parseTerm(TokenIterator& start)
 		} break;
 		case Token::Type::IDENTIFER:
 		case Token::Type::TYPE: {
-			// find out if we have to execute a method or simply get a stored variable
-
-			if ( lookahead(start)->type() == Token::Type::PARENTHESIS_OPEN ) {
-				term = process_method(start);
-			}
-			else if ( lookahead(start)->type() == Token::Type::IDENTIFER ) {
-				term = new TypecastExpression(start->content(), expression(++start));
-			}
-			else {
-				term = new VariableExpression(start->content());
-
-				++start;
-			}
-
-/*
-			TokenIterator tmpToken = start;
-			Symbol *symbol = identify(start);
-			if ( !symbol ) {
-				throw Common::Exceptions::UnknownIdentifer("unknown/unexpected identifier '" + start->content() + "' found", start->position());
-			}
-
-			switch ( symbol->getSymbolType() ) {
-				case Symbol::IType::MethodSymbol:
-					process_method(tmpToken);
-					start = tmpToken;
-					++start;
-					break;
-				case Symbol::IType::ObjectSymbol:
-					term = new VariableExpression(start->content());
-
-					++start;
-					break;
-				case Symbol::IType::BluePrintEnumSymbol:
-				case Symbol::IType::BluePrintObjectSymbol: {
-					++start;
-
-					PrototypeConstraints constraints = Designtime::Parser::collectPrototypeConstraints(start);
-
-					std::string newType = dynamic_cast<Designtime::BluePrintGeneric*>(symbol)->QualifiedTypename();
-								newType = Designtime::Parser::buildConstraintTypename(newType, constraints);
-
-					term = expression(start);
-				} break;
-				case Symbol::IType::NamespaceSymbol:
-				case Symbol::IType::UnknownSymbol:
-					throw Common::Exceptions::SyntaxError("unexpected symbol resolved", start->position());
-			}
-*/
+			term = process_identifier(start);
 		} break;
 		case Token::Type::KEYWORD: {
-			term = process_keyword(start);
-
-			++start;
+			term = process_expression_keyword(start);
 		} break;
 		case Token::Type::PARENTHESIS_OPEN: {
 			++start;	// consume operator token
@@ -612,7 +563,32 @@ Statement* TreeGenerator::process_delete(TokenIterator& token)
  */
 Statement* TreeGenerator::process_exit(TokenIterator& token)
 {
-	return new ExitStatement(expression(token));
+	expect(Token::Type::PARENTHESIS_OPEN, token++);
+
+	Statement* statement = new ExitStatement(expression(token));
+
+	expect(Token::Type::PARENTHESIS_CLOSE, token++);
+
+	return statement;
+}
+
+Expression* TreeGenerator::process_expression_keyword(TokenIterator& token)
+{
+	Expression* expression = 0;
+
+	std::string keyword = (*token++).content();
+
+	if ( keyword == KEYWORD_COPY ) {
+		expression = process_copy(token);
+	}
+	else if ( keyword == KEYWORD_NEW ) {
+		expression = process_new(token);
+	}
+	else {
+		throw Common::Exceptions::SyntaxError("invalid token '" + token->content() + "' found", token->position());
+	}
+
+	return expression;
 }
 
 /*
@@ -712,8 +688,16 @@ Node* TreeGenerator::process_identifier(TokenIterator& token, Token::Type::E /*t
 
 		node = new Assignment((*identifier), (*assignment), expression(++token));
 	}
+/*
+	else if ( lookahead(start)->type() == Token::Type::IDENTIFER ) {
+		node = new TypecastExpression(start->content(), expression(++start));
+	}
+*/
 	else {
-		throw Common::Exceptions::Exception("invalid symbol type found!", token->position());
+		node = new VariableExpression(token->content());
+		++token;
+
+		//throw Common::Exceptions::Exception("invalid symbol type found!", token->position());
 	}
 
 	return node;

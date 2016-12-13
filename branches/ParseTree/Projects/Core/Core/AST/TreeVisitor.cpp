@@ -1,6 +1,6 @@
 
+// Header
 #include "TreeVisitor.h"
-
 
 // Library includes
 #include <iostream>
@@ -162,7 +162,7 @@ void PrintVisitor::visitDelete(DeleteStatement* node)
 
 void PrintVisitor::visitExit(ExitStatement* node)
 {
-	std::cout << printIndentation(mIndentation) << "exit " << printExpression(node->mExpression) << ";" << std::endl;
+	std::cout << printIndentation(mIndentation) << "exit( " << printExpression(node->mExpression) << " );" << std::endl;
 }
 
 void PrintVisitor::visitExpression(Expression *expression)

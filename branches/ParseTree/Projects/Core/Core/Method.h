@@ -71,9 +71,11 @@ public: // Signature
 public: // Setup
 	void setParent(IScope* scope);
 	void setPrototypeConstraints(const PrototypeConstraints& constraints);
-	void setRootNode(AST::Statements* node);
 	void setSignature(const ParameterList& params);
 	void setTokens(const TokenList& tokens);
+
+	AST::Statements* getRootNode() const;
+	void setRootNode(AST::Statements* node);
 
 public:
 	const PrototypeConstraints& getPrototypeConstraints() const { return mPrototypeConstraints; }
