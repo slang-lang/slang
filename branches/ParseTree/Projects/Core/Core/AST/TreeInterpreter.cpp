@@ -743,15 +743,11 @@ void TreeInterpreter::visitStatement(Statement *node)
 
 void TreeInterpreter::visitStatements(Statements* node)
 {
-	std::cout << "{" << std::endl;
-
 	pushScope();
 
 	process(node);
 
 	popScope();
-
-	std::cout << "}" << std::endl;
 }
 
 void TreeInterpreter::visitThrow(ThrowStatement* node)
@@ -776,12 +772,6 @@ void TreeInterpreter::visitTry(TryStatement* node)
 
 void TreeInterpreter::visitTypeDeclaration(TypeDeclaration* node)
 {
-	std::cout << node->mSymbol->ToString() << " " << node->mName;
-
-	if ( node->mAssignment ) {
-		std::cout << " = " << printExpression(node->mAssignment) << ";" << std::endl;
-	}
-
 	Runtime::Object* object = mRepository->createInstance(static_cast<Designtime::BluePrintGeneric*>(node->mSymbol), node->mName, node->mConstraints);
 
 	getScope()->define(node->mName, object);
@@ -791,8 +781,6 @@ void TreeInterpreter::visitTypeDeclaration(TypeDeclaration* node)
 
 void TreeInterpreter::visitWhile(WhileStatement* node)
 {
-	std::cout << "while ( " << printExpression(node->mExpression) << " ) " << std::endl;
-
 	// reset control flow to normal
 	mControlFlow = Runtime::ControlFlow::Normal;
 

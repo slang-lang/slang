@@ -74,8 +74,8 @@ AtomicValue::AtomicValue(int val)
 }
 
 AtomicValue::AtomicValue(const char* val)
-: mType(Type::STRING),
-  mStringValue(std::string(val))
+: mStringValue(std::string(val)),
+  mType(Type::STRING)
 {
 	mValue.bool_ = false;
 	mValue.double_ = 0.0;
@@ -85,8 +85,8 @@ AtomicValue::AtomicValue(const char* val)
 }
 
 AtomicValue::AtomicValue(const std::string& val)
-: mType(Type::STRING),
-  mStringValue(val)
+: mStringValue(val),
+  mType(Type::STRING)
 {
 	mValue.bool_ = false;
 	mValue.double_ = 0.0;
