@@ -87,11 +87,6 @@ private: // Execution
 	Node* parseTerm(TokenIterator& start);
 	// }
 
-	// Repository
-	// {
-	Repository* getRepository() const;
-	// }
-
 	// Scope stack
 	// {
 	IScope* getScope() const;

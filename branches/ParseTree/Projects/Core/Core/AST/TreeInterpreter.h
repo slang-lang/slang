@@ -67,6 +67,7 @@ private:
 	void visitIf(IfStatement* node);
 	void visitPrint(PrintStatement* node);
 	void visitReturn(ReturnStatement* node);
+	void visitStatements(Statements* node);
 	void visitThrow(ThrowStatement* node);
 	void visitTry(TryStatement* node);
 	void visitTypeDeclaration(TypeDeclaration* node);

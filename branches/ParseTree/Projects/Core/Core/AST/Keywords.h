@@ -1,10 +1,17 @@
 
-#ifndef ObjectiveScript_Core_AST_Keywords_h
-#define ObjectiveScript_Core_AST_Keywords_h
+#ifndef ObjectiveScript_Core_Core_AST_Keywords_h
+#define ObjectiveScript_Core_Core_AST_Keywords_h
 
 
+// Library includes
+
+// Project includes
+#include <Core/Common/Position.h>
 #include "Statement.h"
 
+// Forward declarations
+
+// Namespace declarations
 
 namespace ObjectiveScript {
 namespace AST {
@@ -92,13 +99,15 @@ public:
 class PrintStatement : public Statement
 {
 public:
-	PrintStatement(Node* exp)
+	PrintStatement(Node* exp, const Common::Position& position)
 	: Statement(StatementType::PrintStatement),
-	  mExpression(exp)
+	  mExpression(exp),
+	  mPosition(position)
 	{ }
 
 public:
 	Node* mExpression;
+	Common::Position mPosition;
 };
 
 

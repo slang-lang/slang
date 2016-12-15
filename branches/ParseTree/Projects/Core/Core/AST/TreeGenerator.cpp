@@ -132,11 +132,6 @@ Runtime::Object* TreeGenerator::getEnclosingObject(IScope* scope) const
 	return 0;
 }
 
-Repository* TreeGenerator::getRepository() const
-{
-	return mRepository;
-}
-
 IScope* TreeGenerator::getScope() const
 {
 	StackLevel* stack = Controller::Instance().stack()->current();
@@ -430,6 +425,7 @@ Node* TreeGenerator::parseTerm(TokenIterator& start)
 			++start;	// consume operator token
 		} break;
 		case Token::Type::SEMICOLON: {
+			return 0;
 		} break;
 		default:
 			throw Common::Exceptions::SyntaxError("identifier, literal or constant expected but " + start->content() + " found", start->position());
@@ -461,10 +457,11 @@ Statements* TreeGenerator::process(TokenIterator& token, TokenIterator end, Toke
 
 	while ( ( (token != getTokens().end()) && (token != end) ) &&
 			( (token->type() != terminator) && (token->type() != Token::Type::ENDOFFILE) ) ) {
+		Node* node = process_statement(token, terminator);
 
-		statements->mNodes.push_back(
-			process_statement(token, terminator)
-		);
+		if ( node ) {
+			statements->mNodes.push_back(node);
+		}
 	}
 
 	return statements;
@@ -794,6 +791,9 @@ Node* TreeGenerator::process_keyword(TokenIterator& token)
 	else if ( keyword == KEYWORD_WHILE ) {
 		node = process_while(token);
 	}
+	else {
+		throw Common::Exceptions::Exception("invalid keyword '" + token->content() + "' found", token->position());
+	}
 
 	return node;
 }
@@ -851,7 +851,8 @@ Statement* TreeGenerator::process_print(TokenIterator& token)
 	expect(Token::Type::PARENTHESIS_OPEN, token);
 	++token;
 
-	Statement* statement = new PrintStatement(expression(token));
+	Common::Position position = token->position();
+	Statement* statement = new PrintStatement(expression(token), position);
 
 	expect(Token::Type::PARENTHESIS_CLOSE, token);
 	++token;

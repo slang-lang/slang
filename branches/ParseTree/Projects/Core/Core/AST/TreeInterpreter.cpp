@@ -23,6 +23,7 @@
 #include <Core/VirtualMachine/Controller.h>
 #include <Core/VirtualMachine/Repository.h>
 #include <Debugger/Debugger.h>
+#include <Tools/Printer.h>
 #include <Utils.h>
 
 // Namespace declarations
@@ -89,7 +90,7 @@ void TreeInterpreter::evaluateVariable(Expression* exp, Runtime::Object* result)
 {
 	VariableExpression* variable = static_cast<VariableExpression*>(exp);
 
-	Symbol* lvalue = getScope()->resolve(variable->mName, true, Visibility::Designtime);
+	Symbol* lvalue = getScope()->resolve(variable->mName, false, Visibility::Designtime);
 	if ( !lvalue ) {
 		throw Runtime::Exceptions::InvalidAssignment("lvalue '" + variable->mName + "' not found");
 	}
@@ -423,6 +424,10 @@ void TreeInterpreter::process(Statements* statements)
 	}
 
 	for ( Statements::Nodes::const_iterator it = statements->mNodes.begin(); it != statements->mNodes.end(); ++it ) {
+		if ( mControlFlow != Runtime::ControlFlow::Normal ) {
+			break;		// control flow has been broken, time to stop processing
+		}
+
 		visit((*it));
 	}
 }
@@ -442,18 +447,20 @@ void TreeInterpreter::pushScope(IScope* scope)
 
 void TreeInterpreter::visit(Node* node)
 {
-	if ( node ) {
-		switch ( node->getNodeType() ) {
-			case Node::NodeType::Expression:
-				visitExpression(static_cast<Expression*>(node));
-				break;
-			case Node::NodeType::Operator:
-				visitOperator(static_cast<Operator*>(node));
-				break;
-			case Node::NodeType::Statement:
-				visitStatement(static_cast<Statement*>(node));
-				break;
-		}
+	if ( !node ) {
+		return;
+	}
+
+	switch ( node->getNodeType() ) {
+		case Node::NodeType::Expression:
+			visitExpression(static_cast<Expression*>(node));
+			break;
+		case Node::NodeType::Operator:
+			visitOperator(static_cast<Operator*>(node));
+			break;
+		case Node::NodeType::Statement:
+			visitStatement(static_cast<Statement*>(node));
+			break;
 	}
 }
 
@@ -466,7 +473,7 @@ void TreeInterpreter::visitAssignment(Assignment* node)
 {
 	std::cout << node->mName.content() << " " << node->mAssignment.content() << " " << printExpression(node->mExpression) << ";" << std::endl;
 
-	Symbol* lvalue = getScope()->resolve(node->mName.content(), true, Visibility::Designtime);
+	Symbol* lvalue = getScope()->resolve(node->mName.content(), false, Visibility::Designtime);
 	if ( !lvalue ) {
 		throw Runtime::Exceptions::InvalidAssignment("lvalue '" + node->mName.content() + "' not found");
 	}
@@ -481,11 +488,15 @@ void TreeInterpreter::visitAssignment(Assignment* node)
 void TreeInterpreter::visitBreak(BreakStatement* /*node*/)
 {
 	std::cout << "break;" << std::endl;
+
+	mControlFlow = Runtime::ControlFlow::Break;
 }
 
 void TreeInterpreter::visitContinue(ContinueStatement* /*node*/)
 {
 	std::cout << "continue;" << std::endl;
+
+	mControlFlow = Runtime::ControlFlow::Continue;
 }
 
 void TreeInterpreter::visitDelete(DeleteStatement* node)
@@ -496,6 +507,8 @@ void TreeInterpreter::visitDelete(DeleteStatement* node)
 void TreeInterpreter::visitExit(ExitStatement* node)
 {
 	std::cout << "exit( " << printExpression(node->mExpression) << " );" << std::endl;
+
+	mControlFlow = Runtime::ControlFlow::ExitProgram;
 }
 
 void TreeInterpreter::visitExpression(Expression *expression)
@@ -549,12 +562,23 @@ void TreeInterpreter::visitOperator(Operator* /*op*/)
 
 void TreeInterpreter::visitPrint(PrintStatement* node)
 {
-	std::cout << "print(" << printExpression(node->mExpression) << ");" << std::endl;
+	Runtime::Object text;
+	try {
+		evaluate(node->mExpression, &text);
+	}
+	catch ( Runtime::ControlFlow::E &e ) {
+		mControlFlow = e;
+		return;
+	}
+
+	::Utils::PrinterDriver::Instance()->print(text.getValue().toStdString(), node->mPosition.mFile, node->mPosition.mLine);
 }
 
 void TreeInterpreter::visitReturn(ReturnStatement* node)
 {
 	std::cout << "return " << printExpression(node->mExpression) << ";" << std::endl;
+
+	mControlFlow = Runtime::ControlFlow::Return;
 }
 
 void TreeInterpreter::visitStatement(Statement *node)
@@ -596,7 +620,7 @@ void TreeInterpreter::visitStatement(Statement *node)
 			visitReturn(static_cast<ReturnStatement*>(node));
 			break;
 		case Statement::StatementType::Statements:
-			process(static_cast<Statements*>(node));
+			visitStatements(static_cast<Statements*>(node));
 			break;
 		case Statement::StatementType::ThrowStatement:
 			visitThrow(static_cast<ThrowStatement*>(node));
@@ -613,9 +637,24 @@ void TreeInterpreter::visitStatement(Statement *node)
 	}
 }
 
+void TreeInterpreter::visitStatements(Statements* node)
+{
+	std::cout << "{" << std::endl;
+
+	pushScope();
+
+	process(node);
+
+	popScope();
+
+	std::cout << "}" << std::endl;
+}
+
 void TreeInterpreter::visitThrow(ThrowStatement* node)
 {
 	std::cout << "throw " << printExpression(node->mExpression) << ";" << std::endl;
+
+	mControlFlow = Runtime::ControlFlow::Throw;
 }
 
 void TreeInterpreter::visitTry(TryStatement* node)
@@ -648,9 +687,41 @@ void TreeInterpreter::visitTypeDeclaration(TypeDeclaration* node)
 
 void TreeInterpreter::visitWhile(WhileStatement* node)
 {
-	std::cout << "while ( " << printExpression(node->mExpression) << " ) ";
+	std::cout << "while ( " << printExpression(node->mExpression) << " ) " << std::endl;
 
-	visit(node->mStatements);
+	// reset control flow to normal
+	mControlFlow = Runtime::ControlFlow::Normal;
+
+	Runtime::Object condition;
+
+	for  ( ; ; ) {
+		try {
+			// evaluate while condition
+			evaluate(node->mExpression, &condition);
+		}
+		catch ( Runtime::ControlFlow::E &e ) {
+			mControlFlow = e;
+			return;
+		}
+
+		// validate loop condition
+		if ( !isTrue(condition) ) {
+			break;
+		}
+
+		// execute compound statement
+		visit(node->mStatements);
+
+		// check (and reset) control flow
+		switch ( mControlFlow ) {
+			case Runtime::ControlFlow::Break: mControlFlow = Runtime::ControlFlow::Normal; return;
+			case Runtime::ControlFlow::Continue: mControlFlow = Runtime::ControlFlow::Normal; break;
+			case Runtime::ControlFlow::ExitProgram: mControlFlow = Runtime::ControlFlow::ExitProgram; return;
+			case Runtime::ControlFlow::Normal: mControlFlow = Runtime::ControlFlow::Normal; break;
+			case Runtime::ControlFlow::Return: mControlFlow = Runtime::ControlFlow::Return; return;
+			case Runtime::ControlFlow::Throw: mControlFlow = Runtime::ControlFlow::Throw; return;
+		}
+	}
 }
 
 
