@@ -712,15 +712,11 @@ void TreeInterpreter::visitAssignment(Assignment* node)
 
 void TreeInterpreter::visitBreak(BreakStatement* /*node*/)
 {
-	std::cout << "break;" << std::endl;
-
 	mControlFlow = Runtime::ControlFlow::Break;
 }
 
 void TreeInterpreter::visitContinue(ContinueStatement* /*node*/)
 {
-	std::cout << "continue;" << std::endl;
-
 	mControlFlow = Runtime::ControlFlow::Continue;
 }
 
@@ -729,11 +725,9 @@ void TreeInterpreter::visitDelete(DeleteStatement* node)
 	std::cout << "delete " << printExpression(node->mExpression) << ";" << std::endl;
 }
 
-void TreeInterpreter::visitExit(ExitStatement* node)
+void TreeInterpreter::visitExit(ExitStatement* /*node*/)
 {
-	std::cout << "exit( " << printExpression(node->mExpression) << " );" << std::endl;
-
-	mControlFlow = Runtime::ControlFlow::ExitProgram;
+	throw Runtime::ControlFlow::ExitProgram;
 }
 
 void TreeInterpreter::visitExpression(Expression *expression)
@@ -743,17 +737,44 @@ void TreeInterpreter::visitExpression(Expression *expression)
 
 void TreeInterpreter::visitFor(ForStatement* node)
 {
-	std::cout << "for ( ";
-
+	// execute initialization statement
 	visitStatement(static_cast<Statement*>(node->mInitialization));
 
-	std::cout << printExpression(node->mCondition) << "; " << std::endl;
+	// reset control flow to normal
+	mControlFlow = Runtime::ControlFlow::Normal;
 
-	visitStatement(static_cast<Statement*>(node->mIteration));
+	Runtime::Object condition;
 
-	std::cout << ") ";
+	for  ( ; ; ) {
+		try {
+			// evaluate loop condition
+			evaluate(node->mCondition, &condition);
+		}
+		catch ( Runtime::ControlFlow::E &e ) {
+			mControlFlow = e;
+			return;
+		}
 
-	visit(node->mLoopBlock);
+		// validate loop condition
+		if ( !isTrue(condition) ) {
+			break;
+		}
+
+		// execute compound statement
+		visit(node->mStatement);
+
+		// check (and reset) control flow
+		switch ( mControlFlow ) {
+			case Runtime::ControlFlow::Break: mControlFlow = Runtime::ControlFlow::Normal; return;
+			case Runtime::ControlFlow::Continue: mControlFlow = Runtime::ControlFlow::Normal; break;
+			case Runtime::ControlFlow::ExitProgram: mControlFlow = Runtime::ControlFlow::ExitProgram; return;
+			case Runtime::ControlFlow::Normal: mControlFlow = Runtime::ControlFlow::Normal; break;
+			case Runtime::ControlFlow::Return: mControlFlow = Runtime::ControlFlow::Return; return;
+			case Runtime::ControlFlow::Throw: mControlFlow = Runtime::ControlFlow::Throw; return;
+		}
+
+		visitStatement(static_cast<Statement*>(node->mIteration));
+	}
 }
 
 void TreeInterpreter::visitForeach(ForeachStatement *node)
@@ -764,18 +785,27 @@ void TreeInterpreter::visitForeach(ForeachStatement *node)
 
 	std::cout << " : " << node->mLoopVariable.content() << " ) ";
 
-	visit(node->mLoopBlock);
+	visit(node->mStatement);
 }
 
 void TreeInterpreter::visitIf(IfStatement* node)
 {
-	std::cout << "if ( " << printExpression(node->mExpression) << " ) ";
+	Runtime::Object condition;
 
-	visit(node->mIfBlock);
+	try {
+		// evaluate if-condition
+		evaluate(node->mExpression, &condition);
+	}
+	catch ( Runtime::ControlFlow::E &e ) {
+		mControlFlow = e;
+		return;
+	}
 
-	if ( node->mElseBlock && static_cast<Statements*>(node->mElseBlock)->mNodes.size() > 0 ) {
-		std::cout << "else ";
-
+	// validate if-condition
+	if ( isTrue(condition) ) { // execute if-compound statement
+		visit(node->mIfBlock);
+	}
+	else { // execute else-compound statement
 		visit(node->mElseBlock);
 	}
 }
@@ -808,6 +838,8 @@ void TreeInterpreter::visitReturn(ReturnStatement* node)
 
 void TreeInterpreter::visitStatement(Statement *node)
 {
+	Core::Debugger::Instance().notify(getScope(), Token());		// notify debugger
+
 	assert(node);
 
 	switch ( node->getStatementType() ) {
@@ -873,9 +905,27 @@ void TreeInterpreter::visitStatements(Statements* node)
 
 void TreeInterpreter::visitThrow(ThrowStatement* node)
 {
-	std::cout << "throw " << printExpression(node->mExpression) << ";" << std::endl;
+	// check if our parent scope is a method that is allowed to throw exceptions
+	Runtime::Method* method = dynamic_cast<Runtime::Method*>(getEnclosingMethodScope(getScope()));
+	if ( method && !method->throws() ) {
+		// this method is not marked as 'throwing', so we can't throw exceptions here
+		OSwarn(std::string(method->getFullScopeName() + " throws although it is not marked with 'throws'"));
+	}
+
+	Runtime::Object* data = mRepository->createInstance(OBJECT, ANONYMOUS_OBJECT, PrototypeConstraints());
+	try {
+		evaluate(node->mExpression, data);
+	}
+	catch ( Runtime::ControlFlow::E &e ) {
+		mControlFlow = e;
+		return;
+	}
 
 	mControlFlow = Runtime::ControlFlow::Throw;
+	Controller::Instance().stack()->exception() = Runtime::ExceptionData(data, Common::Position());
+
+	// notify our debugger that an exception has been thrown
+	Core::Debugger::Instance().notifyExceptionThrow(getScope(), Token());
 }
 
 void TreeInterpreter::visitTry(TryStatement* node)

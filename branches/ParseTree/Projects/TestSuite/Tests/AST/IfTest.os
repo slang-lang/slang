@@ -6,10 +6,12 @@ public void Main(int argc = 1, string args = "") {
 	}
 	else {
 		print("else");
+		assert( false );
 	}
 
 	if ( 173 >= 1389 ) {
 		print("if");
+		assert( false );
 	}
 	else if ( true ) {
 		print("else if");

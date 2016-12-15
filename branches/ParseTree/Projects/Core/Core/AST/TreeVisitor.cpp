@@ -186,7 +186,7 @@ void PrintVisitor::visitFor(ForStatement* node)
 
 	std::cout << printIndentation(mIndentation) << ") ";
 
-	visit(node->mLoopBlock);
+	visit(node->mStatement);
 }
 
 void PrintVisitor::visitForeach(ForeachStatement *node)
@@ -197,7 +197,7 @@ void PrintVisitor::visitForeach(ForeachStatement *node)
 
 	std::cout << " : " << node->mLoopVariable.content() << " ) ";
 
-	visit(node->mLoopBlock);
+	visit(node->mStatement);
 }
 
 void PrintVisitor::visitIf(IfStatement* node)

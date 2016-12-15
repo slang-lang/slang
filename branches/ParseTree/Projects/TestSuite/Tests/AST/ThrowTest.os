@@ -1,6 +1,6 @@
 #!/usr/local/bin/oscript
 
 public void Main(int argc = 1, string args = "") throws {
-	throw 42;
+	throw new int(42);
 }
 
