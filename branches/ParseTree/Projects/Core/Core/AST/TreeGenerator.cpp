@@ -470,9 +470,12 @@ Statements* TreeGenerator::process(TokenIterator& token, TokenIterator end, Toke
  */
 Statement* TreeGenerator::process_assert(TokenIterator& token)
 {
-	expect(Token::Type::PARENTHESIS_OPEN, token++);
+	expect(Token::Type::PARENTHESIS_OPEN, token);
+	++token;
 
-	Statement* statement = new AssertStatement(expression(token));
+	Common::Position position = token->position();
+
+	Statement* statement = new AssertStatement(expression(token), position);
 
 	expect(Token::Type::PARENTHESIS_CLOSE, token);
 	++token;

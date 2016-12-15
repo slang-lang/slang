@@ -20,13 +20,15 @@ namespace AST {
 class AssertStatement : public Statement
 {
 public:
-	AssertStatement(Node* exp)
+	AssertStatement(Node* exp, const Common::Position& position)
 	: Statement(StatementType::AssertStatement),
-	  mExpression(exp)
+	  mExpression(exp),
+	  mPosition(position)
 	{ }
 
 public:
 	Node* mExpression;
+	Common::Position mPosition;
 };
 
 

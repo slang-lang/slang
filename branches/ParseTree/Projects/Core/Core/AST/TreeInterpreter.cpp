@@ -560,12 +560,23 @@ void TreeInterpreter::visit(Node* node)
 void TreeInterpreter::visitAssert(AssertStatement* node)
 {
 	std::cout << "assert(" << printExpression(node->mExpression) << ");" << std::endl;
+
+	Runtime::Object condition;
+	try {
+		evaluate(node->mExpression, &condition);
+	}
+	catch ( Runtime::ControlFlow::E &e ) {
+		mControlFlow = e;
+		return;
+	}
+
+	if ( !isTrue(condition) ) {
+		throw Runtime::Exceptions::AssertionFailed(condition.ToString(), node->mPosition);
+	}
 }
 
 void TreeInterpreter::visitAssignment(Assignment* node)
 {
-	std::cout << node->mName.content() << " " << node->mAssignment.content() << " " << printExpression(node->mExpression) << ";" << std::endl;
-
 	Symbol* lvalue = getScope()->resolve(node->mName.content(), false, Visibility::Designtime);
 	if ( !lvalue ) {
 		throw Runtime::Exceptions::InvalidAssignment("lvalue '" + node->mName.content() + "' not found");
