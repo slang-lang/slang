@@ -52,21 +52,21 @@ void TreeInterpreter::evaluate(Node* exp, Runtime::Object* result)
 		throw Common::Exceptions::Exception("invalid expression");
 	}
 	if ( exp->getNodeType() != Node::NodeType::Expression ) {
-		throw Common::Exceptions::Exception("not a valid expression");
+		throw Common::Exceptions::Exception("not a valid expression type set");
 	}
 
 	Expression* expression = static_cast<Expression*>(exp);
 
 	switch ( expression->getExpressionType() ) {
 		case Expression::ExpressionType::BinaryExpression: evaluateBinaryExpression(static_cast<BinaryExpression*>(expression), result); break;
-		case Expression::ExpressionType::LiteralExpression: evaluateLiteral(expression, result); break;
-		case Expression::ExpressionType::VariableExpression: evaluateVariable(expression, result); break;
+		case Expression::ExpressionType::LiteralExpression: evaluateLiteral(static_cast<LiteralExpression*>(exp), result); break;
+		case Expression::ExpressionType::MethodExpression: evaluateMethodExpression(static_cast<MethodExpression*>(exp), result); break;
+		case Expression::ExpressionType::UnaryExpression: evaluateUnaryExpression(static_cast<UnaryExpression*>(expression), result); break;
+		case Expression::ExpressionType::VariableExpression: evaluateVariable(static_cast<VariableExpression*>(exp), result); break;
 
 		case Expression::ExpressionType::CopyExpression:
 		case Expression::ExpressionType::NewExpression:
-		case Expression::ExpressionType::MethodExpression:
 		case Expression::ExpressionType::TypecastExpression:
-		case Expression::ExpressionType::UnaryExpression:
 			throw Common::Exceptions::NotSupported("expression type not supported yet");
 	}
 }
@@ -94,6 +94,13 @@ void TreeInterpreter::evaluateBinaryExpression(BinaryExpression* exp, Runtime::O
 	}
 
 	switch ( exp->mToken.type() ) {
+		// bit expressions
+		// {
+		case Token::Type::BITAND: Runtime::operator_binary_bitand(&left, &right); break;
+		case Token::Type::BITCOMPLEMENT: Runtime::operator_binary_bitcomplement(&left, &right); break;
+		case Token::Type::BITOR: Runtime::operator_binary_bitor(&left, &right); break;
+		// }
+
 		// math expressions
 		// {
 		case Token::Type::MATH_ADDITION: Runtime::operator_binary_plus(&left, &right); break;
@@ -105,7 +112,7 @@ void TreeInterpreter::evaluateBinaryExpression(BinaryExpression* exp, Runtime::O
 		// default handling
 		// {
 		default:
-			throw Common::Exceptions::NotSupported("binary expression with " + exp->mToken.content() + " not supported (by now)");
+			throw Common::Exceptions::NotSupported("binary expression with " + exp->mToken.content() + " not supported");
 		// }
 	}
 
@@ -164,28 +171,111 @@ void TreeInterpreter::evaluateBooleanBinaryExpression(BinaryExpression* exp, Run
 	}
 }
 
-void TreeInterpreter::evaluateLiteral(Expression* exp, Runtime::Object* result)
+void TreeInterpreter::evaluateLiteral(LiteralExpression* exp, Runtime::Object* result)
 {
-	LiteralExpression* literal = static_cast<LiteralExpression*>(exp);
-
-	switch ( literal->mValue.type() ) {
-		case Runtime::AtomicValue::Type::BOOL: *result = Runtime::BoolObject(literal->mValue); break;
-		case Runtime::AtomicValue::Type::DOUBLE: *result = Runtime::DoubleObject(literal->mValue); break;
-		case Runtime::AtomicValue::Type::FLOAT: *result = Runtime::FloatObject(literal->mValue); break;
-		case Runtime::AtomicValue::Type::INT: *result = Runtime::IntegerObject(literal->mValue); break;
-		case Runtime::AtomicValue::Type::STRING: *result = Runtime::StringObject(literal->mValue); break;
+	switch ( exp->mValue.type() ) {
+		case Runtime::AtomicValue::Type::BOOL: *result = Runtime::BoolObject(exp->mValue); break;
+		case Runtime::AtomicValue::Type::DOUBLE: *result = Runtime::DoubleObject(exp->mValue); break;
+		case Runtime::AtomicValue::Type::FLOAT: *result = Runtime::FloatObject(exp->mValue); break;
+		case Runtime::AtomicValue::Type::INT: *result = Runtime::IntegerObject(exp->mValue); break;
+		case Runtime::AtomicValue::Type::STRING: *result = Runtime::StringObject(exp->mValue); break;
 		case Runtime::AtomicValue::Type::UINT: throw Common::Exceptions::NotSupported("UINT type");
 		case Runtime::AtomicValue::Type::UNKOWN: throw Common::Exceptions::NotSupported("UNKNOWN type");
 	}
 }
 
-void TreeInterpreter::evaluateVariable(Expression* exp, Runtime::Object* result)
+void TreeInterpreter::evaluateMethodExpression(MethodExpression* exp, Runtime::Object* result)
 {
-	VariableExpression* variable = static_cast<VariableExpression*>(exp);
+	MethodScope* scope = getEnclosingMethodScope();
+	if ( !scope ) {
+		throw Runtime::Exceptions::Exception("could not resolve parent scope");
+	}
 
-	Symbol* lvalue = getScope()->resolve(variable->mName, false, Visibility::Designtime);
+	std::list<Runtime::Object> objectList;	// this is a hack to prevent that the provided object parameters run out of scope
+	ParameterList params;
+
+	for ( ExpressionList::const_iterator it = exp->mParams.begin(); it != exp->mParams.end(); ++it ) {
+		objectList.push_back(Runtime::Object());
+
+		Runtime::Object* param = &objectList.back();
+
+		evaluate((*it), param);
+
+		params.push_back(Parameter::CreateRuntime(param->QualifiedOuterface(), param->getValue(), param->getReference()));
+	}
+
+	Symbol* symbol = scope->resolveMethod(exp->mName, params, false);
+	if ( !symbol ) {
+		throw Runtime::Exceptions::Exception("method " + exp->mName + " not found");
+	}
+
+	Runtime::Method* method = static_cast<Runtime::Method*>(symbol);
+	assert(method);
+
+	Runtime::ControlFlow::E controlflow;
+
+	if ( method->isExtensionMethod() ) {
+		controlflow = method->execute(params, result, Token());
+	}
+	else {
+		controlflow = execute(method, params, result);
+	}
+
+	switch ( controlflow ) {
+		case Runtime::ControlFlow::ExitProgram:
+			mControlFlow = Runtime::ControlFlow::ExitProgram;
+			break;
+		case Runtime::ControlFlow::Throw:
+			mControlFlow = Runtime::ControlFlow::Throw;
+			throw Runtime::ControlFlow::Throw;			// throw even further
+		default:
+			mControlFlow = Runtime::ControlFlow::Normal;
+			break;
+	}
+}
+
+void TreeInterpreter::evaluateUnaryExpression(UnaryExpression* exp, Runtime::Object* result)
+{
+	Runtime::Object left;
+
+	try {
+		// evaluate left expression
+		evaluate(exp->mExpression, &left);
+	}
+	catch ( Runtime::ControlFlow::E& e ) {
+		mControlFlow = e;
+		return;
+	}
+
+	switch ( exp->mToken.type() ) {
+		// boolean expressions
+		// {
+		case Token::Type::OPERATOR_NOT: Runtime::operator_unary_not(&left); break;
+		// }
+
+		// math expressions
+		// {
+		case Token::Type::MATH_ADDITION: /* this is empty by intend */ break;
+		case Token::Type::MATH_SUBTRACT: Runtime::operator_unary_minus(&left); break;
+		case Token::Type::OPERATOR_DECREMENT: Runtime::operator_unary_decrement(&left); break;
+		case Token::Type::OPERATOR_INCREMENT: Runtime::operator_unary_increment(&left); break;
+		// }
+
+		// default handling
+		// {
+		default:
+			throw Common::Exceptions::NotSupported("binary expression with " + exp->mToken.content() + " not supported (by now)");
+		// }
+	}
+
+	Runtime::operator_binary_assign(result, &left);
+}
+
+void TreeInterpreter::evaluateVariable(VariableExpression* exp, Runtime::Object* result)
+{
+	Symbol* lvalue = getScope()->resolve(exp->mName, false, Visibility::Designtime);
 	if ( !lvalue ) {
-		throw Runtime::Exceptions::InvalidAssignment("lvalue '" + variable->mName + "' not found");
+		throw Runtime::Exceptions::InvalidAssignment("lvalue '" + exp->mName + "' not found");
 	}
 
 	if ( lvalue->getSymbolType() != Symbol::IType::ObjectSymbol ) {
@@ -269,8 +359,31 @@ Runtime::ControlFlow::E TreeInterpreter::execute(Runtime::Method* method, const 
 	return mControlFlow;
 }
 
-NamedScope* TreeInterpreter::getEnclosingMethodScope(IScope* scope) const
+MethodScope* TreeInterpreter::getEnclosingMethodScope(IScope *scope) const
 {
+	if ( !scope ) {
+		scope = getScope();
+	}
+
+	while ( scope ) {
+		IScope* parent = scope->getEnclosingScope();
+
+		if ( parent && parent->getScopeType() == IScope::IType::MethodScope ) {
+			return dynamic_cast<MethodScope*>(parent);
+		}
+
+		scope = parent;
+	}
+
+	return 0;
+}
+
+NamedScope* TreeInterpreter::getEnclosingNamedScope(IScope *scope) const
+{
+	if ( !scope ) {
+		scope = getScope();
+	}
+
 	while ( scope ) {
 		IScope* parent = scope->getEnclosingScope();
 
@@ -286,6 +399,10 @@ NamedScope* TreeInterpreter::getEnclosingMethodScope(IScope* scope) const
 
 Runtime::Namespace* TreeInterpreter::getEnclosingNamespace(IScope* scope) const
 {
+	if ( !scope ) {
+		scope = getScope();
+	}
+
 	while ( scope ) {
 		IScope* parent = scope->getEnclosingScope();
 
@@ -304,6 +421,10 @@ Runtime::Namespace* TreeInterpreter::getEnclosingNamespace(IScope* scope) const
 
 Runtime::Object* TreeInterpreter::getEnclosingObject(IScope* scope) const
 {
+	if ( !scope ) {
+		scope = getScope();
+	}
+
 	while ( scope ) {
 		IScope* parent = scope->getEnclosingScope();
 

@@ -52,9 +52,9 @@ private:
 
 	void visit(Node* node);
 
-	void visitExpression(Expression *expression);
+	void visitExpression(Expression* expression);
 	void visitOperator(Operator* op);
-	void visitStatement(Statement *node);
+	void visitStatement(Statement* node);
 
 	void visitAssert(AssertStatement* node);
 	void visitAssignment(Assignment* node);
@@ -74,9 +74,10 @@ private:
 	void visitWhile(WhileStatement* node);
 
 private:
-	NamedScope* getEnclosingMethodScope(IScope* scope) const;
-	Runtime::Namespace* getEnclosingNamespace(IScope* scope) const;
-	Runtime::Object* getEnclosingObject(IScope* scope) const;
+	MethodScope* getEnclosingMethodScope(IScope *scope = 0) const;
+	NamedScope* getEnclosingNamedScope(IScope *scope = 0) const;
+	Runtime::Namespace* getEnclosingNamespace(IScope* scope = 0) const;
+	Runtime::Object* getEnclosingObject(IScope* scope = 0) const;
 
 	inline Symbol* identify(TokenIterator& token) const;
 	inline Symbol* identifyMethod(TokenIterator& token, const ParameterList& params) const;
@@ -91,8 +92,10 @@ private:
 	void evaluate(Node* exp, Runtime::Object* result);
 	void evaluateBinaryExpression(BinaryExpression* exp, Runtime::Object* result);
 	void evaluateBooleanBinaryExpression(BinaryExpression* exp, Runtime::Object* result);
-	void evaluateLiteral(Expression* exp, Runtime::Object* result);
-	void evaluateVariable(Expression* exp, Runtime::Object* result);
+	void evaluateLiteral(LiteralExpression* exp, Runtime::Object* result);
+	void evaluateMethodExpression(MethodExpression* exp, Runtime::Object* result);
+	void evaluateUnaryExpression(UnaryExpression* exp, Runtime::Object* result);
+	void evaluateVariable(VariableExpression* exp, Runtime::Object* result);
 
 	std::string printExpression(Node* node) const;
 
