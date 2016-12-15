@@ -66,17 +66,44 @@ class VariableExpression;
 class BinaryExpression : public Expression
 {
 public:
+	class BinaryExpressionType {
+	public:
+		enum E {
+			BooleanBinaryExpression,
+			GenericBinaryExpression
+		};
+	};
+
+public:
 	BinaryExpression(const Token& token, Node* left, Node* right)
 	: Expression(ExpressionType::BinaryExpression),
 	  mLeft(left),
 	  mRight(right),
-	  mToken(token)
+	  mToken(token),
+	  mBinaryExpressionType(BinaryExpressionType::GenericBinaryExpression)
 	{ }
+
+	BinaryExpressionType::E getBinaryExpressionType() const {
+		return mBinaryExpressionType;
+	}
 
 public:
 	Node* mLeft;
 	Node* mRight;
 	Token mToken;
+
+protected:
+	BinaryExpressionType::E mBinaryExpressionType;
+};
+
+class BooleanBinaryExpression : public BinaryExpression
+{
+public:
+	BooleanBinaryExpression(const Token& token, Node* left, Node* right)
+	: BinaryExpression(token, left, right)
+	{
+		mBinaryExpressionType = BinaryExpressionType::BooleanBinaryExpression;
+	}
 };
 
 

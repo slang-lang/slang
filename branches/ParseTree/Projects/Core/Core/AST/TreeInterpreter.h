@@ -88,9 +88,11 @@ private:
 	void pushScope(IScope* scope = 0);
 	// }
 
-	void evaluate(Node* exp, Runtime::Object* result) const;
-	void evaluateLiteral(Expression* exp, Runtime::Object* result) const;
-	void evaluateVariable(Expression* exp, Runtime::Object* result) const;
+	void evaluate(Node* exp, Runtime::Object* result);
+	void evaluateBinaryExpression(BinaryExpression* exp, Runtime::Object* result);
+	void evaluateBooleanBinaryExpression(BinaryExpression* exp, Runtime::Object* result);
+	void evaluateLiteral(Expression* exp, Runtime::Object* result);
+	void evaluateVariable(Expression* exp, Runtime::Object* result);
 
 	std::string printExpression(Node* node) const;
 

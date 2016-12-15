@@ -25,10 +25,7 @@
 
 // AST includes
 #include "ControlStatements.h"
-#include "Expression.h"
 #include "Keywords.h"
-#include "Operator.h"
-#include "Statement.h"
 
 // Namespace declarations
 
@@ -60,7 +57,7 @@ Node* TreeGenerator::expression(TokenIterator& start)
 			return expression;
 		}
 
-		expression = new BinaryExpression((*start), expression, parseCondition(++start));
+		expression = new BooleanBinaryExpression((*start), expression, parseCondition(++start));
 	}
 }
 
@@ -285,7 +282,7 @@ Node* TreeGenerator::parseCondition(TokenIterator& start)
 			 return condition;
 		}
 
-		condition = new BinaryExpression((*start), condition, parseExpression(++start));
+		condition = new BooleanBinaryExpression((*start), condition, parseExpression(++start));
 	}
 }
 

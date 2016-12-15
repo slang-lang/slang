@@ -19,9 +19,9 @@
 #include <Core/Method.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Runtime/Namespace.h>
+#include <Core/Runtime/OperatorOverloading.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
-#include <Core/VirtualMachine/Repository.h>
 #include <Debugger/Debugger.h>
 #include <Tools/Printer.h>
 #include <Utils.h>
@@ -46,7 +46,7 @@ TreeInterpreter::~TreeInterpreter()
 {
 }
 
-void TreeInterpreter::evaluate(Node* exp, Runtime::Object* result) const
+void TreeInterpreter::evaluate(Node* exp, Runtime::Object* result)
 {
 	if ( !exp ) {
 		throw Common::Exceptions::Exception("invalid expression");
@@ -58,10 +58,10 @@ void TreeInterpreter::evaluate(Node* exp, Runtime::Object* result) const
 	Expression* expression = static_cast<Expression*>(exp);
 
 	switch ( expression->getExpressionType() ) {
+		case Expression::ExpressionType::BinaryExpression: evaluateBinaryExpression(static_cast<BinaryExpression*>(expression), result); break;
 		case Expression::ExpressionType::LiteralExpression: evaluateLiteral(expression, result); break;
 		case Expression::ExpressionType::VariableExpression: evaluateVariable(expression, result); break;
 
-		case Expression::ExpressionType::BinaryExpression:
 		case Expression::ExpressionType::CopyExpression:
 		case Expression::ExpressionType::NewExpression:
 		case Expression::ExpressionType::MethodExpression:
@@ -71,7 +71,100 @@ void TreeInterpreter::evaluate(Node* exp, Runtime::Object* result) const
 	}
 }
 
-void TreeInterpreter::evaluateLiteral(Expression* exp, Runtime::Object* result) const
+void TreeInterpreter::evaluateBinaryExpression(BinaryExpression* exp, Runtime::Object* result)
+{
+	if ( exp->getBinaryExpressionType() == BinaryExpression::BinaryExpressionType::BooleanBinaryExpression ) {
+		evaluateBooleanBinaryExpression(exp, result);
+		return;
+	}
+
+	Runtime::Object left;
+	Runtime::Object right;
+
+	try {
+		// evaluate left expression
+		evaluate(exp->mLeft, &left);
+
+		// evaluate right expression
+		evaluate(exp->mRight, &right);
+	}
+	catch ( Runtime::ControlFlow::E& e ) {
+		mControlFlow = e;
+		return;
+	}
+
+	switch ( exp->mToken.type() ) {
+		// math expressions
+		// {
+		case Token::Type::MATH_ADDITION: Runtime::operator_binary_plus(&left, &right); break;
+		case Token::Type::MATH_DIVIDE: Runtime::operator_binary_divide(&left, &right); break;
+		case Token::Type::MATH_MULTIPLY: Runtime::operator_binary_multiply(&left, &right); break;
+		case Token::Type::MATH_SUBTRACT: Runtime::operator_binary_subtract(&left, &right); break;
+		// }
+
+		// default handling
+		// {
+		default:
+			throw Common::Exceptions::NotSupported("binary expression with " + exp->mToken.content() + " not supported (by now)");
+		// }
+	}
+
+	// assign (left ? right) to result
+	Runtime::operator_binary_assign(result, &left);
+}
+
+void TreeInterpreter::evaluateBooleanBinaryExpression(BinaryExpression* exp, Runtime::Object* result)
+{
+	Runtime::Object left;
+	Runtime::Object right;
+
+	try {
+		// evaluate left expression
+		evaluate(exp->mLeft, &left);
+
+		// incomplete boolean evaluation
+		if ( exp->mToken.type() == Token::Type::AND && !isTrue(left) ) {
+			*result = Runtime::BoolObject(false);
+			return;
+		}
+		else if ( exp->mToken.type() == Token::Type::OR && isTrue(left) ) {
+			*result = Runtime::BoolObject(true);
+			return;
+		}
+
+		// evaluate right expression
+		evaluate(exp->mRight, &right);
+	}
+	catch ( Runtime::ControlFlow::E& e ) {
+		mControlFlow = e;
+		return;
+	}
+
+	switch ( exp->mToken.type() ) {
+		// boolean expressions
+		// {
+		case Token::Type::AND: *result = Runtime::BoolObject(isTrue(left) && isTrue(right)); break;
+		case Token::Type::NAND: *result = Runtime::BoolObject(!isTrue(left) && !isTrue(right)); break;
+		case Token::Type::NOR: *result = Runtime::BoolObject(!isTrue(left) || !isTrue(right)); break;
+		case Token::Type::OR: *result = Runtime::BoolObject(isTrue(left) || isTrue(right)); break;
+		// }
+
+		// comparison expressions
+		// {
+		case Token::Type::COMPARE_EQUAL: *result = Runtime::BoolObject(operator_binary_equal(&left, &right)); break;
+		case Token::Type::COMPARE_GREATER: *result = Runtime::BoolObject(operator_binary_greater(&left, &right)); break;
+		case Token::Type::COMPARE_GREATER_EQUAL: *result = Runtime::BoolObject(operator_binary_greater_equal(&left, &right)); break;
+		case Token::Type::COMPARE_LESS: *result = Runtime::BoolObject(operator_binary_less(&left, &right)); break;
+		case Token::Type::COMPARE_LESS_EQUAL: *result = Runtime::BoolObject(operator_binary_less_equal(&left, &right)); break;
+		case Token::Type::COMPARE_UNEQUAL: *result = Runtime::BoolObject(!operator_binary_equal(&left, &right)); break;
+		// }
+
+		default:
+			throw Common::Exceptions::NotSupported("binary expression with " + exp->mToken.content() + " not supported (by now)");
+	}
+}
+
+void TreeInterpreter::evaluateLiteral(Expression* exp, Runtime::Object* result)
 {
 	LiteralExpression* literal = static_cast<LiteralExpression*>(exp);
 
@@ -86,7 +179,7 @@ void TreeInterpreter::evaluateLiteral(Expression* exp, Runtime::Object* result) 
 	}
 }
 
-void TreeInterpreter::evaluateVariable(Expression* exp, Runtime::Object* result) const
+void TreeInterpreter::evaluateVariable(Expression* exp, Runtime::Object* result)
 {
 	VariableExpression* variable = static_cast<VariableExpression*>(exp);
 
