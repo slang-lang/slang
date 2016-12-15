@@ -3,7 +3,7 @@
 public object TestObject {
 	public int mValue;
 
-	public void Constructor(int value) {
+	public void Constructor(int value = 173) {
 		mValue = value;
 	}
 
@@ -12,7 +12,7 @@ public object TestObject {
 	}
 }
 
-public void Main(int argc, string args) {
+public void Main(int argc = 1, string args = "") {
 	TestObject obj = new TestObject(173);
 
 	{
