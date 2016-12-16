@@ -5,10 +5,10 @@
 
 // Library include
 #include <map>
-//#include <set>
+#include <set>
 #include <string>
 //#include <unordered_map>
-#include <unordered_set>
+//#include <unordered_set>
 
 // Project includes
 #include <Core/Interfaces/IScope.h>
@@ -71,8 +71,8 @@ private:
 class MethodScope : public NamedScope
 {
 public:
-	//typedef std::set<Runtime::Method*> MethodCollection;
-	typedef std::unordered_set<Runtime::Method*> MethodCollection;
+	typedef std::set<Runtime::Method*> MethodCollection;
+	//typedef std::unordered_set<Runtime::Method*> MethodCollection;
 
 public:
 	MethodScope(const std::string& name, IScope* parent = 0);

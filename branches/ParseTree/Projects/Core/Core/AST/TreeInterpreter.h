@@ -92,8 +92,10 @@ private:
 	void evaluate(Node* exp, Runtime::Object* result);
 	void evaluateBinaryExpression(BinaryExpression* exp, Runtime::Object* result);
 	void evaluateBooleanBinaryExpression(BinaryExpression* exp, Runtime::Object* result);
+	void evaluateCopyExpression(CopyExpression* exp, Runtime::Object* result);
 	void evaluateLiteral(LiteralExpression* exp, Runtime::Object* result);
 	void evaluateMethodExpression(MethodExpression* exp, Runtime::Object* result);
+	void evaluateNewExpression(NewExpression* exp, Runtime::Object* result);
 	void evaluateUnaryExpression(UnaryExpression* exp, Runtime::Object* result);
 	void evaluateVariable(VariableExpression* exp, Runtime::Object* result);
 

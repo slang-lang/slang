@@ -5,8 +5,10 @@
 // Library includes
 
 // Project includes
+#include <Core/AST/TreeInterpreter.h>
 #include <Core/BuildInObjects/VoidObject.h>
 #include <Core/Common/Exceptions.h>
+#include <Core/Defines.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/VirtualMachine/Controller.h>
 #include <Tools/Strings.h>
@@ -238,9 +240,19 @@ ControlFlow::E Object::Constructor(const ParameterList& params)
 		if ( constructor ) {
 			VoidObject tmp;
 
-			Interpreter interpreter;
+/*
+#ifdef GENERATE_PARSE_TREE
+
+			AST::TreeInterpreter interpreter;
 			controlflow = interpreter.execute(constructor, params, &tmp);
 
+#else
+*/
+			Interpreter interpreter;
+			controlflow = interpreter.execute(constructor, params, &tmp);
+/*
+#endif
+*/
 			if ( controlflow != ControlFlow::Normal ) {
 				return controlflow;
 			}
@@ -329,9 +341,19 @@ ControlFlow::E Object::Destructor()
 		if ( destructor ) {
 			VoidObject tmp;
 
-			Interpreter interpreter;
+/*
+#ifdef GENERATE_PARSE_TREE
+
+			AST::TreeInterpreter interpreter;
 			controlflow = interpreter.execute(destructor, params, &tmp);
 
+#else
+*/
+			Interpreter interpreter;
+			controlflow = interpreter.execute(destructor, params, &tmp);
+/*
+#endif
+*/
 			if ( controlflow != ControlFlow::Normal ) {
 				return controlflow;
 			}
@@ -379,8 +401,17 @@ ControlFlow::E Object::execute(Object *result, const std::string& name, const Pa
 	}
 */
 
+#ifdef GENERATE_PARSE_TREE
+
+	AST::TreeInterpreter interpreter;
+	return interpreter.execute(method, params, result);
+
+#else
+
 	Interpreter interpreter;
 	return interpreter.execute(method, params, result);
+
+#endif
 }
 
 bool Object::FromJson(const Json::Value& value)

@@ -22,6 +22,7 @@
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
 #include <Utils.h>
+#include <Core/Designtime/Exceptions.h>
 
 // AST includes
 #include "ControlStatements.h"
@@ -839,7 +840,16 @@ MethodExpression* TreeGenerator::process_method(TokenIterator& token)
  */
 Expression* TreeGenerator::process_new(TokenIterator& token)
 {
-	return new NewExpression(token->content(), process_method(token));
+	Symbol* symbol = identify(token);
+	if ( !symbol ) {
+		throw Common::Exceptions::UnknownIdentifer("symbol '" + token->content() + "' not found");
+	}
+	if ( symbol->getSymbolType() != Symbol::IType::BluePrintEnumSymbol &&
+		 symbol->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
+		throw Designtime::Exceptions::DesigntimeException("invalid symbol type found");
+	}
+
+	return new NewExpression(symbol, process_method(token));
 }
 
 /*

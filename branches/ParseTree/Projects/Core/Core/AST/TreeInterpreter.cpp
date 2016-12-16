@@ -16,7 +16,6 @@
 #include <Core/BuildInObjects/VoidObject.h>
 #include <Core/Common/Exceptions.h>
 #include <Core/Designtime/Parser/Parser.h>
-#include <Core/Method.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Runtime/Namespace.h>
 #include <Core/Runtime/OperatorOverloading.h>
@@ -55,17 +54,15 @@ void TreeInterpreter::evaluate(Node* exp, Runtime::Object* result)
 		throw Common::Exceptions::Exception("not a valid expression type set");
 	}
 
-	Expression* expression = static_cast<Expression*>(exp);
-
-	switch ( expression->getExpressionType() ) {
-		case Expression::ExpressionType::BinaryExpression: evaluateBinaryExpression(static_cast<BinaryExpression*>(expression), result); break;
+	switch ( static_cast<Expression*>(exp)->getExpressionType() ) {
+		case Expression::ExpressionType::BinaryExpression: evaluateBinaryExpression(static_cast<BinaryExpression*>(exp), result); break;
+		case Expression::ExpressionType::CopyExpression: evaluateCopyExpression(static_cast<CopyExpression*>(exp), result); break;
 		case Expression::ExpressionType::LiteralExpression: evaluateLiteral(static_cast<LiteralExpression*>(exp), result); break;
 		case Expression::ExpressionType::MethodExpression: evaluateMethodExpression(static_cast<MethodExpression*>(exp), result); break;
-		case Expression::ExpressionType::UnaryExpression: evaluateUnaryExpression(static_cast<UnaryExpression*>(expression), result); break;
+		case Expression::ExpressionType::NewExpression: evaluateNewExpression(static_cast<NewExpression*>(exp), result); break;
+		case Expression::ExpressionType::UnaryExpression: evaluateUnaryExpression(static_cast<UnaryExpression*>(exp), result); break;
 		case Expression::ExpressionType::VariableExpression: evaluateVariable(static_cast<VariableExpression*>(exp), result); break;
 
-		case Expression::ExpressionType::CopyExpression:
-		case Expression::ExpressionType::NewExpression:
 		case Expression::ExpressionType::TypecastExpression:
 			throw Common::Exceptions::NotSupported("expression type not supported yet");
 	}
@@ -171,6 +168,53 @@ void TreeInterpreter::evaluateBooleanBinaryExpression(BinaryExpression* exp, Run
 	}
 }
 
+void TreeInterpreter::evaluateCopyExpression(CopyExpression* exp, Runtime::Object* result)
+{
+	Runtime::Object obj;
+	try {
+		evaluate(exp->mExpression, &obj);
+	}
+	catch ( Runtime::ControlFlow::E &e ) {
+		mControlFlow = e;
+		return;
+	}
+
+	result->copy(obj);
+}
+
+void TreeInterpreter::evaluateNewExpression(NewExpression* exp, Runtime::Object* result)
+{
+	MethodExpression* method = dynamic_cast<MethodExpression*>(exp->mExpression);
+	if ( !method ) {
+		throw Runtime::Exceptions::Exception("invalid method expression found");
+	}
+
+	std::list<Runtime::Object> objectList;	// this is a hack to prevent that the provided object parameters run out of scope
+	ParameterList params;
+
+	for ( ExpressionList::const_iterator it = method->mParams.begin(); it != method->mParams.end(); ++it ) {
+		objectList.push_back(Runtime::Object());
+
+		Runtime::Object* param = &objectList.back();
+
+		try {
+			evaluate((*it), param);
+		}
+		catch ( Runtime::ControlFlow::E &e ) {
+			mControlFlow = e;
+			return;
+		}
+
+		params.push_back(Parameter::CreateRuntime(param->QualifiedOuterface(), param->getValue(), param->getReference()));
+	}
+
+	// create initialized reference of new object
+	*result = *mRepository->createReference(static_cast<Designtime::BluePrintGeneric*>(exp->mSymbol), ANONYMOUS_OBJECT, PrototypeConstraints(), Repository::InitilizationType::Final);
+
+	// execute new object's constructor
+	mControlFlow = result->Constructor(params);
+}
+
 void TreeInterpreter::evaluateLiteral(LiteralExpression* exp, Runtime::Object* result)
 {
 	switch ( exp->mValue.type() ) {
@@ -199,7 +243,13 @@ void TreeInterpreter::evaluateMethodExpression(MethodExpression* exp, Runtime::O
 
 		Runtime::Object* param = &objectList.back();
 
-		evaluate((*it), param);
+		try {
+			evaluate((*it), param);
+		}
+		catch ( Runtime::ControlFlow::E &e ) {
+			mControlFlow = e;
+			return;
+		}
 
 		params.push_back(Parameter::CreateRuntime(param->QualifiedOuterface(), param->getValue(), param->getReference()));
 	}
@@ -722,7 +772,16 @@ void TreeInterpreter::visitContinue(ContinueStatement* /*node*/)
 
 void TreeInterpreter::visitDelete(DeleteStatement* node)
 {
-	std::cout << "delete " << printExpression(node->mExpression) << ";" << std::endl;
+	Runtime::Object obj;
+	try {
+		evaluate(node->mExpression, &obj);
+	}
+	catch ( Runtime::ControlFlow::E &e ) {
+		mControlFlow = e;
+		return;
+	}
+
+	Controller::Instance().memory()->remove(obj.getReference());
 }
 
 void TreeInterpreter::visitExit(ExitStatement* /*node*/)

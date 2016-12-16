@@ -32,6 +32,7 @@ public:
 	explicit Node(NodeType::E type)
 	: mType(type)
 	{ }
+	virtual ~Node() { }
 
 	NodeType::E getNodeType() const {
 		return mType;

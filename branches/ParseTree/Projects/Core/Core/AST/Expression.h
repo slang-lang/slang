@@ -204,15 +204,15 @@ public:
 class NewExpression : public Expression
 {
 public:
-	NewExpression(const std::string& type, Node* exp)
+	NewExpression(Symbol* symbol, Node* exp)
 	: Expression(ExpressionType::NewExpression),
 	  mExpression(exp),
-	  mType(type)
+	  mSymbol(symbol)
 	{ }
 
 public:
 	Node* mExpression;
-	std::string mType;
+	Symbol* mSymbol;
 };
 
 
