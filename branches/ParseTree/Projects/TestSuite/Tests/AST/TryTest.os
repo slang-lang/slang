@@ -3,6 +3,10 @@
 public void Main(int argc = 1, string args = "") {
 	try {
 		print("try");
+
+		return;
+
+		throw new int(42);
 	}
 /*
 	catch ( string e ) {
@@ -12,5 +16,7 @@ public void Main(int argc = 1, string args = "") {
 	finally {
 		print("finally");
 	}
+
+	assert( !"after return" );
 }
 

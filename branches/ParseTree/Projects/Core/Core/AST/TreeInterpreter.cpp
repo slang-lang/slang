@@ -730,8 +730,6 @@ void TreeInterpreter::visit(Node* node)
 
 void TreeInterpreter::visitAssert(AssertStatement* node)
 {
-	std::cout << "assert(" << printExpression(node->mExpression) << ");" << std::endl;
-
 	Runtime::Object condition;
 	try {
 		evaluate(node->mExpression, &condition);
@@ -742,6 +740,8 @@ void TreeInterpreter::visitAssert(AssertStatement* node)
 	}
 
 	if ( !isTrue(condition) ) {
+		std::cout << "assert(" << printExpression(node->mExpression) << ");" << std::endl;
+
 		throw Runtime::Exceptions::AssertionFailed(condition.ToString(), node->mPosition);
 	}
 }
@@ -989,14 +989,28 @@ void TreeInterpreter::visitThrow(ThrowStatement* node)
 
 void TreeInterpreter::visitTry(TryStatement* node)
 {
-	std::cout << "try ";
+	mControlFlow = Runtime::ControlFlow::Normal;
 
 	visitStatement(node->mTryBlock);
 
-	if ( node->mFinallyBlock ) {
-		std::cout << "finally ";
+	if ( mControlFlow == Runtime::ControlFlow::Throw ) {
+		// execute catch block(s)
 
-		visitStatement(node->mFinallyBlock);
+		// TODO: only reset control flow if the exception has been caught
+		mControlFlow = Runtime::ControlFlow::Normal;
+	}
+
+	// store current control flow and reset it after finally block has been executed
+	Runtime::ControlFlow::E tmpControlFlow = mControlFlow;
+
+	// execute finally block in any case
+	mControlFlow = Runtime::ControlFlow::Normal;
+
+	visitStatement(node->mFinallyBlock);
+
+	// reset control flow if finally block has been executed normally
+	if ( mControlFlow == Runtime::ControlFlow::Normal ) {
+		mControlFlow = tmpControlFlow;
 	}
 }
 
