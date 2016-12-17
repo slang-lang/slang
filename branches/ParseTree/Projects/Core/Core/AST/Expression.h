@@ -260,13 +260,13 @@ public:
 class VariableExpression : public Expression
 {
 public:
-	VariableExpression(const std::string& name)
+	VariableExpression(const Token& name)
 	: Expression(ExpressionType::VariableExpression),
 	  mName(name)
 	{ }
 
 public:
-	std::string mName;
+	Token mName;
 };
 
 // Variable expressions

@@ -455,7 +455,7 @@ Statements* TreeGenerator::process(TokenIterator& token, TokenIterator end, Toke
 
 	while ( ( (token != getTokens().end()) && (token != end) ) &&
 			( (token->type() != terminator) && (token->type() != Token::Type::ENDOFFILE) ) ) {
-		Node* node = process_statement(token, terminator);
+		Node* node = process_statement(token);
 
 		if ( node ) {
 			statements->mNodes.push_back(node);
@@ -521,7 +521,7 @@ Expression* TreeGenerator::process_copy(TokenIterator& token)
 		throw Common::Exceptions::Exception("nullptr access!");
 	}
 
-	return new CopyExpression(new VariableExpression(token->content()));
+	return new CopyExpression(new VariableExpression((*token)));
 }
 
 /*
@@ -541,7 +541,7 @@ Statement* TreeGenerator::process_delete(TokenIterator& token)
 
 	switch ( symbol->getSymbolType() ) {
 		case Symbol::IType::ObjectSymbol: {
-			statement = new DeleteStatement(new VariableExpression(token->content()));
+			statement = new DeleteStatement(new VariableExpression((*token)));
 		} break;
 		case Symbol::IType::BluePrintEnumSymbol:
 		case Symbol::IType::BluePrintObjectSymbol:
@@ -610,7 +610,7 @@ Statement* TreeGenerator::process_for(TokenIterator& token)
 
 	// process our declaration part
 	// {
-	Node* initialization = process_statement(initializationBegin, Token::Type::SEMICOLON);
+	Node* initialization = process_statement(initializationBegin);
 	// }
 
 	// Condition parsing
@@ -627,7 +627,7 @@ Statement* TreeGenerator::process_for(TokenIterator& token)
 	// {
 	TokenIterator exprBegin = increaseBegin;
 
-	Node* iteration = process_statement(exprBegin, Token::Type::PARENTHESIS_CLOSE);
+	Node* iteration = process_statement(exprBegin);
 	// }
 
 	// Body parsing
@@ -671,32 +671,63 @@ Statement* TreeGenerator::process_foreach(TokenIterator& token)
 /*
  * executes a method, processes an assign statement and instanciates new types
  */
-Node* TreeGenerator::process_identifier(TokenIterator& token, Token::Type::E /*terminator*/)
+Node* TreeGenerator::process_identifier(TokenIterator& token)
 {
 	Node* node = 0;
 
+	TokenIterator op = lookahead(token);
+
 	// type declaration
-	if ( lookahead(token)->type() == Token::Type::IDENTIFER ) {
+	if ( op->type() == Token::Type::IDENTIFER ) {
 		node = process_type(token);
 	}
 	// method call
-	else if ( lookahead(token)->type() == Token::Type::PARENTHESIS_OPEN ) {
+	else if ( op->type() == Token::Type::PARENTHESIS_OPEN ) {
 		node = process_method(token);
 	}
 	// assignment
-	else if ( lookahead(token)->category() == Token::Category::Assignment ) {
+	else if ( op->category() == Token::Category::Assignment ) {
 		TokenIterator identifier = token;
 		TokenIterator assignment = ++token;
+		Node* exp = 0;
 
-		node = new Assignment((*identifier), (*assignment), expression(++token));
+		switch ( assignment->type() ) {
+			case Token::Type::ASSIGN_ADDITION: exp = new BinaryExpression(Token(Token::Type::MATH_ADDITION), new VariableExpression((*identifier)), expression(++token)); break;
+			case Token::Type::ASSIGN_BITAND: exp = new BinaryExpression(Token(Token::Type::BITAND), new VariableExpression((*identifier)), expression(++token)); break;
+			case Token::Type::ASSIGN_BITCOMPLEMENT: exp = new BinaryExpression(Token(Token::Type::BITCOMPLEMENT), new VariableExpression((*identifier)), expression(++token)); break;
+			case Token::Type::ASSIGN_BITOR: exp = new BinaryExpression(Token(Token::Type::BITOR), new VariableExpression((*identifier)), expression(++token)); break;
+			case Token::Type::ASSIGN_DIVIDE: exp = new BinaryExpression(Token(Token::Type::MATH_DIVIDE), new VariableExpression((*identifier)), expression(++token)); break;
+			case Token::Type::ASSIGN_MODULO: exp = new BinaryExpression(Token(Token::Type::MATH_MODULO), new VariableExpression((*identifier)), expression(++token)); break;
+			case Token::Type::ASSIGN_MULTIPLY: exp = new BinaryExpression(Token(Token::Type::MATH_MULTIPLY), new VariableExpression((*identifier)), expression(++token)); break;
+			case Token::Type::ASSIGN_SUBTRACT: exp = new BinaryExpression(Token(Token::Type::MATH_SUBTRACT), new VariableExpression((*identifier)), expression(++token)); break;
+			default: exp = expression(++token); break;
+		}
+
+		node = new Assignment((*identifier), (*assignment), exp);
 	}
 /*
-	else if ( lookahead(start)->type() == Token::Type::IDENTIFER ) {
-		node = new TypecastExpression(start->content(), expression(++start));
+	// type cast
+	else if ( op->type() == Token::Type::IDENTIFER ) {
+		node = new TypecastExpression(token->content(), expression(++token));
 	}
 */
+	else if ( op->type() == Token::Type::OPERATOR_DECREMENT ) {
+		Node* exp = new VariableExpression((*token));
+		++token;
+
+		node = new UnaryExpression((*token), exp);
+		++token;
+	}
+	else if ( op->type() == Token::Type::OPERATOR_INCREMENT ) {
+		Node* exp = new VariableExpression((*token));
+		++token;
+
+		node = new UnaryExpression((*token), exp);
+		++token;
+	}
+	// variable usage
 	else {
-		node = new VariableExpression(token->content());
+		node = new VariableExpression((*token));
 		++token;
 
 		//throw Common::Exceptions::Exception("invalid symbol type found!", token->position());
@@ -905,7 +936,7 @@ Statements* TreeGenerator::process_scope(TokenIterator& token)
 	return statements;
 }
 
-Node* TreeGenerator::process_statement(TokenIterator& token, Token::Type::E terminator)
+Node* TreeGenerator::process_statement(TokenIterator& token)
 {
 	Node* node = 0;
 
@@ -913,7 +944,7 @@ Node* TreeGenerator::process_statement(TokenIterator& token, Token::Type::E term
 		case Token::Type::IDENTIFER:
 		case Token::Type::PROTOTYPE:
 		case Token::Type::TYPE:
-			node = process_identifier(token, terminator == Token::Type::NIL ? Token::Type::SEMICOLON : terminator);
+			node = process_identifier(token);
 			break;
 		case Token::Type::KEYWORD:
 			node = process_keyword(token);

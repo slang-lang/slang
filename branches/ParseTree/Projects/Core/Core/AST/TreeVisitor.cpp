@@ -17,20 +17,9 @@ namespace ObjectiveScript {
 namespace AST {
 
 
-TreeVisitor::TreeVisitor(Statements *root)
-: mRootNode(root)
-{
-}
-
-TreeVisitor::~TreeVisitor()
-{
-}
-
-
-
 PrintVisitor::PrintVisitor(Statements *root)
-: TreeVisitor(root),
-  mIndentation(0)
+: mIndentation(0),
+  mRootNode(root)
 {
 }
 
@@ -82,7 +71,7 @@ std::string PrintVisitor::printExpression(Node* node) const
 				result += printExpression(bin->mExpression);
 			} break;
 			case Expression::ExpressionType::VariableExpression: {
-				result += static_cast<VariableExpression*>(expression)->mName;
+				result += static_cast<VariableExpression*>(expression)->mName.content();
 			} break;
 		}
 	}

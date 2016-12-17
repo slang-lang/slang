@@ -23,18 +23,7 @@ namespace AST {
 class Statement;
 class Statements;
 
-class TreeVisitor
-{
-public:
-	TreeVisitor(Statements* root);
-	virtual ~TreeVisitor();
-
-public:
-	Statements* mRootNode;
-};
-
-
-class PrintVisitor : public TreeVisitor
+class PrintVisitor
 {
 public:
 	PrintVisitor(Statements* root);
@@ -72,6 +61,7 @@ private:
 
 private:
 	int mIndentation;
+	Statements* mRootNode;
 };
 
 

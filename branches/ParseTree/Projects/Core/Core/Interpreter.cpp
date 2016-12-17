@@ -778,8 +778,6 @@ void Interpreter::process(Object *result, TokenIterator& token, TokenIterator en
 		}
 
 		process_statement(token, result, terminator);
-
-		//++token;	// consume token
 	}
 }
 
@@ -920,7 +918,8 @@ void Interpreter::process_for(TokenIterator& token, Object* result)
 	// process our declaration part
 	// {
 	Object declarationTmp;
-	process(&declarationTmp, initializationBegin, conditionBegin, Token::Type::SEMICOLON);
+	//process(&declarationTmp, initializationBegin, conditionBegin, Token::Type::SEMICOLON);
+	process_statement(initializationBegin, &declarationTmp, Token::Type::SEMICOLON);
 	// }
 
 	++bodyBegin;		// don't collect scope token
@@ -972,7 +971,8 @@ void Interpreter::process_for(TokenIterator& token, Object* result)
 		TokenIterator exprBegin = increaseBegin;
 
 		Object expressionTmp;
-		process(&expressionTmp, exprBegin, expressionEnd, Token::Type::PARENTHESIS_CLOSE);
+		//process(&expressionTmp, exprBegin, expressionEnd, Token::Type::PARENTHESIS_CLOSE);
+		process_statement(exprBegin, &expressionTmp, Token::Type::PARENTHESIS_CLOSE);
 		// }
 	}
 }

@@ -102,6 +102,7 @@ void TreeInterpreter::evaluateBinaryExpression(BinaryExpression* exp, Runtime::O
 		// {
 		case Token::Type::MATH_ADDITION: Runtime::operator_binary_plus(&left, &right); break;
 		case Token::Type::MATH_DIVIDE: Runtime::operator_binary_divide(&left, &right); break;
+		case Token::Type::MATH_MODULO: Runtime::operator_binary_modulo(&left, &right); break;
 		case Token::Type::MATH_MULTIPLY: Runtime::operator_binary_multiply(&left, &right); break;
 		case Token::Type::MATH_SUBTRACT: Runtime::operator_binary_subtract(&left, &right); break;
 		// }
@@ -323,9 +324,9 @@ void TreeInterpreter::evaluateUnaryExpression(UnaryExpression* exp, Runtime::Obj
 
 void TreeInterpreter::evaluateVariable(VariableExpression* exp, Runtime::Object* result)
 {
-	Symbol* lvalue = getScope()->resolve(exp->mName, false, Visibility::Designtime);
+	Symbol* lvalue = getScope()->resolve(exp->mName.content(), false, Visibility::Designtime);
 	if ( !lvalue ) {
-		throw Runtime::Exceptions::InvalidAssignment("lvalue '" + exp->mName + "' not found");
+		throw Runtime::Exceptions::InvalidAssignment("lvalue '" + exp->mName.content() + "' not found", exp->mName.position());
 	}
 
 	if ( lvalue->getSymbolType() != Symbol::IType::ObjectSymbol ) {
@@ -673,7 +674,7 @@ std::string TreeInterpreter::printExpression(Node* node) const
 				result += printExpression(bin->mExpression);
 			} break;
 			case Expression::ExpressionType::VariableExpression: {
-				result += static_cast<VariableExpression*>(expression)->mName;
+				result += static_cast<VariableExpression*>(expression)->mName.content();
 			} break;
 		}
 	}
@@ -791,7 +792,10 @@ void TreeInterpreter::visitExit(ExitStatement* /*node*/)
 
 void TreeInterpreter::visitExpression(Expression *expression)
 {
-	std::cout << printExpression(expression) << ";" << std::endl;
+	//std::cout << printExpression(expression) << ";" << std::endl;
+
+	Runtime::Object tmp;
+	evaluate(expression, &tmp);
 }
 
 void TreeInterpreter::visitFor(ForStatement* node)
