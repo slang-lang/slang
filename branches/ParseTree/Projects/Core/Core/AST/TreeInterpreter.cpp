@@ -404,8 +404,9 @@ Runtime::ControlFlow::E TreeInterpreter::execute(Runtime::Method* method, const 
 	// notify debugger
 	Core::Debugger::Instance().notifyEnter(&scope, Core::Debugger::immediateBreakToken);
 	// interpret scope tokens
-	//ControlFlow::E controlflow = interpret(getTokens(), result);
 	process(mRootNode);
+
+	mOwner = previousOwner;
 
 	return mControlFlow;
 }

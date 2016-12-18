@@ -1024,7 +1024,6 @@ Statement* TreeGenerator::process_switch(TokenIterator& token)
 	// find next balanced '{' & '}' pair
 	TokenIterator bodyEnd = findNextBalancedCurlyBracket(bodyBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
 
-	++bodyBegin;	// don't collect scope token
 	token = bodyEnd;
 
 	// CaseBlock is our data holder object for each case-block, hence the name
