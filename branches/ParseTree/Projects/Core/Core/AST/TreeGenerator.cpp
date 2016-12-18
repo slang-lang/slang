@@ -519,8 +519,10 @@ Statement* TreeGenerator::process_assert(TokenIterator& token)
  * syntax:
  * break;
  */
-Statement* TreeGenerator::process_break(TokenIterator& /*token*/)
+Statement* TreeGenerator::process_break(TokenIterator& token)
 {
+	++token;
+
 	return new BreakStatement();
 }
 
@@ -528,8 +530,10 @@ Statement* TreeGenerator::process_break(TokenIterator& /*token*/)
  * syntax:
  * continue;
  */
-Statement* TreeGenerator::process_continue(TokenIterator& /*token*/)
+Statement* TreeGenerator::process_continue(TokenIterator& token)
 {
+	++token;
+
 	return new ContinueStatement();
 }
 
@@ -1005,6 +1009,7 @@ Statement* TreeGenerator::process_switch(TokenIterator& token)
 	expect(Token::Type::PARENTHESIS_OPEN, token);
 	++token;
 
+/*
 	// find next open parenthesis '('
 	TokenIterator condBegin = token;
 	// find next balanced '(' & ')' pair
@@ -1025,91 +1030,86 @@ Statement* TreeGenerator::process_switch(TokenIterator& token)
 	TokenIterator bodyEnd = findNextBalancedCurlyBracket(bodyBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
 
 	token = bodyEnd;
+*/
 
-	// CaseBlock is our data holder object for each case-block, hence the name
-	class CaseBlock
-	{
-	public:
-		CaseBlock(TokenIterator begin, TokenIterator end)
-		: mBegin(begin),
-		  mEnd(end)
-		{ }
+	// evaluate switch-expression
+	Node* switchExpression = expression(token);
 
-		TokenIterator mBegin;
-		TokenIterator mEnd;
-	};
-	typedef std::list<CaseBlock> CaseBlocks;
+	expect(Token::Type::PARENTHESIS_CLOSE, token);
+	++token;
 
-	CaseBlocks caseBlocks;
-	CaseBlock defaultBlock = CaseBlock(getTokens().end(), getTokens().end());
+	expect(Token::Type::BRACKET_CURLY_OPEN, token);
+	++token;
 
-	// collect all case-blocks for further processing
-	while ( bodyBegin != bodyEnd ) {
-		if ( bodyBegin->type() == Token::Type::KEYWORD && bodyBegin->content() == KEYWORD_CASE ) {
-			TokenIterator tmp = findNextBalancedCurlyBracket(bodyBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
+	// find next open curly bracket '{'
+	TokenIterator bodyBegin = token;
+	// find next balanced '{' & '}' pair
+	TokenIterator bodyEnd = findNextBalancedCurlyBracket(bodyBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
 
-			caseBlocks.push_back(CaseBlock(bodyBegin, tmp));
-
-			bodyBegin = tmp;
-		}
-		else if ( bodyBegin->type() == Token::Type::KEYWORD && bodyBegin->content() == KEYWORD_DEFAULT ) {
-			if ( defaultBlock.mBegin != getTokens().end() ) {
-				throw Common::Exceptions::SyntaxError("duplicate default entry for switch statement");
-			}
-
-			TokenIterator tmp = findNextBalancedCurlyBracket(bodyBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
-
-			defaultBlock = CaseBlock(bodyBegin, tmp);
-
-			bodyBegin = tmp;
-		}
-		++bodyBegin;
-	}
+	token = bodyEnd;
 
 	CaseStatements caseStatements;
 
-	// loop through all case-labels and match their expressions against the switch-expression
-	for ( CaseBlocks::iterator it = caseBlocks.begin(); it != caseBlocks.end(); ++it ) {
-		it->mBegin++;
-
-		// evaluate switch-expression
-		Node* caseExpression = expression(it->mBegin);
-
-		expect(Token::Type::COLON, it->mBegin++);
-		expect(Token::Type::BRACKET_CURLY_OPEN, it->mBegin++);	// don't collect scope token
-
-		// collect case-block tokens
-		TokenList caseTokens;
-		while ( it->mBegin != it->mEnd ) {
-			caseTokens.push_back((*it->mBegin));
-			it->mBegin++;
-		}
-
-		Node* caseBlock = generate(caseTokens);
-
-		// process/interpret case-block tokens
-		caseStatements.push_back(
-			new CaseStatement(caseExpression, caseBlock)
-		);
-	}
-
 	Node* defaultStatement = 0;
 
-	// execute the default block (if present)
-	if ( defaultBlock.mBegin != getTokens().end() ) {
-		defaultBlock.mBegin++;
-		expect(Token::Type::COLON, defaultBlock.mBegin++);
-		expect(Token::Type::BRACKET_CURLY_OPEN, defaultBlock.mBegin++);
+	// collect all case-blocks
+	while ( bodyBegin != bodyEnd ) {
+		if ( bodyBegin->type() == Token::Type::KEYWORD && bodyBegin->content() == KEYWORD_CASE ) {
+			// skip case-label
+			++bodyBegin;
 
-		// collect default-block tokens
-		TokenList defaultTokens;
-		while ( defaultBlock.mBegin != defaultBlock.mEnd ) {
-			defaultTokens.push_back((*defaultBlock.mBegin));
-			defaultBlock.mBegin++;
+			Node* caseExpression = expression(bodyBegin);
+
+			expect(Token::Type::COLON, bodyBegin);
+			++bodyBegin;
+
+			expect(Token::Type::BRACKET_CURLY_OPEN, bodyBegin);
+			++bodyBegin;
+
+			TokenIterator caseEnd = findNextBalancedCurlyBracket(bodyBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
+
+			// collect case-block tokens
+			TokenList caseTokens;
+			while ( bodyBegin != caseEnd ) {
+				caseTokens.push_back((*bodyBegin));
+				++bodyBegin;
+			}
+
+			Node* caseBlock = generate(caseTokens);
+
+			// process/interpret case-block tokens
+			caseStatements.push_back(
+				new CaseStatement(caseExpression, caseBlock)
+			);
+		}
+		else if ( bodyBegin->type() == Token::Type::KEYWORD && bodyBegin->content() == KEYWORD_DEFAULT ) {
+			if ( defaultStatement ) {
+				throw Common::Exceptions::SyntaxError("duplicate default entry for switch statement");
+			}
+
+			// skip default-label
+			++bodyBegin;
+
+			expect(Token::Type::COLON, bodyBegin);
+			++bodyBegin;
+
+			expect(Token::Type::BRACKET_CURLY_OPEN, bodyBegin);
+			++bodyBegin;
+
+			TokenIterator defaultEnd = findNextBalancedCurlyBracket(bodyBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
+
+			// collect default-block tokens
+			TokenList defaultTokens;
+			while ( bodyBegin != defaultEnd ) {
+				defaultTokens.push_back((*bodyBegin));
+				++bodyBegin;
+			}
+
+			// process/interpret case-block tokens
+			defaultStatement = generate(defaultTokens);
 		}
 
-		// process/interpret case-block tokens
-		defaultStatement = generate(defaultTokens);
+		++bodyBegin;
 	}
 
 	return new SwitchStatement(switchExpression, caseStatements, defaultStatement);
