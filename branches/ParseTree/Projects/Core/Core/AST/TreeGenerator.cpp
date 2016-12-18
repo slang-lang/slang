@@ -79,8 +79,31 @@ Statements* TreeGenerator::generate(const TokenList &tokens)
 	return statements;
 }
 
-NamedScope* TreeGenerator::getEnclosingMethodScope(IScope* scope) const
+MethodScope* TreeGenerator::getEnclosingMethodScope(IScope* scope) const
 {
+	if ( !scope ) {
+		scope = getScope();
+	}
+
+	while ( scope ) {
+		IScope* parent = scope->getEnclosingScope();
+
+		if ( parent && parent->getScopeType() == IScope::IType::MethodScope ) {
+			return dynamic_cast<MethodScope*>(parent);
+		}
+
+		scope = parent;
+	}
+
+	return 0;
+}
+
+NamedScope* TreeGenerator::getEnclosingNamedScope(IScope *scope) const
+{
+	if ( !scope ) {
+		scope = getScope();
+	}
+
 	while ( scope ) {
 		IScope* parent = scope->getEnclosingScope();
 
@@ -96,6 +119,10 @@ NamedScope* TreeGenerator::getEnclosingMethodScope(IScope* scope) const
 
 Runtime::Namespace* TreeGenerator::getEnclosingNamespace(IScope* scope) const
 {
+	if ( !scope ) {
+		scope = getScope();
+	}
+
 	while ( scope ) {
 		IScope* parent = scope->getEnclosingScope();
 
@@ -114,6 +141,10 @@ Runtime::Namespace* TreeGenerator::getEnclosingNamespace(IScope* scope) const
 
 Runtime::Object* TreeGenerator::getEnclosingObject(IScope* scope) const
 {
+	if ( !scope ) {
+		scope = getScope();
+	}
+
 	while ( scope ) {
 		IScope* parent = scope->getEnclosingScope();
 
@@ -159,7 +190,7 @@ inline Symbol* TreeGenerator::identify(TokenIterator& token) const
 			prev_identifier = identifier;
 
 			if ( !result ) {
-				Runtime::Namespace* space = getEnclosingNamespace(getScope());
+				Runtime::Namespace* space = getEnclosingNamespace();
 				if ( space ) {
 					result = getScope()->resolve(space->QualifiedTypename() + "." + identifier, onlyCurrentScope, Visibility::Private);
 				}
@@ -971,7 +1002,8 @@ Node* TreeGenerator::process_statement(TokenIterator& token)
  */
 Statement* TreeGenerator::process_switch(TokenIterator& token)
 {
-	expect(Token::Type::PARENTHESIS_OPEN, token++);
+	expect(Token::Type::PARENTHESIS_OPEN, token);
+	++token;
 
 	// find next open parenthesis '('
 	TokenIterator condBegin = token;
@@ -979,16 +1011,20 @@ Statement* TreeGenerator::process_switch(TokenIterator& token)
 	TokenIterator condEnd = findNextBalancedParenthesis(condBegin);
 
 	// evaluate switch-expression
-	expression(token);
+	Node* switchExpression = expression(token);
 
-	expect(Token::Type::BRACKET_CURLY_OPEN, ++condEnd);
+	expect(Token::Type::PARENTHESIS_CLOSE, condEnd);
+	++condEnd;
+
+	expect(Token::Type::BRACKET_CURLY_OPEN, condEnd);
+	++condEnd;
 
 	// find next open curly bracket '{'
 	TokenIterator bodyBegin = condEnd;
 	// find next balanced '{' & '}' pair
 	TokenIterator bodyEnd = findNextBalancedCurlyBracket(bodyBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
 
-	bodyBegin++;	// don't collect scope token
+	++bodyBegin;	// don't collect scope token
 	token = bodyEnd;
 
 	// CaseBlock is our data holder object for each case-block, hence the name
@@ -1028,15 +1064,17 @@ Statement* TreeGenerator::process_switch(TokenIterator& token)
 
 			bodyBegin = tmp;
 		}
-		bodyBegin++;
+		++bodyBegin;
 	}
+
+	CaseStatements caseStatements;
 
 	// loop through all case-labels and match their expressions against the switch-expression
 	for ( CaseBlocks::iterator it = caseBlocks.begin(); it != caseBlocks.end(); ++it ) {
 		it->mBegin++;
 
 		// evaluate switch-expression
-		expression(it->mBegin);
+		Node* caseExpression = expression(it->mBegin);
 
 		expect(Token::Type::COLON, it->mBegin++);
 		expect(Token::Type::BRACKET_CURLY_OPEN, it->mBegin++);	// don't collect scope token
@@ -1048,9 +1086,15 @@ Statement* TreeGenerator::process_switch(TokenIterator& token)
 			it->mBegin++;
 		}
 
+		Node* caseBlock = generate(caseTokens);
+
 		// process/interpret case-block tokens
-		generate(caseTokens);
+		caseStatements.push_back(
+			new CaseStatement(caseExpression, caseBlock)
+		);
 	}
+
+	Node* defaultStatement = 0;
 
 	// execute the default block (if present)
 	if ( defaultBlock.mBegin != getTokens().end() ) {
@@ -1066,10 +1110,10 @@ Statement* TreeGenerator::process_switch(TokenIterator& token)
 		}
 
 		// process/interpret case-block tokens
-		generate(defaultTokens);
+		defaultStatement = generate(defaultTokens);
 	}
 
-	return 0;
+	return new SwitchStatement(switchExpression, caseStatements, defaultStatement);
 }
 
 /*
@@ -1078,16 +1122,14 @@ Statement* TreeGenerator::process_switch(TokenIterator& token)
  */
 Statement* TreeGenerator::process_throw(TokenIterator& token)
 {
-	ThrowStatement* statement = 0;
-
 	// check if our parent scope is a method that is allowed to throw exceptions
-	Runtime::Method* method = dynamic_cast<Runtime::Method*>(getEnclosingMethodScope(getScope()));
+	Runtime::Method* method = dynamic_cast<Runtime::Method*>(getEnclosingMethodScope());
 	if ( method && !method->throws() ) {
 		// this method is not marked as 'throwing', so we can't throw exceptions here
 		OSwarn(std::string(method->getFullScopeName() + " throws although it is not marked with 'throws' in " + token->position().toString()).c_str());
 	}
 
-	statement = new ThrowStatement(expression(token));
+	ThrowStatement* statement = new ThrowStatement(expression(token));
 
 	expect(Token::Type::SEMICOLON, token);
 	++token;
@@ -1158,10 +1200,14 @@ Statement* TreeGenerator::process_try(TokenIterator& token)
 		tmp++;
 	}
 
+	CatchStatements catchStatements;
+
 	// process catch-blocks (if present)
 	for ( std::list<TokenIterator>::const_iterator it = catchTokens.begin(); it != catchTokens.end(); ++it ) {
 		TokenIterator catchIt = (*it);
 		catchIt++;
+
+		TypeDeclaration* typeDeclaration = 0;
 
 		// parse exception type (if present)
 		if ( catchIt->type() == Token::Type::PARENTHESIS_OPEN ) {
@@ -1176,7 +1222,7 @@ Statement* TreeGenerator::process_try(TokenIterator& token)
 			}
 
 			// create new exception type instance
-			process_type(catchIt);
+			typeDeclaration = process_type(catchIt);
 
 			expect(Token::Type::PARENTHESIS_CLOSE, catchIt);
 			++catchIt;
@@ -1198,16 +1244,9 @@ Statement* TreeGenerator::process_try(TokenIterator& token)
 			catchBegin++;
 		}
 
-		// execute catch-block if an exception has been thrown
-		generate(tokens);
-
-		Runtime::Object* ex = Controller::Instance().stack()->exception().getData();
-		if ( ex ) {
-			getScope()->define(ex->getName(), ex);
-		}
-
-		popScope();		// pop exception instance scope
-		break;
+		catchStatements.push_back(
+			new CatchStatement(typeDeclaration, generate(tokens))
+		);
 	}
 
 	Statements* finallyBlock = 0;
@@ -1237,7 +1276,7 @@ Statement* TreeGenerator::process_try(TokenIterator& token)
 
 	++token;
 
-	return new TryStatement(tryBlock, finallyBlock);
+	return new TryStatement(tryBlock, catchStatements, finallyBlock);
 }
 
 /*

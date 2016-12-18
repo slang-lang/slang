@@ -915,6 +915,10 @@ void TreeInterpreter::visitStatement(Statement *node)
 		case Statement::StatementType::BreakStatement:
 			visitBreak(static_cast<BreakStatement*>(node));
 			break;
+		case Statement::StatementType::CaseStatement:
+			throw Common::Exceptions::Exception("case statements are handled separately!");
+		case Statement::StatementType::CatchStatement:
+			throw Common::Exceptions::Exception("catch statements are handled separately!");
 		case Statement::StatementType::ContinueStatement:
 			visitContinue(static_cast<ContinueStatement*>(node));
 			break;
@@ -942,6 +946,9 @@ void TreeInterpreter::visitStatement(Statement *node)
 		case Statement::StatementType::Statements:
 			visitStatements(static_cast<Statements*>(node));
 			break;
+		case Statement::StatementType::SwitchStatement:
+			visitSwitch(static_cast<SwitchStatement*>(node));
+			break;
 		case Statement::StatementType::ThrowStatement:
 			visitThrow(static_cast<ThrowStatement*>(node));
 			break;
@@ -966,15 +973,56 @@ void TreeInterpreter::visitStatements(Statements* node)
 	popScope();
 }
 
-void TreeInterpreter::visitThrow(ThrowStatement* node)
+void TreeInterpreter::visitSwitch(SwitchStatement* node)
 {
-	// check if our parent scope is a method that is allowed to throw exceptions
-	Runtime::Method* method = dynamic_cast<Runtime::Method*>(getEnclosingMethodScope(getScope()));
-	if ( method && !method->throws() ) {
-		// this method is not marked as 'throwing', so we can't throw exceptions here
-		OSwarn(std::string(method->getFullScopeName() + " throws although it is not marked with 'throws'"));
+	Runtime::Object value;
+	try {
+		evaluate(node->mExpression, &value);
+	}
+	catch ( Runtime::ControlFlow::E &e ) {
+		mControlFlow = e;
+		return;
 	}
 
+	bool caseMatched = false;
+
+	for ( CaseStatements::const_iterator it = node->mCaseStatements.begin(); it != node->mCaseStatements.end(); ++it ) {
+		Runtime::Object caseValue;
+		try {
+			evaluate((*it)->mCaseExpression, &caseValue);
+		}
+		catch ( Runtime::ControlFlow::E &e ) {
+			mControlFlow = e;
+			return;
+		}
+
+		if ( Runtime::operator_binary_equal(&value, &caseValue) ) {
+			visit((*it)->mCaseBlock);
+
+			switch ( mControlFlow ) {
+				case Runtime::ControlFlow::Break:
+					mControlFlow = Runtime::ControlFlow::Normal;
+					return;	// stop matching the remaining case-statements
+				case Runtime::ControlFlow::Continue:
+				case Runtime::ControlFlow::Normal:
+					mControlFlow = Runtime::ControlFlow::Normal;
+					break;	// continue matching the remaining case-statements
+				case Runtime::ControlFlow::ExitProgram:
+				case Runtime::ControlFlow::Return:
+				case Runtime::ControlFlow::Throw:
+					return;	// no further processing, keep current control flow state
+			}
+		}
+	}
+
+	// no matching case statement found => execute default statement
+	if ( !caseMatched ) {
+		visit(node->mDefaultStatement);
+	}
+}
+
+void TreeInterpreter::visitThrow(ThrowStatement* node)
+{
 	Runtime::Object* data = mRepository->createInstance(OBJECT, ANONYMOUS_OBJECT, PrototypeConstraints());
 	try {
 		evaluate(node->mExpression, data);
@@ -993,24 +1041,42 @@ void TreeInterpreter::visitThrow(ThrowStatement* node)
 
 void TreeInterpreter::visitTry(TryStatement* node)
 {
-	mControlFlow = Runtime::ControlFlow::Normal;
-
+	// execute try-block
 	visitStatement(node->mTryBlock);
 
-	if ( mControlFlow == Runtime::ControlFlow::Throw ) {
-		// execute catch block(s)
+	// execute exception handling only if an exception occurred
+	if ( mControlFlow == Runtime::ControlFlow::Throw && !node->mCatchStatements.empty() ) {
+		// get exception data
+		Runtime::Object* exception = Controller::Instance().stack()->exception().getData();
 
-		// TODO: only reset control flow if the exception has been caught
-		mControlFlow = Runtime::ControlFlow::Normal;
+		// determine correct catch-block (if a correct one exists)
+		for ( CatchStatements::const_iterator it = node->mCatchStatements.begin(); it != node->mCatchStatements.end(); ++it ) {
+			Designtime::BluePrintGeneric* catchType = static_cast<Designtime::BluePrintGeneric*>((*it)->mTypeDeclaration->mSymbol);
+
+			if ( exception->isInstanceOf(catchType->QualifiedTypename()) ) {
+				mControlFlow = Runtime::ControlFlow::Normal;
+
+				pushScope();
+					visit((*it)->mTypeDeclaration);
+
+					visit((*it)->mStatement);
+				popScope();
+
+				break;
+			}
+		}
 	}
 
 	// store current control flow and reset it after finally block has been executed
 	Runtime::ControlFlow::E tmpControlFlow = mControlFlow;
 
-	// execute finally block in any case
+	// reset current control flow to allow execution of finally-block (if one exists)
 	mControlFlow = Runtime::ControlFlow::Normal;
 
-	visitStatement(node->mFinallyBlock);
+	// allow try-statements without finally-statements
+	if ( node->mFinallyBlock ) {
+		visitStatement(node->mFinallyBlock);
+	}
 
 	// reset control flow if finally block has been executed normally
 	if ( mControlFlow == Runtime::ControlFlow::Normal ) {
@@ -1024,7 +1090,9 @@ void TreeInterpreter::visitTypeDeclaration(TypeDeclaration* node)
 
 	getScope()->define(node->mName, object);
 
-	evaluate(node->mAssignment, object);
+	if ( node->mAssignment ) {
+		evaluate(node->mAssignment, object);
+	}
 }
 
 void TreeInterpreter::visitWhile(WhileStatement* node)

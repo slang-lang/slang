@@ -1,18 +1,21 @@
 #!/usr/local/bin/oscript
 
-public void Main(int argc = 1, string args = "") {
+public void Main(int argc = 1, string args = "") throws {
 	try {
 		print("try");
 
-		return;
+		throw new string("this is an exception");
+	}
+	catch ( int e ) {
+		print("catch(int): " + e);
 
-		throw new int(42);
+		assert( false );
 	}
-/*
 	catch ( string e ) {
-		print(e);
+		print("catch(string): " + e);
+
+		return;
 	}
-*/
 	finally {
 		print("finally");
 	}

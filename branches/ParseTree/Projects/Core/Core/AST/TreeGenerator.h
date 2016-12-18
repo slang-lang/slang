@@ -22,6 +22,7 @@
 namespace ObjectiveScript {
 
 // Forward declarations
+class MethodScope;
 class Repository;
 
 namespace Runtime {
@@ -101,9 +102,10 @@ private: // Execution
 	void pushTokens(const TokenList& tokens);
 	// }
 
-	NamedScope* getEnclosingMethodScope(IScope* scope) const;
-	Runtime::Namespace* getEnclosingNamespace(IScope* scope) const;
-	Runtime::Object* getEnclosingObject(IScope* scope) const;
+	MethodScope* getEnclosingMethodScope(IScope *scope = 0) const;
+	NamedScope* getEnclosingNamedScope(IScope *scope = 0) const;
+	Runtime::Namespace* getEnclosingNamespace(IScope* scope = 0) const;
+	Runtime::Object* getEnclosingObject(IScope* scope = 0) const;
 
 private:
 	IScope* mOwner;

@@ -4,6 +4,7 @@
 
 // Library includes
 #include <iostream>
+#include <Core/Common/Exceptions.h>
 
 // Project includes
 //#include "ControlStatements.h"
@@ -231,6 +232,10 @@ void PrintVisitor::visitStatement(Statement *node)
 		case Statement::StatementType::BreakStatement:
 			visitBreak(static_cast<BreakStatement*>(node));
 			break;
+		case Statement::StatementType::CaseStatement:
+			throw Common::Exceptions::Exception("case statements are handled separately!");
+		case Statement::StatementType::CatchStatement:
+			throw Common::Exceptions::Exception("catch statements are handled separately!");
 		case Statement::StatementType::ContinueStatement:
 			visitContinue(static_cast<ContinueStatement*>(node));
 			break;
@@ -258,6 +263,9 @@ void PrintVisitor::visitStatement(Statement *node)
 		case Statement::StatementType::Statements:
 			process(static_cast<Statements*>(node));
 			break;
+		case Statement::StatementType::SwitchStatement:
+			visitSwitch(static_cast<SwitchStatement*>(node));
+			break;
 		case Statement::StatementType::ThrowStatement:
 			visitThrow(static_cast<ThrowStatement*>(node));
 			break;
@@ -271,6 +279,12 @@ void PrintVisitor::visitStatement(Statement *node)
 			visitWhile(static_cast<WhileStatement*>(node));
 			break;
 	}
+}
+
+void PrintVisitor::visitSwitch(SwitchStatement *node)
+{
+	std::cout << printIndentation(mIndentation) << "switch ( " << printExpression(node->mExpression) << " ) {" << std::endl;
+	std::cout << printIndentation(mIndentation) << "}" << std::endl;
 }
 
 void PrintVisitor::visitThrow(ThrowStatement* node)

@@ -32,6 +32,39 @@ public:
 };
 
 
+class CaseStatement : public Statement
+{
+public:
+	CaseStatement(Node* caseExpression, Node* caseBlock)
+	: Statement(StatementType::CaseStatement),
+	  mCaseBlock(caseBlock),
+	  mCaseExpression(caseExpression)
+	{ }
+
+public:
+	Node* mCaseBlock;
+	Node* mCaseExpression;
+};
+
+typedef std::list<CaseStatement*> CaseStatements;
+
+class CatchStatement : public Statement
+{
+public:
+	CatchStatement(TypeDeclaration* typeDeclaration, Node* statement)
+	: Statement(StatementType::CatchStatement),
+	  mStatement(statement),
+	  mTypeDeclaration(typeDeclaration)
+	{ }
+
+public:
+	Node* mStatement;
+	TypeDeclaration* mTypeDeclaration;
+};
+
+typedef std::list<CatchStatement*> CatchStatements;
+
+
 class DeleteStatement : public Statement
 {
 public:
@@ -48,10 +81,10 @@ public:
 class ForeachStatement : public Statement
 {
 public:
-	ForeachStatement(TypeDeclaration* typeDeclaration, const Token& loopVariable, Node* statement)
+	ForeachStatement(TypeDeclaration* typeDeclaration, const Token& loopVariable, Node* loopStatement)
 	: Statement(StatementType::ForeachStatement),
 	  mLoopVariable(loopVariable),
-	  mStatement(statement),
+	  mStatement(loopStatement),
 	  mTypeDeclaration(typeDeclaration)
 	{ }
 
@@ -65,12 +98,12 @@ public:
 class ForStatement : public Statement
 {
 public:
-	ForStatement(Node* initialization, Node* condition, Node* iteration, Node* statement)
+	ForStatement(Node* initStatement, Node* condition, Node* iterationStatement, Node* loopStatement)
 	: Statement(StatementType::ForStatement),
 	  mCondition(condition),
-	  mInitialization(initialization),
-	  mIteration(iteration),
-	  mStatement(statement)
+	  mInitialization(initStatement),
+	  mIteration(iterationStatement),
+	  mStatement(loopStatement)
 	{ }
 
 public:
@@ -113,17 +146,35 @@ public:
 };
 
 
+class SwitchStatement : public Statement
+{
+public:
+	SwitchStatement(Node* exp, const CaseStatements& caseStatements, Node* defaultStatement)
+	: Statement(StatementType::SwitchStatement),
+	  mCaseStatements(caseStatements),
+	  mDefaultStatement(defaultStatement),
+	  mExpression(exp)
+	{ }
+
+public:
+	CaseStatements mCaseStatements;
+	Node* mDefaultStatement;
+	Node* mExpression;
+};
+
+
 class TryStatement : public Statement
 {
 public:
-	TryStatement(Statements* tryBlock, Statements* finallyBlock)
+	TryStatement(Statements* tryBlock, const CatchStatements& catchStatements, Statements* finallyBlock)
 	: Statement(StatementType::TryStatement),
+	  mCatchStatements(catchStatements),
 	  mFinallyBlock(finallyBlock),
 	  mTryBlock(tryBlock)
 	{ }
 
 public:
-	//CatchBlocks* mCatchBlocks;
+	CatchStatements mCatchStatements;
 	Statements* mFinallyBlock;
 	Statements* mTryBlock;
 };

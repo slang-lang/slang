@@ -35,9 +35,9 @@ public:
 private:
 	void visit(Node* node);
 
-	void visitExpression(Expression *expression);
+	void visitExpression(Expression* expression);
 	void visitOperator(Operator* op);
-	void visitStatement(Statement *node);
+	void visitStatement(Statement* node);
 
 	void visitAssert(AssertStatement* node);
 	void visitAssignment(Assignment* node);
@@ -50,6 +50,7 @@ private:
 	void visitIf(IfStatement* node);
 	void visitPrint(PrintStatement* node);
 	void visitReturn(ReturnStatement* node);
+	void visitSwitch(SwitchStatement* node);
 	void visitThrow(ThrowStatement* node);
 	void visitTry(TryStatement* node);
 	void visitTypeDeclaration(TypeDeclaration* node);
