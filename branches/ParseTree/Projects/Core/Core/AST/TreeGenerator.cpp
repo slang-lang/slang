@@ -1012,29 +1012,6 @@ Statement* TreeGenerator::process_switch(TokenIterator& token)
 	expect(Token::Type::PARENTHESIS_OPEN, token);
 	++token;
 
-/*
-	// find next open parenthesis '('
-	TokenIterator condBegin = token;
-	// find next balanced '(' & ')' pair
-	TokenIterator condEnd = findNextBalancedParenthesis(condBegin);
-
-	// evaluate switch-expression
-	Node* switchExpression = expression(token);
-
-	expect(Token::Type::PARENTHESIS_CLOSE, condEnd);
-	++condEnd;
-
-	expect(Token::Type::BRACKET_CURLY_OPEN, condEnd);
-	++condEnd;
-
-	// find next open curly bracket '{'
-	TokenIterator bodyBegin = condEnd;
-	// find next balanced '{' & '}' pair
-	TokenIterator bodyEnd = findNextBalancedCurlyBracket(bodyBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
-
-	token = bodyEnd;
-*/
-
 	// evaluate switch-expression
 	Node* switchExpression = expression(token);
 
