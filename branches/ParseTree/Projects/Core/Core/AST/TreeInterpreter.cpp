@@ -976,18 +976,23 @@ void TreeInterpreter::visitStatements(Statements* node)
 
 void TreeInterpreter::visitSwitch(SwitchStatement* node)
 {
-	Runtime::Object value;
-	try {
-		evaluate(node->mExpression, &value);
-	}
-	catch ( Runtime::ControlFlow::E &e ) {
-		mControlFlow = e;
-		return;
-	}
-
 	bool caseMatched = false;
+	bool evaluateCaseExpression = true;
+	Runtime::Object value;
 
 	for ( CaseStatements::const_iterator it = node->mCaseStatements.begin(); it != node->mCaseStatements.end(); ++it ) {
+		if ( evaluateCaseExpression ) {
+			try {
+				evaluate(node->mExpression, &value);
+
+				evaluateCaseExpression = false;
+			}
+			catch ( Runtime::ControlFlow::E &e ) {
+				mControlFlow = e;
+				return;
+			}
+		}
+
 		Runtime::Object caseValue;
 		try {
 			evaluate((*it)->mCaseExpression, &caseValue);
@@ -998,6 +1003,8 @@ void TreeInterpreter::visitSwitch(SwitchStatement* node)
 		}
 
 		if ( Runtime::operator_binary_equal(&value, &caseValue) ) {
+			caseMatched = true;
+
 			visit((*it)->mCaseBlock);
 
 			switch ( mControlFlow ) {
@@ -1007,6 +1014,7 @@ void TreeInterpreter::visitSwitch(SwitchStatement* node)
 				case Runtime::ControlFlow::Continue:
 				case Runtime::ControlFlow::Normal:
 					mControlFlow = Runtime::ControlFlow::Normal;
+					evaluateCaseExpression = true;
 					break;	// continue matching the remaining case-statements
 				case Runtime::ControlFlow::ExitProgram:
 				case Runtime::ControlFlow::Return:
