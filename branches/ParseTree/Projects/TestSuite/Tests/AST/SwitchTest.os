@@ -1,7 +1,7 @@
 #!/usr/local/bin/oscript
 
 public void Main(int argc = 1, string args = "") {
-	int value = 5;
+	int value = 3;
 
 	switch ( value ) {
 		case 0: { print("case 0"); break; }

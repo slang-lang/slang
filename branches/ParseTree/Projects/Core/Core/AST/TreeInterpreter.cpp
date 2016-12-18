@@ -1019,6 +1019,18 @@ void TreeInterpreter::visitSwitch(SwitchStatement* node)
 	// no matching case statement found => execute default statement
 	if ( !caseMatched ) {
 		visit(node->mDefaultStatement);
+
+		switch ( mControlFlow ) {
+			case Runtime::ControlFlow::Break:
+			case Runtime::ControlFlow::Continue:
+			case Runtime::ControlFlow::Normal:
+				mControlFlow = Runtime::ControlFlow::Normal;
+				break;	// continue matching the remaining case-statements
+			case Runtime::ControlFlow::ExitProgram:
+			case Runtime::ControlFlow::Return:
+			case Runtime::ControlFlow::Throw:
+				return;	// no further processing, keep current control flow state
+		}
 	}
 }
 
