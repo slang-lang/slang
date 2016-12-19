@@ -15,6 +15,7 @@
 #include <Core/BuildInObjects/UserObject.h>
 #include <Core/BuildInObjects/VoidObject.h>
 #include <Core/Common/Exceptions.h>
+#include <Core/Designtime/BluePrintEnum.h>
 #include <Core/Designtime/Parser/Parser.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Runtime/Namespace.h>
@@ -109,8 +110,7 @@ void TreeInterpreter::evaluateBinaryExpression(BinaryExpression* exp, Runtime::O
 
 		// default handling
 		// {
-		default:
-			throw Common::Exceptions::NotSupported("binary expression with " + exp->mToken.content() + " not supported");
+		default: throw Common::Exceptions::NotSupported("binary expression with " + exp->mToken.content() + " not supported");
 		// }
 	}
 
@@ -164,8 +164,10 @@ void TreeInterpreter::evaluateBooleanBinaryExpression(BinaryExpression* exp, Run
 		case Token::Type::COMPARE_UNEQUAL: *result = Runtime::BoolObject(!operator_binary_equal(&left, &right)); break;
 		// }
 
-		default:
-			throw Common::Exceptions::NotSupported("binary expression with " + exp->mToken.content() + " not supported (by now)");
+		// default handling
+		// {
+		default: throw Common::Exceptions::NotSupported("binary expression with " + exp->mToken.content() + " not supported (by now)");
+		// }
 	}
 }
 
@@ -287,11 +289,8 @@ void TreeInterpreter::evaluateMethodExpression(MethodExpression* exp, Runtime::O
 
 void TreeInterpreter::evaluateUnaryExpression(UnaryExpression* exp, Runtime::Object* result)
 {
-	Runtime::Object left;
-
 	try {
-		// evaluate left expression
-		evaluate(exp->mExpression, &left);
+		evaluate(exp->mExpression, result);
 	}
 	catch ( Runtime::ControlFlow::E& e ) {
 		mControlFlow = e;
@@ -301,25 +300,22 @@ void TreeInterpreter::evaluateUnaryExpression(UnaryExpression* exp, Runtime::Obj
 	switch ( exp->mToken.type() ) {
 		// boolean expressions
 		// {
-		case Token::Type::OPERATOR_NOT: Runtime::operator_unary_not(&left); break;
+		case Token::Type::OPERATOR_NOT: Runtime::operator_unary_not(result); break;
 		// }
 
 		// math expressions
 		// {
 		case Token::Type::MATH_ADDITION: /* this is empty by intend */ break;
-		case Token::Type::MATH_SUBTRACT: Runtime::operator_unary_minus(&left); break;
-		case Token::Type::OPERATOR_DECREMENT: Runtime::operator_unary_decrement(&left); break;
-		case Token::Type::OPERATOR_INCREMENT: Runtime::operator_unary_increment(&left); break;
+		case Token::Type::MATH_SUBTRACT: Runtime::operator_unary_minus(result); break;
+		case Token::Type::OPERATOR_DECREMENT: Runtime::operator_unary_decrement(result); break;
+		case Token::Type::OPERATOR_INCREMENT: Runtime::operator_unary_increment(result); break;
 		// }
 
 		// default handling
 		// {
-		default:
-			throw Common::Exceptions::NotSupported("binary expression with " + exp->mToken.content() + " not supported (by now)");
+		default: throw Common::Exceptions::NotSupported("binary expression with " + exp->mToken.content() + " not supported (by now)");
 		// }
 	}
-
-	Runtime::operator_binary_assign(result, &left);
 }
 
 void TreeInterpreter::evaluateVariable(VariableExpression* exp, Runtime::Object* result)
@@ -524,10 +520,10 @@ inline Symbol* TreeInterpreter::identify(TokenIterator& token) const
 		else {
 			switch ( result->getSymbolType() ) {
 				case Symbol::IType::BluePrintEnumSymbol:
-					//result = dynamic_cast<Designtime::BluePrintEnum*>(result)->resolve(identifier, onlyCurrentScope, Visibility::Public);
+					result = dynamic_cast<Designtime::BluePrintEnum*>(result)->resolve(identifier, onlyCurrentScope, Visibility::Public);
 					break;
 				case Symbol::IType::BluePrintObjectSymbol:
-					//result = dynamic_cast<Designtime::BluePrintObject*>(result)->resolve(identifier, onlyCurrentScope, Visibility::Public);
+					result = dynamic_cast<Designtime::BluePrintObject*>(result)->resolve(identifier, onlyCurrentScope, Visibility::Public);
 					break;
 				case Symbol::IType::NamespaceSymbol:
 					result = dynamic_cast<Runtime::Namespace*>(result)->resolve(identifier, onlyCurrentScope, Visibility::Public);
@@ -585,10 +581,10 @@ Symbol* TreeInterpreter::identifyMethod(TokenIterator& token, const ParameterLis
 		else {
 			switch ( result->getSymbolType() ) {
 				case Symbol::IType::BluePrintEnumSymbol:
-					//result = dynamic_cast<Designtime::BluePrintEnum*>(result)->resolveMethod(identifier, params, true, Visibility::Public);
+					result = dynamic_cast<Designtime::BluePrintEnum*>(result)->resolveMethod(identifier, params, true, Visibility::Public);
 					break;
 				case Symbol::IType::BluePrintObjectSymbol:
-					//result = dynamic_cast<Designtime::BluePrintObject*>(result)->resolveMethod(identifier, params, true, Visibility::Public);
+					result = dynamic_cast<Designtime::BluePrintObject*>(result)->resolveMethod(identifier, params, true, Visibility::Public);
 					break;
 				case Symbol::IType::NamespaceSymbol:
 					result = dynamic_cast<Runtime::Namespace*>(result)->resolveMethod(identifier, params, true, Visibility::Public);

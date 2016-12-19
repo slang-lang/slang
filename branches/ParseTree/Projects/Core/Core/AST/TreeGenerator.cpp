@@ -764,8 +764,6 @@ Node* TreeGenerator::process_identifier(TokenIterator& token)
 	else {
 		node = new VariableExpression((*token));
 		++token;
-
-		//throw Common::Exceptions::Exception("invalid symbol type found!", token->position());
 	}
 
 	return node;
