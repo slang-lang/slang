@@ -230,8 +230,12 @@ void Interpreter::expression(Object* result, TokenIterator& start)
 	}
 }
 
-NamedScope* Interpreter::getEnclosingMethodScope(IScope* scope) const
+NamedScope* Interpreter::getEnclosingNamedScope(IScope *scope) const
 {
+	if ( !scope ) {
+		scope = getScope();
+	}
+
 	while ( scope ) {
 		IScope* parent = scope->getEnclosingScope();
 
@@ -247,6 +251,10 @@ NamedScope* Interpreter::getEnclosingMethodScope(IScope* scope) const
 
 Namespace* Interpreter::getEnclosingNamespace(IScope* scope) const
 {
+	if ( !scope ) {
+		scope = getScope();
+	}
+
 	while ( scope ) {
 		IScope* parent = scope->getEnclosingScope();
 
@@ -265,6 +273,10 @@ Namespace* Interpreter::getEnclosingNamespace(IScope* scope) const
 
 Object* Interpreter::getEnclosingObject(IScope* scope) const
 {
+	if ( !scope ) {
+		scope = getScope();
+	}
+
 	while ( scope ) {
 		IScope* parent = scope->getEnclosingScope();
 
@@ -307,20 +319,10 @@ inline Symbol* Interpreter::identify(TokenIterator& token) const
 		if ( !result ) {
 			result = getScope()->resolve(identifier, onlyCurrentScope, Visibility::Private);
 
-/*
-			if ( dynamic_cast<Designtime::BluePrintGeneric*>(result) && !dynamic_cast<Designtime::BluePrintGeneric*>(result)->getPrototypeConstraints().empty() ) {
-				++token;
-
-				PrototypeConstraints constraints = Designtime::Parser::collectPrototypeConstraints(token);
-
-				result = getScope()->resolve(Designtime::Parser::buildConstraintTypename(identifier, constraints), onlyCurrentScope, Visibility::Private);
-			}
-*/
-
 			prev_identifier = identifier;
 
 			if ( !result ) {
-				Namespace* space = getEnclosingNamespace(getScope());
+				Namespace* space = getEnclosingNamespace();
 				if ( space ) {
 					result = getScope()->resolve(space->QualifiedTypename() + "." + identifier, onlyCurrentScope, Visibility::Private);
 				}
@@ -918,8 +920,7 @@ void Interpreter::process_for(TokenIterator& token, Object* result)
 	// process our declaration part
 	// {
 	Object declarationTmp;
-	//process(&declarationTmp, initializationBegin, conditionBegin, Token::Type::SEMICOLON);
-	process_statement(initializationBegin, &declarationTmp, Token::Type::SEMICOLON);
+	process(&declarationTmp, initializationBegin, conditionBegin, Token::Type::SEMICOLON);
 	// }
 
 	++bodyBegin;		// don't collect scope token
@@ -971,8 +972,7 @@ void Interpreter::process_for(TokenIterator& token, Object* result)
 		TokenIterator exprBegin = increaseBegin;
 
 		Object expressionTmp;
-		//process(&expressionTmp, exprBegin, expressionEnd, Token::Type::PARENTHESIS_CLOSE);
-		process_statement(exprBegin, &expressionTmp, Token::Type::PARENTHESIS_CLOSE);
+		process(&expressionTmp, exprBegin, expressionEnd, Token::Type::PARENTHESIS_CLOSE);
 		// }
 	}
 }
@@ -1346,7 +1346,7 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 	}
 
 	// check caller's constness
-	Method* owner = dynamic_cast<Method*>(getEnclosingMethodScope(getScope()));
+	Method* owner = dynamic_cast<Method*>(getEnclosingNamedScope());
 	if ( owner && owner->isConst() ) {
 		if ( owner->getEnclosingScope() == method->getEnclosingScope() && !method->isConst() ) {
 			// check target method's constness
@@ -1480,7 +1480,7 @@ void Interpreter::process_return(TokenIterator& token, Object *result)
 		expression(result, token);
 
 /*
-		Object tmp(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, static_cast<Method*>(getEnclosingMethodScope(getScope()))->QualifiedTypename(), Runtime::AtomicValue());
+		Object tmp(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, static_cast<Method*>(getEnclosingNamedScope(getScope()))->QualifiedTypename(), Runtime::AtomicValue());
 
 		expression(&tmp, token);
 
@@ -1703,7 +1703,7 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 void Interpreter::process_throw(TokenIterator& token, Object* /*result*/)
 {
 	// check if our parent scope is a method that is allowed to throw exceptions
-	Runtime::Method* method = dynamic_cast<Runtime::Method*>(getEnclosingMethodScope(getScope()));
+	Runtime::Method* method = dynamic_cast<Runtime::Method*>(getEnclosingNamedScope());
 	if ( method && !method->throws() ) {
 		// this method is not marked as 'throwing', so we can't throw exceptions here
 		OSwarn(std::string(method->getFullScopeName() + " throws although it is not marked with 'throws' in " + token->position().toString()).c_str());
