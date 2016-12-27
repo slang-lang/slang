@@ -22,6 +22,7 @@
 #include <Debugger/Debugger.h>
 #include <Tools/Printer.h>
 #include <Utils.h>
+#include <Designtime/Exceptions.h>
 #include "Defines.h"
 #include "Tools.h"
 
@@ -90,9 +91,7 @@ ControlFlow::E Interpreter::execute(Method* method, const ParameterList& params,
 				object = mRepository->createInstance(it->type(), it->name(), PrototypeConstraints());
 
 				if ( it->reference().isValid() ) {
-					object->assign(
-						*Controller::Instance().memory()->get(it->reference())
-					);
+					object->assign(*Controller::Instance().memory()->get(it->reference()));
 				}
 
 				object->setConst(it->isConst());
@@ -1109,11 +1108,11 @@ void Interpreter::process_identifier(TokenIterator& token, Object* /*result*/, T
 
 		Object* object = dynamic_cast<Object*>(symbol);
 		if ( object->isConst() ) {	// we tried to modify a const symbol (i.e. member, parameter or constant local variable)
-			throw Common::Exceptions::ConstCorrectnessViolated("tried to modify const symbol '" + object->getFullScopeName() + "'", token->position());
+			throw Common::Exceptions::ConstCorrectnessViolated("tried to modify const symbol '" + object->getName() + "'", token->position());
 		}
 /*
 		if ( object->isMember() && dynamic_cast<Method*>(mOwner)->isConst() ) {	// we tried to modify a member in a const method
-			throw Common::Exceptions::ConstCorrectnessViolated("tried to modify member '" + object->getFullScopeName() + "' in const method '" + getScope()->getScopeName() + "'", token->position());
+			throw Common::Exceptions::ConstCorrectnessViolated("tried to modify member '" + object->getName() + "' in const method '" + getScope()->getScopeName() + "'", token->position());
 		}
 */
 		try {
@@ -1122,14 +1121,6 @@ void Interpreter::process_identifier(TokenIterator& token, Object* /*result*/, T
 		catch ( ControlFlow::E &e ) {
 			mControlFlow = e;
 			return;
-		}
-
-		if ( !object->isConst() && object->isFinal() ) {
-			// we have modified a final symbol for the first time, we now have to set it so const
-			object->setConst(true);
-			object->setFinal(false);
-
-			object->setMutability(Mutability::Const);
 		}
 
 		// assign == end should now be true
@@ -1902,7 +1893,7 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol)
 {
 	bool isConst = false;
-	bool isFinal = false;
+	bool isReference = false;
 
 	++token;
 
@@ -1914,35 +1905,26 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol)
 
 	++token;
 
-/*	Array handling
-	bool isArray = false;
-	int size = 0;
+	if ( token->type() == Token::Type::MODIFIER ) {
+		if ( token->content() == MODIFIER_CONST ) { isConst = true; }
+		else if ( token->content() == MODIFIER_MODIFY ) { isConst = false; }
+		else {
+			// invalid modifier
+			throw Common::Exceptions::SyntaxError("invalid token '" + token->content() + "' found", token->position());
+		}
 
-	if (  token->type() == Token::Type::BRACKET_OPEN ) {
-		isArray = true;
 		++token;
-
-		Object tmp;
-		try {
-			expression(&tmp, token);
-		}
-		catch ( ControlFlow::E &e ) {
-			mControlFlow = e;
-			return 0;
-		}
-
-		size = tmp.getValue().toInt();
-
-		expect(Token::Type::BRACKET_CLOSE, token++);
 	}
-*/
 
-	std::string tmpStr = token->content();
-	if ( tmpStr == MODIFIER_CONST || tmpStr == MODIFIER_FINAL ) {
+	if ( token->type() == Token::Type::RESERVED_WORD ) {
+		if ( token->content() == RESERVED_WORD_BY_REFERENCE ) { isReference = true; }
+		else if ( token->content() == RESERVED_WORD_BY_VALUE ) { isReference = false; }
+		else {
+			// invalid type
+			throw Common::Exceptions::SyntaxError("invalid token '" + token->content() + "' found", token->position());
+		}
+
 		++token;
-
-		if ( tmpStr == MODIFIER_CONST ) { isConst = true; }
-		else if ( tmpStr == MODIFIER_FINAL ) { isFinal = true; }
 	}
 
 	TokenIterator assign = getTokens().end();
@@ -1955,19 +1937,22 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol)
 
 	getScope()->define(name, object);
 
-	//if ( isArray ) object->setArray(true, (size_t)size);
 	if ( isConst ) object->setConst(true);
-	if ( isFinal ) object->setFinal(true);
 
 	if ( assign != getTokens().end() ) {
 		// execute assignment statement
 		try {
 			Object tmp;
-			//tmp.setArray(true, (size_t)size);
-			tmp.setConst(isConst);
-			tmp.setFinal(isFinal);
-
 			expression(&tmp, token);
+
+			if ( isReference && !tmp.getReference().isValid() ) {
+				throw Runtime::Exceptions::InvalidAssignment("reference type expected", token->position());
+			}
+/* temporarily disabled
+			else if ( !isReference && tmp.getReference().isValid() ) {
+				throw Runtime::Exceptions::InvalidAssignment("value type expected", token->position());
+			}
+*/
 
 			operator_binary_assign(object, &tmp);
 		}
