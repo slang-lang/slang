@@ -1,9 +1,5 @@
 #!/usr/local/bin/oscript
 
-private int intValue;
-private string stringValue;
-private Object objectValue;
-
 public void Main(int argc = 0, string args = "") {
 	int intValue;
 	string stringValue;

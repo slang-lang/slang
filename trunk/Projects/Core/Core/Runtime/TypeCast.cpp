@@ -29,7 +29,7 @@ void typecast(Object *base, const std::string& targetType)
 	}
 	if ( targetType.empty() ) {
 		OSerror("invalid cast target type");
-		throw Runtime::Exceptions::InvalidTypeCast("invalid cast target type");
+		throw Runtime::Exceptions::TypeCastException("invalid cast target type");
 	}
 
 	if ( targetType == BoolObject::TYPENAME ) {
@@ -64,7 +64,7 @@ void typecast(Object *base, const std::string& targetType)
 	}
 	else {
 		if ( !base->isInstanceOf(targetType) ) {
-			throw Runtime::Exceptions::InvalidTypeCast(targetType + " does not belong to " + base->QualifiedTypename() + " object hierarchy");
+			throw Runtime::Exceptions::TypeCastException(targetType + " does not belong to " + base->QualifiedTypename() + " object hierarchy");
 		}
 
 		base->setQualifiedOuterface(targetType);
