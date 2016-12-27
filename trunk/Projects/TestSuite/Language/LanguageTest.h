@@ -35,6 +35,7 @@ private:	// Tests
 
 	void testAbstractObject();
 	void testAssert();
+	void testAtomicReference();
 	void testBooleanOperators();
 	void testComment();
 	void testConstCorrectness1();
@@ -44,7 +45,6 @@ private:	// Tests
 	void testDefaultParameter();
 	void testEnum();
 	void testException();
-	void testFinal();
 	void testFor();
 	void testForeach();
 	void testIf();

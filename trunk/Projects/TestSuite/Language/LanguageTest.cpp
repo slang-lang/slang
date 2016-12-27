@@ -36,6 +36,7 @@ void LanguageTest::process()
 {
 	TEST(testAbstractObject);
 	TEST(testAssert);
+	TEST(testAtomicReference);
 	TEST(testBooleanOperators);
 	TEST(testComment);
 	TEST(testConstCorrectness1);
@@ -45,7 +46,6 @@ void LanguageTest::process()
 	TEST(testDefaultParameter);
 	TEST(testEnum);
 	TEST(testException);
-	TEST(testFinal);
 	TEST(testFor);
 	TEST(testForeach);
 	TEST(GlobalVariableTest);
@@ -115,6 +115,21 @@ void LanguageTest::testAssert()
 		VirtualMachine vm;
 
 		TTHROWS(vm.createScriptFromFile("Tests/Language/AssertTest.os"), ObjectiveScript::Runtime::Exceptions::AssertionFailed);
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// unexpected exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void LanguageTest::testAtomicReference()
+{
+	try {
+		VirtualMachine vm;
+
+		vm.createScriptFromFile("Tests/Language/AtomicReference.os");
 
 		// automatic success
 	}
@@ -252,21 +267,6 @@ void LanguageTest::testException()
 		VirtualMachine vm;
 
 		vm.createScriptFromFile("Tests/Language/ExceptionTest.os");
-
-		// automatic success
-	}
-	catch ( std::exception& e ) {
-		// unexpected exception has been thrown: test failed!
-		TFAIL(e.what());
-	}
-}
-
-void LanguageTest::testFinal()
-{
-	try {
-		VirtualMachine vm;
-
-		TTHROWS(vm.createScriptFromFile("Tests/Language/FinalTest.os"), ObjectiveScript::Common::Exceptions::ConstCorrectnessViolated);
 
 		// automatic success
 	}
