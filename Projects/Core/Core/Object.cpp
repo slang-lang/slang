@@ -24,8 +24,6 @@ Object::Object()
 : MethodScope(ANONYMOUS_OBJECT, 0),
   ObjectSymbol(ANONYMOUS_OBJECT),
   mFilename(ANONYMOUS_OBJECT),
-  mIsArray(false),
-  mIsArrayDynamicallyExpanding(false),
   mIsAtomicType(false),
   mIsConstructed(false),
   mIsNull(false),
@@ -43,15 +41,12 @@ Object::Object(const Object& other)
   mBase(0),
   mFilename(other.mFilename),
   mInheritance(other.mInheritance),
-  mIsArray(other.mIsArray),
-  mIsArrayDynamicallyExpanding(other.mIsArrayDynamicallyExpanding),
   mIsAtomicType(other.mIsAtomicType),
   mIsConstructed(other.mIsConstructed),
   mIsNull(other.mIsNull),
   mQualifiedOuterface(other.mQualifiedOuterface),
   mQualifiedTypename(other.mQualifiedTypename),
-  mTypename(other.mTypename),
-  mValue(other.mValue)
+  mTypename(other.mTypename)
 {
 	mThis = this;
 
@@ -66,14 +61,14 @@ Object::Object(const Object& other)
 	setMember(other.isMember());
 
 	assignReference(other.mReference);
+
+	setValue(other.mValue);
 }
 
 Object::Object(const std::string& name, const std::string& filename, const std::string& type, AtomicValue value)
 : MethodScope(name, 0),
   ObjectSymbol(name),
   mFilename(filename),
-  mIsArray(false),
-  mIsArrayDynamicallyExpanding(false),
   mIsAtomicType(false),
   mIsConstructed(false),
   mIsNull(false),
@@ -104,8 +99,6 @@ Object& Object::operator= (const Object& other)
 		mFilename = other.mFilename;
 		mImplementationType = other.mImplementationType;
 		mInheritance = other.mInheritance;
-		mIsArray = other.mIsArray;
-		mIsArrayDynamicallyExpanding = other.mIsArrayDynamicallyExpanding;
 		mIsAtomicType = other.mIsAtomicType;
 		mIsConstructed = other.mIsConstructed;
 		mIsNull = other.mIsNull;
@@ -124,6 +117,8 @@ Object& Object::operator= (const Object& other)
 		setMember(other.isMember());
 
 		assignReference(other.mReference);
+
+		setValue(other.mValue);
 	}
 
 	return *this;
@@ -135,15 +130,12 @@ void Object::assign(const Object& other, bool overrideType)
 		mFilename = other.mFilename;
 		mImplementationType = other.mImplementationType;
 		mInheritance = other.mInheritance;
-		mIsArray = other.mIsArray;
-		mIsArrayDynamicallyExpanding = other.mIsArrayDynamicallyExpanding;
 		mIsAtomicType = other.mIsAtomicType;
 		mIsConstructed = other.mIsConstructed;
 		mIsNull = other.mIsNull;
 		mParent = other.mParent ? other.mParent : mParent;
 		mScopeName = other.mScopeName;
 		mScopeType = other.mScopeType;
-		mValue = other.mValue;
 
 		if ( mQualifiedOuterface == NULL_TYPE || overrideType ) {
 			mQualifiedOuterface = other.mQualifiedOuterface;
@@ -151,7 +143,12 @@ void Object::assign(const Object& other, bool overrideType)
 		mQualifiedTypename = other.mQualifiedTypename;
 		mTypename = other.mTypename;
 
-		assignReference(other.mReference);
+		if ( other.mReference.isValid() ) {
+			assignReference(other.mReference);
+		}
+		else {
+			setValue(other.mValue);
+		}
 	}
 }
 
@@ -274,10 +271,8 @@ void Object::copy(const Object& other)
 		mFilename = other.mFilename;
 		mImplementationType = other.mImplementationType;
 		mInheritance = other.mInheritance;
-		mIsArray = other.mIsArray;
-		mIsArrayDynamicallyExpanding = other.mIsArrayDynamicallyExpanding;
 		mIsAtomicType = other.mIsAtomicType;
-		mIsConstructed = other.mIsConstructed;// ? other.mIsConstructed : mIsConstructed;
+		mIsConstructed = other.mIsConstructed;
 		mFilename = other.mFilename;
 		mParent = other.mParent ? other.mParent : mParent;
 		mQualifiedOuterface = other.mQualifiedTypename;
@@ -428,12 +423,11 @@ void Object::garbageCollector()
 
 AtomicValue Object::getValue() const
 {
-	return mValue;
-}
+	if ( mThis != this ) {
+		return mThis->getValue();
+	}
 
-bool Object::isArray() const
-{
-	return mIsArray;
+	return mValue;
 }
 
 bool Object::isAbstract() const
@@ -974,12 +968,6 @@ ObjectiveScript::MethodSymbol* Object::resolveMethod(const std::string& name, co
 	return result;
 }
 
-void Object::setArray(bool value, size_t size)
-{
-	mIsArray = value;
-	mIsArrayDynamicallyExpanding = (size == 0);
-}
-
 void Object::setConstructed(bool state)
 {
 	if ( mThis != this ) {
@@ -997,6 +985,10 @@ void Object::setParent(IScope *scope)
 
 void Object::setValue(AtomicValue value)
 {
+	if ( mThis != this ) {
+		return mThis->setValue(value);
+	}
+
 	mValue = value;
 }
 
@@ -1024,6 +1016,10 @@ Json::Value Object::ToJson() const
 
 std::string Object::ToString(unsigned int indent) const
 {
+	if ( mThis != this ) {
+		return mThis->ToString(indent);
+	}
+
 	std::string result;
 	result += ::Utils::Tools::indent(indent);
 	result += Visibility::convert(mVisibility);

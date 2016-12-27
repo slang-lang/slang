@@ -79,17 +79,15 @@ public:	// Type
 	bool isInstanceOf(const std::string& type) const;
 
 public:	// Value
-	virtual AtomicValue getValue() const;
-	virtual void setValue(AtomicValue value);
+	AtomicValue getValue() const;
+	void setValue(AtomicValue value);
 
-	virtual bool isAbstract() const;
-	virtual bool isArray() const;
-	virtual bool isAtomicType() const;
-	virtual bool isConstructed() const;
-	virtual bool isNull() const;
-	virtual bool isValid() const;
+	bool isAbstract() const;
+	bool isAtomicType() const;
+	bool isConstructed() const;
+	bool isNull() const;
+	bool isValid() const;
 
-	virtual void setArray(bool value, size_t size = 0);
 	virtual std::string ToString(unsigned int indent = 0) const;
 
 public:	// Json serialization
@@ -135,8 +133,6 @@ protected:
 	Object* mBase;
 	std::string mFilename;
 	Inheritance mInheritance;
-	bool mIsArray;
-	bool mIsArrayDynamicallyExpanding;
 	bool mIsAtomicType;
 	bool mIsConstructed;
 	bool mIsNull;
