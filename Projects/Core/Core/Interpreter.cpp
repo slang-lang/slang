@@ -1965,28 +1965,27 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol)
  */
 void Interpreter::process_typeid(TokenIterator& token, Object* result)
 {
-	expect(Token::Type::PARENTHESIS_OPEN, token++);
+	expect(Token::Type::PARENTHESIS_OPEN, token);
+	++token;
 
 	Symbol* symbol = identify(token);
-	if ( symbol ) {
-		switch ( symbol->getSymbolType() ) {
-			case Symbol::IType::BluePrintEnumSymbol:
-			case Symbol::IType::BluePrintObjectSymbol:
-				*result = StringObject(static_cast<Designtime::BluePrintGeneric*>(symbol)->QualifiedTypename());
-				break;
-			case Symbol::IType::ObjectSymbol:
-				*result = StringObject(static_cast<Object*>(symbol)->QualifiedTypename());
-				break;
-			default:
-				*result = StringObject("<not a valid symbol>");
-				break;
-		}
+	if ( !symbol ) {
+		throw Runtime::Exceptions::InvalidSymbol("typeid(): invalid symbol provided", token->position());
 	}
-	else {
-		*result = StringObject("<not a valid symbol>");
-	}
-	token++;
 
+	switch ( symbol->getSymbolType() ) {
+		case Symbol::IType::BluePrintEnumSymbol:
+		case Symbol::IType::BluePrintObjectSymbol:
+			*result = StringObject(static_cast<Designtime::BluePrintGeneric*>(symbol)->QualifiedTypename());
+			break;
+		case Symbol::IType::ObjectSymbol:
+			*result = StringObject(static_cast<Object*>(symbol)->QualifiedTypename());
+			break;
+		default:
+			throw Runtime::Exceptions::InvalidSymbol("typeid(): cannot resolve symbol type", token->position());
+	}
+
+	++token;
 	expect(Token::Type::PARENTHESIS_CLOSE, token);
 }
 

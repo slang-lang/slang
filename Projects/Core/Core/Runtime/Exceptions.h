@@ -18,104 +18,116 @@ namespace Runtime {
 namespace Exceptions {
 
 
-class Exception : public ::ObjectiveScript::Common::Exceptions::Exception
+class RuntimeException : public ::ObjectiveScript::Common::Exceptions::Exception
 {
 public:
-	Exception(const std::string& text, const ObjectiveScript::Common::Position& position = ObjectiveScript::Common::Position())
+	RuntimeException(const std::string& text, const ObjectiveScript::Common::Position& position = ObjectiveScript::Common::Position())
 	: ::ObjectiveScript::Common::Exceptions::Exception("Runtime." + text, position)
 	{ }
 
-	virtual ~Exception() throw() { }
+	virtual ~RuntimeException() throw() { }
 };
 
 
 
-class AccessViolation : public Exception
+class AccessViolation : public RuntimeException
 {
 public:
 	AccessViolation(const std::string& text, const Common::Position& position = Common::Position())
-	: Exception("AccessViolationException: " + text, position)
+	: RuntimeException("AccessViolationException: " + text, position)
 	{ }
 
 	virtual ~AccessViolation() throw() { }
 };
 
 
-class AssertionFailed : public Exception
+class AssertionFailed : public RuntimeException
 {
 public:
 	AssertionFailed(const std::string& text, const Common::Position& position = Common::Position())
-	: Exception("AssertionFailedException: " + text, position)
+	: RuntimeException("AssertionFailedException: " + text, position)
 	{ }
 
 	virtual ~AssertionFailed() throw() { }
 };
 
 
-class ExplicitCastRequired : public Exception
+class ExplicitCastRequired : public RuntimeException
 {
 public:
 	ExplicitCastRequired(const std::string& text, const Common::Position& position = Common::Position())
-	: Exception("ExplicitCastRequiredException: " + text, position)
+	: RuntimeException("ExplicitCastRequiredException: " + text, position)
 	{ }
 
 	virtual ~ExplicitCastRequired() throw() { }
 };
 
 
-class InvalidAssignment : public Exception
+class InvalidAssignment : public RuntimeException
 {
 public:
 	InvalidAssignment(const std::string& text, const Common::Position& position = Common::Position())
-	: Exception("InvalidAssignment: " + text, position)
+	: RuntimeException("InvalidAssignment: " + text, position)
 	{ }
 
 	virtual ~InvalidAssignment() throw() { }
 };
 
 
-class InvalidTypeCast : public Exception
+class InvalidSymbol : public RuntimeException
 {
 public:
-	InvalidTypeCast(const std::string& text, const Common::Position& position = Common::Position())
-	: Exception("InvalidTypeCastException: " + text, position)
+	InvalidSymbol(const std::string& text, const Common::Position& position = Common::Position())
+	: RuntimeException("InvalidSymbol: " + text, position)
 	{ }
 
-	virtual ~InvalidTypeCast() throw() { }
+	virtual ~InvalidSymbol() throw() { }
 };
 
 
-class NullPointerException : public Exception
+class NullPointerException : public RuntimeException
 {
 public:
 	NullPointerException(const std::string& text, const Common::Position& position = Common::Position())
-	: Exception("NullPointerException: " + text, position)
+	: RuntimeException("NullPointerException: " + text, position)
 	{ }
 
 	virtual ~NullPointerException() throw() { }
 };
 
 
-class SizeException : public Exception
+class SizeException : public RuntimeException
 {
 public:
 	SizeException(const std::string& text, const Common::Position& position = Common::Position())
-	: Exception("SizeException: " + text, position)
+	: RuntimeException("SizeException: " + text, position)
 	{ }
 
 	virtual ~SizeException() throw() { }
 };
 
 
-class StaticException : public Exception
+class StaticException : public RuntimeException
 {
 public:
 	StaticException(const std::string& text, const Common::Position& position = Common::Position())
-	: Exception("StaticException: " + text, position)
+	: RuntimeException("StaticException: " + text, position)
 	{ }
 
 	virtual ~StaticException() throw() { }
 };
+
+
+class TypeCastException : public RuntimeException
+{
+public:
+	TypeCastException(const std::string& text, const Common::Position& position = Common::Position())
+	: RuntimeException("TypeCastException: " + text, position)
+	{ }
+
+	virtual ~TypeCastException() throw() { }
+};
+
 
 
 }

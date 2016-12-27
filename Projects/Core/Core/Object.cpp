@@ -117,8 +117,6 @@ Object& Object::operator= (const Object& other)
 		setMember(other.isMember());
 
 		assignReference(other.mReference);
-
-		setValue(other.mValue);
 	}
 
 	return *this;
@@ -147,7 +145,7 @@ void Object::assign(const Object& other, bool overrideType)
 			assignReference(other.mReference);
 		}
 		else {
-			setValue(other.mValue);
+			setValue(other.getValue());
 		}
 	}
 }
