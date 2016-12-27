@@ -1255,19 +1255,19 @@ Statement* TreeGenerator::process_try(TokenIterator& token)
 
 /*
  * syntax:
- * <type> <identifier> [= <initialization>]
+ * <type> <identifier> [const|modify] [ref|val] [= <initialization>]
  */
 TypeDeclaration* TreeGenerator::process_type(TokenIterator& token)
 {
 	bool isConst = false;
-	bool isFinal = false;
+	bool isReference = false;
 
 	Symbol* symbol = identify(token);
 	if ( !symbol ) {
 		throw Common::Exceptions::UnknownIdentifer("identifier '" + token->content() + "' not found", token->position());
 	}
 
-	token++;
+	++token;
 
 	PrototypeConstraints constraints = Designtime::Parser::collectPrototypeConstraints(token);
 
@@ -1275,14 +1275,28 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token)
 
 	expect(Token::Type::IDENTIFER, token);
 
-	token++;
+	++token;
 
-	std::string tmpStr = token->content();
-	if ( tmpStr == MODIFIER_CONST || tmpStr == MODIFIER_FINAL ) {
-		token++;
+	if ( token->type() == Token::Type::MODIFIER ) {
+		if ( token->content() == MODIFIER_CONST ) { isConst = true; }
+		else if ( token->content() == MODIFIER_MODIFY ) { isConst = false; }
+		else {
+			// invalid modifier
+			throw Common::Exceptions::SyntaxError("invalid token '" + token->content() + "' found", token->position());
+		}
 
-		if ( tmpStr == MODIFIER_CONST ) { isConst = true; }
-		else if ( tmpStr == MODIFIER_FINAL ) { isFinal = true; }
+		++token;
+	}
+
+	if ( token->type() == Token::Type::RESERVED_WORD ) {
+		if ( token->content() == RESERVED_WORD_BY_REFERENCE ) { isReference = true; }
+		else if ( token->content() == RESERVED_WORD_BY_VALUE ) { isReference = false; }
+		else {
+			// invalid type
+			throw Common::Exceptions::SyntaxError("invalid token '" + token->content() + "' found", token->position());
+		}
+
+		++token;
 	}
 
 	TokenIterator assign = getTokens().end();
@@ -1296,7 +1310,7 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token)
 		assignment = expression(token);
 	}
 
-	return new TypeDeclaration(symbol, constraints, name, assignment);
+	return new TypeDeclaration(symbol, constraints, name, isConst, isReference, assignment);
 }
 
 /*

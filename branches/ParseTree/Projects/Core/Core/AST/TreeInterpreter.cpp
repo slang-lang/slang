@@ -320,7 +320,9 @@ void TreeInterpreter::evaluateUnaryExpression(UnaryExpression* exp, Runtime::Obj
 
 void TreeInterpreter::evaluateVariable(VariableExpression* exp, Runtime::Object* result)
 {
-	Symbol* lvalue = getScope()->resolve(exp->mName.content(), false, Visibility::Designtime);
+	IScope* scope = getScope();
+
+	Symbol* lvalue = scope->resolve(exp->mName.content(), false, Visibility::Designtime);
 	if ( !lvalue ) {
 		throw Runtime::Exceptions::InvalidAssignment("lvalue '" + exp->mName.content() + "' not found", exp->mName.position());
 	}
@@ -748,11 +750,11 @@ void TreeInterpreter::visitAssignment(Assignment* node)
 {
 	Symbol* lvalue = getScope()->resolve(node->mName.content(), false, Visibility::Designtime);
 	if ( !lvalue ) {
-		throw Runtime::Exceptions::InvalidAssignment("lvalue '" + node->mName.content() + "' not found");
+		throw Runtime::Exceptions::InvalidAssignment("lvalue '" + node->mName.content() + "' not found", node->mName.position());
 	}
 
 	if ( lvalue->getSymbolType() != Symbol::IType::ObjectSymbol ) {
-		throw Runtime::Exceptions::Exception("invalid lvalue symbol type");
+		throw Runtime::Exceptions::Exception("invalid lvalue symbol type", node->mName.position());
 	}
 
 	evaluate(node->mExpression, static_cast<Runtime::Object*>(lvalue));
@@ -1106,6 +1108,8 @@ void TreeInterpreter::visitTypeDeclaration(TypeDeclaration* node)
 	Runtime::Object* object = mRepository->createInstance(static_cast<Designtime::BluePrintGeneric*>(node->mSymbol), node->mName, node->mConstraints);
 
 	getScope()->define(node->mName, object);
+
+	object->setConst(node->mIsConst);
 
 	if ( node->mAssignment ) {
 		evaluate(node->mAssignment, object);

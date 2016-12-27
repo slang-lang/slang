@@ -118,9 +118,12 @@ Object& Object::operator= (const Object& other)
 		setLanguageFeatureState(other.getLanguageFeatureState());
 		setMember(other.isMember());
 
-		assignReference(other.mReference);
-
-		setValue(other.mValue);
+		if ( other.mReference.isValid() ) {
+			assignReference(other.mReference);
+		}
+		else {
+			setValue(other.mValue);
+		}
 	}
 
 	return *this;
