@@ -14,6 +14,7 @@ public void Main(int argc = 0, string args = "") {
 	assert( TestCase8() );
 	assert( TestCase9() );
 	assert( TestCase10() );
+	assert( TestCase11() );
 }
 
 private bool TestCase1() const {
@@ -124,6 +125,21 @@ private bool TestCase10() const {
 		string next = it.next();
 
 		print("it.next() = " + next);
+	}
+
+	return true;
+}
+
+private bool TestCase11() const {
+	print("TestCase 11: foreach");
+
+	String str = new String("This is a string");
+
+	int count = 0;
+	foreach ( string s : str ) {
+		print("str(" + count + ") = " + s);
+
+		count++;
 	}
 
 	return true;
