@@ -6,7 +6,8 @@ public void Main(int argc = 1, string args = "") {
 	while ( count < 5 ) {
 		print("loop count = " + count);
 
-		count = count + 1;
+		//count += 1;
+		count = count++;
 	}
 }
 

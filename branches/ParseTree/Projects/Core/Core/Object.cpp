@@ -118,12 +118,7 @@ Object& Object::operator= (const Object& other)
 		setLanguageFeatureState(other.getLanguageFeatureState());
 		setMember(other.isMember());
 
-		if ( other.mReference.isValid() ) {
-			assignReference(other.mReference);
-		}
-		else {
-			setValue(other.mValue);
-		}
+		assignReference(other.mReference);
 	}
 
 	return *this;
@@ -152,7 +147,7 @@ void Object::assign(const Object& other, bool overrideType)
 			assignReference(other.mReference);
 		}
 		else {
-			setValue(other.mValue);
+			setValue(other.getValue());
 		}
 	}
 }

@@ -788,7 +788,8 @@ void Interpreter::process(Object *result, TokenIterator& token, TokenIterator en
  */
 void Interpreter::process_assert(TokenIterator& token)
 {
-	expect(Token::Type::PARENTHESIS_OPEN, token++);
+	expect(Token::Type::PARENTHESIS_OPEN, token);
+	++token;
 
     Object condition;
 	try {
@@ -803,7 +804,8 @@ void Interpreter::process_assert(TokenIterator& token)
 		throw Runtime::Exceptions::AssertionFailed(condition.ToString(), token->position());
 	}
 
-	expect(Token::Type::PARENTHESIS_CLOSE, token++);
+	expect(Token::Type::PARENTHESIS_CLOSE, token);
+	++token;
 }
 
 /*
@@ -899,7 +901,8 @@ void Interpreter::process_exit(TokenIterator& /*token*/)
  */
 void Interpreter::process_for(TokenIterator& token, Object* result)
 {
-	expect(Token::Type::PARENTHESIS_OPEN, token++);
+	expect(Token::Type::PARENTHESIS_OPEN, token);
+	++token;
 
 	TokenIterator initializationBegin = token;
 
@@ -982,7 +985,8 @@ void Interpreter::process_for(TokenIterator& token, Object* result)
  */
 void Interpreter::process_foreach(TokenIterator& token, Object* result)
 {
-	expect(Token::Type::PARENTHESIS_OPEN, token++);
+	expect(Token::Type::PARENTHESIS_OPEN, token);
+	++token;
 
 	TokenIterator typedefIt = token;
 
@@ -1138,7 +1142,8 @@ void Interpreter::process_identifier(TokenIterator& token, Object* /*result*/, T
  */
 void Interpreter::process_if(TokenIterator& token, Object *result)
 {
-	expect(Token::Type::PARENTHESIS_OPEN, token++);
+	expect(Token::Type::PARENTHESIS_OPEN, token);
+	++token;
 
 	TokenIterator condBegin = token;
 	// find next balanced '(' & ')' pair
@@ -1429,7 +1434,7 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 		if ( std::distance(tmp, closed) < 0 ) {
 			break;
 		}
-		tmp++;
+		++tmp;
 	}
 
 	// create initialized reference of new object
@@ -1445,7 +1450,8 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
  */
 void Interpreter::process_print(TokenIterator& token)
 {
-	expect(Token::Type::PARENTHESIS_OPEN, token++);
+	expect(Token::Type::PARENTHESIS_OPEN, token);
+	++token;
 
 	Object text;
 	try {
@@ -1458,7 +1464,8 @@ void Interpreter::process_print(TokenIterator& token)
 
 	::Utils::PrinterDriver::Instance()->print(text.getValue().toStdString(), token->position().mFile, token->position().mLine);
 
-	expect(Token::Type::PARENTHESIS_CLOSE, token++);
+	expect(Token::Type::PARENTHESIS_CLOSE, token);
+	++token;
 }
 
 /*
@@ -1490,7 +1497,8 @@ void Interpreter::process_return(TokenIterator& token, Object *result)
 // { <statement> }
 void Interpreter::process_scope(TokenIterator& token, Object* result)
 {
-	expect(Token::Type::BRACKET_CURLY_OPEN, token++);
+	expect(Token::Type::BRACKET_CURLY_OPEN, token);
+	++token;
 
 	TokenIterator scopeBegin = token;
 	TokenIterator scopeEnd = findNextBalancedCurlyBracket(scopeBegin, getTokens().end());
@@ -1545,7 +1553,8 @@ void Interpreter::process_statement(TokenIterator& token, Object* result, Token:
  */
 void Interpreter::process_switch(TokenIterator& token, Object* result)
 {
-	expect(Token::Type::PARENTHESIS_OPEN, token++);
+	expect(Token::Type::PARENTHESIS_OPEN, token);
+	++token;
 
 	// find next open parenthesis '('
 	TokenIterator condBegin = token;
@@ -1809,7 +1818,8 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 				// create new exception type instance
 				Object* type = process_type(catchIt, symbol);
 
-				expect(Token::Type::PARENTHESIS_CLOSE, catchIt++);
+				expect(Token::Type::PARENTHESIS_CLOSE, catchIt);
+				++catchIt;
 
 				if ( !type || !Controller::Instance().stack()->exception().getData() ) {
 					throw Common::Exceptions::Exception("could not create exception type instance", catchIt->position());
@@ -1970,28 +1980,27 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol)
  */
 void Interpreter::process_typeid(TokenIterator& token, Object* result)
 {
-	expect(Token::Type::PARENTHESIS_OPEN, token++);
-
-	Symbol* symbol = identify(token);
-	if ( symbol ) {
-		switch ( symbol->getSymbolType() ) {
-			case Symbol::IType::BluePrintEnumSymbol:
-			case Symbol::IType::BluePrintObjectSymbol:
-				*result = StringObject(static_cast<Designtime::BluePrintGeneric*>(symbol)->QualifiedTypename());
-				break;
-			case Symbol::IType::ObjectSymbol:
-				*result = StringObject(static_cast<Object*>(symbol)->QualifiedTypename());
-				break;
-			default:
-				*result = StringObject("<not a valid symbol>");
-				break;
-		}
-	}
-	else {
-		*result = StringObject("<not a valid symbol>");
-	}
+	expect(Token::Type::PARENTHESIS_OPEN, token);
 	++token;
 
+	Symbol* symbol = identify(token);
+	if ( !symbol ) {
+		throw Runtime::Exceptions::InvalidSymbol("typeid(): invalid symbol provided", token->position());
+	}
+
+	switch ( symbol->getSymbolType() ) {
+		case Symbol::IType::BluePrintEnumSymbol:
+		case Symbol::IType::BluePrintObjectSymbol:
+			*result = StringObject(static_cast<Designtime::BluePrintGeneric*>(symbol)->QualifiedTypename());
+			break;
+		case Symbol::IType::ObjectSymbol:
+			*result = StringObject(static_cast<Object*>(symbol)->QualifiedTypename());
+			break;
+		default:
+			throw Runtime::Exceptions::InvalidSymbol("typeid(): cannot resolve symbol type", token->position());
+	}
+
+	++token;
 	expect(Token::Type::PARENTHESIS_CLOSE, token);
 }
 
@@ -2001,7 +2010,8 @@ void Interpreter::process_typeid(TokenIterator& token, Object* result)
  */
 void Interpreter::process_while(TokenIterator& token, Object* result)
 {
-	expect(Token::Type::PARENTHESIS_OPEN, token++);
+	expect(Token::Type::PARENTHESIS_OPEN, token);
+	++token;
 
 	// find next open parenthesis '('
 	TokenIterator condBegin = token;

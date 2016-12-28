@@ -63,7 +63,7 @@ private:
 	void visitDelete(DeleteStatement* node);
 	void visitExit(ExitStatement* node);
 	void visitFor(ForStatement* node);
-	void visitForeach(ForeachStatement *node);
+	void visitForeach(ForeachStatement* node);
 	void visitIf(IfStatement* node);
 	void visitPrint(PrintStatement* node);
 	void visitReturn(ReturnStatement* node);
@@ -85,7 +85,7 @@ private:
 
 	// Scope stack
 	// {
-	IScope* getScope() const;
+	inline IScope* getScope() const;
 	void popScope();
 	void pushScope(IScope* scope = 0);
 	// }

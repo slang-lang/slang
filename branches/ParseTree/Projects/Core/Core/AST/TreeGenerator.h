@@ -90,9 +90,7 @@ private: // Execution
 
 	// Scope stack
 	// {
-	IScope* getScope() const;
-	void popScope();
-	void pushScope(IScope* scope = 0);
+	inline IScope* getScope() const;
 	// }
 
 	// Token stack

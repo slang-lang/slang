@@ -38,7 +38,7 @@ public:
 	};
 
 public:
-	Expression(ExpressionType::E expressionType)
+	explicit Expression(ExpressionType::E expressionType)
 	: Node(NodeType::Expression),
 	  mExpressionType(expressionType)
 	{ }
@@ -51,8 +51,6 @@ protected:
 	ExpressionType::E mExpressionType;
 };
 
-typedef Expression BooleanExpression;
-typedef Expression Factor;
 typedef std::list<Node*> ExpressionList;
 
 
@@ -131,7 +129,7 @@ public:
 class LiteralExpression : public Expression
 {
 public:
-	LiteralExpression(Runtime::AtomicValue value)
+	explicit LiteralExpression(Runtime::AtomicValue value)
 	: Expression(ExpressionType::LiteralExpression),
 	  mValue(value)
 	{ }
@@ -144,7 +142,7 @@ public:
 class BooleanLiteralExpression : public LiteralExpression
 {
 public:
-	BooleanLiteralExpression(Runtime::AtomicValue value)
+	explicit BooleanLiteralExpression(Runtime::AtomicValue value)
 	: LiteralExpression(value)
 	{ }
 };
@@ -152,7 +150,7 @@ public:
 class DoubleLiteralExpression : public LiteralExpression
 {
 public:
-	DoubleLiteralExpression(Runtime::AtomicValue value)
+	explicit DoubleLiteralExpression(Runtime::AtomicValue value)
 	: LiteralExpression(value)
 	{ }
 };
@@ -160,7 +158,7 @@ public:
 class FloatLiteralExpression : public LiteralExpression
 {
 public:
-	FloatLiteralExpression(Runtime::AtomicValue value)
+	explicit FloatLiteralExpression(Runtime::AtomicValue value)
 	: LiteralExpression(value)
 	{ }
 };
@@ -168,7 +166,7 @@ public:
 class IntegerLiteralExpression : public LiteralExpression
 {
 public:
-	IntegerLiteralExpression(Runtime::AtomicValue value)
+	explicit IntegerLiteralExpression(Runtime::AtomicValue value)
 	: LiteralExpression(value)
 	{ }
 };
@@ -176,7 +174,7 @@ public:
 class StringLiteralExpression : public LiteralExpression
 {
 public:
-	StringLiteralExpression(Runtime::AtomicValue value)
+	explicit StringLiteralExpression(Runtime::AtomicValue value)
 	: LiteralExpression(value)
 	{ }
 };
@@ -191,7 +189,7 @@ public:
 class CopyExpression : public Expression
 {
 public:
-	CopyExpression(Node* exp)
+	explicit CopyExpression(Node* exp)
 	: Expression(ExpressionType::CopyExpression),
 	  mExpression(exp)
 	{ }
@@ -260,7 +258,7 @@ public:
 class VariableExpression : public Expression
 {
 public:
-	VariableExpression(const Token& name)
+	explicit VariableExpression(const Token& name)
 	: Expression(ExpressionType::VariableExpression),
 	  mName(name)
 	{ }

@@ -7,11 +7,11 @@ public int Main(int argc = 0, string args = "") {
 	print("Starting performance test (by counting from " + lowerbound + " to " + upperbound + ")...");
 
 	while ( lowerbound < upperbound ) {
-		print("lowerbound = " + lowerbound);
+		//print("lowerbound = " + lowerbound);
 
 		//lowerbound = lowerbound + 1;
-		//lowerbound += 1;
-		lowerbound++;
+		lowerbound += 1;
+		//lowerbound++;
 	}
 
 	print("Finished performance test.");

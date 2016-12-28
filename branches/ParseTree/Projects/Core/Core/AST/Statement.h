@@ -50,7 +50,7 @@ public:
 	};
 
 public:
-	Statement(StatementType::E statementType)
+	explicit Statement(StatementType::E statementType)
 	: Node(NodeType::Statement),
 	  mStatementType(statementType)
 	{ }

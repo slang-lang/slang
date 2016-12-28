@@ -189,7 +189,7 @@ void TreeInterpreter::evaluateNewExpression(NewExpression* exp, Runtime::Object*
 {
 	MethodExpression* method = dynamic_cast<MethodExpression*>(exp->mExpression);
 	if ( !method ) {
-		throw Runtime::Exceptions::Exception("invalid method expression found");
+		throw Runtime::Exceptions::RuntimeException("invalid method expression found");
 	}
 
 	std::list<Runtime::Object> objectList;	// this is a hack to prevent that the provided object parameters run out of scope
@@ -235,7 +235,7 @@ void TreeInterpreter::evaluateMethodExpression(MethodExpression* exp, Runtime::O
 {
 	MethodScope* scope = getEnclosingMethodScope();
 	if ( !scope ) {
-		throw Runtime::Exceptions::Exception("could not resolve parent scope");
+		throw Runtime::Exceptions::RuntimeException("could not resolve parent scope");
 	}
 
 	std::list<Runtime::Object> objectList;	// this is a hack to prevent that the provided object parameters run out of scope
@@ -259,7 +259,7 @@ void TreeInterpreter::evaluateMethodExpression(MethodExpression* exp, Runtime::O
 
 	Symbol* symbol = scope->resolveMethod(exp->mName, params, false);
 	if ( !symbol ) {
-		throw Runtime::Exceptions::Exception("method " + exp->mName + " not found");
+		throw Runtime::Exceptions::RuntimeException("method " + exp->mName + " not found");
 	}
 
 	Runtime::Method* method = static_cast<Runtime::Method*>(symbol);
@@ -328,7 +328,7 @@ void TreeInterpreter::evaluateVariable(VariableExpression* exp, Runtime::Object*
 	}
 
 	if ( lvalue->getSymbolType() != Symbol::IType::ObjectSymbol ) {
-		throw Runtime::Exceptions::Exception("invalid lvalue symbol type");
+		throw Runtime::Exceptions::RuntimeException("invalid lvalue symbol type");
 	}
 
 	*result = *static_cast<Runtime::Object*>(lvalue);
@@ -491,7 +491,7 @@ Runtime::Object* TreeInterpreter::getEnclosingObject(IScope* scope) const
 	return 0;
 }
 
-IScope* TreeInterpreter::getScope() const
+inline IScope* TreeInterpreter::getScope() const
 {
 	StackLevel* stack = Controller::Instance().stack()->current();
 
@@ -513,7 +513,7 @@ inline Symbol* TreeInterpreter::identify(TokenIterator& token) const
 			prev_identifier = identifier;
 
 			if ( !result ) {
-				Runtime::Namespace* space = getEnclosingNamespace(getScope());
+				Runtime::Namespace* space = getEnclosingNamespace();
 				if ( space ) {
 					result = getScope()->resolve(space->QualifiedTypename() + "." + identifier, onlyCurrentScope, Visibility::Private);
 				}
@@ -748,13 +748,15 @@ void TreeInterpreter::visitAssert(AssertStatement* node)
 
 void TreeInterpreter::visitAssignment(Assignment* node)
 {
-	Symbol* lvalue = getScope()->resolve(node->mName.content(), false, Visibility::Designtime);
+	IScope* scope = getScope();
+
+	Symbol* lvalue = scope->resolve(node->mName.content(), false, Visibility::Designtime);
 	if ( !lvalue ) {
 		throw Runtime::Exceptions::InvalidAssignment("lvalue '" + node->mName.content() + "' not found", node->mName.position());
 	}
 
 	if ( lvalue->getSymbolType() != Symbol::IType::ObjectSymbol ) {
-		throw Runtime::Exceptions::Exception("invalid lvalue symbol type", node->mName.position());
+		throw Runtime::Exceptions::RuntimeException("invalid lvalue symbol type", node->mName.position());
 	}
 
 	evaluate(node->mExpression, static_cast<Runtime::Object*>(lvalue));
@@ -789,12 +791,14 @@ void TreeInterpreter::visitExit(ExitStatement* /*node*/)
 	throw Runtime::ControlFlow::ExitProgram;
 }
 
-void TreeInterpreter::visitExpression(Expression *expression)
+void TreeInterpreter::visitExpression(Expression* /*expression*/)
 {
-	//std::cout << printExpression(expression) << ";" << std::endl;
+	throw Common::Exceptions::SyntaxError("cannot process standalone expression");
 
+/*
 	Runtime::Object tmp;
 	evaluate(expression, &tmp);
+*/
 }
 
 void TreeInterpreter::visitFor(ForStatement* node)
@@ -802,15 +806,13 @@ void TreeInterpreter::visitFor(ForStatement* node)
 	// execute initialization statement
 	visitStatement(static_cast<Statement*>(node->mInitialization));
 
-	// reset control flow to normal
-	mControlFlow = Runtime::ControlFlow::Normal;
+	mControlFlow = Runtime::ControlFlow::Normal;	// reset control flow to normal
 
 	Runtime::Object condition;
 
 	for  ( ; ; ) {
 		try {
-			// evaluate loop condition
-			evaluate(node->mCondition, &condition);
+			evaluate(node->mCondition, &condition);		// evaluate loop condition
 		}
 		catch ( Runtime::ControlFlow::E &e ) {
 			mControlFlow = e;
@@ -839,15 +841,71 @@ void TreeInterpreter::visitFor(ForStatement* node)
 	}
 }
 
-void TreeInterpreter::visitForeach(ForeachStatement *node)
+void TreeInterpreter::visitForeach(ForeachStatement* node)
 {
-	std::cout << "for ( ";
+	mControlFlow = Runtime::ControlFlow::Normal;	// reset control flow to normal
 
-	visitStatement(node->mTypeDeclaration);
+	IScope* scope = getScope();
 
-	std::cout << " : " << node->mLoopVariable.content() << " ) ";
+	// resolve loop collection
+	// {
+	Symbol* symbol = scope->resolve(node->mLoopVariable.content(), false, Visibility::Private);
+	if ( !symbol ) {
+		throw Runtime::Exceptions::InvalidSymbol("symbol '" + node->mLoopVariable.content() + "' not found", node->mLoopVariable.position());
+	}
 
-	visit(node->mStatement);
+	Runtime::Object* collection = dynamic_cast<Runtime::Object*>(symbol);
+	if ( !collection ) {
+		throw Runtime::Exceptions::InvalidSymbol("invalid symbol type provided", node->mLoopVariable.position());
+	}
+	// }
+
+	// get collection's forward iterator
+	Runtime::Object iterator;
+	collection->execute(&iterator, "getIterator", ParameterList());
+
+	for  ( ; ; ) {
+		pushScope();	// push new scope for loop variable
+
+		// Setup
+		// {
+		Runtime::Object condition;
+		iterator.execute(&condition, "hasNext", ParameterList());
+
+		if ( !isTrue(condition) ) {	// do we have more items to iterate over?
+			break;
+		}
+		// }
+
+		// execute type declaration
+		// {
+		TypeDeclaration* typeDeclaration = node->mTypeDeclaration;
+
+		Runtime::Object* loopVariable = mRepository->createInstance(static_cast<Designtime::BluePrintGeneric*>(typeDeclaration->mSymbol), typeDeclaration->mName, typeDeclaration->mConstraints);
+
+		getScope()->define(typeDeclaration->mName, loopVariable);
+
+		loopVariable->setConst(typeDeclaration->mIsConst);
+		// }
+
+		// iterate over next item
+		iterator.execute(loopVariable, "next", ParameterList());
+
+		// execute compound statement
+		visit(node->mStatement);
+
+		popScope();		// pop scope and remove loop variable
+
+		// check (and reset) control flow
+		switch ( mControlFlow ) {
+			case Runtime::ControlFlow::Break: mControlFlow = Runtime::ControlFlow::Normal; return;
+			case Runtime::ControlFlow::Continue: mControlFlow = Runtime::ControlFlow::Normal; break;
+			case Runtime::ControlFlow::ExitProgram: mControlFlow = Runtime::ControlFlow::ExitProgram; return;
+			case Runtime::ControlFlow::Normal: mControlFlow = Runtime::ControlFlow::Normal; break;
+			case Runtime::ControlFlow::Return: mControlFlow = Runtime::ControlFlow::Return; return;
+			case Runtime::ControlFlow::Throw: mControlFlow = Runtime::ControlFlow::Throw; return;
+		}
+	}
 }
 
 void TreeInterpreter::visitIf(IfStatement* node)
@@ -874,7 +932,7 @@ void TreeInterpreter::visitIf(IfStatement* node)
 
 void TreeInterpreter::visitOperator(Operator* /*op*/)
 {
-	std::cout << "Operator" << std::endl;
+	throw Common::Exceptions::SyntaxError("cannot process standalone operator");
 }
 
 void TreeInterpreter::visitPrint(PrintStatement* node)

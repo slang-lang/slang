@@ -12,7 +12,6 @@
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/BuildInObjects/VoidObject.h>
 #include <Core/Common/Exceptions.h>
-#include <Core/Defines.h>
 #include <Core/Designtime/BluePrintEnum.h>
 #include <Core/Designtime/Parser/Parser.h>
 #include <Core/Runtime/Exceptions.h>
@@ -127,10 +126,7 @@ Runtime::Namespace* TreeGenerator::getEnclosingNamespace(IScope* scope) const
 		IScope* parent = scope->getEnclosingScope();
 
 		if ( parent && parent->getScopeType() == IScope::IType::MethodScope ) {
-			Runtime::Namespace* result = dynamic_cast<Runtime::Namespace*>(parent);
-			if ( result ) {
-				return result;
-			}
+			return dynamic_cast<Runtime::Namespace*>(parent);
 		}
 
 		scope = parent;
@@ -161,7 +157,7 @@ Runtime::Object* TreeGenerator::getEnclosingObject(IScope* scope) const
 	return 0;
 }
 
-IScope* TreeGenerator::getScope() const
+inline IScope* TreeGenerator::getScope() const
 {
 	StackLevel* stack = Controller::Instance().stack()->current();
 
@@ -461,13 +457,6 @@ Node* TreeGenerator::parseTerm(TokenIterator& start)
 	}
 
 	return term;
-}
-
-void TreeGenerator::popScope()
-{
-	StackLevel* stack = Controller::Instance().stack()->current();
-
-	stack->popScope();
 }
 
 void TreeGenerator::popTokens()
@@ -1361,19 +1350,6 @@ Statement* TreeGenerator::process_while(TokenIterator& token)
 	Node* whileBlock = process_statement(token);
 
 	return new WhileStatement(expression(condBegin), whileBlock);
-}
-
-void TreeGenerator::pushScope(IScope* scope)
-{
-	StackLevel* stack = Controller::Instance().stack()->current();
-
-	bool allowDelete = !scope;
-
-	if ( !scope ) {
-		scope = new SymbolScope(stack->getScope());
-	}
-
-	stack->pushScope(scope, allowDelete);
 }
 
 void TreeGenerator::pushTokens(const TokenList& tokens)

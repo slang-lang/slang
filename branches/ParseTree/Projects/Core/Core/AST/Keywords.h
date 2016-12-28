@@ -68,7 +68,7 @@ typedef std::list<CatchStatement*> CatchStatements;
 class DeleteStatement : public Statement
 {
 public:
-	DeleteStatement(Node* exp)
+	explicit DeleteStatement(Node* exp)
 	: Statement(StatementType::DeleteStatement),
 	  mExpression(exp)
 	{ }

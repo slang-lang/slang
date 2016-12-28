@@ -24,7 +24,7 @@ public:
 	};
 
 public:
-	Operator(OperatorType::E operatorType)
+	explicit Operator(OperatorType::E operatorType)
 	: Node(NodeType::Operator),
 	  mOperatorType(operatorType)
 	{ }

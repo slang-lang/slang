@@ -31,7 +31,7 @@ public:
 class ExitStatement : public Statement
 {
 public:
-	ExitStatement(Node* exp)
+	explicit ExitStatement(Node* exp)
 	: Statement(StatementType::ExitStatement),
 	  mExpression(exp)
 	{ }
@@ -44,7 +44,7 @@ public:
 class ReturnStatement : public Statement
 {
 public:
-	ReturnStatement(Node* exp)
+	explicit ReturnStatement(Node* exp)
 	: Statement(StatementType::ReturnStatement),
 	  mExpression(exp)
 	{ }
@@ -57,7 +57,7 @@ public:
 class ThrowStatement : public Statement
 {
 public:
-	ThrowStatement(Node* exp)
+	explicit ThrowStatement(Node* exp)
 	: Statement(StatementType::ThrowStatement),
 	  mExpression(exp)
 	{ }
