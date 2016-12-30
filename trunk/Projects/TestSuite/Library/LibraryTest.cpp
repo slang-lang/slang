@@ -39,9 +39,9 @@ void LibraryTest::process()
 	TEST(testSystemCollectionsDoubleLinkedList);
 	TEST(testSystemCollectionsIterator);
 	TEST(testSystemCollectionsList);
-	TEST(testSystemCollectionsRandomAccessCollection);
 	TEST(testSystemCollectionsSet);
 	TEST(testSystemCollectionsStack);
+	TEST(testSystemCollectionsVector);
 	TEST(testSystemDouble);
 	TEST(testSystemFloat);
 	TEST(testSystemInteger);
@@ -115,20 +115,6 @@ void LibraryTest::testSystemCollectionsList()
 	}
 }
 
-void LibraryTest::testSystemCollectionsRandomAccessCollection()
-{
-	try {
-		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/Library/System/Collections/RandomAccessCollectionTest.os");
-
-		// automatic success
-	}
-	catch ( std::exception& e ) {
-		// exception has been thrown: test failed
-		TFAIL(e.what());
-	}
-}
-
 void LibraryTest::testSystemCollectionsSet()
 {
 	try {
@@ -151,6 +137,20 @@ void LibraryTest::testSystemCollectionsStack()
 	try {
 		VirtualMachine vm;
 		vm.createScriptFromFile("Tests/Library/System/Collections/StackTest.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed
+		TFAIL(e.what());
+	}
+}
+
+void LibraryTest::testSystemCollectionsVector()
+{
+	try {
+		VirtualMachine vm;
+		vm.createScriptFromFile("Tests/Library/System/Collections/VectorTest.os");
 
 		// automatic success
 	}

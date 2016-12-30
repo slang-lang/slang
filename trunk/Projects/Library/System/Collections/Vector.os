@@ -4,7 +4,7 @@ import System.Exception;
 
 public namespace System {
 
-	public object RandomAccessCollection extends System.AbstractCollection {
+	public object Vector extends System.AbstractCollection {
 		public void Constructor() {
 			base.Constructor();
 		}
