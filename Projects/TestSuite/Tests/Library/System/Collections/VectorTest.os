@@ -1,6 +1,6 @@
 #!/usr/local/bin/oscript
 
-import System.Collections.RandomAccessCollection;
+import System.Collections.Vector;
 import System.Integer;
 import System.String;
 
@@ -19,7 +19,7 @@ private bool TestCase1() const {
 	print("TestCase 1: insert");
 
 	try {
-		System.RandomAccessCollection list = new System.RandomAccessCollection();
+		System.Vector list = new System.Vector();
 
 		// Setup
 		Integer item;
@@ -49,7 +49,7 @@ private bool TestCase2() const {
 	print("TestCase 2: erase front");
 
 	try {
-		System.RandomAccessCollection list = new System.RandomAccessCollection();
+		System.Vector list = new System.Vector();
 
 		// Setup
 		Integer item;
@@ -86,7 +86,7 @@ private bool TestCase3() const {
 	print("TestCase 3: erase middle");
 
 	try {
-		System.RandomAccessCollection list = new System.RandomAccessCollection();
+		System.Vector list = new System.Vector();
 
 		// Setup
 		Integer item;
@@ -123,7 +123,7 @@ private bool TestCase4() const {
 	print("TestCase 4: erase back");
 
 	try {
-		System.RandomAccessCollection list = new System.RandomAccessCollection();
+		System.Vector list = new System.Vector();
 
 		// Setup
 		Integer item;
@@ -159,7 +159,7 @@ private bool TestCase5() const {
 	print("TestCase 5: iterator");
 
 	try {
-		System.RandomAccessCollection list = new System.RandomAccessCollection();
+		System.Vector list = new System.Vector();
 
 		Integer item;
 
@@ -197,7 +197,7 @@ private bool TestCase6() const {
 	print("TestCase 6: reverse iterator");
 
 	try {
-		System.RandomAccessCollection list = new System.RandomAccessCollection();
+		System.Vector list = new System.Vector();
 
 		list.insert(0, Object new String("1"));
 		list.insert(1, Object new String("2"));
@@ -223,7 +223,7 @@ private bool TestCase7() const {
 	print("TestCase 7: indexOf");
 
 	try {
-		System.RandomAccessCollection list = new System.RandomAccessCollection();
+		System.Vector list = new System.Vector();
 
 		list.insert(0, Object new String("1"));
 		list.insert(1, Object new String("2"));
@@ -245,7 +245,7 @@ private bool TestCase8() const {
 	print("TestCase 8: contains");
 
 	try {
-		System.RandomAccessCollection list = new System.RandomAccessCollection();
+		System.Vector list = new System.Vector();
 		assert( list is Object );
 		assert( list is System.AbstractCollection );
 
