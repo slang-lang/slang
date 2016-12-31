@@ -6,12 +6,12 @@ import System.Collections.List;
 public namespace Mysql {
 
 	public object Row {
-		private System.List mEntries;
+		private List mEntries;
 		private int mNumFields;
 		private int mResultHandle;
 
 		public void Constructor(int handle) {
-			mEntries = new System.List();
+			mEntries = new List();
 			mResultHandle = handle;
 
 			initialize();

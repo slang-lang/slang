@@ -1033,7 +1033,7 @@ void Interpreter::process_foreach(TokenIterator& token, Object* result)
 	if ( !collection ) {
 		throw Common::Exceptions::SyntaxError("invalid symbol '" + token->content() + "' found", token->position());
 	}
-	if ( !collection->isInstanceOf("System.IIterateable") ) {
+	if ( !collection->isInstanceOf("IIterateable") ) {
 		throw Common::Exceptions::SyntaxError("symbol '" + collection->getName() + "' is not derived from IIteratable", token->position());
 	}
 	++token;

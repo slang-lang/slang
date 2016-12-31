@@ -16,7 +16,7 @@ private bool TestCase1() const {
 	print("TestCase 1: push_back");
 
 	try {
-		System.List list = new System.List();
+		List list = new List();
 
 		// Setup
 		Integer item;
@@ -57,7 +57,7 @@ private bool TestCase2() const {
 	print("TestCase 2: push_front");
 
 	try {
-		System.List list = new System.List();
+		List list = new List();
 
 		Integer item;
 
@@ -92,7 +92,7 @@ private bool TestCase3() const {
 	print("TestCase 3: pop_front");
 
 	try {
-		System.List list = new System.List();
+		List list = new List();
 
 		// Setup
 		Integer item;
@@ -145,7 +145,7 @@ private bool TestCase4() const {
 	print("TestCase 4: pop_back");
 
 	try {
-		System.List list = new System.List();
+		List list = new List();
 
 		// Setup
 		Integer item;
@@ -198,7 +198,7 @@ private bool TestCase5() const {
 	print("TestCase 5: clear");
 
 	try {
-		System.List list = new System.List();
+		List list = new List();
 
 		Integer item;
 
@@ -213,7 +213,7 @@ private bool TestCase5() const {
 
 		assert( list.size() == 3 );
 
-		System.Iterator it = list.getIterator();
+		Iterator it = list.getIterator();
 		while ( it.hasNext() ) {
 			it.next();
 

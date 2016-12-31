@@ -1,23 +1,22 @@
 
-public namespace System {
+public namespace System.Collections { }
 
-	public object Iterator;
-	public object ReverseIterator;
+public object Iterator;
+public object ReverseIterator;
 
-	public interface IIterateable {
-		public System.Iterator getIterator() const;
-	}
+public interface IIterateable {
+	public Iterator getIterator() const;
+}
 
-	public interface IReverseIterateable {
-		public System.ReverseIterator getReverseIterator() const;
-	}
+public interface IReverseIterateable {
+	public ReverseIterator getReverseIterator() const;
+}
 
-	public interface IGenericIterateable<T> implements IIterateable {
-		public System.Iterator<T> getIterator() const;
-	}
+public interface IGenericIterateable<T> implements IIterateable {
+	public Iterator<T> getIterator() const;
+}
 
-	public interface IGenericReverseIterateable<T> implements IReverseIterateable {
-		public System.ReverseIterator<T> getIterator() const;
-	}
+public interface IGenericReverseIterateable<T> implements IReverseIterateable {
+	public ReverseIterator<T> getIterator() const;
 }
 
