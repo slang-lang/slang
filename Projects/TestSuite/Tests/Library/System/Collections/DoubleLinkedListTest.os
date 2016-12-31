@@ -21,7 +21,7 @@ private bool TestCase1() const {
 	print("TestCase 1: push_back");
 
 	try {
-		System.DoubleLinkedList list = new System.DoubleLinkedList();
+		DoubleLinkedList list = new DoubleLinkedList();
 
 		Integer item;
 
@@ -55,7 +55,7 @@ private bool TestCase2() const {
 	print("TestCase 2: push_front");
 
 	try {
-		System.DoubleLinkedList list = new System.DoubleLinkedList();
+		DoubleLinkedList list = new DoubleLinkedList();
 
 		Integer item;
 		item = new Integer(1389);
@@ -71,7 +71,7 @@ private bool TestCase2() const {
 		assert( list.size() == 3 );
 
 /*
-		System.Iterator it = list.getIterator();
+		Iterator it = list.getIterator();
 		while ( it.hasNext() ) {
 			it.next();
 
@@ -103,7 +103,7 @@ private bool TestCase3() const {
 	print("TestCase 3: pop_front");
 
 	try {
-		System.DoubleLinkedList list = new System.DoubleLinkedList();
+		DoubleLinkedList list = new DoubleLinkedList();
 
 		// Setup
 		Integer item;
@@ -145,7 +145,7 @@ private bool TestCase4() const {
 	print("TestCase 4: pop_back");
 
 	try {
-		System.DoubleLinkedList list = new System.DoubleLinkedList();
+		DoubleLinkedList list = new DoubleLinkedList();
 
 		// Setup
 		Integer item;
@@ -187,7 +187,7 @@ private bool TestCase5() const {
 	print("TestCase 5: iterate");
 
 	try {
-		System.DoubleLinkedList list = new System.DoubleLinkedList();
+		DoubleLinkedList list = new DoubleLinkedList();
 
 		// Setup
 		Integer item;
@@ -204,7 +204,7 @@ private bool TestCase5() const {
 		// Usage
 		assert( list.size() == 3 );
 
-		System.Iterator it = list.getIterator();
+		Iterator it = list.getIterator();
 
 		int count = 0;
 		while ( it.hasNext() ) {
@@ -233,7 +233,7 @@ private bool TestCase6() const {
 	print("TestCase 6: reverse iterate");
 
 	try {
-		System.DoubleLinkedList list = new System.DoubleLinkedList();
+		DoubleLinkedList list = new DoubleLinkedList();
 
 		// Setup
 		Integer item;
@@ -250,7 +250,7 @@ private bool TestCase6() const {
 		// Usage
 		assert( list.size() == 3 );
 
-		System.ReverseIterator it = list.getReverseIterator();
+		ReverseIterator it = list.getReverseIterator();
 
 		int count = 0;
 		while ( it.hasNext() ) {
@@ -279,7 +279,7 @@ private bool TestCase7() const {
 	print("TestCase 7: indexOf");
 
 	try {
-		System.DoubleLinkedList list = new System.DoubleLinkedList();
+		DoubleLinkedList list = new DoubleLinkedList();
 		assert( list is Object );
 
 		list.push_back(Object new String("1"));
@@ -302,8 +302,8 @@ private bool TestCase8() const {
 	print("TestCase 8: contains");
 
 	try {
-		System.DoubleLinkedList list = new System.DoubleLinkedList();
-		assert( list is System.AbstractCollection );
+		DoubleLinkedList list = new DoubleLinkedList();
+		assert( list is AbstractCollection );
 
 		list.push_back(Object new Integer(1));
 		list.push_back(Object new Integer(2));

@@ -222,7 +222,7 @@ private bool TestCase6() const {
 		GenericStack<Integer> stack = new GenericStack<Integer>();
 		assert( stack is Object );
 		assert( stack is IGenericCollection );
-		assert( stack is System.IIterateable );
+		assert( stack is IIterateable );
 		assert( stack is GenericStack<Integer> );
 
 		stack.push(new Integer(1));

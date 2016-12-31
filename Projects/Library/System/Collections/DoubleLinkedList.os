@@ -2,13 +2,13 @@
 import AbstractCollection;
 import System.Exception;
 
-public namespace System {
+public namespace System.Collections { }
 
 /*
  * Double linked list
  * allows reverse iteration
  */
-public object DoubleLinkedList extends System.AbstractCollection {
+public object DoubleLinkedList extends AbstractCollection {
 	public void Constructor() {
 		base.Constructor();
 	}
@@ -68,7 +68,5 @@ public object DoubleLinkedList extends System.AbstractCollection {
 
 		mSize++;
 	}
-}
-
 }
 

@@ -46,8 +46,8 @@ private bool TestCase1() const {
 	print("TestCase 1: insert");
 
 	try {
-		System.Set set = new System.Set();
-		assert( set is System.AbstractCollection );
+		Set set = new Set();
+		assert( set is AbstractCollection );
 
 		TestObject item;
 
@@ -63,7 +63,7 @@ private bool TestCase1() const {
 
 		TestObject last;
 
-		System.Iterator it = set.getIterator();
+		Iterator it = set.getIterator();
 		while ( it.hasNext() ) {
 			it.next();
 
@@ -87,7 +87,7 @@ private bool TestCase2() const {
 	print("TestCase 2: erase");
 
 	try {
-		System.Set set = new System.Set();
+		Set set = new Set();
 		assert( set is Object );
 
 		int count = 0;
@@ -101,7 +101,7 @@ private bool TestCase2() const {
 
 		//print("before erase: set has " + set.size() + " item(s)");
 
-		System.Iterator it = set.getIterator();
+		Iterator it = set.getIterator();
 		while ( it.hasNext() ) {
 			it.next();
 

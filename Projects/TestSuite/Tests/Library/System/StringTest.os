@@ -1,7 +1,7 @@
 #!/usr/local/bin/oscript
 
+import System.Collections.Iterator;
 import System.String;
-import System.StringIterator;
 
 public void Main(int argc = 0, string args = "") {
 	assert( TestCase1() );
