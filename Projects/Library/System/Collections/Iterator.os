@@ -14,7 +14,7 @@ public object Iterator {
 		reset();
 	}
 
-	public Object current() const {
+	public Object current() const throws {
 		if ( !mCollection ) {
 			throw new Exception("invalid iterator access");
 		}
@@ -22,7 +22,7 @@ public object Iterator {
 		return mCollection.at(mCurrentIndex);
 	}
 
-	public bool hasNext() const {
+	public bool hasNext() const throws {
 		if ( !mCollection ) {
 			throw new Exception("invalid iterator access");
 		}
@@ -30,7 +30,7 @@ public object Iterator {
 		return mCurrentIndex < mCollection.size() - 1;
 	}
 
-	public Object next() modify {
+	public Object next() modify throws {
 		if ( !hasNext() ) {
 			throw new OutOfBoundsException("index out of bounds");
 		}
@@ -42,6 +42,14 @@ public object Iterator {
 
 	public void reset() modify {
 		mCurrentIndex = -1;
+	}
+
+	public void operator++() modify {
+		if ( !hasNext() ) {
+			throw new OutOfBoundsException("index out of bounds");
+		}
+
+		mCurrentIndex++;		
 	}
 
 	public Object =operator(Object none ref) const {
@@ -59,7 +67,7 @@ public object ReverseIterator {
 		reset();
 	}
 
-	public Object current() const {
+	public Object current() const throws {
 		if ( !mCollection ) {
 			throw new Exception("invalid iterator access");
 		}
@@ -67,7 +75,7 @@ public object ReverseIterator {
 		return mCollection.at(mCurrentIndex);
 	}
 
-	public bool hasNext() const {
+	public bool hasNext() const throws {
 		if ( !mCollection ) {
 			throw new Exception("invalid iterator access");
 		}
@@ -75,7 +83,7 @@ public object ReverseIterator {
 		return mCurrentIndex > 0;
 	}
 
-	public Object next() modify {
+	public Object next() modify throws {
 		if ( !hasNext() ) {
 			throw new OutOfBoundsException("index out of bounds");
 		}
@@ -87,6 +95,14 @@ public object ReverseIterator {
 
 	public void reset() modify {
 		mCurrentIndex = mCollection.size();
+	}
+
+	public void operator++() modify {
+		if ( !hasNext() ) {
+			throw new OutOfBoundsException("index out of bounds");
+		}
+
+		mCurrentIndex--;		
 	}
 
 	public Object =operator(Object none ref) const {
