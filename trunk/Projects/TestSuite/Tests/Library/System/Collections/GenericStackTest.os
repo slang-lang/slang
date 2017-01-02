@@ -338,10 +338,11 @@ private bool TestCase10() const {
 		stack.push(2);
 		stack.push(3);
 
+		assert( !stack.empty() );
 		assert( stack.size() == 3 );
 
 		foreach ( int i : stack ) {
-			//print(i);
+			//print("i = " + i);
 		}
 
 		return true;
