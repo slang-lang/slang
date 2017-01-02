@@ -1,8 +1,7 @@
 
-import AbstractCollection;
 import System.Exception;
 
-public namespace System { }
+public namespace System.Collections { }
 
 public object GenericIterator<T> {
 	private IGenericCollection mCollection;
