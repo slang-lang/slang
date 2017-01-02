@@ -7,7 +7,7 @@ public void Main(int argc = 0, string args = "") {
 	GenericStack<String> stack = new GenericStack<String>();
 
 	for ( int i = 0; i < 100; i = i++ ) {
-		stack.push(new String("String " + i));
+		stack.push(new String("String(" + i + ")"));
 	}
 
 	loop(stack);
