@@ -47,7 +47,7 @@ Repository::~Repository()
 void Repository::addBluePrint(Designtime::BluePrintEnum* blueprint)
 {
 	if ( blueprint->getImplementationType() == ImplementationType::ForwardDeclaration ) {
-		// adding additional forward declarations doesn't matter
+		// adding duplicate forward declarations doesn't matter
 		mForwardDeclarations.insert(blueprint);
 	}
 
@@ -78,7 +78,7 @@ void Repository::addBluePrint(Designtime::BluePrintEnum* blueprint)
 void Repository::addBluePrint(Designtime::BluePrintObject* blueprint)
 {
 	if ( blueprint->getImplementationType() == ImplementationType::ForwardDeclaration ) {
-		// adding additional forward declarations doesn't matter
+		// adding duplicate forward declarations doesn't matter
 		mForwardDeclarations.insert(blueprint);
 	}
 
@@ -143,7 +143,12 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 	// inheritance
 	Designtime::Ancestors ancestors = blueprint->getInheritance();
 	for ( Designtime::Ancestors::const_iterator it = ancestors.begin(); it != ancestors.end(); ++it ) {
-		newBlue->addInheritance((*it));
+		newBlue->addInheritance(Designtime::Ancestor(
+			Designtime::Parser::buildConstraintTypename((*it).name(), (*it).constraints()),
+			(*it).type(),
+			(*it).visibility(),
+			PrototypeConstraints()
+		));
 	}
 
 	std::string type;
