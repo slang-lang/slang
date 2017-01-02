@@ -7,5 +7,13 @@ public object Pair<F, S> {
 		first = f;
 		second = s;
 	}
+
+	public bool operator<(F f) const {
+		return f < first;
+	}
+
+	public bool operator==(F f) const {
+		return f == first;
+	}
 }
 
