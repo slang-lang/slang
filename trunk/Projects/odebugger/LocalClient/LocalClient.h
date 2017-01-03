@@ -25,6 +25,10 @@ namespace ObjectiveScript {
 namespace Core {
 	class Debugger;
 }
+namespace Runtime {
+	class Namespace;
+	class Object;
+}
 class VirtualMachine;
 
 class LocalClient : public AClient,
@@ -44,7 +48,6 @@ public:
 	void continueExecution();
 	void executeMethod(const StringList &tokens);
 	MethodSymbol* getMethod(std::string name, const ParameterList& params) const;
-	MethodScope* getMethodScope(IScope* scope) const;
 	Symbol* getSymbol(std::string name) const;
 	bool modifySymbol(const StringList& tokens);
 	void printBreakPoints();
@@ -67,6 +70,12 @@ private:	// Configuration
 	void loadConfig();
 	void saveConfig();
 
+private:	// Scopes
+	Runtime::Method* getEnclosingMethod(IScope* scope) const;
+	MethodScope* getEnclosingMethodScope(IScope* scope) const;
+	Runtime::Namespace* getEnclosingNamespace(IScope* scope) const;
+	Runtime::Object* getEnclosingObject(IScope* scope) const;
+
 private:	// Watches
 	bool addWatch(const StringList &tokens);
 	void refreshWatches();
@@ -83,6 +92,7 @@ private:
 	StringList parseCommands(const std::string& commands) const;
 	void prepare(const StringList& tokens);
 	void printHelp();
+	void printScope(IScope* scope);
 	std::string read();
 	void start();
 	void write(const std::string& text);
