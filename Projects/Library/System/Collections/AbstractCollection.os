@@ -5,8 +5,8 @@ import Iterator;
 public namespace System.Collections { }
 
 /*
-	* Double linked collection item
-	*/
+ * Double linked collection item
+ */
 public object CollectionItem {
 	public CollectionItem mNext;
 	public CollectionItem mPrevious;
@@ -87,12 +87,10 @@ public abstract object AbstractCollection implements IIterateable {
 	}
 
 	public Iterator getIterator() const {
-		// TODO: why do we have to cast here?
 		return new Iterator(AbstractCollection this);
 	}
 
 	public ReverseIterator getReverseIterator() const {
-		// TODO: why do we have to cast here?
 		return new ReverseIterator(AbstractCollection this);
 	}
 
