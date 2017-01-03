@@ -95,10 +95,13 @@ private:
 	void printScope(IScope* scope);
 	std::string read();
 	void start();
+	void toggleAutoList();
+	void toggleAutoStart();
 	void write(const std::string& text);
 	void writeln(const std::string& text);
 
 private:
+	Core::BreakPoint mBreakpoint;
 	bool mContinue;
 	Core::Debugger* mDebugger;
 	ParameterList mParameters;
