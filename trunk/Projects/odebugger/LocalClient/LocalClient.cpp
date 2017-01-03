@@ -207,7 +207,13 @@ std::string LocalClient::executeCommand(const StringList &tokens)
 	if ( it != tokens.end() ) {
 		std::string cmd = (*it++);
 
-		if ( cmd == "autowatch" ) {
+		if ( cmd == "autolist" ) {
+			toggleAutoList();
+		}
+		else if ( cmd == "autostart" ) {
+			toggleAutoStart();
+		}
+		else if ( cmd == "autowatch" ) {
 			toggleAutoWatch();
 		}
 		else if ( cmd == "backtrace" || cmd == "bt" ) {
@@ -495,6 +501,9 @@ void LocalClient::loadConfig()
 	Json::Value config = Json::Parser::parse(data);
 
 	// (1) odebugger config
+	if ( config.isMember("autolist") ) {
+		mSettings->autoList(config["autolist"].asBool());
+	}
 	if ( config.isMember("autostart") ) {
 		mSettings->autoStart(config["autostart"].asBool());
 	}
@@ -603,6 +612,12 @@ int LocalClient::notify(IScope* scope, const Core::BreakPoint& breakpoint)
 	// Breakpoint check
 	if ( scope && !(breakpoint == Core::Debugger::immediateBreakPoint) ) {
 		writeln("[Breakpoint " + breakpoint.toString() + " reached]");
+	}
+
+	mBreakpoint = breakpoint;
+
+	if ( mSettings->autoList() ) {
+		printScope(mScope);
 	}
 
 	// automatically update watches
@@ -720,6 +735,8 @@ void LocalClient::printHelp()
 {
 	writeln("Generic commands:");
 
+	writeln("\tautolist      automatically list source code after reaching breakpoint");
+	writeln("\tautostart     automatically run program after startup");
 	writeln("\tautowatch     automatically show watches after reaching breakpoint");
 	writeln("\tbreak (b)     add breakpoint");
 	writeln("\tbreakpoints   print all breakpoints");
@@ -758,25 +775,31 @@ void LocalClient::printScope(IScope* scope)
 	TokenList tokens = method->getTokens();
 	TokenIterator it = tokens.begin();
 
-	bool printLine = true;
+	unsigned int activeLine = mBreakpoint.getLine();
+	unsigned int currentLine = 0;
+	unsigned int previousLine = 0;
 
 	while ( it != tokens.end() ) {
-		if ( printLine ) {
+		currentLine = it->position().mLine;
+
+		if ( currentLine != previousLine ) {
+			std::cout << std::endl;
+			if ( currentLine == activeLine ) {
+				std::cout << "> ";
+			}
+			else {
+				std::cout << "  ";
+			}
 			std::cout << it->position().mLine << ": ";
-			printLine = false;
+			previousLine = currentLine;
 		}
 
 		std::cout << it->content();
 
-		if ( it->type() == Token::Type::BRACKET_CURLY_CLOSE || it->type() == Token::Type::SEMICOLON ) {
-			std::cout << std::endl;
-			printLine = true;
-		}
-
 		it++;
 	}
 
-	std::cout << std::endl;
+	std::cout << std::endl << std::endl;
 }
 
 void LocalClient::printStackTrace()
@@ -898,6 +921,7 @@ void LocalClient::saveConfig()
 	Json::Value config;
 
 	// (1) odebugger config
+	config.addMember("autolist", Json::Value(mSettings->autoList()));
 	config.addMember("autostart", Json::Value(mSettings->autoStart()));
 	config.addMember("autowatch", Json::Value(mSettings->autoWatch()));
 	config.addMember("breakonexceptioncatch", Json::Value(mSettings->breakOnExceptionCatch()));
@@ -999,13 +1023,41 @@ void LocalClient::stop()
 		delete mVirtualMachine;
 		mVirtualMachine = 0;
 	}
+
+	mBreakpoint = Core::BreakPoint();
+}
+
+void LocalClient::toggleAutoList()
+{
+	mSettings->autoList(!mSettings->autoList());
+
+	write("AutoList is ");
+	if ( mSettings->autoList() ) {
+		writeln("on");
+	}
+	else {
+		writeln("off");
+	}
+}
+
+void LocalClient::toggleAutoStart()
+{
+	mSettings->autoStart(!mSettings->autoStart());
+
+	write("AutoStart is ");
+	if ( mSettings->autoStart() ) {
+		writeln("on");
+	}
+	else {
+		writeln("off");
+	}
 }
 
 void LocalClient::toggleAutoWatch()
 {
 	mSettings->autoWatch(!mSettings->autoWatch());
 
-	write("Autowatch is ");
+	write("AutoWatch is ");
 	if ( mSettings->autoWatch() ) {
 		writeln("on");
 	}
