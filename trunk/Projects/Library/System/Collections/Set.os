@@ -37,7 +37,7 @@ public object Set extends AbstractCollection {
 	public void insert(Object value ref) modify {
 		CollectionItem item = new CollectionItem(value);
 
-		if ( !mFirst ) {						// special handling for 1st element
+		if ( !mFirst ) {				// special handling for 1st element
 			mFirst = item;
 			mLast = item;
 		}
@@ -45,7 +45,7 @@ public object Set extends AbstractCollection {
 			item.mNext = mFirst;
 			mFirst = item;
 		}
-		else {									// default handling for insertions
+		else {						// default handling for insertions
 			CollectionItem tmp = mFirst;
 			CollectionItem previous;
 

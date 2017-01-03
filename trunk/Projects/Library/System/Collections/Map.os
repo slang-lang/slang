@@ -22,6 +22,10 @@ public object Map<K, V> implements IIterateable {
 		return mItems.size() == 0;
 	}
 
+	public Iterator getIterator() const {
+		return new Iterator(AbstractCollection mItems);
+	}
+
 	public void insert(K k, V v) modify {
 		Pair<K, V> pair = new Pair<K, V>(k, v);
 
