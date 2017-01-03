@@ -17,6 +17,7 @@
 #include <Core/Designtime/Parser/Tokenizer.h>
 #include <Core/Interpreter.h>
 #include <Core/Method.h>
+#include <Core/Runtime/Namespace.h>
 #include <Core/Runtime/Script.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
@@ -239,6 +240,9 @@ std::string LocalClient::executeCommand(const StringList &tokens)
 			mDebugger->stepInto();
 			continueExecution();
 		}
+		else if ( cmd == "list" ) {
+			printScope(mScope);
+		}
 		else if ( cmd == "load" ) {
 			loadConfig();
 		}
@@ -369,7 +373,7 @@ MethodSymbol* LocalClient::getMethod(std::string name, const ParameterList& para
 
 	std::string child;
 	std::string parent;
-	MethodScope* scope = getMethodScope(mScope);
+	MethodScope* scope = getEnclosingMethodScope(mScope);
 
 	do {
 		if ( !scope ) {
@@ -391,13 +395,49 @@ MethodSymbol* LocalClient::getMethod(std::string name, const ParameterList& para
 	return 0;
 }
 
-MethodScope* LocalClient::getMethodScope(IScope* scope) const
+Runtime::Method* LocalClient::getEnclosingMethod(IScope* scope) const
+{
+	while ( scope ) {
+		IScope* parent = scope->getEnclosingScope();
+
+		if ( parent && parent->getScopeType() == IScope::IType::NamedScope ) {
+			Runtime::Method* result = dynamic_cast<Runtime::Method*>(parent);
+			if ( result ) {
+				return result;
+			}
+		}
+
+		scope = parent;
+	}
+
+	return 0;
+}
+
+MethodScope* LocalClient::getEnclosingMethodScope(IScope* scope) const
+{
+	while ( scope ) {
+		IScope* parent = scope->getEnclosingScope();
+
+		if ( parent && parent->getScopeType() == IScope::IType::NamedScope ) {
+			return dynamic_cast<MethodScope*>(parent);
+		}
+
+		scope = parent;
+	}
+
+	return 0;
+}
+
+Runtime::Object* LocalClient::getEnclosingObject(IScope* scope) const
 {
 	while ( scope ) {
 		IScope* parent = scope->getEnclosingScope();
 
 		if ( parent && parent->getScopeType() == IScope::IType::MethodScope ) {
-			return static_cast<MethodScope*>(parent);
+			Runtime::Object* result = dynamic_cast<Runtime::Object*>(parent);
+			if ( result ) {
+				return result;
+			}
 		}
 
 		scope = parent;
@@ -700,11 +740,43 @@ void LocalClient::printHelp()
 		writeln("\texecute (e)      execute program function");
 		writeln("\tignore           ignore all breakpoints and continue program execution");
 		writeln("\tinto (i)         break on next function call");
+		writeln("\tlist (l)         print current method");
 		writeln("\tmodify (m)       modify (atomic) symbol");
 		writeln("\tnext (n)         step over");
 		writeln("\tout (o)          break on next function exit");
 		writeln("\tprint (p)        print symbol");
 	}
+}
+
+void LocalClient::printScope(IScope* scope)
+{
+	Runtime::Method* method = dynamic_cast<Runtime::Method*>(getEnclosingMethod(scope));
+	if ( !method ) {
+		return;
+	}
+
+	TokenList tokens = method->getTokens();
+	TokenIterator it = tokens.begin();
+
+	bool printLine = true;
+
+	while ( it != tokens.end() ) {
+		if ( printLine ) {
+			std::cout << it->position().mLine << ": ";
+			printLine = false;
+		}
+
+		std::cout << it->content();
+
+		if ( it->type() == Token::Type::BRACKET_CURLY_CLOSE || it->type() == Token::Type::SEMICOLON ) {
+			std::cout << std::endl;
+			printLine = true;
+		}
+
+		it++;
+	}
+
+	std::cout << std::endl;
 }
 
 void LocalClient::printStackTrace()
