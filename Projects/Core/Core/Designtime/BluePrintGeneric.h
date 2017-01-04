@@ -33,13 +33,13 @@ class BluePrintGeneric : public BluePrintSymbol
 {
 public:
 	BluePrintGeneric();
-	BluePrintGeneric(const std::string& type, const std::string& filename);
+	BluePrintGeneric(const std::string& unqualifiedTypename, const std::string& filename);
 	virtual ~BluePrintGeneric();
 
 public:
 	const std::string& Filename() const { return mFilename; }
 	const std::string& QualifiedTypename() const { return mQualifiedTypename; }
-	const std::string& Typename() const { return mTypename; }
+	const std::string& UnqualifiedTypename() const { return mUnqualifiedTypename; }
 
 	void setQualifiedTypename(const std::string& name);
 
@@ -68,7 +68,7 @@ protected:
 	std::string mFilename;
 	std::string mQualifiedTypename;
 	TokenList mTokens;
-	std::string mTypename;
+	std::string mUnqualifiedTypename;
 
 private:
 	Ancestors mInheritance;
