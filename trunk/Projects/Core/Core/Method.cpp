@@ -173,6 +173,10 @@ bool Method::isSignatureValid(const ParameterList& params) const
 
 ParameterList Method::mergeParameters(const ParameterList& params) const
 {
+	if ( !isSignatureValid(params) ) {
+		throw Common::Exceptions::ParameterCountMissmatch("incorrect number or type of parameters");
+	}
+
 	ParameterList result;
 
 	ParameterList::const_iterator paramIt = params.begin();
@@ -206,22 +210,6 @@ ParameterList Method::mergeParameters(const ParameterList& params) const
 const ParameterList& Method::provideSignature() const
 {
 	return mSignature;
-}
-
-Symbol* Method::resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope) const
-{
-	if ( mMethodType != MethodType::Function ) {
-		switch ( mParent->getScopeType() ) {
-			case IScope::IType::MethodScope:
-				return static_cast<MethodScope*>(mParent)->resolveMethod(name, params, onlyCurrentScope);
-			case IScope::IType::NamedScope:
-			case IScope::IType::SymbolScope:
-			case IScope::IType::UnknownScope:
-				throw Common::Exceptions::Exception("invalid/unknown scope type detected!");
-		}
-	}
-
-	return SymbolScope::resolve(name, onlyCurrentScope);
 }
 
 void Method::setParent(IScope *scope)
