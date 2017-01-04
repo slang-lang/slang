@@ -38,13 +38,9 @@ public:
 
 	std::string ToString(unsigned int indent) const;
 
-public:
-	MethodCollection provideMethods() const {
-		return mMethods;
-	}
-	Symbols provideSymbols() const {
-		return mSymbols;
-	}
+public:	// for prototype resolution only
+	MethodCollection provideMethods() const;
+	Symbols provideSymbols() const;
 
 private:
 	Runtime::AtomicValue mValue;
