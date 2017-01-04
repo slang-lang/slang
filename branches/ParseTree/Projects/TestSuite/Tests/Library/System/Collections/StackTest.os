@@ -19,7 +19,7 @@ private bool TestCase1() const {
 	print("TestCase 1: push");
 
 	try {
-		System.Stack stack = new System.Stack();
+		Stack stack = new Stack();
 
 		String item;
 
@@ -61,7 +61,7 @@ private bool TestCase2() const {
 	print("TestCase 2: pop");
 
 	try {
-		System.Stack stack = new System.Stack();
+		Stack stack = new Stack();
 
 		// Setup
 		String item;
@@ -123,7 +123,7 @@ private bool TestCase3() const {
 	print("TestCase 3: iterate");
 
 	try {
-		System.Stack stack = new System.Stack();
+		Stack stack = new Stack();
 
 		stack.push(Object new String("1"));
 		stack.push(Object new String("2"));
@@ -131,7 +131,7 @@ private bool TestCase3() const {
 
 		assert( stack.size() == 3 );
 
-		System.Iterator it = stack.getIterator();
+		Iterator it = stack.getIterator();
 
 		it.next();
 		assert( it.current() == "1" );
@@ -162,7 +162,7 @@ private bool TestCase4() const {
 	print("TestCase 4: reverse iterate");
 
 	try {
-		System.Stack stack = new System.Stack();
+		Stack stack = new Stack();
 
 		stack.push(Object new String("1"));
 		stack.push(Object new String("2"));
@@ -170,7 +170,7 @@ private bool TestCase4() const {
 
 		assert( stack.size() == 3 );
 
-		System.ReverseIterator it = stack.getReverseIterator();
+		ReverseIterator it = stack.getReverseIterator();
 
 		it.next();
 		assert( it.current() == "3" );
@@ -198,7 +198,7 @@ private bool TestCase5() const {
 	print("TestCase 5: indexOf");
 
 	try {
-		System.Stack stack = new System.Stack();
+		Stack stack = new Stack();
 
 		stack.push(Object new String("1"));
 		stack.push(Object new String("2"));
@@ -220,9 +220,9 @@ private bool TestCase6() const {
 	print("TestCase 6: contains");
 
 	try {
-		System.Stack stack = new System.Stack();
+		Stack stack = new Stack();
 		assert( stack is Object );
-		assert( stack is System.AbstractCollection );
+		assert( stack is AbstractCollection );
 
 		stack.push(Object new Integer(1));
 		stack.push(Object new Integer(2));
@@ -244,9 +244,9 @@ private bool TestCase7() const {
 	print("TestCase 7: peek");
 
 	try {
-		System.Stack stack = new System.Stack();
+		Stack stack = new Stack();
 		assert( stack is Object );
-		assert( stack is System.AbstractCollection );
+		assert( stack is AbstractCollection );
 
 		stack.push(Object new Integer(1));
 		assert( stack.peek() == 1 );

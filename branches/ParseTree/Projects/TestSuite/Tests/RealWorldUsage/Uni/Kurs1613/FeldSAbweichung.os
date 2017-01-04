@@ -10,7 +10,7 @@ private int FELDGROESSE const = 5;
 public void Main(int argc, string args) {
 	// Mittelwert berechnen
 	float Mittelwert = 0.f;
-	System.List inFeld = new System.List();
+	List inFeld = new List();
 
 	int idx;
 	for ( idx = 0; idx < FELDGROESSE; idx = idx++ ) {

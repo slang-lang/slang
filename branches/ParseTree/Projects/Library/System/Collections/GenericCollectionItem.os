@@ -1,5 +1,5 @@
 
-public namespace System { }
+public namespace System.Collections { }
 
 public object GenericCollectionItem<T> {
     public GenericCollectionItem<T> mNext;
@@ -18,6 +18,7 @@ public object GenericCollectionItem<T> {
         // this is empty by intend
     }
 
+/*
     public T get() const {
         return mValue;
     }
@@ -33,4 +34,6 @@ public object GenericCollectionItem<T> {
     public void set(T value) modify {
         mValue = value;
     }
+*/
 }
+

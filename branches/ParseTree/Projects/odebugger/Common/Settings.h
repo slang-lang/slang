@@ -21,7 +21,8 @@ class Settings
 {
 public:
 	Settings()
-	: mAutoStart(false),
+	: mAutoList(false),
+	  mAutoStart(false),
 	  mAutoStop(false),
 	  mAutoWatch(true),
 	  mBreakOnExceptionCatch(false),
@@ -31,6 +32,13 @@ public:
 	{ }
 
 public:
+	bool autoList() const {
+		return mAutoList;
+	}
+	void autoList(bool value) {
+		mAutoList = value;
+	}
+
 	bool autoStart() const {
 		return mAutoStart;
 	}
@@ -95,6 +103,7 @@ public:
 	}
 
 private:
+	bool mAutoList;
 	bool mAutoStart;
 	bool mAutoStop;
 	bool mAutoWatch;

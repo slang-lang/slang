@@ -2,7 +2,7 @@
 import Exception;
 import String;
 
-public namespace System {
+public namespace System { }
 
 	public object StringIterator {
 		private int mCurrentPosition;
@@ -21,7 +21,7 @@ public namespace System {
 		/*
 		 * Copy constructor
 		 */
-		public void Constructor(System.StringIterator si) {
+		public void Constructor(StringIterator si) {
 			mCurrentPosition = si.mCurrentPosition;
 			mSeparator = si.mSeparator;
 			mValue = new String(string si);
@@ -94,5 +94,5 @@ public namespace System {
 		}
 	}
 
-}
+//}
 

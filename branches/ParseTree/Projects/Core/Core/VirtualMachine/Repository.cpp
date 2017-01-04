@@ -47,7 +47,7 @@ Repository::~Repository()
 void Repository::addBluePrint(Designtime::BluePrintEnum* blueprint)
 {
 	if ( blueprint->getImplementationType() == ImplementationType::ForwardDeclaration ) {
-		// adding additional forward declarations doesn't matter
+		// adding duplicate forward declarations doesn't matter
 		mForwardDeclarations.insert(blueprint);
 	}
 
@@ -78,7 +78,7 @@ void Repository::addBluePrint(Designtime::BluePrintEnum* blueprint)
 void Repository::addBluePrint(Designtime::BluePrintObject* blueprint)
 {
 	if ( blueprint->getImplementationType() == ImplementationType::ForwardDeclaration ) {
-		// adding additional forward declarations doesn't matter
+		// adding duplicate forward declarations doesn't matter
 		mForwardDeclarations.insert(blueprint);
 	}
 
@@ -143,7 +143,12 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 	// inheritance
 	Designtime::Ancestors ancestors = blueprint->getInheritance();
 	for ( Designtime::Ancestors::const_iterator it = ancestors.begin(); it != ancestors.end(); ++it ) {
-		newBlue->addInheritance((*it));
+		newBlue->addInheritance(Designtime::Ancestor(
+			Designtime::Parser::buildConstraintTypename((*it).name(), (*it).constraints()),
+			(*it).type(),
+			(*it).visibility(),
+			PrototypeConstraints()
+		));
 	}
 
 	std::string type;
@@ -214,7 +219,13 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 					access = Parameter::AccessMode::ByReference;
 				}
 
-				(*paramIt) = Parameter::CreateDesigntime(paramIt->name(), type, paramIt->value(), paramIt->hasDefaultValue(), paramIt->isConst(), access, paramIt->reference());
+				(*paramIt) = Parameter::CreateDesigntime(paramIt->name(),
+														 type,
+														 paramIt->value(),
+														 paramIt->hasDefaultValue(),
+														 paramIt->isConst(),
+														 access,
+														 paramIt->reference());
 
 				signatureChanged = true;
 			}
@@ -330,22 +341,22 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 	Runtime::Object *object = 0;
 
 	// instantiate atomic types
-	if ( blueprint->Typename() == Runtime::BoolObject::TYPENAME ) {
+	if ( blueprint->QualifiedTypename() == Runtime::BoolObject::TYPENAME ) {
 		object = new Runtime::BoolObject(name, Runtime::BoolObject::DEFAULTVALUE.toBool());
 	}
-	else if ( blueprint->Typename() == Runtime::DoubleObject::TYPENAME ) {
+	else if ( blueprint->QualifiedTypename() == Runtime::DoubleObject::TYPENAME ) {
 		object = new Runtime::DoubleObject(name, Runtime::DoubleObject::DEFAULTVALUE.toDouble());
 	}
-	else if ( blueprint->Typename() == Runtime::FloatObject::TYPENAME ) {
+	else if ( blueprint->QualifiedTypename() == Runtime::FloatObject::TYPENAME ) {
 		object = new Runtime::FloatObject(name, Runtime::FloatObject::DEFAULTVALUE.toFloat());
 	}
-	else if ( blueprint->Typename() == Runtime::IntegerObject::TYPENAME ) {
+	else if ( blueprint->QualifiedTypename() == Runtime::IntegerObject::TYPENAME ) {
 		object = new Runtime::IntegerObject(name, Runtime::IntegerObject::DEFAULTVALUE.toInt());
 	}
-	else if ( blueprint->Typename() == Runtime::StringObject::TYPENAME ) {
+	else if ( blueprint->QualifiedTypename() == Runtime::StringObject::TYPENAME ) {
 		object = new Runtime::StringObject(name, Runtime::StringObject::DEFAULTVALUE.toStdString());
 	}
-	else if ( blueprint->Typename() == Runtime::VoidObject::TYPENAME ) {
+	else if ( blueprint->QualifiedTypename() == Runtime::VoidObject::TYPENAME ) {
 		object = new Runtime::VoidObject(name);
 	}
 	// instantiate user defined types
@@ -364,8 +375,6 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 	object->setMember(blueprint->isMember());
 	object->setMutability(blueprint->getMutability());
 	object->setParent(parent);
-	object->setQualifiedOuterface(blueprint->QualifiedTypename());
-	object->setQualifiedTypename(blueprint->QualifiedTypename());
 	object->setVisibility(blueprint->getVisibility());
 
 	return object;
@@ -623,7 +632,6 @@ void Repository::initializeObject(Runtime::Object* object, Designtime::BluePrint
 		symbol->setMember(blue->isMember());
 		symbol->setMutability(blue->getMutability());
 		symbol->setParent(object);
-		symbol->setQualifiedTypename(blue->QualifiedTypename());
 		symbol->setValue(blue->getValue());
 		symbol->setVisibility(blue->getVisibility());
 

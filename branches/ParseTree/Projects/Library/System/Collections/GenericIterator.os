@@ -1,8 +1,7 @@
 
-import AbstractCollection;
 import System.Exception;
 
-public namespace System { }
+public namespace System.Collections { }
 
 public object GenericIterator<T> {
 	private IGenericCollection mCollection;
@@ -14,7 +13,7 @@ public object GenericIterator<T> {
 		reset();
 	}
 
-	public T current() const {
+	public T current() const throws {
 		if ( !mCollection ) {
 			throw new Exception("invalid collection access");
 		}
@@ -22,7 +21,7 @@ public object GenericIterator<T> {
 		return mCollection.at(mCurrentIndex);
 	}
 
-	public bool hasNext() const {
+	public bool hasNext() const throws {
 		if ( !mCollection ) {
 			throw new Exception("invalid collection access");
 		}
@@ -30,7 +29,7 @@ public object GenericIterator<T> {
 		return mCurrentIndex < mCollection.size() - 1;
 	}
 
-	public T next() modify {
+	public T next() modify throws {
 		if ( !hasNext() ) {
 			throw new OutOfBoundsException("index out of bounds");
 		}
@@ -48,7 +47,7 @@ public object GenericIterator<T> {
 		return current();
 	}
 
-	public void operator++() modify {
+	public void operator++() modify throws {
 		if ( !hasNext() ) {
 			throw new OutOfBoundsException("index out of bounds");
 		}
@@ -56,7 +55,7 @@ public object GenericIterator<T> {
 		mCurrentIndex++;
 	}
 
-	public void operator--() modify {
+	public void operator--() modify throws {
 		if ( mCurrentIndex <= 0 ) {
 			throw new OutOfBoundsException("index out of bounds");
 		}
@@ -75,7 +74,7 @@ public object GenericReverseIterator<T: Object> {
 		reset();
 	}
 
-	public T current() const {
+	public T current() const throws {
 		if ( !mCollection ) {
 			throw new Exception("invalid collection access");
 		}
@@ -83,7 +82,7 @@ public object GenericReverseIterator<T: Object> {
 		return mCollection.at(mCurrentIndex);
 	}
 
-	public bool hasNext() const {
+	public bool hasNext() const throws {
 		if ( !mCollection ) {
 			throw new Exception("invalid collection access");
 		}
@@ -91,7 +90,7 @@ public object GenericReverseIterator<T: Object> {
 		return mCurrentIndex > 0;
 	}
 
-	public T next() modify {
+	public T next() modify throws {
 		if ( !hasNext() ) {
 			throw new OutOfBoundsException("index out of bounds");
 		}
@@ -109,7 +108,7 @@ public object GenericReverseIterator<T: Object> {
 		return current();
 	}
 
-	public void operator++() modify {
+	public void operator++() modify throws {
 		if ( mCurrentIndex <= 0 ) {
 			throw new OutOfBoundsException("index out of bounds");
 		}
@@ -117,7 +116,7 @@ public object GenericReverseIterator<T: Object> {
 		mCurrentIndex--;
 	}
 
-	public void operator--() modify {
+	public void operator--() modify throws {
 		if ( !hasNext() ) {
 			throw new OutOfBoundsException("index out of bounds");
 		}

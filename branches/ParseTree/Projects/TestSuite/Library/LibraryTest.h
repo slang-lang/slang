@@ -34,9 +34,9 @@ private:	// Tests
 	void testSystemCollectionsDoubleLinkedList();
 	void testSystemCollectionsIterator();
 	void testSystemCollectionsList();
-	void testSystemCollectionsRandomAccessCollection();
 	void testSystemCollectionsSet();
 	void testSystemCollectionsStack();
+	void testSystemCollectionsVector();
 	void testSystemDouble();
 	void testSystemFloat();
 	void testSystemInteger();

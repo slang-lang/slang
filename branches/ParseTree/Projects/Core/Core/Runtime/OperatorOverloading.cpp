@@ -747,9 +747,9 @@ void operator_trinary_array(Object *base, Object *index, Object* other)
 	}
 
 /*
-	std::string source = base->Typename();
-//	std::string subscript = index->Typename();
-//	std::string target = other->Typename();
+	std::string source = base->QualifiedTypename();
+//	std::string subscript = index->QualifiedTypename();
+//	std::string target = other->QualifiedTypename();
 */
 
 	other->operator_array(index, base);

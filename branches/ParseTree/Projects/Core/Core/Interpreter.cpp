@@ -872,7 +872,7 @@ void Interpreter::process_delete(TokenIterator& token)
 		case Symbol::IType::ObjectSymbol: {
 			Object *object = static_cast<Object*>(symbol);
 
-			//object->assign(Object(object->getName(), object->Filename(), object->Typename(), VALUE_NONE));
+			//object->assign(Object(object->getName(), object->Filename(), object->QualifiedTypename(), VALUE_NONE));
 			object->assign(Object());
 		} break;
 		case Symbol::IType::BluePrintEnumSymbol:
@@ -1014,7 +1014,7 @@ void Interpreter::process_foreach(TokenIterator& token, Object* result)
 	if ( !collection ) {
 		throw Common::Exceptions::SyntaxError("invalid symbol '" + token->content() + "' found", token->position());
 	}
-	if ( !collection->isInstanceOf("System.IIterateable") ) {
+	if ( !collection->isInstanceOf("IIterateable") ) {
 		throw Common::Exceptions::SyntaxError("symbol '" + collection->getName() + "' is not derived from IIteratable", token->position());
 	}
 	++token;
@@ -1905,15 +1905,11 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol)
 	bool isConst = false;
 	bool isReference = false;
 
-	++token;
-
-	PrototypeConstraints constraints = Designtime::Parser::collectPrototypeConstraints(token);
-
-	std::string name = token->content();
+	PrototypeConstraints constraints = Designtime::Parser::collectPrototypeConstraints(++token);
 
 	expect(Token::Type::IDENTIFER, token);
 
-	++token;
+	std::string name = (token++)->content();
 
 	if ( token->type() == Token::Type::MODIFIER ) {
 		if ( token->content() == MODIFIER_CONST ) { isConst = true; }
@@ -1944,10 +1940,9 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol)
 
 
 	Object* object = mRepository->createInstance(static_cast<Designtime::BluePrintGeneric*>(symbol), name, constraints);
+	object->setConst(isConst);
 
 	getScope()->define(name, object);
-
-	if ( isConst ) object->setConst(true);
 
 	if ( assign != getTokens().end() ) {
 		// execute assignment statement

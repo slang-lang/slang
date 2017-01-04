@@ -262,9 +262,9 @@ ControlFlow::E Object::Constructor(const ParameterList& params)
 	// check if all base objects have been constructed correctly
 	for ( Inheritance::iterator it = mInheritance.begin(); it != mInheritance.end(); ++it ) {
 		if ( !it->second->mIsConstructed ) {
-			System::Print("C++ (Constructor): " + getName() + "::" + Typename() + "()");
+			System::Print("C++ (Constructor): " + getName() + "::" + QualifiedTypename() + "()");
 
-			throw Common::Exceptions::Exception(getName() + "::" + Typename() + "(): not all base objects have been constructed correctly");
+			throw Common::Exceptions::Exception(getName() + "::" + QualifiedTypename() + "(): not all base objects have been constructed correctly");
 		}
 	}
 */
@@ -1059,8 +1059,11 @@ std::string Object::ToString(unsigned int indent) const
 	if ( isAtomicType() ) {
 		result += " = " + getValue().toStdString();
 	}
+	else if ( !isValid() ) {
+		result += " = null";
+	}
 	else {
-		result += " {\n";
+		result += "{\n";
 
 		for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
 			result += (*it)->ToString(indent + 1) + "\n";

@@ -26,18 +26,15 @@ public:
 	Namespace(const std::string& name, IScope* parent);
 	~Namespace();
 
-public:	// Symbol::IType implementation & RTTI
+public:	// Symbol::IType implementation
 	const std::string& Filename() const { return mFilename; }
-	const std::string& Typename() const { return mTypename; }
 	const std::string& QualifiedTypename() const { return mQualifiedTypename; }
+	const std::string& Typename() const { return mTypename; }
 
-public:
 	void setQualifiedTypename(const std::string& type) { mQualifiedTypename = type; }
 
-public:	// Value
-	virtual std::string ToString(unsigned int indent = 0) const;
-
-protected:
+public:
+	std::string ToString(unsigned int indent = 0) const;
 
 private:
 	std::string mFilename;

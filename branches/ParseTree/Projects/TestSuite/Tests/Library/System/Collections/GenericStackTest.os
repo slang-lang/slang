@@ -222,7 +222,7 @@ private bool TestCase6() const {
 		GenericStack<Integer> stack = new GenericStack<Integer>();
 		assert( stack is Object );
 		assert( stack is IGenericCollection );
-		assert( stack is System.IIterateable );
+		assert( stack is IIterateable );
 		assert( stack is GenericStack<Integer> );
 
 		stack.push(new Integer(1));
@@ -338,10 +338,11 @@ private bool TestCase10() const {
 		stack.push(2);
 		stack.push(3);
 
+		assert( !stack.empty() );
 		assert( stack.size() == 3 );
 
 		foreach ( int i : stack ) {
-			//print(i);
+			//print("i = " + i);
 		}
 
 		return true;

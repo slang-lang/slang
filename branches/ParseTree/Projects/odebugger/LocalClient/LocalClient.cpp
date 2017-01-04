@@ -17,6 +17,7 @@
 #include <Core/Designtime/Parser/Tokenizer.h>
 #include <Core/Interpreter.h>
 #include <Core/Method.h>
+#include <Core/Runtime/Namespace.h>
 #include <Core/Runtime/Script.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
@@ -206,7 +207,13 @@ std::string LocalClient::executeCommand(const StringList &tokens)
 	if ( it != tokens.end() ) {
 		std::string cmd = (*it++);
 
-		if ( cmd == "autowatch" ) {
+		if ( cmd == "autolist" ) {
+			toggleAutoList();
+		}
+		else if ( cmd == "autostart" ) {
+			toggleAutoStart();
+		}
+		else if ( cmd == "autowatch" ) {
 			toggleAutoWatch();
 		}
 		else if ( cmd == "backtrace" || cmd == "bt" ) {
@@ -238,6 +245,9 @@ std::string LocalClient::executeCommand(const StringList &tokens)
 		else if ( cmd == "into" || cmd == "i" ) {
 			mDebugger->stepInto();
 			continueExecution();
+		}
+		else if ( cmd == "list" ) {
+			printScope(mScope);
 		}
 		else if ( cmd == "load" ) {
 			loadConfig();
@@ -369,7 +379,7 @@ MethodSymbol* LocalClient::getMethod(std::string name, const ParameterList& para
 
 	std::string child;
 	std::string parent;
-	MethodScope* scope = getMethodScope(mScope);
+	MethodScope* scope = getEnclosingMethodScope(mScope);
 
 	do {
 		if ( !scope ) {
@@ -391,13 +401,49 @@ MethodSymbol* LocalClient::getMethod(std::string name, const ParameterList& para
 	return 0;
 }
 
-MethodScope* LocalClient::getMethodScope(IScope* scope) const
+Runtime::Method* LocalClient::getEnclosingMethod(IScope* scope) const
+{
+	while ( scope ) {
+		IScope* parent = scope->getEnclosingScope();
+
+		if ( parent && parent->getScopeType() == IScope::IType::NamedScope ) {
+			Runtime::Method* result = dynamic_cast<Runtime::Method*>(parent);
+			if ( result ) {
+				return result;
+			}
+		}
+
+		scope = parent;
+	}
+
+	return 0;
+}
+
+MethodScope* LocalClient::getEnclosingMethodScope(IScope* scope) const
+{
+	while ( scope ) {
+		IScope* parent = scope->getEnclosingScope();
+
+		if ( parent && parent->getScopeType() == IScope::IType::NamedScope ) {
+			return dynamic_cast<MethodScope*>(parent);
+		}
+
+		scope = parent;
+	}
+
+	return 0;
+}
+
+Runtime::Object* LocalClient::getEnclosingObject(IScope* scope) const
 {
 	while ( scope ) {
 		IScope* parent = scope->getEnclosingScope();
 
 		if ( parent && parent->getScopeType() == IScope::IType::MethodScope ) {
-			return static_cast<MethodScope*>(parent);
+			Runtime::Object* result = dynamic_cast<Runtime::Object*>(parent);
+			if ( result ) {
+				return result;
+			}
 		}
 
 		scope = parent;
@@ -455,6 +501,9 @@ void LocalClient::loadConfig()
 	Json::Value config = Json::Parser::parse(data);
 
 	// (1) odebugger config
+	if ( config.isMember("autolist") ) {
+		mSettings->autoList(config["autolist"].asBool());
+	}
 	if ( config.isMember("autostart") ) {
 		mSettings->autoStart(config["autostart"].asBool());
 	}
@@ -563,6 +612,12 @@ int LocalClient::notify(IScope* scope, const Core::BreakPoint& breakpoint)
 	// Breakpoint check
 	if ( scope && !(breakpoint == Core::Debugger::immediateBreakPoint) ) {
 		writeln("[Breakpoint " + breakpoint.toString() + " reached]");
+	}
+
+	mBreakpoint = breakpoint;
+
+	if ( mSettings->autoList() ) {
+		printScope(mScope);
 	}
 
 	// automatically update watches
@@ -680,6 +735,8 @@ void LocalClient::printHelp()
 {
 	writeln("Generic commands:");
 
+	writeln("\tautolist      automatically list source code after reaching breakpoint");
+	writeln("\tautostart     automatically run program after startup");
 	writeln("\tautowatch     automatically show watches after reaching breakpoint");
 	writeln("\tbreak (b)     add breakpoint");
 	writeln("\tbreakpoints   print all breakpoints");
@@ -700,11 +757,49 @@ void LocalClient::printHelp()
 		writeln("\texecute (e)      execute program function");
 		writeln("\tignore           ignore all breakpoints and continue program execution");
 		writeln("\tinto (i)         break on next function call");
+		writeln("\tlist (l)         print current method");
 		writeln("\tmodify (m)       modify (atomic) symbol");
 		writeln("\tnext (n)         step over");
 		writeln("\tout (o)          break on next function exit");
 		writeln("\tprint (p)        print symbol");
 	}
+}
+
+void LocalClient::printScope(IScope* scope)
+{
+	Runtime::Method* method = dynamic_cast<Runtime::Method*>(getEnclosingMethod(scope));
+	if ( !method ) {
+		return;
+	}
+
+	TokenList tokens = method->getTokens();
+	TokenIterator it = tokens.begin();
+
+	unsigned int activeLine = mBreakpoint.getLine();
+	unsigned int currentLine = 0;
+	unsigned int previousLine = 0;
+
+	while ( it != tokens.end() ) {
+		currentLine = it->position().mLine;
+
+		if ( currentLine != previousLine ) {
+			std::cout << std::endl;
+			if ( currentLine == activeLine ) {
+				std::cout << "> ";
+			}
+			else {
+				std::cout << "  ";
+			}
+			std::cout << it->position().mLine << ": ";
+			previousLine = currentLine;
+		}
+
+		std::cout << it->content();
+
+		it++;
+	}
+
+	std::cout << std::endl << std::endl;
 }
 
 void LocalClient::printStackTrace()
@@ -826,6 +921,7 @@ void LocalClient::saveConfig()
 	Json::Value config;
 
 	// (1) odebugger config
+	config.addMember("autolist", Json::Value(mSettings->autoList()));
 	config.addMember("autostart", Json::Value(mSettings->autoStart()));
 	config.addMember("autowatch", Json::Value(mSettings->autoWatch()));
 	config.addMember("breakonexceptioncatch", Json::Value(mSettings->breakOnExceptionCatch()));
@@ -927,13 +1023,41 @@ void LocalClient::stop()
 		delete mVirtualMachine;
 		mVirtualMachine = 0;
 	}
+
+	mBreakpoint = Core::BreakPoint();
+}
+
+void LocalClient::toggleAutoList()
+{
+	mSettings->autoList(!mSettings->autoList());
+
+	write("AutoList is ");
+	if ( mSettings->autoList() ) {
+		writeln("on");
+	}
+	else {
+		writeln("off");
+	}
+}
+
+void LocalClient::toggleAutoStart()
+{
+	mSettings->autoStart(!mSettings->autoStart());
+
+	write("AutoStart is ");
+	if ( mSettings->autoStart() ) {
+		writeln("on");
+	}
+	else {
+		writeln("off");
+	}
 }
 
 void LocalClient::toggleAutoWatch()
 {
 	mSettings->autoWatch(!mSettings->autoWatch());
 
-	write("Autowatch is ");
+	write("AutoWatch is ");
 	if ( mSettings->autoWatch() ) {
 		writeln("on");
 	}

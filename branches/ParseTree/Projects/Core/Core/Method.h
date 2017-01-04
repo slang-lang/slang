@@ -51,7 +51,6 @@ public: // overloaded operators
 
 public:	// Symbol::IType implementation
 	const std::string& QualifiedTypename() const { return mQualifiedTypename; }
-	const std::string& Typename() const { return mQualifiedTypename; }
 
 	void setQualifiedTypename(const std::string& type) { mQualifiedTypename = type; }
 

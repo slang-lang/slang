@@ -15,28 +15,28 @@ public object Integer {
 	/*
 	 * Copy constructor
 	 */
-	public void Constructor(Integer i) {
+	public void Constructor(Integer i ref) {
 		mValue = i.mValue;
+	}
+
+	/*
+	 * Destructor
+	 */
+	public void Destructor() {
+		// this is empty by intend
 	}
 
 	/*
 	 * Returns a JSON-formatted string
 	 */
-	public string ToJsonString() const {
+	public deprecated string ToJsonString() const {
 		return "{ "
 		     + "mValue: " + mValue
 		     + " }";
 	}
 
-	public string ToString() const {
+	public deprecated string ToString() const {
 		return "Integer: " +  mValue;
-	}
-
-	public deprecated int Value() const {
-		return mValue;
-	}
-	public deprecated void Value(int value) modify {
-		mValue = value;
 	}
 
 	public bool operator!() const {
@@ -74,7 +74,7 @@ public object Integer {
 	/*
 	 * Integer assignment operator
 	 */
-	public void operator=(Integer other) modify {
+	public void operator=(Integer other ref) modify {
 		mValue = other;
 	}
 

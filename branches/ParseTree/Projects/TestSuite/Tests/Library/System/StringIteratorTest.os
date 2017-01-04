@@ -13,11 +13,12 @@ private bool TestCase1() modify {
 	System.StringIterator strIt = new System.StringIterator("This is a string", " ");
 
 	int count;
+
 	while ( strIt.hasNext() && count < 10 ) {
 		string next = strIt.next();
 		print("str.next() = " + next);
 
-		count = count++;
+		count++;
 	}
 
 	return true;
@@ -30,13 +31,12 @@ private bool TestCase2() const {
 
 	try {
 		int count;
-		string str;
 
 		while ( count < 10 ) {
 			string str = strIt.next();
 			print("strIt.next() = " + str);
 
-			count = count++;
+			count++;
 		}
 
 		assert(!"we should not get here!");

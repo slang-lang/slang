@@ -57,10 +57,8 @@ public:	// Symbol::IType implementation & RTTI
 	const std::string& Filename() const { return mFilename; }
 	const std::string& QualifiedOuterface() const { return mQualifiedOuterface; }
 	const std::string& QualifiedTypename() const { return mQualifiedTypename; }
-	const std::string& Typename() const { return mTypename; }
 
 	void setQualifiedOuterface(const std::string &type) { mQualifiedOuterface = type; }
-	void setQualifiedTypename(const std::string& type) { mQualifiedTypename = type; }
 
 public:	// Setup
 	void addInheritance(const Designtime::Ancestor& ancestor, Object* inheritance);

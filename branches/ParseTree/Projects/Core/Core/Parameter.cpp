@@ -13,8 +13,13 @@
 namespace ObjectiveScript {
 
 
-Parameter Parameter::CreateDesigntime(const std::string& name, const std::string& type, Runtime::AtomicValue value,
-									  bool hasDefaultValue, bool isConst, AccessMode::E access, Reference reference)
+Parameter Parameter::CreateDesigntime(const std::string& name,
+									  const std::string& type,
+									  Runtime::AtomicValue value,
+									  bool hasDefaultValue,
+									  bool isConst,
+									  AccessMode::E access,
+									  Reference reference)
 {
 	return Parameter(
 		name,
@@ -59,8 +64,8 @@ Parameter::Parameter()
 {
 }
 
-Parameter::Parameter(const std::string& name, const std::string& type, Runtime::AtomicValue value, bool hasDefaultValue,
-					 bool isConst, AccessMode::E access, Reference reference)
+Parameter::Parameter(const std::string& name, const std::string& type, Runtime::AtomicValue value,
+					 bool hasDefaultValue, bool isConst, AccessMode::E access, Reference reference)
 : mAccessMode(access),
   mHasDefaultValue(hasDefaultValue),
   mIsConst(isConst),

@@ -1,10 +1,11 @@
 
 import Collections.IIterateable;
+import StringIterator;
 
 // declare 'System' namespace to prevent a user defined private 'System' namespace
 public namespace System { }
 
-public object String implements System.IIterateable {
+public object String implements IIterateable {
 	private string mValue;
 
 	/*
@@ -50,10 +51,10 @@ public object String implements System.IIterateable {
 	}
 
 	/*
-	 * Returns a StringIterator that is not attached to this string, instead it uses a copy of this Strings string value
+	 * Returns an Iterator that is not attached to this string, instead it uses a copy of this Strings string value
 	 */
-	public System.StringIterator getIterator() const {
-		return new System.StringIterator(mValue);
+	public StringIterator getIterator() const {
+		return new StringIterator(mValue);
 	}
 
 	/*
@@ -165,9 +166,9 @@ public object String implements System.IIterateable {
 		return mValue;
 	}
 
-    /*
-     * String validation operator
-     */
+	/*
+	 * String validation operator
+	 */
 	public bool operator!() const {
 		return !mValue;
 	}

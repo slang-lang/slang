@@ -174,12 +174,12 @@ PrototypeConstraints Parser::collectPrototypeConstraints(TokenIterator& token)
 		index++;
 		type = "";
 
-		if ( lookahead(token)->type() == Token::Type::COMMA ) {
+		if ( token->type() == Token::Type::COMMA ) {
 			token++;
 		}
 	}
 
-	token++;
+	expect(Token::Type::COMPARE_GREATER, token++);
 
 	return constraints;
 }

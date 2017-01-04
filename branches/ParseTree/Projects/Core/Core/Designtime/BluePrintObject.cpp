@@ -38,6 +38,16 @@ Runtime::AtomicValue BluePrintObject::getValue() const
 	return mValue;
 }
 
+MethodScope::MethodCollection BluePrintObject::provideMethods() const
+{
+	return mMethods;
+}
+
+Symbols BluePrintObject::provideSymbols() const
+{
+	return mSymbols;
+}
+
 void BluePrintObject::setParent(IScope* parent)
 {
 	mParent = parent;

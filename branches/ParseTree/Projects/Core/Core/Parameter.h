@@ -37,16 +37,26 @@ public:
 	};
 
 public:
-	static Parameter CreateDesigntime(const std::string& name, const std::string& type,
-									  Runtime::AtomicValue value = Runtime::AtomicValue(), bool hasDefaultValue = false,
-									  bool isConst = false, AccessMode::E access = AccessMode::ByValue,
+	static Parameter CreateDesigntime(const std::string& name,
+									  const std::string& type,
+									  Runtime::AtomicValue value = Runtime::AtomicValue(),
+									  bool hasDefaultValue = false,
+									  bool isConst = false,
+									  AccessMode::E access = AccessMode::ByValue,
 									  Reference reference = Reference());
-	static Parameter CreateRuntime(const std::string& type, Runtime::AtomicValue value, Reference reference = Reference());
+	static Parameter CreateRuntime(const std::string& type,
+								   Runtime::AtomicValue value,
+								   Reference reference = Reference());
 
 public:
 	Parameter();
-	Parameter(const std::string& name, const std::string& type, Runtime::AtomicValue value, bool hasDefaultValue = false,
-			  bool isConst = false, AccessMode::E access = AccessMode::ByValue, Reference reference = Reference());
+	Parameter(const std::string& name,
+			  const std::string& type,
+			  Runtime::AtomicValue value,
+			  bool hasDefaultValue = false,
+			  bool isConst = false,
+			  AccessMode::E access = AccessMode::ByValue,
+			  Reference reference = Reference());
 
 public:
 	AccessMode::E access() const;
