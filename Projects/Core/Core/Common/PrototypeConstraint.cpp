@@ -12,16 +12,22 @@
 namespace ObjectiveScript {
 
 
-PrototypeConstraint::PrototypeConstraint(unsigned int index, const std::string& type, const std::string& constraint)
+PrototypeConstraint::PrototypeConstraint(unsigned int index, const std::string& designType, const std::string& runType, const std::string& constraint)
 : mConstraint(constraint),
+  mDesignType(designType),
   mIndex(index),
-  mType(type)
+  mRunType(runType)
 {
 }
 
 bool PrototypeConstraint::operator==(const PrototypeConstraint& other) const
 {
-	return /*mConstraint == other.mConstraint &&*/ mIndex == other.mIndex && mType == mType;
+	return mIndex == other.mIndex && mDesignType == mDesignType /*&& mRunType == other.mRunType*/;
+}
+
+bool PrototypeConstraint::typeHasBeenResolved() const
+{
+	return !mRunType.empty();
 }
 
 

@@ -55,7 +55,7 @@ std::string Parser::buildConstraintTypename(const std::string& name, const Proto
 	std::string type = name;
 	type += "<";
 	for ( PrototypeConstraints::const_iterator it = constraints.begin(); it != constraints.end(); ++it ) {
-		type += it->mType;
+		type += it->mDesignType;
 
 		if ( std::distance(it, constraints.end()) > 1 ) {
 			type += ",";
@@ -120,7 +120,7 @@ Ancestors Parser::collectInheritance(TokenIterator& token)
 
 		std::string type = Parser::identify(token);
 
-		PrototypeConstraints constraints = collectPrototypeConstraints(token);
+		PrototypeConstraints constraints = collectDesigntimePrototypeConstraints(token);
 
 		ancestors.insert(
 			Ancestor(type, inheritance, visibility, constraints)
@@ -130,7 +130,7 @@ Ancestors Parser::collectInheritance(TokenIterator& token)
 	return ancestors;
 }
 
-PrototypeConstraints Parser::collectPrototypeConstraints(TokenIterator& token)
+PrototypeConstraints Parser::collectDesigntimePrototypeConstraints(TokenIterator &token)
 {
 	PrototypeConstraints constraints;
 	
@@ -142,11 +142,12 @@ PrototypeConstraints Parser::collectPrototypeConstraints(TokenIterator& token)
 	token++;
 
 	std::string constraint;
+	std::string designType;
 	unsigned int index = 0;
-	std::string type;
+	std::string runType;
 
 	while ( token->type() != Token::Type::COMPARE_GREATER ) {
-		type = token->content();
+		designType = token->content();
 		token++;
 
 		if ( token->type() == Token::Type::COLON ) {	// constraint
@@ -166,13 +167,58 @@ PrototypeConstraints Parser::collectPrototypeConstraints(TokenIterator& token)
 		}
 
 		constraints.push_back(
-			PrototypeConstraint(index, type, constraint)
+			PrototypeConstraint(index, designType, runType, constraint)
 		);
 
 		// cleanup for next iteration
 		constraint = "";
+		designType = "";
 		index++;
-		type = "";
+		runType = "";
+
+		if ( token->type() == Token::Type::COMMA ) {
+			token++;
+		}
+	}
+
+	expect(Token::Type::COMPARE_GREATER, token++);
+
+	return constraints;
+}
+
+PrototypeConstraints Parser::collectRuntimePrototypeConstraints(TokenIterator& token)
+{
+	PrototypeConstraints constraints;
+
+	if ( token->type() != Token::Type::COMPARE_LESS ) {
+		// no '<' token, no constraints
+		return constraints;
+	}
+
+	token++;
+
+	std::string constraint;
+	std::string designType;
+	unsigned int index = 0;
+	std::string runType;
+
+	while ( token->type() != Token::Type::COMPARE_GREATER ) {
+		designType = token->content();
+		token++;
+
+		if ( token->type() == Token::Type::COLON ) {	// constraint
+			token++;
+		}
+
+		constraints.push_back(
+			PrototypeConstraint(index, designType, runType, constraint)
+		);
+
+		// cleanup for next iteration
+		constraint = "";
+		designType = "";
+		index++;
+		runType = "";
 
 		if ( token->type() == Token::Type::COMMA ) {
 			token++;
@@ -437,8 +483,6 @@ ObjectType::E Parser::parseObjectType(TokenIterator& token)
 
 ParameterList Parser::parseParameters(TokenIterator &token, IScope* scope)
 {
-(void)scope;	// scope would allow a namespace resolution
-
 	ParameterList params;
 
 	while ( (*++token).type() != Token::Type::PARENTHESIS_CLOSE ) {
@@ -459,7 +503,7 @@ ParameterList Parser::parseParameters(TokenIterator &token, IScope* scope)
 			throw Common::Exceptions::SyntaxError("unexpected token '" + token->content() + "' found", token->position());
 		}
 
-		TypeDeclaration type = parseTypeDeclaration(token);
+		TypeDeclaration type = parseTypeDeclaration(token, scope);
 
 		std::string name = token->content();
 		token++;
@@ -513,11 +557,18 @@ ParameterList Parser::parseParameters(TokenIterator &token, IScope* scope)
 	return params;
 }
 
-TypeDeclaration Parser::parseTypeDeclaration(TokenIterator& token)
+TypeDeclaration Parser::parseTypeDeclaration(TokenIterator& token, IScope* scope)
 {
 	TypeDeclaration result;
 	result.mTypename = identify(token);
-	result.mConstraints = collectPrototypeConstraints(token);
+
+	// determine if we are called at "design time" or "run time"
+	if ( scope && scope->getScopeType() == IScope::IType::NamedScope ) {
+		result.mConstraints = collectRuntimePrototypeConstraints(token);
+	}
+	else {
+		result.mConstraints = collectDesigntimePrototypeConstraints(token);
+	}
 
 	return result;
 }

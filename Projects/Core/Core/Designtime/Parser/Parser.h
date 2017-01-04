@@ -36,7 +36,8 @@ public:
 
 	static TokenList collectScopeTokens(TokenIterator& token);
 	static Ancestors collectInheritance(TokenIterator& token);
-	static PrototypeConstraints collectPrototypeConstraints(TokenIterator& token);
+	static PrototypeConstraints collectDesigntimePrototypeConstraints(TokenIterator &token);
+	static PrototypeConstraints collectRuntimePrototypeConstraints(TokenIterator& token);
 
 	static std::string identify(TokenIterator& token);
 
@@ -54,7 +55,7 @@ public:
 	static LanguageFeatureState::E parseLanguageFeatureState(TokenIterator& token, LanguageFeatureState::E defaultValue);
 	static ObjectType::E parseObjectType(TokenIterator& token);
 	static ParameterList parseParameters(TokenIterator &token, IScope* scope = 0);
-	static TypeDeclaration parseTypeDeclaration(TokenIterator& token);
+	static TypeDeclaration parseTypeDeclaration(TokenIterator& token, IScope* scope = 0);
 	static Runtime::AtomicValue parseValueInitialization(TokenIterator& token);
 };
 

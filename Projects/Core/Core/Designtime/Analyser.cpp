@@ -138,7 +138,7 @@ bool Analyser::createBluePrint(TokenIterator& token, TokenIterator /*end*/)
 	}
 	else {
 		// collect prototype constraints (if present)
-		PrototypeConstraints constraints = Parser::collectPrototypeConstraints(token);
+		PrototypeConstraints constraints = Parser::collectDesigntimePrototypeConstraints(token);
 
 		blueprint->setPrototypeConstraints(constraints);
 
@@ -224,7 +224,7 @@ bool Analyser::createEnum(TokenIterator& token, TokenIterator /*end*/)
 	}
 
 	// look for the identifier token
-	TypeDeclaration type = Parser::parseTypeDeclaration(token);
+	TypeDeclaration type = Parser::parseTypeDeclaration(token, mScope);
 	if ( !type.mConstraints.empty() ) {
 		throw Common::Exceptions::SyntaxError("enums are now allowed to be prototypes", token->position());
 	}
@@ -298,7 +298,7 @@ bool Analyser::createMemberOrMethod(TokenIterator& token, TokenIterator /*end*/)
 	// look for an optional language feature token
 	LanguageFeatureState::E languageFeatureState = Parser::parseLanguageFeatureState(token, LanguageFeatureState::Stable);
 	// look for the type token
-	TypeDeclaration type = Parser::parseTypeDeclaration(token);
+	TypeDeclaration type = Parser::parseTypeDeclaration(token, mScope);
 	// look for the identifier token
 	std::string name = (*token++).content();
 
@@ -414,7 +414,7 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 	expect(Token::Type::PARENTHESIS_OPEN, token);
 
 
-	ParameterList params = Parser::parseParameters(token);
+	ParameterList params = Parser::parseParameters(token, mScope);
 
 	// look at possible attributes (abstract, const, final, modify, throws, etc.)
 	// while looking for the next opening curly bracket
@@ -483,7 +483,9 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 		throw Common::Exceptions::SyntaxError("method '" + name + "' is not declared as abstract but has no implementation", token->position());
 	}
 
-// TODO look up if type.mTypename is a valid type and in case it is rebuild method return type; update Interpreter::execute afterwards
+// TODO: if this method is a runtime method prototype constraints are not allowed (because they never will be resolved)
+// TODO: look up if type.mTypename is a valid type and in case it is rebuild method return type; update Interpreter::execute afterwards
+
 	// create a new method with the corresponding return type
 	Common::Method *method = new Common::Method(mScope, name, type.mTypename);
 	method->setAbstract(isAbstract || mProcessingInterface);

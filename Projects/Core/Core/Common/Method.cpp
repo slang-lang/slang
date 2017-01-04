@@ -116,6 +116,16 @@ Runtime::ControlFlow::E Method::execute(const ParameterList& /*params*/, Runtime
 	throw Common::Exceptions::NotSupported("executing methods directly is not supported!", token.position());
 }
 
+const PrototypeConstraints& Method::getPrototypeConstraints() const
+{
+	return mPrototypeConstraints;
+}
+
+const TokenList& Method::getTokens() const
+{
+	return mTokens;
+}
+
 bool Method::isExtensionMethod() const
 {
 	return mIsExtensionMethod;
@@ -212,6 +222,11 @@ const ParameterList& Method::provideSignature() const
 	return mSignature;
 }
 
+const std::string& Method::QualifiedTypename() const
+{
+	return mQualifiedTypename;
+}
+
 void Method::setParent(IScope *scope)
 {
 	mParent = scope;
@@ -220,6 +235,11 @@ void Method::setParent(IScope *scope)
 void Method::setPrototypeConstraints(const PrototypeConstraints& constraints)
 {
 	mPrototypeConstraints = constraints;
+}
+
+void Method::setQualifiedTypename(const std::string& type)
+{
+	mQualifiedTypename = type;
 }
 
 void Method::setSignature(const ParameterList& params)

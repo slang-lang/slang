@@ -309,16 +309,6 @@ inline Symbol* Interpreter::identify(TokenIterator& token) const
 		if ( !result ) {
 			result = getScope()->resolve(identifier, onlyCurrentScope, Visibility::Private);
 
-/*
-			if ( dynamic_cast<Designtime::BluePrintGeneric*>(result) && !dynamic_cast<Designtime::BluePrintGeneric*>(result)->getPrototypeConstraints().empty() ) {
-				++token;
-
-				PrototypeConstraints constraints = Designtime::Parser::collectPrototypeConstraints(token);
-
-				result = getScope()->resolve(Designtime::Parser::buildConstraintTypename(identifier, constraints), onlyCurrentScope, Visibility::Private);
-			}
-*/
-
 			prev_identifier = identifier;
 
 			if ( !result ) {
@@ -652,7 +642,7 @@ void Interpreter::parseInfixPostfix(Object *result, TokenIterator& start)
 				compareType = static_cast<Object*>(symbol)->QualifiedTypename();
 			}
 			else if ( symbol->getSymbolType() == Symbol::IType::BluePrintEnumSymbol || symbol->getSymbolType() == Symbol::IType::BluePrintObjectSymbol ) {
-				PrototypeConstraints constraints = Designtime::Parser::collectPrototypeConstraints(start);
+				PrototypeConstraints constraints = Designtime::Parser::collectRuntimePrototypeConstraints(start);
 
 				compareType = dynamic_cast<Designtime::BluePrintGeneric*>(symbol)->QualifiedTypename();
 				compareType = Designtime::Parser::buildConstraintTypename(compareType, constraints);
@@ -724,7 +714,7 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 				case Symbol::IType::BluePrintObjectSymbol: {
 					++start;
 
-					PrototypeConstraints constraints = Designtime::Parser::collectPrototypeConstraints(start);
+					PrototypeConstraints constraints = Designtime::Parser::collectRuntimePrototypeConstraints(start);
 
 					std::string newType = dynamic_cast<Designtime::BluePrintGeneric*>(symbol)->QualifiedTypename();
 								newType = Designtime::Parser::buildConstraintTypename(newType, constraints);
@@ -1017,7 +1007,7 @@ void Interpreter::process_foreach(TokenIterator& token, Object* result)
 	}
 	++token;
 
-	PrototypeConstraints constraints = Designtime::Parser::collectPrototypeConstraints(token);
+	PrototypeConstraints constraints = Designtime::Parser::collectRuntimePrototypeConstraints(token);
 	(void)constraints;
 
 	expect(Token::Type::IDENTIFER, token);
@@ -1415,7 +1405,7 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 
 	token++;
 
-	PrototypeConstraints constraints = Designtime::Parser::collectPrototypeConstraints(token);
+	PrototypeConstraints constraints = Designtime::Parser::collectRuntimePrototypeConstraints(token);
 
 	expect(Token::Type::PARENTHESIS_OPEN, token);
 
@@ -1888,7 +1878,7 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol)
 	bool isConst = false;
 	bool isReference = false;
 
-	PrototypeConstraints constraints = Designtime::Parser::collectPrototypeConstraints(++token);
+	PrototypeConstraints constraints = Designtime::Parser::collectRuntimePrototypeConstraints(++token);
 
 	expect(Token::Type::IDENTIFER, token);
 

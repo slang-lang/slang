@@ -20,15 +20,18 @@ namespace ObjectiveScript {
 class PrototypeConstraint
 {
 public:
-	PrototypeConstraint(unsigned int index, const std::string& type, const std::string& constraint);
+	PrototypeConstraint(unsigned int index, const std::string& designType, const std::string& runType, const std::string& constraint);
 
 public:
 	bool operator==(const PrototypeConstraint& other) const;
 
+	bool typeHasBeenResolved() const;
+
 public:
 	std::string mConstraint;
+	std::string mDesignType;
 	unsigned int mIndex;
-	std::string mType;
+	std::string mRunType;
 };
 
 typedef std::list<PrototypeConstraint> PrototypeConstraints;
