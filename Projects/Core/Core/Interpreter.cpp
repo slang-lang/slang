@@ -56,9 +56,6 @@ ControlFlow::E Interpreter::execute(Method* method, const ParameterList& params,
 	if ( method->isAbstract() ) {
 		throw Common::Exceptions::AbstractException("cannot execute abstract method '" + method->getFullScopeName() + "'");
 	}
-	if ( !method->isSignatureValid(params) ) {
-		throw Common::Exceptions::ParameterCountMissmatch("incorrect number or type of parameters");
-	}
 
 	switch ( method->getLanguageFeatureState() ) {
 		case LanguageFeatureState::Deprecated: OSwarn("method '" + method->getFullScopeName() + "' is marked as deprecated"); break;

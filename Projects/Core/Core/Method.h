@@ -57,9 +57,6 @@ public: // Execution
 	virtual ControlFlow::E execute(const ParameterList& params, Object* result, const Token& token);
 	virtual bool isExtensionMethod() const;
 
-public:
-	virtual Symbol* resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope = false) const;
-
 public: // Signature
 	bool isSignatureValid(const ParameterList& params) const;
 	const ParameterList& provideSignature() const;
