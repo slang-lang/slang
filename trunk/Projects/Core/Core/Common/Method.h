@@ -12,8 +12,6 @@
 #include <Core/Interpreter.h>
 #include <Core/Object.h>
 #include <Core/Parameter.h>
-#include <Core/Reference.h>
-#include <Core/Runtime/ExceptionData.h>
 #include <Core/Scope.h>
 #include <Core/Types.h>
 
@@ -43,9 +41,9 @@ public: // overloaded operators
 	Method& operator= (const Method& other);
 
 public:	// Symbol::IType implementation
-	const std::string& QualifiedTypename() const { return mQualifiedTypename; }
+	const std::string& QualifiedTypename() const;
 
-	void setQualifiedTypename(const std::string& type) { mQualifiedTypename = type; }
+	void setQualifiedTypename(const std::string& type);
 
 	std::string ToString(unsigned int indent = 0) const;
 
@@ -64,8 +62,8 @@ public: // Setup
 
 public:
 	bool isExtensionMethod() const;
-	const PrototypeConstraints& getPrototypeConstraints() const { return mPrototypeConstraints; }
-	const TokenList& getTokens() const { return mTokens; }
+	const PrototypeConstraints& getPrototypeConstraints() const;
+	const TokenList& getTokens() const;
 
 public:
 	ParameterList mergeParameters(const ParameterList& params) const;

@@ -670,7 +670,7 @@ std::string Repository::extractType(const PrototypeConstraints& blueprintConstra
 				if ( result.size() ) {
 					result += ",";
 				}
-				result += conIt->mType;
+				result += conIt->mDesignType;
 			}
 		}
 	}
@@ -681,10 +681,10 @@ std::string Repository::extractType(const PrototypeConstraints& blueprintConstra
 std::string Repository::lookupType(const std::string& type, const PrototypeConstraints& blueprintConstraints, const PrototypeConstraints& implConstraints) const
 {
 	for ( PrototypeConstraints::const_iterator blueConIt = blueprintConstraints.begin(); blueConIt != blueprintConstraints.end(); ++blueConIt ) {
-		if ( type == blueConIt->mType ) {
+		if ( type == blueConIt->mDesignType ) {
 			for ( PrototypeConstraints::const_iterator conIt = implConstraints.begin(); conIt != implConstraints.end(); ++conIt ) {
 				if ( blueConIt->mIndex == conIt->mIndex ) {
-					return conIt->mType;
+					return conIt->mDesignType;
 				}
 			}
 		}
