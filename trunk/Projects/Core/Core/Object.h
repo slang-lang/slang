@@ -17,7 +17,6 @@
 #include <Core/Runtime/AtomicValue.h>
 #include <Core/Runtime/ControlFlow.h>
 #include "Interpreter.h"
-#include "Method.h"
 #include "Parameter.h"
 #include "Reference.h"
 #include "Scope.h"

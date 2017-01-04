@@ -10,6 +10,7 @@
 // Project includes
 #include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/Common/Exceptions.h>
+#include <Core/Common/Method.h>
 #include <Core/Common/Namespace.h>
 #include <Core/Designtime/Parser/Parser.h>
 #include <Core/Designtime/Parser/Tokenizer.h>
@@ -484,7 +485,7 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 
 // TODO look up if type.mTypename is a valid type and in case it is rebuild method return type; update Interpreter::execute afterwards
 	// create a new method with the corresponding return type
-	Runtime::Method *method = new Runtime::Method(mScope, name, type.mTypename);
+	Common::Method *method = new Common::Method(mScope, name, type.mTypename);
 	method->setAbstract(isAbstract || mProcessingInterface);
 	method->setFinal(isFinal);
 	method->setLanguageFeatureState(languageFeature);

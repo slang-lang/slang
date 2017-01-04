@@ -7,6 +7,7 @@
 
 // Project includes
 #include <Core/Common/Exceptions.h>
+#include <Core/Common/Method.h>
 #include <Core/VirtualMachine/Controller.h>
 #include "Tools.h"
 
@@ -141,7 +142,7 @@ MethodScope::~MethodScope()
 	deinit();
 }
 
-void MethodScope::defineMethod(const std::string& name, Runtime::Method* method)
+void MethodScope::defineMethod(const std::string& name, Common::Method* method)
 {
 	assert(method);
 
@@ -179,7 +180,7 @@ void MethodScope::deinit()
 MethodSymbol* MethodScope::resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope, Visibility::E visibility) const
 {
 	for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
-		Runtime::Method *method = (*it);
+		Common::Method *method = (*it);
 
 		if ( method->getVisibility() >= visibility ) {
 			if ( method->getName() == name && method->isSignatureValid(params) ) {
@@ -195,7 +196,7 @@ MethodSymbol* MethodScope::resolveMethod(const std::string& name, const Paramete
 	return 0;
 }
 
-void MethodScope::undefineMethod(Runtime::Method* method)
+void MethodScope::undefineMethod(Common::Method* method)
 {
 	assert(method);
 

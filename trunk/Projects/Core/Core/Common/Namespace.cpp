@@ -5,7 +5,7 @@
 // Library includes
 
 // Project includes
-#include <Core/Method.h>
+#include "Method.h"
 
 // Namespace declarations
 
