@@ -7,6 +7,7 @@
 // Project includes
 #include <Core/BuildInObjects/VoidObject.h>
 #include <Core/Common/Exceptions.h>
+#include <Core/Common/Method.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/VirtualMachine/Controller.h>
 #include <Tools/Strings.h>
@@ -229,7 +230,7 @@ ControlFlow::E Object::Constructor(const ParameterList& params)
 	Symbol *symbol = resolve(RESERVED_WORD_CONSTRUCTOR, true, Visibility::Private);
 	if ( symbol ) {
 		// if a specialized constructor is implemented, the default constructor cannot be used
-		Method *constructor = dynamic_cast<Method*>(resolveMethod(RESERVED_WORD_CONSTRUCTOR, params, true, Visibility::Private));
+		Common::Method *constructor = dynamic_cast<Common::Method*>(resolveMethod(RESERVED_WORD_CONSTRUCTOR, params, true, Visibility::Private));
 		if ( constructor ) {
 			VoidObject tmp;
 
@@ -301,7 +302,7 @@ void Object::copy(const Object& other)
 
 			// register new methods
 			for ( MethodCollection::const_iterator it = other.mMethods.begin(); it != other.mMethods.end(); ++it ) {
-				Method *method = new Method(this, (*it)->getName(), (*it)->QualifiedTypename());
+				Common::Method *method = new Common::Method(this, (*it)->getName(), (*it)->QualifiedTypename());
 				*method = *(*it);
 
 				defineMethod((*it)->getName(), method);
@@ -318,7 +319,7 @@ ControlFlow::E Object::Destructor()
 		ParameterList params;
 
 		// only execute destructor if one is present
-		Method *destructor = static_cast<Method*>(resolveMethod(RESERVED_WORD_DESTRUCTOR, params, true, Visibility::Private));
+		Common::Method *destructor = static_cast<Common::Method*>(resolveMethod(RESERVED_WORD_DESTRUCTOR, params, true, Visibility::Private));
 		if ( destructor ) {
 			VoidObject tmp;
 
@@ -355,7 +356,7 @@ ControlFlow::E Object::execute(Object *result, const std::string& name, const Pa
 		throw Runtime::Exceptions::NullPointerException("executed method '" + name + "' of uninitialized object '" + QualifiedTypename() + "'");
 	}
 
-	Method *method = static_cast<Method*>(resolveMethod(name, params, false, Visibility::Private));
+	Common::Method *method = static_cast<Common::Method*>(resolveMethod(name, params, false, Visibility::Private));
 	if ( !method ) {
 		throw Common::Exceptions::UnknownIdentifer("unknown method '" + QualifiedTypename() + "." + name + "' or method with invalid parameter count called!");
 	}
@@ -502,7 +503,7 @@ void Object::operator_array(const Object *index, Object* result)
 	::ObjectiveScript::MethodSymbol* opMethod = resolveMethod("operator[]", params, false, Visibility::Public);
 	if ( opMethod ) {
 		Interpreter interpreter;
-		interpreter.execute(static_cast<Method*>(opMethod), params, result);
+		interpreter.execute(static_cast<Common::Method*>(opMethod), params, result);
 		return;
 	}
 
@@ -524,7 +525,7 @@ void Object::operator_assign(const Object *other)
 		Object tmp;
 
 		Interpreter interpreter;
-		interpreter.execute(static_cast<Method*>(value_operator), params, &tmp);
+		interpreter.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
 
 		operator_assign(&tmp);
 		return;
@@ -550,7 +551,7 @@ void Object::operator_bitand(const Object *other)
 		Object tmp;
 
 		Interpreter interpreter;
-		interpreter.execute(static_cast<Method*>(value_operator), params, &tmp);
+		interpreter.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
 
 		operator_bitand(&tmp);
 		return;
@@ -576,7 +577,7 @@ void Object::operator_bitcomplement(const Object *other)
 		Object tmp;
 
 		Interpreter interpreter;
-		interpreter.execute(static_cast<Method*>(value_operator), params, &tmp);
+		interpreter.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
 
 		operator_bitcomplement(&tmp);
 		return;
@@ -602,7 +603,7 @@ void Object::operator_bitor(const Object *other)
 		Object tmp;
 
 		Interpreter interpreter;
-		interpreter.execute(static_cast<Method*>(value_operator), params, &tmp);
+		interpreter.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
 
 		operator_bitor(&tmp);
 		return;
@@ -633,7 +634,7 @@ void Object::operator_divide(const Object *other)
 		Object tmp;
 
 		Interpreter interpreter;
-		interpreter.execute(static_cast<Method*>(value_operator), params, &tmp);
+		interpreter.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
 
 		operator_divide(&tmp);
 		return;
@@ -663,7 +664,7 @@ bool Object::operator_equal(const Object *other)
 		Object tmp;
 
 		Interpreter interpreter;
-		interpreter.execute(static_cast<Method*>(value_operator), params, &tmp);
+		interpreter.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
 
 		return operator_equal(&tmp);
 	}
@@ -688,7 +689,7 @@ bool Object::operator_greater(const Object *other)
 		Object tmp;
 
 		Interpreter interpreter;
-		interpreter.execute(static_cast<Method*>(value_operator), params, &tmp);
+		interpreter.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
 
 		return operator_greater(&tmp);
 	}
@@ -713,7 +714,7 @@ bool Object::operator_greater_equal(const Object *other)
 		Object tmp;
 
 		Interpreter interpreter;
-		interpreter.execute(static_cast<Method*>(value_operator), params, &tmp);
+		interpreter.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
 
 		return operator_greater_equal(&tmp);
 	}
@@ -751,7 +752,7 @@ bool Object::operator_less(const Object *other)
 		Object tmp;
 
 		Interpreter interpreter;
-		interpreter.execute(static_cast<Method*>(value_operator), params, &tmp);
+		interpreter.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
 
 		return operator_less(&tmp);
 	}
@@ -776,7 +777,7 @@ bool Object::operator_less_equal(const Object *other)
 		Object tmp;
 
 		Interpreter interpreter;
-		interpreter.execute(static_cast<Method*>(value_operator), params, &tmp);
+		interpreter.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
 
 		return operator_less_equal(&tmp);
 	}
@@ -801,7 +802,7 @@ void Object::operator_modulo(const Object *other)
 		Object tmp;
 
 		Interpreter interpreter;
-		interpreter.execute(static_cast<Method*>(value_operator), params, &tmp);
+		interpreter.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
 
 		operator_modulo(&tmp);
 		return;
@@ -827,7 +828,7 @@ void Object::operator_multiply(const Object *other)
 		Object tmp;
 
 		Interpreter interpreter;
-		interpreter.execute(static_cast<Method*>(value_operator), params, &tmp);
+		interpreter.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
 
 		operator_multiply(&tmp);
 		return;
@@ -853,7 +854,7 @@ void Object::operator_plus(const Object *other)
 		Object tmp;
 
 		Interpreter interpreter;
-		interpreter.execute(static_cast<Method*>(value_operator), params, &tmp);
+		interpreter.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
 
 		operator_plus(&tmp);
 		return;
@@ -879,7 +880,7 @@ void Object::operator_subtract(const Object *other)
 		Object tmp;
 
 		Interpreter interpreter;
-		interpreter.execute(static_cast<Method*>(value_operator), params, &tmp);
+		interpreter.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
 
 		operator_subtract(&tmp);
 		return;

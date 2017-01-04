@@ -5,7 +5,7 @@
 // Library includes
 
 // Project includes
-#include <Core/Method.h>
+#include <Core/Common/Method.h>
 
 // Namespace declarations
 
@@ -31,7 +31,7 @@ VirtualMethodTable::~VirtualMethodTable()
 	}
 }
 
-void VirtualMethodTable::addMethod(const std::string& currentObject, Runtime::Method* method, const std::string& parentObject)
+void VirtualMethodTable::addMethod(const std::string& currentObject, Common::Method* method, const std::string& parentObject)
 {
 	MethodTable::iterator ownerIt = mMethods.find(currentObject);
 	if ( ownerIt == mMethods.end() ) {
@@ -43,7 +43,7 @@ void VirtualMethodTable::addMethod(const std::string& currentObject, Runtime::Me
 	ownerIt->second.push_back(MethodAndParent(method, parentObject));
 }
 
-Runtime::Method* VirtualMethodTable::lookup(const std::string& parent, const std::string& name, const ParameterList& params) const
+Common::Method* VirtualMethodTable::lookup(const std::string& parent, const std::string& name, const ParameterList& params) const
 {
 	MethodTable::const_iterator ownerIt = mMethods.find(parent);
 	if ( ownerIt != mMethods.end() ) {
@@ -53,7 +53,7 @@ Runtime::Method* VirtualMethodTable::lookup(const std::string& parent, const std
 			MethodAndParent mp = (*methodIt);
 
 			if ( mp.mMethod->getName() == name && mp.mMethod->isSignatureValid(params) ) {
-				Runtime::Method* tmp = lookup(mp.mParent, name, params);
+				Common::Method* tmp = lookup(mp.mParent, name, params);
 				if ( tmp && tmp->isFinal() ) {
 					return tmp;
 				}

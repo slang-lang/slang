@@ -5,7 +5,7 @@
 // Library includes
 
 // Project includes
-#include <Core/Method.h>
+#include <Core/Common/Method.h>
 #include <Core/Tools.h>
 
 // Namespace declarations
@@ -83,7 +83,7 @@ std::string StackLevel::toString() const
 
 		switch ( scope->getScopeType() ) {
 			case IScope::IType::MethodScope:
-				result += dynamic_cast<Runtime::Method*>(scope)->ToString();
+				result += dynamic_cast<Common::Method*>(scope)->ToString();
 				break;
 			case IScope::IType::NamedScope:
 				result += scope->getScopeName();

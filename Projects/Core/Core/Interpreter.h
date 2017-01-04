@@ -42,7 +42,7 @@ public:
 	virtual ~Interpreter();
 
 public: // Execution
-	ControlFlow::E execute(Method* method, const ParameterList& params, Object* result);
+	ControlFlow::E execute(Common::Method* method, const ParameterList& params, Object* result);
 
 private: // Execution
 	inline Symbol* identify(TokenIterator& token) const;

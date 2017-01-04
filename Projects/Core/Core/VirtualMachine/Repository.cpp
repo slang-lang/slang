@@ -13,6 +13,7 @@
 #include <Core/BuildInObjects/UserObject.h>
 #include <Core/BuildInObjects/VoidObject.h>
 #include <Core/Common/Exceptions.h>
+#include <Core/Common/Method.h>
 #include <Core/Designtime/BluePrintEnum.h>
 #include <Core/Designtime/BluePrintObject.h>
 #include <Core/Designtime/BuildInTypes/BoolObject.h>
@@ -188,7 +189,7 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 	// methods
 	MethodScope::MethodCollection methods = blueprint->provideMethods();
 	for ( MethodScope::MethodCollection::const_iterator methIt = methods.begin(); methIt != methods.end(); ++methIt ) {
-		Runtime::Method* method = new Runtime::Method(newBlue, (*methIt)->getName(), Designtime::Parser::buildConstraintTypename((*methIt)->QualifiedTypename(), (*methIt)->getPrototypeConstraints()));
+		Common::Method* method = new Common::Method(newBlue, (*methIt)->getName(), Designtime::Parser::buildConstraintTypename((*methIt)->QualifiedTypename(), (*methIt)->getPrototypeConstraints()));
 
 		// copy from template
 		*method = *(*methIt);
@@ -641,11 +642,11 @@ void Repository::initializeObject(Runtime::Object* object, Designtime::BluePrint
 	// create and define all methods based on given blueprint
 	MethodScope::MethodCollection methods = blueprint->provideMethods();
 	for ( MethodScope::MethodCollection::const_iterator it = methods.begin(); it != methods.end(); ++it ) {
-		Runtime::Method* method = new Runtime::Method(object, (*it)->getName(), (*it)->QualifiedTypename());
+		Common::Method* method = new Common::Method(object, (*it)->getName(), (*it)->QualifiedTypename());
 		*method = *(*it);
 
 		// try to override abstract methods a.k.a. implement an interface method
-		Runtime::Method* old = static_cast<Runtime::Method*>(object->resolveMethod((*it)->getName(), method->provideSignature(), true, Visibility::Designtime));
+		Common::Method* old = static_cast<Common::Method*>(object->resolveMethod((*it)->getName(), method->provideSignature(), true, Visibility::Designtime));
 		if ( old && old->isAbstract() ) {
 			Runtime::Object* base = dynamic_cast<Runtime::Object*>(object->resolve(IDENTIFIER_BASE, true, Visibility::Designtime));
 			base->undefineMethod(old);

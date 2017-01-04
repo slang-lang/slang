@@ -12,6 +12,7 @@
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/BuildInObjects/VoidObject.h>
 #include <Core/Common/Exceptions.h>
+#include <Core/Common/Method.h>
 #include <Core/Common/Namespace.h>
 #include <Core/Designtime/BluePrintEnum.h>
 #include <Core/Designtime/Parser/Parser.h>
@@ -47,7 +48,7 @@ Interpreter::~Interpreter()
 /*
  * processes tokens and updates the given result
  */
-ControlFlow::E Interpreter::execute(Method* method, const ParameterList& params, Object* result)
+ControlFlow::E Interpreter::execute(Common::Method* method, const ParameterList& params, Object* result)
 {
 	if ( !mRepository ) {
 		throw Common::Exceptions::Exception("mRepository not set");
@@ -71,7 +72,7 @@ ControlFlow::E Interpreter::execute(Method* method, const ParameterList& params,
 		method->setPrototypeConstraints(PrototypeConstraints());
 	}
 
-	Method scope(*method);
+	Common::Method scope(*method);
 
 	IScope* previousOwner = mOwner;
 
@@ -1344,7 +1345,7 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 
 	Symbol* symbol = identifyMethod(token, params);
 
-	Method* method = dynamic_cast<Method*>(symbol);
+	Common::Method* method = dynamic_cast<Common::Method*>(symbol);
 	if ( !method) {
 		throw Common::Exceptions::UnknownIdentifer("could not resolve identifier '" + token->content() + "' with parameters '" + toString(params) + "'", token->position());
 	}
@@ -1357,7 +1358,7 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 	}
 
 	// check caller's constness
-	Method* owner = dynamic_cast<Method*>(getEnclosingMethodScope(getScope()));
+	Common::Method* owner = dynamic_cast<Common::Method*>(getEnclosingMethodScope(getScope()));
 	if ( owner && owner->isConst() ) {
 		if ( owner->getEnclosingScope() == method->getEnclosingScope() && !method->isConst() ) {
 			// check target method's constness
@@ -1686,7 +1687,7 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 void Interpreter::process_throw(TokenIterator& token, Object* /*result*/)
 {
 	// check if our parent scope is a method that is allowed to throw exceptions
-	Runtime::Method* method = dynamic_cast<Runtime::Method*>(getEnclosingMethodScope(getScope()));
+	Common::Method* method = dynamic_cast<Common::Method*>(getEnclosingMethodScope(getScope()));
 	if ( method && !method->throws() ) {
 		// this method is not marked as 'throwing', so we can't throw exceptions here
 		OSwarn(std::string(method->getFullScopeName() + " throws although it is not marked with 'throws' in " + token->position().toString()).c_str());

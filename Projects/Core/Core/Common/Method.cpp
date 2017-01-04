@@ -17,7 +17,7 @@
 
 
 namespace ObjectiveScript {
-namespace Runtime {
+namespace Common {
 
 
 Method::Method(IScope* parent, const std::string& name, const std::string& type)
@@ -111,7 +111,7 @@ Method& Method::operator= (const Method& other)
 	return *this;
 }
 
-ControlFlow::E Method::execute(const ParameterList& /*params*/, Object* /*result*/, const Token& token)
+Runtime::ControlFlow::E Method::execute(const ParameterList& /*params*/, Runtime::Object* /*result*/, const Token& token)
 {
 	throw Common::Exceptions::NotSupported("executing methods directly is not supported!", token.position());
 }
@@ -183,7 +183,7 @@ ParameterList Method::mergeParameters(const ParameterList& params) const
 	ParameterList::const_iterator sigIt = mSignature.begin();
 
 	Reference ref;
-	AtomicValue value;
+	Runtime::AtomicValue value;
 
 	for ( ; sigIt != mSignature.end(); ++sigIt ) {
 		// initialize parameter with default value

@@ -7,6 +7,7 @@
 #include <iostream>
 
 // Project includes
+#include <Core/Common/Method.h>
 #include <Core/Common/Namespace.h>
 #include <Core/Tools.h>
 
@@ -92,8 +93,8 @@ void Stack::print()
 void Stack::push(IScope* scope, const ParameterList &params)
 {
 	TokenList tokens;
-	if ( dynamic_cast<Runtime::Method*>(scope) ) {
-		tokens = dynamic_cast<Runtime::Method*>(scope)->getTokens();
+	if ( dynamic_cast<Common::Method*>(scope) ) {
+		tokens = dynamic_cast<Common::Method*>(scope)->getTokens();
 	}
 
 	// create new stack level

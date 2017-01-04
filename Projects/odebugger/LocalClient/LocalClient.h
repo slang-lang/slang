@@ -71,7 +71,7 @@ private:	// Configuration
 	void saveConfig();
 
 private:	// Scopes
-	Runtime::Method* getEnclosingMethod(IScope* scope) const;
+	Common::Method* getEnclosingMethod(IScope* scope) const;
 	MethodScope* getEnclosingMethodScope(IScope* scope) const;
 	Runtime::Namespace* getEnclosingNamespace(IScope* scope) const;
 	Runtime::Object* getEnclosingObject(IScope* scope) const;

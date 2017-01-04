@@ -9,13 +9,13 @@
 // Project includes
 #include <Core/Attributes/Attributes.h>
 #include <Core/Common/PrototypeConstraint.h>
+#include <Core/Interpreter.h>
+#include <Core/Object.h>
+#include <Core/Parameter.h>
+#include <Core/Reference.h>
 #include <Core/Runtime/ExceptionData.h>
-#include "Interpreter.h"
-#include "Object.h"
-#include "Parameter.h"
-#include "Reference.h"
-#include "Scope.h"
-#include "Types.h"
+#include <Core/Scope.h>
+#include <Core/Types.h>
 
 // Forward declarations
 
@@ -23,10 +23,12 @@
 
 
 namespace ObjectiveScript {
-namespace Runtime {
 
 // Forward declarations
 class Object;
+
+namespace Common {
+
 
 class Method : public NamedScope,
 			   public MethodSymbol
@@ -48,7 +50,7 @@ public:	// Symbol::IType implementation
 	std::string ToString(unsigned int indent = 0) const;
 
 public: // Execution
-	virtual ControlFlow::E execute(const ParameterList& params, Object* result, const Token& token);
+	virtual Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* result, const Token& token);
 
 public: // Signature
 	bool isSignatureValid(const ParameterList& params) const;
