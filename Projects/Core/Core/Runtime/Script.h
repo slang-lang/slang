@@ -33,11 +33,6 @@ public:	//Helpers
 
 public:	// Execution
 	void execute(const std::string& method, const ParameterList& params, Runtime::Object* result);
-
-protected:
-
-private:
-
 };
 
 
