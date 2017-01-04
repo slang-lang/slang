@@ -27,15 +27,16 @@ VirtualMachine::VirtualMachine()
 
 VirtualMachine::~VirtualMachine()
 {
+	for ( ScriptCollection::iterator it = mScripts.begin(); it != mScripts.end(); ++it ) {
+		delete (*it);
+	}
+	mScripts.clear();
+
 	Controller::Instance().deinit();
 
 	for ( Extensions::ExtensionList::iterator it = mExtensions.begin(); it != mExtensions.end(); ++it ) {
 		delete (*it);
 	}
-	for ( ScriptCollection::iterator it = mScripts.begin(); it != mScripts.end(); ++it ) {
-		delete (*it);
-	}
-	mScripts.clear();
 }
 
 void VirtualMachine::addExtension(Extensions::AExtension *extension)
