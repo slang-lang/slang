@@ -194,7 +194,7 @@ bool Analyser::createBluePrint(TokenIterator& token, TokenIterator /*end*/)
 		return blueprint != 0;
 	}
 
-	mScope->define(blueprint->Typename(), blueprint);
+	mScope->define(type, blueprint);
 
 	MethodScope* tmpScope = mScope;
 
@@ -247,7 +247,7 @@ bool Analyser::createEnum(TokenIterator& token, TokenIterator /*end*/)
 
 	mRepository->addBluePrint(symbol);
 
-	mScope->define(symbol->Typename(), symbol);
+	mScope->define(type.mTypename, symbol);
 
 	return buildEnum(symbol, tokens);
 }
@@ -358,7 +358,6 @@ bool Analyser::createMemberStub(TokenIterator& token, Visibility::E visibility, 
 		member->setMember(true);
 		member->setMutability(mutability);
 		member->setParent(mScope);
-		member->setQualifiedTypename(type.mTypename);
 		member->setValue(value);
 		member->setVisibility(visibility);
 

@@ -18,16 +18,16 @@ BluePrintGeneric::BluePrintGeneric()
 : BluePrintSymbol(ANONYMOUS_OBJECT),
   mFilename(ANONYMOUS_OBJECT),
   mQualifiedTypename(ANONYMOUS_OBJECT),
-  mTypename(ANONYMOUS_OBJECT)
+  mUnqualifiedTypename(ANONYMOUS_OBJECT)
 {
 	mVisibility = Visibility::Public;
 }
 
-BluePrintGeneric::BluePrintGeneric(const std::string& type, const std::string& filename)
-: BluePrintSymbol(type),
+BluePrintGeneric::BluePrintGeneric(const std::string& unqualifiedTypename, const std::string& filename)
+: BluePrintSymbol(unqualifiedTypename),
   mFilename(filename),
-  mQualifiedTypename(type),
-  mTypename(type)
+  mQualifiedTypename(unqualifiedTypename),
+  mUnqualifiedTypename(unqualifiedTypename)
 {
 	mVisibility = Visibility::Public;
 }
