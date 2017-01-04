@@ -23,12 +23,6 @@
 
 
 namespace ObjectiveScript {
-
-// Forward declarations
-class IPrinter;
-class Memory;
-class Repository;
-
 namespace Runtime {
 
 // Forward declarations
@@ -39,7 +33,7 @@ class Method : public NamedScope,
 {
 public:
 	Method(IScope* parent, const std::string& name, const std::string& type);
-	~Method();
+	virtual ~Method();
 
 public: // overloaded operators
 	bool operator()(const Method& first, const Method& second) const;
@@ -55,7 +49,6 @@ public:	// Symbol::IType implementation
 
 public: // Execution
 	virtual ControlFlow::E execute(const ParameterList& params, Object* result, const Token& token);
-	virtual bool isExtensionMethod() const;
 
 public: // Signature
 	bool isSignatureValid(const ParameterList& params) const;
@@ -68,6 +61,7 @@ public: // Setup
 	void setTokens(const TokenList& tokens);
 
 public:
+	bool isExtensionMethod() const;
 	const PrototypeConstraints& getPrototypeConstraints() const { return mPrototypeConstraints; }
 	const TokenList& getTokens() const { return mTokens; }
 
