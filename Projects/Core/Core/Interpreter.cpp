@@ -893,7 +893,7 @@ void Interpreter::process_delete(TokenIterator& token)
 		case Symbol::IType::ObjectSymbol: {
 			Object *object = static_cast<Object*>(symbol);
 
-			//object->assign(Object(object->getName(), object->Filename(), object->Typename(), VALUE_NONE));
+			//object->assign(Object(object->getName(), object->Filename(), object->QualifiedTypename(), VALUE_NONE));
 			object->assign(Object());
 		} break;
 		case Symbol::IType::BluePrintEnumSymbol:
