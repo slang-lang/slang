@@ -2,6 +2,7 @@ INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
 SET(SOURCES
     Exceptions.cpp
+    Namespace.cpp
     Position.cpp
     PrototypeConstraint.cpp
     Visibility.cpp
@@ -9,6 +10,7 @@ SET(SOURCES
 
 SET(HEADERS
     Exceptions.h
+    Namespace.h
     Position.h
     PrototypeConstraint.h
     TypeDeclaration.h

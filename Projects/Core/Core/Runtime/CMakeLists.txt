@@ -3,7 +3,6 @@ INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 SET(SOURCES
 	AtomicValue.cpp
 	ExceptionData.cpp
-	Namespace.cpp
 	OperatorOverloading.cpp
 	Script.cpp
 	TypeCast.cpp
@@ -14,7 +13,6 @@ SET(HEADERS
 	ControlFlow.h
 	ExceptionData.h
 	Exceptions.h
-	Namespace.h
 	OperatorOverloading.h
 	Script.h
 	TypeCast.h

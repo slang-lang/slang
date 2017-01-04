@@ -20,7 +20,7 @@
 namespace ObjectiveScript {
 
 // Forward declarations
-namespace Runtime {
+namespace Common {
 	class Namespace;
 }
 
@@ -56,7 +56,7 @@ private:
 
 private:
 	Runtime::ExceptionData mExceptionData;
-	Runtime::Namespace* mGlobalScope;
+	Common::Namespace* mGlobalScope;
 	StackTrace mStack;
 };
 

@@ -22,12 +22,16 @@
 namespace ObjectiveScript {
 
 // Forward declarations
+namespace Common {
+	class Namespace;
+}
+
+// Forward declarations
 class Repository;
 
 namespace Runtime {
 
 // Forward declarations
-class Namespace;
 class Object;
 
 
@@ -103,7 +107,7 @@ private: // Execution
 	ControlFlow::E interpret(const TokenList& tokens, Object* result);
 
 	NamedScope* getEnclosingMethodScope(IScope* scope) const;
-	Namespace* getEnclosingNamespace(IScope* scope) const;
+	Common::Namespace* getEnclosingNamespace(IScope* scope) const;
 	Object* getEnclosingObject(IScope* scope) const;
 
 private:
