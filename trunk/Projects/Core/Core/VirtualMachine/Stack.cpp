@@ -7,7 +7,7 @@
 #include <iostream>
 
 // Project includes
-#include <Core/Runtime/Namespace.h>
+#include <Core/Common/Namespace.h>
 #include <Core/Tools.h>
 
 // Namespace declarations
@@ -59,7 +59,7 @@ MethodScope* Stack::globalScope() const
 void Stack::init()
 {
 	assert(!mGlobalScope);
-	mGlobalScope = new Runtime::Namespace(VALUE_NONE, 0);
+	mGlobalScope = new Common::Namespace(VALUE_NONE, 0);
 
 	push(mGlobalScope, ParameterList());
 }

@@ -10,9 +10,9 @@
 // Project includes
 #include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/Common/Exceptions.h>
+#include <Core/Common/Namespace.h>
 #include <Core/Designtime/Parser/Parser.h>
 #include <Core/Designtime/Parser/Tokenizer.h>
-#include <Core/Runtime/Namespace.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
 #include <Tools/Files.h>
@@ -522,12 +522,12 @@ bool Analyser::createNamespace(TokenIterator& token, TokenIterator /*end*/)
 			token++;
 		}
 
-		Runtime::Namespace* space = 0;
+		Common::Namespace* space = 0;
 
 		// check for an existing namespace with this name
 		Symbol* symbol = mScope->resolve(name, true);
 		if ( !symbol ) {
-			space = new Runtime::Namespace(name, mScope);
+			space = new Common::Namespace(name, mScope);
 			space->setLanguageFeatureState(languageFeatureState);
 			space->setQualifiedTypename(getQualifiedTypename(name));
 			space->setVisibility(visibility);
@@ -538,7 +538,7 @@ bool Analyser::createNamespace(TokenIterator& token, TokenIterator /*end*/)
 		else {
 			switch ( symbol->getSymbolType() ) {
 				case Symbol::IType::NamespaceSymbol:
-					space = static_cast<Runtime::Namespace*>(symbol);
+					space = static_cast<Common::Namespace*>(symbol);
 					break;
 				case Symbol::IType::BluePrintEnumSymbol:
 				case Symbol::IType::BluePrintObjectSymbol:

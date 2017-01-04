@@ -16,7 +16,7 @@
 
 
 namespace ObjectiveScript {
-namespace Runtime {
+namespace Common {
 
 
 class Namespace : public MethodScope,

@@ -12,10 +12,10 @@
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/BuildInObjects/VoidObject.h>
 #include <Core/Common/Exceptions.h>
+#include <Core/Common/Namespace.h>
 #include <Core/Designtime/BluePrintEnum.h>
 #include <Core/Designtime/Parser/Parser.h>
 #include <Core/Runtime/Exceptions.h>
-#include <Core/Runtime/Namespace.h>
 #include <Core/Runtime/OperatorOverloading.h>
 #include <Core/Runtime/TypeCast.h>
 #include <Core/VirtualMachine/Controller.h>
@@ -241,13 +241,13 @@ NamedScope* Interpreter::getEnclosingMethodScope(IScope* scope) const
 	return 0;
 }
 
-Namespace* Interpreter::getEnclosingNamespace(IScope* scope) const
+Common::Namespace* Interpreter::getEnclosingNamespace(IScope* scope) const
 {
 	while ( scope ) {
 		IScope* parent = scope->getEnclosingScope();
 
 		if ( parent && parent->getScopeType() == IScope::IType::MethodScope ) {
-			Namespace* result = dynamic_cast<Namespace*>(parent);
+			Common::Namespace* result = dynamic_cast<Common::Namespace*>(parent);
 			if ( result ) {
 				return result;
 			}
@@ -321,7 +321,7 @@ inline Symbol* Interpreter::identify(TokenIterator& token) const
 			prev_identifier = identifier;
 
 			if ( !result ) {
-				Namespace* space = getEnclosingNamespace(getScope());
+				Common::Namespace* space = getEnclosingNamespace(getScope());
 				if ( space ) {
 					result = getScope()->resolve(space->QualifiedTypename() + "." + identifier, onlyCurrentScope, Visibility::Private);
 				}
@@ -336,7 +336,7 @@ inline Symbol* Interpreter::identify(TokenIterator& token) const
 					result = dynamic_cast<Designtime::BluePrintObject*>(result)->resolve(identifier, onlyCurrentScope, Visibility::Public);
 					break;
 				case Symbol::IType::NamespaceSymbol:
-					result = dynamic_cast<Namespace*>(result)->resolve(identifier, onlyCurrentScope, Visibility::Public);
+					result = dynamic_cast<Common::Namespace*>(result)->resolve(identifier, onlyCurrentScope, Visibility::Public);
 					break;
 				case Symbol::IType::ObjectSymbol:
 					result = dynamic_cast<Object*>(result)->resolve(identifier, onlyCurrentScope,
@@ -397,7 +397,7 @@ Symbol* Interpreter::identifyMethod(TokenIterator& token, const ParameterList& p
 					result = dynamic_cast<Designtime::BluePrintObject*>(result)->resolveMethod(identifier, params, true, Visibility::Public);
 					break;
 				case Symbol::IType::NamespaceSymbol:
-					result = dynamic_cast<Namespace*>(result)->resolveMethod(identifier, params, true, Visibility::Public);
+					result = dynamic_cast<Common::Namespace*>(result)->resolveMethod(identifier, params, true, Visibility::Public);
 					break;
 				case Symbol::IType::ObjectSymbol:
 					result = dynamic_cast<Object*>(result)->resolveMethod(identifier, params, true,

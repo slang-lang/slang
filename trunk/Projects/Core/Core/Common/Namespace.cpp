@@ -11,7 +11,7 @@
 
 
 namespace ObjectiveScript {
-namespace Runtime {
+namespace Common {
 
 
 Namespace::Namespace(const std::string& name, IScope* parent)

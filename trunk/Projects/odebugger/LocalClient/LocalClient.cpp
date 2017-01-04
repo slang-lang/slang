@@ -14,10 +14,10 @@
 #include <Core/BuildInObjects/FloatObject.h>
 #include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/BuildInObjects/StringObject.h>
+#include <Core/Common/Namespace.h>
 #include <Core/Designtime/Parser/Tokenizer.h>
 #include <Core/Interpreter.h>
 #include <Core/Method.h>
-#include <Core/Runtime/Namespace.h>
 #include <Core/Runtime/Script.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
