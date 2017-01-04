@@ -38,7 +38,6 @@ public:
 		virtual ~IType() { }
 
 		virtual const std::string& QualifiedTypename() const = 0;
-		virtual const std::string& Typename() const = 0;
 	};
 
 public:
