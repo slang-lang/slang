@@ -147,12 +147,11 @@ ControlFlow::E Interpreter::execute(Common::Method* method, const ParameterList&
 			}
 			else if ( method->QualifiedTypename() != VoidObject::TYPENAME && result->QualifiedOuterface() != method->QualifiedTypename() ) {
 #ifdef ALLOW_IMPLICIT_CASTS
-				OSwarn("implicit type conversion from " + result->QualifiedOuterface() + " to " + method->QualifiedTypename() + " in " + getTokens().begin()->position().toString());
+				//OSwarn("implicit type conversion from " + result->QualifiedOuterface() + " to " + method->QualifiedTypename() + " in " + getTokens().begin()->position().toString());
 
 				typecast(result, method->QualifiedTypename());
-				//typecast(result, Designtime::Parser::buildDesigntimeConstraintTypename(method->QualifiedTypename(), method->getPrototypeConstraints()));
 #else
-				throw Runtime::Exceptions::ExplicitCastRequired("Explicit cast required for type conversion from " + result->QualifiedOutterface() + " to " + method->QualifiedTypename() + " in " + method->getFullScopeName());
+				throw Runtime::Exceptions::ExplicitCastRequired("explicit cast required for type conversion from " + result->QualifiedOutterface() + " to " + method->QualifiedTypename() + " in " + method->getFullScopeName());
 #endif
 			}
 
