@@ -25,7 +25,7 @@ public:
 public:
 	bool operator==(const PrototypeConstraint& other) const;
 
-	bool typeHasBeenResolved() const;
+	bool hasRuntimeType() const;
 
 public:
 	std::string mConstraint;
@@ -34,7 +34,14 @@ public:
 	std::string mRunType;
 };
 
-typedef std::list<PrototypeConstraint> PrototypeConstraints;
+
+class PrototypeConstraints : public std::list<PrototypeConstraint>
+{
+public:
+	std::string extractTypes(const std::list<PrototypeConstraint>& other) const;
+	bool hasRuntimeTypes() const;
+	const std::string& lookupType(const std::string& type) const;
+};
 
 
 }

@@ -235,20 +235,20 @@ bool Analyser::createEnum(TokenIterator& token, TokenIterator /*end*/)
 	// collect all tokens of this method
 	TokenList tokens = Parser::collectScopeTokens(token);
 
-	BluePrintEnum* symbol = new BluePrintEnum(type.mTypename, mFilename);
+	BluePrintEnum* symbol = new BluePrintEnum(type.mName, mFilename);
 	symbol->setFinal(true);
 	symbol->setLanguageFeatureState(languageFeatureState);
 	symbol->setMutability(Mutability::Modify);
 	symbol->setParent(mScope);
 	symbol->setPrototypeConstraints(type.mConstraints);
-	symbol->setQualifiedTypename(getQualifiedTypename(type.mTypename));
+	symbol->setQualifiedTypename(getQualifiedTypename(type.mName));
 	symbol->setTokens(tokens);
 	symbol->setVisibility(visibility);
 	symbol->setSealed(true);
 
 	mRepository->addBluePrint(symbol);
 
-	mScope->define(type.mTypename, symbol);
+	mScope->define(type.mName, symbol);
 
 	return buildEnum(symbol, tokens);
 }
@@ -339,21 +339,21 @@ bool Analyser::createMemberStub(TokenIterator& token, Visibility::E visibility, 
 	expect(Token::Type::SEMICOLON, token);
 
 	if ( dynamic_cast<BluePrintGeneric*>(mScope) ) {
-		BluePrintObject* blue = new BluePrintObject(type.mTypename, mFilename, name);
+		BluePrintObject* blue = new BluePrintObject(type.mName, mFilename, name);
 		blue->setFinal(isFinal);
 		blue->setLanguageFeatureState(languageFeature);
 		blue->setMember(true);
 		blue->setMutability(mutability);
 		blue->setParent(mScope);
 		blue->setPrototypeConstraints(type.mConstraints);
-		blue->setQualifiedTypename(type.mTypename);
+		blue->setQualifiedTypename(type.mName);
 		blue->setValue(value);
 		blue->setVisibility(visibility);
 
 		mScope->define(name, blue);
 	}
 	else {
-		Runtime::Object *member = mRepository->createInstance(type.mTypename, name, type.mConstraints);
+		Runtime::Object *member = mRepository->createInstance(type.mName, name, type.mConstraints);
 		member->setFinal(isFinal);
 		member->setLanguageFeatureState(languageFeature);
 		member->setMember(true);
@@ -397,16 +397,12 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 
 	BluePrintGeneric* blueprint = dynamic_cast<BluePrintGeneric*>(mScope);
 	if ( blueprint && name == RESERVED_WORD_CONSTRUCTOR ) {
-		// these methods have the same name as their containing object,
-		// so this has to be a constructor or a destructor;
-		// they can never ever be const, ever
+		// constructor or destructor can never ever be const, ever
 		methodType = MethodAttributes::MethodType::Constructor;
 		mutability = Mutability::Modify;
 	}
 	else if ( blueprint && name == RESERVED_WORD_DESTRUCTOR ) {
-		// these methods have the same name as their containing object,
-		// so this has to be a constructor or a destructor;
-		// they can never ever be const, ever
+		// constructor or destructor can never ever be const, ever
 		methodType = MethodAttributes::MethodType::Destructor;
 		mutability = Mutability::Modify;
 	}
@@ -424,24 +420,22 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 
 		if ( token->category() == Token::Category::Modifier ) {
 			if ( token->content() == MODIFIER_ABSTRACT ) {
-				isAbstract = true;
-
 				if ( !blueprint ) {
 					throw Common::Exceptions::NotSupported("global methods cannot be declared as abstract", token->position());
 				}
+
+				isAbstract = true;
 			}
 			else if ( token->content() == MODIFIER_CONST ) {
 				mutability = Mutability::Const;
 				numConstModifiers++;
 			}
 			else if ( token->content() == MODIFIER_FINAL ) {
-				isFinal = true;
-				//mutability = Mutability::Final;
-				//numConstModifiers++;
-
 				if ( !blueprint ) {
 					throw Common::Exceptions::NotSupported("global methods cannot be declared as final", token->position());
 				}
+
+				isFinal = true;
 			}
 			else if ( token->content() == MODIFIER_MODIFY ) {
 				mutability = Mutability::Modify;
@@ -466,7 +460,7 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 		}
 	} while ( isModifierToken && token->type() != Token::Type::BRACKET_CURLY_OPEN );
 
-	if ( numConstModifiers > 1 ) {
+	if ( numConstModifiers > 1 ) {	// prevent concurrent use of 'const' and 'modify' attributes
 		throw Common::Exceptions::Exception("modifiers 'const' & 'modify' are exclusive", token->position());
 	}
 
@@ -483,11 +477,13 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 		throw Common::Exceptions::SyntaxError("method '" + name + "' is not declared as abstract but has no implementation", token->position());
 	}
 
-// TODO: if this method is a runtime method prototype constraints are not allowed (because they never will be resolved)
-// TODO: look up if type.mTypename is a valid type and in case it is rebuild method return type; update Interpreter::execute afterwards
+	// if this method is a runtime method then prototype constraints are not allowed (because they will never get resolved)
+	if ( !blueprint && !type.mConstraints.hasRuntimeTypes() ) {
+		throw Common::Exceptions::SyntaxError("only resolved prototype constraints are allowed in non-object methods", token->position());
+	}
 
 	// create a new method with the corresponding return type
-	Common::Method *method = new Common::Method(mScope, name, type.mTypename);
+	Common::Method *method = new Common::Method(mScope, name, type.mName);
 	method->setAbstract(isAbstract || mProcessingInterface);
 	method->setFinal(isFinal);
 	method->setLanguageFeatureState(languageFeature);
@@ -560,6 +556,8 @@ bool Analyser::createNamespace(TokenIterator& token, TokenIterator /*end*/)
 	TokenList tokens = Parser::collectScopeTokens(token);
 
 	generate(tokens);
+
+	static_cast<Common::Namespace*>(mScope)->initialize();
 
 	mScope = tmpScope;
 

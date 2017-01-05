@@ -5,9 +5,8 @@
 // Library includes
 
 // Project includes
+#include <Core/Designtime/Parser/Parser.h>
 #include <Core/Runtime/Exceptions.h>
-#include <Core/Runtime/OperatorOverloading.h>
-#include <Core/Runtime/TypeCast.h>
 #include <Core/VirtualMachine/Controller.h>
 #include <Debugger/Debugger.h>
 #include <Tools/Strings.h>
@@ -24,7 +23,7 @@ Method::Method(IScope* parent, const std::string& name, const std::string& type)
 : NamedScope(name, parent),
   MethodSymbol(name),
   mIsExtensionMethod(false),
-  mQualifiedTypename(type)
+  mReturnType(TypeDeclaration(type))
 {
 }
 
@@ -98,8 +97,7 @@ Method& Method::operator= (const Method& other)
 		mLanguageFeatureState = other.mLanguageFeatureState;
 		mMethodType = other.mMethodType;
 		mMutability = other.mMutability;
-		mPrototypeConstraints = other.mPrototypeConstraints;
-		mQualifiedTypename = other.mQualifiedTypename;
+		mReturnType = other.mReturnType;
 		mScopeName = other.mScopeName;
 		mScopeType = other.mScopeType;
 		mSignature = other.mSignature;
@@ -118,12 +116,35 @@ Runtime::ControlFlow::E Method::execute(const ParameterList& /*params*/, Runtime
 
 const PrototypeConstraints& Method::getPrototypeConstraints() const
 {
-	return mPrototypeConstraints;
+	return mReturnType.mConstraints;
 }
 
 const TokenList& Method::getTokens() const
 {
 	return mTokens;
+}
+
+void Method::initialize()
+{
+	// reset qualified typename if prototype constraints are present
+	if ( mReturnType.mConstraints.size() ) {
+		mReturnType.mName = Designtime::Parser::buildRuntimeConstraintTypename(mReturnType.mName, mReturnType.mConstraints);
+		mReturnType.mConstraints = PrototypeConstraints();
+	}
+
+	// update parameter types
+	for ( ParameterList::iterator it = mSignature.begin(); it != mSignature.end(); ++it ) {
+		if ( (*it).typeConstraints().size() ) {
+			(*it) = Parameter::CreateDesigntime(
+				(*it).name(),
+				TypeDeclaration(Designtime::Parser::buildRuntimeConstraintTypename((*it).type(), (*it).typeConstraints())),
+				(*it).value(),
+				(*it).hasDefaultValue(),
+				(*it).isConst(),
+				(*it).access()
+			);
+		}
+	}
 }
 
 bool Method::isExtensionMethod() const
@@ -197,7 +218,7 @@ ParameterList Method::mergeParameters(const ParameterList& params) const
 
 	for ( ; sigIt != mSignature.end(); ++sigIt ) {
 		// initialize parameter with default value
-		ref = sigIt->reference();
+		//ref = sigIt->reference();
 		value = sigIt->value();
 
 		if ( paramIt != params.end() ) {
@@ -209,8 +230,8 @@ ParameterList Method::mergeParameters(const ParameterList& params) const
 			++paramIt;
 		}
 
-		result.push_back(Parameter::CreateDesigntime(
-			sigIt->name(), sigIt->type(), value, sigIt->hasDefaultValue(), sigIt->isConst(), sigIt->access(), ref
+		result.push_back(Parameter(
+			sigIt->name(), TypeDeclaration(sigIt->type()), value, sigIt->hasDefaultValue(), sigIt->isConst(), sigIt->access(), ref
 		));
 	}
 
@@ -224,7 +245,7 @@ const ParameterList& Method::provideSignature() const
 
 const std::string& Method::QualifiedTypename() const
 {
-	return mQualifiedTypename;
+	return mReturnType.mName;
 }
 
 void Method::setParent(IScope *scope)
@@ -234,12 +255,12 @@ void Method::setParent(IScope *scope)
 
 void Method::setPrototypeConstraints(const PrototypeConstraints& constraints)
 {
-	mPrototypeConstraints = constraints;
+	mReturnType.mConstraints = constraints;
 }
 
 void Method::setQualifiedTypename(const std::string& type)
 {
-	mQualifiedTypename = type;
+	mReturnType.mName = type;
 }
 
 void Method::setSignature(const ParameterList& params)

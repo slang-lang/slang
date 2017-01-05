@@ -4,6 +4,7 @@ import System.Collections.Pair;
 
 public void Main(int argc = 0, string args = "") {
 	assert( TestCase1() );
+	assert( TestCase2() );
 }
 
 private bool TestCase1() {
@@ -14,5 +15,14 @@ private bool TestCase1() {
 	assert( p is Object );
 
 	return p.first == 1 && p.second == "Pair 1";
+}
+
+private bool TestCase2() {
+	print("TestCase 2: operator<");
+
+	Pair<int, string> p1 = new Pair<int, string>(1, "Pair 1");
+	Pair<int, string> p2 = new Pair<int, string>(2, "Pair 2");
+
+	return p1 < p2;
 }
 
