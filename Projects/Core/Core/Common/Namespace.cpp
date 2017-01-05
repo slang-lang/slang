@@ -54,6 +54,18 @@ Namespace::~Namespace()
 	}
 }
 
+void Namespace::defineMethod(const std::string& name, Common::Method* method)
+{
+	MethodScope::defineMethod(name, method);
+
+	method->initialize();
+}
+
+void Namespace::initialize()
+{
+	// nothing to do here atm
+}
+
 std::string Namespace::ToString(unsigned int indent) const
 {
 	std::string result = Visibility::convert(mVisibility) + " " + RESERVED_WORD_NAMESPACE + " " + getName();

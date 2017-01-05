@@ -1,4 +1,4 @@
-added support for references to atomic types
-added unit test for atomic references
-removed support for variable declarations as final
+cleaned up type mess (IType::Typename())
+improved prototype handling for designtime and runtime method return types and parameters
+added listing of method source code in odebugger via list command during runtime
 

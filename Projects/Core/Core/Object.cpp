@@ -302,13 +302,33 @@ void Object::copy(const Object& other)
 
 			// register new methods
 			for ( MethodCollection::const_iterator it = other.mMethods.begin(); it != other.mMethods.end(); ++it ) {
-				Common::Method *method = new Common::Method(this, (*it)->getName(), (*it)->QualifiedTypename());
+				// create new method and ...
+				Common::Method* method = new Common::Method(this, (*it)->getName(), (*it)->QualifiedTypename());
+				// ... copy its data from our template method
 				*method = *(*it);
 
 				defineMethod((*it)->getName(), method);
 			}
 		}
 	}
+}
+
+void Object::defineMethod(const std::string& name, Common::Method* method)
+{
+/* // don't delete overwritten methods because one of our ancestors may call one of them
+	// try to override abstract methods a.k.a. implement an interface method
+	Common::Method* old = static_cast<Common::Method*>(resolveMethod(method->getName(), method->provideSignature(), true, Visibility::Designtime));
+	if ( old && old->isAbstract() ) {
+		Runtime::Object* base = dynamic_cast<Runtime::Object*>(resolve(IDENTIFIER_BASE, true, Visibility::Designtime));
+		base->undefineMethod(old);
+
+		delete old;
+	}
+*/
+
+	MethodScope::defineMethod(name, method);
+
+	method->initialize();
 }
 
 ControlFlow::E Object::Destructor()
@@ -427,6 +447,11 @@ AtomicValue Object::getValue() const
 	}
 
 	return mValue;
+}
+
+void Object::initialize()
+{
+	// nothing to do here atm
 }
 
 bool Object::isAbstract() const

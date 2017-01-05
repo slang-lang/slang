@@ -20,8 +20,22 @@ namespace ObjectiveScript {
 class TypeDeclaration
 {
 public:
+	TypeDeclaration()
+	{ }
+	TypeDeclaration(const char* type)
+	: mName(type)
+	{ }
+	TypeDeclaration(const std::string& type)
+	: mName(type)
+	{ }
+	TypeDeclaration(const std::string& type, const PrototypeConstraints& constraints)
+	: mConstraints(constraints),
+	  mName(type)
+	{ }
+
+public:
 	PrototypeConstraints mConstraints;
-	std::string mTypename;
+	std::string mName;
 };
 
 

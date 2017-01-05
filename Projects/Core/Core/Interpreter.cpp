@@ -66,12 +66,6 @@ ControlFlow::E Interpreter::execute(Common::Method* method, const ParameterList&
 		case LanguageFeatureState::Unstable: OSwarn("method '" + method->getFullScopeName() + "' is marked as unstable"); break;
 	}
 
-	// reset qualified typename if prototype constraints are present
-	if ( !method->getPrototypeConstraints().empty() ) {
-		method->setQualifiedTypename(Designtime::Parser::buildConstraintTypename(method->QualifiedTypename(), method->getPrototypeConstraints()));
-		method->setPrototypeConstraints(PrototypeConstraints());
-	}
-
 	Common::Method scope(*method);
 
 	IScope* previousOwner = mOwner;
@@ -156,7 +150,7 @@ ControlFlow::E Interpreter::execute(Common::Method* method, const ParameterList&
 				OSwarn("implicit type conversion from " + result->QualifiedOuterface() + " to " + method->QualifiedTypename() + " in " + getTokens().begin()->position().toString());
 
 				typecast(result, method->QualifiedTypename());
-				//typecast(result, Designtime::Parser::buildConstraintTypename(method->QualifiedTypename(), method->getPrototypeConstraints()));
+				//typecast(result, Designtime::Parser::buildDesigntimeConstraintTypename(method->QualifiedTypename(), method->getPrototypeConstraints()));
 #else
 				throw Runtime::Exceptions::ExplicitCastRequired("Explicit cast required for type conversion from " + result->QualifiedOutterface() + " to " + method->QualifiedTypename() + " in " + method->getFullScopeName());
 #endif
@@ -645,7 +639,7 @@ void Interpreter::parseInfixPostfix(Object *result, TokenIterator& start)
 				PrototypeConstraints constraints = Designtime::Parser::collectRuntimePrototypeConstraints(start);
 
 				compareType = dynamic_cast<Designtime::BluePrintGeneric*>(symbol)->QualifiedTypename();
-				compareType = Designtime::Parser::buildConstraintTypename(compareType, constraints);
+				compareType = Designtime::Parser::buildRuntimeConstraintTypename(compareType, constraints);
 			}
 			else {
 				throw Common::Exceptions::SyntaxError("invalid symbol type found", start->position());
@@ -717,7 +711,7 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 					PrototypeConstraints constraints = Designtime::Parser::collectRuntimePrototypeConstraints(start);
 
 					std::string newType = dynamic_cast<Designtime::BluePrintGeneric*>(symbol)->QualifiedTypename();
-								newType = Designtime::Parser::buildConstraintTypename(newType, constraints);
+								newType = Designtime::Parser::buildDesigntimeConstraintTypename(newType, constraints);
 
 					Object tmp;
 					expression(&tmp, start);

@@ -8,7 +8,8 @@
 
 // Project includes
 #include <Core/Attributes/Attributes.h>
-#include <Core/Common/PrototypeConstraint.h>
+#include <Core/Common/TypeDeclaration.h>
+#include <Core/Interfaces/IRuntimeType.h>
 #include <Core/Interpreter.h>
 #include <Core/Object.h>
 #include <Core/Parameter.h>
@@ -29,7 +30,8 @@ namespace Common {
 
 
 class Method : public NamedScope,
-			   public MethodSymbol
+			   public MethodSymbol,
+			   public IRuntimeType
 {
 public:
 	Method(IScope* parent, const std::string& name, const std::string& type);
@@ -45,7 +47,8 @@ public:	// Symbol::IType implementation
 
 	void setQualifiedTypename(const std::string& type);
 
-	std::string ToString(unsigned int indent = 0) const;
+public: // IRuntimeType implementation
+	void initialize();
 
 public: // Execution
 	virtual Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* result, const Token& token);
@@ -64,6 +67,7 @@ public:
 	bool isExtensionMethod() const;
 	const PrototypeConstraints& getPrototypeConstraints() const;
 	const TokenList& getTokens() const;
+	std::string ToString(unsigned int indent = 0) const;
 
 public:
 	ParameterList mergeParameters(const ParameterList& params) const;
@@ -72,8 +76,7 @@ protected:
 	bool mIsExtensionMethod;
 
 private:
-	PrototypeConstraints mPrototypeConstraints;
-	std::string mQualifiedTypename;
+	TypeDeclaration mReturnType;
 	ParameterList mSignature;
 	TokenList mTokens;
 };
