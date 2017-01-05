@@ -3,7 +3,7 @@
 import System.Integer;
 import System.String;
 
-public object Prototype<T/*: Object*/> {
+public object Prototype<T: Object> {
 	private T mValue;
 
 	public void Constructor(T value) {

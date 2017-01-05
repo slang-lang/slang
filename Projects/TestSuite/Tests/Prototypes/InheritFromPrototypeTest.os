@@ -28,6 +28,8 @@ private bool TestCase1() {
 	DerivedFromPrototype derived = new DerivedFromPrototype(173);
 	print(string derived);
 
+	assert( "mValue = 173" == string derived );
+
 	assert( derived is DerivedFromPrototype );
 	assert( derived is Object );
 	//assert( derived is BasePrototype<int> );	// is operator does not support prototypes ;-(
