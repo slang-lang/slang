@@ -86,12 +86,28 @@ public abstract object AbstractCollection implements IIterateable {
 		return mSize == 0;
 	}
 
+	public Object first() const {
+		if ( empty() ) {
+			throw new OutOfBoundsException("index(" + index + ") out of bounds");
+		}
+
+		return mFirst.mValue;
+	}
+
 	public Iterator getIterator() const {
 		return new Iterator(AbstractCollection this);
 	}
 
 	public ReverseIterator getReverseIterator() const {
 		return new ReverseIterator(AbstractCollection this);
+	}
+
+	public Object last() const {
+		if ( empty() ) {
+			throw new OutOfBoundsException("index(" + index + ") out of bounds");
+		}
+
+		return mLast.mValue;
 	}
 
 	public int indexOf(Object value ref) const {
