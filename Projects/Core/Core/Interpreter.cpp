@@ -124,10 +124,10 @@ ControlFlow::E Interpreter::execute(Common::Method* method, const ParameterList&
 	// notify debugger
 	Core::Debugger::Instance().notifyEnter(&scope, Core::Debugger::immediateBreakToken);
 	// interpret scope tokens
-	ControlFlow::E controlflow = interpret(getTokens(), result);
+	mControlFlow = interpret(getTokens(), result);
 
 	// process & update control flow
-	switch ( controlflow ) {
+	switch ( mControlFlow ) {
 		case ControlFlow::Break:
 		case ControlFlow::Continue:
 		case ControlFlow::Normal:
@@ -137,7 +137,7 @@ ControlFlow::E Interpreter::execute(Common::Method* method, const ParameterList&
 			}
 
 			// correct behavior detected, override control flow with normal state
-			controlflow = ControlFlow::Normal;
+			mControlFlow = ControlFlow::Normal;
 			break;
 		case ControlFlow::Return:
 			// validate return value
@@ -156,7 +156,7 @@ ControlFlow::E Interpreter::execute(Common::Method* method, const ParameterList&
 			}
 
 			// correct behavior detected, override control flow with normal state
-			controlflow = ControlFlow::Normal;
+			mControlFlow = ControlFlow::Normal;
 			break;
 		case ControlFlow::ExitProgram:
 		case ControlFlow::Throw:
@@ -164,7 +164,7 @@ ControlFlow::E Interpreter::execute(Common::Method* method, const ParameterList&
 			break;
 	}
 
-	if ( controlflow == ControlFlow::Normal ) {
+	if ( mControlFlow == ControlFlow::Normal ) {
 		switch ( method->getMethodType() ) {
 			case MethodAttributes::MethodType::Constructor:
 				dynamic_cast<Object*>(mOwner)->setConstructed(true);
@@ -184,7 +184,7 @@ ControlFlow::E Interpreter::execute(Common::Method* method, const ParameterList&
 
 	mOwner = previousOwner;
 
-	return controlflow;
+	return mControlFlow;
 }
 
 void Interpreter::expression(Object* result, TokenIterator& start)
@@ -278,14 +278,14 @@ Repository* Interpreter::getRepository() const
 
 IScope* Interpreter::getScope() const
 {
-	StackLevel* stack = Controller::Instance().stack()->current();
+	StackFrame* stack = Controller::Instance().stack()->current();
 
 	return stack->getScope();
 }
 
 const TokenList& Interpreter::getTokens() const
 {
-	StackLevel* stack = Controller::Instance().stack()->current();
+	StackFrame* stack = Controller::Instance().stack()->current();
 
 	return stack->getTokens();
 }
@@ -738,14 +738,14 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 
 void Interpreter::popScope()
 {
-	StackLevel* stack = Controller::Instance().stack()->current();
+	StackFrame* stack = Controller::Instance().stack()->current();
 
 	stack->popScope();
 }
 
 void Interpreter::popTokens()
 {
-	StackLevel* stack = Controller::Instance().stack()->current();
+	StackFrame* stack = Controller::Instance().stack()->current();
 
 	stack->popTokens();
 }
@@ -958,9 +958,9 @@ void Interpreter::process_for(TokenIterator& token, Object* result)
 
 		// Body parsing
 		// {
-		ControlFlow::E controlflow = interpret(loopTokens, result);
+		mControlFlow = interpret(loopTokens, result);
 
-		switch ( controlflow ) {
+		switch ( mControlFlow ) {
 			case ControlFlow::Break: mControlFlow = ControlFlow::Normal; return;
 			case ControlFlow::Continue: mControlFlow = ControlFlow::Normal; break;
 			case ControlFlow::ExitProgram: mControlFlow = ControlFlow::ExitProgram; return;
@@ -1061,11 +1061,11 @@ void Interpreter::process_foreach(TokenIterator& token, Object* result)
 
 		// Body parsing
 		// {
-		ControlFlow::E controlflow = interpret(loopTokens, result);
+		mControlFlow = interpret(loopTokens, result);
 
 		popScope();	// needed for loop variable
 
-		switch ( controlflow ) {
+		switch ( mControlFlow ) {
 			case ControlFlow::Break: mControlFlow = ControlFlow::Normal; return;
 			case ControlFlow::Continue: mControlFlow = ControlFlow::Normal; break;
 			case ControlFlow::ExitProgram: mControlFlow = ControlFlow::ExitProgram; return;
@@ -2010,9 +2010,9 @@ void Interpreter::process_while(TokenIterator& token, Object* result)
 			break;
 		}
 
-		ControlFlow::E controlflow = interpret(statementTokens, result);
+		mControlFlow = interpret(statementTokens, result);
 
-		switch ( controlflow ) {
+		switch ( mControlFlow ) {
 			case ControlFlow::Break: mControlFlow = ControlFlow::Normal; return;
 			case ControlFlow::Continue: mControlFlow = ControlFlow::Normal; break;
 			case ControlFlow::ExitProgram: mControlFlow = ControlFlow::ExitProgram; return;
@@ -2025,7 +2025,7 @@ void Interpreter::process_while(TokenIterator& token, Object* result)
 
 void Interpreter::pushScope(IScope* scope)
 {
-	StackLevel* stack = Controller::Instance().stack()->current();
+	StackFrame* stack = Controller::Instance().stack()->current();
 
 	bool allowDelete = !scope;
 
@@ -2038,7 +2038,7 @@ void Interpreter::pushScope(IScope* scope)
 
 void Interpreter::pushTokens(const TokenList& tokens)
 {
-	StackLevel* stack = Controller::Instance().stack()->current();
+	StackFrame* stack = Controller::Instance().stack()->current();
 
 	stack->pushTokens(tokens);
 }

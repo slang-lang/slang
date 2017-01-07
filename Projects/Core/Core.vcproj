@@ -811,7 +811,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\VirtualMachine\StackLevel.cpp"
+				RelativePath=".\Core\VirtualMachine\StackFrame.cpp"
 				>
 			</File>
 			<File
@@ -1205,7 +1205,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\VirtualMachine\StackLevel.h"
+				RelativePath=".\Core\VirtualMachine\StackFrame.h"
 				>
 			</File>
 			<File

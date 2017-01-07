@@ -26,7 +26,7 @@ Stack::~Stack()
 {
 }
 
-StackLevel* Stack::current() const
+StackFrame* Stack::current() const
 {
 	if ( mStack.empty() ) {
 		return 0;
@@ -67,7 +67,7 @@ void Stack::init()
 
 void Stack::pop()
 {
-	StackLevel* level = mStack.back();
+	StackFrame* level = mStack.back();
 	level->popTokens();
 	level->popScope();
 
@@ -98,7 +98,7 @@ void Stack::push(IScope* scope, const ParameterList &params)
 	}
 
 	// create new stack level
-	StackLevel* level = new StackLevel(mStack.size(), scope, params);
+	StackFrame* level = new StackFrame(mStack.size(), scope, params);
 	// push scope
 	level->pushScope(scope, false);
 	// push tokens (although maybe none are present)

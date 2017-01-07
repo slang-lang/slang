@@ -251,9 +251,7 @@ ControlFlow::E Object::Constructor(const ParameterList& params)
 	// check if all base objects have been constructed correctly
 	for ( Inheritance::iterator it = mInheritance.begin(); it != mInheritance.end(); ++it ) {
 		if ( !it->second->mIsConstructed ) {
-			System::Print("C++ (Constructor): " + getName() + "::" + QualifiedTypename() + "()");
-
-			throw Common::Exceptions::Exception(getName() + "::" + QualifiedTypename() + "(): not all base objects have been constructed correctly");
+			throw Common::Exceptions::Exception(getName() + "." + QualifiedTypename() + "(): not all base objects have been constructed correctly");
 		}
 	}
 */
@@ -315,7 +313,6 @@ void Object::copy(const Object& other)
 
 void Object::defineMethod(const std::string& name, Common::Method* method)
 {
-/* // don't delete overwritten methods because one of our ancestors may call one of them
 	// try to override abstract methods a.k.a. implement an interface method
 	Common::Method* old = static_cast<Common::Method*>(resolveMethod(method->getName(), method->provideSignature(), true, Visibility::Designtime));
 	if ( old && old->isAbstract() ) {
@@ -324,7 +321,6 @@ void Object::defineMethod(const std::string& name, Common::Method* method)
 
 		delete old;
 	}
-*/
 
 	MethodScope::defineMethod(name, method);
 
