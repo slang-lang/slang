@@ -145,14 +145,16 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 	// inheritance
 	Designtime::Ancestors ancestors = blueprint->getInheritance();
 	for ( Designtime::Ancestors::const_iterator it = ancestors.begin(); it != ancestors.end(); ++it ) {
-		newBlue->addInheritance(Designtime::Ancestor(
-			Designtime::Parser::buildRuntimeConstraintTypename((*it).name(), (*it).constraints()),
-			(*it).type(),
-			(*it).visibility(),
-			PrototypeConstraints()
-		));
+		std::string type = constraints.lookupType((*it).name());
+		if ( !(*it).constraints().empty() ) {
+			type += constraints.extractTypes((*it).constraints());
+		}
 
-		//newBlue->addInheritance((*it));
+		newBlue->addInheritance(Designtime::Ancestor(
+			TypeDeclaration(type),
+			(*it).ancestorType(),
+			(*it).visibility()
+		));
 	}
 
 	// symbols
@@ -453,7 +455,7 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 					throw Common::Exceptions::Exception("trying to initialize unknown object '" + ancestorIt->name() + "'");
 				}
 
-				switch ( ancestorIt->type() ) {
+				switch ( ancestorIt->ancestorType() ) {
 					case Designtime::Ancestor::Type::Extends:
 					case Designtime::Ancestor::Type::Replicates: {
 						// undefine previous base (while using single inheritance none should exist yet)
