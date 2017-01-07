@@ -28,18 +28,18 @@ Stack::~Stack()
 
 StackFrame* Stack::current() const
 {
-	if ( mStack.empty() ) {
+	if ( mStackFrames.empty() ) {
 		return 0;
 	}
 
-	return mStack.back();
+	return mStackFrames.back();
 }
 
 void Stack::deinit()
 {
-	assert( !mStack.empty() );
+	assert( !mStackFrames.empty() );
 
-	while ( !mStack.empty() ) {
+	while ( !mStackFrames.empty() ) {
 		pop();
 	}
 
@@ -67,25 +67,25 @@ void Stack::init()
 
 void Stack::pop()
 {
-	StackFrame* level = mStack.back();
-	level->popTokens();
-	level->popScope();
+	StackFrame* frame = mStackFrames.back();
+	frame->popTokens();
+	frame->popScope();
 
-	mStack.pop_back();
+	mStackFrames.pop_back();
 
-	delete level;
+	delete frame;
 }
 
 void Stack::print()
 {
-	if ( mStack.empty() ) {
+	if ( mStackFrames.empty() ) {
 		return;
 	}
 
-	StackTrace::const_iterator it = mStack.begin();
+	StackFrames::const_iterator it = mStackFrames.begin();
 	++it;	// skip frame 0 (global scope)
 
-	for ( ; it != mStack.end(); ++it ) {
+	for ( ; it != mStackFrames.end(); ++it ) {
 		std::cout << (*it)->toString() << std::endl;
 	}
 }
@@ -97,14 +97,14 @@ void Stack::push(IScope* scope, const ParameterList &params)
 		tokens = dynamic_cast<Common::Method*>(scope)->getTokens();
 	}
 
-	// create new stack level
-	StackFrame* level = new StackFrame(mStack.size(), scope, params);
+	// create new stack frame
+	StackFrame* frame = new StackFrame(mStackFrames.size(), scope, params);
 	// push scope
-	level->pushScope(scope, false);
+	frame->pushScope(scope, false);
 	// push tokens (although maybe none are present)
-	level->pushTokens(tokens);
+	frame->pushTokens(tokens);
 
-	mStack.push_back(level);
+	mStackFrames.push_back(frame);
 }
 
 

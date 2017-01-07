@@ -86,6 +86,11 @@ Stack* Controller::stack() const
 	return mStack;
 }
 
+Thread* Controller::thread(ThreadId id) const
+{
+	return mThreads->getThread(id);
+}
+
 Threads* Controller::threads() const
 {
 	return mThreads;

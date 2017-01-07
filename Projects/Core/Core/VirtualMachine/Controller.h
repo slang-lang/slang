@@ -40,6 +40,7 @@ public:
 	Memory* memory() const;
 	Repository* repository() const;
 	Stack* stack() const;
+	Thread* thread(ThreadId id) const;
 	Threads* threads() const;
 	VirtualMethodTable* virtualMethodTable() const;
 
