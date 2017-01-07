@@ -5,9 +5,9 @@
 
 // Library include
 #include <map>
-//#include <set>
+#include <set>
 #include <string>
-//#include <unordered_map>
+#include <unordered_map>
 #include <unordered_set>
 
 // Project includes
@@ -71,7 +71,7 @@ private:
 class MethodScope : public NamedScope
 {
 public:
-	//typedef std::set<Runtime::Method*> MethodCollection;
+	//typedef std::set<Common::Method*> MethodCollection;
 	typedef std::unordered_set<Common::Method*> MethodCollection;
 
 public:
