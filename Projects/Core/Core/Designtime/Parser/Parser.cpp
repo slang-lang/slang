@@ -165,7 +165,7 @@ Ancestors Parser::collectInheritance(TokenIterator& token)
 		PrototypeConstraints constraints = collectDesigntimePrototypeConstraints(token);
 
 		ancestors.insert(
-			Ancestor(type, inheritance, visibility, constraints)
+			Ancestor(TypeDeclaration(type, constraints), inheritance, visibility)
 		);
 	}
 

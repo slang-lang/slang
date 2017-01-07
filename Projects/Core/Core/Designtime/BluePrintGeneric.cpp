@@ -50,7 +50,7 @@ Ancestors BluePrintGeneric::getAncestors() const
 	Ancestors ancestors;
 
 	for ( Ancestors::const_iterator it = mInheritance.begin(); it != mInheritance.end(); ++it ) {
-		if ( it->type() == Ancestor::Type::Extends ) {
+		if ( it->ancestorType() == Ancestor::Type::Extends ) {
 			ancestors.insert((*it));
 		}
 	}
@@ -68,7 +68,7 @@ Ancestors BluePrintGeneric::getImplementations() const
 	Ancestors implementations;
 
 	for ( Ancestors::const_iterator it = mInheritance.begin(); it != mInheritance.end(); ++it ) {
-		if ( it->type() == Ancestor::Type::Implements ) {
+		if ( it->ancestorType() == Ancestor::Type::Implements ) {
 			implementations.insert((*it));
 		}
 	}

@@ -147,7 +147,7 @@ bool Analyser::createBluePrint(TokenIterator& token, TokenIterator /*end*/)
 
 		bool isImplemented = true;
 		if ( !inheritance.empty() ) {
-			isImplemented = (inheritance.begin()->type() != Ancestor::Type::Replicates);
+			isImplemented = (inheritance.begin()->ancestorType() != Ancestor::Type::Replicates);
 		}
 
 		if ( isImplemented ) {
@@ -169,7 +169,7 @@ bool Analyser::createBluePrint(TokenIterator& token, TokenIterator /*end*/)
 		// set up inheritance (if present)
 		if ( !inheritance.empty() ) {
 			for ( Ancestors::const_iterator it = inheritance.begin(); it != inheritance.end(); ++it ) {
-				if ( it->type() == Ancestor::Type::Extends ) {
+				if ( it->ancestorType() == Ancestor::Type::Extends ) {
 					extends = true;
 				}
 
@@ -179,7 +179,7 @@ bool Analyser::createBluePrint(TokenIterator& token, TokenIterator /*end*/)
 
 		// in case this object has no inheritance set, we inherit from 'Object'
 		if ( objectType != ObjectType::Interface && !extends ) {
-			blueprint->addInheritance(Ancestor(OBJECT, Ancestor::Type::Extends, Visibility::Public, PrototypeConstraints()));
+			blueprint->addInheritance(Ancestor(TypeDeclaration(OBJECT), Ancestor::Type::Extends, Visibility::Public));
 		}
 	}
 
