@@ -18,6 +18,10 @@ public object GenericCollectionItem<T> {
         // this is empty by intend
     }
 
+    public void operator=(T value) modify {
+        mValue = value;
+    }
+
 /*
     public T get() const {
         return mValue;

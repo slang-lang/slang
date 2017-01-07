@@ -65,14 +65,12 @@ public:
 	void setTokens(const TokenList& tokens);
 
 protected:
+	Ancestors mInheritance;
 	std::string mFilename;
+	PrototypeConstraints mPrototypeConstraints;
 	std::string mQualifiedTypename;
 	TokenList mTokens;
 	std::string mUnqualifiedTypename;
-
-private:
-	Ancestors mInheritance;
-	PrototypeConstraints mPrototypeConstraints;
 };
 
 

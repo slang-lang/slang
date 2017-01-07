@@ -10,7 +10,7 @@
 // Project includes
 #include <Core/Runtime/ExceptionData.h>
 #include <Core/Scope.h>
-#include "StackLevel.h"
+#include "StackFrame.h"
 
 // Forward declarations
 
@@ -28,14 +28,14 @@ class Stack
 {
 public:
 	Stack();
-	~Stack();
+	virtual ~Stack();
 
 public:
-	void deinit();
-	void init();
+	virtual void deinit();
+	virtual void init();
 
 public:
-	StackLevel* current() const;
+	StackFrame* current() const;
 
 	Runtime::ExceptionData& exception();
 
@@ -47,17 +47,17 @@ public:
 public:
 	MethodScope* globalScope() const;
 
-private:
-	typedef std::list<StackLevel*> StackTrace;
+protected:
+	typedef std::list<StackFrame*> StackTrace;
+
+protected:
+	Runtime::ExceptionData mExceptionData;
+	Common::Namespace* mGlobalScope;
+	StackTrace mStack;
 
 private:
 	Stack(Stack const&)/* = delete*/;
 	void operator=(Stack const&)/* = delete*/;
-
-private:
-	Runtime::ExceptionData mExceptionData;
-	Common::Namespace* mGlobalScope;
-	StackTrace mStack;
 };
 
 

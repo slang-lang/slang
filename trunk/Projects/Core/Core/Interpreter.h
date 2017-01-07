@@ -39,7 +39,7 @@ class Interpreter
 {
 public:
 	Interpreter();
-	virtual ~Interpreter();
+	~Interpreter();
 
 public: // Execution
 	ControlFlow::E execute(Common::Method* method, const ParameterList& params, Object* result);

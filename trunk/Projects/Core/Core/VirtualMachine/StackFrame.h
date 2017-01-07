@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Core_VirtualMachine_StackLevel_h
-#define ObjectiveScript_Core_VirtualMachine_StackLevel_h
+#ifndef ObjectiveScript_Core_VirtualMachine_StackFrame_h
+#define ObjectiveScript_Core_VirtualMachine_StackFrame_h
 
 
 // Library includes
@@ -20,7 +20,7 @@ namespace ObjectiveScript {
 // Forward declarations
 class IScope;
 
-class StackLevel
+class StackFrame
 {
 public:
 	class Scope
@@ -35,8 +35,8 @@ public:
 	typedef std::list<Scope> Scopes;
 
 public:
-	StackLevel(unsigned long level, IScope* scope, const ParameterList& params);
-	~StackLevel();
+	StackFrame(unsigned long level, IScope* scope, const ParameterList& params);
+	~StackFrame();
 
 public:
 	IScope* getScope() const;
@@ -50,7 +50,7 @@ public:
 	std::string toString() const;
 
 private:
-	void operator=(const StackLevel&)/* = delete*/;
+	void operator=(const StackFrame&)/* = delete*/;
 
 private:
 	unsigned long mLevel;
