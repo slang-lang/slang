@@ -103,23 +103,9 @@
                given in the text are ready to be executed and are similar in form
                to:
             </p><pre class="programlisting">
-class Test {
-    public static void main(String[] args) {
-        for (int i = 0; i &lt; args.length; i++)
-            System.out.print(i == 0 ? args[i] : " " + args[i]);
-        System.out.println();
-    }
+public void Main(int argc, string args) modify {
+   print("Hello World");
 }
-</pre><p class="norm"><a name="chapter-1.2-110"></a>On a machine with the Oracle
-               JDK installed, this class, stored in the
-               file <code class="literal">Test.ObjectiveScript</code>, can be compiled and executed by
-               giving the commands:
-            </p><pre class="screen">
-ObjectiveScriptc Test.ObjectiveScript
-ObjectiveScript Test Hello, world.
-</pre><p class="norm"><a name="chapter-1.2-120"></a>producing the output:
-            </p><pre class="screen">
-Hello, world.
 </pre></div>
       </div>
       <div class="navfooter">
