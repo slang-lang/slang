@@ -48,12 +48,12 @@ public:
 	MethodScope* globalScope() const;
 
 protected:
-	typedef std::list<StackFrame*> StackTrace;
+	typedef std::list<StackFrame*> StackFrames;
 
 protected:
 	Runtime::ExceptionData mExceptionData;
 	Common::Namespace* mGlobalScope;
-	StackTrace mStack;
+	StackFrames mStackFrames;
 
 private:
 	Stack(Stack const&)/* = delete*/;
