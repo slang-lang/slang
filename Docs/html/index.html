@@ -1,0 +1,226 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+
+      <title>The ObjectiveScript Language Specification</title>
+      <meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1">
+      <link rel="home" href="index.html" title="The ObjectiveScript&reg; Language Specification">
+   </head>
+   <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+      <div class="navheader">
+         <table width="100%" summary="Navigation header">
+            <tr>
+               <th colspan="3" align="center">The <span class="trademark">ObjectiveScript</span>&reg; Language Specification
+               </th>
+            </tr>
+            <tr>
+               <td width="20%" align="left">&nbsp;</td>
+               <th width="60%" align="center">&nbsp;</th>
+               <td width="20%" align="right">&nbsp;</td>
+            </tr>
+         </table>
+         <hr>
+      </div>
+      <div lang="en" class="book" title="The ObjectiveScript&reg; Language Specification">
+         <div class="titlepage">
+            <div>
+               <h1 class="title"><a name="jls"></a>The <span class="trademark">ObjectiveScript</span>&reg; Language Specification
+               </h1>
+               <p class="edition">ObjectiveScript 1st Edition</p>
+               <div class="authorgroup">
+                  <div class="author">
+                     <h3 class="author">Michael Adelmann</h3>
+                  </div>
+               </div>
+               <h4 xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:rx="http://www.renderx.com/XSL/Extensions"><span class="date">2017-01-07<br></span></h4></div>
+            <hr>
+         </div>
+         <div class="toc">
+            <p><b>Table of Contents</b></p>
+            <dl>
+               <dt><span class="chapter"><a href="chapter-1.html">1. Introduction</a></span></dt>
+               <dd>
+                  <dl>
+                     <dt><span class="section"><a href="chapter-1.html#chapter-1.1">1.1. Introduction of ObjectiveScript</a></span></dt>
+                     <dt><span class="section"><a href="chapter-1.html#chapter-1.2">1.2. Example Programs</a></span></dt>
+                  </dl>
+               </dd>
+               <dt><span class="chapter"><a href="jls-2.html">2. Grammars</a></span></dt>
+               <dd>
+                  <dl>
+                     <dt><span class="section"><a href="jls-2.html#jls-2.1">2.1. Context-Free Grammars</a></span></dt>
+                     <dt><span class="section"><a href="jls-2.html#jls-2.2">2.2. The Lexical Grammar</a></span></dt>
+                     <dt><span class="section"><a href="jls-2.html#jls-2.3">2.3. The Syntactic Grammar</a></span></dt>
+                     <dt><span class="section"><a href="jls-2.html#jls-2.4">2.4. Grammar Notation</a></span></dt>
+                  </dl>
+               </dd>
+               <dt><span class="chapter"><a href="jls-3.html">3. Lexical Structure</a></span></dt>
+               <dd>
+                  <dl>
+                     <dt><span class="section"><a href="jls-3.html#jls-3.4">3.4. Line Terminators</a></span></dt>
+                     <dt><span class="section"><a href="jls-3.html#jls-3.5">3.5. Input Elements and Tokens</a></span></dt>
+                     <dt><span class="section"><a href="jls-3.html#jls-3.6">3.6. White Space</a></span></dt>
+                     <dt><span class="section"><a href="jls-3.html#jls-3.7">3.7. Comments</a></span></dt>
+                     <dt><span class="section"><a href="jls-3.html#jls-3.8">3.8. Identifiers</a></span></dt>
+                     <dt><span class="section"><a href="jls-3.html#jls-3.9">3.9. Keywords</a></span></dt>
+                     <dt><span class="section"><a href="jls-3.html#jls-3.10">3.10. Literals</a></span></dt>
+                     <dd>
+                        <dl>
+                           <dt><span class="section"><a href="jls-3.html#jls-3.10.1">3.10.1. Integer Literals</a></span></dt>
+                           <dt><span class="section"><a href="jls-3.html#jls-3.10.2">3.10.2. Floating-Point Literals</a></span></dt>
+                           <dt><span class="section"><a href="jls-3.html#jls-3.10.3">3.10.3. Boolean Literals</a></span></dt>
+                           <dt><span class="section"><a href="jls-3.html#jls-3.10.5">3.10.5. String Literals</a></span></dt>
+                           <dt><span class="section"><a href="jls-3.html#jls-3.10.6">3.10.6. Escape Sequences for Character and String Literals</a></span></dt>
+                           <dt><span class="section"><a href="jls-3.html#jls-3.10.7">3.10.7. The Null Literal</a></span></dt>
+                        </dl>
+                     </dd>
+                     <dt><span class="section"><a href="jls-3.html#jls-3.11">3.11. Separators</a></span></dt>
+                     <dt><span class="section"><a href="jls-3.html#jls-3.12">3.12. Operators</a></span></dt>
+                  </dl>
+               </dd>
+               <dt><span class="chapter"><a href="jls-4.html">4. Types, Values, and Variables</a></span></dt>
+               <dd>
+                  <dl>
+                     <dt><span class="section"><a href="jls-4.html#jls-4.1">4.1. The Kinds of Types and Values</a></span></dt>
+                     <dt><span class="section"><a href="jls-4.html#jls-4.2">4.2. Primitive Types and Values</a></span></dt>
+                     <dd>
+                        <dl>
+                           <dt><span class="section"><a href="jls-4.html#jls-4.2.1">4.2.1. Integral Types and Values</a></span></dt>
+                           <dt><span class="section"><a href="jls-4.html#jls-4.2.2">4.2.2. Integer Operations</a></span></dt>
+                           <dt><span class="section"><a href="jls-4.html#jls-4.2.3">4.2.3. Floating-Point Types, Formats, and Values</a></span></dt>
+                           <dt><span class="section"><a href="jls-4.html#jls-4.2.4">4.2.4. Floating-Point Operations</a></span></dt>
+                           <dt><span class="section"><a href="jls-4.html#jls-4.2.5">4.2.5. The <code class="literal">boolean</code> Type and boolean Values</a></span></dt>
+                        </dl>
+                     </dd>
+                  </dl>
+               </dd>
+               <dt><span class="chapter"><a href="jls-6.html">6. Names</a></span></dt>
+               <dd>
+                  <dl>
+                     <dt><span class="section"><a href="jls-6.html#jls-6.1">6.1. Declarations</a></span></dt>
+                     <dt><span class="section"><a href="jls-6.html#jls-6.2">6.2. Names and Identifiers</a></span></dt>
+                     <dt><span class="section"><a href="jls-6.html#jls-6.3">6.3. Scope of a Declaration</a></span></dt>
+                     <dt><span class="section"><a href="jls-6.html#jls-6.6">6.6. Access Control</a></span></dt>
+                     <dt><span class="section"><a href="jls-6.html#jls-6.7">6.7. Fully Qualified Names and Canonical Names</a></span></dt>
+                  </dl>
+               </dd>
+               <dt><span class="chapter"><a href="jls-8.html">8. Classes</a></span></dt>
+               <dd>
+                  <dl>
+                     <dt><span class="section"><a href="jls-8.html#jls-8.1">8.1. Class Declarations</a></span></dt>
+                     <dd>
+                        <dl>
+                           <dt><span class="section"><a href="jls-8.html#jls-8.1.1">8.1.1. Class Modifiers</a></span></dt>
+                           <dt><span class="section"><a href="jls-8.html#jls-8.1.2">8.1.2. Generic Classes and Type Parameters</a></span></dt>
+                           <dt><span class="section"><a href="jls-8.html#jls-8.1.3">8.1.3. Inner Classes and Enclosing Instances</a></span></dt>
+                           <dt><span class="section"><a href="jls-8.html#jls-8.1.4">8.1.4. Superclasses and Subclasses</a></span></dt>
+                           <dt><span class="section"><a href="jls-8.html#jls-8.1.6">8.1.6. Class Body and Member Declarations</a></span></dt>
+                        </dl>
+                     </dd>
+                     <dt><span class="section"><a href="jls-8.html#jls-8.2">8.2. Class Members</a></span></dt>
+                     <dt><span class="section"><a href="jls-8.html#jls-8.3">8.3. Field Declarations</a></span></dt>
+                     <dt><span class="section"><a href="jls-8.html#jls-8.4">8.4. Method Declarations</a></span></dt>
+                     <dd>
+                        <dl>
+                           <dt><span class="section"><a href="jls-8.html#jls-8.4.1">8.4.1. Formal Parameters</a></span></dt>
+                           <dt><span class="section"><a href="jls-8.html#jls-8.4.2">8.4.2. Method Signature</a></span></dt>
+                           <dt><span class="section"><a href="jls-8.html#jls-8.4.3">8.4.3. Method Modifiers</a></span></dt>
+                           <dt><span class="section"><a href="jls-8.html#jls-8.4.4">8.4.4. Generic Methods</a></span></dt>
+                           <dt><span class="section"><a href="jls-8.html#jls-8.4.5">8.4.5. Method Result</a></span></dt>
+                           <dt><span class="section"><a href="jls-8.html#jls-8.4.6">8.4.6. Method Throws</a></span></dt>
+                           <dt><span class="section"><a href="jls-8.html#jls-8.4.7">8.4.7. Method Body</a></span></dt>
+                           <dt><span class="section"><a href="jls-8.html#jls-8.4.8">8.4.8. Inheritance, Overriding, and Hiding</a></span></dt>
+                           <dt><span class="section"><a href="jls-8.html#jls-8.4.9">8.4.9. Overloading</a></span></dt>
+                        </dl>
+                     </dd>
+                     <dt><span class="section"><a href="jls-8.html#jls-8.5">8.5. Member Type Declarations</a></span></dt>
+                     <dt><span class="section"><a href="jls-8.html#jls-8.6">8.6. Instance Initializers</a></span></dt>
+                     <dt><span class="section"><a href="jls-8.html#jls-8.7">8.7. Static Initializers</a></span></dt>
+                     <dt><span class="section"><a href="jls-8.html#jls-8.8">8.8. Constructor Declarations</a></span></dt>
+                     <dd>
+                        <dl>
+                           <dt><span class="section"><a href="jls-8.html#jls-8.8.1">8.8.1. Formal Parameters</a></span></dt>
+                           <dt><span class="section"><a href="jls-8.html#jls-8.8.2">8.8.2. Constructor Signature</a></span></dt>
+                           <dt><span class="section"><a href="jls-8.html#jls-8.8.3">8.8.3. Constructor Modifiers</a></span></dt>
+                           <dt><span class="section"><a href="jls-8.html#jls-8.8.4">8.8.4. Generic Constructors</a></span></dt>
+                           <dt><span class="section"><a href="jls-8.html#jls-8.8.5">8.8.5. Constructor Throws</a></span></dt>
+                           <dt><span class="section"><a href="jls-8.html#jls-8.8.6">8.8.6. The Type of a Constructor</a></span></dt>
+                           <dt><span class="section"><a href="jls-8.html#jls-8.8.7">8.8.7. Constructor Body</a></span></dt>
+                           <dt><span class="section"><a href="jls-8.html#jls-8.8.8">8.8.8. Constructor Overloading</a></span></dt>
+                           <dt><span class="section"><a href="jls-8.html#jls-8.8.9">8.8.9. Default Constructor</a></span></dt>
+                           <dt><span class="section"><a href="jls-8.html#jls-8.8.10">8.8.10. Preventing Instantiation of a Class</a></span></dt>
+                        </dl>
+                     </dd>
+                     <dt><span class="section"><a href="jls-8.html#jls-8.9">8.9. Enum Types</a></span></dt>
+                     <dd>
+                        <dl>
+                           <dt><span class="section"><a href="jls-8.html#jls-8.9.1">8.9.1. Enum Constants</a></span></dt>
+                           <dt><span class="section"><a href="jls-8.html#jls-8.9.2">8.9.2. Enum Body Declarations</a></span></dt>
+                        </dl>
+                     </dd>
+                  </dl>
+               </dd>
+               <dt><span class="chapter"><a href="jls-9.html">9. Interfaces</a></span></dt>
+               <dd>
+                  <dl>
+                     <dt><span class="section"><a href="jls-9.html#jls-9.1">9.1. Interface Declarations</a></span></dt>
+                     <dd>
+                        <dl>
+                           <dt><span class="section"><a href="jls-9.html#jls-9.1.1">9.1.1. Interface Modifiers</a></span></dt>
+                           <dt><span class="section"><a href="jls-9.html#jls-9.1.2">9.1.2. Generic Interfaces and Type Parameters</a></span></dt>
+                           <dt><span class="section"><a href="jls-9.html#jls-9.1.3">9.1.3. Superinterfaces and Subinterfaces</a></span></dt>
+                           <dt><span class="section"><a href="jls-9.html#jls-9.1.4">9.1.4. Interface Body and Member Declarations</a></span></dt>
+                        </dl>
+                     </dd>
+                     <dt><span class="section"><a href="jls-9.html#jls-9.4">9.4. Method Declarations</a></span></dt>
+                     <dd>
+                        <dl>
+                           <dt><span class="section"><a href="jls-9.html#jls-9.4.1">9.4.1. Inheritance and Overriding</a></span></dt>
+                           <dd>
+                              <dl>
+                                 <dt><span class="section"><a href="jls-9.html#jls-9.4.1.1">9.4.1.1. Overriding (by Instance Methods)</a></span></dt>
+                                 <dt><span class="section"><a href="jls-9.html#jls-9.4.1.2">9.4.1.2. Requirements in Overriding</a></span></dt>
+                                 <dt><span class="section"><a href="jls-9.html#jls-9.4.1.3">9.4.1.3. Inheriting Methods with Override-Equivalent Signatures</a></span></dt>
+                              </dl>
+                           </dd>
+                           <dt><span class="section"><a href="jls-9.html#jls-9.4.2">9.4.2. Overloading</a></span></dt>
+                        </dl>
+                     </dd>
+                  </dl>
+               </dd>
+               <dt><span class="chapter"><a href="chapter-11.html">11. Exceptions</a></span></dt>
+               <dd>
+                  <dl>
+                     <dt><span class="section"><a href="chapter-11.html#chapter-11.1">11.1. The Kinds and Causes of Exceptions</a></span></dt>
+                     <dd>
+                        <dl>
+                           <dt><span class="section"><a href="chapter-11.html#chapter-11.1.1">11.1.1. The Kinds of Exceptions</a></span></dt>
+                           <dt><span class="section"><a href="chapter-11.html#chapter-11.1.2">11.1.2. The Causes of Exceptions</a></span></dt>
+                        </dl>
+                     </dd>
+                     <dt><span class="section"><a href="chapter-11.html#chapter-11.3">11.3. Run-Time Handling of an Exception</a></span></dt>
+                  </dl>
+               </dd>
+            </dl>
+         </div>
+      </div>
+      <div class="navfooter">
+         <hr>
+         <table width="100%" summary="Navigation footer">
+            <tr>
+               <td width="40%" align="left">&nbsp;</td>
+               <td width="20%" align="center">&nbsp;</td>
+               <td width="40%" align="right">&nbsp;</td>
+            </tr>
+            <tr>
+               <td width="40%" align="left" valign="top">&nbsp;</td>
+               <td width="20%" align="center">&nbsp;</td>
+               <td width="40%" align="right" valign="top">&nbsp;</td>
+            </tr>
+         </table>
+      </div>
+   </body>
+</html>
