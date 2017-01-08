@@ -29,52 +29,45 @@ public:
 	FloatObject(const Object& object);
 
 public:	// Operators
-	virtual void operator_assign(const FloatObject *other);
-	virtual void operator_assign(const Object *other);
+	void operator_assign(const FloatObject *other);
+	void operator_assign(const Object *other);
 
-	virtual bool operator_bool() const;
+	bool operator_bool() const;
 
-	virtual void operator_divide(const FloatObject *other);
-	virtual void operator_divide(const Object *other);
+	void operator_divide(const FloatObject *other);
+	void operator_divide(const Object *other);
 
-	virtual bool operator_equal(const FloatObject *other);
-	virtual bool operator_equal(const Object *other);
+	bool operator_equal(const FloatObject *other);
+	bool operator_equal(const Object *other);
 
-	virtual bool operator_greater(const FloatObject *other);
-	virtual bool operator_greater(const Object *other);
+	bool operator_greater(const FloatObject *other);
+	bool operator_greater(const Object *other);
 
-	virtual bool operator_greater_equal(const FloatObject *other);
-	virtual bool operator_greater_equal(const Object *other);
+	bool operator_greater_equal(const FloatObject *other);
+	bool operator_greater_equal(const Object *other);
 
-	virtual bool operator_less(const FloatObject *other);
-	virtual bool operator_less(const Object *other);
+	bool operator_less(const FloatObject *other);
+	bool operator_less(const Object *other);
 
-	virtual bool operator_less_equal(const FloatObject *other);
-	virtual bool operator_less_equal(const Object *other);
+	bool operator_less_equal(const FloatObject *other);
+	bool operator_less_equal(const Object *other);
 
-	virtual void operator_multiply(const FloatObject *other);
-	virtual void operator_multiply(const Object *other);
+	void operator_multiply(const FloatObject *other);
+	void operator_multiply(const Object *other);
 
-	virtual void operator_plus(const FloatObject *other);
-	virtual void operator_plus(const Object *other);
+	void operator_plus(const FloatObject *other);
+	void operator_plus(const Object *other);
 
-	virtual void operator_subtract(const FloatObject *other);
-	virtual void operator_subtract(const Object *other);
+	void operator_subtract(const FloatObject *other);
+	void operator_subtract(const Object *other);
 
-	virtual void operator_unary_decrement();
-	virtual void operator_unary_increment();
-	virtual void operator_unary_minus();
-	virtual void operator_unary_not();
+	void operator_unary_decrement();
+	void operator_unary_increment();
+	void operator_unary_minus();
+	void operator_unary_not();
 
 public: // Values
-	virtual bool isValid() const;
-
-	virtual std::string ToString(unsigned int indent) const;
-
-protected:
-
-private:
-
+	bool isValid() const;
 };
 
 

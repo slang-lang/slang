@@ -141,11 +141,6 @@ void StringObject::operator_plus(const StringObject *other)
 	mValue = mValue.toStdString() + other->getValue().toStdString();
 }
 
-std::string StringObject::ToString(unsigned int indent) const
-{
-	return ::Utils::Tools::indent(indent) + QualifiedTypename() + " " + getName() + " = " + getValue().toStdString();
-}
-
 
 }
 }

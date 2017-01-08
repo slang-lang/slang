@@ -161,11 +161,6 @@ void BoolObject::operator_unary_not()
 	mValue = !mValue.toBool();
 }
 
-std::string BoolObject::ToString(unsigned int indent) const
-{
-	return ::Utils::Tools::indent(indent) + QualifiedTypename() + " " + getName() + " = " + getValue().toStdString();
-}
-
 
 }
 }

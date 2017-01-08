@@ -39,24 +39,14 @@ VoidObject::VoidObject(const Object& object)
 	mIsConstructed = true;
 }
 
+bool VoidObject::isValid() const
+{
+	return false;
+}
+
 bool VoidObject::operator_bool() const
 {
 	return mIsConstructed;
-}
-
-void VoidObject::getNativeValue() const
-{
-	return;	// this makes absolutely no sense but hey :-)
-}
-
-void VoidObject::setNativeValue(void)
-{
-	// this makes absolutely no sense but hey :-)
-}
-
-std::string VoidObject::ToString(unsigned int indent) const
-{
-	return ::Utils::Tools::indent(indent) + QualifiedTypename() + " " + getName();
 }
 
 
