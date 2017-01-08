@@ -29,13 +29,10 @@ public:
 	VoidObject(const Object& other);
 
 public:	// Operators
-	virtual bool operator_bool() const;
+	bool operator_bool() const;
 
 public: // Value
-	virtual void getNativeValue() const;
-	virtual void setNativeValue(void);
-
-	virtual std::string ToString(unsigned int indent) const;
+	bool isValid() const;
 };
 
 

@@ -29,29 +29,24 @@ public:
 	BoolObject(const Object& other);
 
 public:	// Operators
-	virtual void operator_assign(const BoolObject *other);
-	virtual void operator_assign(const Object *other);
+	void operator_assign(const BoolObject *other);
+	void operator_assign(const Object *other);
 
-	virtual bool operator_bool() const;
+	bool operator_bool() const;
 
-	virtual void operator_bitand(const BoolObject *other);
-	virtual void operator_bitand(const Object *other);
+	void operator_bitand(const BoolObject *other);
+	void operator_bitand(const Object *other);
 
-	virtual void operator_bitor(const BoolObject *other);
-	virtual void operator_bitor(const Object *other);
+	void operator_bitor(const BoolObject *other);
+	void operator_bitor(const Object *other);
 
-	virtual bool operator_equal(const BoolObject *other);
-	virtual bool operator_equal(const Object *other);
+	bool operator_equal(const BoolObject *other);
+	bool operator_equal(const Object *other);
 
-	virtual void operator_unary_not();
+	void operator_unary_not();
 
 public: // Value
-	virtual bool isValid() const;
-
-	virtual std::string ToString(unsigned int indent) const;
-
-private:
-
+	bool isValid() const;
 };
 
 
