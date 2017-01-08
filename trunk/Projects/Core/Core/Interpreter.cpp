@@ -874,7 +874,6 @@ void Interpreter::process_delete(TokenIterator& token)
 		case Symbol::IType::ObjectSymbol: {
 			Object *object = static_cast<Object*>(symbol);
 
-			//object->assign(Object(object->getName(), object->Filename(), object->QualifiedTypename(), VALUE_NONE));
 			object->assign(Object());
 		} break;
 		case Symbol::IType::BluePrintEnumSymbol:
@@ -1672,21 +1671,25 @@ void Interpreter::process_throw(TokenIterator& token, Object* /*result*/)
 	// check if our parent scope is a method that is allowed to throw exceptions
 	Common::Method* method = dynamic_cast<Common::Method*>(getEnclosingMethodScope(getScope()));
 	if ( method && !method->throws() ) {
-		// this method is not marked as 'throwing', so we can't throw exceptions here
+		// this method is not marked as 'throwing', so we are not allowed to throw exceptions here
 		OSwarn(std::string(method->getFullScopeName() + " throws although it is not marked with 'throws' in " + token->position().toString()).c_str());
 	}
 
-	Object* data = getRepository()->createInstance(OBJECT, ANONYMOUS_OBJECT, PrototypeConstraints());
-	try {
-		expression(data, token);
-	}
-	catch ( ControlFlow::E &e ) {
-		mControlFlow = e;
-		return;
+	// determine if we are about to rethrow an exception or throw a new one
+	if ( token->type() != Token::Type::SEMICOLON ) {
+		Object* data = getRepository()->createInstance(OBJECT, ANONYMOUS_OBJECT, PrototypeConstraints());
+		try {
+			expression(data, token);
+		}
+		catch ( ControlFlow::E &e ) {
+			mControlFlow = e;
+			return;
+		}
+
+		Controller::Instance().stack()->exception() = ExceptionData(data, token->position());
 	}
 
 	mControlFlow = ControlFlow::Throw;
-	Controller::Instance().stack()->exception() = ExceptionData(data, token->position());
 
 	expect(Token::Type::SEMICOLON, token);
 
@@ -1764,6 +1767,8 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 			mControlFlow = ControlFlow::Normal;
 		}
 
+		Object* exception = Controller::Instance().stack()->exception().getData();
+
 		for ( std::list<TokenIterator>::const_iterator it = catchTokens.begin(); it != catchTokens.end(); ++it ) {
 			TokenIterator catchIt = (*it);
 			++catchIt;
@@ -1787,18 +1792,18 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 
 				expect(Token::Type::PARENTHESIS_CLOSE, catchIt++);
 
-				if ( !type || !Controller::Instance().stack()->exception().getData() ) {
+				if ( !type || !exception ) {
 					throw Common::Exceptions::Exception("could not create exception type instance", catchIt->position());
 				}
 
 				// compare given exception type with thrown type inheritance
-				if ( !Controller::Instance().stack()->exception().getData()->isInstanceOf(type->QualifiedTypename()) ) {
+				if ( !exception->isInstanceOf(type->QualifiedTypename()) ) {
 					popScope();		// pop exception instance scope
 					continue;
 				}
 
 				// exception type match with thrown type, start with the real exception handling
-				operator_binary_assign(type, Controller::Instance().stack()->exception().getData());
+				operator_binary_assign(type, exception);
 			}
 
 			// notify our debugger that an exception has been caught
@@ -1826,10 +1831,11 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 			// execute catch-block if an exception has been thrown
 			mControlFlow = interpret(tokens, result);
 
-			Object* ex = Controller::Instance().stack()->exception().getData();
-			if ( ex ) {
-				getScope()->define(ex->getName(), ex);
+/*
+			if ( exception ) {
+				getScope()->define(exception->getName(), exception);
 			}
+*/
 
 			popScope();		// pop exception instance scope
 			break;

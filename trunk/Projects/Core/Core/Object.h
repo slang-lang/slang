@@ -55,6 +55,7 @@ public:
 	void copy(const Object& other);
 
 public: // MethodScope overrides
+	void defineMember(const std::string& name, Symbol* symbol);
 	void defineMethod(const std::string& name, Common::Method* method);
 
 public:	// Symbol::IType implementation & RTTI

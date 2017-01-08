@@ -279,7 +279,7 @@ std::string Method::ToString(unsigned int indent) const
 
 	result += ::Utils::Tools::indent(indent);
 	result += Visibility::convert(mVisibility);
-	result += " " + LanguageFeatureState::convert(mLanguageFeatureState);
+	//result += " " + LanguageFeatureState::convert(mLanguageFeatureState);
 	result += " " + QualifiedTypename() + " " + getName() + "(" + toString(mSignature) + ")";
 	result += " " + Mutability::convert(mMutability);
 	if ( isAbstract() ) {

@@ -631,7 +631,7 @@ void Repository::initializeObject(Runtime::Object* object, Designtime::BluePrint
 		symbol->setValue(blue->getValue());
 		symbol->setVisibility(blue->getVisibility());
 
-		object->define(symbol->getName(), symbol);
+		object->defineMember(symbol->getName(), symbol);
 	}
 
 	// create and define all methods based on given blueprint

@@ -295,7 +295,7 @@ void Object::copy(const Object& other)
 				Object* target = Controller::Instance().repository()->createInstance(source->QualifiedTypename(), source->getName(), PrototypeConstraints());
 				target->copy(*source);
 
-				define(target->getName(), target);
+				defineMember(target->getName(), target);
 			}
 
 			// register new methods
@@ -309,6 +309,11 @@ void Object::copy(const Object& other)
 			}
 		}
 	}
+}
+
+void Object::defineMember(const std::string& name, Symbol* symbol)
+{
+	SymbolScope::define(name, symbol);
 }
 
 void Object::defineMethod(const std::string& name, Common::Method* method)
@@ -1043,9 +1048,9 @@ std::string Object::ToString(unsigned int indent) const
 	std::string result;
 	result += ::Utils::Tools::indent(indent);
 	result += Visibility::convert(mVisibility);
-	result += " " + LanguageFeatureState::convert(mLanguageFeatureState);
+	//result += " " + LanguageFeatureState::convert(mLanguageFeatureState);
 	result += " " + QualifiedTypename() + " " + getName();
-//	result += " " + Mutability::convert(mMutability);
+	result += " " + Mutability::convert(mMutability);
 
 	if ( isAtomicType() ) {
 		result += " = " + getValue().toStdString();
@@ -1054,18 +1059,30 @@ std::string Object::ToString(unsigned int indent) const
 		result += " = null";
 	}
 	else {
-		result += "{\n";
+		result += " {\n";
 
+/*
 		for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
 			result += (*it)->ToString(indent + 1) + "\n";
 		}
+*/
 
 		for ( Symbols::const_iterator it = mSymbols.begin(); it != mSymbols.end(); ++it ) {
-			if ( it->first == IDENTIFIER_THIS || !it->second || it->second->getSymbolType() != Symbol::IType::ObjectSymbol ) {
+			if ( it->first == IDENTIFIER_THIS || !it->second ) {
 				continue;
 			}
 
-			result += it->second->ToString(indent + 1) + "\n";
+			switch ( it->second->getSymbolType() ) {
+				case Symbol::IType::BluePrintEnumSymbol:
+				case Symbol::IType::BluePrintObjectSymbol:
+				case Symbol::IType::MethodSymbol:
+				case Symbol::IType::NamespaceSymbol:
+				case Symbol::IType::UnknownSymbol:
+					continue;
+				case Symbol::IType::ObjectSymbol:
+					result += it->second->ToString(indent + 1) + "\n";
+					break;
+			}
 		}
 
 		result += ::Utils::Tools::indent(indent) + "}";
