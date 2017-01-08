@@ -51,11 +51,11 @@ public object GenericStack<T> implements IIterateable, IGenericCollection<T> {
     }
 
     public GenericIterator<T> getIterator() const {
-        return new GenericIterator<T>(IGenericCollection this);
+        return new GenericIterator<T>(IGenericCollection<T> this);
     }
 
     public GenericReverseIterator<T> getReverseIterator() const {
-        return new GenericReverseIterator<T>(IGenericCollection this);
+        return new GenericReverseIterator<T>(IGenericCollection<T> this);
     }
 
     public int indexOf(T value) const {

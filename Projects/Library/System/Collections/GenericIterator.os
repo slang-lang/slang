@@ -4,10 +4,10 @@ import System.Exception;
 public namespace System.Collections { }
 
 public object GenericIterator<T> {
-	private IGenericCollection mCollection;
+	private IGenericCollection<T> mCollection;
 	private int mCurrentIndex;
 
-	public void Constructor(IGenericCollection collection) {
+	public void Constructor(IGenericCollection<T> collection) {
 		mCollection = collection;
 
 		reset();
@@ -65,10 +65,10 @@ public object GenericIterator<T> {
 }
 
 public object GenericReverseIterator<T: Object> {
-	private IGenericCollection mCollection;
+	private IGenericCollection<T> mCollection;
 	private int mCurrentIndex;
 
-	public void Constructor(IGenericCollection collection) {
+	public void Constructor(IGenericCollection<T> collection) {
 		mCollection = collection;
 
 		reset();

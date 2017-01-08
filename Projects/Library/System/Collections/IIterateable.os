@@ -12,11 +12,11 @@ public interface IReverseIterateable {
 	public ReverseIterator getReverseIterator() const;
 }
 
-public interface IGenericIterateable<T> implements IIterateable {
+public interface IGenericIterateable<T> {
 	public Iterator<T> getIterator() const;
 }
 
-public interface IGenericReverseIterateable<T> implements IReverseIterateable {
+public interface IGenericReverseIterateable<T> {
 	public ReverseIterator<T> getIterator() const;
 }
 
