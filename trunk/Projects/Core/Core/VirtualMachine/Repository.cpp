@@ -145,13 +145,8 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 	// inheritance
 	Designtime::Ancestors ancestors = blueprint->getInheritance();
 	for ( Designtime::Ancestors::const_iterator it = ancestors.begin(); it != ancestors.end(); ++it ) {
-		std::string type = constraints.lookupType((*it).name());
-		if ( !(*it).constraints().empty() ) {
-			type += constraints.extractTypes((*it).constraints());
-		}
-
 		newBlue->addInheritance(Designtime::Ancestor(
-			TypeDeclaration(type),
+			TypeDeclaration(constraints.lookupType((*it).name()), constraints.extractConstraints((*it).constraints())),
 			(*it).ancestorType(),
 			(*it).visibility()
 		));

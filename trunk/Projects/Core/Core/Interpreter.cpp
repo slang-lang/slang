@@ -710,7 +710,7 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 					PrototypeConstraints constraints = Designtime::Parser::collectRuntimePrototypeConstraints(start);
 
 					std::string newType = dynamic_cast<Designtime::BluePrintGeneric*>(symbol)->QualifiedTypename();
-								newType = Designtime::Parser::buildDesigntimeConstraintTypename(newType, constraints);
+								newType = Designtime::Parser::buildRuntimeConstraintTypename(newType, constraints);
 
 					Object tmp;
 					expression(&tmp, start);
