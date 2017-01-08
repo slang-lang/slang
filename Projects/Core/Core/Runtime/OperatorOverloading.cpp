@@ -25,7 +25,7 @@ namespace Runtime {
 
 void operator_binary_assign(Object *base, Object *other)
 {
-	if ( !base ) {
+	if ( !base || !other ) {
 		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object");
 	}
 
