@@ -7,6 +7,8 @@ public void Main(int argc = 0, string args = "") {
 	assert( TestCase1() );
 	assert( TestCase2() );
 	assert( TestCase3() );
+	assert( TestCase4() );
+	//assert( TestCase5() );	// this test should fail
 }
 
 public bool TestCase1() {
@@ -84,5 +86,46 @@ private bool TestCase3() {
 	assert( queue.size() == 3 );
 
 	return true;
+}
+
+private bool TestCase4() {
+	print("TestCase 4: Queue.clear()");
+
+	Queue<String> queue = new Queue<String>();
+	assert( queue );
+	assert( queue is IIterateable );
+
+	assert( queue.empty() );
+
+	queue.enqueue(new String("Entry 1"));
+	queue.enqueue(new String("Entry 2"));
+	queue.enqueue(new String("Entry 3"));
+
+	assert( !queue.empty() );
+	assert( queue.size() == 3 );
+
+	foreach ( String s : queue ) {
+		//print("s = " + s);
+	}
+
+	queue.clear();
+
+	assert( queue.empty() );
+	assert( queue.size() == 0);
+
+	foreach ( String s : queue ) {
+		assert( false );
+	}
+
+	return true;
+}
+
+private bool TestCase5() {
+	print("TestCase 5: Queue with non-object type");
+
+	Queue<int> queue = new Queue<int>();
+	queue.enqueue(1);
+
+	return false;
 }
 

@@ -43,6 +43,9 @@ class PrototypeConstraints;
 class PrototypeConstraints : public std::list<PrototypeConstraint>
 {
 public:
+	bool operator==(const PrototypeConstraints& other) const;
+
+public:
 	PrototypeConstraints extractConstraints(const PrototypeConstraints& other) const;
 	std::string extractTypes(const PrototypeConstraints& other) const;
 	bool hasDesigntimeTypes() const;

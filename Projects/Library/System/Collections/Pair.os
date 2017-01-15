@@ -21,7 +21,7 @@ public object Pair<F, S> {
 	}
 
 	public string =operator(string none) const {
-		return "{\"" + first + "\":" + second + "}";
+		return "{" + first + ":" + second + "}";
 	}
 }
 
