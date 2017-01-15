@@ -8,6 +8,7 @@
 #include "MysqlAffectedRows.h"
 #include "MysqlClose.h"
 #include "MysqlDataSeek.h"
+#include "MysqlErrno.h"
 #include "MysqlError.h"
 #include "MysqlFieldCount.h"
 #include "MysqlFieldSeek.h"
@@ -51,6 +52,7 @@ void MysqlExtension::provideMethods(ExtensionMethods &methods)
 	methods.push_back(new MysqlAffectedRows());
 	methods.push_back(new MysqlClose());
 	methods.push_back(new MysqlDataSeek());
+	methods.push_back(new MysqlErrno());
 	methods.push_back(new MysqlError());
 	methods.push_back(new MysqlFieldCount());
 	methods.push_back(new MysqlFieldSeek());
