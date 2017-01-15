@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_Mysql_MysqlFieldSeek_h
-#define ObjectiveScript_Extensions_Mysql_MysqlFieldSeek_h
+#ifndef ObjectiveScript_Extensions_Mysql_MysqlRowSeek_h
+#define ObjectiveScript_Extensions_Mysql_MysqlRowSeek_h
 
 // Library includes
 
@@ -21,11 +21,11 @@ namespace Extensions {
 namespace Mysql {
 
 
-class MysqlFieldSeek : public ExtensionMethod
+class MysqlRowSeek : public ExtensionMethod
 {
 public:
-	MysqlFieldSeek()
-	: ExtensionMethod(0, "mysql_field_seek", Designtime::IntegerObject::TYPENAME)
+	MysqlRowSeek()
+	: ExtensionMethod(0, "mysql_row_seek", Designtime::IntegerObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME));
@@ -42,7 +42,7 @@ public:
 			ParameterList::const_iterator it = list.begin();
 
 			int param_handle = (*it++).value().toInt();
-			int param_offset = (*it++).value().toInt();
+			long param_offset = (*it++).value().toInt();
 
 			MYSQL_RES *myResult = mMysqlResults[param_handle];
 			if ( !myResult ) {
@@ -50,7 +50,7 @@ public:
 			}
 
 			*result = Runtime::IntegerObject(
-				mysql_field_seek(myResult, (MYSQL_FIELD_OFFSET) param_offset)
+				mysql_row_seek(myResult, (MYSQL_ROW_OFFSET) param_offset)
 			);
 		}
 		catch ( std::exception &e ) {

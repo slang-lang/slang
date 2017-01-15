@@ -29,6 +29,9 @@ SET(HEADERS
 	MysqlQuery.h
 	MysqlRealConnect.h
 	MysqlRealEscapeString.h
+	MysqlRowCount.h
+	MysqlRowSeek.h
+	MysqlRowTell.h
 	MysqlSelectDB.h
 	MysqlStat.h
 	MysqlStoreResult.h

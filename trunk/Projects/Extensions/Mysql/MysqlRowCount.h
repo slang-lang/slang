@@ -1,6 +1,7 @@
 
-#ifndef ObjectiveScript_Extensions_Mysql_MysqlFieldSeek_h
-#define ObjectiveScript_Extensions_Mysql_MysqlFieldSeek_h
+#ifndef ObjectiveScript_Extensions_Mysql_MysqlRowCount_h
+#define ObjectiveScript_Extensions_Mysql_MysqlRowCount_h
+
 
 // Library includes
 
@@ -13,6 +14,8 @@
 #include <Core/Tools.h>
 #include "Types.h"
 
+// Forward declarations
+
 // Namespace declarations
 
 
@@ -21,15 +24,14 @@ namespace Extensions {
 namespace Mysql {
 
 
-class MysqlFieldSeek : public ExtensionMethod
+class MysqlRowCount : public ExtensionMethod
 {
 public:
-	MysqlFieldSeek()
-	: ExtensionMethod(0, "mysql_field_seek", Designtime::IntegerObject::TYPENAME)
+	MysqlRowCount()
+	: ExtensionMethod(0, "mysql_row_count", Designtime::IntegerObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME));
-		params.push_back(Parameter::CreateDesigntime("offset", Designtime::IntegerObject::TYPENAME));
 
 		setSignature(params);
 	}
@@ -42,15 +44,14 @@ public:
 			ParameterList::const_iterator it = list.begin();
 
 			int param_handle = (*it++).value().toInt();
-			int param_offset = (*it++).value().toInt();
 
 			MYSQL_RES *myResult = mMysqlResults[param_handle];
 			if ( !myResult ) {
-				throw Common::Exceptions::Exception("no valid mysql result!");
+				throw Common::Exceptions::Exception("no valid mysql connection handle: " + Tools::toString(param_handle));
 			}
 
 			*result = Runtime::IntegerObject(
-				mysql_field_seek(myResult, (MYSQL_FIELD_OFFSET) param_offset)
+				(int)mysql_num_rows(myResult)
 			);
 		}
 		catch ( std::exception &e ) {
