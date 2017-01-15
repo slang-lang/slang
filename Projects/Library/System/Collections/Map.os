@@ -73,6 +73,7 @@ public object Map<K, V> implements IIterateable {
 		foreach ( Object p : mItems ) {
 			if ( p == key ) {
 				mItems.erase(index);
+				return;
 			}
 
 			index++;
