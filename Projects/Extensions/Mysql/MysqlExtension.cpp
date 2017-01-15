@@ -27,6 +27,9 @@
 #include "MysqlQuery.h"
 #include "MysqlRealConnect.h"
 #include "MysqlRealEscapeString.h"
+#include "MysqlRowCount.h"
+#include "MysqlRowSeek.h"
+#include "MysqlRowTell.h"
 #include "MysqlSelectDB.h"
 #include "MysqlStat.h"
 #include "MysqlStoreResult.h"
@@ -72,6 +75,9 @@ void MysqlExtension::provideMethods(ExtensionMethods &methods)
 	methods.push_back(new MysqlQuery());
 	methods.push_back(new MysqlRealEscapeString());
 	methods.push_back(new MysqlRealConnect());
+	methods.push_back(new MysqlRowCount());
+	methods.push_back(new MysqlRowSeek());
+	methods.push_back(new MysqlRowTell());
 	methods.push_back(new MysqlSelectDB());
 	methods.push_back(new MysqlStat());
 	methods.push_back(new MysqlStoreResult());
