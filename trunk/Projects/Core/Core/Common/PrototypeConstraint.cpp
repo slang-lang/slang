@@ -41,6 +41,22 @@ bool PrototypeConstraint::hasRuntimeType() const
 }
 
 
+bool PrototypeConstraints::operator==(const PrototypeConstraints& other) const
+{
+	if ( this->size() == other.size() ) {
+		PrototypeConstraints::const_iterator thisIt = this->begin();
+		for ( PrototypeConstraints::const_iterator otherIt = other.begin(); otherIt != other.end(); ++otherIt, ++thisIt ) {
+			if ( !((*thisIt) == (*otherIt)) ) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	return false;
+}
+
 PrototypeConstraints PrototypeConstraints::extractConstraints(const PrototypeConstraints& other) const
 {
 	PrototypeConstraints result;
