@@ -293,7 +293,7 @@ Runtime::Object* Repository::createInstance(const std::string& type, const std::
 /*
  * Creates an instance of the given blueprint
  */
-Runtime::Object* Repository::createInstance(Designtime::BluePrintGeneric* blueprint, const std::string& name, const PrototypeConstraints& constraints, InitilizationType::E initialize)
+Runtime::Object* Repository::createInstance(Designtime::BluePrintGeneric* blueprint, const std::string& name, PrototypeConstraints constraints, InitilizationType::E initialize)
 {
 	if ( !blueprint ) {
 		throw Common::Exceptions::Exception("invalid blueprint provided!");
@@ -302,6 +302,15 @@ Runtime::Object* Repository::createInstance(Designtime::BluePrintGeneric* bluepr
 	if ( blueprint->getSymbolType() == Symbol::IType::BluePrintEnumSymbol ) {
 		// replace enum blueprint with an integer blueprint
 		blueprint = findBluePrint(Runtime::IntegerObject::TYPENAME);
+	}
+
+	if ( constraints != blueprint->getPrototypeConstraints() ) {
+		if ( constraints.size() < blueprint->getPrototypeConstraints().size() ) {
+			constraints = blueprint->getPrototypeConstraints().buildRawConstraints(constraints);
+		}
+		else {
+			throw Common::Exceptions::TypeMismatch("'" + blueprint->QualifiedTypename() + "' prototype constraint mismatch");
+		}
 	}
 
 	std::string constraintType = Designtime::Parser::buildRuntimeConstraintTypename(blueprint->QualifiedTypename(), constraints);
@@ -384,7 +393,7 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 /*
  * Creates an instance of the given blueprint and adds a reference to it in the heap memory
  */
-Runtime::Object* Repository::createReference(Designtime::BluePrintGeneric* blueprint, const std::string& name, const PrototypeConstraints& constraints, InitilizationType::E initialize)
+Runtime::Object* Repository::createReference(Designtime::BluePrintGeneric* blueprint, const std::string& name, PrototypeConstraints constraints, InitilizationType::E initialize)
 {
 	if ( !blueprint ) {
 		throw Common::Exceptions::Exception("invalid blueprint provided!");
@@ -393,6 +402,15 @@ Runtime::Object* Repository::createReference(Designtime::BluePrintGeneric* bluep
 	if ( blueprint->getSymbolType() == Symbol::IType::BluePrintEnumSymbol ) {
 		// replace enum blueprint with an integer blueprint
 		blueprint = findBluePrint(Runtime::IntegerObject::TYPENAME);
+	}
+
+	if ( constraints != blueprint->getPrototypeConstraints() ) {
+		if ( constraints.size() < blueprint->getPrototypeConstraints().size() ) {
+			constraints = blueprint->getPrototypeConstraints().buildRawConstraints(constraints);
+		}
+		else {
+			throw Common::Exceptions::TypeMismatch("'" + blueprint->QualifiedTypename() + "' prototype constraint mismatch");
+		}
 	}
 
 	std::string constraintType = Designtime::Parser::buildRuntimeConstraintTypename(blueprint->QualifiedTypename(), constraints);

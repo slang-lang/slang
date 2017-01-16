@@ -5,6 +5,7 @@
 // Library includes
 
 // Project includes
+#include <Core/Consts.h>
 
 // Namespace declarations
 
@@ -55,6 +56,27 @@ bool PrototypeConstraints::operator==(const PrototypeConstraints& other) const
 	}
 
 	return false;
+}
+
+PrototypeConstraints PrototypeConstraints::buildRawConstraints(const PrototypeConstraints& other) const
+{
+	PrototypeConstraints result = other;
+
+	PrototypeConstraints::const_iterator otherIt = other.begin();
+	PrototypeConstraints::const_iterator thisIt = this->begin();
+
+	for ( ; thisIt != this->end(); ++thisIt ) {
+		if ( otherIt == other.end() ) {
+			result.push_back(
+				PrototypeConstraint(thisIt->mIndex, thisIt->mDesignType, OBJECT, VALUE_NONE)
+			);
+			continue;
+		}
+
+		++otherIt;
+	}
+
+	return result;
 }
 
 PrototypeConstraints PrototypeConstraints::extractConstraints(const PrototypeConstraints& other) const

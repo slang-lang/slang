@@ -1870,7 +1870,7 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 
 /*
  * syntax:
- * <type> <identifier> [= <initialization>]
+ * <type> [ "<" <type> ">" ] <identifier> [= <initialization>]
  */
 Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol)
 {
