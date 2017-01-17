@@ -211,5 +211,12 @@ public object String implements IIterateable {
 	public void operator+(String other ref) modify {
 		mValue = mValue + other;
 	}
+
+	public bool operator<(string other) const {
+		return mValue < other;
+	}
+	public bool operator<(String other ref) const {
+		return mValue < string other;
+	}
 }
 
