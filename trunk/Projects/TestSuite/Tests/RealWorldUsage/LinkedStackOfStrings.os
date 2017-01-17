@@ -3,6 +3,7 @@
 import System.Collections.AbstractCollection;
 import System.Collections.IIterateable;
 import System.Collections.Iterator;
+import System.Exception;
 import System.String;
 
 // helper Node class
@@ -11,7 +12,7 @@ private object Node {
     public Node next;
 }
 
-public object StringStackIterator extends System.Iterator {
+public object StringStackIterator extends Iterator {
     private Node mCurrent;
     private Node mFirst;
 
@@ -46,13 +47,14 @@ public object StringStackIterator extends System.Iterator {
     }
 }
 
-public object LinkedStackOfStrings<T> {
+public object LinkedStackOfStrings<T> implements IIterateable {
     private int n;          // size of the stack
     private Node first;     // top of stack
 
     // is the stack empty?
     public bool isEmpty() {
-        return !first;
+        //return !first;
+	return !n;
     }
 
     // number of elements on the stack
@@ -79,15 +81,15 @@ public object LinkedStackOfStrings<T> {
     }
 
     // delete and return the most recently added element
-    public T pop() {
+    public T pop() throws {
         if ( isEmpty() ) {
-            throw new RuntimeException("Stack underflow");
+            throw new Exception("Stack underflow");
         }
 
-        T item = first.item;      // save item to return
-        first = first.next;            // delete first node
+        T item = first.item;      	// save item to return
+        first = first.next;		// delete first node
         n--;
-        return item;                   // return the saved item
+        return item;			// return the saved item
     }
 
 	public StringStackIterator getIterator() const {

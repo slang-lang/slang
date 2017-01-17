@@ -39,11 +39,11 @@ public void Main(int argc, string args) {
 	rank.push(Object new String("queen"));
 	rank.push(Object new String("king"));
 
-	deck = new List();
+	deck = new Vector();
 	foreach ( String s : suit ) {
 		foreach ( String r : rank ) {
 			int key = rand() % (deck.size() + 1);
-			print("key = " + key);
+			//print("key = " + key);
 
 			deck.insert(int key, Object new String("" + r + " of " + s));
 		}
