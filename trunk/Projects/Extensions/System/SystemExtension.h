@@ -7,6 +7,7 @@
 
 // Project includes
 #include <Core/Extensions/AExtension.h>
+#include <System/Console/Console.h>
 #include <System/IO/IO.h>
 
 // Forward declarations
@@ -29,6 +30,7 @@ public:
 	void provideMethods(ExtensionMethods &methods);
 
 private:
+	Console::SystemConsoleExtension mConsoleExtension;
 	IO::SystemIOExtension mIOExtension;
 };
 

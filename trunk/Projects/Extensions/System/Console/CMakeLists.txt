@@ -2,6 +2,7 @@ INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
 SET(SOURCES
 	Console.cpp
+	Defines.cpp
 )
 
 SET(HEADERS
@@ -9,6 +10,7 @@ SET(HEADERS
 	Cin.h
 	Console.h
 	Cout.h
+	Defines.h
 	Endl.h
 )
 
