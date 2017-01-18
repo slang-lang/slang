@@ -10,6 +10,7 @@
 #include <System/Console/Console.h>
 #include <System/IO/IO.h>
 #include <System/Math/MathExtension.h>
+#include <System/Strings/StringsExtension.h>
 
 // Forward declarations
 
@@ -34,6 +35,7 @@ private:
 	Console::SystemConsoleExtension mConsoleExtension;
 	IO::SystemIOExtension mIOExtension;
 	Math::SystemMathExtension mMathExtension;
+	Strings::SystemStringsExtension mStringsExtension;
 };
 
 

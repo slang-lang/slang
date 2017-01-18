@@ -5,16 +5,6 @@
 // Library includes
 
 // Project includes
-#include <System/Strings/StrFind.h>
-#include <System/Strings/StrLen.h>
-#include <System/Strings/StrLPad.h>
-#include <System/Strings/StrLTrim.h>
-#include <System/Strings/StrRPad.h>
-#include <System/Strings/StrRTrim.h>
-#include <System/Strings/StrTrim.h>
-#include <System/Strings/SubStr.h>
-#include <System/Strings/ToLower.h>
-#include <System/Strings/ToUpper.h>
 #include "AssertMsg.h"
 #include "GetChar.h"
 #include "GetEnv.h"
@@ -75,16 +65,7 @@ void SystemExtension::provideMethods(ExtensionMethods &methods)
 	mIOExtension.provideMethods(methods);
 
 	// Strings
-	methods.push_back(new Strings::StrFind());
-	methods.push_back(new Strings::StrLen());
-	methods.push_back(new Strings::StrLPad());
-	methods.push_back(new Strings::StrLTrim());
-	methods.push_back(new Strings::StrRPad());
-	methods.push_back(new Strings::StrRTrim());
-	methods.push_back(new Strings::StrTrim());
-	methods.push_back(new Strings::SubStr());
-	methods.push_back(new Strings::ToLower());
-	methods.push_back(new Strings::ToUpper());
+	mStringsExtension.provideMethods(methods);
 
 	
 #ifdef _WIN32

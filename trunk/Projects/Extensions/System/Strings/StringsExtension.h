@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_System_Math_MathExtension_h
-#define ObjectiveScript_Extensions_System_Math_MathExtension_h
+#ifndef ObjectiveScript_Extensions_System_Strings_StringsExtension_h
+#define ObjectiveScript_Extensions_System_Strings_StringsExtension_h
 
 
 // Library includes
@@ -16,14 +16,14 @@
 namespace ObjectiveScript {
 namespace Extensions {
 namespace System {
-namespace Math {
+namespace Strings {
 
 
-class SystemMathExtension : public AExtension
+class SystemStringsExtension : public AExtension
 {
 public:
-	SystemMathExtension();
-	~SystemMathExtension();
+	SystemStringsExtension();
+	~SystemStringsExtension();
 
 public:
 	void provideMethods(ExtensionMethods &methods);
