@@ -5,14 +5,6 @@
 // Library includes
 
 // Project includes
-#include <System/Math/Abs.h>
-#include <System/Math/Ceil.h>
-#include <System/Math/Floor.h>
-#include <System/Math/Rand.h>
-#include <System/Math/Round.h>
-#include <System/Math/Sqrt.h>
-#include <System/Math/Srand.h>
-#include <System/Math/Trunc.h>
 #include <System/Strings/StrFind.h>
 #include <System/Strings/StrLen.h>
 #include <System/Strings/StrLPad.h>
@@ -77,21 +69,7 @@ void SystemExtension::provideMethods(ExtensionMethods &methods)
 	mConsoleExtension.provideMethods(methods);
 
 	// Math
-	methods.push_back(new Math::AbsDouble());
-	methods.push_back(new Math::AbsFloat());
-	methods.push_back(new Math::AbsInt());
-	methods.push_back(new Math::CeilDouble());
-	methods.push_back(new Math::CeilFloat());
-	methods.push_back(new Math::FloorDouble());
-	methods.push_back(new Math::FloorFloat());
-	methods.push_back(new Math::Rand());
-	methods.push_back(new Math::RoundDouble());
-	methods.push_back(new Math::RoundFloat());
-	methods.push_back(new Math::SqrtDouble());
-	methods.push_back(new Math::SqrtFloat());
-	methods.push_back(new Math::Srand());
-	methods.push_back(new Math::TruncDouble());
-	methods.push_back(new Math::TruncFloat());
+	mMathExtension.provideMethods(methods);
 
 	// IO
 	mIOExtension.provideMethods(methods);

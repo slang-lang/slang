@@ -20,7 +20,7 @@ namespace Console {
 
 
 SystemConsoleExtension::SystemConsoleExtension()
-: AExtension("IO")
+: AExtension("Console")
 {
 }
 

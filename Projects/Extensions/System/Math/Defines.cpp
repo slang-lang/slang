@@ -1,9 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_System_Console_Console_h
-#define ObjectiveScript_Extensions_System_Console_Console_h
-
-
-// Library includes
+// Header
+#include "Defines.h"
 
 // Project includes
 
@@ -24,5 +21,3 @@ namespace Math {
 }
 }
 }
-
-#endif

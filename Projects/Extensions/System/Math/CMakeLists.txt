@@ -1,14 +1,16 @@
 INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
 SET(SOURCES
-	Math.cpp
+	Defines.cpp
+	MathExtension.cpp
 )
 
 SET(HEADERS
 	Abs.h
 	Ceil.h
+	Defines.h
 	Floor.h
-	Math.h
+	MathExtension.h
 	Rand.h
 	Round.h
 	Sqrt.h
