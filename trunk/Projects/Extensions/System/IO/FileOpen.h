@@ -84,8 +84,11 @@ public:
 			std::string param_accessmode = (*it++).value().toStdString();
 
 			FILE* fileHandle = fopen(param_filename.c_str(), param_accessmode.c_str());
+			if ( !fileHandle ) {
+				throw Runtime::Exceptions::RuntimeException("error while opening file");
+			}
 
-			int handle = mFileHandles.size();
+			int handle = mFileHandles.size() + 1;
 
 			mFileHandles.insert(std::make_pair(handle, fileHandle));
 

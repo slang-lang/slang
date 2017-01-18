@@ -51,7 +51,7 @@ private bool writeFile() const {
 	int result = 0;
 
 	try {
-		fd = fopen("file.complex", "ctw");
+		fd = fopen("file.complex", "wb");
 
 		fwriteb(fd, true);	// write bool
 		fwrited(fd, 173.1389d); // write double
