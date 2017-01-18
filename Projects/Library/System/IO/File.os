@@ -41,6 +41,10 @@ public namespace IO {
 			return (result == 0);
 		}
 
+		public bool isEOF() const {
+			return feof(mHandle);
+		}
+
 		public bool isOpen() const {
 			return (mHandle != 0);
 		}
