@@ -15,7 +15,7 @@
 #include <Core/Tools.h>
 #include <Core/Common/Exceptions.h>
 #include <Tools/Strings.h>
-#include "Math.h"
+#include "Defines.h"
 
 // Forward declarations
 

@@ -9,6 +9,7 @@
 #include <Core/Extensions/AExtension.h>
 #include <System/Console/Console.h>
 #include <System/IO/IO.h>
+#include <System/Math/MathExtension.h>
 
 // Forward declarations
 
@@ -32,6 +33,7 @@ public:
 private:
 	Console::SystemConsoleExtension mConsoleExtension;
 	IO::SystemIOExtension mIOExtension;
+	Math::SystemMathExtension mMathExtension;
 };
 
 
