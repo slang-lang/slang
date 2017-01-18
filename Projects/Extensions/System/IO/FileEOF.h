@@ -4,25 +4,20 @@
 
 
 // Library includes
-#include <fcntl.h>
-#ifdef __APPLE__
-#	include <unistd.h>
-#elif defined _WIN32
-#	include <io.h>
-#	pragma warning(disable:4996)
-#else
-#	include <unistd.h>
-#endif
 
 // Project includes
 #include <Core/BuildInObjects/BoolObject.h>
 #include <Core/BuildInObjects/IntegerObject.h>
+#include <Core/BuildInObjects/StringObject.h>
 #include <Core/Common/Exceptions.h>
 #include <Core/Designtime/BuildInTypes/BoolObject.h>
+#include <Core/Designtime/BuildInTypes/IntegerObject.h>
 #include <Core/Extensions/ExtensionMethod.h>
+#include <Core/Runtime/Exceptions.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
 #include <Tools/Strings.h>
+#include "Defines.h"
 
 // Forward declarations
 
@@ -31,6 +26,7 @@
 
 namespace ObjectiveScript {
 namespace Extensions {
+namespace System {
 namespace IO {
 
 
@@ -48,13 +44,21 @@ public:
 
 	Runtime::ControlFlow::E execute(const ParameterList &params, Runtime::Object *result, const Token& token)
 	{
-		Runtime::ControlFlow::E controlFlow = Runtime::ControlFlow::Normal;
-
-		int fileHandle = params.front().value().toInt();
+		ParameterList list = mergeParameters(params);
 
 		try {
+			ParameterList::const_iterator it = list.begin();
+
+			std::string param_handle = (*it++).value().toStdString();
+
+			int handle = Tools::stringToInt(param_handle);
+
+			if ( mFileHandles.find(handle) == mFileHandles.end() ) {
+				throw Runtime::Exceptions::RuntimeException("invalid file handle");
+			}
+
 			*result = Runtime::BoolObject(
-				feof(fileHandle)
+				feof(mFileHandles[handle])
 			);
 		}
 		catch ( std::exception& e ) {
@@ -65,7 +69,7 @@ public:
 			return Runtime::ControlFlow::Throw;
 		}
 
-		return controlFlow;
+		return Runtime::ControlFlow::Normal;
 	}
 
 };
@@ -74,5 +78,7 @@ public:
 }
 }
 }
+}
+
 
 #endif

@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_System_IO_FileSeek_h
-#define ObjectiveScript_Extensions_System_IO_FileSeek_h
+#ifndef ObjectiveScript_Extensions_System_IO_FileTell_h
+#define ObjectiveScript_Extensions_System_IO_FileTell_h
 
 
 // Library includes
@@ -33,15 +33,14 @@ namespace System {
 namespace IO {
 
 
-class FileSeek : public ExtensionMethod
+class FileTell : public ExtensionMethod
 {
 public:
-	FileSeek()
-	: ExtensionMethod(0, "fseek", Designtime::IntegerObject::TYPENAME)
+	FileTell()
+	: ExtensionMethod(0, "ftell", Designtime::IntegerObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME));
-		params.push_back(Parameter::CreateDesigntime("offset", Designtime::IntegerObject::TYPENAME));
 
 		setSignature(params);
 	}
@@ -54,15 +53,14 @@ public:
 			ParameterList::const_iterator it = list.begin();
 
 			int param_handle = (*it++).value().toInt();
-			int param_offset = (*it++).value().toInt();
 
 			if ( mFileHandles.find(param_handle) == mFileHandles.end() ) {
 				throw Runtime::Exceptions::RuntimeException("invalid file handle");
 			}
 
-			long size = fseek(mFileHandles[param_handle], param_offset, SEEK_SET);
+			long size = ftell(mFileHandles[param_handle]);
 			if ( size == -1 ) {
-				throw Runtime::Exceptions::RuntimeException("error while seeking file");
+				throw Runtime::Exceptions::RuntimeException("error while telling file");
 			}
 
 			*result = Runtime::IntegerObject((int)size);

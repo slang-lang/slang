@@ -4,22 +4,16 @@
 
 
 // Library includes
-#ifdef __APPLE__
-#	include <unistd.h>
-#elif defined _WIN32
-#	include <io.h>
-#	pragma warning(disable:4996)
-#else
-#	include <unistd.h>
-#endif
 
 // Project includes
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
 #include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Extensions/ExtensionMethod.h>
+#include <Core/Runtime/Exceptions.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
+#include "Defines.h"
 
 // Forward declarations
 
@@ -54,10 +48,13 @@ public:
 			std::string param_handle = (*it++).value().toStdString();
 
 			int handle = Tools::stringToInt(param_handle);
+			if ( mFileHandles.find(handle) == mFileHandles.end() ) {
+				throw Runtime::Exceptions::RuntimeException("invalid file handle");
+			}
 
-			int fileResult = close(handle);
+			int fileResult = fclose(mFileHandles[handle]);
 			if ( fileResult == -1 ) {
-				return Runtime::ControlFlow::Throw;
+				throw Runtime::Exceptions::RuntimeException("invalid file handle");
 			}
 
 			*result = Runtime::IntegerObject(fileResult);
