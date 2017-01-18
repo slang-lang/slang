@@ -8,8 +8,10 @@ public void Main(int argc, string argv) {
 		file = fopen("file.float", "r");
 		writeln("handle: " + file);
 
-		double result = freadf(file);
+		float result = freadf(file);
 		writeln("freadf = " + result);
+
+		assert( result == 173.139f );
 	}
 	catch {
 		writeln("error during fread");
