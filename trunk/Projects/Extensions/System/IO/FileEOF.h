@@ -1,9 +1,10 @@
 
-#ifndef ObjectiveScript_Extensions_System_IO_FileClose_h
-#define ObjectiveScript_Extensions_System_IO_FileClose_h
+#ifndef ObjectiveScript_Extensions_System_IO_FileEOF_h
+#define ObjectiveScript_Extensions_System_IO_FileEOF_h
 
 
 // Library includes
+#include <fcntl.h>
 #ifdef __APPLE__
 #	include <unistd.h>
 #elif defined _WIN32
@@ -14,12 +15,14 @@
 #endif
 
 // Project includes
-#include <Core/Designtime/BuildInTypes/IntegerObject.h>
+#include <Core/BuildInObjects/BoolObject.h>
 #include <Core/BuildInObjects/IntegerObject.h>
-#include <Core/BuildInObjects/StringObject.h>
+#include <Core/Common/Exceptions.h>
+#include <Core/Designtime/BuildInTypes/BoolObject.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
+#include <Tools/Strings.h>
 
 // Forward declarations
 
@@ -28,15 +31,14 @@
 
 namespace ObjectiveScript {
 namespace Extensions {
-namespace System {
 namespace IO {
 
 
-class FileClose : public ExtensionMethod
+class FileEOF : public ExtensionMethod
 {
 public:
-	FileClose()
-	: ExtensionMethod(0, "fclose", Designtime::IntegerObject::TYPENAME)
+	FileEOF()
+	: ExtensionMethod(0, "feof", Designtime::BoolObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME));
@@ -46,21 +48,14 @@ public:
 
 	Runtime::ControlFlow::E execute(const ParameterList &params, Runtime::Object *result, const Token& token)
 	{
-		ParameterList list = mergeParameters(params);
+		Runtime::ControlFlow::E controlFlow = Runtime::ControlFlow::Normal;
+
+		int fileHandle = params.front().value().toInt();
 
 		try {
-			ParameterList::const_iterator it = list.begin();
-
-			std::string param_handle = (*it++).value().toStdString();
-
-			int handle = Tools::stringToInt(param_handle);
-
-			int fileResult = close(handle);
-			if ( fileResult == -1 ) {
-				return Runtime::ControlFlow::Throw;
-			}
-
-			*result = Runtime::IntegerObject(fileResult);
+			*result = Runtime::BoolObject(
+				feof(fileHandle)
+			);
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
@@ -70,15 +65,14 @@ public:
 			return Runtime::ControlFlow::Throw;
 		}
 
-		return Runtime::ControlFlow::Normal;
+		return controlFlow;
 	}
+
 };
 
 
 }
 }
 }
-}
-
 
 #endif

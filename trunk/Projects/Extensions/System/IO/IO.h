@@ -1,13 +1,12 @@
 
-#ifndef ObjectiveScript_Extensions_System_SystemExtension_h
-#define ObjectiveScript_Extensions_System_SystemExtension_h
+#ifndef ObjectiveScript_Extensions_System_IO_IO_h
+#define ObjectiveScript_Extensions_System_IO_IO_h
 
 
 // Library includes
 
 // Project includes
 #include <Core/Extensions/AExtension.h>
-#include <System/IO/IO.h>
 
 // Forward declarations
 
@@ -17,22 +16,21 @@
 namespace ObjectiveScript {
 namespace Extensions {
 namespace System {
+namespace IO {
 
 
-class SystemExtension : public AExtension
+class SystemIOExtension : public AExtension
 {
 public:
-	SystemExtension();
-	~SystemExtension();
+	SystemIOExtension();
+	~SystemIOExtension();
 
 public:
 	void provideMethods(ExtensionMethods &methods);
-
-private:
-	IO::SystemIOExtension mIOExtension;
 };
 
 
+}
 }
 }
 }

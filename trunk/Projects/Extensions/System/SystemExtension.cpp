@@ -17,11 +17,6 @@
 #include <System/Math/Sqrt.h>
 #include <System/Math/Srand.h>
 #include <System/Math/Trunc.h>
-#include <System/IO/FileClose.h>
-#include <System/IO/FileOpen.h>
-#include <System/IO/FileRead.h>
-#include <System/IO/FileSeek.h>
-#include <System/IO/FileWrite.h>
 #include <System/Strings/StrFind.h>
 #include <System/Strings/StrLen.h>
 #include <System/Strings/StrLPad.h>
@@ -106,19 +101,7 @@ void SystemExtension::provideMethods(ExtensionMethods &methods)
 	methods.push_back(new Math::TruncFloat());
 
 	// IO
-	methods.push_back(new IO::FileClose());
-	methods.push_back(new IO::FileOpen());
-	methods.push_back(new IO::FileReadBool());
-	methods.push_back(new IO::FileReadDouble());
-	methods.push_back(new IO::FileReadFloat());
-	methods.push_back(new IO::FileReadInt());
-	methods.push_back(new IO::FileReadString());
-	methods.push_back(new IO::FileSeek());
-	methods.push_back(new IO::FileWriteBool());
-	methods.push_back(new IO::FileWriteDouble());
-	methods.push_back(new IO::FileWriteFloat());
-	methods.push_back(new IO::FileWriteInt());
-	methods.push_back(new IO::FileWriteString());
+	mIOExtension.provideMethods(methods);
 
 	// Strings
 	methods.push_back(new Strings::StrFind());
