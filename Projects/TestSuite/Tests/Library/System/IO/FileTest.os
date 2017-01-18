@@ -8,7 +8,7 @@ public void Main(int argc = 0, string argv = "") {
 
 private bool TestCase1() const {
 	try {
-		System.IO.File file = new System.IO.File("file", "crtw");
+		System.IO.File file = new System.IO.File("file", "wb");
 		assert( file.isOpen() );
 
 		file.write(1731389);
