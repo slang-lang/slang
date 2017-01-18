@@ -44,8 +44,10 @@
 #include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/Extensions/ExtensionMethod.h>
+#include <Core/Runtime/Exceptions.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
+#include "Defines.h"
 
 // Forward declarations
 
@@ -81,12 +83,11 @@ public:
 			std::string param_filename = (*it++).value().toStdString();
 			std::string param_accessmode = (*it++).value().toStdString();
 
-			int mode = parseAccessMode(param_accessmode);
-			int handle = open(param_filename.c_str(), mode, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+			FILE* fileHandle = fopen(param_filename.c_str(), param_accessmode.c_str());
 
-			if ( handle == -1 ) {
-				return Runtime::ControlFlow::Throw;
-			}
+			int handle = mFileHandles.size();
+
+			mFileHandles.insert(std::make_pair(handle, fileHandle));
 
 			*result = Runtime::IntegerObject(handle);
 		}

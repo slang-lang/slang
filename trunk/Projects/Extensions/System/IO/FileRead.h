@@ -4,15 +4,6 @@
 
 
 // Library includes
-#include <fcntl.h>
-#ifdef __APPLE__
-#	include <unistd.h>
-#elif defined _WIN32
-#	include <io.h>
-#	pragma warning(disable:4996)
-#else
-#	include <unistd.h>
-#endif
 
 // Project includes
 #include <Core/Designtime/BuildInTypes/BoolObject.h>
@@ -27,9 +18,11 @@
 #include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/Extensions/ExtensionMethod.h>
+#include <Core/Runtime/Exceptions.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
 #include <Tools/Strings.h>
+#include "Defines.h"
 
 // Forward declarations
 
@@ -56,16 +49,24 @@ public:
 
 	Runtime::ControlFlow::E execute(const ParameterList &params, Runtime::Object *result, const Token& token)
 	{
-		Runtime::ControlFlow::E controlFlow = Runtime::ControlFlow::Normal;
-
-		int fileHandle = params.front().value().toInt();
+		ParameterList list = mergeParameters(params);
 
 		try {
+			ParameterList::const_iterator it = list.begin();
+
+			std::string param_handle = (*it++).value().toStdString();
+
+			int handle = Tools::stringToInt(param_handle);
+
+			if ( mFileHandles.find(handle) == mFileHandles.end() ) {
+				throw Runtime::Exceptions::RuntimeException("invalid file handle");
+			}
+
 			bool value = false;
 
-			long size = read(fileHandle, &value, sizeof(bool));
+			long size = fread(&value, 1, sizeof(bool), mFileHandles[handle]);
 			if ( size == -1 ) {    // error while reading
-				return Runtime::ControlFlow::Throw;
+				throw Runtime::Exceptions::RuntimeException("error while reading file");
 			}
 
 			*result = Runtime::BoolObject(value);
@@ -78,7 +79,7 @@ public:
 			return Runtime::ControlFlow::Throw;
 		}
 
-		return controlFlow;
+		return Runtime::ControlFlow::Normal;
 	}
 };
 
@@ -97,16 +98,24 @@ public:
 
 	Runtime::ControlFlow::E execute(const ParameterList &params, Runtime::Object *result, const Token& token)
 	{
-		Runtime::ControlFlow::E controlFlow = Runtime::ControlFlow::Normal;
-
-		int fileHandle = params.front().value().toInt();
+		ParameterList list = mergeParameters(params);
 
 		try {
+			ParameterList::const_iterator it = list.begin();
+
+			std::string param_handle = (*it++).value().toStdString();
+
+			int handle = Tools::stringToInt(param_handle);
+
+			if ( mFileHandles.find(handle) == mFileHandles.end() ) {
+				throw Runtime::Exceptions::RuntimeException("invalid file handle");
+			}
+
 			double value = 0.0;
 
-			long size = read(fileHandle, &value, sizeof(double));
+			long size = fread(&value, 1, sizeof(double), mFileHandles[handle]);
 			if ( size == -1 ) {    // error while reading
-				return Runtime::ControlFlow::Throw;
+				throw Runtime::Exceptions::RuntimeException("error while reading file");
 			}
 
 			*result = Runtime::DoubleObject(value);
@@ -119,7 +128,7 @@ public:
 			return Runtime::ControlFlow::Throw;
 		}
 
-		return controlFlow;
+		return Runtime::ControlFlow::Normal;
 	}
 };
 
@@ -138,16 +147,24 @@ public:
 
 	Runtime::ControlFlow::E execute(const ParameterList &params, Runtime::Object *result, const Token& token)
 	{
-		Runtime::ControlFlow::E controlFlow = Runtime::ControlFlow::Normal;
-
-		int fileHandle = params.front().value().toInt();
+		ParameterList list = mergeParameters(params);
 
 		try {
+			ParameterList::const_iterator it = list.begin();
+
+			std::string param_handle = (*it++).value().toStdString();
+
+			int handle = Tools::stringToInt(param_handle);
+
+			if ( mFileHandles.find(handle) == mFileHandles.end() ) {
+				throw Runtime::Exceptions::RuntimeException("invalid file handle");
+			}
+
 			float value = 0.f;
 
-			long size = read(fileHandle, &value, sizeof(float));
+			long size = fread(&value, 1, sizeof(float), mFileHandles[handle]);
 			if ( size == -1 ) {    // error while reading
-				return Runtime::ControlFlow::Throw;
+				throw Runtime::Exceptions::RuntimeException("error while reading file");
 			}
 
 			*result = Runtime::FloatObject(value);
@@ -160,7 +177,7 @@ public:
 			return Runtime::ControlFlow::Throw;
 		}
 
-		return controlFlow;
+		return Runtime::ControlFlow::Normal;
 	}
 };
 
@@ -179,16 +196,24 @@ public:
 
 	Runtime::ControlFlow::E execute(const ParameterList &params, Runtime::Object *result, const Token& token)
 	{
-		Runtime::ControlFlow::E controlFlow = Runtime::ControlFlow::Normal;
-
-		int fileHandle = params.front().value().toInt();
+		ParameterList list = mergeParameters(params);
 
 		try {
+			ParameterList::const_iterator it = list.begin();
+
+			std::string param_handle = (*it++).value().toStdString();
+
+			int handle = Tools::stringToInt(param_handle);
+
+			if ( mFileHandles.find(handle) == mFileHandles.end() ) {
+				throw Runtime::Exceptions::RuntimeException("invalid file handle");
+			}
+
 			int value = 0;
 
-			long size = read(fileHandle, &value, sizeof(int));
+			long size = fread(&value, 1, sizeof(int), mFileHandles[handle]);
 			if ( size == -1 ) {    // error while reading
-				return Runtime::ControlFlow::Throw;
+				throw Runtime::Exceptions::RuntimeException("error while reading file");
 			}
 
 			*result = Runtime::IntegerObject(value);
@@ -201,7 +226,7 @@ public:
 			return Runtime::ControlFlow::Throw;
 		}
 
-		return controlFlow;
+		return Runtime::ControlFlow::Normal;
 	}
 };
 
@@ -221,19 +246,27 @@ public:
 
 	Runtime::ControlFlow::E execute(const ParameterList &params, Runtime::Object *result, const Token& token)
 	{
-		Runtime::ControlFlow::E controlFlow = Runtime::ControlFlow::Normal;
-
-		int fileHandle = params.front().value().toInt();
-		int fileCount = params.back().value().toInt();
+		ParameterList list = mergeParameters(params);
 
 		try {
+			ParameterList::const_iterator it = list.begin();
+
+			std::string param_handle = (*it++).value().toStdString();
+
+			int handle = Tools::stringToInt(param_handle);
+			int fileCount = params.back().value().toInt();
+
+			if ( mFileHandles.find(handle) == mFileHandles.end() ) {
+				throw Runtime::Exceptions::RuntimeException("invalid file handle");
+			}
+
 			int count = fileCount;
 			std::string value;
 
 			while ( count > 0 ) {
 				char charValue;
 
-				long size = read(fileHandle, &charValue, 1);
+				long size = fread(&charValue, 1, sizeof(char), mFileHandles[handle]);
 				if ( size == -1 ) {    // error while reading
 					return Runtime::ControlFlow::Throw;
 				}
@@ -255,7 +288,7 @@ public:
 			return Runtime::ControlFlow::Throw;
 		}
 
-		return controlFlow;
+		return Runtime::ControlFlow::Normal;
 	}
 
 };
