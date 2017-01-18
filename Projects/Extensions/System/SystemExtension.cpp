@@ -5,10 +5,6 @@
 // Library includes
 
 // Project includes
-#include <System/Console/Cerr.h>
-#include <System/Console/Cin.h>
-#include <System/Console/Cout.h>
-#include <System/Console/Endl.h>
 #include <System/Math/Abs.h>
 #include <System/Math/Ceil.h>
 #include <System/Math/Floor.h>
@@ -78,10 +74,7 @@ void SystemExtension::provideMethods(ExtensionMethods &methods)
 	methods.push_back(new WriteLn());
 
 	// Console
-	methods.push_back(new Console::Cerr());
-	methods.push_back(new Console::Cin());
-	methods.push_back(new Console::Cout());
-	methods.push_back(new Console::Endl());
+	mConsoleExtension.provideMethods(methods);
 
 	// Math
 	methods.push_back(new Math::AbsDouble());
