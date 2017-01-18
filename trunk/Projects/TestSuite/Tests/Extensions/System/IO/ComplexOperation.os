@@ -1,9 +1,9 @@
 #!/usr/local/bin/oscript
 
-import System.All;
+import System.IO.File;
 
 public void Main(int argc, string argv) {
-	System.IO.File file = new System.IO.File("file.complex", "ctw");
+	System.IO.File file = new System.IO.File("file.complex", "wb");
 	assert( file.isOpen() );
 
 	assert( writeFile() );

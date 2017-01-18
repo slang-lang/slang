@@ -10,6 +10,8 @@ public void Main(int argc, string argv) {
 
 		int result = freadi(file);
 		writeln("freadi = " + result);
+
+		assert( result == 173 );
 	}
 	catch {
 		writeln("error during fread");

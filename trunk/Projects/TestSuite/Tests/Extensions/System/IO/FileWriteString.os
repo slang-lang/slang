@@ -5,7 +5,7 @@ public void Main(int argc, string argv) {
 	int result = 0;
 
 	try {
-		file = fopen("file.string", "ctw");
+		file = fopen("file.string", "wb");
 		writeln("handle: " + file);
 
 		result = fwrites(file, "foo bar");

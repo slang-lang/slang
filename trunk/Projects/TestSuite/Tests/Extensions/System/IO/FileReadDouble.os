@@ -10,6 +10,8 @@ public void Main(int argc, string argv) {
 
 		double result = freadd(file);
 		writeln("freadd = " + result);
+
+		assert( result == 173.139d );
 	}
 	catch {
 		writeln("error during fread");
