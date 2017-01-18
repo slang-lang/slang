@@ -11,6 +11,7 @@
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Tools.h>
+#include <Core/VirtualMachine/Controller.h>
 
 // Forward declarations
 
