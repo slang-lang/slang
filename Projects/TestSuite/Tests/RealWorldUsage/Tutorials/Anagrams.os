@@ -12,8 +12,9 @@ public void Main(int argc, string args) {
 
 	try {
 		Scanner scanner = new Scanner(new System.IO.File("testfile", "r"));
-		foreach ( String word : scanner ) {
-			String alpha = alphabetize(new String(word));
+
+		foreach ( string word : scanner ) {
+			String alpha = alphabetize(word);
 
 			Set set = map.get(alpha);
 			if ( set == null ) {
@@ -27,7 +28,7 @@ public void Main(int argc, string args) {
 	}
 }
 
-private String alphabetize(String word) {
+private String alphabetize(string word) {
 	print("alphabetize(" + word + ")");
 
 	Set sorted = new Set();
@@ -38,7 +39,7 @@ private String alphabetize(String word) {
 
 	String result = new String();
 
-	foreach ( String s : sorted ) {
+	foreach ( string s : sorted ) {
 		result = result + s;
 	}
 

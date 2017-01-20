@@ -20,7 +20,7 @@ public object Scanner implements IIterateable {
 			word = word + ch;
 		}
 
-		print("word = " + word);
+		print(word);
 	}
 
 	public StringIterator getIterator() const {
