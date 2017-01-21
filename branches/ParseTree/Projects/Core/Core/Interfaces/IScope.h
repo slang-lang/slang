@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Interfaces_IScope_h
-#define ObjectiveScript_Interfaces_IScope_h
+#ifndef ObjectiveScript_Core_Interfaces_IScope_h
+#define ObjectiveScript_Core_Interfaces_IScope_h
 
 
 // Library includes

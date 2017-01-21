@@ -310,11 +310,6 @@ void IntegerObject::operator_unary_not()
 	mValue = (int)!mValue.toBool();
 }
 
-std::string IntegerObject::ToString(unsigned int indent) const
-{
-	return ::Utils::Tools::indent(indent) + QualifiedTypename() + " " + getName() + " = " + getValue().toStdString();
-}
-
 
 }
 }

@@ -13,6 +13,7 @@
 #include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Tools.h>
+#include <Core/VirtualMachine/Controller.h>
 #include <Tools/Strings.h>
 
 // Forward declarations

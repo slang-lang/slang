@@ -53,8 +53,8 @@ public object String implements IIterateable {
 	/*
 	 * Returns an Iterator that is not attached to this string, instead it uses a copy of this Strings string value
 	 */
-	public StringIterator getIterator() const {
-		return new StringIterator(mValue);
+	public StringIterator getIterator(string separator = " ") const {
+		return new StringIterator(mValue, separator);
 	}
 
 	/*
@@ -210,6 +210,13 @@ public object String implements IIterateable {
 	 */
 	public void operator+(String other ref) modify {
 		mValue = mValue + other;
+	}
+
+	public bool operator<(string other) const {
+		return mValue < other;
+	}
+	public bool operator<(String other ref) const {
+		return mValue < string other;
 	}
 }
 

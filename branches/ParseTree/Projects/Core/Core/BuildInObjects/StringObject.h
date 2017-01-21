@@ -39,15 +39,23 @@ public:	// Operators
 	bool operator_equal(const Object* other);
 	bool operator_equal(const StringObject* other);
 
+	bool operator_greater(const StringObject *other);
+	bool operator_greater(const Object *other);
+
+	bool operator_greater_equal(const StringObject *other);
+	bool operator_greater_equal(const Object *other);
+
+	bool operator_less(const StringObject *other);
+	bool operator_less(const Object *other);
+
+	bool operator_less_equal(const StringObject *other);
+	bool operator_less_equal(const Object *other);
+
 	void operator_plus(const Object* other);
 	void operator_plus(const StringObject* other);
 
 public: // Value
 	bool isValid() const;
-
-	std::string ToString(unsigned int indent) const;
-
-private:
 };
 
 

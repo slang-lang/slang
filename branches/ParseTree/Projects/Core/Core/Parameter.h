@@ -8,6 +8,7 @@
 #include <string>
 
 // Project includes
+#include <Core/Common/TypeDeclaration.h>
 #include <Core/Runtime/AtomicValue.h>
 #include "Reference.h"
 
@@ -38,12 +39,11 @@ public:
 
 public:
 	static Parameter CreateDesigntime(const std::string& name,
-									  const std::string& type,
+									  const TypeDeclaration& type,
 									  Runtime::AtomicValue value = Runtime::AtomicValue(),
 									  bool hasDefaultValue = false,
 									  bool isConst = false,
-									  AccessMode::E access = AccessMode::ByValue,
-									  Reference reference = Reference());
+									  AccessMode::E access = AccessMode::ByValue);
 	static Parameter CreateRuntime(const std::string& type,
 								   Runtime::AtomicValue value,
 								   Reference reference = Reference());
@@ -51,7 +51,7 @@ public:
 public:
 	Parameter();
 	Parameter(const std::string& name,
-			  const std::string& type,
+			  const TypeDeclaration& type,
 			  Runtime::AtomicValue value,
 			  bool hasDefaultValue = false,
 			  bool isConst = false,
@@ -65,6 +65,7 @@ public:
 	const std::string& name() const;
 	const Reference& reference() const;
 	const std::string& type() const;
+	const PrototypeConstraints& typeConstraints() const;
 	Runtime::AtomicValue value() const;
 
 private:
@@ -73,7 +74,7 @@ private:
 	bool mIsConst;
 	std::string mName;
 	Reference mReference;
-	std::string mType;
+	TypeDeclaration mType;
 	Runtime::AtomicValue mValue;
 };
 

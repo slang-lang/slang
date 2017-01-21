@@ -1,20 +1,20 @@
 INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
 SET(SOURCES
-	FileClose.cpp
-	FileOpen.cpp
-	FileRead.cpp
-	FileSeek.cpp
-	FileWrite.cpp
+	Defines.cpp
 	IO.cpp
 )
 
 SET(HEADERS
+	Defines.h
 	FileClose.h
+	FileEOF.h
 	FileOpen.h
 	FileRead.h
 	FileSeek.h
+	FileTell.h
 	FileWrite.h
+	IO.h
 )
 
 SET(DEPENDENCIES

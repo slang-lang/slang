@@ -6,6 +6,7 @@
 // Library includes
 
 // Project includes
+#include <Core/Extensions/AExtension.h>
 
 // Forward declarations
 
@@ -18,13 +19,15 @@ namespace System {
 namespace Console {
 
 
-typedef enum {
-	CERR,
-	COUT
-} TOutMode;
+class SystemConsoleExtension : public AExtension
+{
+public:
+	SystemConsoleExtension();
+	~SystemConsoleExtension();
 
-
-extern TOutMode mOutMode;
+public:
+	void provideMethods(ExtensionMethods &methods);
+};
 
 
 }

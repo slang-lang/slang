@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_System_Console_Console_h
-#define ObjectiveScript_Extensions_System_Console_Console_h
+#ifndef ObjectiveScript_Extensions_System_Strings_Defines_h
+#define ObjectiveScript_Extensions_System_Strings_Defines_h
 
 
 // Library includes
@@ -15,7 +15,8 @@
 namespace ObjectiveScript {
 namespace Extensions {
 namespace System {
-namespace Math {
+namespace Strings {
+
 
 
 
@@ -24,5 +25,6 @@ namespace Math {
 }
 }
 }
+
 
 #endif

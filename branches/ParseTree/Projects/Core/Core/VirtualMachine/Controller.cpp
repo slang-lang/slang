@@ -17,6 +17,7 @@ Controller::Controller()
   mMemory(0),
   mRepository(0),
   mStack(0),
+  mThreads(0),
   mVirtualMethodTable(0)
 {
 }
@@ -37,11 +38,13 @@ void Controller::deinit()
 	assert(mInitialized);
 
 	mStack->deinit();
+	mThreads->deinit();
 	mMemory->deinit();
 	mRepository->deinit();
 	//mVirtualMethodTable->deinit();
 
 	delete mStack;
+	delete mThreads;
 	delete mMemory;
 	delete mRepository;
 	delete mVirtualMethodTable;
@@ -56,41 +59,45 @@ void Controller::init()
 	mMemory = new Memory();
 	mRepository = new Repository();
 	mStack = new Stack();
+	mThreads = new Threads();
 	mVirtualMethodTable = new VirtualMethodTable();
 
 	//mVirtualMethodTable->init();
 	mMemory->init();
 	mStack->init();
 	mRepository->init();
+	mThreads->init();
 
 	mInitialized = true;
 }
 
 Memory* Controller::memory() const
 {
-	assert(mMemory);
-
 	return mMemory;
 }
 
 Repository* Controller::repository() const
 {
-	assert(mRepository);
-
 	return mRepository;
 }
 
 Stack* Controller::stack() const
 {
-	assert(mStack);
-
 	return mStack;
+}
+
+Thread* Controller::thread(ThreadId id) const
+{
+	return mThreads->getThread(id);
+}
+
+Threads* Controller::threads() const
+{
+	return mThreads;
 }
 
 VirtualMethodTable* Controller::virtualMethodTable() const
 {
-	assert(mVirtualMethodTable);
-
 	return mVirtualMethodTable;
 }
 

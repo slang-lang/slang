@@ -1,11 +1,14 @@
 INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
 SET(SOURCES
-	Strings.cpp
+	Defines.cpp
+	StringsExtension.cpp
 )
 
 SET(HEADERS
+	Defines.h
 	StrFind.h
+	StringsExtension.h
 	StrLen.h
 	StrLPad.h
 	StrLTrim.h

@@ -44,9 +44,31 @@ bool checkSyntax(TokenIterator foundIt, const TokenList &expected)
 	return true;
 }
 
+PrototypeConstraints mergeConstraints(const PrototypeConstraints& designtime, const PrototypeConstraints& runtime)
+{
+	PrototypeConstraints result;
+
+	if ( designtime.size() != runtime.size() ) {
+		throw Common::Exceptions::Exception("prototype constraint size mismatch");
+	}
+
+	PrototypeConstraints::const_iterator designIt = designtime.begin();
+	PrototypeConstraints::const_iterator runIt = runtime.begin();
+
+	while ( designIt != designtime.end() ) {
+		result.push_back(
+			PrototypeConstraint(designIt->mIndex, designIt->mDesignType, runIt->mRunType, designIt->mConstraint)
+		);
+
+		++designIt;
+		++runIt;
+	}
+
+	return result;
+}
 
 
-std::string Parser::buildConstraintTypename(const std::string& name, const PrototypeConstraints& constraints)
+std::string Parser::buildDesigntimeConstraintTypename(const std::string &name, const PrototypeConstraints &constraints)
 {
 	if ( constraints.empty() ) {
 		return name;
@@ -55,7 +77,27 @@ std::string Parser::buildConstraintTypename(const std::string& name, const Proto
 	std::string type = name;
 	type += "<";
 	for ( PrototypeConstraints::const_iterator it = constraints.begin(); it != constraints.end(); ++it ) {
-		type += it->mType;
+		type += it->mDesignType;
+
+		if ( std::distance(it, constraints.end()) > 1 ) {
+			type += ",";
+		}
+	}
+	type += ">";
+
+	return type;
+}
+
+std::string Parser::buildRuntimeConstraintTypename(const std::string &name, const PrototypeConstraints &constraints)
+{
+	if ( constraints.empty() ) {
+		return name;
+	}
+
+	std::string type = name;
+	type += "<";
+	for ( PrototypeConstraints::const_iterator it = constraints.begin(); it != constraints.end(); ++it ) {
+		type += it->mRunType;
 
 		if ( std::distance(it, constraints.end()) > 1 ) {
 			type += ",";
@@ -120,17 +162,17 @@ Ancestors Parser::collectInheritance(TokenIterator& token)
 
 		std::string type = Parser::identify(token);
 
-		PrototypeConstraints constraints = collectPrototypeConstraints(token);
+		PrototypeConstraints constraints = collectDesigntimePrototypeConstraints(token);
 
 		ancestors.insert(
-			Ancestor(type, inheritance, visibility, constraints)
+			Ancestor(TypeDeclaration(type, constraints), inheritance, visibility)
 		);
 	}
 
 	return ancestors;
 }
 
-PrototypeConstraints Parser::collectPrototypeConstraints(TokenIterator& token)
+PrototypeConstraints Parser::collectDesigntimePrototypeConstraints(TokenIterator &token)
 {
 	PrototypeConstraints constraints;
 	
@@ -142,11 +184,13 @@ PrototypeConstraints Parser::collectPrototypeConstraints(TokenIterator& token)
 	token++;
 
 	std::string constraint;
+	std::string designType;
 	unsigned int index = 0;
-	std::string type;
+	std::string runType;
 
 	while ( token->type() != Token::Type::COMPARE_GREATER ) {
-		type = token->content();
+		designType = token->content();
+		runType = token->content();	// hack to prevent runtime type to be empty
 		token++;
 
 		if ( token->type() == Token::Type::COLON ) {	// constraint
@@ -166,13 +210,58 @@ PrototypeConstraints Parser::collectPrototypeConstraints(TokenIterator& token)
 		}
 
 		constraints.push_back(
-			PrototypeConstraint(index, type, constraint)
+			PrototypeConstraint(index, designType, runType, constraint)
 		);
 
 		// cleanup for next iteration
 		constraint = "";
+		designType = "";
 		index++;
-		type = "";
+		runType = "";
+
+		if ( token->type() == Token::Type::COMMA ) {
+			token++;
+		}
+	}
+
+	expect(Token::Type::COMPARE_GREATER, token++);
+
+	return constraints;
+}
+
+PrototypeConstraints Parser::collectRuntimePrototypeConstraints(TokenIterator& token)
+{
+	PrototypeConstraints constraints;
+
+	if ( token->type() != Token::Type::COMPARE_LESS ) {
+		// no '<' token, no constraints
+		return constraints;
+	}
+
+	token++;
+
+	std::string constraint;
+	std::string designType;
+	unsigned int index = 0;
+	std::string runType;
+
+	while ( token->type() != Token::Type::COMPARE_GREATER ) {
+		runType = token->content();
+		token++;
+
+		if ( token->type() == Token::Type::COLON ) {	// constraint
+			token++;
+		}
+
+		constraints.push_back(
+			PrototypeConstraint(index, designType, runType, constraint)
+		);
+
+		// cleanup for next iteration
+		constraint = "";
+		designType = "";
+		index++;
+		runType = "";
 
 		if ( token->type() == Token::Type::COMMA ) {
 			token++;
@@ -227,7 +316,7 @@ std::string Parser::identify(TokenIterator& token)
 
 // enum declaration:
 // <visibility> [language feature] enum <identifier> { ... }
-bool Parser::isEnumDeclaration(TokenIterator start)
+bool Parser::isEnumDeclaration(TokenIterator token)
 {
 	TokenList tokens;
 
@@ -235,12 +324,12 @@ bool Parser::isEnumDeclaration(TokenIterator start)
 	tokens.push_back(Token(Token::Type::RESERVED_WORD, std::string(RESERVED_WORD_ENUM)));
 	tokens.push_back(Token(Token::Type::IDENTIFER));
 
-	return checkSyntax(start, tokens);
+	return checkSyntax(token, tokens);
 }
 
 // interface declaration:
 // <visibility> [language feature] interface <identifier> { ... }
-bool Parser::isInterfaceDeclaration(TokenIterator start)
+bool Parser::isInterfaceDeclaration(TokenIterator token)
 {
 	TokenList tokens;
 
@@ -248,31 +337,31 @@ bool Parser::isInterfaceDeclaration(TokenIterator start)
 	tokens.push_back(Token(Token::Type::RESERVED_WORD, std::string(RESERVED_WORD_INTERFACE)));
 	tokens.push_back(Token(Token::Type::IDENTIFER));
 
-	return checkSyntax(start, tokens);
+	return checkSyntax(token, tokens);
 }
 
 // library declaration:
 // import <identifier> ;
-bool Parser::isLibraryReference(TokenIterator start)
+bool Parser::isLibraryReference(TokenIterator token)
 {
 	TokenList tokens;
 
 	tokens.push_back(Token(Token::Type::RESERVED_WORD, std::string(RESERVED_WORD_IMPORT)));
 	tokens.push_back(Token(Token::Type::IDENTIFER));
 
-	return checkSyntax(start, tokens);
+	return checkSyntax(token, tokens);
 }
 
 // syntax:
 // <type> <identifier>
-bool Parser::isLocalDeclaration(TokenIterator start)
+bool Parser::isLocalDeclaration(TokenIterator token)
 {
 	TokenList tokens;
 
 	tokens.push_back(Token(Token::Type::TYPE));
 	tokens.push_back(Token(Token::Type::IDENTIFER));
 
-	return checkSyntax(start, tokens);
+	return checkSyntax(token, tokens);
 }
 
 // member declaration:
@@ -364,7 +453,7 @@ bool Parser::isMethodDeclaration(TokenIterator token)
 
 // namespace declaration:
 // <visibility> [language feature] namespace <identifier> { ... }
-bool Parser::isNamespaceDeclaration(TokenIterator start)
+bool Parser::isNamespaceDeclaration(TokenIterator token)
 {
 	TokenList tokens;
 
@@ -372,12 +461,12 @@ bool Parser::isNamespaceDeclaration(TokenIterator start)
 	tokens.push_back(Token(Token::Type::RESERVED_WORD, std::string(RESERVED_WORD_NAMESPACE)));
 	tokens.push_back(Token(Token::Type::IDENTIFER));
 
-	return checkSyntax(start, tokens);
+	return checkSyntax(token, tokens);
 }
 
 // object declaration:
 // <visibility> [language feature] object <identifier> [extends <identifier> [implements <identifier>, ...]] { ... }
-bool Parser::isObjectDeclaration(TokenIterator start)
+bool Parser::isObjectDeclaration(TokenIterator token)
 {
 	TokenList tokens;
 
@@ -385,19 +474,19 @@ bool Parser::isObjectDeclaration(TokenIterator start)
 	tokens.push_back(Token(Token::Type::RESERVED_WORD, std::string(RESERVED_WORD_OBJECT)));
 	tokens.push_back(Token(Token::Type::IDENTIFER));
 
-	return checkSyntax(start, tokens);
+	return checkSyntax(token, tokens);
 }
 
 // syntax:
 // <identifier> <identifier>
-bool Parser::isParameterDeclaration(TokenIterator start)
+bool Parser::isParameterDeclaration(TokenIterator token)
 {
 	TokenList tokens;
 
 	tokens.push_back(Token(Token::Type::IDENTIFER));
 	tokens.push_back(Token(Token::Type::IDENTIFER));
 
-	return checkSyntax(start, tokens);
+	return checkSyntax(token, tokens);
 }
 
 ImplementationType::E Parser::parseImplementationType(TokenIterator& token, ImplementationType::E defaultValue)
@@ -437,8 +526,6 @@ ObjectType::E Parser::parseObjectType(TokenIterator& token)
 
 ParameterList Parser::parseParameters(TokenIterator &token, IScope* scope)
 {
-(void)scope;	// scope would allow a namespace resolution
-
 	ParameterList params;
 
 	while ( (*++token).type() != Token::Type::PARENTHESIS_CLOSE ) {
@@ -459,7 +546,7 @@ ParameterList Parser::parseParameters(TokenIterator &token, IScope* scope)
 			throw Common::Exceptions::SyntaxError("unexpected token '" + token->content() + "' found", token->position());
 		}
 
-		TypeDeclaration type = parseTypeDeclaration(token);
+		TypeDeclaration type = parseTypeDeclaration(token, scope);
 
 		std::string name = token->content();
 		token++;
@@ -502,7 +589,7 @@ ParameterList Parser::parseParameters(TokenIterator &token, IScope* scope)
 		}
 
 		params.push_back(
-			Parameter::CreateDesigntime(name, buildConstraintTypename(type.mTypename, type.mConstraints), value, hasDefaultValue, isConst, accessMode)
+			Parameter::CreateDesigntime(name, TypeDeclaration(type.mName, type.mConstraints), value, hasDefaultValue, isConst, accessMode)
 		);
 
 		if ( token->type() == Token::Type::PARENTHESIS_CLOSE ) {
@@ -513,11 +600,18 @@ ParameterList Parser::parseParameters(TokenIterator &token, IScope* scope)
 	return params;
 }
 
-TypeDeclaration Parser::parseTypeDeclaration(TokenIterator& token)
+TypeDeclaration Parser::parseTypeDeclaration(TokenIterator& token, IScope* scope)
 {
 	TypeDeclaration result;
-	result.mTypename = identify(token);
-	result.mConstraints = collectPrototypeConstraints(token);
+	result.mName = identify(token);
+
+	// determine if we are called at "design time" or "run time"
+	if ( scope && scope->getScopeType() == IScope::IType::NamedScope ) {
+		result.mConstraints = collectRuntimePrototypeConstraints(token);
+	}
+	else {
+		result.mConstraints = collectDesigntimePrototypeConstraints(token);
+	}
 
 	return result;
 }

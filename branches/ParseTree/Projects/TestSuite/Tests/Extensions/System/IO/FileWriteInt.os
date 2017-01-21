@@ -5,10 +5,10 @@ public void Main(int argc, string argv) {
 	int result = 0;
 
 	try {
-		file = fopen("file.int", "ctw");
+		file = fopen("file.int", "wb");
 		writeln("handle: " + file);
 
-		result = fwritei(file, 17);
+		result = fwritei(file, 173);
 		writeln("result = " + result);
 	}
 	catch {

@@ -14,10 +14,10 @@
 #include <Core/BuildInObjects/FloatObject.h>
 #include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/BuildInObjects/StringObject.h>
+#include <Core/Common/Method.h>
+#include <Core/Common/Namespace.h>
 #include <Core/Designtime/Parser/Tokenizer.h>
 #include <Core/Interpreter.h>
-#include <Core/Method.h>
-#include <Core/Runtime/Namespace.h>
 #include <Core/Runtime/Script.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
@@ -343,7 +343,7 @@ void LocalClient::executeMethod(const StringList &tokens)
 		return;
 	}
 
-	Runtime::Method* method = static_cast<Runtime::Method*>(symbol);
+	Common::Method* method = static_cast<Common::Method*>(symbol);
 	try {
 		Runtime::Object result;
 
@@ -401,13 +401,13 @@ MethodSymbol* LocalClient::getMethod(std::string name, const ParameterList& para
 	return 0;
 }
 
-Runtime::Method* LocalClient::getEnclosingMethod(IScope* scope) const
+Common::Method* LocalClient::getEnclosingMethod(IScope* scope) const
 {
 	while ( scope ) {
 		IScope* parent = scope->getEnclosingScope();
 
 		if ( parent && parent->getScopeType() == IScope::IType::NamedScope ) {
-			Runtime::Method* result = dynamic_cast<Runtime::Method*>(parent);
+			Common::Method* result = dynamic_cast<Common::Method*>(parent);
 			if ( result ) {
 				return result;
 			}
@@ -767,7 +767,7 @@ void LocalClient::printHelp()
 
 void LocalClient::printScope(IScope* scope)
 {
-	Runtime::Method* method = dynamic_cast<Runtime::Method*>(getEnclosingMethod(scope));
+	Common::Method* method = dynamic_cast<Common::Method*>(getEnclosingMethod(scope));
 	if ( !method ) {
 		return;
 	}

@@ -8,7 +8,7 @@ import System.Exception;
 
 public namespace System { }
 
-public object GenericStack<T> implements IIterateable, IGenericCollection {
+public object GenericStack<T> implements IIterateable, IGenericCollection<T> {
     private GenericCollectionItem<T> mFirst;
     private GenericCollectionItem<T> mLast;
     private int mSize = 0;
@@ -51,11 +51,11 @@ public object GenericStack<T> implements IIterateable, IGenericCollection {
     }
 
     public GenericIterator<T> getIterator() const {
-        return new GenericIterator<T>(IGenericCollection this);
+        return new GenericIterator<T>(IGenericCollection<T> this);
     }
 
     public GenericReverseIterator<T> getReverseIterator() const {
-        return new GenericReverseIterator<T>(IGenericCollection this);
+        return new GenericReverseIterator<T>(IGenericCollection<T> this);
     }
 
     public int indexOf(T value) const {

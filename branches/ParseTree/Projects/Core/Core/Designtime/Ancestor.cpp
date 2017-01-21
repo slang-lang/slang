@@ -14,23 +14,22 @@ namespace Designtime {
 
 
 Ancestor::Ancestor()
-: mName(""),
-  mType(Type::Unknown),
+: mAncestorType(Type::Unknown),
+  mTypeDeclaration("", PrototypeConstraints()),
   mVisibility(Visibility::Private)
 {
 }
 
-Ancestor::Ancestor(const std::string& name, Type::E type, Visibility::E visibility, const PrototypeConstraints& constraints)
-: mName(name),
-  mPrototypeConstraints(constraints),
-  mType(type),
+Ancestor::Ancestor(const TypeDeclaration& typeDeclaration, Type::E ancestorType, Visibility::E visibility)
+: mAncestorType(ancestorType),
+  mTypeDeclaration(typeDeclaration),
   mVisibility(visibility)
 {
 }
 
 bool Ancestor::operator<(const Ancestor& other) const
 {
-	if ( type() == other.type() ) {
+	if ( ancestorType() == other.ancestorType() ) {
 		if ( name() == other.name() ) {
 			if ( visibility() == other.visibility() ) {
 				return constraints() == other.constraints();
@@ -42,7 +41,7 @@ bool Ancestor::operator<(const Ancestor& other) const
 		return name() < other.name();
 	}
 
-	return type() < other.type();
+	return ancestorType() < other.ancestorType();
 }
 
 bool Ancestor::operator==(const Ancestor& other) const
@@ -51,22 +50,22 @@ bool Ancestor::operator==(const Ancestor& other) const
 		return false;
 	}
 
-	return type() == other.type() && visibility() == other.visibility();
+	return ancestorType() == other.ancestorType() && visibility() == other.visibility();
+}
+
+Ancestor::Type::E Ancestor::ancestorType() const
+{
+	return mAncestorType;
 }
 
 const PrototypeConstraints& Ancestor::constraints() const
 {
-	return mPrototypeConstraints;
+	return mTypeDeclaration.mConstraints;
 }
 
 const std::string& Ancestor::name() const
 {
-	return mName;
-}
-
-Ancestor::Type::E Ancestor::type() const
-{
-	return mType;
+	return mTypeDeclaration.mName;
 }
 
 Visibility::E Ancestor::visibility() const

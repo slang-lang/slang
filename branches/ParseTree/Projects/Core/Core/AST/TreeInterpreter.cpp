@@ -15,10 +15,11 @@
 #include <Core/BuildInObjects/UserObject.h>
 #include <Core/BuildInObjects/VoidObject.h>
 #include <Core/Common/Exceptions.h>
+#include <Core/Common/Method.h>
+#include <Core/Common/Namespace.h>
 #include <Core/Designtime/BluePrintEnum.h>
 #include <Core/Designtime/Parser/Parser.h>
 #include <Core/Runtime/Exceptions.h>
-#include <Core/Runtime/Namespace.h>
 #include <Core/Runtime/OperatorOverloading.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
@@ -262,7 +263,7 @@ void TreeInterpreter::evaluateMethodExpression(MethodExpression* exp, Runtime::O
 		throw Runtime::Exceptions::RuntimeException("method " + exp->mName + " not found");
 	}
 
-	Runtime::Method* method = static_cast<Runtime::Method*>(symbol);
+	Common::Method* method = static_cast<Common::Method*>(symbol);
 	assert(method);
 
 	Runtime::ControlFlow::E controlflow;
@@ -334,7 +335,7 @@ void TreeInterpreter::evaluateVariable(VariableExpression* exp, Runtime::Object*
 	*result = *static_cast<Runtime::Object*>(lvalue);
 }
 
-Runtime::ControlFlow::E TreeInterpreter::execute(Runtime::Method* method, const ParameterList& params, Runtime::Object* result)
+Runtime::ControlFlow::E TreeInterpreter::execute(Common::Method* method, const ParameterList& params, Runtime::Object* result)
 {
 	(void)result;
 
@@ -353,7 +354,7 @@ Runtime::ControlFlow::E TreeInterpreter::execute(Runtime::Method* method, const 
 		case LanguageFeatureState::Unstable: OSwarn("method '" + method->getFullScopeName() + "' is marked as unstable"); break;
 	}
 
-	Runtime::Method scope(*method);
+	Common::Method scope(*method);
 
 	IScope* previousOwner = mOwner;
 
@@ -447,7 +448,7 @@ NamedScope* TreeInterpreter::getEnclosingNamedScope(IScope *scope) const
 	return 0;
 }
 
-Runtime::Namespace* TreeInterpreter::getEnclosingNamespace(IScope* scope) const
+Common::Namespace* TreeInterpreter::getEnclosingNamespace(IScope* scope) const
 {
 	if ( !scope ) {
 		scope = getScope();
@@ -457,7 +458,7 @@ Runtime::Namespace* TreeInterpreter::getEnclosingNamespace(IScope* scope) const
 		IScope* parent = scope->getEnclosingScope();
 
 		if ( parent && parent->getScopeType() == IScope::IType::MethodScope ) {
-			Runtime::Namespace* result = dynamic_cast<Runtime::Namespace*>(parent);
+			Common::Namespace* result = dynamic_cast<Common::Namespace*>(parent);
 			if ( result ) {
 				return result;
 			}
@@ -493,7 +494,7 @@ Runtime::Object* TreeInterpreter::getEnclosingObject(IScope* scope) const
 
 inline IScope* TreeInterpreter::getScope() const
 {
-	StackLevel* stack = Controller::Instance().stack()->current();
+	StackFrame* stack = Controller::Instance().stack()->current();
 
 	return stack->getScope();
 }
@@ -513,7 +514,7 @@ inline Symbol* TreeInterpreter::identify(TokenIterator& token) const
 			prev_identifier = identifier;
 
 			if ( !result ) {
-				Runtime::Namespace* space = getEnclosingNamespace();
+				Common::Namespace* space = getEnclosingNamespace();
 				if ( space ) {
 					result = getScope()->resolve(space->QualifiedTypename() + "." + identifier, onlyCurrentScope, Visibility::Private);
 				}
@@ -528,7 +529,7 @@ inline Symbol* TreeInterpreter::identify(TokenIterator& token) const
 					result = dynamic_cast<Designtime::BluePrintObject*>(result)->resolve(identifier, onlyCurrentScope, Visibility::Public);
 					break;
 				case Symbol::IType::NamespaceSymbol:
-					result = dynamic_cast<Runtime::Namespace*>(result)->resolve(identifier, onlyCurrentScope, Visibility::Public);
+					result = dynamic_cast<Common::Namespace*>(result)->resolve(identifier, onlyCurrentScope, Visibility::Public);
 					break;
 				case Symbol::IType::ObjectSymbol:
 					result = dynamic_cast<Runtime::Object*>(result)->resolve(identifier, onlyCurrentScope,
@@ -589,7 +590,7 @@ Symbol* TreeInterpreter::identifyMethod(TokenIterator& token, const ParameterLis
 					result = dynamic_cast<Designtime::BluePrintObject*>(result)->resolveMethod(identifier, params, true, Visibility::Public);
 					break;
 				case Symbol::IType::NamespaceSymbol:
-					result = dynamic_cast<Runtime::Namespace*>(result)->resolveMethod(identifier, params, true, Visibility::Public);
+					result = dynamic_cast<Common::Namespace*>(result)->resolveMethod(identifier, params, true, Visibility::Public);
 					break;
 				case Symbol::IType::ObjectSymbol:
 					result = dynamic_cast<Runtime::Object*>(result)->resolveMethod(identifier, params, true,
@@ -624,7 +625,7 @@ Symbol* TreeInterpreter::identifyMethod(TokenIterator& token, const ParameterLis
 
 void TreeInterpreter::popScope()
 {
-	StackLevel* stack = Controller::Instance().stack()->current();
+	StackFrame* stack = Controller::Instance().stack()->current();
 
 	stack->popScope();
 }
@@ -698,7 +699,7 @@ void TreeInterpreter::process(Statements* statements)
 
 void TreeInterpreter::pushScope(IScope* scope)
 {
-	StackLevel* stack = Controller::Instance().stack()->current();
+	StackFrame* stack = Controller::Instance().stack()->current();
 
 	bool allowDelete = !scope;
 

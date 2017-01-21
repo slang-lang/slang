@@ -9,6 +9,7 @@ SET(HEADERS
 	MysqlAffectedRows.h
 	MysqlClose.h
 	MysqlDataSeek.h
+	MysqlErrno.h
 	MysqlError.h
 	MysqlExtension.h
 	MysqlFieldCount.h
@@ -28,6 +29,9 @@ SET(HEADERS
 	MysqlQuery.h
 	MysqlRealConnect.h
 	MysqlRealEscapeString.h
+	MysqlRowCount.h
+	MysqlRowSeek.h
+	MysqlRowTell.h
 	MysqlSelectDB.h
 	MysqlStat.h
 	MysqlStoreResult.h

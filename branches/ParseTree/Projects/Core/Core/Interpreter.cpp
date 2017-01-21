@@ -12,10 +12,11 @@
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/BuildInObjects/VoidObject.h>
 #include <Core/Common/Exceptions.h>
+#include <Core/Common/Method.h>
+#include <Core/Common/Namespace.h>
 #include <Core/Designtime/BluePrintEnum.h>
 #include <Core/Designtime/Parser/Parser.h>
 #include <Core/Runtime/Exceptions.h>
-#include <Core/Runtime/Namespace.h>
 #include <Core/Runtime/OperatorOverloading.h>
 #include <Core/Runtime/TypeCast.h>
 #include <Core/VirtualMachine/Controller.h>
@@ -47,7 +48,7 @@ Interpreter::~Interpreter()
 /*
  * processes tokens and updates the given result
  */
-ControlFlow::E Interpreter::execute(Method* method, const ParameterList& params, Object* result)
+ControlFlow::E Interpreter::execute(Common::Method* method, const ParameterList& params, Object* result)
 {
 	if ( !mRepository ) {
 		throw Common::Exceptions::Exception("mRepository not set");
@@ -55,9 +56,6 @@ ControlFlow::E Interpreter::execute(Method* method, const ParameterList& params,
 
 	if ( method->isAbstract() ) {
 		throw Common::Exceptions::AbstractException("cannot execute abstract method '" + method->getFullScopeName() + "'");
-	}
-	if ( !method->isSignatureValid(params) ) {
-		throw Common::Exceptions::ParameterCountMissmatch("incorrect number or type of parameters");
 	}
 
 	switch ( method->getLanguageFeatureState() ) {
@@ -68,13 +66,7 @@ ControlFlow::E Interpreter::execute(Method* method, const ParameterList& params,
 		case LanguageFeatureState::Unstable: OSwarn("method '" + method->getFullScopeName() + "' is marked as unstable"); break;
 	}
 
-	// reset qualified typename if prototype constraints are present
-	if ( !method->getPrototypeConstraints().empty() ) {
-		method->setQualifiedTypename(Designtime::Parser::buildConstraintTypename(method->QualifiedTypename(), method->getPrototypeConstraints()));
-		method->setPrototypeConstraints(PrototypeConstraints());
-	}
-
-	Method scope(*method);
+	Common::Method scope(*method);
 
 	IScope* previousOwner = mOwner;
 
@@ -132,10 +124,10 @@ ControlFlow::E Interpreter::execute(Method* method, const ParameterList& params,
 	// notify debugger
 	Core::Debugger::Instance().notifyEnter(&scope, Core::Debugger::immediateBreakToken);
 	// interpret scope tokens
-	ControlFlow::E controlflow = interpret(getTokens(), result);
+	mControlFlow = interpret(getTokens(), result);
 
 	// process & update control flow
-	switch ( controlflow ) {
+	switch ( mControlFlow ) {
 		case ControlFlow::Break:
 		case ControlFlow::Continue:
 		case ControlFlow::Normal:
@@ -145,7 +137,7 @@ ControlFlow::E Interpreter::execute(Method* method, const ParameterList& params,
 			}
 
 			// correct behavior detected, override control flow with normal state
-			controlflow = ControlFlow::Normal;
+			mControlFlow = ControlFlow::Normal;
 			break;
 		case ControlFlow::Return:
 			// validate return value
@@ -155,17 +147,16 @@ ControlFlow::E Interpreter::execute(Method* method, const ParameterList& params,
 			}
 			else if ( method->QualifiedTypename() != VoidObject::TYPENAME && result->QualifiedOuterface() != method->QualifiedTypename() ) {
 #ifdef ALLOW_IMPLICIT_CASTS
-				OSwarn("implicit type conversion from " + result->QualifiedOuterface() + " to " + method->QualifiedTypename() + " in " + getTokens().begin()->position().toString());
+				//OSwarn("implicit type conversion from " + result->QualifiedOuterface() + " to " + method->QualifiedTypename() + " in " + getTokens().begin()->position().toString());
 
 				typecast(result, method->QualifiedTypename());
-				//typecast(result, Designtime::Parser::buildConstraintTypename(method->QualifiedTypename(), method->getPrototypeConstraints()));
 #else
-				throw Runtime::Exceptions::ExplicitCastRequired("Explicit cast required for type conversion from " + result->QualifiedOutterface() + " to " + method->QualifiedTypename() + " in " + method->getFullScopeName());
+				throw Runtime::Exceptions::ExplicitCastRequired("explicit cast required for type conversion from " + result->QualifiedOutterface() + " to " + method->QualifiedTypename() + " in " + method->getFullScopeName());
 #endif
 			}
 
 			// correct behavior detected, override control flow with normal state
-			controlflow = ControlFlow::Normal;
+			mControlFlow = ControlFlow::Normal;
 			break;
 		case ControlFlow::ExitProgram:
 		case ControlFlow::Throw:
@@ -173,7 +164,7 @@ ControlFlow::E Interpreter::execute(Method* method, const ParameterList& params,
 			break;
 	}
 
-	if ( controlflow == ControlFlow::Normal ) {
+	if ( mControlFlow == ControlFlow::Normal ) {
 		switch ( method->getMethodType() ) {
 			case MethodAttributes::MethodType::Constructor:
 				dynamic_cast<Object*>(mOwner)->setConstructed(true);
@@ -193,7 +184,7 @@ ControlFlow::E Interpreter::execute(Method* method, const ParameterList& params,
 
 	mOwner = previousOwner;
 
-	return controlflow;
+	return mControlFlow;
 }
 
 void Interpreter::expression(Object* result, TokenIterator& start)
@@ -248,7 +239,7 @@ NamedScope* Interpreter::getEnclosingNamedScope(IScope *scope) const
 	return 0;
 }
 
-Namespace* Interpreter::getEnclosingNamespace(IScope* scope) const
+Common::Namespace* Interpreter::getEnclosingNamespace(IScope* scope) const
 {
 	if ( !scope ) {
 		scope = getScope();
@@ -258,7 +249,7 @@ Namespace* Interpreter::getEnclosingNamespace(IScope* scope) const
 		IScope* parent = scope->getEnclosingScope();
 
 		if ( parent && parent->getScopeType() == IScope::IType::MethodScope ) {
-			Namespace* result = dynamic_cast<Namespace*>(parent);
+			Common::Namespace* result = dynamic_cast<Common::Namespace*>(parent);
 			if ( result ) {
 				return result;
 			}
@@ -294,14 +285,14 @@ Object* Interpreter::getEnclosingObject(IScope* scope) const
 
 IScope* Interpreter::getScope() const
 {
-	StackLevel* stack = Controller::Instance().stack()->current();
+	StackFrame* stack = Controller::Instance().stack()->current();
 
 	return stack->getScope();
 }
 
 const TokenList& Interpreter::getTokens() const
 {
-	StackLevel* stack = Controller::Instance().stack()->current();
+	StackFrame* stack = Controller::Instance().stack()->current();
 
 	return stack->getTokens();
 }
@@ -321,7 +312,7 @@ inline Symbol* Interpreter::identify(TokenIterator& token) const
 			prev_identifier = identifier;
 
 			if ( !result ) {
-				Namespace* space = getEnclosingNamespace();
+				Common::Namespace* space = getEnclosingNamespace(getScope());
 				if ( space ) {
 					result = getScope()->resolve(space->QualifiedTypename() + "." + identifier, onlyCurrentScope, Visibility::Private);
 				}
@@ -336,7 +327,7 @@ inline Symbol* Interpreter::identify(TokenIterator& token) const
 					result = dynamic_cast<Designtime::BluePrintObject*>(result)->resolve(identifier, onlyCurrentScope, Visibility::Public);
 					break;
 				case Symbol::IType::NamespaceSymbol:
-					result = dynamic_cast<Namespace*>(result)->resolve(identifier, onlyCurrentScope, Visibility::Public);
+					result = dynamic_cast<Common::Namespace*>(result)->resolve(identifier, onlyCurrentScope, Visibility::Public);
 					break;
 				case Symbol::IType::ObjectSymbol:
 					result = dynamic_cast<Object*>(result)->resolve(identifier, onlyCurrentScope,
@@ -397,7 +388,7 @@ Symbol* Interpreter::identifyMethod(TokenIterator& token, const ParameterList& p
 					result = dynamic_cast<Designtime::BluePrintObject*>(result)->resolveMethod(identifier, params, true, Visibility::Public);
 					break;
 				case Symbol::IType::NamespaceSymbol:
-					result = dynamic_cast<Namespace*>(result)->resolveMethod(identifier, params, true, Visibility::Public);
+					result = dynamic_cast<Common::Namespace*>(result)->resolveMethod(identifier, params, true, Visibility::Public);
 					break;
 				case Symbol::IType::ObjectSymbol:
 					result = dynamic_cast<Object*>(result)->resolveMethod(identifier, params, true,
@@ -651,10 +642,10 @@ void Interpreter::parseInfixPostfix(Object *result, TokenIterator& start)
 				compareType = static_cast<Object*>(symbol)->QualifiedTypename();
 			}
 			else if ( symbol->getSymbolType() == Symbol::IType::BluePrintEnumSymbol || symbol->getSymbolType() == Symbol::IType::BluePrintObjectSymbol ) {
-				PrototypeConstraints constraints = Designtime::Parser::collectPrototypeConstraints(start);
+				PrototypeConstraints constraints = Designtime::Parser::collectRuntimePrototypeConstraints(start);
 
 				compareType = dynamic_cast<Designtime::BluePrintGeneric*>(symbol)->QualifiedTypename();
-				compareType = Designtime::Parser::buildConstraintTypename(compareType, constraints);
+				compareType = Designtime::Parser::buildRuntimeConstraintTypename(compareType, constraints);
 			}
 			else {
 				throw Common::Exceptions::SyntaxError("invalid symbol type found", start->position());
@@ -723,10 +714,10 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 				case Symbol::IType::BluePrintObjectSymbol: {
 					++start;
 
-					PrototypeConstraints constraints = Designtime::Parser::collectPrototypeConstraints(start);
+					PrototypeConstraints constraints = Designtime::Parser::collectRuntimePrototypeConstraints(start);
 
 					std::string newType = dynamic_cast<Designtime::BluePrintGeneric*>(symbol)->QualifiedTypename();
-								newType = Designtime::Parser::buildConstraintTypename(newType, constraints);
+								newType = Designtime::Parser::buildRuntimeConstraintTypename(newType, constraints);
 
 					Object tmp;
 					expression(&tmp, start);
@@ -754,14 +745,14 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 
 void Interpreter::popScope()
 {
-	StackLevel* stack = Controller::Instance().stack()->current();
+	StackFrame* stack = Controller::Instance().stack()->current();
 
 	stack->popScope();
 }
 
 void Interpreter::popTokens()
 {
-	StackLevel* stack = Controller::Instance().stack()->current();
+	StackFrame* stack = Controller::Instance().stack()->current();
 
 	stack->popTokens();
 }
@@ -872,7 +863,6 @@ void Interpreter::process_delete(TokenIterator& token)
 		case Symbol::IType::ObjectSymbol: {
 			Object *object = static_cast<Object*>(symbol);
 
-			//object->assign(Object(object->getName(), object->Filename(), object->QualifiedTypename(), VALUE_NONE));
 			object->assign(Object());
 		} break;
 		case Symbol::IType::BluePrintEnumSymbol:
@@ -957,9 +947,9 @@ void Interpreter::process_for(TokenIterator& token, Object* result)
 
 		// Body parsing
 		// {
-		ControlFlow::E controlflow = interpret(loopTokens, result);
+		mControlFlow = interpret(loopTokens, result);
 
-		switch ( controlflow ) {
+		switch ( mControlFlow ) {
 			case ControlFlow::Break: mControlFlow = ControlFlow::Normal; return;
 			case ControlFlow::Continue: mControlFlow = ControlFlow::Normal; break;
 			case ControlFlow::ExitProgram: mControlFlow = ControlFlow::ExitProgram; return;
@@ -1000,7 +990,7 @@ void Interpreter::process_foreach(TokenIterator& token, Object* result)
 	}
 	++token;
 
-	PrototypeConstraints constraints = Designtime::Parser::collectPrototypeConstraints(token);
+	PrototypeConstraints constraints = Designtime::Parser::collectRuntimePrototypeConstraints(token);
 	(void)constraints;
 
 	expect(Token::Type::IDENTIFER, token);
@@ -1061,11 +1051,11 @@ void Interpreter::process_foreach(TokenIterator& token, Object* result)
 
 		// Body parsing
 		// {
-		ControlFlow::E controlflow = interpret(loopTokens, result);
+		mControlFlow = interpret(loopTokens, result);
 
 		popScope();	// needed for loop variable
 
-		switch ( controlflow ) {
+		switch ( mControlFlow ) {
 			case ControlFlow::Break: mControlFlow = ControlFlow::Normal; return;
 			case ControlFlow::Continue: mControlFlow = ControlFlow::Normal; break;
 			case ControlFlow::ExitProgram: mControlFlow = ControlFlow::ExitProgram; return;
@@ -1329,7 +1319,7 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 
 	Symbol* symbol = identifyMethod(token, params);
 
-	Method* method = dynamic_cast<Method*>(symbol);
+	Common::Method* method = dynamic_cast<Common::Method*>(symbol);
 	if ( !method) {
 		throw Common::Exceptions::UnknownIdentifer("could not resolve identifier '" + token->content() + "' with parameters '" + toString(params) + "'", token->position());
 	}
@@ -1342,7 +1332,7 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 	}
 
 	// check caller's constness
-	Method* owner = dynamic_cast<Method*>(getEnclosingNamedScope());
+	Common::Method* owner = dynamic_cast<Common::Method*>(getEnclosingNamedScope());
 	if ( owner && owner->isConst() ) {
 		if ( owner->getEnclosingScope() == method->getEnclosingScope() && !method->isConst() ) {
 			// check target method's constness
@@ -1399,7 +1389,7 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 
 	++token;
 
-	PrototypeConstraints constraints = Designtime::Parser::collectPrototypeConstraints(token);
+	PrototypeConstraints constraints = Designtime::Parser::collectRuntimePrototypeConstraints(token);
 
 	expect(Token::Type::PARENTHESIS_OPEN, token);
 
@@ -1703,23 +1693,27 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 void Interpreter::process_throw(TokenIterator& token, Object* /*result*/)
 {
 	// check if our parent scope is a method that is allowed to throw exceptions
-	Runtime::Method* method = dynamic_cast<Runtime::Method*>(getEnclosingNamedScope());
+	Common::Method* method = dynamic_cast<Common::Method*>(getEnclosingNamedScope());
 	if ( method && !method->throws() ) {
-		// this method is not marked as 'throwing', so we can't throw exceptions here
+		// this method is not marked as 'throwing', so we are not allowed to throw exceptions here
 		OSwarn(std::string(method->getFullScopeName() + " throws although it is not marked with 'throws' in " + token->position().toString()).c_str());
 	}
 
-	Object* data = mRepository->createInstance(OBJECT, ANONYMOUS_OBJECT, PrototypeConstraints());
-	try {
-		expression(data, token);
-	}
-	catch ( ControlFlow::E &e ) {
-		mControlFlow = e;
-		return;
+	// determine if we are about to rethrow an exception or throw a new one
+	if ( token->type() != Token::Type::SEMICOLON ) {
+		Object* data = mRepository->createInstance(OBJECT, ANONYMOUS_OBJECT, PrototypeConstraints());
+		try {
+			expression(data, token);
+		}
+		catch ( ControlFlow::E &e ) {
+			mControlFlow = e;
+			return;
+		}
+
+		Controller::Instance().stack()->exception() = ExceptionData(data, token->position());
 	}
 
 	mControlFlow = ControlFlow::Throw;
-	Controller::Instance().stack()->exception() = ExceptionData(data, token->position());
 
 	expect(Token::Type::SEMICOLON, token);
 
@@ -1797,6 +1791,8 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 			mControlFlow = ControlFlow::Normal;
 		}
 
+		Object* exception = Controller::Instance().stack()->exception().getData();
+
 		for ( std::list<TokenIterator>::const_iterator it = catchTokens.begin(); it != catchTokens.end(); ++it ) {
 			TokenIterator catchIt = (*it);
 			++catchIt;
@@ -1821,18 +1817,18 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 				expect(Token::Type::PARENTHESIS_CLOSE, catchIt);
 				++catchIt;
 
-				if ( !type || !Controller::Instance().stack()->exception().getData() ) {
+				if ( !type || !exception ) {
 					throw Common::Exceptions::Exception("could not create exception type instance", catchIt->position());
 				}
 
 				// compare given exception type with thrown type inheritance
-				if ( !Controller::Instance().stack()->exception().getData()->isInstanceOf(type->QualifiedTypename()) ) {
+				if ( !exception->isInstanceOf(type->QualifiedTypename()) ) {
 					popScope();		// pop exception instance scope
 					continue;
 				}
 
 				// exception type match with thrown type, start with the real exception handling
-				operator_binary_assign(type, Controller::Instance().stack()->exception().getData());
+				operator_binary_assign(type, exception);
 			}
 
 			// notify our debugger that an exception has been caught
@@ -1860,10 +1856,11 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 			// execute catch-block if an exception has been thrown
 			mControlFlow = interpret(tokens, result);
 
-			Object* ex = Controller::Instance().stack()->exception().getData();
-			if ( ex ) {
-				getScope()->define(ex->getName(), ex);
+/*
+			if ( exception ) {
+				getScope()->define(exception->getName(), exception);
 			}
+*/
 
 			popScope();		// pop exception instance scope
 			break;
@@ -1898,14 +1895,14 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 
 /*
  * syntax:
- * <type> <identifier> [= <initialization>]
+ * <type> [ "<" <type> ">" ] <identifier> [= <initialization>]
  */
 Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol)
 {
 	bool isConst = false;
 	bool isReference = false;
 
-	PrototypeConstraints constraints = Designtime::Parser::collectPrototypeConstraints(++token);
+	PrototypeConstraints constraints = Designtime::Parser::collectRuntimePrototypeConstraints(++token);
 
 	expect(Token::Type::IDENTIFER, token);
 
@@ -2045,9 +2042,9 @@ void Interpreter::process_while(TokenIterator& token, Object* result)
 			break;
 		}
 
-		ControlFlow::E controlflow = interpret(statementTokens, result);
+		mControlFlow = interpret(statementTokens, result);
 
-		switch ( controlflow ) {
+		switch ( mControlFlow ) {
 			case ControlFlow::Break: mControlFlow = ControlFlow::Normal; return;
 			case ControlFlow::Continue: mControlFlow = ControlFlow::Normal; break;
 			case ControlFlow::ExitProgram: mControlFlow = ControlFlow::ExitProgram; return;
@@ -2060,7 +2057,7 @@ void Interpreter::process_while(TokenIterator& token, Object* result)
 
 void Interpreter::pushScope(IScope* scope)
 {
-	StackLevel* stack = Controller::Instance().stack()->current();
+	StackFrame* stack = Controller::Instance().stack()->current();
 
 	bool allowDelete = !scope;
 
@@ -2073,7 +2070,7 @@ void Interpreter::pushScope(IScope* scope)
 
 void Interpreter::pushTokens(const TokenList& tokens)
 {
-	StackLevel* stack = Controller::Instance().stack()->current();
+	StackFrame* stack = Controller::Instance().stack()->current();
 
 	stack->pushTokens(tokens);
 }

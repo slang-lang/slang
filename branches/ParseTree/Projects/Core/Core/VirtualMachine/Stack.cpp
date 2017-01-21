@@ -7,7 +7,8 @@
 #include <iostream>
 
 // Project includes
-#include <Core/Runtime/Namespace.h>
+#include <Core/Common/Method.h>
+#include <Core/Common/Namespace.h>
 #include <Core/Tools.h>
 
 // Namespace declarations
@@ -25,20 +26,20 @@ Stack::~Stack()
 {
 }
 
-StackLevel* Stack::current() const
+StackFrame* Stack::current() const
 {
-	if ( mStack.empty() ) {
+	if ( mStackFrames.empty() ) {
 		return 0;
 	}
 
-	return mStack.back();
+	return mStackFrames.back();
 }
 
 void Stack::deinit()
 {
-	assert( !mStack.empty() );
+	assert( !mStackFrames.empty() );
 
-	while ( !mStack.empty() ) {
+	while ( !mStackFrames.empty() ) {
 		pop();
 	}
 
@@ -59,32 +60,32 @@ MethodScope* Stack::globalScope() const
 void Stack::init()
 {
 	assert(!mGlobalScope);
-	mGlobalScope = new Runtime::Namespace(VALUE_NONE, 0);
+	mGlobalScope = new Common::Namespace(VALUE_NONE, 0);
 
 	push(mGlobalScope, ParameterList());
 }
 
 void Stack::pop()
 {
-	StackLevel* level = mStack.back();
-	level->popTokens();
-	level->popScope();
+	StackFrame* frame = mStackFrames.back();
+	frame->popTokens();
+	frame->popScope();
 
-	mStack.pop_back();
+	mStackFrames.pop_back();
 
-	delete level;
+	delete frame;
 }
 
 void Stack::print()
 {
-	if ( mStack.empty() ) {
+	if ( mStackFrames.empty() ) {
 		return;
 	}
 
-	StackTrace::const_iterator it = mStack.begin();
+	StackFrames::const_iterator it = mStackFrames.begin();
 	++it;	// skip frame 0 (global scope)
 
-	for ( ; it != mStack.end(); ++it ) {
+	for ( ; it != mStackFrames.end(); ++it ) {
 		std::cout << (*it)->toString() << std::endl;
 	}
 }
@@ -92,18 +93,18 @@ void Stack::print()
 void Stack::push(IScope* scope, const ParameterList &params)
 {
 	TokenList tokens;
-	if ( dynamic_cast<Runtime::Method*>(scope) ) {
-		tokens = dynamic_cast<Runtime::Method*>(scope)->getTokens();
+	if ( dynamic_cast<Common::Method*>(scope) ) {
+		tokens = dynamic_cast<Common::Method*>(scope)->getTokens();
 	}
 
-	// create new stack level
-	StackLevel* level = new StackLevel(mStack.size(), scope, params);
+	// create new stack frame
+	StackFrame* frame = new StackFrame(mStackFrames.size(), scope, params);
 	// push scope
-	level->pushScope(scope, false);
+	frame->pushScope(scope, false);
 	// push tokens (although maybe none are present)
-	level->pushTokens(tokens);
+	frame->pushTokens(tokens);
 
-	mStack.push_back(level);
+	mStackFrames.push_back(frame);
 }
 
 

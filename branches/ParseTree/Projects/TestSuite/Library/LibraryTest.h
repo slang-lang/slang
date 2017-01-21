@@ -34,6 +34,9 @@ private:	// Tests
 	void testSystemCollectionsDoubleLinkedList();
 	void testSystemCollectionsIterator();
 	void testSystemCollectionsList();
+	void testSystemCollectionsMap();
+	void testSystemCollectionsPair();
+	void testSystemCollectionsQueue();
 	void testSystemCollectionsSet();
 	void testSystemCollectionsStack();
 	void testSystemCollectionsVector();

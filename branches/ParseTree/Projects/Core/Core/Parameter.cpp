@@ -14,12 +14,11 @@ namespace ObjectiveScript {
 
 
 Parameter Parameter::CreateDesigntime(const std::string& name,
-									  const std::string& type,
+									  const TypeDeclaration& type,
 									  Runtime::AtomicValue value,
 									  bool hasDefaultValue,
 									  bool isConst,
-									  AccessMode::E access,
-									  Reference reference)
+									  AccessMode::E access)
 {
 	return Parameter(
 		name,
@@ -27,8 +26,7 @@ Parameter Parameter::CreateDesigntime(const std::string& name,
 		value,
 		hasDefaultValue,
 		isConst,
-		access,
-		reference
+		access
 	);
 }
 
@@ -37,7 +35,7 @@ Parameter Parameter::CreateRuntime(const std::string& type, Runtime::AtomicValue
 	if ( reference.isValid() ) {
 		return Parameter(
 				ANONYMOUS_OBJECT,
-				type,
+				TypeDeclaration(type),
 				Runtime::AtomicValue(),
 				false,
 				false,
@@ -48,7 +46,7 @@ Parameter Parameter::CreateRuntime(const std::string& type, Runtime::AtomicValue
 
 	return Parameter(
 		ANONYMOUS_OBJECT,
-		type,
+		TypeDeclaration(type),
 		value,
 		false,
 		false,
@@ -64,7 +62,7 @@ Parameter::Parameter()
 {
 }
 
-Parameter::Parameter(const std::string& name, const std::string& type, Runtime::AtomicValue value,
+Parameter::Parameter(const std::string& name, const TypeDeclaration& type, Runtime::AtomicValue value,
 					 bool hasDefaultValue, bool isConst, AccessMode::E access, Reference reference)
 : mAccessMode(access),
   mHasDefaultValue(hasDefaultValue),
@@ -103,7 +101,12 @@ const Reference& Parameter::reference() const
 
 const std::string& Parameter::type() const
 {
-	return mType;
+	return mType.mName;
+}
+
+const PrototypeConstraints& Parameter::typeConstraints() const
+{
+	return mType.mConstraints;
 }
 
 Runtime::AtomicValue Parameter::value() const

@@ -8,7 +8,7 @@
 #include <string>
 
 // Project includes
-#include <Core/Common/PrototypeConstraint.h>
+#include <Core/Common/TypeDeclaration.h>
 #include <Core/Common/Visibility.h>
 
 // Forward declarations
@@ -36,22 +36,21 @@ public:
 
 public:
 	Ancestor();
-	Ancestor(const std::string& name, Type::E type, Visibility::E visibility, const PrototypeConstraints& constraints);
+	Ancestor(const TypeDeclaration& typeDeclaration, Type::E ancestorType, Visibility::E visibility);
 
 public:
 	bool operator<(const Ancestor& other) const;
 	bool operator==(const Ancestor& other) const;
 
 public:
+	Type::E ancestorType() const;
 	const PrototypeConstraints& constraints() const;
 	const std::string& name() const;
-	Type::E type() const;
 	Visibility::E visibility() const;
 
 private:
-	std::string	mName;
-	PrototypeConstraints mPrototypeConstraints;
-	Type::E mType;
+	Type::E mAncestorType;
+	TypeDeclaration mTypeDeclaration;
 	Visibility::E mVisibility;
 };
 

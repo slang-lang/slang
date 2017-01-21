@@ -10,6 +10,7 @@ public void Main(int argc = 0, string args = "") const {
 	assert( TestCase3() );
 	assert( TestCase4() );
 	assert( TestCase5() );
+	//assert( TestCase6() );
 }
 
 private bool TestCase1() const {
@@ -19,21 +20,14 @@ private bool TestCase1() const {
 		List list = new List();
 
 		// Setup
-		Integer item;
-
-		item = new Integer(664);
-		list.push_back(Object item);
-
-		item = new Integer(173);
-		list.push_back(Object item);
-
-		item = new Integer(1389);
-		list.push_back(Object item);
+		list.push_back(Object new Integer(664));
+		list.push_back(Object new Integer(173));
+		list.push_back(Object new Integer(1389));
 
 		// Usage
 		assert( list.size() == 3 );
 
-		item = Integer list.at(0);
+		Integer item = Integer list.at(0);
 		assert( item == 664 );
 
 		item = Integer list.at(1);
@@ -59,21 +53,14 @@ private bool TestCase2() const {
 	try {
 		List list = new List();
 
-		Integer item;
-
-		item = new Integer(1389);
-		list.push_front(Object item);
-
-		item = new Integer(173);
-		list.push_front(Object item);
-
-		item = new Integer(664);
-		list.push_front(Object item);
+		list.push_front(Object new Integer(1389));
+		list.push_front(Object new Integer(173));
+		list.push_front(Object new Integer(664));
 
 		// Usage
 		assert( list.size() == 3 );
 
-		item = Integer list.at(0);
+		Integer item = Integer list.at(0);
 		assert( item == 664 );
 
 		item = Integer list.at(1);
@@ -95,16 +82,9 @@ private bool TestCase3() const {
 		List list = new List();
 
 		// Setup
-		Integer item;
-
-		item = new Integer(664);
-		list.push_back(Object item);
-
-		item = new Integer(173);
-		list.push_back(Object item);
-
-		item = new Integer(1389);
-		list.push_back(Object item);
+		list.push_back(Object new Integer(664));
+		list.push_back(Object new Integer(173));
+		list.push_back(Object new Integer(1389));
 
 		// Usage
 		assert( list.size() == 3 );
@@ -113,7 +93,7 @@ private bool TestCase3() const {
 
 		assert( list.size() == 2 );
 
-		item = Integer list.at(0);
+		Integer item = Integer list.at(0);
 		assert( item == 173 );
 
 		item = Integer list.at(1);
@@ -148,16 +128,9 @@ private bool TestCase4() const {
 		List list = new List();
 
 		// Setup
-		Integer item;
-
-		item = new Integer(664);
-		list.push_back(Object item);
-
-		item = new Integer(173);
-		list.push_back(Object item);
-
-		item = new Integer(1389);
-		list.push_back(Object item);
+		list.push_back(Object new Integer(664));
+		list.push_back(Object new Integer(173));
+		list.push_back(Object new Integer(1389));
 
 		// Usage
 		assert( list.size() == 3 );
@@ -166,7 +139,7 @@ private bool TestCase4() const {
 
 		assert( list.size() == 2 );
 
-		item = Integer list.at(0);
+		Integer item = Integer list.at(0);
 		assert( item == 664 );
 
 		item = Integer list.at(1);
@@ -199,19 +172,16 @@ private bool TestCase5() const {
 
 	try {
 		List list = new List();
+		assert( list );
+
+		list.push_back(Object new Integer(1));
+		list.push_back(Object new Integer(2));
+		list.push_back(Object new Integer(3));
+
+		assert( !list.empty() );
+		assert( list.size() == 3 );
 
 		Integer item;
-
-		item = new Integer(1);
-		list.push_back(Object item);
-
-		item = new Integer(2);
-		list.push_back(Object item);
-
-		item = new Integer(3);
-		list.push_back(Object item);
-
-		assert( list.size() == 3 );
 
 		Iterator it = list.getIterator();
 		while ( it.hasNext() ) {
@@ -233,6 +203,30 @@ private bool TestCase5() const {
 
 		assert( list.empty() );
 		assert( list.size() == 0 );
+
+		return true;
+	}
+
+	return false;
+}
+
+private bool TestCase6() {
+	print("TestCase 6: generic List");
+
+	try {
+		List<int> list = new List<int>();
+		assert( list );
+
+		list.push_back(1);
+		list.push_back(2);
+		list.push_back(3);
+
+		assert( !list.empty() );
+		assert( list.size() == 3 );
+
+		foreach ( int i : list ) {
+			print(i);
+		}
 
 		return true;
 	}

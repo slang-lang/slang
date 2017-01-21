@@ -7,7 +7,7 @@
 #include <map>
 #include <set>
 #include <string>
-//#include <unordered_map>
+#include <unordered_map>
 //#include <unordered_set>
 
 // Project includes
@@ -22,10 +22,10 @@
 namespace ObjectiveScript {
 
 // Forward declarations
-class Symbol;
-namespace Runtime {
+namespace Common {
 	class Method;
 }
+class Symbol;
 
 class SymbolScope : public IScope
 {
@@ -71,17 +71,17 @@ private:
 class MethodScope : public NamedScope
 {
 public:
-	typedef std::set<Runtime::Method*> MethodCollection;
-	//typedef std::unordered_set<Runtime::Method*> MethodCollection;
+	typedef std::set<Common::Method*> MethodCollection;
+	//typedef std::unordered_set<Common::Method*> MethodCollection;
 
 public:
 	MethodScope(const std::string& name, IScope* parent = 0);
 	virtual ~MethodScope();
 
 public:
-	virtual void defineMethod(const std::string& name, Runtime::Method* method);
+	virtual void defineMethod(const std::string& name, Common::Method* method);
 	virtual MethodSymbol* resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope = false, Visibility::E visibility = Visibility::Designtime) const;
-	virtual void undefineMethod(Runtime::Method* method);
+	virtual void undefineMethod(Common::Method* method);
 
 protected:
 	MethodCollection mMethods;

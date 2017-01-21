@@ -8,6 +8,7 @@
 #include <Core/AST/TreeInterpreter.h>
 #include <Core/BuildInObjects/VoidObject.h>
 #include <Core/Common/Exceptions.h>
+#include <Core/Common/Method.h>
 #include <Core/Defines.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/VirtualMachine/Controller.h>
@@ -231,7 +232,7 @@ ControlFlow::E Object::Constructor(const ParameterList& params)
 	Symbol *symbol = resolve(RESERVED_WORD_CONSTRUCTOR, true, Visibility::Private);
 	if ( symbol ) {
 		// if a specialized constructor is implemented, the default constructor cannot be used
-		Method *constructor = dynamic_cast<Method*>(resolveMethod(RESERVED_WORD_CONSTRUCTOR, params, true, Visibility::Private));
+		Common::Method *constructor = dynamic_cast<Common::Method*>(resolveMethod(RESERVED_WORD_CONSTRUCTOR, params, true, Visibility::Private));
 		if ( constructor ) {
 			VoidObject tmp;
 
@@ -262,9 +263,7 @@ ControlFlow::E Object::Constructor(const ParameterList& params)
 	// check if all base objects have been constructed correctly
 	for ( Inheritance::iterator it = mInheritance.begin(); it != mInheritance.end(); ++it ) {
 		if ( !it->second->mIsConstructed ) {
-			System::Print("C++ (Constructor): " + getName() + "::" + QualifiedTypename() + "()");
-
-			throw Common::Exceptions::Exception(getName() + "::" + QualifiedTypename() + "(): not all base objects have been constructed correctly");
+			throw Common::Exceptions::Exception(getName() + "." + QualifiedTypename() + "(): not all base objects have been constructed correctly");
 		}
 	}
 */
@@ -308,18 +307,41 @@ void Object::copy(const Object& other)
 				Object* target = Controller::Instance().repository()->createInstance(source->QualifiedTypename(), source->getName(), PrototypeConstraints());
 				target->copy(*source);
 
-				define(target->getName(), target);
+				defineMember(target->getName(), target);
 			}
 
 			// register new methods
 			for ( MethodCollection::const_iterator it = other.mMethods.begin(); it != other.mMethods.end(); ++it ) {
-				Method *method = new Method(this, (*it)->getName(), (*it)->QualifiedTypename());
+				// create new method and ...
+				Common::Method* method = new Common::Method(this, (*it)->getName(), (*it)->QualifiedTypename());
+				// ... copy its data from our template method
 				*method = *(*it);
 
 				defineMethod((*it)->getName(), method);
 			}
 		}
 	}
+}
+
+void Object::defineMember(const std::string& name, Symbol* symbol)
+{
+	SymbolScope::define(name, symbol);
+}
+
+void Object::defineMethod(const std::string& name, Common::Method* method)
+{
+	// try to override abstract methods a.k.a. implement an interface method
+	Common::Method* old = static_cast<Common::Method*>(resolveMethod(method->getName(), method->provideSignature(), true, Visibility::Designtime));
+	if ( old && old->isAbstract() ) {
+		Runtime::Object* base = dynamic_cast<Runtime::Object*>(resolve(IDENTIFIER_BASE, true, Visibility::Designtime));
+		base->undefineMethod(old);
+
+		delete old;
+	}
+
+	MethodScope::defineMethod(name, method);
+
+	method->initialize();
 }
 
 ControlFlow::E Object::Destructor()
@@ -330,7 +352,7 @@ ControlFlow::E Object::Destructor()
 		ParameterList params;
 
 		// only execute destructor if one is present
-		Method *destructor = static_cast<Method*>(resolveMethod(RESERVED_WORD_DESTRUCTOR, params, true, Visibility::Private));
+		Common::Method *destructor = static_cast<Common::Method*>(resolveMethod(RESERVED_WORD_DESTRUCTOR, params, true, Visibility::Private));
 		if ( destructor ) {
 			VoidObject tmp;
 
@@ -377,7 +399,7 @@ ControlFlow::E Object::execute(Object *result, const std::string& name, const Pa
 		throw Runtime::Exceptions::NullPointerException("executed method '" + name + "' of uninitialized object '" + QualifiedTypename() + "'");
 	}
 
-	Method *method = static_cast<Method*>(resolveMethod(name, params, false, Visibility::Private));
+	Common::Method *method = static_cast<Common::Method*>(resolveMethod(name, params, false, Visibility::Private));
 	if ( !method ) {
 		throw Common::Exceptions::UnknownIdentifer("unknown method '" + QualifiedTypename() + "." + name + "' or method with invalid parameter count called!");
 	}
@@ -459,6 +481,11 @@ AtomicValue Object::getValue() const
 	return mValue;
 }
 
+void Object::initialize()
+{
+	// nothing to do here atm
+}
+
 bool Object::isAbstract() const
 {
 	if ( mThis != this ) {
@@ -533,7 +560,7 @@ void Object::operator_array(const Object *index, Object* result)
 	::ObjectiveScript::MethodSymbol* opMethod = resolveMethod("operator[]", params, false, Visibility::Public);
 	if ( opMethod ) {
 		Interpreter interpreter;
-		interpreter.execute(static_cast<Method*>(opMethod), params, result);
+		interpreter.execute(static_cast<Common::Method*>(opMethod), params, result);
 		return;
 	}
 
@@ -555,7 +582,7 @@ void Object::operator_assign(const Object *other)
 		Object tmp;
 
 		Interpreter interpreter;
-		interpreter.execute(static_cast<Method*>(value_operator), params, &tmp);
+		interpreter.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
 
 		operator_assign(&tmp);
 		return;
@@ -581,7 +608,7 @@ void Object::operator_bitand(const Object *other)
 		Object tmp;
 
 		Interpreter interpreter;
-		interpreter.execute(static_cast<Method*>(value_operator), params, &tmp);
+		interpreter.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
 
 		operator_bitand(&tmp);
 		return;
@@ -607,7 +634,7 @@ void Object::operator_bitcomplement(const Object *other)
 		Object tmp;
 
 		Interpreter interpreter;
-		interpreter.execute(static_cast<Method*>(value_operator), params, &tmp);
+		interpreter.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
 
 		operator_bitcomplement(&tmp);
 		return;
@@ -633,7 +660,7 @@ void Object::operator_bitor(const Object *other)
 		Object tmp;
 
 		Interpreter interpreter;
-		interpreter.execute(static_cast<Method*>(value_operator), params, &tmp);
+		interpreter.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
 
 		operator_bitor(&tmp);
 		return;
@@ -664,7 +691,7 @@ void Object::operator_divide(const Object *other)
 		Object tmp;
 
 		Interpreter interpreter;
-		interpreter.execute(static_cast<Method*>(value_operator), params, &tmp);
+		interpreter.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
 
 		operator_divide(&tmp);
 		return;
@@ -694,7 +721,7 @@ bool Object::operator_equal(const Object *other)
 		Object tmp;
 
 		Interpreter interpreter;
-		interpreter.execute(static_cast<Method*>(value_operator), params, &tmp);
+		interpreter.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
 
 		return operator_equal(&tmp);
 	}
@@ -719,7 +746,7 @@ bool Object::operator_greater(const Object *other)
 		Object tmp;
 
 		Interpreter interpreter;
-		interpreter.execute(static_cast<Method*>(value_operator), params, &tmp);
+		interpreter.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
 
 		return operator_greater(&tmp);
 	}
@@ -744,7 +771,7 @@ bool Object::operator_greater_equal(const Object *other)
 		Object tmp;
 
 		Interpreter interpreter;
-		interpreter.execute(static_cast<Method*>(value_operator), params, &tmp);
+		interpreter.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
 
 		return operator_greater_equal(&tmp);
 	}
@@ -782,7 +809,7 @@ bool Object::operator_less(const Object *other)
 		Object tmp;
 
 		Interpreter interpreter;
-		interpreter.execute(static_cast<Method*>(value_operator), params, &tmp);
+		interpreter.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
 
 		return operator_less(&tmp);
 	}
@@ -807,7 +834,7 @@ bool Object::operator_less_equal(const Object *other)
 		Object tmp;
 
 		Interpreter interpreter;
-		interpreter.execute(static_cast<Method*>(value_operator), params, &tmp);
+		interpreter.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
 
 		return operator_less_equal(&tmp);
 	}
@@ -832,7 +859,7 @@ void Object::operator_modulo(const Object *other)
 		Object tmp;
 
 		Interpreter interpreter;
-		interpreter.execute(static_cast<Method*>(value_operator), params, &tmp);
+		interpreter.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
 
 		operator_modulo(&tmp);
 		return;
@@ -858,7 +885,7 @@ void Object::operator_multiply(const Object *other)
 		Object tmp;
 
 		Interpreter interpreter;
-		interpreter.execute(static_cast<Method*>(value_operator), params, &tmp);
+		interpreter.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
 
 		operator_multiply(&tmp);
 		return;
@@ -884,7 +911,7 @@ void Object::operator_plus(const Object *other)
 		Object tmp;
 
 		Interpreter interpreter;
-		interpreter.execute(static_cast<Method*>(value_operator), params, &tmp);
+		interpreter.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
 
 		operator_plus(&tmp);
 		return;
@@ -910,7 +937,7 @@ void Object::operator_subtract(const Object *other)
 		Object tmp;
 
 		Interpreter interpreter;
-		interpreter.execute(static_cast<Method*>(value_operator), params, &tmp);
+		interpreter.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
 
 		operator_subtract(&tmp);
 		return;
@@ -1052,9 +1079,9 @@ std::string Object::ToString(unsigned int indent) const
 	std::string result;
 	result += ::Utils::Tools::indent(indent);
 	result += Visibility::convert(mVisibility);
-	result += " " + LanguageFeatureState::convert(mLanguageFeatureState);
+	//result += " " + LanguageFeatureState::convert(mLanguageFeatureState);
 	result += " " + QualifiedTypename() + " " + getName();
-//	result += " " + Mutability::convert(mMutability);
+	result += " " + Mutability::convert(mMutability);
 
 	if ( isAtomicType() ) {
 		result += " = " + getValue().toStdString();
@@ -1063,18 +1090,30 @@ std::string Object::ToString(unsigned int indent) const
 		result += " = null";
 	}
 	else {
-		result += "{\n";
+		result += " {\n";
 
+/*
 		for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
 			result += (*it)->ToString(indent + 1) + "\n";
 		}
+*/
 
 		for ( Symbols::const_iterator it = mSymbols.begin(); it != mSymbols.end(); ++it ) {
-			if ( it->first == IDENTIFIER_THIS || !it->second || it->second->getSymbolType() != Symbol::IType::ObjectSymbol ) {
+			if ( it->first == IDENTIFIER_THIS || !it->second ) {
 				continue;
 			}
 
-			result += it->second->ToString(indent + 1) + "\n";
+			switch ( it->second->getSymbolType() ) {
+				case Symbol::IType::BluePrintEnumSymbol:
+				case Symbol::IType::BluePrintObjectSymbol:
+				case Symbol::IType::MethodSymbol:
+				case Symbol::IType::NamespaceSymbol:
+				case Symbol::IType::UnknownSymbol:
+					continue;
+				case Symbol::IType::ObjectSymbol:
+					result += it->second->ToString(indent + 1) + "\n";
+					break;
+			}
 		}
 
 		result += ::Utils::Tools::indent(indent) + "}";

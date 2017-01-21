@@ -24,9 +24,10 @@ namespace ObjectiveScript {
 // Forward declarations
 class MethodScope;
 class Repository;
-
-namespace Runtime {
+namespace Common {
 	class Namespace;
+}
+namespace Runtime {
 	class Object;
 }
 
@@ -102,7 +103,7 @@ private: // Execution
 
 	MethodScope* getEnclosingMethodScope(IScope *scope = 0) const;
 	NamedScope* getEnclosingNamedScope(IScope *scope = 0) const;
-	Runtime::Namespace* getEnclosingNamespace(IScope* scope = 0) const;
+	Common::Namespace* getEnclosingNamespace(IScope* scope = 0) const;
 	Runtime::Object* getEnclosingObject(IScope* scope = 0) const;
 
 private:

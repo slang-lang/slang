@@ -5,7 +5,8 @@ SET(SOURCES
 	Memory.cpp
 	Repository.cpp
 	Stack.cpp
-	StackLevel.cpp
+	StackFrame.cpp
+	Threads.cpp
 	VirtualMachine.cpp
 	VirtualMethodTable.cpp
 )
@@ -15,7 +16,8 @@ SET(HEADERS
 	Memory.h
 	Repository.h
 	Stack.h
-	StackLevel.h
+	StackFrame.h
+	Threads.h
 	VirtualMachine.h
 	VirtualMethodTable.h
 )

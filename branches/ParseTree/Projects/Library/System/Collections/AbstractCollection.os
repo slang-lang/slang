@@ -7,7 +7,7 @@ public namespace System.Collections { }
 /*
  * Double linked collection item
  */
-public object CollectionItem {
+private object CollectionItem {
 	public CollectionItem mNext;
 	public CollectionItem mPrevious;
 	public Object mValue;
@@ -42,8 +42,8 @@ public object CollectionItem {
 }
 
 /*
-	* Abstract base for collections
-	*/
+ * Abstract base for collections
+ */
 public abstract object AbstractCollection implements IIterateable {
 	protected CollectionItem mFirst;
 	protected CollectionItem mLast;
@@ -52,6 +52,7 @@ public abstract object AbstractCollection implements IIterateable {
 	public void Constructor() {
 		mSize = 0;
 	}
+
 	public void Destructor() {
 		clear();
 	}
@@ -86,6 +87,14 @@ public abstract object AbstractCollection implements IIterateable {
 		return mSize == 0;
 	}
 
+	public Object first() const {
+		if ( !mSize ) {
+			throw new OutOfBoundsException("empty collection");
+		}
+
+		return mFirst.mValue;
+	}
+
 	public Iterator getIterator() const {
 		return new Iterator(AbstractCollection this);
 	}
@@ -94,8 +103,17 @@ public abstract object AbstractCollection implements IIterateable {
 		return new ReverseIterator(AbstractCollection this);
 	}
 
+	public Object last() const {
+		if ( !mSize ) {
+			throw new OutOfBoundsException("empty collection");
+		}
+
+		return mLast.mValue;
+	}
+
 	public int indexOf(Object value ref) const {
 		CollectionItem item = mFirst;
+
 		for ( int i = 0; i < mSize; i = i++ ) {
 			if ( item.mValue == value ) {
 				return i;
@@ -113,6 +131,10 @@ public abstract object AbstractCollection implements IIterateable {
 
 	public Object operator[](int index) const throws {
 		return at(index);
+	}
+
+	public string =operator(string none) const {
+		return string mSize;
 	}
 }
 

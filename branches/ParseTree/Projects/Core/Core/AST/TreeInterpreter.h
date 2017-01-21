@@ -26,9 +26,11 @@ namespace ObjectiveScript {
 
 // Forward declarations
 class Repository;
-namespace Runtime {
+namespace Common {
 	class Method;
 	class Namespace;
+}
+namespace Runtime {
 	class Object;
 }
 
@@ -45,7 +47,7 @@ public:
 	~TreeInterpreter();
 
 public: // Execution
-	Runtime::ControlFlow::E execute(Runtime::Method* method, const ParameterList& params, Runtime::Object* result);
+	Runtime::ControlFlow::E execute(Common::Method* method, const ParameterList& params, Runtime::Object* result);
 
 private:
 	void process(Statements* statements);
@@ -77,7 +79,7 @@ private:
 private:
 	MethodScope* getEnclosingMethodScope(IScope *scope = 0) const;
 	NamedScope* getEnclosingNamedScope(IScope *scope = 0) const;
-	Runtime::Namespace* getEnclosingNamespace(IScope* scope = 0) const;
+	Common::Namespace* getEnclosingNamespace(IScope* scope = 0) const;
 	Runtime::Object* getEnclosingObject(IScope* scope = 0) const;
 
 	inline Symbol* identify(TokenIterator& token) const;

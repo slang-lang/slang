@@ -1,9 +1,9 @@
 #!/usr/local/bin/oscript
 
-import System.All;
+import System.IO.File;
 
 public void Main(int argc, string argv) {
-	System.IO.File file = new System.IO.File("file.complex", "ctw");
+	System.IO.File file = new System.IO.File("file.complex", "wb");
 	assert( file.isOpen() );
 
 	assert( writeFile() );
@@ -51,7 +51,7 @@ private bool writeFile() const {
 	int result = 0;
 
 	try {
-		fd = fopen("file.complex", "ctw");
+		fd = fopen("file.complex", "wb");
 
 		fwriteb(fd, true);	// write bool
 		fwrited(fd, 173.1389d); // write double

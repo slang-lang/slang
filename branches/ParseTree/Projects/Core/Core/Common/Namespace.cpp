@@ -5,13 +5,15 @@
 // Library includes
 
 // Project includes
-#include <Core/Method.h>
+#include <Tools/Strings.h>
+#include <Utils.h>
+#include "Method.h"
 
 // Namespace declarations
 
 
 namespace ObjectiveScript {
-namespace Runtime {
+namespace Common {
 
 
 Namespace::Namespace(const std::string& name, IScope* parent)
@@ -54,31 +56,50 @@ Namespace::~Namespace()
 	}
 }
 
+void Namespace::defineMethod(const std::string& name, Common::Method* method)
+{
+	MethodScope::defineMethod(name, method);
+
+	method->initialize();
+}
+
+void Namespace::initialize()
+{
+	// nothing to do here atm
+}
+
 std::string Namespace::ToString(unsigned int indent) const
 {
-	std::string result = Visibility::convert(mVisibility) + " " + RESERVED_WORD_NAMESPACE + " " + getName();
+	std::string result;
 
+	result += ::Utils::Tools::indent(indent);
+	result += Visibility::convert(mVisibility);
+	//result += " " + LanguageFeatureState::convert(mLanguageFeatureState);
+	result += " " + std::string(RESERVED_WORD_NAMESPACE) + " " + getName();
+	result += " " + Mutability::convert(mMutability);
 	result += " {\n";
 
+/*
 	for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
 		result += "\t" + (*it)->ToString(indent) + "\n";
 	}
+*/
 
 	for ( Symbols::const_iterator it = mSymbols.begin(); it != mSymbols.end(); ++it ) {
 		switch ( it->second->getSymbolType() ) {
 			case Symbol::IType::BluePrintEnumSymbol:
 			case Symbol::IType::BluePrintObjectSymbol:
+			case Symbol::IType::MethodSymbol:
 			case Symbol::IType::UnknownSymbol:
 				continue;
-			case Symbol::IType::MethodSymbol:
 			case Symbol::IType::NamespaceSymbol:
 			case Symbol::IType::ObjectSymbol:
-				result += "\t" + it->second->ToString(indent) + "\n";
+				result += it->second->ToString(indent + 1) + "\n";
 				break;
 		}
 	}
 
-	result += "}";
+	result += ::Utils::Tools::indent(indent) + "}";
 
 	return result;
 }

@@ -6,6 +6,7 @@
 
 // Project includes
 #include <Core/Common/Exceptions.h>
+#include <Core/Common/Method.h>
 #include <Core/Tools.h>
 
 // Namespace declarations
@@ -60,7 +61,7 @@ void UserObject::operator_assign(const Object *other)
 		::ObjectiveScript::MethodSymbol* operator_method = resolveMethod("operator=", params, true, Visibility::Private);
 		if ( operator_method ) {
 			Interpreter interpreter;
-			interpreter.execute(static_cast<Method*>(operator_method), params, mThis);
+			interpreter.execute(static_cast<Common::Method*>(operator_method), params, mThis);
 
 			return;
 		}
@@ -72,7 +73,7 @@ void UserObject::operator_assign(const Object *other)
 	::ObjectiveScript::MethodSymbol* operator_method = other->resolveMethod("=operator", params, true, Visibility::Public);
 	if ( operator_method ) {
 		Interpreter interpreter;
-		interpreter.execute(static_cast<Method*>(operator_method), params, mThis);
+		interpreter.execute(static_cast<Common::Method*>(operator_method), params, mThis);
 
 		return;
 	}

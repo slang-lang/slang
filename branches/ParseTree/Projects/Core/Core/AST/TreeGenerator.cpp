@@ -12,10 +12,11 @@
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/BuildInObjects/VoidObject.h>
 #include <Core/Common/Exceptions.h>
+#include <Core/Common/Method.h>
+#include <Core/Common/Namespace.h>
 #include <Core/Designtime/BluePrintEnum.h>
 #include <Core/Designtime/Parser/Parser.h>
 #include <Core/Runtime/Exceptions.h>
-#include <Core/Runtime/Namespace.h>
 #include <Core/Runtime/OperatorOverloading.h>
 #include <Core/Runtime/TypeCast.h>
 #include <Core/Tools.h>
@@ -116,7 +117,7 @@ NamedScope* TreeGenerator::getEnclosingNamedScope(IScope *scope) const
 	return 0;
 }
 
-Runtime::Namespace* TreeGenerator::getEnclosingNamespace(IScope* scope) const
+Common::Namespace* TreeGenerator::getEnclosingNamespace(IScope* scope) const
 {
 	if ( !scope ) {
 		scope = getScope();
@@ -126,7 +127,7 @@ Runtime::Namespace* TreeGenerator::getEnclosingNamespace(IScope* scope) const
 		IScope* parent = scope->getEnclosingScope();
 
 		if ( parent && parent->getScopeType() == IScope::IType::MethodScope ) {
-			return dynamic_cast<Runtime::Namespace*>(parent);
+			return dynamic_cast<Common::Namespace*>(parent);
 		}
 
 		scope = parent;
@@ -159,14 +160,14 @@ Runtime::Object* TreeGenerator::getEnclosingObject(IScope* scope) const
 
 inline IScope* TreeGenerator::getScope() const
 {
-	StackLevel* stack = Controller::Instance().stack()->current();
+	StackFrame* stack = Controller::Instance().stack()->current();
 
 	return stack->getScope();
 }
 
 const TokenList& TreeGenerator::getTokens() const
 {
-	StackLevel* stack = Controller::Instance().stack()->current();
+	StackFrame* stack = Controller::Instance().stack()->current();
 
 	return stack->getTokens();
 }
@@ -186,7 +187,7 @@ inline Symbol* TreeGenerator::identify(TokenIterator& token) const
 			prev_identifier = identifier;
 
 			if ( !result ) {
-				Runtime::Namespace* space = getEnclosingNamespace();
+				Common::Namespace* space = getEnclosingNamespace();
 				if ( space ) {
 					result = getScope()->resolve(space->QualifiedTypename() + "." + identifier, onlyCurrentScope, Visibility::Private);
 				}
@@ -201,7 +202,7 @@ inline Symbol* TreeGenerator::identify(TokenIterator& token) const
 					result = dynamic_cast<Designtime::BluePrintObject*>(result)->resolve(identifier, onlyCurrentScope, Visibility::Public);
 					break;
 				case Symbol::IType::NamespaceSymbol:
-					result = dynamic_cast<Runtime::Namespace*>(result)->resolve(identifier, onlyCurrentScope, Visibility::Public);
+					result = dynamic_cast<Common::Namespace*>(result)->resolve(identifier, onlyCurrentScope, Visibility::Public);
 					break;
 				case Symbol::IType::ObjectSymbol:
 					result = dynamic_cast<Runtime::Object*>(result)->resolve(identifier, onlyCurrentScope,
@@ -262,7 +263,7 @@ Symbol* TreeGenerator::identifyMethod(TokenIterator& token, const ParameterList&
 					result = dynamic_cast<Designtime::BluePrintObject*>(result)->resolveMethod(identifier, params, true, Visibility::Public);
 					break;
 				case Symbol::IType::NamespaceSymbol:
-					result = dynamic_cast<Runtime::Namespace*>(result)->resolveMethod(identifier, params, true, Visibility::Public);
+					result = dynamic_cast<Common::Namespace*>(result)->resolveMethod(identifier, params, true, Visibility::Public);
 					break;
 				case Symbol::IType::ObjectSymbol:
 					result = dynamic_cast<Runtime::Object*>(result)->resolveMethod(identifier, params, true,
@@ -461,7 +462,7 @@ Node* TreeGenerator::parseTerm(TokenIterator& start)
 
 void TreeGenerator::popTokens()
 {
-	StackLevel* stack = Controller::Instance().stack()->current();
+	StackFrame* stack = Controller::Instance().stack()->current();
 
 	stack->popTokens();
 }
@@ -1086,7 +1087,7 @@ Statement* TreeGenerator::process_switch(TokenIterator& token)
 Statement* TreeGenerator::process_throw(TokenIterator& token)
 {
 	// check if our parent scope is a method that is allowed to throw exceptions
-	Runtime::Method* method = dynamic_cast<Runtime::Method*>(getEnclosingMethodScope());
+	Common::Method* method = dynamic_cast<Common::Method*>(getEnclosingMethodScope());
 	if ( method && !method->throws() ) {
 		// this method is not marked as 'throwing', so we can't throw exceptions here
 		OSwarn(std::string(method->getFullScopeName() + " throws although it is not marked with 'throws' in " + token->position().toString()).c_str());
@@ -1258,7 +1259,7 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token)
 
 	++token;
 
-	PrototypeConstraints constraints = Designtime::Parser::collectPrototypeConstraints(token);
+	PrototypeConstraints constraints = Designtime::Parser::collectRuntimePrototypeConstraints(token);
 
 	std::string name = token->content();
 
@@ -1354,7 +1355,7 @@ Statement* TreeGenerator::process_while(TokenIterator& token)
 
 void TreeGenerator::pushTokens(const TokenList& tokens)
 {
-	StackLevel* stack = Controller::Instance().stack()->current();
+	StackFrame* stack = Controller::Instance().stack()->current();
 
 	stack->pushTokens(tokens);
 }

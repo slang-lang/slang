@@ -5,8 +5,12 @@ import System.Exception;
 public namespace System.Collections { }
 
 public object Set extends AbstractCollection {
-	public void Constructor() {
+	private bool mAllowDuplicates;
+
+	public void Constructor(bool allowDuplicates = false) {
 		base.Constructor();
+
+		mAllowDuplicates = allowDuplicates;
 	}
 
 	public void erase(int index) modify throws {
@@ -56,6 +60,14 @@ public object Set extends AbstractCollection {
 
 				previous = tmp;
 				tmp = tmp.mNext;
+			}
+
+			if ( !mAllowDuplicates ) {
+				if ( previous.mNext ) {
+					if ( item == previous.mNext ) {
+						throw Exception("duplicate item");
+					}
+				}
 			}
 
 			item.mNext = previous.mNext;

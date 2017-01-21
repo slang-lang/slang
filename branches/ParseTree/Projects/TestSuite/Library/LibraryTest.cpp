@@ -39,6 +39,9 @@ void LibraryTest::process()
 	TEST(testSystemCollectionsDoubleLinkedList);
 	TEST(testSystemCollectionsIterator);
 	TEST(testSystemCollectionsList);
+	TEST(testSystemCollectionsMap);
+	TEST(testSystemCollectionsPair);
+	TEST(testSystemCollectionsQueue);
 	TEST(testSystemCollectionsSet);
 	TEST(testSystemCollectionsStack);
 	TEST(testSystemCollectionsVector);
@@ -106,6 +109,48 @@ void LibraryTest::testSystemCollectionsList()
 	try {
 		VirtualMachine vm;
 		vm.createScriptFromFile("Tests/Library/System/Collections/ListTest.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed
+		TFAIL(e.what());
+	}
+}
+
+void LibraryTest::testSystemCollectionsMap()
+{
+	try {
+		VirtualMachine vm;
+		vm.createScriptFromFile("Tests/Library/System/Collections/MapTest.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed
+		TFAIL(e.what());
+	}
+}
+
+void LibraryTest::testSystemCollectionsPair()
+{
+	try {
+		VirtualMachine vm;
+		vm.createScriptFromFile("Tests/Library/System/Collections/PairTest.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed
+		TFAIL(e.what());
+	}
+}
+
+void LibraryTest::testSystemCollectionsQueue()
+{
+	try {
+		VirtualMachine vm;
+		vm.createScriptFromFile("Tests/Library/System/Collections/QueueTest.os");
 
 		// automatic success
 	}

@@ -277,11 +277,6 @@ void FloatObject::operator_unary_not()
 	mValue = (float)!mValue.toFloat();
 }
 
-std::string FloatObject::ToString(unsigned int indent) const
-{
-	return ::Utils::Tools::indent(indent) + QualifiedTypename() + " " + getName() + " = " + mValue.toStdString();
-}
-
 
 }
 }

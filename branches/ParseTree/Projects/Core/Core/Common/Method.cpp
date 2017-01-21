@@ -6,9 +6,8 @@
 
 // Project includes
 #include <Core/AST/Statement.h>
+#include <Core/Designtime/Parser/Parser.h>
 #include <Core/Runtime/Exceptions.h>
-#include <Core/Runtime/OperatorOverloading.h>
-#include <Core/Runtime/TypeCast.h>
 #include <Core/VirtualMachine/Controller.h>
 #include <Debugger/Debugger.h>
 #include <Tools/Strings.h>
@@ -18,14 +17,14 @@
 
 
 namespace ObjectiveScript {
-namespace Runtime {
+namespace Common {
 
 
 Method::Method(IScope* parent, const std::string& name, const std::string& type)
 : NamedScope(name, parent),
   MethodSymbol(name),
   mIsExtensionMethod(false),
-  mQualifiedTypename(type),
+  mReturnType(TypeDeclaration(type)),
   mRootNode(0)
 {
 }
@@ -100,8 +99,7 @@ Method& Method::operator= (const Method& other)
 		mLanguageFeatureState = other.mLanguageFeatureState;
 		mMethodType = other.mMethodType;
 		mMutability = other.mMutability;
-		mPrototypeConstraints = other.mPrototypeConstraints;
-		mQualifiedTypename = other.mQualifiedTypename;
+		mReturnType = other.mReturnType;
 		mScopeName = other.mScopeName;
 		mScopeType = other.mScopeType;
 		mSignature = other.mSignature;
@@ -113,14 +111,47 @@ Method& Method::operator= (const Method& other)
 	return *this;
 }
 
-ControlFlow::E Method::execute(const ParameterList& /*params*/, Object* /*result*/, const Token& token)
+Runtime::ControlFlow::E Method::execute(const ParameterList& /*params*/, Runtime::Object* /*result*/, const Token& token)
 {
 	throw Common::Exceptions::NotSupported("executing methods directly is not supported!", token.position());
+}
+
+const PrototypeConstraints& Method::getPrototypeConstraints() const
+{
+	return mReturnType.mConstraints;
 }
 
 AST::Statements* Method::getRootNode() const
 {
 	return mRootNode;
+}
+
+const TokenList& Method::getTokens() const
+{
+	return mTokens;
+}
+
+void Method::initialize()
+{
+	// reset qualified typename if prototype constraints are present
+	if ( mReturnType.mConstraints.size() ) {
+		mReturnType.mName = Designtime::Parser::buildRuntimeConstraintTypename(mReturnType.mName, mReturnType.mConstraints);
+		mReturnType.mConstraints = PrototypeConstraints();
+	}
+
+	// update parameter types
+	for ( ParameterList::iterator it = mSignature.begin(); it != mSignature.end(); ++it ) {
+		if ( (*it).typeConstraints().size() ) {
+			(*it) = Parameter::CreateDesigntime(
+					(*it).name(),
+					TypeDeclaration(Designtime::Parser::buildRuntimeConstraintTypename((*it).type(), (*it).typeConstraints())),
+					(*it).value(),
+					(*it).hasDefaultValue(),
+					(*it).isConst(),
+					(*it).access()
+			);
+		}
+	}
 }
 
 bool Method::isExtensionMethod() const
@@ -180,17 +211,21 @@ bool Method::isSignatureValid(const ParameterList& params) const
 
 ParameterList Method::mergeParameters(const ParameterList& params) const
 {
+	if ( !isSignatureValid(params) ) {
+		throw Common::Exceptions::ParameterCountMissmatch("incorrect number or type of parameters");
+	}
+
 	ParameterList result;
 
 	ParameterList::const_iterator paramIt = params.begin();
 	ParameterList::const_iterator sigIt = mSignature.begin();
 
 	Reference ref;
-	AtomicValue value;
+	Runtime::AtomicValue value;
 
 	for ( ; sigIt != mSignature.end(); ++sigIt ) {
 		// initialize parameter with default value
-		ref = sigIt->reference();
+		//ref = sigIt->reference();
 		value = sigIt->value();
 
 		if ( paramIt != params.end() ) {
@@ -202,8 +237,8 @@ ParameterList Method::mergeParameters(const ParameterList& params) const
 			++paramIt;
 		}
 
-		result.push_back(Parameter::CreateDesigntime(
-			sigIt->name(), sigIt->type(), value, sigIt->hasDefaultValue(), sigIt->isConst(), sigIt->access(), ref
+		result.push_back(Parameter(
+			sigIt->name(), TypeDeclaration(sigIt->type()), value, sigIt->hasDefaultValue(), sigIt->isConst(), sigIt->access(), ref
 		));
 	}
 
@@ -215,20 +250,9 @@ const ParameterList& Method::provideSignature() const
 	return mSignature;
 }
 
-Symbol* Method::resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope) const
+const std::string& Method::QualifiedTypename() const
 {
-	if ( mMethodType != MethodType::Function ) {
-		switch ( mParent->getScopeType() ) {
-			case IScope::IType::MethodScope:
-				return static_cast<MethodScope*>(mParent)->resolveMethod(name, params, onlyCurrentScope);
-			case IScope::IType::NamedScope:
-			case IScope::IType::SymbolScope:
-			case IScope::IType::UnknownScope:
-				throw Common::Exceptions::Exception("invalid/unknown scope type detected!");
-		}
-	}
-
-	return SymbolScope::resolve(name, onlyCurrentScope);
+	return mReturnType.mName;
 }
 
 void Method::setParent(IScope *scope)
@@ -238,7 +262,12 @@ void Method::setParent(IScope *scope)
 
 void Method::setPrototypeConstraints(const PrototypeConstraints& constraints)
 {
-	mPrototypeConstraints = constraints;
+	mReturnType.mConstraints = constraints;
+}
+
+void Method::setQualifiedTypename(const std::string& type)
+{
+	mReturnType.mName = type;
 }
 
 void Method::setRootNode(AST::Statements* node)
@@ -262,7 +291,7 @@ std::string Method::ToString(unsigned int indent) const
 
 	result += ::Utils::Tools::indent(indent);
 	result += Visibility::convert(mVisibility);
-	result += " " + LanguageFeatureState::convert(mLanguageFeatureState);
+	//result += " " + LanguageFeatureState::convert(mLanguageFeatureState);
 	result += " " + QualifiedTypename() + " " + getName() + "(" + toString(mSignature) + ")";
 	result += " " + Mutability::convert(mMutability);
 	if ( isAbstract() ) {

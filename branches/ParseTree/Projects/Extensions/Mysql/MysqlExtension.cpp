@@ -8,6 +8,7 @@
 #include "MysqlAffectedRows.h"
 #include "MysqlClose.h"
 #include "MysqlDataSeek.h"
+#include "MysqlErrno.h"
 #include "MysqlError.h"
 #include "MysqlFieldCount.h"
 #include "MysqlFieldSeek.h"
@@ -26,6 +27,9 @@
 #include "MysqlQuery.h"
 #include "MysqlRealConnect.h"
 #include "MysqlRealEscapeString.h"
+#include "MysqlRowCount.h"
+#include "MysqlRowSeek.h"
+#include "MysqlRowTell.h"
 #include "MysqlSelectDB.h"
 #include "MysqlStat.h"
 #include "MysqlStoreResult.h"
@@ -51,6 +55,7 @@ void MysqlExtension::provideMethods(ExtensionMethods &methods)
 	methods.push_back(new MysqlAffectedRows());
 	methods.push_back(new MysqlClose());
 	methods.push_back(new MysqlDataSeek());
+	methods.push_back(new MysqlErrno());
 	methods.push_back(new MysqlError());
 	methods.push_back(new MysqlFieldCount());
 	methods.push_back(new MysqlFieldSeek());
@@ -70,6 +75,9 @@ void MysqlExtension::provideMethods(ExtensionMethods &methods)
 	methods.push_back(new MysqlQuery());
 	methods.push_back(new MysqlRealEscapeString());
 	methods.push_back(new MysqlRealConnect());
+	methods.push_back(new MysqlRowCount());
+	methods.push_back(new MysqlRowSeek());
+	methods.push_back(new MysqlRowTell());
 	methods.push_back(new MysqlSelectDB());
 	methods.push_back(new MysqlStat());
 	methods.push_back(new MysqlStoreResult());

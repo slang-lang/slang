@@ -5,11 +5,13 @@ public void Main(int argc, string argv) {
 	int result = 0;
 
 	try {
-		file = fopen("file.bool", "r");
+		file = fopen("file.bool", "rb");
 		writeln("handle: " + file);
 
 		bool result = freadb(file);
 		writeln("freadb = " + result);
+
+		assert( result == true );
 	}
 	catch {
 		writeln("error during fread");

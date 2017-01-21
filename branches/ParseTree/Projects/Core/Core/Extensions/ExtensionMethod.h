@@ -7,7 +7,7 @@
 #include <string>
 
 // Project includes
-#include <Core/Method.h>
+#include <Core/Common/Method.h>
 
 // Forward declarations
 
@@ -17,11 +17,11 @@
 namespace ObjectiveScript {
 
 
-class ExtensionMethod : public Runtime::Method
+class ExtensionMethod : public Common::Method
 {
 public:
 	ExtensionMethod(IScope* parent, const std::string& name, const std::string& type)
-	: Runtime::Method(parent, name, type)
+	: Common::Method(parent, name, type)
 	{
 		mIsExtensionMethod = true;
 	}

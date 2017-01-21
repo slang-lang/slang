@@ -29,15 +29,16 @@ VirtualMachine::VirtualMachine()
 
 VirtualMachine::~VirtualMachine()
 {
+	for ( ScriptCollection::iterator it = mScripts.begin(); it != mScripts.end(); ++it ) {
+		delete (*it);
+	}
+	mScripts.clear();
+
 	Controller::Instance().deinit();
 
 	for ( Extensions::ExtensionList::iterator it = mExtensions.begin(); it != mExtensions.end(); ++it ) {
 		delete (*it);
 	}
-	for ( ScriptCollection::iterator it = mScripts.begin(); it != mScripts.end(); ++it ) {
-		delete (*it);
-	}
-	mScripts.clear();
 }
 
 void VirtualMachine::addExtension(Extensions::AExtension *extension)
@@ -101,7 +102,7 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 	}
 
 	// Startup
-	Runtime::Method* main = dynamic_cast<Runtime::Method*>(Controller::Instance().stack()->globalScope()->resolveMethod("Main", params, false));
+	Common::Method* main = dynamic_cast<Common::Method*>(Controller::Instance().stack()->globalScope()->resolveMethod("Main", params, false));
 	if ( !main ) {
 		throw Common::Exceptions::Exception("could not resolve method 'Main(" + toString(params) + ")'");
 	}

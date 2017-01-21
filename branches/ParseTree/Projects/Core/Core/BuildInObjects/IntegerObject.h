@@ -74,10 +74,6 @@ public:	// Operators
 
 public: // Values
 	bool isValid() const;
-
-	std::string ToString(unsigned int indent) const;
-
-private:
 };
 
 

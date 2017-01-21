@@ -21,12 +21,16 @@
 namespace ObjectiveScript {
 
 // Forward declarations
+namespace Common {
+	class Namespace;
+}
+
+// Forward declarations
 class Repository;
 
 namespace Runtime {
 
 // Forward declarations
-class Namespace;
 class Object;
 
 
@@ -34,10 +38,10 @@ class Interpreter
 {
 public:
 	Interpreter();
-	virtual ~Interpreter();
+	~Interpreter();
 
 public: // Execution
-	ControlFlow::E execute(Method* method, const ParameterList& params, Object* result);
+	ControlFlow::E execute(Common::Method* method, const ParameterList& params, Object* result);
 
 private: // Execution
 	inline Symbol* identify(TokenIterator& token) const;
@@ -98,7 +102,7 @@ private: // Execution
 	ControlFlow::E interpret(const TokenList& tokens, Object* result);
 
 	NamedScope* getEnclosingNamedScope(IScope *scope = 0) const;
-	Namespace* getEnclosingNamespace(IScope* scope = 0) const;
+	Common::Namespace* getEnclosingNamespace(IScope* scope = 0) const;
 	Object* getEnclosingObject(IScope* scope = 0) const;
 
 private:

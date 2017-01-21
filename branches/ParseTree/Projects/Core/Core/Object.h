@@ -14,10 +14,10 @@
 #include <Core/Designtime/Ancestor.h>
 #include <Core/Designtime/BluePrintObject.h>
 #include <Core/Designtime/Parser/Token.h>
+#include <Core/Interfaces/IRuntimeType.h>
 #include <Core/Runtime/AtomicValue.h>
 #include <Core/Runtime/ControlFlow.h>
 #include "Interpreter.h"
-#include "Method.h"
 #include "Parameter.h"
 #include "Reference.h"
 #include "Scope.h"
@@ -40,7 +40,8 @@ namespace Runtime {
 class Method;
 
 class Object : public MethodScope,
-			   public ObjectSymbol
+			   public ObjectSymbol,
+			   public IRuntimeType
 {
 public:
 	Object();
@@ -53,12 +54,19 @@ public:
 	void assign(const Object& other, bool overrideType = false);
 	void copy(const Object& other);
 
+public: // MethodScope overrides
+	void defineMember(const std::string& name, Symbol* symbol);
+	void defineMethod(const std::string& name, Common::Method* method);
+
 public:	// Symbol::IType implementation & RTTI
 	const std::string& Filename() const { return mFilename; }
 	const std::string& QualifiedOuterface() const { return mQualifiedOuterface; }
 	const std::string& QualifiedTypename() const { return mQualifiedTypename; }
 
 	void setQualifiedOuterface(const std::string &type) { mQualifiedOuterface = type; }
+
+public: // IRuntimeType implementation
+	void initialize();
 
 public:	// Setup
 	void addInheritance(const Designtime::Ancestor& ancestor, Object* inheritance);

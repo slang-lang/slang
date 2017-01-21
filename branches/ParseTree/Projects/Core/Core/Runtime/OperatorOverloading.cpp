@@ -12,6 +12,7 @@
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/BuildInObjects/UserObject.h>
 #include <Core/BuildInObjects/VoidObject.h>
+#include <Core/Common/Method.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Tools.h>
 
@@ -24,7 +25,7 @@ namespace Runtime {
 
 void operator_binary_assign(Object *base, Object *other)
 {
-	if ( !base ) {
+	if ( !base || !other ) {
 		throw Runtime::Exceptions::AccessViolation("cannot add null pointer to object");
 	}
 
@@ -954,7 +955,7 @@ void operator_unary_not(Object *base)
 			Object tmp;
 
 			Interpreter interpreter;
-			interpreter.execute(dynamic_cast<Method*>(value_op), params, &tmp);
+			interpreter.execute(dynamic_cast<Common::Method*>(value_op), params, &tmp);
 
 			*base = BoolObject(!tmp.isValid());
 		}

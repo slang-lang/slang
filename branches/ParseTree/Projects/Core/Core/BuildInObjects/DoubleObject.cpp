@@ -275,11 +275,6 @@ void DoubleObject::operator_unary_not()
 	mValue = (double)!mValue.toDouble();
 }
 
-std::string DoubleObject::ToString(unsigned int indent) const
-{
-	return ::Utils::Tools::indent(indent) + QualifiedTypename() + " " + getName() + " = " + getValue().toStdString();
-}
-
 
 }
 }
