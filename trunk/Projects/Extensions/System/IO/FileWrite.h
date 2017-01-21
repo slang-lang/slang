@@ -4,6 +4,7 @@
 
 
 // Library includes
+#include <strings.h>
 
 // Project includes
 #include <Core/Designtime/BuildInTypes/BoolObject.h>
