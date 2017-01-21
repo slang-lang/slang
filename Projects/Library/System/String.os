@@ -53,8 +53,8 @@ public object String implements IIterateable {
 	/*
 	 * Returns an Iterator that is not attached to this string, instead it uses a copy of this Strings string value
 	 */
-	public StringIterator getIterator() const {
-		return new StringIterator(mValue);
+	public StringIterator getIterator(string separator = " ") const {
+		return new StringIterator(mValue, separator);
 	}
 
 	/*

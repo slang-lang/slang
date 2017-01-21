@@ -89,7 +89,7 @@ public namespace System { }
 			return "StringIterator: { " +
 					"mCurrentPosition: " + mCurrentPosition + ", " +
 					"mSeparator: \"" + mSeparator + "\", " +
-					"mValue: { " + mValue.toString() + " }" +
+					"mValue: { " + mValue.ToString() + " }" +
 				" }";
 		}
 	}

@@ -132,5 +132,9 @@ public abstract object AbstractCollection implements IIterateable {
 	public Object operator[](int index) const throws {
 		return at(index);
 	}
+
+	public string =operator(string none) const {
+		return string mSize;
+	}
 }
 
