@@ -947,21 +947,7 @@ void operator_unary_not(Object *base)
 		*base = BoolObject(!tmp.operator_bool());
 	}
 	else {
-		ParameterList params;
-		params.push_back(Parameter::CreateRuntime(BoolObject::TYPENAME, false));
-
-		MethodSymbol* value_op = base->resolveMethod("=operator", params, true, Visibility::Public);
-		if ( value_op ) {
-			Object tmp;
-
-			Interpreter interpreter;
-			interpreter.execute(dynamic_cast<Common::Method*>(value_op), params, &tmp);
-
-			*base = BoolObject(!tmp.isValid());
-		}
-		else {
-			*base = BoolObject(!base->isValid());
-		}
+		*base = BoolObject(!base->isValid());
 	}
 }
 
