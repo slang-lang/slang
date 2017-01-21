@@ -2,11 +2,15 @@
 import System.Collections.IIterateable;
 import System.IO.File;
 import System.String;
+import System.StringIterator;
 
 public object Scanner implements IIterateable {
+	private string mSeparator = " ";
 	private string mText;
 
-	public void Constructor(System.IO.File file) {
+	public void Constructor(System.IO.File file, string separator) {
+		mSeparator = separator;
+
 		readAll(file);
 	}
 
@@ -20,11 +24,11 @@ public object Scanner implements IIterateable {
 			word = word + ch;
 		}
 
-		print(word);
+		mText = word;
 	}
 
 	public StringIterator getIterator() const {
-		return new StringIterator(mText, " ");
+		return new StringIterator(mText, mSeparator);
 	}
 }
 

@@ -6,43 +6,64 @@ import System.Collections.Map;
 import System.Collections.Set;
 import System.IO.File;
 import System.String;
+import System.StringIterator;
 
 public void Main(int argc, string args) {
-	Map<String, Set> map = new Map<String, Set>();
+	Map<string, Set> map = new Map<string, Set>();
 
 	try {
-		Scanner scanner = new Scanner(new System.IO.File("testfile", "r"));
+		Scanner scanner = new Scanner(new System.IO.File("data.txt", "r"), ",");
 
 		foreach ( string word : scanner ) {
-			String alpha = alphabetize(word);
+			string alpha = alphabetize(new String(word));
+			print("alpha = " + alpha);
 
-			Set set = map.get(alpha);
-			if ( set == null ) {
-				map.put(alpha, new Set());
+			Set set;
+			if ( map.contains(alpha) ) {
+				set = map.get(alpha);
 			}
+			else {
+				set = new Set();
+				map.insert(alpha, set);
+			}
+
+			set.insert(Object new String(alpha));
 		}
 
-		foreach ( Pair<String, Set> p : map ) {
-			print("p.second.size() = " + p.second.size());
+		foreach ( Pair<string, Set> p : map ) {
+			//print("p.second.size() = " + p.second.size());
+			cout(string p.first + ", " + p.second + ": [");
+			foreach ( String s : p.second ) {
+				cout("" + s + " ");
+			}
+			cout("]");
+			endl();
 		}
+	}
+	catch ( Exception e ) {
+		print("exception: " + e.what());
+	}
+	catch ( string e ) {
+		print("exception: " + e);
+	}
+	catch {
+		print("upsi");
 	}
 }
 
-private String alphabetize(string word) {
-	print("alphabetize(" + word + ")");
-
+private String alphabetize(String word ref) {
 	Set sorted = new Set();
 
-	foreach ( string s : word ) {
-		sorted.insert(Object new String(s));
+	int length = word.Length();
+	for ( int i = 0; i < length; i = i++ ) {
+		sorted.insert(Object new String(word.At(i)));
 	}
 
-	String result = new String();
-
-	foreach ( string s : sorted ) {
-		result = result + s;
+	word = "";
+	foreach ( Object s : sorted ) {
+		word = word + s;
 	}
 
-	return result;
+	return word;
 }
 
