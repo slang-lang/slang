@@ -39,7 +39,7 @@ elseif("${BUILD}" MATCHES "Release")
     # suppress "veraltete Konvertierung von Zeichenkettenkonstante in »char*« [-Werror=write-strings]"
     add_definitions(-Wno-write-strings -Wno-unused-variable -Wno-unused-result -Wno-unused-value)
 
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-strict-aliasing -O3")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-strict-aliasing -O4")
 
 else()
 
