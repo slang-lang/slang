@@ -1088,35 +1088,29 @@ void Interpreter::process_identifier(TokenIterator& token, Object* /*result*/)
 		throw Common::Exceptions::UnknownIdentifer("identifier '" + token->content() + "' not found", token->position());
 	}
 
-	if ( symbol->getSymbolType() == Symbol::IType::BluePrintEnumSymbol || symbol->getSymbolType() == Symbol::IType::BluePrintObjectSymbol ) {
-		process_type(token, symbol);
-	}
-	else if ( symbol->getSymbolType() == Symbol::IType::MethodSymbol ) {
-		token = tmpToken;	// reset token after call to identify
+	try {
+		if ( symbol->getSymbolType() == Symbol::IType::BluePrintEnumSymbol || symbol->getSymbolType() == Symbol::IType::BluePrintObjectSymbol ) {
+			process_type(token, symbol);
+		}
+		else if ( symbol->getSymbolType() == Symbol::IType::MethodSymbol ) {
+			token = tmpToken;	// reset token after call to identify
 
-		try {
 			Object tmpObject;
 			process_method(token, &tmpObject);
 		}
-		catch ( ControlFlow::E &e ) {
-			mControlFlow = e;
-			return;
-		}
-	}
-	else if ( symbol->getSymbolType() == Symbol::IType::ObjectSymbol ) {
-		Object* object = dynamic_cast<Object*>(symbol);
-		if ( object->isConst() ) {	// we tried to modify a const symbol (i.e. member, parameter or constant local variable)
-			throw Common::Exceptions::ConstCorrectnessViolated("tried to modify const symbol '" + object->getName() + "'", token->position());
-		}
+		else if ( symbol->getSymbolType() == Symbol::IType::ObjectSymbol ) {
+			Object* object = dynamic_cast<Object*>(symbol);
+			if ( object->isConst() ) {	// we tried to modify a const symbol (i.e. member, parameter or constant local variable)
+				throw Common::Exceptions::ConstCorrectnessViolated("tried to modify const symbol '" + object->getName() + "'", token->position());
+			}
 
-		//if ( object->isMember() && dynamic_cast<Common::Method*>(mOwner)->isConst() ) {	// we tried to modify a member in a const method
-		//	throw Common::Exceptions::ConstCorrectnessViolated("tried to modify member '" + object->getName() + "' in const method '" + getScope()->getScopeName() + "'", token->position());
-		//}
+			//if ( object->isMember() && dynamic_cast<Common::Method*>(mOwner)->isConst() ) {	// we tried to modify a member in a const method
+			//	throw Common::Exceptions::ConstCorrectnessViolated("tried to modify member '" + object->getName() + "' in const method '" + getScope()->getScopeName() + "'", token->position());
+			//}
 
-		try {
-			if ( lookahead(token)->category() == Token::Category::Assignment ) {
-				++token;
+			++token;
 
+			if ( token->category() == Token::Category::Assignment ) {
 				TokenIterator assignToken = token;
 
 				Object tmp;
@@ -1137,16 +1131,16 @@ void Interpreter::process_identifier(TokenIterator& token, Object* /*result*/)
 			}
 			else {
 				// by evaluation a standalone expression we can process ++/-- operators
-				expression(object, ++token);
+				expression(object, token);
 			}
 		}
-		catch ( ControlFlow::E &e ) {
-			mControlFlow = e;
-			return;
+		else {
+			throw Common::Exceptions::Exception("invalid symbol type found!");
 		}
 	}
-	else {
-		throw Common::Exceptions::Exception("invalid symbol type found!");
+	catch ( ControlFlow::E &e ) {
+		mControlFlow = e;
+		return;
 	}
 }
 
