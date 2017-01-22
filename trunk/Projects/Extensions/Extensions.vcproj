@@ -213,6 +213,22 @@
 		<File
 			RelativePath=".\System\Console\Console.cpp"
 			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					ObjectFile="$(IntDir)\Extensions\System\Console\"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					ObjectFile="$(IntDir)\Extensions\System\Console\"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath=".\System\Console\Console.h"
@@ -220,6 +236,102 @@
 		</File>
 		<File
 			RelativePath=".\System\Console\Cout.h"
+			>
+		</File>
+		<File
+			RelativePath=".\System\IO\Defines.cpp"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					ObjectFile="$(IntDir)\Extensions\System\IO\"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					ObjectFile="$(IntDir)\Extensions\System\IO\"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath=".\System\Strings\Defines.cpp"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					ObjectFile="$(IntDir)\Extensions\System\Strings\"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					ObjectFile="$(IntDir)\Extensions\System\Strings\"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath=".\System\Math\Defines.cpp"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					ObjectFile="$(IntDir)\Extensions\System\Math\"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					ObjectFile="$(IntDir)\Extensions\System\Math\"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath=".\System\Console\Defines.cpp"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					ObjectFile="$(IntDir)\Extensions\System\Console\"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					ObjectFile="$(IntDir)\Extensions\System\Console\"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath=".\System\Math\Defines.h"
+			>
+		</File>
+		<File
+			RelativePath=".\System\IO\Defines.h"
+			>
+		</File>
+		<File
+			RelativePath=".\System\Strings\Defines.h"
+			>
+		</File>
+		<File
+			RelativePath=".\System\Console\Defines.h"
 			>
 		</File>
 		<File
@@ -239,15 +351,11 @@
 			>
 		</File>
 		<File
-			RelativePath=".\System\IO\FileClose.cpp"
-			>
-		</File>
-		<File
 			RelativePath=".\System\IO\FileClose.h"
 			>
 		</File>
 		<File
-			RelativePath=".\System\IO\FileOpen.cpp"
+			RelativePath=".\System\IO\FileEOF.h"
 			>
 		</File>
 		<File
@@ -255,15 +363,7 @@
 			>
 		</File>
 		<File
-			RelativePath=".\System\IO\FileRead.cpp"
-			>
-		</File>
-		<File
 			RelativePath=".\System\IO\FileRead.h"
-			>
-		</File>
-		<File
-			RelativePath=".\System\IO\FileSeek.cpp"
 			>
 		</File>
 		<File
@@ -271,7 +371,7 @@
 			>
 		</File>
 		<File
-			RelativePath=".\System\IO\FileWrite.cpp"
+			RelativePath=".\System\IO\FileTell.h"
 			>
 		</File>
 		<File
@@ -300,6 +400,26 @@
 		</File>
 		<File
 			RelativePath=".\System\IO\IO.cpp"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					ObjectFile="$(IntDir)\Extensions\System\IO\"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					ObjectFile="$(IntDir)\Extensions\System\IO\"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath=".\System\IO\IO.h"
 			>
 		</File>
 		<File
@@ -331,11 +451,31 @@
 			>
 		</File>
 		<File
-			RelativePath=".\System\Math\Math.cpp"
+			RelativePath=".\System\Math\Math.h"
 			>
 		</File>
 		<File
-			RelativePath=".\System\Math\Math.h"
+			RelativePath=".\System\Math\MathExtension.cpp"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					ObjectFile="$(IntDir)\Extensions\System\Math\"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					ObjectFile="$(IntDir)\Extensions\System\Math\"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath=".\System\Math\MathExtension.h"
 			>
 		</File>
 		<File
@@ -507,7 +647,27 @@
 			>
 		</File>
 		<File
-			RelativePath=".\System\Strings\Strings.cpp"
+			RelativePath=".\System\Strings\StringsExtension.cpp"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					ObjectFile="$(IntDir)\Extensions\System\Strings\"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					ObjectFile="$(IntDir)\Extensions\System\Strings\"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath=".\System\Strings\StringsExtension.h"
 			>
 		</File>
 		<File

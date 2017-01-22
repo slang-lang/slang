@@ -6,6 +6,7 @@
 // Library includes
 #include <list>
 #include <map>
+//#include <unordered_map>
 
 // Project includes
 #include <Core/Parameter.h>
@@ -48,6 +49,7 @@ private:
 
 	typedef std::list<MethodAndParent> MethodCollection;
 	typedef std::map<std::string /*parent*/, MethodCollection> MethodTable;
+	//typedef std::unordered_map<std::string /*parent*/, MethodCollection> MethodTable;
 
 private:
 	MethodTable mMethods;
