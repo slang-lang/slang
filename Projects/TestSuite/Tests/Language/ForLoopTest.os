@@ -10,7 +10,7 @@ public void Main(int argc = 0, string argv = "") {
 }
 
 private bool TestCase1() const {
-	for ( int loop1 = 0; loop1 < 5; loop1 = loop1 + 1 ) {
+	for ( int loop1 = 0; loop1 < 5; loop1 += 1 ) {
 		print("loop1 = " + loop1);
 		assert( loop1 < 5 );
 	}
@@ -22,7 +22,7 @@ private bool TestCase1() const {
 }
 
 private bool TestCase2() const {
-	for ( int loop2 = 0; loop2 < 10; loop2 = loop2 + 1 ) {
+	for ( int loop2 = 0; loop2 < 10; loop2 += 1 ) {
 		print("loop2 = " + loop2);
 		assert( loop2 < 10 );
 	}
@@ -34,7 +34,7 @@ private bool TestCase2() const {
 }
 
 private bool TestCase3() const {
-	for ( int loop3 = 0; loop3 < 5; loop3 = loop3 + 1 ) {
+	for ( int loop3 = 0; loop3 < 5; loop3 += 1 ) {
 		print("loop3 = " + loop3);
 		assert( loop3 < 5 );
 
@@ -50,7 +50,7 @@ private bool TestCase3() const {
 }
 
 private bool TestCase4() const {
-	for ( int loop4 = 0; loop4 < 10; loop4 = loop4 + 1 ) {
+	for ( int loop4 = 0; loop4 < 10; loop4 += 1 ) {
 		print("loop4 = " + loop4);
 
 		if ( loop4 > 2 ) {
@@ -64,7 +64,7 @@ private bool TestCase4() const {
 private bool TestCase5() const {
 	print("TestCase 5: continue");
 
-	for ( int loop5 = 0; loop5 < 10; loop5 = loop5 + 1 ) {
+	for ( int loop5 = 0; loop5 < 10; loop5 += 1 ) {
 		if ( loop5 == 2 ) {
 			continue;
 		}

@@ -1,7 +1,7 @@
 #!/usr/local/bin/oscript
 
 public namespace MathOverloads {
-	private object OverloadedObject {
+	public object OverloadedObject {
 		private int mNumber;
 
 		public void Constructor(int one const) {

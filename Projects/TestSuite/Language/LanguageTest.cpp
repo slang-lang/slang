@@ -36,6 +36,7 @@ void LanguageTest::process()
 {
 	TEST(testAbstractObject);
 	TEST(testAssert);
+	TEST(testAssignment);
 	TEST(testAtomicReference);
 	TEST(testBooleanOperators);
 	TEST(testComment);
@@ -115,6 +116,21 @@ void LanguageTest::testAssert()
 		VirtualMachine vm;
 
 		TTHROWS(vm.createScriptFromFile("Tests/Language/AssertTest.os"), ObjectiveScript::Runtime::Exceptions::AssertionFailed);
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// unexpected exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void LanguageTest::testAssignment()
+{
+	try {
+		VirtualMachine vm;
+
+		vm.createScriptFromFile("Tests/Language/Assignment.os");
 
 		// automatic success
 	}
