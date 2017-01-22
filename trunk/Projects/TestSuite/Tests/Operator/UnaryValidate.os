@@ -13,8 +13,8 @@ private object TestObject {
 
 public void Main(int argc, string argv) {
 	assert( TestCase1() );
-	assert( TestCase2() );
-	assert( TestCase3() );
+	//assert( TestCase2() );
+	//assert( TestCase3() );
 }
 
 private bool TestCase1() const {
@@ -22,8 +22,6 @@ private bool TestCase1() const {
 
 	bool value = true;
 	print("value = " + value);
-
-	value!;
 
 	return value!;
 }

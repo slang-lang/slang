@@ -768,7 +768,7 @@ void Interpreter::process(Object *result, TokenIterator& token, TokenIterator en
 			case Token::Type::IDENTIFER:
 			case Token::Type::PROTOTYPE:
 			case Token::Type::TYPE:
-				process_identifier(token, result, terminator == Token::Type::NIL ? Token::Type::SEMICOLON : terminator);
+				process_identifier(token, result);
 				break;
 			case Token::Type::KEYWORD:
 				process_keyword(token, result);
@@ -1079,7 +1079,7 @@ void Interpreter::process_foreach(TokenIterator& token, Object* result)
 /*
  * executes a method, processes an assign statement and instanciates new types
  */
-void Interpreter::process_identifier(TokenIterator& token, Object* /*result*/, Token::Type::E terminator)
+void Interpreter::process_identifier(TokenIterator& token, Object* /*result*/)
 {
 	TokenIterator tmpToken = token;
 
@@ -1104,12 +1104,6 @@ void Interpreter::process_identifier(TokenIterator& token, Object* /*result*/, T
 		}
 	}
 	else if ( symbol->getSymbolType() == Symbol::IType::ObjectSymbol ) {
-#ifdef ENABLE_ASSIGNMENT_OPERATORS
-		// try to find an assignment token
-		TokenIterator assign = findNext(token, Token::Category::Assignment, terminator);
-		// find next terminator token
-		TokenIterator end = findNext(assign, terminator);
-
 		Object* object = dynamic_cast<Object*>(symbol);
 		if ( object->isConst() ) {	// we tried to modify a const symbol (i.e. member, parameter or constant local variable)
 			throw Common::Exceptions::ConstCorrectnessViolated("tried to modify const symbol '" + object->getName() + "'", token->position());
@@ -1120,57 +1114,36 @@ void Interpreter::process_identifier(TokenIterator& token, Object* /*result*/, T
 		//}
 
 		try {
-			TokenIterator assignToken = assign;
+			if ( lookahead(token)->category() == Token::Category::Assignment ) {
+				++token;
 
-			Object tmp;
-			expression(&tmp, ++assign);
+				TokenIterator assignToken = token;
 
-			switch ( assignToken->type() ) {
-				case Token::Type::ASSIGN: operator_binary_assign(object, &tmp); break;
-				case Token::Type::ASSIGN_ADDITION: operator_binary_plus(object, &tmp); break;
-				case Token::Type::ASSIGN_BITAND: operator_binary_bitand(object, &tmp); break;
-				case Token::Type::ASSIGN_BITCOMPLEMENT: operator_binary_bitcomplement(object, &tmp); break;
-				case Token::Type::ASSIGN_BITOR: operator_binary_bitor(object, &tmp); break;
-				case Token::Type::ASSIGN_DIVIDE: operator_binary_divide(object, &tmp); break;
-				case Token::Type::ASSIGN_MODULO: operator_binary_modulo(object, &tmp); break;
-				case Token::Type::ASSIGN_MULTIPLY: operator_binary_multiply(object, &tmp); break;
-				case Token::Type::ASSIGN_SUBTRACT: operator_binary_subtract(object, &tmp); break;
-				default: throw Common::Exceptions::NotSupported("unsupported assignment " + assignToken->content(), assignToken->position());
+				Object tmp;
+				expression(&tmp, ++token);
+
+				switch ( assignToken->type() ) {
+					case Token::Type::ASSIGN: operator_binary_assign(object, &tmp); break;
+					case Token::Type::ASSIGN_ADDITION: operator_binary_plus(object, &tmp); break;
+					case Token::Type::ASSIGN_BITAND: operator_binary_bitand(object, &tmp); break;
+					case Token::Type::ASSIGN_BITCOMPLEMENT: operator_binary_bitcomplement(object, &tmp); break;
+					case Token::Type::ASSIGN_BITOR: operator_binary_bitor(object, &tmp); break;
+					case Token::Type::ASSIGN_DIVIDE: operator_binary_divide(object, &tmp); break;
+					case Token::Type::ASSIGN_MODULO: operator_binary_modulo(object, &tmp); break;
+					case Token::Type::ASSIGN_MULTIPLY: operator_binary_multiply(object, &tmp); break;
+					case Token::Type::ASSIGN_SUBTRACT: operator_binary_subtract(object, &tmp); break;
+					default: throw Common::Exceptions::NotSupported("unsupported assignment " + assignToken->content(), assignToken->position());
+				}
+			}
+			else {
+				// by evaluation a standalone expression we can process ++/-- operators
+				expression(object, ++token);
 			}
 		}
 		catch ( ControlFlow::E &e ) {
 			mControlFlow = e;
 			return;
 		}
-
-		// assign == end should now be true
-		token = end;
-#else
-		// try to find an assignment token
-		TokenIterator assign = findNext(token, Token::Type::ASSIGN, terminator);
-		// find next terminator token
-		TokenIterator end = findNext(assign, terminator);
-
-		Object* object = dynamic_cast<Object*>(symbol);
-		if ( object->isConst() ) {	// we tried to modify a const symbol (i.e. member, parameter or constant local variable)
-			throw Common::Exceptions::ConstCorrectnessViolated("tried to modify const symbol '" + object->getName() + "'", token->position());
-		}
-
-		//if ( object->isMember() && dynamic_cast<Common::Method*>(mOwner)->isConst() ) {	// we tried to modify a member in a const method
-		//	throw Common::Exceptions::ConstCorrectnessViolated("tried to modify member '" + object->getName() + "' in const method '" + getScope()->getScopeName() + "'", token->position());
-		//}
-
-		try {
-			expression(object, ++assign);
-		}
-		catch ( ControlFlow::E &e ) {
-			mControlFlow = e;
-			return;
-		}
-
-		// assign == end should now be true
-		token = end;
-#endif
 	}
 	else {
 		throw Common::Exceptions::Exception("invalid symbol type found!");
