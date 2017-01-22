@@ -1077,7 +1077,7 @@ void Interpreter::process_foreach(TokenIterator& token, Object* result)
 }
 
 /*
- * executes a method, processes an assign statement and instanciates new types
+ * executes a method, processes an assign statement and instantiates new types
  */
 void Interpreter::process_identifier(TokenIterator& token, Object* /*result*/)
 {
