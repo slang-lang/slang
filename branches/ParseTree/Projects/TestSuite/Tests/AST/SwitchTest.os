@@ -5,7 +5,7 @@ public void Main(int argc = 1, string args = "") {
 
 	switch ( value ) {
 		case 0: { print("case 0"); break; }
-		case 3: { print("case 5"); break; }
+		case 3: { print("case 3"); break; }
 		default: { print("default"); break; }
 	}
 

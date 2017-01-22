@@ -25,7 +25,7 @@ public void Main(int argc = 0, string args = "") {
 private bool TestCase1() {
 	print("TestCase 1: valid foreach with collection");
 
-	System.List list = new System.List();
+	List list = new List();
 
 	list.push_back(Object new String("664"));
 	list.push_back(Object new String("173"));
@@ -43,7 +43,7 @@ private bool TestCase1() {
 private bool TestCase2() {
 	print("TestCase 2: valid foreach with collection");
 
-	System.List list = new System.List();
+	List list = new List();
 
 	list.push_back(Object new String("664"));
 	list.push_back(Object new String("173"));
@@ -79,7 +79,7 @@ private bool TestCase3() {
 private bool TestCase4() {
 	print("TestCase 4: valid foreach with prototype");
 
-	System.List list = new System.List();
+	List list = new List();
 
 	list.push_back(Object new Prototype<int>(664));
 	list.push_back(Object new Prototype<int>(173));

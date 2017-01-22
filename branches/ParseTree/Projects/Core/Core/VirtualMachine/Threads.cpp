@@ -18,7 +18,7 @@ Thread::Thread()
 {
 }
 
-Thread::Thread(ThreadId id, Threads* threadController)
+Thread::Thread(Common::ThreadId id, Threads* threadController)
 : mId(id),
   mState(State::Starting),
   mThreadController(threadController)
@@ -48,7 +48,7 @@ Runtime::ControlFlow::E Thread::execute(Common::Method* method, const ParameterL
 	return controlflow;
 }
 
-ThreadId Thread::getId() const
+Common::ThreadId Thread::getId() const
 {
 	return mId;
 }
@@ -72,7 +72,7 @@ Threads::~Threads()
 {
 }
 
-ThreadId Threads::createThread()
+Common::ThreadId Threads::createThread()
 {
 	Thread* t = new Thread(mThreads.size(), this);
 
@@ -92,7 +92,7 @@ void Threads::deinit()
 	mThreads.clear();
 }
 
-void Threads::deleteThread(ThreadId id)
+void Threads::deleteThread(Common::ThreadId id)
 {
 	(void)id;
 }
@@ -102,7 +102,7 @@ unsigned int Threads::getNumThreads() const
 	return mThreads.size();
 }
 
-Thread* Threads::getThread(ThreadId id) const
+Thread* Threads::getThread(Common::ThreadId id) const
 {
 	InternalThreads::const_iterator it = mThreads.find(id);
 	if ( it == mThreads.end() ) {

@@ -58,7 +58,7 @@ private: // Execution
 	void process_exit(TokenIterator& token);
 	void process_for(TokenIterator& token, Object* result);
 	void process_foreach(TokenIterator& token, Object* result);
-	void process_identifier(TokenIterator& token, Object* result, Token::Type::E terminator = Token::Type::SEMICOLON);
+	void process_identifier(TokenIterator& token, Object* result);
 	void process_if(TokenIterator& token, Object* result);
 	void process_keyword(TokenIterator& token, Object* result);
 	void process_method(TokenIterator& token, Object* result);
@@ -66,7 +66,7 @@ private: // Execution
 	void process_print(TokenIterator& token);
 	void process_return(TokenIterator& token, Object* result);
 	void process_scope(TokenIterator& token, Object* result);
-	void process_statement(TokenIterator& token, Object* result, Token::Type::E terminator = Token::Type::SEMICOLON);
+	void process_statement(TokenIterator& token, Object* result);
 	void process_switch(TokenIterator& token, Object* result);
 	void process_throw(TokenIterator& token, Object* result);
 	void process_try(TokenIterator& token, Object* result);

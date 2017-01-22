@@ -769,7 +769,31 @@ void Interpreter::process(Object *result, TokenIterator& token, TokenIterator en
 			break;		// control flow has been broken, time to stop processing
 		}
 
-		process_statement(token, result, terminator);
+		process_statement(token, result);
+
+/*
+		Core::Debugger::Instance().notify(getScope(), (*token));		// notify debugger
+
+		switch ( token->type() ) {
+			case Token::Type::IDENTIFER:
+			case Token::Type::PROTOTYPE:
+			case Token::Type::TYPE:
+				process_identifier(token, result);
+				break;
+			case Token::Type::KEYWORD:
+				process_keyword(token, result);
+				break;
+			case Token::Type::BRACKET_CURLY_OPEN:
+				process_scope(token, result);	// this opens a new scope
+				break;
+			case Token::Type::SEMICOLON:
+				break;
+			default:
+				throw Common::Exceptions::SyntaxError("invalid token '" + token->content() + "' found", token->position());
+		}
+
+		++token;	// consume token
+*/
 	}
 }
 
@@ -1068,9 +1092,9 @@ void Interpreter::process_foreach(TokenIterator& token, Object* result)
 }
 
 /*
- * executes a method, processes an assign statement and instanciates new types
+ * executes a method, processes an assign statement and instantiates new types
  */
-void Interpreter::process_identifier(TokenIterator& token, Object* /*result*/, Token::Type::E terminator)
+void Interpreter::process_identifier(TokenIterator& token, Object* /*result*/)
 {
 	TokenIterator tmpToken = token;
 
@@ -1079,49 +1103,59 @@ void Interpreter::process_identifier(TokenIterator& token, Object* /*result*/, T
 		throw Common::Exceptions::UnknownIdentifer("identifier '" + token->content() + "' not found", token->position());
 	}
 
-	if ( symbol->getSymbolType() == Symbol::IType::BluePrintEnumSymbol || symbol->getSymbolType() == Symbol::IType::BluePrintObjectSymbol ) {
-		process_type(token, symbol);
-	}
-	else if ( symbol->getSymbolType() == Symbol::IType::MethodSymbol ) {
-		token = tmpToken;	// reset token after call to identify
+	try {
+		if ( symbol->getSymbolType() == Symbol::IType::BluePrintEnumSymbol || symbol->getSymbolType() == Symbol::IType::BluePrintObjectSymbol ) {
+			process_type(token, symbol);
+		}
+		else if ( symbol->getSymbolType() == Symbol::IType::MethodSymbol ) {
+			token = tmpToken;	// reset token after call to identify
 
-		try {
 			Object tmpObject;
 			process_method(token, &tmpObject);
 		}
-		catch ( ControlFlow::E &e ) {
-			mControlFlow = e;
-			return;
+		else if ( symbol->getSymbolType() == Symbol::IType::ObjectSymbol ) {
+			Object* object = dynamic_cast<Object*>(symbol);
+			if ( object->isConst() ) {	// we tried to modify a const symbol (i.e. member, parameter or constant local variable)
+				throw Common::Exceptions::ConstCorrectnessViolated("tried to modify const symbol '" + object->getName() + "'", token->position());
+			}
+
+			//if ( object->isMember() && dynamic_cast<Common::Method*>(mOwner)->isConst() ) {	// we tried to modify a member in a const method
+			//	throw Common::Exceptions::ConstCorrectnessViolated("tried to modify member '" + object->getName() + "' in const method '" + getScope()->getScopeName() + "'", token->position());
+			//}
+
+			++token;
+
+			if ( token->category() == Token::Category::Assignment ) {
+				TokenIterator assignToken = token;
+
+				Object tmp;
+				expression(&tmp, ++token);
+
+				switch ( assignToken->type() ) {
+					case Token::Type::ASSIGN: operator_binary_assign(object, &tmp); break;
+					case Token::Type::ASSIGN_ADDITION: operator_binary_plus(object, &tmp); break;
+					case Token::Type::ASSIGN_BITAND: operator_binary_bitand(object, &tmp); break;
+					case Token::Type::ASSIGN_BITCOMPLEMENT: operator_binary_bitcomplement(object, &tmp); break;
+					case Token::Type::ASSIGN_BITOR: operator_binary_bitor(object, &tmp); break;
+					case Token::Type::ASSIGN_DIVIDE: operator_binary_divide(object, &tmp); break;
+					case Token::Type::ASSIGN_MODULO: operator_binary_modulo(object, &tmp); break;
+					case Token::Type::ASSIGN_MULTIPLY: operator_binary_multiply(object, &tmp); break;
+					case Token::Type::ASSIGN_SUBTRACT: operator_binary_subtract(object, &tmp); break;
+					default: throw Common::Exceptions::NotSupported("unsupported assignment " + assignToken->content(), assignToken->position());
+				}
+			}
+			else {
+				// by evaluation a standalone expression we can process ++/-- operators
+				expression(object, token);
+			}
+		}
+		else {
+			throw Common::Exceptions::Exception("invalid symbol type found!");
 		}
 	}
-	else if ( symbol->getSymbolType() == Symbol::IType::ObjectSymbol ) {
-		// try to find an assignment token
-		TokenIterator assign = findNext(token, Token::Type::ASSIGN, terminator);
-		// find next terminator token
-		TokenIterator end = findNext(assign, terminator);
-
-		Object* object = dynamic_cast<Object*>(symbol);
-		if ( object->isConst() ) {	// we tried to modify a const symbol (i.e. member, parameter or constant local variable)
-			throw Common::Exceptions::ConstCorrectnessViolated("tried to modify const symbol '" + object->getName() + "'", token->position());
-		}
-/*
-		if ( object->isMember() && dynamic_cast<Method*>(mOwner)->isConst() ) {	// we tried to modify a member in a const method
-			throw Common::Exceptions::ConstCorrectnessViolated("tried to modify member '" + object->getName() + "' in const method '" + getScope()->getScopeName() + "'", token->position());
-		}
-*/
-		try {
-			expression(object, ++assign);
-		}
-		catch ( ControlFlow::E &e ) {
-			mControlFlow = e;
-			return;
-		}
-
-		// assign == end should now be true
-		token = end;
-	}
-	else {
-		throw Common::Exceptions::Exception("invalid symbol type found!");
+	catch ( ControlFlow::E &e ) {
+		mControlFlow = e;
+		return;
 	}
 }
 
@@ -1509,7 +1543,7 @@ void Interpreter::process_scope(TokenIterator& token, Object* result)
 /*
  * process a single statement
  */
-void Interpreter::process_statement(TokenIterator& token, Object* result, Token::Type::E terminator)
+void Interpreter::process_statement(TokenIterator& token, Object* result)
 {
 	Core::Debugger::Instance().notify(getScope(), (*token));		// notify debugger
 
@@ -1517,7 +1551,7 @@ void Interpreter::process_statement(TokenIterator& token, Object* result, Token:
 		case Token::Type::IDENTIFER:
 		case Token::Type::PROTOTYPE:
 		case Token::Type::TYPE:
-			process_identifier(token, result, terminator == Token::Type::NIL ? Token::Type::SEMICOLON : terminator);
+			process_identifier(token, result);
 			break;
 		case Token::Type::KEYWORD:
 			process_keyword(token, result);
