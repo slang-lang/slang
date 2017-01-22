@@ -71,8 +71,8 @@ private:
 class MethodScope : public NamedScope
 {
 public:
-	//typedef std::set<Common::Method*> MethodCollection;
-	typedef std::unordered_set<Common::Method*> MethodCollection;
+	typedef std::set<Common::Method*> MethodCollection;
+	//typedef std::unordered_set<Common::Method*> MethodCollection;
 
 public:
 	MethodScope(const std::string& name, IScope* parent = 0);

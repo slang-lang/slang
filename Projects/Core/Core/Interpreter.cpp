@@ -15,6 +15,7 @@
 #include <Core/Common/Method.h>
 #include <Core/Common/Namespace.h>
 #include <Core/Designtime/BluePrintEnum.h>
+#include <Core/Designtime/Exceptions.h>
 #include <Core/Designtime/Parser/Parser.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Runtime/OperatorOverloading.h>
@@ -23,7 +24,6 @@
 #include <Debugger/Debugger.h>
 #include <Tools/Printer.h>
 #include <Utils.h>
-#include <Designtime/Exceptions.h>
 #include "Defines.h"
 #include "Tools.h"
 

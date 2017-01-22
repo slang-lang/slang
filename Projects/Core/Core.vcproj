@@ -415,10 +415,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\DoubleObject.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\Core\Designtime\BuildInTypes\DoubleObject.cpp"
 				>
 				<FileConfiguration
@@ -437,6 +433,10 @@
 						ObjectFile="$(IntDir)\Core\Designtime\BuildInTypes\"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\Core\BuildInObjects\DoubleObject.cpp"
+				>
 			</File>
 			<File
 				RelativePath=".\Core\Runtime\ExceptionData.cpp"
@@ -479,10 +479,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\FloatObject.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\Core\Designtime\BuildInTypes\FloatObject.cpp"
 				>
 				<FileConfiguration
@@ -503,7 +499,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\GenericObject.cpp"
+				RelativePath=".\Core\BuildInObjects\FloatObject.cpp"
 				>
 			</File>
 			<File
@@ -527,6 +523,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\Core\BuildInObjects\GenericObject.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\Attributes\ImplementationType.cpp"
 				>
 				<FileConfiguration
@@ -547,10 +547,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\IntegerObject.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\Core\Designtime\BuildInTypes\IntegerObject.cpp"
 				>
 				<FileConfiguration
@@ -569,6 +565,10 @@
 						ObjectFile="$(IntDir)\Core\Designtime\BuildInTypes\"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\Core\BuildInObjects\IntegerObject.cpp"
+				>
 			</File>
 			<File
 				RelativePath=".\Core\BuildInObjects\IntegerObject.cpp"
@@ -603,7 +603,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Method.cpp"
+				RelativePath=".\Core\Common\Method.cpp"
 				>
 			</File>
 			<File
@@ -627,24 +627,8 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\Runtime\Namespace.cpp"
+				RelativePath=".\Core\Common\Namespace.cpp"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\Runtime\"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\Runtime\"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\Core\Object.cpp"
@@ -843,7 +827,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Token.cpp"
+				RelativePath=".\Core\VirtualMachine\Threads.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\Designtime\Parser\Token.cpp"
 				>
 			</File>
 			<File
@@ -889,6 +877,10 @@
 						ObjectFile="$(IntDir)\Runtime\"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\Core\Common\Types.cpp"
+				>
 			</File>
 			<File
 				RelativePath=".\Core\Types.cpp"
@@ -1009,11 +1001,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\BoolObject.h"
+				RelativePath=".\Core\BuildInObjects\BoolObject.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\BoolObject.h"
+				RelativePath=".\Core\Designtime\BuildInTypes\BoolObject.h"
 				>
 			</File>
 			<File
@@ -1045,23 +1037,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\DoubleObject.h"
-				>
-			</File>
-			<File
 				RelativePath=".\Core\Designtime\BuildInTypes\DoubleObject.h"
 				>
 			</File>
 			<File
+				RelativePath=".\Core\BuildInObjects\DoubleObject.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\Runtime\ExceptionData.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Core\Exceptions.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Core\Designtime\Exceptions.h"
 				>
 			</File>
 			<File
@@ -1073,11 +1057,23 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\FloatObject.h"
+				RelativePath=".\Core\Exceptions.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\Designtime\Exceptions.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\Extensions\ExtensionMethod.h"
 				>
 			</File>
 			<File
 				RelativePath=".\Core\Designtime\BuildInTypes\FloatObject.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\BuildInObjects\FloatObject.h"
 				>
 			</File>
 			<File
@@ -1101,11 +1097,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\IntegerObject.h"
+				RelativePath=".\Core\Designtime\BuildInTypes\IntegerObject.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\IntegerObject.h"
+				RelativePath=".\Core\BuildInObjects\IntegerObject.h"
 				>
 			</File>
 			<File
@@ -1133,7 +1129,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Method.h"
+				RelativePath=".\Core\Common\Method.h"
 				>
 			</File>
 			<File
@@ -1141,7 +1137,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Runtime\Namespace.h"
+				RelativePath=".\Core\Common\Namespace.h"
 				>
 			</File>
 			<File
@@ -1225,7 +1221,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Token.h"
+				RelativePath=".\Core\VirtualMachine\Threads.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\Designtime\Parser\Token.h"
 				>
 			</File>
 			<File
@@ -1238,6 +1238,14 @@
 			</File>
 			<File
 				RelativePath=".\Core\Runtime\TypeCast.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\Common\TypeDeclaration.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\Common\Types.h"
 				>
 			</File>
 			<File
@@ -1269,11 +1277,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\VoidObject.h"
+				RelativePath=".\Core\Designtime\BuildInTypes\VoidObject.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\VoidObject.h"
+				RelativePath=".\Core\BuildInObjects\VoidObject.h"
 				>
 			</File>
 		</Filter>
