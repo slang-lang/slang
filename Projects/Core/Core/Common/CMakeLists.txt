@@ -6,6 +6,7 @@ SET(SOURCES
     Namespace.cpp
     Position.cpp
     PrototypeConstraint.cpp
+    Types.cpp
     Visibility.cpp
 )
 
@@ -16,6 +17,7 @@ SET(HEADERS
     Position.h
     PrototypeConstraint.h
     TypeDeclaration.h
+    Types.h
     Visibility.h
 )
 

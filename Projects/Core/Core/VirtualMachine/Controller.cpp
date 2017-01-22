@@ -86,7 +86,7 @@ Stack* Controller::stack() const
 	return mStack;
 }
 
-Thread* Controller::thread(ThreadId id) const
+Thread* Controller::thread(Common::ThreadId id) const
 {
 	return mThreads->getThread(id);
 }

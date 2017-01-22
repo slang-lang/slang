@@ -7,6 +7,7 @@
 #include <map>
 
 // Project includes
+#include <Core/Common/Types.h>
 #include <Core/Interpreter.h>
 #include <Core/Parameter.h>
 #include <Core/Runtime/ControlFlow.h>
@@ -28,9 +29,6 @@ namespace Runtime {
 class Threads;
 
 
-typedef unsigned int ThreadId;
-
-
 class Thread : public Stack
 {
 public:
@@ -49,7 +47,7 @@ public:
 
 public:
 	Thread();
-	Thread(ThreadId id, Threads* threadController);
+	Thread(Common::ThreadId id, Threads* threadController);
 	~Thread();
 
 public:
@@ -58,11 +56,11 @@ public:
 	void init();
 
 public:
-	ThreadId getId() const;
+	Common::ThreadId getId() const;
 	State::E getState() const;
 
 private:
-	ThreadId mId;
+	Common::ThreadId mId;
 	Runtime::Interpreter mInterpreter;
 	State::E mState;
 	Threads* mThreadController;
@@ -80,9 +78,9 @@ public:
 	void init();
 
 public:
-	ThreadId createThread();
-	void deleteThread(ThreadId id);
-	Thread* getThread(ThreadId id) const;
+	Common::ThreadId createThread();
+	void deleteThread(Common::ThreadId id);
+	Thread* getThread(Common::ThreadId id) const;
 
 	unsigned int getNumThreads() const;
 
