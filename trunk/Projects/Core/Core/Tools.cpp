@@ -137,6 +137,24 @@ void expect(Token::Type::E expected, TokenIterator found)
 	}
 }
 
+TokenIterator findNext(TokenIterator start, Token::Category::E category, Token::Type::E terminator)
+{
+	int count = 0;
+	TokenIterator tmp = start;
+
+	while ( tmp->category() != category ) {
+		if ( tmp->type() == terminator ) {
+			// we did not find a result before the defined end-token appeared
+			return start;
+		}
+
+		count++;
+		tmp++;
+	}
+
+	return tmp;
+}
+
 TokenIterator findNext(TokenIterator start, Token::Type::E type, Token::Type::E terminator)
 {
 	int count = 0;

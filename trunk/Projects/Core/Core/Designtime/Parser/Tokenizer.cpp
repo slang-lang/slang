@@ -547,6 +547,14 @@ void Tokenizer::replaceAssignments()
 			// ... and add COMPARE_EQUAL instead
 			tmp.push_back(Token(Token::Category::Comparator, Token::Type::COMPARE_EQUAL, "==", token->position()));
 		}
+		else if ( (lastType == Token::Type::BITAND) && (activeType == Token::Type::ASSIGN) ) {
+			// &=
+			changed = true;
+			// remove last added token ...
+			tmp.pop_back();
+			// ... and add ASSIGN_ADD instead
+			tmp.push_back(Token(Token::Category::Assignment, Token::Type::ASSIGN_BITAND, "&=", token->position()));
+		}
 		else if ( (lastType == Token::Type::BITCOMPLEMENT) && (activeType == Token::Type::ASSIGN) ) {
 			// ~=
 			changed = true;
@@ -554,6 +562,14 @@ void Tokenizer::replaceAssignments()
 			tmp.pop_back();
 			// ... and add ASSIGN_ADD instead
 			tmp.push_back(Token(Token::Category::Assignment, Token::Type::ASSIGN_BITCOMPLEMENT, "~=", token->position()));
+		}
+		else if ( (lastType == Token::Type::BITOR) && (activeType == Token::Type::ASSIGN) ) {
+			// |=
+			changed = true;
+			// remove last added token ...
+			tmp.pop_back();
+			// ... and add ASSIGN_ADD instead
+			tmp.push_back(Token(Token::Category::Assignment, Token::Type::ASSIGN_BITOR, "|=", token->position()));
 		}
 		else if ( (lastType == Token::Type::OPERATOR_NOT) && (activeType == Token::Type::ASSIGN) ) {
 			// !=

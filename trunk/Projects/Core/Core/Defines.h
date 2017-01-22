@@ -5,6 +5,7 @@
 
 //#define ALLOW_BY_VALUE_COPY
 #define ALLOW_IMPLICIT_CASTS
+//#define ENABLE_ASSIGNMENT_OPERATORS
 
 
 #endif

@@ -55,6 +55,7 @@ inline TokenList::iterator lookahead(TokenList::iterator token, int numLooks = 1
 	do { ++token; --numLooks; } while ( numLooks > 0 ); return token;
 }
 
+TokenIterator findNext(TokenIterator start, Token::Category::E category, Token::Type::E terminator = Token::Type::NIL);
 TokenIterator findNext(TokenIterator start, Token::Type::E type, Token::Type::E terminator = Token::Type::NIL);
 TokenIterator findNextBalancedBracket(TokenIterator start, int generateErrorAfter = 0, Token::Type::E terminator = Token::Type::NIL);
 TokenIterator findNextBalancedCurlyBracket(TokenIterator start, TokenIterator end, int generateErrorAfter = 0, Token::Type::E terminator = Token::Type::NIL);
