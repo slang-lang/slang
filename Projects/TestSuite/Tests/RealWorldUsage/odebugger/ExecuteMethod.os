@@ -12,6 +12,7 @@ private void Method(int value) {
 
 private string Method(string value) {
 	print("Method('" + value + "')");
+
 	return value;
 }
 
