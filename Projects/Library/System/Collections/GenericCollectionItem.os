@@ -21,23 +21,5 @@ public object GenericCollectionItem<T> {
     public void operator=(T value) modify {
         mValue = value;
     }
-
-/*
-    public T get() const {
-        return mValue;
-    }
-
-    public GenericCollectionItem<T> next() const {
-        return mNext;
-    }
-
-    public GenericCollectionItem<T> previous() const {
-        return mPrevious;
-    }
-
-    public void set(T value) modify {
-        mValue = value;
-    }
-*/
 }
 
