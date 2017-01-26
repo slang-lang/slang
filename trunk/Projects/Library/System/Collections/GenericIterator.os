@@ -3,7 +3,7 @@ import System.Exception;
 
 public namespace System.Collections { }
 
-public object GenericIterator<T> {
+public object GenericIterator<T: Object> {
 	private IGenericCollection<T> mCollection;
 	private int mCurrentIndex;
 
