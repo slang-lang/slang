@@ -792,14 +792,14 @@ void TreeInterpreter::visitExit(ExitStatement* /*node*/)
 	throw Runtime::ControlFlow::ExitProgram;
 }
 
-void TreeInterpreter::visitExpression(Expression* /*expression*/)
+void TreeInterpreter::visitExpression(Expression* expression)
 {
-	throw Common::Exceptions::SyntaxError("cannot process standalone expression");
+	//(void)expression;
+	//throw Common::Exceptions::SyntaxError("cannot process standalone expression");
 
-/*
+
 	Runtime::Object tmp;
 	evaluate(expression, &tmp);
-*/
 }
 
 void TreeInterpreter::visitFor(ForStatement* node)
@@ -866,8 +866,6 @@ void TreeInterpreter::visitForeach(ForeachStatement* node)
 	collection->execute(&iterator, "getIterator", ParameterList());
 
 	for  ( ; ; ) {
-		pushScope();	// push new scope for loop variable
-
 		// Setup
 		// {
 		Runtime::Object condition;
@@ -877,6 +875,8 @@ void TreeInterpreter::visitForeach(ForeachStatement* node)
 			break;
 		}
 		// }
+
+		pushScope();	// push new scope for loop variable
 
 		// execute type declaration
 		// {

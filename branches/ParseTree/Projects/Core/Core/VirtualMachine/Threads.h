@@ -26,7 +26,6 @@ namespace Common {
 namespace Runtime {
 	class Object;
 }
-class Threads;
 
 
 class Thread : public Stack
@@ -47,7 +46,7 @@ public:
 
 public:
 	Thread();
-	Thread(Common::ThreadId id, Threads* threadController);
+	Thread(Common::ThreadId id);
 	~Thread();
 
 public:
@@ -63,7 +62,6 @@ private:
 	Common::ThreadId mId;
 	Runtime::Interpreter mInterpreter;
 	State::E mState;
-	Threads* mThreadController;
 };
 
 

@@ -18,10 +18,9 @@ Thread::Thread()
 {
 }
 
-Thread::Thread(Common::ThreadId id, Threads* threadController)
+Thread::Thread(Common::ThreadId id)
 : mId(id),
-  mState(State::Starting),
-  mThreadController(threadController)
+  mState(State::Starting)
 {
 }
 
@@ -36,13 +35,17 @@ void Thread::deinit()
 
 Runtime::ControlFlow::E Thread::execute(Common::Method* method, const ParameterList& params, Runtime::Object* result)
 {
+	if ( mState == State::Starting ) {
+		mState = State::Started;
+	}
+
 	//pushFrame();
 	// add parameters as locales
 	Runtime::ControlFlow::E controlflow = mInterpreter.execute(method, params, result);
 	//popFrame();
 
 	if ( mState == State::Stopping ) {
-		mThreadController->deleteThread(mId);
+		mState = State::Stopped;
 	}
 
 	return controlflow;
@@ -74,7 +77,7 @@ Threads::~Threads()
 
 Common::ThreadId Threads::createThread()
 {
-	Thread* t = new Thread(mThreads.size(), this);
+	Thread* t = new Thread(mThreads.size());
 
 	mThreads.insert(std::make_pair(t->getId(), t));
 

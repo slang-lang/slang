@@ -327,10 +327,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\BoolObject.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\Core\Designtime\BuildInTypes\BoolObject.cpp"
 				>
 				<FileConfiguration
@@ -349,6 +345,10 @@
 						ObjectFile="$(IntDir)\Core\Designtime\BuildInTypes\"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\Core\BuildInObjects\BoolObject.cpp"
+				>
 			</File>
 			<File
 				RelativePath=".\Debugger\BreakPoint.cpp"
@@ -479,10 +479,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\FloatObject.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\Core\Designtime\BuildInTypes\FloatObject.cpp"
 				>
 				<FileConfiguration
@@ -503,7 +499,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\GenericObject.cpp"
+				RelativePath=".\Core\BuildInObjects\FloatObject.cpp"
 				>
 			</File>
 			<File
@@ -527,6 +523,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\Core\BuildInObjects\GenericObject.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\Attributes\ImplementationType.cpp"
 				>
 				<FileConfiguration
@@ -547,10 +547,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\IntegerObject.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\Core\Designtime\BuildInTypes\IntegerObject.cpp"
 				>
 				<FileConfiguration
@@ -569,6 +565,10 @@
 						ObjectFile="$(IntDir)\Core\Designtime\BuildInTypes\"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\Core\BuildInObjects\IntegerObject.cpp"
+				>
 			</File>
 			<File
 				RelativePath=".\Core\BuildInObjects\IntegerObject.cpp"
@@ -603,7 +603,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Method.cpp"
+				RelativePath=".\Core\Common\Method.cpp"
 				>
 			</File>
 			<File
@@ -627,24 +627,8 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\Runtime\Namespace.cpp"
+				RelativePath=".\Core\Common\Namespace.cpp"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\Runtime\"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\Runtime\"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\Core\Object.cpp"
@@ -815,6 +799,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Core\BuildInObjects\StringObject.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\Designtime\BuildInTypes\StringObject.cpp"
 				>
 				<FileConfiguration
@@ -835,11 +823,11 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\StringObject.cpp"
+				RelativePath=".\Core\Symbol.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Symbol.cpp"
+				RelativePath=".\Core\VirtualMachine\Threads.cpp"
 				>
 			</File>
 			<File
@@ -871,18 +859,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\AST\TreeGenerator.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Core\AST\TreeInterpreter.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Core\AST\TreeVisitor.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\Core\Runtime\TypeCast.cpp"
 				>
 				<FileConfiguration
@@ -903,11 +879,11 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\Types.cpp"
+				RelativePath=".\Core\Common\Types.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\UserObject.cpp"
+				RelativePath=".\Core\Types.cpp"
 				>
 			</File>
 			<File
@@ -929,6 +905,10 @@
 						ObjectFile="$(IntDir)\Core\Designtime\BuildInTypes\"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\Core\BuildInObjects\UserObject.cpp"
+				>
 			</File>
 			<File
 				RelativePath=".\Core\VirtualMachine\VirtualMachine.cpp"
@@ -959,10 +939,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\VoidObject.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\Core\Designtime\BuildInTypes\VoidObject.cpp"
 				>
 				<FileConfiguration
@@ -981,6 +957,10 @@
 						ObjectFile="$(IntDir)\Core\Designtime\BuildInTypes\"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\Core\BuildInObjects\VoidObject.cpp"
+				>
 			</File>
 		</Filter>
 		<Filter
@@ -1021,11 +1001,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\BoolObject.h"
+				RelativePath=".\Core\BuildInObjects\BoolObject.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\BoolObject.h"
+				RelativePath=".\Core\Designtime\BuildInTypes\BoolObject.h"
 				>
 			</File>
 			<File
@@ -1049,10 +1029,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\AST\ControlStatements.h"
-				>
-			</File>
-			<File
 				RelativePath=".\Debugger\Debugger.h"
 				>
 			</File>
@@ -1061,11 +1037,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\DoubleObject.h"
+				RelativePath=".\Core\Designtime\BuildInTypes\DoubleObject.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\DoubleObject.h"
+				RelativePath=".\Core\BuildInObjects\DoubleObject.h"
 				>
 			</File>
 			<File
@@ -1089,15 +1065,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\AST\Expression.h"
-				>
-			</File>
-			<File
 				RelativePath=".\Core\Extensions\ExtensionMethod.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Core\BuildInObjects\FloatObject.h"
 				>
 			</File>
 			<File
@@ -1105,11 +1073,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\GenericObject.h"
+				RelativePath=".\Core\BuildInObjects\FloatObject.h"
 				>
 			</File>
 			<File
 				RelativePath=".\Core\Designtime\BuildInTypes\GenericObject.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\BuildInObjects\GenericObject.h"
 				>
 			</File>
 			<File
@@ -1121,11 +1093,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\IntegerObject.h"
+				RelativePath=".\Core\BuildInObjects\IntegerObject.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\IntegerObject.h"
+				RelativePath=".\Core\Designtime\BuildInTypes\IntegerObject.h"
 				>
 			</File>
 			<File
@@ -1149,10 +1121,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\AST\Keywords.h"
-				>
-			</File>
-			<File
 				RelativePath=".\Core\Attributes\LanguageFeatureState.h"
 				>
 			</File>
@@ -1161,7 +1129,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Method.h"
+				RelativePath=".\Core\Common\Method.h"
 				>
 			</File>
 			<File
@@ -1169,11 +1137,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Runtime\Namespace.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Core\AST\Node.h"
+				RelativePath=".\Core\Common\Namespace.h"
 				>
 			</File>
 			<File
@@ -1189,10 +1153,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\AST\Operator.h"
-				>
-			</File>
-			<File
 				RelativePath=".\Core\Runtime\OperatorOverloading.h"
 				>
 			</File>
@@ -1205,11 +1165,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Utils\Position.h"
+				RelativePath=".\Core\Common\Position.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Common\Position.h"
+				RelativePath=".\Core\Utils\Position.h"
 				>
 			</File>
 			<File
@@ -1245,10 +1205,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\AST\Statement.h"
-				>
-			</File>
-			<File
 				RelativePath=".\Core\Designtime\BuildInTypes\StringObject.h"
 				>
 			</File>
@@ -1265,6 +1221,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Core\VirtualMachine\Threads.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\Designtime\Parser\Token.h"
 				>
 			</File>
@@ -1277,18 +1237,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\AST\TreeGenerator.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Core\AST\TreeInterpreter.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Core\AST\TreeVisitor.h"
-				>
-			</File>
-			<File
 				RelativePath=".\Core\Runtime\TypeCast.h"
 				>
 			</File>
@@ -1297,15 +1245,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Core\Common\Types.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\Types.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\UserObject.h"
+				RelativePath=".\Core\BuildInObjects\UserObject.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\UserObject.h"
+				RelativePath=".\Core\Designtime\BuildInTypes\UserObject.h"
 				>
 			</File>
 			<File
@@ -1325,11 +1277,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\VoidObject.h"
+				RelativePath=".\Core\Designtime\BuildInTypes\VoidObject.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\VoidObject.h"
+				RelativePath=".\Core\BuildInObjects\VoidObject.h"
 				>
 			</File>
 		</Filter>
