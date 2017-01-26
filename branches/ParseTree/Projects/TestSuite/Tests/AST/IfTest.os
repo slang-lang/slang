@@ -17,8 +17,16 @@ public void Main(int argc = 1, string args = "") {
 		print("else if");
 	}
 
-	if ( true ) {
+	if ( true || completeEval() ) {
 		print("if");
 	}
+
+	completeEval();
+}
+
+private bool completeEval() const {
+	print("completeEval()");
+
+	return false;
 }
 

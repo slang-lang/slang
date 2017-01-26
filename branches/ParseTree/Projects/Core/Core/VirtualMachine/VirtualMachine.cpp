@@ -6,6 +6,7 @@
 #include <fstream>
 
 // Project includes
+#include <Core/AST/TreeGenerator.h>
 #include <Core/AST/TreeInterpreter.h>
 #include <Core/Common/Exceptions.h>
 #include <Core/Defines.h>
@@ -108,6 +109,9 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 	}
 
 #ifdef GENERATE_PARSE_TREE
+
+	AST::TreeGenerator tg;
+	main->setRootNode(tg.generate(main->getTokens()));
 
 	AST::TreeInterpreter ti;
 	Runtime::ControlFlow::E controlflow = ti.execute(main, params, result);

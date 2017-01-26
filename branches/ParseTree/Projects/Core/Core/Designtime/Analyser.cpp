@@ -500,10 +500,12 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 	method->setVisibility(visibility);
 
 #ifdef GENERATE_PARSE_TREE
+/*
 
 	AST::TreeGenerator tg;
 	method->setRootNode(tg.generate(tokens));
 
+*/
 #endif
 
 	mScope->defineMethod(name, method);

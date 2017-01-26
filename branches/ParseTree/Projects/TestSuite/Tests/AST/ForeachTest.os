@@ -1,15 +1,23 @@
 #!/usr/local/bin/oscript
 
-import System.Collections.GenericStack;
+import System.Collections.List;
+import System.String;
+import System.StringIterator;
 
 public void Main(int argc = 1, string args = "") {
-	GenericStack<string> strings = new GenericStack<string>();
+	print("Main(" + argc + ", \"" + args + "\")");
 
-	strings.push("664");
-	strings.push("173");
-	strings.push("1389");
+/*
+	List list = new List();
 
-	foreach ( string s : strings ) {
+	list.push_back("664");
+	list.push_back("173");
+	list.push_back("1389");
+*/
+
+	String list = new String("1 2 3");
+
+	foreach ( string s : list ) {
 		print("s = " + s);
 	}
 }

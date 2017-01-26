@@ -78,6 +78,7 @@ public:
 };
 
 
+/*
 class ForeachStatement : public Statement
 {
 public:
@@ -90,6 +91,22 @@ public:
 
 public:
 	Token mLoopVariable;
+	Node* mStatement;
+	TypeDeclaration* mTypeDeclaration;
+};
+*/
+class ForeachStatement : public Statement
+{
+public:
+	ForeachStatement(TypeDeclaration* typeDeclaration, VariableExpression* loopVariable, Node* loopStatement)
+	: Statement(StatementType::ForeachStatement),
+	  mLoopVariable(loopVariable),
+	  mStatement(loopStatement),
+	  mTypeDeclaration(typeDeclaration)
+	{ }
+
+public:
+	VariableExpression* mLoopVariable;
 	Node* mStatement;
 	TypeDeclaration* mTypeDeclaration;
 };

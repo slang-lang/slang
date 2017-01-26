@@ -38,7 +38,7 @@ TreeInterpreter::TreeInterpreter()
 : mControlFlow(Runtime::ControlFlow::Normal),
   mOwner(0),
   mRepository(0),
-  mRootNode(0)
+  mReturnValue(0)
 {
 	mRepository = Controller::Instance().repository();
 }
@@ -337,8 +337,6 @@ void TreeInterpreter::evaluateVariable(VariableExpression* exp, Runtime::Object*
 
 Runtime::ControlFlow::E TreeInterpreter::execute(Common::Method* method, const ParameterList& params, Runtime::Object* result)
 {
-	(void)result;
-
 	if ( method->isAbstract() ) {
 		throw Common::Exceptions::AbstractException("cannot execute abstract method '" + method->getFullScopeName() + "'");
 	}
@@ -396,14 +394,14 @@ Runtime::ControlFlow::E TreeInterpreter::execute(Common::Method* method, const P
 		}
 	}
 
-	mRootNode = method->getRootNode();
+	mReturnValue = result;
 
 	// record stack
 	Controller::Instance().stack()->push(&scope, executedParams);
 	// notify debugger
 	Core::Debugger::Instance().notifyEnter(&scope, Core::Debugger::immediateBreakToken);
 	// interpret scope tokens
-	process(mRootNode);
+	process(method->getRootNode());
 
 	mOwner = previousOwner;
 
@@ -848,6 +846,10 @@ void TreeInterpreter::visitForeach(ForeachStatement* node)
 
 	IScope* scope = getScope();
 
+	Runtime::Object collection;
+	evaluate(node->mLoopVariable, &collection);
+
+/*
 	// resolve loop collection
 	// {
 	Symbol* symbol = scope->resolve(node->mLoopVariable.content(), false, Visibility::Private);
@@ -860,10 +862,11 @@ void TreeInterpreter::visitForeach(ForeachStatement* node)
 		throw Runtime::Exceptions::InvalidSymbol("invalid symbol type provided", node->mLoopVariable.position());
 	}
 	// }
+*/
 
 	// get collection's forward iterator
 	Runtime::Object iterator;
-	collection->execute(&iterator, "getIterator", ParameterList());
+	collection.execute(&iterator, "getIterator", ParameterList());
 
 	for  ( ; ; ) {
 		// Setup
@@ -952,7 +955,13 @@ void TreeInterpreter::visitPrint(PrintStatement* node)
 
 void TreeInterpreter::visitReturn(ReturnStatement* node)
 {
-	std::cout << "return " << printExpression(node->mExpression) << ";" << std::endl;
+	try {
+		evaluate(node->mExpression, mReturnValue);
+	}
+	catch ( Runtime::ControlFlow::E &e ) {
+		mControlFlow = e;
+		return;
+	}
 
 	mControlFlow = Runtime::ControlFlow::Return;
 }

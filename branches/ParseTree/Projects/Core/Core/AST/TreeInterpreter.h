@@ -108,7 +108,7 @@ private:	// Interpreter stuff
 	Runtime::ControlFlow::E mControlFlow;
 	IScope* mOwner;
 	Repository *mRepository;
-	Statements* mRootNode;
+	Runtime::Object* mReturnValue;
 };
 
 

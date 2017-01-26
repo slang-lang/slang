@@ -185,7 +185,7 @@ void PrintVisitor::visitForeach(ForeachStatement *node)
 
 	visitStatement(node->mTypeDeclaration);
 
-	std::cout << " : " << node->mLoopVariable.content() << " ) ";
+	std::cout << " : "; printExpression(node->mLoopVariable);
 
 	visit(node->mStatement);
 }

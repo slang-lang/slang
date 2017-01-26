@@ -690,7 +690,7 @@ Statement* TreeGenerator::process_foreach(TokenIterator& token)
 	Node* loopBlock = process_statement(token);
 	// }
 
-	return new ForeachStatement(typeDeclaration, (*identifier), loopBlock);
+	return new ForeachStatement(typeDeclaration, new VariableExpression(*identifier), loopBlock);
 }
 
 /*
