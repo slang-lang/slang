@@ -314,7 +314,7 @@ void TreeInterpreter::evaluateUnaryExpression(UnaryExpression* exp, Runtime::Obj
 
 		// default handling
 		// {
-		default: throw Common::Exceptions::NotSupported("binary expression with " + exp->mToken.content() + " not supported (by now)");
+		default: throw Common::Exceptions::NotSupported("expression with " + exp->mToken.content() + " not supported (by now)");
 		// }
 	}
 }
