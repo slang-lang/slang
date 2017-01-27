@@ -730,6 +730,7 @@ void TreeInterpreter::visit(Node* node)
 void TreeInterpreter::visitAssert(AssertStatement* node)
 {
 	Runtime::Object condition;
+
 	try {
 		evaluate(node->mExpression, &condition);
 	}
@@ -774,6 +775,7 @@ void TreeInterpreter::visitContinue(ContinueStatement* /*node*/)
 void TreeInterpreter::visitDelete(DeleteStatement* node)
 {
 	Runtime::Object obj;
+
 	try {
 		evaluate(node->mExpression, &obj);
 	}
@@ -782,7 +784,9 @@ void TreeInterpreter::visitDelete(DeleteStatement* node)
 		return;
 	}
 
-	Controller::Instance().memory()->remove(obj.getReference());
+	//Controller::Instance().memory()->remove(obj.getReference());
+
+	obj = Runtime::Object();
 }
 
 void TreeInterpreter::visitExit(ExitStatement* /*node*/)
@@ -802,10 +806,10 @@ void TreeInterpreter::visitExpression(Expression* expression)
 
 void TreeInterpreter::visitFor(ForStatement* node)
 {
+	//mControlFlow = Runtime::ControlFlow::Normal;	// reset control flow to normal
+
 	// execute initialization statement
 	visitStatement(static_cast<Statement*>(node->mInitialization));
-
-	mControlFlow = Runtime::ControlFlow::Normal;	// reset control flow to normal
 
 	Runtime::Object condition;
 
@@ -842,27 +846,12 @@ void TreeInterpreter::visitFor(ForStatement* node)
 
 void TreeInterpreter::visitForeach(ForeachStatement* node)
 {
-	mControlFlow = Runtime::ControlFlow::Normal;	// reset control flow to normal
+	//mControlFlow = Runtime::ControlFlow::Normal;	// reset control flow to normal
 
 	IScope* scope = getScope();
 
 	Runtime::Object collection;
 	evaluate(node->mLoopVariable, &collection);
-
-/*
-	// resolve loop collection
-	// {
-	Symbol* symbol = scope->resolve(node->mLoopVariable.content(), false, Visibility::Private);
-	if ( !symbol ) {
-		throw Runtime::Exceptions::InvalidSymbol("symbol '" + node->mLoopVariable.content() + "' not found", node->mLoopVariable.position());
-	}
-
-	Runtime::Object* collection = dynamic_cast<Runtime::Object*>(symbol);
-	if ( !collection ) {
-		throw Runtime::Exceptions::InvalidSymbol("invalid symbol type provided", node->mLoopVariable.position());
-	}
-	// }
-*/
 
 	// get collection's forward iterator
 	Runtime::Object iterator;
@@ -942,6 +931,7 @@ void TreeInterpreter::visitOperator(Operator* /*op*/)
 void TreeInterpreter::visitPrint(PrintStatement* node)
 {
 	Runtime::Object text;
+
 	try {
 		evaluate(node->mExpression, &text);
 	}
@@ -1186,8 +1176,7 @@ void TreeInterpreter::visitTypeDeclaration(TypeDeclaration* node)
 
 void TreeInterpreter::visitWhile(WhileStatement* node)
 {
-	// reset control flow to normal
-	mControlFlow = Runtime::ControlFlow::Normal;
+	//mControlFlow = Runtime::ControlFlow::Normal;	// reset control flow to normal
 
 	Runtime::Object condition;
 
