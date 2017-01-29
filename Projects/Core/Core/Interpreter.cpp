@@ -736,6 +736,8 @@ void Interpreter::process(Object *result, TokenIterator& token, TokenIterator en
 
 		mDebugger->notify(getScope(), (*token));		// notify debugger
 
+		//process_statement(token, result);
+
 		switch ( token->type() ) {
 			case Token::Type::IDENTIFER:
 			case Token::Type::PROTOTYPE:
@@ -874,12 +876,10 @@ void Interpreter::process_exit(TokenIterator& /*token*/)
  */
 void Interpreter::process_for(TokenIterator& token, Object* result)
 {
-	expect(Token::Type::PARENTHESIS_OPEN, token++);
+	expect(Token::Type::PARENTHESIS_OPEN, token);
 
-	TokenIterator initializationBegin = token;
-
+	TokenIterator initializationBegin = ++token;
 	const TokenIterator conditionBegin = ++findNext(initializationBegin, Token::Type::SEMICOLON);
-
 	const TokenIterator increaseBegin = ++findNext(conditionBegin, Token::Type::SEMICOLON);
 
 	// find next open curly bracket '{'
@@ -894,7 +894,7 @@ void Interpreter::process_for(TokenIterator& token, Object* result)
 	// process our declaration part
 	// {
 	Object declarationTmp;
-	process(&declarationTmp, initializationBegin, conditionBegin, Token::Type::SEMICOLON);
+	process(&declarationTmp, initializationBegin, conditionBegin);
 	// }
 
 	++bodyBegin;		// don't collect scope token
@@ -1491,6 +1491,32 @@ void Interpreter::process_scope(TokenIterator& token, Object* result)
 	mControlFlow = interpret(scopeTokens, result);
 
 	expect(Token::Type::BRACKET_CURLY_CLOSE, token);
+}
+
+/*
+ * process a single statement
+ */
+void Interpreter::process_statement(TokenIterator& token, Object* result)
+{
+	switch ( token->type() ) {
+		case Token::Type::IDENTIFER:
+		case Token::Type::PROTOTYPE:
+		case Token::Type::TYPE:
+			process_identifier(token, result);
+			break;
+		case Token::Type::KEYWORD:
+			process_keyword(token, result);
+			break;
+		case Token::Type::BRACKET_CURLY_OPEN:
+			process_scope(token, result);	// this opens a new scope
+			break;
+		case Token::Type::SEMICOLON:
+			break;
+		default:
+			throw Common::Exceptions::SyntaxError("invalid token '" + token->content() + "' found", token->position());
+	}
+
+	++token;	// consume token
 }
 
 /*
