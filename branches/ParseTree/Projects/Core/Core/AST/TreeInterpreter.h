@@ -25,14 +25,19 @@
 namespace ObjectiveScript {
 
 // Forward declarations
-class Repository;
 namespace Common {
 	class Method;
 	class Namespace;
 }
+namespace Core {
+	class Debugger;
+}
+class Memory;
 namespace Runtime {
 	class Object;
 }
+class Repository;
+class Stack;
 
 namespace AST {
 
@@ -52,11 +57,11 @@ public: // Execution
 private:
 	void process(Statements* statements);
 
-	void visit(Node* node);
+	inline void visit(Node* node);
 
 	void visitExpression(Expression* expression);
 	void visitOperator(Operator* op);
-	void visitStatement(Statement* node);
+	inline void visitStatement(Statement* node);
 
 	void visitAssert(AssertStatement* node);
 	void visitAssignment(Assignment* node);
@@ -107,8 +112,13 @@ private:
 private:	// Interpreter stuff
 	Runtime::ControlFlow::E mControlFlow;
 	IScope* mOwner;
-	Repository *mRepository;
 	Runtime::Object* mReturnValue;
+
+private:	// Virtual machine stuff
+	Core::Debugger* mDebugger;
+	Memory* mMemory;
+	Repository *mRepository;
+	Stack* mStack;
 };
 
 

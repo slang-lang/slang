@@ -37,10 +37,13 @@ namespace AST {
 TreeInterpreter::TreeInterpreter()
 : mControlFlow(Runtime::ControlFlow::Normal),
   mOwner(0),
-  mRepository(0),
   mReturnValue(0)
 {
+	// initialize virtual machine stuff
+	mDebugger = &Core::Debugger::Instance();
+	mMemory = Controller::Instance().memory();
 	mRepository = Controller::Instance().repository();
+	mStack = Controller::Instance().stack();
 }
 
 TreeInterpreter::~TreeInterpreter()
@@ -370,7 +373,7 @@ Runtime::ControlFlow::E TreeInterpreter::execute(Common::Method* method, const P
 
 				if ( it->reference().isValid() ) {
 					object->assign(
-						*Controller::Instance().memory()->get(it->reference())
+						*mMemory->get(it->reference())
 					);
 				}
 
@@ -397,13 +400,21 @@ Runtime::ControlFlow::E TreeInterpreter::execute(Common::Method* method, const P
 	mReturnValue = result;
 
 	// record stack
-	Controller::Instance().stack()->push(&scope, executedParams);
+	mStack->push(&scope, executedParams);
+
 	// notify debugger
-	Core::Debugger::Instance().notifyEnter(&scope, Core::Debugger::immediateBreakToken);
+	mDebugger->notifyEnter(&scope, Core::Debugger::immediateBreakToken);
+
 	// interpret scope tokens
 	process(method->getRootNode());
 
+	// notify debugger
+	mDebugger->notifyExit(&scope, Core::Debugger::immediateBreakToken);
+
 	mOwner = previousOwner;
+
+	// unwind stack
+	mStack->pop();
 
 	return mControlFlow;
 }
@@ -492,9 +503,7 @@ Runtime::Object* TreeInterpreter::getEnclosingObject(IScope* scope) const
 
 inline IScope* TreeInterpreter::getScope() const
 {
-	StackFrame* stack = Controller::Instance().stack()->current();
-
-	return stack->getScope();
+	return mStack->current()->getScope();
 }
 
 inline Symbol* TreeInterpreter::identify(TokenIterator& token) const
@@ -623,9 +632,7 @@ Symbol* TreeInterpreter::identifyMethod(TokenIterator& token, const ParameterLis
 
 void TreeInterpreter::popScope()
 {
-	StackFrame* stack = Controller::Instance().stack()->current();
-
-	stack->popScope();
+	mStack->current()->popScope();
 }
 
 std::string TreeInterpreter::printExpression(Node* node) const
@@ -697,7 +704,7 @@ void TreeInterpreter::process(Statements* statements)
 
 void TreeInterpreter::pushScope(IScope* scope)
 {
-	StackFrame* stack = Controller::Instance().stack()->current();
+	StackFrame* stack = mStack->current();
 
 	bool allowDelete = !scope;
 
@@ -796,18 +803,19 @@ void TreeInterpreter::visitExit(ExitStatement* /*node*/)
 
 void TreeInterpreter::visitExpression(Expression* expression)
 {
-	//(void)expression;
-	//throw Common::Exceptions::SyntaxError("cannot process standalone expression");
-
-
 	Runtime::Object tmp;
-	evaluate(expression, &tmp);
+
+	try {
+		evaluate(expression, &tmp);
+	}
+	catch ( Runtime::ControlFlow::E &e ) {
+		mControlFlow = e;
+		return;
+	}
 }
 
 void TreeInterpreter::visitFor(ForStatement* node)
 {
-	//mControlFlow = Runtime::ControlFlow::Normal;	// reset control flow to normal
-
 	// execute initialization statement
 	visitStatement(static_cast<Statement*>(node->mInitialization));
 
@@ -828,7 +836,7 @@ void TreeInterpreter::visitFor(ForStatement* node)
 		}
 
 		// execute compound statement
-		visit(node->mStatement);
+		visitStatement(static_cast<Statement*>(node->mStatement));
 
 		// check (and reset) control flow
 		switch ( mControlFlow ) {
@@ -846,8 +854,6 @@ void TreeInterpreter::visitFor(ForStatement* node)
 
 void TreeInterpreter::visitForeach(ForeachStatement* node)
 {
-	//mControlFlow = Runtime::ControlFlow::Normal;	// reset control flow to normal
-
 	IScope* scope = getScope();
 
 	Runtime::Object collection;
@@ -958,7 +964,7 @@ void TreeInterpreter::visitReturn(ReturnStatement* node)
 
 void TreeInterpreter::visitStatement(Statement *node)
 {
-	Core::Debugger::Instance().notify(getScope(), Token());		// notify debugger
+	mDebugger->notify(getScope(), Token());		// notify debugger
 
 	assert(node);
 
@@ -1110,10 +1116,10 @@ void TreeInterpreter::visitThrow(ThrowStatement* node)
 	}
 
 	mControlFlow = Runtime::ControlFlow::Throw;
-	Controller::Instance().stack()->exception() = Runtime::ExceptionData(data, Common::Position());
+	mStack->exception() = Runtime::ExceptionData(data, Common::Position());
 
 	// notify our debugger that an exception has been thrown
-	Core::Debugger::Instance().notifyExceptionThrow(getScope(), Token());
+	mDebugger->notifyExceptionThrow(getScope(), Token());
 }
 
 void TreeInterpreter::visitTry(TryStatement* node)
@@ -1124,7 +1130,7 @@ void TreeInterpreter::visitTry(TryStatement* node)
 	// execute exception handling only if an exception occurred
 	if ( mControlFlow == Runtime::ControlFlow::Throw && !node->mCatchStatements.empty() ) {
 		// get exception data
-		Runtime::Object* exception = Controller::Instance().stack()->exception().getData();
+		Runtime::Object* exception = mStack->exception().getData();
 
 		// determine correct catch-block (if a correct one exists)
 		for ( CatchStatements::const_iterator it = node->mCatchStatements.begin(); it != node->mCatchStatements.end(); ++it ) {
@@ -1176,8 +1182,6 @@ void TreeInterpreter::visitTypeDeclaration(TypeDeclaration* node)
 
 void TreeInterpreter::visitWhile(WhileStatement* node)
 {
-	//mControlFlow = Runtime::ControlFlow::Normal;	// reset control flow to normal
-
 	Runtime::Object condition;
 
 	for  ( ; ; ) {
@@ -1196,7 +1200,7 @@ void TreeInterpreter::visitWhile(WhileStatement* node)
 		}
 
 		// execute compound statement
-		visit(node->mStatements);
+		visitStatement(static_cast<Statement*>(node->mStatements));
 
 		// check (and reset) control flow
 		switch ( mControlFlow ) {

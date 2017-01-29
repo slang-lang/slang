@@ -11,7 +11,6 @@
 #include <Core/Runtime/ControlFlow.h>
 #include <Core/Runtime/ExceptionData.h>
 #include <Core/Scope.h>
-#include <Core/VirtualMachine/Stack.h>
 #include "Statement.h"
 
 // Forward declarations
@@ -22,14 +21,15 @@
 namespace ObjectiveScript {
 
 // Forward declarations
-class MethodScope;
-class Repository;
 namespace Common {
 	class Namespace;
 }
+class MethodScope;
 namespace Runtime {
 	class Object;
 }
+class Repository;
+class Stack;
 
 namespace AST {
 
@@ -108,7 +108,10 @@ private: // Execution
 
 private:
 	IScope* mOwner;
-	Repository *mRepository;
+
+private:	// Virtual machine stuff
+	Repository* mRepository;
+	Stack* mStack;
 };
 
 

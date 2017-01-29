@@ -21,6 +21,7 @@
 #include <Core/Runtime/OperatorOverloading.h>
 #include <Core/Runtime/TypeCast.h>
 #include <Core/VirtualMachine/Controller.h>
+#include <Core/VirtualMachine/Stack.h>
 #include <Debugger/Debugger.h>
 #include <Tools/Printer.h>
 #include <Utils.h>
@@ -39,6 +40,7 @@ Interpreter::Interpreter()
   mOwner(0)
 {
 	mRepository = Controller::Instance().repository();
+	mStack = Controller::Instance().stack();
 }
 
 Interpreter::~Interpreter()
@@ -120,7 +122,7 @@ ControlFlow::E Interpreter::execute(Common::Method* method, const ParameterList&
 	}
 
 	// record stack
-	Controller::Instance().stack()->push(&scope, executedParams);
+	mStack->push(&scope, executedParams);
 	// notify debugger
 	Core::Debugger::Instance().notifyEnter(&scope, Core::Debugger::immediateBreakToken);
 	// interpret scope tokens
@@ -180,7 +182,7 @@ ControlFlow::E Interpreter::execute(Common::Method* method, const ParameterList&
 	// notify debugger
 	Core::Debugger::Instance().notifyExit(getScope(), Core::Debugger::immediateBreakToken);
 	// unwind stack trace
-	Controller::Instance().stack()->pop();
+	mStack->pop();
 
 	mOwner = previousOwner;
 
@@ -285,16 +287,12 @@ Object* Interpreter::getEnclosingObject(IScope* scope) const
 
 IScope* Interpreter::getScope() const
 {
-	StackFrame* stack = Controller::Instance().stack()->current();
-
-	return stack->getScope();
+	return mStack->current()->getScope();
 }
 
 const TokenList& Interpreter::getTokens() const
 {
-	StackFrame* stack = Controller::Instance().stack()->current();
-
-	return stack->getTokens();
+	return mStack->current()->getTokens();
 }
 
 inline Symbol* Interpreter::identify(TokenIterator& token) const
@@ -745,16 +743,12 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 
 void Interpreter::popScope()
 {
-	StackFrame* stack = Controller::Instance().stack()->current();
-
-	stack->popScope();
+	mStack->current()->popScope();
 }
 
 void Interpreter::popTokens()
 {
-	StackFrame* stack = Controller::Instance().stack()->current();
-
-	stack->popTokens();
+	mStack->current()->popTokens();
 }
 
 /*
@@ -1744,7 +1738,7 @@ void Interpreter::process_throw(TokenIterator& token, Object* /*result*/)
 			return;
 		}
 
-		Controller::Instance().stack()->exception() = ExceptionData(data, token->position());
+		mStack->exception() = ExceptionData(data, token->position());
 	}
 
 	mControlFlow = ControlFlow::Throw;
@@ -1825,7 +1819,7 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 			mControlFlow = ControlFlow::Normal;
 		}
 
-		Object* exception = Controller::Instance().stack()->exception().getData();
+		Object* exception = mStack->exception().getData();
 
 		for ( std::list<TokenIterator>::const_iterator it = catchTokens.begin(); it != catchTokens.end(); ++it ) {
 			TokenIterator catchIt = (*it);
@@ -2091,7 +2085,7 @@ void Interpreter::process_while(TokenIterator& token, Object* result)
 
 void Interpreter::pushScope(IScope* scope)
 {
-	StackFrame* stack = Controller::Instance().stack()->current();
+	StackFrame* stack = mStack->current();
 
 	bool allowDelete = !scope;
 
@@ -2104,9 +2098,7 @@ void Interpreter::pushScope(IScope* scope)
 
 void Interpreter::pushTokens(const TokenList& tokens)
 {
-	StackFrame* stack = Controller::Instance().stack()->current();
-
-	stack->pushTokens(tokens);
+	mStack->current()->pushTokens(tokens);
 }
 
 

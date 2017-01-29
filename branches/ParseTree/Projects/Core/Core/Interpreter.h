@@ -9,7 +9,6 @@
 #include <Core/Designtime/Parser/Token.h>
 #include <Core/Runtime/ControlFlow.h>
 #include <Core/Runtime/ExceptionData.h>
-#include <Core/VirtualMachine/Stack.h>
 #include "Parameter.h"
 #include "Scope.h"
 
@@ -27,6 +26,7 @@ namespace Common {
 
 // Forward declarations
 class Repository;
+class Stack;
 
 namespace Runtime {
 
@@ -108,7 +108,8 @@ private: // Execution
 private:
 	ControlFlow::E mControlFlow;
 	IScope* mOwner;
-	Repository *mRepository;
+	Repository* mRepository;
+	Stack* mStack;
 };
 
 

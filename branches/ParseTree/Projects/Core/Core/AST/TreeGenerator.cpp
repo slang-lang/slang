@@ -21,6 +21,7 @@
 #include <Core/Runtime/TypeCast.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
+#include <Core/VirtualMachine/Stack.h>
 #include <Utils.h>
 #include <Core/Designtime/Exceptions.h>
 
@@ -38,7 +39,9 @@ namespace AST {
 TreeGenerator::TreeGenerator()
 : mOwner(0)
 {
+	// initialize virtual machine stuff
 	mRepository = Controller::Instance().repository();
+	mStack = Controller::Instance().stack();
 }
 
 TreeGenerator::~TreeGenerator()
@@ -160,16 +163,12 @@ Runtime::Object* TreeGenerator::getEnclosingObject(IScope* scope) const
 
 inline IScope* TreeGenerator::getScope() const
 {
-	StackFrame* stack = Controller::Instance().stack()->current();
-
-	return stack->getScope();
+	return mStack->current()->getScope();
 }
 
 const TokenList& TreeGenerator::getTokens() const
 {
-	StackFrame* stack = Controller::Instance().stack()->current();
-
-	return stack->getTokens();
+	return mStack->current()->getTokens();
 }
 
 inline Symbol* TreeGenerator::identify(TokenIterator& token) const
@@ -462,9 +461,7 @@ Node* TreeGenerator::parseTerm(TokenIterator& start)
 
 void TreeGenerator::popTokens()
 {
-	StackFrame* stack = Controller::Instance().stack()->current();
-
-	stack->popTokens();
+	mStack->current()->popTokens();
 }
 
 /*
@@ -1355,9 +1352,7 @@ Statement* TreeGenerator::process_while(TokenIterator& token)
 
 void TreeGenerator::pushTokens(const TokenList& tokens)
 {
-	StackFrame* stack = Controller::Instance().stack()->current();
-
-	stack->pushTokens(tokens);
+	mStack->current()->pushTokens(tokens);
 }
 
 
