@@ -10,7 +10,6 @@
 #include <Core/Designtime/Parser/Token.h>
 #include <Core/Runtime/ControlFlow.h>
 #include <Core/Runtime/ExceptionData.h>
-#include <Core/VirtualMachine/Stack.h>
 #include "Parameter.h"
 #include "Scope.h"
 
@@ -28,6 +27,7 @@ namespace Common {
 
 // Forward declarations
 class Repository;
+class Stack;
 
 namespace Runtime {
 
@@ -85,11 +85,6 @@ private: // Execution
 	void parseTerm(Object* result, TokenIterator& start);
 	// }
 
-	// Repository
-	// {
-	Repository* getRepository() const;
-	// }
-
 	// Scope stack
 	// {
 	IScope* getScope() const;
@@ -108,12 +103,12 @@ private: // Execution
 
 	NamedScope* getEnclosingMethodScope(IScope* scope) const;
 	Common::Namespace* getEnclosingNamespace(IScope* scope) const;
-	Object* getEnclosingObject(IScope* scope) const;
 
 private:
 	ControlFlow::E mControlFlow;
 	IScope* mOwner;
-	Repository *mRepository;
+	Repository* mRepository;
+	Stack* mStack;
 };
 
 
