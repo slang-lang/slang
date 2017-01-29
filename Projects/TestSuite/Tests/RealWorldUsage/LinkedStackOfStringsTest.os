@@ -51,7 +51,7 @@ private bool TestCase2() {
 		assert( stack.size() == 3 );
 		assert( stack.peek() == "3" );
 
-		System.Iterator it = stack.getIterator();
+		Iterator it = stack.getIterator();
 		while ( it.current() ) {
 			print(string it.current());
 
