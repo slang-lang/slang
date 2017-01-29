@@ -11,6 +11,7 @@
 #include <Core/Interpreter.h>
 #include <Core/Parameter.h>
 #include <Core/Runtime/ControlFlow.h>
+#include <Core/VirtualMachine/Stack.h>
 
 // Forward declarations
 
