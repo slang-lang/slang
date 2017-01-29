@@ -9,6 +9,7 @@
 #include <Core/Designtime/Parser/Token.h>
 #include <Core/Runtime/ControlFlow.h>
 #include <Core/Runtime/ExceptionData.h>
+#include <Debugger/Debugger.h>
 #include "Parameter.h"
 #include "Scope.h"
 
@@ -23,8 +24,10 @@ namespace ObjectiveScript {
 namespace Common {
 	class Namespace;
 }
-
-// Forward declarations
+namespace Core {
+	class Debugger;
+}
+class Memory;
 class Repository;
 class Stack;
 
@@ -105,9 +108,13 @@ private: // Execution
 	Common::Namespace* getEnclosingNamespace(IScope* scope = 0) const;
 	Object* getEnclosingObject(IScope* scope = 0) const;
 
-private:
+private:	// internal stuff
 	ControlFlow::E mControlFlow;
 	IScope* mOwner;
+
+private:	// Virtual machine stuff
+	Core::Debugger* mDebugger;
+	Memory* mMemory;
 	Repository* mRepository;
 	Stack* mStack;
 };
