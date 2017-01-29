@@ -767,28 +767,6 @@ void Interpreter::process(Object *result, TokenIterator& token, TokenIterator en
 		mDebugger->notify(getScope(), (*token));                // notify debugger
 
 		process_statement(token, result);
-
-/*
-		switch ( token->type() ) {
-			case Token::Type::IDENTIFER:
-			case Token::Type::PROTOTYPE:
-			case Token::Type::TYPE:
-				process_identifier(token, result);
-				break;
-			case Token::Type::KEYWORD:
-				process_keyword(token, result);
-				break;
-			case Token::Type::BRACKET_CURLY_OPEN:
-				process_scope(token, result);	// this opens a new scope
-				break;
-			case Token::Type::SEMICOLON:
-				break;
-			default:
-				throw Common::Exceptions::SyntaxError("invalid token '" + token->content() + "' found", token->position());
-		}
-
-		++token;	// consume token
-*/
 	}
 }
 
