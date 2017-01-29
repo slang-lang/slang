@@ -39,6 +39,9 @@ Interpreter::Interpreter()
 : mControlFlow(ControlFlow::Normal),
   mOwner(0)
 {
+	// initialize virtual machine stuff
+	mDebugger = &Core::Debugger::Instance();
+	mMemory = Controller::Instance().memory();
 	mRepository = Controller::Instance().repository();
 	mStack = Controller::Instance().stack();
 }
@@ -85,7 +88,7 @@ ControlFlow::E Interpreter::execute(Common::Method* method, const ParameterList&
 				object = mRepository->createInstance(it->type(), it->name(), PrototypeConstraints());
 
 				if ( it->reference().isValid() ) {
-					object->assign(*Controller::Instance().memory()->get(it->reference()));
+					object->assign(*mMemory->get(it->reference()));
 				}
 
 				object->setConst(it->isConst());
@@ -100,9 +103,7 @@ ControlFlow::E Interpreter::execute(Common::Method* method, const ParameterList&
 #ifdef ALLOW_BY_VALUE_COPY
 					OSwarn("by value call for object in " + scope.ToString());
 
-					object->copy(
-						*Controller::Instance().memory()->get(it->reference())
-					);
+					object->copy(*mMemory->get(it->reference()));
 #else
 					throw Common::Exceptions::NotSupported("by value calls not allowed for objects", getTokens().begin()->position());
 #endif
@@ -124,7 +125,7 @@ ControlFlow::E Interpreter::execute(Common::Method* method, const ParameterList&
 	// record stack
 	mStack->push(&scope, executedParams);
 	// notify debugger
-	Core::Debugger::Instance().notifyEnter(&scope, Core::Debugger::immediateBreakToken);
+	mDebugger->notifyEnter(&scope, Core::Debugger::immediateBreakToken);
 	// interpret scope tokens
 	mControlFlow = interpret(getTokens(), result);
 
@@ -180,7 +181,7 @@ ControlFlow::E Interpreter::execute(Common::Method* method, const ParameterList&
 	}
 
 	// notify debugger
-	Core::Debugger::Instance().notifyExit(getScope(), Core::Debugger::immediateBreakToken);
+	mDebugger->notifyExit(getScope(), Core::Debugger::immediateBreakToken);
 	// unwind stack trace
 	mStack->pop();
 
@@ -733,7 +734,7 @@ void Interpreter::process(Object *result, TokenIterator& token, TokenIterator en
 			break;		// control flow has been broken, time to stop processing
 		}
 
-		Core::Debugger::Instance().notify(getScope(), (*token));		// notify debugger
+		mDebugger->notify(getScope(), (*token));		// notify debugger
 
 		switch ( token->type() ) {
 			case Token::Type::IDENTIFER:
@@ -1675,7 +1676,7 @@ void Interpreter::process_throw(TokenIterator& token, Object* /*result*/)
 	expect(Token::Type::SEMICOLON, token);
 
 	// notify our debugger that an exception has been thrown
-	Core::Debugger::Instance().notifyExceptionThrow(getScope(), (*token));
+	mDebugger->notifyExceptionThrow(getScope(), (*token));
 }
 
 /*
@@ -1788,7 +1789,7 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 			}
 
 			// notify our debugger that an exception has been caught
-			Core::Debugger::Instance().notifyExceptionCatch(getScope(), (*catchIt));
+			mDebugger->notifyExceptionCatch(getScope(), (*catchIt));
 
 			expect(Token::Type::BRACKET_CURLY_OPEN, catchIt);
 
