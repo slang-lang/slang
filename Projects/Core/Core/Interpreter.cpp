@@ -1024,7 +1024,7 @@ void Interpreter::process_foreach(TokenIterator& token, Object* result)
 
 		// create and define loop variable
 		TokenIterator typedefItCopy = typedefIt;
-		Object* loop = process_type(typedefItCopy, symbol);
+		Object* loop = process_type(typedefItCopy, symbol, false);
 
 		// get current item
 		iterator.execute(loop, "next", ParameterList());
@@ -1796,7 +1796,7 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 				}
 
 				// create new exception type instance
-				Object* type = process_type(catchIt, symbol);
+				Object* type = process_type(catchIt, symbol, false);
 
 				expect(Token::Type::PARENTHESIS_CLOSE, catchIt++);
 
@@ -1880,7 +1880,7 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
  * syntax:
  * <type> [ "<" <type> ">" ] <identifier> [= <initialization>]
  */
-Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol)
+Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol, bool allowInitialization)
 {
 	bool isConst = false;
 	bool isReference = false;
@@ -1915,6 +1915,11 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol)
 
 	TokenIterator assign = getTokens().end();
 	if ( token->type() == Token::Type::ASSIGN ) {
+		if ( !allowInitialization ) {
+			// type declaration without initialization has been requested
+			throw Common::Exceptions::NotSupported("type initialization is not allowed here", token->position());
+		}
+
 		assign = ++token;
 	}
 

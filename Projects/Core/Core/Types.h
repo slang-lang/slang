@@ -3,11 +3,17 @@
 #define ObjectiveScript_Core_Types_h
 
 
+// Defines
+#define USE_ORDERED_COLLECTION
+
 // Library includes
 #include <list>
-#include <set>
+#ifdef USE_ORDERED_COLLECTION
+# include <set>
+#else
+#	include <unordered_set>
+#endif
 #include <string>
-#include <unordered_set>
 
 // Project includes
 #include "Parameter.h"
@@ -19,8 +25,11 @@
 
 
 typedef std::list<std::string> StringList;
-//typedef std::set<std::string> StringSet;
+#ifdef USE_ORDERED_COLLECTION
+typedef std::set<std::string> StringSet;
+#else
 typedef std::unordered_set<std::string> StringSet;
+#endif
 
 
 namespace ObjectiveScript {
