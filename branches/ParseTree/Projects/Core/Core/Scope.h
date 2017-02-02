@@ -80,9 +80,9 @@ class MethodScope : public NamedScope
 {
 public:
 #ifdef USE_ORDERED_COLLECTION
-	typedef std::set<Runtime::Method*> MethodCollection;
+	typedef std::set<Common::Method*> MethodCollection;
 #else
-	typedef std::unordered_set<Runtime::Method*> MethodCollection;
+	typedef std::unordered_set<Common::Method*> MethodCollection;
 #endif
 
 public:

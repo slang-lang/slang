@@ -669,7 +669,7 @@ Statement* TreeGenerator::process_foreach(TokenIterator& token)
 	expect(Token::Type::PARENTHESIS_OPEN, token);
 	++token;
 
-	TypeDeclaration* typeDeclaration = process_type(token);	// maybe we should prevent type initialisation here with an additional parameter
+	TypeDeclaration* typeDeclaration = process_type(token, false);
 
 	expect(Token::Type::COLON, token);
 	++token;
@@ -1183,7 +1183,7 @@ Statement* TreeGenerator::process_try(TokenIterator& token)
 			}
 
 			// create new exception type instance
-			typeDeclaration = process_type(catchIt);
+			typeDeclaration = process_type(catchIt, false);
 
 			expect(Token::Type::PARENTHESIS_CLOSE, catchIt);
 			++catchIt;
@@ -1244,7 +1244,7 @@ Statement* TreeGenerator::process_try(TokenIterator& token)
  * syntax:
  * <type> <identifier> [const|modify] [ref|val] [= <initialization>]
  */
-TypeDeclaration* TreeGenerator::process_type(TokenIterator& token)
+TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, bool allowInitialization)
 {
 	bool isConst = false;
 	bool isReference = false;
@@ -1288,6 +1288,11 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token)
 
 	TokenIterator assign = getTokens().end();
 	if ( token->type() == Token::Type::ASSIGN ) {
+		if ( !allowInitialization ) {
+			// type declaration without initialization has been requested
+			throw Common::Exceptions::NotSupported("type initialization is not allowed here", token->position());
+		}
+
 		assign = ++token;
 	}
 

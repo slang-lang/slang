@@ -854,7 +854,7 @@ void TreeInterpreter::visitFor(ForStatement* node)
 
 void TreeInterpreter::visitForeach(ForeachStatement* node)
 {
-	IScope* scope = getScope();
+	//IScope* scope = getScope();
 
 	Runtime::Object collection;
 	evaluate(node->mLoopVariable, &collection);
