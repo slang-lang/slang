@@ -3,10 +3,16 @@
 #define ObjectiveScript_Core_VirtualMachine_VirtualMethodTable_h
 
 
+// Defines
+#define USE_ORDERED_COLLECTION
+
 // Library includes
 #include <list>
-#include <map>
-//#include <unordered_map>
+#ifdef USE_ORDERED_COLLECTION
+#	include <map>
+#else
+#	include<unordered_map>
+#endif
 
 // Project includes
 #include <Core/Parameter.h>
@@ -48,8 +54,11 @@ private:
 	};
 
 	typedef std::list<MethodAndParent> MethodCollection;
+#ifdef USE_ORDERED_COLLECTION
 	typedef std::map<std::string /*parent*/, MethodCollection> MethodTable;
-	//typedef std::unordered_map<std::string /*parent*/, MethodCollection> MethodTable;
+#else
+	typedef std::unordered_map<std::string /*parent*/, MethodCollection> MethodTable;
+#endif
 
 private:
 	MethodTable mMethods;
