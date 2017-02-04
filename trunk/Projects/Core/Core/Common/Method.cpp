@@ -5,6 +5,7 @@
 // Library includes
 
 // Project includes
+#include <Core/AST/Statement.h>
 #include <Core/Designtime/Parser/Parser.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/VirtualMachine/Controller.h>
@@ -23,7 +24,8 @@ Method::Method(IScope* parent, const std::string& name, const std::string& type)
 : NamedScope(name, parent),
   MethodSymbol(name),
   mIsExtensionMethod(false),
-  mReturnType(TypeDeclaration(type))
+  mReturnType(TypeDeclaration(type)),
+  mRootNode(0)
 {
 }
 
@@ -117,6 +119,11 @@ Runtime::ControlFlow::E Method::execute(const ParameterList& /*params*/, Runtime
 const PrototypeConstraints& Method::getPrototypeConstraints() const
 {
 	return mReturnType.mConstraints;
+}
+
+AST::Statements* Method::getRootNode() const
+{
+	return mRootNode;
 }
 
 const TokenList& Method::getTokens() const
@@ -261,6 +268,11 @@ void Method::setPrototypeConstraints(const PrototypeConstraints& constraints)
 void Method::setQualifiedTypename(const std::string& type)
 {
 	mReturnType.mName = type;
+}
+
+void Method::setRootNode(AST::Statements* node)
+{
+	mRootNode = node;
 }
 
 void Method::setSignature(const ParameterList& params)

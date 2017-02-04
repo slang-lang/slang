@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Core_Method_h
-#define ObjectiveScript_Core_Method_h
+#ifndef ObjectiveScript_Core_Core_Common_Method_h
+#define ObjectiveScript_Core_Core_Common_Method_h
 
 
 // Library includes
@@ -24,10 +24,18 @@
 namespace ObjectiveScript {
 
 // Forward declarations
-class Object;
+namespace AST {
+	class Statements;
+}
+class IPrinter;
+class Memory;
+class Repository;
+
+namespace Runtime {
+	class Object;
+}
 
 namespace Common {
-
 
 class Method : public NamedScope,
 			   public MethodSymbol,
@@ -35,7 +43,7 @@ class Method : public NamedScope,
 {
 public:
 	Method(IScope* parent, const std::string& name, const std::string& type);
-	virtual ~Method();
+	~Method();
 
 public: // overloaded operators
 	bool operator()(const Method& first, const Method& second) const;
@@ -44,7 +52,6 @@ public: // overloaded operators
 
 public:	// Symbol::IType implementation
 	const std::string& QualifiedTypename() const;
-
 	void setQualifiedTypename(const std::string& type);
 
 public: // IRuntimeType implementation
@@ -63,6 +70,9 @@ public: // Setup
 	void setSignature(const ParameterList& params);
 	void setTokens(const TokenList& tokens);
 
+	AST::Statements* getRootNode() const;
+	void setRootNode(AST::Statements* node);
+
 public:
 	bool isExtensionMethod() const;
 	const PrototypeConstraints& getPrototypeConstraints() const;
@@ -77,6 +87,7 @@ protected:
 
 private:
 	TypeDeclaration mReturnType;
+	AST::Statements* mRootNode;
 	ParameterList mSignature;
 	TokenList mTokens;
 };

@@ -118,7 +118,7 @@ private bool TestCase10() const {
 
 	String str = new String("This is a string");
 
-	System.StringIterator it = str.getIterator();
+	StringIterator it = str.getIterator();
 	assert( it );
 
 	while ( it.hasNext() ) {

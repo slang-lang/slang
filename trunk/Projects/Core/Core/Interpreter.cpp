@@ -225,6 +225,10 @@ void Interpreter::expression(Object* result, TokenIterator& start)
 
 NamedScope* Interpreter::getEnclosingMethodScope(IScope* scope) const
 {
+	if ( !scope ) {
+		scope = getScope();
+	}
+
 	while ( scope ) {
 		IScope* parent = scope->getEnclosingScope();
 
@@ -240,6 +244,10 @@ NamedScope* Interpreter::getEnclosingMethodScope(IScope* scope) const
 
 Common::Namespace* Interpreter::getEnclosingNamespace(IScope* scope) const
 {
+	if ( !scope ) {
+		scope = getScope();
+	}
+
 	while ( scope ) {
 		IScope* parent = scope->getEnclosingScope();
 
@@ -1165,7 +1173,7 @@ void Interpreter::process_if(TokenIterator& token, Object *result)
 	TokenIterator elseEnd = getTokens().end();
 
 	// look for an else-token
-	if ( bodyEnd != getTokens().end() && (bodyEnd->type() == Token::Type::KEYWORD && bodyEnd->content() == "else") ) {
+	if ( bodyEnd != getTokens().end() && (bodyEnd->type() == Token::Type::KEYWORD && bodyEnd->content() == KEYWORD_ELSE ) ) {
 		elseBegin = findNext(bodyEnd, Token::Type::BRACKET_CURLY_OPEN);
 		// find next balanced '{' & '}' pair
 		elseEnd = findNextBalancedCurlyBracket(elseBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
@@ -1174,7 +1182,7 @@ void Interpreter::process_if(TokenIterator& token, Object *result)
 			// check if there is another if after our else-block
 			TokenIterator tmpIf = elseEnd;
 			++tmpIf;
-			if ( tmpIf != getTokens().end() && tmpIf->type() == Token::Type::KEYWORD && tmpIf->content() == "else" ) {
+			if ( tmpIf != getTokens().end() && tmpIf->type() == Token::Type::KEYWORD && tmpIf->content() == KEYWORD_ELSE ) {
 				// find next balanced '{' & '}' pair
 				elseEnd = findNextBalancedCurlyBracket(tmpIf, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
 
@@ -1332,7 +1340,7 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 	}
 
 	// check caller's constness
-	Common::Method* owner = dynamic_cast<Common::Method*>(getEnclosingMethodScope(getScope()));
+	Common::Method* owner = dynamic_cast<Common::Method*>(getEnclosingMethodScope());
 	if ( owner && owner->isConst() ) {
 		if ( owner->getEnclosingScope() == method->getEnclosingScope() && !method->isConst() ) {
 			// check target method's constness
@@ -1687,7 +1695,7 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 void Interpreter::process_throw(TokenIterator& token, Object* /*result*/)
 {
 	// check if our parent scope is a method that is allowed to throw exceptions
-	Common::Method* method = dynamic_cast<Common::Method*>(getEnclosingMethodScope(getScope()));
+	Common::Method* method = dynamic_cast<Common::Method*>(getEnclosingMethodScope());
 	if ( method && !method->throws() ) {
 		// this method is not marked as 'throwing', so we are not allowed to throw exceptions here
 		OSwarn(std::string(method->getFullScopeName() + " throws although it is not marked with 'throws' in " + token->position().toString()).c_str());

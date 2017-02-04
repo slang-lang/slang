@@ -5,6 +5,7 @@
 
 //#define ALLOW_BY_VALUE_COPY
 #define ALLOW_IMPLICIT_CASTS
+//#define GENERATE_PARSE_TREE
 
 
 #endif

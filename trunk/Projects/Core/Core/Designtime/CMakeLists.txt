@@ -27,6 +27,7 @@ SET(DEPENDENCIES
 	CoreDesigntimeBuildInTypes
 	CoreCommon
 	CoreAttributes
+	CoreAST
 )
 
 add_include(Projects/Core)

@@ -21,15 +21,18 @@ namespace Runtime {
 class AtomicValue
 {
 public:
-	enum E {
-		UNKOWN,
-		BOOL,
-		DOUBLE,
-		FLOAT,
-		INT,
-		STRING,
-		UINT
-	} type;
+	class Type {
+	public:
+		enum E {
+			UNKOWN,
+			BOOL,
+			DOUBLE,
+			FLOAT,
+			INT,
+			STRING,
+			UINT
+		};
+	};
 
 public:	// Construction
 	AtomicValue();
@@ -60,6 +63,8 @@ public:	// Conversion
 	std::string toStdString() const;
 	unsigned int toUInt() const;
 
+	Type::E type() const;
+
 private:
 	union ValueHolder {
 		bool bool_;
@@ -72,6 +77,7 @@ private:
 
 private:
 	std::string mStringValue;
+	Type::E mType;
 	ValueHolder mValue;
 };
 

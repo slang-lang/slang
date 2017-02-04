@@ -560,7 +560,7 @@ void Tokenizer::replaceAssignments()
 			changed = true;
 			// remove last added token ...
 			tmp.pop_back();
-			// ... and add ASSIGN_ADD instead
+			// ... and add ASSIGN_BITCOMPLEMENT instead
 			tmp.push_back(Token(Token::Category::Assignment, Token::Type::ASSIGN_BITCOMPLEMENT, "~=", token->position()));
 		}
 		else if ( (lastType == Token::Type::BITOR) && (activeType == Token::Type::ASSIGN) ) {
