@@ -14,7 +14,7 @@ namespace ObjectiveScript {
 
 
 PrototypeConstraint::PrototypeConstraint()
-: mIndex(~0)
+: mIndex((unsigned int)~0)
 {
 }
 

@@ -712,7 +712,7 @@ void TreeInterpreter::pushScope(IScope* scope)
 		scope = new SymbolScope(stack->getScope());
 	}
 
-	stack->pushScope(scope, allowDelete);
+	stack->pushScope(scope, allowDelete, true);
 }
 
 void TreeInterpreter::visit(Node* node)

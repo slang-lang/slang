@@ -73,7 +73,7 @@ private: // Execution
 	void process_switch(TokenIterator& token, Object* result);
 	void process_throw(TokenIterator& token, Object* result);
 	void process_try(TokenIterator& token, Object* result);
-	Object* process_type(TokenIterator& token, Symbol* symbol);
+	Object* process_type(TokenIterator& token, Symbol* symbol, bool allowInitialization = true);
 	void process_typeid(TokenIterator& token, Object* result);
 	void process_while(TokenIterator& token, Object* result);
 	// }
@@ -92,7 +92,7 @@ private: // Execution
 	// {
 	IScope* getScope() const;
 	void popScope();
-	void pushScope(IScope* scope = 0);
+	void pushScope(IScope* scope = 0, bool allowBreakAndContinue = false);
 	// }
 
 	// Token stack
@@ -102,7 +102,7 @@ private: // Execution
 	void pushTokens(const TokenList& tokens);
 	// }
 
-	ControlFlow::E interpret(const TokenList& tokens, Object* result);
+	ControlFlow::E interpret(const TokenList& tokens, Object* result, bool allowBreakAndContinue = false);
 
 	NamedScope* getEnclosingNamedScope(IScope *scope = 0) const;
 	Common::Namespace* getEnclosingNamespace(IScope* scope = 0) const;

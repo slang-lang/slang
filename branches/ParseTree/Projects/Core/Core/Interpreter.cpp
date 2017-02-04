@@ -423,12 +423,12 @@ Symbol* Interpreter::identifyMethod(TokenIterator& token, const ParameterList& p
 /*
  * executes the given tokens in a separate scope
  */
-ControlFlow::E Interpreter::interpret(const TokenList& tokens, Object* result)
+ControlFlow::E Interpreter::interpret(const TokenList& tokens, Object* result, bool allowBreakAndContinue)
 {
 	// reset control flow to normal
 	mControlFlow = ControlFlow::Normal;
 
-	pushScope();
+	pushScope(0, allowBreakAndContinue);
 		pushTokens(tokens);
 			TokenIterator start = getTokens().begin();
 			TokenIterator end = getTokens().end();
@@ -779,7 +779,7 @@ void Interpreter::process_assert(TokenIterator& token)
 	expect(Token::Type::PARENTHESIS_OPEN, token);
 	++token;
 
-    Object condition;
+	Object condition;
 	try {
 		expression(&condition, token);
 	}
@@ -800,8 +800,13 @@ void Interpreter::process_assert(TokenIterator& token)
  * syntax:
  * break;
  */
-void Interpreter::process_break(TokenIterator& /*token*/)
+void Interpreter::process_break(TokenIterator& token)
 {
+	if ( !mStack->current()->allowBreakAndContinue() ) {
+		OSwarn("break not allowed in " + token->position().toString());
+		return;
+	}
+
 	mControlFlow = ControlFlow::Break;
 }
 
@@ -809,8 +814,13 @@ void Interpreter::process_break(TokenIterator& /*token*/)
  * syntax:
  * continue;
  */
-void Interpreter::process_continue(TokenIterator& /*token*/)
+void Interpreter::process_continue(TokenIterator& token)
 {
+	if ( !mStack->current()->allowBreakAndContinue() ) {
+		OSwarn("continue not allowed in " + token->position().toString());
+		return;
+	}
+
 	mControlFlow = ControlFlow::Continue;
 }
 
@@ -891,10 +901,8 @@ void Interpreter::process_for(TokenIterator& token, Object* result)
 	expect(Token::Type::PARENTHESIS_OPEN, token);
 	++token;
 
-	TokenIterator initializationBegin = token;
-
+	TokenIterator initializationBegin = ++token;
 	const TokenIterator conditionBegin = ++findNext(initializationBegin, Token::Type::SEMICOLON);
-
 	const TokenIterator increaseBegin = ++findNext(conditionBegin, Token::Type::SEMICOLON);
 
 	// find next open curly bracket '{'
@@ -909,7 +917,7 @@ void Interpreter::process_for(TokenIterator& token, Object* result)
 	// process our declaration part
 	// {
 	Object declarationTmp;
-	process(&declarationTmp, initializationBegin, conditionBegin, Token::Type::SEMICOLON);
+	process(&declarationTmp, initializationBegin, conditionBegin);
 	// }
 
 	++bodyBegin;		// don't collect scope token
@@ -944,7 +952,7 @@ void Interpreter::process_for(TokenIterator& token, Object* result)
 
 		// Body parsing
 		// {
-		mControlFlow = interpret(loopTokens, result);
+		mControlFlow = interpret(loopTokens, result, true);
 
 		switch ( mControlFlow ) {
 			case ControlFlow::Break: mControlFlow = ControlFlow::Normal; return;
@@ -1040,7 +1048,7 @@ void Interpreter::process_foreach(TokenIterator& token, Object* result)
 
 		// create and define loop variable
 		TokenIterator typedefItCopy = typedefIt;
-		Object* loop = process_type(typedefItCopy, symbol);
+		Object* loop = process_type(typedefItCopy, symbol, false);
 
 		// get current item
 		iterator.execute(loop, "next", ParameterList());
@@ -1048,7 +1056,7 @@ void Interpreter::process_foreach(TokenIterator& token, Object* result)
 
 		// Body parsing
 		// {
-		mControlFlow = interpret(loopTokens, result);
+		mControlFlow = interpret(loopTokens, result, true);
 
 		popScope();	// needed for loop variable
 
@@ -1643,7 +1651,7 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 			}
 
 			// process/interpret case-block tokens
-			mControlFlow = interpret(caseTokens, result);
+			mControlFlow = interpret(caseTokens, result, true);
 
 			switch ( mControlFlow ) {
 				case ControlFlow::Break:
@@ -1675,7 +1683,7 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 		}
 
 		// process/interpret case-block tokens
-		mControlFlow = interpret(defaultTokens, result);
+		mControlFlow = interpret(defaultTokens, result, true);
 
 		switch ( mControlFlow ) {
 			case ControlFlow::Break:
@@ -1756,13 +1764,13 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 
 	TokenIterator tmp = lookahead(token, 1);
 
-	std::list<TokenIterator> catchTokens;
+	std::list<TokenIterator> catches;
 	TokenIterator finallyToken = getTokens().end();
 
 	// collect all catch- and finally-blocks
 	for ( ; ; ) {
 		if ( tmp != getTokens().end() && tmp->content() == KEYWORD_CATCH ) {
-			catchTokens.push_back(tmp);
+			catches.push_back(tmp);
 
 			tmp = findNextBalancedCurlyBracket(tmp, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
 
@@ -1791,14 +1799,14 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 
 	// process catch-blocks (if present)
 	if ( mControlFlow == ControlFlow::Throw ) {
-		if ( catchTokens.empty() ) {
+		if ( catches.empty() ) {
 			// reset control flow in case no catch-block has been defined
 			mControlFlow = ControlFlow::Normal;
 		}
 
 		Object* exception = mStack->exception().getData();
 
-		for ( std::list<TokenIterator>::const_iterator it = catchTokens.begin(); it != catchTokens.end(); ++it ) {
+		for ( std::list<TokenIterator>::const_iterator it = catches.begin(); it != catches.end(); ++it ) {
 			TokenIterator catchIt = (*it);
 			++catchIt;
 
@@ -1817,7 +1825,7 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 				}
 
 				// create new exception type instance
-				Object* type = process_type(catchIt, symbol);
+				Object* type = process_type(catchIt, symbol, false);
 
 				expect(Token::Type::PARENTHESIS_CLOSE, catchIt);
 				++catchIt;
@@ -1849,9 +1857,9 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 			++catchBegin;		// don't collect scope token
 
 			// collect catch-block tokens
-			TokenList tokens;
+			TokenList catchTokens;
 			while ( catchBegin != catchEnd ) {
-				tokens.push_back((*catchBegin));
+				catchTokens.push_back((*catchBegin));
 				++catchBegin;
 			}
 
@@ -1859,7 +1867,7 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 			mControlFlow = ControlFlow::Normal;
 
 			// execute catch-block if an exception has been thrown
-			mControlFlow = interpret(tokens, result);
+			mControlFlow = interpret(catchTokens, result);
 
 /*
 			if ( exception ) {
@@ -1902,7 +1910,7 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
  * syntax:
  * <type> [ "<" <type> ">" ] <identifier> [= <initialization>]
  */
-Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol)
+Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol, bool allowInitialization)
 {
 	bool isConst = false;
 	bool isReference = false;
@@ -1937,6 +1945,11 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol)
 
 	TokenIterator assign = getTokens().end();
 	if ( token->type() == Token::Type::ASSIGN ) {
+		if ( !allowInitialization ) {
+			// type declaration without initialization has been requested
+			throw Common::Exceptions::NotSupported("type initialization is not allowed here", token->position());
+		}
+
 		assign = ++token;
 	}
 
@@ -2025,9 +2038,9 @@ void Interpreter::process_while(TokenIterator& token, Object* result)
 	++bodyBegin;	// don't collect scope token;
 	token = bodyEnd;
 
-	TokenList statementTokens;
+	TokenList whileTokens;
 	while ( bodyBegin != bodyEnd ) {
-		statementTokens.push_back((*bodyBegin));
+		whileTokens.push_back((*bodyBegin));
 		++bodyBegin;
 	}
 
@@ -2047,7 +2060,7 @@ void Interpreter::process_while(TokenIterator& token, Object* result)
 			break;
 		}
 
-		mControlFlow = interpret(statementTokens, result);
+		mControlFlow = interpret(whileTokens, result, true);
 
 		switch ( mControlFlow ) {
 			case ControlFlow::Break: mControlFlow = ControlFlow::Normal; return;
@@ -2060,7 +2073,7 @@ void Interpreter::process_while(TokenIterator& token, Object* result)
 	}
 }
 
-void Interpreter::pushScope(IScope* scope)
+void Interpreter::pushScope(IScope* scope, bool allowBreakAndContinue)
 {
 	StackFrame* stack = mStack->current();
 
@@ -2070,7 +2083,7 @@ void Interpreter::pushScope(IScope* scope)
 		scope = new SymbolScope(stack->getScope());
 	}
 
-	stack->pushScope(scope, allowDelete);
+	stack->pushScope(scope, allowDelete, allowBreakAndContinue || stack->allowBreakAndContinue());
 }
 
 void Interpreter::pushTokens(const TokenList& tokens)
