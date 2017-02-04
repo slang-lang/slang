@@ -6,7 +6,10 @@
 #include <fstream>
 
 // Project includes
+#include <Core/AST/TreeGenerator.h>
+#include <Core/AST/TreeInterpreter.h>
 #include <Core/Common/Exceptions.h>
+#include <Core/Defines.h>
 #include <Core/Designtime/Analyser.h>
 #include <Core/Runtime/Script.h>
 #include <Core/Tools.h>
@@ -105,8 +108,20 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 		throw Common::Exceptions::Exception("could not resolve method 'Main(" + toString(params) + ")'");
 	}
 
+#ifdef GENERATE_PARSE_TREE
+
+	AST::TreeGenerator tg;
+	main->setRootNode(tg.generate(main->getTokens()));
+
+	AST::TreeInterpreter ti;
+	Runtime::ControlFlow::E controlflow = ti.execute(main, params, result);
+
+#else
+
 	Runtime::Interpreter interpreter;
 	Runtime::ControlFlow::E controlflow = interpreter.execute(main, params, result);
+
+#endif
 
 	if ( controlflow == Runtime::ControlFlow::Throw ) {
 		Runtime::ExceptionData data = Controller::Instance().stack()->exception();

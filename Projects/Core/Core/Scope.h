@@ -2,13 +2,18 @@
 #ifndef ObjectiveScript_Core_Scope_h
 #define ObjectiveScript_Core_Scope_h
 
+// Defines
+#define USE_ORDERED_COLLECTION
 
 // Library include
-#include <map>
-#include <set>
+#ifdef USE_ORDERED_COLLECTION
+#	include <map>
+#	include <set>
+#else
+#	include <unordered_map>
+#	include <unordered_set>
+#endif
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 
 // Project includes
 #include <Core/Interfaces/IScope.h>
@@ -43,8 +48,11 @@ public:	// IScope implementation
 	virtual void undefine(const std::string& name, bool onlyCurrentScope = true);
 
 protected:
+#ifdef USE_ORDERED_COLLECTION
 	typedef std::map<std::string, Symbol*> Symbols;
-	//typedef std::unordered_map<std::string, Symbol*> Symbols;
+#else
+	typedef std::unordered_map<std::string, Symbol*> Symbols;
+#endif
 
 protected:
 	IScope *mParent;
@@ -71,8 +79,11 @@ private:
 class MethodScope : public NamedScope
 {
 public:
+#ifdef USE_ORDERED_COLLECTION
 	typedef std::set<Common::Method*> MethodCollection;
-	//typedef std::unordered_set<Common::Method*> MethodCollection;
+#else
+	typedef std::unordered_set<Common::Method*> MethodCollection;
+#endif
 
 public:
 	MethodScope(const std::string& name, IScope* parent = 0);

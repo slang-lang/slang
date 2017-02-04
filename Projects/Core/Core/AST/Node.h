@@ -1,58 +1,45 @@
 
-#ifndef AST_Node_h
-#define AST_Node_h
+#ifndef ObjectiveScript_Core_AST_Node_h
+#define ObjectiveScript_Core_AST_Node_h
 
 
 // Library includes
-#include <list>
-#include <string>
 
 // Project includes
-#include <Core/Interpreter.h>
-#include <Core/Memory.h>
-#include <Core/Token.h>
 
 // Forward declarations
 
 // Namespace declarations
 
+
 namespace ObjectiveScript {
 namespace AST {
-
-
-// Forward declarations
-class Node;
-
-
-typedef std::list<Node*> NodeList;
 
 
 class Node
 {
 public:
-	Node();
-	virtual ~Node();
+	class NodeType {
+	public:
+		enum E {
+			Expression,
+			Operator,
+			Statement
+		};
+	};
 
 public:
-	virtual Node* execute() = 0;
+	explicit Node(NodeType::E type)
+	: mType(type)
+	{ }
+	virtual ~Node() { }
 
-public:
-	void addLeft(Node *node);
-	void addRight(Node *node);
-
-	void scope(const std::string& s);
-	const std::string& scope() const;
+	NodeType::E getNodeType() const {
+		return mType;
+	}
 
 protected:
-	Runtime::Interpreter *mInterpreter;
-	Node *mLeftNode;
-	Memory *mMemory;
-	Node *mRightNode;
-	std::string mScope;
-	TokenList mTokens;
-
-private:
-
+	NodeType::E mType;
 };
 
 

@@ -1,0 +1,122 @@
+
+#ifndef ObjectiveScript_Core_AST_TreeGenerator_h
+#define ObjectiveScript_Core_AST_TreeGenerator_h
+
+
+// Library includes
+
+// Project includes
+#include <Core/Designtime/Parser/Token.h>
+#include <Core/Parameter.h>
+#include <Core/Runtime/ControlFlow.h>
+#include <Core/Runtime/ExceptionData.h>
+#include <Core/Scope.h>
+#include "Statement.h"
+
+// Forward declarations
+
+// Namespace declarations
+
+
+namespace ObjectiveScript {
+
+// Forward declarations
+namespace Common {
+	class Namespace;
+}
+class MethodScope;
+namespace Runtime {
+	class Object;
+}
+class Repository;
+class Stack;
+
+namespace AST {
+
+// Forward declarations
+class Expression;
+class Node;
+
+class TreeGenerator
+{
+public:
+	TreeGenerator();
+	~TreeGenerator();
+
+public:
+	Statements* generate(const TokenList &tokens);
+
+private: // Execution
+	inline Symbol* identify(TokenIterator& token) const;
+	inline Symbol* identifyMethod(TokenIterator& token, const ParameterList& params) const;
+
+	// token processing
+	// {
+	Statements* process(TokenIterator& start, TokenIterator end, Token::Type::E terminator = Token::Type::NIL);
+	Statement* process_assert(TokenIterator& token);
+	Statement* process_break(TokenIterator& token);
+	Statement* process_continue(TokenIterator& token);
+	Expression* process_copy(TokenIterator& token);
+	Statement* process_delete(TokenIterator& token);
+	Statement* process_exit(TokenIterator& token);
+	Expression* process_expression_keyword(TokenIterator& token);
+	Statement* process_for(TokenIterator& token);
+	Statement* process_foreach(TokenIterator& token);
+	Node* process_identifier(TokenIterator& token);
+	Statement* process_if(TokenIterator& token);
+	Node* process_keyword(TokenIterator& token);
+	MethodExpression* process_method(TokenIterator& token);
+	Expression* process_new(TokenIterator& token);
+	Statement* process_print(TokenIterator& token);
+	Statement* process_return(TokenIterator& token);
+	Statements* process_scope(TokenIterator& token);
+	Node* process_statement(TokenIterator& token);
+	Statement* process_switch(TokenIterator& token);
+	Statement* process_throw(TokenIterator& token);
+	Statement* process_try(TokenIterator& token);
+	TypeDeclaration* process_type(TokenIterator& token, bool allowInitialization = true);
+	Expression* process_typeid(TokenIterator& token);
+	Statement* process_while(TokenIterator& token);
+	// }
+
+	// expression parsing
+	// {
+	Node* expression(TokenIterator& start);
+	Node* parseCondition(TokenIterator& start);
+	Node* parseExpression(TokenIterator& start);
+	Node* parseFactors(TokenIterator& start);
+	Node* parseInfixPostfix(TokenIterator& start);
+	Node* parseTerm(TokenIterator& start);
+	// }
+
+	// Scope stack
+	// {
+	inline IScope* getScope() const;
+	// }
+
+	// Token stack
+	// {
+	const TokenList& getTokens() const;
+	void popTokens();
+	void pushTokens(const TokenList& tokens);
+	// }
+
+	MethodScope* getEnclosingMethodScope(IScope *scope = 0) const;
+	NamedScope* getEnclosingNamedScope(IScope *scope = 0) const;
+	Common::Namespace* getEnclosingNamespace(IScope* scope = 0) const;
+	Runtime::Object* getEnclosingObject(IScope* scope = 0) const;
+
+private:
+	IScope* mOwner;
+
+private:	// Virtual machine stuff
+	Repository* mRepository;
+	Stack* mStack;
+};
+
+
+}
+}
+
+
+#endif

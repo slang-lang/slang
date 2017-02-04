@@ -105,8 +105,8 @@ private: // Execution
 
 	ControlFlow::E interpret(const TokenList& tokens, Object* result, bool allowBreakAndContinue = false);
 
-	NamedScope* getEnclosingMethodScope(IScope* scope) const;
-	Common::Namespace* getEnclosingNamespace(IScope* scope) const;
+	NamedScope* getEnclosingMethodScope(IScope* scope = 0) const;
+	Common::Namespace* getEnclosingNamespace(IScope* scope = 0) const;
 
 private:	// internal stuff
 	ControlFlow::E mControlFlow;

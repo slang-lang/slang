@@ -2,14 +2,13 @@
 #ifndef ObjectiveScript_Core_Types_h
 #define ObjectiveScript_Core_Types_h
 
-
 // Defines
 #define USE_ORDERED_COLLECTION
 
 // Library includes
 #include <list>
 #ifdef USE_ORDERED_COLLECTION
-# include <set>
+#	include <set>
 #else
 #	include <unordered_set>
 #endif
