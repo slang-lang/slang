@@ -26,9 +26,10 @@ public:
 	class Scope
 	{
 	public:
-		Scope(IScope* scope, bool allowDelete);
+		Scope(IScope* scope, bool allowDelete, bool allowBreakAndContinue);
 
 	public:
+		bool mAllowBreakAndContinue;
 		bool mAllowDelete;
 		IScope* mScope;
 	};
@@ -39,9 +40,11 @@ public:
 	~StackFrame();
 
 public:
+	bool allowBreakAndContinue() const;
+
 	IScope* getScope() const;
 	void popScope();
-	void pushScope(IScope* scope, bool allowDelete);
+	void pushScope(IScope* scope, bool allowDelete, bool allowBreakAndContinue);
 
 	const TokenList& getTokens() const;
 	void popTokens();

@@ -15,8 +15,9 @@
 namespace ObjectiveScript {
 
 
-StackFrame::Scope::Scope(IScope* scope, bool allowDelete)
-: mAllowDelete(allowDelete),
+StackFrame::Scope::Scope(IScope* scope, bool allowDelete, bool allowBreakAndContinue)
+: mAllowBreakAndContinue(allowBreakAndContinue),
+  mAllowDelete(allowDelete),
   mScope(scope)
 {
 }
@@ -31,6 +32,11 @@ StackFrame::StackFrame(unsigned long level, IScope* scope, const ParameterList& 
 
 StackFrame::~StackFrame()
 {
+}
+
+bool StackFrame::allowBreakAndContinue() const
+{
+	return mScopeStack.back().mAllowBreakAndContinue;
 }
 
 IScope* StackFrame::getScope() const
@@ -59,10 +65,10 @@ void StackFrame::popTokens()
 	mTokenStack.pop_back();
 }
 
-void StackFrame::pushScope(IScope* scope, bool allowDelete)
+void StackFrame::pushScope(IScope* scope, bool allowDelete, bool allowBreakAndContinue)
 {
 	mScopeStack.push_back(
-		Scope(scope, allowDelete)
+		Scope(scope, allowDelete, allowBreakAndContinue)
 	);
 }
 

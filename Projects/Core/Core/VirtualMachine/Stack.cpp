@@ -100,7 +100,7 @@ void Stack::push(IScope* scope, const ParameterList &params)
 	// create new stack frame
 	StackFrame* frame = new StackFrame(mStackFrames.size(), scope, params);
 	// push scope
-	frame->pushScope(scope, false);
+	frame->pushScope(scope, false, false);
 	// push tokens (although maybe none are present)
 	frame->pushTokens(tokens);
 
