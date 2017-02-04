@@ -107,6 +107,7 @@ private: // Execution
 
 	NamedScope* getEnclosingMethodScope(IScope* scope = 0) const;
 	Common::Namespace* getEnclosingNamespace(IScope* scope = 0) const;
+	Runtime::Object* getEnclosingObject(IScope* scope = 0) const;
 
 private:	// internal stuff
 	ControlFlow::E mControlFlow;

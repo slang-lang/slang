@@ -264,6 +264,28 @@ Common::Namespace* Interpreter::getEnclosingNamespace(IScope* scope) const
 	return 0;
 }
 
+Runtime::Object* Interpreter::getEnclosingObject(IScope* scope) const
+{
+	if ( !scope ) {
+		scope = getScope();
+	}
+
+	while ( scope ) {
+		IScope* parent = scope->getEnclosingScope();
+
+		if ( parent && parent->getScopeType() == IScope::IType::MethodScope ) {
+			Object* result = dynamic_cast<Object*>(parent);
+			if ( result ) {
+				return result;
+			}
+		}
+
+		scope = parent;
+	}
+
+	return 0;
+}
+
 IScope* Interpreter::getScope() const
 {
 	return mStack->current()->getScope();
@@ -742,9 +764,13 @@ void Interpreter::process(Object *result, TokenIterator& token, TokenIterator en
 			break;		// control flow has been broken, time to stop processing
 		}
 
-		mDebugger->notify(getScope(), (*token));		// notify debugger
+#ifdef USE_PROCESS_STATEMENT
 
-		//process_statement(token, result);
+		process_statement(token, result);
+
+#else
+
+		mDebugger->notify(getScope(), (*token));		// notify debugger
 
 		switch ( token->type() ) {
 			case Token::Type::IDENTIFER:
@@ -765,6 +791,8 @@ void Interpreter::process(Object *result, TokenIterator& token, TokenIterator en
 		}
 
 		++token;	// consume token
+
+#endif
 	}
 }
 
@@ -1516,6 +1544,8 @@ void Interpreter::process_scope(TokenIterator& token, Object* result)
  */
 void Interpreter::process_statement(TokenIterator& token, Object* result)
 {
+	mDebugger->notify(getScope(), (*token));		// notify debugger
+
 	switch ( token->type() ) {
 		case Token::Type::IDENTIFER:
 		case Token::Type::PROTOTYPE:
