@@ -50,13 +50,11 @@ private:
 
 	bool createBluePrint(TokenIterator& token, TokenIterator end);
 	bool createEnum(TokenIterator& token, TokenIterator end);
-	//bool createFunction(TokenIterator& token, TokenIterator end);
 	bool createLibraryReference(TokenIterator& token, TokenIterator end);
 	bool createMember(TokenIterator& token, TokenIterator end);
 	bool createMemberOrMethod(TokenIterator& token, TokenIterator end);
 	bool createMethod(TokenIterator& token, TokenIterator end);
 	bool createNamespace(TokenIterator& token, TokenIterator end);
-	//bool createNamespaceMember(TokenIterator& token, TokenIterator end);
 
 	bool createMethodStub(TokenIterator& token, Visibility::E visibility, LanguageFeatureState::E languageFeature, TypeDeclaration type, const std::string& name);
 	bool createMemberStub(TokenIterator& token, Visibility::E visibility, LanguageFeatureState::E languageFeature, TypeDeclaration type, const std::string& name);
