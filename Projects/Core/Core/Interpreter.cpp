@@ -190,7 +190,7 @@ ControlFlow::E Interpreter::execute(Common::Method* method, const ParameterList&
 	return mControlFlow;
 }
 
-void Interpreter::expression(Object* result, TokenIterator& start)
+void Interpreter::expression(Object* result, TokenIterator& start, bool completeEval)
 {
 	parseCondition(result, start);
 
@@ -203,22 +203,44 @@ void Interpreter::expression(Object* result, TokenIterator& start)
 			return;
 		}
 
+		bool lvalue = isTrue(*result);
+
+		// incomplete boolean evaluation (available for && and !& and || operators)
+		if ( !completeEval ) {
+			if ( op == Token::Type::AND && !lvalue) {
+				*result = BoolObject(false);
+				return;
+			}
+			else if ( op == Token::Type::NAND && !lvalue ) {
+				*result = BoolObject(true);
+				return;
+			}
+			else if ( op == Token::Type::NOR && lvalue ) {
+				*result = BoolObject(false);
+				return;
+			}
+			else if ( op == Token::Type::OR && lvalue ) {
+				*result = BoolObject(true);
+				return;
+			}
+		}
+
 		++start;	// consume operator token
 
-		Object v2;
-		parseCondition(&v2, start);
+		Object rvalue;
+		parseCondition(&rvalue, start);
 
-		if ( op == Token::Type::AND && isTrue(*result) ) {
-			*result = BoolObject(isTrue(*result) && isTrue(v2));
+		if ( op == Token::Type::AND ) {
+			*result = BoolObject(lvalue && isTrue(rvalue));
 		}
-		else if ( op == Token::Type::NAND && !isTrue(*result) ) {
-			*result = BoolObject(!isTrue(*result) && !isTrue(v2));
+		else if ( op == Token::Type::NAND ) {
+			*result = BoolObject(!lvalue || !isTrue(rvalue));
 		}
-		else if ( op == Token::Type::NOR && !isTrue(*result) ) {
-			*result = BoolObject(!isTrue(*result) || !isTrue(v2));
+		else if ( op == Token::Type::NOR ) {
+			*result = BoolObject(!lvalue && !isTrue(rvalue));
 		}
-		else if ( op == Token::Type::OR && !isTrue(*result) ) {
-			*result = BoolObject(isTrue(*result) || isTrue(v2));
+		else if ( op == Token::Type::OR ) {
+			*result = BoolObject(lvalue || isTrue(rvalue));
 		}
 	}
 }
@@ -457,27 +479,27 @@ void Interpreter::parseCondition(Object *result, TokenIterator& start)
 
 		++start;	// consume comparator token
 
-		Object v2;
-		parseExpression(&v2, start);
+		Object rvalue;
+		parseExpression(&rvalue, start);
 
 		switch ( op ) {
 			case Token::Type::COMPARE_EQUAL:
-				*result = BoolObject(operator_binary_equal(result, &v2));
+				*result = BoolObject(operator_binary_equal(result, &rvalue));
 				break;
 			case Token::Type::COMPARE_GREATER:
-				*result = BoolObject(operator_binary_greater(result, &v2));
+				*result = BoolObject(operator_binary_greater(result, &rvalue));
 				break;
 			case Token::Type::COMPARE_GREATER_EQUAL:
-				*result = BoolObject(operator_binary_greater_equal(result, &v2));
+				*result = BoolObject(operator_binary_greater_equal(result, &rvalue));
 				break;
 			case Token::Type::COMPARE_LESS:
-				*result = BoolObject(operator_binary_less(result, &v2));
+				*result = BoolObject(operator_binary_less(result, &rvalue));
 				break;
 			case Token::Type::COMPARE_LESS_EQUAL:
-				*result = BoolObject(operator_binary_less_equal(result, &v2));
+				*result = BoolObject(operator_binary_less_equal(result, &rvalue));
 				break;
 			case Token::Type::COMPARE_UNEQUAL:
-				*result = BoolObject(!operator_binary_equal(result, &v2));
+				*result = BoolObject(!operator_binary_equal(result, &rvalue));
 				break;
 			default:
 				break;
@@ -501,24 +523,24 @@ void Interpreter::parseExpression(Object *result, TokenIterator& start)
 
 		++start;	// consume operator token
 
-		Object v2;
-		parseFactors(&v2, start);
+		Object rvalue;
+		parseFactors(&rvalue, start);
 
 		switch ( op ) {
 			case Token::Type::BITAND:
-				operator_binary_bitand(result, &v2);
+				operator_binary_bitand(result, &rvalue);
 				break;
 			case Token::Type::BITCOMPLEMENT:
-				operator_binary_bitcomplement(result, &v2);
+				operator_binary_bitcomplement(result, &rvalue);
 				break;
 			case Token::Type::BITOR:
-				operator_binary_bitor(result, &v2);
+				operator_binary_bitor(result, &rvalue);
 				break;
 			case Token::Type::MATH_ADDITION:
-				operator_binary_plus(result, &v2);
+				operator_binary_plus(result, &rvalue);
 				break;
 			case Token::Type::MATH_SUBTRACT:
-				operator_binary_subtract(result, &v2);
+				operator_binary_subtract(result, &rvalue);
 				break;
 			default:
 				break;
@@ -540,18 +562,18 @@ void Interpreter::parseFactors(Object *result, TokenIterator& start)
 
 		++start;	// consume operator token
 
-		Object v2;
-		parseInfixPostfix(&v2, start);
+		Object rvalue;
+		parseInfixPostfix(&rvalue, start);
 
 		switch ( op ) {
 			case Token::Type::MATH_DIVIDE:
-				operator_binary_divide(result, &v2);
+				operator_binary_divide(result, &rvalue);
 				break;
 			case Token::Type::MATH_MODULO:
-				operator_binary_modulo(result, &v2);
+				operator_binary_modulo(result, &rvalue);
 				break;
 			case Token::Type::MATH_MULTIPLY:
-				operator_binary_multiply(result, &v2);
+				operator_binary_multiply(result, &rvalue);
 				break;
 			default:
 				break;
@@ -1241,7 +1263,7 @@ void Interpreter::process_if(TokenIterator& token, Object *result)
 
     Object condition;
 	try {
-		expression(&condition, condBegin);
+		expression(&condition, condBegin, false);
 	}
 	catch ( ControlFlow::E &e ) {
 		mControlFlow = e;
@@ -1586,7 +1608,7 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 	// evaluate switch-expression
 	Object expr;
 	try {
-		expression(&expr, token);
+		expression(&expr, condBegin, false);
 	}
 	catch ( ControlFlow::E &e ) {
 		mControlFlow = e;
@@ -2066,7 +2088,7 @@ void Interpreter::process_while(TokenIterator& token, Object* result)
 
 		Object condition;
 		try {
-			expression(&condition, tmp);
+			expression(&condition, tmp, false);
 		}
 		catch ( ControlFlow::E &e ) {
 			mControlFlow = e;

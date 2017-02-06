@@ -49,6 +49,7 @@ private:	// Tests
 	void testFor();
 	void testForeach();
 	void testIf();
+	void testIncompleteBooleanEvaluation();
 	void testInfixOperator();
 	void testLawOfDemeter();
 	void testMethodOverloading();

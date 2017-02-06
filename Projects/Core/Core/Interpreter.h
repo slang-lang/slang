@@ -81,7 +81,7 @@ private: // Execution
 
 	// expression parsing
 	// {
-	void expression(Object* result, TokenIterator& start);
+	void expression(Object* result, TokenIterator& start, bool completeEval = true);
 	void parseCondition(Object* result, TokenIterator& start);
 	void parseExpression(Object* result, TokenIterator& start);
 	void parseFactors(Object* result, TokenIterator& start);
