@@ -51,6 +51,7 @@ void LanguageTest::process()
 	TEST(testForeach);
 	TEST(GlobalVariableTest);
 	TEST(testIf);
+	TEST(testIncompleteBooleanEvaluation);
 	TEST(testInfixOperator);
 	TEST(testLawOfDemeter);
 	TEST(testMethodOverloading);
@@ -328,6 +329,21 @@ void LanguageTest::testIf()
 		VirtualMachine vm;
 
 		vm.createScriptFromFile("Tests/Language/IfTest.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// unexpected exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void LanguageTest::testIncompleteBooleanEvaluation()
+{
+	try {
+		VirtualMachine vm;
+
+		vm.createScriptFromFile("Tests/Language/IncompleteBooleanEvaluationTest.os");
 
 		// automatic success
 	}
