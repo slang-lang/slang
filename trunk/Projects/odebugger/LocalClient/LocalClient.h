@@ -97,6 +97,7 @@ private:
 	void start();
 	void toggleAutoList();
 	void toggleAutoStart();
+	void toggleAutoStop();
 	void write(const std::string& text);
 	void writeln(const std::string& text);
 

@@ -34,6 +34,10 @@ public:
 	static Debugger& Instance();
 // }
 
+public:
+	void deinit();
+	void init();
+
 public:	// IDebugger implementation
 	bool addBreakPoint(const BreakPoint& breakpoint);
 	void clearBreakPoints();
@@ -65,6 +69,7 @@ public:
 
 private:
 	BreakPointCollection::iterator findBreakPoint(const Token& token);
+	void resetCurrentScope(IScope* scope = 0);
 
 private:
 	Debugger();
@@ -76,6 +81,7 @@ private:
 	bool mBreakOnExceptionCatch;
 	bool mBreakOnExceptionThrow;
 	BreakPointCollection mBreakPoints;
+	IScope* mCurrentScope;
 	NextAction::E mNextAction;
 	Core::IReceiver* mReceiver;
 };

@@ -23,6 +23,7 @@ Token Debugger::immediateBreakToken = Token();
 Debugger::Debugger()
 : mBreakOnExceptionCatch(false),
   mBreakOnExceptionThrow(false),
+  mCurrentScope(0),
   mNextAction(NextAction::WaitForBreakPoint),
   mReceiver(0)
 {
@@ -60,6 +61,11 @@ void Debugger::clearBreakPoints()
 	mBreakPoints.clear();
 }
 
+void Debugger::deinit()
+{
+	// nothing to do here atm
+}
+
 BreakPointCollection::iterator Debugger::findBreakPoint(const Token& token)
 {
 	return mBreakPoints.find(BreakPoint(token.position()));
@@ -68,6 +74,12 @@ BreakPointCollection::iterator Debugger::findBreakPoint(const Token& token)
 const BreakPointCollection& Debugger::getBreakPoints() const
 {
 	return mBreakPoints;
+}
+
+void Debugger::init()
+{
+	resetCurrentScope();
+	resume();
 }
 
 Debugger& Debugger::Instance()
@@ -93,14 +105,19 @@ void Debugger::notify(IScope* scope, const Token& token)
 		return;
 	}
 
+	if ( !mCurrentScope ) {
+		resetCurrentScope(scope);
+	}
+
 	BreakPoint breakpoint = BreakPoint(token.position());
 	BreakPointCollection::iterator breakIt = mBreakPoints.find(breakpoint);
 
 	bool stop = false;
 
 	switch ( mNextAction ) {
+		//case NextAction::StepInto:	// if there's nothing to step into, we just step over
 		case NextAction::StepOver:
-			stop = true;
+			stop = (scope == mCurrentScope);
 			break;
 		case NextAction::WaitForBreakPoint:
 			if ( breakIt != mBreakPoints.end() ) {
@@ -112,7 +129,7 @@ void Debugger::notify(IScope* scope, const Token& token)
 			break;
 	}
 
-	if ( stop && mReceiver ) {
+	if ( stop ) {
 		mReceiver->notify(scope, breakpoint);
 	}
 }
@@ -120,6 +137,8 @@ void Debugger::notify(IScope* scope, const Token& token)
 void Debugger::notifyEnter(IScope* scope, const Token& /*token*/)
 {
 	if ( mReceiver && mNextAction == NextAction::StepInto ) {
+		resetCurrentScope();
+
 		mReceiver->notifyEnter(scope, immediateBreakPoint);
 	}
 }
@@ -127,12 +146,16 @@ void Debugger::notifyEnter(IScope* scope, const Token& /*token*/)
 void Debugger::notifyExceptionCatch(IScope *scope, const Token &token)
 {
 	if ( mReceiver && mBreakOnExceptionCatch ) {
+		resetCurrentScope();
+
 		mReceiver->notifyExceptionCatch(scope, BreakPoint(token.position()));
 	}
 }
 
 void Debugger::notifyExceptionThrow(IScope *scope, const Token &token)
 {
+	resetCurrentScope();	// reset scope no matter what next action is set
+
 	if ( mReceiver && mBreakOnExceptionThrow ) {
 		mReceiver->notifyExceptionThrow(scope, BreakPoint(token.position()));
 	}
@@ -140,6 +163,8 @@ void Debugger::notifyExceptionThrow(IScope *scope, const Token &token)
 
 void Debugger::notifyExit(IScope* scope, const Token& /*token*/)
 {
+	resetCurrentScope();	// reset scope no matter what next action is set
+
 	if ( mReceiver && mNextAction == NextAction::StepOut ) {
 		mReceiver->notifyExit(scope, immediateBreakPoint);
 	}
@@ -164,6 +189,11 @@ bool Debugger::removeBreakPoint(const BreakPoint& breakpoint)
 	mBreakPoints.erase(mBreakPoints.find(breakpoint));
 
 	return size > mBreakPoints.size();
+}
+
+void Debugger::resetCurrentScope(IScope* scope)
+{
+	mCurrentScope = scope;
 }
 
 void Debugger::resume()

@@ -213,6 +213,9 @@ std::string LocalClient::executeCommand(const StringList &tokens)
 		else if ( cmd == "autostart" ) {
 			toggleAutoStart();
 		}
+		else if ( cmd == "autostop" ) {
+			toggleAutoStop();
+		}
 		else if ( cmd == "autowatch" ) {
 			toggleAutoWatch();
 		}
@@ -246,7 +249,7 @@ std::string LocalClient::executeCommand(const StringList &tokens)
 			mDebugger->stepInto();
 			continueExecution();
 		}
-		else if ( cmd == "list" ) {
+		else if ( cmd == "list" || cmd == "l" ) {
 			printScope(mScope);
 		}
 		else if ( cmd == "load" ) {
@@ -506,6 +509,9 @@ void LocalClient::loadConfig()
 	}
 	if ( config.isMember("autostart") ) {
 		mSettings->autoStart(config["autostart"].asBool());
+	}
+	if ( config.isMember("autostop") ) {
+		mSettings->autoStop(config["autostop"].asBool());
 	}
 	if ( config.isMember("autowatch") ) {
 		mSettings->autoWatch(config["autowatch"].asBool());
@@ -923,6 +929,7 @@ void LocalClient::saveConfig()
 	// (1) odebugger config
 	config.addMember("autolist", Json::Value(mSettings->autoList()));
 	config.addMember("autostart", Json::Value(mSettings->autoStart()));
+	config.addMember("autostop", Json::Value(mSettings->autoStop()));
 	config.addMember("autowatch", Json::Value(mSettings->autoWatch()));
 	config.addMember("breakonexceptioncatch", Json::Value(mSettings->breakOnExceptionCatch()));
 	config.addMember("breakonexceptionthrow", Json::Value(mSettings->breakOnExceptionThrow()));
@@ -975,7 +982,7 @@ void LocalClient::start()
 
 	mDebugger->breakOnExceptionCatch(mSettings->breakOnExceptionCatch());
 	mDebugger->breakOnExceptionThrow(mSettings->breakOnExceptionThrow());
-	mDebugger->resume();
+	mDebugger->init();
 
 	mVirtualMachine = new VirtualMachine();
 	for ( StringSet::const_iterator it = mSettings->libraryFolders().begin(); it != mSettings->libraryFolders().end(); ++it ) {
@@ -1046,6 +1053,19 @@ void LocalClient::toggleAutoStart()
 
 	write("AutoStart is ");
 	if ( mSettings->autoStart() ) {
+		writeln("on");
+	}
+	else {
+		writeln("off");
+	}
+}
+
+void LocalClient::toggleAutoStop()
+{
+	mSettings->autoStop(!mSettings->autoStop());
+
+	write("AutoStop is ");
+	if ( mSettings->autoStop() ) {
 		writeln("on");
 	}
 	else {

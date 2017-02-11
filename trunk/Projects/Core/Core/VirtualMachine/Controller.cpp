@@ -71,6 +71,11 @@ void Controller::init()
 	mInitialized = true;
 }
 
+bool Controller::isInitialized() const
+{
+	return mInitialized;
+}
+
 Memory* Controller::memory() const
 {
 	return mMemory;
