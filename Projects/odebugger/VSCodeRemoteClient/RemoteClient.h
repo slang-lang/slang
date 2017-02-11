@@ -27,7 +27,7 @@ namespace ObjectiveScript {
 
 // Forward declarations
 namespace Core {
-	class IDebugger;
+	class Debugger;
 }
 class IScope;
 class Symbol;
@@ -84,7 +84,7 @@ private:
 
 private:
 	bool mContinue;
-	Core::IDebugger* mDebugger;
+	Core::Debugger* mDebugger;
 	ParameterList mParameters;
 	bool mRunning;
 	IScope* mScope;

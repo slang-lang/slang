@@ -35,6 +35,7 @@ public:
 public:
 	void deinit();
 	void init();
+	bool isInitialized() const;
 
 public:
 	Memory* memory() const;
