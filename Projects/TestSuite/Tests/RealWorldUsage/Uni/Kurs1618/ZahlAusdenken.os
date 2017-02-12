@@ -2,7 +2,7 @@
 
     public void Main(int argc, string args) {
         // default initialisierung unseres startwerts
-	    write("Startwert: ");
+	write("Startwert: ");
         int startzahl = int cin();
 
         // setze das ergebnis (vorläufig) auf den startwert
