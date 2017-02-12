@@ -41,8 +41,6 @@ public:	// Entry points
 	void processString(const std::string& content, const std::string& filename = "");
 	void processTokens(const TokenList& tokens);
 
-protected:
-
 private:
 	void generate(const TokenList& tokens);
 	TokenList generateTokens(const std::string& content);

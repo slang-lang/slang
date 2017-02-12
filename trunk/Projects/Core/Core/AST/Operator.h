@@ -3,9 +3,16 @@
 #define ObjectiveScript_Core_AST_Operator_h
 
 
+// Library includes
+
+// Project includes
 #include <Core/Designtime/Parser/Token.h>
 #include "Expression.h"
 #include "Node.h"
+
+// Forward declarations
+
+// Namespace declarations
 
 
 namespace ObjectiveScript {

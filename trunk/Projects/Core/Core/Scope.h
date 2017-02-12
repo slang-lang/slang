@@ -3,7 +3,7 @@
 #define ObjectiveScript_Core_Scope_h
 
 // Defines
-#define USE_ORDERED_COLLECTION
+#include <Core/Defines.h>
 
 // Library include
 #ifdef USE_ORDERED_COLLECTION
@@ -35,6 +35,13 @@ class Symbol;
 class SymbolScope : public IScope
 {
 public:
+#ifdef USE_ORDERED_COLLECTION
+	typedef std::map<std::string, Symbol*> Symbols;
+#else
+	typedef std::unordered_map<std::string, Symbol*> Symbols;
+#endif
+
+public:
 	explicit SymbolScope(IScope* parent = 0);
 	virtual ~SymbolScope();
 
@@ -46,13 +53,6 @@ public:	// IScope implementation
 	virtual IScope::IType::E getScopeType() const;
 	virtual Symbol* resolve(const std::string& name, bool onlyCurrentScope = false, Visibility::E visibility = Visibility::Designtime) const;
 	virtual void undefine(const std::string& name, bool onlyCurrentScope = true);
-
-protected:
-#ifdef USE_ORDERED_COLLECTION
-	typedef std::map<std::string, Symbol*> Symbols;
-#else
-	typedef std::unordered_map<std::string, Symbol*> Symbols;
-#endif
 
 protected:
 	IScope *mParent;
@@ -93,6 +93,10 @@ public:
 	virtual void defineMethod(const std::string& name, Common::Method* method);
 	virtual MethodSymbol* resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope = false, Visibility::E visibility = Visibility::Designtime) const;
 	virtual void undefineMethod(Common::Method* method);
+
+public:
+	virtual Symbols::const_iterator begin() const;
+	virtual Symbols::const_iterator end() const;
 
 protected:
 	MethodCollection mMethods;

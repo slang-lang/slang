@@ -142,6 +142,11 @@ MethodScope::~MethodScope()
 	deinit();
 }
 
+SymbolScope::Symbols::const_iterator MethodScope::begin() const
+{
+	return mSymbols.begin();
+}
+
 void MethodScope::defineMethod(const std::string& name, Common::Method* method)
 {
 	assert(method);
@@ -175,6 +180,11 @@ void MethodScope::deinit()
 		mMethods.erase((*methIt));
 		delete (*methIt);
 	}
+}
+
+SymbolScope::Symbols::const_iterator MethodScope::end() const
+{
+	return mSymbols.end();
 }
 
 MethodSymbol* MethodScope::resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope, Visibility::E visibility) const
