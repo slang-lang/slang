@@ -54,12 +54,20 @@ std::string PrintVisitor::printExpression(Node* node) const
 				result += static_cast<LiteralExpression*>(expression)->mValue.toStdString();
 			} break;
 			case Expression::ExpressionType::MethodExpression: {
-				result += static_cast<MethodExpression*>(expression)->mName;
+				result += printExpression(static_cast<MethodExpression*>(expression)->mSymbol);
 				result += "(";
 				for ( ExpressionList::const_iterator it = static_cast<MethodExpression*>(expression)->mParams.begin(); it != static_cast<MethodExpression*>(expression)->mParams.end(); ++it ) {
 					result += printExpression((*it));
 				}
 				result += ")";
+			} break;
+			case Expression::ExpressionType::SymbolExpression: {
+				if ( static_cast<SymbolExpression*>(expression)->mScope ) {
+					result += printExpression(static_cast<SymbolExpression*>(expression)->mScope);
+				}
+				else {
+					result += static_cast<SymbolExpression*>(expression)->mName.content();
+				}
 			} break;
 			case Expression::ExpressionType::TypecastExpression: {
 				result += static_cast<TypecastExpression*>(expression)->mDestinationType + " ";
@@ -70,9 +78,6 @@ std::string PrintVisitor::printExpression(Node* node) const
 
 				result += bin->mToken.content();
 				result += printExpression(bin->mExpression);
-			} break;
-			case Expression::ExpressionType::VariableExpression: {
-				result += static_cast<VariableExpression*>(expression)->mName.content();
 			} break;
 		}
 	}
@@ -132,7 +137,7 @@ void PrintVisitor::visitAssert(AssertStatement* node)
 
 void PrintVisitor::visitAssignment(Assignment* node)
 {
-	std::cout << printIndentation(mIndentation) << node->mName.content() << " " << node->mAssignment.content() << " " << printExpression(node->mExpression) << ";" << std::endl;
+	std::cout << printIndentation(mIndentation) << node->mLValue->mName.content() << " " << node->mAssignment.content() << " " << printExpression(node->mExpression) << ";" << std::endl;
 }
 
 void PrintVisitor::visitBreak(BreakStatement* /*node*/)

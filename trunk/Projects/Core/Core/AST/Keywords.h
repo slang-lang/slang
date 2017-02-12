@@ -99,7 +99,7 @@ public:
 class ForeachStatement : public Statement
 {
 public:
-	ForeachStatement(TypeDeclaration* typeDeclaration, VariableExpression* loopVariable, Node* loopStatement)
+	ForeachStatement(TypeDeclaration* typeDeclaration, SymbolExpression* loopVariable, Node* loopStatement)
 	: Statement(StatementType::ForeachStatement),
 	  mLoopVariable(loopVariable),
 	  mStatement(loopStatement),
@@ -107,7 +107,7 @@ public:
 	{ }
 
 public:
-	VariableExpression* mLoopVariable;
+	SymbolExpression* mLoopVariable;
 	Node* mStatement;
 	TypeDeclaration* mTypeDeclaration;
 };

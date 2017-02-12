@@ -66,6 +66,7 @@ void LanguageTest::process()
 	TEST(testStaticMethod);
 	TEST(testSwitch);
 	TEST(testThis);
+	TEST(testThrow);
 	TEST(testTypeCast);
 	TEST(testWhile);
 
@@ -573,6 +574,21 @@ void LanguageTest::testThis()
 		VirtualMachine vm;
 
 		vm.createScriptFromFile("Tests/Language/ThisTest.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// unexpected exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void LanguageTest::testThrow()
+{
+	try {
+		VirtualMachine vm;
+
+		TTHROWS(vm.createScriptFromFile("Tests/Language/ThrowTest.os"), Common::Exceptions::Exception);
 
 		// automatic success
 	}

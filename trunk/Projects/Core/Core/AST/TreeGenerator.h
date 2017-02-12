@@ -65,7 +65,7 @@ private: // Execution
 	Node* process_identifier(TokenIterator& token);
 	Statement* process_if(TokenIterator& token);
 	Node* process_keyword(TokenIterator& token);
-	MethodExpression* process_method(TokenIterator& token);
+	MethodExpression* process_method(SymbolExpression* symbol, TokenIterator& token);
 	Expression* process_new(TokenIterator& token);
 	Statement* process_print(TokenIterator& token);
 	Statement* process_return(TokenIterator& token);
@@ -89,6 +89,8 @@ private: // Execution
 	Node* parseTerm(TokenIterator& start);
 	// }
 
+	SymbolExpression* resolve(TokenIterator& token) const;
+
 	// Scope stack
 	// {
 	inline IScope* getScope() const;
@@ -102,9 +104,7 @@ private: // Execution
 	// }
 
 	MethodScope* getEnclosingMethodScope(IScope *scope = 0) const;
-	NamedScope* getEnclosingNamedScope(IScope *scope = 0) const;
 	Common::Namespace* getEnclosingNamespace(IScope* scope = 0) const;
-	Runtime::Object* getEnclosingObject(IScope* scope = 0) const;
 
 private:
 	IScope* mOwner;

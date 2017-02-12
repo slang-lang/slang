@@ -5,6 +5,7 @@
 
 // Project includes
 #include <Common/StdOutLogger.h>
+#include <Core/Defines.h>
 #include <Core/VirtualMachine/Controller.h>
 #include <Tools/Printer.h>
 #include <Tools/Strings.h>
@@ -12,6 +13,7 @@
 #include <Utils.h>
 
 // Fixtures
+#include <AST/Fixture.h>
 #include <Attributes/Fixture.h>
 #include <Inheritance/Fixture.h>
 #include <Interfaces/Fixture.h>
@@ -135,6 +137,14 @@ int main(int argc, const char* argv[])
 		Testing::Framework::Fixture testing(logger);
 		mFixtures.push_back(&testing);
 */
+
+#ifdef GENERATE_PARSE_TREE
+
+		Testing::AST::Fixture ast(mLogger);
+		mFixtures.push_back(&ast);
+
+#else
+
 		Testing::Attributes::Fixture attributes(mLogger);
 		mFixtures.push_back(&attributes);
 
@@ -158,6 +168,8 @@ int main(int argc, const char* argv[])
 
 		Testing::Prototype::Fixture prototype(mLogger);
 		mFixtures.push_back(&prototype);
+
+#endif
 
 		TestResult result;
 

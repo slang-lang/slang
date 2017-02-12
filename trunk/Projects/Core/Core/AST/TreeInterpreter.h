@@ -104,10 +104,13 @@ private:
 	void evaluateLiteral(LiteralExpression* exp, Runtime::Object* result);
 	void evaluateMethodExpression(MethodExpression* exp, Runtime::Object* result);
 	void evaluateNewExpression(NewExpression* exp, Runtime::Object* result);
+	void evaluateSymbol(SymbolExpression *exp, Runtime::Object *result);
 	void evaluateUnaryExpression(UnaryExpression* exp, Runtime::Object* result);
-	void evaluateVariable(VariableExpression* exp, Runtime::Object* result);
 
 	std::string printExpression(Node* node) const;
+
+	Symbol* resolve(IScope* scope, SymbolExpression* symbol, bool onlyCurrentScope, Visibility::E visibility) const;
+	Symbol* resolveMethod(MethodScope* scope, SymbolExpression* symbol, const ParameterList& params, bool onlyCurrentScope, Visibility::E visibility) const;
 
 private:	// Interpreter stuff
 	Runtime::ControlFlow::E mControlFlow;

@@ -26,6 +26,7 @@
 #include <Debugger/Debugger.h>
 #include <Tools/Printer.h>
 #include <Utils.h>
+#include <Core/Designtime/Exceptions.h>
 
 // Namespace declarations
 
@@ -65,9 +66,8 @@ void TreeInterpreter::evaluate(Node* exp, Runtime::Object* result)
 		case Expression::ExpressionType::LiteralExpression: evaluateLiteral(static_cast<LiteralExpression*>(exp), result); break;
 		case Expression::ExpressionType::MethodExpression: evaluateMethodExpression(static_cast<MethodExpression*>(exp), result); break;
 		case Expression::ExpressionType::NewExpression: evaluateNewExpression(static_cast<NewExpression*>(exp), result); break;
+		case Expression::ExpressionType::SymbolExpression: evaluateSymbol(static_cast<SymbolExpression *>(exp), result); break;
 		case Expression::ExpressionType::UnaryExpression: evaluateUnaryExpression(static_cast<UnaryExpression*>(exp), result); break;
-		case Expression::ExpressionType::VariableExpression: evaluateVariable(static_cast<VariableExpression*>(exp), result); break;
-
 		case Expression::ExpressionType::TypecastExpression:
 			throw Common::Exceptions::NotSupported("expression type not supported yet");
 	}
@@ -237,11 +237,6 @@ void TreeInterpreter::evaluateLiteral(LiteralExpression* exp, Runtime::Object* r
 
 void TreeInterpreter::evaluateMethodExpression(MethodExpression* exp, Runtime::Object* result)
 {
-	MethodScope* scope = getEnclosingMethodScope();
-	if ( !scope ) {
-		throw Runtime::Exceptions::RuntimeException("could not resolve parent scope");
-	}
-
 	std::list<Runtime::Object> objectList;	// this is a hack to prevent that the provided object parameters run out of scope
 	ParameterList params;
 
@@ -261,10 +256,12 @@ void TreeInterpreter::evaluateMethodExpression(MethodExpression* exp, Runtime::O
 		params.push_back(Parameter::CreateRuntime(param->QualifiedOuterface(), param->getValue(), param->getReference()));
 	}
 
-	Symbol* symbol = scope->resolveMethod(exp->mName, params, false);
-	if ( !symbol ) {
-		throw Runtime::Exceptions::RuntimeException("method " + exp->mName + " not found");
+	MethodScope* scope = getEnclosingMethodScope();
+	if ( !scope ) {
+		throw Runtime::Exceptions::RuntimeException("could not resolve parent scope");
 	}
+
+	Symbol* symbol = resolveMethod(scope, exp->mSymbol, params, false, Visibility::Private);
 
 	Common::Method* method = static_cast<Common::Method*>(symbol);
 	assert(method);
@@ -289,6 +286,22 @@ void TreeInterpreter::evaluateMethodExpression(MethodExpression* exp, Runtime::O
 			mControlFlow = Runtime::ControlFlow::Normal;
 			break;
 	}
+}
+
+void TreeInterpreter::evaluateSymbol(SymbolExpression *exp, Runtime::Object *result)
+{
+	IScope* scope = getScope();
+
+	Symbol* lvalue = scope->resolve(exp->mName.content(), false, Visibility::Designtime);
+	if ( !lvalue ) {
+		throw Runtime::Exceptions::InvalidAssignment("lvalue '" + exp->mName.content() + "' not found", exp->mName.position());
+	}
+
+	if ( lvalue->getSymbolType() != Symbol::IType::ObjectSymbol ) {
+		throw Runtime::Exceptions::RuntimeException("invalid lvalue symbol type");
+	}
+
+	*result = *static_cast<Runtime::Object*>(lvalue);
 }
 
 void TreeInterpreter::evaluateUnaryExpression(UnaryExpression* exp, Runtime::Object* result)
@@ -320,22 +333,6 @@ void TreeInterpreter::evaluateUnaryExpression(UnaryExpression* exp, Runtime::Obj
 		default: throw Common::Exceptions::NotSupported("expression with " + exp->mToken.content() + " not supported (by now)");
 		// }
 	}
-}
-
-void TreeInterpreter::evaluateVariable(VariableExpression* exp, Runtime::Object* result)
-{
-	IScope* scope = getScope();
-
-	Symbol* lvalue = scope->resolve(exp->mName.content(), false, Visibility::Designtime);
-	if ( !lvalue ) {
-		throw Runtime::Exceptions::InvalidAssignment("lvalue '" + exp->mName.content() + "' not found", exp->mName.position());
-	}
-
-	if ( lvalue->getSymbolType() != Symbol::IType::ObjectSymbol ) {
-		throw Runtime::Exceptions::RuntimeException("invalid lvalue symbol type");
-	}
-
-	*result = *static_cast<Runtime::Object*>(lvalue);
 }
 
 Runtime::ControlFlow::E TreeInterpreter::execute(Common::Method* method, const ParameterList& params, Runtime::Object* result)
@@ -661,12 +658,15 @@ std::string TreeInterpreter::printExpression(Node* node) const
 				result += static_cast<LiteralExpression*>(expression)->mValue.toStdString();
 			} break;
 			case Expression::ExpressionType::MethodExpression: {
-				result += static_cast<MethodExpression*>(expression)->mName;
+				result += printExpression(static_cast<MethodExpression*>(expression)->mSymbol);
 				result += "(";
 				for ( ExpressionList::const_iterator it = static_cast<MethodExpression*>(expression)->mParams.begin(); it != static_cast<MethodExpression*>(expression)->mParams.end(); ++it ) {
 					result += printExpression((*it));
 				}
 				result += ")";
+			} break;
+			case Expression::ExpressionType::SymbolExpression: {
+				result += static_cast<SymbolExpression*>(expression)->mName.content();
 			} break;
 			case Expression::ExpressionType::TypecastExpression: {
 				result += static_cast<TypecastExpression*>(expression)->mDestinationType + " ";
@@ -677,9 +677,6 @@ std::string TreeInterpreter::printExpression(Node* node) const
 
 				result += bin->mToken.content();
 				result += printExpression(bin->mExpression);
-			} break;
-			case Expression::ExpressionType::VariableExpression: {
-				result += static_cast<VariableExpression*>(expression)->mName.content();
 			} break;
 		}
 	}
@@ -713,6 +710,79 @@ void TreeInterpreter::pushScope(IScope* scope)
 	}
 
 	stack->pushScope(scope, allowDelete, true);
+}
+
+Symbol* TreeInterpreter::resolve(IScope* scope, SymbolExpression* symbol, bool onlyCurrentScope, Visibility::E visibility) const
+{
+	if ( !scope ) {
+		throw Runtime::Exceptions::InvalidSymbol("invalid scope provided");
+	}
+	if ( !symbol ) {
+		throw Runtime::Exceptions::InvalidSymbol("invalid symbol provided");
+	}
+
+	while ( symbol->mScope ) {
+		Symbol* child = scope->resolve(symbol->mName.content(), onlyCurrentScope, visibility);
+
+		if ( !child ) {
+			throw Designtime::Exceptions::DesigntimeException("unknown symbol '" + symbol->mName.content() + "' found", symbol->mName.position());
+		}
+
+		switch ( child->getSymbolType() ) {
+			case Symbol::IType::ObjectSymbol:
+			case Symbol::IType::NamespaceSymbol:
+			case Symbol::IType::BluePrintEnumSymbol:
+			case Symbol::IType::BluePrintObjectSymbol:
+				symbol = symbol->mScope;
+				break;
+			case Symbol::IType::MethodSymbol:
+			case Symbol::IType::UnknownSymbol:
+				throw Designtime::Exceptions::DesigntimeException("invalid symbol type found", symbol->mName.position());
+		}
+	}
+
+	return 0;
+}
+
+Symbol* TreeInterpreter::resolveMethod(MethodScope* scope, SymbolExpression* symbol, const ParameterList& params, bool onlyCurrentScope, Visibility::E visibility) const
+{
+	if ( !scope ) {
+		throw Runtime::Exceptions::InvalidSymbol("invalid scope provided");
+	}
+	if ( !symbol ) {
+		throw Runtime::Exceptions::InvalidSymbol("invalid symbol provided");
+	}
+
+	while ( symbol->mScope ) {
+		Symbol* child = scope->resolve(symbol->mName.content(), onlyCurrentScope, visibility);
+
+		if ( !child ) {
+			throw Designtime::Exceptions::DesigntimeException("unknown symbol '" + symbol->mName.content() + "' found", symbol->mName.position());
+		}
+
+		switch ( child->getSymbolType() ) {
+			case Symbol::IType::NamespaceSymbol:
+				scope = static_cast<Common::Namespace*>(child);
+				break;
+			case Symbol::IType::BluePrintEnumSymbol:
+			case Symbol::IType::BluePrintObjectSymbol:
+			case Symbol::IType::ObjectSymbol:
+				scope = static_cast<Designtime::BluePrintObject*>(child);
+				break;
+			case Symbol::IType::MethodSymbol:
+			case Symbol::IType::UnknownSymbol:
+				throw Designtime::Exceptions::DesigntimeException("invalid symbol type found", symbol->mName.position());
+		}
+
+		symbol = symbol->mScope;
+	}
+
+	Symbol* method = scope->resolveMethod(symbol->mName.content(), params, onlyCurrentScope, visibility);
+	if ( !method ) {
+		throw Runtime::Exceptions::RuntimeException("method " + symbol->mName.content() + " not found");
+	}
+
+	return method;
 }
 
 void TreeInterpreter::visit(Node* node)
@@ -757,13 +827,13 @@ void TreeInterpreter::visitAssignment(Assignment* node)
 {
 	IScope* scope = getScope();
 
-	Symbol* lvalue = scope->resolve(node->mName.content(), false, Visibility::Designtime);
+	Symbol* lvalue = scope->resolve(node->mLValue->mName.content(), false, Visibility::Designtime);
 	if ( !lvalue ) {
-		throw Runtime::Exceptions::InvalidAssignment("lvalue '" + node->mName.content() + "' not found", node->mName.position());
+		throw Runtime::Exceptions::InvalidAssignment("lvalue '" + node->mLValue->mName.content() + "' not found", node->mLValue->mName.position());
 	}
 
 	if ( lvalue->getSymbolType() != Symbol::IType::ObjectSymbol ) {
-		throw Runtime::Exceptions::RuntimeException("invalid lvalue symbol type", node->mName.position());
+		throw Runtime::Exceptions::RuntimeException("invalid lvalue symbol type", node->mLValue->mName.position());
 	}
 
 	evaluate(node->mExpression, static_cast<Runtime::Object*>(lvalue));
@@ -790,8 +860,6 @@ void TreeInterpreter::visitDelete(DeleteStatement* node)
 		mControlFlow = e;
 		return;
 	}
-
-	//Controller::Instance().memory()->remove(obj.getReference());
 
 	obj = Runtime::Object();
 }
@@ -952,7 +1020,9 @@ void TreeInterpreter::visitPrint(PrintStatement* node)
 void TreeInterpreter::visitReturn(ReturnStatement* node)
 {
 	try {
-		evaluate(node->mExpression, mReturnValue);
+		if ( node->mExpression ) {	// only process not-empty return statements
+			evaluate(node->mExpression, mReturnValue);
+		}
 	}
 	catch ( Runtime::ControlFlow::E &e ) {
 		mControlFlow = e;
