@@ -101,25 +101,6 @@ MethodScope* TreeGenerator::getEnclosingMethodScope(IScope* scope) const
 	return 0;
 }
 
-NamedScope* TreeGenerator::getEnclosingNamedScope(IScope *scope) const
-{
-	if ( !scope ) {
-		scope = getScope();
-	}
-
-	while ( scope ) {
-		IScope* parent = scope->getEnclosingScope();
-
-		if ( parent && parent->getScopeType() == IScope::IType::NamedScope ) {
-			return dynamic_cast<NamedScope*>(parent);
-		}
-
-		scope = parent;
-	}
-
-	return 0;
-}
-
 Common::Namespace* TreeGenerator::getEnclosingNamespace(IScope* scope) const
 {
 	if ( !scope ) {
@@ -131,28 +112,6 @@ Common::Namespace* TreeGenerator::getEnclosingNamespace(IScope* scope) const
 
 		if ( parent && parent->getScopeType() == IScope::IType::MethodScope ) {
 			return dynamic_cast<Common::Namespace*>(parent);
-		}
-
-		scope = parent;
-	}
-
-	return 0;
-}
-
-Runtime::Object* TreeGenerator::getEnclosingObject(IScope* scope) const
-{
-	if ( !scope ) {
-		scope = getScope();
-	}
-
-	while ( scope ) {
-		IScope* parent = scope->getEnclosingScope();
-
-		if ( parent && parent->getScopeType() == IScope::IType::MethodScope ) {
-			Runtime::Object* result = dynamic_cast<Runtime::Object*>(parent);
-			if ( result ) {
-				return result;
-			}
 		}
 
 		scope = parent;
@@ -543,7 +502,7 @@ Expression* TreeGenerator::process_copy(TokenIterator& token)
 		throw Common::Exceptions::Exception("nullptr access!");
 	}
 
-	return new CopyExpression(new VariableExpression((*token)));
+	return new CopyExpression(resolve(token));
 }
 
 /*
@@ -563,7 +522,7 @@ Statement* TreeGenerator::process_delete(TokenIterator& token)
 
 	switch ( symbol->getSymbolType() ) {
 		case Symbol::IType::ObjectSymbol: {
-			statement = new DeleteStatement(new VariableExpression((*token)));
+			statement = new DeleteStatement(resolve(token));
 		} break;
 		case Symbol::IType::BluePrintEnumSymbol:
 		case Symbol::IType::BluePrintObjectSymbol:
@@ -675,57 +634,52 @@ Statement* TreeGenerator::process_foreach(TokenIterator& token)
 	++token;
 	expect(Token::Type::IDENTIFER, token);
 
-	TokenIterator identifier = token;
-
-	++token;
+	SymbolExpression* symbol = resolve(token);
 
 	expect(Token::Type::PARENTHESIS_CLOSE, token);
 	++token;
 
-	// Body parsing
-	// {
-	Node* loopBlock = process_statement(token);
-	// }
-
-	return new ForeachStatement(typeDeclaration, new VariableExpression(*identifier), loopBlock);
+	return new ForeachStatement(typeDeclaration, symbol, process_statement(token));
 }
 
 /*
- * executes a method, processes an assign statement and instanciates new types
+ * executes a method, processes an assign statement and instantiates new types
  */
 Node* TreeGenerator::process_identifier(TokenIterator& token)
 {
 	Node* node = 0;
 
-	TokenIterator op = lookahead(token);
+	TokenIterator old = token;
+	SymbolExpression* symbol = resolve(token);
+	TokenIterator op = token;
 
 	// type declaration
 	if ( op->type() == Token::Type::IDENTIFER ) {
-		node = process_type(token);
+		node = process_type(old);
+		token = old;
 	}
 	// method call
 	else if ( op->type() == Token::Type::PARENTHESIS_OPEN ) {
-		node = process_method(token);
+		node = process_method(symbol, token);
 	}
 	// assignment
 	else if ( op->category() == Token::Category::Assignment ) {
-		TokenIterator identifier = token;
-		TokenIterator assignment = ++token;
+		TokenIterator assignment = token;
 		Node* exp = 0;
 
 		switch ( assignment->type() ) {
-			case Token::Type::ASSIGN_ADDITION: exp = new BinaryExpression(Token(Token::Type::MATH_ADDITION), new VariableExpression((*identifier)), expression(++token)); break;
-			case Token::Type::ASSIGN_BITAND: exp = new BinaryExpression(Token(Token::Type::BITAND), new VariableExpression((*identifier)), expression(++token)); break;
-			case Token::Type::ASSIGN_BITCOMPLEMENT: exp = new BinaryExpression(Token(Token::Type::BITCOMPLEMENT), new VariableExpression((*identifier)), expression(++token)); break;
-			case Token::Type::ASSIGN_BITOR: exp = new BinaryExpression(Token(Token::Type::BITOR), new VariableExpression((*identifier)), expression(++token)); break;
-			case Token::Type::ASSIGN_DIVIDE: exp = new BinaryExpression(Token(Token::Type::MATH_DIVIDE), new VariableExpression((*identifier)), expression(++token)); break;
-			case Token::Type::ASSIGN_MODULO: exp = new BinaryExpression(Token(Token::Type::MATH_MODULO), new VariableExpression((*identifier)), expression(++token)); break;
-			case Token::Type::ASSIGN_MULTIPLY: exp = new BinaryExpression(Token(Token::Type::MATH_MULTIPLY), new VariableExpression((*identifier)), expression(++token)); break;
-			case Token::Type::ASSIGN_SUBTRACT: exp = new BinaryExpression(Token(Token::Type::MATH_SUBTRACT), new VariableExpression((*identifier)), expression(++token)); break;
+			case Token::Type::ASSIGN_ADDITION: exp = new BinaryExpression(Token(Token::Type::MATH_ADDITION), symbol, expression(++token)); break;
+			case Token::Type::ASSIGN_BITAND: exp = new BinaryExpression(Token(Token::Type::BITAND), symbol, expression(++token)); break;
+			case Token::Type::ASSIGN_BITCOMPLEMENT: exp = new BinaryExpression(Token(Token::Type::BITCOMPLEMENT), symbol, expression(++token)); break;
+			case Token::Type::ASSIGN_BITOR: exp = new BinaryExpression(Token(Token::Type::BITOR), symbol, expression(++token)); break;
+			case Token::Type::ASSIGN_DIVIDE: exp = new BinaryExpression(Token(Token::Type::MATH_DIVIDE), symbol, expression(++token)); break;
+			case Token::Type::ASSIGN_MODULO: exp = new BinaryExpression(Token(Token::Type::MATH_MODULO), symbol, expression(++token)); break;
+			case Token::Type::ASSIGN_MULTIPLY: exp = new BinaryExpression(Token(Token::Type::MATH_MULTIPLY), symbol, expression(++token)); break;
+			case Token::Type::ASSIGN_SUBTRACT: exp = new BinaryExpression(Token(Token::Type::MATH_SUBTRACT), symbol, expression(++token)); break;
 			default: exp = expression(++token); break;
 		}
 
-		node = new Assignment((*identifier), (*assignment), exp);
+		node = new Assignment(symbol, (*assignment), exp);
 	}
 /*
 	// type cast
@@ -734,23 +688,24 @@ Node* TreeGenerator::process_identifier(TokenIterator& token)
 	}
 */
 	else if ( op->type() == Token::Type::OPERATOR_DECREMENT ) {
-		Node* exp = new VariableExpression((*token));
-		++token;
+		//Node* exp = new SymbolExpression((*token));
+		//++token;
 
-		node = new UnaryExpression((*token), exp);
+		node = new UnaryExpression((*token), symbol);
 		++token;
 	}
 	else if ( op->type() == Token::Type::OPERATOR_INCREMENT ) {
-		Node* exp = new VariableExpression((*token));
-		++token;
+		//Node* exp = new SymbolExpression((*token));
+		//++token;
 
-		node = new UnaryExpression((*token), exp);
+		node = new UnaryExpression((*token), symbol);
 		++token;
 	}
 	// variable usage
 	else {
-		node = new VariableExpression((*token));
-		++token;
+		//node = new SymbolExpression((*token));
+		//++token;
+		node = symbol;
 	}
 
 	return node;
@@ -854,7 +809,7 @@ Node* TreeGenerator::process_keyword(TokenIterator& token)
  * syntax:
  * <type> <identifier>(<parameter list>);
  */
-MethodExpression* TreeGenerator::process_method(TokenIterator& token)
+MethodExpression* TreeGenerator::process_method(SymbolExpression* symbol, TokenIterator& token)
 {
 	TokenIterator tmp = token;
 
@@ -878,11 +833,9 @@ MethodExpression* TreeGenerator::process_method(TokenIterator& token)
 		tmp++;
 	}
 
-	std::string name = token->content();
-
 	token = ++closed;
 
-	return new MethodExpression(name, parameterList);
+	return new MethodExpression(symbol, parameterList);
 }
 
 /*
@@ -900,7 +853,7 @@ Expression* TreeGenerator::process_new(TokenIterator& token)
 		throw Designtime::Exceptions::DesigntimeException("invalid symbol type found");
 	}
 
-	return new NewExpression(symbol, process_method(token));
+	return new NewExpression(symbol, process_method(0, token));
 }
 
 /*
@@ -1358,6 +1311,17 @@ Statement* TreeGenerator::process_while(TokenIterator& token)
 void TreeGenerator::pushTokens(const TokenList& tokens)
 {
 	mStack->current()->pushTokens(tokens);
+}
+
+SymbolExpression* TreeGenerator::resolve(TokenIterator& token) const
+{
+	SymbolExpression* symbol = new SymbolExpression(*token++);
+
+	while ( token->type() == Token::Type::SCOPE ) {
+		symbol->mScope = resolve(++token);
+	}
+
+	return symbol;
 }
 
 

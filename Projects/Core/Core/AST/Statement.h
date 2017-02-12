@@ -67,17 +67,17 @@ protected:
 class Assignment : public Statement
 {
 public:
-	Assignment(const Token& name, const Token& assignment, Node* exp)
+	Assignment(SymbolExpression* lvalue, const Token& assignment, Node* rvalue)
 	: Statement(StatementType::Assignment),
 	  mAssignment(assignment),
-	  mExpression(exp),
-	  mName(name)
+	  mExpression(rvalue),
+	  mLValue(lvalue)
 	{ }
 
 public:
 	Token mAssignment;
 	Node* mExpression;
-	Token mName;
+	SymbolExpression* mLValue;
 };
 
 

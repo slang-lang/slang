@@ -31,9 +31,9 @@ public:
 			LiteralExpression,
 			MethodExpression,
 			NewExpression,
+			SymbolExpression,
 			TypecastExpression,
-			UnaryExpression,
-			VariableExpression,
+			UnaryExpression
 		};
 	};
 
@@ -55,7 +55,7 @@ typedef std::list<Node*> ExpressionList;
 
 
 // Forward declarations
-class VariableExpression;
+class SymbolExpression;
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -224,22 +224,36 @@ public:
 class MethodExpression : public Expression
 {
 public:
-	MethodExpression(const std::string& name, const ExpressionList& params)
+	MethodExpression(SymbolExpression* symbol, const ExpressionList& params)
 	: Expression(ExpressionType::MethodExpression),
-	  mName(name),
-	  mParams(params)
+	  mParams(params),
+	  mSymbol(symbol)
 	{ }
 
 public:
-	std::string mName;
 	ExpressionList mParams;
+	SymbolExpression* mSymbol;
 };
 
 // Method expressions
 ///////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////////////////////
-// Variable expressions
+// Symbol expressions
+
+class SymbolExpression : public Expression
+{
+public:
+	explicit SymbolExpression(const Token& name)
+	: Expression(ExpressionType::SymbolExpression),
+	  mName(name),
+	  mScope(0)
+	{ }
+
+public:
+	Token mName;
+	SymbolExpression* mScope;
+};
 
 class TypecastExpression : public Expression
 {
@@ -253,18 +267,6 @@ public:
 public:
 	std::string mDestinationType;
 	Node* mExpression;
-};
-
-class VariableExpression : public Expression
-{
-public:
-	explicit VariableExpression(const Token& name)
-	: Expression(ExpressionType::VariableExpression),
-	  mName(name)
-	{ }
-
-public:
-	Token mName;
 };
 
 // Variable expressions

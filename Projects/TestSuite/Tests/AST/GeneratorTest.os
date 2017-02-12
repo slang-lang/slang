@@ -6,13 +6,13 @@ private namespace Space {
 	}
 }
 
-public void Main(int argc, string args) {
+public void Main(int argc = 0, string args = "") {
 
 	print("Main()");
 
 	methodCall();
 
-	//Space.NamespacedMethod();
+	Space.NamespacedMethod();
 
 	print("end.");
 
