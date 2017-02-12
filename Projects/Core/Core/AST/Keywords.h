@@ -13,6 +13,7 @@
 
 // Namespace declarations
 
+
 namespace ObjectiveScript {
 namespace AST {
 

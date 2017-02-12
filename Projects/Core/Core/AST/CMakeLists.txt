@@ -1,6 +1,7 @@
 INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
 SET(SOURCES
+	Generator.cpp
 	TreeGenerator.cpp
 	TreeInterpreter.cpp
 	TreeVisitor.cpp
@@ -9,6 +10,7 @@ SET(SOURCES
 SET(HEADERS
 	ControlStatements.h
 	Expression.h
+	Generator.h
 	Keywords.h
 	Node.h
 	Operator.h
@@ -19,6 +21,7 @@ SET(HEADERS
 )
 
 SET(DEPENDENCIES
+	CoreCommon
 )
 
 add_include(Projects/Core)

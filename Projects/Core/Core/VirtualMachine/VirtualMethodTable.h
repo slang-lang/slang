@@ -4,7 +4,7 @@
 
 
 // Defines
-#define USE_ORDERED_COLLECTION
+#include <Core/Defines.h>
 
 // Library includes
 #include <list>

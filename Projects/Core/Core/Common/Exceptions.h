@@ -124,6 +124,17 @@ public:
 };
 
 
+class InvalidSymbol : public Exception
+{
+public:
+	InvalidSymbol(const std::string& text, const Position& position = Position())
+	: Exception("Exception.InvalidSymbol: " + text, position)
+	{ }
+
+	virtual ~InvalidSymbol() throw() { }
+};
+
+
 class NotImplemented : public Exception
 {
 public:

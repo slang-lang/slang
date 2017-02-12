@@ -3,7 +3,7 @@
 #define ObjectiveScript_Core_Types_h
 
 // Defines
-#define USE_ORDERED_COLLECTION
+#include "Defines.h"
 
 // Library includes
 #include <list>
