@@ -939,9 +939,24 @@ void Interpreter::process_delete(TokenIterator& token)
  * syntax:
  * exit;
  */
-void Interpreter::process_exit(TokenIterator& /*token*/)
+void Interpreter::process_exit(TokenIterator& token)
 {
+	expect(Token::Type::PARENTHESIS_OPEN, token++);
+
+	Object* data = mRepository->createInstance(IntegerObject::TYPENAME, ANONYMOUS_OBJECT, PrototypeConstraints());
+	try {
+		expression(data, token);
+	}
+	catch ( ControlFlow::E &e ) {
+		mControlFlow = e;
+		return;
+	}
+
+	mStack->exception() = ExceptionData(data, token->position());
+
 	throw ControlFlow::ExitProgram;
+
+	//expect(Token::Type::PARENTHESIS_CLOSE, token++);
 }
 
 /*

@@ -12,7 +12,7 @@ private bool TestCase1() const {
 	int result = -1;
 	print("(" + result + ") == -(1)");
 
-	return (result) == -(1);
+	return result == -(1);
 }
 
 private bool TestCase2() const {
