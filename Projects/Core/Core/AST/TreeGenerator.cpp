@@ -316,19 +316,19 @@ Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 	// infix
 	switch ( op ) {
 		case Token::Type::MATH_ADDITION: {
-			infixPostfix = new UnaryExpression((*start), expression(++start));
+			infixPostfix = new UnaryExpression((*start), parseExpression(++start));
 		} break;
 		case Token::Type::MATH_SUBTRACT: {
-			infixPostfix = new UnaryExpression((*start), expression(++start));
+			infixPostfix = new UnaryExpression((*start), parseExpression(++start));
 		} break;
 		case Token::Type::OPERATOR_DECREMENT: {
-			infixPostfix = new UnaryExpression((*start), expression(++start));
+			infixPostfix = new UnaryExpression((*start), parseExpression(++start));
 		} break;
 		case Token::Type::OPERATOR_INCREMENT: {
-			infixPostfix = new UnaryExpression((*start), expression(++start));
+			infixPostfix = new UnaryExpression((*start), parseExpression(++start));
 		} break;
 		case Token::Type::OPERATOR_NOT: {
-			infixPostfix = new UnaryExpression((*start), expression(++start));
+			infixPostfix = new UnaryExpression((*start), parseExpression(++start));
 		} break;
 		default: {
 			infixPostfix = parseTerm(start);
@@ -394,7 +394,7 @@ Node* TreeGenerator::parseTerm(TokenIterator& start)
 		} break;
 		case Token::Type::IDENTIFER:
 		case Token::Type::TYPE: {
-			term = process_identifier(start);
+			term = process_identifier(start, true);
 		} break;
 		case Token::Type::KEYWORD: {
 			term = process_expression_keyword(start);
@@ -645,7 +645,7 @@ Statement* TreeGenerator::process_foreach(TokenIterator& token)
 /*
  * executes a method, processes an assign statement and instantiates new types
  */
-Node* TreeGenerator::process_identifier(TokenIterator& token)
+Node* TreeGenerator::process_identifier(TokenIterator& token, bool allowTypeCast)
 {
 	Node* node = 0;
 
@@ -653,9 +653,16 @@ Node* TreeGenerator::process_identifier(TokenIterator& token)
 	SymbolExpression* symbol = resolve(token);
 	TokenIterator op = token;
 
+	// type cast
+	if ( allowTypeCast && op->type() == Token::Type::IDENTIFER ) {
+		node = new TypecastExpression(*old, expression(++old));
+
+		token = old;
+	}
 	// type declaration
-	if ( op->type() == Token::Type::IDENTIFER ) {
+	else if ( !allowTypeCast && op->type() == Token::Type::IDENTIFER ) {
 		node = process_type(old);
+
 		token = old;
 	}
 	// method call
@@ -681,30 +688,18 @@ Node* TreeGenerator::process_identifier(TokenIterator& token)
 
 		node = new Assignment(symbol, (*assignment), exp);
 	}
-/*
-	// type cast
-	else if ( op->type() == Token::Type::IDENTIFER ) {
-		node = new TypecastExpression(token->content(), expression(++token));
-	}
-*/
+	// --
 	else if ( op->type() == Token::Type::OPERATOR_DECREMENT ) {
-		//Node* exp = new SymbolExpression((*token));
-		//++token;
-
 		node = new UnaryExpression((*token), symbol);
 		++token;
 	}
+	// ++
 	else if ( op->type() == Token::Type::OPERATOR_INCREMENT ) {
-		//Node* exp = new SymbolExpression((*token));
-		//++token;
-
 		node = new UnaryExpression((*token), symbol);
 		++token;
 	}
 	// variable usage
 	else {
-		//node = new SymbolExpression((*token));
-		//++token;
 		node = symbol;
 	}
 

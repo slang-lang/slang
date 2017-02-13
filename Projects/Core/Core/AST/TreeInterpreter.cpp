@@ -21,6 +21,7 @@
 #include <Core/Designtime/Parser/Parser.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Runtime/OperatorOverloading.h>
+#include <Core/Runtime/TypeCast.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
 #include <Debugger/Debugger.h>
@@ -67,9 +68,8 @@ void TreeInterpreter::evaluate(Node* exp, Runtime::Object* result)
 		case Expression::ExpressionType::MethodExpression: evaluateMethodExpression(static_cast<MethodExpression*>(exp), result); break;
 		case Expression::ExpressionType::NewExpression: evaluateNewExpression(static_cast<NewExpression*>(exp), result); break;
 		case Expression::ExpressionType::SymbolExpression: evaluateSymbol(static_cast<SymbolExpression *>(exp), result); break;
+		case Expression::ExpressionType::TypecastExpression: evaluateTypeCastExpression(static_cast<TypecastExpression*>(exp), result); break;
 		case Expression::ExpressionType::UnaryExpression: evaluateUnaryExpression(static_cast<UnaryExpression*>(exp), result); break;
-		case Expression::ExpressionType::TypecastExpression:
-			throw Common::Exceptions::NotSupported("expression type not supported yet");
 	}
 }
 
@@ -90,7 +90,7 @@ void TreeInterpreter::evaluateBinaryExpression(BinaryExpression* exp, Runtime::O
 		// evaluate right expression
 		evaluate(exp->mRight, &right);
 	}
-	catch ( Runtime::ControlFlow::E& e ) {
+	catch ( Runtime::ControlFlow::E &e ) {
 		mControlFlow = e;
 		return;
 	}
@@ -144,7 +144,7 @@ void TreeInterpreter::evaluateBooleanBinaryExpression(BinaryExpression* exp, Run
 		// evaluate right expression
 		evaluate(exp->mRight, &right);
 	}
-	catch ( Runtime::ControlFlow::E& e ) {
+	catch ( Runtime::ControlFlow::E &e ) {
 		mControlFlow = e;
 		return;
 	}
@@ -304,12 +304,29 @@ void TreeInterpreter::evaluateSymbol(SymbolExpression *exp, Runtime::Object *res
 	*result = *static_cast<Runtime::Object*>(lvalue);
 }
 
+void TreeInterpreter::evaluateTypeCastExpression(TypecastExpression* exp, Runtime::Object* result)
+{
+	Runtime::Object tmp;
+
+	try {
+		evaluate(exp->mExpression, &tmp);
+	}
+	catch ( Runtime::ControlFlow::E &e ) {
+		mControlFlow = e;
+		return;
+	}
+
+	Runtime::typecast(&tmp, exp->mDestinationType.content());
+
+	Runtime::operator_binary_assign(result, &tmp);
+}
+
 void TreeInterpreter::evaluateUnaryExpression(UnaryExpression* exp, Runtime::Object* result)
 {
 	try {
 		evaluate(exp->mExpression, result);
 	}
-	catch ( Runtime::ControlFlow::E& e ) {
+	catch ( Runtime::ControlFlow::E &e ) {
 		mControlFlow = e;
 		return;
 	}
@@ -666,10 +683,15 @@ std::string TreeInterpreter::printExpression(Node* node) const
 				result += ")";
 			} break;
 			case Expression::ExpressionType::SymbolExpression: {
-				result += static_cast<SymbolExpression*>(expression)->mName.content();
+				if ( static_cast<SymbolExpression*>(expression)->mScope ) {
+					result += printExpression(static_cast<SymbolExpression*>(expression)->mScope);
+				}
+				else {
+					result += static_cast<SymbolExpression*>(expression)->mName.content();
+				}
 			} break;
 			case Expression::ExpressionType::TypecastExpression: {
-				result += static_cast<TypecastExpression*>(expression)->mDestinationType + " ";
+				result += static_cast<TypecastExpression*>(expression)->mDestinationType.content() + " ";
 				result += printExpression(static_cast<TypecastExpression*>(expression)->mExpression);
 			} break;
 			case Expression::ExpressionType::UnaryExpression: {
