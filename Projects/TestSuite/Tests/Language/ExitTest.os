@@ -7,7 +7,7 @@ public void Main(int argc, string args) {
 private bool TestCase1() const {
 	writeln("TestCase1: exit");
 
-	exit;
+	exit(0);
 
 	assert(!"this should not happen");
 }

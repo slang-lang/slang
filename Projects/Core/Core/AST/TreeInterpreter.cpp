@@ -886,8 +886,20 @@ void TreeInterpreter::visitDelete(DeleteStatement* node)
 	obj = Runtime::Object();
 }
 
-void TreeInterpreter::visitExit(ExitStatement* /*node*/)
+void TreeInterpreter::visitExit(ExitStatement* node)
 {
+	Runtime::Object* data = mRepository->createInstance(Runtime::IntegerObject::TYPENAME, ANONYMOUS_OBJECT, PrototypeConstraints());
+
+	try {
+		evaluate(node->mExpression, data);
+	}
+	catch ( Runtime::ControlFlow::E &e ) {
+		mControlFlow = e;
+		return;
+	}
+
+	mStack->exception() = Runtime::ExceptionData(data, Common::Position());
+
 	throw Runtime::ControlFlow::ExitProgram;
 }
 
