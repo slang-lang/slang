@@ -104,7 +104,8 @@ private:
 	void evaluateLiteral(LiteralExpression* exp, Runtime::Object* result);
 	void evaluateMethodExpression(MethodExpression* exp, Runtime::Object* result);
 	void evaluateNewExpression(NewExpression* exp, Runtime::Object* result);
-	void evaluateSymbol(SymbolExpression *exp, Runtime::Object *result);
+	void evaluateSymbol(SymbolExpression* exp, Runtime::Object* result);
+	void evaluateTypeCastExpression(TypecastExpression* exp, Runtime::Object* result);
 	void evaluateUnaryExpression(UnaryExpression* exp, Runtime::Object* result);
 
 	std::string printExpression(Node* node) const;

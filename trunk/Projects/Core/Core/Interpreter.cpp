@@ -741,7 +741,13 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 								newType = Designtime::Parser::buildRuntimeConstraintTypename(newType, constraints);
 
 					Object tmp;
-					expression(&tmp, start);
+					try {
+						expression(&tmp, start);
+					}
+					catch ( ControlFlow::E &e ) {
+						mControlFlow = e;
+						return;
+					}
 
 					typecast(&tmp, newType);
 

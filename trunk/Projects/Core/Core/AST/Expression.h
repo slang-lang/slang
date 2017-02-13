@@ -258,14 +258,14 @@ public:
 class TypecastExpression : public Expression
 {
 public:
-	TypecastExpression(const std::string& destinationType, Node* exp)
+	TypecastExpression(const Token& destinationType, Node* exp)
 	: Expression(ExpressionType::TypecastExpression),
 	  mDestinationType(destinationType),
 	  mExpression(exp)
 	{ }
 
 public:
-	std::string mDestinationType;
+	Token mDestinationType;
 	Node* mExpression;
 };
 
