@@ -79,23 +79,6 @@ public:
 };
 
 
-/*
-class ForeachStatement : public Statement
-{
-public:
-	ForeachStatement(TypeDeclaration* typeDeclaration, const Token& loopVariable, Node* loopStatement)
-	: Statement(StatementType::ForeachStatement),
-	  mLoopVariable(loopVariable),
-	  mStatement(loopStatement),
-	  mTypeDeclaration(typeDeclaration)
-	{ }
-
-public:
-	Token mLoopVariable;
-	Node* mStatement;
-	TypeDeclaration* mTypeDeclaration;
-};
-*/
 class ForeachStatement : public Statement
 {
 public:

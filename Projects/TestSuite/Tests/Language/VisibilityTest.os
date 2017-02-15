@@ -30,6 +30,7 @@ private bool TestCase1() {
 	TestObject obj = new TestObject();
 
 	obj.mPublicValue = 1;
+	print("obj.mPublicValue = " + obj.mPublicValue);
 
 	obj.publicPrint();
 
