@@ -489,20 +489,12 @@ Statement* TreeGenerator::process_continue(TokenIterator& token)
  */
 Expression* TreeGenerator::process_copy(TokenIterator& token)
 {
-	Symbol* symbol = identify(token);
-	if ( !symbol ) {
-		throw Common::Exceptions::UnknownIdentifer("unknown identifier '" + token->content() + "'");
-	}
-	if ( symbol->getSymbolType() != Symbol::IType::ObjectSymbol ) {
-		throw Common::Exceptions::Exception("object symbol expected!");
-	}
+	Node* exp = expression(token);
 
-	Runtime::Object* source = dynamic_cast<Runtime::Object*>(symbol);
-	if ( !source ) {
-		throw Common::Exceptions::Exception("nullptr access!");
-	}
+	expect(Token::Type::SEMICOLON, token);
+	++token;
 
-	return new CopyExpression(resolve(token));
+	return new CopyExpression(exp);
 }
 
 /*
@@ -511,30 +503,12 @@ Expression* TreeGenerator::process_copy(TokenIterator& token)
  */
 Statement* TreeGenerator::process_delete(TokenIterator& token)
 {
-	DeleteStatement* statement = 0;
+	Node* exp = expression(token);
 
-	TokenIterator end = findNext(token, Token::Type::SEMICOLON);
+	expect(Token::Type::SEMICOLON, token);
+	++token;
 
-	Symbol* symbol = identify(token);
-	if ( !symbol ) {
-		throw Common::Exceptions::UnknownIdentifer(token->content(), token->position());
-	}
-
-	switch ( symbol->getSymbolType() ) {
-		case Symbol::IType::ObjectSymbol: {
-			statement = new DeleteStatement(resolve(token));
-		} break;
-		case Symbol::IType::BluePrintEnumSymbol:
-		case Symbol::IType::BluePrintObjectSymbol:
-		case Symbol::IType::MethodSymbol:
-		case Symbol::IType::NamespaceSymbol:
-		case Symbol::IType::UnknownSymbol:
-			throw Common::Exceptions::TypeMismatch("member or local variable expected but symbol '" + symbol->getName() + "' found", token->position());
-	}
-
-	token = end;
-
-	return statement;
+	return new DeleteStatement(exp);
 }
 
 /*
@@ -754,9 +728,6 @@ Node* TreeGenerator::process_keyword(TokenIterator& token)
 	else if ( keyword == KEYWORD_CONTINUE ) {
 		node = process_continue(token);
 	}
-	else if ( keyword == KEYWORD_COPY ) {
-		node = process_copy(token);
-	}
 	else if ( keyword == KEYWORD_DELETE ) {
 		node = process_delete(token);
 	}
@@ -772,9 +743,6 @@ Node* TreeGenerator::process_keyword(TokenIterator& token)
 	else if ( keyword == KEYWORD_IF ) {
 		node = process_if(token);
 	}
-	else if ( keyword == KEYWORD_NEW ) {
-		node = process_new(token);
-	}
 	else if ( keyword == KEYWORD_PRINT ) {
 		node = process_print(token);
 	}
@@ -789,9 +757,6 @@ Node* TreeGenerator::process_keyword(TokenIterator& token)
 	}
 	else if ( keyword == KEYWORD_TRY ) {
 		node = process_try(token);
-	}
-	else if ( keyword == KEYWORD_TYPEID ) {
-		node = process_typeid(token);
 	}
 	else if ( keyword == KEYWORD_WHILE ) {
 		node = process_while(token);
