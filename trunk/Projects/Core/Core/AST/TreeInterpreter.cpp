@@ -69,6 +69,7 @@ void TreeInterpreter::evaluate(Node* exp, Runtime::Object* result)
 		case Expression::ExpressionType::NewExpression: evaluateNewExpression(static_cast<NewExpression*>(exp), result); break;
 		case Expression::ExpressionType::SymbolExpression: evaluateSymbol(static_cast<SymbolExpression *>(exp), result); break;
 		case Expression::ExpressionType::TypecastExpression: evaluateTypeCastExpression(static_cast<TypecastExpression*>(exp), result); break;
+		case Expression::ExpressionType::TypeidExpression: evaluateTypeidExpression(static_cast<TypeidExpression*>(exp), result); break;
 		case Expression::ExpressionType::UnaryExpression: evaluateUnaryExpression(static_cast<UnaryExpression*>(exp), result); break;
 	}
 }
@@ -319,6 +320,21 @@ void TreeInterpreter::evaluateTypeCastExpression(TypecastExpression* exp, Runtim
 	Runtime::typecast(&tmp, exp->mDestinationType.content());
 
 	Runtime::operator_binary_assign(result, &tmp);
+}
+
+void TreeInterpreter::evaluateTypeidExpression(TypeidExpression* exp, Runtime::Object* result)
+{
+	Runtime::Object tmp;
+	try {
+		evaluate(exp->mExpression, &tmp);
+
+		Runtime::StringObject type(tmp.QualifiedTypename());
+		Runtime::operator_binary_assign(result, &type);
+	}
+	catch ( Runtime::ControlFlow::E &e ) {
+		mControlFlow = e;
+		return;
+	}
 }
 
 void TreeInterpreter::evaluateUnaryExpression(UnaryExpression* exp, Runtime::Object* result)
@@ -693,6 +709,9 @@ std::string TreeInterpreter::printExpression(Node* node) const
 			case Expression::ExpressionType::TypecastExpression: {
 				result += static_cast<TypecastExpression*>(expression)->mDestinationType.content() + " ";
 				result += printExpression(static_cast<TypecastExpression*>(expression)->mExpression);
+			} break;
+			case Expression::ExpressionType::TypeidExpression: {
+				result += "typeid(" + printExpression(static_cast<TypeidExpression*>(expression)->mExpression) + ")";
 			} break;
 			case Expression::ExpressionType::UnaryExpression: {
 				UnaryExpression* bin = static_cast<UnaryExpression*>(expression);

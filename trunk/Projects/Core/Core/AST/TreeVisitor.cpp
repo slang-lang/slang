@@ -73,6 +73,9 @@ std::string PrintVisitor::printExpression(Node* node) const
 				result += static_cast<TypecastExpression*>(expression)->mDestinationType.content() + " ";
 				result += printExpression(static_cast<TypecastExpression*>(expression)->mExpression);
 			} break;
+			case Expression::ExpressionType::TypeidExpression: {
+				result += "typeid(" + printExpression(static_cast<TypeidExpression*>(expression)->mExpression) + ")";
+			} break;
 			case Expression::ExpressionType::UnaryExpression: {
 				UnaryExpression* bin = static_cast<UnaryExpression*>(expression);
 

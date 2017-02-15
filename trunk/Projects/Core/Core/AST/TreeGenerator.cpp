@@ -566,6 +566,9 @@ Expression* TreeGenerator::process_expression_keyword(TokenIterator& token)
 	else if ( keyword == KEYWORD_NEW ) {
 		expression = process_new(token);
 	}
+	else if ( keyword == KEYWORD_TYPEID ) {
+		expression = process_typeid(token);
+	}
 	else {
 		throw Common::Exceptions::SyntaxError("invalid token '" + token->content() + "' found", token->position());
 	}
@@ -1258,29 +1261,15 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, bool allowIni
  */
 Expression* TreeGenerator::process_typeid(TokenIterator& token)
 {
-	expect(Token::Type::PARENTHESIS_OPEN, token++);
-
-	Symbol* symbol = identify(token);
-	if ( symbol ) {
-		switch ( symbol->getSymbolType() ) {
-			case Symbol::IType::BluePrintEnumSymbol:
-			case Symbol::IType::BluePrintObjectSymbol:
-				//*result = Runtime::StringObject(static_cast<Designtime::BluePrintGeneric*>(symbol)->QualifiedTypename());
-				break;
-			case Symbol::IType::ObjectSymbol:
-				//*result = Runtime::StringObject(static_cast<Runtime::Object*>(symbol)->QualifiedTypename());
-				break;
-			default:
-				//*result = Runtime::StringObject("<not a valid symbol>");
-				break;
-		}
-	}
+	expect(Token::Type::PARENTHESIS_OPEN, token);
 	++token;
+
+	Node* exp = expression(token);
 
 	expect(Token::Type::PARENTHESIS_CLOSE, token);
 	++token;
 
-	return 0;
+	return new TypeidExpression(exp);
 }
 
 /*

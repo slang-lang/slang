@@ -33,6 +33,7 @@ public:
 			NewExpression,
 			SymbolExpression,
 			TypecastExpression,
+			TypeidExpression,
 			UnaryExpression
 		};
 	};
@@ -73,7 +74,7 @@ public:
 	};
 
 public:
-	BinaryExpression(const Token& token, Node* left, Node* right)
+	explicit BinaryExpression(const Token& token, Node* left, Node* right)
 	: Expression(ExpressionType::BinaryExpression),
 	  mLeft(left),
 	  mRight(right),
@@ -97,7 +98,7 @@ protected:
 class BooleanBinaryExpression : public BinaryExpression
 {
 public:
-	BooleanBinaryExpression(const Token& token, Node* left, Node* right)
+	explicit BooleanBinaryExpression(const Token& token, Node* left, Node* right)
 	: BinaryExpression(token, left, right)
 	{
 		mBinaryExpressionType = BinaryExpressionType::BooleanBinaryExpression;
@@ -108,7 +109,7 @@ public:
 class UnaryExpression : public Expression
 {
 public:
-	UnaryExpression(const Token& token, Node* exp)
+	explicit UnaryExpression(const Token& token, Node* exp)
 	: Expression(ExpressionType::UnaryExpression),
 	  mExpression(exp),
 	  mToken(token)
@@ -202,7 +203,7 @@ public:
 class NewExpression : public Expression
 {
 public:
-	NewExpression(Symbol* symbol, Node* exp)
+	explicit NewExpression(Symbol* symbol, Node* exp)
 	: Expression(ExpressionType::NewExpression),
 	  mExpression(exp),
 	  mSymbol(symbol)
@@ -224,7 +225,7 @@ public:
 class MethodExpression : public Expression
 {
 public:
-	MethodExpression(SymbolExpression* symbol, const ExpressionList& params)
+	explicit MethodExpression(SymbolExpression* symbol, const ExpressionList& params)
 	: Expression(ExpressionType::MethodExpression),
 	  mParams(params),
 	  mSymbol(symbol)
@@ -255,10 +256,11 @@ public:
 	SymbolExpression* mScope;
 };
 
+
 class TypecastExpression : public Expression
 {
 public:
-	TypecastExpression(const Token& destinationType, Node* exp)
+	explicit TypecastExpression(const Token& destinationType, Node* exp)
 	: Expression(ExpressionType::TypecastExpression),
 	  mDestinationType(destinationType),
 	  mExpression(exp)
@@ -266,6 +268,19 @@ public:
 
 public:
 	Token mDestinationType;
+	Node* mExpression;
+};
+
+
+class TypeidExpression : public Expression
+{
+public:
+	explicit TypeidExpression(Node* expression)
+	: Expression(ExpressionType::TypeidExpression),
+	  mExpression(expression)
+	{ }
+
+public:
 	Node* mExpression;
 };
 
