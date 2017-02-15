@@ -257,14 +257,12 @@ void TreeInterpreter::evaluateMethodExpression(MethodExpression* exp, Runtime::O
 		params.push_back(Parameter::CreateRuntime(param->QualifiedOuterface(), param->getValue(), param->getReference()));
 	}
 
-	MethodScope* scope = getEnclosingMethodScope();
-	if ( !scope ) {
-		throw Runtime::Exceptions::RuntimeException("could not resolve parent scope");
+	MethodSymbol* methodSymbol = resolveMethod(getScope(), exp->mSymbol, params, false, Visibility::Private);
+	if ( !methodSymbol ) {
+		throw Runtime::Exceptions::RuntimeException("method " + exp->mSymbol->toString() + " not found");
 	}
 
-	Symbol* symbol = resolveMethod(scope, exp->mSymbol, params, false, Visibility::Private);
-
-	Common::Method* method = static_cast<Common::Method*>(symbol);
+	Common::Method* method = static_cast<Common::Method*>(methodSymbol);
 	assert(method);
 
 	Runtime::ControlFlow::E controlflow;
@@ -536,130 +534,6 @@ inline IScope* TreeInterpreter::getScope() const
 	return mStack->current()->getScope();
 }
 
-inline Symbol* TreeInterpreter::identify(TokenIterator& token) const
-{
-	Symbol *result = 0;
-	bool onlyCurrentScope = false;
-	std::string prev_identifier;	// hack to allow special 'this'-handling
-
-	while ( token->type() == Token::Type::IDENTIFER || token->type() == Token::Type::TYPE ) {
-		std::string identifier = token->content();
-
-		if ( !result ) {
-			result = getScope()->resolve(identifier, onlyCurrentScope, Visibility::Private);
-
-			prev_identifier = identifier;
-
-			if ( !result ) {
-				Common::Namespace* space = getEnclosingNamespace();
-				if ( space ) {
-					result = getScope()->resolve(space->QualifiedTypename() + "." + identifier, onlyCurrentScope, Visibility::Private);
-				}
-			}
-		}
-		else {
-			switch ( result->getSymbolType() ) {
-				case Symbol::IType::BluePrintEnumSymbol:
-					result = dynamic_cast<Designtime::BluePrintEnum*>(result)->resolve(identifier, onlyCurrentScope, Visibility::Public);
-					break;
-				case Symbol::IType::BluePrintObjectSymbol:
-					result = dynamic_cast<Designtime::BluePrintObject*>(result)->resolve(identifier, onlyCurrentScope, Visibility::Public);
-					break;
-				case Symbol::IType::NamespaceSymbol:
-					result = dynamic_cast<Common::Namespace*>(result)->resolve(identifier, onlyCurrentScope, Visibility::Public);
-					break;
-				case Symbol::IType::ObjectSymbol:
-					result = dynamic_cast<Runtime::Object*>(result)->resolve(identifier, onlyCurrentScope,
-																	(prev_identifier == IDENTIFIER_THIS) ? Visibility::Private : Visibility::Public);
-					break;
-				case Symbol::IType::MethodSymbol:
-					throw Common::Exceptions::NotSupported("cannot directly access locales of method");
-				case Symbol::IType::UnknownSymbol:
-					throw Common::Exceptions::SyntaxError("unexpected symbol found");
-			}
-
-			onlyCurrentScope = true;
-		}
-
-		if ( lookahead(token)->type() != Token::Type::SCOPE ) {
-			break;
-		}
-
-		++token;
-
-		TokenIterator tmp = token;
-		++tmp;
-		if ( tmp->type() != Token::Type::IDENTIFER && tmp->type() != Token::Type::TYPE ) {
-			break;
-		}
-
-		++token;
-	}
-
-	return result;
-}
-
-Symbol* TreeInterpreter::identifyMethod(TokenIterator& token, const ParameterList& params) const
-{
-	Symbol *result = 0;
-	bool onlyCurrentScope = false;
-	std::string prev_identifier;	// hack to allow special 'this'-handling
-
-	while ( token->type() == Token::Type::IDENTIFER || token->type() == Token::Type::TYPE ) {
-		std::string identifier = token->content();
-
-		if ( !result ) {
-			result = getScope()->resolve(identifier, onlyCurrentScope, Visibility::Private);
-
-			prev_identifier = identifier;
-
-			// look for an overloaded method
-			if ( result && result->getSymbolType() == Symbol::IType::MethodSymbol ) {
-				result = dynamic_cast<MethodScope*>(mOwner)->resolveMethod(identifier, params, onlyCurrentScope, Visibility::Private);
-			}
-		}
-		else {
-			switch ( result->getSymbolType() ) {
-				case Symbol::IType::BluePrintEnumSymbol:
-					result = dynamic_cast<Designtime::BluePrintEnum*>(result)->resolveMethod(identifier, params, true, Visibility::Public);
-					break;
-				case Symbol::IType::BluePrintObjectSymbol:
-					result = dynamic_cast<Designtime::BluePrintObject*>(result)->resolveMethod(identifier, params, true, Visibility::Public);
-					break;
-				case Symbol::IType::NamespaceSymbol:
-					result = dynamic_cast<Common::Namespace*>(result)->resolveMethod(identifier, params, true, Visibility::Public);
-					break;
-				case Symbol::IType::ObjectSymbol:
-					result = dynamic_cast<Runtime::Object*>(result)->resolveMethod(identifier, params, true,
-																		  (prev_identifier == IDENTIFIER_THIS) ? Visibility::Private : Visibility::Public);
-					break;
-				case Symbol::IType::MethodSymbol:
-					throw Common::Exceptions::NotSupported("cannot directly access locales of method");
-				case Symbol::IType::UnknownSymbol:
-					throw Common::Exceptions::SyntaxError("unexpected symbol found");
-			}
-
-			onlyCurrentScope = true;
-		}
-
-		if ( lookahead(token)->type() != Token::Type::SCOPE ) {
-			break;
-		}
-
-		++token;
-
-		TokenIterator tmp = token;
-		++tmp;
-		if ( tmp->type() != Token::Type::IDENTIFER && tmp->type() != Token::Type::TYPE ) {
-			break;
-		}
-
-		++token;
-	}
-
-	return result;
-}
-
 void TreeInterpreter::popScope()
 {
 	mStack->current()->popScope();
@@ -770,22 +644,28 @@ Symbol* TreeInterpreter::resolve(IScope* scope, SymbolExpression* symbol, bool o
 		}
 
 		switch ( child->getSymbolType() ) {
-			case Symbol::IType::ObjectSymbol:
 			case Symbol::IType::NamespaceSymbol:
+				scope = static_cast<Common::Namespace*>(child);
+				break;
 			case Symbol::IType::BluePrintEnumSymbol:
 			case Symbol::IType::BluePrintObjectSymbol:
-				symbol = symbol->mScope;
+				scope = static_cast<Designtime::BluePrintObject*>(child);
+				break;
+			case Symbol::IType::ObjectSymbol:
+				scope = static_cast<Runtime::Object*>(child);
 				break;
 			case Symbol::IType::MethodSymbol:
 			case Symbol::IType::UnknownSymbol:
 				throw Designtime::Exceptions::DesigntimeException("invalid symbol type found", symbol->mName.position());
+
+			symbol = symbol->mScope;
 		}
 	}
 
-	return 0;
+	return scope->resolve(symbol->mName.content(), onlyCurrentScope, visibility);
 }
 
-Symbol* TreeInterpreter::resolveMethod(MethodScope* scope, SymbolExpression* symbol, const ParameterList& params, bool onlyCurrentScope, Visibility::E visibility) const
+MethodSymbol* TreeInterpreter::resolveMethod(IScope* scope, SymbolExpression* symbol, const ParameterList& params, bool onlyCurrentScope, Visibility::E visibility) const
 {
 	if ( !scope ) {
 		throw Runtime::Exceptions::InvalidSymbol("invalid scope provided");
@@ -807,8 +687,10 @@ Symbol* TreeInterpreter::resolveMethod(MethodScope* scope, SymbolExpression* sym
 				break;
 			case Symbol::IType::BluePrintEnumSymbol:
 			case Symbol::IType::BluePrintObjectSymbol:
-			case Symbol::IType::ObjectSymbol:
 				scope = static_cast<Designtime::BluePrintObject*>(child);
+				break;
+			case Symbol::IType::ObjectSymbol:
+				scope = static_cast<Runtime::Object*>(child);
 				break;
 			case Symbol::IType::MethodSymbol:
 			case Symbol::IType::UnknownSymbol:
@@ -818,12 +700,15 @@ Symbol* TreeInterpreter::resolveMethod(MethodScope* scope, SymbolExpression* sym
 		symbol = symbol->mScope;
 	}
 
-	Symbol* method = scope->resolveMethod(symbol->mName.content(), params, onlyCurrentScope, visibility);
-	if ( !method ) {
-		throw Runtime::Exceptions::RuntimeException("method " + symbol->mName.content() + " not found");
+	MethodScope* methodScope = dynamic_cast<MethodScope*>(scope);
+	if ( !methodScope ) {
+		methodScope = getEnclosingMethodScope(scope);
+	}
+	if ( !methodScope ) {
+		throw Runtime::Exceptions::RuntimeException("invalid scope type");
 	}
 
-	return method;
+	return methodScope->resolveMethod(symbol->mName.content(), params, onlyCurrentScope, visibility);
 }
 
 void TreeInterpreter::visit(Node* node)

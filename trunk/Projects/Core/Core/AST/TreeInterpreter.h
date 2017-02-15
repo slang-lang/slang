@@ -87,9 +87,6 @@ private:
 	Common::Namespace* getEnclosingNamespace(IScope* scope = 0) const;
 	Runtime::Object* getEnclosingObject(IScope* scope = 0) const;
 
-	inline Symbol* identify(TokenIterator& token) const;
-	inline Symbol* identifyMethod(TokenIterator& token, const ParameterList& params) const;
-
 	// Scope stack
 	// {
 	inline IScope* getScope() const;
@@ -112,7 +109,7 @@ private:
 	std::string printExpression(Node* node) const;
 
 	Symbol* resolve(IScope* scope, SymbolExpression* symbol, bool onlyCurrentScope, Visibility::E visibility) const;
-	Symbol* resolveMethod(MethodScope* scope, SymbolExpression* symbol, const ParameterList& params, bool onlyCurrentScope, Visibility::E visibility) const;
+	MethodSymbol* resolveMethod(IScope* scope, SymbolExpression* symbol, const ParameterList& params, bool onlyCurrentScope, Visibility::E visibility) const;
 
 private:	// Interpreter stuff
 	Runtime::ControlFlow::E mControlFlow;

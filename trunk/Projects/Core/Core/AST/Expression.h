@@ -251,6 +251,16 @@ public:
 	  mScope(0)
 	{ }
 
+	std::string toString() const {
+		std::string result = mName.content();
+
+		if ( mScope ) {
+			result += "." + mScope->toString();
+		}
+
+		return result;
+	}
+
 public:
 	Token mName;
 	SymbolExpression* mScope;
