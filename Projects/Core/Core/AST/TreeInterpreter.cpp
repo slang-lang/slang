@@ -259,6 +259,9 @@ void TreeInterpreter::evaluateMethodExpression(MethodExpression* exp, Runtime::O
 
 	MethodSymbol* methodSymbol = resolveMethod(getScope(), exp->mSymbol, params, false, Visibility::Private);
 	if ( !methodSymbol ) {
+		methodSymbol = resolveMethod(getEnclosingMethodScope(), exp->mSymbol, params, false, Visibility::Private);
+	}
+	if ( !methodSymbol ) {
 		throw Runtime::Exceptions::RuntimeException("method " + exp->mSymbol->toString() + " not found");
 	}
 
@@ -640,7 +643,7 @@ Symbol* TreeInterpreter::resolve(IScope* scope, SymbolExpression* symbol, bool o
 		Symbol* child = scope->resolve(symbol->mName.content(), onlyCurrentScope, visibility);
 
 		if ( !child ) {
-			throw Designtime::Exceptions::DesigntimeException("unknown symbol '" + symbol->mName.content() + "' found", symbol->mName.position());
+			return 0;
 		}
 
 		switch ( child->getSymbolType() ) {
@@ -657,9 +660,9 @@ Symbol* TreeInterpreter::resolve(IScope* scope, SymbolExpression* symbol, bool o
 			case Symbol::IType::MethodSymbol:
 			case Symbol::IType::UnknownSymbol:
 				throw Designtime::Exceptions::DesigntimeException("invalid symbol type found", symbol->mName.position());
-
-			symbol = symbol->mScope;
 		}
+
+		symbol = symbol->mScope;
 	}
 
 	return scope->resolve(symbol->mName.content(), onlyCurrentScope, visibility);
@@ -678,7 +681,7 @@ MethodSymbol* TreeInterpreter::resolveMethod(IScope* scope, SymbolExpression* sy
 		Symbol* child = scope->resolve(symbol->mName.content(), onlyCurrentScope, visibility);
 
 		if ( !child ) {
-			throw Designtime::Exceptions::DesigntimeException("unknown symbol '" + symbol->mName.content() + "' found", symbol->mName.position());
+			return 0;
 		}
 
 		switch ( child->getSymbolType() ) {
@@ -702,10 +705,7 @@ MethodSymbol* TreeInterpreter::resolveMethod(IScope* scope, SymbolExpression* sy
 
 	MethodScope* methodScope = dynamic_cast<MethodScope*>(scope);
 	if ( !methodScope ) {
-		methodScope = getEnclosingMethodScope(scope);
-	}
-	if ( !methodScope ) {
-		throw Runtime::Exceptions::RuntimeException("invalid scope type");
+		return 0;
 	}
 
 	return methodScope->resolveMethod(symbol->mName.content(), params, onlyCurrentScope, visibility);
