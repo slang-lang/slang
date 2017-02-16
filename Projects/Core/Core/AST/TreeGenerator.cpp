@@ -408,9 +408,11 @@ Node* TreeGenerator::parseTerm(TokenIterator& start)
 
 			++start;	// consume operator token
 		} break;
+/*
 		case Token::Type::SEMICOLON: {
 			return 0;
 		} break;
+*/
 		default:
 			throw Common::Exceptions::SyntaxError("identifier, literal or constant expected but " + start->content() + " found", start->position());
 	}
@@ -846,7 +848,15 @@ Statement* TreeGenerator::process_print(TokenIterator& token)
  */
 Statement* TreeGenerator::process_return(TokenIterator& token)
 {
-	return new ReturnStatement(expression(token));
+	Node* exp = 0;
+
+	if ( token->type() != Token::Type::SEMICOLON ) {
+		exp = expression(token);
+	}
+
+	expect(Token::Type::SEMICOLON, token);
+
+	return new ReturnStatement(exp);
 }
 
 // syntax:
