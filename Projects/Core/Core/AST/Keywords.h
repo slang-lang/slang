@@ -26,6 +26,11 @@ public:
 	  mExpression(exp),
 	  mPosition(position)
 	{ }
+	~AssertStatement() {
+		if ( mExpression ) {
+			delete mExpression;
+		}
+	}
 
 public:
 	Node* mExpression;
@@ -41,6 +46,10 @@ public:
 	  mCaseBlock(caseBlock),
 	  mCaseExpression(caseExpression)
 	{ }
+	~CaseStatement() {
+		delete mCaseBlock;
+		delete mCaseExpression;
+	}
 
 public:
 	Node* mCaseBlock;
@@ -57,6 +66,10 @@ public:
 	  mStatement(statement),
 	  mTypeDeclaration(typeDeclaration)
 	{ }
+	~CatchStatement() {
+		delete mStatement;
+		delete mTypeDeclaration;
+	}
 
 public:
 	Node* mStatement;
@@ -73,6 +86,9 @@ public:
 	: Statement(StatementType::DeleteStatement),
 	  mExpression(exp)
 	{ }
+	~DeleteStatement() {
+		delete mExpression;
+	}
 
 public:
 	Node* mExpression;
@@ -88,6 +104,11 @@ public:
 	  mStatement(loopStatement),
 	  mTypeDeclaration(typeDeclaration)
 	{ }
+	~ForeachStatement() {
+		delete mLoopVariable;
+		delete mStatement;
+		delete mTypeDeclaration;
+	}
 
 public:
 	SymbolExpression* mLoopVariable;
@@ -106,6 +127,12 @@ public:
 	  mIteration(iterationStatement),
 	  mStatement(loopStatement)
 	{ }
+	~ForStatement() {
+		delete mCondition;
+		delete mInitialization;
+		delete mIteration;
+		delete mStatement;
+	}
 
 public:
 	Node* mCondition;
@@ -124,6 +151,11 @@ public:
 	  mExpression(exp),
 	  mIfBlock(ifBlock)
 	{ }
+	~IfStatement() {
+		delete mElseBlock;
+		delete mExpression;
+		delete mIfBlock;
+	}
 
 public:
 	Node* mElseBlock;
@@ -140,6 +172,9 @@ public:
 	  mExpression(exp),
 	  mPosition(position)
 	{ }
+	~PrintStatement() {
+		delete mExpression;
+	}
 
 public:
 	Node* mExpression;
@@ -156,6 +191,13 @@ public:
 	  mDefaultStatement(defaultStatement),
 	  mExpression(exp)
 	{ }
+	~SwitchStatement() {
+		for ( CaseStatements::iterator it = mCaseStatements.begin(); it != mCaseStatements.end(); ++it ) {
+			delete (*it);
+		}
+		delete mDefaultStatement;
+		delete mExpression;
+	}
 
 public:
 	CaseStatements mCaseStatements;
@@ -173,6 +215,13 @@ public:
 	  mFinallyBlock(finallyBlock),
 	  mTryBlock(tryBlock)
 	{ }
+	~TryStatement() {
+		for ( CatchStatements::iterator it = mCatchStatements.begin(); it != mCatchStatements.end(); ++it ) {
+			delete (*it);
+		}
+		delete mFinallyBlock;
+		delete mTryBlock;
+	}
 
 public:
 	CatchStatements mCatchStatements;
@@ -184,15 +233,19 @@ public:
 class WhileStatement : public Statement
 {
 public:
-	WhileStatement(Node* condition, Node* statements)
+	WhileStatement(Node* condition, Node* statement)
 	: Statement(StatementType::WhileStatement),
-	  mExpression(condition),
-	  mStatements(statements)
+	  mCondition(condition),
+	  mStatement(statement)
 	{ }
+	~WhileStatement() {
+		delete mCondition;
+		delete mStatement;
+	}
 
 public:
-	Node* mExpression;
-	Node* mStatements;
+	Node* mCondition;
+	Node* mStatement;
 };
 
 

@@ -24,13 +24,39 @@ Method::Method(IScope* parent, const std::string& name, const std::string& type)
 : NamedScope(name, parent),
   MethodSymbol(name),
   mIsExtensionMethod(false),
+  mAllowDelete(true),
   mReturnType(TypeDeclaration(type)),
   mRootNode(0)
 {
 }
 
+Method::Method(const Method& other)
+: NamedScope(other.getName(), other.getEnclosingScope()),
+  MethodSymbol(other.getName())
+{
+	mAllowDelete = false;
+	mImplementationType = other.mImplementationType;
+	mIsExtensionMethod = other.mIsExtensionMethod;
+	mIsFinal = other.mIsFinal;
+	mIsRecursive = other.mIsRecursive;
+	mIsSealed = other.mIsSealed;
+	mLanguageFeatureState = other.mLanguageFeatureState;
+	mMethodType = other.mMethodType;
+	mMutability = other.mMutability;
+	mReturnType = other.mReturnType;
+	mScopeName = other.mScopeName;
+	mScopeType = other.mScopeType;
+	mSignature = other.mSignature;
+	mThrows = other.mThrows;
+	mTokens = other.mTokens;
+	mVisibility = other.mVisibility;
+}
+
 Method::~Method()
 {
+	if ( mAllowDelete ) {
+		delete mRootNode;
+	}
 }
 
 bool Method::operator() (const Method& first, const Method& second) const
@@ -91,6 +117,7 @@ bool Method::operator< (const Method& other) const
 Method& Method::operator= (const Method& other)
 {
 	if ( this != &other ) {
+		mAllowDelete = false;
 		mImplementationType = other.mImplementationType;
 		mIsExtensionMethod = other.mIsExtensionMethod;
 		mIsFinal = other.mIsFinal;

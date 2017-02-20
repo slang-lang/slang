@@ -42,6 +42,11 @@ public:
 	: Statement(StatementType::ExitStatement),
 	  mExpression(exp)
 	{ }
+	~ExitStatement() {
+		if ( mExpression ) {
+			delete mExpression;
+		}
+	}
 
 public:
 	Node* mExpression;
@@ -55,6 +60,11 @@ public:
 	: Statement(StatementType::ReturnStatement),
 	  mExpression(exp)
 	{ }
+	~ReturnStatement() {
+		if ( mExpression ) {
+			delete mExpression;
+		}
+	}
 
 public:
 	Node* mExpression;
@@ -68,6 +78,11 @@ public:
 	: Statement(StatementType::ThrowStatement),
 	  mExpression(exp)
 	{ }
+	~ThrowStatement() {
+		if ( mExpression ) {
+			delete mExpression;
+		}
+	}
 
 public:
 	Node* mExpression;

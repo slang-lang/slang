@@ -937,7 +937,7 @@ Statement* TreeGenerator::process_switch(TokenIterator& token)
 
 	CaseStatements caseStatements;
 
-	Node* defaultStatement = 0;
+	Statements* defaultStatement = 0;
 
 	// collect all case-blocks
 	while ( token != bodyEnd ) {
@@ -962,7 +962,7 @@ Statement* TreeGenerator::process_switch(TokenIterator& token)
 				++token;
 			}
 
-			Node* caseBlock = generate(caseTokens);
+			Statements* caseBlock = generate(caseTokens);
 
 			// process/interpret case-block tokens
 			caseStatements.push_back(

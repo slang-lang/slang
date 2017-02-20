@@ -54,6 +54,7 @@ public:
 	: Node(NodeType::Statement),
 	  mStatementType(statementType)
 	{ }
+	virtual ~Statement() { }
 
 	StatementType::E getStatementType() const {
 		return mStatementType;
@@ -73,6 +74,11 @@ public:
 	  mExpression(rvalue),
 	  mLValue(lvalue)
 	{ }
+	~Assignment() {
+		delete mExpression;
+		//delete mLValue;
+		mLValue = 0;
+	}
 
 public:
 	Token mAssignment;
@@ -93,6 +99,10 @@ public:
 	  mName(name),
 	  mSymbol(symbol)
 	{ }
+	~TypeDeclaration() {
+		delete mAssignment;
+		mSymbol = 0;
+	}
 
 public:
 	Node* mAssignment;
@@ -113,6 +123,11 @@ public:
 	Statements()
 	: Statement(StatementType::Statements)
 	{ }
+	~Statements() {
+		for ( Nodes::iterator it = mNodes.begin(); it != mNodes.end(); ++it ) {
+			delete (*it);
+		}
+	}
 
 public:
 	Nodes mNodes;

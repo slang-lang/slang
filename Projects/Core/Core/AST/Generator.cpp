@@ -50,7 +50,7 @@ void Generator::process(MethodScope* base)
 				break;	// enums don't have an implementation
 			case Symbol::IType::ObjectSymbol:
 				//throw Common::Exceptions::InvalidSymbol("runtime symbol type found");
-				break;	// TODO: investiate on this: why do we have runtime object symbols during initialization?
+				break;	// TODO: investigate on this: why do we have runtime object symbols during initialization?
 			case Symbol::IType::UnknownSymbol:
 				throw Common::Exceptions::InvalidSymbol("unknown symbol type found");
 		}
