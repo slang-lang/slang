@@ -81,6 +81,10 @@ public:
 	  mToken(token),
 	  mBinaryExpressionType(BinaryExpressionType::GenericBinaryExpression)
 	{ }
+	~BinaryExpression() {
+		delete mLeft;
+		delete mRight;
+	}
 
 	BinaryExpressionType::E getBinaryExpressionType() const {
 		return mBinaryExpressionType;
@@ -114,6 +118,9 @@ public:
 	  mExpression(exp),
 	  mToken(token)
 	{ }
+	~UnaryExpression() {
+		delete mExpression;
+	}
 
 public:
 	Node* mExpression;
@@ -194,6 +201,9 @@ public:
 	: Expression(ExpressionType::CopyExpression),
 	  mExpression(exp)
 	{ }
+	~CopyExpression() {
+		delete mExpression;
+	}
 
 public:
 	Node* mExpression;
@@ -208,6 +218,9 @@ public:
 	  mExpression(exp),
 	  mSymbol(symbol)
 	{ }
+	~NewExpression() {
+		delete mExpression;
+	}
 
 public:
 	Node* mExpression;
@@ -220,26 +233,6 @@ public:
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// Method expressions
-
-class MethodExpression : public Expression
-{
-public:
-	explicit MethodExpression(SymbolExpression* symbol, const ExpressionList& params)
-	: Expression(ExpressionType::MethodExpression),
-	  mParams(params),
-	  mSymbol(symbol)
-	{ }
-
-public:
-	ExpressionList mParams;
-	SymbolExpression* mSymbol;
-};
-
-// Method expressions
-///////////////////////////////////////////////////////////////////////////////
-
-///////////////////////////////////////////////////////////////////////////////
 // Symbol expressions
 
 class SymbolExpression : public Expression
@@ -250,6 +243,9 @@ public:
 	  mName(name),
 	  mScope(0)
 	{ }
+	~SymbolExpression() {
+		delete mScope;
+	}
 
 	std::string toString() const {
 		std::string result = mName.content();
@@ -275,6 +271,9 @@ public:
 	  mDestinationType(destinationType),
 	  mExpression(exp)
 	{ }
+	~TypecastExpression() {
+		delete mExpression;
+	}
 
 public:
 	Token mDestinationType;
@@ -289,6 +288,9 @@ public:
 	: Expression(ExpressionType::TypeidExpression),
 	  mExpression(expression)
 	{ }
+	~TypeidExpression() {
+		delete mExpression;
+	}
 
 public:
 	Node* mExpression;
@@ -297,6 +299,32 @@ public:
 // Variable expressions
 ///////////////////////////////////////////////////////////////////////////////
 
+
+///////////////////////////////////////////////////////////////////////////////
+// Method expressions
+
+class MethodExpression : public Expression
+{
+public:
+	explicit MethodExpression(SymbolExpression* symbol, const ExpressionList& params)
+	: Expression(ExpressionType::MethodExpression),
+	  mParams(params),
+	  mSymbol(symbol)
+	{ }
+	~MethodExpression() {
+		for ( ExpressionList::iterator it = mParams.begin(); it != mParams.end(); ++it ) {
+			delete (*it);
+		}
+		delete mSymbol;
+	}
+
+public:
+	ExpressionList mParams;
+	SymbolExpression* mSymbol;
+};
+
+// Method expressions
+///////////////////////////////////////////////////////////////////////////////
 
 
 }

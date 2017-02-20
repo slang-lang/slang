@@ -26,16 +26,16 @@ namespace Runtime {
 Object::Object()
 : MethodScope(ANONYMOUS_OBJECT, 0),
   ObjectSymbol(ANONYMOUS_OBJECT),
+  mBase(0),
   mFilename(ANONYMOUS_OBJECT),
   mIsAtomicType(false),
   mIsConstructed(false),
-  mIsNull(false),
+  mIsNull(true),
   mQualifiedOuterface(ANONYMOUS_OBJECT),
   mQualifiedTypename(ANONYMOUS_OBJECT),
   mTypename(ANONYMOUS_OBJECT)
 {
 	mThis = this;
-	mBase = 0;
 }
 
 Object::Object(const Object& other)
@@ -71,6 +71,7 @@ Object::Object(const Object& other)
 Object::Object(const std::string& name, const std::string& filename, const std::string& type, AtomicValue value)
 : MethodScope(name, 0),
   ObjectSymbol(name),
+  mBase(0),
   mFilename(filename),
   mIsAtomicType(false),
   mIsConstructed(false),
@@ -80,7 +81,6 @@ Object::Object(const std::string& name, const std::string& filename, const std::
   mTypename(type),
   mValue(value)
 {
-	mBase = 0;
 	mThis = this;
 }
 
@@ -290,9 +290,15 @@ void Object::copy(const Object& other)
 		mTypename = other.mTypename;
 		mValue = other.mValue;
 
-		garbageCollector();
+		if ( mReference.isValid() ) {
+			// this object has a reference to a third object
+			// we also have to copy this third object by creating a fourth
 
-		if ( !mIsAtomicType ) {
+			assert(!"not implemented");
+		}
+		else {
+			garbageCollector();
+
 			// register this
 			define(IDENTIFIER_THIS, this);
 

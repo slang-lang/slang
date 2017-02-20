@@ -324,9 +324,9 @@ void PrintVisitor::visitTypeDeclaration(TypeDeclaration* node)
 
 void PrintVisitor::visitWhile(WhileStatement* node)
 {
-	std::cout << printIndentation(mIndentation) << "while ( " << printExpression(node->mExpression) << " ) ";
+	std::cout << printIndentation(mIndentation) << "while ( " << printExpression(node->mCondition) << " ) ";
 
-	visit(node->mStatements);
+	visit(node->mStatement);
 }
 
 

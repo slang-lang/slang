@@ -43,7 +43,8 @@ class Method : public NamedScope,
 {
 public:
 	Method(IScope* parent, const std::string& name, const std::string& type);
-	~Method();
+	Method(const Method& other);
+	virtual ~Method();
 
 public: // overloaded operators
 	bool operator()(const Method& first, const Method& second) const;
@@ -86,6 +87,7 @@ protected:
 	bool mIsExtensionMethod;
 
 private:
+	bool mAllowDelete;
 	TypeDeclaration mReturnType;
 	AST::Statements* mRootNode;
 	ParameterList mSignature;

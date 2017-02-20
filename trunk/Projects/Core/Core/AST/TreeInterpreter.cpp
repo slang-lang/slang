@@ -1195,7 +1195,7 @@ void TreeInterpreter::visitWhile(WhileStatement* node)
 	for  ( ; ; ) {
 		try {
 			// evaluate while condition
-			evaluate(node->mExpression, &condition);
+			evaluate(node->mCondition, &condition);
 		}
 		catch ( Runtime::ControlFlow::E &e ) {
 			mControlFlow = e;
@@ -1208,7 +1208,7 @@ void TreeInterpreter::visitWhile(WhileStatement* node)
 		}
 
 		// execute compound statement
-		visitStatement(static_cast<Statement*>(node->mStatements));
+		visitStatement(static_cast<Statement*>(node->mStatement));
 
 		// check (and reset) control flow
 		switch ( mControlFlow ) {
