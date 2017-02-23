@@ -8,5 +8,12 @@ public void Main(int argc = 1, string args = "") {
 
 		count += 1;
 	}
+
+	count = 0;
+
+	while ( count < 5 )
+		count += 1;
+
+	print("count = " + count);
 }
 

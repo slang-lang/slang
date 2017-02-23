@@ -48,6 +48,8 @@ public: // Execution
 	ControlFlow::E execute(Common::Method* method, const ParameterList& params, Object* result);
 
 private: // Execution
+	inline void collectScopeTokens(TokenIterator& token, TokenList& tokens);
+
 	inline Symbol* identify(TokenIterator& token) const;
 	inline Symbol* identifyMethod(TokenIterator& token, const ParameterList& params) const;
 
@@ -70,7 +72,7 @@ private: // Execution
 	void process_print(TokenIterator& token);
 	void process_return(TokenIterator& token, Object* result);
 	void process_scope(TokenIterator& token, Object* result);
-	inline void process_statement(TokenIterator& token, Object* result);
+	void process_statement(TokenIterator& token, Object* result);
 	void process_switch(TokenIterator& token, Object* result);
 	void process_throw(TokenIterator& token, Object* result);
 	void process_try(TokenIterator& token, Object* result);
