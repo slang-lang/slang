@@ -51,6 +51,27 @@ Interpreter::~Interpreter()
 }
 
 /*
+ * collects all tokens of a given scope (excluding the surrounding curly brackets)
+ */
+void Interpreter::collectScopeTokens(TokenIterator& token, TokenList& tokens)
+{
+	expect(Token::Type::BRACKET_CURLY_OPEN, token);
+
+	// find next balanced '{' & '}' pair for loop-body
+	TokenIterator bodyEnd = findNextBalancedCurlyBracket(token, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
+
+	++token;			// don't collect {-token
+
+	while ( token != bodyEnd ) {
+		tokens.push_back((*token++));
+	}
+
+	token = bodyEnd;	// don't collect }-token
+
+	expect(Token::Type::BRACKET_CURLY_CLOSE, token);
+}
+
+/*
  * processes tokens and updates the given result
  */
 ControlFlow::E Interpreter::execute(Common::Method* method, const ParameterList& params, Object* result)
@@ -961,38 +982,41 @@ void Interpreter::process_exit(TokenIterator& token)
 
 /*
  * syntax:
- * for ( <expression>; <condition>; <expression> ) { ... }
+ * for ( <initialization>; <condition>; <expression> ) { ... }
  */
 void Interpreter::process_for(TokenIterator& token, Object* result)
 {
 	expect(Token::Type::PARENTHESIS_OPEN, token);
+	++token;
 
-	TokenIterator initializationBegin = ++token;
+	TokenIterator initializationBegin = token;
 	const TokenIterator conditionBegin = ++findNext(initializationBegin, Token::Type::SEMICOLON);
-	const TokenIterator increaseBegin = ++findNext(conditionBegin, Token::Type::SEMICOLON);
+	const TokenIterator expressionBegin = ++findNext(conditionBegin, Token::Type::SEMICOLON);
+	TokenIterator expressionEnd = findNext(expressionBegin, Token::Type::PARENTHESIS_CLOSE);
 
-	// find next open curly bracket '{'
-	TokenIterator expressionEnd = findNext(increaseBegin, Token::Type::PARENTHESIS_CLOSE);
-
-	expect(Token::Type::BRACKET_CURLY_OPEN, ++expressionEnd);
-
-	// find next balanced '{' & '}' pair for loop-body
-	TokenIterator bodyBegin = expressionEnd;
-	TokenIterator bodyEnd = findNextBalancedCurlyBracket(bodyBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
+	bool hasCondition = (std::distance(conditionBegin, expressionBegin) > 1);
+	bool hasExpression = (std::distance(expressionBegin, expressionEnd) > 1);
+	bool hasInitialization = (std::distance(initializationBegin, conditionBegin) > 1);
 
 	// process our declaration part
 	// {
-	Object declarationTmp;
-	process(&declarationTmp, initializationBegin, conditionBegin);
+	if ( hasInitialization ) {
+		Object declarationTmp;
+		process(&declarationTmp, initializationBegin, conditionBegin);
+	}
 	// }
 
-	++bodyBegin;		// don't collect scope token
-	token = bodyEnd;
+	expect(Token::Type::PARENTHESIS_CLOSE, expressionEnd);
+	++expressionEnd;
 
+	token = expressionEnd;
+
+	// useCompound defines if a seperate scope block or a single statement has to be executed
+	bool useCompound = (token->type() == Token::Type::BRACKET_CURLY_OPEN);
 	TokenList loopTokens;
-	while ( bodyBegin != bodyEnd ) {
-		loopTokens.push_back((*bodyBegin));
-		++bodyBegin;
+
+	if ( useCompound ) {
+		collectScopeTokens(token, loopTokens);
 	}
 
 	for ( ; ; ) {
@@ -1000,7 +1024,7 @@ void Interpreter::process_for(TokenIterator& token, Object* result)
 		// {
 		TokenIterator condBegin = conditionBegin;
 
-		if ( std::distance(condBegin, increaseBegin) > 1 ) {
+		if ( hasCondition ) {
 			Object condition;
 			try {
 				expression(&condition, condBegin);
@@ -1018,7 +1042,16 @@ void Interpreter::process_for(TokenIterator& token, Object* result)
 
 		// Body parsing
 		// {
-		mControlFlow = interpret(loopTokens, result, true);
+		if ( useCompound ) {
+			// use previously collected tokens
+			interpret(loopTokens, result, true);
+		}
+		else {
+			// interpret a single statement only
+			token = expressionEnd;
+
+			process_statement(token, result);
+		}
 
 		switch ( mControlFlow ) {
 			case ControlFlow::Break: mControlFlow = ControlFlow::Normal; return;
@@ -1032,10 +1065,12 @@ void Interpreter::process_for(TokenIterator& token, Object* result)
 
 		// Expression parsing
 		// {
-		TokenIterator exprBegin = increaseBegin;
+		if ( hasExpression ) {
+			TokenIterator exprBegin = expressionBegin;
 
-		Object expressionTmp;
-		process(&expressionTmp, exprBegin, expressionEnd, Token::Type::PARENTHESIS_CLOSE);
+			Object expressionTmp;
+			process(&expressionTmp, exprBegin, expressionEnd, Token::Type::PARENTHESIS_CLOSE);
+		}
 		// }
 	}
 }
@@ -1046,7 +1081,8 @@ void Interpreter::process_for(TokenIterator& token, Object* result)
  */
 void Interpreter::process_foreach(TokenIterator& token, Object* result)
 {
-	expect(Token::Type::PARENTHESIS_OPEN, token++);
+	expect(Token::Type::PARENTHESIS_OPEN, token);
+	++token;
 
 	TokenIterator typedefIt = token;
 
@@ -1086,22 +1122,22 @@ void Interpreter::process_foreach(TokenIterator& token, Object* result)
 	expect(Token::Type::PARENTHESIS_CLOSE, token);
 	++token;
 
-	// find next balanced '{' & '}' pair for loop-body
-	TokenIterator bodyBegin = token;
-	TokenIterator bodyEnd = findNextBalancedCurlyBracket(bodyBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
+	// Create and define loop variable
+	// {
+	Object* loop = process_type(typedefIt, symbol, false);
+	// }
 
-	++bodyBegin;		// don't collect scope token
-	token = bodyEnd;
+	const TokenIterator statementBegin = token;
 
+	// useCompound defines if a seperate scope block or a single statement has to be executed
+	bool hasCompound = (token->type() == Token::Type::BRACKET_CURLY_OPEN);
 	TokenList loopTokens;
-	while ( bodyBegin != bodyEnd ) {
-		loopTokens.push_back((*bodyBegin));
-		++bodyBegin;
+
+	if ( hasCompound ) {
+		collectScopeTokens(token, loopTokens);
 	}
 
 	for ( ; ; ) {
-		pushScope();	// needed for loop variable
-
 		// Setup
 		// {
 		Object tmp;
@@ -1111,19 +1147,22 @@ void Interpreter::process_foreach(TokenIterator& token, Object* result)
 			break;
 		}
 
-		// create and define loop variable
-		TokenIterator typedefItCopy = typedefIt;
-		Object* loop = process_type(typedefItCopy, symbol, false);
-
 		// get current item
 		iterator.execute(loop, "next", ParameterList());
 		// }
 
 		// Body parsing
 		// {
-		mControlFlow = interpret(loopTokens, result, true);
+		if ( hasCompound ) {
+			// use previously collected tokens
+			interpret(loopTokens, result, true);
+		}
+		else {
+			// interpret a single statement only
+			token = statementBegin;
 
-		popScope();	// needed for loop variable
+			process_statement(token, result);
+		}
 
 		switch ( mControlFlow ) {
 			case ControlFlow::Break: mControlFlow = ControlFlow::Normal; return;
@@ -1602,12 +1641,11 @@ void Interpreter::process_statement(TokenIterator& token, Object* result)
 			process_scope(token, result);	// this opens a new scope
 			break;
 		case Token::Type::SEMICOLON:
+			++token;
 			break;
 		default:
 			throw Common::Exceptions::SyntaxError("invalid token '" + token->content() + "' found", token->position());
 	}
-
-	++token;	// consume token
 }
 
 /*
@@ -2086,22 +2124,28 @@ void Interpreter::process_while(TokenIterator& token, Object* result)
 	// find next open parenthesis '('
 	TokenIterator condBegin = token;
 	// find next balanced '(' & ')' pair
-	TokenIterator condEnd = findNextBalancedParenthesis(condBegin);
+	TokenIterator condEnd = findNextBalancedParenthesis(condBegin)++;
 
-	expect(Token::Type::BRACKET_CURLY_OPEN, ++condEnd);
+	expect(Token::Type::PARENTHESIS_CLOSE, condEnd);
+	++condEnd;
 
-	// find next open curly bracket '{'
-	TokenIterator bodyBegin = condEnd;
-	// find next balanced '{' & '}' pair
-	TokenIterator bodyEnd = findNextBalancedCurlyBracket(bodyBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
-
-	++bodyBegin;	// don't collect scope token;
-	token = bodyEnd;
-
+	// useCompound defines if a seperate scope block or a single statement has to be executed
+	bool useCompound = (condEnd->type() == Token::Type::BRACKET_CURLY_OPEN);
 	TokenList whileTokens;
-	while ( bodyBegin != bodyEnd ) {
-		whileTokens.push_back((*bodyBegin));
-		++bodyBegin;
+
+	if ( useCompound ) {
+		// find next open curly bracket '{'
+		TokenIterator bodyBegin = condEnd;
+		// find next balanced '{' & '}' pair
+		TokenIterator bodyEnd = findNextBalancedCurlyBracket(bodyBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
+
+		++bodyBegin;	// don't collect scope token;
+		token = bodyEnd;
+
+		while ( bodyBegin != bodyEnd ) {
+			whileTokens.push_back((*bodyBegin));
+			++bodyBegin;
+		}
 	}
 
 	for ( ; ; ) {
@@ -2120,7 +2164,16 @@ void Interpreter::process_while(TokenIterator& token, Object* result)
 			break;
 		}
 
-		mControlFlow = interpret(whileTokens, result, true);
+		if ( useCompound ) {
+			// use previously collected tokens
+			interpret(whileTokens, result, true);
+		}
+		else {
+			// interpret a single statement only
+			token = condEnd;
+
+			process_statement(token, result);
+		}
 
 		switch ( mControlFlow ) {
 			case ControlFlow::Break: mControlFlow = ControlFlow::Normal; return;
