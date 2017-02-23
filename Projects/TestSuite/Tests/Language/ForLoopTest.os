@@ -7,6 +7,9 @@ public void Main(int argc = 0, string argv = "") {
 	assert( TestCase4() );
 	assert( TestCase5() );
 	assert( TestCase6() );
+	assert( TestCase7() );
+	assert( TestCase8() );
+	assert( TestCase9() );
 }
 
 private bool TestCase1() const {
@@ -14,11 +17,8 @@ private bool TestCase1() const {
 		print("loop1 = " + loop1);
 		assert( loop1 < 5 );
 	}
-	// if this assert fails or succeeds, either way this means our scopes are not working correctly
-	// we should never ever be able to access a variable that was declared in a loop
-	assert( loop1 == 5 );
 
-	return true;
+	return loop1 == 5;
 }
 
 private bool TestCase2() const {
@@ -26,11 +26,8 @@ private bool TestCase2() const {
 		print("loop2 = " + loop2);
 		assert( loop2 < 10 );
 	}
-	// if this assert fails or succeeds, either way this means our scopes are not working correctly
-	// we should never ever be able to access a variable that was declared in a loop
-	assert( loop2 == 10 );
 
-	return true;
+	return loop2 == 10;
 }
 
 private bool TestCase3() const {
@@ -44,9 +41,8 @@ private bool TestCase3() const {
 	}
 
 	print("loop3 = " + loop3);
-	assert( loop3 == 3 );
 
-	return true;
+	return loop3 == 3;
 }
 
 private bool TestCase4() const {
@@ -77,8 +73,45 @@ private bool TestCase5() const {
 	return false;
 }
 
-private bool TestCase6() const {
-	print("TestCase 6: for ( ; ; )");
+private bool TestCase6() {
+	print("TestCase 6: for ( ; <condition>; <expression> )");
+
+	int i = 0;
+	for ( ; i < 5; i += 1 ) {
+		print("" + i + ": for loop without initialization");
+	}
+
+	return i == 5;
+}
+
+private bool TestCase7() {
+	print("TestCase 7: for ( <initialization>; ; <expression> )");
+
+	for ( int i = 0; ; i += 1 ) {
+		print("" + i + ": for loop without condition");
+
+		if ( i == 5 ) {
+			break;
+		}
+	}
+
+	return i == 5;
+}
+
+private bool TestCase8() {
+	print("TestCase 8: for ( <initialization>; <condition>; )");
+
+	for ( int i = 0; i < 5; ) {
+		print("" + i + ": for loop without expression");
+
+		i += 1;
+	}
+
+	return i == 5;
+}
+
+private bool TestCase9() const {
+	print("TestCase 9: for ( ; ; )");
 
 	int i = 0;
 	for ( ; ; ) {
