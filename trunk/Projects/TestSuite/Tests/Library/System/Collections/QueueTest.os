@@ -113,7 +113,7 @@ private bool TestCase4() {
 	assert( queue.empty() );
 	assert( queue.size() == 0);
 
-	foreach ( String s : queue ) {
+	foreach ( String t : queue ) {
 		assert( false );
 	}
 

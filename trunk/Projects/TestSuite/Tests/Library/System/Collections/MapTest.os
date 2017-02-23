@@ -94,8 +94,8 @@ private bool TestCase4() {
 	assert( !map.empty() );
 	assert( map.size() == 2 );
 
-	foreach ( Pair<int, string> p : map ) {
-		//print("p = " + string p);
+	foreach ( Pair<int, string> s : map ) {
+		//print("s = " + string s);
 	}
 
 	return true;
@@ -124,8 +124,8 @@ private bool TestCase5() {
 	assert( map.size() == 3 );
 	assert( map.get(2) == "alternate string" );
 
-	foreach ( Pair<int, string> p : map ) {
-		//print("p = " + string p);
+	foreach ( Pair<int, string> s : map ) {
+		//print("s = " + string s);
 	}
 
 	return true;
@@ -153,7 +153,7 @@ private bool TestCase6() {
 	assert( map.empty() );
 	assert( map.size() == 0 );
 
-	foreach ( Pair<int, string> p : map ) {
+	foreach ( Pair<int, string> s : map ) {
 		assert( false );
 	}
 
