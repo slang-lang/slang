@@ -51,6 +51,45 @@ Interpreter::~Interpreter()
 }
 
 /*
+ * collects all parameter objects between ( and )
+ */
+void Interpreter::collectParameterList(TokenIterator& token, ParameterList& params)
+{
+	expect(Token::Type::PARENTHESIS_OPEN, token);
+
+	TokenIterator opened = token;
+	TokenIterator closed = findNextBalancedParenthesis(++opened);
+
+	token = closed;
+
+	TokenIterator tmp = opened;
+	// loop through all parameters separated by commas
+	while ( tmp != closed ) {
+		Object obj;
+		try {
+			expression(&obj, tmp);
+		}
+		catch ( ControlFlow::E &e ) {
+			mControlFlow = e;
+			return;
+		}
+
+		params.push_back(Parameter::CreateRuntime(obj.QualifiedOuterface(), obj.getValue(), obj.getReference()));
+
+		if ( std::distance(tmp, closed) <= 0 ) {
+			break;
+		}
+		tmp = findNext(tmp, Token::Type::COMMA);
+		if ( std::distance(tmp, closed) < 0 ) {
+			break;
+		}
+		++tmp;
+	}
+
+	expect(Token::Type::PARENTHESIS_CLOSE, token);
+}
+
+/*
  * collects all tokens of a given scope (excluding the surrounding curly brackets)
  */
 void Interpreter::collectScopeTokens(TokenIterator& token, TokenList& tokens)
@@ -1255,9 +1294,9 @@ void Interpreter::process_if(TokenIterator& token, Object *result)
 
 	TokenIterator condBegin = token;
 	// find next balanced '(' & ')' pair
-	TokenIterator condEnd = findNextBalancedParenthesis(condBegin);
+	TokenIterator condEnd = ++findNextBalancedParenthesis(condBegin);
 
-	expect(Token::Type::BRACKET_CURLY_OPEN, ++condEnd);
+	expect(Token::Type::BRACKET_CURLY_OPEN, condEnd);
 
 	// find next open curly bracket '{'
 	TokenIterator bodyBegin = condEnd;
@@ -1509,41 +1548,8 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 
 	PrototypeConstraints constraints = Designtime::Parser::collectRuntimePrototypeConstraints(token);
 
-	expect(Token::Type::PARENTHESIS_OPEN, token);
-
-	TokenIterator opened = token;
-	TokenIterator closed = findNextBalancedParenthesis(++opened);
-
-	token = closed;
-
-	std::list<Object> objectList;	// this is a hack to prevent that the provided object parameters run out of scope
 	ParameterList params;
-
-	TokenIterator tmp = opened;
-	// loop through all parameters separated by commas
-	while ( tmp != closed ) {
-		objectList.push_back(Object());
-
-		Object *obj = &objectList.back();
-		try {
-			expression(obj, tmp);
-		}
-		catch ( ControlFlow::E &e ) {
-			mControlFlow = e;
-			return;
-		}
-
-		params.push_back(Parameter::CreateRuntime(obj->QualifiedOuterface(), obj->getValue(), obj->getReference()));
-
-		if ( std::distance(tmp, closed) <= 0 ) {
-			break;
-		}
-		tmp = findNext(tmp, Token::Type::COMMA);
-		if ( std::distance(tmp, closed) < 0 ) {
-			break;
-		}
-		++tmp;
-	}
+	collectParameterList(token, params);
 
 	// create initialized reference of new object
 	*result = *mRepository->createReference(static_cast<Designtime::BluePrintGeneric*>(symbol), name, constraints, Repository::InitilizationType::Final);
@@ -1603,22 +1609,10 @@ void Interpreter::process_return(TokenIterator& token, Object *result)
 // { <statement> }
 void Interpreter::process_scope(TokenIterator& token, Object* result)
 {
-	expect(Token::Type::BRACKET_CURLY_OPEN, token++);
-
-	TokenIterator scopeBegin = token;
-	TokenIterator scopeEnd = findNextBalancedCurlyBracket(scopeBegin, getTokens().end());
-
-	token = scopeEnd;
-
 	TokenList scopeTokens;
-	while ( scopeBegin != scopeEnd ) {
-		scopeTokens.push_back((*scopeBegin));
-		++scopeBegin;
-	}
+	collectScopeTokens(token, scopeTokens);
 
 	mControlFlow = interpret(scopeTokens, result);
-
-	expect(Token::Type::BRACKET_CURLY_CLOSE, token);
 }
 
 /*
@@ -1657,12 +1651,13 @@ void Interpreter::process_statement(TokenIterator& token, Object* result)
  */
 void Interpreter::process_switch(TokenIterator& token, Object* result)
 {
-	expect(Token::Type::PARENTHESIS_OPEN, token++);
+	expect(Token::Type::PARENTHESIS_OPEN, token);
+	++token;
 
 	// find next open parenthesis '('
 	TokenIterator condBegin = token;
 	// find next balanced '(' & ')' pair
-	TokenIterator condEnd = findNextBalancedParenthesis(condBegin);
+	TokenIterator condEnd = ++findNextBalancedParenthesis(condBegin);
 
 	// evaluate switch-expression
 	Object expr;
@@ -1674,7 +1669,7 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 		return;
 	}
 
-	expect(Token::Type::BRACKET_CURLY_OPEN, ++condEnd);
+	expect(Token::Type::BRACKET_CURLY_OPEN, condEnd);
 
 	// find next open curly bracket '{'
 	TokenIterator bodyBegin = condEnd;
@@ -1750,7 +1745,7 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 				it->mBegin++;
 			}
 
-			// process/interpret case-block tokens
+			// interpret case-block tokens
 			mControlFlow = interpret(caseTokens, result, true);
 
 			switch ( mControlFlow ) {
@@ -1773,16 +1768,11 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 	if ( defaultBlock.mBegin != getTokens().end() ) {
 		defaultBlock.mBegin++;
 		expect(Token::Type::COLON, defaultBlock.mBegin++);
-		expect(Token::Type::BRACKET_CURLY_OPEN, defaultBlock.mBegin++);
 
-		// collect default-block tokens
 		TokenList defaultTokens;
-		while ( defaultBlock.mBegin != defaultBlock.mEnd ) {
-			defaultTokens.push_back((*defaultBlock.mBegin));
-			defaultBlock.mBegin++;
-		}
+		collectScopeTokens(defaultBlock.mBegin, defaultTokens);
 
-		// process/interpret case-block tokens
+		// interpret case-block tokens
 		mControlFlow = interpret(defaultTokens, result, true);
 
 		switch ( mControlFlow ) {
@@ -1844,20 +1834,8 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 {
 	expect(Token::Type::BRACKET_CURLY_OPEN, token);
 
-	// find next open curly bracket '{'
-	TokenIterator tryBegin = token;
-	// find next balanced '{' & '}' pair
-	TokenIterator tryEnd = findNextBalancedCurlyBracket(tryBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
-
-	++tryBegin;	// don't collect scope tokens
-	token = tryEnd;
-
-	// collect try-block tokens
 	TokenList tryTokens;
-	while ( tryBegin != tryEnd ) {
-		tryTokens.push_back((*tryBegin));
-		++tryBegin;
-	}
+	collectScopeTokens(token, tryTokens);
 
 	// process try-block
 	mControlFlow = interpret(tryTokens, result);
@@ -1946,21 +1924,8 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 			// notify our debugger that an exception has been caught
 			mDebugger->notifyExceptionCatch(getScope(), (*catchIt));
 
-			expect(Token::Type::BRACKET_CURLY_OPEN, catchIt);
-
-			// find next open curly bracket '{'
-			TokenIterator catchBegin = catchIt;
-			// find next balanced '{' & '}' pair
-			TokenIterator catchEnd = findNextBalancedCurlyBracket(catchBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
-
-			++catchBegin;		// don't collect scope token
-
-			// collect catch-block tokens
 			TokenList catchTokens;
-			while ( catchBegin != catchEnd ) {
-				catchTokens.push_back((*catchBegin));
-				++catchBegin;
-			}
+			collectScopeTokens(catchIt, catchTokens);
 
 			// reset control flow to allow correct exception handling
 			mControlFlow = ControlFlow::Normal;
@@ -1982,21 +1947,9 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 	// process finally-block (if present)
 	if ( finallyToken != getTokens().end() ) {
 		++finallyToken;
-		expect(Token::Type::BRACKET_CURLY_OPEN, finallyToken);
 
-		// find next open curly bracket '{'
-		TokenIterator finallyBegin = finallyToken;
-		// find next balanced '{' & '}' pair
-		TokenIterator finallyEnd = findNextBalancedCurlyBracket(finallyBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
-
-		++finallyBegin;		// don't collect scope token;
-
-		// collect finally-block tokens
 		TokenList finallyTokens;
-		while ( finallyBegin != finallyEnd ) {
-			finallyTokens.push_back((*finallyBegin));
-			++finallyBegin;
-		}
+		collectScopeTokens(finallyToken, finallyTokens);
 
 		// TODO: should we execute the finally-block in any case (i.e. even though a return has been issued by the user)?
 		if ( mControlFlow == ControlFlow::Normal ) {
