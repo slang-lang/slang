@@ -15,15 +15,14 @@
 #include <Core/Common/Method.h>
 #include <Core/Common/Namespace.h>
 #include <Core/Designtime/BluePrintEnum.h>
+#include <Core/Designtime/Exceptions.h>
 #include <Core/Designtime/Parser/Parser.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Runtime/OperatorOverloading.h>
 #include <Core/Runtime/TypeCast.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
-#include <Core/VirtualMachine/Stack.h>
 #include <Utils.h>
-#include <Core/Designtime/Exceptions.h>
 
 // AST includes
 #include "ControlStatements.h"
