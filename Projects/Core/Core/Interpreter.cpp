@@ -1926,9 +1926,18 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 		TokenList finallyTokens;
 		collectScopeTokens(finallyToken, finallyTokens);
 
-		// TODO: should we execute the finally-block in any case (i.e. even though a return has been issued by the user)?
-		if ( mControlFlow == ControlFlow::Normal ) {
-			mControlFlow = interpret(finallyTokens, result);
+		// store current control flow and reset it after finally block has been executed
+		Runtime::ControlFlow::E tmpControlFlow = mControlFlow;
+
+		// reset current control flow to allow execution of finally-block
+		mControlFlow = Runtime::ControlFlow::Normal;
+
+		// execute finally-block
+		interpret(finallyTokens, result);
+
+		// reset control flow if finally block has been executed normally
+		if ( mControlFlow == Runtime::ControlFlow::Normal ) {
+			mControlFlow = tmpControlFlow;
 		}
 	}
 }
