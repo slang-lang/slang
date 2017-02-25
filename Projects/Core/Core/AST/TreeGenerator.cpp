@@ -407,11 +407,6 @@ Node* TreeGenerator::parseTerm(TokenIterator& start)
 
 			++start;	// consume operator token
 		} break;
-/*
-		case Token::Type::SEMICOLON: {
-			return 0;
-		} break;
-*/
 		default:
 			throw Common::Exceptions::SyntaxError("identifier, literal or constant expected but " + start->content() + " found", start->position());
 	}
@@ -454,12 +449,12 @@ Statement* TreeGenerator::process_assert(TokenIterator& token)
 
 	Common::Position position = token->position();
 
-	Statement* statement = new AssertStatement(expression(token), position);
+	Node* exp = expression(token);
 
 	expect(Token::Type::PARENTHESIS_CLOSE, token);
 	++token;
 
-	return statement;
+	return new AssertStatement(exp, position);
 }
 
 /*
@@ -521,12 +516,12 @@ Statement* TreeGenerator::process_exit(TokenIterator& token)
 	expect(Token::Type::PARENTHESIS_OPEN, token);
 	++token;
 
-	Statement* statement = new ExitStatement(expression(token));
+	Node* exp = expression(token);
 
 	expect(Token::Type::PARENTHESIS_CLOSE, token);
 	++token;
 
-	return statement;
+	return new ExitStatement(exp);
 }
 
 Expression* TreeGenerator::process_expression_keyword(TokenIterator& token)
@@ -553,7 +548,7 @@ Expression* TreeGenerator::process_expression_keyword(TokenIterator& token)
 
 /*
  * syntax:
- * for ( <expression>; <condition>; <expression> ) { ... }
+ * for ( [<expression>]; [<condition>]; [<expression>] ) { ... }
  */
 Statement* TreeGenerator::process_for(TokenIterator& token)
 {
@@ -591,10 +586,10 @@ Statement* TreeGenerator::process_for(TokenIterator& token)
 
 	// Body parsing
 	// {
-	Node* loopBlock = process_statement(token);
+	Node* loopBody = process_statement(token);
 	// }
 
-	return new ForStatement(initialization, condition, iteration, loopBlock);
+	return new ForStatement(initialization, condition, iteration, loopBody);
 }
 
 /*
@@ -610,6 +605,7 @@ Statement* TreeGenerator::process_foreach(TokenIterator& token)
 
 	expect(Token::Type::COLON, token);
 	++token;
+
 	expect(Token::Type::IDENTIFER, token);
 
 	SymbolExpression* symbol = resolve(token);
@@ -854,6 +850,7 @@ Statement* TreeGenerator::process_return(TokenIterator& token)
 	}
 
 	expect(Token::Type::SEMICOLON, token);
+	++token;
 
 	return new ReturnStatement(exp);
 }
@@ -1015,12 +1012,16 @@ Statement* TreeGenerator::process_throw(TokenIterator& token)
 		OSwarn(std::string(method->getFullScopeName() + " throws although it is not marked with 'throws' in " + token->position().toString()).c_str());
 	}
 
-	ThrowStatement* statement = new ThrowStatement(expression(token));
+	Node* exp = 0;
+
+	if ( token->type() != Token::Type::SEMICOLON ) {
+		exp = expression(token);
+	}
 
 	expect(Token::Type::SEMICOLON, token);
 	++token;
 
-	return statement;
+	return new ThrowStatement(exp);
 }
 
 /*
@@ -1252,18 +1253,15 @@ Expression* TreeGenerator::process_typeid(TokenIterator& token)
  */
 Statement* TreeGenerator::process_while(TokenIterator& token)
 {
-	expect(Token::Type::PARENTHESIS_OPEN, token++);
+	expect(Token::Type::PARENTHESIS_OPEN, token);
+	++token;
 
-	// find next open parenthesis '('
-	TokenIterator condBegin = token;
-	// find next balanced '(' & ')' pair
-	TokenIterator condEnd = findNextBalancedParenthesis(condBegin);
+	Node* exp = expression(token);
 
-	token = ++condEnd;
+	expect(Token::Type::PARENTHESIS_CLOSE, token);
+	++token;
 
-	Node* whileBlock = process_statement(token);
-
-	return new WhileStatement(expression(condBegin), whileBlock);
+	return new WhileStatement(exp, process_statement(token));
 }
 
 void TreeGenerator::pushTokens(const TokenList& tokens)

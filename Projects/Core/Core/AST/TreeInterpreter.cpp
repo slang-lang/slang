@@ -1039,10 +1039,13 @@ void TreeInterpreter::visitStatement(Statement *node)
 
 void TreeInterpreter::visitStatements(Statements* node)
 {
+	// push a new scope
 	pushScope();
 
+	// execute compound statement
 	process(node);
 
+	// pop current scope
 	popScope();
 }
 
@@ -1117,16 +1120,20 @@ void TreeInterpreter::visitSwitch(SwitchStatement* node)
 void TreeInterpreter::visitThrow(ThrowStatement* node)
 {
 	Runtime::Object* data = mRepository->createInstance(OBJECT, ANONYMOUS_OBJECT, PrototypeConstraints());
-	try {
-		evaluate(node->mExpression, data);
-	}
-	catch ( Runtime::ControlFlow::E &e ) {
-		mControlFlow = e;
-		return;
+
+	if ( node->mExpression ) {	// throw new expression
+		try {
+			evaluate(node->mExpression, data);
+		}
+		catch ( Runtime::ControlFlow::E &e ) {
+			mControlFlow = e;
+			return;
+		}
+
+		mStack->exception() = Runtime::ExceptionData(data, Common::Position());
 	}
 
 	mControlFlow = Runtime::ControlFlow::Throw;
-	mStack->exception() = Runtime::ExceptionData(data, Common::Position());
 
 	// notify our debugger that an exception has been thrown
 	mDebugger->notifyExceptionThrow(getScope(), Token());
@@ -1144,17 +1151,24 @@ void TreeInterpreter::visitTry(TryStatement* node)
 
 		// determine correct catch-block (if a correct one exists)
 		for ( CatchStatements::const_iterator it = node->mCatchStatements.begin(); it != node->mCatchStatements.end(); ++it ) {
-			Designtime::BluePrintGeneric* catchType = static_cast<Designtime::BluePrintGeneric*>((*it)->mTypeDeclaration->mSymbol);
+			Designtime::BluePrintGeneric* catchType = dynamic_cast<Designtime::BluePrintGeneric*>((*it)->mTypeDeclaration->mSymbol);
+			if ( !catchType ) {
+				throw Runtime::Exceptions::InvalidSymbol("blueprint symbol expected!");
+			}
 
 			if ( exception->isInstanceOf(catchType->QualifiedTypename()) ) {
+				// reset control flow to normal to allow execution of catch-block
 				mControlFlow = Runtime::ControlFlow::Normal;
 
-				pushScope();
-					visitTypeDeclaration((*it)->mTypeDeclaration);
+				// retrieve exception instance variable
+				Runtime::Object* symbol = visitTypeDeclaration((*it)->mTypeDeclaration);
+				// assign exception to instance variable
+				*symbol = *exception;
 
-					visitStatements((*it)->mStatements);
-				popScope();
+				// execute catch statements
+				visitStatements((*it)->mStatements);
 
+				// only process one catch-block
 				break;
 			}
 		}
@@ -1177,7 +1191,7 @@ void TreeInterpreter::visitTry(TryStatement* node)
 	}
 }
 
-void TreeInterpreter::visitTypeDeclaration(TypeDeclaration* node)
+Runtime::Object* TreeInterpreter::visitTypeDeclaration(TypeDeclaration* node)
 {
 	Runtime::Object* object = mRepository->createInstance(static_cast<Designtime::BluePrintGeneric*>(node->mSymbol), node->mName, node->mConstraints);
 
@@ -1188,6 +1202,8 @@ void TreeInterpreter::visitTypeDeclaration(TypeDeclaration* node)
 	if ( node->mAssignment ) {
 		evaluate(node->mAssignment, object);
 	}
+
+	return object;
 }
 
 void TreeInterpreter::visitWhile(WhileStatement* node)
