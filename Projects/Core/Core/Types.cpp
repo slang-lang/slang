@@ -128,7 +128,7 @@ std::string toString(const Parameter& param)
 	switch ( param.access() ) {
 		case Parameter::AccessMode::ByReference: result += " "; result += RESERVED_WORD_BY_REFERENCE; break;
 		case Parameter::AccessMode::ByValue: result += " "; result += RESERVED_WORD_BY_VALUE; break;
-		case Parameter::AccessMode::Unspecified: break;
+		case Parameter::AccessMode::Unspecified: result += " unspecified"; break;
 	}
 	if ( param.hasDefaultValue() ) {
 		result += " = ";

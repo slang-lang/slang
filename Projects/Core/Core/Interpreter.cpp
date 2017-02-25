@@ -1981,32 +1981,31 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol, bool all
 		++token;
 	}
 
-	TokenIterator assign = getTokens().end();
-	if ( token->type() == Token::Type::ASSIGN ) {
-		if ( !allowInitialization ) {
-			// type declaration without initialization has been requested
-			throw Common::Exceptions::NotSupported("type initialization is not allowed here", token->position());
-		}
-
-		assign = ++token;
-	}
-
-
 	Object* object = mRepository->createInstance(static_cast<Designtime::BluePrintGeneric*>(symbol), name, constraints);
 	object->setConst(isConst);
 
 	getScope()->define(name, object);
 
-	if ( assign != getTokens().end() ) {
+
+	TokenIterator assign = getTokens().end();
+	if ( token->type() == Token::Type::ASSIGN ) {
+		if ( !allowInitialization ) {
+			// type declaration without initialization has been requested
+			throw Common::Exceptions::NotSupported("type initialization not allowed here", token->position());
+		}
+
+		assign = ++token;
+
 		// execute assignment statement
 		try {
 			Object tmp;
 			expression(&tmp, token);
 
-			if ( isReference && !tmp.getReference().isValid() ) {
+			//if ( isReference && !tmp.getReference().isValid() ) {
+			if ( isReference && (tmp.isAtomicType() && !tmp.getReference().isValid()) ) {
 				throw Runtime::Exceptions::InvalidAssignment("reference type expected", token->position());
 			}
-/* temporarily disabled
+/* temporarily disabled because this prevents the usage of =operator with atomic types
 			else if ( !isReference && tmp.getReference().isValid() ) {
 				throw Runtime::Exceptions::InvalidAssignment("value type expected", token->position());
 			}
@@ -2016,8 +2015,13 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol, bool all
 		}
 		catch ( ControlFlow::E &e ) {
 			mControlFlow = e;
+
 			return 0;
 		}
+	}
+	else if ( allowInitialization && isReference && static_cast<Designtime::BluePrintGeneric*>(symbol)->isAtomicType() ) {
+		// atomic reference without initialization found
+		throw Common::Exceptions::NotSupported("atomic references need to be initialized", token->position());
 	}
 
 	return object;
