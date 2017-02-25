@@ -53,7 +53,7 @@ Interpreter::~Interpreter()
 /*
  * collects all parameter objects between ( and )
  */
-void Interpreter::collectParameterList(TokenIterator& token, ParameterList& params)
+void Interpreter::collectParameterList(TokenIterator& token, ParameterList& params, std::list<Object>& objectList)
 {
 	expect(Token::Type::PARENTHESIS_OPEN, token);
 
@@ -65,16 +65,25 @@ void Interpreter::collectParameterList(TokenIterator& token, ParameterList& para
 	TokenIterator tmp = opened;
 	// loop through all parameters separated by commas
 	while ( tmp != closed ) {
-		Object obj;
+		objectList.push_back(Object());
+
+		Object* obj = &objectList.back();
 		try {
-			expression(&obj, tmp);
+			expression(obj, tmp);
 		}
 		catch ( ControlFlow::E &e ) {
 			mControlFlow = e;
 			return;
 		}
 
-		params.push_back(Parameter::CreateRuntime(obj.QualifiedOuterface(), obj.getValue(), obj.getReference()));
+/*
+		// hack to prevent anonymous references to run out of scope, this will most likely produce memory leaks!!!
+		if ( obj.getName() == ANONYMOUS_OBJECT ) {
+			mMemory->add(obj.getReference());
+		}
+*/
+
+		params.push_back(Parameter::CreateRuntime(obj->QualifiedOuterface(), obj->getValue(), obj->getReference()));
 
 		if ( std::distance(tmp, closed) <= 0 ) {
 			break;
@@ -1133,13 +1142,10 @@ void Interpreter::process_foreach(TokenIterator& token, Object* result)
 	if ( symbol->getSymbolType() != Symbol::IType::BluePrintEnumSymbol && symbol->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
 		throw Common::Exceptions::SyntaxError("invalid symbol type '" + symbol->getName() + "' found", token->position());
 	}
-	++token;
 
-	PrototypeConstraints constraints = Designtime::Parser::collectRuntimePrototypeConstraints(token);
-	(void)constraints;
+	// create and define loop variable
+	Object* loop = process_type(token, symbol, false);
 
-	expect(Token::Type::IDENTIFER, token);
-	++token;
 	expect(Token::Type::COLON, token);
 	++token;
 	expect(Token::Type::IDENTIFER, token);
@@ -1148,6 +1154,9 @@ void Interpreter::process_foreach(TokenIterator& token, Object* result)
 	Object* collection = dynamic_cast<Object*>(identify(token));
 	if ( !collection ) {
 		throw Common::Exceptions::SyntaxError("invalid symbol '" + token->content() + "' found", token->position());
+	}
+	if ( !collection->isValid() ) {
+		throw Runtime::Exceptions::NullPointerException("null pointer access", token->position());
 	}
 	if ( !collection->isInstanceOf("IIterateable") ) {
 		throw Common::Exceptions::SyntaxError("symbol '" + collection->getName() + "' is not derived from IIteratable", token->position());
@@ -1161,16 +1170,10 @@ void Interpreter::process_foreach(TokenIterator& token, Object* result)
 	expect(Token::Type::PARENTHESIS_CLOSE, token);
 	++token;
 
-	// Create and define loop variable
-	// {
-	Object* loop = process_type(typedefIt, symbol, false);
-	// }
-
-	const TokenIterator statementBegin = token;
-
-	// useCompound defines if a seperate scope block or a single statement has to be executed
+	// useCompound defines if a separate scope block or a single statement has to be processed
 	bool hasCompound = (token->type() == Token::Type::BRACKET_CURLY_OPEN);
 	TokenList loopTokens;
+	const TokenIterator statementBegin = token;
 
 	if ( hasCompound ) {
 		collectScopeTokens(token, loopTokens);
@@ -1180,14 +1183,13 @@ void Interpreter::process_foreach(TokenIterator& token, Object* result)
 		// Setup
 		// {
 		Object tmp;
-		iterator.execute(&tmp, "hasNext", ParameterList());
+		iterator.execute(&tmp, "hasNext", ParameterList());	// evaluate hasNext method
 
 		if ( !isTrue(tmp) ) {	// do we have more items to iterate over?
 			break;
 		}
 
-		// get current item
-		iterator.execute(loop, "next", ParameterList());
+		iterator.execute(loop, "next", ParameterList());	// get current item
 		// }
 
 		// Body parsing
@@ -1442,50 +1444,24 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 {
 	TokenIterator tmp = token;
 
-	TokenIterator opened = findNext(tmp, Token::Type::PARENTHESIS_OPEN);
-	TokenIterator closed = findNextBalancedParenthesis(++opened);
+	token = findNext(token, Token::Type::PARENTHESIS_OPEN);
 
-	std::list<Object> objectList;	// this is a hack to prevent that the provided object parameters run out of scope
 	ParameterList params;
+	std::list<Object> objectListHack;
+	collectParameterList(token, params, objectListHack);
 
-	tmp = opened;
-	// loop through all parameters separated by commas
-	while ( tmp != closed ) {
-		objectList.push_back(Object());
-
-		Object *obj = &objectList.back();
-		try {
-			expression(obj, tmp);
-		}
-		catch ( ControlFlow::E &e ) {
-			mControlFlow = e;
-			return;
-		}
-
-		params.push_back(Parameter::CreateRuntime(obj->QualifiedOuterface(), obj->getValue(), obj->getReference()));
-
-		if ( std::distance(tmp, closed) <= 0 ) {
-			break;
-		}
-		tmp = findNext(tmp, Token::Type::COMMA);
-		if ( std::distance(tmp, closed) < 0 ) {
-			break;
-		}
-		++tmp;
-	}
-
-	Symbol* symbol = identifyMethod(token, params);
+	Symbol* symbol = identifyMethod(tmp, params);
 
 	Common::Method* method = dynamic_cast<Common::Method*>(symbol);
 	if ( !method) {
-		throw Common::Exceptions::UnknownIdentifer("could not resolve identifier '" + token->content() + "' with parameters '" + toString(params) + "'", token->position());
+		throw Common::Exceptions::UnknownIdentifer("could not resolve identifier '" + tmp->content() + "' with parameters '" + toString(params) + "'", tmp->position());
 	}
 
 	// compare callee's constness with its parent's constness
 	Object* calleeParent = dynamic_cast<Object*>(method->getEnclosingScope());
 	if ( calleeParent && calleeParent->isConst() && !method->isConst() ) {
 		// we want to call a non-const method of a const object... neeeeey!
-		throw Common::Exceptions::ConstCorrectnessViolated("only calls to const methods are allowed for const object '" + calleeParent->getFullScopeName() + "'", token->position());
+		throw Common::Exceptions::ConstCorrectnessViolated("only calls to const methods are allowed for const object '" + calleeParent->getFullScopeName() + "'", tmp->position());
 	}
 
 	// check caller's constness
@@ -1494,19 +1470,19 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 		if ( owner->getEnclosingScope() == method->getEnclosingScope() && !method->isConst() ) {
 			// check target method's constness
 			// this is a const method and we want to call a non-const method... neeeeey!
-			throw Common::Exceptions::ConstCorrectnessViolated("only calls to const methods are allowed in const method '" + getScope()->getFullScopeName() + "'", token->position());
+			throw Common::Exceptions::ConstCorrectnessViolated("only calls to const methods are allowed in const method '" + getScope()->getFullScopeName() + "'", tmp->position());
 		}
 	}
 
 	// static method check
 	if ( owner && owner->isStatic() && !method->isStatic() ) {
-		throw Runtime::Exceptions::StaticException("non-static method \"" + method->ToString() + "\" called from static method \"" + owner->ToString() + "\"", token->position());
+		throw Runtime::Exceptions::StaticException("non-static method \"" + method->ToString() + "\" called from static method \"" + owner->ToString() + "\"", tmp->position());
 	}
 
 	ControlFlow::E controlflow;
 
 	if ( method->isExtensionMethod() ) {
-		controlflow = method->execute(params, result, (*token));
+		controlflow = method->execute(params, result, (*tmp));
 	}
 	else {
 		controlflow = execute(method, params, result);
@@ -1523,8 +1499,6 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 			mControlFlow = ControlFlow::Normal;
 			break;
 	}
-
-	token = closed;
 }
 
 /*
@@ -1549,7 +1523,8 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 	PrototypeConstraints constraints = Designtime::Parser::collectRuntimePrototypeConstraints(token);
 
 	ParameterList params;
-	collectParameterList(token, params);
+	std::list<Object> objectListHack;
+	collectParameterList(token, params, objectListHack);
 
 	// create initialized reference of new object
 	*result = *mRepository->createReference(static_cast<Designtime::BluePrintGeneric*>(symbol), name, constraints, Repository::InitilizationType::Final);
@@ -1964,14 +1939,13 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
  */
 Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol, bool allowInitialization)
 {
-	bool isConst = false;
-	bool isReference = false;
-
 	PrototypeConstraints constraints = Designtime::Parser::collectRuntimePrototypeConstraints(++token);
 
 	expect(Token::Type::IDENTIFER, token);
 
 	std::string name = (token++)->content();
+
+	bool isConst = false;
 
 	if ( token->type() == Token::Type::MODIFIER ) {
 		if ( token->content() == MODIFIER_CONST ) { isConst = true; }
@@ -1983,6 +1957,9 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol, bool all
 
 		++token;
 	}
+
+	// all not atomic types are references by default
+	bool isReference = !static_cast<Designtime::BluePrintGeneric*>(symbol)->isAtomicType();
 
 	if ( token->type() == Token::Type::RESERVED_WORD ) {
 		if ( token->content() == RESERVED_WORD_BY_REFERENCE ) { isReference = true; }
@@ -2026,7 +2003,7 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol, bool all
 			}
 */
 
-			operator_binary_assign(object, &tmp);
+			operator_binary_assign(object, &tmp, token->position());
 		}
 		catch ( ControlFlow::E &e ) {
 			mControlFlow = e;

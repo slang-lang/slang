@@ -48,7 +48,7 @@ public: // Execution
 	ControlFlow::E execute(Common::Method* method, const ParameterList& params, Object* result);
 
 private: // Execution
-	inline void collectParameterList(TokenIterator& token, ParameterList& params);
+	inline void collectParameterList(TokenIterator& token, ParameterList& params, std::list<Object>& objectList);
 	inline void collectScopeTokens(TokenIterator& token, TokenList& tokens);
 
 	inline Symbol* identify(TokenIterator& token) const;
