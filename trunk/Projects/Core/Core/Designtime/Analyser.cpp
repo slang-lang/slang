@@ -318,13 +318,8 @@ bool Analyser::createMemberStub(TokenIterator& token, Visibility::E visibility, 
 
 	// look for a mutability keyword
 	Mutability::E mutability = Mutability::Modify;
-	bool isFinal = false;
 	if ( token->category() == Token::Category::Modifier ) {
 		mutability = Mutability::convert(token->content());
-
-		if ( token->content() == MODIFIER_FINAL ) {
-			isFinal = true;
-		}
 
 		token++;
 	}
@@ -342,7 +337,7 @@ bool Analyser::createMemberStub(TokenIterator& token, Visibility::E visibility, 
 
 	if ( dynamic_cast<BluePrintGeneric*>(mScope) ) {
 		BluePrintObject* blue = new BluePrintObject(type.mName, mFilename, name);
-		blue->setFinal(isFinal);
+		blue->setFinal(mutability == Mutability::Final);
 		blue->setLanguageFeatureState(languageFeature);
 		blue->setMember(true);
 		blue->setMutability(mutability);
@@ -356,7 +351,7 @@ bool Analyser::createMemberStub(TokenIterator& token, Visibility::E visibility, 
 	}
 	else {
 		Runtime::Object *member = mRepository->createInstance(type.mName, name, type.mConstraints);
-		member->setFinal(isFinal);
+		member->setFinal(mutability == Mutability::Final);
 		member->setLanguageFeatureState(languageFeature);
 		member->setMember(true);
 		member->setMutability(mutability);
@@ -392,19 +387,19 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 	bool isFinal = false;
 	bool isRecursive = false;
 	MethodAttributes::MethodType::E methodType = MethodAttributes::MethodType::Function;
-	Mutability::E mutability = Mutability::Const;	// extreme const correctness: all methods are const by default
+	Mutability::E mutability = Mutability::Const;	// extreme const correctness: all methods are const by default (except constructors and destructors)
 	int numConstModifiers = 0;
 	bool throws = false;
 
 
 	BluePrintGeneric* blueprint = dynamic_cast<BluePrintGeneric*>(mScope);
 	if ( blueprint && name == RESERVED_WORD_CONSTRUCTOR ) {
-		// constructor or destructor can never ever be const, ever
+		// constructor or destructor can never ever be const
 		methodType = MethodAttributes::MethodType::Constructor;
 		mutability = Mutability::Modify;
 	}
 	else if ( blueprint && name == RESERVED_WORD_DESTRUCTOR ) {
-		// constructor or destructor can never ever be const, ever
+		// constructor or destructor can never ever be const
 		methodType = MethodAttributes::MethodType::Destructor;
 		mutability = Mutability::Modify;
 	}
