@@ -2,6 +2,7 @@
 #ifndef ObjectiveScript_Core_Scope_h
 #define ObjectiveScript_Core_Scope_h
 
+
 // Defines
 #include <Core/Defines.h>
 
