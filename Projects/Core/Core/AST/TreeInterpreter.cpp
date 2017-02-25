@@ -1162,8 +1162,9 @@ void TreeInterpreter::visitTry(TryStatement* node)
 
 				// retrieve exception instance variable
 				Runtime::Object* symbol = visitTypeDeclaration((*it)->mTypeDeclaration);
+
 				// assign exception to instance variable
-				*symbol = *exception;
+				Runtime::operator_binary_assign(symbol, exception);
 
 				// execute catch statements
 				visitStatements((*it)->mStatements);
