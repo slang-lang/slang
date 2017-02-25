@@ -78,7 +78,7 @@ private:
 	void visitSwitch(SwitchStatement* node);
 	void visitThrow(ThrowStatement* node);
 	void visitTry(TryStatement* node);
-	void visitTypeDeclaration(TypeDeclaration* node);
+	Runtime::Object* visitTypeDeclaration(TypeDeclaration* node);
 	void visitWhile(WhileStatement* node);
 
 private:
