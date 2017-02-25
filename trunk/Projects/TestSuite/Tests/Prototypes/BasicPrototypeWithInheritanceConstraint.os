@@ -7,7 +7,7 @@ public object Prototype<T: Object> {
 	private T mValue;
 
 	public void Constructor(T value) {
-		print("Prototype<T>.Constructor(" + value + ")");
+		print("Prototype<" + typeid(value) + ">.Constructor(" + value + ")");
 
 		mValue = value;
 	}

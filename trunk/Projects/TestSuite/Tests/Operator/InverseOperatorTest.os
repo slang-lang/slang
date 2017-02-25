@@ -28,7 +28,7 @@ private object TestObject {
 	}
 
 	public int =operator(int value) const {
-		print("int =operator(int " + value + ")");
+		print("int " + mValue + " =operator(int " + value + ")");
 		return mValue;
 	}
 
@@ -155,3 +155,4 @@ private bool TestCase5() const {
 
 	return bool obj;
 }
+

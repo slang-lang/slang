@@ -20,6 +20,7 @@ public void Main(int argc = 0, string args = "") {
 	assert( TestCase2() );
 	//assert( TestCase3() );	// invalid foreach-statement
 	assert( TestCase4() );
+	//assert( TestCase5() );	// null pointer access
 }
 
 private bool TestCase1() {
@@ -93,3 +94,18 @@ private bool TestCase4() {
 
 	return true;
 }
+
+private bool TestCase5() {
+	print("TestCase 5: foreach with null reference");
+
+	List list;
+	assert( !list );
+
+	foreach ( Object o : list ) {
+		assert( !"we should never get here" );
+	}
+	assert( !"this should have produced a null pointer exception" );
+
+	return false;
+}
+
