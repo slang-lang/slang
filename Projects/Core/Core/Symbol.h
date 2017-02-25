@@ -3,10 +3,18 @@
 #define ObjectiveScript_Core_Symbol_h
 
 
+// Defines
+#include <Core/Defines.h>
+
 // Library includes
-#include <map>
+#ifdef USE_ORDERED_COLLECTION
+#	include <map>
+#	include <set>
+#else
+#	include <unordered_map>
+#	include <unordered_set>
+#endif
 #include <string>
-//#include <unordered_map>
 
 // Project includes
 #include <Core/Attributes/Attributes.h>
@@ -63,8 +71,11 @@ protected:
 	Visibility::E mVisibility;
 };
 
-typedef std::map<std::string, Symbol*> Symbols;
-//typedef std::unordered_map<std::string, Symbol*> Symbols;
+#ifdef USE_ORDERED_COLLECTION
+	typedef std::map<std::string, Symbol*> Symbols;
+#else
+	typedef std::unordered_map<std::string, Symbol*> Symbols;
+#endif
 
 
 class BluePrintSymbol : public Symbol,
@@ -74,7 +85,9 @@ class BluePrintSymbol : public Symbol,
 public:
 	explicit BluePrintSymbol(const std::string& name)
 	: Symbol(name, Symbol::IType::BluePrintObjectSymbol)
-	{ }
+	{
+		mVisibility = Visibility::Private;
+	}
 	virtual ~BluePrintSymbol() { }
 };
 
@@ -85,7 +98,9 @@ class MethodSymbol : public Symbol,
 public:
 	explicit MethodSymbol(const std::string& name)
 	: Symbol(name, Symbol::IType::MethodSymbol)
-	{ }
+	{
+		mVisibility = Visibility::Private;
+	}
 	virtual ~MethodSymbol() { }
 };
 
@@ -96,7 +111,9 @@ class NamespaceSymbol : public Symbol,
 public:
 	explicit NamespaceSymbol(const std::string& name)
 	: Symbol(name, Symbol::IType::NamespaceSymbol)
-	{ }
+	{
+		mVisibility = Visibility::Private;
+	}
 	virtual ~NamespaceSymbol() { }
 };
 
@@ -107,7 +124,9 @@ class ObjectSymbol : public Symbol,
 public:
 	explicit ObjectSymbol(const std::string& name)
 	: Symbol(name, Symbol::IType::ObjectSymbol)
-	{ }
+	{
+		mVisibility = Visibility::Private;
+	}
 	virtual ~ObjectSymbol() { }
 };
 

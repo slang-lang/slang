@@ -21,6 +21,8 @@ std::string DoubleObject::TYPENAME = "double";
 DoubleObject::DoubleObject()
 : BluePrintObject(TYPENAME, SYSTEM_LIBRARY)
 {
+	mIsAtomicType = true;
+
 	addInheritance(Ancestor(TypeDeclaration(OBJECT), Ancestor::Type::Extends, Visibility::Public));
 }
 

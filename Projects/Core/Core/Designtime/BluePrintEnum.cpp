@@ -18,6 +18,7 @@ namespace Designtime {
 BluePrintEnum::BluePrintEnum()
 : MethodScope(ANONYMOUS_OBJECT, 0)
 {
+	mIsAtomicType = true;
 	mName = ANONYMOUS_OBJECT;
 	mType = Symbol::IType::BluePrintEnumSymbol;
 }
@@ -26,6 +27,7 @@ BluePrintEnum::BluePrintEnum(const std::string& type, const std::string& filenam
 : BluePrintGeneric(type, filename),
   MethodScope(type, 0)
 {
+	mIsAtomicType = true;
 	mName = name;
 	mType = Symbol::IType::BluePrintEnumSymbol;
 }
