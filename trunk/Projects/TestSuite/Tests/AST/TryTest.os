@@ -18,8 +18,6 @@ public void Main(int argc = 1, string args = "") throws {
 	}
 	finally {
 		print("finally");
-
-		assert( !"after return" );
 	}
 
 	assert( !"after return" );
