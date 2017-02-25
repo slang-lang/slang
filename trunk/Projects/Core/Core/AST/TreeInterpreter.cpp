@@ -897,7 +897,7 @@ void TreeInterpreter::visitForeach(ForeachStatement* node)
 		iterator.execute(loopVariable, "next", ParameterList());
 
 		// execute compound statement
-		visit(node->mStatement);
+		visitStatement(static_cast<Statement*>(node->mStatement));
 
 		popScope();		// pop scope and remove loop variable
 
@@ -928,10 +928,10 @@ void TreeInterpreter::visitIf(IfStatement* node)
 
 	// validate if-condition
 	if ( isTrue(condition) ) { // execute if-compound statement
-		visit(node->mIfBlock);
+		visitStatement(static_cast<Statement*>(node->mIfBlock));
 	}
 	else { // execute else-compound statement
-		visit(node->mElseBlock);
+		visitStatement(static_cast<Statement*>(node->mElseBlock));
 	}
 }
 
@@ -972,9 +972,11 @@ void TreeInterpreter::visitReturn(ReturnStatement* node)
 
 void TreeInterpreter::visitStatement(Statement *node)
 {
-	mDebugger->notify(getScope(), Token());		// notify debugger
+	if ( !node ) {
+		return;
+	}
 
-	assert(node);
+	mDebugger->notify(getScope(), Token());		// notify debugger
 
 	switch ( node->getStatementType() ) {
 		case Statement::StatementType::AssertStatement:
@@ -1075,7 +1077,7 @@ void TreeInterpreter::visitSwitch(SwitchStatement* node)
 		if ( Runtime::operator_binary_equal(&value, &caseValue) ) {
 			caseMatched = true;
 
-			visit((*it)->mCaseBlock);
+			visitStatements((*it)->mCaseBlock);
 
 			switch ( mControlFlow ) {
 				case Runtime::ControlFlow::Break:
@@ -1096,7 +1098,7 @@ void TreeInterpreter::visitSwitch(SwitchStatement* node)
 
 	// no matching case statement found => execute default statement
 	if ( !caseMatched ) {
-		visit(node->mDefaultStatement);
+		visitStatements(node->mDefaultStatement);
 
 		switch ( mControlFlow ) {
 			case Runtime::ControlFlow::Break:
@@ -1133,7 +1135,7 @@ void TreeInterpreter::visitThrow(ThrowStatement* node)
 void TreeInterpreter::visitTry(TryStatement* node)
 {
 	// execute try-block
-	visitStatement(node->mTryBlock);
+	visitStatements(node->mTryBlock);
 
 	// execute exception handling only if an exception occurred
 	if ( mControlFlow == Runtime::ControlFlow::Throw && !node->mCatchStatements.empty() ) {
@@ -1148,9 +1150,9 @@ void TreeInterpreter::visitTry(TryStatement* node)
 				mControlFlow = Runtime::ControlFlow::Normal;
 
 				pushScope();
-					visit((*it)->mTypeDeclaration);
+					visitTypeDeclaration((*it)->mTypeDeclaration);
 
-					visit((*it)->mStatement);
+					visitStatements((*it)->mStatements);
 				popScope();
 
 				break;
@@ -1166,7 +1168,7 @@ void TreeInterpreter::visitTry(TryStatement* node)
 
 	// allow try-statements without finally-statements
 	if ( node->mFinallyBlock ) {
-		visitStatement(node->mFinallyBlock);
+		visitStatements(node->mFinallyBlock);
 	}
 
 	// reset control flow if finally block has been executed normally

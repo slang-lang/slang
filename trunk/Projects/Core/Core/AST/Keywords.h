@@ -41,7 +41,7 @@ public:
 class CaseStatement : public Statement
 {
 public:
-	CaseStatement(Node* caseExpression, Node* caseBlock)
+	CaseStatement(Node* caseExpression, Statements* caseBlock)
 	: Statement(StatementType::CaseStatement),
 	  mCaseBlock(caseBlock),
 	  mCaseExpression(caseExpression)
@@ -52,7 +52,7 @@ public:
 	}
 
 public:
-	Node* mCaseBlock;
+	Statements* mCaseBlock;
 	Node* mCaseExpression;
 };
 
@@ -61,18 +61,18 @@ typedef std::list<CaseStatement*> CaseStatements;
 class CatchStatement : public Statement
 {
 public:
-	CatchStatement(TypeDeclaration* typeDeclaration, Node* statement)
+	CatchStatement(TypeDeclaration* typeDeclaration, Statements* statements)
 	: Statement(StatementType::CatchStatement),
-	  mStatement(statement),
+	  mStatements(statements),
 	  mTypeDeclaration(typeDeclaration)
 	{ }
 	~CatchStatement() {
-		delete mStatement;
+		delete mStatements;
 		delete mTypeDeclaration;
 	}
 
 public:
-	Node* mStatement;
+	Statements* mStatements;
 	TypeDeclaration* mTypeDeclaration;
 };
 
@@ -185,7 +185,7 @@ public:
 class SwitchStatement : public Statement
 {
 public:
-	SwitchStatement(Node* exp, const CaseStatements& caseStatements, Node* defaultStatement)
+	SwitchStatement(Node* exp, const CaseStatements& caseStatements, Statements* defaultStatement)
 	: Statement(StatementType::SwitchStatement),
 	  mCaseStatements(caseStatements),
 	  mDefaultStatement(defaultStatement),
@@ -201,7 +201,7 @@ public:
 
 public:
 	CaseStatements mCaseStatements;
-	Node* mDefaultStatement;
+	Statements* mDefaultStatement;
 	Node* mExpression;
 };
 
