@@ -5,12 +5,13 @@ public namespace ExceptionTest {
 		private string _exception;
 
 		public void Constructor(string ex) {
-			print(ex);
+			print("throw new " + typeid(this) + "(\"" + ex + "\")");
 			_exception = ex;
 		}
 
 		public string what() const {
-			return "Exception: " + _exception;
+			//return "Exception: " + _exception;
+			return typeid(this) + "(\"" + _exception + "\")";
 		}
 	}
 
@@ -90,6 +91,7 @@ private bool TestCase3() throws {
 		int one = 3;
 		print("one = " + one);
 	}
+
 	return true;
 }
 
@@ -137,7 +139,7 @@ private bool TestCase5() throws {
 	}
 	catch {
 		print("outter catch");
-		assert(false);
+		assert( false );
 	}
 	finally {
 		print("outter finally");
@@ -152,17 +154,17 @@ private bool TestCase6() throws {
 	try {
 		print("try");
 
-		print("throw new Exception()");
+		//print("throw new Exception()");
 		throw new ExceptionTest.Exception("standard exception");
 	}
-	catch ( int e ) {
+	catch ( int e ref ) {
 		print("FAIL!!!");
-		return false;
+		assert( false );
 	}
-	catch ( ExceptionTest.Exception e ) {
+	catch ( ExceptionTest.Exception e ref ) {
 		print("catch " + e.what());
 	}
-	catch ( Object e ) {
+	catch ( Object e ref ) {
 		print("caugth generic exception type: " + e.what());
 	}
 	finally {
@@ -179,21 +181,27 @@ private bool TestCase7() throws {
 		try {
 			print("try");
 
-			print("throw new ExceptionTest.Exception");
-			throw new ExceptionTest.Exception("ExceptionTest.Exception");
+			//print("throw new ExceptionTest.Exception");
+			throw new ExceptionTest.Exception("inner throw");
 		}
-		catch ( int e ) {
-			assert(false);
+		catch ( int e ref ) {
+			assert( false );
+		}
+		finally {
+			print("inner finally");
 		}
 
 		print("after catch");
 
 		return false;
 	}
-	catch ( ExceptionTest.Exception e ) {
+	catch ( ExceptionTest.Exception e ref ) {
 		print("correct catch: " + e.what());
 
 		return true;
+	}
+	finally {
+		print("outter finally");
 	}
 
 	return false;
