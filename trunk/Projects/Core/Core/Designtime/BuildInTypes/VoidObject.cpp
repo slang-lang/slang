@@ -19,6 +19,8 @@ std::string VoidObject::TYPENAME = "void";
 VoidObject::VoidObject()
 : BluePrintObject(TYPENAME, SYSTEM_LIBRARY)
 {
+	mIsAtomicType = true;
+
 	//addInheritance(Ancestor(OBJECT, Ancestor::Type::Extends, Visibility::Public));
 }
 

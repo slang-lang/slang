@@ -21,6 +21,8 @@ std::string StringObject::TYPENAME = "string";
 StringObject::StringObject()
 : BluePrintObject(TYPENAME, SYSTEM_LIBRARY)
 {
+	mIsAtomicType = true;
+
 	addInheritance(Ancestor(TypeDeclaration(OBJECT), Ancestor::Type::Extends, Visibility::Public));
 }
 

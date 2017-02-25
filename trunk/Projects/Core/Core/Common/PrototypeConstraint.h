@@ -16,6 +16,8 @@
 
 namespace ObjectiveScript {
 
+// Forward declarations
+class PrototypeConstraints;
 
 class PrototypeConstraint
 {
@@ -36,9 +38,6 @@ public:
 	std::string mRunType;
 };
 
-
-// Forward declarations
-class PrototypeConstraints;
 
 class PrototypeConstraints : public std::list<PrototypeConstraint>
 {

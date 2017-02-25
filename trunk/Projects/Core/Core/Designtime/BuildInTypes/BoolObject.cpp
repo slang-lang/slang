@@ -20,6 +20,8 @@ std::string BoolObject::TYPENAME = "bool";
 BoolObject::BoolObject()
 : BluePrintObject(TYPENAME, SYSTEM_LIBRARY)
 {
+	mIsAtomicType = true;
+
 	addInheritance(Ancestor(TypeDeclaration(OBJECT), Ancestor::Type::Extends, Visibility::Public));
 }
 

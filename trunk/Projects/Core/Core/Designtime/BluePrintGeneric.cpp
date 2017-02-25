@@ -17,19 +17,19 @@ namespace Designtime {
 BluePrintGeneric::BluePrintGeneric()
 : BluePrintSymbol(ANONYMOUS_OBJECT),
   mFilename(ANONYMOUS_OBJECT),
+  mIsAtomicType(false),
   mQualifiedTypename(ANONYMOUS_OBJECT),
   mUnqualifiedTypename(ANONYMOUS_OBJECT)
 {
-	mVisibility = Visibility::Public;
 }
 
 BluePrintGeneric::BluePrintGeneric(const std::string& unqualifiedTypename, const std::string& filename)
 : BluePrintSymbol(unqualifiedTypename),
   mFilename(filename),
+  mIsAtomicType(false),
   mQualifiedTypename(unqualifiedTypename),
   mUnqualifiedTypename(unqualifiedTypename)
 {
-	mVisibility = Visibility::Public;
 }
 
 BluePrintGeneric::~BluePrintGeneric()
@@ -84,6 +84,11 @@ const PrototypeConstraints& BluePrintGeneric::getPrototypeConstraints() const
 const TokenList& BluePrintGeneric::getTokens() const
 {
 	return mTokens;
+}
+
+bool BluePrintGeneric::isAtomicType() const
+{
+	return mIsAtomicType;
 }
 
 bool BluePrintGeneric::isAbstract() const

@@ -53,6 +53,7 @@ public:
 	void addInheritance(const Ancestor& inheritance);
 	// }
 
+	bool isAtomicType() const;
 	bool isAbstract() const;
 	bool isForwardDeclaration() const;
 	bool isInterface() const;
@@ -65,8 +66,9 @@ public:
 	void setTokens(const TokenList& tokens);
 
 protected:
-	Ancestors mInheritance;
 	std::string mFilename;
+	Ancestors mInheritance;
+	bool mIsAtomicType;
 	PrototypeConstraints mPrototypeConstraints;
 	std::string mQualifiedTypename;
 	TokenList mTokens;
