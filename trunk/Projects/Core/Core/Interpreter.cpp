@@ -1960,7 +1960,7 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 
 /*
  * syntax:
- * <type> [ "<" <type> ">" ] <identifier> [= <initialization>]
+ * <type> [ "<" <type> ">" ] <identifier> [const|modify] [ref] [= <initialization>]
  */
 Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol, bool allowInitialization)
 {

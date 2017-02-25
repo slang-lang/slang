@@ -46,12 +46,10 @@ public:
 	static bool isEnumDeclaration(TokenIterator token);
 	static bool isInterfaceDeclaration(TokenIterator token);
 	static bool isLibraryReference(TokenIterator token);
-	static bool isLocalDeclaration(TokenIterator token);
 	static bool isMemberDeclaration(TokenIterator token);
 	static bool isMethodDeclaration(TokenIterator token);
 	static bool isNamespaceDeclaration(TokenIterator token);
 	static bool isObjectDeclaration(TokenIterator token);
-	static bool isParameterDeclaration(TokenIterator token);
 
 	static ImplementationType::E parseImplementationType(TokenIterator& token, ImplementationType::E defaultValue);
 	static LanguageFeatureState::E parseLanguageFeatureState(TokenIterator& token, LanguageFeatureState::E defaultValue);

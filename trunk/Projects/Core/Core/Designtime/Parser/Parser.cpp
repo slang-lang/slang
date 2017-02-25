@@ -352,18 +352,6 @@ bool Parser::isLibraryReference(TokenIterator token)
 	return checkSyntax(token, tokens);
 }
 
-// syntax:
-// <type> <identifier>
-bool Parser::isLocalDeclaration(TokenIterator token)
-{
-	TokenList tokens;
-
-	tokens.push_back(Token(Token::Type::TYPE));
-	tokens.push_back(Token(Token::Type::IDENTIFER));
-
-	return checkSyntax(token, tokens);
-}
-
 // member declaration:
 // <visibility> [language feature] <identifier> <identifier> = || ;
 bool Parser::isMemberDeclaration(TokenIterator token)
@@ -472,18 +460,6 @@ bool Parser::isObjectDeclaration(TokenIterator token)
 
 	tokens.push_back(Token(Token::Type::VISIBILITY));
 	tokens.push_back(Token(Token::Type::RESERVED_WORD, std::string(RESERVED_WORD_OBJECT)));
-	tokens.push_back(Token(Token::Type::IDENTIFER));
-
-	return checkSyntax(token, tokens);
-}
-
-// syntax:
-// <identifier> <identifier>
-bool Parser::isParameterDeclaration(TokenIterator token)
-{
-	TokenList tokens;
-
-	tokens.push_back(Token(Token::Type::IDENTIFER));
 	tokens.push_back(Token(Token::Type::IDENTIFER));
 
 	return checkSyntax(token, tokens);
@@ -628,7 +604,7 @@ Runtime::AtomicValue Parser::parseValueInitialization(TokenIterator& token)
 
 	switch ( token->type() ) {
 		case Token::Type::CONST_BOOLEAN:
-			if ( sign.size() != 0 ) {
+			if ( !sign.empty() ) {
 				throw Common::Exceptions::SyntaxError("unexpected token", token->position());
 			}
 
