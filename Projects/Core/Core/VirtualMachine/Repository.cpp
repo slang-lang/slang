@@ -614,7 +614,7 @@ void Repository::init()
 
 	// add predefined runtime objects
 	{	// null
-		Runtime::UserObject* nullObject = new Runtime::UserObject(VALUE_NULL, SYSTEM_LIBRARY, NULL_TYPE, true);
+		Runtime::UserObject* nullObject = new Runtime::UserObject(VALUE_NULL, SYSTEM_LIBRARY, OBJECT, true);
 		nullObject->setConst(true);
 		nullObject->setConstructed(false);
 		nullObject->setFinal(false);
