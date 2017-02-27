@@ -399,7 +399,7 @@ Runtime::ControlFlow::E TreeInterpreter::execute(Common::Method* method, const P
 		Runtime::Object *object = 0;
 
 		switch ( it->access() ) {
-			case Parameter::AccessMode::ByReference: {
+			case AccessMode::ByReference: {
 				object = mRepository->createInstance(it->type(), it->name(), PrototypeConstraints());
 
 				if ( it->reference().isValid() ) {
@@ -413,7 +413,7 @@ Runtime::ControlFlow::E TreeInterpreter::execute(Common::Method* method, const P
 
 				scope.define(it->name(), object);
 			} break;
-			case Parameter::AccessMode::ByValue: {
+			case AccessMode::ByValue: {
 				object = mRepository->createInstance(it->type(), it->name(), PrototypeConstraints());
 
 				object->setConst(it->isConst());
@@ -422,7 +422,7 @@ Runtime::ControlFlow::E TreeInterpreter::execute(Common::Method* method, const P
 
 				scope.define(it->name(), object);
 			} break;
-			case Parameter::AccessMode::Unspecified: {
+			case AccessMode::Unspecified: {
 				throw Common::Exceptions::AccessMode("unspecified access mode");
 			} break;
 		}

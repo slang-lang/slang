@@ -74,7 +74,7 @@ Parameter::Parameter(const std::string& name, const TypeDeclaration& type, Runti
 {
 }
 
-Parameter::AccessMode::E Parameter::access() const
+AccessMode::E Parameter::access() const
 {
 	return mAccessMode;
 }

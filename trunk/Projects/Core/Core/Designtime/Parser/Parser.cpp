@@ -505,18 +505,18 @@ ParameterList Parser::parseParameters(TokenIterator &token, IScope* scope)
 	ParameterList params;
 
 	while ( (*++token).type() != Token::Type::PARENTHESIS_CLOSE ) {
-		Parameter::AccessMode::E accessMode;
+		AccessMode::E accessMode;
 		bool hasDefaultValue = false;
 		bool isConst = false;
 		Runtime::AtomicValue value;
 
 		if ( token->type() == Token::Type::IDENTIFER ) {
 			// set default access mode for complex types
-			accessMode = Parameter::AccessMode::ByReference;
+			accessMode = AccessMode::ByReference;
 		}
 		else if ( token->type() == Token::Type::TYPE ) {
 			// set default access mode for atomic parameters
-			accessMode = Parameter::AccessMode::ByValue;
+			accessMode = AccessMode::ByValue;
 		}
 		else {
 			throw Common::Exceptions::SyntaxError("unexpected token '" + token->content() + "' found", token->position());
@@ -542,11 +542,11 @@ ParameterList Parser::parseParameters(TokenIterator &token, IScope* scope)
 		}
 
 		if ( token->content() == RESERVED_WORD_BY_REFERENCE ) {
-			accessMode = Parameter::AccessMode::ByReference;
+			accessMode = AccessMode::ByReference;
 			token++;
 		}
 		else if ( token->content() == RESERVED_WORD_BY_VALUE ) {
-			accessMode = Parameter::AccessMode::ByValue;
+			accessMode = AccessMode::ByValue;
 			token++;
 		}
 
@@ -559,7 +559,7 @@ ParameterList Parser::parseParameters(TokenIterator &token, IScope* scope)
 			token++;
 		}
 
-		if ( hasDefaultValue && accessMode == Parameter::AccessMode::ByReference ) {
+		if ( hasDefaultValue && accessMode == AccessMode::ByReference ) {
 			// parameters with default values cannot be accessed by reference
 			throw Common::Exceptions::SyntaxError("default parameters are not allowed to be accessed by reference");
 		}

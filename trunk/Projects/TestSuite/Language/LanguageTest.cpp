@@ -68,6 +68,7 @@ void LanguageTest::process()
 	TEST(testThis);
 	TEST(testThrow);
 	TEST(testTypeCast);
+	TEST(testTypeInference);
 	TEST(testWhile);
 
 // not implemented
@@ -604,6 +605,21 @@ void LanguageTest::testTypeCast()
 		VirtualMachine vm;
 
 		vm.createScriptFromFile("Tests/Language/TypeCastTest.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// unexpected exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void LanguageTest::testTypeInference()
+{
+	try {
+		VirtualMachine vm;
+
+		vm.createScriptFromFile("Tests/Language/TypeInferenceTest.os");
 
 		// automatic success
 	}

@@ -67,6 +67,7 @@ private:	// Tests
 	void testThis();
 	void testThrow();
 	void testTypeCast();
+	void testTypeInference();
 	void testWhile();
 };
 

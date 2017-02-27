@@ -1,6 +1,7 @@
 INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
 SET(SOURCES
+	AccessMode.cpp
 	Attributes.cpp
 	ImplementationType.cpp
 	LanguageFeatureState.cpp
@@ -9,6 +10,7 @@ SET(SOURCES
 )
 
 SET(HEADERS
+	AccessMode.h
 	Attributes.h
 	ImplementationType.h
 	LanguageFeatureState.h
