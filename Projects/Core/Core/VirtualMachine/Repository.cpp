@@ -214,10 +214,10 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 			}
 
 			if ( paramIt->type() != type ) {
-				Parameter::AccessMode::E access = Parameter::AccessMode::ByValue;//paramIt->access();
+				AccessMode::E access = AccessMode::ByValue;
 
-				if ( /*access == Parameter::AccessMode::ByValue &&*/ atomicTypes.find(type) == atomicTypes.end() ) {
-					access = Parameter::AccessMode::ByReference;
+				if ( atomicTypes.find(type) == atomicTypes.end() ) {
+					access = AccessMode::ByReference;
 				}
 
 				(*paramIt) = Parameter::CreateDesigntime(paramIt->name(),

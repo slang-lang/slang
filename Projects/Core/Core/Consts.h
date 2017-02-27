@@ -47,6 +47,7 @@ static const char* KEYWORD_SWITCH = "switch";
 static const char* KEYWORD_THROW = "throw";
 static const char* KEYWORD_TRY = "try";
 static const char* KEYWORD_TYPEID = "typeid";
+static const char* KEYWORD_VAR = "var";
 static const char* KEYWORD_WHILE = "while";
 
 // Language feature states

@@ -47,6 +47,16 @@ public:
 public: // Execution
 	ControlFlow::E execute(Common::Method* method, const ParameterList& params, Object* result);
 
+private:
+	class Initialization {
+	public:
+		enum E {
+			NotAllowed,
+			Allowed,
+			Required
+		};
+	};
+
 private: // Execution
 	inline void collectParameterList(TokenIterator& token, ParameterList& params, std::list<Object>& objectList);
 	inline void collectScopeTokens(TokenIterator& token, TokenList& tokens);
@@ -77,8 +87,9 @@ private: // Execution
 	void process_switch(TokenIterator& token, Object* result);
 	void process_throw(TokenIterator& token, Object* result);
 	void process_try(TokenIterator& token, Object* result);
-	Object* process_type(TokenIterator& token, Symbol* symbol, bool allowInitialization = true);
+	Object* process_type(TokenIterator& token, Symbol* symbol, Initialization::E initialization);
 	void process_typeid(TokenIterator& token, Object* result);
+	void process_var(TokenIterator& token, Object* result);
 	void process_while(TokenIterator& token, Object* result);
 	// }
 
@@ -90,6 +101,12 @@ private: // Execution
 	void parseFactors(Object* result, TokenIterator& start);
 	void parseInfixPostfix(Object* result, TokenIterator& start);
 	void parseTerm(Object* result, TokenIterator& start);
+	// }
+
+	// Parsing helpers
+	// {
+	AccessMode::E parseAccessMode(TokenIterator &token, bool isAtomicType);
+	Mutability::E parseMutability(TokenIterator& token);
 	// }
 
 	// Scope stack

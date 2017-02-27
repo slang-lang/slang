@@ -8,6 +8,7 @@
 #include <string>
 
 // Project includes
+#include <Core/Attributes/AccessMode.h>
 #include <Core/Common/TypeDeclaration.h>
 #include <Core/Runtime/AtomicValue.h>
 #include "Reference.h"
@@ -26,17 +27,6 @@ namespace Runtime {
 
 class Parameter
 {
-public:
-	class AccessMode
-	{
-	public:
-		enum E {
-			Unspecified,
-			ByReference,
-			ByValue
-		};
-	};
-
 public:
 	static Parameter CreateDesigntime(const std::string& name,
 									  const TypeDeclaration& type,

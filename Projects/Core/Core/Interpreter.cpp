@@ -153,7 +153,7 @@ ControlFlow::E Interpreter::execute(Common::Method* method, const ParameterList&
 		Object *object = 0;
 
 		switch ( it->access() ) {
-			case Parameter::AccessMode::ByReference: {
+			case AccessMode::ByReference: {
 				object = mRepository->createInstance(it->type(), it->name(), PrototypeConstraints());
 
 				if ( it->reference().isValid() ) {
@@ -165,7 +165,7 @@ ControlFlow::E Interpreter::execute(Common::Method* method, const ParameterList&
 
 				scope.define(it->name(), object);
 			} break;
-			case Parameter::AccessMode::ByValue: {
+			case AccessMode::ByValue: {
 				object = mRepository->createInstance(it->type(), it->name(), PrototypeConstraints());
 
 				if ( it->reference().isValid() ) {
@@ -185,7 +185,7 @@ ControlFlow::E Interpreter::execute(Common::Method* method, const ParameterList&
 
 				scope.define(it->name(), object);
 			} break;
-			case Parameter::AccessMode::Unspecified: {
+			case AccessMode::Unspecified: {
 				throw Common::Exceptions::AccessMode("unspecified access mode");
 			} break;
 		}
@@ -531,6 +531,24 @@ ControlFlow::E Interpreter::interpret(const TokenList& tokens, Object* result, b
 	return mControlFlow;
 }
 
+AccessMode::E Interpreter::parseAccessMode(TokenIterator &token, bool isAtomicType)
+{
+	AccessMode::E result = isAtomicType ? AccessMode::ByValue : AccessMode::ByReference;
+
+	if ( token->type() == Token::Type::RESERVED_WORD ) {
+		result = AccessMode::convert(token->content());
+
+		if ( result == AccessMode::Unspecified ) {
+			// invalid type
+			throw Common::Exceptions::SyntaxError("invalid token '" + token->content() + "' found", token->position());
+		}
+
+		++token;
+	}
+
+	return result;
+}
+
 void Interpreter::parseCondition(Object *result, TokenIterator& start)
 {
 	parseExpression(result, start);
@@ -750,6 +768,24 @@ void Interpreter::parseInfixPostfix(Object *result, TokenIterator& start)
 		default: {
 		} break;
 	}
+}
+
+Mutability::E Interpreter::parseMutability(TokenIterator& token)
+{
+	Mutability::E result = Mutability::Modify;
+
+	if ( token->type() == Token::Type::MODIFIER ) {
+		result = Mutability::convert(token->content());
+
+		if ( result != Mutability::Const && result != Mutability::Modify ) {
+			// local variables are only allowed to by modifiable or constant
+			throw Common::Exceptions::SyntaxError("invalid token '" + token->content() + "' found", token->position());
+		}
+
+		++token;
+	}
+
+	return result;
 }
 
 void Interpreter::parseTerm(Object *result, TokenIterator& start)
@@ -1144,7 +1180,7 @@ void Interpreter::process_foreach(TokenIterator& token, Object* result)
 	}
 
 	// create and define loop variable
-	Object* loop = process_type(token, symbol, false);
+	Object* loop = process_type(token, symbol, Initialization::NotAllowed);
 
 	expect(Token::Type::COLON, token);
 	++token;
@@ -1231,7 +1267,7 @@ void Interpreter::process_identifier(TokenIterator& token, Object* /*result*/)
 
 	try {
 		if ( symbol->getSymbolType() == Symbol::IType::BluePrintEnumSymbol || symbol->getSymbolType() == Symbol::IType::BluePrintObjectSymbol ) {
-			process_type(token, symbol);
+			process_type(token, symbol, Initialization::Allowed);
 		}
 		else if ( symbol->getSymbolType() == Symbol::IType::MethodSymbol ) {
 			token = tmpToken;	// reset token after call to identify
@@ -1430,6 +1466,9 @@ void Interpreter::process_keyword(TokenIterator& token, Object *result)
 	}
 	else if ( keyword == KEYWORD_TYPEID ) {
 		process_typeid(token, result);
+	}
+	else if ( keyword == KEYWORD_VAR ) {
+		process_var(token, result);
 	}
 	else if ( keyword == KEYWORD_WHILE ) {
 		process_while(token, result);
@@ -1878,7 +1917,7 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 				}
 
 				// create new exception type instance
-				Object* type = process_type(catchIt, symbol, false);
+				Object* type = process_type(catchIt, symbol, Initialization::NotAllowed);
 
 				expect(Token::Type::PARENTHESIS_CLOSE, catchIt++);
 
@@ -1944,9 +1983,9 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 
 /*
  * syntax:
- * <type> [ "<" <type> ">" ] <identifier> [const|modify] [ref] [= <initialization>]
+ * <type> [ "<" <type> ">" ] <identifier> [const|modify] [ref|val] [= <initialization>]
  */
-Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol, bool allowInitialization)
+Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol, Initialization::E initialization)
 {
 	PrototypeConstraints constraints = Designtime::Parser::collectRuntimePrototypeConstraints(++token);
 
@@ -1954,63 +1993,41 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol, bool all
 
 	std::string name = (token++)->content();
 
-	bool isConst = false;
+	Mutability::E mutability = parseMutability(token);
 
-	if ( token->type() == Token::Type::MODIFIER ) {
-		if ( token->content() == MODIFIER_CONST ) { isConst = true; }
-		else if ( token->content() == MODIFIER_MODIFY ) { isConst = false; }
-		else {
-			// invalid modifier
-			throw Common::Exceptions::SyntaxError("invalid token '" + token->content() + "' found", token->position());
-		}
-
-		++token;
-	}
-
-	// all not atomic types are references by default
-	bool isReference = !static_cast<Designtime::BluePrintGeneric*>(symbol)->isAtomicType();
-
-	if ( token->type() == Token::Type::RESERVED_WORD ) {
-		if ( token->content() == RESERVED_WORD_BY_REFERENCE ) { isReference = true; }
-		else if ( token->content() == RESERVED_WORD_BY_VALUE ) { isReference = false; }
-		else {
-			// invalid type
-			throw Common::Exceptions::SyntaxError("invalid token '" + token->content() + "' found", token->position());
-		}
-
-		++token;
-	}
+	// not atomic types are references by default
+	AccessMode::E accessMode = parseAccessMode(token, static_cast<Designtime::BluePrintGeneric*>(symbol)->isAtomicType());
 
 	Object* object = mRepository->createInstance(static_cast<Designtime::BluePrintGeneric*>(symbol), name, constraints);
-	object->setConst(isConst);
+	object->setConst(mutability == Mutability::Const);
 
 	getScope()->define(name, object);
 
 
 	TokenIterator assign = getTokens().end();
 	if ( token->type() == Token::Type::ASSIGN ) {
-		if ( !allowInitialization ) {
+		++token;
+
+		if ( initialization != Initialization::Allowed ) {
 			// type declaration without initialization has been requested
 			throw Common::Exceptions::NotSupported("type initialization not allowed here", token->position());
 		}
-
-		assign = ++token;
 
 		// execute assignment statement
 		try {
 			Object tmp;
 			expression(&tmp, token);
 
-			//if ( isReference && !tmp.getReference().isValid() ) {
-			if ( isReference && (tmp.isAtomicType() && !tmp.getReference().isValid()) ) {
+			if ( accessMode == AccessMode::ByReference && (tmp.isAtomicType() && !tmp.getReference().isValid()) ) {
 				throw Runtime::Exceptions::InvalidAssignment("reference type expected", token->position());
 			}
 /* temporarily disabled because this prevents the usage of =operator with atomic types
-			else if ( !isReference && tmp.getReference().isValid() ) {
+			else if ( accessMode == AccessMode::ByValue && tmp.getReference().isValid() ) {
 				throw Runtime::Exceptions::InvalidAssignment("value type expected", token->position());
 			}
 */
 
+			// this separate assignment operation ensures that are type system is not bypassed
 			operator_binary_assign(object, &tmp, token->position());
 		}
 		catch ( ControlFlow::E &e ) {
@@ -2019,7 +2036,13 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol, bool all
 			return 0;
 		}
 	}
-	else if ( allowInitialization && isReference && static_cast<Designtime::BluePrintGeneric*>(symbol)->isAtomicType() ) {
+	else if ( initialization == Initialization::Required ) {
+		// initialization is required (probably because type inference is used) but no initialization sequence found
+		throw Common::Exceptions::NotSupported("type inference required initialization", token->position());
+	}
+	else if ( initialization >= Initialization::Allowed &&
+			  accessMode == AccessMode::ByReference &&
+			  static_cast<Designtime::BluePrintGeneric*>(symbol)->isAtomicType() ) {
 		// atomic reference without initialization found
 		throw Common::Exceptions::NotSupported("atomic references need to be initialized", token->position());
 	}
@@ -2028,6 +2051,7 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol, bool all
 }
 
 /*
+ * syntax:
  * typeid ( <expression> );
  */
 void Interpreter::process_typeid(TokenIterator& token, Object* result)
@@ -2058,11 +2082,50 @@ void Interpreter::process_typeid(TokenIterator& token, Object* result)
 
 /*
  * syntax:
+ * var <identifier> = <expression>;
+ */
+void Interpreter::process_var(TokenIterator& token, Object* /*result*/)
+{
+	expect(Token::Type::IDENTIFER, token);
+
+	std::string name = (token++)->content();
+
+	Mutability::E mutability = parseMutability(token);
+
+	expect(Token::Type::ASSIGN, token);
+	++token;
+
+	// execute assignment statement
+	// {
+	Object var;
+	try {
+		expression(&var, token);
+	}
+	catch ( ControlFlow::E &e ) {
+		mControlFlow = e;
+
+		return;
+	}
+
+	Object* object = mRepository->createInstance(var.QualifiedTypename(), name, PrototypeConstraints(), Repository::InitilizationType::Final);
+	object->setConst(mutability == Mutability::Const);
+
+	getScope()->define(name, object);
+
+	operator_binary_assign(object, &var, token->position());
+	// }
+
+	expect(Token::Type::SEMICOLON, token);
+}
+
+/*
+ * syntax:
  * while ( <condition> ) { ... }
  */
 void Interpreter::process_while(TokenIterator& token, Object* result)
 {
-	expect(Token::Type::PARENTHESIS_OPEN, token++);
+	expect(Token::Type::PARENTHESIS_OPEN, token);
+	++token;
 
 	// find next open parenthesis '('
 	TokenIterator condBegin = token;
