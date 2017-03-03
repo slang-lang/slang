@@ -1,5 +1,6 @@
 #!/usr/local/bin/oscript
 
+import System.Collections.List;
 import System.Integer;
 
 public void Main(int argc = 0, string args = "") {
@@ -7,6 +8,8 @@ public void Main(int argc = 0, string args = "") {
 	assert( TestCase2() );
 	assert( TestCase3() );
 	assert( TestCase4() );
+	assert( TestCase5() );
+	assert( TestCase6() );
 }
 
 private bool TestCase1() {
@@ -59,5 +62,31 @@ private bool TestCase4() {
 	print("i < j = " + (i < j));
         
 	return i < j;
+}
+
+private bool TestCase5() {
+	print("TestCase 5: type inference during for-loop");
+
+	for ( var i = 0; i < 5; i += 1) {
+		print("i = " + i);
+	}
+
+	return i == 5;
+}
+
+private bool TestCase6() {
+	print("TestCase 6: type inference during foreach-loop");
+
+	var list = new List();
+	list.push_back(Object new Integer(1));
+	list.push_back(Object new Integer(2));
+	list.push_back(Object new Integer(3));
+
+	//foreach ( var i : list ) {
+	foreach ( Integer i : list ) {
+		print("i = " + i);
+	}
+
+	return true;
 }
 
