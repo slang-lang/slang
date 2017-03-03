@@ -8,6 +8,7 @@ public void Main(int argc = 0, string args = "") {
 	assert( TestCase2() );
 	assert( TestCase3() );
 	assert( TestCase4() );
+	assert( TestCase41() );
 	assert( TestCase5() );
 	assert( TestCase6() );
 }
@@ -61,6 +62,19 @@ private bool TestCase4() {
 	print("j = " + j); 
 	print("i < j = " + (i < j));
         
+	return i < j;
+}
+
+private bool TestCase41() {
+	print("TestCase 4.1: const type inference with complex type");
+
+	Integer i = new Integer(1);
+	var j const = new Integer(2);
+
+	print("i = " + i);
+	print("j = " + j);
+	print("i < j = " + (i < j));
+
 	return i < j;
 }
 
