@@ -688,14 +688,12 @@ Node* TreeGenerator::process_identifier(TokenIterator& token, bool allowTypeCast
 Statement* TreeGenerator::process_if(TokenIterator& token)
 {
 	expect(Token::Type::PARENTHESIS_OPEN, token);
+	++token;
 
-	TokenIterator condBegin = ++token;
-	// find next balanced '(' & ')' pair
-	TokenIterator condEnd = findNextBalancedParenthesis(condBegin);
+	Node* exp = expression(token);
 
-	expect(Token::Type::PARENTHESIS_CLOSE, condEnd);
-
-	token = ++condEnd;
+	expect(Token::Type::PARENTHESIS_CLOSE, token);
+	++token;
 
 	Node* ifBlock = process_statement(token);
 
@@ -707,7 +705,7 @@ Statement* TreeGenerator::process_if(TokenIterator& token)
 		elseBlock = process_statement(token);
 	}
 
-	return new IfStatement(expression(condBegin), ifBlock, elseBlock);
+	return new IfStatement(exp, ifBlock, elseBlock);
 }
 
 Node* TreeGenerator::process_keyword(TokenIterator& token)
