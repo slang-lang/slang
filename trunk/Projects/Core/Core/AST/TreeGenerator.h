@@ -93,7 +93,7 @@ private: // Execution
 
 	// Scope stack
 	// {
-	inline IScope* getScope() const;
+	IScope* getScope() const;
 	// }
 
 	// Token stack
@@ -106,8 +106,7 @@ private: // Execution
 	MethodScope* getEnclosingMethodScope(IScope *scope = 0) const;
 	Common::Namespace* getEnclosingNamespace(IScope* scope = 0) const;
 
-private:
-	IScope* mOwner;
+	std::string resolveType(Node* left, const Token& operation, Node* right) const;
 
 private:	// Virtual machine stuff
 	Repository* mRepository;

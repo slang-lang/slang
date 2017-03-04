@@ -8,7 +8,6 @@
 #include <iostream>
 
 // Project includes
-#include <Core/AST/TreeGenerator.h>
 #include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/Common/Exceptions.h>
 #include <Core/Common/Method.h>

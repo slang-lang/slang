@@ -7,6 +7,7 @@ SET(SOURCES
 	Stack.cpp
 	StackFrame.cpp
 	Threads.cpp
+	TypeSystem.cpp
 	VirtualMachine.cpp
 	VirtualMethodTable.cpp
 )
@@ -18,6 +19,7 @@ SET(HEADERS
 	Stack.h
 	StackFrame.h
 	Threads.h
+	TypeSystem.h
 	VirtualMachine.h
 	VirtualMethodTable.h
 )

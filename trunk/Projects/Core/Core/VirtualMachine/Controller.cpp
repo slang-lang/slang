@@ -18,6 +18,7 @@ Controller::Controller()
   mRepository(0),
   mStack(0),
   mThreads(0),
+  mTypeSystem(0),
   mVirtualMethodTable(0)
 {
 }
@@ -41,12 +42,14 @@ void Controller::deinit()
 	mThreads->deinit();
 	mMemory->deinit();
 	mRepository->deinit();
+	mTypeSystem->deinit();
 	//mVirtualMethodTable->deinit();
 
 	delete mStack;
 	delete mThreads;
 	delete mMemory;
 	delete mRepository;
+	delete mTypeSystem;
 	delete mVirtualMethodTable;
 
 	mInitialized = false;
@@ -60,8 +63,10 @@ void Controller::init()
 	mRepository = new Repository();
 	mStack = new Stack();
 	mThreads = new Threads();
+	mTypeSystem = new TypeSystem();
 	mVirtualMethodTable = new VirtualMethodTable();
 
+	mTypeSystem->init();
 	//mVirtualMethodTable->init();
 	mMemory->init();
 	mStack->init();
@@ -99,6 +104,11 @@ Thread* Controller::thread(Common::ThreadId id) const
 Threads* Controller::threads() const
 {
 	return mThreads;
+}
+
+TypeSystem* Controller::typeSystem() const
+{
+	return mTypeSystem;
 }
 
 VirtualMethodTable* Controller::virtualMethodTable() const
