@@ -43,20 +43,22 @@ public:
 	: Node(NodeType::Expression),
 	  mExpressionType(expressionType)
 	{ }
+	virtual ~Expression() { }
 
 	ExpressionType::E getExpressionType() const {
 		return mExpressionType;
 	}
 
+	const std::string& getResultType() const {
+		return mResultType;
+	}
+
 protected:
 	ExpressionType::E mExpressionType;
+	std::string mResultType;
 };
 
 typedef std::list<Node*> ExpressionList;
-
-
-// Forward declarations
-class SymbolExpression;
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -74,14 +76,17 @@ public:
 	};
 
 public:
-	explicit BinaryExpression(const Token& token, Node* left, Node* right)
+	explicit BinaryExpression(const Token& token, Node* left, Node* right, const std::string& resultType)
 	: Expression(ExpressionType::BinaryExpression),
 	  mLeft(left),
 	  mRight(right),
 	  mToken(token),
 	  mBinaryExpressionType(BinaryExpressionType::GenericBinaryExpression)
-	{ }
-	~BinaryExpression() {
+	{
+		// TODO: define result type
+		mResultType = resultType;
+	}
+	virtual ~BinaryExpression() {
 		delete mLeft;
 		delete mRight;
 	}
@@ -103,10 +108,11 @@ class BooleanBinaryExpression : public BinaryExpression
 {
 public:
 	explicit BooleanBinaryExpression(const Token& token, Node* left, Node* right)
-	: BinaryExpression(token, left, right)
+	: BinaryExpression(token, left, right, "bool")
 	{
 		mBinaryExpressionType = BinaryExpressionType::BooleanBinaryExpression;
 	}
+	virtual ~BooleanBinaryExpression() { }
 };
 
 
@@ -117,8 +123,10 @@ public:
 	: Expression(ExpressionType::UnaryExpression),
 	  mExpression(exp),
 	  mToken(token)
-	{ }
-	~UnaryExpression() {
+	{
+		mResultType = static_cast<Expression*>(exp)->getResultType();
+	}
+	virtual ~UnaryExpression() {
 		delete mExpression;
 	}
 
@@ -152,7 +160,10 @@ class BooleanLiteralExpression : public LiteralExpression
 public:
 	explicit BooleanLiteralExpression(Runtime::AtomicValue value)
 	: LiteralExpression(value)
-	{ }
+	{
+		// TODO: use BoolObject::TYPENAME
+		mResultType = "bool";
+	}
 };
 
 class DoubleLiteralExpression : public LiteralExpression
@@ -160,7 +171,10 @@ class DoubleLiteralExpression : public LiteralExpression
 public:
 	explicit DoubleLiteralExpression(Runtime::AtomicValue value)
 	: LiteralExpression(value)
-	{ }
+	{
+		// TODO: use DoubleObject::TYPENAME
+		mResultType = "double";
+	}
 };
 
 class FloatLiteralExpression : public LiteralExpression
@@ -168,7 +182,10 @@ class FloatLiteralExpression : public LiteralExpression
 public:
 	explicit FloatLiteralExpression(Runtime::AtomicValue value)
 	: LiteralExpression(value)
-	{ }
+	{
+		// TODO: use FloatObject::TYPENAME
+		mResultType = "float";
+	}
 };
 
 class IntegerLiteralExpression : public LiteralExpression
@@ -176,7 +193,10 @@ class IntegerLiteralExpression : public LiteralExpression
 public:
 	explicit IntegerLiteralExpression(Runtime::AtomicValue value)
 	: LiteralExpression(value)
-	{ }
+	{
+		// TODO: use IntegerObject::TYPENAME
+		mResultType = "int";
+	}
 };
 
 class StringLiteralExpression : public LiteralExpression
@@ -184,7 +204,10 @@ class StringLiteralExpression : public LiteralExpression
 public:
 	explicit StringLiteralExpression(Runtime::AtomicValue value)
 	: LiteralExpression(value)
-	{ }
+	{
+		// TODO: use StringObject::TYPENAME
+		mResultType = "string";
+	}
 };
 
 // Literal expressions

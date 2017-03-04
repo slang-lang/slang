@@ -36,7 +36,6 @@ namespace AST {
 
 
 TreeGenerator::TreeGenerator()
-: mOwner(0)
 {
 	// initialize virtual machine stuff
 	mRepository = Controller::Instance().repository();
@@ -119,7 +118,7 @@ Common::Namespace* TreeGenerator::getEnclosingNamespace(IScope* scope) const
 	return 0;
 }
 
-inline IScope* TreeGenerator::getScope() const
+IScope* TreeGenerator::getScope() const
 {
 	return mStack->current()->getScope();
 }
@@ -142,13 +141,6 @@ inline Symbol* TreeGenerator::identify(TokenIterator& token) const
 			result = getScope()->resolve(identifier, onlyCurrentScope, Visibility::Private);
 
 			prev_identifier = identifier;
-
-			if ( !result ) {
-				Common::Namespace* space = getEnclosingNamespace();
-				if ( space ) {
-					result = getScope()->resolve(space->QualifiedTypename() + "." + identifier, onlyCurrentScope, Visibility::Private);
-				}
-			}
 		}
 		else {
 			switch ( result->getSymbolType() ) {
@@ -205,11 +197,6 @@ Symbol* TreeGenerator::identifyMethod(TokenIterator& token, const ParameterList&
 			result = getScope()->resolve(identifier, onlyCurrentScope, Visibility::Private);
 
 			prev_identifier = identifier;
-
-			// look for an overloaded method
-			if ( result && result->getSymbolType() == Symbol::IType::MethodSymbol ) {
-				result = dynamic_cast<MethodScope*>(mOwner)->resolveMethod(identifier, params, onlyCurrentScope, Visibility::Private);
-			}
 		}
 		else {
 			switch ( result->getSymbolType() ) {
@@ -286,7 +273,11 @@ Node* TreeGenerator::parseExpression(TokenIterator& start)
 			return expression;
 		}
 
-		expression = new BinaryExpression((*start), expression, parseFactors(++start));
+		Token token = (*start);
+		Node* right = parseFactors(++start);
+		std::string type = resolveType(expression, token, right);
+
+		expression = new BinaryExpression(token, expression, right, type);
 	}
 }
 
@@ -302,7 +293,11 @@ Node* TreeGenerator::parseFactors(TokenIterator& start)
 			return factor;
 		}
 
-		factor = new BinaryExpression((*start), factor, parseInfixPostfix(++start));
+		Token token = (*start);
+		Node* right = parseInfixPostfix(++start);
+		std::string type = resolveType(factor, token, right);
+
+		factor = new BinaryExpression(token, factor, right, type);
 	}
 }
 
@@ -404,7 +399,6 @@ Node* TreeGenerator::parseTerm(TokenIterator& start)
 			term = expression(start);
 
 			expect(Token::Type::PARENTHESIS_CLOSE, start);
-
 			++start;	// consume operator token
 		} break;
 		default:
@@ -645,22 +639,27 @@ Node* TreeGenerator::process_identifier(TokenIterator& token, bool allowTypeCast
 	}
 	// assignment
 	else if ( op->category() == Token::Category::Assignment ) {
-		TokenIterator assignment = token;
-		Node* exp = 0;
+		Node* right = expression(++token);
 
-		switch ( assignment->type() ) {
-			case Token::Type::ASSIGN_ADDITION: exp = new BinaryExpression(Token(Token::Type::MATH_ADDITION), symbol, expression(++token)); break;
-			case Token::Type::ASSIGN_BITAND: exp = new BinaryExpression(Token(Token::Type::BITAND), symbol, expression(++token)); break;
-			case Token::Type::ASSIGN_BITCOMPLEMENT: exp = new BinaryExpression(Token(Token::Type::BITCOMPLEMENT), symbol, expression(++token)); break;
-			case Token::Type::ASSIGN_BITOR: exp = new BinaryExpression(Token(Token::Type::BITOR), symbol, expression(++token)); break;
-			case Token::Type::ASSIGN_DIVIDE: exp = new BinaryExpression(Token(Token::Type::MATH_DIVIDE), symbol, expression(++token)); break;
-			case Token::Type::ASSIGN_MODULO: exp = new BinaryExpression(Token(Token::Type::MATH_MODULO), symbol, expression(++token)); break;
-			case Token::Type::ASSIGN_MULTIPLY: exp = new BinaryExpression(Token(Token::Type::MATH_MULTIPLY), symbol, expression(++token)); break;
-			case Token::Type::ASSIGN_SUBTRACT: exp = new BinaryExpression(Token(Token::Type::MATH_SUBTRACT), symbol, expression(++token)); break;
-			default: exp = expression(++token); break;
+		if ( op->type() != Token::Type::ASSIGN ) {
+			Token operation;
+
+			switch ( op->type() ) {
+				case Token::Type::ASSIGN_ADDITION: operation = Token(Token::Type::MATH_ADDITION); break;
+				case Token::Type::ASSIGN_BITAND: operation = Token(Token::Type::BITAND); break;
+				case Token::Type::ASSIGN_BITCOMPLEMENT: operation = Token(Token::Type::BITCOMPLEMENT); break;
+				case Token::Type::ASSIGN_BITOR: operation = Token(Token::Type::BITOR); break;
+				case Token::Type::ASSIGN_DIVIDE: operation = Token(Token::Type::MATH_DIVIDE); break;
+				case Token::Type::ASSIGN_MODULO: operation = Token(Token::Type::MATH_MODULO); break;
+				case Token::Type::ASSIGN_MULTIPLY: operation = Token(Token::Type::MATH_MULTIPLY); break;
+				case Token::Type::ASSIGN_SUBTRACT: operation = Token(Token::Type::MATH_SUBTRACT); break;
+				default: throw Common::Exceptions::SyntaxError("assignment type execpted", token->position());
+			}
+
+			right = new BinaryExpression(operation, symbol, right, resolveType(symbol, operation, right));
 		}
 
-		node = new Assignment(symbol, (*assignment), exp);
+		node = new Assignment(symbol, (*op), right);
 	}
 	// --
 	else if ( op->type() == Token::Type::OPERATOR_DECREMENT ) {
@@ -1276,6 +1275,15 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token) const
 	}
 
 	return symbol;
+}
+
+std::string TreeGenerator::resolveType(Node* left, const Token& operation, Node* right) const
+{
+	return Controller::Instance().typeSystem()->getType(
+		static_cast<Expression*>(left)->getResultType(),
+		operation.type(),
+		static_cast<Expression*>(right)->getResultType()
+	);
 }
 
 

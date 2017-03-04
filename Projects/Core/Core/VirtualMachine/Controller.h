@@ -10,6 +10,7 @@
 #include "Repository.h"
 #include "Stack.h"
 #include "Threads.h"
+#include "TypeSystem.h"
 #include "VirtualMethodTable.h"
 
 // Forward declarations
@@ -43,6 +44,7 @@ public:
 	Stack* stack() const;
 	Thread* thread(Common::ThreadId id) const;
 	Threads* threads() const;
+	TypeSystem* typeSystem() const;
 	VirtualMethodTable* virtualMethodTable() const;
 
 private:
@@ -56,6 +58,7 @@ private:
 	Repository* mRepository;
 	Stack* mStack;
 	Threads* mThreads;
+	TypeSystem* mTypeSystem;
 	VirtualMethodTable* mVirtualMethodTable;
 };
 
