@@ -95,6 +95,14 @@ public:
 	std::string getType(const std::string& left, Token::Type::E operation, const std::string& right);
 
 private:
+	void initBool();
+	void initDouble();
+	void initFloat();
+	void initInt();
+	void initObject();
+	void initString();
+
+private:
 	TypeMap mTypeMap;
 };
 
