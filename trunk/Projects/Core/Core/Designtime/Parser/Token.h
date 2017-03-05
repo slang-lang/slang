@@ -108,6 +108,7 @@ public:
 			SLASH,
 			TILDE,
 			TYPE,
+			TYPECAST,
 			UNKNOWN,
 			VISIBILITY,
 			WHITESPACE
