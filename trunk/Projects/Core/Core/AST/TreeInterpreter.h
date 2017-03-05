@@ -101,7 +101,7 @@ private:
 	void evaluateLiteral(LiteralExpression* exp, Runtime::Object* result);
 	void evaluateMethodExpression(MethodExpression* exp, Runtime::Object* result);
 	void evaluateNewExpression(NewExpression* exp, Runtime::Object* result);
-	void evaluateSymbol(SymbolExpression* exp, Runtime::Object* result);
+	void evaluateSymbol(SymbolExpression* exp, Runtime::Object* result, IScope* scope);
 	void evaluateTypeCastExpression(TypecastExpression* exp, Runtime::Object* result);
 	void evaluateTypeidExpression(TypeidExpression* exp, Runtime::Object* result);
 	void evaluateUnaryExpression(UnaryExpression* exp, Runtime::Object* result);

@@ -44,13 +44,12 @@ void Generator::process(MethodScope* base)
 				processBluePrint(static_cast<Designtime::BluePrintObject*>(it->second));
 				break;
 			case Symbol::IType::NamespaceSymbol:
-				process(static_cast<Common::Namespace*>(it->second));
+				processNamespace(static_cast<Common::Namespace*>(it->second));
 				break;
 			case Symbol::IType::BluePrintEnumSymbol:
 				break;	// enums don't have an implementation
 			case Symbol::IType::ObjectSymbol:
-				//throw Common::Exceptions::InvalidSymbol("runtime symbol type found");
-				break;	// TODO: investigate on this: why do we have runtime object symbols during initialization?
+				break;	// ignore runtime symbols
 			case Symbol::IType::UnknownSymbol:
 				throw Common::Exceptions::InvalidSymbol("unknown symbol type found");
 		}
@@ -66,7 +65,7 @@ void Generator::processBluePrint(Designtime::BluePrintObject* object)
 		// interfaces have no implementation, so there's nothing to parse; adieu..
 		return;
 	}
-	if ( !object->provideSymbols().size() ) {
+	if ( object->provideSymbols().empty() ) {
 		// an object without symbols? maybe a primitive?
 		return;
 	}
@@ -85,7 +84,19 @@ void Generator::processMethod(Common::Method* method)
 	}
 
 	TreeGenerator tg;
-	method->setRootNode(tg.generate(method));
+
+	method->setRootNode(
+		tg.generate(method)
+	);
+}
+
+void Generator::processNamespace(Common::Namespace* space)
+{
+	if ( !space ) {
+		throw Common::Exceptions::Exception("invalid namespace symbol provided");
+	}
+
+	process(space);
 }
 
 

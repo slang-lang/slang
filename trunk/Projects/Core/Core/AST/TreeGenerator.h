@@ -48,7 +48,9 @@ public:
 	Statements* generate(Common::Method* method);
 
 private: // Execution
-	Statements* generate(const TokenList &tokens);
+	inline void collectScopeTokens(TokenIterator& token, TokenList& tokens);
+
+	Statements* generate(const TokenList &tokens, bool allowBreakAndContinue = false);
 
 	inline Symbol* identify(TokenIterator& token) const;
 	inline Symbol* identifyMethod(TokenIterator& token, const ParameterList& params) const;
@@ -72,8 +74,8 @@ private: // Execution
 	Expression* process_new(TokenIterator& token);
 	Statement* process_print(TokenIterator& token);
 	Statement* process_return(TokenIterator& token);
-	Statements* process_scope(TokenIterator& token);
-	Node* process_statement(TokenIterator& token);
+	Statements* process_scope(TokenIterator& token, bool allowBreakAndContinue = false);
+	Node* process_statement(TokenIterator& token, bool allowBreakAndContinue = false);
 	Statement* process_switch(TokenIterator& token);
 	Statement* process_throw(TokenIterator& token);
 	Statement* process_try(TokenIterator& token);
@@ -90,9 +92,17 @@ private: // Execution
 	Node* parseFactors(TokenIterator& start);
 	Node* parseInfixPostfix(TokenIterator& start);
 	Node* parseTerm(TokenIterator& start);
+
+	SymbolExpression* parseSymbol(TokenIterator& token);
 	// }
 
-	SymbolExpression* resolve(TokenIterator& token) const;
+	// Parsing helpers
+	// {
+	AccessMode::E parseAccessMode(TokenIterator &token, bool isAtomicType);
+	Mutability::E parseMutability(TokenIterator& token);
+	// }
+
+	SymbolExpression* resolve(TokenIterator& token, IScope* base) const;
 
 	// Scope stack
 	// {

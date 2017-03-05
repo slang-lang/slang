@@ -45,12 +45,14 @@ void ASTTest::process()
 	TEST(testForeach);
 	TEST(testGenerator);
 	TEST(testIf);
+	TEST(testNamespace);
 	TEST(testNew);
 	TEST(testReturn);
 	TEST(testSwitch);
 	TEST(testThrow);
 	TEST(testTry);
 	TEST(testTypeDeclaration);
+	TEST(testTypeSystem);
 	TEST(testUnaryExpression);
 	TEST(testWhile);
 }
@@ -207,6 +209,20 @@ void ASTTest::testIf()
 	}
 }
 
+void ASTTest::testNamespace()
+{
+	try {
+		VirtualMachine vm;
+		vm.createScriptFromFile("Tests/AST/NamespaceTest.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
 void ASTTest::testNew()
 {
 	try {
@@ -284,6 +300,20 @@ void ASTTest::testTypeDeclaration()
 	try {
 		VirtualMachine vm;
 		vm.createScriptFromFile("Tests/AST/TypeDeclarationTest.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void ASTTest::testTypeSystem()
+{
+	try {
+		VirtualMachine vm;
+		vm.createScriptFromFile("Tests/AST/TypeSystemTest.os");
 
 		// automatic success
 	}

@@ -261,28 +261,32 @@ public:
 class SymbolExpression : public Expression
 {
 public:
-	explicit SymbolExpression(const Token& name)
+	explicit SymbolExpression(const std::string& name, const std::string& resultType, SymbolExpression* symbolExpression)
 	: Expression(ExpressionType::SymbolExpression),
 	  mName(name),
-	  mScope(0)
-	{ }
+	  mSymbolExpression(symbolExpression)
+	{
+		mResultType = symbolExpression ? symbolExpression->getResultType() : resultType;
+	}
 	~SymbolExpression() {
-		delete mScope;
+		delete mSymbolExpression;
 	}
 
 	std::string toString() const {
-		std::string result = mName.content();
+		std::string result;
 
-		if ( mScope ) {
-			result += "." + mScope->toString();
+		if ( mSymbolExpression ) {
+			result = mSymbolExpression->toString() + ".";
 		}
+
+		result += mName;
 
 		return result;
 	}
 
 public:
-	Token mName;
-	SymbolExpression* mScope;
+	std::string mName;
+	SymbolExpression* mSymbolExpression;
 };
 
 
