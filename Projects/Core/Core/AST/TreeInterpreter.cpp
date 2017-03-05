@@ -318,7 +318,7 @@ void TreeInterpreter::evaluateTypeCastExpression(TypecastExpression* exp, Runtim
 		return;
 	}
 
-	Runtime::typecast(&tmp, exp->mDestinationType.content());
+	Runtime::typecast(&tmp, exp->mDestinationType);
 
 	Runtime::operator_binary_assign(result, &tmp);
 }
@@ -584,7 +584,7 @@ std::string TreeInterpreter::printExpression(Node* node) const
 				}
 			} break;
 			case Expression::ExpressionType::TypecastExpression: {
-				result += static_cast<TypecastExpression*>(expression)->mDestinationType.content() + " ";
+				result += static_cast<TypecastExpression*>(expression)->mDestinationType + " ";
 				result += printExpression(static_cast<TypecastExpression*>(expression)->mExpression);
 			} break;
 			case Expression::ExpressionType::TypeidExpression: {

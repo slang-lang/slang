@@ -15,6 +15,7 @@
 #include <Core/Common/Method.h>
 #include <Core/Common/Namespace.h>
 #include <Core/Designtime/BluePrintEnum.h>
+#include <Core/Designtime/BuildInTypes/VoidObject.h>
 #include <Core/Designtime/Exceptions.h>
 #include <Core/Designtime/Parser/Parser.h>
 #include <Core/Runtime/Exceptions.h>
@@ -36,10 +37,12 @@ namespace AST {
 
 
 TreeGenerator::TreeGenerator()
+: mMethod(0),
+  mStackFrame(0)
 {
 	// initialize virtual machine stuff
 	mRepository = Controller::Instance().repository();
-	mStack = Controller::Instance().stack();
+	mTypeSystem = Controller::Instance().typeSystem();
 }
 
 TreeGenerator::~TreeGenerator()
@@ -63,6 +66,26 @@ Node* TreeGenerator::expression(TokenIterator& start)
 	}
 }
 
+Statements* TreeGenerator::generate(Common::Method* method)
+{
+	mMethod = method;
+
+	// create new stack frame
+	mStackFrame = new StackFrame(0, mMethod, ParameterList());
+	// push scope
+	mStackFrame->pushScope(mMethod, false, false);
+	// push tokens (although maybe none are present)
+	mStackFrame->pushTokens(mMethod->getTokens());
+
+	Statements* statements = generate(mMethod->getTokens());
+
+	delete mStackFrame;
+	mStackFrame = 0;
+	mMethod = 0;
+
+	return statements;
+}
+
 /*
  * executes the given tokens in a separate scope
  */
@@ -70,33 +93,16 @@ Statements* TreeGenerator::generate(const TokenList &tokens)
 {
 	Statements* statements = 0;
 
-	pushTokens(tokens);
-		TokenIterator start = getTokens().begin();
-		TokenIterator end = getTokens().end();
+	pushScope(0, false);
+		pushTokens(tokens);
+			TokenIterator start = getTokens().begin();
+			TokenIterator end = getTokens().end();
 
-		statements = process(start, end);
-	popTokens();
+			statements = process(start, end);
+		popTokens();
+	popScope();
 
 	return statements;
-}
-
-MethodScope* TreeGenerator::getEnclosingMethodScope(IScope* scope) const
-{
-	if ( !scope ) {
-		scope = getScope();
-	}
-
-	while ( scope ) {
-		IScope* parent = scope->getEnclosingScope();
-
-		if ( parent && parent->getScopeType() == IScope::IType::MethodScope ) {
-			return dynamic_cast<MethodScope*>(parent);
-		}
-
-		scope = parent;
-	}
-
-	return 0;
 }
 
 Common::Namespace* TreeGenerator::getEnclosingNamespace(IScope* scope) const
@@ -120,12 +126,12 @@ Common::Namespace* TreeGenerator::getEnclosingNamespace(IScope* scope) const
 
 IScope* TreeGenerator::getScope() const
 {
-	return mStack->current()->getScope();
+	return mStackFrame->getScope();
 }
 
 const TokenList& TreeGenerator::getTokens() const
 {
-	return mStack->current()->getTokens();
+	return mStackFrame->getTokens();
 }
 
 inline Symbol* TreeGenerator::identify(TokenIterator& token) const
@@ -408,9 +414,14 @@ Node* TreeGenerator::parseTerm(TokenIterator& start)
 	return term;
 }
 
+void TreeGenerator::popScope()
+{
+	mStackFrame->popScope();
+}
+
 void TreeGenerator::popTokens()
 {
-	mStack->current()->popTokens();
+	mStackFrame->popTokens();
 }
 
 /*
@@ -623,7 +634,7 @@ Node* TreeGenerator::process_identifier(TokenIterator& token, bool allowTypeCast
 
 	// type cast
 	if ( allowTypeCast && op->type() == Token::Type::IDENTIFER ) {
-		node = new TypecastExpression(*old, expression(++old));
+		node = new TypecastExpression(old->content(), expression(++old));
 
 		token = old;
 	}
@@ -846,6 +857,10 @@ Statement* TreeGenerator::process_return(TokenIterator& token)
 		exp = expression(token);
 	}
 
+	if ( !exp && mMethod->QualifiedTypename() != Designtime::VoidObject::TYPENAME ) {
+		throw Common::Exceptions::Exception("return without value in non-void method", token->position());
+	}
+
 	expect(Token::Type::SEMICOLON, token);
 	++token;
 
@@ -1003,10 +1018,9 @@ Statement* TreeGenerator::process_switch(TokenIterator& token)
 Statement* TreeGenerator::process_throw(TokenIterator& token)
 {
 	// check if our parent scope is a method that is allowed to throw exceptions
-	Common::Method* method = dynamic_cast<Common::Method*>(getEnclosingMethodScope());
-	if ( method && !method->throws() ) {
+	if ( mMethod && !mMethod->throws() ) {
 		// this method is not marked as 'throwing', so we can't throw exceptions here
-		OSwarn(std::string(method->getFullScopeName() + " throws although it is not marked with 'throws' in " + token->position().toString()).c_str());
+		throw Common::Exceptions::Exception(mMethod->getFullScopeName() + " throws although it is not marked with 'throws'", token->position());
 	}
 
 	Node* exp = 0;
@@ -1261,9 +1275,20 @@ Statement* TreeGenerator::process_while(TokenIterator& token)
 	return new WhileStatement(exp, process_statement(token));
 }
 
+void TreeGenerator::pushScope(IScope* scope, bool allowBreakAndContinue)
+{
+	bool allowDelete = !scope;
+
+	if ( !scope ) {
+		scope = new SymbolScope(mStackFrame->getScope());
+	}
+
+	mStackFrame->pushScope(scope, allowDelete, allowBreakAndContinue || mStackFrame->allowBreakAndContinue());
+}
+
 void TreeGenerator::pushTokens(const TokenList& tokens)
 {
-	mStack->current()->pushTokens(tokens);
+	mStackFrame->pushTokens(tokens);
 }
 
 SymbolExpression* TreeGenerator::resolve(TokenIterator& token) const
@@ -1279,11 +1304,17 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token) const
 
 std::string TreeGenerator::resolveType(Node* left, const Token& operation, Node* right) const
 {
-	return Controller::Instance().typeSystem()->getType(
-		static_cast<Expression*>(left)->getResultType(),
-		operation.type(),
-		static_cast<Expression*>(right)->getResultType()
-	);
+	Expression* l = dynamic_cast<Expression*>(left);
+	if ( !l ) {
+		throw Common::Exceptions::Exception("invalid expression");
+	}
+
+	Expression* r = dynamic_cast<Expression*>(right);
+	if ( !r ) {
+		throw Common::Exceptions::Exception("invalid expression");
+	}
+
+	return mTypeSystem->getType(l->getResultType(), operation.type(), r->getResultType());
 }
 
 

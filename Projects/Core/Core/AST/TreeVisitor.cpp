@@ -70,7 +70,7 @@ std::string PrintVisitor::printExpression(Node* node) const
 				}
 			} break;
 			case Expression::ExpressionType::TypecastExpression: {
-				result += static_cast<TypecastExpression*>(expression)->mDestinationType.content() + " ";
+				result += static_cast<TypecastExpression*>(expression)->mDestinationType + " ";
 				result += printExpression(static_cast<TypecastExpression*>(expression)->mExpression);
 			} break;
 			case Expression::ExpressionType::TypeidExpression: {

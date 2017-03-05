@@ -29,7 +29,8 @@ namespace Runtime {
 	class Object;
 }
 class Repository;
-class Stack;
+class StackFrame;
+class TypeSystem;
 
 namespace AST {
 
@@ -44,9 +45,11 @@ public:
 	~TreeGenerator();
 
 public:
-	Statements* generate(const TokenList &tokens);
+	Statements* generate(Common::Method* method);
 
 private: // Execution
+	Statements* generate(const TokenList &tokens);
+
 	inline Symbol* identify(TokenIterator& token) const;
 	inline Symbol* identifyMethod(TokenIterator& token, const ParameterList& params) const;
 
@@ -94,6 +97,8 @@ private: // Execution
 	// Scope stack
 	// {
 	IScope* getScope() const;
+	void popScope();
+	void pushScope(IScope* scope = 0, bool allowBreakAndContinue = false);
 	// }
 
 	// Token stack
@@ -103,14 +108,17 @@ private: // Execution
 	void pushTokens(const TokenList& tokens);
 	// }
 
-	MethodScope* getEnclosingMethodScope(IScope *scope = 0) const;
 	Common::Namespace* getEnclosingNamespace(IScope* scope = 0) const;
 
 	std::string resolveType(Node* left, const Token& operation, Node* right) const;
 
+private:
+	Common::Method* mMethod;
+
 private:	// Virtual machine stuff
 	Repository* mRepository;
-	Stack* mStack;
+	StackFrame* mStackFrame;
+	TypeSystem* mTypeSystem;
 };
 
 
