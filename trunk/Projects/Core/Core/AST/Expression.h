@@ -289,17 +289,19 @@ public:
 class TypecastExpression : public Expression
 {
 public:
-	explicit TypecastExpression(const Token& destinationType, Node* exp)
+	explicit TypecastExpression(const std::string& destinationType, Node* exp)
 	: Expression(ExpressionType::TypecastExpression),
 	  mDestinationType(destinationType),
 	  mExpression(exp)
-	{ }
+	{
+		mResultType = mDestinationType;
+	}
 	~TypecastExpression() {
 		delete mExpression;
 	}
 
 public:
-	Token mDestinationType;
+	std::string mDestinationType;
 	Node* mExpression;
 };
 
@@ -310,7 +312,10 @@ public:
 	explicit TypeidExpression(Node* expression)
 	: Expression(ExpressionType::TypeidExpression),
 	  mExpression(expression)
-	{ }
+	{
+		// TODO: use StringObject::TYPENAME
+		mResultType = "string";
+	}
 	~TypeidExpression() {
 		delete mExpression;
 	}
