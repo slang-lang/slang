@@ -44,7 +44,7 @@ public object Iterator {
 		mCurrentIndex = -1;
 	}
 
-	public void operator++() modify {
+	public void operator++() modify throws {
 		if ( !hasNext() ) {
 			throw new OutOfBoundsException("index out of bounds");
 		}
@@ -97,7 +97,7 @@ public object ReverseIterator {
 		mCurrentIndex = mCollection.size();
 	}
 
-	public void operator++() modify {
+	public void operator++() modify throws {
 		if ( !hasNext() ) {
 			throw new OutOfBoundsException("index out of bounds");
 		}

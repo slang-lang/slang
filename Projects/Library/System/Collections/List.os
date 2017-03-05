@@ -12,7 +12,7 @@ public object List extends AbstractCollection {
         base.Constructor();
     }
 
-    public void pop_back() modify {
+    public void pop_back() modify throws {
         if ( mSize <= 0 ) {
             throw new OutOfBoundsException("cannot pop beyond ground level");
         }
@@ -32,7 +32,7 @@ public object List extends AbstractCollection {
         mSize--;
     }
 
-    public void pop_front() modify {
+    public void pop_front() modify throws {
         if ( mSize <= 0 ) {
             throw new OutOfBoundsException("pop beyond begin of list");
         }
