@@ -7,15 +7,13 @@ private namespace Space {
 }
 
 public void Main(int argc = 0, string args = "") {
-
-	print("Main()");
+	print("Main(" + argc + ", " + args + ")");
 
 	methodCall();
 
 	Space.NamespacedMethod();
 
 	print("end.");
-
 }
 
 private void methodCall() {

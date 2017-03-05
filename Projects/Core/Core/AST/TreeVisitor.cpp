@@ -62,11 +62,11 @@ std::string PrintVisitor::printExpression(Node* node) const
 				result += ")";
 			} break;
 			case Expression::ExpressionType::SymbolExpression: {
-				if ( static_cast<SymbolExpression*>(expression)->mScope ) {
-					result += printExpression(static_cast<SymbolExpression*>(expression)->mScope);
+				if ( static_cast<SymbolExpression*>(expression)->mSymbolExpression ) {
+					result += printExpression(static_cast<SymbolExpression*>(expression)->mSymbolExpression);
 				}
 				else {
-					result += static_cast<SymbolExpression*>(expression)->mName.content();
+					result += static_cast<SymbolExpression*>(expression)->mName;
 				}
 			} break;
 			case Expression::ExpressionType::TypecastExpression: {
@@ -140,7 +140,7 @@ void PrintVisitor::visitAssert(AssertStatement* node)
 
 void PrintVisitor::visitAssignment(Assignment* node)
 {
-	std::cout << printIndentation(mIndentation) << node->mLValue->mName.content() << " " << node->mAssignment.content() << " " << printExpression(node->mExpression) << ";" << std::endl;
+	std::cout << printIndentation(mIndentation) << node->mLValue->mName << " " << node->mAssignment.content() << " " << printExpression(node->mExpression) << ";" << std::endl;
 }
 
 void PrintVisitor::visitBreak(BreakStatement* /*node*/)

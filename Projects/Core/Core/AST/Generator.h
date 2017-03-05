@@ -12,11 +12,14 @@
 // Namespace declarations
 
 
+#include <Core/Common/Namespace.h>
+
 namespace ObjectiveScript {
 
 // Forward declarations
 namespace Common {
 	class Method;
+	class Namespace;
 }
 namespace Designtime {
 	class BluePrintObject;
@@ -38,6 +41,7 @@ public:
 private:
 	void processBluePrint(Designtime::BluePrintObject* object);
 	void processMethod(Common::Method* method);
+	void processNamespace(Common::Namespace* space);
 };
 
 

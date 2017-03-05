@@ -41,12 +41,14 @@ private:	// Tests
 	void testForeach();
 	void testGenerator();
 	void testIf();
+	void testNamespace();
 	void testNew();
 	void testReturn();
 	void testSwitch();
 	void testThrow();
 	void testTry();
 	void testTypeDeclaration();
+	void testTypeSystem();
 	void testUnaryExpression();
 	void testWhile();
 };
