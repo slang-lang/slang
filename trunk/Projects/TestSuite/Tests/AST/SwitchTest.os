@@ -4,9 +4,9 @@ public void Main(int argc = 1, string args = "") {
 	int value = 3;
 
 	switch ( value ) {
-		case 0: { print("case 0"); break; }
+		case 0: { print("case 0"); assert( false ); break; }
 		case 3: { print("case 3"); break; }
-		default: { print("default"); break; }
+		default: { print("default"); assert( false ); break; }
 	}
 
 	print("after switch (1)");
@@ -19,5 +19,12 @@ public void Main(int argc = 1, string args = "") {
 	}
 
 	print("after switch (2)");
+
+	switch ( 0 ) {
+		case 1: { print("case 1"); assert( false ); }
+		default: { print("default"); }
+	}
+
+	print("after switch (3)");
 }
 
