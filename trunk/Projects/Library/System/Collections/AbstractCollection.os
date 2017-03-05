@@ -87,7 +87,7 @@ public abstract object AbstractCollection implements IIterateable {
 		return mSize == 0;
 	}
 
-	public Object first() const {
+	public Object first() const throws {
 		if ( !mSize ) {
 			throw new OutOfBoundsException("empty collection");
 		}
@@ -103,7 +103,7 @@ public abstract object AbstractCollection implements IIterateable {
 		return new ReverseIterator(AbstractCollection this);
 	}
 
-	public Object last() const {
+	public Object last() const throws {
 		if ( !mSize ) {
 			throw new OutOfBoundsException("empty collection");
 		}
