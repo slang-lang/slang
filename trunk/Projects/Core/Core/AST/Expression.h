@@ -76,14 +76,13 @@ public:
 	};
 
 public:
-	explicit BinaryExpression(const Token& token, Node* left, Node* right, const std::string& resultType)
+	explicit BinaryExpression(Node* left, const Token& operation, Node* right, const std::string& resultType)
 	: Expression(ExpressionType::BinaryExpression),
 	  mLeft(left),
+	  mOperation(operation),
 	  mRight(right),
-	  mToken(token),
 	  mBinaryExpressionType(BinaryExpressionType::GenericBinaryExpression)
 	{
-		// TODO: define result type
 		mResultType = resultType;
 	}
 	virtual ~BinaryExpression() {
@@ -97,8 +96,8 @@ public:
 
 public:
 	Node* mLeft;
+	Token mOperation;
 	Node* mRight;
-	Token mToken;
 
 protected:
 	BinaryExpressionType::E mBinaryExpressionType;
@@ -107,8 +106,8 @@ protected:
 class BooleanBinaryExpression : public BinaryExpression
 {
 public:
-	explicit BooleanBinaryExpression(const Token& token, Node* left, Node* right)
-	: BinaryExpression(token, left, right, "bool")
+	explicit BooleanBinaryExpression(Node* left, const Token& operation, Node* right)
+	: BinaryExpression(left, operation, right, "bool")
 	{
 		mBinaryExpressionType = BinaryExpressionType::BooleanBinaryExpression;
 	}
@@ -119,10 +118,10 @@ public:
 class UnaryExpression : public Expression
 {
 public:
-	explicit UnaryExpression(const Token& token, Node* exp)
+	explicit UnaryExpression(const Token& operation, Node* exp)
 	: Expression(ExpressionType::UnaryExpression),
 	  mExpression(exp),
-	  mToken(token)
+	  mOperation(operation)
 	{
 		mResultType = static_cast<Expression*>(exp)->getResultType();
 	}
@@ -132,7 +131,7 @@ public:
 
 public:
 	Node* mExpression;
-	Token mToken;
+	Token mOperation;
 };
 
 

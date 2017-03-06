@@ -92,7 +92,7 @@ public:
 public:
 	void define(const std::string& left, Token::Type::E operation, const std::string& right, const std::string& result);
 
-	std::string getType(const std::string& left, Token::Type::E operation, const std::string& right);
+	std::string getType(const std::string& left, const Token& operation, const std::string& right);
 
 private:
 	void initBool();

@@ -96,7 +96,7 @@ void TreeInterpreter::evaluateBinaryExpression(BinaryExpression* exp, Runtime::O
 		return;
 	}
 
-	switch ( exp->mToken.type() ) {
+	switch ( exp->mOperation.type() ) {
 		// bit expressions
 		// {
 		case Token::Type::BITAND: Runtime::operator_binary_bitand(&left, &right); break;
@@ -115,7 +115,7 @@ void TreeInterpreter::evaluateBinaryExpression(BinaryExpression* exp, Runtime::O
 
 		// default handling
 		// {
-		default: throw Common::Exceptions::NotSupported("binary expression with " + exp->mToken.content() + " not supported");
+		default: throw Common::Exceptions::NotSupported("binary expression with " + exp->mOperation.content() + " not supported");
 		// }
 	}
 
@@ -133,11 +133,11 @@ void TreeInterpreter::evaluateBooleanBinaryExpression(BinaryExpression* exp, Run
 		evaluate(exp->mLeft, &left);
 
 		// incomplete boolean evaluation
-		if ( exp->mToken.type() == Token::Type::AND && !isTrue(left) ) {
+		if ( exp->mOperation.type() == Token::Type::AND && !isTrue(left) ) {
 			*result = Runtime::BoolObject(false);
 			return;
 		}
-		else if ( exp->mToken.type() == Token::Type::OR && isTrue(left) ) {
+		else if ( exp->mOperation.type() == Token::Type::OR && isTrue(left) ) {
 			*result = Runtime::BoolObject(true);
 			return;
 		}
@@ -150,7 +150,7 @@ void TreeInterpreter::evaluateBooleanBinaryExpression(BinaryExpression* exp, Run
 		return;
 	}
 
-	switch ( exp->mToken.type() ) {
+	switch ( exp->mOperation.type() ) {
 		// boolean expressions
 		// {
 		case Token::Type::AND: *result = Runtime::BoolObject(isTrue(left) && isTrue(right)); break;
@@ -171,7 +171,7 @@ void TreeInterpreter::evaluateBooleanBinaryExpression(BinaryExpression* exp, Run
 
 		// default handling
 		// {
-		default: throw Common::Exceptions::NotSupported("binary expression with " + exp->mToken.content() + " not supported (by now)");
+		default: throw Common::Exceptions::NotSupported("binary expression with " + exp->mOperation.content() + " not supported (by now)");
 		// }
 	}
 }
@@ -376,7 +376,7 @@ void TreeInterpreter::evaluateUnaryExpression(UnaryExpression* exp, Runtime::Obj
 		return;
 	}
 
-	switch ( exp->mToken.type() ) {
+	switch ( exp->mOperation.type() ) {
 		// boolean expressions
 		// {
 		case Token::Type::OPERATOR_NOT: Runtime::operator_unary_not(result); break;
@@ -392,7 +392,7 @@ void TreeInterpreter::evaluateUnaryExpression(UnaryExpression* exp, Runtime::Obj
 
 		// default handling
 		// {
-		default: throw Common::Exceptions::NotSupported("expression with " + exp->mToken.content() + " not supported (by now)");
+		default: throw Common::Exceptions::NotSupported("expression with " + exp->mOperation.content() + " not supported (by now)");
 		// }
 	}
 }
@@ -583,7 +583,7 @@ std::string TreeInterpreter::printExpression(Node* node) const
 				BinaryExpression* bin = static_cast<BinaryExpression*>(node);
 
 				result += "(" + printExpression(bin->mLeft);
-				result += " " + bin->mToken.content() + " ";
+				result += " " + bin->mOperation.content() + " ";
 				result += printExpression(bin->mRight) + ")";
 			} break;
 			case Expression::ExpressionType::CopyExpression: {
@@ -621,7 +621,7 @@ std::string TreeInterpreter::printExpression(Node* node) const
 			case Expression::ExpressionType::UnaryExpression: {
 				UnaryExpression* bin = static_cast<UnaryExpression*>(expression);
 
-				result += bin->mToken.content();
+				result += bin->mOperation.content();
 				result += printExpression(bin->mExpression);
 			} break;
 		}
@@ -790,7 +790,16 @@ void TreeInterpreter::visitAssignment(Assignment* node)
 		throw Runtime::Exceptions::RuntimeException("invalid lvalue symbol type");
 	}
 
-	evaluate(node->mExpression, static_cast<Runtime::Object*>(lvalue));
+	Runtime::Object tmp;
+	try {
+		evaluate(node->mExpression, &tmp);
+
+		Runtime::operator_binary_assign(static_cast<Runtime::Object*>(lvalue), &tmp);
+	}
+	catch ( Runtime::ControlFlow::E &e ) {
+		mControlFlow = e;
+		return;
+	}
 }
 
 void TreeInterpreter::visitBreak(BreakStatement* /*node*/)

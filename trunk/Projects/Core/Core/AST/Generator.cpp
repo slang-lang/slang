@@ -86,7 +86,7 @@ void Generator::processMethod(Common::Method* method)
 	TreeGenerator tg;
 
 	method->setRootNode(
-		tg.generate(method)
+			tg.generateAST(method)
 	);
 }
 
