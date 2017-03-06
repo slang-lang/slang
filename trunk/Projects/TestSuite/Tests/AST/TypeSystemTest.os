@@ -5,6 +5,14 @@ public void Main(int argc = 0, string args = "") {
 	assert( TestCase2() );
 	assert( TestCase3() );
 	assert( TestCase4() );
+	//assert( TestCase5() );	// this should not work
+
+	assert( TestCase11() );
+	assert( TestCase12() );
+	assert( TestCase13() );
+	assert( TestCase14() );
+	assert( TestCase15() );
+	//assert( TestCase16() );	// this should not work
 }
 
 private bool TestCase1() {
@@ -54,4 +62,155 @@ private bool TestCase4() {
 
 	return result == 3.1f;
 }
+
+/*
+private bool TestCase5() {
+	print("TestCase 5: int = bool + bool");
+
+	bool b1 = true;
+	bool b2 = true;
+
+	int result = b1 + b2;
+	assert( !"this should not be possible" );
+}
+*/
+
+private bool TestCase11() {
+	print("TestCase 11: bool = ?");
+
+	bool value;
+
+	value = true;
+	print("value = " + value);
+
+	value = 1.71d;
+	print("value = " + value);
+
+	value = 1.389f;
+	print("value = " + value);
+
+	value = 664;
+	print("value = " + value);
+
+	value = "bla";
+	print("value = " + value);
+
+	return true;
+}
+
+private bool TestCase12() {
+	print("TestCase 12: double = ?");
+
+	double value;
+
+	value = true;
+	print("value = " + value);
+
+	value = 1.73d;
+	print("value = " + value);
+
+	value = 1.389f;
+	print("value = " + value);
+
+	value = 664;
+	print("value = " + value);
+
+	return true;
+}
+
+private bool TestCase13() {
+	print("TestCase 13: float = ?");
+
+	float value;
+
+	value = true;
+	print("value = " + value);
+
+	value = 1.73d;
+	print("value = " + value);
+
+	value = 1.389f;
+	print("value = " + value);
+
+	value = 664;
+	print("value = " + value);
+
+	// this is not supported
+	//value = "bla";
+	//print("value = " + value);
+
+	return true;
+}
+
+private bool TestCase14() {
+	print("TestCase 14: int = ?");
+
+	int value;
+
+	value = true;
+	print("value = " + value);
+
+	value = 1.73d;
+	print("value = " + value);
+
+	value = 1.389f;
+	print("value = " + value);
+
+	value = 664;
+	print("value = " + value);
+
+	// this is not supported
+	//value = "bla";
+	//print("value = " + value);
+
+	return true;
+}
+
+private bool TestCase15() {
+	print("TestCase 15: string = ?");
+
+	string value;
+
+	value = true;
+	print("value = " + value);
+
+	value = 1.73d;
+	print("value = " + value);
+
+	value = 1.389f;
+	print("value = " + value);
+
+	value = 664;
+	print("value = " + value);
+
+	value = "bla";
+	print("value = " + value);
+
+	return true;
+}
+
+/*
+private bool TestCase16() {
+	print("TestCase 16: void = ?");
+
+	void value;
+
+	value = true;
+	print("value = " + value);
+
+	value = 1.73d;
+	print("value = " + value);
+
+	value = 1.389f;
+	print("value = " + value);
+
+	value = 664;
+	print("value = " + value);
+
+	value = "bla";
+	print("value = " + value);
+
+	return false;
+}
+*/
 

@@ -6,6 +6,12 @@ private namespace Space {
 	public void SpacedMethod() {
 		print("Space.SpacedMethod()");
 	}
+
+	public int SpacedMethod(int value) {
+		print("Space.SpacedMethod(" + value + ")");
+
+		mValue = value;
+	}
 }
 
 public void Main(int argc = 0, string args = "") {
@@ -17,5 +23,9 @@ public void Main(int argc = 0, string args = "") {
 	print("Space.mValue = " + Space.mValue);
 
 	Space.SpacedMethod();
+
+	print("bla");
+
+	//Space.SpacedMethod(17);	// this currently doesn't work
 }
 
