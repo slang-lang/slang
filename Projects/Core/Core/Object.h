@@ -73,6 +73,9 @@ public:	// Setup
 	void setConstructed(bool state);
 	void setParent(IScope *scope);
 
+	Designtime::BluePrintObject* getBluePrint() const;
+	void setBluePrint(Designtime::BluePrintObject* blueprint);
+
 public:	// Reference
 	const Reference& getReference() const { return mReference; }
 	void setReference(const Reference& reference) { mReference = reference; }
@@ -137,6 +140,7 @@ protected:
 
 protected:
 	Object* mBase;
+	Designtime::BluePrintObject* mBluePrint;
 	std::string mFilename;
 	Inheritance mInheritance;
 	bool mIsAtomicType;

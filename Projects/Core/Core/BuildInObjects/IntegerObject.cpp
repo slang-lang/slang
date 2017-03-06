@@ -95,6 +95,48 @@ bool IntegerObject::operator_bool() const
 	return mValue.toInt() != 0;
 }
 
+void IntegerObject::operator_bitand(const IntegerObject *other)
+{
+	mValue = mValue.toInt() & other->getValue().toInt();
+}
+
+void IntegerObject::operator_bitand(const Object *other)
+{
+	std::string target = other->QualifiedTypename();
+
+	if ( target == BoolObject::TYPENAME ||
+		 target == DoubleObject::TYPENAME ||
+		 target == FloatObject::TYPENAME ||
+		 target == IntegerObject::TYPENAME ||
+		 target == StringObject::TYPENAME ) {
+		mValue = mValue.toInt() & other->getValue().toInt();
+	}
+	else {
+		Object::operator_bitand(other);
+	}
+}
+
+void IntegerObject::operator_bitor(const IntegerObject *other)
+{
+	mValue = mValue.toInt() | other->getValue().toInt();
+}
+
+void IntegerObject::operator_bitor(const Object *other)
+{
+	std::string target = other->QualifiedTypename();
+
+	if ( target == BoolObject::TYPENAME ||
+		 target == DoubleObject::TYPENAME ||
+		 target == FloatObject::TYPENAME ||
+		 target == IntegerObject::TYPENAME ||
+		 target == StringObject::TYPENAME ) {
+		mValue = mValue.toInt() | other->getValue().toInt();
+	}
+	else {
+		Object::operator_bitor(other);
+	}
+}
+
 void IntegerObject::operator_divide(const IntegerObject *other)
 {
 	mValue = mValue.toInt() / other->getValue().toInt();

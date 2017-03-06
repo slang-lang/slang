@@ -38,8 +38,7 @@ namespace AST {
 
 TreeInterpreter::TreeInterpreter()
 : mControlFlow(Runtime::ControlFlow::Normal),
-  mOwner(0),
-  mReturnValue(0)
+  mOwner(0)
 {
 	// initialize virtual machine stuff
 	mDebugger = &Core::Debugger::Instance();
@@ -456,8 +455,6 @@ Runtime::ControlFlow::E TreeInterpreter::execute(Common::Method* method, const P
 		}
 	}
 
-	mReturnValue = result;
-
 	// record stack
 	mStack->push(&scope, executedParams);
 
@@ -471,6 +468,10 @@ Runtime::ControlFlow::E TreeInterpreter::execute(Common::Method* method, const P
 	mDebugger->notifyExit(&scope, Core::Debugger::immediateBreakToken);
 
 	mOwner = previousOwner;
+
+	if ( result ) {
+		*result = mStack->current()->returnValue();
+	}
 
 	// unwind stack
 	mStack->pop();
@@ -980,7 +981,6 @@ void TreeInterpreter::visitOperator(Operator* /*op*/)
 void TreeInterpreter::visitPrint(PrintStatement* node)
 {
 	Runtime::Object text;
-
 	try {
 		evaluate(node->mExpression, &text);
 	}
@@ -994,14 +994,18 @@ void TreeInterpreter::visitPrint(PrintStatement* node)
 
 void TreeInterpreter::visitReturn(ReturnStatement* node)
 {
-	try {
-		if ( node->mExpression ) {	// only process not-empty return statements
-			evaluate(node->mExpression, mReturnValue);
+	if ( node->mExpression ) {	// only process not-empty return statements
+		Runtime::Object tmp;
+		try {
+			evaluate(node->mExpression, &tmp);
+
+			//Runtime::operator_binary_assign(mReturnValue, &tmp);
+			Runtime::operator_binary_assign(&mStack->current()->returnValue(), &tmp);
 		}
-	}
-	catch ( Runtime::ControlFlow::E &e ) {
-		mControlFlow = e;
-		return;
+		catch ( Runtime::ControlFlow::E &e ) {
+			mControlFlow = e;
+			return;
+		}
 	}
 
 	mControlFlow = Runtime::ControlFlow::Return;
@@ -1238,7 +1242,16 @@ Runtime::Object* TreeInterpreter::visitTypeDeclaration(TypeDeclaration* node)
 	object->setConst(node->mIsConst);
 
 	if ( node->mAssignment ) {
-		evaluate(node->mAssignment, object);
+		Runtime::Object tmp;
+		try {
+			evaluate(node->mAssignment, &tmp);
+
+			Runtime::operator_binary_assign(object, &tmp);
+		}
+		catch ( Runtime::ControlFlow::E &e ) {
+			mControlFlow = e;
+			return 0;
+		}
 	}
 
 	return object;

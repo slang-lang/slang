@@ -27,6 +27,14 @@ Token::Token(Type::E type, bool isOptional)
 {
 }
 
+Token::Token(Type::E type, const char* content)
+: mCategory(Category::None),
+  mContent(content),
+  mIsOptional(false),
+  mType(type)
+{
+}
+
 Token::Token(Type::E type, const std::string& content)
 : mCategory(Category::None),
   mContent(content),

@@ -44,6 +44,7 @@ Method::Method(const Method& other)
 	mMethodType = other.mMethodType;
 	mMutability = other.mMutability;
 	mReturnType = other.mReturnType;
+	mRootNode = other.mRootNode;
 	mScopeName = other.mScopeName;
 	mScopeType = other.mScopeType;
 	mSignature = other.mSignature;
@@ -127,6 +128,7 @@ Method& Method::operator= (const Method& other)
 		mMethodType = other.mMethodType;
 		mMutability = other.mMutability;
 		mReturnType = other.mReturnType;
+		mRootNode = other.mRootNode;
 		mScopeName = other.mScopeName;
 		mScopeType = other.mScopeType;
 		mSignature = other.mSignature;

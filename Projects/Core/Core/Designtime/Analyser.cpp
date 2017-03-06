@@ -190,8 +190,6 @@ bool Analyser::createBluePrint(TokenIterator& token, TokenIterator /*end*/)
 	blueprint->setQualifiedTypename(getQualifiedTypename(type));
 	blueprint->setVisibility(visibility);
 
-	mRepository->addBluePrint(blueprint);
-
 	if ( implementationType == ImplementationType::ForwardDeclaration ) {
 		return blueprint != 0;
 	}
@@ -207,6 +205,8 @@ bool Analyser::createBluePrint(TokenIterator& token, TokenIterator /*end*/)
 
 	mScope = tmpScope;
 	mProcessingInterface = false;
+
+	mRepository->addBluePrint(blueprint);
 
 	return blueprint != 0;
 }

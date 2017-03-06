@@ -8,6 +8,7 @@
 
 // Project includes
 #include <Core/Designtime/Parser/Token.h>
+#include <Core/Object.h>
 #include <Core/Parameter.h>
 
 // Forward declarations
@@ -42,6 +43,8 @@ public:
 public:
 	bool allowBreakAndContinue() const;
 
+	Runtime::Object& returnValue();
+
 	IScope* getScope() const;
 	void popScope();
 	void pushScope(IScope* scope, bool allowDelete, bool allowBreakAndContinue);
@@ -58,6 +61,7 @@ private:
 private:
 	unsigned long mLevel;
 	ParameterList mParameters;
+	Runtime::Object mReturnValue;
 	IScope* mScope;
 	Scopes mScopeStack;
 	TokenStack mTokenStack;

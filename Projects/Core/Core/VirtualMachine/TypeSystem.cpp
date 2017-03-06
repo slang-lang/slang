@@ -41,11 +41,26 @@ void TypeSystem::define(const std::string& left, Token::Type::E operation, const
 	}
 
 	if ( mTypeMap[left][operation].contains(right) ) {
-		throw Common::Exceptions::Exception("duplicate type system target");
+		throw Common::Exceptions::Exception("duplicate type system target: " + left + " with " + right);
 	}
 
 	mTypeMap[left][operation].insert(right);
 	mTypeMap[left][operation][right] = result;
+}
+
+bool TypeSystem::exists(const std::string& left, const Token& operation, const std::string& right)
+{
+	if ( !mTypeMap.contains(left) ) {
+		return false;
+	}
+	if ( !mTypeMap[left].contains(operation.type()) ) {
+		return false;
+	}
+	if ( !mTypeMap[left][operation.type()].contains(right) ) {
+		return false;
+	}
+
+	return mTypeMap[left][operation.type()][right] != "";
 }
 
 void TypeSystem::deinit()
@@ -215,7 +230,7 @@ void TypeSystem::initInt()
 void TypeSystem::initObject()
 {
 	// assign
-	define(GenericObject::TYPENAME, Token::Type::ASSIGN, GenericObject::TYPENAME, GenericObject::TYPENAME);
+	//define(GenericObject::TYPENAME, Token::Type::ASSIGN, GenericObject::TYPENAME, GenericObject::TYPENAME);
 
 	// arithmetic
 
