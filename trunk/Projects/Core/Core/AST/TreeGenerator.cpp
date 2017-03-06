@@ -694,7 +694,6 @@ Node* TreeGenerator::process_identifier(TokenIterator& token, bool allowTypeCast
 	Node* node = 0;
 
 	TokenIterator old = token;
-	//SymbolExpression* symbol = parseSymbol(token);
 	SymbolExpression* symbol = resolve(token, getScope());
 	TokenIterator op = token;
 
@@ -877,6 +876,7 @@ MethodExpression* TreeGenerator::process_method(SymbolExpression* symbol, TokenI
  */
 Expression* TreeGenerator::process_new(TokenIterator& token)
 {
+/*
 	Symbol* symbol = identify(token);
 	if ( !symbol ) {
 		throw Common::Exceptions::UnknownIdentifer("symbol '" + token->content() + "' not found");
@@ -887,6 +887,24 @@ Expression* TreeGenerator::process_new(TokenIterator& token)
 	}
 
 	return new NewExpression(symbol, process_method(0, token));
+*/
+
+	TokenIterator start = token;
+
+	Symbol* symbol = identify(start);
+	if ( !symbol ) {
+		throw Common::Exceptions::UnknownIdentifer("symbol '" + start->content() + "' not found");
+	}
+	if ( symbol->getSymbolType() != Symbol::IType::BluePrintEnumSymbol &&
+		 symbol->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
+		throw Designtime::Exceptions::DesigntimeException("invalid symbol type found");
+	}
+
+
+	SymbolExpression* exp = resolve(token, getScope());
+	exp->mSymbolExpression = new SymbolExpression("Constructor", static_cast<Designtime::BluePrintObject*>(symbol)->QualifiedTypename(), 0);
+
+	return new NewExpression(symbol, process_method(exp, token));
 }
 
 /*
@@ -1215,7 +1233,6 @@ Statement* TreeGenerator::process_try(TokenIterator& token)
 			finallyBegin++;
 		}
 
-		// TODO: should we execute the finally-block in any case (i.e. even though a return has been issued by the user)?
 		finallyBlock = generate(finallyTokens);
 	}
 
@@ -1341,18 +1358,30 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base) con
 			scope = static_cast<Designtime::BluePrintEnum*>(result);
 			type = static_cast<Designtime::BluePrintEnum*>(result)->QualifiedTypename();
 			break;
-		case Symbol::IType::BluePrintObjectSymbol:
+		case Symbol::IType::BluePrintObjectSymbol: {
 			scope = static_cast<Designtime::BluePrintObject*>(result);
 			type = static_cast<Designtime::BluePrintObject*>(result)->QualifiedTypename();
-			break;
+
+			if ( !static_cast<Designtime::BluePrintObject*>(result)->isMember() ) {
+				name = type;
+			}
+		} break;
 		case Symbol::IType::NamespaceSymbol:
 			scope = static_cast<Common::Namespace*>(result);
 			type = static_cast<Common::Namespace*>(result)->QualifiedTypename();
 			break;
-		case Symbol::IType::ObjectSymbol:
-			scope = static_cast<Runtime::Object*>(result);
+		case Symbol::IType::ObjectSymbol: {
 			type = static_cast<Runtime::Object*>(result)->QualifiedTypename();
-			break;
+
+			if ( static_cast<Runtime::Object*>(result)->isAtomicType() ) {
+				// we are just using an atomic type
+				scope = 0;
+			}
+			else {
+				// we are accessing a complex type (= an object)
+				scope = static_cast<Runtime::Object*>(result)->getBluePrint();
+			}
+		} break;
 		case Symbol::IType::MethodSymbol:
 			scope = 0;
 			type = static_cast<Common::Method*>(result)->QualifiedTypename();

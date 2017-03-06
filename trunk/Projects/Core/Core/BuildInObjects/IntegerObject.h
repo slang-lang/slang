@@ -37,6 +37,12 @@ public:	// Operators
 
 	bool operator_bool() const;
 
+	void operator_bitand(const IntegerObject *other);
+	void operator_bitand(const Object *other);
+
+	void operator_bitor(const IntegerObject *other);
+	void operator_bitor(const Object *other);
+
 	void operator_divide(const IntegerObject *other);
 	void operator_divide(const Object *other);
 

@@ -118,6 +118,7 @@ public:
 public:
 	Token();
 	Token(Type::E type, bool isOptional = false);
+	Token(Type::E type, const char* content);
 	Token(Type::E type, const std::string& content);
 	Token(Category::E category, Type::E type, const std::string& content, const Common::Position& pos);
 

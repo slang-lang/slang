@@ -63,18 +63,6 @@ public:
 	Runtime::Object* createReference(Designtime::BluePrintGeneric* blueprint, const std::string& name, PrototypeConstraints constraints, InitilizationType::E initialize = InitilizationType::None);
 
 private:
-	Designtime::BluePrintObject* createBluePrintFromPrototype(Designtime::BluePrintObject* blueprint, PrototypeConstraints constraints);
-
-	Runtime::Object* createObject(const std::string& name, Designtime::BluePrintObject* blueprint, InitilizationType::E initialize);
-	Runtime::Object* createUserObject(const std::string& name, Designtime::BluePrintObject* blueprint, InitilizationType::E initialize);
-
-	Designtime::BluePrintGeneric* findBluePrint(const std::string& type) const;
-	Designtime::BluePrintEnum* findBluePrintEnum(const std::string& type) const;
-	Designtime::BluePrintObject* findBluePrintObject(const std::string& type) const;
-
-	void initializeObject(Runtime::Object* object, Designtime::BluePrintObject* blueprint);
-
-private:
 	typedef std::map<std::string, Designtime::BluePrintEnum*> BluePrintEnumMap;
 	typedef std::map<std::string, Designtime::BluePrintObject*> BluePrintObjectMap;
 	typedef std::set<Designtime::BluePrintGeneric*> ForwardDeclarationTomb;
@@ -82,6 +70,20 @@ private:
 	//typedef std::unordered_map<std::string, Designtime::BluePrintEnum*> BluePrintEnumMap;
 	//typedef std::unordered_map<std::string, Designtime::BluePrintObject*> BluePrintObjectMap;
 	//typedef std::unordered_set<Designtime::BluePrintGeneric*> ForwardDeclarationTomb;
+
+private:
+	Designtime::BluePrintObject* createBluePrintFromPrototype(Designtime::BluePrintObject* blueprint, PrototypeConstraints constraints);
+
+	Runtime::Object* createObject(const std::string& name, Designtime::BluePrintObject* blueprint, InitilizationType::E initialize);
+	Runtime::Object* createUserObject(const std::string& name, Designtime::BluePrintObject* blueprint, InitilizationType::E initialize);
+
+	void initTypeSystem(Designtime::BluePrintObject* blueprint);
+
+	Designtime::BluePrintGeneric* findBluePrint(const std::string& type) const;
+	Designtime::BluePrintEnum* findBluePrintEnum(const std::string& type) const;
+	Designtime::BluePrintObject* findBluePrintObject(const std::string& type) const;
+
+	void initializeObject(Runtime::Object* object, Designtime::BluePrintObject* blueprint);
 
 private:
 	BluePrintEnumMap mBluePrintEnums;

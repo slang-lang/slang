@@ -27,6 +27,7 @@ Object::Object()
 : MethodScope(ANONYMOUS_OBJECT, 0),
   ObjectSymbol(ANONYMOUS_OBJECT),
   mBase(0),
+  mBluePrint(0),
   mFilename(ANONYMOUS_OBJECT),
   mIsAtomicType(false),
   mIsConstructed(false),
@@ -42,6 +43,7 @@ Object::Object(const Object& other)
 : MethodScope(other.getName(), other.mParent),
   ObjectSymbol(other.getName()),
   mBase(0),
+  mBluePrint(other.mBluePrint),
   mFilename(other.mFilename),
   mInheritance(other.mInheritance),
   mIsAtomicType(other.mIsAtomicType),
@@ -99,6 +101,7 @@ Object::~Object()
 Object& Object::operator= (const Object& other)
 {
 	if ( this != &other ) {
+		mBluePrint = other.mBluePrint;
 		mFilename = other.mFilename;
 		mImplementationType = other.mImplementationType;
 		mInheritance = other.mInheritance;
@@ -128,6 +131,7 @@ Object& Object::operator= (const Object& other)
 void Object::assign(const Object& other, bool overrideType)
 {
 	if ( this != &other ) {
+		mBluePrint = other.mBluePrint;
 		mFilename = other.mFilename;
 		mImplementationType = other.mImplementationType;
 		mInheritance = other.mInheritance;
@@ -276,6 +280,7 @@ ControlFlow::E Object::Constructor(const ParameterList& params)
 void Object::copy(const Object& other)
 {
 	if ( this != &other ) {
+		mBluePrint = other.mBluePrint;
 		mFilename = other.mFilename;
 		mImplementationType = other.mImplementationType;
 		mInheritance = other.mInheritance;
@@ -475,6 +480,11 @@ void Object::garbageCollector()
 
 		mSymbols.erase(symIt->first);
 	}
+}
+
+Designtime::BluePrintObject* Object::getBluePrint() const
+{
+	return mBluePrint;
 }
 
 AtomicValue Object::getValue() const
@@ -1027,6 +1037,11 @@ ObjectiveScript::MethodSymbol* Object::resolveMethod(const std::string& name, co
 	}
 
 	return result;
+}
+
+void Object::setBluePrint(Designtime::BluePrintObject* blueprint)
+{
+	mBluePrint = blueprint;
 }
 
 void Object::setConstructed(bool state)

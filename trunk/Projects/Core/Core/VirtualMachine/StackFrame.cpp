@@ -79,6 +79,11 @@ void StackFrame::pushTokens(const TokenList& tokens)
 	);
 }
 
+Runtime::Object& StackFrame::returnValue()
+{
+	return mReturnValue;
+}
+
 std::string StackFrame::toString() const
 {
 	std::string result = "Frame " + Tools::ConvertToStdString(mLevel);

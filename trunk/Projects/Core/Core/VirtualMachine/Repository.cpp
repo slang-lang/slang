@@ -102,6 +102,10 @@ void Repository::addBluePrint(Designtime::BluePrintObject* blueprint)
 	}
 
 	mBluePrintObjects.insert(std::make_pair(blueprint->QualifiedTypename(), blueprint));
+
+	if ( !blueprint->isAtomicType() ) {
+		initTypeSystem(blueprint);
+	}
 }
 
 void Repository::cleanupForwardDeclarations()
@@ -380,6 +384,7 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 		parent = Controller::Instance().stack()->globalScope();
 	}
 
+	object->setBluePrint(blueprint);
 	object->setFinal(blueprint->isFinal());
 	object->setLanguageFeatureState(blueprint->getLanguageFeatureState());
 	object->setMember(blueprint->isMember());
@@ -664,6 +669,74 @@ void Repository::initializeObject(Runtime::Object* object, Designtime::BluePrint
 	}
 
 	object->define(IDENTIFIER_THIS, object);	// define this-symbol
+}
+
+/*
+ * initializes type system for given blueprint
+ */
+void Repository::initTypeSystem(Designtime::BluePrintObject* blueprint)
+{
+	TypeSystem* typeSystem = Controller::Instance().typeSystem();
+
+	MethodScope::MethodCollection methods = blueprint->provideMethods();
+	for ( MethodScope::MethodCollection::const_iterator it = methods.begin(); it != methods.end(); ++it ) {
+		std::string name = (*it)->getName();
+		ParameterList params = (*it)->provideSignature();
+
+		if ( name == "operator=" && params.size() == 1 ) {
+			typeSystem->define(blueprint->QualifiedTypename(), Token::Type::ASSIGN, params.front().type(), blueprint->QualifiedTypename());
+		}
+		else if ( name == "operator&" && params.size() == 1 ) {
+			typeSystem->define(blueprint->QualifiedTypename(), Token::Type::BITAND, params.front().type(), blueprint->QualifiedTypename());
+		}
+		else if ( name == "operator|" && params.size() == 1 ) {
+			typeSystem->define(blueprint->QualifiedTypename(), Token::Type::BITOR, params.front().type(), blueprint->QualifiedTypename());
+		}
+		else if ( name == "operator~" && params.size() == 1 ) {
+			typeSystem->define(blueprint->QualifiedTypename(), Token::Type::BITCOMPLEMENT, params.front().type(), blueprint->QualifiedTypename());
+		}
+		else if ( name == "operator==" && params.size() == 1 ) {
+			typeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_EQUAL, params.front().type(), blueprint->QualifiedTypename());
+		}
+		else if ( name == "operator<" && params.size() == 1 ) {
+			typeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_LESS, params.front().type(), blueprint->QualifiedTypename());
+		}
+		else if ( name == "operator<=" && params.size() == 1 ) {
+			typeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_LESS_EQUAL, params.front().type(), blueprint->QualifiedTypename());
+		}
+		else if ( name == "operator>" && params.size() == 1 ) {
+			typeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_GREATER, params.front().type(), blueprint->QualifiedTypename());
+		}
+		else if ( name == "operator>=" && params.size() == 1 ) {
+			typeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_GREATER_EQUAL, params.front().type(), blueprint->QualifiedTypename());
+		}
+		else if ( name == "operator!=" && params.size() == 1 ) {
+			typeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_UNEQUAL, params.front().type(), blueprint->QualifiedTypename());
+		}
+		else if ( name == "operator+" && params.size() == 1 ) {
+			typeSystem->define(blueprint->QualifiedTypename(), Token::Type::MATH_ADDITION, params.front().type(), blueprint->QualifiedTypename());
+		}
+		else if ( name == "operator/" && params.size() == 1 ) {
+			typeSystem->define(blueprint->QualifiedTypename(), Token::Type::MATH_DIVIDE, params.front().type(), blueprint->QualifiedTypename());
+		}
+		else if ( name == "operator%" && params.size() == 1 ) {
+			typeSystem->define(blueprint->QualifiedTypename(), Token::Type::MATH_MODULO, params.front().type(), blueprint->QualifiedTypename());
+		}
+		else if ( name == "operator*" && params.size() == 1 ) {
+			typeSystem->define(blueprint->QualifiedTypename(), Token::Type::MATH_MULTIPLY, params.front().type(), blueprint->QualifiedTypename());
+		}
+		else if ( name == "operator-" && params.size() == 1 ) {
+			typeSystem->define(blueprint->QualifiedTypename(), Token::Type::MATH_SUBTRACT, params.front().type(), blueprint->QualifiedTypename());
+		}
+		else if ( name == "=operator" && params.size() == 1 ) {
+			typeSystem->define((*it)->QualifiedTypename(), Token::Type::ASSIGN, blueprint->QualifiedTypename(), (*it)->QualifiedTypename());
+		}
+	}
+
+	// add default assignment entry for type system if it doesn't exist yet
+	if ( !typeSystem->exists(blueprint->QualifiedTypename(), Token(Token::Type::ASSIGN, "="), blueprint->QualifiedTypename()) ) {
+		typeSystem->define(blueprint->QualifiedTypename(), Token::Type::ASSIGN, blueprint->QualifiedTypename(), blueprint->QualifiedTypename());
+	}
 }
 
 

@@ -57,8 +57,6 @@ BoolObject::BoolObject(const Object& other)
 		mValue = other.getValue().toBool();
 	}
 	else {
-		//Object::operator_assign(&other);
-
 		mValue = other.isValid();
 	}
 }
@@ -93,52 +91,6 @@ void BoolObject::operator_assign(const Object *other)
 		Object::operator_assign(other);
 	}
 }
-
-/*
-void BoolObject::operator_bitand(const BoolObject *other)
-{
-	mValue = mValue.toBool() & other->getValue().toBool();
-}
-
-void BoolObject::operator_bitand(const Object *other)
-{
-	std::string target = other->QualifiedTypename();
-
-	if ( target == BoolObject::TYPENAME ||
-		 target == DoubleObject::TYPENAME ||
-		 target == FloatObject::TYPENAME ||
-		 target == IntegerObject::TYPENAME ||
-		 target == StringObject::TYPENAME ) {
-		mValue = mValue.toBool() & other->getValue().toBool();
-	}
-	else {
-		Object::operator_bitand(other);
-	}
-}
-*/
-
-/*
-void BoolObject::operator_bitor(const BoolObject *other)
-{
-	mValue = mValue.toBool() | other->getValue().toBool();
-}
-
-void BoolObject::operator_bitor(const Object *other)
-{
-	std::string target = other->QualifiedTypename();
-
-	if ( target == BoolObject::TYPENAME ||
-		 target == DoubleObject::TYPENAME ||
-		 target == FloatObject::TYPENAME ||
-		 target == IntegerObject::TYPENAME ||
-		 target == StringObject::TYPENAME ) {
-		mValue = mValue.toBool() | other->getValue().toBool();
-	}
-	else {
-		Object::operator_bitor(other);
-	}
-}
-*/
 
 bool BoolObject::operator_equal(const BoolObject *other)
 {
