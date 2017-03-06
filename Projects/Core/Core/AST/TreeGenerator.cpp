@@ -83,11 +83,11 @@ Node* TreeGenerator::expression(TokenIterator& start)
 			return expression;
 		}
 
-		expression = new BooleanBinaryExpression((*start), expression, parseCondition(++start));
+		expression = new BooleanBinaryExpression(expression, (*start), parseCondition(++start));
 	}
 }
 
-Statements* TreeGenerator::generate(Common::Method* method)
+Statements* TreeGenerator::generateAST(Common::Method *method)
 {
 	mMethod = method;
 
@@ -131,25 +131,6 @@ Statements* TreeGenerator::generate(const TokenList &tokens, bool allowBreakAndC
 	popScope();
 
 	return statements;
-}
-
-Common::Namespace* TreeGenerator::getEnclosingNamespace(IScope* scope) const
-{
-	if ( !scope ) {
-		scope = getScope();
-	}
-
-	while ( scope ) {
-		IScope* parent = scope->getEnclosingScope();
-
-		if ( parent && parent->getScopeType() == IScope::IType::MethodScope ) {
-			return dynamic_cast<Common::Namespace*>(parent);
-		}
-
-		scope = parent;
-	}
-
-	return 0;
 }
 
 IScope* TreeGenerator::getScope() const
@@ -307,7 +288,7 @@ Node* TreeGenerator::parseCondition(TokenIterator& start)
 			 return condition;
 		}
 
-		condition = new BooleanBinaryExpression((*start), condition, parseExpression(++start));
+		condition = new BooleanBinaryExpression(condition, (*start), parseExpression(++start));
 	}
 }
 
@@ -329,7 +310,7 @@ Node* TreeGenerator::parseExpression(TokenIterator& start)
 		Node* right = parseFactors(++start);
 		std::string type = resolveType(expression, token, right);
 
-		expression = new BinaryExpression(token, expression, right, type);
+		expression = new BinaryExpression(expression, token, right, type);
 	}
 }
 
@@ -349,7 +330,7 @@ Node* TreeGenerator::parseFactors(TokenIterator& start)
 		Node* right = parseInfixPostfix(++start);
 		std::string type = resolveType(factor, token, right);
 
-		factor = new BinaryExpression(token, factor, right, type);
+		factor = new BinaryExpression(factor, token, right, type);
 	}
 }
 
@@ -735,27 +716,26 @@ Node* TreeGenerator::process_identifier(TokenIterator& token, bool allowTypeCast
 	}
 	// assignment
 	else if ( op->category() == Token::Category::Assignment ) {
+		Token operation(Token::Category::Assignment, Token::Type::ASSIGN, "=", op->position());
 		Node* right = expression(++token);
 
 		if ( op->type() != Token::Type::ASSIGN ) {
-			Token operation;
-
 			switch ( op->type() ) {
-				case Token::Type::ASSIGN_ADDITION: operation = Token(Token::Type::MATH_ADDITION); break;
-				case Token::Type::ASSIGN_BITAND: operation = Token(Token::Type::BITAND); break;
-				case Token::Type::ASSIGN_BITCOMPLEMENT: operation = Token(Token::Type::BITCOMPLEMENT); break;
-				case Token::Type::ASSIGN_BITOR: operation = Token(Token::Type::BITOR); break;
-				case Token::Type::ASSIGN_DIVIDE: operation = Token(Token::Type::MATH_DIVIDE); break;
-				case Token::Type::ASSIGN_MODULO: operation = Token(Token::Type::MATH_MODULO); break;
-				case Token::Type::ASSIGN_MULTIPLY: operation = Token(Token::Type::MATH_MULTIPLY); break;
-				case Token::Type::ASSIGN_SUBTRACT: operation = Token(Token::Type::MATH_SUBTRACT); break;
+				case Token::Type::ASSIGN_ADDITION: operation = Token(Token::Type::MATH_ADDITION, "+"); break;
+				case Token::Type::ASSIGN_BITAND: operation = Token(Token::Type::BITAND, "&"); break;
+				case Token::Type::ASSIGN_BITCOMPLEMENT: operation = Token(Token::Type::BITCOMPLEMENT, "~"); break;
+				case Token::Type::ASSIGN_BITOR: operation = Token(Token::Type::BITOR, "|"); break;
+				case Token::Type::ASSIGN_DIVIDE: operation = Token(Token::Type::MATH_DIVIDE, "/"); break;
+				case Token::Type::ASSIGN_MODULO: operation = Token(Token::Type::MATH_MODULO, "%"); break;
+				case Token::Type::ASSIGN_MULTIPLY: operation = Token(Token::Type::MATH_MULTIPLY, "*"); break;
+				case Token::Type::ASSIGN_SUBTRACT: operation = Token(Token::Type::MATH_SUBTRACT, "-"); break;
 				default: throw Common::Exceptions::SyntaxError("assignment type execpted", token->position());
 			}
 
-			right = new BinaryExpression(operation, symbol, right, resolveType(symbol, operation, right));
+			right = new BinaryExpression(symbol, operation, right, resolveType(symbol, operation, right));
 		}
 
-		node = new Assignment(symbol, (*op), right);
+		node = new Assignment(symbol, operation, right, resolveType(symbol, operation, right));
 	}
 	// --
 	else if ( op->type() == Token::Type::OPERATOR_DECREMENT ) {
@@ -1358,23 +1338,24 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base) con
 
 	switch ( result->getSymbolType() ) {
 		case Symbol::IType::BluePrintEnumSymbol:
-			type = static_cast<Designtime::BluePrintEnum*>(result)->QualifiedTypename();
 			scope = static_cast<Designtime::BluePrintEnum*>(result);
+			type = static_cast<Designtime::BluePrintEnum*>(result)->QualifiedTypename();
 			break;
 		case Symbol::IType::BluePrintObjectSymbol:
-			type = static_cast<Designtime::BluePrintObject*>(result)->QualifiedTypename();
 			scope = static_cast<Designtime::BluePrintObject*>(result);
+			type = static_cast<Designtime::BluePrintObject*>(result)->QualifiedTypename();
 			break;
 		case Symbol::IType::NamespaceSymbol:
-			type = static_cast<Common::Namespace*>(result)->QualifiedTypename();
 			scope = static_cast<Common::Namespace*>(result);
+			type = static_cast<Common::Namespace*>(result)->QualifiedTypename();
 			break;
 		case Symbol::IType::ObjectSymbol:
-			type = static_cast<Runtime::Object*>(result)->QualifiedTypename();
 			scope = static_cast<Runtime::Object*>(result);
+			type = static_cast<Runtime::Object*>(result)->QualifiedTypename();
 			break;
 		case Symbol::IType::MethodSymbol:
-			//throw Common::Exceptions::NotSupported("cannot directly access locales of method");
+			scope = 0;
+			type = static_cast<Common::Method*>(result)->QualifiedTypename();
 			break;
 		case Symbol::IType::UnknownSymbol:
 			throw Common::Exceptions::SyntaxError("unexpected symbol found");
@@ -1399,7 +1380,7 @@ std::string TreeGenerator::resolveType(Node* left, const Token& operation, Node*
 		throw Common::Exceptions::Exception("invalid right expression");
 	}
 
-	return mTypeSystem->getType(l->getResultType(), operation.type(), r->getResultType());
+	return mTypeSystem->getType(l->getResultType(), operation, r->getResultType());
 }
 
 

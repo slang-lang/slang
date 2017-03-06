@@ -94,6 +94,7 @@ void BoolObject::operator_assign(const Object *other)
 	}
 }
 
+/*
 void BoolObject::operator_bitand(const BoolObject *other)
 {
 	mValue = mValue.toBool() & other->getValue().toBool();
@@ -114,7 +115,9 @@ void BoolObject::operator_bitand(const Object *other)
 		Object::operator_bitand(other);
 	}
 }
+*/
 
+/*
 void BoolObject::operator_bitor(const BoolObject *other)
 {
 	mValue = mValue.toBool() | other->getValue().toBool();
@@ -135,6 +138,7 @@ void BoolObject::operator_bitor(const Object *other)
 		Object::operator_bitor(other);
 	}
 }
+*/
 
 bool BoolObject::operator_equal(const BoolObject *other)
 {

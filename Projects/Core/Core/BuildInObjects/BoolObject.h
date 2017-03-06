@@ -34,11 +34,14 @@ public:	// Operators
 
 	bool operator_bool() const;
 
+/*
 	void operator_bitand(const BoolObject *other);
 	void operator_bitand(const Object *other);
-
+*/
+/*
 	void operator_bitor(const BoolObject *other);
 	void operator_bitor(const Object *other);
+*/
 
 	bool operator_equal(const BoolObject *other);
 	bool operator_equal(const Object *other);

@@ -41,7 +41,7 @@ std::string PrintVisitor::printExpression(Node* node) const
 				BinaryExpression* bin = static_cast<BinaryExpression*>(node);
 
 				result += "(" + printExpression(bin->mLeft);
-				result += " " + bin->mToken.content() + " ";
+				result += " " + bin->mOperation.content() + " ";
 				result += printExpression(bin->mRight) + ")";
 			} break;
 			case Expression::ExpressionType::CopyExpression: {
@@ -79,7 +79,7 @@ std::string PrintVisitor::printExpression(Node* node) const
 			case Expression::ExpressionType::UnaryExpression: {
 				UnaryExpression* bin = static_cast<UnaryExpression*>(expression);
 
-				result += bin->mToken.content();
+				result += bin->mOperation.content();
 				result += printExpression(bin->mExpression);
 			} break;
 		}

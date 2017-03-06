@@ -68,7 +68,7 @@ protected:
 class Assignment : public Statement
 {
 public:
-	Assignment(SymbolExpression* lvalue, const Token& assignment, Node* rvalue)
+	Assignment(SymbolExpression* lvalue, const Token& assignment, Node* rvalue, const std::string& /*resultType*/)
 	: Statement(StatementType::Assignment),
 	  mAssignment(assignment),
 	  mExpression(rvalue),

@@ -45,7 +45,7 @@ public:
 	~TreeGenerator();
 
 public:
-	Statements* generate(Common::Method* method);
+	Statements* generateAST(Common::Method *method);
 
 private: // Execution
 	inline void collectScopeTokens(TokenIterator& token, TokenList& tokens);
@@ -104,6 +104,8 @@ private: // Execution
 
 	SymbolExpression* resolve(TokenIterator& token, IScope* base) const;
 
+	std::string resolveType(Node* left, const Token& operation, Node* right) const;
+
 	// Scope stack
 	// {
 	IScope* getScope() const;
@@ -117,10 +119,6 @@ private: // Execution
 	void popTokens();
 	void pushTokens(const TokenList& tokens);
 	// }
-
-	Common::Namespace* getEnclosingNamespace(IScope* scope = 0) const;
-
-	std::string resolveType(Node* left, const Token& operation, Node* right) const;
 
 private:
 	Common::Method* mMethod;

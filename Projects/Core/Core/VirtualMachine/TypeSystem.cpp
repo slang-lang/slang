@@ -53,22 +53,19 @@ void TypeSystem::deinit()
 	// nothing to do here atm
 }
 
-std::string TypeSystem::getType(const std::string& left, Token::Type::E operation, const std::string& right)
+std::string TypeSystem::getType(const std::string& left, const Token& operation, const std::string& right)
 {
 	if ( !mTypeMap.contains(left) ) {
-		throw Common::Exceptions::NotSupported(left);
-//		return "";
+		throw Common::Exceptions::NotSupported(left + " " + operation.content() + " " + right, operation.position());
 	}
-	if ( !mTypeMap[left].contains(operation) ) {
-		throw Common::Exceptions::NotSupported(left);
-//		return "";
+	if ( !mTypeMap[left].contains(operation.type()) ) {
+		throw Common::Exceptions::NotSupported(left + " " + operation.content() + " " + right, operation.position());
 	}
-	if ( !mTypeMap[left][operation].contains(right) ) {
-		throw Common::Exceptions::NotSupported(left + " with " + right);
-//		return "";
+	if ( !mTypeMap[left][operation.type()].contains(right) ) {
+		throw Common::Exceptions::NotSupported(left + " " + operation.content() + " " + right, operation.position());
 	}
 
-	return mTypeMap[left][operation][right];
+	return mTypeMap[left][operation.type()][right];
 }
 
 void TypeSystem::init()
@@ -85,6 +82,10 @@ void TypeSystem::initBool()
 {
 	// assign
 	define(BoolObject::TYPENAME, Token::Type::ASSIGN, BoolObject::TYPENAME, BoolObject::TYPENAME);
+	define(BoolObject::TYPENAME, Token::Type::ASSIGN, DoubleObject::TYPENAME, BoolObject::TYPENAME);
+	define(BoolObject::TYPENAME, Token::Type::ASSIGN, FloatObject::TYPENAME, BoolObject::TYPENAME);
+	define(BoolObject::TYPENAME, Token::Type::ASSIGN, IntegerObject::TYPENAME, BoolObject::TYPENAME);
+	define(BoolObject::TYPENAME, Token::Type::ASSIGN, StringObject::TYPENAME, BoolObject::TYPENAME);
 
 	// arithmetic
 
@@ -102,7 +103,10 @@ void TypeSystem::initBool()
 void TypeSystem::initDouble()
 {
 	// assign
+	define(DoubleObject::TYPENAME, Token::Type::ASSIGN, BoolObject::TYPENAME, DoubleObject::TYPENAME);
 	define(DoubleObject::TYPENAME, Token::Type::ASSIGN, DoubleObject::TYPENAME, DoubleObject::TYPENAME);
+	define(DoubleObject::TYPENAME, Token::Type::ASSIGN, FloatObject::TYPENAME, DoubleObject::TYPENAME);
+	define(DoubleObject::TYPENAME, Token::Type::ASSIGN, IntegerObject::TYPENAME, DoubleObject::TYPENAME);
 
 	// arithmetic
 	define(DoubleObject::TYPENAME, Token::Type::MATH_ADDITION, DoubleObject::TYPENAME, DoubleObject::TYPENAME);
@@ -136,15 +140,24 @@ void TypeSystem::initDouble()
 void TypeSystem::initFloat()
 {
 	// assign
+	define(FloatObject::TYPENAME, Token::Type::ASSIGN, BoolObject::TYPENAME, FloatObject::TYPENAME);
+	define(FloatObject::TYPENAME, Token::Type::ASSIGN, DoubleObject::TYPENAME, FloatObject::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::ASSIGN, FloatObject::TYPENAME, FloatObject::TYPENAME);
+	define(FloatObject::TYPENAME, Token::Type::ASSIGN, IntegerObject::TYPENAME, FloatObject::TYPENAME);
 
 	// arithmetic
-	define(FloatObject::TYPENAME, Token::Type::MATH_ADDITION, DoubleObject::TYPENAME, DoubleObject::TYPENAME);
+	define(FloatObject::TYPENAME, Token::Type::MATH_ADDITION, DoubleObject::TYPENAME, FloatObject::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::MATH_ADDITION, FloatObject::TYPENAME, FloatObject::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::MATH_ADDITION, IntegerObject::TYPENAME, FloatObject::TYPENAME);
+	define(FloatObject::TYPENAME, Token::Type::MATH_DIVIDE,   DoubleObject::TYPENAME, FloatObject::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::MATH_DIVIDE,   FloatObject::TYPENAME, FloatObject::TYPENAME);
+	define(FloatObject::TYPENAME, Token::Type::MATH_DIVIDE,   IntegerObject::TYPENAME, FloatObject::TYPENAME);
+	define(FloatObject::TYPENAME, Token::Type::MATH_MULTIPLY, DoubleObject::TYPENAME, FloatObject::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::MATH_MULTIPLY, FloatObject::TYPENAME, FloatObject::TYPENAME);
+	define(FloatObject::TYPENAME, Token::Type::MATH_MULTIPLY, IntegerObject::TYPENAME, FloatObject::TYPENAME);
+	define(FloatObject::TYPENAME, Token::Type::MATH_SUBTRACT, DoubleObject::TYPENAME, FloatObject::TYPENAME);
 	define(FloatObject::TYPENAME, Token::Type::MATH_SUBTRACT, FloatObject::TYPENAME, FloatObject::TYPENAME);
+	define(FloatObject::TYPENAME, Token::Type::MATH_SUBTRACT, IntegerObject::TYPENAME, FloatObject::TYPENAME);
 
 	// comparison
 	define(FloatObject::TYPENAME, Token::Type::COMPARE_EQUAL, FloatObject::TYPENAME, BoolObject::TYPENAME);
@@ -164,15 +177,24 @@ void TypeSystem::initFloat()
 void TypeSystem::initInt()
 {
 	// assign
+	define(IntegerObject::TYPENAME, Token::Type::ASSIGN, BoolObject::TYPENAME, IntegerObject::TYPENAME);
+	define(IntegerObject::TYPENAME, Token::Type::ASSIGN, DoubleObject::TYPENAME, IntegerObject::TYPENAME);
+	define(IntegerObject::TYPENAME, Token::Type::ASSIGN, FloatObject::TYPENAME, IntegerObject::TYPENAME);
 	define(IntegerObject::TYPENAME, Token::Type::ASSIGN, IntegerObject::TYPENAME, IntegerObject::TYPENAME);
 
 	// arithmetic
-	define(IntegerObject::TYPENAME, Token::Type::MATH_ADDITION, DoubleObject::TYPENAME,  DoubleObject::TYPENAME);
-	define(IntegerObject::TYPENAME, Token::Type::MATH_ADDITION, FloatObject::TYPENAME,   FloatObject::TYPENAME);
+	define(IntegerObject::TYPENAME, Token::Type::MATH_ADDITION, DoubleObject::TYPENAME,  IntegerObject::TYPENAME);
+	define(IntegerObject::TYPENAME, Token::Type::MATH_ADDITION, FloatObject::TYPENAME,   IntegerObject::TYPENAME);
 	define(IntegerObject::TYPENAME, Token::Type::MATH_ADDITION, IntegerObject::TYPENAME, IntegerObject::TYPENAME);
+	define(IntegerObject::TYPENAME, Token::Type::MATH_DIVIDE,   DoubleObject::TYPENAME, IntegerObject::TYPENAME);
+	define(IntegerObject::TYPENAME, Token::Type::MATH_DIVIDE,   FloatObject::TYPENAME, IntegerObject::TYPENAME);
 	define(IntegerObject::TYPENAME, Token::Type::MATH_DIVIDE,   IntegerObject::TYPENAME, IntegerObject::TYPENAME);
 	define(IntegerObject::TYPENAME, Token::Type::MATH_MODULO,   IntegerObject::TYPENAME, IntegerObject::TYPENAME);
+	define(IntegerObject::TYPENAME, Token::Type::MATH_MULTIPLY, DoubleObject::TYPENAME, IntegerObject::TYPENAME);
+	define(IntegerObject::TYPENAME, Token::Type::MATH_MULTIPLY, FloatObject::TYPENAME, IntegerObject::TYPENAME);
 	define(IntegerObject::TYPENAME, Token::Type::MATH_MULTIPLY, IntegerObject::TYPENAME, IntegerObject::TYPENAME);
+	define(IntegerObject::TYPENAME, Token::Type::MATH_SUBTRACT, DoubleObject::TYPENAME, IntegerObject::TYPENAME);
+	define(IntegerObject::TYPENAME, Token::Type::MATH_SUBTRACT, FloatObject::TYPENAME, IntegerObject::TYPENAME);
 	define(IntegerObject::TYPENAME, Token::Type::MATH_SUBTRACT, IntegerObject::TYPENAME, IntegerObject::TYPENAME);
 
 	// comparison
@@ -207,6 +229,10 @@ void TypeSystem::initObject()
 void TypeSystem::initString()
 {
 	// assign
+	define(StringObject::TYPENAME, Token::Type::ASSIGN, BoolObject::TYPENAME, StringObject::TYPENAME);
+	define(StringObject::TYPENAME, Token::Type::ASSIGN, DoubleObject::TYPENAME, StringObject::TYPENAME);
+	define(StringObject::TYPENAME, Token::Type::ASSIGN, FloatObject::TYPENAME, StringObject::TYPENAME);
+	define(StringObject::TYPENAME, Token::Type::ASSIGN, IntegerObject::TYPENAME, StringObject::TYPENAME);
 	define(StringObject::TYPENAME, Token::Type::ASSIGN, StringObject::TYPENAME, StringObject::TYPENAME);
 
 	// arithmetic
