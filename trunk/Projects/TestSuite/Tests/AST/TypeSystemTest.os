@@ -16,7 +16,7 @@ public void Main(int argc = 0, string args = "") {
 }
 
 private bool TestCase1() {
-	print("TestCase 1: int < float");
+	print("TestCase 1: <int> < <float>");
 
 	int i = 1;
 	float f = 2.1f;
@@ -28,7 +28,7 @@ private bool TestCase1() {
 }
 
 private bool TestCase2() {
-	print("TestCase 2: int = int + float");
+	print("TestCase 2: int = <int> + <float>");
 
 	int i = 1;
 	float f = 2.1f;
@@ -40,7 +40,7 @@ private bool TestCase2() {
 }
 
 private bool TestCase3() {
-	print("TestCase 3: float = int + float");
+	print("TestCase 3: float = <int> + <float>");
 
 	int i = 1;
 	float f = 2.1f;
@@ -52,7 +52,19 @@ private bool TestCase3() {
 }
 
 private bool TestCase4() {
-	print("TestCase 4: float = float + int");
+	print("TestCase 4: float = (float <int> + <float>)");
+
+	int i = 1;
+	float f = 2.1f;
+
+	float result = (float i) + f;
+	print("result = " + result);
+
+	return result == 3.1f;
+}
+
+private bool TestCase5() {
+	print("TestCase 5: float = <float> + <int>");
 
 	int i = 1;
 	float f = 2.1f;
@@ -64,8 +76,8 @@ private bool TestCase4() {
 }
 
 /*
-private bool TestCase5() {
-	print("TestCase 5: int = bool + bool");
+private bool TestCase6() {
+	print("TestCase 6: int = bool + bool");
 
 	bool b1 = true;
 	bool b2 = true;
