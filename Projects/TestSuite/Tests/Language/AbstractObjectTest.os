@@ -20,7 +20,7 @@ private bool TestCase1() const {
 
 	AbstractObject obj = new ImplementedObject();
 
-	print("obj.isAbstract() = " + obj.isAbstract());
+	print("obj.isAbstract() = " + string obj.isAbstract());
 
 	assert( obj is Object );
 	assert( obj is AbstractObject );
@@ -35,7 +35,7 @@ private bool TestCase2() const {
 
 	AbstractObject obj = new AbstractObject();
 
-	print("obj.isAbstract() = " + obj.isAbstract());
+	print("obj.isAbstract() = " + string obj.isAbstract());
 
 	return false;
 }
