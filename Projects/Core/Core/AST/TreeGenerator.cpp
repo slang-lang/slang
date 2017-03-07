@@ -87,33 +87,6 @@ Node* TreeGenerator::expression(TokenIterator& start)
 	}
 }
 
-Statements* TreeGenerator::generateAST(Common::Method *method)
-{
-	mMethod = method;
-
-	// create new stack frame
-	mStackFrame = new StackFrame(0, mMethod, ParameterList());
-	// push scope
-	mStackFrame->pushScope(mMethod, false, false);
-	// push tokens (although maybe none are present)
-	mStackFrame->pushTokens(mMethod->getTokens());
-
-	// add parameters as locale variables
-	for ( ParameterList::const_iterator it = mMethod->provideSignature().begin(); it != mMethod->provideSignature().end(); ++it ) {
-		Runtime::Object *object = mRepository->createInstance(it->type(), it->name(), PrototypeConstraints());
-
-		getScope()->define(it->name(), object);
-	}
-
-	Statements* statements = generate(mMethod->getTokens());
-
-	delete mStackFrame;
-	mStackFrame = 0;
-	mMethod = 0;
-
-	return statements;
-}
-
 /*
  * executes the given tokens in a separate scope
  */
@@ -129,6 +102,44 @@ Statements* TreeGenerator::generate(const TokenList &tokens, bool allowBreakAndC
 			statements = process(start, end);
 		popTokens();
 	popScope();
+
+	return statements;
+}
+
+/*
+ * generates the abstract syntax tree that is executed by the TreeInterpreter for the given method
+ */
+Statements* TreeGenerator::generateAST(Common::Method *method)
+{
+	// store method pointer
+	mMethod = method;
+
+	// create new stack frame
+	mStackFrame = new StackFrame(0, mMethod, mMethod->provideSignature());
+	// push scope
+	mStackFrame->pushScope(mMethod, false, false);
+	// push tokens
+	mStackFrame->pushTokens(mMethod->getTokens());
+
+	// add parameters as locale variables
+	for ( ParameterList::const_iterator it = mMethod->provideSignature().begin(); it != mMethod->provideSignature().end(); ++it ) {
+		Runtime::Object *object = mRepository->createInstance(it->type(), it->name(), PrototypeConstraints());
+
+		getScope()->define(it->name(), object);
+	}
+
+	Statements* statements = generate(mMethod->getTokens());
+
+	// pop tokens;
+	mStackFrame->popTokens();
+	// pop scope
+	mStackFrame->popScope();
+	// delete stack frame
+	delete mStackFrame;
+	mStackFrame = 0;
+
+	// reset method pointer
+	mMethod = 0;
 
 	return statements;
 }

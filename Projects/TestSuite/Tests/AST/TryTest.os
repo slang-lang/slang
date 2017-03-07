@@ -1,6 +1,12 @@
 #!/usr/local/bin/oscript
 
-public void Main(int argc = 1, string args = "") throws {
+public void Main(int argc = 1, string args = "") {
+	assert( TestCase1() );
+}
+
+private bool TestCase1() throws {
+	print("AST: try-catch-finally");
+
 	try {
 		print("try");
 
@@ -14,12 +20,13 @@ public void Main(int argc = 1, string args = "") throws {
 	catch ( string e ) {
 		print("catch(string): " + e);
 
-		return;
+		return true;
 	}
 	finally {
 		print("finally");
 	}
 
 	assert( !"after return" );
+	return false;
 }
 

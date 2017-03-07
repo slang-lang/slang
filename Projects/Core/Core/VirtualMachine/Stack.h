@@ -40,7 +40,7 @@ public:
 	Runtime::ExceptionData& exception();
 
 	void pop();
-	void push(IScope* scope, const ParameterList &params);
+	void push(IScope* scope, const TokenList& tokens, const ParameterList &params);
 
 	void print();
 
