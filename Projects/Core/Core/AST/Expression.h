@@ -28,6 +28,7 @@ public:
 		enum E {
 			BinaryExpression,
 			CopyExpression,
+			IsExpression,
 			LiteralExpression,
 			MethodExpression,
 			NewExpression,
@@ -103,6 +104,7 @@ protected:
 	BinaryExpressionType::E mBinaryExpressionType;
 };
 
+
 class BooleanBinaryExpression : public BinaryExpression
 {
 public:
@@ -111,9 +113,14 @@ public:
 	{
 		mBinaryExpressionType = BinaryExpressionType::BooleanBinaryExpression;
 	}
-	virtual ~BooleanBinaryExpression() { }
 };
 
+// Binary expressions
+///////////////////////////////////////////////////////////////////////////////
+
+
+///////////////////////////////////////////////////////////////////////////////
+// Unary expressions
 
 class UnaryExpression : public Expression
 {
@@ -134,9 +141,9 @@ public:
 	Token mOperation;
 };
 
-
-// Binary expressions
+// Unary expressions
 ///////////////////////////////////////////////////////////////////////////////
+
 
 ///////////////////////////////////////////////////////////////////////////////
 // Literal expressions
@@ -165,6 +172,7 @@ public:
 	}
 };
 
+
 class DoubleLiteralExpression : public LiteralExpression
 {
 public:
@@ -175,6 +183,7 @@ public:
 		mResultType = "double";
 	}
 };
+
 
 class FloatLiteralExpression : public LiteralExpression
 {
@@ -187,6 +196,7 @@ public:
 	}
 };
 
+
 class IntegerLiteralExpression : public LiteralExpression
 {
 public:
@@ -197,6 +207,7 @@ public:
 		mResultType = "int";
 	}
 };
+
 
 class StringLiteralExpression : public LiteralExpression
 {
@@ -235,20 +246,21 @@ public:
 class NewExpression : public Expression
 {
 public:
-	explicit NewExpression(Symbol* symbol, Node* exp)
+	explicit NewExpression(const std::string& type, Node* exp)
 	: Expression(ExpressionType::NewExpression),
 	  mExpression(exp),
-	  mSymbol(symbol)
-	{ }
+	  mType(type)
+	{
+		mResultType = type;
+	}
 	~NewExpression() {
 		delete mExpression;
 	}
 
 public:
 	Node* mExpression;
-	Symbol* mSymbol;
+	std::string mType;
 };
-
 
 // Memory expressions
 ///////////////////////////////////////////////////////////////////////////////
@@ -256,6 +268,24 @@ public:
 
 ///////////////////////////////////////////////////////////////////////////////
 // Symbol expressions
+
+class IsExpression : public Expression
+{
+public:
+	explicit IsExpression(Node* expression, const std::string& matchType)
+	: Expression(ExpressionType::IsExpression),
+	  mExpression(expression),
+	  mMatchType(matchType)
+	{
+		// TODO: use BoolObject::TYPENAME
+		mResultType = "bool";
+	}
+
+public:
+	Node* mExpression;
+	std::string mMatchType;
+};
+
 
 class SymbolExpression : public Expression
 {
@@ -341,7 +371,9 @@ public:
 	: Expression(ExpressionType::MethodExpression),
 	  mParams(params),
 	  mSymbol(symbol)
-	{ }
+	{
+		mResultType = "method call";
+	}
 	~MethodExpression() {
 		for ( ExpressionList::iterator it = mParams.begin(); it != mParams.end(); ++it ) {
 			delete (*it);

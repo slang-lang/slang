@@ -47,6 +47,9 @@ std::string PrintVisitor::printExpression(Node* node) const
 			case Expression::ExpressionType::CopyExpression: {
 				result += "copy " + printExpression(static_cast<CopyExpression*>(expression)->mExpression);
 			} break;
+			case Expression::ExpressionType::IsExpression: {
+				result += printExpression(static_cast<IsExpression*>(expression)->mExpression) + " is " + static_cast<IsExpression*>(expression)->mMatchType;
+			} break;
 			case Expression::ExpressionType::NewExpression: {
 				result += "new " + printExpression(static_cast<NewExpression*>(expression)->mExpression);
 			} break;

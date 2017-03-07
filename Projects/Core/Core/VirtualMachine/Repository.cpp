@@ -398,6 +398,27 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 /*
  * Creates an instance of the given blueprint and adds a reference to it in the heap memory
  */
+Runtime::Object* Repository::createReference(const std::string& type, const std::string& name, PrototypeConstraints constraints, InitilizationType::E initialize)
+{
+	BluePrintObjectMap::iterator it = mBluePrintObjects.find(type);
+	if ( it == mBluePrintObjects.end() ) {
+		// workaround for complex member types whose imports have not yet been analysed
+		if ( initialize == InitilizationType::None ) {
+			Runtime::Object* object = new Runtime::UserObject(name, SYSTEM_LIBRARY,
+															  Designtime::Parser::buildRuntimeConstraintTypename(type, constraints), true);
+			Controller::Instance().memory()->newObject(object);
+			return object;
+		}
+
+		throw Common::Exceptions::Exception("cannot not create reference of unknown type '" + type + "'");
+	}
+
+	return createReference(it->second, name, constraints, initialize);
+}
+
+/*
+ * Creates an instance of the given blueprint and adds a reference to it in the heap memory
+ */
 Runtime::Object* Repository::createReference(Designtime::BluePrintGeneric* blueprint, const std::string& name, PrototypeConstraints constraints, InitilizationType::E initialize)
 {
 	if ( !blueprint ) {

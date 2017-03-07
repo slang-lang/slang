@@ -63,6 +63,7 @@ void TreeInterpreter::evaluate(Node* exp, Runtime::Object* result)
 	switch ( static_cast<Expression*>(exp)->getExpressionType() ) {
 		case Expression::ExpressionType::BinaryExpression: evaluateBinaryExpression(static_cast<BinaryExpression*>(exp), result); break;
 		case Expression::ExpressionType::CopyExpression: evaluateCopyExpression(static_cast<CopyExpression*>(exp), result); break;
+		case Expression::ExpressionType::IsExpression: evaluateIsExpression(static_cast<IsExpression*>(exp), result); break;
 		case Expression::ExpressionType::LiteralExpression: evaluateLiteral(static_cast<LiteralExpression*>(exp), result); break;
 		case Expression::ExpressionType::MethodExpression: evaluateMethodExpression(static_cast<MethodExpression*>(exp), result); break;
 		case Expression::ExpressionType::NewExpression: evaluateNewExpression(static_cast<NewExpression*>(exp), result); break;
@@ -76,7 +77,7 @@ void TreeInterpreter::evaluate(Node* exp, Runtime::Object* result)
 void TreeInterpreter::evaluateBinaryExpression(BinaryExpression* exp, Runtime::Object* result)
 {
 	if ( exp->getBinaryExpressionType() == BinaryExpression::BinaryExpressionType::BooleanBinaryExpression ) {
-		evaluateBooleanBinaryExpression(exp, result);
+		evaluateBooleanBinaryExpression(static_cast<BooleanBinaryExpression*>(exp), result);
 		return;
 	}
 
@@ -122,7 +123,7 @@ void TreeInterpreter::evaluateBinaryExpression(BinaryExpression* exp, Runtime::O
 	Runtime::operator_binary_assign(result, &left);
 }
 
-void TreeInterpreter::evaluateBooleanBinaryExpression(BinaryExpression* exp, Runtime::Object* result)
+void TreeInterpreter::evaluateBooleanBinaryExpression(BooleanBinaryExpression* exp, Runtime::Object* result)
 {
 	Runtime::Object left;
 	Runtime::Object right;
@@ -189,37 +190,19 @@ void TreeInterpreter::evaluateCopyExpression(CopyExpression* exp, Runtime::Objec
 	result->copy(obj);
 }
 
-void TreeInterpreter::evaluateNewExpression(NewExpression* exp, Runtime::Object* result)
+void TreeInterpreter::evaluateIsExpression(IsExpression* exp, Runtime::Object* result)
 {
-	MethodExpression* method = dynamic_cast<MethodExpression*>(exp->mExpression);
-	if ( !method ) {
-		throw Runtime::Exceptions::RuntimeException("invalid method expression found");
+	Runtime::Object tmp;
+	try {
+		// evaluate left expression
+		evaluate(exp->mExpression, &tmp);
+	}
+	catch ( Runtime::ControlFlow::E &e ) {
+		mControlFlow = e;
+		return;
 	}
 
-	std::list<Runtime::Object> objectList;	// this is a hack to prevent that the provided object parameters run out of scope
-	ParameterList params;
-
-	for ( ExpressionList::const_iterator it = method->mParams.begin(); it != method->mParams.end(); ++it ) {
-		objectList.push_back(Runtime::Object());
-
-		Runtime::Object* param = &objectList.back();
-
-		try {
-			evaluate((*it), param);
-		}
-		catch ( Runtime::ControlFlow::E &e ) {
-			mControlFlow = e;
-			return;
-		}
-
-		params.push_back(Parameter::CreateRuntime(param->QualifiedOuterface(), param->getValue(), param->getReference()));
-	}
-
-	// create initialized reference of new object
-	*result = *mRepository->createReference(static_cast<Designtime::BluePrintGeneric*>(exp->mSymbol), ANONYMOUS_OBJECT, PrototypeConstraints(), Repository::InitilizationType::Final);
-
-	// execute new object's constructor
-	mControlFlow = result->Constructor(params);
+	*result = Runtime::BoolObject(tmp.isInstanceOf(exp->mMatchType));
 }
 
 void TreeInterpreter::evaluateLiteral(LiteralExpression* exp, Runtime::Object* result)
@@ -287,6 +270,38 @@ void TreeInterpreter::evaluateMethodExpression(MethodExpression* exp, Runtime::O
 			mControlFlow = Runtime::ControlFlow::Normal;
 			break;
 	}
+}
+
+void TreeInterpreter::evaluateNewExpression(NewExpression* exp, Runtime::Object* result)
+{
+	MethodExpression* method = dynamic_cast<MethodExpression*>(exp->mExpression);
+	if ( !method ) {
+		throw Runtime::Exceptions::RuntimeException("invalid method expression found");
+	}
+
+	std::list<Runtime::Object> objectList;	// this is a hack to prevent that the provided object parameters run out of scope
+	ParameterList params;
+
+	for ( ExpressionList::const_iterator it = method->mParams.begin(); it != method->mParams.end(); ++it ) {
+		objectList.push_back(Runtime::Object());
+
+		Runtime::Object* param = &objectList.back();
+		try {
+			evaluate((*it), param);
+		}
+		catch ( Runtime::ControlFlow::E &e ) {
+			mControlFlow = e;
+			return;
+		}
+
+		params.push_back(Parameter::CreateRuntime(param->QualifiedOuterface(), param->getValue(), param->getReference()));
+	}
+
+	// create initialized reference of new object
+	*result = *mRepository->createReference(exp->mType, ANONYMOUS_OBJECT, PrototypeConstraints(), Repository::InitilizationType::Final);
+
+	// execute new object's constructor
+	mControlFlow = result->Constructor(params);
 }
 
 void TreeInterpreter::evaluateSymbol(SymbolExpression* exp, Runtime::Object* result, IScope* scope)
@@ -589,6 +604,9 @@ std::string TreeInterpreter::printExpression(Node* node) const
 			} break;
 			case Expression::ExpressionType::CopyExpression: {
 				result += "copy " + printExpression(static_cast<CopyExpression*>(expression)->mExpression);
+			} break;
+			case Expression::ExpressionType::IsExpression: {
+				result += printExpression(static_cast<IsExpression*>(expression)->mExpression) + " is " + static_cast<IsExpression*>(expression)->mMatchType;
 			} break;
 			case Expression::ExpressionType::NewExpression: {
 				result += "new " + printExpression(static_cast<NewExpression*>(expression)->mExpression);
@@ -1127,10 +1145,12 @@ void TreeInterpreter::visitSwitch(SwitchStatement* node)
 					mControlFlow = Runtime::ControlFlow::Normal;
 					return;	// stop matching the remaining case-statements
 				case Runtime::ControlFlow::Continue:
-				case Runtime::ControlFlow::Normal:
 					mControlFlow = Runtime::ControlFlow::Normal;
 					evaluateCaseExpression = true;
 					break;	// continue matching the remaining case-statements
+				case Runtime::ControlFlow::Normal:
+					mControlFlow = Runtime::ControlFlow::Normal;
+					return;	// stop matching the remaining case-statements
 				case Runtime::ControlFlow::ExitProgram:
 				case Runtime::ControlFlow::Return:
 				case Runtime::ControlFlow::Throw:

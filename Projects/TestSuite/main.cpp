@@ -140,13 +140,9 @@ int main(int argc, const char* argv[])
 
 #ifdef GENERATE_PARSE_TREE
 
-		Testing::AST::Fixture ast(mLogger);
-		mFixtures.push_back(&ast);
+
 
 #else
-
-		Testing::AST::Fixture ast(mLogger);
-		mFixtures.push_back(&ast);
 
 		Testing::Attributes::Fixture attributes(mLogger);
 		mFixtures.push_back(&attributes);
@@ -170,6 +166,9 @@ int main(int argc, const char* argv[])
 		mFixtures.push_back(&prototype);
 
 #endif
+
+		Testing::AST::Fixture ast(mLogger);
+		mFixtures.push_back(&ast);
 
 		Testing::Math::Fixture math(mLogger);
 		mFixtures.push_back(&math);
