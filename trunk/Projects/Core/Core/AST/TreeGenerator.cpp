@@ -353,24 +353,16 @@ Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 
 	// infix
 	switch ( op ) {
-		case Token::Type::MATH_ADDITION: {
+		case Token::Type::MATH_ADDITION:
+		case Token::Type::MATH_SUBTRACT:
+		case Token::Type::OPERATOR_DECREMENT:
+		case Token::Type::OPERATOR_INCREMENT:
+		case Token::Type::OPERATOR_NOT:
 			infixPostfix = new UnaryExpression((*start), parseExpression(++start));
-		} break;
-		case Token::Type::MATH_SUBTRACT: {
-			infixPostfix = new UnaryExpression((*start), parseExpression(++start));
-		} break;
-		case Token::Type::OPERATOR_DECREMENT: {
-			infixPostfix = new UnaryExpression((*start), parseExpression(++start));
-		} break;
-		case Token::Type::OPERATOR_INCREMENT: {
-			infixPostfix = new UnaryExpression((*start), parseExpression(++start));
-		} break;
-		case Token::Type::OPERATOR_NOT: {
-			infixPostfix = new UnaryExpression((*start), parseExpression(++start));
-		} break;
-		default: {
+			break;
+		default:
 			infixPostfix = parseTerm(start);
-		} break;
+			break;
 	}
 
 	op = start->type();
@@ -380,26 +372,24 @@ Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 		case Token::Type::BRACKET_OPEN: {
 			assert(!"[] operator not supported");
 		} break;
-		case Token::Type::OPERATOR_DECREMENT: {
+		case Token::Type::OPERATOR_DECREMENT:
+		case Token::Type::OPERATOR_INCREMENT:
+		case Token::Type::OPERATOR_NOT: {
+			Token tmp = (*start);
+
+			++start;
 			Node* exp = expression(start);
 
-			infixPostfix = new UnaryExpression((*start), exp);
-		} break;
-		case Token::Type::OPERATOR_INCREMENT: {
-			Node* exp = expression(start);
-
-			infixPostfix = new UnaryExpression((*start), exp);
+			infixPostfix = new UnaryExpression(tmp, exp);
 		} break;
 		case Token::Type::OPERATOR_IS: {
-			assert(!"is operator not supported");
-		} break;
-		case Token::Type::OPERATOR_NOT: {
-			Node* exp = expression(start);
+			++start;
+			SymbolExpression* symbol = resolve(start, getScope());
 
-			infixPostfix = new UnaryExpression((*start), exp);
+			infixPostfix = new IsExpression(infixPostfix, symbol->getResultType());
 		} break;
-		default: {
-		} break;
+		default:
+			break;
 	}
 
 	return infixPostfix;
@@ -887,19 +877,6 @@ MethodExpression* TreeGenerator::process_method(SymbolExpression* symbol, TokenI
  */
 Expression* TreeGenerator::process_new(TokenIterator& token)
 {
-/*
-	Symbol* symbol = identify(token);
-	if ( !symbol ) {
-		throw Common::Exceptions::UnknownIdentifer("symbol '" + token->content() + "' not found");
-	}
-	if ( symbol->getSymbolType() != Symbol::IType::BluePrintEnumSymbol &&
-		 symbol->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
-		throw Designtime::Exceptions::DesigntimeException("invalid symbol type found");
-	}
-
-	return new NewExpression(symbol, process_method(0, token));
-*/
-
 	TokenIterator start = token;
 
 	Symbol* symbol = identify(start);
@@ -911,11 +888,10 @@ Expression* TreeGenerator::process_new(TokenIterator& token)
 		throw Designtime::Exceptions::DesigntimeException("invalid symbol type found");
 	}
 
-
 	SymbolExpression* exp = resolve(token, getScope());
 	exp->mSymbolExpression = new SymbolExpression("Constructor", static_cast<Designtime::BluePrintObject*>(symbol)->QualifiedTypename(), 0);
 
-	return new NewExpression(symbol, process_method(exp, token));
+	return new NewExpression(static_cast<Designtime::BluePrintObject*>(symbol)->QualifiedTypename(), process_method(exp, token));
 }
 
 /*
@@ -1058,7 +1034,7 @@ Statement* TreeGenerator::process_switch(TokenIterator& token)
 		}
 		else if ( token->type() == Token::Type::KEYWORD && token->content() == KEYWORD_DEFAULT ) {
 			if ( defaultStatement ) {
-				throw Common::Exceptions::SyntaxError("duplicate default entry for switch statement");
+				throw Common::Exceptions::SyntaxError("duplicate default entry for switch statement", token->position());
 			}
 
 			// skip default-label

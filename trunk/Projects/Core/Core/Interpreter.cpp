@@ -1730,6 +1730,8 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 		++bodyBegin;
 	}
 
+	bool caseMatched = false;
+
 	// loop through all case-labels and match their expressions against the switch-expression
 	for ( CaseBlocks::iterator it = caseBlocks.begin(); it != caseBlocks.end(); ++it ) {
 		it->mBegin++;
@@ -1746,6 +1748,8 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 
 		// compare case block expression with switch-expression
 		if ( operator_binary_equal(&expr, &condition) ) {
+			caseMatched = true;
+
 			expect(Token::Type::COLON, it->mBegin++);
 			expect(Token::Type::BRACKET_CURLY_OPEN, it->mBegin++);	// don't collect scope token
 
@@ -1764,9 +1768,11 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 					mControlFlow = ControlFlow::Normal;
 					return;	// stop matching the remaining case-statements
 				case ControlFlow::Continue:
-				case ControlFlow::Normal:
 					mControlFlow = ControlFlow::Normal;
 					break;	// continue matching the remaining case-statements
+				case ControlFlow::Normal:
+					mControlFlow = ControlFlow::Normal;
+					return;	// stop matching the remaining case-statements
 				case ControlFlow::ExitProgram:
 				case ControlFlow::Return:
 				case ControlFlow::Throw:
@@ -1776,7 +1782,7 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 	}
 
 	// execute the default block (if present)
-	if ( defaultBlock.mBegin != getTokens().end() ) {
+	if ( !caseMatched && defaultBlock.mBegin != getTokens().end() ) {
 		defaultBlock.mBegin++;
 		expect(Token::Type::COLON, defaultBlock.mBegin++);
 
