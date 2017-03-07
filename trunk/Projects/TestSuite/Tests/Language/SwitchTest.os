@@ -11,6 +11,7 @@ public void Main(int argc = 0, string argv = "") {
 	assert( TestCase8() );
 	assert( TestCase9() );
 	assert( TestCase10() );
+	assert( TestCase11() );
 }
 
 private bool TestCase1() const {
@@ -97,7 +98,7 @@ private bool TestCase7() const {
 
 	switch ( 1 ) {
 		default: { return true; }
-		default: { return false; }
+		//default: { return false; }
 	}
 
 	return false;
@@ -121,10 +122,10 @@ private bool TestCase9() const {
 
 	switch ( 0 ) {
 		case 0: { print("case 0"); }
-		default: { print("default"); return true; }
+		default: { print("default"); return false; }
 	}
 
-	return false;
+	return true;
 }
 
 private bool TestCase10() const {
@@ -132,10 +133,11 @@ private bool TestCase10() const {
 
 	switch ( 0 ) {
 		case 0: { print("case 0"); continue; }
+		case 1: { assert( false ); }
 		default: { print("default"); return true; }
 	}
 
-	return false;
+	return true;
 }
 
 private bool TestCase11() const {
@@ -143,19 +145,19 @@ private bool TestCase11() const {
 
 	int one;
 	switch ( one ) {
-		case 1: { return false; }
+		case 1: { assert( false ); }
 		case 0: {
 			print("case 0");
 
 			int one = 1;
 			switch ( one ) {
-				case 0: { return false; }
+				case 0: { assert( false ); }
 				case 1: { print("inner case 1"); return true; }
 			}
 		}
-		default: { return false; }
+		default: { assert( false ); }
 	}
 
-	return true;
+	return false;
 }
 
