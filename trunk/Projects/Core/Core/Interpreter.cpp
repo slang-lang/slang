@@ -192,7 +192,7 @@ ControlFlow::E Interpreter::execute(Common::Method* method, const ParameterList&
 	}
 
 	// record stack
-	mStack->push(&scope, executedParams);
+	mStack->push(&scope, method->getTokens(), executedParams);
 	// notify debugger
 	mDebugger->notifyEnter(&scope, Core::Debugger::immediateBreakToken);
 	// interpret scope tokens
@@ -214,7 +214,7 @@ ControlFlow::E Interpreter::execute(Common::Method* method, const ParameterList&
 		case ControlFlow::Return:
 			// validate return value
 
-			if (result->QualifiedOuterface() == NULL_TYPE ) {
+			if ( result->QualifiedOuterface() == NULL_TYPE ) {
 				// no type cast necessary for null objects
 			}
 			else if ( method->QualifiedTypename() != VoidObject::TYPENAME && result->QualifiedOuterface() != method->QualifiedTypename() ) {
@@ -1600,21 +1600,18 @@ void Interpreter::process_print(TokenIterator& token)
  */
 void Interpreter::process_return(TokenIterator& token, Object *result)
 {
-	try {
-		expression(result, token);
-
-/*
-		Object tmp(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, static_cast<Method*>(getEnclosingMethodScope(getScope()))->QualifiedTypename(), Runtime::AtomicValue());
-
-		expression(&tmp, token);
-
-		operator_binary_assign(result, &tmp);
-*/
+	if ( token->type() != Token::Type::SEMICOLON ) {
+		try {
+			expression(result, token);
+		}
+		catch ( ControlFlow::E &e ) {
+			mControlFlow = e;
+			return;
+		}
 	}
-	catch ( ControlFlow::E &e ) {
-		mControlFlow = e;
-		return;
-	}
+
+	expect(Token::Type::SEMICOLON, token);
+	++token;
 
 	mControlFlow = ControlFlow::Return;
 }

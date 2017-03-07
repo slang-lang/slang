@@ -145,6 +145,9 @@ int main(int argc, const char* argv[])
 
 #else
 
+		Testing::AST::Fixture ast(mLogger);
+		mFixtures.push_back(&ast);
+
 		Testing::Attributes::Fixture attributes(mLogger);
 		mFixtures.push_back(&attributes);
 

@@ -456,7 +456,7 @@ Runtime::ControlFlow::E TreeInterpreter::execute(Common::Method* method, const P
 	}
 
 	// record stack
-	mStack->push(&scope, executedParams);
+	mStack->push(&scope, TokenList(), executedParams);
 
 	// notify debugger
 	mDebugger->notifyEnter(&scope, Core::Debugger::immediateBreakToken);
@@ -999,7 +999,6 @@ void TreeInterpreter::visitReturn(ReturnStatement* node)
 		try {
 			evaluate(node->mExpression, &tmp);
 
-			//Runtime::operator_binary_assign(mReturnValue, &tmp);
 			Runtime::operator_binary_assign(&mStack->current()->returnValue(), &tmp);
 		}
 		catch ( Runtime::ControlFlow::E &e ) {

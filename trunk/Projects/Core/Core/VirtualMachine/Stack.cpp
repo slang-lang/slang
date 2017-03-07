@@ -62,7 +62,7 @@ void Stack::init()
 	assert(!mGlobalScope);
 	mGlobalScope = new Common::Namespace(VALUE_NONE, 0);
 
-	push(mGlobalScope, ParameterList());
+	push(mGlobalScope, TokenList(), ParameterList());
 }
 
 void Stack::pop()
@@ -90,13 +90,8 @@ void Stack::print()
 	}
 }
 
-void Stack::push(IScope* scope, const ParameterList &params)
+void Stack::push(IScope* scope, const TokenList& tokens, const ParameterList &params)
 {
-	TokenList tokens;
-	if ( dynamic_cast<Common::Method*>(scope) ) {
-		tokens = dynamic_cast<Common::Method*>(scope)->getTokens();
-	}
-
 	// create new stack frame
 	StackFrame* frame = new StackFrame(mStackFrames.size(), scope, params);
 	// push scope
