@@ -43,9 +43,7 @@ public:
 	  mExpression(exp)
 	{ }
 	~ExitStatement() {
-		if ( mExpression ) {
-			delete mExpression;
-		}
+		delete mExpression;
 	}
 
 public:
@@ -61,9 +59,7 @@ public:
 	  mExpression(exp)
 	{ }
 	~ReturnStatement() {
-		if ( mExpression ) {
-			delete mExpression;
-		}
+		delete mExpression;
 	}
 
 public:
@@ -79,9 +75,7 @@ public:
 	  mExpression(exp)
 	{ }
 	~ThrowStatement() {
-		if ( mExpression ) {
-			delete mExpression;
-		}
+		delete mExpression;
 	}
 
 public:

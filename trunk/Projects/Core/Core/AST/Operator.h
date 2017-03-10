@@ -54,6 +54,10 @@ public:
 	  mRight(right),
 	  mToken(token)
 	{ }
+	virtual ~BinaryOperator() {
+		delete mLeft;
+		delete mRight;
+	}
 
 public:
 	Expression* mLeft;
@@ -70,6 +74,9 @@ public:
 	  mExpression(exp),
 	  mToken(token)
 	{ }
+	virtual ~UnaryOperator() {
+		delete mExpression;
+	}
 
 public:
 	Expression* mExpression;

@@ -9,6 +9,7 @@
 // Project includes
 #include <Core/Designtime/Parser/Token.h>
 #include <Core/Runtime/AtomicValue.h>
+#include <Core/Scope.h>
 #include "Node.h"
 
 // Forward declarations
@@ -293,8 +294,10 @@ public:
 	explicit SymbolExpression(const std::string& name, const std::string& resultType, SymbolExpression* symbolExpression)
 	: Expression(ExpressionType::SymbolExpression),
 	  mName(name),
+	  mSurroundingScope(0),
 	  mSymbolExpression(symbolExpression)
 	{
+		// retrieve return type from sub-expression
 		mResultType = symbolExpression ? symbolExpression->getResultType() : resultType;
 	}
 	~SymbolExpression() {
@@ -315,6 +318,7 @@ public:
 
 public:
 	std::string mName;
+	IScope* mSurroundingScope;
 	SymbolExpression* mSymbolExpression;
 };
 

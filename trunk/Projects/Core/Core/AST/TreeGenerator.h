@@ -121,6 +121,7 @@ private: // Execution
 	// }
 
 private:
+	bool mHasReturnStatement;
 	Common::Method* mMethod;
 
 private:	// Virtual machine stuff
