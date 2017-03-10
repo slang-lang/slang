@@ -942,7 +942,7 @@ void TreeInterpreter::visitForeach(ForeachStatement* node)
 		// {
 		TypeDeclaration* typeDeclaration = node->mTypeDeclaration;
 
-		Runtime::Object* loopVariable = mRepository->createInstance(static_cast<Designtime::BluePrintGeneric*>(typeDeclaration->mSymbol), typeDeclaration->mName, typeDeclaration->mConstraints);
+		Runtime::Object* loopVariable = mRepository->createInstance(typeDeclaration->mType, typeDeclaration->mName, typeDeclaration->mConstraints);
 
 		getScope()->define(typeDeclaration->mName, loopVariable);
 
@@ -1211,12 +1211,7 @@ void TreeInterpreter::visitTry(TryStatement* node)
 
 		// determine correct catch-block (if a correct one exists)
 		for ( CatchStatements::const_iterator it = node->mCatchStatements.begin(); it != node->mCatchStatements.end(); ++it ) {
-			Designtime::BluePrintGeneric* catchType = dynamic_cast<Designtime::BluePrintGeneric*>((*it)->mTypeDeclaration->mSymbol);
-			if ( !catchType ) {
-				throw Runtime::Exceptions::InvalidSymbol("blueprint symbol expected!");
-			}
-
-			if ( exception->isInstanceOf(catchType->QualifiedTypename()) ) {
+			if ( exception->isInstanceOf((*it)->mTypeDeclaration->mType) ) {
 				// reset control flow to normal to allow execution of catch-block
 				mControlFlow = Runtime::ControlFlow::Normal;
 
@@ -1254,7 +1249,7 @@ void TreeInterpreter::visitTry(TryStatement* node)
 
 Runtime::Object* TreeInterpreter::visitTypeDeclaration(TypeDeclaration* node)
 {
-	Runtime::Object* object = mRepository->createInstance(static_cast<Designtime::BluePrintGeneric*>(node->mSymbol), node->mName, node->mConstraints);
+	Runtime::Object* object = mRepository->createInstance(node->mType, node->mName, node->mConstraints);
 
 	getScope()->define(node->mName, object);
 

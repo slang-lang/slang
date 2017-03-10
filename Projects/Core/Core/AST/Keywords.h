@@ -27,9 +27,7 @@ public:
 	  mPosition(position)
 	{ }
 	~AssertStatement() {
-		if ( mExpression ) {
-			delete mExpression;
-		}
+		delete mExpression;
 	}
 
 public:

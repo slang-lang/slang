@@ -90,18 +90,17 @@ public:
 class TypeDeclaration : public Statement
 {
 public:
-	TypeDeclaration(Symbol* symbol, const PrototypeConstraints& constraints, const std::string& name, bool isConst, bool isReference, Node* assignment)
+	TypeDeclaration(const std::string& type, const PrototypeConstraints& constraints, const std::string& name, bool isConst, bool isReference, Node* assignment)
 	: Statement(StatementType::TypeDeclaration),
 	  mAssignment(assignment),
 	  mConstraints(constraints),
 	  mIsConst(isConst),
 	  mIsReference(isReference),
 	  mName(name),
-	  mSymbol(symbol)
+	  mType(type)
 	{ }
 	~TypeDeclaration() {
 		delete mAssignment;
-		mSymbol = 0;
 	}
 
 public:
@@ -110,7 +109,7 @@ public:
 	bool mIsConst;
 	bool mIsReference;
 	std::string mName;
-	Symbol* mSymbol;
+	std::string mType;
 };
 
 

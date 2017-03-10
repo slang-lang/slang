@@ -15,3 +15,15 @@ private int ReturnOne() const {
 	return 10 - 2 * 4 - 1;
 }
 
+/* // this has to fail
+private void VoidMethod() {
+	return 1;
+}
+*/
+
+/* // this has to fail
+private int IntMethod() {
+	// missing return statement
+}
+*/
+
