@@ -142,6 +142,27 @@ public:
 	Token mOperation;
 };
 
+
+class BooleanUnaryExpression : public Expression
+{
+public:
+	explicit BooleanUnaryExpression(const Token& operation, Node* exp)
+	: Expression(ExpressionType::UnaryExpression),
+	  mExpression(exp),
+	  mOperation(operation)
+	{
+		// TODO: use BoolObject::TYPENAME
+		mResultType = "bool";
+	}
+	virtual ~BooleanUnaryExpression() {
+		delete mExpression;
+	}
+
+public:
+	Node* mExpression;
+	Token mOperation;
+};
+
 // Unary expressions
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -305,13 +326,11 @@ public:
 	}
 
 	std::string toString() const {
-		std::string result;
+		std::string result = mName;
 
 		if ( mSymbolExpression ) {
-			result = mSymbolExpression->toString() + ".";
+			result += "." + mSymbolExpression->toString();
 		}
-
-		result += mName;
 
 		return result;
 	}
@@ -371,12 +390,13 @@ public:
 class MethodExpression : public Expression
 {
 public:
-	explicit MethodExpression(SymbolExpression* symbol, const ExpressionList& params)
+	explicit MethodExpression(SymbolExpression* symbol, const ExpressionList& params, const std::string& resultType)
 	: Expression(ExpressionType::MethodExpression),
 	  mParams(params),
 	  mSymbol(symbol)
 	{
-		mResultType = "method call";
+		// due to the possibility of method overloading we cannot use the result type of our symbol
+		mResultType = resultType;
 	}
 	~MethodExpression() {
 		for ( ExpressionList::iterator it = mParams.begin(); it != mParams.end(); ++it ) {

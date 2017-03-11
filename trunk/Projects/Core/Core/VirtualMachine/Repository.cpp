@@ -592,7 +592,7 @@ Designtime::BluePrintObject* Repository::findBluePrintObject(const std::string& 
 
 void Repository::init()
 {
-	SymbolScope* scope = Controller::Instance().stack()->globalScope();
+	IScope* scope = Controller::Instance().stack()->globalScope();
 
 	// add atomic types
 	{	// "bool" type

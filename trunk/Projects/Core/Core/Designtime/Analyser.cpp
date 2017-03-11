@@ -340,7 +340,7 @@ bool Analyser::createMemberStub(TokenIterator& token, Visibility::E visibility, 
 		blue->setLanguageFeatureState(languageFeature);
 		blue->setMember(true);
 		blue->setMutability(mutability);
-		blue->setParent(mScope);
+		//blue->setParent(mScope);
 		blue->setPrototypeConstraints(type.mConstraints);
 		blue->setQualifiedTypename(type.mName);
 		blue->setValue(value);

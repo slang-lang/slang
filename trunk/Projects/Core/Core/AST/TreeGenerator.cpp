@@ -384,8 +384,10 @@ Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 		case Token::Type::MATH_SUBTRACT:
 		case Token::Type::OPERATOR_DECREMENT:
 		case Token::Type::OPERATOR_INCREMENT:
-		case Token::Type::OPERATOR_NOT:
 			infixPostfix = new UnaryExpression((*start), parseExpression(++start));
+			break;
+		case Token::Type::OPERATOR_NOT:
+			infixPostfix = new BooleanUnaryExpression((*start), parseExpression(++start));
 			break;
 		default:
 			infixPostfix = parseTerm(start);
@@ -902,11 +904,12 @@ MethodExpression* TreeGenerator::process_method(SymbolExpression* symbol, TokenI
 
 	token = ++closed;
 
-	if ( !resolveMethod(getScope(), symbol, params, false, Visibility::Designtime) ) {
-		throw Common::Exceptions::UnknownIdentifer("method '" + symbol->mName + "' not found", token->position());
+	Common::Method* method = static_cast<Common::Method*>(resolveMethod(getEnclosingMethodScope(mMethod), symbol, params, false, Visibility::Designtime));
+	if ( !method ) {
+		throw Common::Exceptions::UnknownIdentifer("method '" + symbol->toString() + "' not found", token->position());
 	}
 
-	return new MethodExpression(symbol, parameterList);
+	return new MethodExpression(symbol, parameterList, method->QualifiedTypename());
 }
 
 /*
