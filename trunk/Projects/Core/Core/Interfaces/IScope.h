@@ -30,8 +30,7 @@ public:
 		enum E {
 			MethodScope,
 			NamedScope,
-			SymbolScope,
-			UnknownScope
+			SymbolScope
 		};
 	};
 

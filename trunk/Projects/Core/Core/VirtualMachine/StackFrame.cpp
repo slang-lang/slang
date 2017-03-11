@@ -103,9 +103,6 @@ std::string StackFrame::toString() const
 			case IScope::IType::SymbolScope:
 				result += scope->getScopeName();
 				break;
-			case IScope::IType::UnknownScope:
-				result += "unknown scope";
-				break; 
 		}
 	}
 
