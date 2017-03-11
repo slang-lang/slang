@@ -27,9 +27,9 @@ private bool TestCase1() const {
 	print("value = " + value);
 
 	Integer intVal = new Integer(173);
-	print("intVal = " + intVal);
+	print("intVal = " + string intVal);
 	Reference(intVal);
-	print("intVal = " + intVal);
+	print("intVal = " + string intVal);
 
 	return value == 173 && intVal == 175;
 }
@@ -41,13 +41,13 @@ private bool TestCase2() const {
 	value = 17;
 
 	value = value * 2;
-	print("value = " + value);
+	print("value = " + string value);
 
 	value = value - 2;
-	print("value = " + value);
+	print("value = " + string value);
 
 	value = value / 2;
-	print("value = " + value);
+	print("value = " + string value);
 
 	return value == 16;
 }
@@ -58,7 +58,7 @@ private bool TestCase3() const {
 	Boolean value = new Boolean(true);
 	value = !false;
 
-	print("value = " + value);
+	print("value = " + string value);
 	print("!value = " + !value);
 	//value = Boolean !value;
 	//print("value = " + value.ToString());
