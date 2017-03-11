@@ -26,6 +26,6 @@ public void Main(int argc = 0, string args = "") {
 
 	print("bla");
 
-	//Space.SpacedMethod(17);	// this currently doesn't work
+	Space.SpacedMethod(17);
 }
 

@@ -157,6 +157,24 @@ Statements* TreeGenerator::generateAST(Common::Method *method)
 	return statements;
 }
 
+MethodScope* TreeGenerator::getEnclosingMethodScope(IScope* scope) const
+{
+	if ( !scope ) {
+		return 0;
+	}
+
+	while ( scope ) {
+		MethodScope* methodScope = dynamic_cast<MethodScope*>(scope->getEnclosingScope());
+		if ( methodScope ) {
+			return methodScope;
+		}
+
+		scope = scope->getEnclosingScope();
+	}
+
+	return 0;
+}
+
 IScope* TreeGenerator::getScope() const
 {
 	return mStackFrame->getScope();
@@ -888,12 +906,8 @@ MethodExpression* TreeGenerator::process_method(SymbolExpression* symbol, TokenI
 
 	token = ++closed;
 
-	MethodScope* scope = dynamic_cast<MethodScope*>(symbol->mSurroundingScope);
-	if ( scope ) {
-		MethodSymbol* method = scope->resolveMethod(symbol->mName, params, true, Visibility::Designtime);
-		if ( !method ) {
-			throw Common::Exceptions::UnknownIdentifer("method '" + symbol->mName + "' not found", token->position());
-		}
+	if ( !resolveMethod(getScope(), symbol, params, false, Visibility::Designtime) ) {
+		throw Common::Exceptions::UnknownIdentifer("method '" + symbol->mName + "' not found", token->position());
 	}
 
 	return new MethodExpression(symbol, parameterList);
@@ -1308,6 +1322,7 @@ void TreeGenerator::pushTokens(const TokenList& tokens)
 
 SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base) const
 {
+	// retrieve symbol for token from base scope
 	Symbol* result = base->resolve(token->content(), false, Visibility::Private);
 	if ( !result ) {
 		throw Common::Exceptions::InvalidSymbol("invalid symbol '" + token->content() + "' found", token->position());
@@ -1320,6 +1335,7 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base) con
 	IScope* scope = 0;
 	std::string type;
 
+	// set scope & type according to symbol type
 	switch ( result->getSymbolType() ) {
 		case Symbol::IType::BluePrintEnumSymbol:
 			scope = static_cast<Designtime::BluePrintEnum*>(result);
@@ -1342,16 +1358,9 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base) con
 			type = static_cast<Common::Namespace*>(result)->QualifiedTypename();
 			break;
 		case Symbol::IType::ObjectSymbol: {
+			// set scope according to result type
+			scope = static_cast<Runtime::Object*>(result)->isAtomicType() ? 0 : static_cast<Runtime::Object*>(result)->getBluePrint();
 			type = static_cast<Runtime::Object*>(result)->QualifiedTypename();
-
-			if ( static_cast<Runtime::Object*>(result)->isAtomicType() ) {
-				// we are just using an atomic type
-				scope = 0;
-			}
-			else {
-				// we are accessing a complex type (= an object)
-				scope = static_cast<Runtime::Object*>(result)->getBluePrint();
-			}
 		} break;
 		case Symbol::IType::MethodSymbol:
 			scope = 0;
@@ -1370,6 +1379,49 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base) con
 	symbol->mSurroundingScope = base;
 
 	return symbol;
+}
+
+MethodSymbol* TreeGenerator::resolveMethod(IScope* scope, SymbolExpression* symbol, const ParameterList& params, bool onlyCurrentScope, Visibility::E visibility) const
+{
+	if ( !scope ) {
+		throw Runtime::Exceptions::InvalidSymbol("invalid scope provided");
+	}
+	if ( !symbol ) {
+		throw Runtime::Exceptions::InvalidSymbol("invalid symbol provided");
+	}
+
+	while ( symbol->mSymbolExpression ) {
+		Symbol* child = scope->resolve(symbol->mName, onlyCurrentScope, visibility);
+
+		if ( !child ) {
+			return 0;
+		}
+
+		switch ( child->getSymbolType() ) {
+			case Symbol::IType::NamespaceSymbol:
+				scope = static_cast<Common::Namespace*>(child);
+				break;
+			case Symbol::IType::BluePrintEnumSymbol:
+			case Symbol::IType::BluePrintObjectSymbol:
+				scope = static_cast<Designtime::BluePrintObject*>(child);
+				break;
+			case Symbol::IType::ObjectSymbol:
+				scope = static_cast<Runtime::Object*>(child);
+				break;
+			case Symbol::IType::MethodSymbol:
+			case Symbol::IType::UnknownSymbol:
+				throw Designtime::Exceptions::DesigntimeException("invalid symbol type found");
+		}
+
+		symbol = symbol->mSymbolExpression;
+	}
+
+	MethodScope* methodScope = dynamic_cast<MethodScope*>(scope);
+	if ( !methodScope ) {
+		return 0;
+	}
+
+	return methodScope->resolveMethod(symbol->mName, params, onlyCurrentScope, visibility);
 }
 
 std::string TreeGenerator::resolveType(Node* left, const Token& operation, Node* right) const

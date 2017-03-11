@@ -103,11 +103,13 @@ private: // Execution
 	// }
 
 	SymbolExpression* resolve(TokenIterator& token, IScope* base) const;
+	MethodSymbol* resolveMethod(IScope* scope, SymbolExpression* symbol, const ParameterList& params, bool onlyCurrentScope, Visibility::E visibility) const;
 
 	std::string resolveType(Node* left, const Token& operation, Node* right) const;
 
 	// Scope stack
 	// {
+	MethodScope* getEnclosingMethodScope(IScope* scope) const;
 	IScope* getScope() const;
 	void popScope();
 	void pushScope(IScope* scope = 0, bool allowBreakAndContinue = false);

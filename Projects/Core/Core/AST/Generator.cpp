@@ -27,7 +27,7 @@ Generator::~Generator()
 }
 
 /*
- * walk through global namespace and process all methods
+ * walk through global namespace and process all methods of all symbols
  */
 void Generator::process(MethodScope* base)
 {
