@@ -539,7 +539,6 @@ bool Analyser::createNamespace(TokenIterator& token, TokenIterator /*end*/)
 				case Symbol::IType::BluePrintObjectSymbol:
 				case Symbol::IType::MethodSymbol:
 				case Symbol::IType::ObjectSymbol:
-				case Symbol::IType::UnknownSymbol:
 					throw Common::Exceptions::Exception("cannot extend non-namespace symbol '" + symbol->getName() + "'", token->position());
 			}
 		}

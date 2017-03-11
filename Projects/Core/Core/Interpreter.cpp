@@ -425,8 +425,6 @@ inline Symbol* Interpreter::identify(TokenIterator& token) const
 					break;
 				case Symbol::IType::MethodSymbol:
 					throw Common::Exceptions::NotSupported("cannot directly access locales of method");
-				case Symbol::IType::UnknownSymbol:
-					throw Common::Exceptions::SyntaxError("unexpected symbol found");
 			}
 
 			onlyCurrentScope = true;
@@ -486,8 +484,6 @@ Symbol* Interpreter::identifyMethod(TokenIterator& token, const ParameterList& p
 					break;
 				case Symbol::IType::MethodSymbol:
 					throw Common::Exceptions::NotSupported("cannot directly access locales of method");
-				case Symbol::IType::UnknownSymbol:
-					throw Common::Exceptions::SyntaxError("unexpected symbol found");
 			}
 
 			onlyCurrentScope = true;
@@ -859,7 +855,6 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 					operator_binary_assign(result, &tmp);
 				} break;
 				case Symbol::IType::NamespaceSymbol:
-				case Symbol::IType::UnknownSymbol:
 					throw Common::Exceptions::SyntaxError("unexpected symbol resolved", start->position());
 			}
 		} break;
@@ -1033,7 +1028,6 @@ void Interpreter::process_delete(TokenIterator& token)
 		case Symbol::IType::BluePrintObjectSymbol:
 		case Symbol::IType::MethodSymbol:
 		case Symbol::IType::NamespaceSymbol:
-		case Symbol::IType::UnknownSymbol:
 			throw Common::Exceptions::TypeMismatch("member or local variable expected but symbol '" + symbol->getName() + "' found", token->position());
 	}
 

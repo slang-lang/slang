@@ -11,6 +11,8 @@ private namespace Space {
 		print("Space.SpacedMethod(" + value + ")");
 
 		mValue = value;
+
+		return mValue;
 	}
 }
 

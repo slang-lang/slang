@@ -216,8 +216,6 @@ inline Symbol* TreeGenerator::identify(TokenIterator& token) const
 					break;
 				case Symbol::IType::MethodSymbol:
 					throw Common::Exceptions::NotSupported("cannot directly access locales of method");
-				case Symbol::IType::UnknownSymbol:
-					throw Common::Exceptions::SyntaxError("unexpected symbol found");
 			}
 
 			onlyCurrentScope = true;
@@ -272,8 +270,6 @@ Symbol* TreeGenerator::identifyMethod(TokenIterator& token, const ParameterList&
 					break;
 				case Symbol::IType::MethodSymbol:
 					throw Common::Exceptions::NotSupported("cannot directly access locales of method");
-				case Symbol::IType::UnknownSymbol:
-					throw Common::Exceptions::SyntaxError("unexpected symbol found");
 			}
 
 			onlyCurrentScope = true;
@@ -1367,8 +1363,6 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base) con
 			// don't set the result type yet because we first have to determine which method should get executed in case overloaded methods are present
 			//type = static_cast<Common::Method*>(result)->QualifiedTypename();
 			break;
-		case Symbol::IType::UnknownSymbol:
-			throw Common::Exceptions::SyntaxError("unexpected symbol found");
 	}
 
 	if ( token->type() == Token::Type::SCOPE ) {
@@ -1398,18 +1392,17 @@ MethodSymbol* TreeGenerator::resolveMethod(IScope* scope, SymbolExpression* symb
 		}
 
 		switch ( child->getSymbolType() ) {
-			case Symbol::IType::NamespaceSymbol:
-				scope = static_cast<Common::Namespace*>(child);
-				break;
-			case Symbol::IType::BluePrintEnumSymbol:
 			case Symbol::IType::BluePrintObjectSymbol:
 				scope = static_cast<Designtime::BluePrintObject*>(child);
+				break;
+			case Symbol::IType::NamespaceSymbol:
+				scope = static_cast<Common::Namespace*>(child);
 				break;
 			case Symbol::IType::ObjectSymbol:
 				scope = static_cast<Runtime::Object*>(child);
 				break;
+			case Symbol::IType::BluePrintEnumSymbol:
 			case Symbol::IType::MethodSymbol:
-			case Symbol::IType::UnknownSymbol:
 				throw Designtime::Exceptions::DesigntimeException("invalid symbol type found");
 		}
 
