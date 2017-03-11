@@ -35,11 +35,12 @@ void Generator::process(MethodScope* base)
 		throw Common::Exceptions::Exception("invalid scope symbol provided");
 	}
 
-	for ( SymbolScope::Symbols::const_iterator it = base->begin(); it != base->end(); ++it ) {
+	for ( SymbolScope::Symbols::const_iterator it = base->beginSymbols(); it != base->endSymbols(); ++it ) {
 		switch ( it->second->getSymbolType() ) {
 			case Symbol::IType::MethodSymbol:
-				processMethod(static_cast<Common::Method*>(it->second));
-				break;
+				throw Common::Exceptions::Exception("invalid symbol found: " + it->second->getName());
+				//processMethod(static_cast<Common::Method*>(it->second));
+				//break;
 			case Symbol::IType::BluePrintObjectSymbol:
 				processBluePrint(static_cast<Designtime::BluePrintObject*>(it->second));
 				break;
@@ -51,6 +52,10 @@ void Generator::process(MethodScope* base)
 			case Symbol::IType::ObjectSymbol:
 				break;	// ignore runtime symbols
 		}
+	}
+
+	for ( MethodScope::MethodCollection::const_iterator it = base->beginMethods(); it != base->endMethods(); ++it ) {
+		processMethod(static_cast<Common::Method*>((*it)));
 	}
 }
 

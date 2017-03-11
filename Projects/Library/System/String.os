@@ -209,7 +209,7 @@ public object String implements IIterateable {
 	 * String concatenation operator
 	 */
 	public void operator+(String other ref) modify {
-		mValue = mValue + other;
+		mValue = mValue + string other;
 	}
 
 	public bool operator<(string other) const {

@@ -179,7 +179,7 @@ void Object::assignReference(const Reference& ref)
 	}
 	else {
 		mThis = this;
-		mBase = dynamic_cast<Object*>(SymbolScope::resolve("base", true));
+		mBase = dynamic_cast<Object*>(MethodScope::resolve("base", true));
 	}
 
 	Controller::Instance().memory()->remove(old);
@@ -335,7 +335,7 @@ void Object::copy(const Object& other)
 
 void Object::defineMember(const std::string& name, Symbol* symbol)
 {
-	SymbolScope::define(name, symbol);
+	MethodScope::define(name, symbol);
 }
 
 void Object::defineMethod(const std::string& name, Common::Method* method)
@@ -366,19 +366,19 @@ ControlFlow::E Object::Destructor()
 		if ( destructor ) {
 			VoidObject tmp;
 
-/*
+
 #ifdef GENERATE_PARSE_TREE
 
 			AST::TreeInterpreter interpreter;
 			controlflow = interpreter.execute(destructor, params, &tmp);
 
 #else
-*/
+
 			Interpreter interpreter;
 			controlflow = interpreter.execute(destructor, params, &tmp);
-/*
+
 #endif
-*/
+
 			if ( controlflow != ControlFlow::Normal ) {
 				return controlflow;
 			}

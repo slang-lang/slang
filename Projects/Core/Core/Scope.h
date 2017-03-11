@@ -75,30 +75,48 @@ public:
 };
 
 
-class MethodScope : public NamedScope
+class MethodScope : public IScope
 {
 public:
 #ifdef USE_ORDERED_COLLECTION
 	typedef std::set<Common::Method*> MethodCollection;
+	typedef std::map<std::string, Symbol*> Symbols;
 #else
 	typedef std::unordered_set<Common::Method*> MethodCollection;
+	typedef std::unordered_map<std::string, Symbol*> Symbols;
 #endif
 
 public:
 	MethodScope(const std::string& name, IScope* parent = 0);
 	virtual ~MethodScope();
 
-public:
+public:	// IScope implementation
+	virtual void define(const std::string& name, Symbol* symbol);
+	virtual IScope* getEnclosingScope() const;
+	virtual std::string getFullScopeName() const;
+	virtual const std::string& getScopeName() const;
+	virtual IScope::IType::E getScopeType() const;
+	virtual Symbol* resolve(const std::string& name, bool onlyCurrentScope = false, Visibility::E visibility = Visibility::Designtime) const;
+	virtual void undefine(const std::string& name, bool onlyCurrentScope = true);
+
+public: // MethodScope implementation
 	virtual void defineMethod(const std::string& name, Common::Method* method);
 	virtual MethodSymbol* resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope = false, Visibility::E visibility = Visibility::Designtime) const;
 	virtual void undefineMethod(Common::Method* method);
 
 public:
-	virtual Symbols::const_iterator begin() const;
-	virtual Symbols::const_iterator end() const;
+	MethodCollection::const_iterator beginMethods() const;
+	MethodCollection::const_iterator endMethods() const;
+
+	Symbols::const_iterator beginSymbols() const;
+	Symbols::const_iterator endSymbols() const;
 
 protected:
 	MethodCollection mMethods;
+	IScope *mParent;
+	std::string mScopeName;
+	IType::E mScopeType;
+	Symbols mSymbols;
 
 private:
 	void deinit();
