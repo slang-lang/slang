@@ -26,7 +26,7 @@ private namespace OutterSpace {
 			mInnerObject = inner;
 		}
 
-		public InnerSpace.InnerObject getInnerObject() const {
+		public OutterSpace.InnerSpace.InnerObject getInnerObject() const {
 			return mInnerObject;
 		}
 	}
@@ -41,6 +41,6 @@ private bool TestCase1() {
 
 	OutterSpace.OutterObject obj = new OutterSpace.OutterObject(173);
 
-	return obj;
+	return bool obj;
 }
 
