@@ -444,11 +444,11 @@ Mutability::E TreeGenerator::parseMutability(TokenIterator& token)
 
 SymbolExpression* TreeGenerator::parseSymbol(TokenIterator& token)
 {
-	SymbolExpression* exp = new SymbolExpression(token->content(), "", 0);
+	SymbolExpression* exp = new RuntimeSymbolExpression(token->content(), "");
 	++token;
 
 	while ( token->type() == Token::Type::SCOPE ) {
-		exp->mSymbolExpression = parseSymbol(++token /*, mMethod*/ );
+		exp->mSymbolExpression = parseSymbol(++token);
 	}
 
 	return exp;
@@ -745,26 +745,27 @@ Node* TreeGenerator::process_identifier(TokenIterator& token, bool allowTypeCast
 	}
 	// assignment
 	else if ( op->category() == Token::Category::Assignment ) {
+		Token assignment(Token::Category::Assignment, Token::Type::ASSIGN, "=", op->position());
 		Token operation(Token::Category::Assignment, Token::Type::ASSIGN, "=", op->position());
 		Node* right = expression(++token);
 
 		if ( op->type() != Token::Type::ASSIGN ) {
 			switch ( op->type() ) {
-				case Token::Type::ASSIGN_ADDITION: operation = Token(Token::Type::MATH_ADDITION, "+"); break;
-				case Token::Type::ASSIGN_BITAND: operation = Token(Token::Type::BITAND, "&"); break;
-				case Token::Type::ASSIGN_BITCOMPLEMENT: operation = Token(Token::Type::BITCOMPLEMENT, "~"); break;
-				case Token::Type::ASSIGN_BITOR: operation = Token(Token::Type::BITOR, "|"); break;
-				case Token::Type::ASSIGN_DIVIDE: operation = Token(Token::Type::MATH_DIVIDE, "/"); break;
-				case Token::Type::ASSIGN_MODULO: operation = Token(Token::Type::MATH_MODULO, "%"); break;
-				case Token::Type::ASSIGN_MULTIPLY: operation = Token(Token::Type::MATH_MULTIPLY, "*"); break;
-				case Token::Type::ASSIGN_SUBTRACT: operation = Token(Token::Type::MATH_SUBTRACT, "-"); break;
-				default: throw Common::Exceptions::SyntaxError("assignment type execpted", token->position());
+				case Token::Type::ASSIGN_ADDITION: operation = Token(Token::Category::Operator, Token::Type::MATH_ADDITION, "+", op->position()); break;
+				case Token::Type::ASSIGN_BITAND: operation = Token(Token::Category::Operator, Token::Type::BITAND, "&", op->position()); break;
+				case Token::Type::ASSIGN_BITCOMPLEMENT: operation = Token(Token::Category::Operator, Token::Type::BITCOMPLEMENT, "~", op->position()); break;
+				case Token::Type::ASSIGN_BITOR: operation = Token(Token::Category::Operator, Token::Type::BITOR, "|", op->position()); break;
+				case Token::Type::ASSIGN_DIVIDE: operation = Token(Token::Category::Operator, Token::Type::MATH_DIVIDE, "/", op->position()); break;
+				case Token::Type::ASSIGN_MODULO: operation = Token(Token::Category::Operator, Token::Type::MATH_MODULO, "%", op->position()); break;
+				case Token::Type::ASSIGN_MULTIPLY: operation = Token(Token::Category::Operator, Token::Type::MATH_MULTIPLY, "*", op->position()); break;
+				case Token::Type::ASSIGN_SUBTRACT: operation = Token(Token::Category::Operator, Token::Type::MATH_SUBTRACT, "-", op->position()); break;
+				default: throw Common::Exceptions::SyntaxError("assignment type expected", token->position());
 			}
 
 			right = new BinaryExpression(symbol, operation, right, resolveType(symbol, operation, right));
 		}
 
-		node = new Assignment(symbol, operation, right, resolveType(symbol, operation, right));
+		node = new Assignment(symbol, (*op), right, resolveType(symbol, assignment, right));
 	}
 	// --
 	else if ( op->type() == Token::Type::OPERATOR_DECREMENT ) {
@@ -906,7 +907,7 @@ MethodExpression* TreeGenerator::process_method(SymbolExpression* symbol, TokenI
 
 	Common::Method* method = static_cast<Common::Method*>(resolveMethod(getEnclosingMethodScope(mMethod), symbol, params, false, Visibility::Designtime));
 	if ( !method ) {
-		throw Common::Exceptions::UnknownIdentifer("method '" + symbol->toString() + "' not found", token->position());
+		throw Common::Exceptions::UnknownIdentifer("method '" + symbol->toString() + "(" + toString(params) + ")' not found", token->position());
 	}
 
 	return new MethodExpression(symbol, parameterList, method->QualifiedTypename());
@@ -937,7 +938,7 @@ Expression* TreeGenerator::process_new(TokenIterator& token)
 			inner = inner->mSymbolExpression;
 		}
 		else {
-			inner->mSymbolExpression = new SymbolExpression("Constructor", static_cast<Designtime::BluePrintObject*>(symbol)->QualifiedTypename(), 0);
+			inner->mSymbolExpression = new DesigntimeSymbolExpression("Constructor", static_cast<Designtime::BluePrintObject*>(symbol)->QualifiedTypename());
 			break;
 		}
 	}
@@ -1344,49 +1345,58 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base) con
 	++token;
 
 	std::string name = result->getName();
-	SymbolExpression* exp = 0;
 	IScope* scope = 0;
 	std::string type;
+
+	SymbolExpression* symbol = 0;
 
 	// set scope & type according to symbol type
 	switch ( result->getSymbolType() ) {
 		case Symbol::IType::BluePrintEnumSymbol:
 			scope = static_cast<Designtime::BluePrintEnum*>(result);
-			type = static_cast<Designtime::BluePrintEnum*>(result)->UnqualifiedTypename();
+			type = static_cast<Designtime::BluePrintEnum*>(result)->QualifiedTypename();
 
 			if ( !static_cast<Designtime::BluePrintEnum*>(result)->isMember() ) {
-				name = type;
+				name = static_cast<Designtime::BluePrintEnum*>(result)->UnqualifiedTypename();
 			}
+
+			symbol = new DesigntimeSymbolExpression(name, type);
 			break;
 		case Symbol::IType::BluePrintObjectSymbol: {
 			scope = static_cast<Designtime::BluePrintObject*>(result);
-			type = static_cast<Designtime::BluePrintObject*>(result)->UnqualifiedTypename();
+			type = static_cast<Designtime::BluePrintObject*>(result)->QualifiedTypename();
 
 			if ( !static_cast<Designtime::BluePrintObject*>(result)->isMember() ) {
-				name = type;
+				name = static_cast<Designtime::BluePrintObject*>(result)->UnqualifiedTypename();
 			}
+
+			symbol = new DesigntimeSymbolExpression(name, type);
 		} break;
 		case Symbol::IType::NamespaceSymbol:
 			scope = static_cast<Common::Namespace*>(result);
 			type = static_cast<Common::Namespace*>(result)->QualifiedTypename();
+
+			symbol = new DesigntimeSymbolExpression(name, type);
 			break;
 		case Symbol::IType::ObjectSymbol: {
 			// set scope according to result type
 			scope = static_cast<Runtime::Object*>(result)->isAtomicType() ? 0 : static_cast<Runtime::Object*>(result)->getBluePrint();
 			type = static_cast<Runtime::Object*>(result)->QualifiedTypename();
+
+			symbol = new RuntimeSymbolExpression(name, type);
 		} break;
 		case Symbol::IType::MethodSymbol:
 			scope = 0;
 			// don't set the result type yet because we first have to determine which method should get executed in case overloaded methods are present
 			//type = static_cast<Common::Method*>(result)->QualifiedTypename();
+
+			symbol = new RuntimeSymbolExpression(name, type);
 			break;
 	}
 
 	if ( token->type() == Token::Type::SCOPE ) {
-		exp = resolve(++token, scope);
+		symbol->mSymbolExpression = resolve(++token, scope);
 	}
-
-	SymbolExpression* symbol = new SymbolExpression(name, type, exp);
 	symbol->mSurroundingScope = base;
 
 	return symbol;

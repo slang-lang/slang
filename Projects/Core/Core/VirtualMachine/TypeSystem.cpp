@@ -212,6 +212,11 @@ void TypeSystem::initInt()
 	define(IntegerObject::TYPENAME, Token::Type::MATH_SUBTRACT, FloatObject::TYPENAME, IntegerObject::TYPENAME);
 	define(IntegerObject::TYPENAME, Token::Type::MATH_SUBTRACT, IntegerObject::TYPENAME, IntegerObject::TYPENAME);
 
+	// bit
+	define(IntegerObject::TYPENAME, Token::Type::BITAND, IntegerObject::TYPENAME, IntegerObject::TYPENAME);
+	define(IntegerObject::TYPENAME, Token::Type::BITCOMPLEMENT, IntegerObject::TYPENAME, IntegerObject::TYPENAME);
+	define(IntegerObject::TYPENAME, Token::Type::BITOR, IntegerObject::TYPENAME, IntegerObject::TYPENAME);
+
 	// comparison
 	define(IntegerObject::TYPENAME, Token::Type::COMPARE_EQUAL, IntegerObject::TYPENAME, BoolObject::TYPENAME);
 	define(IntegerObject::TYPENAME, Token::Type::COMPARE_GREATER, IntegerObject::TYPENAME, BoolObject::TYPENAME);
