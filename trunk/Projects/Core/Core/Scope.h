@@ -33,6 +33,7 @@ namespace Common {
 }
 class Symbol;
 
+
 class SymbolScope : public IScope
 {
 public:
@@ -71,9 +72,6 @@ class NamedScope : public SymbolScope
 public:
 	NamedScope(const std::string& name, IScope* parent = 0);
 	virtual ~NamedScope();
-
-private:
-	void deinit();
 };
 
 

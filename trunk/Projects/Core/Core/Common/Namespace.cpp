@@ -90,7 +90,6 @@ std::string Namespace::ToString(unsigned int indent) const
 			case Symbol::IType::BluePrintEnumSymbol:
 			case Symbol::IType::BluePrintObjectSymbol:
 			case Symbol::IType::MethodSymbol:
-			case Symbol::IType::UnknownSymbol:
 				continue;
 			case Symbol::IType::NamespaceSymbol:
 			case Symbol::IType::ObjectSymbol:

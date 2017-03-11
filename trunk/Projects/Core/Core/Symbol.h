@@ -35,7 +35,6 @@ public:
 	{
 	public:
 		enum E {
-			UnknownSymbol,
 			BluePrintEnumSymbol,
 			BluePrintObjectSymbol,
 			MethodSymbol,

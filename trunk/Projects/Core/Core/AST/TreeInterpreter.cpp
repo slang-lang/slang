@@ -333,8 +333,6 @@ void TreeInterpreter::evaluateSymbol(SymbolExpression* exp, Runtime::Object* res
 				break;
 			case Symbol::IType::MethodSymbol:
 				throw Common::Exceptions::NotSupported("cannot directly access locales of method");
-			case Symbol::IType::UnknownSymbol:
-				throw Common::Exceptions::SyntaxError("unexpected symbol found");
 		}
 
 		evaluateSymbol(exp->mSymbolExpression, result, scope);
@@ -705,7 +703,6 @@ Symbol* TreeInterpreter::resolve(IScope* scope, SymbolExpression* symbol, bool o
 				scope = static_cast<Runtime::Object*>(child);
 				break;
 			case Symbol::IType::MethodSymbol:
-			case Symbol::IType::UnknownSymbol:
 				throw Designtime::Exceptions::DesigntimeException("invalid symbol type found");
 		}
 
@@ -732,18 +729,17 @@ MethodSymbol* TreeInterpreter::resolveMethod(IScope* scope, SymbolExpression* sy
 		}
 
 		switch ( child->getSymbolType() ) {
-			case Symbol::IType::NamespaceSymbol:
-				scope = static_cast<Common::Namespace*>(child);
-				break;
-			case Symbol::IType::BluePrintEnumSymbol:
 			case Symbol::IType::BluePrintObjectSymbol:
 				scope = static_cast<Designtime::BluePrintObject*>(child);
+				break;
+			case Symbol::IType::NamespaceSymbol:
+				scope = static_cast<Common::Namespace*>(child);
 				break;
 			case Symbol::IType::ObjectSymbol:
 				scope = static_cast<Runtime::Object*>(child);
 				break;
+			case Symbol::IType::BluePrintEnumSymbol:
 			case Symbol::IType::MethodSymbol:
-			case Symbol::IType::UnknownSymbol:
 				throw Designtime::Exceptions::DesigntimeException("invalid symbol type found");
 		}
 

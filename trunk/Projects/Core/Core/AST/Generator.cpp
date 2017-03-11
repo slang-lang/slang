@@ -50,8 +50,6 @@ void Generator::process(MethodScope* base)
 				break;	// enums don't have an implementation
 			case Symbol::IType::ObjectSymbol:
 				break;	// ignore runtime symbols
-			case Symbol::IType::UnknownSymbol:
-				throw Common::Exceptions::InvalidSymbol("unknown symbol type found");
 		}
 	}
 }

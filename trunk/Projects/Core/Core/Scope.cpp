@@ -124,12 +124,8 @@ NamedScope::NamedScope(const std::string& name, IScope* parent)
 
 NamedScope::~NamedScope()
 {
-	deinit();
 }
 
-void NamedScope::deinit()
-{
-}
 
 MethodScope::MethodScope(const std::string& name, IScope* parent)
 : NamedScope(name, parent)

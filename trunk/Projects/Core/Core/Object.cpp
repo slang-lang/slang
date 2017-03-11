@@ -1128,7 +1128,6 @@ std::string Object::ToString(unsigned int indent) const
 				case Symbol::IType::BluePrintObjectSymbol:
 				case Symbol::IType::MethodSymbol:
 				case Symbol::IType::NamespaceSymbol:
-				case Symbol::IType::UnknownSymbol:
 					continue;
 				case Symbol::IType::ObjectSymbol:
 					result += it->second->ToString(indent + 1) + "\n";
