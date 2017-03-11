@@ -57,7 +57,7 @@ std::string PrintVisitor::printExpression(Node* node) const
 				result += static_cast<LiteralExpression*>(expression)->mValue.toStdString();
 			} break;
 			case Expression::ExpressionType::MethodExpression: {
-				result += printExpression(static_cast<MethodExpression*>(expression)->mSymbol);
+				result += printExpression(static_cast<MethodExpression*>(expression)->mSymbolExpression);
 				result += "(";
 				for ( ExpressionList::const_iterator it = static_cast<MethodExpression*>(expression)->mParams.begin(); it != static_cast<MethodExpression*>(expression)->mParams.end(); ++it ) {
 					result += printExpression((*it));
