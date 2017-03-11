@@ -930,9 +930,19 @@ Expression* TreeGenerator::process_new(TokenIterator& token)
 	}
 
 	SymbolExpression* exp = resolve(token, getScope());
-	exp->mSymbolExpression = new SymbolExpression("Constructor", static_cast<Designtime::BluePrintObject*>(symbol)->QualifiedTypename(), 0);
 
-	return new NewExpression(static_cast<Designtime::BluePrintObject*>(symbol)->QualifiedTypename(), process_method(exp, token));
+	SymbolExpression* inner = exp;
+	while ( true ) {
+		if ( inner->mSymbolExpression ) {
+			inner = inner->mSymbolExpression;
+		}
+		else {
+			inner->mSymbolExpression = new SymbolExpression("Constructor", static_cast<Designtime::BluePrintObject*>(symbol)->QualifiedTypename(), 0);
+			break;
+		}
+	}
+
+	return new NewExpression(exp->getResultType(), process_method(exp, token));
 }
 
 /*
@@ -1244,7 +1254,7 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, bool allowIni
 
 	Mutability::E mutability = parseMutability(token);
 
-	Runtime::Object* object = mRepository->createInstance(type, name, constraints);
+	Runtime::Object* object = mRepository->createInstance(type, name, constraints, Repository::InitilizationType::Final);
 	object->setConst(mutability == Mutability::Const);
 
 	getScope()->define(name, object);
@@ -1321,6 +1331,10 @@ void TreeGenerator::pushTokens(const TokenList& tokens)
 
 SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base) const
 {
+	if ( !base ) {
+		throw Common::Exceptions::Exception("invalid base scope");
+	}
+
 	// retrieve symbol for token from base scope
 	Symbol* result = base->resolve(token->content(), false, Visibility::Private);
 	if ( !result ) {
@@ -1338,7 +1352,7 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base) con
 	switch ( result->getSymbolType() ) {
 		case Symbol::IType::BluePrintEnumSymbol:
 			scope = static_cast<Designtime::BluePrintEnum*>(result);
-			type = static_cast<Designtime::BluePrintEnum*>(result)->QualifiedTypename();
+			type = static_cast<Designtime::BluePrintEnum*>(result)->UnqualifiedTypename();
 
 			if ( !static_cast<Designtime::BluePrintEnum*>(result)->isMember() ) {
 				name = type;
@@ -1346,7 +1360,7 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base) con
 			break;
 		case Symbol::IType::BluePrintObjectSymbol: {
 			scope = static_cast<Designtime::BluePrintObject*>(result);
-			type = static_cast<Designtime::BluePrintObject*>(result)->QualifiedTypename();
+			type = static_cast<Designtime::BluePrintObject*>(result)->UnqualifiedTypename();
 
 			if ( !static_cast<Designtime::BluePrintObject*>(result)->isMember() ) {
 				name = type;

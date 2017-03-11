@@ -239,12 +239,12 @@ void TreeInterpreter::evaluateMethodExpression(MethodExpression* exp, Runtime::O
 		params.push_back(Parameter::CreateRuntime(param->QualifiedOuterface(), param->getValue(), param->getReference()));
 	}
 
-	MethodSymbol* methodSymbol = resolveMethod(getScope(), exp->mSymbol, params, false, Visibility::Private);
+	MethodSymbol* methodSymbol = resolveMethod(getScope(), exp->mSymbolExpression, params, false, Visibility::Private);
 	if ( !methodSymbol ) {
-		methodSymbol = resolveMethod(getEnclosingMethodScope(), exp->mSymbol, params, false, Visibility::Private);
+		methodSymbol = resolveMethod(getEnclosingMethodScope(), exp->mSymbolExpression, params, false, Visibility::Private);
 	}
 	if ( !methodSymbol ) {
-		throw Runtime::Exceptions::RuntimeException("method " + exp->mSymbol->toString() + " not found");
+		throw Runtime::Exceptions::RuntimeException("method " + exp->mSymbolExpression->toString() + " not found");
 	}
 
 	Common::Method* method = static_cast<Common::Method*>(methodSymbol);
@@ -298,7 +298,7 @@ void TreeInterpreter::evaluateNewExpression(NewExpression* exp, Runtime::Object*
 	}
 
 	// create initialized reference of new object
-	*result = *mRepository->createReference(exp->mType, ANONYMOUS_OBJECT, PrototypeConstraints(), Repository::InitilizationType::Final);
+	*result = *mRepository->createReference(exp->getResultType(), ANONYMOUS_OBJECT, PrototypeConstraints(), Repository::InitilizationType::Final);
 
 	// execute new object's constructor
 	mControlFlow = result->Constructor(params);
@@ -613,7 +613,7 @@ std::string TreeInterpreter::printExpression(Node* node) const
 				result += static_cast<LiteralExpression*>(expression)->mValue.toStdString();
 			} break;
 			case Expression::ExpressionType::MethodExpression: {
-				result += printExpression(static_cast<MethodExpression*>(expression)->mSymbol);
+				result += printExpression(static_cast<MethodExpression*>(expression)->mSymbolExpression);
 				result += "(";
 				for ( ExpressionList::const_iterator it = static_cast<MethodExpression*>(expression)->mParams.begin(); it != static_cast<MethodExpression*>(expression)->mParams.end(); ++it ) {
 					result += printExpression((*it));

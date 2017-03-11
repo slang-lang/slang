@@ -51,7 +51,7 @@ public:
 		return mExpressionType;
 	}
 
-	const std::string& getResultType() const {
+	virtual const std::string& getResultType() const {
 		return mResultType;
 	}
 
@@ -270,8 +270,7 @@ class NewExpression : public Expression
 public:
 	explicit NewExpression(const std::string& type, Node* exp)
 	: Expression(ExpressionType::NewExpression),
-	  mExpression(exp),
-	  mType(type)
+	  mExpression(exp)
 	{
 		mResultType = type;
 	}
@@ -281,7 +280,6 @@ public:
 
 public:
 	Node* mExpression;
-	std::string mType;
 };
 
 // Memory expressions
@@ -323,6 +321,10 @@ public:
 	}
 	~SymbolExpression() {
 		delete mSymbolExpression;
+	}
+
+	const std::string& getResultType() const {
+		return mSymbolExpression ? mSymbolExpression->getResultType() : mResultType;
 	}
 
 	std::string toString() const {
@@ -393,21 +395,21 @@ public:
 	explicit MethodExpression(SymbolExpression* symbol, const ExpressionList& params, const std::string& resultType)
 	: Expression(ExpressionType::MethodExpression),
 	  mParams(params),
-	  mSymbol(symbol)
+	  mSymbolExpression(symbol)
 	{
-		// due to the possibility of method overloading we cannot use the result type of our symbol
+		// due to the possibility of method overloading we cannot use the result type of our symbol expression
 		mResultType = resultType;
 	}
 	~MethodExpression() {
 		for ( ExpressionList::iterator it = mParams.begin(); it != mParams.end(); ++it ) {
 			delete (*it);
 		}
-		delete mSymbol;
+		delete mSymbolExpression;
 	}
 
 public:
 	ExpressionList mParams;
-	SymbolExpression* mSymbol;
+	SymbolExpression* mSymbolExpression;
 };
 
 // Method expressions
