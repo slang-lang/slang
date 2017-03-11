@@ -30,7 +30,7 @@ public:
 	: ExtensionMethod(0, "assert", Designtime::VoidObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("condition", TYPE_ANY));
+		params.push_back(Parameter::CreateDesigntime("condition", _any));
 		params.push_back(Parameter::CreateDesigntime("message", Designtime::StringObject::TYPENAME, VALUE_NONE, true));
 
 		setSignature(params);

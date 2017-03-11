@@ -88,6 +88,8 @@ static const char* RESERVED_WORD_SCOPE_OPERATOR = ".";
 
 // System
 static const char* ANONYMOUS_OBJECT = "<anonymous>";
+static const char* CONSTRUCTOR = "Constructor";
+static const char* DESTRUCTOR = "Destructor";
 static const char* NULL_TYPE = "<anonymous>";
 static const char* OBJECT = "Object";
 static const char* OBJECTIVESCRIPT_LIBRARY = "OBJECTIVESCRIPT_LIBRARY";
@@ -95,7 +97,14 @@ static const char* SYSTEM_LIBRARY = "SYSTEM.OS";
 static const char* UNKNOWN = "unknown";
 
 // Types
-static const char* TYPE_ANY = "";
+static const char* _any = "";
+static const char* _bool = "bool";
+static const char* _double = "double";
+static const char* _float = "float";
+static const char* _int = "int";
+static const char* _object = "Object";
+static const char* _string = "string";
+static const char* _void = "void";
 
 // Values
 static const char* VALUE_NONE = "";
