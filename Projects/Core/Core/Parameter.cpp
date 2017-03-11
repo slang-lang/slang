@@ -30,7 +30,7 @@ Parameter Parameter::CreateDesigntime(const std::string& name,
 	);
 }
 
-Parameter Parameter::CreateRuntime(const std::string& type, Runtime::AtomicValue value, Reference reference)
+Parameter Parameter::CreateRuntime(const std::string& type, Runtime::AtomicValue value, Runtime::Reference reference)
 {
 	if ( reference.isValid() ) {
 		return Parameter(
@@ -51,7 +51,7 @@ Parameter Parameter::CreateRuntime(const std::string& type, Runtime::AtomicValue
 		false,
 		false,
 		AccessMode::ByValue,
-		Reference()
+		Runtime::Reference()
 	);
 }
 
@@ -63,7 +63,7 @@ Parameter::Parameter()
 }
 
 Parameter::Parameter(const std::string& name, const TypeDeclaration& type, Runtime::AtomicValue value,
-					 bool hasDefaultValue, bool isConst, AccessMode::E access, Reference reference)
+					 bool hasDefaultValue, bool isConst, AccessMode::E access, Runtime::Reference reference)
 : mAccessMode(access),
   mHasDefaultValue(hasDefaultValue),
   mIsConst(isConst),
@@ -94,7 +94,7 @@ const std::string& Parameter::name() const
 	return mName;
 }
 
-const Reference& Parameter::reference() const
+const Runtime::Reference& Parameter::reference() const
 {
 	return mReference;
 }

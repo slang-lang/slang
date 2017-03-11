@@ -42,7 +42,7 @@ public:
 
 		ParameterList::const_iterator it = list.begin();
 
-		Reference param_reference = (*it).reference();
+		Runtime::Reference param_reference = (*it).reference();
 		Runtime::AtomicValue param_value = (*it++).value();
 		std::string param_text = (*it++).value().toStdString();
 

@@ -4,6 +4,7 @@ SET(SOURCES
 	AtomicValue.cpp
 	ExceptionData.cpp
 	OperatorOverloading.cpp
+	Reference.cpp
 	Script.cpp
 	TypeCast.cpp
 )
@@ -14,6 +15,7 @@ SET(HEADERS
 	ExceptionData.h
 	Exceptions.h
 	OperatorOverloading.h
+	Reference.h
 	Script.h
 	TypeCast.h
 )

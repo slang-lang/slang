@@ -14,6 +14,7 @@
 
 
 namespace ObjectiveScript {
+namespace Runtime {
 
 
 class Reference
@@ -41,6 +42,7 @@ typedef std::list<Reference> ReferencesList;
 static const Reference NullReference = Reference();
 
 
+}
 }
 
 
