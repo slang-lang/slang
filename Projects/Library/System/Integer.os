@@ -96,28 +96,28 @@ public object Integer {
 		mValue = mValue + other;
 	}
 	public void operator+(Integer other ref) modify {
-		mValue = mValue + other;
+		mValue = mValue + int other;
 	}
 
 	public void operator-(int other) modify {
 		mValue = mValue - other;
 	}
 	public void operator-(Integer other ref) modify {
-		mValue = mValue - other;
+		mValue = mValue - int other;
 	}
 
 	public void operator*(int other) modify {
 		mValue = mValue * other;
 	}
 	public void operator*(Integer other ref) modify {
-		mValue = mValue * other;
+		mValue = mValue * int other;
 	}
 
 	public void operator/(int other) modify {
 		mValue = mValue / other;
 	}
 	public void operator/(Integer other ref) modify {
-		mValue = mValue / other;
+		mValue = mValue / int other;
 	}
 }
 

@@ -11,8 +11,30 @@ public namespace Math {
 		return value * value;
 	}
 
+	public double power(double value, int exp) {
+		double result = value;
+
+		while ( exp > 1 ) {
+			result *= value;
+			exp -= 1;
+		}
+
+		return result;
+	}
+
 	public float power(float value) {
 		return value * value;
+	}
+
+	public float power(float value, int exp) {
+		float result = value;
+
+		while ( exp > 1 ) {
+			result *= value;
+			exp -= 1;
+		}
+
+		return result;
 	}
 
 	public int power(int value) {
@@ -23,8 +45,8 @@ public namespace Math {
 		int result = value;
 
 		while ( exp > 1 ) {
-			result = result * value;
-			exp = exp--;
+			result *= value;
+			exp -= 1;
 		}
 
 		return result;
