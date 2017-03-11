@@ -5,6 +5,8 @@
 // Library includes
 
 // Project includes
+#include <Core/Common/Method.h>
+#include <Core/Consts.h>
 
 // Namespace declarations
 
@@ -14,7 +16,7 @@ namespace Designtime {
 
 
 bool BoolObject::DEFAULTVALUE = false;
-std::string BoolObject::TYPENAME = "bool";
+std::string BoolObject::TYPENAME = _bool;
 
 
 BoolObject::BoolObject()
@@ -22,12 +24,29 @@ BoolObject::BoolObject()
 {
 	mIsAtomicType = true;
 
-	addInheritance(Ancestor(TypeDeclaration(OBJECT), Ancestor::Type::Extends, Visibility::Public));
+	//addInheritance(Ancestor(TypeDeclaration(_object), Ancestor::Type::Extends, Visibility::Public));
+
+	initialize();
 }
 
 const std::string& BoolObject::getTypeName() const
 {
 	return TYPENAME;
+}
+
+void BoolObject::initialize()
+{
+	Common::Method* constructor = new Common::Method(this, CONSTRUCTOR, _void);
+	{
+		ParameterList params;
+		params.push_back(
+			Parameter::CreateDesigntime(ANONYMOUS_OBJECT, _bool)
+		);
+		constructor->setSignature(params);
+		constructor->setVisibility(Visibility::Public);
+	}
+
+	defineMethod(CONSTRUCTOR, constructor);
 }
 
 

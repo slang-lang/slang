@@ -5,6 +5,9 @@
 // Library includes
 
 // Project includes
+#include <Core/Common/Method.h>
+#include <Core/Consts.h>
+
 
 // Namespace declarations
 
@@ -13,7 +16,7 @@ namespace ObjectiveScript {
 namespace Designtime {
 
 
-std::string VoidObject::TYPENAME = "void";
+std::string VoidObject::TYPENAME = _void;
 
 
 VoidObject::VoidObject()
@@ -21,12 +24,29 @@ VoidObject::VoidObject()
 {
 	mIsAtomicType = true;
 
-	//addInheritance(Ancestor(OBJECT, Ancestor::Type::Extends, Visibility::Public));
+	//addInheritance(Ancestor(_object, Ancestor::Type::Extends, Visibility::Public));
+
+	initialize();
 }
 
 const std::string& VoidObject::getTypeName() const
 {
 	return TYPENAME;
+}
+
+void VoidObject::initialize()
+{
+	Common::Method* constructor = new Common::Method(this, CONSTRUCTOR, _void);
+	{
+		ParameterList params;
+		params.push_back(
+			Parameter::CreateDesigntime(ANONYMOUS_OBJECT, _void)
+		);
+		constructor->setSignature(params);
+		constructor->setVisibility(Visibility::Public);
+	}
+
+	defineMethod(CONSTRUCTOR, constructor);
 }
 
 

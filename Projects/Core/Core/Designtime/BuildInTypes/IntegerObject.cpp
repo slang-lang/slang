@@ -5,6 +5,7 @@
 // Library includes
 
 // Project includes
+#include <Core/Common/Method.h>
 #include <Core/Consts.h>
 
 // Namespace declarations
@@ -15,7 +16,7 @@ namespace Designtime {
 
 
 int IntegerObject::DEFAULTVALUE = 0;
-std::string IntegerObject::TYPENAME = "int";
+std::string IntegerObject::TYPENAME = _int;
 
 
 IntegerObject::IntegerObject()
@@ -23,12 +24,29 @@ IntegerObject::IntegerObject()
 {
 	mIsAtomicType = true;
 
-	addInheritance(Ancestor(TypeDeclaration(OBJECT), Ancestor::Type::Extends, Visibility::Public));
+	//addInheritance(Ancestor(TypeDeclaration(_object), Ancestor::Type::Extends, Visibility::Public));
+
+	initialize();
 }
 
 const std::string& IntegerObject::getTypeName() const
 {
 	return TYPENAME;
+}
+
+void IntegerObject::initialize()
+{
+	Common::Method* constructor = new Common::Method(this, CONSTRUCTOR, _void);
+	{
+		ParameterList params;
+		params.push_back(
+			Parameter::CreateDesigntime(ANONYMOUS_OBJECT, _int)
+		);
+		constructor->setSignature(params);
+		constructor->setVisibility(Visibility::Public);
+	}
+
+	defineMethod(CONSTRUCTOR, constructor);
 }
 
 

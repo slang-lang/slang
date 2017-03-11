@@ -5,7 +5,9 @@
 // Library includes
 
 // Project includes
+#include <Core/Common/Method.h>
 #include <Core/Consts.h>
+
 
 // Namespace declarations
 
@@ -15,7 +17,7 @@ namespace Designtime {
 
 
 std::string StringObject::DEFAULTVALUE = "";
-std::string StringObject::TYPENAME = "string";
+std::string StringObject::TYPENAME = _string;
 
 
 StringObject::StringObject()
@@ -23,12 +25,29 @@ StringObject::StringObject()
 {
 	mIsAtomicType = true;
 
-	addInheritance(Ancestor(TypeDeclaration(OBJECT), Ancestor::Type::Extends, Visibility::Public));
+	//addInheritance(Ancestor(TypeDeclaration(_object), Ancestor::Type::Extends, Visibility::Public));
+
+	initialize();
 }
 
 const std::string& StringObject::getTypeName() const
 {
 	return TYPENAME;
+}
+
+void StringObject::initialize()
+{
+	Common::Method* constructor = new Common::Method(this, CONSTRUCTOR, _void);
+	{
+		ParameterList params;
+		params.push_back(
+			Parameter::CreateDesigntime(ANONYMOUS_OBJECT, _string)
+		);
+		constructor->setSignature(params);
+		constructor->setVisibility(Visibility::Public);
+	}
+
+	defineMethod(CONSTRUCTOR, constructor);
 }
 
 
