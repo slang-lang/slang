@@ -7,6 +7,7 @@
 #include <list>
 
 // Project includes
+#include <Core/Consts.h>
 #include <Core/Designtime/Parser/Token.h>
 #include <Core/Runtime/AtomicValue.h>
 #include <Core/Scope.h>
@@ -51,7 +52,7 @@ public:
 		return mExpressionType;
 	}
 
-	virtual const std::string& getResultType() const {
+	virtual std::string getResultType() const {
 		return mResultType;
 	}
 
@@ -151,8 +152,7 @@ public:
 	  mExpression(exp),
 	  mOperation(operation)
 	{
-		// TODO: use BoolObject::TYPENAME
-		mResultType = "bool";
+		mResultType = _bool;
 	}
 	virtual ~BooleanUnaryExpression() {
 		delete mExpression;
@@ -189,8 +189,7 @@ public:
 	explicit BooleanLiteralExpression(Runtime::AtomicValue value)
 	: LiteralExpression(value)
 	{
-		// TODO: use BoolObject::TYPENAME
-		mResultType = "bool";
+		mResultType = _bool;
 	}
 };
 
@@ -201,8 +200,7 @@ public:
 	explicit DoubleLiteralExpression(Runtime::AtomicValue value)
 	: LiteralExpression(value)
 	{
-		// TODO: use DoubleObject::TYPENAME
-		mResultType = "double";
+		mResultType = _double;
 	}
 };
 
@@ -213,8 +211,7 @@ public:
 	explicit FloatLiteralExpression(Runtime::AtomicValue value)
 	: LiteralExpression(value)
 	{
-		// TODO: use FloatObject::TYPENAME
-		mResultType = "float";
+		mResultType = _float;
 	}
 };
 
@@ -225,8 +222,7 @@ public:
 	explicit IntegerLiteralExpression(Runtime::AtomicValue value)
 	: LiteralExpression(value)
 	{
-		// TODO: use IntegerObject::TYPENAME
-		mResultType = "int";
+		mResultType = _int;
 	}
 };
 
@@ -237,8 +233,7 @@ public:
 	explicit StringLiteralExpression(Runtime::AtomicValue value)
 	: LiteralExpression(value)
 	{
-		// TODO: use StringObject::TYPENAME
-		mResultType = "string";
+		mResultType = _string;
 	}
 };
 
@@ -297,8 +292,7 @@ public:
 	  mExpression(expression),
 	  mMatchType(matchType)
 	{
-		// TODO: use BoolObject::TYPENAME
-		mResultType = "bool";
+		mResultType = _bool;
 	}
 
 public:
@@ -310,21 +304,17 @@ public:
 class SymbolExpression : public Expression
 {
 public:
-	explicit SymbolExpression(const std::string& name, const std::string& resultType, SymbolExpression* symbolExpression)
-	: Expression(ExpressionType::SymbolExpression),
-	  mName(name),
-	  mSurroundingScope(0),
-	  mSymbolExpression(symbolExpression)
-	{
-		// retrieve return type from sub-expression
-		mResultType = symbolExpression ? symbolExpression->getResultType() : resultType;
-	}
-	~SymbolExpression() {
-		delete mSymbolExpression;
-	}
+	class SymbolExpressionType {
+	public:
+		enum E {
+			DesigntimeSymbolExpression,
+			RuntimeSymbolExpression
+		};
+	};
 
-	const std::string& getResultType() const {
-		return mSymbolExpression ? mSymbolExpression->getResultType() : mResultType;
+public:
+	virtual ~SymbolExpression() {
+		delete mSymbolExpression;
 	}
 
 	std::string toString() const {
@@ -341,6 +331,48 @@ public:
 	std::string mName;
 	IScope* mSurroundingScope;
 	SymbolExpression* mSymbolExpression;
+
+protected:
+	explicit SymbolExpression(const std::string& name, const std::string& resultType)
+	: Expression(ExpressionType::SymbolExpression),
+	  mName(name),
+	  mSurroundingScope(0),
+	  mSymbolExpression(0)
+	{
+		mResultType = resultType;
+	}
+
+protected:
+	SymbolExpressionType::E mSymbolExpressionType;
+};
+
+
+class DesigntimeSymbolExpression : public SymbolExpression
+{
+public:
+	explicit DesigntimeSymbolExpression(const std::string& name, const std::string& resultType)
+	: SymbolExpression(name, resultType)
+	{
+		mSymbolExpressionType = SymbolExpressionType::DesigntimeSymbolExpression;
+	}
+
+	std::string getResultType() const {
+		return mSymbolExpression ? mSymbolExpression->getResultType() : mResultType;
+	}
+};
+
+class RuntimeSymbolExpression : public SymbolExpression
+{
+public:
+	explicit RuntimeSymbolExpression(const std::string& name, const std::string& resultType)
+	: SymbolExpression(name, resultType)
+	{
+		mSymbolExpressionType = SymbolExpressionType::RuntimeSymbolExpression;
+	}
+
+	std::string getResultType() const {
+		return mSymbolExpression ? mSymbolExpression->getResultType() : mResultType;
+	}
 };
 
 
@@ -371,8 +403,7 @@ public:
 	: Expression(ExpressionType::TypeidExpression),
 	  mExpression(expression)
 	{
-		// TODO: use StringObject::TYPENAME
-		mResultType = "string";
+		mResultType = _string;
 	}
 	~TypeidExpression() {
 		delete mExpression;

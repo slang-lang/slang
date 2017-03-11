@@ -36,7 +36,15 @@ const std::string& GenericObject::getTypeName() const
 
 void GenericObject::initialize()
 {
-	// nothing to do here atm
+	Common::Method* constructor = new Common::Method(this, CONSTRUCTOR, _void);
+	{
+		ParameterList params;
+
+		constructor->setSignature(params);
+		constructor->setVisibility(Visibility::Public);
+	}
+
+	defineMethod(CONSTRUCTOR, constructor);
 }
 
 

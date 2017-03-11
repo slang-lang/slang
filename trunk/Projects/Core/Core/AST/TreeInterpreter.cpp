@@ -675,7 +675,17 @@ void TreeInterpreter::pushScope(IScope* scope)
 	stack->pushScope(scope, allowDelete, true);
 }
 
-Symbol* TreeInterpreter::resolve(IScope* scope, SymbolExpression* symbol, bool onlyCurrentScope, Visibility::E visibility) const
+Runtime::Object& TreeInterpreter::resolveLValue(IScope *scope, SymbolExpression *symbol, bool onlyCurrentScope, Visibility::E visibility) const
+{
+	Runtime::Object* result = dynamic_cast<Runtime::Object*>(resolveRValue(scope, symbol, onlyCurrentScope, visibility));
+	if ( !result ) {
+		throw Common::Exceptions::Exception("invalid lvalue symbol");
+	}
+
+	return (*result);
+}
+
+Symbol* TreeInterpreter::resolveRValue(IScope *scope, SymbolExpression *symbol, bool onlyCurrentScope, Visibility::E visibility) const
 {
 	if ( !scope ) {
 		throw Runtime::Exceptions::InvalidSymbol("invalid scope provided");
@@ -796,20 +806,13 @@ void TreeInterpreter::visitAssignment(Assignment* node)
 {
 	IScope* scope = getScope();
 
-	Symbol* lvalue = scope->resolve(node->mLValue->mName, false, Visibility::Designtime);
-	if ( !lvalue ) {
-		throw Runtime::Exceptions::InvalidAssignment("lvalue '" + node->mLValue->mName + "' not found");
-	}
-
-	if ( lvalue->getSymbolType() != Symbol::IType::ObjectSymbol ) {
-		throw Runtime::Exceptions::RuntimeException("invalid lvalue symbol type");
-	}
+	Runtime::Object &lvalue = resolveLValue(scope, node->mLValue, false, Visibility::Designtime);
 
 	Runtime::Object tmp;
 	try {
 		evaluate(node->mExpression, &tmp);
 
-		Runtime::operator_binary_assign(static_cast<Runtime::Object*>(lvalue), &tmp);
+		Runtime::operator_binary_assign(&lvalue, &tmp);
 	}
 	catch ( Runtime::ControlFlow::E &e ) {
 		mControlFlow = e;
