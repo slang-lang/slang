@@ -10,6 +10,7 @@
 
 
 namespace ObjectiveScript {
+namespace Runtime {
 
 
 Reference::Reference()
@@ -43,4 +44,5 @@ bool Reference::operator== (const Reference& other) const
 }
 
 
+}
 }

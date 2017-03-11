@@ -8,7 +8,7 @@
 
 // Project includes
 #include <Core/Object.h>
-#include <Core/Reference.h>
+#include <Core/Runtime/Reference.h>
 
 // Forward declarations
 
@@ -29,11 +29,11 @@ public:
 	void init();
 
 public:
-	Runtime::Object* get(const Reference &ref) const;
-	const Reference& newObject(Runtime::Object *obj);
+	Runtime::Object* get(const Runtime::Reference &ref) const;
+	const Runtime::Reference& newObject(Runtime::Object *obj);
 
-	void add(const Reference &ref);
-	void remove(const Reference &ref);
+	void add(const Runtime::Reference &ref);
+	void remove(const Runtime::Reference &ref);
 
 private:
 	class RefCount
@@ -49,15 +49,15 @@ private:
 		Runtime::Object* mObject;
 	};
 
-	typedef std::map<Reference, RefCount> MemoryMap;
+	typedef std::map<Runtime::Reference, RefCount> MemoryMap;
 
 private:
 	Memory(Memory const&)/* = delete*/;
 	void operator=(Memory const&)/* = delete*/;
 
 private:
-	void deleteObject(const Reference& ref);
-	const Reference& reserveAddress();
+	void deleteObject(const Runtime::Reference& ref);
+	const Runtime::Reference& reserveAddress();
 
 private:
 	MemoryMap mMemory;

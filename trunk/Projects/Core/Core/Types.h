@@ -15,8 +15,8 @@
 #include <string>
 
 // Project includes
+#include <Core/Runtime/Reference.h>
 #include "Parameter.h"
-#include "Reference.h"
 
 // Forward declarations
 
@@ -36,7 +36,7 @@ namespace ObjectiveScript {
 
 std::string toString(const Parameter& param);
 std::string toString(const ParameterList& list);
-std::string toString(const ReferencesList& list);
+std::string toString(const Runtime::ReferencesList& list);
 std::string toString(const StringList& list);
 
 StringSet provideAtomicTypes();

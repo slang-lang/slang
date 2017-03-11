@@ -11,7 +11,7 @@
 #include <Core/Attributes/AccessMode.h>
 #include <Core/Common/TypeDeclaration.h>
 #include <Core/Runtime/AtomicValue.h>
-#include "Reference.h"
+#include <Core/Runtime/Reference.h>
 
 // Forward declarations
 
@@ -36,7 +36,7 @@ public:
 									  AccessMode::E access = AccessMode::ByValue);
 	static Parameter CreateRuntime(const std::string& type,
 								   Runtime::AtomicValue value,
-								   Reference reference = Reference());
+								   Runtime::Reference reference = Runtime::Reference());
 
 public:
 	Parameter();
@@ -46,14 +46,14 @@ public:
 			  bool hasDefaultValue = false,
 			  bool isConst = false,
 			  AccessMode::E access = AccessMode::ByValue,
-			  Reference reference = Reference());
+			  Runtime::Reference reference = Runtime::Reference());
 
 public:
 	AccessMode::E access() const;
 	bool hasDefaultValue() const;
 	bool isConst() const;
 	const std::string& name() const;
-	const Reference& reference() const;
+	const Runtime::Reference& reference() const;
 	const std::string& type() const;
 	const PrototypeConstraints& typeConstraints() const;
 	Runtime::AtomicValue value() const;
@@ -63,7 +63,7 @@ private:
 	bool mHasDefaultValue;
 	bool mIsConst;
 	std::string mName;
-	Reference mReference;
+	Runtime::Reference mReference;
 	TypeDeclaration mType;
 	Runtime::AtomicValue mValue;
 };

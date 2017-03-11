@@ -27,7 +27,7 @@ Memory::~Memory()
 {
 }
 
-void Memory::add(const Reference &ref)
+void Memory::add(const Runtime::Reference &ref)
 {
 	if ( !ref.isValid() ) {
 		// cannot add address 0
@@ -46,7 +46,7 @@ void Memory::deinit()
 {
 }
 
-void Memory::deleteObject(const Reference& ref)
+void Memory::deleteObject(const Runtime::Reference& ref)
 {
 	MemoryMap::iterator it = mMemory.find(ref);
 	if ( it == mMemory.end() ) {
@@ -66,13 +66,13 @@ void Memory::deleteObject(const Reference& ref)
 	if ( object ) {
 		object->Destructor();
 
-		object->setReference(NullReference);
+		object->setReference(Runtime::NullReference);
 
 		delete object;
 	}
 }
 
-Runtime::Object* Memory::get(const Reference &ref) const
+Runtime::Object* Memory::get(const Runtime::Reference &ref) const
 {
 	MemoryMap::const_iterator it = mMemory.find(ref);
 	if ( it != mMemory.end() ) {
@@ -86,9 +86,9 @@ void Memory::init()
 {
 }
 
-const Reference& Memory::newObject(Runtime::Object *obj)
+const Runtime::Reference& Memory::newObject(Runtime::Object *obj)
 {
-	const Reference& ref = reserveAddress();
+	const Runtime::Reference& ref = reserveAddress();
 
 	mMemory[ref].mCount = 0;
 	mMemory[ref].mObject = obj;
@@ -98,7 +98,7 @@ const Reference& Memory::newObject(Runtime::Object *obj)
 	return ref;
 }
 
-void Memory::remove(const Reference &ref)
+void Memory::remove(const Runtime::Reference &ref)
 {
 	if ( !ref.isValid() ) {
 		// cannot delete address 0
@@ -116,7 +116,7 @@ void Memory::remove(const Reference &ref)
 	}
 }
 
-const Reference& Memory::reserveAddress()
+const Runtime::Reference& Memory::reserveAddress()
 {
 	// 1) the simple way:
 	//    only use an address once, so that no address can get
@@ -137,7 +137,7 @@ const Reference& Memory::reserveAddress()
 
 	// reserve address by creating a new reference
 	// and inserting it into our memory
-	Reference ref(mNextAddress++);
+	Runtime::Reference ref(mNextAddress++);
 	mMemory[ref] = RefCount();
 
 	return mMemory.rbegin()->first;

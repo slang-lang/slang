@@ -13,7 +13,7 @@
 // Project includes
 #include <Core/Common/PrototypeConstraint.h>
 #include <Core/Object.h>
-#include <Core/Reference.h>
+#include <Core/Runtime/Reference.h>
 
 // Forward declarations
 

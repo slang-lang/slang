@@ -14,7 +14,6 @@ SET(SOURCES
 	Interpreter.cpp
 	Object.cpp
 	Parameter.cpp
-	Reference.cpp
 	Scope.cpp
 	Symbol.cpp
 	Tools.cpp
@@ -28,7 +27,6 @@ SET(HEADERS
 	Object.h
 	ObjectiveScript.h
 	Parameter.h
-	Reference.h
 	Scope.h
 	Symbol.h
 	Tools.h

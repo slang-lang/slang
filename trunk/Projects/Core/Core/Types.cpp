@@ -160,14 +160,14 @@ std::string toString(const ParameterList& list)
 	return result;
 }
 
-std::string toString(const ReferencesList& list)
+std::string toString(const Runtime::ReferencesList& list)
 {
 	std::string result;
 
-	for ( ReferencesList::const_iterator it = list.begin(); it != list.end(); ++it ) {
+	for ( Runtime::ReferencesList::const_iterator it = list.begin(); it != list.end(); ++it ) {
 		//result += it->getAddress();
 
-		ReferencesList::const_iterator copy = it;
+		Runtime::ReferencesList::const_iterator copy = it;
 		if ( ++copy != list.end() ) {
 			result += ", ";
 		}
