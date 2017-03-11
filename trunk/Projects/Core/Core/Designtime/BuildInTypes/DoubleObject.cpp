@@ -5,7 +5,9 @@
 // Library includes
 
 // Project includes
+#include <Core/Common/Method.h>
 #include <Core/Consts.h>
+
 
 // Namespace declarations
 
@@ -15,7 +17,7 @@ namespace Designtime {
 
 
 double DoubleObject::DEFAULTVALUE = 0.0;
-std::string DoubleObject::TYPENAME = "double";
+std::string DoubleObject::TYPENAME = _double;
 
 
 DoubleObject::DoubleObject()
@@ -23,12 +25,29 @@ DoubleObject::DoubleObject()
 {
 	mIsAtomicType = true;
 
-	addInheritance(Ancestor(TypeDeclaration(OBJECT), Ancestor::Type::Extends, Visibility::Public));
+	//addInheritance(Ancestor(TypeDeclaration(_object), Ancestor::Type::Extends, Visibility::Public));
+
+	initialize();
 }
 
 const std::string& DoubleObject::getTypeName() const
 {
 	return TYPENAME;
+}
+
+void DoubleObject::initialize()
+{
+	Common::Method* constructor = new Common::Method(this, CONSTRUCTOR, _void);
+	{
+		ParameterList params;
+		params.push_back(
+				Parameter::CreateDesigntime(ANONYMOUS_OBJECT, _double)
+		);
+		constructor->setSignature(params);
+		constructor->setVisibility(Visibility::Public);
+	}
+
+	defineMethod(CONSTRUCTOR, constructor);
 }
 
 

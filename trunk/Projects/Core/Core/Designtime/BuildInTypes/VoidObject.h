@@ -27,6 +27,9 @@ public:
 
 public:	// Symbol::IType implementation
 	const std::string& getTypeName() const;
+
+private:
+	void initialize();
 };
 
 

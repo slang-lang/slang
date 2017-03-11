@@ -5,7 +5,9 @@
 // Library includes
 
 // Project includes
+#include <Core/Common/Method.h>
 #include <Core/Consts.h>
+
 
 // Namespace declarations
 
@@ -15,7 +17,7 @@ namespace Designtime {
 
 
 std::string GenericObject::DEFAULTVALUE = VALUE_NULL;
-std::string GenericObject::TYPENAME = OBJECT;
+std::string GenericObject::TYPENAME = _object;
 
 
 GenericObject::GenericObject()
@@ -23,11 +25,18 @@ GenericObject::GenericObject()
 {
 	// this prevents the user to create an instance of 'Object'
 	setImplementationType(ImplementationType::Abstract);
+
+	initialize();
 }
 
 const std::string& GenericObject::getTypeName() const
 {
 	return TYPENAME;
+}
+
+void GenericObject::initialize()
+{
+	// nothing to do here atm
 }
 
 
