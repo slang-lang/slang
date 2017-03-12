@@ -1,7 +1,5 @@
 #!/usr/local/bin/oscript
 
-import System.String;
-
 public void Main(int argc = 1, string args = "") {
 	assert( TestCase1() );
 }

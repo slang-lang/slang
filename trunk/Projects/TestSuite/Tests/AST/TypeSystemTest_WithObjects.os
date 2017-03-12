@@ -19,7 +19,7 @@ private object TestObject {
 		return mValue;
 	}
 	public string =operator(string none) const {
-		return mValue;
+		return string mValue;
 	}
 }
 
