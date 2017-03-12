@@ -38,9 +38,6 @@ void GenericObject::initialize()
 {
 	Common::Method* constructor = new Common::Method(this, CONSTRUCTOR, _void);
 	{
-		ParameterList params;
-
-		constructor->setSignature(params);
 		constructor->setVisibility(Visibility::Public);
 	}
 

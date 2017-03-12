@@ -902,7 +902,6 @@ void Interpreter::process(Object *result, TokenIterator& token, TokenIterator en
 
 		switch ( token->type() ) {
 			case Token::Type::IDENTIFER:
-			case Token::Type::PROTOTYPE:
 			case Token::Type::TYPE:
 				process_identifier(token, result);
 				break;
@@ -1629,7 +1628,6 @@ void Interpreter::process_statement(TokenIterator& token, Object* result)
 
 	switch ( token->type() ) {
 		case Token::Type::IDENTIFER:
-		case Token::Type::PROTOTYPE:
 		case Token::Type::TYPE:
 			process_identifier(token, result);
 			break;
