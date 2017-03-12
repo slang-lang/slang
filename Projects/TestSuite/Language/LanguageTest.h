@@ -36,6 +36,7 @@ private:	// Tests
 	void testAbstractObject();
 	void testAssert();
 	void testAssignment();
+	void testAttributes();
 	void testAtomicReference();
 	void testBooleanOperators();
 	void testComment();

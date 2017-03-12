@@ -144,9 +144,6 @@ int main(int argc, const char* argv[])
 
 #else
 
-		Testing::Attributes::Fixture attributes(mLogger);
-		mFixtures.push_back(&attributes);
-
 		Testing::Inheritance::Fixture inheritance(mLogger);
 		mFixtures.push_back(&inheritance);
 
