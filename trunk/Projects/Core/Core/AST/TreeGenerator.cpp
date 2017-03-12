@@ -994,7 +994,7 @@ Statement* TreeGenerator::process_return(TokenIterator& token)
 }
 
 // syntax:
-// { <statement> }
+// { [<statements>] }
 Statements* TreeGenerator::process_scope(TokenIterator& token, bool allowBreakAndContinue)
 {
 	TokenList scopeTokens;
