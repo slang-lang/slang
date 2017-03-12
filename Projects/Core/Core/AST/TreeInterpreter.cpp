@@ -32,6 +32,25 @@
 // Namespace declarations
 
 
+#define tryEvalute(left, right) \
+		try { \
+			evaluate(left, right); \
+		} \
+		catch ( Runtime::ControlFlow::E &e ) { \
+			mControlFlow = e; \
+			return; \
+		}
+
+#define tryControl( exp ) \
+		try { \
+			exp \
+		} \
+		catch ( Runtime::ControlFlow::E &e ) { \
+			mControlFlow = e; \
+			return; \
+		}
+
+
 namespace ObjectiveScript {
 namespace AST {
 
@@ -67,7 +86,7 @@ void TreeInterpreter::evaluate(Node* exp, Runtime::Object* result)
 		case Expression::ExpressionType::LiteralExpression: evaluateLiteral(static_cast<LiteralExpression*>(exp), result); break;
 		case Expression::ExpressionType::MethodExpression: evaluateMethodExpression(static_cast<MethodExpression*>(exp), result); break;
 		case Expression::ExpressionType::NewExpression: evaluateNewExpression(static_cast<NewExpression*>(exp), result); break;
-		case Expression::ExpressionType::SymbolExpression: evaluateSymbol(static_cast<SymbolExpression *>(exp), result, getScope()); break;
+		case Expression::ExpressionType::SymbolExpression: evaluateSymbolExpression(static_cast<SymbolExpression *>(exp), result, getScope()); break;
 		case Expression::ExpressionType::TypecastExpression: evaluateTypeCastExpression(static_cast<TypecastExpression*>(exp), result); break;
 		case Expression::ExpressionType::TypeidExpression: evaluateTypeidExpression(static_cast<TypeidExpression*>(exp), result); break;
 		case Expression::ExpressionType::UnaryExpression: evaluateUnaryExpression(static_cast<UnaryExpression*>(exp), result); break;
@@ -84,17 +103,17 @@ void TreeInterpreter::evaluateBinaryExpression(BinaryExpression* exp, Runtime::O
 	Runtime::Object left;
 	Runtime::Object right;
 
-	try {
+//	try {
 		// evaluate left expression
 		evaluate(exp->mLeft, &left);
 
 		// evaluate right expression
 		evaluate(exp->mRight, &right);
-	}
-	catch ( Runtime::ControlFlow::E &e ) {
-		mControlFlow = e;
-		return;
-	}
+//	}
+//	catch ( Runtime::ControlFlow::E &e ) {
+//		mControlFlow = e;
+//		return;
+//	}
 
 	switch ( exp->mOperation.type() ) {
 		// bit expressions
@@ -128,7 +147,7 @@ void TreeInterpreter::evaluateBooleanBinaryExpression(BooleanBinaryExpression* e
 	Runtime::Object left;
 	Runtime::Object right;
 
-	try {
+//	try {
 		// evaluate left expression
 		evaluate(exp->mLeft, &left);
 
@@ -144,11 +163,11 @@ void TreeInterpreter::evaluateBooleanBinaryExpression(BooleanBinaryExpression* e
 
 		// evaluate right expression
 		evaluate(exp->mRight, &right);
-	}
-	catch ( Runtime::ControlFlow::E &e ) {
-		mControlFlow = e;
-		return;
-	}
+//	}
+//	catch ( Runtime::ControlFlow::E &e ) {
+//		mControlFlow = e;
+//		return;
+//	}
 
 	switch ( exp->mOperation.type() ) {
 		// boolean expressions
@@ -179,13 +198,13 @@ void TreeInterpreter::evaluateBooleanBinaryExpression(BooleanBinaryExpression* e
 void TreeInterpreter::evaluateCopyExpression(CopyExpression* exp, Runtime::Object* result)
 {
 	Runtime::Object obj;
-	try {
+//	try {
 		evaluate(exp->mExpression, &obj);
-	}
-	catch ( Runtime::ControlFlow::E &e ) {
-		mControlFlow = e;
-		return;
-	}
+//	}
+//	catch ( Runtime::ControlFlow::E &e ) {
+//		mControlFlow = e;
+//		return;
+//	}
 
 	result->copy(obj);
 }
@@ -193,14 +212,14 @@ void TreeInterpreter::evaluateCopyExpression(CopyExpression* exp, Runtime::Objec
 void TreeInterpreter::evaluateIsExpression(IsExpression* exp, Runtime::Object* result)
 {
 	Runtime::Object tmp;
-	try {
+//	try {
 		// evaluate left expression
 		evaluate(exp->mExpression, &tmp);
-	}
-	catch ( Runtime::ControlFlow::E &e ) {
-		mControlFlow = e;
-		return;
-	}
+//	}
+//	catch ( Runtime::ControlFlow::E &e ) {
+//		mControlFlow = e;
+//		return;
+//	}
 
 	*result = Runtime::BoolObject(tmp.isInstanceOf(exp->mMatchType));
 }
@@ -228,13 +247,13 @@ void TreeInterpreter::evaluateMethodExpression(MethodExpression* exp, Runtime::O
 
 		Runtime::Object* param = &objectList.back();
 
-		try {
+//		try {
 			evaluate((*it), param);
-		}
-		catch ( Runtime::ControlFlow::E &e ) {
-			mControlFlow = e;
-			return;
-		}
+//		}
+//		catch ( Runtime::ControlFlow::E &e ) {
+//			mControlFlow = e;
+//			return;
+//		}
 
 		params.push_back(Parameter::CreateRuntime(param->QualifiedOuterface(), param->getValue(), param->getReference()));
 	}
@@ -244,7 +263,7 @@ void TreeInterpreter::evaluateMethodExpression(MethodExpression* exp, Runtime::O
 		methodSymbol = resolveMethod(getEnclosingMethodScope(), exp->mSymbolExpression, params, false, Visibility::Private);
 	}
 	if ( !methodSymbol ) {
-		throw Runtime::Exceptions::RuntimeException("method " + exp->mSymbolExpression->toString() + " not found");
+		throw Runtime::Exceptions::RuntimeException("method " + exp->mSymbolExpression->toString() + "(" + toString(params) + ") not found");
 	}
 
 	Common::Method* method = static_cast<Common::Method*>(methodSymbol);
@@ -262,10 +281,10 @@ void TreeInterpreter::evaluateMethodExpression(MethodExpression* exp, Runtime::O
 	switch ( controlflow ) {
 		case Runtime::ControlFlow::ExitProgram:
 			mControlFlow = Runtime::ControlFlow::ExitProgram;
-			break;
+			throw Runtime::ControlFlow::ExitProgram;	// promote controlflow
 		case Runtime::ControlFlow::Throw:
 			mControlFlow = Runtime::ControlFlow::Throw;
-			throw Runtime::ControlFlow::Throw;			// throw even further
+			throw Runtime::ControlFlow::Throw;			// promote controlflow
 		default:
 			mControlFlow = Runtime::ControlFlow::Normal;
 			break;
@@ -286,13 +305,13 @@ void TreeInterpreter::evaluateNewExpression(NewExpression* exp, Runtime::Object*
 		objectList.push_back(Runtime::Object());
 
 		Runtime::Object* param = &objectList.back();
-		try {
+//		try {
 			evaluate((*it), param);
-		}
-		catch ( Runtime::ControlFlow::E &e ) {
-			mControlFlow = e;
-			return;
-		}
+//		}
+//		catch ( Runtime::ControlFlow::E &e ) {
+//			mControlFlow = e;
+//			return;
+//		}
 
 		params.push_back(Parameter::CreateRuntime(param->QualifiedOuterface(), param->getValue(), param->getReference()));
 	}
@@ -304,7 +323,7 @@ void TreeInterpreter::evaluateNewExpression(NewExpression* exp, Runtime::Object*
 	mControlFlow = result->Constructor(params);
 }
 
-void TreeInterpreter::evaluateSymbol(SymbolExpression* exp, Runtime::Object* result, IScope* scope)
+void TreeInterpreter::evaluateSymbolExpression(SymbolExpression *exp, Runtime::Object *result, IScope *scope)
 {
 	if ( !scope ) {
 		throw Common::Exceptions::Exception("invalid scope provided");
@@ -335,7 +354,7 @@ void TreeInterpreter::evaluateSymbol(SymbolExpression* exp, Runtime::Object* res
 				throw Common::Exceptions::NotSupported("cannot directly access locales of method");
 		}
 
-		evaluateSymbol(exp->mSymbolExpression, result, scope);
+		evaluateSymbolExpression(exp->mSymbolExpression, result, scope);
 		return;
 	}
 
@@ -350,13 +369,13 @@ void TreeInterpreter::evaluateTypeCastExpression(TypecastExpression* exp, Runtim
 {
 	Runtime::Object tmp;
 
-	try {
+//	try {
 		evaluate(exp->mExpression, &tmp);
-	}
-	catch ( Runtime::ControlFlow::E &e ) {
-		mControlFlow = e;
-		return;
-	}
+//	}
+//	catch ( Runtime::ControlFlow::E &e ) {
+//		mControlFlow = e;
+//		return;
+//	}
 
 	Runtime::typecast(&tmp, exp->mDestinationType);
 
@@ -366,46 +385,61 @@ void TreeInterpreter::evaluateTypeCastExpression(TypecastExpression* exp, Runtim
 void TreeInterpreter::evaluateTypeidExpression(TypeidExpression* exp, Runtime::Object* result)
 {
 	Runtime::Object tmp;
-	try {
+//	try {
 		evaluate(exp->mExpression, &tmp);
 
 		Runtime::StringObject type(tmp.QualifiedTypename());
 		Runtime::operator_binary_assign(result, &type);
-	}
-	catch ( Runtime::ControlFlow::E &e ) {
-		mControlFlow = e;
-		return;
-	}
+//	}
+//	catch ( Runtime::ControlFlow::E &e ) {
+//		mControlFlow = e;
+//		return;
+//	}
 }
 
 void TreeInterpreter::evaluateUnaryExpression(UnaryExpression* exp, Runtime::Object* result)
 {
-	try {
+	if ( exp->mValueType == UnaryExpression::ValueType::LValue ) {
+		Runtime::Object &lvalue = resolveLValue(getScope(), dynamic_cast<SymbolExpression*>(exp->mExpression), false, Visibility::Designtime);
+
+		switch ( exp->mOperation.type() ) {
+			// math expressions
+			// {
+			case Token::Type::OPERATOR_DECREMENT: Runtime::operator_unary_decrement(&lvalue, exp->mOperation.position()); break;
+			case Token::Type::OPERATOR_INCREMENT: Runtime::operator_unary_increment(&lvalue, exp->mOperation.position()); break;
+			// }
+
+			// default handling
+			// {
+			default: throw Common::Exceptions::NotSupported("lvalue expression with " + exp->mOperation.content() + " not supported");
+			// }
+		}
+
+		Runtime::operator_binary_assign(result, &lvalue);
+	}
+	else {
 		evaluate(exp->mExpression, result);
-	}
-	catch ( Runtime::ControlFlow::E &e ) {
-		mControlFlow = e;
-		return;
-	}
 
-	switch ( exp->mOperation.type() ) {
-		// boolean expressions
-		// {
-		case Token::Type::OPERATOR_NOT: Runtime::operator_unary_not(result); break;
-		// }
+		switch ( exp->mOperation.type() ) {
+			// boolean expressions
+			// {
+			case Token::Type::OPERATOR_NOT: Runtime::operator_unary_not(result, exp->mOperation.position()); break;
+			case Token::Type::OPERATOR_VALIDATE: Runtime::operator_unary_validate(result, exp->mOperation.position()); break;
+			// }
 
-		// math expressions
-		// {
-		case Token::Type::MATH_ADDITION: /* this is empty by intend */ break;
-		case Token::Type::MATH_SUBTRACT: Runtime::operator_unary_minus(result); break;
-		case Token::Type::OPERATOR_DECREMENT: Runtime::operator_unary_decrement(result); break;
-		case Token::Type::OPERATOR_INCREMENT: Runtime::operator_unary_increment(result); break;
-		// }
+			// math expressions
+			// {
+			case Token::Type::MATH_ADDITION:  break;
+			case Token::Type::MATH_SUBTRACT: Runtime::operator_unary_minus(result, exp->mOperation.position()); break;
+			case Token::Type::OPERATOR_DECREMENT: Runtime::operator_unary_decrement(result, exp->mOperation.position()); break;
+			case Token::Type::OPERATOR_INCREMENT: Runtime::operator_unary_increment(result, exp->mOperation.position()); break;
+			// }
 
-		// default handling
-		// {
-		default: throw Common::Exceptions::NotSupported("expression with " + exp->mOperation.content() + " not supported (by now)");
-		// }
+			// default handling
+			// {
+			default: throw Common::Exceptions::NotSupported("rvalue expression with " + exp->mOperation.content() + " not supported", exp->mOperation.position());
+			// }
+		}
 	}
 }
 

@@ -1523,10 +1523,10 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 	switch ( controlflow ) {
 		case ControlFlow::ExitProgram:
 			mControlFlow = ControlFlow::ExitProgram;
-			break;
+			throw ControlFlow::ExitProgram;		// promote control flow
 		case ControlFlow::Throw:
 			mControlFlow = ControlFlow::Throw;
-			throw ControlFlow::Throw;			// throw even further
+			throw ControlFlow::Throw;			// promote control flow
 		default:
 			mControlFlow = ControlFlow::Normal;
 			break;

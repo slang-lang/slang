@@ -120,7 +120,7 @@ public:
 // Binary expressions
 ///////////////////////////////////////////////////////////////////////////////
 
-
+/*
 ///////////////////////////////////////////////////////////////////////////////
 // Unary expressions
 
@@ -128,6 +128,13 @@ class UnaryExpression : public Expression
 {
 public:
 	explicit UnaryExpression(const Token& operation, Node* exp)
+	: Expression(ExpressionType::UnaryExpression),
+	  mExpression(exp),
+	  mOperation(operation)
+	{
+		mResultType = static_cast<Expression*>(exp)->getResultType();
+	}
+	explicit UnaryExpression(const Token& operation, SymbolExpression* exp)
 	: Expression(ExpressionType::UnaryExpression),
 	  mExpression(exp),
 	  mOperation(operation)
@@ -165,7 +172,7 @@ public:
 
 // Unary expressions
 ///////////////////////////////////////////////////////////////////////////////
-
+*/
 
 ///////////////////////////////////////////////////////////////////////////////
 // Literal expressions
@@ -444,6 +451,64 @@ public:
 };
 
 // Method expressions
+///////////////////////////////////////////////////////////////////////////////
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+// Unary expressions
+
+class UnaryExpression : public Expression
+{
+public:
+	class ValueType {
+	public:
+		enum E {
+			LValue,
+			RValue
+		};
+	};
+
+public:
+	explicit UnaryExpression(const Token& operation, Node* exp, ValueType::E valueType = ValueType::RValue)
+	: Expression(ExpressionType::UnaryExpression),
+	  mExpression(exp),
+	  mOperation(operation),
+	  mValueType(valueType)
+	{
+		mResultType = static_cast<Expression*>(exp)->getResultType();
+	}
+	virtual ~UnaryExpression() {
+		delete mExpression;
+	}
+
+public:
+	Node* mExpression;
+	Token mOperation;
+	ValueType::E mValueType;
+};
+
+
+class BooleanUnaryExpression : public Expression
+{
+public:
+	explicit BooleanUnaryExpression(const Token& operation, Node* exp)
+	: Expression(ExpressionType::UnaryExpression),
+	  mExpression(exp),
+	  mOperation(operation)
+	{
+		mResultType = _bool;
+	}
+	virtual ~BooleanUnaryExpression() {
+		delete mExpression;
+	}
+
+public:
+	Node* mExpression;
+	Token mOperation;
+};
+
+// Unary expressions
 ///////////////////////////////////////////////////////////////////////////////
 
 

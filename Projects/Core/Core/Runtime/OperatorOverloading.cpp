@@ -14,6 +14,7 @@
 #include <Core/BuildInObjects/VoidObject.h>
 #include <Core/Common/Method.h>
 #include <Core/Runtime/Exceptions.h>
+#include <Core/VirtualMachine/Controller.h>
 #include <Core/Tools.h>
 
 // Namespace declarations
@@ -958,6 +959,8 @@ void operator_unary_validate(Object *base, const Common::Position& position)
 	}
 
 	if ( !base->isValid() ) {
+		Controller::Instance().stack()->exception() = Runtime::ExceptionData(new StringObject("validation failed"), position);
+
 		throw ControlFlow::Throw;
 	}
 }
