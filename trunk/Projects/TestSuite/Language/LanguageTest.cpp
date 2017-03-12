@@ -37,6 +37,7 @@ void LanguageTest::process()
 	TEST(testAbstractObject);
 	TEST(testAssert);
 	TEST(testAssignment);
+	TEST(testAttributes);
 	TEST(testAtomicReference);
 	TEST(testBooleanOperators);
 	TEST(testComment);
@@ -139,6 +140,20 @@ void LanguageTest::testAssignment()
 	}
 	catch ( std::exception& e ) {
 		// unexpected exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void LanguageTest::testAttributes()
+{
+	try {
+		VirtualMachine vm;
+		vm.createScriptFromFile("Tests/Language/AttributesTest.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
 		TFAIL(e.what());
 	}
 }

@@ -1,7 +1,6 @@
 INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
 ADD_SUBDIRECTORY(AST)
-ADD_SUBDIRECTORY(Attributes)
 ADD_SUBDIRECTORY(Inheritance)
 ADD_SUBDIRECTORY(Interfaces)
 ADD_SUBDIRECTORY(Language)
@@ -30,7 +29,6 @@ SET(DEPENDENCIES
 	Test_Language
 	Test_Interfaces
 	Test_Inheritance
-	Test_Attributes
 	Test_AST
 	CoreVirtualMachine
 	CoreRuntime
