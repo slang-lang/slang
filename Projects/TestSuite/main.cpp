@@ -14,7 +14,6 @@
 
 // Fixtures
 #include <AST/Fixture.h>
-#include <Attributes/Fixture.h>
 #include <Inheritance/Fixture.h>
 #include <Interfaces/Fixture.h>
 #include <Language/Fixture.h>
