@@ -128,7 +128,8 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 		Runtime::ExceptionData data = Controller::Instance().stack()->exception();
 
 		std::string text = "Exception raised in " + data.getPosition().toString() + ":\n";
-					text += data.getData()->ToString();
+					//text += data.getData()->ToString();
+					text += data.getData()->getValue().toStdString();
 
 		throw Common::Exceptions::Exception(text);
 	}

@@ -382,12 +382,14 @@ Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 	switch ( op ) {
 		case Token::Type::MATH_ADDITION:
 		case Token::Type::MATH_SUBTRACT:
+			infixPostfix = new UnaryExpression((*start), parseTerm(++start));
+			break;
 		case Token::Type::OPERATOR_DECREMENT:
 		case Token::Type::OPERATOR_INCREMENT:
-			infixPostfix = new UnaryExpression((*start), parseExpression(++start));
+			infixPostfix = new UnaryExpression((*start), parseTerm(++start), UnaryExpression::ValueType::LValue);
 			break;
 		case Token::Type::OPERATOR_NOT:
-			infixPostfix = new BooleanUnaryExpression((*start), parseExpression(++start));
+			infixPostfix = new BooleanUnaryExpression((*start), parseTerm(++start));
 			break;
 		default:
 			infixPostfix = parseTerm(start);
@@ -402,14 +404,15 @@ Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 			assert(!"[] operator not supported");
 		} break;
 		case Token::Type::OPERATOR_DECREMENT:
-		case Token::Type::OPERATOR_INCREMENT:
+		case Token::Type::OPERATOR_INCREMENT: {
+			Token tmp = (*start++);
+			infixPostfix = new UnaryExpression(tmp, infixPostfix, UnaryExpression::ValueType::LValue);
+		} break;
 		case Token::Type::OPERATOR_NOT: {
-			Token tmp = (*start);
+			Token tmp = (*start++);
+			tmp.resetTypeTo(Token::Type::OPERATOR_VALIDATE);
 
-			++start;
-			Node* exp = expression(start);
-
-			infixPostfix = new UnaryExpression(tmp, exp);
+			infixPostfix = new UnaryExpression(tmp, infixPostfix);
 		} break;
 		case Token::Type::OPERATOR_IS: {
 			++start;
@@ -746,10 +749,11 @@ Node* TreeGenerator::process_identifier(TokenIterator& token, bool allowTypeCast
 	// assignment
 	else if ( op->category() == Token::Category::Assignment ) {
 		Token assignment(Token::Category::Assignment, Token::Type::ASSIGN, "=", op->position());
-		Token operation(Token::Category::Assignment, Token::Type::ASSIGN, "=", op->position());
 		Node* right = expression(++token);
 
 		if ( op->type() != Token::Type::ASSIGN ) {
+			Token operation;
+
 			switch ( op->type() ) {
 				case Token::Type::ASSIGN_ADDITION: operation = Token(Token::Category::Operator, Token::Type::MATH_ADDITION, "+", op->position()); break;
 				case Token::Type::ASSIGN_BITAND: operation = Token(Token::Category::Operator, Token::Type::BITAND, "&", op->position()); break;
@@ -769,12 +773,12 @@ Node* TreeGenerator::process_identifier(TokenIterator& token, bool allowTypeCast
 	}
 	// --
 	else if ( op->type() == Token::Type::OPERATOR_DECREMENT ) {
-		node = new UnaryExpression((*token), symbol);
+		node = new UnaryExpression((*token), symbol, UnaryExpression::ValueType::LValue);
 		++token;
 	}
 	// ++
 	else if ( op->type() == Token::Type::OPERATOR_INCREMENT ) {
-		node = new UnaryExpression((*token), symbol);
+		node = new UnaryExpression((*token), symbol, UnaryExpression::ValueType::LValue);
 		++token;
 	}
 	// variable usage
