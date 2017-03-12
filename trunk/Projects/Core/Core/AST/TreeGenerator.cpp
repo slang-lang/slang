@@ -1011,7 +1011,6 @@ Node* TreeGenerator::process_statement(TokenIterator& token, bool allowBreakAndC
 
 	switch ( token->type() ) {
 		case Token::Type::IDENTIFER:
-		case Token::Type::PROTOTYPE:
 		case Token::Type::TYPE:
 			node = process_identifier(token);
 			break;
