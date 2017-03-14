@@ -1275,11 +1275,13 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, bool allowIni
 			throw Common::Exceptions::NotSupported("type initialization is not allowed here", token->position());
 		}
 
+		Token copy = (*token);
 		++token;
 
 		assignment = expression(token);
-	}
 
+		mTypeSystem->getType(type, copy, static_cast<Expression*>(assignment)->getResultType());
+	}
 
 	return new TypeDeclaration(type, constraints, name, mutability == Mutability::Const, accessMode == AccessMode::ByReference, assignment);
 }
