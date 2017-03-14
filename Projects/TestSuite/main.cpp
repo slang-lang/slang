@@ -132,6 +132,7 @@ int main(int argc, const char* argv[])
 
 	try {
 		FixtureList mFixtures;
+
 /*
 		Testing::Framework::Fixture testing(logger);
 		mFixtures.push_back(&testing);
@@ -168,6 +169,9 @@ int main(int argc, const char* argv[])
 
 		Testing::Math::Fixture math(mLogger);
 		mFixtures.push_back(&math);
+
+		Testing::Operator::Fixture operator_overloading(mLogger);
+		mFixtures.push_back(&operator_overloading);
 
 		TestResult result;
 

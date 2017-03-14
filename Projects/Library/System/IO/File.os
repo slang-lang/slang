@@ -49,7 +49,7 @@ public namespace IO {
 			return (mHandle != 0);
 		}
 
-		public bool open(string filename, string mode) modify {
+		public bool open(string filename, string mode) modify throws {
 			if ( mHandle ) {
 				// we already have an open file handle
 				throw new Exception("file descriptor still points to an open file!");
