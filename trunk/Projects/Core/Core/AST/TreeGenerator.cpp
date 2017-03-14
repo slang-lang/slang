@@ -159,10 +159,6 @@ Statements* TreeGenerator::generateAST(Common::Method *method)
 
 MethodScope* TreeGenerator::getEnclosingMethodScope(IScope* scope) const
 {
-	if ( !scope ) {
-		return 0;
-	}
-
 	while ( scope ) {
 		MethodScope* methodScope = dynamic_cast<MethodScope*>(scope->getEnclosingScope());
 		if ( methodScope ) {
@@ -173,6 +169,13 @@ MethodScope* TreeGenerator::getEnclosingMethodScope(IScope* scope) const
 	}
 
 	return 0;
+}
+
+MethodScope* TreeGenerator::getMethodScope(IScope* scope) const
+{
+	MethodScope* result = dynamic_cast<MethodScope*>(scope);
+
+	return result ? result : getEnclosingMethodScope(scope);
 }
 
 IScope* TreeGenerator::getScope() const
@@ -909,7 +912,8 @@ MethodExpression* TreeGenerator::process_method(SymbolExpression* symbol, TokenI
 
 	token = ++closed;
 
-	Common::Method* method = static_cast<Common::Method*>(resolveMethod(getEnclosingMethodScope(mMethod), symbol, params, false, Visibility::Designtime));
+
+	Common::Method* method = static_cast<Common::Method*>(resolveMethod(symbol, params, true, Visibility::Private));
 	if ( !method ) {
 		throw Common::Exceptions::UnknownIdentifer("method '" + symbol->toString() + "(" + toString(params) + ")' not found", token->position());
 	}
@@ -943,6 +947,7 @@ Expression* TreeGenerator::process_new(TokenIterator& token)
 		}
 		else {
 			inner->mSymbolExpression = new DesigntimeSymbolExpression("Constructor", static_cast<Designtime::BluePrintObject*>(symbol)->QualifiedTypename());
+			inner->mSymbolExpression->mSurroundingScope = static_cast<Designtime::BluePrintObject*>(symbol);
 			break;
 		}
 	}
@@ -960,7 +965,7 @@ Statement* TreeGenerator::process_print(TokenIterator& token)
 	++token;
 
 	Common::Position position = token->position();
-	Statement* statement = new PrintStatement(expression(token), position);
+	Node* exp = expression(token);
 
 	expect(Token::Type::PARENTHESIS_CLOSE, token);
 	++token;
@@ -968,7 +973,7 @@ Statement* TreeGenerator::process_print(TokenIterator& token)
 	expect(Token::Type::SEMICOLON, token);
 	++token;
 
-	return statement;
+	return new PrintStatement(exp, position);
 }
 
 /*
@@ -1261,6 +1266,8 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, bool allowIni
 	Runtime::Object* object = mRepository->createInstance(type, name, constraints, Repository::InitilizationType::Final);
 	object->setConst(mutability == Mutability::Const);
 
+	//Designtime::BluePrintGeneric* object = mRepository->findBluePrint(type);
+
 	getScope()->define(name, object);
 
 	// non-atomic types are references by default
@@ -1368,12 +1375,13 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base) con
 			symbol = new DesigntimeSymbolExpression(name, type);
 			break;
 		case Symbol::IType::BluePrintObjectSymbol: {
-			scope = static_cast<Designtime::BluePrintObject*>(result);
 			type = static_cast<Designtime::BluePrintObject*>(result)->QualifiedTypename();
 
 			if ( !static_cast<Designtime::BluePrintObject*>(result)->isMember() ) {
 				name = static_cast<Designtime::BluePrintObject*>(result)->UnqualifiedTypename();
 			}
+
+			scope = static_cast<Designtime::BluePrintObject*>(mRepository->findBluePrint(type));
 
 			symbol = new DesigntimeSymbolExpression(name, type);
 		} break;
@@ -1393,7 +1401,6 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base) con
 		case Symbol::IType::MethodSymbol:
 			scope = 0;
 			// don't set the result type yet because we first have to determine which method should get executed in case overloaded methods are present
-			//type = static_cast<Common::Method*>(result)->QualifiedTypename();
 
 			symbol = new RuntimeSymbolExpression(name, type);
 			break;
@@ -1407,46 +1414,28 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base) con
 	return symbol;
 }
 
-MethodSymbol* TreeGenerator::resolveMethod(IScope* scope, SymbolExpression* symbol, const ParameterList& params, bool onlyCurrentScope, Visibility::E visibility) const
+MethodSymbol* TreeGenerator::resolveMethod(SymbolExpression* symbol, const ParameterList& params, bool onlyCurrentScope, Visibility::E visibility) const
 {
-	if ( !scope ) {
-		throw Runtime::Exceptions::InvalidSymbol("invalid scope provided");
-	}
 	if ( !symbol ) {
 		throw Runtime::Exceptions::InvalidSymbol("invalid symbol provided");
 	}
 
-	while ( symbol->mSymbolExpression ) {
-		Symbol* child = scope->resolve(symbol->mName, onlyCurrentScope, visibility);
-
-		if ( !child ) {
-			return 0;
+	SymbolExpression* inner = symbol;
+	while ( true ) {
+		if ( inner->mSymbolExpression && inner->mSymbolExpression->mSurroundingScope ) {
+			inner = inner->mSymbolExpression;
+			continue;
 		}
 
-		switch ( child->getSymbolType() ) {
-			case Symbol::IType::BluePrintObjectSymbol:
-				scope = static_cast<Designtime::BluePrintObject*>(child);
-				break;
-			case Symbol::IType::NamespaceSymbol:
-				scope = static_cast<Common::Namespace*>(child);
-				break;
-			case Symbol::IType::ObjectSymbol:
-				scope = static_cast<Runtime::Object*>(child);
-				break;
-			case Symbol::IType::BluePrintEnumSymbol:
-			case Symbol::IType::MethodSymbol:
-				throw Designtime::Exceptions::DesigntimeException("invalid symbol type found");
-		}
-
-		symbol = symbol->mSymbolExpression;
+		break;
 	}
 
-	MethodScope* methodScope = dynamic_cast<MethodScope*>(scope);
-	if ( !methodScope ) {
-		return 0;
+	MethodScope* scope = getMethodScope(inner->mSurroundingScope);
+	if ( !scope ) {
+		throw Common::Exceptions::Exception("invalid scope");
 	}
 
-	return methodScope->resolveMethod(symbol->mName, params, onlyCurrentScope, visibility);
+	return scope->resolveMethod(inner->mName, params, onlyCurrentScope, visibility);
 }
 
 std::string TreeGenerator::resolveType(Node* left, const Token& operation, Node* right) const

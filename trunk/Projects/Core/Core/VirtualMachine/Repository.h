@@ -63,6 +63,8 @@ public:
 	Runtime::Object* createReference(const std::string& type, const std::string& name, PrototypeConstraints constraints, InitilizationType::E initialize = InitilizationType::None);
 	Runtime::Object* createReference(Designtime::BluePrintGeneric* blueprint, const std::string& name, PrototypeConstraints constraints, InitilizationType::E initialize = InitilizationType::None);
 
+	Designtime::BluePrintGeneric* findBluePrint(const std::string& type) const;
+
 private:
 	typedef std::map<std::string, Designtime::BluePrintEnum*> BluePrintEnumMap;
 	typedef std::map<std::string, Designtime::BluePrintObject*> BluePrintObjectMap;
@@ -80,7 +82,6 @@ private:
 
 	void initTypeSystem(Designtime::BluePrintObject* blueprint);
 
-	Designtime::BluePrintGeneric* findBluePrint(const std::string& type) const;
 	Designtime::BluePrintEnum* findBluePrintEnum(const std::string& type) const;
 	Designtime::BluePrintObject* findBluePrintObject(const std::string& type) const;
 

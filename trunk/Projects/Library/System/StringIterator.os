@@ -78,7 +78,7 @@ public namespace System { }
 			return "{ " +
 					"mCurrentPosition: " + mCurrentPosition + ", " +
 					"mSeparator: \"" + mSeparator + "\", " +
-					"mValue: " + mValue.toJsonString() + " " +
+					"mValue: " + mValue.ToJsonString() + " " +
 				" }";
 		}
 

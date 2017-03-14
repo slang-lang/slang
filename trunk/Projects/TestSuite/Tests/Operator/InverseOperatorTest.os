@@ -125,7 +125,7 @@ private bool TestCase4() const {
 	TestObject obj = new TestObject(1);
 	print(obj.ToString());
 
-	int value = 5 + obj;
+	int value = 5 + int obj;
 
 	print("value = " + value);
 
@@ -149,9 +149,9 @@ private bool TestCase5() const {
 
 	print("value - 3 == obj: " + (value - 3 == obj));
 	print("value == obj + 3: " + (value == obj + 3));
-	print("value == 8 - obj: " + (value == 8 - obj));
+	print("value == 8 - obj: " + (value == 8 - int obj));
 
-	print("obj = " + 1 + obj);
+	print("obj = " + 1 + string obj);
 
 	return bool obj;
 }
