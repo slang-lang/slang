@@ -576,6 +576,19 @@ void Object::operator_array(const Object *index, Object* result)
 	if ( opMethod ) {
 		Interpreter interpreter;
 		interpreter.execute(static_cast<Common::Method*>(opMethod), params, result);
+
+#ifdef GENERATE_PARSE_TREE
+
+		AST::TreeInterpreter ti;
+		ti.execute(static_cast<Common::Method*>(opMethod), params, result);
+
+#else
+
+		Interpreter interpreter;
+		interpreter.execute(static_cast<Common::Method*>(opMethod), params, result);
+
+#endif
+
 		return;
 	}
 
@@ -596,8 +609,17 @@ void Object::operator_assign(const Object *other)
 	if ( value_operator ) {
 		Object tmp;
 
+#ifdef GENERATE_PARSE_TREE
+
+		AST::TreeInterpreter ti;
+		ti.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
+
+#else
+
 		Interpreter interpreter;
 		interpreter.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
+
+#endif
 
 		operator_assign(&tmp);
 		return;
@@ -622,8 +644,17 @@ void Object::operator_bitand(const Object *other)
 	if ( value_operator ) {
 		Object tmp;
 
+#ifdef GENERATE_PARSE_TREE
+
+		AST::TreeInterpreter ti;
+		ti.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
+
+#else
+
 		Interpreter interpreter;
 		interpreter.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
+
+#endif
 
 		operator_bitand(&tmp);
 		return;
@@ -648,8 +679,17 @@ void Object::operator_bitcomplement(const Object *other)
 	if ( value_operator ) {
 		Object tmp;
 
+#ifdef GENERATE_PARSE_TREE
+
+		AST::TreeInterpreter ti;
+		ti.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
+
+#else
+
 		Interpreter interpreter;
 		interpreter.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
+
+#endif
 
 		operator_bitcomplement(&tmp);
 		return;
@@ -674,8 +714,17 @@ void Object::operator_bitor(const Object *other)
 	if ( value_operator ) {
 		Object tmp;
 
+#ifdef GENERATE_PARSE_TREE
+
+		AST::TreeInterpreter ti;
+		ti.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
+
+#else
+
 		Interpreter interpreter;
 		interpreter.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
+
+#endif
 
 		operator_bitor(&tmp);
 		return;
@@ -705,8 +754,17 @@ void Object::operator_divide(const Object *other)
 	if ( value_operator ) {
 		Object tmp;
 
+#ifdef GENERATE_PARSE_TREE
+
+		AST::TreeInterpreter ti;
+		ti.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
+
+#else
+
 		Interpreter interpreter;
 		interpreter.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
+
+#endif
 
 		operator_divide(&tmp);
 		return;
@@ -735,8 +793,17 @@ bool Object::operator_equal(const Object *other)
 	if ( value_operator ) {
 		Object tmp;
 
+#ifdef GENERATE_PARSE_TREE
+
+		AST::TreeInterpreter ti;
+		ti.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
+
+#else
+
 		Interpreter interpreter;
 		interpreter.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
+
+#endif
 
 		return operator_equal(&tmp);
 	}
@@ -760,8 +827,17 @@ bool Object::operator_greater(const Object *other)
 	if ( value_operator ) {
 		Object tmp;
 
+#ifdef GENERATE_PARSE_TREE
+
+		AST::TreeInterpreter ti;
+		ti.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
+
+#else
+
 		Interpreter interpreter;
 		interpreter.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
+
+#endif
 
 		return operator_greater(&tmp);
 	}
@@ -785,8 +861,17 @@ bool Object::operator_greater_equal(const Object *other)
 	if ( value_operator ) {
 		Object tmp;
 
+#ifdef GENERATE_PARSE_TREE
+
+		AST::TreeInterpreter ti;
+		ti.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
+
+#else
+
 		Interpreter interpreter;
 		interpreter.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
+
+#endif
 
 		return operator_greater_equal(&tmp);
 	}
@@ -823,8 +908,17 @@ bool Object::operator_less(const Object *other)
 	if ( value_operator ) {
 		Object tmp;
 
+#ifdef GENERATE_PARSE_TREE
+
+		AST::TreeInterpreter ti;
+		ti.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
+
+#else
+
 		Interpreter interpreter;
 		interpreter.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
+
+#endif
 
 		return operator_less(&tmp);
 	}
@@ -848,8 +942,17 @@ bool Object::operator_less_equal(const Object *other)
 	if ( value_operator ) {
 		Object tmp;
 
+#ifdef GENERATE_PARSE_TREE
+
+		AST::TreeInterpreter ti;
+		ti.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
+
+#else
+
 		Interpreter interpreter;
 		interpreter.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
+
+#endif
 
 		return operator_less_equal(&tmp);
 	}
@@ -873,8 +976,17 @@ void Object::operator_modulo(const Object *other)
 	if ( value_operator ) {
 		Object tmp;
 
+#ifdef GENERATE_PARSE_TREE
+
+		AST::TreeInterpreter ti;
+		ti.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
+
+#else
+
 		Interpreter interpreter;
 		interpreter.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
+
+#endif
 
 		operator_modulo(&tmp);
 		return;
@@ -899,8 +1011,17 @@ void Object::operator_multiply(const Object *other)
 	if ( value_operator ) {
 		Object tmp;
 
+#ifdef GENERATE_PARSE_TREE
+
+		AST::TreeInterpreter ti;
+		ti.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
+
+#else
+
 		Interpreter interpreter;
 		interpreter.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
+
+#endif
 
 		operator_multiply(&tmp);
 		return;
@@ -925,8 +1046,17 @@ void Object::operator_plus(const Object *other)
 	if ( value_operator ) {
 		Object tmp;
 
+#ifdef GENERATE_PARSE_TREE
+
+		AST::TreeInterpreter ti;
+		ti.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
+
+#else
+
 		Interpreter interpreter;
 		interpreter.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
+
+#endif
 
 		operator_plus(&tmp);
 		return;
@@ -951,8 +1081,17 @@ void Object::operator_subtract(const Object *other)
 	if ( value_operator ) {
 		Object tmp;
 
+#ifdef GENERATE_PARSE_TREE
+
+		AST::TreeInterpreter ti;
+		ti.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
+
+#else
+
 		Interpreter interpreter;
 		interpreter.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
+
+#endif
 
 		operator_subtract(&tmp);
 		return;
