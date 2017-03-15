@@ -68,8 +68,8 @@ void Generator::processBluePrint(Designtime::BluePrintObject* object)
 		// interfaces have no implementation, so there's nothing to parse; adieu..
 		return;
 	}
-	if ( object->provideSymbols().empty() ) {
-		// an object without symbols? maybe a primitive?
+	if ( object->provideMethods().empty() && object->provideSymbols().empty() ) {
+		// an object without methods and symbols... maybe a primitive?
 		return;
 	}
 
