@@ -2,14 +2,10 @@
 
 public object BaseObject {
 	protected int mIntValue;
-
-	private void Constructor() { }
 }
 
 public object DerivedObject extends BaseObject {
 	protected string mStringValue;
-
-	private void Constructor() { }
 }
 
 public void Main(int argc = 0, string args = "") {
