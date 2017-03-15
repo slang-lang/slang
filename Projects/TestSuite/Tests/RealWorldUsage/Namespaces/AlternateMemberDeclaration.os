@@ -2,7 +2,7 @@
 
 private namespace TestSpace {
 
-	private object TestObject {
+	public object TestObject {
 		private int mValue;
 
 		public void Constructor(int value) {
