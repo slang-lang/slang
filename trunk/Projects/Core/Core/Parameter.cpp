@@ -36,7 +36,7 @@ Parameter Parameter::CreateRuntime(const std::string& type, Runtime::AtomicValue
 		return Parameter(
 				ANONYMOUS_OBJECT,
 				TypeDeclaration(type),
-				Runtime::AtomicValue(),
+				value,
 				false,
 				false,
 				AccessMode::ByReference,
