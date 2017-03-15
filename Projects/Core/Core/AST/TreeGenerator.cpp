@@ -707,7 +707,7 @@ Statement* TreeGenerator::process_foreach(TokenIterator& token)
 	expect(Token::Type::PARENTHESIS_OPEN, token);
 	++token;
 
-	TypeDeclaration* typeDeclaration = process_type(token, false);
+	TypeDeclaration* typeDeclaration = process_type(token, Initialization::NotAllowed);
 
 	expect(Token::Type::COLON, token);
 	++token;
@@ -741,7 +741,7 @@ Node* TreeGenerator::process_identifier(TokenIterator& token, bool allowTypeCast
 	}
 	// type declaration
 	else if ( !allowTypeCast && op->type() == Token::Type::IDENTIFER ) {
-		node = process_type(old);
+		node = process_type(old, Initialization::Allowed);
 
 		token = old;
 	}
@@ -946,13 +946,13 @@ Expression* TreeGenerator::process_new(TokenIterator& token)
 			inner = inner->mSymbolExpression;
 		}
 		else {
-			inner->mSymbolExpression = new DesigntimeSymbolExpression("Constructor", static_cast<Designtime::BluePrintObject*>(symbol)->QualifiedTypename());
+			inner->mSymbolExpression = new DesigntimeSymbolExpression("Constructor", "");
 			inner->mSymbolExpression->mSurroundingScope = static_cast<Designtime::BluePrintObject*>(symbol);
 			break;
 		}
 	}
 
-	return new NewExpression(exp->getResultType(), process_method(exp, token));
+	return new NewExpression(static_cast<Designtime::BluePrintObject*>(symbol)->QualifiedTypename(), process_method(exp, token));
 }
 
 /*
@@ -1208,7 +1208,7 @@ Statement* TreeGenerator::process_try(TokenIterator& token)
 			}
 
 			// create new exception type instance
-			typeDeclaration = process_type(catchIt, false);
+			typeDeclaration = process_type(catchIt, Initialization::NotAllowed);
 
 			expect(Token::Type::PARENTHESIS_CLOSE, catchIt);
 			++catchIt;
@@ -1245,7 +1245,7 @@ Statement* TreeGenerator::process_try(TokenIterator& token)
  * syntax:
  * <type> <identifier> [const|modify] [ref|val] [= <initialization>]
  */
-TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, bool allowInitialization)
+TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initialization::E initialization)
 {
 	SymbolExpression* symbolExp = resolve(token, getScope());
 	if ( !symbolExp ) {
@@ -1266,8 +1266,6 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, bool allowIni
 	Runtime::Object* object = mRepository->createInstance(type, name, constraints, Repository::InitilizationType::Final);
 	object->setConst(mutability == Mutability::Const);
 
-	//Designtime::BluePrintGeneric* object = mRepository->findBluePrint(type);
-
 	getScope()->define(name, object);
 
 	// non-atomic types are references by default
@@ -1277,7 +1275,7 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, bool allowIni
 	Node* assignment = 0;
 
 	if ( token->type() == Token::Type::ASSIGN ) {
-		if ( !allowInitialization ) {
+		if ( initialization != Initialization::Allowed ) {
 			// type declaration without initialization has been requested
 			throw Common::Exceptions::NotSupported("type initialization is not allowed here", token->position());
 		}
@@ -1287,7 +1285,28 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, bool allowIni
 
 		assignment = expression(token);
 
+		Designtime::BluePrintGeneric* generic = mRepository->findBluePrint(static_cast<Expression*>(assignment)->getResultType());
+
+		if ( accessMode == AccessMode::ByReference && generic->isAtomicType() ) {
+			throw Runtime::Exceptions::InvalidAssignment("reference type expected", token->position());
+		}
+/* temporarily disabled because this prevents the usage of =operator with atomic types
+		else if ( accessMode == AccessMode::ByValue && tmp.getReference().isValid() ) {
+			throw Runtime::Exceptions::InvalidAssignment("value type expected", token->position());
+		}
+*/
+
 		mTypeSystem->getType(type, copy, static_cast<Expression*>(assignment)->getResultType());
+	}
+	else if ( initialization == Initialization::Required ) {
+		// initialization is required (probably because type inference is used) but no initialization sequence found
+		throw Common::Exceptions::NotSupported("type inference required initialization", token->position());
+	}
+	else if ( initialization >= Initialization::Allowed &&
+			  accessMode == AccessMode::ByReference &&
+			  object->isAtomicType() ) {
+		// atomic reference without initialization found
+		throw Common::Exceptions::NotSupported("atomic references need to be initialized", token->position());
 	}
 
 	return new TypeDeclaration(type, constraints, name, mutability == Mutability::Const, accessMode == AccessMode::ByReference, assignment);
@@ -1401,6 +1420,7 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base) con
 		case Symbol::IType::MethodSymbol:
 			scope = 0;
 			// don't set the result type yet because we first have to determine which method should get executed in case overloaded methods are present
+			// this will be done in a later step (during method resolution)
 
 			symbol = new RuntimeSymbolExpression(name, type);
 			break;
