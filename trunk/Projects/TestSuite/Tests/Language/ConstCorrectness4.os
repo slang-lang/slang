@@ -37,11 +37,11 @@ private bool TestCase1() const {
 
 	TestObject obj = new TestObject();
 
-	print("obj = " + obj);
+	print("obj = " + string obj);
 
 	obj = 1;
 
-	print("obj = " + obj);
+	print("obj = " + string obj);
 
 	return true;
 }
@@ -51,11 +51,11 @@ private bool TestCase2() const {
 
 	TestObject obj = new TestObject();
 
-	print("obj = " + obj);
+	print("obj = " + string obj);
 	{
 		obj.setValue(6);
 	}
-	print("obj = " + obj);
+	print("obj = " + string obj);
 
 	return true;
 }

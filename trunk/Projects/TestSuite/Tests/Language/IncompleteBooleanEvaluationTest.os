@@ -143,11 +143,13 @@ private bool WriteFalse() {
 	print("false");
 
 	assert( false );
+	return false;
 }
 
 private bool WriteTrue() {
 	print("true");
 
 	assert( false );
+	return false;
 }
 

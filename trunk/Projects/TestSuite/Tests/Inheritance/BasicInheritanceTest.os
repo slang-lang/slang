@@ -1,8 +1,6 @@
 #!/usr/local/bin/oscript
 
 public object BaseObject {
-	private void Constructor() { }
-
 	public void Destructor() {
 		print("BaseObject.Destructor()");
 	}
@@ -13,8 +11,6 @@ public object BaseObject {
 }
 
 public object ExtendedObject extends BaseObject {
-	private void Constructor() { }
-
 	public void Destructor() {
 		print("ExtendedObject.Destructor()");
 	}
