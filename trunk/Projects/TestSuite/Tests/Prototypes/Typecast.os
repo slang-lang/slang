@@ -2,9 +2,12 @@
 
 private object Prototype<T> {
 	public T mValue;
+
+	private void Constructor() { }
 }
 
 private object TestObject extends Prototype<int> {
+	private void Constructor() { }
 }
 
 public void Main(int argc = 0, string args = "") {
