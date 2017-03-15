@@ -32,7 +32,7 @@ public object DerivedObject extends BaseObject {
 	}
 
 	public int GetBox() const {
-		return int(1);
+		return 1;
 	}
 
 	public string GetIdentifier() const {

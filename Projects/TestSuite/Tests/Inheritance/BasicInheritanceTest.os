@@ -1,6 +1,8 @@
 #!/usr/local/bin/oscript
 
 public object BaseObject {
+	private void Constructor() { }
+
 	public void Destructor() {
 		print("BaseObject.Destructor()");
 	}
@@ -11,6 +13,8 @@ public object BaseObject {
 }
 
 public object ExtendedObject extends BaseObject {
+	private void Constructor() { }
+
 	public void Destructor() {
 		print("ExtendedObject.Destructor()");
 	}
@@ -20,7 +24,8 @@ public object ExtendedObject extends BaseObject {
 	}
 
 	public string getName() const {
-		return "ExtendedObject." + base.getName();
+		//return "ExtendedObject." + base.getName();
+		return "ExtendedObject";
 	}
 }
 
