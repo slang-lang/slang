@@ -47,6 +47,16 @@ public:
 public:
 	Statements* generateAST(Common::Method *method);
 
+private:
+	class Initialization {
+	public:
+		enum E {
+			NotAllowed,
+			Allowed,
+			Required
+		};
+	};
+
 private: // Execution
 	inline void collectScopeTokens(TokenIterator& token, TokenList& tokens);
 
@@ -79,7 +89,7 @@ private: // Execution
 	Statement* process_switch(TokenIterator& token);
 	Statement* process_throw(TokenIterator& token);
 	Statement* process_try(TokenIterator& token);
-	TypeDeclaration* process_type(TokenIterator& token, bool allowInitialization = true);
+	TypeDeclaration* process_type(TokenIterator& token, Initialization::E initialization);
 	Expression* process_typeid(TokenIterator& token);
 	Statement* process_while(TokenIterator& token);
 	// }
