@@ -62,8 +62,7 @@ private: // Execution
 
 	Statements* generate(const TokenList &tokens, bool allowBreakAndContinue = false);
 
-	inline Symbol* identify(TokenIterator& token) const;
-	inline Symbol* identifyMethod(TokenIterator& token, const ParameterList& params) const;
+	Symbol* identify(TokenIterator& token) const;
 
 	// token processing
 	// {

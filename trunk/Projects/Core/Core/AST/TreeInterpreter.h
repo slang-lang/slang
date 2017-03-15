@@ -59,8 +59,8 @@ private:
 
 	inline void visit(Node* node);
 
-	void visitExpression(Expression* expression);
-	void visitOperator(Operator* op);
+	inline void visitExpression(Expression* expression);
+	inline void visitOperator(Operator* op);
 	inline void visitStatement(Statement* node);
 
 	void visitAssert(AssertStatement* node);
