@@ -14,7 +14,7 @@ public object TestObject {
 	}
 }
 
-public void Main(int argc = 1, string args = "") {
+public void Main(int argc = 1, string args = "") modify {
 	TestObject obj = new TestObject(173);
 
 	{

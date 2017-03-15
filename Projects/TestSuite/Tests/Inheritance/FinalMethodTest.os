@@ -1,16 +1,12 @@
 #!/usr/local/bin/oscript
 
 private object BaseObject {
-	private void Constructor() { }
-
 	public string ToString() const final {
 		return "BaseObject";
 	}
 }
 
 private object DerivedObject extends BaseObject {
-	private void Constructor() { }
-
 	public string ToString() const {
 		return "DerivedObject";
 	}

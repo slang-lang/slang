@@ -2,7 +2,7 @@
 
 private int mNumber;
 
-public void Main(int argc const = 0, string argv const = "") {
+public void Main(int argc const = 0, string argv const = "") modify {
 	mNumber = 0;
 	int one = 0;
 	ModifyByValueParameter(one);
@@ -10,10 +10,10 @@ public void Main(int argc const = 0, string argv const = "") {
 	assert( one == 0 );
 
 	mNumber = 0;
-	one = 0;
-	ModifyByReferenceParameter(one);	// this is not supported atm
+	one = new int(0);
+	ModifyByReferenceParameter(one);
 	assert( mNumber == 1 );
-	//assert( one == 1 );				// atomic reference parameters are not supported atm
+	assert( one == 1 );
 
 	mNumber = 0;
 	int two const = 0;
