@@ -242,60 +242,6 @@ inline Symbol* TreeGenerator::identify(TokenIterator& token) const
 	return result;
 }
 
-Symbol* TreeGenerator::identifyMethod(TokenIterator& token, const ParameterList& params) const
-{
-	Symbol *result = 0;
-	bool onlyCurrentScope = false;
-	std::string prev_identifier;	// hack to allow special 'this'-handling
-
-	while ( token->type() == Token::Type::IDENTIFER || token->type() == Token::Type::TYPE ) {
-		std::string identifier = token->content();
-
-		if ( !result ) {
-			result = getScope()->resolve(identifier, onlyCurrentScope, Visibility::Private);
-
-			prev_identifier = identifier;
-		}
-		else {
-			switch ( result->getSymbolType() ) {
-				case Symbol::IType::BluePrintEnumSymbol:
-					result = dynamic_cast<Designtime::BluePrintEnum*>(result)->resolveMethod(identifier, params, true, Visibility::Public);
-					break;
-				case Symbol::IType::BluePrintObjectSymbol:
-					result = dynamic_cast<Designtime::BluePrintObject*>(result)->resolveMethod(identifier, params, true, Visibility::Public);
-					break;
-				case Symbol::IType::NamespaceSymbol:
-					result = dynamic_cast<Common::Namespace*>(result)->resolveMethod(identifier, params, true, Visibility::Public);
-					break;
-				case Symbol::IType::ObjectSymbol:
-					result = dynamic_cast<Runtime::Object*>(result)->resolveMethod(identifier, params, true,
-																		  (prev_identifier == IDENTIFIER_THIS) ? Visibility::Private : Visibility::Public);
-					break;
-				case Symbol::IType::MethodSymbol:
-					throw Common::Exceptions::NotSupported("cannot directly access locales of method");
-			}
-
-			onlyCurrentScope = true;
-		}
-
-		if ( lookahead(token)->type() != Token::Type::SCOPE ) {
-			break;
-		}
-
-		token++;
-
-		TokenIterator tmp = token;
-		tmp++;
-		if ( tmp->type() != Token::Type::IDENTIFER && tmp->type() != Token::Type::TYPE ) {
-			break;
-		}
-
-		token++;
-	}
-
-	return result;
-}
-
 AccessMode::E TreeGenerator::parseAccessMode(TokenIterator &token, bool isAtomicType)
 {
 	AccessMode::E result = isAtomicType ? AccessMode::ByValue : AccessMode::ByReference;
@@ -772,6 +718,9 @@ Node* TreeGenerator::process_identifier(TokenIterator& token, bool allowTypeCast
 			right = new BinaryExpression(symbol, operation, right, resolveType(symbol, operation, right));
 		}
 
+		// TODO: prevent assignments to const symbols
+		// TODO: prevent assignments to members in const methods
+
 		node = new Assignment(symbol, (*op), right, resolveType(symbol, assignment, right));
 	}
 	// --
@@ -918,6 +867,14 @@ MethodExpression* TreeGenerator::process_method(SymbolExpression* symbol, TokenI
 		throw Common::Exceptions::UnknownIdentifer("method '" + symbol->toString() + "(" + toString(params) + ")' not found", token->position());
 	}
 
+/*
+	// TODO: prevent calls to non-const methods if current method is const
+	if ( mMethod->isConst() && !method->isConst() ) {
+		// this is a const method and we want to call a non-const method... neeeeey!
+		throw Common::Exceptions::ConstCorrectnessViolated("only calls to const methods are allowed in const method '" + mMethod->getFullScopeName() + "'", token->position());
+	}
+*/
+
 	return new MethodExpression(symbol, parameterList, method->QualifiedTypename());
 }
 
@@ -931,11 +888,11 @@ Expression* TreeGenerator::process_new(TokenIterator& token)
 
 	Symbol* symbol = identify(start);
 	if ( !symbol ) {
-		throw Common::Exceptions::UnknownIdentifer("symbol '" + start->content() + "' not found");
+		throw Common::Exceptions::UnknownIdentifer("symbol '" + start->content() + "' not found", token->position());
 	}
 	if ( symbol->getSymbolType() != Symbol::IType::BluePrintEnumSymbol &&
 		 symbol->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
-		throw Designtime::Exceptions::DesigntimeException("invalid symbol type found");
+		throw Common::Exceptions::InvalidSymbol("invalid symbol type found", token->position());
 	}
 
 	SymbolExpression* exp = resolve(token, getScope());
@@ -1277,7 +1234,7 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 	if ( token->type() == Token::Type::ASSIGN ) {
 		if ( initialization != Initialization::Allowed ) {
 			// type declaration without initialization has been requested
-			throw Common::Exceptions::NotSupported("type initialization is not allowed here", token->position());
+			throw Common::Exceptions::NotSupported("initialization is not allowed here", token->position());
 		}
 
 		Token copy = (*token);
@@ -1285,26 +1242,23 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 
 		assignment = expression(token);
 
-		Designtime::BluePrintGeneric* generic = mRepository->findBluePrint(static_cast<Expression*>(assignment)->getResultType());
-
-		if ( accessMode == AccessMode::ByReference && generic->isAtomicType() ) {
+		if ( accessMode == AccessMode::ByReference &&
+			static_cast<Expression*>(assignment)->getExpressionType() != Expression::ExpressionType::NewExpression ) {
 			throw Runtime::Exceptions::InvalidAssignment("reference type expected", token->position());
 		}
-/* temporarily disabled because this prevents the usage of =operator with atomic types
-		else if ( accessMode == AccessMode::ByValue && tmp.getReference().isValid() ) {
+		else if ( accessMode == AccessMode::ByValue &&
+			static_cast<Expression*>(assignment)->getExpressionType() == Expression::ExpressionType::NewExpression ) {
 			throw Runtime::Exceptions::InvalidAssignment("value type expected", token->position());
 		}
-*/
 
 		mTypeSystem->getType(type, copy, static_cast<Expression*>(assignment)->getResultType());
 	}
 	else if ( initialization == Initialization::Required ) {
 		// initialization is required (probably because type inference is used) but no initialization sequence found
-		throw Common::Exceptions::NotSupported("type inference required initialization", token->position());
+		throw Common::Exceptions::NotSupported("initialization required here", token->position());
 	}
 	else if ( initialization >= Initialization::Allowed &&
-			  accessMode == AccessMode::ByReference &&
-			  object->isAtomicType() ) {
+			  accessMode == AccessMode::ByReference ) {
 		// atomic reference without initialization found
 		throw Common::Exceptions::NotSupported("atomic references need to be initialized", token->position());
 	}
