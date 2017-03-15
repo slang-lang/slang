@@ -5,6 +5,7 @@
 // Library includes
 
 // Project includes
+#include <Core/Common/Method.h>
 #include <Tools/Strings.h>
 
 // Namespace declarations
@@ -36,6 +37,20 @@ BluePrintObject::~BluePrintObject()
 Runtime::AtomicValue BluePrintObject::getValue() const
 {
 	return mValue;
+}
+
+bool BluePrintObject::hasDefaultConstructor() const
+{
+	for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
+		if ( (*it)->getMethodType() == MethodAttributes::MethodType::Constructor &&
+			(*it)->getName() == CONSTRUCTOR &&
+			(*it)->provideSignature().empty() ) {
+			// method has to be of type constructor without any parameters
+			return true;
+		}
+	}
+
+	return false;
 }
 
 MethodScope::MethodCollection BluePrintObject::provideMethods() const

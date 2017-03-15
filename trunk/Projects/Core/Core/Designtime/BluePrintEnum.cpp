@@ -41,6 +41,16 @@ void BluePrintEnum::setParent(IScope* parent)
 	mParent = parent;
 }
 
+BluePrintEnum::MethodCollection BluePrintEnum::provideMethods() const
+{
+	return mMethods;
+}
+
+Symbols BluePrintEnum::provideSymbols() const
+{
+	return mSymbols;
+}
+
 std::string BluePrintEnum::ToString(unsigned int indent) const
 {
 	return ::Utils::Tools::indent(indent) + QualifiedTypename() + " " + getName();
