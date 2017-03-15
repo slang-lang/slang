@@ -206,6 +206,24 @@ bool Analyser::createBluePrint(TokenIterator& token, TokenIterator /*end*/)
 	mScope = tmpScope;
 	mProcessingInterface = false;
 
+	// create default constructor if not already present
+	if ( !blueprint->hasDefaultConstructor() ) {
+		Common::Method* defaultConstructor = new Common::Method(blueprint, CONSTRUCTOR, _void);
+		defaultConstructor->setAbstract(false);
+		defaultConstructor->setConst(false);
+		defaultConstructor->setFinal(false);
+		defaultConstructor->setLanguageFeatureState(LanguageFeatureState::Stable);
+		defaultConstructor->setMethodType(MethodAttributes::MethodType::Constructor);
+		defaultConstructor->setMutability(Mutability::Modify);
+		defaultConstructor->setParent(blueprint);
+		defaultConstructor->setRecursive(false);
+		defaultConstructor->setSignature(ParameterList());
+		defaultConstructor->setThrows(false);
+		defaultConstructor->setVisibility(Visibility::Public);
+
+		blueprint->defineMethod(CONSTRUCTOR, defaultConstructor);
+	}
+
 	mRepository->addBluePrint(blueprint);
 
 	return blueprint != 0;

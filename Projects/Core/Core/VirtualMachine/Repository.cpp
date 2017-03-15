@@ -754,10 +754,23 @@ void Repository::initTypeSystem(Designtime::BluePrintObject* blueprint)
 		}
 	}
 
+	// add default assignment entry for null assignments
+	typeSystem->define(blueprint->QualifiedTypename(), Token::Type::ASSIGN, NULL_TYPE, blueprint->QualifiedTypename());
+
 	// add default assignment entry for type system if it doesn't exist yet
 	if ( !typeSystem->exists(blueprint->QualifiedTypename(), Token(Token::Type::ASSIGN, "="), blueprint->QualifiedTypename()) ) {
 		typeSystem->define(blueprint->QualifiedTypename(), Token::Type::ASSIGN, blueprint->QualifiedTypename(), blueprint->QualifiedTypename());
 	}
+
+/*
+	// add default assignment entry for prototype constraints
+	PrototypeConstraints constraints = blueprint->getPrototypeConstraints();
+	for ( PrototypeConstraints::const_iterator it = constraints.begin(); it != constraints.end(); ++it ) {
+		if ( !(*it).mConstraint.empty() && !typeSystem->exists((*it).mConstraint, Token(Token::Type::ASSIGN, "="), (*it).mConstraint) ) {
+			typeSystem->define((*it).mConstraint, Token::Type::ASSIGN, (*it).mConstraint, (*it).mConstraint);
+		}
+	}
+*/
 }
 
 

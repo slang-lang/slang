@@ -95,13 +95,13 @@ std::string StackFrame::toString() const
 
 		switch ( scope->getScopeType() ) {
 			case IScope::IType::MethodScope:
-				result += scope->getScopeName();
+				result += scope->getFullScopeName();
 				break;
 			case IScope::IType::NamedScope:
-				result += static_cast<Common::Method*>(scope)->ToString();
+				result += scope->getFullScopeName();
 				break;
 			case IScope::IType::SymbolScope:
-				result += scope->getScopeName();
+				result += scope->getFullScopeName();
 				break;
 		}
 	}

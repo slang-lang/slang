@@ -36,12 +36,8 @@ public:
 	std::string ToString(unsigned int indent) const;
 
 public:
-	MethodCollection provideMethods() const {
-		return mMethods;
-	}
-	Symbols provideSymbols() const {
-		return mSymbols;
-	}
+	MethodCollection provideMethods() const;
+	Symbols provideSymbols() const;
 
 private:
 };

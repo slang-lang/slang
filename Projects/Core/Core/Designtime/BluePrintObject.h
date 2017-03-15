@@ -33,12 +33,14 @@ public:
 public:
 	void setParent(IScope* parent);
 
+	bool hasDefaultConstructor() const;
+
 	Runtime::AtomicValue getValue() const;
 	void setValue(Runtime::AtomicValue value);
 
 	std::string ToString(unsigned int indent) const;
 
-public:	// for prototype resolution only
+public:
 	MethodCollection provideMethods() const;
 	Symbols provideSymbols() const;
 
