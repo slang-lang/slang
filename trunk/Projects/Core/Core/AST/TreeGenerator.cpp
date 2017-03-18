@@ -70,6 +70,31 @@ void TreeGenerator::collectScopeTokens(TokenIterator& token, TokenList& tokens)
 	expect(Token::Type::BRACKET_CURLY_CLOSE, token);
 }
 
+void TreeGenerator::deinitialize()
+{
+	// pop tokens;
+	mStackFrame->popTokens();
+	// pop scope
+	mStackFrame->popScope();
+	// delete stack frame
+	delete mStackFrame;
+	mStackFrame = 0;
+
+	// verify return statement existance
+	if ( mMethod->QualifiedTypename() != Designtime::VoidObject::TYPENAME && !mHasReturnStatement ) {
+		Token last;
+		if ( !mMethod->getTokens().empty() ) {
+			last = mMethod->getTokens().back();
+		}
+
+		throw Common::Exceptions::Exception("return statement missing in '" + mMethod->getFullScopeName() + "'", last.position());
+	}
+
+	// reset reuseable members
+	mMethod = 0;
+	mHasReturnStatement = false;
+}
+
 Node* TreeGenerator::expression(TokenIterator& start)
 {
 	Node* expression = parseCondition(start);
@@ -111,59 +136,12 @@ Statements* TreeGenerator::generate(const TokenList &tokens, bool allowBreakAndC
  */
 Statements* TreeGenerator::generateAST(Common::Method *method)
 {
-	// initialize reuseable members
-	mHasReturnStatement = false;
-	mMethod = method;
-
-	// create new stack frame
-	mStackFrame = new StackFrame(0, mMethod, mMethod->provideSignature());
-	// push scope
-	mStackFrame->pushScope(mMethod, false, false);
-	// push tokens
-	mStackFrame->pushTokens(mMethod->getTokens());
-
-	IScope* scope = getScope();
-
-	// add this symbol to method
-	Designtime::BluePrintObject* owner = dynamic_cast<Designtime::BluePrintObject*>(scope->getEnclosingScope());
-	if ( owner ) {
-		Runtime::Object *object = mRepository->createInstance(owner->QualifiedTypename(), IDENTIFIER_THIS, PrototypeConstraints());
-		object->setConst(method->isConst());
-
-		scope->define(IDENTIFIER_THIS, object);
-	}
-
-	// add parameters as locale variables
-	for ( ParameterList::const_iterator it = mMethod->provideSignature().begin(); it != mMethod->provideSignature().end(); ++it ) {
-		Runtime::Object *object = mRepository->createInstance(it->type(), it->name(), PrototypeConstraints());
-
-		scope->define(it->name(), object);
-	}
+	initialize(method);
 
 	// generate AST
 	Statements* statements = generate(mMethod->getTokens());
 
-	// pop tokens;
-	mStackFrame->popTokens();
-	// pop scope
-	mStackFrame->popScope();
-	// delete stack frame
-	delete mStackFrame;
-	mStackFrame = 0;
-
-	// verify return statement existance
-	if ( mMethod->QualifiedTypename() != Designtime::VoidObject::TYPENAME && !mHasReturnStatement ) {
-		Token last;
-		if ( !mMethod->getTokens().empty() ) {
-			last = mMethod->getTokens().back();
-		}
-
-		throw Common::Exceptions::Exception("return statement missing in '" + mMethod->getFullScopeName() + "'", last.position());
-	}
-
-	// reset reuseable members
-	mMethod = 0;
-	mHasReturnStatement = false;
+	deinitialize();
 
 	return statements;
 }
@@ -205,7 +183,7 @@ inline Symbol* TreeGenerator::identify(TokenIterator& token) const
 	bool onlyCurrentScope = false;
 	std::string prev_identifier;	// hack to allow special 'this'-handling
 
-	while ( token->type() == Token::Type::IDENTIFER || token->type() == Token::Type::TYPE ) {
+	while ( token->type() == Token::Type::IDENTIFIER || token->type() == Token::Type::TYPE ) {
 		std::string identifier = token->content();
 
 		if ( !result ) {
@@ -243,7 +221,7 @@ inline Symbol* TreeGenerator::identify(TokenIterator& token) const
 
 		TokenIterator tmp = token;
 		tmp++;
-		if ( tmp->type() != Token::Type::IDENTIFER && tmp->type() != Token::Type::TYPE ) {
+		if ( tmp->type() != Token::Type::IDENTIFIER && tmp->type() != Token::Type::TYPE ) {
 			break;
 		}
 
@@ -251,6 +229,48 @@ inline Symbol* TreeGenerator::identify(TokenIterator& token) const
 	}
 
 	return result;
+}
+
+void TreeGenerator::initialize(Common::Method* method)
+{
+	// initialize reuseable members
+	mHasReturnStatement = false;
+	mMethod = method;
+
+	// create new stack frame
+	mStackFrame = new StackFrame(0, mMethod, mMethod->provideSignature());
+	// push scope
+	mStackFrame->pushScope(mMethod, false, false);
+	// push tokens
+	mStackFrame->pushTokens(mMethod->getTokens());
+
+	IScope* scope = getScope();
+
+	// add 'this' and 'base' symbol to method
+	Designtime::BluePrintObject* owner = dynamic_cast<Designtime::BluePrintObject*>(scope->getEnclosingScope());
+	if ( owner ) {
+		Runtime::Object *object = mRepository->createInstance(owner->QualifiedTypename(), IDENTIFIER_THIS, PrototypeConstraints());
+		object->setConst(mMethod->isConst());
+
+		scope->define(IDENTIFIER_THIS, object);
+
+		Designtime::Ancestors ancestors = owner->getAncestors();
+
+		// BEWARE: this is only valid as long as we have single inheritance!!!
+		for ( Designtime::Ancestors::const_iterator it = ancestors.begin(); it != ancestors.end(); ++it ) {
+			Runtime::Object *base = mRepository->createInstance((*it).name(), IDENTIFIER_BASE, PrototypeConstraints());
+			base->setConst(mMethod->isConst());
+
+			scope->define(IDENTIFIER_BASE, base);
+		}
+	}
+
+	// add parameters as locale variables
+	for ( ParameterList::const_iterator it = mMethod->provideSignature().begin(); it != mMethod->provideSignature().end(); ++it ) {
+		Runtime::Object *object = mRepository->createInstance(it->type(), it->name(), PrototypeConstraints());
+
+		scope->define(it->name(), object);
+	}
 }
 
 AccessMode::E TreeGenerator::parseAccessMode(TokenIterator &token, bool isAtomicType)
@@ -442,7 +462,7 @@ Node* TreeGenerator::parseTerm(TokenIterator& start)
 			term = new StringLiteralExpression(start->content());
 			++start;
 		} break;
-		case Token::Type::IDENTIFER:
+		case Token::Type::IDENTIFIER:
 		case Token::Type::TYPE: {
 			term = process_identifier(start, true);
 		} break;
@@ -669,7 +689,7 @@ Statement* TreeGenerator::process_foreach(TokenIterator& token)
 	expect(Token::Type::COLON, token);
 	++token;
 
-	expect(Token::Type::IDENTIFER, token);
+	expect(Token::Type::IDENTIFIER, token);
 
 	SymbolExpression* symbol = parseSymbol(token);
 
@@ -690,14 +710,14 @@ Node* TreeGenerator::process_identifier(TokenIterator& token, bool allowTypeCast
 	SymbolExpression* symbol = resolve(token, getScope());
 	TokenIterator op = token;
 
-	// type cast
-	if ( allowTypeCast && op->type() == Token::Type::IDENTIFER ) {
+	// type cast (followed by identifier or 'copy' || 'new' keyword)
+	if ( allowTypeCast && (op->type() == Token::Type::IDENTIFIER || op->type() == Token::Type::KEYWORD) ) {
 		node = new TypecastExpression(old->content(), expression(++old));
 
 		token = old;
 	}
 	// type declaration
-	else if ( !allowTypeCast && op->type() == Token::Type::IDENTIFER ) {
+	else if ( !allowTypeCast && op->type() == Token::Type::IDENTIFIER ) {
 		node = process_type(old, Initialization::Allowed);
 
 		token = old;
@@ -873,7 +893,7 @@ MethodExpression* TreeGenerator::process_method(SymbolExpression* symbol, TokenI
 	token = ++closed;
 
 
-	Common::Method* method = static_cast<Common::Method*>(resolveMethod(symbol, params, true, Visibility::Private));
+	Common::Method* method = static_cast<Common::Method*>(resolveMethod(symbol, params, Visibility::Private));
 	if ( !method ) {
 		throw Common::Exceptions::UnknownIdentifer("method '" + symbol->toString() + "(" + toString(params) + ")' not found", token->position());
 	}
@@ -987,7 +1007,7 @@ Node* TreeGenerator::process_statement(TokenIterator& token, bool allowBreakAndC
 	Node* node = 0;
 
 	switch ( token->type() ) {
-		case Token::Type::IDENTIFER:
+		case Token::Type::IDENTIFIER:
 		case Token::Type::TYPE:
 			node = process_identifier(token);
 			break;
@@ -1224,7 +1244,7 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 
 	PrototypeConstraints constraints = Designtime::Parser::collectRuntimePrototypeConstraints(token);
 
-	expect(Token::Type::IDENTIFER, token);
+	expect(Token::Type::IDENTIFIER, token);
 
 	std::string name = token->content();
 	++token;
@@ -1253,6 +1273,7 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 
 		assignment = expression(token);
 
+/*
 		if ( accessMode == AccessMode::ByReference &&
 			static_cast<Expression*>(assignment)->getExpressionType() != Expression::ExpressionType::NewExpression ) {
 			throw Runtime::Exceptions::InvalidAssignment("reference type expected", token->position());
@@ -1261,6 +1282,7 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 			static_cast<Expression*>(assignment)->getExpressionType() == Expression::ExpressionType::NewExpression ) {
 			throw Runtime::Exceptions::InvalidAssignment("value type expected", token->position());
 		}
+*/
 
 		mTypeSystem->getType(type, copy, static_cast<Expression*>(assignment)->getResultType());
 	}
@@ -1269,7 +1291,8 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 		throw Common::Exceptions::NotSupported("initialization required here", token->position());
 	}
 	else if ( initialization >= Initialization::Allowed &&
-			  accessMode == AccessMode::ByReference ) {
+			  accessMode == AccessMode::ByReference &&
+			  object->isAtomicType() ) {
 		// atomic reference without initialization found
 		throw Common::Exceptions::NotSupported("atomic references need to be initialized", token->position());
 	}
@@ -1399,15 +1422,20 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base) con
 	return symbol;
 }
 
-MethodSymbol* TreeGenerator::resolveMethod(SymbolExpression* symbol, const ParameterList& params, bool onlyCurrentScope, Visibility::E visibility) const
+MethodSymbol* TreeGenerator::resolveMethod(SymbolExpression* symbol, const ParameterList& params, Visibility::E visibility) const
 {
 	if ( !symbol ) {
 		throw Runtime::Exceptions::InvalidSymbol("invalid symbol provided");
 	}
 
+	bool onlyCurrentScope = false;
+
 	SymbolExpression* inner = symbol;
 	while ( true ) {
 		if ( inner->mSymbolExpression && inner->mSymbolExpression->mSurroundingScope ) {
+			// TODO: reactivate "onlyCurrentScope = true;"
+			//onlyCurrentScope = true;
+
 			inner = inner->mSymbolExpression;
 			continue;
 		}

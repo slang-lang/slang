@@ -51,7 +51,7 @@ bool Analyser::buildEnum(Designtime::BluePrintEnum* symbol, const TokenList& tok
 	while ( token != tokens.end() ) {
 		std::string name;
 
-		expect(Token::Type::IDENTIFER, token);
+		expect(Token::Type::IDENTIFIER, token);
 		name = (token++)->content();
 
 		if ( token->type() == Token::Type::ASSIGN ) {
@@ -278,7 +278,7 @@ bool Analyser::createLibraryReference(TokenIterator& token, TokenIterator end)
 
 	expect(Token::Type::RESERVED_WORD, token++);
 
-	while ( token->type() == Token::Type::IDENTIFER && token != end ) {
+	while ( token->type() == Token::Type::IDENTIFIER && token != end ) {
 		reference += (*token++).content();
 
 		if ( token->type() != Token::Type::SCOPE ) {
@@ -527,7 +527,7 @@ bool Analyser::createNamespace(TokenIterator& token, TokenIterator /*end*/)
 
 	MethodScope* tmpScope = mScope;
 
-	while ( token->type() == Token::Type::IDENTIFER ) {
+	while ( token->type() == Token::Type::IDENTIFIER ) {
 		// look for the identifier token
 		std::string name = (*token++).content();
 

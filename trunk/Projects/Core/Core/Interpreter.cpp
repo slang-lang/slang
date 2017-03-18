@@ -393,7 +393,7 @@ inline Symbol* Interpreter::identify(TokenIterator& token) const
 	bool onlyCurrentScope = false;
 	std::string prev_identifier;	// hack to allow special 'this'-handling
 
-	while ( token->type() == Token::Type::IDENTIFER || token->type() == Token::Type::TYPE ) {
+	while ( token->type() == Token::Type::IDENTIFIER || token->type() == Token::Type::TYPE ) {
 		std::string identifier = token->content();
 
 		if ( !result ) {
@@ -438,7 +438,7 @@ inline Symbol* Interpreter::identify(TokenIterator& token) const
 
 		TokenIterator tmp = token;
 		++tmp;
-		if ( tmp->type() != Token::Type::IDENTIFER && tmp->type() != Token::Type::TYPE ) {
+		if ( tmp->type() != Token::Type::IDENTIFIER && tmp->type() != Token::Type::TYPE ) {
 			break;
 		}
 
@@ -454,7 +454,7 @@ Symbol* Interpreter::identifyMethod(TokenIterator& token, const ParameterList& p
 	bool onlyCurrentScope = false;
 	std::string prev_identifier;	// hack to allow special 'this'-handling
 
-	while ( token->type() == Token::Type::IDENTIFER || token->type() == Token::Type::TYPE ) {
+	while ( token->type() == Token::Type::IDENTIFIER || token->type() == Token::Type::TYPE ) {
 		std::string identifier = token->content();
 
 		if ( !result ) {
@@ -497,7 +497,7 @@ Symbol* Interpreter::identifyMethod(TokenIterator& token, const ParameterList& p
 
 		TokenIterator tmp = token;
 		++tmp;
-		if ( tmp->type() != Token::Type::IDENTIFER && tmp->type() != Token::Type::TYPE ) {
+		if ( tmp->type() != Token::Type::IDENTIFIER && tmp->type() != Token::Type::TYPE ) {
 			break;
 		}
 
@@ -812,7 +812,7 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 			operator_binary_assign(result, &tmp);
 			++start;
 		} break;
-		case Token::Type::IDENTIFER:
+		case Token::Type::IDENTIFIER:
 		case Token::Type::TYPE: {
 			// find out if we have to execute a method or simply get a stored variable
 
@@ -901,7 +901,7 @@ void Interpreter::process(Object *result, TokenIterator& token, TokenIterator en
 		mDebugger->notify(getScope(), (*token));		// notify debugger
 
 		switch ( token->type() ) {
-			case Token::Type::IDENTIFER:
+			case Token::Type::IDENTIFIER:
 			case Token::Type::TYPE:
 				process_identifier(token, result);
 				break;
@@ -1177,7 +1177,7 @@ void Interpreter::process_foreach(TokenIterator& token, Object* result)
 
 	expect(Token::Type::COLON, token);
 	++token;
-	expect(Token::Type::IDENTIFER, token);
+	expect(Token::Type::IDENTIFIER, token);
 
 	// identify collection symbol
 	Object* collection = dynamic_cast<Object*>(identify(token));
@@ -1627,7 +1627,7 @@ void Interpreter::process_statement(TokenIterator& token, Object* result)
 	mDebugger->notify(getScope(), (*token));		// notify debugger
 
 	switch ( token->type() ) {
-		case Token::Type::IDENTIFER:
+		case Token::Type::IDENTIFIER:
 		case Token::Type::TYPE:
 			process_identifier(token, result);
 			break;
@@ -1984,7 +1984,7 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol, Initiali
 {
 	PrototypeConstraints constraints = Designtime::Parser::collectRuntimePrototypeConstraints(++token);
 
-	expect(Token::Type::IDENTIFER, token);
+	expect(Token::Type::IDENTIFIER, token);
 
 	std::string name = (token++)->content();
 
@@ -2081,7 +2081,7 @@ void Interpreter::process_typeid(TokenIterator& token, Object* result)
  */
 void Interpreter::process_var(TokenIterator& token, Object* /*result*/)
 {
-	expect(Token::Type::IDENTIFER, token);
+	expect(Token::Type::IDENTIFIER, token);
 
 	std::string name = (token++)->content();
 

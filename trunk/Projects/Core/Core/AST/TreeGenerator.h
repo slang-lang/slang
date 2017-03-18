@@ -112,7 +112,7 @@ private: // Execution
 	// }
 
 	SymbolExpression* resolve(TokenIterator& token, IScope* base) const;
-	MethodSymbol* resolveMethod(SymbolExpression* symbol, const ParameterList& params, bool onlyCurrentScope, Visibility::E visibility) const;
+	MethodSymbol* resolveMethod(SymbolExpression* symbol, const ParameterList& params, Visibility::E visibility) const;
 	std::string resolveType(Node* left, const Token& operation, Node* right) const;
 
 	// Scope stack
@@ -120,7 +120,7 @@ private: // Execution
 	MethodScope* getEnclosingMethodScope(IScope* scope) const;
 	MethodScope* getMethodScope(IScope* scope) const;
 
-	IScope* getScope() const;
+	inline IScope* getScope() const;
 	void popScope();
 	void pushScope(IScope* scope = 0, bool allowBreakAndContinue = false);
 	// }
@@ -131,6 +131,10 @@ private: // Execution
 	void popTokens();
 	void pushTokens(const TokenList& tokens);
 	// }
+
+private:	// Initialization
+	void deinitialize();
+	void initialize(Common::Method* method);
 
 private:
 	bool mHasReturnStatement;

@@ -245,7 +245,7 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 		TokenList tokens = method->getTokens();
 
 		for ( TokenList::iterator tokIt = tokens.begin(); tokIt != tokens.end(); ++tokIt ) {
-			if ( tokIt->type() == Token::Type::IDENTIFER ) {
+			if ( tokIt->type() == Token::Type::IDENTIFIER ) {
 				type = constraints.lookupType(tokIt->content());
 
 				if ( type != tokIt->content() ) {

@@ -35,7 +35,7 @@ void Tokenizer::addToken(const std::string &con, const Common::Position &positio
 	std::string content = con;
 
 	Token::Category::E category = Token::Category::None;
-	Token::Type::E type = Token::Type::IDENTIFER;
+	Token::Type::E type = Token::Type::IDENTIFIER;
 
 	if ( content == "=" ) { category = Token::Category::Assignment; type = Token::Type::ASSIGN; }
 	else if ( content == "&" ) { category = Token::Category::Operator; type = Token::Type::BITAND; }
@@ -678,7 +678,7 @@ void Tokenizer::replaceConstDataTypes()
 
 					tmp = lookahead(token, numCombines + 1);
 
-					if ( tmp->type() == Token::Type::IDENTIFER ) {
+					if ( tmp->type() == Token::Type::IDENTIFIER ) {
 						if ( tmp->content() == "d" ) {
 							// CONST_INTEGER '.' CONST_INTEGER 'd'
 							numCombines++;
@@ -705,7 +705,7 @@ void Tokenizer::replaceConstDataTypes()
 						numCombines++;
 					}
 				}
-				else if ( tmp->type() == Token::Type::IDENTIFER ) {
+				else if ( tmp->type() == Token::Type::IDENTIFIER ) {
 					if ( tmp->content() == "d" ) {
 						// CONST_INTEGER '.' 'd'
 						numCombines++;
@@ -728,7 +728,7 @@ void Tokenizer::replaceConstDataTypes()
 					numCombines++;
 				}
 			}
-			else if ( tmp->type() == Token::Type::IDENTIFER ) {
+			else if ( tmp->type() == Token::Type::IDENTIFIER ) {
 				if ( tmp->content() == "d" ) {
 					// CONST_INTEGER 'd'
 					numCombines++;
@@ -798,7 +798,7 @@ void Tokenizer::replaceOperators()
 			// we found an operator
 
 			// retype current token ...
-			token->resetTypeTo(Token::Type::IDENTIFER);
+			token->resetTypeTo(Token::Type::IDENTIFIER);
 			token->resetContentTo(last->content() + RESERVED_WORD_OPERATOR);
 
 			// ... and erase the previous one
@@ -811,7 +811,7 @@ void Tokenizer::replaceOperators()
 			mTokens.erase(last);
 
 			// ... and retype current token
-			token->resetTypeTo(Token::Type::IDENTIFER);
+			token->resetTypeTo(Token::Type::IDENTIFIER);
 			token->resetContentTo(RESERVED_WORD_OPERATOR + (*token).content());
 		}
 
