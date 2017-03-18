@@ -820,7 +820,6 @@ void TreeInterpreter::visit(Node* node)
 void TreeInterpreter::visitAssert(AssertStatement* node)
 {
 	Runtime::Object condition;
-
 	try {
 		evaluate(node->mExpression, &condition);
 	}
@@ -838,9 +837,7 @@ void TreeInterpreter::visitAssert(AssertStatement* node)
 
 void TreeInterpreter::visitAssignment(Assignment* node)
 {
-	IScope* scope = getScope();
-
-	Runtime::Object &lvalue = resolveLValue(scope, node->mLValue, false, Visibility::Designtime);
+	Runtime::Object &lvalue = resolveLValue(getScope(), node->mLValue, false, Visibility::Designtime);
 
 	Runtime::Object tmp;
 	try {
@@ -867,7 +864,6 @@ void TreeInterpreter::visitContinue(ContinueStatement* /*node*/)
 void TreeInterpreter::visitDelete(DeleteStatement* node)
 {
 	Runtime::Object obj;
-
 	try {
 		evaluate(node->mExpression, &obj);
 	}
@@ -882,7 +878,6 @@ void TreeInterpreter::visitDelete(DeleteStatement* node)
 void TreeInterpreter::visitExit(ExitStatement* node)
 {
 	Runtime::Object* data = mRepository->createInstance(Runtime::IntegerObject::TYPENAME, ANONYMOUS_OBJECT, PrototypeConstraints());
-
 	try {
 		evaluate(node->mExpression, data);
 	}
@@ -899,7 +894,6 @@ void TreeInterpreter::visitExit(ExitStatement* node)
 void TreeInterpreter::visitExpression(Expression* expression)
 {
 	Runtime::Object tmp;
-
 	try {
 		evaluate(expression, &tmp);
 	}
@@ -949,8 +943,6 @@ void TreeInterpreter::visitFor(ForStatement* node)
 
 void TreeInterpreter::visitForeach(ForeachStatement* node)
 {
-	//IScope* scope = getScope();
-
 	Runtime::Object collection;
 	evaluate(node->mLoopVariable, &collection);
 
@@ -1005,7 +997,6 @@ void TreeInterpreter::visitForeach(ForeachStatement* node)
 void TreeInterpreter::visitIf(IfStatement* node)
 {
 	Runtime::Object condition;
-
 	try {
 		// evaluate if-condition
 		evaluate(node->mExpression, &condition);
@@ -1212,9 +1203,8 @@ void TreeInterpreter::visitSwitch(SwitchStatement* node)
 
 void TreeInterpreter::visitThrow(ThrowStatement* node)
 {
-	Runtime::Object* data = mRepository->createInstance(OBJECT, ANONYMOUS_OBJECT, PrototypeConstraints());
-
 	if ( node->mExpression ) {	// throw new expression
+		Runtime::Object* data = mRepository->createInstance(OBJECT, ANONYMOUS_OBJECT, PrototypeConstraints());
 		try {
 			evaluate(node->mExpression, data);
 		}
@@ -1244,22 +1234,28 @@ void TreeInterpreter::visitTry(TryStatement* node)
 
 		// determine correct catch-block (if a correct one exists)
 		for ( CatchStatements::const_iterator it = node->mCatchStatements.begin(); it != node->mCatchStatements.end(); ++it ) {
-			if ( exception->isInstanceOf((*it)->mTypeDeclaration->mType) ) {
-				// reset control flow to normal to allow execution of catch-block
-				mControlFlow = Runtime::ControlFlow::Normal;
+			if ( (*it)->mTypeDeclaration && !exception->isInstanceOf((*it)->mTypeDeclaration->mType) ) {
+				// exception type does not match
+				continue;
+			}
 
+			// reset control flow to normal to allow execution of catch-block
+			mControlFlow = Runtime::ControlFlow::Normal;
+
+			// process exception type declaration (if present)
+			if ( (*it)->mTypeDeclaration ) {
 				// retrieve exception instance variable
 				Runtime::Object* symbol = visitTypeDeclaration((*it)->mTypeDeclaration);
 
 				// assign exception to instance variable
 				Runtime::operator_binary_assign(symbol, exception);
-
-				// execute catch statements
-				visitStatements((*it)->mStatements);
-
-				// only process one catch-block
-				break;
 			}
+
+			// execute catch statements
+			visitStatements((*it)->mStatements);
+
+			// only process one catch-block
+			break;
 		}
 	}
 

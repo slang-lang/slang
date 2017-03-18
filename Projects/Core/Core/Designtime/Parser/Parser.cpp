@@ -156,7 +156,7 @@ Ancestors Parser::collectInheritance(TokenIterator& token)
 			continue;
 		}
 
-		if ( token->type() != Token::Type::IDENTIFER ) {
+		if ( token->type() != Token::Type::IDENTIFIER ) {
 			break;
 		}
 
@@ -196,7 +196,7 @@ PrototypeConstraints Parser::collectDesigntimePrototypeConstraints(TokenIterator
 		if ( token->type() == Token::Type::COLON ) {	// constraint
 			token++;
 
-			if ( token->type() == Token::Type::IDENTIFER ) {
+			if ( token->type() == Token::Type::IDENTIFIER ) {
 				constraint = token->content();
 			}
 			else if ( token->type() == Token::Type::TYPE ) {
@@ -301,7 +301,7 @@ std::string Parser::identify(TokenIterator& token)
 {
 	std::string type = token->content();
 
-	while ( (token++)->type() == Token::Type::IDENTIFER ) {
+	while ( (token++)->type() == Token::Type::IDENTIFIER ) {
 		if ( token->type() != Token::Type::SCOPE ) {
 			break;
 		}
@@ -322,7 +322,7 @@ bool Parser::isEnumDeclaration(TokenIterator token)
 
 	tokens.push_back(Token(Token::Type::VISIBILITY));
 	tokens.push_back(Token(Token::Type::RESERVED_WORD, std::string(RESERVED_WORD_ENUM)));
-	tokens.push_back(Token(Token::Type::IDENTIFER));
+	tokens.push_back(Token(Token::Type::IDENTIFIER));
 
 	return checkSyntax(token, tokens);
 }
@@ -335,7 +335,7 @@ bool Parser::isInterfaceDeclaration(TokenIterator token)
 
 	tokens.push_back(Token(Token::Type::VISIBILITY));
 	tokens.push_back(Token(Token::Type::RESERVED_WORD, std::string(RESERVED_WORD_INTERFACE)));
-	tokens.push_back(Token(Token::Type::IDENTIFER));
+	tokens.push_back(Token(Token::Type::IDENTIFIER));
 
 	return checkSyntax(token, tokens);
 }
@@ -347,7 +347,7 @@ bool Parser::isLibraryReference(TokenIterator token)
 	TokenList tokens;
 
 	tokens.push_back(Token(Token::Type::RESERVED_WORD, std::string(RESERVED_WORD_IMPORT)));
-	tokens.push_back(Token(Token::Type::IDENTIFER));
+	tokens.push_back(Token(Token::Type::IDENTIFIER));
 
 	return checkSyntax(token, tokens);
 }
@@ -366,7 +366,7 @@ bool Parser::isMemberDeclaration(TokenIterator token)
 		token++;
 	}
 
-	while ( token->type() == Token::Type::IDENTIFER ) {
+	while ( token->type() == Token::Type::IDENTIFIER ) {
 		// identifier token is okay
 		token++;
 
@@ -382,7 +382,7 @@ bool Parser::isMemberDeclaration(TokenIterator token)
 		token++;
 	}
 
-	if ( token->type() == Token::Type::IDENTIFER ) {
+	if ( token->type() == Token::Type::IDENTIFIER ) {
 		// name is okay
 		token++;
 	}
@@ -411,7 +411,7 @@ bool Parser::isMethodDeclaration(TokenIterator token)
 		token++;
 	}
 
-	while ( token->type() == Token::Type::IDENTIFER ) {
+	while ( token->type() == Token::Type::IDENTIFIER ) {
 		token++;
 
 		if ( token->type() == Token::Type::SCOPE ) {
@@ -430,7 +430,7 @@ bool Parser::isMethodDeclaration(TokenIterator token)
 		token++;
 	}
 
-	if ( token->type() == Token::Type::IDENTIFER ) {
+	if ( token->type() == Token::Type::IDENTIFIER ) {
 		// name is okay
 		token++;
 	}
@@ -447,7 +447,7 @@ bool Parser::isNamespaceDeclaration(TokenIterator token)
 
 	tokens.push_back(Token(Token::Type::VISIBILITY));
 	tokens.push_back(Token(Token::Type::RESERVED_WORD, std::string(RESERVED_WORD_NAMESPACE)));
-	tokens.push_back(Token(Token::Type::IDENTIFER));
+	tokens.push_back(Token(Token::Type::IDENTIFIER));
 
 	return checkSyntax(token, tokens);
 }
@@ -460,7 +460,7 @@ bool Parser::isObjectDeclaration(TokenIterator token)
 
 	tokens.push_back(Token(Token::Type::VISIBILITY));
 	tokens.push_back(Token(Token::Type::RESERVED_WORD, std::string(RESERVED_WORD_OBJECT)));
-	tokens.push_back(Token(Token::Type::IDENTIFER));
+	tokens.push_back(Token(Token::Type::IDENTIFIER));
 
 	return checkSyntax(token, tokens);
 }
@@ -510,7 +510,7 @@ ParameterList Parser::parseParameters(TokenIterator &token, IScope* scope)
 		bool isConst = false;
 		Runtime::AtomicValue value;
 
-		if ( token->type() == Token::Type::IDENTIFER ) {
+		if ( token->type() == Token::Type::IDENTIFIER ) {
 			// set default access mode for complex types
 			accessMode = AccessMode::ByReference;
 		}
