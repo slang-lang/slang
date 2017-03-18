@@ -15,7 +15,7 @@ public object Set extends AbstractCollection {
 
 	public void erase(int index) modify throws {
 		if ( index < 0 || index > mSize ) {
-			throw new OutOfBoundsException("erase index(" + index + ") beyond end of list");
+			throw new OutOfBoundsException("erase index(" + index + ") beyond end of set");
 		}
 
 		if ( index == 0 ) {						// special handling for 1st element
@@ -38,7 +38,7 @@ public object Set extends AbstractCollection {
 		mSize--;
 	}
 
-	public void insert(Object value ref) modify {
+	public void insert(Object value ref) modify throws {
 		CollectionItem item = new CollectionItem(value);
 
 		if ( !mFirst ) {				// special handling for 1st element

@@ -13,7 +13,7 @@ public object DoubleLinkedList extends AbstractCollection {
 		base.Constructor();
 	}
 
-	public void pop_back() modify {
+	public void pop_back() modify throws {
 		if ( mSize <= 0 ) {
 			throw new OutOfBoundsException("pop beyond begin of collection");
 		}
@@ -33,7 +33,7 @@ public object DoubleLinkedList extends AbstractCollection {
 		mSize--;
 	}
 
-	public void pop_front() modify {
+	public void pop_front() modify throws {
 		if ( mSize <= 0 ) {
 			throw new OutOfBoundsException("pop beyond begin of collection");
 		}

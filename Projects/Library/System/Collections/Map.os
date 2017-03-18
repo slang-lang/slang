@@ -67,7 +67,7 @@ public object Map<K, V> implements IIterateable {
 		throw new Exception("unknown key!");
 	}
 
-	public void remove(K key) modify throws {
+	public void remove(K key) modify {
 		int index = 0;
 
 		foreach ( Object p : mItems ) {
