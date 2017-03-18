@@ -30,7 +30,9 @@ SymbolScope::~SymbolScope()
 
 void SymbolScope::define(const std::string& name, Symbol* symbol)
 {
-	assert(symbol);
+	if ( !symbol ) {
+		throw Common::Exceptions::Exception("invalid symbol pointer provided");
+	}
 
 	if ( resolve(name, true) ) {
 		// duplicate symbol defined
@@ -151,7 +153,9 @@ MethodScope::MethodCollection::const_iterator MethodScope::beginMethods() const
 
 void MethodScope::define(const std::string& name, Symbol* symbol)
 {
-	assert(symbol);
+	if ( !symbol ) {
+		throw Common::Exceptions::Exception("invalid symbol pointer provided");
+	}
 
 	if ( mSymbols.find(name) != mSymbols.end() ) {
 		// duplicate symbol defined
@@ -163,11 +167,13 @@ void MethodScope::define(const std::string& name, Symbol* symbol)
 
 void MethodScope::defineMethod(const std::string& name, Common::Method* method)
 {
-	assert(method);
+	if ( !method ) {
+		throw Common::Exceptions::Exception("invalid method pointer provided");
+	}
 
 	if ( MethodScope::resolveMethod(name, method->provideSignature(), true) ) {
 		// duplicate method defined
-		throw Common::Exceptions::DuplicateIdentifier("duplicate method '" + method->getName() + "' added with same signature");
+		throw Common::Exceptions::DuplicateIdentifier("duplicate method '" + method->getName() + "(" + toString(method->provideSignature()) + ")' added with same signature");
 	}
 
 	mMethods.insert(method);
