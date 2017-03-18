@@ -40,11 +40,16 @@ private bool TestCase2() const {
 		}
 
 		assert(!"we should not get here!");
-		return false;
 	}
-	catch {
-		print("caught out of bounds exception");
+	catch ( OutOfBoundsException e ) {
+		print("e.what(): " + e.what());
 		return true;
 	}
+	catch {
+		print("caught unknown exception!");
+		assert(!"we should not get here!");
+	}
+
+	return false;
 }
 
