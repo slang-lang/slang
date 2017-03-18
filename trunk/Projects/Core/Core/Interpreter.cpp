@@ -1999,7 +1999,6 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol, Initiali
 	getScope()->define(name, object);
 
 
-	TokenIterator assign = getTokens().end();
 	if ( token->type() == Token::Type::ASSIGN ) {
 		++token;
 
