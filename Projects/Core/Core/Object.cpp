@@ -574,8 +574,6 @@ void Object::operator_array(const Object *index, Object* result)
 
 	::ObjectiveScript::MethodSymbol* opMethod = resolveMethod("operator[]", params, false, Visibility::Public);
 	if ( opMethod ) {
-		Interpreter interpreter;
-		interpreter.execute(static_cast<Common::Method*>(opMethod), params, result);
 
 #ifdef GENERATE_PARSE_TREE
 

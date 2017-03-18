@@ -37,6 +37,7 @@ void ASTTest::process()
 {
 	TEST(testAssert);
 	TEST(testAssignment);
+	TEST(testBase);
 	TEST(testBreak);
 	TEST(testContinue);
 	TEST(testExit);
@@ -49,6 +50,7 @@ void ASTTest::process()
 	TEST(testNew);
 	TEST(testReturn);
 	TEST(testSwitch);
+	TEST(testThis);
 	TEST(testThrow);
 	TEST(testTry);
 	TEST(testTypeDeclaration);
@@ -84,6 +86,22 @@ void ASTTest::testAssignment()
 	try {
 		VirtualMachine vm;
 		vm.createScriptFromFile("Tests/AST/AssignmentTest.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void ASTTest::testBase()
+{
+TSKIP("skipping BaseTest.os");
+
+	try {
+		VirtualMachine vm;
+		vm.createScriptFromFile("Tests/AST/BaseTest.os");
 
 		// automatic success
 	}
@@ -258,6 +276,20 @@ void ASTTest::testSwitch()
 	try {
 		VirtualMachine vm;
 		vm.createScriptFromFile("Tests/AST/SwitchTest.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void ASTTest::testThis()
+{
+	try {
+		VirtualMachine vm;
+		vm.createScriptFromFile("Tests/AST/ThisTest.os");
 
 		// automatic success
 	}

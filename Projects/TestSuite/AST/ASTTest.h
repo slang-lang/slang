@@ -33,6 +33,7 @@ public:
 private:	// Tests
 	void testAssert();
 	void testAssignment();
+	void testBase();
 	void testBreak();
 	void testContinue();
 	void testExit();
@@ -45,6 +46,7 @@ private:	// Tests
 	void testNew();
 	void testReturn();
 	void testSwitch();
+	void testThis();
 	void testThrow();
 	void testTry();
 	void testTypeDeclaration();

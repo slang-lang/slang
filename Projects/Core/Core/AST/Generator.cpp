@@ -39,8 +39,6 @@ void Generator::process(MethodScope* base)
 		switch ( it->second->getSymbolType() ) {
 			case Symbol::IType::MethodSymbol:
 				throw Common::Exceptions::Exception("invalid symbol found: " + it->second->getName());
-				//processMethod(static_cast<Common::Method*>(it->second));
-				//break;
 			case Symbol::IType::BluePrintObjectSymbol:
 				processBluePrint(static_cast<Designtime::BluePrintObject*>(it->second));
 				break;
@@ -70,6 +68,10 @@ void Generator::processBluePrint(Designtime::BluePrintObject* object)
 	}
 	if ( object->provideMethods().empty() && object->provideSymbols().empty() ) {
 		// an object without methods and symbols... maybe a primitive?
+		return;
+	}
+	if ( !object->getPrototypeConstraints().empty() ) {
+		// skip prototypes
 		return;
 	}
 
