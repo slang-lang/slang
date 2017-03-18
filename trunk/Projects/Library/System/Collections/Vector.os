@@ -9,7 +9,7 @@ public object Vector extends AbstractCollection {
 		base.Constructor();
 	}
 
-	public void erase(int index) modify {
+	public void erase(int index) modify throws {
 		if ( index < 0 || index > mSize ) {
 			throw new OutOfBoundsException("erase index(" + index + ") beyond end of list");
 		}
@@ -34,7 +34,7 @@ public object Vector extends AbstractCollection {
 		mSize--;
 	}
 
-	public void insert(int index, Object value ref) modify {
+	public void insert(int index, Object value ref) modify throws {
 		if ( index < 0 || index > mSize ) {
 			throw new OutOfBoundsException("insert index(" + index + ") beyond end of list");
 		}

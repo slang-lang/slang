@@ -16,7 +16,11 @@ public object Queue<T: Object> implements IIterateable {
 		mItems.clear();
 	}
 
-	public T dequeue() modify {
+	public T dequeue() modify throws {
+		if ( mItems.size() <= 0 ) {
+			throw new OutOfBoundsException("queue is already empty");
+		}
+
 		T item = mItems.at(0);
 
 		mItems.pop_front();

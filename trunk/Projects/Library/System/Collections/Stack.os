@@ -13,7 +13,7 @@ public object Stack extends AbstractCollection {
 		return mSize == 0;
 	}
 
-	public Object peek() const {
+	public Object peek() const throws {
 		if ( mSize <= 0 ) {
 			throw new OutOfBoundsException("stack underflow");
 		}
@@ -21,7 +21,7 @@ public object Stack extends AbstractCollection {
 		return mLast.mValue;
 	}
 
-	public void pop() modify {
+	public void pop() modify throws {
 		if ( mSize <= 0 ) {
 			throw new OutOfBoundsException("stack underflow");
 		}
