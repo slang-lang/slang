@@ -5,6 +5,7 @@
 // Library includes
 
 // Project includes
+#include <Core/AST/Generator.h>
 #include <Core/BuildInObjects/BoolObject.h>
 #include <Core/BuildInObjects/DoubleObject.h>
 #include <Core/BuildInObjects/FloatObject.h>
@@ -269,6 +270,13 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 	if ( parent ) {
 		parent->define(newBlue->QualifiedTypename(), newBlue);
 	}
+
+#ifdef GENERATE_PARSE_TREE
+
+	AST::Generator generator;
+	generator.process(newBlue);
+
+#endif
 
 	return newBlue;
 }

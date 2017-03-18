@@ -2,7 +2,7 @@
 
 private int mNumber;
 
-public void Main(int argc const = 0, string argv const = "") modify {
+public void Main(int argc const = 0, string argv const = "") {
 	mNumber = 0;
 
 	assert( UpdateMember(1) );

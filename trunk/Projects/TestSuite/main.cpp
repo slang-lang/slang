@@ -156,9 +156,6 @@ int main(int argc, const char* argv[])
 		Testing::Library::Fixture library(mLogger);
 		mFixtures.push_back(&library);
 
-		Testing::Operator::Fixture operator_overloading(mLogger);
-		mFixtures.push_back(&operator_overloading);
-
 		Testing::Prototype::Fixture prototype(mLogger);
 		mFixtures.push_back(&prototype);
 
