@@ -41,16 +41,8 @@ Runtime::AtomicValue BluePrintObject::getValue() const
 
 bool BluePrintObject::hasDefaultConstructor() const
 {
-	for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
-		if ( (*it)->getMethodType() == MethodAttributes::MethodType::Constructor &&
-			(*it)->getName() == CONSTRUCTOR &&
-			(*it)->provideSignature().empty() ) {
-			// method has to be of type constructor without any parameters
-			return true;
-		}
-	}
-
-	return false;
+	// return any (private, protected, public) constructor that has no parameters or only default parameters
+	return resolveMethod(CONSTRUCTOR, ParameterList(), true, Visibility::Designtime);
 }
 
 MethodScope::MethodCollection BluePrintObject::provideMethods() const

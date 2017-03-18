@@ -122,11 +122,22 @@ Statements* TreeGenerator::generateAST(Common::Method *method)
 	// push tokens
 	mStackFrame->pushTokens(mMethod->getTokens());
 
+	IScope* scope = getScope();
+
+	// add this symbol to method
+	Designtime::BluePrintObject* owner = dynamic_cast<Designtime::BluePrintObject*>(scope->getEnclosingScope());
+	if ( owner ) {
+		Runtime::Object *object = mRepository->createInstance(owner->QualifiedTypename(), IDENTIFIER_THIS, PrototypeConstraints());
+		object->setConst(method->isConst());
+
+		scope->define(IDENTIFIER_THIS, object);
+	}
+
 	// add parameters as locale variables
 	for ( ParameterList::const_iterator it = mMethod->provideSignature().begin(); it != mMethod->provideSignature().end(); ++it ) {
 		Runtime::Object *object = mRepository->createInstance(it->type(), it->name(), PrototypeConstraints());
 
-		getScope()->define(it->name(), object);
+		scope->define(it->name(), object);
 	}
 
 	// generate AST
