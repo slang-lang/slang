@@ -35,18 +35,21 @@ void Thread::deinit()
 
 Runtime::ControlFlow::E Thread::execute(Common::Method* method, const ParameterList& params, Runtime::Object* result)
 {
-	if ( mState == State::Starting ) {
-		mState = State::Started;
-	}
+	mState = State::Started;
 
-	//pushFrame();
-	// add parameters as locales
-	Runtime::ControlFlow::E controlflow = mInterpreter.execute(method, params, result);
-	//popFrame();
+#ifdef GENERATE_PARSE_TREE
 
-	if ( mState == State::Stopping ) {
-		mState = State::Stopped;
-	}
+	AST::TreeInterpreter ti;
+	Runtime::ControlFlow::E controlflow = ti.execute(method, params, result);
+
+#else
+
+	Runtime::Interpreter interpreter;
+	Runtime::ControlFlow::E controlflow = interpreter.execute(mId, method, params, result);
+
+#endif
+
+	mState = State::Stopping;
 
 	return controlflow;
 }
@@ -75,13 +78,15 @@ Threads::~Threads()
 {
 }
 
-Common::ThreadId Threads::createThread()
+Thread* Threads::createThread()
 {
 	Thread* t = new Thread(mThreads.size());
+	// initialize thread
+	t->init();
 
 	mThreads.insert(std::make_pair(t->getId(), t));
 
-	return t->getId();
+	return t;
 }
 
 void Threads::deinit()
@@ -89,6 +94,9 @@ void Threads::deinit()
 	// TODO: stop all currently running threads
 
 	for ( InternalThreads::iterator it = mThreads.begin(); it != mThreads.end(); ++it ) {
+		// deinitialize thread
+		it->second->deinit();
+
 		delete it->second;
 		it->second = 0;
 	}

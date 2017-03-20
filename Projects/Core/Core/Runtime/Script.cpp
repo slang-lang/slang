@@ -34,8 +34,7 @@ void Script::execute(const std::string& method, const ParameterList& params, Run
 
 	Common::Method* methodSymbol = static_cast<Common::Method*>(symbol);
 
-	Runtime::Interpreter interpreter;
-	Runtime::ControlFlow::E controlflow = interpreter.execute(methodSymbol, params, result);
+	Runtime::ControlFlow::E controlflow = Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(methodSymbol), params, result);
 
 	if ( controlflow == Runtime::ControlFlow::Throw ) {
 		Runtime::ExceptionData data = Controller::Instance().stack()->exception();

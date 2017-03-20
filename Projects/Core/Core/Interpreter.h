@@ -7,6 +7,7 @@
 #include <list>
 
 // Project includes
+#include <Core/Common/Types.h>
 #include <Core/Designtime/Parser/Token.h>
 #include <Core/Runtime/ControlFlow.h>
 #include <Core/Runtime/ExceptionData.h>
@@ -47,7 +48,7 @@ public:
 	~Interpreter();
 
 public: // Execution
-	ControlFlow::E execute(Common::Method* method, const ParameterList& params, Object* result);
+	ControlFlow::E execute(Common::ThreadId threadId, Common::Method* method, const ParameterList& params, Object* result);
 
 private:
 	class Initialization {
@@ -140,6 +141,7 @@ private:	// Virtual machine stuff
 	Memory* mMemory;
 	Repository* mRepository;
 	Stack* mStack;
+	Common::ThreadId mThreadId;
 };
 
 

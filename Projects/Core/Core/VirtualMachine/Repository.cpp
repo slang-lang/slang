@@ -20,7 +20,6 @@
 #include <Core/Designtime/BuildInTypes/BoolObject.h>
 #include <Core/Designtime/BuildInTypes/DoubleObject.h>
 #include <Core/Designtime/BuildInTypes/FloatObject.h>
-#include <Core/Designtime/BuildInTypes/GenericObject.h>
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/Designtime/BuildInTypes/UserObject.h>
@@ -622,10 +621,10 @@ void Repository::init()
 		scope->define(Designtime::FloatObject::TYPENAME, obj);
 	}
 	{	// "Object" type
-		Designtime::GenericObject* obj = new Designtime::GenericObject();
+		Designtime::UserObject* obj = new Designtime::UserObject();
 		addBluePrint(obj);
 
-		scope->define(Designtime::GenericObject::TYPENAME, obj);
+		scope->define(Designtime::UserObject::TYPENAME, obj);
 	}
 	{	// "int" type
 		Designtime::IntegerObject* obj = new Designtime::IntegerObject();
@@ -648,7 +647,7 @@ void Repository::init()
 
 	// add predefined runtime objects
 	{	// null
-		Runtime::UserObject* nullObject = new Runtime::UserObject(VALUE_NULL, SYSTEM_LIBRARY, OBJECT, true);
+		Runtime::UserObject* nullObject = new Runtime::UserObject(VALUE_NULL, SYSTEM_LIBRARY, _object, true);
 		nullObject->setConst(true);
 		nullObject->setConstructed(false);
 		nullObject->setFinal(false);

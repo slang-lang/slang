@@ -68,7 +68,7 @@ PrototypeConstraints PrototypeConstraints::buildRawConstraints(const PrototypeCo
 	for ( ; thisIt != this->end(); ++thisIt ) {
 		if ( otherIt == other.end() ) {
 			result.push_back(
-				PrototypeConstraint(thisIt->mIndex, thisIt->mDesignType, OBJECT, VALUE_NONE)
+				PrototypeConstraint(thisIt->mIndex, thisIt->mDesignType, _object, VALUE_NONE)
 			);
 			continue;
 		}

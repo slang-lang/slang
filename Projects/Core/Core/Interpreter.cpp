@@ -128,7 +128,7 @@ void Interpreter::collectScopeTokens(TokenIterator& token, TokenList& tokens)
 /*
  * processes tokens and updates the given result
  */
-ControlFlow::E Interpreter::execute(Common::Method* method, const ParameterList& params, Object* result)
+ControlFlow::E Interpreter::execute(Common::ThreadId threadId, Common::Method* method, const ParameterList& params, Object* result)
 {
 	if ( !mRepository ) {
 		throw Common::Exceptions::Exception("mRepository not set");
@@ -151,6 +151,7 @@ ControlFlow::E Interpreter::execute(Common::Method* method, const ParameterList&
 	IScope* previousOwner = mOwner;
 
 	mOwner = method->getEnclosingScope();
+	mThreadId = threadId;
 
 	ParameterList executedParams = method->mergeParameters(params);
 
@@ -1523,7 +1524,7 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 		controlflow = method->execute(params, result, (*tmp));
 	}
 	else {
-		controlflow = execute(method, params, result);
+		controlflow = execute(mThreadId, method, params, result);
 	}
 
 	switch ( controlflow ) {
@@ -1819,7 +1820,7 @@ void Interpreter::process_throw(TokenIterator& token, Object* /*result*/)
 
 	// determine if we are about to rethrow an exception or throw a new one
 	if ( token->type() != Token::Type::SEMICOLON ) {
-		Object* data = mRepository->createInstance(OBJECT, ANONYMOUS_OBJECT, PrototypeConstraints());
+		Object* data = mRepository->createInstance(_object, ANONYMOUS_OBJECT, PrototypeConstraints());
 		try {
 			expression(data, token);
 		}

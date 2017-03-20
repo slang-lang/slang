@@ -180,7 +180,7 @@ bool Analyser::createBluePrint(TokenIterator& token, TokenIterator /*end*/)
 
 		// in case this object has no inheritance set, we inherit from 'Object'
 		if ( objectType != ObjectType::Interface && !extends ) {
-			blueprint->addInheritance(Ancestor(TypeDeclaration(OBJECT), Ancestor::Type::Extends, Visibility::Public));
+			blueprint->addInheritance(Ancestor(TypeDeclaration(_object), Ancestor::Type::Extends, Visibility::Public));
 		}
 	}
 

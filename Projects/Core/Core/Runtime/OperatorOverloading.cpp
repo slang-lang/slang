@@ -76,7 +76,39 @@ void operator_binary_assign(Object *base, Object *other, const Common::Position&
 	}
 	// no atomic data type, so we have to look if our assign operator has been overwritten
 	else {
-		base->operator_assign(other);
+		if ( other->isNull() ) {	// special handling for null object
+			base->assign(*other);
+			return;
+		}
+
+		if ( other->isInstanceOf(base->QualifiedTypename()) ) {
+			base->assign(*other);
+			return;
+		}
+
+		if ( base->isConstructed() ) {
+			ParameterList params;
+			params.push_back(Parameter::CreateRuntime(other->QualifiedOuterface(), other->getValue(), other->getReference()));
+
+			::ObjectiveScript::MethodSymbol* operator_method = base->resolveMethod("operator=", params, true, Visibility::Private);
+			if ( operator_method ) {
+				Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(operator_method), params, base);
+
+				return;
+			}
+		}
+
+		ParameterList params;
+		params.push_back(Parameter::CreateRuntime(base->QualifiedTypename(), base->getValue(), base->getReference()));
+
+		::ObjectiveScript::MethodSymbol* operator_method = other->resolveMethod("=operator", params, true, Visibility::Public);
+		if ( operator_method ) {
+			Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(operator_method), params, base);
+
+			return;
+		}
+
+		throw Common::Exceptions::Exception(base->QualifiedTypename() + ".operator=: conversion from " + other->QualifiedTypename() + " to " + base->QualifiedTypename() + " not supported");
 	}
 }
 

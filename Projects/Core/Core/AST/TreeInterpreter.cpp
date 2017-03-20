@@ -9,7 +9,6 @@
 #include <Core/BuildInObjects/BoolObject.h>
 #include <Core/BuildInObjects/DoubleObject.h>
 #include <Core/BuildInObjects/FloatObject.h>
-#include <Core/BuildInObjects/GenericObject.h>
 #include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/BuildInObjects/StringObject.h>
 #include <Core/BuildInObjects/UserObject.h>
@@ -454,14 +453,6 @@ Runtime::ControlFlow::E TreeInterpreter::execute(Common::Method* method, const P
 	}
 	if ( !method->isSignatureValid(params) ) {
 		throw Common::Exceptions::ParameterCountMissmatch("incorrect number or type of parameters");
-	}
-
-	switch ( method->getLanguageFeatureState() ) {
-		case LanguageFeatureState::Deprecated: OSwarn("method '" + method->getFullScopeName() + "' is marked as deprecated"); break;
-		case LanguageFeatureState::NotImplemented: OSerror("method '" + method->getFullScopeName() + "' is marked as not implemented"); throw Common::Exceptions::NotImplemented(method->getFullScopeName()); break;
-		case LanguageFeatureState::Stable: /* this is the normal language feature state, so there is no need to log anything here */ break;
-		case LanguageFeatureState::Unknown: OSerror("unknown language feature state set for method '" + method->getFullScopeName() + "'"); break;
-		case LanguageFeatureState::Unstable: OSwarn("method '" + method->getFullScopeName() + "' is marked as unstable"); break;
 	}
 
 	Common::Method scope(*method);
@@ -1208,7 +1199,7 @@ void TreeInterpreter::visitSwitch(SwitchStatement* node)
 void TreeInterpreter::visitThrow(ThrowStatement* node)
 {
 	if ( node->mExpression ) {	// throw new expression
-		Runtime::Object* data = mRepository->createInstance(OBJECT, ANONYMOUS_OBJECT, PrototypeConstraints());
+		Runtime::Object* data = mRepository->createInstance(_object, ANONYMOUS_OBJECT, PrototypeConstraints());
 		try {
 			evaluate(node->mExpression, data);
 		}
