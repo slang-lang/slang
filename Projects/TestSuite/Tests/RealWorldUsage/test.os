@@ -1,7 +1,8 @@
 #!/usr/local/bin/oscript
 
 // Library includes
-import System.All;
+//import System.All;
+import System.Math;
 
 // Project includes
 import imported.DerivedObjectImported;
