@@ -25,7 +25,8 @@ Debugger::Debugger()
   mBreakOnExceptionThrow(false),
   mCurrentScope(0),
   mNextAction(NextAction::WaitForBreakPoint),
-  mReceiver(0)
+  mReceiver(0),
+  mUseDebugger(false)
 {
 }
 
@@ -78,6 +79,8 @@ const BreakPointCollection& Debugger::getBreakPoints() const
 
 void Debugger::init()
 {
+	mUseDebugger = true;
+
 	resetCurrentScope();
 	resume();
 }
@@ -231,6 +234,11 @@ bool Debugger::unregisterReceiver(Core::IReceiver* receiver)
 	}
 
 	return false;
+}
+
+bool Debugger::useDebugger() const
+{
+	return mUseDebugger;
 }
 
 

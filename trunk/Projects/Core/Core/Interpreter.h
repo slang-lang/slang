@@ -10,9 +10,7 @@
 #include <Core/Designtime/Parser/Token.h>
 #include <Core/Runtime/ControlFlow.h>
 #include <Core/Runtime/ExceptionData.h>
-#include <Debugger/Debugger.h>
 #include "Parameter.h"
-#include "Scope.h"
 
 // Forward declarations
 
@@ -23,14 +21,18 @@ namespace ObjectiveScript {
 
 // Forward declarations
 namespace Common {
+	class Method;
 	class Namespace;
 }
 namespace Core {
 	class Debugger;
 }
+class IScope;
 class Memory;
+class NamedScope;
 class Repository;
 class Stack;
+class Symbol;
 
 namespace Runtime {
 

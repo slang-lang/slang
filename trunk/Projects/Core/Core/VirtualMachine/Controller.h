@@ -11,7 +11,6 @@
 #include "Stack.h"
 #include "Threads.h"
 #include "TypeSystem.h"
-#include "VirtualMethodTable.h"
 
 // Forward declarations
 
@@ -45,7 +44,6 @@ public:
 	Thread* thread(Common::ThreadId id) const;
 	Threads* threads() const;
 	TypeSystem* typeSystem() const;
-	VirtualMethodTable* virtualMethodTable() const;
 
 private:
 	Controller();
@@ -59,7 +57,6 @@ private:
 	Stack* mStack;
 	Threads* mThreads;
 	TypeSystem* mTypeSystem;
-	VirtualMethodTable* mVirtualMethodTable;
 };
 
 
