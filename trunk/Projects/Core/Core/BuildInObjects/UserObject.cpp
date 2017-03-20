@@ -8,6 +8,7 @@
 #include <Core/Common/Exceptions.h>
 #include <Core/Common/Method.h>
 #include <Core/Tools.h>
+#include <Core/VirtualMachine/Controller.h>
 
 // Namespace declarations
 
@@ -17,7 +18,7 @@ namespace Runtime {
 
 
 AtomicValue UserObject::DEFAULTVALUE = AtomicValue(VALUE_NONE);
-std::string UserObject::TYPENAME = OBJECT;
+std::string UserObject::TYPENAME = _object;
 
 
 UserObject::UserObject()
@@ -60,8 +61,7 @@ void UserObject::operator_assign(const Object *other)
 
 		::ObjectiveScript::MethodSymbol* operator_method = resolveMethod("operator=", params, true, Visibility::Private);
 		if ( operator_method ) {
-			Interpreter interpreter;
-			interpreter.execute(static_cast<Common::Method*>(operator_method), params, mThis);
+			Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(operator_method), params, mThis);
 
 			return;
 		}
@@ -72,8 +72,7 @@ void UserObject::operator_assign(const Object *other)
 
 	::ObjectiveScript::MethodSymbol* operator_method = other->resolveMethod("=operator", params, true, Visibility::Public);
 	if ( operator_method ) {
-		Interpreter interpreter;
-		interpreter.execute(static_cast<Common::Method*>(operator_method), params, mThis);
+		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(operator_method), params, mThis);
 
 		return;
 	}
@@ -92,7 +91,7 @@ void UserObject::operator_divide(const Object *other)
 	params.push_back(Parameter::CreateRuntime(other->QualifiedOuterface(), other->getValue(), other->getReference()));
 
 	Object tmp;
-	this->execute(&tmp, "operator/", params, 0);
+	execute(&tmp, "operator/", params, 0);
 }
 
 bool UserObject::operator_equal(const Object *other)
@@ -101,7 +100,7 @@ bool UserObject::operator_equal(const Object *other)
 	params.push_back(Parameter::CreateRuntime(other->QualifiedOuterface(), other->getValue(), other->getReference()));
 
 	Object tmp;
-	this->execute(&tmp, "operator==", params, 0);
+	execute(&tmp, "operator==", params, 0);
 
 	return tmp.isValid();
 }
@@ -112,7 +111,7 @@ bool UserObject::operator_greater(const Object *other)
 	params.push_back(Parameter::CreateRuntime(other->QualifiedOuterface(), other->getValue(), other->getReference()));
 
 	Object tmp;
-	this->execute(&tmp, "operator>", params, 0);
+	execute(&tmp, "operator>", params, 0);
 
 	return tmp.isValid();
 }
@@ -123,7 +122,7 @@ bool UserObject::operator_greater_equal(const Object *other)
 	params.push_back(Parameter::CreateRuntime(other->QualifiedOuterface(), other->getValue(), other->getReference()));
 
 	Object tmp;
-	this->execute(&tmp, "operator>=", params, 0);
+	execute(&tmp, "operator>=", params, 0);
 
 	return tmp.isValid();
 }
@@ -134,7 +133,7 @@ bool UserObject::operator_less(const Object *other)
 	params.push_back(Parameter::CreateRuntime(other->QualifiedOuterface(), other->getValue(), other->getReference()));
 
 	Object tmp;
-	this->execute(&tmp, "operator<", params, 0);
+	execute(&tmp, "operator<", params, 0);
 
 	return tmp.isValid();
 }
@@ -145,7 +144,7 @@ bool UserObject::operator_less_equal(const Object *other)
 	params.push_back(Parameter::CreateRuntime(other->QualifiedOuterface(), other->getValue(), other->getReference()));
 
 	Object tmp;
-	this->execute(&tmp, "operator<=", params, 0);
+	execute(&tmp, "operator<=", params, 0);
 
 	return tmp.isValid();
 }
@@ -156,7 +155,7 @@ void UserObject::operator_multiply(const Object *other)
 	params.push_back(Parameter::CreateRuntime(other->QualifiedOuterface(), other->getValue(), other->getReference()));
 
 	Object tmp;
-	this->execute(&tmp, "operator*", params, 0);
+	execute(&tmp, "operator*", params, 0);
 }
 
 void UserObject::operator_plus(const Object *other)
@@ -165,7 +164,7 @@ void UserObject::operator_plus(const Object *other)
 	params.push_back(Parameter::CreateRuntime(other->QualifiedOuterface(), other->getValue(), other->getReference()));
 
 	Object tmp;
-	this->execute(&tmp, "operator+", params, 0);
+	execute(&tmp, "operator+", params, 0);
 }
 
 void UserObject::operator_subtract(const Object *other)
@@ -174,7 +173,7 @@ void UserObject::operator_subtract(const Object *other)
 	params.push_back(Parameter::CreateRuntime(other->QualifiedOuterface(), other->getValue(), other->getReference()));
 
 	Object tmp;
-	this->execute(&tmp, "operator-", params, 0);
+	execute(&tmp, "operator-", params, 0);
 }
 
 

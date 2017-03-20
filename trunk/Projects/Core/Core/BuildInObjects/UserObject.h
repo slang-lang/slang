@@ -29,17 +29,17 @@ public:
 	UserObject(const Object& object);
 
 public: // Operators
-	virtual void operator_assign(const Object *other);
-	virtual bool operator_bool() const;
-	virtual void operator_divide(const Object *other);
-	virtual bool operator_equal(const Object *other);
-	virtual bool operator_greater(const Object *other);
-	virtual bool operator_greater_equal(const Object *other);
-	virtual bool operator_less(const Object *other);
-	virtual bool operator_less_equal(const Object *other);
-	virtual void operator_multiply(const Object *other);
-	virtual void operator_plus(const Object *other);
-	virtual void operator_subtract(const Object *other);
+	void operator_assign(const Object *other);
+	bool operator_bool() const;
+	void operator_divide(const Object *other);
+	bool operator_equal(const Object *other);
+	bool operator_greater(const Object *other);
+	bool operator_greater_equal(const Object *other);
+	bool operator_less(const Object *other);
+	bool operator_less_equal(const Object *other);
+	void operator_multiply(const Object *other);
+	void operator_plus(const Object *other);
+	void operator_subtract(const Object *other);
 };
 
 

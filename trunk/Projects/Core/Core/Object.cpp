@@ -240,17 +240,7 @@ ControlFlow::E Object::Constructor(const ParameterList& params)
 		if ( constructor ) {
 			VoidObject tmp;
 
-#ifdef GENERATE_PARSE_TREE
-
-			AST::TreeInterpreter interpreter;
-			controlflow = interpreter.execute(constructor, params, &tmp);
-
-#else
-
-			Interpreter interpreter;
-			controlflow = interpreter.execute(constructor, params, &tmp);
-
-#endif
+			controlflow = Controller::Instance().thread(0)->execute(constructor, params, &tmp);
 
 			if ( controlflow != ControlFlow::Normal ) {
 				return controlflow;
@@ -366,18 +356,7 @@ ControlFlow::E Object::Destructor()
 		if ( destructor ) {
 			VoidObject tmp;
 
-
-#ifdef GENERATE_PARSE_TREE
-
-			AST::TreeInterpreter interpreter;
-			controlflow = interpreter.execute(destructor, params, &tmp);
-
-#else
-
-			Interpreter interpreter;
-			controlflow = interpreter.execute(destructor, params, &tmp);
-
-#endif
+			controlflow = Controller::Instance().thread(0)->execute(destructor, params, &tmp);
 
 			if ( controlflow != ControlFlow::Normal ) {
 				return controlflow;
@@ -414,29 +393,7 @@ ControlFlow::E Object::execute(Object *result, const std::string& name, const Pa
 		throw Common::Exceptions::UnknownIdentifer("unknown method '" + QualifiedTypename() + "." + name + "' or method with invalid parameter count called!");
 	}
 
-/*
-	// are we called from a colleague method?
-	bool callFromMethod = caller && (caller->resolve(IDENTIFIER_BASE) == this || caller->resolve(IDENTIFIER_THIS) == this);
-
-	// check visibility:
-	// colleague methods can always call us,
-	// for calls from non-member functions the method visibility must be public (or protected if they belong to the same object hierarchy)
-	if ( !callFromMethod && method->getVisibility() != Visibility::Public ) {
-		throw Common::Exceptions::VisibilityError("invalid visibility: " + name);
-	}
-*/
-
-#ifdef GENERATE_PARSE_TREE
-
-	AST::TreeInterpreter interpreter;
-	return interpreter.execute(method, params, result);
-
-#else
-
-	Interpreter interpreter;
-	return interpreter.execute(method, params, result);
-
-#endif
+	return Controller::Instance().thread(0)->execute(method, params, result);
 }
 
 bool Object::FromJson(const Json::Value& value)
@@ -574,18 +531,7 @@ void Object::operator_array(const Object *index, Object* result)
 
 	::ObjectiveScript::MethodSymbol* opMethod = resolveMethod("operator[]", params, false, Visibility::Public);
 	if ( opMethod ) {
-
-#ifdef GENERATE_PARSE_TREE
-
-		AST::TreeInterpreter ti;
-		ti.execute(static_cast<Common::Method*>(opMethod), params, result);
-
-#else
-
-		Interpreter interpreter;
-		interpreter.execute(static_cast<Common::Method*>(opMethod), params, result);
-
-#endif
+		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(opMethod), params, result);
 
 		return;
 	}
@@ -605,21 +551,16 @@ void Object::operator_assign(const Object *other)
 
 	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", params, false, Visibility::Public);
 	if ( value_operator ) {
+/*
 		Object tmp;
 
-#ifdef GENERATE_PARSE_TREE
-
-		AST::TreeInterpreter ti;
-		ti.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
-
-#else
-
-		Interpreter interpreter;
-		interpreter.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
-
-#endif
+		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, &tmp);
 
 		operator_assign(&tmp);
+		return;
+*/
+
+		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, mThis);
 		return;
 	}
 
@@ -640,21 +581,16 @@ void Object::operator_bitand(const Object *other)
 		value_operator = other->resolveMethod("=operator", params, false, Visibility::Public);
 	}
 	if ( value_operator ) {
+/*
 		Object tmp;
 
-#ifdef GENERATE_PARSE_TREE
-
-		AST::TreeInterpreter ti;
-		ti.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
-
-#else
-
-		Interpreter interpreter;
-		interpreter.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
-
-#endif
+		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, &tmp);
 
 		operator_bitand(&tmp);
+		return;
+*/
+
+		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, mThis);
 		return;
 	}
 
@@ -675,21 +611,16 @@ void Object::operator_bitcomplement(const Object *other)
 		value_operator = other->resolveMethod("=operator", params, false, Visibility::Public);
 	}
 	if ( value_operator ) {
+/*
 		Object tmp;
 
-#ifdef GENERATE_PARSE_TREE
-
-		AST::TreeInterpreter ti;
-		ti.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
-
-#else
-
-		Interpreter interpreter;
-		interpreter.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
-
-#endif
+		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, &tmp);
 
 		operator_bitcomplement(&tmp);
+		return;
+*/
+
+		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, mThis);
 		return;
 	}
 
@@ -710,21 +641,16 @@ void Object::operator_bitor(const Object *other)
 		value_operator = other->resolveMethod("=operator", params, false, Visibility::Public);
 	}
 	if ( value_operator ) {
+/*
 		Object tmp;
 
-#ifdef GENERATE_PARSE_TREE
-
-		AST::TreeInterpreter ti;
-		ti.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
-
-#else
-
-		Interpreter interpreter;
-		interpreter.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
-
-#endif
+		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, &tmp);
 
 		operator_bitor(&tmp);
+		return;
+*/
+
+		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, mThis);
 		return;
 	}
 
@@ -750,21 +676,16 @@ void Object::operator_divide(const Object *other)
 		value_operator = other->resolveMethod("=operator", params, false, Visibility::Public);
 	}
 	if ( value_operator ) {
+/*
 		Object tmp;
 
-#ifdef GENERATE_PARSE_TREE
-
-		AST::TreeInterpreter ti;
-		ti.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
-
-#else
-
-		Interpreter interpreter;
-		interpreter.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
-
-#endif
+		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, &tmp);
 
 		operator_divide(&tmp);
+		return;
+*/
+
+		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, mThis);
 		return;
 	}
 
@@ -791,17 +712,7 @@ bool Object::operator_equal(const Object *other)
 	if ( value_operator ) {
 		Object tmp;
 
-#ifdef GENERATE_PARSE_TREE
-
-		AST::TreeInterpreter ti;
-		ti.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
-
-#else
-
-		Interpreter interpreter;
-		interpreter.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
-
-#endif
+		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, &tmp);
 
 		return operator_equal(&tmp);
 	}
@@ -825,17 +736,7 @@ bool Object::operator_greater(const Object *other)
 	if ( value_operator ) {
 		Object tmp;
 
-#ifdef GENERATE_PARSE_TREE
-
-		AST::TreeInterpreter ti;
-		ti.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
-
-#else
-
-		Interpreter interpreter;
-		interpreter.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
-
-#endif
+		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, &tmp);
 
 		return operator_greater(&tmp);
 	}
@@ -859,17 +760,7 @@ bool Object::operator_greater_equal(const Object *other)
 	if ( value_operator ) {
 		Object tmp;
 
-#ifdef GENERATE_PARSE_TREE
-
-		AST::TreeInterpreter ti;
-		ti.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
-
-#else
-
-		Interpreter interpreter;
-		interpreter.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
-
-#endif
+		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, &tmp);
 
 		return operator_greater_equal(&tmp);
 	}
@@ -906,17 +797,7 @@ bool Object::operator_less(const Object *other)
 	if ( value_operator ) {
 		Object tmp;
 
-#ifdef GENERATE_PARSE_TREE
-
-		AST::TreeInterpreter ti;
-		ti.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
-
-#else
-
-		Interpreter interpreter;
-		interpreter.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
-
-#endif
+		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, &tmp);
 
 		return operator_less(&tmp);
 	}
@@ -940,17 +821,7 @@ bool Object::operator_less_equal(const Object *other)
 	if ( value_operator ) {
 		Object tmp;
 
-#ifdef GENERATE_PARSE_TREE
-
-		AST::TreeInterpreter ti;
-		ti.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
-
-#else
-
-		Interpreter interpreter;
-		interpreter.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
-
-#endif
+		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, &tmp);
 
 		return operator_less_equal(&tmp);
 	}
@@ -972,21 +843,16 @@ void Object::operator_modulo(const Object *other)
 		value_operator = other->resolveMethod("=operator", params, false, Visibility::Public);
 	}
 	if ( value_operator ) {
+/*
 		Object tmp;
 
-#ifdef GENERATE_PARSE_TREE
-
-		AST::TreeInterpreter ti;
-		ti.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
-
-#else
-
-		Interpreter interpreter;
-		interpreter.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
-
-#endif
+		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, &tmp);
 
 		operator_modulo(&tmp);
+		return;
+*/
+
+		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, mThis);
 		return;
 	}
 
@@ -1007,21 +873,16 @@ void Object::operator_multiply(const Object *other)
 		value_operator = other->resolveMethod("=operator", params, false, Visibility::Public);
 	}
 	if ( value_operator ) {
+/*
 		Object tmp;
 
-#ifdef GENERATE_PARSE_TREE
-
-		AST::TreeInterpreter ti;
-		ti.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
-
-#else
-
-		Interpreter interpreter;
-		interpreter.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
-
-#endif
+		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, &tmp);
 
 		operator_multiply(&tmp);
+		return;
+*/
+
+		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, mThis);
 		return;
 	}
 
@@ -1042,21 +903,16 @@ void Object::operator_plus(const Object *other)
 		value_operator = other->resolveMethod("=operator", params, false, Visibility::Public);
 	}
 	if ( value_operator ) {
+/*
 		Object tmp;
 
-#ifdef GENERATE_PARSE_TREE
-
-		AST::TreeInterpreter ti;
-		ti.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
-
-#else
-
-		Interpreter interpreter;
-		interpreter.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
-
-#endif
+		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, &tmp);
 
 		operator_plus(&tmp);
+		return;
+*/
+
+		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, mThis);
 		return;
 	}
 
@@ -1077,21 +933,16 @@ void Object::operator_subtract(const Object *other)
 		value_operator = other->resolveMethod("=operator", params, false, Visibility::Public);
 	}
 	if ( value_operator ) {
+/*
 		Object tmp;
 
-#ifdef GENERATE_PARSE_TREE
-
-		AST::TreeInterpreter ti;
-		ti.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
-
-#else
-
-		Interpreter interpreter;
-		interpreter.execute(static_cast<Common::Method*>(value_operator), params, &tmp);
-
-#endif
+		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, &tmp);
 
 		operator_subtract(&tmp);
+		return;
+*/
+
+		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, mThis);
 		return;
 	}
 
@@ -1111,11 +962,6 @@ void Object::operator_unary_increment()
 void Object::operator_unary_minus()
 {
 	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator unary -: for " + QualifiedTypename() + " not supported");
-}
-
-void Object::operator_unary_not()
-{
-	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator unary !: for " + QualifiedTypename() + " not supported");
 }
 
 Symbol* Object::resolve(const std::string& name, bool onlyCurrentScope, Visibility::E visibility) const

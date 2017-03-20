@@ -77,7 +77,7 @@ public:
 	void init();
 
 public:
-	Common::ThreadId createThread();
+	Thread* createThread();
 	void deleteThread(Common::ThreadId id);
 	Thread* getThread(Common::ThreadId id) const;
 

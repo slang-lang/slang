@@ -350,8 +350,7 @@ void LocalClient::executeMethod(const StringList &tokens)
 	try {
 		Runtime::Object result;
 
-		Runtime::Interpreter interpreter;
-		interpreter.execute(method, params, &result);
+		Controller::Instance().thread(0)->execute(method, params, &result);
 
 		writeln("returned " + result.ToString());
 	}

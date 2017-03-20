@@ -9,9 +9,9 @@
 #include <Core/Designtime/BuildInTypes/BoolObject.h>
 #include <Core/Designtime/BuildInTypes/DoubleObject.h>
 #include <Core/Designtime/BuildInTypes/FloatObject.h>
-#include <Core/Designtime/BuildInTypes/GenericObject.h>
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
+#include <Core/Designtime/BuildInTypes/UserObject.h>
 #include <Core/Designtime/BuildInTypes/VoidObject.h>
 #include <Core/Designtime/Exceptions.h>
 
@@ -240,8 +240,8 @@ void TypeSystem::initObject()
 	// arithmetic
 
 	// comparison
-	define(GenericObject::TYPENAME, Token::Type::COMPARE_EQUAL,   GenericObject::TYPENAME, GenericObject::TYPENAME);
-	define(GenericObject::TYPENAME, Token::Type::COMPARE_UNEQUAL, GenericObject::TYPENAME, GenericObject::TYPENAME);
+	define(UserObject::TYPENAME, Token::Type::COMPARE_EQUAL,   UserObject::TYPENAME, UserObject::TYPENAME);
+	define(UserObject::TYPENAME, Token::Type::COMPARE_UNEQUAL, UserObject::TYPENAME, UserObject::TYPENAME);
 
 	// typecasts
 }

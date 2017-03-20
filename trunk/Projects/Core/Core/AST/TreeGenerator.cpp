@@ -237,6 +237,14 @@ void TreeGenerator::initialize(Common::Method* method)
 	mHasReturnStatement = false;
 	mMethod = method;
 
+	switch ( mMethod->getLanguageFeatureState() ) {
+		case LanguageFeatureState::Deprecated: OSwarn("method '" + mMethod->getFullScopeName() + "' is marked as deprecated"); break;
+		case LanguageFeatureState::NotImplemented: OSerror("method '" + mMethod->getFullScopeName() + "' is marked as not implemented"); throw Common::Exceptions::NotImplemented(mMethod->getFullScopeName()); break;
+		case LanguageFeatureState::Stable: /* this is the normal language feature state, so there is no need to log anything here */ break;
+		case LanguageFeatureState::Unknown: OSerror("unknown language feature state set for method '" + mMethod->getFullScopeName() + "'"); break;
+		case LanguageFeatureState::Unstable: OSwarn("method '" + mMethod->getFullScopeName() + "' is marked as unstable"); break;
+	}
+
 	// create new stack frame
 	mStackFrame = new StackFrame(0, mMethod, mMethod->provideSignature());
 	// push scope

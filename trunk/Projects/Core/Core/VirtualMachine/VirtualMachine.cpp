@@ -109,20 +109,8 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 		throw Common::Exceptions::Exception("could not resolve method 'Main(" + toString(params) + ")'");
 	}
 
-#ifdef GENERATE_PARSE_TREE
-
-	AST::Generator generator;
-	generator.process(Controller::Instance().stack()->globalScope());
-
-	AST::TreeInterpreter ti;
-	Runtime::ControlFlow::E controlflow = ti.execute(main, params, result);
-
-#else
-
-	Runtime::Interpreter interpreter;
-	Runtime::ControlFlow::E controlflow = interpreter.execute(main, params, result);
-
-#endif
+	Thread* t = Controller::Instance().threads()->getThread(Common::ThreadId(0));
+	Runtime::ControlFlow::E controlflow = t->execute(main, params, result);
 
 	if ( controlflow == Runtime::ControlFlow::Throw ) {
 		Runtime::ExceptionData data = Controller::Instance().stack()->exception();
