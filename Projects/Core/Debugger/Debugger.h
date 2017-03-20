@@ -37,6 +37,7 @@ public:
 public:
 	void deinit();
 	void init();
+	bool useDebugger() const;
 
 public:	// IDebugger implementation
 	bool addBreakPoint(const BreakPoint& breakpoint);
@@ -84,6 +85,7 @@ private:
 	IScope* mCurrentScope;
 	NextAction::E mNextAction;
 	Core::IReceiver* mReceiver;
+	bool mUseDebugger;
 };
 
 

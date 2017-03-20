@@ -35,6 +35,12 @@ namespace ObjectiveScript {
 namespace Runtime {
 
 
+#define DEBUGGER(exp) \
+	if ( mDebugger->useDebugger() ) { \
+		mDebugger->exp; \
+	}
+
+
 Interpreter::Interpreter()
 : mControlFlow(ControlFlow::Normal),
   mOwner(0)
@@ -194,7 +200,7 @@ ControlFlow::E Interpreter::execute(Common::Method* method, const ParameterList&
 	// record stack
 	mStack->push(&scope, method->getTokens(), executedParams);
 	// notify debugger
-	mDebugger->notifyEnter(&scope, Core::Debugger::immediateBreakToken);
+	DEBUGGER( notifyEnter(&scope, Core::Debugger::immediateBreakToken) );
 	// interpret scope tokens
 	mControlFlow = interpret(getTokens(), result);
 
@@ -250,7 +256,7 @@ ControlFlow::E Interpreter::execute(Common::Method* method, const ParameterList&
 	}
 
 	// notify debugger
-	mDebugger->notifyExit(getScope(), Core::Debugger::immediateBreakToken);
+	DEBUGGER( notifyExit(getScope(), Core::Debugger::immediateBreakToken) );
 	// unwind stack trace
 	mStack->pop();
 
@@ -898,7 +904,7 @@ void Interpreter::process(Object *result, TokenIterator& token, TokenIterator en
 
 #else
 
-		mDebugger->notify(getScope(), (*token));		// notify debugger
+		DEBUGGER( notify(getScope(), (*token)) );		// notify debugger
 
 		switch ( token->type() ) {
 			case Token::Type::IDENTIFIER:
@@ -1624,7 +1630,7 @@ void Interpreter::process_scope(TokenIterator& token, Object* result)
  */
 void Interpreter::process_statement(TokenIterator& token, Object* result)
 {
-	mDebugger->notify(getScope(), (*token));		// notify debugger
+	DEBUGGER( notify(getScope(), (*token)) );		// notify debugger
 
 	switch ( token->type() ) {
 		case Token::Type::IDENTIFIER:
@@ -1830,7 +1836,7 @@ void Interpreter::process_throw(TokenIterator& token, Object* /*result*/)
 	expect(Token::Type::SEMICOLON, token);
 
 	// notify our debugger that an exception has been thrown
-	mDebugger->notifyExceptionThrow(getScope(), (*token));
+	DEBUGGER( notifyExceptionThrow(getScope(), (*token)) );
 }
 
 /*
@@ -1931,7 +1937,7 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 			}
 
 			// notify our debugger that an exception has been caught
-			mDebugger->notifyExceptionCatch(getScope(), (*catchIt));
+			DEBUGGER( notifyExceptionCatch(getScope(), (*catchIt)) );
 
 			TokenList catchTokens;
 			collectScopeTokens(catchIt, catchTokens);

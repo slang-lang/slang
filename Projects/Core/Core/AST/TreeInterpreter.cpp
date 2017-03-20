@@ -31,6 +31,10 @@
 
 // Namespace declarations
 
+#define DEBUGGER(exp) \
+	if ( mDebugger->useDebugger() ) { \
+		mDebugger->exp; \
+	}
 
 #define tryEvalute(left, right) \
 		try { \
@@ -506,13 +510,13 @@ Runtime::ControlFlow::E TreeInterpreter::execute(Common::Method* method, const P
 	mStack->push(&scope, TokenList(), executedParams);
 
 	// notify debugger
-	mDebugger->notifyEnter(&scope, Core::Debugger::immediateBreakToken);
+	DEBUGGER( notifyEnter(&scope, Core::Debugger::immediateBreakToken) );
 
 	// interpret scope tokens
 	process(method->getRootNode());
 
 	// notify debugger
-	mDebugger->notifyExit(&scope, Core::Debugger::immediateBreakToken);
+	DEBUGGER( notifyExit(&scope, Core::Debugger::immediateBreakToken) );
 
 	mOwner = previousOwner;
 
@@ -1058,7 +1062,7 @@ void TreeInterpreter::visitStatement(Statement *node)
 		return;
 	}
 
-	mDebugger->notify(getScope(), Token());		// notify debugger
+	DEBUGGER( notify(getScope(), Token()) );		// notify debugger
 
 	switch ( node->getStatementType() ) {
 		case Statement::StatementType::AssertStatement:
@@ -1219,7 +1223,7 @@ void TreeInterpreter::visitThrow(ThrowStatement* node)
 	mControlFlow = Runtime::ControlFlow::Throw;
 
 	// notify our debugger that an exception has been thrown
-	mDebugger->notifyExceptionThrow(getScope(), Token());
+	DEBUGGER( notifyExceptionThrow(getScope(), Token()) );
 }
 
 void TreeInterpreter::visitTry(TryStatement* node)
@@ -1250,6 +1254,9 @@ void TreeInterpreter::visitTry(TryStatement* node)
 				// assign exception to instance variable
 				Runtime::operator_binary_assign(symbol, exception);
 			}
+
+			// notify our debugger that an exception has been caught
+			DEBUGGER( notifyExceptionCatch(getScope(), Token()) );
 
 			// execute catch statements
 			visitStatements((*it)->mStatements);
