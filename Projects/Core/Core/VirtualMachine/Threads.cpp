@@ -1,12 +1,13 @@
 
 // Header
-#include <Core/Runtime/Exceptions.h>
 #include "Threads.h"
 
 // Library includes
 
 // Project includes
-#include "Stack.h"
+#include <Core/AST/TreeInterpreter.h>
+#include <Core/Interpreter.h>
+#include <Core/Runtime/Exceptions.h>
 
 // Namespace declarations
 
@@ -40,7 +41,7 @@ Runtime::ControlFlow::E Thread::execute(Common::Method* method, const ParameterL
 #ifdef GENERATE_PARSE_TREE
 
 	AST::TreeInterpreter ti;
-	Runtime::ControlFlow::E controlflow = ti.execute(method, params, result);
+	Runtime::ControlFlow::E controlflow = ti.execute(mId, method, params, result);
 
 #else
 

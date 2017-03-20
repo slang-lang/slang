@@ -4,32 +4,39 @@ private object UserObject {
 	private int mValue;
 
 	public void Constructor(int value const) {
+		print("Constructor(" + value + ")");
 		mValue = value;
 	}
 
 	public int getValue() const {
+		print("getValue()");
 		return mValue;
 	}
 
 	public void setValue(int value const) {
+		print("setValue(" + value + ")");
 		mValue = value;
 	}
 
 	/////////////////////////////////////////////////////////////////////
 
 	public void operator=(int other const) modify {
+		print("operator=(int)");
 		mValue = other;
 	}
 
 	public void operator=(UserObject other const ref) modify {
+		print("operator=(UserObject)");
 		mValue = other.getValue();
 	}
 
 	public bool operator==(int other const) const {
+		print("operator==(int)");
 		return mValue == other;
 	}
 
 	public bool operator==(UserObject other const ref) const {
+		print("operator==(UserObject)");
 		return mValue == other.getValue();
 	}
 
@@ -50,6 +57,8 @@ private bool TestCase1() const {
 	UserObject obj1 = new UserObject(1);
 
 	obj1 = 2;
+	print("obj1.getValue() = " + obj1.getValue());
+
 	assert( obj1 == 2 );
 	if ( obj1 == 2 ) {
 		print("obj1 == 2");

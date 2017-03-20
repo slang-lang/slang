@@ -6,12 +6,13 @@
 // Library includes
 
 // Project includes
+#include <Core/Common/Types.h>
 #include <Core/Designtime/Parser/Token.h>
 #include <Core/Runtime/ControlFlow.h>
 #include <Core/Runtime/ExceptionData.h>
 #include <Core/VirtualMachine/Stack.h>
 #include <Core/Parameter.h>
-#include <Core/Scope.h>
+//#include <Core/Scope.h>
 #include "ControlStatements.h"
 #include "Expression.h"
 #include "Keywords.h"
@@ -32,6 +33,7 @@ namespace Common {
 namespace Core {
 	class Debugger;
 }
+class IScope;
 class Memory;
 namespace Runtime {
 	class Object;
@@ -52,7 +54,7 @@ public:
 	~TreeInterpreter();
 
 public: // Execution
-	Runtime::ControlFlow::E execute(Common::Method* method, const ParameterList& params, Runtime::Object* result);
+	Runtime::ControlFlow::E execute(Common::ThreadId threadId, Common::Method* method, const ParameterList& params, Runtime::Object* result);
 
 private:
 	void process(Statements* statements);
@@ -123,6 +125,7 @@ private:	// Virtual machine stuff
 	Memory* mMemory;
 	Repository *mRepository;
 	Stack* mStack;
+	Common::ThreadId mThreadId;
 };
 
 

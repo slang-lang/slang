@@ -8,7 +8,6 @@
 
 // Project includes
 #include <Core/Common/Types.h>
-#include <Core/Interpreter.h>
 #include <Core/Parameter.h>
 #include <Core/Runtime/ControlFlow.h>
 #include <Core/VirtualMachine/Stack.h>
@@ -61,7 +60,6 @@ public:
 
 private:
 	Common::ThreadId mId;
-	Runtime::Interpreter mInterpreter;
 	State::E mState;
 };
 

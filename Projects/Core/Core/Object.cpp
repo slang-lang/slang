@@ -560,7 +560,7 @@ void Object::operator_assign(const Object *other)
 		return;
 */
 
-		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, mThis);
+		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, this);
 		return;
 	}
 
@@ -590,7 +590,7 @@ void Object::operator_bitand(const Object *other)
 		return;
 */
 
-		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, mThis);
+		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, this);
 		return;
 	}
 
@@ -620,7 +620,7 @@ void Object::operator_bitcomplement(const Object *other)
 		return;
 */
 
-		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, mThis);
+		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, this);
 		return;
 	}
 
@@ -650,7 +650,7 @@ void Object::operator_bitor(const Object *other)
 		return;
 */
 
-		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, mThis);
+		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, this);
 		return;
 	}
 
@@ -685,7 +685,7 @@ void Object::operator_divide(const Object *other)
 		return;
 */
 
-		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, mThis);
+		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, this);
 		return;
 	}
 
@@ -852,7 +852,7 @@ void Object::operator_modulo(const Object *other)
 		return;
 */
 
-		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, mThis);
+		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, this);
 		return;
 	}
 
@@ -882,7 +882,7 @@ void Object::operator_multiply(const Object *other)
 		return;
 */
 
-		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, mThis);
+		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, this);
 		return;
 	}
 
@@ -912,7 +912,7 @@ void Object::operator_plus(const Object *other)
 		return;
 */
 
-		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, mThis);
+		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, this);
 		return;
 	}
 
@@ -942,7 +942,7 @@ void Object::operator_subtract(const Object *other)
 		return;
 */
 
-		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, mThis);
+		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, this);
 		return;
 	}
 

@@ -278,7 +278,7 @@ void TreeInterpreter::evaluateMethodExpression(MethodExpression* exp, Runtime::O
 		controlflow = method->execute(params, result, Token());
 	}
 	else {
-		controlflow = execute(method, params, result);
+		controlflow = execute(mThreadId, method, params, result);
 	}
 
 	switch ( controlflow ) {
@@ -446,7 +446,7 @@ void TreeInterpreter::evaluateUnaryExpression(UnaryExpression* exp, Runtime::Obj
 	}
 }
 
-Runtime::ControlFlow::E TreeInterpreter::execute(Common::Method* method, const ParameterList& params, Runtime::Object* result)
+Runtime::ControlFlow::E TreeInterpreter::execute(Common::ThreadId threadId, Common::Method* method, const ParameterList& params, Runtime::Object* result)
 {
 	if ( method->isAbstract() ) {
 		throw Common::Exceptions::AbstractException("cannot execute abstract method '" + method->getFullScopeName() + "'");
@@ -460,6 +460,7 @@ Runtime::ControlFlow::E TreeInterpreter::execute(Common::Method* method, const P
 	IScope* previousOwner = mOwner;
 
 	mOwner = method->getEnclosingScope();
+	mThreadId = threadId;
 
 	ParameterList executedParams = method->mergeParameters(params);
 
