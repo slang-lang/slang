@@ -505,12 +505,18 @@ void TreeGenerator::popTokens()
 /*
  * loop through all tokens and redirect to the corresponding method
  */
-Statements* TreeGenerator::process(TokenIterator& token, TokenIterator end, Token::Type::E terminator)
+Statements* TreeGenerator::process(TokenIterator& token, TokenIterator end)
 {
-	Statements* statements = new Statements();
+	if ( token == end ) {
+		// empty method provided
+		return 0;
+	}
 
-	while ( ( (token != getTokens().end()) && (token != end) ) &&
-			( (token->type() != terminator) && (token->type() != Token::Type::ENDOFFILE) ) ) {
+	Statements* statements = new Statements((*token));
+
+	TokenIterator localEnd = getTokens().end();
+
+	while ( ( (token != localEnd) && (token != end) ) && (token->type() != Token::Type::ENDOFFILE) ) {
 		Node* node = process_statement(token);
 
 		if ( node ) {
@@ -527,6 +533,8 @@ Statements* TreeGenerator::process(TokenIterator& token, TokenIterator end, Toke
  */
 Statement* TreeGenerator::process_assert(TokenIterator& token)
 {
+	Token start = (*token);
+
 	expect(Token::Type::PARENTHESIS_OPEN, token);
 	++token;
 
@@ -537,7 +545,7 @@ Statement* TreeGenerator::process_assert(TokenIterator& token)
 	expect(Token::Type::PARENTHESIS_CLOSE, token);
 	++token;
 
-	return new AssertStatement(exp, position);
+	return new AssertStatement(start, exp);
 }
 
 /*
@@ -550,9 +558,10 @@ Statement* TreeGenerator::process_break(TokenIterator& token)
 		throw Common::Exceptions::Exception("break not allowed here", token->position());
 	}
 
+	expect(Token::Type::SEMICOLON, token);
 	++token;
 
-	return new BreakStatement();
+	return new BreakStatement((*token));
 }
 
 /*
@@ -565,9 +574,10 @@ Statement* TreeGenerator::process_continue(TokenIterator& token)
 		throw Common::Exceptions::Exception("continue not allowed here", token->position());
 	}
 
+	expect(Token::Type::SEMICOLON, token);
 	++token;
 
-	return new ContinueStatement();
+	return new ContinueStatement((*token));
 }
 
 /*
@@ -595,7 +605,7 @@ Statement* TreeGenerator::process_delete(TokenIterator& token)
 	expect(Token::Type::SEMICOLON, token);
 	++token;
 
-	return new DeleteStatement(exp);
+	return new DeleteStatement((*token), exp);
 }
 
 /*
@@ -612,7 +622,7 @@ Statement* TreeGenerator::process_exit(TokenIterator& token)
 	expect(Token::Type::PARENTHESIS_CLOSE, token);
 	++token;
 
-	return new ExitStatement(exp);
+	return new ExitStatement((*token), exp);
 }
 
 Expression* TreeGenerator::process_expression_keyword(TokenIterator& token)
@@ -643,6 +653,8 @@ Expression* TreeGenerator::process_expression_keyword(TokenIterator& token)
  */
 Statement* TreeGenerator::process_for(TokenIterator& token)
 {
+	Token start = (*token);
+
 	expect(Token::Type::PARENTHESIS_OPEN, token);
 
 	TokenIterator initializationBegin = ++token;
@@ -680,7 +692,7 @@ Statement* TreeGenerator::process_for(TokenIterator& token)
 	Node* loopBody = process_statement(token, true);
 	// }
 
-	return new ForStatement(initialization, condition, iteration, loopBody);
+	return new ForStatement(start, initialization, condition, iteration, loopBody);
 }
 
 /*
@@ -689,6 +701,8 @@ Statement* TreeGenerator::process_for(TokenIterator& token)
  */
 Statement* TreeGenerator::process_foreach(TokenIterator& token)
 {
+	Token start = (*token);
+
 	expect(Token::Type::PARENTHESIS_OPEN, token);
 	++token;
 
@@ -704,7 +718,7 @@ Statement* TreeGenerator::process_foreach(TokenIterator& token)
 	expect(Token::Type::PARENTHESIS_CLOSE, token);
 	++token;
 
-	return new ForeachStatement(typeDeclaration, symbol, process_statement(token, true));
+	return new ForeachStatement(start, typeDeclaration, symbol, process_statement(token, true));
 }
 
 /*
@@ -787,6 +801,8 @@ Node* TreeGenerator::process_identifier(TokenIterator& token, bool allowTypeCast
  */
 Statement* TreeGenerator::process_if(TokenIterator& token)
 {
+	Token start = (*token);
+
 	expect(Token::Type::PARENTHESIS_OPEN, token);
 	++token;
 
@@ -805,7 +821,7 @@ Statement* TreeGenerator::process_if(TokenIterator& token)
 		elseBlock = process_statement(token);
 	}
 
-	return new IfStatement(exp, ifBlock, elseBlock);
+	return new IfStatement(start, exp, ifBlock, elseBlock);
 }
 
 Node* TreeGenerator::process_keyword(TokenIterator& token)
@@ -957,6 +973,8 @@ Expression* TreeGenerator::process_new(TokenIterator& token)
  */
 Statement* TreeGenerator::process_print(TokenIterator& token)
 {
+	Token start = (*token);
+
 	expect(Token::Type::PARENTHESIS_OPEN, token);
 	++token;
 
@@ -969,7 +987,7 @@ Statement* TreeGenerator::process_print(TokenIterator& token)
 	expect(Token::Type::SEMICOLON, token);
 	++token;
 
-	return new PrintStatement(exp, position);
+	return new PrintStatement(start, exp);
 }
 
 /*
@@ -978,6 +996,7 @@ Statement* TreeGenerator::process_print(TokenIterator& token)
  */
 Statement* TreeGenerator::process_return(TokenIterator& token)
 {
+	Token start = (*token);
 	mHasReturnStatement = true;
 
 	Node* exp = 0;
@@ -995,7 +1014,7 @@ Statement* TreeGenerator::process_return(TokenIterator& token)
 	expect(Token::Type::SEMICOLON, token);
 	++token;
 
-	return new ReturnStatement(exp);
+	return new ReturnStatement(start, exp);
 }
 
 // syntax:
@@ -1044,6 +1063,8 @@ Node* TreeGenerator::process_statement(TokenIterator& token, bool allowBreakAndC
  */
 Statement* TreeGenerator::process_switch(TokenIterator& token)
 {
+	Token start = (*token);
+
 	expect(Token::Type::PARENTHESIS_OPEN, token);
 	++token;
 
@@ -1062,6 +1083,8 @@ Statement* TreeGenerator::process_switch(TokenIterator& token)
 	// collect all case-blocks
 	while ( token->type() != Token::Type::BRACKET_CURLY_CLOSE ) {
 		if ( token->type() == Token::Type::KEYWORD && token->content() == KEYWORD_CASE ) {
+			Token start = (*token);
+
 			// skip case-label
 			++token;
 
@@ -1075,7 +1098,7 @@ Statement* TreeGenerator::process_switch(TokenIterator& token)
 
 			// process case-block tokens
 			caseStatements.push_back(
-				new CaseStatement(caseExpression, generate(caseTokens, true))
+				new CaseStatement(start, caseExpression, generate(caseTokens, true))
 			);
 		}
 		else if ( token->type() == Token::Type::KEYWORD && token->content() == KEYWORD_DEFAULT ) {
@@ -1103,7 +1126,7 @@ Statement* TreeGenerator::process_switch(TokenIterator& token)
 	}
 	++token;
 
-	return new SwitchStatement(switchExpression, caseStatements, defaultStatement);
+	return new SwitchStatement(start, switchExpression, caseStatements, defaultStatement);
 }
 
 /*
@@ -1112,6 +1135,8 @@ Statement* TreeGenerator::process_switch(TokenIterator& token)
  */
 Statement* TreeGenerator::process_throw(TokenIterator& token)
 {
+	Token start = (*token);
+
 	if ( !mMethod->throws() ) {
 		// this method is not marked as 'throwing', so we can't throw exceptions here
 		throw Common::Exceptions::Exception(mMethod->getFullScopeName() + " throws although it is not marked with 'throws'", token->position());
@@ -1126,7 +1151,7 @@ Statement* TreeGenerator::process_throw(TokenIterator& token)
 	expect(Token::Type::SEMICOLON, token);
 	++token;
 
-	return new ThrowStatement(exp);
+	return new ThrowStatement(start, exp);
 }
 
 /*
@@ -1137,6 +1162,8 @@ Statement* TreeGenerator::process_throw(TokenIterator& token)
  */
 Statement* TreeGenerator::process_try(TokenIterator& token)
 {
+	Token start = (*token);
+
 	expect(Token::Type::BRACKET_CURLY_OPEN, token);
 
 	TokenList tryTokens;
@@ -1146,28 +1173,29 @@ Statement* TreeGenerator::process_try(TokenIterator& token)
 	Statements* tryBlock = generate(tryTokens);
 
 	TokenIterator tmp = ++token;
+	TokenIterator localEnd = getTokens().end();
 
 	std::list<TokenIterator> catchTokens;
-	TokenIterator finallyToken = getTokens().end();
+	TokenIterator finallyToken = localEnd;
 
 	// collect all catch- and finally-blocks
 	for ( ; ; ) {
-		if ( tmp != getTokens().end() && tmp->content() == KEYWORD_CATCH ) {
+		if ( tmp != localEnd && tmp->content() == KEYWORD_CATCH ) {
 			catchTokens.push_back(tmp);
 
-			tmp = findNextBalancedCurlyBracket(tmp, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
+			tmp = findNextBalancedCurlyBracket(tmp, localEnd, 0, Token::Type::BRACKET_CURLY_CLOSE);
 
 			if ( std::distance(token, tmp) ) {
 				token = tmp;	// set exit token
 			}
 		}
-		else if ( tmp != getTokens().end() && tmp->content() == KEYWORD_FINALLY ) {
-			if ( finallyToken != getTokens().end() ) {
+		else if ( tmp != localEnd && tmp->content() == KEYWORD_FINALLY ) {
+			if ( finallyToken != localEnd ) {
 				throw Common::Exceptions::SyntaxError("multiple finally blocks are not allowed");
 			}
 
 			finallyToken = tmp;
-			tmp = findNextBalancedCurlyBracket(tmp, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
+			tmp = findNextBalancedCurlyBracket(tmp, localEnd, 0, Token::Type::BRACKET_CURLY_CLOSE);
 
 			if ( std::distance(token, tmp) ) {
 				token = tmp;	// set exit token
@@ -1185,7 +1213,9 @@ Statement* TreeGenerator::process_try(TokenIterator& token)
 	// process catch-blocks (if present)
 	for ( std::list<TokenIterator>::const_iterator it = catchTokens.begin(); it != catchTokens.end(); ++it ) {
 		TokenIterator catchIt = (*it);
-		catchIt++;
+		Token start = (*catchIt);
+
+		++catchIt;
 
 		pushScope();	// push a new scope to allow reuse of the same exception instance name
 
@@ -1193,7 +1223,7 @@ Statement* TreeGenerator::process_try(TokenIterator& token)
 
 		// parse exception type (if present)
 		if ( catchIt->type() == Token::Type::PARENTHESIS_OPEN ) {
-			catchIt++;
+			++catchIt;
 
 			Symbol* symbol = identify(catchIt);
 			if ( !symbol ) {
@@ -1214,7 +1244,7 @@ Statement* TreeGenerator::process_try(TokenIterator& token)
 		collectScopeTokens(catchIt, tokens);
 
 		catchStatements.push_back(
-			new CatchStatement(typeDeclaration, generate(tokens))
+			new CatchStatement(start, typeDeclaration, generate(tokens))
 		);
 
 		popScope();		// pop exception instance scope
@@ -1223,7 +1253,7 @@ Statement* TreeGenerator::process_try(TokenIterator& token)
 	Statements* finallyBlock = 0;
 
 	// process finally-block (if present)
-	if ( finallyToken != getTokens().end() ) {
+	if ( finallyToken != localEnd ) {
 		++finallyToken;
 
 		TokenList finallyTokens;
@@ -1234,7 +1264,7 @@ Statement* TreeGenerator::process_try(TokenIterator& token)
 
 	++token;
 
-	return new TryStatement(tryBlock, catchStatements, finallyBlock);
+	return new TryStatement(start, tryBlock, catchStatements, finallyBlock);
 }
 
 /*
@@ -1243,6 +1273,8 @@ Statement* TreeGenerator::process_try(TokenIterator& token)
  */
 TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initialization::E initialization)
 {
+	Token start = (*token);
+
 	SymbolExpression* symbolExp = resolve(token, getScope());
 	if ( !symbolExp ) {
 		throw Common::Exceptions::InvalidSymbol("invalid symbol '" + token->content() + "'", token->position());
@@ -1305,7 +1337,7 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 		throw Common::Exceptions::NotSupported("atomic references need to be initialized", token->position());
 	}
 
-	return new TypeDeclaration(type, constraints, name, mutability == Mutability::Const, accessMode == AccessMode::ByReference, assignment);
+	return new TypeDeclaration(start, type, constraints, name, mutability == Mutability::Const, accessMode == AccessMode::ByReference, assignment);
 }
 
 /*
@@ -1330,6 +1362,8 @@ Expression* TreeGenerator::process_typeid(TokenIterator& token)
  */
 Statement* TreeGenerator::process_while(TokenIterator& token)
 {
+	Token start = (*token);
+
 	expect(Token::Type::PARENTHESIS_OPEN, token);
 	++token;
 
@@ -1338,7 +1372,7 @@ Statement* TreeGenerator::process_while(TokenIterator& token)
 	expect(Token::Type::PARENTHESIS_CLOSE, token);
 	++token;
 
-	return new WhileStatement(exp, process_statement(token, true));
+	return new WhileStatement(start, exp, process_statement(token, true));
 }
 
 void TreeGenerator::pushScope(IScope* scope, bool allowBreakAndContinue)

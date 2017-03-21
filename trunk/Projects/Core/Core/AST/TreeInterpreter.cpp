@@ -1054,7 +1054,7 @@ void TreeInterpreter::visitStatement(Statement *node)
 		return;
 	}
 
-	DEBUGGER( notify(getScope(), Token()) );		// notify debugger
+	DEBUGGER( notify(getScope(), node->token()) );		// notify debugger
 
 	switch ( node->getStatementType() ) {
 		case Statement::StatementType::AssertStatement:
@@ -1215,7 +1215,7 @@ void TreeInterpreter::visitThrow(ThrowStatement* node)
 	mControlFlow = Runtime::ControlFlow::Throw;
 
 	// notify our debugger that an exception has been thrown
-	DEBUGGER( notifyExceptionThrow(getScope(), Token()) );
+	DEBUGGER( notifyExceptionThrow(getScope(), node->token()) );
 }
 
 void TreeInterpreter::visitTry(TryStatement* node)
@@ -1248,7 +1248,7 @@ void TreeInterpreter::visitTry(TryStatement* node)
 			}
 
 			// notify our debugger that an exception has been caught
-			DEBUGGER( notifyExceptionCatch(getScope(), Token()) );
+			DEBUGGER( notifyExceptionCatch(getScope(), (*it)->token()) );
 
 			// execute catch statements
 			visitStatements((*it)->mStatements);
