@@ -892,7 +892,9 @@ void Interpreter::popTokens()
  */
 void Interpreter::process(Object *result, TokenIterator& token, TokenIterator end, Token::Type::E terminator)
 {
-	while ( ( (token != getTokens().end()) && (token != end) ) &&
+	TokenIterator localEnd = getTokens().end();
+
+	while ( ( (token != localEnd) && (token != end) ) &&
 			( (token->type() != terminator) && (token->type() != Token::Type::ENDOFFILE) ) ) {
 
 		if ( mControlFlow != ControlFlow::Normal ) {
@@ -1336,10 +1338,12 @@ void Interpreter::process_if(TokenIterator& token, Object *result)
 
 	expect(Token::Type::BRACKET_CURLY_OPEN, condEnd);
 
+	TokenIterator localEnd = getTokens().end();
+
 	// find next open curly bracket '{'
 	TokenIterator bodyBegin = condEnd;
 	// find next balanced '{' & '}' pair
-	TokenIterator bodyEnd = findNextBalancedCurlyBracket(bodyBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
+	TokenIterator bodyEnd = findNextBalancedCurlyBracket(bodyBegin, localEnd, 0, Token::Type::BRACKET_CURLY_CLOSE);
 
 	++bodyBegin;		// don't collect scope token
 	token = bodyEnd;	// no matter what, at least set our token to our if-block's end
@@ -1351,27 +1355,27 @@ void Interpreter::process_if(TokenIterator& token, Object *result)
 		++bodyBegin;
 	}
 
-	if ( bodyEnd != getTokens().end() ) {
+	if ( bodyEnd != localEnd ) {
 		++bodyEnd;
 	}
 
 	bool targetReached = true;	// initially don't collect else-block tokens
-	TokenIterator elseBegin = getTokens().end();
-	TokenIterator elseEnd = getTokens().end();
+	TokenIterator elseBegin = localEnd;
+	TokenIterator elseEnd = localEnd;
 
 	// look for an else-token
-	if ( bodyEnd != getTokens().end() && (bodyEnd->type() == Token::Type::KEYWORD && bodyEnd->content() == KEYWORD_ELSE ) ) {
+	if ( bodyEnd != localEnd && (bodyEnd->type() == Token::Type::KEYWORD && bodyEnd->content() == KEYWORD_ELSE ) ) {
 		elseBegin = findNext(bodyEnd, Token::Type::BRACKET_CURLY_OPEN);
 		// find next balanced '{' & '}' pair
-		elseEnd = findNextBalancedCurlyBracket(elseBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
+		elseEnd = findNextBalancedCurlyBracket(elseBegin, localEnd, 0, Token::Type::BRACKET_CURLY_CLOSE);
 
 		for ( ; ; ) {
 			// check if there is another if after our else-block
 			TokenIterator tmpIf = elseEnd;
 			++tmpIf;
-			if ( tmpIf != getTokens().end() && tmpIf->type() == Token::Type::KEYWORD && tmpIf->content() == KEYWORD_ELSE ) {
+			if ( tmpIf != localEnd && tmpIf->type() == Token::Type::KEYWORD && tmpIf->content() == KEYWORD_ELSE ) {
 				// find next balanced '{' & '}' pair
-				elseEnd = findNextBalancedCurlyBracket(tmpIf, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
+				elseEnd = findNextBalancedCurlyBracket(tmpIf, localEnd, 0, Token::Type::BRACKET_CURLY_CLOSE);
 
 				continue;
 			}
@@ -1681,10 +1685,12 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 
 	expect(Token::Type::BRACKET_CURLY_OPEN, condEnd);
 
+	TokenIterator localEnd = getTokens().end();
+
 	// find next open curly bracket '{'
 	TokenIterator bodyBegin = condEnd;
 	// find next balanced '{' & '}' pair
-	TokenIterator bodyEnd = findNextBalancedCurlyBracket(bodyBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
+	TokenIterator bodyEnd = findNextBalancedCurlyBracket(bodyBegin, localEnd, 0, Token::Type::BRACKET_CURLY_CLOSE);
 
 	++bodyBegin;	// don't collect scope token
 	token = bodyEnd;
@@ -1704,23 +1710,23 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 	typedef std::list<CaseBlock> CaseBlocks;
 
 	CaseBlocks caseBlocks;
-	CaseBlock defaultBlock = CaseBlock(getTokens().end(), getTokens().end());
+	CaseBlock defaultBlock = CaseBlock(localEnd, localEnd);
 
 	// collect all case-blocks for further processing
 	while ( bodyBegin != bodyEnd ) {
 		if ( bodyBegin->type() == Token::Type::KEYWORD && bodyBegin->content() == KEYWORD_CASE ) {
-			TokenIterator tmp = findNextBalancedCurlyBracket(bodyBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
+			TokenIterator tmp = findNextBalancedCurlyBracket(bodyBegin, localEnd, 0, Token::Type::BRACKET_CURLY_CLOSE);
 
 			caseBlocks.push_back(CaseBlock(bodyBegin, tmp));
 
 			bodyBegin = tmp;
 		}
 		else if ( bodyBegin->type() == Token::Type::KEYWORD && bodyBegin->content() == KEYWORD_DEFAULT ) {
-			if ( defaultBlock.mBegin != getTokens().end() ) {
+			if ( defaultBlock.mBegin != localEnd ) {
 				throw Common::Exceptions::SyntaxError("duplicate default entry for switch statement");
 			}
 
-			TokenIterator tmp = findNextBalancedCurlyBracket(bodyBegin, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
+			TokenIterator tmp = findNextBalancedCurlyBracket(bodyBegin, localEnd, 0, Token::Type::BRACKET_CURLY_CLOSE);
 
 			defaultBlock = CaseBlock(bodyBegin, tmp);
 
@@ -1781,7 +1787,7 @@ void Interpreter::process_switch(TokenIterator& token, Object* result)
 	}
 
 	// execute the default block (if present)
-	if ( !caseMatched && defaultBlock.mBegin != getTokens().end() ) {
+	if ( !caseMatched && defaultBlock.mBegin != localEnd ) {
 		defaultBlock.mBegin++;
 		expect(Token::Type::COLON, defaultBlock.mBegin++);
 
@@ -1857,28 +1863,29 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 	mControlFlow = interpret(tryTokens, result);
 
 	TokenIterator tmp = lookahead(token, 1);
+	TokenIterator localEnd = getTokens().end();
 
 	std::list<TokenIterator> catches;
-	TokenIterator finallyToken = getTokens().end();
+	TokenIterator finallyToken = localEnd;
 
 	// collect all catch- and finally-blocks
 	for ( ; ; ) {
-		if ( tmp != getTokens().end() && tmp->content() == KEYWORD_CATCH ) {
+		if ( tmp != localEnd && tmp->content() == KEYWORD_CATCH ) {
 			catches.push_back(tmp);
 
-			tmp = findNextBalancedCurlyBracket(tmp, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
+			tmp = findNextBalancedCurlyBracket(tmp, localEnd, 0, Token::Type::BRACKET_CURLY_CLOSE);
 
 			if ( std::distance(token, tmp) ) {
 				token = tmp;	// set exit token
 			}
 		}
-		else if ( tmp != getTokens().end() && tmp->content() == KEYWORD_FINALLY ) {
-			if ( finallyToken != getTokens().end() ) {
+		else if ( tmp != localEnd && tmp->content() == KEYWORD_FINALLY ) {
+			if ( finallyToken != localEnd ) {
 				throw Common::Exceptions::SyntaxError("multiple finally blocks are not allowed");
 			}
 
 			finallyToken = tmp;
-			tmp = findNextBalancedCurlyBracket(tmp, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
+			tmp = findNextBalancedCurlyBracket(tmp, localEnd, 0, Token::Type::BRACKET_CURLY_CLOSE);
 
 			if ( std::distance(token, tmp) ) {
 				token = tmp;	// set exit token
@@ -1961,7 +1968,7 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 	}
 
 	// process finally-block (if present)
-	if ( finallyToken != getTokens().end() ) {
+	if ( finallyToken != localEnd ) {
 		++finallyToken;
 
 		TokenList finallyTokens;
