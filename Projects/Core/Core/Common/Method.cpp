@@ -8,8 +8,6 @@
 #include <Core/AST/Statement.h>
 #include <Core/Designtime/Parser/Parser.h>
 #include <Core/Runtime/Exceptions.h>
-#include <Core/VirtualMachine/Controller.h>
-#include <Debugger/Debugger.h>
 #include <Tools/Strings.h>
 #include <Utils.h>
 

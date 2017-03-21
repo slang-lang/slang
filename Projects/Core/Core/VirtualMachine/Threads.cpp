@@ -5,8 +5,12 @@
 // Library includes
 
 // Project includes
-#include <Core/AST/TreeInterpreter.h>
-#include <Core/Interpreter.h>
+#ifdef GENERATE_PARSE_TREE
+#	include <Core/AST/TreeInterpreter.h>
+#else
+#	include <Core/Interpreter.h>
+#endif
+#include <Core/Common/Method.h>
 #include <Core/Runtime/Exceptions.h>
 
 // Namespace declarations
