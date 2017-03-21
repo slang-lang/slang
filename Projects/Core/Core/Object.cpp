@@ -381,7 +381,7 @@ ControlFlow::E Object::Destructor()
 	return controlflow;
 }
 
-ControlFlow::E Object::execute(Object *result, const std::string& name, const ParameterList& params, const Method* /*caller*/)
+ControlFlow::E Object::execute(Object *result, const std::string& name, const ParameterList& params)
 {
 	if ( !isConstructed() ) {
 		// a method is being called although our object has not yet been constructed?

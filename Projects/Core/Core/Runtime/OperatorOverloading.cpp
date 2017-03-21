@@ -92,7 +92,7 @@ void operator_binary_assign(Object *base, Object *other, const Common::Position&
 
 			::ObjectiveScript::MethodSymbol* operator_method = base->resolveMethod("operator=", params, true, Visibility::Private);
 			if ( operator_method ) {
-				Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(operator_method), params, base);
+				Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(operator_method), params, 0);
 
 				return;
 			}
@@ -161,7 +161,7 @@ void operator_binary_bitand(Object *base, Object *other, const Common::Position&
 		params.push_back(Parameter::CreateRuntime(other->QualifiedTypename(), other->getValue(), other->getReference()));
 
 		VoidObject tmp;
-		base->execute(&tmp, "operator&", params, 0);
+		base->execute(&tmp, "operator&", params);
 	}
 }
 
@@ -214,7 +214,7 @@ void operator_binary_bitcomplement(Object *base, Object *other, const Common::Po
 		params.push_back(Parameter::CreateRuntime(other->QualifiedTypename(), other->getValue(), other->getReference()));
 
 		VoidObject tmp;
-		base->execute(&tmp, "operator~", params, 0);
+		base->execute(&tmp, "operator~", params);
 	}
 }
 
@@ -267,7 +267,7 @@ void operator_binary_bitor(Object *base, Object *other, const Common::Position& 
 		params.push_back(Parameter::CreateRuntime(other->QualifiedTypename(), other->getValue(), other->getReference()));
 
 		VoidObject tmp;
-		base->execute(&tmp, "operator|", params, 0);
+		base->execute(&tmp, "operator|", params);
 	}
 }
 
@@ -320,7 +320,7 @@ void operator_binary_divide(Object *base, Object *other, const Common::Position&
 		params.push_back(Parameter::CreateRuntime(other->QualifiedTypename(), other->getValue(), other->getReference()));
 
 		VoidObject tmp;
-		base->execute(&tmp, "operator/", params, 0);
+		base->execute(&tmp, "operator/", params);
 	}
 }
 
@@ -461,7 +461,7 @@ bool operator_binary_greater_equal(Object *base, Object *other, const Common::Po
 	params.push_back(Parameter::CreateRuntime(other->QualifiedTypename(), other->getValue(), other->getReference()));
 
 	Object tmp;
-	base->execute(&tmp, "operator>=", params, 0);
+	base->execute(&tmp, "operator>=", params);
 	return isTrue(tmp);
 }
 
@@ -502,7 +502,7 @@ bool operator_binary_less(Object *base, Object *other, const Common::Position& p
 	params.push_back(Parameter::CreateRuntime(other->QualifiedTypename(), other->getValue(), other->getReference()));
 
 	Object tmp;
-	base->execute(&tmp, "operator<", params, 0);
+	base->execute(&tmp, "operator<", params);
 	return isTrue(tmp);
 }
 
@@ -543,7 +543,7 @@ bool operator_binary_less_equal(Object *base, Object *other, const Common::Posit
 	params.push_back(Parameter::CreateRuntime(other->QualifiedTypename(), other->getValue(), other->getReference()));
 
 	Object tmp;
-	base->execute(&tmp, "operator<=", params, 0);
+	base->execute(&tmp, "operator<=", params);
 	return isTrue(tmp);
 }
 
@@ -605,7 +605,7 @@ void operator_binary_modulo(Object *base, Object *other, const Common::Position&
 		params.push_back(Parameter::CreateRuntime(other->QualifiedTypename(), other->getValue(), other->getReference()));
 
 		VoidObject tmp;
-		base->execute(&tmp, "operator%", params, 0);
+		base->execute(&tmp, "operator%", params);
 	}
 }
 
@@ -658,7 +658,7 @@ void operator_binary_multiply(Object *base, Object *other, const Common::Positio
 		params.push_back(Parameter::CreateRuntime(other->QualifiedTypename(), other->getValue(), other->getReference()));
 
 		VoidObject tmp;
-		base->execute(&tmp, "operator*", params, 0);
+		base->execute(&tmp, "operator*", params);
 	}
 }
 
@@ -711,7 +711,7 @@ void operator_binary_plus(Object *base, Object *other, const Common::Position& p
 		params.push_back(Parameter::CreateRuntime(other->QualifiedTypename(), other->getValue(), other->getReference()));
 
 		VoidObject tmp;
-		base->execute(&tmp, "operator+", params, 0);
+		base->execute(&tmp, "operator+", params);
 	}
 }
 
@@ -764,7 +764,7 @@ void operator_binary_subtract(Object *base, Object *other, const Common::Positio
 		params.push_back(Parameter::CreateRuntime(other->QualifiedTypename(), other->getValue(), other->getReference()));
 
 		VoidObject tmp;
-		base->execute(&tmp, "operator-", params, 0);
+		base->execute(&tmp, "operator-", params);
 	}
 }
 
@@ -835,7 +835,7 @@ void operator_unary_decrement(Object *base, const Common::Position& position)
 	}
 	else {
 		VoidObject tmp;
-		base->execute(&tmp, "operator--", ParameterList(), 0);
+		base->execute(&tmp, "operator--", ParameterList());
 	}
 }
 
@@ -885,7 +885,7 @@ void operator_unary_increment(Object *base, const Common::Position& position)
 	}
 	else {
 		VoidObject tmp;
-		base->execute(&tmp, "operator++", ParameterList(), 0);
+		base->execute(&tmp, "operator++", ParameterList());
 	}
 }
 

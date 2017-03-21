@@ -512,7 +512,7 @@ Runtime::ControlFlow::E TreeInterpreter::execute(Common::ThreadId threadId, Comm
 
 	mOwner = previousOwner;
 
-	if ( result ) {
+	if ( result && method->QualifiedTypename() != _void ) {
 		*result = mStack->current()->returnValue();
 	}
 

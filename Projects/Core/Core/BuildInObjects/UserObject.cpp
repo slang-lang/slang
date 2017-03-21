@@ -91,7 +91,7 @@ void UserObject::operator_divide(const Object *other)
 	params.push_back(Parameter::CreateRuntime(other->QualifiedOuterface(), other->getValue(), other->getReference()));
 
 	Object tmp;
-	execute(&tmp, "operator/", params, 0);
+	execute(&tmp, "operator/", params);
 }
 
 bool UserObject::operator_equal(const Object *other)
@@ -100,7 +100,7 @@ bool UserObject::operator_equal(const Object *other)
 	params.push_back(Parameter::CreateRuntime(other->QualifiedOuterface(), other->getValue(), other->getReference()));
 
 	Object tmp;
-	execute(&tmp, "operator==", params, 0);
+	execute(&tmp, "operator==", params);
 
 	return tmp.isValid();
 }
@@ -111,7 +111,7 @@ bool UserObject::operator_greater(const Object *other)
 	params.push_back(Parameter::CreateRuntime(other->QualifiedOuterface(), other->getValue(), other->getReference()));
 
 	Object tmp;
-	execute(&tmp, "operator>", params, 0);
+	execute(&tmp, "operator>", params);
 
 	return tmp.isValid();
 }
@@ -122,7 +122,7 @@ bool UserObject::operator_greater_equal(const Object *other)
 	params.push_back(Parameter::CreateRuntime(other->QualifiedOuterface(), other->getValue(), other->getReference()));
 
 	Object tmp;
-	execute(&tmp, "operator>=", params, 0);
+	execute(&tmp, "operator>=", params);
 
 	return tmp.isValid();
 }
@@ -133,7 +133,7 @@ bool UserObject::operator_less(const Object *other)
 	params.push_back(Parameter::CreateRuntime(other->QualifiedOuterface(), other->getValue(), other->getReference()));
 
 	Object tmp;
-	execute(&tmp, "operator<", params, 0);
+	execute(&tmp, "operator<", params);
 
 	return tmp.isValid();
 }
@@ -144,7 +144,7 @@ bool UserObject::operator_less_equal(const Object *other)
 	params.push_back(Parameter::CreateRuntime(other->QualifiedOuterface(), other->getValue(), other->getReference()));
 
 	Object tmp;
-	execute(&tmp, "operator<=", params, 0);
+	execute(&tmp, "operator<=", params);
 
 	return tmp.isValid();
 }
@@ -155,7 +155,7 @@ void UserObject::operator_multiply(const Object *other)
 	params.push_back(Parameter::CreateRuntime(other->QualifiedOuterface(), other->getValue(), other->getReference()));
 
 	Object tmp;
-	execute(&tmp, "operator*", params, 0);
+	execute(&tmp, "operator*", params);
 }
 
 void UserObject::operator_plus(const Object *other)
@@ -164,7 +164,7 @@ void UserObject::operator_plus(const Object *other)
 	params.push_back(Parameter::CreateRuntime(other->QualifiedOuterface(), other->getValue(), other->getReference()));
 
 	Object tmp;
-	execute(&tmp, "operator+", params, 0);
+	execute(&tmp, "operator+", params);
 }
 
 void UserObject::operator_subtract(const Object *other)
@@ -173,7 +173,7 @@ void UserObject::operator_subtract(const Object *other)
 	params.push_back(Parameter::CreateRuntime(other->QualifiedOuterface(), other->getValue(), other->getReference()));
 
 	Object tmp;
-	execute(&tmp, "operator-", params, 0);
+	execute(&tmp, "operator-", params);
 }
 
 
