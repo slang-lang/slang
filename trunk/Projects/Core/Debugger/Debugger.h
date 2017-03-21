@@ -54,8 +54,8 @@ public:	// IDebugger implementation
 
 	void notify(IScope* scope, const Token& token = Token());
 	void notifyEnter(IScope* scope, const Token& token = Token());
-	void notifyExceptionCatch(IScope *scope, const Token &token = Token());
-	void notifyExceptionThrow(IScope *scope, const Token &token = Token());
+	void notifyExceptionCatch(IScope* scope, const Token& token = Token());
+	void notifyExceptionThrow(IScope* scope, const Token& token = Token());
 	void notifyExit(IScope* scope, const Token& token = Token());
 
 	void resume();

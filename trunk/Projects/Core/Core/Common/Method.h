@@ -10,7 +10,6 @@
 #include <Core/Attributes/Attributes.h>
 #include <Core/Common/TypeDeclaration.h>
 #include <Core/Interfaces/IRuntimeType.h>
-#include <Core/Interpreter.h>
 #include <Core/Object.h>
 #include <Core/Parameter.h>
 #include <Core/Scope.h>
