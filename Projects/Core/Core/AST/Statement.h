@@ -50,9 +50,10 @@ public:
 	};
 
 public:
-	explicit Statement(StatementType::E statementType)
+	explicit Statement(StatementType::E statementType, const Token& token)
 	: Node(NodeType::Statement),
-	  mStatementType(statementType)
+	  mStatementType(statementType),
+	  mToken(token)
 	{ }
 	virtual ~Statement() { }
 
@@ -60,8 +61,13 @@ public:
 		return mStatementType;
 	}
 
+	const Token& token() const {
+		return mToken;
+	}
+
 protected:
 	StatementType::E mStatementType;
+	Token mToken;
 };
 
 
@@ -69,7 +75,7 @@ class Assignment : public Statement
 {
 public:
 	Assignment(SymbolExpression* lvalue, const Token& assignment, Node* rvalue, const std::string& /*resultType*/)
-	: Statement(StatementType::Assignment),
+	: Statement(StatementType::Assignment, assignment),
 	  mAssignment(assignment),
 	  mExpression(rvalue),
 	  mLValue(lvalue)
@@ -90,8 +96,8 @@ public:
 class TypeDeclaration : public Statement
 {
 public:
-	TypeDeclaration(const std::string& type, const PrototypeConstraints& constraints, const std::string& name, bool isConst, bool isReference, Node* assignment)
-	: Statement(StatementType::TypeDeclaration),
+	TypeDeclaration(const Token& token, const std::string& type, const PrototypeConstraints& constraints, const std::string& name, bool isConst, bool isReference, Node* assignment)
+	: Statement(StatementType::TypeDeclaration, token),
 	  mAssignment(assignment),
 	  mConstraints(constraints),
 	  mIsConst(isConst),
@@ -119,8 +125,8 @@ public:
 	typedef std::list<Node*> Nodes;
 
 public:
-	Statements()
-	: Statement(StatementType::Statements)
+	Statements(const Token& token)
+	: Statement(StatementType::Statements, token)
 	{ }
 	~Statements() {
 		for ( Nodes::iterator it = mNodes.begin(); it != mNodes.end(); ++it ) {

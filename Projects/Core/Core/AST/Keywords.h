@@ -21,10 +21,10 @@ namespace AST {
 class AssertStatement : public Statement
 {
 public:
-	AssertStatement(Node* exp, const Common::Position& position)
-	: Statement(StatementType::AssertStatement),
+	AssertStatement(const Token& token, Node* exp)
+	: Statement(StatementType::AssertStatement, token),
 	  mExpression(exp),
-	  mPosition(position)
+	  mPosition(token.position())
 	{ }
 	~AssertStatement() {
 		delete mExpression;
@@ -39,8 +39,8 @@ public:
 class CaseStatement : public Statement
 {
 public:
-	CaseStatement(Node* caseExpression, Statements* caseBlock)
-	: Statement(StatementType::CaseStatement),
+	CaseStatement(const Token& token, Node* caseExpression, Statements* caseBlock)
+	: Statement(StatementType::CaseStatement, token),
 	  mCaseBlock(caseBlock),
 	  mCaseExpression(caseExpression)
 	{ }
@@ -59,8 +59,8 @@ typedef std::list<CaseStatement*> CaseStatements;
 class CatchStatement : public Statement
 {
 public:
-	CatchStatement(TypeDeclaration* typeDeclaration, Statements* statements)
-	: Statement(StatementType::CatchStatement),
+	CatchStatement(const Token& token, TypeDeclaration* typeDeclaration, Statements* statements)
+	: Statement(StatementType::CatchStatement, token),
 	  mStatements(statements),
 	  mTypeDeclaration(typeDeclaration)
 	{ }
@@ -80,8 +80,8 @@ typedef std::list<CatchStatement*> CatchStatements;
 class DeleteStatement : public Statement
 {
 public:
-	explicit DeleteStatement(Node* exp)
-	: Statement(StatementType::DeleteStatement),
+	explicit DeleteStatement(const Token& token, Node* exp)
+	: Statement(StatementType::DeleteStatement, token),
 	  mExpression(exp)
 	{ }
 	~DeleteStatement() {
@@ -96,8 +96,8 @@ public:
 class ForeachStatement : public Statement
 {
 public:
-	ForeachStatement(TypeDeclaration* typeDeclaration, SymbolExpression* loopVariable, Node* loopStatement)
-	: Statement(StatementType::ForeachStatement),
+	ForeachStatement(const Token& token, TypeDeclaration* typeDeclaration, SymbolExpression* loopVariable, Node* loopStatement)
+	: Statement(StatementType::ForeachStatement, token),
 	  mLoopVariable(loopVariable),
 	  mStatement(loopStatement),
 	  mTypeDeclaration(typeDeclaration)
@@ -118,8 +118,8 @@ public:
 class ForStatement : public Statement
 {
 public:
-	ForStatement(Node* initStatement, Node* condition, Node* iterationStatement, Node* loopStatement)
-	: Statement(StatementType::ForStatement),
+	ForStatement(const Token& token, Node* initStatement, Node* condition, Node* iterationStatement, Node* loopStatement)
+	: Statement(StatementType::ForStatement, token),
 	  mCondition(condition),
 	  mInitialization(initStatement),
 	  mIteration(iterationStatement),
@@ -143,8 +143,8 @@ public:
 class IfStatement : public Statement
 {
 public:
-	IfStatement(Node* exp, Node* ifBlock, Node* elseBlock)
-	: Statement(StatementType::IfStatement),
+	IfStatement(const Token& token, Node* exp, Node* ifBlock, Node* elseBlock)
+	: Statement(StatementType::IfStatement, token),
 	  mElseBlock(elseBlock),
 	  mExpression(exp),
 	  mIfBlock(ifBlock)
@@ -165,10 +165,10 @@ public:
 class PrintStatement : public Statement
 {
 public:
-	PrintStatement(Node* exp, const Common::Position& position)
-	: Statement(StatementType::PrintStatement),
+	PrintStatement(const Token& token, Node* exp)
+	: Statement(StatementType::PrintStatement, token),
 	  mExpression(exp),
-	  mPosition(position)
+	  mPosition(token.position())
 	{ }
 	~PrintStatement() {
 		delete mExpression;
@@ -183,8 +183,8 @@ public:
 class SwitchStatement : public Statement
 {
 public:
-	SwitchStatement(Node* exp, const CaseStatements& caseStatements, Statements* defaultStatement)
-	: Statement(StatementType::SwitchStatement),
+	SwitchStatement(const Token& token, Node* exp, const CaseStatements& caseStatements, Statements* defaultStatement)
+	: Statement(StatementType::SwitchStatement, token),
 	  mCaseStatements(caseStatements),
 	  mDefaultStatement(defaultStatement),
 	  mExpression(exp)
@@ -207,8 +207,8 @@ public:
 class TryStatement : public Statement
 {
 public:
-	TryStatement(Statements* tryBlock, const CatchStatements& catchStatements, Statements* finallyBlock)
-	: Statement(StatementType::TryStatement),
+	TryStatement(const Token& token, Statements* tryBlock, const CatchStatements& catchStatements, Statements* finallyBlock)
+	: Statement(StatementType::TryStatement, token),
 	  mCatchStatements(catchStatements),
 	  mFinallyBlock(finallyBlock),
 	  mTryBlock(tryBlock)
@@ -231,8 +231,8 @@ public:
 class WhileStatement : public Statement
 {
 public:
-	WhileStatement(Node* condition, Node* statement)
-	: Statement(StatementType::WhileStatement),
+	WhileStatement(const Token& token, Node* condition, Node* statement)
+	: Statement(StatementType::WhileStatement, token),
 	  mCondition(condition),
 	  mStatement(statement)
 	{ }

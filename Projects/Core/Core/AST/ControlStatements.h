@@ -20,8 +20,8 @@ namespace AST {
 class BreakStatement : public Statement
 {
 public:
-	BreakStatement()
-	: Statement(StatementType::BreakStatement)
+	explicit BreakStatement(const Token& token)
+	: Statement(StatementType::BreakStatement, token)
 	{ }
 };
 
@@ -29,8 +29,8 @@ public:
 class ContinueStatement : public Statement
 {
 public:
-	ContinueStatement()
-	: Statement(StatementType::ContinueStatement)
+	explicit ContinueStatement(const Token& token)
+	: Statement(StatementType::ContinueStatement, token)
 	{ }
 };
 
@@ -38,8 +38,8 @@ public:
 class ExitStatement : public Statement
 {
 public:
-	explicit ExitStatement(Node* exp)
-	: Statement(StatementType::ExitStatement),
+	explicit ExitStatement(const Token& token, Node* exp)
+	: Statement(StatementType::ExitStatement, token),
 	  mExpression(exp)
 	{ }
 	~ExitStatement() {
@@ -54,8 +54,8 @@ public:
 class ReturnStatement : public Statement
 {
 public:
-	explicit ReturnStatement(Node* exp)
-	: Statement(StatementType::ReturnStatement),
+	explicit ReturnStatement(const Token& token, Node* exp)
+	: Statement(StatementType::ReturnStatement, token),
 	  mExpression(exp)
 	{ }
 	~ReturnStatement() {
@@ -70,8 +70,8 @@ public:
 class ThrowStatement : public Statement
 {
 public:
-	explicit ThrowStatement(Node* exp)
-	: Statement(StatementType::ThrowStatement),
+	explicit ThrowStatement(const Token& token, Node* exp)
+	: Statement(StatementType::ThrowStatement, token),
 	  mExpression(exp)
 	{ }
 	~ThrowStatement() {
