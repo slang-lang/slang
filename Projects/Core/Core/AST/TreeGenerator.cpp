@@ -733,7 +733,7 @@ Node* TreeGenerator::process_identifier(TokenIterator& token, bool allowTypeCast
 	TokenIterator op = token;
 
 	// type cast (followed by identifier or 'copy' || 'new' keyword)
-	if ( allowTypeCast && (op->type() == Token::Type::IDENTIFIER || op->type() == Token::Type::KEYWORD) ) {
+	if ( allowTypeCast && (op->category() == Token::Category::Constant || op->type() == Token::Type::IDENTIFIER || op->type() == Token::Type::KEYWORD) ) {
 		node = new TypecastExpression(old->content(), expression(++old));
 
 		token = old;
