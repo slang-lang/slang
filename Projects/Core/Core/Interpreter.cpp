@@ -43,7 +43,8 @@ namespace Runtime {
 
 Interpreter::Interpreter()
 : mControlFlow(ControlFlow::Normal),
-  mOwner(0)
+  mOwner(0),
+  mThreadId(0)
 {
 	// initialize virtual machine stuff
 	mDebugger = &Core::Debugger::Instance();
