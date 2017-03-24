@@ -37,7 +37,8 @@ namespace AST {
 
 
 TreeGenerator::TreeGenerator()
-: mMethod(0),
+: mHasReturnStatement(false),
+  mMethod(0),
   mStackFrame(0)
 {
 	// initialize virtual machine stuff
