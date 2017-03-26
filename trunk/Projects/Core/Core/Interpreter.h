@@ -132,6 +132,10 @@ private: // Execution
 	Common::Namespace* getEnclosingNamespace(IScope* scope = 0) const;
 	Runtime::Object* getEnclosingObject(IScope* scope = 0) const;
 
+private:	// Initialization
+	void deinitialize();
+	void initialize(IScope* scope, const TokenList& tokens, const ParameterList& params);
+
 private:	// internal stuff
 	ControlFlow::E mControlFlow;
 	IScope* mOwner;
