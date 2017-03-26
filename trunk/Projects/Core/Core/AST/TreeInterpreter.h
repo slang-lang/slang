@@ -50,11 +50,11 @@ class Statements;
 class TreeInterpreter
 {
 public:
-	TreeInterpreter();
+	TreeInterpreter(Common::ThreadId id);
 	~TreeInterpreter();
 
 public: // Execution
-	Runtime::ControlFlow::E execute(Common::ThreadId threadId, Common::Method* method, const ParameterList& params, Runtime::Object* result);
+	Runtime::ControlFlow::E execute(Common::Method* method, const ParameterList& params, Runtime::Object* result);
 
 private:
 	void process(Statements* statements);
@@ -115,6 +115,10 @@ private:
 	Symbol* resolveRValue(IScope *scope, SymbolExpression *symbol, bool onlyCurrentScope, Visibility::E visibility) const;
 
 	MethodSymbol* resolveMethod(IScope* scope, SymbolExpression* symbol, const ParameterList& params, bool onlyCurrentScope, Visibility::E visibility) const;
+
+private:	// Initialization
+	void deinitialize();
+	void initialize(IScope* scope, const ParameterList& params);
 
 private:	// Interpreter stuff
 	Runtime::ControlFlow::E mControlFlow;

@@ -58,19 +58,28 @@ namespace ObjectiveScript {
 namespace AST {
 
 
-TreeInterpreter::TreeInterpreter()
+TreeInterpreter::TreeInterpreter(Common::ThreadId id)
 : mControlFlow(Runtime::ControlFlow::Normal),
-  mOwner(0)
+  mOwner(0),
+  mThreadId(id)
 {
 	// initialize virtual machine stuff
 	mDebugger = &Core::Debugger::Instance();
 	mMemory = Controller::Instance().memory();
 	mRepository = Controller::Instance().repository();
 	mStack = Controller::Instance().stack();
+
+	(void)mThreadId;
 }
 
 TreeInterpreter::~TreeInterpreter()
 {
+}
+
+void TreeInterpreter::deinitialize()
+{
+	// unwind stack
+	mStack->pop();
 }
 
 void TreeInterpreter::evaluate(Node* exp, Runtime::Object* result)
@@ -278,7 +287,7 @@ void TreeInterpreter::evaluateMethodExpression(MethodExpression* exp, Runtime::O
 		controlflow = method->execute(params, result, Token());
 	}
 	else {
-		controlflow = execute(mThreadId, method, params, result);
+		controlflow = execute(method, params, result);
 	}
 
 	switch ( controlflow ) {
@@ -446,8 +455,11 @@ void TreeInterpreter::evaluateUnaryExpression(UnaryExpression* exp, Runtime::Obj
 	}
 }
 
-Runtime::ControlFlow::E TreeInterpreter::execute(Common::ThreadId threadId, Common::Method* method, const ParameterList& params, Runtime::Object* result)
+Runtime::ControlFlow::E TreeInterpreter::execute(Common::Method* method, const ParameterList& params, Runtime::Object* result)
 {
+	if ( !method ) {
+		throw Common::Exceptions::Exception("invalid method pointer provided!");
+	}
 	if ( method->isAbstract() ) {
 		throw Common::Exceptions::AbstractException("cannot execute abstract method '" + method->getFullScopeName() + "'");
 	}
@@ -458,48 +470,10 @@ Runtime::ControlFlow::E TreeInterpreter::execute(Common::ThreadId threadId, Comm
 	Common::Method scope(*method);
 
 	IScope* previousOwner = mOwner;
-
 	mOwner = method->getEnclosingScope();
-	mThreadId = threadId;
 
-	ParameterList executedParams = method->mergeParameters(params);
-
-	// add parameters as locale variables
-	for ( ParameterList::const_iterator it = executedParams.begin(); it != executedParams.end(); ++it ) {
-		Runtime::Object *object = 0;
-
-		switch ( it->access() ) {
-			case AccessMode::ByReference: {
-				object = mRepository->createInstance(it->type(), it->name(), PrototypeConstraints());
-
-				if ( it->reference().isValid() ) {
-					object->assign(
-						*mMemory->get(it->reference())
-					);
-				}
-
-				object->setConst(it->isConst());
-				object->setMutability(it->isConst() ? Mutability::Const : Mutability::Modify);
-
-				scope.define(it->name(), object);
-			} break;
-			case AccessMode::ByValue: {
-				object = mRepository->createInstance(it->type(), it->name(), PrototypeConstraints());
-
-				object->setConst(it->isConst());
-				object->setMutability(it->isConst() ? Mutability::Const : Mutability::Modify);
-				object->setValue(it->value());
-
-				scope.define(it->name(), object);
-			} break;
-			case AccessMode::Unspecified: {
-				throw Common::Exceptions::AccessMode("unspecified access mode");
-			} break;
-		}
-	}
-
-	// record stack
-	mStack->push(&scope, TokenList(), executedParams);
+	// initialize parameters & push scope
+	initialize(&scope, method->mergeParameters(params));
 
 	// notify debugger
 	DEBUGGER( notifyEnter(&scope, Core::Debugger::immediateBreakToken) );
@@ -510,14 +484,14 @@ Runtime::ControlFlow::E TreeInterpreter::execute(Common::ThreadId threadId, Comm
 	// notify debugger
 	DEBUGGER( notifyExit(&scope, Core::Debugger::immediateBreakToken) );
 
-	mOwner = previousOwner;
-
 	if ( result && method->QualifiedTypename() != _void ) {
 		*result = mStack->current()->returnValue();
 	}
 
-	// unwind stack
-	mStack->pop();
+	// deinitalize & pop scope
+	deinitialize();
+
+	mOwner = previousOwner;
 
 	return mControlFlow;
 }
@@ -607,6 +581,46 @@ Runtime::Object* TreeInterpreter::getEnclosingObject(IScope* scope) const
 inline IScope* TreeInterpreter::getScope() const
 {
 	return mStack->current()->getScope();
+}
+
+void TreeInterpreter::initialize(IScope* scope, const ParameterList& params)
+{
+	// add parameters as locale variables
+	for ( ParameterList::const_iterator it = params.begin(); it != params.end(); ++it ) {
+		Runtime::Object *object = 0;
+
+		switch ( it->access() ) {
+			case AccessMode::ByReference: {
+				object = mRepository->createInstance(it->type(), it->name(), PrototypeConstraints());
+
+				if ( it->reference().isValid() ) {
+					object->assign(
+							*mMemory->get(it->reference())
+					);
+				}
+
+				object->setConst(it->isConst());
+				object->setMutability(it->isConst() ? Mutability::Const : Mutability::Modify);
+
+				scope->define(it->name(), object);
+			} break;
+			case AccessMode::ByValue: {
+				object = mRepository->createInstance(it->type(), it->name(), PrototypeConstraints());
+
+				object->setConst(it->isConst());
+				object->setMutability(it->isConst() ? Mutability::Const : Mutability::Modify);
+				object->setValue(it->value());
+
+				scope->define(it->name(), object);
+			} break;
+			case AccessMode::Unspecified: {
+				throw Common::Exceptions::AccessMode("unspecified access mode");
+			} break;
+		}
+	}
+
+	// record stack
+	mStack->push(scope, TokenList(), params);
 }
 
 void TreeInterpreter::popScope()
@@ -1003,10 +1017,12 @@ void TreeInterpreter::visitIf(IfStatement* node)
 	}
 
 	// validate if-condition
-	if ( isTrue(condition) ) { // execute if-compound statement
+	if ( isTrue(condition) ) {
+		// execute if-compound statement
 		visitStatement(static_cast<Statement*>(node->mIfBlock));
 	}
-	else { // execute else-compound statement
+	else {
+		// execute else-compound statement
 		visitStatement(static_cast<Statement*>(node->mElseBlock));
 	}
 }

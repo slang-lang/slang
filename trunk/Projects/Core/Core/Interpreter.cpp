@@ -41,16 +41,18 @@ namespace Runtime {
 	}
 
 
-Interpreter::Interpreter()
+Interpreter::Interpreter(Common::ThreadId threadId)
 : mControlFlow(ControlFlow::Normal),
   mOwner(0),
-  mThreadId(0)
+  mThreadId(threadId)
 {
 	// initialize virtual machine stuff
 	mDebugger = &Core::Debugger::Instance();
 	mMemory = Controller::Instance().memory();
 	mRepository = Controller::Instance().repository();
 	mStack = Controller::Instance().stack();
+
+	(void)mThreadId;
 }
 
 Interpreter::~Interpreter()
@@ -129,12 +131,8 @@ void Interpreter::collectScopeTokens(TokenIterator& token, TokenList& tokens)
 /*
  * processes tokens and updates the given result
  */
-ControlFlow::E Interpreter::execute(Common::ThreadId threadId, Common::Method* method, const ParameterList& params, Object* result)
+ControlFlow::E Interpreter::execute(Common::Method* method, const ParameterList& params, Object* result)
 {
-	if ( !mRepository ) {
-		throw Common::Exceptions::Exception("mRepository not set");
-	}
-
 	if ( method->isAbstract() ) {
 		throw Common::Exceptions::AbstractException("cannot execute abstract method '" + method->getFullScopeName() + "'");
 	}
@@ -152,7 +150,6 @@ ControlFlow::E Interpreter::execute(Common::ThreadId threadId, Common::Method* m
 	IScope* previousOwner = mOwner;
 
 	mOwner = method->getEnclosingScope();
-	mThreadId = threadId;
 
 	ParameterList executedParams = method->mergeParameters(params);
 
@@ -1529,7 +1526,7 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 		controlflow = method->execute(params, result, (*tmp));
 	}
 	else {
-		controlflow = execute(mThreadId, method, params, result);
+		controlflow = execute(method, params, result);
 	}
 
 	switch ( controlflow ) {
