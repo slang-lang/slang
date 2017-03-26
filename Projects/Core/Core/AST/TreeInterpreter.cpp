@@ -463,9 +463,6 @@ Runtime::ControlFlow::E TreeInterpreter::execute(Common::Method* method, const P
 	if ( method->isAbstract() ) {
 		throw Common::Exceptions::AbstractException("cannot execute abstract method '" + method->getFullScopeName() + "'");
 	}
-	if ( !method->isSignatureValid(params) ) {
-		throw Common::Exceptions::ParameterCountMissmatch("incorrect number or type of parameters");
-	}
 
 	Common::Method scope(*method);
 
