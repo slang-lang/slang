@@ -128,11 +128,20 @@ void Interpreter::collectScopeTokens(TokenIterator& token, TokenList& tokens)
 	expect(Token::Type::BRACKET_CURLY_CLOSE, token);
 }
 
+void Interpreter::deinitialize()
+{
+	// unwind stack
+	mStack->pop();
+}
+
 /*
  * processes tokens and updates the given result
  */
 ControlFlow::E Interpreter::execute(Common::Method* method, const ParameterList& params, Object* result)
 {
+	if ( !method ) {
+		throw Common::Exceptions::Exception("invalid method pointer provided!");
+	}
 	if ( method->isAbstract() ) {
 		throw Common::Exceptions::AbstractException("cannot execute abstract method '" + method->getFullScopeName() + "'");
 	}
@@ -148,53 +157,10 @@ ControlFlow::E Interpreter::execute(Common::Method* method, const ParameterList&
 	Common::Method scope(*method);
 
 	IScope* previousOwner = mOwner;
-
 	mOwner = method->getEnclosingScope();
 
-	ParameterList executedParams = method->mergeParameters(params);
+	initialize(&scope, method->getTokens(), method->mergeParameters(params));
 
-	// add parameters as locale variables
-	for ( ParameterList::const_iterator it = executedParams.begin(); it != executedParams.end(); ++it ) {
-		Object *object = 0;
-
-		switch ( it->access() ) {
-			case AccessMode::ByReference: {
-				object = mRepository->createInstance(it->type(), it->name(), PrototypeConstraints());
-
-				if ( it->reference().isValid() ) {
-					object->assign(*mMemory->get(it->reference()));
-				}
-
-				object->setMutability(it->mutability());
-
-				scope.define(it->name(), object);
-			} break;
-			case AccessMode::ByValue: {
-				object = mRepository->createInstance(it->type(), it->name(), PrototypeConstraints());
-
-				if ( it->reference().isValid() ) {
-#ifdef ALLOW_BY_VALUE_COPY
-					OSwarn("by value call for object in " + scope.ToString());
-
-					object->copy(*mMemory->get(it->reference()));
-#else
-					throw Common::Exceptions::NotSupported("by value calls not allowed for objects", getTokens().begin()->position());
-#endif
-				}
-
-				object->setMutability(it->mutability());
-				object->setValue(it->value());
-
-				scope.define(it->name(), object);
-			} break;
-			case AccessMode::Unspecified: {
-				throw Common::Exceptions::AccessMode("unspecified access mode");
-			} break;
-		}
-	}
-
-	// record stack
-	mStack->push(&scope, method->getTokens(), executedParams);
 	// notify debugger
 	DEBUGGER( notifyEnter(&scope, Core::Debugger::immediateBreakToken) );
 	// interpret scope tokens
@@ -206,7 +172,7 @@ ControlFlow::E Interpreter::execute(Common::Method* method, const ParameterList&
 		case ControlFlow::Continue:
 		case ControlFlow::Normal:
 			// verify method return reason
-			if ( method->QualifiedTypename() != VoidObject::TYPENAME && result->QualifiedOuterface() != VoidObject::TYPENAME ) {
+			if ( method->QualifiedTypename() != _void && result->QualifiedOuterface() != _void ) {
 				throw Common::Exceptions::Exception("unnatural method return at '" + method->getFullScopeName() + "'");
 			}
 
@@ -214,21 +180,6 @@ ControlFlow::E Interpreter::execute(Common::Method* method, const ParameterList&
 			mControlFlow = ControlFlow::Normal;
 			break;
 		case ControlFlow::Return:
-			// validate return value
-
-			if ( result->QualifiedOuterface() == NULL_TYPE ) {
-				// no type cast necessary for null objects
-			}
-			else if ( method->QualifiedTypename() != VoidObject::TYPENAME && result->QualifiedOuterface() != method->QualifiedTypename() ) {
-#ifdef ALLOW_IMPLICIT_CASTS
-				//OSwarn("implicit type conversion from " + result->QualifiedOuterface() + " to " + method->QualifiedTypename() + " in " + getTokens().begin()->position().toString());
-
-				typecast(result, method->QualifiedTypename());
-#else
-				throw Runtime::Exceptions::ExplicitCastRequired("explicit cast required for type conversion from " + result->QualifiedOutterface() + " to " + method->QualifiedTypename() + " in " + method->getFullScopeName());
-#endif
-			}
-
 			// correct behavior detected, override control flow with normal state
 			mControlFlow = ControlFlow::Normal;
 			break;
@@ -253,8 +204,8 @@ ControlFlow::E Interpreter::execute(Common::Method* method, const ParameterList&
 
 	// notify debugger
 	DEBUGGER( notifyExit(getScope(), Core::Debugger::immediateBreakToken) );
-	// unwind stack trace
-	mStack->pop();
+
+	deinitialize();
 
 	mOwner = previousOwner;
 
@@ -507,6 +458,52 @@ Symbol* Interpreter::identifyMethod(TokenIterator& token, const ParameterList& p
 	}
 
 	return result;
+}
+
+void Interpreter::initialize(IScope* scope, const TokenList& tokens, const ParameterList& params)
+{
+	// add parameters as locale variables
+	for ( ParameterList::const_iterator it = params.begin(); it != params.end(); ++it ) {
+		Object *object = 0;
+
+		switch ( it->access() ) {
+			case AccessMode::ByReference: {
+				object = mRepository->createInstance(it->type(), it->name(), PrototypeConstraints());
+
+				if ( it->reference().isValid() ) {
+					object->assign(*mMemory->get(it->reference()));
+				}
+
+				object->setMutability(it->mutability());
+
+				scope->define(it->name(), object);
+			} break;
+			case AccessMode::ByValue: {
+				object = mRepository->createInstance(it->type(), it->name(), PrototypeConstraints());
+
+				if ( it->reference().isValid() ) {
+#ifdef ALLOW_BY_VALUE_COPY
+					OSwarn("by value call for object in " + scope.ToString());
+
+					object->copy(*mMemory->get(it->reference()));
+#else
+					throw Common::Exceptions::NotSupported("by value calls not allowed for objects", tokens.begin()->position());
+#endif
+				}
+
+				object->setMutability(it->mutability());
+				object->setValue(it->value());
+
+				scope->define(it->name(), object);
+			} break;
+			case AccessMode::Unspecified: {
+				throw Common::Exceptions::AccessMode("unspecified access mode");
+			} break;
+		}
+	}
+
+	// record stack
+	mStack->push(scope, tokens, params);
 }
 
 /*
@@ -1597,7 +1594,7 @@ void Interpreter::process_print(TokenIterator& token)
  * syntax:
  * return [<expression>];
  */
-void Interpreter::process_return(TokenIterator& token, Object *result)
+void Interpreter::process_return(TokenIterator& token, Object* result)
 {
 	if ( token->type() != Token::Type::SEMICOLON ) {
 		try {
