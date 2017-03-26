@@ -122,15 +122,10 @@ std::string toString(const Parameter& param)
 		result += " ";
 		result += ANONYMOUS_OBJECT;
 	}
-	if ( param.isConst() ) {
-		result += " ";
-		result += MODIFIER_CONST;
-	}
-	switch ( param.access() ) {
-		case AccessMode::ByReference: result += " "; result += RESERVED_WORD_BY_REFERENCE; break;
-		case AccessMode::ByValue: result += " "; result += RESERVED_WORD_BY_VALUE; break;
-		case AccessMode::Unspecified: result += " unspecified"; break;
-	}
+
+	result += " "; result += Mutability::convert(param.mutability());
+	result += " "; result += AccessMode::convert(param.access());
+
 	if ( param.hasDefaultValue() ) {
 		result += " = ";
 		if ( param.type() == "string" ) {

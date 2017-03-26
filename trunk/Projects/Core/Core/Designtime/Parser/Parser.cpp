@@ -507,7 +507,7 @@ ParameterList Parser::parseParameters(TokenIterator &token, IScope* scope)
 	while ( (*++token).type() != Token::Type::PARENTHESIS_CLOSE ) {
 		AccessMode::E accessMode;
 		bool hasDefaultValue = false;
-		bool isConst = false;
+		Mutability::E mutability = Mutability::Modify;
 		Runtime::AtomicValue value;
 
 		if ( token->type() == Token::Type::IDENTIFIER ) {
@@ -529,11 +529,11 @@ ParameterList Parser::parseParameters(TokenIterator &token, IScope* scope)
 
 		if ( token->category() == Token::Category::Modifier ) {
 			if ( token->content() == MODIFIER_CONST ) {
-				isConst = true;
+				mutability = Mutability::Const;
 				token++;
 			}
 			else if ( token->content() == MODIFIER_MODIFY ) {
-				isConst = false;
+				mutability = Mutability::Modify;
 				token++;
 			}
 			else {
@@ -565,7 +565,7 @@ ParameterList Parser::parseParameters(TokenIterator &token, IScope* scope)
 		}
 
 		params.push_back(
-			Parameter::CreateDesigntime(name, TypeDeclaration(type.mName, type.mConstraints), value, hasDefaultValue, isConst, accessMode)
+			Parameter::CreateDesigntime(name, TypeDeclaration(type.mName, type.mConstraints), value, hasDefaultValue, mutability, accessMode)
 		);
 
 		if ( token->type() == Token::Type::PARENTHESIS_CLOSE ) {

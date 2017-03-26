@@ -174,7 +174,7 @@ void Method::initialize()
 				TypeDeclaration(Designtime::Parser::buildRuntimeConstraintTypename((*it).type(), (*it).typeConstraints())),
 				(*it).value(),
 				(*it).hasDefaultValue(),
-				(*it).isConst(),
+				(*it).mutability(),
 				(*it).access()
 			);
 		}
@@ -264,7 +264,7 @@ ParameterList Method::mergeParameters(const ParameterList& params) const
 		}
 
 		result.push_back(Parameter(
-			sigIt->name(), TypeDeclaration(sigIt->type()), value, sigIt->hasDefaultValue(), sigIt->isConst(), sigIt->access(), ref
+			sigIt->name(), TypeDeclaration(sigIt->type()), value, sigIt->hasDefaultValue(), sigIt->mutability(), sigIt->access(), ref
 		));
 	}
 

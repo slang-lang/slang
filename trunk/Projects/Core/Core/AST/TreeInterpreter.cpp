@@ -591,24 +591,30 @@ void TreeInterpreter::initialize(IScope* scope, const ParameterList& params)
 
 		switch ( it->access() ) {
 			case AccessMode::ByReference: {
-				object = mRepository->createInstance(it->type(), it->name(), PrototypeConstraints());
+				object = mRepository->createInstance(it->type(), it->name());
 
 				if ( it->reference().isValid() ) {
-					object->assign(
-							*mMemory->get(it->reference())
-					);
+					object->assign(*mMemory->get(it->reference()));
 				}
 
-				object->setConst(it->isConst());
-				object->setMutability(it->isConst() ? Mutability::Const : Mutability::Modify);
+				object->setMutability(it->mutability());
 
 				scope->define(it->name(), object);
 			} break;
 			case AccessMode::ByValue: {
-				object = mRepository->createInstance(it->type(), it->name(), PrototypeConstraints());
+				object = mRepository->createInstance(it->type(), it->name());
 
-				object->setConst(it->isConst());
-				object->setMutability(it->isConst() ? Mutability::Const : Mutability::Modify);
+				if ( it->reference().isValid() ) {
+#ifdef ALLOW_BY_VALUE_COPY
+					OSwarn("by value call for object in " + scope.ToString());
+
+					object->copy(*mMemory->get(it->reference()));
+#else
+					throw Common::Exceptions::NotSupported("by value calls not allowed for objects");
+#endif
+				}
+
+				object->setMutability(it->mutability());
 				object->setValue(it->value());
 
 				scope->define(it->name(), object);
