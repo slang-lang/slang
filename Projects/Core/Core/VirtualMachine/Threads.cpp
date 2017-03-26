@@ -44,13 +44,13 @@ Runtime::ControlFlow::E Thread::execute(Common::Method* method, const ParameterL
 
 #ifdef GENERATE_PARSE_TREE
 
-	AST::TreeInterpreter ti;
-	Runtime::ControlFlow::E controlflow = ti.execute(mId, method, params, result);
+	AST::TreeInterpreter ti(mId);
+	Runtime::ControlFlow::E controlflow = ti.execute(method, params, result);
 
 #else
 
-	Runtime::Interpreter interpreter;
-	Runtime::ControlFlow::E controlflow = interpreter.execute(mId, method, params, result);
+	Runtime::Interpreter interpreter(mId);
+	Runtime::ControlFlow::E controlflow = interpreter.execute(method, params, result);
 
 #endif
 
