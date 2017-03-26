@@ -555,6 +555,8 @@ Statement* TreeGenerator::process_assert(TokenIterator& token)
  */
 Statement* TreeGenerator::process_break(TokenIterator& token)
 {
+	Token start = (*token);
+
 	if ( !mStackFrame->allowBreakAndContinue() ) {
 		throw Common::Exceptions::Exception("break not allowed here", token->position());
 	}
@@ -562,7 +564,7 @@ Statement* TreeGenerator::process_break(TokenIterator& token)
 	expect(Token::Type::SEMICOLON, token);
 	++token;
 
-	return new BreakStatement((*token));
+	return new BreakStatement(start);
 }
 
 /*
@@ -571,6 +573,8 @@ Statement* TreeGenerator::process_break(TokenIterator& token)
  */
 Statement* TreeGenerator::process_continue(TokenIterator& token)
 {
+	Token start = (*token);
+
 	if ( !mStackFrame->allowBreakAndContinue() ) {
 		throw Common::Exceptions::Exception("continue not allowed here", token->position());
 	}
@@ -578,7 +582,7 @@ Statement* TreeGenerator::process_continue(TokenIterator& token)
 	expect(Token::Type::SEMICOLON, token);
 	++token;
 
-	return new ContinueStatement((*token));
+	return new ContinueStatement(start);
 }
 
 /*
@@ -601,12 +605,14 @@ Expression* TreeGenerator::process_copy(TokenIterator& token)
  */
 Statement* TreeGenerator::process_delete(TokenIterator& token)
 {
+	Token start = (*token);
+
 	Node* exp = expression(token);
 
 	expect(Token::Type::SEMICOLON, token);
 	++token;
 
-	return new DeleteStatement((*token), exp);
+	return new DeleteStatement(start, exp);
 }
 
 /*
@@ -615,6 +621,8 @@ Statement* TreeGenerator::process_delete(TokenIterator& token)
  */
 Statement* TreeGenerator::process_exit(TokenIterator& token)
 {
+	Token start = (*token);
+
 	expect(Token::Type::PARENTHESIS_OPEN, token);
 	++token;
 
@@ -623,7 +631,7 @@ Statement* TreeGenerator::process_exit(TokenIterator& token)
 	expect(Token::Type::PARENTHESIS_CLOSE, token);
 	++token;
 
-	return new ExitStatement((*token), exp);
+	return new ExitStatement(start, exp);
 }
 
 Expression* TreeGenerator::process_expression_keyword(TokenIterator& token)
