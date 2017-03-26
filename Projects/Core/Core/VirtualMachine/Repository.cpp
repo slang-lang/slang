@@ -228,7 +228,7 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 														 type,
 														 paramIt->value(),
 														 paramIt->hasDefaultValue(),
-														 paramIt->isConst(),
+														 paramIt->mutability(),
 														 access);
 
 				signatureChanged = true;

@@ -165,8 +165,7 @@ ControlFlow::E Interpreter::execute(Common::Method* method, const ParameterList&
 					object->assign(*mMemory->get(it->reference()));
 				}
 
-				object->setConst(it->isConst());
-				object->setMutability(it->isConst() ? Mutability::Const : Mutability::Modify);
+				object->setMutability(it->mutability());
 
 				scope.define(it->name(), object);
 			} break;
@@ -183,10 +182,8 @@ ControlFlow::E Interpreter::execute(Common::Method* method, const ParameterList&
 #endif
 				}
 
+				object->setMutability(it->mutability());
 				object->setValue(it->value());
-
-				object->setConst(it->isConst());
-				object->setMutability(it->isConst() ? Mutability::Const : Mutability::Modify);
 
 				scope.define(it->name(), object);
 			} break;

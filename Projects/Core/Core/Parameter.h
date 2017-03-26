@@ -33,7 +33,7 @@ public:
 									  const TypeDeclaration& type,
 									  Runtime::AtomicValue value = Runtime::AtomicValue(),
 									  bool hasDefaultValue = false,
-									  bool isConst = false,
+									  Mutability::E mutability = Mutability::Modify,
 									  AccessMode::E access = AccessMode::ByValue);
 	static Parameter CreateRuntime(const std::string& type,
 								   Runtime::AtomicValue value,
@@ -44,15 +44,15 @@ public:
 	Parameter(const std::string& name,
 			  const TypeDeclaration& type,
 			  Runtime::AtomicValue value,
-			  bool hasDefaultValue = false,
-			  bool isConst = false,
-			  AccessMode::E access = AccessMode::ByValue,
-			  Runtime::Reference reference = Runtime::Reference());
+			  bool hasDefaultValue,
+			  Mutability::E mutability,
+			  AccessMode::E access,
+			  Runtime::Reference reference);
 
 public:
 	AccessMode::E access() const;
 	bool hasDefaultValue() const;
-	bool isConst() const;
+	Mutability::E mutability() const;
 	const std::string& name() const;
 	const Runtime::Reference& reference() const;
 	const std::string& type() const;
@@ -62,7 +62,7 @@ public:
 private:
 	AccessMode::E mAccessMode;
 	bool mHasDefaultValue;
-	bool mIsConst;
+	Mutability::E mMutability;
 	std::string mName;
 	Runtime::Reference mReference;
 	TypeDeclaration mType;

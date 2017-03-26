@@ -17,7 +17,7 @@ Parameter Parameter::CreateDesigntime(const std::string& name,
 									  const TypeDeclaration& type,
 									  Runtime::AtomicValue value,
 									  bool hasDefaultValue,
-									  bool isConst,
+									  Mutability::E mutability,
 									  AccessMode::E access)
 {
 	return Parameter(
@@ -25,8 +25,9 @@ Parameter Parameter::CreateDesigntime(const std::string& name,
 		type,
 		value,
 		hasDefaultValue,
-		isConst,
-		access
+		mutability,
+		access,
+		Runtime::Reference()
 	);
 }
 
@@ -38,7 +39,7 @@ Parameter Parameter::CreateRuntime(const std::string& type, Runtime::AtomicValue
 				TypeDeclaration(type),
 				value,
 				false,
-				false,
+				Mutability::Modify,
 				AccessMode::ByReference,
 				reference
 		);
@@ -49,7 +50,7 @@ Parameter Parameter::CreateRuntime(const std::string& type, Runtime::AtomicValue
 		TypeDeclaration(type),
 		value,
 		false,
-		false,
+		Mutability::Modify,
 		AccessMode::ByValue,
 		Runtime::Reference()
 	);
@@ -58,15 +59,15 @@ Parameter Parameter::CreateRuntime(const std::string& type, Runtime::AtomicValue
 Parameter::Parameter()
 : mAccessMode(AccessMode::Unspecified),
   mHasDefaultValue(false),
-  mIsConst(false)
+  mMutability(Mutability::Unknown)
 {
 }
 
 Parameter::Parameter(const std::string& name, const TypeDeclaration& type, Runtime::AtomicValue value,
-					 bool hasDefaultValue, bool isConst, AccessMode::E access, Runtime::Reference reference)
+					 bool hasDefaultValue, Mutability::E mutability, AccessMode::E access, Runtime::Reference reference)
 : mAccessMode(access),
   mHasDefaultValue(hasDefaultValue),
-  mIsConst(isConst),
+  mMutability(mutability),
   mName(name),
   mReference(reference),
   mType(type),
@@ -84,9 +85,9 @@ bool Parameter::hasDefaultValue() const
 	return mHasDefaultValue;
 }
 
-bool Parameter::isConst() const
+Mutability::E Parameter::mutability() const
 {
-	return mIsConst;
+	return mMutability;
 }
 
 const std::string& Parameter::name() const
