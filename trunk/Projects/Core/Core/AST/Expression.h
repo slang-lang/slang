@@ -344,7 +344,8 @@ protected:
 	: Expression(ExpressionType::SymbolExpression),
 	  mName(name),
 	  mSurroundingScope(0),
-	  mSymbolExpression(0)
+	  mSymbolExpression(0),
+	  mSymbolExpressionType(SymbolExpressionType::DesigntimeSymbolExpression)
 	{
 		mResultType = resultType;
 	}

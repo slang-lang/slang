@@ -125,7 +125,7 @@ public:
 	typedef std::list<Node*> Nodes;
 
 public:
-	Statements(const Token& token)
+	explicit Statements(const Token& token)
 	: Statement(StatementType::Statements, token)
 	{ }
 	~Statements() {

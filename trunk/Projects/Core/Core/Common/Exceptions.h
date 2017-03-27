@@ -23,6 +23,8 @@ namespace Exceptions {
 class Exception : public std::exception
 {
 public:
+	Exception() { }
+
 	Exception(const std::string& text, const Position& position = Position())
 	: mMessage(text),
 	  mPosition(position)

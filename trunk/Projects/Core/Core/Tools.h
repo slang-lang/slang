@@ -9,7 +9,7 @@
 #include <string>
 
 // Project includes
-#include "Object.h"
+#include <Core/Designtime/Parser/Token.h>
 #include "Types.h"
 
 // Forward declarations
@@ -18,11 +18,13 @@
 
 
 namespace ObjectiveScript {
+
+// Forward declarations
+class Object;
+
 namespace Tools {
 
 
-	std::string getFirstSubString(const std::string& str);
-	std::string getLastSubString(const std::string& str);
 	void split(const std::string& str, std::string& p, std::string& c);
 	void splitBy(const std::string& str, char splitter, std::string& p, std::string& c);
 
@@ -55,7 +57,6 @@ inline TokenList::iterator lookahead(TokenList::iterator token, int numLooks = 1
 	do { ++token; --numLooks; } while ( numLooks > 0 ); return token;
 }
 
-TokenIterator findNext(TokenIterator start, Token::Category::E category, Token::Type::E terminator = Token::Type::NIL);
 TokenIterator findNext(TokenIterator start, Token::Type::E type, Token::Type::E terminator = Token::Type::NIL);
 TokenIterator findNextBalancedBracket(TokenIterator start, int generateErrorAfter = 0, Token::Type::E terminator = Token::Type::NIL);
 TokenIterator findNextBalancedCurlyBracket(TokenIterator start, TokenIterator end, int generateErrorAfter = 0, Token::Type::E terminator = Token::Type::NIL);

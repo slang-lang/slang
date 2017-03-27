@@ -342,7 +342,7 @@ void TreeInterpreter::evaluateSymbolExpression(SymbolExpression *exp, Runtime::O
 	}
 
 	// resolve current symbol name
-	Symbol* lvalue = scope->resolve(exp->mName, false, Visibility::Designtime);
+	Symbol* lvalue = scope->resolve(exp->mName, false, Visibility::Private);
 	if ( !lvalue ) {
 		throw Runtime::Exceptions::InvalidAssignment("lvalue '" + exp->mName + "' not found");
 	}

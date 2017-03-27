@@ -250,8 +250,8 @@ Symbol* MethodScope::resolve(const std::string& name, bool onlyCurrentScope, Vis
 		}
 	}
 
-	for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
-		Common::Method *method = (*it);
+	for ( MethodCollection::const_iterator methodIt = mMethods.begin(); methodIt != mMethods.end(); ++methodIt ) {
+		Common::Method *method = (*methodIt);
 
 		if ( method->getVisibility() >= visibility ) {
 			if ( method->getName() == name ) {
