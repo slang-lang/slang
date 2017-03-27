@@ -179,7 +179,7 @@ bool Analyser::createBluePrint(TokenIterator& token, TokenIterator /*end*/)
 
 		// in case this object has no inheritance set, we inherit from 'Object'
 		if ( objectType != ObjectType::Interface && !extends ) {
-			blueprint->addInheritance(Ancestor(TypeDeclaration(_object), Ancestor::Type::Extends, Visibility::Public));
+			blueprint->addInheritance(Ancestor(Common::TypeDeclaration(_object), Ancestor::Type::Extends, Visibility::Public));
 		}
 	}
 
@@ -242,7 +242,7 @@ bool Analyser::createEnum(TokenIterator& token, TokenIterator /*end*/)
 	}
 
 	// look for the identifier token
-	TypeDeclaration type = Parser::parseTypeDeclaration(token, mScope);
+	Common::TypeDeclaration type = Parser::parseTypeDeclaration(token, mScope);
 	if ( !type.mConstraints.empty() ) {
 		throw Common::Exceptions::SyntaxError("enums are now allowed to be prototypes", token->position());
 	}
@@ -302,7 +302,7 @@ bool Analyser::createMember(TokenIterator& token, TokenIterator /*end*/)
 	// look for an optional language feature token
 	LanguageFeatureState::E languageFeatureState = Parser::parseLanguageFeatureState(token, LanguageFeatureState::Stable);
 	// look for the type token
-	TypeDeclaration type = Parser::parseTypeDeclaration(token);
+	Common::TypeDeclaration type = Parser::parseTypeDeclaration(token);
 	// look for the identifier token
 	std::string name = (*token++).content();
 
@@ -316,7 +316,7 @@ bool Analyser::createMemberOrMethod(TokenIterator& token, TokenIterator /*end*/)
 	// look for an optional language feature token
 	LanguageFeatureState::E languageFeatureState = Parser::parseLanguageFeatureState(token, LanguageFeatureState::Stable);
 	// look for the type token
-	TypeDeclaration type = Parser::parseTypeDeclaration(token, mScope);
+	Common::TypeDeclaration type = Parser::parseTypeDeclaration(token, mScope);
 	// look for the identifier token
 	std::string name = (*token++).content();
 
@@ -328,7 +328,7 @@ bool Analyser::createMemberOrMethod(TokenIterator& token, TokenIterator /*end*/)
 	return createMemberStub(token, visibility, languageFeatureState, type, name);
 }
 
-bool Analyser::createMemberStub(TokenIterator& token, Visibility::E visibility, LanguageFeatureState::E languageFeature, TypeDeclaration type, const std::string& name)
+bool Analyser::createMemberStub(TokenIterator& token, Visibility::E visibility, LanguageFeatureState::E languageFeature, Common::TypeDeclaration type, const std::string& name)
 {
 	assert( mScope->getScopeType() == IScope::IType::MethodScope );
 
@@ -388,14 +388,14 @@ bool Analyser::createMethod(TokenIterator& token, TokenIterator /*end*/)
 	// look for an optional language feature token
 	LanguageFeatureState::E languageFeatureState = Parser::parseLanguageFeatureState(token, LanguageFeatureState::Stable);
 	// look for the type token
-	TypeDeclaration type = Parser::parseTypeDeclaration(token);
+	Common::TypeDeclaration type = Parser::parseTypeDeclaration(token);
 	// look for the identifier token
 	std::string name = (*token++).content();
 
 	return createMethodStub(token, visibility, languageFeatureState, type, name);
 }
 
-bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, LanguageFeatureState::E languageFeature, TypeDeclaration type, const std::string& name)
+bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, LanguageFeatureState::E languageFeature, Common::TypeDeclaration type, const std::string& name)
 {
 	assert( mScope->getScopeType() == IScope::IType::MethodScope );
 

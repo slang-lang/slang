@@ -36,7 +36,7 @@ public:
 
 public:
 	Ancestor();
-	Ancestor(const TypeDeclaration& typeDeclaration, Type::E ancestorType, Visibility::E visibility);
+	Ancestor(const Common::TypeDeclaration& typeDeclaration, Type::E ancestorType, Visibility::E visibility);
 
 public:
 	bool operator<(const Ancestor& other) const;
@@ -50,7 +50,7 @@ public:
 
 private:
 	Type::E mAncestorType;
-	TypeDeclaration mTypeDeclaration;
+	Common::TypeDeclaration mTypeDeclaration;
 	Visibility::E mVisibility;
 };
 

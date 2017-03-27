@@ -20,7 +20,7 @@ Ancestor::Ancestor()
 {
 }
 
-Ancestor::Ancestor(const TypeDeclaration& typeDeclaration, Type::E ancestorType, Visibility::E visibility)
+Ancestor::Ancestor(const Common::TypeDeclaration& typeDeclaration, Type::E ancestorType, Visibility::E visibility)
 : mAncestorType(ancestorType),
   mTypeDeclaration(typeDeclaration),
   mVisibility(visibility)

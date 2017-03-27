@@ -4,11 +4,14 @@
 
 
 // Library includes
-#include <map>
-#include <set>
+#ifdef USE_ORDERED_COLLECTION
+#	include <map>
+#	include <set>
+#else
+#	include <unordered_map>
+#	include <unordered_set>
+#endif
 #include <string>
-//#include <unordered_map>
-//#include <unordered_set>
 
 // Project includes
 #include <Core/Common/PrototypeConstraint.h>
@@ -66,13 +69,15 @@ public:
 	Designtime::BluePrintGeneric* findBluePrint(const std::string& type) const;
 
 private:
+#ifdef USE_ORDERED_COLLECTION
 	typedef std::map<std::string, Designtime::BluePrintEnum*> BluePrintEnumMap;
 	typedef std::map<std::string, Designtime::BluePrintObject*> BluePrintObjectMap;
 	typedef std::set<Designtime::BluePrintGeneric*> ForwardDeclarationTomb;
-
-	//typedef std::unordered_map<std::string, Designtime::BluePrintEnum*> BluePrintEnumMap;
-	//typedef std::unordered_map<std::string, Designtime::BluePrintObject*> BluePrintObjectMap;
-	//typedef std::unordered_set<Designtime::BluePrintGeneric*> ForwardDeclarationTomb;
+#else
+	typedef std::unordered_map<std::string, Designtime::BluePrintEnum*> BluePrintEnumMap;
+	typedef std::unordered_map<std::string, Designtime::BluePrintObject*> BluePrintObjectMap;
+	typedef std::unordered_set<Designtime::BluePrintGeneric*> ForwardDeclarationTomb;
+#endif
 
 private:
 	Designtime::BluePrintObject* createBluePrintFromPrototype(Designtime::BluePrintObject* blueprint, PrototypeConstraints constraints);

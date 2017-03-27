@@ -1484,8 +1484,7 @@ MethodSymbol* TreeGenerator::resolveMethod(SymbolExpression* symbol, const Param
 	SymbolExpression* inner = symbol;
 	while ( true ) {
 		if ( inner->mSymbolExpression && inner->mSymbolExpression->mSurroundingScope ) {
-			// TODO: reactivate "onlyCurrentScope = true;"
-			//onlyCurrentScope = true;
+			onlyCurrentScope = true;
 
 			inner = inner->mSymbolExpression;
 			continue;

@@ -150,7 +150,7 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 	Designtime::Ancestors ancestors = blueprint->getInheritance();
 	for ( Designtime::Ancestors::const_iterator it = ancestors.begin(); it != ancestors.end(); ++it ) {
 		newBlue->addInheritance(Designtime::Ancestor(
-			TypeDeclaration(constraints.lookupType((*it).name()), constraints.extractConstraints((*it).constraints())),
+			Common::TypeDeclaration(constraints.lookupType((*it).name()), constraints.extractConstraints((*it).constraints())),
 			(*it).ancestorType(),
 			(*it).visibility()
 		));
@@ -289,9 +289,9 @@ Runtime::Object* Repository::createInstance(const std::string& type, const std::
 	if ( it == mBluePrintObjects.end() ) {
 		// workaround for complex member types whose imports have not yet been analysed
 		if ( initialize == InitilizationType::None ) {
-			Runtime::Object* object = new Runtime::UserObject(name, SYSTEM_LIBRARY,
-															  Designtime::Parser::buildRuntimeConstraintTypename(type, constraints), true);
-			Controller::Instance().memory()->newObject(object);
+			Runtime::Object* object = new Runtime::UserObject(name, SYSTEM_LIBRARY, Designtime::Parser::buildRuntimeConstraintTypename(type, constraints), true);
+
+			//Controller::Instance().memory()->newObject(object);
 			return object;
 		}
 
@@ -411,8 +411,8 @@ Runtime::Object* Repository::createReference(const std::string& type, const std:
 	if ( it == mBluePrintObjects.end() ) {
 		// workaround for complex member types whose imports have not yet been analysed
 		if ( initialize == InitilizationType::None ) {
-			Runtime::Object* object = new Runtime::UserObject(name, SYSTEM_LIBRARY,
-															  Designtime::Parser::buildRuntimeConstraintTypename(type, constraints), true);
+			Runtime::Object* object = new Runtime::UserObject(name, SYSTEM_LIBRARY, Designtime::Parser::buildRuntimeConstraintTypename(type, constraints), true);
+
 			Controller::Instance().memory()->newObject(object);
 			return object;
 		}
@@ -505,12 +505,12 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 					case Designtime::Ancestor::Type::Extends:
 					case Designtime::Ancestor::Type::Replicates: {
 						// undefine previous base (while using single inheritance none should exist yet)
-						object->undefine(IDENTIFIER_BASE, 0);
+						object->undefine(IDENTIFIER_BASE);
 
 						// create base object
 						Runtime::Object *ancestor = createReference(blueIt->second, name, ancestorIt->constraints(), InitilizationType::AllowAbstract);
 						ancestor->setParent(blueprint->getEnclosingScope());
-						ancestor->undefine(IDENTIFIER_THIS, 0);
+						ancestor->undefine(IDENTIFIER_THIS);
 						ancestor->define(IDENTIFIER_THIS, object);
 
 						// define new base

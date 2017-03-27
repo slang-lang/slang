@@ -165,7 +165,7 @@ Ancestors Parser::collectInheritance(TokenIterator& token)
 		PrototypeConstraints constraints = collectDesigntimePrototypeConstraints(token);
 
 		ancestors.insert(
-			Ancestor(TypeDeclaration(type, constraints), inheritance, visibility)
+			Ancestor(Common::TypeDeclaration(type, constraints), inheritance, visibility)
 		);
 	}
 
@@ -522,7 +522,7 @@ ParameterList Parser::parseParameters(TokenIterator &token, IScope* scope)
 			throw Common::Exceptions::SyntaxError("unexpected token '" + token->content() + "' found", token->position());
 		}
 
-		TypeDeclaration type = parseTypeDeclaration(token, scope);
+		Common::TypeDeclaration type = parseTypeDeclaration(token, scope);
 
 		std::string name = token->content();
 		token++;
@@ -565,7 +565,7 @@ ParameterList Parser::parseParameters(TokenIterator &token, IScope* scope)
 		}
 
 		params.push_back(
-			Parameter::CreateDesigntime(name, TypeDeclaration(type.mName, type.mConstraints), value, hasDefaultValue, mutability, accessMode)
+			Parameter::CreateDesigntime(name, Common::TypeDeclaration(type.mName, type.mConstraints), value, hasDefaultValue, mutability, accessMode)
 		);
 
 		if ( token->type() == Token::Type::PARENTHESIS_CLOSE ) {
@@ -576,9 +576,9 @@ ParameterList Parser::parseParameters(TokenIterator &token, IScope* scope)
 	return params;
 }
 
-TypeDeclaration Parser::parseTypeDeclaration(TokenIterator& token, IScope* scope)
+Common::TypeDeclaration Parser::parseTypeDeclaration(TokenIterator& token, IScope* scope)
 {
-	TypeDeclaration result;
+	Common::TypeDeclaration result;
 	result.mName = identify(token);
 
 	// determine if we are called at "design time" or "run time"
