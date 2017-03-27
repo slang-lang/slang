@@ -485,7 +485,10 @@ Runtime::ControlFlow::E TreeInterpreter::execute(Common::Method* method, const P
 		*result = mStack->current()->returnValue();
 	}
 
-	if ( mControlFlow == Runtime::ControlFlow::Normal ) {
+	if ( mControlFlow == Runtime::ControlFlow::Break ||
+		 mControlFlow == Runtime::ControlFlow::Continue ||
+		 mControlFlow == Runtime::ControlFlow::Normal ||
+		 mControlFlow == Runtime::ControlFlow::Return ) {
 		switch ( method->getMethodType() ) {
 			case MethodAttributes::MethodType::Constructor:
 				dynamic_cast<Runtime::Object*>(mOwner)->setConstructed(true);
@@ -497,7 +500,6 @@ Runtime::ControlFlow::E TreeInterpreter::execute(Common::Method* method, const P
 				break;
 		}
 	}
-
 
 	// deinitalize & pop scope
 	deinitialize();
