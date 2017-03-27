@@ -15,6 +15,7 @@
 
 
 namespace ObjectiveScript {
+namespace Common {
 
 
 class TypeDeclaration
@@ -39,6 +40,7 @@ public:
 };
 
 
+}
 }
 
 

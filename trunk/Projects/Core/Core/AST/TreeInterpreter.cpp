@@ -270,9 +270,9 @@ void TreeInterpreter::evaluateMethodExpression(MethodExpression* exp, Runtime::O
 		params.push_back(Parameter::CreateRuntime(param->QualifiedOuterface(), param->getValue(), param->getReference()));
 	}
 
-	MethodSymbol* methodSymbol = resolveMethod(getScope(), exp->mSymbolExpression, params, false, Visibility::Private);
+	MethodSymbol* methodSymbol = resolveMethod(getScope(), exp->mSymbolExpression, params, Visibility::Private);
 	if ( !methodSymbol ) {
-		methodSymbol = resolveMethod(getEnclosingMethodScope(), exp->mSymbolExpression, params, false, Visibility::Private);
+		methodSymbol = resolveMethod(getEnclosingMethodScope(), exp->mSymbolExpression, params, Visibility::Private);
 	}
 	if ( !methodSymbol ) {
 		throw Runtime::Exceptions::RuntimeException("method " + exp->mSymbolExpression->toString() + "(" + toString(params) + ") not found");
@@ -785,7 +785,7 @@ Symbol* TreeInterpreter::resolveRValue(IScope *scope, SymbolExpression *symbol, 
 	return scope->resolve(symbol->mName, onlyCurrentScope, visibility);
 }
 
-MethodSymbol* TreeInterpreter::resolveMethod(IScope* scope, SymbolExpression* symbol, const ParameterList& params, bool onlyCurrentScope, Visibility::E visibility) const
+MethodSymbol* TreeInterpreter::resolveMethod(IScope* scope, SymbolExpression* symbol, const ParameterList& params, Visibility::E visibility) const
 {
 	if ( !scope ) {
 		throw Runtime::Exceptions::InvalidSymbol("invalid scope provided");
@@ -794,8 +794,11 @@ MethodSymbol* TreeInterpreter::resolveMethod(IScope* scope, SymbolExpression* sy
 		throw Runtime::Exceptions::InvalidSymbol("invalid symbol provided");
 	}
 
+	bool onlyCurrentScope = false;
+
 	while ( symbol->mSymbolExpression ) {
 		Symbol* child = scope->resolve(symbol->mName, onlyCurrentScope, visibility);
+		onlyCurrentScope = true;
 
 		if ( !child ) {
 			return 0;
@@ -824,7 +827,7 @@ MethodSymbol* TreeInterpreter::resolveMethod(IScope* scope, SymbolExpression* sy
 		return 0;
 	}
 
-	return methodScope->resolveMethod(symbol->mName, params, onlyCurrentScope, visibility);
+	return methodScope->resolveMethod(symbol->mName, params, false, visibility);
 }
 
 void TreeInterpreter::visit(Node* node)

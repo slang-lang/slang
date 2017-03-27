@@ -114,7 +114,7 @@ private:
 	Runtime::Object& resolveLValue(IScope *scope, SymbolExpression *symbol, bool onlyCurrentScope, Visibility::E visibility) const;
 	Symbol* resolveRValue(IScope *scope, SymbolExpression *symbol, bool onlyCurrentScope, Visibility::E visibility) const;
 
-	MethodSymbol* resolveMethod(IScope* scope, SymbolExpression* symbol, const ParameterList& params, bool onlyCurrentScope, Visibility::E visibility) const;
+	MethodSymbol* resolveMethod(IScope* scope, SymbolExpression* symbol, const ParameterList& params, Visibility::E visibility) const;
 
 private:	// Initialization
 	void deinitialize();

@@ -30,7 +30,7 @@ class Parameter
 {
 public:
 	static Parameter CreateDesigntime(const std::string& name,
-									  const TypeDeclaration& type,
+									  const Common::TypeDeclaration& type,
 									  Runtime::AtomicValue value = Runtime::AtomicValue(),
 									  bool hasDefaultValue = false,
 									  Mutability::E mutability = Mutability::Modify,
@@ -42,7 +42,7 @@ public:
 public:
 	Parameter();
 	Parameter(const std::string& name,
-			  const TypeDeclaration& type,
+			  const Common::TypeDeclaration& type,
 			  Runtime::AtomicValue value,
 			  bool hasDefaultValue,
 			  Mutability::E mutability,
@@ -65,7 +65,7 @@ private:
 	Mutability::E mMutability;
 	std::string mName;
 	Runtime::Reference mReference;
-	TypeDeclaration mType;
+	Common::TypeDeclaration mType;
 	Runtime::AtomicValue mValue;
 };
 

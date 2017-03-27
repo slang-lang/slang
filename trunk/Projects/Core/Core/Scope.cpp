@@ -103,16 +103,12 @@ Symbol* SymbolScope::resolve(const std::string& name, bool onlyCurrentScope, Vis
 	return 0;
 }
 
-void SymbolScope::undefine(const std::string& name, bool onlyCurrentScope)
+void SymbolScope::undefine(const std::string& name)
 {
 	Symbols::iterator it = mSymbols.find(name);
 	if ( it != mSymbols.end() ) {
 		mSymbols.erase(it);
 		return;
-	}
-
-	if ( mParent && !onlyCurrentScope ) {
-		mParent->undefine(name, onlyCurrentScope);
 	}
 }
 
@@ -286,16 +282,12 @@ MethodSymbol* MethodScope::resolveMethod(const std::string& name, const Paramete
 	return 0;
 }
 
-void MethodScope::undefine(const std::string& name, bool onlyCurrentScope)
+void MethodScope::undefine(const std::string& name)
 {
 	Symbols::iterator it = mSymbols.find(name);
 	if ( it != mSymbols.end() ) {
 		mSymbols.erase(it);
 		return;
-	}
-
-	if ( mParent && !onlyCurrentScope ) {
-		mParent->undefine(name, onlyCurrentScope);
 	}
 }
 

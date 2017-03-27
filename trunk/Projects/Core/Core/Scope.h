@@ -54,7 +54,7 @@ public:	// IScope implementation
 	virtual const std::string& getScopeName() const;
 	virtual IScope::IType::E getScopeType() const;
 	virtual Symbol* resolve(const std::string& name, bool onlyCurrentScope = false, Visibility::E visibility = Visibility::Designtime) const;
-	virtual void undefine(const std::string& name, bool onlyCurrentScope = true);
+	virtual void undefine(const std::string& name);
 
 protected:
 	IScope *mParent;
@@ -97,7 +97,7 @@ public:	// IScope implementation
 	virtual const std::string& getScopeName() const;
 	virtual IScope::IType::E getScopeType() const;
 	virtual Symbol* resolve(const std::string& name, bool onlyCurrentScope = false, Visibility::E visibility = Visibility::Designtime) const;
-	virtual void undefine(const std::string& name, bool onlyCurrentScope = true);
+	virtual void undefine(const std::string& name);
 
 public: // MethodScope implementation
 	virtual void defineMethod(const std::string& name, Common::Method* method);
