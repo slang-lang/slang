@@ -66,28 +66,28 @@ public object Float {
 		mValue = mValue + other;
 	}
 	public void operator+(Float other ref) modify {
-		mValue = mValue + other;
+		mValue = mValue + float other;
 	}
 
 	public void operator-(float other) modify {
 		mValue = mValue - other;
 	}
 	public void operator-(Float other ref) modify {
-		mValue = mValue - other;
+		mValue = mValue - float other;
 	}
 
 	public void operator*(float other) modify {
 		mValue = mValue * other;
 	}
 	public void operator*(Float other ref) modify {
-		mValue = mValue * other;
+		mValue = mValue * float other;
 	}
 
 	public void operator/(float other) modify {
 		mValue = mValue / other;
 	}
 	public void operator/(Float other ref) modify {
-		mValue = mValue / other;
+		mValue = mValue / float other;
 	}
 }
 
