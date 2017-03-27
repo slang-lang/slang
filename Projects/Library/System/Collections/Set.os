@@ -65,7 +65,7 @@ public object Set extends AbstractCollection {
 			if ( !mAllowDuplicates ) {
 				if ( previous.mNext ) {
 					if ( item == previous.mNext ) {
-						throw Exception("duplicate item");
+						throw new Exception("duplicate item");
 					}
 				}
 			}
