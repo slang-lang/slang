@@ -6,6 +6,7 @@
 
 // Project includes
 #include <Core/Common/Exceptions.h>
+#include "Object.h"
 
 // Namespace declarations
 
@@ -14,19 +15,8 @@ namespace ObjectiveScript {
 namespace Tools {
 
 
-std::string getFirstSubString(const std::string& str)
-{
-	return str.substr(0, str.find_first_of('.'));
-}
-
-std::string getLastSubString(const std::string& str)
-{
-	return str.substr(str.find_last_of('.'), str.size());
-}
-
 void split(const std::string& str, std::string& p, std::string& c)
 {
-	p = "";
 	c = "";
 
 	unsigned long pos = str.find_first_of('.');
@@ -39,7 +29,6 @@ void split(const std::string& str, std::string& p, std::string& c)
 
 void splitBy(const std::string& str, char splitter, std::string& p, std::string& c)
 {
-	p = "";
 	c = "";
 
 	unsigned long pos = str.find_first_of(splitter);
@@ -137,27 +126,8 @@ void expect(Token::Type::E expected, TokenIterator found)
 	}
 }
 
-TokenIterator findNext(TokenIterator start, Token::Category::E category, Token::Type::E terminator)
-{
-	int count = 0;
-	TokenIterator tmp = start;
-
-	while ( tmp->category() != category ) {
-		if ( tmp->type() == terminator ) {
-			// we did not find a result before the defined end-token appeared
-			return start;
-		}
-
-		count++;
-		tmp++;
-	}
-
-	return tmp;
-}
-
 TokenIterator findNext(TokenIterator start, Token::Type::E type, Token::Type::E terminator)
 {
-	int count = 0;
 	TokenIterator tmp = start;
 
 	while ( tmp->type() != type ) {
@@ -166,8 +136,7 @@ TokenIterator findNext(TokenIterator start, Token::Type::E type, Token::Type::E 
 			return start;
 		}
 
-		count++;
-		tmp++;
+		++tmp;
 	}
 
 	return tmp;
@@ -181,10 +150,10 @@ TokenIterator findNextBalancedBracket(TokenIterator start, int generateErrorAfte
 
 	while ( start->type() != Token::Type::BRACKET_CLOSE || openBrackets ) {
 		if ( start->type() == Token::Type::BRACKET_OPEN ) {
-			openBrackets++;
+			++openBrackets;
 		}
 		if ( start->type() == Token::Type::BRACKET_CLOSE ) {
-			openBrackets--;
+			--openBrackets;
 		}
 
 		if ( start->type() == terminator ) {
@@ -195,8 +164,8 @@ TokenIterator findNextBalancedBracket(TokenIterator start, int generateErrorAfte
 			throw Common::Exceptions::SyntaxError("Closed bracket expected, but not found after " + Tools::toString(count) + " iteration(s)", start->position());
 		}
 
-		count++;
-		start++;
+		++count;
+		++start;
 	}
 
 	return start;
@@ -209,10 +178,10 @@ TokenIterator findNextBalancedCurlyBracket(TokenIterator start, TokenIterator en
 
 	while ( ((start != end) && start->type() != Token::Type::BRACKET_CURLY_CLOSE) || openCurlyBrackets ) {
 		if ( start->type() == Token::Type::BRACKET_CURLY_OPEN ) {
-			openCurlyBrackets++;
+			++openCurlyBrackets;
 		}
 		if ( start->type() == Token::Type::BRACKET_CURLY_CLOSE ) {
-			openCurlyBrackets--;
+			--openCurlyBrackets;
 		}
 
 		if ( openCurlyBrackets == 0 && start->type() == terminator ) {
@@ -223,8 +192,8 @@ TokenIterator findNextBalancedCurlyBracket(TokenIterator start, TokenIterator en
 			throw Common::Exceptions::SyntaxError("Closed curly bracket expected, but not found after " + Tools::toString(count) + " iteration(s)", start->position());
 		}
 
-		count++;
-		start++;
+		++count;
+		++start;
 	}
 
 	return start;
@@ -238,10 +207,10 @@ TokenIterator findNextBalancedParenthesis(TokenIterator start, int generateError
 
 	while ( start->type() != Token::Type::PARENTHESIS_CLOSE || openParenthesis ) {
 		if ( start->type() == Token::Type::PARENTHESIS_OPEN ) {
-			openParenthesis++;
+			++openParenthesis;
 		}
 		if ( start->type() == Token::Type::PARENTHESIS_CLOSE ) {
-			openParenthesis--;
+			--openParenthesis;
 		}
 
 		if ( start->type() == terminator ) {
@@ -252,8 +221,8 @@ TokenIterator findNextBalancedParenthesis(TokenIterator start, int generateError
 			throw Common::Exceptions::SyntaxError("closed parenthesis expected, but not found after " + Tools::toString(count) + " iteration(s)", start->position());
 		}
 
-		count++;
-		start++;
+		++count;
+		++start;
 	}
 
 	return start;

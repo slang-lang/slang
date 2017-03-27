@@ -12,7 +12,6 @@
 #include <Core/Common/Exceptions.h>
 #include <Core/Common/Method.h>
 #include <Core/Common/Namespace.h>
-#include <Core/Defines.h>
 #include <Core/Designtime/Parser/Parser.h>
 #include <Core/Designtime/Parser/Tokenizer.h>
 #include <Core/Tools.h>
