@@ -42,7 +42,7 @@ Runtime::AtomicValue BluePrintObject::getValue() const
 bool BluePrintObject::hasDefaultConstructor() const
 {
 	// return any (private, protected, public) constructor that has no parameters or only default parameters
-	return resolveMethod(CONSTRUCTOR, ParameterList(), true, Visibility::Designtime);
+	return resolveMethod(CONSTRUCTOR, ParameterList(), true, Visibility::Public);
 }
 
 MethodScope::MethodCollection BluePrintObject::provideMethods() const
