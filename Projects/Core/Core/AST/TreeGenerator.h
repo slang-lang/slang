@@ -111,7 +111,7 @@ private: // Execution
 	Mutability::E parseMutability(TokenIterator& token);
 	// }
 
-	SymbolExpression* resolve(TokenIterator& token, IScope* base) const;
+	SymbolExpression* resolve(TokenIterator& token, IScope* base, bool onlyCurrentScope = false) const;
 	MethodSymbol* resolveMethod(SymbolExpression* symbol, const ParameterList& params, Visibility::E visibility) const;
 	std::string resolveType(Node* left, const Token& operation, Node* right) const;
 

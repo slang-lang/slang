@@ -44,7 +44,8 @@ public:
 public:
 	explicit Expression(ExpressionType::E expressionType)
 	: Node(NodeType::Expression),
-	  mExpressionType(expressionType)
+	  mExpressionType(expressionType),
+	  mIsConst(false)
 	{ }
 	virtual ~Expression() { }
 
@@ -52,12 +53,20 @@ public:
 		return mExpressionType;
 	}
 
+	virtual bool isConst() const {
+		return mIsConst;
+	}
+	virtual bool isMember() const {
+		return mIsMember;
+	}
 	virtual std::string getResultType() const {
 		return mResultType;
 	}
 
 protected:
 	ExpressionType::E mExpressionType;
+	bool mIsConst;
+	bool mIsMember;
 	std::string mResultType;
 };
 
@@ -119,60 +128,6 @@ public:
 
 // Binary expressions
 ///////////////////////////////////////////////////////////////////////////////
-
-/*
-///////////////////////////////////////////////////////////////////////////////
-// Unary expressions
-
-class UnaryExpression : public Expression
-{
-public:
-	explicit UnaryExpression(const Token& operation, Node* exp)
-	: Expression(ExpressionType::UnaryExpression),
-	  mExpression(exp),
-	  mOperation(operation)
-	{
-		mResultType = static_cast<Expression*>(exp)->getResultType();
-	}
-	explicit UnaryExpression(const Token& operation, SymbolExpression* exp)
-	: Expression(ExpressionType::UnaryExpression),
-	  mExpression(exp),
-	  mOperation(operation)
-	{
-		mResultType = static_cast<Expression*>(exp)->getResultType();
-	}
-	virtual ~UnaryExpression() {
-		delete mExpression;
-	}
-
-public:
-	Node* mExpression;
-	Token mOperation;
-};
-
-
-class BooleanUnaryExpression : public Expression
-{
-public:
-	explicit BooleanUnaryExpression(const Token& operation, Node* exp)
-	: Expression(ExpressionType::UnaryExpression),
-	  mExpression(exp),
-	  mOperation(operation)
-	{
-		mResultType = _bool;
-	}
-	virtual ~BooleanUnaryExpression() {
-		delete mExpression;
-	}
-
-public:
-	Node* mExpression;
-	Token mOperation;
-};
-
-// Unary expressions
-///////////////////////////////////////////////////////////////////////////////
-*/
 
 ///////////////////////////////////////////////////////////////////////////////
 // Literal expressions
@@ -324,6 +279,10 @@ public:
 		delete mSymbolExpression;
 	}
 
+	bool isConst() const {
+		return mIsConst || (mSymbolExpression ? mSymbolExpression->isConst() : false);
+	}
+
 	std::string toString() const {
 		std::string result = mName;
 
@@ -358,9 +317,10 @@ protected:
 class DesigntimeSymbolExpression : public SymbolExpression
 {
 public:
-	explicit DesigntimeSymbolExpression(const std::string& name, const std::string& resultType)
+	explicit DesigntimeSymbolExpression(const std::string& name, const std::string& resultType, bool isConst)
 	: SymbolExpression(name, resultType)
 	{
+		mIsConst = isConst;
 		mSymbolExpressionType = SymbolExpressionType::DesigntimeSymbolExpression;
 	}
 
@@ -372,9 +332,11 @@ public:
 class RuntimeSymbolExpression : public SymbolExpression
 {
 public:
-	explicit RuntimeSymbolExpression(const std::string& name, const std::string& resultType)
+	explicit RuntimeSymbolExpression(const std::string& name, const std::string& resultType, bool isConst, bool isMember)
 	: SymbolExpression(name, resultType)
 	{
+		mIsConst = isConst;
+		mIsMember = isMember;
 		mSymbolExpressionType = SymbolExpressionType::RuntimeSymbolExpression;
 	}
 
@@ -431,11 +393,13 @@ public:
 class MethodExpression : public Expression
 {
 public:
-	explicit MethodExpression(SymbolExpression* symbol, const ExpressionList& params, const std::string& resultType)
+	explicit MethodExpression(SymbolExpression* symbol, const ExpressionList& params, const std::string& resultType, bool isConst, bool isMember)
 	: Expression(ExpressionType::MethodExpression),
 	  mParams(params),
 	  mSymbolExpression(symbol)
 	{
+		mIsConst = isConst;
+		mIsMember = isMember;
 		// due to the possibility of method overloading we cannot use the result type of our symbol expression
 		mResultType = resultType;
 	}
