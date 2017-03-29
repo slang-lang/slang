@@ -10,7 +10,7 @@ public void Main(int argc = 0, string args = "") modify {
 private bool TestCase1() modify {
 	print("TestCase 1: valid iteration");
 
-	System.StringIterator strIt = new System.StringIterator("This is a string", " ");
+	StringIterator strIt = new StringIterator("This is a string", " ");
 
 	int count;
 
@@ -27,7 +27,7 @@ private bool TestCase1() modify {
 private bool TestCase2() const {
 	print("TestCase 2: invalid iteration");
 
-	System.StringIterator strIt = new System.StringIterator("This is a string", " ");
+	StringIterator strIt = new StringIterator("This is a string", " ");
 
 	try {
 		int count;
