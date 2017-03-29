@@ -36,6 +36,10 @@ private:	// Tests
 	void testBase();
 	void testBreak();
 	void testContinue();
+	void testConstCorrectness1();
+	void testConstCorrectness2();
+	void testConstCorrectness3();
+	void testConstCorrectness4();
 	void testExit();
 	void testExpression();
 	void testFor();

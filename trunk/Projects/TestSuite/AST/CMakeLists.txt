@@ -15,6 +15,7 @@ SET(DEPENDENCIES
 )
 
 add_include(Projects/Core)
+add_include(Projects/Extensions)
 add_include(Projects/TestSuite)
 add_include(Projects/Utils)
 

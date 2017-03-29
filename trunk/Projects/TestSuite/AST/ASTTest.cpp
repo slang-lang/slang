@@ -15,8 +15,14 @@
 #include <Core/Runtime/Script.h>
 #include <Core/VirtualMachine/VirtualMachine.h>
 
+// Extension includes
+#ifdef USE_SYSTEM_EXTENSION
+#	include <System/SystemExtension.h>
+#endif
+
 // Namespace declarations
 using namespace ObjectiveScript;
+
 
 
 namespace Testing {
@@ -40,6 +46,10 @@ void ASTTest::process()
 	TEST(testBase);
 	TEST(testBreak);
 	TEST(testContinue);
+	TEST(testConstCorrectness1);
+	TEST(testConstCorrectness2);
+	TEST(testConstCorrectness3);
+	TEST(testConstCorrectness4);
 	TEST(testExit);
 	TEST(testExpression);
 	TEST(testFor);
@@ -139,6 +149,62 @@ void ASTTest::testContinue()
 	}
 }
 
+void ASTTest::testConstCorrectness1()
+{
+	try {
+		VirtualMachine vm;
+		TTHROWS(vm.createScriptFromFile("Tests/AST/ConstCorrectnessTest1.os"), Common::Exceptions::ConstCorrectnessViolated);
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void ASTTest::testConstCorrectness2()
+{
+	try {
+		VirtualMachine vm;
+		TTHROWS(vm.createScriptFromFile("Tests/AST/ConstCorrectnessTest2.os"), Common::Exceptions::ConstCorrectnessViolated);
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void ASTTest::testConstCorrectness3()
+{
+	try {
+		VirtualMachine vm;
+		TTHROWS(vm.createScriptFromFile("Tests/AST/ConstCorrectnessTest3.os"), Common::Exceptions::ConstCorrectnessViolated);
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void ASTTest::testConstCorrectness4()
+{
+	try {
+		VirtualMachine vm;
+		vm.createScriptFromFile("Tests/AST/ConstCorrectnessTest4.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
 void ASTTest::testExit()
 {
 TSKIP("skipping ExitTest.os");
@@ -185,10 +251,11 @@ void ASTTest::testFor()
 
 void ASTTest::testForeach()
 {
-TSKIP("foreach not yet supported");
-
 	try {
 		VirtualMachine vm;
+#ifdef USE_SYSTEM_EXTENSION
+		vm.addExtension(new ObjectiveScript::Extensions::System::SystemExtension());
+#endif
 		vm.createScriptFromFile("Tests/AST/ForeachTest.os");
 
 		// automatic success
