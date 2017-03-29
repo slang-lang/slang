@@ -137,7 +137,9 @@ Statements* TreeGenerator::generate(const TokenList &tokens, bool allowBreakAndC
  */
 Statements* TreeGenerator::generateAST(Common::Method *method)
 {
-	initialize(method);
+	Common::Method scope(*method);
+
+	initialize(&scope);
 
 	// generate AST
 	Statements* statements = generate(mMethod->getTokens());
@@ -257,7 +259,7 @@ void TreeGenerator::initialize(Common::Method* method)
 
 	// add 'this' and 'base' symbol to method
 	Designtime::BluePrintObject* owner = dynamic_cast<Designtime::BluePrintObject*>(scope->getEnclosingScope());
-	if ( owner ) {
+	if ( owner && !method->isStatic() ) {
 		Runtime::Object *object = mRepository->createInstance(owner->QualifiedTypename(), IDENTIFIER_THIS, PrototypeConstraints());
 		object->setConst(mMethod->isConst());
 
@@ -436,7 +438,7 @@ Mutability::E TreeGenerator::parseMutability(TokenIterator& token)
 
 SymbolExpression* TreeGenerator::parseSymbol(TokenIterator& token)
 {
-	SymbolExpression* exp = new RuntimeSymbolExpression(token->content(), "");
+	SymbolExpression* exp = new RuntimeSymbolExpression(token->content(), "", false, false);
 	++token;
 
 	while ( token->type() == Token::Type::SCOPE ) {
@@ -756,10 +758,19 @@ Node* TreeGenerator::process_identifier(TokenIterator& token, bool allowTypeCast
 	// method call
 	else if ( op->type() == Token::Type::PARENTHESIS_OPEN ) {
 		node = process_method(symbol, token);
+
+		if ( mMethod->isConst() && static_cast<Expression*>(node)->isMember() && !static_cast<Expression*>(node)->isConst() ) {
+			throw Common::Exceptions::ConstCorrectnessViolated("only calls to const methods are allowed in const method '" + mMethod->getFullScopeName() + "'", old->position());
+		}
 	}
 	// assignment
 	else if ( op->category() == Token::Category::Assignment ) {
 		Token assignment(Token::Category::Assignment, Token::Type::ASSIGN, "=", op->position());
+
+		if ( symbol->isConst() ) {
+			throw Common::Exceptions::ConstCorrectnessViolated("tried to modify const symbol '" + symbol->mName + "'", op->position());
+		}
+
 		Node* right = expression(++token);
 
 		if ( op->type() != Token::Type::ASSIGN ) {
@@ -780,18 +791,23 @@ Node* TreeGenerator::process_identifier(TokenIterator& token, bool allowTypeCast
 			right = new BinaryExpression(symbol, operation, right, resolveType(symbol, operation, right));
 		}
 
-		// TODO: prevent assignments to const symbols
-		// TODO: prevent assignments to members in const methods
-
 		node = new Assignment(symbol, (*op), right, resolveType(symbol, assignment, right));
 	}
 	// --
 	else if ( op->type() == Token::Type::OPERATOR_DECREMENT ) {
+		if ( symbol->isConst() ) {
+			throw Common::Exceptions::ConstCorrectnessViolated("tried to modify const symbol '" + symbol->mName + "'", op->position());
+		}
+
 		node = new UnaryExpression((*token), symbol, UnaryExpression::ValueType::LValue);
 		++token;
 	}
 	// ++
 	else if ( op->type() == Token::Type::OPERATOR_INCREMENT ) {
+		if ( symbol->isConst() ) {
+			throw Common::Exceptions::ConstCorrectnessViolated("tried to modify const symbol '" + symbol->mName + "'", op->position());
+		}
+
 		node = new UnaryExpression((*token), symbol, UnaryExpression::ValueType::LValue);
 		++token;
 	}
@@ -939,7 +955,7 @@ MethodExpression* TreeGenerator::process_method(SymbolExpression* symbol, TokenI
 	}
 */
 
-	return new MethodExpression(symbol, parameterList, method->QualifiedTypename());
+	return new MethodExpression(symbol, parameterList, method->QualifiedTypename(), method->isConst(), method->getEnclosingScope() == mMethod->getEnclosingScope());
 }
 
 /*
@@ -967,7 +983,7 @@ Expression* TreeGenerator::process_new(TokenIterator& token)
 			inner = inner->mSymbolExpression;
 		}
 		else {
-			inner->mSymbolExpression = new DesigntimeSymbolExpression("Constructor", "");
+			inner->mSymbolExpression = new DesigntimeSymbolExpression("Constructor", "", false);
 			inner->mSymbolExpression->mSurroundingScope = static_cast<Designtime::BluePrintObject*>(symbol);
 			break;
 		}
@@ -1400,14 +1416,14 @@ void TreeGenerator::pushTokens(const TokenList& tokens)
 	mStackFrame->pushTokens(tokens);
 }
 
-SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base) const
+SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, bool onlyCurrentScope) const
 {
 	if ( !base ) {
 		throw Common::Exceptions::Exception("invalid base scope");
 	}
 
 	// retrieve symbol for token from base scope
-	Symbol* result = base->resolve(token->content(), false, Visibility::Private);
+	Symbol* result = base->resolve(token->content(), onlyCurrentScope, Visibility::Private);
 	if ( !result ) {
 		throw Common::Exceptions::InvalidSymbol("invalid symbol '" + token->content() + "' found", token->position());
 	}
@@ -1430,7 +1446,7 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base) con
 				name = static_cast<Designtime::BluePrintEnum*>(result)->UnqualifiedTypename();
 			}
 
-			symbol = new DesigntimeSymbolExpression(name, type);
+			symbol = new DesigntimeSymbolExpression(name, type, static_cast<Designtime::BluePrintEnum*>(result)->isConst());
 			break;
 		case Symbol::IType::BluePrintObjectSymbol: {
 			type = static_cast<Designtime::BluePrintObject*>(result)->QualifiedTypename();
@@ -1441,32 +1457,32 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base) con
 
 			scope = static_cast<Designtime::BluePrintObject*>(mRepository->findBluePrint(type));
 
-			symbol = new DesigntimeSymbolExpression(name, type);
+			symbol = new DesigntimeSymbolExpression(name, type, static_cast<Designtime::BluePrintObject*>(result)->isConst());
 		} break;
 		case Symbol::IType::NamespaceSymbol:
 			scope = static_cast<Common::Namespace*>(result);
 			type = static_cast<Common::Namespace*>(result)->QualifiedTypename();
 
-			symbol = new DesigntimeSymbolExpression(name, type);
+			symbol = new DesigntimeSymbolExpression(name, type, static_cast<Common::Namespace*>(result)->isConst());
 			break;
 		case Symbol::IType::ObjectSymbol: {
 			// set scope according to result type
 			scope = static_cast<Runtime::Object*>(result)->isAtomicType() ? 0 : static_cast<Runtime::Object*>(result)->getBluePrint();
 			type = static_cast<Runtime::Object*>(result)->QualifiedTypename();
 
-			symbol = new RuntimeSymbolExpression(name, type);
+			symbol = new RuntimeSymbolExpression(name, type, static_cast<Runtime::Object*>(result)->isConst(), static_cast<Runtime::Object*>(result)->isMember());
 		} break;
 		case Symbol::IType::MethodSymbol:
 			scope = 0;
 			// don't set the result type yet because we first have to determine which method should get executed in case overloaded methods are present
 			// this will be done in a later step (during method resolution)
 
-			symbol = new RuntimeSymbolExpression(name, type);
+			symbol = new RuntimeSymbolExpression(name, type, false, false);
 			break;
 	}
 
 	if ( token->type() == Token::Type::SCOPE ) {
-		symbol->mSymbolExpression = resolve(++token, scope);
+		symbol->mSymbolExpression = resolve(++token, scope, true);
 	}
 	symbol->mSurroundingScope = base;
 
