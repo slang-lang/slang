@@ -5,11 +5,18 @@ public namespace System { }
 public object Boolean {
 	private bool mValue;
 
+	/*
+	 * Default constructor 
+	 */
 	public void Constructor(bool value = false) {
 		mValue = value;
 	}
-	public void Constructor(Boolean b ref) {
-		mValue = b.mValue;
+
+	/*
+	 * Copy constructor
+	 */
+	public void Constructor(Boolean value ref) {
+		mValue = bool value;
 	}
 
 /*

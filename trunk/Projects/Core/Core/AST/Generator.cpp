@@ -83,10 +83,11 @@ void Generator::processMethod(Common::Method* method)
 	if ( !method ) {
 		throw Common::Exceptions::Exception("invalid method symbol provided");
 	}
-	if ( method->isExtensionMethod() ) {
-		// extension methods have no implementation, so there's nothing to parse; adieu..
+	if ( method->isAbstract() || method->isExtensionMethod() ) {
+		// abstract or extension methods have no implementation, so there's nothing to parse; adieu..
 		return;
 	}
+
 
 	TreeGenerator tg;
 
