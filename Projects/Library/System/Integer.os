@@ -16,7 +16,7 @@ public object Integer {
 	 * Copy constructor
 	 */
 	public void Constructor(Integer i ref) {
-		mValue = i.mValue;
+		mValue = int i;
 	}
 
 	/*

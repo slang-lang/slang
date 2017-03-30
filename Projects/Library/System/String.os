@@ -19,7 +19,7 @@ public object String implements IIterateable {
 	 * Copy constructor
 	 */
 	public void Constructor(String s) {
-		mValue = s.mValue;
+		mValue = string s;
 	}
 
 	/*

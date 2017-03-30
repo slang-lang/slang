@@ -21,11 +21,13 @@ public namespace System { }
 		/*
 		 * Copy constructor
 		 */
+/*
 		public void Constructor(StringIterator si) {
 			mCurrentPosition = si.mCurrentPosition;
 			mSeparator = si.mSeparator;
 			mValue = new String(string si);
 		}
+*/
 
 		/*
 		 * hasNext returns true if the iteration did not reach the end of the held String value

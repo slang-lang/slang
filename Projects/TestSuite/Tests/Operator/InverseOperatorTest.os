@@ -19,7 +19,7 @@ private object TestObject {
 	}
 	public bool operator==(TestObject other) const {
 		print("operator==(TestObject)");
-		return mValue == other.mValue;
+		return mValue == int other;
 	}
 
 	public void operator=(int other) modify {

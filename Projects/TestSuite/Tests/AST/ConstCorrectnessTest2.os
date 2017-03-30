@@ -4,7 +4,7 @@ private object TestObject {
 	public int mValue;
 
 	public void setValue(int value) const {
-		this.mValue = value;
+		mValue = value;
 	}
 }
 
