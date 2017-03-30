@@ -104,6 +104,14 @@ void Repository::addBluePrint(Designtime::BluePrintObject* blueprint)
 	mBluePrintObjects.insert(std::make_pair(blueprint->QualifiedTypename(), blueprint));
 
 	if ( !blueprint->isAtomicType() ) {
+		Designtime::Ancestors ancestors = blueprint->getAncestors();
+		for ( Designtime::Ancestors::const_iterator it = ancestors.begin(); it != ancestors.end(); ++it ) {
+			Designtime::BluePrintGeneric* base = findBluePrint(it->name());
+			if ( base ) {
+				blueprint->define(IDENTIFIER_BASE, base);
+			}
+		}
+
 		initTypeSystem(blueprint);
 	}
 }
@@ -289,10 +297,7 @@ Runtime::Object* Repository::createInstance(const std::string& type, const std::
 	if ( it == mBluePrintObjects.end() ) {
 		// workaround for complex member types whose imports have not yet been analysed
 		if ( initialize == InitilizationType::None ) {
-			Runtime::Object* object = new Runtime::UserObject(name, SYSTEM_LIBRARY, Designtime::Parser::buildRuntimeConstraintTypename(type, constraints), true);
-
-			//Controller::Instance().memory()->newObject(object);
-			return object;
+			return new Runtime::UserObject(name, SYSTEM_LIBRARY, Designtime::Parser::buildRuntimeConstraintTypename(type, constraints), true);
 		}
 
 		throw Common::Exceptions::Exception("cannot not create instance of unknown type '" + type + "'");
@@ -409,14 +414,6 @@ Runtime::Object* Repository::createReference(const std::string& type, const std:
 {
 	BluePrintObjectMap::iterator it = mBluePrintObjects.find(type);
 	if ( it == mBluePrintObjects.end() ) {
-		// workaround for complex member types whose imports have not yet been analysed
-		if ( initialize == InitilizationType::None ) {
-			Runtime::Object* object = new Runtime::UserObject(name, SYSTEM_LIBRARY, Designtime::Parser::buildRuntimeConstraintTypename(type, constraints), true);
-
-			Controller::Instance().memory()->newObject(object);
-			return object;
-		}
-
 		throw Common::Exceptions::Exception("cannot not create reference of unknown type '" + type + "'");
 	}
 
@@ -428,39 +425,7 @@ Runtime::Object* Repository::createReference(const std::string& type, const std:
  */
 Runtime::Object* Repository::createReference(Designtime::BluePrintGeneric* blueprint, const std::string& name, PrototypeConstraints constraints, InitilizationType::E initialize)
 {
-	if ( !blueprint ) {
-		throw Common::Exceptions::Exception("invalid blueprint provided!");
-	}
-
-	if ( blueprint->getSymbolType() == Symbol::IType::BluePrintEnumSymbol ) {
-		// replace enum blueprint with an integer blueprint
-		blueprint = findBluePrint(Runtime::IntegerObject::TYPENAME);
-	}
-
-	if ( constraints != blueprint->getPrototypeConstraints() ) {
-		if ( constraints.size() < blueprint->getPrototypeConstraints().size() ) {
-			constraints = blueprint->getPrototypeConstraints().buildRawConstraints(constraints);
-		}
-		else {
-			throw Common::Exceptions::TypeMismatch("'" + blueprint->QualifiedTypename() + "' prototype constraint mismatch");
-		}
-	}
-
-	std::string constraintType = Designtime::Parser::buildRuntimeConstraintTypename(blueprint->QualifiedTypename(), constraints);
-
-	if ( blueprint->QualifiedTypename() != constraintType ) {
-		// we have to handle a prototyped blueprint
-		BluePrintObjectMap::iterator it = mBluePrintObjects.find(constraintType);
-		if ( it == mBluePrintObjects.end() ) {
-			// a not yet used prototype has been requested => construct the new type
-			blueprint = createBluePrintFromPrototype(static_cast<Designtime::BluePrintObject*>(blueprint), constraints);
-		}
-		else {
-			blueprint = it->second;
-		}
-	}
-
-	Runtime::Object* object = createObject(name, static_cast<Designtime::BluePrintObject*>(blueprint), initialize);
+	Runtime::Object* object = createInstance(blueprint, name, constraints, initialize);
 
 	if ( initialize == InitilizationType::Final ) {
 		if ( object->isAbstract() ) {
@@ -520,11 +485,6 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 						object->addInheritance((*ancestorIt), ancestor);
 					} break;
 					case Designtime::Ancestor::Type::Implements: {
-						// create base object
-						//Runtime::Object *ancestor = createUserObject(name, blueIt->second, initialize);
-						// define ancestor to prevent memleaks
-						//object->define(blueIt->second->QualifiedTypename(), ancestor);
-
 						Runtime::Object *ancestor = createReference(blueIt->second, name, ancestorIt->constraints(), InitilizationType::None);
 						ancestor->setParent(blueprint->getEnclosingScope());
 
@@ -668,6 +628,10 @@ void Repository::initializeObject(Runtime::Object* object, Designtime::BluePrint
 	Symbols symbols = blueprint->provideSymbols();
 	for ( Symbols::const_iterator it = symbols.begin(); it != symbols.end(); ++it ) {
 		if ( it->second->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
+			continue;
+		}
+		if ( it->first == IDENTIFIER_BASE || it->first == IDENTIFIER_THIS ) {
+			// skip "base" && "this" symbols
 			continue;
 		}
 
