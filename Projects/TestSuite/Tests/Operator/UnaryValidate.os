@@ -3,7 +3,7 @@
 private object TestObject {
 	public int getValue() const {
 		assert(false);
-		return "bla";
+		return 0;
 	}
 
 	public string =operator(string value) const {
@@ -31,7 +31,7 @@ private bool TestCase2() const {
 
 	try {
 		TestObject obj;
-		obj!.getValue();
+		obj.getValue();
 
 		assert(!"obj validation failed!");
 	}
@@ -50,7 +50,7 @@ private bool TestCase3() const {
 		int value;
 		print("value = " + value);
 
-		value!;
+		//value!;
 
 		assert(!"int validation failed!");
 	}
