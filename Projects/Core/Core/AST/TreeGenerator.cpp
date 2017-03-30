@@ -956,6 +956,11 @@ MethodExpression* TreeGenerator::process_method(SymbolExpression* symbol, TokenI
 		throw Common::Exceptions::ConstCorrectnessViolated("usage of non-const symbol not allowed from within const symbol '" + symbol->toString() + "'", start.position());
 	}
 
+	// prevent calls to non-static methods from static methods
+	if ( mMethod->isStatic() && !method->isStatic() ) {
+		throw Runtime::Exceptions::StaticException("non-static method \"" + method->ToString() + "\" called from static method \"" + mMethod->ToString() + "\"", start.position());
+	}
+
 	return new MethodExpression(symbol, parameterList, method->QualifiedTypename(), method->isConst(), method->getEnclosingScope() == mMethod->getEnclosingScope());
 }
 
