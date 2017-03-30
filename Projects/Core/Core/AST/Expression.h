@@ -212,7 +212,9 @@ public:
 	explicit CopyExpression(Node* exp)
 	: Expression(ExpressionType::CopyExpression),
 	  mExpression(exp)
-	{ }
+	{
+		mResultType = static_cast<Expression*>(exp)->getResultType();
+	}
 	~CopyExpression() {
 		delete mExpression;
 	}
@@ -398,7 +400,7 @@ public:
 	  mParams(params),
 	  mSymbolExpression(symbol)
 	{
-		mIsConst = isConst;
+		mIsConst = isConst || symbol->isConst();
 		mIsMember = isMember;
 		// due to the possibility of method overloading we cannot use the result type of our symbol expression
 		mResultType = resultType;
