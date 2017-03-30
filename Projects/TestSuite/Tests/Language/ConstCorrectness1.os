@@ -40,9 +40,9 @@ private void ModifyByValueParameter(int value val) modify {
 	value = 1;		// valid, but argh...
 }
 
-private void ModifyConstParameter(int value const) modify {
+private void ModifyConstParameter(int constValue const) modify {
 	mNumber = 2;		// valid
-	value = 2;		// invalid, throws a ConstCorrectnessViolated exception
+	constValue = 2;		// invalid, throws a ConstCorrectnessViolated exception
 	
 	assert( false );
 }
