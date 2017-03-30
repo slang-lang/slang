@@ -8,10 +8,10 @@ private object TestObject {
 	}
 
 	public int getValue() const {
-		return this.mValue;
+		return mValue;
 	}
 	public void setValue(int value) modify {
-		this.mValue = value;
+		mValue = value;
 	}
 }
 

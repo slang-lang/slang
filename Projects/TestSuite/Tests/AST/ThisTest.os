@@ -8,7 +8,7 @@ private object TestObject {
 	}
 
 	public string =operator(string none) const {
-		return string this.mValue;
+		return string mValue;
 	}
 
 	public int getValue() const {
