@@ -279,6 +279,7 @@ void TreeGenerator::initialize(Common::Method* method)
 	// add parameters as locale variables
 	for ( ParameterList::const_iterator it = mMethod->provideSignature().begin(); it != mMethod->provideSignature().end(); ++it ) {
 		Runtime::Object *object = mRepository->createInstance(it->type(), it->name(), PrototypeConstraints());
+		object->setMutability(it->mutability());
 
 		scope->define(it->name(), object);
 	}
@@ -407,7 +408,7 @@ Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 		} break;
 		case Token::Type::OPERATOR_IS: {
 			++start;
-			SymbolExpression* symbol = resolve(start, getScope());
+			SymbolExpression* symbol = resolveWithThis(start, getScope());
 
 			infixPostfix = new IsExpression(infixPostfix, symbol->getResultType());
 		} break;
@@ -740,7 +741,7 @@ Node* TreeGenerator::process_identifier(TokenIterator& token, bool allowTypeCast
 	Node* node = 0;
 
 	TokenIterator old = token;
-	SymbolExpression* symbol = resolve(token, getScope());
+	SymbolExpression* symbol = resolveWithThis(token, getScope());
 	TokenIterator op = token;
 
 	// type cast (followed by identifier or 'copy' || 'new' keyword)
@@ -758,18 +759,14 @@ Node* TreeGenerator::process_identifier(TokenIterator& token, bool allowTypeCast
 	// method call
 	else if ( op->type() == Token::Type::PARENTHESIS_OPEN ) {
 		node = process_method(symbol, token);
-
-		if ( mMethod->isConst() && static_cast<Expression*>(node)->isMember() && !static_cast<Expression*>(node)->isConst() ) {
-			throw Common::Exceptions::ConstCorrectnessViolated("only calls to const methods are allowed in const method '" + mMethod->getFullScopeName() + "'", old->position());
-		}
 	}
 	// assignment
 	else if ( op->category() == Token::Category::Assignment ) {
-		Token assignment(Token::Category::Assignment, Token::Type::ASSIGN, "=", op->position());
-
 		if ( symbol->isConst() ) {
 			throw Common::Exceptions::ConstCorrectnessViolated("tried to modify const symbol '" + symbol->mName + "'", op->position());
 		}
+
+		Token assignment(Token::Category::Assignment, Token::Type::ASSIGN, "=", op->position());
 
 		Node* right = expression(++token);
 
@@ -910,6 +907,8 @@ Node* TreeGenerator::process_keyword(TokenIterator& token)
  */
 MethodExpression* TreeGenerator::process_method(SymbolExpression* symbol, TokenIterator& token)
 {
+	Token start = (*token);
+
 	TokenIterator tmp = token;
 
 	TokenIterator opened = findNext(tmp, Token::Type::PARENTHESIS_OPEN);
@@ -947,13 +946,15 @@ MethodExpression* TreeGenerator::process_method(SymbolExpression* symbol, TokenI
 		throw Common::Exceptions::UnknownIdentifer("method '" + symbol->toString() + "(" + toString(params) + ")' not found", token->position());
 	}
 
-/*
-	// TODO: prevent calls to non-const methods if current method is const
-	if ( mMethod->isConst() && !method->isConst() ) {
-		// this is a const method and we want to call a non-const method... neeeeey!
-		throw Common::Exceptions::ConstCorrectnessViolated("only calls to const methods are allowed in const method '" + mMethod->getFullScopeName() + "'", token->position());
+	// prevent calls to non-const methods from const methods
+	if ( mMethod->isConst() && method->getEnclosingScope() == mMethod->getEnclosingScope() && !method->isConst() ) {
+		throw Common::Exceptions::ConstCorrectnessViolated("only calls to const methods are allowed in const method '" + mMethod->getFullScopeName() + "'", start.position());
 	}
-*/
+
+	// prevent calls to non-const method from const symbol
+	if ( symbol->isConst() && !method->isConst() ) {
+		throw Common::Exceptions::ConstCorrectnessViolated("usage of non-const symbol not allowed from within const symbol '" + symbol->toString() + "'", start.position());
+	}
 
 	return new MethodExpression(symbol, parameterList, method->QualifiedTypename(), method->isConst(), method->getEnclosingScope() == mMethod->getEnclosingScope());
 }
@@ -975,7 +976,7 @@ Expression* TreeGenerator::process_new(TokenIterator& token)
 		throw Common::Exceptions::InvalidSymbol("invalid symbol type found", token->position());
 	}
 
-	SymbolExpression* exp = resolve(token, getScope());
+	SymbolExpression* exp = resolveWithExceptions(token, getScope());
 
 	SymbolExpression* inner = exp;
 	while ( true ) {
@@ -1300,7 +1301,7 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 {
 	Token start = (*token);
 
-	SymbolExpression* symbolExp = resolve(token, getScope());
+	SymbolExpression* symbolExp = resolveWithExceptions(token, getScope());
 	if ( !symbolExp ) {
 		throw Common::Exceptions::InvalidSymbol("invalid symbol '" + token->content() + "'", token->position());
 	}
@@ -1423,9 +1424,9 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 	}
 
 	// retrieve symbol for token from base scope
-	Symbol* result = base->resolve(token->content(), onlyCurrentScope, Visibility::Private);
+	Symbol* result = base->resolve(token->content(), onlyCurrentScope, onlyCurrentScope ? Visibility::Public : Visibility::Private);
 	if ( !result ) {
-		throw Common::Exceptions::InvalidSymbol("invalid symbol '" + token->content() + "' found", token->position());
+		return 0;
 	}
 
 	++token;
@@ -1483,10 +1484,62 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 
 	if ( token->type() == Token::Type::SCOPE ) {
 		symbol->mSymbolExpression = resolve(++token, scope, true);
+
+		if ( !symbol->mSymbolExpression ) {
+			// because exceptions are not allowed here we have to return 0 (without leaving memleaks)
+			delete symbol;
+
+			return 0;
+		}
 	}
 	symbol->mSurroundingScope = base;
 
 	return symbol;
+}
+
+SymbolExpression* TreeGenerator::resolveWithExceptions(TokenIterator& token, IScope* base, bool onlyCurrentScope) const
+{
+	SymbolExpression* exp = resolve(token, base, onlyCurrentScope);
+	if ( !exp ) {
+		throw Common::Exceptions::InvalidSymbol("invalid symbol '" + token->content() + "' found", token->position());
+	}
+
+	return exp;
+}
+
+SymbolExpression* TreeGenerator::resolveWithThis(TokenIterator& token, IScope* base, bool onlyCurrentScope) const
+{
+	IScope* outer = mMethod->getEnclosingScope();
+
+	auto blueprint = dynamic_cast<Designtime::BluePrintObject*>(outer);
+	if ( blueprint ) {
+		// resolve symbol (without exceptions so that we can try to resolve a second time) by using "this" identifier
+		SymbolExpression* exp = resolve(token, blueprint, true);
+		if ( exp ) {
+			// insert "this" symbol as "parent" of our recently resolved symbol
+			SymbolExpression* symbol = new RuntimeSymbolExpression(IDENTIFIER_THIS, blueprint->QualifiedTypename(), mMethod->isConst(), false);
+			symbol->mSymbolExpression = exp;
+
+			return symbol;
+		}
+
+/*		// resolve symbol (without exceptions so that we can try to resolve a second time) by using "base" identifier
+		auto ancestors = blueprint->getAncestors();
+		for ( auto it = ancestors.begin(); it != ancestors.end(); ++it ) {
+			// resolve without exceptions so that we can try to resolve a second time
+			SymbolExpression* exp = resolve(token, (*it)->, true);
+			if ( exp ) {
+				// insert "this" symbol as "parent" of our recently resolved symbol
+				SymbolExpression* symbol = new RuntimeSymbolExpression(IDENTIFIER_BASE, blueprint->QualifiedTypename(), mMethod->isConst(), false);
+				symbol->mSymbolExpression = exp;
+
+				return symbol;
+			}
+		}
+*/
+	}
+
+	return resolveWithExceptions(token, base, onlyCurrentScope);
 }
 
 MethodSymbol* TreeGenerator::resolveMethod(SymbolExpression* symbol, const ParameterList& params, Visibility::E visibility) const
