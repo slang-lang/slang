@@ -5,11 +5,18 @@ public namespace System { }
 public object Double {
 	private double mValue;
 
+	/*
+	 * Default constructor
+	 */
 	public void Constructor(double value = 0d) {
 		mValue = value;
 	}
-	public void Constructor(Double d ref) {
-		mValue = d.mValue;
+
+	/*
+	 * Copy constructor
+	 */
+	public void Constructor(Double value ref) {
+		mValue = double value;
 	}
 
 /*
