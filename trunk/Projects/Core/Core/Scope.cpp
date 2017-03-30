@@ -8,6 +8,9 @@
 // Project includes
 #include <Core/Common/Exceptions.h>
 #include <Core/Common/Method.h>
+#include <Core/Common/Namespace.h>
+#include <Core/Designtime/BluePrintEnum.h>
+#include <Core/Designtime/BluePrintObject.h>
 #include <Core/VirtualMachine/Controller.h>
 #include "Tools.h"
 
@@ -150,12 +153,12 @@ MethodScope::MethodCollection::const_iterator MethodScope::beginMethods() const
 void MethodScope::define(const std::string& name, Symbol* symbol)
 {
 	if ( !symbol ) {
-		throw Common::Exceptions::Exception("invalid symbol pointer provided");
+		throw Common::Exceptions::Exception("invalid symbol pointer provided: " + name);
 	}
 
 	if ( mSymbols.find(name) != mSymbols.end() ) {
 		// duplicate symbol defined
-		throw Common::Exceptions::DuplicateIdentifier("duplicate identifier defined: " + symbol->getName());
+		throw Common::Exceptions::DuplicateIdentifier("duplicate identifier defined: " + name);
 	}
 
 	mSymbols.insert(std::make_pair(name, symbol));
@@ -189,7 +192,7 @@ void MethodScope::deinit()
 	for ( Symbols::iterator symIt = tmpSymbols.begin(); symIt != tmpSymbols.end(); ++symIt ) {
 		mSymbols.erase(symIt->first);
 
-		if ( /*symIt->first == "base" ||*/ symIt->first == "this" ) {
+		if ( symIt->first == "base" || symIt->first == "this" ) {
 			continue;
 		}
 
@@ -252,6 +255,25 @@ Symbol* MethodScope::resolve(const std::string& name, bool onlyCurrentScope, Vis
 		if ( method->getVisibility() >= visibility ) {
 			if ( method->getName() == name ) {
 				return method;
+			}
+		}
+	}
+
+	if ( visibility != Visibility::Designtime ) {
+		Symbol* base = resolve(IDENTIFIER_BASE, true, Visibility::Designtime);
+		if ( base ) {
+			Symbol* result = 0;
+
+			switch ( base->getSymbolType() ) {
+				case Symbol::IType::BluePrintEnumSymbol: result = static_cast<Designtime::BluePrintEnum*>(base)->resolve(name, false, visibility); break;
+				case Symbol::IType::BluePrintObjectSymbol: result = static_cast<Designtime::BluePrintObject*>(base)->resolve(name, false, visibility); break;
+				case Symbol::IType::NamespaceSymbol: result = static_cast<Common::Namespace*>(base)->resolve(name, false, visibility); break;
+				case Symbol::IType::ObjectSymbol: result = static_cast<Runtime::Object*>(base)->resolve(name, false, visibility); break;
+				default: throw Common::Exceptions::Exception("invalid scope type");
+			}
+
+			if ( result ) {
+				return result;
 			}
 		}
 	}
