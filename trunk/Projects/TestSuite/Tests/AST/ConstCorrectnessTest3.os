@@ -14,7 +14,7 @@ private object TestObject {
 		return mValue;
 	}
 	public void setValue(int value) modify {
-		this.mValue = value;
+		mValue = value;
 	}
 }
 
