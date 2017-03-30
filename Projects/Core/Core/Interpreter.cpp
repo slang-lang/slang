@@ -1275,10 +1275,6 @@ void Interpreter::process_identifier(TokenIterator& token, Object* /*result*/)
 				throw Common::Exceptions::ConstCorrectnessViolated("tried to modify const symbol '" + object->getName() + "'", token->position());
 			}
 
-			//if ( object->isMember() && dynamic_cast<Common::Method*>(mOwner)->isConst() ) {	// we tried to modify a member in a const method
-			//	throw Common::Exceptions::ConstCorrectnessViolated("tried to modify member '" + object->getName() + "' in const method '" + getScope()->getScopeName() + "'", token->position());
-			//}
-
 			++token;
 
 			if ( token->category() == Token::Category::Assignment ) {
