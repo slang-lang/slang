@@ -12,7 +12,7 @@ private object TestObject {
 	}
 
 	public int getValue() const {
-		return mValue++;
+		return (mValue)++;
 	}
 }
 
