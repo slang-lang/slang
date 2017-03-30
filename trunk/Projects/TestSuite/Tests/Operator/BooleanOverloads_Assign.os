@@ -13,7 +13,7 @@ private object UserObject {
 		return mValue;
 	}
 
-	public void setValue(int value const) {
+	public void setValue(int value const) modify {
 		print("setValue(" + value + ")");
 		mValue = value;
 	}
