@@ -65,6 +65,7 @@ void ASTTest::process()
 	TEST(testThis);
 	TEST(testThrow);
 	TEST(testTry);
+	TEST(testTypecast);
 	TEST(testTypeDeclaration);
 	TEST(testTypeSystem);
 	TEST(testUnaryExpression);
@@ -387,6 +388,20 @@ void ASTTest::testTry()
 	try {
 		VirtualMachine vm;
 		vm.createScriptFromFile("Tests/AST/TryTest.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void ASTTest::testTypecast()
+{
+	try {
+		VirtualMachine vm;
+		vm.createScriptFromFile("Tests/AST/TypecastTest.os");
 
 		// automatic success
 	}

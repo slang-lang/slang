@@ -73,6 +73,24 @@ void TreeGenerator::collectScopeTokens(TokenIterator& token, TokenList& tokens)
 
 void TreeGenerator::deinitialize()
 {
+	IScope* scope = getScope();
+
+	// remove 'this' and 'base' symbols
+	Designtime::BluePrintObject* owner = dynamic_cast<Designtime::BluePrintObject*>(scope->getEnclosingScope());
+	if ( owner && !mMethod->isStatic() ) {
+		Symbol* baseSymbol = scope->resolve(IDENTIFIER_BASE, true);
+		if ( baseSymbol ) {
+			scope->undefine(IDENTIFIER_BASE);
+			delete baseSymbol;
+		}
+
+		Symbol* thisSymbol = scope->resolve(IDENTIFIER_THIS, true);
+		if ( thisSymbol ) {
+			scope->undefine(IDENTIFIER_THIS);
+			delete thisSymbol;
+		}
+	}
+
 	// pop tokens;
 	mStackFrame->popTokens();
 	// pop scope
@@ -109,7 +127,8 @@ Node* TreeGenerator::expression(TokenIterator& start)
 			return expression;
 		}
 
-		expression = new BooleanBinaryExpression(expression, (*start), parseCondition(++start));
+		Token operation = (*start);
+		expression = new BooleanBinaryExpression(expression, operation, parseCondition(++start));
 	}
 }
 
@@ -318,7 +337,8 @@ Node* TreeGenerator::parseCondition(TokenIterator& start)
 			 return condition;
 		}
 
-		condition = new BooleanBinaryExpression(condition, (*start), parseExpression(++start));
+		Token operation = (*start);
+		condition = new BooleanBinaryExpression(condition, operation, parseExpression(++start));
 	}
 }
 
@@ -336,11 +356,11 @@ Node* TreeGenerator::parseExpression(TokenIterator& start)
 			return expression;
 		}
 
-		Token token = (*start);
+		Token operation = (*start);
 		Node* right = parseFactors(++start);
-		std::string type = resolveType(expression, token, right);
+		std::string type = resolveType(expression, operation, right);
 
-		expression = new BinaryExpression(expression, token, right, type);
+		expression = new BinaryExpression(expression, operation, right, type);
 	}
 }
 
@@ -356,11 +376,11 @@ Node* TreeGenerator::parseFactors(TokenIterator& start)
 			return factor;
 		}
 
-		Token token = (*start);
+		Token operation = (*start);
 		Node* right = parseInfixPostfix(++start);
-		std::string type = resolveType(factor, token, right);
+		std::string type = resolveType(factor, operation, right);
 
-		factor = new BinaryExpression(factor, token, right, type);
+		factor = new BinaryExpression(factor, operation, right, type);
 	}
 }
 
@@ -373,16 +393,19 @@ Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 	// infix
 	switch ( op ) {
 		case Token::Type::MATH_ADDITION:
-		case Token::Type::MATH_SUBTRACT:
-			infixPostfix = new UnaryExpression((*start), parseTerm(++start));
-			break;
+		case Token::Type::MATH_SUBTRACT: {
+			Token operation = (*start);
+			infixPostfix = new UnaryExpression(operation, parseTerm(++start));
+		} break;
 		case Token::Type::OPERATOR_DECREMENT:
-		case Token::Type::OPERATOR_INCREMENT:
-			infixPostfix = new UnaryExpression((*start), parseTerm(++start), UnaryExpression::ValueType::LValue);
-			break;
-		case Token::Type::OPERATOR_NOT:
-			infixPostfix = new BooleanUnaryExpression((*start), parseTerm(++start));
-			break;
+		case Token::Type::OPERATOR_INCREMENT: {
+			Token operation = (*start);
+			infixPostfix = new UnaryExpression(operation, parseTerm(++start), UnaryExpression::ValueType::LValue);
+		} break;
+		case Token::Type::OPERATOR_NOT: {
+			Token operation = (*start);
+			infixPostfix = new BooleanUnaryExpression(operation, parseTerm(++start));
+		} break;
 		default:
 			infixPostfix = parseTerm(start);
 			break;
@@ -746,12 +769,20 @@ Node* TreeGenerator::process_identifier(TokenIterator& token, bool allowTypeCast
 
 	// type cast (followed by identifier or 'copy' || 'new' keyword)
 	if ( allowTypeCast && (op->category() == Token::Category::Constant || op->type() == Token::Type::IDENTIFIER || op->type() == Token::Type::KEYWORD) ) {
-		node = new TypecastExpression(old->content(), expression(++old));
+		node = new TypecastExpression(symbol->getResultType(), expression(++old));
+
+		// delete resolved symbol expression as it is not needed any more
+		delete symbol;
+		symbol = 0;
 
 		token = old;
 	}
 	// type declaration
 	else if ( !allowTypeCast && op->type() == Token::Type::IDENTIFIER ) {
+		// delete resolved symbol expression as it is not needed any more
+		delete symbol;
+		symbol = 0;
+
 		node = process_type(old, Initialization::Allowed);
 
 		token = old;
@@ -1312,6 +1343,9 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 	}
 
 	std::string type = symbolExp->getResultType();
+
+	// delete resolved symbol expression as it is not needed any more
+	delete symbolExp;
 
 	PrototypeConstraints constraints = Designtime::Parser::collectRuntimePrototypeConstraints(token);
 

@@ -120,7 +120,7 @@ class BooleanBinaryExpression : public BinaryExpression
 {
 public:
 	explicit BooleanBinaryExpression(Node* left, const Token& operation, Node* right)
-	: BinaryExpression(left, operation, right, "bool")
+	: BinaryExpression(left, operation, right, _bool)
 	{
 		mBinaryExpressionType = BinaryExpressionType::BooleanBinaryExpression;
 	}
@@ -257,6 +257,9 @@ public:
 	  mMatchType(matchType)
 	{
 		mResultType = _bool;
+	}
+	~IsExpression() {
+		delete mExpression;
 	}
 
 public:

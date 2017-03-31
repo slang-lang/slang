@@ -53,6 +53,7 @@ private:	// Tests
 	void testThis();
 	void testThrow();
 	void testTry();
+	void testTypecast();
 	void testTypeDeclaration();
 	void testTypeSystem();
 	void testUnaryExpression();
