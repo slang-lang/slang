@@ -1507,7 +1507,7 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 
 	// static method check
 	if ( owner && owner->isStatic() && !method->isStatic() ) {
-		throw Runtime::Exceptions::StaticException("non-static method \"" + method->ToString() + "\" called from static method \"" + owner->ToString() + "\"", tmp->position());
+		throw Common::Exceptions::StaticException("non-static method \"" + method->ToString() + "\" called from static method \"" + owner->ToString() + "\"", tmp->position());
 	}
 
 	ControlFlow::E controlflow;
