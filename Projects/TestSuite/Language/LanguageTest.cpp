@@ -544,7 +544,7 @@ void LanguageTest::testStaticMethod()
 	try {
 		VirtualMachine vm;
 
-		TTHROWS(vm.createScriptFromFile("Tests/Language/StaticMethodTest.os"), Runtime::Exceptions::StaticException);
+		TTHROWS(vm.createScriptFromFile("Tests/Language/StaticMethodTest.os"), Common::Exceptions::StaticException);
 
 		// automatic success
 	}

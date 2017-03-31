@@ -170,6 +170,17 @@ public:
 };
 
 
+class StaticException : public Exception
+{
+public:
+	StaticException(const std::string& text, const Common::Position& position = Common::Position())
+	: Exception("Exception.StaticException: " + text, position)
+	{ }
+
+	virtual ~StaticException() throw() { }
+};
+
+
 class SyntaxError : public Exception
 {
 public:

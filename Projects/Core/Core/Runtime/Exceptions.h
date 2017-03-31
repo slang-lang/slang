@@ -107,17 +107,6 @@ public:
 };
 
 
-class StaticException : public RuntimeException
-{
-public:
-	StaticException(const std::string& text, const Common::Position& position = Common::Position())
-	: RuntimeException("StaticException: " + text, position)
-	{ }
-
-	virtual ~StaticException() throw() { }
-};
-
-
 class TypeCastException : public RuntimeException
 {
 public:
