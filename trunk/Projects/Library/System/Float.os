@@ -5,11 +5,18 @@ public namespace System { }
 public object Float {
 	private float mValue;
 
+	/*
+	 * Default constructor
+	 */
 	public void Constructor(float value = 0f) {
 		mValue = value;
 	}
-	public void Constructor(Float f ref) {
-		mValue = f.mValue;
+
+	/*
+	 * Copy constructor
+	 */
+	public void Constructor(Float value ref) {
+		mValue = float value;
 	}
 
 /*
