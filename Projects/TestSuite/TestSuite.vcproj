@@ -188,14 +188,14 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\Attributes\AttributesTest.cpp"
+				RelativePath=".\AST\ASTTest.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\Attributes\"
+						ObjectFile="$(IntDir)\AST\"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -203,47 +203,7 @@
 					>
 					<Tool
 						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\Attributes\"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\Math\Fixture.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\Math\"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\Math\"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\Attributes\Fixture.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\Attributes\"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\Attributes\"
+						ObjectFile="$(IntDir)\AST\"
 					/>
 				</FileConfiguration>
 			</File>
@@ -368,6 +328,46 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						ObjectFile="$(IntDir)\Library\"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\Math\Fixture.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Math\"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Math\"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\AST\Fixture.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\AST\"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\AST\"
 					/>
 				</FileConfiguration>
 			</File>
@@ -526,11 +526,7 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\Attributes\AttributesTest.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Language\Fixture.h"
+				RelativePath=".\AST\ASTTest.h"
 				>
 			</File>
 			<File
@@ -539,10 +535,6 @@
 			</File>
 			<File
 				RelativePath=".\Operator\Fixture.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Attributes\Fixture.h"
 				>
 			</File>
 			<File
@@ -563,6 +555,14 @@
 			</File>
 			<File
 				RelativePath=".\Library\Fixture.h"
+				>
+			</File>
+			<File
+				RelativePath=".\AST\Fixture.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Language\Fixture.h"
 				>
 			</File>
 			<File
@@ -620,6 +620,10 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 		</Filter>
+		<File
+			RelativePath=".\AST\CMakeLists.txt"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

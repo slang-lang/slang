@@ -1516,7 +1516,7 @@ SymbolExpression* TreeGenerator::resolveWithThis(TokenIterator& token, IScope* b
 {
 	IScope* outer = mMethod->getEnclosingScope();
 
-	auto blueprint = dynamic_cast<Designtime::BluePrintObject*>(outer);
+	Designtime::BluePrintObject* blueprint = dynamic_cast<Designtime::BluePrintObject*>(outer);
 	if ( blueprint ) {
 		// resolve symbol (without exceptions so that we can try to resolve a second time) by using "this" identifier
 		SymbolExpression* exp = resolve(token, blueprint, true);

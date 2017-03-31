@@ -167,6 +167,26 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\Core\Attributes\AccessMode.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Attributes\"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Attributes\"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath=".\Core\Extensions\AExtension.cpp"
 				>
 				<FileConfiguration
@@ -327,6 +347,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\Core\BuildInObjects\BoolObject.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\Designtime\BuildInTypes\BoolObject.cpp"
 				>
 				<FileConfiguration
@@ -345,10 +369,6 @@
 						ObjectFile="$(IntDir)\Core\Designtime\BuildInTypes\"
 					/>
 				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\Core\BuildInObjects\BoolObject.cpp"
-				>
 			</File>
 			<File
 				RelativePath=".\Debugger\BreakPoint.cpp"
@@ -393,6 +413,22 @@
 			<File
 				RelativePath=".\Core\VirtualMachine\Controller.cpp"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\VirtualMachine\"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\VirtualMachine\"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\Debugger\Debugger.cpp"
@@ -415,6 +451,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\Core\BuildInObjects\DoubleObject.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\Designtime\BuildInTypes\DoubleObject.cpp"
 				>
 				<FileConfiguration
@@ -433,10 +473,6 @@
 						ObjectFile="$(IntDir)\Core\Designtime\BuildInTypes\"
 					/>
 				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\Core\BuildInObjects\DoubleObject.cpp"
-				>
 			</File>
 			<File
 				RelativePath=".\Core\Runtime\ExceptionData.cpp"
@@ -523,30 +559,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\GenericObject.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\Core\Designtime\BuildInTypes\"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\Core\Designtime\BuildInTypes\"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\Core\BuildInObjects\GenericObject.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\Core\Attributes\ImplementationType.cpp"
 				>
 				<FileConfiguration
@@ -567,14 +579,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\IntegerObject.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Core\BuildInObjects\IntegerObject.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\Core\Designtime\BuildInTypes\IntegerObject.cpp"
 				>
 				<FileConfiguration
@@ -593,6 +597,14 @@
 						ObjectFile="$(IntDir)\Core\Designtime\BuildInTypes\"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\Core\BuildInObjects\IntegerObject.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\BuildInObjects\IntegerObject.cpp"
+				>
 			</File>
 			<File
 				RelativePath=".\Core\Interpreter.cpp"
@@ -621,6 +633,22 @@
 			<File
 				RelativePath=".\Core\VirtualMachine\Memory.cpp"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\VirtualMachine\"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\VirtualMachine\"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\Core\Common\Method.cpp"
@@ -791,12 +819,44 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\Reference.cpp"
+				RelativePath=".\Core\Runtime\Reference.cpp"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Runtime\"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\Runtime\"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\Core\VirtualMachine\Repository.cpp"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\VirtualMachine\"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\VirtualMachine\"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\Core\Designtime\SanityChecker.cpp"
@@ -845,10 +905,42 @@
 			<File
 				RelativePath=".\Core\VirtualMachine\Stack.cpp"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\VirtualMachine\"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\VirtualMachine\"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\Core\VirtualMachine\StackFrame.cpp"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\VirtualMachine\"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\VirtualMachine\"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\Core\Designtime\BuildInTypes\StringObject.cpp"
@@ -881,6 +973,22 @@
 			<File
 				RelativePath=".\Core\VirtualMachine\Threads.cpp"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\VirtualMachine\"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\VirtualMachine\"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\Core\Designtime\Parser\Token.cpp"
@@ -1015,8 +1123,24 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\UserObject.cpp"
+				RelativePath=".\Core\VirtualMachine\TypeSystem.cpp"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\VirtualMachine\"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\VirtualMachine\"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\Core\Designtime\BuildInTypes\UserObject.cpp"
@@ -1039,12 +1163,48 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\Core\BuildInObjects\UserObject.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\VirtualMachine\VirtualMachine.cpp"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\VirtualMachine\"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\VirtualMachine\"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\Core\VirtualMachine\VirtualMethodTable.cpp"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\VirtualMachine\"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\VirtualMachine\"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\Core\Common\Visibility.cpp"
@@ -1097,6 +1257,10 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
+				RelativePath=".\Core\Attributes\AccessMode.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\Extensions\AExtension.h"
 				>
 			</File>
@@ -1129,11 +1293,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\BoolObject.h"
+				RelativePath=".\Core\BuildInObjects\BoolObject.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\BoolObject.h"
+				RelativePath=".\Core\Designtime\BuildInTypes\BoolObject.h"
 				>
 			</File>
 			<File
@@ -1181,7 +1345,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Exceptions.h"
+				RelativePath=".\Core\Designtime\Exceptions.h"
 				>
 			</File>
 			<File
@@ -1189,7 +1353,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\Exceptions.h"
+				RelativePath=".\Core\Exceptions.h"
 				>
 			</File>
 			<File
@@ -1209,27 +1373,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\FloatObject.h"
-				>
-			</File>
-			<File
 				RelativePath=".\Core\BuildInObjects\FloatObject.h"
 				>
 			</File>
 			<File
+				RelativePath=".\Core\Designtime\BuildInTypes\FloatObject.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\AST\Generator.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Core\BuildInObjects\GenericObject.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\GenericObject.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\GenericObject.h"
 				>
 			</File>
 			<File
@@ -1245,11 +1397,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\IntegerObject.h"
+				RelativePath=".\Core\Designtime\BuildInTypes\IntegerObject.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\IntegerObject.h"
+				RelativePath=".\Core\BuildInObjects\IntegerObject.h"
 				>
 			</File>
 			<File
@@ -1337,7 +1489,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Reference.h"
+				RelativePath=".\Core\Runtime\Reference.h"
 				>
 			</File>
 			<File
@@ -1421,11 +1573,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Core\Types.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Core\Common\Types.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Types.h"
+				RelativePath=".\Core\VirtualMachine\TypeSystem.h"
 				>
 			</File>
 			<File
@@ -1453,11 +1609,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\Designtime\BuildInTypes\VoidObject.h"
+				RelativePath=".\Core\BuildInObjects\VoidObject.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Core\BuildInObjects\VoidObject.h"
+				RelativePath=".\Core\Designtime\BuildInTypes\VoidObject.h"
 				>
 			</File>
 		</Filter>
