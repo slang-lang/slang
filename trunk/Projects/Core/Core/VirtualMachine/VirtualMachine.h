@@ -30,12 +30,23 @@ class Script;
 class VirtualMachine
 {
 public:
+	class Settings {
+	public:
+		Settings()
+		: DoSyntaxCheck(false)
+		{ }
+
+		bool DoSyntaxCheck;
+	};
+
+public:
 	VirtualMachine();
 	~VirtualMachine();
 
 public:	// Setup
 	void addExtension(Extensions::AExtension *extension);
 	void addLibraryFolder(const std::string &library);
+	Settings& settings();
 
 public:
 	Script* createScriptFromFile(const std::string& filename, const ParameterList& params = ParameterList(), Runtime::Object* result = 0);
@@ -59,6 +70,7 @@ private:
 	StringSet mLibraryFolders;
 	std::string mScriptFile;
 	ScriptCollection mScripts;
+	Settings mSettings;
 };
 
 
