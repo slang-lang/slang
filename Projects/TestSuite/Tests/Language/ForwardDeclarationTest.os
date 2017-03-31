@@ -5,7 +5,7 @@
 public object ForwardObject;
 
 public object ForwardObject {
-	private int mValue;
+	public int mValue;
 
 	public void Constructor(int value) {
 		mValue = value;
