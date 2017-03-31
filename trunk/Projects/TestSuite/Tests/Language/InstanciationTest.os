@@ -4,7 +4,7 @@ public namespace InstanciationTest {
 	public object OuterObject {
 
 		public object InnerObject {
-			private string mValue;
+			public string mValue;
 
 			public void Constructor(string value) {
 				print("Constructor(\"" + value + "\")");
@@ -18,7 +18,7 @@ public namespace InstanciationTest {
 		}
 
 
-		private string mValue;
+		public string mValue;
 
 		public void Constructor(string value) {
 			print("Constructor(\"" + value + "\")");

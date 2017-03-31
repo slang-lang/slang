@@ -8,7 +8,7 @@ public void Main(int argc = 0, string argv = "") {
 }
 
 private bool TestCase1() const {
-	int bla final = 1;
+	int bla const = 1;
 
 	ModifyInt(bla);
 
