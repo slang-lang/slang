@@ -1356,7 +1356,7 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 
 	Mutability::E mutability = parseMutability(token);
 
-	Runtime::Object* object = mRepository->createInstance(type, name, constraints, Repository::InitilizationType::Final);
+	Runtime::Object* object = mRepository->createInstance(type, name, constraints, Repository::InitilizationType::AllowAbstract);
 	object->setConst(mutability == Mutability::Const);
 
 	getScope()->define(name, object);

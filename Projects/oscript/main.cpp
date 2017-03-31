@@ -39,9 +39,10 @@
 
 
 std::string mFilename;
+StringSet mLibraryFolders;
 Utils::Common::StdOutLogger mLogger;
 ObjectiveScript::ParameterList mParameters;
-StringSet mLibraryFolders;
+bool mSyntaxCheck;
 
 
 void printUsage()
@@ -52,6 +53,13 @@ void printUsage()
 	std::cout << "-h | --help                This help" << std::endl;
 	std::cout << "-l | --library <library>   Library root path" << std::endl;
 	std::cout << "-q | --quiet               Quiet mode, chats as less as possible" << std::endl;
+
+#ifdef GENERATE_PARSE_TREE
+
+	std::cout << "--syntax                   Syntax check only" << std::endl;
+
+#endif
+
 	std::cout << "-v | --verbose             Verbose output" << std::endl;
 	std::cout << "--version                  Version information" << std::endl;
 	std::cout << std::endl;
@@ -59,7 +67,7 @@ void printUsage()
 
 void printVersion()
 {
-	std::cout << "ObjectiveScript Interpreter 0.5.6 (cli)" << std::endl;
+	std::cout << "ObjectiveScript Interpreter 0.5.7 (cli)" << std::endl;
 	std::cout << "Copyright (c) 2014-2017 Michael Adelmann" << std::endl;
 	std::cout << "" << std::endl;
 }
@@ -106,6 +114,15 @@ void processParameters(int argc, const char* argv[])
 
 				Utils::PrinterDriver::Instance()->ActivatePrinter = false;
 			}
+
+#ifdef GENERATE_PARSE_TREE
+
+			else if ( Utils::Tools::StringCompare(argv[i], "--syntax") ) {
+				mSyntaxCheck = true;
+			}
+
+#endif
+
 			else if ( Utils::Tools::StringCompare(argv[i], "-v") || Utils::Tools::StringCompare(argv[i], "--verbose") ) {
 				mLogger.setLoudness(Utils::Common::ILogger::LoudnessInfo);
 
@@ -157,6 +174,12 @@ int main(int argc, const char* argv[])
 	for ( StringSet::const_iterator it = mLibraryFolders.begin(); it != mLibraryFolders.end(); ++it ) {
 		mVirtualMachine.addLibraryFolder((*it));
 	}
+
+#ifdef GENERATE_PARSE_TREE
+
+	mVirtualMachine.settings().DoSyntaxCheck = mSyntaxCheck;
+
+#endif
 
 	// add extensions
 #ifdef USE_APACHE_EXTENSION
