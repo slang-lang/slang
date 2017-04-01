@@ -1261,7 +1261,7 @@ void TreeInterpreter::visitTry(TryStatement* node)
 	// execute try-block
 	visitStatements(node->mTryBlock);
 
-	// execute exception handling only if an exception occurred
+	// execute exception handling only if an exception occurred and catch statements are present
 	if ( mControlFlow == Runtime::ControlFlow::Throw && !node->mCatchStatements.empty() ) {
 		// get exception data
 		Runtime::Object* exception = mStack->exception().getData();
@@ -1305,11 +1305,11 @@ void TreeInterpreter::visitTry(TryStatement* node)
 	// allow try-statements without finally-statements
 	if ( node->mFinallyBlock ) {
 		visitStatements(node->mFinallyBlock);
-	}
 
-	// reset control flow if finally block has been executed normally
-	if ( mControlFlow == Runtime::ControlFlow::Normal ) {
-		mControlFlow = tmpControlFlow;
+		// reset control flow if finally block has been executed normally
+		if ( mControlFlow == Runtime::ControlFlow::Normal && tmpControlFlow != Runtime::ControlFlow::Throw ) {
+			mControlFlow = tmpControlFlow;
+		}
 	}
 }
 
