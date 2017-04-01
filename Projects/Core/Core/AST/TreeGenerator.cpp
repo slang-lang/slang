@@ -565,8 +565,6 @@ Statement* TreeGenerator::process_assert(TokenIterator& token)
 	expect(Token::Type::PARENTHESIS_OPEN, token);
 	++token;
 
-	Common::Position position = token->position();
-
 	Node* exp = expression(token);
 
 	expect(Token::Type::PARENTHESIS_CLOSE, token);
@@ -617,12 +615,7 @@ Statement* TreeGenerator::process_continue(TokenIterator& token)
  */
 Expression* TreeGenerator::process_copy(TokenIterator& token)
 {
-	Node* exp = expression(token);
-
-	expect(Token::Type::SEMICOLON, token);
-	++token;
-
-	return new CopyExpression(exp);
+	return new CopyExpression(expression(token));
 }
 
 /*
@@ -655,6 +648,9 @@ Statement* TreeGenerator::process_exit(TokenIterator& token)
 	Node* exp = expression(token);
 
 	expect(Token::Type::PARENTHESIS_CLOSE, token);
+	++token;
+
+	expect(Token::Type::SEMICOLON, token);
 	++token;
 
 	return new ExitStatement(start, exp);
@@ -1085,8 +1081,6 @@ Statements* TreeGenerator::process_scope(TokenIterator& token, bool allowBreakAn
 	TokenList scopeTokens;
 	collectScopeTokens(token, scopeTokens);
 
-	++token;
-
 	return generate(scopeTokens, allowBreakAndContinue);
 }
 
@@ -1104,6 +1098,7 @@ Node* TreeGenerator::process_statement(TokenIterator& token, bool allowBreakAndC
 			break;
 		case Token::Type::BRACKET_CURLY_OPEN:
 			node = process_scope(token, allowBreakAndContinue);	// this opens a new scope
+			++token;
 			break;
 		case Token::Type::SEMICOLON:
 			++token;
@@ -1183,8 +1178,11 @@ Statement* TreeGenerator::process_switch(TokenIterator& token)
 			throw Common::Exceptions::Exception("invalid token '" + token->content() + "' found", token->position());
 		}
 
+		expect(Token::Type::BRACKET_CURLY_CLOSE, token);
 		++token;
 	}
+
+	expect(Token::Type::BRACKET_CURLY_CLOSE, token);
 	++token;
 
 	return new SwitchStatement(start, switchExpression, caseStatements, defaultStatement);
@@ -1236,91 +1234,71 @@ Statement* TreeGenerator::process_try(TokenIterator& token)
 	TokenIterator tmp = lookahead(token);
 	TokenIterator localEnd = getTokens().end();
 
-	std::list<TokenIterator> catchTokens;
-	TokenIterator finallyToken = localEnd;
+	CatchStatements catchStatements;
+	Statements* finallyBlock = 0;
 
 	// collect all catch- and finally-blocks
 	for ( ; ; ) {
 		if ( tmp != localEnd && tmp->content() == KEYWORD_CATCH ) {
-			catchTokens.push_back(tmp);
+			Token start = (*tmp);
+			++tmp;
 
-			tmp = findNextBalancedCurlyBracket(tmp, localEnd, 0, Token::Type::BRACKET_CURLY_CLOSE);
+			pushScope();	// push a new scope to allow reuse of the same exception instance name
 
-			if ( std::distance(token, tmp) ) {
-				token = tmp;	// set exit token
+			TypeDeclaration* typeDeclaration = 0;
+
+			// parse exception type (if present)
+			if ( tmp->type() == Token::Type::PARENTHESIS_OPEN ) {
+				++tmp;
+
+				Symbol* symbol = identify(tmp);
+				if ( !symbol ) {
+					throw Common::Exceptions::UnknownIdentifer("identifier '" + tmp->content() + "' not found", tmp->position());
+				}
+				if ( symbol->getSymbolType() != Symbol::IType::BluePrintEnumSymbol && symbol->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
+					throw Common::Exceptions::SyntaxError("invalid symbol type '" + symbol->getName() + "' found", tmp->position());
+				}
+
+				// create new exception type instance
+				typeDeclaration = process_type(tmp, Initialization::NotAllowed);
+
+				expect(Token::Type::PARENTHESIS_CLOSE, tmp);
+				++tmp;
 			}
+
+			// parse catch-block
+			TokenList tokens;
+			collectScopeTokens(tmp, tokens);
+
+			// TODO: prevent duplicate catch-blocks
+
+			catchStatements.push_back(
+				new CatchStatement(start, typeDeclaration, generate(tokens))
+			);
+
+			popScope();		// pop exception instance scope
+
+			// set token to end of catch-block
+			token = tmp;
 		}
 		else if ( tmp != localEnd && tmp->content() == KEYWORD_FINALLY ) {
-			if ( finallyToken != localEnd ) {
+			if ( finallyBlock ) {
 				throw Common::Exceptions::SyntaxError("multiple finally blocks are not allowed");
 			}
 
-			finallyToken = tmp;
-			tmp = findNextBalancedCurlyBracket(tmp, localEnd, 0, Token::Type::BRACKET_CURLY_CLOSE);
+			++tmp;
 
-			if ( std::distance(token, tmp) ) {
-				token = tmp;	// set exit token
-			}
+			// parse finally-block
+			finallyBlock = process_scope(tmp);
+
+			// set token to end of finally-block
+			token = tmp;
 		}
 		else {
 			break;	// reached end of try-catch-finally-block
 		}
 
 		++tmp;
-	}
-
-	CatchStatements catchStatements;
-
-	// process catch-blocks (if present)
-	for ( std::list<TokenIterator>::const_iterator it = catchTokens.begin(); it != catchTokens.end(); ++it ) {
-		TokenIterator catchIt = (*it);
-		Token start = (*catchIt);
-
-		++catchIt;
-
-		pushScope();	// push a new scope to allow reuse of the same exception instance name
-
-		TypeDeclaration* typeDeclaration = 0;
-
-		// parse exception type (if present)
-		if ( catchIt->type() == Token::Type::PARENTHESIS_OPEN ) {
-			++catchIt;
-
-			Symbol* symbol = identify(catchIt);
-			if ( !symbol ) {
-				throw Common::Exceptions::UnknownIdentifer("identifier '" + catchIt->content() + "' not found", catchIt->position());
-			}
-			if ( symbol->getSymbolType() != Symbol::IType::BluePrintEnumSymbol && symbol->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
-				throw Common::Exceptions::SyntaxError("invalid symbol type '" + symbol->getName() + "' found", catchIt->position());
-			}
-
-			// create new exception type instance
-			typeDeclaration = process_type(catchIt, Initialization::NotAllowed);
-
-			expect(Token::Type::PARENTHESIS_CLOSE, catchIt);
-			++catchIt;
-		}
-
-		TokenList tokens;
-		collectScopeTokens(catchIt, tokens);
-
-		catchStatements.push_back(
-			new CatchStatement(start, typeDeclaration, generate(tokens))
-		);
-
-		popScope();		// pop exception instance scope
-	}
-
-	Statements* finallyBlock = 0;
-
-	// process finally-block (if present)
-	if ( finallyToken != localEnd ) {
-		++finallyToken;
-
-		TokenList finallyTokens;
-		collectScopeTokens(finallyToken, finallyTokens);
-
-		finallyBlock = generate(finallyTokens);
 	}
 
 	expect(Token::Type::BRACKET_CURLY_CLOSE, token);
