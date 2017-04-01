@@ -1040,7 +1040,6 @@ Statement* TreeGenerator::process_print(TokenIterator& token)
 	expect(Token::Type::PARENTHESIS_OPEN, token);
 	++token;
 
-	Common::Position position = token->position();
 	Node* exp = expression(token);
 
 	expect(Token::Type::PARENTHESIS_CLOSE, token);
@@ -1234,7 +1233,7 @@ Statement* TreeGenerator::process_try(TokenIterator& token)
 	// process try-block
 	Statements* tryBlock = generate(tryTokens);
 
-	TokenIterator tmp = ++token;
+	TokenIterator tmp = lookahead(token);
 	TokenIterator localEnd = getTokens().end();
 
 	std::list<TokenIterator> catchTokens;
@@ -1267,7 +1266,7 @@ Statement* TreeGenerator::process_try(TokenIterator& token)
 			break;	// reached end of try-catch-finally-block
 		}
 
-		tmp++;
+		++tmp;
 	}
 
 	CatchStatements catchStatements;
@@ -1324,6 +1323,7 @@ Statement* TreeGenerator::process_try(TokenIterator& token)
 		finallyBlock = generate(finallyTokens);
 	}
 
+	expect(Token::Type::BRACKET_CURLY_CLOSE, token);
 	++token;
 
 	return new TryStatement(start, tryBlock, catchStatements, finallyBlock);

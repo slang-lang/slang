@@ -1972,7 +1972,7 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 		interpret(finallyTokens, result);
 
 		// reset control flow if finally block has been executed normally
-		if ( mControlFlow == Runtime::ControlFlow::Normal ) {
+		if ( mControlFlow == Runtime::ControlFlow::Normal && tmpControlFlow != Runtime::ControlFlow::Throw ) {
 			mControlFlow = tmpControlFlow;
 		}
 	}
