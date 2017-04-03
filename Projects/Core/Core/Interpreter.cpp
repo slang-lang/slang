@@ -1555,14 +1555,14 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
  */
 void Interpreter::process_new(TokenIterator& token, Object *result)
 {
-	std::string name;
-	std::string type = token->content();
+	TokenIterator start = token;
 
 	Symbol* symbol = identify(token);
 	if ( !symbol ) {
-		throw Common::Exceptions::UnknownIdentifer("unknown identifier '" + type + "'");
+		throw Common::Exceptions::UnknownIdentifer("unknown identifier '" + start->content() + "'");
 	}
-	if ( symbol->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
+	if ( /*symbol->getSymbolType() != Symbol::IType::BluePrintEnumSymbol &&*/
+		 symbol->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
 		throw Common::Exceptions::Exception("blueprint symbol expected!");
 	}
 
@@ -1575,7 +1575,7 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 	collectParameterList(token, params, objectListHack);
 
 	// create initialized reference of new object
-	*result = *mRepository->createReference(static_cast<Designtime::BluePrintGeneric*>(symbol), name, constraints, Repository::InitilizationType::Final);
+	*result = *mRepository->createReference(static_cast<Designtime::BluePrintGeneric*>(symbol), ANONYMOUS_OBJECT, constraints, Repository::InitilizationType::Final);
 
 	// execute new object's constructor
 	mControlFlow = result->Constructor(params);

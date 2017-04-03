@@ -1009,12 +1009,14 @@ Expression* TreeGenerator::process_new(TokenIterator& token)
 	if ( !symbol ) {
 		throw Common::Exceptions::UnknownIdentifer("symbol '" + start->content() + "' not found", token->position());
 	}
-	if ( symbol->getSymbolType() != Symbol::IType::BluePrintEnumSymbol &&
+	if ( /*symbol->getSymbolType() != Symbol::IType::BluePrintEnumSymbol &&*/
 		 symbol->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
 		throw Common::Exceptions::InvalidSymbol("invalid symbol type found", token->position());
 	}
 
 	SymbolExpression* exp = resolveWithExceptions(token, getScope());
+
+	PrototypeConstraints constraints = Designtime::Parser::collectRuntimePrototypeConstraints(token);
 
 	SymbolExpression* inner = exp;
 	while ( true ) {
