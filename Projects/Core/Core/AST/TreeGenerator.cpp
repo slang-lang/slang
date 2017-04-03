@@ -764,7 +764,10 @@ Node* TreeGenerator::process_identifier(TokenIterator& token, bool allowTypeCast
 	TokenIterator op = token;
 
 	// type cast (followed by identifier or 'copy' || 'new' keyword)
-	if ( allowTypeCast && (op->category() == Token::Category::Constant || op->type() == Token::Type::IDENTIFIER || op->type() == Token::Type::KEYWORD) ) {
+	if ( allowTypeCast &&
+		((op->category() == Token::Category::Constant || op->type() == Token::Type::IDENTIFIER || op->type() == Token::Type::KEYWORD) ||
+		 (dynamic_cast<DesigntimeSymbolExpression*>(symbol) && op->type() == Token::Type::COMPARE_LESS))
+		) {
 		node = new TypecastExpression(symbol->getResultType(), expression(++old));
 
 		// delete resolved symbol expression as it is not needed any more
@@ -774,7 +777,10 @@ Node* TreeGenerator::process_identifier(TokenIterator& token, bool allowTypeCast
 		token = old;
 	}
 	// type declaration
-	else if ( !allowTypeCast && op->type() == Token::Type::IDENTIFIER ) {
+	else if ( !allowTypeCast &&
+			(op->type() == Token::Type::IDENTIFIER ||
+			 (dynamic_cast<DesigntimeSymbolExpression*>(symbol) && op->type() == Token::Type::COMPARE_LESS))
+			) {
 		// delete resolved symbol expression as it is not needed any more
 		delete symbol;
 		symbol = 0;
