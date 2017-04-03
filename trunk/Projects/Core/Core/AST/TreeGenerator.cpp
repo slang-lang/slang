@@ -765,8 +765,8 @@ Node* TreeGenerator::process_identifier(TokenIterator& token, bool allowTypeCast
 
 	// type cast (followed by identifier or 'copy' || 'new' keyword)
 	if ( allowTypeCast &&
-		((op->category() == Token::Category::Constant || op->type() == Token::Type::IDENTIFIER || op->type() == Token::Type::KEYWORD) ||
-		 (dynamic_cast<DesigntimeSymbolExpression*>(symbol) && op->type() == Token::Type::COMPARE_LESS))
+		((op->category() == Token::Category::Constant || op->type() == Token::Type::IDENTIFIER || op->type() == Token::Type::KEYWORD) /*||
+		 (dynamic_cast<DesigntimeSymbolExpression*>(symbol) && op->type() == Token::Type::COMPARE_LESS)*/)
 		) {
 		node = new TypecastExpression(symbol->getResultType(), expression(++old));
 
@@ -778,8 +778,8 @@ Node* TreeGenerator::process_identifier(TokenIterator& token, bool allowTypeCast
 	}
 	// type declaration
 	else if ( !allowTypeCast &&
-			(op->type() == Token::Type::IDENTIFIER ||
-			 (dynamic_cast<DesigntimeSymbolExpression*>(symbol) && op->type() == Token::Type::COMPARE_LESS))
+			(op->type() == Token::Type::IDENTIFIER /*||
+			 (dynamic_cast<DesigntimeSymbolExpression*>(symbol) && op->type() == Token::Type::COMPARE_LESS)*/)
 			) {
 		// delete resolved symbol expression as it is not needed any more
 		delete symbol;
@@ -1478,7 +1478,7 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 
 			scope = static_cast<Designtime::BluePrintEnum*>(mRepository->findBluePrint(type));
 
-			PrototypeConstraints constraints = Designtime::Parser::collectRuntimePrototypeConstraints(token);
+			PrototypeConstraints constraints;// = Designtime::Parser::collectRuntimePrototypeConstraints(token);
 
 			symbol = new DesigntimeSymbolExpression(name, type, constraints, static_cast<Designtime::BluePrintEnum*>(result)->isConst());
 		} break;
@@ -1491,7 +1491,7 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 
 			scope = static_cast<Designtime::BluePrintObject*>(mRepository->findBluePrint(type));
 
-			PrototypeConstraints constraints = Designtime::Parser::collectRuntimePrototypeConstraints(token);
+			PrototypeConstraints constraints;// = Designtime::Parser::collectRuntimePrototypeConstraints(token);
 
 			symbol = new DesigntimeSymbolExpression(name, type, constraints, static_cast<Designtime::BluePrintObject*>(result)->isConst());
 		} break;

@@ -17,7 +17,7 @@ public void Main(int argc = 0, string args = "") {
 }
 
 private bool TestCase1() {
-	print("TestCase 1: method with prototype as parameter");
+	print("TestCase 1: method with prototype as return value");
 
 	Prototype<int> proto = new Prototype<int>(173);
 	print(string proto.getValue());
