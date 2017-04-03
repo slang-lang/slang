@@ -1016,15 +1016,13 @@ Expression* TreeGenerator::process_new(TokenIterator& token)
 
 	SymbolExpression* exp = resolveWithExceptions(token, getScope());
 
-	PrototypeConstraints constraints = Designtime::Parser::collectRuntimePrototypeConstraints(token);
-
 	SymbolExpression* inner = exp;
 	while ( true ) {
 		if ( inner->mSymbolExpression ) {
 			inner = inner->mSymbolExpression;
 		}
 		else {
-			inner->mSymbolExpression = new DesigntimeSymbolExpression("Constructor", "", false);
+			inner->mSymbolExpression = new DesigntimeSymbolExpression("Constructor", "", PrototypeConstraints(), false);
 			inner->mSymbolExpression->mSurroundingScope = static_cast<Designtime::BluePrintObject*>(symbol);
 			break;
 		}
@@ -1325,17 +1323,16 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 {
 	Token start = (*token);
 
-	SymbolExpression* symbolExp = resolveWithExceptions(token, getScope());
+	DesigntimeSymbolExpression* symbolExp = dynamic_cast<DesigntimeSymbolExpression*>(resolveWithExceptions(token, getScope()));
 	if ( !symbolExp ) {
 		throw Common::Exceptions::InvalidSymbol("invalid symbol '" + token->content() + "'", token->position());
 	}
 
 	std::string type = symbolExp->getResultType();
+	PrototypeConstraints constraints = symbolExp->mConstraints;
 
 	// delete resolved symbol expression as it is not needed any more
 	delete symbolExp;
-
-	PrototypeConstraints constraints = Designtime::Parser::collectRuntimePrototypeConstraints(token);
 
 	expect(Token::Type::IDENTIFIER, token);
 
@@ -1351,7 +1348,6 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 
 	// non-atomic types are references by default
 	AccessMode::E accessMode = parseAccessMode(token, object->isAtomicType());
-
 
 	Node* assignment = 0;
 
@@ -1466,16 +1462,19 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 
 	// set scope & type according to symbol type
 	switch ( result->getSymbolType() ) {
-		case Symbol::IType::BluePrintEnumSymbol:
-			scope = static_cast<Designtime::BluePrintEnum*>(result);
+		case Symbol::IType::BluePrintEnumSymbol: {
 			type = static_cast<Designtime::BluePrintEnum*>(result)->QualifiedTypename();
 
 			if ( !static_cast<Designtime::BluePrintEnum*>(result)->isMember() ) {
 				name = static_cast<Designtime::BluePrintEnum*>(result)->UnqualifiedTypename();
 			}
 
-			symbol = new DesigntimeSymbolExpression(name, type, static_cast<Designtime::BluePrintEnum*>(result)->isConst());
-			break;
+			scope = static_cast<Designtime::BluePrintEnum*>(mRepository->findBluePrint(type));
+
+			PrototypeConstraints constraints = Designtime::Parser::collectRuntimePrototypeConstraints(token);
+
+			symbol = new DesigntimeSymbolExpression(name, type, constraints, static_cast<Designtime::BluePrintEnum*>(result)->isConst());
+		} break;
 		case Symbol::IType::BluePrintObjectSymbol: {
 			type = static_cast<Designtime::BluePrintObject*>(result)->QualifiedTypename();
 
@@ -1485,13 +1484,15 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 
 			scope = static_cast<Designtime::BluePrintObject*>(mRepository->findBluePrint(type));
 
-			symbol = new DesigntimeSymbolExpression(name, type, static_cast<Designtime::BluePrintObject*>(result)->isConst());
+			PrototypeConstraints constraints = Designtime::Parser::collectRuntimePrototypeConstraints(token);
+
+			symbol = new DesigntimeSymbolExpression(name, type, constraints, static_cast<Designtime::BluePrintObject*>(result)->isConst());
 		} break;
 		case Symbol::IType::NamespaceSymbol:
 			scope = static_cast<Common::Namespace*>(result);
 			type = static_cast<Common::Namespace*>(result)->QualifiedTypename();
 
-			symbol = new DesigntimeSymbolExpression(name, type, static_cast<Common::Namespace*>(result)->isConst());
+			symbol = new DesigntimeSymbolExpression(name, type, PrototypeConstraints(), static_cast<Common::Namespace*>(result)->isConst());
 			break;
 		case Symbol::IType::ObjectSymbol: {
 			// set scope according to result type
