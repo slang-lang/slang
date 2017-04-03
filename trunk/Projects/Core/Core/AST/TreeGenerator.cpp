@@ -1015,6 +1015,7 @@ Expression* TreeGenerator::process_new(TokenIterator& token)
 	}
 
 	SymbolExpression* exp = resolveWithExceptions(token, getScope());
+	std::string type = static_cast<Designtime::BluePrintObject*>(symbol)->QualifiedTypename();
 
 	SymbolExpression* inner = exp;
 	while ( true ) {
@@ -1023,12 +1024,18 @@ Expression* TreeGenerator::process_new(TokenIterator& token)
 		}
 		else {
 			inner->mSymbolExpression = new DesigntimeSymbolExpression("Constructor", "", PrototypeConstraints(), false);
-			inner->mSymbolExpression->mSurroundingScope = static_cast<Designtime::BluePrintObject*>(symbol);
+
+			type = Designtime::Parser::buildRuntimeConstraintTypename(
+				static_cast<Designtime::BluePrintObject*>(symbol)->QualifiedTypename(),
+				dynamic_cast<DesigntimeSymbolExpression*>(exp)->mConstraints
+			);
+			// bauchweh
+			inner->mSymbolExpression->mSurroundingScope = dynamic_cast<Designtime::BluePrintObject*>(mRepository->findBluePrint(type));
 			break;
 		}
 	}
 
-	return new NewExpression(static_cast<Designtime::BluePrintObject*>(symbol)->QualifiedTypename(), process_method(exp, token));
+	return new NewExpression(type, process_method(exp, token));
 }
 
 /*
@@ -1373,7 +1380,7 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 		}
 */
 
-		mTypeSystem->getType(type, copy, static_cast<Expression*>(assignment)->getResultType());
+		mTypeSystem->getType(object->QualifiedTypename(), copy, static_cast<Expression*>(assignment)->getResultType());
 	}
 	else if ( initialization == Initialization::Required ) {
 		// initialization is required (probably because type inference is used) but no initialization sequence found
