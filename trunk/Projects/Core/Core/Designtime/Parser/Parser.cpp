@@ -26,11 +26,11 @@ bool checkSyntax(TokenIterator foundIt, const TokenList &expected)
 	for ( TokenIterator expectedIt = expected.begin(); expectedIt != expected.end(); ++expectedIt, ++foundIt ) {
 		if ( expectedIt->isOptional() ) {
 			// optional tokens have to be skipped during syntax check
-			expectedIt++;
+			++expectedIt;
 		}
 		if ( foundIt->isOptional() ) {
 			// optional tokens have to be skipped during syntax check
-			foundIt++;
+			++foundIt;
 		}
 
 		if ( expectedIt->type() != foundIt->type() ) {
@@ -127,7 +127,7 @@ Ancestors Parser::collectInheritance(TokenIterator& token)
 				throw Common::Exceptions::Exception("combinations with 'replicates' are not allowed");
 			}
 
-			token++;	// consume token
+			++token;	// consume token
 
 			inheritance = Ancestor::Type::Extends;
 		}
@@ -136,7 +136,7 @@ Ancestors Parser::collectInheritance(TokenIterator& token)
 				throw Common::Exceptions::Exception("combinations with 'replicates' are not allowed");
 			}
 
-			token++;	// consume token
+			++token;	// consume token
 
 			inheritance = Ancestor::Type::Implements;
 		}
@@ -145,13 +145,13 @@ Ancestors Parser::collectInheritance(TokenIterator& token)
 				throw Common::Exceptions::Exception("combinations with 'replicates' are not allowed");
 			}
 
-			token++;	// consume token
+			++token;	// consume token
 
 			replicates = true;
 			inheritance = Ancestor::Type::Replicates;
 		}
 		else if ( token->type() == Token::Type::COMMA ) {
-			token++;	// consume token
+			++token;	// consume token
 
 			continue;
 		}
@@ -191,10 +191,10 @@ PrototypeConstraints Parser::collectDesigntimePrototypeConstraints(TokenIterator
 	while ( token->type() != Token::Type::COMPARE_GREATER ) {
 		designType = token->content();
 		runType = token->content();	// hack to prevent runtime type to be empty
-		token++;
+		++token;
 
 		if ( token->type() == Token::Type::COLON ) {	// constraint
-			token++;
+			++token;
 
 			if ( token->type() == Token::Type::IDENTIFIER ) {
 				constraint = token->content();
@@ -206,7 +206,7 @@ PrototypeConstraints Parser::collectDesigntimePrototypeConstraints(TokenIterator
 				throw Common::Exceptions::SyntaxError("unexpected token '" + token->content() + "' found", token->position());
 			}
 
-			token++;
+			++token;
 		}
 
 		constraints.push_back(
@@ -216,15 +216,16 @@ PrototypeConstraints Parser::collectDesigntimePrototypeConstraints(TokenIterator
 		// cleanup for next iteration
 		constraint = "";
 		designType = "";
-		index++;
+		++index;
 		runType = "";
 
 		if ( token->type() == Token::Type::COMMA ) {
-			token++;
+			++token;
 		}
 	}
 
-	expect(Token::Type::COMPARE_GREATER, token++);
+	expect(Token::Type::COMPARE_GREATER, token);
+	++token;
 
 	return constraints;
 }
@@ -238,7 +239,7 @@ PrototypeConstraints Parser::collectRuntimePrototypeConstraints(TokenIterator& t
 		return constraints;
 	}
 
-	token++;
+	++token;
 
 	std::string constraint;
 	std::string designType;
@@ -247,10 +248,10 @@ PrototypeConstraints Parser::collectRuntimePrototypeConstraints(TokenIterator& t
 
 	while ( token->type() != Token::Type::COMPARE_GREATER ) {
 		runType = token->content();
-		token++;
+		++token;
 
 		if ( token->type() == Token::Type::COLON ) {	// constraint
-			token++;
+			++token;
 		}
 
 		constraints.push_back(
@@ -260,15 +261,16 @@ PrototypeConstraints Parser::collectRuntimePrototypeConstraints(TokenIterator& t
 		// cleanup for next iteration
 		constraint = "";
 		designType = "";
-		index++;
+		++index;
 		runType = "";
 
 		if ( token->type() == Token::Type::COMMA ) {
-			token++;
+			++token;
 		}
 	}
 
-	expect(Token::Type::COMPARE_GREATER, token++);
+	expect(Token::Type::COMPARE_GREATER, token);
+	++token;
 
 	return constraints;
 }
@@ -358,38 +360,38 @@ bool Parser::isMemberDeclaration(TokenIterator token)
 {
 	if ( token->type() == Token::Type::VISIBILITY ) {
 		// visibility token is okay
-		token++;
+		++token;
 	}
 
 	if ( token->isOptional() ) {
 		// language feature is okay
-		token++;
+		++token;
 	}
 
 	while ( token->type() == Token::Type::IDENTIFIER ) {
 		// identifier token is okay
-		token++;
+		++token;
 
 		if ( token->type() == Token::Type::SCOPE ) {
 			// scope token is okay
-			token++;
+			++token;
 			continue;
 		}
 	}
 
 	if ( token->type() == Token::Type::TYPE ) {
 		// type is okay
-		token++;
+		++token;
 	}
 
 	if ( token->type() == Token::Type::IDENTIFIER ) {
 		// name is okay
-		token++;
+		++token;
 	}
 
 	if ( token->isOptional() ) {
 		// modifier is okay
-		token++;
+		++token;
 	}
 
 	// check for an assignment or semicolon
@@ -403,36 +405,36 @@ bool Parser::isMethodDeclaration(TokenIterator token)
 {
 	if ( token->type() == Token::Type::VISIBILITY ) {
 		// visibility token is okay
-		token++;
+		++token;
 	}
 
 	if ( token->isOptional() ) {
 		// language feature is okay
-		token++;
+		++token;
 	}
 
 	while ( token->type() == Token::Type::IDENTIFIER ) {
-		token++;
+		++token;
 
 		if ( token->type() == Token::Type::SCOPE ) {
-			token++;
+			++token;
 			continue;
 		}
 	}
 
 	if ( token->type() == Token::Type::TYPE ) {
 		// type is okay
-		token++;
+		++token;
 	}
 
 	if ( token->category() == Token::Category::Modifier ) {
 		// modifier is okay
-		token++;
+		++token;
 	}
 
 	if ( token->type() == Token::Type::IDENTIFIER ) {
 		// name is okay
-		token++;
+		++token;
 	}
 
 	// check for open parenthesis
@@ -530,11 +532,11 @@ ParameterList Parser::parseParameters(TokenIterator &token, IScope* scope)
 		if ( token->category() == Token::Category::Modifier ) {
 			if ( token->content() == MODIFIER_CONST ) {
 				mutability = Mutability::Const;
-				token++;
+				++token;
 			}
 			else if ( token->content() == MODIFIER_MODIFY ) {
 				mutability = Mutability::Modify;
-				token++;
+				++token;
 			}
 			else {
 				throw Common::Exceptions::SyntaxError("unexpected modifier '" + token->content() + "' found", token->position());
@@ -543,20 +545,20 @@ ParameterList Parser::parseParameters(TokenIterator &token, IScope* scope)
 
 		if ( token->content() == RESERVED_WORD_BY_REFERENCE ) {
 			accessMode = AccessMode::ByReference;
-			token++;
+			++token;
 		}
 		else if ( token->content() == RESERVED_WORD_BY_VALUE ) {
 			accessMode = AccessMode::ByValue;
-			token++;
+			++token;
 		}
 
 		if ( token->type() == Token::Type::ASSIGN ) {
 			hasDefaultValue = true;
-			token++;
+			++token;
 
 			value = parseValueInitialization(token);
 
-			token++;
+			++token;
 		}
 
 		if ( hasDefaultValue && accessMode == AccessMode::ByReference ) {
@@ -599,7 +601,7 @@ Runtime::AtomicValue Parser::parseValueInitialization(TokenIterator& token)
 
 	if ( token->type() == Token::Type::MATH_SUBTRACT ) {
 		sign += "-";
-		token++;
+		++token;
 	}
 
 	switch ( token->type() ) {
