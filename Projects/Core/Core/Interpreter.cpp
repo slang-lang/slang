@@ -913,6 +913,7 @@ void Interpreter::process(Object *result, TokenIterator& token, TokenIterator en
 				process_scope(token, result);	// this opens a new scope
 				break;
 			case Token::Type::SEMICOLON:
+				//++token;
 				break;
 			default:
 				throw Common::Exceptions::SyntaxError("invalid token '" + token->content() + "' found", token->position());
@@ -930,7 +931,8 @@ void Interpreter::process(Object *result, TokenIterator& token, TokenIterator en
  */
 void Interpreter::process_assert(TokenIterator& token)
 {
-	expect(Token::Type::PARENTHESIS_OPEN, token++);
+	expect(Token::Type::PARENTHESIS_OPEN, token);
+	++token;
 
     Object condition;
 	try {
@@ -945,7 +947,11 @@ void Interpreter::process_assert(TokenIterator& token)
 		throw Runtime::Exceptions::AssertionFailed(condition.ToString(), token->position());
 	}
 
-	expect(Token::Type::PARENTHESIS_CLOSE, token++);
+	expect(Token::Type::PARENTHESIS_CLOSE, token);
+	++token;
+
+	expect(Token::Type::SEMICOLON, token);
+	//++token;
 }
 
 /*
@@ -960,6 +966,9 @@ void Interpreter::process_break(TokenIterator& token)
 	}
 
 	mControlFlow = ControlFlow::Break;
+
+	expect(Token::Type::SEMICOLON, token);
+	//++token;
 }
 
 /*
@@ -974,6 +983,9 @@ void Interpreter::process_continue(TokenIterator& token)
 	}
 
 	mControlFlow = ControlFlow::Continue;
+
+	expect(Token::Type::SEMICOLON, token);
+	//++token;
 }
 
 /*
@@ -1032,6 +1044,9 @@ void Interpreter::process_delete(TokenIterator& token)
 	}
 
 	token = end;
+
+	expect(Token::Type::SEMICOLON, token);
+	//++token;
 }
 
 /*
@@ -1040,7 +1055,8 @@ void Interpreter::process_delete(TokenIterator& token)
  */
 void Interpreter::process_exit(TokenIterator& token)
 {
-	expect(Token::Type::PARENTHESIS_OPEN, token++);
+	expect(Token::Type::PARENTHESIS_OPEN, token);
+	++token;
 
 	Object* data = mRepository->createInstance(IntegerObject::TYPENAME, ANONYMOUS_OBJECT, PrototypeConstraints());
 	try {
@@ -1055,7 +1071,8 @@ void Interpreter::process_exit(TokenIterator& token)
 
 	throw ControlFlow::ExitProgram;
 
-	//expect(Token::Type::PARENTHESIS_CLOSE, token++);
+	//expect(Token::Type::PARENTHESIS_CLOSE, token);
+	//++token;
 }
 
 /*
@@ -1549,7 +1566,7 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 		throw Common::Exceptions::Exception("blueprint symbol expected!");
 	}
 
-	token++;
+	++token;
 
 	PrototypeConstraints constraints = Designtime::Parser::collectRuntimePrototypeConstraints(token);
 
@@ -1583,7 +1600,8 @@ void Interpreter::process_print(TokenIterator& token)
 
 	::Utils::PrinterDriver::Instance()->print(text.getValue().toStdString(), token->position().mFile, token->position().mLine);
 
-	expect(Token::Type::PARENTHESIS_CLOSE, token++);
+	expect(Token::Type::PARENTHESIS_CLOSE, token);
+	++token;
 }
 
 /*
@@ -1602,10 +1620,10 @@ void Interpreter::process_return(TokenIterator& token, Object* result)
 		}
 	}
 
-	expect(Token::Type::SEMICOLON, token);
-	++token;
-
 	mControlFlow = ControlFlow::Return;
+
+	expect(Token::Type::SEMICOLON, token);
+	//++token;
 }
 
 // syntax:
@@ -1829,6 +1847,7 @@ void Interpreter::process_throw(TokenIterator& token, Object* /*result*/)
 	mControlFlow = ControlFlow::Throw;
 
 	expect(Token::Type::SEMICOLON, token);
+	//++token;
 
 	// notify our debugger that an exception has been thrown
 	DEBUGGER( notifyExceptionThrow(getScope(), (*token)) );
@@ -2112,6 +2131,7 @@ void Interpreter::process_var(TokenIterator& token, Object* /*result*/)
 	// }
 
 	expect(Token::Type::SEMICOLON, token);
+	//++token;
 }
 
 /*
