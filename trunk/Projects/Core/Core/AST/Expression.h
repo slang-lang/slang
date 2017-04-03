@@ -322,8 +322,9 @@ protected:
 class DesigntimeSymbolExpression : public SymbolExpression
 {
 public:
-	explicit DesigntimeSymbolExpression(const std::string& name, const std::string& resultType, bool isConst)
-	: SymbolExpression(name, resultType)
+	explicit DesigntimeSymbolExpression(const std::string& name, const std::string& resultType, const PrototypeConstraints& constraints, bool isConst)
+	: SymbolExpression(name, resultType),
+	  mConstraints(constraints)
 	{
 		mIsConst = isConst;
 		mSymbolExpressionType = SymbolExpressionType::DesigntimeSymbolExpression;
@@ -332,6 +333,9 @@ public:
 	std::string getResultType() const {
 		return mSymbolExpression ? mSymbolExpression->getResultType() : mResultType;
 	}
+
+public:
+	PrototypeConstraints mConstraints;
 };
 
 class RuntimeSymbolExpression : public SymbolExpression
