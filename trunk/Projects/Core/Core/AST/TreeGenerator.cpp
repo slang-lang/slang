@@ -1241,6 +1241,8 @@ Statement* TreeGenerator::process_try(TokenIterator& token)
 	for ( ; ; ) {
 		if ( tmp != localEnd && tmp->content() == KEYWORD_CATCH ) {
 			Token start = (*tmp);
+
+			// skip catch-label
 			++tmp;
 
 			pushScope();	// push a new scope to allow reuse of the same exception instance name
