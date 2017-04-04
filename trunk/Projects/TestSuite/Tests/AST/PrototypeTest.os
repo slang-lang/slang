@@ -17,11 +17,20 @@ private object TestObject<T> {
 	public string toString() const {
 		return string mValue;
 	}
+
+	public void operator=(TestObject<T> other const ref) modify {
+		mValue = other.getValue();
+	}
 }
 
 public void Main(int argc, string args) {
-	TestObject<int> obj = new TestObject<int>(173);
+	TestObject<int> obj1 = new TestObject<int>(173);
+	print("obj1 = " + obj1.toString());
 
-	print("obj = " + obj.toString());
+	TestObject<int> obj2 = new TestObject<int>(1389);
+	print("obj2 = " + obj2.toString());
+
+	obj1 = obj2;
+	print("obj1 = " + obj1.toString());
 }
 
