@@ -8,7 +8,7 @@ public object BasePrototype<T> {
 	}
 
 	public string =operator(string none) const {
-		return "mValue = " + mValue;
+		return "mValue = " + string mValue;
 	}
 }
 

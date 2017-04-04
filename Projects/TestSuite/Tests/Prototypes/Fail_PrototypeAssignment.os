@@ -17,7 +17,7 @@ public object Prototype<T> {
 		return mValue;
 	}
 
-	public void setValue(T value) {
+	public void setValue(T value) modify {
 		mValue = value;
 	}
 }
