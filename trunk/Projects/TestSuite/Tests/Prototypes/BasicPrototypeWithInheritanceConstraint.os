@@ -7,7 +7,7 @@ public object Prototype<T: Object> {
 	private T mValue;
 
 	public void Constructor(T value) {
-		print("Prototype<" + typeid(value) + ">.Constructor(" + value + ")");
+		print("Prototype<" + typeid(value) + ">.Constructor(" + (string value) + ")");
 
 		mValue = value;
 	}
@@ -19,7 +19,7 @@ public object Prototype<T: Object> {
 	public void doIt() {
 		T value = mValue;
 
-		print("value = " + value);
+		print("value = " + string value);
 	}
 }
 
@@ -31,7 +31,7 @@ private bool TestCase1() {
 	print("TestCase 1: basic prototype");
 
 	Prototype<Integer> proto = new Prototype<Integer>(new Integer(173));
-	print("proto.getValue() = " + proto.getValue());
+	print("proto.getValue() = " + string proto.getValue());
 
 	proto.doIt();
 
