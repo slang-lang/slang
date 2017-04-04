@@ -10,13 +10,12 @@ public namespace ExceptionTest {
 		}
 
 		public string what() const {
-			//return "Exception: " + _exception;
 			return typeid(this) + "(\"" + _exception + "\")";
 		}
 	}
 
 	public object ObjectThatThrows {
-		public void ObjectThatThrows() {
+		public void Constructor() {
 			// not implementing this constructor and using the default constructor would also be valid
 		}
 
@@ -197,11 +196,11 @@ private bool TestCase7() throws {
 	}
 	catch ( ExceptionTest.Exception e ref ) {
 		print("correct catch: " + e.what());
-
-		return true;
 	}
 	finally {
 		print("outter finally");
+
+		return true;
 	}
 
 	return false;
