@@ -108,7 +108,7 @@ bool BluePrintGeneric::isInterface() const
 
 bool BluePrintGeneric::isPrototype() const
 {
-	return !mPrototypeConstraints.empty();
+	return mPrototypeConstraints.size();
 }
 
 void BluePrintGeneric::setPrototypeConstraints(const PrototypeConstraints& constraints)
