@@ -551,15 +551,6 @@ void Object::operator_assign(const Object *other)
 
 	::ObjectiveScript::MethodSymbol* value_operator = other->resolveMethod("=operator", params, false, Visibility::Public);
 	if ( value_operator ) {
-/*
-		Object tmp;
-
-		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, &tmp);
-
-		operator_assign(&tmp);
-		return;
-*/
-
 		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, this);
 		return;
 	}
@@ -581,15 +572,6 @@ void Object::operator_bitand(const Object *other)
 		value_operator = other->resolveMethod("=operator", params, false, Visibility::Public);
 	}
 	if ( value_operator ) {
-/*
-		Object tmp;
-
-		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, &tmp);
-
-		operator_bitand(&tmp);
-		return;
-*/
-
 		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, this);
 		return;
 	}
@@ -611,15 +593,6 @@ void Object::operator_bitcomplement(const Object *other)
 		value_operator = other->resolveMethod("=operator", params, false, Visibility::Public);
 	}
 	if ( value_operator ) {
-/*
-		Object tmp;
-
-		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, &tmp);
-
-		operator_bitcomplement(&tmp);
-		return;
-*/
-
 		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, this);
 		return;
 	}
@@ -641,15 +614,6 @@ void Object::operator_bitor(const Object *other)
 		value_operator = other->resolveMethod("=operator", params, false, Visibility::Public);
 	}
 	if ( value_operator ) {
-/*
-		Object tmp;
-
-		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, &tmp);
-
-		operator_bitor(&tmp);
-		return;
-*/
-
 		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, this);
 		return;
 	}
@@ -676,15 +640,6 @@ void Object::operator_divide(const Object *other)
 		value_operator = other->resolveMethod("=operator", params, false, Visibility::Public);
 	}
 	if ( value_operator ) {
-/*
-		Object tmp;
-
-		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, &tmp);
-
-		operator_divide(&tmp);
-		return;
-*/
-
 		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, this);
 		return;
 	}
@@ -843,15 +798,6 @@ void Object::operator_modulo(const Object *other)
 		value_operator = other->resolveMethod("=operator", params, false, Visibility::Public);
 	}
 	if ( value_operator ) {
-/*
-		Object tmp;
-
-		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, &tmp);
-
-		operator_modulo(&tmp);
-		return;
-*/
-
 		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, this);
 		return;
 	}
@@ -873,15 +819,6 @@ void Object::operator_multiply(const Object *other)
 		value_operator = other->resolveMethod("=operator", params, false, Visibility::Public);
 	}
 	if ( value_operator ) {
-/*
-		Object tmp;
-
-		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, &tmp);
-
-		operator_multiply(&tmp);
-		return;
-*/
-
 		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, this);
 		return;
 	}
@@ -903,15 +840,6 @@ void Object::operator_plus(const Object *other)
 		value_operator = other->resolveMethod("=operator", params, false, Visibility::Public);
 	}
 	if ( value_operator ) {
-/*
-		Object tmp;
-
-		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, &tmp);
-
-		operator_plus(&tmp);
-		return;
-*/
-
 		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, this);
 		return;
 	}
@@ -933,15 +861,6 @@ void Object::operator_subtract(const Object *other)
 		value_operator = other->resolveMethod("=operator", params, false, Visibility::Public);
 	}
 	if ( value_operator ) {
-/*
-		Object tmp;
-
-		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, &tmp);
-
-		operator_subtract(&tmp);
-		return;
-*/
-
 		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, this);
 		return;
 	}
