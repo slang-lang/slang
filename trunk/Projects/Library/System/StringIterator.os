@@ -19,6 +19,15 @@ public object StringIterator {
 	}
 
 	/*
+	 * Secondary constructor
+	 */
+	public void Constructor(string value, string separator = " ") {
+		mCurrentPosition = 0;
+		mSeparator = separator;
+		mValue = new String(value);
+	}
+
+	/*
 	 * Copy constructor
 	 */
 /*
