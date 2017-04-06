@@ -6,3 +6,4 @@ public void Main(int argc = 0, string args = "") {
 	// type cast from int to string
 	string strValue = string intValue;
 }
+
