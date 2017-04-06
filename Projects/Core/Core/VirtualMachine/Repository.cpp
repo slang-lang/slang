@@ -473,7 +473,7 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 						object->undefine(IDENTIFIER_BASE);
 
 						// create base object
-						Runtime::Object *ancestor = createReference(blueIt->second, name, ancestorIt->constraints(), InitilizationType::AllowAbstract);
+						Runtime::Object *ancestor = createReference(blueIt->second, IDENTIFIER_BASE, ancestorIt->constraints(), InitilizationType::AllowAbstract);
 						ancestor->setParent(blueprint->getEnclosingScope());
 						ancestor->undefine(IDENTIFIER_THIS);
 						ancestor->define(IDENTIFIER_THIS, object);
@@ -622,10 +622,10 @@ void Repository::init()
 /*
  * creates and defines all members and methods of an object
  */
-void Repository::initializeObject(Runtime::Object* object, Designtime::BluePrintObject* blueprint)
+void Repository::initializeObject(Runtime::Object* destObj, Designtime::BluePrintObject* srcObj)
 {
 	// create and define all symbols based on given blueprint
-	Symbols symbols = blueprint->provideSymbols();
+	Symbols symbols = srcObj->provideSymbols();
 	for ( Symbols::const_iterator it = symbols.begin(); it != symbols.end(); ++it ) {
 		if ( it->second->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
 			continue;
@@ -642,25 +642,25 @@ void Repository::initializeObject(Runtime::Object* object, Designtime::BluePrint
 		symbol->setLanguageFeatureState(blue->getLanguageFeatureState());
 		symbol->setMember(blue->isMember());
 		symbol->setMutability(blue->getMutability());
-		symbol->setParent(object);
+		symbol->setParent(destObj);
 		symbol->setValue(blue->getValue());
 		symbol->setVisibility(blue->getVisibility());
 
-		object->defineMember(symbol->getName(), symbol);
+		destObj->defineMember(symbol->getName(), symbol);
 	}
 
 	// create and define all methods based on given blueprint
-	MethodScope::MethodCollection methods = blueprint->provideMethods();
+	MethodScope::MethodCollection methods = srcObj->provideMethods();
 	for ( MethodScope::MethodCollection::const_iterator it = methods.begin(); it != methods.end(); ++it ) {
 		// create new method and ...
-		Common::Method* method = new Common::Method(object, (*it)->getName(), (*it)->QualifiedTypename());
+		Common::Method* method = new Common::Method(destObj, (*it)->getName(), (*it)->QualifiedTypename());
 		// ... copy its data from our template method
 		*method = *(*it);
 
-		object->defineMethod((*it)->getName(), method);
+		destObj->defineMethod((*it)->getName(), method);
 	}
 
-	object->define(IDENTIFIER_THIS, object);	// define this-symbol
+	destObj->define(IDENTIFIER_THIS, destObj);	// define this-symbol
 }
 
 /*

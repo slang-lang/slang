@@ -43,6 +43,7 @@ private bool TestCase2() const {
 	}
 	catch ( OutOfBoundsException e ) {
 		print("e.what(): " + e.what());
+
 		return true;
 	}
 	catch {

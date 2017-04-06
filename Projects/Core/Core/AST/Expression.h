@@ -330,6 +330,10 @@ public:
 		mSymbolExpressionType = SymbolExpressionType::DesigntimeSymbolExpression;
 	}
 
+	bool isPrototype() const {
+		return mConstraints.size();
+	}
+
 	std::string getResultType() const {
 		return mSymbolExpression ? mSymbolExpression->getResultType() : mResultType;
 	}

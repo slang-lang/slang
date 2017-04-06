@@ -37,7 +37,7 @@ void SymbolScope::define(const std::string& name, Symbol* symbol)
 		throw Common::Exceptions::Exception("invalid symbol pointer provided");
 	}
 
-	if ( resolve(name, true) ) {
+	if ( resolve(name, true, Visibility::Designtime) ) {
 		// duplicate symbol defined
 		throw Common::Exceptions::DuplicateIdentifier("duplicate identifier defined: " + symbol->getName());
 	}
@@ -265,10 +265,10 @@ Symbol* MethodScope::resolve(const std::string& name, bool onlyCurrentScope, Vis
 			Symbol* result = 0;
 
 			switch ( base->getSymbolType() ) {
-				case Symbol::IType::BluePrintEnumSymbol: result = static_cast<Designtime::BluePrintEnum*>(base)->resolve(name, false, visibility); break;
-				case Symbol::IType::BluePrintObjectSymbol: result = static_cast<Designtime::BluePrintObject*>(base)->resolve(name, false, visibility); break;
-				case Symbol::IType::NamespaceSymbol: result = static_cast<Common::Namespace*>(base)->resolve(name, false, visibility); break;
-				case Symbol::IType::ObjectSymbol: result = static_cast<Runtime::Object*>(base)->resolve(name, false, visibility); break;
+				case Symbol::IType::BluePrintEnumSymbol: result = static_cast<Designtime::BluePrintEnum*>(base)->resolve(name, true, visibility); break;
+				case Symbol::IType::BluePrintObjectSymbol: result = static_cast<Designtime::BluePrintObject*>(base)->resolve(name, true, visibility); break;
+				case Symbol::IType::NamespaceSymbol: result = static_cast<Common::Namespace*>(base)->resolve(name, true, visibility); break;
+				case Symbol::IType::ObjectSymbol: result = static_cast<Runtime::Object*>(base)->resolve(name, true, visibility); break;
 				default: throw Common::Exceptions::Exception("invalid scope type");
 			}
 
@@ -293,6 +293,25 @@ MethodSymbol* MethodScope::resolveMethod(const std::string& name, const Paramete
 		if ( method->getVisibility() >= visibility ) {
 			if ( method->getName() == name && method->isSignatureValid(params) ) {
 				return method;
+			}
+		}
+	}
+
+	if ( visibility != Visibility::Designtime ) {
+		Symbol* base = resolve(IDENTIFIER_BASE, true, Visibility::Designtime);
+		if ( base ) {
+			MethodSymbol* result = 0;
+
+			switch ( base->getSymbolType() ) {
+				case Symbol::IType::BluePrintEnumSymbol: result = static_cast<Designtime::BluePrintEnum*>(base)->resolveMethod(name, params, true, visibility); break;
+				case Symbol::IType::BluePrintObjectSymbol: result = static_cast<Designtime::BluePrintObject*>(base)->resolveMethod(name, params, true, visibility); break;
+				case Symbol::IType::NamespaceSymbol: result = static_cast<Common::Namespace*>(base)->resolveMethod(name, params, true, visibility); break;
+				case Symbol::IType::ObjectSymbol: result = static_cast<Runtime::Object*>(base)->resolveMethod(name, params, true, visibility); break;
+				default: throw Common::Exceptions::Exception("invalid scope type");
+			}
+
+			if ( result ) {
+				return result;
 			}
 		}
 	}
