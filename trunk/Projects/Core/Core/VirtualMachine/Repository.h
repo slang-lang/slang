@@ -90,7 +90,7 @@ private:
 	Designtime::BluePrintEnum* findBluePrintEnum(const std::string& type) const;
 	Designtime::BluePrintObject* findBluePrintObject(const std::string& type) const;
 
-	void initializeObject(Runtime::Object* object, Designtime::BluePrintObject* blueprint);
+	void initializeObject(Runtime::Object* destObj, Designtime::BluePrintObject* srcObj);
 
 private:
 	BluePrintEnumMap mBluePrintEnums;

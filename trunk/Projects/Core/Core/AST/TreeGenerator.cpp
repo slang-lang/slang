@@ -281,6 +281,7 @@ void TreeGenerator::initialize(Common::Method* method)
 	if ( owner && !method->isStatic() ) {
 		Runtime::Object *object = mRepository->createInstance(owner->QualifiedTypename(), IDENTIFIER_THIS, PrototypeConstraints());
 		object->setConst(mMethod->isConst());
+		object->setVisibility(Visibility::Private);
 
 		scope->define(IDENTIFIER_THIS, object);
 
@@ -288,10 +289,11 @@ void TreeGenerator::initialize(Common::Method* method)
 
 		// BEWARE: this is only valid as long as we have single inheritance!!!
 		for ( Designtime::Ancestors::const_iterator it = ancestors.begin(); it != ancestors.end(); ++it ) {
-			Runtime::Object *base = mRepository->createInstance((*it).name(), IDENTIFIER_BASE, PrototypeConstraints());
-			base->setConst(mMethod->isConst());
+			Runtime::Object *object = mRepository->createInstance((*it).name(), IDENTIFIER_BASE, PrototypeConstraints());
+			object->setConst(mMethod->isConst());
+			object->setVisibility(Visibility::Private);
 
-			scope->define(IDENTIFIER_BASE, base);
+			scope->define(IDENTIFIER_BASE, object);
 		}
 	}
 
@@ -433,7 +435,12 @@ Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 			++start;
 			SymbolExpression* symbol = resolveWithThis(start, getScope());
 
-			infixPostfix = new IsExpression(infixPostfix, symbol->getResultType());
+			std::string type = symbol->getResultType();
+			if ( dynamic_cast<DesigntimeSymbolExpression*>(symbol) ) {
+				type = Designtime::Parser::buildRuntimeConstraintTypename(type, dynamic_cast<DesigntimeSymbolExpression*>(symbol)->mConstraints);
+			}
+
+			infixPostfix = new IsExpression(infixPostfix, type);
 		} break;
 		default:
 			break;
@@ -765,22 +772,27 @@ Node* TreeGenerator::process_identifier(TokenIterator& token, bool allowTypeCast
 
 	// type cast (followed by identifier or 'copy' || 'new' keyword)
 	if ( allowTypeCast &&
-		((op->category() == Token::Category::Constant || op->type() == Token::Type::IDENTIFIER || op->type() == Token::Type::KEYWORD) /*||
-		 (dynamic_cast<DesigntimeSymbolExpression*>(symbol) && op->type() == Token::Type::COMPARE_LESS)*/)
+		((op->category() == Token::Category::Constant || op->type() == Token::Type::IDENTIFIER || op->type() == Token::Type::KEYWORD) ||
+		 (dynamic_cast<DesigntimeSymbolExpression*>(symbol) && dynamic_cast<DesigntimeSymbolExpression*>(symbol)->isPrototype()))
 		) {
-		node = new TypecastExpression(symbol->getResultType(), expression(++old));
+
+		std::string type = symbol->getResultType();
+		if ( dynamic_cast<DesigntimeSymbolExpression*>(symbol) ) {
+			type = Designtime::Parser::buildRuntimeConstraintTypename(type, dynamic_cast<DesigntimeSymbolExpression*>(symbol)->mConstraints);
+		}
+		node = new TypecastExpression(type, expression(token));
 
 		// delete resolved symbol expression as it is not needed any more
 		delete symbol;
 		symbol = 0;
 
-		token = old;
+		//token = old;
 	}
 	// type declaration
 	else if ( !allowTypeCast &&
-			(op->type() == Token::Type::IDENTIFIER /*||
-			 (dynamic_cast<DesigntimeSymbolExpression*>(symbol) && op->type() == Token::Type::COMPARE_LESS)*/)
-			) {
+		((op->type() == Token::Type::IDENTIFIER) ||
+		 (dynamic_cast<DesigntimeSymbolExpression*>(symbol) && dynamic_cast<DesigntimeSymbolExpression*>(symbol)->isPrototype()))
+		) {
 		// delete resolved symbol expression as it is not needed any more
 		delete symbol;
 		symbol = 0;
@@ -1453,15 +1465,16 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 		throw Common::Exceptions::Exception("invalid base scope");
 	}
 
+	std::string name = token->content();
+
 	// retrieve symbol for token from base scope
-	Symbol* result = base->resolve(token->content(), onlyCurrentScope, onlyCurrentScope ? Visibility::Public : Visibility::Private);
+	Symbol* result = base->resolve(name, onlyCurrentScope, onlyCurrentScope ? Visibility::Public : Visibility::Private);
 	if ( !result ) {
 		return 0;
 	}
 
 	++token;
 
-	std::string name = result->getName();
 	IScope* scope = 0;
 	std::string type;
 
@@ -1476,24 +1489,32 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 				name = static_cast<Designtime::BluePrintEnum*>(result)->UnqualifiedTypename();
 			}
 
-			scope = static_cast<Designtime::BluePrintEnum*>(mRepository->findBluePrint(type));
+			PrototypeConstraints constraints;
+			Designtime::BluePrintGeneric* blueprint = mRepository->findBluePrint(type);
+			if ( blueprint->isPrototype() ) {
+				constraints = Designtime::Parser::collectRuntimePrototypeConstraints(token);
+			}
 
-			PrototypeConstraints constraints;// = Designtime::Parser::collectRuntimePrototypeConstraints(token);
+			scope = static_cast<Designtime::BluePrintEnum*>(blueprint);
 
-			symbol = new DesigntimeSymbolExpression(name, type, constraints, static_cast<Designtime::BluePrintEnum*>(result)->isConst());
+			symbol = new DesigntimeSymbolExpression(name, type, constraints, blueprint->isConst());
 		} break;
 		case Symbol::IType::BluePrintObjectSymbol: {
 			type = static_cast<Designtime::BluePrintObject*>(result)->QualifiedTypename();
 
-			if ( !static_cast<Designtime::BluePrintObject*>(result)->isMember() ) {
+			if ( !static_cast<Designtime::BluePrintObject*>(result)->isMember() && name != IDENTIFIER_BASE ) {
 				name = static_cast<Designtime::BluePrintObject*>(result)->UnqualifiedTypename();
 			}
 
-			scope = static_cast<Designtime::BluePrintObject*>(mRepository->findBluePrint(type));
+			PrototypeConstraints constraints;
+			Designtime::BluePrintGeneric* blueprint = mRepository->findBluePrint(type);
+			if ( blueprint->isPrototype() ) {
+				constraints = Designtime::Parser::collectRuntimePrototypeConstraints(token);
+			}
 
-			PrototypeConstraints constraints;// = Designtime::Parser::collectRuntimePrototypeConstraints(token);
+			scope = static_cast<Designtime::BluePrintObject*>(blueprint);
 
-			symbol = new DesigntimeSymbolExpression(name, type, constraints, static_cast<Designtime::BluePrintObject*>(result)->isConst());
+			symbol = new DesigntimeSymbolExpression(name, type, constraints, blueprint->isConst());
 		} break;
 		case Symbol::IType::NamespaceSymbol:
 			scope = static_cast<Common::Namespace*>(result);
@@ -1548,7 +1569,7 @@ SymbolExpression* TreeGenerator::resolveWithThis(TokenIterator& token, IScope* b
 
 	Designtime::BluePrintObject* blueprint = dynamic_cast<Designtime::BluePrintObject*>(outer);
 	if ( blueprint ) {
-		// resolve symbol (without exceptions so that we can try to resolve a second time) by using "this" identifier
+		// resolve symbol (without exceptions so that we can try to resolve another time) by using "this" identifier
 		SymbolExpression* exp = resolve(token, blueprint, true);
 		if ( exp ) {
 			// insert "this" symbol as "parent" of our recently resolved symbol
@@ -1558,20 +1579,21 @@ SymbolExpression* TreeGenerator::resolveWithThis(TokenIterator& token, IScope* b
 			return symbol;
 		}
 
-/*		// resolve symbol (without exceptions so that we can try to resolve a second time) by using "base" identifier
+		// resolve symbol (without exceptions so that we can try to resolve another time) by using "base" identifier
 		auto ancestors = blueprint->getAncestors();
 		for ( auto it = ancestors.begin(); it != ancestors.end(); ++it ) {
+			Designtime::BluePrintObject* ancestor = static_cast<Designtime::BluePrintObject*>(mRepository->findBluePrint((*it).name()));
+
 			// resolve without exceptions so that we can try to resolve a second time
-			SymbolExpression* exp = resolve(token, (*it)->, true);
+			SymbolExpression* exp = resolve(token, ancestor, true);
 			if ( exp ) {
-				// insert "this" symbol as "parent" of our recently resolved symbol
+				// insert "base" symbol as "parent" of our recently resolved symbol
 				SymbolExpression* symbol = new RuntimeSymbolExpression(IDENTIFIER_BASE, blueprint->QualifiedTypename(), mMethod->isConst(), false);
 				symbol->mSymbolExpression = exp;
 
 				return symbol;
 			}
 		}
-*/
 	}
 
 	return resolveWithExceptions(token, base, onlyCurrentScope);

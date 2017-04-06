@@ -110,8 +110,6 @@ void ASTTest::testAssignment()
 
 void ASTTest::testBase()
 {
-TSKIP("skipping BaseTest.os");
-
 	try {
 		VirtualMachine vm;
 		vm.createScriptFromFile("Tests/AST/BaseTest.os");

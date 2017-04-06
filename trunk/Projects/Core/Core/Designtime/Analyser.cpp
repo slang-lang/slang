@@ -537,7 +537,7 @@ bool Analyser::createNamespace(TokenIterator& token, TokenIterator /*end*/)
 		Common::Namespace* space = 0;
 
 		// check for an existing namespace with this name
-		Symbol* symbol = mScope->resolve(name, true);
+		Symbol* symbol = mScope->resolve(name, true, Visibility::Designtime);
 		if ( !symbol ) {
 			space = new Common::Namespace(name, mScope);
 			space->setLanguageFeatureState(languageFeatureState);
