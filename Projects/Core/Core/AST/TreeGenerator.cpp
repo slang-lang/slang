@@ -1459,16 +1459,19 @@ void TreeGenerator::pushTokens(const TokenList& tokens)
 	mStackFrame->pushTokens(tokens);
 }
 
-SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, bool onlyCurrentScope) const
+SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, bool onlyCurrentScope, Visibility::E visibility) const
 {
 	if ( !base ) {
 		throw Common::Exceptions::Exception("invalid base scope");
 	}
 
 	std::string name = token->content();
+	if ( !onlyCurrentScope /*|| name == IDENTIFIER_BASE || name == IDENTIFIER_THIS*/ ) {
+		visibility = Visibility::Private;
+	}
 
 	// retrieve symbol for token from base scope
-	Symbol* result = base->resolve(name, onlyCurrentScope, onlyCurrentScope ? Visibility::Public : Visibility::Private);
+	Symbol* result = base->resolve(name, onlyCurrentScope, visibility);
 	if ( !result ) {
 		return 0;
 	}
@@ -1539,7 +1542,14 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 	}
 
 	if ( token->type() == Token::Type::SCOPE ) {
-		symbol->mSymbolExpression = resolve(++token, scope, true);
+		if ( name == IDENTIFIER_BASE ) {
+			visibility = Visibility::Protected;
+		}
+		else if ( name == IDENTIFIER_THIS ) {
+			visibility = Visibility::Private;
+		}
+
+		symbol->mSymbolExpression = resolve(++token, scope, true, visibility);
 
 		if ( !symbol->mSymbolExpression ) {
 			// because exceptions are not allowed here we have to return 0 (without leaving memleaks)

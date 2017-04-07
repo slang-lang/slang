@@ -111,7 +111,7 @@ private: // Execution
 	Mutability::E parseMutability(TokenIterator& token);
 	// }
 
-	SymbolExpression* resolve(TokenIterator& token, IScope* base, bool onlyCurrentScope = false) const;
+	SymbolExpression* resolve(TokenIterator& token, IScope* base, bool onlyCurrentScope = false, Visibility::E visibility = Visibility::Public) const;
 	SymbolExpression* resolveWithExceptions(TokenIterator& token, IScope* base, bool onlyCurrentScope = false) const;
 	SymbolExpression* resolveWithThis(TokenIterator& token, IScope* base, bool onlyCurrentScope = false) const;
 	MethodSymbol* resolveMethod(SymbolExpression* symbol, const ParameterList& params, Visibility::E visibility) const;
