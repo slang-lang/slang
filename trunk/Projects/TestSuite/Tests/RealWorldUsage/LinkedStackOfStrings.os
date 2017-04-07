@@ -47,7 +47,7 @@ public object StringStackIterator extends Iterator {
     }
 }
 
-public object LinkedStackOfStrings<T> implements IIterateable {
+public object LinkedStackOfStrings implements IIterateable {
     private int n;          // size of the stack
     private Node first;     // top of stack
 
@@ -63,16 +63,16 @@ public object LinkedStackOfStrings<T> implements IIterateable {
     }
 
     // peek at last element
-    public T peek() {
+    public String peek() throws {
         if ( isEmpty() ) {
-            throw new RuntimeException("Stack underflow");
+            throw new Exception("Stack underflow");
         }
 
-        return T first.item;
+        return String first.item;
     }
 
     // add an element to the stack
-    public void push(T item ref) {
+    public void push(String item ref) modify {
         Node oldfirst = first;
         first = new Node();
         first.item = item;
@@ -81,12 +81,12 @@ public object LinkedStackOfStrings<T> implements IIterateable {
     }
 
     // delete and return the most recently added element
-    public T pop() throws {
+    public String pop() modify throws {
         if ( isEmpty() ) {
             throw new Exception("Stack underflow");
         }
 
-        T item = first.item;      	// save item to return
+        String item = first.item;      	// save item to return
         first = first.next;		// delete first node
         n--;
         return item;			// return the saved item

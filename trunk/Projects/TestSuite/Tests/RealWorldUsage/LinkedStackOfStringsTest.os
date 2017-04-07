@@ -13,7 +13,7 @@ public void Main(int argc = 0, string args = "") {
 private bool TestCase1() {
 	print("TestCase 1");
 
-	LinkedStackOfStrings<String> stack = new LinkedStackOfStrings<String>();
+	LinkedStackOfStrings stack = new LinkedStackOfStrings();
 
 	assert( stack.isEmpty() );
 
@@ -40,7 +40,7 @@ private bool TestCase2() {
 	print("TestCase 2");
 
 	try {
-		LinkedStackOfStrings<String> stack = new LinkedStackOfStrings<String>();
+		LinkedStackOfStrings stack = new LinkedStackOfStrings();
 
 		assert( stack.isEmpty() );
 
@@ -51,7 +51,7 @@ private bool TestCase2() {
 		assert( stack.size() == 3 );
 		assert( stack.peek() == "3" );
 
-		Iterator it = stack.getIterator();
+		Iterator it = Iterator stack.getIterator();
 		while ( it.current() ) {
 			print(string it.current());
 
@@ -68,13 +68,13 @@ private bool TestCase2() {
 		print(e);
 	}
 	catch ( IOException e ) {
-		print( "IOException: " + e.what());
+		print("IOException: " + e.what());
 	}
 	finally {
 		print("finally!");
 	}
 	catch ( OutOfBoundsException e ) {
-		print( "OutOfBoundsException: " + e.what() );
+		print("OutOfBoundsException: " + e.what());
 	}
 	catch ( Exception e ) {
 		print("caught generic exception: " + e.what());
@@ -87,7 +87,7 @@ private bool TestCase3() {
 	print("TestCase 3: foreach");
 
 	try {
-                LinkedStackOfStrings<String> stack = new LinkedStackOfStrings<String>();
+                LinkedStackOfStrings stack = new LinkedStackOfStrings();
 
                 assert( stack.isEmpty() );
 
@@ -99,7 +99,7 @@ private bool TestCase3() {
 		assert( stack.size() == 3 );
 
 		foreach ( String s : stack ) {
-			print(s);
+			print(string s);
 		}
 
 		return true;
