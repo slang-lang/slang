@@ -205,8 +205,8 @@ bool Analyser::createBluePrint(TokenIterator& token, TokenIterator /*end*/)
 	mScope = tmpScope;
 	mProcessingInterface = false;
 
-	// create default constructor if not already present
-	if ( !blueprint->hasDefaultConstructor() ) {
+	// create default constructor if blueprint has no constructor at all
+	if ( !blueprint->hasConstructor() ) {
 		Common::Method* defaultConstructor = new Common::Method(blueprint, CONSTRUCTOR, _void);
 		defaultConstructor->setAbstract(false);
 		defaultConstructor->setConst(false);

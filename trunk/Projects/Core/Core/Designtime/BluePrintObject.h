@@ -33,6 +33,7 @@ public:
 public:
 	void setParent(IScope* parent);
 
+	bool hasConstructor() const;
 	bool hasDefaultConstructor() const;
 
 	Runtime::AtomicValue getValue() const;
