@@ -144,22 +144,6 @@ public object String implements IIterateable {
 	}
 
 	/*
-	 * Returns String.mValue as string
-	 * Deprecated: use (active) value operator instead
-	 */
-	public deprecated string Value() const {
-		return mValue;
-	}
-
-	/*
-	 * Sets String.mValue from a string
-	 * Deprecated: use (passive) assignment operator instead
-	 */
-	public deprecated void Value(string value) modify {
-		mValue = value;
-	}
-
-	/*
 	 * String value operator
 	 */
 	public string =operator(string value) const {

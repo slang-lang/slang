@@ -26,19 +26,6 @@ public object Integer {
 		// this is empty by intend
 	}
 
-	/*
-	 * Returns a JSON-formatted string
-	 */
-	public deprecated string ToJsonString() const {
-		return "{ "
-		     + "mValue: " + mValue
-		     + " }";
-	}
-
-	public deprecated string ToString() const {
-		return "Integer: " +  mValue;
-	}
-
 	public bool operator!() const {
 		return !mValue;
 	}

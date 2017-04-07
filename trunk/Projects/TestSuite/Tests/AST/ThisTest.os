@@ -4,7 +4,7 @@ private object TestObject {
 	private int mValue;
 
 	public void Constructor(int value) {
-		mValue = value;
+		this.mValue = value;
 	}
 
 	public string =operator(string none) const {

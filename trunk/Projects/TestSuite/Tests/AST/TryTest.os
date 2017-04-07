@@ -5,6 +5,7 @@ public void Main(int argc = 1, string args = "") {
 	assert( TestCase2() );
 	assert( TestCase3() );
 	assert( TestCase4() );
+	assert( TestCase5() );
 }
 
 private bool TestCase1() throws {
@@ -98,6 +99,23 @@ private bool TestCase4() throws {
 	}
 
 	assert( !"after return" );
+	return false;
+}
+
+private bool TestCase5() throws {
+	print("TestCase 5: try-catch");
+
+	int blocks;
+	try {
+		blocks++;
+		print("try");
+
+		return true;
+	}
+	catch ( int e ) {
+		assert( !"this will never happen" );
+	}
+
 	return false;
 }
 
