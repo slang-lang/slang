@@ -55,6 +55,9 @@ public:
 	void deinit();
 	void init();
 
+	// asyncronous initialization of blueprints
+	void initializeBlueprints();
+
 public:
 	void addBluePrint(Designtime::BluePrintEnum* blueprint);
 	void addBluePrint(Designtime::BluePrintObject* object);
@@ -85,6 +88,7 @@ private:
 	Runtime::Object* createObject(const std::string& name, Designtime::BluePrintObject* blueprint, InitilizationType::E initialize);
 	Runtime::Object* createUserObject(const std::string& name, Designtime::BluePrintObject* blueprint, InitilizationType::E initialize);
 
+	void initBlueprint(Designtime::BluePrintObject* blueprint);
 	void initTypeSystem(Designtime::BluePrintObject* blueprint);
 
 	Designtime::BluePrintEnum* findBluePrintEnum(const std::string& type) const;

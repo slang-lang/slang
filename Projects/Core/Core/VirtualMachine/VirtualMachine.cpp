@@ -114,6 +114,8 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 	}
 
 
+	Controller::Instance().repository()->initializeBlueprints();
+
 #ifdef GENERATE_PARSE_TREE
 
 	AST::Generator generator;
