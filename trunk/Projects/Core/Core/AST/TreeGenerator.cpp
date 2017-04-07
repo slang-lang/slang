@@ -1580,7 +1580,7 @@ SymbolExpression* TreeGenerator::resolveWithThis(TokenIterator& token, IScope* b
 	Designtime::BluePrintObject* blueprint = dynamic_cast<Designtime::BluePrintObject*>(outer);
 	if ( blueprint ) {
 		// resolve symbol (without exceptions so that we can try to resolve another time) by using "this" identifier
-		SymbolExpression* exp = resolve(token, blueprint, true);
+		SymbolExpression* exp = resolve(token, blueprint, true, Visibility::Private);
 		if ( exp ) {
 			// insert "this" symbol as "parent" of our recently resolved symbol
 			SymbolExpression* symbol = new RuntimeSymbolExpression(IDENTIFIER_THIS, blueprint->QualifiedTypename(), mMethod->isConst(), false);
@@ -1595,7 +1595,7 @@ SymbolExpression* TreeGenerator::resolveWithThis(TokenIterator& token, IScope* b
 			Designtime::BluePrintObject* ancestor = static_cast<Designtime::BluePrintObject*>(mRepository->findBluePrint((*it).name()));
 
 			// resolve without exceptions so that we can try to resolve a second time
-			SymbolExpression* exp = resolve(token, ancestor, true);
+			SymbolExpression* exp = resolve(token, ancestor, true, Visibility::Protected);
 			if ( exp ) {
 				// insert "base" symbol as "parent" of our recently resolved symbol
 				SymbolExpression* symbol = new RuntimeSymbolExpression(IDENTIFIER_BASE, blueprint->QualifiedTypename(), mMethod->isConst(), false);
