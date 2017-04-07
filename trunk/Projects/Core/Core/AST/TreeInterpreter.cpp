@@ -1302,7 +1302,9 @@ void TreeInterpreter::visitTry(TryStatement* node)
 	Runtime::ControlFlow::E tmpControlFlow = mControlFlow;
 
 	// reset current control flow to allow execution of finally-block (if one exists)
-	mControlFlow = Runtime::ControlFlow::Normal;
+	if ( mControlFlow == Runtime::ControlFlow::Throw ) {
+		mControlFlow = Runtime::ControlFlow::Normal;
+	}
 
 	// allow try-statements without finally-statements
 	if ( node->mFinallyBlock ) {
