@@ -103,17 +103,7 @@ void Repository::addBluePrint(Designtime::BluePrintObject* blueprint)
 
 	mBluePrintObjects.insert(std::make_pair(blueprint->QualifiedTypename(), blueprint));
 
-	if ( !blueprint->isAtomicType() ) {
-		Designtime::Ancestors ancestors = blueprint->getAncestors();
-		for ( Designtime::Ancestors::const_iterator it = ancestors.begin(); it != ancestors.end(); ++it ) {
-			Designtime::BluePrintGeneric* base = findBluePrint(it->name());
-			if ( base ) {
-				blueprint->define(IDENTIFIER_BASE, base);
-			}
-		}
-
-		initTypeSystem(blueprint);
-	}
+	//initBlueprint(blueprint);
 }
 
 void Repository::cleanupForwardDeclarations()
@@ -620,6 +610,16 @@ void Repository::init()
 }
 
 /*
+ * this allows asyncronous initialization of blueprints so that the order of imports does not matter
+ */
+void Repository::initializeBlueprints()
+{
+	for ( BluePrintObjectMap::iterator it = mBluePrintObjects.begin(); it != mBluePrintObjects.end(); ++it ) {
+		initBlueprint(it->second);
+	}
+}
+
+/*
  * creates and defines all members and methods of an object
  */
 void Repository::initializeObject(Runtime::Object* destObj, Designtime::BluePrintObject* srcObj)
@@ -661,6 +661,27 @@ void Repository::initializeObject(Runtime::Object* destObj, Designtime::BluePrin
 	}
 
 	destObj->define(IDENTIFIER_THIS, destObj);	// define this-symbol
+}
+
+/*
+ * initializes a given blueprint object (i.e. triggers type system initialization)
+ */
+void Repository::initBlueprint(Designtime::BluePrintObject* blueprint)
+{
+	if ( blueprint->isAtomicType() ) {
+		// atomic types should have been initialized at compile time
+		return;
+	}
+
+	Designtime::Ancestors ancestors = blueprint->getAncestors();
+	for ( Designtime::Ancestors::const_iterator it = ancestors.begin(); it != ancestors.end(); ++it ) {
+		Designtime::BluePrintGeneric* base = findBluePrint(it->name());
+		if ( base ) {
+			blueprint->define(IDENTIFIER_BASE, base);
+		}
+	}
+
+	initTypeSystem(blueprint);
 }
 
 /*
