@@ -3,6 +3,7 @@ INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 SET(SOURCES
 	AtomicValue.cpp
 	ExceptionData.cpp
+	Interpreter.cpp
 	OperatorOverloading.cpp
 	Reference.cpp
 	Script.cpp
@@ -14,6 +15,7 @@ SET(HEADERS
 	ControlFlow.h
 	ExceptionData.h
 	Exceptions.h
+	Interpreter.h
 	OperatorOverloading.h
 	Reference.h
 	Script.h
@@ -21,7 +23,9 @@ SET(HEADERS
 )
 
 SET(DEPENDENCIES
+	CoreDebugger
 	CoreBuildInObjects
+	Utils
 )
 
 add_include(Projects/Core)

@@ -9,9 +9,9 @@
 // Project includes
 #include <Core/Common/Types.h>
 #include <Core/Designtime/Parser/Token.h>
+#include <Core/Parameter.h>
 #include <Core/Runtime/ControlFlow.h>
 #include <Core/Runtime/ExceptionData.h>
-#include "Parameter.h"
 
 // Forward declarations
 

@@ -17,8 +17,8 @@
 #include <Core/Interfaces/IRuntimeType.h>
 #include <Core/Runtime/AtomicValue.h>
 #include <Core/Runtime/ControlFlow.h>
+#include <Core/Runtime/Interpreter.h>
 #include <Core/Runtime/Reference.h>
-#include "Interpreter.h"
 #include "Parameter.h"
 #include "Scope.h"
 #include "Symbol.h"
