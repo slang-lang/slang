@@ -20,6 +20,8 @@ namespace ObjectiveScript {
 
 
 Thread::Thread()
+: mId(0),
+  mState(State::Starting)
 {
 }
 
