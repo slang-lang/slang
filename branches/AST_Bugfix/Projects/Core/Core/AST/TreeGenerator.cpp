@@ -1483,22 +1483,17 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 	}
 
 	std::string name = token->content();
-	if ( !onlyCurrentScope /*|| name == IDENTIFIER_BASE || name == IDENTIFIER_THIS*/ ) {
-		visibility = Visibility::Private;
-	}
+	IScope* scope = 0;
+	SymbolExpression* symbol = 0;
+	std::string type;
 
 	// retrieve symbol for token from base scope
-	Symbol* result = base->resolve(name, onlyCurrentScope, visibility);
+	Symbol* result = base->resolve(name, onlyCurrentScope, !onlyCurrentScope ? Visibility::Private : visibility);
 	if ( !result ) {
 		return 0;
 	}
 
 	++token;
-
-	IScope* scope = 0;
-	std::string type;
-
-	SymbolExpression* symbol = 0;
 
 	// set scope & type according to symbol type
 	switch ( result->getSymbolType() ) {
@@ -1550,9 +1545,8 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 			symbol = new RuntimeSymbolExpression(name, type, static_cast<Runtime::Object*>(result)->isConst(), static_cast<Runtime::Object*>(result)->isMember());
 		} break;
 		case Symbol::IType::MethodSymbol:
-			scope = 0;
-			// don't set the result type yet because we first have to determine which method should get executed in case overloaded methods are present
-			// this will be done in a later step (during method resolution)
+			// don't set the result type yet because we first have to determine which method should get executed in case overloaded methods
+			// are present; this will be done in a later step (during method resolution)
 
 			symbol = new RuntimeSymbolExpression(name, type, false, false);
 			break;
