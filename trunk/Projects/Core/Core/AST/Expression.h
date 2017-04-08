@@ -331,7 +331,7 @@ public:
 	}
 
 	bool isPrototype() const {
-		return mConstraints.size();
+		return !mConstraints.empty();
 	}
 
 	std::string getResultType() const {
