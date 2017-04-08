@@ -46,7 +46,7 @@ public object Stack extends AbstractCollection {
 	public void push(Object value ref) modify {
 		CollectionItem item = new CollectionItem(value);
 
-		if ( mSize == 0 ) {		// special handling for 1st item
+		if ( mSize == 0 ) {			// special handling for 1st item
 			mFirst = item;
 		}
 		else {					// generic handling

@@ -50,7 +50,7 @@ public object Warehouse implements IWarehouse {
 			throw new Exception("Warehouse is empty!");
 		}
 
-		mBox = Box null;
+		mBox = null;
 	}
 }
 

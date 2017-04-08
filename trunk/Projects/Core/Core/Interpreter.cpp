@@ -669,6 +669,11 @@ void Interpreter::parseInfixPostfix(Object *result, TokenIterator& start)
 
 	// infix
 	switch ( op ) {
+		case Token::Type::MATH_ADDITION: {
+			++start;
+			parseExpression(result, start);
+			// ignore infix addition operator
+		} break;
 		case Token::Type::MATH_SUBTRACT: {
 			++start;
 			parseExpression(result, start);
@@ -707,20 +712,9 @@ void Interpreter::parseInfixPostfix(Object *result, TokenIterator& start)
 
 	// postfix
 	switch ( op ) {
-/*
 		case Token::Type::BRACKET_OPEN: {
-			++start;	// consume operator token
-
-			Object tmp;
-			expression(&tmp, start);
-
-			expect(Token::Type::BRACKET_CLOSE, start);
-
-			operator_trinary_array(result, &tmp, result);
-
-			++start;	// consume operator token
+			throw Common::Exceptions::NotSupported("postfix [] operator not supported", start->position());
 		} break;
-*/
 		case Token::Type::OPERATOR_DECREMENT: {
 			operator_unary_decrement(result);
 			++start;
@@ -757,8 +751,11 @@ void Interpreter::parseInfixPostfix(Object *result, TokenIterator& start)
 			*result = BoolObject(operator_binary_is(result, compareType));
 		} break;
 		case Token::Type::OPERATOR_NOT: {
+			throw Common::Exceptions::NotSupported("postfix ! operator not supported", start->position());
+/*
 			operator_unary_validate(result);
 			++start;
+*/
 		} break;
 		default: {
 		} break;

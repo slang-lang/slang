@@ -35,7 +35,8 @@ public object Map<K, V> implements IIterateable {
 	public V get(K key) const throws {
 		foreach ( Object p : mItems ) {
 			if ( p == key ) {
-				return p.second;
+				Pair<K, V> pair = Pair<K, V> p;
+				return pair.second;
 			}
 		}
 
@@ -59,7 +60,8 @@ public object Map<K, V> implements IIterateable {
 	public void put(K key, V value) modify throws {
 		foreach ( Object p : mItems ) {
 			if ( p == key ) {
-				p.second = value;
+				Pair<K, V> pair = Pair<K, V> p;
+				pair.second = value;
 				return;
 			}
 		}

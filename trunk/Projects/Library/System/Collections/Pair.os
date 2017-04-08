@@ -1,4 +1,7 @@
 
+/*
+ * Pair, prototype; A generic implementation of a tuple
+ */
 public object Pair<F, S> {
 	public F first;
 	public S second;
@@ -21,7 +24,7 @@ public object Pair<F, S> {
 	}
 
 	public string =operator(string none) const {
-		return "{" + first + ":" + second + "}";
+		return "{" + (string first) + ":" + (string second) + "}";
 	}
 }
 
