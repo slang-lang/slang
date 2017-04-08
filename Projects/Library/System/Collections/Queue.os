@@ -12,7 +12,7 @@ public object Queue<T: Object> implements IIterateable {
 		clear();
 	}
 
-	public void clear() {
+	public void clear() modify {
 		mItems.clear();
 	}
 
@@ -21,7 +21,7 @@ public object Queue<T: Object> implements IIterateable {
 			throw new OutOfBoundsException("queue is already empty");
 		}
 
-		T item = mItems.at(0);
+		T item = T mItems.at(0);
 
 		mItems.pop_front();
 

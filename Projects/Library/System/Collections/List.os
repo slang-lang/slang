@@ -8,63 +8,63 @@ public namespace System.Collections { }
  * Single linked list
  */
 public object List extends AbstractCollection {
-    public void Constructor() {
-        base.Constructor();
-    }
+	public void Constructor() {
+		base.Constructor();
+	}
 
-    public void pop_back() modify throws {
-        if ( mSize <= 0 ) {
-            throw new OutOfBoundsException("cannot pop beyond ground level");
-        }
+	public void pop_back() modify throws {
+		if ( mSize <= 0 ) {
+			throw new OutOfBoundsException("cannot pop beyond ground level");
+		}
 
-        if ( mSize == 1 ) {		// special handling for 1st item
-            mFirst = null;
-        }
-        else {					// generic handling
-            CollectionItem item = mFirst;
-            for ( int i = 0; i < mSize - 1; i = i++ ) {
-                item = item.mNext;
-            }
+		if ( mSize == 1 ) {		// special handling for 1st item
+			mFirst = null;
+		}
+		else {					// generic handling
+			CollectionItem item = mFirst;
+			for ( int i = 0; i < mSize - 1; i = i++ ) {
+				item = item.mNext;
+			}
 
-            item.mNext = null;
-        }
+			item.mNext = null;
+		}
 
-        mSize--;
-    }
+		mSize--;
+	}
 
-    public void pop_front() modify throws {
-        if ( mSize <= 0 ) {
-            throw new OutOfBoundsException("pop beyond begin of list");
-        }
+	public void pop_front() modify throws {
+		if ( mSize <= 0 ) {
+			throw new OutOfBoundsException("pop beyond begin of list");
+		}
 
-        mFirst = mFirst.mNext;
+		mFirst = mFirst.mNext;
 
-        mSize--;
-    }
+		mSize--;
+	}
 
-    public void push_back(Object value ref) modify {
-        CollectionItem item = new CollectionItem();
-        item.mValue = value;
+	public void push_back(Object value ref) modify {
+		CollectionItem item = new CollectionItem();
+		item.mValue = value;
 
-        if ( mSize == 0 ) {     // special handling for 1st item
-            mFirst = item;
-        }
-        else {                  // generic handling
-            mLast.mNext = item;
-        }
+		if ( mSize == 0 ) {     // special handling for 1st item
+			mFirst = item;
+		}
+		else {                  // generic handling
+			mLast.mNext = item;
+		}
 
-        mLast = item;
+		mLast = item;
 
-        mSize++;
-    }
+		mSize++;
+	}
 
-    public void push_front(Object value ref) modify {
-        CollectionItem item = new CollectionItem(value);
+	public void push_front(Object value ref) modify {
+		CollectionItem item = new CollectionItem(value);
 
-        item.mNext = mFirst;
-        mFirst = item;
+		item.mNext = mFirst;
+		mFirst = item;
 
-        mSize++;
-    }
+		mSize++;
+	}
 }
 

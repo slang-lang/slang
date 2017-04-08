@@ -412,7 +412,7 @@ Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 	// postfix
 	switch ( op ) {
 		case Token::Type::BRACKET_OPEN: {
-			assert(!"postfix [] operator not supported");
+			throw Common::Exceptions::NotSupported("postfix [] operator not supported", start->position());
 		} break;
 		case Token::Type::OPERATOR_DECREMENT:
 		case Token::Type::OPERATOR_INCREMENT: {
@@ -420,9 +420,6 @@ Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 
 			Token tmp = (*start++);
 			infixPostfix = new UnaryExpression(tmp, infixPostfix, UnaryExpression::ValueType::RValue);
-		} break;
-		case Token::Type::OPERATOR_NOT: {
-			assert(!"postfix ! operator not supported");
 		} break;
 		case Token::Type::OPERATOR_IS: {
 			++start;
@@ -434,6 +431,9 @@ Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 			}
 
 			infixPostfix = new IsExpression(infixPostfix, type);
+		} break;
+		case Token::Type::OPERATOR_NOT: {
+			throw Common::Exceptions::NotSupported("postfix ! operator not supported", start->position());
 		} break;
 		default: {
 		} break;

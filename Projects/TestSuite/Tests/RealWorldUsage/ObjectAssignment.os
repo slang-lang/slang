@@ -4,11 +4,11 @@ private object Vector2D {
 	public int x;
 	public int y;
 
-	public void Constructor(int x, int y) {
-		print("Constructor(" + x + ", " + y + ")");
+	public void Constructor(int _x, int _y) {
+		print("Constructor(" + _x + ", " + _y + ")");
 
-		this.x = x;
-		this.y = y;
+		this.x = _x;
+		this.y = _y;
 	}
 
 	public void Destructor() {

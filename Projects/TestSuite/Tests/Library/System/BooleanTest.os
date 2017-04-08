@@ -14,9 +14,8 @@ private bool TestCase1() const {
 	// default value is false
 	Boolean value;// = new Boolean();
 
-	print("value = " + (!value)!);
-
-	return (!value)!;	// this is a really crazy test..
+	print("value = " + !value);
+	return !value;
 }
 
 private bool TestCase2() const {
