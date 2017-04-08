@@ -14,7 +14,7 @@ public object Scanner implements IIterateable {
 		readAll(file);
 	}
 
-	private void readAll(System.IO.File file) {
+	private void readAll(System.IO.File file) modify {
 		string ch;
 		string word;
 
