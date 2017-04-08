@@ -17,7 +17,7 @@ public void Main(int argc, string args) {
 
 		Mysql.MysqlDebugMode = true;
 
-		//conn.settings().setAutoEscaping(true);	// caining is not supported (yet)
+		//conn.settings().setAutoEscaping(true);	// chaining is not supported
 		Mysql.Settings s = conn.settings();
 		s.setAutoEscaping(true);
 
@@ -38,7 +38,7 @@ public void Main(int argc, string args) {
 		conn.close();
 	}
 	catch ( string e ) {
-		print(e);
+		print("caught exception: " + e);
 	}
 }
 
