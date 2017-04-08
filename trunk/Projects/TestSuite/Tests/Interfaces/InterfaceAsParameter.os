@@ -50,7 +50,7 @@ public object Warehouse implements IWarehouse {
 			throw new Exception("Warehouse is empty!");
 		}
 
-		mBox = null;
+		mBox = Box null;
 	}
 }
 
@@ -72,7 +72,7 @@ public object Observer {
 }
 
 public void Main(int argc = 0, string args = "") {
-	IWarehouse wh = new Warehouse();
+	IWarehouse wh = IWarehouse new Warehouse();
 	Observer o = new Observer(wh);
 
 	Box b = new Box(173);
