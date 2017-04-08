@@ -210,6 +210,7 @@ private bool TestCase5() const {
 	return false;
 }
 
+/* implementation of prototypes is not yet finished
 private bool TestCase6() {
 	print("TestCase 6: generic List");
 
@@ -233,4 +234,5 @@ private bool TestCase6() {
 
 	return false;
 }
+*/
 
