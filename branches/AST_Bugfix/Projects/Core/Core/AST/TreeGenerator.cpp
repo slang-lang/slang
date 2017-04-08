@@ -1574,8 +1574,8 @@ SymbolExpression* TreeGenerator::resolveWithThis(TokenIterator& token, IScope* b
 		}
 
 		// resolve symbol (without exceptions so that we can try to resolve another time) by using "base" identifier
-		auto ancestors = blueprint->getAncestors();
-		for ( auto it = ancestors.begin(); it != ancestors.end(); ++it ) {
+		Designtime::Ancestors ancestors = blueprint->getAncestors();
+		for ( Designtime::Ancestors::const_iterator it = ancestors.begin(); it != ancestors.end(); ++it ) {
 			Designtime::BluePrintObject* ancestor = static_cast<Designtime::BluePrintObject*>(mRepository->findBluePrint((*it).name()));
 
 			// resolve without exceptions so that we can try to resolve a second time

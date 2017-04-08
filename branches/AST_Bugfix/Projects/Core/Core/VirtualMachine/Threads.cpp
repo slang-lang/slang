@@ -8,7 +8,7 @@
 #ifdef GENERATE_PARSE_TREE
 #	include <Core/AST/TreeInterpreter.h>
 #else
-#	include <Core/Interpreter.h>
+#	include <Core/Runtime/Interpreter.h>
 #endif
 #include <Core/Common/Method.h>
 #include <Core/Runtime/Exceptions.h>
@@ -20,6 +20,8 @@ namespace ObjectiveScript {
 
 
 Thread::Thread()
+: mId(0),
+  mState(State::Starting)
 {
 }
 
