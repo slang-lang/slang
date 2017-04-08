@@ -5,10 +5,6 @@ import System.Integer;
 public object Prototype<T> {
 	private T mValue;
 
-	public void Constructor() {
-		mValue = 0;
-	}
-
 	public void Constructor(T value) {
 		mValue = value;
 	}
