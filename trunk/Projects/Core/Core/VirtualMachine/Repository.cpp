@@ -102,8 +102,6 @@ void Repository::addBluePrint(Designtime::BluePrintObject* blueprint)
 	}
 
 	mBluePrintObjects.insert(std::make_pair(blueprint->QualifiedTypename(), blueprint));
-
-	//initBlueprint(blueprint);
 }
 
 void Repository::cleanupForwardDeclarations()
@@ -120,7 +118,6 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 	if ( !blueprint ) {
 		throw Common::Exceptions::Exception("invalid blueprint provided!");
 	}
-
 	if ( blueprint->getPrototypeConstraints() != constraints ) {
 		throw Common::Exceptions::TypeMismatch("'" + blueprint->QualifiedTypename() + "' prototype constraint mismatch");
 	}
@@ -261,6 +258,8 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 
 	// add new blueprint to repository
 	addBluePrint(newBlue);
+	// initialize newly created blueprint
+	initBlueprint(newBlue);
 
 	// add new blueprint to parent scope
 	IScope* parent = blueprint->getEnclosingScope();
@@ -753,16 +752,6 @@ void Repository::initTypeSystem(Designtime::BluePrintObject* blueprint)
 	if ( !typeSystem->exists(blueprint->QualifiedTypename(), Token(Token::Type::ASSIGN, "="), blueprint->QualifiedTypename()) ) {
 		typeSystem->define(blueprint->QualifiedTypename(), Token::Type::ASSIGN, blueprint->QualifiedTypename(), blueprint->QualifiedTypename());
 	}
-
-/*
-	// add default assignment entry for prototype constraints
-	PrototypeConstraints constraints = blueprint->getPrototypeConstraints();
-	for ( PrototypeConstraints::const_iterator it = constraints.begin(); it != constraints.end(); ++it ) {
-		if ( !(*it).mConstraint.empty() && !typeSystem->exists((*it).mConstraint, Token(Token::Type::ASSIGN, "="), (*it).mConstraint) ) {
-			typeSystem->define((*it).mConstraint, Token::Type::ASSIGN, (*it).mConstraint, (*it).mConstraint);
-		}
-	}
-*/
 }
 
 
