@@ -54,6 +54,7 @@ private:
 	void visitThrow(ThrowStatement* node);
 	void visitTry(TryStatement* node);
 	void visitTypeDeclaration(TypeDeclaration* node);
+	void visitTypeInference(TypeInference* node);
 	void visitWhile(WhileStatement* node);
 
 private:

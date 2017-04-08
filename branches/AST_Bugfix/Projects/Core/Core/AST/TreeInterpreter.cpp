@@ -1149,6 +1149,9 @@ void TreeInterpreter::visitStatement(Statement *node)
 		case Statement::StatementType::TypeDeclaration:
 			visitTypeDeclaration(static_cast<TypeDeclaration*>(node));
 			break;
+		case Statement::StatementType::TypeInference:
+			visitTypeInference(static_cast<TypeInference*>(node));
+			break;
 		case Statement::StatementType::WhileStatement:
 			visitWhile(static_cast<WhileStatement*>(node));
 			break;
@@ -1320,10 +1323,9 @@ void TreeInterpreter::visitTry(TryStatement* node)
 Runtime::Object* TreeInterpreter::visitTypeDeclaration(TypeDeclaration* node)
 {
 	Runtime::Object* object = mRepository->createInstance(node->mType, node->mName, node->mConstraints);
+	object->setConst(node->mIsConst);
 
 	getScope()->define(node->mName, object);
-
-	object->setConst(node->mIsConst);
 
 	if ( node->mAssignment ) {
 		Runtime::Object tmp;
@@ -1339,6 +1341,11 @@ Runtime::Object* TreeInterpreter::visitTypeDeclaration(TypeDeclaration* node)
 	}
 
 	return object;
+}
+
+Runtime::Object* TreeInterpreter::visitTypeInference(TypeInference* node)
+{
+	return visitTypeDeclaration(node);
 }
 
 void TreeInterpreter::visitWhile(WhileStatement* node)

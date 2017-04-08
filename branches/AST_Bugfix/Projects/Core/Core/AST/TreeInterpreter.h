@@ -81,6 +81,7 @@ private:
 	void visitThrow(ThrowStatement* node);
 	void visitTry(TryStatement* node);
 	Runtime::Object* visitTypeDeclaration(TypeDeclaration* node);
+	Runtime::Object* visitTypeInference(TypeInference* node);
 	void visitWhile(WhileStatement* node);
 
 private:

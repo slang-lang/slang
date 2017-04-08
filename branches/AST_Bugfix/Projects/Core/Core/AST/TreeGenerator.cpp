@@ -920,6 +920,9 @@ Node* TreeGenerator::process_keyword(TokenIterator& token)
 	else if ( keyword == KEYWORD_TRY ) {
 		node = process_try(token);
 	}
+	else if ( keyword == KEYWORD_VAR ) {
+		node = process_var(token);
+	}
 	else if ( keyword == KEYWORD_WHILE ) {
 		node = process_while(token);
 	}
@@ -1406,6 +1409,36 @@ Expression* TreeGenerator::process_typeid(TokenIterator& token)
 	++token;
 
 	return new TypeidExpression(exp);
+}
+
+/*
+ * syntax:
+ * var <identifier> = <expression>;
+ */
+TypeDeclaration* TreeGenerator::process_var(TokenIterator& token)
+{
+	Token start = (*token);
+
+	expect(Token::Type::IDENTIFIER, token);
+
+	std::string name = token->content();
+	++token;
+
+	Mutability::E mutability = parseMutability(token);
+	AccessMode::E accessMode = parseAccessMode(token, AccessMode::ByValue);
+
+	expect(Token::Type::ASSIGN, token);
+	++token;
+
+	Node* assignment = expression(token);
+	std::string type = static_cast<Expression*>(assignment)->getResultType();
+
+	Runtime::Object* object = mRepository->createInstance(type, name, PrototypeConstraints(), Repository::InitilizationType::AllowAbstract);
+	object->setConst(mutability == Mutability::Const);
+
+	getScope()->define(name, object);
+
+	return new TypeInference(start, type, PrototypeConstraints(), name, mutability == Mutability::Const, accessMode == AccessMode::ByReference, assignment);
 }
 
 /*

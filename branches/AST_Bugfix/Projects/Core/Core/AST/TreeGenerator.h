@@ -90,6 +90,7 @@ private: // Execution
 	Statement* process_try(TokenIterator& token);
 	TypeDeclaration* process_type(TokenIterator& token, Initialization::E initialization);
 	Expression* process_typeid(TokenIterator& token);
+	TypeDeclaration* process_var(TokenIterator& token);
 	Statement* process_while(TokenIterator& token);
 	// }
 

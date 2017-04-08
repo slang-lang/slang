@@ -286,6 +286,9 @@ void PrintVisitor::visitStatement(Statement *node)
 		case Statement::StatementType::TypeDeclaration:
 			visitTypeDeclaration(static_cast<TypeDeclaration*>(node));
 			break;
+		case Statement::StatementType::TypeInference:
+			visitTypeInference(static_cast<TypeInference*>(node));
+			break;
 		case Statement::StatementType::WhileStatement:
 			visitWhile(static_cast<WhileStatement*>(node));
 			break;
@@ -319,6 +322,15 @@ void PrintVisitor::visitTry(TryStatement* node)
 void PrintVisitor::visitTypeDeclaration(TypeDeclaration* node)
 {
 	std::cout << printIndentation(mIndentation) << node->mType << " " << node->mName;
+
+	if ( node->mAssignment ) {
+		std::cout << " = " << printExpression(node->mAssignment) << ";" << std::endl;
+	}
+}
+
+void PrintVisitor::visitTypeInference(TypeInference* node)
+{
+	std::cout << printIndentation(mIndentation) << "var " << node->mName;
 
 	if ( node->mAssignment ) {
 		std::cout << " = " << printExpression(node->mAssignment) << ";" << std::endl;
