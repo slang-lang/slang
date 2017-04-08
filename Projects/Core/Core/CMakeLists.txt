@@ -11,7 +11,6 @@ ADD_SUBDIRECTORY(Runtime)
 ADD_SUBDIRECTORY(VirtualMachine)
 
 SET(SOURCES
-	Interpreter.cpp
 	Object.cpp
 	Parameter.cpp
 	Scope.cpp
@@ -23,7 +22,6 @@ SET(SOURCES
 SET(HEADERS
 	Consts.h
 	Defines.h
-	Interpreter.h
 	Object.h
 	ObjectiveScript.h
 	Parameter.h

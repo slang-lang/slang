@@ -14,19 +14,19 @@
 #include <Core/Common/Exceptions.h>
 #include <Core/Common/Method.h>
 #include <Core/Common/Namespace.h>
+#include <Core/Defines.h>
 #include <Core/Designtime/BluePrintEnum.h>
 #include <Core/Designtime/Exceptions.h>
 #include <Core/Designtime/Parser/Parser.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Runtime/OperatorOverloading.h>
 #include <Core/Runtime/TypeCast.h>
+#include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
 #include <Core/VirtualMachine/Stack.h>
 #include <Debugger/Debugger.h>
 #include <Tools/Printer.h>
 #include <Utils.h>
-#include "Defines.h"
-#include "Tools.h"
 
 // Namespace declarations
 
