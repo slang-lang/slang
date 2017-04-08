@@ -11,15 +11,20 @@ public object TestObject {
 	public void Destructor() {
 		print("Destructor()");
 	}
+
+	public string =operator(string none) const {
+		return string mValue;
+	}
 }
 
 public void Main(int argc = 0, string args = "") {
 	TestObject obj = new TestObject(173);
-
 	print(obj.mValue);
-	obj = null;
 
-	print(obj);
+	obj = TestObject null;
+	// obj should not be accessible any more
+
+	print(string obj);
 	assert(!obj);
 }
 

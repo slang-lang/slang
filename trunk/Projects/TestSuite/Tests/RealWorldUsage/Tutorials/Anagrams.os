@@ -34,9 +34,9 @@ public void Main(int argc, string args) {
 		}
 
 		foreach ( Pair<string, Set> p : map ) {
-			cout(string p.first + ", " + p.second + ": [");
+			cout((string p.first) + ", " + (string p.second) + ": [");
 			foreach ( String s : p.second ) {
-				cout("" + s + " ");
+				cout("" + string s + " ");
 			}
 			cout("]");
 			endl();
