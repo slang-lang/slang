@@ -389,7 +389,6 @@ Node* TreeGenerator::parseFactors(TokenIterator& start)
 Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 {
 	Node* infixPostfix = 0;
-
 	Token::Type::E op = start->type();
 
 	// infix
@@ -399,18 +398,13 @@ Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 			Token operation = (*start);
 			infixPostfix = new UnaryExpression(operation, parseTerm(++start));
 		} break;
-		case Token::Type::OPERATOR_DECREMENT:
-		case Token::Type::OPERATOR_INCREMENT: {
-			Token operation = (*start);
-			infixPostfix = new UnaryExpression(operation, parseTerm(++start), UnaryExpression::ValueType::LValue);
-		} break;
 		case Token::Type::OPERATOR_NOT: {
 			Token operation = (*start);
 			infixPostfix = new BooleanUnaryExpression(operation, parseTerm(++start));
 		} break;
-		default:
+		default: {
 			infixPostfix = parseTerm(start);
-			break;
+		} break;
 	}
 
 	op = start->type();
@@ -419,11 +413,16 @@ Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 	switch ( op ) {
 		case Token::Type::BRACKET_OPEN: {
 			assert(!"[] operator not supported");
+
+			Token tmp = (*start++);
+			infixPostfix = new UnaryExpression(tmp, infixPostfix, UnaryExpression::ValueType::RValue);
 		} break;
 		case Token::Type::OPERATOR_DECREMENT:
 		case Token::Type::OPERATOR_INCREMENT: {
+			// --/++ for rvalue
+
 			Token tmp = (*start++);
-			infixPostfix = new UnaryExpression(tmp, infixPostfix, UnaryExpression::ValueType::LValue);
+			infixPostfix = new UnaryExpression(tmp, infixPostfix, UnaryExpression::ValueType::RValue);
 		} break;
 		case Token::Type::OPERATOR_NOT: {
 			Token tmp = (*start++);
@@ -442,8 +441,8 @@ Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 
 			infixPostfix = new IsExpression(infixPostfix, type);
 		} break;
-		default:
-			break;
+		default: {
+		} break;
 	}
 
 	return infixPostfix;
@@ -835,17 +834,8 @@ Node* TreeGenerator::process_identifier(TokenIterator& token, bool allowTypeCast
 
 		node = new Assignment(symbol, (*op), right, resolveType(symbol, assignment, right));
 	}
-	// --
-	else if ( op->type() == Token::Type::OPERATOR_DECREMENT ) {
-		if ( symbol->isConst() ) {
-			throw Common::Exceptions::ConstCorrectnessViolated("tried to modify const symbol '" + symbol->mName + "'", op->position());
-		}
-
-		node = new UnaryExpression((*token), symbol, UnaryExpression::ValueType::LValue);
-		++token;
-	}
-	// ++
-	else if ( op->type() == Token::Type::OPERATOR_INCREMENT ) {
+	// --/++ for lvalue
+	else if ( op->type() == Token::Type::OPERATOR_DECREMENT || op->type() == Token::Type::OPERATOR_INCREMENT ) {
 		if ( symbol->isConst() ) {
 			throw Common::Exceptions::ConstCorrectnessViolated("tried to modify const symbol '" + symbol->mName + "'", op->position());
 		}
