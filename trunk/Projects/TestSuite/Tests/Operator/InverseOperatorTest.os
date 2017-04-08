@@ -99,7 +99,7 @@ private bool TestCase2() const {
 	TestObject obj = new TestObject(1);
 	print(obj.ToString());
 
-	obj=++obj;
+	obj=obj++;
 
 	print(obj.ToString());
 
