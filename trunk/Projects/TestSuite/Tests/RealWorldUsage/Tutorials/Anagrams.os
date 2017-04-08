@@ -1,12 +1,15 @@
 #!/usr/local/bin/oscript
 
-import Scanner;
+// Library imports
 import System.Collections.List;
 import System.Collections.Map;
 import System.Collections.Set;
 import System.IO.File;
 import System.String;
 import System.StringIterator;
+
+// Project imports
+import Scanner;
 
 public void Main(int argc, string args) {
 	Map<string, Set> map = new Map<string, Set>();
@@ -31,7 +34,6 @@ public void Main(int argc, string args) {
 		}
 
 		foreach ( Pair<string, Set> p : map ) {
-			//print("p.second.size() = " + p.second.size());
 			cout(string p.first + ", " + p.second + ": [");
 			foreach ( String s : p.second ) {
 				cout("" + s + " ");
@@ -61,7 +63,7 @@ private String alphabetize(String word ref) {
 
 	word = "";
 	foreach ( Object s : sorted ) {
-		word = word + s;
+		word = word + String s;
 	}
 
 	return word;

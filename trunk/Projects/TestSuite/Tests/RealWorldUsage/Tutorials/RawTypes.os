@@ -10,7 +10,7 @@ private object Box<T> {
 		mId = id;
 	}
 
-	public void set(T value) {
+	public void set(T value) modify {
 		mValue = value;
 	}
 
