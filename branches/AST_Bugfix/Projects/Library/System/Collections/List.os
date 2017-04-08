@@ -18,7 +18,7 @@ public object List extends AbstractCollection {
 		}
 
 		if ( mSize == 1 ) {		// special handling for 1st item
-			mFirst = null;
+			mFirst = CollectionItem null;
 		}
 		else {					// generic handling
 			CollectionItem item = mFirst;
@@ -26,7 +26,7 @@ public object List extends AbstractCollection {
 				item = item.mNext;
 			}
 
-			item.mNext = null;
+			item.mNext = CollectionItem null;
 		}
 
 		mSize--;
