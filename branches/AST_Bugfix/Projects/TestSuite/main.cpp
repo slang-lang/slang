@@ -164,9 +164,6 @@ int main(int argc, const char* argv[])
 		Testing::AST::Fixture ast(mLogger);
 		mFixtures.push_back(&ast);
 
-		Testing::Language::Fixture language(mLogger);
-		mFixtures.push_back(&language);
-
 		Testing::Math::Fixture math(mLogger);
 		mFixtures.push_back(&math);
 
