@@ -467,23 +467,14 @@ public:
 };
 
 
-class BooleanUnaryExpression : public Expression
+class BooleanUnaryExpression : public UnaryExpression
 {
 public:
-	explicit BooleanUnaryExpression(const Token& operation, Node* exp)
-	: Expression(ExpressionType::UnaryExpression),
-	  mExpression(exp),
-	  mOperation(operation)
+	explicit BooleanUnaryExpression(const Token& operation, Node* exp, ValueType::E valueType = ValueType::RValue)
+	: UnaryExpression(operation, exp, valueType)
 	{
 		mResultType = _bool;
 	}
-	virtual ~BooleanUnaryExpression() {
-		delete mExpression;
-	}
-
-public:
-	Node* mExpression;
-	Token mOperation;
 };
 
 // Unary expressions
