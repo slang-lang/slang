@@ -19,16 +19,8 @@ public object BaseObject {
 public object DerivedObject extends BaseObject {
 	private int mPrivateNumber;
 
-	public void Main(int argc = 0, string argv = "") {
+	public void Constructor() {
 		base.Constructor();
-
-		print(ToString());
-		print(ToString2());
-
-		test();
-
-		print(ToString());
-		print(ToString2());
 	}
 
 	public int GetBox() const {
