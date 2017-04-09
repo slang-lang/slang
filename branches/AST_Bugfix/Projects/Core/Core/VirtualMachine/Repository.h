@@ -71,6 +71,8 @@ public:
 
 	Designtime::BluePrintGeneric* findBluePrint(const std::string& type) const;
 
+	void prepareType(const Common::TypeDeclaration& type);
+
 private:
 #ifdef USE_ORDERED_COLLECTION
 	typedef std::map<std::string, Designtime::BluePrintEnum*> BluePrintEnumMap;

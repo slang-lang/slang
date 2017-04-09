@@ -754,5 +754,26 @@ void Repository::initTypeSystem(Designtime::BluePrintObject* blueprint)
 	}
 }
 
+void Repository::prepareType(const Common::TypeDeclaration& type)
+{
+	// resolve type constraints
+	std::string resolvedType = Designtime::Parser::buildRuntimeConstraintTypename(type.mName, type.mConstraints);
+
+	// lookup resolved type
+	Designtime::BluePrintGeneric* blueprint = findBluePrint(resolvedType);
+	if ( !blueprint ) {
+		// lookup pure type without constraints
+		blueprint = findBluePrint(type.mName);
+
+		if ( !blueprint ) {
+			// pure type not available
+			throw Common::Exceptions::UnknownIdentifer(resolvedType);
+		}
+
+		// build new prototype from pure type with constraints
+		createBluePrintFromPrototype(static_cast<Designtime::BluePrintObject*>(blueprint), type.mConstraints);
+	}
+}
+
 
 }

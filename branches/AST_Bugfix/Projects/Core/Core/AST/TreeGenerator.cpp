@@ -1014,7 +1014,7 @@ Expression* TreeGenerator::process_new(TokenIterator& token)
 	}
 
 	SymbolExpression* exp = resolveWithExceptions(token, getScope());
-	std::string type = static_cast<Designtime::BluePrintObject*>(symbol)->QualifiedTypename();
+	std::string type = exp->getResultType();
 
 	SymbolExpression* inner = exp;
 	while ( true ) {
@@ -1022,13 +1022,15 @@ Expression* TreeGenerator::process_new(TokenIterator& token)
 			inner = inner->mSymbolExpression;
 		}
 		else {
-			inner->mSymbolExpression = new DesigntimeSymbolExpression("Constructor", "", PrototypeConstraints(), false);
+			Common::TypeDeclaration typeDeclaration(inner->getResultType(), dynamic_cast<DesigntimeSymbolExpression*>(inner)->mConstraints);
+			mRepository->prepareType(typeDeclaration);
 
 			type = Designtime::Parser::buildRuntimeConstraintTypename(
-				static_cast<Designtime::BluePrintObject*>(symbol)->QualifiedTypename(),
-				dynamic_cast<DesigntimeSymbolExpression*>(exp)->mConstraints
+				typeDeclaration.mName,
+				typeDeclaration.mConstraints
 			);
-			// bauchweh
+
+			inner->mSymbolExpression = new DesigntimeSymbolExpression(CONSTRUCTOR, _void, PrototypeConstraints(), false);
 			inner->mSymbolExpression->mSurroundingScope = dynamic_cast<Designtime::BluePrintObject*>(mRepository->findBluePrint(type));
 			break;
 		}
