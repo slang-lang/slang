@@ -74,6 +74,7 @@ Object::Object(const std::string& name, const std::string& filename, const std::
 : MethodScope(name, 0),
   ObjectSymbol(name),
   mBase(0),
+  mBluePrint(0),
   mFilename(filename),
   mIsAtomicType(false),
   mIsConstructed(false),

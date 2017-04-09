@@ -289,7 +289,7 @@ void TreeGenerator::initialize(Common::Method* method)
 
 		// BEWARE: this is only valid as long as we have single inheritance!!!
 		for ( Designtime::Ancestors::const_iterator it = ancestors.begin(); it != ancestors.end(); ++it ) {
-			Runtime::Object *object = mRepository->createInstance((*it).name(), IDENTIFIER_BASE, PrototypeConstraints());
+			Runtime::Object *object = mRepository->createInstance((*it).name(), IDENTIFIER_BASE);
 			object->setConst(mMethod->isConst());
 			object->setVisibility(Visibility::Private);
 
@@ -299,7 +299,7 @@ void TreeGenerator::initialize(Common::Method* method)
 
 	// add parameters as locale variables
 	for ( ParameterList::const_iterator it = mMethod->provideSignature().begin(); it != mMethod->provideSignature().end(); ++it ) {
-		Runtime::Object *object = mRepository->createInstance(it->type(), it->name(), PrototypeConstraints());
+		Runtime::Object *object = mRepository->createInstance(it->type(), it->name());
 		object->setMutability(it->mutability());
 
 		scope->define(it->name(), object);

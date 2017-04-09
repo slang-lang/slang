@@ -636,9 +636,8 @@ void Repository::initializeObject(Runtime::Object* destObj, Designtime::BluePrin
 
 		Designtime::BluePrintObject* blue = static_cast<Designtime::BluePrintObject*>(it->second);
 
-		Common::TypeDeclaration typeDeclaration(blue->QualifiedTypename(), blue->getPrototypeConstraints());
-
-		Runtime::Object *symbol = createInstance(typeDeclaration.mName, blue->getName(), typeDeclaration.mConstraints, InitilizationType::None);
+		Runtime::Object *symbol = createInstance(blue->QualifiedTypename(), blue->getName(), blue->getPrototypeConstraints(), InitilizationType::None);
+		symbol->setBluePrint(blue);
 		symbol->setFinal(blue->isFinal());
 		symbol->setLanguageFeatureState(blue->getLanguageFeatureState());
 		symbol->setMember(blue->isMember());
