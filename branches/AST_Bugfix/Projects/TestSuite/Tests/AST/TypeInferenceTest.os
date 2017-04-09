@@ -8,7 +8,7 @@ private object Prototype<T> {
 	}
 }
 
-public void Main(int argc, string args) {
+public void Main(int argc = 0, string args = "") {
 	assert( TestCase1() );
 	assert( TestCase2() );
 }

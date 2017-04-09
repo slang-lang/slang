@@ -55,6 +55,7 @@ private:	// Tests
 	void testTry();
 	void testTypecast();
 	void testTypeDeclaration();
+	void testTypeInference();
 	void testTypeSystem();
 	void testUnaryExpression();
 	void testWhile();

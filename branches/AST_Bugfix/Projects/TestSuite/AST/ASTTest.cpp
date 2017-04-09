@@ -67,6 +67,7 @@ void ASTTest::process()
 	TEST(testTry);
 	TEST(testTypecast);
 	TEST(testTypeDeclaration);
+	TEST(testTypeInference);
 	TEST(testTypeSystem);
 	TEST(testUnaryExpression);
 	TEST(testWhile);
@@ -414,6 +415,20 @@ void ASTTest::testTypeDeclaration()
 	try {
 		VirtualMachine vm;
 		vm.createScriptFromFile("Tests/AST/TypeDeclarationTest.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void ASTTest::testTypeInference()
+{
+	try {
+		VirtualMachine vm;
+		vm.createScriptFromFile("Tests/AST/TypeInferenceTest.os");
 
 		// automatic success
 	}
