@@ -636,7 +636,9 @@ void Repository::initializeObject(Runtime::Object* destObj, Designtime::BluePrin
 
 		Designtime::BluePrintObject* blue = static_cast<Designtime::BluePrintObject*>(it->second);
 
-		Runtime::Object *symbol = createInstance(blue->QualifiedTypename(), blue->getName(), blue->getPrototypeConstraints(), InitilizationType::None);
+		Common::TypeDeclaration typeDeclaration(blue->QualifiedTypename(), blue->getPrototypeConstraints());
+
+		Runtime::Object *symbol = createInstance(typeDeclaration.mName, blue->getName(), typeDeclaration.mConstraints, InitilizationType::None);
 		symbol->setFinal(blue->isFinal());
 		symbol->setLanguageFeatureState(blue->getLanguageFeatureState());
 		symbol->setMember(blue->isMember());
@@ -671,7 +673,12 @@ void Repository::initBlueprint(Designtime::BluePrintObject* blueprint)
 		// atomic types should have been initialized at compile time
 		return;
 	}
+	if ( blueprint->isPrototype() ) {
+		// prototypes will get initialized during tree generation phase
+		return;
+	}
 
+	// prepare inheritance
 	Designtime::Ancestors ancestors = blueprint->getAncestors();
 	for ( Designtime::Ancestors::const_iterator it = ancestors.begin(); it != ancestors.end(); ++it ) {
 		Designtime::BluePrintGeneric* base = findBluePrint(it->name());
@@ -679,6 +686,45 @@ void Repository::initBlueprint(Designtime::BluePrintObject* blueprint)
 			blueprint->define(IDENTIFIER_BASE, base);
 		}
 	}
+
+	// prepare members
+	Symbols symbols = blueprint->provideSymbols();
+	for ( Symbols::const_iterator it = symbols.begin(); it != symbols.end(); ++it ) {
+		if ( it->second->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
+			continue;
+		}
+		if ( it->first == IDENTIFIER_BASE || it->first == IDENTIFIER_THIS ) {
+			// skip "base" && "this" symbols
+			continue;
+		}
+
+		Designtime::BluePrintObject* blue = static_cast<Designtime::BluePrintObject*>(it->second);
+		if ( blue->isPrototype() ) {
+			Common::TypeDeclaration typeDeclaration(blue->QualifiedTypename(), blue->getPrototypeConstraints());
+
+			// prepare type
+			prepareType(typeDeclaration);
+			// set qualified typename to constraint type
+			blue->setQualifiedTypename(Designtime::Parser::buildRuntimeConstraintTypename(typeDeclaration.mName, typeDeclaration.mConstraints));
+			// reset constraints
+			blue->setPrototypeConstraints(PrototypeConstraints());
+		}
+	}
+
+/*
+	// prepare methods
+	MethodScope::MethodCollection methods = blueprint->provideMethods();
+	for ( MethodScope::MethodCollection::const_iterator it = methods.begin(); it != methods.end(); ++it ) {
+		Common::TypeDeclaration typeDeclaration((*it)->QualifiedTypename(), (*it)->getPrototypeConstraints());
+
+		// prepare type
+		prepareType(typeDeclaration);
+		// set qualified typename to constraint type
+		(*it)->setQualifiedTypename(Designtime::Parser::buildRuntimeConstraintTypename(typeDeclaration.mName, typeDeclaration.mConstraints));
+		// reset constraints
+		(*it)->setPrototypeConstraints(PrototypeConstraints());
+	}
+*/
 
 	initTypeSystem(blueprint);
 }

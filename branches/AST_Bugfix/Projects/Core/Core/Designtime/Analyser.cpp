@@ -86,7 +86,7 @@ bool Analyser::buildEnum(Designtime::BluePrintEnum* symbol, const TokenList& tok
 		symbol->define(name, entry);
 
 		if ( token->type() == Token::Type::COMMA ) {
-			token++;
+			++token;
 
 			if ( lookahead(token) == tokens.end() ) {
 				throw Common::Exceptions::Exception("new enum value expected but none found!", token->position());
@@ -285,7 +285,7 @@ bool Analyser::createLibraryReference(TokenIterator& token, TokenIterator end)
 		}
 
 		reference += ".";
-		token++;
+		++token;
 	}
 
 	expect(Token::Type::SEMICOLON, token);
@@ -337,45 +337,45 @@ bool Analyser::createMemberStub(TokenIterator& token, Visibility::E visibility, 
 	if ( token->category() == Token::Category::Modifier ) {
 		mutability = Mutability::convert(token->content());
 
-		token++;
+		++token;
 	}
 
 	Runtime::AtomicValue value = 0;
 	if ( token->type() == Token::Type::ASSIGN ) {
-		token++;
+		++token;
 
 		value = Parser::parseValueInitialization(token);
 
-		token++;
+		++token;
 	}
 
 	expect(Token::Type::SEMICOLON, token);
 
 	if ( dynamic_cast<BluePrintGeneric*>(mScope) ) {
-		BluePrintObject* blue = new BluePrintObject(type.mName, mFilename, name);
-		blue->setFinal(mutability == Mutability::Final);
-		blue->setLanguageFeatureState(languageFeature);
-		blue->setMember(true);
-		blue->setMutability(mutability);
-		//blue->setParent(mScope);
-		blue->setPrototypeConstraints(type.mConstraints);
-		blue->setQualifiedTypename(type.mName);
-		blue->setValue(value);
-		blue->setVisibility(visibility);
-
-		mScope->define(name, blue);
-	}
-	else {
-		Runtime::Object *member = mRepository->createInstance(type.mName, name, type.mConstraints);
+		BluePrintObject* member = new BluePrintObject(type.mName, mFilename, name);
 		member->setFinal(mutability == Mutability::Final);
 		member->setLanguageFeatureState(languageFeature);
 		member->setMember(true);
 		member->setMutability(mutability);
-		member->setParent(mScope);
+		//member->setParent(mScope);
+		member->setPrototypeConstraints(type.mConstraints);
+		member->setQualifiedTypename(type.mName);
 		member->setValue(value);
 		member->setVisibility(visibility);
 
 		mScope->define(name, member);
+	}
+	else {
+		Runtime::Object* symbol = mRepository->createInstance(type.mName, name, type.mConstraints);
+		symbol->setFinal(mutability == Mutability::Final);
+		symbol->setLanguageFeatureState(languageFeature);
+		symbol->setMember(false);
+		symbol->setMutability(mutability);
+		symbol->setParent(mScope);
+		symbol->setValue(value);
+		symbol->setVisibility(visibility);
+
+		mScope->define(name, symbol);
 	}
 
 	return true;
@@ -429,7 +429,7 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 	// while looking for the next opening curly bracket
 	bool isModifierToken = true;
 	do {
-		token++;
+		++token;
 
 		if ( token->category() == Token::Category::Modifier ) {
 			if ( token->content() == MODIFIER_ABSTRACT ) {
@@ -496,7 +496,7 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 	}
 
 	// create a new method with the corresponding return type
-	Common::Method *method = new Common::Method(mScope, name, type.mName);
+	Common::Method* method = new Common::Method(mScope, name, type.mName);
 	method->setAbstract(isAbstract || mProcessingInterface);
 	method->setFinal(isFinal);
 	method->setLanguageFeatureState(languageFeature);
@@ -531,7 +531,7 @@ bool Analyser::createNamespace(TokenIterator& token, TokenIterator /*end*/)
 		std::string name = (*token++).content();
 
 		if ( token->type() == Token::Type::SCOPE ) {
-			token++;
+			++token;
 		}
 
 		Common::Namespace* space = 0;
