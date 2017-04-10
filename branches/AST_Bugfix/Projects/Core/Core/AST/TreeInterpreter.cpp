@@ -945,17 +945,19 @@ void TreeInterpreter::visitFor(ForStatement* node)
 	Runtime::Object condition;
 
 	for  ( ; ; ) {
-		try {
-			evaluate(node->mCondition, &condition);		// evaluate loop condition
-		}
-		catch ( Runtime::ControlFlow::E &e ) {
-			mControlFlow = e;
-			return;
-		}
+		if ( node->mCondition ) {
+			try {
+				evaluate(node->mCondition, &condition);		// evaluate loop condition
+			}
+			catch ( Runtime::ControlFlow::E &e ) {
+				mControlFlow = e;
+				return;
+			}
 
-		// validate loop condition
-		if ( !isTrue(condition) ) {
-			break;
+			// validate loop condition
+			if ( !isTrue(condition) ) {
+				break;
+			}
 		}
 
 		// execute compound statement

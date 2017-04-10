@@ -687,35 +687,37 @@ Statement* TreeGenerator::process_for(TokenIterator& token)
 	Token start = (*token);
 
 	expect(Token::Type::PARENTHESIS_OPEN, token);
+	++token;
 
-	TokenIterator initializationBegin = ++token;
+	TokenIterator initializationBegin = token;
+	TokenIterator conditionBegin = ++findNext(initializationBegin, Token::Type::SEMICOLON);
+	TokenIterator iterationBegin = ++findNext(conditionBegin, Token::Type::SEMICOLON);
+	TokenIterator expressionEnd = ++findNext(iterationBegin, Token::Type::PARENTHESIS_CLOSE);
 
-	const TokenIterator conditionBegin = ++findNext(initializationBegin, Token::Type::SEMICOLON);
-	const TokenIterator increaseBegin = ++findNext(conditionBegin, Token::Type::SEMICOLON);
-
-	TokenIterator expressionEnd = findNext(increaseBegin, Token::Type::PARENTHESIS_CLOSE);
-	token = ++expressionEnd;
+	token = expressionEnd;
 
 	// process our declaration part
 	// {
-	Node* initialization = process_statement(initializationBegin);
+	Node* initialization = 0;
+	if ( std::distance(initializationBegin, conditionBegin) > 1 ) {
+		initialization = process_statement(initializationBegin);
+	}
 	// }
 
 	// Condition parsing
 	// {
-	TokenIterator condBegin = conditionBegin;
-
 	Node* condition = 0;
-	if ( std::distance(condBegin, increaseBegin) > 1 ) {
-		condition = expression(condBegin);
+	if ( std::distance(conditionBegin, iterationBegin) > 1 ) {
+		condition = expression(conditionBegin);
 	}
 	// }
 
 	// Expression parsing
 	// {
-	TokenIterator exprBegin = increaseBegin;
-
-	Node* iteration = process_statement(exprBegin);
+	Node* iteration = 0;
+	if ( std::distance(iterationBegin, expressionEnd) > 1 ) {
+		iteration = process_statement(iterationBegin);
+	}
 	// }
 
 	// Body parsing
