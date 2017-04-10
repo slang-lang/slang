@@ -7,7 +7,6 @@
 // Project includes
 #include <Core/Common/Exceptions.h>
 #include <Core/Consts.h>
-#include <Core/Defines.h>
 #include <Core/Interfaces/IScope.h>
 #include <Core/Tools.h>
 
@@ -448,13 +447,21 @@ bool Parser::isMethodDeclaration(TokenIterator token)
 // [<visibility>] [language feature] namespace <identifier> { ... }
 bool Parser::isNamespaceDeclaration(TokenIterator token)
 {
-	TokenList tokens;
+	if ( token->isOptional() && token->type() == Token::Type::VISIBILITY ) {
+		// visibility token is okay
+		++token;
+	}
 
-	tokens.push_back(Token(Token::Type::VISIBILITY, true));
-	tokens.push_back(Token(Token::Type::RESERVED_WORD, std::string(RESERVED_WORD_NAMESPACE)));
-	tokens.push_back(Token(Token::Type::IDENTIFIER));
+	if ( token->isOptional() && token->type() == Token::Type::LANGUAGEFEATURE ) {
+		// language feature is okay
+		++token;
+	}
 
-	return checkSyntax(token, tokens);
+	if ( token->type() != Token::Type::RESERVED_WORD || token->content() != std::string(RESERVED_WORD_NAMESPACE) ) {
+		return false;
+	}
+
+	return true;
 }
 
 // object declaration:
@@ -545,7 +552,7 @@ ParameterList Parser::parseParameters(TokenIterator &token, IScope* scope)
 		Common::TypeDeclaration type = parseTypeDeclaration(token, scope);
 
 		std::string name = token->content();
-		token++;
+		++token;
 
 		if ( token->category() == Token::Category::Modifier ) {
 			if ( token->content() == MODIFIER_CONST ) {

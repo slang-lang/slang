@@ -168,6 +168,14 @@ void TreeInterpreter::evaluateBooleanBinaryExpression(BooleanBinaryExpression* e
 			*result = Runtime::BoolObject(false);
 			return;
 		}
+		else if ( exp->mOperation.type() == Token::Type::NAND && !isTrue(left) ) {
+			*result = Runtime::BoolObject(true);
+			return;
+		}
+		else if ( exp->mOperation.type() == Token::Type::NOR && isTrue(left) ) {
+			*result = Runtime::BoolObject(false);
+			return;
+		}
 		else if ( exp->mOperation.type() == Token::Type::OR && isTrue(left) ) {
 			*result = Runtime::BoolObject(true);
 			return;

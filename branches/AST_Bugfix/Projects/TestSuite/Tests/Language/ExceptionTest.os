@@ -153,7 +153,6 @@ private bool TestCase6() throws {
 	try {
 		print("try");
 
-		//print("throw new Exception()");
 		throw new ExceptionTest.Exception("standard exception");
 	}
 	catch ( int e ref ) {
@@ -180,7 +179,6 @@ private bool TestCase7() throws {
 		try {
 			print("try");
 
-			//print("throw new ExceptionTest.Exception");
 			throw new ExceptionTest.Exception("inner throw");
 		}
 		catch ( int e ref ) {

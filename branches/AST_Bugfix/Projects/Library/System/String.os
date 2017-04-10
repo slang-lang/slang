@@ -51,7 +51,7 @@ public object String implements IIterateable {
 	}
 
 	/*
-	 * Returns an Iterator that is not attached to this string, instead it uses a copy of this Strings string value
+	 * Returns an Iterator that is attached to this string
 	 */
 	public StringIterator getIterator(string separator = " ") const {
 		return new StringIterator(this, separator);
@@ -65,7 +65,7 @@ public object String implements IIterateable {
 	}
 
 	/*
-	 * Replaces the first occurrences of the given string with the provided new string
+	 * Replaces the first occurrence of the given string with the provided new string
 	 */
 	public bool Replace(string oldStr, string newStr) modify {
 		int position = strfind(mValue, oldStr, 0);
@@ -103,7 +103,7 @@ public object String implements IIterateable {
 	 * Returns all characters beginning with start until the end of the held string
 	 */
 	public string SubString(int start) const {
-			return substr(mValue, start);
+		return substr(mValue, start);
 	}
 
 	/*
@@ -167,7 +167,7 @@ public object String implements IIterateable {
 	 * String compare operator
 	 */
 	public bool operator==(String other ref) const {
-		return (mValue == other);
+		return mValue == other;
 	}
 
 	/*
@@ -196,9 +196,16 @@ public object String implements IIterateable {
 		mValue = mValue + string other;
 	}
 
+	/*
+	 * string less compare operator
+	 */
 	public bool operator<(string other) const {
 		return mValue < other;
 	}
+
+	/*
+	 * String less compare operator
+	 */
 	public bool operator<(String other ref) const {
 		return mValue < string other;
 	}
