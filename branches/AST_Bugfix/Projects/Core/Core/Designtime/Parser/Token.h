@@ -120,7 +120,7 @@ public:
 	Token(Type::E type, bool isOptional = false);
 	Token(Type::E type, const char* content);
 	Token(Type::E type, const std::string& content);
-	Token(Category::E category, Type::E type, const std::string& content, const Common::Position& pos);
+	Token(Category::E category, Type::E type, const std::string& content, const Common::Position& pos, bool isOptional = false);
 
 public:
 	Category::E category() const;

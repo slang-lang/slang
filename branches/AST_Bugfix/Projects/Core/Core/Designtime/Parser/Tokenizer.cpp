@@ -81,7 +81,7 @@ void Tokenizer::addToken(const std::string& con, const Common::Position& positio
 	else if ( isKeyword(content) ) { category = Token::Category::Keyword; type = Token::Type::KEYWORD; }
 	else if ( isLanguageFeature(content) ) { category = Token::Category::Modifier; isOptional = true; type = Token::Type::LANGUAGEFEATURE; }
 	else if ( isLiteral(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_LITERAL;
-		// remove leading and trailing (", ') quotation marks (", ')
+		// remove leading and trailing quotation marks (", ')
 		content = con.substr(1, con.length() - 2);
 	}
 	else if ( isModifier(content) ) { category = Token::Category::Modifier; isOptional = true; type = Token::Type::MODIFIER; }
@@ -96,10 +96,9 @@ void Tokenizer::addToken(const std::string& con, const Common::Position& positio
 #endif
 	}
 
-	Token token(category, type, content, position);
-	token.setOptional(isOptional);
-
-	mTokens.push_back(token);
+	mTokens.push_back(
+		Token(category, type, content, position, isOptional)
+	);
 }
 
 void Tokenizer::addToken(const Token& token)
@@ -142,7 +141,7 @@ bool Tokenizer::isDouble(const std::string& token) const
 		}
 	}
 
-	// the last char of our token has to be an 'd'
+	// the last char of our token has to be a 'd'
 	return token[token.size() - 1] == 'd';
 }
 
@@ -246,10 +245,12 @@ bool Tokenizer::isLiteral(const std::string& token) const
 		if ( (token.at(0) == '"' && token.at(token.size() - 1) == '"')) {
 			return true;
 		}
+/*
 		// single quoted literals
 		if ( (token.at(0) == '\'' && token.at(token.size() - 1) == '\'') ) {
 			return true;
 		}
+*/
 	}
 
 	return false;
@@ -332,7 +333,7 @@ void Tokenizer::mergeBooleanOperators()
 			tmp.push_back((*token));
 		}
 
-		token++;
+		++token;
 	}
 
 	mTokens = tmp;
@@ -366,7 +367,7 @@ void Tokenizer::mergeOtherOperators()
 			tmp.push_back((*token));
 		}
 
-		token++;
+		++token;
 	}
 
 	mTokens = tmp;
@@ -408,7 +409,7 @@ void Tokenizer::mergeInfixPostfixOperators()
 			tmp.push_back((*token));
 		}
 
-		token++;
+		++token;
 	}
 
 	mTokens = tmp;
@@ -430,20 +431,19 @@ void Tokenizer::process()
 
 	while ( offset < size ) {
 		char thisChar = mContent[offset++];
-		//size_t i = DELIMITERS.find_first_of(thisChar);
 
 		// preprocessor directives as single line comments '#'
 		if ( !isMultiLineComment && !isSingleLineComment && !isString && thisChar == '#' ) {
 			isPreprocessorDirective = true;
 		}
 		// single line comments '//'
-		if ( !isMultiLineComment && !isSingleLineComment && !isString && lastChar == '/' && thisChar == '/' ) {
+		else if ( !isMultiLineComment && !isSingleLineComment && !isString && lastChar == '/' && thisChar == '/' ) {
 			isSingleLineComment = true;
 			// remove last inserted token
 			mTokens.pop_back();
 		}
-		// multiline comments '/*'
-		if ( !isMultiLineComment && !isSingleLineComment && !isString && lastChar == '/' && thisChar == '*' ) {
+		// multi line comments '/*'
+		else if ( !isMultiLineComment && !isSingleLineComment && !isString && lastChar == '/' && thisChar == '*' ) {
 			isMultiLineComment = true;
 			// remove last inserted token
 			mTokens.pop_back();
@@ -485,7 +485,7 @@ void Tokenizer::process()
 			}
 		}
 
-		// multiline comments '*/'
+		// multi line comments '*/'
 		if ( isMultiLineComment && lastChar == '*' && thisChar == '/' ) {
 			isMultiLineComment = false;
 		}
@@ -652,7 +652,7 @@ void Tokenizer::replaceAssignments()
 			tmp.push_back((*token));
 		}
 
-		token++;
+		++token;
 	}
 
 	mTokens = tmp;
