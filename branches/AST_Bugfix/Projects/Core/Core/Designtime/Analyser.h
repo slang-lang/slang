@@ -44,15 +44,14 @@ public:	// Entry points
 private:
 	void generate(const TokenList& tokens);
 	TokenList generateTokens(const std::string& content);
-	void process(const TokenList& tokens);
 
-	bool createBluePrint(TokenIterator& token, TokenIterator end);
-	bool createEnum(TokenIterator& token, TokenIterator end);
-	bool createLibraryReference(TokenIterator& token, TokenIterator end);
-	bool createMember(TokenIterator& token, TokenIterator end);
-	bool createMemberOrMethod(TokenIterator& token, TokenIterator end);
-	bool createMethod(TokenIterator& token, TokenIterator end);
-	bool createNamespace(TokenIterator& token, TokenIterator end);
+	bool createBluePrint(TokenIterator& token);
+	bool createEnum(TokenIterator& token);
+	bool createLibraryReference(TokenIterator& token);
+	bool createMember(TokenIterator& token);
+	bool createMemberOrMethod(TokenIterator& token);
+	bool createMethod(TokenIterator& token);
+	bool createNamespace(TokenIterator& token);
 
 	bool createMethodStub(TokenIterator& token, Visibility::E visibility, LanguageFeatureState::E languageFeature, Common::TypeDeclaration type, const std::string& name);
 	bool createMemberStub(TokenIterator& token, Visibility::E visibility, LanguageFeatureState::E languageFeature, Common::TypeDeclaration type, const std::string& name);

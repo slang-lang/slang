@@ -7,6 +7,7 @@
 // Project includes
 #include <Core/Common/Exceptions.h>
 #include <Core/Consts.h>
+#include <Core/Defines.h>
 #include <Core/Interfaces/IScope.h>
 #include <Core/Tools.h>
 
@@ -181,7 +182,7 @@ PrototypeConstraints Parser::collectDesigntimePrototypeConstraints(TokenIterator
 		return constraints;
 	}
 
-	token++;
+	++token;
 
 	std::string constraint;
 	std::string designType;
@@ -277,9 +278,8 @@ PrototypeConstraints Parser::collectRuntimePrototypeConstraints(TokenIterator& t
 
 TokenList Parser::collectScopeTokens(TokenIterator& token)
 {
-	if ( token->type() != Token::Type::BRACKET_CURLY_OPEN ) {
-		throw Common::Exceptions::Exception("collectScopeTokens: invalid start token found");
-	}
+	expect(Token::Type::BRACKET_CURLY_OPEN, token);
+	//++token;
 
 	int scope = 0;
 	TokenList tokens;
@@ -295,6 +295,9 @@ TokenList Parser::collectScopeTokens(TokenIterator& token)
 
 		tokens.push_back((*token));
 	}
+
+	expect(Token::Type::BRACKET_CURLY_CLOSE, token);
+	//++token;
 
 	return tokens;
 }
@@ -317,12 +320,16 @@ std::string Parser::identify(TokenIterator& token)
 }
 
 // enum declaration:
-// <visibility> [language feature] enum <identifier> { ... }
+// [<visibility>] [language feature] enum <identifier> { ... }
 bool Parser::isEnumDeclaration(TokenIterator token)
 {
 	TokenList tokens;
 
+#ifdef REQUIRE_VISIBILITY_PREFIX
 	tokens.push_back(Token(Token::Type::VISIBILITY));
+#else
+	tokens.push_back(Token(Token::Type::VISIBILITY, true));
+#endif
 	tokens.push_back(Token(Token::Type::RESERVED_WORD, std::string(RESERVED_WORD_ENUM)));
 	tokens.push_back(Token(Token::Type::IDENTIFIER));
 
@@ -330,12 +337,16 @@ bool Parser::isEnumDeclaration(TokenIterator token)
 }
 
 // interface declaration:
-// <visibility> [language feature] interface <identifier> { ... }
+// [<visibility>] [language feature] interface <identifier> { ... }
 bool Parser::isInterfaceDeclaration(TokenIterator token)
 {
 	TokenList tokens;
 
+#ifdef REQUIRE_VISIBILITY_PREFIX
 	tokens.push_back(Token(Token::Type::VISIBILITY));
+#else
+	tokens.push_back(Token(Token::Type::VISIBILITY, true));
+#endif
 	tokens.push_back(Token(Token::Type::RESERVED_WORD, std::string(RESERVED_WORD_INTERFACE)));
 	tokens.push_back(Token(Token::Type::IDENTIFIER));
 
@@ -355,7 +366,7 @@ bool Parser::isLibraryReference(TokenIterator token)
 }
 
 // member declaration:
-// <visibility> [language feature] <identifier> <identifier> = || ;
+// [<visibility>] [language feature] <identifier> <identifier> = || ;
 bool Parser::isMemberDeclaration(TokenIterator token)
 {
 	if ( token->type() == Token::Type::VISIBILITY ) {
@@ -399,8 +410,8 @@ bool Parser::isMemberDeclaration(TokenIterator token)
 }
 
 // syntax:
-// <visibility> <type> <identifier> (
-// <visibility> <identifier> <identifier> (
+// [<visibility>] <type> <identifier> (
+// [<visibility>] <identifier> <identifier> (
 bool Parser::isMethodDeclaration(TokenIterator token)
 {
 	if ( token->type() == Token::Type::VISIBILITY ) {
@@ -442,12 +453,16 @@ bool Parser::isMethodDeclaration(TokenIterator token)
 }
 
 // namespace declaration:
-// <visibility> [language feature] namespace <identifier> { ... }
+// [<visibility>] [language feature] namespace <identifier> { ... }
 bool Parser::isNamespaceDeclaration(TokenIterator token)
 {
 	TokenList tokens;
 
+#ifdef REQUIRE_VISIBILITY_PREFIX
 	tokens.push_back(Token(Token::Type::VISIBILITY));
+#else
+	tokens.push_back(Token(Token::Type::VISIBILITY, true));
+#endif
 	tokens.push_back(Token(Token::Type::RESERVED_WORD, std::string(RESERVED_WORD_NAMESPACE)));
 	tokens.push_back(Token(Token::Type::IDENTIFIER));
 
@@ -455,12 +470,16 @@ bool Parser::isNamespaceDeclaration(TokenIterator token)
 }
 
 // object declaration:
-// <visibility> [language feature] object <identifier> [extends <identifier> [implements <identifier>, ...]] { ... }
+// [<visibility>] [language feature] object <identifier> [extends <identifier>] [implements <identifier>, ...] { ... }
 bool Parser::isObjectDeclaration(TokenIterator token)
 {
 	TokenList tokens;
 
+#ifdef REQUIRE_VISIBILITY_PREFIX
 	tokens.push_back(Token(Token::Type::VISIBILITY));
+#else
+	tokens.push_back(Token(Token::Type::VISIBILITY, true));
+#endif
 	tokens.push_back(Token(Token::Type::RESERVED_WORD, std::string(RESERVED_WORD_OBJECT)));
 	tokens.push_back(Token(Token::Type::IDENTIFIER));
 
@@ -505,6 +524,8 @@ ObjectType::E Parser::parseObjectType(TokenIterator& token)
 ParameterList Parser::parseParameters(TokenIterator &token, IScope* scope)
 {
 	ParameterList params;
+
+	expect(Token::Type::PARENTHESIS_OPEN, token);
 
 	while ( (*++token).type() != Token::Type::PARENTHESIS_CLOSE ) {
 		AccessMode::E accessMode;
@@ -575,6 +596,8 @@ ParameterList Parser::parseParameters(TokenIterator &token, IScope* scope)
 		}
 	}
 
+	expect(Token::Type::PARENTHESIS_CLOSE, token);
+
 	return params;
 }
 
@@ -633,6 +656,17 @@ Runtime::AtomicValue Parser::parseValueInitialization(TokenIterator& token)
 	}
 
 	return value;
+}
+
+Visibility::E Parser::parseVisibility(TokenIterator& token, Visibility::E defaultValue)
+{
+	Visibility::E result = defaultValue;
+
+	if ( token->type() == Token::Type::VISIBILITY ) {
+		result = Visibility::convert((*token++).content());
+	}
+
+	return result;
 }
 
 

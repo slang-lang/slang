@@ -18,7 +18,6 @@
 #include <Core/VirtualMachine/Controller.h>
 #include <Tools/Files.h>
 #include <Utils.h>
-#include "Exceptions.h"
 #include "SanityChecker.h"
 
 // Namespace declarations
@@ -103,10 +102,10 @@ bool Analyser::buildEnum(Designtime::BluePrintEnum* symbol, const TokenList& tok
 	throw Common::Exceptions::SyntaxError("invalid enum declaration", token->position());
 }
 
-bool Analyser::createBluePrint(TokenIterator& token, TokenIterator /*end*/)
+bool Analyser::createBluePrint(TokenIterator& token)
 {
-	// look for the visibility token
-	Visibility::E visibility = Visibility::convert((*token++).content());
+	// look for an optional visibility token
+	Visibility::E visibility = Parser::parseVisibility(token, Visibility::Private);
 	// look for an optional language feature token
 	LanguageFeatureState::E languageFeatureState = Parser::parseLanguageFeatureState(token, LanguageFeatureState::Stable);
 	// look for an optional modifier token
@@ -121,13 +120,14 @@ bool Analyser::createBluePrint(TokenIterator& token, TokenIterator /*end*/)
 	// determine implementation type
 	if ( objectType == ObjectType::Interface ) {
 		if ( implementationType != ImplementationType::FullyImplemented ) {
-			throw Common::Exceptions::NotSupported("interfaces cannot be defined as abstract", token->position());
+			throw Common::Exceptions::NotSupported("interface implementation is mandatory", token->position());
 		}
 
 		implementationType = ImplementationType::Interface;
 	}
 
 	TokenList tokens;
+	PrototypeConstraints constraints;
 
 	if ( token->type() == Token::Type::SEMICOLON ) {
 		if ( implementationType != ImplementationType::FullyImplemented ) {
@@ -138,10 +138,7 @@ bool Analyser::createBluePrint(TokenIterator& token, TokenIterator /*end*/)
 	}
 	else {
 		// collect prototype constraints (if present)
-		PrototypeConstraints constraints = Parser::collectDesigntimePrototypeConstraints(token);
-
-		blueprint->setPrototypeConstraints(constraints);
-
+		constraints = Parser::collectDesigntimePrototypeConstraints(token);
 		// collect inheritance (if present)
 		Ancestors inheritance = Parser::collectInheritance(token);
 
@@ -153,16 +150,10 @@ bool Analyser::createBluePrint(TokenIterator& token, TokenIterator /*end*/)
 		if ( isImplemented ) {
 			isImplemented = (token->type() != Token::Type::SEMICOLON);
 		}
-
 		if ( isImplemented ) {	// only collect all tokens of this object if it is implemented
-			// interface, object or prototype declarations have to start with an '{' token
-			expect(Token::Type::BRACKET_CURLY_OPEN, token);
-
 			// collect all tokens of this method
 			tokens = Parser::collectScopeTokens(token);
 		}
-
-		blueprint->setTokens(tokens);
 
 		bool extends = false;
 
@@ -183,10 +174,12 @@ bool Analyser::createBluePrint(TokenIterator& token, TokenIterator /*end*/)
 		}
 	}
 
+	blueprint->setPrototypeConstraints(constraints);
 	blueprint->setImplementationType(implementationType);
 	blueprint->setLanguageFeatureState(languageFeatureState);
 	blueprint->setParent(mScope);
 	blueprint->setQualifiedTypename(getQualifiedTypename(type));
+	blueprint->setTokens(tokens);
 	blueprint->setVisibility(visibility);
 
 	if ( implementationType == ImplementationType::ForwardDeclaration ) {
@@ -228,10 +221,10 @@ bool Analyser::createBluePrint(TokenIterator& token, TokenIterator /*end*/)
 	return blueprint != 0;
 }
 
-bool Analyser::createEnum(TokenIterator& token, TokenIterator /*end*/)
+bool Analyser::createEnum(TokenIterator& token)
 {
-	// look for the visibility token
-	Visibility::E visibility = Visibility::convert((*token++).content());
+	// look for an optional visibility token
+	Visibility::E visibility = Parser::parseVisibility(token, Visibility::Private);
 	// look for an optional language feature token
 	LanguageFeatureState::E languageFeatureState = Parser::parseLanguageFeatureState(token, LanguageFeatureState::Stable);
 
@@ -271,13 +264,14 @@ bool Analyser::createEnum(TokenIterator& token, TokenIterator /*end*/)
 	return buildEnum(symbol, tokens);
 }
 
-bool Analyser::createLibraryReference(TokenIterator& token, TokenIterator end)
+bool Analyser::createLibraryReference(TokenIterator& token)
 {
 	std::string reference;
 
-	expect(Token::Type::RESERVED_WORD, token++);
+	expect(Token::Type::RESERVED_WORD, token);
+	++token;
 
-	while ( token->type() == Token::Type::IDENTIFIER && token != end ) {
+	while ( token->type() == Token::Type::IDENTIFIER ) {
 		reference += (*token++).content();
 
 		if ( token->type() != Token::Type::SCOPE ) {
@@ -295,10 +289,10 @@ bool Analyser::createLibraryReference(TokenIterator& token, TokenIterator end)
 	return true;
 }
 
-bool Analyser::createMember(TokenIterator& token, TokenIterator /*end*/)
+bool Analyser::createMember(TokenIterator& token)
 {
-	// look for the visibility token
-	Visibility::E visibility = Visibility::convert((*token++).content());
+	// look for an optional visibility token
+	Visibility::E visibility = Parser::parseVisibility(token, Visibility::Private);
 	// look for an optional language feature token
 	LanguageFeatureState::E languageFeatureState = Parser::parseLanguageFeatureState(token, LanguageFeatureState::Stable);
 	// look for the type token
@@ -309,10 +303,10 @@ bool Analyser::createMember(TokenIterator& token, TokenIterator /*end*/)
 	return createMemberStub(token, visibility, languageFeatureState, type, name);
 }
 
-bool Analyser::createMemberOrMethod(TokenIterator& token, TokenIterator /*end*/)
+bool Analyser::createMemberOrMethod(TokenIterator& token)
 {
-	// look for the visibility token
-	Visibility::E visibility = Visibility::convert((*token++).content());
+	// look for an optional visibility token
+	Visibility::E visibility = Parser::parseVisibility(token, Visibility::Private);
 	// look for an optional language feature token
 	LanguageFeatureState::E languageFeatureState = Parser::parseLanguageFeatureState(token, LanguageFeatureState::Stable);
 	// look for the type token
@@ -381,10 +375,10 @@ bool Analyser::createMemberStub(TokenIterator& token, Visibility::E visibility, 
 	return true;
 }
 
-bool Analyser::createMethod(TokenIterator& token, TokenIterator /*end*/)
+bool Analyser::createMethod(TokenIterator& token)
 {
-	// look for the visibility token
-	Visibility::E visibility = Visibility::convert((*token++).content());
+	// look for an optional visibility token
+	Visibility::E visibility = Parser::parseVisibility(token, Visibility::Private);
 	// look for an optional language feature token
 	LanguageFeatureState::E languageFeatureState = Parser::parseLanguageFeatureState(token, LanguageFeatureState::Stable);
 	// look for the type token
@@ -419,9 +413,6 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 		methodType = MethodAttributes::MethodType::Destructor;
 		mutability = Mutability::Modify;
 	}
-
-	expect(Token::Type::PARENTHESIS_OPEN, token);
-
 
 	ParameterList params = Parser::parseParameters(token, mScope);
 
@@ -515,14 +506,15 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 	return true;
 }
 
-bool Analyser::createNamespace(TokenIterator& token, TokenIterator /*end*/)
+bool Analyser::createNamespace(TokenIterator& token)
 {
-	// look for the visibility token
-	Visibility::E visibility = Visibility::convert((*token++).content());
+	// look for an optional visibility token
+	Visibility::E visibility = Parser::parseVisibility(token, Visibility::Private);
 	// look for an optional language feature token
 	LanguageFeatureState::E languageFeatureState = Parser::parseLanguageFeatureState(token, LanguageFeatureState::Stable);
 	// look for the "namespace" token
-	expect(Token::Type::RESERVED_WORD, token++);
+	expect(Token::Type::RESERVED_WORD, token);
+	++token;
 
 	MethodScope* tmpScope = mScope;
 
@@ -581,32 +573,33 @@ bool Analyser::createNamespace(TokenIterator& token, TokenIterator /*end*/)
  */
 void Analyser::generate(const TokenList& tokens)
 {
-	TokenList::const_iterator it = tokens.begin();
+	TokenList::const_iterator token = tokens.begin();
+	TokenList::const_iterator localEnd = tokens.end();
 
-	while ( it != tokens.end() && it->type() != Token::Type::ENDOFFILE ) {
-		if ( Parser::isInterfaceDeclaration(it) || Parser::isObjectDeclaration(it) ) {
-			createBluePrint(it, tokens.end());
+	while ( token != localEnd && token->type() != Token::Type::ENDOFFILE ) {
+		if ( Parser::isInterfaceDeclaration(token) || Parser::isObjectDeclaration(token) ) {
+			createBluePrint(token);
 		}
-		else if ( Parser::isEnumDeclaration(it) ) {
-			createEnum(it, tokens.end());
+		else if ( Parser::isEnumDeclaration(token) ) {
+			createEnum(token);
 		}
-		else if ( Parser::isLibraryReference(it) ) {
-			createLibraryReference(it, tokens.end());
+		else if ( Parser::isLibraryReference(token) ) {
+			createLibraryReference(token);
 		}
-		else if ( Parser::isMemberDeclaration(it) ) {
-			createMember(it, tokens.end());
+		else if ( Parser::isMemberDeclaration(token) ) {
+			createMember(token);
 		}
-		else if ( Parser::isMethodDeclaration(it) ) {
-			createMethod(it, tokens.end());
+		else if ( Parser::isMethodDeclaration(token) ) {
+			createMethod(token);
 		}
-		else if ( Parser::isNamespaceDeclaration(it) ) {
-			createNamespace(it, tokens.end());
+		else if ( Parser::isNamespaceDeclaration(token) ) {
+			createNamespace(token);
 		}
-		else if ( !createMemberOrMethod(it, tokens.end()) ) {
-			throw Common::Exceptions::SyntaxError("invalid token '" + it->content() + "' found", it->position());
+		else if ( !createMemberOrMethod(token) ) {
+			throw Common::Exceptions::SyntaxError("invalid token '" + token->content() + "' found", token->position());
 		};
 
-		++it;
+		++token;
 	}
 }
 
@@ -635,19 +628,6 @@ std::string Analyser::getQualifiedTypename(const std::string& type) const
 	return result;
 }
 
-void Analyser::process(const TokenList& tokens)
-{
-	// factory reset
-	mLibraries.clear();
-
-	// execute basic sanity checks
-	SanityChecker sanity;
-	sanity.process(tokens);
-
-	// generate objects from tokens
-	generate(tokens);
-}
-
 void Analyser::processFile(const std::string& filename)
 {
 	mFilename = filename;
@@ -663,7 +643,7 @@ void Analyser::processFile(const std::string& filename)
 	TokenList tokens = generateTokens(std::string(std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>()));
 
 	// start the real processing
-	process(tokens);
+	processTokens(tokens);
 }
 
 void Analyser::processString(const std::string& content, const std::string& filename)
@@ -674,13 +654,20 @@ void Analyser::processString(const std::string& content, const std::string& file
 	TokenList tokens = generateTokens(content);
 
 	// start the real processing
-	process(tokens);
+	processTokens(tokens);
 }
 
 void Analyser::processTokens(const TokenList& tokens)
 {
-	// start the real processing
-	process(tokens);
+	// factory reset
+	mLibraries.clear();
+
+	// execute basic sanity checks
+	SanityChecker sanity;
+	sanity.process(tokens);
+
+	// generate objects from tokens
+	generate(tokens);
 }
 
 

@@ -57,6 +57,7 @@ public:
 	static ParameterList parseParameters(TokenIterator &token, IScope* scope = 0);
 	static Common::TypeDeclaration parseTypeDeclaration(TokenIterator& token, IScope* scope = 0);
 	static Runtime::AtomicValue parseValueInitialization(TokenIterator& token);
+	static Visibility::E parseVisibility(TokenIterator& token, Visibility::E defaultValue);
 };
 
 

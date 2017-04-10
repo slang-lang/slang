@@ -35,6 +35,7 @@ void Tokenizer::addToken(const std::string &con, const Common::Position &positio
 	std::string content = con;
 
 	Token::Category::E category = Token::Category::None;
+	bool isOptional = false;
 	Token::Type::E type = Token::Type::IDENTIFIER;
 
 	if ( content == "=" ) { category = Token::Category::Assignment; type = Token::Type::ASSIGN; }
@@ -77,19 +78,19 @@ void Tokenizer::addToken(const std::string &con, const Common::Position &positio
 		content = con.substr(0, con.length() - 1);
 	}
 	else if ( isKeyword(content) ) { category = Token::Category::Keyword; type = Token::Type::KEYWORD; }
-	else if ( isLanguageFeature(content) ) { category = Token::Category::Modifier; type = Token::Type::LANGUAGEFEATURE; }
+	else if ( isLanguageFeature(content) ) { category = Token::Category::Modifier; isOptional = true; type = Token::Type::LANGUAGEFEATURE; }
 	else if ( isLiteral(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_LITERAL;
 		// remove leading and trailing (", ') quotation marks (", ')
 		content = con.substr(1, con.length() - 2);
 	}
-	else if ( isModifier(content) ) { category = Token::Category::Modifier; type = Token::Type::MODIFIER; }
+	else if ( isModifier(content) ) { category = Token::Category::Modifier; isOptional = true; type = Token::Type::MODIFIER; }
 	else if ( isReservedWord(content) ) { category = Token::Category::ReservedWord; type = Token::Type::RESERVED_WORD; }
 	else if ( isType(content) ) { category = Token::Category::Identifier; type = Token::Type::TYPE; }
-	else if ( isVisibility(content) ) { type = Token::Type::VISIBILITY; }
+	else if ( isVisibility(content) ) { isOptional = true; type = Token::Type::VISIBILITY; }
 	else if ( isWhiteSpace(content) ) { category = Token::Category::Ignorable; type = Token::Type::WHITESPACE; }
 
 	Token token(category, type, content, position);
-	token.setOptional(category == Token::Category::Modifier || type == Token::Type::LANGUAGEFEATURE);
+	token.setOptional(isOptional);
 
 	mTokens.push_back(token);
 }
