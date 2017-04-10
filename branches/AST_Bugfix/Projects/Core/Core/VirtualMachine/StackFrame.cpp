@@ -86,24 +86,18 @@ Runtime::Object& StackFrame::returnValue()
 
 std::string StackFrame::toString() const
 {
-	std::string result = "Frame " + Tools::ConvertToStdString(mLevel);
+	std::string result = "Frame " + Tools::ConvertToStdString(mLevel) + ": ";
 
-	SymbolScope* scope = dynamic_cast<SymbolScope*>(mScope);
-
-	if ( scope ) {
-		result += ": ";
-
-		switch ( scope->getScopeType() ) {
-			case IScope::IType::MethodScope:
-				result += scope->getFullScopeName();
-				break;
-			case IScope::IType::NamedScope:
-				result += scope->getFullScopeName();
-				break;
-			case IScope::IType::SymbolScope:
-				result += scope->getFullScopeName();
-				break;
-		}
+	switch ( mScope->getScopeType() ) {
+		case IScope::IType::MethodScope:
+			result += mScope->getFullScopeName();
+			break;
+		case IScope::IType::NamedScope:
+			result += mScope->getFullScopeName();
+			break;
+		case IScope::IType::SymbolScope:
+			result += mScope->getFullScopeName();
+			break;
 	}
 
 	return result;

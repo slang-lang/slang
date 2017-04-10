@@ -315,6 +315,7 @@ bool Analyser::createMemberOrMethod(TokenIterator& token)
 	std::string name = (*token++).content();
 
 	if ( token->type() == Token::Type::PARENTHESIS_OPEN ) {
+		// create a new method
 		return createMethodStub(token, visibility, languageFeatureState, type, name);
 	}
 

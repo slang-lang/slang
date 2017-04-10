@@ -18,7 +18,7 @@ namespace ObjectiveScript {
 namespace Designtime {
 
 
-bool checkSyntax(TokenIterator foundIt, const TokenList &expected)
+bool checkSyntax(TokenIterator foundIt, const TokenList& expected)
 {
 	if ( expected.empty() ) {
 		return false;
@@ -325,11 +325,7 @@ bool Parser::isEnumDeclaration(TokenIterator token)
 {
 	TokenList tokens;
 
-#ifdef REQUIRE_VISIBILITY_PREFIX
-	tokens.push_back(Token(Token::Type::VISIBILITY));
-#else
 	tokens.push_back(Token(Token::Type::VISIBILITY, true));
-#endif
 	tokens.push_back(Token(Token::Type::RESERVED_WORD, std::string(RESERVED_WORD_ENUM)));
 	tokens.push_back(Token(Token::Type::IDENTIFIER));
 
@@ -342,11 +338,7 @@ bool Parser::isInterfaceDeclaration(TokenIterator token)
 {
 	TokenList tokens;
 
-#ifdef REQUIRE_VISIBILITY_PREFIX
-	tokens.push_back(Token(Token::Type::VISIBILITY));
-#else
 	tokens.push_back(Token(Token::Type::VISIBILITY, true));
-#endif
 	tokens.push_back(Token(Token::Type::RESERVED_WORD, std::string(RESERVED_WORD_INTERFACE)));
 	tokens.push_back(Token(Token::Type::IDENTIFIER));
 
@@ -458,11 +450,7 @@ bool Parser::isNamespaceDeclaration(TokenIterator token)
 {
 	TokenList tokens;
 
-#ifdef REQUIRE_VISIBILITY_PREFIX
-	tokens.push_back(Token(Token::Type::VISIBILITY));
-#else
 	tokens.push_back(Token(Token::Type::VISIBILITY, true));
-#endif
 	tokens.push_back(Token(Token::Type::RESERVED_WORD, std::string(RESERVED_WORD_NAMESPACE)));
 	tokens.push_back(Token(Token::Type::IDENTIFIER));
 
@@ -473,17 +461,26 @@ bool Parser::isNamespaceDeclaration(TokenIterator token)
 // [<visibility>] [language feature] object <identifier> [extends <identifier>] [implements <identifier>, ...] { ... }
 bool Parser::isObjectDeclaration(TokenIterator token)
 {
-	TokenList tokens;
+	if ( token->isOptional() && token->type() == Token::Type::VISIBILITY ) {
+		// visibility token is okay
+		++token;
+	}
 
-#ifdef REQUIRE_VISIBILITY_PREFIX
-	tokens.push_back(Token(Token::Type::VISIBILITY));
-#else
-	tokens.push_back(Token(Token::Type::VISIBILITY, true));
-#endif
-	tokens.push_back(Token(Token::Type::RESERVED_WORD, std::string(RESERVED_WORD_OBJECT)));
-	tokens.push_back(Token(Token::Type::IDENTIFIER));
+	if ( token->isOptional() && token->type() == Token::Type::MODIFIER ) {
+		// abstract is okay
+		++token;
+	}
 
-	return checkSyntax(token, tokens);
+	if ( token->isOptional() && token->type() == Token::Type::LANGUAGEFEATURE ) {
+		// language feature is okay
+		++token;
+	}
+
+	if ( token->type() != Token::Type::RESERVED_WORD || token->content() != std::string(RESERVED_WORD_OBJECT) ) {
+		return false;
+	}
+
+	return true;
 }
 
 ImplementationType::E Parser::parseImplementationType(TokenIterator& token, ImplementationType::E defaultValue)

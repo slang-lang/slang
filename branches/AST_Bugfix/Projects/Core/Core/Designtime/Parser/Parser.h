@@ -27,7 +27,7 @@ class IScope;
 
 namespace Designtime {
 
-bool checkSyntax(TokenIterator foundIt, const TokenList &expected);
+bool checkSyntax(TokenIterator foundIt, const TokenList& expected);
 PrototypeConstraints mergeConstraints(const PrototypeConstraints& designtime, const PrototypeConstraints& runtime);
 
 class Parser

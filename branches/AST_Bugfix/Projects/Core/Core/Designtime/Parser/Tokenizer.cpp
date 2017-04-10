@@ -86,8 +86,8 @@ void Tokenizer::addToken(const std::string &con, const Common::Position &positio
 	else if ( isModifier(content) ) { category = Token::Category::Modifier; isOptional = true; type = Token::Type::MODIFIER; }
 	else if ( isReservedWord(content) ) { category = Token::Category::ReservedWord; type = Token::Type::RESERVED_WORD; }
 	else if ( isType(content) ) { category = Token::Category::Identifier; type = Token::Type::TYPE; }
-	else if ( isVisibility(content) ) { isOptional = true; type = Token::Type::VISIBILITY; }
-	else if ( isWhiteSpace(content) ) { category = Token::Category::Ignorable; type = Token::Type::WHITESPACE; }
+	else if ( isVisibility(content) ) { category = Token::Category::ReservedWord; isOptional = true; type = Token::Type::VISIBILITY; }
+	else if ( isWhiteSpace(content) ) { category = Token::Category::Ignorable; isOptional = true; type = Token::Type::WHITESPACE; }
 
 	Token token(category, type, content, position);
 	token.setOptional(isOptional);
@@ -169,7 +169,7 @@ bool Tokenizer::isFloat(const std::string& token) const
 
 bool Tokenizer::isInteger(const std::string& token) const
 {
-	if ( token.empty() ) {
+	if ( token.size() == 0 ) {
 		return false;
 	}
 
