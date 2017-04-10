@@ -90,7 +90,7 @@ private:
 	Runtime::Object* createObject(const std::string& name, Designtime::BluePrintObject* blueprint, InitilizationType::E initialize);
 	Runtime::Object* createUserObject(const std::string& name, Designtime::BluePrintObject* blueprint, InitilizationType::E initialize);
 
-	void initBlueprint(Designtime::BluePrintObject* blueprint);
+	void initBluePrintObject(Designtime::BluePrintObject *blueprint);
 	void initTypeSystem(Designtime::BluePrintObject* blueprint);
 
 	Designtime::BluePrintEnum* findBluePrintEnum(const std::string& type) const;

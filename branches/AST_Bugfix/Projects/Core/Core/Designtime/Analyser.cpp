@@ -53,7 +53,8 @@ bool Analyser::buildEnum(Designtime::BluePrintEnum* symbol, const TokenList& tok
 		name = (token++)->content();
 
 		if ( token->type() == Token::Type::ASSIGN ) {
-			expect(Token::Type::ASSIGN, token++);
+			expect(Token::Type::ASSIGN, token);
+			++token;
 
 			expect(Token::Type::CONST_INTEGER, token);
 			value = (token++)->content();
@@ -240,9 +241,6 @@ bool Analyser::createEnum(TokenIterator& token)
 		throw Common::Exceptions::SyntaxError("enums are now allowed to be prototypes", token->position());
 	}
 
-	// enum, interface, object or prototype declarations have to start with an '{' token
-	expect(Token::Type::BRACKET_CURLY_OPEN, token);
-
 	// collect all tokens of this method
 	TokenList tokens = Parser::collectScopeTokens(token);
 
@@ -257,9 +255,9 @@ bool Analyser::createEnum(TokenIterator& token)
 	symbol->setVisibility(visibility);
 	symbol->setSealed(true);
 
-	mRepository->addBluePrint(symbol);
-
 	mScope->define(type.mName, symbol);
+
+	mRepository->addBluePrint(symbol);
 
 	return buildEnum(symbol, tokens);
 }

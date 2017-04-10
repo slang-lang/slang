@@ -259,7 +259,7 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 	// add new blueprint to repository
 	addBluePrint(newBlue);
 	// initialize newly created blueprint
-	initBlueprint(newBlue);
+	initBluePrintObject(newBlue);
 
 	// add new blueprint to parent scope
 	IScope* parent = blueprint->getEnclosingScope();
@@ -614,7 +614,7 @@ void Repository::init()
 void Repository::initializeBlueprints()
 {
 	for ( BluePrintObjectMap::iterator it = mBluePrintObjects.begin(); it != mBluePrintObjects.end(); ++it ) {
-		initBlueprint(it->second);
+		initBluePrintObject(it->second);
 	}
 }
 
@@ -666,7 +666,7 @@ void Repository::initializeObject(Runtime::Object* destObj, Designtime::BluePrin
 /*
  * initializes a given blueprint object (i.e. triggers type system initialization)
  */
-void Repository::initBlueprint(Designtime::BluePrintObject* blueprint)
+void Repository::initBluePrintObject(Designtime::BluePrintObject *blueprint)
 {
 	if ( blueprint->isAtomicType() ) {
 		// atomic types should have been initialized at compile time
