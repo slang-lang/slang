@@ -32,7 +32,7 @@ public:
 	const TokenList& tokens() const;
 
 private:	// Tokenizer
-	inline void addToken(const std::string &con, const Common::Position &position);
+	inline void addToken(const std::string& con, const Common::Position& position);
 	void addToken(const Token& token);
 
 	void mergeBooleanOperators();

@@ -6,6 +6,7 @@
 
 // Project includes
 #include <Core/Consts.h>
+#include <Core/Defines.h>
 #include <Core/Tools.h>
 
 // Namespace declarations
@@ -30,7 +31,7 @@ Tokenizer::Tokenizer(const std::string& filename, const std::string& content)
 	mTypes = provideAtomicTypes();
 }
 
-void Tokenizer::addToken(const std::string &con, const Common::Position &position)
+void Tokenizer::addToken(const std::string& con, const Common::Position& position)
 {
 	std::string content = con;
 
@@ -87,7 +88,13 @@ void Tokenizer::addToken(const std::string &con, const Common::Position &positio
 	else if ( isReservedWord(content) ) { category = Token::Category::ReservedWord; type = Token::Type::RESERVED_WORD; }
 	else if ( isType(content) ) { category = Token::Category::Identifier; type = Token::Type::TYPE; }
 	else if ( isVisibility(content) ) { category = Token::Category::ReservedWord; isOptional = true; type = Token::Type::VISIBILITY; }
-	else if ( isWhiteSpace(content) ) { category = Token::Category::Ignorable; isOptional = true; type = Token::Type::WHITESPACE; }
+	else if ( isWhiteSpace(content) ) {
+#ifdef SKIP_WHITESPACES
+		return;
+#else
+		category = Token::Category::Ignorable; isOptional = true; type = Token::Type::WHITESPACE;
+#endif
+	}
 
 	Token token(category, type, content, position);
 	token.setOptional(isOptional);
@@ -504,7 +511,10 @@ void Tokenizer::process()
 
 	addToken(Token(Token::Type::ENDOFFILE));	// add end of file token
 
+#ifdef SKIP_WHITESPACES
+#else
 	removeWhiteSpaces();			// remove all white spaces
+#endif
 	replaceAssignments();			// replace assignment tokens with compare tokens (if present)
 	mergeBooleanOperators();		// merge '&' '&' into '&&'
 	mergeInfixPostfixOperators();	// merge '+' '+' into '++'
