@@ -328,10 +328,10 @@ void Tokenizer::mergeBooleanOperators()
 			tmp.push_back(Token(Token::Category::Operator, Token::Type::NOR, "!|", token->position()));
 		}
 
-		lastType = token->type();
 		if ( !changed ) {
 			tmp.push_back((*token));
 		}
+		lastType = tmp.back().type();
 
 		++token;
 	}
@@ -362,10 +362,10 @@ void Tokenizer::mergeOtherOperators()
 			tmp.push_back(Token(Token::Category::Operator, Token::Type::ARRAY_SUBSCRIPT, "[]", token->position()));
 		}
 
-		lastType = token->type();
 		if ( !changed ) {
 			tmp.push_back((*token));
 		}
+		lastType = tmp.back().type();
 
 		++token;
 	}
@@ -404,10 +404,10 @@ void Tokenizer::mergeInfixPostfixOperators()
 			tmp.push_back(Token(Token::Category::Operator, Token::Type::OPERATOR_INCREMENT, "++", token->position()));
 		}
 
-		lastType = token->type();
 		if ( !changed ) {
 			tmp.push_back((*token));
 		}
+		lastType = tmp.back().type();
 
 		++token;
 	}
@@ -647,10 +647,10 @@ void Tokenizer::replaceAssignments()
 			tmp.push_back(Token(Token::Category::Assignment, Token::Type::ASSIGN_SUBTRACT, "-=", token->position()));
 		}
 
-		lastType = token->type();
 		if ( !changed ) {
 			tmp.push_back((*token));
 		}
+		lastType = tmp.back().type();
 
 		++token;
 	}
