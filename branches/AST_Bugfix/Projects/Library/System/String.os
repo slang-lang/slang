@@ -209,5 +209,12 @@ public object String implements IIterateable {
 	public bool operator<(String other ref) const {
 		return mValue < string other;
 	}
+
+	/*
+	 * String subscript operator
+	 */
+	public string operator[](int index) const {
+		return At(index);
+	}
 }
 
