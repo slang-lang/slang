@@ -5,7 +5,7 @@ SET(SOURCES
 	TreeGenerator.cpp
 	TreeInterpreter.cpp
 	TreeVisitor.cpp
-        )
+)
 
 SET(HEADERS
 	ControlStatements.h
@@ -18,9 +18,10 @@ SET(HEADERS
 	TreeGenerator.h
 	TreeInterpreter.h
 	TreeVisitor.h
-        )
+)
 
 SET(DEPENDENCIES
+	CoreRuntime
 	CoreCommon
 )
 
