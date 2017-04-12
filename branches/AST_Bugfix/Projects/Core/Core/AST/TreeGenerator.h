@@ -80,10 +80,12 @@ private: // Execution
 	Statement* process_if(TokenIterator& token);
 	Node* process_keyword(TokenIterator& token);
 	MethodExpression* process_method(SymbolExpression* symbol, TokenIterator& token);
+	MethodExpression* process_method(SymbolExpression* symbol, const Token& token, const ExpressionList& expressions);
 	Expression* process_new(TokenIterator& token);
 	Statement* process_print(TokenIterator& token);
 	Statement* process_return(TokenIterator& token);
 	Statements* process_scope(TokenIterator& token, bool allowBreakAndContinue = false);
+	Expression* process_subscript(TokenIterator& token, SymbolExpression* symbol);
 	Node* process_statement(TokenIterator& token, bool allowBreakAndContinue = false);
 	Statement* process_switch(TokenIterator& token);
 	Statement* process_throw(TokenIterator& token);

@@ -765,7 +765,7 @@ Node* TreeGenerator::process_identifier(TokenIterator& token, bool allowTypeCast
 	SymbolExpression* symbol = resolveWithThis(token, getScope());
 	TokenIterator op = token;
 
-	// type cast (followed by identifier or 'copy' || 'new' keyword)
+	// type cast (followed by identifier, literal, 'copy' or 'new' keyword)
 	if ( allowTypeCast &&
 		((op->category() == Token::Category::Constant || op->type() == Token::Type::IDENTIFIER || op->type() == Token::Type::KEYWORD) ||
 		 (dynamic_cast<DesigntimeSymbolExpression*>(symbol) && dynamic_cast<DesigntimeSymbolExpression*>(symbol)->isPrototype()))
@@ -780,8 +780,6 @@ Node* TreeGenerator::process_identifier(TokenIterator& token, bool allowTypeCast
 		// delete resolved symbol expression as it is not needed any more
 		delete symbol;
 		symbol = 0;
-
-		//token = old;
 	}
 	// type declaration
 	else if ( !allowTypeCast &&
@@ -829,6 +827,9 @@ Node* TreeGenerator::process_identifier(TokenIterator& token, bool allowTypeCast
 		}
 
 		node = new Assignment(symbol, (*op), right, resolveType(symbol, assignment, right));
+	}
+	else if ( op->type() == Token::Type::BRACKET_OPEN ) {
+		node = process_subscript(token, symbol);
 	}
 	// --/++ for lvalue
 	else if ( op->type() == Token::Type::OPERATOR_DECREMENT || op->type() == Token::Type::OPERATOR_INCREMENT ) {
@@ -948,19 +949,14 @@ MethodExpression* TreeGenerator::process_method(SymbolExpression* symbol, TokenI
 	TokenIterator opened = findNext(tmp, Token::Type::PARENTHESIS_OPEN);
 	TokenIterator closed = findNextBalancedParenthesis(++opened);
 
-	ParameterList params;
-	ExpressionList parameterList;
+	ExpressionList params;
 
 	tmp = opened;
 	// loop through all parameters separated by commas
 	while ( tmp != closed ) {
-		Node* exp = expression(tmp);
-
-		params.push_back(Parameter::CreateDesigntime(
-			ANONYMOUS_OBJECT,
-			static_cast<Expression*>(exp)->getResultType()
-		));
-		parameterList.push_back(exp);
+		params.push_back(
+			expression(tmp)
+		);
 
 		if ( std::distance(tmp, closed) <= 0 ) {
 			break;
@@ -974,28 +970,40 @@ MethodExpression* TreeGenerator::process_method(SymbolExpression* symbol, TokenI
 
 	token = ++closed;
 
+	return process_method(symbol, start, params);
+}
+
+MethodExpression* TreeGenerator::process_method(SymbolExpression* symbol, const Token& token, const ExpressionList& expressions)
+{
+	ParameterList params;
+	for (  ExpressionList::const_iterator it = expressions.begin(); it != expressions.end(); ++it ) {
+		params.push_back(Parameter::CreateDesigntime(
+			ANONYMOUS_OBJECT,
+			static_cast<Expression*>((*it))->getResultType()
+		));
+	}
 
 	Common::Method* method = static_cast<Common::Method*>(resolveMethod(symbol, params, Visibility::Private));
 	if ( !method ) {
-		throw Common::Exceptions::UnknownIdentifer("method '" + symbol->toString() + "(" + toString(params) + ")' not found", token->position());
+		throw Common::Exceptions::UnknownIdentifer("method '" + symbol->toString() + "(" + toString(params) + ")' not found", token.position());
 	}
 
 	// prevent calls to non-const methods from const methods
 	if ( mMethod->isConst() && method->getEnclosingScope() == mMethod->getEnclosingScope() && !method->isConst() ) {
-		throw Common::Exceptions::ConstCorrectnessViolated("only calls to const methods are allowed in const method '" + mMethod->getFullScopeName() + "'", start.position());
+		throw Common::Exceptions::ConstCorrectnessViolated("only calls to const methods are allowed in const method '" + mMethod->getFullScopeName() + "'", token.position());
 	}
 
 	// prevent calls to non-const method from const symbol
 	if ( symbol->isConst() && !method->isConst() ) {
-		throw Common::Exceptions::ConstCorrectnessViolated("usage of non-const symbol not allowed from within const symbol '" + symbol->toString() + "'", start.position());
+		throw Common::Exceptions::ConstCorrectnessViolated("usage of non-const symbol not allowed from within const symbol '" + symbol->toString() + "'", token.position());
 	}
 
 	// prevent calls to non-static methods from static methods
 	if ( mMethod->isStatic() && !method->isStatic() ) {
-		throw Common::Exceptions::StaticException("non-static method \"" + method->ToString() + "\" called from static method \"" + mMethod->ToString() + "\"", start.position());
+		throw Common::Exceptions::StaticException("non-static method \"" + method->ToString() + "\" called from static method \"" + mMethod->ToString() + "\"", token.position());
 	}
 
-	return new MethodExpression(symbol, parameterList, method->QualifiedTypename(), method->isConst(), method->getEnclosingScope() == mMethod->getEnclosingScope());
+	return new MethodExpression(symbol, expressions, method->QualifiedTypename(), method->isConst(), method->getEnclosingScope() == mMethod->getEnclosingScope());
 }
 
 /*
@@ -1098,6 +1106,35 @@ Statements* TreeGenerator::process_scope(TokenIterator& token, bool allowBreakAn
 	collectScopeTokens(token, scopeTokens);
 
 	return generate(scopeTokens, allowBreakAndContinue);
+}
+
+Expression* TreeGenerator::process_subscript(TokenIterator& token, SymbolExpression* symbol)
+{
+	if ( !symbol ) {
+		throw Common::Exceptions::InvalidSymbol("invalid symbol found: " + token->content(), token->position());
+	}
+
+	std::string type = symbol->getResultType();
+
+	symbol->mSymbolExpression = new RuntimeSymbolExpression("operator[]", "", true, true);
+	symbol->mSymbolExpression->mSurroundingScope = dynamic_cast<Designtime::BluePrintObject*>(mRepository->findBluePrint(type));
+
+	Token opToken(Token::Category::Operator, Token::Type::BRACKET_OPEN, "[", token->position(), false);
+	ExpressionList params;
+
+	do {
+		// skip [ or ,
+		++token;
+
+		params.push_back(
+			expression(token)
+		);
+	} while ( token->type() == Token::Type::COMMA );
+
+	// skip ]
+	++token;
+
+	return new UnaryExpression(opToken, process_method(symbol, opToken, params), UnaryExpression::ValueType::RValue);
 }
 
 Node* TreeGenerator::process_statement(TokenIterator& token, bool allowBreakAndContinue)

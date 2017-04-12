@@ -431,6 +431,11 @@ void TreeInterpreter::evaluateUnaryExpression(UnaryExpression* exp, Runtime::Obj
 			case Token::Type::OPERATOR_INCREMENT: Runtime::operator_unary_increment(&lvalue, exp->mOperation.position()); break;
 			// }
 
+			// subscript operator
+			// {
+			case Token::Type::BRACKET_OPEN: evaluate(exp->mExpression, &lvalue); break;
+			// }
+
 			// default handling
 			// {
 			default: throw Common::Exceptions::NotSupported("lvalue expression with " + exp->mOperation.content() + " not supported");
@@ -455,6 +460,11 @@ void TreeInterpreter::evaluateUnaryExpression(UnaryExpression* exp, Runtime::Obj
 			case Token::Type::MATH_SUBTRACT: Runtime::operator_unary_minus(result, exp->mOperation.position()); break;
 			case Token::Type::OPERATOR_DECREMENT: Runtime::operator_unary_decrement(result, exp->mOperation.position()); break;
 			case Token::Type::OPERATOR_INCREMENT: Runtime::operator_unary_increment(result, exp->mOperation.position()); break;
+			// }
+
+			// subscript operator
+			// {
+			case Token::Type::BRACKET_OPEN: evaluate(exp->mExpression, result); break;
 			// }
 
 			// default handling
