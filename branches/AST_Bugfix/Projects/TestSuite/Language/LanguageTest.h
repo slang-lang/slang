@@ -52,7 +52,6 @@ private:	// Tests
 	void testIf();
 	void testIncompleteBooleanEvaluation();
 	void testInfixOperator();
-	void testLawOfDemeter();
 	void testMethodOverloading();
 	void testNamespaces();
 	void testObjectEquality();

@@ -59,7 +59,6 @@ void LanguageTest::process()
 	TEST(testIf);
 	TEST(testIncompleteBooleanEvaluation);
 	TEST(testInfixOperator);
-	TEST(testLawOfDemeter);
 	TEST(testMethodOverloading);
 	TEST(testNamespaces);
 	TEST(testObjectEquality);
@@ -228,8 +227,6 @@ void LanguageTest::testConstCorrectness2()
 
 void LanguageTest::testConstCorrectness3()
 {
-TSKIP("const references are not yet const");
-
 	try {
 		VirtualMachine vm;
 		TTHROWS(vm.createScriptFromFile("Tests/Language/ConstCorrectness3.os"), ObjectiveScript::Common::Exceptions::ConstCorrectnessViolated);
@@ -366,22 +363,6 @@ void LanguageTest::testInfixOperator()
 	try {
 		VirtualMachine vm;
 		vm.createScriptFromFile("Tests/Language/InfixOperator.os");
-
-		// automatic success
-	}
-	catch ( std::exception& e ) {
-		// unexpected exception has been thrown: test failed!
-		TFAIL(e.what());
-	}
-}
-
-void LanguageTest::testLawOfDemeter()
-{
-TSKIP("skipping Law of Demeter test");
-
-	try {
-		VirtualMachine vm;
-		TTHROWS(vm.createScriptFromFile("Tests/Language/LawOfDemeterTest.os"), ObjectiveScript::Designtime::Exceptions::LawOfDemeterViolated);
 
 		// automatic success
 	}
