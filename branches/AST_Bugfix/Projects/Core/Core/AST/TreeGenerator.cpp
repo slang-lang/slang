@@ -779,7 +779,6 @@ Node* TreeGenerator::process_identifier(TokenIterator& token, bool allowTypeCast
 
 		// delete resolved symbol expression as it is not needed any more
 		delete symbol;
-		symbol = 0;
 	}
 	// type declaration
 	else if ( !allowTypeCast &&
@@ -788,7 +787,6 @@ Node* TreeGenerator::process_identifier(TokenIterator& token, bool allowTypeCast
 		) {
 		// delete resolved symbol expression as it is not needed any more
 		delete symbol;
-		symbol = 0;
 
 		node = process_type(old, Initialization::Allowed);
 
@@ -1539,14 +1537,20 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 	// set scope & type according to symbol type
 	switch ( result->getSymbolType() ) {
 		case Symbol::IType::BluePrintEnumSymbol: {
-			type = static_cast<Designtime::BluePrintEnum*>(result)->QualifiedTypename();
+			Designtime::BluePrintEnum* object = static_cast<Designtime::BluePrintEnum*>(result);
 
-			if ( !static_cast<Designtime::BluePrintEnum*>(result)->isMember() ) {
-				name = static_cast<Designtime::BluePrintEnum*>(result)->UnqualifiedTypename();
+			type = object->QualifiedTypename();
+
+			if ( !object->isMember() ) {
+				name = object->UnqualifiedTypename();
+			}
+
+			Designtime::BluePrintGeneric* blueprint = mRepository->findBluePrint(type);
+			if ( !blueprint ) {
+				throw Common::Exceptions::UnknownIdentifer("'" + type + "' not found", token->position());
 			}
 
 			PrototypeConstraints constraints;
-			Designtime::BluePrintGeneric* blueprint = mRepository->findBluePrint(type);
 			if ( blueprint->isPrototype() ) {
 				constraints = Designtime::Parser::collectRuntimePrototypeConstraints(token);
 			}
@@ -1556,14 +1560,20 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 			symbol = new DesigntimeSymbolExpression(name, type, constraints, blueprint->isConst());
 		} break;
 		case Symbol::IType::BluePrintObjectSymbol: {
-			type = static_cast<Designtime::BluePrintObject*>(result)->QualifiedTypename();
+			Designtime::BluePrintObject* object = static_cast<Designtime::BluePrintObject*>(result);
 
-			if ( !static_cast<Designtime::BluePrintObject*>(result)->isMember() && name != IDENTIFIER_BASE ) {
-				name = static_cast<Designtime::BluePrintObject*>(result)->UnqualifiedTypename();
+			type = object->QualifiedTypename();
+
+			if ( !object->isMember() && name != IDENTIFIER_BASE ) {
+				name = object->UnqualifiedTypename();
+			}
+
+			Designtime::BluePrintGeneric* blueprint = mRepository->findBluePrint(type);
+			if ( !blueprint ) {
+				throw Common::Exceptions::UnknownIdentifer("'" + type + "' not found", token->position());
 			}
 
 			PrototypeConstraints constraints;
-			Designtime::BluePrintGeneric* blueprint = mRepository->findBluePrint(type);
 			if ( blueprint->isPrototype() ) {
 				constraints = Designtime::Parser::collectRuntimePrototypeConstraints(token);
 			}
@@ -1572,25 +1582,29 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 
 			symbol = new DesigntimeSymbolExpression(name, type, constraints, blueprint->isConst());
 		} break;
-		case Symbol::IType::NamespaceSymbol:
-			scope = static_cast<Common::Namespace*>(result);
-			type = static_cast<Common::Namespace*>(result)->QualifiedTypename();
+		case Symbol::IType::NamespaceSymbol: {
+			Common::Namespace* space = static_cast<Common::Namespace*>(result);
 
-			symbol = new DesigntimeSymbolExpression(name, type, PrototypeConstraints(), static_cast<Common::Namespace*>(result)->isConst());
-			break;
-		case Symbol::IType::ObjectSymbol: {
-			// set scope according to result type
-			scope = static_cast<Runtime::Object*>(result)->isAtomicType() ? 0 : static_cast<Runtime::Object*>(result)->getBluePrint();
-			type = static_cast<Runtime::Object*>(result)->QualifiedTypename();
+			scope = space;
+			type = space->QualifiedTypename();
 
-			symbol = new RuntimeSymbolExpression(name, type, static_cast<Runtime::Object*>(result)->isConst(), static_cast<Runtime::Object*>(result)->isMember());
+			symbol = new DesigntimeSymbolExpression(name, type, PrototypeConstraints(), space->isConst());
 		} break;
-		case Symbol::IType::MethodSymbol:
+		case Symbol::IType::ObjectSymbol: {
+			Runtime::Object* object = static_cast<Runtime::Object*>(result);
+
+			// set scope according to result type
+			scope = object->isAtomicType() ? 0 : object->getBluePrint();
+			type = object->QualifiedTypename();
+
+			symbol = new RuntimeSymbolExpression(name, type, object->isConst(), object->isMember());
+		} break;
+		case Symbol::IType::MethodSymbol: {
 			// don't set the result type yet because we first have to determine which method should get executed in case overloaded methods
 			// are present; this will be done in a later step (during method resolution)
 
 			symbol = new RuntimeSymbolExpression(name, type, false, false);
-			break;
+		} break;
 	}
 
 	if ( token->type() == Token::Type::SCOPE ) {
