@@ -1304,14 +1304,6 @@ Statement* TreeGenerator::process_try(TokenIterator& token)
 			if ( tmp->type() == Token::Type::PARENTHESIS_OPEN ) {
 				++tmp;
 
-				Symbol* symbol = identify(tmp);
-				if ( !symbol ) {
-					throw Common::Exceptions::UnknownIdentifer("identifier '" + tmp->content() + "' not found", tmp->position());
-				}
-				if ( symbol->getSymbolType() != Symbol::IType::BluePrintEnumSymbol && symbol->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
-					throw Common::Exceptions::SyntaxError("invalid symbol type '" + symbol->getName() + "' found", tmp->position());
-				}
-
 				// create new exception type instance
 				typeDeclaration = process_type(tmp, Initialization::NotAllowed);
 
@@ -1541,10 +1533,6 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 
 			type = object->QualifiedTypename();
 
-			if ( !object->isMember() ) {
-				name = object->UnqualifiedTypename();
-			}
-
 			Designtime::BluePrintGeneric* blueprint = mRepository->findBluePrint(type);
 			if ( !blueprint ) {
 				throw Common::Exceptions::UnknownIdentifer("'" + type + "' not found", token->position());
@@ -1563,10 +1551,6 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 			Designtime::BluePrintObject* object = static_cast<Designtime::BluePrintObject*>(result);
 
 			type = object->QualifiedTypename();
-
-			if ( !object->isMember() && name != IDENTIFIER_BASE ) {
-				name = object->UnqualifiedTypename();
-			}
 
 			Designtime::BluePrintGeneric* blueprint = mRepository->findBluePrint(type);
 			if ( !blueprint ) {
