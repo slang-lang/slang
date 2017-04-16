@@ -37,9 +37,8 @@ public:
 	virtual ~BluePrintGeneric();
 
 public:
-	const std::string& Filename() const { return mFilename; }
-	const std::string& QualifiedTypename() const { return mQualifiedTypename; }
-	const std::string& UnqualifiedTypename() const { return mUnqualifiedTypename; }
+	const std::string& Filename() const;
+	const std::string& QualifiedTypename() const;
 
 	void setQualifiedTypename(const std::string& name);
 
