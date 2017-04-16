@@ -209,11 +209,9 @@ void ASTTest::testConstCorrectness4()
 
 void ASTTest::testExit()
 {
-TSKIP("skipping ExitTest.os");
-
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/AST/ExitTest.os");
+		TTHROWS(vm.createScriptFromFile("Tests/AST/ExitTest.os"), Runtime::ControlFlow::E);
 
 		// automatic success
 	}
