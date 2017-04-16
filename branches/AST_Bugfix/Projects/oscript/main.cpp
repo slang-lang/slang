@@ -211,7 +211,7 @@ int main(int argc, const char* argv[])
 		}
 	}
 	catch ( ... ) {	// catch everything
-		std::cout << "uncaught exception detected" << std::endl;
+		std::cout << "uncaught exception detected!" << std::endl;
 
 		ObjectiveScript::Controller::Instance().stack()->print();
 	}
