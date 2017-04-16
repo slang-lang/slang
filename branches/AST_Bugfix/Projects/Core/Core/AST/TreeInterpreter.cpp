@@ -1324,19 +1324,17 @@ void TreeInterpreter::visitTry(TryStatement* node)
 	// store current control flow and reset it after finally block has been executed
 	Runtime::ControlFlow::E tmpControlFlow = mControlFlow;
 
-	// reset current control flow to allow execution of finally-block (if one exists)
-	if ( mControlFlow == Runtime::ControlFlow::Throw ) {
-		mControlFlow = Runtime::ControlFlow::Normal;
-	}
+	// reset current control flow to allow execution of finally-block
+	mControlFlow = Runtime::ControlFlow::Normal;
 
 	// allow try-statements without finally-statements
 	if ( node->mFinallyBlock ) {
 		visitStatements(node->mFinallyBlock);
+	}
 
-		// reset control flow if finally block has been executed normally
-		if ( mControlFlow == Runtime::ControlFlow::Normal && tmpControlFlow != Runtime::ControlFlow::Throw ) {
-			mControlFlow = tmpControlFlow;
-		}
+	// reset control flow to previous state if not set differently by finally statement
+	if ( mControlFlow == Runtime::ControlFlow::Normal && tmpControlFlow != Runtime::ControlFlow::Throw ) {
+		mControlFlow = tmpControlFlow;
 	}
 }
 
