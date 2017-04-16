@@ -1602,7 +1602,7 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 		symbol->mSymbolExpression = resolve(++token, scope, true, visibility);
 
 		if ( !symbol->mSymbolExpression ) {
-			// because exceptions are not allowed here we have to return 0 (without leaving memleaks)
+			// exceptions are not allowed here so we have to return 0 (without leaving memleaks)
 			delete symbol;
 
 			return 0;
@@ -1625,9 +1625,7 @@ SymbolExpression* TreeGenerator::resolveWithExceptions(TokenIterator& token, ISc
 
 SymbolExpression* TreeGenerator::resolveWithThis(TokenIterator& token, IScope* base, bool onlyCurrentScope) const
 {
-	IScope* outer = mMethod->getEnclosingScope();
-
-	Designtime::BluePrintObject* blueprint = dynamic_cast<Designtime::BluePrintObject*>(outer);
+	Designtime::BluePrintObject* blueprint = dynamic_cast<Designtime::BluePrintObject*>(mMethod->getEnclosingScope());
 	if ( blueprint ) {
 		// resolve symbol (without exceptions so that we can try to resolve another time) by using "this" identifier
 		SymbolExpression* exp = resolve(token, blueprint, true, Visibility::Private);
