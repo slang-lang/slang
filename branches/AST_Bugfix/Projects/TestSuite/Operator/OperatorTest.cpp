@@ -14,6 +14,11 @@
 #include <Core/Runtime/Script.h>
 #include <Core/VirtualMachine/VirtualMachine.h>
 
+// Extension includes
+#ifdef USE_SYSTEM_EXTENSION
+#	include <System/SystemExtension.h>
+#endif
+
 // Namespace declarations
 using namespace ObjectiveScript;
 
@@ -183,10 +188,11 @@ void OperatorTest::testBooleanOverloads_Unequal()
 
 void OperatorTest::testIndexOperator()
 {
-TSKIP("index operator is yet not implemented");
-
 	try {
 		VirtualMachine vm;
+#ifdef USE_SYSTEM_EXTENSION
+		vm.addExtension(new ObjectiveScript::Extensions::System::SystemExtension());
+#endif
 		vm.createScriptFromFile("Tests/Operator/IndexOperatorTest.os");
 
 		// automatic success
