@@ -10,7 +10,6 @@
 
 // Project includes
 #include <Core/Designtime/Parser/Token.h>
-#include "Types.h"
 
 // Forward declarations
 
@@ -20,7 +19,9 @@
 namespace ObjectiveScript {
 
 // Forward declarations
-class Object;
+namespace Runtime {
+	class Object;
+}
 
 namespace Tools {
 
