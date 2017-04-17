@@ -236,12 +236,12 @@ int AtomicValue::toInt() const
 std::string AtomicValue::toStdString() const
 {
 	switch ( mType ) {
-		case Type::BOOL: return Tools::ConvertToStdString(mValue.bool_);
-		case Type::DOUBLE: return Tools::ConvertToStdString(mValue.double_);
-		case Type::FLOAT: return Tools::ConvertToStdString(mValue.float_);
-		case Type::INT: return Tools::ConvertToStdString(mValue.int_);
+		case Type::BOOL: return Tools::toString(mValue.bool_);
+		case Type::DOUBLE: return Tools::toString(mValue.double_);
+		case Type::FLOAT: return Tools::toString(mValue.float_);
+		case Type::INT: return Tools::toString(mValue.int_);
 		case Type::STRING: return mStringValue;
-		case Type::UINT: return Tools::ConvertToStdString(mValue.uint_);
+		case Type::UINT: return Tools::toString(mValue.uint_);
 		default: break;
 	}
 

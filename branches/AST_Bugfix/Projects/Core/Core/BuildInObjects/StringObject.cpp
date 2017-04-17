@@ -51,13 +51,11 @@ StringObject::StringObject(const Object& other)
 
 	std::string source = other.QualifiedTypename();
 
-	if ( source == BoolObject::TYPENAME ) {
-		mValue = Tools::toString(other.getValue().toBool());
-	}
-	else if ( source == StringObject::TYPENAME ||
-			  source == DoubleObject::TYPENAME ||
-			  source == FloatObject::TYPENAME ||
-			  source == IntegerObject::TYPENAME ) {
+	if ( source == IntegerObject::TYPENAME ||
+		 source == BoolObject::TYPENAME ||
+		 source == StringObject::TYPENAME ||
+		 source == DoubleObject::TYPENAME ||
+		 source == FloatObject::TYPENAME ) {
 		mValue = other.getValue().toStdString();
 	}
 	else {
@@ -68,14 +66,6 @@ StringObject::StringObject(const Object& other)
 bool StringObject::isValid() const
 {
 	return mIsConstructed;
-}
-
-void StringObject::operator_array(const Object* index, Object* result)
-{
-	(void)index;
-	(void)result;
-
-	assert(!"not implemented");
 }
 
 void StringObject::operator_assign(const Object *other)
@@ -108,7 +98,11 @@ bool StringObject::operator_equal(const Object *other)
 {
 	std::string target = other->QualifiedTypename();
 
-	if ( target == StringObject::TYPENAME ) {
+	if ( target == BoolObject::TYPENAME ||
+		 target == DoubleObject::TYPENAME ||
+		 target == FloatObject::TYPENAME ||
+		 target == IntegerObject::TYPENAME ||
+		 target == StringObject::TYPENAME ) {
 		return mValue.toStdString() == other->getValue().toStdString();
 	}
 
@@ -129,10 +123,10 @@ bool StringObject::operator_greater(const Object *other)
 {
 	std::string target = other->QualifiedTypename();
 
-	if ( target == IntegerObject::TYPENAME ||
-		 target == BoolObject::TYPENAME ||
+	if ( target == BoolObject::TYPENAME ||
 		 target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
+		 target == IntegerObject::TYPENAME ||
 		 target == StringObject::TYPENAME ) {
 		return mValue.toStdString() > other->getValue().toStdString();
 	}
@@ -149,10 +143,10 @@ bool StringObject::operator_greater_equal(const Object *other)
 {
 	std::string target = other->QualifiedTypename();
 
-	if ( target == IntegerObject::TYPENAME ||
-		 target == BoolObject::TYPENAME ||
+	if ( target == BoolObject::TYPENAME ||
 		 target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
+		 target == IntegerObject::TYPENAME ||
 		 target == StringObject::TYPENAME ) {
 		return mValue.toStdString() >= other->getValue().toStdString();
 	}
@@ -169,10 +163,10 @@ bool StringObject::operator_less(const Object *other)
 {
 	std::string target = other->QualifiedTypename();
 
-	if ( target == IntegerObject::TYPENAME ||
-		 target == BoolObject::TYPENAME ||
+	if ( target == BoolObject::TYPENAME ||
 		 target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
+		 target == IntegerObject::TYPENAME ||
 		 target == StringObject::TYPENAME ) {
 		return mValue.toStdString() < other->getValue().toStdString();
 	}
@@ -189,10 +183,10 @@ bool StringObject::operator_less_equal(const Object *other)
 {
 	std::string target = other->QualifiedTypename();
 
-	if ( target == IntegerObject::TYPENAME ||
-		 target == BoolObject::TYPENAME ||
+	if ( target == BoolObject::TYPENAME ||
 		 target == DoubleObject::TYPENAME ||
 		 target == FloatObject::TYPENAME ||
+		 target == IntegerObject::TYPENAME ||
 		 target == StringObject::TYPENAME ) {
 		return mValue.toStdString() <= other->getValue().toStdString();
 	}

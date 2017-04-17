@@ -110,7 +110,7 @@ public:
 
 			for ( unsigned int idx = 0; idx < myResult->field_count; ++idx ) {
 				if ( !myResult->fields[idx].name ) {
-					throw Common::Exceptions::Exception("invalid field name detected at field index: " + Tools::ConvertToStdString(idx));
+					throw Common::Exceptions::Exception("invalid field name detected at field index: " + Tools::toString(idx));
 				}
 
 				if ( std::string(myResult->fields[idx].name) == param_field_name ) {

@@ -39,12 +39,12 @@ void splitBy(const std::string& str, char splitter, std::string& p, std::string&
 	}
 }
 
-bool stringToBool(const std::string &value)
+bool stringToBool(const std::string& value)
 {
 	return !(value.empty() || value == "\n" || value == BOOL_FALSE);
 }
 
-double stringToDouble(const std::string &value)
+double stringToDouble(const std::string& value)
 {
 	if ( value.empty() ) {
 		return 0.0;
@@ -58,7 +58,7 @@ double stringToDouble(const std::string &value)
 	return result;
 }
 
-float stringToFloat(const std::string &value)
+float stringToFloat(const std::string& value)
 {
 	if ( value.empty() ) {
 		return 0.f;
@@ -72,7 +72,7 @@ float stringToFloat(const std::string &value)
 	return result;
 }
 
-int stringToInt(const std::string &value)
+int stringToInt(const std::string& value)
 {
 	if ( value.empty() ) {
 		return 0;
@@ -84,35 +84,6 @@ int stringToInt(const std::string &value)
 	stream >> result;
 
 	return result;
-}
-
-std::string toString(bool value)
-{
-	if ( value ) {
-		return BOOL_TRUE;
-	}
-
-	return BOOL_FALSE;
-}
-
-std::string toString(double value)
-{
-	return ConvertToStdString(value);
-}
-
-std::string toString(float value)
-{
-	return ConvertToStdString(value);
-}
-
-std::string toString(int value)
-{
-	return ConvertToStdString(value);
-}
-
-std::string toString(const std::string& value)
-{
-	return value;
 }
 
 

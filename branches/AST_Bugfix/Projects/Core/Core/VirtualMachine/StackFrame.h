@@ -59,7 +59,7 @@ private:
 	void operator=(const StackFrame&)/* = delete*/;
 
 private:
-	unsigned long mLevel;
+	unsigned int mLevel;
 	ParameterList mParameters;
 	Runtime::Object mReturnValue;
 	IScope* mScope;

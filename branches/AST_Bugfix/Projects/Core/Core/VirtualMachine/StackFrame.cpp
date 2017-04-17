@@ -86,7 +86,7 @@ Runtime::Object& StackFrame::returnValue()
 
 std::string StackFrame::toString() const
 {
-	std::string result = "Frame " + Tools::ConvertToStdString(mLevel) + ": ";
+	std::string result = "Frame " + Tools::toString(mLevel) + ": ";
 
 	switch ( mScope->getScopeType() ) {
 		case IScope::IType::MethodScope:

@@ -36,7 +36,7 @@ void Memory::add(const Runtime::Reference &ref)
 
 	MemoryMap::iterator it = mMemory.find(ref);
 	if ( it == mMemory.end() ) {
-		throw Common::Exceptions::Exception("invalid access for address " + Tools::ConvertToStdString(ref.getAddress()));
+		throw Common::Exceptions::Exception("invalid access for address " + Tools::toString(ref.getAddress()));
 	}
 
 	it->second.mCount++;
@@ -50,7 +50,7 @@ void Memory::deleteObject(const Runtime::Reference& ref)
 {
 	MemoryMap::iterator it = mMemory.find(ref);
 	if ( it == mMemory.end() ) {
-		throw Common::Exceptions::Exception("invalid delete for address " + Tools::ConvertToStdString(ref.getAddress()));
+		throw Common::Exceptions::Exception("invalid delete for address " + Tools::toString(ref.getAddress()));
 	}
 
 	Runtime::Object* object = it->second.mObject;
@@ -107,7 +107,7 @@ void Memory::remove(const Runtime::Reference &ref)
 
 	MemoryMap::iterator it = mMemory.find(ref);
 	if ( it == mMemory.end() ) {
-		throw Common::Exceptions::Exception("invalid access for address " + Tools::ConvertToStdString(ref.getAddress()));
+		throw Common::Exceptions::Exception("invalid access for address " + Tools::toString(ref.getAddress()));
 	}
 
 	it->second.mCount--;

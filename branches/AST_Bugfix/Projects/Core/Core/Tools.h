@@ -28,18 +28,12 @@ namespace Tools {
 	void split(const std::string& str, std::string& p, std::string& c);
 	void splitBy(const std::string& str, char splitter, std::string& p, std::string& c);
 
-	bool stringToBool(const std::string &value);
-	double stringToDouble(const std::string &value);
-	float stringToFloat(const std::string &value);
-	int stringToInt(const std::string &value);
+	bool stringToBool(const std::string& value);
+	double stringToDouble(const std::string& value);
+	float stringToFloat(const std::string& value);
+	int stringToInt(const std::string& value);
 
-	std::string toString(bool value);
-	std::string toString(double value);
-	std::string toString(float value);
-	std::string toString(int value);
-	std::string toString(const std::string& value);
-
-	template <class T> inline std::string ConvertToStdString(const T &t) {
+	template <class T> inline std::string toString(const T& t) {
 		std::stringstream ss; ss << t; return ss.str();
 	}
 
