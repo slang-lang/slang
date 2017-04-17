@@ -40,10 +40,12 @@ public object TestObject {
 public void Main(int argc = 0, string args = "") const {
 	assert( TestCase1() );
 	assert( TestCase2() );
+	assert( TestCase3() );
+	assert( TestCase4() );
 }
 
 private bool TestCase1() const {
-	print("TestCase 1: insert");
+	print("TestCase 1: Set.insert()");
 
 	try {
 		Set set = new Set();
@@ -84,7 +86,7 @@ private bool TestCase1() const {
 }
 
 private bool TestCase2() const {
-	print("TestCase 2: erase");
+	print("TestCase 2: Set.erase()");
 
 	try {
 		Set set = new Set();
@@ -128,6 +130,64 @@ private bool TestCase2() const {
 		}
 
 		return set.empty();
+	}
+
+	return false;
+}
+
+private bool TestCase3() {
+	print("TestCase 3: Set.clear()");
+
+	try {
+		Set set = new Set();
+		assert( set is Object );
+
+		int count;
+
+		while ( count < 10 ) {
+			set.insert(Object new Integer(count));
+
+			count++;
+		}
+
+		assert( !set.empty() );
+		assert( set.size() == 10 );
+
+		set.clear();
+
+		assert( set.empty() );
+		assert( set.size() == 0 );
+
+		return true;
+	}
+
+	return false;
+}
+
+private bool TestCase4() {
+	print("TestCase 4: Set iterate");
+
+	try {
+		Set set = new Set();
+
+		int count;
+		while ( count < 10 ) {
+			set.insert(Object new Integer(count));
+
+			count++;
+		}
+
+		assert( !set.empty() );
+		assert( set.size() == 10 );
+
+		Iterator it = set.getIterator();
+		while ( it.hasNext() ) {
+			it.next();
+
+			//print(string it.current());
+		}
+
+		return true;
 	}
 
 	return false;
