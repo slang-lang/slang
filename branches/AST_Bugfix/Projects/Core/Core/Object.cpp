@@ -895,7 +895,7 @@ Symbol* Object::resolve(const std::string& name, bool onlyCurrentScope, Visibili
 
 	// (2) check inheritance
 	if ( !result ) {
-		Object* base = dynamic_cast<Object*>(MethodScope::resolve("base", true));
+		Object* base = dynamic_cast<Object*>(MethodScope::resolve("base", true, Visibility::Designtime));
 		if ( base && base->getSymbolType() == Symbol::IType::ObjectSymbol && !onlyCurrentScope ) {
 			result = base->resolve(name, onlyCurrentScope, visibility < Visibility::Protected ? Visibility::Protected : visibility);
 		}
@@ -921,7 +921,7 @@ ObjectiveScript::MethodSymbol* Object::resolveMethod(const std::string& name, co
 	// (2) check inheritance
 	// we cannot go the short is-result-already-set way here because one of our ancestor methods could be marked as final
 	Symbol* base = MethodScope::resolve("base", true);
-	if ( base && base->getSymbolType() == Symbol::IType::ObjectSymbol /*&& !onlyCurrentScope*/ ) {
+	if ( base && base->getSymbolType() == Symbol::IType::ObjectSymbol ) {
 		ObjectiveScript::MethodSymbol *tmp = dynamic_cast<Object*>(base)->resolveMethod(name, params, onlyCurrentScope, visibility < Visibility::Protected ? Visibility::Protected : visibility);
 		if ( !result || (tmp && tmp->isFinal()) ) {
 			result = tmp;

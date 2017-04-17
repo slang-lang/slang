@@ -825,6 +825,9 @@ MethodSymbol* TreeInterpreter::resolveMethod(IScope* scope, SymbolExpression* sy
 		}
 
 		switch ( child->getSymbolType() ) {
+			case Symbol::IType::BluePrintEnumSymbol:
+				scope = static_cast<Designtime::BluePrintEnum*>(child);
+				break;
 			case Symbol::IType::BluePrintObjectSymbol:
 				scope = static_cast<Designtime::BluePrintObject*>(child);
 				break;
@@ -834,9 +837,8 @@ MethodSymbol* TreeInterpreter::resolveMethod(IScope* scope, SymbolExpression* sy
 			case Symbol::IType::ObjectSymbol:
 				scope = static_cast<Runtime::Object*>(child);
 				break;
-			case Symbol::IType::BluePrintEnumSymbol:
 			case Symbol::IType::MethodSymbol:
-				throw Designtime::Exceptions::DesigntimeException("invalid symbol type found");
+				throw Designtime::Exceptions::DesigntimeException("invalid symbol type found: " + symbol->toString());
 		}
 
 		symbol = symbol->mSymbolExpression;
