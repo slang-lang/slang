@@ -37,6 +37,7 @@ void InterfacesTest::process()
     TEST(testBasicInterfaces);
     TEST(testFail_MethodImplemented);
     TEST(testInterfaceAsParameter);
+    TEST(testInterfaceAsReturnValue);
     TEST(testInterfaceObject);
     TEST(testSlightlyMoreAdvancedTest);
 }
@@ -67,7 +68,7 @@ void InterfacesTest::testFail_MethodImplemented()
 {
     try {
         VirtualMachine vm;
-        TTHROWS(vm.createScriptFromFile("Tests/Interfaces/Fail_MethodImplented.os"), ObjectiveScript::Common::Exceptions::SyntaxError);
+        TTHROWS(vm.createScriptFromFile("Tests/Interfaces/Fail_MethodImplemented.os"), ObjectiveScript::Common::Exceptions::SyntaxError);
 
         // automatic success
     }
@@ -98,6 +99,20 @@ void InterfacesTest::testInterfaceAsParameter()
     try {
         VirtualMachine vm;
         vm.createScriptFromFile("Tests/Interfaces/InterfaceAsParameter.os");
+
+        // automatic success
+    }
+    catch ( std::exception& e ) {
+        // exception has been thrown: test failed!
+        TFAIL(e.what());
+    }
+}
+
+void InterfacesTest::testInterfaceAsReturnValue()
+{
+    try {
+        VirtualMachine vm;
+        vm.createScriptFromFile("Tests/Interfaces/InterfaceAsReturnValue.os");
 
         // automatic success
     }
