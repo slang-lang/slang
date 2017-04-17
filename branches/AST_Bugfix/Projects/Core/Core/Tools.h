@@ -41,7 +41,7 @@ namespace Tools {
 }
 
 
-void expect(Token::Type::E expected, TokenIterator found);
+void expect(Token::Type::E expected, const TokenIterator& found);
 
 inline TokenIterator lookahead(TokenIterator token, int numLooks = 1) {
 	do { ++token; --numLooks; } while ( numLooks > 0 ); return token;

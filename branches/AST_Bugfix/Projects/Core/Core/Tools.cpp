@@ -90,7 +90,7 @@ int stringToInt(const std::string& value)
 }
 
 
-void expect(Token::Type::E expected, TokenIterator found)
+void expect(Token::Type::E expected, const TokenIterator& found)
 {
 	if ( found->type() != expected ) {
 		throw Common::Exceptions::SyntaxError("unexpected token '" + found->content() + "' found", found->position());
