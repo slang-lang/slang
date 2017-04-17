@@ -144,9 +144,6 @@ int main(int argc, const char* argv[])
 
 #else
 
-		Testing::Library::Fixture library(mLogger);
-		mFixtures.push_back(&library);
-
 		Testing::Prototype::Fixture prototype(mLogger);
 		mFixtures.push_back(&prototype);
 
@@ -163,6 +160,9 @@ int main(int argc, const char* argv[])
 
 		Testing::Language::Fixture language(mLogger);
 		mFixtures.push_back(&language);
+
+		Testing::Library::Fixture library(mLogger);
+		mFixtures.push_back(&library);
 
 		Testing::Math::Fixture math(mLogger);
 		mFixtures.push_back(&math);

@@ -32,7 +32,7 @@ private bool TestCase1() {
 
 	assert( derived is DerivedFromPrototype );
 	assert( derived is Object );
-	//assert( derived is BasePrototype<int> );	// is operator does not support prototypes ;-(
+	assert( derived is BasePrototype<int> );	// is operator does not support prototypes ;-(
 
 	return true;
 }

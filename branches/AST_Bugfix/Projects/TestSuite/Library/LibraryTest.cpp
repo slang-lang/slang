@@ -80,6 +80,9 @@ void LibraryTest::testSystemCollectionsDoubleLinkedList()
 {
 	try {
 		VirtualMachine vm;
+#ifdef USE_SYSTEM_EXTENSION
+		vm.addExtension(new ObjectiveScript::Extensions::System::SystemExtension());
+#endif
 		vm.createScriptFromFile("Tests/Library/System/Collections/DoubleLinkedListTest.os");
 
 		// automatic success
@@ -94,6 +97,9 @@ void LibraryTest::testSystemCollectionsIterator()
 {
 	try {
 		VirtualMachine vm;
+#ifdef USE_SYSTEM_EXTENSION
+		vm.addExtension(new ObjectiveScript::Extensions::System::SystemExtension());
+#endif
 		vm.createScriptFromFile("Tests/Library/System/Collections/IteratorTest.os");
 
 		// automatic success
@@ -150,6 +156,9 @@ void LibraryTest::testSystemCollectionsQueue()
 {
 	try {
 		VirtualMachine vm;
+#ifdef USE_SYSTEM_EXTENSION
+		vm.addExtension(new ObjectiveScript::Extensions::System::SystemExtension());
+#endif
 		vm.createScriptFromFile("Tests/Library/System/Collections/QueueTest.os");
 
 		// automatic success
@@ -181,6 +190,9 @@ void LibraryTest::testSystemCollectionsStack()
 {
 	try {
 		VirtualMachine vm;
+#ifdef USE_SYSTEM_EXTENSION
+		vm.addExtension(new ObjectiveScript::Extensions::System::SystemExtension());
+#endif
 		vm.createScriptFromFile("Tests/Library/System/Collections/StackTest.os");
 
 		// automatic success
@@ -195,6 +207,9 @@ void LibraryTest::testSystemCollectionsVector()
 {
 	try {
 		VirtualMachine vm;
+#ifdef USE_SYSTEM_EXTENSION
+		vm.addExtension(new ObjectiveScript::Extensions::System::SystemExtension());
+#endif
 		vm.createScriptFromFile("Tests/Library/System/Collections/VectorTest.os");
 
 		// automatic success
