@@ -144,15 +144,6 @@ int main(int argc, const char* argv[])
 
 #else
 
-		Testing::Inheritance::Fixture inheritance(mLogger);
-		mFixtures.push_back(&inheritance);
-
-		Testing::Interfaces::Fixture interfaces(mLogger);
-		mFixtures.push_back(&interfaces);
-
-		Testing::Language::Fixture language(mLogger);
-		mFixtures.push_back(&language);
-
 		Testing::Library::Fixture library(mLogger);
 		mFixtures.push_back(&library);
 
@@ -163,6 +154,15 @@ int main(int argc, const char* argv[])
 
 		Testing::AST::Fixture ast(mLogger);
 		mFixtures.push_back(&ast);
+
+		Testing::Inheritance::Fixture inheritance(mLogger);
+		mFixtures.push_back(&inheritance);
+
+		Testing::Interfaces::Fixture interfaces(mLogger);
+		mFixtures.push_back(&interfaces);
+
+		Testing::Language::Fixture language(mLogger);
+		mFixtures.push_back(&language);
 
 		Testing::Math::Fixture math(mLogger);
 		mFixtures.push_back(&math);
