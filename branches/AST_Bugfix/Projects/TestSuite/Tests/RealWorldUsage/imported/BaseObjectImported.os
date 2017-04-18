@@ -1,11 +1,11 @@
 
 public object BaseObjectImported {
 	public void Constructor() {
-		print("Constructor()");
+		print("BaseObjectImported.Constructor()");
 	}
 
 	public void Destructor() {
-		print("Destructor()");
+		print("BaseObjectImported.Destructor()");
 	}
 
 	public string ToString() const {

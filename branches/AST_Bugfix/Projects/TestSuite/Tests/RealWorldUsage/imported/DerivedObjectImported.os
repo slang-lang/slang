@@ -3,11 +3,11 @@ import BaseObjectImported;
 
 public object DerivedObjectImported extends BaseObjectImported {
 	public void Constructor() {
-		print("Constructor()");
+		print("DerivedObjectImported.Constructor()");
 	}
 
 	public void Destructor() {
-		print("Destructor()");
+		print("DerivedObjectImported.Destructor()");
 	}
 
 	public string ToString() const {
