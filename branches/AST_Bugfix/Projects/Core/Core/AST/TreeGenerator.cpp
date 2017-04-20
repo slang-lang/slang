@@ -432,6 +432,21 @@ Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 
 			infixPostfix = new IsExpression(infixPostfix, type);
 		} break;
+		case Token::Type::QUESTIONMARK: {
+			// TODO: introduce type checks for all expressions
+
+			++start;
+
+			Node* condition = infixPostfix;
+			Node* first = expression(start);
+
+			expect(Token::Type::COLON, start);
+			++start;
+
+			Node* second = expression(start);
+
+			infixPostfix = new TernaryExpression(condition, first, second);
+		} break;
 		case Token::Type::OPERATOR_NOT: {
 			throw Common::Exceptions::NotSupported("postfix ! operator not supported", start->position());
 		} break;

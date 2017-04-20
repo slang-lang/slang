@@ -72,6 +72,11 @@ std::string PrintVisitor::printExpression(Node* node) const
 					result += static_cast<SymbolExpression*>(expression)->mName;
 				}
 			} break;
+			case Expression::ExpressionType::TernaryExpression: {
+				result += printExpression(static_cast<TernaryExpression*>(expression)->mCondition) + " ? ";
+				result += printExpression(static_cast<TernaryExpression*>(expression)->mFirst) + " : ";
+				result += printExpression(static_cast<TernaryExpression*>(expression)->mSecond);
+			} break;
 			case Expression::ExpressionType::TypecastExpression: {
 				result += static_cast<TypecastExpression*>(expression)->mDestinationType + " ";
 				result += printExpression(static_cast<TypecastExpression*>(expression)->mExpression);

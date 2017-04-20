@@ -35,6 +35,7 @@ public:
 			MethodExpression,
 			NewExpression,
 			SymbolExpression,
+			TernaryExpression,
 			TypecastExpression,
 			TypeidExpression,
 			UnaryExpression
@@ -356,6 +357,30 @@ public:
 	std::string getResultType() const {
 		return mSymbolExpression ? mSymbolExpression->getResultType() : mResultType;
 	}
+};
+
+
+class TernaryExpression : public Expression
+{
+public:
+	explicit TernaryExpression(Node* condition, Node* first, Node* second)
+	: Expression(ExpressionType::TernaryExpression),
+	  mCondition(condition),
+	  mFirst(first),
+	  mSecond(second)
+	{
+		mResultType = static_cast<Expression*>(first)->getResultType();
+	}
+	~TernaryExpression() {
+		delete mCondition;
+		delete mFirst;
+		delete mSecond;
+	}
+
+public:
+	Node* mCondition;
+	Node* mFirst;
+	Node* mSecond;
 };
 
 

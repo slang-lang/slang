@@ -106,6 +106,7 @@ private:
 	void evaluateMethodExpression(MethodExpression* exp, Runtime::Object* result);
 	void evaluateNewExpression(NewExpression* exp, Runtime::Object* result);
 	void evaluateSymbolExpression(SymbolExpression *exp, Runtime::Object *result, IScope *scope);
+	void evaluateTernaryExpression(TernaryExpression* exp, Runtime::Object* result);
 	void evaluateTypeCastExpression(TypecastExpression* exp, Runtime::Object* result);
 	void evaluateTypeidExpression(TypeidExpression* exp, Runtime::Object* result);
 	void evaluateUnaryExpression(UnaryExpression* exp, Runtime::Object* result);
