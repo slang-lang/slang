@@ -35,6 +35,7 @@ namespace ObjectiveScript {
 
 
 Repository::Repository()
+: mTypeSystem(0)
 {
 }
 
@@ -548,6 +549,9 @@ Designtime::BluePrintObject* Repository::findBluePrintObject(const std::string& 
 
 void Repository::init()
 {
+	// Initialize virtual machine stuff
+	mTypeSystem = Controller::Instance().typeSystem();
+
 	IScope* scope = Controller::Instance().stack()->globalScope();
 
 	// add atomic types
@@ -733,69 +737,67 @@ void Repository::initBluePrintObject(Designtime::BluePrintObject *blueprint)
  */
 void Repository::initTypeSystem(Designtime::BluePrintObject* blueprint)
 {
-	TypeSystem* typeSystem = Controller::Instance().typeSystem();
-
 	MethodScope::MethodCollection methods = blueprint->provideMethods();
 	for ( MethodScope::MethodCollection::const_iterator it = methods.begin(); it != methods.end(); ++it ) {
 		std::string name = (*it)->getName();
 		ParameterList params = (*it)->provideSignature();
 
 		if ( name == "operator=" && params.size() == 1 ) {
-			typeSystem->define(blueprint->QualifiedTypename(), Token::Type::ASSIGN, params.front().type(), blueprint->QualifiedTypename());
+			mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::ASSIGN, params.front().type(), blueprint->QualifiedTypename());
 		}
 		else if ( name == "operator&" && params.size() == 1 ) {
-			typeSystem->define(blueprint->QualifiedTypename(), Token::Type::BITAND, params.front().type(), blueprint->QualifiedTypename());
+			mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::BITAND, params.front().type(), blueprint->QualifiedTypename());
 		}
 		else if ( name == "operator|" && params.size() == 1 ) {
-			typeSystem->define(blueprint->QualifiedTypename(), Token::Type::BITOR, params.front().type(), blueprint->QualifiedTypename());
+			mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::BITOR, params.front().type(), blueprint->QualifiedTypename());
 		}
 		else if ( name == "operator~" && params.size() == 1 ) {
-			typeSystem->define(blueprint->QualifiedTypename(), Token::Type::BITCOMPLEMENT, params.front().type(), blueprint->QualifiedTypename());
+			mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::BITCOMPLEMENT, params.front().type(), blueprint->QualifiedTypename());
 		}
 		else if ( name == "operator==" && params.size() == 1 ) {
-			typeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_EQUAL, params.front().type(), blueprint->QualifiedTypename());
+			mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_EQUAL, params.front().type(), blueprint->QualifiedTypename());
 		}
 		else if ( name == "operator<" && params.size() == 1 ) {
-			typeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_LESS, params.front().type(), blueprint->QualifiedTypename());
+			mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_LESS, params.front().type(), blueprint->QualifiedTypename());
 		}
 		else if ( name == "operator<=" && params.size() == 1 ) {
-			typeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_LESS_EQUAL, params.front().type(), blueprint->QualifiedTypename());
+			mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_LESS_EQUAL, params.front().type(), blueprint->QualifiedTypename());
 		}
 		else if ( name == "operator>" && params.size() == 1 ) {
-			typeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_GREATER, params.front().type(), blueprint->QualifiedTypename());
+			mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_GREATER, params.front().type(), blueprint->QualifiedTypename());
 		}
 		else if ( name == "operator>=" && params.size() == 1 ) {
-			typeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_GREATER_EQUAL, params.front().type(), blueprint->QualifiedTypename());
+			mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_GREATER_EQUAL, params.front().type(), blueprint->QualifiedTypename());
 		}
 		else if ( name == "operator!=" && params.size() == 1 ) {
-			typeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_UNEQUAL, params.front().type(), blueprint->QualifiedTypename());
+			mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_UNEQUAL, params.front().type(), blueprint->QualifiedTypename());
 		}
 		else if ( name == "operator+" && params.size() == 1 ) {
-			typeSystem->define(blueprint->QualifiedTypename(), Token::Type::MATH_ADDITION, params.front().type(), blueprint->QualifiedTypename());
+			mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::MATH_ADDITION, params.front().type(), blueprint->QualifiedTypename());
 		}
 		else if ( name == "operator/" && params.size() == 1 ) {
-			typeSystem->define(blueprint->QualifiedTypename(), Token::Type::MATH_DIVIDE, params.front().type(), blueprint->QualifiedTypename());
+			mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::MATH_DIVIDE, params.front().type(), blueprint->QualifiedTypename());
 		}
 		else if ( name == "operator%" && params.size() == 1 ) {
-			typeSystem->define(blueprint->QualifiedTypename(), Token::Type::MATH_MODULO, params.front().type(), blueprint->QualifiedTypename());
+			mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::MATH_MODULO, params.front().type(), blueprint->QualifiedTypename());
 		}
 		else if ( name == "operator*" && params.size() == 1 ) {
-			typeSystem->define(blueprint->QualifiedTypename(), Token::Type::MATH_MULTIPLY, params.front().type(), blueprint->QualifiedTypename());
+			mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::MATH_MULTIPLY, params.front().type(), blueprint->QualifiedTypename());
 		}
 		else if ( name == "operator-" && params.size() == 1 ) {
-			typeSystem->define(blueprint->QualifiedTypename(), Token::Type::MATH_SUBTRACT, params.front().type(), blueprint->QualifiedTypename());
+			mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::MATH_SUBTRACT, params.front().type(), blueprint->QualifiedTypename());
 		}
 		else if ( name == "=operator" && params.size() == 1 ) {
-			typeSystem->define((*it)->QualifiedTypename(), Token::Type::ASSIGN, blueprint->QualifiedTypename(), (*it)->QualifiedTypename());
+			mTypeSystem->define((*it)->QualifiedTypename(), Token::Type::ASSIGN, blueprint->QualifiedTypename(), (*it)->QualifiedTypename());
 		}
 	}
 
 	// add default assignment entry for null assignments
-	typeSystem->define(blueprint->QualifiedTypename(), Token::Type::ASSIGN, NULL_TYPE, blueprint->QualifiedTypename());
+	mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::ASSIGN, NULL_TYPE, blueprint->QualifiedTypename());
 
 	// add default assignment entry for type system if it doesn't exist yet
-	if ( !typeSystem->exists(blueprint->QualifiedTypename(), Token(Token::Type::ASSIGN, "="), blueprint->QualifiedTypename()) ) {
-		typeSystem->define(blueprint->QualifiedTypename(), Token::Type::ASSIGN, blueprint->QualifiedTypename(), blueprint->QualifiedTypename());
+	if ( !mTypeSystem->exists(blueprint->QualifiedTypename(), Token(Token::Type::ASSIGN, "="), blueprint->QualifiedTypename()) ) {
+		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::ASSIGN, blueprint->QualifiedTypename(), blueprint->QualifiedTypename());
 	}
 }
 

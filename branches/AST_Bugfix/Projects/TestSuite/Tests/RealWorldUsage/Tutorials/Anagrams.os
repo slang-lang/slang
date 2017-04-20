@@ -19,7 +19,7 @@ public void Main(int argc, string args) {
 
 		foreach ( string word : scanner ) {
 			string alpha = alphabetize(new String(word));
-			print("alpha = " + alpha);
+			//print("alpha = " + alpha);
 
 			Set set;
 			if ( map.contains(alpha) ) {

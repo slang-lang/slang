@@ -34,6 +34,7 @@ namespace Designtime {
 namespace Runtime {
 	class Object;
 }
+class TypeSystem;
 
 class Repository
 {
@@ -102,6 +103,9 @@ private:
 	BluePrintEnumMap mBluePrintEnums;
 	BluePrintObjectMap mBluePrintObjects;
 	ForwardDeclarationTomb mForwardDeclarations;
+
+private:	// Virtual machine stuff
+	TypeSystem* mTypeSystem;
 };
 
 
