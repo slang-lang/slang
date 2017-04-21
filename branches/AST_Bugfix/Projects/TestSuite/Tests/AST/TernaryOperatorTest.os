@@ -3,7 +3,8 @@
 public void Main(int argc, string args) {
 	assert( TestCase1() );
 	assert( TestCase2() );
-	assert( TestCase3() );
+	//assert( TestCase3() );
+	assert( TestCase4() );
 }
 
 private bool TestCase1() {
@@ -26,6 +27,7 @@ private bool TestCase2() {
 	return value == 2;
 }
 
+/*
 private bool TestCase3() {
 	print("TestCase 3: cascaded ternary operator");
 
@@ -34,5 +36,16 @@ private bool TestCase3() {
 	assert( value == 2 );
 
 	return value == 2;
+}
+*/
+
+private bool TestCase4() {
+	print("TestCase 4: unequal ternary operator expressions");
+
+	bool value = true ? 1 : false;
+	print("value = " + value);
+
+	assert( value == false );
+	return value == false;
 }
 

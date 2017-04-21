@@ -394,15 +394,15 @@ Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 	// infix
 	switch ( op ) {
 		case Token::Type::MATH_ADDITION:
-		case Token::Type::MATH_SUBTRACT: {
+		case Token::Type::MATH_SUBTRACT: {		// infix +/- operators
 			Token operation = (*start);
 			infixPostfix = new UnaryExpression(operation, parseTerm(++start));
 		} break;
-		case Token::Type::OPERATOR_NOT: {
+		case Token::Type::OPERATOR_NOT: {		// infix ! operator
 			Token operation = (*start);
 			infixPostfix = new BooleanUnaryExpression(operation, parseTerm(++start));
 		} break;
-		default: {
+		default: {								// default term parsing
 			infixPostfix = parseTerm(start);
 		} break;
 	}
@@ -411,17 +411,15 @@ Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 
 	// postfix
 	switch ( op ) {
-		case Token::Type::BRACKET_OPEN: {
+		case Token::Type::BRACKET_OPEN: {		// postfix operator[]
 			throw Common::Exceptions::NotSupported("postfix [] operator not supported", start->position());
 		} break;
 		case Token::Type::OPERATOR_DECREMENT:
-		case Token::Type::OPERATOR_INCREMENT: {
-			// --/++ for rvalue
-
+		case Token::Type::OPERATOR_INCREMENT: {	// postfix --/++ operators for rvalue
 			Token tmp = (*start++);
 			infixPostfix = new UnaryExpression(tmp, infixPostfix, UnaryExpression::ValueType::RValue);
 		} break;
-		case Token::Type::OPERATOR_IS: {
+		case Token::Type::OPERATOR_IS: {		// postfix is operator
 			++start;
 			SymbolExpression* symbol = resolveWithThis(start, getScope());
 
@@ -432,9 +430,7 @@ Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 
 			infixPostfix = new IsExpression(infixPostfix, type);
 		} break;
-		case Token::Type::QUESTIONMARK: {
-			// TODO: introduce type checks for all expressions
-
+		case Token::Type::QUESTIONMARK: {		// postfix ternary ? operator
 			++start;
 
 			Node* condition = infixPostfix;
@@ -445,9 +441,14 @@ Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 
 			Node* second = expression(start);
 
-			infixPostfix = new TernaryExpression(condition, first, second);
+			TernaryExpression* ternaryExpression = new TernaryExpression(condition, first, second);
+			if ( ternaryExpression->getResultType() != ternaryExpression->getSecondResultType() ) {
+				throw Common::Exceptions::SyntaxError("unequal expression results for first ('" + ternaryExpression->getResultType() + "') and second ('" + ternaryExpression->getSecondResultType() + "') expressions", start->position());
+			}
+
+			infixPostfix = ternaryExpression;
 		} break;
-		case Token::Type::OPERATOR_NOT: {
+		case Token::Type::OPERATOR_NOT: {		// postfix ! operator
 			throw Common::Exceptions::NotSupported("postfix ! operator not supported", start->position());
 		} break;
 		default: {

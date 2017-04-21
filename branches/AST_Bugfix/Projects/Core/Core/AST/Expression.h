@@ -370,6 +370,7 @@ public:
 	  mSecond(second)
 	{
 		mResultType = static_cast<Expression*>(first)->getResultType();
+		mSecondResultType = static_cast<Expression*>(second)->getResultType();
 	}
 	~TernaryExpression() {
 		delete mCondition;
@@ -377,10 +378,17 @@ public:
 		delete mSecond;
 	}
 
+	std::string getSecondResultType() const {
+		return mSecondResultType;
+	}
+
 public:
 	Node* mCondition;
 	Node* mFirst;
 	Node* mSecond;
+
+private:
+	std::string mSecondResultType;
 };
 
 
