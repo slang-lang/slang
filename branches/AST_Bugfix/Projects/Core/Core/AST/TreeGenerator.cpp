@@ -791,7 +791,8 @@ Node* TreeGenerator::process_identifier(TokenIterator& token, bool allowTypeCast
 		if ( dynamic_cast<DesigntimeSymbolExpression*>(symbol) ) {
 			type = Designtime::Parser::buildRuntimeConstraintTypename(type, dynamic_cast<DesigntimeSymbolExpression*>(symbol)->mConstraints);
 		}
-		node = new TypecastExpression(type, expression(token));
+		node = new TypecastExpression(type, expression(token));					// this processes all following expressions before casting
+		//node = new TypecastExpression(type, parseInfixPostfix(token));		// this casts first and does no combine the subsequent expressions with this one
 
 		// delete resolved symbol expression as it is not needed any more
 		delete symbol;

@@ -17,6 +17,7 @@
 #include <Core/Common/Method.h>
 #include <Core/Common/Namespace.h>
 #include <Core/Designtime/BluePrintEnum.h>
+#include <Core/Designtime/Exceptions.h>
 #include <Core/Designtime/Parser/Parser.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Runtime/OperatorOverloading.h>
@@ -25,8 +26,6 @@
 #include <Core/VirtualMachine/Controller.h>
 #include <Debugger/Debugger.h>
 #include <Tools/Printer.h>
-#include <Utils.h>
-#include <Core/Designtime/Exceptions.h>
 
 // Namespace declarations
 
@@ -114,19 +113,12 @@ void TreeInterpreter::evaluateBinaryExpression(BinaryExpression* exp, Runtime::O
 	}
 
 	Runtime::Object left;
+	// evaluate left expression
+	evaluate(exp->mLeft, &left);
+
 	Runtime::Object right;
-
-//	try {
-		// evaluate left expression
-		evaluate(exp->mLeft, &left);
-
-		// evaluate right expression
-		evaluate(exp->mRight, &right);
-//	}
-//	catch ( Runtime::ControlFlow::E &e ) {
-//		mControlFlow = e;
-//		return;
-//	}
+	// evaluate right expression
+	evaluate(exp->mRight, &right);
 
 	switch ( exp->mOperation.type() ) {
 		// bit expressions
@@ -160,35 +152,29 @@ void TreeInterpreter::evaluateBooleanBinaryExpression(BooleanBinaryExpression* e
 	Runtime::Object left;
 	Runtime::Object right;
 
-//	try {
-		// evaluate left expression
-		evaluate(exp->mLeft, &left);
+	// evaluate left expression
+	evaluate(exp->mLeft, &left);
 
-		// incomplete boolean evaluation
-		if ( exp->mOperation.type() == Token::Type::AND && !isTrue(left) ) {
-			*result = Runtime::BoolObject(false);
-			return;
-		}
-		else if ( exp->mOperation.type() == Token::Type::NAND && !isTrue(left) ) {
-			*result = Runtime::BoolObject(true);
-			return;
-		}
-		else if ( exp->mOperation.type() == Token::Type::NOR && isTrue(left) ) {
-			*result = Runtime::BoolObject(false);
-			return;
-		}
-		else if ( exp->mOperation.type() == Token::Type::OR && isTrue(left) ) {
-			*result = Runtime::BoolObject(true);
-			return;
-		}
+	// incomplete boolean evaluation
+	if ( exp->mOperation.type() == Token::Type::AND && !isTrue(left) ) {
+		*result = Runtime::BoolObject(false);
+		return;
+	}
+	else if ( exp->mOperation.type() == Token::Type::NAND && !isTrue(left) ) {
+		*result = Runtime::BoolObject(true);
+		return;
+	}
+	else if ( exp->mOperation.type() == Token::Type::NOR && isTrue(left) ) {
+		*result = Runtime::BoolObject(false);
+		return;
+	}
+	else if ( exp->mOperation.type() == Token::Type::OR && isTrue(left) ) {
+		*result = Runtime::BoolObject(true);
+		return;
+	}
 
-		// evaluate right expression
-		evaluate(exp->mRight, &right);
-//	}
-//	catch ( Runtime::ControlFlow::E &e ) {
-//		mControlFlow = e;
-//		return;
-//	}
+	// evaluate right expression
+	evaluate(exp->mRight, &right);
 
 	switch ( exp->mOperation.type() ) {
 		// boolean expressions
@@ -219,13 +205,8 @@ void TreeInterpreter::evaluateBooleanBinaryExpression(BooleanBinaryExpression* e
 void TreeInterpreter::evaluateCopyExpression(CopyExpression* exp, Runtime::Object* result)
 {
 	Runtime::Object obj;
-//	try {
-		evaluate(exp->mExpression, &obj);
-//	}
-//	catch ( Runtime::ControlFlow::E &e ) {
-//		mControlFlow = e;
-//		return;
-//	}
+
+	evaluate(exp->mExpression, &obj);
 
 	result->copy(obj);
 }
@@ -233,14 +214,9 @@ void TreeInterpreter::evaluateCopyExpression(CopyExpression* exp, Runtime::Objec
 void TreeInterpreter::evaluateIsExpression(IsExpression* exp, Runtime::Object* result)
 {
 	Runtime::Object tmp;
-//	try {
-		// evaluate left expression
-		evaluate(exp->mExpression, &tmp);
-//	}
-//	catch ( Runtime::ControlFlow::E &e ) {
-//		mControlFlow = e;
-//		return;
-//	}
+
+	// evaluate left expression
+	evaluate(exp->mExpression, &tmp);
 
 	*result = Runtime::BoolObject(tmp.isInstanceOf(exp->mMatchType));
 }
@@ -268,13 +244,7 @@ void TreeInterpreter::evaluateMethodExpression(MethodExpression* exp, Runtime::O
 
 		Runtime::Object* param = &objectList.back();
 
-//		try {
-			evaluate((*it), param);
-//		}
-//		catch ( Runtime::ControlFlow::E &e ) {
-//			mControlFlow = e;
-//			return;
-//		}
+		evaluate((*it), param);
 
 		params.push_back(Parameter::CreateRuntime(param->QualifiedOuterface(), param->getValue(), param->getReference()));
 	}
@@ -328,13 +298,8 @@ void TreeInterpreter::evaluateNewExpression(NewExpression* exp, Runtime::Object*
 		objectList.push_back(Runtime::Object());
 
 		Runtime::Object* param = &objectList.back();
-//		try {
-			evaluate((*it), param);
-//		}
-//		catch ( Runtime::ControlFlow::E &e ) {
-//			mControlFlow = e;
-//			return;
-//		}
+
+		evaluate((*it), param);
 
 		params.push_back(Parameter::CreateRuntime(param->QualifiedOuterface(), param->getValue(), param->getReference()));
 	}
@@ -408,13 +373,7 @@ void TreeInterpreter::evaluateTypeCastExpression(TypecastExpression* exp, Runtim
 {
 	Runtime::Object tmp;
 
-//	try {
-		evaluate(exp->mExpression, &tmp);
-//	}
-//	catch ( Runtime::ControlFlow::E &e ) {
-//		mControlFlow = e;
-//		return;
-//	}
+	evaluate(exp->mExpression, &tmp);
 
 	Runtime::typecast(&tmp, exp->mDestinationType);
 
@@ -424,16 +383,11 @@ void TreeInterpreter::evaluateTypeCastExpression(TypecastExpression* exp, Runtim
 void TreeInterpreter::evaluateTypeidExpression(TypeidExpression* exp, Runtime::Object* result)
 {
 	Runtime::Object tmp;
-//	try {
-		evaluate(exp->mExpression, &tmp);
 
-		Runtime::StringObject type(tmp.QualifiedTypename());
-		Runtime::operator_binary_assign(result, &type);
-//	}
-//	catch ( Runtime::ControlFlow::E &e ) {
-//		mControlFlow = e;
-//		return;
-//	}
+	evaluate(exp->mExpression, &tmp);
+
+	Runtime::StringObject type(tmp.QualifiedTypename());
+	Runtime::operator_binary_assign(result, &type);
 }
 
 void TreeInterpreter::evaluateUnaryExpression(UnaryExpression* exp, Runtime::Object* result)
