@@ -26,7 +26,6 @@ namespace Runtime {
 Object::Object()
 : MethodScope(ANONYMOUS_OBJECT, 0),
   ObjectSymbol(ANONYMOUS_OBJECT),
-  mBase(0),
   mBluePrint(0),
   mFilename(ANONYMOUS_OBJECT),
   mIsAtomicType(false),
@@ -42,7 +41,6 @@ Object::Object()
 Object::Object(const Object& other)
 : MethodScope(other.getName(), other.mParent),
   ObjectSymbol(other.getName()),
-  mBase(0),
   mBluePrint(other.mBluePrint),
   mFilename(other.mFilename),
   mInheritance(other.mInheritance),
@@ -73,7 +71,6 @@ Object::Object(const Object& other)
 Object::Object(const std::string& name, const std::string& filename, const std::string& type, AtomicValue value)
 : MethodScope(name, 0),
   ObjectSymbol(name),
-  mBase(0),
   mBluePrint(0),
   mFilename(filename),
   mIsAtomicType(false),
@@ -90,12 +87,12 @@ Object::Object(const std::string& name, const std::string& filename, const std::
 Object::~Object()
 {
 	if ( mThis == this ) {
+		// prevent double delete
 		undefine(IDENTIFIER_THIS);
 	}
 
 	Controller::Instance().memory()->remove(mReference);
 
-	mBase = 0;
 	mThis = 0;
 }
 
@@ -176,11 +173,9 @@ void Object::assignReference(const Reference& ref)
 
 	if ( mReference.isValid() ) {
 		mThis = Controller::Instance().memory()->get(mReference);
-		mBase = mThis->mBase;
 	}
 	else {
 		mThis = this;
-		mBase = dynamic_cast<Object*>(MethodScope::resolve("base", true));
 	}
 
 	Controller::Instance().memory()->remove(old);
@@ -465,15 +460,13 @@ bool Object::isAbstract() const
 		return mThis->isAbstract();
 	}
 
-	bool result = mBase ? mBase->isAbstract() : false;
-
 	for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
 		if ( (*it)->isAbstract() ) {
-			result = true;
+			return true;
 		}
 	}
 
-	return result || getImplementationType() == ImplementationType::Abstract || getImplementationType() == ImplementationType::Interface;
+	return getImplementationType() == ImplementationType::Abstract || getImplementationType() == ImplementationType::Interface;
 }
 
 bool Object::isAtomicType() const
@@ -484,7 +477,7 @@ bool Object::isAtomicType() const
 bool Object::isConstructed() const
 {
 	if ( mThis != this ) {
-		return Controller::Instance().memory()->get(mReference)->isConstructed();
+		return mThis->isConstructed();
 	}
 
 	return mIsConstructed;
@@ -713,7 +706,7 @@ bool Object::operator_is(const std::string& type)
 		return false;
 	}
 
-	if ( mThis ) {
+	if ( mThis != this ) {
 		return mThis->isInstanceOf(type);
 	}
 
@@ -933,7 +926,7 @@ void Object::setBluePrint(Designtime::BluePrintObject* blueprint)
 void Object::setConstructed(bool state)
 {
 	if ( mThis != this ) {
-		Controller::Instance().memory()->get(mReference)->setConstructed(state);
+		mThis->setConstructed(state);
 		return;
 	}
 

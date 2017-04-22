@@ -137,7 +137,6 @@ protected:
 	void garbageCollector();
 
 protected:
-	Object* mBase;
 	Designtime::BluePrintObject* mBluePrint;
 	std::string mFilename;
 	Inheritance mInheritance;
