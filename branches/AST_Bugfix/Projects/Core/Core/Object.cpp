@@ -149,7 +149,7 @@ void Object::assign(const Object& other, bool overrideType)
 		mQualifiedTypename = other.mQualifiedTypename;
 		mTypename = other.mTypename;
 
-		if ( other.mReference.isValid() ) {
+		if ( other.mIsNull || other.mReference.isValid() ) {
 			assignReference(other.mReference);
 		}
 		else {
@@ -521,23 +521,6 @@ bool Object::isValid() const
 	}
 
 	return isConstructed();
-}
-
-void Object::operator_array(const Object *index, Object* result)
-{
-	std::string subscript = index->QualifiedTypename();
-
-	ParameterList params;
-	params.push_back(Parameter::CreateRuntime(subscript, index->getValue(), index->getReference()));
-
-	::ObjectiveScript::MethodSymbol* opMethod = resolveMethod("operator[]", params, false, Visibility::Public);
-	if ( opMethod ) {
-		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(opMethod), params, result);
-
-		return;
-	}
-
-	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator[]: no array subscript operator for " + subscript + " implemented");
 }
 
 void Object::operator_assign(const Object *other)

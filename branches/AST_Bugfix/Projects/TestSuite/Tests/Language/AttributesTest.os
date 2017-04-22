@@ -30,7 +30,7 @@ public stable namespace AttributeTest {
 			print("deprecated method called");
 		}
 
-		public /*notimplemented*/ void notimplementedMethod() {
+		public notimplemented void notimplementedMethod() {
 			print("not implemented method called");
 		}
 

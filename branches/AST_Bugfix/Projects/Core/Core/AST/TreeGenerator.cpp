@@ -259,14 +259,6 @@ void TreeGenerator::initialize(Common::Method* method)
 	mHasReturnStatement = false;
 	mMethod = method;
 
-	switch ( mMethod->getLanguageFeatureState() ) {
-		case LanguageFeatureState::Deprecated: OSwarn("method '" + mMethod->getFullScopeName() + "' is marked as deprecated"); break;
-		case LanguageFeatureState::NotImplemented: OSerror("method '" + mMethod->getFullScopeName() + "' is marked as not implemented"); throw Common::Exceptions::NotImplemented(mMethod->getFullScopeName()); break;
-		case LanguageFeatureState::Stable: /* this is the normal language feature state, so there is no need to log anything here */ break;
-		case LanguageFeatureState::Unknown: OSerror("unknown language feature state set for method '" + mMethod->getFullScopeName() + "'"); break;
-		case LanguageFeatureState::Unstable: OSwarn("method '" + mMethod->getFullScopeName() + "' is marked as unstable"); break;
-	}
-
 	// create new stack frame
 	mStackFrame = new StackFrame(0, mMethod, mMethod->provideSignature());
 	// push scope
@@ -1016,6 +1008,15 @@ MethodExpression* TreeGenerator::process_method(SymbolExpression* symbol, const 
 	// prevent calls to non-static methods from static methods
 	if ( mMethod->isStatic() && !method->isStatic() ) {
 		throw Common::Exceptions::StaticException("non-static method \"" + method->ToString() + "\" called from static method \"" + mMethod->ToString() + "\"", token.position());
+	}
+
+	// evaluate language feature state of the newly called method
+	switch ( method->getLanguageFeatureState() ) {
+		case LanguageFeatureState::Deprecated: OSinfo("method '" + method->getFullScopeName() + "' is marked as deprecated"); break;
+		case LanguageFeatureState::NotImplemented: throw Common::Exceptions::NotImplemented("method '" + method->getFullScopeName() + "' is marked as not implemented", token.position()); break;
+		case LanguageFeatureState::Stable: /* this is the normal language feature state, so there is no need to log anything here */ break;
+		case LanguageFeatureState::Unknown: throw Common::Exceptions::Exception("unknown language feature state set for method '" + method->getFullScopeName() + "'", token.position()); break;
+		case LanguageFeatureState::Unstable: OSwarn("method '" + method->getFullScopeName() + "' is marked as unstable"); break;
 	}
 
 	return new MethodExpression(symbol, expressions, method->QualifiedTypename(), method->isConst(), method->getEnclosingScope() == mMethod->getEnclosingScope());

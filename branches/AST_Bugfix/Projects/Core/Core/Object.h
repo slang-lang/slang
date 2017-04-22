@@ -110,7 +110,6 @@ public:	// Usage
 	ControlFlow::E execute(Object *result, const std::string& method, const ParameterList& params);
 
 public:	// Operators
-	virtual void operator_array(const Object *index, Object* result);
 	virtual void operator_assign(const Object *other);
 	virtual void operator_bitand(const Object *other);
 	virtual void operator_bitcomplement(const Object *other);

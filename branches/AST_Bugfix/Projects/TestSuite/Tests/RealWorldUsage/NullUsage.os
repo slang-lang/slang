@@ -24,7 +24,7 @@ public void Main(int argc = 0, string args = "") {
 	obj = TestObject null;
 	// obj should not be accessible any more
 
-	print(string obj);
+	print(obj);
 	assert(!obj);
 }
 

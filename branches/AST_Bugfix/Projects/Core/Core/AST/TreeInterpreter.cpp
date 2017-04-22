@@ -45,7 +45,7 @@
 
 #define tryControl( exp ) \
 		try { \
-			exp \
+			exp; \
 		} \
 		catch ( Runtime::ControlFlow::E &e ) { \
 			mControlFlow = e; \
@@ -872,15 +872,10 @@ void TreeInterpreter::visitAssignment(Assignment* node)
 	Runtime::Object &lvalue = resolveLValue(getScope(), node->mLValue, false, Visibility::Designtime);
 
 	Runtime::Object tmp;
-	try {
-		evaluate(node->mExpression, &tmp);
 
-		Runtime::operator_binary_assign(&lvalue, &tmp);
-	}
-	catch ( Runtime::ControlFlow::E &e ) {
-		mControlFlow = e;
-		return;
-	}
+	tryControl(evaluate(node->mExpression, &tmp));
+
+	Runtime::operator_binary_assign(&lvalue, &tmp);
 }
 
 void TreeInterpreter::visitBreak(BreakStatement* /*node*/)
@@ -1281,6 +1276,9 @@ void TreeInterpreter::visitTry(TryStatement* node)
 			// reset control flow to normal to allow execution of catch-block
 			mControlFlow = Runtime::ControlFlow::Normal;
 
+			// push a new scope to be able to clean up the exception variable
+			pushScope();
+
 			// process exception type declaration (if present)
 			if ( (*it)->mTypeDeclaration ) {
 				// retrieve exception instance variable
@@ -1295,6 +1293,9 @@ void TreeInterpreter::visitTry(TryStatement* node)
 
 			// execute catch statements
 			visitStatements((*it)->mStatements);
+
+			// pop scope to clean up the exception variable
+			popScope();
 
 			// only process one catch-block
 			break;
