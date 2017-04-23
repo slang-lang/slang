@@ -86,14 +86,14 @@ Object::Object(const std::string& name, const std::string& filename, const std::
 
 Object::~Object()
 {
+/*
 	if ( mThis == this ) {
-		// prevent double delete
+		// prevent double delete for value types
 		undefine(IDENTIFIER_THIS);
 	}
+*/
 
 	Controller::Instance().memory()->remove(mReference);
-
-	mThis = 0;
 }
 
 Object& Object::operator= (const Object& other)
