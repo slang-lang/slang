@@ -126,7 +126,7 @@ Object& Object::operator= (const Object& other)
 	return *this;
 }
 
-void Object::assign(const Object& other, bool overrideType)
+void Object::assign(const Object& other)
 {
 	if ( this != &other ) {
 		mBluePrint = other.mBluePrint;
@@ -140,7 +140,7 @@ void Object::assign(const Object& other, bool overrideType)
 		mScopeName = other.mScopeName;
 		mScopeType = other.mScopeType;
 
-		if ( mQualifiedOuterface == NULL_TYPE || overrideType ) {
+		if ( mQualifiedOuterface == NULL_TYPE ) {
 			mQualifiedOuterface = other.mQualifiedOuterface;
 		}
 		mQualifiedTypename = other.mQualifiedTypename;

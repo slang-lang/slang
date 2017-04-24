@@ -51,7 +51,7 @@ public:
 
 public:
 	Object& operator= (const Object& other);
-	void assign(const Object& other, bool overrideType = false);
+	void assign(const Object& other);
 	void copy(const Object& other);
 
 public: // MethodScope overrides

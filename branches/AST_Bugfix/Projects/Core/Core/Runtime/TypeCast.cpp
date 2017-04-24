@@ -35,32 +35,32 @@ void typecast(Object *base, const std::string& targetType)
 	if ( targetType == BoolObject::TYPENAME ) {
 		BoolObject tmp(*base);
 
-		base->assign(tmp, true);
+		base->assign(tmp);
 	}
 	else if ( targetType == DoubleObject::TYPENAME ) {
 		DoubleObject tmp(*base);
 
-		base->assign(tmp, true);
+		base->assign(tmp);
 	}
 	else if ( targetType == FloatObject::TYPENAME ) {
 		FloatObject tmp(*base);
 
-		base->assign(tmp, true);
+		base->assign(tmp);
 	}
 	else if ( targetType == IntegerObject::TYPENAME ) {
 		IntegerObject tmp(*base);
 
-		base->assign(tmp, true);
+		base->assign(tmp);
 	}
 	else if ( targetType == StringObject::TYPENAME ) {
 		StringObject tmp(*base);
 
-		base->assign(tmp, true);
+		base->assign(tmp);
 	}
 	else if ( targetType == VoidObject::TYPENAME ) {
 		VoidObject tmp(*base);
 
-		base->assign(tmp, true);
+		base->assign(tmp);
 	}
 	else {
 #ifndef GENERATE_PARSE_TREE
@@ -68,9 +68,10 @@ void typecast(Object *base, const std::string& targetType)
 			throw Runtime::Exceptions::TypeCastException(targetType + " does not belong to " + base->QualifiedTypename() + " object hierarchy");
 		}
 #endif
-
-		base->setQualifiedOuterface(targetType);
 	}
+
+	// override outerface type
+	base->setQualifiedOuterface(targetType);
 }
 }
 

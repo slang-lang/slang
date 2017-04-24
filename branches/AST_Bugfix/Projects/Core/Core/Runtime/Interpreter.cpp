@@ -1029,7 +1029,7 @@ void Interpreter::process_delete(TokenIterator& token)
 
 	switch ( symbol->getSymbolType() ) {
 		case Symbol::IType::ObjectSymbol: {
-			Object *object = static_cast<Object*>(symbol);
+			Object* object = static_cast<Object*>(symbol);
 
 			object->assign(Object());
 		} break;
