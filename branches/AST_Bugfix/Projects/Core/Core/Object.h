@@ -77,8 +77,8 @@ public:	// Setup
 	void setBluePrint(Designtime::BluePrintObject* blueprint);
 
 public:	// Reference
-	const Reference& getReference() const { return mReference; }
-	void setReference(const Reference& reference) { mReference = reference; }
+	const Reference& getReference() const;
+	void setReference(const Reference& reference);
 
 public: // Symbol
 	Symbol* resolve(const std::string& name, bool onlyCurrentScope, Visibility::E visibility) const;
@@ -142,7 +142,7 @@ protected:
 	Inheritance mInheritance;
 	bool mIsAtomicType;
 	bool mIsConstructed;
-	bool mIsNull;
+	bool mIsReference;
 	std::string mQualifiedOuterface;
 	std::string mQualifiedTypename;
 	Reference mReference;

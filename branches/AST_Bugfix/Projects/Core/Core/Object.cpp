@@ -30,7 +30,7 @@ Object::Object()
   mFilename(ANONYMOUS_OBJECT),
   mIsAtomicType(false),
   mIsConstructed(false),
-  mIsNull(true),
+  mIsReference(false),
   mQualifiedOuterface(ANONYMOUS_OBJECT),
   mQualifiedTypename(ANONYMOUS_OBJECT),
   mTypename(ANONYMOUS_OBJECT)
@@ -46,7 +46,7 @@ Object::Object(const Object& other)
   mInheritance(other.mInheritance),
   mIsAtomicType(other.mIsAtomicType),
   mIsConstructed(other.mIsConstructed),
-  mIsNull(other.mIsNull),
+  mIsReference(other.mIsReference),
   mQualifiedOuterface(other.mQualifiedOuterface),
   mQualifiedTypename(other.mQualifiedTypename),
   mTypename(other.mTypename)
@@ -75,7 +75,7 @@ Object::Object(const std::string& name, const std::string& filename, const std::
   mFilename(filename),
   mIsAtomicType(false),
   mIsConstructed(false),
-  mIsNull(false),
+  mIsReference(false),
   mQualifiedOuterface(type),
   mQualifiedTypename(type),
   mTypename(type),
@@ -105,7 +105,7 @@ Object& Object::operator= (const Object& other)
 		mInheritance = other.mInheritance;
 		mIsAtomicType = other.mIsAtomicType;
 		mIsConstructed = other.mIsConstructed;
-		mIsNull = other.mIsNull;
+		mIsReference = other.mIsReference;
 		mParent = other.mParent;
 		mScopeName = other.mScopeName;
 		mScopeType = other.mScopeType;
@@ -135,7 +135,7 @@ void Object::assign(const Object& other, bool overrideType)
 		mInheritance = other.mInheritance;
 		mIsAtomicType = other.mIsAtomicType;
 		mIsConstructed = other.mIsConstructed;
-		mIsNull = other.mIsNull;
+		mIsReference = other.mIsReference;
 		mParent = other.mParent ? other.mParent : mParent;
 		mScopeName = other.mScopeName;
 		mScopeType = other.mScopeType;
@@ -146,7 +146,7 @@ void Object::assign(const Object& other, bool overrideType)
 		mQualifiedTypename = other.mQualifiedTypename;
 		mTypename = other.mTypename;
 
-		if ( other.mIsNull || other.mReference.isValid() ) {
+		if ( mIsReference && other.mIsReference ) {
 			assignReference(other.mReference);
 		}
 		else {
@@ -440,6 +440,11 @@ Designtime::BluePrintObject* Object::getBluePrint() const
 	return mBluePrint;
 }
 
+const Reference& Object::getReference() const
+{
+	return mReference;
+}
+
 AtomicValue Object::getValue() const
 {
 	if ( mThis != this ) {
@@ -485,7 +490,7 @@ bool Object::isConstructed() const
 
 bool Object::isNull() const
 {
-	return mIsNull;
+	return mIsReference && !mReference.isValid();
 }
 
 bool Object::isInstanceOf(const std::string& type) const
@@ -936,6 +941,12 @@ void Object::setConstructed(bool state)
 void Object::setParent(IScope *scope)
 {
 	mParent = scope;
+}
+
+void Object::setReference(const Reference& reference)
+{
+	mIsReference = true;
+	mReference = reference;
 }
 
 void Object::setValue(AtomicValue value)
