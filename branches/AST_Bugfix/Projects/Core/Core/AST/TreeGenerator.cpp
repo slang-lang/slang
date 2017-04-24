@@ -57,17 +57,14 @@ void TreeGenerator::collectScopeTokens(TokenIterator& token, TokenList& tokens)
 {
 	expect(Token::Type::BRACKET_CURLY_OPEN, token);
 
-	// find next balanced '{' & '}' pair for loop-body
-	TokenIterator bodyEnd = findNextBalancedCurlyBracket(token, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
-
-	++token;			// don't collect {-token
+	// find next balanced '{' & '}' pair
+	TokenIterator bodyEnd = --findNextBalancedCurlyBracket(token, getTokens().end(), 0, Token::Type::BRACKET_CURLY_CLOSE);
 
 	while ( token != bodyEnd ) {
-		tokens.push_back((*token++));
+		tokens.push_back((*++token));
 	}
 
-	token = bodyEnd;	// don't collect }-token
-
+	++token;
 	expect(Token::Type::BRACKET_CURLY_CLOSE, token);
 }
 
@@ -128,7 +125,10 @@ Node* TreeGenerator::expression(TokenIterator& start)
 		}
 
 		Token operation = (*start);
-		expression = new BooleanBinaryExpression(expression, operation, parseCondition(++start));
+		Node* right = parseCondition(++start);
+		/*std::string type =*/ //resolveType(expression, operation, right);
+
+		expression = new BooleanBinaryExpression(expression, operation, right);
 	}
 }
 
@@ -271,7 +271,7 @@ void TreeGenerator::initialize(Common::Method* method)
 	// add 'this' and 'base' symbol to method
 	Designtime::BluePrintObject* owner = dynamic_cast<Designtime::BluePrintObject*>(scope->getEnclosingScope());
 	if ( owner && !method->isStatic() ) {
-		Runtime::Object *object = mRepository->createInstance(owner->QualifiedTypename(), IDENTIFIER_THIS, PrototypeConstraints());
+		Runtime::Object* object = mRepository->createInstance(owner->QualifiedTypename(), IDENTIFIER_THIS, PrototypeConstraints());
 		object->setConst(mMethod->isConst());
 		object->setVisibility(Visibility::Private);
 
@@ -281,7 +281,7 @@ void TreeGenerator::initialize(Common::Method* method)
 
 		// BEWARE: this is only valid as long as we have single inheritance!!!
 		for ( Designtime::Ancestors::const_iterator it = ancestors.begin(); it != ancestors.end(); ++it ) {
-			Runtime::Object *object = mRepository->createInstance((*it).name(), IDENTIFIER_BASE);
+			Runtime::Object* object = mRepository->createInstance((*it).name(), IDENTIFIER_BASE);
 			object->setConst(mMethod->isConst());
 			object->setVisibility(Visibility::Private);
 
@@ -291,7 +291,7 @@ void TreeGenerator::initialize(Common::Method* method)
 
 	// add parameters as locale variables
 	for ( ParameterList::const_iterator it = mMethod->provideSignature().begin(); it != mMethod->provideSignature().end(); ++it ) {
-		Runtime::Object *object = mRepository->createInstance(it->type(), it->name());
+		Runtime::Object* object = mRepository->createInstance(it->type(), it->name());
 		object->setMutability(it->mutability());
 
 		scope->define(it->name(), object);
@@ -332,7 +332,10 @@ Node* TreeGenerator::parseCondition(TokenIterator& start)
 		}
 
 		Token operation = (*start);
-		condition = new BooleanBinaryExpression(condition, operation, parseExpression(++start));
+		Node* right = parseExpression(++start);
+		/*std::string type =*/ //resolveType(condition, operation, right);
+
+		condition = new BooleanBinaryExpression(condition, operation, right);
 	}
 }
 
