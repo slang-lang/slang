@@ -938,6 +938,11 @@ void Object::setConstructed(bool state)
 	mIsConstructed = state;
 }
 
+void Object::setIsReference(bool state)
+{
+	mIsReference = state;
+}
+
 void Object::setParent(IScope *scope)
 {
 	mParent = scope;

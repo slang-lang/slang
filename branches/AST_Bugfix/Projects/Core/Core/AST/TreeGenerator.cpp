@@ -292,6 +292,7 @@ void TreeGenerator::initialize(Common::Method* method)
 	// add parameters as locale variables
 	for ( ParameterList::const_iterator it = mMethod->provideSignature().begin(); it != mMethod->provideSignature().end(); ++it ) {
 		Runtime::Object* object = mRepository->createInstance(it->type(), it->name());
+		object->setIsReference(it->access() == AccessMode::ByReference);
 		object->setMutability(it->mutability());
 
 		scope->define(it->name(), object);
@@ -1487,6 +1488,7 @@ TypeDeclaration* TreeGenerator::process_var(TokenIterator& token)
 
 	Runtime::Object* object = mRepository->createInstance(type, name, PrototypeConstraints(), Repository::InitilizationType::AllowAbstract);
 	object->setConst(mutability == Mutability::Const);
+	object->setIsReference(accessMode == AccessMode::ByReference);
 
 	getScope()->define(name, object);
 

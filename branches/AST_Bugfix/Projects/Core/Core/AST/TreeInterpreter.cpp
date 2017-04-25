@@ -591,12 +591,13 @@ void TreeInterpreter::initialize(IScope* scope, const ParameterList& params)
 {
 	// add parameters as locale variables
 	for ( ParameterList::const_iterator it = params.begin(); it != params.end(); ++it ) {
-		Runtime::Object *object = 0;
+		Runtime::Object* object = 0;
 
 		switch ( it->access() ) {
 			case AccessMode::ByReference: {
 				object = mRepository->createInstance(it->type(), it->name());
 
+				object->setIsReference(true);
 				if ( it->reference().isValid() ) {
 					object->assign(*mMemory->get(it->reference()));
 				}
@@ -618,6 +619,7 @@ void TreeInterpreter::initialize(IScope* scope, const ParameterList& params)
 #endif
 				}
 
+				object->setIsReference(false);
 				object->setMutability(it->mutability());
 				object->setValue(it->value());
 
@@ -852,13 +854,7 @@ void TreeInterpreter::visit(Node* node)
 void TreeInterpreter::visitAssert(AssertStatement* node)
 {
 	Runtime::Object condition;
-	try {
-		evaluate(node->mExpression, &condition);
-	}
-	catch ( Runtime::ControlFlow::E &e ) {
-		mControlFlow = e;
-		return;
-	}
+	tryControl(evaluate(node->mExpression, &condition));
 
 	if ( !isTrue(condition) ) {
 		std::cout << "assert(" << printExpression(node->mExpression) << ");" << std::endl;
@@ -891,13 +887,7 @@ void TreeInterpreter::visitContinue(ContinueStatement* /*node*/)
 void TreeInterpreter::visitDelete(DeleteStatement* node)
 {
 	Runtime::Object obj;
-	try {
-		evaluate(node->mExpression, &obj);
-	}
-	catch ( Runtime::ControlFlow::E &e ) {
-		mControlFlow = e;
-		return;
-	}
+	tryControl(evaluate(node->mExpression, &obj));
 
 	obj = Runtime::Object();
 }
@@ -905,13 +895,7 @@ void TreeInterpreter::visitDelete(DeleteStatement* node)
 void TreeInterpreter::visitExit(ExitStatement* node)
 {
 	Runtime::Object* data = mRepository->createInstance(Runtime::IntegerObject::TYPENAME, ANONYMOUS_OBJECT, PrototypeConstraints());
-	try {
-		evaluate(node->mExpression, data);
-	}
-	catch ( Runtime::ControlFlow::E &e ) {
-		mControlFlow = e;
-		return;
-	}
+	tryControl(evaluate(node->mExpression, data));
 
 	mStack->exception() = Runtime::ExceptionData(data, Common::Position());
 
@@ -921,13 +905,7 @@ void TreeInterpreter::visitExit(ExitStatement* node)
 void TreeInterpreter::visitExpression(Expression* expression)
 {
 	Runtime::Object tmp;
-	try {
-		evaluate(expression, &tmp);
-	}
-	catch ( Runtime::ControlFlow::E &e ) {
-		mControlFlow = e;
-		return;
-	}
+	tryControl(evaluate(expression, &tmp));
 }
 
 void TreeInterpreter::visitFor(ForStatement* node)
@@ -939,13 +917,7 @@ void TreeInterpreter::visitFor(ForStatement* node)
 
 	for  ( ; ; ) {
 		if ( node->mCondition ) {
-			try {
-				evaluate(node->mCondition, &condition);		// evaluate loop condition
-			}
-			catch ( Runtime::ControlFlow::E &e ) {
-				mControlFlow = e;
-				return;
-			}
+			tryControl(evaluate(node->mCondition, &condition));		// evaluate loop condition
 
 			// validate loop condition
 			if ( !isTrue(condition) ) {
@@ -973,7 +945,7 @@ void TreeInterpreter::visitFor(ForStatement* node)
 void TreeInterpreter::visitForeach(ForeachStatement* node)
 {
 	Runtime::Object collection;
-	evaluate(node->mLoopVariable, &collection);
+	tryControl(evaluate(node->mLoopVariable, &collection));
 
 	// get collection's forward iterator
 	Runtime::Object iterator;
@@ -1025,15 +997,9 @@ void TreeInterpreter::visitForeach(ForeachStatement* node)
 
 void TreeInterpreter::visitIf(IfStatement* node)
 {
+	// evaluate if-condition
 	Runtime::Object condition;
-	try {
-		// evaluate if-condition
-		evaluate(node->mExpression, &condition);
-	}
-	catch ( Runtime::ControlFlow::E &e ) {
-		mControlFlow = e;
-		return;
-	}
+	tryControl(evaluate(node->mExpression, &condition));
 
 	// validate if-condition
 	if ( isTrue(condition) ) {
@@ -1054,13 +1020,7 @@ void TreeInterpreter::visitOperator(Operator* /*op*/)
 void TreeInterpreter::visitPrint(PrintStatement* node)
 {
 	Runtime::Object text;
-	try {
-		evaluate(node->mExpression, &text);
-	}
-	catch ( Runtime::ControlFlow::E &e ) {
-		mControlFlow = e;
-		return;
-	}
+	tryControl(evaluate(node->mExpression, &text));
 
 	::Utils::PrinterDriver::Instance()->print(text.getValue().toStdString(), node->mPosition.mFile, node->mPosition.mLine);
 }
@@ -1069,15 +1029,10 @@ void TreeInterpreter::visitReturn(ReturnStatement* node)
 {
 	if ( node->mExpression ) {	// only process not-empty return statements
 		Runtime::Object tmp;
-		try {
-			evaluate(node->mExpression, &tmp);
 
-			Runtime::operator_binary_assign(&mStack->current()->returnValue(), &tmp);
-		}
-		catch ( Runtime::ControlFlow::E &e ) {
-			mControlFlow = e;
-			return;
-		}
+		tryControl(evaluate(node->mExpression, &tmp));
+
+		Runtime::operator_binary_assign(&mStack->current()->returnValue(), &tmp);
 	}
 
 	mControlFlow = Runtime::ControlFlow::Return;
@@ -1173,25 +1128,13 @@ void TreeInterpreter::visitSwitch(SwitchStatement* node)
 
 	for ( CaseStatements::const_iterator it = node->mCaseStatements.begin(); it != node->mCaseStatements.end(); ++it ) {
 		if ( evaluateCaseExpression ) {
-			try {
-				evaluate(node->mExpression, &value);
+			tryControl(evaluate(node->mExpression, &value));
 
-				evaluateCaseExpression = false;
-			}
-			catch ( Runtime::ControlFlow::E &e ) {
-				mControlFlow = e;
-				return;
-			}
+			evaluateCaseExpression = false;
 		}
 
 		Runtime::Object caseValue;
-		try {
-			evaluate((*it)->mCaseExpression, &caseValue);
-		}
-		catch ( Runtime::ControlFlow::E &e ) {
-			mControlFlow = e;
-			return;
-		}
+		tryControl(evaluate((*it)->mCaseExpression, &caseValue));
 
 		if ( Runtime::operator_binary_equal(&value, &caseValue) ) {
 			caseMatched = true;
@@ -1239,13 +1182,7 @@ void TreeInterpreter::visitThrow(ThrowStatement* node)
 {
 	if ( node->mExpression ) {	// throw new expression
 		Runtime::Object* data = mRepository->createInstance(_object, ANONYMOUS_OBJECT, PrototypeConstraints());
-		try {
-			evaluate(node->mExpression, data);
-		}
-		catch ( Runtime::ControlFlow::E &e ) {
-			mControlFlow = e;
-			return;
-		}
+		tryControl(evaluate(node->mExpression, data));
 
 		mStack->exception() = Runtime::ExceptionData(data, Common::Position());
 	}
@@ -1323,15 +1260,13 @@ Runtime::Object* TreeInterpreter::visitTypeDeclaration(TypeDeclaration* node)
 {
 	Runtime::Object* object = mRepository->createInstance(node->mType, node->mName, node->mConstraints);
 	object->setConst(node->mIsConst);
+	object->setIsReference(node->mIsReference);
 
 	getScope()->define(node->mName, object);
 
 	if ( node->mAssignment ) {
-		Runtime::Object tmp;
 		try {
-			evaluate(node->mAssignment, &tmp);
-
-			Runtime::operator_binary_assign(object, &tmp);
+			evaluate(node->mAssignment, object);
 		}
 		catch ( Runtime::ControlFlow::E &e ) {
 			mControlFlow = e;
@@ -1352,14 +1287,8 @@ void TreeInterpreter::visitWhile(WhileStatement* node)
 	Runtime::Object condition;
 
 	for  ( ; ; ) {
-		try {
-			// evaluate while condition
-			evaluate(node->mCondition, &condition);
-		}
-		catch ( Runtime::ControlFlow::E &e ) {
-			mControlFlow = e;
-			return;
-		}
+		// evaluate while condition
+		tryControl(evaluate(node->mCondition, &condition));
 
 		// validate loop condition
 		if ( !isTrue(condition) ) {
