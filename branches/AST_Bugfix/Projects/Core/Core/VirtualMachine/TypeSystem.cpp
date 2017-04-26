@@ -271,7 +271,7 @@ void TypeSystem::initInt()
 void TypeSystem::initObject()
 {
 	// assign
-	//define(GenericObject::TYPENAME, Token::Type::ASSIGN, GenericObject::TYPENAME, GenericObject::TYPENAME);
+	define(UserObject::TYPENAME, Token::Type::ASSIGN, UserObject::TYPENAME, UserObject::TYPENAME);
 
 	// arithmetic
 

@@ -46,7 +46,8 @@ public:
 	explicit Expression(ExpressionType::E expressionType)
 	: Node(NodeType::Expression),
 	  mExpressionType(expressionType),
-	  mIsConst(false)
+	  mIsConst(false),
+	  mIsMember(false)
 	{ }
 	virtual ~Expression() { }
 

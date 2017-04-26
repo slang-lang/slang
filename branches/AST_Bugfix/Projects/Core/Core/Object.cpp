@@ -635,10 +635,6 @@ bool Object::operator_equal(const Object *other)
 		throw Runtime::Exceptions::NullPointerException(QualifiedTypename() + ".operator==: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 	}
 
-	if ( mReference.isValid() && other->mReference.isValid() ) {
-		return mReference == other->mReference;
-	}
-
 	ParameterList params;
 	params.push_back(Parameter::CreateRuntime(mQualifiedTypename, mValue, mReference));
 
@@ -652,6 +648,10 @@ bool Object::operator_equal(const Object *other)
 		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, &tmp);
 
 		return operator_equal(&tmp);
+	}
+
+	if ( mIsReference && other->mIsReference ) {
+		return mReference == other->mReference;
 	}
 
 	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator==: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");

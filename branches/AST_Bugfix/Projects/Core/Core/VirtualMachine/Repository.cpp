@@ -756,6 +756,7 @@ void Repository::initTypeSystem(Designtime::BluePrintObject* blueprint)
 		}
 		else if ( name == "operator==" && params.size() == 1 ) {
 			mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_EQUAL, params.front().type(), blueprint->QualifiedTypename());
+			mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_UNEQUAL, params.front().type(), blueprint->QualifiedTypename());
 		}
 		else if ( name == "operator<" && params.size() == 1 ) {
 			mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_LESS, params.front().type(), blueprint->QualifiedTypename());
@@ -769,9 +770,11 @@ void Repository::initTypeSystem(Designtime::BluePrintObject* blueprint)
 		else if ( name == "operator>=" && params.size() == 1 ) {
 			mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_GREATER_EQUAL, params.front().type(), blueprint->QualifiedTypename());
 		}
+/*
 		else if ( name == "operator!=" && params.size() == 1 ) {
 			mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_UNEQUAL, params.front().type(), blueprint->QualifiedTypename());
 		}
+*/
 		else if ( name == "operator+" && params.size() == 1 ) {
 			mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::MATH_ADDITION, params.front().type(), blueprint->QualifiedTypename());
 		}
@@ -794,10 +797,20 @@ void Repository::initTypeSystem(Designtime::BluePrintObject* blueprint)
 
 	// add default assignment entry for null assignments
 	mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::ASSIGN, NULL_TYPE, blueprint->QualifiedTypename());
+	mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_EQUAL, NULL_TYPE, blueprint->QualifiedTypename());
+	mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_UNEQUAL, NULL_TYPE, blueprint->QualifiedTypename());
 
 	// add default assignment entry for type system if it doesn't exist yet
 	if ( !mTypeSystem->exists(blueprint->QualifiedTypename(), Token(Token::Type::ASSIGN, "="), blueprint->QualifiedTypename()) ) {
 		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::ASSIGN, blueprint->QualifiedTypename(), blueprint->QualifiedTypename());
+	}
+	// add equality operator entry for type system if it doesn't exist yet
+	if ( !mTypeSystem->exists(blueprint->QualifiedTypename(), Token(Token::Type::COMPARE_EQUAL, "=="), blueprint->QualifiedTypename()) ) {
+		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_EQUAL, blueprint->QualifiedTypename(), blueprint->QualifiedTypename());
+	}
+	// add uneuqality operator entry for type system if it doesn't exist yet
+	if ( !mTypeSystem->exists(blueprint->QualifiedTypename(), Token(Token::Type::COMPARE_UNEQUAL, "!="), blueprint->QualifiedTypename()) ) {
+		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_UNEQUAL, blueprint->QualifiedTypename(), blueprint->QualifiedTypename());
 	}
 }
 
