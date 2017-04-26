@@ -50,7 +50,7 @@ private bool TestCase1() const {
 print("obj1.getValue() = " + obj1.getValue());
 return true;
 
-	if ( obj1 == true ) {
+	if ( obj1 ) {
 		print("obj1 == true");
 		return true;
 	}
@@ -70,7 +70,7 @@ private bool TestCase2() const {
 print("obj1 = " + obj1.getValue());
 return true;
 
-	if ( obj1 == true ) {
+	if ( obj1 ) {
 		print("obj1 == true");
 		return true;
 	}
