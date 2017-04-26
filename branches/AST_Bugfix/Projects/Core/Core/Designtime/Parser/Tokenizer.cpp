@@ -511,6 +511,7 @@ void Tokenizer::process()
 	}
 
 	addToken(Token(Token::Type::ENDOFFILE));	// add end of file token
+	addToken(Token(Token::Type::ENDOFFILE));	// add end of file token
 
 #ifdef SKIP_WHITESPACES
 #else

@@ -126,7 +126,7 @@ Node* TreeGenerator::expression(TokenIterator& start)
 
 		Token operation = (*start);
 		Node* right = parseCondition(++start);
-		/*std::string type =*/ //resolveType(expression, operation, right);
+		/*std::string type =*/ resolveType(expression, operation, right);
 
 		expression = new BooleanBinaryExpression(expression, operation, right);
 	}

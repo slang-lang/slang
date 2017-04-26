@@ -35,6 +35,7 @@ OperatorTest::OperatorTest(const ::Utils::Common::Logger *p)
 
 void OperatorTest::process()
 {
+	TEST(testBooleanOperator);
 	TEST(testBooleanOverloads_Assign);
 	TEST(testBooleanOverloads_BitAnd);
 	TEST(testBooleanOverloads_BitOr);
@@ -58,6 +59,20 @@ void OperatorTest::setup()
 
 void OperatorTest::teardown()
 {
+}
+
+void OperatorTest::testBooleanOperator()
+{
+	try {
+		VirtualMachine vm;
+		vm.createScriptFromFile("Tests/Operator/BooleanOperatorTest.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
 }
 
 void OperatorTest::testBooleanOverloads_Assign()
