@@ -334,7 +334,7 @@ Node* TreeGenerator::parseCondition(TokenIterator& start)
 
 		Token operation = (*start);
 		Node* right = parseExpression(++start);
-		/*std::string type =*/ //resolveType(condition, operation, right);
+		/*std::string type =*/ //resolveType(condition, operation, right);	// TODO: find a solution that allows us to activate this check
 
 		condition = new BooleanBinaryExpression(condition, operation, right);
 	}
