@@ -167,7 +167,7 @@ public object String implements IIterateable {
 	 * String compare operator
 	 */
 	public bool operator==(String other ref) const {
-		return mValue == other;
+		return mValue == string other;
 	}
 
 	/*
@@ -180,7 +180,7 @@ public object String implements IIterateable {
 	 * String assignment operator
 	 */
 	public void operator=(String other ref) modify {
-		mValue = other;
+		mValue = string other;
 	}
 
 	/*
