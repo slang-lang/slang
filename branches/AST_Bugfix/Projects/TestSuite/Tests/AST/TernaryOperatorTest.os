@@ -1,10 +1,9 @@
 #!/usr/local/bin/oscript
 
-public void Main(int argc, string args) {
+public void Main(int argc = 0, string args = "") {
 	assert( TestCase1() );
 	assert( TestCase2() );
-	//assert( TestCase3() );
-	assert( TestCase4() );
+	assert( TestCase3() );
 }
 
 private bool TestCase1() {
@@ -27,25 +26,13 @@ private bool TestCase2() {
 	return value == 2;
 }
 
-/*
 private bool TestCase3() {
 	print("TestCase 3: cascaded ternary operator");
 
-	int value = true ? false ? : 1 : 2;
+	int value = true ? false ? 1 : 3 : 2;
 	print("value = " + value);
-	assert( value == 2 );
+	assert( value == 3 );
 
-	return value == 2;
-}
-*/
-
-private bool TestCase4() {
-	print("TestCase 4: unequal ternary operator expressions");
-
-	bool value = true ? 1 : false;
-	print("value = " + value);
-
-	assert( value == false );
-	return value == false;
+	return value == 3;
 }
 

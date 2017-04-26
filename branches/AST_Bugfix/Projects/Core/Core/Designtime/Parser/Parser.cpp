@@ -634,7 +634,7 @@ Runtime::AtomicValue Parser::parseValueInitialization(TokenIterator& token)
 	switch ( token->type() ) {
 		case Token::Type::CONST_BOOLEAN:
 			if ( !sign.empty() ) {
-				throw Common::Exceptions::SyntaxError("unexpected token", token->position());
+				throw Common::Exceptions::SyntaxError("unexpected token '" + token->content() + "'", token->position());
 			}
 
 			value = Tools::stringToBool(token->content());
@@ -650,7 +650,7 @@ Runtime::AtomicValue Parser::parseValueInitialization(TokenIterator& token)
 			break;
 		case Token::Type::CONST_LITERAL:
 			if ( !sign.empty() ) {
-				throw Common::Exceptions::SyntaxError("unexpected token", token->position());
+				throw Common::Exceptions::SyntaxError("unexpected token '" + token->content() + "'", token->position());
 			}
 
 			value = token->content();

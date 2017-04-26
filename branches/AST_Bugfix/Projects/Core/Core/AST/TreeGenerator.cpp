@@ -525,7 +525,7 @@ Node* TreeGenerator::parseTerm(TokenIterator& start)
 			++start;	// consume operator token
 		} break;
 		default:
-			throw Common::Exceptions::SyntaxError("identifier, literal or constant expected but " + start->content() + " found", start->position());
+			throw Common::Exceptions::SyntaxError("identifier, literal or constant expected but '" + start->content() + "' found", start->position());
 	}
 
 	return term;
