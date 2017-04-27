@@ -105,6 +105,10 @@ bool Analyser::buildEnum(Designtime::BluePrintEnum* symbol, const TokenList& tok
 
 bool Analyser::createBluePrint(TokenIterator& token)
 {
+	if ( mScope && (!dynamic_cast<Common::Namespace*>(mScope) && !dynamic_cast<BluePrintObject*>(mScope)) ) {
+		throw Common::Exceptions::SyntaxError("objects can only be created within namespaces or objects", token->position());
+	}
+
 	// look for an optional visibility token
 	Visibility::E visibility = Parser::parseVisibility(token, Visibility::Private);
 	// look for an optional language feature token
@@ -224,6 +228,10 @@ bool Analyser::createBluePrint(TokenIterator& token)
 
 bool Analyser::createEnum(TokenIterator& token)
 {
+	if ( mScope && (!dynamic_cast<Common::Namespace*>(mScope) && !dynamic_cast<BluePrintObject*>(mScope)) ) {
+		throw Common::Exceptions::SyntaxError("enum can only be created within namespaces or objects", token->position());
+	}
+
 	// look for an optional visibility token
 	Visibility::E visibility = Parser::parseVisibility(token, Visibility::Private);
 	// look for an optional language feature token
@@ -507,6 +515,10 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 
 bool Analyser::createNamespace(TokenIterator& token)
 {
+	if ( mScope && !dynamic_cast<Common::Namespace*>(mScope) ) {
+		throw Common::Exceptions::SyntaxError("namespaces can only be created within namespaces", token->position());
+	}
+
 	// look for an optional visibility token
 	Visibility::E visibility = Parser::parseVisibility(token, Visibility::Private);
 	// look for an optional language feature token
