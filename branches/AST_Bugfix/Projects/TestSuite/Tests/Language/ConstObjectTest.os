@@ -1,7 +1,7 @@
 #!/usr/local/bin/oscript
 
-private stable abstract object ValueObject const {
-	private int mValue;
+private stable abstract object ValueObject const extends Object {
+	protected int mValue;
 
 	public void Constructor(int value) {
 		mValue = value;
@@ -29,6 +29,9 @@ private stable abstract object ValueObject const {
 }
 
 private object DerivedValueObject extends ValueObject {
+	public void setValue(int value) modify {
+		mValue = value;
+	}
 }
 
 public void Main(int argc, string args) {
@@ -39,5 +42,13 @@ public void Main(int argc, string args) {
 	value.setValue(1389);
 
 	print("value = " + string value);
+
+	DerivedValueObject derived = new DerivedValueObject(1389);
+
+	print("derived = " + string derived);
+
+	derived.setValue(0664);
+
+	print("derived = " + string derived);
 }
 
