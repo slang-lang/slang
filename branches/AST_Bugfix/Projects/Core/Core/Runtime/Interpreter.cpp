@@ -1505,7 +1505,7 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 	// compare callee's constness with its parent's constness
 	Object* calleeParent = dynamic_cast<Object*>(method->getEnclosingScope());
 	if ( calleeParent && calleeParent->isConst() && !method->isConst() ) {
-		// we want to call a non-const method of a const object... neeeeey!
+		// we want to call a modifiable method of a const object... neeeeey!
 		throw Common::Exceptions::ConstCorrectnessViolated("only calls to const methods are allowed for const object '" + calleeParent->getFullScopeName() + "'", tmp->position());
 	}
 
@@ -1514,7 +1514,7 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 	if ( owner && owner->isConst() ) {
 		if ( owner->getEnclosingScope() == method->getEnclosingScope() && !method->isConst() ) {
 			// check target method's constness
-			// this is a const method and we want to call a non-const method... neeeeey!
+			// this is a const method and we want to call a modifiable method... neeeeey!
 			throw Common::Exceptions::ConstCorrectnessViolated("only calls to const methods are allowed in const method '" + getScope()->getFullScopeName() + "'", tmp->position());
 		}
 	}

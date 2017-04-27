@@ -999,14 +999,14 @@ MethodExpression* TreeGenerator::process_method(SymbolExpression* symbol, const 
 		throw Common::Exceptions::UnknownIdentifer("method '" + symbol->toString() + "(" + toString(params) + ")' not found", token.position());
 	}
 
-	// prevent calls to non-const methods from const methods
+	// prevent calls to modifiable methods from const methods
 	if ( mMethod->isConst() && method->getEnclosingScope() == mMethod->getEnclosingScope() && !method->isConst() ) {
 		throw Common::Exceptions::ConstCorrectnessViolated("only calls to const methods are allowed in const method '" + mMethod->getFullScopeName() + "'", token.position());
 	}
 
-	// prevent calls to non-const method from const symbol
-	if ( symbol->isConst() && !method->isConst() ) {
-		throw Common::Exceptions::ConstCorrectnessViolated("usage of non-const symbol not allowed from within const symbol '" + symbol->toString() + "'", token.position());
+	// prevent calls to modifiable method from const symbol (exception: constructors are allowed)
+	if ( symbol->isConst() && !method->isConst() && method->getMethodType() != MethodAttributes::MethodType::Constructor ) {
+		throw Common::Exceptions::ConstCorrectnessViolated("only calls to const methods are allowed from within const symbol '" + symbol->toString() + "'", token.position());
 	}
 
 	// prevent calls to non-static methods from static methods
@@ -1401,7 +1401,7 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 	Mutability::E mutability = parseMutability(token);
 
 	Runtime::Object* object = mRepository->createInstance(type, name, constraints, Repository::InitilizationType::AllowAbstract);
-	object->setConst(mutability == Mutability::Const);
+	object->setConst(object->isConst() || mutability == Mutability::Const);	// prevent constness of blueprint if set
 
 	getScope()->define(name, object);
 

@@ -18,7 +18,6 @@ ObjectType::E ObjectType::convert(const std::string& v)
 	if ( v == RESERVED_WORD_ENUM ) { return ObjectType::Enum; }
 	else if ( v == RESERVED_WORD_INTERFACE ) { return ObjectType::Interface; }
 	else if ( v == RESERVED_WORD_OBJECT ) { return ObjectType::Object; }
-	else if ( v == UNKNOWN ) { return ObjectType::Unknown; }
 
 	return ObjectType::Unknown;
 }

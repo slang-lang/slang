@@ -278,7 +278,6 @@ PrototypeConstraints Parser::collectRuntimePrototypeConstraints(TokenIterator& t
 TokenList Parser::collectScopeTokens(TokenIterator& token)
 {
 	expect(Token::Type::BRACKET_CURLY_OPEN, token);
-	//++token;
 
 	int scope = 0;
 	TokenList tokens;
@@ -286,17 +285,16 @@ TokenList Parser::collectScopeTokens(TokenIterator& token)
 	// look for the corresponding closing curly bracket
 	while ( (++token)->type() != Token::Type::BRACKET_CURLY_CLOSE || scope > 0 ) {
 		if ( token->type() == Token::Type::BRACKET_CURLY_OPEN ) {
-			scope++;
+			++scope;
 		}
 		if ( token->type() == Token::Type::BRACKET_CURLY_CLOSE ) {
-			scope--;
+			--scope;
 		}
 
 		tokens.push_back((*token));
 	}
 
 	expect(Token::Type::BRACKET_CURLY_CLOSE, token);
-	//++token;
 
 	return tokens;
 }
@@ -311,8 +309,8 @@ std::string Parser::identify(TokenIterator& token)
 		}
 
 		// add next token to type definition
-		type += (token++)->content();
 		type += token->content();
+		type += (++token)->content();
 	}
 
 	return type;
@@ -473,13 +471,13 @@ bool Parser::isObjectDeclaration(TokenIterator token)
 		++token;
 	}
 
-	if ( token->isOptional() && token->type() == Token::Type::MODIFIER ) {
-		// abstract is okay
+	if ( token->isOptional() && token->category() == Token::Category::Attribute && token->type() == Token::Type::LANGUAGEFEATURE ) {
+		// language feature is okay
 		++token;
 	}
 
-	if ( token->isOptional() && token->type() == Token::Type::LANGUAGEFEATURE ) {
-		// language feature is okay
+	if ( token->isOptional() && token->type() == Token::Type::MODIFIER ) {
+		// abstract is okay
 		++token;
 	}
 
@@ -509,10 +507,25 @@ LanguageFeatureState::E Parser::parseLanguageFeatureState(TokenIterator& token, 
 {
 	LanguageFeatureState::E result = defaultValue;
 
-	if ( token->isOptional() && token->type() == Token::Type::LANGUAGEFEATURE ) {
+	if ( token->isOptional() && token->category() == Token::Category::Attribute && token->type() == Token::Type::LANGUAGEFEATURE ) {
 		LanguageFeatureState::E value = LanguageFeatureState::convert((*token++).content());
 
 		if ( value != LanguageFeatureState::Unknown ) {
+			result = value;
+		}
+	}
+
+	return result;
+}
+
+Mutability::E Parser::parseMutability(TokenIterator& token, Mutability::E defaultValue)
+{
+	Mutability::E result = defaultValue;
+
+	if ( token->isOptional() && token->category() == Token::Category::Modifier && token->type() == Token::Type::MODIFIER ) {
+		Mutability::E value = Mutability::convert((*token++).content());
+
+		if ( value != Mutability::Unknown ) {
 			result = value;
 		}
 	}

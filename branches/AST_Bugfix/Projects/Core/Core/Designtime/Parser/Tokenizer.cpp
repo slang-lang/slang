@@ -6,7 +6,6 @@
 
 // Project includes
 #include <Core/Consts.h>
-#include <Core/Defines.h>
 #include <Core/Tools.h>
 
 // Namespace declarations
@@ -80,7 +79,7 @@ void Tokenizer::addToken(const std::string& con, const Common::Position& positio
 		content = con.substr(0, con.length() - 1);
 	}
 	else if ( isKeyword(content) ) { category = Token::Category::Keyword; type = Token::Type::KEYWORD; }
-	else if ( isLanguageFeature(content) ) { category = Token::Category::Modifier; isOptional = true; type = Token::Type::LANGUAGEFEATURE; }
+	else if ( isLanguageFeature(content) ) { category = Token::Category::Attribute; isOptional = true; type = Token::Type::LANGUAGEFEATURE; }
 	else if ( isLiteral(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_LITERAL;
 		// remove leading and trailing quotation marks (", ')
 		content = con.substr(1, con.length() - 2);
@@ -89,13 +88,7 @@ void Tokenizer::addToken(const std::string& con, const Common::Position& positio
 	else if ( isReservedWord(content) ) { category = Token::Category::ReservedWord; type = Token::Type::RESERVED_WORD; }
 	else if ( isType(content) ) { category = Token::Category::Identifier; type = Token::Type::TYPE; }
 	else if ( isVisibility(content) ) { category = Token::Category::ReservedWord; isOptional = true; type = Token::Type::VISIBILITY; }
-	else if ( isWhiteSpace(content) ) {
-#ifdef SKIP_WHITESPACES
-		return;
-#else
-		category = Token::Category::Ignorable; isOptional = true; type = Token::Type::WHITESPACE;
-#endif
-	}
+	else if ( isWhiteSpace(content) ) { return; }
 
 	mTokens.push_back(
 		Token(category, type, content, position, isOptional)
@@ -513,10 +506,6 @@ void Tokenizer::process()
 	addToken(Token(Token::Type::ENDOFFILE));	// add end of file token
 	addToken(Token(Token::Type::ENDOFFILE));	// add end of file token
 
-#ifdef SKIP_WHITESPACES
-#else
-	removeWhiteSpaces();			// remove all white spaces
-#endif
 	replaceAssignments();			// replace assignment tokens with compare tokens (if present)
 	mergeBooleanOperators();		// merge '&' '&' into '&&'
 	mergeInfixPostfixOperators();	// merge '+' '+' into '++'

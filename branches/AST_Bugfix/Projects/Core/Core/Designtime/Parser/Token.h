@@ -27,14 +27,15 @@ public:
 		enum E {
 			None,
 			Assignment,
+			Attribute,
 			Comparator,
 			Constant,
 			Ignorable,
 			Identifier,
 			Keyword,
 			Modifier,
-			ReservedWord,
-			Operator
+			Operator,
+			ReservedWord
 		};
 	};
 

@@ -210,7 +210,7 @@ bool Method::isSignatureValid(const ParameterList& params) const
 /*
 			// compare received const-ness with expected const-ness
 			if ( paramIt->isConst() && !sigIt->isConst() ) {
-				// we received a const parameter but expect a non-const parameter
+				// we received a const parameter but expect a modifiable parameter
 				return false;
 			}
 */

@@ -109,6 +109,9 @@ bool Analyser::createBluePrint(TokenIterator& token)
 		throw Common::Exceptions::SyntaxError("objects can only be created within namespaces or objects", token->position());
 	}
 
+	PrototypeConstraints constraints;
+	TokenList tokens;
+
 	// look for an optional visibility token
 	Visibility::E visibility = Parser::parseVisibility(token, Visibility::Private);
 	// look for an optional language feature token
@@ -118,21 +121,24 @@ bool Analyser::createBluePrint(TokenIterator& token)
 	// look for the object token
 	ObjectType::E objectType = Parser::parseObjectType(token);
 	// look for the identifier token
-	std::string type = (*token++).content();
+	std::string name = (*token++).content();
+	// look for an optional modifier token
+	Mutability::E mutability = Parser::parseMutability(token, Mutability::Modify);
 
-	BluePrintObject* blueprint = new BluePrintObject(type, mFilename);
+	BluePrintObject* blueprint = new BluePrintObject(name, mFilename);
+
+	if ( mutability != Mutability::Const && mutability != Mutability::Modify ) {
+		throw Common::Exceptions::SyntaxError("invalid mutability '" + Mutability::convert(mutability) + "' for " + getQualifiedTypename(name), token->position());
+	}
 
 	// determine implementation type
 	if ( objectType == ObjectType::Interface ) {
-		if ( implementationType != ImplementationType::FullyImplemented ) {
+		if ( mutability != Mutability::Modify ) {
 			throw Common::Exceptions::NotSupported("interface implementation is mandatory", token->position());
 		}
 
 		implementationType = ImplementationType::Interface;
 	}
-
-	TokenList tokens;
-	PrototypeConstraints constraints;
 
 	if ( token->type() == Token::Type::SEMICOLON ) {
 		if ( implementationType != ImplementationType::FullyImplemented ) {
@@ -156,7 +162,6 @@ bool Analyser::createBluePrint(TokenIterator& token)
 			isImplemented = (token->type() != Token::Type::SEMICOLON);
 		}
 		if ( isImplemented ) {	// only collect all tokens of this object if it is implemented
-			// collect all tokens of this method
 			tokens = Parser::collectScopeTokens(token);
 		}
 
@@ -182,16 +187,18 @@ bool Analyser::createBluePrint(TokenIterator& token)
 	blueprint->setPrototypeConstraints(constraints);
 	blueprint->setImplementationType(implementationType);
 	blueprint->setLanguageFeatureState(languageFeatureState);
+	blueprint->setMutability(mutability);
 	blueprint->setParent(mScope);
-	blueprint->setQualifiedTypename(getQualifiedTypename(type));
+	blueprint->setQualifiedTypename(getQualifiedTypename(name));
 	blueprint->setTokens(tokens);
 	blueprint->setVisibility(visibility);
+	blueprint->setSealed(mutability == Mutability::Const);
 
 	if ( implementationType == ImplementationType::ForwardDeclaration ) {
 		return blueprint != 0;
 	}
 
-	mScope->define(type, blueprint);
+	mScope->define(name, blueprint);
 
 	MethodScope* tmpScope = mScope;
 
@@ -204,7 +211,7 @@ bool Analyser::createBluePrint(TokenIterator& token)
 	mProcessingInterface = false;
 
 	// create default constructor if blueprint has no constructor at all
-	if ( !blueprint->hasConstructor() ) {
+	if ( implementationType == ImplementationType::FullyImplemented && !blueprint->hasConstructor() ) {
 		Common::Method* defaultConstructor = new Common::Method(blueprint, CONSTRUCTOR, _void);
 		defaultConstructor->setAbstract(false);
 		defaultConstructor->setConst(false);
@@ -411,12 +418,12 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 
 	BluePrintGeneric* blueprint = dynamic_cast<BluePrintGeneric*>(mScope);
 	if ( blueprint && name == RESERVED_WORD_CONSTRUCTOR ) {
-		// constructor or destructor can never ever be const
+		// constructors can never ever be const
 		methodType = MethodAttributes::MethodType::Constructor;
 		mutability = Mutability::Modify;
 	}
 	else if ( blueprint && name == RESERVED_WORD_DESTRUCTOR ) {
-		// constructor or destructor can never ever be const
+		// destructors can never ever be const
 		methodType = MethodAttributes::MethodType::Destructor;
 		mutability = Mutability::Modify;
 	}
@@ -460,7 +467,7 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 			}
 			else if ( token->content() == MODIFIER_THROWS ) {
 				if ( methodType == MethodAttributes::MethodType::Destructor ) {
-					OSinfo("exceptions thrown in destructor cannot be caught in " + token->position().toString());
+					OSwarn("exceptions thrown in destructor cannot be caught in " + token->position().toString());
 				}
 
 				throws = true;
@@ -473,6 +480,14 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 
 	if ( numConstModifiers > 1 ) {	// prevent concurrent use of 'const' and 'modify' attributes
 		throw Common::Exceptions::Exception("modifiers 'const' & 'modify' are exclusive", token->position());
+	}
+
+	// check parent's constness
+	if ( methodType != MethodAttributes::MethodType::Constructor && methodType != MethodAttributes::MethodType::Destructor ) {
+		BluePrintObject* parent = dynamic_cast<BluePrintObject*>(mScope);
+		if ( parent && parent->isConst() && mutability != Mutability::Const ) {
+			throw Common::Exceptions::ConstCorrectnessViolated("cannot add modifiable method '" + name + "' to const object '" + parent->getFullScopeName() + "'", token->position());
+		}
 	}
 
 	// collect all tokens of this method
