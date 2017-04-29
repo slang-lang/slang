@@ -134,7 +134,7 @@ bool Analyser::createBluePrint(TokenIterator& token)
 	// determine implementation type
 	if ( objectType == ObjectType::Interface ) {
 		if ( mutability != Mutability::Modify ) {
-			throw Common::Exceptions::NotSupported("interface implementation is mandatory", token->position());
+			throw Common::Exceptions::NotSupported("interface mutability has to be modifiable", token->position());
 		}
 
 		implementationType = ImplementationType::Interface;
@@ -176,6 +176,10 @@ bool Analyser::createBluePrint(TokenIterator& token)
 
 				blueprint->addInheritance((*it));
 			}
+		}
+
+		if ( objectType == ObjectType::Object && extends && mutability == Mutability::Const ) {
+			throw Common::Exceptions::ConstCorrectnessViolated("const object '" + getQualifiedTypename(name) + "' cannot extend objects or implement interfaces", token->position());
 		}
 
 		// in case this object has no inheritance set, we inherit from 'Object'
@@ -346,6 +350,12 @@ bool Analyser::createMemberStub(TokenIterator& token, Visibility::E visibility, 
 		mutability = Mutability::convert(token->content());
 
 		++token;
+	}
+
+	// check parent's constness
+	BluePrintObject* parent = dynamic_cast<BluePrintObject*>(mScope);
+	if ( parent && parent->isConst() && mutability != Mutability::Const ) {
+		throw Common::Exceptions::ConstCorrectnessViolated("cannot add modifiable member '" + name + "' to const object '" + parent->getFullScopeName() + "'", token->position());
 	}
 
 	Runtime::AtomicValue value = 0;

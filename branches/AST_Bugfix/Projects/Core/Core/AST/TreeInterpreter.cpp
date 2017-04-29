@@ -34,6 +34,15 @@
 		mDebugger->exp; \
 	}
 
+#define tryControl( exp ) \
+		try { \
+			exp; \
+		} \
+		catch ( Runtime::ControlFlow::E &e ) { \
+			mControlFlow = e; \
+			return; \
+		}
+
 #define tryEvalute(left, right) \
 		try { \
 			evaluate(left, right); \
@@ -43,13 +52,13 @@
 			return; \
 		}
 
-#define tryControl( exp ) \
+#define tryEvaluteNull(left, right) \
 		try { \
-			exp; \
+			evaluate(left, right); \
 		} \
 		catch ( Runtime::ControlFlow::E &e ) { \
 			mControlFlow = e; \
-			return; \
+			return NULL; \
 		}
 
 
@@ -108,8 +117,7 @@ void TreeInterpreter::evaluate(Node* exp, Runtime::Object* result)
 void TreeInterpreter::evaluateBinaryExpression(BinaryExpression* exp, Runtime::Object* result)
 {
 	if ( exp->getBinaryExpressionType() == BinaryExpression::BinaryExpressionType::BooleanBinaryExpression ) {
-		evaluateBooleanBinaryExpression(static_cast<BooleanBinaryExpression*>(exp), result);
-		return;
+		return evaluateBooleanBinaryExpression(static_cast<BooleanBinaryExpression*>(exp), result);
 	}
 
 	Runtime::Object left;
@@ -197,7 +205,7 @@ void TreeInterpreter::evaluateBooleanBinaryExpression(BooleanBinaryExpression* e
 
 		// default handling
 		// {
-		default: throw Common::Exceptions::NotSupported("binary expression with " + exp->mOperation.content() + " not supported (by now)");
+		default: throw Common::Exceptions::NotSupported("binary expression with " + exp->mOperation.content() + " not supported");
 		// }
 	}
 }
@@ -342,8 +350,7 @@ void TreeInterpreter::evaluateSymbolExpression(SymbolExpression *exp, Runtime::O
 				throw Common::Exceptions::NotSupported("cannot directly access locales of method");
 		}
 
-		evaluateSymbolExpression(exp->mSymbolExpression, result, scope);
-		return;
+		return evaluateSymbolExpression(exp->mSymbolExpression, result, scope);
 	}
 
 	if ( lvalue->getSymbolType() != Symbol::IType::ObjectSymbol ) {
