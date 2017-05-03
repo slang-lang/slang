@@ -14,7 +14,6 @@ private bool TestCase1() modify {
 	StringIterator strIt = new StringIterator("This is a string", " ");
 
 	int count;
-
 	while ( strIt.hasNext() && count < 10 ) {
 		string next = strIt.next();
 		print("str.next() = " + next);
