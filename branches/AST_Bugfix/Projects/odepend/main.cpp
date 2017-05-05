@@ -51,15 +51,20 @@ enum e_Action {
 	Upgrade
 };
 
+
+void checkOutdatedModules(std::set<std::string>& modules);
 void deinit();
 bool download(const std::string& url, const std::string& target);
 void init();
 void install();
+void installModule(const std::string& repo, const std::string& module);
 void loadConfig();
+void readJsonFile(const std::string& filename, Json::Value& result);
 void search(const StringList& params);
 void update();
 void upgrade();
 
+StringList mDownloadedFiles;
 Utils::Common::StdOutLogger mLogger;
 StringList mParameters;
 std::list<Repository> mRepositories;
@@ -70,6 +75,38 @@ static size_t write_data(void *ptr, size_t size, size_t nmemb, void *stream)
 {
 	size_t written = fwrite(ptr, size, nmemb, (FILE *)stream);
 	return written;
+}
+
+void checkOutdatedModules(std::set<std::string>& outdatedModules)
+{
+	// compare new index.json with local module information:
+	// find all folders in local <repo> folder and compare their corresponding <repo>/list/<module>.json [version] field
+	// with the version in the index.json file
+
+	for ( std::list<Repository>::iterator repoIt = mRepositories.begin(); repoIt != mRepositories.end(); ++repoIt ) {
+		std::string filename = "tmp/cache/repositories/" + repoIt->getName() + "_index.json";
+
+		// check if filename exists
+		if ( !::Utils::Tools::Files::exists(filename) ) {
+			// no configuration file exists
+			std::cout << "!!! File '" + filename + "' not found" << std::endl;
+			continue;
+		}
+
+		Json::Value config;
+		readJsonFile(filename, config);
+
+		// process Json::Value in Repository
+		repoIt->processIndex(config);
+
+		Repository::Modules modules = repoIt->getModules();
+
+		for ( Repository::Modules::const_iterator moduleIt = modules.begin(); moduleIt != modules.end(); ++moduleIt ) {
+			if ( moduleIt->mActionNeeded == Module::Action::Update ) {
+				outdatedModules.insert(moduleIt->mShortName);
+			}
+		}
+	}
 }
 
 void deinit()
@@ -112,6 +149,8 @@ bool download(const std::string& url, const std::string& target)
 		/* close the header file */
 		fclose(pagefile);
 
+		mDownloadedFiles.push_back(target);
+
 		result = true;
 	}
 
@@ -135,20 +174,62 @@ void install()
 		return;
 	}
 
+	installModule("https://michaeladelmann.ticketsharing.net/repo/stable", "mysql");
+}
 
+void installModule(const std::string& repo, const std::string& module)
+{
+	std::string filename = "tmp/cache/modules/" + module + ".json";
+
+	bool result = download(repo + "/modules/" + module + ".json", filename);
+	if ( !result ) {
+		std::cout << "!!! Download of module information for '" << module << "' failed" << std::endl;
+		return;
+	}
+
+	Json::Value config;
+	readJsonFile(filename, config);
+
+	if ( !config.isMember("target") ) {
+		std::cout << "!!! No target entry found in module information" << std::endl;
+		return;
+	}
+	if ( !config["target"].isMember("type") ) {
+		std::cout << "!!! No type entry found in target module information" << std::endl;
+		return;
+	}
+	if ( config["target"]["type"].asString() != "internal" ) {
+		std::cout << "!!! Currently only internal targets are supported" << std::endl;
+		return;
+	}
+	if ( !config["target"].isMember("url") ) {
+		std::cout << "!!! No url entry found in target module information" << std::endl;
+		return;
+	}
+
+	std::string url = repo + "/modules/" + config["target"]["url"].asString();
+	filename = "tmp/cache/modules/" + module + "_" + config["version"].asString() + ".tar.gz";
+
+	std::cout << "url = " << url << std::endl;
+
+	result = download(url, filename);
+	if ( !result ) {
+		std::cout << "!!! Failed to download target" << std::endl;
+		return;
+	}
+
+	std::string command = "tar xf " + filename + " -C tmp/modules/" + module;
+	std::cout << "command = " << command << std::endl;
+	system(command.c_str());
 }
 
 void loadConfig()
 {
 	std::string filename = "tmp/config.json";
 
-	// load contents of filename into Json::Value
-	std::fstream stream;
-	stream.open(filename.c_str(), std::ios::in);	// open for reading
-	std::string data((std::istreambuf_iterator<char>(stream)), std::istreambuf_iterator<char>());	// read stream
-	stream.close();
+	Json::Value config;
+	readJsonFile(filename, config);
 
-	Json::Value config = Json::Parser::parse(data);
 	if ( config.isMember("repositories") ) {
 		int count = 0;
 		Json::Value::Members repos = config["repositories"].members();
@@ -241,6 +322,17 @@ void processParameters(int argc, const char* argv[])
 	}
 }
 
+void readJsonFile(const std::string& filename, Json::Value& result)
+{
+	// load contents of filename into Json::Value
+	std::fstream stream;
+	stream.open(filename.c_str(), std::ios::in);	// open for reading
+	std::string data((std::istreambuf_iterator<char>(stream)), std::istreambuf_iterator<char>());	// read stream
+	stream.close();
+
+	result = Json::Parser::parse(data);
+}
+
 void search(const StringList& params)
 {
 	(void)params;
@@ -253,7 +345,7 @@ void update()
 	std::cout << "Updating " << mRepositories.size()  << " repositories..." << std::endl;
 
 	for ( std::list<Repository>::iterator it = mRepositories.begin(); it != mRepositories.end(); ++it ) {
-		std::string filename = "tmp/indices/" + it->getName() + "_index.json";
+		std::string filename = "tmp/cache/repositories/" + it->getName() + "_index.json";
 		std::string url = it->getURL() + "/index.json";
 
 		bool result = download(url, filename);
@@ -270,54 +362,34 @@ void update()
 
 void upgrade()
 {
-	// (1) compare new index.json with local module information:
-	//     find all folders in local <repo> folder and compare their corresponding <repo>/list/<module>.json [version] field
-	//     with the version in the index.json file
-	// (2) list all outdated modules
+	// (1) retrieve outdated modules
+	// (2) list all found modules
+	// (3) install new modules if any are available
 
 	std::set<std::string> outdatedModules;
 
-	for ( std::list<Repository>::iterator repoIt = mRepositories.begin(); repoIt != mRepositories.end(); ++repoIt ) {
-		std::string filename = "tmp/indices/" + repoIt->getName() + "_index.json";
-
-		// check if filename exists
-		if ( !::Utils::Tools::Files::exists(filename) ) {
-			// no configuration file exists
-			std::cout << "!!! File '" + filename + "' not found" << std::endl;
-			continue;
-		}
-
-		// load contents of filename into Json::Value
-		std::fstream stream;
-		stream.open(filename.c_str(), std::ios::in);	// open for reading
-		std::string data((std::istreambuf_iterator<char>(stream)), std::istreambuf_iterator<char>());	// read stream
-		stream.close();
-
-		Json::Value config = Json::Parser::parse(data);
-
-		// process Json::Value in Repository
-		repoIt->processIndex(config);
-
-		Repository::Modules modules = repoIt->getModules();
-
-		for ( Repository::Modules::const_iterator moduleIt = modules.begin(); moduleIt != modules.end(); ++moduleIt ) {
-			if ( moduleIt->mActionNeeded == Module::Action::Update ) {
-				outdatedModules.insert(moduleIt->mShortName);
-			}
-		}
-	}
+	checkOutdatedModules(outdatedModules);
 
 	std::cout << "Need to upgrade " << outdatedModules.size() << " module(s)..." << std::endl;
 
 	if ( !outdatedModules.empty() ) {
+		// replace current parameters with outdated modules to install
+		mParameters.clear();
+
 		std::cout << "New module(s): ";
 		for ( std::set<std::string>::const_iterator it = outdatedModules.begin(); it != outdatedModules.end(); ++it ) {
 			std::cout << (*it);
+
+			// add outdated module name to global parameters
+			mParameters.push_back((*it));
 		}
 		std::cout << std::endl;
-	}
 
-	// TODO: implement the actual upgrade
+		// TODO: if mParameters contains values upgrade only the modules that are set in mParameters
+
+		// install new versions of all outdated modules
+		install();
+	}
 }
 
 int main(int argc, const char* argv[])
@@ -342,6 +414,11 @@ int main(int argc, const char* argv[])
 		case Install: install(); break;
 		case Update: update(); break;
 		case Upgrade: upgrade(); break;
+	}
+
+	// debug only
+	for ( StringList::const_iterator it = mDownloadedFiles.begin(); it != mDownloadedFiles.end(); ++it ) {
+		std::cout << (*it) << std::endl;
 	}
 
 	return 0;
