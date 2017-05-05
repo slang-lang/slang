@@ -9,13 +9,10 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
-
-
-Module::Module(const std::string& name_short, const std::string& remote_version)
+Module::Module(const std::string& name_short, const std::string& version)
 : mActionNeeded(Action::None),
-  mRemoteVersion(remote_version),
-  mShortName(name_short)
+  mShortName(name_short),
+  mVersion(version)
 {
 }
 
@@ -28,15 +25,7 @@ bool Module::operator<(const Module& other) const
 	return mShortName < other.mShortName;
 }
 
-const std::string& Module::getURL() const
+bool Module::operator==(const Module& other) const
 {
-	return mURL;
-}
-
-void Module::setURL(const std::string& url)
-{
-	mURL = url;
-}
-
-
+	return mShortName == other.mShortName;
 }

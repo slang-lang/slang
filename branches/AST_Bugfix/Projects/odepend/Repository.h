@@ -16,9 +16,6 @@
 // Namespace declarations
 
 
-namespace ObjectiveScript {
-
-
 class Repository
 {
 public:
@@ -29,6 +26,9 @@ public:
 	~Repository();
 
 public:
+	void addModule(const Module& module);
+
+public:
 	const Modules& getModules() const;
 
 	const std::string& getName() const;
@@ -36,19 +36,13 @@ public:
 	const std::string& getURL() const;
 	void setURL(const std::string& url);
 
-	bool processIndex(const Json::Value &value);
-
-private:
-	std::string getLocalVersion(const std::string& name_short) const;
+	bool processIndex(const Json::Value& value);
 
 private:
 	Modules mModules;
 	std::string mName;
 	std::string mURL;
 };
-
-
-}
 
 
 #endif

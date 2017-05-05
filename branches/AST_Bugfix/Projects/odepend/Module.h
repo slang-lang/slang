@@ -7,13 +7,11 @@
 #include <string>
 
 // Project includes
+#include "Dependency.h"
 
 // Forward declarations
 
 // Namespace declarations
-
-
-namespace ObjectiveScript {
 
 
 class Module
@@ -29,27 +27,22 @@ public:
 	};
 
 public:
-	Module(const std::string& name_short, const std::string& remote_version);
+	Module(const std::string& name_short, const std::string& version);
 	~Module();
 
 public:
-	const std::string& getURL() const;
-	void setURL(const std::string& url);
-
-public:
 	bool operator<(const Module& other) const;
+	bool operator==(const Module& other) const;
 
 public:
 	Action::E mActionNeeded;
-	std::string mLocalVersion;
+	std::string mDescription;
+	Dependencies mDependencies;
 	std::string mLongName;
-	std::string mRemoteVersion;
 	std::string mShortName;
 	std::string mURL;
+	std::string mVersion;
 };
-
-
-}
 
 
 #endif

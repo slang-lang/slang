@@ -1,5 +1,6 @@
 
 // Library includes
+#include <dirent.h>
 #include <set>
 #include <string>
 #include <stdio.h>
@@ -53,6 +54,8 @@ enum e_Action {
 
 
 void checkOutdatedModules(std::set<std::string>& modules);
+void collectLocalModuleData();
+void collectModuleData(const std::string& filename);
 void deinit();
 bool download(const std::string& url, const std::string& target);
 void init();
@@ -65,6 +68,7 @@ void update();
 void upgrade();
 
 StringList mDownloadedFiles;
+Repository mLocalRepository("local");
 Utils::Common::StdOutLogger mLogger;
 StringList mParameters;
 std::list<Repository> mRepositories;
@@ -83,6 +87,8 @@ void checkOutdatedModules(std::set<std::string>& outdatedModules)
 	// find all folders in local <repo> folder and compare their corresponding <repo>/list/<module>.json [version] field
 	// with the version in the index.json file
 
+	Repository::Modules local = mLocalRepository.getModules();
+
 	for ( std::list<Repository>::iterator repoIt = mRepositories.begin(); repoIt != mRepositories.end(); ++repoIt ) {
 		std::string filename = "tmp/cache/repositories/" + repoIt->getName() + "_index.json";
 
@@ -99,14 +105,55 @@ void checkOutdatedModules(std::set<std::string>& outdatedModules)
 		// process Json::Value in Repository
 		repoIt->processIndex(config);
 
-		Repository::Modules modules = repoIt->getModules();
+		Repository::Modules remote = repoIt->getModules();
 
-		for ( Repository::Modules::const_iterator moduleIt = modules.begin(); moduleIt != modules.end(); ++moduleIt ) {
-			if ( moduleIt->mActionNeeded == Module::Action::Update ) {
-				outdatedModules.insert(moduleIt->mShortName);
+		for ( Repository::Modules::const_iterator localIt = local.begin(); localIt != local.end(); ++localIt ) {
+			for ( Repository::Modules::const_iterator remoteIt = remote.begin(); remoteIt != remote.end(); ++remoteIt ) {
+				if ( localIt->mVersion < remoteIt->mVersion ) {
+					outdatedModules.insert(remoteIt->mShortName);
+				}
 			}
 		}
 	}
+}
+
+void collectLocalModuleData()
+{
+	// iterate over all directories in the modules directory and collect all "module.json" files
+
+	DIR* dir = opendir("tmp/modules/");
+	struct dirent* entry = readdir(dir);
+
+	while ( entry ) {
+		if ( entry->d_type == DT_DIR ) {
+			std::string filename = "tmp/modules/" + std::string(entry->d_name) + "/module.json";
+
+			if ( ::Utils::Tools::Files::exists(filename) ) {
+				collectModuleData(filename);
+			}
+		}
+
+		entry = readdir(dir);
+	}
+
+	closedir(dir);
+}
+
+void collectModuleData(const std::string& filename)
+{
+	std::cout << "Collecting module data from " << filename << std::endl;
+
+	Json::Value config;
+	readJsonFile(filename, config);
+
+	std::string description = config["description"].asString();
+	std::string name_long = config["name"].asString();
+	std::string name_short = config["name_short"].asString();
+	std::string version = config["version"].asString();
+
+	Module module(name_short, version);
+
+	mLocalRepository.addModule(module);
 }
 
 void deinit()
@@ -174,21 +221,23 @@ void install()
 		return;
 	}
 
-	installModule("https://michaeladelmann.ticketsharing.net/repo/stable", "mysql");
+	for ( StringList::const_iterator it = mParameters.begin(); it != mParameters.end(); ++it ) {
+		installModule("https://michaeladelmann.ticketsharing.net/repo/stable", (*it));
+	}
 }
 
 void installModule(const std::string& repo, const std::string& module)
 {
-	std::string filename = "tmp/cache/modules/" + module + ".json";
+	std::string module_config = "tmp/cache/modules/" + module + ".json";
 
-	bool result = download(repo + "/modules/" + module + ".json", filename);
+	bool result = download(repo + "/modules/" + module + ".json", module_config);
 	if ( !result ) {
 		std::cout << "!!! Download of module information for '" << module << "' failed" << std::endl;
 		return;
 	}
 
 	Json::Value config;
-	readJsonFile(filename, config);
+	readJsonFile(module_config, config);
 
 	if ( !config.isMember("target") ) {
 		std::cout << "!!! No target entry found in module information" << std::endl;
@@ -198,29 +247,55 @@ void installModule(const std::string& repo, const std::string& module)
 		std::cout << "!!! No type entry found in target module information" << std::endl;
 		return;
 	}
-	if ( config["target"]["type"].asString() != "internal" ) {
+
+	std::string type = config["target"]["type"].asString();
+	std::string url;
+
+	if ( type == "internal" ) {
+		if ( !config["target"].isMember("url") ) {
+			std::cout << "!!! No url entry found in target module information" << std::endl;
+			return;
+		}
+
+		url = repo + "/modules/" + config["target"]["url"].asString();
+	}
+	else if ( type == "virtual" ) {
+		// no url
+	}
+	else {
 		std::cout << "!!! Currently only internal targets are supported" << std::endl;
 		return;
 	}
-	if ( !config["target"].isMember("url") ) {
-		std::cout << "!!! No url entry found in target module information" << std::endl;
-		return;
-	}
 
-	std::string url = repo + "/modules/" + config["target"]["url"].asString();
-	filename = "tmp/cache/modules/" + module + "_" + config["version"].asString() + ".tar.gz";
+	std::string module_archive = "tmp/cache/modules/" + module + "_" + config["version"].asString() + ".tar.gz";
 
-	std::cout << "url = " << url << std::endl;
-
-	result = download(url, filename);
+	result = download(url, module_archive);
 	if ( !result ) {
 		std::cout << "!!! Failed to download target" << std::endl;
 		return;
 	}
 
-	std::string command = "tar xf " + filename + " -C tmp/modules/" + module;
-	std::cout << "command = " << command << std::endl;
-	system(command.c_str());
+/*
+	{	// create module directory
+		std::string command = "mkdir tmp/modules/" + module;
+
+		system(command.c_str());
+	}
+*/
+
+	if ( type != "virtual ") {	// extract module archive to "<module>/"
+		std::string command = "tar xf " + module_archive + " -C tmp/modules/";
+		//std::cout << "command = " << command << std::endl;
+
+		system(command.c_str());
+	}
+
+	{	// copy module config to "<module>/module.json"
+		std::string command = "cp " + module_config + " tmp/modules/" + module + "/module.json";
+		//std::cout << "command = " << command << std::endl;
+
+		system(command.c_str());
+	}
 }
 
 void loadConfig()
@@ -366,6 +441,8 @@ void upgrade()
 	// (2) list all found modules
 	// (3) install new modules if any are available
 
+	collectLocalModuleData();
+
 	std::set<std::string> outdatedModules;
 
 	checkOutdatedModules(outdatedModules);
@@ -378,7 +455,7 @@ void upgrade()
 
 		std::cout << "New module(s): ";
 		for ( std::set<std::string>::const_iterator it = outdatedModules.begin(); it != outdatedModules.end(); ++it ) {
-			std::cout << (*it);
+			std::cout << (*it) << " ";
 
 			// add outdated module name to global parameters
 			mParameters.push_back((*it));
