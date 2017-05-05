@@ -31,35 +31,6 @@ function(build_static_lib target modules)
 endfunction()
 
 
-function(build_test_app target modules)
-
-    SET(EXECUTABLE_OUTPUT_PATH "${PROJECT_BINARY_DIR}/testbin")
-    LIST(APPEND DEPENDENCIES Utils UtilsTestManagement)
-    LIST(APPEND modules "qttest")
-
-    build_app(${target} "${modules}")
-
-endfunction()
-
-
-function(build_qtgui_app target modules)
-
-    LIST(LENGTH FORMS num_forms)
-    if ( num_forms GREATER 0 )
-        qt4_wrap_ui(HEADERS ${FORMS})
-        # the generated .h files are in the binary dir
-        include_directories(${CMAKE_CURRENT_BINARY_DIR})
-    endif()
-
-    LIST(APPEND modules "qtgui")
-
-    MESSAGE(FATAL_ERROR "${target} ${modules}")
-
-    build_app(${target} "${modules}")
-
-endfunction()
-
-
 function(build_app target modules)
 
     _handle_modules_pre_linker("${modules}")
@@ -81,24 +52,6 @@ endfunction()
 
 
 function(_handle_modules_pre_linker modules)
-
-    # make qt available to all by default
-    #_handle_pre_qtcore()
-
-    #list(FIND modules "qtgui" found)
-    #if ( ${found} GREATER -1 )
-    #    _handle_pre_qtgui()
-    #endif()
-
-    #list(FIND modules "qtsql" found)
-    #if ( ${found} GREATER -1 )
-    #    _handle_pre_qtsql()
-    #endif()
-
-    #list(FIND modules "qttest" found)
-    #if ( ${found} GREATER -1 )
-    #    _handle_pre_qttest()
-    #endif()
 
     list(FIND modules "boost" found)
     if ( ${found} GREATER -1 )
@@ -124,24 +77,6 @@ endfunction()
 
 
 function(_handle_modules_post_linker modules target)
-
-    # link against qtcore by default 
-    #_handle_post_qtcore(${target})
-
-    #list(FIND modules "qtgui" found)
-    #if ( ${found} GREATER -1 )
-    #    _handle_post_qtgui(${target})
-    #endif()
-
-    #list(FIND modules "qtsql" found)
-    #if ( ${found} GREATER -1 )
-    #    _handle_post_qtsql(${target})
-    #endif()
-
-    #list(FIND modules "qttest" found)
-    #if ( ${found} GREATER -1 )
-    #    _handle_post_qttest(${target})
-    #endif()
 
     list(FIND modules "curl" found)
     if ( ${found} GREATER -1 )
