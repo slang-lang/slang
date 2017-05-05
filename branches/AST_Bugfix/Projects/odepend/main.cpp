@@ -251,6 +251,14 @@ void upgrade()
 
 	std::cout << "Need to upgrade " << outdatedModules.size() << " modules..." << std::endl;
 
+	if ( !outdatedModules.empty() ) {
+		std::cout << "New module(s): ";
+		for ( std::set<std::string>::const_iterator it = outdatedModules.begin(); it != outdatedModules.end(); ++it ) {
+			std::cout << (*it);
+		}
+		std::cout << std::endl;
+	}
+
 	// TODO: implement the actual upgrade
 }
 

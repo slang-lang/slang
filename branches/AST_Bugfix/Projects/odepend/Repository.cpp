@@ -81,10 +81,6 @@ bool Repository::processIndex(const Json::Value &value)
 			module.mActionNeeded = module.mLocalVersion < module.mRemoteVersion ? Module::Action::Update : Module::Action::None;
 		}
 
-		std::cout << "Module: " << module.mShortName << std::endl;
-		std::cout << "Version (remote): " << module.mRemoteVersion << std::endl;
-		std::cout << "Version (local): " << module.mLocalVersion << std::endl;
-
 		mModules.insert(module);
 	}
 
