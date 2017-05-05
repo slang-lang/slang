@@ -54,6 +54,7 @@ enum e_Action {
 void deinit();
 bool download(const std::string& url, const std::string& target);
 void init();
+void install();
 void loadConfig();
 void search(const StringList& params);
 void update();
@@ -127,6 +128,16 @@ void init()
 	loadConfig();
 }
 
+void install()
+{
+	if ( mParameters.empty() ) {
+		std::cout << "invalid number of parameters!" << std::endl;
+		return;
+	}
+
+
+}
+
 void loadConfig()
 {
 	std::string filename = "tmp/config.json";
@@ -189,33 +200,44 @@ void printVersion()
 
 void processParameters(int argc, const char* argv[])
 {
-	for ( int i = 1; i < argc; i++ ) {
-		if ( Utils::Tools::StringCompare(argv[i], "help") ) {
+	if ( argc > 1 ) {
+		std::string arg1 = argv[1];
+
+		if ( Utils::Tools::StringCompare(arg1, "help") ) {
 			mAction = Help;
 		}
-		else if ( Utils::Tools::StringCompare(argv[i], "install") ) {
+		else if ( Utils::Tools::StringCompare(arg1, "install") ) {
 			mAction = Install;
 		}
-		else if ( Utils::Tools::StringCompare(argv[i], "list") ) {
+		else if ( Utils::Tools::StringCompare(arg1, "list") ) {
 			mAction = List;
 		}
-		else if ( Utils::Tools::StringCompare(argv[i], "remove") ) {
+		else if ( Utils::Tools::StringCompare(arg1, "remove") ) {
 			mAction = Remove;
 		}
-		else if ( Utils::Tools::StringCompare(argv[i], "search") ) {
+		else if ( Utils::Tools::StringCompare(arg1, "search") ) {
 			mAction = Search;
 		}
-		else if ( Utils::Tools::StringCompare(argv[i], "update") ) {
+		else if ( Utils::Tools::StringCompare(arg1, "update") ) {
 			mAction = Update;
 		}
-		else if ( Utils::Tools::StringCompare(argv[i], "upgrade") ) {
+		else if ( Utils::Tools::StringCompare(arg1, "upgrade") ) {
 			mAction = Upgrade;
 		}
-		else if ( Utils::Tools::StringCompare(argv[i], "version") ) {
+		else if ( Utils::Tools::StringCompare(arg1, "version") ) {
 			printVersion();
 
 			exit(0);
 		}
+		else {
+			printUsage();
+
+			exit(0);
+		}
+	}
+
+	for ( int i = 2; i < argc; ++i ) {
+		mParameters.push_back(std::string(argv[i]));
 	}
 }
 
@@ -228,12 +250,13 @@ void update()
 {
 	// download <URL>/<branch>/index.json
 
-	std::cout << "Updating..." << std::endl;
+	std::cout << "Updating " << mRepositories.size()  << " repositories..." << std::endl;
 
 	for ( std::list<Repository>::iterator it = mRepositories.begin(); it != mRepositories.end(); ++it ) {
 		std::string filename = "tmp/indices/" + it->getName() + "_index.json";
+		std::string url = it->getURL() + "/index.json";
 
-		bool result = download(it->getURL() + "/index.json", filename);
+		bool result = download(url, filename);
 		if ( result ) {
 			std::cout << "Updated index for " << it->getURL() << std::endl;
 		}
@@ -241,6 +264,8 @@ void update()
 			std::cout << "!!! Error while updating index for " << it->getURL() << std::endl;
 		}
 	}
+
+	std::cout << "Done." << std::endl;
 }
 
 void upgrade()
@@ -282,7 +307,7 @@ void upgrade()
 		}
 	}
 
-	std::cout << "Need to upgrade " << outdatedModules.size() << " modules..." << std::endl;
+	std::cout << "Need to upgrade " << outdatedModules.size() << " module(s)..." << std::endl;
 
 	if ( !outdatedModules.empty() ) {
 		std::cout << "New module(s): ";
@@ -305,22 +330,16 @@ int main(int argc, const char* argv[])
 
 	processParameters(argc, argv);
 
-	if ( mAction == Help || mAction == None ) {
-		printUsage();
-
-		return 0;
-	}
-
 	init();
 
 	switch ( mAction ) {
-		case Help:
 		case None:
-		case Install:
 		case List:
 		case Remove:
 		case Search:
 			break;
+		case Help: printUsage(); break;
+		case Install: install(); break;
 		case Update: update(); break;
 		case Upgrade: upgrade(); break;
 	}
