@@ -2,9 +2,13 @@ INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
 SET(SOURCES
 	main.cpp
+	Module.cpp
+	Repository.cpp
 )
 
 SET(HEADERS
+	Module.h
+	Repository.h
 )
 
 SET(DEPENDENCIES

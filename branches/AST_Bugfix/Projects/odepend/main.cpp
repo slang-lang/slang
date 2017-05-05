@@ -7,14 +7,18 @@
 #include <unistd.h>
 
 #include <curl/curl.h>
+#include <Json/Json.h>
 
 // Project includes
 #include <Common/StdOutLogger.h>
 #include <Core/Types.h>
+#include <Tools/Files.h>
 #include <Tools/Strings.h>
 #include <Utils.h>
+#include "Repository.h"
 
 // Namespace declarations
+using namespace ObjectiveScript;
 
 #ifdef __APPLE__
 #elif defined _WIN32
@@ -37,16 +41,25 @@
 
 
 Utils::Common::StdOutLogger mLogger;
-std::set<std::string> mOutdatedModules;
+std::list<Repository> mRepositories;
 
+void deinit();
 bool download(const std::string& url, const std::string& target);
+void init();
+void search(const StringList& params);
 void update();
 void upgrade();
+
 
 static size_t write_data(void *ptr, size_t size, size_t nmemb, void *stream)
 {
 	size_t written = fwrite(ptr, size, nmemb, (FILE *)stream);
 	return written;
+}
+
+void deinit()
+{
+	// put de-initialization stuff here
 }
 
 bool download(const std::string& url, const std::string& target)
@@ -64,7 +77,7 @@ bool download(const std::string& url, const std::string& target)
 	curl_easy_setopt(curl_handle, CURLOPT_URL, url.c_str());
 
 	/* Switch on full protocol/debug output while testing */
-	curl_easy_setopt(curl_handle, CURLOPT_VERBOSE, 1L);
+	curl_easy_setopt(curl_handle, CURLOPT_VERBOSE, 0L);
 
 	/* disable progress meter, set to 0L to enable and disable debug output */
 	curl_easy_setopt(curl_handle, CURLOPT_NOPROGRESS, 1L);
@@ -91,6 +104,21 @@ bool download(const std::string& url, const std::string& target)
 	curl_easy_cleanup(curl_handle);
 
 	return result;
+}
+
+void init()
+{
+	// put initialization stuff here
+
+	Repository base_prerelease("ticketsharing_prerelease");
+	base_prerelease.setURL("https://michaeladelmann.ticketsharing.net/repo/prerelease");
+
+	mRepositories.push_back(base_prerelease);
+
+	Repository base_stable("ticketsharing_stable");
+	base_stable.setURL("https://michaeladelmann.ticketsharing.net/repo/stable");
+
+	mRepositories.push_back(base_stable);
 }
 
 void printUsage()
@@ -136,7 +164,7 @@ void processParameters(int argc, const char* argv[])
 				// TODO: remove
 			}
 			else if ( Utils::Tools::StringCompare(argv[i], "search") ) {
-				// TODO: search
+				return search(params);
 			}
 			else if ( Utils::Tools::StringCompare(argv[i], "update") ) {
 				return update();
@@ -158,6 +186,11 @@ void processParameters(int argc, const char* argv[])
 	exit(0);
 }
 
+void search(const StringList& params)
+{
+	(void)params;
+}
+
 void update()
 {
 	// TODO: implement update
@@ -169,22 +202,56 @@ void update()
 
 	std::cout << "Updating..." << std::endl;
 
-	bool result = download("https://michaeladelmann.ticketsharing.net/repo/stable/index/index.json", "index.json");
-	if ( result ) {
-		std::cout << "Updated index successfully." << std::endl;
+	for ( std::list<Repository>::iterator it = mRepositories.begin(); it != mRepositories.end(); ++it ) {
+		std::string filename = "tmp/indices/" + it->getName() + "_index.json";
+
+		bool result = download(it->getURL() + "/index.json", filename);
+		if ( result ) {
+			std::cout << "Successfully updated index for " << it->getURL() << std::endl;
+		}
+		else {
+			std::cout << "!!! Error while updating index for " << it->getURL() << std::endl;
+		}
 	}
 }
 
 void upgrade()
 {
-	// TODO: implement upgrade
+	std::set<std::string> outdatedModules;
 
-	if ( mOutdatedModules.empty() ) {
-		std::cout << "No outdated modules found." << std::endl;
-		return;
+	for ( std::list<Repository>::iterator repoIt = mRepositories.begin(); repoIt != mRepositories.end(); ++repoIt ) {
+		std::string filename = "tmp/indices/" + repoIt->getName() + "_index.json";
+
+		// check if filename exists
+		if ( !::Utils::Tools::Files::exists(filename) ) {
+			// no configuration file exists
+			std::cout << "!!! File '" + filename + "' not found" << std::endl;
+			continue;
+		}
+
+		// load contents of filename into Json::Value
+		std::fstream stream;
+		stream.open(filename.c_str(), std::ios::in);	// open for reading
+		std::string data((std::istreambuf_iterator<char>(stream)), std::istreambuf_iterator<char>());	// read stream
+		stream.close();
+
+		Json::Value config = Json::Parser::parse(data);
+
+		// process Json::Value in Repository
+		repoIt->processIndex(config);
+
+		Repository::Modules modules = repoIt->getModules();
+
+		for ( Repository::Modules::const_iterator moduleIt = modules.begin(); moduleIt != modules.end(); ++moduleIt ) {
+			if ( moduleIt->mActionNeeded == Module::Action::Update ) {
+				outdatedModules.insert(moduleIt->mShortName);
+			}
+		}
 	}
 
-	std::cout << "Upgrading " << mOutdatedModules.size() << " modules..." << std::endl;
+	std::cout << "Need to upgrade " << outdatedModules.size() << " modules..." << std::endl;
+
+	// TODO: implement the actual upgrade
 }
 
 int main(int argc, const char* argv[])
@@ -194,6 +261,8 @@ int main(int argc, const char* argv[])
 	_CrtSetDbgFlag ( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF );
 	// Memory leak detection
 #endif
+
+	init();
 
 	processParameters(argc, argv);
 
