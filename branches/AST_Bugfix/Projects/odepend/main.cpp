@@ -40,15 +40,29 @@ using namespace ObjectiveScript;
 #endif
 
 
-Utils::Common::StdOutLogger mLogger;
-std::list<Repository> mRepositories;
+enum e_Action {
+	None,
+	Help,
+	Install,
+	List,
+	Remove,
+	Search,
+	Update,
+	Upgrade
+};
 
 void deinit();
 bool download(const std::string& url, const std::string& target);
 void init();
+void loadConfig();
 void search(const StringList& params);
 void update();
 void upgrade();
+
+Utils::Common::StdOutLogger mLogger;
+StringList mParameters;
+std::list<Repository> mRepositories;
+e_Action mAction = None;
 
 
 static size_t write_data(void *ptr, size_t size, size_t nmemb, void *stream)
@@ -110,15 +124,45 @@ void init()
 {
 	// put initialization stuff here
 
-	Repository base_prerelease("ticketsharing_prerelease");
-	base_prerelease.setURL("https://michaeladelmann.ticketsharing.net/repo/prerelease");
+	loadConfig();
+}
 
-	mRepositories.push_back(base_prerelease);
+void loadConfig()
+{
+	std::string filename = "tmp/config.json";
 
-	Repository base_stable("ticketsharing_stable");
-	base_stable.setURL("https://michaeladelmann.ticketsharing.net/repo/stable");
+	// load contents of filename into Json::Value
+	std::fstream stream;
+	stream.open(filename.c_str(), std::ios::in);	// open for reading
+	std::string data((std::istreambuf_iterator<char>(stream)), std::istreambuf_iterator<char>());	// read stream
+	stream.close();
 
-	mRepositories.push_back(base_stable);
+	Json::Value config = Json::Parser::parse(data);
+	if ( config.isMember("repositories") ) {
+		int count = 0;
+		Json::Value::Members repos = config["repositories"].members();
+
+		for ( Json::Value::Members::const_iterator repoIt = repos.begin(); repoIt != repos.end(); ++repoIt, ++count ) {
+			Json::Value entry = (*repoIt);
+
+			if ( !entry.isMember("name") ) {
+				std::cout << "invalid repository: entry " << count << std::endl;
+				continue;
+			}
+			std::string name_short = entry["name"].asString();
+
+			if ( !entry.isMember("url") ) {
+				std::cout << "invalid repository: entry " << count << std::endl;
+				continue;
+			}
+			std::string url = entry["url"].asString();
+
+			Repository repository(name_short);
+			repository.setURL(url);
+
+			mRepositories.push_back(repository);
+		}
+	}
 }
 
 void printUsage()
@@ -145,45 +189,34 @@ void printVersion()
 
 void processParameters(int argc, const char* argv[])
 {
-	StringList params;
+	for ( int i = 1; i < argc; i++ ) {
+		if ( Utils::Tools::StringCompare(argv[i], "help") ) {
+			mAction = Help;
+		}
+		else if ( Utils::Tools::StringCompare(argv[i], "install") ) {
+			mAction = Install;
+		}
+		else if ( Utils::Tools::StringCompare(argv[i], "list") ) {
+			mAction = List;
+		}
+		else if ( Utils::Tools::StringCompare(argv[i], "remove") ) {
+			mAction = Remove;
+		}
+		else if ( Utils::Tools::StringCompare(argv[i], "search") ) {
+			mAction = Search;
+		}
+		else if ( Utils::Tools::StringCompare(argv[i], "update") ) {
+			mAction = Update;
+		}
+		else if ( Utils::Tools::StringCompare(argv[i], "upgrade") ) {
+			mAction = Upgrade;
+		}
+		else if ( Utils::Tools::StringCompare(argv[i], "version") ) {
+			printVersion();
 
-	if ( argc > 1 ) {
-		for ( int i = 1; i < argc; i++ ) {
-			if ( Utils::Tools::StringCompare(argv[i], "help") ) {
-				printUsage();
-
-				exit(0);
-			}
-			else if ( Utils::Tools::StringCompare(argv[i], "install") ) {
-				// TODO: install
-			}
-			else if ( Utils::Tools::StringCompare(argv[i], "list") ) {
-				// TODO: list
-			}
-			else if ( Utils::Tools::StringCompare(argv[i], "remove") ) {
-				// TODO: remove
-			}
-			else if ( Utils::Tools::StringCompare(argv[i], "search") ) {
-				return search(params);
-			}
-			else if ( Utils::Tools::StringCompare(argv[i], "update") ) {
-				return update();
-			}
-			else if ( Utils::Tools::StringCompare(argv[i], "upgrade") ) {
-				return upgrade();
-			}
-			else if ( Utils::Tools::StringCompare(argv[i], "version") ) {
-				printVersion();
-
-				exit(0);
-			}
+			exit(0);
 		}
 	}
-
-	// no parameters found
-	printUsage();
-
-	exit(0);
 }
 
 void search(const StringList& params)
@@ -193,12 +226,7 @@ void search(const StringList& params)
 
 void update()
 {
-	// TODO: implement update
-	// (1) download <URL>/<branch>/index/index.json
-	// (2) compare new index.json with local module information:
-	//     find all folders in local <repo> folder and compare their corresponding <repo>/list/<module>_<*>.json [version] field
-	//     with the version in the index.json file
-	// (3) list all outdated modules
+	// download <URL>/<branch>/index.json
 
 	std::cout << "Updating..." << std::endl;
 
@@ -207,7 +235,7 @@ void update()
 
 		bool result = download(it->getURL() + "/index.json", filename);
 		if ( result ) {
-			std::cout << "Successfully updated index for " << it->getURL() << std::endl;
+			std::cout << "Updated index for " << it->getURL() << std::endl;
 		}
 		else {
 			std::cout << "!!! Error while updating index for " << it->getURL() << std::endl;
@@ -217,6 +245,11 @@ void update()
 
 void upgrade()
 {
+	// (1) compare new index.json with local module information:
+	//     find all folders in local <repo> folder and compare their corresponding <repo>/list/<module>.json [version] field
+	//     with the version in the index.json file
+	// (2) list all outdated modules
+
 	std::set<std::string> outdatedModules;
 
 	for ( std::list<Repository>::iterator repoIt = mRepositories.begin(); repoIt != mRepositories.end(); ++repoIt ) {
@@ -270,9 +303,27 @@ int main(int argc, const char* argv[])
 	// Memory leak detection
 #endif
 
+	processParameters(argc, argv);
+
+	if ( mAction == Help || mAction == None ) {
+		printUsage();
+
+		return 0;
+	}
+
 	init();
 
-	processParameters(argc, argv);
+	switch ( mAction ) {
+		case Help:
+		case None:
+		case Install:
+		case List:
+		case Remove:
+		case Search:
+			break;
+		case Update: update(); break;
+		case Upgrade: upgrade(); break;
+	}
 
 	return 0;
 }
