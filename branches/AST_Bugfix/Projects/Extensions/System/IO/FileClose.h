@@ -13,6 +13,7 @@
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
+#include <Tools/Strings.h>
 #include "Defines.h"
 
 // Forward declarations
@@ -47,7 +48,7 @@ public:
 
 			std::string param_handle = (*it++).value().toStdString();
 
-			int handle = Tools::stringToInt(param_handle);
+			int handle = Utils::Tools::stringToInt(param_handle);
 			if ( mFileHandles.find(handle) == mFileHandles.end() ) {
 				throw Runtime::Exceptions::RuntimeException("invalid file handle");
 			}

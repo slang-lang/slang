@@ -15,6 +15,7 @@
 #include <Core/Runtime/Script.h>
 #include <Core/Tools.h>
 #include <Tools/Files.h>
+#include <Tools/Strings.h>
 #include <Utils.h>
 #include "Controller.h"
 
@@ -190,7 +191,7 @@ void VirtualMachine::init()
 			std::string left;
 			std::string right;
 
-			Tools::splitBy(path, ':', left, right);
+			Utils::Tools::splitBy(path, ':', left, right);
 			addLibraryFolder(left);
 
 			path = right;

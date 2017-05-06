@@ -9,6 +9,7 @@
 #include <Core/Consts.h>
 #include <Core/Interfaces/IScope.h>
 #include <Core/Tools.h>
+#include <Tools/Strings.h>
 
 // Namespace declarations
 
@@ -650,16 +651,16 @@ Runtime::AtomicValue Parser::parseValueInitialization(TokenIterator& token)
 				throw Common::Exceptions::SyntaxError("unexpected token '" + token->content() + "'", token->position());
 			}
 
-			value = Tools::stringToBool(token->content());
+			value = Utils::Tools::stringToBool(token->content());
 			break;
 		case Token::Type::CONST_DOUBLE:
-			value = Tools::stringToDouble(sign + token->content());
+			value = Utils::Tools::stringToDouble(sign + token->content());
 			break;
 		case Token::Type::CONST_FLOAT:
-			value = Tools::stringToFloat(sign + token->content());
+			value = Utils::Tools::stringToFloat(sign + token->content());
 			break;
 		case Token::Type::CONST_INTEGER:
-			value = Tools::stringToInt(sign + token->content());
+			value = Utils::Tools::stringToInt(sign + token->content());
 			break;
 		case Token::Type::CONST_LITERAL:
 			if ( !sign.empty() ) {

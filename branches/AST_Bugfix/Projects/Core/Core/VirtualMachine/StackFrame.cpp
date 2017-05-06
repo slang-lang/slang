@@ -8,6 +8,7 @@
 #include <Core/Common/Method.h>
 #include <Core/Common/Namespace.h>
 #include <Core/Tools.h>
+#include <Tools/Strings.h>
 
 // Namespace declarations
 
@@ -86,7 +87,7 @@ Runtime::Object& StackFrame::returnValue()
 
 std::string StackFrame::toString() const
 {
-	std::string result = "Frame " + Tools::toString(mLevel) + ": ";
+	std::string result = "Frame " + Utils::Tools::toString(mLevel) + ": ";
 
 	switch ( mScope->getScopeType() ) {
 		case IScope::IType::MethodScope:

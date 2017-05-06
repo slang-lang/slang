@@ -23,6 +23,7 @@
 #include <Core/Runtime/TypeCast.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
+#include <Tools/Strings.h>
 #include <Utils.h>
 
 // AST includes
@@ -490,19 +491,19 @@ Node* TreeGenerator::parseTerm(TokenIterator& start)
 
 	switch ( start->type() ) {
 		case Token::Type::CONST_BOOLEAN: {
-			term = new BooleanLiteralExpression(Tools::stringToBool(start->content()));
+			term = new BooleanLiteralExpression(Utils::Tools::stringToBool(start->content()));
 			++start;
 		} break;
 		case Token::Type::CONST_DOUBLE: {
-			term = new DoubleLiteralExpression(Tools::stringToDouble(start->content()));
+			term = new DoubleLiteralExpression(Utils::Tools::stringToDouble(start->content()));
 			++start;
 		} break;
 		case Token::Type::CONST_FLOAT: {
-			term = new FloatLiteralExpression(Tools::stringToFloat(start->content()));
+			term = new FloatLiteralExpression(Utils::Tools::stringToFloat(start->content()));
 			++start;
 		} break;
 		case Token::Type::CONST_INTEGER: {
-			term = new IntegerLiteralExpression(Tools::stringToInt(start->content()));
+			term = new IntegerLiteralExpression(Utils::Tools::stringToInt(start->content()));
 			++start;
 		} break;
 		case Token::Type::CONST_LITERAL: {

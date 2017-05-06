@@ -23,24 +23,6 @@ namespace Runtime {
 	class Object;
 }
 
-namespace Tools {
-
-
-	void split(const std::string& str, std::string& p, std::string& c);
-	void splitBy(const std::string& str, char splitter, std::string& p, std::string& c);
-
-	bool stringToBool(const std::string& value);
-	double stringToDouble(const std::string& value);
-	float stringToFloat(const std::string& value);
-	int stringToInt(const std::string& value);
-
-	template <class T> inline std::string toString(const T& t) {
-		std::stringstream ss; ss << t; return ss.str();
-	}
-
-
-}
-
 
 void expect(Token::Type::E expected, const TokenIterator& found);
 

@@ -20,6 +20,7 @@
 
 // Extension includes
 #include <Extensions.h>
+#include <Tools/Strings.h>
 
 
 namespace ObjectiveScript {
@@ -186,7 +187,7 @@ Symbol* RemoteClient::getSymbol(std::string name) const
 			return 0;
 		}
 
-		Tools::split(name, parent, child);
+		Utils::Tools::split(name, parent, child);
 
 		if ( !parent.empty() && !child.empty() ) {
 			scope = dynamic_cast<ObjectiveScript::Runtime::Object*>(scope->resolve(parent, false));

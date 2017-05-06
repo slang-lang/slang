@@ -6,6 +6,7 @@
 
 // Project includes
 #include <Core/Tools.h>
+#include <Tools/Strings.h>
 
 // Namespace declarations
 
@@ -176,7 +177,7 @@ bool AtomicValue::toBool() const
 		case Type::DOUBLE: return (mValue.double_ != 0.0);
 		case Type::FLOAT: return (mValue.float_ != 0.f);
 		case Type::INT: return (mValue.int_ != 0);
-		case Type::STRING: return Tools::stringToBool(mStringValue);
+		case Type::STRING: return Utils::Tools::stringToBool(mStringValue);
 		case Type::UINT: return (mValue.uint_ != 0);
 		default: break;
 	}
@@ -192,7 +193,7 @@ double AtomicValue::toDouble() const
 		case Type::DOUBLE: return mValue.double_;
 		case Type::FLOAT: return (double)mValue.float_;
 		case Type::INT: return (double)mValue.int_;
-		case Type::STRING: return Tools::stringToDouble(mStringValue);
+		case Type::STRING: return Utils::Tools::stringToDouble(mStringValue);
 		case Type::UINT: return (double)mValue.uint_;
 		default: break;
 	}
@@ -208,7 +209,7 @@ float AtomicValue::toFloat() const
 		case Type::DOUBLE: return (float)mValue.double_;
 		case Type::FLOAT: return mValue.float_;
 		case Type::INT: return (float)mValue.int_;
-		case Type::STRING: return Tools::stringToFloat(mStringValue);
+		case Type::STRING: return Utils::Tools::stringToFloat(mStringValue);
 		case Type::UINT: return (float)mValue.uint_;
 		default: break;
 	}
@@ -224,7 +225,7 @@ int AtomicValue::toInt() const
 		case Type::DOUBLE: return (int)mValue.double_;
 		case Type::FLOAT: return (int)mValue.float_;
 		case Type::INT: return mValue.int_;
-		case Type::STRING: return Tools::stringToInt(mStringValue);
+		case Type::STRING: return Utils::Tools::stringToInt(mStringValue);
 		case Type::UINT: return (int)mValue.uint_;
 		default: break;
 	}
@@ -236,12 +237,12 @@ int AtomicValue::toInt() const
 std::string AtomicValue::toStdString() const
 {
 	switch ( mType ) {
-		case Type::BOOL: return Tools::toString(mValue.bool_);
-		case Type::DOUBLE: return Tools::toString(mValue.double_);
-		case Type::FLOAT: return Tools::toString(mValue.float_);
-		case Type::INT: return Tools::toString(mValue.int_);
+		case Type::BOOL: return Utils::Tools::toString(mValue.bool_);
+		case Type::DOUBLE: return Utils::Tools::toString(mValue.double_);
+		case Type::FLOAT: return Utils::Tools::toString(mValue.float_);
+		case Type::INT: return Utils::Tools::toString(mValue.int_);
 		case Type::STRING: return mStringValue;
-		case Type::UINT: return Tools::toString(mValue.uint_);
+		case Type::UINT: return Utils::Tools::toString(mValue.uint_);
 		default: break;
 	}
 
@@ -256,7 +257,7 @@ unsigned int AtomicValue::toUInt() const
 		case Type::DOUBLE: return (unsigned int)mValue.double_;
 		case Type::FLOAT: return (unsigned int)mValue.float_;
 		case Type::INT: return (unsigned int)mValue.int_;
-		case Type::STRING: return (unsigned int)Tools::stringToInt(mStringValue);
+		case Type::STRING: return (unsigned int)Utils::Tools::stringToInt(mStringValue);
 		case Type::UINT: return mValue.uint_;
 		default: break;
 	}

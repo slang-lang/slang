@@ -49,7 +49,7 @@ public:
 
 			MYSQL_RES *myResult = mMysqlResults[param_handle];
 			if ( !myResult ) {
-				throw Common::Exceptions::Exception("no valid result handle: " + Tools::toString(param_handle));
+				throw Common::Exceptions::Exception("no valid result handle: " + Utils::Tools::toString(param_handle));
 			}
 
 			std::string my_result;

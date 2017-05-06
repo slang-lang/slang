@@ -12,6 +12,7 @@
 
 // Project includes
 #include <Common/StdOutLogger.h>
+#include <Core/Consts.h>
 #include <Core/Types.h>
 #include <Tools/Files.h>
 #include <Tools/Strings.h>
@@ -67,6 +68,7 @@ void search(const StringList& params);
 void update();
 void upgrade();
 
+std::string mBaseFolder;
 StringList mDownloadedFiles;
 Repository mLocalRepository("local");
 Utils::Common::StdOutLogger mLogger;
@@ -210,6 +212,22 @@ bool download(const std::string& url, const std::string& target)
 void init()
 {
 	// put initialization stuff here
+
+	const char* homepath = getenv(OBJECTIVESCRIPT_LIBRARY);
+	if ( homepath ) {
+		std::string path = std::string(homepath);
+
+		// only read first entry
+		if ( !path.empty() ) {
+			std::string left;
+			std::string right;
+
+			Utils::Tools::splitBy(path, ':', left, right);
+			mBaseFolder = left;
+
+			path = right;
+		}
+	}
 
 	loadConfig();
 }

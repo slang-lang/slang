@@ -47,7 +47,7 @@ public:
 
 			MYSQL_RES *myResult = mMysqlResults[param_handle];
 			if ( !myResult ) {
-				throw Common::Exceptions::Exception("no valid mysql connection handle: " + Tools::toString(param_handle));
+				throw Common::Exceptions::Exception("no valid mysql connection handle: " + Utils::Tools::toString(param_handle));
 			}
 
 			*result = Runtime::IntegerObject(

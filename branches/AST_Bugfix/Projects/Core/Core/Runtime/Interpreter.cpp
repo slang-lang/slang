@@ -26,6 +26,7 @@
 #include <Core/VirtualMachine/Stack.h>
 #include <Debugger/Debugger.h>
 #include <Tools/Printer.h>
+#include <Tools/Strings.h>
 #include <Utils.h>
 
 // Namespace declarations
@@ -784,22 +785,22 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 {
 	switch ( start->type() ) {
 		case Token::Type::CONST_BOOLEAN: {
-			BoolObject tmp(Tools::stringToBool(start->content()));
+			BoolObject tmp(Utils::Tools::stringToBool(start->content()));
 			operator_binary_assign(result, &tmp);
 			++start;
 		} break;
 		case Token::Type::CONST_DOUBLE: {
-			DoubleObject tmp(Tools::stringToDouble(start->content()));
+			DoubleObject tmp(Utils::Tools::stringToDouble(start->content()));
 			operator_binary_assign(result, &tmp);
 			++start;
 		} break;
 		case Token::Type::CONST_FLOAT: {
-			FloatObject tmp(Tools::stringToFloat(start->content()));
+			FloatObject tmp(Utils::Tools::stringToFloat(start->content()));
 			operator_binary_assign(result, &tmp);
 			++start;
 		} break;
 		case Token::Type::CONST_INTEGER: {
-			IntegerObject tmp(Tools::stringToInt(start->content()));
+			IntegerObject tmp(Utils::Tools::stringToInt(start->content()));
 			operator_binary_assign(result, &tmp);
 			++start;
 		} break;
