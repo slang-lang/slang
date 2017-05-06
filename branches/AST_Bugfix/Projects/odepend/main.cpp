@@ -66,6 +66,7 @@ bool download(const std::string& url, const std::string& target);
 void init();
 void install(const StringList& params);
 void installModule(const std::string& repo, const std::string& module);
+void list();
 void loadConfig();
 void prepareModuleInstallation(const std::string& repo, const std::string& moduleName);
 void readJsonFile(const std::string& filename, Json::Value& result);
@@ -130,7 +131,8 @@ void checkOutdatedModules(std::set<std::string>& outdatedModules)
 void cleanCache()
 {
 	// delete all downloaded files from cache
-	std::cout << "Cleaning cache..." << std::endl;
+
+	//std::cout << "Cleaning cache..." << std::endl;
 
 	for ( StringList::const_iterator it = mDownloadedFiles.begin(); it != mDownloadedFiles.end(); ++it ) {
 		std::string command = "rm " + (*it);
@@ -172,7 +174,7 @@ void collectLocalModuleData()
 
 	while ( entry ) {
 		if ( entry->d_type == DT_DIR ) {
-			std::string filename = "/module.json";;
+			std::string filename = "/module.json";
 			std::string path = base + std::string(entry->d_name);
 
 			if ( ::Utils::Tools::Files::exists(path + "/" + filename) ) {
@@ -409,6 +411,19 @@ void installModule(const std::string& repo, const std::string& module)
 	}
 }
 
+void list()
+{
+	collectLocalModuleData();
+
+	Repository::Modules local = mLocalRepository.getModules();
+
+	std::cout << local.size() << " module(s) installed." << std::endl;
+
+	for ( Repository::Modules::const_iterator localIt = local.begin(); localIt != local.end(); ++localIt ) {
+		std::cout << localIt->mShortName << "(" << localIt->mVersion << "): " << localIt->mLongName << std::endl;
+	}
+}
+
 void loadConfig()
 {
 	std::string filename = mBaseFolder + "/config.json";
@@ -449,7 +464,7 @@ void printUsage()
 	std::cout << std::endl;
 	std::cout << "help                       This help" << std::endl;
 	std::cout << "install                    Install new module" << std::endl;
-	std::cout << "list                       List all available modules" << std::endl;
+	std::cout << "list                       List all installed modules" << std::endl;
 	std::cout << "remove                     Remove an installed module" << std::endl;
 	std::cout << "search                     Search for a module" << std::endl;
 	std::cout << "update                     Update repository indices" << std::endl;
@@ -673,7 +688,7 @@ int main(int argc, const char* argv[])
 	switch ( mAction ) {
 		case Help: printUsage(); break;
 		case Install: install(mParameters); break;
-		case List: break;
+		case List: list(); break;
 		case None: break;
 		case Remove: remove(mParameters); break;
 		case Search: search(mParameters); break;
