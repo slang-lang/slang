@@ -20,7 +20,7 @@
 #include "Repository.h"
 
 // Namespace declarations
-using namespace ObjectiveScript;
+
 
 #ifdef __APPLE__
 #elif defined _WIN32
@@ -58,7 +58,7 @@ enum e_Action {
 void checkOutdatedModules(std::set<std::string>& modules);
 Dependencies collectDependencies(const Json::Value& dependencies);
 void collectLocalModuleData();
-void collectModuleData(const std::string& path, const std::string& filename);
+Module collectModuleData(const std::string& path, const std::string& filename);
 void createBasicFolderStructur();
 void deinit();
 bool download(const std::string& url, const std::string& target);
@@ -66,6 +66,7 @@ void init();
 void install(const StringList& params);
 void installModule(const std::string& repo, const std::string& module);
 void loadConfig();
+void prepareModuleInstallation(const std::string& repo, const std::string& moduleName);
 void readJsonFile(const std::string& filename, Json::Value& result);
 void remove(const StringList& params);
 void search(const StringList& params);
@@ -76,6 +77,7 @@ std::string mBaseFolder;
 StringList mDownloadedFiles;
 Repository mLocalRepository("local");
 Utils::Common::StdOutLogger mLogger;
+Repository mMissingDependencies("missing");
 StringList mParameters;
 std::list<Repository> mRepositories;
 e_Action mAction = None;
@@ -125,11 +127,17 @@ void checkOutdatedModules(std::set<std::string>& outdatedModules)
 
 Dependencies collectDependencies(const Json::Value& dependencies)
 {
-	(void)dependencies;
-
 	Dependencies result;
 
-	// TODO: collect dependencies
+	for ( Json::Value::Members::const_iterator depIt = dependencies.members().begin(); depIt != dependencies.members().end(); ++depIt ) {
+		std::string moduleName = (*depIt)["module"].asString();
+		std::string version_max = depIt->isMember("version_max") ? (*depIt)["version_max"].asString() : "";
+		std::string version_min = (*depIt)["version_min"].asString();
+
+		result.insert(
+			Dependency(moduleName, version_min, version_max)
+		);
+	}
 
 	return result;
 }
@@ -154,7 +162,9 @@ void collectLocalModuleData()
 			std::string path = base + std::string(entry->d_name);
 
 			if ( ::Utils::Tools::Files::exists(path + "/" + filename) ) {
-				collectModuleData(path, filename);
+				mLocalRepository.addModule(
+					collectModuleData(path, filename)
+				);
 			}
 		}
 
@@ -164,7 +174,7 @@ void collectLocalModuleData()
 	closedir(dir);
 }
 
-void collectModuleData(const std::string& path, const std::string& filename)
+Module collectModuleData(const std::string& path, const std::string& filename)
 {
 	//std::cout << "Collecting module data from " << path << std::endl;
 
@@ -183,7 +193,7 @@ void collectModuleData(const std::string& path, const std::string& filename)
 	module.mLongName = name_long;
 	module.mVersion = version;
 
-	mLocalRepository.addModule(module);
+	return module;
 }
 
 void createBasicFolderStructur()
@@ -268,7 +278,7 @@ void init()
 {
 	// put initialization stuff here
 
-	const char* homepath = getenv(OBJECTIVESCRIPT_LIBRARY);
+	const char* homepath = getenv(ObjectiveScript::OBJECTIVESCRIPT_LIBRARY);
 	if ( homepath ) {
 		std::string path = std::string(homepath);
 
@@ -290,13 +300,31 @@ void init()
 
 void install(const StringList& params)
 {
+	// (1) prepare dependencies
+	// (2) install missing dependencies
+	// (3) installed requested modules
+
 	if ( mParameters.empty() ) {
 		std::cout << "invalid number of parameters!" << std::endl;
 		return;
 	}
 
+	std::cout << "Preparing dependencies..." << std::endl;
+
 	for ( StringList::const_iterator it = params.begin(); it != params.end(); ++it ) {
-		installModule("https://michaeladelmann.ticketsharing.net/repo/stable", (*it));
+		prepareModuleInstallation("https://michaeladelmann.ticketsharing.net/repo/stable", (*it));
+	}
+
+	// add all other requested modules to missing modules to prevent multiple installations of the same modules
+	for ( StringList::const_iterator it = params.begin(); it != params.end(); ++it ) {
+		mMissingDependencies.addModule(
+			Module((*it), "")
+		);
+	}
+
+	Repository::Modules missing = mMissingDependencies.getModules();
+	for ( Repository::Modules::const_iterator moduleIt = missing.begin(); moduleIt != missing.end(); ++moduleIt ) {
+		installModule("https://michaeladelmann.ticketsharing.net/repo/stable", moduleIt->mShortName);
 	}
 }
 
@@ -306,9 +334,8 @@ void installModule(const std::string& repo, const std::string& module)
 
 	std::string module_config = mBaseFolder + "/cache/modules/" + module + ".json";
 
-	bool result = download(repo + "/modules/" + module + ".json", module_config);
-	if ( !result ) {
-		std::cout << "!!! Download of module information for '" << module << "' failed" << std::endl;
+	if ( !Utils::Tools::Files::exists(module_config) ) {
+		std::cout << "!!! Module information missing for module '" << module << "'" << std::endl;
 		return;
 	}
 
@@ -345,7 +372,7 @@ void installModule(const std::string& repo, const std::string& module)
 
 	std::string module_archive = mBaseFolder + "/cache/modules/" + module + "_" + config["version"].asString() + ".tar.gz";
 
-	result = download(url, module_archive);
+	bool result = download(url, module_archive);
 	if ( !result ) {
 		std::cout << "!!! Failed to download target" << std::endl;
 		return;
@@ -359,7 +386,7 @@ void installModule(const std::string& repo, const std::string& module)
 	}
 
 	{	// copy module config to "<module>/module.json"
-		std::string command = "cp " + module_config + " " + mBaseFolder + "/modules/" + module + "/module.json";
+		std::string command = "mv " + module_config + " " + mBaseFolder + "/modules/" + module + "/module.json";
 		//std::cout << "command = " << command << std::endl;
 
 		system(command.c_str());
@@ -460,9 +487,55 @@ void processParameters(int argc, const char* argv[])
 	}
 }
 
+void prepareModuleInstallation(const std::string& repo, const std::string& moduleName)
+{
+	//std::cout << "Preparing module '" << moduleName << "' from '" << repo << "'..." << std::endl;
+
+	// (1) download module information from repository
+	// (2) collect dependencies from module information
+	// (3) check dependencies against local repository and download module information for missing modules
+
+	std::string path = mBaseFolder + "/cache/modules/";
+	std::string filename = moduleName + ".json";
+	std::string module_config = path + filename;
+
+	bool result = download(repo + "/modules/" + moduleName + ".json", module_config);
+	if ( !result ) {
+		std::cout << "!!! Download of module information for '" << moduleName << "' failed" << std::endl;
+		return;
+	}
+
+	Module module = collectModuleData(path, filename);
+
+	Repository::Modules local = mLocalRepository.getModules();
+	for ( Dependencies::const_iterator depIt = module.mDependencies.begin(); depIt != module.mDependencies.end(); ++depIt ) {
+		bool found = false;
+
+		// look up dependency in already installed modules
+		for ( Repository::Modules::const_iterator localIt = local.begin(); localIt != local.end(); ++localIt ) {
+			if ( localIt->mShortName == depIt->mModule ) {
+				found = true;
+				break;
+			}
+		}
+
+		if ( !found ) {
+			// dependee module is not yet installed
+			std::cout << "Need to install dependend module '" << depIt->mModule << "'" << std::endl;
+
+			Module dependee(depIt->mModule, depIt->mMinVersion);
+
+			mMissingDependencies.addModule(dependee);
+
+			prepareModuleInstallation(repo, dependee.mShortName);
+		}
+	}
+}
+
 void readJsonFile(const std::string& filename, Json::Value& result)
 {
 	// load contents of filename into Json::Value
+
 	std::fstream stream;
 	stream.open(filename.c_str(), std::ios::in);	// open for reading
 	std::string data((std::istreambuf_iterator<char>(stream)), std::istreambuf_iterator<char>());	// read stream
@@ -475,6 +548,11 @@ void remove(const StringList& params)
 {
 	// (1) check if the requested modules are actually installed
 	// (2) remove them by deleting their complete directory
+
+	if ( mParameters.empty() ) {
+		std::cout << "invalid number of parameters!" << std::endl;
+		return;
+	}
 
 	collectLocalModuleData();
 

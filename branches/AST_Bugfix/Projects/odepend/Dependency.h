@@ -17,7 +17,7 @@
 class Dependency
 {
 public:
-	Dependency(const std::string& module, const std::string& version_min, const std::string& version_max = "")
+	Dependency(const std::string& module, const std::string& version_min, const std::string& version_max)
 	: mMaxVersion(version_max),
 	  mMinVersion(version_min),
 	  mModule(module)

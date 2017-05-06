@@ -27,6 +27,7 @@ public:
 
 public:
 	void addModule(const Module& module);
+	bool contains(const Module& module) const;
 
 public:
 	const Modules& getModules() const;

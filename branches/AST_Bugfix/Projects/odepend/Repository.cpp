@@ -24,7 +24,23 @@ Repository::~Repository()
 
 void Repository::addModule(const Module& module)
 {
+	if ( contains(module) ) {
+		// prevent duplicates
+		return;
+	}
+
 	mModules.insert(module);
+}
+
+bool Repository::contains(const Module& module) const
+{
+	for ( Modules::const_iterator it = mModules.begin(); it != mModules.end(); ++it ) {
+		if ( it->mShortName == module.mShortName ) {
+			return true;
+		}
+	}
+
+	return false;
 }
 
 const Repository::Modules& Repository::getModules() const
