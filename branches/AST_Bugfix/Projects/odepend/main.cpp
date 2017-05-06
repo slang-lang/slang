@@ -62,7 +62,7 @@ void collectLocalModuleData();
 Module collectModuleData(const std::string& path, const std::string& filename);
 void createBasicFolderStructur();
 void deinit();
-bool download(const std::string& url, const std::string& target);
+bool download(const std::string& url, const std::string& target, bool allowCleanup = true);
 void init();
 void install(const StringList& params);
 void installModule(const std::string& repo, const std::string& module);
@@ -244,7 +244,7 @@ void deinit()
 	// put de-initialization stuff here
 }
 
-bool download(const std::string& url, const std::string& target)
+bool download(const std::string& url, const std::string& target, bool allowCleanup)
 {
 	CURL *curl_handle;
 	FILE *pagefile;
@@ -279,7 +279,9 @@ bool download(const std::string& url, const std::string& target)
 		/* close the header file */
 		fclose(pagefile);
 
-		mDownloadedFiles.push_back(target);
+		if ( allowCleanup ) {
+			mDownloadedFiles.push_back(target);
+		}
 
 		result = true;
 	}
@@ -627,7 +629,7 @@ void update()
 		std::string filename = mBaseFolder + "/cache/repositories/" + it->getName() + "_index.json";
 		std::string url = it->getURL() + "/index.json";
 
-		bool result = download(url, filename);
+		bool result = download(url, filename, false);
 		if ( result ) {
 			std::cout << "Updated index for " << it->getURL() << std::endl;
 		}
