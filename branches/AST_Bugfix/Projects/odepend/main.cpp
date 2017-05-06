@@ -56,6 +56,7 @@ enum e_Action {
 
 
 void checkOutdatedModules(std::set<std::string>& modules);
+void cleanCache();
 Dependencies collectDependencies(const Json::Value& dependencies);
 void collectLocalModuleData();
 Module collectModuleData(const std::string& path, const std::string& filename);
@@ -72,6 +73,7 @@ void remove(const StringList& params);
 void search(const StringList& params);
 void update();
 void upgrade();
+
 
 std::string mBaseFolder;
 StringList mDownloadedFiles;
@@ -122,6 +124,18 @@ void checkOutdatedModules(std::set<std::string>& outdatedModules)
 				}
 			}
 		}
+	}
+}
+
+void cleanCache()
+{
+	// delete all downloaded files from cache
+	std::cout << "Cleaning cache..." << std::endl;
+
+	for ( StringList::const_iterator it = mDownloadedFiles.begin(); it != mDownloadedFiles.end(); ++it ) {
+		std::string command = "rm " + (*it);
+
+		system(command.c_str());
 	}
 }
 
@@ -309,6 +323,8 @@ void install(const StringList& params)
 		return;
 	}
 
+	collectLocalModuleData();
+
 	std::cout << "Preparing dependencies..." << std::endl;
 
 	for ( StringList::const_iterator it = params.begin(); it != params.end(); ++it ) {
@@ -386,7 +402,7 @@ void installModule(const std::string& repo, const std::string& module)
 	}
 
 	{	// copy module config to "<module>/module.json"
-		std::string command = "mv " + module_config + " " + mBaseFolder + "/modules/" + module + "/module.json";
+		std::string command = "cp " + module_config + " " + mBaseFolder + "/modules/" + module + "/module.json";
 		//std::cout << "command = " << command << std::endl;
 
 		system(command.c_str());
@@ -666,12 +682,7 @@ int main(int argc, const char* argv[])
 		case Version: printVersion(); break;
 	}
 
-/*
-	// debug only
-	for ( StringList::const_iterator it = mDownloadedFiles.begin(); it != mDownloadedFiles.end(); ++it ) {
-		std::cout << (*it) << std::endl;
-	}
-*/
+	cleanCache();
 
 	return 0;
 }
