@@ -50,13 +50,15 @@ enum e_Action {
 	Remove,
 	Search,
 	Update,
-	Upgrade
+	Upgrade,
+	Version
 };
 
 
 void checkOutdatedModules(std::set<std::string>& modules);
 void collectLocalModuleData();
 void collectModuleData(const std::string& filename);
+void createBasicFolderStructur();
 void deinit();
 bool download(const std::string& url, const std::string& target);
 void init();
@@ -92,7 +94,7 @@ void checkOutdatedModules(std::set<std::string>& outdatedModules)
 	Repository::Modules local = mLocalRepository.getModules();
 
 	for ( std::list<Repository>::iterator repoIt = mRepositories.begin(); repoIt != mRepositories.end(); ++repoIt ) {
-		std::string filename = "tmp/cache/repositories/" + repoIt->getName() + "_index.json";
+		std::string filename = mBaseFolder + "/cache/repositories/" + repoIt->getName() + "_index.json";
 
 		// check if filename exists
 		if ( !::Utils::Tools::Files::exists(filename) ) {
@@ -123,12 +125,19 @@ void collectLocalModuleData()
 {
 	// iterate over all directories in the modules directory and collect all "module.json" files
 
-	DIR* dir = opendir("tmp/modules/");
-	struct dirent* entry = readdir(dir);
+	std::string base = mBaseFolder + "/modules/";
+
+	DIR* dir = opendir(base.c_str());
+	if ( !dir ) {
+		std::cout << "!!! Error while accessing modules directory" << std::endl;
+		return;
+	}
+
+ 	struct dirent* entry = readdir(dir);
 
 	while ( entry ) {
 		if ( entry->d_type == DT_DIR ) {
-			std::string filename = "tmp/modules/" + std::string(entry->d_name) + "/module.json";
+			std::string filename = base + std::string(entry->d_name) + "/module.json";
 
 			if ( ::Utils::Tools::Files::exists(filename) ) {
 				collectModuleData(filename);
@@ -156,6 +165,33 @@ void collectModuleData(const std::string& filename)
 	Module module(name_short, version);
 
 	mLocalRepository.addModule(module);
+}
+
+void createBasicFolderStructur()
+{
+	std::string command;
+	std::string path;
+
+	// create "<base>/cache/modules" folder
+	path = mBaseFolder + "/cache/modules/";
+	if ( !Utils::Tools::Files::exists(path) ) {
+		command = "mkdir -p " + path;
+		system(command.c_str());
+	}
+
+	// create "<base>/cache/repositories" folder
+	path = mBaseFolder + "/cache/repositories/";
+	if ( !Utils::Tools::Files::exists(path) ) {
+		command = "mkdir -p " + path;
+		system(command.c_str());
+	}
+
+	// create "<base>/modules" directory
+	path = mBaseFolder + "/modules/";
+	if ( !Utils::Tools::Files::exists(path) ) {
+		command = "mkdir " + path;
+		system(command.c_str());
+	}
 }
 
 void deinit()
@@ -223,11 +259,12 @@ void init()
 			std::string right;
 
 			Utils::Tools::splitBy(path, ':', left, right);
-			mBaseFolder = left;
 
-			path = right;
+			mBaseFolder = left;
 		}
 	}
+
+	createBasicFolderStructur();
 
 	loadConfig();
 }
@@ -246,7 +283,7 @@ void install()
 
 void installModule(const std::string& repo, const std::string& module)
 {
-	std::string module_config = "tmp/cache/modules/" + module + ".json";
+	std::string module_config = mBaseFolder + "/cache/modules/" + module + ".json";
 
 	bool result = download(repo + "/modules/" + module + ".json", module_config);
 	if ( !result ) {
@@ -285,7 +322,7 @@ void installModule(const std::string& repo, const std::string& module)
 		return;
 	}
 
-	std::string module_archive = "tmp/cache/modules/" + module + "_" + config["version"].asString() + ".tar.gz";
+	std::string module_archive = mBaseFolder + "/cache/modules/" + module + "_" + config["version"].asString() + ".tar.gz";
 
 	result = download(url, module_archive);
 	if ( !result ) {
@@ -293,24 +330,16 @@ void installModule(const std::string& repo, const std::string& module)
 		return;
 	}
 
-/*
-	{	// create module directory
-		std::string command = "mkdir tmp/modules/" + module;
-
-		system(command.c_str());
-	}
-*/
-
 	if ( type != "virtual ") {	// extract module archive to "<module>/"
-		std::string command = "tar xf " + module_archive + " -C tmp/modules/";
-		//std::cout << "command = " << command << std::endl;
+		std::string command = "tar xf " + module_archive + " -C " + mBaseFolder + "/modules/";
+		std::cout << "command = " << command << std::endl;
 
 		system(command.c_str());
 	}
 
 	{	// copy module config to "<module>/module.json"
-		std::string command = "cp " + module_config + " tmp/modules/" + module + "/module.json";
-		//std::cout << "command = " << command << std::endl;
+		std::string command = "cp " + module_config + " " + mBaseFolder + "/modules/" + module + "/module.json";
+		std::cout << "command = " << command << std::endl;
 
 		system(command.c_str());
 	}
@@ -318,7 +347,7 @@ void installModule(const std::string& repo, const std::string& module)
 
 void loadConfig()
 {
-	std::string filename = "tmp/config.json";
+	std::string filename = mBaseFolder + "/config.json";
 
 	Json::Value config;
 	readJsonFile(filename, config);
@@ -374,6 +403,8 @@ void printVersion()
 
 void processParameters(int argc, const char* argv[])
 {
+	mAction = Help;
+
 	if ( argc > 1 ) {
 		std::string arg1 = argv[1];
 
@@ -399,14 +430,7 @@ void processParameters(int argc, const char* argv[])
 			mAction = Upgrade;
 		}
 		else if ( Utils::Tools::StringCompare(arg1, "version") ) {
-			printVersion();
-
-			exit(0);
-		}
-		else {
-			printUsage();
-
-			exit(0);
+			mAction = Version;
 		}
 	}
 
@@ -438,7 +462,7 @@ void update()
 	std::cout << "Updating " << mRepositories.size()  << " repositories..." << std::endl;
 
 	for ( std::list<Repository>::iterator it = mRepositories.begin(); it != mRepositories.end(); ++it ) {
-		std::string filename = "tmp/cache/repositories/" + it->getName() + "_index.json";
+		std::string filename = mBaseFolder + "/cache/repositories/" + it->getName() + "_index.json";
 		std::string url = it->getURL() + "/index.json";
 
 		bool result = download(url, filename);
@@ -509,6 +533,7 @@ int main(int argc, const char* argv[])
 		case Install: install(); break;
 		case Update: update(); break;
 		case Upgrade: upgrade(); break;
+		case Version: printVersion(); break;
 	}
 
 	// debug only
