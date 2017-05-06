@@ -55,6 +55,13 @@ enum e_Action {
 };
 
 
+
+static const char* CACHE = "cache/";
+static const char* CACHE_MODULES = "cache/modules/";
+static const char* CACHE_REPOSITORIES = "cache/repositories/";
+static const char* MODULES = "modules/";
+
+
 void checkOutdatedModules(std::set<std::string>& modules);
 void cleanCache();
 Dependencies collectDependencies(const Json::Value& dependencies);
@@ -101,7 +108,7 @@ void checkOutdatedModules(std::set<std::string>& outdatedModules)
 	Repository::Modules local = mLocalRepository.getModules();
 
 	for ( std::list<Repository>::iterator repoIt = mRepositories.begin(); repoIt != mRepositories.end(); ++repoIt ) {
-		std::string filename = mBaseFolder + "/cache/repositories/" + repoIt->getName() + "_index.json";
+		std::string filename = mBaseFolder + CACHE_REPOSITORIES + repoIt->getName() + "_index.json";
 
 		// check if filename exists
 		if ( !::Utils::Tools::Files::exists(filename) ) {
@@ -162,7 +169,7 @@ void collectLocalModuleData()
 {
 	// iterate over all directories in the modules directory and collect all "module.json" files
 
-	std::string base = mBaseFolder + "/modules/";
+	std::string base = mBaseFolder + MODULES;
 
 	DIR* dir = opendir(base.c_str());
 	if ( !dir ) {
@@ -174,10 +181,10 @@ void collectLocalModuleData()
 
 	while ( entry ) {
 		if ( entry->d_type == DT_DIR ) {
-			std::string filename = "/module.json";
-			std::string path = base + std::string(entry->d_name);
+			std::string filename = "module.json";
+			std::string path = base + std::string(entry->d_name) + "/";
 
-			if ( ::Utils::Tools::Files::exists(path + "/" + filename) ) {
+			if ( ::Utils::Tools::Files::exists(path + filename) ) {
 				mLocalRepository.addModule(
 					collectModuleData(path, filename)
 				);
@@ -218,21 +225,21 @@ void createBasicFolderStructur()
 	std::string path;
 
 	// create "<base>/cache/modules" folder
-	path = mBaseFolder + "/cache/modules/";
+	path = mBaseFolder + CACHE_MODULES;
 	if ( !Utils::Tools::Files::exists(path) ) {
 		command = "mkdir -p " + path;
 		system(command.c_str());
 	}
 
 	// create "<base>/cache/repositories" folder
-	path = mBaseFolder + "/cache/repositories/";
+	path = mBaseFolder + CACHE_REPOSITORIES;
 	if ( !Utils::Tools::Files::exists(path) ) {
 		command = "mkdir -p " + path;
 		system(command.c_str());
 	}
 
 	// create "<base>/modules" directory
-	path = mBaseFolder + "/modules/";
+	path = mBaseFolder + MODULES;
 	if ( !Utils::Tools::Files::exists(path) ) {
 		command = "mkdir " + path;
 		system(command.c_str());
@@ -266,6 +273,8 @@ bool download(const std::string& url, const std::string& target, bool allowClean
 
 	/* send all data to this function  */
 	curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, write_data);
+
+	//std::cout << "Downloading " << url << " => " << target << std::endl;
 
 	/* open the file */
 	pagefile = fopen(target.c_str(), "wb");
@@ -307,7 +316,7 @@ void init()
 
 			Utils::Tools::splitBy(path, ':', left, right);
 
-			mBaseFolder = left;
+			mBaseFolder = left + "/";
 		}
 	}
 
@@ -331,8 +340,10 @@ void install(const StringList& params)
 
 	std::cout << "Preparing dependencies..." << std::endl;
 
+	// TODO: make sure that the repository path ends with an '/'
+
 	for ( StringList::const_iterator it = params.begin(); it != params.end(); ++it ) {
-		prepareModuleInstallation("https://michaeladelmann.ticketsharing.net/repo/stable", (*it));
+		prepareModuleInstallation("https://michaeladelmann.ticketsharing.net/repo/stable/", (*it));
 	}
 
 	// add all other requested modules to missing modules to prevent multiple installations of the same modules
@@ -344,7 +355,7 @@ void install(const StringList& params)
 
 	Repository::Modules missing = mMissingDependencies.getModules();
 	for ( Repository::Modules::const_iterator moduleIt = missing.begin(); moduleIt != missing.end(); ++moduleIt ) {
-		installModule("https://michaeladelmann.ticketsharing.net/repo/stable", moduleIt->mShortName);
+		installModule("https://michaeladelmann.ticketsharing.net/repo/stable/", moduleIt->mShortName);
 	}
 }
 
@@ -352,7 +363,7 @@ void installModule(const std::string& repo, const std::string& module)
 {
 	std::cout << "Installing module '" << module << "' from '" << repo << "'..." << std::endl;
 
-	std::string module_config = mBaseFolder + "/cache/modules/" + module + ".json";
+	std::string module_config = mBaseFolder + CACHE_MODULES + module + ".json";
 
 	if ( !Utils::Tools::Files::exists(module_config) ) {
 		std::cout << "!!! Module information missing for module '" << module << "'" << std::endl;
@@ -380,7 +391,7 @@ void installModule(const std::string& repo, const std::string& module)
 			return;
 		}
 
-		url = repo + "/modules/" + config["target"]["url"].asString();
+		url = repo + MODULES + config["target"]["url"].asString();
 	}
 	else if ( type == "virtual" ) {
 		// no url
@@ -390,7 +401,7 @@ void installModule(const std::string& repo, const std::string& module)
 		return;
 	}
 
-	std::string module_archive = mBaseFolder + "/cache/modules/" + module + "_" + config["version"].asString() + ".tar.gz";
+	std::string module_archive = mBaseFolder + CACHE_MODULES + module + "_" + config["version"].asString() + ".tar.gz";
 
 	bool result = download(url, module_archive);
 	if ( !result ) {
@@ -399,14 +410,14 @@ void installModule(const std::string& repo, const std::string& module)
 	}
 
 	if ( type != "virtual ") {	// extract module archive to "<module>/"
-		std::string command = "tar xf " + module_archive + " -C " + mBaseFolder + "/modules/";
+		std::string command = "tar xf " + module_archive + " -C " + mBaseFolder + MODULES;
 		//std::cout << "command = " << command << std::endl;
 
 		system(command.c_str());
 	}
 
 	{	// copy module config to "<module>/module.json"
-		std::string command = "cp " + module_config + " " + mBaseFolder + "/modules/" + module + "/module.json";
+		std::string command = "cp " + module_config + " " + mBaseFolder + MODULES + module + "/module.json";
 		//std::cout << "command = " << command << std::endl;
 
 		system(command.c_str());
@@ -528,11 +539,11 @@ void prepareModuleInstallation(const std::string& repo, const std::string& modul
 	// (2) collect dependencies from module information
 	// (3) check dependencies against local repository and download module information for missing modules
 
-	std::string path = mBaseFolder + "/cache/modules/";
+	std::string path = mBaseFolder + CACHE_MODULES;
 	std::string filename = moduleName + ".json";
 	std::string module_config = path + filename;
 
-	bool result = download(repo + "/modules/" + moduleName + ".json", module_config);
+	bool result = download(repo + "/" + MODULES + moduleName + ".json", module_config);
 	if ( !result ) {
 		std::cout << "!!! Download of module information for '" << moduleName << "' failed" << std::endl;
 		return;
@@ -626,7 +637,7 @@ void update()
 	std::cout << "Updating " << mRepositories.size()  << " repositories..." << std::endl;
 
 	for ( std::list<Repository>::iterator it = mRepositories.begin(); it != mRepositories.end(); ++it ) {
-		std::string filename = mBaseFolder + "/cache/repositories/" + it->getName() + "_index.json";
+		std::string filename = mBaseFolder + CACHE_REPOSITORIES + it->getName() + "_index.json";
 		std::string url = it->getURL() + "/index.json";
 
 		bool result = download(url, filename, false);
