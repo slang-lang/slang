@@ -56,16 +56,18 @@ enum e_Action {
 
 
 void checkOutdatedModules(std::set<std::string>& modules);
+Dependencies collectDependencies(const Json::Value& dependencies);
 void collectLocalModuleData();
-void collectModuleData(const std::string& filename);
+void collectModuleData(const std::string& path, const std::string& filename);
 void createBasicFolderStructur();
 void deinit();
 bool download(const std::string& url, const std::string& target);
 void init();
-void install();
+void install(const StringList& params);
 void installModule(const std::string& repo, const std::string& module);
 void loadConfig();
 void readJsonFile(const std::string& filename, Json::Value& result);
+void remove(const StringList& params);
 void search(const StringList& params);
 void update();
 void upgrade();
@@ -121,6 +123,17 @@ void checkOutdatedModules(std::set<std::string>& outdatedModules)
 	}
 }
 
+Dependencies collectDependencies(const Json::Value& dependencies)
+{
+	(void)dependencies;
+
+	Dependencies result;
+
+	// TODO: collect dependencies
+
+	return result;
+}
+
 void collectLocalModuleData()
 {
 	// iterate over all directories in the modules directory and collect all "module.json" files
@@ -137,10 +150,11 @@ void collectLocalModuleData()
 
 	while ( entry ) {
 		if ( entry->d_type == DT_DIR ) {
-			std::string filename = base + std::string(entry->d_name) + "/module.json";
+			std::string filename = "/module.json";;
+			std::string path = base + std::string(entry->d_name);
 
-			if ( ::Utils::Tools::Files::exists(filename) ) {
-				collectModuleData(filename);
+			if ( ::Utils::Tools::Files::exists(path + "/" + filename) ) {
+				collectModuleData(path, filename);
 			}
 		}
 
@@ -150,12 +164,12 @@ void collectLocalModuleData()
 	closedir(dir);
 }
 
-void collectModuleData(const std::string& filename)
+void collectModuleData(const std::string& path, const std::string& filename)
 {
-	std::cout << "Collecting module data from " << filename << std::endl;
+	//std::cout << "Collecting module data from " << path << std::endl;
 
 	Json::Value config;
-	readJsonFile(filename, config);
+	readJsonFile(path + "/" + filename, config);
 
 	std::string description = config["description"].asString();
 	std::string name_long = config["name"].asString();
@@ -163,6 +177,11 @@ void collectModuleData(const std::string& filename)
 	std::string version = config["version"].asString();
 
 	Module module(name_short, version);
+	module.mDescription = description;
+	module.mDependencies = collectDependencies(config["dependencies"]);
+	module.mInstalledDirectory = path;
+	module.mLongName = name_long;
+	module.mVersion = version;
 
 	mLocalRepository.addModule(module);
 }
@@ -269,20 +288,22 @@ void init()
 	loadConfig();
 }
 
-void install()
+void install(const StringList& params)
 {
 	if ( mParameters.empty() ) {
 		std::cout << "invalid number of parameters!" << std::endl;
 		return;
 	}
 
-	for ( StringList::const_iterator it = mParameters.begin(); it != mParameters.end(); ++it ) {
+	for ( StringList::const_iterator it = params.begin(); it != params.end(); ++it ) {
 		installModule("https://michaeladelmann.ticketsharing.net/repo/stable", (*it));
 	}
 }
 
 void installModule(const std::string& repo, const std::string& module)
 {
+	std::cout << "Installing module '" << module << "' from '" << repo << "'..." << std::endl;
+
 	std::string module_config = mBaseFolder + "/cache/modules/" + module + ".json";
 
 	bool result = download(repo + "/modules/" + module + ".json", module_config);
@@ -332,14 +353,14 @@ void installModule(const std::string& repo, const std::string& module)
 
 	if ( type != "virtual ") {	// extract module archive to "<module>/"
 		std::string command = "tar xf " + module_archive + " -C " + mBaseFolder + "/modules/";
-		std::cout << "command = " << command << std::endl;
+		//std::cout << "command = " << command << std::endl;
 
 		system(command.c_str());
 	}
 
 	{	// copy module config to "<module>/module.json"
 		std::string command = "cp " + module_config + " " + mBaseFolder + "/modules/" + module + "/module.json";
-		std::cout << "command = " << command << std::endl;
+		//std::cout << "command = " << command << std::endl;
 
 		system(command.c_str());
 	}
@@ -450,6 +471,38 @@ void readJsonFile(const std::string& filename, Json::Value& result)
 	result = Json::Parser::parse(data);
 }
 
+void remove(const StringList& params)
+{
+	// (1) check if the requested modules are actually installed
+	// (2) remove them by deleting their complete directory
+
+	collectLocalModuleData();
+
+	Repository::Modules local = mLocalRepository.getModules();
+
+	for ( StringList::const_iterator moduleIt = params.begin(); moduleIt != params.end(); ++ moduleIt ) {
+		bool found = false;
+
+		for ( Repository::Modules::const_iterator localIt = local.begin(); localIt != local.end(); ++localIt ) {
+			if ( localIt->mShortName == (*moduleIt) ) {
+				found = true;
+
+				std::string path = localIt->mInstalledDirectory;
+
+				std::cout << "Removing module '" << localIt->mShortName << "' from '" << path << "'..." << std::endl;
+
+				std::string command = "rm -r " + path;
+
+				system(command.c_str());
+			}
+		}
+
+		if ( !found ) {
+			std::cout << "!!! Module '" << (*moduleIt) << "' cannot be removed because it is not installed" << std::endl;
+		}
+	}
+}
+
 void search(const StringList& params)
 {
 	(void)params;
@@ -507,7 +560,7 @@ void upgrade()
 		// TODO: if mParameters contains values upgrade only the modules that are set in mParameters
 
 		// install new versions of all outdated modules
-		install();
+		install(mParameters);
 	}
 }
 
@@ -524,22 +577,23 @@ int main(int argc, const char* argv[])
 	init();
 
 	switch ( mAction ) {
-		case None:
-		case List:
-		case Remove:
-		case Search:
-			break;
 		case Help: printUsage(); break;
-		case Install: install(); break;
+		case Install: install(mParameters); break;
+		case List: break;
+		case None: break;
+		case Remove: remove(mParameters); break;
+		case Search: search(mParameters); break;
 		case Update: update(); break;
 		case Upgrade: upgrade(); break;
 		case Version: printVersion(); break;
 	}
 
+/*
 	// debug only
 	for ( StringList::const_iterator it = mDownloadedFiles.begin(); it != mDownloadedFiles.end(); ++it ) {
 		std::cout << (*it) << std::endl;
 	}
+*/
 
 	return 0;
 }

@@ -38,6 +38,7 @@ public:
 	Action::E mActionNeeded;
 	std::string mDescription;
 	Dependencies mDependencies;
+	std::string mInstalledDirectory;
 	std::string mLongName;
 	std::string mShortName;
 	std::string mURL;
