@@ -3,10 +3,7 @@
 #include <dirent.h>
 #include <set>
 #include <string>
-#include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
-
 #include <curl/curl.h>
 #include <Json/Json.h>
 
@@ -53,7 +50,6 @@ enum e_Action {
 	Upgrade,
 	Version
 };
-
 
 
 static const char* CACHE = "cache/";
@@ -331,8 +327,8 @@ void install(const StringList& params)
 	// (2) install missing dependencies
 	// (3) installed requested modules
 
-	if ( mParameters.empty() ) {
-		std::cout << "invalid number of parameters!" << std::endl;
+	if ( params.empty() ) {
+		std::cout << "!!! Invalid number of parameters" << std::endl;
 		return;
 	}
 
@@ -452,13 +448,13 @@ void loadConfig()
 			Json::Value entry = (*repoIt);
 
 			if ( !entry.isMember("name") ) {
-				std::cout << "invalid repository: entry " << count << std::endl;
+				std::cout << "!!! Invalid repository: entry " << count << std::endl;
 				continue;
 			}
 			std::string name_short = entry["name"].asString();
 
 			if ( !entry.isMember("url") ) {
-				std::cout << "invalid repository: entry " << count << std::endl;
+				std::cout << "!!! Invalid repository: entry " << count << std::endl;
 				continue;
 			}
 			std::string url = entry["url"].asString();
@@ -594,7 +590,7 @@ void remove(const StringList& params)
 	// (2) remove them by deleting their complete directory
 
 	if ( mParameters.empty() ) {
-		std::cout << "invalid number of parameters!" << std::endl;
+		std::cout << "!!! Invalid number of parameters" << std::endl;
 		return;
 	}
 
@@ -627,7 +623,12 @@ void remove(const StringList& params)
 
 void search(const StringList& params)
 {
-	(void)params;
+	if ( params.empty() ) {
+		std::cout << "!!! Invalid number of parameters" << std::endl;
+		return;
+	}
+
+	// TODO: implement search
 }
 
 void update()
