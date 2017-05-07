@@ -56,6 +56,7 @@ static const char* CACHE = "cache/";
 static const char* CACHE_MODULES = "cache/modules/";
 static const char* CACHE_REPOSITORIES = "cache/repositories/";
 static const char* MODULES = "modules/";
+static const char* TMP = "/tmp/";
 
 
 void checkOutdatedModules(std::set<std::string>& modules);
@@ -81,6 +82,7 @@ void upgrade();
 
 std::string mBaseFolder;
 StringList mDownloadedFiles;
+std::string mLibraryFolder;
 Repository mLocalRepository("local");
 Utils::Common::StdOutLogger mLogger;
 Repository mMissingDependencies("missing");
@@ -104,7 +106,7 @@ void checkOutdatedModules(std::set<std::string>& outdatedModules)
 	Repository::Modules local = mLocalRepository.getModules();
 
 	for ( std::list<Repository>::iterator repoIt = mRepositories.begin(); repoIt != mRepositories.end(); ++repoIt ) {
-		std::string filename = mBaseFolder + CACHE_REPOSITORIES + repoIt->getName() + "_index.json";
+		std::string filename = mBaseFolder + CACHE_REPOSITORIES + repoIt->getName() + ".json";
 
 		// check if filename exists
 		if ( !::Utils::Tools::Files::exists(filename) ) {
@@ -165,7 +167,7 @@ void collectLocalModuleData()
 {
 	// iterate over all directories in the modules directory and collect all "module.json" files
 
-	std::string base = mBaseFolder + MODULES;
+	std::string base = mLibraryFolder + MODULES;
 
 	DIR* dir = opendir(base.c_str());
 	if ( !dir ) {
@@ -235,7 +237,7 @@ void createBasicFolderStructur()
 	}
 
 	// create "<base>/modules" directory
-	path = mBaseFolder + MODULES;
+	path = mLibraryFolder + MODULES;
 	if ( !Utils::Tools::Files::exists(path) ) {
 		command = "mkdir " + path;
 		system(command.c_str());
@@ -300,6 +302,7 @@ bool download(const std::string& url, const std::string& target, bool allowClean
 void init()
 {
 	// put initialization stuff here
+	mBaseFolder = TMP;
 
 	const char* homepath = getenv(ObjectiveScript::OBJECTIVESCRIPT_LIBRARY);
 	if ( homepath ) {
@@ -312,7 +315,7 @@ void init()
 
 			Utils::Tools::splitBy(path, ':', left, right);
 
-			mBaseFolder = left + "/";
+			mLibraryFolder = left + "/";
 		}
 	}
 
@@ -406,14 +409,14 @@ void installModule(const std::string& repo, const std::string& module)
 	}
 
 	if ( type != "virtual ") {	// extract module archive to "<module>/"
-		std::string command = "tar xf " + module_archive + " -C " + mBaseFolder + MODULES;
+		std::string command = "tar xf " + module_archive + " -C " + mLibraryFolder + MODULES;
 		//std::cout << "command = " << command << std::endl;
 
 		system(command.c_str());
 	}
 
 	{	// copy module config to "<module>/module.json"
-		std::string command = "cp " + module_config + " " + mBaseFolder + MODULES + module + "/module.json";
+		std::string command = "cp " + module_config + " " + mLibraryFolder + MODULES + module + "/module.json";
 		//std::cout << "command = " << command << std::endl;
 
 		system(command.c_str());
@@ -435,7 +438,7 @@ void list()
 
 void loadConfig()
 {
-	std::string filename = mBaseFolder + "/config.json";
+	std::string filename = mLibraryFolder + "config.json";
 
 	Json::Value config;
 	readJsonFile(filename, config);
@@ -638,7 +641,7 @@ void update()
 	std::cout << "Updating " << mRepositories.size()  << " repositories..." << std::endl;
 
 	for ( std::list<Repository>::iterator it = mRepositories.begin(); it != mRepositories.end(); ++it ) {
-		std::string filename = mBaseFolder + CACHE_REPOSITORIES + it->getName() + "_index.json";
+		std::string filename = mBaseFolder + CACHE_REPOSITORIES + it->getName() + ".json";
 		std::string url = it->getURL() + "/index.json";
 
 		bool result = download(url, filename, false);
