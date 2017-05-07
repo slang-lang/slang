@@ -70,6 +70,7 @@ void create(const StringList& params);
 void createBasicFolderStructure();
 void deinit();
 bool download(const std::string& url, const std::string& target, bool allowCleanup = true);
+void execute(const std::string& command);
 void init();
 void install(const StringList& params);
 void installModule(const std::string& repo, const std::string& module);
@@ -145,7 +146,7 @@ void cleanCache()
 	for ( StringList::const_iterator it = mDownloadedFiles.begin(); it != mDownloadedFiles.end(); ++it ) {
 		std::string command = "rm " + (*it);
 
-		system(command.c_str());
+		execute(command);
 	}
 }
 
@@ -248,8 +249,7 @@ void create(const StringList& params)
 
 		std::cout << "Creating module information '" << moduleName + ".json'" << std::endl;
 
-		//std::cout << command << std::endl;
-		system(command.c_str());
+		execute(command);
 	}
 
 	{	// create package
@@ -257,8 +257,7 @@ void create(const StringList& params)
 
 		std::cout << "Creating module package '" << path + "_" + module.mVersion + ".tar.gz'" << std::endl;
 
-		//std::cout << command << std::endl;
-		system(command.c_str());
+		execute(command);
 	}
 }
 
@@ -271,14 +270,16 @@ void createBasicFolderStructure()
 	path = mBaseFolder + CACHE_MODULES;
 	if ( !Utils::Tools::Files::exists(path) ) {
 		command = "mkdir -p " + path;
-		system(command.c_str());
+
+		execute(command);
 	}
 
 	// create "<base>/cache/repositories" folder
 	path = mBaseFolder + CACHE_REPOSITORIES;
 	if ( !Utils::Tools::Files::exists(path) ) {
 		command = "mkdir -p " + path;
-		system(command.c_str());
+
+		execute(command);
 	}
 }
 
@@ -335,6 +336,13 @@ bool download(const std::string& url, const std::string& target, bool allowClean
 	curl_easy_cleanup(curl_handle);
 
 	return result;
+}
+
+void execute(const std::string& command)
+{
+	std::cout << "Executing '" << command << "'" << std::endl;
+
+	system(command.c_str());
 }
 
 void info(const StringList& params)
@@ -476,16 +484,14 @@ void installModule(const std::string& repo, const std::string& module)
 
 	if ( type != "virtual ") {	// extract module archive to "<module>/"
 		std::string command = "tar xf " + module_archive + " -C " + mLibraryFolder;
-		//std::cout << "command = " << command << std::endl;
 
-		system(command.c_str());
+		execute(command);
 	}
 
 	{	// copy module config to "<module>/module.json"
 		std::string command = "cp " + module_config + " " + mLibraryFolder + module + "/module.json";
-		//std::cout << "command = " << command << std::endl;
 
-		system(command.c_str());
+		execute(command);
 	}
 }
 
@@ -688,7 +694,7 @@ void remove(const StringList& params)
 
 				std::string command = "rm -r " + path;
 
-				system(command.c_str());
+				execute(command);
 			}
 		}
 
@@ -743,8 +749,6 @@ void update()
 			std::cout << "!!! Error while updating index for " << it->getURL() << std::endl;
 		}
 	}
-
-	std::cout << "Done." << std::endl;
 }
 
 void upgrade(const StringList& params)
