@@ -40,11 +40,12 @@
 
 
 enum e_Action {
-	None,
+	Create,
 	Help,
 	Info,
 	Install,
 	List,
+	None,
 	Remove,
 	Search,
 	Update,
@@ -65,6 +66,7 @@ void cleanCache();
 Dependencies collectDependencies(const Json::Value& dependencies);
 void collectLocalModuleData();
 Module collectModuleData(const std::string& path, const std::string& filename);
+void create(const StringList& params);
 void createBasicFolderStructure();
 void deinit();
 bool download(const std::string& url, const std::string& target, bool allowCleanup = true);
@@ -78,7 +80,7 @@ void readJsonFile(const std::string& filename, Json::Value& result);
 void remove(const StringList& params);
 void search(const StringList& params);
 void update();
-void upgrade();
+void upgrade(const StringList& params);
 
 
 std::string mBaseFolder;
@@ -218,6 +220,48 @@ Module collectModuleData(const std::string& path, const std::string& filename)
 	return module;
 }
 
+/*
+ * creates a module package ("<module>.json", "<module>_<version>.tar.gz")
+ * does NOT upload the package to a repository
+ */
+void create(const StringList& params)
+{
+	// (1) collect module information from given "<directory>/module.json"
+	// (2) create "<module>.json", "<module>_<version>.tar.gz"
+
+	if ( params.empty() || params.size() != 1 ) {
+		std::cout << "!!! Invalid number of parameters" << std::endl;
+		return;
+	}
+
+	// TODO: module name is not allowed to end with '/'
+	std::string moduleName = params.front();
+	std::string path = moduleName;
+	std::string filename = "module.json";
+
+	Module module = collectModuleData(path, filename);
+
+	std::string command;
+
+	{	// create <module>.json
+		command = "cp " + path + "/" + filename + " " + moduleName + ".json";
+
+		std::cout << "Creating module information '" << moduleName + ".json'" << std::endl;
+
+		//std::cout << command << std::endl;
+		system(command.c_str());
+	}
+
+	{	// create package
+		command = "tar -cjf " + path + "_" + module.mVersion + ".tar.gz " + path;
+
+		std::cout << "Creating module package '" << path + "_" + module.mVersion + ".tar.gz'" << std::endl;
+
+		//std::cout << command << std::endl;
+		system(command.c_str());
+	}
+}
+
 void createBasicFolderStructure()
 {
 	std::string command;
@@ -298,7 +342,7 @@ void info(const StringList& params)
 	// (1) collect local module data
 	// (2) print module information for requested module
 
-	if ( params.empty() ) {
+	if ( params.empty() || params.size() != 1 ) {
 		std::cout << "!!! Invalid number of parameters" << std::endl;
 		return;
 	}
@@ -307,17 +351,17 @@ void info(const StringList& params)
 
 	bool found = false;
 	Repository::Modules local = mLocalRepository.getModules();
-	std::string querriedModule = params.front();
+	std::string demandedModule = params.front();
 
 	for ( Repository::Modules::const_iterator localIt = local.begin(); localIt != local.end(); ++localIt ) {
-		if ( localIt->mShortName == querriedModule ) {
+		if ( localIt->mShortName == demandedModule ) {
 			found = true;
 			std::cout << localIt->mShortName << "(" << localIt->mVersion << "): " << localIt->mLongName << std::endl;
 		}
 	}
 
 	if ( !found ) {
-		std::cout << "!!! Requested module '" << querriedModule << "' is not installed" << std::endl;
+		std::cout << "!!! Requested module '" << demandedModule << "' is not installed" << std::endl;
 	}
 }
 
@@ -496,6 +540,7 @@ void printUsage()
 {
 	std::cout << "Usage: odepend [args...]" << std::endl;
 	std::cout << std::endl;
+	std::cout << "create                     Create a new module from a given directory" << std::endl;
 	std::cout << "help                       This help" << std::endl;
 	std::cout << "info                       Print information about requested module" << std::endl;
 	std::cout << "install                    Install new module" << std::endl;
@@ -522,7 +567,10 @@ void processParameters(int argc, const char* argv[])
 	if ( argc > 1 ) {
 		std::string arg1 = argv[1];
 
-		if ( Utils::Tools::StringCompare(arg1, "help") ) {
+		if ( Utils::Tools::StringCompare(arg1, "create") ) {
+			mAction = Create;
+		}
+		else if ( Utils::Tools::StringCompare(arg1, "help") ) {
 			mAction = Help;
 		}
 		else if ( Utils::Tools::StringCompare(arg1, "info") ) {
@@ -655,7 +703,7 @@ void search(const StringList& params)
 	// (1) load cached repositories from disk
 	// (2) substr-search through all entries for given params
 
-	if ( params.empty() ) {
+	if ( params.empty() || params.size() != 1 ) {
 		std::cout << "!!! Invalid number of parameters" << std::endl;
 		return;
 	}
@@ -699,8 +747,10 @@ void update()
 	std::cout << "Done." << std::endl;
 }
 
-void upgrade()
+void upgrade(const StringList& params)
 {
+	(void)params;
+
 	// (1) retrieve outdated modules
 	// (2) list all found modules
 	// (3) install new modules if any are available
@@ -746,6 +796,7 @@ int main(int argc, const char* argv[])
 	init();
 
 	switch ( mAction ) {
+		case Create: create(mParameters); break;
 		case Help: printUsage(); break;
 		case Info: info(mParameters); break;
 		case Install: install(mParameters); break;
@@ -754,7 +805,7 @@ int main(int argc, const char* argv[])
 		case Remove: remove(mParameters); break;
 		case Search: search(mParameters); break;
 		case Update: update(); break;
-		case Upgrade: upgrade(); break;
+		case Upgrade: upgrade(mParameters); break;
 		case Version: printVersion(); break;
 	}
 
