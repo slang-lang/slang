@@ -42,6 +42,7 @@
 enum e_Action {
 	None,
 	Help,
+	Info,
 	Install,
 	List,
 	Remove,
@@ -64,7 +65,7 @@ void cleanCache();
 Dependencies collectDependencies(const Json::Value& dependencies);
 void collectLocalModuleData();
 Module collectModuleData(const std::string& path, const std::string& filename);
-void createBasicFolderStructur();
+void createBasicFolderStructure();
 void deinit();
 bool download(const std::string& url, const std::string& target, bool allowCleanup = true);
 void init();
@@ -217,7 +218,7 @@ Module collectModuleData(const std::string& path, const std::string& filename)
 	return module;
 }
 
-void createBasicFolderStructur()
+void createBasicFolderStructure()
 {
 	std::string command;
 	std::string path;
@@ -299,6 +300,34 @@ bool download(const std::string& url, const std::string& target, bool allowClean
 	return result;
 }
 
+void info(const StringList& params)
+{
+	// (1) collect local module data
+	// (2) print module information for requested module
+
+	if ( params.empty() ) {
+		std::cout << "!!! Invalid number of parameters" << std::endl;
+		return;
+	}
+
+	collectLocalModuleData();
+
+	bool found = false;
+	Repository::Modules local = mLocalRepository.getModules();
+	std::string querriedModule = params.front();
+
+	for ( Repository::Modules::const_iterator localIt = local.begin(); localIt != local.end(); ++localIt ) {
+		if ( localIt->mShortName == querriedModule ) {
+			found = true;
+			std::cout << localIt->mShortName << "(" << localIt->mVersion << "): " << localIt->mLongName << std::endl;
+		}
+	}
+
+	if ( !found ) {
+		std::cout << "!!! Requested module '" << querriedModule << "' is not installed" << std::endl;
+	}
+}
+
 void init()
 {
 	// put initialization stuff here
@@ -319,7 +348,7 @@ void init()
 		}
 	}
 
-	createBasicFolderStructur();
+	createBasicFolderStructure();
 
 	loadConfig();
 }
@@ -475,6 +504,7 @@ void printUsage()
 	std::cout << "Usage: odepend [args...]" << std::endl;
 	std::cout << std::endl;
 	std::cout << "help                       This help" << std::endl;
+	std::cout << "info                       Print information about requested module" << std::endl;
 	std::cout << "install                    Install new module" << std::endl;
 	std::cout << "list                       List all installed modules" << std::endl;
 	std::cout << "remove                     Remove an installed module" << std::endl;
@@ -501,6 +531,9 @@ void processParameters(int argc, const char* argv[])
 
 		if ( Utils::Tools::StringCompare(arg1, "help") ) {
 			mAction = Help;
+		}
+		else if ( Utils::Tools::StringCompare(arg1, "info") ) {
+			mAction = Info;
 		}
 		else if ( Utils::Tools::StringCompare(arg1, "install") ) {
 			mAction = Install;
@@ -626,12 +659,29 @@ void remove(const StringList& params)
 
 void search(const StringList& params)
 {
+	// (1) load cached repositories from disk
+	// (2) substr-search through all entries for given params
+
 	if ( params.empty() ) {
 		std::cout << "!!! Invalid number of parameters" << std::endl;
 		return;
 	}
 
-	// TODO: implement search
+	for ( std::list<Repository>::iterator repoIt = mRepositories.begin(); repoIt != mRepositories.end(); ++repoIt ) {
+		std::string filename = mBaseFolder + CACHE_REPOSITORIES + repoIt->getName() + ".json";
+
+		// check if filename exists
+		if ( !::Utils::Tools::Files::exists(filename) ) {
+			// no configuration file exists
+			std::cout << "!!! File '" + filename + "' not found" << std::endl;
+			continue;
+		}
+
+		Json::Value config;
+		readJsonFile(filename, config);
+
+		// TODO: implement search
+	}
 }
 
 void update()
@@ -641,8 +691,8 @@ void update()
 	std::cout << "Updating " << mRepositories.size()  << " repositories..." << std::endl;
 
 	for ( std::list<Repository>::iterator it = mRepositories.begin(); it != mRepositories.end(); ++it ) {
-		std::string filename = mBaseFolder + CACHE_REPOSITORIES + it->getName() + ".json";
 		std::string url = it->getURL() + "/index.json";
+		std::string filename = mBaseFolder + CACHE_REPOSITORIES + it->getName() + ".json";
 
 		bool result = download(url, filename, false);
 		if ( result ) {
@@ -704,6 +754,7 @@ int main(int argc, const char* argv[])
 
 	switch ( mAction ) {
 		case Help: printUsage(); break;
+		case Info: info(mParameters); break;
 		case Install: install(mParameters); break;
 		case List: list(); break;
 		case None: break;
