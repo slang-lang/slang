@@ -144,9 +144,7 @@ void cleanCache()
 	//std::cout << "Cleaning cache..." << std::endl;
 
 	for ( StringList::const_iterator it = mDownloadedFiles.begin(); it != mDownloadedFiles.end(); ++it ) {
-		std::string command = "rm " + (*it);
-
-		execute(command);
+		execute("rm " + (*it));
 	}
 }
 
@@ -242,22 +240,16 @@ void create(const StringList& params)
 
 	Module module = collectModuleData(path, filename);
 
-	std::string command;
-
 	{	// create <module>.json
-		command = "cp " + path + "/" + filename + " " + moduleName + ".json";
-
 		std::cout << "Creating module information '" << moduleName + ".json'" << std::endl;
 
-		execute(command);
+		execute("cp " + path + "/" + filename + " " + moduleName + ".json");
 	}
 
 	{	// create package
-		command = "tar -cjf " + path + "_" + module.mVersion + ".tar.gz " + path;
-
 		std::cout << "Creating module package '" << path + "_" + module.mVersion + ".tar.gz'" << std::endl;
 
-		execute(command);
+		execute("tar -cjf " + path + "_" + module.mVersion + ".tar.gz " + path);
 	}
 }
 
@@ -269,18 +261,17 @@ void createBasicFolderStructure()
 	// create "<base>/cache/modules" folder
 	path = mBaseFolder + CACHE_MODULES;
 	if ( !Utils::Tools::Files::exists(path) ) {
-		command = "mkdir -p " + path;
-
-		execute(command);
+		execute("mkdir -p " + path);
 	}
 
 	// create "<base>/cache/repositories" folder
 	path = mBaseFolder + CACHE_REPOSITORIES;
 	if ( !Utils::Tools::Files::exists(path) ) {
-		command = "mkdir -p " + path;
-
-		execute(command);
+		execute("mkdir -p " + path);
 	}
+
+	// create config file
+	execute("touch " + mLibraryFolder + "config.json");
 }
 
 void deinit()
@@ -290,6 +281,8 @@ void deinit()
 
 bool download(const std::string& url, const std::string& target, bool allowCleanup)
 {
+	//std::cout << "Downloading " << url << " => " << target << std::endl;
+
 	CURL *curl_handle;
 	FILE *pagefile;
 	bool result = false;
@@ -310,8 +303,6 @@ bool download(const std::string& url, const std::string& target, bool allowClean
 
 	/* send all data to this function  */
 	curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, write_data);
-
-	//std::cout << "Downloading " << url << " => " << target << std::endl;
 
 	/* open the file */
 	pagefile = fopen(target.c_str(), "wb");
@@ -340,7 +331,7 @@ bool download(const std::string& url, const std::string& target, bool allowClean
 
 void execute(const std::string& command)
 {
-	std::cout << "Executing '" << command << "'" << std::endl;
+	//std::cout << "Executing '" << command << "'" << std::endl;
 
 	system(command.c_str());
 }
@@ -364,6 +355,7 @@ void info(const StringList& params)
 	for ( Repository::Modules::const_iterator localIt = local.begin(); localIt != local.end(); ++localIt ) {
 		if ( localIt->mShortName == demandedModule ) {
 			found = true;
+
 			std::cout << localIt->mShortName << "(" << localIt->mVersion << "): " << localIt->mLongName << std::endl;
 		}
 	}
@@ -483,16 +475,11 @@ void installModule(const std::string& repo, const std::string& module)
 	}
 
 	if ( type != "virtual ") {	// extract module archive to "<module>/"
-		std::string command = "tar xf " + module_archive + " -C " + mLibraryFolder;
-
-		execute(command);
+		execute("tar xf " + module_archive + " -C " + mLibraryFolder);
 	}
 
-	{	// copy module config to "<module>/module.json"
-		std::string command = "cp " + module_config + " " + mLibraryFolder + module + "/module.json";
-
-		execute(command);
-	}
+	// copy module config to "<module>/module.json"
+	execute("cp " + module_config + " " + mLibraryFolder + module + "/module.json");
 }
 
 void list()
@@ -688,13 +675,9 @@ void remove(const StringList& params)
 			if ( localIt->mShortName == (*moduleIt) ) {
 				found = true;
 
-				std::string path = localIt->mInstalledDirectory;
+				std::cout << "Removing module '" << localIt->mShortName << "' from '" << localIt->mInstalledDirectory << "'..." << std::endl;
 
-				std::cout << "Removing module '" << localIt->mShortName << "' from '" << path << "'..." << std::endl;
-
-				std::string command = "rm -r " + path;
-
-				execute(command);
+				execute("rm -r " + localIt->mInstalledDirectory);
 			}
 		}
 
