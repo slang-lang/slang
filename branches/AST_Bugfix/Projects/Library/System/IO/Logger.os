@@ -4,9 +4,11 @@ public namespace IO {
 
 	public object Logger {
 		// Members
-		private string mKey final;
+		protected string mKey final;
 
-		// Specialised constructor
+		/*
+		 * Specialised constructor
+		 */
 		public void Constructor(string key, int keyLength = 0) {
 			if ( keyLength ) {
 				mKey = substr(key, strlen(key) - keyLength, keyLength);
@@ -14,6 +16,13 @@ public namespace IO {
 			else {
 				mKey = key;
 			}
+		}
+
+		/*
+		 * Default destructor
+		 */
+		public void Destructor() {
+			// nothing to do here
 		}
 
 		// Public methods
