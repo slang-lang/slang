@@ -168,7 +168,7 @@ void collectLocalModuleData()
 {
 	// iterate over all directories in the modules directory and collect all "module.json" files
 
-	std::string base = mLibraryFolder + MODULES;
+	std::string base = mLibraryFolder;
 
 	DIR* dir = opendir(base.c_str());
 	if ( !dir ) {
@@ -234,13 +234,6 @@ void createBasicFolderStructure()
 	path = mBaseFolder + CACHE_REPOSITORIES;
 	if ( !Utils::Tools::Files::exists(path) ) {
 		command = "mkdir -p " + path;
-		system(command.c_str());
-	}
-
-	// create "<base>/modules" directory
-	path = mLibraryFolder + MODULES;
-	if ( !Utils::Tools::Files::exists(path) ) {
-		command = "mkdir " + path;
 		system(command.c_str());
 	}
 }
@@ -438,14 +431,14 @@ void installModule(const std::string& repo, const std::string& module)
 	}
 
 	if ( type != "virtual ") {	// extract module archive to "<module>/"
-		std::string command = "tar xf " + module_archive + " -C " + mLibraryFolder + MODULES;
+		std::string command = "tar xf " + module_archive + " -C " + mLibraryFolder;
 		//std::cout << "command = " << command << std::endl;
 
 		system(command.c_str());
 	}
 
 	{	// copy module config to "<module>/module.json"
-		std::string command = "cp " + module_config + " " + mLibraryFolder + MODULES + module + "/module.json";
+		std::string command = "cp " + module_config + " " + mLibraryFolder + module + "/module.json";
 		//std::cout << "command = " << command << std::endl;
 
 		system(command.c_str());
