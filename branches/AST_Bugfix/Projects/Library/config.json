@@ -1,0 +1,6 @@
+{
+  "repositories": [
+    { "name": "main", "url": "https://michaeladelmann.ticketsharing.net/repo/stable" },
+    { "name": "main_prerelease", "url": "https://michaeladelmann.ticketsharing.net/repo/prerelease" }
+  ]
+}
