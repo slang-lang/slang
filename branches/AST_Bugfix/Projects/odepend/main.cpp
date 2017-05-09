@@ -4,6 +4,13 @@
 #include <set>
 #include <string>
 #include <stdlib.h>
+#ifdef WINDOWS
+#	include <direct.h>
+    #define GetCurrentDir _getcwd
+#else
+#	include <unistd.h>
+#	define GetCurrentDir getcwd
+#endif
 #include <curl/curl.h>
 #include <Json/Json.h>
 
@@ -41,6 +48,7 @@
 
 enum e_Action {
 	Create,
+	CreateLocalLibrary,
 	Help,
 	Info,
 	Install,
@@ -68,12 +76,14 @@ void collectLocalModuleData();
 Module collectModuleData(const std::string& path, const std::string& filename);
 void create(const StringList& params);
 void createBasicFolderStructure();
+void createLocalLibrary();
 void deinit();
 bool download(const std::string& url, const std::string& target, bool allowCleanup = true);
 void execute(const std::string& command);
 void init();
 void install(const StringList& params);
 void installModule(const std::string& repo, const std::string& module);
+bool isLocalLibrary();
 void list();
 void loadConfig();
 void prepareModuleInstallation(const std::string& repo, const std::string& moduleName);
@@ -85,6 +95,7 @@ void upgrade(const StringList& params);
 
 
 std::string mBaseFolder;
+std::string mCurrendFolder;
 StringList mDownloadedFiles;
 std::string mLibraryFolder;
 Repository mLocalRepository("local");
@@ -274,6 +285,12 @@ void createBasicFolderStructure()
 	execute("touch " + mLibraryFolder + "config.json");
 }
 
+void createLocalLibrary()
+{
+	// create config file
+	execute("touch " + mCurrendFolder + "/config.json");
+}
+
 void deinit()
 {
 	// put de-initialization stuff here
@@ -370,18 +387,35 @@ void init()
 	// put initialization stuff here
 	mBaseFolder = TMP;
 
-	const char* homepath = getenv(ObjectiveScript::OBJECTIVESCRIPT_LIBRARY);
-	if ( homepath ) {
-		std::string path = std::string(homepath);
+	{	// set library home path
+		const char* homepath = getenv(ObjectiveScript::OBJECTIVESCRIPT_LIBRARY);
+		if ( homepath ) {
+			std::string path = std::string(homepath);
 
-		// only read first entry
-		if ( !path.empty() ) {
-			std::string left;
-			std::string right;
+			// only read first entry
+			if ( !path.empty() ) {
+				std::string left;
+				std::string right;
 
-			Utils::Tools::splitBy(path, ':', left, right);
+				Utils::Tools::splitBy(path, ':', left, right);
 
-			mLibraryFolder = left + "/";
+				mLibraryFolder = left + "/";
+			}
+		}
+	}
+
+	{	// set current folder
+		char cCurrentPath[FILENAME_MAX];
+		if ( !GetCurrentDir(cCurrentPath, sizeof(cCurrentPath)) )  {
+			return;
+		}
+
+		cCurrentPath[sizeof(cCurrentPath) - 1] = '\0'; /* not really required */
+
+		mCurrendFolder = std::string(cCurrentPath) + "/";
+
+		if ( isLocalLibrary() ) {
+			mLibraryFolder = mCurrendFolder;
 		}
 	}
 
@@ -482,6 +516,11 @@ void installModule(const std::string& repo, const std::string& module)
 	execute("cp " + module_config + " " + mLibraryFolder + module + "/module.json");
 }
 
+bool isLocalLibrary()
+{
+	return Utils::Tools::Files::exists(mCurrendFolder + "/config.json");
+}
+
 void list()
 {
 	collectLocalModuleData();
@@ -542,7 +581,8 @@ void printUsage()
 	std::cout << "search                     Search for a module" << std::endl;
 	std::cout << "update                     Update repository indices" << std::endl;
 	std::cout << "upgrade                    Upgrade outdated modules" << std::endl;
-	std::cout << "version                    Version information" << std::endl;
+	std::cout << "--locallibrary             Use current directory as library" << std::endl;
+	std::cout << "--version                  Version information" << std::endl;
 	std::cout << std::endl;
 }
 
@@ -587,7 +627,10 @@ void processParameters(int argc, const char* argv[])
 		else if ( Utils::Tools::StringCompare(arg1, "upgrade") ) {
 			mAction = Upgrade;
 		}
-		else if ( Utils::Tools::StringCompare(arg1, "version") ) {
+		else if ( Utils::Tools::StringCompare(arg1, "--locallibrary") ) {
+			mAction = CreateLocalLibrary;
+		}
+		else if ( Utils::Tools::StringCompare(arg1, "--version") ) {
 			mAction = Version;
 		}
 	}
@@ -784,6 +827,7 @@ int main(int argc, const char* argv[])
 
 	switch ( mAction ) {
 		case Create: create(mParameters); break;
+		case CreateLocalLibrary: createLocalLibrary(); break;
 		case Help: printUsage(); break;
 		case Info: info(mParameters); break;
 		case Install: install(mParameters); break;
