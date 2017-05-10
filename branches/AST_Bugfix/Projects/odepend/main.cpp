@@ -282,13 +282,13 @@ void createBasicFolderStructure()
 	}
 
 	// create config file
-	execute("touch " + mLibraryFolder + "config.json");
+	execute("touch " + mLibraryFolder + "/odepend.json");
 }
 
 void createLocalLibrary()
 {
 	// create config file
-	execute("touch " + mCurrendFolder + "/config.json");
+	execute("touch " + mCurrendFolder + "/odepend.json");
 }
 
 void deinit()
@@ -518,7 +518,7 @@ void installModule(const std::string& repo, const std::string& module)
 
 bool isLocalLibrary()
 {
-	return Utils::Tools::Files::exists(mCurrendFolder + "/config.json");
+	return Utils::Tools::Files::exists(mCurrendFolder + "/odepend.json");
 }
 
 void list()
@@ -536,7 +536,7 @@ void list()
 
 void loadConfig()
 {
-	std::string filename = mLibraryFolder + "config.json";
+	std::string filename = mLibraryFolder + "odepend.json";
 
 	Json::Value config;
 	readJsonFile(filename, config);
