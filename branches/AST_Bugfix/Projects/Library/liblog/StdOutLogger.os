@@ -1,7 +1,15 @@
 
-public object StdOutLogger const {
+// Project imports
+import Context;
+import ILogger;
+
+//public namespace LibLog {
+
+public object StdOutLogger implements ILogger {
 	// Members
-	private string mKey final;
+	private IContext mContext final;
+	private bool mHasParent final;
+	private string mKey final = "";
 
 	/*
 	 * Specialised constructor
@@ -16,27 +24,72 @@ public object StdOutLogger const {
 	}
 
 	/*
+	 * Copy constructor
+	 */
+	public void Constructor(ILogger parent ref, string key, int keyLength = 0) {
+		if ( parent ) {
+			mContext = parent.getContext();
+			mHasParent = true;
+			if ( parent.getKey() ) {
+				mKey = parent.getKey() + "::";
+			}
+		}
+
+		mKey += key;
+
+		if ( keyLength && strlen(mKey) > keyLength ) {
+			mKey = substr(mKey, strlen(mKey) - keyLength, keyLength);
+		}
+
+		if ( !mContext ) {
+			mContext = IContext new StdOutContext();
+		}
+	}
+
+	/*
 	 * Default destructor
 	 */
 	public void Destructor() {
-		// nothing to do here
+		if ( !mHasParent ) {
+			delete mContext;
+		}
+	}
+
+	public IContext getContext() const {
+		return mContext;
+	}
+
+	public string getKey() const {
+		return mKey;
 	}
 
 	// Public methods
 	public void debug(string message) {
-		print("[DEBUG] " + mKey + "::" + message);
+		print("[DEBUG] [" + mKey + "]   " + message);
 	}
 
 	public void error(string message) {
-		print("[ERROR] " + mKey + "::" + message);
+		print("[ERROR] [" + mKey + "]   " + message);
+	}
+
+	public void fatal(string message) {
+		print("[FATAL] [" + mKey + "]   " + message);
+
+		exit(-1);
 	}
 
 	public void info(string message) {
-		print("[INFO ] " + mKey + "::" + message);
+		print("[INFO ] [" + mKey + "]   " + message);
 	}
 
 	public void warning(string message) {
-		print("[WARN ] " + mKey + "::" + message);
+		print("[WARN ] [" + mKey + "]   " + message);
+	}
+
+	public string =operator(string none) const {
+		return mKey;
 	}
 }
+
+//}
 

@@ -1,4 +1,6 @@
 
+import System.IO.File;
+
 public object FileLogger {
 	// Members
 	private string mFilename final;
@@ -20,7 +22,6 @@ public object FileLogger {
 	 * Default destructor
 	 */
 	public void Destructor() {
-		// nothing to do here
 	}
 
 	// Public methods
