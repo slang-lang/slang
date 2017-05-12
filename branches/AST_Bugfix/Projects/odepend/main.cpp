@@ -442,13 +442,23 @@ void install(const StringList& params)
 	// TODO: make sure that the repository path ends with an '/'
 
 	for ( StringList::const_iterator it = params.begin(); it != params.end(); ++it ) {
-		prepareModuleInstallation("https://michaeladelmann.ticketsharing.net/repo/stable/", (*it));
+		std::string moduleName;
+		std::string version;
+
+		Utils::Tools::splitBy((*it), ':', moduleName, version);
+
+		prepareModuleInstallation("https://michaeladelmann.ticketsharing.net/repo/stable/", moduleName);
 	}
 
 	// add all other requested modules to missing modules to prevent multiple installations of the same modules
 	for ( StringList::const_iterator it = params.begin(); it != params.end(); ++it ) {
+		std::string moduleName;
+		std::string version;
+
+		Utils::Tools::splitBy((*it), ':', moduleName, version);
+
 		mMissingDependencies.addModule(
-			Module((*it), "")
+			Module(moduleName, version)
 		);
 	}
 
