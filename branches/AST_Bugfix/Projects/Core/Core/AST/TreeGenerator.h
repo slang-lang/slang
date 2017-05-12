@@ -142,6 +142,7 @@ private:	// Initialization
 	void initialize(Common::Method* method);
 
 private:
+	bool mAllowConstModify;
 	bool mHasReturnStatement;
 	Common::Method* mMethod;
 

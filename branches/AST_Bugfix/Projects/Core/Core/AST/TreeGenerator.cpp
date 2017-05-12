@@ -38,7 +38,8 @@ namespace AST {
 
 
 TreeGenerator::TreeGenerator()
-: mHasReturnStatement(false),
+: mAllowConstModify(false),
+  mHasReturnStatement(false),
   mMethod(0),
   mStackFrame(0)
 {
@@ -110,6 +111,7 @@ void TreeGenerator::deinitialize()
 	// reset reuseable members
 	mMethod = 0;
 	mHasReturnStatement = false;
+	mAllowConstModify = false;
 }
 
 Node* TreeGenerator::expression(TokenIterator& start)
@@ -257,6 +259,7 @@ inline Symbol* TreeGenerator::identify(TokenIterator& token) const
 void TreeGenerator::initialize(Common::Method* method)
 {
 	// initialize reuseable members
+	mAllowConstModify = method->getMethodType() == Common::Method::MethodType::Constructor || method->getMethodType() == Common::Method::MethodType::Destructor;
 	mHasReturnStatement = false;
 	mMethod = method;
 
@@ -789,9 +792,9 @@ Node* TreeGenerator::process_identifier(TokenIterator& token, bool allowTypeCast
 			type = Designtime::Parser::buildRuntimeConstraintTypename(type, dynamic_cast<DesigntimeSymbolExpression*>(symbol)->mConstraints);
 		}
 		node = new TypecastExpression(type, expression(token));					// this processes all following expressions before casting
-		//node = new TypecastExpression(type, parseInfixPostfix(token));		// this casts first and does no combine the subsequent expressions with this one
+		//node = new TypecastExpression(type, parseInfixPostfix(token));		// this casts first and does not combine the subsequent expressions with this one
 
-		// delete resolved symbol expression as it is not needed any more
+		// delete resolved symbol expression as it is not needed any more to prevent memleaks
 		delete symbol;
 	}
 	// type declaration
@@ -812,7 +815,7 @@ Node* TreeGenerator::process_identifier(TokenIterator& token, bool allowTypeCast
 	}
 	// assignment
 	else if ( op->category() == Token::Category::Assignment ) {
-		if ( symbol->isConst() ) {
+		if ( symbol->isConst() && !(mAllowConstModify && symbol->isMember()) ) {
 			throw Common::Exceptions::ConstCorrectnessViolated("tried to modify const symbol '" + symbol->mName + "'", op->position());
 		}
 
@@ -845,7 +848,7 @@ Node* TreeGenerator::process_identifier(TokenIterator& token, bool allowTypeCast
 	}
 	// --/++ for lvalue
 	else if ( op->type() == Token::Type::OPERATOR_DECREMENT || op->type() == Token::Type::OPERATOR_INCREMENT ) {
-		if ( symbol->isConst() ) {
+		if ( symbol->isConst() && !(mAllowConstModify && symbol->isMember()) ) {
 			throw Common::Exceptions::ConstCorrectnessViolated("tried to modify const symbol '" + symbol->mName + "'", op->position());
 		}
 
@@ -1015,13 +1018,13 @@ MethodExpression* TreeGenerator::process_method(SymbolExpression* symbol, const 
 		throw Common::Exceptions::StaticException("non-static method \"" + method->ToString() + "\" called from static method \"" + mMethod->ToString() + "\"", token.position());
 	}
 
-	// evaluate language feature state of the newly called method
+	// evaluate language feature state of the called method
 	switch ( method->getLanguageFeatureState() ) {
-		case LanguageFeatureState::Deprecated: OSinfo("method '" + method->getFullScopeName() + "' is marked as deprecated"); break;
-		case LanguageFeatureState::NotImplemented: throw Common::Exceptions::NotImplemented("method '" + method->getFullScopeName() + "' is marked as not implemented", token.position()); break;
+		case LanguageFeatureState::Deprecated: OSinfo("executed method '" + method->getFullScopeName() + "' is marked as deprecated"); break;
+		case LanguageFeatureState::NotImplemented: throw Common::Exceptions::NotImplemented("executed method '" + method->getFullScopeName() + "' is marked as not implemented", token.position()); break;
 		case LanguageFeatureState::Stable: /* this is the normal language feature state, so there is no need to log anything here */ break;
-		case LanguageFeatureState::Unknown: throw Common::Exceptions::Exception("unknown language feature state set for method '" + method->getFullScopeName() + "'", token.position()); break;
-		case LanguageFeatureState::Unstable: OSwarn("method '" + method->getFullScopeName() + "' is marked as unstable"); break;
+		case LanguageFeatureState::Unknown: throw Common::Exceptions::Exception("unknown language feature state set for executed method '" + method->getFullScopeName() + "'", token.position()); break;
+		case LanguageFeatureState::Unstable: OSwarn("executed method '" + method->getFullScopeName() + "' is marked as unstable"); break;
 	}
 
 	return new MethodExpression(symbol, expressions, method->QualifiedTypename(), method->isConst(), method->getEnclosingScope() == mMethod->getEnclosingScope());
@@ -1588,7 +1591,7 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 
 			scope = static_cast<Designtime::BluePrintObject*>(blueprint);
 
-			symbol = new DesigntimeSymbolExpression(name, type, constraints, blueprint->isConst());
+			symbol = new DesigntimeSymbolExpression(name, type, constraints, object->isConst());
 		} break;
 		case Symbol::IType::NamespaceSymbol: {
 			Common::Namespace* space = static_cast<Common::Namespace*>(result);
@@ -1655,7 +1658,7 @@ SymbolExpression* TreeGenerator::resolveWithThis(TokenIterator& token, IScope* b
 		SymbolExpression* exp = resolve(token, blueprint, true, Visibility::Private);
 		if ( exp ) {
 			// insert "this" symbol as "parent" of our recently resolved symbol
-			SymbolExpression* symbol = new RuntimeSymbolExpression(IDENTIFIER_THIS, blueprint->QualifiedTypename(), mMethod->isConst(), false);
+			SymbolExpression* symbol = new RuntimeSymbolExpression(IDENTIFIER_THIS, blueprint->QualifiedTypename(), mMethod->isConst(), true);
 			symbol->mSymbolExpression = exp;
 
 			return symbol;
@@ -1670,7 +1673,7 @@ SymbolExpression* TreeGenerator::resolveWithThis(TokenIterator& token, IScope* b
 			SymbolExpression* exp = resolve(token, ancestor, true, Visibility::Protected);
 			if ( exp ) {
 				// insert "base" symbol as "parent" of our recently resolved symbol
-				SymbolExpression* symbol = new RuntimeSymbolExpression(IDENTIFIER_BASE, blueprint->QualifiedTypename(), mMethod->isConst(), false);
+				SymbolExpression* symbol = new RuntimeSymbolExpression(IDENTIFIER_BASE, blueprint->QualifiedTypename(), mMethod->isConst(), true);
 				symbol->mSymbolExpression = exp;
 
 				return symbol;

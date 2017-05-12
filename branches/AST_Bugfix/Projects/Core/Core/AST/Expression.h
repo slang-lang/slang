@@ -290,6 +290,10 @@ public:
 		return mIsConst || (mSymbolExpression ? mSymbolExpression->isConst() : false);
 	}
 
+	bool isMember() const {
+		return mIsMember || (mSymbolExpression ? mSymbolExpression->isMember() : false);
+	}
+
 	std::string toString() const {
 		std::string result = mName;
 
