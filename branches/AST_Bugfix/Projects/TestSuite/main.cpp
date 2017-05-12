@@ -181,7 +181,11 @@ int main(int argc, const char* argv[])
 		}
 
 		std::cout << std::endl;
-		std::cout << "Statistics: " << (result.Run - result.Failed - result.Skipped) << " passed, " << result.Failed << " failed, " << result.Skipped << " skipped" << std::endl;
+		std::cout << "Statistics: "
+				  << (result.Run - result.Failed - result.Skipped) << " passed, "
+				  << result.Skipped << " skipped, "
+				  << result.Failed << " failed "
+				  << std::endl;
 
 		mFixtures.clear();
 	}
