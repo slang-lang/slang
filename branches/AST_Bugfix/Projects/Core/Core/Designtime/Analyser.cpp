@@ -190,6 +190,7 @@ bool Analyser::createBluePrint(TokenIterator& token)
 
 	blueprint->setPrototypeConstraints(constraints);
 	blueprint->setImplementationType(implementationType);
+	blueprint->setIsReference(true);
 	blueprint->setLanguageFeatureState(languageFeatureState);
 	blueprint->setMutability(mutability);
 	blueprint->setParent(mScope);
@@ -358,6 +359,8 @@ bool Analyser::createMemberStub(TokenIterator& token, Visibility::E visibility, 
 		throw Common::Exceptions::ConstCorrectnessViolated("cannot add modifiable member '" + name + "' to const object '" + parent->getFullScopeName() + "'", token->position());
 	}
 
+	AccessMode::E access = Parser::parseAccessMode(token, AccessMode::ByValue);
+
 	Runtime::AtomicValue value = 0;
 	if ( token->type() == Token::Type::ASSIGN ) {
 		++token;
@@ -372,6 +375,7 @@ bool Analyser::createMemberStub(TokenIterator& token, Visibility::E visibility, 
 	if ( dynamic_cast<BluePrintGeneric*>(mScope) ) {
 		BluePrintObject* member = new BluePrintObject(type.mName, mFilename, name);
 		member->setFinal(mutability == Mutability::Final);
+		member->setIsReference(access == AccessMode::ByReference);
 		member->setLanguageFeatureState(languageFeature);
 		member->setMember(true);
 		member->setMutability(mutability);
@@ -386,6 +390,7 @@ bool Analyser::createMemberStub(TokenIterator& token, Visibility::E visibility, 
 	else {
 		Runtime::Object* symbol = mRepository->createInstance(type.mName, name, type.mConstraints);
 		symbol->setFinal(mutability == Mutability::Final);
+		symbol->setIsReference(access == AccessMode::ByReference);
 		symbol->setLanguageFeatureState(languageFeature);
 		symbol->setMember(false);
 		symbol->setMutability(mutability);
