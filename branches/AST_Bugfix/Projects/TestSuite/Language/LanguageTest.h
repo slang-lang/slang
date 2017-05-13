@@ -44,6 +44,7 @@ private:	// Tests
 	void testConstCorrectness2();
 	void testConstCorrectness3();
 	void testConstCorrectness4();
+	void testCopy();
 	void testDefaultParameter();
 	void testEnum();
 	void testException();

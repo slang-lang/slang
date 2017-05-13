@@ -50,6 +50,7 @@ void LanguageTest::process()
 	TEST(testConstCorrectness2);
 	TEST(testConstCorrectness3);
 	TEST(testConstCorrectness4);
+	TEST(testCopy);
 	TEST(testDefaultParameter);
 	TEST(testEnum);
 	TEST(testException);
@@ -253,6 +254,21 @@ void LanguageTest::testConstCorrectness4()
 	}
 }
 
+void LanguageTest::testCopy()
+{
+TSKIP("copy-expression not supported by now");
+
+	try {
+		VirtualMachine vm;
+		vm.createScriptFromFile("Tests/Language/CopyTest.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// unexpected exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
 void LanguageTest::testDefaultParameter()
 {
 	try {

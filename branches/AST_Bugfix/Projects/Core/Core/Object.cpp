@@ -135,7 +135,6 @@ void Object::assign(const Object& other)
 		mInheritance = other.mInheritance;
 		mIsAtomicType = other.mIsAtomicType;
 		mIsConstructed = other.mIsConstructed;
-		mIsReference = other.mIsReference;
 		mParent = other.mParent ? other.mParent : mParent;
 		mScopeName = other.mScopeName;
 		mScopeType = other.mScopeType;
@@ -146,6 +145,7 @@ void Object::assign(const Object& other)
 		mQualifiedTypename = other.mQualifiedTypename;
 		mTypename = other.mTypename;
 
+		mIsReference = other.mIsReference;	// TODO: this prevents a correct handling
 		if ( mIsReference && other.mIsReference ) {
 			assignReference(other.mReference);
 		}
@@ -281,7 +281,7 @@ void Object::copy(const Object& other)
 		mTypename = other.mTypename;
 		mValue = other.mValue;
 
-		if ( mReference.isValid() ) {
+		if ( mIsReference ) {
 			// this object has a reference to a third object
 			// we also have to copy this third object by creating a fourth
 

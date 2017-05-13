@@ -388,6 +388,7 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 
 	object->setBluePrint(blueprint);
 	object->setFinal(blueprint->isFinal());
+	object->setIsReference(blueprint->isReference());
 	object->setLanguageFeatureState(blueprint->getLanguageFeatureState());
 	object->setMember(blueprint->isMember());
 	object->setMutability(blueprint->getMutability());
@@ -575,6 +576,7 @@ void Repository::init()
 	}
 	{	// "Object" type
 		Designtime::UserObject* obj = new Designtime::UserObject();
+		obj->setIsReference(true);
 		addBluePrint(obj);
 
 		scope->define(Designtime::UserObject::TYPENAME, obj);
@@ -604,6 +606,7 @@ void Repository::init()
 		nullObject->setConst(true);
 		nullObject->setConstructed(false);
 		nullObject->setFinal(false);
+		nullObject->setIsReference(true);
 		nullObject->setMutability(Mutability::Const);
 		nullObject->setVisibility(Visibility::Public);
 		nullObject->setSealed(true);
