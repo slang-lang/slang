@@ -51,6 +51,7 @@ public:
 	static bool isNamespaceDeclaration(TokenIterator token);
 	static bool isObjectDeclaration(TokenIterator token);
 
+	static AccessMode::E parseAccessMode(TokenIterator& token, AccessMode::E defaultValue);
 	static ImplementationType::E parseImplementationType(TokenIterator& token, ImplementationType::E defaultValue);
 	static LanguageFeatureState::E parseLanguageFeatureState(TokenIterator& token, LanguageFeatureState::E defaultValue);
 	static Mutability::E parseMutability(TokenIterator& token, Mutability::E defaultValue);

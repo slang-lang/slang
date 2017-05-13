@@ -489,6 +489,24 @@ bool Parser::isObjectDeclaration(TokenIterator token)
 	return true;
 }
 
+AccessMode::E Parser::parseAccessMode(TokenIterator& token, AccessMode::E defaultValue)
+{
+	AccessMode::E result = defaultValue;
+
+	if ( token->type() == Token::Type::RESERVED_WORD ) {
+		result = AccessMode::convert(token->content());
+
+		if ( result == AccessMode::Unspecified ) {
+			// invalid type
+			throw Common::Exceptions::SyntaxError("invalid token '" + token->content() + "' found", token->position());
+		}
+
+		++token;
+	}
+
+	return result;
+}
+
 ImplementationType::E Parser::parseImplementationType(TokenIterator& token, ImplementationType::E defaultValue)
 {
 	ImplementationType::E result = defaultValue;
