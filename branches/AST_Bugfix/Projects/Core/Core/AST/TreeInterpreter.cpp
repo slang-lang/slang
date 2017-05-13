@@ -737,8 +737,7 @@ void TreeInterpreter::pushScope(IScope* scope)
 	StackFrame* stack = mStack->current();
 
 	bool allowDelete = !scope;
-
-	if ( !scope ) {
+	if ( allowDelete ) {
 		scope = new SymbolScope(stack->getScope());
 	}
 
@@ -749,7 +748,7 @@ Runtime::Object& TreeInterpreter::resolveLValue(IScope *scope, SymbolExpression 
 {
 	Runtime::Object* result = dynamic_cast<Runtime::Object*>(resolveRValue(scope, symbol, onlyCurrentScope, visibility));
 	if ( !result ) {
-		throw Common::Exceptions::Exception("invalid lvalue symbol");
+		throw Runtime::Exceptions::AccessViolation(symbol->toString());
 	}
 
 	return (*result);

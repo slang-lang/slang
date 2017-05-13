@@ -303,24 +303,6 @@ void TreeGenerator::initialize(Common::Method* method)
 	}
 }
 
-AccessMode::E TreeGenerator::parseAccessMode(TokenIterator &token, bool isAtomicType)
-{
-	AccessMode::E result = isAtomicType ? AccessMode::ByValue : AccessMode::ByReference;
-
-	if ( token->type() == Token::Type::RESERVED_WORD ) {
-		result = AccessMode::convert(token->content());
-
-		if ( result == AccessMode::Unspecified ) {
-			// invalid type
-			throw Common::Exceptions::SyntaxError("invalid token '" + token->content() + "' found", token->position());
-		}
-
-		++token;
-	}
-
-	return result;
-}
-
 Node* TreeGenerator::parseCondition(TokenIterator& start)
 {
 	Node* condition = parseExpression(start);
@@ -456,24 +438,6 @@ Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 	}
 
 	return infixPostfix;
-}
-
-Mutability::E TreeGenerator::parseMutability(TokenIterator& token)
-{
-	Mutability::E result = Mutability::Modify;
-
-	if ( token->type() == Token::Type::MODIFIER ) {
-		result = Mutability::convert(token->content());
-
-		if ( result != Mutability::Const && result != Mutability::Modify ) {
-			// local variables are only allowed to by modifiable or constant
-			throw Common::Exceptions::SyntaxError("invalid token '" + token->content() + "' found", token->position());
-		}
-
-		++token;
-	}
-
-	return result;
 }
 
 SymbolExpression* TreeGenerator::parseSymbol(TokenIterator& token)
@@ -1402,7 +1366,10 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 	std::string name = token->content();
 	++token;
 
-	Mutability::E mutability = parseMutability(token);
+	Mutability::E mutability = Designtime::Parser::parseMutability(token, Mutability::Modify);
+	if ( mutability != Mutability::Const && mutability != Mutability::Modify ) {
+		throw Common::Exceptions::SyntaxError("invalid mutability set for '" + name + "'", token->position());
+	}
 
 	Runtime::Object* object = mRepository->createInstance(type, name, constraints, Repository::InitilizationType::AllowAbstract);
 	object->setConst(object->isConst() || mutability == Mutability::Const);	// prevent constness of blueprint if set
@@ -1410,7 +1377,7 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 	getScope()->define(name, object);
 
 	// non-atomic types are references by default
-	AccessMode::E accessMode = parseAccessMode(token, object->isAtomicType());
+	AccessMode::E accessMode = Designtime::Parser::parseAccessMode(token, object->isAtomicType() ? AccessMode::ByValue : AccessMode::ByReference);
 
 	Node* assignment = 0;
 
@@ -1481,8 +1448,12 @@ TypeDeclaration* TreeGenerator::process_var(TokenIterator& token)
 	std::string name = token->content();
 	++token;
 
-	Mutability::E mutability = parseMutability(token);
-	AccessMode::E accessMode = parseAccessMode(token, AccessMode::ByValue);
+	Mutability::E mutability = Designtime::Parser::parseMutability(token, Mutability::Modify);
+	if ( mutability != Mutability::Const && mutability != Mutability::Modify ) {
+		throw Common::Exceptions::SyntaxError("invalid mutability set for '" + name + "'", token->position());
+	}
+
+	AccessMode::E accessMode = Designtime::Parser::parseAccessMode(token, AccessMode::ByValue);
 
 	expect(Token::Type::ASSIGN, token);
 	++token;
