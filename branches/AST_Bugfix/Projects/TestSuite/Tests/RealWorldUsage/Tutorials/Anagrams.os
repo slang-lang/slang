@@ -53,7 +53,7 @@ public void Main(int argc, string args) {
 	}
 }
 
-private String alphabetize(String word ref) {
+private string alphabetize(String word ref) {
 	Set sorted = new Set();
 
 	int length = word.Length();
@@ -66,6 +66,6 @@ private String alphabetize(String word ref) {
 		word = word + String s;
 	}
 
-	return word;
+	return string word;
 }
 
