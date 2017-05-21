@@ -288,8 +288,28 @@ void createBasicFolderStructure()
 
 void createLocalLibrary()
 {
-	// create config file
-	execute("touch " + mCurrendFolder + "/odepend.json");
+	std::cout << "Preparing current directory for odepend..." << std::endl;
+
+	std::string filename = mCurrendFolder + "/odepend.json";
+
+	if ( !Utils::Tools::Files::exists(filename) ) {
+		Json::Value repository;
+		repository.addMember("name", "main");
+		repository.addMember("url", "https://michaeladelmann.ticketsharing.net/repo/stable");
+
+		Json::Value config;
+		config.addMember("repository", repository);
+
+		// serialize config to string
+		Json::StyledWriter writer;
+		std::string data = writer.toString(config);
+
+		// write config string to file
+		std::fstream stream;
+		stream.open(filename.c_str(), std::ios::out);    // open file for writing
+		stream.write(data.c_str(), data.size());
+		stream.close();
+	}
 }
 
 void deinit()
@@ -550,41 +570,39 @@ void loadConfig()
 	Json::Value config;
 	readJsonFile(filename, config);
 
-	if ( !config.isMember("repository") ) {
-		throw ObjectiveScript::Common::Exceptions::Exception("invalid repository condifuration");
+	if ( config.isMember("repository") ) {
+		Json::Value entry = config["repository"];
+
+		// repository name
+		// {
+		if ( !entry.isMember("name") ) {
+			std::cout << "!!! Invalid repository name" << std::endl;
+			return;
+		}
+
+		std::string name = entry["name"].asString();
+		// }
+
+		// repository URL
+		// {
+		if ( !entry.isMember("url") ) {
+			std::cout << "!!! Invalid repository url" << std::endl;
+			return;
+		}
+
+		std::string url = entry["url"].asString();
+
+		// make sure the URL ends with a slash
+		if ( url[url.size() - 1] != '/' ) {
+			url += '/';
+		}
+		// }
+
+		Repository repository(name);
+		repository.setURL(url);
+
+		mRepository = repository;
 	}
-
-	Json::Value entry = config["repository"];
-
-	// repository name
-	// {
-	if ( !entry.isMember("name") ) {
-		std::cout << "!!! Invalid repository name" << std::endl;
-		return;
-	}
-
-	std::string name = entry["name"].asString();
-	// }
-
-	// repository URL
-	// {
-	if ( !entry.isMember("url") ) {
-		std::cout << "!!! Invalid repository url" << std::endl;
-		return;
-	}
-
-	std::string url = entry["url"].asString();
-
-	// make sure the URL ends with a slash
-	if ( url[url.size() - 1] != '/' ) {
-		url += '/';
-	}
-	// }
-
-	Repository repository(name);
-	repository.setURL(url);
-
-	mRepository = repository;
 }
 
 void printUsage()
@@ -842,7 +860,7 @@ int main(int argc, const char* argv[])
 
 	switch ( mAction ) {
 		case Create: create(mParameters); break;
-		case CreateLocalLibrary: createLocalLibrary(); break;
+		case CreateLocalLibrary: createLocalLibrary(); init(); break;
 		case Help: printUsage(); break;
 		case Info: info(mParameters); break;
 		case Install: install(mParameters); break;
