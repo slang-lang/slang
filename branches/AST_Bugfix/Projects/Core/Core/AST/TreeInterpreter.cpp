@@ -158,28 +158,31 @@ void TreeInterpreter::evaluateBinaryExpression(BinaryExpression* exp, Runtime::O
 void TreeInterpreter::evaluateBooleanBinaryExpression(BooleanBinaryExpression* exp, Runtime::Object* result)
 {
 	Runtime::Object left;
-	Runtime::Object right;
 
 	// evaluate left expression
 	evaluate(exp->mLeft, &left);
 
+	bool leftResult = isTrue(left);
+
 	// incomplete boolean evaluation
-	if ( exp->mOperation.type() == Token::Type::AND && !isTrue(left) ) {
+	if ( exp->mOperation.type() == Token::Type::AND && !leftResult ) {
 		*result = Runtime::BoolObject(false);
 		return;
 	}
-	else if ( exp->mOperation.type() == Token::Type::NAND && !isTrue(left) ) {
+	else if ( exp->mOperation.type() == Token::Type::NAND && !leftResult ) {
 		*result = Runtime::BoolObject(true);
 		return;
 	}
-	else if ( exp->mOperation.type() == Token::Type::NOR && isTrue(left) ) {
+	else if ( exp->mOperation.type() == Token::Type::NOR && leftResult ) {
 		*result = Runtime::BoolObject(false);
 		return;
 	}
-	else if ( exp->mOperation.type() == Token::Type::OR && isTrue(left) ) {
+	else if ( exp->mOperation.type() == Token::Type::OR && leftResult ) {
 		*result = Runtime::BoolObject(true);
 		return;
 	}
+
+	Runtime::Object right;
 
 	// evaluate right expression
 	evaluate(exp->mRight, &right);
@@ -187,10 +190,10 @@ void TreeInterpreter::evaluateBooleanBinaryExpression(BooleanBinaryExpression* e
 	switch ( exp->mOperation.type() ) {
 		// boolean expressions
 		// {
-		case Token::Type::AND: *result = Runtime::BoolObject(isTrue(left) && isTrue(right)); break;
-		case Token::Type::NAND: *result = Runtime::BoolObject(!isTrue(left) && !isTrue(right)); break;
-		case Token::Type::NOR: *result = Runtime::BoolObject(!isTrue(left) || !isTrue(right)); break;
-		case Token::Type::OR: *result = Runtime::BoolObject(isTrue(left) || isTrue(right)); break;
+		case Token::Type::AND: *result = Runtime::BoolObject(leftResult && isTrue(right)); break;
+		case Token::Type::NAND: *result = Runtime::BoolObject(!leftResult && !isTrue(right)); break;
+		case Token::Type::NOR: *result = Runtime::BoolObject(!leftResult || !isTrue(right)); break;
+		case Token::Type::OR: *result = Runtime::BoolObject(leftResult || isTrue(right)); break;
 		// }
 
 		// comparison expressions
@@ -270,25 +273,17 @@ void TreeInterpreter::evaluateMethodExpression(MethodExpression* exp, Runtime::O
 	Common::Method* method = static_cast<Common::Method*>(methodSymbol);
 	assert(method);
 
-	Runtime::ControlFlow::E controlflow;
-
 	if ( method->isExtensionMethod() ) {
-		controlflow = method->execute(params, result, Token());
+		mControlFlow = method->execute(params, result, Token());
 	}
 	else {
-		controlflow = execute(method, params, result);
+		mControlFlow = execute(method, params, result);
 	}
 
-	switch ( controlflow ) {
-		case Runtime::ControlFlow::ExitProgram:
-			mControlFlow = Runtime::ControlFlow::ExitProgram;
-			throw Runtime::ControlFlow::ExitProgram;	// promote controlflow
-		case Runtime::ControlFlow::Throw:
-			mControlFlow = Runtime::ControlFlow::Throw;
-			throw Runtime::ControlFlow::Throw;			// promote controlflow
-		default:
-			mControlFlow = Runtime::ControlFlow::Normal;
-			break;
+	switch ( mControlFlow ) {
+		case Runtime::ControlFlow::ExitProgram: throw Runtime::ControlFlow::ExitProgram;	// promote control flow
+		case Runtime::ControlFlow::Throw: throw Runtime::ControlFlow::Throw;				// promote control flow
+		default: mControlFlow = Runtime::ControlFlow::Normal; break;
 	}
 }
 

@@ -22,7 +22,7 @@ public:
 	typedef std::set<Module> Modules;
 
 public:
-	Repository(const std::string& name);
+	explicit Repository(const std::string& name = "");
 	~Repository();
 
 public:

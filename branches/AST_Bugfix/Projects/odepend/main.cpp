@@ -21,6 +21,7 @@
 #include <Tools/Files.h>
 #include <Tools/Strings.h>
 #include <Utils.h>
+#include <Core/Common/Exceptions.h>
 #include "Repository.h"
 
 // Namespace declarations
@@ -102,7 +103,7 @@ Repository mLocalRepository("local");
 Utils::Common::StdOutLogger mLogger;
 Repository mMissingDependencies("missing");
 StringList mParameters;
-std::list<Repository> mRepositories;
+Repository mRepository;
 e_Action mAction = None;
 
 
@@ -120,29 +121,29 @@ void checkOutdatedModules(std::set<std::string>& outdatedModules)
 
 	Repository::Modules local = mLocalRepository.getModules();
 
-	for ( std::list<Repository>::iterator repoIt = mRepositories.begin(); repoIt != mRepositories.end(); ++repoIt ) {
-		std::string filename = mBaseFolder + CACHE_REPOSITORIES + repoIt->getName() + ".json";
+	std::string filename = mBaseFolder + CACHE_REPOSITORIES + mRepository.getName() + ".json";
 
-		// check if filename exists
-		if ( !::Utils::Tools::Files::exists(filename) ) {
-			// no configuration file exists
-			std::cout << "!!! File '" + filename + "' not found" << std::endl;
-			continue;
-		}
+	// check if filename exists
+	if ( !::Utils::Tools::Files::exists(filename) ) {
+		// no configuration file exists
+		std::cout << "!!! File '" + filename + "' not found" << std::endl;
+		return;
 
-		Json::Value config;
-		readJsonFile(filename, config);
+		//throw ObjectiveScript::Common::Exceptions::Exception("!!! File '" + filename + "' not found");
+	}
 
-		// process Json::Value in Repository
-		repoIt->processIndex(config);
+	Json::Value config;
+	readJsonFile(filename, config);
 
-		Repository::Modules remote = repoIt->getModules();
+	// process Json::Value in Repository
+	mRepository.processIndex(config);
 
-		for ( Repository::Modules::const_iterator localIt = local.begin(); localIt != local.end(); ++localIt ) {
-			for ( Repository::Modules::const_iterator remoteIt = remote.begin(); remoteIt != remote.end(); ++remoteIt ) {
-				if ( localIt->mVersion < remoteIt->mVersion ) {
-					outdatedModules.insert(remoteIt->mShortName);
-				}
+	Repository::Modules remote = mRepository.getModules();
+
+	for ( Repository::Modules::const_iterator localIt = local.begin(); localIt != local.end(); ++localIt ) {
+		for ( Repository::Modules::const_iterator remoteIt = remote.begin(); remoteIt != remote.end(); ++remoteIt ) {
+			if ( localIt->mVersion < remoteIt->mVersion ) {
+				outdatedModules.insert(remoteIt->mShortName);
 			}
 		}
 	}
@@ -439,15 +440,13 @@ void install(const StringList& params)
 
 	std::cout << "Preparing dependencies..." << std::endl;
 
-	// TODO: make sure that the repository path ends with an '/'
-
 	for ( StringList::const_iterator it = params.begin(); it != params.end(); ++it ) {
 		std::string moduleName;
 		std::string version;
 
 		Utils::Tools::splitBy((*it), ':', moduleName, version);
 
-		prepareModuleInstallation("https://michaeladelmann.ticketsharing.net/repo/stable/", moduleName);
+		prepareModuleInstallation(mRepository.getURL(), moduleName);
 	}
 
 	// add all other requested modules to missing modules to prevent multiple installations of the same modules
@@ -464,7 +463,7 @@ void install(const StringList& params)
 
 	Repository::Modules missing = mMissingDependencies.getModules();
 	for ( Repository::Modules::const_iterator moduleIt = missing.begin(); moduleIt != missing.end(); ++moduleIt ) {
-		installModule("https://michaeladelmann.ticketsharing.net/repo/stable/", moduleIt->mShortName);
+		installModule(mRepository.getURL(), moduleIt->mShortName);
 	}
 }
 
@@ -551,31 +550,41 @@ void loadConfig()
 	Json::Value config;
 	readJsonFile(filename, config);
 
-	if ( config.isMember("repositories") ) {
-		int count = 0;
-		Json::Value::Members repos = config["repositories"].members();
-
-		for ( Json::Value::Members::const_iterator repoIt = repos.begin(); repoIt != repos.end(); ++repoIt, ++count ) {
-			Json::Value entry = (*repoIt);
-
-			if ( !entry.isMember("name") ) {
-				std::cout << "!!! Invalid repository: entry " << count << std::endl;
-				continue;
-			}
-			std::string name_short = entry["name"].asString();
-
-			if ( !entry.isMember("url") ) {
-				std::cout << "!!! Invalid repository: entry " << count << std::endl;
-				continue;
-			}
-			std::string url = entry["url"].asString();
-
-			Repository repository(name_short);
-			repository.setURL(url);
-
-			mRepositories.push_back(repository);
-		}
+	if ( !config.isMember("repository") ) {
+		throw ObjectiveScript::Common::Exceptions::Exception("invalid repository condifuration");
 	}
+
+	Json::Value entry = config["repository"];
+
+	// repository name
+	// {
+	if ( !entry.isMember("name") ) {
+		std::cout << "!!! Invalid repository name" << std::endl;
+		return;
+	}
+
+	std::string name = entry["name"].asString();
+	// }
+
+	// repository URL
+	// {
+	if ( !entry.isMember("url") ) {
+		std::cout << "!!! Invalid repository url" << std::endl;
+		return;
+	}
+
+	std::string url = entry["url"].asString();
+
+	// make sure the URL ends with a slash
+	if ( url[url.size() - 1] != '/' ) {
+		url += '/';
+	}
+	// }
+
+	Repository repository(name);
+	repository.setURL(url);
+
+	mRepository = repository;
 }
 
 void printUsage()
@@ -750,40 +759,36 @@ void search(const StringList& params)
 		return;
 	}
 
-	for ( std::list<Repository>::iterator repoIt = mRepositories.begin(); repoIt != mRepositories.end(); ++repoIt ) {
-		std::string filename = mBaseFolder + CACHE_REPOSITORIES + repoIt->getName() + ".json";
+	std::string filename = mBaseFolder + CACHE_REPOSITORIES + mRepository.getName() + ".json";
 
-		// check if filename exists
-		if ( !::Utils::Tools::Files::exists(filename) ) {
-			// no configuration file exists
-			std::cout << "!!! File '" + filename + "' not found" << std::endl;
-			continue;
-		}
-
-		Json::Value config;
-		readJsonFile(filename, config);
-
-		// TODO: implement search
+	// check if filename exists
+	if ( !::Utils::Tools::Files::exists(filename) ) {
+		// no configuration file exists
+		std::cout << "!!! File '" + filename + "' not found" << std::endl;
+		return;
 	}
+
+	Json::Value config;
+	readJsonFile(filename, config);
+
+	// TODO: implement search
 }
 
 void update()
 {
 	// download <URL>/<branch>/index.json
 
-	std::cout << "Updating " << mRepositories.size()  << " repositories..." << std::endl;
+	std::cout << "Updating repository \"" << mRepository.getName() << "\"..." << std::endl;
 
-	for ( std::list<Repository>::iterator it = mRepositories.begin(); it != mRepositories.end(); ++it ) {
-		std::string url = it->getURL() + "/index.json";
-		std::string filename = mBaseFolder + CACHE_REPOSITORIES + it->getName() + ".json";
+	std::string url = mRepository.getURL() + "/index.json";
+	std::string filename = mBaseFolder + CACHE_REPOSITORIES + mRepository.getName() + ".json";
 
-		bool result = download(url, filename, false);
-		if ( result ) {
-			std::cout << "Updated index for " << it->getURL() << std::endl;
-		}
-		else {
-			std::cout << "!!! Error while updating index for " << it->getURL() << std::endl;
-		}
+	bool result = download(url, filename, false);
+	if ( result ) {
+		std::cout << "Updated index for \"" << mRepository.getURL() << "\"" << std::endl;
+	}
+	else {
+		std::cout << "!!! Error while updating index for " << mRepository.getURL() << std::endl;
 	}
 }
 
