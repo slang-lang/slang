@@ -2009,7 +2009,7 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol, Initiali
 
 	Mutability::E mutability = parseMutability(token);
 
-	// not atomic types are references by default
+	// not-atomic types are references by default
 	AccessMode::E accessMode = parseAccessMode(token, static_cast<Designtime::BluePrintGeneric*>(symbol)->isAtomicType());
 
 	Object* object = mRepository->createInstance(static_cast<Designtime::BluePrintGeneric*>(symbol), name, constraints);

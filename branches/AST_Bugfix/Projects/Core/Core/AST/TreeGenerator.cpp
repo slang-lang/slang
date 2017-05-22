@@ -1257,7 +1257,7 @@ Statement* TreeGenerator::process_throw(TokenIterator& token)
 /*
  * syntax:
  * try { ... }
- * [ catch { ... } ]
+ * [ catch [ ( <expression> ) ] { ... } ]
  * [ finally { ... } ]
  */
 Statement* TreeGenerator::process_try(TokenIterator& token)
