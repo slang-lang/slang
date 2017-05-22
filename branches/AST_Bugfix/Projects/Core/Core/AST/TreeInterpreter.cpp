@@ -30,7 +30,7 @@
 // Namespace declarations
 
 #define DEBUGGER(exp) \
-	if ( mDebugger->useDebugger() ) { \
+	if ( mDebugger ) { \
 		mDebugger->exp; \
 	}
 
@@ -72,7 +72,7 @@ TreeInterpreter::TreeInterpreter(Common::ThreadId id)
   mThreadId(id)
 {
 	// initialize virtual machine stuff
-	mDebugger = &Core::Debugger::Instance();
+	mDebugger = Core::Debugger::Instance().useDebugger() ? &Core::Debugger::Instance() : 0;
 	mMemory = Controller::Instance().memory();
 	mRepository = Controller::Instance().repository();
 	mStack = Controller::Instance().stack();
