@@ -78,6 +78,11 @@ endfunction()
 
 function(_handle_modules_post_linker modules target)
 
+    list(FIND modules "boost" found)
+    if ( ${found} GREATER -1 )
+        _handle_post_boost(${target})
+    endif()
+
     list(FIND modules "curl" found)
     if ( ${found} GREATER -1 )
         _handle_post_curl(${target})
@@ -105,6 +110,11 @@ function(_boost_check_existence)
     if("${BUILD_BOOST_INC}" STREQUAL "")
         MESSAGE(FATAL_ERROR "BUILD_BOOST_INC needed for boost!")
     endif()
+
+endfunction()
+
+
+function(_handle_post_boost)
 
 endfunction()
 
@@ -137,7 +147,7 @@ endfunction()
 function(_handle_post_curl target)
 
     _curl_check_existence()
-    target_link_libraries(${target} Curl)
+    target_link_libraries(${target} curl)
 
 endfunction()
 
