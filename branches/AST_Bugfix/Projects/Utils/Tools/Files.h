@@ -25,6 +25,7 @@ std::string _ExtractFileExt(const std::string& filename);
 std::string ExtractFileExt(const std::string& filename);
 std::string ExtractFilename(const std::string& filename);
 std::string ExtractPathname(const std::string& pathname);
+std::string GetFullname(const std::string& filename);
 std::string _RemoveFileExt(const std::string& filename);
 std::string RemoveFileExt(const std::string& filename);
 

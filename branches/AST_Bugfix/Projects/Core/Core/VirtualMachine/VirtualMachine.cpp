@@ -57,7 +57,7 @@ void VirtualMachine::addLibraryFolder(const std::string &library)
 		return;
 	}
 
-	mLibraryFolders.insert(library + "/");
+	mLibraryFolders.insert(Utils::Tools::Files::GetFullname(library) + "/");
 }
 
 std::string VirtualMachine::buildPath(const std::string& basefolder, const std::string& library) const
@@ -72,21 +72,16 @@ std::string VirtualMachine::buildPath(const std::string& basefolder, const std::
 		}
 	} while ( npos != std::string::npos );
 
-	return basefolder + result + ".os";
+	return Utils::Tools::Files::GetFullname(basefolder + result + ".os");
 }
 
 Script* VirtualMachine::createScript(const std::string& content, const ParameterList& params, Runtime::Object* result)
 {
 	init();
+	printLibraryFolders();
 
 	Script *script = new Script();
 	mScripts.insert(script);
-
-/*
-	if ( mSettings.DoSyntaxCheck ) {
-		std::cout << "Starting syntax check..." << std::endl;
-	}
-*/
 
 	Designtime::Analyser analyser;
 	analyser.processString(content, mScriptFile);
@@ -154,7 +149,7 @@ Script* VirtualMachine::createScriptFromFile(const std::string& filename, const 
 		OSerror("invalid filename '" + filename + "' provided!");
 		throw Common::Exceptions::Exception("invalid filename '" + filename + "' provided!");
 	}
-	if ( !::Utils::Tools::Files::exists(filename) ) {
+	if ( !Utils::Tools::Files::exists(filename) ) {
 		OSerror("file '" + filename + "' not found!");
 		throw Common::Exceptions::Exception("file '" + filename + "' not found!");
 	}
@@ -164,7 +159,7 @@ Script* VirtualMachine::createScriptFromFile(const std::string& filename, const 
 
 	std::string content = std::string(std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>());
 
-	addLibraryFolder(::Utils::Tools::Files::ExtractPathname(filename));
+	addLibraryFolder(Utils::Tools::Files::ExtractPathname(filename));
 	mScriptFile = filename;
 
 	return createScript(content, params, result);
@@ -199,8 +194,6 @@ void VirtualMachine::init()
 	}
 
 	loadExtensions();
-
-	printLibraryFolders();
 }
 
 bool VirtualMachine::loadExtensions()
@@ -227,7 +220,7 @@ bool VirtualMachine::loadExtensions()
 			}
 		}
 		catch ( std::exception &e ) {
-			std::cout << "error while loading extensions: " << e.what() << std::endl;
+			std::cout << "error while loading extension: " << e.what() << std::endl;
 		}
 	}
 
@@ -238,7 +231,7 @@ bool VirtualMachine::loadLibrary(const std::string& library)
 {
 	OSdebug("loading library file '" + library + "'...");
 
-	if ( !::Utils::Tools::Files::exists(library) ) {
+	if ( !Utils::Tools::Files::exists(library) ) {
 		// provided library file doesn't exist!
 		return false;
 	}
@@ -249,7 +242,7 @@ bool VirtualMachine::loadLibrary(const std::string& library)
 		return true;
 	}
 
-	mLibraryFolders.insert(::Utils::Tools::Files::ExtractPathname(library));
+	mLibraryFolders.insert(Utils::Tools::Files::ExtractPathname(library));
 
 	Designtime::Analyser analyser;
 	analyser.processFile(library);
