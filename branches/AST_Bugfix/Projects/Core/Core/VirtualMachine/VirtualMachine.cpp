@@ -82,9 +82,11 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 	Script *script = new Script();
 	mScripts.insert(script);
 
+/*
 	if ( mSettings.DoSyntaxCheck ) {
 		std::cout << "Starting syntax check..." << std::endl;
 	}
+*/
 
 	Designtime::Analyser analyser;
 	analyser.processString(content, mScriptFile);
@@ -116,7 +118,7 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 	generator.process(Controller::Instance().stack()->globalScope());
 
 	if ( mSettings.DoSyntaxCheck ) {
-		std::cout << "Syntax check done." << std::endl;
+		std::cout << "Syntax check done, no errors found." << std::endl;
 
 		throw Runtime::ControlFlow::ExitProgram;
 	}
