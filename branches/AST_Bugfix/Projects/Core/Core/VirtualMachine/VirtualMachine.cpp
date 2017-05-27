@@ -108,13 +108,6 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 		}
 	}
 
-	// Startup
-	Common::Method* main = dynamic_cast<Common::Method*>(Controller::Instance().stack()->globalScope()->resolveMethod("Main", params, false));
-	if ( !main ) {
-		throw Common::Exceptions::Exception("could not resolve method 'Main(" + toString(params) + ")'");
-	}
-
-
 	Controller::Instance().repository()->initializeBlueprints();
 
 #ifdef GENERATE_PARSE_TREE
@@ -130,14 +123,19 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 
 #endif
 
-	Thread* t = Controller::Instance().threads()->getThread(Common::ThreadId(0));
-	Runtime::ControlFlow::E controlflow = t->execute(main, params, result);
+	// Startup
+	Common::Method* main = dynamic_cast<Common::Method*>(Controller::Instance().stack()->globalScope()->resolveMethod("Main", params, false));
+	if ( !main ) {
+		throw Common::Exceptions::Exception("could not resolve method 'Main(" + toString(params) + ")'");
+	}
 
+	Thread* t = Controller::Instance().threads()->getThread(Common::ThreadId(0));
+
+	Runtime::ControlFlow::E controlflow = t->execute(main, params, result);
 	if ( controlflow == Runtime::ControlFlow::Throw ) {
 		Runtime::ExceptionData data = Controller::Instance().stack()->exception();
 
 		std::string text = "Exception raised in " + data.getPosition().toString() + ":\n";
-					//text += data.getData()->ToString();
 					text += data.getData()->getValue().toStdString();
 
 		throw Common::Exceptions::Exception(text);

@@ -20,12 +20,8 @@ public object InnerObject {
 }
 
 public object CircularExtendedObject extends CircularBaseObject {
-	//private InnerObject mInner;
-
 	public void Constructor() {
 		writeln("Constructor(): Start");
-
-		//mInner = new InnerObject();
 
 		writeln("Constructor(): End");
 	}
