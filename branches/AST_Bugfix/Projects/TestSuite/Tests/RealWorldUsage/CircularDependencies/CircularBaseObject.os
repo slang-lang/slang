@@ -5,17 +5,15 @@ public object CircularBaseObject {
 	private InnerObject mInner;
 
 	public void Constructor() {
-		writeln("Constructor(): Start");
+		writeln("CircularBaseObject.Constructor()");
 
 		mInner = new InnerObject();
-
-		writeln("Constructor(): End");
 	}
 
 	public void Destructor() {
-		writeln("Destructor(): Start");
+		delete mInner;
 
-		writeln("Destructor(): End");
+		writeln("CircularBaseObject.Destructor()");
 	}
 
 	public string ToString() const {
