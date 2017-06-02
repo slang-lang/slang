@@ -5,7 +5,7 @@
 // Library includes
 #include <cassert>
 #include <fstream>
-
+#include <limits.h>
 
 // Project includes
 
