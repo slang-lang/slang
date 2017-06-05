@@ -9,6 +9,11 @@
 // Namespace declarations
 
 
+Module::Module()
+: mActionNeeded(Action::None)
+{
+}
+
 Module::Module(const std::string& name_short, const std::string& version)
 : mActionNeeded(Action::None),
   mShortName(name_short),
@@ -28,4 +33,14 @@ bool Module::operator<(const Module& other) const
 bool Module::operator==(const Module& other) const
 {
 	return mShortName == other.mShortName;
+}
+
+bool Module::loadFromJson(const Json::Value& value)
+{
+	mDescription = value["description"].asString();
+	mLongName = value["name"].asString();
+	mShortName = value["name_short"].asString();
+	mVersion = value["version"].asString();
+
+	return true;
 }

@@ -5,6 +5,7 @@
 
 // Library includes
 #include <string>
+#include <Json/Value.h>
 
 // Project includes
 #include "Dependency.h"
@@ -27,12 +28,16 @@ public:
 	};
 
 public:
+	Module();
 	Module(const std::string& name_short, const std::string& version);
 	~Module();
 
 public:
 	bool operator<(const Module& other) const;
 	bool operator==(const Module& other) const;
+
+public:
+	bool loadFromJson(const Json::Value& value);
 
 public:
 	Action::E mActionNeeded;

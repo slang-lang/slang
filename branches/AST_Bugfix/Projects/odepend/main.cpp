@@ -87,7 +87,7 @@ void installModule(const std::string& repo, const std::string& module);
 bool isLocalLibrary();
 void list();
 void loadConfig();
-void prepareModuleInstallation(const std::string& repo, const std::string& moduleName);
+void prepareModuleInstallation(const std::string& repo, const std::string& moduleName, const std::string& version);
 void readJsonFile(const std::string& filename, Json::Value& result);
 void remove(const StringList& params);
 void search(const StringList& params);
@@ -126,10 +126,10 @@ void checkOutdatedModules(std::set<std::string>& outdatedModules)
 	// check if filename exists
 	if ( !::Utils::Tools::Files::exists(filename) ) {
 		// no configuration file exists
-		std::cout << "!!! File '" + filename + "' not found" << std::endl;
+		std::cout << "!!! File \"" + filename + "\" not found" << std::endl;
 		return;
 
-		//throw ObjectiveScript::Common::Exceptions::Exception("!!! File '" + filename + "' not found");
+		//throw ObjectiveScript::Common::Exceptions::Exception("!!! File "" + filename + "" not found");
 	}
 
 	Json::Value config;
@@ -221,12 +221,10 @@ Module collectModuleData(const std::string& path, const std::string& filename)
 	std::string name_short = config["name_short"].asString();
 	std::string version = config["version"].asString();
 
-	Module module(name_short, version);
-	module.mDescription = description;
+	Module module;
+	module.loadFromJson(config);
 	module.mDependencies = collectDependencies(config["dependencies"]);
 	module.mInstalledDirectory = path;
-	module.mLongName = name_long;
-	module.mVersion = version;
 
 	return module;
 }
@@ -253,13 +251,13 @@ void create(const StringList& params)
 	Module module = collectModuleData(path, filename);
 
 	{	// create <module>.json
-		std::cout << "Creating module information '" << moduleName + ".json'" << std::endl;
+		std::cout << "Creating module information \"" << moduleName + ".json\"" << std::endl;
 
 		execute("cp " + path + "/" + filename + " " + moduleName + ".json");
 	}
 
 	{	// create package
-		std::cout << "Creating module package '" << path + "_" + module.mVersion + ".tar.gz'" << std::endl;
+		std::cout << "Creating module package \"" << path + "_" + module.mVersion + ".tar.gz\"" << std::endl;
 
 		execute("tar -cjf " + path + "_" + module.mVersion + ".tar.gz " + path);
 	}
@@ -369,7 +367,7 @@ bool download(const std::string& url, const std::string& target, bool allowClean
 
 void execute(const std::string& command)
 {
-	//std::cout << "Executing '" << command << "'" << std::endl;
+	//std::cout << "Executing "" << command << """ << std::endl;
 
 	system(command.c_str());
 }
@@ -395,11 +393,12 @@ void info(const StringList& params)
 			found = true;
 
 			std::cout << localIt->mShortName << "(" << localIt->mVersion << "): " << localIt->mLongName << std::endl;
+			std::cout << localIt->mDescription << std::endl;
 		}
 	}
 
 	if ( !found ) {
-		std::cout << "!!! Requested module '" << demandedModule << "' is not installed" << std::endl;
+		std::cout << "!!! Requested module \"" << demandedModule << "\" is not installed" << std::endl;
 	}
 }
 
@@ -449,7 +448,7 @@ void install(const StringList& params)
 {
 	// (1) prepare dependencies
 	// (2) install missing dependencies
-	// (3) installed requested modules
+	// (3) install requested modules
 
 	if ( params.empty() ) {
 		std::cout << "!!! Invalid number of parameters" << std::endl;
@@ -466,7 +465,7 @@ void install(const StringList& params)
 
 		Utils::Tools::splitBy((*it), ':', moduleName, version);
 
-		prepareModuleInstallation(mRepository.getURL(), moduleName);
+		prepareModuleInstallation(mRepository.getURL(), moduleName, version);
 	}
 
 	// add all other requested modules to missing modules to prevent multiple installations of the same modules
@@ -489,12 +488,12 @@ void install(const StringList& params)
 
 void installModule(const std::string& repo, const std::string& module)
 {
-	std::cout << "Installing module '" << module << "' from '" << repo << "'..." << std::endl;
+	std::cout << "Installing module \"" << module << "\" from \"" << repo << "\"..." << std::endl;
 
 	std::string module_config = mBaseFolder + CACHE_MODULES + module + ".json";
 
 	if ( !Utils::Tools::Files::exists(module_config) ) {
-		std::cout << "!!! Module information missing for module '" << module << "'" << std::endl;
+		std::cout << "!!! Module information missing for module \"" << module << "\"" << std::endl;
 		return;
 	}
 
@@ -677,9 +676,9 @@ void processParameters(int argc, const char* argv[])
 	}
 }
 
-void prepareModuleInstallation(const std::string& repo, const std::string& moduleName)
+void prepareModuleInstallation(const std::string& repo, const std::string& moduleName, const std::string& version)
 {
-	//std::cout << "Preparing module '" << moduleName << "' from '" << repo << "'..." << std::endl;
+	//std::cout << "Preparing module \"" << moduleName << "(" << version << ")\" from "" << repo << ""..." << std::endl;
 
 	// (1) download module information from repository
 	// (2) collect dependencies from module information
@@ -688,10 +687,11 @@ void prepareModuleInstallation(const std::string& repo, const std::string& modul
 	std::string path = mBaseFolder + CACHE_MODULES;
 	std::string filename = moduleName + ".json";
 	std::string module_config = path + filename;
+	std::string url = repo + "/" + MODULES + moduleName + (version.empty() ? ".json" : "_" + version + ".json");
 
-	bool result = download(repo + "/" + MODULES + moduleName + ".json", module_config);
+	bool result = download(url, module_config);
 	if ( !result ) {
-		std::cout << "!!! Download of module information for '" << moduleName << "' failed" << std::endl;
+		std::cout << "!!! Download of module information for \"" << moduleName << "\" failed" << std::endl;
 		return;
 	}
 
@@ -710,14 +710,14 @@ void prepareModuleInstallation(const std::string& repo, const std::string& modul
 		}
 
 		if ( !found ) {
-			// dependee module is not yet installed
-			std::cout << "Need to install dependend module '" << depIt->mModule << "'" << std::endl;
+			// dependent module is not yet installed
+			std::cout << "Need to install dependent module \"" << depIt->mModule << "\"" << std::endl;
 
-			Module dependee(depIt->mModule, depIt->mMinVersion);
+			Module dependent(depIt->mModule, depIt->mMinVersion);
 
-			mMissingDependencies.addModule(dependee);
+			mMissingDependencies.addModule(dependent);
 
-			prepareModuleInstallation(repo, dependee.mShortName);
+			prepareModuleInstallation(repo, dependent.mShortName, dependent.mVersion);
 		}
 	}
 }
@@ -755,14 +755,14 @@ void remove(const StringList& params)
 			if ( localIt->mShortName == (*moduleIt) ) {
 				found = true;
 
-				std::cout << "Removing module '" << localIt->mShortName << "' from '" << localIt->mInstalledDirectory << "'..." << std::endl;
+				std::cout << "Removing module \"" << localIt->mShortName << "\" from \"" << localIt->mInstalledDirectory << "\"..." << std::endl;
 
 				execute("rm -r " + localIt->mInstalledDirectory);
 			}
 		}
 
 		if ( !found ) {
-			std::cout << "!!! Module '" << (*moduleIt) << "' cannot be removed because it is not installed" << std::endl;
+			std::cout << "!!! Module \"" << (*moduleIt) << "\" cannot be removed because it is not installed" << std::endl;
 		}
 	}
 }
@@ -782,7 +782,7 @@ void search(const StringList& params)
 	// check if filename exists
 	if ( !::Utils::Tools::Files::exists(filename) ) {
 		// no configuration file exists
-		std::cout << "!!! File '" + filename + "' not found" << std::endl;
+		std::cout << "!!! File \"" + filename + "\" not found" << std::endl;
 		return;
 	}
 
