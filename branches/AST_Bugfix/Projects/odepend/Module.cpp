@@ -44,3 +44,8 @@ bool Module::loadFromJson(const Json::Value& value)
 
 	return true;
 }
+
+std::string Module::toVersionString() const
+{
+	return mShortName + ":" + mVersion.toString();
+}

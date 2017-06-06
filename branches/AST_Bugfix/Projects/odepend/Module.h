@@ -9,6 +9,7 @@
 
 // Project includes
 #include "Dependency.h"
+#include "Version.h"
 
 // Forward declarations
 
@@ -38,6 +39,7 @@ public:
 
 public:
 	bool loadFromJson(const Json::Value& value);
+	std::string toVersionString() const;
 
 public:
 	Action::E mActionNeeded;
@@ -47,7 +49,8 @@ public:
 	std::string mLongName;
 	std::string mShortName;
 	std::string mURL;
-	std::string mVersion;
+	//std::string mVersion;
+	SemanticVersionNumber mVersion;
 };
 
 

@@ -4,12 +4,15 @@ SET(SOURCES
 	main.cpp
 	Module.cpp
 	Repository.cpp
+	Version.cpp
 )
 
 SET(HEADERS
+	Defines.h
 	Dependency.h
 	Module.h
 	Repository.h
+	Version.h
 )
 
 SET(DEPENDENCIES

@@ -43,6 +43,18 @@ bool Repository::contains(const Module& module) const
 	return false;
 }
 
+bool Repository::getModule(const std::string& shortName, Module& module) const
+{
+	for ( Modules::const_iterator it = mModules.begin(); it != mModules.end(); ++it ) {
+		if ( it->mShortName == shortName ) {
+			module = (*it);
+			return true;
+		}
+	}
+
+	return false;
+}
+
 const Repository::Modules& Repository::getModules() const
 {
 	return mModules;

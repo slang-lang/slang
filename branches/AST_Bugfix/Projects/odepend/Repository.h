@@ -28,6 +28,7 @@ public:
 public:
 	void addModule(const Module& module);
 	bool contains(const Module& module) const;
+	bool getModule(const std::string& shortName, Module& module) const;
 
 public:
 	const Modules& getModules() const;

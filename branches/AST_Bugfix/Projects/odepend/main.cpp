@@ -22,6 +22,7 @@
 #include <Tools/Strings.h>
 #include <Utils.h>
 #include <Core/Common/Exceptions.h>
+#include "Defines.h"
 #include "Repository.h"
 
 // Namespace declarations
@@ -70,7 +71,7 @@ static const char* MODULES = "modules/";
 static const char* TMP = "/tmp/";
 
 
-void checkOutdatedModules(std::set<std::string>& modules);
+void checkOutdatedModules(Repository::Modules& modules);
 void cleanCache();
 Dependencies collectDependencies(const Json::Value& dependencies);
 void collectLocalModuleData();
@@ -81,6 +82,7 @@ void createLocalLibrary();
 void deinit();
 bool download(const std::string& url, const std::string& target, bool allowCleanup = true);
 void execute(const std::string& command);
+void info(const StringList& params);
 void init();
 void install(const StringList& params);
 void installModule(const std::string& repo, const std::string& module);
@@ -88,6 +90,7 @@ bool isLocalLibrary();
 void list();
 void loadConfig();
 void prepareModuleInstallation(const std::string& repo, const std::string& moduleName, const std::string& version);
+void prepareRemoteRepository();
 void readJsonFile(const std::string& filename, Json::Value& result);
 void remove(const StringList& params);
 void search(const StringList& params);
@@ -96,14 +99,14 @@ void upgrade(const StringList& params);
 
 
 std::string mBaseFolder;
-std::string mCurrendFolder;
+std::string mCurrentFolder;
 StringList mDownloadedFiles;
 std::string mLibraryFolder;
 Repository mLocalRepository("local");
 Utils::Common::StdOutLogger mLogger;
 Repository mMissingDependencies("missing");
 StringList mParameters;
-Repository mRepository;
+Repository mRemoteRepository;
 e_Action mAction = None;
 
 
@@ -113,37 +116,19 @@ static size_t write_data(void *ptr, size_t size, size_t nmemb, void *stream)
 	return written;
 }
 
-void checkOutdatedModules(std::set<std::string>& outdatedModules)
+void checkOutdatedModules(Repository::Modules& outdatedModules)
 {
 	// compare new index.json with local module information:
 	// find all folders in local <repo> folder and compare their corresponding <repo>/list/<module>.json [version] field
 	// with the version in the index.json file
 
 	Repository::Modules local = mLocalRepository.getModules();
-
-	std::string filename = mBaseFolder + CACHE_REPOSITORIES + mRepository.getName() + ".json";
-
-	// check if filename exists
-	if ( !::Utils::Tools::Files::exists(filename) ) {
-		// no configuration file exists
-		std::cout << "!!! File \"" + filename + "\" not found" << std::endl;
-		return;
-
-		//throw ObjectiveScript::Common::Exceptions::Exception("!!! File "" + filename + "" not found");
-	}
-
-	Json::Value config;
-	readJsonFile(filename, config);
-
-	// process Json::Value in Repository
-	mRepository.processIndex(config);
-
-	Repository::Modules remote = mRepository.getModules();
+	Repository::Modules remote = mRemoteRepository.getModules();
 
 	for ( Repository::Modules::const_iterator localIt = local.begin(); localIt != local.end(); ++localIt ) {
 		for ( Repository::Modules::const_iterator remoteIt = remote.begin(); remoteIt != remote.end(); ++remoteIt ) {
-			if ( localIt->mVersion < remoteIt->mVersion ) {
-				outdatedModules.insert(remoteIt->mShortName);
+			if ( localIt->mShortName == remoteIt->mShortName && localIt->mVersion < remoteIt->mVersion ) {
+				outdatedModules.insert(*remoteIt);
 			}
 		}
 	}
@@ -153,7 +138,9 @@ void cleanCache()
 {
 	// delete all downloaded files from cache
 
-	//std::cout << "Cleaning cache..." << std::endl;
+#ifdef ODEPEND_DEBUG
+	std::cout << "Cleaning cache..." << std::endl;
+#endif
 
 	for ( StringList::const_iterator it = mDownloadedFiles.begin(); it != mDownloadedFiles.end(); ++it ) {
 		execute("rm " + (*it));
@@ -189,21 +176,24 @@ void collectLocalModuleData()
 		return;
 	}
 
- 	struct dirent* entry = readdir(dir);
+ 	struct dirent* dirEntry = readdir(dir);
 
-	while ( entry ) {
-		if ( entry->d_type == DT_DIR ) {
-			std::string filename = "module.json";
-			std::string path = base + std::string(entry->d_name) + "/";
+	while ( dirEntry ) {
+		if ( dirEntry->d_type == DT_DIR ) {
+			std::string entry(dirEntry->d_name);
+			if ( entry != "." && entry != ".." ) {
+				std::string filename = "module.json";
+				std::string path = base + entry + "/";
 
-			if ( ::Utils::Tools::Files::exists(path + filename) ) {
-				mLocalRepository.addModule(
-					collectModuleData(path, filename)
-				);
+				if ( ::Utils::Tools::Files::exists(path + filename) ) {
+					mLocalRepository.addModule(
+						collectModuleData(path, filename)
+					);
+				}
 			}
 		}
 
-		entry = readdir(dir);
+		dirEntry = readdir(dir);
 	}
 
 	closedir(dir);
@@ -211,15 +201,12 @@ void collectLocalModuleData()
 
 Module collectModuleData(const std::string& path, const std::string& filename)
 {
-	//std::cout << "Collecting module data from " << path << std::endl;
+#ifdef ODEPEND_DEBUG
+	std::cout << "Collecting module data from \"" << path << "\"" << std::endl;
+#endif
 
 	Json::Value config;
 	readJsonFile(path + "/" + filename, config);
-
-	std::string description = config["description"].asString();
-	std::string name_long = config["name"].asString();
-	std::string name_short = config["name_short"].asString();
-	std::string version = config["version"].asString();
 
 	Module module;
 	module.loadFromJson(config);
@@ -236,7 +223,7 @@ Module collectModuleData(const std::string& path, const std::string& filename)
 void create(const StringList& params)
 {
 	// (1) collect module information from given "<directory>/module.json"
-	// (2) create "<module>.json", "<module>_<version>.tar.gz"
+	// (2) create "<module>.json", "<module>_<version>.json", "<module>_<version>.tar.gz"
 
 	if ( params.empty() || params.size() != 1 ) {
 		std::cout << "!!! Invalid number of parameters" << std::endl;
@@ -250,22 +237,25 @@ void create(const StringList& params)
 
 	Module module = collectModuleData(path, filename);
 
-	{	// create <module>.json
+	{	// create generic module information ("<module>.json")
 		std::cout << "Creating module information \"" << moduleName + ".json\"" << std::endl;
 
 		execute("cp " + path + "/" + filename + " " + moduleName + ".json");
 	}
+	{	// create version specific module information ("<module>_<version>.json")
+		std::cout << "Creating module information \"" << moduleName + "_" + module.mVersion.toString() + ".json\"" << std::endl;
 
-	{	// create package
-		std::cout << "Creating module package \"" << path + "_" + module.mVersion + ".tar.gz\"" << std::endl;
+		execute("cp " + path + "/" + filename + " " + moduleName + "_" + module.mVersion.toString() + ".json");
+	}
+	{	// create package ("<module>_<version>.tar.gz")
+		std::cout << "Creating module package \"" << path + "_" + module.mVersion.toString() + ".tar.gz\"" << std::endl;
 
-		execute("tar -cjf " + path + "_" + module.mVersion + ".tar.gz " + path);
+		execute("tar -cjf " + path + "_" + module.mVersion.toString() + ".tar.gz " + path);
 	}
 }
 
 void createBasicFolderStructure()
 {
-	std::string command;
 	std::string path;
 
 	// create "<base>/cache/modules" folder
@@ -288,7 +278,7 @@ void createLocalLibrary()
 {
 	std::cout << "Preparing current directory for odepend..." << std::endl;
 
-	std::string filename = mCurrendFolder + "/odepend.json";
+	std::string filename = mCurrentFolder + "/odepend.json";
 
 	if ( !Utils::Tools::Files::exists(filename) ) {
 		Json::Value repository;
@@ -317,7 +307,9 @@ void deinit()
 
 bool download(const std::string& url, const std::string& target, bool allowCleanup)
 {
-	//std::cout << "Downloading " << url << " => " << target << std::endl;
+//#ifdef ODEPEND_DEBUG
+//	std::cout << "Downloading \"" << url << "\" => \"" << target << "\"" << std::endl;
+//#endif
 
 	CURL *curl_handle;
 	FILE *pagefile;
@@ -367,7 +359,9 @@ bool download(const std::string& url, const std::string& target, bool allowClean
 
 void execute(const std::string& command)
 {
-	//std::cout << "Executing "" << command << """ << std::endl;
+//#ifdef ODEPEND_DEBUG
+//	std::cout << "Executing \"" << command << "\"" << std::endl;
+//#endif
 
 	system(command.c_str());
 }
@@ -392,7 +386,7 @@ void info(const StringList& params)
 		if ( localIt->mShortName == demandedModule ) {
 			found = true;
 
-			std::cout << localIt->mShortName << "(" << localIt->mVersion << "): " << localIt->mLongName << std::endl;
+			std::cout << localIt->mShortName << "(" << localIt->mVersion.toString() << "): " << localIt->mLongName << std::endl;
 			std::cout << localIt->mDescription << std::endl;
 		}
 	}
@@ -432,10 +426,10 @@ void init()
 
 		cCurrentPath[sizeof(cCurrentPath) - 1] = '\0'; /* not really required */
 
-		mCurrendFolder = std::string(cCurrentPath) + "/";
+		mCurrentFolder = std::string(cCurrentPath) + "/";
 
 		if ( isLocalLibrary() ) {
-			mLibraryFolder = mCurrendFolder;
+			mLibraryFolder = mCurrentFolder;
 		}
 	}
 
@@ -456,6 +450,7 @@ void install(const StringList& params)
 	}
 
 	collectLocalModuleData();
+	prepareRemoteRepository();
 
 	std::cout << "Preparing dependencies..." << std::endl;
 
@@ -465,7 +460,15 @@ void install(const StringList& params)
 
 		Utils::Tools::splitBy((*it), ':', moduleName, version);
 
-		prepareModuleInstallation(mRepository.getURL(), moduleName, version);
+		if ( version.empty() ) {
+			Module tmpModule;
+
+			if ( mRemoteRepository.getModule(moduleName, tmpModule) ) {
+				version = tmpModule.mVersion.toString();
+			}
+		}
+
+		prepareModuleInstallation(mRemoteRepository.getURL(), moduleName, version);
 	}
 
 	// add all other requested modules to missing modules to prevent multiple installations of the same modules
@@ -475,6 +478,14 @@ void install(const StringList& params)
 
 		Utils::Tools::splitBy((*it), ':', moduleName, version);
 
+		if ( version.empty() ) {
+			Module tmpModule;
+
+			if ( mRemoteRepository.getModule(moduleName, tmpModule) ) {
+				version = tmpModule.mVersion.toString();
+			}
+		}
+
 		mMissingDependencies.addModule(
 			Module(moduleName, version)
 		);
@@ -482,7 +493,16 @@ void install(const StringList& params)
 
 	Repository::Modules missing = mMissingDependencies.getModules();
 	for ( Repository::Modules::const_iterator moduleIt = missing.begin(); moduleIt != missing.end(); ++moduleIt ) {
-		installModule(mRepository.getURL(), moduleIt->mShortName);
+		Module tmp;
+
+		if ( mLocalRepository.getModule(moduleIt->mShortName, tmp) ) {
+			if ( !(tmp.mVersion < moduleIt->mVersion) ) {
+				std::cout << "Same or newer version (" << tmp.mVersion.toString() << " vs " << moduleIt->mVersion.toString() << ") of module \"" << moduleIt->mShortName << "\" already installed" << std::endl;
+				continue;
+			}
+		}
+
+		installModule(mRemoteRepository.getURL(), moduleIt->mShortName);
 	}
 }
 
@@ -546,7 +566,7 @@ void installModule(const std::string& repo, const std::string& module)
 
 bool isLocalLibrary()
 {
-	return Utils::Tools::Files::exists(mCurrendFolder + "/odepend.json");
+	return Utils::Tools::Files::exists(mCurrentFolder + "/odepend.json");
 }
 
 void list()
@@ -558,7 +578,7 @@ void list()
 	std::cout << local.size() << " module(s) installed." << std::endl;
 
 	for ( Repository::Modules::const_iterator localIt = local.begin(); localIt != local.end(); ++localIt ) {
-		std::cout << localIt->mShortName << "(" << localIt->mVersion << "): " << localIt->mLongName << std::endl;
+		std::cout << localIt->mShortName << "(" << localIt->mVersion.toString() << "): " << localIt->mLongName << std::endl;
 	}
 }
 
@@ -600,7 +620,7 @@ void loadConfig()
 		Repository repository(name);
 		repository.setURL(url);
 
-		mRepository = repository;
+		mRemoteRepository = repository;
 	}
 }
 
@@ -678,7 +698,9 @@ void processParameters(int argc, const char* argv[])
 
 void prepareModuleInstallation(const std::string& repo, const std::string& moduleName, const std::string& version)
 {
-	//std::cout << "Preparing module \"" << moduleName << "(" << version << ")\" from "" << repo << ""..." << std::endl;
+#ifdef ODEPEND_DEBUG
+	std::cout << "Preparing module \"" << moduleName << "(" << version << ")\" from \"" << repo << "\"..." << std::endl;
+#endif
 
 	// (1) download module information from repository
 	// (2) collect dependencies from module information
@@ -717,9 +739,29 @@ void prepareModuleInstallation(const std::string& repo, const std::string& modul
 
 			mMissingDependencies.addModule(dependent);
 
-			prepareModuleInstallation(repo, dependent.mShortName, dependent.mVersion);
+			prepareModuleInstallation(repo, dependent.mShortName, dependent.mVersion.toString());
 		}
 	}
+}
+
+void prepareRemoteRepository()
+{
+	std::string filename = mBaseFolder + CACHE_REPOSITORIES + mRemoteRepository.getName() + ".json";
+
+	// check if filename exists
+	if ( !::Utils::Tools::Files::exists(filename) ) {
+		// no configuration file exists
+		std::cout << "!!! File \"" + filename + "\" not found" << std::endl;
+		return;
+
+		//throw ObjectiveScript::Common::Exceptions::Exception("!!! File "" + filename + "" not found");
+	}
+
+	Json::Value config;
+	readJsonFile(filename, config);
+
+	// process Json::Value in Repository
+	mRemoteRepository.processIndex(config);
 }
 
 void readJsonFile(const std::string& filename, Json::Value& result)
@@ -777,7 +819,7 @@ void search(const StringList& params)
 		return;
 	}
 
-	std::string filename = mBaseFolder + CACHE_REPOSITORIES + mRepository.getName() + ".json";
+	std::string filename = mBaseFolder + CACHE_REPOSITORIES + mRemoteRepository.getName() + ".json";
 
 	// check if filename exists
 	if ( !::Utils::Tools::Files::exists(filename) ) {
@@ -796,17 +838,17 @@ void update()
 {
 	// download <URL>/<branch>/index.json
 
-	std::cout << "Updating repository \"" << mRepository.getName() << "\"..." << std::endl;
+	std::cout << "Updating repository \"" << mRemoteRepository.getName() << "\"..." << std::endl;
 
-	std::string url = mRepository.getURL() + "/index.json";
-	std::string filename = mBaseFolder + CACHE_REPOSITORIES + mRepository.getName() + ".json";
+	std::string url = mRemoteRepository.getURL() + "index.json";
+	std::string filename = mBaseFolder + CACHE_REPOSITORIES + mRemoteRepository.getName() + ".json";
 
 	bool result = download(url, filename, false);
 	if ( result ) {
-		std::cout << "Updated index for \"" << mRepository.getURL() << "\"" << std::endl;
+		std::cout << "Updated index for \"" << mRemoteRepository.getURL() << "\"" << std::endl;
 	}
 	else {
-		std::cout << "!!! Error while updating index for " << mRepository.getURL() << std::endl;
+		std::cout << "!!! Error while updating index for " << mRemoteRepository.getURL() << std::endl;
 	}
 }
 
@@ -819,9 +861,9 @@ void upgrade(const StringList& params)
 	// (3) install new modules if any are available
 
 	collectLocalModuleData();
+	prepareRemoteRepository();
 
-	std::set<std::string> outdatedModules;
-
+	Repository::Modules outdatedModules;
 	checkOutdatedModules(outdatedModules);
 
 	std::cout << "Need to upgrade " << outdatedModules.size() << " module(s)..." << std::endl;
@@ -831,11 +873,11 @@ void upgrade(const StringList& params)
 		mParameters.clear();
 
 		std::cout << "New module(s): ";
-		for ( std::set<std::string>::const_iterator it = outdatedModules.begin(); it != outdatedModules.end(); ++it ) {
-			std::cout << (*it) << " ";
+		for ( Repository::Modules::const_iterator it = outdatedModules.begin(); it != outdatedModules.end(); ++it ) {
+			std::cout << it->mShortName << "(" << it->mVersion.toString() << ")" << " ";
 
 			// add outdated module name to global parameters
-			mParameters.push_back((*it));
+			mParameters.push_back(it->toVersionString());
 		}
 		std::cout << std::endl;
 
