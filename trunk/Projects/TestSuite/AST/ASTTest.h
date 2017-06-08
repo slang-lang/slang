@@ -50,11 +50,14 @@ private:	// Tests
 	void testNew();
 	void testReturn();
 	void testSwitch();
+	void testTernaryOperator();
+	void testTernaryOperatorFail();
 	void testThis();
 	void testThrow();
 	void testTry();
 	void testTypecast();
 	void testTypeDeclaration();
+	void testTypeInference();
 	void testTypeSystem();
 	void testUnaryExpression();
 	void testWhile();

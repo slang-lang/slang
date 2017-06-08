@@ -31,7 +31,7 @@ if( "${BUILD}" STREQUAL "" OR "${BUILD}" MATCHES "Debug")
 
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wextra -g")
 
-elseif("${BUILD}" MATCHES "Release")
+elseif( "${BUILD}" MATCHES "Release")
 
     # MESSAGE("Setting default build to: Release")
     SET(CMAKE_BUILD_TYPE "Release")

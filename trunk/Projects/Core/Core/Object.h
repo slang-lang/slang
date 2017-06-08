@@ -51,7 +51,7 @@ public:
 
 public:
 	Object& operator= (const Object& other);
-	void assign(const Object& other, bool overrideType = false);
+	void assign(const Object& other);
 	void copy(const Object& other);
 
 public: // MethodScope overrides
@@ -71,14 +71,15 @@ public: // IRuntimeType implementation
 public:	// Setup
 	void addInheritance(const Designtime::Ancestor& ancestor, Object* inheritance);
 	void setConstructed(bool state);
+	void setIsReference(bool state);
 	void setParent(IScope *scope);
 
 	Designtime::BluePrintObject* getBluePrint() const;
 	void setBluePrint(Designtime::BluePrintObject* blueprint);
 
 public:	// Reference
-	const Reference& getReference() const { return mReference; }
-	void setReference(const Reference& reference) { mReference = reference; }
+	const Reference& getReference() const;
+	void setReference(const Reference& reference);
 
 public: // Symbol
 	Symbol* resolve(const std::string& name, bool onlyCurrentScope, Visibility::E visibility) const;
@@ -110,7 +111,6 @@ public:	// Usage
 	ControlFlow::E execute(Object *result, const std::string& method, const ParameterList& params);
 
 public:	// Operators
-	virtual void operator_array(const Object *index, Object* result);
 	virtual void operator_assign(const Object *other);
 	virtual void operator_bitand(const Object *other);
 	virtual void operator_bitcomplement(const Object *other);
@@ -138,13 +138,12 @@ protected:
 	void garbageCollector();
 
 protected:
-	Object* mBase;
 	Designtime::BluePrintObject* mBluePrint;
 	std::string mFilename;
 	Inheritance mInheritance;
 	bool mIsAtomicType;
 	bool mIsConstructed;
-	bool mIsNull;
+	bool mIsReference;
 	std::string mQualifiedOuterface;
 	std::string mQualifiedTypename;
 	Reference mReference;

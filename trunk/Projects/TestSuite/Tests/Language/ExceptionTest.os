@@ -153,7 +153,6 @@ private bool TestCase6() throws {
 	try {
 		print("try");
 
-		//print("throw new Exception()");
 		throw new ExceptionTest.Exception("standard exception");
 	}
 	catch ( int e ref ) {
@@ -162,9 +161,6 @@ private bool TestCase6() throws {
 	}
 	catch ( ExceptionTest.Exception e ref ) {
 		print("catch " + e.what());
-	}
-	catch ( Object e ref ) {
-		print("caugth generic exception type: " + e.what());
 	}
 	finally {
 		print("finally");
@@ -180,7 +176,6 @@ private bool TestCase7() throws {
 		try {
 			print("try");
 
-			//print("throw new ExceptionTest.Exception");
 			throw new ExceptionTest.Exception("inner throw");
 		}
 		catch ( int e ref ) {
@@ -203,6 +198,6 @@ private bool TestCase7() throws {
 		return true;
 	}
 
-	return false;
+	assert( false );
 }
 

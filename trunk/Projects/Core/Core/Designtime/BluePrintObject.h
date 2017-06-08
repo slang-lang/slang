@@ -36,6 +36,9 @@ public:
 	bool hasConstructor() const;
 	bool hasDefaultConstructor() const;
 
+	bool isReference() const;
+	void setIsReference(bool state);
+
 	Runtime::AtomicValue getValue() const;
 	void setValue(Runtime::AtomicValue value);
 
@@ -46,6 +49,7 @@ public:
 	Symbols provideSymbols() const;
 
 private:
+	bool mIsReference;
 	Runtime::AtomicValue mValue;
 };
 

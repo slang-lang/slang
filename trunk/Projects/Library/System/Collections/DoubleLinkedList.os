@@ -19,7 +19,7 @@ public object DoubleLinkedList extends AbstractCollection {
 		}
 
 		if ( mSize == 1 ) {
-			mFirst = null;
+			mFirst = CollectionItem null;
 		}
 		else {
 			CollectionItem item = mFirst;
@@ -27,7 +27,7 @@ public object DoubleLinkedList extends AbstractCollection {
 				item = item.mNext;
 			}
 
-			item.mNext = null;
+			item.mNext = CollectionItem null;
 		}
 
 		mSize--;

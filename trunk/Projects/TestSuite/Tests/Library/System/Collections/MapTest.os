@@ -10,6 +10,7 @@ public void Main(int argc = 0, string args = "") {
 	assert( TestCase5() );
 	assert( TestCase6() );
 	assert( TestCase7() );
+	assert( TestCase8() );
 }
 
 private bool TestCase1() {
@@ -184,6 +185,28 @@ private bool TestCase7() {
 
 		//print("it.current() = " + it.current());
 	}
+
+	return true;
+}
+
+private bool TestCase8() {
+	print("TestCase 8: Map.operator[]");
+
+	Map<int, string> map = new Map<int, string>();
+
+	map.insert(0, "0");
+	map.insert(1, "1");
+	map.insert(2, "2");
+
+	assert( map.size() == 3 );
+
+	foreach ( Pair<int, string> p : map ) {
+		//print("p = " + string p);
+	}
+
+	assert( map[0] == "0" );
+	assert( map[2] == "2" );
+	assert( map[1] == "1" );
 
 	return true;
 }

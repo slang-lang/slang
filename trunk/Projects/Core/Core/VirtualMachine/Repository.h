@@ -34,6 +34,7 @@ namespace Designtime {
 namespace Runtime {
 	class Object;
 }
+class TypeSystem;
 
 class Repository
 {
@@ -55,7 +56,7 @@ public:
 	void deinit();
 	void init();
 
-	// asyncronous initialization of blueprints
+	// asynchronous initialization of blueprints
 	void initializeBlueprints();
 
 public:
@@ -70,6 +71,8 @@ public:
 	Runtime::Object* createReference(Designtime::BluePrintGeneric* blueprint, const std::string& name, PrototypeConstraints constraints, InitilizationType::E initialize = InitilizationType::None);
 
 	Designtime::BluePrintGeneric* findBluePrint(const std::string& type) const;
+
+	void prepareType(const Common::TypeDeclaration& type);
 
 private:
 #ifdef USE_ORDERED_COLLECTION
@@ -88,7 +91,8 @@ private:
 	Runtime::Object* createObject(const std::string& name, Designtime::BluePrintObject* blueprint, InitilizationType::E initialize);
 	Runtime::Object* createUserObject(const std::string& name, Designtime::BluePrintObject* blueprint, InitilizationType::E initialize);
 
-	void initBlueprint(Designtime::BluePrintObject* blueprint);
+	void initBluePrintObject(Designtime::BluePrintObject *blueprint);
+	void initTypeSystem(Designtime::BluePrintEnum* blueprint);
 	void initTypeSystem(Designtime::BluePrintObject* blueprint);
 
 	Designtime::BluePrintEnum* findBluePrintEnum(const std::string& type) const;
@@ -100,6 +104,9 @@ private:
 	BluePrintEnumMap mBluePrintEnums;
 	BluePrintObjectMap mBluePrintObjects;
 	ForwardDeclarationTomb mForwardDeclarations;
+
+private:	// Virtual machine stuff
+	TypeSystem* mTypeSystem;
 };
 
 

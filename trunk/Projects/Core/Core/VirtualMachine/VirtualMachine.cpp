@@ -15,6 +15,7 @@
 #include <Core/Runtime/Script.h>
 #include <Core/Tools.h>
 #include <Tools/Files.h>
+#include <Tools/Strings.h>
 #include <Utils.h>
 #include "Controller.h"
 
@@ -56,7 +57,7 @@ void VirtualMachine::addLibraryFolder(const std::string &library)
 		return;
 	}
 
-	mLibraryFolders.insert(library + "/");
+	mLibraryFolders.insert(Utils::Tools::Files::GetFullname(library) + "/");
 }
 
 std::string VirtualMachine::buildPath(const std::string& basefolder, const std::string& library) const
@@ -71,19 +72,16 @@ std::string VirtualMachine::buildPath(const std::string& basefolder, const std::
 		}
 	} while ( npos != std::string::npos );
 
-	return basefolder + result + ".os";
+	return Utils::Tools::Files::GetFullname(basefolder + result + ".os");
 }
 
 Script* VirtualMachine::createScript(const std::string& content, const ParameterList& params, Runtime::Object* result)
 {
 	init();
+	printLibraryFolders();
 
 	Script *script = new Script();
 	mScripts.insert(script);
-
-	if ( mSettings.DoSyntaxCheck ) {
-		std::cout << "Starting syntax check..." << std::endl;
-	}
 
 	Designtime::Analyser analyser;
 	analyser.processString(content, mScriptFile);
@@ -107,13 +105,6 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 		}
 	}
 
-	// Startup
-	Common::Method* main = dynamic_cast<Common::Method*>(Controller::Instance().stack()->globalScope()->resolveMethod("Main", params, false));
-	if ( !main ) {
-		throw Common::Exceptions::Exception("could not resolve method 'Main(" + toString(params) + ")'");
-	}
-
-
 	Controller::Instance().repository()->initializeBlueprints();
 
 #ifdef GENERATE_PARSE_TREE
@@ -122,21 +113,26 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 	generator.process(Controller::Instance().stack()->globalScope());
 
 	if ( mSettings.DoSyntaxCheck ) {
-		std::cout << "Syntax check done." << std::endl;
+		std::cout << "Syntax check done, no errors found." << std::endl;
 
 		throw Runtime::ControlFlow::ExitProgram;
 	}
 
 #endif
 
-	Thread* t = Controller::Instance().threads()->getThread(Common::ThreadId(0));
-	Runtime::ControlFlow::E controlflow = t->execute(main, params, result);
+	// Startup
+	Common::Method* main = dynamic_cast<Common::Method*>(Controller::Instance().stack()->globalScope()->resolveMethod("Main", params, false));
+	if ( !main ) {
+		throw Common::Exceptions::Exception("could not resolve method 'Main(" + toString(params) + ")'");
+	}
 
+	Thread* t = Controller::Instance().threads()->getThread(Common::ThreadId(0));
+
+	Runtime::ControlFlow::E controlflow = t->execute(main, params, result);
 	if ( controlflow == Runtime::ControlFlow::Throw ) {
 		Runtime::ExceptionData data = Controller::Instance().stack()->exception();
 
 		std::string text = "Exception raised in " + data.getPosition().toString() + ":\n";
-					//text += data.getData()->ToString();
 					text += data.getData()->getValue().toStdString();
 
 		throw Common::Exceptions::Exception(text);
@@ -153,7 +149,7 @@ Script* VirtualMachine::createScriptFromFile(const std::string& filename, const 
 		OSerror("invalid filename '" + filename + "' provided!");
 		throw Common::Exceptions::Exception("invalid filename '" + filename + "' provided!");
 	}
-	if ( !::Utils::Tools::Files::exists(filename) ) {
+	if ( !Utils::Tools::Files::exists(filename) ) {
 		OSerror("file '" + filename + "' not found!");
 		throw Common::Exceptions::Exception("file '" + filename + "' not found!");
 	}
@@ -163,7 +159,7 @@ Script* VirtualMachine::createScriptFromFile(const std::string& filename, const 
 
 	std::string content = std::string(std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>());
 
-	addLibraryFolder(::Utils::Tools::Files::ExtractPathname(filename));
+	addLibraryFolder(Utils::Tools::Files::ExtractPathname(filename));
 	mScriptFile = filename;
 
 	return createScript(content, params, result);
@@ -190,7 +186,7 @@ void VirtualMachine::init()
 			std::string left;
 			std::string right;
 
-			Tools::splitBy(path, ':', left, right);
+			Utils::Tools::splitBy(path, ':', left, right);
 			addLibraryFolder(left);
 
 			path = right;
@@ -198,8 +194,6 @@ void VirtualMachine::init()
 	}
 
 	loadExtensions();
-
-	printLibraryFolders();
 }
 
 bool VirtualMachine::loadExtensions()
@@ -226,7 +220,7 @@ bool VirtualMachine::loadExtensions()
 			}
 		}
 		catch ( std::exception &e ) {
-			std::cout << "error while loading extensions: " << e.what() << std::endl;
+			std::cout << "error while loading extension: " << e.what() << std::endl;
 		}
 	}
 
@@ -237,7 +231,7 @@ bool VirtualMachine::loadLibrary(const std::string& library)
 {
 	OSdebug("loading library file '" + library + "'...");
 
-	if ( !::Utils::Tools::Files::exists(library) ) {
+	if ( !Utils::Tools::Files::exists(library) ) {
 		// provided library file doesn't exist!
 		return false;
 	}
@@ -248,7 +242,7 @@ bool VirtualMachine::loadLibrary(const std::string& library)
 		return true;
 	}
 
-	mLibraryFolders.insert(::Utils::Tools::Files::ExtractPathname(library));
+	mLibraryFolders.insert(Utils::Tools::Files::ExtractPathname(library));
 
 	Designtime::Analyser analyser;
 	analyser.processFile(library);

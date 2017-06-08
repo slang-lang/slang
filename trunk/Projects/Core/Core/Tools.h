@@ -10,7 +10,6 @@
 
 // Project includes
 #include <Core/Designtime/Parser/Token.h>
-#include "Types.h"
 
 // Forward declarations
 
@@ -20,34 +19,12 @@
 namespace ObjectiveScript {
 
 // Forward declarations
-class Object;
-
-namespace Tools {
-
-
-	void split(const std::string& str, std::string& p, std::string& c);
-	void splitBy(const std::string& str, char splitter, std::string& p, std::string& c);
-
-	bool stringToBool(const std::string &value);
-	double stringToDouble(const std::string &value);
-	float stringToFloat(const std::string &value);
-	int stringToInt(const std::string &value);
-
-	std::string toString(bool value);
-	std::string toString(double value);
-	std::string toString(float value);
-	std::string toString(int value);
-	std::string toString(const std::string& value);
-
-	template <class T> inline std::string ConvertToStdString(const T &t) {
-		std::stringstream ss; ss << t; return ss.str();
-	}
-
-
+namespace Runtime {
+	class Object;
 }
 
 
-void expect(Token::Type::E expected, TokenIterator found);
+void expect(Token::Type::E expected, const TokenIterator& found);
 
 inline TokenIterator lookahead(TokenIterator token, int numLooks = 1) {
 	do { ++token; --numLooks; } while ( numLooks > 0 ); return token;

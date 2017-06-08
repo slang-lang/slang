@@ -14,7 +14,7 @@
 namespace ObjectiveScript {
 
 
-const std::string CONTROLCHARS	= "#.,;:=()[]{}!<>+-*/%&|~'\" ";
+const std::string CONTROLCHARS	= "#.,;:=()[]{}!?<>+-*/%&|~'\" ";
 const std::string WHITESPACES	= "\t\n\r ";
 const std::string DELIMITERS	= CONTROLCHARS + WHITESPACES;
 
@@ -30,11 +30,12 @@ Tokenizer::Tokenizer(const std::string& filename, const std::string& content)
 	mTypes = provideAtomicTypes();
 }
 
-void Tokenizer::addToken(const std::string &con, const Common::Position &position)
+void Tokenizer::addToken(const std::string& con, const Common::Position& position)
 {
 	std::string content = con;
 
 	Token::Category::E category = Token::Category::None;
+	bool isOptional = false;
 	Token::Type::E type = Token::Type::IDENTIFIER;
 
 	if ( content == "=" ) { category = Token::Category::Assignment; type = Token::Type::ASSIGN; }
@@ -60,6 +61,7 @@ void Tokenizer::addToken(const std::string &con, const Common::Position &positio
 	else if ( content == "*" ) { category = Token::Category::Operator; type = Token::Type::MATH_MULTIPLY; }
 	else if ( content == "-" ) { category = Token::Category::Operator; type = Token::Type::MATH_SUBTRACT; }
 	else if ( content == OPERATOR_IS ) { category = Token::Category::Operator; type = Token::Type::OPERATOR_IS; }
+	else if ( content == "?" ) { category = Token::Category::Operator; type = Token::Type::QUESTIONMARK; }
 	else if ( content == "!" ) { category = Token::Category::Operator; type = Token::Type::OPERATOR_NOT; }
 	else if ( content == "~" ) { category = Token::Category::Operator; type = Token::Type::TILDE; }
 	else if ( isBoolean(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_BOOLEAN; }
@@ -77,21 +79,20 @@ void Tokenizer::addToken(const std::string &con, const Common::Position &positio
 		content = con.substr(0, con.length() - 1);
 	}
 	else if ( isKeyword(content) ) { category = Token::Category::Keyword; type = Token::Type::KEYWORD; }
-	else if ( isLanguageFeature(content) ) { category = Token::Category::Modifier; type = Token::Type::LANGUAGEFEATURE; }
+	else if ( isLanguageFeature(content) ) { category = Token::Category::Attribute; isOptional = true; type = Token::Type::LANGUAGEFEATURE; }
 	else if ( isLiteral(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_LITERAL;
-		// remove leading and trailing (", ') quotation marks (", ')
+		// remove leading and trailing quotation marks (", ')
 		content = con.substr(1, con.length() - 2);
 	}
-	else if ( isModifier(content) ) { category = Token::Category::Modifier; type = Token::Type::MODIFIER; }
+	else if ( isModifier(content) ) { category = Token::Category::Modifier; isOptional = true; type = Token::Type::MODIFIER; }
 	else if ( isReservedWord(content) ) { category = Token::Category::ReservedWord; type = Token::Type::RESERVED_WORD; }
 	else if ( isType(content) ) { category = Token::Category::Identifier; type = Token::Type::TYPE; }
-	else if ( isVisibility(content) ) { type = Token::Type::VISIBILITY; }
-	else if ( isWhiteSpace(content) ) { category = Token::Category::Ignorable; type = Token::Type::WHITESPACE; }
+	else if ( isVisibility(content) ) { category = Token::Category::ReservedWord; isOptional = true; type = Token::Type::VISIBILITY; }
+	else if ( isWhiteSpace(content) ) { return; }
 
-	Token token(category, type, content, position);
-	token.setOptional(category == Token::Category::Modifier || type == Token::Type::LANGUAGEFEATURE);
-
-	mTokens.push_back(token);
+	mTokens.push_back(
+		Token(category, type, content, position, isOptional)
+	);
 }
 
 void Tokenizer::addToken(const Token& token)
@@ -134,7 +135,7 @@ bool Tokenizer::isDouble(const std::string& token) const
 		}
 	}
 
-	// the last char of our token has to be an 'd'
+	// the last char of our token has to be a 'd'
 	return token[token.size() - 1] == 'd';
 }
 
@@ -168,7 +169,7 @@ bool Tokenizer::isFloat(const std::string& token) const
 
 bool Tokenizer::isInteger(const std::string& token) const
 {
-	if ( token.empty() ) {
+	if ( token.size() == 0 ) {
 		return false;
 	}
 
@@ -238,10 +239,12 @@ bool Tokenizer::isLiteral(const std::string& token) const
 		if ( (token.at(0) == '"' && token.at(token.size() - 1) == '"')) {
 			return true;
 		}
+/*
 		// single quoted literals
 		if ( (token.at(0) == '\'' && token.at(token.size() - 1) == '\'') ) {
 			return true;
 		}
+*/
 	}
 
 	return false;
@@ -319,12 +322,12 @@ void Tokenizer::mergeBooleanOperators()
 			tmp.push_back(Token(Token::Category::Operator, Token::Type::NOR, "!|", token->position()));
 		}
 
-		lastType = token->type();
 		if ( !changed ) {
 			tmp.push_back((*token));
 		}
+		lastType = tmp.back().type();
 
-		token++;
+		++token;
 	}
 
 	mTokens = tmp;
@@ -353,12 +356,12 @@ void Tokenizer::mergeOtherOperators()
 			tmp.push_back(Token(Token::Category::Operator, Token::Type::ARRAY_SUBSCRIPT, "[]", token->position()));
 		}
 
-		lastType = token->type();
 		if ( !changed ) {
 			tmp.push_back((*token));
 		}
+		lastType = tmp.back().type();
 
-		token++;
+		++token;
 	}
 
 	mTokens = tmp;
@@ -395,12 +398,12 @@ void Tokenizer::mergeInfixPostfixOperators()
 			tmp.push_back(Token(Token::Category::Operator, Token::Type::OPERATOR_INCREMENT, "++", token->position()));
 		}
 
-		lastType = token->type();
 		if ( !changed ) {
 			tmp.push_back((*token));
 		}
+		lastType = tmp.back().type();
 
-		token++;
+		++token;
 	}
 
 	mTokens = tmp;
@@ -422,20 +425,19 @@ void Tokenizer::process()
 
 	while ( offset < size ) {
 		char thisChar = mContent[offset++];
-		//size_t i = DELIMITERS.find_first_of(thisChar);
 
 		// preprocessor directives as single line comments '#'
 		if ( !isMultiLineComment && !isSingleLineComment && !isString && thisChar == '#' ) {
 			isPreprocessorDirective = true;
 		}
 		// single line comments '//'
-		if ( !isMultiLineComment && !isSingleLineComment && !isString && lastChar == '/' && thisChar == '/' ) {
+		else if ( !isMultiLineComment && !isSingleLineComment && !isString && lastChar == '/' && thisChar == '/' ) {
 			isSingleLineComment = true;
 			// remove last inserted token
 			mTokens.pop_back();
 		}
-		// multiline comments '/*'
-		if ( !isMultiLineComment && !isSingleLineComment && !isString && lastChar == '/' && thisChar == '*' ) {
+		// multi line comments '/*'
+		else if ( !isMultiLineComment && !isSingleLineComment && !isString && lastChar == '/' && thisChar == '*' ) {
 			isMultiLineComment = true;
 			// remove last inserted token
 			mTokens.pop_back();
@@ -477,7 +479,7 @@ void Tokenizer::process()
 			}
 		}
 
-		// multiline comments '*/'
+		// multi line comments '*/'
 		if ( isMultiLineComment && lastChar == '*' && thisChar == '/' ) {
 			isMultiLineComment = false;
 		}
@@ -502,8 +504,8 @@ void Tokenizer::process()
 	}
 
 	addToken(Token(Token::Type::ENDOFFILE));	// add end of file token
+	addToken(Token(Token::Type::ENDOFFILE));	// add end of file token
 
-	removeWhiteSpaces();			// remove all white spaces
 	replaceAssignments();			// replace assignment tokens with compare tokens (if present)
 	mergeBooleanOperators();		// merge '&' '&' into '&&'
 	mergeInfixPostfixOperators();	// merge '+' '+' into '++'
@@ -636,12 +638,12 @@ void Tokenizer::replaceAssignments()
 			tmp.push_back(Token(Token::Category::Assignment, Token::Type::ASSIGN_SUBTRACT, "-=", token->position()));
 		}
 
-		lastType = token->type();
 		if ( !changed ) {
 			tmp.push_back((*token));
 		}
+		lastType = tmp.back().type();
 
-		token++;
+		++token;
 	}
 
 	mTokens = tmp;

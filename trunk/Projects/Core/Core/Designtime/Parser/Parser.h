@@ -27,7 +27,7 @@ class IScope;
 
 namespace Designtime {
 
-bool checkSyntax(TokenIterator foundIt, const TokenList &expected);
+bool checkSyntax(TokenIterator foundIt, const TokenList& expected);
 PrototypeConstraints mergeConstraints(const PrototypeConstraints& designtime, const PrototypeConstraints& runtime);
 
 class Parser
@@ -51,12 +51,15 @@ public:
 	static bool isNamespaceDeclaration(TokenIterator token);
 	static bool isObjectDeclaration(TokenIterator token);
 
+	static AccessMode::E parseAccessMode(TokenIterator& token, AccessMode::E defaultValue);
 	static ImplementationType::E parseImplementationType(TokenIterator& token, ImplementationType::E defaultValue);
 	static LanguageFeatureState::E parseLanguageFeatureState(TokenIterator& token, LanguageFeatureState::E defaultValue);
+	static Mutability::E parseMutability(TokenIterator& token, Mutability::E defaultValue);
 	static ObjectType::E parseObjectType(TokenIterator& token);
 	static ParameterList parseParameters(TokenIterator &token, IScope* scope = 0);
 	static Common::TypeDeclaration parseTypeDeclaration(TokenIterator& token, IScope* scope = 0);
 	static Runtime::AtomicValue parseValueInitialization(TokenIterator& token);
+	static Visibility::E parseVisibility(TokenIterator& token, Visibility::E defaultValue);
 };
 
 

@@ -52,9 +52,9 @@ public object Map<K, V> implements IIterateable {
 	}
 
 	public void insert(K k, V v) modify {
-		Pair<K, V> pair = new Pair<K, V>(k, v);
-
-		mItems.insert(Object pair);
+		mItems.insert(
+			Object new Pair<K, V>(k, v)
+		);
 	}
 
 	public void put(K key, V value) modify throws {
@@ -84,6 +84,10 @@ public object Map<K, V> implements IIterateable {
 
 	public int size() const {
 		return mItems.size();
+	}
+
+	public V operator[](K key) const {
+		return get(key);
 	}
 }
 

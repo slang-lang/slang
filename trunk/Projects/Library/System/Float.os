@@ -55,14 +55,14 @@ public object Float {
 		return mValue == other;
 	}
 	public bool operator==(Float other ref) const {
-		return mValue == other;
+		return mValue == float other;
 	}
 
 	public void operator=(float other) modify {
 		mValue = other;
 	}
 	public void operator=(Float other ref) modify {
-		mValue = other;
+		mValue = float other;
 	}
 
 	public float =operator(float other) const {

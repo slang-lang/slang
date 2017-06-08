@@ -129,7 +129,7 @@ public abstract object AbstractCollection implements IIterateable {
 		return mSize;
 	}
 
-	public Object operator[](int index) const throws {
+	public Object operator[](int index) const {
 		return at(index);
 	}
 

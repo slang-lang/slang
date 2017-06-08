@@ -1,7 +1,6 @@
 
 import System.Collections.IIterateable;
 import System.IO.File;
-import System.String;
 import System.StringIterator;
 
 public object Scanner implements IIterateable {

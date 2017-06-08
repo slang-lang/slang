@@ -8,7 +8,7 @@
 // Project includes
 #include <Parsers/LineParser.h>
 #include <Tools/Files.h>
-#include <Tools/Tools.h>
+#include <Tools/Strings.h>
 
 // Namespace declarations
 

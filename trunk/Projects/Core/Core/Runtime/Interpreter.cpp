@@ -26,6 +26,7 @@
 #include <Core/VirtualMachine/Stack.h>
 #include <Debugger/Debugger.h>
 #include <Tools/Printer.h>
+#include <Tools/Strings.h>
 #include <Utils.h>
 
 // Namespace declarations
@@ -36,7 +37,7 @@ namespace Runtime {
 
 
 #define DEBUGGER(exp) \
-	if ( mDebugger->useDebugger() ) { \
+	if ( mDebugger ) { \
 		mDebugger->exp; \
 	}
 
@@ -47,7 +48,7 @@ Interpreter::Interpreter(Common::ThreadId threadId)
   mThreadId(threadId)
 {
 	// initialize virtual machine stuff
-	mDebugger = &Core::Debugger::Instance();
+	mDebugger = Core::Debugger::Instance().useDebugger() ? &Core::Debugger::Instance() : 0;
 	mMemory = Controller::Instance().memory();
 	mRepository = Controller::Instance().repository();
 	mStack = Controller::Instance().stack();
@@ -784,22 +785,22 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 {
 	switch ( start->type() ) {
 		case Token::Type::CONST_BOOLEAN: {
-			BoolObject tmp(Tools::stringToBool(start->content()));
+			BoolObject tmp(Utils::Tools::stringToBool(start->content()));
 			operator_binary_assign(result, &tmp);
 			++start;
 		} break;
 		case Token::Type::CONST_DOUBLE: {
-			DoubleObject tmp(Tools::stringToDouble(start->content()));
+			DoubleObject tmp(Utils::Tools::stringToDouble(start->content()));
 			operator_binary_assign(result, &tmp);
 			++start;
 		} break;
 		case Token::Type::CONST_FLOAT: {
-			FloatObject tmp(Tools::stringToFloat(start->content()));
+			FloatObject tmp(Utils::Tools::stringToFloat(start->content()));
 			operator_binary_assign(result, &tmp);
 			++start;
 		} break;
 		case Token::Type::CONST_INTEGER: {
-			IntegerObject tmp(Tools::stringToInt(start->content()));
+			IntegerObject tmp(Utils::Tools::stringToInt(start->content()));
 			operator_binary_assign(result, &tmp);
 			++start;
 		} break;
@@ -861,7 +862,7 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 		case Token::Type::SEMICOLON: {
 		} break;
 		default: {
-			throw Common::Exceptions::SyntaxError("identifier, literal or constant expected but " + start->content() + " found", start->position());
+			throw Common::Exceptions::SyntaxError("identifier, literal or constant expected but '" + start->content() + "' found", start->position());
 		} break;
 	}
 }
@@ -1029,7 +1030,7 @@ void Interpreter::process_delete(TokenIterator& token)
 
 	switch ( symbol->getSymbolType() ) {
 		case Symbol::IType::ObjectSymbol: {
-			Object *object = static_cast<Object*>(symbol);
+			Object* object = static_cast<Object*>(symbol);
 
 			object->assign(Object());
 		} break;
@@ -1505,7 +1506,7 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 	// compare callee's constness with its parent's constness
 	Object* calleeParent = dynamic_cast<Object*>(method->getEnclosingScope());
 	if ( calleeParent && calleeParent->isConst() && !method->isConst() ) {
-		// we want to call a non-const method of a const object... neeeeey!
+		// we want to call a modifiable method of a const object... neeeeey!
 		throw Common::Exceptions::ConstCorrectnessViolated("only calls to const methods are allowed for const object '" + calleeParent->getFullScopeName() + "'", tmp->position());
 	}
 
@@ -1514,7 +1515,7 @@ void Interpreter::process_method(TokenIterator& token, Object *result)
 	if ( owner && owner->isConst() ) {
 		if ( owner->getEnclosingScope() == method->getEnclosingScope() && !method->isConst() ) {
 			// check target method's constness
-			// this is a const method and we want to call a non-const method... neeeeey!
+			// this is a const method and we want to call a modifiable method... neeeeey!
 			throw Common::Exceptions::ConstCorrectnessViolated("only calls to const methods are allowed in const method '" + getScope()->getFullScopeName() + "'", tmp->position());
 		}
 	}
@@ -1971,6 +1972,12 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 		}
 	}
 
+	// store current control flow and reset it after finally block has been executed
+	Runtime::ControlFlow::E tmpControlFlow = mControlFlow;
+
+	// reset current control flow to allow execution of finally-block
+	mControlFlow = Runtime::ControlFlow::Normal;
+
 	// process finally-block (if present)
 	if ( finallyToken != localEnd ) {
 		++finallyToken;
@@ -1978,19 +1985,13 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 		TokenList finallyTokens;
 		collectScopeTokens(finallyToken, finallyTokens);
 
-		// store current control flow and reset it after finally block has been executed
-		Runtime::ControlFlow::E tmpControlFlow = mControlFlow;
-
-		// reset current control flow to allow execution of finally-block
-		mControlFlow = Runtime::ControlFlow::Normal;
-
 		// execute finally-block
 		interpret(finallyTokens, result);
+	}
 
-		// reset control flow if finally block has been executed normally
-		if ( mControlFlow == Runtime::ControlFlow::Normal && tmpControlFlow != Runtime::ControlFlow::Throw ) {
-			mControlFlow = tmpControlFlow;
-		}
+	// reset control flow to previous state if not set differently by finally statement
+	if ( mControlFlow == Runtime::ControlFlow::Normal && tmpControlFlow != Runtime::ControlFlow::Throw ) {
+		mControlFlow = tmpControlFlow;
 	}
 }
 
@@ -2008,7 +2009,7 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol, Initiali
 
 	Mutability::E mutability = parseMutability(token);
 
-	// not atomic types are references by default
+	// not-atomic types are references by default
 	AccessMode::E accessMode = parseAccessMode(token, static_cast<Designtime::BluePrintGeneric*>(symbol)->isAtomicType());
 
 	Object* object = mRepository->createInstance(static_cast<Designtime::BluePrintGeneric*>(symbol), name, constraints);

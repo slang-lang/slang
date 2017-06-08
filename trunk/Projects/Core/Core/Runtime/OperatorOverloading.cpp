@@ -768,27 +768,6 @@ void operator_binary_subtract(Object *base, Object *other, const Common::Positio
 	}
 }
 
-void operator_trinary_array(Object *base, Object *index, Object* other, const Common::Position& position)
-{
-	if ( !base ) {
-		throw Runtime::Exceptions::AccessViolation("cannot use null pointer: base", position);
-	}
-	if ( !index ) {
-		throw Runtime::Exceptions::AccessViolation("cannot use null pointer: index", position);
-	}
-	if ( !other ) {
-		throw Runtime::Exceptions::AccessViolation("cannot use null pointer: other", position);
-	}
-
-/*
-	std::string source = base->QualifiedTypename();
-//	std::string subscript = index->QualifiedTypename();
-//	std::string target = other->QualifiedTypename();
-*/
-
-	other->operator_array(index, base);
-}
-
 void operator_unary_decrement(Object *base, const Common::Position& position)
 {
 	if ( !base ) {

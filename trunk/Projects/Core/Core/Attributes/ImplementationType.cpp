@@ -18,8 +18,7 @@ ImplementationType::E ImplementationType::convert(const std::string& v)
 	if ( v == MODIFIER_ABSTRACT ) { return ImplementationType::Abstract; }
 	else if ( v == "ForwardDeclaration" ) { return ImplementationType::ForwardDeclaration; }
 	else if ( v == "FullyImplemented" ) { return ImplementationType::FullyImplemented; }
-	else if ( v == RESERVED_WORD_INTERFACE ) { return ImplementationType::Interface; }
-	else if ( v == UNKNOWN ) { return ImplementationType::Unknown; }
+	//else if ( v == RESERVED_WORD_INTERFACE ) { return ImplementationType::Interface; }
 
 	return ImplementationType::Unknown;
 }

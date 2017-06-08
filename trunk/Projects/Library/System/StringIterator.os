@@ -38,6 +38,19 @@ public object StringIterator {
 	}
 */
 
+	public string current() const throws {
+		if ( mCurrentPosition >= mValue.Length() ) {
+			throw new OutOfBoundsException("out of bounds");
+		}
+
+		int newPos = mValue.Find(mSeparator, mCurrentPosition);
+		if ( newPos > 0 ) {
+			return mValue.SubString(mCurrentPosition, newPos - mCurrentPosition);
+		}
+
+		return mValue.SubString(mCurrentPosition);
+	}
+
 	/*
 	 * hasNext returns true if the iteration did not reach the end of the held String value
 	 */

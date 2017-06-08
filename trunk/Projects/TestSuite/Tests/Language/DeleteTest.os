@@ -39,7 +39,7 @@ public void Main(int argc = 1, string args = "") {
 		assert( obj2.getValue() == 1 );
 
 		obj1.setValue(173);
-		print("obj1 == obj2 == " + obj1);
+		print("obj1 == obj2 == " + string obj1);
 		assert( obj2.getValue() == 173 );
 
 		obj1 = new TestObject(2);

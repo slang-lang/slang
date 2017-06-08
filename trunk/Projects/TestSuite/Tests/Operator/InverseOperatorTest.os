@@ -141,14 +141,14 @@ private bool TestCase5() const {
 	int value = 4;
 	print("value = " + value);
 
-	print("value == obj: " + (value == obj));
-	print("value > obj: " + (value > obj));
-	print("value >= obj: " + (value >= obj));
-	print("value < obj: " + (value < obj));
-	print("value <= obj: " + (value <= obj));
+	print("value == obj: " + (value == int obj));
+	print("value > obj: " + (value > int obj));
+	print("value >= obj: " + (value >= int obj));
+	print("value < obj: " + (value < int obj));
+	print("value <= obj: " + (value <= int obj));
 
-	print("value - 3 == obj: " + (value - 3 == obj));
-	print("value == obj + 3: " + (value == obj + 3));
+	print("value - 3 == obj: " + (value - 3 == int obj));
+	print("value == obj + 3: " + (value == int obj + 3));
 	print("value == 8 - obj: " + (value == 8 - int obj));
 
 	print("obj = " + 1 + string obj);

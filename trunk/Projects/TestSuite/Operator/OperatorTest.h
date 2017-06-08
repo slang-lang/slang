@@ -31,6 +31,7 @@ public:
 	void teardown();
 
 private:	// Tests
+	void testBooleanOperator();
 	void testBooleanOverloads_Assign();
 	void testBooleanOverloads_BitAnd();
 	void testBooleanOverloads_BitOr();

@@ -3,15 +3,11 @@ import CircularBaseObject;
 
 public object InnerObject {
 	public void Constructor() {
-		writeln("Constructor(): Start");
-
-		writeln("Constructor(): End");
+		writeln("InnerObject.Constructor()");
 	}
 
 	public void Destructor() {
-		writeln("Destructor(): Start");
-
-		writeln("Destructor(): End");
+		writeln("InnerObject.Destructor()");
 	}
 
 	public string ToString() const {
@@ -20,20 +16,16 @@ public object InnerObject {
 }
 
 public object CircularExtendedObject extends CircularBaseObject {
-	//private InnerObject mInner;
-
 	public void Constructor() {
-		writeln("Constructor(): Start");
+		writeln("CircularExtendedObject.Constructor()");
 
-		//mInner = new InnerObject();
-
-		writeln("Constructor(): End");
+		base.Constructor();
 	}
 
 	public void Destructor() {
-		writeln("Destructor(): Start");
+		base.Destructor();
 
-		writeln("Destructor(): End");
+		writeln("CircularExtendedObject.Destructor()");
 	}
 
 	public string ToString() const {

@@ -5,7 +5,7 @@
 // Library includes
 #include <cassert>
 #include <fstream>
-
+#include <limits.h>
 
 // Project includes
 
@@ -147,6 +147,14 @@ std::string ExtractPathname(const std::string& pathname)
 	}
 
 	return result;
+}
+
+std::string GetFullname(const std::string& filename)
+{
+	char full_path[PATH_MAX];
+	realpath(filename.c_str(), full_path);
+
+	return std::string(full_path);
 }
 
 std::string RemoveFileExt(const std::string& filename)

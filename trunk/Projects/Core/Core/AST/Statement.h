@@ -45,6 +45,7 @@ public:
 			ThrowStatement,
 			TryStatement,
 			TypeDeclaration,
+			TypeInference,
 			WhileStatement
 		};
 	};
@@ -116,6 +117,17 @@ public:
 	bool mIsReference;
 	std::string mName;
 	std::string mType;
+};
+
+
+class TypeInference : public TypeDeclaration
+{
+public:
+	TypeInference(const Token& token, const std::string& type, const PrototypeConstraints& constraints, const std::string& name, bool isConst, bool isReference, Node* assignment)
+	: TypeDeclaration(token, type, constraints, name, isConst, isReference, assignment)
+	{
+		mStatementType = Statement::StatementType::TypeInference;
+	}
 };
 
 

@@ -37,13 +37,9 @@ public:
 	}
 
 public:
-	Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* result, const Token& token)
+	Runtime::ControlFlow::E execute(const ParameterList& /*params*/, Runtime::Object* result, const Token& token)
 	{
-		ParameterList list = mergeParameters(params);
-
 		try {
-			ParameterList::const_iterator it = list.begin();
-
 			*result = Runtime::IntegerObject((int)time(NULL));
 		}
 		catch ( std::exception& e ) {

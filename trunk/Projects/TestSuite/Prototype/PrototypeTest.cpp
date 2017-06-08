@@ -15,6 +15,11 @@
 #include <Core/VirtualMachine/VirtualMachine.h>
 #include <Core/Runtime/Exceptions.h>
 
+// Extension includes
+#ifdef USE_SYSTEM_EXTENSION
+#	include <System/SystemExtension.h>
+#endif
+
 // Namespace declarations
 using namespace ObjectiveScript;
 
@@ -56,7 +61,9 @@ void PrototypeTest::testAdvancedPrototypeTest()
 {
 	try {
 		VirtualMachine vm;
-
+#ifdef USE_SYSTEM_EXTENSION
+		vm.addExtension(new ObjectiveScript::Extensions::System::SystemExtension());
+#endif
 		vm.createScriptFromFile("Tests/Prototypes/AdvancedPrototypeTest.os");
 
 		// automatic success
@@ -71,7 +78,6 @@ void PrototypeTest::testBasicPrototypeTest()
 {
 	try {
 		VirtualMachine vm;
-
 		vm.createScriptFromFile("Tests/Prototypes/BasicPrototypeTest.os");
 
 		// automatic success
@@ -86,7 +92,9 @@ void PrototypeTest::testBasicPrototypeWithInheritanceConstraint()
 {
 	try {
 		VirtualMachine vm;
-
+#ifdef USE_SYSTEM_EXTENSION
+		vm.addExtension(new ObjectiveScript::Extensions::System::SystemExtension());
+#endif
 		vm.createScriptFromFile("Tests/Prototypes/BasicPrototypeWithInheritanceConstraint.os");
 
 		// automatic success
@@ -101,7 +109,6 @@ void PrototypeTest::testBasicPrototypeWithObjectTest()
 {
 	try {
 		VirtualMachine vm;
-
 		vm.createScriptFromFile("Tests/Prototypes/BasicPrototypeWithObjectTest.os");
 
 		// automatic success
@@ -116,7 +123,9 @@ void PrototypeTest::testFail_BasicPrototypeWithInheritanceConstraint()
 {
 	try {
 		VirtualMachine vm;
-
+#ifdef USE_SYSTEM_EXTENSION
+		vm.addExtension(new ObjectiveScript::Extensions::System::SystemExtension());
+#endif
 		TTHROWS(vm.createScriptFromFile("Tests/Prototypes/Fail_BasicPrototypeWithInheritanceConstraint.os"), ObjectiveScript::Runtime::Exceptions::AssertionFailed);
 	}
 	catch ( std::exception& e ) {
@@ -129,7 +138,6 @@ void PrototypeTest::testFail_PrototypeAssignment()
 {
 	try {
 		VirtualMachine vm;
-
 		TTHROWS(vm.createScriptFromFile("Tests/Prototypes/Fail_PrototypeAssignment.os"), ObjectiveScript::Common::Exceptions::Exception);
 	}
 	catch ( std::exception& e ) {
@@ -142,7 +150,6 @@ void PrototypeTest::testInheritFromPrototypeTest()
 {
 	try {
 		VirtualMachine vm;
-
 		vm.createScriptFromFile("Tests/Prototypes/InheritFromPrototypeTest.os");
 
 		// automatic success
@@ -157,7 +164,6 @@ void PrototypeTest::testPrototypeAsMember()
 {
 	try {
 		VirtualMachine vm;
-
 		vm.createScriptFromFile("Tests/Prototypes/PrototypeAsMember.os");
 
 		// automatic success
@@ -172,7 +178,6 @@ void PrototypeTest::testPrototypeAsParameter()
 {
 	try {
 		VirtualMachine vm;
-
 		vm.createScriptFromFile("Tests/Prototypes/PrototypeAsParameter.os");
 
 		// automatic success
@@ -187,7 +192,6 @@ void PrototypeTest::testPrototypeAsPrototypedMember()
 {
 	try {
 		VirtualMachine vm;
-
 		vm.createScriptFromFile("Tests/Prototypes/PrototypeAsPrototypedMember.os");
 
 		// automatic success
@@ -202,7 +206,6 @@ void PrototypeTest::testPrototypeAsReturnValue()
 {
 	try {
 		VirtualMachine vm;
-
 		vm.createScriptFromFile("Tests/Prototypes/PrototypeAsReturnValue.os");
 
 		// automatic success

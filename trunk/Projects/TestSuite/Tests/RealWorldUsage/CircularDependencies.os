@@ -7,11 +7,14 @@ public void Main(int argc, string argv) {
 	CircularBaseObject baseObject = new CircularBaseObject();
 
 	writeln(baseObject.ToString());
+	delete baseObject;
+
+	writeln("");
 	writeln("");
 
 	CircularExtendedObject extendedObject = new CircularExtendedObject();
 
 	writeln(extendedObject.ToString());
-	writeln("");
+	delete extendedObject;
 }
 

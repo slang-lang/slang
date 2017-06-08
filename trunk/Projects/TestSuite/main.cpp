@@ -138,11 +138,8 @@ int main(int argc, const char* argv[])
 		mFixtures.push_back(&testing);
 */
 
-#ifdef GENERATE_PARSE_TREE
-
-
-
-#else
+		Testing::AST::Fixture ast(mLogger);
+		mFixtures.push_back(&ast);
 
 		Testing::Inheritance::Fixture inheritance(mLogger);
 		mFixtures.push_back(&inheritance);
@@ -156,19 +153,14 @@ int main(int argc, const char* argv[])
 		Testing::Library::Fixture library(mLogger);
 		mFixtures.push_back(&library);
 
-		Testing::Prototype::Fixture prototype(mLogger);
-		mFixtures.push_back(&prototype);
-
-#endif
-
-		Testing::AST::Fixture ast(mLogger);
-		mFixtures.push_back(&ast);
-
 		Testing::Math::Fixture math(mLogger);
 		mFixtures.push_back(&math);
 
 		Testing::Operator::Fixture operator_overloading(mLogger);
 		mFixtures.push_back(&operator_overloading);
+
+		Testing::Prototype::Fixture prototype(mLogger);
+		mFixtures.push_back(&prototype);
 
 		TestResult result;
 
@@ -189,7 +181,11 @@ int main(int argc, const char* argv[])
 		}
 
 		std::cout << std::endl;
-		std::cout << "Statistics: " << (result.Run - result.Failed - result.Skipped) << " passed, " << result.Failed << " failed, " << result.Skipped << " skipped" << std::endl;
+		std::cout << "Statistics: "
+				  << (result.Run - result.Failed - result.Skipped) << " passed, "
+				  << result.Skipped << " skipped, "
+				  << result.Failed << " failed "
+				  << std::endl;
 
 		mFixtures.clear();
 	}
