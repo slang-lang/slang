@@ -1,11 +1,11 @@
 
 // Header
 #include "Parameter.h"
-#include "Consts.h"
 
 // Library includes
 
 // Project includes
+#include <Core/Consts.h>
 
 // Namespace declarations
 

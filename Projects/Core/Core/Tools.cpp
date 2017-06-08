@@ -6,120 +6,16 @@
 
 // Project includes
 #include <Core/Common/Exceptions.h>
+#include <Tools/Strings.h>
 #include "Object.h"
 
 // Namespace declarations
 
 
 namespace ObjectiveScript {
-namespace Tools {
 
 
-void split(const std::string& str, std::string& p, std::string& c)
-{
-	c = "";
-
-	unsigned long pos = str.find_first_of('.');
-
-	p = str.substr(0, pos);
-	if ( p.size() != str.size() ) {
-		c = str.substr(pos + 1, str.size());
-	}
-}
-
-void splitBy(const std::string& str, char splitter, std::string& p, std::string& c)
-{
-	c = "";
-
-	unsigned long pos = str.find_first_of(splitter);
-
-	p = str.substr(0, pos);
-	if ( p.size() != str.size() ) {
-		c = str.substr(pos + 1, str.size());
-	}
-}
-
-bool stringToBool(const std::string &value)
-{
-	return !(value.empty() || value == "\n" || value == BOOL_FALSE);
-}
-
-double stringToDouble(const std::string &value)
-{
-	if ( value.empty() ) {
-		return 0.0;
-	}
-
-	std::stringstream stream;
-	stream << value;
-	double result;
-	stream >> result;
-
-	return result;
-}
-
-float stringToFloat(const std::string &value)
-{
-	if ( value.empty() ) {
-		return 0.f;
-	}
-
-	std::stringstream stream;
-	stream << value;
-	float result;
-	stream >> result;
-
-	return result;
-}
-
-int stringToInt(const std::string &value)
-{
-	if ( value.empty() ) {
-		return 0;
-	}
-
-	std::stringstream stream;
-	stream << value;
-	int result;
-	stream >> result;
-
-	return result;
-}
-
-std::string toString(bool value)
-{
-	if ( value ) {
-		return BOOL_TRUE;
-	}
-
-	return BOOL_FALSE;
-}
-
-std::string toString(double value)
-{
-	return ConvertToStdString(value);
-}
-
-std::string toString(float value)
-{
-	return ConvertToStdString(value);
-}
-
-std::string toString(int value)
-{
-	return ConvertToStdString(value);
-}
-
-std::string toString(const std::string& value)
-{
-	return value;
-}
-
-
-}
-
-
-void expect(Token::Type::E expected, TokenIterator found)
+void expect(Token::Type::E expected, const TokenIterator& found)
 {
 	if ( found->type() != expected ) {
 		throw Common::Exceptions::SyntaxError("unexpected token '" + found->content() + "' found", found->position());
@@ -161,7 +57,7 @@ TokenIterator findNextBalancedBracket(TokenIterator start, int generateErrorAfte
 			return tmp;
 		}
 		if ( generateErrorAfter && count >= generateErrorAfter ) {
-			throw Common::Exceptions::SyntaxError("Closed bracket expected, but not found after " + Tools::toString(count) + " iteration(s)", start->position());
+			throw Common::Exceptions::SyntaxError("Closed bracket expected, but none found after " + Utils::Tools::toString(count) + " iteration(s)", start->position());
 		}
 
 		++count;
@@ -189,7 +85,7 @@ TokenIterator findNextBalancedCurlyBracket(TokenIterator start, TokenIterator en
 		}
 
 		if ( generateErrorAfter && count >= generateErrorAfter ) {
-			throw Common::Exceptions::SyntaxError("Closed curly bracket expected, but not found after " + Tools::toString(count) + " iteration(s)", start->position());
+			throw Common::Exceptions::SyntaxError("Closed curly bracket expected, but none found after " + Utils::Tools::toString(count) + " iteration(s)", start->position());
 		}
 
 		++count;
@@ -218,7 +114,7 @@ TokenIterator findNextBalancedParenthesis(TokenIterator start, int generateError
 			return tmp;
 		}
 		if ( generateErrorAfter && count >= generateErrorAfter ) {
-			throw Common::Exceptions::SyntaxError("closed parenthesis expected, but not found after " + Tools::toString(count) + " iteration(s)", start->position());
+			throw Common::Exceptions::SyntaxError("closed parenthesis expected, but none found after " + Utils::Tools::toString(count) + " iteration(s)", start->position());
 		}
 
 		++count;

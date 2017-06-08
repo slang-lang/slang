@@ -26,11 +26,12 @@ public object Summierer {
 		if ( startWert > 0 ) {
 			return startWert + rekursiveSumme(startWert - 1);
 		}
+
 		return 0;
 	}
 
 	public int kleinerGauss(int startWert) {
-		return startWert * ( startWert + 1) / 2;
+		return startWert * (startWert + 1) / 2;
 	}
 }
 

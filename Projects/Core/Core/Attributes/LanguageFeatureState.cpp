@@ -19,7 +19,6 @@ LanguageFeatureState::E LanguageFeatureState::convert(const std::string& v)
 	else if ( v == LANGUAGE_FEATURE_NONE ) { return LanguageFeatureState::Stable; }
 	else if ( v == LANGUAGE_FEATURE_NOTIMPLEMENTED ) { return LanguageFeatureState::NotImplemented; }
 	else if ( v == LANGUAGE_FEATURE_STABLE ) { return LanguageFeatureState::Stable; }
-	else if ( v == UNKNOWN ) { return LanguageFeatureState::Unknown; }
 	else if ( v == LANGUAGE_FEATURE_UNSTABLE ) { return LanguageFeatureState::Unstable; }
 
 	return LanguageFeatureState::Unknown;

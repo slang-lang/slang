@@ -388,7 +388,7 @@ MethodSymbol* LocalClient::getMethod(std::string name, const ParameterList& para
 			return 0;
 		}
 
-		Tools::split(name, parent, child);
+		Utils::Tools::split(name, parent, child);
 
 		if ( !parent.empty() && !child.empty() ) {
 			scope = dynamic_cast<ObjectiveScript::Runtime::Object*>(scope->resolve(parent, false));
@@ -465,7 +465,7 @@ Symbol* LocalClient::getSymbol(std::string name) const
 			return 0;
 		}
 
-		Tools::split(name, parent, child);
+		Utils::Tools::split(name, parent, child);
 
 		if ( !parent.empty() && !child.empty() ) {
 			scope = dynamic_cast<ObjectiveScript::Runtime::Object*>(scope->resolve(parent, false));
@@ -730,7 +730,7 @@ void LocalClient::printBreakPoints()
 
 	int idx = 1;
 	for ( Core::BreakPointCollection::const_iterator it = list.begin(); it != list.end(); ++it ) {
-		writeln(Tools::toString(idx) + ": " + it->toString());
+		writeln(Utils::Tools::toString(idx) + ": " + it->toString());
 
 		idx++;
 	}

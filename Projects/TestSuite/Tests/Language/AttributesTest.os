@@ -43,7 +43,7 @@ public stable namespace AttributeTest {
 		}
 	}
 
-	public object ConstObject {
+	public stable object ConstObject {
 		private int mNumber;
 
 		public void Constructor() {

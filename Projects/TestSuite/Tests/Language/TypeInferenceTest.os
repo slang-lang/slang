@@ -58,8 +58,8 @@ private bool TestCase4() {
 	Integer i = new Integer(1);
 	var j = new Integer(2);
 
-	print("i = " + i);
-	print("j = " + j); 
+	print("i = " + string i);
+	print("j = " + string j); 
 	print("i < j = " + (i < j));
         
 	return i < j;
@@ -71,8 +71,8 @@ private bool TestCase41() {
 	Integer i = new Integer(1);
 	var j const = new Integer(2);
 
-	print("i = " + i);
-	print("j = " + j);
+	print("i = " + string i);
+	print("j = " + string j);
 	print("i < j = " + (i < j));
 
 	return i < j;
@@ -98,7 +98,7 @@ private bool TestCase6() {
 
 	//foreach ( var i : list ) {
 	foreach ( Integer i : list ) {
-		print("i = " + i);
+		print("i = " + string i);
 	}
 
 	return true;

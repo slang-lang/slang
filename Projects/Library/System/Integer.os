@@ -34,21 +34,21 @@ public object Integer {
 		return mValue == other;
 	}
 	public bool operator==(Integer other ref) const {
-		return mValue == other;
+		return mValue == int other;
 	}
 
 	public bool operator<(int other) const {
 		return mValue < other;
 	}
 	public bool operator<(Integer other ref) const {
-		return mValue < other;
+		return mValue < int other;
 	}
 
 	public bool operator>(int other) const {
 		return mValue > other;
 	}
 	public bool operator>(Integer other ref) const {
-		return mValue > other;
+		return mValue > int other;
 	}
 
 	/*
@@ -62,7 +62,7 @@ public object Integer {
 	 * Integer assignment operator
 	 */
 	public void operator=(Integer other ref) modify {
-		mValue = other;
+		mValue = int other;
 	}
 
 	/*

@@ -53,14 +53,14 @@ public object Double {
 		return mValue == other;
 	}
 	public bool operator==(Double other ref) const {
-		return mValue == other;
+		return mValue == double other;
 	}
 
 	public void operator=(double other) modify {
 		mValue = other;
 	}
 	public void operator=(Double other ref) modify {
-		mValue = other;
+		mValue = double other;
 	}
 
 	public bool =operator(bool other) const {

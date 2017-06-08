@@ -44,6 +44,7 @@ private:	// Tests
 	void testConstCorrectness2();
 	void testConstCorrectness3();
 	void testConstCorrectness4();
+	void testCopy();
 	void testDefaultParameter();
 	void testEnum();
 	void testException();
@@ -52,7 +53,6 @@ private:	// Tests
 	void testIf();
 	void testIncompleteBooleanEvaluation();
 	void testInfixOperator();
-	void testLawOfDemeter();
 	void testMethodOverloading();
 	void testNamespaces();
 	void testObjectEquality();
@@ -63,7 +63,6 @@ private:	// Tests
 	void testSanityChecker();
 	void testScope();
 	void testStaticMethod();
-	void testStaticLocalVariable();
 	void testSwitch();
 	void testThis();
 	void testThrow();

@@ -27,14 +27,15 @@ public:
 		enum E {
 			None,
 			Assignment,
+			Attribute,
 			Comparator,
 			Constant,
 			Ignorable,
 			Identifier,
 			Keyword,
 			Modifier,
-			ReservedWord,
-			Operator
+			Operator,
+			ReservedWord
 		};
 	};
 
@@ -100,6 +101,7 @@ public:
 			OR,
 			PARENTHESIS_CLOSE,
 			PARENTHESIS_OPEN,
+			QUESTIONMARK,
 			QUOTATION_DOUBLE,
 			QUOTATION_SINGLE,
 			RESERVED_WORD,
@@ -120,7 +122,7 @@ public:
 	Token(Type::E type, bool isOptional = false);
 	Token(Type::E type, const char* content);
 	Token(Type::E type, const std::string& content);
-	Token(Category::E category, Type::E type, const std::string& content, const Common::Position& pos);
+	Token(Category::E category, Type::E type, const std::string& content, const Common::Position& pos, bool isOptional = false);
 
 public:
 	Category::E category() const;

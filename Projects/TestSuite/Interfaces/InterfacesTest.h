@@ -35,6 +35,7 @@ private:	// Tests
 	void testFail_MethodImplemented();
 	void testInterfaceObject();
 	void testInterfaceAsParameter();
+	void testInterfaceAsReturnValue();
 	void testSlightlyMoreAdvancedTest();
 };
 

@@ -15,6 +15,7 @@ public void Main(int argc = 0, string args = "") {
 	assert( TestCase9() );
 	assert( TestCase10() );
 	assert( TestCase11() );
+	assert( TestCase12() );
 }
 
 private bool TestCase1() const {
@@ -143,5 +144,14 @@ private bool TestCase11() const {
 	}
 
 	return true;
+}
+
+private bool TestCase12() const {
+	print("TestCase 12: subscript operator");
+
+	String str = new String("This is a string");
+	print("str[6] = " + str[6]);
+
+	return str[6] == "s";
 }
 

@@ -171,7 +171,7 @@ void Method::initialize()
 		if ( (*it).typeConstraints().size() ) {
 			(*it) = Parameter::CreateDesigntime(
 				(*it).name(),
-				TypeDeclaration(Designtime::Parser::buildRuntimeConstraintTypename((*it).type(), (*it).typeConstraints())),
+				TypeDeclaration(Designtime::Parser::buildRuntimeConstraintTypename((*it).type(), (*it).typeConstraints()), PrototypeConstraints()),
 				(*it).value(),
 				(*it).hasDefaultValue(),
 				(*it).mutability(),
@@ -210,7 +210,7 @@ bool Method::isSignatureValid(const ParameterList& params) const
 /*
 			// compare received const-ness with expected const-ness
 			if ( paramIt->isConst() && !sigIt->isConst() ) {
-				// we received a const parameter but expect a non-const parameter
+				// we received a const parameter but expect a modifiable parameter
 				return false;
 			}
 */

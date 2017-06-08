@@ -39,7 +39,6 @@ void operator_binary_modulo(Object *base, Object *other, const Common::Position&
 void operator_binary_multiply(Object *base, Object *other, const Common::Position& position = Common::Position());
 void operator_binary_plus(Object *base, Object *other, const Common::Position& position = Common::Position());
 void operator_binary_subtract(Object *base, Object *other, const Common::Position& position = Common::Position());
-void operator_trinary_array(Object *base, Object *index, Object* other, const Common::Position& position = Common::Position());
 void operator_unary_decrement(Object *base, const Common::Position& position = Common::Position());
 void operator_unary_increment(Object *base, const Common::Position& position = Common::Position());
 void operator_unary_minus(Object *base, const Common::Position& position = Common::Position());

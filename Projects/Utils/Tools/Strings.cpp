@@ -53,6 +53,30 @@ std::string indent(unsigned int level)
 	return result;
 }
 
+void split(const std::string& str, std::string& p, std::string& c)
+{
+	c = "";
+
+	unsigned long pos = str.find_first_of('.');
+
+	p = str.substr(0, pos);
+	if ( p.size() != str.size() ) {
+		c = str.substr(pos + 1, str.size());
+	}
+}
+
+void splitBy(const std::string& str, char splitter, std::string& p, std::string& c)
+{
+	c = "";
+
+	unsigned long pos = str.find_first_of(splitter);
+
+	p = str.substr(0, pos);
+	if ( p.size() != str.size() ) {
+		c = str.substr(pos + 1, str.size());
+	}
+}
+
 bool StringCompare(std::string s1, std::string s2)
 {
 	return s1.size() == s2.size() && !(s1 != s2);
@@ -79,8 +103,11 @@ bool StringCompareI(const std::string & s1, const std::string& s2)
 	return true;
 }
 
-bool stringToBool(const std::string &str)
+bool stringToBool(const std::string& str)
 {
+	return !(str.empty() || str == "\n" || str == "false");
+
+/*
 	if ( str.length() == 1 && str[0] == '1' ) {
 		return true;
 	}
@@ -89,9 +116,10 @@ bool stringToBool(const std::string &str)
 	}
 
 	return false;
+*/
 }
 
-double stringToDouble(const std::string &str)
+double stringToDouble(const std::string& str)
 {
 	if ( str.empty() ) {
 		return 0.f;
@@ -105,7 +133,7 @@ double stringToDouble(const std::string &str)
 	return d;
 }
 
-float stringToFloat(const std::string &str)
+float stringToFloat(const std::string& str)
 {
 	if ( str.empty() ) {
 		return 0.f;
@@ -119,7 +147,7 @@ float stringToFloat(const std::string &str)
 	return f;
 }
 
-int stringToInt(const std::string &str)
+int stringToInt(const std::string& str)
 {
 	if ( str.empty() ) {
 		return 0;

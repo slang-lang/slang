@@ -89,7 +89,7 @@ private void ParameterByValue(int value val) const {
 	assert(value == 2);
 }
 
-private void ParameterByValue(Language.TestObject value const ref) const {
+private void ParameterByValue(Language.TestObject value ref) const {
 	assert(value.mValue == 1);
 	print("ParameterByValue(TestObject): mValue = " + value.mValue);
 	value.mValue = value.mValue + 1;

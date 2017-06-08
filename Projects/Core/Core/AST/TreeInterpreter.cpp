@@ -17,6 +17,7 @@
 #include <Core/Common/Method.h>
 #include <Core/Common/Namespace.h>
 #include <Core/Designtime/BluePrintEnum.h>
+#include <Core/Designtime/Exceptions.h>
 #include <Core/Designtime/Parser/Parser.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Runtime/OperatorOverloading.h>
@@ -25,15 +26,22 @@
 #include <Core/VirtualMachine/Controller.h>
 #include <Debugger/Debugger.h>
 #include <Tools/Printer.h>
-#include <Utils.h>
-#include <Core/Designtime/Exceptions.h>
 
 // Namespace declarations
 
 #define DEBUGGER(exp) \
-	if ( mDebugger->useDebugger() ) { \
+	if ( mDebugger ) { \
 		mDebugger->exp; \
 	}
+
+#define tryControl( exp ) \
+		try { \
+			exp; \
+		} \
+		catch ( Runtime::ControlFlow::E &e ) { \
+			mControlFlow = e; \
+			return; \
+		}
 
 #define tryEvalute(left, right) \
 		try { \
@@ -44,13 +52,13 @@
 			return; \
 		}
 
-#define tryControl( exp ) \
+#define tryEvaluteNull(left, right) \
 		try { \
-			exp \
+			evaluate(left, right); \
 		} \
 		catch ( Runtime::ControlFlow::E &e ) { \
 			mControlFlow = e; \
-			return; \
+			return NULL; \
 		}
 
 
@@ -64,7 +72,7 @@ TreeInterpreter::TreeInterpreter(Common::ThreadId id)
   mThreadId(id)
 {
 	// initialize virtual machine stuff
-	mDebugger = &Core::Debugger::Instance();
+	mDebugger = Core::Debugger::Instance().useDebugger() ? &Core::Debugger::Instance() : 0;
 	mMemory = Controller::Instance().memory();
 	mRepository = Controller::Instance().repository();
 	mStack = Controller::Instance().stack();
@@ -99,6 +107,7 @@ void TreeInterpreter::evaluate(Node* exp, Runtime::Object* result)
 		case Expression::ExpressionType::MethodExpression: evaluateMethodExpression(static_cast<MethodExpression*>(exp), result); break;
 		case Expression::ExpressionType::NewExpression: evaluateNewExpression(static_cast<NewExpression*>(exp), result); break;
 		case Expression::ExpressionType::SymbolExpression: evaluateSymbolExpression(static_cast<SymbolExpression *>(exp), result, getScope()); break;
+		case Expression::ExpressionType::TernaryExpression: evaluateTernaryExpression(static_cast<TernaryExpression*>(exp), result); break;
 		case Expression::ExpressionType::TypecastExpression: evaluateTypeCastExpression(static_cast<TypecastExpression*>(exp), result); break;
 		case Expression::ExpressionType::TypeidExpression: evaluateTypeidExpression(static_cast<TypeidExpression*>(exp), result); break;
 		case Expression::ExpressionType::UnaryExpression: evaluateUnaryExpression(static_cast<UnaryExpression*>(exp), result); break;
@@ -108,24 +117,16 @@ void TreeInterpreter::evaluate(Node* exp, Runtime::Object* result)
 void TreeInterpreter::evaluateBinaryExpression(BinaryExpression* exp, Runtime::Object* result)
 {
 	if ( exp->getBinaryExpressionType() == BinaryExpression::BinaryExpressionType::BooleanBinaryExpression ) {
-		evaluateBooleanBinaryExpression(static_cast<BooleanBinaryExpression*>(exp), result);
-		return;
+		return evaluateBooleanBinaryExpression(static_cast<BooleanBinaryExpression*>(exp), result);
 	}
 
 	Runtime::Object left;
+	// evaluate left expression
+	evaluate(exp->mLeft, &left);
+
 	Runtime::Object right;
-
-//	try {
-		// evaluate left expression
-		evaluate(exp->mLeft, &left);
-
-		// evaluate right expression
-		evaluate(exp->mRight, &right);
-//	}
-//	catch ( Runtime::ControlFlow::E &e ) {
-//		mControlFlow = e;
-//		return;
-//	}
+	// evaluate right expression
+	evaluate(exp->mRight, &right);
 
 	switch ( exp->mOperation.type() ) {
 		// bit expressions
@@ -157,37 +158,42 @@ void TreeInterpreter::evaluateBinaryExpression(BinaryExpression* exp, Runtime::O
 void TreeInterpreter::evaluateBooleanBinaryExpression(BooleanBinaryExpression* exp, Runtime::Object* result)
 {
 	Runtime::Object left;
+
+	// evaluate left expression
+	evaluate(exp->mLeft, &left);
+
+	bool leftResult = isTrue(left);
+
+	// incomplete boolean evaluation
+	if ( exp->mOperation.type() == Token::Type::AND && !leftResult ) {
+		*result = Runtime::BoolObject(false);
+		return;
+	}
+	else if ( exp->mOperation.type() == Token::Type::NAND && !leftResult ) {
+		*result = Runtime::BoolObject(true);
+		return;
+	}
+	else if ( exp->mOperation.type() == Token::Type::NOR && leftResult ) {
+		*result = Runtime::BoolObject(false);
+		return;
+	}
+	else if ( exp->mOperation.type() == Token::Type::OR && leftResult ) {
+		*result = Runtime::BoolObject(true);
+		return;
+	}
+
 	Runtime::Object right;
 
-//	try {
-		// evaluate left expression
-		evaluate(exp->mLeft, &left);
-
-		// incomplete boolean evaluation
-		if ( exp->mOperation.type() == Token::Type::AND && !isTrue(left) ) {
-			*result = Runtime::BoolObject(false);
-			return;
-		}
-		else if ( exp->mOperation.type() == Token::Type::OR && isTrue(left) ) {
-			*result = Runtime::BoolObject(true);
-			return;
-		}
-
-		// evaluate right expression
-		evaluate(exp->mRight, &right);
-//	}
-//	catch ( Runtime::ControlFlow::E &e ) {
-//		mControlFlow = e;
-//		return;
-//	}
+	// evaluate right expression
+	evaluate(exp->mRight, &right);
 
 	switch ( exp->mOperation.type() ) {
 		// boolean expressions
 		// {
-		case Token::Type::AND: *result = Runtime::BoolObject(isTrue(left) && isTrue(right)); break;
-		case Token::Type::NAND: *result = Runtime::BoolObject(!isTrue(left) && !isTrue(right)); break;
-		case Token::Type::NOR: *result = Runtime::BoolObject(!isTrue(left) || !isTrue(right)); break;
-		case Token::Type::OR: *result = Runtime::BoolObject(isTrue(left) || isTrue(right)); break;
+		case Token::Type::AND: *result = Runtime::BoolObject(leftResult && isTrue(right)); break;
+		case Token::Type::NAND: *result = Runtime::BoolObject(!leftResult && !isTrue(right)); break;
+		case Token::Type::NOR: *result = Runtime::BoolObject(!leftResult || !isTrue(right)); break;
+		case Token::Type::OR: *result = Runtime::BoolObject(leftResult || isTrue(right)); break;
 		// }
 
 		// comparison expressions
@@ -202,7 +208,7 @@ void TreeInterpreter::evaluateBooleanBinaryExpression(BooleanBinaryExpression* e
 
 		// default handling
 		// {
-		default: throw Common::Exceptions::NotSupported("binary expression with " + exp->mOperation.content() + " not supported (by now)");
+		default: throw Common::Exceptions::NotSupported("binary expression with " + exp->mOperation.content() + " not supported");
 		// }
 	}
 }
@@ -210,13 +216,8 @@ void TreeInterpreter::evaluateBooleanBinaryExpression(BooleanBinaryExpression* e
 void TreeInterpreter::evaluateCopyExpression(CopyExpression* exp, Runtime::Object* result)
 {
 	Runtime::Object obj;
-//	try {
-		evaluate(exp->mExpression, &obj);
-//	}
-//	catch ( Runtime::ControlFlow::E &e ) {
-//		mControlFlow = e;
-//		return;
-//	}
+
+	evaluate(exp->mExpression, &obj);
 
 	result->copy(obj);
 }
@@ -224,14 +225,9 @@ void TreeInterpreter::evaluateCopyExpression(CopyExpression* exp, Runtime::Objec
 void TreeInterpreter::evaluateIsExpression(IsExpression* exp, Runtime::Object* result)
 {
 	Runtime::Object tmp;
-//	try {
-		// evaluate left expression
-		evaluate(exp->mExpression, &tmp);
-//	}
-//	catch ( Runtime::ControlFlow::E &e ) {
-//		mControlFlow = e;
-//		return;
-//	}
+
+	// evaluate left expression
+	evaluate(exp->mExpression, &tmp);
 
 	*result = Runtime::BoolObject(tmp.isInstanceOf(exp->mMatchType));
 }
@@ -259,13 +255,7 @@ void TreeInterpreter::evaluateMethodExpression(MethodExpression* exp, Runtime::O
 
 		Runtime::Object* param = &objectList.back();
 
-//		try {
-			evaluate((*it), param);
-//		}
-//		catch ( Runtime::ControlFlow::E &e ) {
-//			mControlFlow = e;
-//			return;
-//		}
+		evaluate((*it), param);
 
 		params.push_back(Parameter::CreateRuntime(param->QualifiedOuterface(), param->getValue(), param->getReference()));
 	}
@@ -283,25 +273,17 @@ void TreeInterpreter::evaluateMethodExpression(MethodExpression* exp, Runtime::O
 	Common::Method* method = static_cast<Common::Method*>(methodSymbol);
 	assert(method);
 
-	Runtime::ControlFlow::E controlflow;
-
 	if ( method->isExtensionMethod() ) {
-		controlflow = method->execute(params, result, Token());
+		mControlFlow = method->execute(params, result, Token());
 	}
 	else {
-		controlflow = execute(method, params, result);
+		mControlFlow = execute(method, params, result);
 	}
 
-	switch ( controlflow ) {
-		case Runtime::ControlFlow::ExitProgram:
-			mControlFlow = Runtime::ControlFlow::ExitProgram;
-			throw Runtime::ControlFlow::ExitProgram;	// promote controlflow
-		case Runtime::ControlFlow::Throw:
-			mControlFlow = Runtime::ControlFlow::Throw;
-			throw Runtime::ControlFlow::Throw;			// promote controlflow
-		default:
-			mControlFlow = Runtime::ControlFlow::Normal;
-			break;
+	switch ( mControlFlow ) {
+		case Runtime::ControlFlow::ExitProgram: throw Runtime::ControlFlow::ExitProgram;	// promote control flow
+		case Runtime::ControlFlow::Throw: throw Runtime::ControlFlow::Throw;				// promote control flow
+		default: mControlFlow = Runtime::ControlFlow::Normal; break;
 	}
 }
 
@@ -319,13 +301,8 @@ void TreeInterpreter::evaluateNewExpression(NewExpression* exp, Runtime::Object*
 		objectList.push_back(Runtime::Object());
 
 		Runtime::Object* param = &objectList.back();
-//		try {
-			evaluate((*it), param);
-//		}
-//		catch ( Runtime::ControlFlow::E &e ) {
-//			mControlFlow = e;
-//			return;
-//		}
+
+		evaluate((*it), param);
 
 		params.push_back(Parameter::CreateRuntime(param->QualifiedOuterface(), param->getValue(), param->getReference()));
 	}
@@ -368,8 +345,7 @@ void TreeInterpreter::evaluateSymbolExpression(SymbolExpression *exp, Runtime::O
 				throw Common::Exceptions::NotSupported("cannot directly access locales of method");
 		}
 
-		evaluateSymbolExpression(exp->mSymbolExpression, result, scope);
-		return;
+		return evaluateSymbolExpression(exp->mSymbolExpression, result, scope);
 	}
 
 	if ( lvalue->getSymbolType() != Symbol::IType::ObjectSymbol ) {
@@ -379,17 +355,27 @@ void TreeInterpreter::evaluateSymbolExpression(SymbolExpression *exp, Runtime::O
 	*result = *static_cast<Runtime::Object*>(lvalue);
 }
 
+void TreeInterpreter::evaluateTernaryExpression(TernaryExpression* exp, Runtime::Object* result)
+{
+	Runtime::Object condition;
+
+	// evaluate ? condition
+	evaluate(exp->mCondition, &condition);
+
+	// validate ? condition
+	if ( isTrue(condition) ) {
+		evaluate(exp->mFirst, result);
+	}
+	else {
+		evaluate(exp->mSecond, result);
+	}
+}
+
 void TreeInterpreter::evaluateTypeCastExpression(TypecastExpression* exp, Runtime::Object* result)
 {
 	Runtime::Object tmp;
 
-//	try {
-		evaluate(exp->mExpression, &tmp);
-//	}
-//	catch ( Runtime::ControlFlow::E &e ) {
-//		mControlFlow = e;
-//		return;
-//	}
+	evaluate(exp->mExpression, &tmp);
 
 	Runtime::typecast(&tmp, exp->mDestinationType);
 
@@ -399,16 +385,11 @@ void TreeInterpreter::evaluateTypeCastExpression(TypecastExpression* exp, Runtim
 void TreeInterpreter::evaluateTypeidExpression(TypeidExpression* exp, Runtime::Object* result)
 {
 	Runtime::Object tmp;
-//	try {
-		evaluate(exp->mExpression, &tmp);
 
-		Runtime::StringObject type(tmp.QualifiedTypename());
-		Runtime::operator_binary_assign(result, &type);
-//	}
-//	catch ( Runtime::ControlFlow::E &e ) {
-//		mControlFlow = e;
-//		return;
-//	}
+	evaluate(exp->mExpression, &tmp);
+
+	Runtime::StringObject type(tmp.QualifiedTypename());
+	Runtime::operator_binary_assign(result, &type);
 }
 
 void TreeInterpreter::evaluateUnaryExpression(UnaryExpression* exp, Runtime::Object* result)
@@ -421,6 +402,11 @@ void TreeInterpreter::evaluateUnaryExpression(UnaryExpression* exp, Runtime::Obj
 			// {
 			case Token::Type::OPERATOR_DECREMENT: Runtime::operator_unary_decrement(&lvalue, exp->mOperation.position()); break;
 			case Token::Type::OPERATOR_INCREMENT: Runtime::operator_unary_increment(&lvalue, exp->mOperation.position()); break;
+			// }
+
+			// subscript operator
+			// {
+			case Token::Type::BRACKET_OPEN: evaluate(exp->mExpression, &lvalue); break;
 			// }
 
 			// default handling
@@ -447,6 +433,11 @@ void TreeInterpreter::evaluateUnaryExpression(UnaryExpression* exp, Runtime::Obj
 			case Token::Type::MATH_SUBTRACT: Runtime::operator_unary_minus(result, exp->mOperation.position()); break;
 			case Token::Type::OPERATOR_DECREMENT: Runtime::operator_unary_decrement(result, exp->mOperation.position()); break;
 			case Token::Type::OPERATOR_INCREMENT: Runtime::operator_unary_increment(result, exp->mOperation.position()); break;
+			// }
+
+			// subscript operator
+			// {
+			case Token::Type::BRACKET_OPEN: evaluate(exp->mExpression, result); break;
 			// }
 
 			// default handling
@@ -602,12 +593,13 @@ void TreeInterpreter::initialize(IScope* scope, const ParameterList& params)
 {
 	// add parameters as locale variables
 	for ( ParameterList::const_iterator it = params.begin(); it != params.end(); ++it ) {
-		Runtime::Object *object = 0;
+		Runtime::Object* object = 0;
 
 		switch ( it->access() ) {
 			case AccessMode::ByReference: {
 				object = mRepository->createInstance(it->type(), it->name());
 
+				object->setIsReference(true);
 				if ( it->reference().isValid() ) {
 					object->assign(*mMemory->get(it->reference()));
 				}
@@ -629,6 +621,7 @@ void TreeInterpreter::initialize(IScope* scope, const ParameterList& params)
 #endif
 				}
 
+				object->setIsReference(false);
 				object->setMutability(it->mutability());
 				object->setValue(it->value());
 
@@ -651,62 +644,69 @@ void TreeInterpreter::popScope()
 
 std::string TreeInterpreter::printExpression(Node* node) const
 {
+	if ( !node ) {
+		return "";
+	}
+
+	assert(node->getNodeType() == Node::NodeType::Expression);
+
+	Expression* expression = static_cast<Expression*>(node);
 	std::string result;
 
-	if ( node ) {
-		assert(node->getNodeType() == Node::NodeType::Expression);
-		Expression* expression = static_cast<Expression*>(node);
+	switch ( expression->getExpressionType() ) {
+		case Expression::ExpressionType::BinaryExpression: {
+			BinaryExpression* bin = static_cast<BinaryExpression*>(node);
 
-		switch ( expression->getExpressionType() ) {
-			case Expression::ExpressionType::BinaryExpression: {
-				BinaryExpression* bin = static_cast<BinaryExpression*>(node);
+			result += "(" + printExpression(bin->mLeft);
+			result += " " + bin->mOperation.content() + " ";
+			result += printExpression(bin->mRight) + ")";
+		} break;
+		case Expression::ExpressionType::CopyExpression: {
+			result += "copy " + printExpression(static_cast<CopyExpression*>(expression)->mExpression);
+		} break;
+		case Expression::ExpressionType::IsExpression: {
+			result += printExpression(static_cast<IsExpression*>(expression)->mExpression) + " is " + static_cast<IsExpression*>(expression)->mMatchType;
+		} break;
+		case Expression::ExpressionType::NewExpression: {
+			result += "new " + printExpression(static_cast<NewExpression*>(expression)->mExpression);
+		} break;
+		case Expression::ExpressionType::LiteralExpression: {
+			result += static_cast<LiteralExpression*>(expression)->mValue.toStdString();
+		} break;
+		case Expression::ExpressionType::MethodExpression: {
+			result += printExpression(static_cast<MethodExpression*>(expression)->mSymbolExpression);
+			result += "(";
+			for ( ExpressionList::const_iterator it = static_cast<MethodExpression*>(expression)->mParams.begin(); it != static_cast<MethodExpression*>(expression)->mParams.end(); ++it ) {
+				result += printExpression((*it));
+			}
+			result += ")";
+		} break;
+		case Expression::ExpressionType::SymbolExpression: {
+			if ( static_cast<SymbolExpression*>(expression)->mSymbolExpression ) {
+				result += printExpression(static_cast<SymbolExpression*>(expression)->mSymbolExpression);
+			}
+			else {
+				result += static_cast<SymbolExpression*>(expression)->mName;
+			}
+		} break;
+		case Expression::ExpressionType::TernaryExpression: {
+			result += printExpression(static_cast<TernaryExpression*>(expression)->mCondition) + " ? ";
+			result += printExpression(static_cast<TernaryExpression*>(expression)->mFirst) + " : ";
+			result += printExpression(static_cast<TernaryExpression*>(expression)->mSecond);
+		} break;
+		case Expression::ExpressionType::TypecastExpression: {
+			result += static_cast<TypecastExpression*>(expression)->mDestinationType + " ";
+			result += printExpression(static_cast<TypecastExpression*>(expression)->mExpression);
+		} break;
+		case Expression::ExpressionType::TypeidExpression: {
+			result += "typeid(" + printExpression(static_cast<TypeidExpression*>(expression)->mExpression) + ")";
+		} break;
+		case Expression::ExpressionType::UnaryExpression: {
+			UnaryExpression* bin = static_cast<UnaryExpression*>(expression);
 
-				result += "(" + printExpression(bin->mLeft);
-				result += " " + bin->mOperation.content() + " ";
-				result += printExpression(bin->mRight) + ")";
-			} break;
-			case Expression::ExpressionType::CopyExpression: {
-				result += "copy " + printExpression(static_cast<CopyExpression*>(expression)->mExpression);
-			} break;
-			case Expression::ExpressionType::IsExpression: {
-				result += printExpression(static_cast<IsExpression*>(expression)->mExpression) + " is " + static_cast<IsExpression*>(expression)->mMatchType;
-			} break;
-			case Expression::ExpressionType::NewExpression: {
-				result += "new " + printExpression(static_cast<NewExpression*>(expression)->mExpression);
-			} break;
-			case Expression::ExpressionType::LiteralExpression: {
-				result += static_cast<LiteralExpression*>(expression)->mValue.toStdString();
-			} break;
-			case Expression::ExpressionType::MethodExpression: {
-				result += printExpression(static_cast<MethodExpression*>(expression)->mSymbolExpression);
-				result += "(";
-				for ( ExpressionList::const_iterator it = static_cast<MethodExpression*>(expression)->mParams.begin(); it != static_cast<MethodExpression*>(expression)->mParams.end(); ++it ) {
-					result += printExpression((*it));
-				}
-				result += ")";
-			} break;
-			case Expression::ExpressionType::SymbolExpression: {
-				if ( static_cast<SymbolExpression*>(expression)->mSymbolExpression ) {
-					result += printExpression(static_cast<SymbolExpression*>(expression)->mSymbolExpression);
-				}
-				else {
-					result += static_cast<SymbolExpression*>(expression)->mName;
-				}
-			} break;
-			case Expression::ExpressionType::TypecastExpression: {
-				result += static_cast<TypecastExpression*>(expression)->mDestinationType + " ";
-				result += printExpression(static_cast<TypecastExpression*>(expression)->mExpression);
-			} break;
-			case Expression::ExpressionType::TypeidExpression: {
-				result += "typeid(" + printExpression(static_cast<TypeidExpression*>(expression)->mExpression) + ")";
-			} break;
-			case Expression::ExpressionType::UnaryExpression: {
-				UnaryExpression* bin = static_cast<UnaryExpression*>(expression);
-
-				result += bin->mOperation.content();
-				result += printExpression(bin->mExpression);
-			} break;
-		}
+			result += bin->mOperation.content();
+			result += printExpression(bin->mExpression);
+		} break;
 	}
 
 	return result;
@@ -732,8 +732,7 @@ void TreeInterpreter::pushScope(IScope* scope)
 	StackFrame* stack = mStack->current();
 
 	bool allowDelete = !scope;
-
-	if ( !scope ) {
+	if ( allowDelete ) {
 		scope = new SymbolScope(stack->getScope());
 	}
 
@@ -744,7 +743,7 @@ Runtime::Object& TreeInterpreter::resolveLValue(IScope *scope, SymbolExpression 
 {
 	Runtime::Object* result = dynamic_cast<Runtime::Object*>(resolveRValue(scope, symbol, onlyCurrentScope, visibility));
 	if ( !result ) {
-		throw Common::Exceptions::Exception("invalid lvalue symbol");
+		throw Runtime::Exceptions::AccessViolation(symbol->toString());
 	}
 
 	return (*result);
@@ -807,6 +806,9 @@ MethodSymbol* TreeInterpreter::resolveMethod(IScope* scope, SymbolExpression* sy
 		}
 
 		switch ( child->getSymbolType() ) {
+			case Symbol::IType::BluePrintEnumSymbol:
+				scope = static_cast<Designtime::BluePrintEnum*>(child);
+				break;
 			case Symbol::IType::BluePrintObjectSymbol:
 				scope = static_cast<Designtime::BluePrintObject*>(child);
 				break;
@@ -816,9 +818,8 @@ MethodSymbol* TreeInterpreter::resolveMethod(IScope* scope, SymbolExpression* sy
 			case Symbol::IType::ObjectSymbol:
 				scope = static_cast<Runtime::Object*>(child);
 				break;
-			case Symbol::IType::BluePrintEnumSymbol:
 			case Symbol::IType::MethodSymbol:
-				throw Designtime::Exceptions::DesigntimeException("invalid symbol type found");
+				throw Designtime::Exceptions::DesigntimeException("invalid symbol type found: " + symbol->toString());
 		}
 
 		symbol = symbol->mSymbolExpression;
@@ -854,13 +855,7 @@ void TreeInterpreter::visit(Node* node)
 void TreeInterpreter::visitAssert(AssertStatement* node)
 {
 	Runtime::Object condition;
-	try {
-		evaluate(node->mExpression, &condition);
-	}
-	catch ( Runtime::ControlFlow::E &e ) {
-		mControlFlow = e;
-		return;
-	}
+	tryControl(evaluate(node->mExpression, &condition));
 
 	if ( !isTrue(condition) ) {
 		std::cout << "assert(" << printExpression(node->mExpression) << ");" << std::endl;
@@ -874,15 +869,10 @@ void TreeInterpreter::visitAssignment(Assignment* node)
 	Runtime::Object &lvalue = resolveLValue(getScope(), node->mLValue, false, Visibility::Designtime);
 
 	Runtime::Object tmp;
-	try {
-		evaluate(node->mExpression, &tmp);
 
-		Runtime::operator_binary_assign(&lvalue, &tmp);
-	}
-	catch ( Runtime::ControlFlow::E &e ) {
-		mControlFlow = e;
-		return;
-	}
+	tryControl(evaluate(node->mExpression, &tmp));
+
+	Runtime::operator_binary_assign(&lvalue, &tmp);
 }
 
 void TreeInterpreter::visitBreak(BreakStatement* /*node*/)
@@ -898,13 +888,7 @@ void TreeInterpreter::visitContinue(ContinueStatement* /*node*/)
 void TreeInterpreter::visitDelete(DeleteStatement* node)
 {
 	Runtime::Object obj;
-	try {
-		evaluate(node->mExpression, &obj);
-	}
-	catch ( Runtime::ControlFlow::E &e ) {
-		mControlFlow = e;
-		return;
-	}
+	tryControl(evaluate(node->mExpression, &obj));
 
 	obj = Runtime::Object();
 }
@@ -912,13 +896,7 @@ void TreeInterpreter::visitDelete(DeleteStatement* node)
 void TreeInterpreter::visitExit(ExitStatement* node)
 {
 	Runtime::Object* data = mRepository->createInstance(Runtime::IntegerObject::TYPENAME, ANONYMOUS_OBJECT, PrototypeConstraints());
-	try {
-		evaluate(node->mExpression, data);
-	}
-	catch ( Runtime::ControlFlow::E &e ) {
-		mControlFlow = e;
-		return;
-	}
+	tryControl(evaluate(node->mExpression, data));
 
 	mStack->exception() = Runtime::ExceptionData(data, Common::Position());
 
@@ -928,13 +906,7 @@ void TreeInterpreter::visitExit(ExitStatement* node)
 void TreeInterpreter::visitExpression(Expression* expression)
 {
 	Runtime::Object tmp;
-	try {
-		evaluate(expression, &tmp);
-	}
-	catch ( Runtime::ControlFlow::E &e ) {
-		mControlFlow = e;
-		return;
-	}
+	tryControl(evaluate(expression, &tmp));
 }
 
 void TreeInterpreter::visitFor(ForStatement* node)
@@ -945,17 +917,13 @@ void TreeInterpreter::visitFor(ForStatement* node)
 	Runtime::Object condition;
 
 	for  ( ; ; ) {
-		try {
-			evaluate(node->mCondition, &condition);		// evaluate loop condition
-		}
-		catch ( Runtime::ControlFlow::E &e ) {
-			mControlFlow = e;
-			return;
-		}
+		if ( node->mCondition ) {
+			tryControl(evaluate(node->mCondition, &condition));		// evaluate loop condition
 
-		// validate loop condition
-		if ( !isTrue(condition) ) {
-			break;
+			// validate loop condition
+			if ( !isTrue(condition) ) {
+				break;
+			}
 		}
 
 		// execute compound statement
@@ -978,7 +946,7 @@ void TreeInterpreter::visitFor(ForStatement* node)
 void TreeInterpreter::visitForeach(ForeachStatement* node)
 {
 	Runtime::Object collection;
-	evaluate(node->mLoopVariable, &collection);
+	tryControl(evaluate(node->mLoopVariable, &collection));
 
 	// get collection's forward iterator
 	Runtime::Object iterator;
@@ -1030,15 +998,9 @@ void TreeInterpreter::visitForeach(ForeachStatement* node)
 
 void TreeInterpreter::visitIf(IfStatement* node)
 {
+	// evaluate if-condition
 	Runtime::Object condition;
-	try {
-		// evaluate if-condition
-		evaluate(node->mExpression, &condition);
-	}
-	catch ( Runtime::ControlFlow::E &e ) {
-		mControlFlow = e;
-		return;
-	}
+	tryControl(evaluate(node->mExpression, &condition));
 
 	// validate if-condition
 	if ( isTrue(condition) ) {
@@ -1059,13 +1021,7 @@ void TreeInterpreter::visitOperator(Operator* /*op*/)
 void TreeInterpreter::visitPrint(PrintStatement* node)
 {
 	Runtime::Object text;
-	try {
-		evaluate(node->mExpression, &text);
-	}
-	catch ( Runtime::ControlFlow::E &e ) {
-		mControlFlow = e;
-		return;
-	}
+	tryControl(evaluate(node->mExpression, &text));
 
 	::Utils::PrinterDriver::Instance()->print(text.getValue().toStdString(), node->mPosition.mFile, node->mPosition.mLine);
 }
@@ -1074,15 +1030,10 @@ void TreeInterpreter::visitReturn(ReturnStatement* node)
 {
 	if ( node->mExpression ) {	// only process not-empty return statements
 		Runtime::Object tmp;
-		try {
-			evaluate(node->mExpression, &tmp);
 
-			Runtime::operator_binary_assign(&mStack->current()->returnValue(), &tmp);
-		}
-		catch ( Runtime::ControlFlow::E &e ) {
-			mControlFlow = e;
-			return;
-		}
+		tryControl(evaluate(node->mExpression, &tmp));
+
+		Runtime::operator_binary_assign(&mStack->current()->returnValue(), &tmp);
 	}
 
 	mControlFlow = Runtime::ControlFlow::Return;
@@ -1149,6 +1100,9 @@ void TreeInterpreter::visitStatement(Statement *node)
 		case Statement::StatementType::TypeDeclaration:
 			visitTypeDeclaration(static_cast<TypeDeclaration*>(node));
 			break;
+		case Statement::StatementType::TypeInference:
+			visitTypeInference(static_cast<TypeInference*>(node));
+			break;
 		case Statement::StatementType::WhileStatement:
 			visitWhile(static_cast<WhileStatement*>(node));
 			break;
@@ -1175,25 +1129,13 @@ void TreeInterpreter::visitSwitch(SwitchStatement* node)
 
 	for ( CaseStatements::const_iterator it = node->mCaseStatements.begin(); it != node->mCaseStatements.end(); ++it ) {
 		if ( evaluateCaseExpression ) {
-			try {
-				evaluate(node->mExpression, &value);
+			tryControl(evaluate(node->mExpression, &value));
 
-				evaluateCaseExpression = false;
-			}
-			catch ( Runtime::ControlFlow::E &e ) {
-				mControlFlow = e;
-				return;
-			}
+			evaluateCaseExpression = false;
 		}
 
 		Runtime::Object caseValue;
-		try {
-			evaluate((*it)->mCaseExpression, &caseValue);
-		}
-		catch ( Runtime::ControlFlow::E &e ) {
-			mControlFlow = e;
-			return;
-		}
+		tryControl(evaluate((*it)->mCaseExpression, &caseValue));
 
 		if ( Runtime::operator_binary_equal(&value, &caseValue) ) {
 			caseMatched = true;
@@ -1241,13 +1183,7 @@ void TreeInterpreter::visitThrow(ThrowStatement* node)
 {
 	if ( node->mExpression ) {	// throw new expression
 		Runtime::Object* data = mRepository->createInstance(_object, ANONYMOUS_OBJECT, PrototypeConstraints());
-		try {
-			evaluate(node->mExpression, data);
-		}
-		catch ( Runtime::ControlFlow::E &e ) {
-			mControlFlow = e;
-			return;
-		}
+		tryControl(evaluate(node->mExpression, data));
 
 		mStack->exception() = Runtime::ExceptionData(data, Common::Position());
 	}
@@ -1278,6 +1214,9 @@ void TreeInterpreter::visitTry(TryStatement* node)
 			// reset control flow to normal to allow execution of catch-block
 			mControlFlow = Runtime::ControlFlow::Normal;
 
+			// push a new scope to be able to clean up the exception variable
+			pushScope();
+
 			// process exception type declaration (if present)
 			if ( (*it)->mTypeDeclaration ) {
 				// retrieve exception instance variable
@@ -1293,6 +1232,9 @@ void TreeInterpreter::visitTry(TryStatement* node)
 			// execute catch statements
 			visitStatements((*it)->mStatements);
 
+			// pop scope to clean up the exception variable
+			popScope();
+
 			// only process one catch-block
 			break;
 		}
@@ -1301,36 +1243,31 @@ void TreeInterpreter::visitTry(TryStatement* node)
 	// store current control flow and reset it after finally block has been executed
 	Runtime::ControlFlow::E tmpControlFlow = mControlFlow;
 
-	// reset current control flow to allow execution of finally-block (if one exists)
-	if ( mControlFlow == Runtime::ControlFlow::Throw ) {
-		mControlFlow = Runtime::ControlFlow::Normal;
-	}
+	// reset current control flow to allow execution of finally-block
+	mControlFlow = Runtime::ControlFlow::Normal;
 
 	// allow try-statements without finally-statements
 	if ( node->mFinallyBlock ) {
 		visitStatements(node->mFinallyBlock);
+	}
 
-		// reset control flow if finally block has been executed normally
-		if ( mControlFlow == Runtime::ControlFlow::Normal && tmpControlFlow != Runtime::ControlFlow::Throw ) {
-			mControlFlow = tmpControlFlow;
-		}
+	// reset control flow to previous state if not set differently by finally statement
+	if ( mControlFlow == Runtime::ControlFlow::Normal && tmpControlFlow != Runtime::ControlFlow::Throw ) {
+		mControlFlow = tmpControlFlow;
 	}
 }
 
 Runtime::Object* TreeInterpreter::visitTypeDeclaration(TypeDeclaration* node)
 {
 	Runtime::Object* object = mRepository->createInstance(node->mType, node->mName, node->mConstraints);
+	object->setConst(node->mIsConst);
+	object->setIsReference(node->mIsReference);
 
 	getScope()->define(node->mName, object);
 
-	object->setConst(node->mIsConst);
-
 	if ( node->mAssignment ) {
-		Runtime::Object tmp;
 		try {
-			evaluate(node->mAssignment, &tmp);
-
-			Runtime::operator_binary_assign(object, &tmp);
+			evaluate(node->mAssignment, object);
 		}
 		catch ( Runtime::ControlFlow::E &e ) {
 			mControlFlow = e;
@@ -1341,19 +1278,18 @@ Runtime::Object* TreeInterpreter::visitTypeDeclaration(TypeDeclaration* node)
 	return object;
 }
 
+Runtime::Object* TreeInterpreter::visitTypeInference(TypeInference* node)
+{
+	return visitTypeDeclaration(node);
+}
+
 void TreeInterpreter::visitWhile(WhileStatement* node)
 {
 	Runtime::Object condition;
 
 	for  ( ; ; ) {
-		try {
-			// evaluate while condition
-			evaluate(node->mCondition, &condition);
-		}
-		catch ( Runtime::ControlFlow::E &e ) {
-			mControlFlow = e;
-			return;
-		}
+		// evaluate while condition
+		tryControl(evaluate(node->mCondition, &condition));
 
 		// validate loop condition
 		if ( !isTrue(condition) ) {

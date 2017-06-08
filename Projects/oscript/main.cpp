@@ -200,9 +200,6 @@ int main(int argc, const char* argv[])
 
 		mVirtualMachine.createScriptFromFile(mFilename, mParameters, &result);
 	}
-	catch ( std::exception &e ) {	// catch every std::exception and all derived exception types
-		OSerror(e.what());
-	}
 	catch ( ObjectiveScript::Runtime::ControlFlow::E &e ) {
 		if ( e != ObjectiveScript::Runtime::ControlFlow::ExitProgram ) {
 			OSerror("abnormal program termination!");
@@ -210,8 +207,11 @@ int main(int argc, const char* argv[])
 			ObjectiveScript::Controller::Instance().stack()->print();
 		}
 	}
+	catch ( std::exception &e ) {	// catch every std::exception and all derived exception types
+		OSerror(e.what());
+	}
 	catch ( ... ) {	// catch everything
-		std::cout << "uncaught exception detected" << std::endl;
+		std::cout << "uncaught exception detected!" << std::endl;
 
 		ObjectiveScript::Controller::Instance().stack()->print();
 	}

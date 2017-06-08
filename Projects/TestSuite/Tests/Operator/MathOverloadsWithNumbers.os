@@ -53,16 +53,6 @@ public namespace MathOverloads {
 			print("operator--");
 			mNumber = mNumber--;
 		}
-
-		public void ++operator() modify {
-			print("++operator");
-			mNumber = ++mNumber;
-		}
-
-		public void --operator() modify {
-			print("--operator");
-			mNumber = --mNumber;
-		}
 	}
 }
 

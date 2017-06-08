@@ -32,7 +32,7 @@ public:
 	const TokenList& tokens() const;
 
 private:	// Tokenizer
-	inline void addToken(const std::string &con, const Common::Position &position);
+	inline void addToken(const std::string& con, const Common::Position& position);
 	void addToken(const Token& token);
 
 	void mergeBooleanOperators();
@@ -43,19 +43,19 @@ private:	// Tokenizer
 	void replaceConstDataTypes();
 	void replaceOperators();
 
-	bool isBoolean(const std::string& token) const;
-	bool isDouble(const std::string& token) const;
-	bool isFloat(const std::string& token) const;
-	bool isInteger(const std::string& token) const;
-	bool isIntegerWithType(const std::string& token) const;
-	bool isKeyword(const std::string& token) const;
-	bool isLanguageFeature(const std::string& token) const;
-	bool isLiteral(const std::string& token) const;
-	bool isModifier(const std::string& token) const;
-	bool isReservedWord(const std::string& token) const;
-	bool isType(const std::string& token) const;
-	bool isVisibility(const std::string& token) const;
-	bool isWhiteSpace(const std::string& token) const;
+	inline bool isBoolean(const std::string& token) const;
+	inline bool isDouble(const std::string& token) const;
+	inline bool isFloat(const std::string& token) const;
+	inline bool isInteger(const std::string& token) const;
+	inline bool isIntegerWithType(const std::string& token) const;
+	inline bool isKeyword(const std::string& token) const;
+	inline bool isLanguageFeature(const std::string& token) const;
+	inline bool isLiteral(const std::string& token) const;
+	inline bool isModifier(const std::string& token) const;
+	inline bool isReservedWord(const std::string& token) const;
+	inline bool isType(const std::string& token) const;
+	inline bool isVisibility(const std::string& token) const;
+	inline bool isWhiteSpace(const std::string& token) const;
 
 private:
 	std::string	mContent;

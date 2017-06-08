@@ -18,7 +18,7 @@ public void Main(int argc = 0, string args = "") {
 private bool TestCase1() const {
 	print("TestCase 1: implemented object instantiation");
 
-	AbstractObject obj = new ImplementedObject();
+	AbstractObject obj = AbstractObject new ImplementedObject();
 
 	print("obj.isAbstract() = " + string obj.isAbstract());
 

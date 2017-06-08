@@ -14,6 +14,11 @@
 #include <Core/Runtime/Script.h>
 #include <Core/VirtualMachine/VirtualMachine.h>
 
+// Extension includes
+#ifdef USE_SYSTEM_EXTENSION
+#	include <System/SystemExtension.h>
+#endif
+
 // Namespace declarations
 using namespace ObjectiveScript;
 
@@ -30,6 +35,7 @@ OperatorTest::OperatorTest(const ::Utils::Common::Logger *p)
 
 void OperatorTest::process()
 {
+	TEST(testBooleanOperator);
 	TEST(testBooleanOverloads_Assign);
 	TEST(testBooleanOverloads_BitAnd);
 	TEST(testBooleanOverloads_BitOr);
@@ -53,6 +59,20 @@ void OperatorTest::setup()
 
 void OperatorTest::teardown()
 {
+}
+
+void OperatorTest::testBooleanOperator()
+{
+	try {
+		VirtualMachine vm;
+		vm.createScriptFromFile("Tests/Operator/BooleanOperatorTest.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
 }
 
 void OperatorTest::testBooleanOverloads_Assign()
@@ -183,10 +203,11 @@ void OperatorTest::testBooleanOverloads_Unequal()
 
 void OperatorTest::testIndexOperator()
 {
-TSKIP("index operator is yet not implemented");
-
 	try {
 		VirtualMachine vm;
+#ifdef USE_SYSTEM_EXTENSION
+		vm.addExtension(new ObjectiveScript::Extensions::System::SystemExtension());
+#endif
 		vm.createScriptFromFile("Tests/Operator/IndexOperatorTest.os");
 
 		// automatic success

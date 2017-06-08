@@ -29,8 +29,6 @@ public:
 	StringObject(const Object& other);
 
 public:	// Operators
-	void operator_array(const Object* index, Object* result);
-
 	void operator_assign(const Object* other);
 	void operator_assign(const StringObject* other);
 

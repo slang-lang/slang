@@ -26,12 +26,11 @@ namespace Runtime {
 Object::Object()
 : MethodScope(ANONYMOUS_OBJECT, 0),
   ObjectSymbol(ANONYMOUS_OBJECT),
-  mBase(0),
   mBluePrint(0),
   mFilename(ANONYMOUS_OBJECT),
   mIsAtomicType(false),
   mIsConstructed(false),
-  mIsNull(true),
+  mIsReference(false),
   mQualifiedOuterface(ANONYMOUS_OBJECT),
   mQualifiedTypename(ANONYMOUS_OBJECT),
   mTypename(ANONYMOUS_OBJECT)
@@ -42,13 +41,12 @@ Object::Object()
 Object::Object(const Object& other)
 : MethodScope(other.getName(), other.mParent),
   ObjectSymbol(other.getName()),
-  mBase(0),
   mBluePrint(other.mBluePrint),
   mFilename(other.mFilename),
   mInheritance(other.mInheritance),
   mIsAtomicType(other.mIsAtomicType),
   mIsConstructed(other.mIsConstructed),
-  mIsNull(other.mIsNull),
+  mIsReference(other.mIsReference),
   mQualifiedOuterface(other.mQualifiedOuterface),
   mQualifiedTypename(other.mQualifiedTypename),
   mTypename(other.mTypename)
@@ -73,11 +71,11 @@ Object::Object(const Object& other)
 Object::Object(const std::string& name, const std::string& filename, const std::string& type, AtomicValue value)
 : MethodScope(name, 0),
   ObjectSymbol(name),
-  mBase(0),
+  mBluePrint(0),
   mFilename(filename),
   mIsAtomicType(false),
   mIsConstructed(false),
-  mIsNull(false),
+  mIsReference(false),
   mQualifiedOuterface(type),
   mQualifiedTypename(type),
   mTypename(type),
@@ -88,14 +86,14 @@ Object::Object(const std::string& name, const std::string& filename, const std::
 
 Object::~Object()
 {
+/*
 	if ( mThis == this ) {
+		// prevent double delete for value types
 		undefine(IDENTIFIER_THIS);
 	}
+*/
 
 	Controller::Instance().memory()->remove(mReference);
-
-	mBase = 0;
-	mThis = 0;
 }
 
 Object& Object::operator= (const Object& other)
@@ -107,7 +105,7 @@ Object& Object::operator= (const Object& other)
 		mInheritance = other.mInheritance;
 		mIsAtomicType = other.mIsAtomicType;
 		mIsConstructed = other.mIsConstructed;
-		mIsNull = other.mIsNull;
+		mIsReference = other.mIsReference;
 		mParent = other.mParent;
 		mScopeName = other.mScopeName;
 		mScopeType = other.mScopeType;
@@ -128,7 +126,7 @@ Object& Object::operator= (const Object& other)
 	return *this;
 }
 
-void Object::assign(const Object& other, bool overrideType)
+void Object::assign(const Object& other)
 {
 	if ( this != &other ) {
 		mBluePrint = other.mBluePrint;
@@ -137,18 +135,18 @@ void Object::assign(const Object& other, bool overrideType)
 		mInheritance = other.mInheritance;
 		mIsAtomicType = other.mIsAtomicType;
 		mIsConstructed = other.mIsConstructed;
-		mIsNull = other.mIsNull;
 		mParent = other.mParent ? other.mParent : mParent;
 		mScopeName = other.mScopeName;
 		mScopeType = other.mScopeType;
 
-		if ( mQualifiedOuterface == NULL_TYPE || overrideType ) {
+		if ( mQualifiedOuterface == NULL_TYPE ) {
 			mQualifiedOuterface = other.mQualifiedOuterface;
 		}
 		mQualifiedTypename = other.mQualifiedTypename;
 		mTypename = other.mTypename;
 
-		if ( other.mReference.isValid() ) {
+		mIsReference = other.mIsReference;	// TODO: this prevents a correct handling
+		if ( mIsReference && other.mIsReference ) {
 			assignReference(other.mReference);
 		}
 		else {
@@ -175,11 +173,9 @@ void Object::assignReference(const Reference& ref)
 
 	if ( mReference.isValid() ) {
 		mThis = Controller::Instance().memory()->get(mReference);
-		mBase = mThis->mBase;
 	}
 	else {
 		mThis = this;
-		mBase = dynamic_cast<Object*>(MethodScope::resolve("base", true));
 	}
 
 	Controller::Instance().memory()->remove(old);
@@ -285,7 +281,7 @@ void Object::copy(const Object& other)
 		mTypename = other.mTypename;
 		mValue = other.mValue;
 
-		if ( mReference.isValid() ) {
+		if ( mIsReference ) {
 			// this object has a reference to a third object
 			// we also have to copy this third object by creating a fourth
 
@@ -444,6 +440,11 @@ Designtime::BluePrintObject* Object::getBluePrint() const
 	return mBluePrint;
 }
 
+const Reference& Object::getReference() const
+{
+	return mReference;
+}
+
 AtomicValue Object::getValue() const
 {
 	if ( mThis != this ) {
@@ -464,15 +465,13 @@ bool Object::isAbstract() const
 		return mThis->isAbstract();
 	}
 
-	bool result = mBase ? mBase->isAbstract() : false;
-
 	for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
 		if ( (*it)->isAbstract() ) {
-			result = true;
+			return true;
 		}
 	}
 
-	return result || getImplementationType() == ImplementationType::Abstract || getImplementationType() == ImplementationType::Interface;
+	return getImplementationType() == ImplementationType::Abstract || getImplementationType() == ImplementationType::Interface;
 }
 
 bool Object::isAtomicType() const
@@ -483,7 +482,7 @@ bool Object::isAtomicType() const
 bool Object::isConstructed() const
 {
 	if ( mThis != this ) {
-		return Controller::Instance().memory()->get(mReference)->isConstructed();
+		return mThis->isConstructed();
 	}
 
 	return mIsConstructed;
@@ -491,7 +490,7 @@ bool Object::isConstructed() const
 
 bool Object::isNull() const
 {
-	return mIsNull;
+	return mIsReference && !mReference.isValid();
 }
 
 bool Object::isInstanceOf(const std::string& type) const
@@ -520,23 +519,6 @@ bool Object::isValid() const
 	}
 
 	return isConstructed();
-}
-
-void Object::operator_array(const Object *index, Object* result)
-{
-	std::string subscript = index->QualifiedTypename();
-
-	ParameterList params;
-	params.push_back(Parameter::CreateRuntime(subscript, index->getValue(), index->getReference()));
-
-	::ObjectiveScript::MethodSymbol* opMethod = resolveMethod("operator[]", params, false, Visibility::Public);
-	if ( opMethod ) {
-		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(opMethod), params, result);
-
-		return;
-	}
-
-	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator[]: no array subscript operator for " + subscript + " implemented");
 }
 
 void Object::operator_assign(const Object *other)
@@ -653,10 +635,6 @@ bool Object::operator_equal(const Object *other)
 		throw Runtime::Exceptions::NullPointerException(QualifiedTypename() + ".operator==: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
 	}
 
-	if ( mReference.isValid() && other->mReference.isValid() ) {
-		return mReference == other->mReference;
-	}
-
 	ParameterList params;
 	params.push_back(Parameter::CreateRuntime(mQualifiedTypename, mValue, mReference));
 
@@ -670,6 +648,10 @@ bool Object::operator_equal(const Object *other)
 		Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(value_operator), params, &tmp);
 
 		return operator_equal(&tmp);
+	}
+
+	if ( mIsReference && other->mIsReference ) {
+		return mReference == other->mReference;
 	}
 
 	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator==: conversion from " + other->QualifiedTypename() + " to " + QualifiedTypename() + " not supported");
@@ -729,7 +711,7 @@ bool Object::operator_is(const std::string& type)
 		return false;
 	}
 
-	if ( mThis ) {
+	if ( mThis != this ) {
 		return mThis->isInstanceOf(type);
 	}
 
@@ -894,7 +876,7 @@ Symbol* Object::resolve(const std::string& name, bool onlyCurrentScope, Visibili
 
 	// (2) check inheritance
 	if ( !result ) {
-		Object* base = dynamic_cast<Object*>(MethodScope::resolve("base", true));
+		Object* base = dynamic_cast<Object*>(MethodScope::resolve("base", true, Visibility::Designtime));
 		if ( base && base->getSymbolType() == Symbol::IType::ObjectSymbol && !onlyCurrentScope ) {
 			result = base->resolve(name, onlyCurrentScope, visibility < Visibility::Protected ? Visibility::Protected : visibility);
 		}
@@ -920,7 +902,7 @@ ObjectiveScript::MethodSymbol* Object::resolveMethod(const std::string& name, co
 	// (2) check inheritance
 	// we cannot go the short is-result-already-set way here because one of our ancestor methods could be marked as final
 	Symbol* base = MethodScope::resolve("base", true);
-	if ( base && base->getSymbolType() == Symbol::IType::ObjectSymbol /*&& !onlyCurrentScope*/ ) {
+	if ( base && base->getSymbolType() == Symbol::IType::ObjectSymbol ) {
 		ObjectiveScript::MethodSymbol *tmp = dynamic_cast<Object*>(base)->resolveMethod(name, params, onlyCurrentScope, visibility < Visibility::Protected ? Visibility::Protected : visibility);
 		if ( !result || (tmp && tmp->isFinal()) ) {
 			result = tmp;
@@ -949,16 +931,27 @@ void Object::setBluePrint(Designtime::BluePrintObject* blueprint)
 void Object::setConstructed(bool state)
 {
 	if ( mThis != this ) {
-		Controller::Instance().memory()->get(mReference)->setConstructed(state);
+		mThis->setConstructed(state);
 		return;
 	}
 
 	mIsConstructed = state;
 }
 
+void Object::setIsReference(bool state)
+{
+	mIsReference = state;
+}
+
 void Object::setParent(IScope *scope)
 {
 	mParent = scope;
+}
+
+void Object::setReference(const Reference& reference)
+{
+	mIsReference = true;
+	mReference = reference;
 }
 
 void Object::setValue(AtomicValue value)

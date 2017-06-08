@@ -72,6 +72,11 @@ std::string PrintVisitor::printExpression(Node* node) const
 					result += static_cast<SymbolExpression*>(expression)->mName;
 				}
 			} break;
+			case Expression::ExpressionType::TernaryExpression: {
+				result += printExpression(static_cast<TernaryExpression*>(expression)->mCondition) + " ? ";
+				result += printExpression(static_cast<TernaryExpression*>(expression)->mFirst) + " : ";
+				result += printExpression(static_cast<TernaryExpression*>(expression)->mSecond);
+			} break;
 			case Expression::ExpressionType::TypecastExpression: {
 				result += static_cast<TypecastExpression*>(expression)->mDestinationType + " ";
 				result += printExpression(static_cast<TypecastExpression*>(expression)->mExpression);
@@ -286,6 +291,9 @@ void PrintVisitor::visitStatement(Statement *node)
 		case Statement::StatementType::TypeDeclaration:
 			visitTypeDeclaration(static_cast<TypeDeclaration*>(node));
 			break;
+		case Statement::StatementType::TypeInference:
+			visitTypeInference(static_cast<TypeInference*>(node));
+			break;
 		case Statement::StatementType::WhileStatement:
 			visitWhile(static_cast<WhileStatement*>(node));
 			break;
@@ -319,6 +327,15 @@ void PrintVisitor::visitTry(TryStatement* node)
 void PrintVisitor::visitTypeDeclaration(TypeDeclaration* node)
 {
 	std::cout << printIndentation(mIndentation) << node->mType << " " << node->mName;
+
+	if ( node->mAssignment ) {
+		std::cout << " = " << printExpression(node->mAssignment) << ";" << std::endl;
+	}
+}
+
+void PrintVisitor::visitTypeInference(TypeInference* node)
+{
+	std::cout << printIndentation(mIndentation) << "var " << node->mName;
 
 	if ( node->mAssignment ) {
 		std::cout << " = " << printExpression(node->mAssignment) << ";" << std::endl;

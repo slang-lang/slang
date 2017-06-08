@@ -22,7 +22,7 @@ class RuntimeException : public ::ObjectiveScript::Common::Exceptions::Exception
 {
 public:
 	RuntimeException(const std::string& text, const ObjectiveScript::Common::Position& position = ObjectiveScript::Common::Position())
-	: ::ObjectiveScript::Common::Exceptions::Exception("Runtime." + text, position)
+	: ::ObjectiveScript::Common::Exceptions::Exception("RuntimeException: " + text, position)
 	{ }
 
 	virtual ~RuntimeException() throw() { }
@@ -34,7 +34,7 @@ class AccessViolation : public RuntimeException
 {
 public:
 	AccessViolation(const std::string& text, const Common::Position& position = Common::Position())
-	: RuntimeException("AccessViolationException: " + text, position)
+	: RuntimeException("AccessViolation: " + text, position)
 	{ }
 
 	virtual ~AccessViolation() throw() { }
@@ -45,7 +45,7 @@ class AssertionFailed : public RuntimeException
 {
 public:
 	AssertionFailed(const std::string& text, const Common::Position& position = Common::Position())
-	: RuntimeException("AssertionFailedException: " + text, position)
+	: RuntimeException("AssertionFailed: " + text, position)
 	{ }
 
 	virtual ~AssertionFailed() throw() { }
@@ -56,7 +56,7 @@ class ExplicitCastRequired : public RuntimeException
 {
 public:
 	ExplicitCastRequired(const std::string& text, const Common::Position& position = Common::Position())
-	: RuntimeException("ExplicitCastRequiredException: " + text, position)
+	: RuntimeException("ExplicitCastRequired: " + text, position)
 	{ }
 
 	virtual ~ExplicitCastRequired() throw() { }

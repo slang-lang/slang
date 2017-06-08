@@ -17,7 +17,6 @@ AccessMode::E AccessMode::convert(const std::string& v)
 {
 	if ( v == RESERVED_WORD_BY_REFERENCE ) { return AccessMode::ByReference; }
 	else if ( v == RESERVED_WORD_BY_VALUE ) { return AccessMode::ByValue; }
-	else if ( v == UNKNOWN ) { return AccessMode::Unspecified; }
 
 	return AccessMode::Unspecified;
 }

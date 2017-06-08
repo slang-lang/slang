@@ -94,7 +94,7 @@ protected:
 
 private:
 	void printResults() {
-		std::cout << "Statistics: " << getName() << " " << (mResult.Run - mResult.Failed - mResult.Skipped) << " passed, " << mResult.Failed << " failed, " << mResult.Skipped << " skipped" << std::endl;
+		std::cout << "Statistics: " << getName() << " " << (mResult.Run - mResult.Failed - mResult.Skipped) << " passed, " << mResult.Skipped << " skipped, " << mResult.Failed << " failed" << std::endl;
 	}
 };
 

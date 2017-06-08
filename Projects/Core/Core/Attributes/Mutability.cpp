@@ -19,7 +19,6 @@ Mutability::E Mutability::convert(const std::string& v)
 	else if ( v == MODIFIER_FINAL ) { return Mutability::Final; }
 	else if ( v == MODIFIER_MODIFY ) { return Mutability::Modify; }
 	else if ( v == MODIFIER_STATIC ) { return Mutability::Static; }
-	else if ( v == UNKNOWN ) { return Mutability::Unknown; }
 
 	return Mutability::Unknown;
 }

@@ -213,7 +213,7 @@ private bool TestCase5() const {
 			count++;
 
 			Integer item = Integer it.current();
-			//print(item.ToString());
+			//print("item = " + string item);
 		}
 
 		assert( count == 3 );
@@ -223,9 +223,11 @@ private bool TestCase5() const {
 	catch ( OutOfBoundsException e ) {
 		print(e.what());
 
+		assert(false);
 		return false;
 	}
 
+	assert(false);
 	return false;
 }
 

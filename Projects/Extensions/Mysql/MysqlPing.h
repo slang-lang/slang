@@ -47,7 +47,7 @@ public:
 
 			MYSQL *myConn = mMysqlConnections[param_handle];
 			if ( !myConn ) {
-				throw Common::Exceptions::Exception("no valid mysql connection handle: " + Tools::toString(param_handle));
+				throw Common::Exceptions::Exception("no valid mysql connection handle: " + Utils::Tools::toString(param_handle));
 			}
 
 			int my_result = mysql_ping(myConn);

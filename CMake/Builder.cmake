@@ -31,35 +31,6 @@ function(build_static_lib target modules)
 endfunction()
 
 
-function(build_test_app target modules)
-
-    SET(EXECUTABLE_OUTPUT_PATH "${PROJECT_BINARY_DIR}/testbin")
-    LIST(APPEND DEPENDENCIES Utils UtilsTestManagement)
-    LIST(APPEND modules "qttest")
-
-    build_app(${target} "${modules}")
-
-endfunction()
-
-
-function(build_qtgui_app target modules)
-
-    LIST(LENGTH FORMS num_forms)
-    if ( num_forms GREATER 0 )
-        qt4_wrap_ui(HEADERS ${FORMS})
-        # the generated .h files are in the binary dir
-        include_directories(${CMAKE_CURRENT_BINARY_DIR})
-    endif()
-
-    LIST(APPEND modules "qtgui")
-
-    MESSAGE(FATAL_ERROR "${target} ${modules}")
-
-    build_app(${target} "${modules}")
-
-endfunction()
-
-
 function(build_app target modules)
 
     _handle_modules_pre_linker("${modules}")
@@ -82,27 +53,14 @@ endfunction()
 
 function(_handle_modules_pre_linker modules)
 
-    # make qt available to all by default
-    #_handle_pre_qtcore()
-
-    #list(FIND modules "qtgui" found)
-    #if ( ${found} GREATER -1 )
-    #    _handle_pre_qtgui()
-    #endif()
-
-    #list(FIND modules "qtsql" found)
-    #if ( ${found} GREATER -1 )
-    #    _handle_pre_qtsql()
-    #endif()
-
-    #list(FIND modules "qttest" found)
-    #if ( ${found} GREATER -1 )
-    #    _handle_pre_qttest()
-    #endif()
-
     list(FIND modules "boost" found)
     if ( ${found} GREATER -1 )
         _handle_pre_boost()
+    endif()
+
+    list(FIND modules "curl" found)
+    if ( ${found} GREATER -1 )
+        _handle_pre_curl()
     endif()
 
     #list(FIND modules "json" found)
@@ -120,23 +78,15 @@ endfunction()
 
 function(_handle_modules_post_linker modules target)
 
-    # link against qtcore by default 
-    #_handle_post_qtcore(${target})
+    list(FIND modules "boost" found)
+    if ( ${found} GREATER -1 )
+        _handle_post_boost(${target})
+    endif()
 
-    #list(FIND modules "qtgui" found)
-    #if ( ${found} GREATER -1 )
-    #    _handle_post_qtgui(${target})
-    #endif()
-
-    #list(FIND modules "qtsql" found)
-    #if ( ${found} GREATER -1 )
-    #    _handle_post_qtsql(${target})
-    #endif()
-
-    #list(FIND modules "qttest" found)
-    #if ( ${found} GREATER -1 )
-    #    _handle_post_qttest(${target})
-    #endif()
+    list(FIND modules "curl" found)
+    if ( ${found} GREATER -1 )
+        _handle_post_curl(${target})
+    endif()
 
     #list(FIND modules "json" found)
     #if ( ${found} GREATER -1 )
@@ -151,17 +101,68 @@ function(_handle_modules_post_linker modules target)
 endfunction()
 
 
-function(_handle_pre_boost)
+###############################
+### BOOST
+
+function(_boost_check_existence)
 
     # make sure the appropriate environment variable is set!
     if("${BUILD_BOOST_INC}" STREQUAL "")
         MESSAGE(FATAL_ERROR "BUILD_BOOST_INC needed for boost!")
     endif()
 
+endfunction()
+
+
+function(_handle_post_boost)
+
+endfunction()
+
+
+function(_handle_pre_boost)
+
+    _boost_check_existance()
     include_directories(${BUILD_BOOST_INC})
 
 endfunction()
 
+### BOOST
+###############################
+
+###############################
+### CURL
+
+function(_curl_check_existence)
+
+    # make sure the appropriate environment variable is set!
+    if("${BUILD_CURL_INC}" STREQUAL "")
+        MESSAGE(FATAL_ERROR "BUILD_CURL_INC needed for curl!")
+    endif()
+    if("${BUILD_CURL_LIB}" STREQUAL "")
+        MESSAGE(FATAL_ERROR "BUILD_CURL_LIB needed for curl!")
+    endif()
+
+endfunction()
+
+function(_handle_post_curl target)
+
+    _curl_check_existence()
+    target_link_libraries(${target} curl)
+
+endfunction()
+
+function(_handle_pre_curl)
+
+    _curl_check_existence()
+    include_directories(${BUILD_CURL_INC})
+
+endfunction()
+
+### CURL
+###############################
+
+###############################
+### JSON
 
 function(_json_check_existence)
 
@@ -176,6 +177,12 @@ function(_json_check_existence)
 
 endfunction()
 
+function(_handle_post_json target)
+
+    _json_check_existence()
+    target_link_libraries(${target} Json)
+
+endfunction()
 
 function(_handle_pre_json)
 
@@ -185,14 +192,11 @@ function(_handle_pre_json)
 
 endfunction()
 
+### JSON
+###############################
 
-function(_handle_post_json target)
-
-    _json_check_existence()
-    target_link_libraries(${target} Json)
-
-endfunction()
-
+###############################
+### MYSQL
 
 function(_mysql_check_existence)
 
@@ -207,6 +211,12 @@ function(_mysql_check_existence)
 
 endfunction()
 
+function(_handle_post_mysql target)
+
+    _mysql_check_existence()
+    target_link_libraries(${target} mysqlclient)
+
+endfunction()
 
 function(_handle_pre_mysql)
 
@@ -216,14 +226,8 @@ function(_handle_pre_mysql)
 
 endfunction()
 
-
-function(_handle_post_mysql target)
-
-    _mysql_check_existence()
-    target_link_libraries(${target} mysqlclient)
-
-endfunction()
-
+### MYSQL
+###############################
 
 function(_handle_pre_qtcore)
 

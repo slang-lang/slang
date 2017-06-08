@@ -62,11 +62,14 @@ void ASTTest::process()
 	TEST(testNew);
 	TEST(testReturn);
 	TEST(testSwitch);
+	TEST(testTernaryOperator);
+	TEST(testTernaryOperatorFail);
 	TEST(testThis);
 	TEST(testThrow);
 	TEST(testTry);
 	TEST(testTypecast);
 	TEST(testTypeDeclaration);
+	TEST(testTypeInference);
 	TEST(testTypeSystem);
 	TEST(testUnaryExpression);
 	TEST(testWhile);
@@ -208,11 +211,9 @@ void ASTTest::testConstCorrectness4()
 
 void ASTTest::testExit()
 {
-TSKIP("skipping ExitTest.os");
-
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/AST/ExitTest.os");
+		TTHROWS(vm.createScriptFromFile("Tests/AST/ExitTest.os"), Runtime::ControlFlow::E);
 
 		// automatic success
 	}
@@ -353,6 +354,34 @@ void ASTTest::testSwitch()
 	}
 }
 
+void ASTTest::testTernaryOperator()
+{
+	try {
+		VirtualMachine vm;
+		vm.createScriptFromFile("Tests/AST/TernaryOperatorTest.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void ASTTest::testTernaryOperatorFail()
+{
+	try {
+		VirtualMachine vm;
+		TTHROWS(vm.createScriptFromFile("Tests/AST/Fail_TernaryOperatorTest.os"), Common::Exceptions::SyntaxError);
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
 void ASTTest::testThis()
 {
 	try {
@@ -414,6 +443,20 @@ void ASTTest::testTypeDeclaration()
 	try {
 		VirtualMachine vm;
 		vm.createScriptFromFile("Tests/AST/TypeDeclarationTest.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void ASTTest::testTypeInference()
+{
+	try {
+		VirtualMachine vm;
+		vm.createScriptFromFile("Tests/AST/TypeInferenceTest.os");
 
 		// automatic success
 	}

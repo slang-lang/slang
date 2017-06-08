@@ -19,12 +19,15 @@ public object TestObject {
 
 public void Main(int argc = 0, string args = "") {
 	TestObject obj = new TestObject(173);
+	assert( obj );
+
 	print(obj.mValue);
 
 	obj = TestObject null;
 	// obj should not be accessible any more
+	//assert( obj );
 
-	print(string obj);
-	assert(!obj);
+	print(obj);
+	assert( !obj );
 }
 

@@ -45,6 +45,16 @@ void BluePrintGeneric::addInheritance(const Designtime::Ancestor& inheritance)
 	mInheritance.insert(inheritance);
 }
 
+const std::string& BluePrintGeneric::Filename() const
+{
+	return mFilename;
+}
+
+const std::string& BluePrintGeneric::QualifiedTypename() const
+{
+	return mQualifiedTypename;
+}
+
 Ancestors BluePrintGeneric::getAncestors() const
 {
 	Ancestors ancestors;

@@ -28,12 +28,12 @@ UserObject::UserObject()
 	mIsConstructed = false;
 }
 
-UserObject::UserObject(const std::string& name, const std::string& filename, const std::string& type, bool isNull)
+UserObject::UserObject(const std::string& name, const std::string& filename, const std::string& type, bool isReference)
 : Object(name, filename, type, AtomicValue(0))
 {
 	mIsAtomicType = false;
 	mIsConstructed = false;
-	mIsNull = isNull;
+	mIsReference = isReference;
 }
 
 UserObject::UserObject(const Object& object)

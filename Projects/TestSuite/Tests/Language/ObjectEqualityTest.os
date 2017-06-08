@@ -8,7 +8,7 @@ public namespace ObjectEqualityTest {
 			return mValue;
 		}
 
-		public void setValue(int value const) {
+		public void setValue(int value const) modify {
 			mValue = value;
 		}
 	}

@@ -16,7 +16,8 @@ namespace Designtime {
 
 
 BluePrintObject::BluePrintObject()
-: MethodScope(ANONYMOUS_OBJECT, 0)
+: MethodScope(ANONYMOUS_OBJECT, 0),
+  mIsReference(false)
 {
 	mName = ANONYMOUS_OBJECT;
 	mType = Symbol::IType::BluePrintObjectSymbol;
@@ -24,7 +25,8 @@ BluePrintObject::BluePrintObject()
 
 BluePrintObject::BluePrintObject(const std::string& type, const std::string& filename, const std::string& name)
 : BluePrintGeneric(type, filename),
-  MethodScope(type, 0)
+  MethodScope(type, 0),
+  mIsReference(false)
 {
 	mName = name;
 	mType = Symbol::IType::BluePrintObjectSymbol;
@@ -56,6 +58,11 @@ bool BluePrintObject::hasDefaultConstructor() const
 	return resolveMethod(CONSTRUCTOR, ParameterList(), true, Visibility::Public);
 }
 
+bool BluePrintObject::isReference() const
+{
+	return mIsReference;
+}
+
 MethodScope::MethodCollection BluePrintObject::provideMethods() const
 {
 	return mMethods;
@@ -64,6 +71,11 @@ MethodScope::MethodCollection BluePrintObject::provideMethods() const
 Symbols BluePrintObject::provideSymbols() const
 {
 	return mSymbols;
+}
+
+void BluePrintObject::setIsReference(bool state)
+{
+	mIsReference = state;
 }
 
 void BluePrintObject::setParent(IScope* parent)

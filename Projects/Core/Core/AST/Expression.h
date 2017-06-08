@@ -35,6 +35,7 @@ public:
 			MethodExpression,
 			NewExpression,
 			SymbolExpression,
+			TernaryExpression,
 			TypecastExpression,
 			TypeidExpression,
 			UnaryExpression
@@ -45,7 +46,8 @@ public:
 	explicit Expression(ExpressionType::E expressionType)
 	: Node(NodeType::Expression),
 	  mExpressionType(expressionType),
-	  mIsConst(false)
+	  mIsConst(false),
+	  mIsMember(false)
 	{ }
 	virtual ~Expression() { }
 
@@ -288,6 +290,10 @@ public:
 		return mIsConst || (mSymbolExpression ? mSymbolExpression->isConst() : false);
 	}
 
+	bool isMember() const {
+		return mIsMember || (mSymbolExpression ? mSymbolExpression->isMember() : false);
+	}
+
 	std::string toString() const {
 		std::string result = mName;
 
@@ -356,6 +362,38 @@ public:
 	std::string getResultType() const {
 		return mSymbolExpression ? mSymbolExpression->getResultType() : mResultType;
 	}
+};
+
+
+class TernaryExpression : public Expression
+{
+public:
+	explicit TernaryExpression(Node* condition, Node* first, Node* second)
+	: Expression(ExpressionType::TernaryExpression),
+	  mCondition(condition),
+	  mFirst(first),
+	  mSecond(second)
+	{
+		mResultType = static_cast<Expression*>(first)->getResultType();
+		mSecondResultType = static_cast<Expression*>(second)->getResultType();
+	}
+	~TernaryExpression() {
+		delete mCondition;
+		delete mFirst;
+		delete mSecond;
+	}
+
+	std::string getSecondResultType() const {
+		return mSecondResultType;
+	}
+
+public:
+	Node* mCondition;
+	Node* mFirst;
+	Node* mSecond;
+
+private:
+	std::string mSecondResultType;
 };
 
 
