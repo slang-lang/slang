@@ -7,6 +7,7 @@ public void Main(int argc, string args) throws {
 		throw new OutOfBoundsException("out of bounds");
 	}
 	catch ( OutOfBoundsException e ) {
+		assert(e);
 		print("e.what() = " + e.what());
 	}
 }
