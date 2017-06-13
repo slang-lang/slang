@@ -807,6 +807,7 @@ Node* TreeGenerator::process_identifier(TokenIterator& token, bool allowTypeCast
 
 		node = new Assignment(symbol, (*op), right, resolveType(symbol, assignment, right));
 	}
+	// subscript [] operator
 	else if ( op->type() == Token::Type::BRACKET_OPEN ) {
 		node = process_subscript(token, symbol);
 	}
