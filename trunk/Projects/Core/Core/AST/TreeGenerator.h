@@ -24,6 +24,9 @@ namespace ObjectiveScript {
 namespace Common {
 	class Namespace;
 }
+namespace Designtime {
+	class BluePrintObject;
+}
 class MethodScope;
 namespace Runtime {
 	class Object;
@@ -139,6 +142,7 @@ private:
 	bool mAllowConstModify;
 	bool mHasReturnStatement;
 	Common::Method* mMethod;
+	Designtime::BluePrintObject* mThis;
 
 private:	// Virtual machine stuff
 	Repository* mRepository;

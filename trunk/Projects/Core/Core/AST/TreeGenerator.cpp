@@ -41,6 +41,7 @@ TreeGenerator::TreeGenerator()
 : mAllowConstModify(false),
   mHasReturnStatement(false),
   mMethod(0),
+  mThis(0),
   mStackFrame(0)
 {
 	// initialize virtual machine stuff
@@ -75,14 +76,7 @@ void TreeGenerator::deinitialize()
 	IScope* scope = getScope();
 
 	// remove 'this' and 'base' symbols
-	Designtime::BluePrintObject* owner = dynamic_cast<Designtime::BluePrintObject*>(scope->getEnclosingScope());
-	if ( owner && !mMethod->isStatic() ) {
-		Symbol* baseSymbol = scope->resolve(IDENTIFIER_BASE, true);
-		if ( baseSymbol ) {
-			scope->undefine(IDENTIFIER_BASE);
-			delete baseSymbol;
-		}
-
+	if ( mThis && !mMethod->isStatic() ) {
 		Symbol* thisSymbol = scope->resolve(IDENTIFIER_THIS, true);
 		if ( thisSymbol ) {
 			scope->undefine(IDENTIFIER_THIS);
@@ -109,6 +103,7 @@ void TreeGenerator::deinitialize()
 	}
 
 	// reset reuseable members
+	mThis = 0;
 	mMethod = 0;
 	mHasReturnStatement = false;
 	mAllowConstModify = false;
@@ -262,6 +257,7 @@ void TreeGenerator::initialize(Common::Method* method)
 	mAllowConstModify = method->getMethodType() == Common::Method::MethodType::Constructor || method->getMethodType() == Common::Method::MethodType::Destructor;
 	mHasReturnStatement = false;
 	mMethod = method;
+	mThis = dynamic_cast<Designtime::BluePrintObject*>(method->getEnclosingScope());
 
 	// create new stack frame
 	mStackFrame = new StackFrame(0, mMethod, mMethod->provideSignature());
@@ -273,24 +269,12 @@ void TreeGenerator::initialize(Common::Method* method)
 	IScope* scope = getScope();
 
 	// add 'this' and 'base' symbol to method
-	Designtime::BluePrintObject* owner = dynamic_cast<Designtime::BluePrintObject*>(scope->getEnclosingScope());
-	if ( owner && !method->isStatic() ) {
-		Runtime::Object* object = mRepository->createInstance(owner->QualifiedTypename(), IDENTIFIER_THIS, PrototypeConstraints());
+	if ( mThis && !method->isStatic() ) {
+		Runtime::Object* object = mRepository->createInstance(mThis->QualifiedTypename(), IDENTIFIER_THIS, PrototypeConstraints());
 		object->setConst(mMethod->isConst());
 		object->setVisibility(Visibility::Private);
 
 		scope->define(IDENTIFIER_THIS, object);
-
-		Designtime::Ancestors ancestors = owner->getAncestors();
-
-		// BEWARE: this is only valid as long as we have single inheritance!!!
-		for ( Designtime::Ancestors::const_iterator it = ancestors.begin(); it != ancestors.end(); ++it ) {
-			Runtime::Object* object = mRepository->createInstance((*it).name(), IDENTIFIER_BASE);
-			object->setConst(mMethod->isConst());
-			object->setVisibility(Visibility::Private);
-
-			scope->define(IDENTIFIER_BASE, object);
-		}
 	}
 
 	// add parameters as locale variables
@@ -1592,10 +1576,10 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 
 	if ( token->type() == Token::Type::SCOPE ) {
 		if ( name == IDENTIFIER_BASE ) {
-			visibility = Visibility::Protected;
+			visibility = Visibility::Protected;		// this allows us to access protected and public members/methods of our base class
 		}
 		else if ( name == IDENTIFIER_THIS ) {
-			visibility = Visibility::Private;
+			visibility = Visibility::Private;		// this allows us full access to our owners class' members/methods
 		}
 
 		symbol->mSymbolExpression = resolve(++token, scope, true, visibility);
@@ -1624,33 +1608,40 @@ SymbolExpression* TreeGenerator::resolveWithExceptions(TokenIterator& token, ISc
 
 SymbolExpression* TreeGenerator::resolveWithThis(TokenIterator& token, IScope* base, bool onlyCurrentScope) const
 {
-	Designtime::BluePrintObject* blueprint = dynamic_cast<Designtime::BluePrintObject*>(mMethod->getEnclosingScope());
-	if ( blueprint ) {
-		// resolve symbol (without exceptions so that we can try to resolve another time) by using "this" identifier
-		SymbolExpression* exp = resolve(token, blueprint, true, Visibility::Private);
+	if ( mThis ) {
+		// every class-method has a "this" local that points to the object's blueprint
+		// resolve symbol by using the "this" identifier (without exceptions so that we can try to resolve another time)
+		SymbolExpression* exp = resolve(token, mThis, true, Visibility::Private);
 		if ( exp ) {
 			// insert "this" symbol as "parent" of our recently resolved symbol
-			SymbolExpression* symbol = new RuntimeSymbolExpression(IDENTIFIER_THIS, blueprint->QualifiedTypename(), mMethod->isConst(), true);
+			SymbolExpression* symbol = new RuntimeSymbolExpression(IDENTIFIER_THIS, mThis->QualifiedTypename(), mMethod->isConst(), true);
 			symbol->mSymbolExpression = exp;
 
 			return symbol;
 		}
 
-		// resolve symbol (without exceptions so that we can try to resolve another time) by using "base" identifier
-		Designtime::Ancestors ancestors = blueprint->getAncestors();
-		for ( Designtime::Ancestors::const_iterator it = ancestors.begin(); it != ancestors.end(); ++it ) {
-			Designtime::BluePrintObject* ancestor = static_cast<Designtime::BluePrintObject*>(mRepository->findBluePrint((*it).name()));
+		// every class that inherits from another class has a private "base" member to access its ancestor's protected and public members/methods
+		// resolve symbol by using the "base" identifier (without exceptions so that we can try to resolve another time)
+		SymbolExpression* base = new RuntimeSymbolExpression(IDENTIFIER_THIS, mThis->QualifiedTypename(), mMethod->isConst(), true);
+		SymbolExpression* origin = base;
+		IScope* scope = mThis;
 
-			// resolve without exceptions so that we can try to resolve a second time
-			SymbolExpression* exp = resolve(token, ancestor, true, Visibility::Protected);
+		while ( scope ) {
+			base->mSymbolExpression = new RuntimeSymbolExpression(IDENTIFIER_BASE, dynamic_cast<Designtime::BluePrintObject*>(scope)->QualifiedTypename(), mMethod->isConst(), true);
+			base = base->mSymbolExpression;
+
+			SymbolExpression* exp = resolve(token, scope, true, Visibility::Protected);
 			if ( exp ) {
 				// insert "base" symbol as "parent" of our recently resolved symbol
-				SymbolExpression* symbol = new RuntimeSymbolExpression(IDENTIFIER_BASE, blueprint->QualifiedTypename(), mMethod->isConst(), true);
-				symbol->mSymbolExpression = exp;
-
-				return symbol;
+				base->mSymbolExpression = exp;
+				return origin;
 			}
+
+			scope = dynamic_cast<Designtime::BluePrintObject*>(scope->resolve(IDENTIFIER_BASE, true, Visibility::Private));
 		}
+
+		// could not resolve token so we have to delete our "exp" SymbolExpression
+		delete origin;
 	}
 
 	return resolveWithExceptions(token, base, onlyCurrentScope);

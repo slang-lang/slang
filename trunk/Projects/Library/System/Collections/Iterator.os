@@ -16,7 +16,7 @@ public object Iterator {
 
 	public Object current() const throws {
 		if ( !mCollection ) {
-			throw new Exception("invalid iterator access");
+			throw new Exception("current(): invalid iterator access");
 		}
 
 		return mCollection.at(mCurrentIndex);
@@ -24,7 +24,7 @@ public object Iterator {
 
 	public bool hasNext() const throws {
 		if ( !mCollection ) {
-			throw new Exception("invalid iterator access");
+			throw new Exception("hasNext(): invalid iterator access");
 		}
 
 		return mCurrentIndex < mCollection.size() - 1;
@@ -32,7 +32,7 @@ public object Iterator {
 
 	public Object next() modify throws {
 		if ( !hasNext() ) {
-			throw new OutOfBoundsException("index out of bounds");
+			throw new OutOfBoundsException("next(): index out of bounds");
 		}
 
 		mCurrentIndex++;
@@ -46,7 +46,7 @@ public object Iterator {
 
 	public void operator++() modify throws {
 		if ( !hasNext() ) {
-			throw new OutOfBoundsException("index out of bounds");
+			throw new OutOfBoundsException("operator++(): index out of bounds");
 		}
 
 		mCurrentIndex++;		
@@ -69,7 +69,7 @@ public object ReverseIterator {
 
 	public Object current() const throws {
 		if ( !mCollection ) {
-			throw new Exception("invalid iterator access");
+			throw new Exception("current(): invalid iterator access");
 		}
 
 		return mCollection.at(mCurrentIndex);
@@ -77,7 +77,7 @@ public object ReverseIterator {
 
 	public bool hasNext() const throws {
 		if ( !mCollection ) {
-			throw new Exception("invalid iterator access");
+			throw new Exception("hasNext(): invalid iterator access");
 		}
 
 		return mCurrentIndex > 0;
@@ -85,7 +85,7 @@ public object ReverseIterator {
 
 	public Object next() modify throws {
 		if ( !hasNext() ) {
-			throw new OutOfBoundsException("index out of bounds");
+			throw new OutOfBoundsException("next(): index out of bounds");
 		}
 
 		mCurrentIndex--;
@@ -99,7 +99,7 @@ public object ReverseIterator {
 
 	public void operator++() modify throws {
 		if ( !hasNext() ) {
-			throw new OutOfBoundsException("index out of bounds");
+			throw new OutOfBoundsException("operator++(): index out of bounds");
 		}
 
 		mCurrentIndex--;		
