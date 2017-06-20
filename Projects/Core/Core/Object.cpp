@@ -86,14 +86,9 @@ Object::Object(const std::string& name, const std::string& filename, const std::
 
 Object::~Object()
 {
-/*
-	if ( mThis == this ) {
-		// prevent double delete for value types
-		undefine(IDENTIFIER_THIS);
+	if ( this != mThis ) {
+		Controller::Instance().memory()->remove(mReference);
 	}
-*/
-
-	Controller::Instance().memory()->remove(mReference);
 }
 
 Object& Object::operator= (const Object& other)
@@ -210,52 +205,22 @@ ControlFlow::E Object::Constructor(const ParameterList& params)
 		return controlflow;
 	}
 
-	if ( isConstructed() ) {	// prevent multiple instantiations
-		throw Common::Exceptions::Exception("can not construct '" + QualifiedTypename() + "' multiple times");
-	}
+	// check if we have implemented a constructor with the given amount and type of parameters
+	// if a specialized constructor is implemented, the default constructor cannot be used
+	Common::Method *constructor = dynamic_cast<Common::Method*>(resolveMethod(RESERVED_WORD_CONSTRUCTOR, params, true, Visibility::Protected));
+	if ( constructor ) {
+		VoidObject tmp;
 
-	// execute parent object constructors
-	for ( Inheritance::iterator it = mInheritance.begin(); it != mInheritance.end(); ++it ) {
-		if ( !it->second->CanExecuteDefaultConstructor() ) {
-			break;
-		}
-
-		// try to execute the default constructor
-		controlflow = it->second->Constructor(ParameterList());
+		controlflow = Controller::Instance().thread(0)->execute(constructor, params, &tmp);
 
 		if ( controlflow != ControlFlow::Normal ) {
 			return controlflow;
 		}
 	}
-
-	// check if we have implemented at least one constructor
-	Symbol *symbol = resolve(RESERVED_WORD_CONSTRUCTOR, true, Visibility::Private);
-	if ( symbol ) {
-		// if a specialized constructor is implemented, the default constructor cannot be used
-		Common::Method *constructor = dynamic_cast<Common::Method*>(resolveMethod(RESERVED_WORD_CONSTRUCTOR, params, true, Visibility::Private));
-		if ( constructor ) {
-			VoidObject tmp;
-
-			controlflow = Controller::Instance().thread(0)->execute(constructor, params, &tmp);
-
-			if ( controlflow != ControlFlow::Normal ) {
-				return controlflow;
-			}
-		}
-		else {
-			// no appropriate constructor found
-			throw Common::Exceptions::Exception(QualifiedTypename() + ": no appropriate constructor found");
-		}
+	else {
+		// no appropriate constructor found
+		throw Common::Exceptions::Exception(QualifiedTypename() + ": no appropriate constructor found");
 	}
-
-/*	// doesn't work properly yet
-	// check if all base objects have been constructed correctly
-	for ( Inheritance::iterator it = mInheritance.begin(); it != mInheritance.end(); ++it ) {
-		if ( !it->second->mIsConstructed ) {
-			throw Common::Exceptions::Exception(getName() + "." + QualifiedTypename() + "(): not all base objects have been constructed correctly");
-		}
-	}
-*/
 
 	// set after executing constructor in case any exceptions have been thrown
 	setConstructed(true);
@@ -358,17 +323,6 @@ ControlFlow::E Object::Destructor()
 				return controlflow;
 			}
 		}
-
-/*
-		// execute parent object destructors
-		for ( Inheritance::iterator it = mInheritance.begin(); it != mInheritance.end(); ++it ) {
-			controlflow = it->second->Destructor();
-
-			if ( controlflow != ControlFlow::Normal ) {
-				return controlflow;
-			}
-		}
-*/
 	}
 
 	// set after executing destructor in case any exceptions have been thrown

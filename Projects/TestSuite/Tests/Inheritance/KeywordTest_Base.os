@@ -37,6 +37,8 @@ public namespace Inheritance {
 
 		public void Destructor() {
 			print("DerivedObject.Destructor()");
+
+			base.Destructor();
 		}
 
 		public int getBaseValue() const {
@@ -61,6 +63,8 @@ public namespace Inheritance {
 
 		public void Destructor() {
 			print("ExtendedObject.Destructor()");
+
+			base.Destructor();
 		}
 
 		public int getValue() const {

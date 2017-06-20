@@ -11,6 +11,12 @@ private object ConstMember const {
 		v = 18;
 */
 	}
+
+/*
+	public void setValue(int value) modify {
+		mValue = value;
+	}
+*/
 }
 
 public void Main(int argc, string args) {
