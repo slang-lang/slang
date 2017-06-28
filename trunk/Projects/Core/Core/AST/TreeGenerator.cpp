@@ -1640,7 +1640,7 @@ SymbolExpression* TreeGenerator::resolveWithThis(TokenIterator& token, IScope* b
 			scope = dynamic_cast<Designtime::BluePrintObject*>(scope->resolve(IDENTIFIER_BASE, true, Visibility::Private));
 		}
 
-		// could not resolve token so we have to delete our "exp" SymbolExpression
+		// could not resolve token so we have to delete our "origin" SymbolExpression
 		delete origin;
 	}
 
