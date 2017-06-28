@@ -9,6 +9,7 @@
 #include <Core/AST/Generator.h>
 #include <Core/AST/TreeGenerator.h>
 #include <Core/AST/TreeInterpreter.h>
+#include <Core/AST/TreeOptimizer.h>
 #include <Core/Common/Exceptions.h>
 #include <Core/Defines.h>
 #include <Core/Designtime/Analyser.h>
@@ -111,6 +112,9 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 
 	AST::Generator generator;
 	generator.process(Controller::Instance().stack()->globalScope());
+
+	AST::TreeOptimizer optimizer;
+	optimizer.process(Controller::Instance().stack()->globalScope());
 
 	if ( mSettings.DoSyntaxCheck ) {
 		std::cout << "Syntax check done, no errors found." << std::endl;

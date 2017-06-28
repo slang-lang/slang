@@ -474,6 +474,7 @@ Runtime::ControlFlow::E TreeInterpreter::execute(Common::Method* method, const P
 	// notify debugger
 	DEBUGGER( notifyExit(&scope, Core::Debugger::immediateBreakToken) );
 
+	// only set return value if we are a non-void method
 	if ( result && method->QualifiedTypename() != _void ) {
 		*result = mStack->current()->returnValue();
 	}
@@ -1240,13 +1241,13 @@ void TreeInterpreter::visitTry(TryStatement* node)
 		}
 	}
 
-	// store current control flow and reset it after finally block has been executed
+	// store current control flow and re-set it after finally block has been executed
 	Runtime::ControlFlow::E tmpControlFlow = mControlFlow;
 
 	// reset current control flow to allow execution of finally-block
 	mControlFlow = Runtime::ControlFlow::Normal;
 
-	// allow try-statements without finally-statements
+	// execute finally-block if present
 	if ( node->mFinallyBlock ) {
 		visitStatements(node->mFinallyBlock);
 	}

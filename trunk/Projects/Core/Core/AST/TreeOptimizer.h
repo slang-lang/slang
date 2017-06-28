@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Core_AST_Generator_h
-#define ObjectiveScript_Core_AST_Generator_h
+#ifndef ObjectiveScript_Core_AST_TreeOptimizer_h
+#define ObjectiveScript_Core_AST_TreeOptimizer_h
 
 
 // Library includes
@@ -28,11 +28,11 @@ class MethodScope;
 namespace AST {
 
 
-class Generator
+class TreeOptimizer
 {
 public:
-	Generator();
-	~Generator();
+	TreeOptimizer();
+	~TreeOptimizer();
 
 public:
 	void process(MethodScope* base);

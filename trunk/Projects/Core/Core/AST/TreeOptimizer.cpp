@@ -1,6 +1,6 @@
 
 // Header
-#include "Generator.h"
+#include "TreeOptimizer.h"
 
 // Library includes
 
@@ -18,18 +18,18 @@ namespace ObjectiveScript {
 namespace AST {
 
 
-Generator::Generator()
+TreeOptimizer::TreeOptimizer()
 {
 }
 
-Generator::~Generator()
+TreeOptimizer::~TreeOptimizer()
 {
 }
 
 /*
- * walk through global namespace and process all methods of all symbols
- */
-void Generator::process(MethodScope* base)
+* walk through global namespace and process all methods of all symbols
+*/
+void TreeOptimizer::process(MethodScope* base)
 {
 	if ( !base ) {
 		throw Common::Exceptions::Exception("invalid scope symbol provided");
@@ -57,13 +57,13 @@ void Generator::process(MethodScope* base)
 	}
 }
 
-void Generator::processBluePrint(Designtime::BluePrintObject* object)
+void TreeOptimizer::processBluePrint(Designtime::BluePrintObject* object)
 {
 	if ( !object ) {
 		throw Common::Exceptions::Exception("invalid blueprint symbol provided");
 	}
 	if ( object->isInterface() ) {
-		// interfaces have no implementation, so there's nothing to parse; adieu..
+		// interfaces have no implementation, so there's nothing to optimize; adieu..
 		return;
 	}
 	if ( object->provideMethods().empty() && object->provideSymbols().empty() ) {
@@ -71,31 +71,30 @@ void Generator::processBluePrint(Designtime::BluePrintObject* object)
 		return;
 	}
 	if ( !object->getPrototypeConstraints().empty() ) {
-		// skip prototypes
+		// skip prototypes; not optimizing prototypes will hurt us during prototype usage though
 		return;
 	}
 
 	process(object);
 }
 
-void Generator::processMethod(Common::Method* method)
+void TreeOptimizer::processMethod(Common::Method* method)
 {
 	if ( !method ) {
 		throw Common::Exceptions::Exception("invalid method symbol provided");
 	}
 	if ( method->isAbstract() || method->isExtensionMethod() ) {
-		// abstract or extension methods have no implementation, so there's nothing to parse; adieu..
+		// abstract or extension methods have no implementation, so there's nothing to optimize; adieu..
 		return;
 	}
 
-	TreeGenerator tg;
+	// loop through all nodes of a method and decide if we keep or remove them
 
-	method->setRootNode(
-		tg.generateAST(method)
-	);
+	//Node* rootNode = method->getRootNode();
+
 }
 
-void Generator::processNamespace(Common::Namespace* space)
+void TreeOptimizer::processNamespace(Common::Namespace* space)
 {
 	if ( !space ) {
 		throw Common::Exceptions::Exception("invalid namespace symbol provided");
