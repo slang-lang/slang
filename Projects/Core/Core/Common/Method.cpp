@@ -181,6 +181,11 @@ void Method::initialize()
 	}
 }
 
+bool Method::isEmpty() const
+{
+	return !mIsExtensionMethod && !mRootNode;
+}
+
 bool Method::isExtensionMethod() const
 {
 	return mIsExtensionMethod;

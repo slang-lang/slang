@@ -4,6 +4,7 @@ SET(SOURCES
 	Generator.cpp
 	TreeGenerator.cpp
 	TreeInterpreter.cpp
+	TreeOptimizer.cpp
 	TreeVisitor.cpp
 )
 
@@ -17,6 +18,7 @@ SET(HEADERS
 	Statement.h
 	TreeGenerator.h
 	TreeInterpreter.h
+	TreeOptimizer.h
 	TreeVisitor.h
 )
 

@@ -236,7 +236,9 @@ void PrintVisitor::visitReturn(ReturnStatement* node)
 
 void PrintVisitor::visitStatement(Statement *node)
 {
-	assert(node);
+	if ( !node ) {
+		return;
+	}
 
 	switch ( node->getStatementType() ) {
 		case Statement::StatementType::AssertStatement:

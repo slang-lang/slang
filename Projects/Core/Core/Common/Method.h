@@ -74,6 +74,7 @@ public: // Setup
 	void setRootNode(AST::Statements* node);
 
 public:
+	bool isEmpty() const;
 	bool isExtensionMethod() const;
 	const PrototypeConstraints& getPrototypeConstraints() const;
 	const TokenList& getTokens() const;

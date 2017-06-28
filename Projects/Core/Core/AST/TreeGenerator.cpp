@@ -503,14 +503,18 @@ Statements* TreeGenerator::process(TokenIterator& token, TokenIterator end)
 		return 0;
 	}
 
-	Statements* statements = new Statements((*token));
-
+	Token firstToken = (*token);
 	TokenIterator localEnd = getTokens().end();
+	Statements* statements = 0;
 
 	while ( ( (token != localEnd) && (token != end) ) && (token->type() != Token::Type::ENDOFFILE) ) {
 		Node* node = process_statement(token);
 
 		if ( node ) {
+			if ( !statements ) {
+				statements = new Statements(firstToken);
+			}
+
 			statements->mNodes.push_back(node);
 		}
 	}
