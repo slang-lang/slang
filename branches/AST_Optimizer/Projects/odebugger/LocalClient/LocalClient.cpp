@@ -9,6 +9,8 @@
 
 // Project includes
 #include <Common/Settings.h>
+#include <Core/AST/TreeLineBuffer.h>
+#include <Core/AST/TreeVisitor.h>
 #include <Core/BuildInObjects/BoolObject.h>
 #include <Core/BuildInObjects/DoubleObject.h>
 #include <Core/BuildInObjects/FloatObject.h>
@@ -403,19 +405,17 @@ MethodSymbol* LocalClient::getMethod(std::string name, const ParameterList& para
 	return 0;
 }
 
-Common::Method* LocalClient::getEnclosingMethod(IScope* scope) const
+Common::Method* LocalClient::getMethodFromScope(IScope *scope) const
 {
 	while ( scope ) {
-		IScope* parent = scope->getEnclosingScope();
-
-		if ( parent && parent->getScopeType() == IScope::IType::NamedScope ) {
-			Common::Method* result = dynamic_cast<Common::Method*>(parent);
+		if ( scope->getScopeType() == IScope::IType::NamedScope ) {
+			Common::Method* result = dynamic_cast<Common::Method*>(scope);
 			if ( result ) {
 				return result;
 			}
 		}
 
-		scope = parent;
+		scope = scope->getEnclosingScope();
 	}
 
 	return 0;
@@ -772,20 +772,27 @@ void LocalClient::printHelp()
 
 void LocalClient::printScope(IScope* scope)
 {
-	Common::Method* method = dynamic_cast<Common::Method*>(getEnclosingMethod(scope));
+	Common::Method* method = getMethodFromScope(scope);
 	if ( !method ) {
 		return;
 	}
 
-	TokenList tokens = method->getTokens();
-	TokenIterator it = tokens.begin();
+	AST::TreeLineBuffer buffer;
+	AST::TreeLineBuffer::Lines lines;
+	AST::PrintVisitor visitor;
+
+	visitor.process(method->getRootNode(), buffer);
+
+	buffer.getLines(lines);
 
 	unsigned int activeLine = mBreakpoint.getLine();
 	unsigned int currentLine = 0;
 	unsigned int previousLine = 0;
 
-	while ( it != tokens.end() ) {
-		currentLine = it->position().mLine;
+	AST::TreeLineBuffer::Lines::const_iterator it = lines.begin();
+
+	while ( it != lines.end() ) {
+		currentLine = it->first.mLine;
 
 		if ( currentLine != previousLine ) {
 			std::cout << std::endl;
@@ -795,11 +802,11 @@ void LocalClient::printScope(IScope* scope)
 			else {
 				std::cout << "  ";
 			}
-			std::cout << it->position().mLine << ": ";
+			std::cout << it->first.mLine << ": ";
 			previousLine = currentLine;
 		}
 
-		std::cout << it->content();
+		std::cout << it->second;
 
 		it++;
 	}
