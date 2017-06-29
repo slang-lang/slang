@@ -4,6 +4,7 @@
 
 
 // Library includes
+#include <sstream>
 
 // Project includes
 #include "ControlStatements.h"
@@ -26,11 +27,11 @@ class Statements;
 class PrintVisitor
 {
 public:
-	PrintVisitor(Statements* root);
+	PrintVisitor();
 	~PrintVisitor();
 
 public:
-	void process(Statements* root = 0);
+	void process(Statements* root, std::ostream& output);
 
 private:
 	void visit(Node* node);
@@ -63,7 +64,7 @@ private:
 
 private:
 	int mIndentation;
-	Statements* mRootNode;
+	std::ostringstream mOutput;
 };
 
 

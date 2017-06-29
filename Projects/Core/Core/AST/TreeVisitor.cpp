@@ -7,9 +7,6 @@
 #include <Core/Common/Exceptions.h>
 
 // Project includes
-//#include "ControlStatements.h"
-//#include "Expression.h"
-//#include "Keywords.h"
 
 // Namespace declarations
 
@@ -18,9 +15,8 @@ namespace ObjectiveScript {
 namespace AST {
 
 
-PrintVisitor::PrintVisitor(Statements *root)
-: mIndentation(0),
-  mRootNode(root)
+PrintVisitor::PrintVisitor()
+: mIndentation(0)
 {
 }
 
@@ -107,12 +103,12 @@ std::string PrintVisitor::printIndentation(int indentation) const
 	return result;
 }
 
-void PrintVisitor::process(Statements* root)
+void PrintVisitor::process(Statements* root, std::ostream& output)
 {
-	std::cout << printIndentation(mIndentation) << "{" << std::endl;
+	mOutput << printIndentation(mIndentation) << "{" << std::endl;
 	mIndentation++;
 
-	Statements* statements = root ? root : mRootNode;
+	Statements* statements = root;
 
 	if ( statements ) {
 		for ( Statements::Nodes::const_iterator it = statements->mNodes.begin(); it != statements->mNodes.end(); ++it ) {
@@ -121,7 +117,15 @@ void PrintVisitor::process(Statements* root)
 	}
 
 	mIndentation--;
-	std::cout << printIndentation(mIndentation) << "}" << std::endl;
+	mOutput << printIndentation(mIndentation) << "}" << std::endl;
+
+
+	std::ostringstream tmpStream;
+	tmpStream << mOutput.rdbuf();
+	mOutput.clear();
+	//mOutput.flush();
+
+	output << tmpStream.rdbuf();
 }
 
 void PrintVisitor::visit(Node* node)
@@ -143,77 +147,77 @@ void PrintVisitor::visit(Node* node)
 
 void PrintVisitor::visitAssert(AssertStatement* node)
 {
-	std::cout << printIndentation(mIndentation) << "assert(" << printExpression(node->mExpression) << ");" << std::endl;
+	mOutput << printIndentation(mIndentation) << "assert(" << printExpression(node->mExpression) << ");" << std::endl;
 }
 
 void PrintVisitor::visitAssignment(Assignment* node)
 {
-	std::cout << printIndentation(mIndentation) << node->mLValue->mName << " " << node->mAssignment.content() << " " << printExpression(node->mExpression) << ";" << std::endl;
+	mOutput << printIndentation(mIndentation) << node->mLValue->mName << " " << node->mAssignment.content() << " " << printExpression(node->mExpression) << ";" << std::endl;
 }
 
 void PrintVisitor::visitBreak(BreakStatement* /*node*/)
 {
-	std::cout << printIndentation(mIndentation) << "break;" << std::endl;
+	mOutput << printIndentation(mIndentation) << "break;" << std::endl;
 }
 
 void PrintVisitor::visitContinue(ContinueStatement* /*node*/)
 {
-	std::cout << printIndentation(mIndentation) << "continue;" << std::endl;
+	mOutput << printIndentation(mIndentation) << "continue;" << std::endl;
 }
 
 void PrintVisitor::visitDelete(DeleteStatement* node)
 {
-	std::cout << printIndentation(mIndentation) << "delete " << printExpression(node->mExpression) << ";" << std::endl;
+	mOutput << printIndentation(mIndentation) << "delete " << printExpression(node->mExpression) << ";" << std::endl;
 }
 
 void PrintVisitor::visitExit(ExitStatement* node)
 {
-	std::cout << printIndentation(mIndentation) << "exit( " << printExpression(node->mExpression) << " );" << std::endl;
+	mOutput << printIndentation(mIndentation) << "exit( " << printExpression(node->mExpression) << " );" << std::endl;
 }
 
 void PrintVisitor::visitExpression(Expression *expression)
 {
-	std::cout << printIndentation(mIndentation) << printExpression(expression) << ";" << std::endl;
+	mOutput << printIndentation(mIndentation) << printExpression(expression) << ";" << std::endl;
 }
 
 void PrintVisitor::visitFor(ForStatement* node)
 {
-	std::cout << printIndentation(mIndentation) << "for ( ";
+	mOutput << printIndentation(mIndentation) << "for ( ";
 
 	visitStatement(static_cast<Statement*>(node->mInitialization));
 
 	mIndentation++;
 
-	std::cout << printIndentation(mIndentation) << printExpression(node->mCondition) << "; " << std::endl;
+	mOutput << printIndentation(mIndentation) << printExpression(node->mCondition) << "; " << std::endl;
 
 	visitStatement(static_cast<Statement*>(node->mIteration));
 
 	mIndentation--;
 
-	std::cout << printIndentation(mIndentation) << ") ";
+	mOutput << printIndentation(mIndentation) << ") ";
 
 	visit(node->mStatement);
 }
 
 void PrintVisitor::visitForeach(ForeachStatement *node)
 {
-	std::cout << printIndentation(mIndentation) << "for ( ";
+	mOutput << printIndentation(mIndentation) << "for ( ";
 
 	visitStatement(node->mTypeDeclaration);
 
-	std::cout << " : "; printExpression(node->mLoopVariable);
+	mOutput << " : "; printExpression(node->mLoopVariable);
 
 	visit(node->mStatement);
 }
 
 void PrintVisitor::visitIf(IfStatement* node)
 {
-	std::cout << printIndentation(mIndentation) << "if ( " << printExpression(node->mExpression) << " ) ";
+	mOutput << printIndentation(mIndentation) << "if ( " << printExpression(node->mCondition) << " ) ";
 
 	visit(node->mIfBlock);
 
 	if ( node->mElseBlock && static_cast<Statements*>(node->mElseBlock)->mNodes.size() > 0 ) {
-		std::cout << printIndentation(mIndentation) << "else ";
+		mOutput << printIndentation(mIndentation) << "else ";
 
 		visit(node->mElseBlock);
 	}
@@ -221,17 +225,17 @@ void PrintVisitor::visitIf(IfStatement* node)
 
 void PrintVisitor::visitOperator(Operator* /*op*/)
 {
-	std::cout << "Operator" << std::endl;
+	mOutput << "Operator" << std::endl;
 }
 
 void PrintVisitor::visitPrint(PrintStatement* node)
 {
-	std::cout << printIndentation(mIndentation) << "print(" << printExpression(node->mExpression) << ");" << std::endl;
+	mOutput << printIndentation(mIndentation) << "print(" << printExpression(node->mExpression) << ");" << std::endl;
 }
 
 void PrintVisitor::visitReturn(ReturnStatement* node)
 {
-	std::cout << printIndentation(mIndentation) << "return " << printExpression(node->mExpression) << ";" << std::endl;
+	mOutput << printIndentation(mIndentation) << "return " << printExpression(node->mExpression) << ";" << std::endl;
 }
 
 void PrintVisitor::visitStatement(Statement *node)
@@ -279,7 +283,7 @@ void PrintVisitor::visitStatement(Statement *node)
 			visitReturn(static_cast<ReturnStatement*>(node));
 			break;
 		case Statement::StatementType::Statements:
-			process(static_cast<Statements*>(node));
+			process(static_cast<Statements*>(node), mOutput);
 			break;
 		case Statement::StatementType::SwitchStatement:
 			visitSwitch(static_cast<SwitchStatement*>(node));
@@ -302,25 +306,42 @@ void PrintVisitor::visitStatement(Statement *node)
 	}
 }
 
-void PrintVisitor::visitSwitch(SwitchStatement *node)
+void PrintVisitor::visitSwitch(SwitchStatement* node)
 {
-	std::cout << printIndentation(mIndentation) << "switch ( " << printExpression(node->mExpression) << " ) {" << std::endl;
-	std::cout << printIndentation(mIndentation) << "}" << std::endl;
+	mOutput << printIndentation(mIndentation) << "switch ( " << printExpression(node->mExpression) << " ) {" << std::endl;
+
+	for ( CaseStatements::const_iterator it = node->mCaseStatements.begin(); it != node->mCaseStatements.end(); ++it ) {
+		mOutput << printIndentation(mIndentation + 1) << printExpression((*it)->mCaseExpression) << ": ";
+
+		visit((*it)->mCaseBlock);
+
+		mOutput << std::endl;
+	}
+
+	if ( node->mDefaultStatement ) {
+		mOutput << "default: ";
+
+		visit(node->mDefaultStatement);
+
+		mOutput << std::endl;
+	}
+
+	mOutput << printIndentation(mIndentation) << "}" << std::endl;
 }
 
 void PrintVisitor::visitThrow(ThrowStatement* node)
 {
-	std::cout << printIndentation(mIndentation) << "throw " << printExpression(node->mExpression) << ";" << std::endl;
+	mOutput << printIndentation(mIndentation) << "throw " << printExpression(node->mExpression) << ";" << std::endl;
 }
 
 void PrintVisitor::visitTry(TryStatement* node)
 {
-	std::cout << printIndentation(mIndentation) << "try ";
+	mOutput << printIndentation(mIndentation) << "try ";
 
 	visitStatement(node->mTryBlock);
 
 	if ( node->mFinallyBlock ) {
-		std::cout << printIndentation(mIndentation) << "finally ";
+		mOutput << printIndentation(mIndentation) << "finally ";
 
 		visitStatement(node->mFinallyBlock);
 	}
@@ -328,25 +349,25 @@ void PrintVisitor::visitTry(TryStatement* node)
 
 void PrintVisitor::visitTypeDeclaration(TypeDeclaration* node)
 {
-	std::cout << printIndentation(mIndentation) << node->mType << " " << node->mName;
+	mOutput << printIndentation(mIndentation) << node->mType << " " << node->mName;
 
 	if ( node->mAssignment ) {
-		std::cout << " = " << printExpression(node->mAssignment) << ";" << std::endl;
+		mOutput << " = " << printExpression(node->mAssignment) << ";" << std::endl;
 	}
 }
 
 void PrintVisitor::visitTypeInference(TypeInference* node)
 {
-	std::cout << printIndentation(mIndentation) << "var " << node->mName;
+	mOutput << printIndentation(mIndentation) << "var " << node->mName;
 
 	if ( node->mAssignment ) {
-		std::cout << " = " << printExpression(node->mAssignment) << ";" << std::endl;
+		mOutput << " = " << printExpression(node->mAssignment) << ";" << std::endl;
 	}
 }
 
 void PrintVisitor::visitWhile(WhileStatement* node)
 {
-	std::cout << printIndentation(mIndentation) << "while ( " << printExpression(node->mCondition) << " ) ";
+	mOutput << printIndentation(mIndentation) << "while ( " << printExpression(node->mCondition) << " ) ";
 
 	visit(node->mStatement);
 }
