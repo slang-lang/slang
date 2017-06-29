@@ -143,21 +143,21 @@ public:
 class IfStatement : public Statement
 {
 public:
-	IfStatement(const Token& token, Node* exp, Node* ifBlock, Node* elseBlock)
+	IfStatement(const Token& token, Node* condition, Node* ifBlock, Node* elseBlock)
 	: Statement(StatementType::IfStatement, token),
+	  mCondition(condition),
 	  mElseBlock(elseBlock),
-	  mExpression(exp),
 	  mIfBlock(ifBlock)
 	{ }
 	~IfStatement() {
+		delete mCondition;
 		delete mElseBlock;
-		delete mExpression;
 		delete mIfBlock;
 	}
 
 public:
+	Node* mCondition;
 	Node* mElseBlock;
-	Node* mExpression;
 	Node* mIfBlock;
 };
 

@@ -72,7 +72,7 @@ TreeInterpreter::TreeInterpreter(Common::ThreadId id)
   mThreadId(id)
 {
 	// initialize virtual machine stuff
-	mDebugger = Core::Debugger::Instance().useDebugger() ? &Core::Debugger::Instance() : 0;
+	mDebugger = Core::Debugger::Instance().useDebugger() ? &Core::Debugger::Instance() : NULL;
 	mMemory = Controller::Instance().memory();
 	mRepository = Controller::Instance().repository();
 	mStack = Controller::Instance().stack();
@@ -1001,7 +1001,7 @@ void TreeInterpreter::visitIf(IfStatement* node)
 {
 	// evaluate if-condition
 	Runtime::Object condition;
-	tryControl(evaluate(node->mExpression, &condition));
+	tryControl(evaluate(node->mCondition, &condition));
 
 	// validate if-condition
 	if ( isTrue(condition) ) {
