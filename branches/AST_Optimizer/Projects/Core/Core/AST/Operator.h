@@ -31,17 +31,23 @@ public:
 	};
 
 public:
-	explicit Operator(OperatorType::E operatorType)
+	explicit Operator(OperatorType::E operatorType, const Token& token)
 	: Node(NodeType::Operator),
-	  mOperatorType(operatorType)
+	  mOperatorType(operatorType),
+	  mToken(token)
 	{ }
 
 	OperatorType::E getOperatorType() const {
 		return mOperatorType;
 	}
 
+	const Token& token() const {
+		return mToken;
+	}
+
 private:
 	OperatorType::E mOperatorType;
+	Token mToken;
 };
 
 
@@ -49,10 +55,9 @@ class BinaryOperator : public Operator
 {
 public:
 	BinaryOperator(const Token& token, Expression* left, Expression* right)
-	: Operator(OperatorType::BinaryOperator),
+	: Operator(OperatorType::BinaryOperator, token),
 	  mLeft(left),
-	  mRight(right),
-	  mToken(token)
+	  mRight(right)
 	{ }
 	virtual ~BinaryOperator() {
 		delete mLeft;
@@ -62,7 +67,6 @@ public:
 public:
 	Expression* mLeft;
 	Expression* mRight;
-	Token mToken;
 };
 
 
@@ -70,9 +74,8 @@ class UnaryOperator : public Operator
 {
 public:
 	UnaryOperator(const Token& token, Expression* exp)
-	: Operator(OperatorType::UnaryOperator),
-	  mExpression(exp),
-	  mToken(token)
+	: Operator(OperatorType::UnaryOperator, token),
+	  mExpression(exp)
 	{ }
 	virtual ~UnaryOperator() {
 		delete mExpression;
@@ -80,7 +83,6 @@ public:
 
 public:
 	Expression* mExpression;
-	Token mToken;
 };
 
 

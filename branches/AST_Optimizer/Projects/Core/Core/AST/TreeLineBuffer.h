@@ -38,12 +38,16 @@ public:
 	~TreeLineBuffer();
 
 public:
-	void clear();
 	void getLines(Lines& lines);
+
+	void append(const std::string& content);
+	void clear();
 	void insert(const Common::Position& position, const std::string& content);
 	void insert(const Lines& lines);
+	void insert(const TreeLineBuffer& buffer);
 
 private:
+	Common::Position mLastInsertPosition;
 	Lines mTreeLines;
 };
 

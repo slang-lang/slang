@@ -24,69 +24,87 @@ PrintVisitor::~PrintVisitor()
 {
 }
 
+void PrintVisitor::generate(Statements* root, TreeLineBuffer& output)
+{
+	// clean up old output
+	mOutput.clear();
+
+	// start processing beginning with our given root node
+	process(root);
+
+	// provide our callee with our collected output
+	output.insert(mOutput);
+}
+
 std::string PrintVisitor::printExpression(Node* node) const
 {
+	if ( !node ) {
+		return "";
+	}
+
+	assert(node->getNodeType() == Node::NodeType::Expression);
+
+	Expression* expression = static_cast<Expression*>(node);
 	std::string result;
 
-	if ( node ) {
-		assert(node->getNodeType() == Node::NodeType::Expression);
-		Expression* expression = static_cast<Expression*>(node);
+	switch ( expression->getExpressionType() ) {
+		case Expression::ExpressionType::BinaryExpression: {
+			BinaryExpression* bin = static_cast<BinaryExpression*>(node);
 
-		switch ( expression->getExpressionType() ) {
-			case Expression::ExpressionType::BinaryExpression: {
-				BinaryExpression* bin = static_cast<BinaryExpression*>(node);
-
-				result += "(" + printExpression(bin->mLeft);
-				result += " " + bin->mOperation.content() + " ";
-				result += printExpression(bin->mRight) + ")";
-			} break;
-			case Expression::ExpressionType::CopyExpression: {
-				result += "copy " + printExpression(static_cast<CopyExpression*>(expression)->mExpression);
-			} break;
-			case Expression::ExpressionType::IsExpression: {
-				result += printExpression(static_cast<IsExpression*>(expression)->mExpression) + " is " + static_cast<IsExpression*>(expression)->mMatchType;
-			} break;
-			case Expression::ExpressionType::NewExpression: {
-				result += "new " + printExpression(static_cast<NewExpression*>(expression)->mExpression);
-			} break;
-			case Expression::ExpressionType::LiteralExpression: {
-				result += static_cast<LiteralExpression*>(expression)->mValue.toStdString();
-			} break;
-			case Expression::ExpressionType::MethodExpression: {
-				result += printExpression(static_cast<MethodExpression*>(expression)->mSymbolExpression);
-				result += "(";
-				for ( ExpressionList::const_iterator it = static_cast<MethodExpression*>(expression)->mParams.begin(); it != static_cast<MethodExpression*>(expression)->mParams.end(); ++it ) {
-					result += printExpression((*it));
-				}
-				result += ")";
-			} break;
-			case Expression::ExpressionType::SymbolExpression: {
-				if ( static_cast<SymbolExpression*>(expression)->mSymbolExpression ) {
-					result += printExpression(static_cast<SymbolExpression*>(expression)->mSymbolExpression);
-				}
-				else {
-					result += static_cast<SymbolExpression*>(expression)->mName;
-				}
-			} break;
-			case Expression::ExpressionType::TernaryExpression: {
-				result += printExpression(static_cast<TernaryExpression*>(expression)->mCondition) + " ? ";
-				result += printExpression(static_cast<TernaryExpression*>(expression)->mFirst) + " : ";
-				result += printExpression(static_cast<TernaryExpression*>(expression)->mSecond);
-			} break;
-			case Expression::ExpressionType::TypecastExpression: {
-				result += static_cast<TypecastExpression*>(expression)->mDestinationType + " ";
-				result += printExpression(static_cast<TypecastExpression*>(expression)->mExpression);
-			} break;
-			case Expression::ExpressionType::TypeidExpression: {
-				result += "typeid(" + printExpression(static_cast<TypeidExpression*>(expression)->mExpression) + ")";
-			} break;
-			case Expression::ExpressionType::UnaryExpression: {
-				UnaryExpression* bin = static_cast<UnaryExpression*>(expression);
-
-				result += bin->mOperation.content();
-				result += printExpression(bin->mExpression);
-			} break;
-		}
+			result += printExpression(bin->mLeft) + " ";
+			result += bin->mOperation.content() + " ";
+			result += printExpression(bin->mRight);
+		} break;
+		case Expression::ExpressionType::CopyExpression: {
+			result += "copy " + printExpression(static_cast<CopyExpression*>(expression)->mExpression);
+		} break;
+		case Expression::ExpressionType::IsExpression: {
+			result += printExpression(static_cast<IsExpression*>(expression)->mExpression) + " is " + static_cast<IsExpression*>(expression)->mMatchType;
+		} break;
+		case Expression::ExpressionType::NewExpression: {
+			result += "new " + printExpression(static_cast<NewExpression*>(expression)->mExpression);
+		} break;
+		case Expression::ExpressionType::LiteralExpression: {
+			Runtime::AtomicValue value = static_cast<LiteralExpression*>(expression)->mValue;
+			if ( value.type() == Runtime::AtomicValue::Type::STRING ) {
+				result += "\"";
+			}
+			result += value.toStdString();
+			if ( value.type() == Runtime::AtomicValue::Type::STRING ) {
+				result += "\"";
+			}
+		} break;
+		case Expression::ExpressionType::MethodExpression: {
+			result += printExpression(static_cast<MethodExpression*>(expression)->mSymbolExpression);
+			result += "(";
+			for ( ExpressionList::const_iterator it = static_cast<MethodExpression*>(expression)->mParams.begin();
+				  it != static_cast<MethodExpression*>(expression)->mParams.end();
+				  ++it ) {
+				result += printExpression((*it));
+			}
+			result += ")";
+		} break;
+		case Expression::ExpressionType::SymbolExpression: {
+			result += static_cast<SymbolExpression*>(expression)->mSymbolExpression
+					  ? printExpression(static_cast<SymbolExpression*>(expression)->mSymbolExpression)
+					  : static_cast<SymbolExpression*>(expression)->mName;
+		} break;
+		case Expression::ExpressionType::TernaryExpression: {
+			result += printExpression(static_cast<TernaryExpression*>(expression)->mCondition) + " ? ";
+			result += printExpression(static_cast<TernaryExpression*>(expression)->mFirst) + " : ";
+			result += printExpression(static_cast<TernaryExpression*>(expression)->mSecond);
+		} break;
+		case Expression::ExpressionType::TypecastExpression: {
+			result += "( " + static_cast<TypecastExpression*>(expression)->mDestinationType + " ";
+			result += printExpression(static_cast<TypecastExpression*>(expression)->mExpression) + " )";
+		} break;
+		case Expression::ExpressionType::TypeidExpression: {
+			result += "typeid( " + printExpression(static_cast<TypeidExpression*>(expression)->mExpression) + " )";
+		} break;
+		case Expression::ExpressionType::UnaryExpression: {
+			result += static_cast<UnaryExpression*>(expression)->mOperation.content();
+			result += printExpression(static_cast<UnaryExpression*>(expression)->mExpression);
+		} break;
 	}
 
 	return result;
@@ -103,9 +121,9 @@ std::string PrintVisitor::printIndentation(int indentation) const
 	return result;
 }
 
-void PrintVisitor::process(Statements* root, TreeLineBuffer& output)
+void PrintVisitor::process(Statements* root)
 {
-	//mOutput << printIndentation(mIndentation) << "{" << std::endl;
+	mOutput.append("{ ");
 	mIndentation++;
 
 	Statements* statements = root;
@@ -117,12 +135,7 @@ void PrintVisitor::process(Statements* root, TreeLineBuffer& output)
 	}
 
 	mIndentation--;
-	//mOutput << printIndentation(mIndentation) << "}" << std::endl;
-
-	//TreeLineBuffer tmpBuffer = mOutput;
-	//output = tmpBuffer;
-
-	output = mOutput;
+	mOutput.append(" }");
 }
 
 void PrintVisitor::visit(Node* node)
@@ -149,7 +162,7 @@ void PrintVisitor::visitAssert(AssertStatement* node)
 
 void PrintVisitor::visitAssignment(Assignment* node)
 {
-	mOutput.insert(node->token().position(), printIndentation(mIndentation) + node->mLValue->mName + " " + node->mAssignment.content() + " " + printExpression(node->mExpression) + ";");
+	mOutput.insert(node->token().position(), printIndentation(mIndentation) + node->mLValue->mName + " " + node->mAssignment.content() + " " + printExpression(node->mExpression));
 }
 
 void PrintVisitor::visitBreak(BreakStatement* node)
@@ -172,10 +185,9 @@ void PrintVisitor::visitExit(ExitStatement* node)
 	mOutput.insert(node->token().position(), printIndentation(mIndentation) + "exit( " + printExpression(node->mExpression) + " );");
 }
 
-void PrintVisitor::visitExpression(Expression* /*expression*/)
+void PrintVisitor::visitExpression(Expression* expression)
 {
-	//mOutput << printIndentation(mIndentation) << printExpression(expression) << ";" << std::endl;
-	//mOutput.insert(expression->token().position(), printIndentation(mIndentation) + printExpression(expression));
+	mOutput.append(printIndentation(mIndentation) + printExpression(expression));
 }
 
 void PrintVisitor::visitFor(ForStatement* node)
@@ -184,17 +196,17 @@ void PrintVisitor::visitFor(ForStatement* node)
 
 	visitStatement(static_cast<Statement*>(node->mInitialization));
 
-	mIndentation++;
-
-	mOutput.insert(node->token().position(), printExpression(node->mCondition) + "; ");
+	mOutput.append("; " + printExpression(node->mCondition) + "; ");
 
 	visitStatement(static_cast<Statement*>(node->mIteration));
 
-	mIndentation--;
+	mOutput.append(" ) ");
 
-	mOutput.insert(node->token().position(), " ) ");
+	mIndentation++;
 
 	visit(node->mStatement);
+
+	mIndentation--;
 }
 
 void PrintVisitor::visitForeach(ForeachStatement *node)
@@ -205,7 +217,11 @@ void PrintVisitor::visitForeach(ForeachStatement *node)
 
 	mOutput.insert(node->token().position(), " : " + printExpression(node->mLoopVariable) + " ) ");
 
+	mIndentation++;
+
 	visit(node->mStatement);
+
+	mIndentation--;
 }
 
 void PrintVisitor::visitIf(IfStatement* node)
@@ -214,16 +230,16 @@ void PrintVisitor::visitIf(IfStatement* node)
 
 	visit(node->mIfBlock);
 
-	if ( node->mElseBlock && static_cast<Statements*>(node->mElseBlock)->mNodes.size() > 0 ) {
-		mOutput.insert(node->token().position(), printIndentation(mIndentation) + "else ");
+	if ( node->mElseBlock ) {
+		mOutput.insert(static_cast<Statements*>(node->mElseBlock)->token().position(), printIndentation(mIndentation) + "else ");
 
 		visit(node->mElseBlock);
 	}
 }
 
-void PrintVisitor::visitOperator(Operator* /*op*/)
+void PrintVisitor::visitOperator(Operator* op)
 {
-	//mOutput << "Operator" << std::endl;
+	mOutput.append(op->token().content());
 }
 
 void PrintVisitor::visitPrint(PrintStatement* node)
@@ -281,7 +297,7 @@ void PrintVisitor::visitStatement(Statement *node)
 			visitReturn(static_cast<ReturnStatement*>(node));
 			break;
 		case Statement::StatementType::Statements:
-			process(static_cast<Statements*>(node), mOutput);
+			process(static_cast<Statements*>(node));
 			break;
 		case Statement::StatementType::SwitchStatement:
 			visitSwitch(static_cast<SwitchStatement*>(node));
@@ -350,7 +366,7 @@ void PrintVisitor::visitTypeDeclaration(TypeDeclaration* node)
 	mOutput.insert(node->token().position(), printIndentation(mIndentation) + node->mType + " " + node->mName);
 
 	if ( node->mAssignment ) {
-		mOutput.insert(node->token().position(), " = " + printExpression(node->mAssignment) + ";");
+		mOutput.insert(node->token().position(), " = " + printExpression(node->mAssignment));
 	}
 }
 
@@ -359,7 +375,7 @@ void PrintVisitor::visitTypeInference(TypeInference* node)
 	mOutput.insert(node->token().position(), printIndentation(mIndentation) + "var " + node->mName);
 
 	if ( node->mAssignment ) {
-		mOutput.insert(node->token().position(), " = " + printExpression(node->mAssignment) + ";");
+		mOutput.insert(node->token().position(), " = " + printExpression(node->mAssignment));
 	}
 }
 
@@ -367,7 +383,11 @@ void PrintVisitor::visitWhile(WhileStatement* node)
 {
 	mOutput.insert(node->token().position(), printIndentation(mIndentation) + "while ( " + printExpression(node->mCondition) + " ) ");
 
+	mIndentation++;
+
 	visit(node->mStatement);
+
+	mIndentation--;
 }
 
 

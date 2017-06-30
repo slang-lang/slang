@@ -32,7 +32,8 @@ public:
 	~PrintVisitor();
 
 public:
-	void process(Statements* root, TreeLineBuffer& output);
+	void generate(Statements* root, TreeLineBuffer& output);
+	void process(Statements* root);
 
 private:
 	void visit(Node* node);

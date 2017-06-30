@@ -781,7 +781,7 @@ void LocalClient::printScope(IScope* scope)
 	AST::TreeLineBuffer::Lines lines;
 	AST::PrintVisitor visitor;
 
-	visitor.process(method->getRootNode(), buffer);
+	visitor.generate(method->getRootNode(), buffer);
 
 	buffer.getLines(lines);
 
