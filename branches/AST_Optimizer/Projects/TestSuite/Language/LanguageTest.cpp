@@ -285,7 +285,7 @@ void LanguageTest::testDefaultParameter()
 
 void LanguageTest::testEnum()
 {
-#ifdef GENERATE_PARSE_TREE
+#ifdef USE_AST_PARSE_TREE
 	TSKIP("enums are currently not supported");
 #endif
 

@@ -108,13 +108,17 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 
 	Controller::Instance().repository()->initializeBlueprints();
 
-#ifdef GENERATE_PARSE_TREE
+#ifdef USE_AST_PARSE_TREE
 
 	AST::Generator generator;
 	generator.process(Controller::Instance().stack()->globalScope());
 
+#	ifdef USE_AST_OPTIMIZATION
+
 	AST::TreeOptimizer optimizer;
 	optimizer.process(Controller::Instance().stack()->globalScope());
+
+#	endif
 
 	if ( mSettings.DoSyntaxCheck ) {
 		std::cout << "Syntax check done, no errors found." << std::endl;

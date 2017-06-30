@@ -46,7 +46,7 @@ void ASTTest::process()
 	TEST(testBase);
 	TEST(testBreak);
 	TEST(testContinue);
-#ifdef GENERATE_PARSE_TREE
+#ifdef USE_AST_PARSE_TREE
 	TEST(testConstCorrectness1);
 	TEST(testConstCorrectness2);
 	TEST(testConstCorrectness3);
