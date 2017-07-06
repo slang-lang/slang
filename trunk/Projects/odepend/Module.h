@@ -48,6 +48,7 @@ public:
 	std::string mInstalledDirectory;
 	std::string mLongName;
 	std::string mShortName;
+	std::string mTargetDirectory;
 	std::string mURL;
 	//std::string mVersion;
 	SemanticVersionNumber mVersion;

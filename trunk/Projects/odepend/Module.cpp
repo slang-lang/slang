@@ -42,6 +42,10 @@ bool Module::loadFromJson(const Json::Value& value)
 	mShortName = value["name_short"].asString();
 	mVersion = value["version"].asString();
 
+	if ( value.isMember("target") ) {
+		mTargetDirectory = value["target"]["directory"].asString();
+	}
+
 	return true;
 }
 
