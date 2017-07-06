@@ -560,8 +560,11 @@ void installModule(const std::string& repo, const std::string& module)
 		execute("tar xf " + module_archive + " -C " + mLibraryFolder);
 	}
 
+	Module tmpModule = collectModuleData(mBaseFolder + CACHE_MODULES, module + ".json");
+
 	// copy module config to "<module>/module.json"
-	execute("cp " + module_config + " " + mLibraryFolder + module + "/module.json");
+	//execute("cp " + module_config + " " + mLibraryFolder + module + "/module.json");
+	execute("cp " + module_config + " " + mLibraryFolder + tmpModule.mTargetDirectory + "/module.json");
 }
 
 bool isLocalLibrary()
