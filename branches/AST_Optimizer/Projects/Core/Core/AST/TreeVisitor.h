@@ -33,7 +33,6 @@ public:
 
 public:
 	void generate(Statements* root, TreeLineBuffer& output);
-	void process(Statements* root);
 
 private:
 	void visit(Node* node);
@@ -53,6 +52,7 @@ private:
 	void visitIf(IfStatement* node);
 	void visitPrint(PrintStatement* node);
 	void visitReturn(ReturnStatement* node);
+	void visitStatements(Statements* node);
 	void visitSwitch(SwitchStatement* node);
 	void visitThrow(ThrowStatement* node);
 	void visitTry(TryStatement* node);

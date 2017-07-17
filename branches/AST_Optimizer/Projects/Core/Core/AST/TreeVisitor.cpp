@@ -30,7 +30,7 @@ void PrintVisitor::generate(Statements* root, TreeLineBuffer& output)
 	mOutput.clear();
 
 	// start processing beginning with our given root node
-	process(root);
+	visitStatements(root);
 
 	// provide our callee with our collected output
 	output.insert(mOutput);
@@ -121,23 +121,6 @@ std::string PrintVisitor::printIndentation(int indentation) const
 	return result;
 }
 
-void PrintVisitor::process(Statements* root)
-{
-	mOutput.append("{ ");
-	mIndentation++;
-
-	Statements* statements = root;
-
-	if ( statements ) {
-		for ( Statements::Nodes::const_iterator it = statements->mNodes.begin(); it != statements->mNodes.end(); ++it ) {
-			visit((*it));
-		}
-	}
-
-	mIndentation--;
-	mOutput.append(" }");
-}
-
 void PrintVisitor::visit(Node* node)
 {
 	if ( node ) {
@@ -167,12 +150,12 @@ void PrintVisitor::visitAssignment(Assignment* node)
 
 void PrintVisitor::visitBreak(BreakStatement* node)
 {
-	mOutput.insert(node->token().position(), printIndentation(mIndentation) + "break");
+	mOutput.insert(node->token().position(), printIndentation(mIndentation) + "break;");
 }
 
 void PrintVisitor::visitContinue(ContinueStatement* node)
 {
-	mOutput.insert(node->token().position(), printIndentation(mIndentation) + "continue");
+	mOutput.insert(node->token().position(), printIndentation(mIndentation) + "continue;");
 }
 
 void PrintVisitor::visitDelete(DeleteStatement* node)
@@ -194,6 +177,10 @@ void PrintVisitor::visitFor(ForStatement* node)
 {
 	mOutput.insert(node->token().position(), printIndentation(mIndentation) + "for ( ");
 
+	// set indentation to 0 temporarily
+	int indent = mIndentation;
+	mIndentation = 0;
+
 	visitStatement(static_cast<Statement*>(node->mInitialization));
 
 	mOutput.append("; " + printExpression(node->mCondition) + "; ");
@@ -202,26 +189,28 @@ void PrintVisitor::visitFor(ForStatement* node)
 
 	mOutput.append(" ) ");
 
-	mIndentation++;
+	// reset indentation
+	mIndentation = indent;
 
 	visit(node->mStatement);
-
-	mIndentation--;
 }
 
 void PrintVisitor::visitForeach(ForeachStatement *node)
 {
 	mOutput.insert(node->token().position(), printIndentation(mIndentation) + "for ( ");
 
+	// set indentation to 0 temporarily
+	int indent = mIndentation;
+	mIndentation = 0;
+
 	visitStatement(node->mTypeDeclaration);
 
-	mOutput.insert(node->token().position(), " : " + printExpression(node->mLoopVariable) + " ) ");
+	mOutput.append(" : " + printExpression(node->mLoopVariable) + " ) ");
 
-	mIndentation++;
+	// reset indentation
+	mIndentation = indent;
 
 	visit(node->mStatement);
-
-	mIndentation--;
 }
 
 void PrintVisitor::visitIf(IfStatement* node)
@@ -297,7 +286,7 @@ void PrintVisitor::visitStatement(Statement *node)
 			visitReturn(static_cast<ReturnStatement*>(node));
 			break;
 		case Statement::StatementType::Statements:
-			process(static_cast<Statements*>(node));
+			visitStatements(static_cast<Statements*>(node));
 			break;
 		case Statement::StatementType::SwitchStatement:
 			visitSwitch(static_cast<SwitchStatement*>(node));
@@ -318,6 +307,23 @@ void PrintVisitor::visitStatement(Statement *node)
 			visitWhile(static_cast<WhileStatement*>(node));
 			break;
 	}
+}
+
+void PrintVisitor::visitStatements(Statements* node)
+{
+	mOutput.append("{ ");
+	mIndentation++;
+
+	Statements* statements = node;
+
+	if ( statements ) {
+		for ( Statements::Nodes::const_iterator it = statements->mNodes.begin(); it != statements->mNodes.end(); ++it ) {
+			visit((*it));
+		}
+	}
+
+	mIndentation--;
+	mOutput.append(" }");
 }
 
 void PrintVisitor::visitSwitch(SwitchStatement* node)
@@ -346,18 +352,37 @@ void PrintVisitor::visitThrow(ThrowStatement* node)
 
 void PrintVisitor::visitTry(TryStatement* node)
 {
-	mOutput.insert(node->token().position(), printIndentation(mIndentation) + "try {");
+	mOutput.insert(node->token().position(), printIndentation(mIndentation) + "try ");
 
 	visitStatement(node->mTryBlock);
 
-	mOutput.insert(node->token().position(), printIndentation(mIndentation) + "}");
+	// TODO: handle catch statements
+
+	for ( CatchStatements::const_iterator it = node->mCatchStatements.begin(); it != node->mCatchStatements.end(); ++it ) {
+		mOutput.insert((*it)->mStatements->token().position(), printIndentation(mIndentation) + "catch ");
+
+		if ( (*it)->mTypeDeclaration ) {
+			mOutput.append("(");
+
+			// set indentation to 0 temporarily
+			int indent = mIndentation;
+			mIndentation = 0;
+
+			//visitTypeDeclaration((*it)->mTypeDeclaration);
+
+			// reset indentation
+			mIndentation = indent;
+
+			mOutput.append(") ");
+
+			visitStatements((*it)->mStatements);
+		}
+	}
 
 	if ( node->mFinallyBlock ) {
-		mOutput.insert(node->mFinallyBlock->token().position(), printIndentation(mIndentation) + "finally {");
+		mOutput.insert(node->mFinallyBlock->token().position(), printIndentation(mIndentation) + "finally ");
 
 		visitStatement(node->mFinallyBlock);
-
-		mOutput.insert(node->mFinallyBlock->token().position(), printIndentation(mIndentation) + "}");
 	}
 }
 
@@ -383,11 +408,7 @@ void PrintVisitor::visitWhile(WhileStatement* node)
 {
 	mOutput.insert(node->token().position(), printIndentation(mIndentation) + "while ( " + printExpression(node->mCondition) + " ) ");
 
-	mIndentation++;
-
 	visit(node->mStatement);
-
-	mIndentation--;
 }
 
 

@@ -47,7 +47,8 @@ public:
 	: Node(NodeType::Expression),
 	  mExpressionType(expressionType),
 	  mIsConst(false),
-	  mIsMember(false)
+	  mIsMember(false),
+	  mIsReference(false)
 	{ }
 	virtual ~Expression() { }
 
@@ -61,6 +62,9 @@ public:
 	virtual bool isMember() const {
 		return mIsMember;
 	}
+	virtual bool isReference() const {
+		return mIsReference;
+	}
 	virtual std::string getResultType() const {
 		return mResultType;
 	}
@@ -69,6 +73,7 @@ protected:
 	ExpressionType::E mExpressionType;
 	bool mIsConst;
 	bool mIsMember;
+	bool mIsReference;
 	std::string mResultType;
 };
 
@@ -353,11 +358,12 @@ public:
 class RuntimeSymbolExpression : public SymbolExpression
 {
 public:
-	explicit RuntimeSymbolExpression(const std::string& name, const std::string& resultType, bool isConst, bool isMember)
+	explicit RuntimeSymbolExpression(const std::string& name, const std::string& resultType, bool isConst, bool isMember, bool isReference)
 	: SymbolExpression(name, resultType)
 	{
 		mIsConst = isConst;
 		mIsMember = isMember;
+		mIsReference = isReference;
 		mSymbolExpressionType = SymbolExpressionType::RuntimeSymbolExpression;
 	}
 
