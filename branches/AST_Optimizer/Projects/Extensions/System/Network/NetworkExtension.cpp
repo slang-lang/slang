@@ -5,6 +5,12 @@
 // Library includes
 
 // Project includes
+#include "Accept.h"
+#include "Bind.h"
+#include "Connect.h"
+#include "Listen.h"
+#include "Receive.h"
+#include "Send.h"
 #include "Socket.h"
 
 // Namespace declarations
@@ -48,12 +54,19 @@ void SystemNetworkExtension::initialize(IScope* scope)
 	scope->define("SOCK_RAW", new Runtime::IntegerObject(SOCK_RAW));
 	scope->define("SOCK_RDM", new Runtime::IntegerObject(SOCK_RDM));
 	//scope->define("SOCK_PACKET", new Runtime::IntegerObject(SOCK_PACKET));
+	//scope->define("SOCK_NONBLOCK", new Runtime::IntegerObject(SOCK_NONBLOCK));
+	//scope->define("SOCK_CLOEXEC", new Runtime::IntegerObject(SOCK_CLOEXEC));
 }
 
 void SystemNetworkExtension::provideMethods(ExtensionMethods &methods)
 {
+	methods.push_back(new Accept());
+	methods.push_back(new Bind());
+	methods.push_back(new Connect());
+	methods.push_back(new Listen());
+	methods.push_back(new Receive());
+	methods.push_back(new Send());
 	methods.push_back(new Socket());
-
 }
 
 

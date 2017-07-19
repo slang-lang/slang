@@ -3,6 +3,7 @@
 #include "SystemExtension.h"
 
 // Library includes
+#include <cerrno>
 
 // Project includes
 #include "AssertMsg.h"
@@ -48,6 +49,16 @@ SystemExtension::~SystemExtension()
 
 void SystemExtension::initialize(IScope* scope)
 {
+	// error constants
+	scope->define("EACCES", new Runtime::IntegerObject(EACCES));
+	scope->define("EAFNOSUPPORT", new Runtime::IntegerObject(EAFNOSUPPORT));
+	scope->define("EINVAL", new Runtime::IntegerObject(EINVAL));
+	scope->define("EMFILE", new Runtime::IntegerObject(EMFILE));
+	scope->define("ENFILE", new Runtime::IntegerObject(ENFILE));
+	scope->define("ENOBUFS", new Runtime::IntegerObject(ENOBUFS));
+	scope->define("ENOMEM", new Runtime::IntegerObject(ENOMEM));
+	scope->define("EPROTONOSUPPORT", new Runtime::IntegerObject(EPROTONOSUPPORT));
+
 	// Console
 	mConsoleExtension.initialize(scope);
 	// IO

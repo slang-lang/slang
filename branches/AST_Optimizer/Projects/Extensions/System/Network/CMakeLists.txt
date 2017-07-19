@@ -6,8 +6,14 @@ SET(SOURCES
 )
 
 SET(HEADERS
+	Accept.h
+	Bind.h
+	Connect.h
 	Defines.h
+	Listen.h
 	NetworkExtension.h
+	Receive.h
+	Send.h
 	Socket.h
 )
 
