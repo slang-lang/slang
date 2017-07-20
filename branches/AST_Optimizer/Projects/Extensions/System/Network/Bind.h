@@ -6,6 +6,8 @@
 // Library includes
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <sys/un.h>
+#include <netinet/in.h>
 
 // Project includes
 #include "Defines.h"
@@ -29,7 +31,8 @@ public:
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("sockfd", Designtime::IntegerObject::TYPENAME));
-		params.push_back(Parameter::CreateDesigntime("addr", Designtime::StringObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("sockaddr", "ISocketAddress"));
+		//params.push_back(Parameter::CreateDesigntime("sockaddr", "IPAddress"));
 
 		setSignature(params);
 	}
@@ -42,12 +45,9 @@ public:
 			ParameterList::const_iterator it = list.begin();
 
 			int param_sockfd = (*it++).value().toInt();
-			std::string param_addr = (*it++).value().toStdString();
+			Runtime::Object* param_addr = Controller::Instance().memory()->get((*it++).reference());
 
-			auto addr = new sockaddr();
-			sprintf(addr->sa_data, "%s", param_addr.c_str());
-
-			int handle = bind(param_sockfd, addr, param_addr.length());
+			int handle = evaluate(param_sockfd, param_addr);
 
 			*result = Runtime::IntegerObject(handle);
 		}
@@ -60,6 +60,37 @@ public:
 		}
 
 		return Runtime::ControlFlow::Normal;
+	}
+
+private:
+	int evaluate(int param_sockfd, Runtime::Object *param_addr) const {
+		// sa_family
+		Symbol* sa_family = param_addr->resolve("_sa_family", true, Visibility::Public);
+		sa_family_t addr_family = static_cast<Runtime::IntegerObject*>(sa_family)->getValue().toInt();
+
+		switch ( addr_family ) {
+			case AF_INET: {
+				struct sockaddr_in serv_addr;
+				serv_addr.sin_family = AF_INET;
+				serv_addr.sin_addr.s_addr = INADDR_ANY;
+				serv_addr.sin_port = param_addr->getValue().toInt();
+
+				return bind(param_sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr));
+			} break;
+			case AF_INET6: {
+				struct sockaddr_in serv_addr;
+				serv_addr.sin_family = AF_INET6;
+				serv_addr.sin_addr.s_addr = INADDR_ANY;
+				serv_addr.sin_port = param_addr->getValue().toInt();
+
+				return bind(param_sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr));
+			} break;
+			default: {
+				throw Common::Exceptions::Exception("unsupported socket address type provided!");
+			} break;
+		}
+
+		return -1;
 	}
 };
 

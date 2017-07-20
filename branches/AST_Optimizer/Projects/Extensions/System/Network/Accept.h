@@ -29,7 +29,8 @@ public:
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("sockfd", Designtime::IntegerObject::TYPENAME));
-		params.push_back(Parameter::CreateDesigntime("addr", Designtime::StringObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("sockaddr", "ISocketAddress"));
+		//params.push_back(Parameter::CreateDesigntime("sockaddr", "IPAddress"));
 
 		setSignature(params);
 	}
@@ -42,14 +43,12 @@ public:
 			ParameterList::const_iterator it = list.begin();
 
 			int param_sockfd = (*it++).value().toInt();
-			std::string param_addr = (*it++).value().toStdString();
+			Runtime::Object* param_addr = Controller::Instance().memory()->get((*it++).reference());
 
-			auto addr = new sockaddr();
-			sprintf(addr->sa_data, "%s", param_addr.c_str());
+			struct sockaddr addr;
 
-			socklen_t addr_length;
-
-			int handle = accept(param_sockfd, addr, &addr_length);
+			socklen_t addr_size;
+			int handle = accept(param_sockfd, &addr, &addr_size);
 
 			*result = Runtime::IntegerObject(handle);
 		}

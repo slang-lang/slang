@@ -845,6 +845,16 @@ void Repository::initTypeSystem(Designtime::BluePrintObject* blueprint)
 	if ( !mTypeSystem->exists(blueprint->QualifiedTypename(), Token(Token::Type::ASSIGN, "="), blueprint->QualifiedTypename()) ) {
 		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::ASSIGN, blueprint->QualifiedTypename(), blueprint->QualifiedTypename());
 	}
+	// add assignment entries for extended and implemented objects
+	{
+		Designtime::Ancestors ancestors = blueprint->getInheritance();
+
+		for ( Designtime::Ancestors::const_iterator it = ancestors.begin(); it != ancestors.end(); ++it ) {
+			if ( !mTypeSystem->exists(it->name(), Token(Token::Type::ASSIGN, "="), blueprint->QualifiedTypename()) ) {
+				mTypeSystem->define(it->name(), Token::Type::ASSIGN, blueprint->QualifiedTypename(), blueprint->QualifiedTypename());
+			}
+		}
+	}
 	// add equality operator entries for type system if it doesn't exist yet
 	if ( !mTypeSystem->exists(blueprint->QualifiedTypename(), Token(Token::Type::COMPARE_EQUAL, "=="), blueprint->QualifiedTypename()) ) {
 		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_EQUAL, blueprint->QualifiedTypename(), blueprint->QualifiedTypename());
