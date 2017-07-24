@@ -14,9 +14,7 @@ public void Main(int argc = 0, string args = "") {
 	result = listen(sockfd, 50);
 	print("result = " + result);
 
-	result = accept(sockfd, sockaddr);
+	result = accept(sockfd);
 	print("result = " + result);
-
-	//close(sockfd);
 }
 
