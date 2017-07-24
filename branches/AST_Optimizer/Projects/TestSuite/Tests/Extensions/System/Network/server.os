@@ -40,9 +40,12 @@ public void Main(int argc = 0, string args = "") {
 		return;
 	}
 
+/*
 	// get length of following string
 	int length = readi(connectfd);
 	print("length = " + length);
+*/
+	int length = -1;
 
 	// get string data
 	string value = reads(connectfd, length);

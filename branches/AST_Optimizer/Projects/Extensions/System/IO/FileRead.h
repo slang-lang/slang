@@ -239,7 +239,7 @@ public:
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME));
-		params.push_back(Parameter::CreateDesigntime("count", Designtime::IntegerObject::TYPENAME, 1, true));
+		params.push_back(Parameter::CreateDesigntime("length", Designtime::IntegerObject::TYPENAME, 1, true));
 
 		setSignature(params);
 	}
@@ -252,18 +252,17 @@ public:
 			ParameterList::const_iterator it = list.begin();
 
 			std::string param_handle = (*it++).value().toStdString();
+			int param_length = (*it++).value().toInt();
 
 			int handle = Utils::Tools::stringToInt(param_handle);
-			int fileCount = params.back().value().toInt();
 
 			if ( mFileHandles.find(handle) == mFileHandles.end() ) {
 				throw Runtime::Exceptions::RuntimeException("invalid file handle");
 			}
 
-			int count = fileCount;
 			std::string value;
 
-			while ( count > 0 ) {
+			while ( param_length > 0 || param_length == -1 ) {
 				char charValue;
 
 				long size = fread(&charValue, 1, sizeof(char), mFileHandles[handle]);
@@ -275,7 +274,10 @@ public:
 				}
 
 				value += charValue;
-				count--;
+
+				if ( param_length > 0 ) {
+					param_length--;
+				}
 			}
 
 			*result = Runtime::StringObject(value);

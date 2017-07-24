@@ -215,7 +215,7 @@ public:
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME));
-		params.push_back(Parameter::CreateDesigntime("count", Designtime::IntegerObject::TYPENAME, 1, true));
+		params.push_back(Parameter::CreateDesigntime("length", Designtime::IntegerObject::TYPENAME, 1, true));
 
 		setSignature(params);
 	}
@@ -228,11 +228,11 @@ public:
 			ParameterList::const_iterator it = list.begin();
 
 			int param_handle = (*it++).value().toInt();
-			int param_count = (*it++).value().toInt();
+			int param_length = (*it++).value().toInt();
 
 			std::string value;
 
-			while ( param_count > 0 ) {
+			while ( param_length > 0 || param_length == -1 ) {
 				char charValue;
 
 				long size = read(param_handle, &charValue, sizeof(char));
@@ -244,7 +244,10 @@ public:
 				}
 
 				value += charValue;
-				param_count--;
+
+				if ( param_length > 0 ) {
+					param_length--;
+				}
 			}
 
 			*result = Runtime::StringObject(value);
