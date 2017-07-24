@@ -237,7 +237,7 @@ public:
 			long size = 0;
 
 			while ( count < value.size() ) {
-				size = write(param_handle, &value[count], sizeof(char) * value.size());
+				size = write(param_handle, &value[count], sizeof(char));
 				if ( size == -1 ) {    // error while writing
 					throw Runtime::Exceptions::RuntimeException("error while writing handle");
 				}

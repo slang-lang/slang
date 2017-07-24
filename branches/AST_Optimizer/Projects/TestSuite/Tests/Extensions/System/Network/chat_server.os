@@ -39,12 +39,13 @@ public void Main(int argc = 0, string args = "") {
 	while ( running ) {
 		// get length of following string
 		cmd_length = readi(connectfd);
-		// get payload data
-		cmd_data = reads(connectfd, cmd_length);
 
-		if ( !cmd_data || !cmd_length ) {
+		if ( !cmd_length ) {
 			continue;
 		}
+
+		// get payload data
+		cmd_data = reads(connectfd, cmd_length);
 
 		if ( cmd_data == "quit" ) {
 			running = false;
