@@ -16,14 +16,13 @@ public void Main(int argc = 0, string args = "") {
 	int result = connect(sockfd, sockaddr);
 	print("connect = " + result);
 
-/*
-	result = send();
-	print("result = " + result);
-*/
-/*
-	result = receive();
-	print("result = " + result);
-*/
+	string data = "hallo";
+
+	result = writei(sockfd, strlen(data));
+	print("write = " + result);
+
+	result = writes(sockfd, data);
+	print("write = " + result);
 
 	result = close(sockfd);
 	print("close = " + result);

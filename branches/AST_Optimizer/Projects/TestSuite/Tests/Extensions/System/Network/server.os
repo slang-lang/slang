@@ -40,10 +40,13 @@ public void Main(int argc = 0, string args = "") {
 		return;
 	}
 
-/*
-	result = receive();
-	print("receive = " + result);
-*/
+	// get length of following string
+	int length = readi(connectfd);
+	print("length = " + length);
+
+	// get string data
+	string value = reads(connectfd, length);
+	print("read = " + value);
 
 	result = close(connectfd);
 	print("close = " + result);

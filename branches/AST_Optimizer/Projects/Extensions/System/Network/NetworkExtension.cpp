@@ -10,9 +10,9 @@
 #include "Close.h"
 #include "Connect.h"
 #include "Listen.h"
-#include "Receive.h"
-#include "Send.h"
+#include "Read.h"
 #include "Socket.h"
+#include "Write.h"
 
 // Namespace declarations
 
@@ -66,9 +66,17 @@ void SystemNetworkExtension::provideMethods(ExtensionMethods &methods)
 	methods.push_back(new Close());
 	methods.push_back(new Connect());
 	methods.push_back(new Listen());
-	methods.push_back(new Receive());
-	methods.push_back(new Send());
+	methods.push_back(new ReadBool());
+	methods.push_back(new ReadDouble());
+	methods.push_back(new ReadFloat());
+	methods.push_back(new ReadInt());
+	methods.push_back(new ReadString());
 	methods.push_back(new Socket());
+	methods.push_back(new WriteBool());
+	methods.push_back(new WriteDouble());
+	methods.push_back(new WriteFloat());
+	methods.push_back(new WriteInt());
+	methods.push_back(new WriteString());
 }
 
 

@@ -13,9 +13,11 @@ SET(HEADERS
 	Defines.h
 	Listen.h
 	NetworkExtension.h
-	Receive.h
-	Send.h
+	Read.h
+	#Receive.h
+	#Send.h
 	Socket.h
+	Write.h
 )
 
 SET(DEPENDENCIES
