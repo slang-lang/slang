@@ -1,12 +1,12 @@
 
-#ifndef ObjectiveScript_Extensions_System_Network_Accept_h
-#define ObjectiveScript_Extensions_System_Network_Accept_h
+#ifndef ObjectiveScript_Extensions_System_Network_Close_h
+#define ObjectiveScript_Extensions_System_Network_Close_h
 
 
 // Library includes
 #include <sys/types.h>
 #include <sys/socket.h>
-#include <arpa/inet.h>
+#include <zconf.h>
 
 // Project includes
 #include "Defines.h"
@@ -22,11 +22,11 @@ namespace System {
 namespace Network {
 
 
-class Accept : public ExtensionMethod
+class Close : public ExtensionMethod
 {
 public:
-	Accept()
-	: ExtensionMethod(0, "accept", Designtime::IntegerObject::TYPENAME)
+	Close()
+	: ExtensionMethod(0, "close", Designtime::IntegerObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("sockfd", Designtime::IntegerObject::TYPENAME));
@@ -43,7 +43,7 @@ public:
 
 			int param_sockfd = (*it++).value().toInt();
 
-			int handle = accept(param_sockfd, NULL, NULL);
+			int handle = close(param_sockfd);
 
 			*result = Runtime::IntegerObject(handle);
 		}

@@ -8,6 +8,7 @@ SET(SOURCES
 SET(HEADERS
 	Accept.h
 	Bind.h
+	Close.h
 	Connect.h
 	Defines.h
 	Listen.h

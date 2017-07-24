@@ -8,6 +8,7 @@
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
 
 // Project includes
 #include "Defines.h"
@@ -63,34 +64,44 @@ public:
 	}
 
 private:
-	int evaluate(int param_sockfd, Runtime::Object *param_addr) const {
-		// sa_family
-		Symbol* sa_family = param_addr->resolve("_sa_family", true, Visibility::Public);
-		sa_family_t addr_family = static_cast<Runtime::IntegerObject*>(sa_family)->getValue().toInt();
-
-		switch ( addr_family ) {
-			case AF_INET: {
-				struct sockaddr_in serv_addr;
-				serv_addr.sin_family = AF_INET;
-				serv_addr.sin_addr.s_addr = INADDR_ANY;
-				serv_addr.sin_port = param_addr->getValue().toInt();
-
-				return bind(param_sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr));
-			} break;
-			case AF_INET6: {
-				struct sockaddr_in serv_addr;
-				serv_addr.sin_family = AF_INET6;
-				serv_addr.sin_addr.s_addr = INADDR_ANY;
-				serv_addr.sin_port = param_addr->getValue().toInt();
-
-				return bind(param_sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr));
-			} break;
-			default: {
-				throw Common::Exceptions::Exception("unsupported socket address type provided!");
-			} break;
+	int evaluate(int param_sockfd, Runtime::Object* param_addr) const {
+		Symbol* addressSymbol = param_addr->resolve("_sa_address", true, Visibility::Public);
+		if ( !addressSymbol ) {
+			throw Runtime::Exceptions::RuntimeException("_sa_address symbol not found");
 		}
 
-		return -1;
+		Symbol* familySymbol = param_addr->resolve("_sa_family", true, Visibility::Public);
+		if ( !familySymbol ) {
+			throw Runtime::Exceptions::RuntimeException("_sa_family symbol not found");
+		}
+
+		Symbol* portSymbol = param_addr->resolve("_sa_port", true, Visibility::Public);
+		if ( !portSymbol ) {
+			throw Runtime::Exceptions::RuntimeException("_sa_port symbol not found");
+		}
+
+		struct sockaddr_in serv_addr;
+		sa_family_t addr_family = (sa_family_t)static_cast<Runtime::IntegerObject*>(familySymbol)->getValue().toInt();
+
+		// set sa_family
+		switch ( addr_family ) {
+			case AF_INET: {
+				serv_addr.sin_family = AF_INET;
+			} break;
+			case AF_INET6: {
+				serv_addr.sin_family = AF_INET6;
+			} break;
+			default:
+				throw Common::Exceptions::Exception("unsupported socket address type provided!");
+		}
+
+		// set sa_address
+		inet_pton(serv_addr.sin_family, static_cast<Runtime::StringObject*>(addressSymbol)->getValue().toStdString().c_str(), &serv_addr.sin_addr);
+
+		// set sa_port
+		serv_addr.sin_port = (in_port_t)static_cast<Runtime::IntegerObject*>(portSymbol)->getValue().toInt();
+
+		return bind(param_sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr));
 	}
 };
 

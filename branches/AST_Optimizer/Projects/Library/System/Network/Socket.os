@@ -4,26 +4,26 @@ public interface ISocketAddress {
 }
 
 public object IPv4Address const implements ISocketAddress {
-	public string _address const;
-	public int _port const;
+	public string _sa_address const;
+	public int _sa_port const;
 	public int _sa_family const;
 
 	public void Constructor(string address, int port) {
-		_address = address;
-		_port = port;
+		_sa_address = address;
 		_sa_family = AF_INET;
+		_sa_port = port;
 	}
 }
 
 public object IPv6Address const implements ISocketAddress {
-	public string _address const;
-	public int _port const;
+	public string _sa_address const;
+	public int _sa_port const;
 	public int _sa_family const;
 
 	public void Constructor(string address, int port) {
-		_address = address;
-		_port = port;
+		_sa_address = address;
 		_sa_family = AF_INET6;
+		_sa_port = port;
 	}
 }
 

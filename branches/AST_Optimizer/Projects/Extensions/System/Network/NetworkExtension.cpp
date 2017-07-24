@@ -7,6 +7,7 @@
 // Project includes
 #include "Accept.h"
 #include "Bind.h"
+#include "Close.h"
 #include "Connect.h"
 #include "Listen.h"
 #include "Receive.h"
@@ -62,6 +63,7 @@ void SystemNetworkExtension::provideMethods(ExtensionMethods &methods)
 {
 	methods.push_back(new Accept());
 	methods.push_back(new Bind());
+	methods.push_back(new Close());
 	methods.push_back(new Connect());
 	methods.push_back(new Listen());
 	methods.push_back(new Receive());
