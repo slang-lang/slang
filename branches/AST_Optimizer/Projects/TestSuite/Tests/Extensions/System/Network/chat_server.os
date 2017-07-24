@@ -25,6 +25,8 @@ public void Main(int argc = 0, string args = "") {
 		return;
 	}
 
+	print("chat_server is listening...");
+
 	int connectfd = accept(sockfd);
 	if ( connectfd < 0 ) {
 		print("accept failed");
@@ -32,11 +34,15 @@ public void Main(int argc = 0, string args = "") {
 		return;
 	}
 
+	print("client connected.");
+
 	string cmd_data;
 	int cmd_length;
 
 	bool running = true;
 	while ( running ) {
+		print("waiting for client message...");
+
 		// get length of following string
 		cmd_length = readi(connectfd);
 
