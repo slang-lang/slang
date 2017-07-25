@@ -10,8 +10,7 @@ public object ServerSocket {
 	/*
 	 * Private members
 	 */
-	private ISocketAddress mAddress;
-	private int mPort;
+	private IPv4Address mAddress;
 	private int mQueueLength;
 
 	/*
@@ -25,7 +24,7 @@ public object ServerSocket {
 	 * 
 	 */
 	public void Constructor(int port) {
-		mPort = port;
+		mAddress = new IPv4Address(INADDR_ANY, port);
 		mQueueLength = DEFAULT_QUEUE_LENGTH;
 	}
 
@@ -33,16 +32,15 @@ public object ServerSocket {
 	 *
 	 */
 	public void Constructor(int port, int queueLength) {
-		mPort = port;
+		mAddress = new IPv4Address(INADDR_ANY, port);
 		mQueueLength = queueLength;
 	}
 
 	/*
 	 *
 	 */
-	public void Constructor(int port, int queueLength, ISocketAddress address) {
+	public void Constructor(IPv4Address address, int queueLength) {
 		mAddress = address;
-		mPort = port;
 		mQueueLength = queueLength;
 	}
 
@@ -57,8 +55,20 @@ public object ServerSocket {
 	 * Listens for a connection to be made to this socket and accepts it.
 	 * The method blocks until a connection is made.
 	 */
-	Socket accept() throws {
+	public Socket accept() throws {
 		return Socket null;
+	}
+
+	/*
+	 * Binds the ServerSocket to the address given during object construction
+	 */
+	public void bind() modify throws {
+	}
+
+	/*
+	 * Binds the ServerSocket to a given address
+	 */
+	public void bind(ISocketAddress endpoint) modify throws {
 	}
 
 	/*
@@ -71,7 +81,11 @@ public object ServerSocket {
 	 * Returns the port on which the socket is listening
 	 */
 	public int getLocalPort() const {
-		return mPort;
+		if ( !mAddress ) {
+			return 0;
+		}
+
+		return mAddress._sa_port;
 	}
 }
 

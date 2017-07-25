@@ -11,7 +11,7 @@ public void Main(int argc = 0, string args = "") {
 		return;
 	}
 
-	ISocketAddress sockaddr = ISocketAddress new IPv4Address("127.0.0.1", 33333);
+	ISocketAddress sockaddr = ISocketAddress new IPv4Address(INADDR_ANY, 33333);
 
 	int result = bind(sockfd, sockaddr);
 	print("bind = " + result);
