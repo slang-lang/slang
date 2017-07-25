@@ -53,11 +53,25 @@ public object ServerSocket {
 		close();
 	}
 
+	/*
+	 * Listens for a connection to be made to this socket and accepts it.
+	 * The method blocks until a connection is made.
+	 */
 	Socket accept() throws {
 		return Socket null;
 	}
 
+	/*
+	 * Closes this socket
+	 */
 	public void close() throws {
+	}
+
+	/*
+	 * Returns the port on which the socket is listening
+	 */
+	public int getLocalPort() const {
+		return mPort;
 	}
 }
 
