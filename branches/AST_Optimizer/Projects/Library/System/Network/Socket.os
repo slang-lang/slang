@@ -31,6 +31,7 @@ public object IPv6Address const implements ISocketAddress {
 	}
 }
 
+/*
 public object Socket {
 	public void Constructor() {
 	}
@@ -38,4 +39,5 @@ public object Socket {
 	public void Destructor() {
 	}
 }
+*/
 

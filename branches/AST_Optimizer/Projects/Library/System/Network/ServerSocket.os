@@ -1,5 +1,6 @@
 
-import Socket;
+import System.Exception;
+import System.Network.Socket;
 
 public object ServerSocket {
 	/*
@@ -10,8 +11,9 @@ public object ServerSocket {
 	/*
 	 * Private members
 	 */
-	private IPv4Address mAddress;
+	private IPv4Address mEndpoint;
 	private int mQueueLength;
+	private int mSocket;
 
 	/*
 	 * Default constructor
@@ -24,24 +26,29 @@ public object ServerSocket {
 	 * 
 	 */
 	public void Constructor(int port) {
-		mAddress = new IPv4Address(INADDR_ANY, port);
-		mQueueLength = DEFAULT_QUEUE_LENGTH;
+		mEndpoint = new IPv4Address(INADDR_ANY, port);
+
+		Constructor(mEndpoint, DEFAULT_QUEUE_LENGTH);
 	}
 
 	/*
 	 *
 	 */
 	public void Constructor(int port, int queueLength) {
-		mAddress = new IPv4Address(INADDR_ANY, port);
+		mEndpoint = new IPv4Address(INADDR_ANY, port);
 		mQueueLength = queueLength;
+
+		Constructor(mEndpoint, mQueueLength);
 	}
 
 	/*
 	 *
 	 */
 	public void Constructor(IPv4Address address, int queueLength) {
-		mAddress = address;
+		mEndpoint = address;
 		mQueueLength = queueLength;
+
+		init();
 	}
 
 	/*
@@ -55,37 +62,62 @@ public object ServerSocket {
 	 * Listens for a connection to be made to this socket and accepts it.
 	 * The method blocks until a connection is made.
 	 */
-	public Socket accept() throws {
-		return Socket null;
+	public int accept() throws {
+		return -1;
 	}
 
 	/*
 	 * Binds the ServerSocket to the address given during object construction
 	 */
-	public void bind() modify throws {
+	public int bind() modify throws {
+	    if ( !mEndpoint ) {
+	        throw new Exception("endpoint not set");
+	    }
+
+	    return accept(mSocket, ISocketAddress mEndpoint);
 	}
 
 	/*
 	 * Binds the ServerSocket to a given address
 	 */
-	public void bind(ISocketAddress endpoint) modify throws {
+	public int bind(IPv4Address endpoint) modify throws {
+	    if ( !endpoint ) {
+	        throw new Exception("endpoint not set");
+	    }
+
+	    mEndpoint = endpoint;
+
+	    return accept(mSocket, ISocketAddress mEndpoint);
 	}
 
 	/*
 	 * Closes this socket
 	 */
-	public void close() throws {
+	public int close() throws {
+	    return -1;
 	}
 
 	/*
 	 * Returns the port on which the socket is listening
 	 */
 	public int getLocalPort() const {
-		if ( !mAddress ) {
+		if ( !mEndpoint ) {
 			return 0;
 		}
 
-		return mAddress._sa_port;
+		return mEndpoint._sa_port;
+	}
+
+	private void init() modify {
+	    mSocket = socket(AF_INET, SOCK_STREAM, o);
+	}
+
+	public int listen() modify {
+	    return -1;
+	}
+
+	public string readString(int length) {
+	    return "";
 	}
 }
 
