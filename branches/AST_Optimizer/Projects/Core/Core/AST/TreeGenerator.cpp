@@ -746,7 +746,7 @@ Node* TreeGenerator::process_identifier(TokenIterator& token, bool allowTypeCast
 		node = new TypecastExpression(type, expression(token));					// this processes all following expressions before casting
 		//node = new TypecastExpression(type, parseInfixPostfix(token));		// this casts first and does not combine the subsequent expressions with this one
 
-		// delete resolved symbol expression as it is not needed any more to prevent memleaks
+		// delete resolved symbol expression as it is not needed any more
 		delete symbol;
 	}
 	// type declaration
@@ -944,7 +944,7 @@ MethodExpression* TreeGenerator::process_method(SymbolExpression* symbol, TokenI
 MethodExpression* TreeGenerator::process_method(SymbolExpression* symbol, const Token& token, const ExpressionList& expressions)
 {
 	ParameterList params;
-	for (  ExpressionList::const_iterator it = expressions.begin(); it != expressions.end(); ++it ) {
+	for ( ExpressionList::const_iterator it = expressions.begin(); it != expressions.end(); ++it ) {
 		params.push_back(Parameter::CreateDesigntime(
 			ANONYMOUS_OBJECT,
 			static_cast<Expression*>((*it))->getResultType()
