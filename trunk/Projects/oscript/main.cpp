@@ -54,7 +54,7 @@ void printUsage()
 	std::cout << "-l | --library <library>   Library root path" << std::endl;
 	std::cout << "-q | --quiet               Quiet mode, chats as less as possible" << std::endl;
 
-#ifdef GENERATE_PARSE_TREE
+#ifdef USE_AST_PARSE_TREE
 
 	std::cout << "--syntax                   Syntax check only" << std::endl;
 
@@ -115,7 +115,7 @@ void processParameters(int argc, const char* argv[])
 				Utils::PrinterDriver::Instance()->ActivatePrinter = false;
 			}
 
-#ifdef GENERATE_PARSE_TREE
+#ifdef USE_AST_PARSE_TREE
 
 			else if ( Utils::Tools::StringCompare(argv[i], "--syntax") ) {
 				mSyntaxCheck = true;
@@ -175,7 +175,7 @@ int main(int argc, const char* argv[])
 		mVirtualMachine.addLibraryFolder((*it));
 	}
 
-#ifdef GENERATE_PARSE_TREE
+#ifdef USE_AST_PARSE_TREE
 
 	mVirtualMachine.settings().DoSyntaxCheck = mSyntaxCheck;
 

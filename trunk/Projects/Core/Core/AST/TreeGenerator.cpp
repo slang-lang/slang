@@ -426,7 +426,7 @@ Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 
 SymbolExpression* TreeGenerator::parseSymbol(TokenIterator& token)
 {
-	SymbolExpression* exp = new RuntimeSymbolExpression(token->content(), "", false, false);
+	SymbolExpression* exp = new RuntimeSymbolExpression(token->content(), "", false, false, false);
 	++token;
 
 	while ( token->type() == Token::Type::SCOPE ) {
@@ -746,7 +746,7 @@ Node* TreeGenerator::process_identifier(TokenIterator& token, bool allowTypeCast
 		node = new TypecastExpression(type, expression(token));					// this processes all following expressions before casting
 		//node = new TypecastExpression(type, parseInfixPostfix(token));		// this casts first and does not combine the subsequent expressions with this one
 
-		// delete resolved symbol expression as it is not needed any more to prevent memleaks
+		// delete resolved symbol expression as it is not needed any more
 		delete symbol;
 	}
 	// type declaration
@@ -773,7 +773,7 @@ Node* TreeGenerator::process_identifier(TokenIterator& token, bool allowTypeCast
 
 		Token assignment(Token::Category::Assignment, Token::Type::ASSIGN, "=", op->position());
 
-		Node* right = expression(++token);
+		Expression* right = static_cast<Expression*>(expression(++token));
 
 		if ( op->type() != Token::Type::ASSIGN ) {
 			Token operation;
@@ -944,7 +944,7 @@ MethodExpression* TreeGenerator::process_method(SymbolExpression* symbol, TokenI
 MethodExpression* TreeGenerator::process_method(SymbolExpression* symbol, const Token& token, const ExpressionList& expressions)
 {
 	ParameterList params;
-	for (  ExpressionList::const_iterator it = expressions.begin(); it != expressions.end(); ++it ) {
+	for ( ExpressionList::const_iterator it = expressions.begin(); it != expressions.end(); ++it ) {
 		params.push_back(Parameter::CreateDesigntime(
 			ANONYMOUS_OBJECT,
 			static_cast<Expression*>((*it))->getResultType()
@@ -1093,7 +1093,7 @@ Expression* TreeGenerator::process_subscript(TokenIterator& token, SymbolExpress
 
 	std::string type = symbol->getResultType();
 
-	symbol->mSymbolExpression = new RuntimeSymbolExpression("operator[]", "", true, true);
+	symbol->mSymbolExpression = new RuntimeSymbolExpression("operator[]", "", true, true, false);
 	symbol->mSymbolExpression->mSurroundingScope = dynamic_cast<Designtime::BluePrintObject*>(mRepository->findBluePrint(type));
 
 	Token opToken(Token::Category::Operator, Token::Type::BRACKET_OPEN, "[", token->position(), false);
@@ -1568,13 +1568,13 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 			scope = object->isAtomicType() ? 0 : object->getBluePrint();
 			type = object->QualifiedTypename();
 
-			symbol = new RuntimeSymbolExpression(name, type, object->isConst(), object->isMember());
+			symbol = new RuntimeSymbolExpression(name, type, object->isConst(), object->isMember(), !object->isAtomicType());
 		} break;
 		case Symbol::IType::MethodSymbol: {
 			// don't set the result type yet because we first have to determine which method should get executed in case overloaded methods
 			// are present; this will be done in a later step (during method resolution)
 
-			symbol = new RuntimeSymbolExpression(name, type, false, false);
+			symbol = new RuntimeSymbolExpression(name, type, false, false, false);
 		} break;
 	}
 
@@ -1618,7 +1618,7 @@ SymbolExpression* TreeGenerator::resolveWithThis(TokenIterator& token, IScope* b
 		SymbolExpression* exp = resolve(token, mThis, true, Visibility::Private);
 		if ( exp ) {
 			// insert "this" symbol as "parent" of our recently resolved symbol
-			SymbolExpression* symbol = new RuntimeSymbolExpression(IDENTIFIER_THIS, mThis->QualifiedTypename(), mMethod->isConst(), true);
+			SymbolExpression* symbol = new RuntimeSymbolExpression(IDENTIFIER_THIS, mThis->QualifiedTypename(), mMethod->isConst(), true, true);
 			symbol->mSymbolExpression = exp;
 
 			return symbol;
@@ -1626,12 +1626,12 @@ SymbolExpression* TreeGenerator::resolveWithThis(TokenIterator& token, IScope* b
 
 		// every class that inherits from another class has a private "base" member to access its ancestor's protected and public members/methods
 		// resolve symbol by using the "base" identifier (without exceptions so that we can try to resolve another time)
-		SymbolExpression* base = new RuntimeSymbolExpression(IDENTIFIER_THIS, mThis->QualifiedTypename(), mMethod->isConst(), true);
+		SymbolExpression* base = new RuntimeSymbolExpression(IDENTIFIER_THIS, mThis->QualifiedTypename(), mMethod->isConst(), true, true);
 		SymbolExpression* origin = base;
 		IScope* scope = mThis;
 
 		while ( scope ) {
-			base->mSymbolExpression = new RuntimeSymbolExpression(IDENTIFIER_BASE, dynamic_cast<Designtime::BluePrintObject*>(scope)->QualifiedTypename(), mMethod->isConst(), true);
+			base->mSymbolExpression = new RuntimeSymbolExpression(IDENTIFIER_BASE, dynamic_cast<Designtime::BluePrintObject*>(scope)->QualifiedTypename(), mMethod->isConst(), true, true);
 			base = base->mSymbolExpression;
 
 			SymbolExpression* exp = resolve(token, scope, true, Visibility::Protected);

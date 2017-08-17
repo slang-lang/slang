@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #ifdef WINDOWS
 #	include <direct.h>
-    #define GetCurrentDir _getcwd
+#	define GetCurrentDir _getcwd
 #else
 #	include <unistd.h>
 #	define GetCurrentDir getcwd
@@ -834,7 +834,36 @@ void search(const StringList& params)
 	Json::Value config;
 	readJsonFile(filename, config);
 
-	// TODO: implement search
+	if ( !config.isMember("modules") ) {
+		std::cout << "!!! Invalid cache file structure: \"modules\" missing" << std::endl;
+		return;
+	}
+
+	// loop through 'config' and return all values that contain the givin string (from 'params') in it
+
+	std::string lookup = params.front();
+	StringList result;
+
+	Json::Value::Members members = config["modules"].members();
+	for ( Json::Value::Members::const_iterator it = members.begin(); it != members.end(); ++it ) {
+		if ( !it->isMember("name") ) {
+			std::cout << "!!! Invalid cache file structure: \"name\" missing" << std::endl;
+			return;
+		}
+
+		if ( (*it)["name"].asString().find(lookup) != std::string::npos ) {
+			result.push_back((*it)["name"].asString());
+		}
+	}
+
+	if ( result.empty() ) {
+		std::cout << "Nothing found." << std::endl;
+	}
+	else {
+		for ( StringList::const_iterator resultIt = result.begin(); resultIt != result.end(); ++resultIt ) {
+			std::cout << (*resultIt) << std::endl;
+		}
+	}
 }
 
 void update()
@@ -852,6 +881,7 @@ void update()
 	}
 	else {
 		std::cout << "!!! Error while updating index for " << mRemoteRepository.getURL() << std::endl;
+		return;
 	}
 }
 

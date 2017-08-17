@@ -5,7 +5,7 @@
 // Library includes
 
 // Project includes
-#ifdef GENERATE_PARSE_TREE
+#ifdef USE_AST_PARSE_TREE
 #	include <Core/AST/TreeInterpreter.h>
 #else
 #	include <Core/Runtime/Interpreter.h>
@@ -44,7 +44,7 @@ Runtime::ControlFlow::E Thread::execute(Common::Method* method, const ParameterL
 {
 	mState = State::Started;
 
-#ifdef GENERATE_PARSE_TREE
+#ifdef USE_AST_PARSE_TREE
 
 	AST::TreeInterpreter ti(mId);
 	Runtime::ControlFlow::E controlflow = ti.execute(method, params, result);

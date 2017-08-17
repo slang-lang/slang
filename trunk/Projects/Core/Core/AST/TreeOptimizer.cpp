@@ -9,6 +9,7 @@
 #include <Core/Common/Method.h>
 #include <Core/Common/Namespace.h>
 #include <Core/Designtime/BluePrintObject.h>
+#include <Utils.h>
 #include "TreeGenerator.h"
 
 // Namespace declarations
@@ -90,7 +91,12 @@ void TreeOptimizer::processMethod(Common::Method* method)
 
 	// loop through all nodes of a method and decide if we keep or remove them
 
-	//Node* rootNode = method->getRootNode();
+	Node* rootNode = method->getRootNode();
+	if ( !rootNode ) {
+		//OSinfo("method \"" + method->getFullScopeName() + "\" is empty");
+		return;
+	}
+
 
 }
 

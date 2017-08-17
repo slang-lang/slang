@@ -123,33 +123,25 @@ bool Analyser::createBluePrint(TokenIterator& token)
 	// look for the identifier token
 	std::string name = (*token++).content();
 	// look for an optional modifier token
-	Mutability::E mutability = Parser::parseMutability(token, Mutability::Modify);
+	Mutability::E mutability;
 
 	BluePrintObject* blueprint = new BluePrintObject(name, mFilename);
-
-	if ( mutability != Mutability::Const && mutability != Mutability::Modify ) {
-		throw Common::Exceptions::SyntaxError("invalid mutability '" + Mutability::convert(mutability) + "' for " + getQualifiedTypename(name), token->position());
-	}
-
-	// determine implementation type
-	if ( objectType == ObjectType::Interface ) {
-		if ( mutability != Mutability::Modify ) {
-			throw Common::Exceptions::NotSupported("interface mutability has to be modifiable", token->position());
-		}
-
-		implementationType = ImplementationType::Interface;
-	}
 
 	if ( token->type() == Token::Type::SEMICOLON ) {
 		if ( implementationType != ImplementationType::FullyImplemented ) {
 			throw Common::Exceptions::NotSupported("forward declarations cannot be defined as interface or abstract object", token->position());
 		}
 
+		// set implementation type
 		implementationType = ImplementationType::ForwardDeclaration;
+		// collect mutability
+		mutability = Parser::parseMutability(token, Mutability::Modify);
 	}
 	else {
 		// collect prototype constraints (if present)
 		constraints = Parser::collectDesigntimePrototypeConstraints(token);
+		// collect mutability
+		mutability = Parser::parseMutability(token, Mutability::Modify);
 		// collect inheritance (if present)
 		Ancestors inheritance = Parser::collectInheritance(token);
 
@@ -186,6 +178,20 @@ bool Analyser::createBluePrint(TokenIterator& token)
 		if ( objectType != ObjectType::Interface && !extends ) {
 			blueprint->addInheritance(Ancestor(Common::TypeDeclaration(_object), Ancestor::Type::Extends, Visibility::Public));
 		}
+	}
+
+	// validate mutability
+	if ( mutability != Mutability::Const && mutability != Mutability::Modify ) {
+		throw Common::Exceptions::SyntaxError("invalid mutability '" + Mutability::convert(mutability) + "' for " + getQualifiedTypename(name), token->position());
+	}
+
+	// determine implementation type
+	if ( objectType == ObjectType::Interface ) {
+		if ( mutability != Mutability::Modify ) {
+			throw Common::Exceptions::NotSupported("interface mutability has to be modifiable", token->position());
+		}
+
+		implementationType = ImplementationType::Interface;
 	}
 
 	blueprint->setPrototypeConstraints(constraints);
