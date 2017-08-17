@@ -268,7 +268,7 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 		parent->define(newBlue->QualifiedTypename(), newBlue);
 	}
 
-#ifdef GENERATE_PARSE_TREE
+#ifdef USE_AST_PARSE_TREE
 
 	AST::Generator generator;
 	generator.process(newBlue);
@@ -844,6 +844,16 @@ void Repository::initTypeSystem(Designtime::BluePrintObject* blueprint)
 	// add default assignment entry for type system if it doesn't exist yet
 	if ( !mTypeSystem->exists(blueprint->QualifiedTypename(), Token(Token::Type::ASSIGN, "="), blueprint->QualifiedTypename()) ) {
 		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::ASSIGN, blueprint->QualifiedTypename(), blueprint->QualifiedTypename());
+	}
+	// add assignment entries for extended and implemented objects
+	{
+		Designtime::Ancestors ancestors = blueprint->getInheritance();
+
+		for ( Designtime::Ancestors::const_iterator it = ancestors.begin(); it != ancestors.end(); ++it ) {
+			if ( !mTypeSystem->exists(it->name(), Token(Token::Type::ASSIGN, "="), blueprint->QualifiedTypename()) ) {
+				mTypeSystem->define(it->name(), Token::Type::ASSIGN, blueprint->QualifiedTypename(), blueprint->QualifiedTypename());
+			}
+		}
 	}
 	// add equality operator entries for type system if it doesn't exist yet
 	if ( !mTypeSystem->exists(blueprint->QualifiedTypename(), Token(Token::Type::COMPARE_EQUAL, "=="), blueprint->QualifiedTypename()) ) {

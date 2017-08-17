@@ -10,6 +10,7 @@
 #include <System/Console/Console.h>
 #include <System/IO/IO.h>
 #include <System/Math/MathExtension.h>
+#include <System/Network/NetworkExtension.h>
 #include <System/Strings/StringsExtension.h>
 
 // Forward declarations
@@ -29,12 +30,14 @@ public:
 	~SystemExtension();
 
 public:
+	void initialize(IScope* scope);
 	void provideMethods(ExtensionMethods &methods);
 
 private:
 	Console::SystemConsoleExtension mConsoleExtension;
 	IO::SystemIOExtension mIOExtension;
 	Math::SystemMathExtension mMathExtension;
+	Network::SystemNetworkExtension mNetworkExtension;
 	Strings::SystemStringsExtension mStringsExtension;
 };
 

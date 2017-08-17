@@ -6,7 +6,6 @@
 // Library includes
 
 // Project includes
-#include <Core/Common/Namespace.h>
 
 // Forward declarations
 

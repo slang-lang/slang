@@ -3,6 +3,7 @@
 #include "SystemExtension.h"
 
 // Library includes
+#include <cerrno>
 
 // Project includes
 #include "AssertMsg.h"
@@ -27,7 +28,9 @@ SystemExtension::SystemExtension()
 : AExtension("System")
 {
 #ifdef _WIN32
+	// Win32 only
 #else
+	// Unix/Linux only
 	// store keyboard blocking mode
 	storeKeyboardBlockingMode();
 #endif
@@ -36,9 +39,41 @@ SystemExtension::SystemExtension()
 SystemExtension::~SystemExtension()
 {
 #ifdef _WIN32
+	// Win32 only
 #else
+	// Unix/Linux only
 	// not restoring the keyboard settings causes the input from the terminal to not work right
 	restoreKeyboardBlockingMode();
+#endif
+}
+
+void SystemExtension::initialize(IScope* scope)
+{
+	// error constants
+	scope->define("EACCES", new Runtime::IntegerObject(EACCES));
+	scope->define("EAFNOSUPPORT", new Runtime::IntegerObject(EAFNOSUPPORT));
+	scope->define("EINVAL", new Runtime::IntegerObject(EINVAL));
+	scope->define("EMFILE", new Runtime::IntegerObject(EMFILE));
+	scope->define("ENFILE", new Runtime::IntegerObject(ENFILE));
+	scope->define("ENOBUFS", new Runtime::IntegerObject(ENOBUFS));
+	scope->define("ENOMEM", new Runtime::IntegerObject(ENOMEM));
+	scope->define("EPROTONOSUPPORT", new Runtime::IntegerObject(EPROTONOSUPPORT));
+
+	// Console
+	mConsoleExtension.initialize(scope);
+	// IO
+	mIOExtension.initialize(scope);
+	// Math
+	mMathExtension.initialize(scope);
+	// Network
+	mNetworkExtension.initialize(scope);
+	// Strings
+	mStringsExtension.initialize(scope);
+
+#ifdef _WIN32
+	// Win32 only
+#else
+	// Unix/Linux only
 #endif
 }
 
@@ -58,11 +93,14 @@ void SystemExtension::provideMethods(ExtensionMethods &methods)
 	// Console
 	mConsoleExtension.provideMethods(methods);
 
+	// IO
+	mIOExtension.provideMethods(methods);
+
 	// Math
 	mMathExtension.provideMethods(methods);
 
-	// IO
-	mIOExtension.provideMethods(methods);
+	// Network
+	mNetworkExtension.provideMethods(methods);
 
 	// Strings
 	mStringsExtension.provideMethods(methods);

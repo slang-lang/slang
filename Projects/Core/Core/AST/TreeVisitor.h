@@ -11,6 +11,7 @@
 #include "Expression.h"
 #include "Keywords.h"
 #include "Operator.h"
+#include "TreeLineBuffer.h"
 
 // Forward declarations
 
@@ -31,7 +32,7 @@ public:
 	~PrintVisitor();
 
 public:
-	void process(Statements* root, std::ostream& output);
+	void generate(Statements* root, TreeLineBuffer& output);
 
 private:
 	void visit(Node* node);
@@ -51,6 +52,7 @@ private:
 	void visitIf(IfStatement* node);
 	void visitPrint(PrintStatement* node);
 	void visitReturn(ReturnStatement* node);
+	void visitStatements(Statements* node);
 	void visitSwitch(SwitchStatement* node);
 	void visitThrow(ThrowStatement* node);
 	void visitTry(TryStatement* node);
@@ -64,7 +66,7 @@ private:
 
 private:
 	int mIndentation;
-	std::ostringstream mOutput;
+	TreeLineBuffer mOutput;
 };
 
 

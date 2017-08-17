@@ -1,6 +1,6 @@
 
-#ifndef ObjectiveScript_Extensions_System_IO_FileRead_h
-#define ObjectiveScript_Extensions_System_IO_FileRead_h
+#ifndef ObjectiveScript_Extensions_System_Network_Write_h
+#define ObjectiveScript_Extensions_System_Network_Write_h
 
 
 // Library includes
@@ -11,7 +11,6 @@
 #include <Core/Designtime/BuildInTypes/FloatObject.h>
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
-#include <Core/Common/Exceptions.h>
 #include <Core/BuildInObjects/BoolObject.h>
 #include <Core/BuildInObjects/DoubleObject.h>
 #include <Core/BuildInObjects/FloatObject.h>
@@ -32,17 +31,18 @@
 namespace ObjectiveScript {
 namespace Extensions {
 namespace System {
-namespace IO {
+namespace Network {
 
 
-class FileReadBool : public ExtensionMethod
+class WriteBool : public ExtensionMethod
 {
 public:
-	FileReadBool()
-	: ExtensionMethod(0, "freadb", Designtime::BoolObject::TYPENAME)
+	WriteBool()
+	: ExtensionMethod(0, "writeb", Designtime::IntegerObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME, 0));
+		params.push_back(Parameter::CreateDesigntime("value", Designtime::BoolObject::TYPENAME, false));
 
 		setSignature(params);
 	}
@@ -54,22 +54,16 @@ public:
 		try {
 			ParameterList::const_iterator it = list.begin();
 
-			std::string param_handle = (*it++).value().toStdString();
+			int param_handle = (*it++).value().toInt();
 
-			int handle = Utils::Tools::stringToInt(param_handle);
+			bool value = (*it++).value().toBool();
 
-			if ( mFileHandles.find(handle) == mFileHandles.end() ) {
-				throw Runtime::Exceptions::RuntimeException("invalid file handle");
+			long size = write(param_handle, &value, sizeof(bool));
+			if ( size == -1 ) {    // error while writing
+				throw Runtime::Exceptions::RuntimeException("error while writing handle");
 			}
 
-			bool value = false;
-
-			long size = fread(&value, 1, sizeof(bool), mFileHandles[handle]);
-			if ( size == -1 ) {    // error while reading
-				throw Runtime::Exceptions::RuntimeException("error while reading file");
-			}
-
-			*result = Runtime::BoolObject(value);
+			*result = Runtime::IntegerObject((int)size);
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
@@ -84,14 +78,15 @@ public:
 };
 
 
-class FileReadDouble : public ExtensionMethod
+class WriteDouble : public ExtensionMethod
 {
 public:
-	FileReadDouble()
-	: ExtensionMethod(0, "freadd", Designtime::DoubleObject::TYPENAME)
+	WriteDouble()
+	: ExtensionMethod(0, "writed", Designtime::IntegerObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME, 0));
+		params.push_back(Parameter::CreateDesigntime("value", Designtime::DoubleObject::TYPENAME, 0.0));
 
 		setSignature(params);
 	}
@@ -103,22 +98,16 @@ public:
 		try {
 			ParameterList::const_iterator it = list.begin();
 
-			std::string param_handle = (*it++).value().toStdString();
+			int param_handle = (*it++).value().toInt();
 
-			int handle = Utils::Tools::stringToInt(param_handle);
+			double value = (*it++).value().toDouble();
 
-			if ( mFileHandles.find(handle) == mFileHandles.end() ) {
-				throw Runtime::Exceptions::RuntimeException("invalid file handle");
+			long size = write(param_handle, &value, sizeof(double));
+			if ( size == -1 ) {    // error while writing
+				throw Runtime::Exceptions::RuntimeException("error while writing handle");
 			}
 
-			double value = 0.0;
-
-			long size = fread(&value, 1, sizeof(double), mFileHandles[handle]);
-			if ( size == -1 ) {    // error while reading
-				throw Runtime::Exceptions::RuntimeException("error while reading file");
-			}
-
-			*result = Runtime::DoubleObject(value);
+			*result = Runtime::IntegerObject((int)size);
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
@@ -133,14 +122,15 @@ public:
 };
 
 
-class FileReadFloat : public ExtensionMethod
+class WriteFloat : public ExtensionMethod
 {
 public:
-	FileReadFloat()
-	: ExtensionMethod(0, "freadf", Designtime::FloatObject::TYPENAME)
+	WriteFloat()
+	: ExtensionMethod(0, "writef", Designtime::IntegerObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME, 0));
+		params.push_back(Parameter::CreateDesigntime("value", Designtime::FloatObject::TYPENAME, 0.f));
 
 		setSignature(params);
 	}
@@ -152,22 +142,16 @@ public:
 		try {
 			ParameterList::const_iterator it = list.begin();
 
-			std::string param_handle = (*it++).value().toStdString();
+			int param_handle = (*it++).value().toInt();
 
-			int handle = Utils::Tools::stringToInt(param_handle);
+			float value = (*it++).value().toFloat();
 
-			if ( mFileHandles.find(handle) == mFileHandles.end() ) {
-				throw Runtime::Exceptions::RuntimeException("invalid file handle");
+			long size = write(param_handle, &value, sizeof(float));
+			if ( size == -1 ) {    // error while writing
+				throw Runtime::Exceptions::RuntimeException("error while writing handle");
 			}
 
-			float value = 0.f;
-
-			long size = fread(&value, 1, sizeof(float), mFileHandles[handle]);
-			if ( size == -1 ) {    // error while reading
-				throw Runtime::Exceptions::RuntimeException("error while reading file");
-			}
-
-			*result = Runtime::FloatObject(value);
+			*result = Runtime::IntegerObject((int)size);
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
@@ -182,14 +166,15 @@ public:
 };
 
 
-class FileReadInt : public ExtensionMethod
+class WriteInt : public ExtensionMethod
 {
 public:
-	FileReadInt()
-	: ExtensionMethod(0, "freadi", Designtime::IntegerObject::TYPENAME)
+	WriteInt()
+	: ExtensionMethod(0, "writei", Designtime::IntegerObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME, 0));
+		params.push_back(Parameter::CreateDesigntime("value", Designtime::IntegerObject::TYPENAME, 0));
 
 		setSignature(params);
 	}
@@ -201,22 +186,16 @@ public:
 		try {
 			ParameterList::const_iterator it = list.begin();
 
-			std::string param_handle = (*it++).value().toStdString();
+			int param_handle = (*it++).value().toInt();
 
-			int handle = Utils::Tools::stringToInt(param_handle);
+			int value = (*it++).value().toInt();
 
-			if ( mFileHandles.find(handle) == mFileHandles.end() ) {
-				throw Runtime::Exceptions::RuntimeException("invalid file handle");
+			long size = write(param_handle, &value, sizeof(int));
+			if ( size == -1 ) {    // error while writing
+				throw Runtime::Exceptions::RuntimeException("error while writing handle");
 			}
 
-			int value = 0;
-
-			long size = fread(&value, 1, sizeof(int), mFileHandles[handle]);
-			if ( size == -1 ) {    // error while reading
-				throw Runtime::Exceptions::RuntimeException("error while reading file");
-			}
-
-			*result = Runtime::IntegerObject(value);
+			*result = Runtime::IntegerObject((int)size);
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
@@ -231,15 +210,15 @@ public:
 };
 
 
-class FileReadString : public ExtensionMethod
+class WriteString : public ExtensionMethod
 {
 public:
-	FileReadString()
-	: ExtensionMethod(0, "freads", Designtime::StringObject::TYPENAME)
+	WriteString()
+	: ExtensionMethod(0, "writes", Designtime::IntegerObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME));
-		params.push_back(Parameter::CreateDesigntime("length", Designtime::IntegerObject::TYPENAME, 1, true));
+		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME, 0));
+		params.push_back(Parameter::CreateDesigntime("value", Designtime::StringObject::TYPENAME, VALUE_NONE));
 
 		setSignature(params);
 	}
@@ -251,36 +230,22 @@ public:
 		try {
 			ParameterList::const_iterator it = list.begin();
 
-			std::string param_handle = (*it++).value().toStdString();
-			int param_length = (*it++).value().toInt();
+			int param_handle = (*it++).value().toInt();
 
-			int handle = Utils::Tools::stringToInt(param_handle);
+			std::string value = params.back().value().toStdString();
+			unsigned long count = 0;
+			long size = 0;
 
-			if ( mFileHandles.find(handle) == mFileHandles.end() ) {
-				throw Runtime::Exceptions::RuntimeException("invalid file handle");
-			}
-
-			std::string value;
-
-			while ( param_length > 0 || param_length == -1 ) {
-				char charValue;
-
-				long size = fread(&charValue, 1, sizeof(char), mFileHandles[handle]);
-				if ( size == -1 ) {    // error while reading
-					return Runtime::ControlFlow::Throw;
-				}
-				if ( size == 0 ) {	// EOF reached
-					break;
+			while ( count < value.size() ) {
+				size = write(param_handle, &value[count], sizeof(char));
+				if ( size == -1 ) {    // error while writing
+					throw Runtime::Exceptions::RuntimeException("error while writing handle");
 				}
 
-				value += charValue;
-
-				if ( param_length > 0 ) {
-					param_length--;
-				}
+				count++;
 			}
 
-			*result = Runtime::StringObject(value);
+			*result = Runtime::IntegerObject((int)size);
 		}
 		catch ( std::exception& e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
@@ -292,7 +257,6 @@ public:
 
 		return Runtime::ControlFlow::Normal;
 	}
-
 };
 
 

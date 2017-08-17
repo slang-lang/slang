@@ -4,6 +4,7 @@ SET(SOURCES
 	Generator.cpp
 	TreeGenerator.cpp
 	TreeInterpreter.cpp
+	TreeLineBuffer.cpp
 	TreeOptimizer.cpp
 	TreeVisitor.cpp
 )
@@ -18,6 +19,7 @@ SET(HEADERS
 	Statement.h
 	TreeGenerator.h
 	TreeInterpreter.h
+	TreeLineBuffer.h
 	TreeOptimizer.h
 	TreeVisitor.h
 )
