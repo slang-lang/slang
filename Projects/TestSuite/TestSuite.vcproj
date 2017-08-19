@@ -372,6 +372,26 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\RealWorldUsage\Fixture.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\RealWorldUsage\"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\RealWorldUsage\"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath=".\Inheritance\InheritanceTest.cpp"
 				>
 				<FileConfiguration
@@ -500,6 +520,26 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\RealWorldUsage\RealWorldUsageTest.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\RealWorldUsage\"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\RealWorldUsage\"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath=".\TestFramework\TestFrameworkTest.cpp"
 				>
 				<FileConfiguration
@@ -566,6 +606,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\RealWorldUsage\Fixture.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Framework\GenericTest.h"
 				>
 			</File>
@@ -599,6 +643,10 @@
 			</File>
 			<File
 				RelativePath=".\Prototype\PrototypeTest.h"
+				>
+			</File>
+			<File
+				RelativePath=".\RealWorldUsage\RealWorldUsageTest.h"
 				>
 			</File>
 			<File

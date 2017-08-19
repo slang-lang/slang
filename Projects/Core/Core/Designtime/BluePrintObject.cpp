@@ -55,7 +55,7 @@ bool BluePrintObject::hasConstructor() const
 bool BluePrintObject::hasDefaultConstructor() const
 {
 	// return any (private, protected, public) constructor that has no parameters or only default parameters
-	return resolveMethod(CONSTRUCTOR, ParameterList(), true, Visibility::Public);
+	return resolveMethod(CONSTRUCTOR, ParameterList(), true, Visibility::Public) != NULL;
 }
 
 bool BluePrintObject::isReference() const

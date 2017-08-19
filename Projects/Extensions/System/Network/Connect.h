@@ -5,8 +5,12 @@
 
 // Library includes
 #include <sys/types.h>
-#include <sys/socket.h>
-#include <arpa/inet.h>
+#ifdef _MSC_VER
+#	include <winsock.h>
+#else
+#	include <sys/socket.h>
+#	include <arpa/inet.h>
+#endif
 
 // Project includes
 #include "Defines.h"
@@ -85,18 +89,24 @@ private:
 			case AF_INET: {
 				serv_addr.sin_family = AF_INET;
 			} break;
+#ifdef _MSC_VER
+#else
 			case AF_INET6: {
 				serv_addr.sin_family = AF_INET6;
 			} break;
+#endif
 			default:
 				throw Common::Exceptions::Exception("unsupported socket address type provided!");
 		}
 
+#ifdef _MSC_VER
+#else
 		// set sa_address
 		inet_pton(serv_addr.sin_family, static_cast<Runtime::StringObject*>(addressSymbol)->getValue().toStdString().c_str(), &serv_addr.sin_addr);
 
 		// set sa_port
 		serv_addr.sin_port = (in_port_t)static_cast<Runtime::IntegerObject*>(portSymbol)->getValue().toInt();
+#endif
 
 		return connect(param_sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr));
 	}

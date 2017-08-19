@@ -1004,7 +1004,7 @@ Expression* TreeGenerator::process_new(TokenIterator& token)
 	std::string type = exp->getResultType();
 
 	SymbolExpression* inner = exp;
-	while ( true ) {
+	for ( ; ; ) {
 		if ( inner->mSymbolExpression ) {
 			inner = inner->mSymbolExpression;
 		}
@@ -1660,7 +1660,7 @@ MethodSymbol* TreeGenerator::resolveMethod(SymbolExpression* symbol, const Param
 	bool onlyCurrentScope = false;
 
 	SymbolExpression* inner = symbol;
-	while ( true ) {
+	for ( ; ; ) {
 		if ( inner->mSymbolExpression && inner->mSymbolExpression->mSurroundingScope ) {
 			onlyCurrentScope = true;
 

@@ -36,9 +36,7 @@ void SystemNetworkExtension::initialize(IScope* scope)
 {
 	// domain constants
 	scope->define("AF_UNIX", new Runtime::IntegerObject(AF_UNIX));
-	scope->define("AF_LOCAL", new Runtime::IntegerObject(AF_LOCAL));
 	scope->define("AF_INET", new Runtime::IntegerObject(AF_INET));
-	scope->define("AF_INET6", new Runtime::IntegerObject(AF_INET6));
 	scope->define("AF_IPX", new Runtime::IntegerObject(AF_IPX));
 	//scope->define("AF_NETLINK", new Runtime::IntegerObject(AF_NETLINK));
 	//scope->define("AF_X25", new Runtime::IntegerObject(AF_X25));
@@ -47,6 +45,12 @@ void SystemNetworkExtension::initialize(IScope* scope)
 	scope->define("AF_APPLETALK", new Runtime::IntegerObject(AF_APPLETALK));
 	//scope->define("AF_PACKET", new Runtime::IntegerObject(AF_PACKET));
 	//scope->define("AF_ALG", new Runtime::IntegerObject(AF_ALG));
+
+#ifdef _MSC_VER
+#else
+	scope->define("AF_LOCAL", new Runtime::IntegerObject(AF_LOCAL));
+	scope->define("AF_INET6", new Runtime::IntegerObject(AF_INET6));
+#endif
 
 	// type constants
 	scope->define("SOCK_STREAM", new Runtime::IntegerObject(SOCK_STREAM));
