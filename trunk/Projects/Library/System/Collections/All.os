@@ -1,5 +1,5 @@
 
-// import all System.IO libraries
+// import all System.Collections libraries
 
 import AbstractCollection;
 import DoubleLinkedList;

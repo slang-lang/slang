@@ -11,9 +11,7 @@ public void Main(int argc = 0, string args = "") {
 		return;
 	}
 
-	ISocketAddress sockaddr = ISocketAddress new IPv4Address("127.0.0.1", 33333);
-
-	int result = bind(sockfd, sockaddr);
+	int result = bind(sockfd, ISocketAddress new IPv4Address("127.0.0.1", 33333));
 	print("bind = " + result);
 
 	if ( result == -1 ) {
@@ -32,7 +30,7 @@ public void Main(int argc = 0, string args = "") {
 	}
 
 	int connectfd = accept(sockfd);
-	print("connectfd = " + connectfd);
+	print("accept = " + connectfd);
 
 	if ( connectfd < 0 ) {
 		print("accept failed");
