@@ -6,6 +6,11 @@
 #include <cassert>
 #include <fstream>
 #include <limits.h>
+#ifdef _MSC_VER
+#	include <windows.h>
+#	include <tchar.h>
+#	include <stdio.h>
+#endif
 
 // Project includes
 
@@ -151,10 +156,22 @@ std::string ExtractPathname(const std::string& pathname)
 
 std::string GetFullname(const std::string& filename)
 {
+#ifdef _MSC_VER
+#define PATH_MAX 1024
+
+	char full_path[PATH_MAX];
+	GetFullPathName(filename.c_str(), PATH_MAX, full_path, 0);
+
+	return std::string(full_path);
+
+#else
+
 	char full_path[PATH_MAX];
 	realpath(filename.c_str(), full_path);
 
 	return std::string(full_path);
+
+#endif
 }
 
 std::string RemoveFileExt(const std::string& filename)

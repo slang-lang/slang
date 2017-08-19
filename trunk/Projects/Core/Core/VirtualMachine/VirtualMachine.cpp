@@ -58,7 +58,7 @@ void VirtualMachine::addLibraryFolder(const std::string &library)
 		return;
 	}
 
-	mLibraryFolders.insert(Utils::Tools::Files::GetFullname(library) + "/");
+	mLibraryFolders.insert(Utils::Tools::Files::GetFullname(library + "/"));
 }
 
 std::string VirtualMachine::buildPath(const std::string& basefolder, const std::string& library) const

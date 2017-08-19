@@ -239,14 +239,14 @@
 			>
 		</File>
 		<File
-			RelativePath=".\System\IO\Defines.cpp"
+			RelativePath=".\System\Console\Defines.cpp"
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
-					ObjectFile="$(IntDir)\Extensions\System\IO\"
+					ObjectFile="$(IntDir)\Extensions\System\Console\"
 				/>
 			</FileConfiguration>
 			<FileConfiguration
@@ -254,27 +254,7 @@
 				>
 				<Tool
 					Name="VCCLCompilerTool"
-					ObjectFile="$(IntDir)\Extensions\System\IO\"
-				/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath=".\System\Strings\Defines.cpp"
-			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					ObjectFile="$(IntDir)\Extensions\System\Strings\"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					ObjectFile="$(IntDir)\Extensions\System\Strings\"
+					ObjectFile="$(IntDir)\Extensions\System\Console\"
 				/>
 			</FileConfiguration>
 		</File>
@@ -299,14 +279,14 @@
 			</FileConfiguration>
 		</File>
 		<File
-			RelativePath=".\System\Console\Defines.cpp"
+			RelativePath=".\System\Strings\Defines.cpp"
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
-					ObjectFile="$(IntDir)\Extensions\System\Console\"
+					ObjectFile="$(IntDir)\Extensions\System\Strings\"
 				/>
 			</FileConfiguration>
 			<FileConfiguration
@@ -314,24 +294,44 @@
 				>
 				<Tool
 					Name="VCCLCompilerTool"
-					ObjectFile="$(IntDir)\Extensions\System\Console\"
+					ObjectFile="$(IntDir)\Extensions\System\Strings\"
 				/>
 			</FileConfiguration>
 		</File>
 		<File
-			RelativePath=".\System\IO\Defines.h"
+			RelativePath=".\System\IO\Defines.cpp"
 			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					ObjectFile="$(IntDir)\Extensions\System\IO\"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					ObjectFile="$(IntDir)\Extensions\System\IO\"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath=".\System\Strings\Defines.h"
 			>
 		</File>
 		<File
-			RelativePath=".\System\Console\Defines.h"
+			RelativePath=".\System\IO\Defines.h"
 			>
 		</File>
 		<File
 			RelativePath=".\System\Math\Defines.h"
+			>
+		</File>
+		<File
+			RelativePath=".\System\Console\Defines.h"
 			>
 		</File>
 		<File

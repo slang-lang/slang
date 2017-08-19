@@ -10,7 +10,12 @@
 #include <System/Console/Console.h>
 #include <System/IO/IO.h>
 #include <System/Math/MathExtension.h>
-#include <System/Network/NetworkExtension.h>
+#ifdef _WIN32
+	// Win32 only
+#else
+	// Unix/Linux only
+#	include <System/Network/NetworkExtension.h>
+#endif
 #include <System/Strings/StringsExtension.h>
 
 // Forward declarations
@@ -37,7 +42,12 @@ private:
 	Console::SystemConsoleExtension mConsoleExtension;
 	IO::SystemIOExtension mIOExtension;
 	Math::SystemMathExtension mMathExtension;
+#ifdef _WIN32
+	// Win32 only
+#else
+	// Unix/Linux only
 	Network::SystemNetworkExtension mNetworkExtension;
+#endif
 	Strings::SystemStringsExtension mStringsExtension;
 };
 

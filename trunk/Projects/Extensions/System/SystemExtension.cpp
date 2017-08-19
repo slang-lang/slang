@@ -51,30 +51,39 @@ void SystemExtension::initialize(IScope* scope)
 {
 	// error constants
 	scope->define("EACCES", new Runtime::IntegerObject(EACCES));
-	scope->define("EAFNOSUPPORT", new Runtime::IntegerObject(EAFNOSUPPORT));
 	scope->define("EINVAL", new Runtime::IntegerObject(EINVAL));
 	scope->define("EMFILE", new Runtime::IntegerObject(EMFILE));
 	scope->define("ENFILE", new Runtime::IntegerObject(ENFILE));
-	scope->define("ENOBUFS", new Runtime::IntegerObject(ENOBUFS));
 	scope->define("ENOMEM", new Runtime::IntegerObject(ENOMEM));
-	scope->define("EPROTONOSUPPORT", new Runtime::IntegerObject(EPROTONOSUPPORT));
-
-	// Console
-	mConsoleExtension.initialize(scope);
-	// IO
-	mIOExtension.initialize(scope);
-	// Math
-	mMathExtension.initialize(scope);
-	// Network
-	mNetworkExtension.initialize(scope);
-	// Strings
-	mStringsExtension.initialize(scope);
 
 #ifdef _WIN32
 	// Win32 only
 #else
 	// Unix/Linux only
+	scope->define("EAFNOSUPPORT", new Runtime::IntegerObject(EAFNOSUPPORT));
+	scope->define("ENOBUFS", new Runtime::IntegerObject(ENOBUFS));
+	scope->define("EPROTONOSUPPORT", new Runtime::IntegerObject(EPROTONOSUPPORT));
 #endif
+
+	// Console
+	mConsoleExtension.initialize(scope);
+
+	// IO
+	mIOExtension.initialize(scope);
+
+	// Math
+	mMathExtension.initialize(scope);
+
+	// Network
+#ifdef _WIN32
+	// Win32 only
+#else
+	// Unix/Linux only
+	mNetworkExtension.initialize(scope);
+#endif
+
+	// Strings
+	mStringsExtension.initialize(scope);
 }
 
 void SystemExtension::provideMethods(ExtensionMethods &methods)
@@ -90,6 +99,13 @@ void SystemExtension::provideMethods(ExtensionMethods &methods)
 	methods.push_back(new Write());
 	methods.push_back(new WriteLn());
 
+#ifdef _WIN32
+	// Win32 only methods
+#else
+	// Unix/Linux only methods
+	methods.push_back(new SetKeyboardBlockingMode());
+#endif
+
 	// Console
 	mConsoleExtension.provideMethods(methods);
 
@@ -100,18 +116,15 @@ void SystemExtension::provideMethods(ExtensionMethods &methods)
 	mMathExtension.provideMethods(methods);
 
 	// Network
+#ifdef _WIN32
+	// Win32 only
+#else
+	// Unix/Linux only
 	mNetworkExtension.provideMethods(methods);
+#endif
 
 	// Strings
 	mStringsExtension.provideMethods(methods);
-
-	
-#ifdef _WIN32
-	// Win32 only methods
-#else
-	// Unix/Linux only methods
-	methods.push_back(new SetKeyboardBlockingMode());
-#endif
 }
 
 
