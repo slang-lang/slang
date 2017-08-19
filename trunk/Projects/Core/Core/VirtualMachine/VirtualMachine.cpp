@@ -58,7 +58,11 @@ void VirtualMachine::addLibraryFolder(const std::string &library)
 		return;
 	}
 
+#ifdef _MSC_VER
 	mLibraryFolders.insert(Utils::Tools::Files::GetFullname(library + "/"));
+#else
+	mLibraryFolders.insert(Utils::Tools::Files::GetFullname(library) + "/");
+#endif
 }
 
 std::string VirtualMachine::buildPath(const std::string& basefolder, const std::string& library) const
