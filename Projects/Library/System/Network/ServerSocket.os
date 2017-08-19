@@ -48,53 +48,53 @@ public object ServerSocket {
 		mEndpoint = address;
 		mQueueLength = queueLength;
 
-		init();
+		Init();
 	}
 
 	/*
 	 * Destructor
 	 */
 	public void Destructor() {
-		close();
+		Close();
 	}
 
 	/*
-	 * Listens for a connection to be made to this socket and accepts it.
+	 * Listens for a connection to be made to this socket and Accepts it.
 	 * The method blocks until a connection is made.
 	 */
-	public int accept() throws {
-		return -1;
+	public int Accept() throws {
+		return accept(mSocket);
 	}
 
 	/*
 	 * Binds the ServerSocket to the address given during object construction
 	 */
-	public int bind() modify throws {
-	    if ( !mEndpoint ) {
-	        throw new Exception("endpoint not set");
-	    }
+	public int Bind() modify throws {
+		if ( !mEndpoint ) {
+			throw new Exception("endpoint not set");
+		}
 
-	    return accept(mSocket, ISocketAddress mEndpoint);
+		return bind(mSocket, ISocketAddress mEndpoint);
 	}
 
 	/*
 	 * Binds the ServerSocket to a given address
 	 */
-	public int bind(IPv4Address endpoint) modify throws {
-	    if ( !endpoint ) {
-	        throw new Exception("endpoint not set");
-	    }
+	public int Bind(IPv4Address endpoint) modify throws {
+		if ( !endpoint ) {
+			throw new Exception("endpoint not set");
+		}
 
-	    mEndpoint = endpoint;
+		mEndpoint = endpoint;
 
-	    return accept(mSocket, ISocketAddress mEndpoint);
+		return bind(mSocket, ISocketAddress mEndpoint);
 	}
 
 	/*
 	 * Closes this socket
 	 */
-	public int close() throws {
-	    return -1;
+	public int Close() throws {
+	    return close(mSocket);
 	}
 
 	/*
@@ -108,16 +108,16 @@ public object ServerSocket {
 		return mEndpoint._sa_port;
 	}
 
-	private void init() modify {
-	    mSocket = socket(AF_INET, SOCK_STREAM, o);
+	private void Init() modify {
+	    mSocket = socket(AF_INET, SOCK_STREAM, 0);
 	}
 
-	public int listen() modify {
-	    return -1;
+	public int Listen() modify {
+	    return listen(mSocket, mQueueLength);
 	}
 
-	public string readString(int length) {
-	    return "";
+	public string ReadString(int socket, int length = -1) {
+	    return reads(socket, length);
 	}
 }
 
