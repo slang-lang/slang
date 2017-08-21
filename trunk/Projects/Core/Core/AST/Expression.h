@@ -386,7 +386,13 @@ public:
 		mSecondResultType = static_cast<Expression*>(second)->getResultType();
 	}
 	~TernaryExpression() {
-		delete mCondition;
+		if ( mCondition == mFirst ) {
+			// short ternary operator
+			mCondition = 0;
+		}
+		else {
+			delete mCondition;
+		}
 		delete mFirst;
 		delete mSecond;
 	}

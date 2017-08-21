@@ -4,6 +4,8 @@ public void Main(int argc = 0, string args = "") {
 	assert( TestCase1() );
 	assert( TestCase2() );
 	assert( TestCase3() );
+	assert( TestCase4() );
+	assert( TestCase5() );
 }
 
 private bool TestCase1() {
@@ -34,5 +36,25 @@ private bool TestCase3() {
 	assert( value == 3 );
 
 	return value == 3;
+}
+
+private bool TestCase4() {
+	print("TestCase 4: valid condition in short ternary operator");
+
+	int value = 4 ?: 0;
+	print("value = " + value);
+	assert( value == 4 );
+
+	return value == 4;
+}
+
+private bool TestCase5() {
+	print("TestCase 5: invalid condition in short ternary operator");
+
+	int value = 0 ?: 5;
+	print("value = " + value);
+	assert( value == 5 );
+
+	return value == 5;
 }
 
