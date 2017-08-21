@@ -223,8 +223,7 @@ inline Symbol* TreeGenerator::identify(TokenIterator& token) const
 					result = dynamic_cast<Common::Namespace*>(result)->resolve(identifier, onlyCurrentScope, Visibility::Public);
 					break;
 				case Symbol::IType::ObjectSymbol:
-					result = dynamic_cast<Runtime::Object*>(result)->resolve(identifier, onlyCurrentScope,
-																	(prev_identifier == IDENTIFIER_THIS) ? Visibility::Private : Visibility::Public);
+					result = dynamic_cast<Runtime::Object*>(result)->resolve(identifier, onlyCurrentScope, (prev_identifier == IDENTIFIER_THIS) ? Visibility::Private : Visibility::Public);
 					break;
 				case Symbol::IType::MethodSymbol:
 					throw Common::Exceptions::NotSupported("cannot directly access locales of method");
@@ -400,7 +399,17 @@ Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 			++start;
 
 			Node* condition = infixPostfix;
-			Node* first = expression(start);
+			Node* first = 0;
+
+			// determine the type of the ternary operator
+			if ( start->type() == Token::Type::COLON ) {
+				// use short ternary operator: <expression> ?: <expression>
+				first = condition;
+			}
+			else {
+				// use long ternary operator: <expression> ? <expression> : <expression>
+				first = expression(start);
+			}
 
 			expect(Token::Type::COLON, start);
 			++start;
