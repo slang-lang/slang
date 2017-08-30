@@ -27,9 +27,11 @@ SemanticVersionNumber::SemanticVersionNumber(const std::string& version)
 	parse(version);
 }
 
-void SemanticVersionNumber::operator=(const std::string& version)
+SemanticVersionNumber& SemanticVersionNumber::operator=(const std::string& version)
 {
 	parse(version);
+
+	return *this;
 }
 
 bool SemanticVersionNumber::operator==(const SemanticVersionNumber& other) const
