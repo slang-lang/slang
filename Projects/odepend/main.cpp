@@ -71,7 +71,7 @@ static const char* MODULES = "modules/";
 static const char* TMP = "/tmp/";
 
 
-void checkOutdatedModules(Repository::Modules& modules);
+void checkOutdatedModules(Repository::Modules& outdatedModules);
 void cleanCache();
 Dependencies collectDependencies(const Json::Value& dependencies);
 void collectLocalModuleData();
@@ -916,7 +916,7 @@ void upgrade(const StringList& params)
 
 		// TODO: if mParameters contains values upgrade only the modules that are set in mParameters
 
-		// install new versions of all outdated modules
+		// install new versions of the selected outdated modules
 		install(mParameters);
 	}
 }

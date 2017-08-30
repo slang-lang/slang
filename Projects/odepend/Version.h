@@ -21,10 +21,10 @@ class SemanticVersionNumber
 {
 public:
 	SemanticVersionNumber();
-	SemanticVersionNumber(const std::string& version);
+	explicit SemanticVersionNumber(const std::string& version);
 
 public:
-	void operator=(const std::string& version);
+	SemanticVersionNumber& operator=(const std::string& version);
 	bool operator==(const SemanticVersionNumber& other) const;
 	bool operator<(const SemanticVersionNumber& other) const;
 
