@@ -3,8 +3,8 @@ import System.IO.File;
 
 public object FileLogger {
 	// Members
-	private string mFilename final;
-	private string mKey final;
+	private string mFilename const;
+	private string mKey const;
 
 	/*
 	 * Specialised constructor
