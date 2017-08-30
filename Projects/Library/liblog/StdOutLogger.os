@@ -7,9 +7,9 @@ import ILogger;
 
 public object StdOutLogger implements ILogger {
 	// Members
-	private IContext mContext final;
-	private bool mHasParent final;
-	private string mKey final = "";
+	private IContext mContext const;
+	private bool mHasParent const;
+	private string mKey const = "";
 
 	/*
 	 * Specialised constructor

@@ -2,7 +2,7 @@
   "name": "ObjectiveScript logging library",
   "name_short": "liblog",
   "version": "0.1.0",
-  "description": "ObjectiveScript logging library",
+  "description": "The ObjectiveScript logging library provides a stdout and file logging capabilities.",
   "dependencies": [
     { "module": "system", "version_min": "0.0.0" }
   ],
