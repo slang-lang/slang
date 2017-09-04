@@ -59,6 +59,7 @@ public:
 
 			std::string param_text = (*it++).value().toStdString();
 
+#if __cplusplus >= 201402L
 			std::array<char, 128> buffer;
 			std::string resultStr;
 			std::shared_ptr<FILE> pipe(popen(param_text.c_str(), "r"), pclose);
@@ -71,6 +72,29 @@ public:
 					resultStr += buffer.data();
 				}
 			}
+#else
+			std::string resultStr = "";
+
+			FILE* pipe = popen(param_text.c_str(), "r");
+			if ( !pipe ) {
+				throw std::runtime_error("popen() failed!");
+			}
+
+			try {
+				char buffer[128];
+
+				while ( !feof(pipe) ) {
+					if ( fgets(buffer, 128, pipe) != NULL ) {
+						resultStr += buffer;
+					}
+				}
+			}
+			catch ( ... ) {
+				pclose(pipe);
+				throw;
+			}
+			pclose(pipe);
+#endif
 
 			*result = Runtime::StringObject(resultStr);
 		}
