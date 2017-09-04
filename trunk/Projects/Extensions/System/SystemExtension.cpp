@@ -96,6 +96,7 @@ void SystemExtension::provideMethods(ExtensionMethods &methods)
 	methods.push_back(new GetEnv());
 	methods.push_back(new Sleep());
 	methods.push_back(new StdTime());
+	methods.push_back(new SystemExecute());
 	methods.push_back(new Write());
 	methods.push_back(new WriteLn());
 
