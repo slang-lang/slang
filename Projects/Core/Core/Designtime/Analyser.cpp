@@ -123,7 +123,7 @@ bool Analyser::createBluePrint(TokenIterator& token)
 	// look for the identifier token
 	std::string name = (*token++).content();
 	// look for an optional modifier token
-	Mutability::E mutability = Mutability::Unknown;
+	Mutability::E mutability = Mutability::Modify;
 
 	BluePrintObject* blueprint = new BluePrintObject(name, mFilename);
 
