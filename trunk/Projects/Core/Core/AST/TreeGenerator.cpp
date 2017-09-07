@@ -395,7 +395,7 @@ Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 
 			infixPostfix = new IsExpression(infixPostfix, type);
 		} break;
-		case Token::Type::QUESTIONMARK: {		// postfix ternary ? operator
+		case Token::Type::QUESTION_MARK: {		// postfix ternary ? operator
 			++start;
 
 			Node* condition = infixPostfix;
