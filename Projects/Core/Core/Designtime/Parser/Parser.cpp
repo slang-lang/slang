@@ -214,7 +214,7 @@ PrototypeConstraints Parser::collectDesigntimePrototypeConstraints(TokenIterator
 			PrototypeConstraint(index, designType, runType, constraint)
 		);
 
-		// cleanup for next iteration
+		// prepare next iteration
 		constraint = "";
 		designType = "";
 		++index;
@@ -259,7 +259,7 @@ PrototypeConstraints Parser::collectRuntimePrototypeConstraints(TokenIterator& t
 			PrototypeConstraint(index, designType, runType, constraint)
 		);
 
-		// cleanup for next iteration
+		// prepare next iteration
 		constraint = "";
 		designType = "";
 		++index;

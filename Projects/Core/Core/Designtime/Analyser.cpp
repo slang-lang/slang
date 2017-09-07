@@ -123,7 +123,7 @@ bool Analyser::createBluePrint(TokenIterator& token)
 	// look for the identifier token
 	std::string name = (*token++).content();
 	// look for an optional modifier token
-	Mutability::E mutability;
+	Mutability::E mutability = Mutability::Unknown;
 
 	BluePrintObject* blueprint = new BluePrintObject(name, mFilename);
 
@@ -134,8 +134,6 @@ bool Analyser::createBluePrint(TokenIterator& token)
 
 		// set implementation type
 		implementationType = ImplementationType::ForwardDeclaration;
-		// collect mutability
-		mutability = Parser::parseMutability(token, Mutability::Modify);
 	}
 	else {
 		// collect prototype constraints (if present)
