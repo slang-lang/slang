@@ -25,7 +25,7 @@ public:
 	class OperatorType {
 	public:
 		enum E {
-			BinaryOperator,
+			BinaryOperator = 0,
 			UnaryOperator
 		};
 	};

@@ -27,7 +27,7 @@ public:
 	class StatementType {
 	public:
 		enum E {
-			AssertStatement,
+			AssertStatement = 0,
 			Assignment,
 			BreakStatement,
 			CaseStatement,

@@ -2,6 +2,7 @@ INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
 SET(SOURCES
 	Generator.cpp
+	NodeFactory.cpp
 	TreeGenerator.cpp
 	TreeInterpreter.cpp
 	TreeLineBuffer.cpp
@@ -15,6 +16,7 @@ SET(HEADERS
 	Generator.h
 	Keywords.h
 	Node.h
+	NodeFactory.h
 	Operator.h
 	Statement.h
 	TreeGenerator.h

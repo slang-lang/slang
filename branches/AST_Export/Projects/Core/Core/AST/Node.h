@@ -4,6 +4,7 @@
 
 
 // Library includes
+#include <cassert>
 
 // Project includes
 
@@ -16,13 +17,17 @@ namespace ObjectiveScript {
 namespace AST {
 
 
+typedef unsigned int NodeID;
+const NodeID DEFAULT_ID = ~0;
+
+
 class Node
 {
 public:
 	class NodeType {
 	public:
 		enum E {
-			Expression,
+			Expression = 0,
 			Operator,
 			Statement
 		};
@@ -30,15 +35,26 @@ public:
 
 public:
 	explicit Node(NodeType::E type)
-	: mType(type)
+	: mId(DEFAULT_ID),
+	  mType(type)
 	{ }
 	virtual ~Node() { }
+
+public:
+	NodeID getId() const {
+		return mId;
+	}
+	void setId(NodeID id) {
+		assert( mId == DEFAULT_ID );
+		mId = id;
+	}
 
 	NodeType::E getNodeType() const {
 		return mType;
 	}
 
 protected:
+	NodeID mId;
 	NodeType::E mType;
 };
 

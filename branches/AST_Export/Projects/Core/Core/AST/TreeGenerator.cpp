@@ -102,7 +102,7 @@ void TreeGenerator::deinitialize()
 		throw Common::Exceptions::Exception("return statement missing in '" + mMethod->getFullScopeName() + "'", last.position());
 	}
 
-	// reset reuseable members
+	// reset reusable members
 	mThis = 0;
 	mMethod = 0;
 	mHasReturnStatement = false;

@@ -28,7 +28,7 @@ public:
 	class ExpressionType {
 	public:
 		enum E {
-			BinaryExpression,
+			BinaryExpression = 0,
 			CopyExpression,
 			IsExpression,
 			LiteralExpression,
