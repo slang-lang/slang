@@ -59,7 +59,7 @@ public:
 
 			std::string param_text = (*it++).value().toStdString();
 
-#if __cplusplus >= 201402L
+#if __cplusplus > 201402L
 			std::array<char, 128> buffer;
 			std::string resultStr;
 			std::shared_ptr<FILE> pipe(popen(param_text.c_str(), "r"), pclose);
