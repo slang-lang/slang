@@ -73,6 +73,8 @@ void ATreeVisitor::visitExpression(Expression* expression)
 
 void ATreeVisitor::visitFor(ForStatement* node)
 {
+	assert(node);
+
 	visitStatement(static_cast<Statement*>(node->mInitialization));
 
 	visitStatement(static_cast<Statement*>(node->mIteration));
@@ -82,6 +84,8 @@ void ATreeVisitor::visitFor(ForStatement* node)
 
 void ATreeVisitor::visitForeach(ForeachStatement *node)
 {
+	assert(node);
+
 	visitStatement(node->mTypeDeclaration);
 
 	visit(node->mStatement);
@@ -89,6 +93,8 @@ void ATreeVisitor::visitForeach(ForeachStatement *node)
 
 void ATreeVisitor::visitIf(IfStatement* node)
 {
+	assert(node);
+
 	visit(node->mIfBlock);
 
 	if ( node->mElseBlock ) {
@@ -181,17 +187,19 @@ void ATreeVisitor::visitStatement(Statement *node)
 
 void ATreeVisitor::visitStatements(Statements* node)
 {
-	Statements* statements = node;
+	if ( !node ) {
+		return;
+	}
 
-	if ( statements ) {
-		for ( Statements::Nodes::const_iterator it = statements->mNodes.begin(); it != statements->mNodes.end(); ++it ) {
-			visit((*it));
-		}
+	for ( Statements::Nodes::const_iterator it = node->mNodes.begin(); it != node->mNodes.end(); ++it ) {
+		visit((*it));
 	}
 }
 
 void ATreeVisitor::visitSwitch(SwitchStatement* node)
 {
+	assert(node);
+
 	for ( CaseStatements::const_iterator it = node->mCaseStatements.begin(); it != node->mCaseStatements.end(); ++it ) {
 		visit((*it)->mCaseBlock);
 	}
@@ -208,6 +216,8 @@ void ATreeVisitor::visitThrow(ThrowStatement* node)
 
 void ATreeVisitor::visitTry(TryStatement* node)
 {
+	assert(node);
+
 	visitStatement(node->mTryBlock);
 
 	for ( CatchStatements::const_iterator it = node->mCatchStatements.begin(); it != node->mCatchStatements.end(); ++it ) {
@@ -233,6 +243,10 @@ void ATreeVisitor::visitTypeInference(TypeInference* node)
 
 void ATreeVisitor::visitWhile(WhileStatement* node)
 {
+	assert(node);
+
+	visitExpression(static_cast<Expression*>(node->mCondition));
+
 	visit(node->mStatement);
 }
 
