@@ -9,8 +9,8 @@
 
 // Project includes
 #include <Common/Settings.h>
+#include <Core/AST/PrintVisitor.h>
 #include <Core/AST/TreeLineBuffer.h>
-#include <Core/AST/TreeVisitor.h>
 #include <Core/BuildInObjects/BoolObject.h>
 #include <Core/BuildInObjects/DoubleObject.h>
 #include <Core/BuildInObjects/FloatObject.h>
@@ -786,13 +786,12 @@ void LocalClient::printScope(IScope* scope)
 	buffer.getLines(lines);
 
 	unsigned int activeLine = mBreakpoint.getLine();
-	unsigned int currentLine = 0;
 	unsigned int previousLine = 0;
 
 	AST::TreeLineBuffer::Lines::const_iterator it = lines.begin();
 
 	while ( it != lines.end() ) {
-		currentLine = it->first.mLine;
+		unsigned int currentLine = it->first.mLine;
 
 		if ( currentLine != previousLine ) {
 			std::cout << std::endl;

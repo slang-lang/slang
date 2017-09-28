@@ -23,7 +23,7 @@ NodeFactory::~NodeFactory()
 {
 }
 
-NodeID NodeFactory::nextNode()
+NodeID NodeFactory::nextID()
 {
     return ++mCurrentID;
 }
@@ -37,7 +37,7 @@ void NodeFactory::updateID(Node* node)
         return;
     }
 
-    node->setId(nextNode());
+    node->setId(nextID());
 }
 
 

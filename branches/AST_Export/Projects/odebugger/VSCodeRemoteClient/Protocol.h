@@ -47,7 +47,7 @@ public:
 class Event : public ProtocolMessage
 {
 public:
-	Event(const std::string& eventtype_)
+	explicit Event(const std::string& eventtype_)
 	: ProtocolMessage("event"),
 	  eventtype(eventtype_)
 	{ }
@@ -107,7 +107,7 @@ public:
 class Response : public ProtocolMessage
 {
 public:
-	Response(const Request& req)
+	explicit Response(const Request& req)
 	: ProtocolMessage("response", req.seq),
 	  request(req),
 	  success(false)

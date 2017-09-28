@@ -89,10 +89,9 @@ void Generator::processMethod(Common::Method* method)
 	}
 
 	TreeGenerator tg;
+	Statements* rootNode = tg.generateAST(method);
 
-	method->setRootNode(
-		tg.generateAST(method)
-	);
+	method->setRootNode(rootNode);
 }
 
 void Generator::processNamespace(Common::Namespace* space)

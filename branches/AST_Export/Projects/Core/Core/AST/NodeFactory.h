@@ -27,7 +27,7 @@ public:
     void updateID(Node* node);
 
 private:
-    NodeID nextNode();
+    NodeID nextID();
 
 private:
     NodeID mCurrentID;

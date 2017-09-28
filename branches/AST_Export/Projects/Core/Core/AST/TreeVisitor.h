@@ -25,48 +25,36 @@ namespace AST {
 class Statement;
 class Statements;
 
-class PrintVisitor
+class ATreeVisitor
 {
 public:
-	PrintVisitor();
-	~PrintVisitor();
+	virtual ~ATreeVisitor();
 
-public:
-	void generate(Statements* root, TreeLineBuffer& output);
+protected:
+	virtual void visit(Node* node);
 
-private:
-	void visit(Node* node);
+	virtual void visitExpression(Expression* expression);
+	virtual void visitOperator(Operator* op);
+	virtual void visitStatement(Statement* node);
 
-	void visitExpression(Expression* expression);
-	void visitOperator(Operator* op);
-	void visitStatement(Statement* node);
-
-	void visitAssert(AssertStatement* node);
-	void visitAssignment(Assignment* node);
-	void visitBreak(BreakStatement* node);
-	void visitContinue(ContinueStatement* node);
-	void visitDelete(DeleteStatement* node);
-	void visitExit(ExitStatement* node);
-	void visitFor(ForStatement* node);
-	void visitForeach(ForeachStatement *node);
-	void visitIf(IfStatement* node);
-	void visitPrint(PrintStatement* node);
-	void visitReturn(ReturnStatement* node);
-	void visitStatements(Statements* node);
-	void visitSwitch(SwitchStatement* node);
-	void visitThrow(ThrowStatement* node);
-	void visitTry(TryStatement* node);
-	void visitTypeDeclaration(TypeDeclaration* node);
-	void visitTypeInference(TypeInference* node);
-	void visitWhile(WhileStatement* node);
-
-private:
-	std::string printExpression(Node* node) const;
-	std::string printIndentation(int indentation) const;
-
-private:
-	int mIndentation;
-	TreeLineBuffer mOutput;
+	virtual void visitAssert(AssertStatement* node);
+	virtual void visitAssignment(Assignment* node);
+	virtual void visitBreak(BreakStatement* node);
+	virtual void visitContinue(ContinueStatement* node);
+	virtual void visitDelete(DeleteStatement* node);
+	virtual void visitExit(ExitStatement* node);
+	virtual void visitFor(ForStatement* node);
+	virtual void visitForeach(ForeachStatement *node);
+	virtual void visitIf(IfStatement* node);
+	virtual void visitPrint(PrintStatement* node);
+	virtual void visitReturn(ReturnStatement* node);
+	virtual void visitStatements(Statements* node);
+	virtual void visitSwitch(SwitchStatement* node);
+	virtual void visitThrow(ThrowStatement* node);
+	virtual void visitTry(TryStatement* node);
+	virtual void visitTypeDeclaration(TypeDeclaration* node);
+	virtual void visitTypeInference(TypeInference* node);
+	virtual void visitWhile(WhileStatement* node);
 };
 
 

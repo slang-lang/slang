@@ -15,113 +15,11 @@ namespace ObjectiveScript {
 namespace AST {
 
 
-PrintVisitor::PrintVisitor()
-: mIndentation(0)
+ATreeVisitor::~ATreeVisitor()
 {
 }
 
-PrintVisitor::~PrintVisitor()
-{
-}
-
-void PrintVisitor::generate(Statements* root, TreeLineBuffer& output)
-{
-	// clean up old output
-	mOutput.clear();
-
-	// start processing beginning with our given root node
-	visitStatements(root);
-
-	// provide our callee with our collected output
-	output.insert(mOutput);
-}
-
-std::string PrintVisitor::printExpression(Node* node) const
-{
-	if ( !node ) {
-		return "";
-	}
-
-	assert(node->getNodeType() == Node::NodeType::Expression);
-
-	Expression* expression = static_cast<Expression*>(node);
-	std::string result;
-
-	switch ( expression->getExpressionType() ) {
-		case Expression::ExpressionType::BinaryExpression: {
-			BinaryExpression* bin = static_cast<BinaryExpression*>(node);
-
-			result += printExpression(bin->mLeft) + " ";
-			result += bin->mOperation.content() + " ";
-			result += printExpression(bin->mRight);
-		} break;
-		case Expression::ExpressionType::CopyExpression: {
-			result += "copy " + printExpression(static_cast<CopyExpression*>(expression)->mExpression);
-		} break;
-		case Expression::ExpressionType::IsExpression: {
-			result += printExpression(static_cast<IsExpression*>(expression)->mExpression) + " is " + static_cast<IsExpression*>(expression)->mMatchType;
-		} break;
-		case Expression::ExpressionType::NewExpression: {
-			result += "new " + printExpression(static_cast<NewExpression*>(expression)->mExpression);
-		} break;
-		case Expression::ExpressionType::LiteralExpression: {
-			Runtime::AtomicValue value = static_cast<LiteralExpression*>(expression)->mValue;
-			if ( value.type() == Runtime::AtomicValue::Type::STRING ) {
-				result += "\"";
-			}
-			result += value.toStdString();
-			if ( value.type() == Runtime::AtomicValue::Type::STRING ) {
-				result += "\"";
-			}
-		} break;
-		case Expression::ExpressionType::MethodExpression: {
-			result += printExpression(static_cast<MethodExpression*>(expression)->mSymbolExpression);
-			result += "(";
-			for ( ExpressionList::const_iterator it = static_cast<MethodExpression*>(expression)->mParams.begin();
-				  it != static_cast<MethodExpression*>(expression)->mParams.end();
-				  ++it ) {
-				result += printExpression((*it));
-			}
-			result += ")";
-		} break;
-		case Expression::ExpressionType::SymbolExpression: {
-			result += static_cast<SymbolExpression*>(expression)->mSymbolExpression
-					  ? printExpression(static_cast<SymbolExpression*>(expression)->mSymbolExpression)
-					  : static_cast<SymbolExpression*>(expression)->mName;
-		} break;
-		case Expression::ExpressionType::TernaryExpression: {
-			result += printExpression(static_cast<TernaryExpression*>(expression)->mCondition) + " ? ";
-			result += printExpression(static_cast<TernaryExpression*>(expression)->mFirst) + " : ";
-			result += printExpression(static_cast<TernaryExpression*>(expression)->mSecond);
-		} break;
-		case Expression::ExpressionType::TypecastExpression: {
-			result += "( " + static_cast<TypecastExpression*>(expression)->mDestinationType + " ";
-			result += printExpression(static_cast<TypecastExpression*>(expression)->mExpression) + " )";
-		} break;
-		case Expression::ExpressionType::TypeidExpression: {
-			result += "typeid( " + printExpression(static_cast<TypeidExpression*>(expression)->mExpression) + " )";
-		} break;
-		case Expression::ExpressionType::UnaryExpression: {
-			result += static_cast<UnaryExpression*>(expression)->mOperation.content();
-			result += printExpression(static_cast<UnaryExpression*>(expression)->mExpression);
-		} break;
-	}
-
-	return result;
-}
-
-std::string PrintVisitor::printIndentation(int indentation) const
-{
-	std::string result;
-
-	for ( int i = 0; i < indentation; i++ ) {
-		result += "\t";
-	}
-
-	return result;
-}
-
-void PrintVisitor::visit(Node* node)
+void ATreeVisitor::visit(Node* node)
 {
 	if ( node ) {
 		switch ( node->getNodeType() ) {
@@ -138,110 +36,82 @@ void PrintVisitor::visit(Node* node)
 	}
 }
 
-void PrintVisitor::visitAssert(AssertStatement* node)
+void ATreeVisitor::visitAssert(AssertStatement* node)
 {
-	mOutput.insert(node->token().position(), printIndentation(mIndentation) + "assert(" + printExpression(node->mExpression) + ");");
+	(void)node;
 }
 
-void PrintVisitor::visitAssignment(Assignment* node)
+void ATreeVisitor::visitAssignment(Assignment* node)
 {
-	mOutput.insert(node->token().position(), printIndentation(mIndentation) + node->mLValue->mName + " " + node->mAssignment.content() + " " + printExpression(node->mExpression));
+	(void)node;
 }
 
-void PrintVisitor::visitBreak(BreakStatement* node)
+void ATreeVisitor::visitBreak(BreakStatement* node)
 {
-	mOutput.insert(node->token().position(), printIndentation(mIndentation) + "break;");
+	(void)node;
 }
 
-void PrintVisitor::visitContinue(ContinueStatement* node)
+void ATreeVisitor::visitContinue(ContinueStatement* node)
 {
-	mOutput.insert(node->token().position(), printIndentation(mIndentation) + "continue;");
+	(void)node;
 }
 
-void PrintVisitor::visitDelete(DeleteStatement* node)
+void ATreeVisitor::visitDelete(DeleteStatement* node)
 {
-	mOutput.insert(node->token().position(), printIndentation(mIndentation) + "delete " + printExpression(node->mExpression) + ";");
+	(void)node;
 }
 
-void PrintVisitor::visitExit(ExitStatement* node)
+void ATreeVisitor::visitExit(ExitStatement* node)
 {
-	mOutput.insert(node->token().position(), printIndentation(mIndentation) + "exit( " + printExpression(node->mExpression) + " );");
+	(void)node;
 }
 
-void PrintVisitor::visitExpression(Expression* expression)
+void ATreeVisitor::visitExpression(Expression* expression)
 {
-	mOutput.append(printIndentation(mIndentation) + printExpression(expression));
+	(void)expression;
 }
 
-void PrintVisitor::visitFor(ForStatement* node)
+void ATreeVisitor::visitFor(ForStatement* node)
 {
-	mOutput.insert(node->token().position(), printIndentation(mIndentation) + "for ( ");
-
-	// set indentation to 0 temporarily
-	int indent = mIndentation;
-	mIndentation = 0;
-
 	visitStatement(static_cast<Statement*>(node->mInitialization));
-
-	mOutput.append("; " + printExpression(node->mCondition) + "; ");
 
 	visitStatement(static_cast<Statement*>(node->mIteration));
 
-	mOutput.append(" ) ");
-
-	// reset indentation
-	mIndentation = indent;
-
 	visit(node->mStatement);
 }
 
-void PrintVisitor::visitForeach(ForeachStatement *node)
+void ATreeVisitor::visitForeach(ForeachStatement *node)
 {
-	mOutput.insert(node->token().position(), printIndentation(mIndentation) + "for ( ");
-
-	// set indentation to 0 temporarily
-	int indent = mIndentation;
-	mIndentation = 0;
-
 	visitStatement(node->mTypeDeclaration);
 
-	mOutput.append(" : " + printExpression(node->mLoopVariable) + " ) ");
-
-	// reset indentation
-	mIndentation = indent;
-
 	visit(node->mStatement);
 }
 
-void PrintVisitor::visitIf(IfStatement* node)
+void ATreeVisitor::visitIf(IfStatement* node)
 {
-	mOutput.insert(node->token().position(), printIndentation(mIndentation) + "if ( " + printExpression(node->mCondition) + " ) ");
-
 	visit(node->mIfBlock);
 
 	if ( node->mElseBlock ) {
-		mOutput.insert(static_cast<Statements*>(node->mElseBlock)->token().position(), printIndentation(mIndentation) + "else ");
-
 		visit(node->mElseBlock);
 	}
 }
 
-void PrintVisitor::visitOperator(Operator* op)
+void ATreeVisitor::visitOperator(Operator* op)
 {
-	mOutput.append(op->token().content());
+	(void)op;
 }
 
-void PrintVisitor::visitPrint(PrintStatement* node)
+void ATreeVisitor::visitPrint(PrintStatement* node)
 {
-	mOutput.insert(node->token().position(), printIndentation(mIndentation) + "print(" + printExpression(node->mExpression) + ");");
+	(void)node;
 }
 
-void PrintVisitor::visitReturn(ReturnStatement* node)
+void ATreeVisitor::visitReturn(ReturnStatement* node)
 {
-	mOutput.insert(node->token().position(), printIndentation(mIndentation) + "return " + printExpression(node->mExpression) + ";");
+	(void)node;
 }
 
-void PrintVisitor::visitStatement(Statement *node)
+void ATreeVisitor::visitStatement(Statement *node)
 {
 	if ( !node ) {
 		return;
@@ -309,11 +179,8 @@ void PrintVisitor::visitStatement(Statement *node)
 	}
 }
 
-void PrintVisitor::visitStatements(Statements* node)
+void ATreeVisitor::visitStatements(Statements* node)
 {
-	mOutput.append("{ ");
-	mIndentation++;
-
 	Statements* statements = node;
 
 	if ( statements ) {
@@ -321,93 +188,51 @@ void PrintVisitor::visitStatements(Statements* node)
 			visit((*it));
 		}
 	}
-
-	mIndentation--;
-	mOutput.append(" }");
 }
 
-void PrintVisitor::visitSwitch(SwitchStatement* node)
+void ATreeVisitor::visitSwitch(SwitchStatement* node)
 {
-	mOutput.insert(node->token().position(), printIndentation(mIndentation) + "switch ( " + printExpression(node->mExpression) + " ) {");
-
 	for ( CaseStatements::const_iterator it = node->mCaseStatements.begin(); it != node->mCaseStatements.end(); ++it ) {
-		mOutput.insert(node->token().position(), printIndentation(mIndentation + 1) + printExpression((*it)->mCaseExpression) + ": ");
-
 		visit((*it)->mCaseBlock);
 	}
 
 	if ( node->mDefaultStatement ) {
-		mOutput.insert(node->token().position(), printIndentation(mIndentation + 1) + "default: ");
-
 		visit(node->mDefaultStatement);
 	}
-
-	mOutput.insert(node->token().position(), printIndentation(mIndentation) + "}");
 }
 
-void PrintVisitor::visitThrow(ThrowStatement* node)
+void ATreeVisitor::visitThrow(ThrowStatement* node)
 {
-	mOutput.insert(node->token().position(), printIndentation(mIndentation) + "throw " + printExpression(node->mExpression) + ";");
+	(void)node;
 }
 
-void PrintVisitor::visitTry(TryStatement* node)
+void ATreeVisitor::visitTry(TryStatement* node)
 {
-	mOutput.insert(node->token().position(), printIndentation(mIndentation) + "try ");
-
 	visitStatement(node->mTryBlock);
 
-	// TODO: handle catch statements
-
 	for ( CatchStatements::const_iterator it = node->mCatchStatements.begin(); it != node->mCatchStatements.end(); ++it ) {
-		mOutput.insert((*it)->mStatements->token().position(), printIndentation(mIndentation) + "catch ");
-
 		if ( (*it)->mTypeDeclaration ) {
-			mOutput.append("(");
-
-			// set indentation to 0 temporarily
-			int indent = mIndentation;
-			mIndentation = 0;
-
-			//visitTypeDeclaration((*it)->mTypeDeclaration);
-
-			// reset indentation
-			mIndentation = indent;
-
-			mOutput.append(") ");
-
 			visitStatements((*it)->mStatements);
 		}
 	}
 
 	if ( node->mFinallyBlock ) {
-		mOutput.insert(node->mFinallyBlock->token().position(), printIndentation(mIndentation) + "finally ");
-
 		visitStatement(node->mFinallyBlock);
 	}
 }
 
-void PrintVisitor::visitTypeDeclaration(TypeDeclaration* node)
+void ATreeVisitor::visitTypeDeclaration(TypeDeclaration* node)
 {
-	mOutput.insert(node->token().position(), printIndentation(mIndentation) + node->mType + " " + node->mName);
-
-	if ( node->mAssignment ) {
-		mOutput.insert(node->token().position(), " = " + printExpression(node->mAssignment));
-	}
+	(void)node;
 }
 
-void PrintVisitor::visitTypeInference(TypeInference* node)
+void ATreeVisitor::visitTypeInference(TypeInference* node)
 {
-	mOutput.insert(node->token().position(), printIndentation(mIndentation) + "var " + node->mName);
-
-	if ( node->mAssignment ) {
-		mOutput.insert(node->token().position(), " = " + printExpression(node->mAssignment));
-	}
+	(void)node;
 }
 
-void PrintVisitor::visitWhile(WhileStatement* node)
+void ATreeVisitor::visitWhile(WhileStatement* node)
 {
-	mOutput.insert(node->token().position(), printIndentation(mIndentation) + "while ( " + printExpression(node->mCondition) + " ) ");
-
 	visit(node->mStatement);
 }
 
