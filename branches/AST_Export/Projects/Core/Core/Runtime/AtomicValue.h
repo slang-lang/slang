@@ -29,8 +29,8 @@ public:
 			DOUBLE,
 			FLOAT,
 			INT,
-			STRING,
-			UINT
+			OBJECT,
+			STRING
 		};
 	};
 
@@ -42,7 +42,7 @@ public:	// Construction
 	AtomicValue(int val);
 	AtomicValue(const char* val);
 	AtomicValue(const std::string& val);
-	AtomicValue(unsigned int val);
+	explicit AtomicValue(unsigned int val);
 
 	~AtomicValue();
 
@@ -60,8 +60,8 @@ public:	// Conversion
 	double toDouble() const;
 	float toFloat() const;
 	int toInt() const;
+	unsigned int toObject() const;
 	std::string toStdString() const;
-	unsigned int toUInt() const;
 
 	Type::E type() const;
 
@@ -71,8 +71,8 @@ private:
 		double double_;
 		float float_;
 		int int_;
+		unsigned int object_;
 		//const char* string_;
-		unsigned int uint_;
 	};
 
 private:

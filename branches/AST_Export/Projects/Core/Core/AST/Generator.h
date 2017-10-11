@@ -4,8 +4,10 @@
 
 
 // Library includes
+#include <string>
 
 // Project includes
+#include "NodeIdentifier.h"
 
 // Forward declarations
 
@@ -26,7 +28,6 @@ class MethodScope;
 
 namespace AST {
 
-
 class Generator
 {
 public:
@@ -35,11 +36,15 @@ public:
 
 public:
 	void process(MethodScope* base);
+	void store(const std::string& filename);
 
 private:
 	void processBluePrint(Designtime::BluePrintObject* object);
 	void processMethod(Common::Method* method);
 	void processNamespace(Common::Namespace* space);
+
+private:
+	NodeIdentifier mNodeIdentifier;
 };
 
 

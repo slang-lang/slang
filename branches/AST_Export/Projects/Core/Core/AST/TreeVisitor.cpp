@@ -21,29 +21,37 @@ ATreeVisitor::~ATreeVisitor()
 
 void ATreeVisitor::visit(Node* node)
 {
-	if ( node ) {
-		switch ( node->getNodeType() ) {
-			case Node::NodeType::Expression:
-				visitExpression(static_cast<Expression*>(node));
-				break;
-			case Node::NodeType::Operator:
-				visitOperator(static_cast<Operator*>(node));
-				break;
-			case Node::NodeType::Statement:
-				visitStatement(static_cast<Statement*>(node));
-				break;
-		}
+	if ( !node ) {
+		return;
+	}
+
+	switch ( node->getNodeType() ) {
+		case Node::NodeType::Expression:
+			visitExpression(static_cast<Expression*>(node));
+			break;
+		case Node::NodeType::Operator:
+			visitOperator(static_cast<Operator*>(node));
+			break;
+		case Node::NodeType::Statement:
+			visitStatement(static_cast<Statement*>(node));
+			break;
 	}
 }
 
 void ATreeVisitor::visitAssert(AssertStatement* node)
 {
-	(void)node;
+	assert(node);
+
+	visit(node->mExpression);
 }
 
 void ATreeVisitor::visitAssignment(Assignment* node)
 {
-	(void)node;
+	assert(node);
+
+	visit(node->mLValue);
+
+	visit(node->mExpression);
 }
 
 void ATreeVisitor::visitBreak(BreakStatement* node)
@@ -58,26 +66,78 @@ void ATreeVisitor::visitContinue(ContinueStatement* node)
 
 void ATreeVisitor::visitDelete(DeleteStatement* node)
 {
-	(void)node;
+	assert(node);
+
+	visit(node->mExpression);
 }
 
 void ATreeVisitor::visitExit(ExitStatement* node)
 {
-	(void)node;
+	assert(node);
+
+	visit(node->mExpression);
 }
 
 void ATreeVisitor::visitExpression(Expression* expression)
 {
-	(void)expression;
+	if ( !expression ) {
+		return;
+	}
+
+	switch ( expression->getExpressionType() ) {
+		case Expression::ExpressionType::BinaryExpression: {
+			visit(static_cast<Expression*>(static_cast<BinaryExpression*>(expression)->mLeft));
+			visit(static_cast<Expression*>(static_cast<BinaryExpression*>(expression)->mRight));
+		} break;
+		case Expression::ExpressionType::CopyExpression: {
+			visit(static_cast<Expression*>(static_cast<CopyExpression*>(expression)->mExpression));
+		} break;
+		case Expression::ExpressionType::IsExpression: {
+			visit(static_cast<Expression*>(static_cast<IsExpression*>(expression)->mExpression));
+		} break;
+		case Expression::ExpressionType::NewExpression: {
+			visit(static_cast<Expression*>(static_cast<NewExpression*>(expression)->mExpression));
+		} break;
+		case Expression::ExpressionType::LiteralExpression: {
+		} break;
+		case Expression::ExpressionType::MethodExpression: {
+			visit(static_cast<Expression*>(static_cast<MethodExpression*>(expression)->mSymbolExpression));
+
+			for ( ExpressionList::const_iterator it = static_cast<MethodExpression*>(expression)->mParams.begin();
+				  it != static_cast<MethodExpression*>(expression)->mParams.end();
+				  ++it ) {
+				visit(static_cast<Expression*>((*it)));
+			}
+		} break;
+		case Expression::ExpressionType::SymbolExpression: {
+			visit(static_cast<Expression*>(static_cast<SymbolExpression*>(expression)->mSymbolExpression));
+		} break;
+		case Expression::ExpressionType::TernaryExpression: {
+			visit(static_cast<Expression*>(static_cast<TernaryExpression*>(expression)->mCondition));
+			visit(static_cast<Expression*>(static_cast<TernaryExpression*>(expression)->mFirst));
+			visit(static_cast<Expression*>(static_cast<TernaryExpression*>(expression)->mSecond));
+		} break;
+		case Expression::ExpressionType::TypecastExpression: {
+			visit(static_cast<Expression*>(static_cast<TypecastExpression*>(expression)->mExpression));
+		} break;
+		case Expression::ExpressionType::TypeidExpression: {
+			visit(static_cast<Expression*>(static_cast<TypeidExpression*>(expression)->mExpression));
+		} break;
+		case Expression::ExpressionType::UnaryExpression: {
+			visit(static_cast<Expression*>(static_cast<UnaryExpression*>(expression)->mExpression));
+		} break;
+	}
 }
 
 void ATreeVisitor::visitFor(ForStatement* node)
 {
 	assert(node);
 
-	visitStatement(static_cast<Statement*>(node->mInitialization));
+	visit(node->mCondition);
 
-	visitStatement(static_cast<Statement*>(node->mIteration));
+	visit(node->mInitialization);
+
+	visit(node->mIteration);
 
 	visit(node->mStatement);
 }
@@ -86,7 +146,9 @@ void ATreeVisitor::visitForeach(ForeachStatement *node)
 {
 	assert(node);
 
-	visitStatement(node->mTypeDeclaration);
+	visit(node->mLoopVariable);
+
+	visit(node->mTypeDeclaration);
 
 	visit(node->mStatement);
 }
@@ -94,6 +156,8 @@ void ATreeVisitor::visitForeach(ForeachStatement *node)
 void ATreeVisitor::visitIf(IfStatement* node)
 {
 	assert(node);
+
+	visit(node->mCondition);
 
 	visit(node->mIfBlock);
 
@@ -109,12 +173,16 @@ void ATreeVisitor::visitOperator(Operator* op)
 
 void ATreeVisitor::visitPrint(PrintStatement* node)
 {
-	(void)node;
+	assert(node);
+
+	visit(node->mExpression);
 }
 
 void ATreeVisitor::visitReturn(ReturnStatement* node)
 {
-	(void)node;
+	assert(node);
+
+	visit(node->mExpression);
 }
 
 void ATreeVisitor::visitStatement(Statement *node)
@@ -211,14 +279,16 @@ void ATreeVisitor::visitSwitch(SwitchStatement* node)
 
 void ATreeVisitor::visitThrow(ThrowStatement* node)
 {
-	(void)node;
+	assert(node);
+
+	visit(node->mExpression);
 }
 
 void ATreeVisitor::visitTry(TryStatement* node)
 {
 	assert(node);
 
-	visitStatement(node->mTryBlock);
+	visit(node->mTryBlock);
 
 	for ( CatchStatements::const_iterator it = node->mCatchStatements.begin(); it != node->mCatchStatements.end(); ++it ) {
 		if ( (*it)->mTypeDeclaration ) {
@@ -227,25 +297,29 @@ void ATreeVisitor::visitTry(TryStatement* node)
 	}
 
 	if ( node->mFinallyBlock ) {
-		visitStatement(node->mFinallyBlock);
+		visit(node->mFinallyBlock);
 	}
 }
 
 void ATreeVisitor::visitTypeDeclaration(TypeDeclaration* node)
 {
-	(void)node;
+	assert(node);
+
+	visit(node->mAssignment);
 }
 
 void ATreeVisitor::visitTypeInference(TypeInference* node)
 {
-	(void)node;
+	assert(node);
+
+	visit(node->mAssignment);
 }
 
 void ATreeVisitor::visitWhile(WhileStatement* node)
 {
 	assert(node);
 
-	visitExpression(static_cast<Expression*>(node->mCondition));
+	visit(node->mCondition);
 
 	visit(node->mStatement);
 }

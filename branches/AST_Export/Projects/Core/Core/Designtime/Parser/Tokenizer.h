@@ -52,6 +52,7 @@ private:	// Tokenizer
 	inline bool isLanguageFeature(const std::string& token) const;
 	inline bool isLiteral(const std::string& token) const;
 	inline bool isModifier(const std::string& token) const;
+	inline bool isNull(const std::string& token) const;
 	inline bool isReservedWord(const std::string& token) const;
 	inline bool isType(const std::string& token) const;
 	inline bool isVisibility(const std::string& token) const;

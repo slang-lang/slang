@@ -21,12 +21,12 @@ class NodeFactory
 {
 public:
     NodeFactory();
-    ~NodeFactory();
+    virtual ~NodeFactory();
 
 public:
     void updateID(Node* node);
 
-private:
+protected:
     NodeID nextID();
 
 private:

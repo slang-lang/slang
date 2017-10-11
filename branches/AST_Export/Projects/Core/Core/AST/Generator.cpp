@@ -91,6 +91,9 @@ void Generator::processMethod(Common::Method* method)
 	TreeGenerator tg;
 	Statements* rootNode = tg.generateAST(method);
 
+	// set node IDs
+	mNodeIdentifier.visit(rootNode);
+
 	method->setRootNode(rootNode);
 }
 
@@ -101,6 +104,11 @@ void Generator::processNamespace(Common::Namespace* space)
 	}
 
 	process(space);
+}
+
+void Generator::store(const std::string& filename)
+{
+	(void)filename;
 }
 
 

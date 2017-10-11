@@ -7,6 +7,7 @@
 
 // Project includes
 #include <Core/AST/Generator.h>
+#include <Core/AST/NodeFactory.h>
 #include <Core/AST/TreeGenerator.h>
 #include <Core/AST/TreeInterpreter.h>
 #include <Core/AST/TreeOptimizer.h>
@@ -116,6 +117,7 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 
 	AST::Generator generator;
 	generator.process(Controller::Instance().stack()->globalScope());
+	generator.store("/tmp/" + mScriptFile + ".ast");
 
 #	ifdef USE_AST_OPTIMIZATION
 

@@ -50,7 +50,7 @@ public:
 				throw Common::Exceptions::Exception("no valid mysql connection handle: " + Utils::Tools::toString(param_handle));
 			}
 
-			*result = Runtime::IntegerObject(mysql_errno(myConn));
+			*result = Runtime::IntegerObject((int)mysql_errno(myConn));
 		}
 		catch ( std::exception &e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);

@@ -53,6 +53,11 @@ public:
 		return mType;
 	}
 
+public:
+	bool operator<(const Node* other) const {
+		return false || mId < other->mId;
+	}
+
 protected:
 	NodeID mId;
 	NodeType::E mType;

@@ -84,6 +84,7 @@ void Tokenizer::addToken(const std::string& con, const Common::Position& positio
 		// remove leading and trailing quotation marks (", ')
 		content = con.substr(1, con.length() - 2);
 	}
+	//else if ( isNull(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_NULL; }
 	else if ( isModifier(content) ) { category = Token::Category::Modifier; isOptional = true; type = Token::Type::MODIFIER; }
 	else if ( isReservedWord(content) ) { category = Token::Category::ReservedWord; type = Token::Type::RESERVED_WORD; }
 	else if ( isType(content) ) { category = Token::Category::Identifier; type = Token::Type::TYPE; }
@@ -253,6 +254,11 @@ bool Tokenizer::isLiteral(const std::string& token) const
 bool Tokenizer::isModifier(const std::string& token) const
 {
 	return mModifiers.find(token) != mModifiers.end();
+}
+
+bool Tokenizer::isNull(const std::string& token) const
+{
+	return token == VALUE_NULL;
 }
 
 bool Tokenizer::isReservedWord(const std::string& token) const

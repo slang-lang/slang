@@ -30,13 +30,14 @@ class ATreeVisitor
 public:
 	virtual ~ATreeVisitor();
 
-protected:
+public:
 	virtual void visit(Node* node);
 
 	virtual void visitExpression(Expression* expression);
 	virtual void visitOperator(Operator* op);
 	virtual void visitStatement(Statement* node);
 
+protected:
 	virtual void visitAssert(AssertStatement* node);
 	virtual void visitAssignment(Assignment* node);
 	virtual void visitBreak(BreakStatement* node);

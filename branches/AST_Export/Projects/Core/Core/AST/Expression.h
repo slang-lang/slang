@@ -197,6 +197,17 @@ public:
 };
 
 
+class NullLiteralExpression : public LiteralExpression
+{
+public:
+	explicit NullLiteralExpression()
+	: LiteralExpression(Runtime::AtomicValue((unsigned int)0))
+	{
+		mResultType = _object;
+	}
+};
+
+
 class StringLiteralExpression : public LiteralExpression
 {
 public:
@@ -383,22 +394,14 @@ public:
 	  mSecond(second)
 	{
 		mResultType = static_cast<Expression*>(first)->getResultType();
-		mSecondResultType = static_cast<Expression*>(second)->getResultType();
 	}
 	~TernaryExpression() {
-		if ( mCondition == mFirst ) {
-			// short ternary operator
-			mCondition = 0;
-		}
-		else {
+		if ( mCondition != mFirst ) {
+			// long ternary operator
 			delete mCondition;
 		}
 		delete mFirst;
 		delete mSecond;
-	}
-
-	std::string getSecondResultType() const {
-		return mSecondResultType;
 	}
 
 public:

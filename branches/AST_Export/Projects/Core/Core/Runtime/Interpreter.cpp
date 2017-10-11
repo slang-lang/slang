@@ -10,6 +10,7 @@
 #include <Core/BuildInObjects/FloatObject.h>
 #include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/BuildInObjects/StringObject.h>
+#include <Core/BuildInObjects/UserObject.h>
 #include <Core/BuildInObjects/VoidObject.h>
 #include <Core/Common/Exceptions.h>
 #include <Core/Common/Method.h>
@@ -809,6 +810,11 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 			operator_binary_assign(result, &tmp);
 			++start;
 		} break;
+		case Token::Type::CONST_NULL: {
+			Runtime::UserObject tmp(VALUE_NULL, SYSTEM_LIBRARY, _object, true);
+			operator_binary_assign(result, &tmp);
+			++start;
+		} break;
 		case Token::Type::IDENTIFIER:
 		case Token::Type::TYPE: {
 			// find out if we have to execute a method or simply get a stored variable
@@ -1573,7 +1579,7 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 	collectParameterList(token, params, objectListHack);
 
 	// create initialized reference of new object
-	*result = *mRepository->createReference(static_cast<Designtime::BluePrintGeneric*>(symbol), ANONYMOUS_OBJECT, constraints, Repository::InitilizationType::Final);
+	*result = *mRepository->createReference(static_cast<Designtime::BluePrintGeneric*>(symbol), ANONYMOUS_OBJECT, constraints, Repository::InitializationType::Final);
 
 	// execute new object's constructor
 	mControlFlow = result->Constructor(params);
@@ -2120,7 +2126,7 @@ void Interpreter::process_var(TokenIterator& token, Object* /*result*/)
 		return;
 	}
 
-	Object* object = mRepository->createInstance(var.QualifiedTypename(), name, PrototypeConstraints(), Repository::InitilizationType::Final);
+	Object* object = mRepository->createInstance(var.QualifiedTypename(), name, PrototypeConstraints(), Repository::InitializationType::Final);
 	object->setConst(mutability == Mutability::Const);
 
 	getScope()->define(name, object);

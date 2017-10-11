@@ -49,9 +49,7 @@ public:
 				throw Common::Exceptions::Exception("no valid mysql result!");
 			}
 
-			*result = Runtime::IntegerObject(
-				mysql_field_seek(myResult, (MYSQL_FIELD_OFFSET) param_offset)
-			);
+			*result = Runtime::IntegerObject((int)mysql_field_seek(myResult, (MYSQL_FIELD_OFFSET) param_offset));
 		}
 		catch ( std::exception &e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);

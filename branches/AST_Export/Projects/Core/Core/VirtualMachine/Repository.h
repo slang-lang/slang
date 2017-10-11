@@ -39,7 +39,7 @@ class TypeSystem;
 class Repository
 {
 public:
-	class InitilizationType {
+	class InitializationType {
 	public:
 		enum E {
 			None,
@@ -65,10 +65,10 @@ public:
 
 	void cleanupForwardDeclarations();
 
-	Runtime::Object* createInstance(const std::string& type, const std::string& name = std::string(), const PrototypeConstraints& constraints = PrototypeConstraints(), InitilizationType::E initialize = InitilizationType::None);
-	Runtime::Object* createInstance(Designtime::BluePrintGeneric* blueprint, const std::string& name, PrototypeConstraints constraints, InitilizationType::E initialize = InitilizationType::None);
-	Runtime::Object* createReference(const std::string& type, const std::string& name, PrototypeConstraints constraints, InitilizationType::E initialize = InitilizationType::None);
-	Runtime::Object* createReference(Designtime::BluePrintGeneric* blueprint, const std::string& name, PrototypeConstraints constraints, InitilizationType::E initialize = InitilizationType::None);
+	Runtime::Object* createInstance(const std::string& type, const std::string& name = std::string(), const PrototypeConstraints& constraints = PrototypeConstraints(), InitializationType::E initialize = InitializationType::None);
+	Runtime::Object* createInstance(Designtime::BluePrintGeneric* blueprint, const std::string& name, PrototypeConstraints constraints, InitializationType::E initialize = InitializationType::None);
+	Runtime::Object* createReference(const std::string& type, const std::string& name, PrototypeConstraints constraints, InitializationType::E initialize = InitializationType::None);
+	Runtime::Object* createReference(Designtime::BluePrintGeneric* blueprint, const std::string& name, PrototypeConstraints constraints, InitializationType::E initialize = InitializationType::None);
 
 	Designtime::BluePrintGeneric* findBluePrint(const std::string& type) const;
 
@@ -88,8 +88,8 @@ private:
 private:
 	Designtime::BluePrintObject* createBluePrintFromPrototype(Designtime::BluePrintObject* blueprint, PrototypeConstraints constraints);
 
-	Runtime::Object* createObject(const std::string& name, Designtime::BluePrintObject* blueprint, InitilizationType::E initialize);
-	Runtime::Object* createUserObject(const std::string& name, Designtime::BluePrintObject* blueprint, InitilizationType::E initialize);
+	Runtime::Object* createObject(const std::string& name, Designtime::BluePrintObject* blueprint, InitializationType::E initialize);
+	Runtime::Object* createUserObject(const std::string& name, Designtime::BluePrintObject* blueprint, InitializationType::E initialize);
 
 	void initBluePrintObject(Designtime::BluePrintObject *blueprint);
 	void initTypeSystem(Designtime::BluePrintEnum* blueprint);

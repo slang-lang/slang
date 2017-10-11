@@ -416,12 +416,11 @@ Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 
 			Node* second = expression(start);
 
-			TernaryExpression* ternaryExpression = new TernaryExpression(condition, first, second);
-			if ( ternaryExpression->getResultType() != ternaryExpression->getSecondResultType() ) {
-				throw Common::Exceptions::SyntaxError("unequal expression results for first ('" + ternaryExpression->getResultType() + "') and second ('" + ternaryExpression->getSecondResultType() + "') expressions", start->position());
+			if ( static_cast<Expression*>(first)->getResultType() != static_cast<Expression*>(second)->getResultType() ) {
+				throw Common::Exceptions::SyntaxError("unequal expression results for first ('" + static_cast<Expression*>(first)->getResultType() + "') and second ('" + static_cast<Expression*>(second)->getResultType() + "') expressions", start->position());
 			}
 
-			infixPostfix = ternaryExpression;
+			infixPostfix = new TernaryExpression(condition, first, second);
 		} break;
 		case Token::Type::OPERATOR_NOT: {		// postfix ! operator
 			throw Common::Exceptions::NotSupported("postfix ! operator not supported", start->position());
@@ -468,6 +467,10 @@ Node* TreeGenerator::parseTerm(TokenIterator& start)
 		} break;
 		case Token::Type::CONST_LITERAL: {
 			term = new StringLiteralExpression(start->content());
+			++start;
+		} break;
+		case Token::Type::CONST_NULL: {
+			term = new NullLiteralExpression();
 			++start;
 		} break;
 		case Token::Type::IDENTIFIER:
@@ -673,7 +676,7 @@ Statement* TreeGenerator::process_for(TokenIterator& token)
 
 	token = expressionEnd;
 
-	// process our declaration part
+	// process declaration
 	// {
 	Node* initialization = 0;
 	if ( std::distance(initializationBegin, conditionBegin) > 1 ) {
@@ -681,7 +684,7 @@ Statement* TreeGenerator::process_for(TokenIterator& token)
 	}
 	// }
 
-	// Condition parsing
+	// condition parsing
 	// {
 	Node* condition = 0;
 	if ( std::distance(conditionBegin, iterationBegin) > 1 ) {
@@ -689,7 +692,7 @@ Statement* TreeGenerator::process_for(TokenIterator& token)
 	}
 	// }
 
-	// Expression parsing
+	// expression parsing
 	// {
 	Node* iteration = 0;
 	if ( std::distance(iterationBegin, expressionEnd) > 1 ) {
@@ -697,7 +700,7 @@ Statement* TreeGenerator::process_for(TokenIterator& token)
 	}
 	// }
 
-	// Body parsing
+	// body parsing
 	// {
 	Node* loopBody = process_statement(token, true);
 	// }
@@ -846,7 +849,8 @@ Statement* TreeGenerator::process_if(TokenIterator& token)
 
 	Node* elseBlock = 0;
 	if ( token != getTokens().end() &&
-		 token->type() == Token::Type::KEYWORD && token->content() == KEYWORD_ELSE ) {
+		 token->type() == Token::Type::KEYWORD &&
+		 token->content() == KEYWORD_ELSE ) {
 		++token;
 
 		elseBlock = process_statement(token);
@@ -1369,7 +1373,7 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 		throw Common::Exceptions::SyntaxError("invalid mutability set for '" + name + "'", token->position());
 	}
 
-	Runtime::Object* object = mRepository->createInstance(type, name, constraints, Repository::InitilizationType::AllowAbstract);
+	Runtime::Object* object = mRepository->createInstance(type, name, constraints, Repository::InitializationType::AllowAbstract);
 	object->setConst(object->isConst() || mutability == Mutability::Const);	// prevent constness of blueprint if set
 
 	getScope()->define(name, object);
@@ -1459,7 +1463,7 @@ TypeDeclaration* TreeGenerator::process_var(TokenIterator& token)
 	Node* assignment = expression(token);
 	std::string type = static_cast<Expression*>(assignment)->getResultType();
 
-	Runtime::Object* object = mRepository->createInstance(type, name, PrototypeConstraints(), Repository::InitilizationType::AllowAbstract);
+	Runtime::Object* object = mRepository->createInstance(type, name, PrototypeConstraints(), Repository::InitializationType::AllowAbstract);
 	object->setConst(mutability == Mutability::Const);
 	object->setIsReference(accessMode == AccessMode::ByReference);
 

@@ -239,8 +239,8 @@ void TreeInterpreter::evaluateLiteral(LiteralExpression* exp, Runtime::Object* r
 		case Runtime::AtomicValue::Type::DOUBLE: *result = Runtime::DoubleObject(exp->mValue); break;
 		case Runtime::AtomicValue::Type::FLOAT: *result = Runtime::FloatObject(exp->mValue); break;
 		case Runtime::AtomicValue::Type::INT: *result = Runtime::IntegerObject(exp->mValue); break;
+		case Runtime::AtomicValue::Type::OBJECT: throw Common::Exceptions::NotImplemented("OBJECT type");
 		case Runtime::AtomicValue::Type::STRING: *result = Runtime::StringObject(exp->mValue); break;
-		case Runtime::AtomicValue::Type::UINT: throw Common::Exceptions::NotSupported("UINT type");
 		case Runtime::AtomicValue::Type::UNKOWN: throw Common::Exceptions::NotSupported("UNKNOWN type");
 	}
 }
@@ -308,7 +308,7 @@ void TreeInterpreter::evaluateNewExpression(NewExpression* exp, Runtime::Object*
 	}
 
 	// create initialized reference of new object
-	*result = *mRepository->createReference(exp->getResultType(), ANONYMOUS_OBJECT, PrototypeConstraints(), Repository::InitilizationType::Final);
+	*result = *mRepository->createReference(exp->getResultType(), ANONYMOUS_OBJECT, PrototypeConstraints(), Repository::InitializationType::Final);
 
 	// execute new object's constructor
 	mControlFlow = result->Constructor(params);
