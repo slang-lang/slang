@@ -1124,60 +1124,51 @@ void TreeInterpreter::visitStatements(Statements* node)
 
 void TreeInterpreter::visitSwitch(SwitchStatement* node)
 {
-	bool caseMatched = false;
-	bool evaluateCaseExpression = true;
 	Runtime::Object value;
 
-	for ( CaseStatements::const_iterator it = node->mCaseStatements.begin(); it != node->mCaseStatements.end(); ++it ) {
-		if ( evaluateCaseExpression ) {
-			tryControl(evaluate(node->mExpression, &value));
+	do {
+		// reset this for every loop
+		bool caseMatched = false;
+		bool evaluateCaseExpression = true;
 
-			evaluateCaseExpression = false;
-		}
+		// loop over all case statements
+		for ( CaseStatements::const_iterator it = node->mCaseStatements.begin(); it != node->mCaseStatements.end(); ++it ) {
+			if ( evaluateCaseExpression ) {
+				tryControl(evaluate(node->mExpression, &value));
 
-		Runtime::Object caseValue;
-		tryControl(evaluate((*it)->mCaseExpression, &caseValue));
+				evaluateCaseExpression = false;
+			}
 
-		if ( Runtime::operator_binary_equal(&value, &caseValue) ) {
-			caseMatched = true;
+			Runtime::Object caseValue;
+			tryControl(evaluate((*it)->mCaseExpression, &caseValue));
 
-			visitStatements((*it)->mCaseBlock);
+			if ( Runtime::operator_binary_equal(&value, &caseValue) ) {
+				caseMatched = true;
 
-			switch ( mControlFlow ) {
-				case Runtime::ControlFlow::Break:
-					mControlFlow = Runtime::ControlFlow::Normal;
-					return;	// stop matching the remaining case-statements
-				case Runtime::ControlFlow::Continue:
-					mControlFlow = Runtime::ControlFlow::Normal;
-					evaluateCaseExpression = true;
-					break;	// continue matching the remaining case-statements
-				case Runtime::ControlFlow::Normal:
-					mControlFlow = Runtime::ControlFlow::Normal;
-					return;	// stop matching the remaining case-statements
-				case Runtime::ControlFlow::ExitProgram:
-				case Runtime::ControlFlow::Return:
-				case Runtime::ControlFlow::Throw:
-					return;	// no further processing, keep current control flow state
+				visitStatements((*it)->mCaseBlock);
 			}
 		}
-	}
 
-	// no matching case statement found => execute default statement
-	if ( !caseMatched ) {
-		visitStatements(node->mDefaultStatement);
+		// no matching case statement found => execute default statement
+		if ( !caseMatched ) {
+			visitStatements(node->mDefaultStatement);
+		}
 
+		// inspect control flow after the complete iteration
 		switch ( mControlFlow ) {
-			case Runtime::ControlFlow::Break:
 			case Runtime::ControlFlow::Continue:
+				mControlFlow = Runtime::ControlFlow::Normal;
+				break;	// continue loop, reset current control flow state
+			case Runtime::ControlFlow::Break:
 			case Runtime::ControlFlow::Normal:
 				mControlFlow = Runtime::ControlFlow::Normal;
-				break;	// continue matching the remaining case-statements
+				return;	// no further processing, reset current control flow state
 			case Runtime::ControlFlow::ExitProgram:
 			case Runtime::ControlFlow::Return:
 			case Runtime::ControlFlow::Throw:
 				return;	// no further processing, keep current control flow state
 		}
-	}
+	} while ( mControlFlow == Runtime::ControlFlow::Normal );
 }
 
 void TreeInterpreter::visitThrow(ThrowStatement* node)
