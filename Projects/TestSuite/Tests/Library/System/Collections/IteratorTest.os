@@ -32,10 +32,10 @@ private bool TestCase1() const {
 
 		return true;
 	}
-	catch ( Exception e ) {
+	catch ( OutOfBoundsException e ) {
 		print(e.what());
 	}
-	catch ( OutOfBoundsException e ) {
+	catch ( Exception e ) {
 		print(e.what());
 	}
 

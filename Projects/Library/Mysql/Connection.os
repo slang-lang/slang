@@ -38,7 +38,7 @@ public namespace Mysql {
 		}
 
 		public int affectedRows() const {
-			return mysql_affected_rows();
+			return mysql_affected_rows(mHandle);
 		}
 
 		private void cleanup() modify {
@@ -88,7 +88,7 @@ public namespace Mysql {
 			return mysql_num_rows(mHandle);
 		}
 
-		public bool open(string hostname, int port, string user, string password, string database = "") modify {
+		public bool open(string hostname, int port, string user, string password, string database = "") modify throws {
 			if ( mHandle != 0 ) {
 				// we already have a connection handle
 				throw new Exception("mysql handle still points to an open connection!");
@@ -114,7 +114,7 @@ public namespace Mysql {
 		}
 
 		public Mysql.Result query(string queryStr) modify {
-			if ( MysqlDebugMode ) { print("Mysql debug mode is enabled."); }
+			if ( DebugMode ) { print("Mysql debug mode is enabled."); }
 
 			if ( mSettings.getAutoEscaping() ) {
 				// auto escaping for strings is active
@@ -125,15 +125,15 @@ public namespace Mysql {
 			if ( error ) {
 				// error while query execution
 				print(mysql_error(mHandle));
-				return null;
+				return Mysql.Result null;
 			}
 
-			int handle = mysql_store_result(mHandle);
-			return new Result(handle);
+			var handle = mysql_store_result(mHandle);
+			return new Result(int handle);
 		}
 
 		public int selectDB(string database) modify {
-			int result = mysql_select_db(mHandle, database);
+			int result = int mysql_select_db(mHandle, database);
 
 			if ( !result ) {
 				// success! so we can update our database

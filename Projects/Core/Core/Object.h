@@ -17,7 +17,6 @@
 #include <Core/Interfaces/IRuntimeType.h>
 #include <Core/Runtime/AtomicValue.h>
 #include <Core/Runtime/ControlFlow.h>
-#include <Core/Runtime/Interpreter.h>
 #include <Core/Runtime/Reference.h>
 #include "Parameter.h"
 #include "Scope.h"
@@ -46,7 +45,6 @@ class Object : public MethodScope,
 public:
 	Object();
 	Object(const std::string& name, const std::string& filename, const std::string& type, AtomicValue value);
-	Object(const Object& other);
 	virtual ~Object();
 
 public:

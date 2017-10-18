@@ -38,36 +38,6 @@ Object::Object()
 	mThis = this;
 }
 
-Object::Object(const Object& other)
-: MethodScope(other.getName(), other.mParent),
-  ObjectSymbol(other.getName()),
-  mBluePrint(other.mBluePrint),
-  mFilename(other.mFilename),
-  mInheritance(other.mInheritance),
-  mIsAtomicType(other.mIsAtomicType),
-  mIsConstructed(other.mIsConstructed),
-  mIsReference(other.mIsReference),
-  mQualifiedOuterface(other.mQualifiedOuterface),
-  mQualifiedTypename(other.mQualifiedTypename),
-  mTypename(other.mTypename)
-{
-	mThis = this;
-
-	mImplementationType = other.mImplementationType;
-	mParent = other.mParent;
-	mScopeName = other.mScopeName;
-	mScopeType = other.mScopeType;
-
-	setConst(other.isConst());
-	setFinal(other.isFinal());
-	setLanguageFeatureState(other.getLanguageFeatureState());
-	setMember(other.isMember());
-
-	assignReference(other.mReference);
-
-	setValue(other.mValue);
-}
-
 Object::Object(const std::string& name, const std::string& filename, const std::string& type, AtomicValue value)
 : MethodScope(name, 0),
   ObjectSymbol(name),
