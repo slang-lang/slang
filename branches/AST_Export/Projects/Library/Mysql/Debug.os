@@ -1,7 +1,7 @@
 
 public namespace Mysql {
 
-	public bool MysqlDebugMode;
+	public bool DebugMode;
 
 }
 

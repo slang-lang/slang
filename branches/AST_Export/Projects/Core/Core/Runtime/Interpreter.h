@@ -44,7 +44,6 @@ class Object;
 class Interpreter
 {
 public:
-	Interpreter(Common::ThreadId threadId);
 	~Interpreter();
 
 public: // Execution
@@ -131,6 +130,10 @@ private: // Execution
 	NamedScope* getEnclosingMethodScope(IScope* scope = 0) const;
 	Common::Namespace* getEnclosingNamespace(IScope* scope = 0) const;
 	Runtime::Object* getEnclosingObject(IScope* scope = 0) const;
+
+private:
+	// prevent usage
+	Interpreter(Common::ThreadId threadId);
 
 private:	// Initialization
 	void deinitialize();

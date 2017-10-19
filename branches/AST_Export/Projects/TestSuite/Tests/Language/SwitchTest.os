@@ -12,6 +12,7 @@ public void Main(int argc = 0, string argv = "") {
 	assert( TestCase9() );
 	assert( TestCase10() );
 	assert( TestCase11() );
+	assert( TestCase12() );
 }
 
 private bool TestCase1() const {
@@ -49,7 +50,7 @@ private bool TestCase3() const {
 
 	int one = 1;
 	switch ( one ) {
-		case 1: { print("case 1"); print("some other commands"); print("bla"); }
+		case 1: { print("case 1"); print("some other commands"); print("bla"); break; }
 		case 2: { print("case 2"); break; }
 		case 3: { assert( false ); break; }
 		default: { print("default"); break; }
@@ -86,7 +87,7 @@ private bool TestCase6() const {
 
 	int one = 1;
 	switch ( 2 ) {
-		case (one + 1): { print("case (one + 1)"); continue; }
+		case (one + 1): { print("case (one + 1)"); one++; continue; }
 		case 2: { print("case 2"); return true; }
 	}
 
@@ -121,7 +122,7 @@ private bool TestCase9() const {
 	print("TestCase 9: case without control-statement");
 
 	switch ( 0 ) {
-		case 0: { print("case 0"); }
+		case 0: { print("case 0"); break; }
 		default: { print("default"); return false; }
 	}
 
@@ -131,9 +132,9 @@ private bool TestCase9() const {
 private bool TestCase10() const {
 	print("TestCase 10: case with continue");
 
-	switch ( 0 ) {
+	switch ( 2 ) {
 		case 0: { print("case 0"); continue; }
-		case 1: { assert( false ); }
+		case 1: { assert( false ); return false; }
 		default: { print("default"); return true; }
 	}
 
@@ -145,17 +146,33 @@ private bool TestCase11() const {
 
 	int one;
 	switch ( one ) {
-		case 1: { assert( false ); }
+		case 1: { assert( false ); return false; }
 		case 0: {
 			print("case 0");
 
 			int one = 1;
 			switch ( one ) {
-				case 0: { assert( false ); }
+				case 0: { assert( false ); return false; }
 				case 1: { print("inner case 1"); return true; }
 			}
 		}
-		default: { assert( false ); }
+		default: { assert( false ); return false; }
+	}
+
+	return false;
+}
+
+private bool TestCase12() const {
+	print("TestCase 12: switch-loop");
+
+	int value;
+	switch ( value ) {
+		case 5: { return true; }
+		default: {
+			print("default: " + value);
+			value++;
+			continue;
+		}
 	}
 
 	return false;

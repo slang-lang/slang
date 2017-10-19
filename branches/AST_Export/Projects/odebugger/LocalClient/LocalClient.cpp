@@ -20,7 +20,6 @@
 #include <Core/Common/Method.h>
 #include <Core/Common/Namespace.h>
 #include <Core/Designtime/Parser/Tokenizer.h>
-#include <Core/Runtime/Interpreter.h>
 #include <Core/Runtime/Script.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>

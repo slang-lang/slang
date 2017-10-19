@@ -17,30 +17,11 @@ public namespace Mysql {
 			initialize();
 		}
 
-		public Mysql.Entry getEntry(int fieldIdx) {
-/*
-			if ( fieldIdx < 0 || fieldIdx > mNumFields ) {
-				throw new OutOfBoundsException("fieldIdx out of bounds");
-			}
-
-			string name = mysql_get_field_name(mResultHandle, fieldIdx);
-			string value = mysql_get_field_value(mResultHandle, fieldIdx);
-
-			return new Mysql.Entry(name, value);
-*/
-
+		public Mysql.Entry getEntry(int fieldIdx) const{
 			return Entry mEntries.at(fieldIdx);
 		}
 
-		public Mysql.Entry getEntry(string name) {
-/*
-			for ( int idx = 0; idx < mNumFields; idx = idx++ ) {
-				if ( mysql_get_field_name(mResultHandle, idx) == name ) {
-					return mysql_get_field_value(mResultHandle, idx);
-				}
-			}
-*/
-
+		public Mysql.Entry getEntry(string name) const {
 			for ( int idx = 0; idx < mEntries.size(); idx = idx++ ) {
 				Entry e = Entry mEntries.at(idx);
 
@@ -49,46 +30,20 @@ public namespace Mysql {
 				}
 			}
 
-			return null;
+			return Mysql.Entry null;
 		}
 
-		public string getName(int fieldIdx) {
-/*
-			if ( fieldIdx < 0 || fieldIdx > mNumFields ) {
-				throw new OutOfBoundsException("fieldIdx out of bounds");
-			}
-
-			return mysql_get_field_name(mResultHandle, fieldIdx);
-*/
-
+		public string getName(int fieldIdx) const {
 			Entry e = Entry mEntries.at(fieldIdx);
 			return e.name();
 		}
 
-		public string getType(int fieldIdx) {
-/*
-			if ( fieldIdx < 0 || fieldIdx > mNumFields ) {
-				throw new OutOfBoundsException("fieldIdx out of bounds");
-			}
-*/
-
-			assertmsg(!"not implemented", "string getType(int fieldIdx) is not implemented");
-		}
-
-		public string getValue(int fieldIdx) {
-/*
-			if ( fieldIdx < 0 || fieldIdx > mNumFields ) {
-				throw new OutOfBoundsException("fieldIdx out of bounds");
-			}
-
-			return mysql_get_field_value(mResultHandle, fieldIdx);
-*/
-
+		public string getValue(int fieldIdx) const {
 			Entry e = Entry mEntires.at(fieldIdx);
 			return e.value();
 		}
 
-		private void initialize() {
+		private void initialize() modify {
 			mNumFields = mysql_num_fields(mResultHandle);
 
 			for ( int fieldIdx = 0; fieldIdx < mNumFields; fieldIdx = fieldIdx++ ) {
@@ -107,7 +62,7 @@ public namespace Mysql {
 			string result = "|";
 
 			for ( int i = 0; i < mNumFields; i = i++ ) {
-				Entry e = Entry mEntries.at(i); //getEntry(i);
+				Entry e = Entry mEntries.at(i);
 				result = result + " " + e.name() + ": " + e.value() + " |";
 			}
 

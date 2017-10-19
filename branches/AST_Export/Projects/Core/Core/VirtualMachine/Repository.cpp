@@ -268,12 +268,8 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 		parent->define(newBlue->QualifiedTypename(), newBlue);
 	}
 
-#ifdef USE_AST_PARSE_TREE
-
 	AST::Generator generator;
 	generator.process(newBlue);
-
-#endif
 
 	return newBlue;
 }

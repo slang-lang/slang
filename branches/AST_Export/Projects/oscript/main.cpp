@@ -53,13 +53,7 @@ void printUsage()
 	std::cout << "-h | --help                This help" << std::endl;
 	std::cout << "-l | --library <library>   Library root path" << std::endl;
 	std::cout << "-q | --quiet               Quiet mode, chats as less as possible" << std::endl;
-
-#ifdef USE_AST_PARSE_TREE
-
 	std::cout << "--syntax                   Syntax check only" << std::endl;
-
-#endif
-
 	std::cout << "-v | --verbose             Verbose output" << std::endl;
 	std::cout << "--version                  Version information" << std::endl;
 	std::cout << std::endl;
@@ -114,15 +108,9 @@ void processParameters(int argc, const char* argv[])
 
 				Utils::PrinterDriver::Instance()->ActivatePrinter = false;
 			}
-
-#ifdef USE_AST_PARSE_TREE
-
 			else if ( Utils::Tools::StringCompare(argv[i], "--syntax") ) {
 				mSyntaxCheck = true;
 			}
-
-#endif
-
 			else if ( Utils::Tools::StringCompare(argv[i], "-v") || Utils::Tools::StringCompare(argv[i], "--verbose") ) {
 				mLogger.setLoudness(Utils::Common::ILogger::LoudnessInfo);
 
@@ -175,11 +163,7 @@ int main(int argc, const char* argv[])
 		mVirtualMachine.addLibraryFolder((*it));
 	}
 
-#ifdef USE_AST_PARSE_TREE
-
 	mVirtualMachine.settings().DoSyntaxCheck = mSyntaxCheck;
-
-#endif
 
 	// add extensions
 #ifdef USE_APACHE_EXTENSION

@@ -114,12 +114,12 @@ StringSet provideReservedWords()
 std::string toString(const Parameter& param)
 {
 	std::string result = param.type();
-	if ( !param.name().empty() ) {
-		result += " ";
-		result += param.name();
+	if ( !param.type().empty() ) {
+		//result += " ";
+		result += param.type();
 	}
 	else {
-		result += " ";
+		//result += " ";
 		result += ANONYMOUS_OBJECT;
 	}
 
