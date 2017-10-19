@@ -112,8 +112,6 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 
 	Controller::Instance().repository()->initializeBlueprints();
 
-#ifdef USE_AST_PARSE_TREE
-
 	AST::Generator generator;
 	generator.process(Controller::Instance().stack()->globalScope());
 
@@ -122,15 +120,13 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 	AST::TreeOptimizer optimizer;
 	optimizer.process(Controller::Instance().stack()->globalScope());
 
-#	endif
+#endif
 
 	if ( mSettings.DoSyntaxCheck ) {
 		std::cout << "Syntax check done, no errors found." << std::endl;
 
 		throw Runtime::ControlFlow::ExitProgram;
 	}
-
-#endif
 
 	// Startup
 	Common::Method* main = dynamic_cast<Common::Method*>(Controller::Instance().stack()->globalScope()->resolveMethod("Main", params, false));
@@ -143,9 +139,15 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 	Runtime::ControlFlow::E controlflow = t->execute(main, params, result);
 	if ( controlflow == Runtime::ControlFlow::Throw ) {
 		Runtime::ExceptionData data = Controller::Instance().stack()->exception();
+		std::string text;
 
-		std::string text = "Exception raised in " + data.getPosition().toString() + ":\n";
-					text += data.getData()->getValue().toStdString();
+		if ( data.getData() ) {
+			text += "Exception raised in " + data.getPosition().toString() + ":\n";
+			text += data.getData()->getValue().toStdString();
+		}
+		else {
+			text += "Anonymous exception raised";
+		}
 
 		throw Common::Exceptions::Exception(text);
 	}

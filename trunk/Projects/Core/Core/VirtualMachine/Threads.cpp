@@ -5,11 +5,7 @@
 // Library includes
 
 // Project includes
-#ifdef USE_AST_PARSE_TREE
-#	include <Core/AST/TreeInterpreter.h>
-#else
-#	include <Core/Runtime/Interpreter.h>
-#endif
+#include <Core/AST/TreeInterpreter.h>
 #include <Core/Common/Method.h>
 #include <Core/Runtime/Exceptions.h>
 
@@ -44,17 +40,8 @@ Runtime::ControlFlow::E Thread::execute(Common::Method* method, const ParameterL
 {
 	mState = State::Started;
 
-#ifdef USE_AST_PARSE_TREE
-
 	AST::TreeInterpreter ti(mId);
 	Runtime::ControlFlow::E controlflow = ti.execute(method, params, result);
-
-#else
-
-	Runtime::Interpreter interpreter(mId);
-	Runtime::ControlFlow::E controlflow = interpreter.execute(method, params, result);
-
-#endif
 
 	mState = State::Stopping;
 

@@ -39,7 +39,7 @@ namespace AST {
 
 TreeGenerator::TreeGenerator()
 : mAllowConstModify(false),
-  mHasReturnStatement(false),
+  mControlFlow(Runtime::ControlFlow::Normal),
   mMethod(0),
   mThis(0),
   mStackFrame(0)
@@ -93,7 +93,8 @@ void TreeGenerator::deinitialize()
 	mStackFrame = 0;
 
 	// verify return statement existance
-	if ( mMethod->QualifiedTypename() != Designtime::VoidObject::TYPENAME && !mHasReturnStatement ) {
+	if ( mMethod->QualifiedTypename() != Designtime::VoidObject::TYPENAME
+		 && (mControlFlow != Runtime::ControlFlow::Return && mControlFlow != Runtime::ControlFlow::Throw) ) {
 		Token last;
 		if ( !mMethod->getTokens().empty() ) {
 			last = mMethod->getTokens().back();
@@ -102,10 +103,10 @@ void TreeGenerator::deinitialize()
 		throw Common::Exceptions::Exception("return statement missing in '" + mMethod->getFullScopeName() + "'", last.position());
 	}
 
-	// reset reuseable members
+	// reset reusable members
 	mThis = 0;
 	mMethod = 0;
-	mHasReturnStatement = false;
+	mControlFlow = Runtime::ControlFlow::Normal;
 	mAllowConstModify = false;
 }
 
@@ -133,8 +134,11 @@ Node* TreeGenerator::expression(TokenIterator& start)
 /*
  * executes the given tokens in a separate scope
  */
-Statements* TreeGenerator::generate(const TokenList &tokens, bool allowBreakAndContinue)
+Statements* TreeGenerator::generate(const TokenList &tokens, bool allowBreakAndContinue, bool needsControlStatement)
 {
+	// reset control flow to be able to check for missing control flow statements during switch/case
+	mControlFlow = Runtime::ControlFlow::Normal;
+
 	Statements* statements = 0;
 
 	pushScope(0, allowBreakAndContinue);
@@ -142,7 +146,13 @@ Statements* TreeGenerator::generate(const TokenList &tokens, bool allowBreakAndC
 			TokenIterator start = getTokens().begin();
 			TokenIterator end = getTokens().end();
 
+			Common::Position position(start != end ? start->position() : Common::Position());
+
 			statements = process(start, end);
+
+			if ( needsControlStatement && mControlFlow == Runtime::ControlFlow::Normal ) {
+				throw Common::Exceptions::ControlFlowException("block is missing control flow statement", position);
+			}
 		popTokens();
 	popScope();
 
@@ -254,7 +264,7 @@ void TreeGenerator::initialize(Common::Method* method)
 {
 	// initialize reuseable members
 	mAllowConstModify = method->getMethodType() == Common::Method::MethodType::Constructor || method->getMethodType() == Common::Method::MethodType::Destructor;
-	mHasReturnStatement = false;
+	mControlFlow = Runtime::ControlFlow::Normal;
 	mMethod = method;
 	mThis = dynamic_cast<Designtime::BluePrintObject*>(method->getEnclosingScope());
 
@@ -513,10 +523,9 @@ Statements* TreeGenerator::process(TokenIterator& token, TokenIterator end)
 	}
 
 	Token firstToken = (*token);
-	TokenIterator localEnd = getTokens().end();
 	Statements* statements = 0;
 
-	while ( ( (token != localEnd) && (token != end) ) && (token->type() != Token::Type::ENDOFFILE) ) {
+	while ( (token != end) && (token->type() != Token::Type::ENDOFFILE) ) {
 		Node* node = process_statement(token);
 
 		if ( node ) {
@@ -557,6 +566,7 @@ Statement* TreeGenerator::process_assert(TokenIterator& token)
 Statement* TreeGenerator::process_break(TokenIterator& token)
 {
 	Token start = (*token);
+	mControlFlow = Runtime::ControlFlow::Break;
 
 	if ( !mStackFrame->allowBreakAndContinue() ) {
 		throw Common::Exceptions::Exception("break not allowed here", token->position());
@@ -575,6 +585,7 @@ Statement* TreeGenerator::process_break(TokenIterator& token)
 Statement* TreeGenerator::process_continue(TokenIterator& token)
 {
 	Token start = (*token);
+	mControlFlow = Runtime::ControlFlow::Continue;
 
 	if ( !mStackFrame->allowBreakAndContinue() ) {
 		throw Common::Exceptions::Exception("continue not allowed here", token->position());
@@ -618,6 +629,7 @@ Statement* TreeGenerator::process_delete(TokenIterator& token)
 Statement* TreeGenerator::process_exit(TokenIterator& token)
 {
 	Token start = (*token);
+	mControlFlow = Runtime::ControlFlow::ExitProgram;
 
 	expect(Token::Type::PARENTHESIS_OPEN, token);
 	++token;
@@ -1064,7 +1076,7 @@ Statement* TreeGenerator::process_print(TokenIterator& token)
 Statement* TreeGenerator::process_return(TokenIterator& token)
 {
 	Token start = (*token);
-	mHasReturnStatement = true;
+	mControlFlow = Runtime::ControlFlow::Return;
 
 	Node* exp = 0;
 	std::string returnType = Designtime::VoidObject::TYPENAME;
@@ -1193,7 +1205,7 @@ Statement* TreeGenerator::process_switch(TokenIterator& token)
 
 			// process case-block tokens
 			caseStatements.push_back(
-				new CaseStatement(start, caseExpression, generate(caseTokens, true))
+				new CaseStatement(start, caseExpression, generate(caseTokens, true, true))
 			);
 		}
 		else if ( token->type() == Token::Type::KEYWORD && token->content() == KEYWORD_DEFAULT ) {
@@ -1211,7 +1223,7 @@ Statement* TreeGenerator::process_switch(TokenIterator& token)
 			collectScopeTokens(token, defaultTokens);
 
 			// process default-block tokens
-			defaultStatement = generate(defaultTokens, true);
+			defaultStatement = generate(defaultTokens, true, true);
 		}
 		else {
 			throw Common::Exceptions::Exception("invalid token '" + token->content() + "' found", token->position());
@@ -1234,6 +1246,7 @@ Statement* TreeGenerator::process_switch(TokenIterator& token)
 Statement* TreeGenerator::process_throw(TokenIterator& token)
 {
 	Token start = (*token);
+	mControlFlow = Runtime::ControlFlow::Throw;
 
 	if ( !mMethod->throws() ) {
 		// this method is not marked as 'throwing', so we can't throw exceptions here

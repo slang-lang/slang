@@ -285,9 +285,7 @@ void LanguageTest::testDefaultParameter()
 
 void LanguageTest::testEnum()
 {
-#ifdef USE_AST_PARSE_TREE
-	TSKIP("enums are currently not supported");
-#endif
+TSKIP("enums are currently not supported");
 
 	try {
 		VirtualMachine vm;

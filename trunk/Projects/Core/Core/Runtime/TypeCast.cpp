@@ -62,13 +62,6 @@ void typecast(Object *base, const std::string& targetType)
 
 		base->assign(tmp);
 	}
-	else {
-#ifndef USE_AST_PARSE_TREE
-		if ( !base->isInstanceOf(targetType) ) {
-			throw Runtime::Exceptions::TypeCastException(targetType + " does not belong to " + base->QualifiedTypename() + " object hierarchy");
-		}
-#endif
-	}
 
 	// override outerface type
 	base->setQualifiedOuterface(targetType);
