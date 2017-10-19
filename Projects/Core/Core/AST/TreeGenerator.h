@@ -63,7 +63,7 @@ private:
 private: // Execution
 	inline void collectScopeTokens(TokenIterator& token, TokenList& tokens);
 
-	Statements* generate(const TokenList &tokens, bool allowBreakAndContinue = false);
+	Statements* generate(const TokenList &tokens, bool allowBreakAndContinue = false, bool needsControlStatement = false);
 
 	Symbol* identify(TokenIterator& token) const;
 
@@ -140,7 +140,7 @@ private:	// Initialization
 
 private:
 	bool mAllowConstModify;
-	bool mHasReturnStatement;
+	Runtime::ControlFlow::E mControlFlow;
 	Common::Method* mMethod;
 	Designtime::BluePrintObject* mThis;
 

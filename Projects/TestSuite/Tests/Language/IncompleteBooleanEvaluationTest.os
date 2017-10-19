@@ -75,7 +75,7 @@ private bool TestCase5() {
 
 	switch ( true || WriteFalse() ) {
 		case true: { print("true || false"); break; }
-		default: { assert( false ); }
+		default: { assert( false ); return false; }
 	}
 
 	return true;
@@ -86,7 +86,7 @@ private bool TestCase6() {
 
 	switch ( false && WriteFalse() ) {
 		case false: { print("false && false"); break; }
-		default: { assert( false ); }
+		default: { assert( false ); return false; }
 	}
 
 	return true;

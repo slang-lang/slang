@@ -198,6 +198,6 @@ private bool TestCase7() throws {
 		return true;
 	}
 
-	assert( false );
+	return false;
 }
 
