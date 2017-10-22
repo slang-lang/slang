@@ -127,7 +127,7 @@ void processParameters(int argc, const char* argv[])
 				params.push_back(mFilename);
 				paramStr += mFilename;
 
-				// all parameters that follow are designated for our script
+				// all parameters that follow are intended to our script
 				scriptParams = true;
 			}
 		}
