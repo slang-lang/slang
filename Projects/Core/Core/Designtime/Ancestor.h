@@ -27,10 +27,10 @@ public:
 	{
 	public:
 		enum E {
+			Unknown = 0,
 			Extends,
 			Implements,
-			Replicates,
-			Unknown
+			Replicates
 		};
 	};
 
