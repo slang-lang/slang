@@ -100,7 +100,7 @@ void TreeGenerator::deinitialize()
 			last = mMethod->getTokens().back();
 		}
 
-		throw Common::Exceptions::Exception("return statement missing in '" + mMethod->getFullScopeName() + "'", last.position());
+		throw Designtime::Exceptions::DesigntimeException("return statement missing in '" + mMethod->getFullScopeName() + "'", last.position());
 	}
 
 	// reset reusable members
@@ -569,7 +569,7 @@ Statement* TreeGenerator::process_break(TokenIterator& token)
 	mControlFlow = Runtime::ControlFlow::Break;
 
 	if ( !mStackFrame->allowBreakAndContinue() ) {
-		throw Common::Exceptions::Exception("break not allowed here", token->position());
+		throw Common::Exceptions::ControlFlowException("break not allowed here", token->position());
 	}
 
 	expect(Token::Type::SEMICOLON, token);
@@ -588,7 +588,7 @@ Statement* TreeGenerator::process_continue(TokenIterator& token)
 	mControlFlow = Runtime::ControlFlow::Continue;
 
 	if ( !mStackFrame->allowBreakAndContinue() ) {
-		throw Common::Exceptions::Exception("continue not allowed here", token->position());
+		throw Common::Exceptions::ControlFlowException("continue not allowed here", token->position());
 	}
 
 	expect(Token::Type::SEMICOLON, token);
@@ -919,7 +919,7 @@ Node* TreeGenerator::process_keyword(TokenIterator& token)
 		node = process_while(token);
 	}
 	else {
-		throw Common::Exceptions::Exception("invalid keyword '" + token->content() + "' found", token->position());
+		throw Designtime::Exceptions::DesigntimeException("invalid keyword '" + token->content() + "' found", token->position());
 	}
 
 	return node;
@@ -1226,7 +1226,7 @@ Statement* TreeGenerator::process_switch(TokenIterator& token)
 			defaultStatement = generate(defaultTokens, true, true);
 		}
 		else {
-			throw Common::Exceptions::Exception("invalid token '" + token->content() + "' found", token->position());
+			throw Designtime::Exceptions::DesigntimeException("invalid token '" + token->content() + "' found", token->position());
 		}
 
 		expect(Token::Type::BRACKET_CURLY_CLOSE, token);
@@ -1250,7 +1250,7 @@ Statement* TreeGenerator::process_throw(TokenIterator& token)
 
 	if ( !mMethod->throws() ) {
 		// this method is not marked as 'throwing', so we can't throw exceptions here
-		throw Common::Exceptions::Exception(mMethod->getFullScopeName() + " throws although it is not marked with 'throws'", token->position());
+		throw Common::Exceptions::ControlFlowException(mMethod->getFullScopeName() + " throws although it is not marked with 'throws'", token->position());
 	}
 
 	Node* exp = 0;
@@ -1519,7 +1519,7 @@ void TreeGenerator::pushTokens(const TokenList& tokens)
 SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, bool onlyCurrentScope, Visibility::E visibility) const
 {
 	if ( !base ) {
-		throw Common::Exceptions::Exception("invalid base scope");
+		throw Designtime::Exceptions::DesigntimeException("invalid base scope");
 	}
 
 	std::string name = token->content();
@@ -1676,7 +1676,7 @@ SymbolExpression* TreeGenerator::resolveWithThis(TokenIterator& token, IScope* b
 MethodSymbol* TreeGenerator::resolveMethod(SymbolExpression* symbol, const ParameterList& params, Visibility::E visibility) const
 {
 	if ( !symbol ) {
-		throw Runtime::Exceptions::InvalidSymbol("invalid symbol provided");
+		throw Common::Exceptions::InvalidSymbol("invalid symbol provided");
 	}
 
 	bool onlyCurrentScope = false;
@@ -1695,7 +1695,7 @@ MethodSymbol* TreeGenerator::resolveMethod(SymbolExpression* symbol, const Param
 
 	MethodScope* scope = getMethodScope(inner->mSurroundingScope);
 	if ( !scope ) {
-		throw Common::Exceptions::Exception("invalid scope");
+		throw Designtime::Exceptions::DesigntimeException("invalid scope");
 	}
 
 	return scope->resolveMethod(inner->mName, params, onlyCurrentScope, visibility);
@@ -1705,12 +1705,12 @@ std::string TreeGenerator::resolveType(Node* left, const Token& operation, Node*
 {
 	Expression* l = dynamic_cast<Expression*>(left);
 	if ( !l ) {
-		throw Common::Exceptions::Exception("invalid left expression");
+		throw Designtime::Exceptions::DesigntimeException("invalid left expression");
 	}
 
 	Expression* r = dynamic_cast<Expression*>(right);
 	if ( !r ) {
-		throw Common::Exceptions::Exception("invalid right expression");
+		throw Designtime::Exceptions::DesigntimeException("invalid right expression");
 	}
 
 	return mTypeSystem->getType(l->getResultType(), operation, r->getResultType());
