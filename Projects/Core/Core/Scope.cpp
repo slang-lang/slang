@@ -265,10 +265,10 @@ Symbol* MethodScope::resolve(const std::string& name, bool onlyCurrentScope, Vis
 			Symbol* result = 0;
 
 			switch ( base->getSymbolType() ) {
-				case Symbol::IType::BluePrintEnumSymbol: result = static_cast<Designtime::BluePrintEnum*>(base)->resolve(name, true, visibility < Visibility::Protected ? Visibility::Protected : visibility); break;
-				case Symbol::IType::BluePrintObjectSymbol: result = static_cast<Designtime::BluePrintObject*>(base)->resolve(name, true, visibility < Visibility::Protected ? Visibility::Protected : visibility); break;
-				case Symbol::IType::NamespaceSymbol: result = static_cast<Common::Namespace*>(base)->resolve(name, true, visibility < Visibility::Protected ? Visibility::Protected : visibility); break;
-				case Symbol::IType::ObjectSymbol: result = static_cast<Runtime::Object*>(base)->resolve(name, true, visibility < Visibility::Protected ? Visibility::Protected : visibility); break;
+				case Symbol::IType::BluePrintEnumSymbol: result = static_cast<Designtime::BluePrintEnum*>(base)->resolve(name, true, visibility); break;
+				case Symbol::IType::BluePrintObjectSymbol: result = static_cast<Designtime::BluePrintObject*>(base)->resolve(name, true, visibility); break;
+				case Symbol::IType::NamespaceSymbol: result = static_cast<Common::Namespace*>(base)->resolve(name, true, visibility); break;
+				case Symbol::IType::ObjectSymbol: result = static_cast<Runtime::Object*>(base)->resolve(name, true, visibility); break;
 				default: throw Common::Exceptions::Exception("invalid scope type");
 			}
 
