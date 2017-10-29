@@ -21,6 +21,6 @@ private object DerivedObject extends BaseObject {
 }
 
 public void Main(int argc = 0, string argv = "") {
-	DerivedObject derived = new DerivedObject();
+	DerivedObject derivedObj = new DerivedObject();
 }
 

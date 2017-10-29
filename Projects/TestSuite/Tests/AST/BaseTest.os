@@ -30,9 +30,9 @@ public void Main(int argc = 0, string args = "") {
 private bool TestCase1() {
 	print("TestCase 1");
 
-	DerivedObject derived = new DerivedObject(173);
+	DerivedObject derivedObj = new DerivedObject(173);
 
-	print("derived = " + string derived);
+	print("derivedObj = " + string derivedObj);
 
 	return true;
 }

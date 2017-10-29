@@ -29,7 +29,7 @@ private object DerivedObject extends BaseObject {
 }
 
 public void Main(int argc = 0, string argv = "") {
-	DerivedObject derived = new DerivedObject(5);
-	print("derived.mValue = " + derived.mValue);
+	DerivedObject derivedObj = new DerivedObject(5);
+	print("derivedObj.mValue = " + derivedObj.mValue);
 }
 
