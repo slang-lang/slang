@@ -40,8 +40,8 @@ Runtime::ControlFlow::E Thread::execute(Common::Method* method, const ParameterL
 {
 	mState = State::Started;
 
-	AST::TreeInterpreter ti(mId);
-	Runtime::ControlFlow::E controlflow = ti.execute(method, params, result);
+	AST::TreeInterpreter interpreter(mId);
+	Runtime::ControlFlow::E controlflow = interpreter.execute(method, params, result);
 
 	mState = State::Stopping;
 
@@ -99,7 +99,9 @@ void Threads::deinit()
 
 void Threads::deleteThread(Common::ThreadId id)
 {
-	(void)id;
+	Thread* thread = getThread(id);
+
+	(void)thread;
 }
 
 unsigned int Threads::getNumThreads() const
@@ -120,8 +122,7 @@ Thread* Threads::getThread(Common::ThreadId id) const
 
 void Threads::init()
 {
-	// create main thread for program execution
-	createThread();
+	// nothing to do here atm
 }
 
 

@@ -15,7 +15,7 @@ namespace Designtime {
 
 
 BluePrintGeneric::BluePrintGeneric()
-: BluePrintSymbol(ANONYMOUS_OBJECT),
+: BlueprintSymbol(ANONYMOUS_OBJECT),
   mFilename(ANONYMOUS_OBJECT),
   mIsAtomicType(false),
   mQualifiedTypename(ANONYMOUS_OBJECT),
@@ -24,7 +24,7 @@ BluePrintGeneric::BluePrintGeneric()
 }
 
 BluePrintGeneric::BluePrintGeneric(const std::string& unqualifiedTypename, const std::string& filename)
-: BluePrintSymbol(unqualifiedTypename),
+: BlueprintSymbol(unqualifiedTypename),
   mFilename(filename),
   mIsAtomicType(false),
   mQualifiedTypename(unqualifiedTypename),
