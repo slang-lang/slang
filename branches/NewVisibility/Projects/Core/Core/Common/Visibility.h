@@ -22,6 +22,7 @@ public:
 	enum E {
 		Designtime = 0,
 		Private,
+		Derived,
 		Protected,
 		Public
 	};
@@ -30,6 +31,7 @@ public:
 	static std::string convert(E e);
 
 private:
+	static const std::string DerivedStr;
 	static const std::string DesigntimeStr;
 	static const std::string PrivateStr;
 	static const std::string ProtectedStr;

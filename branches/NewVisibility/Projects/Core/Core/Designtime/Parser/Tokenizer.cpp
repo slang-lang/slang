@@ -267,7 +267,7 @@ bool Tokenizer::isType(const std::string& token) const
 
 bool Tokenizer::isVisibility(const std::string& token) const
 {
-	return token == PRIVATE || token == PROTECTED || token == PUBLIC;
+	return token == DERIVED || token == PRIVATE || token == PROTECTED || token == PUBLIC;
 }
 
 bool Tokenizer::isWhiteSpace(const std::string& token) const

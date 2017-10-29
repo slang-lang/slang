@@ -148,13 +148,13 @@ void Object::assignReference(const Reference& ref)
 
 bool Object::CanExecuteDefaultConstructor() const
 {
-	Symbol* anyConstructor = resolve(RESERVED_WORD_CONSTRUCTOR, false, Visibility::Private);
+	Symbol* anyConstructor = resolve(RESERVED_WORD_CONSTRUCTOR, false, Visibility::Designtime);
 	if ( !anyConstructor ) {
 		// no constructor found at all, so we can call our default constructor but it won't do anything besides setting our object to constructed
 		return true;
 	}
 
-	Symbol* defaultConstructor = resolveMethod(RESERVED_WORD_CONSTRUCTOR, ParameterList(), true, Visibility::Private);
+	Symbol* defaultConstructor = resolveMethod(RESERVED_WORD_CONSTRUCTOR, ParameterList(), true, Visibility::Designtime);
 
 	return defaultConstructor && (anyConstructor == defaultConstructor);
 }
@@ -177,7 +177,7 @@ ControlFlow::E Object::Constructor(const ParameterList& params)
 
 	// check if we have implemented a constructor with the given amount and type of parameters
 	// if a specialized constructor is implemented, the default constructor cannot be used
-	Common::Method *constructor = dynamic_cast<Common::Method*>(resolveMethod(RESERVED_WORD_CONSTRUCTOR, params, true, Visibility::Protected));
+	Common::Method *constructor = dynamic_cast<Common::Method*>(resolveMethod(RESERVED_WORD_CONSTRUCTOR, params, true, Visibility::Designtime));
 	if ( constructor ) {
 		VoidObject tmp;
 
@@ -283,7 +283,7 @@ ControlFlow::E Object::Destructor()
 		ParameterList params;
 
 		// only execute destructor if one is present
-		Common::Method *destructor = static_cast<Common::Method*>(resolveMethod(RESERVED_WORD_DESTRUCTOR, params, true, Visibility::Private));
+		Common::Method *destructor = static_cast<Common::Method*>(resolveMethod(RESERVED_WORD_DESTRUCTOR, params, true, Visibility::Designtime));
 		if ( destructor ) {
 			VoidObject tmp;
 
@@ -308,7 +308,7 @@ ControlFlow::E Object::execute(Object *result, const std::string& name, const Pa
 		throw Runtime::Exceptions::NullPointerException("executed method '" + name + "' of uninitialized object '" + QualifiedTypename() + "'");
 	}
 
-	Common::Method *method = static_cast<Common::Method*>(resolveMethod(name, params, false, Visibility::Private));
+	Common::Method *method = static_cast<Common::Method*>(resolveMethod(name, params, false, Visibility::Designtime));
 	if ( !method ) {
 		throw Common::Exceptions::UnknownIdentifer("unknown method '" + QualifiedTypename() + "." + name + "' or method with invalid parameter count called!");
 	}

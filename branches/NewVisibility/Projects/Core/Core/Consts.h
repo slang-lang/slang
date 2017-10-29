@@ -110,6 +110,7 @@ static const char* VALUE_NONE = "";
 static const char* VALUE_NULL = "null";
 
 // Visibility
+static const char* DERIVED = "derived";
 static const char* PRIVATE = "private";
 static const char* PROTECTED = "protected";
 static const char* PUBLIC = "public";

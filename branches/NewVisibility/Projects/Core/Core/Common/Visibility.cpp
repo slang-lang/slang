@@ -13,6 +13,7 @@
 namespace ObjectiveScript {
 
 
+const std::string Visibility::DerivedStr = "derived";
 const std::string Visibility::DesigntimeStr = "Designtime";
 const std::string Visibility::PrivateStr = "private";
 const std::string Visibility::ProtectedStr = "protected";
@@ -21,7 +22,8 @@ const std::string Visibility::PublicStr = "public";
 
 Visibility::E Visibility::convert(const std::string& v)
 {
-	if ( v == DesigntimeStr ) { return Visibility::Designtime; }
+	if ( v == DerivedStr ) { return Visibility::Derived; }
+	else if ( v == DesigntimeStr ) { return Visibility::Designtime; }
 	else if ( v == PrivateStr ) { return Visibility::Private; }
 	else if ( v == ProtectedStr ) { return Visibility::Protected; }
 	else if ( v == PublicStr ) { return Visibility::Public; }
@@ -33,6 +35,7 @@ Visibility::E Visibility::convert(const std::string& v)
 std::string Visibility::convert(Visibility::E e)
 {
 	switch ( e ) {
+		case Visibility::Derived: return DerivedStr;
 		case Visibility::Designtime: return DesigntimeStr;
 		case Visibility::Private: return PrivateStr;
 		case Visibility::Protected: return ProtectedStr;

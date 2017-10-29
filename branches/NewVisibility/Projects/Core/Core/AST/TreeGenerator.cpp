@@ -1602,7 +1602,7 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 
 	if ( token->type() == Token::Type::SCOPE ) {
 		if ( name == IDENTIFIER_BASE ) {
-			visibility = Visibility::Protected;		// this allows us to access protected and public members/methods of our base class
+			visibility = visibility == Visibility::Derived ? Visibility::Protected : Visibility::Derived;		// this allows us to access protected and public members/methods of our base class
 		}
 		else if ( name == IDENTIFIER_THIS ) {
 			visibility = Visibility::Private;		// this allows us full access to our owners class' members/methods
@@ -1656,7 +1656,7 @@ SymbolExpression* TreeGenerator::resolveWithThis(TokenIterator& token, IScope* b
 			base->mSymbolExpression = new RuntimeSymbolExpression(IDENTIFIER_BASE, dynamic_cast<Designtime::BluePrintObject*>(scope)->QualifiedTypename(), mMethod->isConst(), true, true);
 			base = base->mSymbolExpression;
 
-			SymbolExpression* exp = resolve(token, scope, true, Visibility::Protected);
+			SymbolExpression* exp = resolve(token, scope, true, Visibility::Derived);
 			if ( exp ) {
 				// insert "base" symbol as "parent" of our recently resolved symbol
 				base->mSymbolExpression = exp;
