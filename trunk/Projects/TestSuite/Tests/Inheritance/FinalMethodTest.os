@@ -13,9 +13,9 @@ private object DerivedObject extends BaseObject {
 }
 
 public void Main(int argc = 0, string args = "") {
-	DerivedObject derived = new DerivedObject();
+	DerivedObject derivedObj = new DerivedObject();
 
-	string result = derived.ToString();
+	string result = derivedObj.ToString();
 	print("result = " + result);
 
 	assert( result == "BaseObject" );
