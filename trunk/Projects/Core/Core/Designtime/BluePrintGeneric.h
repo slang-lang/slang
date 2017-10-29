@@ -29,7 +29,7 @@ namespace ObjectiveScript {
 namespace Designtime {
 
 
-class BluePrintGeneric : public BluePrintSymbol
+class BluePrintGeneric : public BlueprintSymbol
 {
 public:
 	BluePrintGeneric();

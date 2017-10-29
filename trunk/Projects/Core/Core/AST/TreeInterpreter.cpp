@@ -68,7 +68,6 @@ namespace AST {
 
 TreeInterpreter::TreeInterpreter(Common::ThreadId id)
 : mControlFlow(Runtime::ControlFlow::Normal),
-  mOwner(0),
   mThreadId(id)
 {
 	// initialize virtual machine stuff
@@ -459,8 +458,7 @@ Runtime::ControlFlow::E TreeInterpreter::execute(Common::Method* method, const P
 
 	Common::Method scope(*method);
 
-	IScope* previousOwner = mOwner;
-	mOwner = method->getEnclosingScope();
+	IScope* owner = method->getEnclosingScope();
 
 	// initialize parameters & push scope
 	initialize(&scope, method->mergeParameters(params));
@@ -485,10 +483,10 @@ Runtime::ControlFlow::E TreeInterpreter::execute(Common::Method* method, const P
 		 mControlFlow == Runtime::ControlFlow::Return ) {
 		switch ( method->getMethodType() ) {
 			case MethodAttributes::MethodType::Constructor:
-				dynamic_cast<Runtime::Object*>(mOwner)->setConstructed(true);
+				dynamic_cast<Runtime::Object*>(owner)->setConstructed(true);
 				break;
 			case MethodAttributes::MethodType::Destructor:
-				dynamic_cast<Runtime::Object*>(mOwner)->setConstructed(false);
+				dynamic_cast<Runtime::Object*>(owner)->setConstructed(false);
 				break;
 			default:
 				break;
@@ -497,8 +495,6 @@ Runtime::ControlFlow::E TreeInterpreter::execute(Common::Method* method, const P
 
 	// deinitalize & pop scope
 	deinitialize();
-
-	mOwner = previousOwner;
 
 	return mControlFlow;
 }

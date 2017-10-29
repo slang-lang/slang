@@ -124,7 +124,6 @@ private:	// Initialization
 
 private:	// Interpreter stuff
 	Runtime::ControlFlow::E mControlFlow;
-	IScope* mOwner;
 
 private:	// Virtual machine stuff
 	Core::Debugger* mDebugger;

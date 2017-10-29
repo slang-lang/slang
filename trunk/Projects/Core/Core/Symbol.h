@@ -77,17 +77,17 @@ protected:
 #endif
 
 
-class BluePrintSymbol : public Symbol,
+class BlueprintSymbol : public Symbol,
 						public Symbol::IType,
 						public ObjectAttributes
 {
 public:
-	explicit BluePrintSymbol(const std::string& name)
+	explicit BlueprintSymbol(const std::string& name)
 	: Symbol(name, Symbol::IType::BluePrintObjectSymbol)
 	{
 		mVisibility = Visibility::Private;
 	}
-	virtual ~BluePrintSymbol() { }
+	virtual ~BlueprintSymbol() { }
 };
 
 class MethodSymbol : public Symbol,

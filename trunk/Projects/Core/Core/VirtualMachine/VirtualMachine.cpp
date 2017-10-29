@@ -134,9 +134,9 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 		throw Common::Exceptions::Exception("could not resolve method 'Main(" + toString(params) + ")'");
 	}
 
-	Thread* t = Controller::Instance().threads()->getThread(Common::ThreadId(0));
+	Thread* thread = Controller::Instance().threads()->createThread();
 
-	Runtime::ControlFlow::E controlflow = t->execute(main, params, result);
+	Runtime::ControlFlow::E controlflow = thread->execute(main, params, result);
 	if ( controlflow == Runtime::ControlFlow::Throw ) {
 		Runtime::ExceptionData data = Controller::Instance().stack()->exception();
 		std::string text;
