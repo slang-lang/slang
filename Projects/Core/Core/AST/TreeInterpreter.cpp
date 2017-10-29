@@ -262,9 +262,9 @@ void TreeInterpreter::evaluateMethodExpression(MethodExpression* exp, Runtime::O
 
 	IScope* scope = getScope();
 
-	MethodSymbol* methodSymbol = resolveMethod(scope, exp->mSymbolExpression, params, Visibility::Private);
+	MethodSymbol* methodSymbol = resolveMethod(scope, exp->mSymbolExpression, params, Visibility::Designtime);
 	if ( !methodSymbol ) {
-		methodSymbol = resolveMethod(getEnclosingMethodScope(scope), exp->mSymbolExpression, params, Visibility::Private);
+		methodSymbol = resolveMethod(getEnclosingMethodScope(scope), exp->mSymbolExpression, params, Visibility::Designtime);
 	}
 	if ( !methodSymbol ) {
 		throw Runtime::Exceptions::RuntimeException("method " + exp->mSymbolExpression->toString() + "(" + toString(params) + ") not found");
