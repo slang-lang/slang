@@ -1,12 +1,6 @@
 
 function(build_static_testlib target modules)
 
-    LIST(LENGTH HEADERS num_headers)
-    if ( num_headers GREATER 0 )
-        # modify given headers
-        qt_wrap_cpp(${target} HEADERS ${HEADERS})
-    endif()
-
     # append our utils testmanagement
     list(APPEND DEPENDENCIES "UtilsTestManagement")
 
@@ -17,16 +11,16 @@ endfunction()
 
 function(build_static_lib target modules)
 
-        _handle_modules_pre_linker("${modules}")
+    _handle_modules_pre_linker("${modules}")
 
-        add_library(${target} ${SOURCES} ${HEADERS})
+    add_library(${target} ${SOURCES} ${HEADERS})
 
-        LIST(LENGTH DEPENDENCIES num_dependencies)
-        if ( num_dependencies GREATER 0 )
-            target_link_libraries(${target} ${DEPENDENCIES})
-        endif()
+    LIST(LENGTH DEPENDENCIES num_dependencies)
+    if ( num_dependencies GREATER 0 )
+        target_link_libraries(${target} ${DEPENDENCIES})
+    endif()
 
-        _handle_modules_post_linker("${modules}" ${target})
+    _handle_modules_post_linker("${modules}" ${target})
 
 endfunction()
 
@@ -37,9 +31,6 @@ function(build_app target modules)
 
     SET(CMAKE_CXX_FLAGS "-Wl,--as-needed")
     LIST(LENGTH HEADERS num_headers)
-    #if ( num_headers GREATER 0 )
-    #    qt_wrap_cpp(${target} HEADERS ${HEADERS})
-    #endif()
 
     add_executable(${target} ${SOURCES} ${HEADERS})
 
@@ -63,10 +54,10 @@ function(_handle_modules_pre_linker modules)
         _handle_pre_curl()
     endif()
 
-    #list(FIND modules "json" found)
-    #if ( ${found} GREATER -1 )
+    list(FIND modules "json" found)
+    if ( ${found} GREATER -1 )
         _handle_pre_json()
-    #endif()
+    endif()
 
     list(FIND modules "mysql" found)
     if ( ${found} GREATER -1 )
@@ -88,10 +79,10 @@ function(_handle_modules_post_linker modules target)
         _handle_post_curl(${target})
     endif()
 
-    #list(FIND modules "json" found)
-    #if ( ${found} GREATER -1 )
+    list(FIND modules "json" found)
+    if ( ${found} GREATER -1 )
         _handle_post_json(${target})
-    #endif()
+    endif()
 
     list(FIND modules "mysql" found)
     if ( ${found} GREATER -1 )
@@ -228,70 +219,4 @@ endfunction()
 
 ### MYSQL
 ###############################
-
-function(_handle_pre_qtcore)
-
-        find_package(Qt4)
-        SET(QT_DONT_USE_QTGUI 1)
-        include(${QT_USE_FILE})
-
-endfunction()
-
-
-function(_handle_post_qtcore target)
-
-    target_link_libraries(${target} ${QT_LIBRARIES} ${QT_QTCORE_LIBRARY})
-
-endfunction()
-
-
-function(_handle_pre_qtgui)
-
-        find_package(Qt4 COMPONENTS QtGui REQUIRED)
-        SET(QT_USE_QTGUI 1)
-        SET(QT_DONT_USE_QTGUI 0)
-        include(${QT_USE_FILE})
-
-endfunction()
-
-
-function(_handle_post_qtgui target)
-
-    target_link_libraries(${target} ${QT_QTGUI_LIBRARY})
-
-endfunction()
-
-
-function(_handle_pre_qtsql)
-
-        find_package(Qt4 COMPONENTS QtSql REQUIRED)
-        SET(QT_DONT_USE_QTGUI 1)
-        SET(QT_USE_QTSQL 1)
-        include(${QT_USE_FILE})
-
-endfunction()
-
-
-function(_handle_post_qtsql target)
-
-    target_link_libraries(${target} ${QT_QTSQL_LIBRARY})
-
-endfunction()
-
-
-function(_handle_pre_qttest)
-
-        find_package(Qt4 COMPONENTS QtSql REQUIRED)
-        SET(QT_DONT_USE_QTGUI 1)
-        SET(QT_USE_QTSQL 1)
-        include(${QT_USE_FILE})
-
-endfunction()
-
-
-function(_handle_post_qttest target)
-
-    target_link_libraries(${target} ${QT_QTTEST_LIBRARY})
-
-endfunction()
 

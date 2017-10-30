@@ -26,5 +26,6 @@ add_include(Projects/Extensions)
 add_include(Projects/Utils)
 
 SET(EXECUTABLE_OUTPUT_PATH ${EXECUTABLE_OUTPUT_PATH}/oscript)
-build_app(oscript "mysql")
+SET(MODULES json mysql)
+build_app(oscript "${MODULES}")
 

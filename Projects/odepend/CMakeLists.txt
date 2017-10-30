@@ -24,5 +24,6 @@ add_include(Projects/Core)
 add_include(Projects/Utils)
 
 SET(EXECUTABLE_OUTPUT_PATH ${EXECUTABLE_OUTPUT_PATH}/odepend)
-build_app(odepend "curl")
+SET(MODULES curl json)
+build_app(odepend "${MODULES}")
 
