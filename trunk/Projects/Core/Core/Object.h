@@ -7,7 +7,6 @@
 #include <cassert>
 #include <map>
 #include <string>
-#include <Json/Value.h>
 
 // Project includes
 #include <Core/Attributes/Attributes.h>

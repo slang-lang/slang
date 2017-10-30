@@ -23,4 +23,4 @@ add_include(Projects/Extensions)
 add_include(Projects/odebugger)
 add_include(Projects/Utils)
 
-build_static_lib(DebuggerVSCodeRemoteClient "")
+build_static_lib(DebuggerVSCodeRemoteClient "json")
