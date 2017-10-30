@@ -8,6 +8,7 @@
 #include <string>
 
 // Project includes
+#include "Types.h"
 
 // Forward declarations
 
@@ -29,6 +30,7 @@ public:
 			DOUBLE,
 			FLOAT,
 			INT,
+			REFERENCE,
 			STRING
 		};
 	};
@@ -39,7 +41,7 @@ public:	// Construction
 	AtomicValue(double val);
 	AtomicValue(float val);
 	AtomicValue(int val);
-	AtomicValue(const char* val);
+	AtomicValue(MemoryId val);
 	AtomicValue(const std::string& val);
 
 	~AtomicValue();
@@ -49,7 +51,7 @@ public:	// Assignment
 	void operator=(double val);
 	void operator=(float val);
 	void operator=(int val);
-	void operator=(const char* val);
+	void operator=(MemoryId val);
 	void operator=(const std::string& val);
 
 public:	// Conversion
@@ -57,6 +59,7 @@ public:	// Conversion
 	double toDouble() const;
 	float toFloat() const;
 	int toInt() const;
+	MemoryId toReference() const;
 	std::string toStdString() const;
 
 	Type::E type() const;
@@ -67,7 +70,7 @@ private:
 		double double_;
 		float float_;
 		int int_;
-		//const char* string_;
+		MemoryId reference_;
 	};
 
 private:

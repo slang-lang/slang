@@ -9,6 +9,7 @@
 // Project includes
 #include <Core/Object.h>
 #include <Core/Runtime/Reference.h>
+#include <Core/Runtime/Types.h>
 
 // Forward declarations
 
@@ -61,7 +62,7 @@ private:
 
 private:
 	MemoryMap mMemory;
-	unsigned int mNextAddress;
+	Runtime::MemoryId mNextAddress;
 };
 
 
