@@ -23,7 +23,6 @@ AtomicValue::AtomicValue()
 	mValue.float_ = 0.f;
 	mValue.int_ = 0;
 	//mValue.string_ = 0;
-	mValue.uint_ = 0;
 }
 
 AtomicValue::AtomicValue(bool val)
@@ -33,7 +32,6 @@ AtomicValue::AtomicValue(bool val)
 	mValue.float_ = 0.f;
 	mValue.int_ = 0;
 	//mValue.string_ = 0;
-	mValue.uint_ = 0;
 
 	mValue.bool_ = val;
 }
@@ -45,7 +43,6 @@ AtomicValue::AtomicValue(double val)
 	mValue.float_ = 0.f;
 	mValue.int_ = 0;
 	//mValue.string_ = 0;
-	mValue.uint_ = 0;
 
 	mValue.double_ = val;
 }
@@ -57,7 +54,6 @@ AtomicValue::AtomicValue(float val)
 	mValue.double_ = 0.0;
 	mValue.int_ = 0;
 	//mValue.string_ = 0;
-	mValue.uint_ = 0;
 
 	mValue.float_ = val;
 }
@@ -69,7 +65,6 @@ AtomicValue::AtomicValue(int val)
 	mValue.double_ = 0.0;
 	mValue.float_ = 0.f;
 	//mValue.string_ = 0;
-	mValue.uint_ = 0;
 
 	mValue.int_ = val;
 }
@@ -82,7 +77,6 @@ AtomicValue::AtomicValue(const char* val)
 	mValue.double_ = 0.0;
 	mValue.float_ = 0.f;
 	mValue.int_ = 0;
-	mValue.uint_ = 0;
 }
 
 AtomicValue::AtomicValue(const std::string& val)
@@ -93,19 +87,6 @@ AtomicValue::AtomicValue(const std::string& val)
 	mValue.double_ = 0.0;
 	mValue.float_ = 0.f;
 	mValue.int_ = 0;
-	mValue.uint_ = 0;
-}
-
-AtomicValue::AtomicValue(unsigned int val)
-: mType(Type::UINT)
-{
-	mValue.bool_ = false;
-	mValue.double_ = 0.0;
-	mValue.float_ = 0.f;
-	mValue.int_ = 0;
-	//mValue.string_ = 0;
-
-	mValue.uint_ = val;
 }
 
 AtomicValue::~AtomicValue()
@@ -162,14 +143,6 @@ void AtomicValue::operator=(const std::string& val)
 	mStringValue = val;
 }
 
-void AtomicValue::operator=(unsigned int val)
-{
-	mStringValue = "";
-
-	mType = Type::UINT;
-	mValue.uint_ = val;
-}
-
 bool AtomicValue::toBool() const
 {
 	switch ( mType ) {
@@ -178,7 +151,6 @@ bool AtomicValue::toBool() const
 		case Type::FLOAT: return (mValue.float_ != 0.f);
 		case Type::INT: return (mValue.int_ != 0);
 		case Type::STRING: return Utils::Tools::stringToBool(mStringValue);
-		case Type::UINT: return (mValue.uint_ != 0);
 		default: break;
 	}
 
@@ -194,7 +166,6 @@ double AtomicValue::toDouble() const
 		case Type::FLOAT: return (double)mValue.float_;
 		case Type::INT: return (double)mValue.int_;
 		case Type::STRING: return Utils::Tools::stringToDouble(mStringValue);
-		case Type::UINT: return (double)mValue.uint_;
 		default: break;
 	}
 
@@ -210,7 +181,6 @@ float AtomicValue::toFloat() const
 		case Type::FLOAT: return mValue.float_;
 		case Type::INT: return (float)mValue.int_;
 		case Type::STRING: return Utils::Tools::stringToFloat(mStringValue);
-		case Type::UINT: return (float)mValue.uint_;
 		default: break;
 	}
 
@@ -226,7 +196,6 @@ int AtomicValue::toInt() const
 		case Type::FLOAT: return (int)mValue.float_;
 		case Type::INT: return mValue.int_;
 		case Type::STRING: return Utils::Tools::stringToInt(mStringValue);
-		case Type::UINT: return (int)mValue.uint_;
 		default: break;
 	}
 
@@ -242,28 +211,11 @@ std::string AtomicValue::toStdString() const
 		case Type::FLOAT: return Utils::Tools::toString(mValue.float_);
 		case Type::INT: return Utils::Tools::toString(mValue.int_);
 		case Type::STRING: return mStringValue;
-		case Type::UINT: return Utils::Tools::toString(mValue.uint_);
 		default: break;
 	}
 
 	assert(!"invalid data type");
 	return "";
-}
-
-unsigned int AtomicValue::toUInt() const
-{
-	switch ( mType ) {
-		case Type::BOOL: return (unsigned int)mValue.bool_;
-		case Type::DOUBLE: return (unsigned int)mValue.double_;
-		case Type::FLOAT: return (unsigned int)mValue.float_;
-		case Type::INT: return (unsigned int)mValue.int_;
-		case Type::STRING: return (unsigned int)Utils::Tools::stringToInt(mStringValue);
-		case Type::UINT: return mValue.uint_;
-		default: break;
-	}
-
-	assert(!"invalid data type");
-	return 0;
 }
 
 AtomicValue::Type::E AtomicValue::type() const
