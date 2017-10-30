@@ -76,7 +76,7 @@ void operator_binary_assign(Object *base, Object *other, const Common::Position&
 	}
 	// no atomic data type, so we have to look if our assign operator has been overwritten
 	else {
-		if ( other->isNull() ) {	// special handling for null object
+		if ( !other->isValid() ) {	// special handling for null object
 			base->assign(*other);
 			return;
 		}

@@ -316,28 +316,6 @@ ControlFlow::E Object::execute(Object *result, const std::string& name, const Pa
 	return Controller::Instance().thread(0)->execute(method, params, result);
 }
 
-bool Object::FromJson(const Json::Value& value)
-{
-	for ( Json::Value::Members::const_iterator it = value.members().begin(); it != value.members().end(); ++it ) {
-		Json::Value sub = (*it);
-
-		Symbol *symbol = resolve(sub.key(), true, Visibility::Designtime);
-		if ( !symbol ) {
-			throw Common::Exceptions::Exception("FromJson: unknown member '" + sub.key() + "'!");
-		}
-
-		Object *obj = static_cast<Object*>(symbol);
-		if ( obj->isAtomicType() ) {
-			obj->setValue(sub.asString());
-		}
-		else {
-			obj->FromJson(sub);
-		}
-	}
-
-	return true;
-}
-
 void Object::garbageCollector()
 {
 	for ( MethodCollection::iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
@@ -410,11 +388,6 @@ bool Object::isConstructed() const
 	}
 
 	return mIsConstructed;
-}
-
-bool Object::isNull() const
-{
-	return mIsReference && !mReference.isValid();
 }
 
 bool Object::isInstanceOf(const std::string& type) const
@@ -885,28 +858,6 @@ void Object::setValue(AtomicValue value)
 	}
 
 	mValue = value;
-}
-
-Json::Value Object::ToJson() const
-{
-	Json::Value result;
-
-	for ( Symbols::const_iterator it = mSymbols.begin(); it != mSymbols.end(); ++it ) {
-		if ( it->first == IDENTIFIER_BASE ) {
-			result.addMember(it->first, dynamic_cast<Object*>(it->second)->ToJson());
-		}
-
-		if ( it->first == IDENTIFIER_BASE || it->first == IDENTIFIER_THIS ||
-			 !it->second || it->second->getSymbolType() != Symbol::IType::ObjectSymbol ) {
-			continue;
-		}
-
-		Object *obj = dynamic_cast<Object*>(it->second);
-
-		result.addMember(it->first, obj->getValue().toStdString());
-	}
-
-	return result;
 }
 
 std::string Object::ToString(unsigned int indent) const

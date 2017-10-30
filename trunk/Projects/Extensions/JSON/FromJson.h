@@ -47,14 +47,13 @@ public:
 		try {
 			ParameterList::const_iterator it = list.begin();
 
-			Runtime::Object *param_object = Controller::Instance().memory()->get((*it++).reference());
+			Runtime::Object* param_object = Controller::Instance().memory()->get((*it++).reference());
 			if ( !param_object ) {
 				throw Runtime::Exceptions::AccessViolation("invalid reference set for 'object'", token.position());
 			}
 
-			std::string param_value = (*it++).value().toStdString();
-
-			bool success = param_object->FromJson(::Json::Parser::parse(param_value));
+			::Json::Value param_value = ::Json::Parser::parse((*it++).value().toStdString());
+			bool success = fromJson(param_value, param_object);
 
 			*result = Runtime::BoolObject(success);
 		}
@@ -67,6 +66,32 @@ public:
 		}
 
 		return Runtime::ControlFlow::Normal;
+	}
+
+private:
+	bool fromJson(const ::Json::Value& value, Runtime::Object* result) const {
+		for ( ::Json::Value::Members::const_iterator it = value.members().begin(); it != value.members().end(); ++it ) {
+			::Json::Value sub = (*it);
+
+			Symbol *symbol = result->resolve(sub.key(), false, Visibility::Designtime);
+			if ( !symbol ) {
+				throw Common::Exceptions::Exception("FromJson: unknown member '" + sub.key() + "'!");
+			}
+
+			Runtime::Object *obj = dynamic_cast<Runtime::Object*>(symbol);
+			if ( !obj ) {
+				continue;
+			}
+
+			if ( obj->isAtomicType() ) {
+				obj->setValue(sub.asString());
+			}
+			else {
+				fromJson(sub, obj);
+			}
+		}
+
+		return true;
 	}
 };
 

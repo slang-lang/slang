@@ -93,14 +93,9 @@ public:	// Value
 	bool isAbstract() const;
 	bool isAtomicType() const;
 	bool isConstructed() const;
-	bool isNull() const;
 	bool isValid() const;
 
 	virtual std::string ToString(unsigned int indent = 0) const;
-
-public:	// Json serialization
-	virtual bool FromJson(const Json::Value& value);
-	virtual Json::Value ToJson() const;
 
 public:	// Usage
 	bool CanExecuteDefaultConstructor() const;
