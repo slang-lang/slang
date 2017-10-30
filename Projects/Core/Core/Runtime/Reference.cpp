@@ -18,12 +18,12 @@ Reference::Reference()
 {
 }
 
-Reference::Reference(unsigned int address)
+Reference::Reference(MemoryId address)
 : mAddress(address)
 {
 }
 
-unsigned int Reference::getAddress() const
+MemoryId Reference::getAddress() const
 {
 	return mAddress;
 }

@@ -238,6 +238,7 @@ void TreeInterpreter::evaluateLiteral(LiteralExpression* exp, Runtime::Object* r
 		case Runtime::AtomicValue::Type::DOUBLE: *result = Runtime::DoubleObject(exp->mValue); break;
 		case Runtime::AtomicValue::Type::FLOAT: *result = Runtime::FloatObject(exp->mValue); break;
 		case Runtime::AtomicValue::Type::INT: *result = Runtime::IntegerObject(exp->mValue); break;
+		case Runtime::AtomicValue::Type::REFERENCE: *result = *mMemory->get(Runtime::Reference(exp->mValue.toReference())); break;
 		case Runtime::AtomicValue::Type::STRING: *result = Runtime::StringObject(exp->mValue); break;
 		case Runtime::AtomicValue::Type::UNKOWN: throw Common::Exceptions::NotSupported("UNKNOWN type");
 	}

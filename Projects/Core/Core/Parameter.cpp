@@ -31,7 +31,9 @@ Parameter Parameter::CreateDesigntime(const std::string& name,
 	);
 }
 
-Parameter Parameter::CreateRuntime(const std::string& type, Runtime::AtomicValue value, Runtime::Reference reference)
+Parameter Parameter::CreateRuntime(const std::string& type,
+								   Runtime::AtomicValue value,
+								   Runtime::Reference reference)
 {
 	if ( reference.isValid() ) {
 		return Parameter(

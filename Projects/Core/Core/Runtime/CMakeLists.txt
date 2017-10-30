@@ -8,6 +8,7 @@ SET(SOURCES
 	Reference.cpp
 	Script.cpp
 	TypeCast.cpp
+	Types.cpp
 )
 
 SET(HEADERS
@@ -20,6 +21,7 @@ SET(HEADERS
 	Reference.h
 	Script.h
 	TypeCast.h
+	Types.h
 )
 
 SET(DEPENDENCIES

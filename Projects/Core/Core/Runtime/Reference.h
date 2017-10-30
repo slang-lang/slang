@@ -7,6 +7,7 @@
 #include <list>
 
 // Project includes
+#include "Types.h"
 
 // Forward declarations
 
@@ -21,10 +22,10 @@ class Reference
 {
 public:
 	Reference();
-	explicit Reference(unsigned int address);
+	explicit Reference(MemoryId address);
 
 public:
-	unsigned int getAddress() const;
+	MemoryId getAddress() const;
 	bool isValid() const;
 
 public:
@@ -32,7 +33,7 @@ public:
 	bool operator== (const Reference& other) const;
 
 private:
-	unsigned int mAddress;
+	MemoryId mAddress;
 };
 
 

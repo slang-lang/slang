@@ -22,7 +22,7 @@ AtomicValue::AtomicValue()
 	mValue.double_ = 0.0;
 	mValue.float_ = 0.f;
 	mValue.int_ = 0;
-	//mValue.string_ = 0;
+	mValue.reference_ = 0;
 }
 
 AtomicValue::AtomicValue(bool val)
@@ -31,7 +31,7 @@ AtomicValue::AtomicValue(bool val)
 	mValue.double_ = 0.0;
 	mValue.float_ = 0.f;
 	mValue.int_ = 0;
-	//mValue.string_ = 0;
+	mValue.reference_ = 0;
 
 	mValue.bool_ = val;
 }
@@ -42,7 +42,7 @@ AtomicValue::AtomicValue(double val)
 	mValue.bool_ = false;
 	mValue.float_ = 0.f;
 	mValue.int_ = 0;
-	//mValue.string_ = 0;
+	mValue.reference_ = 0;
 
 	mValue.double_ = val;
 }
@@ -53,7 +53,7 @@ AtomicValue::AtomicValue(float val)
 	mValue.bool_ = false;
 	mValue.double_ = 0.0;
 	mValue.int_ = 0;
-	//mValue.string_ = 0;
+	mValue.reference_ = 0;
 
 	mValue.float_ = val;
 }
@@ -64,19 +64,20 @@ AtomicValue::AtomicValue(int val)
 	mValue.bool_ = false;
 	mValue.double_ = 0.0;
 	mValue.float_ = 0.f;
-	//mValue.string_ = 0;
+	mValue.reference_ = 0;
 
 	mValue.int_ = val;
 }
 
-AtomicValue::AtomicValue(const char* val)
-: mStringValue(std::string(val)),
-  mType(Type::STRING)
+AtomicValue::AtomicValue(MemoryId val)
+: mType(Type::REFERENCE)
 {
 	mValue.bool_ = false;
 	mValue.double_ = 0.0;
 	mValue.float_ = 0.f;
 	mValue.int_ = 0;
+
+	mValue.reference_ = val;
 }
 
 AtomicValue::AtomicValue(const std::string& val)
@@ -87,6 +88,7 @@ AtomicValue::AtomicValue(const std::string& val)
 	mValue.double_ = 0.0;
 	mValue.float_ = 0.f;
 	mValue.int_ = 0;
+	mValue.reference_ = 0;
 }
 
 AtomicValue::~AtomicValue()
@@ -125,13 +127,12 @@ void AtomicValue::operator=(int val)
 	mValue.int_ = val;
 }
 
-void AtomicValue::operator=(const char* val)
+void AtomicValue::operator=(MemoryId val)
 {
-	mValue.double_ = 0.0;
+	mStringValue = "";
 
-	mType = Type::STRING;
-	//mValue.string_ = val.c_str();
-	mStringValue = std::string(val);
+	mType = Type::REFERENCE;
+	mValue.reference_ = val;
 }
 
 void AtomicValue::operator=(const std::string& val)
@@ -139,7 +140,6 @@ void AtomicValue::operator=(const std::string& val)
 	mValue.double_ = 0.0;
 
 	mType = Type::STRING;
-	//mValue.string_ = val.c_str();
 	mStringValue = val;
 }
 
@@ -150,6 +150,7 @@ bool AtomicValue::toBool() const
 		case Type::DOUBLE: return (mValue.double_ != 0.0);
 		case Type::FLOAT: return (mValue.float_ != 0.f);
 		case Type::INT: return (mValue.int_ != 0);
+		case Type::REFERENCE: return (mValue.reference_ != 0);
 		case Type::STRING: return Utils::Tools::stringToBool(mStringValue);
 		default: break;
 	}
@@ -165,6 +166,7 @@ double AtomicValue::toDouble() const
 		case Type::DOUBLE: return mValue.double_;
 		case Type::FLOAT: return (double)mValue.float_;
 		case Type::INT: return (double)mValue.int_;
+		case Type::REFERENCE: return (double)(mValue.reference_ != 0);
 		case Type::STRING: return Utils::Tools::stringToDouble(mStringValue);
 		default: break;
 	}
@@ -180,6 +182,7 @@ float AtomicValue::toFloat() const
 		case Type::DOUBLE: return (float)mValue.double_;
 		case Type::FLOAT: return mValue.float_;
 		case Type::INT: return (float)mValue.int_;
+		case Type::REFERENCE: return (float)(mValue.reference_ != 0);
 		case Type::STRING: return Utils::Tools::stringToFloat(mStringValue);
 		default: break;
 	}
@@ -195,8 +198,26 @@ int AtomicValue::toInt() const
 		case Type::DOUBLE: return (int)mValue.double_;
 		case Type::FLOAT: return (int)mValue.float_;
 		case Type::INT: return mValue.int_;
+		case Type::REFERENCE: return (int)(mValue.reference_ != 0);
 		case Type::STRING: return Utils::Tools::stringToInt(mStringValue);
 		default: break;
+	}
+
+	assert(!"invalid data type");
+	return 0;
+}
+
+MemoryId AtomicValue::toReference() const
+{
+	switch ( mType ) {
+		case Type::REFERENCE: return mValue.reference_;
+
+		case Type::BOOL:
+		case Type::DOUBLE:
+		case Type::FLOAT:
+		case Type::INT:
+		case Type::STRING:
+		default: return MemoryId(-1);	// invalid typecast
 	}
 
 	assert(!"invalid data type");
@@ -210,6 +231,7 @@ std::string AtomicValue::toStdString() const
 		case Type::DOUBLE: return Utils::Tools::toString(mValue.double_);
 		case Type::FLOAT: return Utils::Tools::toString(mValue.float_);
 		case Type::INT: return Utils::Tools::toString(mValue.int_);
+		case Type::REFERENCE: return Utils::Tools::toString(mValue.reference_);
 		case Type::STRING: return mStringValue;
 		default: break;
 	}
