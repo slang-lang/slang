@@ -45,7 +45,7 @@ UserObject::UserObject(const Object& object)
 
 void UserObject::operator_assign(const Object *other)
 {
-	if ( other->isNull() ) {	// special handling for null object
+	if ( !other->isValid() ) {	// special handling for null object
 		assign(*other);
 		return;
 	}

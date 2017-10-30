@@ -22,6 +22,8 @@ public void Main(int argc, string argv) {
 }
 
 private bool TestCase1() const {
+	print("TestCase 1");
+
 	BaseObject baseObject = new BaseObject();
 	baseObject.mIntValue = 173;
 
@@ -33,6 +35,8 @@ private bool TestCase1() const {
 }
 
 private bool TestCase2() const {
+	print("TestCase 2");
+
 	DerivedObject derived = new DerivedObject();
 	derived.mIntValue = 42;
 	derived.mStringValue = "this is a string";
@@ -40,7 +44,7 @@ private bool TestCase2() const {
 	string jsonString = ToJsonString(derived);
 	writeln("jsonString = " + jsonString);
 
-	bool result = FromJsonString( derived, jsonString);
+	bool result = FromJsonString(derived, jsonString);
 	return result && derived.mIntValue == 42;
 }
 

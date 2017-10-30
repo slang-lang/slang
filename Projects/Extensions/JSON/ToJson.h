@@ -48,7 +48,9 @@ public:
 				throw Runtime::Exceptions::AccessViolation("invalid reference set for 'object'", token.position());
 			}
 
-			::Json::Value value = param_object->ToJson();
+			::Json::Value value;
+
+			toJson(param_object, value);
 
 			*result = Runtime::StringObject(value.toString());
 		}
@@ -61,6 +63,35 @@ public:
 		}
 
 		return Runtime::ControlFlow::Normal;
+	}
+
+private:
+	void toJson(Runtime::Object* object, ::Json::Value& result) const {
+		for ( Symbols::const_iterator it = object->beginSymbols(); it != object->endSymbols(); ++it ) {
+			if ( it->first == IDENTIFIER_THIS || !it->second || it->second->getSymbolType() != Symbol::IType::ObjectSymbol ) {
+				continue;
+			}
+
+			if ( it->first == IDENTIFIER_BASE ) {
+				Runtime::Object* obj = dynamic_cast<Runtime::Object*>(it->second);
+				if ( !obj || obj->QualifiedTypename() == _object ) {
+					continue;
+				}
+
+				::Json::Value value;
+				toJson(obj, value);
+
+				result.addMember(it->first, value);
+				continue;
+			}
+
+			Runtime::Object *obj = dynamic_cast<Runtime::Object*>(it->second);
+			if ( !obj ) {
+				continue;
+			}
+
+			result.addMember(it->first, obj->getValue().toStdString());
+		}
 	}
 };
 
