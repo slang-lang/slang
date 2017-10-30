@@ -42,8 +42,8 @@ bool Analyser::buildEnum(Designtime::BluePrintEnum* symbol, const TokenList& tok
 {
 	TokenIterator token = tokens.begin();
 
-	Runtime::AtomicValue previous_value = Runtime::AtomicValue((unsigned)-1);
-	Runtime::AtomicValue value = Runtime::AtomicValue((unsigned)-1);
+	Runtime::AtomicValue previous_value = Runtime::AtomicValue(-1);
+	Runtime::AtomicValue value = Runtime::AtomicValue(-1);
 
 	// Format: <identifier> = <value>[, or ;]
 	while ( token != tokens.end() ) {
@@ -448,6 +448,19 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 	}
 
 	ParameterList params = Parser::parseParameters(token, mScope);
+/*
+	// if this is an object method add 'this' as first parameter
+	if ( blueprint ) {
+		params.push_front(Parameter::CreateDesigntime(
+				IDENTIFIER_THIS,
+				blueprint->QualifiedTypename(),
+				Runtime::AtomicValue(),
+				false,
+				mutability,
+				AccessMode::ByReference
+		));
+	}
+*/
 
 	// look at possible attributes (abstract, const, final, modify, throws, etc.)
 	// while looking for the next opening curly bracket

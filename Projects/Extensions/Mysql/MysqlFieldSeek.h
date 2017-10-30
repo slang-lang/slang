@@ -50,7 +50,7 @@ public:
 			}
 
 			*result = Runtime::IntegerObject(
-				mysql_field_seek(myResult, (MYSQL_FIELD_OFFSET) param_offset)
+					(int)mysql_field_seek(myResult, (MYSQL_FIELD_OFFSET)param_offset)
 			);
 		}
 		catch ( std::exception &e ) {
