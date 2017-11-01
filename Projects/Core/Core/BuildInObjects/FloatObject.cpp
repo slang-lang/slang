@@ -25,15 +25,15 @@ AtomicValue FloatObject::DEFAULTVALUE = AtomicValue(0.f);
 std::string FloatObject::TYPENAME = "float";
 
 
-FloatObject::FloatObject(AtomicValue value)
+FloatObject::FloatObject(const AtomicValue& value)
 : Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, AtomicValue(value.toFloat()))
 {
 	mIsAtomicType = true;
 	mIsConstructed = true;
 }
 
-FloatObject::FloatObject(const std::string& name, float value)
-: Object(name, SYSTEM_LIBRARY, TYPENAME, AtomicValue(value))
+FloatObject::FloatObject(const std::string& name, const AtomicValue& value)
+: Object(name, SYSTEM_LIBRARY, TYPENAME, value)
 {
 	mIsAtomicType = true;
 	mIsConstructed = true;

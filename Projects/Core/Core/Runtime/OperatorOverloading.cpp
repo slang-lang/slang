@@ -970,7 +970,7 @@ void operator_unary_validate(Object *base, const Common::Position& position)
 	}
 
 	if ( !base->isValid() ) {
-		Controller::Instance().stack()->exception() = Runtime::ExceptionData(new StringObject("validation failed"), position);
+		Controller::Instance().stack()->exception() = Runtime::ExceptionData(new StringObject(std::string("validation failed")), position);
 
 		throw ControlFlow::Throw;
 	}

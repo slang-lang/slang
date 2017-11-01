@@ -26,7 +26,7 @@ public:
 public:
 	UserObject();
 	UserObject(const std::string& name, const std::string& filename, const std::string& type, bool isReference = false);
-	UserObject(const Object& object);
+	explicit UserObject(const Object& object);
 
 public: // Operators
 	void operator_assign(const Object *other);

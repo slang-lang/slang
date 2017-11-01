@@ -24,9 +24,9 @@ public:
 	static std::string TYPENAME;
 
 public:
-	IntegerObject(AtomicValue value = DEFAULTVALUE);
-	IntegerObject(const std::string& name, int value);
-	IntegerObject(const Object& object);
+	explicit IntegerObject(const AtomicValue& value = DEFAULTVALUE);
+	IntegerObject(const std::string& name, const AtomicValue& value);
+	explicit IntegerObject(const Object& object);
 
 public:	// Symbol::IType implementation
 	const std::string& getTypeName() const;

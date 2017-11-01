@@ -41,7 +41,7 @@ public:	// Construction
 	AtomicValue(double val);
 	AtomicValue(float val);
 	AtomicValue(int val);
-	AtomicValue(MemoryId val);
+	explicit AtomicValue(MemoryId val);
 	AtomicValue(const std::string& val);
 
 	~AtomicValue();

@@ -25,15 +25,15 @@ AtomicValue BoolObject::DEFAULTVALUE = AtomicValue(false);
 std::string BoolObject::TYPENAME = "bool";
 
 
-BoolObject::BoolObject(AtomicValue value)
+BoolObject::BoolObject(const AtomicValue& value)
 : Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, AtomicValue(value.toBool()))
 {
 	mIsAtomicType = true;
 	mIsConstructed = true;
 }
 
-BoolObject::BoolObject(const std::string& name, bool value)
-: Object(name, SYSTEM_LIBRARY, TYPENAME, AtomicValue(value))
+BoolObject::BoolObject(const std::string& name, const AtomicValue& value)
+: Object(name, SYSTEM_LIBRARY, TYPENAME, value)
 {
 	mIsAtomicType = true;
 	mIsConstructed = true;

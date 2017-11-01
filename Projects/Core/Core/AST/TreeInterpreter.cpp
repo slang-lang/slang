@@ -387,7 +387,7 @@ void TreeInterpreter::evaluateTypeidExpression(TypeidExpression* exp, Runtime::O
 
 	evaluate(exp->mExpression, &tmp);
 
-	Runtime::StringObject type(tmp.QualifiedTypename());
+	Runtime::StringObject type(Runtime::AtomicValue(tmp.QualifiedTypename()));
 	Runtime::operator_binary_assign(result, &type);
 }
 
