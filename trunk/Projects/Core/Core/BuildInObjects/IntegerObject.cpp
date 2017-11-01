@@ -24,15 +24,15 @@ AtomicValue IntegerObject::DEFAULTVALUE = AtomicValue(0);
 std::string IntegerObject::TYPENAME = "int";
 
 
-IntegerObject::IntegerObject(AtomicValue value)
+IntegerObject::IntegerObject(const AtomicValue& value)
 : Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, AtomicValue(value.toInt()))
 {
 	mIsAtomicType = true;
 	mIsConstructed = true;
 }
 
-IntegerObject::IntegerObject(const std::string& name, int value)
-: Object(name, SYSTEM_LIBRARY, TYPENAME, AtomicValue(value))
+IntegerObject::IntegerObject(const std::string& name, const AtomicValue& value)
+: Object(name, SYSTEM_LIBRARY, TYPENAME, value)
 {
 	mIsAtomicType = true;
 	mIsConstructed = true;

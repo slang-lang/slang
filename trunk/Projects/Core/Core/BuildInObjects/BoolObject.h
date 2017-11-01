@@ -24,9 +24,9 @@ public:
 	static std::string TYPENAME;
 
 public:
-	BoolObject(AtomicValue value = DEFAULTVALUE);
-	BoolObject(const std::string& name, bool value);
-	BoolObject(const Object& other);
+	explicit BoolObject(const AtomicValue& value = DEFAULTVALUE);
+	BoolObject(const std::string& name, const AtomicValue& value);
+	explicit BoolObject(const Object& other);
 
 public:	// Operators
 	void operator_assign(const BoolObject *other);

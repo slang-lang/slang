@@ -23,19 +23,26 @@ namespace ObjectiveScript {
 namespace Runtime {
 
 
-AtomicValue StringObject::DEFAULTVALUE = AtomicValue("");
+AtomicValue StringObject::DEFAULTVALUE = AtomicValue(std::string(""));
 std::string StringObject::TYPENAME = "string";
 
 
-StringObject::StringObject(AtomicValue value)
+StringObject::StringObject(const AtomicValue& value)
 : Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, AtomicValue(value.toStdString()))
 {
 	mIsAtomicType = true;
 	mIsConstructed = true;
 }
 
-StringObject::StringObject(const std::string& name, const std::string& value)
-: Object(name, SYSTEM_LIBRARY, TYPENAME, AtomicValue(value))
+StringObject::StringObject(const std::string& value)
+: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, AtomicValue(value))
+{
+	mIsAtomicType = true;
+	mIsConstructed = true;
+}
+
+StringObject::StringObject(const std::string& name, const AtomicValue& value)
+: Object(name, SYSTEM_LIBRARY, TYPENAME, value)
 {
 	mIsAtomicType = true;
 	mIsConstructed = true;

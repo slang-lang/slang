@@ -24,9 +24,9 @@ public:
 	static std::string TYPENAME;
 
 public:
-	FloatObject(AtomicValue value = DEFAULTVALUE);
-	FloatObject(const std::string& name, float value);
-	FloatObject(const Object& object);
+	explicit FloatObject(const AtomicValue& value = DEFAULTVALUE);
+	FloatObject(const std::string& name, const AtomicValue& value);
+	explicit FloatObject(const Object& object);
 
 public:	// Operators
 	void operator_assign(const FloatObject *other);

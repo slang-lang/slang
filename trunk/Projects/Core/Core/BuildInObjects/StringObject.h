@@ -24,9 +24,10 @@ public:
 	static std::string TYPENAME;
 
 public:
-	StringObject(AtomicValue value = DEFAULTVALUE);
-	StringObject(const std::string& name, const std::string& value);
-	StringObject(const Object& other);
+	explicit StringObject(const AtomicValue& value = DEFAULTVALUE);
+	explicit StringObject(const std::string& value);
+	StringObject(const std::string& name, const AtomicValue& value);
+	explicit StringObject(const Object& other);
 
 public:	// Operators
 	void operator_assign(const Object* other);

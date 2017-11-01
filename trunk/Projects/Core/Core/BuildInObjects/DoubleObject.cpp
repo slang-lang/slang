@@ -23,15 +23,15 @@ AtomicValue DoubleObject::DEFAULTVALUE = AtomicValue(0.0);
 std::string DoubleObject::TYPENAME = "double";
 
 
-DoubleObject::DoubleObject(AtomicValue value)
+DoubleObject::DoubleObject(const AtomicValue& value)
 : Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, AtomicValue(value.toDouble()))
 {
 	mIsAtomicType = true;
 	mIsConstructed = true;
 }
 
-DoubleObject::DoubleObject(const std::string& name, double value)
-: Object(name, SYSTEM_LIBRARY, TYPENAME, AtomicValue(value))
+DoubleObject::DoubleObject(const std::string& name, const AtomicValue& value)
+: Object(name, SYSTEM_LIBRARY, TYPENAME, value)
 {
 	mIsAtomicType = true;
 	mIsConstructed = true;

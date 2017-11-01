@@ -62,7 +62,7 @@ void SystemNetworkExtension::initialize(IScope* scope)
 	//scope->define("SOCK_NONBLOCK", new Runtime::IntegerObject(SOCK_NONBLOCK));
 	//scope->define("SOCK_CLOEXEC", new Runtime::IntegerObject(SOCK_CLOEXEC));
 
-	scope->define("INADDR_ANY", new Runtime::StringObject("0.0.0.0"));
+	scope->define("INADDR_ANY", new Runtime::StringObject(std::string("0.0.0.0")));
 }
 
 void SystemNetworkExtension::provideMethods(ExtensionMethods &methods)

@@ -477,7 +477,7 @@ Node* TreeGenerator::parseTerm(TokenIterator& start)
 			++start;
 		} break;
 		case Token::Type::CONST_LITERAL: {
-			term = new StringLiteralExpression(start->content());
+			term = new StringLiteralExpression(Runtime::AtomicValue(start->content()));
 			++start;
 		} break;
 		case Token::Type::IDENTIFIER:

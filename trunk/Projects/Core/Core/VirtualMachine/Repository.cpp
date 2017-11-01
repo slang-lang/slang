@@ -362,19 +362,19 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 
 	// instantiate atomic types
 	if ( blueprint->QualifiedTypename() == Runtime::BoolObject::TYPENAME ) {
-		object = new Runtime::BoolObject(name, Runtime::BoolObject::DEFAULTVALUE.toBool());
+		object = new Runtime::BoolObject(name, Runtime::BoolObject::DEFAULTVALUE);
 	}
 	else if ( blueprint->QualifiedTypename() == Runtime::DoubleObject::TYPENAME ) {
-		object = new Runtime::DoubleObject(name, Runtime::DoubleObject::DEFAULTVALUE.toDouble());
+		object = new Runtime::DoubleObject(name, Runtime::DoubleObject::DEFAULTVALUE);
 	}
 	else if ( blueprint->QualifiedTypename() == Runtime::FloatObject::TYPENAME ) {
-		object = new Runtime::FloatObject(name, Runtime::FloatObject::DEFAULTVALUE.toFloat());
+		object = new Runtime::FloatObject(name, Runtime::FloatObject::DEFAULTVALUE);
 	}
 	else if ( blueprint->QualifiedTypename() == Runtime::IntegerObject::TYPENAME ) {
-		object = new Runtime::IntegerObject(name, Runtime::IntegerObject::DEFAULTVALUE.toInt());
+		object = new Runtime::IntegerObject(name, Runtime::IntegerObject::DEFAULTVALUE);
 	}
 	else if ( blueprint->QualifiedTypename() == Runtime::StringObject::TYPENAME ) {
-		object = new Runtime::StringObject(name, Runtime::StringObject::DEFAULTVALUE.toStdString());
+		object = new Runtime::StringObject(name, Runtime::StringObject::DEFAULTVALUE);
 	}
 	else if ( blueprint->QualifiedTypename() == Runtime::VoidObject::TYPENAME ) {
 		object = new Runtime::VoidObject(name);

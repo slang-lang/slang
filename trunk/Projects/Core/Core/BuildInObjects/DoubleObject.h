@@ -24,8 +24,8 @@ public:
 	static std::string TYPENAME;
 
 public:
-	DoubleObject(AtomicValue value = DEFAULTVALUE);
-	DoubleObject(const std::string& name, double value);
+	explicit DoubleObject(const AtomicValue& value = DEFAULTVALUE);
+	DoubleObject(const std::string& name, const AtomicValue& value);
 	explicit DoubleObject(const Object& object);
 
 public:	// Operators
