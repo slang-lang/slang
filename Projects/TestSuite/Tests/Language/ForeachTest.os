@@ -18,7 +18,7 @@ public object Prototype<T> {
 public void Main(int argc = 0, string args = "") {
 	assert( TestCase1() );
 	assert( TestCase2() );
-	//assert( TestCase3() );	// invalid foreach-statement
+	assert( TestCase3() );
 	assert( TestCase4() );
 	//assert( TestCase5() );	// null pointer access
 }
@@ -66,15 +66,15 @@ private bool TestCase2() {
 }
 
 private bool TestCase3() {
-	print("TestCase 3: invalid foreach");
+	print("TestCase 3: foreach on String");
 
-	String str = new String("this is no collection");
+	String str = new String("One can iterate over a String");
 
 	foreach ( String s : str ) {
-		assert(false);
+		print("s = " + string s);
 	}
 
-	return false;
+	return true;
 }
 
 private bool TestCase4() {
