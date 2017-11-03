@@ -58,6 +58,17 @@ bool BluePrintObject::hasDefaultConstructor() const
 	return resolveMethod(CONSTRUCTOR, ParameterList(), true, Visibility::Public) != NULL;
 }
 
+bool BluePrintObject::isIterable() const
+{
+	for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
+		if ( (*it)->getName() == "getIterator" &&  (*it)->isSignatureValid(ParameterList()) ) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
 bool BluePrintObject::isReference() const
 {
 	return mIsReference;

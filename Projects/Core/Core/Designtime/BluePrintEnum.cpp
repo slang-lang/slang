@@ -36,6 +36,11 @@ BluePrintEnum::~BluePrintEnum()
 {
 }
 
+bool BluePrintEnum::isIterable() const
+{
+	return false;
+}
+
 void BluePrintEnum::setParent(IScope* parent)
 {
 	mParent = parent;

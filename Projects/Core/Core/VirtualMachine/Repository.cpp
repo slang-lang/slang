@@ -827,6 +827,15 @@ void Repository::initTypeSystem(Designtime::BluePrintObject* blueprint)
 		else if ( name == "operator-" && params.size() == 1 ) {
 			mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::MATH_SUBTRACT, params.front().type(), blueprint->QualifiedTypename());
 		}
+// TODO: verify me
+/*
+		else if ( name == "operator--" && params.size() == 1 ) {
+			mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::OPERATOR_DECREMENT, params.front().type(), blueprint->QualifiedTypename());
+		}
+		else if ( name == "operator++" && params.size() == 1 ) {
+			mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::OPERATOR_INCCREMENT, params.front().type(), blueprint->QualifiedTypename());
+		}
+*/
 		else if ( name == "=operator" && params.size() == 1 ) {
 			mTypeSystem->define((*it)->QualifiedTypename(), Token::Type::ASSIGN, blueprint->QualifiedTypename(), (*it)->QualifiedTypename());
 		}
