@@ -205,7 +205,7 @@ void PrintVisitor::visitForeach(ForeachStatement *node)
 
 	visitStatement(node->mTypeDeclaration);
 
-	mOutput.append(" : " + printExpression(node->mLoopVariable) + " ) ");
+	mOutput.append(" : " + printExpression(node->mLoopExpression) + " ) ");
 
 	// reset indentation
 	mIndentation = indent;

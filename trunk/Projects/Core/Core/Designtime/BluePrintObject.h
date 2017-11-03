@@ -36,6 +36,8 @@ public:
 	bool hasConstructor() const;
 	bool hasDefaultConstructor() const;
 
+	bool isIterable() const;
+
 	bool isReference() const;
 	void setIsReference(bool state);
 

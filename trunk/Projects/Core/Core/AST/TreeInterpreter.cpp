@@ -943,7 +943,7 @@ void TreeInterpreter::visitFor(ForStatement* node)
 void TreeInterpreter::visitForeach(ForeachStatement* node)
 {
 	Runtime::Object collection;
-	tryControl(evaluate(node->mLoopVariable, &collection));
+	tryControl(evaluate(node->mLoopExpression, &collection));
 
 	// get collection's forward iterator
 	Runtime::Object iterator;

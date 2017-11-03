@@ -96,20 +96,20 @@ public:
 class ForeachStatement : public Statement
 {
 public:
-	ForeachStatement(const Token& token, TypeDeclaration* typeDeclaration, SymbolExpression* loopVariable, Node* loopStatement)
+	ForeachStatement(const Token& token, TypeDeclaration* typeDeclaration, Node* loopExpression, Node* loopStatement)
 	: Statement(StatementType::ForeachStatement, token),
-	  mLoopVariable(loopVariable),
+	  mLoopExpression(loopExpression),
 	  mStatement(loopStatement),
 	  mTypeDeclaration(typeDeclaration)
 	{ }
 	~ForeachStatement() {
-		delete mLoopVariable;
+		delete mLoopExpression;
 		delete mStatement;
 		delete mTypeDeclaration;
 	}
 
 public:
-	SymbolExpression* mLoopVariable;
+	Node* mLoopExpression;
 	Node* mStatement;
 	TypeDeclaration* mTypeDeclaration;
 };

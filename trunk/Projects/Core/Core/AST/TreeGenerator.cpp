@@ -428,7 +428,7 @@ Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 
 			TernaryExpression* ternaryExpression = new TernaryExpression(condition, first, second);
 			if ( ternaryExpression->getResultType() != ternaryExpression->getSecondResultType() ) {
-				throw Common::Exceptions::SyntaxError("unequal expression results for first ('" + ternaryExpression->getResultType() + "') and second ('" + ternaryExpression->getSecondResultType() + "') expressions", start->position());
+				throw Common::Exceptions::SyntaxError("expression results for first ('" + ternaryExpression->getResultType() + "') and second ('" + ternaryExpression->getSecondResultType() + "') expressions don't match", start->position());
 			}
 
 			infixPostfix = ternaryExpression;
@@ -733,14 +733,23 @@ Statement* TreeGenerator::process_foreach(TokenIterator& token)
 	expect(Token::Type::COLON, token);
 	++token;
 
-	expect(Token::Type::IDENTIFIER, token);
+	Expression* loopExpression = dynamic_cast<Expression*>(parseExpression(token));
+	if ( loopExpression ) {
+		// TODO: fix me
+/*
+		// check if this expression offers an iterator
+		Designtime::BluePrintGeneric* blueprint = mRepository->findBluePrint(loopExpression->getResultType());
 
-	SymbolExpression* symbol = parseSymbol(token);
+		if ( !blueprint || !blueprint->isIterable() ) {
+			throw Common::Exceptions::SyntaxError(loopExpression->getResultType() + " is not iterable", token->position());
+		}
+*/
+	}
 
 	expect(Token::Type::PARENTHESIS_CLOSE, token);
 	++token;
 
-	return new ForeachStatement(start, typeDeclaration, symbol, process_statement(token, true));
+	return new ForeachStatement(start, typeDeclaration, loopExpression, process_statement(token, true));
 }
 
 /*

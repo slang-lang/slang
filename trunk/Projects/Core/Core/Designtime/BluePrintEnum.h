@@ -33,6 +33,8 @@ public:
 public:
 	void setParent(IScope* parent);
 
+	bool isIterable() const;
+
 	std::string ToString(unsigned int indent) const;
 
 public:

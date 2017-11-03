@@ -58,6 +58,8 @@ public:
 	bool isInterface() const;
 	bool isPrototype() const;
 
+	virtual bool isIterable() const = 0;
+
 	const PrototypeConstraints& getPrototypeConstraints() const;
 	void setPrototypeConstraints(const PrototypeConstraints& constraints);
 
