@@ -10,6 +10,7 @@ public void Main(int argc = 0, string argv = "") {
 	assert( TestCase7() );
 	assert( TestCase8() );
 	assert( TestCase9() );
+	assert( TestCase10() );
 }
 
 private bool TestCase1() const {
@@ -122,6 +123,16 @@ private bool TestCase9() const {
 		}
 
 		i++;
+	}
+
+	return true;
+}
+
+private bool TestCase10() const {
+	print("TestCase 10: arbitrary iteration statement");
+
+	for ( int i = 0; i < 5; { print((string i) + ": for loop with arbitrary iteration statement"); i++; } ) {
+		// nothing to do here
 	}
 
 	return true;

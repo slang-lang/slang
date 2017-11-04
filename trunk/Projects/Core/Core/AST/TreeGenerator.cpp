@@ -678,35 +678,34 @@ Statement* TreeGenerator::process_for(TokenIterator& token)
 	expect(Token::Type::PARENTHESIS_OPEN, token);
 	++token;
 
-	TokenIterator initializationBegin = token;
-	TokenIterator conditionBegin = ++findNext(initializationBegin, Token::Type::SEMICOLON);
-	TokenIterator iterationBegin = ++findNext(conditionBegin, Token::Type::SEMICOLON);
-	TokenIterator expressionEnd = ++findNext(iterationBegin, Token::Type::PARENTHESIS_CLOSE);
-
-	token = expressionEnd;
-
 	// Declaration parsing
 	// {
 	Node* initialization = 0;
-	if ( std::distance(initializationBegin, conditionBegin) > 1 ) {
-		initialization = process_statement(initializationBegin);
+	if ( token->type() != Token::Type::SEMICOLON ) {
+		initialization = process_statement(token);
 	}
+
+	++token;
 	// }
 
 	// Condition parsing
 	// {
 	Node* condition = 0;
-	if ( std::distance(conditionBegin, iterationBegin) > 1 ) {
-		condition = expression(conditionBegin);
+	if ( token->type() != Token::Type::SEMICOLON ) {
+		condition = expression(token);
 	}
+
+	++token;
 	// }
 
 	// Iteration parsing
 	// {
 	Node* iteration = 0;
-	if ( std::distance(iterationBegin, expressionEnd) > 1 ) {
-		iteration = process_statement(iterationBegin);
+	if ( token->type() != Token::Type::PARENTHESIS_CLOSE ) {
+		iteration = process_statement(token, true);
 	}
+
+	++token;
 	// }
 
 	// Body parsing
