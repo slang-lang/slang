@@ -685,7 +685,7 @@ Statement* TreeGenerator::process_for(TokenIterator& token)
 
 	token = expressionEnd;
 
-	// process our declaration part
+	// Declaration parsing
 	// {
 	Node* initialization = 0;
 	if ( std::distance(initializationBegin, conditionBegin) > 1 ) {
@@ -701,7 +701,7 @@ Statement* TreeGenerator::process_for(TokenIterator& token)
 	}
 	// }
 
-	// Expression parsing
+	// Iteration parsing
 	// {
 	Node* iteration = 0;
 	if ( std::distance(iterationBegin, expressionEnd) > 1 ) {
@@ -1462,10 +1462,9 @@ Expression* TreeGenerator::process_typeid(TokenIterator& token)
 TypeDeclaration* TreeGenerator::process_var(TokenIterator& token)
 {
 	Token start = (*token);
+	std::string name = token->content();
 
 	expect(Token::Type::IDENTIFIER, token);
-
-	std::string name = token->content();
 	++token;
 
 	Mutability::E mutability = Designtime::Parser::parseMutability(token, Mutability::Modify);
