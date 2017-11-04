@@ -936,7 +936,8 @@ void TreeInterpreter::visitFor(ForStatement* node)
 			case Runtime::ControlFlow::Throw: mControlFlow = Runtime::ControlFlow::Throw; return;
 		}
 
-		visitStatement(static_cast<Statement*>(node->mIteration));
+		// execute arbitrary iteration node type
+		visit(node->mIteration);
 	}
 }
 
