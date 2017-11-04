@@ -115,11 +115,11 @@ std::string toString(const Parameter& param)
 {
 	std::string result = param.type();
 	if ( !param.type().empty() ) {
-		//result += " ";
-		result += param.type();
+		result += " ";
+		result += param.name();
 	}
 	else {
-		//result += " ";
+		result += " ";
 		result += ANONYMOUS_OBJECT;
 	}
 
