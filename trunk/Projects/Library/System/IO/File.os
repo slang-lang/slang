@@ -66,6 +66,10 @@ public namespace IO {
 			return freadb(mHandle);
 		}
 
+		public string readChar() const {
+			return freads(mHandle, 1);
+		}
+
 		public double readDouble() const {
 			return freadd(mHandle);
 		}
@@ -78,7 +82,7 @@ public namespace IO {
 			return freadi(mHandle);
 		}
 
-		public string readString(int length = 1) {
+		public string readString(int length) const {
 			return freads(mHandle, length);
 		}
 
