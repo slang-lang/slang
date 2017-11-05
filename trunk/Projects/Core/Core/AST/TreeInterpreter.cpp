@@ -52,7 +52,7 @@
 			return; \
 		}
 
-#define tryEvaluteNull(left, right) \
+#define tryEvaluteReturnNull(left, right) \
 		try { \
 			evaluate(left, right); \
 		} \
@@ -250,7 +250,7 @@ void TreeInterpreter::evaluateMethodExpression(MethodExpression* exp, Runtime::O
 	ParameterList params;
 
 	for ( ExpressionList::const_iterator it = exp->mParams.begin(); it != exp->mParams.end(); ++it ) {
-		objectList.push_back(Runtime::Object());
+		objectList.emplace_back(Runtime::Object());
 
 		Runtime::Object* param = &objectList.back();
 
@@ -297,7 +297,7 @@ void TreeInterpreter::evaluateNewExpression(NewExpression* exp, Runtime::Object*
 	ParameterList params;
 
 	for ( ExpressionList::const_iterator it = method->mParams.begin(); it != method->mParams.end(); ++it ) {
-		objectList.push_back(Runtime::Object());
+		objectList.emplace_back(Runtime::Object());
 
 		Runtime::Object* param = &objectList.back();
 
@@ -428,7 +428,7 @@ void TreeInterpreter::evaluateUnaryExpression(UnaryExpression* exp, Runtime::Obj
 
 			// math expressions
 			// {
-			case Token::Type::MATH_ADDITION:  break;
+			case Token::Type::MATH_ADDITION: /* nothing to do here */ break;
 			case Token::Type::MATH_SUBTRACT: Runtime::operator_unary_minus(result, exp->mOperation.position()); break;
 			case Token::Type::OPERATOR_DECREMENT: Runtime::operator_unary_decrement(result, exp->mOperation.position()); break;
 			case Token::Type::OPERATOR_INCREMENT: Runtime::operator_unary_increment(result, exp->mOperation.position()); break;
@@ -647,59 +647,59 @@ std::string TreeInterpreter::printExpression(Node* node) const
 
 	assert(node->getNodeType() == Node::NodeType::Expression);
 
-	Expression* expression = static_cast<Expression*>(node);
+	Expression* expression = dynamic_cast<Expression*>(node);
 	std::string result;
 
 	switch ( expression->getExpressionType() ) {
 		case Expression::ExpressionType::BinaryExpression: {
-			BinaryExpression* bin = static_cast<BinaryExpression*>(node);
+			BinaryExpression* bin = dynamic_cast<BinaryExpression*>(node);
 
 			result += "(" + printExpression(bin->mLeft);
 			result += " " + bin->mOperation.content() + " ";
 			result += printExpression(bin->mRight) + ")";
 		} break;
 		case Expression::ExpressionType::CopyExpression: {
-			result += "copy " + printExpression(static_cast<CopyExpression*>(expression)->mExpression);
+			result += "copy " + printExpression(dynamic_cast<CopyExpression*>(expression)->mExpression);
 		} break;
 		case Expression::ExpressionType::IsExpression: {
-			result += printExpression(static_cast<IsExpression*>(expression)->mExpression) + " is " + static_cast<IsExpression*>(expression)->mMatchType;
+			result += printExpression(dynamic_cast<IsExpression*>(expression)->mExpression) + " is " + dynamic_cast<IsExpression*>(expression)->mMatchType;
 		} break;
 		case Expression::ExpressionType::NewExpression: {
-			result += "new " + printExpression(static_cast<NewExpression*>(expression)->mExpression);
+			result += "new " + printExpression(dynamic_cast<NewExpression*>(expression)->mExpression);
 		} break;
 		case Expression::ExpressionType::LiteralExpression: {
-			result += static_cast<LiteralExpression*>(expression)->mValue.toStdString();
+			result += dynamic_cast<LiteralExpression*>(expression)->mValue.toStdString();
 		} break;
 		case Expression::ExpressionType::MethodExpression: {
-			result += printExpression(static_cast<MethodExpression*>(expression)->mSymbolExpression);
+			result += printExpression(dynamic_cast<MethodExpression*>(expression)->mSymbolExpression);
 			result += "(";
-			for ( ExpressionList::const_iterator it = static_cast<MethodExpression*>(expression)->mParams.begin(); it != static_cast<MethodExpression*>(expression)->mParams.end(); ++it ) {
+			for ( ExpressionList::const_iterator it = dynamic_cast<MethodExpression*>(expression)->mParams.begin(); it != dynamic_cast<MethodExpression*>(expression)->mParams.end(); ++it ) {
 				result += printExpression((*it));
 			}
 			result += ")";
 		} break;
 		case Expression::ExpressionType::SymbolExpression: {
-			if ( static_cast<SymbolExpression*>(expression)->mSymbolExpression ) {
-				result += printExpression(static_cast<SymbolExpression*>(expression)->mSymbolExpression);
+			if ( dynamic_cast<SymbolExpression*>(expression)->mSymbolExpression ) {
+				result += printExpression(dynamic_cast<SymbolExpression*>(expression)->mSymbolExpression);
 			}
 			else {
-				result += static_cast<SymbolExpression*>(expression)->mName;
+				result += dynamic_cast<SymbolExpression*>(expression)->mName;
 			}
 		} break;
 		case Expression::ExpressionType::TernaryExpression: {
-			result += printExpression(static_cast<TernaryExpression*>(expression)->mCondition) + " ? ";
-			result += printExpression(static_cast<TernaryExpression*>(expression)->mFirst) + " : ";
-			result += printExpression(static_cast<TernaryExpression*>(expression)->mSecond);
+			result += printExpression(dynamic_cast<TernaryExpression*>(expression)->mCondition) + " ? ";
+			result += printExpression(dynamic_cast<TernaryExpression*>(expression)->mFirst) + " : ";
+			result += printExpression(dynamic_cast<TernaryExpression*>(expression)->mSecond);
 		} break;
 		case Expression::ExpressionType::TypecastExpression: {
-			result += static_cast<TypecastExpression*>(expression)->mDestinationType + " ";
-			result += printExpression(static_cast<TypecastExpression*>(expression)->mExpression);
+			result += dynamic_cast<TypecastExpression*>(expression)->mDestinationType + " ";
+			result += printExpression(dynamic_cast<TypecastExpression*>(expression)->mExpression);
 		} break;
 		case Expression::ExpressionType::TypeidExpression: {
-			result += "typeid(" + printExpression(static_cast<TypeidExpression*>(expression)->mExpression) + ")";
+			result += "typeid(" + printExpression(dynamic_cast<TypeidExpression*>(expression)->mExpression) + ")";
 		} break;
 		case Expression::ExpressionType::UnaryExpression: {
-			UnaryExpression* bin = static_cast<UnaryExpression*>(expression);
+			UnaryExpression* bin = dynamic_cast<UnaryExpression*>(expression);
 
 			result += bin->mOperation.content();
 			result += printExpression(bin->mExpression);
@@ -776,7 +776,7 @@ Symbol* TreeInterpreter::resolveRValue(IScope *scope, SymbolExpression *symbol, 
 				scope = static_cast<Runtime::Object*>(child);
 				break;
 			case Symbol::IType::MethodSymbol:
-				throw Designtime::Exceptions::DesigntimeException("invalid symbol type found");
+				throw Runtime::Exceptions::InvalidSymbol("invalid symbol type found");
 		}
 
 		symbol = symbol->mSymbolExpression;
@@ -818,7 +818,7 @@ MethodSymbol* TreeInterpreter::resolveMethod(IScope* scope, SymbolExpression* sy
 				scope = static_cast<Runtime::Object*>(child);
 				break;
 			case Symbol::IType::MethodSymbol:
-				throw Designtime::Exceptions::DesigntimeException("invalid symbol type found: " + symbol->toString());
+				throw Runtime::Exceptions::InvalidSymbol("invalid symbol type found: " + symbol->toString());
 		}
 
 		symbol = symbol->mSymbolExpression;
@@ -1049,62 +1049,62 @@ void TreeInterpreter::visitStatement(Statement *node)
 
 	switch ( node->getStatementType() ) {
 		case Statement::StatementType::AssertStatement:
-			visitAssert(static_cast<AssertStatement*>(node));
+			visitAssert(dynamic_cast<AssertStatement*>(node));
 			break;
 		case Statement::StatementType::Assignment:
-			visitAssignment(static_cast<Assignment*>(node));
+			visitAssignment(dynamic_cast<Assignment*>(node));
 			break;
 		case Statement::StatementType::BreakStatement:
-			visitBreak(static_cast<BreakStatement*>(node));
+			visitBreak(dynamic_cast<BreakStatement*>(node));
 			break;
 		case Statement::StatementType::CaseStatement:
 			throw Common::Exceptions::Exception("case statements are handled separately!");
 		case Statement::StatementType::CatchStatement:
 			throw Common::Exceptions::Exception("catch statements are handled separately!");
 		case Statement::StatementType::ContinueStatement:
-			visitContinue(static_cast<ContinueStatement*>(node));
+			visitContinue(dynamic_cast<ContinueStatement*>(node));
 			break;
 		case Statement::StatementType::DeleteStatement:
-			visitDelete(static_cast<DeleteStatement*>(node));
+			visitDelete(dynamic_cast<DeleteStatement*>(node));
 			break;
 		case Statement::StatementType::ExitStatement:
-			visitExit(static_cast<ExitStatement*>(node));
+			visitExit(dynamic_cast<ExitStatement*>(node));
 			break;
 		case Statement::StatementType::ForeachStatement:
-			visitForeach(static_cast<ForeachStatement *>(node));
+			visitForeach(dynamic_cast<ForeachStatement *>(node));
 			break;
 		case Statement::StatementType::ForStatement:
-			visitFor(static_cast<ForStatement*>(node));
+			visitFor(dynamic_cast<ForStatement*>(node));
 			break;
 		case Statement::StatementType::IfStatement:
-			visitIf(static_cast<IfStatement*>(node));
+			visitIf(dynamic_cast<IfStatement*>(node));
 			break;
 		case Statement::StatementType::PrintStatement:
-			visitPrint(static_cast<PrintStatement*>(node));
+			visitPrint(dynamic_cast<PrintStatement*>(node));
 			break;
 		case Statement::StatementType::ReturnStatement:
-			visitReturn(static_cast<ReturnStatement*>(node));
+			visitReturn(dynamic_cast<ReturnStatement*>(node));
 			break;
 		case Statement::StatementType::Statements:
-			visitStatements(static_cast<Statements*>(node));
+			visitStatements(dynamic_cast<Statements*>(node));
 			break;
 		case Statement::StatementType::SwitchStatement:
-			visitSwitch(static_cast<SwitchStatement*>(node));
+			visitSwitch(dynamic_cast<SwitchStatement*>(node));
 			break;
 		case Statement::StatementType::ThrowStatement:
-			visitThrow(static_cast<ThrowStatement*>(node));
+			visitThrow(dynamic_cast<ThrowStatement*>(node));
 			break;
 		case Statement::StatementType::TryStatement:
-			visitTry(static_cast<TryStatement*>(node));
+			visitTry(dynamic_cast<TryStatement*>(node));
 			break;
 		case Statement::StatementType::TypeDeclaration:
-			visitTypeDeclaration(static_cast<TypeDeclaration*>(node));
+			visitTypeDeclaration(dynamic_cast<TypeDeclaration*>(node));
 			break;
 		case Statement::StatementType::TypeInference:
-			visitTypeInference(static_cast<TypeInference*>(node));
+			visitTypeInference(dynamic_cast<TypeInference*>(node));
 			break;
 		case Statement::StatementType::WhileStatement:
-			visitWhile(static_cast<WhileStatement*>(node));
+			visitWhile(dynamic_cast<WhileStatement*>(node));
 			break;
 	}
 }
@@ -1257,13 +1257,7 @@ Runtime::Object* TreeInterpreter::visitTypeDeclaration(TypeDeclaration* node)
 	getScope()->define(node->mName, object);
 
 	if ( node->mAssignment ) {
-		try {
-			evaluate(node->mAssignment, object);
-		}
-		catch ( Runtime::ControlFlow::E &e ) {
-			mControlFlow = e;
-			return 0;
-		}
+		tryEvaluteReturnNull(node->mAssignment, object);
 	}
 
 	return object;

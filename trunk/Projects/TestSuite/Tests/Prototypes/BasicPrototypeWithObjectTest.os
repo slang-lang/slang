@@ -15,8 +15,8 @@ public object Prototype<T> {
 		return mValue;
 	}
 
-	public void doIt() {
-		T value = mValue;
+	public void doIt() const {
+		T value const = mValue;
 
 		print("value = " + string value);
 	}
