@@ -18,7 +18,7 @@ public object Scanner implements IIterateable {
 		string word;
 
 		while ( !file.isEOF() ) {
-			ch = file.readString();
+			ch = file.readChar();
 
 			word = word + ch;
 		}
