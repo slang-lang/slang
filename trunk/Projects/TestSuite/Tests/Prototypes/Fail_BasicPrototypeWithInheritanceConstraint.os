@@ -1,13 +1,10 @@
 #!/usr/local/bin/oscript
 
-import System.Integer;
-import System.String;
-
 public object Prototype<T: Object> {
 	private T mValue;
 
 	public void Constructor(T value) {
-		print("Prototype<T>.Constructor(" + value + ")");
+		print("Prototype<T: Object>.Constructor(" + value + ")");
 
 		mValue = value;
 	}

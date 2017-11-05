@@ -96,6 +96,17 @@ const TokenList& BluePrintGeneric::getTokens() const
 	return mTokens;
 }
 
+bool BluePrintGeneric::inheritsFrom(const std::string& type) const
+{
+	for ( Ancestors::const_iterator it = mInheritance.begin(); it != mInheritance.end(); ++it ) {
+		if ( it->name() == type ) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
 bool BluePrintGeneric::isAtomicType() const
 {
 	return mIsAtomicType;

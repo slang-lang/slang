@@ -759,7 +759,7 @@ void Object::operator_unary_increment()
 
 void Object::operator_unary_minus()
 {
-	throw Common::Exceptions::NotImplemented(QualifiedTypename() + ".operator unary -: for " + QualifiedTypename() + " not supported");
+	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator unary -: for " + QualifiedTypename() + " not supported");
 }
 
 Symbol* Object::resolve(const std::string& name, bool onlyCurrentScope, Visibility::E visibility) const

@@ -107,14 +107,14 @@ public:
 };
 
 
-class TypeCastException : public RuntimeException
+class TypecastException : public RuntimeException
 {
 public:
-	TypeCastException(const std::string& text, const Common::Position& position = Common::Position())
-	: RuntimeException("TypeCastException: " + text, position)
+	TypecastException(const std::string& text, const Common::Position& position = Common::Position())
+	: RuntimeException("TypecastException: " + text, position)
 	{ }
 
-	virtual ~TypeCastException() throw() { }
+	virtual ~TypecastException() throw() { }
 };
 
 

@@ -126,7 +126,7 @@ void PrototypeTest::testFail_BasicPrototypeWithInheritanceConstraint()
 #ifdef USE_SYSTEM_EXTENSION
 		vm.addExtension(new ObjectiveScript::Extensions::System::SystemExtension());
 #endif
-		TTHROWS(vm.createScriptFromFile("Tests/Prototypes/Fail_BasicPrototypeWithInheritanceConstraint.os"), ObjectiveScript::Runtime::Exceptions::AssertionFailed);
+		TTHROWS(vm.createScriptFromFile("Tests/Prototypes/Fail_BasicPrototypeWithInheritanceConstraint.os"), ObjectiveScript::Common::Exceptions::TypeMismatch);
 	}
 	catch ( std::exception& e ) {
 		// exception has been thrown: test failed!
@@ -138,7 +138,7 @@ void PrototypeTest::testFail_PrototypeAssignment()
 {
 	try {
 		VirtualMachine vm;
-		TTHROWS(vm.createScriptFromFile("Tests/Prototypes/Fail_PrototypeAssignment.os"), ObjectiveScript::Common::Exceptions::Exception);
+		TTHROWS(vm.createScriptFromFile("Tests/Prototypes/Fail_PrototypeAssignment.os"), ObjectiveScript::Common::Exceptions::TypeMismatch);
 	}
 	catch ( std::exception& e ) {
 		// exception has been thrown: test failed!

@@ -71,13 +71,13 @@ void TypeSystem::deinit()
 std::string TypeSystem::getType(const std::string& left, const Token& operation, const std::string& right)
 {
 	if ( !mTypeMap.contains(left) ) {
-		throw Common::Exceptions::NotSupported(left + " " + operation.content() + " " + right, operation.position());
+		throw Common::Exceptions::TypeMismatch(left + " " + operation.content() + " " + right, operation.position());
 	}
 	if ( !mTypeMap[left].contains(operation.type()) ) {
-		throw Common::Exceptions::NotSupported(left + " " + operation.content() + " " + right, operation.position());
+		throw Common::Exceptions::TypeMismatch(left + " " + operation.content() + " " + right, operation.position());
 	}
 	if ( !mTypeMap[left][operation.type()].contains(right) ) {
-		throw Common::Exceptions::NotSupported(left + " " + operation.content() + " " + right, operation.position());
+		throw Common::Exceptions::TypeMismatch(left + " " + operation.content() + " " + right, operation.position());
 	}
 
 	return mTypeMap[left][operation.type()][right];

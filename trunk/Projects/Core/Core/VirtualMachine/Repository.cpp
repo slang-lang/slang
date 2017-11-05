@@ -125,6 +125,25 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 
 	// merge design time and run time constraints
 	constraints = Designtime::mergeConstraints(blueprint->getPrototypeConstraints(), constraints);
+	for ( PrototypeConstraints::const_iterator constIt = constraints.begin(); constIt != constraints.end(); ++constIt ) {
+		if ( constIt->mConstraint.empty() ) {
+			continue;
+		}
+		if ( constIt->mRunType == constIt->mConstraint ) {
+			// same types are okay
+			continue;
+		}
+
+		Designtime::BluePrintGeneric* generic = findBluePrint(constIt->mRunType);
+		if ( !generic ) {
+			throw Common::Exceptions::UnknownIdentifer(constIt->mRunType + " is unknown");
+		}
+
+		if ( !generic->inheritsFrom(constIt->mConstraint) ) {
+			throw Common::Exceptions::TypeMismatch(constIt->mRunType + " does not inherit from " + constIt->mConstraint);
+		}
+	}
+
 
 	std::string constraintType = Designtime::Parser::buildRuntimeConstraintTypename(blueprint->QualifiedTypename(), constraints);
 
