@@ -139,7 +139,7 @@ void processParameters(int argc, const char* argv[])
 	}
 
 	mParameters.push_back(ObjectiveScript::Parameter::CreateRuntime(ObjectiveScript::Runtime::IntegerObject::TYPENAME, (int)params.size()));
-	mParameters.push_back(ObjectiveScript::Parameter::CreateRuntime(ObjectiveScript::Runtime::StringObject::TYPENAME, paramStr.c_str()));
+	mParameters.push_back(ObjectiveScript::Parameter::CreateRuntime(ObjectiveScript::Runtime::StringObject::TYPENAME, paramStr));
 }
 
 int main(int argc, const char* argv[])
