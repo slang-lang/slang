@@ -29,7 +29,7 @@ void typecast(Object *base, const std::string& targetType)
 	}
 	if ( targetType.empty() ) {
 		OSerror("invalid cast target type");
-		throw Runtime::Exceptions::TypeCastException("invalid cast target type");
+		throw Runtime::Exceptions::TypecastException("invalid cast target type");
 	}
 
 	if ( targetType == BoolObject::TYPENAME ) {

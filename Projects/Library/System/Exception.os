@@ -2,7 +2,11 @@
 // declare 'System' namespace to prevent a user defined private 'System' namespace
 public namespace System { }
 
-public object Exception {
+public interface IException {
+	public string what() const;
+}
+
+public object Exception implements IException {
 	private string _exception;
 
 	public void Constructor(string ex) {
@@ -36,9 +40,23 @@ public object NullPointerException extends Exception {
 	}
 }
 
+/*
 public object OutOfBoundsException extends Exception {
 	public void Constructor(string ex) {
 		base.Constructor("OutOfBoundsException: " + ex);
+	}
+}
+*/
+
+public object OutOfBoundsException implements IException {
+	private string _exception;
+
+	public void Constructor(string ex) {
+		_exception = ex;
+	}
+
+	public string what() const {
+		return _exception;
 	}
 }
 

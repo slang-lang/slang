@@ -269,7 +269,7 @@ void TreeInterpreter::evaluateMethodExpression(MethodExpression* exp, Runtime::O
 		throw Runtime::Exceptions::RuntimeException("method " + exp->mSymbolExpression->toString() + "(" + toString(params) + ") not found");
 	}
 
-	Common::Method* method = static_cast<Common::Method*>(methodSymbol);
+	Common::Method* method = dynamic_cast<Common::Method*>(methodSymbol);
 	assert(method);
 
 	if ( method->isExtensionMethod() ) {
@@ -763,12 +763,14 @@ Symbol* TreeInterpreter::resolveRValue(IScope *scope, SymbolExpression *symbol, 
 		}
 
 		switch ( child->getSymbolType() ) {
-			case Symbol::IType::NamespaceSymbol:
-				scope = static_cast<Common::Namespace*>(child);
-				break;
 			case Symbol::IType::BluePrintEnumSymbol:
+				scope = static_cast<Designtime::BluePrintEnum*>(child);
+				break;
 			case Symbol::IType::BluePrintObjectSymbol:
 				scope = static_cast<Designtime::BluePrintObject*>(child);
+				break;
+			case Symbol::IType::NamespaceSymbol:
+				scope = static_cast<Common::Namespace*>(child);
 				break;
 			case Symbol::IType::ObjectSymbol:
 				scope = static_cast<Runtime::Object*>(child);
@@ -909,7 +911,7 @@ void TreeInterpreter::visitExpression(Expression* expression)
 void TreeInterpreter::visitFor(ForStatement* node)
 {
 	// execute initialization statement
-	visitStatement(static_cast<Statement*>(node->mInitialization));
+	visitStatement(dynamic_cast<Statement*>(node->mInitialization));
 
 	Runtime::Object condition;
 
@@ -924,7 +926,7 @@ void TreeInterpreter::visitFor(ForStatement* node)
 		}
 
 		// execute compound statement
-		visitStatement(static_cast<Statement*>(node->mStatement));
+		visitStatement(dynamic_cast<Statement*>(node->mStatement));
 
 		// check (and reset) control flow
 		switch ( mControlFlow ) {
@@ -978,7 +980,7 @@ void TreeInterpreter::visitForeach(ForeachStatement* node)
 		iterator.execute(loopVariable, "next", ParameterList());
 
 		// execute compound statement
-		visitStatement(static_cast<Statement*>(node->mStatement));
+		visitStatement(dynamic_cast<Statement*>(node->mStatement));
 
 		popScope();		// pop scope and remove loop variable
 
@@ -1003,11 +1005,11 @@ void TreeInterpreter::visitIf(IfStatement* node)
 	// validate if-condition
 	if ( isTrue(condition) ) {
 		// execute if-compound statement
-		visitStatement(static_cast<Statement*>(node->mIfBlock));
+		visitStatement(dynamic_cast<Statement*>(node->mIfBlock));
 	}
 	else {
 		// execute else-compound statement
-		visitStatement(static_cast<Statement*>(node->mElseBlock));
+		visitStatement(dynamic_cast<Statement*>(node->mElseBlock));
 	}
 }
 
@@ -1286,7 +1288,7 @@ void TreeInterpreter::visitWhile(WhileStatement* node)
 		}
 
 		// execute compound statement
-		visitStatement(static_cast<Statement*>(node->mStatement));
+		visitStatement(dynamic_cast<Statement*>(node->mStatement));
 
 		// check (and reset) control flow
 		switch ( mControlFlow ) {

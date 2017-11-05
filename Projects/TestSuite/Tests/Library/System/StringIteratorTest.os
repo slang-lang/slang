@@ -31,9 +31,9 @@ private bool TestCase2() const {
 
 	int count;
 	while ( it.hasNext() ) {
-		it.next();
-
 		print("str.current() = " + it.current());
+
+		it.next();
 
 		count++;
 	}

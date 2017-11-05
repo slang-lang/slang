@@ -29,7 +29,6 @@ public:
 };
 
 
-
 class LawOfDemeterViolated : public DesigntimeException
 {
 public:

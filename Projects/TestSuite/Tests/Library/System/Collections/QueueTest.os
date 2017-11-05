@@ -123,8 +123,10 @@ private bool TestCase4() {
 private bool TestCase5() {
 	print("TestCase 5: Queue with non-object type");
 
+/*
 	Queue<int> queue = new Queue<int>();
 	queue.enqueue(1);
+*/
 
 	return false;
 }

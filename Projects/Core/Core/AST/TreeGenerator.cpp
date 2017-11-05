@@ -875,62 +875,62 @@ Statement* TreeGenerator::process_if(TokenIterator& token)
 	return new IfStatement(start, exp, ifBlock, elseBlock);
 }
 
-Node* TreeGenerator::process_keyword(TokenIterator& token)
+Statement* TreeGenerator::process_keyword(TokenIterator& token)
 {
-	Node* node = 0;
+	Statement* statement = 0;
 
 	std::string keyword = (*token++).content();
 
 	if ( keyword == KEYWORD_ASSERT ) {
-		node = process_assert(token);
+		statement = process_assert(token);
 	}
 	else if ( keyword == KEYWORD_BREAK ) {
-		node = process_break(token);
+		statement = process_break(token);
 	}
 	else if ( keyword == KEYWORD_CONTINUE ) {
-		node = process_continue(token);
+		statement = process_continue(token);
 	}
 	else if ( keyword == KEYWORD_DELETE ) {
-		node = process_delete(token);
+		statement = process_delete(token);
 	}
 	else if ( keyword == KEYWORD_EXIT ) {
-		node = process_exit(token);
+		statement = process_exit(token);
 	}
 	else if ( keyword == KEYWORD_FOR ) {
-		node = process_for(token);
+		statement = process_for(token);
 	}
 	else if ( keyword == KEYWORD_FOREACH ) {
-		node = process_foreach(token);
+		statement = process_foreach(token);
 	}
 	else if ( keyword == KEYWORD_IF ) {
-		node = process_if(token);
+		statement = process_if(token);
 	}
 	else if ( keyword == KEYWORD_PRINT ) {
-		node = process_print(token);
+		statement = process_print(token);
 	}
 	else if ( keyword == KEYWORD_RETURN ) {
-		node = process_return(token);
+		statement = process_return(token);
 	}
 	else if ( keyword == KEYWORD_SWITCH ) {
-		node = process_switch(token);
+		statement = process_switch(token);
 	}
 	else if ( keyword == KEYWORD_THROW ) {
-		node = process_throw(token);
+		statement = process_throw(token);
 	}
 	else if ( keyword == KEYWORD_TRY ) {
-		node = process_try(token);
+		statement = process_try(token);
 	}
 	else if ( keyword == KEYWORD_VAR ) {
-		node = process_var(token);
+		statement = process_var(token);
 	}
 	else if ( keyword == KEYWORD_WHILE ) {
-		node = process_while(token);
+		statement = process_while(token);
 	}
 	else {
 		throw Designtime::Exceptions::DesigntimeException("invalid keyword '" + token->content() + "' found", token->position());
 	}
 
-	return node;
+	return statement;
 }
 
 /*

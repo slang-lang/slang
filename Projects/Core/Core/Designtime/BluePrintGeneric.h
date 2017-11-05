@@ -49,6 +49,8 @@ public:
 	Ancestors getInheritance() const;
 	Ancestors getImplementations() const;
 
+	bool inheritsFrom(const std::string& type) const;
+
 	void addInheritance(const Ancestor& inheritance);
 	// }
 

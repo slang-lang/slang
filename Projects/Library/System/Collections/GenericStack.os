@@ -79,7 +79,7 @@ public object GenericStack<T> implements IIterateable, IGenericCollection<T> {
         return mLast.mValue;
     }
 
-    public void pop() modify {
+    public void pop() modify throws {
         if ( mSize <= 0 ) {
             throw new OutOfBoundsException("stack underflow");
         }
