@@ -22,7 +22,7 @@ class RuntimeException : public ::ObjectiveScript::Common::Exceptions::Exception
 {
 public:
 	explicit RuntimeException(const std::string& text, const ObjectiveScript::Common::Position& position = ObjectiveScript::Common::Position())
-	: ::ObjectiveScript::Common::Exceptions::Exception("RuntimeException: " + text, position)
+	: ::ObjectiveScript::Common::Exceptions::Exception(text, position)
 	{ }
 
 	virtual ~RuntimeException() { }
