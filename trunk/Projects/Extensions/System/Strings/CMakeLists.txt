@@ -12,6 +12,7 @@ SET(HEADERS
 	StrLen.h
 	StrLPad.h
 	StrLTrim.h
+	StrPos.h
 	StrRPad.h
 	StrRTrim.h
 	StrTrim.h
