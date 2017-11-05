@@ -23,7 +23,7 @@ namespace Exceptions {
 class Exception : public std::exception
 {
 public:
-	Exception(const std::string& text, const Position& position = Position())
+	explicit Exception(const std::string& text, const Position& position = Position())
 	: mMessage(text),
 	  mPosition(position)
 	{
@@ -31,7 +31,7 @@ public:
 			mMessage += " in " + mPosition.toString();
 		}
 	}
-	virtual ~Exception() noexcept { }
+	virtual ~Exception() noexcept override { }
 
 public:
 #ifdef _WIN32
@@ -40,23 +40,16 @@ public:
 	}
 #elif defined __APPLE__
 #include "TargetConditionals.h"
-#if TARGET_IPHONE_SIMULATOR
-    // iOS Simulator
-#elif TARGET_OS_IPHONE
-    // iOS device
-    const char* what() const throw() {
-        return mMessage.c_str();
-    }
-#elif TARGET_OS_MAC
+#if TARGET_OS_MAC
     // Other kinds of Mac OS X
-    const char* what() const _NOEXCEPT {
+    const char* what() const noexcept override {
     	return mMessage.c_str();
     }
 #else
     // Unsupported platform
 #endif
 #elif defined __linux
-	virtual const char* what() const throw() {
+	virtual const char* what() const noexcept {
 		return mMessage.c_str();
 	}
 #endif
@@ -72,154 +65,154 @@ private:
 class AbstractException : public Exception
 {
 public:
-	AbstractException(const std::string& text, const Position& position = Position())
+	explicit AbstractException(const std::string& text, const Position& position = Position())
 	: Exception("AbstractException: " + text, position)
 	{ }
 
-	virtual ~AbstractException() throw() { }
+	virtual ~AbstractException() { }
 };
 
 
 class AccessMode : public Exception
 {
 public:
-	AccessMode(const std::string& text, const Position& position = Position())
+	explicit AccessMode(const std::string& text, const Position& position = Position())
 	: Exception("AccessModeException: " + text, position)
 	{ }
 
-	virtual ~AccessMode() throw() { }
+	virtual ~AccessMode() { }
 };
 
 
 class ControlFlowException : public Exception
 {
 public:
-	ControlFlowException(const std::string& text, const Position& position = Position())
+	explicit ControlFlowException(const std::string& text, const Position& position = Position())
 	: Exception("ControlFlowException: " + text, position)
 	{ }
 
-	virtual ~ControlFlowException() throw() { }
+	virtual ~ControlFlowException() { }
 };
 
 
 class ConstCorrectnessViolated : public Exception
 {
 public:
-	ConstCorrectnessViolated(const std::string& text, const Position& position = Position())
+	explicit ConstCorrectnessViolated(const std::string& text, const Position& position = Position())
 	: Exception("ConstCorrectnessViolated: " + text, position)
 	{ }
 
-	virtual ~ConstCorrectnessViolated() throw() { }
+	virtual ~ConstCorrectnessViolated() { }
 };
 
 
 class DuplicateIdentifier : public Exception
 {
 public:
-	DuplicateIdentifier(const std::string& text, const Position& position = Position())
+	explicit DuplicateIdentifier(const std::string& text, const Position& position = Position())
 	: Exception("DuplicateIdentifier: " + text, position)
 	{ }
 
-	virtual ~DuplicateIdentifier() throw() { }
+	virtual ~DuplicateIdentifier() { }
 };
 
 
 class InvalidSymbol : public Exception
 {
 public:
-	InvalidSymbol(const std::string& text, const Position& position = Position())
+	explicit InvalidSymbol(const std::string& text, const Position& position = Position())
 	: Exception("InvalidSymbol: " + text, position)
 	{ }
 
-	virtual ~InvalidSymbol() throw() { }
+	virtual ~InvalidSymbol() { }
 };
 
 
 class NotImplemented : public Exception
 {
 public:
-	NotImplemented(const std::string& text, const Position& position = Position())
+	explicit NotImplemented(const std::string& text, const Position& position = Position())
 	: Exception("NotImplemented: " + text, position)
 	{ }
 
-	virtual ~NotImplemented() throw() { }
+	virtual ~NotImplemented() { }
 };
 
 
 class NotSupported : public Exception
 {
 public:
-	NotSupported(const std::string& text, const Position& position = Position())
+	explicit NotSupported(const std::string& text, const Position& position = Position())
 	: Exception("NotSupported: " + text, position)
 	{ }
 
-	virtual ~NotSupported() throw() { }
+	virtual ~NotSupported() { }
 };
 
 
 class ParameterCountMissmatch : public Exception
 {
 public:
-	ParameterCountMissmatch(const std::string& text, const Position& position = Position())
+	explicit ParameterCountMissmatch(const std::string& text, const Position& position = Position())
 	: Exception("ParameterCountMissmatch: " + text, position)
 	{ }
 
-	virtual ~ParameterCountMissmatch() throw() { }
+	virtual ~ParameterCountMissmatch() { }
 };
 
 
 class StaticException : public Exception
 {
 public:
-	StaticException(const std::string& text, const Common::Position& position = Common::Position())
+	explicit StaticException(const std::string& text, const Common::Position& position = Common::Position())
 	: Exception("StaticException: " + text, position)
 	{ }
 
-	virtual ~StaticException() throw() { }
+	virtual ~StaticException() { }
 };
 
 
 class SyntaxError : public Exception
 {
 public:
-	SyntaxError(const std::string& text, const Position& position = Position())
+	explicit SyntaxError(const std::string& text, const Position& position = Position())
 	: Exception("SyntaxError: " + text, position)
 	{ }
 
-	virtual ~SyntaxError() throw() { }
+	virtual ~SyntaxError() { }
 };
 
 
 class TypeMismatch : public Exception
 {
 public:
-	TypeMismatch(const std::string& text, const Position& position = Position())
+	explicit TypeMismatch(const std::string& text, const Position& position = Position())
 	: Exception("TypeMismatch: " + text, position)
 	{ }
 
-	virtual ~TypeMismatch() throw() { }
+	virtual ~TypeMismatch() { }
 };
 
 
 class UnknownIdentifer : public Exception
 {
 public:
-	UnknownIdentifer(const std::string& text, const Position& position = Position())
+	explicit UnknownIdentifer(const std::string& text, const Position& position = Position())
 	: Exception("UnknownIdentifer: " + text, position)
 	{ }
 
-	virtual ~UnknownIdentifer() throw() { }
+	virtual ~UnknownIdentifer() { }
 };
 
 
 class VisibilityError : public Exception
 {
 public:
-	VisibilityError(const std::string& text, const Position& position = Position())
+	explicit VisibilityError(const std::string& text, const Position& position = Position())
 	: Exception("VisibilityError: " + text, position)
 	{ }
 
-	virtual ~VisibilityError() throw() { }
+	virtual ~VisibilityError() { }
 };
 
 

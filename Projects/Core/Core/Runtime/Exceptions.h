@@ -21,11 +21,11 @@ namespace Exceptions {
 class RuntimeException : public ::ObjectiveScript::Common::Exceptions::Exception
 {
 public:
-	RuntimeException(const std::string& text, const ObjectiveScript::Common::Position& position = ObjectiveScript::Common::Position())
+	explicit RuntimeException(const std::string& text, const ObjectiveScript::Common::Position& position = ObjectiveScript::Common::Position())
 	: ::ObjectiveScript::Common::Exceptions::Exception("RuntimeException: " + text, position)
 	{ }
 
-	virtual ~RuntimeException() throw() { }
+	virtual ~RuntimeException() { }
 };
 
 
@@ -33,88 +33,88 @@ public:
 class AccessViolation : public RuntimeException
 {
 public:
-	AccessViolation(const std::string& text, const Common::Position& position = Common::Position())
+	explicit AccessViolation(const std::string& text, const Common::Position& position = Common::Position())
 	: RuntimeException("AccessViolation: " + text, position)
 	{ }
 
-	virtual ~AccessViolation() throw() { }
+	virtual ~AccessViolation() { }
 };
 
 
 class AssertionFailed : public RuntimeException
 {
 public:
-	AssertionFailed(const std::string& text, const Common::Position& position = Common::Position())
+	explicit AssertionFailed(const std::string& text, const Common::Position& position = Common::Position())
 	: RuntimeException("AssertionFailed: " + text, position)
 	{ }
 
-	virtual ~AssertionFailed() throw() { }
+	virtual ~AssertionFailed() { }
 };
 
 
 class ExplicitCastRequired : public RuntimeException
 {
 public:
-	ExplicitCastRequired(const std::string& text, const Common::Position& position = Common::Position())
+	explicit ExplicitCastRequired(const std::string& text, const Common::Position& position = Common::Position())
 	: RuntimeException("ExplicitCastRequired: " + text, position)
 	{ }
 
-	virtual ~ExplicitCastRequired() throw() { }
+	virtual ~ExplicitCastRequired() { }
 };
 
 
 class InvalidAssignment : public RuntimeException
 {
 public:
-	InvalidAssignment(const std::string& text, const Common::Position& position = Common::Position())
+	explicit InvalidAssignment(const std::string& text, const Common::Position& position = Common::Position())
 	: RuntimeException("InvalidAssignment: " + text, position)
 	{ }
 
-	virtual ~InvalidAssignment() throw() { }
+	virtual ~InvalidAssignment() { }
 };
 
 
 class InvalidSymbol : public RuntimeException
 {
 public:
-	InvalidSymbol(const std::string& text, const Common::Position& position = Common::Position())
+	explicit InvalidSymbol(const std::string& text, const Common::Position& position = Common::Position())
 	: RuntimeException("InvalidSymbol: " + text, position)
 	{ }
 
-	virtual ~InvalidSymbol() throw() { }
+	virtual ~InvalidSymbol() { }
 };
 
 
 class NullPointerException : public RuntimeException
 {
 public:
-	NullPointerException(const std::string& text, const Common::Position& position = Common::Position())
+	explicit NullPointerException(const std::string& text, const Common::Position& position = Common::Position())
 	: RuntimeException("NullPointerException: " + text, position)
 	{ }
 
-	virtual ~NullPointerException() throw() { }
+	virtual ~NullPointerException() { }
 };
 
 
 class SizeException : public RuntimeException
 {
 public:
-	SizeException(const std::string& text, const Common::Position& position = Common::Position())
+	explicit SizeException(const std::string& text, const Common::Position& position = Common::Position())
 	: RuntimeException("SizeException: " + text, position)
 	{ }
 
-	virtual ~SizeException() throw() { }
+	virtual ~SizeException() { }
 };
 
 
 class TypecastException : public RuntimeException
 {
 public:
-	TypecastException(const std::string& text, const Common::Position& position = Common::Position())
+	explicit TypecastException(const std::string& text, const Common::Position& position = Common::Position())
 	: RuntimeException("TypecastException: " + text, position)
 	{ }
 
-	virtual ~TypecastException() throw() { }
+	virtual ~TypecastException() { }
 };
 
 

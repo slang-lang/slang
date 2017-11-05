@@ -561,6 +561,50 @@ Statement* TreeGenerator::process_assert(TokenIterator& token)
 
 /*
  * syntax:
+ * <lvalue> = <rvalue>;
+ */
+Statement* TreeGenerator::process_assignment(TokenIterator& token, SymbolExpression* symbol)
+{
+	TokenIterator op = token;
+
+	if ( symbol->isConst() && !(mAllowConstModify && symbol->isMember()) ) {
+		throw Common::Exceptions::ConstCorrectnessViolated("tried to modify const symbol '" + symbol->mName + "'", op->position());
+	}
+
+	Token assignment(Token::Category::Assignment, Token::Type::ASSIGN, "=", op->position());
+
+	Expression* right = static_cast<Expression*>(expression(++token));
+
+	if ( op->type() != Token::Type::ASSIGN ) {
+		Token operation;
+
+		switch ( op->type() ) {
+			case Token::Type::ASSIGN_ADDITION: operation = Token(Token::Category::Operator, Token::Type::MATH_ADDITION, "+", op->position()); break;
+			case Token::Type::ASSIGN_BITAND: operation = Token(Token::Category::Operator, Token::Type::BITAND, "&", op->position()); break;
+			case Token::Type::ASSIGN_BITCOMPLEMENT: operation = Token(Token::Category::Operator, Token::Type::BITCOMPLEMENT, "~", op->position()); break;
+			case Token::Type::ASSIGN_BITOR: operation = Token(Token::Category::Operator, Token::Type::BITOR, "|", op->position()); break;
+			case Token::Type::ASSIGN_DIVIDE: operation = Token(Token::Category::Operator, Token::Type::MATH_DIVIDE, "/", op->position()); break;
+			case Token::Type::ASSIGN_MODULO: operation = Token(Token::Category::Operator, Token::Type::MATH_MODULO, "%", op->position()); break;
+			case Token::Type::ASSIGN_MULTIPLY: operation = Token(Token::Category::Operator, Token::Type::MATH_MULTIPLY, "*", op->position()); break;
+			case Token::Type::ASSIGN_SUBTRACT: operation = Token(Token::Category::Operator, Token::Type::MATH_SUBTRACT, "-", op->position()); break;
+			default: throw Common::Exceptions::SyntaxError("assignment type expected", token->position());
+		}
+
+		right = new BinaryExpression(symbol, operation, right, resolveType(symbol, operation, right));
+	}
+
+/*
+	// TODO: assignment of const objects to non-const objects should not be allowed
+	if ( (right->isConst() && right->isReference()) && (!symbol->isConst() && symbol->isReference()) ) {
+		throw Common::Exceptions::ConstCorrectnessViolated("assignment of const symbol to non-const symbol '" + symbol->mName + "' not allowed", op->position());
+	}
+*/
+
+	return new Assignment(symbol, (*op), right, resolveType(symbol, assignment, right));
+}
+
+/*
+ * syntax:
  * break;
  */
 Statement* TreeGenerator::process_break(TokenIterator& token)
@@ -796,33 +840,7 @@ Node* TreeGenerator::process_identifier(TokenIterator& token, bool allowTypeCast
 	}
 	// assignment
 	else if ( op->category() == Token::Category::Assignment ) {
-		if ( symbol->isConst() && !(mAllowConstModify && symbol->isMember()) ) {
-			throw Common::Exceptions::ConstCorrectnessViolated("tried to modify const symbol '" + symbol->mName + "'", op->position());
-		}
-
-		Token assignment(Token::Category::Assignment, Token::Type::ASSIGN, "=", op->position());
-
-		Expression* right = static_cast<Expression*>(expression(++token));
-
-		if ( op->type() != Token::Type::ASSIGN ) {
-			Token operation;
-
-			switch ( op->type() ) {
-				case Token::Type::ASSIGN_ADDITION: operation = Token(Token::Category::Operator, Token::Type::MATH_ADDITION, "+", op->position()); break;
-				case Token::Type::ASSIGN_BITAND: operation = Token(Token::Category::Operator, Token::Type::BITAND, "&", op->position()); break;
-				case Token::Type::ASSIGN_BITCOMPLEMENT: operation = Token(Token::Category::Operator, Token::Type::BITCOMPLEMENT, "~", op->position()); break;
-				case Token::Type::ASSIGN_BITOR: operation = Token(Token::Category::Operator, Token::Type::BITOR, "|", op->position()); break;
-				case Token::Type::ASSIGN_DIVIDE: operation = Token(Token::Category::Operator, Token::Type::MATH_DIVIDE, "/", op->position()); break;
-				case Token::Type::ASSIGN_MODULO: operation = Token(Token::Category::Operator, Token::Type::MATH_MODULO, "%", op->position()); break;
-				case Token::Type::ASSIGN_MULTIPLY: operation = Token(Token::Category::Operator, Token::Type::MATH_MULTIPLY, "*", op->position()); break;
-				case Token::Type::ASSIGN_SUBTRACT: operation = Token(Token::Category::Operator, Token::Type::MATH_SUBTRACT, "-", op->position()); break;
-				default: throw Common::Exceptions::SyntaxError("assignment type expected", token->position());
-			}
-
-			right = new BinaryExpression(symbol, operation, right, resolveType(symbol, operation, right));
-		}
-
-		node = new Assignment(symbol, (*op), right, resolveType(symbol, assignment, right));
+		node = process_assignment(token, symbol);
 	}
 	// subscript [] operator
 	else if ( op->type() == Token::Type::BRACKET_OPEN ) {
@@ -1369,16 +1387,13 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 {
 	Token start = (*token);
 
-	DesigntimeSymbolExpression* symbolExp = dynamic_cast<DesigntimeSymbolExpression*>(resolveWithExceptions(token, getScope()));
-	if ( !symbolExp ) {
+	DesigntimeSymbolExpression* symbol = dynamic_cast<DesigntimeSymbolExpression*>(resolveWithExceptions(token, getScope()));
+	if ( !symbol ) {
 		throw Common::Exceptions::InvalidSymbol("invalid symbol '" + token->content() + "'", token->position());
 	}
 
-	std::string type = symbolExp->getResultType();
-	PrototypeConstraints constraints = symbolExp->mConstraints;
-
-	// delete resolved symbol expression as it is not needed any more
-	delete symbolExp;
+	std::string type = symbol->getResultType();
+	PrototypeConstraints constraints = symbol->mConstraints;
 
 	expect(Token::Type::IDENTIFIER, token);
 
@@ -1398,7 +1413,7 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 	// non-atomic types are references by default
 	AccessMode::E accessMode = Designtime::Parser::parseAccessMode(token, object->isAtomicType() ? AccessMode::ByValue : AccessMode::ByReference);
 
-	Node* assignment = 0;
+	Expression* assignment = 0;
 
 	if ( token->type() == Token::Type::ASSIGN ) {
 		if ( initialization != Initialization::Allowed ) {
@@ -1409,7 +1424,7 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 		Token copy = (*token);
 		++token;
 
-		assignment = expression(token);
+		assignment = dynamic_cast<Expression*>(expression(token));
 
 /*
 		if ( accessMode == AccessMode::ByReference &&
@@ -1422,7 +1437,14 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 		}
 */
 
-		mTypeSystem->getType(object->QualifiedTypename(), copy, static_cast<Expression*>(assignment)->getResultType());
+/*
+		// TODO: assignment of const objects to non-const objects should not be allowed
+		if ( (assignment->isConst() && assignment->isReference()) && (!symbol->isConst() && symbol->isReference()) ) {
+			throw Common::Exceptions::ConstCorrectnessViolated("assignment of const expression to non-const symbol '" + name + "' not allowed", token->position());
+		}
+*/
+
+		mTypeSystem->getType(object->QualifiedTypename(), copy, assignment->getResultType());
 	}
 	else if ( initialization == Initialization::Required ) {
 		// initialization is required (probably because type inference is used) but no initialization sequence found
@@ -1434,6 +1456,9 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 		// atomic reference without initialization found
 		throw Common::Exceptions::NotSupported("atomic references need to be initialized", token->position());
 	}
+
+	// delete resolved symbol expression as it is not needed any more
+	//delete symbol;
 
 	return new TypeDeclaration(start, type, constraints, name, mutability == Mutability::Const, accessMode == AccessMode::ByReference, assignment);
 }

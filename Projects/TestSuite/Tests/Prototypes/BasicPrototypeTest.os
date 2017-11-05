@@ -14,7 +14,7 @@ public object Prototype<T> {
 	}
 
 	public void doIt() {
-		T value = mValue;
+		T value const = mValue;
 
 		print("value = " + value);
 	}
