@@ -9,7 +9,6 @@ SET(SOURCES
 	Threads.cpp
 	TypeSystem.cpp
 	VirtualMachine.cpp
-	VirtualMethodTable.cpp
 )
 
 SET(HEADERS
@@ -21,7 +20,6 @@ SET(HEADERS
 	Threads.h
 	TypeSystem.h
 	VirtualMachine.h
-	VirtualMethodTable.h
 )
 
 SET(DEPENDENCIES
