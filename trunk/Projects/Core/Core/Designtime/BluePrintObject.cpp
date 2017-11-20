@@ -43,8 +43,8 @@ Runtime::AtomicValue BluePrintObject::getValue() const
 
 bool BluePrintObject::hasConstructor() const
 {
-	// return any (private, protected, public) constructor that has or has no parameters or only default parameters
-	Symbol* constructor = resolve(CONSTRUCTOR, true, Visibility::Public);
+	// return any (private, protected, public) constructor with or without parameters or only default parameters
+	Symbol* constructor = resolve(CONSTRUCTOR, true, Visibility::Private);
 	if ( constructor && dynamic_cast<class MethodSymbol*>(constructor) ) {
 		return true;
 	}
@@ -55,13 +55,21 @@ bool BluePrintObject::hasConstructor() const
 bool BluePrintObject::hasDefaultConstructor() const
 {
 	// return any (private, protected, public) constructor that has no parameters or only default parameters
-	return resolveMethod(CONSTRUCTOR, ParameterList(), true, Visibility::Public) != NULL;
+	return resolveMethod(CONSTRUCTOR, ParameterList(), true, Visibility::Private) != NULL;
 }
 
 bool BluePrintObject::isIterable() const
 {
+	ParameterList params;
+
+/*	this has to be used as soon as 'this' is passed to methods as first parameter
+	params.push_back(
+		Parameter::CreateDesigntime(IDENTIFIER_THIS, Common::TypeDeclaration(QualifiedTypename(), getPrototypeConstraints()))
+	);
+*/
+
 	for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
-		if ( (*it)->getName() == "getIterator" &&  (*it)->isSignatureValid(ParameterList()) ) {
+		if ( (*it)->getName() == "getIterator" &&  (*it)->isSignatureValid(params) ) {
 			return true;
 		}
 	}

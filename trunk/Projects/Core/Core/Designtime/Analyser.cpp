@@ -221,6 +221,13 @@ bool Analyser::createBluePrint(TokenIterator& token)
 
 	// create default constructor if blueprint has no constructor at all
 	if ( implementationType == ImplementationType::FullyImplemented && !blueprint->hasConstructor() ) {
+		ParameterList params;
+/*	this has to be used as soon as 'this' is passed to methods as first parameter
+		params.push_back(Parameter::CreateDesigntime(
+			IDENTIFIER_THIS, Common::TypeDeclaration(name, constraints)
+		));
+*/
+
 		Common::Method* defaultConstructor = new Common::Method(blueprint, CONSTRUCTOR, _void);
 		defaultConstructor->setAbstract(false);
 		defaultConstructor->setConst(false);
@@ -230,7 +237,7 @@ bool Analyser::createBluePrint(TokenIterator& token)
 		defaultConstructor->setMutability(Mutability::Modify);
 		defaultConstructor->setParent(blueprint);
 		defaultConstructor->setRecursive(false);
-		defaultConstructor->setSignature(ParameterList());
+		defaultConstructor->setSignature(params);
 		defaultConstructor->setThrows(false);
 		defaultConstructor->setVisibility(Visibility::Public);
 
@@ -376,14 +383,14 @@ bool Analyser::createMemberStub(TokenIterator& token, Visibility::E visibility, 
 
 	expect(Token::Type::SEMICOLON, token);
 
-	if ( dynamic_cast<BluePrintGeneric*>(mScope) ) {
+	if ( dynamic_cast<BluePrintGeneric*>(mScope) && mutability != Mutability::Static ) {
 		BluePrintObject* member = new BluePrintObject(type.mName, mFilename, name);
 		member->setFinal(mutability == Mutability::Final);
 		member->setIsReference(access == AccessMode::ByReference);
 		member->setLanguageFeatureState(languageFeature);
 		member->setMember(true);
 		member->setMutability(mutability);
-		//member->setParent(mScope);
+		member->setParent(NULL);
 		member->setPrototypeConstraints(type.mConstraints);
 		member->setQualifiedTypename(type.mName);
 		member->setValue(value);
@@ -453,7 +460,7 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 	if ( blueprint ) {
 		params.push_front(Parameter::CreateDesigntime(
 				IDENTIFIER_THIS,
-				blueprint->QualifiedTypename(),
+				Common::TypeDeclaration(blueprint->QualifiedTypename()),
 				Runtime::AtomicValue(),
 				false,
 				mutability,
