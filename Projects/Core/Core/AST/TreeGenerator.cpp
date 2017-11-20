@@ -778,8 +778,7 @@ Statement* TreeGenerator::process_foreach(TokenIterator& token)
 
 	Expression* loopExpression = dynamic_cast<Expression*>(parseExpression(token));
 	if ( loopExpression ) {
-		// TODO: fix me
-/*
+/*	this has to be used as soon as 'this' is passed to methods as first parameter
 		// check if this expression offers an iterator
 		Designtime::BluePrintGeneric* blueprint = mRepository->findBluePrint(loopExpression->getResultType());
 
@@ -1166,6 +1165,10 @@ Node* TreeGenerator::process_statement(TokenIterator& token, bool allowBreakAndC
 	Node* node = 0;
 
 	switch ( token->type() ) {
+		case Token::Type::BRACKET_CURLY_OPEN:
+			node = process_scope(token, allowBreakAndContinue);	// this opens a new scope
+			++token;
+			break;
 		case Token::Type::IDENTIFIER:
 		case Token::Type::TYPE:
 			node = process_identifier(token);
@@ -1173,9 +1176,8 @@ Node* TreeGenerator::process_statement(TokenIterator& token, bool allowBreakAndC
 		case Token::Type::KEYWORD:
 			node = process_keyword(token);
 			break;
-		case Token::Type::BRACKET_CURLY_OPEN:
-			node = process_scope(token, allowBreakAndContinue);	// this opens a new scope
-			++token;
+		case Token::Type::PARENTHESIS_OPEN:
+			node = expression(token);
 			break;
 		case Token::Type::SEMICOLON:
 			++token;
@@ -1618,6 +1620,12 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 		case Symbol::IType::ObjectSymbol: {
 			Runtime::Object* object = static_cast<Runtime::Object*>(result);
 
+/*	this does not work because it also is true for valid static fields
+			if ( dynamic_cast<Designtime::BluePrintGeneric*>(base) && !object->isMember() ) {
+				throw Common::Exceptions::StaticException("cannot access static instance '" + object->getName() + "' from within runtime instance", token->position());
+			}
+*/
+
 			// set scope according to result type
 			scope = object->isAtomicType() ? 0 : object->getBluePrint();
 			type = object->QualifiedTypename();
@@ -1654,9 +1662,9 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 	return symbol;
 }
 
-SymbolExpression* TreeGenerator::resolveWithExceptions(TokenIterator& token, IScope* base, bool onlyCurrentScope) const
+SymbolExpression* TreeGenerator::resolveWithExceptions(TokenIterator& token, IScope* base) const
 {
-	SymbolExpression* exp = resolve(token, base, onlyCurrentScope);
+	SymbolExpression* exp = resolve(token, base, false, Visibility::Public);
 	if ( !exp ) {
 		throw Common::Exceptions::InvalidSymbol("invalid symbol '" + token->content() + "' found", token->position());
 	}
@@ -1664,7 +1672,7 @@ SymbolExpression* TreeGenerator::resolveWithExceptions(TokenIterator& token, ISc
 	return exp;
 }
 
-SymbolExpression* TreeGenerator::resolveWithThis(TokenIterator& token, IScope* base, bool onlyCurrentScope) const
+SymbolExpression* TreeGenerator::resolveWithThis(TokenIterator& token, IScope* base) const
 {
 	if ( mThis ) {
 		// every class-method has a "this" local that points to the object's blueprint
@@ -1702,7 +1710,7 @@ SymbolExpression* TreeGenerator::resolveWithThis(TokenIterator& token, IScope* b
 		delete origin;
 	}
 
-	return resolveWithExceptions(token, base, onlyCurrentScope);
+	return resolveWithExceptions(token, base);
 }
 
 MethodSymbol* TreeGenerator::resolveMethod(SymbolExpression* symbol, const ParameterList& params, Visibility::E visibility) const
