@@ -373,6 +373,31 @@ public:
 };
 
 
+class LocalSymbolExpression : public SymbolExpression
+{
+public:
+	explicit LocalSymbolExpression(const std::string& name, const std::string& resultType, bool isConst, bool isReference)
+	: SymbolExpression(name, resultType)
+	{
+		mIsConst = isConst;
+		mIsMember = false;
+		mIsReference = isReference;
+		mSymbolExpressionType = SymbolExpressionType::RuntimeSymbolExpression;
+	}
+
+	std::string getResultType() const {
+		return mSymbolExpression ? mSymbolExpression->getResultType() : mResultType;
+	}
+
+	unsigned int getIndex() const {
+		return mIndex;
+	}
+
+private:
+	unsigned int mIndex;
+};
+
+
 class TernaryExpression : public Expression
 {
 public:
