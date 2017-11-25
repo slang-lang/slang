@@ -71,6 +71,7 @@ Object& Object::operator= (const Object& other)
 		mIsAtomicType = other.mIsAtomicType;
 		mIsConstructed = other.mIsConstructed;
 		mIsReference = other.mIsReference;
+		mMemoryLayout = other.mMemoryLayout;
 		mParent = other.mParent;
 		mScopeName = other.mScopeName;
 		mScopeType = other.mScopeType;
@@ -81,7 +82,6 @@ Object& Object::operator= (const Object& other)
 		mTypename = other.mTypename;
 
 		setConst(other.isConst());
-		setFinal(other.isFinal());
 		setLanguageFeatureState(other.getLanguageFeatureState());
 		setMember(other.isMember());
 
@@ -100,6 +100,7 @@ void Object::assign(const Object& other)
 		mInheritance = other.mInheritance;
 		mIsAtomicType = other.mIsAtomicType;
 		mIsConstructed = other.mIsConstructed;
+		mMemoryLayout = other.mMemoryLayout;
 		mParent = other.mParent ? other.mParent : mParent;
 		mScopeName = other.mScopeName;
 		mScopeType = other.mScopeType;

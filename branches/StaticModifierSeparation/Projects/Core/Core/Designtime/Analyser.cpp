@@ -230,15 +230,15 @@ bool Analyser::createBluePrint(TokenIterator& token)
 
 		Common::Method* defaultConstructor = new Common::Method(blueprint, CONSTRUCTOR, _void);
 		defaultConstructor->setAbstract(false);
-		defaultConstructor->setConst(false);
-		defaultConstructor->setFinal(false);
 		defaultConstructor->setLanguageFeatureState(LanguageFeatureState::Stable);
+		defaultConstructor->setMemoryLayout(MemoryLayout::Instance);
 		defaultConstructor->setMethodType(MethodAttributes::MethodType::Constructor);
 		defaultConstructor->setMutability(Mutability::Modify);
 		defaultConstructor->setParent(blueprint);
 		defaultConstructor->setRecursive(false);
 		defaultConstructor->setSignature(params);
 		defaultConstructor->setThrows(false);
+		defaultConstructor->setVirtuality(Virtuality::Virtual);
 		defaultConstructor->setVisibility(Visibility::Public);
 
 		blueprint->defineMethod(CONSTRUCTOR, defaultConstructor);
@@ -276,7 +276,6 @@ bool Analyser::createEnum(TokenIterator& token)
 	TokenList tokens = Parser::collectScopeTokens(token);
 
 	BluePrintEnum* symbol = new BluePrintEnum(type.mName, mFilename);
-	symbol->setFinal(true);
 	symbol->setLanguageFeatureState(languageFeatureState);
 	symbol->setMutability(Mutability::Modify);
 	symbol->setParent(mScope);
@@ -385,7 +384,6 @@ bool Analyser::createMemberStub(TokenIterator& token, Visibility::E visibility, 
 
 	if ( dynamic_cast<BluePrintGeneric*>(mScope) && mutability != Mutability::Static ) {
 		BluePrintObject* member = new BluePrintObject(type.mName, mFilename, name);
-		member->setFinal(mutability == Mutability::Final);
 		member->setIsReference(access == AccessMode::ByReference);
 		member->setLanguageFeatureState(languageFeature);
 		member->setMember(true);
@@ -400,7 +398,6 @@ bool Analyser::createMemberStub(TokenIterator& token, Visibility::E visibility, 
 	}
 	else {
 		Runtime::Object* symbol = mRepository->createInstance(type.mName, name, type.mConstraints);
-		symbol->setFinal(mutability == Mutability::Final);
 		symbol->setIsReference(access == AccessMode::ByReference);
 		symbol->setLanguageFeatureState(languageFeature);
 		symbol->setMember(false);
@@ -434,12 +431,13 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 	assert( mScope->getScopeType() == IScope::IType::MethodScope );
 
 	bool isAbstract = mProcessingInterface;
-	bool isFinal = false;
 	bool isRecursive = false;
+	MemoryLayout::E memoryLayout = MemoryLayout::Instance;
 	MethodAttributes::MethodType::E methodType = MethodAttributes::MethodType::Function;
 	Mutability::E mutability = Mutability::Const;	// extreme const correctness: all methods are const by default (except constructors and destructors)
 	int numConstModifiers = 0;
 	bool throws = false;
+	Virtuality::E virtuality = Virtuality::Virtual;
 
 
 	BluePrintGeneric* blueprint = dynamic_cast<BluePrintGeneric*>(mScope);
@@ -492,7 +490,7 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 					throw Common::Exceptions::NotSupported("global methods cannot be declared as final", token->position());
 				}
 
-				isFinal = true;
+				virtuality = Virtuality::Final;
 			}
 			else if ( token->content() == MODIFIER_MODIFY ) {
 				mutability = Mutability::Modify;
@@ -502,6 +500,7 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 				isRecursive = true;
 			}
 			else if ( token->content() == MODIFIER_STATIC ) {
+				memoryLayout = MemoryLayout::Static;
 				mutability = Mutability::Static;
 			}
 			else if ( token->content() == MODIFIER_THROWS ) {
@@ -550,7 +549,6 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 	// create a new method with the corresponding return type
 	Common::Method* method = new Common::Method(mScope, name, type.mName);
 	method->setAbstract(isAbstract || mProcessingInterface);
-	method->setFinal(isFinal);
 	method->setLanguageFeatureState(languageFeature);
 	method->setMethodType(methodType);
 	method->setMutability(mutability);
@@ -560,6 +558,7 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 	method->setSignature(params);
 	method->setThrows(throws);
 	method->setTokens(tokens);
+	method->setVirtuality(virtuality);
 	method->setVisibility(visibility);
 
 	mScope->defineMethod(name, method);

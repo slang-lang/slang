@@ -280,7 +280,7 @@ void TreeGenerator::initialize(Common::Method* method)
 	// add 'this' and 'base' symbol to method
 	if ( mThis && !method->isStatic() ) {
 		Runtime::Object* object = mRepository->createInstance(mThis->QualifiedTypename(), IDENTIFIER_THIS, PrototypeConstraints());
-		object->setConst(mMethod->isConst());
+		object->setMutability(mMethod->getMutability());
 		object->setVisibility(Visibility::Private);
 
 		scope->define(IDENTIFIER_THIS, object);
@@ -1507,7 +1507,7 @@ TypeDeclaration* TreeGenerator::process_var(TokenIterator& token)
 	std::string type = static_cast<Expression*>(assignment)->getResultType();
 
 	Runtime::Object* object = mRepository->createInstance(type, name, PrototypeConstraints(), Repository::InitilizationType::AllowAbstract);
-	object->setConst(mutability == Mutability::Const);
+	object->setMutability(mutability);
 	object->setIsReference(accessMode == AccessMode::ByReference);
 
 	getScope()->define(name, object);

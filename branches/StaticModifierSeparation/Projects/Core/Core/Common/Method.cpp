@@ -35,10 +35,10 @@ Method::Method(const Method& other)
 	mAllowDelete = false;
 	mImplementationType = other.mImplementationType;
 	mIsExtensionMethod = other.mIsExtensionMethod;
-	mIsFinal = other.mIsFinal;
 	mIsRecursive = other.mIsRecursive;
 	mIsSealed = other.mIsSealed;
 	mLanguageFeatureState = other.mLanguageFeatureState;
+	mMemoryLayout = other.mMemoryLayout;
 	mMethodType = other.mMethodType;
 	mMutability = other.mMutability;
 	mReturnType = other.mReturnType;
@@ -48,6 +48,7 @@ Method::Method(const Method& other)
 	mSignature = other.mSignature;
 	mThrows = other.mThrows;
 	mTokens = other.mTokens;
+	mVirtuality = other.mVirtuality;
 	mVisibility = other.mVisibility;
 }
 
@@ -119,10 +120,10 @@ Method& Method::operator= (const Method& other)
 		mAllowDelete = false;
 		mImplementationType = other.mImplementationType;
 		mIsExtensionMethod = other.mIsExtensionMethod;
-		mIsFinal = other.mIsFinal;
 		mIsRecursive = other.mIsRecursive;
 		mIsSealed = other.mIsSealed;
 		mLanguageFeatureState = other.mLanguageFeatureState;
+		mMemoryLayout = other.mMemoryLayout;
 		mMethodType = other.mMethodType;
 		mMutability = other.mMutability;
 		mReturnType = other.mReturnType;
@@ -132,6 +133,7 @@ Method& Method::operator= (const Method& other)
 		mSignature = other.mSignature;
 		mThrows = other.mThrows;
 		mTokens = other.mTokens;
+		mVirtuality = other.mVirtuality;
 		mVisibility = other.mVisibility;
 	}
 
