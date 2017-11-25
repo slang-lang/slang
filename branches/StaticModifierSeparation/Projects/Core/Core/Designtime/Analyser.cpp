@@ -363,6 +363,13 @@ bool Analyser::createMemberStub(TokenIterator& token, Visibility::E visibility, 
 		++token;
 	}
 
+	MemoryLayout::E memoryLayout = MemoryLayout::Instance;
+	if ( token->category() == Token::Category::Modifier ) {
+		memoryLayout = Parser::parseMemoryLayout(token, MemoryLayout::Instance);
+
+		++token;
+	}
+
 	// check parent's constness
 	BluePrintObject* parent = dynamic_cast<BluePrintObject*>(mScope);
 	if ( parent && parent->isConst() && mutability != Mutability::Const ) {
@@ -382,11 +389,12 @@ bool Analyser::createMemberStub(TokenIterator& token, Visibility::E visibility, 
 
 	expect(Token::Type::SEMICOLON, token);
 
-	if ( dynamic_cast<BluePrintGeneric*>(mScope) && mutability != Mutability::Static ) {
+	if ( dynamic_cast<BluePrintGeneric*>(mScope) && memoryLayout != MemoryLayout::Static ) {
 		BluePrintObject* member = new BluePrintObject(type.mName, mFilename, name);
 		member->setIsReference(access == AccessMode::ByReference);
 		member->setLanguageFeatureState(languageFeature);
 		member->setMember(true);
+		member->setMemoryLayout(memoryLayout);
 		member->setMutability(mutability);
 		member->setParent(NULL);
 		member->setPrototypeConstraints(type.mConstraints);
@@ -401,6 +409,7 @@ bool Analyser::createMemberStub(TokenIterator& token, Visibility::E visibility, 
 		symbol->setIsReference(access == AccessMode::ByReference);
 		symbol->setLanguageFeatureState(languageFeature);
 		symbol->setMember(false);
+		symbol->setMemoryLayout(memoryLayout);
 		symbol->setMutability(mutability);
 		symbol->setParent(mScope);
 		symbol->setValue(value);
@@ -501,7 +510,6 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 			}
 			else if ( token->content() == MODIFIER_STATIC ) {
 				memoryLayout = MemoryLayout::Static;
-				mutability = Mutability::Static;
 			}
 			else if ( token->content() == MODIFIER_THROWS ) {
 				if ( methodType == MethodAttributes::MethodType::Destructor ) {
@@ -551,6 +559,7 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 	method->setAbstract(isAbstract || mProcessingInterface);
 	method->setLanguageFeatureState(languageFeature);
 	method->setMethodType(methodType);
+	method->setMemoryLayout(memoryLayout);
 	method->setMutability(mutability);
 	method->setParent(mScope);
 	method->setPrototypeConstraints(type.mConstraints);

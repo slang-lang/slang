@@ -16,6 +16,52 @@
 namespace ObjectiveScript {
 
 
+class AccessMode
+{
+public:
+	enum E {
+		Unspecified = 0,
+		ByReference,
+		ByValue
+	};
+
+	static E convert(const std::string& v);
+	static std::string convert(E e);
+};
+
+
+class ImplementationType
+{
+public:
+	enum E {
+		Unknown = 0,
+		Abstract,
+		ForwardDeclaration,
+		FullyImplemented,
+		Interface
+	};
+
+	static E convert(const std::string& v);
+	static std::string convert(E e);
+};
+
+
+class LanguageFeatureState
+{
+public:
+	enum E {
+		Unknown = 0,
+		Deprecated,
+		NotImplemented,
+		Stable,
+		Unstable
+	};
+
+	static E convert(const std::string& v);
+	static std::string convert(E e);
+};
+
+
 class MemoryLayout
 {
 public:
@@ -23,6 +69,35 @@ public:
 		Unknown = 0,
 		Instance,
 		Static
+	};
+
+	static E convert(const std::string& v);
+	static std::string convert(E e);
+};
+
+
+class Mutability
+{
+public:
+	enum E {
+		Unknown = 0,
+		Const,
+		Modify
+	};
+
+	static E convert(const std::string& v);
+	static std::string convert(E e);
+};
+
+
+class ObjectType
+{
+public:
+	enum E {
+		Unknown = 0,
+		Enum,
+		Interface,
+		Object
 	};
 
 	static E convert(const std::string& v);

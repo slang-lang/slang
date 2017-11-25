@@ -130,7 +130,7 @@ bool MethodAttributes::isRecursive() const
 
 bool MethodAttributes::isStatic() const
 {
-	return mMutability == Mutability::Static;
+	return mMemoryLayout == MemoryLayout::Static;
 }
 
 void MethodAttributes::setAbstract(bool state)

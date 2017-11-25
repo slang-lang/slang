@@ -82,11 +82,13 @@ StringSet provideModifiers()
 	modifiers.insert(MODIFIER_ABSTRACT);
 	modifiers.insert(MODIFIER_CONST);
 	modifiers.insert(MODIFIER_FINAL);
+	modifiers.insert(MODIFIER_INSTANCE);
 	modifiers.insert(MODIFIER_MODIFY);
 	modifiers.insert(MODIFIER_RECURSIVE);
 	modifiers.insert(MODIFIER_SEALED);
 	modifiers.insert(MODIFIER_STATIC);
 	modifiers.insert(MODIFIER_THROWS);
+	modifiers.insert(MODIFIER_VIRTUAL);
 
 	return modifiers;
 }

@@ -6,9 +6,6 @@
 // Library includes
 
 // Project includes
-#include "ImplementationType.h"
-#include "LanguageFeatureState.h"
-#include "Mutability.h"
 #include "Types.h"
 
 // Forward declarations

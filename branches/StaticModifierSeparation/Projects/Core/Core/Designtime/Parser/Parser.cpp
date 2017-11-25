@@ -537,6 +537,21 @@ LanguageFeatureState::E Parser::parseLanguageFeatureState(TokenIterator& token, 
 	return result;
 }
 
+MemoryLayout::E Parser::parseMemoryLayout(TokenIterator& token, MemoryLayout::E defaultValue)
+{
+	MemoryLayout::E result = defaultValue;
+
+	if ( token->type() == Token::Type::MODIFIER ) {
+		result = MemoryLayout::convert((*token++).content());
+
+		if ( result == MemoryLayout::Unknown ) {
+			result = defaultValue;
+		}
+	}
+
+	return result;
+}
+
 Mutability::E Parser::parseMutability(TokenIterator& token, Mutability::E defaultValue)
 {
 	Mutability::E result = defaultValue;
@@ -692,6 +707,21 @@ Runtime::AtomicValue Parser::parseValueInitialization(TokenIterator& token)
 	}
 
 	return value;
+}
+
+Virtuality::E Parser::parseVirtuality(TokenIterator& token, Virtuality::E defaultValue)
+{
+	Virtuality::E result = defaultValue;
+
+	if ( token->type() == Token::Type::MODIFIER ) {
+		result = Virtuality::convert((*token++).content());
+
+		if ( result == Virtuality::Unknown ) {
+			result = defaultValue;
+		}
+	}
+
+	return result;
 }
 
 Visibility::E Parser::parseVisibility(TokenIterator& token, Visibility::E defaultValue)
