@@ -8,8 +8,7 @@
 #include <string>
 
 // Project includes
-#include <Core/Attributes/AccessMode.h>
-#include <Core/Attributes/Mutability.h>
+#include <Core/Attributes/Types.h>
 #include <Core/Common/TypeDeclaration.h>
 #include <Core/Runtime/AtomicValue.h>
 #include <Core/Runtime/Reference.h>

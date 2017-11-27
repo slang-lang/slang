@@ -6,9 +6,7 @@
 // Library includes
 
 // Project includes
-#include "ImplementationType.h"
-#include "LanguageFeatureState.h"
-#include "Mutability.h"
+#include "Types.h"
 
 // Forward declarations
 
@@ -28,22 +26,25 @@ public:
 	virtual bool isConst() const;
 	virtual void setConst(bool state);
 
-	virtual bool isFinal() const;
-	virtual void setFinal(bool state);
+	virtual bool isStatic() const;
+	virtual void setStatic(bool state);
 
 	virtual LanguageFeatureState::E getLanguageFeatureState() const;
-	virtual void setLanguageFeatureState(LanguageFeatureState::E s);
+	virtual void setLanguageFeatureState(LanguageFeatureState::E value);
+
+	virtual MemoryLayout::E getMemoryLayout() const;
+	virtual void setMemoryLayout(MemoryLayout::E value);
 
 	virtual Mutability::E getMutability() const;
-	virtual void setMutability(Mutability::E m);
+	virtual void setMutability(Mutability::E value);
 
 protected:
 	void checkSealState();
 
 protected:
-	bool mIsFinal;
 	bool mIsSealed;
 	LanguageFeatureState::E mLanguageFeatureState;
+	MemoryLayout::E mMemoryLayout;
 	Mutability::E mMutability;
 };
 
@@ -67,24 +68,27 @@ public:
 
 public:
 	virtual bool isAbstract() const;
-	virtual void setAbstract(bool state);
+	virtual bool isFinal() const;
+	virtual bool isStatic() const;
+	virtual bool throws() const;
 
-	virtual bool isRecursive() const;
-	virtual void setRecursive(bool state);
+	virtual Algorithm::E getAlgorithm() const;
+	virtual void setAlgorithm(Algorithm::E value);
+
+	virtual CheckedExceptions::E getExceptions() const;
+	virtual void setExceptions(CheckedExceptions::E value);
 
 	virtual MethodType::E getMethodType() const;
-	virtual void setMethodType(MethodType::E type);
+	virtual void setMethodType(MethodType::E value);
 
-	virtual bool isStatic() const;
-
-	virtual bool throws() const;
-	virtual void setThrows(bool state);
+	virtual Virtuality::E getVirtuality() const;
+	virtual void setVirtuality(Virtuality::E value);
 
 protected:
-	ImplementationType::E mImplementationType;
-	bool mIsRecursive;
+	Algorithm::E mAlgorithm;
+	CheckedExceptions::E mCheckedExceptions;
 	MethodType::E mMethodType;
-	bool mThrows;
+	Virtuality::E mVirtuality;
 };
 
 
@@ -106,7 +110,7 @@ public:
 
 public:
 	virtual ImplementationType::E getImplementationType() const;
-	virtual void setImplementationType(ImplementationType::E type);
+	virtual void setImplementationType(ImplementationType::E value);
 
 	virtual bool isMember() const;
 	virtual void setMember(bool state);

@@ -6,13 +6,12 @@
 // Library includes
 
 // Project includes
-#include <Core/Attributes/ImplementationType.h>
-#include <Core/Attributes/LanguageFeatureState.h>
-#include <Core/Attributes/ObjectType.h>
+#include <Core/Attributes/Types.h>
 #include <Core/Common/PrototypeConstraint.h>
 #include <Core/Common/TypeDeclaration.h>
 #include <Core/Designtime/Ancestor.h>
 #include <Core/Parameter.h>
+#include <Core/Attributes/Types.h>
 #include "Token.h"
 
 // Forward declarations
@@ -52,14 +51,17 @@ public:
 	static bool isObjectDeclaration(TokenIterator token);
 
 	static AccessMode::E parseAccessMode(TokenIterator& token, AccessMode::E defaultValue);
+	static CheckedExceptions::E parseExceptions(TokenIterator& token, CheckedExceptions::E defaultValue = CheckedExceptions::Nothrow);
 	static ImplementationType::E parseImplementationType(TokenIterator& token, ImplementationType::E defaultValue);
 	static LanguageFeatureState::E parseLanguageFeatureState(TokenIterator& token, LanguageFeatureState::E defaultValue);
-	static Mutability::E parseMutability(TokenIterator& token, Mutability::E defaultValue);
+	static MemoryLayout::E parseMemoryLayout(TokenIterator& token, MemoryLayout::E defaultValue = MemoryLayout::Instance);
+	static Mutability::E parseMutability(TokenIterator& token, Mutability::E defaultValue = Mutability::Modify);
 	static ObjectType::E parseObjectType(TokenIterator& token);
 	static ParameterList parseParameters(TokenIterator &token, IScope* scope = 0);
 	static Common::TypeDeclaration parseTypeDeclaration(TokenIterator& token, IScope* scope = 0);
 	static Runtime::AtomicValue parseValueInitialization(TokenIterator& token);
-	static Visibility::E parseVisibility(TokenIterator& token, Visibility::E defaultValue);
+	static Virtuality::E parseVirtuality(TokenIterator& token, Virtuality::E defaultValue = Virtuality::Virtual);
+	static Visibility::E parseVisibility(TokenIterator& token, Visibility::E defaultValue = Visibility::Private);
 };
 
 
