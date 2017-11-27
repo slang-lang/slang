@@ -45,7 +45,6 @@ void Tokenizer::addToken(const std::string& con, const Common::Position& positio
 	else if ( content == "." ) { type = Token::Type::SCOPE; }
 	else if ( content == ";" ) { type = Token::Type::SEMICOLON; }
 	else if ( content == ":" ) { type = Token::Type::COLON; }
-	else if ( content == "'" ) { type = Token::Type::QUOTATION_SINGLE; }
 	else if ( content == "\"" ) { type = Token::Type::QUOTATION_DOUBLE; }
 	else if ( content == "[" ) { type = Token::Type::BRACKET_OPEN; }
 	else if ( content == "]" ) { type = Token::Type::BRACKET_CLOSE; }
@@ -74,10 +73,12 @@ void Tokenizer::addToken(const std::string& con, const Common::Position& positio
 		content = con.substr(0, con.length() - 1);
 	}
 	else if ( isInteger(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_INTEGER; }
+/*
 	else if ( isIntegerWithType(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_INTEGER;
 		// remove trailing 'i' character
 		content = con.substr(0, con.length() - 1);
 	}
+*/
 	else if ( isKeyword(content) ) { category = Token::Category::Keyword; type = Token::Type::KEYWORD; }
 	else if ( isLanguageFeature(content) ) { category = Token::Category::Attribute; isOptional = true; type = Token::Type::LANGUAGEFEATURE; }
 	else if ( isLiteral(content) ) { category = Token::Category::Constant; type = Token::Type::CONST_LITERAL;
