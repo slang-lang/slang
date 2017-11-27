@@ -229,15 +229,13 @@ bool Analyser::createBluePrint(TokenIterator& token)
 */
 
 		Common::Method* defaultConstructor = new Common::Method(blueprint, CONSTRUCTOR, _void);
-		defaultConstructor->setAbstract(false);
+		defaultConstructor->setExceptions(CheckedExceptions::Nothrow);
 		defaultConstructor->setLanguageFeatureState(LanguageFeatureState::Stable);
 		defaultConstructor->setMemoryLayout(MemoryLayout::Instance);
 		defaultConstructor->setMethodType(MethodAttributes::MethodType::Constructor);
 		defaultConstructor->setMutability(Mutability::Modify);
 		defaultConstructor->setParent(blueprint);
-		defaultConstructor->setRecursive(false);
 		defaultConstructor->setSignature(params);
-		defaultConstructor->setThrows(false);
 		defaultConstructor->setVirtuality(Virtuality::Virtual);
 		defaultConstructor->setVisibility(Visibility::Public);
 
@@ -355,28 +353,15 @@ bool Analyser::createMemberStub(TokenIterator& token, Visibility::E visibility, 
 {
 	assert( mScope->getScopeType() == IScope::IType::MethodScope );
 
-	// look for a mutability keyword
-	Mutability::E mutability = Mutability::Modify;
-	if ( token->category() == Token::Category::Modifier ) {
-		mutability = Mutability::convert(token->content());
-
-		++token;
-	}
-
-	MemoryLayout::E memoryLayout = MemoryLayout::Instance;
-	if ( token->category() == Token::Category::Modifier ) {
-		memoryLayout = Parser::parseMemoryLayout(token, MemoryLayout::Instance);
-
-		++token;
-	}
+	Mutability::E mutability = Parser::parseMutability(token, Mutability::Modify);
+	MemoryLayout::E memoryLayout = Parser::parseMemoryLayout(token, MemoryLayout::Instance);
+	AccessMode::E access = Parser::parseAccessMode(token, AccessMode::ByValue);
 
 	// check parent's constness
 	BluePrintObject* parent = dynamic_cast<BluePrintObject*>(mScope);
 	if ( parent && parent->isConst() && mutability != Mutability::Const ) {
 		throw Common::Exceptions::ConstCorrectnessViolated("cannot add modifiable member '" + name + "' to const object '" + parent->getFullScopeName() + "'", token->position());
 	}
-
-	AccessMode::E access = Parser::parseAccessMode(token, AccessMode::ByValue);
 
 	Runtime::AtomicValue value = 0;
 	if ( token->type() == Token::Type::ASSIGN ) {
@@ -408,7 +393,7 @@ bool Analyser::createMemberStub(TokenIterator& token, Visibility::E visibility, 
 		Runtime::Object* symbol = mRepository->createInstance(type.mName, name, type.mConstraints);
 		symbol->setIsReference(access == AccessMode::ByReference);
 		symbol->setLanguageFeatureState(languageFeature);
-		symbol->setMember(false);
+		symbol->setMember(dynamic_cast<BluePrintGeneric*>(mScope));
 		symbol->setMemoryLayout(memoryLayout);
 		symbol->setMutability(mutability);
 		symbol->setParent(mScope);
@@ -439,14 +424,12 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 {
 	assert( mScope->getScopeType() == IScope::IType::MethodScope );
 
-	bool isAbstract = mProcessingInterface;
-	bool isRecursive = false;
+	CheckedExceptions::E exceptions = CheckedExceptions::Nothrow;
 	MemoryLayout::E memoryLayout = MemoryLayout::Instance;
 	MethodAttributes::MethodType::E methodType = MethodAttributes::MethodType::Function;
 	Mutability::E mutability = Mutability::Const;	// extreme const correctness: all methods are const by default (except constructors and destructors)
-	int numConstModifiers = 0;
 	bool throws = false;
-	Virtuality::E virtuality = Virtuality::Virtual;
+	Virtuality::E virtuality = mProcessingInterface ? Virtuality::Abstract : Virtuality::Virtual;
 
 
 	BluePrintGeneric* blueprint = dynamic_cast<BluePrintGeneric*>(mScope);
@@ -476,56 +459,15 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 	}
 */
 
-	// look at possible attributes (abstract, const, final, modify, throws, etc.)
-	// while looking for the next opening curly bracket
-	bool isModifierToken = true;
-	do {
-		++token;
+	++token;
 
-		if ( token->category() == Token::Category::Modifier ) {
-			if ( token->content() == MODIFIER_ABSTRACT ) {
-				if ( !blueprint ) {
-					throw Common::Exceptions::NotSupported("global methods cannot be declared as abstract", token->position());
-				}
+	mutability = Parser::parseMutability(token, mutability);
+	memoryLayout = Parser::parseMemoryLayout(token, memoryLayout);
+	exceptions = Parser::parseExceptions(token, exceptions);
+	virtuality = Parser::parseVirtuality(token, virtuality);
 
-				isAbstract = true;
-			}
-			else if ( token->content() == MODIFIER_CONST ) {
-				mutability = Mutability::Const;
-				numConstModifiers++;
-			}
-			else if ( token->content() == MODIFIER_FINAL ) {
-				if ( !blueprint ) {
-					throw Common::Exceptions::NotSupported("global methods cannot be declared as final", token->position());
-				}
-
-				virtuality = Virtuality::Final;
-			}
-			else if ( token->content() == MODIFIER_MODIFY ) {
-				mutability = Mutability::Modify;
-				numConstModifiers++;
-			}
-			else if ( token->content() == MODIFIER_RECURSIVE ) {
-				isRecursive = true;
-			}
-			else if ( token->content() == MODIFIER_STATIC ) {
-				memoryLayout = MemoryLayout::Static;
-			}
-			else if ( token->content() == MODIFIER_THROWS ) {
-				if ( methodType == MethodAttributes::MethodType::Destructor ) {
-					OSwarn("exceptions thrown in destructor cannot be caught in " + token->position().toString());
-				}
-
-				throws = true;
-			}
-		}
-		else {
-			isModifierToken = false;
-		}
-	} while ( isModifierToken && token->type() != Token::Type::BRACKET_CURLY_OPEN );
-
-	if ( numConstModifiers > 1 ) {	// prevent concurrent use of 'const' and 'modify' attributes
-		throw Common::Exceptions::Exception("modifiers 'const' & 'modify' are exclusive", token->position());
+	if ( methodType == MethodAttributes::MethodType::Destructor && exceptions == CheckedExceptions::Throw ) {
+		OSwarn("exceptions thrown in destructor cannot be caught in " + token->position().toString());
 	}
 
 	// check parent's constness
@@ -539,13 +481,13 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 	// collect all tokens of this method
 	TokenList tokens;
 	if ( token->type() == Token::Type::BRACKET_CURLY_OPEN ) {
-		if ( mProcessingInterface ) {
+		if ( virtuality == Virtuality::Abstract ) {
 			throw Common::Exceptions::SyntaxError("interface methods are not allowed to be implemented", token->position());
 		}
 
 		tokens = Parser::collectScopeTokens(token);
 	}
-	else if ( !isAbstract ) {
+	else if ( virtuality != Virtuality::Abstract ) {
 		throw Common::Exceptions::SyntaxError("method '" + name + "' is not declared as abstract but has no implementation", token->position());
 	}
 
@@ -556,16 +498,14 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 
 	// create a new method with the corresponding return type
 	Common::Method* method = new Common::Method(mScope, name, type.mName);
-	method->setAbstract(isAbstract || mProcessingInterface);
+	method->setExceptions(exceptions);
 	method->setLanguageFeatureState(languageFeature);
 	method->setMethodType(methodType);
 	method->setMemoryLayout(memoryLayout);
 	method->setMutability(mutability);
 	method->setParent(mScope);
 	method->setPrototypeConstraints(type.mConstraints);
-	method->setRecursive(isRecursive);
 	method->setSignature(params);
-	method->setThrows(throws);
 	method->setTokens(tokens);
 	method->setVirtuality(virtuality);
 	method->setVisibility(visibility);

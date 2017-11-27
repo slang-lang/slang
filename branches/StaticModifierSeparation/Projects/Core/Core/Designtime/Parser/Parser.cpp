@@ -507,6 +507,21 @@ AccessMode::E Parser::parseAccessMode(TokenIterator& token, AccessMode::E defaul
 	return result;
 }
 
+CheckedExceptions::E Parser::parseExceptions(TokenIterator& token, CheckedExceptions::E defaultValue)
+{
+	CheckedExceptions::E result = CheckedExceptions::convert((*token).content());
+
+	if ( result != CheckedExceptions::Unspecified ) {
+		// an exception modifier has been detected => increment the token iterator and return the found modifier
+		++token;
+
+		return result;
+	}
+
+	// no exception token found => return the default value without incrementing the token iterator
+	return defaultValue;
+}
+
 ImplementationType::E Parser::parseImplementationType(TokenIterator& token, ImplementationType::E defaultValue)
 {
 	ImplementationType::E result = defaultValue;
@@ -514,7 +529,7 @@ ImplementationType::E Parser::parseImplementationType(TokenIterator& token, Impl
 	if ( token->isOptional() && token->type() == Token::Type::MODIFIER ) {
 		ImplementationType::E value = ImplementationType::convert((*token++).content());
 
-		if ( value != ImplementationType::Unknown ) {
+		if ( value != ImplementationType::Unspecified ) {
 			result = value;
 		}
 	}
@@ -529,7 +544,7 @@ LanguageFeatureState::E Parser::parseLanguageFeatureState(TokenIterator& token, 
 	if ( token->isOptional() && token->category() == Token::Category::Attribute && token->type() == Token::Type::LANGUAGEFEATURE ) {
 		LanguageFeatureState::E value = LanguageFeatureState::convert((*token++).content());
 
-		if ( value != LanguageFeatureState::Unknown ) {
+		if ( value != LanguageFeatureState::Unspecified ) {
 			result = value;
 		}
 	}
@@ -539,32 +554,32 @@ LanguageFeatureState::E Parser::parseLanguageFeatureState(TokenIterator& token, 
 
 MemoryLayout::E Parser::parseMemoryLayout(TokenIterator& token, MemoryLayout::E defaultValue)
 {
-	MemoryLayout::E result = defaultValue;
+	MemoryLayout::E result = MemoryLayout::convert((*token).content());
 
-	if ( token->type() == Token::Type::MODIFIER ) {
-		result = MemoryLayout::convert((*token++).content());
+	if ( result != MemoryLayout::Unspecified ) {
+		// a memory layout modifier has been detected => increment the token iterator and return the found modifier
+		++token;
 
-		if ( result == MemoryLayout::Unknown ) {
-			result = defaultValue;
-		}
+		return result;
 	}
 
-	return result;
+	// no memory layout token found => return the default value without incrementing the token iterator
+	return defaultValue;
 }
 
 Mutability::E Parser::parseMutability(TokenIterator& token, Mutability::E defaultValue)
 {
-	Mutability::E result = defaultValue;
+	Mutability::E result = Mutability::convert((*token).content());
 
-	if ( token->isOptional() && token->category() == Token::Category::Modifier && token->type() == Token::Type::MODIFIER ) {
-		Mutability::E value = Mutability::convert((*token++).content());
+	if ( result != Mutability::Unknown ) {
+		// a mutability modifier has been detected => increment the token iterator and return the found modifier
+		++token;
 
-		if ( value != Mutability::Unknown ) {
-			result = value;
-		}
+		return result;
 	}
 
-	return result;
+	// no mutability token found => return the default value without incrementing the token iterator
+	return defaultValue;
 }
 
 ObjectType::E Parser::parseObjectType(TokenIterator& token)
@@ -711,17 +726,17 @@ Runtime::AtomicValue Parser::parseValueInitialization(TokenIterator& token)
 
 Virtuality::E Parser::parseVirtuality(TokenIterator& token, Virtuality::E defaultValue)
 {
-	Virtuality::E result = defaultValue;
+	Virtuality::E result = Virtuality::convert((*token).content());
 
-	if ( token->type() == Token::Type::MODIFIER ) {
-		result = Virtuality::convert((*token++).content());
+	if ( result != Virtuality::Unknown ) {
+		// a virtuality modifier has been detected => increment the token iterator and return the found modifier
+		++token;
 
-		if ( result == Virtuality::Unknown ) {
-			result = defaultValue;
-		}
+		return result;
 	}
 
-	return result;
+	// no virtuality token found => return the default value without incrementing the token iterator
+	return defaultValue;
 }
 
 Visibility::E Parser::parseVisibility(TokenIterator& token, Visibility::E defaultValue)

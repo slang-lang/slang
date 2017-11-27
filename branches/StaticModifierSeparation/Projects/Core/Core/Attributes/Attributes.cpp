@@ -94,13 +94,22 @@ void GenericAttributes::setMutability(Mutability::E value)
 
 
 MethodAttributes::MethodAttributes()
-: mImplementationType(ImplementationType::FullyImplemented),
-  mIsRecursive(false),
+: mAlgorithm(Algorithm::Heuristic),
+  mCheckedExceptions(CheckedExceptions::Nothrow),
   mMethodType(MethodType::Method),
-  mThrows(false),
   mVirtuality(Virtuality::Virtual)
 {
 	setMutability(Mutability::Const);
+}
+
+Algorithm::E MethodAttributes::getAlgorithm() const
+{
+	return mAlgorithm;
+}
+
+CheckedExceptions::E MethodAttributes::getExceptions() const
+{
+	return mCheckedExceptions;
 }
 
 MethodAttributes::MethodType::E MethodAttributes::getMethodType() const
@@ -115,7 +124,7 @@ Virtuality::E MethodAttributes::getVirtuality() const
 
 bool MethodAttributes::isAbstract() const
 {
-	return mImplementationType == ImplementationType::Abstract || mImplementationType == ImplementationType::Interface;
+	return mVirtuality == Virtuality::Abstract;
 }
 
 bool MethodAttributes::isFinal() const
@@ -123,48 +132,42 @@ bool MethodAttributes::isFinal() const
 	return mVirtuality == Virtuality::Final;
 }
 
-bool MethodAttributes::isRecursive() const
-{
-	return mIsRecursive;
-}
-
 bool MethodAttributes::isStatic() const
 {
 	return mMemoryLayout == MemoryLayout::Static;
 }
 
-void MethodAttributes::setAbstract(bool state)
+void MethodAttributes::setAlgorithm(Algorithm::E value)
 {
 	checkSealState();
 
-	mImplementationType = state ? ImplementationType::Abstract : ImplementationType::FullyImplemented;
+	mAlgorithm = value;
 }
 
-void MethodAttributes::setMethodType(MethodType::E type)
-{
-	mMethodType = type;
-}
-
-void MethodAttributes::setRecursive(bool state)
+void MethodAttributes::setExceptions(CheckedExceptions::E value)
 {
 	checkSealState();
 
-	mIsRecursive = state;
+	mCheckedExceptions = value;
+}
+
+void MethodAttributes::setMethodType(MethodType::E value)
+{
+	checkSealState();
+
+	mMethodType = value;
 }
 
 void MethodAttributes::setVirtuality(Virtuality::E value)
 {
+	checkSealState();
+
 	mVirtuality = value;
 }
 
 bool MethodAttributes::throws() const
 {
-	return mThrows;
-}
-
-void MethodAttributes::setThrows(bool state)
-{
-	mThrows = state;
+	return mCheckedExceptions == CheckedExceptions::Throw;
 }
 
 NamespaceAttributes::NamespaceAttributes()
@@ -187,7 +190,7 @@ void NamespaceAttributes::setSealed(bool state)
 
 
 ObjectAttributes::ObjectAttributes()
-: mImplementationType(ImplementationType::Unknown),
+: mImplementationType(ImplementationType::Unspecified),
   mIsMember(false)
 {
 	setMutability(Mutability::Modify);
@@ -208,11 +211,11 @@ bool ObjectAttributes::isSealed() const
 	return mIsSealed;
 }
 
-void ObjectAttributes::setImplementationType(ImplementationType::E type)
+void ObjectAttributes::setImplementationType(ImplementationType::E value)
 {
 	checkSealState();
 
-	mImplementationType = type;
+	mImplementationType = value;
 }
 
 void ObjectAttributes::setMember(bool state)

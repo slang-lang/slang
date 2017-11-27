@@ -68,29 +68,26 @@ public:
 
 public:
 	virtual bool isAbstract() const;
-	virtual void setAbstract(bool state);
-
 	virtual bool isFinal() const;
-
 	virtual bool isStatic() const;
+	virtual bool throws() const;
 
-	virtual bool isRecursive() const;
-	virtual void setRecursive(bool state);
+	virtual Algorithm::E getAlgorithm() const;
+	virtual void setAlgorithm(Algorithm::E value);
+
+	virtual CheckedExceptions::E getExceptions() const;
+	virtual void setExceptions(CheckedExceptions::E value);
 
 	virtual MethodType::E getMethodType() const;
 	virtual void setMethodType(MethodType::E value);
-
-	virtual bool throws() const;
-	virtual void setThrows(bool state);
 
 	virtual Virtuality::E getVirtuality() const;
 	virtual void setVirtuality(Virtuality::E value);
 
 protected:
-	ImplementationType::E mImplementationType;
-	bool mIsRecursive;
+	Algorithm::E mAlgorithm;
+	CheckedExceptions::E mCheckedExceptions;
 	MethodType::E mMethodType;
-	bool mThrows;
 	Virtuality::E mVirtuality;
 };
 
@@ -113,7 +110,7 @@ public:
 
 public:
 	virtual ImplementationType::E getImplementationType() const;
-	virtual void setImplementationType(ImplementationType::E type);
+	virtual void setImplementationType(ImplementationType::E value);
 
 	virtual bool isMember() const;
 	virtual void setMember(bool state);

@@ -33,14 +33,53 @@ std::string AccessMode::convert(AccessMode::E e)
 }
 
 
+Algorithm::E Algorithm::convert(const std::string& v)
+{
+	if ( v == MODIFIER_HEURISTIC ) { return Algorithm::Heuristic; }
+	else if ( v == MODIFIER_RECURSIVE ) { return Algorithm::Recursive; }
+
+	return Algorithm::Unspecified;
+}
+
+std::string Algorithm::convert(Algorithm::E e)
+{
+	switch ( e ) {
+		case Algorithm::Heuristic: return MODIFIER_HEURISTIC;
+		case Algorithm::Recursive: return MODIFIER_RECURSIVE;
+		case Algorithm::Unspecified: return UNKNOWN;
+	}
+
+	return UNKNOWN;
+}
+
+
+CheckedExceptions::E CheckedExceptions::convert(const std::string& v)
+{
+	if ( v == MODIFIER_NOTHROW ) { return CheckedExceptions::Nothrow; }
+	else if ( v == MODIFIER_THROWS ) { return CheckedExceptions::Throw; }
+
+	return CheckedExceptions::Unspecified;
+}
+
+std::string CheckedExceptions::convert(CheckedExceptions::E e)
+{
+	switch ( e ) {
+		case CheckedExceptions::Nothrow: return MODIFIER_NOTHROW;
+		case CheckedExceptions::Throw: return MODIFIER_THROWS;
+		case CheckedExceptions::Unspecified: return UNKNOWN;
+	}
+
+	return UNKNOWN;
+}
+
+
 ImplementationType::E ImplementationType::convert(const std::string& v)
 {
 	if ( v == MODIFIER_ABSTRACT ) { return ImplementationType::Abstract; }
 	else if ( v == "ForwardDeclaration" ) { return ImplementationType::ForwardDeclaration; }
 	else if ( v == "FullyImplemented" ) { return ImplementationType::FullyImplemented; }
-	//else if ( v == RESERVED_WORD_INTERFACE ) { return ImplementationType::Interface; }
 
-	return ImplementationType::Unknown;
+	return ImplementationType::Unspecified;
 }
 
 std::string ImplementationType::convert(ImplementationType::E e)
@@ -50,7 +89,7 @@ std::string ImplementationType::convert(ImplementationType::E e)
 		case ImplementationType::ForwardDeclaration: return "ForwardDeclaration";
 		case ImplementationType::FullyImplemented: return "FullyImplemented";
 		case ImplementationType::Interface: return RESERVED_WORD_INTERFACE;
-		case ImplementationType::Unknown: return UNKNOWN;
+		case ImplementationType::Unspecified: return UNKNOWN;
 	}
 
 	return UNKNOWN;
@@ -65,7 +104,7 @@ LanguageFeatureState::E LanguageFeatureState::convert(const std::string& v)
 	else if ( v == LANGUAGE_FEATURE_STABLE ) { return LanguageFeatureState::Stable; }
 	else if ( v == LANGUAGE_FEATURE_UNSTABLE ) { return LanguageFeatureState::Unstable; }
 
-	return LanguageFeatureState::Unknown;
+	return LanguageFeatureState::Unspecified;
 }
 
 std::string LanguageFeatureState::convert(LanguageFeatureState::E e)
@@ -74,7 +113,7 @@ std::string LanguageFeatureState::convert(LanguageFeatureState::E e)
 		case LanguageFeatureState::Deprecated: return LANGUAGE_FEATURE_DEPRECATED;
 		case LanguageFeatureState::NotImplemented: return LANGUAGE_FEATURE_NOTIMPLEMENTED;
 		case LanguageFeatureState::Stable: return LANGUAGE_FEATURE_STABLE;
-		case LanguageFeatureState::Unknown: return UNKNOWN;
+		case LanguageFeatureState::Unspecified: return UNKNOWN;
 		case LanguageFeatureState::Unstable: return LANGUAGE_FEATURE_UNSTABLE;
 	}
 
@@ -87,7 +126,7 @@ MemoryLayout::E MemoryLayout::convert(const std::string& v)
 	if ( v == MODIFIER_INSTANCE ) { return MemoryLayout::Instance; }
 	else if ( v == MODIFIER_STATIC ) { return MemoryLayout::Static; }
 
-	return MemoryLayout::Unknown;
+	return MemoryLayout::Unspecified;
 }
 
 std::string MemoryLayout::convert(MemoryLayout::E e)
@@ -95,7 +134,7 @@ std::string MemoryLayout::convert(MemoryLayout::E e)
 	switch ( e ) {
 		case MemoryLayout::Instance: return MODIFIER_INSTANCE;
 		case MemoryLayout::Static: return MODIFIER_STATIC;
-		case MemoryLayout::Unknown: return UNKNOWN;
+		case MemoryLayout::Unspecified: return UNKNOWN;
 	}
 
 	return UNKNOWN;
@@ -146,7 +185,8 @@ std::string ObjectType::convert(ObjectType::E e)
 
 Virtuality::E Virtuality::convert(const std::string& v)
 {
-	if ( v == MODIFIER_FINAL ) { return Virtuality::Final; }
+	if ( v == MODIFIER_ABSTRACT ) { return Virtuality::Abstract; }
+	else if ( v == MODIFIER_FINAL ) { return Virtuality::Final; }
 	else if ( v == MODIFIER_VIRTUAL ) { return Virtuality::Virtual; }
 
 	return Virtuality::Unknown;
@@ -155,6 +195,7 @@ Virtuality::E Virtuality::convert(const std::string& v)
 std::string Virtuality::convert(Virtuality::E e)
 {
 	switch ( e ) {
+		case Virtuality::Abstract: return MODIFIER_ABSTRACT;
 		case Virtuality::Final: return MODIFIER_FINAL;
 		case Virtuality::Virtual: return MODIFIER_VIRTUAL;
 		case Virtuality::Unknown: return UNKNOWN;

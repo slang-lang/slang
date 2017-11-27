@@ -30,11 +30,40 @@ public:
 };
 
 
+
+class Algorithm
+{
+public:
+	enum E {
+		Unspecified = 0,
+		Heuristic,
+		Recursive
+	};
+
+	static E convert(const std::string& v);
+	static std::string convert(E e);
+};
+
+
+class CheckedExceptions
+{
+public:
+	enum E {
+		Unspecified = 0,
+		Nothrow,
+		Throw
+	};
+
+	static E convert(const std::string& v);
+	static std::string convert(E e);
+};
+
+
 class ImplementationType
 {
 public:
 	enum E {
-		Unknown = 0,
+		Unspecified = 0,
 		Abstract,
 		ForwardDeclaration,
 		FullyImplemented,
@@ -50,7 +79,7 @@ class LanguageFeatureState
 {
 public:
 	enum E {
-		Unknown = 0,
+		Unspecified = 0,
 		Deprecated,
 		NotImplemented,
 		Stable,
@@ -66,7 +95,7 @@ class MemoryLayout
 {
 public:
 	enum E {
-		Unknown = 0,
+		Unspecified = 0,
 		Instance,
 		Static
 	};
@@ -110,6 +139,7 @@ class Virtuality
 public:
 	enum E {
 		Unknown = 0,
+		Abstract,
 		Final,
 		Virtual
 	};
