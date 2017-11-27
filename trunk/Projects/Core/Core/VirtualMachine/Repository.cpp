@@ -149,10 +149,10 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 
 	Designtime::BluePrintObject* newBlue = new Designtime::BluePrintObject(constraintType, blueprint->Filename());
 	newBlue->setConst(blueprint->isConst());
-	newBlue->setFinal(blueprint->isFinal());
 	newBlue->setImplementationType(blueprint->getImplementationType());
 	newBlue->setLanguageFeatureState(blueprint->getLanguageFeatureState());
 	newBlue->setMember(blueprint->isMember());
+	newBlue->setMemoryLayout(blueprint->getMemoryLayout());
 	newBlue->setMutability(blueprint->getMutability());
 	newBlue->setParent(blueprint->getEnclosingScope());
 	newBlue->setQualifiedTypename(constraintType);
@@ -186,9 +186,9 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 		}
 
 		Designtime::BluePrintObject* member = new Designtime::BluePrintObject(type, blue->Filename(), blue->getName());
-		member->setFinal(blue->isFinal());
 		member->setLanguageFeatureState(blue->getLanguageFeatureState());
 		member->setMember(blue->isMember());
+		member->setMemoryLayout(blue->getMemoryLayout());
 		member->setMutability(blue->getMutability());
 		member->setParent(newBlue);
 		member->setPrototypeConstraints(PrototypeConstraints());	// reset prototype constraints
@@ -410,10 +410,10 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 	}
 
 	object->setBluePrint(blueprint);
-	object->setFinal(blueprint->isFinal());
 	object->setIsReference(blueprint->isReference());
 	object->setLanguageFeatureState(blueprint->getLanguageFeatureState());
 	object->setMember(blueprint->isMember());
+	object->setMemoryLayout(blueprint->getMemoryLayout());
 	object->setMutability(blueprint->getMutability());
 	object->setParent(parent);
 	object->setVisibility(blueprint->getVisibility());
@@ -632,8 +632,8 @@ void Repository::init()
 		Runtime::UserObject* nullObject = new Runtime::UserObject(VALUE_NULL, SYSTEM_LIBRARY, _object, true);
 		nullObject->setConst(true);
 		nullObject->setConstructed(false);
-		nullObject->setFinal(false);
 		nullObject->setIsReference(true);
+		nullObject->setMemoryLayout(MemoryLayout::Static);
 		nullObject->setMutability(Mutability::Const);
 		nullObject->setVisibility(Visibility::Public);
 		nullObject->setSealed(true);
@@ -678,7 +678,6 @@ void Repository::initializeObject(Runtime::Object* destObj, Designtime::BluePrin
 
 		Runtime::Object *symbol = createInstance(blue->QualifiedTypename(), blue->getName(), blue->getPrototypeConstraints(), InitilizationType::None);
 		symbol->setBluePrint(blue);
-		symbol->setFinal(blue->isFinal());
 		symbol->setLanguageFeatureState(blue->getLanguageFeatureState());
 		symbol->setMember(blue->isMember());
 		symbol->setMutability(blue->getMutability());

@@ -32,13 +32,13 @@ Method::Method(const Method& other)
 : NamedScope(other.getName(), other.getEnclosingScope()),
   MethodSymbol(other.getName())
 {
+	mAlgorithm = other.mAlgorithm;
 	mAllowDelete = false;
-	mImplementationType = other.mImplementationType;
+	mCheckedExceptions = other.mCheckedExceptions;
 	mIsExtensionMethod = other.mIsExtensionMethod;
-	mIsFinal = other.mIsFinal;
-	mIsRecursive = other.mIsRecursive;
 	mIsSealed = other.mIsSealed;
 	mLanguageFeatureState = other.mLanguageFeatureState;
+	mMemoryLayout = other.mMemoryLayout;
 	mMethodType = other.mMethodType;
 	mMutability = other.mMutability;
 	mReturnType = other.mReturnType;
@@ -46,8 +46,8 @@ Method::Method(const Method& other)
 	mScopeName = other.mScopeName;
 	mScopeType = other.mScopeType;
 	mSignature = other.mSignature;
-	mThrows = other.mThrows;
 	mTokens = other.mTokens;
+	mVirtuality = other.mVirtuality;
 	mVisibility = other.mVisibility;
 }
 
@@ -116,13 +116,13 @@ bool Method::operator< (const Method& other) const
 Method& Method::operator= (const Method& other)
 {
 	if ( this != &other ) {
+		mAlgorithm = other.mAlgorithm;
 		mAllowDelete = false;
-		mImplementationType = other.mImplementationType;
+		mCheckedExceptions = other.mCheckedExceptions;
 		mIsExtensionMethod = other.mIsExtensionMethod;
-		mIsFinal = other.mIsFinal;
-		mIsRecursive = other.mIsRecursive;
 		mIsSealed = other.mIsSealed;
 		mLanguageFeatureState = other.mLanguageFeatureState;
+		mMemoryLayout = other.mMemoryLayout;
 		mMethodType = other.mMethodType;
 		mMutability = other.mMutability;
 		mReturnType = other.mReturnType;
@@ -130,8 +130,8 @@ Method& Method::operator= (const Method& other)
 		mScopeName = other.mScopeName;
 		mScopeType = other.mScopeType;
 		mSignature = other.mSignature;
-		mThrows = other.mThrows;
 		mTokens = other.mTokens;
+		mVirtuality = other.mVirtuality;
 		mVisibility = other.mVisibility;
 	}
 
@@ -325,15 +325,9 @@ std::string Method::ToString(unsigned int indent) const
 	//result += " " + LanguageFeatureState::convert(mLanguageFeatureState);
 	result += " " + QualifiedTypename() + " " + getName() + "(" + toString(mSignature) + ")";
 	result += " " + Mutability::convert(mMutability);
-	if ( isAbstract() ) {
-		result += " abstract";
-	}
-	if ( isRecursive() ) {
-		result += " recursive";
-	}
-	if ( isStatic() ) {
-		result += " static";
-	}
+	result += " " + CheckedExceptions::convert(mCheckedExceptions);
+	result += " " + MemoryLayout::convert(mMemoryLayout);
+	result += " " + Virtuality::convert(mVirtuality);
 
 	return result;
 }

@@ -280,7 +280,7 @@ void TreeGenerator::initialize(Common::Method* method)
 	// add 'this' and 'base' symbol to method
 	if ( mThis && !method->isStatic() ) {
 		Runtime::Object* object = mRepository->createInstance(mThis->QualifiedTypename(), IDENTIFIER_THIS, PrototypeConstraints());
-		object->setConst(mMethod->isConst());
+		object->setMutability(mMethod->getMutability());
 		object->setVisibility(Visibility::Private);
 
 		scope->define(IDENTIFIER_THIS, object);
@@ -1022,7 +1022,7 @@ MethodExpression* TreeGenerator::process_method(SymbolExpression* symbol, const 
 		case LanguageFeatureState::Deprecated: OSinfo("executed method '" + method->getFullScopeName() + "' is marked as deprecated"); break;
 		case LanguageFeatureState::NotImplemented: throw Common::Exceptions::NotImplemented("executed method '" + method->getFullScopeName() + "' is marked as not implemented", token.position()); break;
 		case LanguageFeatureState::Stable: /* this is the normal language feature state, so there is no need to log anything here */ break;
-		case LanguageFeatureState::Unknown: throw Common::Exceptions::Exception("unknown language feature state set for executed method '" + method->getFullScopeName() + "'", token.position()); break;
+		case LanguageFeatureState::Unspecified: throw Common::Exceptions::Exception("unknown language feature state set for executed method '" + method->getFullScopeName() + "'", token.position()); break;
 		case LanguageFeatureState::Unstable: OSwarn("executed method '" + method->getFullScopeName() + "' is marked as unstable"); break;
 	}
 
@@ -1507,7 +1507,7 @@ TypeDeclaration* TreeGenerator::process_var(TokenIterator& token)
 	std::string type = static_cast<Expression*>(assignment)->getResultType();
 
 	Runtime::Object* object = mRepository->createInstance(type, name, PrototypeConstraints(), Repository::InitilizationType::AllowAbstract);
-	object->setConst(mutability == Mutability::Const);
+	object->setMutability(mutability);
 	object->setIsReference(accessMode == AccessMode::ByReference);
 
 	getScope()->define(name, object);

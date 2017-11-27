@@ -87,6 +87,7 @@ StringSet provideModifiers()
 	modifiers.insert(MODIFIER_SEALED);
 	modifiers.insert(MODIFIER_STATIC);
 	modifiers.insert(MODIFIER_THROWS);
+	modifiers.insert(MODIFIER_VIRTUAL);
 
 	return modifiers;
 }

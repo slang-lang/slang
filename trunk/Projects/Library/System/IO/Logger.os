@@ -4,7 +4,7 @@ public namespace IO {
 
 	public object Logger {
 		// Members
-		protected string mKey final;
+		protected string mKey const;
 
 		/*
 		 * Specialised constructor

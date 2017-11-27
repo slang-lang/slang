@@ -61,11 +61,15 @@ static const char* LANGUAGE_FEATURE_UNSTABLE = "unstable";
 static const char* MODIFIER_ABSTRACT = "abstract";
 static const char* MODIFIER_CONST = "const";
 static const char* MODIFIER_FINAL = "final";
+static const char* MODIFIER_HEURISTIC = "heuristic";	// no reserved word, antonym to "recursive"
+static const char* MODIFIER_INSTANCE = "instance";		// no reserved word, antonym to "static"
 static const char* MODIFIER_MODIFY = "modify";
+static const char* MODIFIER_NOTHROW = "nothrow";		// no reserved word, antonym to "throws"
 static const char* MODIFIER_RECURSIVE = "recursive";
 static const char* MODIFIER_SEALED = "sealed";
 static const char* MODIFIER_STATIC = "static";
 static const char* MODIFIER_THROWS = "throws";
+static const char* MODIFIER_VIRTUAL = "virtual";
 
 // Operators
 static const char* OPERATOR_IS = "is";

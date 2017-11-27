@@ -1,21 +1,13 @@
 INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
 SET(SOURCES
-	AccessMode.cpp
 	Attributes.cpp
-	ImplementationType.cpp
-	LanguageFeatureState.cpp
-	Mutability.cpp
-	ObjectType.cpp
+	Types.cpp
 )
 
 SET(HEADERS
-	AccessMode.h
 	Attributes.h
-	ImplementationType.h
-	LanguageFeatureState.h
-	Mutability.h
-	ObjectType.h
+	Types.h
 )
 
 SET(DEPENDENCIES
