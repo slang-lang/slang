@@ -12,7 +12,7 @@ public enum Company {
 public object CrunchifyEnumExample {
 	private Company mName;
  
-	public void CrunchifyEnumExample(int name) {
+	public void Constructor(int name) {
 		writeln("CrunchifyEnumExample(" + name + ")");
 
 		mName = name;
@@ -32,7 +32,7 @@ public object CrunchifyEnumExample {
 			}
 			case Company.GOOGLE: {
 				writeln("1st Web 2.0 Company.");
-				continue;
+				break;
 			}
 			case Company.YAHOO: {
 				writeln("1st Web 2.0 Company.");
