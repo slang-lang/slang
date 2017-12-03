@@ -1460,7 +1460,7 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 	}
 
 	// delete resolved symbol expression as it is not needed any more
-	//delete symbol;
+	delete symbol;
 
 	return new TypeDeclaration(start, type, constraints, name, mutability == Mutability::Const, accessMode == AccessMode::ByReference, assignment);
 }
