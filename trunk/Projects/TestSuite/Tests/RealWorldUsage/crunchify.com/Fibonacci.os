@@ -14,8 +14,8 @@ public void Main(int argc, string args) {
 
 	//printing Fibonacci series upto number
 	for ( int i = 1; i <= value; i = i++ ) {
-		cout("" + fibonacciRecusion(i) + " ");
-		//cout("" + fibonacciLoop(i) + " ");
+		//cout("" + fibonacciRecusion(i) + " ");
+		cout("" + fibonacciLoop(i) + " ");
 	}
 	endl();
 } 
