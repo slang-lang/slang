@@ -94,27 +94,5 @@ public object StringIterator {
 
 		reset();
 	}
-
-	/*
-	 * Returns a JSON-like formatted string
-	 */
-	public string toJsonString() const {
-		return "{ " +
-				"mCurrentPosition: " + mCurrentPosition + ", " +
-				"mSeparator: \"" + mSeparator + "\", " +
-				"mValue: \"" + mValue.ToJsonString() + "\" " +
-			"}";
-	}
-
-	/*
-	 * Returns a JSON-like formatted string
-	 */
-	public string toString() const {
-		return "StringIterator: { " +
-				"mCurrentPosition: " + mCurrentPosition + ", " +
-				"mSeparator: \"" + mSeparator + "\", " +
-				"mValue: \"" + mValue.ToString() + "\" " +
-			"}";
-	}
 }
 

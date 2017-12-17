@@ -22,31 +22,41 @@ public object Exception implements IException {
 	}
 }
 
-public object ArithmeticException extends Exception {
+public object ArithmeticException implements IException {
+	private string _exception;
+
 	public void Constructor(string ex) {
-		base.Constructor("ArithmeticException: " + ex);
+		_exception = ex;
+	}
+
+	public string what() const {
+		return _exception;
 	}
 }
 
-public object IOException extends Exception {
+public object IOException implements IException {
+	private string _exception;
+
 	public void Constructor(string ex) {
-		base.Constructor("IOException: " + ex);
+		_exception = ex;
+	}
+
+	public string what() const {
+		return _exception;
 	}
 }
 
-public object NullPointerException extends Exception {
-	public void Constructor(string ex) {
-		base.Constructor("NullPointerException: " + ex);
-	}
-}
+public object NullPointerException implements IException {
+	private string _exception;
 
-/*
-public object OutOfBoundsException extends Exception {
 	public void Constructor(string ex) {
-		base.Constructor("OutOfBoundsException: " + ex);
+		_exception = ex;
+	}
+
+	public string what() const {
+		return _exception;
 	}
 }
-*/
 
 public object OutOfBoundsException implements IException {
 	private string _exception;
@@ -60,9 +70,15 @@ public object OutOfBoundsException implements IException {
 	}
 }
 
-public object SecurityException extends Exception {
+public object SecurityException implements IException {
+	private string _exception;
+
 	public void Constructor(string ex) {
-		base.Constructor("SecurityException: " + ex);
+		_exception = ex;
+	}
+
+	public string what() const {
+		return _exception;
 	}
 }
 

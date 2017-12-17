@@ -25,28 +25,6 @@ public object Float {
 	}
 */
 
-	/*
-	 * Returns a JSON-formatted string
-	 */
-	public string ToJsonString() const {
-		return "{ "
-		     + "mValue: " + mValue
-		     + " }";
-	}
-
-	public string ToString() const {
-		return "Float: " + mValue;
-	}
-
-/*
-	public deprecated float Value() const {
-		return mValue;
-	}
-	public deprecated void Value(float value) modify {
-		mValue = value;
-	}
-*/
-
 	public bool operator!() const {
 		return !mValue;
 	}

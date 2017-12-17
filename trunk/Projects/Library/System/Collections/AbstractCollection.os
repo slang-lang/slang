@@ -1,50 +1,14 @@
 
-import IIterateable;
+import CollectionItem;
+import ICollection;
 import Iterator;
 
 public namespace System.Collections { }
 
 /*
- * Double linked collection item
- */
-private object CollectionItem {
-	public CollectionItem mNext;
-	public CollectionItem mPrevious;
-	public Object mValue;
-
-	public void Constructor() {
-		// this is empty by intend
-	}
-
-	public void Constructor(Object value ref) {
-		mValue = value;
-	}
-
-	public void Destructor() {
-		// this is empty by intend
-	}
-
-	public Object get() const {
-		return mValue;
-	}
-
-	public CollectionItem next() const {
-		return mNext;
-	}
-
-	public CollectionItem previous() const {
-		return mPrevious;
-	}
-
-	public void set(Object value ref) modify {
-		mValue = value;
-	}
-}
-
-/*
  * Abstract base for collections
  */
-public abstract object AbstractCollection implements IIterateable {
+public abstract object AbstractCollection implements ICollection {
 	protected CollectionItem mFirst;
 	protected CollectionItem mLast;
 	protected int mSize = 0;
@@ -96,11 +60,11 @@ public abstract object AbstractCollection implements IIterateable {
 	}
 
 	public Iterator getIterator() const {
-		return new Iterator(AbstractCollection this);
+		return new Iterator(ICollection this);
 	}
 
 	public ReverseIterator getReverseIterator() const {
-		return new ReverseIterator(AbstractCollection this);
+		return new ReverseIterator(ICollection this);
 	}
 
 	public Object last() const throws {

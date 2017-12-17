@@ -1,9 +1,9 @@
 
-import IIterateable;
+import ICollection;
 import Pair;
 import Set;
 
-public object Map<K, V> implements IIterateable {
+public object Map<K, V> implements ICollection {
 	private Set mItems;		// a set of Pair<K, V>
 
 	public void Constructor() {
@@ -44,11 +44,11 @@ public object Map<K, V> implements IIterateable {
 	}
 
 	public Iterator getIterator() const {
-		return new Iterator(AbstractCollection mItems);
+		return new Iterator(ICollection mItems);
 	}
 
 	public ReverseIterator getReverseIterator() const {
-		return new ReverseIterator(AbstractCollection mItems);
+		return new ReverseIterator(ICollection mItems);
 	}
 
 	public void insert(K k, V v) modify {

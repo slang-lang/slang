@@ -1,10 +1,9 @@
 
-public namespace System {
-public namespace IO {
+public namespace System.IO {
 
-	public object Logger {
+	public object Logger const {
 		// Members
-		protected string mKey const;
+		private string mKey const;
 
 		/*
 		 * Specialised constructor
@@ -16,13 +15,6 @@ public namespace IO {
 			else {
 				mKey = key;
 			}
-		}
-
-		/*
-		 * Default destructor
-		 */
-		public void Destructor() {
-			// nothing to do here
 		}
 
 		// Public methods
@@ -43,6 +35,5 @@ public namespace IO {
 		}
 	}
 
-}
 }
 
