@@ -14,10 +14,9 @@ private bool TestCase1() modify {
 
 	Double value = new Double();
 
-	assert( !value.Value() );
+	assert( !(double value) );
 
-	value.Value(double 1);
-	assert( value.Value() );
+	value = double 1;
 	//assert( bool value );
 
 	return true;
