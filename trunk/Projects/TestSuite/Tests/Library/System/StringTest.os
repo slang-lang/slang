@@ -22,7 +22,7 @@ private bool TestCase1() const {
 	print("TestCase 1: String.StartsWith");
 
 	String str = new String("This is a string");
-	print(str.ToString());
+	print("str = " + string str);
 	print("str.StartsWith(\"This\") = " + str.StartsWith("This"));
 
 	return str.StartsWith("This");
