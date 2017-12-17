@@ -1,44 +1,48 @@
 
-import System.IO.File;
+// Library imports
+
+// Project imports
+import Context;
 
 public object FileLogger {
 	// Members
-	private string mFilename const;
+	private FileContext mContext;
 	private string mKey const;
 
 	/*
 	 * Specialised constructor
 	 */
-	public void Constructor(string key, int keyLength = 0) {
+	public void Constructor(FileContext context, string key, int keyLength = 0) {
 		if ( keyLength ) {
 			mKey = substr(key, strlen(key) - keyLength, keyLength);
 		}
 		else {
 			mKey = key;
 		}
-	}
 
-	/*
-	 * Default destructor
-	 */
-	public void Destructor() {
+		if ( context ) {
+			mContext = context;
+		}
+		else {
+			mContext = new FileContext();
+		}
 	}
 
 	// Public methods
 	public void debug(string message) {
-		print("[DEBUG] " + mKey + "::" + message);
+		mContext.write("[DEBUG] " + mKey + "::" + message);
 	}
 
 	public void error(string message) {
-		print("[ERROR] " + mKey + "::" + message);
+		mContext.write("[ERROR] " + mKey + "::" + message);
 	}
 
 	public void info(string message) {
-		print("[INFO ] " + mKey + "::" + message);
+		mContext.write("[INFO ] " + mKey + "::" + message);
 	}
 
 	public void warning(string message) {
-		print("[WARN ] " + mKey + "::" + message);
+		mContext.write("[WARN ] " + mKey + "::" + message);
 	}
 }
 
