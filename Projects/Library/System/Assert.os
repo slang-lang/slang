@@ -14,28 +14,28 @@ public void assert(bool condition, string message) {
 
 public void debug(bool condition, string msg_success, string msg_fail) {
 	if ( condition ) {
-		writeln(msg_success);
+		print(msg_success);
 	}
 	else {
-		writeln("[DEBUG] " + msg_fail);
+		print("[DEBUG] " + msg_fail);
 	}
 }
 
 public void error(bool condition, string msg_success, string msg_fail) {
 	if ( condition ) {
-		writeln(msg_success);
+		print(msg_success);
 	}
 	else {
-		writeln("[ERROR] " + msg_fail);
+		print("[ERROR] " + msg_fail);
 	}
 }
 
 public void warn(bool condition, string msg_success, string msg_fail) {
 	if ( condition ) {
-		writeln(msg_success);
+		print(msg_success);
 	}
 	else {
-		writeln("[WARN ] " + msg_fail);
+		print("[WARN ] " + msg_fail);
 	}
 }
 

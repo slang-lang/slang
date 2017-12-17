@@ -6,6 +6,7 @@ import Result;
 import Settings;
 
 public namespace Mysql {
+
 	public object Connection {
 		private string mDatabase;
 		private int mHandle;
@@ -151,5 +152,6 @@ public namespace Mysql {
 			return mysql_stat(mHandle);
 		}
 	}
+
 }
 

@@ -3,9 +3,19 @@ import System.Exception;
 
 public namespace Mysql {
 
-	public object MysqlException extends Exception {
+	public object MysqlException implements IException {
+		private string _exception;
+
 		public void Constructor(string ex) {
-			base.Constructor(ex)
+			_exception = ex;
+		}
+
+		public string =operator(string none) const {
+			return _exception;
+		}
+
+		public string what() const {
+			return _exception;
 		}
 	}
 

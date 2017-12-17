@@ -25,26 +25,6 @@ public object Double {
 	}
 */
 
-	/*
-	 * Returns a JSON-formatted string
-	 */
-	public string ToJsonString() const {
-		return "{ "
-		     + "mValue: " + mValue
-		     + " }";
-	}
-
-	public string ToString() const {
-		return "Double: " + mValue;
-	}
-
-	public deprecated double Value() const {
-		return mValue;
-	}
-	public deprecated void Value(double value) modify {
-		mValue = value;
-	}
-
 	public bool operator!() const {
 		return !mValue;
 	}

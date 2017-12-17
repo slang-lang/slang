@@ -19,17 +19,6 @@ public namespace Mysql {
 			initialize();
 		}
 
-		public string ToString() const {
-			return	"Result={ " +
-					"Handle=" + mHandle + ", " +
-					"AffectedRows=" + mAffectedRows + ", " +
-					"NumRows=" + mNumRows + ", " +
-					"NumFields=" + mNumFields + ", " +
-					"CurrentRowIdx=" + mCurrentRowIdx + ", " +
-					"CurrentFieldIdx=" + mCurrentFieldIdx +
-				" }";
-		}
-
 		public int affectedRows() const {
 			return mAffectedRows;
 		}

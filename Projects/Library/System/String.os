@@ -121,22 +121,6 @@ public object String implements IIterateable {
 	}
 
 	/*
-	 * Returns a JSON-formatted string
-	 */
-	public string ToJsonString() const {
-		return "{ "
-		     + "mValue: \"" + mValue + "\""
-		     + " }";
-	}
-
-	/*
-	 * Returns the held string as it is
-	 */
-	public string ToString() const {
-		return "String: \"" + mValue + "\"";
-	}
-
-	/*
 	 * Returns the held string in capital letters
 	 */
 	public string ToUpperCase() const {
@@ -214,7 +198,7 @@ public object String implements IIterateable {
 	 * String subscript operator
 	 */
 	public string operator[](int index) const {
-		return At(index);
+		return substr(mValue, index, 1);
 	}
 }
 

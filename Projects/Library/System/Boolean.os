@@ -32,19 +32,6 @@ public object Boolean {
 	}
 */
 
-	/*
-	 * Returns a JSON-formatted string
-	 */
-	public string ToJsonString() const {
-		return "{ "
-		     + "mValue: " + mValue
-		     + " }";
-	}
-
-	public string ToString() const {
-		return "Boolean: " + mValue;
-	}
-
 	public bool operator!() const {
 		return !mValue;
 	}
@@ -66,14 +53,14 @@ public object Boolean {
 	/*
 	 * bool-value operator
 	 */
-	public bool =operator(bool other) const {
+	public bool =operator(bool none) const {
 		return mValue;
 	}
 
 	/*
 	 * string-value operator
 	 */
-	public string =operator(string other) const {
+	public string =operator(string none) const {
 		return string mValue;
 	}
 }
