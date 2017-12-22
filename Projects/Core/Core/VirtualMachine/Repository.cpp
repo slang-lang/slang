@@ -144,137 +144,7 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 		}
 	}
 
-
-	std::string constraintType = Designtime::Parser::buildRuntimeConstraintTypename(blueprint->QualifiedTypename(), constraints);
-
-	Designtime::BluePrintObject* newBlue = new Designtime::BluePrintObject(constraintType, blueprint->Filename());
-	newBlue->setConst(blueprint->isConst());
-	newBlue->setImplementationType(blueprint->getImplementationType());
-	newBlue->setLanguageFeatureState(blueprint->getLanguageFeatureState());
-	newBlue->setMember(blueprint->isMember());
-	newBlue->setMemoryLayout(blueprint->getMemoryLayout());
-	newBlue->setMutability(blueprint->getMutability());
-	newBlue->setParent(blueprint->getEnclosingScope());
-	newBlue->setQualifiedTypename(constraintType);
-	newBlue->setSealed(blueprint->isSealed());
-	newBlue->setTokens(blueprint->getTokens());
-	newBlue->setValue(blueprint->getValue());
-	newBlue->setVisibility(blueprint->getVisibility());
-
-	// inheritance
-	Designtime::Ancestors ancestors = blueprint->getInheritance();
-	for ( Designtime::Ancestors::const_iterator it = ancestors.begin(); it != ancestors.end(); ++it ) {
-		newBlue->addInheritance(Designtime::Ancestor(
-			Common::TypeDeclaration(constraints.lookupType((*it).name()), constraints.extractConstraints((*it).constraints())),
-			(*it).ancestorType(),
-			(*it).visibility()
-		));
-	}
-
-	// symbols
-	Symbols symbols = blueprint->provideSymbols();
-	for ( Symbols::const_iterator symIt = symbols.begin(); symIt != symbols.end(); ++symIt ) {
-		if ( symIt->second->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
-			continue;
-		}
-
-		Designtime::BluePrintObject* blue = static_cast<Designtime::BluePrintObject*>(symIt->second);
-
-		std::string type = constraints.lookupType(blue->QualifiedTypename());
-		if ( !blue->getPrototypeConstraints().empty() ) {
-			type += constraints.extractTypes(blue->getPrototypeConstraints());
-		}
-
-		Designtime::BluePrintObject* member = new Designtime::BluePrintObject(type, blue->Filename(), blue->getName());
-		member->setLanguageFeatureState(blue->getLanguageFeatureState());
-		member->setMember(blue->isMember());
-		member->setMemoryLayout(blue->getMemoryLayout());
-		member->setMutability(blue->getMutability());
-		member->setParent(newBlue);
-		member->setPrototypeConstraints(PrototypeConstraints());	// reset prototype constraints
-		member->setQualifiedTypename(type);
-		member->setValue(blue->getValue());
-		member->setVisibility(blue->getVisibility());
-
-		newBlue->define(blue->getName(), member);
-	}
-
-	StringSet atomicTypes = provideAtomicTypes();
-
-	// methods
-	MethodScope::MethodCollection methods = blueprint->provideMethods();
-	for ( MethodScope::MethodCollection::const_iterator methIt = methods.begin(); methIt != methods.end(); ++methIt ) {
-		// create new method and ...
-		Common::Method* method = new Common::Method(newBlue, (*methIt)->getName(), (*methIt)->QualifiedTypename());
-		// ... copy its data from our template method
-		*method = *(*methIt);
-
-		// Prepare return value
-		// {
-		std::string type = constraints.lookupType(method->QualifiedTypename());
-		if ( !method->getPrototypeConstraints().empty() ) {
-			type += constraints.extractTypes(method->getPrototypeConstraints());
-
-			method->setPrototypeConstraints(PrototypeConstraints());	// reset prototype constraints
-		}
-
-		method->setQualifiedTypename(type);
-		// }
-
-		// Update method signature
-		// {
-		bool signatureChanged = false;
-
-		ParameterList params = method->provideSignature();
-		for ( ParameterList::iterator paramIt = params.begin(); paramIt != params.end(); ++paramIt ) {
-			type = constraints.lookupType(paramIt->type());
-			if ( paramIt->typeConstraints().size() ) {
-				type += constraints.extractTypes(paramIt->typeConstraints());
-			}
-
-			if ( paramIt->type() != type ) {
-				AccessMode::E access = AccessMode::ByValue;
-
-				if ( atomicTypes.find(type) == atomicTypes.end() ) {
-					access = AccessMode::ByReference;
-				}
-
-				(*paramIt) = Parameter::CreateDesigntime(paramIt->name(),
-														 type,
-														 paramIt->value(),
-														 paramIt->hasDefaultValue(),
-														 paramIt->mutability(),
-														 access);
-
-				signatureChanged = true;
-			}
-		}
-
-		if ( signatureChanged ) {
-			method->setSignature(params);
-		}
-		// }
-
-		// Update method tokens
-		// {
-		TokenList tokens = method->getTokens();
-
-		for ( TokenList::iterator tokIt = tokens.begin(); tokIt != tokens.end(); ++tokIt ) {
-			if ( tokIt->type() == Token::Type::IDENTIFIER ) {
-				type = constraints.lookupType(tokIt->content());
-
-				if ( type != tokIt->content() ) {
-					tokIt->resetContentTo(type);
-				}
-			}
-		}
-
-		method->setTokens(tokens);
-		// }
-
-		// add prepared method to new blueprint
-		newBlue->defineMethod((*methIt)->getName(), method);
-	}
+	Designtime::BluePrintObject* newBlue = blueprint->fromPrototype(constraints);
 
 	// add new blueprint to repository
 	addBluePrint(newBlue);
@@ -296,7 +166,7 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 /*
  * Creates an instance of the given blueprint
  */
-Runtime::Object* Repository::createInstance(const std::string& type, const std::string& name, const PrototypeConstraints& constraints, InitilizationType::E initialize)
+Runtime::Object* Repository::createInstance(const std::string& type, const std::string& name, PrototypeConstraints constraints, InitilizationType::E initialize)
 {
 	// look up type in blueprint enums (because there are generally less blueprint enums defined than blueprint objects)
 	BluePrintEnumMap::iterator enumIt = mBluePrintEnums.find(type);
@@ -851,7 +721,7 @@ void Repository::initTypeSystem(Designtime::BluePrintObject* blueprint)
 			mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::OPERATOR_DECREMENT, params.front().type(), blueprint->QualifiedTypename());
 		}
 		else if ( name == "operator++" && params.size() == 1 ) {
-			mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::OPERATOR_INCCREMENT, params.front().type(), blueprint->QualifiedTypename());
+			mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::OPERATOR_INCREMENT, params.front().type(), blueprint->QualifiedTypename());
 		}
 */
 		else if ( name == "=operator" && params.size() == 1 ) {

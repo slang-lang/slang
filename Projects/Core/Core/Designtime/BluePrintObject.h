@@ -47,6 +47,10 @@ public:
 	std::string ToString(unsigned int indent) const;
 
 public:
+	BluePrintObject* fromPrototype(const PrototypeConstraints& constraints) const;
+	BluePrintObject* replicate(const std::string& newType, const std::string& filename) const;
+
+public:
 	MethodCollection provideMethods() const;
 	Symbols provideSymbols() const;
 

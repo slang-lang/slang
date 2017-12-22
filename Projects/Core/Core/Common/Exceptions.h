@@ -205,6 +205,17 @@ public:
 };
 
 
+class UnknownOperation : public Exception
+{
+public:
+	explicit UnknownOperation(const std::string& text, const Position& position = Position())
+	: Exception("UnknownOperation: " + text, position)
+	{ }
+
+	virtual ~UnknownOperation() { }
+};
+
+
 class VisibilityError : public Exception
 {
 public:
