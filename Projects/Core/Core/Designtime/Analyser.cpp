@@ -160,7 +160,7 @@ bool Analyser::createBluePrint(TokenIterator& token)
 		// set up inheritance (if present)
 		if ( !inheritance.empty() ) {
 			for ( Ancestors::const_iterator it = inheritance.begin(); it != inheritance.end(); ++it ) {
-				if ( it->ancestorType() == Ancestor::Type::Extends ) {
+				if ( it->ancestorType() == Ancestor::Type::Extends || it->ancestorType() == Ancestor::Type::Replicates ) {
 					extends = true;
 				}
 

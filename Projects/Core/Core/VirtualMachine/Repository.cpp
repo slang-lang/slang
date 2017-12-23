@@ -359,8 +359,7 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 				}
 
 				switch ( ancestorIt->ancestorType() ) {
-					case Designtime::Ancestor::Type::Extends:
-					case Designtime::Ancestor::Type::Replicates: {
+					case Designtime::Ancestor::Type::Extends: {
 						// undefine previous base (while using single inheritance none should exist yet)
 						object->undefine(IDENTIFIER_BASE);
 
@@ -382,6 +381,9 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 
 						// add our newly created ancestor to our inheritance
 						object->addInheritance((*ancestorIt), ancestor);
+					} break;
+					case Designtime::Ancestor::Type::Replicates: {
+
 					} break;
 					case Designtime::Ancestor::Type::Unknown:
 						throw Common::Exceptions::Exception("invalid inheritance detected");
@@ -583,11 +585,39 @@ void Repository::initBluePrintObject(Designtime::BluePrintObject *blueprint)
 	}
 
 	// prepare inheritance
-	Designtime::Ancestors ancestors = blueprint->getAncestors();
+	Designtime::Ancestors ancestors = blueprint->getInheritance();
 	for ( Designtime::Ancestors::const_iterator it = ancestors.begin(); it != ancestors.end(); ++it ) {
-		Designtime::BluePrintGeneric* base = findBluePrint(it->name());
-		if ( base ) {
-			blueprint->define(IDENTIFIER_BASE, base);
+		switch ( it->ancestorType() ) {
+			case Designtime::Ancestor::Type::Extends: {
+				Designtime::BluePrintGeneric* base = findBluePrint(it->name());
+				if ( base ) {
+					blueprint->define(IDENTIFIER_BASE, base);
+				}
+			} break;
+			case Designtime::Ancestor::Type::Implements: {
+				// nothing to do here
+			} break;
+			case Designtime::Ancestor::Type::Replicates: {
+				prepareType(Common::TypeDeclaration(it->name(), it->constraints()));
+
+				Designtime::BluePrintObject* blue = findBluePrintObject(Designtime::Parser::buildRuntimeConstraintTypename(it->name(), it->constraints()));
+				Designtime::BluePrintObject* replica = blue->replicate(blueprint->QualifiedTypename(), blueprint->Filename());
+
+				BluePrintObjectMap::iterator blueIt = mBluePrintObjects.find(blueprint->QualifiedTypename());
+				if ( blueIt == mBluePrintObjects.end() ) {
+					throw Common::Exceptions::Exception("Blueprint '" + blueprint->QualifiedTypename() + "' not found!");
+				}
+
+				// TODO: potenial memleak
+				blueIt->second = replica;
+				blueprint = replica;
+
+				initBluePrintObject(replica);
+
+				return;
+			} break;
+			case Designtime::Ancestor::Type::Unknown:
+				throw Common::Exceptions::Exception("invalid inheritance detected");
 		}
 	}
 
