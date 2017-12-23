@@ -12,7 +12,7 @@ private object CollectionItem {
 		// this is empty by intend
 	}
 
-	public void Constructor(Object value ref) {
+	public void Constructor(Object value) {
 		mValue = value;
 	}
 
@@ -32,7 +32,7 @@ private object CollectionItem {
 		return mPrevious;
 	}
 
-	public void set(Object value ref) modify {
+	public void set(Object value) modify {
 		mValue = value;
 	}
 }

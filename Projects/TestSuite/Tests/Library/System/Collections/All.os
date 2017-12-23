@@ -3,10 +3,6 @@
 public void Main(int argc, string args) {
 	print("DoubleLinkedListTest.os");
 	system("./DoubleLinkedListTest.os");
-	print("GenericStackLoop.os");
-	system("./GenericStackLoop.os");
-	print("GenericStackTest.os");
-	system("./GenericStackTest.os");
 	print("IteratorTest.os");
 	system("./IteratorTest.os");
 	print("ListTest.os");

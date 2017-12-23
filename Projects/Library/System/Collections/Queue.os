@@ -1,12 +1,17 @@
 
-import List;
-import IIterateable;
+import System.Collections.CollectionItem;
+import System.Collections.ICollection;
+import System.Collections.Iterator;
+import System.Collections.List;
+import System.Exception;
 
-public object Queue<T: Object> implements IIterateable {
-	private List mItems;
+public namespace System.Collections.Generics { }
+
+public object Queue<T> implements ICollection {
+	private List<T> mItems;
 
 	public void Constructor() {
-		mItems = new List();
+		mItems = new List<T>();
 	}
 	public void Destructor() {
 		clear();
@@ -33,7 +38,7 @@ public object Queue<T: Object> implements IIterateable {
 	}
 
 	public void enqueue(T item) modify {
-		mItems.push_back(Object item);
+		mItems.push_back(item);
 	}
 
 	public Iterator getIterator() const {

@@ -160,11 +160,13 @@ const TokenList& Method::getTokens() const
 
 void Method::initialize()
 {
+/*
 	// reset qualified typename if prototype constraints are present
-	if ( mReturnType.mConstraints.size() ) {
+	if ( !mReturnType.mConstraints.empty() ) {
 		mReturnType.mName = Designtime::Parser::buildRuntimeConstraintTypename(mReturnType.mName, mReturnType.mConstraints);
 		mReturnType.mConstraints = PrototypeConstraints();
 	}
+*/
 
 	// update parameter types
 	for ( ParameterList::iterator it = mSignature.begin(); it != mSignature.end(); ++it ) {
@@ -283,7 +285,7 @@ const ParameterList& Method::provideSignature() const
 
 const std::string& Method::QualifiedTypename() const
 {
-	return mReturnType.mName;
+	return mReturnType.mCombinedName;
 }
 
 void Method::setParent(IScope *scope)
@@ -293,11 +295,13 @@ void Method::setParent(IScope *scope)
 
 void Method::setPrototypeConstraints(const PrototypeConstraints& constraints)
 {
+	mReturnType.mCombinedName = Designtime::Parser::buildRuntimeConstraintTypename(mReturnType.mName, constraints);
 	mReturnType.mConstraints = constraints;
 }
 
 void Method::setQualifiedTypename(const std::string& type)
 {
+	mReturnType.mCombinedName = Designtime::Parser::buildRuntimeConstraintTypename(type, mReturnType.mConstraints);
 	mReturnType.mName = type;
 }
 

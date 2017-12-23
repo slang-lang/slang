@@ -32,6 +32,9 @@ namespace Runtime {
 	class Object;
 }
 class Repository;
+namespace Runtime {
+	class Object;
+}
 class StackFrame;
 class TypeSystem;
 
@@ -48,7 +51,7 @@ public:
 	~TreeGenerator();
 
 public:
-	Statements* generateAST(Common::Method *method);
+	Statements* generateAST(Common::Method *method, Runtime::Object* thisObject);
 
 private:
 	class Initialization {
@@ -137,7 +140,7 @@ private: // Execution
 
 private:	// Initialization
 	void deinitialize();
-	void initialize(Common::Method* method);
+	void initialize(Common::Method* method, Runtime::Object* thisObject);
 
 private:
 	bool mAllowConstModify;

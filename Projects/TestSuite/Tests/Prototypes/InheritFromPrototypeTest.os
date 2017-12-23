@@ -12,8 +12,11 @@ public object BasePrototype<T> {
 	}
 }
 
+// BEWARE: inheriting from prototypes is not supported because our AST::TreeGenerator cannot resolve its constraints
 public object DerivedFromPrototype extends BasePrototype<int> {
 	public void Constructor(int value) {
+		assert(!"not supported");
+
 		base.Constructor(value);
 	}
 }

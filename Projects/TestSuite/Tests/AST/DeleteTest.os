@@ -13,6 +13,7 @@ public void Main(int argc = 0, string args = "") {
 	assert( obj );
 
 	delete obj;
+	assert( !obj );
 	print("after delete");
 }
 
