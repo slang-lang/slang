@@ -1,13 +1,16 @@
 
-import ICollection;
+import System.Collections.CollectionItem;
+import System.Collections.ICollection;
+import System.Collections.Iterator;
+import System.Exception;
 import Pair;
 import Set;
 
 public object Map<K, V> implements ICollection {
-	private Set mItems;		// a set of Pair<K, V>
+	private Set<Object> mItems;		// a set of Pair<K, V>
 
 	public void Constructor() {
-		mItems = new Set();
+		mItems = new Set<Object>();
 	}
 
 	public void Destructor() {

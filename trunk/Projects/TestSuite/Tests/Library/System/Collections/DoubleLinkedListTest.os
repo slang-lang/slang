@@ -21,15 +21,15 @@ private bool TestCase1() const {
 	print("TestCase 1: push_back");
 
 	try {
-		DoubleLinkedList list = new DoubleLinkedList();
+		DoubleLinkedList<Integer> list = new DoubleLinkedList<Integer>();
 
 		Integer item;
 
 		item = new Integer(173);
-		list.push_back(Object item);
+		list.push_back(item);
 
 		item = new Integer(1389);
-		list.push_back(Object item);
+		list.push_back(item);
 
 		// Usage
 		assert( list.size() == 2 );
@@ -55,17 +55,17 @@ private bool TestCase2() const {
 	print("TestCase 2: push_front");
 
 	try {
-		DoubleLinkedList list = new DoubleLinkedList();
+		DoubleLinkedList<Integer> list = new DoubleLinkedList<Integer>();
 
 		Integer item;
 		item = new Integer(1389);
-		list.push_front(Object item);
+		list.push_front(item);
 
 		item = new Integer(173);
-		list.push_front(Object item);
+		list.push_front(item);
 
 		item = new Integer(664);
-		list.push_front(Object item);
+		list.push_front(item);
 
 		// Usage
 		assert( list.size() == 3 );
@@ -103,19 +103,19 @@ private bool TestCase3() const {
 	print("TestCase 3: pop_front");
 
 	try {
-		DoubleLinkedList list = new DoubleLinkedList();
+		DoubleLinkedList<Integer> list = new DoubleLinkedList<Integer>();
 
 		// Setup
 		Integer item;
 
 		item = new Integer(664);
-		list.push_back(Object item);
+		list.push_back(item);
 
 		item = new Integer(173);
-		list.push_back(Object item);
+		list.push_back(item);
 
 		item = new Integer(1389);
-		list.push_back(Object item);
+		list.push_back(item);
 
 		// Usage
 		assert( list.size() == 3 );
@@ -145,19 +145,19 @@ private bool TestCase4() const {
 	print("TestCase 4: pop_back");
 
 	try {
-		DoubleLinkedList list = new DoubleLinkedList();
+		DoubleLinkedList<Integer> list = new DoubleLinkedList<Integer>();
 
 		// Setup
 		Integer item;
 
 		item = new Integer(664);
-		list.push_back(Object item);
+		list.push_back(item);
 
 		item = new Integer(173);
-		list.push_back(Object item);
+		list.push_back(item);
 
 		item = new Integer(1389);
-		list.push_back(Object item);
+		list.push_back(item);
 
 		// Usage
 		assert( list.size() == 3 );
@@ -187,19 +187,19 @@ private bool TestCase5() const {
 	print("TestCase 5: iterate");
 
 	try {
-		DoubleLinkedList list = new DoubleLinkedList();
+		DoubleLinkedList<Integer> list = new DoubleLinkedList<Integer>();
 
 		// Setup
 		Integer item;
 
 		item = new Integer(664);
-		list.push_back(Object item);
+		list.push_back(item);
 
 		item = new Integer(173);
-		list.push_back(Object item);
+		list.push_back(item);
 
 		item = new Integer(1389);
-		list.push_back(Object item);
+		list.push_back(item);
 
 		// Usage
 		assert( list.size() == 3 );
@@ -235,19 +235,19 @@ private bool TestCase6() const {
 	print("TestCase 6: reverse iterate");
 
 	try {
-		DoubleLinkedList list = new DoubleLinkedList();
+		DoubleLinkedList<Integer> list = new DoubleLinkedList<Integer>();
 
 		// Setup
 		Integer item;
 
 		item = new Integer(664);
-		list.push_back(Object item);
+		list.push_back(item);
 
 		item = new Integer(173);
-		list.push_back(Object item);
+		list.push_back(item);
 
 		item = new Integer(1389);
-		list.push_back(Object item);
+		list.push_back(item);
 
 		// Usage
 		assert( list.size() == 3 );
@@ -281,18 +281,18 @@ private bool TestCase7() const {
 	print("TestCase 7: indexOf");
 
 	try {
-		DoubleLinkedList list = new DoubleLinkedList();
+		DoubleLinkedList<String> list = new DoubleLinkedList<String>();
 		assert( list is Object );
 
-		list.push_back(Object new String("1"));
-		list.push_back(Object new String("2"));
-		list.push_back(Object new String("3"));
+		list.push_back(new String("1"));
+		list.push_back(new String("2"));
+		list.push_back(new String("3"));
 
 		assert( list.size() == 3 );
 
-		assert( list.indexOf(Object new String("1")) == 0 );
-		assert( list.indexOf(Object new String("2")) == 1 );
-		assert( list.indexOf(Object new String("3")) == 2 );
+		assert( list.indexOf(new String("1")) == 0 );
+		assert( list.indexOf(new String("2")) == 1 );
+		assert( list.indexOf(new String("3")) == 2 );
 
 		return true;
 	}
@@ -304,18 +304,18 @@ private bool TestCase8() const {
 	print("TestCase 8: contains");
 
 	try {
-		DoubleLinkedList list = new DoubleLinkedList();
-		assert( list is AbstractCollection );
+		DoubleLinkedList<Integer> list = new DoubleLinkedList<Integer>();
+		assert( list is ICollection );
 
-		list.push_back(Object new Integer(1));
-		list.push_back(Object new Integer(2));
-		list.push_back(Object new Integer(3));
+		list.push_back(new Integer(1));
+		list.push_back(new Integer(2));
+		list.push_back(new Integer(3));
 
 		assert( list.size() == 3 );
 
-		assert( list.contains(Object new Integer(1)) );
-		assert( list.contains(Object new Integer(2)) );
-		assert( list.contains(Object new Integer(3)) );
+		assert( list.contains(new Integer(1)) );
+		assert( list.contains(new Integer(2)) );
+		assert( list.contains(new Integer(3)) );
 
 		return true;
 	}

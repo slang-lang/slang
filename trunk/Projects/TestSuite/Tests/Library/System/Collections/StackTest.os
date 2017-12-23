@@ -19,18 +19,18 @@ private bool TestCase1() const {
 	print("TestCase 1: push");
 
 	try {
-		Stack stack = new Stack();
+		Stack<String> stack = new Stack<String>();
 
 		String item;
 
 		item = new String("664");
-		stack.push(Object item);
+		stack.push(item);
 
 		item = new String("173");
-		stack.push(Object item);
+		stack.push(item);
 
 		item = new String("1389");
-		stack.push(Object item);
+		stack.push(item);
 
 		// Usage
 		assert( stack.size() == 3 );
@@ -61,19 +61,19 @@ private bool TestCase2() const {
 	print("TestCase 2: pop");
 
 	try {
-		Stack stack = new Stack();
+		Stack<String> stack = new Stack<String>();
 
 		// Setup
 		String item;
 
 		item = new String("664");
-		stack.push(Object item);
+		stack.push(item);
 
 		item = new String("173");
-		stack.push(Object item);
+		stack.push(item);
 
 		item = new String("1389");
-		stack.push(Object item);
+		stack.push(item);
 
 		// Usage
 		assert( stack.size() == 3 );
@@ -123,11 +123,11 @@ private bool TestCase3() const {
 	print("TestCase 3: iterate");
 
 	try {
-		Stack stack = new Stack();
+		Stack<String> stack = new Stack<String>();
 
-		stack.push(Object new String("1"));
-		stack.push(Object new String("2"));
-		stack.push(Object new String("3"));
+		stack.push(new String("1"));
+		stack.push(new String("2"));
+		stack.push(new String("3"));
 
 		assert( stack.size() == 3 );
 
@@ -162,11 +162,11 @@ private bool TestCase4() const {
 	print("TestCase 4: reverse iterate");
 
 	try {
-		Stack stack = new Stack();
+		Stack<String> stack = new Stack<String>();
 
-		stack.push(Object new String("1"));
-		stack.push(Object new String("2"));
-		stack.push(Object new String("3"));
+		stack.push(new String("1"));
+		stack.push(new String("2"));
+		stack.push(new String("3"));
 
 		assert( stack.size() == 3 );
 
@@ -198,17 +198,17 @@ private bool TestCase5() const {
 	print("TestCase 5: indexOf");
 
 	try {
-		Stack stack = new Stack();
+		Stack<String> stack = new Stack<String>();
 
-		stack.push(Object new String("1"));
-		stack.push(Object new String("2"));
-		stack.push(Object new String("3"));
+		stack.push(new String("1"));
+		stack.push(new String("2"));
+		stack.push(new String("3"));
 
 		assert( stack.size() == 3 );
 
-		assert( stack.indexOf(Object new String("1")) == 0 );
-		assert( stack.indexOf(Object new String("2")) == 1 );
-		assert( stack.indexOf(Object new String("3")) == 2 );
+		assert( stack.indexOf(new String("1")) == 0 );
+		assert( stack.indexOf(new String("2")) == 1 );
+		assert( stack.indexOf(new String("3")) == 2 );
 
 		return true;
 	}
@@ -220,19 +220,19 @@ private bool TestCase6() const {
 	print("TestCase 6: contains");
 
 	try {
-		Stack stack = new Stack();
+		Stack<Integer> stack = new Stack<Integer>();
 		assert( stack is Object );
-		assert( stack is AbstractCollection );
+		assert( stack is ICollection );
 
-		stack.push(Object new Integer(1));
-		stack.push(Object new Integer(2));
-		stack.push(Object new Integer(3));
+		stack.push(new Integer(1));
+		stack.push(new Integer(2));
+		stack.push(new Integer(3));
 
 		assert( stack.size() == 3 );
 
-		assert( stack.contains(Object new Integer(1)) );
-		assert( stack.contains(Object new Integer(2)) );
-		assert( stack.contains(Object new Integer(3)) );
+		assert( stack.contains(new Integer(1)) );
+		assert( stack.contains(new Integer(2)) );
+		assert( stack.contains(new Integer(3)) );
 
 		return true;
 	}
@@ -244,24 +244,24 @@ private bool TestCase7() const {
 	print("TestCase 7: peek");
 
 	try {
-		Stack stack = new Stack();
+		Stack<Integer> stack = new Stack<Integer>();
 		assert( stack is Object );
-		assert( stack is AbstractCollection );
+		assert( stack is ICollection );
 
-		stack.push(Object new Integer(1));
+		stack.push(new Integer(1));
 		assert( stack.peek() == 1 );
 
-		stack.push(Object new Integer(2));
+		stack.push(new Integer(2));
 		assert( stack.peek() == 2 );
 
-		stack.push(Object new Integer(3));
+		stack.push(new Integer(3));
 		assert( stack.peek() == 3 );
 
 		assert( stack.size() == 3 );
 
-		assert( stack.contains(Object new Integer(1)) );
-		assert( stack.contains(Object new Integer(2)) );
-		assert( stack.contains(Object new Integer(3)) );
+		assert( stack.contains(new Integer(1)) );
+		assert( stack.contains(new Integer(2)) );
+		assert( stack.contains(new Integer(3)) );
 
 		return true;
 	}

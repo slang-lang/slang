@@ -9,6 +9,8 @@
 #include <Core/Common/Method.h>
 #include <Core/Common/Namespace.h>
 #include <Core/Designtime/BluePrintObject.h>
+#include <Core/Object.h>
+#include <Core/VirtualMachine/Controller.h>
 #include "TreeGenerator.h"
 
 // Namespace declarations
@@ -19,7 +21,9 @@ namespace AST {
 
 
 Generator::Generator()
+: mRepository(0)
 {
+	mRepository = Controller::Instance().repository();
 }
 
 Generator::~Generator()
@@ -52,8 +56,21 @@ void Generator::process(MethodScope* base)
 		}
 	}
 
-	for ( MethodScope::MethodCollection::const_iterator it = base->beginMethods(); it != base->endMethods(); ++it ) {
-		processMethod(static_cast<Common::Method*>((*it)));
+	if ( base->beginMethods() != base->endMethods() ) {
+		Runtime::Object* thisObject = 0;
+
+		// we have methods, no check if we're part of an object
+		Designtime::BluePrintObject* symbol = dynamic_cast<Designtime::BluePrintObject*>(base);
+		if ( symbol ) {
+			// instantiate object once and pass it to our methods to prevent multiple this-object instantiations
+			thisObject = mRepository->createInstance(symbol->QualifiedTypename(), IDENTIFIER_THIS, symbol->getPrototypeConstraints(), Repository::InitilizationType::Final);
+		}
+
+		for ( MethodScope::MethodCollection::const_iterator it = base->beginMethods(); it != base->endMethods(); ++it ) {
+			processMethod(static_cast<Common::Method*>((*it)), thisObject);
+		}
+
+		delete thisObject;
 	}
 }
 
@@ -78,7 +95,7 @@ void Generator::processBluePrint(Designtime::BluePrintObject* object)
 	process(object);
 }
 
-void Generator::processMethod(Common::Method* method)
+void Generator::processMethod(Common::Method* method, Runtime::Object* thisObject)
 {
 	if ( !method ) {
 		throw Common::Exceptions::Exception("invalid method symbol provided");
@@ -91,7 +108,7 @@ void Generator::processMethod(Common::Method* method)
 	TreeGenerator tg;
 
 	method->setRootNode(
-		tg.generateAST(method)
+		tg.generateAST(method, thisObject)
 	);
 }
 

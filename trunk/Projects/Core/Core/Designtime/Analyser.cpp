@@ -599,16 +599,13 @@ void Analyser::generate(const TokenList& tokens)
 		else if ( Parser::isLibraryReference(token) ) {
 			createLibraryReference(token);
 		}
-		else if ( Parser::isMemberDeclaration(token) ) {
-			createMember(token);
-		}
-		else if ( Parser::isMethodDeclaration(token) ) {
-			createMethod(token);
-		}
 		else if ( Parser::isNamespaceDeclaration(token) ) {
 			createNamespace(token);
 		}
-		else if ( !createMemberOrMethod(token) ) {
+		else if ( createMemberOrMethod(token) ) {
+			// nothing to do here
+		}
+		else {
 			throw Common::Exceptions::SyntaxError("invalid token '" + token->content() + "' found", token->position());
 		};
 

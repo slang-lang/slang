@@ -34,9 +34,9 @@ private bool TestCase1() const {
 bool TestCase2() {
 	print("TestCase 2: Vector.operator[]");
 
-	Vector v = new Vector();
-	v.insert(0, Object new String("index 0"));
-	v.insert(1, Object new String("index 1"));
+	Vector<String> v = new Vector<String>();
+	v.insert(0, new String("index 0"));
+	v.insert(1, new String("index 1"));
 
 	print(string v[0]);
 	print(string v[1]);

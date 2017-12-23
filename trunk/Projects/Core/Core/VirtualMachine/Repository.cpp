@@ -219,14 +219,14 @@ Runtime::Object* Repository::createInstance(Designtime::BluePrintGeneric* bluepr
 		BluePrintObjectMap::iterator it = mBluePrintObjects.find(constraintType);
 		if ( it == mBluePrintObjects.end() ) {
 			// a not yet used prototype has been requested => construct the new type
-			blueprint = createBluePrintFromPrototype(static_cast<Designtime::BluePrintObject*>(blueprint), constraints);
+			blueprint = createBluePrintFromPrototype(dynamic_cast<Designtime::BluePrintObject*>(blueprint), constraints);
 		}
 		else {
 			blueprint = it->second;
 		}
 	}
 
-	Runtime::Object* object = createObject(name, static_cast<Designtime::BluePrintObject*>(blueprint), initialize);
+	Runtime::Object* object = createObject(name, dynamic_cast<Designtime::BluePrintObject*>(blueprint), initialize);
 
 	if ( initialize == InitilizationType::Final ) {
 		if ( object->isAbstract() ) {
@@ -379,10 +379,6 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 					case Designtime::Ancestor::Type::Implements: {
 						Runtime::Object *ancestor = createReference(blueIt->second, name, ancestorIt->constraints(), InitilizationType::None);
 						ancestor->setParent(blueprint->getEnclosingScope());
-
-						// TODO: fix memleak here
-						// define ancestor to prevent memleaks
-						//object->define(blueIt->second->QualifiedTypename(), ancestor);
 
 						// add our newly created ancestor to our inheritance
 						object->addInheritance((*ancestorIt), ancestor);
