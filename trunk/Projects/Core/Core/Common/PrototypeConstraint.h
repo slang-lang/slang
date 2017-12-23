@@ -46,6 +46,7 @@ public:
 
 public:
 	PrototypeConstraints buildRawConstraints(const PrototypeConstraints& other) const;
+	PrototypeConstraints buildRuntimeConstraints(const PrototypeConstraints& other) const;
 	PrototypeConstraints extractConstraints(const PrototypeConstraints& other) const;
 	std::string extractTypes(const PrototypeConstraints& other) const;
 	bool hasDesigntimeTypes() const;

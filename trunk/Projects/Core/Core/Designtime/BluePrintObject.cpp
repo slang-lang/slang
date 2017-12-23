@@ -59,7 +59,7 @@ BluePrintObject* BluePrintObject::fromPrototype(const PrototypeConstraints& cons
 
 		if ( blue->isPrototype() ) {
 			blue->setPrototypeConstraints(
-				constraints.extractConstraints(blue->getPrototypeConstraints())		//Designtime::mergeConstraints(blue->getPrototypeConstraints(), constraints)
+				blue->getPrototypeConstraints().buildRuntimeConstraints(constraints)
 			);
 		}
 		else {
