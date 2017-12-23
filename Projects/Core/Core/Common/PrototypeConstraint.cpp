@@ -79,6 +79,27 @@ PrototypeConstraints PrototypeConstraints::buildRawConstraints(const PrototypeCo
 	return result;
 }
 
+PrototypeConstraints PrototypeConstraints::buildRuntimeConstraints(const PrototypeConstraints& other) const
+{
+	PrototypeConstraints result;
+
+	PrototypeConstraints::const_iterator otherIt = other.begin();
+	PrototypeConstraints::const_iterator thisIt = this->begin();
+
+	for ( ; thisIt != this->end(); ++thisIt ) {
+		PrototypeConstraint constraint = other.lookupConstraint(thisIt->mDesignType);
+
+		if ( constraint.hasRuntimeType() ) {
+			result.push_back(constraint);
+		}
+		else {
+			result.push_back((*thisIt));
+		}
+	}
+
+	return result;
+}
+
 PrototypeConstraints PrototypeConstraints::extractConstraints(const PrototypeConstraints& other) const
 {
 	PrototypeConstraints result;

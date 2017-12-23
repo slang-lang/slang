@@ -9,7 +9,7 @@ public namespace System.Collections.Generics { }
 /*
  * Single linked list
  */
-public object List<T> extends ICollection {
+public object List<T> implements ICollection {
 	private CollectionItem mFirst;
 	private CollectionItem mLast;
 	private int mSize = 0;

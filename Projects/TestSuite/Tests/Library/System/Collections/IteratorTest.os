@@ -115,8 +115,8 @@ private bool TestCase4() const {
 
 	try {
 		List<String> list = new List<String>();
-		assert( list is Object );
 		assert( list is ICollection );
+		assert( list is Object );
 
 		list.push_back(new String("Item 1"));
 		list.push_back(new String("Item 2"));
