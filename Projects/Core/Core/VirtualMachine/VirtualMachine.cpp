@@ -110,15 +110,17 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 		}
 	}
 
+	MethodScope* globalScope = Controller::Instance().stack()->globalScope();
+
 	Controller::Instance().repository()->initializeBlueprints();
 
 	AST::Generator generator;
-	generator.process(Controller::Instance().stack()->globalScope());
+	generator.process(globalScope);
 
 #	ifdef USE_AST_OPTIMIZATION
 
 	AST::TreeOptimizer optimizer;
-	optimizer.process(Controller::Instance().stack()->globalScope());
+	optimizer.process(globalScope);
 
 #endif
 
@@ -129,7 +131,7 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 	}
 
 	// Startup
-	Common::Method* main = dynamic_cast<Common::Method*>(Controller::Instance().stack()->globalScope()->resolveMethod("Main", params, false));
+	Common::Method* main = dynamic_cast<Common::Method*>(globalScope->resolveMethod("Main", params, false));
 	if ( !main ) {
 		throw Common::Exceptions::Exception("could not resolve method 'Main(" + toString(params) + ")'");
 	}
@@ -214,23 +216,23 @@ bool VirtualMachine::loadExtensions()
 {
 	OSdebug("loading extensions...");
 
+	MethodScope* globalScope = Controller::Instance().stack()->globalScope();
+
 	for ( Extensions::ExtensionList::const_iterator extIt = mExtensions.begin(); extIt != mExtensions.end(); ++extIt ) {
 		try {
 			OSdebug("adding extension '" + (*extIt)->getName() + "'");
 
-			(*extIt)->initialize(Controller::Instance().stack()->globalScope());
+			(*extIt)->initialize(globalScope);
 
 			Extensions::ExtensionMethods methods;
 			(*extIt)->provideMethods(methods);
 
-			MethodScope* scope = Controller::Instance().stack()->globalScope();
-
 			for ( Extensions::ExtensionMethods::const_iterator it = methods.begin(); it != methods.end(); ++it ) {
 				OSdebug("adding extension '" + (*extIt)->getName() + "." + (*it)->getName() + "'");
 
-				(*it)->setParent(scope);
+				(*it)->setParent(globalScope);
 
-				scope->defineMethod((*it)->getName(), (*it));
+				globalScope->defineMethod((*it)->getName(), (*it));
 			}
 		}
 		catch ( std::exception &e ) {
