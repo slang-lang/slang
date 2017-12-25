@@ -48,8 +48,7 @@ private bool TestCase1() const {
 	print("TestCase 1: Set.insert()");
 
 	try {
-		Set set = new Set();
-		assert( set is AbstractCollection );
+		Set<TestObject> set = new Set<TestObject>();
 
 		TestObject item;
 
@@ -58,7 +57,7 @@ private bool TestCase1() const {
 			//use srand(time()); for real random numbers
 
 			item = new TestObject(int rand());
-			set.insert(Object item);
+			set.insert(item);
 
 			count++;
 		}
@@ -89,12 +88,12 @@ private bool TestCase2() const {
 	print("TestCase 2: Set.erase()");
 
 	try {
-		Set set = new Set();
+		Set<Integer> set = new Set<Integer>();
 		assert( set is Object );
 
 		int count = 0;
 		while ( count < 10 ) {
-			set.insert(Object new Integer(count));
+			set.insert(new Integer(count));
 
 			count++;
 		}
@@ -139,13 +138,13 @@ private bool TestCase3() {
 	print("TestCase 3: Set.clear()");
 
 	try {
-		Set set = new Set();
+		Set<Integer> set = new Set<Integer>();
 		assert( set is Object );
 
 		int count;
 
 		while ( count < 10 ) {
-			set.insert(Object new Integer(count));
+			set.insert(new Integer(count));
 
 			count++;
 		}
@@ -168,11 +167,11 @@ private bool TestCase4() {
 	print("TestCase 4: Set iterate");
 
 	try {
-		Set set = new Set();
+		Set<Integer> set = new Set<Integer>();
 
 		int count;
 		while ( count < 10 ) {
-			set.insert(Object new Integer(count));
+			set.insert(new Integer(count));
 
 			count++;
 		}

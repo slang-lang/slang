@@ -19,13 +19,13 @@ private bool TestCase1() const {
 	print("TestCase 1: insert");
 
 	try {
-		Vector vector = new Vector();
+		Vector<Integer> vector = new Vector<Integer>();
 
 		// Setup
 		Integer item;
-		vector.insert(0, Object new Integer(664));
-		vector.insert(1, Object new Integer(1389));
-		vector.insert(1, Object new Integer(173));
+		vector.insert(0, new Integer(664));
+		vector.insert(1, new Integer(1389));
+		vector.insert(1, new Integer(173));
 
 		// Usage
 		assert( vector.size() == 3 );
@@ -49,14 +49,14 @@ private bool TestCase2() const {
 	print("TestCase 2: erase front");
 
 	try {
-		Vector vector = new Vector();
+		Vector<Integer> vector = new Vector<Integer>();
 
 		// Setup
 		Integer item;
 
-		vector.insert(0, Object new Integer(664));
-		vector.insert(1, Object new Integer(173));
-		vector.insert(2, Object new Integer(1389));
+		vector.insert(0, new Integer(664));
+		vector.insert(1, new Integer(173));
+		vector.insert(2, new Integer(1389));
 
 		// Usage
 		assert( vector.size() == 3 );
@@ -86,14 +86,14 @@ private bool TestCase3() const {
 	print("TestCase 3: erase middle");
 
 	try {
-		Vector vector = new Vector();
+		Vector<Integer> vector = new Vector<Integer>();
 
 		// Setup
 		Integer item;
 
-		vector.insert(0, Object new Integer(664));
-		vector.insert(1, Object new Integer(173));
-		vector.insert(2, Object new Integer(1389));
+		vector.insert(0, new Integer(664));
+		vector.insert(1, new Integer(173));
+		vector.insert(2, new Integer(1389));
 
 		// Usage
 		assert( vector.size() == 3 );
@@ -123,13 +123,13 @@ private bool TestCase4() const {
 	print("TestCase 4: erase back");
 
 	try {
-		Vector vector = new Vector();
+		Vector<Integer> vector = new Vector<Integer>();
 
 		// Setup
 		Integer item;
-		vector.insert(0, Object new Integer(664));
-		vector.insert(1, Object new Integer(173));
-		vector.insert(2, Object new Integer(1389));
+		vector.insert(0, new Integer(664));
+		vector.insert(1, new Integer(173));
+		vector.insert(2, new Integer(1389));
 
 		// Usage
 		assert( vector.size() == 3 );
@@ -159,13 +159,13 @@ private bool TestCase5() const {
 	print("TestCase 5: iterator");
 
 	try {
-		Vector vector = new Vector();
+		Vector<Integer> vector = new Vector<Integer>();
 
 		Integer item;
 
-		vector.insert(0, Object new Integer(664));
-		vector.insert(1, Object new Integer(173));
-		vector.insert(2, Object new Integer(1389));
+		vector.insert(0, new Integer(664));
+		vector.insert(1, new Integer(173));
+		vector.insert(2, new Integer(1389));
 
 		assert( vector.size() == 3 );
 
@@ -197,11 +197,11 @@ private bool TestCase6() const {
 	print("TestCase 6: reverse iterator");
 
 	try {
-		Vector vector = new Vector();
+		Vector<String> vector = new Vector<String>();
 
-		vector.insert(0, Object new String("1"));
-		vector.insert(1, Object new String("2"));
-		vector.insert(2, Object new String("3"));
+		vector.insert(0, new String("1"));
+		vector.insert(1, new String("2"));
+		vector.insert(2, new String("3"));
 
 		assert( vector.size() == 3 );
 
@@ -223,17 +223,17 @@ private bool TestCase7() const {
 	print("TestCase 7: indexOf");
 
 	try {
-		Vector vector = new Vector();
+		Vector<String> vector = new Vector<String>();
 
-		vector.insert(0, Object new String("1"));
-		vector.insert(1, Object new String("2"));
-		vector.insert(2, Object new String("3"));
+		vector.insert(0, new String("1"));
+		vector.insert(1, new String("2"));
+		vector.insert(2, new String("3"));
 
 		assert( vector.size() == 3 );
 
-		assert( vector.indexOf(Object new String("1")) == 0 );
-		assert( vector.indexOf(Object new String("2")) == 1 );
-		assert( vector.indexOf(Object new String("3")) == 2 );
+		assert( vector.indexOf(new String("1")) == 0 );
+		assert( vector.indexOf(new String("2")) == 1 );
+		assert( vector.indexOf(new String("3")) == 2 );
 
 		return true;
 	}
@@ -245,19 +245,19 @@ private bool TestCase8() const {
 	print("TestCase 8: contains");
 
 	try {
-		Vector vector = new Vector();
+		Vector<Integer> vector = new Vector<Integer>();
 		assert( vector is Object );
-		assert( vector is AbstractCollection );
+		assert( vector is ICollection );
 
-		vector.insert(0, Object new Integer(1));
-		vector.insert(1, Object new Integer(2));
-		vector.insert(2, Object new Integer(3));
+		vector.insert(0, new Integer(1));
+		vector.insert(1, new Integer(2));
+		vector.insert(2, new Integer(3));
 
 		assert( vector.size() == 3 );
 
-		assert( vector.contains(Object new Integer(1)) );
-		assert( vector.contains(Object new Integer(2)) );
-		assert( vector.contains(Object new Integer(3)) );
+		assert( vector.contains(new Integer(1)) );
+		assert( vector.contains(new Integer(2)) );
+		assert( vector.contains(new Integer(3)) );
 
 		return true;
 	}

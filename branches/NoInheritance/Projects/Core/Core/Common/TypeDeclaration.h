@@ -27,14 +27,17 @@ public:
 	: mName(type)
 	{ }
 	TypeDeclaration(const std::string& type)
-	: mName(type)
+	: mCombinedName(type),
+	  mName(type)
 	{ }
 	TypeDeclaration(const std::string& type, const PrototypeConstraints& constraints)
-	: mConstraints(constraints),
+	: mCombinedName(type),
+	  mConstraints(constraints),
 	  mName(type)
 	{ }
 
 public:
+	std::string mCombinedName;
 	PrototypeConstraints mConstraints;
 	std::string mName;
 };

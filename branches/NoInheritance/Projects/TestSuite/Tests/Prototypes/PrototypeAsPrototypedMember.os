@@ -48,7 +48,7 @@ private bool TestCase1() {
 	TestObject<string> obj = new TestObject<string>("173");
 
 	print("obj.toString() = " + obj.toString());
-	print("obj.mValue = " + obj.mValue);
+	print("obj.mValue = " + string obj.mValue);
 
 	Prototype<string> value = obj.mValue;
 	print("value = " + value.toString());

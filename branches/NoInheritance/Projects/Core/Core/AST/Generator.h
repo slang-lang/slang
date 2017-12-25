@@ -24,6 +24,10 @@ namespace Designtime {
 	class BluePrintObject;
 }
 class MethodScope;
+class Repository;
+namespace Runtime {
+	class Object;
+}
 
 namespace AST {
 
@@ -39,8 +43,11 @@ public:
 
 private:
 	void processBluePrint(Designtime::BluePrintObject* object);
-	void processMethod(Common::Method* method);
+	void processMethod(Common::Method* method, Runtime::Object* thisObject);
 	void processNamespace(Common::Namespace* space);
+
+private:
+	Repository* mRepository;
 };
 
 

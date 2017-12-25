@@ -1,13 +1,16 @@
 
-import IIterateable;
+import System.Collections.CollectionItem;
+import System.Collections.ICollection;
+import System.Collections.Iterator;
+import System.Exception;
 import Pair;
 import Set;
 
-public object Map<K, V> implements IIterateable {
-	private Set mItems;		// a set of Pair<K, V>
+public object Map<K, V> implements ICollection {
+	private Set<Object> mItems;		// a set of Pair<K, V>
 
 	public void Constructor() {
-		mItems = new Set();
+		mItems = new Set<Object>();
 	}
 
 	public void Destructor() {
@@ -44,11 +47,11 @@ public object Map<K, V> implements IIterateable {
 	}
 
 	public Iterator getIterator() const {
-		return new Iterator(AbstractCollection mItems);
+		return new Iterator(ICollection mItems);
 	}
 
 	public ReverseIterator getReverseIterator() const {
-		return new ReverseIterator(AbstractCollection mItems);
+		return new ReverseIterator(ICollection mItems);
 	}
 
 	public void insert(K k, V v) modify {

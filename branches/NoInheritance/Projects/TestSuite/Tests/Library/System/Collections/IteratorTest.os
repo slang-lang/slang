@@ -15,12 +15,12 @@ private bool TestCase1() const {
 	print("TestCase 1: iterate");
 
 	try {
-		List list = new List();
-		assert(list is AbstractCollection);
+		List<String> list = new List<String>();
+		assert(list is ICollection);
 
-		list.push_back(Object new String("1"));
-		list.push_back(Object new String("2"));
-		list.push_back(Object new String("3"));
+		list.push_back(new String("1"));
+		list.push_back(new String("2"));
+		list.push_back(new String("3"));
 
 		Iterator it = list.getIterator();
 
@@ -46,12 +46,12 @@ private bool TestCase2() const {
 	print("TestCase 2: reverse iterate");
 
 	try {
-		List list = new List();
-		assert(list is AbstractCollection);
+		List<String> list = new List<String>();
+		assert(list is ICollection);
 
-		list.push_back(Object new String("1"));
-		list.push_back(Object new String("2"));
-		list.push_back(Object new String("3"));
+		list.push_back(new String("1"));
+		list.push_back(new String("2"));
+		list.push_back(new String("3"));
 
 		ReverseIterator it = list.getReverseIterator();
 
@@ -77,12 +77,12 @@ private bool TestCase3() const {
 	print("TestCase 3: multiple iterators");
 
 	try {
-		List list = new List();
-		assert( list is List );
+		List<String> list = new List<String>();
+		assert( list is List<String> );
 
-		list.push_back(Object new String("1"));
-		list.push_back(Object new String("2"));
-		list.push_back(Object new String("3"));
+		list.push_back(new String("1"));
+		list.push_back(new String("2"));
+		list.push_back(new String("3"));
 
 		Iterator iterator = list.getIterator();
 		ReverseIterator reverse = list.getReverseIterator();
@@ -114,13 +114,13 @@ private bool TestCase4() const {
 	print("TestCase 4: iterator operators");
 
 	try {
-		List list = new List();
+		List<String> list = new List<String>();
+		assert( list is ICollection );
 		assert( list is Object );
-		assert( list is AbstractCollection );
 
-		list.push_back(Object new String("Item 1"));
-		list.push_back(Object new String("Item 2"));
-		list.push_back(Object new String("Item 3"));
+		list.push_back(new String("Item 1"));
+		list.push_back(new String("Item 2"));
+		list.push_back(new String("Item 3"));
 
 		assert( list.size() == 3 );
 

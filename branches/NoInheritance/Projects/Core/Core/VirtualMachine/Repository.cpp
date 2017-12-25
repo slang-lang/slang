@@ -144,140 +144,11 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 		}
 	}
 
-
-	std::string constraintType = Designtime::Parser::buildRuntimeConstraintTypename(blueprint->QualifiedTypename(), constraints);
-
-	Designtime::BluePrintObject* newBlue = new Designtime::BluePrintObject(constraintType, blueprint->Filename());
-	newBlue->setConst(blueprint->isConst());
-	newBlue->setImplementationType(blueprint->getImplementationType());
-	newBlue->setLanguageFeatureState(blueprint->getLanguageFeatureState());
-	newBlue->setMember(blueprint->isMember());
-	newBlue->setMemoryLayout(blueprint->getMemoryLayout());
-	newBlue->setMutability(blueprint->getMutability());
-	newBlue->setParent(blueprint->getEnclosingScope());
-	newBlue->setQualifiedTypename(constraintType);
-	newBlue->setSealed(blueprint->isSealed());
-	newBlue->setTokens(blueprint->getTokens());
-	newBlue->setValue(blueprint->getValue());
-	newBlue->setVisibility(blueprint->getVisibility());
-
-	// inheritance
-	Designtime::Ancestors ancestors = blueprint->getInheritance();
-	for ( Designtime::Ancestors::const_iterator it = ancestors.begin(); it != ancestors.end(); ++it ) {
-		newBlue->addInheritance(Designtime::Ancestor(
-			Common::TypeDeclaration(constraints.lookupType((*it).name()), constraints.extractConstraints((*it).constraints())),
-			(*it).ancestorType(),
-			(*it).visibility()
-		));
-	}
-
-	// symbols
-	Symbols symbols = blueprint->provideSymbols();
-	for ( Symbols::const_iterator symIt = symbols.begin(); symIt != symbols.end(); ++symIt ) {
-		if ( symIt->second->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
-			continue;
-		}
-
-		Designtime::BluePrintObject* blue = static_cast<Designtime::BluePrintObject*>(symIt->second);
-
-		std::string type = constraints.lookupType(blue->QualifiedTypename());
-		if ( !blue->getPrototypeConstraints().empty() ) {
-			type += constraints.extractTypes(blue->getPrototypeConstraints());
-		}
-
-		Designtime::BluePrintObject* member = new Designtime::BluePrintObject(type, blue->Filename(), blue->getName());
-		member->setLanguageFeatureState(blue->getLanguageFeatureState());
-		member->setMember(blue->isMember());
-		member->setMemoryLayout(blue->getMemoryLayout());
-		member->setMutability(blue->getMutability());
-		member->setParent(newBlue);
-		member->setPrototypeConstraints(PrototypeConstraints());	// reset prototype constraints
-		member->setQualifiedTypename(type);
-		member->setValue(blue->getValue());
-		member->setVisibility(blue->getVisibility());
-
-		newBlue->define(blue->getName(), member);
-	}
-
-	StringSet atomicTypes = provideAtomicTypes();
-
-	// methods
-	MethodScope::MethodCollection methods = blueprint->provideMethods();
-	for ( MethodScope::MethodCollection::const_iterator methIt = methods.begin(); methIt != methods.end(); ++methIt ) {
-		// create new method and ...
-		Common::Method* method = new Common::Method(newBlue, (*methIt)->getName(), (*methIt)->QualifiedTypename());
-		// ... copy its data from our template method
-		*method = *(*methIt);
-
-		// Prepare return value
-		// {
-		std::string type = constraints.lookupType(method->QualifiedTypename());
-		if ( !method->getPrototypeConstraints().empty() ) {
-			type += constraints.extractTypes(method->getPrototypeConstraints());
-
-			method->setPrototypeConstraints(PrototypeConstraints());	// reset prototype constraints
-		}
-
-		method->setQualifiedTypename(type);
-		// }
-
-		// Update method signature
-		// {
-		bool signatureChanged = false;
-
-		ParameterList params = method->provideSignature();
-		for ( ParameterList::iterator paramIt = params.begin(); paramIt != params.end(); ++paramIt ) {
-			type = constraints.lookupType(paramIt->type());
-			if ( paramIt->typeConstraints().size() ) {
-				type += constraints.extractTypes(paramIt->typeConstraints());
-			}
-
-			if ( paramIt->type() != type ) {
-				AccessMode::E access = AccessMode::ByValue;
-
-				if ( atomicTypes.find(type) == atomicTypes.end() ) {
-					access = AccessMode::ByReference;
-				}
-
-				(*paramIt) = Parameter::CreateDesigntime(paramIt->name(),
-														 type,
-														 paramIt->value(),
-														 paramIt->hasDefaultValue(),
-														 paramIt->mutability(),
-														 access);
-
-				signatureChanged = true;
-			}
-		}
-
-		if ( signatureChanged ) {
-			method->setSignature(params);
-		}
-		// }
-
-		// Update method tokens
-		// {
-		TokenList tokens = method->getTokens();
-
-		for ( TokenList::iterator tokIt = tokens.begin(); tokIt != tokens.end(); ++tokIt ) {
-			if ( tokIt->type() == Token::Type::IDENTIFIER ) {
-				type = constraints.lookupType(tokIt->content());
-
-				if ( type != tokIt->content() ) {
-					tokIt->resetContentTo(type);
-				}
-			}
-		}
-
-		method->setTokens(tokens);
-		// }
-
-		// add prepared method to new blueprint
-		newBlue->defineMethod((*methIt)->getName(), method);
-	}
+	Designtime::BluePrintObject* newBlue = blueprint->fromPrototype(constraints);
 
 	// add new blueprint to repository
 	addBluePrint(newBlue);
+
 	// initialize newly created blueprint
 	initBluePrintObject(newBlue);
 
@@ -296,7 +167,7 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 /*
  * Creates an instance of the given blueprint
  */
-Runtime::Object* Repository::createInstance(const std::string& type, const std::string& name, const PrototypeConstraints& constraints, InitilizationType::E initialize)
+Runtime::Object* Repository::createInstance(const std::string& type, const std::string& name, PrototypeConstraints constraints, InitilizationType::E initialize)
 {
 	// look up type in blueprint enums (because there are generally less blueprint enums defined than blueprint objects)
 	BluePrintEnumMap::iterator enumIt = mBluePrintEnums.find(type);
@@ -349,14 +220,14 @@ Runtime::Object* Repository::createInstance(Designtime::BluePrintGeneric* bluepr
 		BluePrintObjectMap::iterator it = mBluePrintObjects.find(constraintType);
 		if ( it == mBluePrintObjects.end() ) {
 			// a not yet used prototype has been requested => construct the new type
-			blueprint = createBluePrintFromPrototype(static_cast<Designtime::BluePrintObject*>(blueprint), constraints);
+			blueprint = createBluePrintFromPrototype(dynamic_cast<Designtime::BluePrintObject*>(blueprint), constraints);
 		}
 		else {
 			blueprint = it->second;
 		}
 	}
 
-	Runtime::Object* object = createObject(name, static_cast<Designtime::BluePrintObject*>(blueprint), initialize);
+	Runtime::Object* object = createObject(name, dynamic_cast<Designtime::BluePrintObject*>(blueprint), initialize);
 
 	if ( initialize == InitilizationType::Final ) {
 		if ( object->isAbstract() ) {
@@ -489,11 +360,7 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 				}
 
 				switch ( ancestorIt->ancestorType() ) {
-					case Designtime::Ancestor::Type::Extends:
-					case Designtime::Ancestor::Type::Replicates: {
-						// undefine previous base (while using single inheritance none should exist yet)
-						object->undefine(IDENTIFIER_BASE);
-
+					case Designtime::Ancestor::Type::Extends: {
 						// create base object
 						Runtime::Object *ancestor = createReference(blueIt->second, IDENTIFIER_BASE, ancestorIt->constraints(), InitilizationType::AllowAbstract);
 						ancestor->setParent(blueprint->getEnclosingScope());
@@ -510,12 +377,11 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 						Runtime::Object *ancestor = createReference(blueIt->second, name, ancestorIt->constraints(), InitilizationType::None);
 						ancestor->setParent(blueprint->getEnclosingScope());
 
-						// TODO: fix memleak here
-						// define ancestor to prevent memleaks
-						//object->define(blueIt->second->QualifiedTypename(), ancestor);
-
 						// add our newly created ancestor to our inheritance
 						object->addInheritance((*ancestorIt), ancestor);
+					} break;
+					case Designtime::Ancestor::Type::Replicates: {
+
 					} break;
 					case Designtime::Ancestor::Type::Unknown:
 						throw Common::Exceptions::Exception("invalid inheritance detected");
@@ -717,11 +583,41 @@ void Repository::initBluePrintObject(Designtime::BluePrintObject *blueprint)
 	}
 
 	// prepare inheritance
-	Designtime::Ancestors ancestors = blueprint->getAncestors();
+	Designtime::Ancestors ancestors = blueprint->getInheritance();
 	for ( Designtime::Ancestors::const_iterator it = ancestors.begin(); it != ancestors.end(); ++it ) {
-		Designtime::BluePrintGeneric* base = findBluePrint(it->name());
-		if ( base ) {
-			blueprint->define(IDENTIFIER_BASE, base);
+		switch ( it->ancestorType() ) {
+			case Designtime::Ancestor::Type::Extends: {
+				std::string type = Designtime::Parser::buildRuntimeConstraintTypename(it->name(), it->constraints());
+
+				Designtime::BluePrintObject* base = findBluePrintObject(type);
+				if ( base ) {
+					blueprint->define(IDENTIFIER_BASE, base);
+				}
+			} break;
+			case Designtime::Ancestor::Type::Implements: {
+				// nothing to do here
+			} break;
+			case Designtime::Ancestor::Type::Replicates: {
+				prepareType(Common::TypeDeclaration(it->name(), it->constraints()));
+
+				Designtime::BluePrintObject* blue = findBluePrintObject(Designtime::Parser::buildRuntimeConstraintTypename(it->name(), it->constraints()));
+				Designtime::BluePrintObject* replica = blue->replicate(blueprint->QualifiedTypename(), blueprint->Filename());
+
+				BluePrintObjectMap::iterator blueIt = mBluePrintObjects.find(blueprint->QualifiedTypename());
+				if ( blueIt == mBluePrintObjects.end() ) {
+					throw Common::Exceptions::Exception("Blueprint '" + blueprint->QualifiedTypename() + "' not found!");
+				}
+
+				// TODO: potential memleak
+				blueIt->second = replica;
+				blueprint = replica;
+
+				initBluePrintObject(replica);
+
+				return;
+			} break;
+			case Designtime::Ancestor::Type::Unknown:
+				throw Common::Exceptions::Exception("invalid inheritance detected");
 		}
 	}
 
@@ -797,6 +693,10 @@ void Repository::initTypeSystem(Designtime::BluePrintEnum* blueprint)
  */
 void Repository::initTypeSystem(Designtime::BluePrintObject* blueprint)
 {
+	if ( mTypeSystem->exists(blueprint->QualifiedTypename(), Token::Type::ASSIGN, blueprint->QualifiedTypename()) ) {
+		return;
+	}
+
 	MethodScope::MethodCollection methods = blueprint->provideMethods();
 	for ( MethodScope::MethodCollection::const_iterator it = methods.begin(); it != methods.end(); ++it ) {
 		std::string name = (*it)->getName();
@@ -851,7 +751,7 @@ void Repository::initTypeSystem(Designtime::BluePrintObject* blueprint)
 			mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::OPERATOR_DECREMENT, params.front().type(), blueprint->QualifiedTypename());
 		}
 		else if ( name == "operator++" && params.size() == 1 ) {
-			mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::OPERATOR_INCCREMENT, params.front().type(), blueprint->QualifiedTypename());
+			mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::OPERATOR_INCREMENT, params.front().type(), blueprint->QualifiedTypename());
 		}
 */
 		else if ( name == "=operator" && params.size() == 1 ) {

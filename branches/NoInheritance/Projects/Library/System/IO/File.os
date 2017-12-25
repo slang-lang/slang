@@ -1,8 +1,7 @@
 
 import System.Exception;
 
-public namespace System {
-public namespace IO {
+public namespace System.IO {
 
 	public object File {
 		private string mAccessMode;
@@ -38,7 +37,7 @@ public namespace IO {
 
 			cleanup();
 
-			return (result == 0);
+			return result == 0;
 		}
 
 		public bool isEOF() const {
@@ -59,7 +58,7 @@ public namespace IO {
 			mFilename = filename;
 			mHandle = fopen(mFilename, mAccessMode);
 
-			return (mHandle != 0);
+			return mHandle != 0;
 		}
 
 		public bool readBool() const {
@@ -87,33 +86,33 @@ public namespace IO {
 		}
 
 		public bool rewind() const {
-			return (fseek(mHandle, 0) == 0);
+			return fseek(mHandle, 0) == 0;
 		}
 
 		public bool seek(int address) {
-			return (fseek(mHandle, address) == 0);
+			return fseek(mHandle, address) == 0;
 		}
 
 		public bool write(bool value) {
-			return (fwriteb(mHandle, value) == 0);
+			return fwriteb(mHandle, value) == 0;
 		}
 
 		public bool write(double value) {
-			return (fwrited(mHandle, value) == 0);
+			return fwrited(mHandle, value) == 0;
 		}
 
 		public bool write(float value) {
-			return (fwritef(mHandle, value) == 0);
+			return fwritef(mHandle, value) == 0;
 		}
 
 		public bool write(int value) {
-			return (fwritei(mHandle, value) == 0);
+			return fwritei(mHandle, value) == 0;
 		}
 
 		public bool write(string value) {
-			return (fwrites(mHandle, value) == 0);
+			return fwrites(mHandle, value) == 0;
 		}
 	}
-}
+
 }
 

@@ -28,20 +28,6 @@ public namespace Mysql {
 			}
 		}
 
-		public string ToJsonString() const {
-			return	"{ " +
-					"\"mExecutedQuery\": " + mExecutedQuery.ToJsonString() ", " +
-					"\"mPreparedQuery\": " + mPreparedQuery.ToJsonString() + " " +
-				" }";
-		}
-
-		public string ToString() const {
-			return	"Query={ " +
-					"mExecutedQuery=\"" + mExecutedQuery + "\", " +
-					"mPreparedQuery=\"" + mPreparedQuery + "\" " +
-				"}";
-		}
-
 		public bool bind(string field, bool value) modify {
 			if ( MysqlDebugMode ) { print("bind '" + field + "' with '" + value + "'"); }
 

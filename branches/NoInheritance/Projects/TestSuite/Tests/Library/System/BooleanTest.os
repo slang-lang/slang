@@ -22,7 +22,7 @@ private bool TestCase2() const {
 	print("TestCase 2: automatic type convertion");
 
 	Boolean value = new Boolean(true);
-	print(string value);
+	print("value = " + string value);
 
 	return bool value;
 }
@@ -32,7 +32,7 @@ private bool TestCase3() modify {
 
 	Boolean value = new Boolean();
 	value = bool "foo bar";
-	print(string value);
+	print("value = " + string value);
 	assert(bool value);
 
 	return true;

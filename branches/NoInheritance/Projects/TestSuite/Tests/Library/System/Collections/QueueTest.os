@@ -16,7 +16,7 @@ public bool TestCase1() {
 
 	Queue<String> queue = new Queue<String>();
 	assert( queue );
-	assert( queue is IIterateable );
+	assert( queue is ICollection );
 
 	assert( queue.empty() );
 
@@ -39,7 +39,7 @@ private bool TestCase2() {
 
 	Queue<String> queue = new Queue<String>();
 	assert( queue );
-	assert( queue is IIterateable );
+	assert( queue is ICollection );
 
 	assert( queue.empty() );
 
@@ -63,7 +63,7 @@ private bool TestCase3() {
 
 	Queue<String> queue = new Queue<String>();
 	assert( queue );
-	assert( queue is IIterateable );
+	assert( queue is ICollection );
 
 	assert( queue.empty() );
 
@@ -93,7 +93,7 @@ private bool TestCase4() {
 
 	Queue<String> queue = new Queue<String>();
 	assert( queue );
-	assert( queue is IIterateable );
+	assert( queue is ICollection );
 
 	assert( queue.empty() );
 

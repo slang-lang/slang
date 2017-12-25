@@ -80,7 +80,7 @@ void TreeGenerator::deinitialize()
 		Symbol* thisSymbol = scope->resolve(IDENTIFIER_THIS, true);
 		if ( thisSymbol ) {
 			scope->undefine(IDENTIFIER_THIS);
-			delete thisSymbol;
+			//delete thisSymbol;
 		}
 	}
 
@@ -162,11 +162,11 @@ Statements* TreeGenerator::generate(const TokenList &tokens, bool allowBreakAndC
 /*
  * generates the abstract syntax tree that is executed by the TreeInterpreter for the given method
  */
-Statements* TreeGenerator::generateAST(Common::Method *method)
+Statements* TreeGenerator::generateAST(Common::Method *method, Runtime::Object* thisObject)
 {
 	Common::Method scope(*method);
 
-	initialize(&scope);
+	initialize(&scope, thisObject);
 
 	// generate AST
 	Statements* statements = generate(mMethod->getTokens());
@@ -260,7 +260,7 @@ inline Symbol* TreeGenerator::identify(TokenIterator& token) const
 	return result;
 }
 
-void TreeGenerator::initialize(Common::Method* method)
+void TreeGenerator::initialize(Common::Method* method, Runtime::Object* thisObject)
 {
 	// initialize reuseable members
 	mAllowConstModify = method->getMethodType() == Common::Method::MethodType::Constructor || method->getMethodType() == Common::Method::MethodType::Destructor;
@@ -279,11 +279,18 @@ void TreeGenerator::initialize(Common::Method* method)
 
 	// add 'this' and 'base' symbol to method
 	if ( mThis && !method->isStatic() ) {
-		Runtime::Object* object = mRepository->createInstance(mThis->QualifiedTypename(), IDENTIFIER_THIS, PrototypeConstraints());
+/*
+		Runtime::Object* object = mRepository->createInstance(mThis->QualifiedTypename(), IDENTIFIER_THIS, PrototypeConstraints(), Repository::InitilizationType::Final);
 		object->setMutability(mMethod->getMutability());
 		object->setVisibility(Visibility::Private);
 
 		scope->define(IDENTIFIER_THIS, object);
+*/
+
+		thisObject->setMutability(mMethod->getMutability());
+		thisObject->setVisibility(Visibility::Private);
+
+		scope->define(IDENTIFIER_THIS, thisObject);
 	}
 
 	// add parameters as locale variables

@@ -26,15 +26,15 @@ public void Main(int argc = 0, string args = "") {
 private bool TestCase1() {
 	print("TestCase 1: valid foreach with collection");
 
-	List list = new List();
+	List<String> list = new List<String>();
 
-	list.push_back(Object new String("664"));
-	list.push_back(Object new String("173"));
-	list.push_back(Object new String("1389"));
+	list.push_back(new String("664"));
+	list.push_back(new String("173"));
+	list.push_back(new String("1389"));
 
 	assert( list.size() == 3 );
 
-	foreach ( Object s : list ) {
+	foreach ( String s : list ) {
 		print(string s);
 	}
 
@@ -44,16 +44,16 @@ private bool TestCase1() {
 private bool TestCase2() {
 	print("TestCase 2: valid foreach with collection");
 
-	List list = new List();
+	List<String> list = new List<String>();
 
-	list.push_back(Object new String("664"));
-	list.push_back(Object new String("173"));
-	list.push_back(Object new String("1389"));
+	list.push_back(new String("664"));
+	list.push_back(new String("173"));
+	list.push_back(new String("1389"));
 
 	assert( list.size() == 3 );
 
-	foreach ( Object r : list ) {
-		foreach ( Object s : list ) {
+	foreach ( String r : list ) {
+		foreach ( String s : list ) {
 			foreach ( Object t : list ) {
 				print(string r);
 				print(string s);
@@ -80,7 +80,7 @@ private bool TestCase3() {
 private bool TestCase4() {
 	print("TestCase 4: valid foreach with prototype");
 
-	List list = new List();
+	List<Object> list = new List<Object>();
 
 	list.push_back(Object new Prototype<int>(664));
 	list.push_back(Object new Prototype<int>(173));
