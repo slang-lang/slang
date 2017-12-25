@@ -2,11 +2,15 @@
 
 private object DerivedObject extends BaseObject {
 	public void Constructor() {
-		print("Constructor");
+		print("DerivedObject.Constructor");
+
+		base.Constructor();
 	}
 
 	public void Destructor() {
-		print("Destructor");
+		print("DerivedObject.Destructor");
+
+		base.Destructor();
 	}
 }
 
@@ -16,11 +20,11 @@ public void Main(int argc = 0, string args = "") {
 
 private object BaseObject {
 	public void Constructor() {
-		print("Constructor");
+		print("BaseObject.Constructor");
 	}
 
 	public void Destructor() {
-		print("Destructor");
+		print("BaseObject.Destructor");
 	}
 }
 

@@ -17,7 +17,7 @@ private bool TestCase1() const {
 		file.close();
 	}
 	catch {
-		writeln("error during fwrite");
+		print("error during fwrite");
 
 		return false;
 	}
@@ -28,17 +28,17 @@ private bool TestCase1() const {
 		assert( file.isOpen() );
 
 		int value = file.readInt();
-		writeln("value = " + value);
+		print("value = " + value);
 
 		file.rewind();
 
 		value = file.readInt();
-		writeln("value = " + value);
+		print("value = " + value);
 
 		file.close();
 	}
 	catch {
-		writeln("error during fread");
+		print("error during fread");
 
 		return false;
 	}
