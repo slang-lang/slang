@@ -148,6 +148,7 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 
 	// add new blueprint to repository
 	addBluePrint(newBlue);
+
 	// initialize newly created blueprint
 	initBluePrintObject(newBlue);
 
@@ -360,9 +361,6 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 
 				switch ( ancestorIt->ancestorType() ) {
 					case Designtime::Ancestor::Type::Extends: {
-						// undefine previous base (while using single inheritance none should exist yet)
-						object->undefine(IDENTIFIER_BASE);
-
 						// create base object
 						Runtime::Object *ancestor = createReference(blueIt->second, IDENTIFIER_BASE, ancestorIt->constraints(), InitilizationType::AllowAbstract);
 						ancestor->setParent(blueprint->getEnclosingScope());
@@ -589,7 +587,9 @@ void Repository::initBluePrintObject(Designtime::BluePrintObject *blueprint)
 	for ( Designtime::Ancestors::const_iterator it = ancestors.begin(); it != ancestors.end(); ++it ) {
 		switch ( it->ancestorType() ) {
 			case Designtime::Ancestor::Type::Extends: {
-				Designtime::BluePrintGeneric* base = findBluePrint(it->name());
+				std::string type = Designtime::Parser::buildRuntimeConstraintTypename(it->name(), it->constraints());
+
+				Designtime::BluePrintObject* base = findBluePrintObject(type);
 				if ( base ) {
 					blueprint->define(IDENTIFIER_BASE, base);
 				}
@@ -608,7 +608,7 @@ void Repository::initBluePrintObject(Designtime::BluePrintObject *blueprint)
 					throw Common::Exceptions::Exception("Blueprint '" + blueprint->QualifiedTypename() + "' not found!");
 				}
 
-				// TODO: potenial memleak
+				// TODO: potential memleak
 				blueIt->second = replica;
 				blueprint = replica;
 
@@ -693,6 +693,10 @@ void Repository::initTypeSystem(Designtime::BluePrintEnum* blueprint)
  */
 void Repository::initTypeSystem(Designtime::BluePrintObject* blueprint)
 {
+	if ( mTypeSystem->exists(blueprint->QualifiedTypename(), Token::Type::ASSIGN, blueprint->QualifiedTypename()) ) {
+		return;
+	}
+
 	MethodScope::MethodCollection methods = blueprint->provideMethods();
 	for ( MethodScope::MethodCollection::const_iterator it = methods.begin(); it != methods.end(); ++it ) {
 		std::string name = (*it)->getName();
