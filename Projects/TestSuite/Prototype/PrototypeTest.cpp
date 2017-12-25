@@ -150,9 +150,7 @@ void PrototypeTest::testInheritFromPrototypeTest()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/Prototypes/InheritFromPrototypeTest.os");
-
-		// automatic success
+		TTHROWS(vm.createScriptFromFile("Tests/Prototypes/InheritFromPrototypeTest.os"), ObjectiveScript::Common::Exceptions::NotSupported);
 	}
 	catch ( std::exception& e ) {
 		// exception has been thrown: test failed!
