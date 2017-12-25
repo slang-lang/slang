@@ -1,12 +1,10 @@
-Runtime::AtomicValue:
-- removed unused atomic type UINT
-- introducted a pointer/reference to an object as new atomic type
+Inheritance:
+- prevented extending from prototypes since AST::TreeGenerator is not able to resolve the correct base type
 
-Runtime::Object:
-- replaced all usages of isNull() with isValid() and removed isNull() completely
-- extracted From/ToJson functionality and re-implemented it in the extension methods FromJsonString(Object, string) and ToJsonString(Object, string)
+Prototypes:
+- handling of prototypes is now a bit more stable
 
-Build system:
-- extracted Json dependency from Core (and moved it to the correct targets (= executables))
-- fixed adding additional link libraries by using an additional list (MODULES)
+System library:
+- the system library has been updated to allow the use of generics
+- all collections have been refactored to not use AbstractCollection as base any more
 
