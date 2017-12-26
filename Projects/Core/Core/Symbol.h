@@ -7,13 +7,8 @@
 #include <Core/Defines.h>
 
 // Library includes
-#ifdef USE_ORDERED_COLLECTION
-#	include <map>
-#	include <set>
-#else
-#	include <unordered_map>
-#	include <unordered_set>
-#endif
+#include <map>
+#include <set>
 #include <string>
 
 // Project includes
@@ -70,11 +65,7 @@ protected:
 	Visibility::E mVisibility;
 };
 
-#ifdef USE_ORDERED_COLLECTION
-	typedef std::map<std::string, Symbol*> Symbols;
-#else
-	typedef std::unordered_map<std::string, Symbol*> Symbols;
-#endif
+typedef std::map<std::string, Symbol*> Symbols;
 
 
 class BlueprintSymbol : public Symbol,

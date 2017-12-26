@@ -68,6 +68,11 @@ const std::string& Ancestor::name() const
 	return mTypeDeclaration.mName;
 }
 
+const Common::TypeDeclaration& Ancestor::typeDeclaration() const
+{
+	return mTypeDeclaration;
+}
+
 Visibility::E Ancestor::visibility() const
 {
 	return mVisibility;

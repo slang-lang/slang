@@ -98,7 +98,7 @@ std::string Parser::buildRuntimeConstraintTypename(const std::string &name, cons
 	std::string type = name;
 	type += "<";
 	for ( PrototypeConstraints::const_iterator it = constraints.begin(); it != constraints.end(); ++it ) {
-		type += it->mRunType;
+		type += it->mRunType.empty() ? _object : it->mRunType;
 
 		if ( std::distance(it, constraints.end()) > 1 ) {
 			type += ",";

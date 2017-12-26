@@ -5,7 +5,6 @@
 
 //#define ALLOW_BY_VALUE_COPY
 #define USE_AST_OPTIMIZATION
-#define USE_ORDERED_COLLECTION
 
 
 #endif
