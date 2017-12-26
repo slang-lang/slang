@@ -1054,7 +1054,6 @@ Expression* TreeGenerator::process_new(TokenIterator& token)
 			inner = inner->mSymbolExpression;
 		}
 		else {
-			// TODO: use buildRawPrototypes
 			PrototypeConstraints constraints = dynamic_cast<DesigntimeSymbolExpression*>(inner)->mConstraints;
 
 			Common::TypeDeclaration typeDeclaration = Common::TypeDeclaration(inner->getResultType(), constraints);
@@ -1585,7 +1584,9 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 
 			PrototypeConstraints constraints;
 			if ( blueprint->isPrototype() ) {
-				constraints = Designtime::Parser::collectRuntimePrototypeConstraints(token);
+				constraints = blueprint->getPrototypeConstraints().buildRawConstraints(
+					Designtime::Parser::collectRuntimePrototypeConstraints(token)
+				);
 			}
 
 			scope = static_cast<Designtime::BluePrintEnum*>(blueprint);
