@@ -134,7 +134,7 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 			continue;
 		}
 
-		Designtime::BluePrintGeneric* generic = findBluePrint(constIt->mRunType);
+		Designtime::BluePrintGeneric* generic = findBluePrintGeneric(constIt->mRunType);
 		if ( !generic ) {
 			throw Common::Exceptions::UnknownIdentifer(constIt->mRunType + " is unknown");
 		}
@@ -201,7 +201,7 @@ Runtime::Object* Repository::createInstance(Designtime::BluePrintGeneric* bluepr
 
 	if ( blueprint->getSymbolType() == Symbol::IType::BluePrintEnumSymbol ) {
 		// replace enum blueprint with an integer blueprint
-		blueprint = findBluePrint(Runtime::IntegerObject::TYPENAME);
+		blueprint = findBluePrintGeneric(Runtime::IntegerObject::TYPENAME);
 	}
 
 	if ( constraints != blueprint->getPrototypeConstraints() ) {
@@ -390,7 +390,7 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 		}
 
 		// initialize the base object
-		initializeObject(object, blueprint);
+		initializeObject(blueprint, object);
 	}
 
 	return object;
@@ -408,7 +408,7 @@ void Repository::deinit()
 	mBluePrintObjects.clear();
 }
 
-Designtime::BluePrintGeneric* Repository::findBluePrint(const std::string& type) const
+Designtime::BluePrintGeneric* Repository::findBluePrintGeneric(const std::string &type) const
 {
 	Designtime::BluePrintGeneric* blueprint = findBluePrintEnum(type);
 
@@ -439,6 +439,13 @@ Designtime::BluePrintObject* Repository::findBluePrintObject(const std::string& 
 	}
 
 	return 0;
+}
+
+Designtime::BluePrintObject* Repository::findBluePrintObject(const Common::TypeDeclaration& typeDeclaration) const
+{
+	return findBluePrintObject(
+			Designtime::Parser::buildRuntimeConstraintTypename(typeDeclaration.mName, typeDeclaration.mConstraints)
+	);
 }
 
 void Repository::init()
@@ -527,7 +534,7 @@ void Repository::initializeBlueprints()
 /*
  * creates and defines all members and methods of an object
  */
-void Repository::initializeObject(Runtime::Object* destObj, Designtime::BluePrintObject* srcObj)
+void Repository::initializeObject(Designtime::BluePrintObject* srcObj, Runtime::Object* destObj)
 {
 	// create and define all symbols based on given blueprint
 	Symbols symbols = srcObj->provideSymbols();
@@ -587,9 +594,10 @@ void Repository::initBluePrintObject(Designtime::BluePrintObject *blueprint)
 	for ( Designtime::Ancestors::const_iterator it = ancestors.begin(); it != ancestors.end(); ++it ) {
 		switch ( it->ancestorType() ) {
 			case Designtime::Ancestor::Type::Extends: {
-				std::string type = Designtime::Parser::buildRuntimeConstraintTypename(it->name(), it->constraints());
+				Designtime::BluePrintObject* base = findBluePrintObject(
+					Designtime::Parser::buildRuntimeConstraintTypename(it->name(), it->constraints())
+				);
 
-				Designtime::BluePrintObject* base = findBluePrintObject(type);
 				if ( base ) {
 					blueprint->define(IDENTIFIER_BASE, base);
 				}
@@ -600,8 +608,12 @@ void Repository::initBluePrintObject(Designtime::BluePrintObject *blueprint)
 			case Designtime::Ancestor::Type::Replicates: {
 				prepareType(Common::TypeDeclaration(it->name(), it->constraints()));
 
-				Designtime::BluePrintObject* blue = findBluePrintObject(Designtime::Parser::buildRuntimeConstraintTypename(it->name(), it->constraints()));
-				Designtime::BluePrintObject* replica = blue->replicate(blueprint->QualifiedTypename(), blueprint->Filename());
+				Designtime::BluePrintObject* blue = findBluePrintObject(
+					Designtime::Parser::buildRuntimeConstraintTypename(it->name(), it->constraints())
+				);
+				Designtime::BluePrintObject* replica = blue->replicate(
+					blueprint->QualifiedTypename(), blueprint->Filename()
+				);
 
 				BluePrintObjectMap::iterator blueIt = mBluePrintObjects.find(blueprint->QualifiedTypename());
 				if ( blueIt == mBluePrintObjects.end() ) {
@@ -791,10 +803,10 @@ void Repository::prepareType(const Common::TypeDeclaration& type)
 	std::string resolvedType = Designtime::Parser::buildRuntimeConstraintTypename(type.mName, type.mConstraints);
 
 	// lookup resolved type
-	Designtime::BluePrintGeneric* blueprint = findBluePrint(resolvedType);
+	Designtime::BluePrintGeneric* blueprint = findBluePrintGeneric(resolvedType);
 	if ( !blueprint ) {
 		// lookup pure type without constraints
-		blueprint = findBluePrint(type.mName);
+		blueprint = findBluePrintGeneric(type.mName);
 
 		if ( !blueprint ) {
 			// pure type not available

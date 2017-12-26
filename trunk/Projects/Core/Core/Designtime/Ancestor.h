@@ -46,6 +46,7 @@ public:
 	Type::E ancestorType() const;
 	const PrototypeConstraints& constraints() const;
 	const std::string& name() const;
+	const Common::TypeDeclaration& typeDeclaration() const;
 	Visibility::E visibility() const;
 
 private:

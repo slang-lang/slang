@@ -7,11 +7,7 @@
 
 // Library includes
 #include <list>
-#ifdef USE_ORDERED_COLLECTION
-#	include <set>
-#else
-#	include <unordered_set>
-#endif
+#include <set>
 #include <string>
 
 // Project includes
@@ -24,11 +20,7 @@
 
 
 typedef std::list<std::string> StringList;
-#ifdef USE_ORDERED_COLLECTION
 typedef std::set<std::string> StringSet;
-#else
-typedef std::unordered_set<std::string> StringSet;
-#endif
 
 
 namespace ObjectiveScript {

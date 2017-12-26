@@ -93,21 +93,9 @@ PrototypeConstraints PrototypeConstraints::buildRuntimeConstraints(const Prototy
 			result.push_back(constraint);
 		}
 		else {
-			result.push_back((*thisIt));
+			//result.push_back((*thisIt));
+			result.push_back(PrototypeConstraint(thisIt->mIndex, thisIt->mDesignType, _object, VALUE_NONE));
 		}
-	}
-
-	return result;
-}
-
-PrototypeConstraints PrototypeConstraints::extractConstraints(const PrototypeConstraints& other) const
-{
-	PrototypeConstraints result;
-
-	for ( PrototypeConstraints::const_iterator it = other.begin(); it != other.end(); ++it ) {
-		result.push_back(
-			lookupConstraint((*it).mDesignType)
-		);
 	}
 
 	return result;

@@ -1054,7 +1054,8 @@ Expression* TreeGenerator::process_new(TokenIterator& token)
 	}
 
 	SymbolExpression* exp = resolveWithExceptions(token, getScope());
-	std::string type = exp->getResultType();
+
+	std::string type;
 
 	SymbolExpression* inner = exp;
 	for ( ; ; ) {
@@ -1062,7 +1063,9 @@ Expression* TreeGenerator::process_new(TokenIterator& token)
 			inner = inner->mSymbolExpression;
 		}
 		else {
-			Common::TypeDeclaration typeDeclaration(inner->getResultType(), dynamic_cast<DesigntimeSymbolExpression*>(inner)->mConstraints);
+			PrototypeConstraints constraints = dynamic_cast<DesigntimeSymbolExpression*>(inner)->mConstraints;
+
+			Common::TypeDeclaration typeDeclaration = Common::TypeDeclaration(inner->getResultType(), constraints);
 			mRepository->prepareType(typeDeclaration);
 
 			type = Designtime::Parser::buildRuntimeConstraintTypename(
@@ -1070,8 +1073,8 @@ Expression* TreeGenerator::process_new(TokenIterator& token)
 				typeDeclaration.mConstraints
 			);
 
-			inner->mSymbolExpression = new DesigntimeSymbolExpression(CONSTRUCTOR, _void, PrototypeConstraints(), false);
-			inner->mSymbolExpression->mSurroundingScope = dynamic_cast<Designtime::BluePrintObject*>(mRepository->findBluePrint(type));
+			inner->mSymbolExpression = new DesigntimeSymbolExpression(CONSTRUCTOR, _void, PrototypeConstraints());
+			inner->mSymbolExpression->mSurroundingScope = mRepository->findBluePrintObject(type);
 			break;
 		}
 	}
@@ -1147,7 +1150,7 @@ Expression* TreeGenerator::process_subscript(TokenIterator& token, SymbolExpress
 	std::string type = symbol->getResultType();
 
 	symbol->mSymbolExpression = new RuntimeSymbolExpression("operator[]", "", true, true, false);
-	symbol->mSymbolExpression->mSurroundingScope = dynamic_cast<Designtime::BluePrintObject*>(mRepository->findBluePrint(type));
+	symbol->mSymbolExpression->mSurroundingScope = mRepository->findBluePrintObject(type);
 
 	Token opToken(Token::Category::Operator, Token::Type::BRACKET_OPEN, "[", token->position(), false);
 	ExpressionList params;
@@ -1583,7 +1586,7 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 
 			type = object->QualifiedTypename();
 
-			Designtime::BluePrintGeneric* blueprint = mRepository->findBluePrint(type);
+			Designtime::BluePrintEnum* blueprint = mRepository->findBluePrintEnum(type);
 			if ( !blueprint ) {
 				throw Common::Exceptions::UnknownIdentifer("'" + type + "' not found", token->position());
 			}
@@ -1595,26 +1598,26 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 
 			scope = static_cast<Designtime::BluePrintEnum*>(blueprint);
 
-			symbol = new DesigntimeSymbolExpression(name, type, constraints, blueprint->isConst());
+			symbol = new DesigntimeSymbolExpression(name, type, constraints);
 		} break;
 		case Symbol::IType::BluePrintObjectSymbol: {
-			Designtime::BluePrintObject* object = static_cast<Designtime::BluePrintObject*>(result);
+			type = static_cast<Designtime::BluePrintObject*>(result)->QualifiedTypename();
 
-			type = object->QualifiedTypename();
-
-			Designtime::BluePrintGeneric* blueprint = mRepository->findBluePrint(type);
+			Designtime::BluePrintObject* blueprint = mRepository->findBluePrintObject(type);
 			if ( !blueprint ) {
 				throw Common::Exceptions::UnknownIdentifer("'" + type + "' not found", token->position());
 			}
 
 			PrototypeConstraints constraints;
 			if ( blueprint->isPrototype() ) {
-				constraints = Designtime::Parser::collectRuntimePrototypeConstraints(token);
+				constraints = blueprint->getPrototypeConstraints().buildRawConstraints(
+					Designtime::Parser::collectRuntimePrototypeConstraints(token)
+				);
 			}
 
 			scope = static_cast<Designtime::BluePrintObject*>(blueprint);
 
-			symbol = new DesigntimeSymbolExpression(name, type, constraints, object->isConst());
+			symbol = new DesigntimeSymbolExpression(name, type, constraints);
 		} break;
 		case Symbol::IType::NamespaceSymbol: {
 			Common::Namespace* space = static_cast<Common::Namespace*>(result);
@@ -1622,7 +1625,7 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 			scope = space;
 			type = space->QualifiedTypename();
 
-			symbol = new DesigntimeSymbolExpression(name, type, PrototypeConstraints(), space->isConst());
+			symbol = new DesigntimeSymbolExpression(name, type, PrototypeConstraints());
 		} break;
 		case Symbol::IType::ObjectSymbol: {
 			Runtime::Object* object = static_cast<Runtime::Object*>(result);

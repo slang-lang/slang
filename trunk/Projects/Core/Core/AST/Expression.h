@@ -334,11 +334,11 @@ protected:
 class DesigntimeSymbolExpression : public SymbolExpression
 {
 public:
-	explicit DesigntimeSymbolExpression(const std::string& name, const std::string& resultType, const PrototypeConstraints& constraints, bool isConst)
+	explicit DesigntimeSymbolExpression(const std::string& name, const std::string& resultType, const PrototypeConstraints& constraints)
 	: SymbolExpression(name, resultType),
 	  mConstraints(constraints)
 	{
-		mIsConst = isConst;
+		mIsConst = false;
 		mSymbolExpressionType = SymbolExpressionType::DesigntimeSymbolExpression;
 	}
 

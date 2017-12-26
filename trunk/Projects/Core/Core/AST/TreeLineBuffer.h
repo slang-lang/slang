@@ -5,11 +5,7 @@
 #include <Core/Defines.h>
 
 // Library includes
-#ifdef USE_ORDERED_COLLECTION
-#	include <map>
-#else
-#	include <unordered_map>
-#endif
+#include <map>
 #include <string>
 
 // Project includes
@@ -27,11 +23,7 @@ namespace AST {
 class TreeLineBuffer
 {
 public:
-#ifdef USE_ORDERED_COLLECTION
-		typedef std::map<Common::Position, std::string> Lines;
-#else
-		typedef std::unordered_map<Common::Position, std::string> Lines;
-#endif
+	typedef std::map<Common::Position, std::string> Lines;
 
 public:
 	TreeLineBuffer();
