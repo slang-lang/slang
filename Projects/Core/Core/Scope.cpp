@@ -12,6 +12,7 @@
 #include <Core/Designtime/BluePrintEnum.h>
 #include <Core/Designtime/BluePrintObject.h>
 #include <Core/VirtualMachine/Controller.h>
+#include <Utils.h>
 #include "Tools.h"
 
 // Namespace declarations
@@ -45,6 +46,21 @@ void SymbolScope::define(const std::string& name, Symbol* symbol)
 	mSymbols.insert(std::make_pair(name, symbol));
 }
 
+void SymbolScope::defineExternal(const std::string &name, Symbol *symbol)
+{
+	if ( !symbol ) {
+		throw Common::Exceptions::Exception("invalid symbol pointer provided");
+	}
+
+	Symbols::iterator symIt = mExternalSymbols.find(name);
+	if ( symIt != mExternalSymbols.end() ) {
+		// duplicate symbol defined
+		throw Common::Exceptions::DuplicateIdentifier("duplicate identifier defined: " + symbol->getName());
+	}
+
+	mExternalSymbols.insert(std::make_pair(name, symbol));
+}
+
 void SymbolScope::deinit()
 {
 	Symbols tmpSymbols = mSymbols;
@@ -52,7 +68,7 @@ void SymbolScope::deinit()
 	for ( Symbols::iterator symIt = tmpSymbols.begin(); symIt != tmpSymbols.end(); ++symIt ) {
 		mSymbols.erase(symIt->first);
 
-		if ( /*symIt->first == "base" ||*/ symIt->first == "this" ) {
+		if ( symIt->first == IDENTIFIER_THIS ) {
 			continue;
 		}
 
@@ -92,6 +108,7 @@ IScope::IType::E SymbolScope::getScopeType() const
 
 Symbol* SymbolScope::resolve(const std::string& name, bool onlyCurrentScope, Visibility::E visibility) const
 {
+	// look up in local symbols
 	Symbols::const_iterator it = mSymbols.find(name);
 	if ( it != mSymbols.end() ) {
 		if ( it->second->getVisibility() >= visibility ) {
@@ -99,6 +116,15 @@ Symbol* SymbolScope::resolve(const std::string& name, bool onlyCurrentScope, Vis
 		}
 	}
 
+	// look up in external symbols
+	it = mExternalSymbols.find(name);
+	if ( it != mExternalSymbols.end() ) {
+		if ( it->second->getVisibility() >= visibility ) {
+			return it->second;
+		}
+	}
+
+	// look up in parent's symbols
 	if ( mParent && !onlyCurrentScope ) {
 		return mParent->resolve(name, onlyCurrentScope, visibility);
 	}
@@ -162,6 +188,30 @@ void MethodScope::define(const std::string& name, Symbol* symbol)
 	}
 
 	mSymbols.insert(std::make_pair(name, symbol));
+}
+
+void MethodScope::defineExternal(const std::string &name, Symbol *symbol)
+{
+	if ( !symbol ) {
+		throw Common::Exceptions::Exception("invalid symbol pointer provided");
+	}
+
+	Symbols::const_iterator symIt = mExternalSymbols.find(name);
+	if ( symIt != mExternalSymbols.end() ) {
+		// duplicate symbol defined
+		throw Common::Exceptions::DuplicateIdentifier("duplicate identifier defined: " + symbol->getName());
+	}
+
+	mExternalSymbols.insert(std::make_pair(name, symbol));
+}
+
+void MethodScope::defineExternalMethod(const std::string& /*name*/, Common::Method* method)
+{
+	if ( !method ) {
+		throw Common::Exceptions::Exception("invalid method pointer provided");
+	}
+
+	mExternalMethods.insert(method);
 }
 
 void MethodScope::defineMethod(const std::string& name, Common::Method* method)
@@ -242,6 +292,7 @@ IScope::IType::E MethodScope::getScopeType() const
 
 Symbol* MethodScope::resolve(const std::string& name, bool onlyCurrentScope, Visibility::E visibility) const
 {
+	// look up in local symbols
 	Symbols::const_iterator it = mSymbols.find(name);
 	if ( it != mSymbols.end() ) {
 		if ( it->second->getVisibility() >= visibility ) {
@@ -249,7 +300,27 @@ Symbol* MethodScope::resolve(const std::string& name, bool onlyCurrentScope, Vis
 		}
 	}
 
+	// look up in external symbols
+	it = mExternalSymbols.find(name);
+	if ( it != mExternalSymbols.end() ) {
+		if ( it->second->getVisibility() >= visibility ) {
+			return it->second;
+		}
+	}
+
+	// look up in local methods
 	for ( MethodCollection::const_iterator methodIt = mMethods.begin(); methodIt != mMethods.end(); ++methodIt ) {
+		Common::Method *method = (*methodIt);
+
+		if ( method->getVisibility() >= visibility ) {
+			if ( method->getName() == name ) {
+				return method;
+			}
+		}
+	}
+
+	// look up in external methods
+	for ( MethodCollection::const_iterator methodIt = mExternalMethods.begin(); methodIt != mExternalMethods.end(); ++methodIt ) {
 		Common::Method *method = (*methodIt);
 
 		if ( method->getVisibility() >= visibility ) {

@@ -672,6 +672,10 @@ void Repository::initBluePrintObject(Designtime::BluePrintObject *blueprint)
 	}
 */
 
+	if ( !blueprint->isPrepared() ) {
+		blueprint->prepareParents(this);
+	}
+
 	initTypeSystem(blueprint);
 }
 
