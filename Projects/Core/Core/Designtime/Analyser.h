@@ -48,9 +48,7 @@ private:
 	bool createBluePrint(TokenIterator& token);
 	bool createEnum(TokenIterator& token);
 	bool createLibraryReference(TokenIterator& token);
-	bool createMember(TokenIterator& token);
 	bool createMemberOrMethod(TokenIterator& token);
-	bool createMethod(TokenIterator& token);
 	bool createNamespace(TokenIterator& token);
 
 	bool createMethodStub(TokenIterator& token, Visibility::E visibility, LanguageFeatureState::E languageFeature, Common::TypeDeclaration type, const std::string& name);
