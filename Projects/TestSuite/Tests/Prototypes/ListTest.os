@@ -37,6 +37,7 @@ private object List<T> {
 public void Main(int argc = 0, string argv = "") {
 	assert( TestCase1() );
 	assert( TestCase2() );
+	assert( TestCase3() );
 }
 
 private bool TestCase1() {
@@ -70,6 +71,19 @@ private bool TestCase2() {
 
 	strings.push_back("O1389O");
 	print(strings.peek());
+
+	return true;
+}
+
+private bool TestCase3() {
+	print("TestCase 3: raw prototype");
+
+	List list = new List();
+	assert( list is Object );
+
+	assert( typeid(list) == "List<Object>" );
+
+	list.push_back(new Object());
 
 	return true;
 }
