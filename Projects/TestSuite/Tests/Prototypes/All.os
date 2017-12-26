@@ -27,7 +27,5 @@ public void Main(int argc, string args) {
 	system("./PrototypeAsPrototypedMember.os");
 	print("PrototypeAsReturnValue.os");
 	system("./PrototypeAsReturnValue.os");
-	print("Typecast.os");
-	system("./Typecast.os");
 }
 

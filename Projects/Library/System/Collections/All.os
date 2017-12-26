@@ -1,14 +1,7 @@
 
 // import all System.Collections libraries
 
-import AbstractCollection;
 import DoubleLinkedList;
-//import GenericCollectionItem;
-//import Genericiterator;
-//import GenericList;
-//import GenericListIterator;
-//import GenericStack;
-//import IGenericCollection;
 import IIterateable;
 import Iterator;
 import List;
