@@ -277,18 +277,9 @@ void TreeGenerator::initialize(Common::Method* method, Runtime::Object* thisObje
 
 	IScope* scope = getScope();
 
-	// add 'this' and 'base' symbol to method
+	// add 'this' symbol to method
 	if ( mThis && !method->isStatic() ) {
-/*
-		Runtime::Object* object = mRepository->createInstance(mThis->QualifiedTypename(), IDENTIFIER_THIS, PrototypeConstraints(), Repository::InitilizationType::Final);
-		object->setMutability(mMethod->getMutability());
-		object->setVisibility(Visibility::Private);
-
-		scope->define(IDENTIFIER_THIS, object);
-*/
-
 		thisObject->setMutability(mMethod->getMutability());
-		thisObject->setVisibility(Visibility::Private);
 
 		scope->define(IDENTIFIER_THIS, thisObject);
 	}
@@ -1696,6 +1687,7 @@ SymbolExpression* TreeGenerator::resolveWithThis(TokenIterator& token, IScope* b
 			return symbol;
 		}
 
+/*
 		// every class that inherits from another class has a private "base" member to access its ancestor's protected and public members/methods
 		// resolve symbol by using the "base" identifier (without exceptions so that we can try to resolve another time)
 		SymbolExpression* base = new RuntimeSymbolExpression(IDENTIFIER_THIS, mThis->QualifiedTypename(), mMethod->isConst(), true, true);
@@ -1718,6 +1710,7 @@ SymbolExpression* TreeGenerator::resolveWithThis(TokenIterator& token, IScope* b
 
 		// could not resolve token so we have to delete our "origin" SymbolExpression
 		delete origin;
+*/
 	}
 
 	return resolveWithExceptions(token, base);

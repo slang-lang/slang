@@ -6,6 +6,7 @@
 
 // Project includes
 #include <Core/Common/Method.h>
+#include <Core/VirtualMachine/Repository.h>
 #include <Parser/Parser.h>
 #include <Tools/Strings.h>
 
@@ -18,6 +19,7 @@ namespace Designtime {
 
 BluePrintObject::BluePrintObject()
 : MethodScope(ANONYMOUS_OBJECT, 0),
+  mIsPrepared(false),
   mIsReference(false)
 {
 	mName = ANONYMOUS_OBJECT;
@@ -27,6 +29,7 @@ BluePrintObject::BluePrintObject()
 BluePrintObject::BluePrintObject(const std::string& type, const std::string& filename, const std::string& name)
 : BluePrintGeneric(type, filename),
   MethodScope(type, 0),
+  mIsPrepared(false),
   mIsReference(false)
 {
 	mName = name;
@@ -190,9 +193,45 @@ bool BluePrintObject::isIterable() const
 	return false;
 }
 
+bool BluePrintObject::isPrepared() const
+{
+	return mIsPrepared;
+}
+
 bool BluePrintObject::isReference() const
 {
 	return mIsReference;
+}
+
+void BluePrintObject::prepareParents(Repository* repository)
+{
+	Ancestors ancestors = getAncestors();
+	for ( Ancestors::const_iterator it = ancestors.begin(); it != ancestors.end(); ++it ) {
+		BluePrintObject* parent = repository->findBluePrintObject(it->typeDeclaration());
+
+		if ( !parent->isPrepared() ) {
+			// recursively prepare parent objects
+			parent->prepareParents(repository);
+		}
+
+		// locally define parent's public and protected symbols
+		Symbols symbols = parent->provideSymbols();
+		for ( Symbols::const_iterator symIt = symbols.begin(); symIt != symbols.end(); ++symIt ) {
+			if ( symIt->second->getVisibility() >= Visibility::Protected ) {
+				defineExternal(symIt->first, symIt->second);
+			}
+		}
+
+		// locally define parent's public and protected methods
+		MethodCollection methods = parent->provideMethods();
+		for ( MethodCollection::const_iterator methIt = methods.begin(); methIt != methods.end(); ++methIt ) {
+			if ( (*methIt)->getVisibility() >= Visibility::Protected ) {
+				defineExternalMethod((*methIt)->QualifiedTypename(), (*methIt));
+			}
+		}
+	}
+
+	mIsPrepared = true;
 }
 
 MethodScope::MethodCollection BluePrintObject::provideMethods() const

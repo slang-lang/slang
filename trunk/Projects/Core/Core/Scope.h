@@ -7,13 +7,8 @@
 #include <Core/Defines.h>
 
 // Library include
-#ifdef USE_ORDERED_COLLECTION
-#	include <map>
-#	include <set>
-#else
-#	include <unordered_map>
-#	include <unordered_set>
-#endif
+#include <map>
+#include <set>
 #include <string>
 
 // Project includes
@@ -37,11 +32,7 @@ class Symbol;
 class SymbolScope : public IScope
 {
 public:
-#ifdef USE_ORDERED_COLLECTION
 	typedef std::map<std::string, Symbol*> Symbols;
-#else
-	typedef std::unordered_map<std::string, Symbol*> Symbols;
-#endif
 
 public:
 	explicit SymbolScope(IScope* parent = 0);
@@ -49,6 +40,7 @@ public:
 
 public:	// IScope implementation
 	virtual void define(const std::string& name, Symbol* symbol);
+	virtual void defineExternal(const std::string& name, Symbol* symbol);
 	virtual IScope* getEnclosingScope() const;
 	virtual std::string getFullScopeName() const;
 	virtual const std::string& getScopeName() const;
@@ -57,6 +49,7 @@ public:	// IScope implementation
 	virtual void undefine(const std::string& name);
 
 protected:
+	Symbols mExternalSymbols;
 	IScope *mParent;
 	std::string mScopeName;
 	IType::E mScopeType;
@@ -78,13 +71,8 @@ public:
 class MethodScope : public IScope
 {
 public:
-#ifdef USE_ORDERED_COLLECTION
 	typedef std::set<Common::Method*> MethodCollection;
 	typedef std::map<std::string, Symbol*> Symbols;
-#else
-	typedef std::unordered_set<Common::Method*> MethodCollection;
-	typedef std::unordered_map<std::string, Symbol*> Symbols;
-#endif
 
 public:
 	MethodScope(const std::string& name, IScope* parent = 0);
@@ -92,6 +80,7 @@ public:
 
 public:	// IScope implementation
 	virtual void define(const std::string& name, Symbol* symbol);
+	virtual void defineExternal(const std::string& name, Symbol* symbol);
 	virtual IScope* getEnclosingScope() const;
 	virtual std::string getFullScopeName() const;
 	virtual const std::string& getScopeName() const;
@@ -100,6 +89,7 @@ public:	// IScope implementation
 	virtual void undefine(const std::string& name);
 
 public: // MethodScope implementation
+	virtual void defineExternalMethod(const std::string& name, Common::Method* method);
 	virtual void defineMethod(const std::string& name, Common::Method* method);
 	virtual MethodSymbol* resolveMethod(const std::string& name, const ParameterList& params, bool onlyCurrentScope = false, Visibility::E visibility = Visibility::Designtime) const;
 	virtual void undefineMethod(Common::Method* method);
@@ -112,6 +102,8 @@ public:
 	Symbols::const_iterator endSymbols() const;
 
 protected:
+	Symbols mExternalSymbols;
+	MethodCollection mExternalMethods;
 	MethodCollection mMethods;
 	IScope *mParent;
 	std::string mScopeName;

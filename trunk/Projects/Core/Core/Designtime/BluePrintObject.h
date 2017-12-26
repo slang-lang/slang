@@ -19,6 +19,10 @@
 
 
 namespace ObjectiveScript {
+
+// Forward declarations
+class Repository;
+
 namespace Designtime {
 
 
@@ -38,6 +42,9 @@ public:
 
 	bool isIterable() const;
 
+	bool isPrepared() const;
+	void prepareParents(Repository* repository);
+
 	bool isReference() const;
 	void setIsReference(bool state);
 
@@ -55,6 +62,7 @@ public:
 	Symbols provideSymbols() const;
 
 private:
+	bool mIsPrepared;
 	bool mIsReference;
 	Runtime::AtomicValue mValue;
 };

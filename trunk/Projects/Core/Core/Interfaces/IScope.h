@@ -49,6 +49,7 @@ public:
 	virtual ~IScope() { }
 
 	virtual void define(const std::string& name, Symbol* symbol) = 0;
+	virtual void defineExternal(const std::string& name, Symbol* symbol) = 0;
 	virtual IScope* getEnclosingScope() const = 0;
 	virtual std::string getFullScopeName() const = 0;
 	virtual const std::string& getScopeName() const = 0;
