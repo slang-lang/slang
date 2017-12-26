@@ -222,11 +222,6 @@ bool Analyser::createBluePrint(TokenIterator& token)
 	// create default constructor if blueprint has no constructor at all
 	if ( implementationType == ImplementationType::FullyImplemented && !blueprint->hasConstructor() ) {
 		ParameterList params;
-/*	this has to be used as soon as 'this' is passed to methods as first parameter
-		params.push_back(Parameter::CreateDesigntime(
-			IDENTIFIER_THIS, Common::TypeDeclaration(name, constraints)
-		));
-*/
 
 		Common::Method* defaultConstructor = new Common::Method(blueprint, CONSTRUCTOR, _void);
 		defaultConstructor->setExceptions(CheckedExceptions::Nothrow);
@@ -315,20 +310,6 @@ bool Analyser::createLibraryReference(TokenIterator& token)
 	return true;
 }
 
-bool Analyser::createMember(TokenIterator& token)
-{
-	// look for an optional visibility token
-	Visibility::E visibility = Parser::parseVisibility(token, Visibility::Private);
-	// look for an optional language feature token
-	LanguageFeatureState::E languageFeatureState = Parser::parseLanguageFeatureState(token, LanguageFeatureState::Stable);
-	// look for the type token
-	Common::TypeDeclaration type = Parser::parseTypeDeclaration(token);
-	// look for the identifier token
-	std::string name = (*token++).content();
-
-	return createMemberStub(token, visibility, languageFeatureState, type, name);
-}
-
 bool Analyser::createMemberOrMethod(TokenIterator& token)
 {
 	// look for an optional visibility token
@@ -406,20 +387,6 @@ bool Analyser::createMemberStub(TokenIterator& token, Visibility::E visibility, 
 	return true;
 }
 
-bool Analyser::createMethod(TokenIterator& token)
-{
-	// look for an optional visibility token
-	Visibility::E visibility = Parser::parseVisibility(token, Visibility::Private);
-	// look for an optional language feature token
-	LanguageFeatureState::E languageFeatureState = Parser::parseLanguageFeatureState(token, LanguageFeatureState::Stable);
-	// look for the type token
-	Common::TypeDeclaration type = Parser::parseTypeDeclaration(token);
-	// look for the identifier token
-	std::string name = (*token++).content();
-
-	return createMethodStub(token, visibility, languageFeatureState, type, name);
-}
-
 bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, LanguageFeatureState::E languageFeature, Common::TypeDeclaration type, const std::string& name)
 {
 	assert( mScope->getScopeType() == IScope::IType::MethodScope );
@@ -445,19 +412,6 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 	}
 
 	ParameterList params = Parser::parseParameters(token, mScope);
-/*
-	// if this is an object method add 'this' as first parameter
-	if ( blueprint ) {
-		params.push_front(Parameter::CreateDesigntime(
-				IDENTIFIER_THIS,
-				Common::TypeDeclaration(blueprint->QualifiedTypename()),
-				Runtime::AtomicValue(),
-				false,
-				mutability,
-				AccessMode::ByReference
-		));
-	}
-*/
 
 	++token;
 
