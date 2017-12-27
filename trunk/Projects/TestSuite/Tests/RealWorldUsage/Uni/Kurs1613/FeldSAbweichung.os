@@ -8,6 +8,8 @@ private int FELDGROESSE const = 5;
 
 // Berechnet die Standardabweichung der Werte im Feld inFeld
 public void Main(int argc, string args) {
+	print("Berechnet den Mittelwert von 5 Zahlen:");
+
 	// Mittelwert berechnen
 	float Mittelwert = 0.f;
 	List inFeld = new List();

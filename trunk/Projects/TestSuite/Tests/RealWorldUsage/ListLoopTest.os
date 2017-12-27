@@ -17,12 +17,12 @@ public void Main(int argc = 0, string args = "") {
 }
 
 private void ObjectMethod() {
-	List list = new List();
+	List<Integer> list = new List<Integer>();
 
 	// Setup
-	list.push_back(Object new Integer(664));
-	list.push_back(Object new Integer(173));
-	list.push_back(Object new Integer(1389));
+	list.push_back(new Integer(664));
+	list.push_back(new Integer(173));
+	list.push_back(new Integer(1389));
 
 	// Usage
 	assert( list.size() == 3 );
@@ -42,19 +42,12 @@ private void ObjectMethod() {
 }
 
 private void ValueMethod() {
-	List list = new List();
+	List<string> list = new List<string>();
 
 	// Setup
-	string item;
-
-	item = "664";
-	list.push_back(Object item);
-
-	item = "173";
-	list.push_back(Object item);
-
-	item = "1389";
-	list.push_back(Object item);
+	list.push_back("0664");
+	list.push_back("173");
+	list.push_back("1389");
 
 	// Usage
 	assert( list.size() == 3 );

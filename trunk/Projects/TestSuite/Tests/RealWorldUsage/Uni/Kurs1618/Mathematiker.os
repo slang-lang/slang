@@ -29,6 +29,7 @@ public void Main(int argc, string args) throws {
             switch ( i ) {
                 case 0: {
                     writeln("eine Formel");
+			break;
                 }
                 case 1: {
                     writeln("ein Programm");
@@ -50,6 +51,7 @@ public void Main(int argc, string args) throws {
             switch ( i ) {
                 case 1: {
                     writeln(";)");
+			break;
                 }
                 default: {
                     throw new Exception();
