@@ -40,6 +40,14 @@ public namespace System.IO {
 			return result == 0;
 		}
 
+		public string getAccessMode() const {
+			return mAccessMode;
+		}
+
+		public string getFilename() const {
+			return mFilename;
+		}
+
 		public bool isEOF() const {
 			return feof(mHandle);
 		}

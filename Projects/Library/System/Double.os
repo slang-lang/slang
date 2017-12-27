@@ -8,7 +8,7 @@ public object Double {
 	/*
 	 * Default constructor
 	 */
-	public void Constructor(double value = 0d) {
+	public void Constructor(double value val = 0d) {
 		mValue = value;
 	}
 
@@ -29,49 +29,49 @@ public object Double {
 		return !mValue;
 	}
 
-	public bool operator==(double other) const {
+	public bool operator==(double other val) const {
 		return mValue == other;
 	}
 	public bool operator==(Double other ref) const {
 		return mValue == double other;
 	}
 
-	public void operator=(double other) modify {
+	public void operator=(double other val) modify {
 		mValue = other;
 	}
 	public void operator=(Double other ref) modify {
 		mValue = double other;
 	}
 
-	public bool =operator(bool other) const {
+	public bool =operator(bool other val) const {
 		return bool mValue;
 	}
-	public double =operator(double other) const {
+	public double =operator(double other val) const {
 		return mValue;
 	}
 
-	public void operator+(double other) modify {
+	public void operator+(double other val) modify {
 		mValue = mValue + other;
 	}
 	public void operator+(Double other ref) modify {
 		mValue = mValue + double other;
 	}
 
-	public void operator-(double other) modify {
+	public void operator-(double other val) modify {
 		mValue = mValue - other;
 	}
 	public void operator-(Double other ref) modify {
 		mValue = mValue - double other;
 	}
 
-	public void operator*(double other) modify {
+	public void operator*(double other val) modify {
 		mValue = mValue * other;
 	}
 	public void operator*(Double other ref) modify {
 		mValue = mValue * double other;
 	}
 
-	public void operator/(double other) modify {
+	public void operator/(double other val) modify {
 		mValue = mValue / other;
 	}
 	public void operator/(Double other ref) modify {
