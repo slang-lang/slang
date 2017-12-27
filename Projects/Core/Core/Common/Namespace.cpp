@@ -63,34 +63,23 @@ void Namespace::defineMethod(const std::string& name, Common::Method* method)
 	method->initialize();
 }
 
-void Namespace::initialize()
-{
-	// nothing to do here atm
-}
-
 std::string Namespace::ToString(unsigned int indent) const
 {
 	std::string result;
 
 	result += ::Utils::Tools::indent(indent);
 	result += Visibility::convert(mVisibility);
-	//result += " " + LanguageFeatureState::convert(mLanguageFeatureState);
+	result += " " + LanguageFeatureState::convert(mLanguageFeatureState);
 	result += " " + std::string(RESERVED_WORD_NAMESPACE) + " " + getName();
 	result += " " + Mutability::convert(mMutability);
 	result += " {\n";
-
-/*
-	for ( MethodCollection::const_iterator it = mMethods.begin(); it != mMethods.end(); ++it ) {
-		result += "\t" + (*it)->ToString(indent) + "\n";
-	}
-*/
 
 	for ( Symbols::const_iterator it = mSymbols.begin(); it != mSymbols.end(); ++it ) {
 		switch ( it->second->getSymbolType() ) {
 			case Symbol::IType::BluePrintEnumSymbol:
 			case Symbol::IType::BluePrintObjectSymbol:
-			case Symbol::IType::MethodSymbol:
 				continue;
+			case Symbol::IType::MethodSymbol:
 			case Symbol::IType::NamespaceSymbol:
 			case Symbol::IType::ObjectSymbol:
 				result += it->second->ToString(indent + 1) + "\n";

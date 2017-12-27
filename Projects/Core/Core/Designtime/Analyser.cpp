@@ -398,7 +398,6 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 	bool throws = false;
 	Virtuality::E virtuality = mProcessingInterface ? Virtuality::Abstract : Virtuality::Virtual;
 
-
 	BluePrintGeneric* blueprint = dynamic_cast<BluePrintGeneric*>(mScope);
 	if ( blueprint && name == RESERVED_WORD_CONSTRUCTOR ) {
 		// constructors can never ever be const
@@ -527,8 +526,6 @@ bool Analyser::createNamespace(TokenIterator& token)
 	TokenList tokens = Parser::collectScopeTokens(token);
 
 	generate(tokens);
-
-	static_cast<Common::Namespace*>(mScope)->initialize();
 
 	mScope = tmpScope;
 

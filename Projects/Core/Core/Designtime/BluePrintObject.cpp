@@ -42,16 +42,14 @@ BluePrintObject::~BluePrintObject()
 
 BluePrintObject* BluePrintObject::fromPrototype(const PrototypeConstraints& constraints) const
 {
-	std::string constraintType = Designtime::Parser::buildRuntimeConstraintTypename(QualifiedTypename(), constraints);
+	// generate a new blueprint from our prototype
+	BluePrintObject* prototype = replicate(Designtime::Parser::buildRuntimeConstraintTypename(QualifiedTypename(), constraints), mFilename);
 
-	BluePrintObject* prototype = replicate(constraintType, mFilename);
-
-	// blueprint data
+	// clear prototype constraints
 	prototype->setPrototypeConstraints(PrototypeConstraints());
 
-	// inheritance should be fine
-
 	// update members
+	// {
 	Symbols symbols = prototype->provideSymbols();
 	for ( Symbols::const_iterator symIt = symbols.begin(); symIt != symbols.end(); ++symIt ) {
 		if ( symIt->second->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
@@ -72,82 +70,17 @@ BluePrintObject* BluePrintObject::fromPrototype(const PrototypeConstraints& cons
 			blue->setQualifiedTypename(type);
 		}
 	}
+	// }
 
 	// update methods
-	StringSet atomicTypes = provideAtomicTypes();
-
+	// {
 	MethodScope::MethodCollection methods = prototype->provideMethods();
 	for ( MethodScope::MethodCollection::const_iterator it = methods.begin(); it != methods.end(); ++it ) {
 		Common::Method* method = (*it);
 
-		// Prepare return value
-		// {
-		std::string type = constraints.lookupType(method->QualifiedTypename());
-		if ( !method->getPrototypeConstraints().empty() ) {
-			type += constraints.extractTypes(method->getPrototypeConstraints());
-
-			method->setPrototypeConstraints(PrototypeConstraints());	// reset prototype constraints
-		}
-
-		method->setQualifiedTypename(type);
-		// }
-
-		// Update method signature
-		// {
-		bool signatureChanged = false;
-
-		ParameterList params = method->provideSignature();
-		for ( ParameterList::iterator paramIt = params.begin(); paramIt != params.end(); ++paramIt ) {
-			type = constraints.lookupType(paramIt->type());
-			if ( paramIt->typeConstraints().size() ) {
-				type += constraints.extractTypes(paramIt->typeConstraints());
-			}
-
-			if ( paramIt->type() != type ) {
-				AccessMode::E access = AccessMode::ByValue;
-
-				if ( atomicTypes.find(type) == atomicTypes.end() ) {
-					access = AccessMode::ByReference;
-				}
-
-				(*paramIt) = Parameter::CreateDesigntime(paramIt->name(),
-														 type,
-														 paramIt->value(),
-														 paramIt->hasDefaultValue(),
-														 paramIt->mutability(),
-														 access);
-
-				signatureChanged = true;
-			}
-		}
-
-		if ( signatureChanged ) {
-			method->setSignature(params);
-		}
-		// }
-
-		// Update method tokens
-		// {
-		bool tokenChanged = false;
-
-		TokenList tokens = method->getTokens();
-		for ( TokenList::iterator tokIt = tokens.begin(); tokIt != tokens.end(); ++tokIt ) {
-			if ( tokIt->type() == Token::Type::IDENTIFIER ) {
-				type = constraints.lookupType(tokIt->content());
-
-				if ( type != tokIt->content() ) {
-					tokIt->resetContentTo(type);
-
-					tokenChanged = true;
-				}
-			}
-		}
-
-		if ( tokenChanged ) {
-			method->setTokens(tokens);
-		}
-		// }
+		method->initialize(constraints);
 	}
+	// }
 
 	return prototype;
 }

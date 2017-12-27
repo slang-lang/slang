@@ -9,7 +9,6 @@
 // Project includes
 #include <Core/Attributes/Attributes.h>
 #include <Core/Common/TypeDeclaration.h>
-#include <Core/Interfaces/IRuntimeType.h>
 #include <Core/Object.h>
 #include <Core/Parameter.h>
 #include <Core/Scope.h>
@@ -37,8 +36,7 @@ namespace Runtime {
 namespace Common {
 
 class Method : public NamedScope,
-			   public MethodSymbol,
-			   public IRuntimeType
+			   public MethodSymbol
 {
 public:
 	Method(IScope* parent, const std::string& name, const std::string& type);
@@ -54,8 +52,7 @@ public:	// Symbol::IType implementation
 	const std::string& QualifiedTypename() const;
 	void setQualifiedTypename(const std::string& type);
 
-public: // IRuntimeType implementation
-	void initialize();
+	void initialize(const PrototypeConstraints& constraints = PrototypeConstraints());
 
 public: // Execution
 	virtual Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* result, const Token& token);
@@ -66,18 +63,20 @@ public: // Signature
 
 public: // Setup
 	void setParent(IScope* scope);
-	void setPrototypeConstraints(const PrototypeConstraints& constraints);
 	void setSignature(const ParameterList& params);
-	void setTokens(const TokenList& tokens);
+
+	const PrototypeConstraints& getPrototypeConstraints() const;
+	void setPrototypeConstraints(const PrototypeConstraints& constraints);
 
 	AST::Statements* getRootNode() const;
 	void setRootNode(AST::Statements* node);
 
+	const TokenList& getTokens() const;
+	void setTokens(const TokenList& tokens);
+
 public:
 	bool isEmpty() const;
 	bool isExtensionMethod() const;
-	const PrototypeConstraints& getPrototypeConstraints() const;
-	const TokenList& getTokens() const;
 	std::string ToString(unsigned int indent = 0) const;
 
 public:

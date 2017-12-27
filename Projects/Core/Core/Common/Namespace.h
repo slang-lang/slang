@@ -7,7 +7,6 @@
 #include <string>
 
 // Project includes
-#include <Core/Interfaces/IRuntimeType.h>
 #include <Core/Scope.h>
 #include <Core/Symbol.h>
 
@@ -21,8 +20,7 @@ namespace Common {
 
 
 class Namespace : public MethodScope,
-				  public NamespaceSymbol,
-				  public IRuntimeType
+				  public NamespaceSymbol
 {
 public:
 	Namespace(const std::string& name, IScope* parent);
@@ -37,9 +35,6 @@ public:	// Symbol::IType implementation
 	const std::string& Typename() const { return mTypename; }
 
 	void setQualifiedTypename(const std::string& type) { mQualifiedTypename = type; }
-
-public: // IRuntimeType implementation
-	void initialize();
 
 public:
 	std::string ToString(unsigned int indent = 0) const;

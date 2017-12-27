@@ -622,7 +622,7 @@ void Repository::initializeObject(Designtime::BluePrintObject* srcObj, Runtime::
 void Repository::initBluePrintObject(Designtime::BluePrintObject* blueprint)
 {
 	if ( blueprint->isAtomicType() ) {
-		// atomic types should have been initialized at compile time
+		// atomic types have been initialized at compile time
 		return;
 	}
 	if ( blueprint->isPrototype() ) {
@@ -658,20 +658,20 @@ void Repository::initBluePrintObject(Designtime::BluePrintObject* blueprint)
 		}
 	}
 
-/*
 	// prepare methods
 	MethodScope::MethodCollection methods = blueprint->provideMethods();
 	for ( MethodScope::MethodCollection::const_iterator it = methods.begin(); it != methods.end(); ++it ) {
-		Common::TypeDeclaration typeDeclaration((*it)->QualifiedTypename(), (*it)->getPrototypeConstraints());
+		if ( !(*it)->getPrototypeConstraints().empty() ) {
+			Common::TypeDeclaration typeDeclaration((*it)->QualifiedTypename(), (*it)->getPrototypeConstraints());
 
-		// prepare type
-		prepareType(typeDeclaration);
-		// set qualified typename to constraint type
-		(*it)->setQualifiedTypename(Designtime::Parser::buildRuntimeConstraintTypename(typeDeclaration.mName, typeDeclaration.mConstraints));
-		// reset constraints
-		(*it)->setPrototypeConstraints(PrototypeConstraints());
+			// prepare type
+			prepareType(typeDeclaration);
+			// set qualified typename to constraint type
+			(*it)->setQualifiedTypename(Designtime::Parser::buildRuntimeConstraintTypename(typeDeclaration.mName, typeDeclaration.mConstraints));
+			// reset constraints
+			(*it)->setPrototypeConstraints(PrototypeConstraints());
+		}
 	}
-*/
 
 	if ( !blueprint->isPrepared() ) {
 		blueprint->prepareParents(this);
