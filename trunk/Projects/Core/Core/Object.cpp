@@ -272,8 +272,6 @@ void Object::defineMethod(const std::string& name, Common::Method* method)
 	}
 
 	MethodScope::defineMethod(name, method);
-
-	method->initialize();
 }
 
 ControlFlow::E Object::Destructor()
@@ -355,11 +353,6 @@ AtomicValue Object::getValue() const
 	}
 
 	return mValue;
-}
-
-void Object::initialize()
-{
-	// nothing to do here atm
 }
 
 bool Object::isAbstract() const

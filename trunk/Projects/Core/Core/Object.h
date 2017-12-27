@@ -13,7 +13,6 @@
 #include <Core/Designtime/Ancestor.h>
 #include <Core/Designtime/BluePrintObject.h>
 #include <Core/Designtime/Parser/Token.h>
-#include <Core/Interfaces/IRuntimeType.h>
 #include <Core/Runtime/AtomicValue.h>
 #include <Core/Runtime/ControlFlow.h>
 #include <Core/Runtime/Reference.h>
@@ -38,8 +37,7 @@ namespace Runtime {
 class Method;
 
 class Object : public MethodScope,
-			   public ObjectSymbol,
-			   public IRuntimeType
+			   public ObjectSymbol
 {
 public:
 	Object();
@@ -61,9 +59,6 @@ public:	// Symbol::IType implementation & RTTI
 	const std::string& QualifiedTypename() const { return mQualifiedTypename; }
 
 	void setQualifiedOuterface(const std::string &type) { mQualifiedOuterface = type; }
-
-public: // IRuntimeType implementation
-	void initialize();
 
 public:	// Setup
 	void addInheritance(const Designtime::Ancestor& ancestor, Object* inheritance);

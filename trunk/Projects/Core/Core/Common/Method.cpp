@@ -158,29 +158,59 @@ const TokenList& Method::getTokens() const
 	return mTokens;
 }
 
-void Method::initialize()
+void Method::initialize(const PrototypeConstraints& constraints)
 {
-/*
-	// reset qualified typename if prototype constraints are present
+	// Prepare return value
+	// {
+	std::string type = constraints.lookupType(QualifiedTypename());
 	if ( !mReturnType.mConstraints.empty() ) {
-		mReturnType.mName = Designtime::Parser::buildRuntimeConstraintTypename(mReturnType.mName, mReturnType.mConstraints);
-		mReturnType.mConstraints = PrototypeConstraints();
-	}
-*/
+		type += constraints.extractTypes(getPrototypeConstraints());
 
-	// update parameter types
-	for ( ParameterList::iterator it = mSignature.begin(); it != mSignature.end(); ++it ) {
-		if ( (*it).typeConstraints().size() ) {
-			(*it) = Parameter::CreateDesigntime(
-				(*it).name(),
-				TypeDeclaration(Designtime::Parser::buildRuntimeConstraintTypename((*it).type(), (*it).typeConstraints()), PrototypeConstraints()),
-				(*it).value(),
-				(*it).hasDefaultValue(),
-				(*it).mutability(),
-				(*it).access()
-			);
+		mReturnType.mConstraints = PrototypeConstraints();	// reset prototype constraints
+	}
+
+	mReturnType.mCombinedName = type;
+	// }
+
+	// Update method signature
+	// {
+	StringSet atomicTypes = provideAtomicTypes();
+
+	for ( ParameterList::iterator paramIt = mSignature.begin(); paramIt != mSignature.end(); ++paramIt ) {
+		type = constraints.lookupType(paramIt->type());
+		if ( paramIt->typeConstraints().size() ) {
+			type += constraints.extractTypes(paramIt->typeConstraints());
+		}
+
+		if ( paramIt->type() != type ) {
+			AccessMode::E access = AccessMode::ByValue;
+
+			if ( atomicTypes.find(type) == atomicTypes.end() ) {
+				access = AccessMode::ByReference;
+			}
+
+			(*paramIt) = Parameter::CreateDesigntime(paramIt->name(),
+													 TypeDeclaration(type, PrototypeConstraints()),
+													 paramIt->value(),
+													 paramIt->hasDefaultValue(),
+													 paramIt->mutability(),
+													 access);
 		}
 	}
+	// }
+
+	// Update method tokens
+	// {
+	for ( TokenList::iterator tokIt = mTokens.begin(); tokIt != mTokens.end(); ++tokIt ) {
+		if ( tokIt->type() == Token::Type::IDENTIFIER ) {
+			type = constraints.lookupType(tokIt->content());
+
+			if ( type != tokIt->content() ) {
+				tokIt->resetContentTo(type);
+			}
+		}
+	}
+	// }
 }
 
 bool Method::isEmpty() const
@@ -296,7 +326,7 @@ void Method::setParent(IScope *scope)
 void Method::setPrototypeConstraints(const PrototypeConstraints& constraints)
 {
 	mReturnType.mCombinedName = Designtime::Parser::buildRuntimeConstraintTypename(mReturnType.mName, constraints);
-	mReturnType.mConstraints = constraints;
+	mReturnType.mConstraints = PrototypeConstraints();
 }
 
 void Method::setQualifiedTypename(const std::string& type)
