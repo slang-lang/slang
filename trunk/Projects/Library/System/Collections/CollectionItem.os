@@ -3,16 +3,16 @@
 /*
  * Double linked collection item
  */
-private object CollectionItem {
-	public CollectionItem mNext;
-	public CollectionItem mPrevious;
-	public Object mValue;
+private object CollectionItem<T> {
+	public CollectionItem<T> mNext;
+	public CollectionItem<T> mPrevious;
+	public T mValue;
 
 	public void Constructor() {
 		// this is empty by intend
 	}
 
-	public void Constructor(Object value) {
+	public void Constructor(T value) {
 		mValue = value;
 	}
 
@@ -20,19 +20,19 @@ private object CollectionItem {
 		// this is empty by intend
 	}
 
-	public Object get() const {
+	public T get() const {
 		return mValue;
 	}
 
-	public CollectionItem next() const {
+	public CollectionItem<T> next() const {
 		return mNext;
 	}
 
-	public CollectionItem previous() const {
+	public CollectionItem<T> previous() const {
 		return mPrevious;
 	}
 
-	public void set(Object value) modify {
+	public void set(T value) modify {
 		mValue = value;
 	}
 }

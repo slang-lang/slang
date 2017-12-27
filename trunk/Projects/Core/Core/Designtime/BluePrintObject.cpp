@@ -199,9 +199,9 @@ BluePrintObject* BluePrintObject::replicate(const std::string& newType, const st
 	Designtime::Ancestors ancestors = getInheritance();
 	for ( Designtime::Ancestors::const_iterator it = ancestors.begin(); it != ancestors.end(); ++it ) {
 		replica->addInheritance(Designtime::Ancestor(
-				Common::TypeDeclaration((*it).name(), (*it).constraints()),
-				(*it).ancestorType(),
-				(*it).visibility()
+			Common::TypeDeclaration((*it).name(), (*it).constraints()),
+			(*it).ancestorType(),
+			(*it).visibility()
 		));
 	}
 
@@ -233,6 +233,8 @@ BluePrintObject* BluePrintObject::replicate(const std::string& newType, const st
 		Common::Method* method = new Common::Method(replica, (*it)->getName(), (*it)->QualifiedTypename());
 		// ... copy its data from our template method
 		*method = *(*it);
+
+		//method->initialize();
 
 		replica->defineMethod((*it)->getName(), method);
 	}

@@ -146,7 +146,7 @@ public object List<T> implements ICollection {
 
 	public void push_back(T value) modify {
 		CollectionItem item = new CollectionItem();
-		item.mValue = value;
+		item.mValue = Object value;
 
 		if ( mSize == 0 ) {     // special handling for 1st item
 			mFirst = item;
