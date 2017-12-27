@@ -661,15 +661,17 @@ void Repository::initBluePrintObject(Designtime::BluePrintObject* blueprint)
 	// prepare methods
 	MethodScope::MethodCollection methods = blueprint->provideMethods();
 	for ( MethodScope::MethodCollection::const_iterator it = methods.begin(); it != methods.end(); ++it ) {
-		if ( !(*it)->getPrototypeConstraints().empty() ) {
-			Common::TypeDeclaration typeDeclaration((*it)->QualifiedTypename(), (*it)->getPrototypeConstraints());
+		Common::Method* method = (*it);
+
+		if ( !method->getPrototypeConstraints().empty() ) {
+			Common::TypeDeclaration typeDeclaration(method->QualifiedTypename(), method->getPrototypeConstraints());
 
 			// prepare type
 			prepareType(typeDeclaration);
 			// set qualified typename to constraint type
-			(*it)->setQualifiedTypename(Designtime::Parser::buildRuntimeConstraintTypename(typeDeclaration.mName, typeDeclaration.mConstraints));
+			method->setQualifiedTypename(Designtime::Parser::buildRuntimeConstraintTypename(typeDeclaration.mName, typeDeclaration.mConstraints));
 			// reset constraints
-			(*it)->setPrototypeConstraints(PrototypeConstraints());
+			method->setPrototypeConstraints(PrototypeConstraints());
 		}
 	}
 

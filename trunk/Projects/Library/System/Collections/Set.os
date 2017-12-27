@@ -26,7 +26,7 @@ public object Set<T> implements ICollection {
 		}
 
 		CollectionItem item = mFirst;
-		for ( int i = 0; i < index; i = i++ ) {
+		for ( int i = 0; i < index; i++ ) {
 			item = item.mNext;
 		}
 
@@ -34,7 +34,7 @@ public object Set<T> implements ICollection {
 	}
 
 	public void clear() modify {
-		for ( int i = 0; i < mSize; i = i++ ) {
+		for ( int i = 0; i < mSize; i++ ) {
 			mFirst.mValue = null;
 			mFirst = mFirst.mNext;
 		}
@@ -52,7 +52,7 @@ public object Set<T> implements ICollection {
 
 	public void erase(int index) modify throws {
 		if ( index < 0 || index > mSize ) {
-			throw new OutOfBoundsException("erase index(" + index + ") beyond end of set");
+			throw new OutOfBoundsException("index(" + index + ") out of bounds");
 		}
 
 		if ( index == 0 ) {						// special handling for 1st element
@@ -60,7 +60,7 @@ public object Set<T> implements ICollection {
 		}
 		else {									// default handling for erasing
 			CollectionItem prev = mFirst;
-			for ( int i = 0; i < index - 1; i = i++ ) {
+			for ( int i = 0; i < index - 1; i++ ) {
 				prev = prev.mNext;
 			}
 
@@ -94,7 +94,7 @@ public object Set<T> implements ICollection {
 	public int indexOf(T value) const {
 		CollectionItem item = mFirst;
 
-		for ( int i = 0; i < mSize; i = i++ ) {
+		for ( int i = 0; i < mSize; i++ ) {
 			if ( item.mValue == value ) {
 				return i;
 			}
@@ -120,7 +120,7 @@ public object Set<T> implements ICollection {
 			CollectionItem tmp = mFirst;
 			CollectionItem previous;
 
-			for ( int i = 0; i < mSize; i = i++ ) {
+			for ( int i = 0; i < mSize; i++ ) {
 				if ( value < tmp.mValue ) {
 					break;
 				}

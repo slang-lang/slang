@@ -13,6 +13,7 @@ public object Stack<T> implements ICollection {
 	private int mSize = 0;
 
 	public void Constructor() {
+		// this is empty by intend
 	}
 
 	public void Destructor() {
@@ -25,7 +26,7 @@ public object Stack<T> implements ICollection {
 		}
 
 		CollectionItem item = mFirst;
-		for ( int i = 0; i < index; i = i++ ) {
+		for ( int i = 0; i < index; i++ ) {
 			item = item.mNext;
 		}
 
@@ -51,7 +52,7 @@ public object Stack<T> implements ICollection {
 
 	public void erase(int index) modify throws {
 		if ( index < 0 || index > mSize ) {
-			throw new OutOfBoundsException("erase index(" + index + ") beyond end of set");
+			throw new OutOfBoundsException("index(" + index + ") out of bounds");
 		}
 
 		if ( index == 0 ) {						// special handling for 1st element
@@ -59,7 +60,7 @@ public object Stack<T> implements ICollection {
 		}
 		else {									// default handling for erasing
 			CollectionItem prev = mFirst;
-			for ( int i = 0; i < index - 1; i = i++ ) {
+			for ( int i = 0; i < index - 1; i++ ) {
 				prev = prev.mNext;
 			}
 
@@ -85,7 +86,7 @@ public object Stack<T> implements ICollection {
 	public int indexOf(T value) const {
 		CollectionItem item = mFirst;
 
-		for ( int i = 0; i < mSize; i = i++ ) {
+		for ( int i = 0; i < mSize; i++ ) {
 			if ( item.mValue == value ) {
 				return i;
 			}
@@ -98,7 +99,7 @@ public object Stack<T> implements ICollection {
 
 	public T peek() const throws {
 		if ( mSize <= 0 ) {
-			throw new OutOfBoundsException("stack underflow");
+			throw new OutOfBoundsException("empty collection");
 		}
 
 		return T mLast.mValue;
@@ -106,7 +107,7 @@ public object Stack<T> implements ICollection {
 
 	public void pop() modify throws {
 		if ( mSize <= 0 ) {
-			throw new OutOfBoundsException("stack underflow");
+			throw new OutOfBoundsException("empty collection");
 		}
 
 		if ( mSize == 1 ) {
@@ -114,7 +115,7 @@ public object Stack<T> implements ICollection {
 		}
 		else {
 			CollectionItem item = mFirst;
-			for ( int i = 0; i < mSize - 1; i = i++ ) {
+			for ( int i = 0; i < mSize - 1; i++ ) {
 				item = item.mNext;
 			}
 
