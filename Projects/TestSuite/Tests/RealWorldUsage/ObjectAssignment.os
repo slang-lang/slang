@@ -3,12 +3,14 @@
 private object Vector2D {
 	public int x;
 	public int y;
+	private string name;
 
 	public void Constructor(int _x, int _y) {
 		print("Constructor(" + _x + ", " + _y + ")");
 
 		this.x = _x;
 		this.y = _y;
+		this.name = string _x + y;
 	}
 
 	public void Destructor() {
@@ -16,7 +18,7 @@ private object Vector2D {
 	}
 
 	public string ToString() const {
-		return "Vector2D = { " + x + ", " + y + " }";
+		return "Vector2D = { name: \"" + name + "\", " + x + ", " + y + " }";
 	}
 
 	public void operator=(Vector2D other ref) modify {

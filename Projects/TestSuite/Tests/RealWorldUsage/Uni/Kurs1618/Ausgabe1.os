@@ -32,7 +32,7 @@ public void Main(int argc, string args) {
 	Circle circle = new Circle(4);
 	print("Circle.getArea() = " + circle.getArea());
 
-	Eclipse eclipse = new Eclipse(4, 4);
+	Eclipse eclipse = new Eclipse(4, 8);
 	print("Eclipse.getArea() = " + eclipse.getArea());
 }
 

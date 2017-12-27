@@ -22,15 +22,19 @@ public void Main(int argc, string args) {
 		print("i = " + i);
 	}
 
-	StringList list = new StringList();
-	assert( list is ICollection );
-	assert( list is Object );
+	StringList stringList = new StringList();
+	assert( stringList is ICollection );
+	assert( stringList is Object );
 
-	list.push_back(new String("this is a string"));
-	list.push_back(new String("and another string"));
+	stringList.push_back(new String("this is a string"));
+	stringList.push_back(new String("and another string"));
 
-	foreach ( string s : list ) {
-		print("s = " + s);
+	foreach ( String s : stringList ) {
+		print("s = " + string s);
+
+		foreach ( string word : s ) {
+			print("word = " + word);
+		}
 	}
 }
 
