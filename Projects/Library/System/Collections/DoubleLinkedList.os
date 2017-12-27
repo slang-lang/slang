@@ -16,6 +16,7 @@ public object DoubleLinkedList<T> implements ICollection {
 	private int mSize = 0;
 
 	public void Constructor() {
+		// this is empty by intend
 	}
 
 	public void Destructor() {
@@ -28,7 +29,7 @@ public object DoubleLinkedList<T> implements ICollection {
 		}
 
 		CollectionItem item = mFirst;
-		for ( int i = 0; i < index; i = i++ ) {
+		for ( int i = 0; i < index; i++ ) {
 			item = item.mNext;
 		}
 
@@ -36,7 +37,7 @@ public object DoubleLinkedList<T> implements ICollection {
 	}
 
 	public void clear() modify {
-		for ( int i = 0; i < mSize; i = i++ ) {
+		for ( int i = 0; i < mSize; i++ ) {
 			mFirst.mValue = null;
 			mFirst = mFirst.mNext;
 		}
@@ -54,7 +55,7 @@ public object DoubleLinkedList<T> implements ICollection {
 
 	public void erase(int index) modify throws {
 		if ( index < 0 || index > mSize ) {
-			throw new OutOfBoundsException("erase index(" + index + ") beyond end of set");
+			throw new OutOfBoundsException("index(" + index + ") out of bounds");
 		}
 
 		if ( index == 0 ) {						// special handling for 1st element
@@ -62,7 +63,7 @@ public object DoubleLinkedList<T> implements ICollection {
 		}
 		else {									// default handling for erasing
 			CollectionItem prev = mFirst;
-			for ( int i = 0; i < index - 1; i = i++ ) {
+			for ( int i = 0; i < index - 1; i++ ) {
 				prev = prev.mNext;
 			}
 
@@ -96,7 +97,7 @@ public object DoubleLinkedList<T> implements ICollection {
 	public int indexOf(T value) const {
 		CollectionItem item = mFirst;
 
-		for ( int i = 0; i < mSize; i = i++ ) {
+		for ( int i = 0; i < mSize; i++ ) {
 			if ( item.mValue == value ) {
 				return i;
 			}
@@ -117,7 +118,7 @@ public object DoubleLinkedList<T> implements ICollection {
 
 	public void pop_back() modify throws {
 		if ( mSize <= 0 ) {
-			throw new OutOfBoundsException("pop beyond begin of collection");
+			throw new OutOfBoundsException("empty collection");
 		}
 
 		if ( mSize == 1 ) {
@@ -125,7 +126,7 @@ public object DoubleLinkedList<T> implements ICollection {
 		}
 		else {
 			CollectionItem item = mFirst;
-			for ( int i = 0; i < mSize - 1; i = i++ ) {
+			for ( int i = 0; i < mSize - 1; i++ ) {
 				item = item.mNext;
 			}
 
@@ -137,7 +138,7 @@ public object DoubleLinkedList<T> implements ICollection {
 
 	public void pop_front() modify throws {
 		if ( mSize <= 0 ) {
-			throw new OutOfBoundsException("pop beyond begin of collection");
+			throw new OutOfBoundsException("empty collection");
 		}
 
 		mFirst = mFirst.mNext;

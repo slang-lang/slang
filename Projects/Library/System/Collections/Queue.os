@@ -13,6 +13,7 @@ public object Queue<T> implements ICollection {
 	public void Constructor() {
 		mItems = new List<T>();
 	}
+
 	public void Destructor() {
 		clear();
 	}
@@ -23,10 +24,10 @@ public object Queue<T> implements ICollection {
 
 	public T dequeue() modify throws {
 		if ( mItems.size() <= 0 ) {
-			throw new OutOfBoundsException("queue is already empty");
+			throw new OutOfBoundsException("empty collection");
 		}
 
-		T item = T mItems.at(0);
+		T item = mItems.at(0);
 
 		mItems.pop_front();
 
@@ -46,7 +47,7 @@ public object Queue<T> implements ICollection {
 	}
 
 	public T peek() const {
-		return T mItems.last();
+		return mItems.last();
 	}
 
 	public int size() const {

@@ -12,6 +12,7 @@ public object Vector<T> implements ICollection {
 	private int mSize = 0;
 
 	public void Constructor() {
+		// this is empty by intend
 	}
 
 	public void Destructor() {
@@ -24,7 +25,7 @@ public object Vector<T> implements ICollection {
 		}
 
 		CollectionItem item = mFirst;
-		for ( int i = 0; i < index; i = i++ ) {
+		for ( int i = 0; i < index; i++ ) {
 			item = item.mNext;
 		}
 
@@ -32,7 +33,7 @@ public object Vector<T> implements ICollection {
 	}
 
 	public void clear() modify {
-		for ( int i = 0; i < mSize; i = i++ ) {
+		for ( int i = 0; i < mSize; i++ ) {
 			mFirst.mValue = null;
 			mFirst = mFirst.mNext;
 		}
@@ -58,7 +59,7 @@ public object Vector<T> implements ICollection {
 		}
 		else {	                        // default handling for erasing
 			CollectionItem prev = mFirst;
-			for ( int i = 0; i < index - 1; i = i++ ) {
+			for ( int i = 0; i < index - 1; i++ ) {
 				prev = prev.mNext;
 			}
 
@@ -92,7 +93,7 @@ public object Vector<T> implements ICollection {
 	public int indexOf(T value) const {
 		CollectionItem item = mFirst;
 
-		for ( int i = 0; i < mSize; i = i++ ) {
+		for ( int i = 0; i < mSize; i++ ) {
 			if ( item.mValue == value ) {
 				return i;
 			}
@@ -124,7 +125,7 @@ public object Vector<T> implements ICollection {
 		}
 		else {					// default handling for insertions
 			CollectionItem tmp = mFirst;
-			for ( int i = 0; i < index - 1; i = i++ ) {
+			for ( int i = 0; i < index - 1; i++ ) {
 				tmp = tmp.mNext;
 			}
 
