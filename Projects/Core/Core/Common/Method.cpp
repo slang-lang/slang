@@ -160,16 +160,16 @@ const TokenList& Method::getTokens() const
 
 void Method::initialize(const PrototypeConstraints& constraints)
 {
-	// Prepare return value
+	// Prepare return type
 	// {
-	std::string type = constraints.lookupType(QualifiedTypename());
-	if ( !mReturnType.mConstraints.empty() ) {
-		type += constraints.extractTypes(getPrototypeConstraints());
+	std::string type = constraints.lookupType(mReturnType.mName);
 
-		mReturnType.mConstraints = PrototypeConstraints();	// reset prototype constraints
+	if ( !mReturnType.mConstraints.empty() ) {
+		type += constraints.extractTypes(mReturnType.mConstraints);
 	}
 
 	mReturnType.mCombinedName = type;
+	mReturnType.mConstraints = PrototypeConstraints();	// reset prototype constraints
 	// }
 
 	// Update method signature
@@ -177,7 +177,10 @@ void Method::initialize(const PrototypeConstraints& constraints)
 	StringSet atomicTypes = provideAtomicTypes();
 
 	for ( ParameterList::iterator paramIt = mSignature.begin(); paramIt != mSignature.end(); ++paramIt ) {
+		// look up parameter type in object-wide prototype constraints
 		type = constraints.lookupType(paramIt->type());
+
+		// combine parameter type with
 		if ( paramIt->typeConstraints().size() ) {
 			type += constraints.extractTypes(paramIt->typeConstraints());
 		}
@@ -325,8 +328,12 @@ void Method::setParent(IScope *scope)
 
 void Method::setPrototypeConstraints(const PrototypeConstraints& constraints)
 {
+/*
 	mReturnType.mCombinedName = Designtime::Parser::buildRuntimeConstraintTypename(mReturnType.mName, constraints);
 	mReturnType.mConstraints = PrototypeConstraints();
+*/
+
+	mReturnType.mConstraints = constraints;
 }
 
 void Method::setQualifiedTypename(const std::string& type)
