@@ -11,14 +11,14 @@ public object String implements IIterateable {
 	/*
 	 * Standard & default constructor
 	 */
-	public void Constructor(string value = "") {
+	public void Constructor(string value val = "") {
 		mValue = value;
 	}
 
 	/*
 	 * Copy constructor
 	 */
-	public void Constructor(String s) {
+	public void Constructor(String s ref) {
 		mValue = string s;
 	}
 
@@ -144,7 +144,7 @@ public object String implements IIterateable {
 	/*
 	 * string compare operator
 	 */
-	public bool operator==(string other) const {
+	public bool operator==(string other val) const {
 		return (mValue == other);
 	}
 	/*
@@ -157,7 +157,7 @@ public object String implements IIterateable {
 	/*
 	 * string assignment operator
 	 */
-	public void operator=(string other) modify {
+	public void operator=(string other val) modify {
 		mValue = other;
 	}
 	/*
@@ -170,7 +170,7 @@ public object String implements IIterateable {
 	/*
 	 * string concatenation operator
 	 */
-	public void operator+(string other) modify {
+	public void operator+(string other val) modify {
 		mValue = mValue + other;
 	}
 	/*
@@ -183,7 +183,7 @@ public object String implements IIterateable {
 	/*
 	 * string less compare operator
 	 */
-	public bool operator<(string other) const {
+	public bool operator<(string other val) const {
 		return mValue < other;
 	}
 

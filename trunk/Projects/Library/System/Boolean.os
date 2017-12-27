@@ -8,7 +8,7 @@ public object Boolean {
 	/*
 	 * Default constructor 
 	 */
-	public void Constructor(bool value = false) {
+	public void Constructor(bool value val = false) {
 		mValue = value;
 	}
 
@@ -36,14 +36,14 @@ public object Boolean {
 		return !mValue;
 	}
 
-	public bool operator==(bool other) const {
+	public bool operator==(bool other val) const {
 		return mValue == other;
 	}
 	public bool operator==(Boolean other ref) const {
 		return mValue == bool other;
 	}
 
-	public void operator=(bool other) modify {
+	public void operator=(bool other val) modify {
 		mValue = other;
 	}
 	public void operator=(Boolean other ref) modify {
@@ -53,14 +53,14 @@ public object Boolean {
 	/*
 	 * bool-value operator
 	 */
-	public bool =operator(bool none) const {
+	public bool =operator(bool none val) const {
 		return mValue;
 	}
 
 	/*
 	 * string-value operator
 	 */
-	public string =operator(string none) const {
+	public string =operator(string none val) const {
 		return string mValue;
 	}
 }
