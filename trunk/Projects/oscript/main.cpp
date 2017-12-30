@@ -61,7 +61,7 @@ void printUsage()
 
 void printVersion()
 {
-	std::cout << "ObjectiveScript Interpreter 0.6.0 (cli)" << std::endl;
+	std::cout << "ObjectiveScript Interpreter 0.6.1 (cli)" << std::endl;
 	std::cout << "Copyright (c) 2014-2017 Michael Adelmann" << std::endl;
 	std::cout << "" << std::endl;
 }
