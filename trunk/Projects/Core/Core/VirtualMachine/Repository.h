@@ -76,8 +76,6 @@ private:
 	typedef std::set<Designtime::BluePrintGeneric*> ForwardDeclarationTomb;
 
 private:
-	void cleanupForwardDeclarations();
-
 	Designtime::BluePrintObject* createBluePrintFromPrototype(Designtime::BluePrintObject* blueprint, PrototypeConstraints constraints);
 	Runtime::Object* createObject(const std::string& name, Designtime::BluePrintObject* blueprint, InitilizationType::E initialize);
 	Runtime::Object* createUserObject(const std::string& name, Designtime::BluePrintObject* blueprint, InitilizationType::E initialize);
@@ -91,7 +89,6 @@ private:
 private:
 	BluePrintEnumMap mBluePrintEnums;
 	BluePrintObjectMap mBluePrintObjects;
-	ForwardDeclarationTomb mForwardDeclarations;
 
 private:	// Virtual machine stuff
 	TypeSystem* mTypeSystem;

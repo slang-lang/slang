@@ -226,6 +226,11 @@ bool Method::isExtensionMethod() const
 	return mIsExtensionMethod;
 }
 
+bool Method::isPrototype() const
+{
+	return !mReturnType.mConstraints.empty();
+}
+
 bool Method::isSignatureValid(const ParameterList& params) const
 {
 	// check method signature by:

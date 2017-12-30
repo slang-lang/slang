@@ -66,5 +66,6 @@ private object Level4Replica replicates Level4;
 
 public void Main(int argc, string argv) {
 	Level4Replica replica = new Level4Replica();
+	assert(replica);
 }
 

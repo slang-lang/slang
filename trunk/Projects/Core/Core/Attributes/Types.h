@@ -65,7 +65,6 @@ public:
 	enum E {
 		Unspecified = 0,
 		Abstract,
-		ForwardDeclaration,
 		FullyImplemented,
 		Interface
 	};

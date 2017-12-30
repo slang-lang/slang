@@ -6,6 +6,7 @@
 #include <cerrno>
 
 // Project includes
+#include "Ascii.h"
 #include "AssertMsg.h"
 #include "GetChar.h"
 #include "GetEnv.h"
@@ -91,6 +92,7 @@ void SystemExtension::provideMethods(ExtensionMethods &methods)
 	assert(methods.empty());
 
 	// Generic methods
+	methods.push_back(new Ascii());
 	methods.push_back(new Assert());
 	methods.push_back(new GetChar());
 	methods.push_back(new GetEnv());

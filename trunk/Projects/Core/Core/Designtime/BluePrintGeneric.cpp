@@ -117,11 +117,6 @@ bool BluePrintGeneric::isAbstract() const
 	return getImplementationType() == ImplementationType::Abstract || getImplementationType() == ImplementationType::Interface;
 }
 
-bool BluePrintGeneric::isForwardDeclaration() const
-{
-	return getImplementationType() == ImplementationType::ForwardDeclaration;
-}
-
 bool BluePrintGeneric::isInterface() const
 {
 	return getImplementationType() == ImplementationType::Interface;

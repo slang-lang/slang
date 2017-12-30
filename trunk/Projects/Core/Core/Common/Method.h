@@ -77,6 +77,8 @@ public: // Setup
 public:
 	bool isEmpty() const;
 	bool isExtensionMethod() const;
+	bool isPrototype() const;
+
 	std::string ToString(unsigned int indent = 0) const;
 
 public:

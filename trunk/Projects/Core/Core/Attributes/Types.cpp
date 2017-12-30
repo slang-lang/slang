@@ -76,7 +76,6 @@ std::string CheckedExceptions::convert(CheckedExceptions::E e)
 ImplementationType::E ImplementationType::convert(const std::string& v)
 {
 	if ( v == MODIFIER_ABSTRACT ) { return ImplementationType::Abstract; }
-	else if ( v == "ForwardDeclaration" ) { return ImplementationType::ForwardDeclaration; }
 	else if ( v == "FullyImplemented" ) { return ImplementationType::FullyImplemented; }
 
 	return ImplementationType::Unspecified;
@@ -86,7 +85,6 @@ std::string ImplementationType::convert(ImplementationType::E e)
 {
 	switch ( e ) {
 		case ImplementationType::Abstract: return MODIFIER_ABSTRACT;
-		case ImplementationType::ForwardDeclaration: return "ForwardDeclaration";
 		case ImplementationType::FullyImplemented: return "FullyImplemented";
 		case ImplementationType::Interface: return RESERVED_WORD_INTERFACE;
 		case ImplementationType::Unspecified: return UNKNOWN;
