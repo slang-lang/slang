@@ -35,6 +35,10 @@ public object Map<K, V> implements ICollection {
 		return mItems.size() == 0;
 	}
 
+	public V first() const throws {
+		return V mItems.first();
+	}
+
 	public V get(K key) const throws {
 		foreach ( Object p : mItems ) {
 			if ( p == key ) {
@@ -58,6 +62,10 @@ public object Map<K, V> implements ICollection {
 		mItems.insert(
 			Object new Pair<K, V>(k, v)
 		);
+	}
+
+	public V last() const throws {
+		return V mItems.last();
 	}
 
 	public void put(K key, V value) modify throws {

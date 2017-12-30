@@ -35,7 +35,6 @@ private bool TestCase2() {
 	print("TestCase 2: abstract object");
 
 	AbstractObject obj = new AbstractObject();
-	//assert( obj.isAbstract() );
 
 	return false;
 }

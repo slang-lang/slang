@@ -48,27 +48,9 @@ Repository::~Repository()
  */
 void Repository::addBluePrint(Designtime::BluePrintEnum* blueprint)
 {
-	if ( blueprint->getImplementationType() == ImplementationType::ForwardDeclaration ) {
-		// adding duplicate forward declarations doesn't matter
-		mForwardDeclarations.insert(blueprint);
-	}
-
 	BluePrintEnumMap::iterator it = mBluePrintEnums.find(blueprint->QualifiedTypename());
 	if ( it != mBluePrintEnums.end() ) {
-		if ( blueprint->getImplementationType() == ImplementationType::ForwardDeclaration ) {
-			// we already added this forward declaration to our forward declaration tomb
-			return;
-		}
-
-		if ( it->second->getImplementationType() != ImplementationType::ForwardDeclaration ) {
-			throw Common::Exceptions::Exception("duplicate enum '" + blueprint->QualifiedTypename() + "' added to repository");
-		}
-
-		// insert forward declaration into forward declaration tomb ...
-		mForwardDeclarations.insert(it->second);
-
-		// ... and remove it from our blueprints
-		mBluePrintEnums.erase(it);
+		throw Common::Exceptions::Exception("duplicate enum '" + blueprint->QualifiedTypename() + "' added to repository");
 	}
 
 	mBluePrintEnums.insert(std::make_pair(blueprint->QualifiedTypename(), blueprint));
@@ -79,39 +61,12 @@ void Repository::addBluePrint(Designtime::BluePrintEnum* blueprint)
  */
 void Repository::addBluePrint(Designtime::BluePrintObject* blueprint)
 {
-	if ( blueprint->getImplementationType() == ImplementationType::ForwardDeclaration ) {
-		// adding duplicate forward declarations doesn't matter
-		mForwardDeclarations.insert(blueprint);
-	}
-
 	BluePrintObjectMap::iterator it = mBluePrintObjects.find(blueprint->QualifiedTypename());
 	if ( it != mBluePrintObjects.end() ) {
-		if ( blueprint->getImplementationType() == ImplementationType::ForwardDeclaration ) {
-			// we already added this forward declaration to our forward declaration tomb
-			return;
-		}
-
-		if ( it->second->getImplementationType() != ImplementationType::ForwardDeclaration ) {
-			throw Common::Exceptions::Exception("duplicate object '" + blueprint->QualifiedTypename() + "' added to repository");
-		}
-
-		// insert forward declaration into forward declaration tomb ...
-		mForwardDeclarations.insert(it->second);
-
-		// ... and remove it from our blueprints
-		mBluePrintObjects.erase(it);
+		throw Common::Exceptions::Exception("duplicate object '" + blueprint->QualifiedTypename() + "' added to repository");
 	}
 
 	mBluePrintObjects.insert(std::make_pair(blueprint->QualifiedTypename(), blueprint));
-}
-
-void Repository::cleanupForwardDeclarations()
-{
-	ForwardDeclarationTomb tmp = mForwardDeclarations;
-	for ( ForwardDeclarationTomb::iterator it = tmp.begin(); it != tmp.end(); ++it ) {
-		delete (*it);
-	}
-	mForwardDeclarations.clear();
 }
 
 Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime::BluePrintObject* blueprint, PrototypeConstraints constraints)
@@ -126,21 +81,18 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 	// merge design time and run time constraints
 	constraints = Designtime::mergeConstraints(blueprint->getPrototypeConstraints(), constraints);
 	for ( PrototypeConstraints::const_iterator constIt = constraints.begin(); constIt != constraints.end(); ++constIt ) {
-		if ( constIt->mConstraint.empty() ) {
-			continue;
-		}
-		if ( constIt->mRunType == constIt->mConstraint ) {
-			// same types are okay
-			continue;
-		}
-
 		Designtime::BluePrintGeneric* generic = findBluePrintGeneric(constIt->mRunType);
+
 		if ( !generic ) {
 			throw Common::Exceptions::UnknownIdentifer(constIt->mRunType + " is unknown");
 		}
-
-		if ( !generic->inheritsFrom(constIt->mConstraint) ) {
+		if ( !constIt->mConstraint.empty() && !generic->inheritsFrom(constIt->mConstraint) ) {
 			throw Common::Exceptions::TypeMismatch(constIt->mRunType + " does not inherit from " + constIt->mConstraint);
+		}
+
+		Designtime::BluePrintObject* bluePrintObject = dynamic_cast<Designtime::BluePrintObject*>(generic);
+		if ( bluePrintObject ) {
+			initBluePrintObject(bluePrintObject);
 		}
 	}
 
@@ -338,10 +290,6 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 {
 	assert(blueprint);
 
-	if ( blueprint->getImplementationType() == ImplementationType::ForwardDeclaration ) {
-		throw Common::Exceptions::NotImplemented("cannot create instance of forward declared type '" + blueprint->QualifiedTypename() + "'");
-	}
-
 	// create the base object
 	Runtime::Object* object = new Runtime::UserObject(name, blueprint->Filename(),
 													  Designtime::Parser::buildRuntimeConstraintTypename(blueprint->QualifiedTypename(),
@@ -398,9 +346,6 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 
 void Repository::deinit()
 {
-	// clean up the unused forward declarations (TODO: find a better solution for this)
-	cleanupForwardDeclarations();
-
 	// cleanup blue prints
 	mBluePrintEnums.clear();
 
@@ -444,7 +389,7 @@ Designtime::BluePrintObject* Repository::findBluePrintObject(const std::string& 
 Designtime::BluePrintObject* Repository::findBluePrintObject(const Common::TypeDeclaration& typeDeclaration) const
 {
 	return findBluePrintObject(
-			Designtime::Parser::buildRuntimeConstraintTypename(typeDeclaration.mName, typeDeclaration.mConstraints)
+		Designtime::Parser::buildRuntimeConstraintTypename(typeDeclaration.mName, typeDeclaration.mConstraints)
 	);
 }
 
@@ -643,11 +588,19 @@ void Repository::initBluePrintObject(Designtime::BluePrintObject* blueprint)
 
 		Designtime::BluePrintGeneric* member = static_cast<Designtime::BluePrintGeneric*>(it->second);
 
-		Designtime::BluePrintObject* base = findBluePrintObject(member->QualifiedTypename());
-		if ( base->isPrototype() ) {
-			PrototypeConstraints constraints = base->getPrototypeConstraints().buildRawConstraints(member->getPrototypeConstraints());
+		Designtime::BluePrintObject* baseType = findBluePrintObject(member->QualifiedTypename());
+		if ( !baseType ) {
+			throw Common::Exceptions::UnknownIdentifer("unknown member type '" + member->QualifiedTypename() + "'!");
+		}
+		if ( !baseType->isPrototype() && member->isPrototype() ) {
+			throw Common::Exceptions::TypeMismatch("base type '" + baseType->QualifiedTypename() + "' is no prototype!");
+		}
 
-			Common::TypeDeclaration typeDeclaration(member->QualifiedTypename(), constraints);
+		if ( baseType->isPrototype() ) {
+			Common::TypeDeclaration typeDeclaration(
+				member->QualifiedTypename(),
+				baseType->getPrototypeConstraints().buildRawConstraints(member->getPrototypeConstraints())
+			);
 
 			// prepare type
 			prepareType(typeDeclaration);
@@ -663,8 +616,19 @@ void Repository::initBluePrintObject(Designtime::BluePrintObject* blueprint)
 	for ( MethodScope::MethodCollection::const_iterator it = methods.begin(); it != methods.end(); ++it ) {
 		Common::Method* method = (*it);
 
-		if ( !method->getPrototypeConstraints().empty() ) {
-			Common::TypeDeclaration typeDeclaration(method->QualifiedTypename(), method->getPrototypeConstraints());
+		Designtime::BluePrintObject* baseType = findBluePrintObject(method->QualifiedTypename());
+		if ( !baseType ) {
+			throw Common::Exceptions::UnknownIdentifer("unknown type '" + method->QualifiedTypename() + "'!");
+		}
+		if ( !baseType->isPrototype() && method->isPrototype() ) {
+			throw Common::Exceptions::TypeMismatch("base type '" + baseType->QualifiedTypename() + "' is no prototype!");
+		}
+
+		if ( baseType->isPrototype() ) {
+			Common::TypeDeclaration typeDeclaration(
+				method->QualifiedTypename(),
+				baseType->getPrototypeConstraints().buildRawConstraints(method->getPrototypeConstraints())
+			);
 
 			// prepare type
 			prepareType(typeDeclaration);

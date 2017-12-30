@@ -1,5 +1,6 @@
 #!/usr/local/bin/oscript
 
+import System.Collections.Iterator;
 import System.Types;
 
 public void Main(int argc, string args) {

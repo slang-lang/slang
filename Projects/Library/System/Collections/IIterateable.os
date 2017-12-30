@@ -1,8 +1,7 @@
 
-public namespace System.Collections { }
+import Iterator;
 
-public object Iterator;
-public object ReverseIterator;
+public namespace System.Collections { }
 
 public interface IIterateable {
 	public Iterator getIterator() const;

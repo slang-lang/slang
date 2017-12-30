@@ -127,55 +127,45 @@ bool Analyser::createBluePrint(TokenIterator& token)
 
 	BluePrintObject* blueprint = new BluePrintObject(name, mFilename);
 
-	if ( token->type() == Token::Type::SEMICOLON ) {
-		if ( implementationType != ImplementationType::FullyImplemented ) {
-			throw Common::Exceptions::NotSupported("forward declarations cannot be defined as interface or abstract object", token->position());
-		}
+	// collect prototype constraints (if present)
+	constraints = Parser::collectDesigntimePrototypeConstraints(token);
+	// collect mutability
+	mutability = Parser::parseMutability(token, Mutability::Modify);
+	// collect inheritance (if present)
+	Ancestors inheritance = Parser::collectInheritance(token);
 
-		// set implementation type
-		implementationType = ImplementationType::ForwardDeclaration;
+	bool isImplemented = true;
+	if ( !inheritance.empty() ) {
+		isImplemented = (inheritance.begin()->ancestorType() != Ancestor::Type::Replicates);
 	}
-	else {
-		// collect prototype constraints (if present)
-		constraints = Parser::collectDesigntimePrototypeConstraints(token);
-		// collect mutability
-		mutability = Parser::parseMutability(token, Mutability::Modify);
-		// collect inheritance (if present)
-		Ancestors inheritance = Parser::collectInheritance(token);
 
-		bool isImplemented = true;
-		if ( !inheritance.empty() ) {
-			isImplemented = (inheritance.begin()->ancestorType() != Ancestor::Type::Replicates);
-		}
+	if ( isImplemented ) {
+		isImplemented = (token->type() != Token::Type::SEMICOLON);
+	}
+	if ( isImplemented ) {	// only collect all tokens of this object if it is implemented
+		tokens = Parser::collectScopeTokens(token);
+	}
 
-		if ( isImplemented ) {
-			isImplemented = (token->type() != Token::Type::SEMICOLON);
-		}
-		if ( isImplemented ) {	// only collect all tokens of this object if it is implemented
-			tokens = Parser::collectScopeTokens(token);
-		}
+	bool extends = false;
 
-		bool extends = false;
-
-		// set up inheritance (if present)
-		if ( !inheritance.empty() ) {
-			for ( Ancestors::const_iterator it = inheritance.begin(); it != inheritance.end(); ++it ) {
-				if ( it->ancestorType() == Ancestor::Type::Extends || it->ancestorType() == Ancestor::Type::Replicates ) {
-					extends = true;
-				}
-
-				blueprint->addInheritance((*it));
+	// set up inheritance (if present)
+	if ( !inheritance.empty() ) {
+		for ( Ancestors::const_iterator it = inheritance.begin(); it != inheritance.end(); ++it ) {
+			if ( it->ancestorType() == Ancestor::Type::Extends || it->ancestorType() == Ancestor::Type::Replicates ) {
+				extends = true;
 			}
-		}
 
-		if ( objectType == ObjectType::Object && extends && mutability == Mutability::Const ) {
-			throw Common::Exceptions::ConstCorrectnessViolated("const object '" + getQualifiedTypename(name) + "' cannot extend objects or implement interfaces", token->position());
+			blueprint->addInheritance((*it));
 		}
+	}
 
-		// in case this object has no inheritance set, we inherit from 'Object'
-		if ( objectType != ObjectType::Interface && !extends ) {
-			blueprint->addInheritance(Ancestor(Common::TypeDeclaration(_object), Ancestor::Type::Extends, Visibility::Public));
-		}
+	if ( objectType == ObjectType::Object && extends && mutability == Mutability::Const ) {
+		throw Common::Exceptions::ConstCorrectnessViolated("const object '" + getQualifiedTypename(name) + "' cannot extend objects or implement interfaces", token->position());
+	}
+
+	// in case this object has no inheritance set, we inherit from 'Object'
+	if ( objectType != ObjectType::Interface && !extends ) {
+		blueprint->addInheritance(Ancestor(Common::TypeDeclaration(_object), Ancestor::Type::Extends, Visibility::Public));
 	}
 
 	// validate mutability
@@ -202,10 +192,6 @@ bool Analyser::createBluePrint(TokenIterator& token)
 	blueprint->setTokens(tokens);
 	blueprint->setVisibility(visibility);
 	blueprint->setSealed(mutability == Mutability::Const);
-
-	if ( implementationType == ImplementationType::ForwardDeclaration ) {
-		return blueprint != 0;
-	}
 
 	mScope->define(name, blueprint);
 

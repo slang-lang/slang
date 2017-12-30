@@ -56,7 +56,6 @@ public:
 
 	bool isAtomicType() const;
 	bool isAbstract() const;
-	bool isForwardDeclaration() const;
 	bool isInterface() const;
 	bool isPrototype() const;
 

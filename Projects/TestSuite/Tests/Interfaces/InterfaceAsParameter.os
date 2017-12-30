@@ -2,8 +2,6 @@
 
 import System.Exception;
 
-public object Box;	// forward declarations are not needed
-
 public interface IWarehouse {
 	public void insert(Box box ref);
 	public bool isFull() const;

@@ -94,5 +94,13 @@ public object StringIterator {
 
 		reset();
 	}
+
+	public string =operator(string none) const {
+		return current();
+	}
+
+	public void operator++() modify throws {
+		next();
+	}
 }
 
