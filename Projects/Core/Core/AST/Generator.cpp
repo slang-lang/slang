@@ -11,6 +11,7 @@
 #include <Core/Designtime/BluePrintObject.h>
 #include <Core/Object.h>
 #include <Core/VirtualMachine/Controller.h>
+#include <Utils.h>
 #include "TreeGenerator.h"
 
 // Namespace declarations
@@ -20,14 +21,24 @@ namespace ObjectiveScript {
 namespace AST {
 
 
-Generator::Generator()
-: mRepository(0)
+Generator::Generator(bool collectErrors)
+: mCollectErrors(collectErrors),
+  mErrorCount(0),
+  mRepository(0)
 {
 	mRepository = Controller::Instance().repository();
 }
 
 Generator::~Generator()
 {
+}
+
+/*
+ * returns the number of errors that occurred during AST generation
+ */
+size_t Generator::hasErrors() const
+{
+	return mErrorCount;
 }
 
 /*
@@ -74,6 +85,9 @@ void Generator::process(MethodScope* base)
 	}
 }
 
+/*
+ * walk through a blueprint and process all members and methods
+ */
 void Generator::processBluePrint(Designtime::BluePrintObject* object)
 {
 	if ( !object ) {
@@ -95,6 +109,9 @@ void Generator::processBluePrint(Designtime::BluePrintObject* object)
 	process(object);
 }
 
+/*
+ * generates the AST for a single function/method
+ */
 void Generator::processMethod(Common::Method* method, Runtime::Object* thisObject)
 {
 	if ( !method ) {
@@ -105,13 +122,30 @@ void Generator::processMethod(Common::Method* method, Runtime::Object* thisObjec
 		return;
 	}
 
-	TreeGenerator tg;
+	try {
+		TreeGenerator tg;
 
-	method->setRootNode(
-		tg.generateAST(method, thisObject)
-	);
+		method->setRootNode(
+			tg.generateAST(method, thisObject)
+		);
+	}
+	catch ( Common::Exceptions::Exception& e ) {
+		if ( !mCollectErrors ) {
+			// rethrow error
+			throw;
+		}
+
+		// increment error count
+		mErrorCount++;
+
+		// write error to log device out
+		OSerror(e.what());
+	}
 }
 
+/*
+ * walks through a complete namespace with all blueprints & methods
+ */
 void Generator::processNamespace(Common::Namespace* space)
 {
 	if ( !space ) {

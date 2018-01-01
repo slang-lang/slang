@@ -182,7 +182,7 @@ int main(int argc, const char* argv[])
 	try {
 		ObjectiveScript::Runtime::Object result;
 
-		mVirtualMachine.createScriptFromFile(mFilename, mParameters, &result);
+		mVirtualMachine.createScriptFromFile(mFilename, mParameters, &result, true);
 	}
 	catch ( ObjectiveScript::Runtime::ControlFlow::E &e ) {
 		if ( e != ObjectiveScript::Runtime::ControlFlow::ExitProgram ) {

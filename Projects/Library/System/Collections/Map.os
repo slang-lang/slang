@@ -14,8 +14,8 @@ public object MapIterator<K, V> implements Iterator {
 		mCollection = collection;
 	}
 
-	public V at(K index) const {
-		return V mCollection[index];
+	public V at(K key) const {
+		return V mCollection.at(key);
 	}
 
 	public V current() const throws {
@@ -34,14 +34,12 @@ public object MapIterator<K, V> implements Iterator {
 		return mCurrentIndex < mCollection.size() - 1;
 	}
 
-	public V next() modify throws {
+	public void next() modify throws {
 		if ( !hasNext() ) {
 			throw new OutOfBoundsException("next(): index out of bounds");
 		}
 
 		mCurrentIndex++;
-
-		return V mCollection.at(mCurrentIndex);
 	}
 
 	public void reset() modify {
@@ -111,6 +109,18 @@ public object Map<K, V> implements ICollection {
 
 	public ReverseIterator getReverseIterator() const {
 		return new ReverseIterator(ICollection mItems);
+	}
+
+	public int indexOf(K key) const throws {
+		int count = 0;
+
+		foreach ( Object p : mItems ) {
+			if ( p == key ) {
+				return count;
+			}
+		}
+
+		return -1;
 	}
 
 	public void insert(K k, V v) modify {

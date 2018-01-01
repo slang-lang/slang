@@ -80,7 +80,7 @@ std::string VirtualMachine::buildPath(const std::string& basefolder, const std::
 	return Utils::Tools::Files::GetFullname(basefolder + result + ".os");
 }
 
-Script* VirtualMachine::createScript(const std::string& content, const ParameterList& params, Runtime::Object* result)
+Script* VirtualMachine::createScript(const std::string& content, const ParameterList& params, Runtime::Object* result, bool collectErrors)
 {
 	init();
 	printLibraryFolders();
@@ -114,8 +114,13 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 
 	Controller::Instance().repository()->initializeBlueprints();
 
-	AST::Generator generator;
+	AST::Generator generator(collectErrors);
 	generator.process(globalScope);
+
+	int errors = generator.hasErrors();
+	if ( errors ) {
+		throw Common::Exceptions::Exception(Utils::Tools::toString(errors) + " error(s) during AST generation detected!");
+	}
 
 #	ifdef USE_AST_OPTIMIZATION
 
@@ -157,7 +162,7 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 	return script;
 }
 
-Script* VirtualMachine::createScriptFromFile(const std::string& filename, const ParameterList& params, Runtime::Object* result)
+Script* VirtualMachine::createScriptFromFile(const std::string& filename, const ParameterList& params, Runtime::Object* result, bool collectErrors)
 {
 	OSdebug("processing script '" + filename + "'...");
 
@@ -178,16 +183,16 @@ Script* VirtualMachine::createScriptFromFile(const std::string& filename, const 
 	addLibraryFolder(Utils::Tools::Files::ExtractPathname(filename));
 	mScriptFile = filename;
 
-	return createScript(content, params, result);
+	return createScript(content, params, result, collectErrors);
 }
 
-Script* VirtualMachine::createScriptFromString(const std::string& content, const ParameterList& params, Runtime::Object* result)
+Script* VirtualMachine::createScriptFromString(const std::string& content, const ParameterList& params, Runtime::Object* result, bool collectErrors)
 {
 	OSdebug("processing string...");
 
 	mScriptFile = "";
 
-	return createScript(content, params, result);
+	return createScript(content, params, result, collectErrors);
 }
 
 void VirtualMachine::init()

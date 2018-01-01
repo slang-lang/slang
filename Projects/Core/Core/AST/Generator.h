@@ -4,8 +4,10 @@
 
 
 // Library includes
+#include <list>
 
 // Project includes
+#include <Core/Common/Exceptions.h>
 #include <Core/Common/Namespace.h>
 
 // Forward declarations
@@ -35,10 +37,11 @@ namespace AST {
 class Generator
 {
 public:
-	Generator();
+	explicit Generator(bool collectErrors = false);
 	~Generator();
 
 public:
+	size_t hasErrors() const;
 	void process(MethodScope* base);
 
 private:
@@ -47,6 +50,11 @@ private:
 	void processNamespace(Common::Namespace* space);
 
 private:
+	typedef std::list<Common::Exceptions::Exception> ErrorList;
+
+private:
+	bool mCollectErrors;
+	size_t mErrorCount;
 	Repository* mRepository;
 };
 
