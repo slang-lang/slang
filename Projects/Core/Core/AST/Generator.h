@@ -4,10 +4,8 @@
 
 
 // Library includes
-#include <list>
 
 // Project includes
-#include <Core/Common/Exceptions.h>
 #include <Core/Common/Namespace.h>
 
 // Forward declarations
@@ -48,9 +46,6 @@ private:
 	void processBluePrint(Designtime::BluePrintObject* object);
 	void processMethod(Common::Method* method, Runtime::Object* thisObject);
 	void processNamespace(Common::Namespace* space);
-
-private:
-	typedef std::list<Common::Exceptions::Exception> ErrorList;
 
 private:
 	bool mCollectErrors;

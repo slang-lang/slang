@@ -129,7 +129,7 @@ void Generator::processMethod(Common::Method* method, Runtime::Object* thisObjec
 			tg.generateAST(method, thisObject)
 		);
 	}
-	catch ( Common::Exceptions::Exception& e ) {
+	catch ( std::exception& e ) {
 		if ( !mCollectErrors ) {
 			// rethrow error
 			throw;
