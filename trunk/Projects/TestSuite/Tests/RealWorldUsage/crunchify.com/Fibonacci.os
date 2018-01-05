@@ -13,7 +13,7 @@ public void Main(int argc, string args) {
 	endl();
 
 	//printing Fibonacci series upto number
-	for ( int i = 1; i <= value; i = i++ ) {
+	for ( int i = 1; i <= value; i++ ) {
 		//cout("" + fibonacciRecusion(i) + " ");
 		cout("" + fibonacciLoop(i) + " ");
 	}
@@ -39,7 +39,7 @@ private int fibonacciLoop(int value) {
 	int fibo2 = 1;
 	int fibonacci = 1;
 
-	for ( int i = 3; i <= value; i = i++ ) {
+	for ( int i = 3; i <= value; i++ ) {
 		fibonacci = fibo1 + fibo2; //Fibonacci number is sum of previous two Fibonacci number
 		fibo1 = fibo2;
 		fibo2 = fibonacci;

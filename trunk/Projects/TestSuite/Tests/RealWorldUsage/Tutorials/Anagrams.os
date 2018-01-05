@@ -57,7 +57,7 @@ private string alphabetize(String word ref) {
 	Set sorted = new Set();
 
 	int length = word.Length();
-	for ( int i = 0; i < length; i = i++ ) {
+	for ( int i = 0; i < length; i++ ) {
 		sorted.insert(Object new String(word.At(i)));
 	}
 
