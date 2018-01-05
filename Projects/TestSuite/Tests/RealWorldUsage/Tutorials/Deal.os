@@ -77,7 +77,7 @@ public void Main(int argc, string args) {
 private List dealHand(int n) {
 	List hand = new List();
 
-	for ( int i = 0; i < n; i = i++ ) {
+	for ( int i = 0; i < n; i++ ) {
 		string s = deck.at(i);
 
 		hand.push_back(Object new String(s));
