@@ -343,7 +343,7 @@ void Method::setPrototypeConstraints(const PrototypeConstraints& constraints)
 
 void Method::setQualifiedTypename(const std::string& type)
 {
-	mReturnType.mCombinedName = Designtime::Parser::buildRuntimeConstraintTypename(type, mReturnType.mConstraints);
+	mReturnType.mCombinedName = type;
 	mReturnType.mName = type;
 }
 
