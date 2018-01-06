@@ -19,12 +19,6 @@ public object Double {
 		mValue = double value;
 	}
 
-/*
-	public void FromString(string value) modify {
-		mValue = double value;
-	}
-*/
-
 	public bool operator!() const {
 		return !mValue;
 	}
@@ -77,5 +71,9 @@ public object Double {
 	public void operator/(Double other ref) modify {
 		mValue = mValue / double other;
 	}
+}
+
+public Double Double(double value) const {
+	return new Double(value);
 }
 

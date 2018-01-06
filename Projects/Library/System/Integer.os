@@ -108,3 +108,7 @@ public object Integer {
 	}
 }
 
+public Integer Integer(int value) const {
+	return new Integer(value);
+}
+

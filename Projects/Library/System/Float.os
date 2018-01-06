@@ -19,12 +19,6 @@ public object Float {
 		mValue = float value;
 	}
 
-/*
-	public void FromString(string value) modify {
-		mValue = float value;
-	}
-*/
-
 	public bool operator!() const {
 		return !mValue;
 	}
@@ -74,5 +68,9 @@ public object Float {
 	public void operator/(Float other ref) modify {
 		mValue = mValue / float other;
 	}
+}
+
+public Float Float(float value) const {
+	return new Float(value);
 }
 
