@@ -19,19 +19,6 @@ public object Boolean {
 		mValue = bool value;
 	}
 
-/*
-	public void FromString(string value) modify {
-		print("FromString('" + value + "')");
-
-		if ( value != "" ) {
-			mValue = true;
-			return;
-		}
-
-		mValue = false;
-	}
-*/
-
 	public bool operator!() const {
 		return !mValue;
 	}
@@ -63,5 +50,9 @@ public object Boolean {
 	public string =operator(string none val) const {
 		return string mValue;
 	}
+}
+
+public Boolean Boolean(bool value) const {
+	return new Boolean(value);
 }
 

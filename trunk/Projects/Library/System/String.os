@@ -202,3 +202,7 @@ public object String implements IIterateable {
 	}
 }
 
+public String String(string value) const {
+	return new String(value);
+}
+
