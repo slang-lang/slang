@@ -10,10 +10,8 @@ SET(SOURCES
 )
 
 SET(HEADERS
-	ControlStatements.h
 	Expression.h
 	Generator.h
-	Keywords.h
 	Node.h
 	Operator.h
 	Statement.h
