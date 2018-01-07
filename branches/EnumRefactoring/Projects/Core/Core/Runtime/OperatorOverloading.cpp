@@ -423,6 +423,9 @@ bool operator_binary_greater(Object *base, Object *other, const Common::Position
 		VoidObject tmp;
 		return tmp.operator_greater(other);
 	}
+	else if ( base->isEnumerationValue() && other->isEnumerationValue() && base->QualifiedTypename() == other->QualifiedTypename() ) {
+		return base->getValue().toInt() > other->getValue().toInt();
+	}
 
 	ParameterList params;
 	params.push_back(Parameter::CreateRuntime(other->QualifiedTypename(), other->getValue(), other->getReference()));
@@ -463,6 +466,9 @@ bool operator_binary_greater_equal(Object *base, Object *other, const Common::Po
 	else if ( source == VoidObject::TYPENAME ) {
 		VoidObject tmp;
 		return tmp.operator_greater_equal(other);
+	}
+	else if ( base->isEnumerationValue() && other->isEnumerationValue() && base->QualifiedTypename() == other->QualifiedTypename() ) {
+		return base->getValue().toInt() >= other->getValue().toInt();
 	}
 
 	ParameterList params;
@@ -505,6 +511,9 @@ bool operator_binary_less(Object *base, Object *other, const Common::Position& p
 		VoidObject tmp;
 		return tmp.operator_less(other);
 	}
+	else if ( base->isEnumerationValue() && other->isEnumerationValue() && base->QualifiedTypename() == other->QualifiedTypename() ) {
+		return base->getValue().toInt() < other->getValue().toInt();
+	}
 
 	ParameterList params;
 	params.push_back(Parameter::CreateRuntime(other->QualifiedTypename(), other->getValue(), other->getReference()));
@@ -545,6 +554,9 @@ bool operator_binary_less_equal(Object *base, Object *other, const Common::Posit
 	else if ( source == VoidObject::TYPENAME ) {
 		VoidObject tmp;
 		return tmp.operator_less_equal(other);
+	}
+	else if ( base->isEnumerationValue() && other->isEnumerationValue() && base->QualifiedTypename() == other->QualifiedTypename() ) {
+		return base->getValue().toInt() <= other->getValue().toInt();
 	}
 
 	ParameterList params;

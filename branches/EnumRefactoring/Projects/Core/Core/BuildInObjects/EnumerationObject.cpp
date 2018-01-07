@@ -8,6 +8,7 @@
 #include <Core/Common/Exceptions.h>
 #include <Core/Tools.h>
 #include <Tools/Strings.h>
+#include <Core/Runtime/Exceptions.h>
 #include "BoolObject.h"
 #include "DoubleObject.h"
 #include "FloatObject.h"
@@ -47,17 +48,16 @@ bool EnumerationObject::isValid() const
 
 void EnumerationObject::operator_assign(const EnumerationObject *other)
 {
-	mValue = other->getValue().toInt();
+	if ( QualifiedTypename() == other->QualifiedTypename() ) {
+		mValue = other->getValue().toInt();
+	}
+
+	throw Runtime::Exceptions::InvalidAssignment(QualifiedTypename() + ".operator=: invalid use of type " + other->QualifiedTypename());
 }
 
 void EnumerationObject::operator_assign(const Object *other)
 {
-	std::string target = other->QualifiedTypename();
-
-	if ( target == EnumerationObject::TYPENAME ||
-		 target == BoolObject::TYPENAME ||
-		 target == DoubleObject::TYPENAME ||
-		 target == FloatObject::TYPENAME ) {
+	if ( other->isEnumerationValue() && QualifiedTypename() == other->QualifiedTypename() ) {
 		mValue = other->getValue().toInt();
 	}
 	else {
@@ -72,17 +72,16 @@ bool EnumerationObject::operator_bool() const
 
 bool EnumerationObject::operator_equal(const EnumerationObject *other)
 {
-	return mValue.toInt() == other->getValue().toInt();
+	if ( QualifiedTypename() == other->QualifiedTypename() ) {
+		return mValue.toInt() == other->getValue().toInt();
+	}
+
+	throw Runtime::Exceptions::InvalidAssignment(QualifiedTypename() + ".operator==: invalid use of type " + other->QualifiedTypename());
 }
 
 bool EnumerationObject::operator_equal(const Object *other)
 {
-	std::string target = other->QualifiedTypename();
-
-	if ( target == EnumerationObject::TYPENAME ||
-		 target == BoolObject::TYPENAME ||
-		 target == DoubleObject::TYPENAME ||
-		 target == FloatObject::TYPENAME ) {
+	if ( other->isEnumerationValue() && QualifiedTypename() == other->QualifiedTypename() ) {
 		return mValue.toInt() == other->getValue().toInt();
 	}
 
@@ -91,17 +90,16 @@ bool EnumerationObject::operator_equal(const Object *other)
 
 bool EnumerationObject::operator_greater(const EnumerationObject *other)
 {
-	return mValue.toInt() > other->getValue().toInt();
+	if ( QualifiedTypename() == other->QualifiedTypename() ) {
+		return mValue.toInt() > other->getValue().toInt();
+	}
+
+	throw Runtime::Exceptions::InvalidAssignment(QualifiedTypename() + ".operator>: invalid use of type " + other->QualifiedTypename());
 }
 
 bool EnumerationObject::operator_greater(const Object *other)
 {
-	std::string target = other->QualifiedTypename();
-
-	if ( target == EnumerationObject::TYPENAME ||
-		 target == BoolObject::TYPENAME ||
-		 target == DoubleObject::TYPENAME ||
-		 target == FloatObject::TYPENAME ) {
+	if ( other->isEnumerationValue() && QualifiedTypename() == other->QualifiedTypename() ) {
 		return mValue.toInt() > other->getValue().toInt();
 	}
 
@@ -110,17 +108,16 @@ bool EnumerationObject::operator_greater(const Object *other)
 
 bool EnumerationObject::operator_greater_equal(const EnumerationObject *other)
 {
-	return mValue.toInt() >= other->getValue().toInt();
+	if ( QualifiedTypename() == other->QualifiedTypename() ) {
+		return mValue.toInt() >= other->getValue().toInt();
+	}
+
+	throw Runtime::Exceptions::InvalidAssignment(QualifiedTypename() + ".operator>=: invalid use of type " + other->QualifiedTypename());
 }
 
 bool EnumerationObject::operator_greater_equal(const Object *other)
 {
-	std::string target = other->QualifiedTypename();
-
-	if ( target == EnumerationObject::TYPENAME ||
-		 target == BoolObject::TYPENAME ||
-		 target == DoubleObject::TYPENAME ||
-		 target == FloatObject::TYPENAME ) {
+	if ( other->isEnumerationValue() && QualifiedTypename() == other->QualifiedTypename() ) {
 		return mValue.toInt() >= other->getValue().toInt();
 	}
 
@@ -129,17 +126,16 @@ bool EnumerationObject::operator_greater_equal(const Object *other)
 
 bool EnumerationObject::operator_less(const EnumerationObject *other)
 {
-	return mValue.toInt() < other->getValue().toInt();
+	if ( QualifiedTypename() == other->QualifiedTypename() ) {
+		return mValue.toInt() < other->getValue().toInt();
+	}
+
+	throw Runtime::Exceptions::InvalidAssignment(QualifiedTypename() + ".operator<: invalid use of type " + other->QualifiedTypename());
 }
 
 bool EnumerationObject::operator_less(const Object *other)
 {
-	std::string target = other->QualifiedTypename();
-
-	if ( target == EnumerationObject::TYPENAME ||
-		 target == BoolObject::TYPENAME ||
-		 target == DoubleObject::TYPENAME ||
-		 target == FloatObject::TYPENAME ) {
+	if ( other->isEnumerationValue() && QualifiedTypename() == other->QualifiedTypename() ) {
 		return mValue.toInt() < other->getValue().toInt();
 	}
 
@@ -148,17 +144,16 @@ bool EnumerationObject::operator_less(const Object *other)
 
 bool EnumerationObject::operator_less_equal(const EnumerationObject *other)
 {
-	return mValue.toInt() <= other->getValue().toInt();
+	if ( QualifiedTypename() == other->QualifiedTypename() ) {
+		return mValue.toInt() <= other->getValue().toInt();
+	}
+
+	throw Runtime::Exceptions::InvalidAssignment(QualifiedTypename() + ".operator<=: invalid use of type " + other->QualifiedTypename());
 }
 
 bool EnumerationObject::operator_less_equal(const Object *other)
 {
-	std::string target = other->QualifiedTypename();
-
-	if ( target == EnumerationObject::TYPENAME ||
-		 target == BoolObject::TYPENAME ||
-		 target == DoubleObject::TYPENAME ||
-		 target == FloatObject::TYPENAME ) {
+	if ( other->isEnumerationValue() && QualifiedTypename() == other->QualifiedTypename() ) {
 		return mValue.toInt() <= other->getValue().toInt();
 	}
 
