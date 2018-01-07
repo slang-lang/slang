@@ -38,7 +38,7 @@ Analyser::~Analyser()
 {
 }
 
-bool Analyser::buildEnum(Designtime::BluePrintEnum* symbol, const TokenList& tokens)
+bool Analyser::buildEnum(Designtime::BluePrintObject* symbol, const TokenList& tokens)
 {
 	TokenIterator token = tokens.begin();
 
@@ -47,10 +47,9 @@ bool Analyser::buildEnum(Designtime::BluePrintEnum* symbol, const TokenList& tok
 
 	// Format: <identifier> = <value>[, or ;]
 	while ( token != tokens.end() ) {
-		std::string name;
-
 		expect(Token::Type::IDENTIFIER, token);
-		name = (token++)->content();
+
+		std::string name = (token++)->content();
 
 		if ( token->type() == Token::Type::ASSIGN ) {
 			expect(Token::Type::ASSIGN, token);
@@ -70,14 +69,15 @@ bool Analyser::buildEnum(Designtime::BluePrintEnum* symbol, const TokenList& tok
 
 		previous_value = value;
 
-		// define enum entries as parent type
-		//Runtime::Object* entry = mRepository->createInstance(mBluePrint->QualifiedTypename(), name, true);
-		//entry->setConstructed(true);
-
 		// define enum entries as integer type
-		Runtime::Object* entry = new Runtime::IntegerObject(name, value.toInt());	// this prevents a double delete because all instances are freed by their surrounding scope
+		//Runtime::Object* entry = new Runtime::IntegerObject(name, value.toInt());	// this prevents a double delete because all instances are freed by their surrounding scope
+
+		// define enum entries as parent type
+		Runtime::Object* entry = mRepository->createInstance(symbol->QualifiedTypename(), name);
+		entry->setConstructed(true);
 		entry->setMember(true);
 		entry->setMutability(Mutability::Const);
+		entry->setQualifiedOuterface(symbol->QualifiedTypename());
 		entry->setValue(value.toInt());
 		entry->setVisibility(Visibility::Public);
 
@@ -254,7 +254,8 @@ bool Analyser::createEnum(TokenIterator& token)
 	// collect all tokens of this method
 	TokenList tokens = Parser::collectScopeTokens(token);
 
-	BluePrintEnum* symbol = new BluePrintEnum(type.mName, mFilename);
+	BluePrintObject* symbol = new BluePrintObject(type.mName, mFilename);
+	symbol->setIsEnumeration(true);
 	symbol->setLanguageFeatureState(languageFeatureState);
 	symbol->setMutability(Mutability::Modify);
 	symbol->setParent(mScope);
@@ -496,7 +497,6 @@ bool Analyser::createNamespace(TokenIterator& token)
 				case Symbol::IType::NamespaceSymbol:
 					space = static_cast<Common::Namespace*>(symbol);
 					break;
-				case Symbol::IType::BluePrintEnumSymbol:
 				case Symbol::IType::BluePrintObjectSymbol:
 				case Symbol::IType::MethodSymbol:
 				case Symbol::IType::ObjectSymbol:

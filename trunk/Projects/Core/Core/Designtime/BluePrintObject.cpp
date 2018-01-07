@@ -19,6 +19,7 @@ namespace Designtime {
 
 BluePrintObject::BluePrintObject()
 : MethodScope(ANONYMOUS_OBJECT, 0),
+  mIsEnumeration(false),
   mIsPrepared(false),
   mIsReference(false)
 {
@@ -29,6 +30,7 @@ BluePrintObject::BluePrintObject()
 BluePrintObject::BluePrintObject(const std::string& type, const std::string& filename, const std::string& name)
 : BluePrintGeneric(type, filename),
   MethodScope(type, 0),
+  mIsEnumeration(false),
   mIsPrepared(false),
   mIsReference(false)
 {
@@ -105,6 +107,11 @@ bool BluePrintObject::hasDefaultConstructor() const
 {
 	// return any (private, protected, public) constructor that has no parameters or only default parameters
 	return resolveMethod(CONSTRUCTOR, ParameterList(), true, Visibility::Private) != NULL;
+}
+
+bool BluePrintObject::isEnumeration() const
+{
+	return mIsEnumeration;
 }
 
 bool BluePrintObject::isIterable() const
@@ -240,6 +247,11 @@ BluePrintObject* BluePrintObject::replicate(const std::string& newType, const st
 	}
 
 	return replica;
+}
+
+void BluePrintObject::setIsEnumeration(bool state)
+{
+	mIsEnumeration = state;
 }
 
 void BluePrintObject::setIsReference(bool state)

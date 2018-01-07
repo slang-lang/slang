@@ -76,7 +76,6 @@ std::string Namespace::ToString(unsigned int indent) const
 
 	for ( Symbols::const_iterator it = mSymbols.begin(); it != mSymbols.end(); ++it ) {
 		switch ( it->second->getSymbolType() ) {
-			case Symbol::IType::BluePrintEnumSymbol:
 			case Symbol::IType::BluePrintObjectSymbol:
 				continue;
 			case Symbol::IType::MethodSymbol:

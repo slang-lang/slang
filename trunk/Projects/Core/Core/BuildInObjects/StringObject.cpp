@@ -65,6 +65,9 @@ StringObject::StringObject(const Object& other)
 		 source == FloatObject::TYPENAME ) {
 		mValue = other.getValue().toStdString();
 	}
+	else if ( other.isEnumerationValue() ) {
+		mValue = other.QualifiedTypename() + "." + other.getName();
+	}
 	else {
 		Object::operator_assign(&other);
 	}

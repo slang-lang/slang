@@ -40,6 +40,9 @@ public:
 	bool hasConstructor() const;
 	bool hasDefaultConstructor() const;
 
+	bool isEnumeration() const;
+	void setIsEnumeration(bool state);
+
 	bool isIterable() const;
 
 	bool isPrepared() const;
@@ -62,6 +65,7 @@ public:
 	Symbols provideSymbols() const;
 
 private:
+	bool mIsEnumeration;
 	bool mIsPrepared;
 	bool mIsReference;
 	Runtime::AtomicValue mValue;

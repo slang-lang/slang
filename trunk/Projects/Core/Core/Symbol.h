@@ -30,7 +30,6 @@ public:
 	{
 	public:
 		enum E {
-			BluePrintEnumSymbol,
 			BluePrintObjectSymbol,
 			MethodSymbol,
 			NamespaceSymbol,

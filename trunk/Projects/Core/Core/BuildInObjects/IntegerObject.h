@@ -25,7 +25,7 @@ public:
 
 public:
 	explicit IntegerObject(const AtomicValue& value = DEFAULTVALUE);
-	IntegerObject(const std::string& name, const AtomicValue& value);
+	explicit IntegerObject(const std::string& name, const AtomicValue& value);
 	explicit IntegerObject(const Object& object);
 
 public:	// Symbol::IType implementation

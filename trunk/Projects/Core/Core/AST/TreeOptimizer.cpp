@@ -46,8 +46,6 @@ void TreeOptimizer::process(MethodScope* base)
 			case Symbol::IType::NamespaceSymbol:
 				processNamespace(static_cast<Common::Namespace*>(it->second));
 				break;
-			case Symbol::IType::BluePrintEnumSymbol:
-				break;	// enums don't have an implementation
 			case Symbol::IType::ObjectSymbol:
 				break;	// ignore runtime symbols
 		}
