@@ -285,8 +285,6 @@ void LanguageTest::testDefaultParameter()
 
 void LanguageTest::testEnum()
 {
-TSKIP("enums are currently not supported");
-
 	try {
 		VirtualMachine vm;
 		vm.createScriptFromFile("Tests/Language/EnumTest.os");

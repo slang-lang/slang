@@ -25,7 +25,7 @@ public:
 
 public:
 	explicit BoolObject(const AtomicValue& value = DEFAULTVALUE);
-	BoolObject(const std::string& name, const AtomicValue& value);
+	explicit BoolObject(const std::string& name, const AtomicValue& value);
 	explicit BoolObject(const Object& other);
 
 public:	// Operators

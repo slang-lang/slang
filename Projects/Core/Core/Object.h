@@ -87,6 +87,7 @@ public:	// Value
 	bool isAbstract() const;
 	bool isAtomicType() const;
 	bool isConstructed() const;
+	bool isEnumerationValue() const;
 	bool isValid() const;
 
 	virtual std::string ToString(unsigned int indent = 0) const;
@@ -130,6 +131,7 @@ protected:
 	Inheritance mInheritance;
 	bool mIsAtomicType;
 	bool mIsConstructed;
+	bool mIsEnumerationValue;
 	bool mIsReference;
 	std::string mQualifiedOuterface;
 	std::string mQualifiedTypename;

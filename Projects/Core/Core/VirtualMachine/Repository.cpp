@@ -15,10 +15,10 @@
 #include <Core/BuildInObjects/VoidObject.h>
 #include <Core/Common/Exceptions.h>
 #include <Core/Common/Method.h>
-#include <Core/Designtime/BluePrintEnum.h>
 #include <Core/Designtime/BluePrintObject.h>
 #include <Core/Designtime/BuildInTypes/BoolObject.h>
 #include <Core/Designtime/BuildInTypes/DoubleObject.h>
+#include <Core/BuildInObjects/EnumerationObject.h>
 #include <Core/Designtime/BuildInTypes/FloatObject.h>
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
@@ -41,19 +41,6 @@ Repository::Repository()
 
 Repository::~Repository()
 {
-}
-
-/*
- * add a new blue print enum to the repository
- */
-void Repository::addBluePrint(Designtime::BluePrintEnum* blueprint)
-{
-	BluePrintEnumMap::iterator it = mBluePrintEnums.find(blueprint->QualifiedTypename());
-	if ( it != mBluePrintEnums.end() ) {
-		throw Common::Exceptions::Exception("duplicate enum '" + blueprint->QualifiedTypename() + "' added to repository");
-	}
-
-	mBluePrintEnums.insert(std::make_pair(blueprint->QualifiedTypename(), blueprint));
 }
 
 /*
@@ -121,12 +108,6 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
  */
 Runtime::Object* Repository::createInstance(const std::string& type, const std::string& name, PrototypeConstraints constraints, InitilizationType::E initialize)
 {
-	// look up type in blueprint enums (because there are generally less blueprint enums defined than blueprint objects)
-	BluePrintEnumMap::iterator enumIt = mBluePrintEnums.find(type);
-	if ( enumIt != mBluePrintEnums.end() ) {
-		return createInstance(enumIt->second, name, constraints, initialize);
-	}
-
 	// look up type in blueprint objects
 	BluePrintObjectMap::iterator objectIt = mBluePrintObjects.find(type);
 	if ( objectIt != mBluePrintObjects.end() ) {
@@ -149,11 +130,6 @@ Runtime::Object* Repository::createInstance(Designtime::BluePrintGeneric* bluepr
 {
 	if ( !blueprint ) {
 		throw Common::Exceptions::Exception("invalid blueprint provided!");
-	}
-
-	if ( blueprint->getSymbolType() == Symbol::IType::BluePrintEnumSymbol ) {
-		// replace enum blueprint with an integer blueprint
-		blueprint = findBluePrintGeneric(Runtime::IntegerObject::TYPENAME);
 	}
 
 	if ( constraints != blueprint->getPrototypeConstraints() ) {
@@ -221,6 +197,9 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 	else if ( blueprint->QualifiedTypename() == Runtime::VoidObject::TYPENAME ) {
 		object = new Runtime::VoidObject(name);
 	}
+	else if ( blueprint->isEnumeration() ) {
+		object = new Runtime::EnumerationObject(name, blueprint->QualifiedTypename(), blueprint->getValue());
+	}
 	// instantiate user defined types
 	else {
 		object = createUserObject(name, blueprint, initialize);
@@ -249,12 +228,6 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
  */
 Runtime::Object* Repository::createReference(const std::string& type, const std::string& name, PrototypeConstraints constraints, InitilizationType::E initialize)
 {
-	// look up type in blueprint enums (because there are generally less blueprint enums defined than blueprint objects)
-	BluePrintEnumMap::iterator enumIt = mBluePrintEnums.find(type);
-	if ( enumIt != mBluePrintEnums.end() ) {
-		return createReference(enumIt->second, name, constraints, initialize);
-	}
-
 	// look up type in blueprint objects
 	BluePrintObjectMap::iterator objectIt = mBluePrintObjects.find(type);
 	if ( objectIt != mBluePrintObjects.end() ) {
@@ -347,32 +320,12 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 void Repository::deinit()
 {
 	// cleanup blue prints
-	mBluePrintEnums.clear();
-
-	// cleanup blue prints
 	mBluePrintObjects.clear();
 }
 
 Designtime::BluePrintGeneric* Repository::findBluePrintGeneric(const std::string &type) const
 {
-	Designtime::BluePrintGeneric* blueprint = findBluePrintEnum(type);
-
-	if ( !blueprint ) {
-		blueprint = findBluePrintObject(type);
-	}
-
-	return blueprint;
-}
-
-Designtime::BluePrintEnum* Repository::findBluePrintEnum(const std::string& type) const
-{
-	BluePrintEnumMap::const_iterator it = mBluePrintEnums.find(type);
-
-	if ( it != mBluePrintEnums.end() ) {
-		return it->second;
-	}
-
-	return 0;
+	return findBluePrintObject(type);
 }
 
 Designtime::BluePrintObject* Repository::findBluePrintObject(const std::string& type) const
@@ -506,11 +459,6 @@ void Repository::initializeBlueprints()
 		}
 	}
 
-	// initialize blueprint enums
-	for ( BluePrintEnumMap::iterator it = mBluePrintEnums.begin(); it != mBluePrintEnums.end(); ++it ) {
-		initTypeSystem(it->second);
-	}
-
 	// initialize blueprint objects
 	for ( BluePrintObjectMap::iterator it = mBluePrintObjects.begin(); it != mBluePrintObjects.end(); ++it ) {
 		initBluePrintObject(it->second);
@@ -588,7 +536,7 @@ void Repository::initBluePrintObject(Designtime::BluePrintObject* blueprint)
 
 		Designtime::BluePrintGeneric* member = static_cast<Designtime::BluePrintGeneric*>(it->second);
 
-		Designtime::BluePrintObject* baseType = findBluePrintObject(member->QualifiedTypename());
+		Designtime::BluePrintGeneric* baseType = findBluePrintGeneric(member->QualifiedTypename());
 		if ( !baseType ) {
 			throw Common::Exceptions::UnknownIdentifer("unknown member type '" + member->QualifiedTypename() + "'!");
 		}
@@ -644,31 +592,6 @@ void Repository::initBluePrintObject(Designtime::BluePrintObject* blueprint)
 	}
 
 	initTypeSystem(blueprint);
-}
-
-/*
- * initializes type system for given blueprint enum
- */
-void Repository::initTypeSystem(Designtime::BluePrintEnum* blueprint)
-{
-	// add default assignment entry for int assignments
-	mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::ASSIGN, _int, blueprint->QualifiedTypename());
-	mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_EQUAL, _int, blueprint->QualifiedTypename());
-	mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_GREATER, _int, blueprint->QualifiedTypename());
-	mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_GREATER_EQUAL, _int, blueprint->QualifiedTypename());
-	mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_LESS, _int, blueprint->QualifiedTypename());
-	mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_LESS_EQUAL, _int, blueprint->QualifiedTypename());
-	mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_UNEQUAL, _int, blueprint->QualifiedTypename());
-
-	// add default assignment entry for type system if it doesn't exist yet
-	if ( !mTypeSystem->exists(blueprint->QualifiedTypename(), Token(Token::Type::ASSIGN, "="), blueprint->QualifiedTypename()) ) {
-		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::ASSIGN, blueprint->QualifiedTypename(), blueprint->QualifiedTypename());
-	}
-	// add equality operator entries for type system if it doesn't exist yet
-	if ( !mTypeSystem->exists(blueprint->QualifiedTypename(), Token(Token::Type::COMPARE_EQUAL, "=="), blueprint->QualifiedTypename()) ) {
-		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_EQUAL, blueprint->QualifiedTypename(), blueprint->QualifiedTypename());
-		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_UNEQUAL, blueprint->QualifiedTypename(), blueprint->QualifiedTypename());
-	}
 }
 
 /*

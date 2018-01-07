@@ -30,6 +30,7 @@ Object::Object()
   mFilename(ANONYMOUS_OBJECT),
   mIsAtomicType(false),
   mIsConstructed(false),
+  mIsEnumerationValue(false),
   mIsReference(false),
   mQualifiedOuterface(ANONYMOUS_OBJECT),
   mQualifiedTypename(ANONYMOUS_OBJECT),
@@ -45,6 +46,7 @@ Object::Object(const std::string& name, const std::string& filename, const std::
   mFilename(filename),
   mIsAtomicType(false),
   mIsConstructed(false),
+  mIsEnumerationValue(false),
   mIsReference(false),
   mQualifiedOuterface(type),
   mQualifiedTypename(type),
@@ -70,8 +72,10 @@ Object& Object::operator= (const Object& other)
 		mInheritance = other.mInheritance;
 		mIsAtomicType = other.mIsAtomicType;
 		mIsConstructed = other.mIsConstructed;
+		mIsEnumerationValue = other.mIsEnumerationValue;
 		mIsReference = other.mIsReference;
 		mMemoryLayout = other.mMemoryLayout;
+		mName = other.mName;
 		mParent = other.mParent;
 		mScopeName = other.mScopeName;
 		mScopeType = other.mScopeType;
@@ -382,6 +386,11 @@ bool Object::isConstructed() const
 	}
 
 	return mIsConstructed;
+}
+
+bool Object::isEnumerationValue() const
+{
+	return mIsEnumerationValue;
 }
 
 bool Object::isInstanceOf(const std::string& type) const
@@ -888,7 +897,6 @@ std::string Object::ToString(unsigned int indent) const
 			}
 
 			switch ( it->second->getSymbolType() ) {
-				case Symbol::IType::BluePrintEnumSymbol:
 				case Symbol::IType::BluePrintObjectSymbol:
 				case Symbol::IType::MethodSymbol:
 				case Symbol::IType::NamespaceSymbol:

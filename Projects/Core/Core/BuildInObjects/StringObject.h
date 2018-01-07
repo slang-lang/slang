@@ -26,7 +26,7 @@ public:
 public:
 	explicit StringObject(const AtomicValue& value = DEFAULTVALUE);
 	explicit StringObject(const std::string& value);
-	StringObject(const std::string& name, const AtomicValue& value);
+	explicit StringObject(const std::string& name, const AtomicValue& value);
 	explicit StringObject(const Object& other);
 
 public:	// Operators

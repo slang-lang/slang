@@ -80,6 +80,9 @@ private bool TestCase1() const {
 
 		return set.size() == 10;
 	}
+	catch ( Exception e ) {
+		print("Exception: " + e.what());
+	}
 
 	return false;
 }
@@ -130,6 +133,9 @@ private bool TestCase2() const {
 
 		return set.empty();
 	}
+	catch ( Exception e ) {
+		print("Exception: " + e.what());
+	}
 
 	return false;
 }
@@ -159,6 +165,9 @@ private bool TestCase3() {
 
 		return true;
 	}
+	catch ( Exception e ) {
+		print("Exception: " + e.what());
+	}
 
 	return false;
 }
@@ -187,6 +196,9 @@ private bool TestCase4() {
 		}
 
 		return true;
+	}
+	catch ( Exception e ) {
+		print("Exception: " + e.what());
 	}
 
 	return false;

@@ -14,7 +14,6 @@
 #include <Core/Common/Exceptions.h>
 #include <Core/Common/Method.h>
 #include <Core/Common/Namespace.h>
-#include <Core/Designtime/BluePrintEnum.h>
 #include <Core/Designtime/BuildInTypes/VoidObject.h>
 #include <Core/Designtime/Exceptions.h>
 #include <Core/Designtime/Parser/Parser.h>
@@ -222,9 +221,6 @@ inline Symbol* TreeGenerator::identify(TokenIterator& token) const
 		}
 		else {
 			switch ( result->getSymbolType() ) {
-				case Symbol::IType::BluePrintEnumSymbol:
-					result = dynamic_cast<Designtime::BluePrintEnum*>(result)->resolve(identifier, onlyCurrentScope, Visibility::Public);
-					break;
 				case Symbol::IType::BluePrintObjectSymbol:
 					result = dynamic_cast<Designtime::BluePrintObject*>(result)->resolve(identifier, onlyCurrentScope, Visibility::Public);
 					break;
@@ -1571,27 +1567,6 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 
 	// set scope & type according to symbol type
 	switch ( result->getSymbolType() ) {
-		case Symbol::IType::BluePrintEnumSymbol: {
-			Designtime::BluePrintEnum* object = static_cast<Designtime::BluePrintEnum*>(result);
-
-			type = object->QualifiedTypename();
-
-			Designtime::BluePrintEnum* blueprint = mRepository->findBluePrintEnum(type);
-			if ( !blueprint ) {
-				throw Common::Exceptions::UnknownIdentifer("'" + type + "' not found", token->position());
-			}
-
-			PrototypeConstraints constraints;
-			if ( blueprint->isPrototype() ) {
-				constraints = blueprint->getPrototypeConstraints().buildRawConstraints(
-					Designtime::Parser::collectRuntimePrototypeConstraints(token)
-				);
-			}
-
-			scope = static_cast<Designtime::BluePrintEnum*>(blueprint);
-
-			symbol = new DesigntimeSymbolExpression(name, type, constraints);
-		} break;
 		case Symbol::IType::BluePrintObjectSymbol: {
 			type = static_cast<Designtime::BluePrintObject*>(result)->QualifiedTypename();
 

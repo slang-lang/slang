@@ -15,7 +15,6 @@
 #include <Core/Common/Method.h>
 #include <Core/Common/Namespace.h>
 #include <Core/Defines.h>
-#include <Core/Designtime/BluePrintEnum.h>
 #include <Core/Designtime/Exceptions.h>
 #include <Core/Designtime/Parser/Parser.h>
 #include <Core/Runtime/Exceptions.h>
