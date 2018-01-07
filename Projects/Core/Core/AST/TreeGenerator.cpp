@@ -27,8 +27,7 @@
 #include <Utils.h>
 
 // AST includes
-#include "ControlStatements.h"
-#include "Keywords.h"
+#include "Statement.h"
 
 // Namespace declarations
 
