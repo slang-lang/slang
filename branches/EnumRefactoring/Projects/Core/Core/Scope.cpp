@@ -9,7 +9,6 @@
 #include <Core/Common/Exceptions.h>
 #include <Core/Common/Method.h>
 #include <Core/Common/Namespace.h>
-#include <Core/Designtime/BluePrintEnum.h>
 #include <Core/Designtime/BluePrintObject.h>
 #include <Core/VirtualMachine/Controller.h>
 #include <Utils.h>
@@ -336,7 +335,6 @@ Symbol* MethodScope::resolve(const std::string& name, bool onlyCurrentScope, Vis
 			Symbol* result = 0;
 
 			switch ( base->getSymbolType() ) {
-				case Symbol::IType::BluePrintEnumSymbol: result = static_cast<Designtime::BluePrintEnum*>(base)->resolve(name, true, visibility); break;
 				case Symbol::IType::BluePrintObjectSymbol: result = static_cast<Designtime::BluePrintObject*>(base)->resolve(name, true, visibility); break;
 				case Symbol::IType::NamespaceSymbol: result = static_cast<Common::Namespace*>(base)->resolve(name, true, visibility); break;
 				case Symbol::IType::ObjectSymbol: result = static_cast<Runtime::Object*>(base)->resolve(name, true, visibility); break;
@@ -374,7 +372,6 @@ MethodSymbol* MethodScope::resolveMethod(const std::string& name, const Paramete
 			MethodSymbol* result = 0;
 
 			switch ( base->getSymbolType() ) {
-				case Symbol::IType::BluePrintEnumSymbol: result = static_cast<Designtime::BluePrintEnum*>(base)->resolveMethod(name, params, true, visibility); break;
 				case Symbol::IType::BluePrintObjectSymbol: result = static_cast<Designtime::BluePrintObject*>(base)->resolveMethod(name, params, true, visibility); break;
 				case Symbol::IType::NamespaceSymbol: result = static_cast<Common::Namespace*>(base)->resolveMethod(name, params, true, visibility); break;
 				case Symbol::IType::ObjectSymbol: result = static_cast<Runtime::Object*>(base)->resolveMethod(name, params, true, visibility); break;

@@ -16,7 +16,6 @@
 #include <Core/Common/Exceptions.h>
 #include <Core/Common/Method.h>
 #include <Core/Common/Namespace.h>
-#include <Core/Designtime/BluePrintEnum.h>
 #include <Core/Designtime/Exceptions.h>
 #include <Core/Designtime/Parser/Parser.h>
 #include <Core/Runtime/Exceptions.h>
@@ -328,9 +327,6 @@ void TreeInterpreter::evaluateSymbolExpression(SymbolExpression *exp, Runtime::O
 	// evaluate sub expression?
 	if ( exp->mSymbolExpression ) {
 		switch ( lvalue->getSymbolType() ) {
-			case Symbol::IType::BluePrintEnumSymbol:
-				scope = static_cast<Designtime::BluePrintEnum*>(lvalue);
-				break;
 			case Symbol::IType::BluePrintObjectSymbol:
 				scope = static_cast<Designtime::BluePrintObject*>(lvalue);
 				break;
@@ -763,9 +759,6 @@ Symbol* TreeInterpreter::resolveRValue(IScope *scope, SymbolExpression *symbol, 
 		}
 
 		switch ( child->getSymbolType() ) {
-			case Symbol::IType::BluePrintEnumSymbol:
-				scope = static_cast<Designtime::BluePrintEnum*>(child);
-				break;
 			case Symbol::IType::BluePrintObjectSymbol:
 				scope = static_cast<Designtime::BluePrintObject*>(child);
 				break;
@@ -805,9 +798,6 @@ MethodSymbol* TreeInterpreter::resolveMethod(IScope* scope, SymbolExpression* sy
 		}
 
 		switch ( child->getSymbolType() ) {
-			case Symbol::IType::BluePrintEnumSymbol:
-				scope = static_cast<Designtime::BluePrintEnum*>(child);
-				break;
 			case Symbol::IType::BluePrintObjectSymbol:
 				scope = static_cast<Designtime::BluePrintObject*>(child);
 				break;

@@ -19,13 +19,15 @@ private bool TestCase1() const {
 	print("TestCase 1");
 
 	Day e = Day.Friday;
-	print("e = " + e);
+	print("e = " + string e);
 
 	e = Day.Wednesday;
-	print("e = " + e);
+	print("e = " + string e);
 
-	e = 17;
-	print("e = " + e);
+/*
+	e = Day 17;
+	print("e = " + string e);
+*/
 
 	e = Day.Friday;
 	return e == Day.Friday;
@@ -38,7 +40,7 @@ private bool TestCase2() const {
 
 	switch ( e ) {
 		case Day.Monday: { return false; }
-		case Day.Tuesday: { print("e = " + e); break; }
+		case Day.Tuesday: { print("e = " + string e); break; }
 		case Day.Wednesday: { return false; }
 		default: { return false; }
 	}

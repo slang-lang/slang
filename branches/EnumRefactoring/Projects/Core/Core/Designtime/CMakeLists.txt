@@ -7,7 +7,6 @@ SET(SOURCES
 	Analyser.cpp
 	Ancestor.cpp
 	BluePrintGeneric.cpp
-	BluePrintEnum.cpp
 	BluePrintObject.cpp
 	SanityChecker.cpp
 )
@@ -16,7 +15,6 @@ SET(HEADERS
 	Analyser.h
 	Ancestor.h
 	BluePrintGeneric.h
-	BluePrintEnum.h
 	BluePrintObject.h
 	Exceptions.h
 	SanityChecker.h

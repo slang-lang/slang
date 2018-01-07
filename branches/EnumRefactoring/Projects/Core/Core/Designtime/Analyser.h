@@ -11,7 +11,6 @@
 #include <Core/Designtime/Parser/Token.h>
 #include "Ancestor.h"
 #include "BluePrintObject.h"
-#include "BluePrintEnum.h"
 
 // Forward declarations
 
@@ -54,7 +53,7 @@ private:
 	bool createMethodStub(TokenIterator& token, Visibility::E visibility, LanguageFeatureState::E languageFeature, Common::TypeDeclaration type, const std::string& name);
 	bool createMemberStub(TokenIterator& token, Visibility::E visibility, LanguageFeatureState::E languageFeature, Common::TypeDeclaration type, const std::string& name);
 
-	bool buildEnum(Designtime::BluePrintEnum* symbol, const TokenList& tokens);
+	bool buildEnum(Designtime::BluePrintObject* symbol, const TokenList& tokens);
 	std::string getQualifiedTypename(const std::string& name) const;
 
 private:

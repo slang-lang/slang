@@ -25,7 +25,7 @@ public:
 
 public:
 	explicit FloatObject(const AtomicValue& value = DEFAULTVALUE);
-	FloatObject(const std::string& name, const AtomicValue& value);
+	explicit FloatObject(const std::string& name, const AtomicValue& value);
 	explicit FloatObject(const Object& object);
 
 public:	// Operators

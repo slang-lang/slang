@@ -7,6 +7,7 @@
 // Project includes
 #include <Core/BuildInObjects/BoolObject.h>
 #include <Core/BuildInObjects/DoubleObject.h>
+#include <Core/BuildInObjects/EnumerationObject.h>
 #include <Core/BuildInObjects/FloatObject.h>
 #include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/BuildInObjects/StringObject.h>
@@ -73,6 +74,10 @@ void operator_binary_assign(Object *base, Object *other, const Common::Position&
 		tmp.operator_assign(other);
 
 		base->assign(tmp);
+	}
+	// special handling for enumeration values
+	else if ( base->isEnumerationValue() && other->isEnumerationValue() && base->QualifiedTypename() == other->QualifiedTypename() ) {
+		base->assign(*other);
 	}
 	// no atomic data type, so we have to look if our assign operator has been overwritten
 	else {
@@ -359,6 +364,9 @@ bool operator_binary_equal(Object *base, Object *other, const Common::Position& 
 	else if ( source == VoidObject::TYPENAME ) {
 		VoidObject tmp;
 		return tmp.operator_equal(other);
+	}
+	else if ( base->isEnumerationValue() && other->isEnumerationValue() && base->QualifiedTypename() == other->QualifiedTypename() ) {
+		return base->getValue().toInt() == other->getValue().toInt();
 	}
 
 	ParameterList params;
