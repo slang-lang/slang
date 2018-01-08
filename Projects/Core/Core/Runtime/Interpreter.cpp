@@ -363,9 +363,6 @@ inline Symbol* Interpreter::identify(TokenIterator& token) const
 		}
 		else {
 			switch ( result->getSymbolType() ) {
-				case Symbol::IType::BluePrintEnumSymbol:
-					result = dynamic_cast<Designtime::BluePrintEnum*>(result)->resolve(identifier, onlyCurrentScope, Visibility::Public);
-					break;
 				case Symbol::IType::BluePrintObjectSymbol:
 					result = dynamic_cast<Designtime::BluePrintObject*>(result)->resolve(identifier, onlyCurrentScope, Visibility::Public);
 					break;
@@ -422,9 +419,6 @@ Symbol* Interpreter::identifyMethod(TokenIterator& token, const ParameterList& p
 		}
 		else {
 			switch ( result->getSymbolType() ) {
-				case Symbol::IType::BluePrintEnumSymbol:
-					result = dynamic_cast<Designtime::BluePrintEnum*>(result)->resolveMethod(identifier, params, true, Visibility::Public);
-					break;
 				case Symbol::IType::BluePrintObjectSymbol:
 					result = dynamic_cast<Designtime::BluePrintObject*>(result)->resolveMethod(identifier, params, true, Visibility::Public);
 					break;
@@ -738,10 +732,10 @@ void Interpreter::parseInfixPostfix(Object *result, TokenIterator& start)
 			if ( symbol->getSymbolType() == Symbol::IType::ObjectSymbol ) {
 				compareType = static_cast<Object*>(symbol)->QualifiedTypename();
 			}
-			else if ( symbol->getSymbolType() == Symbol::IType::BluePrintEnumSymbol || symbol->getSymbolType() == Symbol::IType::BluePrintObjectSymbol ) {
+			else if ( symbol->getSymbolType() == Symbol::IType::BluePrintObjectSymbol ) {
 				PrototypeConstraints constraints = Designtime::Parser::collectRuntimePrototypeConstraints(start);
 
-				compareType = dynamic_cast<Designtime::BluePrintGeneric*>(symbol)->QualifiedTypename();
+				compareType = dynamic_cast<Designtime::BluePrintObject*>(symbol)->QualifiedTypename();
 				compareType = Designtime::Parser::buildRuntimeConstraintTypename(compareType, constraints);
 			}
 			else {
@@ -819,23 +813,13 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 			}
 
 			switch ( symbol->getSymbolType() ) {
-				case Symbol::IType::MethodSymbol:
-					process_method(tmpToken, result);
-					start = tmpToken;
-					++start;
-					break;
-				case Symbol::IType::ObjectSymbol:
-					operator_binary_assign(result, static_cast<Object*>(symbol));
-					++start;
-					break;
-				case Symbol::IType::BluePrintEnumSymbol:
 				case Symbol::IType::BluePrintObjectSymbol: {
 					++start;
 
 					PrototypeConstraints constraints = Designtime::Parser::collectRuntimePrototypeConstraints(start);
 
-					std::string newType = dynamic_cast<Designtime::BluePrintGeneric*>(symbol)->QualifiedTypename();
-								newType = Designtime::Parser::buildRuntimeConstraintTypename(newType, constraints);
+					std::string newType = dynamic_cast<Designtime::BluePrintObject*>(symbol)->QualifiedTypename();
+					newType = Designtime::Parser::buildRuntimeConstraintTypename(newType, constraints);
 
 					Object tmp;
 					try {
@@ -850,8 +834,17 @@ void Interpreter::parseTerm(Object *result, TokenIterator& start)
 
 					operator_binary_assign(result, &tmp);
 				} break;
+				case Symbol::IType::MethodSymbol:
+					process_method(tmpToken, result);
+					start = tmpToken;
+					++start;
+					break;
 				case Symbol::IType::NamespaceSymbol:
 					throw Common::Exceptions::SyntaxError("unexpected symbol resolved", start->position());
+				case Symbol::IType::ObjectSymbol:
+					operator_binary_assign(result, static_cast<Object*>(symbol));
+					++start;
+					break;
 			}
 		} break;
 		case Token::Type::KEYWORD: {
@@ -1033,7 +1026,6 @@ void Interpreter::process_delete(TokenIterator& token)
 
 			object->assign(Object());
 		} break;
-		case Symbol::IType::BluePrintEnumSymbol:
 		case Symbol::IType::BluePrintObjectSymbol:
 		case Symbol::IType::MethodSymbol:
 		case Symbol::IType::NamespaceSymbol:
@@ -1183,7 +1175,7 @@ void Interpreter::process_foreach(TokenIterator& token, Object* result)
 	if ( !symbol ) {
 		throw Common::Exceptions::UnknownIdentifer("identifier '" + typedefIt->content() + "' not found", token->position());
 	}
-	if ( symbol->getSymbolType() != Symbol::IType::BluePrintEnumSymbol && symbol->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
+	if ( symbol->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
 		throw Common::Exceptions::SyntaxError("invalid symbol type '" + symbol->getName() + "' found", token->position());
 	}
 
@@ -1274,7 +1266,7 @@ void Interpreter::process_identifier(TokenIterator& token, Object* /*result*/)
 	}
 
 	try {
-		if ( symbol->getSymbolType() == Symbol::IType::BluePrintEnumSymbol || symbol->getSymbolType() == Symbol::IType::BluePrintObjectSymbol ) {
+		if ( symbol->getSymbolType() == Symbol::IType::BluePrintObjectSymbol ) {
 			process_type(token, symbol, Initialization::Allowed);
 		}
 		else if ( symbol->getSymbolType() == Symbol::IType::MethodSymbol ) {
@@ -1558,8 +1550,7 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 	if ( !symbol ) {
 		throw Common::Exceptions::UnknownIdentifer("unknown identifier '" + start->content() + "'");
 	}
-	if ( /*symbol->getSymbolType() != Symbol::IType::BluePrintEnumSymbol &&*/
-		 symbol->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
+	if ( symbol->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
 		throw Common::Exceptions::Exception("blueprint symbol expected!");
 	}
 
@@ -1572,7 +1563,7 @@ void Interpreter::process_new(TokenIterator& token, Object *result)
 	collectParameterList(token, params, objectListHack);
 
 	// create initialized reference of new object
-	*result = *mRepository->createReference(static_cast<Designtime::BluePrintGeneric*>(symbol), ANONYMOUS_OBJECT, constraints, Repository::InitilizationType::Final);
+	*result = *mRepository->createReference(static_cast<Designtime::BluePrintObject*>(symbol), ANONYMOUS_OBJECT, constraints, Repository::InitilizationType::Final);
 
 	// execute new object's constructor
 	mControlFlow = result->Constructor(params);
@@ -1925,7 +1916,7 @@ void Interpreter::process_try(TokenIterator& token, Object* result)
 				if ( !symbol ) {
 					throw Common::Exceptions::UnknownIdentifer("identifier '" + catchIt->content() + "' not found", catchIt->position());
 				}
-				if ( symbol->getSymbolType() != Symbol::IType::BluePrintEnumSymbol && symbol->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
+				if ( symbol->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
 					throw Common::Exceptions::SyntaxError("invalid symbol type '" + symbol->getName() + "' found", catchIt->position());
 				}
 
@@ -2009,9 +2000,9 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol, Initiali
 	Mutability::E mutability = parseMutability(token);
 
 	// not-atomic types are references by default
-	AccessMode::E accessMode = parseAccessMode(token, static_cast<Designtime::BluePrintGeneric*>(symbol)->isAtomicType());
+	AccessMode::E accessMode = parseAccessMode(token, static_cast<Designtime::BluePrintObject*>(symbol)->isAtomicType());
 
-	Object* object = mRepository->createInstance(static_cast<Designtime::BluePrintGeneric*>(symbol), name, constraints);
+	Object* object = mRepository->createInstance(static_cast<Designtime::BluePrintObject*>(symbol), name, constraints);
 	object->setConst(mutability == Mutability::Const);
 
 	getScope()->define(name, object);
@@ -2054,7 +2045,7 @@ Object* Interpreter::process_type(TokenIterator& token, Symbol* symbol, Initiali
 	}
 	else if ( initialization >= Initialization::Allowed &&
 			  accessMode == AccessMode::ByReference &&
-			  static_cast<Designtime::BluePrintGeneric*>(symbol)->isAtomicType() ) {
+			  static_cast<Designtime::BluePrintObject*>(symbol)->isAtomicType() ) {
 		// atomic reference without initialization found
 		throw Common::Exceptions::NotSupported("atomic references need to be initialized", token->position());
 	}
@@ -2077,9 +2068,8 @@ void Interpreter::process_typeid(TokenIterator& token, Object* result)
 	}
 
 	switch ( symbol->getSymbolType() ) {
-		case Symbol::IType::BluePrintEnumSymbol:
 		case Symbol::IType::BluePrintObjectSymbol:
-			*result = StringObject(static_cast<Designtime::BluePrintGeneric*>(symbol)->QualifiedTypename());
+			*result = StringObject(static_cast<Designtime::BluePrintObject*>(symbol)->QualifiedTypename());
 			break;
 		case Symbol::IType::ObjectSymbol:
 			*result = StringObject(static_cast<Object*>(symbol)->QualifiedTypename());
