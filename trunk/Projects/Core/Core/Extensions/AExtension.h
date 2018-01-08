@@ -37,8 +37,6 @@ public:
 public:
 	const std::string& getName() const;
 
-protected:
-
 private:
 	bool mInitialized;
 	std::string mName;

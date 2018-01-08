@@ -57,11 +57,10 @@ public:
 	void addBluePrint(Designtime::BluePrintObject* object);
 
 	Runtime::Object* createInstance(const std::string& type, const std::string& name = std::string(), PrototypeConstraints constraints = PrototypeConstraints(), InitilizationType::E initialize = InitilizationType::None);
-	Runtime::Object* createInstance(Designtime::BluePrintGeneric* blueprint, const std::string& name, PrototypeConstraints constraints, InitilizationType::E initialize = InitilizationType::None);
+	Runtime::Object* createInstance(Designtime::BluePrintObject* blueprint, const std::string& name, PrototypeConstraints constraints, InitilizationType::E initialize = InitilizationType::None);
 	Runtime::Object* createReference(const std::string& type, const std::string& name, PrototypeConstraints constraints, InitilizationType::E initialize = InitilizationType::None);
-	Runtime::Object* createReference(Designtime::BluePrintGeneric* blueprint, const std::string& name, PrototypeConstraints constraints, InitilizationType::E initialize = InitilizationType::None);
+	Runtime::Object* createReference(Designtime::BluePrintObject* blueprint, const std::string& name, PrototypeConstraints constraints, InitilizationType::E initialize = InitilizationType::None);
 
-	Designtime::BluePrintGeneric* findBluePrintGeneric(const std::string &type) const;
 	Designtime::BluePrintObject* findBluePrintObject(const std::string& type) const;
 	Designtime::BluePrintObject* findBluePrintObject(const Common::TypeDeclaration& typeDeclaration) const;
 
@@ -69,7 +68,6 @@ public:
 
 private:
 	typedef std::map<std::string, Designtime::BluePrintObject*> BluePrintObjectMap;
-	typedef std::set<Designtime::BluePrintGeneric*> ForwardDeclarationTomb;
 
 private:
 	Designtime::BluePrintObject* createBluePrintFromPrototype(Designtime::BluePrintObject* blueprint, PrototypeConstraints constraints);

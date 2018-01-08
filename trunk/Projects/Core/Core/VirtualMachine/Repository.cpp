@@ -68,7 +68,7 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 	// merge design time and run time constraints
 	constraints = Designtime::mergeConstraints(blueprint->getPrototypeConstraints(), constraints);
 	for ( PrototypeConstraints::const_iterator constIt = constraints.begin(); constIt != constraints.end(); ++constIt ) {
-		Designtime::BluePrintGeneric* generic = findBluePrintGeneric(constIt->mRunType);
+		Designtime::BluePrintObject* generic = findBluePrintObject(constIt->mRunType);
 
 		if ( !generic ) {
 			throw Common::Exceptions::UnknownIdentifer(constIt->mRunType + " is unknown");
@@ -77,10 +77,7 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 			throw Common::Exceptions::TypeMismatch(constIt->mRunType + " does not inherit from " + constIt->mConstraint);
 		}
 
-		Designtime::BluePrintObject* bluePrintObject = dynamic_cast<Designtime::BluePrintObject*>(generic);
-		if ( bluePrintObject ) {
-			initBluePrintObject(bluePrintObject);
-		}
+		initBluePrintObject(generic);
 	}
 
 	Designtime::BluePrintObject* newBlue = blueprint->fromPrototype(constraints);
@@ -126,7 +123,7 @@ Runtime::Object* Repository::createInstance(const std::string& type, const std::
 /*
  * Creates an instance of the given blueprint
  */
-Runtime::Object* Repository::createInstance(Designtime::BluePrintGeneric* blueprint, const std::string& name, PrototypeConstraints constraints, InitilizationType::E initialize)
+Runtime::Object* Repository::createInstance(Designtime::BluePrintObject* blueprint, const std::string& name, PrototypeConstraints constraints, InitilizationType::E initialize)
 {
 	if ( !blueprint ) {
 		throw Common::Exceptions::Exception("invalid blueprint provided!");
@@ -155,7 +152,7 @@ Runtime::Object* Repository::createInstance(Designtime::BluePrintGeneric* bluepr
 		}
 	}
 
-	Runtime::Object* object = createObject(name, dynamic_cast<Designtime::BluePrintObject*>(blueprint), initialize);
+	Runtime::Object* object = createObject(name, blueprint, initialize);
 
 	if ( initialize == InitilizationType::Final ) {
 		if ( object->isAbstract() ) {
@@ -241,7 +238,7 @@ Runtime::Object* Repository::createReference(const std::string& type, const std:
 /*
  * Creates an instance of the given blueprint and adds a reference to it in the heap memory
  */
-Runtime::Object* Repository::createReference(Designtime::BluePrintGeneric* blueprint, const std::string& name, PrototypeConstraints constraints, InitilizationType::E initialize)
+Runtime::Object* Repository::createReference(Designtime::BluePrintObject* blueprint, const std::string& name, PrototypeConstraints constraints, InitilizationType::E initialize)
 {
 	Runtime::Object* object = createInstance(blueprint, name, constraints, initialize);
 
@@ -321,11 +318,6 @@ void Repository::deinit()
 {
 	// cleanup blue prints
 	mBluePrintObjects.clear();
-}
-
-Designtime::BluePrintGeneric* Repository::findBluePrintGeneric(const std::string &type) const
-{
-	return findBluePrintObject(type);
 }
 
 Designtime::BluePrintObject* Repository::findBluePrintObject(const std::string& type) const
@@ -534,9 +526,9 @@ void Repository::initBluePrintObject(Designtime::BluePrintObject* blueprint)
 			continue;
 		}
 
-		Designtime::BluePrintGeneric* member = static_cast<Designtime::BluePrintGeneric*>(it->second);
+		Designtime::BluePrintObject* member = static_cast<Designtime::BluePrintObject*>(it->second);
 
-		Designtime::BluePrintGeneric* baseType = findBluePrintGeneric(member->QualifiedTypename());
+		Designtime::BluePrintObject* baseType = findBluePrintObject(member->QualifiedTypename());
 		if ( !baseType ) {
 			throw Common::Exceptions::UnknownIdentifer("unknown member type '" + member->QualifiedTypename() + "'!");
 		}
@@ -697,10 +689,10 @@ void Repository::prepareType(const Common::TypeDeclaration& type)
 	std::string resolvedType = Designtime::Parser::buildRuntimeConstraintTypename(type.mName, type.mConstraints);
 
 	// lookup resolved type
-	Designtime::BluePrintGeneric* blueprint = findBluePrintGeneric(resolvedType);
+	Designtime::BluePrintObject* blueprint = findBluePrintObject(resolvedType);
 	if ( !blueprint ) {
 		// lookup pure type without constraints
-		blueprint = findBluePrintGeneric(type.mName);
+		blueprint = findBluePrintObject(type.mName);
 
 		if ( !blueprint ) {
 			// pure type not available

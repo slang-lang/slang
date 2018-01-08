@@ -773,7 +773,7 @@ Statement* TreeGenerator::process_foreach(TokenIterator& token)
 	if ( loopExpression ) {
 /*	this has to be used as soon as 'this' is passed to methods as first parameter
 		// check if this expression offers an iterator
-		Designtime::BluePrintGeneric* blueprint = mRepository->findBluePrint(loopExpression->getResultType());
+		Designtime::BluePrintObject* blueprint = mRepository->findBluePrint(loopExpression->getResultType());
 
 		if ( !blueprint || !blueprint->isIterable() ) {
 			throw Common::Exceptions::SyntaxError(loopExpression->getResultType() + " is not iterable", token->position());
@@ -1034,8 +1034,7 @@ Expression* TreeGenerator::process_new(TokenIterator& token)
 	if ( !symbol ) {
 		throw Common::Exceptions::UnknownIdentifer("symbol '" + start->content() + "' not found", token->position());
 	}
-	if ( /*symbol->getSymbolType() != Symbol::IType::BluePrintEnumSymbol &&*/
-		 symbol->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
+	if ( symbol->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
 		throw Common::Exceptions::InvalidSymbol("invalid symbol type found", token->position());
 	}
 
@@ -1598,7 +1597,7 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 			Runtime::Object* object = static_cast<Runtime::Object*>(result);
 
 /*	this does not work because it also is true for valid static fields
-			if ( dynamic_cast<Designtime::BluePrintGeneric*>(base) && !object->isMember() ) {
+			if ( dynamic_cast<Designtime::BluePrintObject*>(base) && !object->isMember() ) {
 				throw Common::Exceptions::StaticException("cannot access static instance '" + object->getName() + "' from within runtime instance", token->position());
 			}
 */

@@ -69,9 +69,6 @@ bool Analyser::buildEnum(Designtime::BluePrintObject* symbol, const TokenList& t
 
 		previous_value = value;
 
-		// define enum entries as integer type
-		//Runtime::Object* entry = new Runtime::IntegerObject(name, value.toInt());	// this prevents a double delete because all instances are freed by their surrounding scope
-
 		// define enum entries as parent type
 		Runtime::Object* entry = mRepository->createInstance(symbol->QualifiedTypename(), name);
 		entry->setConstructed(true);
@@ -342,7 +339,7 @@ bool Analyser::createMemberStub(TokenIterator& token, Visibility::E visibility, 
 
 	expect(Token::Type::SEMICOLON, token);
 
-	if ( dynamic_cast<BluePrintGeneric*>(mScope) && memoryLayout != MemoryLayout::Static ) {
+	if ( dynamic_cast<BluePrintObject*>(mScope) && memoryLayout != MemoryLayout::Static ) {
 		BluePrintObject* member = new BluePrintObject(type.mName, mFilename, name);
 		member->setIsReference(access == AccessMode::ByReference);
 		member->setLanguageFeatureState(languageFeature);
@@ -361,7 +358,7 @@ bool Analyser::createMemberStub(TokenIterator& token, Visibility::E visibility, 
 		Runtime::Object* symbol = mRepository->createInstance(type.mName, name, type.mConstraints);
 		symbol->setIsReference(access == AccessMode::ByReference);
 		symbol->setLanguageFeatureState(languageFeature);
-		symbol->setMember(dynamic_cast<BluePrintGeneric*>(mScope));
+		symbol->setMember(dynamic_cast<BluePrintObject*>(mScope));
 		symbol->setMemoryLayout(memoryLayout);
 		symbol->setMutability(mutability);
 		symbol->setParent(mScope);
@@ -385,7 +382,7 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 	bool throws = false;
 	Virtuality::E virtuality = mProcessingInterface ? Virtuality::Abstract : Virtuality::Virtual;
 
-	BluePrintGeneric* blueprint = dynamic_cast<BluePrintGeneric*>(mScope);
+	BluePrintObject* blueprint = dynamic_cast<BluePrintObject*>(mScope);
 	if ( blueprint && name == RESERVED_WORD_CONSTRUCTOR ) {
 		// constructors can never ever be const
 		methodType = MethodAttributes::MethodType::Constructor;
