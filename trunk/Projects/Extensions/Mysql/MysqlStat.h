@@ -48,9 +48,9 @@ public:
 
 			const char* mysql_result = mysql_stat(myConn);
 
-			if ( mysql_result ) {
-				*result = Runtime::StringObject(std::string(mysql_result));
-			}
+			*result = Runtime::StringObject(
+				mysql_result ? std::string(mysql_result) : ""
+			);
 		}
 		catch ( std::exception &e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
