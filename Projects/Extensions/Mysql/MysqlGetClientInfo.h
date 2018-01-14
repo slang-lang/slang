@@ -36,9 +36,9 @@ public:
 	Runtime::ControlFlow::E execute(const ParameterList& /*params*/, Runtime::Object* result, const Token& token)
 	{
 		try {
-			std::string my_result = mysql_get_client_info();
-
-			*result = Runtime::StringObject(my_result);
+			*result = Runtime::StringObject(
+				(std::string)mysql_get_client_info()
+			);
 		}
 		catch ( std::exception &e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);

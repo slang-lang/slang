@@ -55,11 +55,9 @@ public:
 
 			char* to = new char[(param_from.length() * 2) + 1];
 
-			long mysql_result = mysql_real_escape_string(myConn, to, param_from.c_str(), param_from.length());
+			mysql_real_escape_string(myConn, to, param_from.c_str(), param_from.length());
 
-			if ( mysql_result ) {
-				*result = Runtime::StringObject(std::string(to));
-			}
+			*result = Runtime::StringObject(std::string(to));
 		}
 		catch ( std::exception &e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);

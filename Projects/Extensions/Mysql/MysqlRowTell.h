@@ -47,7 +47,9 @@ public:
 				throw Common::Exceptions::Exception("no valid mysql result handle: " + Utils::Tools::toString(param_handle));
 			}
 
-			*result = Runtime::IntegerObject(mysql_row_tell(myResult));
+			*result = Runtime::IntegerObject(
+				mysql_row_tell(myResult)
+			);
 		}
 		catch ( std::exception &e ) {
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
