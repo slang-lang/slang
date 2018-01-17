@@ -14,7 +14,7 @@ private bool TestCase1() throws {
 			print("inner try");
 
 			print("inner throw");
-			throw new string("this is a new string exception");
+			throw "this is a new string exception";
 		}
 		catch ( string e ) {
 			print("inner catch");

@@ -76,7 +76,7 @@ private bool TestCase4() throws {
 
 		print("try");
 
-		throw new string("this is an exception");
+		throw "this is an exception";
 	}
 	catch ( int e ) {
 		print("catch(int): " + e);
