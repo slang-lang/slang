@@ -277,9 +277,11 @@ bool Tokenizer::isWhiteSpace(const std::string& token) const
 }
 
 /*
- * mergeBooleanOperators: merges all pairs of & or | operators together (i.e. '&' '&' become '&&')
+ * mergeOperators: merges all pairs of & or | operators together (i.e. '&' '&' become '&&')
+ * mergeOperators: merges all pairs of + or - operators together (i.e. '+' '+' become '++')
+ * mergeOperators: merges all pairs of [ or ] operators together (i.e. '[' ']' become '[]')
  */
-void Tokenizer::mergeBooleanOperators()
+void Tokenizer::mergeOperators()
 {
 	TokenList tmp;
 	Token::Type::E lastType = Token::Type::UNKNOWN;
@@ -322,67 +324,7 @@ void Tokenizer::mergeBooleanOperators()
 			// ... and add OR instead
 			tmp.push_back(Token(Token::Category::Operator, Token::Type::NOR, "!|", token->position()));
 		}
-
-		if ( !changed ) {
-			tmp.push_back((*token));
-		}
-		lastType = tmp.back().type();
-
-		++token;
-	}
-
-	mTokens = tmp;
-}
-
-/*
- * mergeOtherOperators: merges '[' ']' operators into '[]'
- */
-void Tokenizer::mergeOtherOperators()
-{
-	TokenList tmp;
-	Token::Type::E lastType = Token::Type::UNKNOWN;
-	TokenIterator token = mTokens.begin();
-
-	// try to combine all other operator tokens
-	while ( token != mTokens.end() ) {
-		bool changed = false;
-		Token::Type::E activeType = token->type();
-
-		if ( (lastType == Token::Type::BRACKET_OPEN) && (activeType == Token::Type::BRACKET_CLOSE) ) {
-			// && and
-			changed = true;
-			// remove last added token ...
-			tmp.pop_back();
-			// ... and add AND instead
-			tmp.push_back(Token(Token::Category::Operator, Token::Type::ARRAY_SUBSCRIPT, "[]", token->position()));
-		}
-
-		if ( !changed ) {
-			tmp.push_back((*token));
-		}
-		lastType = tmp.back().type();
-
-		++token;
-	}
-
-	mTokens = tmp;
-}
-
-/*
- * mergeInfixPostfixOperators: merges all pairs of + or - operators together (i.e. '+' '+' become '++')
- */
-void Tokenizer::mergeInfixPostfixOperators()
-{
-	TokenList tmp;
-	Token::Type::E lastType = Token::Type::UNKNOWN;
-	TokenIterator token = mTokens.begin();
-
-	// try to combine all compare tokens
-	while ( token != mTokens.end() ) {
-		bool changed = false;
-		Token::Type::E activeType = token->type();
-
-		if ( (lastType == Token::Type::MATH_SUBTRACT) && (activeType == Token::Type::MATH_SUBTRACT) ) {
+		else if ( (lastType == Token::Type::MATH_SUBTRACT) && (activeType == Token::Type::MATH_SUBTRACT) ) {
 			// --
 			changed = true;
 			// remove last added token ...
@@ -397,6 +339,14 @@ void Tokenizer::mergeInfixPostfixOperators()
 			tmp.pop_back();
 			// ... and add AND instead
 			tmp.push_back(Token(Token::Category::Operator, Token::Type::OPERATOR_INCREMENT, "++", token->position()));
+		}
+		else if ( (lastType == Token::Type::BRACKET_OPEN) && (activeType == Token::Type::BRACKET_CLOSE) ) {
+			// && and
+			changed = true;
+			// remove last added token ...
+			tmp.pop_back();
+			// ... and add AND instead
+			tmp.push_back(Token(Token::Category::Operator, Token::Type::ARRAY_SUBSCRIPT, "[]", token->position()));
 		}
 
 		if ( !changed ) {
@@ -417,7 +367,6 @@ void Tokenizer::process()
 	std::string token;
 
 	bool isMultiLineComment = false;
-	bool isPreprocessorDirective = false;
 	bool isSingleLineComment = false;
 	bool isString = false;
 
@@ -429,7 +378,7 @@ void Tokenizer::process()
 
 		// preprocessor directives as single line comments '#'
 		if ( !isMultiLineComment && !isSingleLineComment && !isString && thisChar == '#' ) {
-			isPreprocessorDirective = true;
+			isSingleLineComment = true;
 		}
 		// single line comments '//'
 		else if ( !isMultiLineComment && !isSingleLineComment && !isString && lastChar == '/' && thisChar == '/' ) {
@@ -444,11 +393,7 @@ void Tokenizer::process()
 			mTokens.pop_back();
 		}
 
-		if ( isPreprocessorDirective ) {
-			// not in use atm so just ignore it
-		}
-		// don't parse comments
-		else if ( !isMultiLineComment && !isSingleLineComment ) {
+		if ( !isMultiLineComment && !isSingleLineComment ) {
 			// are we reading a string?
 			if ( (thisChar == '\"' /* || thisChar == '\''*/) && lastChar != '\\' ) {
 				isString = !isString;
@@ -460,17 +405,15 @@ void Tokenizer::process()
 						token += thisChar;
 						thisChar = 0;
 					}
+
 					addToken(token, pos);
+
+					token.clear();
 				}
 
-				token.clear();
-				token = thisChar;
-
-				if ( !token.empty() && token.at(0) != 0 ) {
-					addToken(token, pos);
+				if ( thisChar ) {
+					addToken(std::string(1, thisChar), pos);
 				}
-
-				token.clear();
 			}
 			else {
 				// only add char if it is no '\'
@@ -488,7 +431,6 @@ void Tokenizer::process()
 		// counting lines and columns
 		pos.mColumn++;
 		if ( thisChar == '\n' ) {
-			isPreprocessorDirective = false;
 			isSingleLineComment = false;
 			pos.mLine++;
 			pos.mColumn = 1;
@@ -505,33 +447,17 @@ void Tokenizer::process()
 	}
 
 	addToken(Token(Token::Type::ENDOFFILE));	// add end of file token
-	addToken(Token(Token::Type::ENDOFFILE));	// add end of file token
 
-	replaceAssignments();			// replace assignment tokens with compare tokens (if present)
-	mergeBooleanOperators();		// merge '&' '&' into '&&'
-	mergeInfixPostfixOperators();	// merge '+' '+' into '++'
-	mergeOtherOperators();			// merge '[' ']' into '[]'
+	mergeAssignments();			// replace assignment tokens with compare tokens (if present)
+	mergeOperators();				// merge '+' '+' into '++'
 	replaceConstDataTypes();		// combines CONST_INTEGER '.' CONST_INTEGER <data type> into a CONST_FLOAT or CONST_DOUBLE
 	replaceOperators();				// combine 'operator' identifiers with the next following token i.e. 'operator' '+' => 'operator+'
 }
 
-void Tokenizer::removeWhiteSpaces()
-{
-	TokenList tmp;
-
-	for ( TokenList::iterator it = mTokens.begin(); it != mTokens.end(); ++it ) {
-		if ( (*it).type() != Token::Type::WHITESPACE ) {
-			tmp.push_back((*it));
-		}
-	}
-
-	mTokens = tmp;
-}
-
 /*
- * replaceAssignments replaces/merges all assignment tokens with compare tokens (if present), i.e. '+' & '=' => '+='
+ * mergeAssignments: replaces/merges all assignment tokens with compare tokens (if present), i.e. '+' & '=' => '+='
  */
-void Tokenizer::replaceAssignments()
+void Tokenizer::mergeAssignments()
 {
 	TokenList tmp;
 	Token::Type::E lastType = Token::Type::UNKNOWN;
