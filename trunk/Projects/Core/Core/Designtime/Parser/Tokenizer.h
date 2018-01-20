@@ -35,11 +35,8 @@ private:	// Tokenizer
 	inline void addToken(const std::string& con, const Common::Position& position);
 	void addToken(const Token& token);
 
-	void mergeBooleanOperators();
-	void mergeInfixPostfixOperators();
-	void mergeOtherOperators();
-	void removeWhiteSpaces();
-	void replaceAssignments();
+	void mergeAssignments();
+	void mergeOperators();
 	void replaceConstDataTypes();
 	void replaceOperators();
 
