@@ -83,7 +83,7 @@ PrototypeConstraints PrototypeConstraints::buildRuntimeConstraints(const Prototy
 {
 	PrototypeConstraints result;
 
-	PrototypeConstraints::const_iterator otherIt = other.begin();
+	//PrototypeConstraints::const_iterator otherIt = other.begin();
 	PrototypeConstraints::const_iterator thisIt = this->begin();
 
 	for ( ; thisIt != this->end(); ++thisIt ) {
