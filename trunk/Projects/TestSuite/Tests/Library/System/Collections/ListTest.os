@@ -9,7 +9,6 @@ public void Main(int argc = 0, string args = "") const {
 	assert( TestCase3() );
 	assert( TestCase4() );
 	assert( TestCase5() );
-	//assert( TestCase6() );
 }
 
 private bool TestCase1() const {
@@ -208,30 +207,4 @@ private bool TestCase5() const {
 
 	return false;
 }
-
-/*
-private bool TestCase6() {
-	print("TestCase 6: generic List");
-
-	try {
-		List<int> list = new List<int>();
-		assert( list );
-
-		list.push_back(1);
-		list.push_back(2);
-		list.push_back(3);
-
-		assert( !list.empty() );
-		assert( list.size() == 3 );
-
-		foreach ( int i : list ) {
-			print(i);
-		}
-
-		return true;
-	}
-
-	return false;
-}
-*/
 
