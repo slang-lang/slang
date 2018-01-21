@@ -416,8 +416,8 @@ void Tokenizer::process()
 				}
 			}
 			else {
-				// only add char if it is no '\'
-				if ( thisChar != '\\' ) {
+				// only add char if it is no '\' or if '\' has already been escaped
+				if ( thisChar != '\\' || (lastChar == '\\' && thisChar == '\\') ) {
 					token += thisChar;
 				}
 			}
@@ -448,7 +448,7 @@ void Tokenizer::process()
 
 	addToken(Token(Token::Type::ENDOFFILE));	// add end of file token
 
-	mergeAssignments();			// replace assignment tokens with compare tokens (if present)
+	mergeAssignments();				// replace assignment tokens with compare tokens (if present)
 	mergeOperators();				// merge '+' '+' into '++'
 	replaceConstDataTypes();		// combines CONST_INTEGER '.' CONST_INTEGER <data type> into a CONST_FLOAT or CONST_DOUBLE
 	replaceOperators();				// combine 'operator' identifiers with the next following token i.e. 'operator' '+' => 'operator+'
