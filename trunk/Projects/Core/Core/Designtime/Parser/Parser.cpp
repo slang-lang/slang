@@ -336,16 +336,25 @@ bool Parser::isEnumDeclaration(TokenIterator token)
 }
 
 // interface declaration:
-// [<visibility>] [language feature] interface <identifier> { ... }
+// [<visibility>] [language feature] interface <identifier> [modifier] { ... }
 bool Parser::isInterfaceDeclaration(TokenIterator token)
 {
-	TokenList tokens;
+	if ( token->isOptional() && token->type() == Token::Type::VISIBILITY ) {
+		// visibility token is okay
+		++token;
+	}
 
-	tokens.push_back(Token(Token::Type::VISIBILITY, true));
-	tokens.push_back(Token(Token::Type::RESERVED_WORD, std::string(RESERVED_WORD_INTERFACE)));
-	tokens.push_back(Token(Token::Type::IDENTIFIER));
+	if ( token->isOptional() && token->category() == Token::Category::Attribute && token->type() == Token::Type::LANGUAGEFEATURE ) {
+		// language feature is okay
+		++token;
+	}
 
-	return checkSyntax(token, tokens);
+	if ( token->isOptional() && token->type() == Token::Type::MODIFIER ) {
+		// abstract is okay
+		++token;
+	}
+
+	return !(token->type() != Token::Type::RESERVED_WORD || token->content() != std::string(RESERVED_WORD_INTERFACE));
 }
 
 // library declaration:
@@ -361,7 +370,7 @@ bool Parser::isLibraryReference(TokenIterator token)
 }
 
 // member declaration:
-// [<visibility>] [language feature] <identifier> <identifier> = || ;
+// [<visibility>] [language feature] <identifier> <identifier> [modifier] = || ;
 bool Parser::isMemberDeclaration(TokenIterator token)
 {
 	if ( token->type() == Token::Type::VISIBILITY ) {
@@ -461,15 +470,11 @@ bool Parser::isNamespaceDeclaration(TokenIterator token)
 		++token;
 	}
 
-	if ( token->type() != Token::Type::RESERVED_WORD || token->content() != std::string(RESERVED_WORD_NAMESPACE) ) {
-		return false;
-	}
-
-	return true;
+	return !(token->type() != Token::Type::RESERVED_WORD || token->content() != std::string(RESERVED_WORD_NAMESPACE));
 }
 
 // object declaration:
-// [<visibility>] [language feature] object <identifier> [extends <identifier>] [implements <identifier>, ...] { ... }
+// [<visibility>] [language feature] object <identifier> [modifier] [extends <identifier>] [implements <identifier>, ...] { ... }
 bool Parser::isObjectDeclaration(TokenIterator token)
 {
 	if ( token->isOptional() && token->type() == Token::Type::VISIBILITY ) {
@@ -487,11 +492,7 @@ bool Parser::isObjectDeclaration(TokenIterator token)
 		++token;
 	}
 
-	if ( token->type() != Token::Type::RESERVED_WORD || token->content() != std::string(RESERVED_WORD_OBJECT) ) {
-		return false;
-	}
-
-	return true;
+	return !(token->type() != Token::Type::RESERVED_WORD || token->content() != std::string(RESERVED_WORD_OBJECT));
 }
 
 AccessMode::E Parser::parseAccessMode(TokenIterator& token, AccessMode::E defaultValue)
