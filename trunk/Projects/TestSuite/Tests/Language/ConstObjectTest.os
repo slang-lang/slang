@@ -43,6 +43,8 @@ public void Main(int argc, string args) {
 
 	//value.setValue(1389);
 
+	value = new ValueObject(1389);
+
 	print("value = " + string value);
 
 	DerivedValueObject derived = new DerivedValueObject(1389);
