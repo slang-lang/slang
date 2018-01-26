@@ -43,19 +43,24 @@ public object Scanner implements IIterateable {
 }
 
 public void Main(int argc, string args) {
-        var params = new List<String>();
+	if ( argc < 2 ) {
+		print("usage: program [arg1 [arg2 [...] ] ]");
+		return;
+	}
 
-        foreach ( string p : String(args) ) {
-                params.push_back(new String(p));
-        }
+	var params = new List<String>();
+	foreach ( string p : String(args) ) {
+		params.push_back(new String(p));
+	}
 
-        if ( params.size() < 2 ) {
-                print("not enought parameters provided!");
-                return;
-        }
+	for ( int idx = 1; idx < argc; idx++ ) {
+		string filename = string params.at(idx);
 
-	foreach ( string line : new Scanner(new System.IO.File(string params.at(1), "r"), ascii(10)) ) {
-		print(line);
+		print(filename + ":");
+
+		foreach ( string line : new Scanner(new System.IO.File(filename, "r"), ascii(10)) ) {
+			print(line);
+		}
 	}
 }
 
