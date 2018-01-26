@@ -66,7 +66,7 @@ StringObject::StringObject(const Object& other)
 		mValue = other.getValue().toStdString();
 	}
 	else if ( other.isEnumerationValue() ) {
-		mValue = other.QualifiedTypename() + "." + other.getName();
+		mValue = other.getValue().toStdString();
 	}
 	else {
 		Object::operator_assign(&other);
