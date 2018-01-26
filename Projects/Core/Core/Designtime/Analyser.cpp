@@ -73,6 +73,7 @@ bool Analyser::buildEnum(Designtime::BluePrintObject* symbol, const TokenList& t
 		Runtime::Object* entry = mRepository->createInstance(symbol->QualifiedTypename(), name);
 		entry->setConstructed(true);
 		entry->setMember(true);
+		entry->setMemoryLayout(MemoryLayout::Static);
 		entry->setMutability(Mutability::Const);
 		entry->setQualifiedOuterface(symbol->QualifiedTypename());
 		entry->setValue(value.toInt());
@@ -183,7 +184,7 @@ bool Analyser::createBluePrint(TokenIterator& token)
 	blueprint->setImplementationType(implementationType);
 	blueprint->setIsReference(true);
 	blueprint->setLanguageFeatureState(languageFeatureState);
-	blueprint->setMutability(mutability);
+	//blueprint->setMutability(mutability);
 	blueprint->setParent(mScope);
 	blueprint->setQualifiedTypename(getQualifiedTypename(name));
 	blueprint->setTokens(tokens);
@@ -259,6 +260,7 @@ bool Analyser::createEnum(TokenIterator& token)
 	symbol->setPrototypeConstraints(type.mConstraints);
 	symbol->setQualifiedTypename(getQualifiedTypename(type.mName));
 	symbol->setTokens(tokens);
+	symbol->setValue(Runtime::AtomicValue(0));
 	symbol->setVisibility(visibility);
 	symbol->setSealed(true);
 
