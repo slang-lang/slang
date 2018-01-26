@@ -6,59 +6,6 @@ import System.Exception;
 import Pair;
 import Set;
 
-public object MapIterator<K, V> implements Iterator {
-	private ICollection mCollection;
-	private int mCurrentIndex;
-
-	public void Constructor(ICollection collection ref) {
-		mCollection = collection;
-	}
-
-	public V at(K key) const {
-		return V mCollection.at(key);
-	}
-
-	public V current() const throws {
-		if ( !mCollection ) {
-			throw new Exception("current(): invalid iterator access");
-		}
-
-		return V mCollection.at(mCurrentIndex);
-	}
-
-	public bool hasNext() const throws {
-		if ( !mCollection ) {
-			throw new Exception("hasNext(): invalid iterator access");
-		}
-
-		return mCurrentIndex < mCollection.size() - 1;
-	}
-
-	public void next() modify throws {
-		if ( !hasNext() ) {
-			throw new OutOfBoundsException("next(): index out of bounds");
-		}
-
-		mCurrentIndex++;
-	}
-
-	public void reset() modify {
-		mCurrentIndex = -1;
-	}
-
-	public void operator++() modify throws {
-		if ( !hasNext() ) {
-			throw new OutOfBoundsException("operator++(): index out of bounds");
-		}
-
-		mCurrentIndex++;		
-	}
-
-	public V =operator(V none ref) const {
-		return current();
-	}
-}
-
 public object Map<K, V> implements ICollection {
 	private Set<Object> mItems;		// a set of Pair<K, V>
 
