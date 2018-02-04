@@ -68,6 +68,8 @@ enum e_Action {
 static const char* CACHE = "cache/";
 static const char* CACHE_MODULES = "cache/modules/";
 static const char* CACHE_REPOSITORIES = "cache/repositories/";
+static const char* CONFIG_FILE = ".odepend/odepend.json";
+static const char* CONFIG_FOLDER = ".odepend/";
 static const char* MODULES = "modules/";
 static const char* TMP = "/tmp/";
 
@@ -77,6 +79,7 @@ void cleanCache();
 Dependencies collectDependencies(const Json::Value& dependencies);
 void collectLocalModuleData();
 Module collectModuleData(const std::string& path, const std::string& filename);
+bool contains(const StringList& list, const std::string& value);
 void create(const StringList& params);
 void createBasicFolderStructure();
 void createLocalLibrary();
@@ -218,6 +221,17 @@ Module collectModuleData(const std::string& path, const std::string& filename)
 	return module;
 }
 
+bool contains(const StringList& list, const std::string& value)
+{
+	for ( StringList::const_iterator it = list.begin(); it != list.end(); ++it ) {
+		if ( (*it) == value ) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
 /*
  * creates a module package ("<module>.json", "<module>_<version>.tar.gz")
  * does NOT upload the package to a repository
@@ -273,16 +287,19 @@ void createBasicFolderStructure()
 	}
 
 	// create config file
-	execute("touch " + mLibraryFolder + "/odepend.json");
+	//execute("touch " + mLibraryFolder + CONFIG_FILE);
 }
 
 void createLocalLibrary()
 {
 	std::cout << "Preparing current directory for odepend..." << std::endl;
 
-	std::string filename = mCurrentFolder + "/odepend.json";
+	std::string filename = mCurrentFolder + CONFIG_FILE;
 
 	if ( !Utils::Tools::Files::exists(filename) ) {
+		// create folder for library config
+		execute("mkdir " + mCurrentFolder + CONFIG_FOLDER);
+
 		Json::Value repository;
 		repository.addMember("name", "main");
 		repository.addMember("url", "https://objectivescript.ticketsharing.net/repo/stable");
@@ -436,7 +453,7 @@ void init()
 	{	// set current folder
 		char cCurrentPath[FILENAME_MAX];
 		if ( !GetCurrentDir(cCurrentPath, sizeof(cCurrentPath)) )  {
-			return;
+			throw ObjectiveScript::Common::Exceptions::Exception("invalid current directory!");
 		}
 
 		cCurrentPath[sizeof(cCurrentPath) - 1] = '\0'; /* not really required */
@@ -444,6 +461,7 @@ void init()
 		mCurrentFolder = std::string(cCurrentPath) + "/";
 
 		if ( isLocalLibrary() ) {
+			mBaseFolder = mCurrentFolder + ".odepend/";
 			mLibraryFolder = mCurrentFolder;
 		}
 	}
@@ -578,13 +596,12 @@ void installModule(const std::string& repo, const std::string& module)
 	Module tmpModule = collectModuleData(mBaseFolder + CACHE_MODULES, module + ".json");
 
 	// copy module config to "<module>/module.json"
-	//execute("cp " + module_config + " " + mLibraryFolder + module + "/module.json");
 	execute("cp " + module_config + " " + mLibraryFolder + tmpModule.mTargetDirectory + "/module.json");
 }
 
 bool isLocalLibrary()
 {
-	return Utils::Tools::Files::exists(mCurrentFolder + "/odepend.json");
+	return Utils::Tools::Files::exists(mCurrentFolder + CONFIG_FILE);
 }
 
 void list()
@@ -602,7 +619,7 @@ void list()
 
 void loadConfig()
 {
-	std::string filename = mLibraryFolder + "odepend.json";
+	std::string filename = mLibraryFolder + CONFIG_FILE;
 
 	Json::Value config;
 	readJsonFile(filename, config);
@@ -832,11 +849,6 @@ void search(const StringList& params)
 	// (1) load cached repositories from disk
 	// (2) substr-search through all entries for given params
 
-	if ( params.empty() || params.size() != 1 ) {
-		std::cout << "!!! Invalid number of parameters" << std::endl;
-		return;
-	}
-
 	std::string filename = mBaseFolder + CACHE_REPOSITORIES + mRemoteRepository.getName() + ".json";
 
 	// check if filename exists
@@ -854,7 +866,6 @@ void search(const StringList& params)
 		return;
 	}
 
-	// loop through 'config' and return all values that contain the given string (from 'params') in it
 
 	std::string lookup = params.front();
 	StringList result;
@@ -866,8 +877,10 @@ void search(const StringList& params)
 			return;
 		}
 
-		if ( findCaseInsensitive((*it)["name"].asString(), lookup) != std::string::npos ) {
-			result.push_back((*it)["name"].asString());
+		std::string name = (*it)["name"].asString();
+
+		if ( findCaseInsensitive(name, lookup) != std::string::npos ) {
+			result.push_back(name + "(" + (*it)["version"].asString() + ")");
 		}
 	}
 
@@ -902,8 +915,6 @@ void update()
 
 void upgrade(const StringList& params)
 {
-	(void)params;
-
 	// (1) retrieve outdated modules
 	// (2) list all found modules
 	// (3) install new modules if any are available
@@ -927,12 +938,13 @@ void upgrade(const StringList& params)
 		for ( Repository::Modules::const_iterator it = outdatedModules.begin(); it != outdatedModules.end(); ++it ) {
 			std::cout << it->mShortName << "(" << it->mVersion.toString() << ")" << " ";
 
-			// add outdated module name to global parameters
-			mParameters.push_back(it->toVersionString());
+			// if params contains values upgrade only the modules that are set in mParameters
+			if ( params.empty() || contains(params, it->mShortName)) {
+				// add outdated module name to global parameters
+				mParameters.push_back(it->toVersionString());
+			}
 		}
 		std::cout << std::endl;
-
-		// TODO: if mParameters contains values upgrade only the modules that are set in mParameters
 
 		// install new versions of the selected outdated modules
 		install(mParameters);
