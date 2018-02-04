@@ -111,7 +111,7 @@ public object Parser {
 
 	private Statement parseDIM(CharacterIterator ci) throws {
 		if ( !ci.hasNext() ) {
-			throw new Exception("incomplete GOTO!");
+			throw new Exception("incomplete DIM!");
 		}
 
 		return Statement new DimStatement(parseWord(ci));
@@ -131,7 +131,7 @@ public object Parser {
 
 	private Statement parseINPUT(CharacterIterator ci) throws {
 		if ( !ci.hasNext() ) {
-			throw new Exception("incomplete GOTO!");
+			throw new Exception("incomplete INPUT!");
 		}
 
 		return Statement new InputStatement(parseWord(ci));
@@ -152,8 +152,8 @@ public object Parser {
 
 	private Statement parseREM(CharacterIterator ci) throws {
 		// ignore everything on this line
-		//return Statement new RemStatement(parseLine(ci));
-		return Statement new RemStatement();
+		return Statement new RemStatement(parseLine(ci));
+		//return Statement new RemStatement();
 	}
 
 	private string parseLine(CharacterIterator ci) throws {

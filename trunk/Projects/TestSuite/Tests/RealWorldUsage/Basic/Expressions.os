@@ -6,20 +6,21 @@ import Nodes;
 
 
 public enum ExpressionType {
-    BinaryExpression = 0;
+	BinaryExpression = 0;
 }
 
 
 public object Expression extends Node {
-    public int mExpressionType;
+	public int mExpressionType;
 
 	public void Constructor(int expressionType) {
 		base.Constructor(NodeType.ExpressionNode);
 
-        mExpressionType = expressionType;
+		mExpressionType = expressionType;
 	}
 
-    public string toString() const {
+	public string toString() const {
 		return "Epression: " + string mExpressionType;
 	}
 }
+
