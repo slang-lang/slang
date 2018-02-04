@@ -68,7 +68,7 @@ enum e_Action {
 static const char* CACHE = "cache/";
 static const char* CACHE_MODULES = "cache/modules/";
 static const char* CACHE_REPOSITORIES = "cache/repositories/";
-static const char* CONFIG_FILE = ".odepend/odepend.json";
+static const char* CONFIG_FILE = ".odepend/config.json";
 static const char* CONFIG_FOLDER = ".odepend/";
 static const char* MODULES = "modules/";
 static const char* TMP = "/tmp/";
@@ -461,7 +461,7 @@ void init()
 		mCurrentFolder = std::string(cCurrentPath) + "/";
 
 		if ( isLocalLibrary() ) {
-			mBaseFolder = mCurrentFolder + ".odepend/";
+			mBaseFolder = mCurrentFolder + CONFIG_FOLDER;
 			mLibraryFolder = mCurrentFolder;
 		}
 	}
