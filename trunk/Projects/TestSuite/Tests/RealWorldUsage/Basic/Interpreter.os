@@ -1,6 +1,7 @@
 
 // library imports
 import System.Collections.Map;
+import System.String;
 
 // project imports
 import Line;
@@ -13,23 +14,25 @@ public enum ControlFlow {
 
 public object Interpreter {
 	private Map<int, Line> mLines;
+	private Map<string, String> mVariables;
 
 	public void Constructor(Object lines) {
 		assert(lines is Map<int, Line>);
 
 		mLines = Map<int, Line> lines;
+		mVariables = new Map<string, String>();
 	}
 
-	private int process(Line line) const {
+	private int process(Line line) modify {
 		return process(line.mStatement);
 	}
 
-	private int process(Statement stmt) const throws {
+	private int process(Statement stmt) modify throws {
 		//print("process(" + stmt.toString() + ")");
 
 		switch ( true ) {
 			case stmt is DimStatement: {
-				throw new Exception("DIM statement not supported!");
+				return processDIM(DimStatement stmt);
 			}
 			case stmt is EndStatement: {
 				return processEND(EndStatement stmt);
@@ -39,6 +42,9 @@ public object Interpreter {
 			}
 			case stmt is IfStatement: {
 				return processIF(IfStatement stmt);
+			}
+			case stmt is InputStatement: {
+				return processINPUT(InputStatement stmt);
 			}
 			case stmt is PrintStatement: {
 				return processPRINT(PrintStatement stmt);
@@ -54,6 +60,18 @@ public object Interpreter {
 		return false;
 	}
 
+	private int processDIM(DimStatement stmt) modify throws {
+		assert(stmt);
+
+		if ( mVariables.contains(stmt.mVariable) ) {
+			throw new Exception("duplicate variable '" + stmt.mVariable + "' declared!");
+		}
+
+		mVariables.insert(stmt.mVariable, new String());
+
+		return 0;
+	}
+
 	private int processEND(EndStatement stmt) const throws {
 		throw ControlFlow.Exit;
 	}
@@ -64,7 +82,7 @@ public object Interpreter {
 		return stmt.mLine;
 	}
 
-	private int processIF(IfStatement stmt) const {
+	private int processIF(IfStatement stmt) modify {
 		assert(stmt);
 
 		bool isValid = processBooleanExpression(stmt.mExpression);
@@ -75,15 +93,29 @@ public object Interpreter {
 		return 0;
 	}
 
-	private int processPRINT(PrintStatement stmt) const {
+	private int processINPUT(InputStatement stmt) const {
 		assert(stmt);
 
-		print(stmt.mText);
+		String obj = mVariables.get(stmt.mVariable);
+		obj = cin();
 
 		return 0;
 	}
 
-	public int run() const throws {
+	private int processPRINT(PrintStatement stmt) const {
+		assert(stmt);
+
+		if ( mVariables.contains(stmt.mText) ) {
+			print(string mVariables.get(stmt.mText));
+		}
+		else {
+			print(stmt.mText);
+		}
+
+		return 0;
+	}
+
+	public int run() modify throws {
 		if ( !mLines || mLines.empty() ) {
 			throw new Exception("no valid lines to interpret!");
 		}

@@ -22,13 +22,14 @@ int KEYWORD_REM_ID const = 7;
 
 
 public enum StatementType {
-    DimStatement = 0,
-    EndStatement,
-    GotoStatement,
-    IfStatement,
-    LetStatement,
-    PrintStatement,
-    RemStatement;
+	DimStatement = 0,
+	EndStatement,
+	GotoStatement,
+	IfStatement,
+	InputStatement,
+	LetStatement,
+	PrintStatement,
+	RemStatement;
 }
 
 public object Statement extends Node {
@@ -97,6 +98,20 @@ public object IfStatement extends Statement {
 
 	public string toString() const {
 		return "IF " + mExpression.toString() + " THEN " + mIfBlock.toString();
+	}
+}
+
+public object InputStatement extends Statement {
+	public string mVariable;
+
+	public void Constructor(string variable) {
+		base.Constructor(StatementType.InputStatement);
+
+		mVariable = variable;
+	}
+
+	public string toString() const {
+		return "INPUT " + mVariable;
 	}
 }
 
