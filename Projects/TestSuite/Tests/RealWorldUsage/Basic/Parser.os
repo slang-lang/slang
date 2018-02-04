@@ -72,6 +72,10 @@ public object Parser {
 		Statement result = Statement null;
 
 		switch ( parseWord(ci) ) {
+			case "DIM": {
+				result = parseDIM(ci);
+				break;
+			}
 			case "END": {
 				result = parseEND(ci);
 				break;
@@ -85,7 +89,7 @@ public object Parser {
 				break;
 			}
 			case "INPUT": {
-				assert(!"INPUT-branch not implemented!");
+				result = parseINPUT(ci);
 				break;
 			}
 			case "LET": {
@@ -105,6 +109,14 @@ public object Parser {
 		return result;
 	}
 
+	private Statement parseDIM(CharacterIterator ci) throws {
+		if ( !ci.hasNext() ) {
+			throw new Exception("incomplete GOTO!");
+		}
+
+		return Statement new DimStatement(parseWord(ci));
+	}
+
 	private Statement parseEND(CharacterIterator ci) throws {
 		return Statement new EndStatement();
 	}
@@ -115,6 +127,14 @@ public object Parser {
 		}
 
 		return Statement new GotoStatement(int parseWord(ci));
+	}
+
+	private Statement parseINPUT(CharacterIterator ci) throws {
+		if ( !ci.hasNext() ) {
+			throw new Exception("incomplete GOTO!");
+		}
+
+		return Statement new InputStatement(parseWord(ci));
 	}
 
 	private Statement parsePRINT(CharacterIterator ci) throws {
