@@ -1,5 +1,6 @@
 
 // Library includes
+#include <algorithm>
 #include <dirent.h>
 #include <set>
 #include <string>
@@ -82,6 +83,7 @@ void createLocalLibrary();
 void deinit();
 bool download(const std::string& url, const std::string& target, bool allowCleanup = true);
 void execute(const std::string& command);
+size_t findCaseInsensitive(std::string data, std::string toSearch, size_t pos = 0);
 void info(const StringList& params);
 void init();
 void install(const StringList& params);
@@ -364,6 +366,19 @@ void execute(const std::string& command)
 //#endif
 
 	system(command.c_str());
+}
+
+/*
+ * Find Case Insensitive Sub String in a given substring
+ */
+size_t findCaseInsensitive(std::string data, std::string toSearch, size_t pos)
+{
+	// Convert complete given String to lower case
+	std::transform(data.begin(), data.end(), data.begin(), ::tolower);
+	// Convert complete given Sub String to lower case
+	std::transform(toSearch.begin(), toSearch.end(), toSearch.begin(), ::tolower);
+	// Find sub string in given string
+	return data.find(toSearch, pos);
 }
 
 void info(const StringList& params)
@@ -839,7 +854,7 @@ void search(const StringList& params)
 		return;
 	}
 
-	// loop through 'config' and return all values that contain the givin string (from 'params') in it
+	// loop through 'config' and return all values that contain the given string (from 'params') in it
 
 	std::string lookup = params.front();
 	StringList result;
@@ -851,7 +866,7 @@ void search(const StringList& params)
 			return;
 		}
 
-		if ( (*it)["name"].asString().find(lookup) != std::string::npos ) {
+		if ( findCaseInsensitive((*it)["name"].asString(), lookup) != std::string::npos ) {
 			result.push_back((*it)["name"].asString());
 		}
 	}
@@ -899,9 +914,12 @@ void upgrade(const StringList& params)
 	Repository::Modules outdatedModules;
 	checkOutdatedModules(outdatedModules);
 
-	std::cout << "Need to upgrade " << outdatedModules.size() << " module(s)..." << std::endl;
+	if ( outdatedModules.empty() ) {
+		std::cout << "No outdated modules found." << std::endl;
+	}
+	else {
+		std::cout << "Need to upgrade " << outdatedModules.size() << " module(s)..." << std::endl;
 
-	if ( !outdatedModules.empty() ) {
 		// replace current parameters with outdated modules to install
 		mParameters.clear();
 
