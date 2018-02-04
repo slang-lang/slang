@@ -100,7 +100,7 @@ void readJsonFile(const std::string& filename, Json::Value& result);
 void remove(const StringList& params);
 void search(const StringList& params);
 void update();
-void upgrade(const StringList& params);
+void upgrade(StringList params);
 
 
 std::string mBaseFolder;
@@ -913,7 +913,7 @@ void update()
 	}
 }
 
-void upgrade(const StringList& params)
+void upgrade(StringList params)
 {
 	// (1) retrieve outdated modules
 	// (2) list all found modules
@@ -945,6 +945,12 @@ void upgrade(const StringList& params)
 			}
 		}
 		std::cout << std::endl;
+
+		if ( mParameters.empty() ) {
+			// no modules added to upgrade
+			std::cout << "No upgradeable module selected." << std::endl;
+			return;
+		}
 
 		// install new versions of the selected outdated modules
 		install(mParameters);
