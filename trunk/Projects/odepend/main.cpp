@@ -247,11 +247,12 @@ void create(const StringList& params)
 	}
 
 	// TODO: module name is not allowed to end with '/'
-	std::string moduleName = params.front();
-	std::string path = moduleName;
+	std::string path = params.front();
 	std::string filename = "module.json";
 
 	Module module = collectModuleData(path, filename);
+
+	std::string moduleName = module.mShortName;
 
 	{	// create generic module information ("<module>.json")
 		std::cout << "Creating module information \"" << moduleName + ".json\"" << std::endl;
@@ -264,9 +265,9 @@ void create(const StringList& params)
 		execute("cp " + path + "/" + filename + " " + moduleName + "_" + module.mVersion.toString() + ".json");
 	}
 	{	// create package ("<module>_<version>.tar.gz")
-		std::cout << "Creating module package \"" << path + "_" + module.mVersion.toString() + ".tar.gz\"" << std::endl;
+		std::cout << "Creating module package \"" << moduleName + "_" + module.mVersion.toString() + ".tar.gz\"" << std::endl;
 
-		execute("tar -cjf " + path + "_" + module.mVersion.toString() + ".tar.gz " + path);
+		execute("tar -cjf " + moduleName + "_" + module.mVersion.toString() + ".tar.gz " + path);
 	}
 }
 
