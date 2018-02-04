@@ -867,7 +867,7 @@ void search(const StringList& params)
 	}
 
 
-	std::string lookup = params.front();
+	std::string lookup = (!params.size() ? "" : params.front());
 	StringList result;
 
 	Json::Value::Members members = config["modules"].members();
