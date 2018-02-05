@@ -44,7 +44,7 @@ public:
 
 private:
 	void processBluePrint(Designtime::BluePrintObject* object);
-	void processMethod(Common::Method* method, Runtime::Object* thisObject);
+	void processMethod(Common::Method* method);
 	void processNamespace(Common::Namespace* space);
 
 private:

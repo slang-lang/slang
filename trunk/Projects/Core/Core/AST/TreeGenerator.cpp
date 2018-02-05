@@ -75,6 +75,9 @@ void TreeGenerator::deinitialize()
 
 	// remove 'this' and 'base' symbols
 	if ( mThis && !mMethod->isStatic() ) {
+		// revert blueprint constness to modifiable
+		mThis->setMutability(Mutability::Modify);
+
 		Symbol* thisSymbol = scope->resolve(IDENTIFIER_THIS, true);
 		if ( thisSymbol ) {
 			scope->undefine(IDENTIFIER_THIS);
@@ -160,11 +163,11 @@ Statements* TreeGenerator::generate(const TokenList &tokens, bool allowBreakAndC
 /*
  * generates the abstract syntax tree that is executed by the TreeInterpreter for the given method
  */
-Statements* TreeGenerator::generateAST(Common::Method *method, Runtime::Object* thisObject)
+Statements* TreeGenerator::generateAST(Common::Method *method)
 {
 	Common::Method scope(*method);
 
-	initialize(&scope, thisObject);
+	initialize(&scope);
 
 	// generate AST
 	Statements* statements = generate(mMethod->getTokens());
@@ -255,7 +258,7 @@ inline Symbol* TreeGenerator::identify(TokenIterator& token) const
 	return result;
 }
 
-void TreeGenerator::initialize(Common::Method* method, Runtime::Object* thisObject)
+void TreeGenerator::initialize(Common::Method* method)
 {
 	// initialize reuseable members
 	mAllowConstModify = method->getMethodType() == Common::Method::MethodType::Constructor || method->getMethodType() == Common::Method::MethodType::Destructor;
@@ -274,9 +277,9 @@ void TreeGenerator::initialize(Common::Method* method, Runtime::Object* thisObje
 
 	// add 'this' symbol to method
 	if ( mThis && !method->isStatic() ) {
-		thisObject->setMutability(mMethod->getMutability());
+		mThis->setMutability(mMethod->getMutability());
 
-		scope->define(IDENTIFIER_THIS, thisObject);
+		scope->define(IDENTIFIER_THIS, mThis);
 	}
 
 	// add parameters as locale variables
