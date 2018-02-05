@@ -476,13 +476,7 @@ void Interpreter::initialize(IScope* scope, const TokenList& tokens, const Param
 				object = mRepository->createInstance(it->type(), it->name(), PrototypeConstraints());
 
 				if ( it->reference().isValid() ) {
-#ifdef ALLOW_BY_VALUE_COPY
-					OSwarn("by value call for object in " + scope.ToString());
-
-					object->copy(*mMemory->get(it->reference()));
-#else
 					throw Common::Exceptions::NotSupported("by value calls not allowed for objects", tokens.begin()->position());
-#endif
 				}
 
 				object->setMutability(it->mutability());
