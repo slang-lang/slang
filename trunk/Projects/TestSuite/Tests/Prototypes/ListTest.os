@@ -80,6 +80,7 @@ private bool TestCase3() {
 
 	List list = new List();
 	assert( list is Object );
+	assert( list is List<Object> );
 
 	assert( typeid(list) == "List<Object>" );
 
