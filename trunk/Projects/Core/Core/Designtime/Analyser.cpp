@@ -189,7 +189,7 @@ bool Analyser::createBluePrint(TokenIterator& token)
 	blueprint->setQualifiedTypename(getQualifiedTypename(name));
 	blueprint->setTokens(tokens);
 	blueprint->setVisibility(visibility);
-	blueprint->setSealed(mutability == Mutability::Const);
+	//blueprint->setSealed(mutability == Mutability::Const);
 
 	mScope->define(name, blueprint);
 
