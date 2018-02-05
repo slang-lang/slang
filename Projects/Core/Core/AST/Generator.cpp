@@ -66,20 +66,9 @@ void Generator::process(MethodScope* base)
 	}
 
 	if ( base->beginMethods() != base->endMethods() ) {
-		Runtime::Object* thisObject = 0;
-
-		// we have methods, no check if we're part of an object
-		Designtime::BluePrintObject* symbol = dynamic_cast<Designtime::BluePrintObject*>(base);
-		if ( symbol ) {
-			// instantiate object once and pass it to our methods to prevent multiple this-object instantiations
-			thisObject = mRepository->createInstance(symbol->QualifiedTypename(), IDENTIFIER_THIS, symbol->getPrototypeConstraints(), Repository::InitilizationType::Final);
-		}
-
 		for ( MethodScope::MethodCollection::const_iterator it = base->beginMethods(); it != base->endMethods(); ++it ) {
-			processMethod(static_cast<Common::Method*>((*it)), thisObject);
+			processMethod(static_cast<Common::Method*>((*it)));
 		}
-
-		delete thisObject;
 	}
 }
 
@@ -110,7 +99,7 @@ void Generator::processBluePrint(Designtime::BluePrintObject* object)
 /*
  * generates the AST for a single function/method
  */
-void Generator::processMethod(Common::Method* method, Runtime::Object* thisObject)
+void Generator::processMethod(Common::Method* method)
 {
 	if ( !method ) {
 		throw Common::Exceptions::Exception("invalid method symbol provided");
@@ -124,7 +113,7 @@ void Generator::processMethod(Common::Method* method, Runtime::Object* thisObjec
 		TreeGenerator tg;
 
 		method->setRootNode(
-			tg.generateAST(method, thisObject)
+			tg.generateAST(method)
 		);
 	}
 	catch ( std::exception& e ) {

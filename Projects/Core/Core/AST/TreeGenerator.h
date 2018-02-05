@@ -51,7 +51,7 @@ public:
 	~TreeGenerator();
 
 public:
-	Statements* generateAST(Common::Method *method, Runtime::Object* thisObject);
+	Statements* generateAST(Common::Method *method);
 
 private:
 	class Initialization {
@@ -140,7 +140,7 @@ private: // Execution
 
 private:	// Initialization
 	void deinitialize();
-	void initialize(Common::Method* method, Runtime::Object* thisObject);
+	void initialize(Common::Method* method);
 
 private:
 	bool mAllowConstModify;
