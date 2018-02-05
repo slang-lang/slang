@@ -559,17 +559,17 @@ Statement* TreeGenerator::process_assert(TokenIterator& token)
  * syntax:
  * <lvalue> = <rvalue>;
  */
-Statement* TreeGenerator::process_assignment(TokenIterator& token, SymbolExpression* symbol)
+Statement* TreeGenerator::process_assignment(TokenIterator& token, SymbolExpression* lhs)
 {
 	TokenIterator op = token;
 
-	if ( symbol->isConst() && !(mAllowConstModify && symbol->isMember()) ) {
-		throw Common::Exceptions::ConstCorrectnessViolated("tried to modify const symbol '" + symbol->mName + "'", op->position());
+	if ( lhs->isConst() && !(mAllowConstModify && lhs->isMember()) ) {
+		throw Common::Exceptions::ConstCorrectnessViolated("tried to modify const symbol '" + lhs->mName + "'", op->position());
 	}
 
 	Token assignment(Token::Category::Assignment, Token::Type::ASSIGN, "=", op->position());
 
-	Expression* right = static_cast<Expression*>(expression(++token));
+	Expression* rhs = static_cast<Expression*>(expression(++token));
 
 	if ( op->type() != Token::Type::ASSIGN ) {
 		Token operation;
@@ -586,17 +586,17 @@ Statement* TreeGenerator::process_assignment(TokenIterator& token, SymbolExpress
 			default: throw Common::Exceptions::SyntaxError("assignment type expected", token->position());
 		}
 
-		right = new BinaryExpression(symbol, operation, right, resolveType(symbol, operation, right));
+		rhs = new BinaryExpression(lhs, operation, rhs, resolveType(lhs, operation, rhs));
 	}
 
 /*
 	// TODO: assignment of const objects to non-const objects should not be allowed
-	if ( (right->isConst() && right->isReference()) && (!symbol->isConst() && symbol->isReference()) ) {
-		throw Common::Exceptions::ConstCorrectnessViolated("assignment of const symbol to non-const symbol '" + symbol->mName + "' not allowed", op->position());
+	if ( (rhs->isConst() && rhs->isReference()) && (!lhs->isConst() && lhs->isReference()) ) {
+		throw Common::Exceptions::ConstCorrectnessViolated("assignment of const symbol to non-const symbol '" + lhs->mName + "' not allowed", op->position());
 	}
 */
 
-	return new Assignment(symbol, (*op), right, resolveType(symbol, assignment, right));
+	return new Assignment(lhs, (*op), rhs, resolveType(lhs, assignment, rhs));
 }
 
 /*
@@ -1387,13 +1387,13 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 {
 	Token start = (*token);
 
-	DesigntimeSymbolExpression* symbol = dynamic_cast<DesigntimeSymbolExpression*>(resolveWithExceptions(token, getScope()));
-	if ( !symbol ) {
+	DesigntimeSymbolExpression* lhs = dynamic_cast<DesigntimeSymbolExpression*>(resolveWithExceptions(token, getScope()));
+	if ( !lhs ) {
 		throw Common::Exceptions::InvalidSymbol("invalid symbol '" + token->content() + "'", token->position());
 	}
 
-	std::string type = symbol->getResultType();
-	PrototypeConstraints constraints = symbol->mConstraints;
+	std::string type = lhs->getResultType();
+	PrototypeConstraints constraints = lhs->mConstraints;
 
 	expect(Token::Type::IDENTIFIER, token);
 
@@ -1413,7 +1413,7 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 	// non-atomic types are references by default
 	AccessMode::E accessMode = Designtime::Parser::parseAccessMode(token, object->isAtomicType() ? AccessMode::ByValue : AccessMode::ByReference);
 
-	Expression* assignment = 0;
+	Expression* rhs = 0;
 
 	if ( token->type() == Token::Type::ASSIGN ) {
 		if ( initialization != Initialization::Allowed ) {
@@ -1424,27 +1424,27 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 		Token copy = (*token);
 		++token;
 
-		assignment = dynamic_cast<Expression*>(expression(token));
+		rhs = dynamic_cast<Expression*>(expression(token));
 
 /*
 		if ( accessMode == AccessMode::ByReference &&
-			static_cast<Expression*>(assignment)->getExpressionType() != Expression::ExpressionType::NewExpression ) {
+			static_cast<Expression*>(rhs)->getExpressionType() != Expression::ExpressionType::NewExpression ) {
 			throw Runtime::Exceptions::InvalidAssignment("reference type expected", token->position());
 		}
 		else if ( accessMode == AccessMode::ByValue &&
-			static_cast<Expression*>(assignment)->getExpressionType() == Expression::ExpressionType::NewExpression ) {
+			static_cast<Expression*>(rhs)->getExpressionType() == Expression::ExpressionType::NewExpression ) {
 			throw Runtime::Exceptions::InvalidAssignment("value type expected", token->position());
 		}
 */
 
 /*
 		// TODO: assignment of const objects to non-const objects should not be allowed
-		if ( (assignment->isConst() && assignment->isReference()) && (!symbol->isConst() && symbol->isReference()) ) {
-			throw Common::Exceptions::ConstCorrectnessViolated("assignment of const expression to non-const symbol '" + name + "' not allowed", token->position());
+		if ( (!lhs->isConst() && lhs->isReference()) && (rhs->isConst() && rhs->isReference()) ) {
+			throw Common::Exceptions::ConstCorrectnessViolated("rhs of const expression to non-const symbol '" + name + "' not allowed", token->position());
 		}
 */
 
-		mTypeSystem->getType(object->QualifiedTypename(), copy, assignment->getResultType());
+		mTypeSystem->getType(object->QualifiedTypename(), copy, rhs->getResultType());
 	}
 	else if ( initialization == Initialization::Required ) {
 		// initialization is required (probably because type inference is used) but no initialization sequence found
@@ -1458,9 +1458,9 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 	}
 
 	// delete resolved symbol expression as it is not needed any more
-	delete symbol;
+	delete lhs;
 
-	return new TypeDeclaration(start, type, constraints, name, mutability == Mutability::Const, accessMode == AccessMode::ByReference, assignment);
+	return new TypeDeclaration(start, type, constraints, name, mutability == Mutability::Const, accessMode == AccessMode::ByReference, rhs);
 }
 
 /*

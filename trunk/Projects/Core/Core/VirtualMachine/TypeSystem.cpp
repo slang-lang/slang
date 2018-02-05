@@ -74,7 +74,6 @@ std::string TypeSystem::getType(const std::string& left, const Token& operation,
 		throw Common::Exceptions::UnknownIdentifer("unknown type '" + left + "' detected during type check", operation.position());
 	}
 	if ( !mTypeMap[left].contains(operation.type()) ) {
-		//throw Common::Exceptions::UnknownOperation(left + " " + operation.content() + " " + right, operation.position());
 		throw Common::Exceptions::UnknownOperation("unknown operation " + operation.content() + " detected for type '" + left + "' during type check", operation.position());
 	}
 	if ( !mTypeMap[left][operation.type()].contains(right) ) {
