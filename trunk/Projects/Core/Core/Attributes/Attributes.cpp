@@ -17,7 +17,7 @@ GenericAttributes::GenericAttributes()
 : mIsSealed(false),
   mLanguageFeatureState(LanguageFeatureState::Stable),
   mMemoryLayout(MemoryLayout::Instance),
-  mMutability(Mutability::Const)
+  mMutability(Mutability::Modify)
 {
 }
 
