@@ -45,6 +45,21 @@ public:
 };
 
 
+class BluePrintType
+{
+public:
+	enum E {
+		Unknown = 0,
+		Enum,
+		Interface,
+		Object
+	};
+
+	static E convert(const std::string& v);
+	static std::string convert(E e);
+};
+
+
 class CheckedExceptions
 {
 public:
@@ -111,21 +126,6 @@ public:
 		Unknown = 0,
 		Const,
 		Modify
-	};
-
-	static E convert(const std::string& v);
-	static std::string convert(E e);
-};
-
-
-class ObjectType
-{
-public:
-	enum E {
-		Unknown = 0,
-		Enum,
-		Interface,
-		Object
 	};
 
 	static E convert(const std::string& v);

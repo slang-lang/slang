@@ -51,12 +51,12 @@ public:
 	static bool isObjectDeclaration(TokenIterator token);
 
 	static AccessMode::E parseAccessMode(TokenIterator& token, AccessMode::E defaultValue);
+	static BluePrintType::E parseBluePrintType(TokenIterator &token);
 	static CheckedExceptions::E parseExceptions(TokenIterator& token, CheckedExceptions::E defaultValue = CheckedExceptions::Nothrow);
 	static ImplementationType::E parseImplementationType(TokenIterator& token, ImplementationType::E defaultValue);
 	static LanguageFeatureState::E parseLanguageFeatureState(TokenIterator& token, LanguageFeatureState::E defaultValue);
 	static MemoryLayout::E parseMemoryLayout(TokenIterator& token, MemoryLayout::E defaultValue = MemoryLayout::Instance);
 	static Mutability::E parseMutability(TokenIterator& token, Mutability::E defaultValue = Mutability::Modify);
-	static ObjectType::E parseObjectType(TokenIterator& token);
 	static ParameterList parseParameters(TokenIterator &token, IScope* scope = 0);
 	static Common::TypeDeclaration parseTypeDeclaration(TokenIterator& token, IScope* scope = 0);
 	static Runtime::AtomicValue parseValueInitialization(TokenIterator& token);
