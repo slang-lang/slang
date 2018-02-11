@@ -513,6 +513,11 @@ AccessMode::E Parser::parseAccessMode(TokenIterator& token, AccessMode::E defaul
 	return result;
 }
 
+BluePrintType::E Parser::parseBluePrintType(TokenIterator &token)
+{
+	return BluePrintType::convert((*token++).content());
+}
+
 CheckedExceptions::E Parser::parseExceptions(TokenIterator& token, CheckedExceptions::E defaultValue)
 {
 	CheckedExceptions::E result = CheckedExceptions::convert((*token).content());
@@ -586,11 +591,6 @@ Mutability::E Parser::parseMutability(TokenIterator& token, Mutability::E defaul
 
 	// no mutability token found => return the default value without incrementing the token iterator
 	return defaultValue;
-}
-
-ObjectType::E Parser::parseObjectType(TokenIterator& token)
-{
-	return ObjectType::convert((*token++).content());
 }
 
 ParameterList Parser::parseParameters(TokenIterator &token, IScope* scope)

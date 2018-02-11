@@ -53,6 +53,28 @@ std::string Algorithm::convert(Algorithm::E e)
 }
 
 
+BluePrintType::E BluePrintType::convert(const std::string& v)
+{
+	if ( v == RESERVED_WORD_ENUM ) { return BluePrintType::Enum; }
+	else if ( v == RESERVED_WORD_INTERFACE ) { return BluePrintType::Interface; }
+	else if ( v == RESERVED_WORD_OBJECT ) { return BluePrintType::Object; }
+
+	return BluePrintType::Unknown;
+}
+
+std::string BluePrintType::convert(BluePrintType::E e)
+{
+	switch ( e ) {
+		case BluePrintType::Enum: return RESERVED_WORD_ENUM;
+		case BluePrintType::Interface: return RESERVED_WORD_INTERFACE;
+		case BluePrintType::Object: return RESERVED_WORD_OBJECT;
+		case BluePrintType::Unknown: return UNKNOWN;
+	}
+
+	return UNKNOWN;
+}
+
+
 CheckedExceptions::E CheckedExceptions::convert(const std::string& v)
 {
 	if ( v == MODIFIER_NOTHROW ) { return CheckedExceptions::Nothrow; }
@@ -77,6 +99,7 @@ ImplementationType::E ImplementationType::convert(const std::string& v)
 {
 	if ( v == MODIFIER_ABSTRACT ) { return ImplementationType::Abstract; }
 	else if ( v == "FullyImplemented" ) { return ImplementationType::FullyImplemented; }
+	else if ( v == RESERVED_WORD_INTERFACE ) { return ImplementationType::Interface; }
 
 	return ImplementationType::Unspecified;
 }
@@ -153,28 +176,6 @@ std::string Mutability::convert(Mutability::E e)
 		case Mutability::Const: return MODIFIER_CONST;
 		case Mutability::Modify: return MODIFIER_MODIFY;
 		case Mutability::Unknown: return UNKNOWN;
-	}
-
-	return UNKNOWN;
-}
-
-
-ObjectType::E ObjectType::convert(const std::string& v)
-{
-	if ( v == RESERVED_WORD_ENUM ) { return ObjectType::Enum; }
-	else if ( v == RESERVED_WORD_INTERFACE ) { return ObjectType::Interface; }
-	else if ( v == RESERVED_WORD_OBJECT ) { return ObjectType::Object; }
-
-	return ObjectType::Unknown;
-}
-
-std::string ObjectType::convert(ObjectType::E e)
-{
-	switch ( e ) {
-		case ObjectType::Enum: return RESERVED_WORD_ENUM;
-		case ObjectType::Interface: return RESERVED_WORD_INTERFACE;
-		case ObjectType::Object: return RESERVED_WORD_OBJECT;
-		case ObjectType::Unknown: return UNKNOWN;
 	}
 
 	return UNKNOWN;
