@@ -88,6 +88,8 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 	Script *script = new Script();
 	mScripts.insert(script);
 
+	Controller::Instance().phase(Controller::Phase::Generation);
+
 	Designtime::Analyser analyser;
 	analyser.processString(content, mScriptFile);
 
@@ -122,7 +124,9 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 		throw Common::Exceptions::Exception(Utils::Tools::toString(errors) + " error(s) during AST generation detected!");
 	}
 
-#	ifdef USE_AST_OPTIMIZATION
+#ifdef USE_AST_OPTIMIZATION
+
+	Controller::Instance().phase(Controller::Phase::Optimization);
 
 	AST::TreeOptimizer optimizer;
 	optimizer.process(globalScope);
@@ -134,6 +138,9 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 
 		throw Runtime::ControlFlow::ExitProgram;
 	}
+
+
+	Controller::Instance().phase(Controller::Phase::Execution);
 
 	// Startup
 	Common::Method* main = dynamic_cast<Common::Method*>(globalScope->resolveMethod("Main", params, false));

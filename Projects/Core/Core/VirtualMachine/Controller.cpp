@@ -13,8 +13,8 @@ namespace ObjectiveScript {
 
 
 Controller::Controller()
-: mInitialized(false),
-  mMemory(0),
+: mMemory(0),
+  mPhase(Phase::Preparation),
   mRepository(0),
   mStack(0),
   mThreads(0),
@@ -35,7 +35,7 @@ Controller& Controller::Instance()
 
 void Controller::deinit()
 {
-	assert(mInitialized);
+	assert(mPhase > Phase::Preparation);
 
 	mStack->deinit();
 	mThreads->deinit();
@@ -49,12 +49,12 @@ void Controller::deinit()
 	delete mRepository;
 	delete mTypeSystem;
 
-	mInitialized = false;
+	mPhase = Phase::Shutdown;
 }
 
 void Controller::init()
 {
-	assert(!mInitialized);
+	assert(mPhase == Phase::Preparation || mPhase == Phase::Shutdown);
 
 	mMemory = new Memory();
 	mRepository = new Repository();
@@ -68,17 +68,24 @@ void Controller::init()
 	mRepository->init();
 	mThreads->init();
 
-	mInitialized = true;
-}
-
-bool Controller::isInitialized() const
-{
-	return mInitialized;
+	mPhase = Phase::Generation;
 }
 
 Memory* Controller::memory() const
 {
 	return mMemory;
+}
+
+Controller::Phase::E Controller::phase() const
+{
+	return mPhase;
+}
+
+void Controller::phase(Controller::Phase::E value)
+{
+	//assert(mPhase < value);
+
+	mPhase = value;
 }
 
 Repository* Controller::repository() const
