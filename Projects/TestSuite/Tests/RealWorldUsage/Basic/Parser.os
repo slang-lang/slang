@@ -11,6 +11,14 @@ import Scanner;
 
 
 public object Parser {
+	private string COMPARECHARS const = "<>=";
+	private string DELIMITERCHARS const;
+	private string OPERATORCHARS const = "+-*/";
+
+	public void Constructor() {
+		DELIMITERCHARS = COMPARECHARS + OPERATORCHARS;
+	}
+
 	public Map<int, Line> parseFile(string filename) modify {
 		Scanner scanner = new Scanner(new System.IO.File(filename, "r"), ascii(10));
 
@@ -85,7 +93,7 @@ public object Parser {
 				break;
 			}
 			case "IF": {
-				assert(!"IF-branch not implemented!");
+				result = parseIF(ci);
 				break;
 			}
 			case "INPUT": {
@@ -93,7 +101,7 @@ public object Parser {
 				break;
 			}
 			case "LET": {
-				assert(!"LET-branch not implemented!");
+				result = parseLET(ci);
 				break;
 			}
 			case "PRINT": {
@@ -129,12 +137,28 @@ public object Parser {
 		return Statement new GotoStatement(int parseWord(ci));
 	}
 
+	private Statement parseIF(CharacterIterator ci) throws {
+		if ( !ci.hasNext() ) {
+			throw new Exception("incomplete IF!");
+		}
+
+		throw "IF-branch not implemented!";
+	}
+
 	private Statement parseINPUT(CharacterIterator ci) throws {
 		if ( !ci.hasNext() ) {
 			throw new Exception("incomplete INPUT!");
 		}
 
 		return Statement new InputStatement(parseWord(ci));
+	}
+
+	private Statement parseLET(CharacterIterator ci) throws {
+		if ( !ci.hasNext() ) {
+			throw new Exception("incomplete IF!");
+		}
+
+		throw "LET-branch not implemented!";
 	}
 
 	private Statement parsePRINT(CharacterIterator ci) throws {
