@@ -3,11 +3,11 @@ import Iterator;
 
 public namespace System.Collections { }
 
-public interface IIterateable {
+public stable interface IIterateable {
 	public Iterator getIterator() const;
 }
 
-public interface IReverseIterateable {
+public stable interface IReverseIterateable {
 	public ReverseIterator getReverseIterator() const;
 }
 
