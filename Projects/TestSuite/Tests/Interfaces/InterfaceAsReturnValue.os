@@ -1,6 +1,6 @@
 #!/usr/local/bin/oscript
 
-private interface IInterface {
+private stable interface IInterface {
 	public bool IsInterface() const;
 }
 

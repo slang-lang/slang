@@ -1,6 +1,6 @@
 #!/usr/local/bin/oscript
 
-public interface IInterface {
+public stable interface IInterface {
 	public bool isAbstract() const;
 }
 
