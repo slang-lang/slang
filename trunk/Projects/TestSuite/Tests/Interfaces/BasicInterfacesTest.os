@@ -1,6 +1,6 @@
 #!/usr/local/bin/oscript
 
-public interface IGetBox {
+public stable interface IGetBox {
 	public int GetBox() const;
 }
 
@@ -10,7 +10,7 @@ public object Boxhouse implements IGetBox {
 	}
 }
 
-public interface IGetBoxType {
+public stable interface IGetBoxType {
 	public string GetBoxType(int boxId) const;
 }
 

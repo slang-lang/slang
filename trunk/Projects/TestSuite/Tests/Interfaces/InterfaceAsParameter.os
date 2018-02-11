@@ -2,7 +2,7 @@
 
 import System.Exception;
 
-public interface IWarehouse {
+public stable interface IWarehouse {
 	public void insert(Box box ref);
 	public bool isFull() const;
 	public void takeOut();
