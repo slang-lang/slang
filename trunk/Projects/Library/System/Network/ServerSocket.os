@@ -59,7 +59,7 @@ public object ServerSocket {
 	}
 
 	/*
-	 * Listens for a connection to be made to this socket and Accepts it.
+	 * Listens for a connection to be made to this socket and accepts it.
 	 * The method blocks until a connection is made.
 	 */
 	public int Accept() throws {
@@ -87,7 +87,7 @@ public object ServerSocket {
 
 		mEndpoint = endpoint;
 
-		return bind(mSocket, ISocketAddress mEndpoint);
+		return Bind();
 	}
 
 	/*

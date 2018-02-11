@@ -3,6 +3,8 @@
 
 import Assert;
 import Boolean;
+//import Character;
+import CharacterIterator;
 import Collections.All;
 import Double;
 import Exception;
@@ -12,4 +14,5 @@ import IO.All;
 import Math;
 import Network.All;
 import String;
+import StringIterator;
 
