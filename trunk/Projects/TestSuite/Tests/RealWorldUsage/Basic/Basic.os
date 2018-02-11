@@ -54,6 +54,9 @@ public int Main(int argc, string args) modify {
 	catch ( Exception e ) {
 		print(e.what());
 	}
+	catch ( string e ) {
+		print(e);
+	}
 	catch {
 		print("caught unknown exception!");
 	}
