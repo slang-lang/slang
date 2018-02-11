@@ -13,10 +13,6 @@ public object Exception implements IException {
 		_exception = ex;
 	}
 
-	public string =operator(string none) const {
-		return _exception;
-	}
-
 	public string what() const {
 		return _exception;
 	}
