@@ -2,7 +2,7 @@
 // declare 'System' namespace to prevent a user defined private 'System' namespace
 public namespace System { }
 
-public interface IException {
+public stable interface IException {
 	public string what() const;
 }
 
