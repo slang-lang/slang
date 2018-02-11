@@ -89,10 +89,12 @@ public object StringIterator {
 	/*
 	 * Change separator token (resets iterator to start)
 	 */
-	public void setSeparator(string separator) modify {
+	public void setSeparator(string separator, bool doReset = true) modify {
 		mSeparator = separator;
 
-		reset();
+		if ( doReset ) {
+			reset();
+		}
 	}
 
 	public string =operator(string none) const {
