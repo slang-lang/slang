@@ -107,9 +107,6 @@ bool Analyser::createBluePrint(TokenIterator& token)
 		throw Common::Exceptions::SyntaxError("objects can only be created within namespaces or objects", token->position());
 	}
 
-	PrototypeConstraints constraints;
-	TokenList tokens;
-
 	// look for an optional visibility token
 	Visibility::E visibility = Parser::parseVisibility(token, Visibility::Private);
 	// look for an optional language feature token
@@ -117,20 +114,20 @@ bool Analyser::createBluePrint(TokenIterator& token)
 	// look for an optional modifier token
 	ImplementationType::E implementationType = Parser::parseImplementationType(token, ImplementationType::FullyImplemented);
 	// look for the object token
-	ObjectType::E objectType = Parser::parseObjectType(token);
+	BluePrintType::E blueprintType = Parser::parseBluePrintType(token);
+	if ( blueprintType != BluePrintType::Object ) {
+		throw Common::Exceptions::SyntaxError("object expected", token->position());
+	}
 	// look for the identifier token
 	std::string name = (*token++).content();
-	// look for an optional modifier token
-	Mutability::E mutability = Mutability::Modify;
-
-	BluePrintObject* blueprint = new BluePrintObject(name, mFilename);
-
 	// collect prototype constraints (if present)
-	constraints = Parser::collectDesigntimePrototypeConstraints(token);
-	// collect mutability
-	mutability = Parser::parseMutability(token, Mutability::Modify);
+	PrototypeConstraints constraints = Parser::collectDesigntimePrototypeConstraints(token);
+	// look for an optional modifier token
+	Mutability::E mutability = Parser::parseMutability(token, Mutability::Modify);
 	// collect inheritance (if present)
 	Ancestors inheritance = Parser::collectInheritance(token);
+
+	TokenList tokens;
 
 	bool isImplemented = true;
 	if ( !inheritance.empty() ) {
@@ -144,6 +141,7 @@ bool Analyser::createBluePrint(TokenIterator& token)
 		tokens = Parser::collectScopeTokens(token);
 	}
 
+	BluePrintObject* blueprint = new BluePrintObject(name, mFilename);
 	bool extends = false;
 
 	// set up inheritance (if present)
@@ -155,29 +153,20 @@ bool Analyser::createBluePrint(TokenIterator& token)
 
 			blueprint->addInheritance((*it));
 		}
-	}
 
-	if ( objectType == ObjectType::Object && extends && mutability == Mutability::Const ) {
-		throw Common::Exceptions::ConstCorrectnessViolated("const object '" + getQualifiedTypename(name) + "' cannot extend objects or implement interfaces", token->position());
+		if ( blueprintType == BluePrintType::Object && mutability == Mutability::Const ) {
+			throw Common::Exceptions::ConstCorrectnessViolated("const object '" + getQualifiedTypename(name) + "' cannot extend objects or implement interfaces", token->position());
+		}
 	}
 
 	// in case this object has no inheritance set, we inherit from 'Object'
-	if ( objectType != ObjectType::Interface && !extends ) {
+	if ( isImplemented && !extends ) {
 		blueprint->addInheritance(Ancestor(Common::TypeDeclaration(_object), Ancestor::Type::Extends, Visibility::Public));
 	}
 
 	// validate mutability
 	if ( mutability != Mutability::Const && mutability != Mutability::Modify ) {
 		throw Common::Exceptions::SyntaxError("invalid mutability '" + Mutability::convert(mutability) + "' for " + getQualifiedTypename(name), token->position());
-	}
-
-	// determine implementation type
-	if ( objectType == ObjectType::Interface ) {
-		if ( mutability != Mutability::Modify ) {
-			throw Common::Exceptions::NotSupported("interface mutability has to be modifiable", token->position());
-		}
-
-		implementationType = ImplementationType::Interface;
 	}
 
 	blueprint->setPrototypeConstraints(constraints);
@@ -195,13 +184,11 @@ bool Analyser::createBluePrint(TokenIterator& token)
 
 	MethodScope* tmpScope = mScope;
 
-	mProcessingInterface = implementationType == ImplementationType::Interface;
 	mScope = blueprint;
 
 	generate(tokens);
 
 	mScope = tmpScope;
-	mProcessingInterface = false;
 
 	// create default constructor if blueprint has no constructor at all
 	if ( implementationType == ImplementationType::FullyImplemented && !blueprint->hasConstructor() ) {
@@ -238,8 +225,8 @@ bool Analyser::createEnum(TokenIterator& token)
 	LanguageFeatureState::E languageFeatureState = Parser::parseLanguageFeatureState(token, LanguageFeatureState::Stable);
 
 	// determine implementation type
-	ObjectType::E objectType = Parser::parseObjectType(token);
-	if ( objectType != ObjectType::Enum ) {
+	BluePrintType::E objectType = Parser::parseBluePrintType(token);
+	if ( objectType != BluePrintType::Enum ) {
 		throw Common::Exceptions::SyntaxError("enum type expected", token->position());
 	}
 
@@ -269,6 +256,79 @@ bool Analyser::createEnum(TokenIterator& token)
 	mRepository->addBluePrint(symbol);
 
 	return buildEnum(symbol, tokens);
+}
+
+bool Analyser::createInterface(TokenIterator& token)
+{
+	if ( mScope && (!dynamic_cast<Common::Namespace*>(mScope) && !dynamic_cast<BluePrintObject*>(mScope)) ) {
+		throw Common::Exceptions::SyntaxError("objects can only be created within namespaces or objects", token->position());
+	}
+
+	// look for an optional visibility token
+	Visibility::E visibility = Parser::parseVisibility(token, Visibility::Private);
+	// look for an optional language feature token, default is unstable
+	LanguageFeatureState::E languageFeatureState = Parser::parseLanguageFeatureState(token, LanguageFeatureState::Unstable);
+	// look for the object token, BluePrintType::Interface is required
+	BluePrintType::E blueprintType = Parser::parseBluePrintType(token);
+	if ( blueprintType != BluePrintType::Interface ) {
+		throw Common::Exceptions::SyntaxError("interface type expected", token->position());
+	}
+
+	// look for the identifier token
+	std::string name = (*token++).content();
+	// collect prototype constraints (if present)
+	PrototypeConstraints constraints = Parser::collectDesigntimePrototypeConstraints(token);
+	// look for an optional mutability token
+	Mutability::E mutability = Parser::parseMutability(token, Mutability::Modify);
+	if ( mutability != Mutability::Const && mutability != Mutability::Modify ) {
+		throw Common::Exceptions::SyntaxError("invalid mutability '" + Mutability::convert(mutability) + "' for " + getQualifiedTypename(name), token->position());
+	}
+
+	// collect inheritance (if present)
+	Ancestors inheritance = Parser::collectInheritance(token);
+
+	expect(Token::Type::BRACKET_CURLY_OPEN, token);
+
+	BluePrintObject* blueprint = new BluePrintObject(name, mFilename);
+
+	// set up inheritance (if present)
+	if ( !inheritance.empty() ) {
+		for ( Ancestors::const_iterator it = inheritance.begin(); it != inheritance.end(); ++it ) {
+			if ( it->ancestorType() != Ancestor::Type::Implements ) {
+				throw Common::Exceptions::NotSupported("Interfaces can only implement other interfaces", token->position());
+			}
+
+			blueprint->addInheritance((*it));
+		}
+	}
+
+	TokenList tokens = Parser::collectScopeTokens(token);
+
+	blueprint->setPrototypeConstraints(constraints);
+	blueprint->setImplementationType(ImplementationType::Interface);
+	blueprint->setIsReference(true);
+	blueprint->setLanguageFeatureState(languageFeatureState);
+	blueprint->setMutability(mutability);
+	blueprint->setParent(mScope);
+	blueprint->setQualifiedTypename(getQualifiedTypename(name));
+	blueprint->setTokens(tokens);
+	blueprint->setVisibility(visibility);
+
+	mScope->define(name, blueprint);
+
+	MethodScope* tmpScope = mScope;
+
+	mProcessingInterface = true;
+	mScope = blueprint;
+
+	generate(tokens);
+
+	mScope = tmpScope;
+	mProcessingInterface = false;
+
+	mRepository->addBluePrint(blueprint);
+
+	return blueprint != 0;
 }
 
 bool Analyser::createLibraryReference(TokenIterator& token)
@@ -320,6 +380,7 @@ bool Analyser::createMemberStub(TokenIterator& token, Visibility::E visibility, 
 {
 	assert( mScope->getScopeType() == IScope::IType::MethodScope );
 
+	// look for an optional mutability token
 	Mutability::E mutability = Parser::parseMutability(token, Mutability::Modify);
 	MemoryLayout::E memoryLayout = Parser::parseMemoryLayout(token, MemoryLayout::Instance);
 	AccessMode::E access = Parser::parseAccessMode(token, AccessMode::ByValue);
@@ -526,11 +587,14 @@ void Analyser::generate(const TokenList& tokens)
 	TokenList::const_iterator localEnd = tokens.end();
 
 	while ( token != localEnd && token->type() != Token::Type::ENDOFFILE ) {
-		if ( Parser::isInterfaceDeclaration(token) || Parser::isObjectDeclaration(token) ) {
+		if ( Parser::isObjectDeclaration(token) ) {
 			createBluePrint(token);
 		}
 		else if ( Parser::isEnumDeclaration(token) ) {
 			createEnum(token);
+		}
+		else if ( Parser::isInterfaceDeclaration(token) ) {
+			createInterface(token);
 		}
 		else if ( Parser::isLibraryReference(token) ) {
 			createLibraryReference(token);

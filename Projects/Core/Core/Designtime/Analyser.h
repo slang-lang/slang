@@ -46,6 +46,7 @@ private:
 
 	bool createBluePrint(TokenIterator& token);
 	bool createEnum(TokenIterator& token);
+	bool createInterface(TokenIterator& token);
 	bool createLibraryReference(TokenIterator& token);
 	bool createMemberOrMethod(TokenIterator& token);
 	bool createNamespace(TokenIterator& token);
