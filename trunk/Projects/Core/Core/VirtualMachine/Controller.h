@@ -30,12 +30,26 @@ public:
 // }
 
 public:
+	class Phase {
+	public:
+		enum E {
+			Preparation,
+			Generation,
+			Optimization,
+			Execution,
+			Shutdown
+		};
+	};
+
+public:
 	~Controller();
 
 public:
 	void deinit();
 	void init();
-	bool isInitialized() const;
+
+	Phase::E phase() const;
+	void phase(Phase::E value);
 
 public:
 	Memory* memory() const;
@@ -51,8 +65,8 @@ private:
 	void operator=(Controller const&)/* = delete*/;
 
 private:
-	bool mInitialized;
 	Memory* mMemory;
+	Phase::E mPhase;
 	Repository* mRepository;
 	Stack* mStack;
 	Threads* mThreads;
