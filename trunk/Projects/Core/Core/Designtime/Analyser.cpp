@@ -153,10 +153,10 @@ bool Analyser::createBluePrint(TokenIterator& token)
 
 			blueprint->addInheritance((*it));
 		}
+	}
 
-		if ( blueprintType == BluePrintType::Object && mutability == Mutability::Const ) {
-			throw Common::Exceptions::ConstCorrectnessViolated("const object '" + getQualifiedTypename(name) + "' cannot extend objects or implement interfaces", token->position());
-		}
+	if ( extends && mutability == Mutability::Const ) {
+		throw Common::Exceptions::ConstCorrectnessViolated("const object '" + getQualifiedTypename(name) + "' cannot extend objects or implement interfaces", token->position());
 	}
 
 	// in case this object has no inheritance set, we inherit from 'Object'

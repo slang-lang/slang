@@ -25,7 +25,7 @@ public object String implements IIterateable {
 	/*
 	 * Returns the character at the given position
 	 */
-	public string At(int index) const {
+	public string CharAt(int index) const {
 		return substr(mValue, index, 1);
 	}
 

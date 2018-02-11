@@ -16,6 +16,7 @@ public void Main(int argc = 0, string args = "") {
 	assert( TestCase10() );
 	assert( TestCase11() );
 	assert( TestCase12() );
+	assert( TestCase13() );
 }
 
 private bool TestCase1() const {
@@ -153,5 +154,14 @@ private bool TestCase12() const {
 	print("str[6] = " + str[6]);
 
 	return str[6] == "s";
+}
+
+private bool TestCase13() const {
+	print("TestCase 13: CharAt");
+
+	String str = new String("This is a string");
+	print("str.CharAt(6) = " + str.CharAt(6));
+
+	return str.CharAt(6) == "s";
 }
 
