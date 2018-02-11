@@ -87,17 +87,17 @@ public object GotoStatement extends Statement {
 
 public object IfStatement extends Statement {
 	public Expression mExpression;
-	public Statement mIfBlock;
+	public Statement mThenBlock;
 
-	public void Constructor(Expression exp, Statement ifBlock) {
+	public void Constructor(Expression exp, Statement thenBlock) {
 		base.Constructor(StatementType.IfStatement);
 
 		mExpression = exp;
-		mIfBlock = ifBlock;
+		mThenBlock = thenBlock;
 	}
 
 	public string toString() const {
-		return "IF " + mExpression.toString() + " THEN " + mIfBlock.toString();
+		return "IF " + mExpression.toString() + " THEN " + mThenBlock.toString();
 	}
 }
 

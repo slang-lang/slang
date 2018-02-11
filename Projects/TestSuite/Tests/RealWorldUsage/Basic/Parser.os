@@ -142,7 +142,7 @@ public object Parser {
 			throw new Exception("incomplete IF!");
 		}
 
-		throw "IF-branch not implemented!";
+		return Statement new IfStatement(expression(ci), parseStatement(ci));
 	}
 
 	private Statement parseINPUT(CharacterIterator ci) throws {
@@ -158,7 +158,16 @@ public object Parser {
 			throw new Exception("incomplete IF!");
 		}
 
-		throw "LET-branch not implemented!";
+		string variable = parseWord(ci);
+		print("variable = " + variable);
+
+		string word = parseWord(ci);
+		print("word = " + word);
+		if ( word != "=" ) {
+			throw "LET: syntax error: missing '='";
+		}
+
+		return Statement new LetStatement(variable, expression(ci));
 	}
 
 	private Statement parsePRINT(CharacterIterator ci) throws {
@@ -177,8 +186,20 @@ public object Parser {
 	private Statement parseREM(CharacterIterator ci) throws {
 		// ignore everything on this line
 		return Statement new RemStatement(parseLine(ci));
-		//return Statement new RemStatement();
 	}
+
+
+///////////////////////////////////////////////////////////
+// Expression parsing
+
+	private Expression expression(CharacterIterator ci) throws {
+		throw "expression() not implemented!";
+	}
+
+
+
+// Expression parsing
+///////////////////////////////////////////////////////////
 
 	private string parseLine(CharacterIterator ci) throws {
 		string line;
