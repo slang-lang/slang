@@ -87,7 +87,7 @@ public object Interpreter {
 
 		bool isValid = processBooleanExpression(stmt.mExpression);
 		if ( isValid ) {
-			return process(stmt.mIfBlock);
+			return process(stmt.mThenBlock);
 		}
 
 		return 0;
