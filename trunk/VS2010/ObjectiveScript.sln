@@ -18,6 +18,13 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "odebugger", "..\Projects\od
 		{13A4F4FC-06D3-441F-B235-320D9C145BFA} = {13A4F4FC-06D3-441F-B235-320D9C145BFA}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "odepend", "..\Projects\odepend\odepend.vcxproj", "{8B5344A5-0C74-497D-BCC6-618E078B9B64}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E4C9A60C-AA55-424F-8ABA-B82E60316724} = {E4C9A60C-AA55-424F-8ABA-B82E60316724}
+		{C6DB82E5-93BC-4A67-8D37-2FA7BEBDDF29} = {C6DB82E5-93BC-4A67-8D37-2FA7BEBDDF29}
+		{13A4F4FC-06D3-441F-B235-320D9C145BFA} = {13A4F4FC-06D3-441F-B235-320D9C145BFA}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -48,6 +55,10 @@ Global
 		{64729D9C-A0BA-4DBE-AC19-15FC85AFCB61}.Debug|Win32.Build.0 = Debug|Win32
 		{64729D9C-A0BA-4DBE-AC19-15FC85AFCB61}.Release|Win32.ActiveCfg = Release|Win32
 		{64729D9C-A0BA-4DBE-AC19-15FC85AFCB61}.Release|Win32.Build.0 = Release|Win32
+		{8B5344A5-0C74-497D-BCC6-618E078B9B64}.Debug|Win32.ActiveCfg = Debug|Win32
+		{8B5344A5-0C74-497D-BCC6-618E078B9B64}.Debug|Win32.Build.0 = Debug|Win32
+		{8B5344A5-0C74-497D-BCC6-618E078B9B64}.Release|Win32.ActiveCfg = Release|Win32
+		{8B5344A5-0C74-497D-BCC6-618E078B9B64}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
