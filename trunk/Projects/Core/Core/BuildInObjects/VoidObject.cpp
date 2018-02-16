@@ -19,21 +19,21 @@ std::string VoidObject::TYPENAME = "void";
 
 
 VoidObject::VoidObject()
-: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, AtomicValue(VALUE_NONE))
+: Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, AtomicValue())
 {
 	mIsAtomicType = true;
 	mIsConstructed = true;
 }
 
 VoidObject::VoidObject(const std::string& name)
-: Object(name, SYSTEM_LIBRARY, TYPENAME, AtomicValue(VALUE_NONE))
+: Object(name, SYSTEM_LIBRARY, TYPENAME, AtomicValue())
 {
 	mIsAtomicType = true;
 	mIsConstructed = true;
 }
 
 VoidObject::VoidObject(const Object& object)
-: Object(object.getName(), SYSTEM_LIBRARY, TYPENAME, AtomicValue(VALUE_NONE))
+: Object(object.getName(), SYSTEM_LIBRARY, TYPENAME, AtomicValue())
 {
 	mIsAtomicType = true;
 	mIsConstructed = true;

@@ -442,7 +442,6 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 	MemoryLayout::E memoryLayout = MemoryLayout::Instance;
 	MethodAttributes::MethodType::E methodType = MethodAttributes::MethodType::Function;
 	Mutability::E mutability = Mutability::Const;	// extreme const correctness: all methods are const by default (except constructors and destructors)
-	bool throws = false;
 	Virtuality::E virtuality = mProcessingInterface ? Virtuality::Abstract : Virtuality::Virtual;
 
 	BluePrintObject* blueprint = dynamic_cast<BluePrintObject*>(mScope);

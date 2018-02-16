@@ -150,7 +150,7 @@ ControlFlow::E Interpreter::execute(Common::Method* method, const ParameterList&
 		case LanguageFeatureState::Deprecated: OSwarn("method '" + method->getFullScopeName() + "' is marked as deprecated"); break;
 		case LanguageFeatureState::NotImplemented: OSerror("method '" + method->getFullScopeName() + "' is marked as not implemented"); throw Common::Exceptions::NotImplemented(method->getFullScopeName()); break;
 		case LanguageFeatureState::Stable: /* this is the normal language feature state, so there is no need to log anything here */ break;
-		case LanguageFeatureState::Unknown: OSerror("unknown language feature state set for method '" + method->getFullScopeName() + "'"); break;
+		case LanguageFeatureState::Unspecified: OSerror("unknown language feature state set for method '" + method->getFullScopeName() + "'"); break;
 		case LanguageFeatureState::Unstable: OSwarn("method '" + method->getFullScopeName() + "' is marked as unstable"); break;
 	}
 
