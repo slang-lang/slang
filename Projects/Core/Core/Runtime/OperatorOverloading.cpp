@@ -75,10 +75,12 @@ void operator_binary_assign(Object *base, Object *other, const Common::Position&
 
 		base->assign(tmp);
 	}
+/*
 	// special handling for enumeration values
-	else if ( base->isEnumerationValue() && other->isEnumerationValue() && base->QualifiedTypename() == other->QualifiedTypename() ) {
-		base->assign(*other);
+	else if ( base->isEnumerationValue() && other->isEnumerationValue() && source == target ) {
+		base->setValue(other->getValue().toInt());
 	}
+*/
 	// no atomic data type, so we have to look if our assign operator has been overwritten
 	else {
 		if ( !other->isValid() ) {	// special handling for null object
