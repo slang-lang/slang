@@ -12,6 +12,11 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Extensions", "..\Projects\Extensions\Extensions.vcxproj", "{E4C9A60C-AA55-424F-8ABA-B82E60316724}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "odebugger", "..\Projects\odebugger\odebugger.vcxproj", "{64729D9C-A0BA-4DBE-AC19-15FC85AFCB61}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E4C9A60C-AA55-424F-8ABA-B82E60316724} = {E4C9A60C-AA55-424F-8ABA-B82E60316724}
+		{C6DB82E5-93BC-4A67-8D37-2FA7BEBDDF29} = {C6DB82E5-93BC-4A67-8D37-2FA7BEBDDF29}
+		{13A4F4FC-06D3-441F-B235-320D9C145BFA} = {13A4F4FC-06D3-441F-B235-320D9C145BFA}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
