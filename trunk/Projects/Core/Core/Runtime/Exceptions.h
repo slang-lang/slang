@@ -18,6 +18,7 @@ namespace Runtime {
 namespace Exceptions {
 
 
+#ifdef _WIN32
 class RuntimeException : public ::ObjectiveScript::Common::Exceptions::Exception
 {
 public:
@@ -27,7 +28,17 @@ public:
 
 	virtual ~RuntimeException() { }
 };
+#else
+class RuntimeException : public ::ObjectiveScript::Common::Exceptions::Exception
+{
+public:
+	explicit RuntimeException(const std::string& text, const ObjectiveScript::Common::Position& position = ObjectiveScript::Common::Position()) noexcept
+	: ::ObjectiveScript::Common::Exceptions::Exception(text, position)
+	{ }
 
+	virtual ~RuntimeException() noexcept { }
+};
+#endif
 
 
 class AccessViolation : public RuntimeException

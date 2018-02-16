@@ -17,7 +17,17 @@ namespace ObjectiveScript {
 namespace Designtime {
 namespace Exceptions {
 
+#ifdef _WIN32
+class DesigntimeException : public ObjectiveScript::Common::Exceptions::Exception
+{
+public:
+	explicit DesigntimeException(const std::string& text, const Common::Position& position = Common::Position())
+	: Exception("DesigntimeException: " + text, position)
+	{ }
 
+	virtual ~DesigntimeException() { }
+};
+#else
 class DesigntimeException : public ObjectiveScript::Common::Exceptions::Exception
 {
 public:
@@ -27,8 +37,20 @@ public:
 
 	virtual ~DesigntimeException() noexcept { }
 };
+#endif
 
 
+#ifdef _WIN32
+class LawOfDemeterViolated : public DesigntimeException
+{
+public:
+	explicit LawOfDemeterViolated(const std::string& text, const Common::Position& position = Common::Position())
+	: DesigntimeException("LawOfDemeterViolatedException: " + text, position)
+	{ }
+
+	virtual ~LawOfDemeterViolated() { }
+};
+#else
 class LawOfDemeterViolated : public DesigntimeException
 {
 public:
@@ -38,6 +60,7 @@ public:
 
 	virtual ~LawOfDemeterViolated() noexcept { }
 };
+#endif
 
 
 }

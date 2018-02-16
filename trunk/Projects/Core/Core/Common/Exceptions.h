@@ -23,6 +23,7 @@ namespace Exceptions {
 class Exception : public std::exception
 {
 public:
+#ifdef _WIN32
 	explicit Exception(const std::string& text, const Position& position = Position())
 	: mMessage(text),
 	  mPosition(position)
@@ -31,7 +32,18 @@ public:
 			mMessage += " in " + mPosition.toString();
 		}
 	}
-	virtual ~Exception() noexcept override { }
+	virtual ~Exception() { }
+#else
+	explicit Exception(const std::string& text, const Position& position = Position()) noexcept
+	: mMessage(text),
+	  mPosition(position)
+	{
+		if ( !mPosition.toString().empty() ) {
+			mMessage += " in " + mPosition.toString();
+		}
+	}
+	virtual ~Exception() noexcept { }
+#endif
 
 public:
 #ifdef _WIN32
