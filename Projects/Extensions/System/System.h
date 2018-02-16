@@ -7,6 +7,8 @@
 #include <array>
 #include <stdexcept>
 #ifdef _WIN32
+#	include <stdio.h>
+#	include <stdlib.h>
 #else
 #	include <termios.h>
 #	include <stdlib.h>
@@ -45,7 +47,7 @@ public:
 	: ExtensionMethod(0, "system", Designtime::StringObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("command", Designtime::StringObject::TYPENAME, VALUE_NONE, true));
+		params.push_back(Parameter::CreateDesigntime("command", Designtime::StringObject::TYPENAME, Runtime::AtomicValue(VALUE_NONE), true));
 
 		setSignature(params);
 	}
@@ -75,7 +77,11 @@ public:
 #else
 			std::string resultStr = "";
 
+#ifdef _WIN32
+			FILE* pipe = _popen(param_text.c_str(), "r");
+#else
 			FILE* pipe = popen(param_text.c_str(), "r");
+#endif
 			if ( !pipe ) {
 				throw std::runtime_error("popen() failed!");
 			}
@@ -90,10 +96,18 @@ public:
 				}
 			}
 			catch ( ... ) {
+#ifdef _WIN32
+				_pclose(pipe);
+#else
 				pclose(pipe);
+#endif
 				throw;
 			}
+#ifdef _WIN32
+			_pclose(pipe);
+#else
 			pclose(pipe);
+#endif
 #endif
 
 			*result = Runtime::StringObject(resultStr);

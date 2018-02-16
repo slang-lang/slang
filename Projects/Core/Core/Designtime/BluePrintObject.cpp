@@ -6,8 +6,8 @@
 
 // Project includes
 #include <Core/Common/Method.h>
+#include <Core/Designtime/Parser/Parser.h>
 #include <Core/VirtualMachine/Repository.h>
-#include <Parser/Parser.h>
 #include <Tools/Strings.h>
 
 // Namespace declarations
