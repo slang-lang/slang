@@ -5,7 +5,7 @@
 #include <set>
 #include <string>
 #include <stdlib.h>
-#ifdef WINDOWS
+#ifdef _WIN32
 #	include <direct.h>
 #	define GetCurrentDir _getcwd
 #else
