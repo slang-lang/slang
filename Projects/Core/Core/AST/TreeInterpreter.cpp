@@ -25,6 +25,7 @@
 #include <Core/VirtualMachine/Controller.h>
 #include <Debugger/Debugger.h>
 #include <Tools/Printer.h>
+#include <Utils.h>
 
 // Namespace declarations
 
@@ -586,44 +587,31 @@ void TreeInterpreter::initialize(IScope* scope, const ParameterList& params)
 {
 	// add parameters as locale variables
 	for ( ParameterList::const_iterator it = params.begin(); it != params.end(); ++it ) {
-		Runtime::Object* object = 0;
+		Runtime::Object* object = mRepository->createInstance(it->type(), it->name());
+
+		object->setMutability(it->mutability());
+		object->setValue(it->value());
 
 		switch ( it->access() ) {
 			case AccessMode::ByReference: {
-				object = mRepository->createInstance(it->type(), it->name());
-
 				object->setIsReference(true);
+
 				if ( it->reference().isValid() ) {
 					object->assign(*mMemory->get(it->reference()));
 				}
-
-				object->setMutability(it->mutability());
-
-				scope->define(it->name(), object);
 			} break;
 			case AccessMode::ByValue: {
-				object = mRepository->createInstance(it->type(), it->name());
+				object->setIsReference(false);
 
 				if ( it->reference().isValid() ) {
-#ifdef ALLOW_BY_VALUE_COPY
-					OSwarn("by value call for object in " + scope.ToString());
-
-					object->copy(*mMemory->get(it->reference()));
-#else
 					throw Common::Exceptions::NotSupported("by value calls not allowed for objects");
-#endif
 				}
-
-				object->setIsReference(false);
-				object->setMutability(it->mutability());
-				object->setValue(it->value());
-
-				scope->define(it->name(), object);
 			} break;
-			case AccessMode::Unspecified: {
+			case AccessMode::Unspecified:
 				throw Common::Exceptions::AccessMode("unspecified access mode");
-			} break;
 		}
+
+		scope->define(it->name(), object);
 	}
 
 	// record stack
