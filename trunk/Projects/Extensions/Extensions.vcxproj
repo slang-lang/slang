@@ -1,0 +1,256 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{E4C9A60C-AA55-424F-8ABA-B82E60316724}</ProjectGuid>
+    <RootNamespace>Extensions</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)\..\Projects\Libs\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)\..\Projects\Libs\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>.\;..\Core;..\Extensions;..\Externals;..\Utils;$(JSON);$(MYSQL)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <FloatingPointModel>Precise</FloatingPointModel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <ShowIncludes>false</ShowIncludes>
+      <UseFullPaths>true</UseFullPaths>
+      <OmitDefaultLibName>false</OmitDefaultLibName>
+    </ClCompile>
+    <Lib>
+      <AdditionalDependencies>$(JSON)\Libs\Json_debug.lib;$(MYSQL)\lib\libmysql.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(ProjectName).lib</OutputFile>
+      <AdditionalLibraryDirectories>..\Externals; ..\Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>Full</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>.\;..\Core;..\Externals;..\Utils;$(JSON);$(MYSQL)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <FloatingPointModel>Precise</FloatingPointModel>
+      <FloatingPointExceptions>false</FloatingPointExceptions>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <UseFullPaths>true</UseFullPaths>
+      <OmitDefaultLibName>true</OmitDefaultLibName>
+    </ClCompile>
+    <Lib>
+      <AdditionalDependencies>$(JSON)\Libs\Json.lib;$(MYSQL)\lib\libmysql.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\Externals; ..\Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="System\Math\Abs.h" />
+    <ClInclude Include="Apache\ApacheExtension.h" />
+    <ClInclude Include="System\AssertMsg.h" />
+    <ClInclude Include="System\Math\Ceil.h" />
+    <ClInclude Include="System\Console\Cerr.h" />
+    <ClInclude Include="System\Console\Cin.h" />
+    <ClInclude Include="System\Console\Console.h" />
+    <ClInclude Include="System\Console\Cout.h" />
+    <ClInclude Include="System\Strings\Defines.h" />
+    <ClInclude Include="System\IO\Defines.h" />
+    <ClInclude Include="System\Math\Defines.h" />
+    <ClInclude Include="System\Console\Defines.h" />
+    <ClInclude Include="Apache\Defs.h" />
+    <ClInclude Include="System\Console\Endl.h" />
+    <ClInclude Include="Extensions.h" />
+    <ClInclude Include="System\IO\FileClose.h" />
+    <ClInclude Include="System\IO\FileEOF.h" />
+    <ClInclude Include="System\IO\FileOpen.h" />
+    <ClInclude Include="System\IO\FileRead.h" />
+    <ClInclude Include="System\IO\FileSeek.h" />
+    <ClInclude Include="System\IO\FileTell.h" />
+    <ClInclude Include="System\IO\FileWrite.h" />
+    <ClInclude Include="System\Math\Floor.h" />
+    <ClInclude Include="JSON\FromJson.h" />
+    <ClInclude Include="Apache\Get.h" />
+    <ClInclude Include="System\GetChar.h" />
+    <ClInclude Include="System\GetEnv.h" />
+    <ClInclude Include="System\IO\IO.h" />
+    <ClInclude Include="Apache\IsSet.h" />
+    <ClInclude Include="JSON\JsonExtension.h" />
+    <ClInclude Include="System\Math\Math.h" />
+    <ClInclude Include="System\Math\MathExtension.h" />
+    <ClInclude Include="Mysql\MysqlAffectedRows.h" />
+    <ClInclude Include="Mysql\MysqlClose.h" />
+    <ClInclude Include="Mysql\MysqlDataSeek.h" />
+    <ClInclude Include="Mysql\MysqlErrno.h" />
+    <ClInclude Include="Mysql\MysqlError.h" />
+    <ClInclude Include="Mysql\MysqlExtension.h" />
+    <ClInclude Include="Mysql\MysqlFieldCount.h" />
+    <ClInclude Include="Mysql\MysqlFieldSeek.h" />
+    <ClInclude Include="Mysql\MysqlFieldTell.h" />
+    <ClInclude Include="Mysql\MysqlFreeResult.h" />
+    <ClInclude Include="Mysql\MysqlGetClientInfo.h" />
+    <ClInclude Include="Mysql\MysqlGetFieldName.h" />
+    <ClInclude Include="Mysql\MysqlGetFieldValue.h" />
+    <ClInclude Include="Mysql\MysqlInfo.h" />
+    <ClInclude Include="Mysql\MysqlInit.h" />
+    <ClInclude Include="Mysql\MysqlNextResult.h" />
+    <ClInclude Include="Mysql\MysqlNextRow.h" />
+    <ClInclude Include="Mysql\MysqlNumFields.h" />
+    <ClInclude Include="Mysql\MysqlNumRows.h" />
+    <ClInclude Include="Mysql\MysqlPing.h" />
+    <ClInclude Include="Mysql\MysqlQuery.h" />
+    <ClInclude Include="Mysql\MysqlRealConnect.h" />
+    <ClInclude Include="Mysql\MysqlRealEscapeString.h" />
+    <ClInclude Include="Mysql\MysqlRowCount.h" />
+    <ClInclude Include="Mysql\MysqlRowSeek.h" />
+    <ClInclude Include="Mysql\MysqlRowTell.h" />
+    <ClInclude Include="Mysql\MysqlSelectDB.h" />
+    <ClInclude Include="Mysql\MysqlStat.h" />
+    <ClInclude Include="Mysql\MysqlStoreResult.h" />
+    <ClInclude Include="Mysql\MysqlUseResult.h" />
+    <ClInclude Include="Apache\Post.h" />
+    <ClInclude Include="Apache\Pre.h" />
+    <ClInclude Include="System\Print.h" />
+    <ClInclude Include="System\Math\Rand.h" />
+    <ClInclude Include="System\Math\Round.h" />
+    <ClInclude Include="System\SetKeyboardBlockingMode.h" />
+    <ClInclude Include="System\Sleep.h" />
+    <ClInclude Include="System\Math\Sqrt.h" />
+    <ClInclude Include="System\Math\Srand.h" />
+    <ClInclude Include="System\StdTime.h" />
+    <ClInclude Include="System\Strings\StrFind.h" />
+    <ClInclude Include="System\Strings\StringsExtension.h" />
+    <ClInclude Include="System\Strings\StrLen.h" />
+    <ClInclude Include="System\Strings\StrLPad.h" />
+    <ClInclude Include="System\Strings\StrLTrim.h" />
+    <ClInclude Include="System\Strings\StrRPad.h" />
+    <ClInclude Include="System\Strings\StrRTrim.h" />
+    <ClInclude Include="System\Strings\StrTrim.h" />
+    <ClInclude Include="System\Strings\SubStr.h" />
+    <ClInclude Include="System\System.h" />
+    <ClInclude Include="System\SystemExtension.h" />
+    <ClInclude Include="JSON\ToJson.h" />
+    <ClInclude Include="System\Strings\ToLower.h" />
+    <ClInclude Include="System\Strings\ToUpper.h" />
+    <ClInclude Include="System\Math\Trunc.h" />
+    <ClInclude Include="Mysql\Types.h" />
+    <ClInclude Include="System\Write.h" />
+    <ClInclude Include="System\WriteLn.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Apache\ApacheExtension.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Apache\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Apache\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="System\Console\Console.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Extensions\System\Console\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Extensions\System\Console\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="System\Console\Defines.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Extensions\System\Console\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Extensions\System\Console\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="System\Math\Defines.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Extensions\System\Math\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Extensions\System\Math\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="System\Strings\Defines.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Extensions\System\Strings\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Extensions\System\Strings\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="System\IO\Defines.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Extensions\System\IO\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Extensions\System\IO\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Apache\Defs.cpp" />
+    <ClCompile Include="System\IO\IO.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Extensions\System\IO\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Extensions\System\IO\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="JSON\JsonExtension.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Json\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Json\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="System\Math\MathExtension.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Extensions\System\Math\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Extensions\System\Math\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Mysql\MysqlExtension.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Mysql\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Mysql\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="System\Strings\StringsExtension.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Extensions\System\Strings\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Extensions\System\Strings\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="System\System.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)System\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)System\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="System\SystemExtension.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)System\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)System\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Mysql\Types.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Core\Core.vcxproj">
+      <Project>{c6db82e5-93bc-4a67-8d37-2fa7bebddf29}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\Utils\Utils.vcxproj">
+      <Project>{13a4f4fc-06d3-441f-b235-320d9c145bfa}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
