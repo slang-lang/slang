@@ -26,6 +26,7 @@
 #include <Core/Designtime/BuildInTypes/VoidObject.h>
 #include <Core/Designtime/Parser/Parser.h>
 #include <Core/Tools.h>
+#include <Utils.h>
 #include "Controller.h"
 
 // Namespace declarations
@@ -145,7 +146,7 @@ Runtime::Object* Repository::createInstance(Designtime::BluePrintObject* bluepri
 		BluePrintObjectMap::iterator it = mBluePrintObjects.find(constraintType);
 		if ( it == mBluePrintObjects.end() ) {
 			// a not yet used prototype has been requested => construct the new type
-			blueprint = createBluePrintFromPrototype(dynamic_cast<Designtime::BluePrintObject*>(blueprint), constraints);
+			blueprint = createBluePrintFromPrototype(blueprint, constraints);
 		}
 		else {
 			blueprint = it->second;
@@ -161,6 +162,15 @@ Runtime::Object* Repository::createInstance(Designtime::BluePrintObject* bluepri
 
 		// TODO: verify me
 		//Controller::Instance().memory()->newObject(object);
+	}
+
+	if ( Controller::Instance().phase() == Controller::Phase::Generation ) {
+		switch ( object->getLanguageFeatureState() ) {
+			case LanguageFeatureState::Deprecated: OSwarn("Used type '" + object->QualifiedTypename() + "' is marked as deprecated"); break;
+			case LanguageFeatureState::NotImplemented: OSerror("Used type '" + object->QualifiedTypename() + "' is marked as not implemented"); break;
+			case LanguageFeatureState::Unstable: OSwarn("Used type '" + object->QualifiedTypename() + "' is marked as unstable"); break;
+			default: break;
+		}
 	}
 
 	return object;
@@ -474,9 +484,13 @@ void Repository::initializeObject(Designtime::BluePrintObject* srcObj, Runtime::
 		}
 
 		Designtime::BluePrintObject* blue = static_cast<Designtime::BluePrintObject*>(it->second);
+		if ( blue->isStatic() ) {
+			continue;
+		}
 
 		Runtime::Object *symbol = createInstance(blue->QualifiedTypename(), blue->getName(), blue->getPrototypeConstraints(), InitilizationType::None);
 		symbol->setBluePrint(blue);
+		symbol->setIsReference(blue->isEnumeration() ? false : blue->isReference());
 		symbol->setLanguageFeatureState(blue->getLanguageFeatureState());
 		symbol->setMember(blue->isMember());
 		symbol->setMutability(blue->getMutability());
@@ -492,6 +506,10 @@ void Repository::initializeObject(Designtime::BluePrintObject* srcObj, Runtime::
 	for ( MethodScope::MethodCollection::const_iterator it = methods.begin(); it != methods.end(); ++it ) {
 		// create new method and ...
 		Common::Method* method = new Common::Method(destObj, (*it)->getName(), (*it)->QualifiedTypename());
+		if ( method->isStatic() ) {
+			continue;
+		}
+
 		// ... copy its data from our template method
 		*method = *(*it);
 
