@@ -560,7 +560,7 @@ void LanguageTest::testThrow()
 {
 	try {
 		VirtualMachine vm;
-		TTHROWS(vm.createScriptFromFile("Tests/Language/ThrowTest.os"), Common::Exceptions::Exception);
+		TTHROWS(vm.createScriptFromFile("Tests/Language/ThrowTest.os"), Runtime::ControlFlow::E);
 
 		// automatic success
 	}

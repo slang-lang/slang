@@ -22,8 +22,8 @@ private bool TestCase2() {
 	try {
 		Character c = new Character("this is too long", true);
 	}
-	catch ( IException e ) {
-		print("e.what() = " + e.what());
+	catch ( InvalidLengthException e ) {
+		print("InvalidLengthException e.what() = " + e.what());
 		return true;
 	}
 
