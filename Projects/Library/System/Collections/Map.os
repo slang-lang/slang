@@ -1,10 +1,12 @@
 
-import System.Collections.CollectionItem;
-import System.Collections.ICollection;
-import System.Collections.Iterator;
 import System.Exception;
+import CollectionItem;
+import ICollection;
+import Iterator;
 import Pair;
 import Set;
+
+public namespace System.Collections { }
 
 public object Map<K, V> implements ICollection {
 	private Set<Object> mItems;		// a set of Pair<K, V>

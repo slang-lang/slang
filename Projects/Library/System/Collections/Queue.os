@@ -1,11 +1,11 @@
 
-import System.Collections.CollectionItem;
-import System.Collections.ICollection;
-import System.Collections.Iterator;
-import System.Collections.List;
 import System.Exception;
+import CollectionItem;
+import ICollection;
+import Iterator;
+import List;
 
-public namespace System.Collections.Generics { }
+public namespace System.Collections { }
 
 public object Queue<T> implements ICollection {
 	private List<T> mItems;
