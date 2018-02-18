@@ -282,8 +282,9 @@ void TreeGenerator::initialize(Common::Method* method)
 		scope->define(IDENTIFIER_THIS, mThis);
 	}
 
+	const ParameterList& params = mMethod->provideSignature();
 	// add parameters as locale variables
-	for ( ParameterList::const_iterator it = mMethod->provideSignature().begin(); it != mMethod->provideSignature().end(); ++it ) {
+	for ( ParameterList::const_iterator it = params.begin(); it != params.end(); ++it ) {
 		Runtime::Object* object = mRepository->createInstance(it->type(), it->name());
 		object->setIsReference(it->access() == AccessMode::ByReference);
 		object->setMutability(it->mutability());
@@ -569,7 +570,7 @@ Statement* TreeGenerator::process_assignment(TokenIterator& token, SymbolExpress
 
 	Token assignment(Token::Category::Assignment, Token::Type::ASSIGN, "=", op->position());
 
-	Expression* rhs = static_cast<Expression*>(expression(++token));
+	Expression* rhs = dynamic_cast<Expression*>(expression(++token));
 
 	if ( op->type() != Token::Type::ASSIGN ) {
 		Token operation;
@@ -774,14 +775,14 @@ Statement* TreeGenerator::process_foreach(TokenIterator& token)
 
 	Expression* loopExpression = dynamic_cast<Expression*>(parseExpression(token));
 	if ( loopExpression ) {
-/*	this has to be used as soon as 'this' is passed to methods as first parameter
+///*	this has to be used as soon as 'this' is passed to methods as first parameter
 		// check if this expression offers an iterator
-		Designtime::BluePrintObject* blueprint = mRepository->findBluePrint(loopExpression->getResultType());
+		Designtime::BluePrintObject* blueprint = mRepository->findBluePrintObject(loopExpression->getResultType());
 
 		if ( !blueprint || !blueprint->isIterable() ) {
 			throw Common::Exceptions::SyntaxError(loopExpression->getResultType() + " is not iterable", token->position());
 		}
-*/
+//*/
 	}
 
 	expect(Token::Type::PARENTHESIS_CLOSE, token);
@@ -989,11 +990,11 @@ MethodExpression* TreeGenerator::process_method(SymbolExpression* symbol, const 
 	for ( ExpressionList::const_iterator it = expressions.begin(); it != expressions.end(); ++it ) {
 		params.push_back(Parameter::CreateDesigntime(
 			ANONYMOUS_OBJECT,
-			static_cast<Expression*>((*it))->getResultType()
+			dynamic_cast<Expression*>((*it))->getResultType()
 		));
 	}
 
-	Common::Method* method = static_cast<Common::Method*>(resolveMethod(symbol, params, Visibility::Private));
+	Common::Method* method = dynamic_cast<Common::Method*>(resolveMethod(symbol, params, Visibility::Private));
 	if ( !method ) {
 		throw Common::Exceptions::UnknownIdentifer("method '" + symbol->toString() + "(" + toString(params) + ")' not found", token.position());
 	}
@@ -1106,7 +1107,7 @@ Statement* TreeGenerator::process_return(TokenIterator& token)
 
 	if ( token->type() != Token::Type::SEMICOLON ) {
 		exp = expression(token);
-		returnType = static_cast<Expression*>(exp)->getResultType();
+		returnType = dynamic_cast<Expression*>(exp)->getResultType();
 	}
 
 	if ( mMethod->QualifiedTypename() != returnType ) {
@@ -1428,11 +1429,11 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 
 /*
 		if ( accessMode == AccessMode::ByReference &&
-			static_cast<Expression*>(rhs)->getExpressionType() != Expression::ExpressionType::NewExpression ) {
+			dynamic_cast<Expression*>(rhs)->getExpressionType() != Expression::ExpressionType::NewExpression ) {
 			throw Runtime::Exceptions::InvalidAssignment("reference type expected", token->position());
 		}
 		else if ( accessMode == AccessMode::ByValue &&
-			static_cast<Expression*>(rhs)->getExpressionType() == Expression::ExpressionType::NewExpression ) {
+			dynamic_cast<Expression*>(rhs)->getExpressionType() == Expression::ExpressionType::NewExpression ) {
 			throw Runtime::Exceptions::InvalidAssignment("value type expected", token->position());
 		}
 */
@@ -1502,7 +1503,7 @@ TypeDeclaration* TreeGenerator::process_var(TokenIterator& token)
 	++token;
 
 	Node* assignment = expression(token);
-	std::string type = static_cast<Expression*>(assignment)->getResultType();
+	std::string type = dynamic_cast<Expression*>(assignment)->getResultType();
 
 	Runtime::Object* object = mRepository->createInstance(type, name, PrototypeConstraints(), Repository::InitilizationType::AllowAbstract);
 	object->setMutability(mutability);
@@ -1570,7 +1571,7 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 	// set scope & type according to symbol type
 	switch ( result->getSymbolType() ) {
 		case Symbol::IType::BluePrintObjectSymbol: {
-			type = static_cast<Designtime::BluePrintObject*>(result)->QualifiedTypename();
+			type = dynamic_cast<Designtime::BluePrintObject*>(result)->QualifiedTypename();
 
 			Designtime::BluePrintObject* blueprint = mRepository->findBluePrintObject(type);
 			if ( !blueprint ) {
@@ -1584,12 +1585,12 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 				);
 			}
 
-			scope = static_cast<Designtime::BluePrintObject*>(blueprint);
+			scope = blueprint;
 
 			symbol = new DesigntimeSymbolExpression(name, type, constraints);
 		} break;
 		case Symbol::IType::NamespaceSymbol: {
-			Common::Namespace* space = static_cast<Common::Namespace*>(result);
+			Common::Namespace* space = dynamic_cast<Common::Namespace*>(result);
 
 			scope = space;
 			type = space->QualifiedTypename();
@@ -1597,7 +1598,7 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 			symbol = new DesigntimeSymbolExpression(name, type, PrototypeConstraints());
 		} break;
 		case Symbol::IType::ObjectSymbol: {
-			Runtime::Object* object = static_cast<Runtime::Object*>(result);
+			Runtime::Object* object = dynamic_cast<Runtime::Object*>(result);
 
 /*	this does not work because it also is true for valid static fields
 			if ( dynamic_cast<Designtime::BluePrintObject*>(base) && !object->isMember() ) {

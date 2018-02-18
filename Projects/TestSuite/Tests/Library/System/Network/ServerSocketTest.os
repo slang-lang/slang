@@ -7,7 +7,7 @@ public void Main(int argc = 0, string args = "") {
 }
 
 private bool TestCase1() {
-	ServerSocket socket = new ServerSocket(33333);
+	var socket = new ServerSocket(33333);
 	assert( socket );
 
 	int result;
@@ -36,14 +36,29 @@ private bool TestCase1() {
 		return false;
 	}
 
-	int length = -1;
-	string value = socket.ReadString(connectfd, length);
-	print("value = " + value);
+
+	try {
 
 /*
-	result = socket.Close(connectfd);
-	print("close = " + result);
+	int length = -1;
+	string value = socket.ReadString(length);
+	print("value = " + value);
 */
+
+	while ( true ) {
+		int length = socket.ReadInt();
+
+		if ( length > 0 ) {
+			string data = socket.ReadString(length);
+			print("received: " + data);
+
+			continue;
+		}
+	}
+	}
+	catch ( IException e ) {
+		print("e.what() = " + e.what());
+	}
 
 	result = socket.Close();
 	print("close = " + result);
