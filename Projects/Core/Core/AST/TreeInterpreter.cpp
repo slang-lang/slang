@@ -891,8 +891,9 @@ void TreeInterpreter::visitFor(ForStatement* node)
 	// execute initialization statement
 	visitStatement(dynamic_cast<Statement*>(node->mInitialization));
 
-	Runtime::Object condition;
+	//pushScope();	// push new scope for loop variable
 
+	Runtime::Object condition;
 	for  ( ; ; ) {
 		if ( node->mCondition ) {
 			tryControl(evaluate(node->mCondition, &condition));		// evaluate loop condition
@@ -919,6 +920,8 @@ void TreeInterpreter::visitFor(ForStatement* node)
 		// execute arbitrary iteration node type
 		visit(node->mIteration);
 	}
+
+	//popScope();		// pop scope and remove loop variable
 }
 
 void TreeInterpreter::visitForeach(ForeachStatement* node)

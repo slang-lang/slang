@@ -31,6 +31,8 @@ public:
 
 private:	// Tests
 	void testSystemBoolean();
+	void testSystemCharacter();
+	void testSystemCharacterIterator();
 	void testSystemCollectionsDoubleLinkedList();
 	void testSystemCollectionsIterator();
 	void testSystemCollectionsList();
