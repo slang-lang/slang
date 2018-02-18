@@ -12,7 +12,7 @@ public object Character {
 	 */
 	public void Constructor(string value val = "", bool checkLength = false) throws {
 		if ( checkLength && strlen(value) != 1) {
-			throw new Exception("invalid input length(" + strlen(value) + ")");
+			throw new InvalidLengthException("invalid input length(" + strlen(value) + ")");
 		}
 
         // a character can only have a value of string(length: 1)

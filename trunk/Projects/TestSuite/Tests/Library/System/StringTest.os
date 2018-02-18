@@ -124,9 +124,10 @@ private bool TestCase10() const {
 	assert( it );
 
 	while ( it.hasNext() ) {
-		string next = it.next();
+		it.next();
 
-		print("it.next() = " + next);
+		print("it.current() = '" + it.current() + "'");
+
 	}
 
 	return true;
@@ -139,7 +140,7 @@ private bool TestCase11() const {
 
 	int count = 0;
 	foreach ( string s : str ) {
-		print("str(" + count + ") = " + s);
+		print("str(" + count + ") = '" + s + "'");
 
 		count++;
 	}
