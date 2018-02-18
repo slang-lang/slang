@@ -152,18 +152,7 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 
 	Runtime::ControlFlow::E controlflow = thread->execute(main, params, result);
 	if ( controlflow == Runtime::ControlFlow::Throw ) {
-		Runtime::ExceptionData data = Controller::Instance().stack()->exception();
-		std::string text;
-
-		if ( data.getData() ) {
-			text += "Exception raised in " + data.getPosition().toString() + ":\n";
-			text += data.getData()->getValue().toStdString();
-		}
-		else {
-			text += "Anonymous exception raised";
-		}
-
-		throw Common::Exceptions::Exception(text);
+		throw Runtime::ControlFlow::Throw;
 	}
 
 	return script;

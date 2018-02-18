@@ -2,7 +2,7 @@
 
 import System.CharacterIterator;
 
-public void Main(int argc, string args) {
+public void Main(int argc = 0, string args = "") {
 	assert( TestCase1() );
 	assert( TestCase2() );
 }
@@ -10,49 +10,43 @@ public void Main(int argc, string args) {
 private bool TestCase1() {
 	print("TestCase 1: iterate");
 
-	int count;
 	string source = "This is a string";
 	string target;
 
 	CharacterIterator it = new CharacterIterator(source);
 
 	while ( it.hasNext() ) {
-		count++;
+		it.next();
 
 		string c = it.current();
 		target += c;
 
 		write(c);
-
-		it.next();
 	}
-	writeln("");
+	writeln();
 
-	//print("'" + source + "' == '" + target + "'");
+	print("'" + source + "' == '" + target + "'");
 
-	assert(count == strlen(source));
 	return source == target;
 }
 
 private bool TestCase2() {
-	print("TestCase 2: for loop");
+	print("TestCase 2: for-loop");
 
-	int count;
 	string source = "This is a string";
 	string target;
 
-	for ( CharacterIterator it = new CharacterIterator(source); it.hasNext(); it++ ) {
-		count++;
+	for ( CharacterIterator it = new CharacterIterator(source); it.hasNext(); ) {
+		it.next();
 
 		target += it.current();
 
 		write(it.current());
 	}
-	writeln("");
+	writeln();
 
-	//print("'" + source + "' == '" + target + "'");
+	print("'" + source + "' == '" + target + "'");
 
-	assert( count == strlen(source) );
 	return source == target;
 }
 

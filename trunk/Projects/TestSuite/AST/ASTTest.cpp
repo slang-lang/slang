@@ -398,7 +398,7 @@ void ASTTest::testThrow()
 {
 	try {
 		VirtualMachine vm;
-		TTHROWS(vm.createScriptFromFile("Tests/AST/ThrowTest.os"), Common::Exceptions::Exception);
+		TTHROWS(vm.createScriptFromFile("Tests/AST/ThrowTest.os"), Runtime::ControlFlow::E);
 
 		// automatic success
 	}

@@ -36,6 +36,8 @@ LibraryTest::LibraryTest(const ::Utils::Common::ILogger *p)
 void LibraryTest::process()
 {
 	TEST(testSystemBoolean);
+	TEST(testSystemCharacter);
+	TEST(testSystemCharacterIterator);
 	TEST(testSystemCollectionsDoubleLinkedList);
 	TEST(testSystemCollectionsIterator);
 	TEST(testSystemCollectionsList);
@@ -67,6 +69,40 @@ void LibraryTest::testSystemBoolean()
 	try {
 		VirtualMachine vm;
 		vm.createScriptFromFile("Tests/Library/System/BooleanTest.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed
+		TFAIL(e.what());
+	}
+}
+
+void LibraryTest::testSystemCharacter()
+{
+	try {
+		VirtualMachine vm;
+#ifdef USE_SYSTEM_EXTENSION
+		vm.addExtension(new ObjectiveScript::Extensions::System::SystemExtension());
+#endif
+		vm.createScriptFromFile("Tests/Library/System/CharacterTest.os");
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed
+		TFAIL(e.what());
+	}
+}
+
+void LibraryTest::testSystemCharacterIterator()
+{
+	try {
+		VirtualMachine vm;
+#ifdef USE_SYSTEM_EXTENSION
+		vm.addExtension(new ObjectiveScript::Extensions::System::SystemExtension());
+#endif
+		vm.createScriptFromFile("Tests/Library/System/CharacterIteratorTest.os");
 
 		// automatic success
 	}

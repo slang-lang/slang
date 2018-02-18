@@ -6,6 +6,7 @@
 // Project includes
 #include <Common/StdOutLogger.h>
 #include <Core/Defines.h>
+#include <Core/Runtime/ControlFlow.h>
 #include <Core/VirtualMachine/Controller.h>
 #include <Tools/Printer.h>
 #include <Tools/Strings.h>
@@ -188,6 +189,13 @@ int main(int argc, const char* argv[])
 				  << std::endl;
 
 		mFixtures.clear();
+	}
+	catch ( ObjectiveScript::Runtime::ControlFlow::E &e ) {
+		if ( e != ObjectiveScript::Runtime::ControlFlow::ExitProgram ) {
+			OSerror("abnormal program termination!");
+
+			ObjectiveScript::Controller::Instance().stack()->print();
+		}
 	}
 	catch ( std::exception& e ) {	// catch every std::exception and all derived exception types
 		OSerror(e.what());

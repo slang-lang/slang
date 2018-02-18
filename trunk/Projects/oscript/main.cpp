@@ -193,6 +193,8 @@ int main(int argc, const char* argv[])
 	}
 	catch ( std::exception &e ) {	// catch every std::exception and all derived exception types
 		OSerror(e.what());
+
+		ObjectiveScript::Controller::Instance().stack()->print();
 	}
 	catch ( ... ) {	// catch everything
 		std::cout << "uncaught exception detected!" << std::endl;
