@@ -2,6 +2,8 @@
 import System.Exception;
 import System.Network.Socket;
 
+public namespace System.Network { }
+
 public object ServerSocket {
 	/*
 	 * Public constants
@@ -20,6 +22,8 @@ public object ServerSocket {
 	 */
 	public void Constructor() {
 		mQueueLength = DEFAULT_QUEUE_LENGTH;
+
+		Init();
 	}
 
 	/*
@@ -116,8 +120,12 @@ public object ServerSocket {
 	    return listen(mSocket, mQueueLength);
 	}
 
-	public string ReadString(int socket, int length = -1) {
-	    return reads(socket, length);
+	public int ReadInt() {
+		return readi(mSocket);
+	}
+
+	public string ReadString(int length = -1) {
+	    return reads(mSocket, length);
 	}
 }
 

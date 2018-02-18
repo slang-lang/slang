@@ -1,4 +1,6 @@
 
+public namespace System.Network { }
+
 public interface ISocketAddress {
 	// this is empty by intend
 }
