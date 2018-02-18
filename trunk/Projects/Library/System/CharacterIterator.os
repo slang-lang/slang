@@ -2,7 +2,7 @@
 import System.Collections.Iterator;
 
 public object CharacterIterator implements Iterator {
-	private int mCurrentPos;
+	private int mCurrentIndex;
 	private int mLength;
 	private string mValue;
 
@@ -15,33 +15,42 @@ public object CharacterIterator implements Iterator {
 			throw new Exception("invalid iteration string");
 		}
 
-		return substr(mValue, mCurrentPos, 1);
+		return substr(mValue, mCurrentIndex, 1);
 	}
 
 	public bool hasNext() const {
-		return mCurrentPos < mLength;
+		return mCurrentIndex < mLength;
 	}
 
-	public void next() modify throws {
-		if ( mCurrentPos >= mLength ) {
-			throw new OutOfBoundsException("index(" + mCurrentPos + ") out of bounds");
+	public string next() modify throws {
+		if ( mCurrentIndex >= mLength ) {
+			throw new OutOfBoundsException("index(" + mCurrentIndex + ") out of bounds");
 		}
 
-		mCurrentPos++;
+		mCurrentIndex++;
+		return substr(mValue, mCurrentIndex, 1);
 	}
 
 	public void reset(string value = "") modify {
-		mCurrentPos = 0;
+		mCurrentIndex = -1;
 		mLength = strlen(value);
 		mValue = value;
 	}
 
-	public void operator++() modify throws {
-		if ( mCurrentPos >= mLength ) {
-			throw new OutOfBoundsException("index(" + mCurrentPos + ") out of bounds");
+	public string =operator(string none) const throws {
+		if ( !mValue ) {
+			throw new Exception("invalid iteration string");
 		}
 
-		mCurrentPos++;
+		return substr(mValue, mCurrentIndex, 1);
+	}
+
+	public void operator++() modify throws {
+		if ( mCurrentIndex >= mLength ) {
+			throw new OutOfBoundsException("index(" + mCurrentIndex + ") out of bounds");
+		}
+
+		mCurrentIndex++;
 	}
 }
 

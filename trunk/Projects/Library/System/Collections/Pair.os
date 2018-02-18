@@ -1,4 +1,6 @@
 
+public namespace System.Collections { }
+
 /*
  * Pair, prototype; A generic implementation of a tuple
  */

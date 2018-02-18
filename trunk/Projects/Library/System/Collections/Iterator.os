@@ -18,6 +18,9 @@ public object Iterator {
 		if ( !mCollection ) {
 			throw new Exception("current(): invalid iterator access");
 		}
+		if ( mCurrentIndex == -1 ) {
+			throw new Exception("iterator not initialized");
+		}
 
 		return mCollection.at(mCurrentIndex);
 	}
@@ -44,16 +47,16 @@ public object Iterator {
 		mCurrentIndex = -1;
 	}
 
+	public Object =operator(Object none ref) const throws {
+		return current();
+	}
+
 	public void operator++() modify throws {
 		if ( !hasNext() ) {
 			throw new OutOfBoundsException("operator++(): index out of bounds");
 		}
 
 		mCurrentIndex++;		
-	}
-
-	public Object =operator(Object none ref) const {
-		return current();
 	}
 }
 
@@ -70,6 +73,9 @@ public object ReverseIterator {
 	public Object current() const throws {
 		if ( !mCollection ) {
 			throw new Exception("current(): invalid iterator access");
+		}
+		if ( mCurrentIndex == mCollection.size() ) {
+			throw new Exception("iterator not initialized");
 		}
 
 		return mCollection.at(mCurrentIndex);
@@ -97,16 +103,16 @@ public object ReverseIterator {
 		mCurrentIndex = mCollection.size();
 	}
 
+	public Object =operator(Object none ref) const throws {
+		return current();
+	}
+
 	public void operator++() modify throws {
 		if ( !hasNext() ) {
 			throw new OutOfBoundsException("operator++(): index out of bounds");
 		}
 
 		mCurrentIndex--;		
-	}
-
-	public Object =operator(Object none ref) const {
-		return current();
 	}
 }
 

@@ -1,10 +1,10 @@
 
-import System.Collections.CollectionItem;
-import System.Collections.ICollection;
-import System.Collections.Iterator;
 import System.Exception;
+import CollectionItem;
+import ICollection;
+import Iterator;
 
-public namespace System.Collections.Generics { }
+public namespace System.Collections { }
 
 /*
  * Single linked list

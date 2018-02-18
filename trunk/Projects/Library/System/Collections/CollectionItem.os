@@ -1,5 +1,7 @@
 
 
+public namespace System.Collections { }
+
 /*
  * Double linked collection item
  */

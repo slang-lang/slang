@@ -6,6 +6,7 @@ public namespace System { }
 
 public object StringIterator {
 	private int mCurrentPosition;
+	private int mNextPosition;
 	private string mSeparator;
 	private String mValue;
 
@@ -13,81 +14,76 @@ public object StringIterator {
 	 * Standard constructor
 	 */
 	public void Constructor(String value, string separator = " ") {
-		mCurrentPosition = 0;
 		mSeparator = separator;
 		mValue = value;
+
+		reset();
 	}
 
 	/*
 	 * Secondary constructor
 	 */
 	public void Constructor(string value, string separator = " ") {
-		mCurrentPosition = 0;
 		mSeparator = separator;
 		mValue = new String(value);
+
+		reset();
 	}
 
 	/*
-	 * Copy constructor
+	 * returns the value of the current iteration
+	 * throws Exception
+	 * throws OutOfBoundsException
 	 */
-/*
-	public void Constructor(StringIterator si) {
-		mCurrentPosition = si.mCurrentPosition;
-		mSeparator = si.mSeparator;
-		mValue = new String(string si);
-	}
-*/
-
 	public string current() const throws {
-		if ( mCurrentPosition >= mValue.Length() ) {
+		if ( mCurrentPosition == -1 ) {
+			throw new Exception("iterator not initialized");
+		}
+		if ( mCurrentPosition >= mNextPosition ) {
 			throw new OutOfBoundsException("out of bounds");
 		}
 
-		int newPos = mValue.Find(mSeparator, mCurrentPosition);
-		if ( newPos > 0 ) {
-			return mValue.SubString(mCurrentPosition, newPos - mCurrentPosition);
-		}
-
-		return mValue.SubString(mCurrentPosition);
+		return mValue.SubString(mCurrentPosition, mNextPosition - mCurrentPosition);
 	}
 
 	/*
-	 * hasNext returns true if the iteration did not reach the end of the held String value
+	 * returns true if the iteration did not reach the end of the held String value
 	 */
 	public bool hasNext() const {
-		return mCurrentPosition < mValue.Length();
+		return mNextPosition < mValue.Length();
 	}
 
 	/*
-	 * next returns the next sub string of the held String value
+	 * returns the next sub string of the held String value
 	 * throws OutOfBoundsException
 	 */
 	public string next() modify throws {
-		if ( mCurrentPosition >= mValue.Length() ) {
+		if ( mNextPosition >= mValue.Length() ) {
 			throw new OutOfBoundsException("out of bounds");
 		}
 
-		int oldPos = mCurrentPosition;
-		int newPos = mValue.Find(mSeparator, oldPos);
+		mCurrentPosition = mNextPosition + strlen(mSeparator);
+		mNextPosition = mValue.Find(mSeparator, mCurrentPosition);
 
-		if ( newPos > 0 ) {
-			mCurrentPosition = newPos + strlen(mSeparator);
-			return mValue.SubString(oldPos, newPos - oldPos);
+		if ( mNextPosition > 0 ) {
+			return mValue.SubString(mCurrentPosition, mNextPosition - mCurrentPosition);
 		}
 
-		mCurrentPosition = mValue.Length();
-		return mValue.SubString(oldPos);
+		// set iteration to end of string
+		mNextPosition = mValue.Length();
+		return mValue.SubString(mCurrentPosition);
 	}
 
 	/*
 	 * resets the current iteration
 	 */
 	public void reset() modify {
-		mCurrentPosition = 0;
+		mCurrentPosition = -1;
+		mNextPosition = strlen(mSeparator) * -1;
 	}
 
 	/*
-	 * Change separator token (resets iterator to start)
+	 * changes the separator token (optionally resets iterator to start)
 	 */
 	public void setSeparator(string separator, bool doReset = true) modify {
 		mSeparator = separator;
@@ -97,10 +93,18 @@ public object StringIterator {
 		}
 	}
 
-	public string =operator(string none) const {
+	/*
+	 * returns the value of the current iteration
+	 * throws OutOfBoundsException
+	 */
+	public string =operator(string none) const throws {
 		return current();
 	}
 
+	/*
+	 * increments the iteration step
+	 * throws OutOfBoundsException
+	 */
 	public void operator++() modify throws {
 		next();
 	}
