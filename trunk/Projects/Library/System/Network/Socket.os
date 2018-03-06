@@ -1,7 +1,7 @@
 
 public namespace System.Network { }
 
-public interface ISocketAddress {
+public stable interface ISocketAddress {
 	// this is empty by intend
 }
 
