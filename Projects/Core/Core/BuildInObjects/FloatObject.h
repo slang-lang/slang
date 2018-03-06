@@ -65,9 +65,6 @@ public:	// Operators
 	void operator_unary_increment();
 	void operator_unary_minus();
 	void operator_unary_not();
-
-public: // Values
-	bool isValid() const;
 };
 
 

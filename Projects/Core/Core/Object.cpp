@@ -29,7 +29,6 @@ Object::Object()
   mBluePrint(0),
   mFilename(ANONYMOUS_OBJECT),
   mIsAtomicType(false),
-  mIsConstructed(false),
   mIsEnumerationValue(false),
   mIsReference(false),
   mQualifiedOuterface(ANONYMOUS_OBJECT),
@@ -45,7 +44,6 @@ Object::Object(const std::string& name, const std::string& filename, const std::
   mBluePrint(0),
   mFilename(filename),
   mIsAtomicType(false),
-  mIsConstructed(false),
   mIsEnumerationValue(false),
   mIsReference(false),
   mQualifiedOuterface(type),
@@ -71,7 +69,6 @@ Object& Object::operator= (const Object& other)
 		mImplementationType = other.mImplementationType;
 		mInheritance = other.mInheritance;
 		mIsAtomicType = other.mIsAtomicType;
-		mIsConstructed = other.mIsConstructed;
 		mIsEnumerationValue = other.mIsEnumerationValue;
 		mIsReference = other.mIsReference;
 		mMemoryLayout = other.mMemoryLayout;
@@ -103,7 +100,6 @@ void Object::assign(const Object& other)
 		mImplementationType = other.mImplementationType;
 		mInheritance = other.mInheritance;
 		mIsAtomicType = other.mIsAtomicType;
-		mIsConstructed = other.mIsConstructed;
 		mMemoryLayout = other.mMemoryLayout;
 		mParent = other.mParent ? other.mParent : mParent;
 		mScopeName = other.mScopeName;
@@ -197,9 +193,6 @@ ControlFlow::E Object::Constructor(const ParameterList& params)
 		throw Common::Exceptions::Exception(QualifiedTypename() + ": no appropriate constructor found");
 	}
 
-	// set after executing constructor in case any exceptions have been thrown
-	setConstructed(true);
-
 	return controlflow;
 }
 
@@ -211,7 +204,6 @@ void Object::copy(const Object& other)
 		mImplementationType = other.mImplementationType;
 		mInheritance = other.mInheritance;
 		mIsAtomicType = other.mIsAtomicType;
-		mIsConstructed = other.mIsConstructed;
 		mFilename = other.mFilename;
 		mParent = other.mParent ? other.mParent : mParent;
 		mQualifiedOuterface = other.mQualifiedTypename;
@@ -282,7 +274,7 @@ ControlFlow::E Object::Destructor()
 {
 	ControlFlow::E controlflow = ControlFlow::Normal;
 
-	if ( isConstructed() && !mIsAtomicType ) {
+	if ( !mIsAtomicType ) {
 		ParameterList params;
 
 		// only execute destructor if one is present
@@ -298,19 +290,11 @@ ControlFlow::E Object::Destructor()
 		}
 	}
 
-	// set after executing destructor in case any exceptions have been thrown
-	setConstructed(false);
-
 	return controlflow;
 }
 
 ControlFlow::E Object::execute(Object *result, const std::string& name, const ParameterList& params)
 {
-	if ( !isConstructed() ) {
-		// a method is being called although our object has not yet been constructed?
-		throw Runtime::Exceptions::NullPointerException("executed method '" + name + "' of uninitialized object '" + QualifiedTypename() + "'");
-	}
-
 	Common::Method *method = static_cast<Common::Method*>(resolveMethod(name, params, false, Visibility::Private));
 	if ( !method ) {
 		throw Common::Exceptions::UnknownIdentifer("unknown method '" + QualifiedTypename() + "." + name + "' or method with invalid parameter count called!");
@@ -379,15 +363,6 @@ bool Object::isAtomicType() const
 	return mIsAtomicType;
 }
 
-bool Object::isConstructed() const
-{
-	if ( mThis != this ) {
-		return mThis->isConstructed();
-	}
-
-	return mIsConstructed;
-}
-
 bool Object::isEnumerationValue() const
 {
 	return mIsEnumerationValue;
@@ -418,7 +393,7 @@ bool Object::isValid() const
 		return getValue().toBool();
 	}
 
-	return isConstructed();
+	return mReference.isValid();
 }
 
 void Object::operator_assign(const Object *other)
@@ -828,17 +803,7 @@ void Object::setBluePrint(Designtime::BluePrintObject* blueprint)
 	mBluePrint = blueprint;
 }
 
-void Object::setConstructed(bool state)
-{
-	if ( mThis != this ) {
-		mThis->setConstructed(state);
-		return;
-	}
-
-	mIsConstructed = state;
-}
-
-void Object::setIsReference(bool state)
+	void Object::setIsReference(bool state)
 {
 	mIsReference = state;
 }

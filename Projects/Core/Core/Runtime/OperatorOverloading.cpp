@@ -93,7 +93,7 @@ void operator_binary_assign(Object *base, Object *other, const Common::Position&
 			return;
 		}
 
-		if ( base->isConstructed() ) {
+		{
 			ParameterList params;
 			params.push_back(Parameter::CreateRuntime(other->QualifiedOuterface(), other->getValue(), other->getReference()));
 

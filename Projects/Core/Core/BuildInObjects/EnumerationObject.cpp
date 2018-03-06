@@ -30,7 +30,6 @@ EnumerationObject::EnumerationObject(const std::string& name, const std::string&
 : Object(name, SYSTEM_LIBRARY, TYPENAME, value)
 {
 	mIsAtomicType = true;
-	mIsConstructed = true;
 	mIsEnumerationValue = true;
 	mQualifiedOuterface = type;
 	mQualifiedTypename = type;
@@ -43,7 +42,7 @@ const std::string& EnumerationObject::getTypeName() const
 
 bool EnumerationObject::isValid() const
 {
-	return mIsConstructed;
+	return true;
 }
 
 void EnumerationObject::operator_assign(const EnumerationObject *other)

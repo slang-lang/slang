@@ -38,9 +38,6 @@ public:	// Operators
 	bool operator_equal(const Object *other);
 
 	void operator_unary_not();
-
-public: // Value
-	bool isValid() const;
 };
 
 

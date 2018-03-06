@@ -52,9 +52,6 @@ public:	// Operators
 
 	void operator_plus(const Object* other);
 	void operator_plus(const StringObject* other);
-
-public: // Value
-	bool isValid() const;
 };
 
 

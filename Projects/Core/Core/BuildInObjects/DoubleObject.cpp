@@ -27,14 +27,12 @@ DoubleObject::DoubleObject(const AtomicValue& value)
 : Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, AtomicValue(value.toDouble()))
 {
 	mIsAtomicType = true;
-	mIsConstructed = true;
 }
 
 DoubleObject::DoubleObject(const std::string& name, const AtomicValue& value)
 : Object(name, SYSTEM_LIBRARY, TYPENAME, value)
 {
 	mIsAtomicType = true;
-	mIsConstructed = true;
 }
 
 DoubleObject::DoubleObject(const Object& other)
@@ -43,7 +41,6 @@ DoubleObject::DoubleObject(const Object& other)
 	// generic type cast
 
 	mIsAtomicType = true;
-	mIsConstructed = true;
 
 	std::string source = other.QualifiedTypename();
 
@@ -57,11 +54,6 @@ DoubleObject::DoubleObject(const Object& other)
 	else {
 		Object::operator_assign(&other);
 	}
-}
-
-bool DoubleObject::isValid() const
-{
-	return mIsConstructed;
 }
 
 void DoubleObject::operator_assign(const DoubleObject *other)

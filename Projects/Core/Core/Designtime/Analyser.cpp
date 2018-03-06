@@ -71,7 +71,6 @@ bool Analyser::buildEnum(Designtime::BluePrintObject* symbol, const TokenList& t
 
 		// define enum entries as parent type
 		Runtime::Object* entry = mRepository->createInstance(symbol->QualifiedTypename(), name);
-		entry->setConstructed(true);
 		entry->setMember(true);
 		entry->setMemoryLayout(MemoryLayout::Static);
 		entry->setMutability(Mutability::Const);
