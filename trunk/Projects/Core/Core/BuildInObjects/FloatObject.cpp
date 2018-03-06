@@ -29,14 +29,12 @@ FloatObject::FloatObject(const AtomicValue& value)
 : Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, AtomicValue(value.toFloat()))
 {
 	mIsAtomicType = true;
-	mIsConstructed = true;
 }
 
 FloatObject::FloatObject(const std::string& name, const AtomicValue& value)
 : Object(name, SYSTEM_LIBRARY, TYPENAME, value)
 {
 	mIsAtomicType = true;
-	mIsConstructed = true;
 }
 
 FloatObject::FloatObject(const Object& other)
@@ -45,7 +43,6 @@ FloatObject::FloatObject(const Object& other)
 	// generic type cast
 
 	mIsAtomicType = true;
-	mIsConstructed = true;
 
 	std::string source = other.QualifiedTypename();
 
@@ -59,11 +56,6 @@ FloatObject::FloatObject(const Object& other)
 	else {
 		Object::operator_assign(&other);
 	}
-}
-
-bool FloatObject::isValid() const
-{
-	return mIsConstructed;
 }
 
 void FloatObject::operator_assign(const FloatObject *other)
@@ -88,7 +80,7 @@ void FloatObject::operator_assign(const Object *other)
 
 bool FloatObject::operator_bool() const
 {
-	return mValue.toFloat() != 0.f;
+	return mValue.toBool();
 }
 
 void FloatObject::operator_divide(const FloatObject *other)

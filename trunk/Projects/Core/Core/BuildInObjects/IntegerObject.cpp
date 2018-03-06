@@ -28,14 +28,12 @@ IntegerObject::IntegerObject(const AtomicValue& value)
 : Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, AtomicValue(value.toInt()))
 {
 	mIsAtomicType = true;
-	mIsConstructed = true;
 }
 
 IntegerObject::IntegerObject(const std::string& name, const AtomicValue& value)
 : Object(name, SYSTEM_LIBRARY, TYPENAME, value)
 {
 	mIsAtomicType = true;
-	mIsConstructed = true;
 }
 
 IntegerObject::IntegerObject(const Object& other)
@@ -44,7 +42,6 @@ IntegerObject::IntegerObject(const Object& other)
 	// generic type cast
 
 	mIsAtomicType = true;
-	mIsConstructed = true;
 
 	std::string target = other.QualifiedTypename();
 
@@ -63,11 +60,6 @@ IntegerObject::IntegerObject(const Object& other)
 const std::string& IntegerObject::getTypeName() const
 {
 	return TYPENAME;
-}
-
-bool IntegerObject::isValid() const
-{
-	return mIsConstructed;
 }
 
 void IntegerObject::operator_assign(const IntegerObject *other)
@@ -92,7 +84,7 @@ void IntegerObject::operator_assign(const Object *other)
 
 bool IntegerObject::operator_bool() const
 {
-	return mValue.toInt() != 0;
+	return mValue.toBool();
 }
 
 void IntegerObject::operator_bitand(const IntegerObject *other)

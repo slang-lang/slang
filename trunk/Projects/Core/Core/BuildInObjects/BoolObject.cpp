@@ -29,14 +29,12 @@ BoolObject::BoolObject(const AtomicValue& value)
 : Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, AtomicValue(value.toBool()))
 {
 	mIsAtomicType = true;
-	mIsConstructed = true;
 }
 
 BoolObject::BoolObject(const std::string& name, const AtomicValue& value)
 : Object(name, SYSTEM_LIBRARY, TYPENAME, value)
 {
 	mIsAtomicType = true;
-	mIsConstructed = true;
 }
 
 BoolObject::BoolObject(const Object& other)
@@ -45,7 +43,6 @@ BoolObject::BoolObject(const Object& other)
 	// generic type cast
 
 	mIsAtomicType = true;
-	mIsConstructed = true;
 
 	std::string target = other.QualifiedTypename();
 
@@ -64,11 +61,6 @@ BoolObject::BoolObject(const Object& other)
 bool BoolObject::operator_bool() const
 {
 	return mValue.toBool();
-}
-
-bool BoolObject::isValid() const
-{
-	return mIsConstructed;
 }
 
 void BoolObject::operator_assign(const BoolObject *other)

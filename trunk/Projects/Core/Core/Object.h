@@ -62,7 +62,7 @@ public:	// Symbol::IType implementation & RTTI
 
 public:	// Setup
 	void addInheritance(const Designtime::Ancestor& ancestor, Object* inheritance);
-	void setConstructed(bool state);
+
 	void setIsReference(bool state);
 	void setParent(IScope *scope);
 
@@ -86,9 +86,8 @@ public:	// Value
 
 	bool isAbstract() const;
 	bool isAtomicType() const;
-	bool isConstructed() const;
 	bool isEnumerationValue() const;
-	bool isValid() const;
+	virtual bool isValid() const;
 
 	virtual std::string ToString(unsigned int indent = 0) const;
 
@@ -130,7 +129,6 @@ protected:
 	std::string mFilename;
 	Inheritance mInheritance;
 	bool mIsAtomicType;
-	bool mIsConstructed;
 	bool mIsEnumerationValue;
 	bool mIsReference;
 	std::string mQualifiedOuterface;

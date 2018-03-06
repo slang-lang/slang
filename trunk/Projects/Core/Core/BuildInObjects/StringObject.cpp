@@ -31,21 +31,18 @@ StringObject::StringObject(const AtomicValue& value)
 : Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, AtomicValue(value.toStdString()))
 {
 	mIsAtomicType = true;
-	mIsConstructed = true;
 }
 
 StringObject::StringObject(const std::string& value)
 : Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, AtomicValue(value))
 {
 	mIsAtomicType = true;
-	mIsConstructed = true;
 }
 
 StringObject::StringObject(const std::string& name, const AtomicValue& value)
 : Object(name, SYSTEM_LIBRARY, TYPENAME, value)
 {
 	mIsAtomicType = true;
-	mIsConstructed = true;
 }
 
 StringObject::StringObject(const Object& other)
@@ -54,7 +51,6 @@ StringObject::StringObject(const Object& other)
 	// generic type cast
 
 	mIsAtomicType = true;
-	mIsConstructed = true;
 
 	std::string source = other.QualifiedTypename();
 
@@ -71,11 +67,6 @@ StringObject::StringObject(const Object& other)
 	else {
 		Object::operator_assign(&other);
 	}
-}
-
-bool StringObject::isValid() const
-{
-	return mIsConstructed;
 }
 
 void StringObject::operator_assign(const Object *other)

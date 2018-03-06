@@ -22,21 +22,18 @@ VoidObject::VoidObject()
 : Object(ANONYMOUS_OBJECT, SYSTEM_LIBRARY, TYPENAME, AtomicValue())
 {
 	mIsAtomicType = true;
-	mIsConstructed = true;
 }
 
 VoidObject::VoidObject(const std::string& name)
 : Object(name, SYSTEM_LIBRARY, TYPENAME, AtomicValue())
 {
 	mIsAtomicType = true;
-	mIsConstructed = true;
 }
 
 VoidObject::VoidObject(const Object& object)
 : Object(object.getName(), SYSTEM_LIBRARY, TYPENAME, AtomicValue())
 {
 	mIsAtomicType = true;
-	mIsConstructed = true;
 }
 
 bool VoidObject::isValid() const
@@ -46,7 +43,7 @@ bool VoidObject::isValid() const
 
 bool VoidObject::operator_bool() const
 {
-	return mIsConstructed;
+	return false;
 }
 
 
