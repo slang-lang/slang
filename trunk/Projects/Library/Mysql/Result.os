@@ -27,7 +27,7 @@ public namespace Mysql {
 			return new Row(mHandle);
 		}
 
-		public Mysql.Entry getField(int fieldIdx) const {
+		public Mysql.Entry getField(int fieldIdx) const throws {
 			if ( fieldIdx < 0 || fieldIdx > mNumFields ) {
 				throw new OutOfBoundsException("fieldIdx out of bounds");
 			}
@@ -50,7 +50,7 @@ public namespace Mysql {
 			return entry;
 		}
 
-		public void seekRow(int rowIdx) {
+		public void seekRow(int rowIdx) throws {
 			if ( rowIdx < 0 || rowIdx >= mNumRows ) {
 				throw new OutOfBoundsException("rowIdx out of bounds");
 			}
