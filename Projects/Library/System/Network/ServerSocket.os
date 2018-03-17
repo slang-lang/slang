@@ -66,25 +66,25 @@ public object ServerSocket {
 	 * Listens for a connection to be made to this socket and accepts it.
 	 * The method blocks until a connection is made.
 	 */
-	public int Accept() throws {
-		return accept(mSocket);
+	public bool Accept() throws {
+		return accept(mSocket) > 0;
 	}
 
 	/*
 	 * Binds the ServerSocket to the address given during object construction
 	 */
-	public int Bind() modify throws {
+	public bool Bind() modify throws {
 		if ( !mEndpoint ) {
 			throw new Exception("endpoint not set");
 		}
 
-		return bind(mSocket, ISocketAddress mEndpoint);
+		return bind(mSocket, ISocketAddress mEndpoint) > 0;
 	}
 
 	/*
-	 * Binds the ServerSocket to a given address
+	 * Binds the ServerSocket to the given address
 	 */
-	public int Bind(IPv4Address endpoint) modify throws {
+	public bool Bind(IPv4Address endpoint) modify throws {
 		if ( !endpoint ) {
 			throw new Exception("endpoint not set");
 		}
@@ -97,14 +97,25 @@ public object ServerSocket {
 	/*
 	 * Closes this socket
 	 */
-	public int Close() throws {
-	    return close(mSocket);
+	public bool Close() throws {
+	    return close(mSocket) == 0;
+	}
+
+	/*
+	 *
+	 */
+	public string getAddress() const {
+		if ( !mEndpoint ) {
+			return "";
+		}
+
+		return mEndpoint._sa_address;
 	}
 
 	/*
 	 * Returns the port on which the socket is listening
 	 */
-	public int getLocalPort() const {
+	public int getPort() const {
 		if ( !mEndpoint ) {
 			return 0;
 		}
@@ -120,11 +131,43 @@ public object ServerSocket {
 	    return listen(mSocket, mQueueLength);
 	}
 
-	public int ReadInt() {
+	public bool ReadBool() const throws {
+		if ( !mSocket ) {
+			throw new Exception("not connected");
+		}
+
+		return readb(mSocket);
+	}
+
+	public double ReadDouble() const throws {
+		if ( !mSocket ) {
+			throw new Exception("not connected");
+		}
+
+		return readd(mSocket);
+	}
+
+	public float ReadFloat() const throws {
+		if ( !mSocket ) {
+			throw new Exception("not connected");
+		}
+
+		return readf(mSocket);
+	}
+
+	public int ReadInt() const throws {
+		if ( !mSocket ) {
+			throw new Exception("not connected");
+		}
+
 		return readi(mSocket);
 	}
 
-	public string ReadString(int length = -1) {
+	public string ReadString(int length = 1) const throws {
+		if ( !mSocket ) {
+			throw new Exception("not connected");
+		}
+
 	    return reads(mSocket, length);
 	}
 }

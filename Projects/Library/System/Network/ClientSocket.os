@@ -66,7 +66,39 @@ public object ClientSocket {
 		return mIsConnected;
 	}
 
-	public void WriteString(string data) throws {
+	public void Write(bool data) throws {
+		if ( !mIsConnected ) {
+			throw new Exception("not connected");
+		}
+
+		writeb(mSocket, data);
+	}
+
+	public void Write(double data) throws {
+		if ( !mIsConnected ) {
+			throw new Exception("not connected");
+		}
+
+		writed(mSocket, data);
+	}
+
+	public void Write(float data) throws {
+		if ( !mIsConnected ) {
+			throw new Exception("not connected");
+		}
+
+		writef(mSocket, data);
+	}
+
+	public void Write(int data) throws {
+		if ( !mIsConnected ) {
+			throw new Exception("not connected");
+		}
+
+		writei(mSocket, data);
+	}
+
+	public void Write(string data) throws {
 		if ( !mIsConnected ) {
 			throw new Exception("not connected");
 		}
