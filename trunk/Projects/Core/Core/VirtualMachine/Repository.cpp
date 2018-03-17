@@ -74,8 +74,8 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 		if ( !generic ) {
 			throw Common::Exceptions::UnknownIdentifer(constIt->mRunType + " is unknown");
 		}
-		if ( !constIt->mConstraint.empty() && !generic->inheritsFrom(constIt->mConstraint) ) {
-			throw Common::Exceptions::TypeMismatch(constIt->mRunType + " does not inherit from " + constIt->mConstraint);
+		if ( !constIt->mConstraint.empty() && generic->QualifiedTypename() != constIt->mConstraint && !generic->inheritsFrom(constIt->mConstraint) ) {
+			throw Common::Exceptions::TypeMismatch(constIt->mRunType + " is no or does not inherit from " + constIt->mConstraint);
 		}
 
 		initBluePrintObject(generic);
