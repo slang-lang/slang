@@ -5,6 +5,7 @@
 import Context;
 import Exceptions;
 import FileLogger;
+import IContext;
 import ILogger;
 import Logger;
 import StdOutLogger;

@@ -2,9 +2,7 @@
 // Library imports
 
 // Project imports
-import Context;
-import ILogger;
-import Logger;
+import LibLog;
 
 
 public object FileLogger implements ILogger {
