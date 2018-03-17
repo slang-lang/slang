@@ -122,6 +122,7 @@ public object List<T> implements ICollection {
 
 		if ( mSize == 1 ) {		// special handling for 1st item
 			mFirst = CollectionItem null;
+			mLast = CollectionItem null;
 		}
 		else {					// generic handling
 			CollectionItem item = mFirst;
@@ -129,6 +130,7 @@ public object List<T> implements ICollection {
 				item = item.mNext;
 			}
 
+			mLast = item;
 			item.mNext = CollectionItem null;
 		}
 
@@ -141,13 +143,15 @@ public object List<T> implements ICollection {
 		}
 
 		mFirst = mFirst.mNext;
+		if ( !mFirst ) {
+			mLast = CollectionItem null;
+		}
 
 		mSize--;
 	}
 
 	public void push_back(T value) modify {
-		CollectionItem item = new CollectionItem();
-		item.mValue = Object value;
+		CollectionItem item = new CollectionItem(Object value);
 
 		if ( mSize == 0 ) {     // special handling for 1st item
 			mFirst = item;
@@ -166,6 +170,10 @@ public object List<T> implements ICollection {
 
 		item.mNext = mFirst;
 		mFirst = item;
+
+		if ( mSize == 0 ) {
+			mLast = item;
+		}
 
 		mSize++;
 	}
