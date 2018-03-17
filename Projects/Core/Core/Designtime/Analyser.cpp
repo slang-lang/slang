@@ -112,15 +112,13 @@ bool Analyser::createBluePrint(TokenIterator& token)
 	LanguageFeatureState::E languageFeatureState = Parser::parseLanguageFeatureState(token, LanguageFeatureState::Stable);
 	// look for an optional modifier token
 	ImplementationType::E implementationType = Parser::parseImplementationType(token, ImplementationType::FullyImplemented);
-	// look for the object token
+	// look for the object token, BluePrintType::Object is required
 	BluePrintType::E blueprintType = Parser::parseBluePrintType(token);
 	if ( blueprintType != BluePrintType::Object ) {
 		throw Common::Exceptions::SyntaxError("object expected", token->position());
 	}
-	// look for the identifier token
-	std::string name = (*token++).content();
-	// collect prototype constraints (if present)
-	PrototypeConstraints constraints = Parser::collectDesigntimePrototypeConstraints(token);
+	// look for the type declaration
+	Common::TypeDeclaration type = Parser::parseTypeDeclaration(token, mScope);
 	// look for an optional modifier token
 	Mutability::E mutability = Parser::parseMutability(token, Mutability::Modify);
 	// collect inheritance (if present)
@@ -140,7 +138,7 @@ bool Analyser::createBluePrint(TokenIterator& token)
 		tokens = Parser::collectScopeTokens(token);
 	}
 
-	BluePrintObject* blueprint = new BluePrintObject(name, mFilename);
+	BluePrintObject* blueprint = new BluePrintObject(type.mName, mFilename);
 	bool extends = false;
 
 	// set up inheritance (if present)
@@ -155,7 +153,7 @@ bool Analyser::createBluePrint(TokenIterator& token)
 	}
 
 	if ( extends && mutability == Mutability::Const ) {
-		throw Common::Exceptions::ConstCorrectnessViolated("const object '" + getQualifiedTypename(name) + "' cannot extend objects or implement interfaces", token->position());
+		throw Common::Exceptions::ConstCorrectnessViolated("const object '" + getQualifiedTypename(type.mName) + "' cannot extend objects or implement interfaces", token->position());
 	}
 
 	// in case this object has no inheritance set, we inherit from 'Object'
@@ -165,21 +163,21 @@ bool Analyser::createBluePrint(TokenIterator& token)
 
 	// validate mutability
 	if ( mutability != Mutability::Const && mutability != Mutability::Modify ) {
-		throw Common::Exceptions::SyntaxError("invalid mutability '" + Mutability::convert(mutability) + "' for " + getQualifiedTypename(name), token->position());
+		throw Common::Exceptions::SyntaxError("invalid mutability '" + Mutability::convert(mutability) + "' for " + getQualifiedTypename(type.mName), token->position());
 	}
 
-	blueprint->setPrototypeConstraints(constraints);
+	blueprint->setPrototypeConstraints(type.mConstraints);
 	blueprint->setImplementationType(implementationType);
 	blueprint->setIsReference(true);
 	blueprint->setLanguageFeatureState(languageFeatureState);
 	//blueprint->setMutability(mutability);
 	blueprint->setParent(mScope);
-	blueprint->setQualifiedTypename(getQualifiedTypename(name));
+	blueprint->setQualifiedTypename(getQualifiedTypename(type.mName));
 	blueprint->setTokens(tokens);
 	blueprint->setVisibility(visibility);
 	//blueprint->setSealed(mutability == Mutability::Const);
 
-	mScope->define(name, blueprint);
+	mScope->define(type.mName, blueprint);
 
 	MethodScope* tmpScope = mScope;
 
@@ -222,14 +220,12 @@ bool Analyser::createEnum(TokenIterator& token)
 	Visibility::E visibility = Parser::parseVisibility(token, Visibility::Private);
 	// look for an optional language feature token
 	LanguageFeatureState::E languageFeatureState = Parser::parseLanguageFeatureState(token, LanguageFeatureState::Stable);
-
-	// determine implementation type
+	// look for the object token, BluePrintType::Enum is required
 	BluePrintType::E objectType = Parser::parseBluePrintType(token);
 	if ( objectType != BluePrintType::Enum ) {
 		throw Common::Exceptions::SyntaxError("enum type expected", token->position());
 	}
-
-	// look for the identifier token
+	// look for the type declaration
 	Common::TypeDeclaration type = Parser::parseTypeDeclaration(token, mScope);
 	if ( !type.mConstraints.empty() ) {
 		throw Common::Exceptions::SyntaxError("enums are now allowed to be prototypes", token->position());
@@ -272,23 +268,19 @@ bool Analyser::createInterface(TokenIterator& token)
 	if ( blueprintType != BluePrintType::Interface ) {
 		throw Common::Exceptions::SyntaxError("interface type expected", token->position());
 	}
-
-	// look for the identifier token
-	std::string name = (*token++).content();
-	// collect prototype constraints (if present)
-	PrototypeConstraints constraints = Parser::collectDesigntimePrototypeConstraints(token);
+	// look for the type declaration
+	Common::TypeDeclaration type = Parser::parseTypeDeclaration(token, mScope);
 	// look for an optional mutability token
 	Mutability::E mutability = Parser::parseMutability(token, Mutability::Modify);
 	if ( mutability != Mutability::Const && mutability != Mutability::Modify ) {
-		throw Common::Exceptions::SyntaxError("invalid mutability '" + Mutability::convert(mutability) + "' for " + getQualifiedTypename(name), token->position());
+		throw Common::Exceptions::SyntaxError("invalid mutability '" + Mutability::convert(mutability) + "' for " + getQualifiedTypename(type.mName), token->position());
 	}
-
 	// collect inheritance (if present)
 	Ancestors inheritance = Parser::collectInheritance(token);
 
 	expect(Token::Type::BRACKET_CURLY_OPEN, token);
 
-	BluePrintObject* blueprint = new BluePrintObject(name, mFilename);
+	BluePrintObject* blueprint = new BluePrintObject(type.mName, mFilename);
 
 	// set up inheritance (if present)
 	if ( !inheritance.empty() ) {
@@ -303,17 +295,17 @@ bool Analyser::createInterface(TokenIterator& token)
 
 	TokenList tokens = Parser::collectScopeTokens(token);
 
-	blueprint->setPrototypeConstraints(constraints);
+	blueprint->setPrototypeConstraints(type.mConstraints);
 	blueprint->setImplementationType(ImplementationType::Interface);
 	blueprint->setIsReference(true);
 	blueprint->setLanguageFeatureState(languageFeatureState);
 	blueprint->setMutability(mutability);
 	blueprint->setParent(mScope);
-	blueprint->setQualifiedTypename(getQualifiedTypename(name));
+	blueprint->setQualifiedTypename(getQualifiedTypename(type.mName));
 	blueprint->setTokens(tokens);
 	blueprint->setVisibility(visibility);
 
-	mScope->define(name, blueprint);
+	mScope->define(type.mName, blueprint);
 
 	MethodScope* tmpScope = mScope;
 
@@ -361,8 +353,8 @@ bool Analyser::createMemberOrMethod(TokenIterator& token)
 	Visibility::E visibility = Parser::parseVisibility(token, Visibility::Private);
 	// look for an optional language feature token
 	LanguageFeatureState::E languageFeatureState = Parser::parseLanguageFeatureState(token, LanguageFeatureState::Stable);
-	// look for the type token
-	Common::TypeDeclaration type = Parser::parseTypeDeclaration(token, mScope);
+	// look for the type token and resolve full typename
+	Common::TypeDeclaration type = parseTypeDeclaration(token, mScope);
 	// look for the identifier token
 	std::string name = (*token++).content();
 
@@ -381,7 +373,9 @@ bool Analyser::createMemberStub(TokenIterator& token, Visibility::E visibility, 
 
 	// look for an optional mutability token
 	Mutability::E mutability = Parser::parseMutability(token, Mutability::Modify);
+	// look up memory layout
 	MemoryLayout::E memoryLayout = Parser::parseMemoryLayout(token, MemoryLayout::Instance);
+	// look up access mode
 	AccessMode::E access = Parser::parseAccessMode(token, AccessMode::ByValue);
 
 	// check parent's constness
@@ -455,7 +449,7 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 		mutability = Mutability::Modify;
 	}
 
-	ParameterList params = Parser::parseParameters(token, mScope);
+	ParameterList params = parseParameters(token, mScope);
 
 	++token;
 
@@ -636,6 +630,22 @@ std::string Analyser::getQualifiedTypename(const std::string& type) const
 	return result;
 }
 
+ParameterList Analyser::parseParameters(TokenIterator& token, IScope* scope)
+{
+	ParameterList params = Parser::parseParameters(token, scope);
+
+	for ( ParameterList::iterator it = params.begin(); it != params.end(); ++it ) {
+		it->mType = resolveType(it->typeDeclaration(), token);
+	}
+
+	return params;
+}
+
+Common::TypeDeclaration Analyser::parseTypeDeclaration(TokenIterator& token, IScope* scope)
+{
+	return resolveType(Parser::parseTypeDeclaration(token, scope), token);
+}
+
 void Analyser::processFile(const std::string& filename)
 {
 	mFilename = filename;
@@ -676,6 +686,50 @@ void Analyser::processTokens(const TokenList& tokens)
 
 	// generate objects from tokens
 	generate(tokens);
+}
+
+std::string Analyser::resolveType(const std::string& type, const TokenIterator& token) const
+{
+	// look up type in scope
+	IScope* scope = mScope;
+
+	while ( scope ) {
+		Symbol* symbol = scope->resolve(type, false);
+		if ( symbol ) {
+			switch ( symbol->getSymbolType() ) {
+				case Symbol::IType::BluePrintObjectSymbol: return dynamic_cast<BluePrintObject*>(symbol)->QualifiedTypename();
+				case Symbol::IType::MethodSymbol:
+				case Symbol::IType::NamespaceSymbol:
+				case Symbol::IType::ObjectSymbol:
+					throw Common::Exceptions::SyntaxError("invalid symbol type detected", token->position());
+			}
+		}
+
+		scope = scope->getEnclosingScope();
+	}
+
+	// nothing found so return the original type
+	return type;
+}
+
+Common::TypeDeclaration Analyser::resolveType(const Common::TypeDeclaration& type, const TokenIterator& token) const
+{
+	Common::TypeDeclaration result;
+
+	// resolve type
+	result.mName = resolveType(type.mName, token);
+
+	// resolve prototype constraints
+	for ( PrototypeConstraints::const_iterator it = type.mConstraints.begin(); it != type.mConstraints.end(); ++it ) {
+		PrototypeConstraint constraint = (*it);
+
+		constraint.mConstraint = resolveType(it->mConstraint, token);
+		constraint.mRunType = resolveType(it->mRunType, token);
+
+		result.mConstraints.push_back(constraint);
+	}
+
+	return result;
 }
 
 

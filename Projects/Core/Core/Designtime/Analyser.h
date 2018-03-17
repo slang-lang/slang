@@ -55,7 +55,15 @@ private:
 	bool createMemberStub(TokenIterator& token, Visibility::E visibility, LanguageFeatureState::E languageFeature, Common::TypeDeclaration type, const std::string& name);
 
 	bool buildEnum(Designtime::BluePrintObject* symbol, const TokenList& tokens);
+
+private: // type resolution
 	std::string getQualifiedTypename(const std::string& name) const;
+	std::string resolveType(const std::string& type, const TokenIterator& token) const;
+	Common::TypeDeclaration resolveType(const Common::TypeDeclaration& type, const TokenIterator& token) const;
+
+private: // wrapper methods
+	ParameterList parseParameters(TokenIterator& token, IScope* scope);
+	Common::TypeDeclaration parseTypeDeclaration(TokenIterator& token, IScope* scope);
 
 private:
 	std::string mFilename;
