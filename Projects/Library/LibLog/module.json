@@ -1,7 +1,7 @@
 {
   "name": "ObjectiveScript logging library",
   "name_short": "liblog",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "The ObjectiveScript logging library provides standard out and file logging capabilities.",
   "dependencies": [
     { "module": "system", "version_min": "0.0.1" }
@@ -9,6 +9,6 @@
   "target": {
     "directory": "LibLog",
     "type": "internal",
-    "url": "liblog_0.1.3.tar.gz"
+    "url": "liblog_0.1.4.tar.gz"
   }
 }
