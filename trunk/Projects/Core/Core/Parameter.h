@@ -56,9 +56,10 @@ public:
 	const Runtime::Reference& reference() const;
 	const std::string& type() const;
 	const PrototypeConstraints& typeConstraints() const;
+	const Common::TypeDeclaration& typeDeclaration() const;
 	Runtime::AtomicValue value() const;
 
-private:
+public:
 	AccessMode::E mAccessMode;
 	bool mHasDefaultValue;
 	Mutability::E mMutability;

@@ -112,6 +112,11 @@ const PrototypeConstraints& Parameter::typeConstraints() const
 	return mType.mConstraints;
 }
 
+const Common::TypeDeclaration& Parameter::typeDeclaration() const
+{
+	return mType;
+}
+
 Runtime::AtomicValue Parameter::value() const
 {
 	return mValue;
