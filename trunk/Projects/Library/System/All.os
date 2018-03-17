@@ -3,7 +3,7 @@
 
 import Assert;
 import Boolean;
-//import Character;
+import Character;
 import CharacterIterator;
 import Collections.All;
 import Double;
