@@ -4,48 +4,47 @@
 // Project imports
 import Context;
 import ILogger;
+import Logger;
 
 
-public object FileLogger const implements ILogger {
+public object FileLogger implements ILogger {
 	// Members
 	private IContext mContext;
 	private bool mHasParent const;
 	private string mKey const;
+	private int mKeyLength const;
 
 	/*
 	 * Specialised constructor
 	 */
-	public void Constructor(string key, int keyLength = 0) {
-		if ( keyLength ) {
+	public void Constructor(string filename, string key, int keyLength = 0) {
+		mContext = new FileContext(filename);
+		mKeyLength = keyLength;
+
+		if ( keyLength && strlen(key) > keyLength ) {
 			mKey = substr(key, strlen(key) - keyLength, keyLength);
 		}
 		else {
 			mKey = key;
 		}
-
-		mContext = IContext new FileContext();
 	}
 
 	/*
 	 * Copy constructor
 	 */
-	public void Constructor(ILogger parent ref, string key, int keyLength = 0) {
-		if ( parent ) {
-			mContext = parent.getContext();
-			mHasParent = true;
-			if ( parent.getKey() ) {
-				mKey = parent.getKey() + "::";
-			}
+	public void Constructor(ILogger parent ref, string key, int keyLength = 0) throws {
+		if ( !parent ) {
+			throw new Exception("missing parent logger");
 		}
 
-		mKey += key;
+		mContext = parent.getContext();
+		mHasParent = true;
+		mKeyLength = keyLength;
+
+		mKey = parent.getKey() + "::" + key;
 
 		if ( keyLength && strlen(mKey) > keyLength ) {
 			mKey = substr(mKey, strlen(mKey) - keyLength, keyLength);
-		}
-
-		if ( !mContext ) {
-			mContext = IContext new StdOutContext();
 		}
 	}
 
@@ -58,20 +57,38 @@ public object FileLogger const implements ILogger {
 		}
 	}
 
+	public IContext getContext() const {
+		return mContext;
+	}
+
+	public string getKey() const {
+		return mKey;
+	}
+
+	public int getKeyLength() const {
+		return mKeyLength;
+	}
+
 	// Public methods
-	public void debug(string message) {
+	public void debug(string message) modify {
 		mContext.write("[DEBUG] " + mKey + "::" + message);
 	}
 
-	public void error(string message) {
+	public void error(string message) modify {
 		mContext.write("[ERROR] " + mKey + "::" + message);
 	}
 
-	public void info(string message) {
+	public void fatal(string message) modify throws {
+		mContext.write("[FATAL] [" + mKey + "]   " + message);
+
+        throw new FatalError(message);
+	}
+
+	public void info(string message) modify {
 		mContext.write("[INFO ] " + mKey + "::" + message);
 	}
 
-	public void warning(string message) {
+	public void warning(string message) modify {
 		mContext.write("[WARN ] " + mKey + "::" + message);
 	}
 }

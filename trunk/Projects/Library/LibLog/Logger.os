@@ -2,46 +2,39 @@
 // Library imports
 
 // Project imports
-import Context;
-import ILogger;
-import Logger;
+import LibLog;
 
 
-public object StdOutLogger implements ILogger {
+public object Logger implements ILogger {
 	// Members
 	private IContext mContext;
-	private bool mHasParent const;
 	private string mKey const;
-	private int mKeyLength const;
+    private int mKeyLength;
 
 	/*
-	 * Specialised constructor
+	 * Default constructor
+     * expects a parent logger, uses parent's keylength
 	 */
-	public void Constructor(string key, int keyLength = 0) {
-		mContext = IContext new StdOutContext();
-		mKeyLength = keyLength;
+    public void Constructor(ILogger parent ref, string key) throws {
+		if ( !parent ) {
+			throw new Exception("missing parent logger");
+		}
 
-		if ( keyLength && strlen(key) > keyLength ) {
-			mKey = substr(key, strlen(key) - keyLength, keyLength);
-		}
-		else {
-			mKey = key;
-		}
+		Constructor(parent, key, parent.getKeyLength());
 	}
 
-	/*
-	 * Copy constructor
-	 */
+    /*
+     * Expended constructor
+     * expects parent logger, uses provided key length
+     */
 	public void Constructor(ILogger parent ref, string key, int keyLength) throws {
 		if ( !parent ) {
 			throw new Exception("missing parent logger");
 		}
 
 		mContext = parent.getContext();
-		mHasParent = true;
-		mKeyLength = keyLength;
-
-		mKey = parent.getKey() + LibLog.KeySeparator + key;
+        mKey = parent.getKey() + LibLog.KeySeparator + key;
+        mKeyLength = keyLength;
 
 		if ( keyLength && strlen(mKey) > keyLength ) {
 			mKey = substr(mKey, strlen(mKey) - keyLength, keyLength);
@@ -52,6 +45,7 @@ public object StdOutLogger implements ILogger {
 	 * Default destructor
 	 */
 	public void Destructor() {
+        // this is empty by intend
 	}
 
 	public IContext getContext() const {
@@ -62,9 +56,9 @@ public object StdOutLogger implements ILogger {
 		return mKey;
 	}
 
-	public int getKeyLength() const {
-		return mKeyLength;
-	}
+    public int getKeyLength() const {
+        return mKeyLength;
+    }
 
 	// Public methods
 	public void debug(string message) modify {
@@ -78,7 +72,7 @@ public object StdOutLogger implements ILogger {
 	public void fatal(string message) modify throws {
 		mContext.write("[FATAL] [" + mKey + "]   " + message);
 
-        throw new FatalError(message);
+        throw new FatalError("fatal error: " + message);
 	}
 
 	public void info(string message) modify {

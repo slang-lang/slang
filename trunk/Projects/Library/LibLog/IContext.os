@@ -7,7 +7,7 @@
 /*
  * Context for logging
  */
-public interface IContext {
-	public void write(string message);
+public stable interface IContext {
+	public void write(string message) modify;
 }
 

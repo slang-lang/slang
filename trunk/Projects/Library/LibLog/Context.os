@@ -7,25 +7,25 @@ import IContext;
 
 
 public object FileContext implements IContext {
-	private System.IO.File mLogFile;
+	private System.IO.File mFile;
 
 	public void Constructor(string filename) {
-		mLogFile = new System.IO.File(filename, "w+");
+		mFile = new System.IO.File(filename, "w+");
 	}
 
 	public void Destructor() {
-		if ( mLogFile ) {
-			mLogFile.close();
+		if ( mFile ) {
+			mFile.close();
 		}
 	}
 
-	public void write(string message) {
-		mLogFile.write(message);
+	public void write(string message) modify {
+		mFile.write(message);
 	}
 }
 
 public object StdOutContext implements IContext {
-	public void write(string message) {
+	public void write(string message) modify {
 		print(message);
 	}
 }

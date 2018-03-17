@@ -5,9 +5,10 @@
 import IContext;
 
 
-public interface ILogger {
+public stable interface ILogger {
 	public IContext getContext() const;
 	public string getKey() const;
+	public int getKeyLength() const;
 
 	public void debug(string message);
 	public void error(string message);
