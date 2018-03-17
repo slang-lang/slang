@@ -11,7 +11,10 @@ public void Main(int argc, string args) {
 	}
 
 	while ( true ) {
-		socket.WriteString(cin());
+		string data = cin();
+
+		socket.Write(strlen(data));
+		socket.Write(data);
 	}
 }
 

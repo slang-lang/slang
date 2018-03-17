@@ -3,21 +3,17 @@
 import System.Network.ServerSocket;
 
 public void Main(int argc = 0, string args = "") {
-	assert( TestCase1() );
-}
-
-private bool TestCase1() {
 	var socket = new ServerSocket(33333);
 	assert( socket );
 
-	int result;
+	bool result;
 
 	result = socket.Bind();
 	print("bind = " + result);
 
 	if ( result == -1 ) {
 		print("bind failed");
-		return false;
+		assert(false);
 	}
 
 	result = socket.Listen();
@@ -25,44 +21,36 @@ private bool TestCase1() {
 
 	if ( result == -1 ) {
 		print("listen failed");
-		return false;
+		assert(false);
 	}
 
-	int connectfd = socket.Accept();
-	print("accept = " + connectfd);
+	result = socket.Accept();
+	print("accept = " + result);
 
-	if ( connectfd < 0 ) {
+	if ( !result ) {
 		print("accept failed");
-		return false;
+		assert(false);
 	}
-
 
 	try {
+		int length = -1;
 
-/*
-	int length = -1;
-	string value = socket.ReadString(length);
-	print("value = " + value);
-*/
+		while ( true ) {
+			length = socket.ReadInt();
 
-	while ( true ) {
-		int length = socket.ReadInt();
+			if ( length > 0 ) {
+				string data = socket.ReadString(length);
+				print("received: " + data);
 
-		if ( length > 0 ) {
-			string data = socket.ReadString(length);
-			print("received: " + data);
-
-			continue;
+				continue;
+			}
 		}
-	}
 	}
 	catch ( IException e ) {
 		print("e.what() = " + e.what());
+		assert(false);
 	}
 
-	result = socket.Close();
-	print("close = " + result);
-
-	return true;
+	socket.Close();
 }
 
