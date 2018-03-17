@@ -5,7 +5,7 @@ public stable interface ISocketAddress {
 	// this is empty by intend
 }
 
-public object IPv4Address const implements ISocketAddress {
+public stable object IPv4Address const implements ISocketAddress {
 	public string _sa_address const;
 	public int _sa_port const;
 	public int _sa_family const;
@@ -17,7 +17,7 @@ public object IPv4Address const implements ISocketAddress {
 	}
 }
 
-public object IPv6Address const implements ISocketAddress {
+public stable object IPv6Address const implements ISocketAddress {
 	public string _sa_address const;
 	public int _sa_port const;
 	public int _sa_family const;
