@@ -13,6 +13,7 @@ public void Main(int argc, string args) {
 	IntegerList intList = new IntegerList();
 	assert( intList is ICollection );
 	assert( intList is Object );
+	assert( !(intList is List<Integer>) );
 
 	intList.push_back(new Integer(1));
 	intList.push_back(new Integer(7));
@@ -25,6 +26,7 @@ public void Main(int argc, string args) {
 	StringList stringList = new StringList();
 	assert( stringList is ICollection );
 	assert( stringList is Object );
+	assert( !(stringList is List<String>) );
 
 	stringList.push_back(new String("this is a string"));
 	stringList.push_back(new String("and another string"));
