@@ -77,7 +77,7 @@ public namespace Mysql {
 			if ( error ) {
 					// error while query execution
 				print(mysql_error(mConnection.mHandle));
-				return null;
+				return Mysql.Result null;
 			}
 
 			int handle = mysql_store_result(mConnection.mHandle);
