@@ -61,6 +61,10 @@ void SemanticVersionNumber::parse(const std::string& version)
 {
 	mIsValid = false;
 
+	if ( version.empty() ) {
+		return;
+	}
+
 	std::string bugfix;
 	std::string major;
 	std::string minor;
@@ -73,7 +77,7 @@ void SemanticVersionNumber::parse(const std::string& version)
 	mMinor = Utils::Tools::stringToInt(minor);
 	mBugfix = Utils::Tools::stringToInt(bugfix);
 
-	mIsValid = true;
+	mIsValid = mMajor != 0 || mMinor != 0 || mBugfix != 0;
 }
 
 std::string SemanticVersionNumber::toString() const

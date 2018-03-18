@@ -57,7 +57,9 @@ enum e_Action {
 	Install,
 	List,
 	None,
+	Purge,
 	Remove,
+	Restrict,
 	Search,
 	Update,
 	Upgrade,
@@ -74,6 +76,7 @@ static const char* MODULES = "modules/";
 static const char* TMP = "/tmp/";
 
 
+void addRestriction(const StringList& params);
 void checkOutdatedModules(Repository::Modules& outdatedModules);
 void cleanCache();
 Dependencies collectDependencies(const Json::Value& dependencies);
@@ -96,14 +99,23 @@ void list();
 void loadConfig();
 void prepareModuleInstallation(const std::string& repo, const std::string& moduleName, const std::string& version);
 void prepareRemoteRepository();
+void printUsage();
+void printVersion();
+void processParameters(int argc, const char* argv[]);
+void purge(const StringList& params);
 void readJsonFile(const std::string& filename, Json::Value& result);
 void remove(const StringList& params);
+void removeRestriction(const std::string& module);
+void removeRestriction(const StringList& params);
 void search(const StringList& params);
+void storeConfig();
+void writeJsonFile(const std::string& filename, Json::Value& result);
 void update();
 void upgrade(StringList params);
 
 
 std::string mBaseFolder;
+Json::Value mConfig;
 std::string mCurrentFolder;
 StringList mDownloadedFiles;
 std::string mLibraryFolder;
@@ -119,6 +131,57 @@ static size_t write_data(void *ptr, size_t size, size_t nmemb, void *stream)
 {
 	size_t written = fwrite(ptr, size, nmemb, (FILE *)stream);
 	return written;
+}
+
+void addRestriction(const StringList& params)
+{
+	// (1) check if the requested module is actually installed
+	// (2) add a version restriction for the given module
+
+	if ( params.size() != 3 && params.size() != 5 ) {
+		std::cout << "!!! Invalid number of parameters: " << params.size() << std::endl;
+		return;
+	}
+
+	collectLocalModuleData();
+
+	StringList::const_iterator paramIt = params.begin();
+
+	std::string module = (*paramIt);
+
+	removeRestriction(module);
+
+	Json::Value value;
+
+	while ( paramIt != params.end() ) {
+		++paramIt;
+
+		if ( (*paramIt) == "max" ) {
+			++paramIt;
+
+			SemanticVersionNumber version((*paramIt));
+
+			value.addMember("version_max", version.toString());
+		}
+		else if ( (*paramIt) == "min" ) {
+			++paramIt;
+
+			SemanticVersionNumber version((*paramIt));
+
+			value.addMember("version_min", version.toString());
+		}
+	}
+
+	if ( !mConfig.isMember("restrictions") ) {
+		mConfig.addMember("restrictions", "");
+	}
+
+	Json::Value restriction;
+	restriction.addMember(module, value);
+
+	mConfig["restrictions"].addElement(restriction);
+
+	storeConfig();
 }
 
 void checkOutdatedModules(Repository::Modules& outdatedModules)
@@ -305,18 +368,13 @@ void createLocalLibrary()
 		repository.addMember("name", "main");
 		repository.addMember("url", "https://objectivescript.ticketsharing.net/repo/stable");
 
+		Json::Array restrictions;
+
 		Json::Value config;
 		config.addMember("repository", repository);
+		config.addMember("restrictions", restrictions);
 
-		// serialize config to string
-		Json::StyledWriter writer;
-		std::string data = writer.toString(config);
-
-		// write config string to file
-		std::fstream stream;
-		stream.open(filename.c_str(), std::ios::out);    // open file for writing
-		stream.write(data.c_str(), data.size());
-		stream.close();
+		writeJsonFile(filename, config);
 	}
 }
 
@@ -622,11 +680,10 @@ void loadConfig()
 {
 	std::string filename = mLibraryFolder + CONFIG_FILE;
 
-	Json::Value config;
-	readJsonFile(filename, config);
+	readJsonFile(filename, mConfig);
 
-	if ( config.isMember("repository") ) {
-		Json::Value entry = config["repository"];
+	if ( mConfig.isMember("repository") ) {
+		Json::Value entry = mConfig["repository"];
 
 		// repository name
 		// {
@@ -658,6 +715,10 @@ void loadConfig()
 
 		mRemoteRepository = repository;
 	}
+
+	if ( !mConfig.isMember("restrictions") ) {
+		mConfig.addMember("restrictions", Json::Array());
+	}
 }
 
 void printUsage()
@@ -669,7 +730,9 @@ void printUsage()
 	std::cout << "info                       Print information about requested module" << std::endl;
 	std::cout << "install                    Install new module" << std::endl;
 	std::cout << "list                       List all installed modules" << std::endl;
+	std::cout << "purge                      Remove an installed module and all of its configuration" << std::endl;
 	std::cout << "remove                     Remove an installed module" << std::endl;
+	std::cout << "restrict                   Add version restriction for module" << std::endl;
 	std::cout << "search                     Search for a module" << std::endl;
 	std::cout << "update                     Update repository indices" << std::endl;
 	std::cout << "upgrade                    Upgrade outdated modules" << std::endl;
@@ -707,8 +770,14 @@ void processParameters(int argc, const char* argv[])
 		else if ( Utils::Tools::StringCompare(arg1, "list") ) {
 			mAction = List;
 		}
+		else if ( Utils::Tools::StringCompare(arg1, "purge") ) {
+			mAction = Purge;
+		}
 		else if ( Utils::Tools::StringCompare(arg1, "remove") ) {
 			mAction = Remove;
+		}
+		else if ( Utils::Tools::StringCompare(arg1, "restrict") ) {
+			mAction = Restrict;
 		}
 		else if ( Utils::Tools::StringCompare(arg1, "search") ) {
 			mAction = Search;
@@ -800,6 +869,26 @@ void prepareRemoteRepository()
 	mRemoteRepository.processIndex(config);
 }
 
+void purge(const StringList& params)
+{
+	// (1) remove the configuration of the requested modules
+	// (2) remove the modules themselves
+
+	if ( mParameters.empty() ) {
+		std::cout << "!!! Invalid number of parameters" << std::endl;
+		return;
+	}
+
+	// (1) remove the module configurations from config.json
+	removeRestriction(params);
+
+	// (2) remove the modules (if installed)
+	remove(params);
+
+	// (3) store configuration
+	storeConfig();
+}
+
 void readJsonFile(const std::string& filename, Json::Value& result)
 {
 	// load contents of filename into Json::Value
@@ -842,6 +931,37 @@ void remove(const StringList& params)
 		if ( !found ) {
 			std::cout << "!!! Module \"" << (*moduleIt) << "\" cannot be removed because it is not installed" << std::endl;
 		}
+	}
+}
+
+void removeRestriction(const std::string& module)
+{
+	Json::Value& restrictions = mConfig["restrictions"];
+	Json::Value::Members members = restrictions.members();
+
+	size_t count = 0;
+	while ( count < members.size() ) {
+		if ( members[count].isMember(module) ) {
+			restrictions.removeElement(count);
+			return;
+		}
+
+		count++;
+	}
+}
+
+void removeRestriction(const StringList& params)
+{
+	// (1) check if the requested modules are actually installed
+	// (2) remove them by deleting their complete directory
+
+	if ( mParameters.empty() ) {
+		std::cout << "!!! Invalid number of parameters" << std::endl;
+		return;
+	}
+
+	for ( StringList::const_iterator moduleIt = params.begin(); moduleIt != params.end(); ++ moduleIt ) {
+		removeRestriction((*moduleIt));
 	}
 }
 
@@ -893,6 +1013,27 @@ void search(const StringList& params)
 			std::cout << (*resultIt) << std::endl;
 		}
 	}
+}
+
+void storeConfig()
+{
+	// write json config to file
+	std::string filename = mLibraryFolder + CONFIG_FILE;
+
+	writeJsonFile(filename, mConfig);
+}
+
+void writeJsonFile(const std::string& filename, Json::Value& result)
+{
+	// write contents of Json::Value into filename
+
+	Json::StyledWriter writer;
+	std::string data = writer.toString(result);
+
+	std::fstream stream;
+	stream.open(filename.c_str(), std::ios::out);    // open file for writing
+	stream.write(data.c_str(), data.size());
+	stream.close();
 }
 
 void update()
@@ -978,7 +1119,9 @@ int main(int argc, const char* argv[])
 		case Install: install(mParameters); break;
 		case List: list(); break;
 		case None: break;
+		case Purge: purge(mParameters); break;
 		case Remove: remove(mParameters); break;
+		case Restrict: addRestriction(mParameters); break;
 		case Search: search(mParameters); break;
 		case Update: update(); break;
 		case Upgrade: upgrade(mParameters); break;
