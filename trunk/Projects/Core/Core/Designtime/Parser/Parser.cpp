@@ -619,8 +619,15 @@ ParameterList Parser::parseParameters(TokenIterator &token, IScope* scope)
 
 		Common::TypeDeclaration type = parseTypeDeclaration(token, scope);
 
-		std::string name = token->content();
-		++token;
+		std::string name;
+
+		// this allows unnamed parameters that are not instantiated, just to satisfy an interface or similar
+		// {
+		if ( token->type() == Token::Type::IDENTIFIER ) {
+			name = token->content();
+			++token;
+		}
+		// }
 
 		if ( token->category() == Token::Category::Modifier ) {
 			if ( token->content() == MODIFIER_CONST ) {

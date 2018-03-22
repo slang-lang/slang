@@ -285,6 +285,11 @@ void TreeGenerator::initialize(Common::Method* method)
 	const ParameterList& params = mMethod->provideSignature();
 	// add parameters as locale variables
 	for ( ParameterList::const_iterator it = params.begin(); it != params.end(); ++it ) {
+		if ( it->name().empty() ) {
+			// skip unnamed parameters
+			continue;
+		}
+
 		Runtime::Object* object = mRepository->createInstance(it->type(), it->name());
 		object->setIsReference(it->access() == AccessMode::ByReference);
 		object->setMutability(it->mutability());

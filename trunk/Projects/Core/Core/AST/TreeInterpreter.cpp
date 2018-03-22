@@ -571,6 +571,11 @@ void TreeInterpreter::initialize(IScope* scope, const ParameterList& params)
 {
 	// add parameters as locale variables
 	for ( ParameterList::const_iterator it = params.begin(); it != params.end(); ++it ) {
+		if ( it->name().empty() ) {
+			// skip unnamed parameters
+			continue;
+		}
+
 		Runtime::Object* object = mRepository->createInstance(it->type(), it->name());
 
 		object->setMutability(it->mutability());
