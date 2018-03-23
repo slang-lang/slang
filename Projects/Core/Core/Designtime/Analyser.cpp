@@ -100,6 +100,20 @@ bool Analyser::buildEnum(Designtime::BluePrintObject* symbol, const TokenList& t
 	throw Common::Exceptions::SyntaxError("invalid enum declaration", token->position());
 }
 
+Ancestors Analyser::collectInheritance(TokenIterator& token)
+{
+	Ancestors ancestors = Parser::collectInheritance(token);
+	Ancestors result;
+
+	for ( Ancestors::const_iterator it = ancestors.begin(); it != ancestors.end(); ++it ) {
+		Ancestor ancestor(resolveType(it->typeDeclaration(), token), it->ancestorType(), it->visibility());
+
+		result.insert(ancestor);
+	}
+
+	return result;
+}
+
 bool Analyser::createBluePrint(TokenIterator& token)
 {
 	if ( mScope && (!dynamic_cast<Common::Namespace*>(mScope) && !dynamic_cast<BluePrintObject*>(mScope)) ) {
@@ -122,7 +136,7 @@ bool Analyser::createBluePrint(TokenIterator& token)
 	// look for an optional modifier token
 	Mutability::E mutability = Parser::parseMutability(token, Mutability::Modify);
 	// collect inheritance (if present)
-	Ancestors inheritance = Parser::collectInheritance(token);
+	Ancestors inheritance = collectInheritance(token);
 
 	TokenList tokens;
 
