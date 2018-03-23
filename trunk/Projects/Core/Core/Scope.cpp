@@ -332,12 +332,13 @@ Symbol* MethodScope::resolve(const std::string& name, bool onlyCurrentScope, Vis
 	if ( visibility != Visibility::Designtime ) {
 		Symbol* base = resolve(IDENTIFIER_BASE, true, Visibility::Designtime);
 		if ( base ) {
+			Visibility::E parentVisibility = visibility == Visibility::Private ? Visibility::Protected : visibility;
 			Symbol* result = 0;
 
 			switch ( base->getSymbolType() ) {
-				case Symbol::IType::BluePrintObjectSymbol: result = static_cast<Designtime::BluePrintObject*>(base)->resolve(name, true, visibility); break;
-				case Symbol::IType::NamespaceSymbol: result = static_cast<Common::Namespace*>(base)->resolve(name, true, visibility); break;
-				case Symbol::IType::ObjectSymbol: result = static_cast<Runtime::Object*>(base)->resolve(name, true, visibility); break;
+				case Symbol::IType::BluePrintObjectSymbol: result = static_cast<Designtime::BluePrintObject*>(base)->resolve(name, true, parentVisibility); break;
+				case Symbol::IType::NamespaceSymbol: result = static_cast<Common::Namespace*>(base)->resolve(name, true, parentVisibility); break;
+				case Symbol::IType::ObjectSymbol: result = static_cast<Runtime::Object*>(base)->resolve(name, true, parentVisibility); break;
 				default: throw Common::Exceptions::Exception("invalid scope type");
 			}
 
