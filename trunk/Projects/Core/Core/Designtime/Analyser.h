@@ -62,6 +62,7 @@ private: // type resolution
 	Common::TypeDeclaration resolveType(const Common::TypeDeclaration& type, const TokenIterator& token) const;
 
 private: // wrapper methods
+	Ancestors collectInheritance(TokenIterator& token);
 	ParameterList parseParameters(TokenIterator& token, IScope* scope);
 	Common::TypeDeclaration parseTypeDeclaration(TokenIterator& token, IScope* scope);
 
