@@ -28,7 +28,7 @@ public namespace Inheritance {
 		}
 	}
 
-	public object DerivedObject extends Inheritance.BaseObject {
+	public object DerivedObject extends BaseObject {
 		public void Constructor(int value) {
 			print("DerivedObject.Constructor(" + value + ")");
 
@@ -54,7 +54,7 @@ public namespace Inheritance {
 		}
 	}
 
-	public object ExtendedObject extends Inheritance.DerivedObject {
+	public object ExtendedObject extends DerivedObject {
 		public void Constructor(int value) {
 			print("ExtendedObject.Constructor(" + value + ")");
 
