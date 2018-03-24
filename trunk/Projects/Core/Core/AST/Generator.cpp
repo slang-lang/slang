@@ -116,7 +116,7 @@ void Generator::processMethod(Common::Method* method)
 			tg.generateAST(method)
 		);
 	}
-	catch ( std::exception& e ) {
+	catch ( Common::Exceptions::Exception& e ) {
 		if ( !mCollectErrors ) {
 			// rethrow error
 			throw;
@@ -125,7 +125,7 @@ void Generator::processMethod(Common::Method* method)
 		// increment error count
 		mErrorCount++;
 
-		// write error to log device out
+		// write error to log device
 		OSerror(e.what());
 	}
 }
