@@ -1,6 +1,12 @@
 #!/usr/local/bin/oscript
 
-import AbstractBase;
+public abstract object AbstractBase {
+	protected int mSize = 1389;
+
+	public int size() const {
+		return mSize;
+	}	
+}
 
 public object AbstractImplementation extends AbstractBase {
 	public void Constructor() {
