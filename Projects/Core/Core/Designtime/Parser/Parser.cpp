@@ -731,6 +731,10 @@ Runtime::AtomicValue Parser::parseValueInitialization(TokenIterator& token)
 			value = token->content();
 			break;
 		default:
+			if ( !sign.empty() ) {
+				throw Common::Exceptions::SyntaxError("unexpected token '" + token->content() + "'", token->position());
+			}
+
 			throw Common::Exceptions::NotSupported("only atomic data types are allowed as default parameters", token->position());
 	}
 
