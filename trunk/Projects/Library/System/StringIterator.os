@@ -32,12 +32,12 @@ public object StringIterator {
 
 	/*
 	 * returns the value of the current iteration
-	 * throws Exception
+	 * throws NotInitializedException
 	 * throws OutOfBoundsException
 	 */
 	public string current() const throws {
 		if ( mCurrentPosition == -1 ) {
-			throw new Exception("iterator not initialized");
+			throw new NotInitializedException("iterator not initialized");
 		}
 		if ( mCurrentPosition >= mNextPosition ) {
 			throw new OutOfBoundsException("out of bounds");
@@ -75,6 +75,16 @@ public object StringIterator {
 	}
 
 	/*
+	 * changes the separator and returns the next sub string of the held String value
+	 * throws OutOfBoundsException
+	 */
+	public string next(string separator) modify throws {
+		setSeparator(separator, false);
+
+		return next();
+	}
+
+	/*
 	 * resets the current iteration
 	 */
 	public void reset() modify {
@@ -85,8 +95,9 @@ public object StringIterator {
 	/*
 	 * changes the separator token (optionally resets iterator to start)
 	 */
-	public void setSeparator(string separator, bool doReset = true) modify {
+	public void setSeparator(string separator, bool doReset = false) modify {
 		mSeparator = separator;
+		mNextPosition = mCurrentPosition + strlen(separator);
 
 		if ( doReset ) {
 			reset();
