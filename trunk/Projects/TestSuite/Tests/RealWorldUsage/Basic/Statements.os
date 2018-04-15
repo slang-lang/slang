@@ -33,7 +33,7 @@ public enum StatementType {
 }
 
 public object Statement extends Node {
-	public StatementType mStatementType;
+	public StatementType mStatementType const;
 
 	public void Constructor(StatementType statementType) {
 		base.Constructor(NodeType.StatementNode);
@@ -72,7 +72,7 @@ public object EndStatement extends Statement {
 }
 
 public object GotoStatement extends Statement {
-	public int mLine;
+	public int mLine const;
 
 	public void Constructor(int line) {
 		base.Constructor(StatementType.GotoStatement);
@@ -86,8 +86,8 @@ public object GotoStatement extends Statement {
 }
 
 public object IfStatement extends Statement {
-	public Expression mExpression;
-	public Statement mThenBlock;
+	public Expression mExpression const;
+	public Statement mThenBlock const;
 
 	public void Constructor(Expression exp, Statement thenBlock) {
 		base.Constructor(StatementType.IfStatement);
@@ -116,7 +116,7 @@ public object InputStatement extends Statement {
 }
 
 public object LetStatement extends Statement {
-	public Expression mExpression;
+	public Expression mExpression const;
 	public string mVariable;
 
 	public void Constructor(string variable, Expression exp) {
@@ -132,7 +132,7 @@ public object LetStatement extends Statement {
 }
 
 public object PrintStatement extends Statement {
-	public string mText;
+	public string mText const;
 
 	public void Constructor(string text) {
 		base.Constructor(StatementType.PrintStatement);
@@ -146,7 +146,7 @@ public object PrintStatement extends Statement {
 }
 
 public object RemStatement extends Statement {
-	public string mComment;
+	public string mComment const;
 
 	public void Constructor(string text = "") {
 		base.Constructor(StatementType.RemStatement);

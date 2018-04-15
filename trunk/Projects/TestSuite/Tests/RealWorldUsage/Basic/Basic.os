@@ -13,6 +13,12 @@ import Parser;
 
 
 public int Main(int argc, string args) modify {
+	if ( argc < 2 ) {
+		print("not enought parameters provided!");
+		return -1;
+	}
+
+
 	List<String> params = new List<String>();
 
 	//int count;
@@ -22,11 +28,6 @@ public int Main(int argc, string args) modify {
 		params.push_back(new String(p));
 
 		//count++;
-	}
-
-	if ( params.size() < 1 ) {
-		print("not enought parameters provided!");
-		return -1;
 	}
 
 	try {
@@ -51,7 +52,7 @@ public int Main(int argc, string args) modify {
 			}
 		}
 	}
-	catch ( Exception e ) {
+	catch ( IException e ) {
 		print(e.what());
 	}
 	catch ( string e ) {
