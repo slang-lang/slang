@@ -54,6 +54,18 @@ public object IOException implements IException {
 	}
 }
 
+public object NotInitializedException implements IException {
+	private string _exception;
+
+	public void Constructor(string ex) {
+		_exception = ex;
+	}
+
+	public string what() const {
+		return _exception;
+	}
+}
+
 public object NullPointerException implements IException {
 	private string _exception;
 
