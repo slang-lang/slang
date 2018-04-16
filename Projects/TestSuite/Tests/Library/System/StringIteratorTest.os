@@ -6,17 +6,17 @@ public void Main(int argc = 0, string args = "") modify {
 	assert( TestCase1() );
 	assert( TestCase2() );
 	assert( TestCase3() );
+	assert( TestCase4() );
 }
 
-private bool TestCase1() modify {
+private bool TestCase1() {
 	print("TestCase 1: valid iteration");
 
 	StringIterator strIt = new StringIterator("This is a string", " ");
 
 	int count;
 	while ( strIt.hasNext() && count < 10 ) {
-		string next = strIt.next();
-		print("str.next() = " + next);
+		print("str.next() = " + strIt.next());
 
 		count++;
 	}
@@ -24,7 +24,7 @@ private bool TestCase1() modify {
 	return true;
 }
 
-private bool TestCase2() const {
+private bool TestCase2() {
 	print("TestCase 2: valid iteration");
 
 	StringIterator it = new StringIterator("This is a string", " ");
@@ -40,7 +40,7 @@ private bool TestCase2() const {
 	return true;
 }
 
-private bool TestCase3() const {
+private bool TestCase3() {
 	print("TestCase 3: invalid iteration");
 
 	StringIterator strIt = new StringIterator("This is a string", " ");
@@ -65,6 +65,39 @@ private bool TestCase3() const {
 	catch {
 		print("caught unknown exception!");
 		assert(!"we should not get here!");
+	}
+
+	return false;
+}
+
+private bool TestCase4() {
+	print("TestCase 4: valid iteration with separator change");
+
+	StringIterator it = new StringIterator("This is a string", " ");
+
+	try {
+		string value;
+
+		assert( it.hasNext() );
+
+		value = it.next();
+		print("value = '" + value + "'");
+		assert( value == "This" );
+
+		value = it.next("i");
+		print("value = '" + value + "'");
+		assert( value == "s a str" );
+
+		value = it.next();
+		print("value = '" + value + "'");
+		assert( value == "ng" );
+
+		return true;
+	}
+	catch ( IException e ) {
+		print("e.what(): " + e.what());
+
+		return false;
 	}
 
 	return false;
