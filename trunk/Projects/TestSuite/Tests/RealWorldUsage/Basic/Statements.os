@@ -48,7 +48,7 @@ public object Statement extends Node {
 
 
 public object DimStatement extends Statement {
-	public string mVariable;
+	public string mVariable const;
 
 	public void Constructor(string variable) {
 		base.Constructor(StatementType.DimStatement);
@@ -102,7 +102,7 @@ public object IfStatement extends Statement {
 }
 
 public object InputStatement extends Statement {
-	public string mVariable;
+	public string mVariable const;
 
 	public void Constructor(string variable) {
 		base.Constructor(StatementType.InputStatement);
@@ -117,7 +117,7 @@ public object InputStatement extends Statement {
 
 public object LetStatement extends Statement {
 	public Expression mExpression const;
-	public string mVariable;
+	public string mVariable const;
 
 	public void Constructor(string variable, Expression exp) {
 		base.Constructor(StatementType.LetStatement);
