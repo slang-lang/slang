@@ -29,11 +29,12 @@ public object Parser {
 		Line previousLine;
 
 		while ( it.hasNext() ) {
+			it++;
+
 			if ( it.current() ) {
-				print(it.current());
+				print(string it);
 
 				Line line = parseLine(it.current());
-
 				lines.insert(line.mLineNumber, line);
 
 				if ( previousLine ) {
@@ -42,8 +43,6 @@ public object Parser {
 
 				previousLine = line;
 			}
-
-			it++;
 		}
 
 		print("Done parsing.");
@@ -174,8 +173,8 @@ public object Parser {
 		string text;
 
 		while ( ci.hasNext() ) {
-			string c = ci.current();
 			ci++;
+			string c = ci.current();
 
 			text += c;
 		}
@@ -205,8 +204,8 @@ public object Parser {
 		string line;
 
 		while ( ci.hasNext() ) {
-			string c = ci.current();
 			ci++;
+			string c = ci.current();
 
 			line += c;
 		}
@@ -218,8 +217,8 @@ public object Parser {
 		string word;
 
 		while ( ci.hasNext() ) {
-			string c = ci.current();
 			ci++;
+			string c = ci.current();
 
 			if ( c == " " ) {
 				break;
