@@ -14,20 +14,18 @@ public object StringIterator {
 	 * Standard constructor
 	 */
 	public void Constructor(String value, string separator = " ") {
-		mSeparator = separator;
 		mValue = value;
 
-		reset();
+		setSeparator(separator, true);
 	}
 
 	/*
 	 * Secondary constructor
 	 */
 	public void Constructor(string value, string separator = " ") {
-		mSeparator = separator;
 		mValue = new String(value);
 
-		reset();
+		setSeparator(separator, true);
 	}
 
 	/*
@@ -36,10 +34,10 @@ public object StringIterator {
 	 * throws OutOfBoundsException
 	 */
 	public string current() const throws {
-		if ( mCurrentPosition == -1 ) {
+		if ( mCurrentPosition < 0 ) {
 			throw new NotInitializedException("iterator not initialized");
 		}
-		if ( mCurrentPosition >= mNextPosition ) {
+		if ( mNextPosition > mValue.Length() ) {
 			throw new OutOfBoundsException("out of bounds");
 		}
 
@@ -79,6 +77,8 @@ public object StringIterator {
 	 * throws OutOfBoundsException
 	 */
 	public string next(string separator) modify throws {
+		mCurrentPosition = mNextPosition;
+
 		setSeparator(separator, false);
 
 		return next();
@@ -97,10 +97,16 @@ public object StringIterator {
 	 */
 	public void setSeparator(string separator, bool doReset = false) modify {
 		mSeparator = separator;
-		mNextPosition = mCurrentPosition + strlen(separator);
 
 		if ( doReset ) {
 			reset();
+		}
+		else {
+			mNextPosition = mValue.Find(mSeparator, mCurrentPosition);
+
+			if ( mNextPosition <= 0 ) {
+				mNextPosition = mValue.Length();
+			}
 		}
 	}
 
