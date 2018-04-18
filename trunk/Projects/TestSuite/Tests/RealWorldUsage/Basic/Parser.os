@@ -11,12 +11,19 @@ import Scanner;
 
 
 public object Parser {
+	private String CHARS const;
 	private string COMPARECHARS const = "<>=";
-	private string DELIMITERCHARS const;
+	private String DELIMITERCHARS const;
+	private String NUMBERS const;
 	private string OPERATORCHARS const = "+-*/";
+	private String WHITESPACES const;
 
 	public void Constructor() {
-		DELIMITERCHARS = COMPARECHARS + OPERATORCHARS;
+		CHARS = new String("ABCDEFGHIJKLMNOPRSTUVWXYZ");
+		NUMBERS = new String("0123456789");
+		WHITESPACES = new String(" ");
+
+		DELIMITERCHARS = new String(COMPARECHARS + OPERATORCHARS + string WHITESPACES);
 	}
 
 	public Map<int, Line> parseFile(string filename) modify {
@@ -158,11 +165,10 @@ public object Parser {
 		}
 
 		string variable = parseWord(ci);
-		print("variable = " + variable);
 
-		string word = parseWord(ci);
-		print("word = " + word);
-		if ( word != "=" ) {
+		skipWhitespaces(ci);
+
+		if ( ci.current() != "=" ) {
 			throw "LET: syntax error: missing '='";
 		}
 
@@ -170,13 +176,10 @@ public object Parser {
 	}
 
 	private Statement parsePRINT(CharacterIterator ci) throws {
-		string text;
+		string text = parseWord(ci);
 
-		while ( ci.hasNext() ) {
-			ci++;
-			string c = ci.current();
-
-			text += c;
+		if ( ci.hasNext() ) {
+			throw "cannot handle tokens after print!";
 		}
 
 		return Statement new PrintStatement(text);
@@ -192,13 +195,73 @@ public object Parser {
 // Expression parsing
 
 	private Expression expression(CharacterIterator ci) throws {
-		throw "expression() not implemented!";
+		//skipWhitespaces(ci);
+
+		var leftExp = expression(parseWord(ci));
+
+		if ( ci.hasNext() ) {
+			//skipWhitespaces(ci);
+
+			if ( !ci.hasNext() ) {
+				throw "invalid boolean expression!";
+			}
+
+			var op = ci.current();
+
+			var rightExp = expression(parseWord(ci));
+
+			var binaryExp = new BinaryExpression(op);
+			binaryExp.mLeft = leftExp;		
+			binaryExp.mRight = rightExp;	
+
+			return Expression binaryExp;
+		}
+
+		return leftExp;
 	}
 
+	private Expression expression(string value) const throws {
+		if ( isNumber(String(value)) ) {
+			return Expression new ConstExpression(int value);
+		}
+		if ( isVariable(String(value)) ) {
+			return Expression new VariableExpression(string value);
+		}
+
+		throw "invalid value '" + value + "' provided!";
+	}
 
 
 // Expression parsing
 ///////////////////////////////////////////////////////////
+
+	private bool isNumber(String value) const {
+		if ( !value ) {
+			return false;
+		}
+
+		foreach ( string s : value ) {
+			if ( !NUMBERS.Contains(s) ) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	private bool isVariable(String value) const {
+		if ( !value ) {
+			return false;
+		}
+
+		foreach ( string s : value ) {
+			if ( !CHARS.Contains(s) ) {
+				return false;
+			}
+		}
+
+		return true;
+	}
 
 	private string parseLine(CharacterIterator ci) throws {
 		string line;
@@ -214,20 +277,33 @@ public object Parser {
 	}
 
 	private string parseWord(CharacterIterator ci) throws {
+		bool isString;
 		string word;
 
 		while ( ci.hasNext() ) {
-			ci++;
-			string c = ci.current();
+			string c = ci.next();
 
-			if ( c == " " ) {
+			if ( !isString && DELIMITERCHARS.Contains(c) ) {
 				break;
+			}
+
+			if ( c == "\"" ) {
+				isString = !isString;
+				continue;
 			}
 
 			word += c;
 		}
 
 		return word;
+	}
+
+	private void skipWhitespaces(CharacterIterator it) const throws {
+		while ( WHITESPACES.Contains(it.current()) ) {
+			print("Skipping '" + it.current() + "'");
+
+			it.next();
+		}
 	}
 }
 
