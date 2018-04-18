@@ -46,6 +46,9 @@ public object Interpreter {
 			case stmt is InputStatement: {
 				return processINPUT(InputStatement stmt);
 			}
+			case stmt is LetStatement: {
+				return processLET(LetStatement stmt);
+			}
 			case stmt is PrintStatement: {
 				return processPRINT(PrintStatement stmt);
 			}
@@ -54,10 +57,71 @@ public object Interpreter {
 		return 0;
 	}
 
+	private string processBinaryExpression(BinaryExpression exp) const throws {
+		print("processBinaryExpression(" + exp.toString() + ")");
+
+		string result = processExpression(exp.mLeft);
+
+		switch ( exp.mOperator ) {
+			case "+": {
+				return result + processExpression(exp.mRight);
+			}
+			case "-": {
+				return "" + ((int result) - (int processExpression(exp.mRight)));
+			}
+			case "*": {
+				return "" + ((int result) * (int processExpression(exp.mRight)));
+			}
+			case "/": {
+				return "" + ((int result) / (int processExpression(exp.mRight)));
+			}
+		}
+
+		throw "invalid binary operator '" + exp.mOperator + "'!";
+	}
+
 	private bool processBooleanExpression(Expression exp) const {
 		print("processBooleanExpression(" + exp.toString() + ")");
 
-		return false;
+		string result = processExpression(exp);
+
+		return bool result;
+	}
+
+	private string processConstExpression(ConstExpression exp) const {
+		print("processConstExpression(" + exp.toString() + ")");
+
+		return string exp.mValue;
+	}
+
+	private string processExpression(Expression exp) const throws {
+		print("processExpression(" + exp.toString() + ")");
+
+		//switch ( exp.mExpressionType ) {
+		switch ( typeid(exp) ) {
+			//case ExpressionType.BinaryExpression: {
+			case "BinaryExpression": {
+				return processBinaryExpression(BinaryExpression exp);
+			}
+			//case ExpressionType.ConstExpression: {
+			case "ConstExpression": {
+				return processConstExpression(ConstExpression exp);
+			}
+			//case ExpressionType.VariableExpression: {
+			case "VariableExpression": {
+				return processVariableExpression(VariableExpression exp);
+			}
+		}
+
+		throw "Unhandled expression found!";
+	}
+
+	private string processVariableExpression(VariableExpression exp) const throws {
+		print("processVariableExpression(" + exp.toString() + ")");
+		
+		String obj = mVariables.get(exp.mVariable);
+
+		return string obj;
 	}
 
 	private int processDIM(DimStatement stmt) modify throws {
@@ -73,6 +137,8 @@ public object Interpreter {
 	}
 
 	private int processEND(EndStatement stmt) const throws {
+		print("END");
+
 		throw ControlFlow.Exit;
 	}
 
@@ -98,6 +164,19 @@ public object Interpreter {
 
 		String obj = mVariables.get(stmt.mVariable);
 		obj = cin();
+
+		return 0;
+	}
+
+	private int processLET(LetStatement stmt) const throws {
+		assert(stmt);
+
+		String obj = mVariables.get(stmt.mVariable);
+		if ( !obj ) {
+			throw "invalid variable '" + stmt.mVariable + "' referenced!";
+		}
+
+		obj = processExpression(stmt.mExpression);
 
 		return 0;
 	}
