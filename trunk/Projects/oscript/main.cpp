@@ -42,7 +42,8 @@ std::string mFilename;
 StringSet mLibraryFolders;
 Utils::Common::StdOutLogger mLogger;
 ObjectiveScript::ParameterList mParameters;
-bool mSyntaxCheck;
+bool mSanityCheck = true;
+bool mSyntaxCheck = false;
 
 
 void printUsage()
@@ -53,6 +54,7 @@ void printUsage()
 	std::cout << "-h | --help                This help" << std::endl;
 	std::cout << "-l | --library <library>   Library root path" << std::endl;
 	std::cout << "-q | --quiet               Quiet mode, chats as less as possible" << std::endl;
+	std::cout << "--skip-sanitycheck         Skips sanity check before parsing" << std::endl;
 	std::cout << "--syntax <file>            Syntax check only" << std::endl;
 	std::cout << "-v | --verbose             Verbose output" << std::endl;
 	std::cout << "--version                  Version information" << std::endl;
@@ -107,6 +109,9 @@ void processParameters(int argc, const char* argv[])
 				mLogger.setLoudness(Utils::Common::ILogger::LoudnessMute);
 
 				Utils::PrinterDriver::Instance()->ActivatePrinter = false;
+			}
+			else if ( Utils::Tools::StringCompare(argv[i], "--skip-sanitycheck") ) {
+				mSanityCheck = false;
 			}
 			else if ( Utils::Tools::StringCompare(argv[i], "--syntax") ) {
 				mSyntaxCheck = true;
@@ -163,6 +168,7 @@ int main(int argc, const char* argv[])
 		mVirtualMachine.addLibraryFolder((*it));
 	}
 
+	mVirtualMachine.settings().DoSanityCheck = mSanityCheck;
 	mVirtualMachine.settings().DoSyntaxCheck = mSyntaxCheck;
 
 	// add extensions

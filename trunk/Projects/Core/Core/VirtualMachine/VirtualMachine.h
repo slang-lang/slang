@@ -33,9 +33,11 @@ public:
 	class Settings {
 	public:
 		Settings()
-		: DoSyntaxCheck(false)
+		: DoSanityCheck(true),
+		  DoSyntaxCheck(false)
 		{ }
 
+		bool DoSanityCheck;
 		bool DoSyntaxCheck;
 	};
 
