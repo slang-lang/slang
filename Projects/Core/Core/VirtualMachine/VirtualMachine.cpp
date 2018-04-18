@@ -90,7 +90,7 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 
 	Controller::Instance().phase(Controller::Phase::Generation);
 
-	Designtime::Analyser analyser;
+	Designtime::Analyser analyser(mSettings.DoSyntaxCheck);
 	analyser.processString(content, mScriptFile);
 
 	// load all library references
@@ -261,7 +261,7 @@ bool VirtualMachine::loadLibrary(const std::string& library)
 
 	mLibraryFolders.insert(Utils::Tools::Files::ExtractPathname(library));
 
-	Designtime::Analyser analyser;
+	Designtime::Analyser analyser(mSettings.DoSanityCheck);
 	analyser.processFile(library);
 
 	mImportedLibraries.insert(library);

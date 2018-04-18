@@ -29,7 +29,7 @@ namespace Designtime {
 class Analyser
 {
 public:
-	Analyser();
+	explicit Analyser(bool doSanityCheck = true);
 	~Analyser();
 
 public:
@@ -67,6 +67,7 @@ private: // wrapper methods
 	Common::TypeDeclaration parseTypeDeclaration(TokenIterator& token, IScope* scope);
 
 private:
+	bool mDoSanityCheck;
 	std::string mFilename;
 	StringList mLibraries;
 	bool mProcessingInterface;

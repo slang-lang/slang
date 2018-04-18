@@ -27,8 +27,9 @@ namespace ObjectiveScript {
 namespace Designtime {
 
 
-Analyser::Analyser()
-: mProcessingInterface(false)
+Analyser::Analyser(bool doSanityCheck)
+: mDoSanityCheck(doSanityCheck),
+  mProcessingInterface(false)
 {
 	mRepository = Controller::Instance().repository();
 	mScope = Controller::Instance().stack()->globalScope();
@@ -694,9 +695,11 @@ void Analyser::processTokens(const TokenList& tokens)
 	// factory reset
 	mLibraries.clear();
 
-	// execute basic sanity checks
-	SanityChecker sanity;
-	sanity.process(tokens);
+	if ( mDoSanityCheck ) {
+		// execute basic sanity checks
+		SanityChecker sanity;
+		sanity.process(tokens);
+	}
 
 	// generate objects from tokens
 	generate(tokens);
