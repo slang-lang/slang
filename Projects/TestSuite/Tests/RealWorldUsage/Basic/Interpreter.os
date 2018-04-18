@@ -64,7 +64,7 @@ public object Interpreter {
 
 		switch ( exp.mOperator ) {
 			case "+": {
-				return result + processExpression(exp.mRight);
+				return "" + ((int result) + (int processExpression(exp.mRight)));
 			}
 			case "-": {
 				return "" + ((int result) - (int processExpression(exp.mRight)));
@@ -83,32 +83,26 @@ public object Interpreter {
 	private bool processBooleanExpression(Expression exp) const {
 		print("processBooleanExpression(" + exp.toString() + ")");
 
-		string result = processExpression(exp);
-
-		return bool result;
+		return bool processExpression(exp);
 	}
 
 	private string processConstExpression(ConstExpression exp) const {
-		print("processConstExpression(" + exp.toString() + ")");
+		//print("processConstExpression(" + exp.toString() + ")");
 
 		return string exp.mValue;
 	}
 
 	private string processExpression(Expression exp) const throws {
-		print("processExpression(" + exp.toString() + ")");
+		//print("processExpression(" + exp.toString() + ")");
 
-		//switch ( exp.mExpressionType ) {
-		switch ( typeid(exp) ) {
-			//case ExpressionType.BinaryExpression: {
-			case "BinaryExpression": {
+		switch ( true ) {
+			case exp is BinaryExpression: {
 				return processBinaryExpression(BinaryExpression exp);
 			}
-			//case ExpressionType.ConstExpression: {
-			case "ConstExpression": {
+			case exp is ConstExpression: {
 				return processConstExpression(ConstExpression exp);
 			}
-			//case ExpressionType.VariableExpression: {
-			case "VariableExpression": {
+			case exp is VariableExpression: {
 				return processVariableExpression(VariableExpression exp);
 			}
 		}
@@ -117,11 +111,9 @@ public object Interpreter {
 	}
 
 	private string processVariableExpression(VariableExpression exp) const throws {
-		print("processVariableExpression(" + exp.toString() + ")");
-		
-		String obj = mVariables.get(exp.mVariable);
+		//print("processVariableExpression(" + exp.toString() + ")");
 
-		return string obj;
+		return string mVariables.get(exp.mVariable);
 	}
 
 	private int processDIM(DimStatement stmt) modify throws {
@@ -131,7 +123,13 @@ public object Interpreter {
 			throw new Exception("duplicate variable '" + stmt.mVariable + "' declared!");
 		}
 
-		mVariables.insert(stmt.mVariable, new String());
+		var obj = new String();
+
+		if ( stmt.mExpression ) {
+			obj = processExpression(stmt.mExpression);
+		}
+
+		mVariables.insert(stmt.mVariable, obj);
 
 		return 0;
 	}
