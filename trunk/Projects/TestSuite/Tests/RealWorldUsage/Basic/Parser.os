@@ -1,4 +1,3 @@
-#!/usr/local/bin/oscript
 
 // library imports
 import System.CharacterIterator;
@@ -83,7 +82,7 @@ public object Parser {
 	}
 
 	private Statement parseStatement(CharacterIterator ci) throws {
-		Statement result = Statement null;
+		Statement result;
 
 		switch ( parseWord(ci) ) {
 			case "DIM": {
