@@ -48,16 +48,18 @@ public object Statement extends Node {
 
 
 public object DimStatement extends Statement {
+	public Expression mExpression const;
 	public string mVariable const;
 
-	public void Constructor(string variable) {
+	public void Constructor(string variable, Expression exp) {
 		base.Constructor(StatementType.DimStatement);
 
+		mExpression = exp;
 		mVariable = variable;
 	}
 
 	public string toString() const {
-		return "DIM " + mVariable;
+		return "DIM " + mVariable + mExpression ? mExpression.toString() : "";
 	}
 }
 

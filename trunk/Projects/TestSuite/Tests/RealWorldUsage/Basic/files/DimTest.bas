@@ -1,6 +1,8 @@
-10 REM This is a simple "Hello World" BASIC script
-20 PRINT "Hello World!"
-30 DIM A
-40 PRINT "After DIM"
-50 REM END
+10 REM This is a simple BASIC script that tests the DIM keyword
+20 DIM A
+30 PRINT "After DIM"
+40 DIM B = 2
+50 PRINT "B = "
+60 PRINT B
+70 REM END
 

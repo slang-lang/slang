@@ -35,7 +35,7 @@ public object BinaryExpression extends Expression {
 	public void Constructor(string op) {
 		base.Constructor(ExpressionType.BinaryExpression);
 
-		mOperator = operator;
+		mOperator = op;
 	}
 
 	public string toString() const {

@@ -88,6 +88,7 @@ public object Parser {
 		switch ( parseWord(ci) ) {
 			case "DIM": {
 				result = parseDIM(ci);
+				print(result.toString());
 				break;
 			}
 			case "END": {
@@ -100,18 +101,22 @@ public object Parser {
 			}
 			case "IF": {
 				result = parseIF(ci);
+				//print(result.toString());
 				break;
 			}
 			case "INPUT": {
 				result = parseINPUT(ci);
+				//print(result.toString());
 				break;
 			}
 			case "LET": {
 				result = parseLET(ci);
+				//print(result.toString());
 				break;
 			}
 			case "PRINT": {
 				result = parsePRINT(ci);
+				//print(result.toString());
 				break;
 			}
 			case "REM": {
@@ -128,7 +133,18 @@ public object Parser {
 			throw new Exception("incomplete DIM!");
 		}
 
-		return Statement new DimStatement(parseWord(ci));
+		string variable = parseWord(ci);
+		Expression exp;
+
+		skipWhitespaces(ci);
+
+		if ( ci.current() == "=" ) {
+			ci.next();
+
+			exp = expression(ci);
+		}
+
+		return Statement new DimStatement(variable, exp);
 	}
 
 	private Statement parseEND(CharacterIterator ci) throws {
@@ -161,7 +177,7 @@ public object Parser {
 
 	private Statement parseLET(CharacterIterator ci) throws {
 		if ( !ci.hasNext() ) {
-			throw new Exception("incomplete IF!");
+			throw new Exception("incomplete LET!");
 		}
 
 		string variable = parseWord(ci);
@@ -171,6 +187,7 @@ public object Parser {
 		if ( ci.current() != "=" ) {
 			throw "LET: syntax error: missing '='";
 		}
+		ci.next();
 
 		return Statement new LetStatement(variable, expression(ci));
 	}
@@ -195,24 +212,28 @@ public object Parser {
 // Expression parsing
 
 	private Expression expression(CharacterIterator ci) throws {
-		//skipWhitespaces(ci);
-
 		var leftExp = expression(parseWord(ci));
+		print("leftExp: " + leftExp.toString());
 
 		if ( ci.hasNext() ) {
-			//skipWhitespaces(ci);
+			skipWhitespaces(ci);
+
+			var op = ci.current();
+			print("op: '" + op + "'");
 
 			if ( !ci.hasNext() ) {
 				throw "invalid boolean expression!";
 			}
 
-			var op = ci.current();
+			ci.next();
 
-			var rightExp = expression(parseWord(ci));
+			var rightExp = expression(ci);
+			print("rightExp: " + rightExp.toString());
 
 			var binaryExp = new BinaryExpression(op);
-			binaryExp.mLeft = leftExp;		
-			binaryExp.mRight = rightExp;	
+			binaryExp.mLeft = leftExp;
+			binaryExp.mRight = rightExp;
+			print("binaryExp: " + binaryExp.toString());
 
 			return Expression binaryExp;
 		}
@@ -298,11 +319,11 @@ public object Parser {
 		return word;
 	}
 
-	private void skipWhitespaces(CharacterIterator it) const throws {
-		while ( WHITESPACES.Contains(it.current()) ) {
-			print("Skipping '" + it.current() + "'");
+	private void skipWhitespaces(CharacterIterator ci) const throws {
+		while ( ci.hasNext() && WHITESPACES.Contains(ci.current()) ) {
+			//print("Skipping '" + ci.current() + "'");
 
-			it.next();
+			ci.next();
 		}
 	}
 }
