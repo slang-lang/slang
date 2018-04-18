@@ -88,7 +88,7 @@ public object Parser {
 		switch ( parseWord(ci) ) {
 			case "DIM": {
 				result = parseDIM(ci);
-				print(result.toString());
+				//print(result.toString());
 				break;
 			}
 			case "END": {
@@ -213,13 +213,11 @@ public object Parser {
 
 	private Expression expression(CharacterIterator ci) throws {
 		var leftExp = expression(parseWord(ci));
-		print("leftExp: " + leftExp.toString());
 
 		if ( ci.hasNext() ) {
 			skipWhitespaces(ci);
 
 			var op = ci.current();
-			print("op: '" + op + "'");
 
 			if ( !ci.hasNext() ) {
 				throw "invalid boolean expression!";
@@ -228,12 +226,10 @@ public object Parser {
 			ci.next();
 
 			var rightExp = expression(ci);
-			print("rightExp: " + rightExp.toString());
 
 			var binaryExp = new BinaryExpression(op);
 			binaryExp.mLeft = leftExp;
 			binaryExp.mRight = rightExp;
-			print("binaryExp: " + binaryExp.toString());
 
 			return Expression binaryExp;
 		}

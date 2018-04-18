@@ -58,7 +58,7 @@ public object Interpreter {
 	}
 
 	private string processBinaryExpression(BinaryExpression exp) const throws {
-		print("processBinaryExpression(" + exp.toString() + ")");
+		//print("processBinaryExpression(" + exp.toString() + ")");
 
 		string result = processExpression(exp.mLeft);
 
@@ -81,7 +81,7 @@ public object Interpreter {
 	}
 
 	private bool processBooleanExpression(Expression exp) const {
-		print("processBooleanExpression(" + exp.toString() + ")");
+		//print("processBooleanExpression(" + exp.toString() + ")");
 
 		return bool processExpression(exp);
 	}
@@ -93,7 +93,7 @@ public object Interpreter {
 	}
 
 	private string processExpression(Expression exp) const throws {
-		//print("processExpression(" + exp.toString() + ")");
+		print("processExpression(" + exp.toString() + ")");
 
 		switch ( true ) {
 			case exp is BinaryExpression: {
