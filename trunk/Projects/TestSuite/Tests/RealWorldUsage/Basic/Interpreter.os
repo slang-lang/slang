@@ -63,6 +63,27 @@ public object Interpreter {
 		string result = processExpression(exp.mLeft);
 
 		switch ( exp.mOperator ) {
+			// compare operators
+			case "=": {
+				return "" + (result == processExpression(exp.mRight));
+			}
+			case "<": {
+				return "" + (result < processExpression(exp.mRight));
+			}
+			case "<=": {
+				return "" + (result <= processExpression(exp.mRight));
+			}
+			case ">": {
+				return "" + (result > processExpression(exp.mRight));
+			}
+			case ">=": {
+				return "" + (result >= processExpression(exp.mRight));
+			}
+			case "<>": {
+				return "" + (result != processExpression(exp.mRight));
+			}
+
+			// arithmetic operators
 			case "+": {
 				return "" + ((int result) + (int processExpression(exp.mRight)));
 			}
