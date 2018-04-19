@@ -18,7 +18,7 @@ public object Parser {
 	private String WHITESPACES const;
 
 	public void Constructor() {
-		CHARS = new String("ABCDEFGHIJKLMNOPRSTUVWXYZ");
+		CHARS = new String("ABCDEFGHIJKLMNOPRSTUVWXYZabcdefghijklmnoprstuvwxyz");
 		NUMBERS = new String("0123456789");
 		WHITESPACES = new String(" ");
 
@@ -163,7 +163,16 @@ public object Parser {
 			throw new Exception("incomplete IF!");
 		}
 
-		return Statement new IfStatement(expression(ci), parseStatement(ci));
+		Expression exp = expression(ci);
+		print(exp.toString());
+
+		var then = parseWord(ci);
+		print("then: " + then);
+		if ( then != "THEN" ) {
+			throw "'THEN' excpected but '" + then + "' found!";
+		}
+
+		return Statement new IfStatement(exp, parseStatement(ci));
 	}
 
 	private Statement parseINPUT(CharacterIterator ci) throws {
@@ -213,13 +222,13 @@ public object Parser {
 	private Expression expression(CharacterIterator ci) throws {
 		var leftExp = expression(parseWord(ci));
 
-		if ( ci.hasNext() ) {
-			skipWhitespaces(ci);
+		skipWhitespaces(ci);
 
+		if ( ci.hasNext() && (isComparator(ci.current()) || isOperator(ci.current())) ) {
 			var op = ci.current();
 
 			if ( !ci.hasNext() ) {
-				throw "invalid boolean expression!";
+				throw "invalid binary expression!";
 			}
 
 			ci.next();
@@ -237,10 +246,10 @@ public object Parser {
 	}
 
 	private Expression expression(string value) const throws {
-		if ( isNumber(String(value)) ) {
+		if ( isNumber(new String(value)) ) {
 			return Expression new ConstExpression(int value);
 		}
-		if ( isVariable(String(value)) ) {
+		if ( isVariable(new String(value)) ) {
 			return Expression new VariableExpression(string value);
 		}
 
@@ -250,6 +259,10 @@ public object Parser {
 
 // Expression parsing
 ///////////////////////////////////////////////////////////
+
+	private bool isComparator(string value) const {
+		return strfind(COMPARECHARS, value, 0) >= 0;
+	}
 
 	private bool isNumber(String value) const {
 		if ( !value ) {
@@ -263,6 +276,10 @@ public object Parser {
 		}
 
 		return true;
+	}
+
+	private bool isOperator(string value) const {
+		return strfind(OPERATORCHARS, value, 0) >= 0;
 	}
 
 	private bool isVariable(String value) const {
@@ -316,8 +333,6 @@ public object Parser {
 
 	private void skipWhitespaces(CharacterIterator ci) const throws {
 		while ( ci.hasNext() && WHITESPACES.Contains(ci.current()) ) {
-			//print("Skipping '" + ci.current() + "'");
-
 			ci.next();
 		}
 	}
