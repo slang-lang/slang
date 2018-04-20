@@ -1,3 +1,4 @@
+#!/usr/local/bin/oscript /Users/madelmann/workspace/ObjectiveScript/src/Projects/TestSuite/Tests/RealWorldUsage/Basic/Basic.os
 100 REM This is probably the canonical BASIC example
 110 REM Program. Note that REM statements are ignored.
 120 PRINT "This is a test program."

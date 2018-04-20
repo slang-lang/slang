@@ -41,6 +41,11 @@ public object Parser {
 				print(string it);
 
 				Line line = parseLine(it.current());
+				if ( !line ) {
+					// ignore invalid lines (mostly shebangs ;-)
+					continue;
+				}
+
 				lines.insert(line.mLineNumber, line);
 
 				if ( previousLine ) {
@@ -58,6 +63,10 @@ public object Parser {
 	}
 
 	private Line parseLine(string content) throws {
+		if ( strpos(content, 0) == "#" ) {
+			return Line null;
+		}
+
 		// parse line number
 		// {
 		int idx = strfind(content, " ", 0);
@@ -164,10 +173,14 @@ public object Parser {
 		}
 
 		Expression exp = expression(ci);
-		print(exp.toString());
 
-		var then = parseWord(ci);
-		print("then: " + then);
+		string then;
+		while ( ci.hasNext() && isCharacter(ci.current()) ) {
+			then += ci.current();
+
+			ci.next();
+		}
+
 		if ( then != "THEN" ) {
 			throw "'THEN' excpected but '" + then + "' found!";
 		}
@@ -259,6 +272,10 @@ public object Parser {
 
 // Expression parsing
 ///////////////////////////////////////////////////////////
+
+	private bool isCharacter(string value) const {
+		return CHARS.Contains(value);
+	}
 
 	private bool isComparator(string value) const {
 		return strfind(COMPARECHARS, value, 0) >= 0;
