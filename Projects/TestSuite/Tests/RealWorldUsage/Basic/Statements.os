@@ -59,7 +59,7 @@ public object DimStatement extends Statement {
 	}
 
 	public string toString() const {
-		return "DIM " + mVariable + mExpression ? mExpression.toString() : "";
+		return "DIM " + mVariable + mExpression ? (" = " + mExpression.toString()) : "";
 	}
 }
 
@@ -104,16 +104,18 @@ public object IfStatement extends Statement {
 }
 
 public object InputStatement extends Statement {
+	public string mText;
 	public string mVariable const;
 
-	public void Constructor(string variable) {
+	public void Constructor(string text, string variable) {
 		base.Constructor(StatementType.InputStatement);
 
+		mText = text;
 		mVariable = variable;
 	}
 
 	public string toString() const {
-		return "INPUT " + mVariable;
+		return "INPUT " + mText ? (mText + " ") : "" + mVariable;
 	}
 }
 
@@ -134,16 +136,16 @@ public object LetStatement extends Statement {
 }
 
 public object PrintStatement extends Statement {
-	public string mText const;
+	public Expression mExpression const;
 
-	public void Constructor(string text) {
+	public void Constructor(Expression exp) {
 		base.Constructor(StatementType.PrintStatement);
 
-		mText = text;
+		mExpression = exp;
 	}
 
 	public string toString() const {
-		return "PRINT " + mText;
+		return "PRINT " + mExpression ? mExpression.toString() : "";
 	}
 }
 
@@ -157,8 +159,7 @@ public object RemStatement extends Statement {
 	}
 
 	public string toString() const {
-		//return "REM " + mComment;
-		return "REM";
+		return "REM " + mComment;
 	}
 }
 

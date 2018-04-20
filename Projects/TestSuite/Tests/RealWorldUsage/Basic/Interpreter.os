@@ -60,6 +60,8 @@ public object Interpreter {
 	private string processBinaryExpression(BinaryExpression exp) const throws {
 		//print("processBinaryExpression(" + exp.toString() + ")");
 
+		bool isStringExp = (exp.mLeft is ConstStringExpression) || (exp.mRight is ConstStringExpression);
+
 		string result = processExpression(exp.mLeft);
 
 		switch ( exp.mOperator ) {
@@ -116,10 +118,16 @@ public object Interpreter {
 		return processExpression(exp) > "0";
 	}
 
-	private string processConstExpression(ConstExpression exp) const {
-		//print("processConstExpression(" + exp.toString() + ")");
+	private string processConstIntegerExpression(ConstIntegerExpression exp) const {
+		print("processConstIntegerExpression(" + exp.toString() + ")");
 
 		return string exp.mValue;
+	}
+
+	private string processConstStringExpression(ConstStringExpression exp) const {
+		print("processConstStringExpression(" + exp.toString() + ")");
+
+		return exp.mValue;
 	}
 
 	private string processExpression(Expression exp) const throws {
@@ -129,8 +137,11 @@ public object Interpreter {
 			case exp is BinaryExpression: {
 				return processBinaryExpression(BinaryExpression exp);
 			}
-			case exp is ConstExpression: {
-				return processConstExpression(ConstExpression exp);
+			case exp is ConstIntegerExpression: {
+				return processConstIntegerExpression(ConstIntegerExpression exp);
+			}
+			case exp is ConstStringExpression: {
+				return processConstStringExpression(ConstStringExpression exp);
 			}
 			case exp is VariableExpression: {
 				return processVariableExpression(VariableExpression exp);
@@ -190,6 +201,8 @@ public object Interpreter {
 	private int processINPUT(InputStatement stmt) const {
 		assert(stmt);
 
+		write(stmt.mText);
+
 		String obj = mVariables.get(stmt.mVariable);
 		obj = cin();
 
@@ -212,12 +225,7 @@ public object Interpreter {
 	private int processPRINT(PrintStatement stmt) const {
 		assert(stmt);
 
-		if ( mVariables.contains(stmt.mText) ) {
-			print(string mVariables.get(stmt.mText));
-		}
-		else {
-			print(stmt.mText);
-		}
+		print(processExpression(stmt.mExpression));
 
 		return 0;
 	}
