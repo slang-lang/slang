@@ -1,9 +1,11 @@
 #!/usr/local/bin/oscript /Users/madelmann/workspace/ObjectiveScript/src/Projects/TestSuite/Tests/RealWorldUsage/Basic/Basic.os
-10 REM This is a simple "Hello World" BASIC script
+10 REM This is a simple BASIC script that tests the INPUT keyword
 20 PRINT "Hello World!"
 25 DIM A
 30 INPUT A
 40 PRINT "After INPUT"
-45 PRINT A
-50 REM END
+50 PRINT A
+60 INPUT "A = " A
+70 PRINT A
+100 REM END
 
