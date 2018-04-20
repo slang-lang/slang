@@ -60,52 +60,70 @@ public object Interpreter {
 	private string processBinaryExpression(BinaryExpression exp) const throws {
 		//print("processBinaryExpression(" + exp.toString() + ")");
 
-		bool isStringExp = (exp.mLeft is ConstStringExpression) || (exp.mRight is ConstStringExpression);
+		// determine if anyone of the expressions is a string
+		bool isStringExp = exp.isString();
 
-		string result = processExpression(exp.mLeft);
+		// evaluate left expression
+		string left = processExpression(exp.mLeft);
+		string right = processExpression(exp.mRight);
 
 		switch ( exp.mOperator ) {
 			// compare operators
 			case "=": {
-				print("result: '" + result + "' == '" + processExpression(exp.mRight) + "'");
-				return "" + (result == processExpression(exp.mRight));
+				//print("left: '" + left + "' == '" + right + "'");
+				return "" + (left == right);
 			}
 			case "<": {
-				print("result: '" + result + "' < '" + processExpression(exp.mRight) + "'");
-				return "" + (result < processExpression(exp.mRight));
+				//print("left: '" + left + "' < '" + right + "'");
+				return "" + (left < right);
 			}
 			case "<=": {
-				print("result: '" + result + "' <= '" + processExpression(exp.mRight) + "'");
-				return "" + (result <= processExpression(exp.mRight));
+				print("left: '" + left + "' <= '" + right + "'");
+				return "" + (left <= right);
 			}
 			case ">": {
-				print("result: '" + result + "' > '" + processExpression(exp.mRight) + "'");
-				return "" + (result > processExpression(exp.mRight));
+				//print("left: '" + left + "' > '" + right + "'");
+				return "" + (left > right);
 			}
 			case ">=": {
-				print("result: '" + result + "' >= '" + processExpression(exp.mRight) + "'");
-				return "" + (result >= processExpression(exp.mRight));
+				print("left: '" + left + "' >= '" + right + "'");
+				return "" + (left >= right);
 			}
 			case "<>": {
-				print("result: '" + result + "' <> '" + processExpression(exp.mRight) + "'");
-				return "" + (result != processExpression(exp.mRight));
+				print("left: '" + left + "' <> '" + right + "'");
+				return "" + (left != right);
 			}
 
 			// arithmetic operators
 			case "+": {
-				return "" + ((int result) + (int processExpression(exp.mRight)));
+				if ( isStringExp ) {
+					return left + right;
+				}
+				return "" + ((int left) + (int right));
 			}
 			case "-": {
-				return "" + ((int result) - (int processExpression(exp.mRight)));
+				if ( isStringExp ) {
+					throw new ArithmeticException("strings not supported");
+				}
+				return "" + ((int left) - (int right));
 			}
 			case "*": {
-				return "" + ((int result) * (int processExpression(exp.mRight)));
+				if ( isStringExp ) {
+					throw new ArithmeticException("strings not supported");
+				}
+				return "" + ((int left) * (int right));
 			}
 			case "/": {
-				return "" + ((int result) / (int processExpression(exp.mRight)));
+				if ( isStringExp ) {
+					throw new ArithmeticException("strings not supported");
+				}
+				return "" + ((int left) / (int right));
 			}
 			case "%": {
-				return "" + ((int result) % (int processExpression(exp.mRight)));
+				if ( isStringExp ) {
+					throw new ArithmeticException("strings not supported");
+				}
+				return "" + ((int left) % (int right));
 			}
 		}
 
@@ -119,13 +137,13 @@ public object Interpreter {
 	}
 
 	private string processConstIntegerExpression(ConstIntegerExpression exp) const {
-		print("processConstIntegerExpression(" + exp.toString() + ")");
+		//print("processConstIntegerExpression(" + exp.toString() + ")");
 
 		return string exp.mValue;
 	}
 
 	private string processConstStringExpression(ConstStringExpression exp) const {
-		print("processConstStringExpression(" + exp.toString() + ")");
+		//print("processConstStringExpression(" + exp.toString() + ")");
 
 		return exp.mValue;
 	}
