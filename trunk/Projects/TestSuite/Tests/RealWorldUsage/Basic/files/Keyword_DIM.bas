@@ -3,7 +3,6 @@
 20 DIM A
 30 PRINT "After DIM"
 40 DIM B = 2
-50 PRINT "B = "
-60 PRINT B
-70 REM END
+50 PRINT "B = " + B
+60 REM END
 
