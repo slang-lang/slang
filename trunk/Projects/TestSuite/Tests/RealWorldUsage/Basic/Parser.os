@@ -267,10 +267,10 @@ public object Parser {
 	}
 
 	private Expression expression(string value) const throws {
-		if ( isNumber(new String(value)) ) {
+		if ( isNumber(value) ) {
 			return Expression new ConstNumberExpression(float value);
 		}
-		else if ( isVariable(new String(value)) ) {
+		else if ( isVariable(value) ) {
 			return Expression new VariableExpression(value);
 		}
 		else {
@@ -292,12 +292,12 @@ public object Parser {
 		return strfind(COMPARECHARS, value, 0) >= 0;
 	}
 
-	private bool isNumber(String value) const {
+	private bool isNumber(string value) const {
 		if ( !value ) {
 			return false;
 		}
 
-		foreach ( string s : value ) {
+		foreach ( string s : new String(value) ) {
 			if ( !NUMBERS.Contains(s) ) {
 				return false;
 			}
@@ -310,12 +310,12 @@ public object Parser {
 		return strfind(OPERATORCHARS, value, 0) >= 0;
 	}
 
-	private bool isVariable(String value) const {
+	private bool isVariable(string value) const {
 		if ( !value ) {
 			return false;
 		}
 
-		foreach ( string s : value ) {
+		foreach ( string s : new String(value) ) {
 			if ( !CHARS.Contains(s) ) {
 				return false;
 			}
