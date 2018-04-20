@@ -23,10 +23,6 @@ public object Interpreter {
 		mVariables = new Map<string, String>();
 	}
 
-	private int process(Line line) modify {
-		return process(line.mStatement);
-	}
-
 	private int process(Statement stmt) modify throws {
 		//print("process(" + stmt.toString() + ")");
 
@@ -99,25 +95,25 @@ public object Interpreter {
 				if ( isStringExp ) {
 					return left + right;
 				}
-				return "" + ((int left) + (int right));
+				return "" + ((float left) + (float right));
 			}
 			case "-": {
 				if ( isStringExp ) {
 					throw new ArithmeticException("strings not supported");
 				}
-				return "" + ((int left) - (int right));
+				return "" + ((float left) - (float right));
 			}
 			case "*": {
 				if ( isStringExp ) {
 					throw new ArithmeticException("strings not supported");
 				}
-				return "" + ((int left) * (int right));
+				return "" + ((float left) * (float right));
 			}
 			case "/": {
 				if ( isStringExp ) {
 					throw new ArithmeticException("strings not supported");
 				}
-				return "" + ((int left) / (int right));
+				return "" + ((float left) / (float right));
 			}
 			case "%": {
 				if ( isStringExp ) {
@@ -133,11 +129,13 @@ public object Interpreter {
 	private bool processBooleanExpression(Expression exp) const {
 		//print("processBooleanExpression(" + exp.toString() + ")");
 
-		return processExpression(exp) > "0";
+		var result = processExpression(exp);
+
+		return result && result != "0";
 	}
 
-	private string processConstIntegerExpression(ConstIntegerExpression exp) const {
-		//print("processConstIntegerExpression(" + exp.toString() + ")");
+	private string processConstNumberExpression(ConstNumberExpression exp) const {
+		//print("processConstNumberExpression(" + exp.toString() + ")");
 
 		return string exp.mValue;
 	}
@@ -155,8 +153,8 @@ public object Interpreter {
 			case exp is BinaryExpression: {
 				return processBinaryExpression(BinaryExpression exp);
 			}
-			case exp is ConstIntegerExpression: {
-				return processConstIntegerExpression(ConstIntegerExpression exp);
+			case exp is ConstNumberExpression: {
+				return processConstNumberExpression(ConstNumberExpression exp);
 			}
 			case exp is ConstStringExpression: {
 				return processConstStringExpression(ConstStringExpression exp);
@@ -208,8 +206,7 @@ public object Interpreter {
 	private int processIF(IfStatement stmt) modify {
 		assert(stmt);
 
-		bool isValid = processBooleanExpression(stmt.mExpression);
-		if ( isValid ) {
+		if ( processBooleanExpression(stmt.mExpression) ) {
 			return process(stmt.mThenBlock);
 		}
 
@@ -253,20 +250,38 @@ public object Interpreter {
 			throw new Exception("no valid lines to interpret!");
 		}
 
-		print("Interpreting keywords...");
+		//print("Started interpreting statements...");
 
 		int lineNumber = 10;
 		Line line;
 
-		while ( lineNumber > 0 ) {
-			//print("lineNumber = " + lineNumber);
+		try {
+			while ( lineNumber > 0 ) {
+				//print("LINE: " + lineNumber);
 
-			line = mLines.get(lineNumber);
+				line = mLines.get(lineNumber);
 
-			lineNumber = process(line.mStatement) ?: line.nextLine();
+				lineNumber = process(line.mStatement) ?: line.nextLine();
+			}
+		}
+		catch ( ControlFlow e ) {
+			switch ( e ) {
+				case ControlFlow.Exit: {
+					//print("ControlFlow: Exit");
+					break;
+				}
+				case ControlFlow.Normal: {
+					//print("ControlFlow: Normal");
+					break;
+				}
+				default: {
+					print("ControlFlow: Unknown!");
+					break;
+				}
+			}
 		}
 
-		print("Done interpreting.");
+		//print("Done interpreting.");
 
 		return 0;
 	}

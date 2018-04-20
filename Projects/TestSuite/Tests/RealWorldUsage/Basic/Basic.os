@@ -36,22 +36,6 @@ public int Main(int argc, string args) modify {
 		Interpreter interpreter = new Interpreter(Object parser.parseFile(string params.at(1)));
 		return interpreter.run();
 	}
-	catch ( ControlFlow e ) {
-		switch ( e ) {
-			case ControlFlow.Exit: {
-				//print("ControlFlow: Exit");
-				break;
-			}
-			case ControlFlow.Normal: {
-				//print("ControlFlow: Normal");
-				break;
-			}
-			default: {
-				print("ControlFlow: Unknown!");
-				break;
-			}
-		}
-	}
 	catch ( IException e ) {
 		print(e.what());
 	}
