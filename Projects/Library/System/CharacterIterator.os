@@ -11,6 +11,9 @@ public object CharacterIterator implements Iterator {
 	}
 
 	public string current() const throws {
+		if ( mCurrentIndex < 0 ) {
+			throw new NotInitializedException("iterator not initialized");
+		}
 		if ( !mValue ) {
 			throw new Exception("invalid iteration string");
 		}
@@ -20,6 +23,17 @@ public object CharacterIterator implements Iterator {
 
 	public bool hasNext() const {
 		return mCurrentIndex < mLength;
+	}
+
+	public string lookAHead(int offset = 1) const throws {
+		if ( offset <= 0 ) {
+			throw new Exception("invalid look ahead offset(" + offset + ")");
+		}
+		if ( mCurrentIndex + offset >= mLength ) {
+			throw new OutOfBoundsException("index(" + mCurrentIndex + offset + ") out of bounds");
+		}
+
+		return substr(mValue, mCurrentIndex + offset, 1);
 	}
 
 	public string next() modify throws {
