@@ -268,7 +268,7 @@ public object Parser {
 
 	private Expression expression(string value) const throws {
 		if ( isNumber(new String(value)) ) {
-			return Expression new ConstIntegerExpression(int value);
+			return Expression new ConstNumberExpression(float value);
 		}
 		else if ( isVariable(new String(value)) ) {
 			return Expression new VariableExpression(value);
