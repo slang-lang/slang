@@ -101,15 +101,17 @@ public object Parser {
 			}
 			case "END": {
 				result = parseEND(ci);
+				//print(result.toString());
 				break;
 			}
 			case "GOTO": {
 				result = parseGOTO(ci);
+				//print(result.toString());
 				break;
 			}
 			case "IF": {
 				result = parseIF(ci);
-				//print(result.toString());
+				print(result.toString());
 				break;
 			}
 			case "INPUT": {
@@ -119,7 +121,7 @@ public object Parser {
 			}
 			case "LET": {
 				result = parseLET(ci);
-				//print(result.toString());
+				print(result.toString());
 				break;
 			}
 			case "PRINT": {
@@ -129,6 +131,7 @@ public object Parser {
 			}
 			case "REM": {
 				result = parseREM(ci);
+				//print(result.toString());
 				break;
 			}
 		}
@@ -193,7 +196,12 @@ public object Parser {
 			throw new Exception("incomplete INPUT!");
 		}
 
-		return Statement new InputStatement(parseWord(ci));
+		string text;
+		if ( ci.lookAHead() == "\"" ) {
+			text = parseWord(ci);
+		}
+
+		return Statement new InputStatement(text, parseWord(ci));
 	}
 
 	private Statement parseLET(CharacterIterator ci) throws {
@@ -214,13 +222,13 @@ public object Parser {
 	}
 
 	private Statement parsePRINT(CharacterIterator ci) throws {
-		string text = parseWord(ci);
-
-		if ( ci.hasNext() ) {
-			throw "cannot handle tokens after print!";
+		if ( !ci.hasNext() ) {
+			throw new Exception("incomplete LET!");
 		}
 
-		return Statement new PrintStatement(text);
+		Expression exp = expression(ci);
+
+		return Statement new PrintStatement(exp);
 	}
 
 	private Statement parseREM(CharacterIterator ci) throws {
@@ -260,10 +268,13 @@ public object Parser {
 
 	private Expression expression(string value) const throws {
 		if ( isNumber(new String(value)) ) {
-			return Expression new ConstExpression(int value);
+			return Expression new ConstIntegerExpression(int value);
 		}
-		if ( isVariable(new String(value)) ) {
-			return Expression new VariableExpression(string value);
+		else if ( isVariable(new String(value)) ) {
+			return Expression new VariableExpression(value);
+		}
+		else {
+			return Expression new ConstStringExpression(value);
 		}
 
 		throw "invalid value '" + value + "' provided!";

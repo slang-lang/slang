@@ -7,7 +7,8 @@ import Nodes;
 
 public enum ExpressionType {
 	BinaryExpression = 0,
-	ConstExpression,
+	ConstIntegerExpression,
+	ConstStringExpression,
 	VariableExpression;
 }
 
@@ -43,17 +44,31 @@ public object BinaryExpression extends Expression {
 	}
 }
 
-public object ConstExpression extends Expression {
+public object ConstIntegerExpression extends Expression {
 	public int mValue const;
 
 	public void Constructor(int value) {
-		base.Constructor(ExpressionType.ConstExpression);
+		base.Constructor(ExpressionType.ConstIntegerExpression);
 
 		mValue = value;
 	}
 
 	public string toString() const {
-		return "ConstExpression(" + mValue + ")";
+		return "ConstIntegerExpression(" + mValue + ")";
+	}
+}
+
+public object ConstStringExpression extends Expression {
+	public string mValue const;
+
+	public void Constructor(string value) {
+		base.Constructor(ExpressionType.ConstStringExpression);
+
+		mValue = value;
+	}
+
+	public string toString() const {
+		return "ConstStringExpression(" + mValue + ")";
 	}
 }
 
