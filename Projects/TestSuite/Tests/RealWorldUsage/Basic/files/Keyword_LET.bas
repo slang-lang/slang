@@ -4,11 +4,10 @@
 120 DIM B
 130 DIM C
 200 LET A = 2
-210 PRINT "A = "
-220 PRINT A
+210 PRINT "A = " + A
 300 LET B = A + 1 + 3
-310 PRINT "B = "
-320 PRINT B
+310 PRINT "B = " + B
 400 LET C = A + 2 - B / 4
-410 PRINT C
+410 PRINT "C = " + C
+420 PRINT "A = " + A + ", B = " + B + ", C = " + C
 500 END
