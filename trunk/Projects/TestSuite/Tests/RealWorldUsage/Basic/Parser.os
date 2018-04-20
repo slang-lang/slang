@@ -14,7 +14,7 @@ public object Parser {
 	private string COMPARECHARS const = "<>=";
 	private String DELIMITERCHARS const;
 	private String NUMBERS const;
-	private string OPERATORCHARS const = "+-*/";
+	private string OPERATORCHARS const = "+-*/%";
 	private String WHITESPACES const;
 
 	public void Constructor() {
@@ -121,7 +121,7 @@ public object Parser {
 			}
 			case "LET": {
 				result = parseLET(ci);
-				print(result.toString());
+				//print(result.toString());
 				break;
 			}
 			case "PRINT": {
