@@ -1,3 +1,4 @@
+#!/usr/local/bin/oscript /Users/madelmann/workspace/ObjectiveScript/src/Projects/TestSuite/Tests/RealWorldUsage/Basic/Basic.os
 10 REM LET-Test
 110 DIM A
 120 DIM B

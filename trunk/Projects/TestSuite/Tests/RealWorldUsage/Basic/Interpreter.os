@@ -65,21 +65,27 @@ public object Interpreter {
 		switch ( exp.mOperator ) {
 			// compare operators
 			case "=": {
+				print("result: '" + result + "' == '" + processExpression(exp.mRight) + "'");
 				return "" + (result == processExpression(exp.mRight));
 			}
 			case "<": {
+				print("result: '" + result + "' < '" + processExpression(exp.mRight) + "'");
 				return "" + (result < processExpression(exp.mRight));
 			}
 			case "<=": {
+				print("result: '" + result + "' <= '" + processExpression(exp.mRight) + "'");
 				return "" + (result <= processExpression(exp.mRight));
 			}
 			case ">": {
+				print("result: '" + result + "' > '" + processExpression(exp.mRight) + "'");
 				return "" + (result > processExpression(exp.mRight));
 			}
 			case ">=": {
+				print("result: '" + result + "' >= '" + processExpression(exp.mRight) + "'");
 				return "" + (result >= processExpression(exp.mRight));
 			}
 			case "<>": {
+				print("result: '" + result + "' <> '" + processExpression(exp.mRight) + "'");
 				return "" + (result != processExpression(exp.mRight));
 			}
 
@@ -96,6 +102,9 @@ public object Interpreter {
 			case "/": {
 				return "" + ((int result) / (int processExpression(exp.mRight)));
 			}
+			case "%": {
+				return "" + ((int result) % (int processExpression(exp.mRight)));
+			}
 		}
 
 		throw "invalid binary operator '" + exp.mOperator + "'!";
@@ -104,7 +113,7 @@ public object Interpreter {
 	private bool processBooleanExpression(Expression exp) const {
 		//print("processBooleanExpression(" + exp.toString() + ")");
 
-		return bool processExpression(exp);
+		return processExpression(exp) > "0";
 	}
 
 	private string processConstExpression(ConstExpression exp) const {
@@ -114,7 +123,7 @@ public object Interpreter {
 	}
 
 	private string processExpression(Expression exp) const throws {
-		print("processExpression(" + exp.toString() + ")");
+		//print("processExpression(" + exp.toString() + ")");
 
 		switch ( true ) {
 			case exp is BinaryExpression: {
@@ -144,7 +153,7 @@ public object Interpreter {
 			throw new Exception("duplicate variable '" + stmt.mVariable + "' declared!");
 		}
 
-		var obj = new String();
+		var obj = new String("0");
 
 		if ( stmt.mExpression ) {
 			obj = processExpression(stmt.mExpression);

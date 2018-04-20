@@ -39,11 +39,11 @@ public int Main(int argc, string args) modify {
 	catch ( ControlFlow e ) {
 		switch ( e ) {
 			case ControlFlow.Exit: {
-				print("ControlFlow: Exit");
+				//print("ControlFlow: Exit");
 				break;
 			}
 			case ControlFlow.Normal: {
-				print("ControlFlow: Normal");
+				//print("ControlFlow: Normal");
 				break;
 			}
 			default: {
