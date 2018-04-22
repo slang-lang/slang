@@ -70,12 +70,20 @@ int Application::exec()
 	}
 
 	// start program execution
-	int result = 0;
+	int result = -1;
 	try {
 		result = mClient->exec();
 	}
-	catch ( Runtime::ControlFlow::E &/*e*/ ) {
-		//
+	catch ( ObjectiveScript::Runtime::ControlFlow::E &e ) {
+		if ( e != ObjectiveScript::Runtime::ControlFlow::ExitProgram ) {
+			OSerror("abnormal program termination!");
+		}
+	}
+	catch ( std::exception &e ) {	// catch every std::exception and all derived exception types
+		OSerror(e.what());
+	}
+	catch ( ... ) {	// catch everything
+		std::cout << "uncaught exception detected!" << std::endl;
 	}
 
 	return result;
