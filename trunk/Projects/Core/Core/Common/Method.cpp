@@ -252,9 +252,11 @@ bool Method::isSignatureValid(const ParameterList& params) const
 				// we received the wrong parameter type
 				return false;
 			}
+
 /*
 			// compare received const-ness with expected const-ness
-			if ( paramIt->isConst() && !sigIt->isConst() ) {
+			if ( paramIt->mutability() == sigIt->mutability() ||
+				 (paramIt->mutability() == Mutability::Modify && sigIt->mutability() == Mutability::Const) ) {
 				// we received a const parameter but expect a modifiable parameter
 				return false;
 			}
