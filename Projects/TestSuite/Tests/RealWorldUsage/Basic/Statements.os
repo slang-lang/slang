@@ -33,6 +33,7 @@ public enum StatementType {
 }
 
 public object Statement extends Node {
+	public Statement mFollowingStatement;
 	public StatementType mStatementType const;
 
 	public void Constructor(StatementType statementType) {
@@ -43,6 +44,10 @@ public object Statement extends Node {
 
 	public string toString() const {
 		return "Statement: " + string mStatementType;
+	}
+
+	protected string following() const {
+		return mFollowingStatement ? (" : " + mFollowingStatement.toString()) : "";
 	}
 }
 
@@ -59,7 +64,7 @@ public object DimStatement extends Statement {
 	}
 
 	public string toString() const {
-		return "DIM " + mVariable + mExpression ? (" = " + mExpression.toString()) : "";
+		return "DIM " + mVariable + mExpression ? (" = " + mExpression.toString()) : "" + following();
 	}
 }
 
@@ -69,7 +74,7 @@ public object EndStatement extends Statement {
 	}
 
 	public string toString() const {
-		return "END";
+		return "END" + following();
 	}
 }
 
@@ -83,7 +88,7 @@ public object GotoStatement extends Statement {
 	}
 
 	public string toString() const {
-		return "GOTO " + mLine;
+		return "GOTO " + mLine + following();
 	}
 }
 
@@ -99,7 +104,7 @@ public object IfStatement extends Statement {
 	}
 
 	public string toString() const {
-		return "IF " + mExpression.toString() + " THEN " + mThenBlock.toString();
+		return "IF " + mExpression.toString() + " THEN " + mThenBlock.toString() + following();
 	}
 }
 
@@ -131,7 +136,7 @@ public object LetStatement extends Statement {
 	}
 
 	public string toString() const {
-		return "LET " + mVariable + " = " + mExpression.toString();
+		return "LET " + mVariable + " = " + mExpression.toString() + following();
 	}
 }
 
@@ -145,7 +150,7 @@ public object PrintStatement extends Statement {
 	}
 
 	public string toString() const {
-		return "PRINT " + mExpression ? mExpression.toString() : "";
+		return "PRINT " + (mExpression ? mExpression.toString() : "") + following();
 	}
 }
 
@@ -159,7 +164,7 @@ public object RemStatement extends Statement {
 	}
 
 	public string toString() const {
-		return "REM " + mComment;
+		return "REM " + mComment + following();
 	}
 }
 

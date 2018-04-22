@@ -188,17 +188,25 @@ public object Interpreter {
 
 		mVariables.insert(stmt.mVariable, obj);
 
-		return 0;
+		return stmt.mFollowingStatement ? process(stmt.mFollowingStatement) : 0;
 	}
 
 	private int processEND(EndStatement stmt) const throws {
 		print("END");
 
+		if ( stmt.mFollowingStatement ) {
+			throw "END does not support following statements!";
+		}
+
 		throw ControlFlow.Exit;
 	}
 
-	private int processGOTO(GotoStatement stmt) const {
+	private int processGOTO(GotoStatement stmt) const throws {
 		assert(stmt);
+
+		if ( stmt.mFollowingStatement ) {
+			throw "GOTO does not support following statements!";
+		}
 
 		return stmt.mLine;
 	}
@@ -210,10 +218,10 @@ public object Interpreter {
 			return process(stmt.mThenBlock);
 		}
 
-		return 0;
+		return stmt.mFollowingStatement ? process(stmt.mFollowingStatement) : 0;
 	}
 
-	private int processINPUT(InputStatement stmt) const {
+	private int processINPUT(InputStatement stmt) modify {
 		assert(stmt);
 
 		write(stmt.mText);
@@ -221,10 +229,10 @@ public object Interpreter {
 		String obj = mVariables.get(stmt.mVariable);
 		obj = cin();
 
-		return 0;
+		return stmt.mFollowingStatement ? process(stmt.mFollowingStatement) : 0;
 	}
 
-	private int processLET(LetStatement stmt) const throws {
+	private int processLET(LetStatement stmt) modify throws {
 		assert(stmt);
 
 		String obj = mVariables.get(stmt.mVariable);
@@ -234,15 +242,15 @@ public object Interpreter {
 
 		obj = processExpression(stmt.mExpression);
 
-		return 0;
+		return stmt.mFollowingStatement ? process(stmt.mFollowingStatement) : 0;
 	}
 
-	private int processPRINT(PrintStatement stmt) const {
+	private int processPRINT(PrintStatement stmt) modify {
 		assert(stmt);
 
 		print(processExpression(stmt.mExpression));
 
-		return 0;
+		return stmt.mFollowingStatement ? process(stmt.mFollowingStatement) : 0;
 	}
 
 	public int run() modify throws {
