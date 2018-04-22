@@ -455,8 +455,6 @@ Runtime::ControlFlow::E TreeInterpreter::execute(Common::Method* method, const P
 
 	Common::Method scope(*method);
 
-	IScope* owner = method->getEnclosingScope();
-
 	// initialize parameters & push scope
 	initialize(&scope, method->mergeParameters(params));
 
