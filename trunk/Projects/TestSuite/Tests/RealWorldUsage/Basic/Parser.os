@@ -85,7 +85,20 @@ public object Parser {
 		if ( !statement ) {
 			throw new Exception("invalid keyword in line \"" + content + "\"");
 		}
+
+		skipWhitespaces(ci);
+
+		Statement followingStatement = statement;
+		if ( ci.hasNext() && ci.current() == ":" && bool followingStatement ) {
+			ci.next();
+
+			Statement stmt = parseStatement(ci);
+			followingStatement.mFollowingStatement = Statement stmt;
+			//followingStatement = Statement stmt;
+		}
 		// }
+
+		print(statement.toString());
 
 		return new Line(int lineLabel, statement);
 	}
