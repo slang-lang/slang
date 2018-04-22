@@ -90,7 +90,7 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 
 	Controller::Instance().phase(Controller::Phase::Generation);
 
-	Designtime::Analyser analyser(mSettings.DoSyntaxCheck);
+	Designtime::Analyser analyser(mSettings.DoSanityCheck);
 	analyser.processString(content, mScriptFile);
 
 	// load all library references
