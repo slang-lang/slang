@@ -21,13 +21,8 @@ public int Main(int argc, string args) modify {
 
 	List<String> params = new List<String>();
 
-	//int count;
 	foreach ( string p : new String(args) ) {
-		//print("argv[" + count + "] = " + p);
-
 		params.push_back(new String(p));
-
-		//count++;
 	}
 
 	try {
