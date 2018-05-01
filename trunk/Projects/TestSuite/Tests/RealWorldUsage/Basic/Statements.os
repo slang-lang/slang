@@ -24,6 +24,7 @@ int KEYWORD_REM_ID const = 7;
 public enum StatementType {
 	DimStatement = 0,
 	EndStatement,
+	ForStatement,
 	GotoStatement,
 	IfStatement,
 	InputStatement,
@@ -75,6 +76,26 @@ public object EndStatement extends Statement {
 
 	public string toString() const {
 		return "END" + following();
+	}
+}
+
+public object ForStatement extends Statement {
+	public int mEndValue const;
+	public int mStartValue const;
+	public int mStepValue const;
+	public string mVariable const;
+
+	public void Constructor(string variable, int startValue, int endValue, int stepValue = 1) {
+		base.Constructor(StatementType.DimStatement);
+
+		mEndValue = endValue;
+		mStartValue = startValue;
+		mStepValue = stepValue;
+		mVariable = variable;
+	}
+
+	public string toString() const {
+		return "FOR " + mVariable + " = " + mStartValue + " TO " + mEndValue + " STEP " + mStepValue + following();
 	}
 }
 
