@@ -35,10 +35,12 @@ public object BinaryExpression extends Expression {
 	public string mOperator const;
 	public Expression mRight const;
 
-	public void Constructor(string op) {
+	public void Constructor(Expression left, string op, Expression right) {
 		base.Constructor(ExpressionType.BinaryExpression);
 
+		mLeft = left;
 		mOperator = op;
+		mRight = right;
 	}
 
 	public bool isString() const {

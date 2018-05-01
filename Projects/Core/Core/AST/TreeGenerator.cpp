@@ -73,15 +73,15 @@ void TreeGenerator::deinitialize()
 {
 	IScope* scope = getScope();
 
-	// remove 'this' and 'base' symbols
-	if ( mThis && !mMethod->isStatic() ) {
+	// remove 'this' symbol
+	if ( mThis ) {
 		// revert blueprint constness to modifiable
+// TODO: this is really really wrong and dangerous!!!
 		mThis->setMutability(Mutability::Modify);
 
 		Symbol* thisSymbol = scope->resolve(IDENTIFIER_THIS, true);
 		if ( thisSymbol ) {
 			scope->undefine(IDENTIFIER_THIS);
-			//delete thisSymbol;
 		}
 	}
 
@@ -276,7 +276,7 @@ void TreeGenerator::initialize(Common::Method* method)
 	IScope* scope = getScope();
 
 	// add 'this' symbol to method
-	if ( mThis && !method->isStatic() ) {
+	if ( mThis && !mMethod->isStatic() ) {
 		mThis->setMutability(mMethod->getMutability());
 
 		scope->define(IDENTIFIER_THIS, mThis);
@@ -995,7 +995,11 @@ MethodExpression* TreeGenerator::process_method(SymbolExpression* symbol, const 
 	for ( ExpressionList::const_iterator it = expressions.begin(); it != expressions.end(); ++it ) {
 		params.push_back(Parameter::CreateDesigntime(
 			ANONYMOUS_OBJECT,
-			dynamic_cast<Expression*>((*it))->getResultType()
+			dynamic_cast<Expression*>((*it))->getResultType(),
+			Runtime::AtomicValue(),
+			false,
+			static_cast<Expression*>((*it))->isConst() ? Mutability::Const : Mutability::Modify,
+			static_cast<Expression*>((*it))->isAtomicType() ? AccessMode::ByValue : AccessMode::ByReference
 		));
 	}
 
@@ -1067,7 +1071,7 @@ Expression* TreeGenerator::process_new(TokenIterator& token)
 				typeDeclaration.mConstraints
 			);
 
-			inner->mSymbolExpression = new DesigntimeSymbolExpression(CONSTRUCTOR, _void, PrototypeConstraints());
+			inner->mSymbolExpression = new DesigntimeSymbolExpression(CONSTRUCTOR, _void, PrototypeConstraints(), false);
 			inner->mSymbolExpression->mSurroundingScope = mRepository->findBluePrintObject(type);
 			break;
 		}
@@ -1143,8 +1147,10 @@ Expression* TreeGenerator::process_subscript(TokenIterator& token, SymbolExpress
 
 	std::string type = symbol->getResultType();
 
-	symbol->mSymbolExpression = new RuntimeSymbolExpression("operator[]", "", true, true, false);
-	symbol->mSymbolExpression->mSurroundingScope = mRepository->findBluePrintObject(type);
+	Designtime::BluePrintObject* obj = mRepository->findBluePrintObject(type);
+
+	symbol->mSymbolExpression = new RuntimeSymbolExpression("operator[]", "", true, true, obj->isAtomicType());
+	symbol->mSymbolExpression->mSurroundingScope = obj;
 
 	Token opToken(Token::Category::Operator, Token::Type::BRACKET_OPEN, "[", token->position(), false);
 	ExpressionList params;
@@ -1592,7 +1598,7 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 
 			scope = blueprint;
 
-			symbol = new DesigntimeSymbolExpression(name, type, constraints);
+			symbol = new DesigntimeSymbolExpression(name, type, constraints, blueprint->isAtomicType());
 		} break;
 		case Symbol::IType::NamespaceSymbol: {
 			Common::Namespace* space = dynamic_cast<Common::Namespace*>(result);
@@ -1600,7 +1606,7 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 			scope = space;
 			type = space->QualifiedTypename();
 
-			symbol = new DesigntimeSymbolExpression(name, type, PrototypeConstraints());
+			symbol = new DesigntimeSymbolExpression(name, type, PrototypeConstraints(), true);
 		} break;
 		case Symbol::IType::ObjectSymbol: {
 			Runtime::Object* object = dynamic_cast<Runtime::Object*>(result);
@@ -1615,7 +1621,7 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 			scope = object->isAtomicType() ? 0 : object->getBluePrint();
 			type = object->QualifiedTypename();
 
-			symbol = new RuntimeSymbolExpression(name, type, object->isConst(), object->isMember(), !object->isAtomicType());
+			symbol = new RuntimeSymbolExpression(name, type, object->isConst(), object->isMember(), object->isAtomicType());
 		} break;
 		case Symbol::IType::MethodSymbol: {
 			// don't set the result type yet because we first have to determine which method should get executed in case overloaded methods
@@ -1665,36 +1671,11 @@ SymbolExpression* TreeGenerator::resolveWithThis(TokenIterator& token, IScope* b
 		SymbolExpression* exp = resolve(token, mThis, true, Visibility::Private);
 		if ( exp ) {
 			// insert "this" symbol as "parent" of our recently resolved symbol
-			SymbolExpression* symbol = new RuntimeSymbolExpression(IDENTIFIER_THIS, mThis->QualifiedTypename(), mMethod->isConst(), true, true);
+			SymbolExpression* symbol = new RuntimeSymbolExpression(IDENTIFIER_THIS, mThis->QualifiedTypename(), mMethod->isConst(), true, false);
 			symbol->mSymbolExpression = exp;
 
 			return symbol;
 		}
-
-/*
-		// every class that inherits from another class has a private "base" member to access its ancestor's protected and public members/methods
-		// resolve symbol by using the "base" identifier (without exceptions so that we can try to resolve another time)
-		SymbolExpression* base = new RuntimeSymbolExpression(IDENTIFIER_THIS, mThis->QualifiedTypename(), mMethod->isConst(), true, true);
-		SymbolExpression* origin = base;
-		IScope* scope = mThis;
-
-		while ( scope ) {
-			base->mSymbolExpression = new RuntimeSymbolExpression(IDENTIFIER_BASE, dynamic_cast<Designtime::BluePrintObject*>(scope)->QualifiedTypename(), mMethod->isConst(), true, true);
-			base = base->mSymbolExpression;
-
-			SymbolExpression* exp = resolve(token, scope, true, Visibility::Protected);
-			if ( exp ) {
-				// insert "base" symbol as "parent" of our recently resolved symbol
-				base->mSymbolExpression = exp;
-				return origin;
-			}
-
-			scope = dynamic_cast<Designtime::BluePrintObject*>(scope->resolve(IDENTIFIER_BASE, true, Visibility::Private));
-		}
-
-		// could not resolve token so we have to delete our "origin" SymbolExpression
-		delete origin;
-*/
 	}
 
 	return resolveWithExceptions(token, base);

@@ -98,8 +98,6 @@ public object Parser {
 		}
 		// }
 
-		print(statement.toString());
-
 		return new Line(int lineLabel, statement);
 	}
 
@@ -114,6 +112,11 @@ public object Parser {
 			}
 			case "END": {
 				result = parseEND(ci);
+				//print(result.toString());
+				break;
+			}
+			case "FOR": {
+				result = parseFOR(ci);
 				//print(result.toString());
 				break;
 			}
@@ -173,6 +176,20 @@ public object Parser {
 
 	private Statement parseEND(CharacterIterator ci) throws {
 		return Statement new EndStatement();
+	}
+
+	private Statement parseFOR(CharacterIterator ci) throws {
+		if ( !ci.hasNext() ) {
+			throw new Exception("incomplete FOR!");
+		}
+
+		string variable = parseWord(ci);
+
+		skipWhitespaces(ci);
+
+		throw "FOR-statement not implemented!";
+
+		return Statement new ForStatement(variable, 1, 10, 1);
 	}
 
 	private Statement parseGOTO(CharacterIterator ci) throws {
@@ -269,9 +286,7 @@ public object Parser {
 
 			var rightExp = expression(ci);
 
-			var binaryExp = new BinaryExpression(op);
-			binaryExp.mLeft = leftExp;
-			binaryExp.mRight = rightExp;
+			var binaryExp = new BinaryExpression(leftExp, op, rightExp);
 
 			return Expression binaryExp;
 		}

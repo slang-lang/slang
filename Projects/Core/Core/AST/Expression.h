@@ -46,9 +46,9 @@ public:
 	explicit Expression(ExpressionType::E expressionType)
 	: Node(NodeType::Expression),
 	  mExpressionType(expressionType),
+	  mIsAtomicType(false),
 	  mIsConst(false),
-	  mIsMember(false),
-	  mIsReference(false)
+	  mIsMember(false)
 	{ }
 	virtual ~Expression() { }
 
@@ -56,14 +56,14 @@ public:
 		return mExpressionType;
 	}
 
+	virtual bool isAtomicType() const {
+		return mIsAtomicType;
+	}
 	virtual bool isConst() const {
 		return mIsConst;
 	}
 	virtual bool isMember() const {
 		return mIsMember;
-	}
-	virtual bool isReference() const {
-		return mIsReference;
 	}
 	virtual std::string getResultType() const {
 		return mResultType;
@@ -71,9 +71,9 @@ public:
 
 protected:
 	ExpressionType::E mExpressionType;
+	bool mIsAtomicType;
 	bool mIsConst;
 	bool mIsMember;
-	bool mIsReference;
 	std::string mResultType;
 };
 
@@ -146,7 +146,9 @@ public:
 	explicit LiteralExpression(Runtime::AtomicValue value)
 	: Expression(ExpressionType::LiteralExpression),
 	  mValue(value)
-	{ }
+	{
+		mIsAtomicType = true;
+	}
 
 public:
 	Runtime::AtomicValue mValue;
@@ -316,13 +318,14 @@ public:
 	SymbolExpression* mSymbolExpression;
 
 protected:
-	explicit SymbolExpression(const std::string& name, const std::string& resultType)
+	explicit SymbolExpression(const std::string& name, const std::string& resultType, bool isAtomicType)
 	: Expression(ExpressionType::SymbolExpression),
 	  mName(name),
 	  mSurroundingScope(0),
 	  mSymbolExpression(0),
 	  mSymbolExpressionType(SymbolExpressionType::DesigntimeSymbolExpression)
 	{
+		mIsAtomicType = isAtomicType;
 		mResultType = resultType;
 	}
 
@@ -334,8 +337,8 @@ protected:
 class DesigntimeSymbolExpression : public SymbolExpression
 {
 public:
-	explicit DesigntimeSymbolExpression(const std::string& name, const std::string& resultType, const PrototypeConstraints& constraints)
-	: SymbolExpression(name, resultType),
+	explicit DesigntimeSymbolExpression(const std::string& name, const std::string& resultType, const PrototypeConstraints& constraints, bool isAtomicType)
+	: SymbolExpression(name, resultType, isAtomicType),
 	  mConstraints(constraints)
 	{
 		mIsConst = false;
@@ -358,12 +361,11 @@ public:
 class RuntimeSymbolExpression : public SymbolExpression
 {
 public:
-	explicit RuntimeSymbolExpression(const std::string& name, const std::string& resultType, bool isConst, bool isMember, bool isReference)
-	: SymbolExpression(name, resultType)
+	explicit RuntimeSymbolExpression(const std::string& name, const std::string& resultType, bool isConst, bool isMember, bool isAtomicType)
+	: SymbolExpression(name, resultType, isAtomicType)
 	{
 		mIsConst = isConst;
 		mIsMember = isMember;
-		mIsReference = isReference;
 		mSymbolExpressionType = SymbolExpressionType::RuntimeSymbolExpression;
 	}
 
@@ -376,12 +378,11 @@ public:
 class LocalSymbolExpression : public SymbolExpression
 {
 public:
-	explicit LocalSymbolExpression(const std::string& name, const std::string& resultType, bool isConst, bool isReference)
-	: SymbolExpression(name, resultType)
+	explicit LocalSymbolExpression(const std::string& name, const std::string& resultType, bool isConst, bool isAtomicType)
+	: SymbolExpression(name, resultType, isAtomicType)
 	{
 		mIsConst = isConst;
 		mIsMember = false;
-		mIsReference = isReference;
 		mSymbolExpressionType = SymbolExpressionType::RuntimeSymbolExpression;
 	}
 
