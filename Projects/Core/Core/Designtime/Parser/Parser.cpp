@@ -643,16 +643,22 @@ ParameterList Parser::parseParameters(TokenIterator &token, IScope* scope)
 			}
 		}
 
-		if ( token->content() == RESERVED_WORD_BY_REFERENCE ) {
-			accessMode = AccessMode::ByReference;
-			++token;
-		}
-		else if ( token->content() == RESERVED_WORD_BY_VALUE ) {
-			accessMode = AccessMode::ByValue;
-			++token;
+		if ( token->category() == Token::Category::ReservedWord ) {
+			if ( token->content() == RESERVED_WORD_BY_REFERENCE ) {
+				accessMode = AccessMode::ByReference;
+				++token;
+			}
+			else if ( token->content() == RESERVED_WORD_BY_VALUE ) {
+				accessMode = AccessMode::ByValue;
+				++token;
+			}
 		}
 
 		if ( token->type() == Token::Type::ASSIGN ) {
+			if ( name.empty() ) {
+				throw Common::Exceptions::SyntaxError("cannot use default values for unnamed parameters", token->position());
+			}
+
 			hasDefaultValue = true;
 			++token;
 

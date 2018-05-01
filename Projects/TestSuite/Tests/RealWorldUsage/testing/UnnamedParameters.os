@@ -19,7 +19,7 @@ private object OIsForObject implements IIsForInterface {
 	public void Constructor() {
 	}
 
-	public bool init(int /*param1*/, bool /*param2*/ = false) {
+	public bool init(int /*param1*/, bool /*param2*/) {
 		return true;
 	}
 }
