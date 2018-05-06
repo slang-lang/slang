@@ -1,5 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -18,11 +18,13 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
     <WholeProgramOptimization>false</WholeProgramOptimization>
   </PropertyGroup>
@@ -37,11 +39,15 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
-    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)\..\Projects\Libs\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)\..\Projects\Libs\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
+    <_ProjectFileVersion>15.0.26919.1</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)\..\Projects\Libs\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)\..\Projects\Libs\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -53,8 +59,7 @@
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <FloatingPointModel>Precise</FloatingPointModel>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PrecompiledHeader />
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <ShowIncludes>false</ShowIncludes>
@@ -79,11 +84,9 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <FloatingPointModel>Precise</FloatingPointModel>
       <FloatingPointExceptions>false</FloatingPointExceptions>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PrecompiledHeader />
       <WarningLevel>Level4</WarningLevel>
-      <DebugInformationFormat>
-      </DebugInformationFormat>
+      <DebugInformationFormat />
       <UseFullPaths>true</UseFullPaths>
       <OmitDefaultLibName>true</OmitDefaultLibName>
     </ClCompile>
@@ -93,38 +96,16 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="System\Math\Abs.h" />
     <ClInclude Include="Apache\ApacheExtension.h" />
-    <ClInclude Include="System\AssertMsg.h" />
-    <ClInclude Include="System\Math\Ceil.h" />
-    <ClInclude Include="System\Console\Cerr.h" />
-    <ClInclude Include="System\Console\Cin.h" />
-    <ClInclude Include="System\Console\Console.h" />
-    <ClInclude Include="System\Console\Cout.h" />
-    <ClInclude Include="System\Strings\Defines.h" />
-    <ClInclude Include="System\IO\Defines.h" />
-    <ClInclude Include="System\Math\Defines.h" />
-    <ClInclude Include="System\Console\Defines.h" />
     <ClInclude Include="Apache\Defs.h" />
-    <ClInclude Include="System\Console\Endl.h" />
-    <ClInclude Include="Extensions.h" />
-    <ClInclude Include="System\IO\FileClose.h" />
-    <ClInclude Include="System\IO\FileEOF.h" />
-    <ClInclude Include="System\IO\FileOpen.h" />
-    <ClInclude Include="System\IO\FileRead.h" />
-    <ClInclude Include="System\IO\FileSeek.h" />
-    <ClInclude Include="System\IO\FileTell.h" />
-    <ClInclude Include="System\IO\FileWrite.h" />
-    <ClInclude Include="System\Math\Floor.h" />
-    <ClInclude Include="JSON\FromJson.h" />
     <ClInclude Include="Apache\Get.h" />
-    <ClInclude Include="System\GetChar.h" />
-    <ClInclude Include="System\GetEnv.h" />
-    <ClInclude Include="System\IO\IO.h" />
     <ClInclude Include="Apache\IsSet.h" />
+    <ClInclude Include="Apache\Post.h" />
+    <ClInclude Include="Apache\Pre.h" />
+    <ClInclude Include="Extensions.h" />
+    <ClInclude Include="JSON\FromJson.h" />
     <ClInclude Include="JSON\JsonExtension.h" />
-    <ClInclude Include="System\Math\Math.h" />
-    <ClInclude Include="System\Math\MathExtension.h" />
+    <ClInclude Include="JSON\ToJson.h" />
     <ClInclude Include="Mysql\MysqlAffectedRows.h" />
     <ClInclude Include="Mysql\MysqlClose.h" />
     <ClInclude Include="Mysql\MysqlDataSeek.h" />
@@ -155,16 +136,41 @@
     <ClInclude Include="Mysql\MysqlStat.h" />
     <ClInclude Include="Mysql\MysqlStoreResult.h" />
     <ClInclude Include="Mysql\MysqlUseResult.h" />
-    <ClInclude Include="Apache\Post.h" />
-    <ClInclude Include="Apache\Pre.h" />
-    <ClInclude Include="System\Print.h" />
+    <ClInclude Include="Mysql\Types.h" />
+    <ClInclude Include="System\AssertMsg.h" />
+    <ClInclude Include="System\Console\Cerr.h" />
+    <ClInclude Include="System\Console\Cin.h" />
+    <ClInclude Include="System\Console\Console.h" />
+    <ClInclude Include="System\Console\Cout.h" />
+    <ClInclude Include="System\Console\Defines.h" />
+    <ClInclude Include="System\Console\Endl.h" />
+    <ClInclude Include="System\GetChar.h" />
+    <ClInclude Include="System\GetEnv.h" />
+    <ClInclude Include="System\IO\Defines.h" />
+    <ClInclude Include="System\IO\FileClose.h" />
+    <ClInclude Include="System\IO\FileEOF.h" />
+    <ClInclude Include="System\IO\FileOpen.h" />
+    <ClInclude Include="System\IO\FileRead.h" />
+    <ClInclude Include="System\IO\FileSeek.h" />
+    <ClInclude Include="System\IO\FileTell.h" />
+    <ClInclude Include="System\IO\FileWrite.h" />
+    <ClInclude Include="System\IO\IO.h" />
+    <ClInclude Include="System\Math\Abs.h" />
+    <ClInclude Include="System\Math\Ceil.h" />
+    <ClInclude Include="System\Math\Defines.h" />
+    <ClInclude Include="System\Math\Floor.h" />
+    <ClInclude Include="System\Math\Math.h" />
+    <ClInclude Include="System\Math\MathExtension.h" />
     <ClInclude Include="System\Math\Rand.h" />
     <ClInclude Include="System\Math\Round.h" />
-    <ClInclude Include="System\SetKeyboardBlockingMode.h" />
-    <ClInclude Include="System\Sleep.h" />
     <ClInclude Include="System\Math\Sqrt.h" />
     <ClInclude Include="System\Math\Srand.h" />
+    <ClInclude Include="System\Math\Trunc.h" />
+    <ClInclude Include="System\Print.h" />
+    <ClInclude Include="System\SetKeyboardBlockingMode.h" />
+    <ClInclude Include="System\Sleep.h" />
     <ClInclude Include="System\StdTime.h" />
+    <ClInclude Include="System\Strings\Defines.h" />
     <ClInclude Include="System\Strings\StrFind.h" />
     <ClInclude Include="System\Strings\StringsExtension.h" />
     <ClInclude Include="System\Strings\StrLen.h" />
@@ -174,13 +180,10 @@
     <ClInclude Include="System\Strings\StrRTrim.h" />
     <ClInclude Include="System\Strings\StrTrim.h" />
     <ClInclude Include="System\Strings\SubStr.h" />
-    <ClInclude Include="System\System.h" />
-    <ClInclude Include="System\SystemExtension.h" />
-    <ClInclude Include="JSON\ToJson.h" />
     <ClInclude Include="System\Strings\ToLower.h" />
     <ClInclude Include="System\Strings\ToUpper.h" />
-    <ClInclude Include="System\Math\Trunc.h" />
-    <ClInclude Include="Mysql\Types.h" />
+    <ClInclude Include="System\System.h" />
+    <ClInclude Include="System\SystemExtension.h" />
     <ClInclude Include="System\Write.h" />
     <ClInclude Include="System\WriteLn.h" />
   </ItemGroup>
@@ -189,6 +192,16 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Apache\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Apache\</ObjectFileName>
     </ClCompile>
+    <ClCompile Include="Apache\Defs.cpp" />
+    <ClCompile Include="JSON\JsonExtension.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Json\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Json\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Mysql\MysqlExtension.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Mysql\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Mysql\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Mysql\Types.cpp" />
     <ClCompile Include="System\Console\Console.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Extensions\System\Console\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Extensions\System\Console\</ObjectFileName>
@@ -197,34 +210,25 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Extensions\System\Console\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Extensions\System\Console\</ObjectFileName>
     </ClCompile>
+    <ClCompile Include="System\IO\Defines.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Extensions\System\IO\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Extensions\System\IO\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="System\IO\IO.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Extensions\System\IO\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Extensions\System\IO\</ObjectFileName>
+    </ClCompile>
     <ClCompile Include="System\Math\Defines.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Extensions\System\Math\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Extensions\System\Math\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="System\Math\MathExtension.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Extensions\System\Math\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Extensions\System\Math\</ObjectFileName>
     </ClCompile>
     <ClCompile Include="System\Strings\Defines.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Extensions\System\Strings\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Extensions\System\Strings\</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="System\IO\Defines.cpp">
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Extensions\System\IO\</ObjectFileName>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Extensions\System\IO\</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="Apache\Defs.cpp" />
-    <ClCompile Include="System\IO\IO.cpp">
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Extensions\System\IO\</ObjectFileName>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Extensions\System\IO\</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="JSON\JsonExtension.cpp">
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Json\</ObjectFileName>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Json\</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="System\Math\MathExtension.cpp">
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Extensions\System\Math\</ObjectFileName>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Extensions\System\Math\</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="Mysql\MysqlExtension.cpp">
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Mysql\</ObjectFileName>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Mysql\</ObjectFileName>
     </ClCompile>
     <ClCompile Include="System\Strings\StringsExtension.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Extensions\System\Strings\</ObjectFileName>
@@ -238,7 +242,6 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)System\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)System\</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="Mysql\Types.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.vcxproj">
