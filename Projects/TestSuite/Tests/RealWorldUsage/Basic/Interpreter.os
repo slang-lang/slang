@@ -13,8 +13,8 @@ public enum ControlFlow {
 }
 
 public object Interpreter {
-	private Map<int, Line> mLines;
-	private Map<string, String> mVariables;
+	protected Map<int, Line> mLines;
+	protected Map<string, String> mVariables;
 
 	public void Constructor(Object lines) {
 		assert(lines is Map<int, Line>);
@@ -23,7 +23,7 @@ public object Interpreter {
 		mVariables = new Map<string, String>();
 	}
 
-	private int process(Statement stmt) modify throws {
+	protected int process(Statement stmt) modify throws {
 		//print("process(" + stmt.toString() + ")");
 
 		switch ( true ) {

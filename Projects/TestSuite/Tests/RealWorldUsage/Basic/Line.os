@@ -33,5 +33,9 @@ public object Line {
 	public bool operator<(int lineNumber) const {
 		return mLineNumber < lineNumber;
 	}
+
+	public string =operator(string) const {
+		return mStatement.toString();
+	}
 }
 

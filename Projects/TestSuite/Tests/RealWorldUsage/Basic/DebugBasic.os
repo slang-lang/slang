@@ -29,8 +29,8 @@ public int Main(int argc, string args) modify {
 	try {
 		Parser parser = new Parser();
 
-		Interpreter interpreter = new Interpreter(Object parser.parseFile(string params.at(1)));
-		return interpreter.run();
+		Debugger debugger = new Debugger(Object parser.parseFile(string params.at(1)));
+		return debugger.run();
 	}
 	catch ( IException e ) {
 		print(e.what());
