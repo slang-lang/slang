@@ -71,6 +71,7 @@ public object Debugger extends Interpreter {
 		print("g:  Go to line");
 		print("h:  Print help (= this screen)");
 		print("l:  List program");
+		print("m:  Modify variable");
 		print("n:  Execute next line and break on execution");
 		print("p:  Print variable");
 		print("pa: Print all variables");
@@ -110,17 +111,18 @@ public object Debugger extends Interpreter {
 			write("debugger> ");
 
 			switch ( cin() ) {
-				case "a": { write("Add breakpoint: "); addBreakpoint(int cin()); break; }
-				case "b": { printBreakpoints(); break; }
-				case "c": { /*print("continue");*/ return 0; }
-				case "d": { write("Delete breakpoint: "); removeBreakpoint(int cin()); break; }
-				case "g": { write("Go to line: "); return int cin(); }
-				case "h": { printHelp(); break; }
-				case "l": { printProgram(); break; }
-				case "n": { /*print("next");*/ addBreakpoint(line.mNextLineNumber); return 0; }
-				case "p": { write("Enter variable: "); printVariable(cin()); break; }
+				case "a" : { write("Add breakpoint: "); addBreakpoint(int cin()); break; }
+				case "b" : { printBreakpoints(); break; }
+				case "c" : { /*print("continue");*/ return 0; }
+				case "d" : { write("Delete breakpoint: "); removeBreakpoint(int cin()); break; }
+				case "g" : { write("Go to line: "); return int cin(); }
+				case "h" : { printHelp(); break; }
+				case "l" : { printProgram(); break; }
+				case "m" : { write("Enter variable: "); setVariable(cin()); break; }
+				case "n" : { /*print("next");*/ addBreakpoint(line.mNextLineNumber); return 0; }
+				case "p" : { write("Enter variable: "); printVariable(cin()); break; }
 				case "pa": { printAllVariables(); break; }
-				case "q": { print("Quitting..."); throw ControlFlow.Exit; }
+				case "q" : { print("Quitting..."); throw ControlFlow.Exit; }
 			}
 		}
 
@@ -176,6 +178,18 @@ public object Debugger extends Interpreter {
 		}
 
 		return 0;
+	}
+
+	private void setVariable(string variable) modify {
+		try {
+			var obj = mVariables.get(variable);
+
+			write("Enter value: ");
+			obj = cin();
+		}
+		catch {
+			print("Unknown variable '" + variable + "'!");
+		}
 	}
 }
 
