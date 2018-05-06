@@ -38,7 +38,7 @@ public object Parser {
 			it++;
 
 			if ( it.current() ) {
-				print(string it);
+				//print(string it);
 
 				Line line = parseLine(it.current());
 				if ( !line ) {
@@ -127,7 +127,7 @@ public object Parser {
 			}
 			case "IF": {
 				result = parseIF(ci);
-				print(result.toString());
+				//print(result.toString());
 				break;
 			}
 			case "INPUT": {
