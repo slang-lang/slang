@@ -1,5 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -17,11 +17,13 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -35,16 +37,19 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
-    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</IntDir>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
-    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</GenerateManifest>
-    <EmbedManifest Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</EmbedManifest>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
-    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</GenerateManifest>
+    <_ProjectFileVersion>15.0.26919.1</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
+    <GenerateManifest>false</GenerateManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <LinkIncremental />
+    <GenerateManifest>false</GenerateManifest>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -70,8 +75,7 @@
       <CLRUnmanagedCodeCheck>false</CLRUnmanagedCodeCheck>
     </Link>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command />
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -86,8 +90,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <FloatingPointModel>Precise</FloatingPointModel>
       <WarningLevel>Level4</WarningLevel>
-      <DebugInformationFormat>
-      </DebugInformationFormat>
+      <DebugInformationFormat />
       <UseFullPaths>true</UseFullPaths>
       <OmitDefaultLibName>true</OmitDefaultLibName>
     </ClCompile>
@@ -96,10 +99,8 @@
       <AdditionalLibraryDirectories>..\Libs;$(JSON)\Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
-      <OptimizeReferences>
-      </OptimizeReferences>
-      <EnableCOMDATFolding>
-      </EnableCOMDATFolding>
+      <OptimizeReferences />
+      <EnableCOMDATFolding />
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
   </ItemDefinitionGroup>
@@ -108,20 +109,15 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)AST\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)AST\</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="Language\Fixture.cpp">
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Language\</ObjectFileName>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Language\</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="Prototype\Fixture.cpp">
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Prototype\</ObjectFileName>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Prototype\</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="Operator\Fixture.cpp" />
-    <ClCompile Include="TestFramework\Fixture.cpp">
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)TestFramework\</ObjectFileName>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)TestFramework\</ObjectFileName>
+    <ClCompile Include="AST\Fixture.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)AST\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)AST\</ObjectFileName>
     </ClCompile>
     <ClCompile Include="Inheritance\Fixture.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Inheritance\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Inheritance\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Inheritance\InheritanceTest.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Inheritance\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Inheritance\</ObjectFileName>
     </ClCompile>
@@ -129,51 +125,56 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Interfaces\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Interfaces\</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="Library\Fixture.cpp">
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Library\</ObjectFileName>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Library\</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="Math\Fixture.cpp">
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Math\</ObjectFileName>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Math\</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="AST\Fixture.cpp">
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)AST\</ObjectFileName>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)AST\</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="RealWorldUsage\Fixture.cpp">
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)RealWorldUsage\</ObjectFileName>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)RealWorldUsage\</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="Inheritance\InheritanceTest.cpp">
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Inheritance\</ObjectFileName>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Inheritance\</ObjectFileName>
-    </ClCompile>
     <ClCompile Include="Interfaces\InterfacesTest.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Interfaces\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Interfaces\</ObjectFileName>
     </ClCompile>
+    <ClCompile Include="Language\Fixture.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Language\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Language\</ObjectFileName>
+    </ClCompile>
     <ClCompile Include="Language\LanguageTest.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Language\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Language\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Library\Fixture.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Library\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Library\</ObjectFileName>
     </ClCompile>
     <ClCompile Include="Library\LibraryTest.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Library\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Library\</ObjectFileName>
     </ClCompile>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Math\Fixture.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Math\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Math\</ObjectFileName>
+    </ClCompile>
     <ClCompile Include="Math\MathTest.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Math\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Math\</ObjectFileName>
     </ClCompile>
+    <ClCompile Include="Operator\Fixture.cpp" />
     <ClCompile Include="Operator\OperatorTest.cpp" />
+    <ClCompile Include="Prototype\Fixture.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Prototype\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Prototype\</ObjectFileName>
+    </ClCompile>
     <ClCompile Include="Prototype\PrototypeTest.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Prototype\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Prototype\</ObjectFileName>
     </ClCompile>
+    <ClCompile Include="RealWorldUsage\Fixture.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)RealWorldUsage\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)RealWorldUsage\</ObjectFileName>
+    </ClCompile>
     <ClCompile Include="RealWorldUsage\RealWorldUsageTest.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)RealWorldUsage\</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)RealWorldUsage\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="TestFramework\Fixture.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)TestFramework\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)TestFramework\</ObjectFileName>
     </ClCompile>
     <ClCompile Include="TestFramework\TestFrameworkTest.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)TestFramework\</ObjectFileName>
@@ -182,32 +183,32 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AST\ASTTest.h" />
-    <ClInclude Include="Prototype\Fixture.h" />
-    <ClInclude Include="Operator\Fixture.h" />
-    <ClInclude Include="TestFramework\Fixture.h" />
-    <ClInclude Include="Math\Fixture.h" />
-    <ClInclude Include="Inheritance\Fixture.h" />
-    <ClInclude Include="Interfaces\Fixture.h" />
-    <ClInclude Include="Library\Fixture.h" />
     <ClInclude Include="AST\Fixture.h" />
-    <ClInclude Include="Language\Fixture.h" />
-    <ClInclude Include="RealWorldUsage\Fixture.h" />
     <ClInclude Include="Framework\GenericTest.h" />
-    <ClInclude Include="Inheritance\InheritanceTest.h" />
-    <ClInclude Include="Interfaces\InterfacesTest.h" />
-    <ClInclude Include="Language\LanguageTest.h" />
-    <ClInclude Include="Library\LibraryTest.h" />
-    <ClInclude Include="Math\MathTest.h" />
-    <ClInclude Include="Operator\OperatorTest.h" />
-    <ClInclude Include="Utils\Printer.h" />
-    <ClInclude Include="Prototype\PrototypeTest.h" />
-    <ClInclude Include="RealWorldUsage\RealWorldUsageTest.h" />
     <ClInclude Include="Framework\TestFixture.h" />
     <ClInclude Include="Framework\TestFramework.h" />
+    <ClInclude Include="Inheritance\Fixture.h" />
+    <ClInclude Include="Inheritance\InheritanceTest.h" />
+    <ClInclude Include="Interfaces\Fixture.h" />
+    <ClInclude Include="Interfaces\InterfacesTest.h" />
+    <ClInclude Include="Language\Fixture.h" />
+    <ClInclude Include="Language\LanguageTest.h" />
+    <ClInclude Include="Library\Fixture.h" />
+    <ClInclude Include="Library\LibraryTest.h" />
+    <ClInclude Include="Math\Fixture.h" />
+    <ClInclude Include="Math\MathTest.h" />
+    <ClInclude Include="Operator\Fixture.h" />
+    <ClInclude Include="Operator\OperatorTest.h" />
+    <ClInclude Include="Prototype\Fixture.h" />
+    <ClInclude Include="Prototype\PrototypeTest.h" />
+    <ClInclude Include="RealWorldUsage\Fixture.h" />
+    <ClInclude Include="RealWorldUsage\RealWorldUsageTest.h" />
+    <ClInclude Include="TestFramework\Fixture.h" />
     <ClInclude Include="TestFramework\TestFrameworkTest.h" />
+    <ClInclude Include="Utils\Printer.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="AST\CMakeLists.txt" />
+    <Text Include="AST\CMakeLists.txt" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.vcxproj">
