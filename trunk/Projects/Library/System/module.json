@@ -1,12 +1,12 @@
 {
   "name": "System Library",
   "name_short": "system",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "library",
   "description": "ObjectiveScript core system library",
   "dependencies": [],
   "target": {
     "type": "internal",
-    "url": "system_0.1.0.tar.gz"
+    "url": "system_0.1.1.tar.gz"
   }
 }
