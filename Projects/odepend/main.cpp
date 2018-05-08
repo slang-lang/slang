@@ -743,7 +743,7 @@ void printUsage()
 
 void printVersion()
 {
-	std::cout << "ObjectiveScript Dependency Manager 0.6.2 (cli)" << std::endl;
+	std::cout << "ObjectiveScript Dependency Manager 0.6.3 (cli)" << std::endl;
 	std::cout << "Copyright (c) 2014-2018 Michael Adelmann" << std::endl;
 	std::cout << "" << std::endl;
 }
