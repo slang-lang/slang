@@ -15,6 +15,10 @@ public void Main(int argc, string args) {
 
 		socket.Write(strlen(data));
 		socket.Write(data);
+
+		if ( data == "quit" ) {
+			break;
+		}
 	}
 }
 

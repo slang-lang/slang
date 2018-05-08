@@ -1,5 +1,5 @@
 
-import System.Exception;
+import System.Network.Exception;
 import System.Network.Socket;
 
 public namespace System.Network { }
@@ -14,8 +14,9 @@ public object ServerSocket {
 	 * Private members
 	 */
 	private IPv4Address mEndpoint;
+	private int mListenerSocket = 0;
+	private int mMasterSocket;
 	private int mQueueLength;
-	private int mSocket;
 
 	/*
 	 * Default constructor
@@ -27,7 +28,7 @@ public object ServerSocket {
 	}
 
 	/*
-	 * 
+	 * Constructs a server socket object by using the given port
 	 */
 	public void Constructor(int port) {
 		mEndpoint = new IPv4Address(INADDR_ANY, port);
@@ -36,7 +37,7 @@ public object ServerSocket {
 	}
 
 	/*
-	 *
+	 * Constructs a server socket object by using the given port with a given queue length
 	 */
 	public void Constructor(int port, int queueLength) {
 		mEndpoint = new IPv4Address(INADDR_ANY, port);
@@ -46,7 +47,7 @@ public object ServerSocket {
 	}
 
 	/*
-	 *
+	 * Constructs a server socket object by using a given IPv4 address with a given queue length
 	 */
 	public void Constructor(IPv4Address address, int queueLength) {
 		mEndpoint = address;
@@ -66,8 +67,10 @@ public object ServerSocket {
 	 * Listens for a connection to be made to this socket and accepts it.
 	 * The method blocks until a connection is made.
 	 */
-	public bool Accept() throws {
-		return accept(mSocket) > 0;
+	public bool Accept() modify throws {
+		mListenerSocket = accept(mMasterSocket);
+
+		return mListenerSocket > 0;
 	}
 
 	/*
@@ -78,7 +81,7 @@ public object ServerSocket {
 			throw new Exception("endpoint not set");
 		}
 
-		return bind(mSocket, ISocketAddress mEndpoint) > 0;
+		return bind(mMasterSocket, ISocketAddress mEndpoint) > 0;
 	}
 
 	/*
@@ -98,11 +101,11 @@ public object ServerSocket {
 	 * Closes this socket
 	 */
 	public bool Close() throws {
-	    return close(mSocket) == 0;
+	    return close(mMasterSocket) == 0;
 	}
 
 	/*
-	 *
+	 * Returns the endpoint address on which the server is listening as string
 	 */
 	public string getAddress() const {
 		if ( !mEndpoint ) {
@@ -124,51 +127,51 @@ public object ServerSocket {
 	}
 
 	private void Init() modify {
-	    mSocket = socket(AF_INET, SOCK_STREAM, 0);
+	    mMasterSocket = socket(AF_INET, SOCK_STREAM, 0);
 	}
 
 	public int Listen() modify {
-	    return listen(mSocket, mQueueLength);
+	    return listen(mMasterSocket, mQueueLength);
 	}
 
 	public bool ReadBool() const throws {
-		if ( !mSocket ) {
+		if ( !mListenerSocket ) {
 			throw new Exception("not connected");
 		}
 
-		return readb(mSocket);
+		return readb(mListenerSocket);
 	}
 
 	public double ReadDouble() const throws {
-		if ( !mSocket ) {
+		if ( !mListenerSocket ) {
 			throw new Exception("not connected");
 		}
 
-		return readd(mSocket);
+		return readd(mListenerSocket);
 	}
 
 	public float ReadFloat() const throws {
-		if ( !mSocket ) {
+		if ( !mListenerSocket ) {
 			throw new Exception("not connected");
 		}
 
-		return readf(mSocket);
+		return readf(mListenerSocket);
 	}
 
 	public int ReadInt() const throws {
-		if ( !mSocket ) {
+		if ( !mListenerSocket ) {
 			throw new Exception("not connected");
 		}
 
-		return readi(mSocket);
+		return readi(mListenerSocket);
 	}
 
 	public string ReadString(int length = 1) const throws {
-		if ( !mSocket ) {
+		if ( !mListenerSocket ) {
 			throw new Exception("not connected");
 		}
 
-	    return reads(mSocket, length);
+	    return reads(mListenerSocket, length);
 	}
 }
 

@@ -1,5 +1,5 @@
 
-import System.Exception;
+import System.Network.Exception;
 import System.Network.Socket;
 
 public namespace System.Network { }

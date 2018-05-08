@@ -42,7 +42,9 @@ public void Main(int argc = 0, string args = "") {
 				string data = socket.ReadString(length);
 				print("received: " + data);
 
-				continue;
+				if ( data == "quit" ) {
+					break;
+				}
 			}
 		}
 	}
