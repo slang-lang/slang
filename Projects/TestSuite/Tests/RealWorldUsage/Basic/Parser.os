@@ -38,8 +38,6 @@ public object Parser {
 			it++;
 
 			if ( it.current() ) {
-				//print(string it);
-
 				Line line = parseLine(it.current());
 				if ( !line ) {
 					// ignore invalid lines (mostly shebangs ;-)
@@ -57,7 +55,6 @@ public object Parser {
 		}
 
 		print("Done parsing.");
-		print("");
 
 		return lines;
 	}
