@@ -3,38 +3,9 @@
 import System.Collections.Set;
 
 // project imports
+import Breakpoint;
 import Interpreter;
 
-
-private object Breakpoint {
-	public int Line;
-	public bool IsTemporary;
-
-	public void Constructor(int line, bool isTemporary = true) {
-		Line = line;
-		IsTemporary = isTemporary;
-	}
-
-	public bool operator==(Breakpoint other ref) const {
-		return other ? Line == other.Line : false;
-	}
-
-	public bool operator==(int line) const {
-		return Line == line;
-	}
-
-	public bool operator<(Breakpoint other ref) const {
-		return other ? Line < other.Line : false;
-	}
-
-	public string toString() const {
-		return (string Line) + " " + (string IsTemporary);
-	}
-
-	public string =operator(string none) const {
-		return toString();
-	}
-}
 
 public object Debugger extends Interpreter {
 	private Set<Breakpoint> mBreakpoints;
@@ -43,11 +14,10 @@ public object Debugger extends Interpreter {
 		base.Constructor(lines);
 
 		mBreakpoints = new Set<Breakpoint>();
-		addBreakpoint(10, true);
 	}
 
-	private void addBreakpoint(int line, bool isTemporary = true) modify {
-		mBreakpoints.insert(new Breakpoint(line, isTemporary));
+	private void addBreakpoint(int line) modify {
+		mBreakpoints.insert(new Breakpoint(line));
 	}
 
 	private void printAllVariables() const {
@@ -58,7 +28,7 @@ public object Debugger extends Interpreter {
 
 	private void printBreakpoints() const {
 		foreach ( Breakpoint line : mBreakpoints ) {
-			print("Line " + string line /*.toString()*/);
+			print("Line " + string line);
 		}
 	}
 
@@ -71,6 +41,7 @@ public object Debugger extends Interpreter {
 		print("g:  Go to line");
 		print("h:  Print help (= this screen)");
 		print("l:  List program");
+		print("ll: Print current line");
 		print("m:  Modify variable");
 		print("n:  Execute next line and break on execution");
 		print("p:  Print variable");
@@ -93,36 +64,31 @@ public object Debugger extends Interpreter {
 		}
 	}
 
-	private int processBreakpoint(Line line ref) modify throws {
-		int idx = mBreakpoints.indexOf(new Breakpoint(line.mLineNumber));
-
-		Breakpoint point = mBreakpoints.at(idx);
-
-/*
-		if ( point.IsTemporary ) {
-			print("Removing remporary breakpoint " + string point);
-			mBreakpoints.erase(idx);
-		}
-*/
-
+	private int processBreakpoint(Line line) modify throws {
 		print("> " + line.toString());
 
 		while ( true ) {
-			write("debugger> ");
+			write("debug> ");
 
-			switch ( cin() ) {
+			var cmdIt = new StringIterator(cin());
+			if ( !cmdIt.hasNext() ) {
+				continue;
+			}
+
+			switch ( cmdIt.next() ) {
 				case "a" : { write("Add breakpoint: "); addBreakpoint(int cin()); break; }
 				case "b" : { printBreakpoints(); break; }
-				case "c" : { /*print("continue");*/ return 0; }
+				case "c" : { return 0; }
 				case "d" : { write("Delete breakpoint: "); removeBreakpoint(int cin()); break; }
 				case "g" : { write("Go to line: "); return int cin(); }
 				case "h" : { printHelp(); break; }
 				case "l" : { printProgram(); break; }
+				case "ll": { print("> " + line.toString()); break; }
 				case "m" : { write("Enter variable: "); setVariable(cin()); break; }
-				case "n" : { /*print("next");*/ addBreakpoint(line.mNextLineNumber); return 0; }
+				case "n" : { return -1; }
 				case "p" : { write("Enter variable: "); printVariable(cin()); break; }
 				case "pa": { printAllVariables(); break; }
-				case "q" : { print("Quitting..."); throw ControlFlow.Exit; }
+				case "q" : { print("Aborting debug session..."); throw ControlFlow.Exit; }
 			}
 		}
 
@@ -136,11 +102,12 @@ public object Debugger extends Interpreter {
 		}
 	}
 
-	public int run() modify throws {
+	public int run(bool breakOnFirstLine = true) modify throws {
 		if ( !mLines || mLines.empty() ) {
 			throw new Exception("no valid lines to interpret!");
 		}
 
+		bool breakOnNextLine = breakOnFirstLine;
 		int lineNumber = 10;
 		Line line;
 
@@ -148,12 +115,17 @@ public object Debugger extends Interpreter {
 			while ( lineNumber > 0 ) {
 				line = mLines.get(lineNumber);
 
-				if ( mBreakpoints.contains(new Breakpoint(lineNumber)) ) {
+				if ( breakOnNextLine || mBreakpoints.contains(new Breakpoint(lineNumber)) ) {
+					breakOnNextLine = false;
+
 					lineNumber = processBreakpoint(line);
 
 					if ( lineNumber > 0 ) {
 						// jump to given line
 						continue;
+					}
+					else if ( lineNumber == -1 ) {
+						breakOnNextLine = true;
 					}
 				}
 
