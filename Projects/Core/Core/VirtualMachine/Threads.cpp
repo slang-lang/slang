@@ -3,6 +3,7 @@
 #include "Threads.h"
 
 // Library includes
+#include <iostream>
 
 // Project includes
 #include <Core/AST/TreeInterpreter.h>
@@ -61,6 +62,17 @@ Thread::State::E Thread::getState() const
 void Thread::init()
 {
 	mState = State::Started;
+}
+
+void Thread::print()
+{
+	if ( mStackFrames.empty() ) {
+		return;
+	}
+
+	for ( StackFrames::const_iterator it = mStackFrames.begin(); it != mStackFrames.end(); ++it ) {
+		std::cout << "Thread " << mId << ": " << (*it)->toString() << std::endl;
+	}
 }
 
 
@@ -123,6 +135,13 @@ Thread* Threads::getThread(Common::ThreadId id) const
 void Threads::init()
 {
 	// nothing to do here atm
+}
+
+void Threads::print()
+{
+	for ( InternalThreads::iterator it = mThreads.begin(); it != mThreads.end(); ++it ) {
+		it->second->print();
+	}
 }
 
 

@@ -7,6 +7,7 @@
 
 // Project includes
 #include <Common/AClient.h>
+#include <Core/Common/Types.h>
 #include <Core/Parameter.h>
 #include <Core/Scope.h>
 #include <Core/Types.h>
@@ -53,7 +54,12 @@ public:
 	void printBreakPoints();
 	void printStackTrace();
 	void printSymbol(const StringList& tokens);
+	void printThreads();
 	void printWatches();
+	void setCurrentFrame(Common::FrameId frameId);
+	void setCurrentFrame(const StringList& tokens);
+	void setCurrentThread(Common::ThreadId threadId);
+	void setCurrentThread(const StringList& tokens);
 
 	void run(const StringList &tokens);
 	void shutdown();
@@ -104,6 +110,8 @@ private:
 private:
 	Core::BreakPoint mBreakpoint;
 	bool mContinue;
+	Common::FrameId mCurrentFrameId;
+	Common::ThreadId mCurrentThreadId;
 	Core::Debugger* mDebugger;
 	ParameterList mParameters;
 	bool mRunning;

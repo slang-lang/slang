@@ -7,6 +7,7 @@
 // Project includes
 #include <Core/Common/Exceptions.h>
 #include <Core/Common/Method.h>
+#include <Core/Common/Namespace.h>
 #include <Core/Runtime/ControlFlow.h>
 #include <Core/VirtualMachine/Controller.h>
 #include <Utils.h>
@@ -27,7 +28,7 @@ Script::~Script()
 
 void Script::execute(const std::string& method, const ParameterList& params, Runtime::Object* result)
 {
-	MethodSymbol *symbol = Controller::Instance().stack()->globalScope()->resolveMethod(method, params, false);
+	MethodSymbol *symbol = Controller::Instance().globalScope()->resolveMethod(method, params, false);
 	if ( !symbol ) {
 		throw Common::Exceptions::Exception("could not resolve method '" + method + "(" + toString(params) + ")'");
 	}
@@ -37,7 +38,7 @@ void Script::execute(const std::string& method, const ParameterList& params, Run
 	Runtime::ControlFlow::E controlflow = Controller::Instance().thread(0)->execute(methodSymbol, params, result);
 
 	if ( controlflow == Runtime::ControlFlow::Throw ) {
-		Runtime::ExceptionData data = Controller::Instance().stack()->exception();
+		Runtime::ExceptionData data = Controller::Instance().thread(0)->exception();
 
 		std::string text = "Exception raised in " + data.getPosition().toString() + ":\n";
 					text += data.getData()->ToString();
@@ -48,12 +49,12 @@ void Script::execute(const std::string& method, const ParameterList& params, Run
 
 Symbol* Script::resolve(const std::string &symbol)
 {
-	return Controller::Instance().stack()->globalScope()->resolve(symbol);
+	return Controller::Instance().globalScope()->resolve(symbol);
 }
 
 Symbol* Script::resolveMethod(const std::string &method, const ParameterList &params)
 {
-	return Controller::Instance().stack()->globalScope()->resolveMethod(method, params);
+	return Controller::Instance().globalScope()->resolveMethod(method, params);
 }
 
 

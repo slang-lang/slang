@@ -16,6 +16,7 @@ namespace ObjectiveScript {
 namespace Common {
 
 
+typedef unsigned int FrameId;
 typedef unsigned int ThreadId;
 
 

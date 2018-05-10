@@ -381,8 +381,6 @@ void RemoteClient::start()
 		mVirtualMachine->addLibraryFolder((*it));
 	}
 
-	Controller::Instance().stack()->print();
-
 	// add extensions
 #ifdef USE_APACHE_EXTENSION
 	mVirtualMachine->addExtension(new ObjectiveScript::Extensions::Apache::ApacheExtension());

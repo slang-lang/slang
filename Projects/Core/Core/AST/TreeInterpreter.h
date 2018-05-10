@@ -128,7 +128,6 @@ private:	// Virtual machine stuff
 	Memory* mMemory;
 	Repository *mRepository;
 	Stack* mStack;
-	Common::ThreadId mThreadId;
 };
 
 

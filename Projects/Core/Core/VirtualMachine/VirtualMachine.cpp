@@ -112,7 +112,7 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 		}
 	}
 
-	MethodScope* globalScope = Controller::Instance().stack()->globalScope();
+	MethodScope* globalScope = Controller::Instance().globalScope();
 
 	Controller::Instance().repository()->initializeBlueprints();
 
@@ -217,7 +217,7 @@ bool VirtualMachine::loadExtensions()
 {
 	OSdebug("loading extensions...");
 
-	MethodScope* globalScope = Controller::Instance().stack()->globalScope();
+	MethodScope* globalScope = Controller::Instance().globalScope();
 
 	for ( Extensions::ExtensionList::const_iterator extIt = mExtensions.begin(); extIt != mExtensions.end(); ++extIt ) {
 		try {

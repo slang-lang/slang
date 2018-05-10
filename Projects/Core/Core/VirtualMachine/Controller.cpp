@@ -5,6 +5,7 @@
 // Library includes
 
 // Project includes
+#include <Core/Common/Namespace.h>
 
 // Namespace declarations
 
@@ -13,10 +14,10 @@ namespace ObjectiveScript {
 
 
 Controller::Controller()
-: mMemory(0),
+: mGlobalScope(0),
+  mMemory(0),
   mPhase(Phase::Preparation),
   mRepository(0),
-  mStack(0),
   mThreads(0),
   mTypeSystem(0)
 {
@@ -37,34 +38,44 @@ void Controller::deinit()
 {
 	assert(mPhase > Phase::Preparation);
 
-	mStack->deinit();
 	mThreads->deinit();
 	mMemory->deinit();
 	mRepository->deinit();
 	mTypeSystem->deinit();
 
-	delete mStack;
+	delete mGlobalScope;
+	mGlobalScope = 0;
 	delete mThreads;
+	mThreads = 0;
 	delete mMemory;
+	mMemory = 0;
 	delete mRepository;
+	mRepository = 0;
 	delete mTypeSystem;
+	mTypeSystem = 0;
 
 	mPhase = Phase::Shutdown;
+}
+
+Common::Namespace* Controller::globalScope() const
+{
+	return mGlobalScope;
 }
 
 void Controller::init()
 {
 	assert(mPhase == Phase::Preparation || mPhase == Phase::Shutdown);
 
+	assert(!mGlobalScope);
+	mGlobalScope = new Common::Namespace(VALUE_NONE, 0);
+
 	mMemory = new Memory();
 	mRepository = new Repository();
-	mStack = new Stack();
 	mThreads = new Threads();
 	mTypeSystem = new TypeSystem();
 
 	mTypeSystem->init();
 	mMemory->init();
-	mStack->init();
 	mRepository->init();
 	mThreads->init();
 
@@ -95,7 +106,7 @@ Repository* Controller::repository() const
 
 Stack* Controller::stack() const
 {
-	return mStack;
+	return mThreads->getThread(0);
 }
 
 Thread* Controller::thread(Common::ThreadId id) const

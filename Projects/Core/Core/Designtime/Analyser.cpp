@@ -32,7 +32,7 @@ Analyser::Analyser(bool doSanityCheck)
   mProcessingInterface(false)
 {
 	mRepository = Controller::Instance().repository();
-	mScope = Controller::Instance().stack()->globalScope();
+	mScope = Controller::Instance().globalScope();
 }
 
 Analyser::~Analyser()

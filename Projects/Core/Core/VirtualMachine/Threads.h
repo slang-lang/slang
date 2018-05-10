@@ -53,6 +53,7 @@ public:
 	void deinit();
 	Runtime::ControlFlow::E execute(Common::Method* method, const ParameterList& params, Runtime::Object* result);
 	void init();
+	void print();
 
 public:
 	Common::ThreadId getId() const;
@@ -81,8 +82,10 @@ public:
 
 	unsigned int getNumThreads() const;
 
+	void print();
+
 private:
-	typedef std::map<unsigned int /*id*/, Thread*> InternalThreads;
+	typedef std::map<unsigned int /*id*/, Thread* /*thread*/> InternalThreads;
 
 private:
 	InternalThreads mThreads;
