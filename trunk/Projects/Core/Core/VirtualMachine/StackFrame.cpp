@@ -8,6 +8,7 @@
 #include <Core/Common/Method.h>
 #include <Core/Common/Namespace.h>
 #include <Core/Tools.h>
+#include <Core/Types.h>
 #include <Tools/Strings.h>
 
 // Namespace declarations
@@ -94,7 +95,7 @@ std::string StackFrame::toString() const
 			result += mScope->getFullScopeName();
 			break;
 		case IScope::IType::NamedScope:
-			result += mScope->getFullScopeName();
+			result += mScope->getFullScopeName() + "(" + ObjectiveScript::toString(mParameters) + ")";
 			break;
 		case IScope::IType::SymbolScope:
 			result += mScope->getFullScopeName();

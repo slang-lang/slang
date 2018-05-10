@@ -50,6 +50,8 @@ void handleSIGINT(int signal)
 
 LocalClient::LocalClient()
 : mContinue(false),
+  mCurrentFrameId(0),
+  mCurrentThreadId(0),
   mDebugger(0),
   mRunning(true),
   mScope(0),
@@ -239,6 +241,9 @@ std::string LocalClient::executeCommand(const StringList &tokens)
 		else if ( cmd == "execute" || cmd == "e" ) {
 			executeMethod(tokens);
 		}
+		else if ( cmd == "frame" || cmd == "f" ) {
+			setCurrentFrame(tokens);
+		}
 		else if ( cmd == "help" ) {
 			printHelp();
 		}
@@ -289,6 +294,12 @@ std::string LocalClient::executeCommand(const StringList &tokens)
 		}
 		else if ( cmd == "store" ) {
 			saveConfig();
+		}
+		else if ( cmd == "thread" || cmd == "t" ) {
+			setCurrentThread(tokens);
+		}
+		else if ( cmd == "threads" ) {
+			printThreads();
 		}
 		else if ( cmd == "unwatch" ) {
 			removeWatch(tokens);
@@ -620,6 +631,7 @@ int LocalClient::notify(IScope* scope, const Core::BreakPoint& breakpoint)
 
 	mBreakpoint = breakpoint;
 
+	// automatically print scope
 	if ( mSettings->autoList() ) {
 		printScope(mScope);
 	}
@@ -648,28 +660,28 @@ int LocalClient::notify(IScope* scope, const Core::BreakPoint& breakpoint)
 
 int LocalClient::notifyEnter(IScope* scope, const Core::BreakPoint& breakpoint)
 {
-	writeln("[Stepping into " + Controller::Instance().stack()->current()->toString() + "]");
+	writeln("[Stepping into " + Controller::Instance().thread(mCurrentThreadId)->current()->toString() + "]");
 
 	return notify(scope, breakpoint);
 }
 
 int LocalClient::notifyExceptionCatch(IScope *scope, const Core::BreakPoint &breakpoint)
 {
-	writeln("[Caught exception in " + Controller::Instance().stack()->current()->toString() + "]");
+	writeln("[Caught exception in " + Controller::Instance().thread(mCurrentThreadId)->current()->toString() + "]");
 
 	return notify(scope, breakpoint);
 }
 
 int LocalClient::notifyExceptionThrow(IScope *scope, const Core::BreakPoint &breakpoint)
 {
-	writeln("[Exception has been thrown in " + Controller::Instance().stack()->current()->toString() + "]");
+	writeln("[Exception has been thrown in " + Controller::Instance().thread(mCurrentThreadId)->current()->toString() + "]");
 
 	return notify(scope, breakpoint);
 }
 
 int LocalClient::notifyExit(IScope* scope, const Core::BreakPoint& breakpoint)
 {
-	writeln("[Stepping out of " + Controller::Instance().stack()->current()->toString() + "]");
+	writeln("[Stepping out of " + Controller::Instance().thread(mCurrentThreadId)->current()->toString() + "]");
 
 	return notify(scope, breakpoint);
 }
@@ -759,6 +771,7 @@ void LocalClient::printHelp()
 		writeln("\tbacktrace (bt)   print stack trace");
 		writeln("\tcontinue (c)     continue program execution");
 		writeln("\texecute (e)      execute program function");
+		writeln("\tframe (f)        select frame");
 		writeln("\tignore           ignore all breakpoints and continue program execution");
 		writeln("\tinto (i)         break on next function call");
 		writeln("\tlist (l)         print current method");
@@ -766,6 +779,8 @@ void LocalClient::printHelp()
 		writeln("\tnext (n)         step over");
 		writeln("\tout (o)          break on next function exit");
 		writeln("\tprint (p)        print symbol");
+		writeln("\tthread (t)       select thread");
+		writeln("\tthreads          list current threads");
 	}
 }
 
@@ -819,7 +834,7 @@ void LocalClient::printStackTrace()
 		return;
 	}
 
-	Controller::Instance().stack()->print();
+	Controller::Instance().threads()->print();
 }
 
 void LocalClient::printSymbol(const StringList& tokens)
@@ -839,6 +854,13 @@ void LocalClient::printSymbol(const StringList& tokens)
 	}
 
 	writeln(symbol->ToString());
+}
+
+void LocalClient::printThreads()
+{
+	writeln("Threads:");
+
+	Controller::Instance().threads()->print();
 }
 
 void LocalClient::printWatches()
@@ -967,6 +989,73 @@ void LocalClient::saveConfig()
 	stream.close();
 }
 
+void LocalClient::setCurrentFrame(Common::FrameId frameId)
+{
+	if ( frameId >= Controller::Instance().thread(mCurrentThreadId)->getNumFrames() ) {
+		writeln("invalid frame selected!");
+		return;
+	}
+
+	// update current frame id
+	mCurrentFrameId = frameId;
+
+	// update current stack/scope
+	mScope = Controller::Instance().thread(mCurrentThreadId)->frame(mCurrentFrameId)->getScope();
+
+	// automatically print scope
+	if ( mSettings->autoList() ) {
+		printScope(mScope);
+	}
+
+	// automatically update watches
+	if ( mSettings->autoWatch() && mScope ) {
+		refreshWatches();
+	}
+}
+
+void LocalClient::setCurrentFrame(const StringList& tokens)
+{
+	if ( tokens.size() != 2 ) {
+		writeln("invalid number of arguments!");
+		return;
+	}
+
+	StringList::const_iterator it = tokens.begin();
+	++it;	// skip first token
+
+	setCurrentFrame((Common::FrameId)::Utils::Tools::stringToInt((*it++)));
+}
+
+void LocalClient::setCurrentThread(Common::ThreadId threadId)
+{
+	if ( threadId >= Controller::Instance().threads()->getNumThreads() ) {
+		writeln("invalid thread selected!");
+		return;
+	}
+
+	// update current thread id
+	mCurrentThreadId = threadId;
+
+	// print stack trace for select thread
+	printStackTrace();
+
+	// reset current frame to newest in thread
+	setCurrentFrame(Controller::Instance().thread(mCurrentThreadId)->getNumFrames() - 1);
+}
+
+void LocalClient::setCurrentThread(const StringList& tokens)
+{
+	if ( tokens.size() != 2 ) {
+		writeln("invalid number of arguments!");
+		return;
+	}
+
+	StringList::const_iterator it = tokens.begin();
+	++it;	// skip first token
+
+	setCurrentThread((Common::FrameId)::Utils::Tools::stringToInt((*it++)));
+}
+
 void LocalClient::shutdown()
 {
 	stop();
@@ -993,8 +1082,6 @@ void LocalClient::start()
 	for ( StringSet::const_iterator it = mSettings->libraryFolders().begin(); it != mSettings->libraryFolders().end(); ++it ) {
 		mVirtualMachine->addLibraryFolder((*it));
 	}
-
-	Controller::Instance().stack()->print();
 
 	// add extensions
 #ifdef USE_APACHE_EXTENSION

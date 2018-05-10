@@ -215,7 +215,7 @@ Runtime::Object* Repository::createObject(const std::string& name, Designtime::B
 	IScope* parent = blueprint->getEnclosingScope();
 	if ( !parent ) {
 		// set global scope as fallback parent
-		parent = Controller::Instance().stack()->globalScope();
+		parent = Controller::Instance().globalScope();
 	}
 
 	object->setBluePrint(blueprint);
@@ -353,7 +353,7 @@ void Repository::init()
 	// Initialize virtual machine stuff
 	mTypeSystem = Controller::Instance().typeSystem();
 
-	IScope* scope = Controller::Instance().stack()->globalScope();
+	IScope* scope = Controller::Instance().globalScope();
 
 	// add atomic types
 	{	// "bool" type

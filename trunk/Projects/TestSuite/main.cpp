@@ -189,28 +189,29 @@ int main(int argc, const char* argv[])
 				  << std::endl;
 
 		mFixtures.clear();
+
+		cleanup();
+
+		if ( !executed && !show ) {
+			std::cout << "could not find fixture '" << toRun << "'!" << std::endl;
+		}
+
+		return 0;
 	}
 	catch ( ObjectiveScript::Runtime::ControlFlow::E &e ) {
 		if ( e != ObjectiveScript::Runtime::ControlFlow::ExitProgram ) {
 			OSerror("abnormal program termination!");
-
-			ObjectiveScript::Controller::Instance().stack()->print();
 		}
 	}
 	catch ( std::exception& e ) {	// catch every std::exception and all derived exception types
 		OSerror(e.what());
-
-		ObjectiveScript::Controller::Instance().stack()->print();
 	}
 	catch ( ... ) {	// catch everything
 		std::cout << "uncaught exception detected" << std::endl;
 	}
 
-	if ( !executed && !show ) {
-		std::cout << "could not find fixture '" << toRun << "'!" << std::endl;
-	}
+	// if we get here something bad has happened
+	ObjectiveScript::Controller::Instance().threads()->print();
 
-	cleanup();
-
-	return 0;
+	return -1;
 }

@@ -8,6 +8,7 @@
 #include <string>
 
 // Project includes
+#include <Core/Common/Types.h>
 #include <Core/Runtime/ExceptionData.h>
 #include <Core/Scope.h>
 #include "StackFrame.h"
@@ -31,28 +32,20 @@ public:
 	virtual ~Stack();
 
 public:
-	virtual void deinit();
-	virtual void init();
-
-public:
 	StackFrame* current() const;
+	StackFrame* frame(Common::FrameId frameId) const;
+	Common::FrameId getNumFrames() const;
 
 	Runtime::ExceptionData& exception();
 
 	void pop();
 	void push(IScope* scope, const TokenList& tokens, const ParameterList &params);
 
-	void print();
-
-public:
-	MethodScope* globalScope() const;
-
 protected:
 	typedef std::list<StackFrame*> StackFrames;
 
 protected:
 	Runtime::ExceptionData mExceptionData;
-	Common::Namespace* mGlobalScope;
 	StackFrames mStackFrames;
 
 private:

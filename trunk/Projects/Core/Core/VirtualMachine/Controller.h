@@ -52,6 +52,7 @@ public:
 	void phase(Phase::E value);
 
 public:
+	Common::Namespace* globalScope() const;
 	Memory* memory() const;
 	Repository* repository() const;
 	Stack* stack() const;
@@ -65,10 +66,10 @@ private:
 	void operator=(Controller const&)/* = delete*/;
 
 private:
+	Common::Namespace* mGlobalScope;
 	Memory* mMemory;
 	Phase::E mPhase;
 	Repository* mRepository;
-	Stack* mStack;
 	Threads* mThreads;
 	TypeSystem* mTypeSystem;
 };

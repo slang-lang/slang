@@ -18,12 +18,14 @@ namespace ObjectiveScript {
 
 
 Stack::Stack()
-: mGlobalScope(0)
 {
 }
 
 Stack::~Stack()
 {
+	while ( !mStackFrames.empty() ) {
+		pop();
+	}
 }
 
 StackFrame* Stack::current() const
@@ -35,34 +37,26 @@ StackFrame* Stack::current() const
 	return mStackFrames.back();
 }
 
-void Stack::deinit()
-{
-	assert( !mStackFrames.empty() );
-
-	while ( !mStackFrames.empty() ) {
-		pop();
-	}
-
-	delete mGlobalScope;
-	mGlobalScope = 0;
-}
-
 Runtime::ExceptionData& Stack::exception()
 {
 	return mExceptionData;
 }
 
-MethodScope* Stack::globalScope() const
+StackFrame* Stack::frame(Common::FrameId frameId) const
 {
-	return mGlobalScope;
+	size_t idx = 0;
+	for ( StackFrames::const_iterator it = mStackFrames.cbegin(); it != mStackFrames.cend(); ++it, ++idx ) {
+		if ( idx == frameId ) {
+			return (*it);
+		}
+	}
+
+	return 0;
 }
 
-void Stack::init()
+Common::FrameId Stack::getNumFrames() const
 {
-	assert(!mGlobalScope);
-	mGlobalScope = new Common::Namespace(VALUE_NONE, 0);
-
-	push(mGlobalScope, TokenList(), ParameterList());
+	return mStackFrames.size();
 }
 
 void Stack::pop()
@@ -74,20 +68,6 @@ void Stack::pop()
 	mStackFrames.pop_back();
 
 	delete frame;
-}
-
-void Stack::print()
-{
-	if ( mStackFrames.empty() ) {
-		return;
-	}
-
-	StackFrames::const_iterator it = mStackFrames.begin();
-	++it;	// skip frame 0 (global scope)
-
-	for ( ; it != mStackFrames.end(); ++it ) {
-		std::cout << (*it)->toString() << std::endl;
-	}
 }
 
 void Stack::push(IScope* scope, const TokenList& tokens, const ParameterList &params)

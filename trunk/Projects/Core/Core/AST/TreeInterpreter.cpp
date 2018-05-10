@@ -67,16 +67,13 @@ namespace AST {
 
 
 TreeInterpreter::TreeInterpreter(Common::ThreadId id)
-: mControlFlow(Runtime::ControlFlow::Normal),
-  mThreadId(id)
+: mControlFlow(Runtime::ControlFlow::Normal)
 {
 	// initialize virtual machine stuff
 	mDebugger = Core::Debugger::Instance().useDebugger() ? &Core::Debugger::Instance() : NULL;
 	mMemory = Controller::Instance().memory();
 	mRepository = Controller::Instance().repository();
-	mStack = Controller::Instance().stack();
-
-	(void)mThreadId;
+	mStack = Controller::Instance().thread(id);
 }
 
 TreeInterpreter::~TreeInterpreter()
