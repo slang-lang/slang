@@ -32,8 +32,8 @@ class IScope;
 class Memory;
 class NamedScope;
 class Repository;
-class Stack;
 class Symbol;
+class Thread;
 
 namespace Runtime {
 
@@ -147,8 +147,7 @@ private:	// Virtual machine stuff
 	Core::Debugger* mDebugger;
 	Memory* mMemory;
 	Repository* mRepository;
-	Stack* mStack;
-	Common::ThreadId mThreadId;
+	Thread* mStack;
 };
 
 
