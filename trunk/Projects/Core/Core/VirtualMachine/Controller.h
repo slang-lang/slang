@@ -8,7 +8,6 @@
 // Project includes
 #include "Memory.h"
 #include "Repository.h"
-#include "Stack.h"
 #include "Threads.h"
 #include "TypeSystem.h"
 

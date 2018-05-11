@@ -22,7 +22,7 @@
 #include <Core/Runtime/TypeCast.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
-#include <Core/VirtualMachine/Stack.h>
+#include <Core/VirtualMachine/Threads.h>
 #include <Debugger/Debugger.h>
 #include <Tools/Printer.h>
 #include <Tools/Strings.h>
@@ -43,16 +43,13 @@ namespace Runtime {
 
 Interpreter::Interpreter(Common::ThreadId threadId)
 : mControlFlow(ControlFlow::Normal),
-  mOwner(0),
-  mThreadId(threadId)
+  mOwner(0)
 {
 	// initialize virtual machine stuff
-	mDebugger = Core::Debugger::Instance().useDebugger() ? &Core::Debugger::Instance() : 0;
+	mDebugger = Core::Debugger::Instance().useDebugger() ? &Core::Debugger::Instance() : NULL;
 	mMemory = Controller::Instance().memory();
 	mRepository = Controller::Instance().repository();
-	mStack = Controller::Instance().stack();
-
-	(void)mThreadId;
+	mStack = Controller::Instance().threads(threadId);
 }
 
 Interpreter::~Interpreter()

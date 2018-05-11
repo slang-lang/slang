@@ -10,7 +10,6 @@
 #include <Core/Designtime/Parser/Token.h>
 #include <Core/Runtime/ControlFlow.h>
 #include <Core/Runtime/ExceptionData.h>
-#include <Core/VirtualMachine/Stack.h>
 #include <Core/Parameter.h>
 #include "Expression.h"
 #include "Operator.h"
