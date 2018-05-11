@@ -8,6 +8,7 @@
 
 // Project includes
 #include <Core/Common/Method.h>
+#include <Core/Common/Types.h>
 
 // Forward declarations
 
@@ -25,6 +26,8 @@ public:
 	{
 		mIsExtensionMethod = true;
 	}
+
+	virtual Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList& params, Runtime::Object* result, const Token& token) = 0;
 };
 
 

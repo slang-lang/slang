@@ -138,11 +138,6 @@ Method& Method::operator= (const Method& other)
 	return *this;
 }
 
-Runtime::ControlFlow::E Method::execute(const ParameterList& /*params*/, Runtime::Object* /*result*/, const Token& token)
-{
-	throw Common::Exceptions::NotSupported("executing methods directly is not supported!", token.position());
-}
-
 const PrototypeConstraints& Method::getPrototypeConstraints() const
 {
 	return mReturnType.mConstraints;

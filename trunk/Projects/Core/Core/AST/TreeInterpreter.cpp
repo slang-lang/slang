@@ -18,11 +18,13 @@
 #include <Core/Common/Namespace.h>
 #include <Core/Designtime/Exceptions.h>
 #include <Core/Designtime/Parser/Parser.h>
+#include <Core/Extensions/ExtensionMethod.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Runtime/OperatorOverloading.h>
 #include <Core/Runtime/TypeCast.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
+#include <Core/VirtualMachine/Threads.h>
 #include <Debugger/Debugger.h>
 #include <Tools/Printer.h>
 #include <Utils.h>
@@ -270,7 +272,7 @@ void TreeInterpreter::evaluateMethodExpression(MethodExpression* exp, Runtime::O
 	assert(method);
 
 	if ( method->isExtensionMethod() ) {
-		mControlFlow = method->execute(params, result, Token());
+		mControlFlow = dynamic_cast<ObjectiveScript::ExtensionMethod*>(method)->execute(mStack->getId(), params, result, Token());
 	}
 	else {
 		mControlFlow = execute(method, params, result);
