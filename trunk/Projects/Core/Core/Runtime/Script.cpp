@@ -26,7 +26,7 @@ Script::~Script()
 {
 }
 
-void Script::execute(const std::string& method, const ParameterList& params, Runtime::Object* result)
+void Script::execute(Common::ThreadId threadId, const std::string& method, const ParameterList& params, Runtime::Object* result)
 {
 	MethodSymbol *symbol = Controller::Instance().globalScope()->resolveMethod(method, params, false);
 	if ( !symbol ) {
@@ -35,10 +35,10 @@ void Script::execute(const std::string& method, const ParameterList& params, Run
 
 	Common::Method* methodSymbol = static_cast<Common::Method*>(symbol);
 
-	Runtime::ControlFlow::E controlflow = Controller::Instance().thread(0)->execute(methodSymbol, params, result);
+	Runtime::ControlFlow::E controlflow = Controller::Instance().thread(threadId)->execute(methodSymbol, params, result);
 
 	if ( controlflow == Runtime::ControlFlow::Throw ) {
-		Runtime::ExceptionData data = Controller::Instance().thread(0)->exception();
+		Runtime::ExceptionData data = Controller::Instance().thread(threadId)->exception();
 
 		std::string text = "Exception raised in " + data.getPosition().toString() + ":\n";
 					text += data.getData()->ToString();

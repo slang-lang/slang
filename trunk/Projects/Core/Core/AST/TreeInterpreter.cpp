@@ -75,7 +75,7 @@ TreeInterpreter::TreeInterpreter(Common::ThreadId id)
 	mDebugger = Core::Debugger::Instance().useDebugger() ? &Core::Debugger::Instance() : NULL;
 	mMemory = Controller::Instance().memory();
 	mRepository = Controller::Instance().repository();
-	mStack = Controller::Instance().thread(id);
+	mThread = Controller::Instance().thread(id);
 }
 
 TreeInterpreter::~TreeInterpreter()
@@ -85,7 +85,7 @@ TreeInterpreter::~TreeInterpreter()
 void TreeInterpreter::deinitialize()
 {
 	// unwind stack
-	mStack->popFrame();
+	mThread->popFrame();
 }
 
 void TreeInterpreter::evaluate(Node* exp, Runtime::Object* result)
@@ -272,7 +272,7 @@ void TreeInterpreter::evaluateMethodExpression(MethodExpression* exp, Runtime::O
 	assert(method);
 
 	if ( method->isExtensionMethod() ) {
-		mControlFlow = dynamic_cast<ObjectiveScript::ExtensionMethod*>(method)->execute(mStack->getId(), params, result, Token());
+		mControlFlow = dynamic_cast<ObjectiveScript::ExtensionMethod*>(method)->execute(mThread->getId(), params, result, Token());
 	}
 	else {
 		mControlFlow = execute(method, params, result);
@@ -468,7 +468,7 @@ Runtime::ControlFlow::E TreeInterpreter::execute(Common::Method* method, const P
 
 	// only set return value if we are a non-void method
 	if ( result && method->QualifiedTypename() != _void ) {
-		*result = mStack->currentFrame()->returnValue();
+		*result = mThread->currentFrame()->returnValue();
 	}
 
 	// deinitalize & pop scope
@@ -561,7 +561,7 @@ Runtime::Object* TreeInterpreter::getEnclosingObject(IScope* scope) const
 
 inline IScope* TreeInterpreter::getScope() const
 {
-	return mStack->currentFrame()->getScope();
+	return mThread->currentFrame()->getScope();
 }
 
 void TreeInterpreter::initialize(IScope* scope, const ParameterList& params)
@@ -601,12 +601,12 @@ void TreeInterpreter::initialize(IScope* scope, const ParameterList& params)
 	}
 
 	// record stack
-	mStack->pushFrame(scope, TokenList(), params);
+	mThread->pushFrame(scope, TokenList(), params);
 }
 
 void TreeInterpreter::popScope()
 {
-	mStack->currentFrame()->popScope();
+	mThread->currentFrame()->popScope();
 }
 
 std::string TreeInterpreter::printExpression(Node* node) const
@@ -696,7 +696,7 @@ void TreeInterpreter::process(Statements* statements)
 
 void TreeInterpreter::pushScope(IScope* scope)
 {
-	StackFrame* stack = mStack->currentFrame();
+	StackFrame* stack = mThread->currentFrame();
 
 	bool allowDelete = !scope;
 	if ( allowDelete ) {
@@ -861,7 +861,7 @@ void TreeInterpreter::visitExit(ExitStatement* node)
 	Runtime::Object* data = mRepository->createInstance(Runtime::IntegerObject::TYPENAME, ANONYMOUS_OBJECT, PrototypeConstraints());
 	tryControl(evaluate(node->mExpression, data));
 
-	mStack->exception() = Runtime::ExceptionData(data, Common::Position());
+	mThread->exception() = Runtime::ExceptionData(data, Common::Position());
 
 	throw Runtime::ControlFlow::ExitProgram;
 }
@@ -1000,7 +1000,7 @@ void TreeInterpreter::visitReturn(ReturnStatement* node)
 
 		tryControl(evaluate(node->mExpression, &tmp));
 
-		Runtime::operator_binary_assign(&mStack->currentFrame()->returnValue(), &tmp);
+		Runtime::operator_binary_assign(&mThread->currentFrame()->returnValue(), &tmp);
 	}
 
 	mControlFlow = Runtime::ControlFlow::Return;
@@ -1143,7 +1143,7 @@ void TreeInterpreter::visitThrow(ThrowStatement* node)
 		Runtime::Object* data = mRepository->createInstance(_object, ANONYMOUS_OBJECT, PrototypeConstraints());
 		tryControl(evaluate(node->mExpression, data));
 
-		mStack->exception() = Runtime::ExceptionData(data, Common::Position());
+		mThread->exception() = Runtime::ExceptionData(data, Common::Position());
 	}
 
 	mControlFlow = Runtime::ControlFlow::Throw;
@@ -1160,7 +1160,7 @@ void TreeInterpreter::visitTry(TryStatement* node)
 	// execute exception handling only if an exception occurred and catch statements are present
 	if ( mControlFlow == Runtime::ControlFlow::Throw && !node->mCatchStatements.empty() ) {
 		// get exception data
-		Runtime::Object* exception = mStack->exception().getData();
+		Runtime::Object* exception = mThread->exception().getData();
 
 		// determine correct catch-block (if a correct one exists)
 		for ( CatchStatements::const_iterator it = node->mCatchStatements.begin(); it != node->mCatchStatements.end(); ++it ) {
