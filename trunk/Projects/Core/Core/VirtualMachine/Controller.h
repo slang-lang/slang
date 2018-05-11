@@ -18,6 +18,10 @@
 
 namespace ObjectiveScript {
 
+// Forward declarations
+namespace Common {
+	class Namespace;
+}
 
 class Controller
 {

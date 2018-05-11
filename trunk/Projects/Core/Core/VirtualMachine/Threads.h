@@ -4,13 +4,16 @@
 
 
 // Library includes
+#include <list>
 #include <map>
 
 // Project includes
 #include <Core/Common/Types.h>
+#include <Core/Designtime/Parser/Token.h>
 #include <Core/Parameter.h>
 #include <Core/Runtime/ControlFlow.h>
-#include <Core/VirtualMachine/Stack.h>
+#include <Core/Runtime/ExceptionData.h>
+#include <Core/VirtualMachine/StackFrame.h>
 
 // Forward declarations
 
@@ -23,12 +26,13 @@ namespace ObjectiveScript {
 namespace Common {
 	class Method;
 }
+class IScope;
 namespace Runtime {
 	class Object;
 }
 
 
-class Thread : public Stack
+class Thread
 {
 public:
 	class State
@@ -49,18 +53,33 @@ public:
 	Thread(Common::ThreadId id);
 	~Thread();
 
-public:
+public:	// Initialization
 	void deinit();
 	Runtime::ControlFlow::E execute(Common::Method* method, const ParameterList& params, Runtime::Object* result);
 	void init();
 	void print();
 
-public:
+public:	// Thread specificas
 	Common::ThreadId getId() const;
 	State::E getState() const;
 
+public:	// StackFrame specificas
+	StackFrame* currentFrame() const;
+	StackFrame* frame(Common::FrameId frameId) const;
+	Common::FrameId getNumFrames() const;
+
+	Runtime::ExceptionData& exception();
+
+	void popFrame();
+	void pushFrame(IScope* scope, const TokenList& tokens, const ParameterList& params);
+
 private:
+	typedef std::list<StackFrame*> StackFrames;
+
+private:
+	Runtime::ExceptionData mExceptionData;
 	Common::ThreadId mId;
+	StackFrames mStackFrames;
 	State::E mState;
 };
 

@@ -4,7 +4,6 @@ SET(SOURCES
 	Controller.cpp
 	Memory.cpp
 	Repository.cpp
-	Stack.cpp
 	StackFrame.cpp
 	Threads.cpp
 	TypeSystem.cpp
@@ -15,7 +14,6 @@ SET(HEADERS
 	Controller.h
 	Memory.h
 	Repository.h
-	Stack.h
 	StackFrame.h
 	Threads.h
 	TypeSystem.h

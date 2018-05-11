@@ -660,28 +660,28 @@ int LocalClient::notify(IScope* scope, const Core::BreakPoint& breakpoint)
 
 int LocalClient::notifyEnter(IScope* scope, const Core::BreakPoint& breakpoint)
 {
-	writeln("[Stepping into " + Controller::Instance().thread(mCurrentThreadId)->current()->toString() + "]");
+	writeln("[Stepping into " + Controller::Instance().thread(mCurrentThreadId)->currentFrame()->toString() + "]");
 
 	return notify(scope, breakpoint);
 }
 
 int LocalClient::notifyExceptionCatch(IScope *scope, const Core::BreakPoint &breakpoint)
 {
-	writeln("[Caught exception in " + Controller::Instance().thread(mCurrentThreadId)->current()->toString() + "]");
+	writeln("[Caught exception in " + Controller::Instance().thread(mCurrentThreadId)->currentFrame()->toString() + "]");
 
 	return notify(scope, breakpoint);
 }
 
 int LocalClient::notifyExceptionThrow(IScope *scope, const Core::BreakPoint &breakpoint)
 {
-	writeln("[Exception has been thrown in " + Controller::Instance().thread(mCurrentThreadId)->current()->toString() + "]");
+	writeln("[Exception has been thrown in " + Controller::Instance().thread(mCurrentThreadId)->currentFrame()->toString() + "]");
 
 	return notify(scope, breakpoint);
 }
 
 int LocalClient::notifyExit(IScope* scope, const Core::BreakPoint& breakpoint)
 {
-	writeln("[Stepping out of " + Controller::Instance().thread(mCurrentThreadId)->current()->toString() + "]");
+	writeln("[Stepping out of " + Controller::Instance().thread(mCurrentThreadId)->currentFrame()->toString() + "]");
 
 	return notify(scope, breakpoint);
 }
