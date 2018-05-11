@@ -126,7 +126,7 @@ private:	// Virtual machine stuff
 	Core::Debugger* mDebugger;
 	Memory* mMemory;
 	Repository *mRepository;
-	Thread* mStack;
+	Thread* mThread;
 };
 
 
