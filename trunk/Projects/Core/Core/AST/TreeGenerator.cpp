@@ -411,7 +411,8 @@ Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 			++start;
 
 			Node* condition = infixPostfix;
-			Node* first = 0;
+			Node* first = NULL;
+			Node* second = NULL;
 
 			// determine the type of the ternary operator
 			if ( start->type() == Token::Type::COLON ) {
@@ -426,7 +427,7 @@ Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 			expect(Token::Type::COLON, start);
 			++start;
 
-			Node* second = expression(start);
+			second = expression(start);
 
 			TernaryExpression* ternaryExpression = new TernaryExpression(condition, first, second);
 			if ( ternaryExpression->getResultType() != ternaryExpression->getSecondResultType() ) {
