@@ -32,7 +32,7 @@ public:
 		setSignature(params);
 	}
 
-	Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* result, const Token& token)
+	Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList& params, Runtime::Object* result, const Token& token)
 	{
 		try {
 			// Parameter processing
@@ -55,7 +55,7 @@ public:
 			Runtime::Object *data = Controller::Instance().repository()->createInstance(Runtime::StringObject::TYPENAME, ANONYMOUS_OBJECT);
 			*data = Runtime::StringObject(std::string(e.what()));
 
-			Controller::Instance().stack()->exception() = Runtime::ExceptionData(data, token.position());
+			Controller::Instance().thread(threadId)->exception() = Runtime::ExceptionData(data, token.position());
 			return Runtime::ControlFlow::Throw;
 		}
 

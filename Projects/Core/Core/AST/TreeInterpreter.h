@@ -37,7 +37,7 @@ namespace Runtime {
 	class Object;
 }
 class Repository;
-class Stack;
+class Thread;
 
 namespace AST {
 
@@ -127,7 +127,7 @@ private:	// Virtual machine stuff
 	Core::Debugger* mDebugger;
 	Memory* mMemory;
 	Repository *mRepository;
-	Stack* mStack;
+	Thread* mStack;
 };
 
 

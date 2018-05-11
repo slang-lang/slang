@@ -54,9 +54,6 @@ public:	// Symbol::IType implementation
 
 	void initialize(const PrototypeConstraints& constraints = PrototypeConstraints());
 
-public: // Execution
-	virtual Runtime::ControlFlow::E execute(const ParameterList& params, Runtime::Object* result, const Token& token);
-
 public: // Signature
 	bool isSignatureValid(const ParameterList& params) const;
 	const ParameterList& provideSignature() const;
