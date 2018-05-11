@@ -55,7 +55,6 @@ public:
 	Common::Namespace* globalScope() const;
 	Memory* memory() const;
 	Repository* repository() const;
-	Stack* stack() const;
 	Thread* thread(Common::ThreadId id) const;
 	Threads* threads() const;
 	TypeSystem* typeSystem() const;
