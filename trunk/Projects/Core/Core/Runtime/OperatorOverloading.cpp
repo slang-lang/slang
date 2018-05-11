@@ -93,24 +93,12 @@ void operator_binary_assign(Object *base, Object *other, const Common::Position&
 			return;
 		}
 
-		{
-			ParameterList params;
-			params.push_back(Parameter::CreateRuntime(other->QualifiedOuterface(), other->getValue(), other->getReference()));
-
-			::ObjectiveScript::MethodSymbol* operator_method = base->resolveMethod("operator=", params, true, Visibility::Private);
-			if ( operator_method ) {
-				Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(operator_method), params, 0);
-
-				return;
-			}
-		}
-
 		ParameterList params;
-		params.push_back(Parameter::CreateRuntime(base->QualifiedTypename(), base->getValue(), base->getReference()));
+		params.push_back(Parameter::CreateRuntime(other->QualifiedOuterface(), other->getValue(), other->getReference()));
 
-		::ObjectiveScript::MethodSymbol* operator_method = other->resolveMethod("=operator", params, true, Visibility::Public);
+		::ObjectiveScript::MethodSymbol* operator_method = base->resolveMethod("operator=", params, true, Visibility::Private);
 		if ( operator_method ) {
-			Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(operator_method), params, base);
+			Controller::Instance().thread(0)->execute(static_cast<Common::Method*>(operator_method), params, 0);
 
 			return;
 		}

@@ -253,20 +253,30 @@ public:
 class ForeachStatement : public Statement
 {
 public:
-	ForeachStatement(const Token& token, TypeDeclaration* typeDeclaration, Node* loopExpression, Node* loopStatement)
+	ForeachStatement(const Token& token, TypeDeclaration* typeDeclaration, Node* collectionExpression, MethodExpression* iteratorExpression,
+					 MethodExpression* hasNextExpression, MethodExpression* nextExpression, Node* loopStatement)
 	: Statement(StatementType::ForeachStatement, token),
-	  mLoopExpression(loopExpression),
+	  mCollectionExpression(collectionExpression),
+	  mGetIteratorExpression(iteratorExpression),
+	  mHasNextExpression(hasNextExpression),
+	  mNextExpression(nextExpression),
 	  mStatement(loopStatement),
 	  mTypeDeclaration(typeDeclaration)
 	{ }
 	~ForeachStatement() {
-		delete mLoopExpression;
+		delete mCollectionExpression;
+		delete mGetIteratorExpression;
+		delete mHasNextExpression;
+		delete mNextExpression;
 		delete mStatement;
 		delete mTypeDeclaration;
 	}
 
 public:
-	Node* mLoopExpression;
+	Node* mCollectionExpression;
+	MethodExpression* mGetIteratorExpression;
+	MethodExpression* mHasNextExpression;
+	MethodExpression* mNextExpression;
 	Node* mStatement;
 	TypeDeclaration* mTypeDeclaration;
 };

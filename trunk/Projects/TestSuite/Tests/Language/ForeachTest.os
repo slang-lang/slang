@@ -34,7 +34,7 @@ private bool TestCase1() {
 
 	assert( list.size() == 3 );
 
-	foreach ( String s : list ) {
+	foreach ( String s const : list ) {
 		print(string s);
 	}
 

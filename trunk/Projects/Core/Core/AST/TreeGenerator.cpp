@@ -778,22 +778,51 @@ Statement* TreeGenerator::process_foreach(TokenIterator& token)
 	expect(Token::Type::COLON, token);
 	++token;
 
-	Expression* loopExpression = dynamic_cast<Expression*>(parseExpression(token));
-	if ( loopExpression ) {
-///*	this has to be used as soon as 'this' is passed to methods as first parameter
-		// check if this expression offers an iterator
-		Designtime::BluePrintObject* blueprint = mRepository->findBluePrintObject(loopExpression->getResultType());
+	MethodExpression* getIteratorExpression = NULL;
+	MethodExpression* hasNextExpression = NULL;
+	MethodExpression* nextExpression = NULL;
 
-		if ( !blueprint || !blueprint->isIterable() ) {
-			throw Common::Exceptions::SyntaxError(loopExpression->getResultType() + " is not iterable", token->position());
+	Expression* collectionExpression = dynamic_cast<Expression*>(parseExpression(token));
+	if ( collectionExpression ) {
+		// check if this expression offers an iterator
+		Designtime::BluePrintObject* collection = mRepository->findBluePrintObject(collectionExpression->getResultType());
+
+		if ( !collection || !collection->isIterable() ) {
+			throw Common::Exceptions::SyntaxError(collectionExpression->getResultType() + " is not iterable", token->position());
 		}
-//*/
+
+		// check if iterator is a valid type
+		Designtime::BluePrintObject* iterator = mRepository->findBluePrintObject(std::string("Iterator"));
+		if ( !iterator ) {
+			throw Common::Exceptions::SyntaxError("'Iterator' is not a valid type", token->position());
+		}
+
+		{	// look up "getIterator" method in given collection
+			SymbolExpression* expression = new DesigntimeSymbolExpression("getIterator", "Iterator", PrototypeConstraints(), false);
+			expression->mSurroundingScope = collection;
+
+			getIteratorExpression = process_method(expression, *token, ExpressionList());
+		}
+
+		{	// look up "hasNext" method in given iterator
+			SymbolExpression* expression = new DesigntimeSymbolExpression("hasNext", _bool, PrototypeConstraints(), true);
+			expression->mSurroundingScope = iterator;
+
+			hasNextExpression = process_method(expression, *token, ExpressionList());
+		}
+
+		{	// look up "next" method in given iterator
+			SymbolExpression* expression = new DesigntimeSymbolExpression("next", typeDeclaration->mType, PrototypeConstraints(), false);
+			expression->mSurroundingScope = iterator;
+
+			nextExpression = process_method(expression, *token, ExpressionList());
+		}
 	}
 
 	expect(Token::Type::PARENTHESIS_CLOSE, token);
 	++token;
 
-	return new ForeachStatement(start, typeDeclaration, loopExpression, process_statement(token, true));
+	return new ForeachStatement(start, typeDeclaration, collectionExpression, getIteratorExpression, hasNextExpression, nextExpression, process_statement(token, true));
 }
 
 /*
