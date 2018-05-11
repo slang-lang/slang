@@ -104,11 +104,6 @@ Repository* Controller::repository() const
 	return mRepository;
 }
 
-Stack* Controller::stack() const
-{
-	return mThreads->getThread(0);
-}
-
 Thread* Controller::thread(Common::ThreadId id) const
 {
 	return mThreads->getThread(id);
