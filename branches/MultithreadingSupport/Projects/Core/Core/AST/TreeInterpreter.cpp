@@ -265,7 +265,7 @@ void TreeInterpreter::evaluateMethodExpression(MethodExpression* exp, Runtime::O
 		methodSymbol = resolveMethod(getEnclosingMethodScope(scope), exp->mSymbolExpression, params, Visibility::Private);
 	}
 	if ( !methodSymbol ) {
-		throw Runtime::Exceptions::RuntimeException("method " + exp->mSymbolExpression->toString() + "(" + toString(params) + ") not found");
+		throw Runtime::Exceptions::RuntimeException("method " + (!scope->getFullScopeName().empty() ? scope->getFullScopeName() + "." : "") + exp->mSymbolExpression->toString() + "(" + toString(params) + ") not found");
 	}
 
 	Common::Method* method = dynamic_cast<Common::Method*>(methodSymbol);
@@ -913,17 +913,27 @@ void TreeInterpreter::visitFor(ForStatement* node)
 void TreeInterpreter::visitForeach(ForeachStatement* node)
 {
 	Runtime::Object collection;
-	tryControl(evaluate(node->mLoopExpression, &collection));
+	tryControl(evaluate(node->mCollectionExpression, &collection));
 
 	// get collection's forward iterator
 	Runtime::Object iterator;
-	collection.execute(&iterator, "getIterator", ParameterList());
+
+	pushScope(&collection);
+
+		evaluateMethodExpression(node->mGetIteratorExpression, &iterator);
+
+	popScope();
 
 	for  ( ; ; ) {
 		// Setup
 		// {
 		Runtime::Object condition;
-		iterator.execute(&condition, "hasNext", ParameterList());
+
+		pushScope(&iterator);
+
+			evaluateMethodExpression(node->mHasNextExpression, &condition);
+
+		popScope();
 
 		if ( !isTrue(condition) ) {	// do we have more items to iterate over?
 			break;
@@ -932,22 +942,26 @@ void TreeInterpreter::visitForeach(ForeachStatement* node)
 
 		pushScope();	// push new scope for loop variable
 
-		// execute type declaration
-		// {
-		TypeDeclaration* typeDeclaration = node->mTypeDeclaration;
+			// execute type declaration
+			// {
+			TypeDeclaration* typeDeclaration = node->mTypeDeclaration;
 
-		Runtime::Object* loopVariable = mRepository->createInstance(typeDeclaration->mType, typeDeclaration->mName, typeDeclaration->mConstraints);
+			Runtime::Object* loopVariable = mRepository->createInstance(typeDeclaration->mType, typeDeclaration->mName, typeDeclaration->mConstraints);
 
-		getScope()->define(typeDeclaration->mName, loopVariable);
+			getScope()->define(typeDeclaration->mName, loopVariable);
+			// }
 
-		loopVariable->setConst(typeDeclaration->mIsConst);
-		// }
+			// iterate over next item
+			pushScope(&iterator);
 
-		// iterate over next item
-		iterator.execute(loopVariable, "next", ParameterList());
+				evaluateMethodExpression(node->mNextExpression, loopVariable);
 
-		// execute compound statement
-		visitStatement(dynamic_cast<Statement*>(node->mStatement));
+			popScope();
+
+			loopVariable->setConst(typeDeclaration->mIsConst);
+
+			// execute compound statement
+			visitStatement(dynamic_cast<Statement*>(node->mStatement));
 
 		popScope();		// pop scope and remove loop variable
 
