@@ -32,6 +32,15 @@ Thread::~Thread()
 {
 }
 
+StackFrame* Thread::currentFrame() const
+{
+	if ( mStackFrames.empty() ) {
+		return 0;
+	}
+
+	return mStackFrames.back();
+}
+
 void Thread::deinit()
 {
 	mState = State::Stopped;
@@ -49,9 +58,31 @@ Runtime::ControlFlow::E Thread::execute(Common::Method* method, const ParameterL
 	return controlflow;
 }
 
+Runtime::ExceptionData& Thread::exception()
+{
+	return mExceptionData;
+}
+
+StackFrame* Thread::frame(Common::FrameId frameId) const
+{
+	size_t idx = 0;
+	for ( StackFrames::const_iterator it = mStackFrames.cbegin(); it != mStackFrames.cend(); ++it, ++idx ) {
+		if ( idx == frameId ) {
+			return (*it);
+		}
+	}
+
+	return 0;
+}
+
 Common::ThreadId Thread::getId() const
 {
 	return mId;
+}
+
+Common::FrameId Thread::getNumFrames() const
+{
+	return mStackFrames.size();
 }
 
 Thread::State::E Thread::getState() const
@@ -64,6 +95,17 @@ void Thread::init()
 	mState = State::Started;
 }
 
+void Thread::popFrame()
+{
+	StackFrame* frame = mStackFrames.back();
+	frame->popTokens();
+	frame->popScope();
+
+	mStackFrames.pop_back();
+
+	delete frame;
+}
+
 void Thread::print()
 {
 	if ( mStackFrames.empty() ) {
@@ -73,6 +115,18 @@ void Thread::print()
 	for ( StackFrames::const_iterator it = mStackFrames.begin(); it != mStackFrames.end(); ++it ) {
 		std::cout << "Thread " << mId << ": " << (*it)->toString() << std::endl;
 	}
+}
+
+void Thread::pushFrame(IScope* scope, const TokenList& tokens, const ParameterList& params)
+{
+	// create new stack frame
+	StackFrame* frame = new StackFrame(mStackFrames.size(), scope, params);
+	// push scope
+	frame->pushScope(scope, false, false);
+	// push tokens (although maybe none are present)
+	frame->pushTokens(tokens);
+
+	mStackFrames.push_back(frame);
 }
 
 

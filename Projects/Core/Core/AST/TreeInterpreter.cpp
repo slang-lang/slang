@@ -85,7 +85,7 @@ TreeInterpreter::~TreeInterpreter()
 void TreeInterpreter::deinitialize()
 {
 	// unwind stack
-	mStack->pop();
+	mStack->popFrame();
 }
 
 void TreeInterpreter::evaluate(Node* exp, Runtime::Object* result)
@@ -468,7 +468,7 @@ Runtime::ControlFlow::E TreeInterpreter::execute(Common::Method* method, const P
 
 	// only set return value if we are a non-void method
 	if ( result && method->QualifiedTypename() != _void ) {
-		*result = mStack->current()->returnValue();
+		*result = mStack->currentFrame()->returnValue();
 	}
 
 	// deinitalize & pop scope
@@ -561,7 +561,7 @@ Runtime::Object* TreeInterpreter::getEnclosingObject(IScope* scope) const
 
 inline IScope* TreeInterpreter::getScope() const
 {
-	return mStack->current()->getScope();
+	return mStack->currentFrame()->getScope();
 }
 
 void TreeInterpreter::initialize(IScope* scope, const ParameterList& params)
@@ -601,12 +601,12 @@ void TreeInterpreter::initialize(IScope* scope, const ParameterList& params)
 	}
 
 	// record stack
-	mStack->push(scope, TokenList(), params);
+	mStack->pushFrame(scope, TokenList(), params);
 }
 
 void TreeInterpreter::popScope()
 {
-	mStack->current()->popScope();
+	mStack->currentFrame()->popScope();
 }
 
 std::string TreeInterpreter::printExpression(Node* node) const
@@ -696,7 +696,7 @@ void TreeInterpreter::process(Statements* statements)
 
 void TreeInterpreter::pushScope(IScope* scope)
 {
-	StackFrame* stack = mStack->current();
+	StackFrame* stack = mStack->currentFrame();
 
 	bool allowDelete = !scope;
 	if ( allowDelete ) {
@@ -1000,7 +1000,7 @@ void TreeInterpreter::visitReturn(ReturnStatement* node)
 
 		tryControl(evaluate(node->mExpression, &tmp));
 
-		Runtime::operator_binary_assign(&mStack->current()->returnValue(), &tmp);
+		Runtime::operator_binary_assign(&mStack->currentFrame()->returnValue(), &tmp);
 	}
 
 	mControlFlow = Runtime::ControlFlow::Return;
