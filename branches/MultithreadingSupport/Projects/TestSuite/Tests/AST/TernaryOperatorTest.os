@@ -6,6 +6,7 @@ public void Main(int argc = 0, string args = "") {
 	assert( TestCase3() );
 	assert( TestCase4() );
 	assert( TestCase5() );
+	assert( TestCase6() );
 }
 
 private bool TestCase1() {
@@ -56,5 +57,17 @@ private bool TestCase5() {
 	assert( value == 5 );
 
 	return value == 5;
+}
+
+private bool TestCase6() {
+	print("TestCase 6: short ternary operator without duplicate execution bug");
+
+	int i = 1;
+
+	int value = (i++) ?: 0;
+	print("value = " + value);
+	assert( value == 2 );
+
+	return value == 2;
 }
 
