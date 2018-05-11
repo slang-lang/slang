@@ -359,7 +359,13 @@ void TreeInterpreter::evaluateTernaryExpression(TernaryExpression* exp, Runtime:
 
 	// validate ? condition
 	if ( isTrue(condition) ) {
-		evaluate(exp->mFirst, result);
+		// determine if the short evaluation has to be used
+		if ( exp->mCondition == exp->mFirst ) {
+			*result = condition;
+		}
+		else {
+			evaluate(exp->mFirst, result);
+		}
 	}
 	else {
 		evaluate(exp->mSecond, result);
