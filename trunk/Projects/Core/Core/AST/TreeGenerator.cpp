@@ -373,11 +373,13 @@ Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 		case Token::Type::MATH_ADDITION:
 		case Token::Type::MATH_SUBTRACT: {		// infix +/- operators
 			Token operation = (*start);
-			infixPostfix = new UnaryExpression(operation, parseTerm(++start));
+
+			infixPostfix = new UnaryExpression(operation, parseTerm(++start), UnaryExpression::ValueType::RValue);
 		} break;
 		case Token::Type::OPERATOR_NOT: {		// infix ! operator
 			Token operation = (*start);
-			infixPostfix = new BooleanUnaryExpression(operation, parseTerm(++start));
+
+			infixPostfix = new BooleanUnaryExpression(operation, parseTerm(++start), UnaryExpression::ValueType::RValue);
 		} break;
 		default: {								// default term parsing
 			infixPostfix = parseTerm(start);
@@ -393,8 +395,9 @@ Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 		} break;
 		case Token::Type::OPERATOR_DECREMENT:
 		case Token::Type::OPERATOR_INCREMENT: {	// postfix --/++ operators for rvalue
-			Token tmp = (*start++);
-			infixPostfix = new UnaryExpression(tmp, infixPostfix, UnaryExpression::ValueType::RValue);
+			Token operation = (*start++);
+
+			infixPostfix = new UnaryExpression(operation, infixPostfix, UnaryExpression::ValueType::RValue);
 		} break;
 		case Token::Type::OPERATOR_IS: {		// postfix is operator
 			++start;
@@ -431,7 +434,7 @@ Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 
 			TernaryExpression* ternaryExpression = new TernaryExpression(condition, first, second);
 			if ( ternaryExpression->getResultType() != ternaryExpression->getSecondResultType() ) {
-				throw Common::Exceptions::SyntaxError("expression results for first ('" + ternaryExpression->getResultType() + "') and second ('" + ternaryExpression->getSecondResultType() + "') expressions don't match", start->position());
+				throw Common::Exceptions::SyntaxError("expression results for first ('" + ternaryExpression->getResultType() + "') and second ('" + ternaryExpression->getSecondResultType() + "') expression don't match", start->position());
 			}
 
 			infixPostfix = ternaryExpression;
@@ -582,14 +585,14 @@ Statement* TreeGenerator::process_assignment(TokenIterator& token, SymbolExpress
 		Token operation;
 
 		switch ( op->type() ) {
-			case Token::Type::ASSIGN_ADDITION: operation = Token(Token::Category::Operator, Token::Type::MATH_ADDITION, "+", op->position()); break;
-			case Token::Type::ASSIGN_BITAND: operation = Token(Token::Category::Operator, Token::Type::BITAND, "&", op->position()); break;
+			case Token::Type::ASSIGN_ADDITION:      operation = Token(Token::Category::Operator, Token::Type::MATH_ADDITION, "+", op->position()); break;
+			case Token::Type::ASSIGN_BITAND:        operation = Token(Token::Category::Operator, Token::Type::BITAND, "&", op->position()); break;
 			case Token::Type::ASSIGN_BITCOMPLEMENT: operation = Token(Token::Category::Operator, Token::Type::BITCOMPLEMENT, "~", op->position()); break;
-			case Token::Type::ASSIGN_BITOR: operation = Token(Token::Category::Operator, Token::Type::BITOR, "|", op->position()); break;
-			case Token::Type::ASSIGN_DIVIDE: operation = Token(Token::Category::Operator, Token::Type::MATH_DIVIDE, "/", op->position()); break;
-			case Token::Type::ASSIGN_MODULO: operation = Token(Token::Category::Operator, Token::Type::MATH_MODULO, "%", op->position()); break;
-			case Token::Type::ASSIGN_MULTIPLY: operation = Token(Token::Category::Operator, Token::Type::MATH_MULTIPLY, "*", op->position()); break;
-			case Token::Type::ASSIGN_SUBTRACT: operation = Token(Token::Category::Operator, Token::Type::MATH_SUBTRACT, "-", op->position()); break;
+			case Token::Type::ASSIGN_BITOR:         operation = Token(Token::Category::Operator, Token::Type::BITOR, "|", op->position()); break;
+			case Token::Type::ASSIGN_DIVIDE:        operation = Token(Token::Category::Operator, Token::Type::MATH_DIVIDE, "/", op->position()); break;
+			case Token::Type::ASSIGN_MODULO:        operation = Token(Token::Category::Operator, Token::Type::MATH_MODULO, "%", op->position()); break;
+			case Token::Type::ASSIGN_MULTIPLY:      operation = Token(Token::Category::Operator, Token::Type::MATH_MULTIPLY, "*", op->position()); break;
+			case Token::Type::ASSIGN_SUBTRACT:      operation = Token(Token::Category::Operator, Token::Type::MATH_SUBTRACT, "-", op->position()); break;
 			default: throw Common::Exceptions::SyntaxError("assignment type expected", token->position());
 		}
 
@@ -879,12 +882,7 @@ Node* TreeGenerator::process_identifier(TokenIterator& token, bool allowTypeCast
 	}
 	// --/++ for lvalue
 	else if ( op->type() == Token::Type::OPERATOR_DECREMENT || op->type() == Token::Type::OPERATOR_INCREMENT ) {
-		if ( symbol->isConst() && !(mAllowConstModify && symbol->isMember()) ) {
-			throw Common::Exceptions::ConstCorrectnessViolated("tried to modify const symbol '" + symbol->mName + "'", op->position());
-		}
-
-		node = new UnaryExpression((*token), symbol, UnaryExpression::ValueType::LValue);
-		++token;
+		node = process_incdecrement(token, symbol);
 	}
 	// variable usage
 	else {
@@ -922,6 +920,28 @@ Statement* TreeGenerator::process_if(TokenIterator& token)
 	}
 
 	return new IfStatement(start, exp, ifBlock, elseBlock);
+}
+
+Expression* TreeGenerator::process_incdecrement(TokenIterator& token, SymbolExpression* symbol)
+{
+	if ( symbol->isConst() && !(mAllowConstModify && symbol->isMember()) ) {
+		throw Common::Exceptions::ConstCorrectnessViolated("tried to modify const symbol '" + symbol->mName + "'", token->position());
+	}
+
+	if ( symbol->isAtomicType() ) {
+		return new UnaryExpression((*token++), symbol, UnaryExpression::ValueType::LValue);
+	}
+
+	// check if we are using a valid type
+	Designtime::BluePrintObject* type = mRepository->findBluePrintObject(symbol->getResultType());
+	if ( !type ) {
+		throw Common::Exceptions::SyntaxError("'" + symbol->getResultType() + "' is not a valid type", token->position());
+	}
+
+	symbol->mSymbolExpression = new DesigntimeSymbolExpression("operator" + token->content(), _void, PrototypeConstraints(), false);
+	symbol->mSymbolExpression->mSurroundingScope = type;
+
+	return process_method(symbol, (*token++), ExpressionList());
 }
 
 Statement* TreeGenerator::process_keyword(TokenIterator& token)
@@ -1197,7 +1217,7 @@ Expression* TreeGenerator::process_subscript(TokenIterator& token, SymbolExpress
 	// skip ]
 	++token;
 
-	return new UnaryExpression(opToken, process_method(symbol, opToken, params), UnaryExpression::ValueType::RValue);
+	return process_method(symbol, opToken, params);
 }
 
 Node* TreeGenerator::process_statement(TokenIterator& token, bool allowBreakAndContinue)

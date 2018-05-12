@@ -6,10 +6,12 @@ import System.String;
 
 private object TestObject {
 	public int operator[](int index) const {
+		print("operator[" + index + "]");
 		return index;
 	}
 
 	public int operator[](int left, int right) const {
+		print("operator[" + left + ", " + right + "]");
 		return left * right;
 	}
 }
@@ -57,7 +59,7 @@ bool TestCase3() {
 	map.insert(1, new String("index 1"));
 
 	assert( map[0] == "index 0" );
-	assert( "index 0" == map[0] );
+	assert( "index 1" == map[1] );
 
 	return true;
 }
