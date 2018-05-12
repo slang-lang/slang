@@ -823,8 +823,8 @@ void operator_unary_decrement(Object *base, const Common::Position& position)
 		base->assign(tmp);
 	}
 	else {
-		VoidObject tmp;
-		base->execute(&tmp, "operator--", ParameterList());
+		// invalid decrement operator handling!
+		throw ControlFlow::Throw;
 	}
 }
 
@@ -873,8 +873,8 @@ void operator_unary_increment(Object *base, const Common::Position& position)
 		base->assign(tmp);
 	}
 	else {
-		VoidObject tmp;
-		base->execute(&tmp, "operator++", ParameterList());
+		// invalid increment operator handling!
+		throw ControlFlow::Throw;
 	}
 }
 
@@ -923,10 +923,58 @@ void operator_unary_minus(Object *base, const Common::Position& position)
 		base->assign(tmp);
 	}
 	else {
-		Object tmp;
-		tmp.operator_unary_minus();
+		// invalid unary minus operator handling!
+		throw ControlFlow::Throw;
+	}
+}
+
+void operator_unary_plus(Object *base, const Common::Position& position)
+{
+	if ( !base ) {
+		throw Runtime::Exceptions::AccessViolation("null pointer access", position);
+	}
+
+	std::string source = base->QualifiedTypename();
+
+	if ( source == BoolObject::TYPENAME ) {
+		BoolObject tmp(base->isValid());
+		tmp.operator_unary_plus();
 
 		base->assign(tmp);
+	}
+	else if ( source == DoubleObject::TYPENAME ) {
+		DoubleObject tmp(base->getValue());
+		tmp.operator_unary_plus();
+
+		base->assign(tmp);
+	}
+	else if ( source == FloatObject::TYPENAME ) {
+		FloatObject tmp(base->getValue());
+		tmp.operator_unary_plus();
+
+		base->assign(tmp);
+	}
+	else if ( source == IntegerObject::TYPENAME ) {
+		IntegerObject tmp(base->getValue());
+		tmp.operator_unary_plus();
+
+		base->assign(tmp);
+	}
+	else if ( source == StringObject::TYPENAME ) {
+		StringObject tmp(base->getValue());
+		tmp.operator_unary_plus();
+
+		base->assign(tmp);
+	}
+	else if ( source == VoidObject::TYPENAME ) {
+		VoidObject tmp;
+		tmp.operator_unary_plus();
+
+		base->assign(tmp);
+	}
+	else {
+		// invalid unary plus operator handling!
+		throw ControlFlow::Throw;
 	}
 }
 
@@ -980,8 +1028,6 @@ void operator_unary_validate(Object *base, const Common::Position& position)
 	}
 
 	if ( !base->isValid() ) {
-		Controller::Instance().thread(0)->exception() = Runtime::ExceptionData(new StringObject(std::string("validation failed")), position);
-
 		throw ControlFlow::Throw;
 	}
 }

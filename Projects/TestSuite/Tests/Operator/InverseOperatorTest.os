@@ -56,9 +56,11 @@ private object TestObject {
 		return mValue;
 	}
 */
-	public void operator++() modify {
+	public TestObject operator++() modify {
 		print("operator++");
 		mValue = mValue++;
+
+		return this;
 	}
 
 	public void ++operator() modify {

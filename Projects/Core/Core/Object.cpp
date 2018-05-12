@@ -740,6 +740,11 @@ void Object::operator_unary_minus()
 	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator unary -: for " + QualifiedTypename() + " not supported");
 }
 
+void Object::operator_unary_plus()
+{
+	throw Common::Exceptions::Exception(QualifiedTypename() + ".operator unary +: for " + QualifiedTypename() + " not supported");
+}
+
 Symbol* Object::resolve(const std::string& name, bool onlyCurrentScope, Visibility::E visibility) const
 {
 	if ( mThis != this ) {
