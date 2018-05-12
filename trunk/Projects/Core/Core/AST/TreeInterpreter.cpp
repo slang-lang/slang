@@ -396,7 +396,7 @@ void TreeInterpreter::evaluateTypeidExpression(TypeidExpression* exp, Runtime::O
 void TreeInterpreter::evaluateUnaryExpression(UnaryExpression* exp, Runtime::Object* result)
 {
 	if ( exp->mValueType == UnaryExpression::ValueType::LValue ) {
-		Runtime::Object &lvalue = resolveLValue(getScope(), dynamic_cast<SymbolExpression*>(exp->mExpression), false, Visibility::Designtime);
+		Runtime::Object& lvalue = resolveLValue(getScope(), dynamic_cast<SymbolExpression*>(exp->mExpression), false, Visibility::Designtime);
 
 		switch ( exp->mOperation.type() ) {
 			// math expressions

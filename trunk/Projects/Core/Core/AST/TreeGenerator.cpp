@@ -315,15 +315,26 @@ Node* TreeGenerator::parseCondition(TokenIterator& start)
 
 		Token operation = (*start);
 		Node* right = parseExpression(++start);
-		/*std::string type =*/ //resolveType(condition, operation, right);	// TODO: find a solution that allows us to activate this check
+
+		if ( op == Token::Type::COMPARE_UNEQUAL ) {
+			operation.resetContentTo("==");
+			operation.resetTypeTo(Token::Type::COMPARE_EQUAL);
+		}
+
+		//std::string type = resolveType(condition, operation, right);	// TODO: find a solution that allows us to activate this check
 
 		condition = new BooleanBinaryExpression(condition, operation, right);
+
+		// != operator is not defined but rather used as 'not =='
+		if ( op == Token::Type::COMPARE_UNEQUAL ) {
+			condition = new BooleanUnaryExpression(Token::Type::OPERATOR_NOT, condition, UnaryExpression::ValueType::RValue);
+		}
 	}
 }
 
 Node* TreeGenerator::parseExpression(TokenIterator& start)
 {
-	Node* expression = parseFactors(start);
+	Node* expression = parseFactor(start);
 
 	for ( ; ; ) {
 		Token::Type::E op = start->type();
@@ -336,14 +347,36 @@ Node* TreeGenerator::parseExpression(TokenIterator& start)
 		}
 
 		Token operation = (*start);
-		Node* right = parseFactors(++start);
+		Node* right = parseFactor(++start);
 		std::string type = resolveType(expression, operation, right);
 
-		expression = new BinaryExpression(expression, operation, right, type);
+		//expression = new BinaryExpression(expression, operation, right, type);
+
+
+		SymbolExpression* exp = dynamic_cast<SymbolExpression*>(expression);
+
+		if ( !exp || exp->isAtomicType() ) {
+			expression = new BinaryExpression(expression, operation, right, type);
+			continue;
+		}
+
+		// check if we are using a valid type
+		Designtime::BluePrintObject* blueprint = mRepository->findBluePrintObject(exp->getResultType());
+		if ( !blueprint ) {
+			throw Common::Exceptions::SyntaxError("'" + exp->getResultType() + "' is not a valid type", operation.position());
+		}
+
+		exp->mSymbolExpression = new DesigntimeSymbolExpression("operator" + operation.content(), type, PrototypeConstraints(), false);
+		exp->mSymbolExpression->mSurroundingScope = blueprint;
+
+		ExpressionList params;
+		params.emplace_back(right);
+
+		expression = process_method(exp, (*start), params);
 	}
 }
 
-Node* TreeGenerator::parseFactors(TokenIterator& start)
+Node* TreeGenerator::parseFactor(TokenIterator &start)
 {
 	Node* factor = parseInfixPostfix(start);
 
@@ -359,7 +392,29 @@ Node* TreeGenerator::parseFactors(TokenIterator& start)
 		Node* right = parseInfixPostfix(++start);
 		std::string type = resolveType(factor, operation, right);
 
-		factor = new BinaryExpression(factor, operation, right, type);
+		//factor = new BinaryExpression(factor, operation, right, type);
+
+
+		SymbolExpression* exp = dynamic_cast<SymbolExpression*>(factor);
+
+		if ( !exp || exp->isAtomicType() ) {
+			factor = new BinaryExpression(factor, operation, right, type);
+			continue;
+		}
+
+		// check if we are using a valid type
+		Designtime::BluePrintObject* blueprint = mRepository->findBluePrintObject(exp->getResultType());
+		if ( !blueprint ) {
+			throw Common::Exceptions::SyntaxError("'" + exp->getResultType() + "' is not a valid type", operation.position());
+		}
+
+		exp->mSymbolExpression = new DesigntimeSymbolExpression("operator" + operation.content(), type, PrototypeConstraints(), false);
+		exp->mSymbolExpression->mSurroundingScope = blueprint;
+
+		ExpressionList params;
+		params.emplace_back(right);
+
+		factor = process_method(exp, (*start), params);
 	}
 }
 
@@ -941,7 +996,9 @@ Expression* TreeGenerator::process_incdecrement(TokenIterator& token, SymbolExpr
 	symbol->mSymbolExpression = new DesigntimeSymbolExpression("operator" + token->content(), _void, PrototypeConstraints(), false);
 	symbol->mSymbolExpression->mSurroundingScope = type;
 
-	return process_method(symbol, (*token++), ExpressionList());
+	++token;
+
+	return process_method(symbol, (*token), ExpressionList());
 }
 
 Statement* TreeGenerator::process_keyword(TokenIterator& token)

@@ -109,7 +109,7 @@ private: // Execution
 	Node* expression(TokenIterator& start);
 	Node* parseCondition(TokenIterator& start);
 	Node* parseExpression(TokenIterator& start);
-	Node* parseFactors(TokenIterator& start);
+	Node* parseFactor(TokenIterator &start);
 	Node* parseInfixPostfix(TokenIterator& start);
 	Node* parseTerm(TokenIterator& start);
 

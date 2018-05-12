@@ -17,12 +17,16 @@ private object UserObject {
 
 	/////////////////////////////////////////////////////////////////////
 
-	public void operator&(int other const) modify {
+	public UserObject operator&(int other const) modify {
 		mValue = mValue & other;
+
+		return this;
 	}
 
-	public void operator&(UserObject other const) modify {
+	public UserObject operator&(UserObject other const) modify {
 		mValue = mValue & other.getValue();
+
+		return this;
 	}
 
 	public bool operator==(int other const) const {
