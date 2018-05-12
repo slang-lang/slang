@@ -11,16 +11,20 @@ private object TestObject {
 		mValue = value;
 	}
 
-	public void operator=(int value) modify {
+	public TestObject operator=(int value) modify {
 		mValue = value;
+
+		return this;
 	}
 
 	public int =operator(int none) const {
 		return mValue;
 	}
 
-	public void operator+(int value) modify {
+	public TestObject operator+(int value) modify {
 		mValue = mValue + value;
+
+		return this;
 	}
 }
 
@@ -31,8 +35,10 @@ private object DerivedObject extends TestObject {
 		operator+(5);
 	}
 
-	public void operator=(int value) modify {
+	public DerivedObject operator=(int value) modify {
 		mValue = value * value;
+
+		return this;
 	}
 }
 

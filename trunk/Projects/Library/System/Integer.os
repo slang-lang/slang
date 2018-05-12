@@ -54,15 +54,19 @@ public object Integer {
 	/*
 	 * int assignment operator
 	 */
-	public void operator=(int other val) modify {
+	public Integer operator=(int other val) modify {
 		mValue = other;
+
+		return this;
 	}
 
 	/*
 	 * Integer assignment operator
 	 */
-	public void operator=(Integer other ref) modify {
+	public Integer operator=(Integer other ref) modify {
 		mValue = int other;
+
+		return this;
 	}
 
 	/*
@@ -79,32 +83,48 @@ public object Integer {
 		return string mValue;
 	}
 
-	public void operator+(int other val) modify {
+	public Integer operator+(int other val) modify {
 		mValue = mValue + other;
+
+		return this;
 	}
-	public void operator+(Integer other ref) modify {
+	public Integer operator+(Integer other ref) modify {
 		mValue = mValue + int other;
+
+		return this;
 	}
 
-	public void operator-(int other val) modify {
+	public Integer operator-(int other val) modify {
 		mValue = mValue - other;
+
+		return this;
 	}
-	public void operator-(Integer other ref) modify {
+	public Integer operator-(Integer other ref) modify {
 		mValue = mValue - int other;
+
+		return this;
 	}
 
-	public void operator*(int other val) modify {
+	public Integer operator*(int other val) modify {
 		mValue = mValue * other;
+
+		return this;
 	}
-	public void operator*(Integer other ref) modify {
+	public Integer operator*(Integer other ref) modify {
 		mValue = mValue * int other;
+
+		return this;
 	}
 
-	public void operator/(int other val) modify {
+	public Integer operator/(int other val) modify {
 		mValue = mValue / other;
+
+		return this;
 	}
-	public void operator/(Integer other ref) modify {
+	public Integer operator/(Integer other ref) modify {
 		mValue = mValue / int other;
+
+		return this;
 	}
 }
 
