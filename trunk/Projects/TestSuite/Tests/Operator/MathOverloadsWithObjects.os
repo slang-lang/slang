@@ -19,34 +19,44 @@ public namespace MathOverloads {
 			return mNumber == other;
 		}
 
-		public bool operator==(MathOverloads.OverloadedObject other const ref) const {
+		public bool operator==(OverloadedObject other const) const {
 			print("operator==(OverloadedObject)");
 			return mNumber == other.GetNumber();
 		}
 
-		public void operator*(MathOverloads.OverloadedObject other const ref) modify {
+		public OverloadedObject operator*(OverloadedObject other const) modify {
 			print("operator*(OverloadedObject)");
 			mNumber = mNumber * other.GetNumber();
+
+			return this;
 		}
 
-		public void operator%(MathOverloads.OverloadedObject other const ref) modify {
+		public OverloadedObject operator%(OverloadedObject other const) modify {
 			print("operator%(OverloadedObject)");
 			mNumber = mNumber % other.GetNumber();
+
+			return this;
 		}
 
-		public void operator+(MathOverloads.OverloadedObject other const ref) modify {
+		public OverloadedObject operator+(OverloadedObject other const) modify {
 			print("operator+(OverloadedObject)");
 			mNumber = mNumber + other.GetNumber();
+
+			return this;
 		}
 
-		public void operator-(MathOverloads.OverloadedObject other const ref) modify {
+		public OverloadedObject operator-(OverloadedObject other const) modify {
 			print("operator-(OverloadedObject)");
 			mNumber = mNumber - other.GetNumber();
+
+			return this;
 		}
 
-		public void operator/(MathOverloads.OverloadedObject other const ref) modify {
+		public OverloadedObject operator/(OverloadedObject other const) modify {
 			print("operator/(OverloadedObject)");
 			mNumber = mNumber / other.GetNumber();
+
+			return this;
 		}
 	}
 }

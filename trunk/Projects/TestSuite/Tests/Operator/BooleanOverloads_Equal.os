@@ -23,7 +23,7 @@ private object UserObject
 		return mValue == other;
 	}
 
-	public bool operator==(UserObject other const ref) const
+	public bool operator==(UserObject other const) const
 	{
 		print("operator==(UserObject)");
 
