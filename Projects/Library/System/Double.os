@@ -30,11 +30,15 @@ public object Double {
 		return mValue == double other;
 	}
 
-	public void operator=(double other val) modify {
+	public Double operator=(double other val) modify {
 		mValue = other;
+
+		return this;
 	}
-	public void operator=(Double other ref) modify {
+	public Double operator=(Double other ref) modify {
 		mValue = double other;
+
+		return this;
 	}
 
 	public bool =operator(bool other val) const {
@@ -44,32 +48,48 @@ public object Double {
 		return mValue;
 	}
 
-	public void operator+(double other val) modify {
+	public Double operator+(double other val) modify {
 		mValue = mValue + other;
+
+		return this;
 	}
-	public void operator+(Double other ref) modify {
+	public Double operator+(Double other ref) modify {
 		mValue = mValue + double other;
+
+		return this;
 	}
 
-	public void operator-(double other val) modify {
+	public Double operator-(double other val) modify {
 		mValue = mValue - other;
+
+		return this;
 	}
-	public void operator-(Double other ref) modify {
+	public Double operator-(Double other ref) modify {
 		mValue = mValue - double other;
+
+		return this;
 	}
 
-	public void operator*(double other val) modify {
+	public Double operator*(double other val) modify {
 		mValue = mValue * other;
+
+		return this;
 	}
-	public void operator*(Double other ref) modify {
+	public Double operator*(Double other ref) modify {
 		mValue = mValue * double other;
+
+		return this;
 	}
 
-	public void operator/(double other val) modify {
+	public Double operator/(double other val) modify {
 		mValue = mValue / other;
+
+		return this;
 	}
-	public void operator/(Double other ref) modify {
+	public Double operator/(Double other ref) modify {
 		mValue = mValue / double other;
+
+		return this;
 	}
 }
 

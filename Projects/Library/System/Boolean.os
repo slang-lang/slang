@@ -30,11 +30,15 @@ public object Boolean {
 		return mValue == bool other;
 	}
 
-	public void operator=(bool other val) modify {
+	public Boolean operator=(bool other val) modify {
 		mValue = other;
+
+		return this;
 	}
-	public void operator=(Boolean other ref) modify {
+	public Boolean operator=(Boolean other ref) modify {
 		mValue = bool other;
+
+		return this;
 	}
 
 	/*

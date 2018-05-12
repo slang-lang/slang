@@ -30,43 +30,63 @@ public object Float {
 		return mValue == float other;
 	}
 
-	public void operator=(float other val) modify {
+	public Float operator=(float other val) modify {
 		mValue = other;
+
+		return this;
 	}
-	public void operator=(Float other ref) modify {
+	public Float operator=(Float other ref) modify {
 		mValue = float other;
+
+		return this;
 	}
 
 	public float =operator(float other val) const {
 		return mValue;
 	}
 
-	public void operator+(float other) modify {
+	public Float operator+(float other) modify {
 		mValue = mValue + other;
+
+		return this;
 	}
-	public void operator+(Float other ref) modify {
+	public Float operator+(Float other ref) modify {
 		mValue = mValue + float other;
+
+		return this;
 	}
 
-	public void operator-(float other val) modify {
+	public Float operator-(float other val) modify {
 		mValue = mValue - other;
+
+		return this;
 	}
-	public void operator-(Float other ref) modify {
+	public Float operator-(Float other ref) modify {
 		mValue = mValue - float other;
+
+		return this;
 	}
 
-	public void operator*(float other val) modify {
+	public Float operator*(float other val) modify {
 		mValue = mValue * other;
+
+		return this;
 	}
-	public void operator*(Float other ref) modify {
+	public Float operator*(Float other ref) modify {
 		mValue = mValue * float other;
+
+		return this;
 	}
 
-	public void operator/(float other val) modify {
+	public Float operator/(float other val) modify {
 		mValue = mValue / other;
+
+		return this;
 	}
-	public void operator/(Float other ref) modify {
+	public Float operator/(Float other ref) modify {
 		mValue = mValue / float other;
+
+		return this;
 	}
 }
 

@@ -157,27 +157,35 @@ public object String implements IIterateable {
 	/*
 	 * string assignment operator
 	 */
-	public void operator=(string other val) modify {
+	public String operator=(string other val) modify {
 		mValue = other;
+
+		return this;
 	}
 	/*
 	 * String assignment operator
 	 */
-	public void operator=(String other ref) modify {
+	public String operator=(String other ref) modify {
 		mValue = string other;
+
+		return this;
 	}
 
 	/*
 	 * string concatenation operator
 	 */
-	public void operator+(string other val) modify {
+	public String operator+(string other val) modify {
 		mValue = mValue + other;
+
+		return this;
 	}
 	/*
 	 * String concatenation operator
 	 */
-	public void operator+(String other ref) modify {
+	public String operator+(String other ref) modify {
 		mValue = mValue + string other;
+
+		return this;
 	}
 
 	/*
