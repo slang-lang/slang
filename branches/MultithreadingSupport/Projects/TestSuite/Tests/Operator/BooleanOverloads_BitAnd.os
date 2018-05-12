@@ -17,19 +17,23 @@ private object UserObject {
 
 	/////////////////////////////////////////////////////////////////////
 
-	public void operator&(int other const) modify {
+	public UserObject operator&(int other const) modify {
 		mValue = mValue & other;
+
+		return this;
 	}
 
-	public void operator&(UserObject other const ref) modify {
+	public UserObject operator&(UserObject other const) modify {
 		mValue = mValue & other.getValue();
+
+		return this;
 	}
 
 	public bool operator==(int other const) const {
 		return mValue == other;
 	}
 
-	public bool operator==(UserObject other const ref) const {
+	public bool operator==(UserObject other const) const {
 		return mValue == other.getValue();
 	}
 }

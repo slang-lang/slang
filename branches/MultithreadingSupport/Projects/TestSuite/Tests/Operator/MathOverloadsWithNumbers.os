@@ -14,9 +14,11 @@ public namespace MathOverloads {
 
 		/////////////////////////////////////////////////////////////////////
 
-		public void operator/(int other const) modify {
+		public OverloadedObject operator/(int other const) modify {
 			print("operator/");
 			mNumber = mNumber / other;
+
+			return this;
 		}
 
 		public bool operator==(int other const) const {
@@ -24,34 +26,46 @@ public namespace MathOverloads {
 			return mNumber == other;
 		}
 
-		public void operator*(int other const) modify {
+		public OverloadedObject operator*(int other const) modify {
 			print("operator*");
 			mNumber = mNumber * other;
+
+			return this;
 		}
 
-		public void operator%(int other const) modify {
+		public OverloadedObject operator%(int other const) modify {
 			print("operator%");
 			mNumber = mNumber % other;
+
+			return this;
 		}
 
-		public void operator+(int other const) modify {
+		public OverloadedObject operator+(int other const) modify {
 			print("operator+");
 			mNumber = mNumber + other;
+
+			return this;
 		}
 
-		public void operator-(int other const) modify {
+		public OverloadedObject operator-(int other const) modify {
 			print("operator-");
 			mNumber = mNumber - other;
+
+			return this;
 		}
 
-		public void operator++() modify {
+		public OverloadedObject operator++() modify {
 			print("operator++");
 			mNumber = mNumber++;
+
+			return this;
 		}
 
-		public void operator--() modify {
+		public OverloadedObject operator--() modify {
 			print("operator--");
 			mNumber = mNumber--;
+
+			return this;
 		}
 	}
 }

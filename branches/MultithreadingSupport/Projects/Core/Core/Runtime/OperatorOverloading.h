@@ -42,6 +42,7 @@ void operator_binary_subtract(Object *base, Object *other, const Common::Positio
 void operator_unary_decrement(Object *base, const Common::Position& position = Common::Position());
 void operator_unary_increment(Object *base, const Common::Position& position = Common::Position());
 void operator_unary_minus(Object *base, const Common::Position& position = Common::Position());
+void operator_unary_plus(Object *base, const Common::Position& position = Common::Position());
 void operator_unary_not(Object *base, const Common::Position& position = Common::Position());
 void operator_unary_validate(Object *base, const Common::Position& position = Common::Position());
 

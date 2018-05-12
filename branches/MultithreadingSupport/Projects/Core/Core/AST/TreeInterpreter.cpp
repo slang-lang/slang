@@ -98,17 +98,17 @@ void TreeInterpreter::evaluate(Node* exp, Runtime::Object* result)
 	}
 
 	switch ( static_cast<Expression*>(exp)->getExpressionType() ) {
-		case Expression::ExpressionType::BinaryExpression: evaluateBinaryExpression(static_cast<BinaryExpression*>(exp), result); break;
-		case Expression::ExpressionType::CopyExpression: evaluateCopyExpression(static_cast<CopyExpression*>(exp), result); break;
-		case Expression::ExpressionType::IsExpression: evaluateIsExpression(static_cast<IsExpression*>(exp), result); break;
-		case Expression::ExpressionType::LiteralExpression: evaluateLiteral(static_cast<LiteralExpression*>(exp), result); break;
-		case Expression::ExpressionType::MethodExpression: evaluateMethodExpression(static_cast<MethodExpression*>(exp), result); break;
-		case Expression::ExpressionType::NewExpression: evaluateNewExpression(static_cast<NewExpression*>(exp), result); break;
-		case Expression::ExpressionType::SymbolExpression: evaluateSymbolExpression(static_cast<SymbolExpression *>(exp), result, getScope()); break;
-		case Expression::ExpressionType::TernaryExpression: evaluateTernaryExpression(static_cast<TernaryExpression*>(exp), result); break;
+		case Expression::ExpressionType::BinaryExpression:   evaluateBinaryExpression(static_cast<BinaryExpression*>(exp), result); break;
+		case Expression::ExpressionType::CopyExpression:     evaluateCopyExpression(static_cast<CopyExpression*>(exp), result); break;
+		case Expression::ExpressionType::IsExpression:       evaluateIsExpression(static_cast<IsExpression*>(exp), result); break;
+		case Expression::ExpressionType::LiteralExpression:  evaluateLiteral(static_cast<LiteralExpression*>(exp), result); break;
+		case Expression::ExpressionType::MethodExpression:   evaluateMethodExpression(static_cast<MethodExpression*>(exp), result); break;
+		case Expression::ExpressionType::NewExpression:      evaluateNewExpression(static_cast<NewExpression*>(exp), result); break;
+		case Expression::ExpressionType::SymbolExpression:   evaluateSymbolExpression(static_cast<SymbolExpression *>(exp), result, getScope()); break;
+		case Expression::ExpressionType::TernaryExpression:  evaluateTernaryExpression(static_cast<TernaryExpression*>(exp), result); break;
 		case Expression::ExpressionType::TypecastExpression: evaluateTypeCastExpression(static_cast<TypecastExpression*>(exp), result); break;
-		case Expression::ExpressionType::TypeidExpression: evaluateTypeidExpression(static_cast<TypeidExpression*>(exp), result); break;
-		case Expression::ExpressionType::UnaryExpression: evaluateUnaryExpression(static_cast<UnaryExpression*>(exp), result); break;
+		case Expression::ExpressionType::TypeidExpression:   evaluateTypeidExpression(static_cast<TypeidExpression*>(exp), result); break;
+		case Expression::ExpressionType::UnaryExpression:    evaluateUnaryExpression(static_cast<UnaryExpression*>(exp), result); break;
 	}
 }
 
@@ -129,16 +129,16 @@ void TreeInterpreter::evaluateBinaryExpression(BinaryExpression* exp, Runtime::O
 	switch ( exp->mOperation.type() ) {
 		// bit expressions
 		// {
-		case Token::Type::BITAND: Runtime::operator_binary_bitand(&left, &right); break;
+		case Token::Type::BITAND:        Runtime::operator_binary_bitand(&left, &right); break;
 		case Token::Type::BITCOMPLEMENT: Runtime::operator_binary_bitcomplement(&left, &right); break;
-		case Token::Type::BITOR: Runtime::operator_binary_bitor(&left, &right); break;
+		case Token::Type::BITOR:         Runtime::operator_binary_bitor(&left, &right); break;
 		// }
 
 		// math expressions
 		// {
 		case Token::Type::MATH_ADDITION: Runtime::operator_binary_plus(&left, &right); break;
-		case Token::Type::MATH_DIVIDE: Runtime::operator_binary_divide(&left, &right); break;
-		case Token::Type::MATH_MODULO: Runtime::operator_binary_modulo(&left, &right); break;
+		case Token::Type::MATH_DIVIDE:   Runtime::operator_binary_divide(&left, &right); break;
+		case Token::Type::MATH_MODULO:   Runtime::operator_binary_modulo(&left, &right); break;
 		case Token::Type::MATH_MULTIPLY: Runtime::operator_binary_multiply(&left, &right); break;
 		case Token::Type::MATH_SUBTRACT: Runtime::operator_binary_subtract(&left, &right); break;
 		// }
@@ -188,20 +188,20 @@ void TreeInterpreter::evaluateBooleanBinaryExpression(BooleanBinaryExpression* e
 	switch ( exp->mOperation.type() ) {
 		// boolean expressions
 		// {
-		case Token::Type::AND: *result = Runtime::BoolObject(leftResult && isTrue(right)); break;
+		case Token::Type::AND:  *result = Runtime::BoolObject(leftResult && isTrue(right)); break;
 		case Token::Type::NAND: *result = Runtime::BoolObject(!leftResult && !isTrue(right)); break;
-		case Token::Type::NOR: *result = Runtime::BoolObject(!leftResult || !isTrue(right)); break;
-		case Token::Type::OR: *result = Runtime::BoolObject(leftResult || isTrue(right)); break;
+		case Token::Type::NOR:  *result = Runtime::BoolObject(!leftResult || !isTrue(right)); break;
+		case Token::Type::OR:   *result = Runtime::BoolObject(leftResult || isTrue(right)); break;
 		// }
 
 		// comparison expressions
 		// {
-		case Token::Type::COMPARE_EQUAL: *result = Runtime::BoolObject(operator_binary_equal(&left, &right)); break;
-		case Token::Type::COMPARE_GREATER: *result = Runtime::BoolObject(operator_binary_greater(&left, &right)); break;
+		case Token::Type::COMPARE_EQUAL:         *result = Runtime::BoolObject(operator_binary_equal(&left, &right)); break;
+		case Token::Type::COMPARE_GREATER:       *result = Runtime::BoolObject(operator_binary_greater(&left, &right)); break;
 		case Token::Type::COMPARE_GREATER_EQUAL: *result = Runtime::BoolObject(operator_binary_greater_equal(&left, &right)); break;
-		case Token::Type::COMPARE_LESS: *result = Runtime::BoolObject(operator_binary_less(&left, &right)); break;
-		case Token::Type::COMPARE_LESS_EQUAL: *result = Runtime::BoolObject(operator_binary_less_equal(&left, &right)); break;
-		case Token::Type::COMPARE_UNEQUAL: *result = Runtime::BoolObject(!operator_binary_equal(&left, &right)); break;
+		case Token::Type::COMPARE_LESS:          *result = Runtime::BoolObject(operator_binary_less(&left, &right)); break;
+		case Token::Type::COMPARE_LESS_EQUAL:    *result = Runtime::BoolObject(operator_binary_less_equal(&left, &right)); break;
+		case Token::Type::COMPARE_UNEQUAL:       *result = Runtime::BoolObject(!operator_binary_equal(&left, &right)); break;
 		// }
 
 		// default handling
@@ -233,13 +233,13 @@ void TreeInterpreter::evaluateIsExpression(IsExpression* exp, Runtime::Object* r
 void TreeInterpreter::evaluateLiteral(LiteralExpression* exp, Runtime::Object* result)
 {
 	switch ( exp->mValue.type() ) {
-		case Runtime::AtomicValue::Type::BOOL: *result = Runtime::BoolObject(exp->mValue); break;
-		case Runtime::AtomicValue::Type::DOUBLE: *result = Runtime::DoubleObject(exp->mValue); break;
-		case Runtime::AtomicValue::Type::FLOAT: *result = Runtime::FloatObject(exp->mValue); break;
-		case Runtime::AtomicValue::Type::INT: *result = Runtime::IntegerObject(exp->mValue); break;
+		case Runtime::AtomicValue::Type::BOOL:      *result = Runtime::BoolObject(exp->mValue); break;
+		case Runtime::AtomicValue::Type::DOUBLE:    *result = Runtime::DoubleObject(exp->mValue); break;
+		case Runtime::AtomicValue::Type::FLOAT:     *result = Runtime::FloatObject(exp->mValue); break;
+		case Runtime::AtomicValue::Type::INT:       *result = Runtime::IntegerObject(exp->mValue); break;
 		case Runtime::AtomicValue::Type::REFERENCE: *result = *mMemory->get(Runtime::Reference(exp->mValue.toReference())); break;
-		case Runtime::AtomicValue::Type::STRING: *result = Runtime::StringObject(exp->mValue); break;
-		case Runtime::AtomicValue::Type::UNKOWN: throw Common::Exceptions::NotSupported("UNKNOWN type");
+		case Runtime::AtomicValue::Type::STRING:    *result = Runtime::StringObject(exp->mValue); break;
+		case Runtime::AtomicValue::Type::UNKOWN:    throw Common::Exceptions::NotSupported("UNKNOWN type");
 	}
 }
 
@@ -396,7 +396,7 @@ void TreeInterpreter::evaluateTypeidExpression(TypeidExpression* exp, Runtime::O
 void TreeInterpreter::evaluateUnaryExpression(UnaryExpression* exp, Runtime::Object* result)
 {
 	if ( exp->mValueType == UnaryExpression::ValueType::LValue ) {
-		Runtime::Object &lvalue = resolveLValue(getScope(), dynamic_cast<SymbolExpression*>(exp->mExpression), false, Visibility::Designtime);
+		Runtime::Object& lvalue = resolveLValue(getScope(), dynamic_cast<SymbolExpression*>(exp->mExpression), false, Visibility::Designtime);
 
 		switch ( exp->mOperation.type() ) {
 			// math expressions
@@ -407,7 +407,7 @@ void TreeInterpreter::evaluateUnaryExpression(UnaryExpression* exp, Runtime::Obj
 
 			// subscript operator
 			// {
-			case Token::Type::BRACKET_OPEN: evaluate(exp->mExpression, &lvalue); break;
+			case Token::Type::BRACKET_OPEN:       evaluate(exp->mExpression, &lvalue); break;
 			// }
 
 			// default handling
@@ -424,21 +424,21 @@ void TreeInterpreter::evaluateUnaryExpression(UnaryExpression* exp, Runtime::Obj
 		switch ( exp->mOperation.type() ) {
 			// boolean expressions
 			// {
-			case Token::Type::OPERATOR_NOT: Runtime::operator_unary_not(result, exp->mOperation.position()); break;
+			case Token::Type::OPERATOR_NOT:      Runtime::operator_unary_not(result, exp->mOperation.position()); break;
 			case Token::Type::OPERATOR_VALIDATE: Runtime::operator_unary_validate(result, exp->mOperation.position()); break;
 			// }
 
 			// math expressions
 			// {
-			case Token::Type::MATH_ADDITION: /* nothing to do here */ break;
-			case Token::Type::MATH_SUBTRACT: Runtime::operator_unary_minus(result, exp->mOperation.position()); break;
-			case Token::Type::OPERATOR_DECREMENT: Runtime::operator_unary_decrement(result, exp->mOperation.position()); break;
-			case Token::Type::OPERATOR_INCREMENT: Runtime::operator_unary_increment(result, exp->mOperation.position()); break;
+			case Token::Type::MATH_ADDITION:      Runtime::operator_unary_plus(result, exp->mOperation.position()); break;
+			case Token::Type::MATH_SUBTRACT:      Runtime::operator_unary_minus(result, exp->mOperation.position()); break;
+			case Token::Type::OPERATOR_DECREMENT: if ( exp->isAtomicType() ) Runtime::operator_unary_decrement(result, exp->mOperation.position()); break;
+			case Token::Type::OPERATOR_INCREMENT: if ( exp->isAtomicType() ) Runtime::operator_unary_increment(result, exp->mOperation.position()); break;
 			// }
 
 			// subscript operator
 			// {
-			case Token::Type::BRACKET_OPEN: evaluate(exp->mExpression, result); break;
+			case Token::Type::BRACKET_OPEN:       if ( exp->isAtomicType() ) evaluate(exp->mExpression, result); break;
 			// }
 
 			// default handling

@@ -315,15 +315,26 @@ Node* TreeGenerator::parseCondition(TokenIterator& start)
 
 		Token operation = (*start);
 		Node* right = parseExpression(++start);
-		/*std::string type =*/ //resolveType(condition, operation, right);	// TODO: find a solution that allows us to activate this check
+
+		if ( op == Token::Type::COMPARE_UNEQUAL ) {
+			operation.resetContentTo("==");
+			operation.resetTypeTo(Token::Type::COMPARE_EQUAL);
+		}
+
+		//std::string type = resolveType(condition, operation, right);	// TODO: find a solution that allows us to activate this check
 
 		condition = new BooleanBinaryExpression(condition, operation, right);
+
+		// != operator is not defined but rather used as 'not =='
+		if ( op == Token::Type::COMPARE_UNEQUAL ) {
+			condition = new BooleanUnaryExpression(Token::Type::OPERATOR_NOT, condition, UnaryExpression::ValueType::RValue);
+		}
 	}
 }
 
 Node* TreeGenerator::parseExpression(TokenIterator& start)
 {
-	Node* expression = parseFactors(start);
+	Node* expression = parseFactor(start);
 
 	for ( ; ; ) {
 		Token::Type::E op = start->type();
@@ -336,14 +347,36 @@ Node* TreeGenerator::parseExpression(TokenIterator& start)
 		}
 
 		Token operation = (*start);
-		Node* right = parseFactors(++start);
+		Node* right = parseFactor(++start);
 		std::string type = resolveType(expression, operation, right);
 
-		expression = new BinaryExpression(expression, operation, right, type);
+		//expression = new BinaryExpression(expression, operation, right, type);
+
+
+		SymbolExpression* exp = dynamic_cast<SymbolExpression*>(expression);
+
+		if ( !exp || exp->isAtomicType() ) {
+			expression = new BinaryExpression(expression, operation, right, type);
+			continue;
+		}
+
+		// check if we are using a valid type
+		Designtime::BluePrintObject* blueprint = mRepository->findBluePrintObject(exp->getResultType());
+		if ( !blueprint ) {
+			throw Common::Exceptions::SyntaxError("'" + exp->getResultType() + "' is not a valid type", operation.position());
+		}
+
+		exp->mSymbolExpression = new DesigntimeSymbolExpression("operator" + operation.content(), type, PrototypeConstraints(), false);
+		exp->mSymbolExpression->mSurroundingScope = blueprint;
+
+		ExpressionList params;
+		params.emplace_back(right);
+
+		expression = process_method(exp, (*start), params);
 	}
 }
 
-Node* TreeGenerator::parseFactors(TokenIterator& start)
+Node* TreeGenerator::parseFactor(TokenIterator &start)
 {
 	Node* factor = parseInfixPostfix(start);
 
@@ -359,7 +392,29 @@ Node* TreeGenerator::parseFactors(TokenIterator& start)
 		Node* right = parseInfixPostfix(++start);
 		std::string type = resolveType(factor, operation, right);
 
-		factor = new BinaryExpression(factor, operation, right, type);
+		//factor = new BinaryExpression(factor, operation, right, type);
+
+
+		SymbolExpression* exp = dynamic_cast<SymbolExpression*>(factor);
+
+		if ( !exp || exp->isAtomicType() ) {
+			factor = new BinaryExpression(factor, operation, right, type);
+			continue;
+		}
+
+		// check if we are using a valid type
+		Designtime::BluePrintObject* blueprint = mRepository->findBluePrintObject(exp->getResultType());
+		if ( !blueprint ) {
+			throw Common::Exceptions::SyntaxError("'" + exp->getResultType() + "' is not a valid type", operation.position());
+		}
+
+		exp->mSymbolExpression = new DesigntimeSymbolExpression("operator" + operation.content(), type, PrototypeConstraints(), false);
+		exp->mSymbolExpression->mSurroundingScope = blueprint;
+
+		ExpressionList params;
+		params.emplace_back(right);
+
+		factor = process_method(exp, (*start), params);
 	}
 }
 
@@ -373,11 +428,13 @@ Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 		case Token::Type::MATH_ADDITION:
 		case Token::Type::MATH_SUBTRACT: {		// infix +/- operators
 			Token operation = (*start);
-			infixPostfix = new UnaryExpression(operation, parseTerm(++start));
+
+			infixPostfix = new UnaryExpression(operation, parseTerm(++start), UnaryExpression::ValueType::RValue);
 		} break;
 		case Token::Type::OPERATOR_NOT: {		// infix ! operator
 			Token operation = (*start);
-			infixPostfix = new BooleanUnaryExpression(operation, parseTerm(++start));
+
+			infixPostfix = new BooleanUnaryExpression(operation, parseTerm(++start), UnaryExpression::ValueType::RValue);
 		} break;
 		default: {								// default term parsing
 			infixPostfix = parseTerm(start);
@@ -393,8 +450,9 @@ Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 		} break;
 		case Token::Type::OPERATOR_DECREMENT:
 		case Token::Type::OPERATOR_INCREMENT: {	// postfix --/++ operators for rvalue
-			Token tmp = (*start++);
-			infixPostfix = new UnaryExpression(tmp, infixPostfix, UnaryExpression::ValueType::RValue);
+			Token operation = (*start++);
+
+			infixPostfix = new UnaryExpression(operation, infixPostfix, UnaryExpression::ValueType::RValue);
 		} break;
 		case Token::Type::OPERATOR_IS: {		// postfix is operator
 			++start;
@@ -431,7 +489,7 @@ Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 
 			TernaryExpression* ternaryExpression = new TernaryExpression(condition, first, second);
 			if ( ternaryExpression->getResultType() != ternaryExpression->getSecondResultType() ) {
-				throw Common::Exceptions::SyntaxError("expression results for first ('" + ternaryExpression->getResultType() + "') and second ('" + ternaryExpression->getSecondResultType() + "') expressions don't match", start->position());
+				throw Common::Exceptions::SyntaxError("expression results for first ('" + ternaryExpression->getResultType() + "') and second ('" + ternaryExpression->getSecondResultType() + "') expression don't match", start->position());
 			}
 
 			infixPostfix = ternaryExpression;
@@ -582,14 +640,14 @@ Statement* TreeGenerator::process_assignment(TokenIterator& token, SymbolExpress
 		Token operation;
 
 		switch ( op->type() ) {
-			case Token::Type::ASSIGN_ADDITION: operation = Token(Token::Category::Operator, Token::Type::MATH_ADDITION, "+", op->position()); break;
-			case Token::Type::ASSIGN_BITAND: operation = Token(Token::Category::Operator, Token::Type::BITAND, "&", op->position()); break;
+			case Token::Type::ASSIGN_ADDITION:      operation = Token(Token::Category::Operator, Token::Type::MATH_ADDITION, "+", op->position()); break;
+			case Token::Type::ASSIGN_BITAND:        operation = Token(Token::Category::Operator, Token::Type::BITAND, "&", op->position()); break;
 			case Token::Type::ASSIGN_BITCOMPLEMENT: operation = Token(Token::Category::Operator, Token::Type::BITCOMPLEMENT, "~", op->position()); break;
-			case Token::Type::ASSIGN_BITOR: operation = Token(Token::Category::Operator, Token::Type::BITOR, "|", op->position()); break;
-			case Token::Type::ASSIGN_DIVIDE: operation = Token(Token::Category::Operator, Token::Type::MATH_DIVIDE, "/", op->position()); break;
-			case Token::Type::ASSIGN_MODULO: operation = Token(Token::Category::Operator, Token::Type::MATH_MODULO, "%", op->position()); break;
-			case Token::Type::ASSIGN_MULTIPLY: operation = Token(Token::Category::Operator, Token::Type::MATH_MULTIPLY, "*", op->position()); break;
-			case Token::Type::ASSIGN_SUBTRACT: operation = Token(Token::Category::Operator, Token::Type::MATH_SUBTRACT, "-", op->position()); break;
+			case Token::Type::ASSIGN_BITOR:         operation = Token(Token::Category::Operator, Token::Type::BITOR, "|", op->position()); break;
+			case Token::Type::ASSIGN_DIVIDE:        operation = Token(Token::Category::Operator, Token::Type::MATH_DIVIDE, "/", op->position()); break;
+			case Token::Type::ASSIGN_MODULO:        operation = Token(Token::Category::Operator, Token::Type::MATH_MODULO, "%", op->position()); break;
+			case Token::Type::ASSIGN_MULTIPLY:      operation = Token(Token::Category::Operator, Token::Type::MATH_MULTIPLY, "*", op->position()); break;
+			case Token::Type::ASSIGN_SUBTRACT:      operation = Token(Token::Category::Operator, Token::Type::MATH_SUBTRACT, "-", op->position()); break;
 			default: throw Common::Exceptions::SyntaxError("assignment type expected", token->position());
 		}
 
@@ -879,12 +937,7 @@ Node* TreeGenerator::process_identifier(TokenIterator& token, bool allowTypeCast
 	}
 	// --/++ for lvalue
 	else if ( op->type() == Token::Type::OPERATOR_DECREMENT || op->type() == Token::Type::OPERATOR_INCREMENT ) {
-		if ( symbol->isConst() && !(mAllowConstModify && symbol->isMember()) ) {
-			throw Common::Exceptions::ConstCorrectnessViolated("tried to modify const symbol '" + symbol->mName + "'", op->position());
-		}
-
-		node = new UnaryExpression((*token), symbol, UnaryExpression::ValueType::LValue);
-		++token;
+		node = process_incdecrement(token, symbol);
 	}
 	// variable usage
 	else {
@@ -922,6 +975,30 @@ Statement* TreeGenerator::process_if(TokenIterator& token)
 	}
 
 	return new IfStatement(start, exp, ifBlock, elseBlock);
+}
+
+Expression* TreeGenerator::process_incdecrement(TokenIterator& token, SymbolExpression* symbol)
+{
+	if ( symbol->isConst() && !(mAllowConstModify && symbol->isMember()) ) {
+		throw Common::Exceptions::ConstCorrectnessViolated("tried to modify const symbol '" + symbol->mName + "'", token->position());
+	}
+
+	if ( symbol->isAtomicType() ) {
+		return new UnaryExpression((*token++), symbol, UnaryExpression::ValueType::LValue);
+	}
+
+	// check if we are using a valid type
+	Designtime::BluePrintObject* type = mRepository->findBluePrintObject(symbol->getResultType());
+	if ( !type ) {
+		throw Common::Exceptions::SyntaxError("'" + symbol->getResultType() + "' is not a valid type", token->position());
+	}
+
+	symbol->mSymbolExpression = new DesigntimeSymbolExpression("operator" + token->content(), _void, PrototypeConstraints(), false);
+	symbol->mSymbolExpression->mSurroundingScope = type;
+
+	++token;
+
+	return process_method(symbol, (*token), ExpressionList());
 }
 
 Statement* TreeGenerator::process_keyword(TokenIterator& token)
@@ -1197,7 +1274,7 @@ Expression* TreeGenerator::process_subscript(TokenIterator& token, SymbolExpress
 	// skip ]
 	++token;
 
-	return new UnaryExpression(opToken, process_method(symbol, opToken, params), UnaryExpression::ValueType::RValue);
+	return process_method(symbol, opToken, params);
 }
 
 Node* TreeGenerator::process_statement(TokenIterator& token, bool allowBreakAndContinue)

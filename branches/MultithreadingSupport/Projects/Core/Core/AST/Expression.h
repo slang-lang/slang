@@ -294,11 +294,18 @@ public:
 		delete mSymbolExpression;
 	}
 
+	bool isAtomicType() const {
+		// it's only important to know if the target type is atomic not if any one of the types is
+		return mSymbolExpression ? mSymbolExpression->isAtomicType() : mIsAtomicType;
+	}
+
 	bool isConst() const {
+		// determines if at least one type in the chain is const
 		return mIsConst || (mSymbolExpression ? mSymbolExpression->isConst() : false);
 	}
 
 	bool isMember() const {
+		// determines if at least one type in the chain is a member
 		return mIsMember || (mSymbolExpression ? mSymbolExpression->isMember() : false);
 	}
 
@@ -525,7 +532,7 @@ public:
 	};
 
 public:
-	explicit UnaryExpression(const Token& operation, Node* exp, ValueType::E valueType = ValueType::RValue)
+	explicit UnaryExpression(const Token& operation, Node* exp, ValueType::E valueType)
 	: Expression(ExpressionType::UnaryExpression),
 	  mExpression(exp),
 	  mOperation(operation),
@@ -547,7 +554,7 @@ public:
 class BooleanUnaryExpression : public UnaryExpression
 {
 public:
-	explicit BooleanUnaryExpression(const Token& operation, Node* exp, ValueType::E valueType = ValueType::RValue)
+	explicit BooleanUnaryExpression(const Token& operation, Node* exp, ValueType::E valueType)
 	: UnaryExpression(operation, exp, valueType)
 	{
 		mResultType = _bool;
