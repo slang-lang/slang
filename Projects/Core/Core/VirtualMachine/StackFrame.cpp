@@ -90,16 +90,18 @@ std::string StackFrame::toString() const
 {
 	std::string result = "Frame " + Utils::Tools::toString(mLevel) + ": ";
 
-	switch ( mScope->getScopeType() ) {
-		case IScope::IType::MethodScope:
-			result += mScope->getFullScopeName();
-			break;
-		case IScope::IType::NamedScope:
-			result += mScope->getFullScopeName() + "(" + ObjectiveScript::toString(mParameters) + ")";
-			break;
-		case IScope::IType::SymbolScope:
-			result += mScope->getFullScopeName();
-			break;
+	if ( mScope ) {
+		switch ( mScope->getScopeType() ) {
+			case IScope::IType::MethodScope:
+				result += mScope->getFullScopeName();
+				break;
+			case IScope::IType::NamedScope:
+				result += mScope->getFullScopeName() + "(" + ObjectiveScript::toString(mParameters) + ")";
+				break;
+			case IScope::IType::SymbolScope:
+				result += mScope->getFullScopeName();
+				break;
+		}
 	}
 
 	return result;

@@ -37,10 +37,20 @@ private object TestObject {
 		return string mValue;
 	}
 
-	public void operator+(int other) modify {
+	public TestObject operator+(int other) modify {
 		print("operator+");
-		mValue = mValue + other;
+		mValue += other;
+
+		return this;
 	}
+
+	public TestObject operator-(int other) modify {
+		print("operator-");
+		mValue -= other;
+
+		return this;
+	}
+
 /*
 	public int +operator(int other) const {
 		print("int +operator(int " + other + ")");
@@ -56,9 +66,17 @@ private object TestObject {
 		return mValue;
 	}
 */
+
+	public TestObject operator--() modify {
+		print("operator--");
+		mValue--;
+
+		return this;
+	}
+
 	public TestObject operator++() modify {
 		print("operator++");
-		mValue = mValue++;
+		mValue++;
 
 		return this;
 	}

@@ -85,6 +85,17 @@ public:
 };
 
 
+class InvalidOperation : public RuntimeException
+{
+public:
+	explicit InvalidOperation(const std::string& text, const Common::Position& position = Common::Position())
+	: RuntimeException("InvalidOperation: " + text, position)
+	{ }
+
+	virtual ~InvalidOperation() { }
+};
+
+
 class InvalidSymbol : public RuntimeException
 {
 public:
