@@ -98,17 +98,17 @@ void TreeInterpreter::evaluate(Node* exp, Runtime::Object* result)
 	}
 
 	switch ( static_cast<Expression*>(exp)->getExpressionType() ) {
-		case Expression::ExpressionType::BinaryExpression: evaluateBinaryExpression(static_cast<BinaryExpression*>(exp), result); break;
-		case Expression::ExpressionType::CopyExpression: evaluateCopyExpression(static_cast<CopyExpression*>(exp), result); break;
-		case Expression::ExpressionType::IsExpression: evaluateIsExpression(static_cast<IsExpression*>(exp), result); break;
-		case Expression::ExpressionType::LiteralExpression: evaluateLiteral(static_cast<LiteralExpression*>(exp), result); break;
-		case Expression::ExpressionType::MethodExpression: evaluateMethodExpression(static_cast<MethodExpression*>(exp), result); break;
-		case Expression::ExpressionType::NewExpression: evaluateNewExpression(static_cast<NewExpression*>(exp), result); break;
-		case Expression::ExpressionType::SymbolExpression: evaluateSymbolExpression(static_cast<SymbolExpression *>(exp), result, getScope()); break;
-		case Expression::ExpressionType::TernaryExpression: evaluateTernaryExpression(static_cast<TernaryExpression*>(exp), result); break;
+		case Expression::ExpressionType::BinaryExpression:   evaluateBinaryExpression(static_cast<BinaryExpression*>(exp), result); break;
+		case Expression::ExpressionType::CopyExpression:     evaluateCopyExpression(static_cast<CopyExpression*>(exp), result); break;
+		case Expression::ExpressionType::IsExpression:       evaluateIsExpression(static_cast<IsExpression*>(exp), result); break;
+		case Expression::ExpressionType::LiteralExpression:  evaluateLiteral(static_cast<LiteralExpression*>(exp), result); break;
+		case Expression::ExpressionType::MethodExpression:   evaluateMethodExpression(static_cast<MethodExpression*>(exp), result); break;
+		case Expression::ExpressionType::NewExpression:      evaluateNewExpression(static_cast<NewExpression*>(exp), result); break;
+		case Expression::ExpressionType::SymbolExpression:   evaluateSymbolExpression(static_cast<SymbolExpression *>(exp), result, getScope()); break;
+		case Expression::ExpressionType::TernaryExpression:  evaluateTernaryExpression(static_cast<TernaryExpression*>(exp), result); break;
 		case Expression::ExpressionType::TypecastExpression: evaluateTypeCastExpression(static_cast<TypecastExpression*>(exp), result); break;
-		case Expression::ExpressionType::TypeidExpression: evaluateTypeidExpression(static_cast<TypeidExpression*>(exp), result); break;
-		case Expression::ExpressionType::UnaryExpression: evaluateUnaryExpression(static_cast<UnaryExpression*>(exp), result); break;
+		case Expression::ExpressionType::TypeidExpression:   evaluateTypeidExpression(static_cast<TypeidExpression*>(exp), result); break;
+		case Expression::ExpressionType::UnaryExpression:    evaluateUnaryExpression(static_cast<UnaryExpression*>(exp), result); break;
 	}
 }
 
