@@ -55,6 +55,6 @@ public void Main(int argc, string args) {
 
 	print("obj.mValue = " + obj.mValue);
 	obj += 2;
-	print("obj.mValue = "+ obj.mValue);	
+	print("obj.mValue = " + obj.mValue);
 }
 

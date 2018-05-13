@@ -9,10 +9,11 @@ private object TestObject {
 		print("mValue = " + mValue);
 	}
 
-	public void operator=(int value) modify {
+	public TestObject operator=(int value) modify {
+		print("operator=(int)");
 		mValue = value;
 
-		print("mValue = " + mValue);
+		return this;
 	}
 
 	public int =operator(int none) const {

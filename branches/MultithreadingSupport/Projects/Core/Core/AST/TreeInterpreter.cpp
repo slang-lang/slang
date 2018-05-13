@@ -98,6 +98,7 @@ void TreeInterpreter::evaluate(Node* exp, Runtime::Object* result)
 	}
 
 	switch ( static_cast<Expression*>(exp)->getExpressionType() ) {
+		case Expression::ExpressionType::AssignmentExpression: evaluateAssignmentExpression(static_cast<AssignmentExpression*>(exp), result); break;
 		case Expression::ExpressionType::BinaryExpression:   evaluateBinaryExpression(static_cast<BinaryExpression*>(exp), result); break;
 		case Expression::ExpressionType::CopyExpression:     evaluateCopyExpression(static_cast<CopyExpression*>(exp), result); break;
 		case Expression::ExpressionType::IsExpression:       evaluateIsExpression(static_cast<IsExpression*>(exp), result); break;
@@ -112,6 +113,15 @@ void TreeInterpreter::evaluate(Node* exp, Runtime::Object* result)
 	}
 }
 
+void TreeInterpreter::evaluateAssignmentExpression(AssignmentExpression* exp, Runtime::Object* result)
+{
+	Runtime::Object& lvalue = resolveLValue(getScope(), exp->mLHS, false, Visibility::Designtime);
+
+	tryControl(evaluate(exp->mRHS, &lvalue));
+
+	Runtime::operator_binary_assign(result, &lvalue);
+}
+
 void TreeInterpreter::evaluateBinaryExpression(BinaryExpression* exp, Runtime::Object* result)
 {
 	if ( exp->getBinaryExpressionType() == BinaryExpression::BinaryExpressionType::BooleanBinaryExpression ) {
@@ -120,11 +130,11 @@ void TreeInterpreter::evaluateBinaryExpression(BinaryExpression* exp, Runtime::O
 
 	Runtime::Object left;
 	// evaluate left expression
-	evaluate(exp->mLeft, &left);
+	evaluate(exp->mLHS, &left);
 
 	Runtime::Object right;
 	// evaluate right expression
-	evaluate(exp->mRight, &right);
+	evaluate(exp->mRHS, &right);
 
 	switch ( exp->mOperation.type() ) {
 		// bit expressions
@@ -158,7 +168,7 @@ void TreeInterpreter::evaluateBooleanBinaryExpression(BooleanBinaryExpression* e
 	Runtime::Object left;
 
 	// evaluate left expression
-	evaluate(exp->mLeft, &left);
+	evaluate(exp->mLHS, &left);
 
 	bool leftResult = isTrue(left);
 
@@ -183,7 +193,7 @@ void TreeInterpreter::evaluateBooleanBinaryExpression(BooleanBinaryExpression* e
 	Runtime::Object right;
 
 	// evaluate right expression
-	evaluate(exp->mRight, &right);
+	evaluate(exp->mRHS, &right);
 
 	switch ( exp->mOperation.type() ) {
 		// boolean expressions
@@ -627,58 +637,76 @@ std::string TreeInterpreter::printExpression(Node* node) const
 	std::string result;
 
 	switch ( expression->getExpressionType() ) {
+		case Expression::ExpressionType::AssignmentExpression: {
+			AssignmentExpression* ass = dynamic_cast<AssignmentExpression*>(expression);
+
+			result += printExpression(ass->mLHS);
+			result += " = ";
+			result += printExpression(ass->mRHS);
+		} break;
 		case Expression::ExpressionType::BinaryExpression: {
 			BinaryExpression* bin = dynamic_cast<BinaryExpression*>(node);
 
-			result += "(" + printExpression(bin->mLeft);
+			result += "(" + printExpression(bin->mLHS);
 			result += " " + bin->mOperation.content() + " ";
-			result += printExpression(bin->mRight) + ")";
+			result += printExpression(bin->mRHS) + ")";
 		} break;
 		case Expression::ExpressionType::CopyExpression: {
 			result += "copy " + printExpression(dynamic_cast<CopyExpression*>(expression)->mExpression);
 		} break;
 		case Expression::ExpressionType::IsExpression: {
-			result += printExpression(dynamic_cast<IsExpression*>(expression)->mExpression) + " is " + dynamic_cast<IsExpression*>(expression)->mMatchType;
+			IsExpression* is = dynamic_cast<IsExpression*>(expression);
+
+			result += printExpression(is->mExpression) + " is " + is->mMatchType;
 		} break;
 		case Expression::ExpressionType::NewExpression: {
 			result += "new " + printExpression(dynamic_cast<NewExpression*>(expression)->mExpression);
 		} break;
 		case Expression::ExpressionType::LiteralExpression: {
-			result += dynamic_cast<LiteralExpression*>(expression)->mValue.toStdString();
+			Runtime::AtomicValue value = dynamic_cast<LiteralExpression*>(expression)->mValue;
+
+			if ( value.type() == Runtime::AtomicValue::Type::STRING ) {
+				result += "\"";
+			}
+			result += value.toStdString();
+			if ( value.type() == Runtime::AtomicValue::Type::STRING ) {
+				result += "\"";
+			}
 		} break;
 		case Expression::ExpressionType::MethodExpression: {
-			result += printExpression(dynamic_cast<MethodExpression*>(expression)->mSymbolExpression);
+			MethodExpression* method = dynamic_cast<MethodExpression*>(expression);
+
+			result += printExpression(method->mSymbolExpression);
 			result += "(";
-			for ( ExpressionList::const_iterator it = dynamic_cast<MethodExpression*>(expression)->mParams.begin(); it != dynamic_cast<MethodExpression*>(expression)->mParams.end(); ++it ) {
+			for ( ExpressionList::const_iterator it = method->mParams.begin(); it != method->mParams.end(); ++it ) {
 				result += printExpression((*it));
 			}
 			result += ")";
 		} break;
 		case Expression::ExpressionType::SymbolExpression: {
-			if ( dynamic_cast<SymbolExpression*>(expression)->mSymbolExpression ) {
-				result += printExpression(dynamic_cast<SymbolExpression*>(expression)->mSymbolExpression);
-			}
-			else {
-				result += dynamic_cast<SymbolExpression*>(expression)->mName;
-			}
+			SymbolExpression* sym = dynamic_cast<SymbolExpression*>(expression);
+
+			result += sym->mSymbolExpression ? printExpression(sym->mSymbolExpression) : sym->mName;
 		} break;
 		case Expression::ExpressionType::TernaryExpression: {
-			result += printExpression(dynamic_cast<TernaryExpression*>(expression)->mCondition) + " ? ";
-			result += printExpression(dynamic_cast<TernaryExpression*>(expression)->mFirst) + " : ";
-			result += printExpression(dynamic_cast<TernaryExpression*>(expression)->mSecond);
+			TernaryExpression* ter = dynamic_cast<TernaryExpression*>(expression);
+
+			result += printExpression(ter->mCondition) + " ? ";
+			result += printExpression(ter->mFirst) + " : ";
+			result += printExpression(ter->mSecond);
 		} break;
 		case Expression::ExpressionType::TypecastExpression: {
-			result += dynamic_cast<TypecastExpression*>(expression)->mDestinationType + " ";
-			result += printExpression(dynamic_cast<TypecastExpression*>(expression)->mExpression);
+			TypecastExpression* type = dynamic_cast<TypecastExpression*>(expression);
+
+			result += type->mDestinationType + " " + printExpression(type->mExpression);
 		} break;
 		case Expression::ExpressionType::TypeidExpression: {
 			result += "typeid(" + printExpression(dynamic_cast<TypeidExpression*>(expression)->mExpression) + ")";
 		} break;
 		case Expression::ExpressionType::UnaryExpression: {
-			UnaryExpression* bin = dynamic_cast<UnaryExpression*>(expression);
+			UnaryExpression* un = dynamic_cast<UnaryExpression*>(expression);
 
-			result += bin->mOperation.content();
-			result += printExpression(bin->mExpression);
+			result += un->mOperation.content() + printExpression(un->mExpression);
 		} break;
 	}
 
@@ -833,17 +861,6 @@ void TreeInterpreter::visitAssert(AssertStatement* node)
 	}
 }
 
-void TreeInterpreter::visitAssignment(Assignment* node)
-{
-	Runtime::Object& lvalue = resolveLValue(getScope(), node->mLValue, false, Visibility::Designtime);
-
-	Runtime::Object tmp;
-
-	tryControl(evaluate(node->mExpression, &tmp));
-
-	Runtime::operator_binary_assign(&lvalue, &tmp);
-}
-
 void TreeInterpreter::visitBreak(BreakStatement* /*node*/)
 {
 	mControlFlow = Runtime::ControlFlow::Break;
@@ -881,7 +898,7 @@ void TreeInterpreter::visitExpression(Expression* expression)
 void TreeInterpreter::visitFor(ForStatement* node)
 {
 	// execute initialization statement
-	visitStatement(dynamic_cast<Statement*>(node->mInitialization));
+	visit(node->mInitialization);
 
 	//pushScope();	// push new scope for loop variable
 
@@ -896,8 +913,8 @@ void TreeInterpreter::visitFor(ForStatement* node)
 			}
 		}
 
-		// execute compound statement
-		visitStatement(dynamic_cast<Statement*>(node->mStatement));
+		// execute statement
+		visit(node->mStatement);
 
 		// check (and reset) control flow
 		switch ( mControlFlow ) {
@@ -966,8 +983,8 @@ void TreeInterpreter::visitForeach(ForeachStatement* node)
 
 			loopVariable->setConst(typeDeclaration->mIsConst);
 
-			// execute compound statement
-			visitStatement(dynamic_cast<Statement*>(node->mStatement));
+			// execute statement
+			visit(node->mStatement);
 
 		popScope();		// pop scope and remove loop variable
 
@@ -991,12 +1008,12 @@ void TreeInterpreter::visitIf(IfStatement* node)
 
 	// validate if-condition
 	if ( isTrue(condition) ) {
-		// execute if-compound statement
-		visitStatement(dynamic_cast<Statement*>(node->mIfBlock));
+		// execute if-statement
+		visit(node->mIfBlock);
 	}
 	else {
-		// execute else-compound statement
-		visitStatement(dynamic_cast<Statement*>(node->mElseBlock));
+		// execute else-statement
+		visit(node->mElseBlock);
 	}
 }
 
@@ -1038,16 +1055,13 @@ void TreeInterpreter::visitStatement(Statement *node)
 		case Statement::StatementType::AssertStatement:
 			visitAssert(dynamic_cast<AssertStatement*>(node));
 			break;
-		case Statement::StatementType::Assignment:
-			visitAssignment(dynamic_cast<Assignment*>(node));
-			break;
 		case Statement::StatementType::BreakStatement:
 			visitBreak(dynamic_cast<BreakStatement*>(node));
 			break;
 		case Statement::StatementType::CaseStatement:
-			throw Common::Exceptions::Exception("case statements are handled separately!");
+			throw Runtime::Exceptions::InvalidOperation("case statements are handled separately!");
 		case Statement::StatementType::CatchStatement:
-			throw Common::Exceptions::Exception("catch statements are handled separately!");
+			throw Runtime::Exceptions::InvalidOperation("catch statements are handled separately!");
 		case Statement::StatementType::ContinueStatement:
 			visitContinue(dynamic_cast<ContinueStatement*>(node));
 			break;
@@ -1268,8 +1282,8 @@ void TreeInterpreter::visitWhile(WhileStatement* node)
 			break;
 		}
 
-		// execute compound statement
-		visitStatement(dynamic_cast<Statement*>(node->mStatement));
+		// execute statement
+		visit(node->mStatement);
 
 		// check (and reset) control flow
 		switch ( mControlFlow ) {

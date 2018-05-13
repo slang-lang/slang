@@ -624,8 +624,7 @@ Statement* TreeGenerator::process_assert(TokenIterator& token)
  * syntax:
  * <lvalue> = <rvalue>
  */
-//Statement* TreeGenerator::process_assignment(TokenIterator& token, SymbolExpression* lhs)
-Node* TreeGenerator::process_assignment(TokenIterator& token, SymbolExpression* lhs)
+Expression* TreeGenerator::process_assignment(TokenIterator& token, SymbolExpression* lhs)
 {
 	TokenIterator op = token;
 
@@ -683,10 +682,10 @@ Node* TreeGenerator::process_assignment(TokenIterator& token, SymbolExpression* 
 	}
 */
 
-	//return new Assignment(lhs, (*op), rhs, resolveType(lhs, assignment, rhs));
+	//return new AssignmentExpression(lhs, rhs, resolveType(lhs, assignment, rhs));
 
 	if ( lhs->isAtomicType() || lhs->getResultType() == rhs->getResultType() ) {
-		return new Assignment(lhs, (*op), rhs, resolveType(lhs, assignment, rhs));
+		return new AssignmentExpression(lhs, rhs, resolveType(lhs, assignment, rhs));
 	}
 
 	// check if we are using a valid type
@@ -838,6 +837,10 @@ Statement* TreeGenerator::process_for(TokenIterator& token)
 	Node* condition = 0;
 	if ( token->type() != Token::Type::SEMICOLON ) {
 		condition = expression(token);
+
+		if ( dynamic_cast<AssignmentExpression*>(condition) ) {
+			OSwarn("Detected assignment expression that is used as conditional expression in " + token->position().toString());
+		}
 	}
 
 	++token;
@@ -1000,6 +1003,10 @@ Statement* TreeGenerator::process_if(TokenIterator& token)
 	++token;
 
 	Node* exp = expression(token);
+
+	if ( dynamic_cast<AssignmentExpression*>(exp) ) {
+		OSwarn("Detected assignment expression that is used as conditional expression in " + token->position().toString());
+	}
 
 	expect(Token::Type::PARENTHESIS_CLOSE, token);
 	++token;
@@ -1604,6 +1611,10 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 */
 
 		mTypeSystem->getType(object->QualifiedTypename(), copy, rhs->getResultType());
+
+
+
+		//rhs = process_assignment(token, lhs);
 	}
 	else if ( initialization == Initialization::Required ) {
 		// initialization is required (probably because type inference is used) but no initialization sequence found
@@ -1684,6 +1695,10 @@ Statement* TreeGenerator::process_while(TokenIterator& token)
 	++token;
 
 	Node* exp = expression(token);
+
+	if ( dynamic_cast<AssignmentExpression*>(exp) ) {
+		OSwarn("Detected assignment expression that is used as conditional expression in " + token->position().toString());
+	}
 
 	expect(Token::Type::PARENTHESIS_CLOSE, token);
 	++token;
