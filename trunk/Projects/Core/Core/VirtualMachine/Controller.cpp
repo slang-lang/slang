@@ -38,13 +38,14 @@ void Controller::deinit()
 {
 	assert(mPhase > Phase::Preparation);
 
+	delete mGlobalScope;
+	mGlobalScope = 0;
+
 	mThreads->deinit();
 	mMemory->deinit();
 	mRepository->deinit();
 	mTypeSystem->deinit();
 
-	delete mGlobalScope;
-	mGlobalScope = 0;
 	delete mThreads;
 	mThreads = 0;
 	delete mMemory;

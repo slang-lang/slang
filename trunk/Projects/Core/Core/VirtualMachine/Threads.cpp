@@ -30,6 +30,9 @@ Thread::Thread(Common::ThreadId id)
 
 Thread::~Thread()
 {
+	while ( !mStackFrames.empty() ) {
+		popFrame();
+	}
 }
 
 StackFrame* Thread::currentFrame() const

@@ -13,5 +13,7 @@ public object DerivedObject extends BaseObject {
 public void Main(int argc, string args) {
 	DerivedObject do = new DerivedObject();
 	do.setValue(173);
+
+	//do.mProtectedValue = 1389;
 }
 
