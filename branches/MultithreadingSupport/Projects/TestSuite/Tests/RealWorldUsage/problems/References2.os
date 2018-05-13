@@ -10,8 +10,10 @@ private object TestObject {
 		value += 1;
 	}
 
-	public void operator+(int value) modify {
+	public TestObject operator+(int value) modify {
 		mValue += value;
+
+		return this;
 	}
 
 	public string =operator(string none) const {

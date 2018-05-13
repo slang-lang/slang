@@ -835,7 +835,7 @@ void TreeInterpreter::visitAssert(AssertStatement* node)
 
 void TreeInterpreter::visitAssignment(Assignment* node)
 {
-	Runtime::Object &lvalue = resolveLValue(getScope(), node->mLValue, false, Visibility::Designtime);
+	Runtime::Object& lvalue = resolveLValue(getScope(), node->mLValue, false, Visibility::Designtime);
 
 	Runtime::Object tmp;
 

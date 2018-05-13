@@ -622,9 +622,10 @@ Statement* TreeGenerator::process_assert(TokenIterator& token)
 
 /*
  * syntax:
- * <lvalue> = <rvalue>;
+ * <lvalue> = <rvalue>
  */
-Statement* TreeGenerator::process_assignment(TokenIterator& token, SymbolExpression* lhs)
+//Statement* TreeGenerator::process_assignment(TokenIterator& token, SymbolExpression* lhs)
+Node* TreeGenerator::process_assignment(TokenIterator& token, SymbolExpression* lhs)
 {
 	TokenIterator op = token;
 
@@ -651,7 +652,28 @@ Statement* TreeGenerator::process_assignment(TokenIterator& token, SymbolExpress
 			default: throw Common::Exceptions::SyntaxError("assignment type expected", token->position());
 		}
 
-		rhs = new BinaryExpression(lhs, operation, rhs, resolveType(lhs, operation, rhs));
+		//rhs = new BinaryExpression(lhs, operation, rhs, resolveType(lhs, operation, rhs));
+
+		if ( lhs->isAtomicType() ) {
+			rhs = new BinaryExpression(lhs, operation, rhs, resolveType(lhs, operation, rhs));
+		}
+		else {
+			// check if we are using a valid type
+			Designtime::BluePrintObject* blueprint = mRepository->findBluePrintObject(lhs->getResultType());
+			if ( !blueprint ) {
+				throw Common::Exceptions::SyntaxError("'" + lhs->getResultType() + "' is not a valid type", operation.position());
+			}
+
+			SymbolExpression* sym = new DesigntimeSymbolExpression(lhs->mName, lhs->getResultType(), PrototypeConstraints(), false);
+			sym->mSurroundingScope = lhs->mSurroundingScope;
+			sym->mSymbolExpression = new DesigntimeSymbolExpression("operator" + operation.content(), resolveType(lhs, operation, rhs), PrototypeConstraints(), false);
+			sym->mSymbolExpression->mSurroundingScope = blueprint;
+
+			ExpressionList params;
+			params.emplace_back(rhs);
+
+			rhs = process_method(sym, (*token), params);
+		}
 	}
 
 /*
@@ -661,7 +683,25 @@ Statement* TreeGenerator::process_assignment(TokenIterator& token, SymbolExpress
 	}
 */
 
-	return new Assignment(lhs, (*op), rhs, resolveType(lhs, assignment, rhs));
+	//return new Assignment(lhs, (*op), rhs, resolveType(lhs, assignment, rhs));
+
+	if ( lhs->isAtomicType() || lhs->getResultType() == rhs->getResultType() ) {
+		return new Assignment(lhs, (*op), rhs, resolveType(lhs, assignment, rhs));
+	}
+
+	// check if we are using a valid type
+	Designtime::BluePrintObject* blueprint = mRepository->findBluePrintObject(lhs->getResultType());
+	if ( !blueprint ) {
+		throw Common::Exceptions::SyntaxError("'" + lhs->getResultType() + "' is not a valid type", token->position());
+	}
+
+	lhs->mSymbolExpression = new DesigntimeSymbolExpression("operator=", lhs->getResultType(), PrototypeConstraints(), false);
+	lhs->mSymbolExpression->mSurroundingScope = blueprint;
+
+	ExpressionList params;
+	params.emplace_back(rhs);
+
+	return process_method(lhs, (*token), params);
 }
 
 /*
@@ -774,7 +814,7 @@ Expression* TreeGenerator::process_expression_keyword(TokenIterator& token)
 
 /*
  * syntax:
- * for ( [<expression>]; [<condition>]; [<expression>] ) { ... }
+ * for ( [<expression>]; [<condition>]; [<expression>] ) <statement>
  */
 Statement* TreeGenerator::process_for(TokenIterator& token)
 {
@@ -823,7 +863,7 @@ Statement* TreeGenerator::process_for(TokenIterator& token)
 
 /*
  * syntax:
- * for ( <type definition> <identifier> : <instance> ) { ... }
+ * foreach ( <type definition> <identifier> : <instance> ) <statement>
  */
 Statement* TreeGenerator::process_foreach(TokenIterator& token)
 {
