@@ -677,7 +677,7 @@ Expression* TreeGenerator::process_assignment(TokenIterator& token, SymbolExpres
 
 /*
 	// TODO: assignment of const objects to non-const objects should not be allowed
-	if ( (rhs->isConst() && rhs->isReference()) && (!lhs->isConst() && lhs->isReference()) ) {
+	if ( (!lhs->isConst() && !lhs->isAtomicType()) && (rhs->isConst() && !rhs->isAtomicType()) ) {
 		throw Common::Exceptions::ConstCorrectnessViolated("assignment of const symbol to non-const symbol '" + lhs->mName + "' not allowed", op->position());
 	}
 */
@@ -966,13 +966,13 @@ Node* TreeGenerator::process_identifier(TokenIterator& token, bool allowTypeCast
 
 		token = old;
 	}
-	// method call
-	else if ( op->type() == Token::Type::PARENTHESIS_OPEN ) {
-		node = process_method(symbol, token);
-	}
 	// assignment
 	else if ( op->category() == Token::Category::Assignment ) {
 		node = process_assignment(token, symbol);
+	}
+	// method call
+	else if ( op->type() == Token::Type::PARENTHESIS_OPEN ) {
+		node = process_method(symbol, token);
 	}
 	// subscript [] operator
 	else if ( op->type() == Token::Type::BRACKET_OPEN ) {
@@ -1160,6 +1160,33 @@ MethodExpression* TreeGenerator::process_method(SymbolExpression* symbol, const 
 	Common::Method* method = dynamic_cast<Common::Method*>(resolveMethod(symbol, params, Visibility::Private));
 	if ( !method ) {
 		throw Common::Exceptions::UnknownIdentifer("method '" + symbol->toString() + "(" + toString(params) + ")' not found", token.position());
+	}
+
+	// validate parameters
+	const ParameterList& expectedParams = method->provideSignature();
+	ParameterList::const_iterator expectedIt = expectedParams.cbegin();
+	ParameterList::const_iterator providedIt = params.begin();
+	for ( ; expectedIt != expectedParams.end(); ++expectedIt ) {
+		if ( providedIt != params.end() ) {
+			// validate constness
+			if ( expectedIt->mAccessMode == AccessMode::ByReference &&
+				 (expectedIt->mMutability == Mutability::Modify && providedIt->mMutability == Mutability::Const) ) {
+				throw Common::Exceptions::ConstCorrectnessViolated("expected a modifiable by reference parameter", token.position());
+			}
+
+/* temporarily deactivated but this should be turned on again
+			// validate access mode
+			if ( expectedIt->mAccessMode == AccessMode::ByReference && providedIt->mAccessMode != AccessMode::ByReference ) {
+				throw Common::Exceptions::AccessMode("expected a by reference parameter", token.position());
+			}
+*/
+
+			++providedIt;
+			continue;
+		}
+
+		// not enough parameters provided; this is okay because our called method can have default parameters
+		break;
 	}
 
 	// prevent calls to modifiable methods from const methods
@@ -1561,13 +1588,17 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 	std::string type = lhs->getResultType();
 	PrototypeConstraints constraints = lhs->mConstraints;
 
+	// delete resolved symbol expression as it is not needed any more
+	delete lhs;
+	lhs = 0;
+
 	expect(Token::Type::IDENTIFIER, token);
 
 	std::string name = token->content();
 	++token;
 
 	Mutability::E mutability = Designtime::Parser::parseMutability(token, Mutability::Modify);
-	if ( mutability != Mutability::Const && mutability != Mutability::Modify ) {
+	if ( mutability == Mutability::Unknown ) {
 		throw Common::Exceptions::SyntaxError("invalid mutability set for '" + name + "'", token->position());
 	}
 
@@ -1587,34 +1618,12 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 			throw Common::Exceptions::NotSupported("initialization is not allowed here", token->position());
 		}
 
-		Token copy = (*token);
-		++token;
+		RuntimeSymbolExpression* lhs = new RuntimeSymbolExpression(name, object->QualifiedTypename(), false, object->isMember(), accessMode == AccessMode::ByValue);
 
-		rhs = dynamic_cast<Expression*>(expression(token));
+		//Token copy = (*token);
+		rhs = process_assignment(token, lhs);
 
-/*
-		if ( accessMode == AccessMode::ByReference &&
-			dynamic_cast<Expression*>(rhs)->getExpressionType() != Expression::ExpressionType::NewExpression ) {
-			throw Runtime::Exceptions::InvalidAssignment("reference type expected", token->position());
-		}
-		else if ( accessMode == AccessMode::ByValue &&
-			dynamic_cast<Expression*>(rhs)->getExpressionType() == Expression::ExpressionType::NewExpression ) {
-			throw Runtime::Exceptions::InvalidAssignment("value type expected", token->position());
-		}
-*/
-
-/*
-		// TODO: assignment of const objects to non-const objects should not be allowed
-		if ( (!lhs->isConst() && lhs->isReference()) && (rhs->isConst() && rhs->isReference()) ) {
-			throw Common::Exceptions::ConstCorrectnessViolated("rhs of const expression to non-const symbol '" + name + "' not allowed", token->position());
-		}
-*/
-
-		mTypeSystem->getType(object->QualifiedTypename(), copy, rhs->getResultType());
-
-
-
-		//rhs = process_assignment(token, lhs);
+		//mTypeSystem->getType(object->QualifiedTypename(), copy, rhs->getResultType());
 	}
 	else if ( initialization == Initialization::Required ) {
 		// initialization is required (probably because type inference is used) but no initialization sequence found
@@ -1626,9 +1635,6 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 		// atomic reference without initialization found
 		throw Common::Exceptions::NotSupported("atomic references need to be initialized", token->position());
 	}
-
-	// delete resolved symbol expression as it is not needed any more
-	delete lhs;
 
 	return new TypeDeclaration(start, type, constraints, name, mutability == Mutability::Const, accessMode == AccessMode::ByReference, rhs);
 }
@@ -1662,7 +1668,7 @@ TypeDeclaration* TreeGenerator::process_var(TokenIterator& token)
 	++token;
 
 	Mutability::E mutability = Designtime::Parser::parseMutability(token, Mutability::Modify);
-	if ( mutability != Mutability::Const && mutability != Mutability::Modify ) {
+	if ( mutability == Mutability::Unknown ) {
 		throw Common::Exceptions::SyntaxError("invalid mutability set for '" + name + "'", token->position());
 	}
 
@@ -1680,6 +1686,7 @@ TypeDeclaration* TreeGenerator::process_var(TokenIterator& token)
 
 	getScope()->define(name, object);
 
+	// this could easily be changed to return a TypeDeclaration statement, which would be a little faster but during debugging the wrong statement would be shown
 	return new TypeInference(start, type, PrototypeConstraints(), name, mutability == Mutability::Const, accessMode == AccessMode::ByReference, assignment);
 }
 

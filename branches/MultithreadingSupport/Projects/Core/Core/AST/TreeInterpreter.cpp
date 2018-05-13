@@ -1251,17 +1251,17 @@ void TreeInterpreter::visitTry(TryStatement* node)
 
 Runtime::Object* TreeInterpreter::visitTypeDeclaration(TypeDeclaration* node)
 {
-	Runtime::Object* object = mRepository->createInstance(node->mType, node->mName, node->mConstraints);
-	object->setConst(node->mIsConst);
-	object->setIsReference(node->mIsReference);
+	Runtime::Object* lvalue = mRepository->createInstance(node->mType, node->mName, node->mConstraints);
+	lvalue->setConst(node->mIsConst);
+	lvalue->setIsReference(node->mIsReference);
 
-	getScope()->define(node->mName, object);
+	getScope()->define(node->mName, lvalue);
 
 	if ( node->mAssignment ) {
-		tryEvaluteReturnNull(node->mAssignment, object);
+		tryEvaluteReturnNull(node->mAssignment, lvalue);
 	}
 
-	return object;
+	return lvalue;
 }
 
 Runtime::Object* TreeInterpreter::visitTypeInference(TypeInference* node)
