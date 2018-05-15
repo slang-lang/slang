@@ -48,19 +48,19 @@ void TypeSystem::define(const std::string& left, Token::Type::E operation, const
 	mTypeMap[left][operation][right] = result;
 }
 
-bool TypeSystem::exists(const std::string& left, const Token& operation, const std::string& right)
+bool TypeSystem::exists(const std::string& left, Token::Type::E operation, const std::string& right)
 {
 	if ( !mTypeMap.contains(left) ) {
 		return false;
 	}
-	if ( !mTypeMap[left].contains(operation.type()) ) {
+	if ( !mTypeMap[left].contains(operation) ) {
 		return false;
 	}
-	if ( !mTypeMap[left][operation.type()].contains(right) ) {
+	if ( !mTypeMap[left][operation].contains(right) ) {
 		return false;
 	}
 
-	return mTypeMap[left][operation.type()][right] != "";
+	return mTypeMap[left][operation][right] != "";
 }
 
 void TypeSystem::deinit()
