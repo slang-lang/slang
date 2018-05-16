@@ -742,7 +742,7 @@ void Repository::prepareType(const Common::TypeDeclaration& type)
 		}
 
 		// build new prototype from pure type with constraints
-		createBluePrintFromPrototype(static_cast<Designtime::BluePrintObject*>(blueprint), type.mConstraints);
+		createBluePrintFromPrototype(blueprint, type.mConstraints);
 	}
 }
 

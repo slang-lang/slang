@@ -321,7 +321,7 @@ Node* TreeGenerator::parseCondition(TokenIterator& start)
 			operation.resetTypeTo(Token::Type::COMPARE_EQUAL);
 		}
 
-		//std::string type = resolveType(condition, operation, right);	// TODO: find a solution that allows us to activate this check
+		resolveType(condition, operation, right);	// TODO: find a solution that allows us to activate this check
 
 		condition = new BooleanBinaryExpression(condition, operation, right);
 
@@ -877,6 +877,8 @@ Statement* TreeGenerator::process_foreach(TokenIterator& token)
 
 	TypeDeclaration* typeDeclaration = process_type(token, Initialization::NotAllowed);
 
+	mRepository->prepareType(Common::TypeDeclaration(typeDeclaration->mType, typeDeclaration->mConstraints));
+
 	expect(Token::Type::COLON, token);
 	++token;
 
@@ -944,10 +946,13 @@ Node* TreeGenerator::process_identifier(TokenIterator& token, bool allowTypeCast
 		 (dynamic_cast<DesigntimeSymbolExpression*>(symbol) && dynamic_cast<DesigntimeSymbolExpression*>(symbol)->isPrototype()))
 		) {
 
+		mRepository->prepareType(Common::TypeDeclaration(symbol->getResultType(), dynamic_cast<DesigntimeSymbolExpression*>(symbol)->mConstraints));
+
 		std::string type = symbol->getResultType();
 		if ( dynamic_cast<DesigntimeSymbolExpression*>(symbol) ) {
 			type = Designtime::Parser::buildRuntimeConstraintTypename(type, dynamic_cast<DesigntimeSymbolExpression*>(symbol)->mConstraints);
 		}
+
 		node = new TypecastExpression(type, expression(token));					// this processes all following expressions before casting
 		//node = new TypecastExpression(type, parseInfixPostfix(token));		// this casts first and does not combine the subsequent expressions with this one
 
@@ -1527,6 +1532,8 @@ Statement* TreeGenerator::process_try(TokenIterator& token)
 				// create new exception type instance
 				typeDeclaration = process_type(tmp, Initialization::NotAllowed);
 
+				mRepository->prepareType(Common::TypeDeclaration(typeDeclaration->mType, typeDeclaration->mConstraints));
+
 				expect(Token::Type::PARENTHESIS_CLOSE, tmp);
 				++tmp;
 			}
@@ -1587,6 +1594,8 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 
 	std::string type = lhs->getResultType();
 	PrototypeConstraints constraints = lhs->mConstraints;
+
+	mRepository->prepareType(Common::TypeDeclaration(type, constraints));
 
 	// delete resolved symbol expression as it is not needed any more
 	delete lhs;
