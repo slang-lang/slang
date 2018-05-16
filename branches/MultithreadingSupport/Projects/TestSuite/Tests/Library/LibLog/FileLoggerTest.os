@@ -18,7 +18,7 @@ public object LoggingObject {
 
 public void Main(int argc, string args) {
 	try {
-		ILogger logger = ILogger new FileLogger("Test.log", "Logger");
+		var logger = ILogger new FileLogger("Test.log", "Logger");
 
 		LoggingObject obj = new LoggingObject(logger);
 
