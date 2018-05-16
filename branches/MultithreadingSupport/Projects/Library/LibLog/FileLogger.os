@@ -16,7 +16,7 @@ public object FileLogger implements ILogger {
 	 * Specialised constructor
 	 */
 	public void Constructor(string filename, string key, int keyLength = 0) {
-		mContext = new FileContext(filename);
+		mContext = IContext new FileContext(filename);
 		mKeyLength = keyLength;
 
 		if ( keyLength && strlen(key) > keyLength ) {

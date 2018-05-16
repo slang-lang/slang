@@ -9,8 +9,8 @@ import IContext;
 public object FileContext implements IContext {
 	private System.IO.File mFile;
 
-	public void Constructor(string filename) {
-		mFile = new System.IO.File(filename, "w+");
+	public void Constructor(string filename, bool append = false) {
+		mFile = new System.IO.File(filename, append ? "wa" : "w");
 	}
 
 	public void Destructor() {
