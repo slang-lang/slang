@@ -329,6 +329,39 @@ Node* TreeGenerator::parseCondition(TokenIterator& start)
 		if ( op == Token::Type::COMPARE_UNEQUAL ) {
 			condition = new BooleanUnaryExpression(Token::Type::OPERATOR_NOT, condition, UnaryExpression::ValueType::RValue);
 		}
+
+/*
+		if ( op == Token::Type::COMPARE_UNEQUAL ) {
+			operation.resetContentTo("==");
+			operation.resetTypeTo(Token::Type::COMPARE_EQUAL);
+		}
+
+		SymbolExpression* exp = dynamic_cast<SymbolExpression*>(condition);
+
+		if ( !exp || exp->isAtomicType() ) {
+			condition = new BooleanBinaryExpression(condition, operation, right);
+			continue;
+		}
+
+		// check if we are using a valid type
+		Designtime::BluePrintObject* blueprint = mRepository->findBluePrintObject(exp->getResultType());
+		if ( !blueprint ) {
+			throw Common::Exceptions::SyntaxError("'" + exp->getResultType() + "' is not a valid type", operation.position());
+		}
+
+		exp->mSymbolExpression = new DesigntimeSymbolExpression("operator" + operation.content(), _bool, PrototypeConstraints(), false);
+		exp->mSymbolExpression->mSurroundingScope = blueprint;
+
+		ExpressionList params;
+		params.emplace_back(right);
+
+		condition = process_method(exp, (*start), params);
+
+		// != operator is not defined but rather used as 'not =='
+		if ( op == Token::Type::COMPARE_UNEQUAL ) {
+			condition = new BooleanUnaryExpression(Token::Type::OPERATOR_NOT, condition, UnaryExpression::ValueType::RValue);
+		}
+*/
 	}
 }
 
@@ -349,9 +382,6 @@ Node* TreeGenerator::parseExpression(TokenIterator& start)
 		Token operation = (*start);
 		Node* right = parseFactor(++start);
 		std::string type = resolveType(expression, operation, right);
-
-		//expression = new BinaryExpression(expression, operation, right, type);
-
 
 		SymbolExpression* exp = dynamic_cast<SymbolExpression*>(expression);
 
