@@ -316,12 +316,13 @@ Node* TreeGenerator::parseCondition(TokenIterator& start)
 		Token operation = (*start);
 		Node* right = parseExpression(++start);
 
+
 		if ( op == Token::Type::COMPARE_UNEQUAL ) {
 			operation.resetContentTo("==");
 			operation.resetTypeTo(Token::Type::COMPARE_EQUAL);
 		}
 
-		resolveType(condition, operation, right);	// TODO: find a solution that allows us to activate this check
+		resolveType(condition, operation, right);
 
 		condition = new BooleanBinaryExpression(condition, operation, right);
 
@@ -336,26 +337,36 @@ Node* TreeGenerator::parseCondition(TokenIterator& start)
 			operation.resetTypeTo(Token::Type::COMPARE_EQUAL);
 		}
 
+		resolveType(condition, operation, right);
+
 		SymbolExpression* exp = dynamic_cast<SymbolExpression*>(condition);
 
 		if ( !exp || exp->isAtomicType() ) {
 			condition = new BooleanBinaryExpression(condition, operation, right);
-			continue;
 		}
+		else {
+			// check if we are using a valid type
+			Designtime::BluePrintObject* blueprint = mRepository->findBluePrintObject(exp->getResultType());
+			if ( !blueprint ) {
+				throw Common::Exceptions::SyntaxError("'" + exp->getResultType() + "' is not a valid type", operation.position());
+			}
 
-		// check if we are using a valid type
-		Designtime::BluePrintObject* blueprint = mRepository->findBluePrintObject(exp->getResultType());
-		if ( !blueprint ) {
-			throw Common::Exceptions::SyntaxError("'" + exp->getResultType() + "' is not a valid type", operation.position());
+			exp->mSymbolExpression = new DesigntimeSymbolExpression("operator" + operation.content(), _bool, PrototypeConstraints(), false);
+			exp->mSymbolExpression->mSurroundingScope = blueprint;
+
+			ExpressionList params;
+			params.emplace_back(right);
+
+			//try {
+				condition = process_method(exp, (*start), params);
+			//}
+			//catch ( Common::Exceptions::UnknownIdentifer& e ) {
+			//	delete exp->mSymbolExpression;
+			//	exp->mSymbolExpression = 0;
+			//
+			//	condition = new BooleanBinaryExpression(condition, operation, right);
+			//}
 		}
-
-		exp->mSymbolExpression = new DesigntimeSymbolExpression("operator" + operation.content(), _bool, PrototypeConstraints(), false);
-		exp->mSymbolExpression->mSurroundingScope = blueprint;
-
-		ExpressionList params;
-		params.emplace_back(right);
-
-		condition = process_method(exp, (*start), params);
 
 		// != operator is not defined but rather used as 'not =='
 		if ( op == Token::Type::COMPARE_UNEQUAL ) {
