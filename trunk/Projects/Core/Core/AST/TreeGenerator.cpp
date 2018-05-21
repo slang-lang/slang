@@ -366,21 +366,18 @@ Node* TreeGenerator::parseCondition(TokenIterator& start)
 				throw Common::Exceptions::SyntaxError("'" + exp->getResultType() + "' is not a valid type", operation.position());
 			}
 
-			exp->mSymbolExpression = new DesigntimeSymbolExpression("operator" + operation.content(), _bool, PrototypeConstraints(), false);
-			exp->mSymbolExpression->mSurroundingScope = blueprint;
+			SymbolExpression* inner = exp;
+			while ( inner->mSymbolExpression ) {
+				inner = inner->mSymbolExpression;
+			}
+
+			inner->mSymbolExpression = new DesigntimeSymbolExpression("operator" + operation.content(), dynamic_cast<Expression*>(right)->getResultType(), PrototypeConstraints(), false);
+			inner->mSymbolExpression->mSurroundingScope = blueprint;
 
 			ExpressionList params;
 			params.emplace_back(right);
 
-			//try {
-				condition = process_method(exp, (*start), params);
-			//}
-			//catch ( Common::Exceptions::UnknownIdentifer& e ) {
-			//	delete exp->mSymbolExpression;
-			//	exp->mSymbolExpression = 0;
-			//
-			//	condition = new BooleanBinaryExpression(condition, operation, right);
-			//}
+			condition = process_method(exp, (*start), params);
 		}
 
 		// != operator is not defined but rather used as 'not =='
@@ -422,8 +419,13 @@ Node* TreeGenerator::parseExpression(TokenIterator& start)
 			throw Common::Exceptions::SyntaxError("'" + exp->getResultType() + "' is not a valid type", operation.position());
 		}
 
-		exp->mSymbolExpression = new DesigntimeSymbolExpression("operator" + operation.content(), type, PrototypeConstraints(), false);
-		exp->mSymbolExpression->mSurroundingScope = blueprint;
+		SymbolExpression* inner = exp;
+		while ( inner->mSymbolExpression ) {
+			inner = inner->mSymbolExpression;
+		}
+
+		inner->mSymbolExpression = new DesigntimeSymbolExpression("operator" + operation.content(), type, PrototypeConstraints(), false);
+		inner->mSymbolExpression->mSurroundingScope = blueprint;
 
 		ExpressionList params;
 		params.emplace_back(right);
@@ -464,8 +466,13 @@ Node* TreeGenerator::parseFactor(TokenIterator &start)
 			throw Common::Exceptions::SyntaxError("'" + exp->getResultType() + "' is not a valid type", operation.position());
 		}
 
-		exp->mSymbolExpression = new DesigntimeSymbolExpression("operator" + operation.content(), type, PrototypeConstraints(), false);
-		exp->mSymbolExpression->mSurroundingScope = blueprint;
+		SymbolExpression* inner = exp;
+		while ( inner->mSymbolExpression ) {
+			inner = inner->mSymbolExpression;
+		}
+
+		inner->mSymbolExpression = new DesigntimeSymbolExpression("operator" + operation.content(), type, PrototypeConstraints(), false);
+		inner->mSymbolExpression->mSurroundingScope = blueprint;
 
 		ExpressionList params;
 		params.emplace_back(right);
@@ -707,8 +714,6 @@ Expression* TreeGenerator::process_assignment(TokenIterator& token, SymbolExpres
 			default: throw Common::Exceptions::SyntaxError("assignment type expected", token->position());
 		}
 
-		//rhs = new BinaryExpression(lhs, operation, rhs, resolveType(lhs, operation, rhs));
-
 		if ( lhs->isAtomicType() ) {
 			rhs = new BinaryExpression(lhs, operation, rhs, resolveType(lhs, operation, rhs));
 		}
@@ -731,14 +736,6 @@ Expression* TreeGenerator::process_assignment(TokenIterator& token, SymbolExpres
 		}
 	}
 
-/*
-	// TODO: assignment of const objects to non-const objects should not be allowed
-	if ( (!lhs->isConst() && !lhs->isAtomicType()) && (rhs->isConst() && !rhs->isAtomicType()) ) {
-		throw Common::Exceptions::ConstCorrectnessViolated("assignment of const symbol to non-const symbol '" + lhs->mName + "' not allowed", op->position());
-	}
-*/
-
-	//return new AssignmentExpression(lhs, rhs, resolveType(lhs, assignment, rhs));
 
 	if ( lhs->isAtomicType() || lhs->getResultType() == rhs->getResultType() ) {
 		return new AssignmentExpression(lhs, rhs, resolveType(lhs, assignment, rhs));
@@ -750,8 +747,13 @@ Expression* TreeGenerator::process_assignment(TokenIterator& token, SymbolExpres
 		throw Common::Exceptions::SyntaxError("'" + lhs->getResultType() + "' is not a valid type", token->position());
 	}
 
-	lhs->mSymbolExpression = new DesigntimeSymbolExpression("operator=", lhs->getResultType(), PrototypeConstraints(), false);
-	lhs->mSymbolExpression->mSurroundingScope = blueprint;
+	SymbolExpression* inner = lhs;
+	while ( inner->mSymbolExpression ) {
+		inner = inner->mSymbolExpression;
+	}
+
+	inner->mSymbolExpression = new DesigntimeSymbolExpression("operator=", lhs->getResultType(), PrototypeConstraints(), false);
+	inner->mSymbolExpression->mSurroundingScope = blueprint;
 
 	ExpressionList params;
 	params.emplace_back(rhs);
