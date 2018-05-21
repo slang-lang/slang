@@ -73,6 +73,20 @@ void TreeGenerator::deinitialize()
 {
 	IScope* scope = getScope();
 
+	if ( !mThrownExceptions.empty() && !mMethod->throws() ) {
+		// this method is not marked as 'throwing', but it throws uncaught exceptions
+		std::string exceptions = "'";
+		for ( std::set<std::string>::const_iterator it = mThrownExceptions.cbegin(); it != mThrownExceptions.cend(); ++it ) {
+			if ( it != mThrownExceptions.cbegin() ) {
+				exceptions += "', '";
+			}
+			exceptions += (*it);
+ 		}
+ 		exceptions += "'";
+
+		throw Common::Exceptions::ControlFlowException("'" + mMethod->getFullScopeName() + "' throws " + exceptions + " exception(s) although it is not marked with 'throws'");
+	}
+
 	// remove 'this' symbol
 	if ( mThis ) {
 		// revert blueprint constness to modifiable
@@ -265,6 +279,7 @@ void TreeGenerator::initialize(Common::Method* method)
 	mControlFlow = Runtime::ControlFlow::Normal;
 	mMethod = method;
 	mThis = dynamic_cast<Designtime::BluePrintObject*>(method->getEnclosingScope());
+	mThrownExceptions.clear();
 
 	// create new stack frame
 	mStackFrame = new StackFrame(0, mMethod, mMethod->provideSignature());
@@ -1513,15 +1528,14 @@ Statement* TreeGenerator::process_throw(TokenIterator& token)
 	Token start = (*token);
 	mControlFlow = Runtime::ControlFlow::Throw;
 
-	if ( !mMethod->throws() ) {
-		// this method is not marked as 'throwing', so we can't throw exceptions here
-		throw Common::Exceptions::ControlFlowException(mMethod->getFullScopeName() + " throws although it is not marked with 'throws'", token->position());
-	}
-
 	Node* exp = 0;
 
 	if ( token->type() != Token::Type::SEMICOLON ) {
 		exp = expression(token);
+
+		if ( exp ) {
+			mThrownExceptions.insert(dynamic_cast<Expression*>(exp)->getResultType());
+		}
 	}
 
 	expect(Token::Type::SEMICOLON, token);
@@ -1541,6 +1555,9 @@ Statement* TreeGenerator::process_try(TokenIterator& token)
 	Token start = (*token);
 
 	expect(Token::Type::BRACKET_CURLY_OPEN, token);
+
+	std::set<std::string> thrownExceptions = mThrownExceptions;
+	mThrownExceptions.clear();
 
 	TokenList tryTokens;
 	collectScopeTokens(token, tryTokens);
@@ -1578,6 +1595,10 @@ Statement* TreeGenerator::process_try(TokenIterator& token)
 				expect(Token::Type::PARENTHESIS_CLOSE, tmp);
 				++tmp;
 			}
+			else {
+				// this is a catch block without an exception type (= a "catch all"-block), so we have to clear all exceptions
+				mThrownExceptions.clear();
+			}
 
 			// parse catch-block
 			TokenList tokens;
@@ -1588,6 +1609,8 @@ Statement* TreeGenerator::process_try(TokenIterator& token)
 			catchStatements.push_back(
 				new CatchStatement(start, typeDeclaration, generate(tokens))
 			);
+
+			mThrownExceptions.erase(typeDeclaration->mType);
 
 			popScope();		// pop exception instance scope
 
@@ -1613,6 +1636,14 @@ Statement* TreeGenerator::process_try(TokenIterator& token)
 
 		++tmp;
 	}
+
+	if ( catchStatements.empty() ) {
+		// this is a try-block without catch statements (= a "no throw" try-block), so we have to clear all exceptions
+		mThrownExceptions.clear();
+	}
+
+	// merge local thrown exceptions list with global list
+	mThrownExceptions.insert(thrownExceptions.begin(), thrownExceptions.end());
 
 	expect(Token::Type::BRACKET_CURLY_CLOSE, token);
 	++token;

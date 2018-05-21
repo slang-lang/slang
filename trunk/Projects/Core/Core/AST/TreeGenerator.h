@@ -4,6 +4,7 @@
 
 
 // Library includes
+#include <set>
 
 // Project includes
 #include <Core/Designtime/Parser/Token.h>
@@ -134,7 +135,7 @@ private: // Execution
 
 	// Token stack
 	// {
-	const TokenList& getTokens() const;
+	inline const TokenList& getTokens() const;
 	void popTokens();
 	void pushTokens(const TokenList& tokens);
 	// }
@@ -148,6 +149,7 @@ private:
 	Runtime::ControlFlow::E mControlFlow;
 	Common::Method* mMethod;
 	Designtime::BluePrintObject* mThis;
+	std::set<std::string> mThrownExceptions;
 
 private:	// Virtual machine stuff
 	Repository* mRepository;
