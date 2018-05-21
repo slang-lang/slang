@@ -115,7 +115,7 @@ public object Vector<T> implements ICollection {
 			mFirst = item;
 			mLast = item;
 		}
-		else if ( index == 0 ) {			// special handling for 1st element
+		else if ( index == 0 ) {		// special handling for 1st element
 			item.mNext = mFirst;
 			mFirst = item;
 		}

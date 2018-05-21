@@ -93,6 +93,12 @@ void operator_binary_assign(Object *base, Object *other, const Common::Position&
 			return;
 		}
 
+
+		// invalid binary assignment operator handling!
+		throw Runtime::Exceptions::InvalidOperation("'" + base->getFullScopeName() + ".operator=()'");
+
+
+
 		ParameterList params;
 		params.push_back(Parameter::CreateRuntime(other->QualifiedOuterface(), other->getValue(), other->getReference()));
 
@@ -153,7 +159,7 @@ void operator_binary_bitand(Object *base, Object *other, const Common::Position&
 	}
 	else {
 		// invalid binary bitand operator handling!
-		throw Runtime::Exceptions::InvalidOperation("'" + base->getFullScopeName() + "'.operator&()");
+		throw Runtime::Exceptions::InvalidOperation("'" + base->getFullScopeName() + ".operator&()'");
 	}
 }
 
@@ -203,7 +209,7 @@ void operator_binary_bitcomplement(Object *base, Object *other, const Common::Po
 	}
 	else {
 		// invalid binary bitcomplement operator handling!
-		throw Runtime::Exceptions::InvalidOperation("'" + base->getFullScopeName() + "'.operator~()");
+		throw Runtime::Exceptions::InvalidOperation("'" + base->getFullScopeName() + ".operator~()'");
 	}
 }
 
@@ -253,7 +259,7 @@ void operator_binary_bitor(Object *base, Object *other, const Common::Position& 
 	}
 	else {
 		// invalid binary bitor operator handling!
-		throw Runtime::Exceptions::InvalidOperation("'" + base->getFullScopeName() + "'.operator|()");
+		throw Runtime::Exceptions::InvalidOperation("'" + base->getFullScopeName() + ".operator|()'");
 	}
 }
 
@@ -303,7 +309,7 @@ void operator_binary_divide(Object *base, Object *other, const Common::Position&
 	}
 	else {
 		// invalid binary division operator handling!
-		throw Runtime::Exceptions::InvalidOperation("'" + base->getFullScopeName() + "'.operator/()");
+		throw Runtime::Exceptions::InvalidOperation("'" + base->getFullScopeName() + ".operator/()'");
 	}
 }
 
@@ -600,7 +606,7 @@ void operator_binary_modulo(Object *base, Object *other, const Common::Position&
 	}
 	else {
 		// invalid binary modulo operator handling!
-		throw Runtime::Exceptions::InvalidOperation("'" + base->getFullScopeName() + "'.operator%()");
+		throw Runtime::Exceptions::InvalidOperation("'" + base->getFullScopeName() + ".operator%()'");
 	}
 }
 
@@ -650,7 +656,7 @@ void operator_binary_multiply(Object *base, Object *other, const Common::Positio
 	}
 	else {
 		// invalid binary multiply operator handling!
-		throw Runtime::Exceptions::InvalidOperation("'" + base->getFullScopeName() + "'.operator*()");
+		throw Runtime::Exceptions::InvalidOperation("'" + base->getFullScopeName() + ".operator*()'");
 	}
 }
 
@@ -700,7 +706,7 @@ void operator_binary_plus(Object *base, Object *other, const Common::Position& p
 	}
 	else {
 		// invalid binary addition operator handling!
-		throw Runtime::Exceptions::InvalidOperation("'" + base->getFullScopeName() + "'.operator+()");
+		throw Runtime::Exceptions::InvalidOperation("'" + base->getFullScopeName() + ".operator+()'");
 	}
 }
 
@@ -750,7 +756,7 @@ void operator_binary_subtract(Object *base, Object *other, const Common::Positio
 	}
 	else {
 		// invalid binary subtract operator handling!
-		throw Runtime::Exceptions::InvalidOperation("'" + base->getFullScopeName() + "'.operator-()");
+		throw Runtime::Exceptions::InvalidOperation("'" + base->getFullScopeName() + ".operator-()'");
 	}
 }
 
@@ -800,7 +806,7 @@ void operator_unary_decrement(Object *base, const Common::Position& position)
 	}
 	else {
 		// invalid decrement operator handling!
-		throw Runtime::Exceptions::InvalidOperation("'" + base->getFullScopeName() + "'.operator--()");
+		throw Runtime::Exceptions::InvalidOperation("'" + base->getFullScopeName() + ".operator--()'");
 	}
 }
 
@@ -850,7 +856,7 @@ void operator_unary_increment(Object *base, const Common::Position& position)
 	}
 	else {
 		// invalid increment operator handling!
-		throw Runtime::Exceptions::InvalidOperation("'" + base->getFullScopeName() + "'.operator++()");
+		throw Runtime::Exceptions::InvalidOperation("'" + base->getFullScopeName() + ".operator++()'");
 	}
 }
 
@@ -900,7 +906,7 @@ void operator_unary_minus(Object *base, const Common::Position& position)
 	}
 	else {
 		// invalid unary minus operator handling!
-		throw Runtime::Exceptions::InvalidOperation("'" + base->getFullScopeName() + "'.-operator()");
+		throw Runtime::Exceptions::InvalidOperation("'" + base->getFullScopeName() + ".-operator()'");
 	}
 }
 
@@ -950,7 +956,7 @@ void operator_unary_plus(Object *base, const Common::Position& position)
 	}
 	else {
 		// invalid unary plus operator handling!
-		throw Runtime::Exceptions::InvalidOperation("'" + base->getFullScopeName() + "'.+operator()");
+		throw Runtime::Exceptions::InvalidOperation("'" + base->getFullScopeName() + ".+operator()'");
 	}
 }
 

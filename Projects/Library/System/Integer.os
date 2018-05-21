@@ -33,21 +33,21 @@ public object Integer {
 	public bool operator==(int other val) const {
 		return mValue == other;
 	}
-	public bool operator==(Integer other ref) const {
+	public bool operator==(Integer other const ref) const {
 		return mValue == int other;
 	}
 
 	public bool operator<(int other) const {
 		return mValue < other;
 	}
-	public bool operator<(Integer other ref) const {
+	public bool operator<(Integer other const ref) const {
 		return mValue < int other;
 	}
 
 	public bool operator>(int other val) const {
 		return mValue > other;
 	}
-	public bool operator>(Integer other ref) const {
+	public bool operator>(Integer other const ref) const {
 		return mValue > int other;
 	}
 
@@ -63,23 +63,23 @@ public object Integer {
 	/*
 	 * Integer assignment operator
 	 */
-	public Integer operator=(Integer other ref) modify {
+	public Integer operator=(Integer other const ref) modify {
 		mValue = int other;
 
 		return this;
 	}
 
 	/*
-	 * int value operator
+	 * int typecast operator
 	 */
-	public int =operator(int other val) const {
+	public int =operator(int) const {
 		return mValue;
 	}
 
 	/*
-	 * string value operator
+	 * string typecast operator
 	 */
-	public string =operator(string none val) const {
+	public string =operator(string) const {
 		return string mValue;
 	}
 
@@ -88,7 +88,7 @@ public object Integer {
 
 		return this;
 	}
-	public Integer operator+(Integer other ref) modify {
+	public Integer operator+(Integer other const ref) modify {
 		mValue = mValue + int other;
 
 		return this;
@@ -99,7 +99,7 @@ public object Integer {
 
 		return this;
 	}
-	public Integer operator-(Integer other ref) modify {
+	public Integer operator-(Integer other const ref) modify {
 		mValue = mValue - int other;
 
 		return this;
@@ -110,7 +110,7 @@ public object Integer {
 
 		return this;
 	}
-	public Integer operator*(Integer other ref) modify {
+	public Integer operator*(Integer other const ref) modify {
 		mValue = mValue * int other;
 
 		return this;
@@ -121,7 +121,7 @@ public object Integer {
 
 		return this;
 	}
-	public Integer operator/(Integer other ref) modify {
+	public Integer operator/(Integer other const ref) modify {
 		mValue = mValue / int other;
 
 		return this;

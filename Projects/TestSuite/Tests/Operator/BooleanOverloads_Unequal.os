@@ -16,12 +16,8 @@ private namespace BooleanOverloads {
 			return mValue == value;
 		}
 
-		public bool operator!=(int value const) const {
-			return mValue != value;
-		}
-
-		public bool operator!=(UserObject other const) const {
-			return mValue != other.GetValue();
+		public bool operator==(UserObject other const) const {
+			return mValue == other.GetValue();
 		}
 	}
 }

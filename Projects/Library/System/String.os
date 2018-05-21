@@ -150,7 +150,7 @@ public object String implements IIterateable {
 	/*
 	 * String compare operator
 	 */
-	public bool operator==(String other ref) const {
+	public bool operator==(String other const ref) const {
 		return mValue == string other;
 	}
 
@@ -165,7 +165,7 @@ public object String implements IIterateable {
 	/*
 	 * String assignment operator
 	 */
-	public String operator=(String other ref) modify {
+	public String operator=(String other const ref) modify {
 		mValue = string other;
 
 		return this;
@@ -182,7 +182,7 @@ public object String implements IIterateable {
 	/*
 	 * String concatenation operator
 	 */
-	public String operator+(String other ref) modify {
+	public String operator+(String other const ref) modify {
 		mValue = mValue + string other;
 
 		return this;
@@ -198,7 +198,7 @@ public object String implements IIterateable {
 	/*
 	 * String less compare operator
 	 */
-	public bool operator<(String other ref) const {
+	public bool operator<(String other const ref) const {
 		return mValue < string other;
 	}
 

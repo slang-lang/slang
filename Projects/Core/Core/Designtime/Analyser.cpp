@@ -177,7 +177,7 @@ bool Analyser::createBluePrint(TokenIterator& token)
 	}
 
 	// validate mutability
-	if ( mutability != Mutability::Const && mutability != Mutability::Modify ) {
+	if ( mutability == Mutability::Unknown ) {
 		throw Common::Exceptions::SyntaxError("invalid mutability '" + Mutability::convert(mutability) + "' for " + getQualifiedTypename(type.mName), token->position());
 	}
 
@@ -287,7 +287,7 @@ bool Analyser::createInterface(TokenIterator& token)
 	Common::TypeDeclaration type = Parser::parseTypeDeclaration(token, mScope);
 	// look for an optional mutability token
 	Mutability::E mutability = Parser::parseMutability(token, Mutability::Modify);
-	if ( mutability != Mutability::Const && mutability != Mutability::Modify ) {
+	if ( mutability == Mutability::Unknown ) {
 		throw Common::Exceptions::SyntaxError("invalid mutability '" + Mutability::convert(mutability) + "' for " + getQualifiedTypename(type.mName), token->position());
 	}
 	// collect inheritance (if present)

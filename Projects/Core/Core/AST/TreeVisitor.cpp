@@ -48,18 +48,27 @@ std::string PrintVisitor::printExpression(Node* node) const
 	std::string result;
 
 	switch ( expression->getExpressionType() ) {
+		case Expression::ExpressionType::AssignmentExpression: {
+			AssignmentExpression* ass = static_cast<AssignmentExpression*>(expression);
+
+			result += printExpression(ass->mLHS);
+			result += " = ";
+			result += printExpression(ass->mRHS);
+		} break;
 		case Expression::ExpressionType::BinaryExpression: {
 			BinaryExpression* bin = static_cast<BinaryExpression*>(node);
 
-			result += printExpression(bin->mLeft) + " ";
+			result += printExpression(bin->mLHS) + " ";
 			result += bin->mOperation.content() + " ";
-			result += printExpression(bin->mRight);
+			result += printExpression(bin->mRHS);
 		} break;
 		case Expression::ExpressionType::CopyExpression: {
 			result += "copy " + printExpression(static_cast<CopyExpression*>(expression)->mExpression);
 		} break;
 		case Expression::ExpressionType::IsExpression: {
-			result += printExpression(static_cast<IsExpression*>(expression)->mExpression) + " is " + static_cast<IsExpression*>(expression)->mMatchType;
+			IsExpression* is = static_cast<IsExpression*>(expression);
+
+			result += printExpression(is->mExpression) + " is " + is->mMatchType;
 		} break;
 		case Expression::ExpressionType::NewExpression: {
 			result += "new " + printExpression(static_cast<NewExpression*>(expression)->mExpression);
@@ -75,35 +84,39 @@ std::string PrintVisitor::printExpression(Node* node) const
 			}
 		} break;
 		case Expression::ExpressionType::MethodExpression: {
-			result += printExpression(static_cast<MethodExpression*>(expression)->mSymbolExpression);
+			MethodExpression* method = static_cast<MethodExpression*>(expression);
+
+			result += printExpression(method->mSymbolExpression);
 			result += "(";
-			for ( ExpressionList::const_iterator it = static_cast<MethodExpression*>(expression)->mParams.begin();
-				  it != static_cast<MethodExpression*>(expression)->mParams.end();
-				  ++it ) {
+			for ( ExpressionList::const_iterator it = method->mParams.begin(); it != method->mParams.end(); ++it ) {
 				result += printExpression((*it));
 			}
 			result += ")";
 		} break;
 		case Expression::ExpressionType::SymbolExpression: {
-			result += static_cast<SymbolExpression*>(expression)->mSymbolExpression
-					  ? printExpression(static_cast<SymbolExpression*>(expression)->mSymbolExpression)
-					  : static_cast<SymbolExpression*>(expression)->mName;
+			SymbolExpression* sym = static_cast<SymbolExpression*>(expression);
+
+			result += sym->mSymbolExpression ? printExpression(sym->mSymbolExpression) : sym->mName;
 		} break;
 		case Expression::ExpressionType::TernaryExpression: {
-			result += printExpression(static_cast<TernaryExpression*>(expression)->mCondition) + " ? ";
-			result += printExpression(static_cast<TernaryExpression*>(expression)->mFirst) + " : ";
-			result += printExpression(static_cast<TernaryExpression*>(expression)->mSecond);
+			TernaryExpression* ter = static_cast<TernaryExpression*>(expression);
+
+			result += printExpression(ter->mCondition) + " ? ";
+			result += printExpression(ter->mFirst) + " : ";
+			result += printExpression(ter->mSecond);
 		} break;
 		case Expression::ExpressionType::TypecastExpression: {
-			result += "( " + static_cast<TypecastExpression*>(expression)->mDestinationType + " ";
-			result += printExpression(static_cast<TypecastExpression*>(expression)->mExpression) + " )";
+			TypecastExpression* type = static_cast<TypecastExpression*>(expression);
+
+			result += "( " + type->mDestinationType + " " + printExpression(type->mExpression) + " )";
 		} break;
 		case Expression::ExpressionType::TypeidExpression: {
 			result += "typeid( " + printExpression(static_cast<TypeidExpression*>(expression)->mExpression) + " )";
 		} break;
 		case Expression::ExpressionType::UnaryExpression: {
-			result += static_cast<UnaryExpression*>(expression)->mOperation.content();
-			result += printExpression(static_cast<UnaryExpression*>(expression)->mExpression);
+			UnaryExpression* un = static_cast<UnaryExpression*>(expression);
+
+			result += un->mOperation.content() + printExpression(un->mExpression);
 		} break;
 	}
 
@@ -141,11 +154,6 @@ void PrintVisitor::visit(Node* node)
 void PrintVisitor::visitAssert(AssertStatement* node)
 {
 	mOutput.insert(node->token().position(), printIndentation(mIndentation) + "assert(" + printExpression(node->mExpression) + ");");
-}
-
-void PrintVisitor::visitAssignment(Assignment* node)
-{
-	mOutput.insert(node->token().position(), printIndentation(mIndentation) + node->mLValue->mName + " " + node->mAssignment.content() + " " + printExpression(node->mExpression));
 }
 
 void PrintVisitor::visitBreak(BreakStatement* node)
@@ -250,9 +258,6 @@ void PrintVisitor::visitStatement(Statement *node)
 	switch ( node->getStatementType() ) {
 		case Statement::StatementType::AssertStatement:
 			visitAssert(static_cast<AssertStatement*>(node));
-			break;
-		case Statement::StatementType::Assignment:
-			visitAssignment(static_cast<Assignment*>(node));
 			break;
 		case Statement::StatementType::BreakStatement:
 			visitBreak(static_cast<BreakStatement*>(node));
