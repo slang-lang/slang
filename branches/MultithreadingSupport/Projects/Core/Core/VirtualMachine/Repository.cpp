@@ -695,34 +695,32 @@ void Repository::initTypeSystem(Designtime::BluePrintObject* blueprint)
 		}
 	}
 
-	// add default entries for null assignments, etc.
-	mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::ASSIGN,          NULL_TYPE,                      blueprint->QualifiedTypename());
-	mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_EQUAL,   NULL_TYPE,                      blueprint->QualifiedTypename());
-	mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_UNEQUAL, NULL_TYPE,                      blueprint->QualifiedTypename());
 	// add default entries for pointer comparison etc.
 	mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_EQUAL,   _object,                        _bool);
 	mTypeSystem->define(_object,                        Token::Type::COMPARE_EQUAL,   blueprint->QualifiedTypename(), _bool);
 
 	// add default assignment entry for type system if it doesn't exist yet
-	if ( !mTypeSystem->exists(blueprint->QualifiedTypename(), Token::Type::ASSIGN, blueprint->QualifiedTypename()) ) {
+	//if ( !mTypeSystem->exists(blueprint->QualifiedTypename(), Token::Type::ASSIGN, blueprint->QualifiedTypename()) ) {
 		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::ASSIGN, blueprint->QualifiedTypename(), blueprint->QualifiedTypename());
-	}
+	//}
+
 	// add assignment entries for extended and implemented objects
 	{
 		Designtime::Ancestors ancestors = blueprint->getInheritance();
 
 		for ( Designtime::Ancestors::const_iterator it = ancestors.begin(); it != ancestors.end(); ++it ) {
-			if ( !mTypeSystem->exists(it->name(), Token::Type::ASSIGN, blueprint->QualifiedTypename()) ) {
+			//if ( !mTypeSystem->exists(it->name(), Token::Type::ASSIGN, blueprint->QualifiedTypename()) ) {
 				mTypeSystem->define(it->name(), Token::Type::ASSIGN, blueprint->QualifiedTypename(), it->name());
-			}
+			//}
 		}
 	}
+
 	// add equality operator entries for type system if it doesn't exist yet
-	if ( !mTypeSystem->exists(blueprint->QualifiedTypename(), Token::Type::COMPARE_EQUAL, blueprint->QualifiedTypename()) ) {
+	//if ( !mTypeSystem->exists(blueprint->QualifiedTypename(), Token::Type::COMPARE_EQUAL, blueprint->QualifiedTypename()) ) {
 		// compare with same type
-		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_EQUAL, blueprint->QualifiedTypename(), _bool);
+		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_EQUAL,   blueprint->QualifiedTypename(), _bool);
 		mTypeSystem->define(blueprint->QualifiedTypename(), Token::Type::COMPARE_UNEQUAL, blueprint->QualifiedTypename(), _bool);
-	}
+	//}
 }
 
 void Repository::prepareType(const Common::TypeDeclaration& type)

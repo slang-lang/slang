@@ -41,7 +41,8 @@ void TypeSystem::define(const std::string& left, Token::Type::E operation, const
 	}
 
 	if ( mTypeMap[left][operation].contains(right) ) {
-		throw Common::Exceptions::Exception("duplicate type system target: " + left + " with " + right);
+		//throw Common::Exceptions::Exception("duplicate type system target: " + left + " with " + right);
+		return;
 	}
 
 	mTypeMap[left][operation].insert(right);
