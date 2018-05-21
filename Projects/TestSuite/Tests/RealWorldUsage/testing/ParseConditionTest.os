@@ -3,10 +3,20 @@
 private object ComplexType {
 	public int mValue = 1;
 
-	public bool operator==(int other) modify {
+	public void Constructor(int value) {
+		mValue = value;
+	}
+
+	public bool operator==(int other) const {
 		print("operator==(" + other + ")");
 
 		return mValue == other;
+	}
+
+	public bool operator==(ComplexType other const) const {
+		print("operator==(ComplexType)");
+
+		return mValue == other.mValue;
 	}
 }
 
@@ -35,5 +45,8 @@ public void Main(int argc, string args) {
 	else {
 		print("ct == 2");
 	}
+
+	var ct2 = new ComplexType(2);
+	assert( ct != ct2 );
 }
 
