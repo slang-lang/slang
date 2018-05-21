@@ -449,7 +449,7 @@ void LanguageTest::testParameters()
 		params.push_back(Parameter::CreateRuntime(Runtime::IntegerObject::TYPENAME, "2"));
 		params.push_back(Parameter::CreateRuntime(Runtime::StringObject::TYPENAME, ""));
 
-		vm.createScriptFromFile("Tests/Language/ParameterTest.os", params);
+		TTHROWS(vm.createScriptFromFile("Tests/Language/ParameterTest.os", params), Common::Exceptions::ConstCorrectnessViolated);
 
 		// automatic success
 	}

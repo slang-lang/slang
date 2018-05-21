@@ -316,12 +316,13 @@ Node* TreeGenerator::parseCondition(TokenIterator& start)
 		Token operation = (*start);
 		Node* right = parseExpression(++start);
 
+
 		if ( op == Token::Type::COMPARE_UNEQUAL ) {
 			operation.resetContentTo("==");
 			operation.resetTypeTo(Token::Type::COMPARE_EQUAL);
 		}
 
-		//std::string type = resolveType(condition, operation, right);	// TODO: find a solution that allows us to activate this check
+		resolveType(condition, operation, right);
 
 		condition = new BooleanBinaryExpression(condition, operation, right);
 
@@ -329,6 +330,49 @@ Node* TreeGenerator::parseCondition(TokenIterator& start)
 		if ( op == Token::Type::COMPARE_UNEQUAL ) {
 			condition = new BooleanUnaryExpression(Token::Type::OPERATOR_NOT, condition, UnaryExpression::ValueType::RValue);
 		}
+
+/*
+		if ( op == Token::Type::COMPARE_UNEQUAL ) {
+			operation.resetContentTo("==");
+			operation.resetTypeTo(Token::Type::COMPARE_EQUAL);
+		}
+
+		resolveType(condition, operation, right);
+
+		SymbolExpression* exp = dynamic_cast<SymbolExpression*>(condition);
+
+		if ( !exp || exp->isAtomicType() ) {
+			condition = new BooleanBinaryExpression(condition, operation, right);
+		}
+		else {
+			// check if we are using a valid type
+			Designtime::BluePrintObject* blueprint = mRepository->findBluePrintObject(exp->getResultType());
+			if ( !blueprint ) {
+				throw Common::Exceptions::SyntaxError("'" + exp->getResultType() + "' is not a valid type", operation.position());
+			}
+
+			exp->mSymbolExpression = new DesigntimeSymbolExpression("operator" + operation.content(), _bool, PrototypeConstraints(), false);
+			exp->mSymbolExpression->mSurroundingScope = blueprint;
+
+			ExpressionList params;
+			params.emplace_back(right);
+
+			//try {
+				condition = process_method(exp, (*start), params);
+			//}
+			//catch ( Common::Exceptions::UnknownIdentifer& e ) {
+			//	delete exp->mSymbolExpression;
+			//	exp->mSymbolExpression = 0;
+			//
+			//	condition = new BooleanBinaryExpression(condition, operation, right);
+			//}
+		}
+
+		// != operator is not defined but rather used as 'not =='
+		if ( op == Token::Type::COMPARE_UNEQUAL ) {
+			condition = new BooleanUnaryExpression(Token::Type::OPERATOR_NOT, condition, UnaryExpression::ValueType::RValue);
+		}
+*/
 	}
 }
 
@@ -349,9 +393,6 @@ Node* TreeGenerator::parseExpression(TokenIterator& start)
 		Token operation = (*start);
 		Node* right = parseFactor(++start);
 		std::string type = resolveType(expression, operation, right);
-
-		//expression = new BinaryExpression(expression, operation, right, type);
-
 
 		SymbolExpression* exp = dynamic_cast<SymbolExpression*>(expression);
 
@@ -622,9 +663,9 @@ Statement* TreeGenerator::process_assert(TokenIterator& token)
 
 /*
  * syntax:
- * <lvalue> = <rvalue>;
+ * <lvalue> = <rvalue>
  */
-Statement* TreeGenerator::process_assignment(TokenIterator& token, SymbolExpression* lhs)
+Expression* TreeGenerator::process_assignment(TokenIterator& token, SymbolExpression* lhs)
 {
 	TokenIterator op = token;
 
@@ -651,17 +692,56 @@ Statement* TreeGenerator::process_assignment(TokenIterator& token, SymbolExpress
 			default: throw Common::Exceptions::SyntaxError("assignment type expected", token->position());
 		}
 
-		rhs = new BinaryExpression(lhs, operation, rhs, resolveType(lhs, operation, rhs));
+		//rhs = new BinaryExpression(lhs, operation, rhs, resolveType(lhs, operation, rhs));
+
+		if ( lhs->isAtomicType() ) {
+			rhs = new BinaryExpression(lhs, operation, rhs, resolveType(lhs, operation, rhs));
+		}
+		else {
+			// check if we are using a valid type
+			Designtime::BluePrintObject* blueprint = mRepository->findBluePrintObject(lhs->getResultType());
+			if ( !blueprint ) {
+				throw Common::Exceptions::SyntaxError("'" + lhs->getResultType() + "' is not a valid type", operation.position());
+			}
+
+			SymbolExpression* sym = new DesigntimeSymbolExpression(lhs->mName, lhs->getResultType(), PrototypeConstraints(), false);
+			sym->mSurroundingScope = lhs->mSurroundingScope;
+			sym->mSymbolExpression = new DesigntimeSymbolExpression("operator" + operation.content(), resolveType(lhs, operation, rhs), PrototypeConstraints(), false);
+			sym->mSymbolExpression->mSurroundingScope = blueprint;
+
+			ExpressionList params;
+			params.emplace_back(rhs);
+
+			rhs = process_method(sym, (*token), params);
+		}
 	}
 
 /*
 	// TODO: assignment of const objects to non-const objects should not be allowed
-	if ( (rhs->isConst() && rhs->isReference()) && (!lhs->isConst() && lhs->isReference()) ) {
+	if ( (!lhs->isConst() && !lhs->isAtomicType()) && (rhs->isConst() && !rhs->isAtomicType()) ) {
 		throw Common::Exceptions::ConstCorrectnessViolated("assignment of const symbol to non-const symbol '" + lhs->mName + "' not allowed", op->position());
 	}
 */
 
-	return new Assignment(lhs, (*op), rhs, resolveType(lhs, assignment, rhs));
+	//return new AssignmentExpression(lhs, rhs, resolveType(lhs, assignment, rhs));
+
+	if ( lhs->isAtomicType() || lhs->getResultType() == rhs->getResultType() ) {
+		return new AssignmentExpression(lhs, rhs, resolveType(lhs, assignment, rhs));
+	}
+
+	// check if we are using a valid type
+	Designtime::BluePrintObject* blueprint = mRepository->findBluePrintObject(lhs->getResultType());
+	if ( !blueprint ) {
+		throw Common::Exceptions::SyntaxError("'" + lhs->getResultType() + "' is not a valid type", token->position());
+	}
+
+	lhs->mSymbolExpression = new DesigntimeSymbolExpression("operator=", lhs->getResultType(), PrototypeConstraints(), false);
+	lhs->mSymbolExpression->mSurroundingScope = blueprint;
+
+	ExpressionList params;
+	params.emplace_back(rhs);
+
+	return process_method(lhs, (*token), params);
 }
 
 /*
@@ -774,7 +854,7 @@ Expression* TreeGenerator::process_expression_keyword(TokenIterator& token)
 
 /*
  * syntax:
- * for ( [<expression>]; [<condition>]; [<expression>] ) { ... }
+ * for ( [<expression>]; [<condition>]; [<expression>] ) <statement>
  */
 Statement* TreeGenerator::process_for(TokenIterator& token)
 {
@@ -798,6 +878,10 @@ Statement* TreeGenerator::process_for(TokenIterator& token)
 	Node* condition = 0;
 	if ( token->type() != Token::Type::SEMICOLON ) {
 		condition = expression(token);
+
+		if ( dynamic_cast<AssignmentExpression*>(condition) ) {
+			OSwarn("Detected assignment expression that is used as conditional expression in " + token->position().toString());
+		}
 	}
 
 	++token;
@@ -823,7 +907,7 @@ Statement* TreeGenerator::process_for(TokenIterator& token)
 
 /*
  * syntax:
- * for ( <type definition> <identifier> : <instance> ) { ... }
+ * foreach ( <type definition> <identifier> : <instance> ) <statement>
  */
 Statement* TreeGenerator::process_foreach(TokenIterator& token)
 {
@@ -833,6 +917,8 @@ Statement* TreeGenerator::process_foreach(TokenIterator& token)
 	++token;
 
 	TypeDeclaration* typeDeclaration = process_type(token, Initialization::NotAllowed);
+
+	mRepository->prepareType(Common::TypeDeclaration(typeDeclaration->mType, typeDeclaration->mConstraints));
 
 	expect(Token::Type::COLON, token);
 	++token;
@@ -901,10 +987,13 @@ Node* TreeGenerator::process_identifier(TokenIterator& token, bool allowTypeCast
 		 (dynamic_cast<DesigntimeSymbolExpression*>(symbol) && dynamic_cast<DesigntimeSymbolExpression*>(symbol)->isPrototype()))
 		) {
 
+		mRepository->prepareType(Common::TypeDeclaration(symbol->getResultType(), dynamic_cast<DesigntimeSymbolExpression*>(symbol)->mConstraints));
+
 		std::string type = symbol->getResultType();
 		if ( dynamic_cast<DesigntimeSymbolExpression*>(symbol) ) {
 			type = Designtime::Parser::buildRuntimeConstraintTypename(type, dynamic_cast<DesigntimeSymbolExpression*>(symbol)->mConstraints);
 		}
+
 		node = new TypecastExpression(type, expression(token));					// this processes all following expressions before casting
 		//node = new TypecastExpression(type, parseInfixPostfix(token));		// this casts first and does not combine the subsequent expressions with this one
 
@@ -923,13 +1012,13 @@ Node* TreeGenerator::process_identifier(TokenIterator& token, bool allowTypeCast
 
 		token = old;
 	}
-	// method call
-	else if ( op->type() == Token::Type::PARENTHESIS_OPEN ) {
-		node = process_method(symbol, token);
-	}
 	// assignment
 	else if ( op->category() == Token::Category::Assignment ) {
 		node = process_assignment(token, symbol);
+	}
+	// method call
+	else if ( op->type() == Token::Type::PARENTHESIS_OPEN ) {
+		node = process_method(symbol, token);
 	}
 	// subscript [] operator
 	else if ( op->type() == Token::Type::BRACKET_OPEN ) {
@@ -960,6 +1049,10 @@ Statement* TreeGenerator::process_if(TokenIterator& token)
 	++token;
 
 	Node* exp = expression(token);
+
+	if ( dynamic_cast<AssignmentExpression*>(exp) ) {
+		OSwarn("Detected assignment expression that is used as conditional expression in " + token->position().toString());
+	}
 
 	expect(Token::Type::PARENTHESIS_CLOSE, token);
 	++token;
@@ -1113,6 +1206,33 @@ MethodExpression* TreeGenerator::process_method(SymbolExpression* symbol, const 
 	Common::Method* method = dynamic_cast<Common::Method*>(resolveMethod(symbol, params, Visibility::Private));
 	if ( !method ) {
 		throw Common::Exceptions::UnknownIdentifer("method '" + symbol->toString() + "(" + toString(params) + ")' not found", token.position());
+	}
+
+	// validate parameters
+	const ParameterList& expectedParams = method->provideSignature();
+	ParameterList::const_iterator expectedIt = expectedParams.cbegin();
+	ParameterList::const_iterator providedIt = params.begin();
+	for ( ; expectedIt != expectedParams.end(); ++expectedIt ) {
+		if ( providedIt != params.end() ) {
+			// validate constness
+			if ( expectedIt->mAccessMode == AccessMode::ByReference &&
+				 (expectedIt->mMutability == Mutability::Modify && providedIt->mMutability == Mutability::Const) ) {
+				throw Common::Exceptions::ConstCorrectnessViolated("expected a modifiable by reference parameter", token.position());
+			}
+
+/* temporarily deactivated but this should be turned on again
+			// validate access mode
+			if ( expectedIt->mAccessMode == AccessMode::ByReference && providedIt->mAccessMode != AccessMode::ByReference ) {
+				throw Common::Exceptions::AccessMode("expected a by reference parameter", token.position());
+			}
+*/
+
+			++providedIt;
+			continue;
+		}
+
+		// not enough parameters provided; this is okay because our called method can have default parameters
+		break;
 	}
 
 	// prevent calls to modifiable methods from const methods
@@ -1453,6 +1573,8 @@ Statement* TreeGenerator::process_try(TokenIterator& token)
 				// create new exception type instance
 				typeDeclaration = process_type(tmp, Initialization::NotAllowed);
 
+				mRepository->prepareType(Common::TypeDeclaration(typeDeclaration->mType, typeDeclaration->mConstraints));
+
 				expect(Token::Type::PARENTHESIS_CLOSE, tmp);
 				++tmp;
 			}
@@ -1514,13 +1636,19 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 	std::string type = lhs->getResultType();
 	PrototypeConstraints constraints = lhs->mConstraints;
 
+	mRepository->prepareType(Common::TypeDeclaration(type, constraints));
+
+	// delete resolved symbol expression as it is not needed any more
+	delete lhs;
+	lhs = 0;
+
 	expect(Token::Type::IDENTIFIER, token);
 
 	std::string name = token->content();
 	++token;
 
 	Mutability::E mutability = Designtime::Parser::parseMutability(token, Mutability::Modify);
-	if ( mutability != Mutability::Const && mutability != Mutability::Modify ) {
+	if ( mutability == Mutability::Unknown ) {
 		throw Common::Exceptions::SyntaxError("invalid mutability set for '" + name + "'", token->position());
 	}
 
@@ -1540,30 +1668,12 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 			throw Common::Exceptions::NotSupported("initialization is not allowed here", token->position());
 		}
 
-		Token copy = (*token);
-		++token;
+		RuntimeSymbolExpression* lhs = new RuntimeSymbolExpression(name, object->QualifiedTypename(), false, object->isMember(), accessMode == AccessMode::ByValue);
 
-		rhs = dynamic_cast<Expression*>(expression(token));
+		//Token copy = (*token);
+		rhs = process_assignment(token, lhs);
 
-/*
-		if ( accessMode == AccessMode::ByReference &&
-			dynamic_cast<Expression*>(rhs)->getExpressionType() != Expression::ExpressionType::NewExpression ) {
-			throw Runtime::Exceptions::InvalidAssignment("reference type expected", token->position());
-		}
-		else if ( accessMode == AccessMode::ByValue &&
-			dynamic_cast<Expression*>(rhs)->getExpressionType() == Expression::ExpressionType::NewExpression ) {
-			throw Runtime::Exceptions::InvalidAssignment("value type expected", token->position());
-		}
-*/
-
-/*
-		// TODO: assignment of const objects to non-const objects should not be allowed
-		if ( (!lhs->isConst() && lhs->isReference()) && (rhs->isConst() && rhs->isReference()) ) {
-			throw Common::Exceptions::ConstCorrectnessViolated("rhs of const expression to non-const symbol '" + name + "' not allowed", token->position());
-		}
-*/
-
-		mTypeSystem->getType(object->QualifiedTypename(), copy, rhs->getResultType());
+		//mTypeSystem->getType(object->QualifiedTypename(), copy, rhs->getResultType());
 	}
 	else if ( initialization == Initialization::Required ) {
 		// initialization is required (probably because type inference is used) but no initialization sequence found
@@ -1575,9 +1685,6 @@ TypeDeclaration* TreeGenerator::process_type(TokenIterator& token, Initializatio
 		// atomic reference without initialization found
 		throw Common::Exceptions::NotSupported("atomic references need to be initialized", token->position());
 	}
-
-	// delete resolved symbol expression as it is not needed any more
-	delete lhs;
 
 	return new TypeDeclaration(start, type, constraints, name, mutability == Mutability::Const, accessMode == AccessMode::ByReference, rhs);
 }
@@ -1611,7 +1718,7 @@ TypeDeclaration* TreeGenerator::process_var(TokenIterator& token)
 	++token;
 
 	Mutability::E mutability = Designtime::Parser::parseMutability(token, Mutability::Modify);
-	if ( mutability != Mutability::Const && mutability != Mutability::Modify ) {
+	if ( mutability == Mutability::Unknown ) {
 		throw Common::Exceptions::SyntaxError("invalid mutability set for '" + name + "'", token->position());
 	}
 
@@ -1629,6 +1736,7 @@ TypeDeclaration* TreeGenerator::process_var(TokenIterator& token)
 
 	getScope()->define(name, object);
 
+	// this could easily be changed to return a TypeDeclaration statement, which would be a little faster but during debugging the wrong statement would be shown
 	return new TypeInference(start, type, PrototypeConstraints(), name, mutability == Mutability::Const, accessMode == AccessMode::ByReference, assignment);
 }
 
@@ -1644,6 +1752,10 @@ Statement* TreeGenerator::process_while(TokenIterator& token)
 	++token;
 
 	Node* exp = expression(token);
+
+	if ( dynamic_cast<AssignmentExpression*>(exp) ) {
+		OSwarn("Detected assignment expression that is used as conditional expression in " + token->position().toString());
+	}
 
 	expect(Token::Type::PARENTHESIS_CLOSE, token);
 	++token;

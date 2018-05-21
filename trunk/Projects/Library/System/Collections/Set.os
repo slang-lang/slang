@@ -112,7 +112,7 @@ public object Set<T> implements ICollection {
 			mFirst = item;
 			mLast = item;
 		}
-		else if ( value < mFirst.mValue ) {		// special handling for inserting in 1st position
+		else if ( (T value) < (T mFirst.mValue) ) {		// special handling for inserting in 1st position
 			item.mNext = mFirst;
 			mFirst = item;
 		}
@@ -121,7 +121,7 @@ public object Set<T> implements ICollection {
 			CollectionItem previous;
 
 			for ( int i = 0; i < mSize; i++ ) {
-				if ( value < tmp.mValue ) {
+				if ( (T value) < (T tmp.mValue) ) {
 					break;
 				}
 

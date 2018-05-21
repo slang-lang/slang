@@ -30,10 +30,10 @@ public void Main(int argc, string args) {
 
 	print("Complex type:");
 
-	var obj = new UnaryDecrement();
+	var ct = new UnaryDecrement();
 
-	print("obj.mValue: " + obj.mValue);
-	obj--;
-	print("obj.mValue: " + obj.mValue);
+	print("ct.mValue: " + ct.mValue);
+	ct--;
+	print("ct.mValue: " + ct.mValue);
 }
 

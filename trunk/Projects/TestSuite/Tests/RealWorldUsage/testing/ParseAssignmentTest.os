@@ -50,11 +50,11 @@ public void Main(int argc, string args) {
 
 	print("Complex type:");
 
-	var obj = new ComplexType();
-	obj = Object new ComplexType(2);
+	var ct = new ComplexType();
+	ct = Object new ComplexType(2);
 
-	print("obj.mValue = " + obj.mValue);
-	obj += 2;
-	print("obj.mValue = "+ obj.mValue);	
+	print("ct.mValue = " + ct.mValue);
+	ct += 2;
+	print("ct.mValue = " + ct.mValue);
 }
 

@@ -28,6 +28,7 @@ public:
 	class ExpressionType {
 	public:
 		enum E {
+			AssignmentExpression,
 			BinaryExpression,
 			CopyExpression,
 			IsExpression,
@@ -95,18 +96,18 @@ public:
 	};
 
 public:
-	explicit BinaryExpression(Node* left, const Token& operation, Node* right, const std::string& resultType)
+	explicit BinaryExpression(Node* lhs, const Token& operation, Node* rhs, const std::string& resultType)
 	: Expression(ExpressionType::BinaryExpression),
-	  mLeft(left),
+	  mLHS(lhs),
 	  mOperation(operation),
-	  mRight(right),
+	  mRHS(rhs),
 	  mBinaryExpressionType(BinaryExpressionType::GenericBinaryExpression)
 	{
 		mResultType = resultType;
 	}
 	virtual ~BinaryExpression() {
-		delete mLeft;
-		delete mRight;
+		delete mLHS;
+		delete mRHS;
 	}
 
 	BinaryExpressionType::E getBinaryExpressionType() const {
@@ -114,9 +115,9 @@ public:
 	}
 
 public:
-	Node* mLeft;
+	Node* mLHS;
 	Token mOperation;
-	Node* mRight;
+	Node* mRHS;
 
 protected:
 	BinaryExpressionType::E mBinaryExpressionType;
@@ -405,6 +406,29 @@ private:
 	unsigned int mIndex;
 };
 
+// Variable expressions
+///////////////////////////////////////////////////////////////////////////////
+
+
+class AssignmentExpression : public Expression
+{
+public:
+	AssignmentExpression(SymbolExpression* lhs, Node* rhs, const std::string& resultType)
+	: Expression(ExpressionType::AssignmentExpression),
+	  mLHS(lhs),
+	  mRHS(rhs)
+	{
+		mIsAtomicType = lhs->isAtomicType();
+		mIsConst = lhs->isConst();
+		mIsMember = lhs->isMember();
+		mResultType = resultType;
+	}
+
+public:
+	SymbolExpression* mLHS;
+	Node* mRHS;
+};
+
 
 class TernaryExpression : public Expression
 {
@@ -480,9 +504,6 @@ public:
 public:
 	Node* mExpression;
 };
-
-// Variable expressions
-///////////////////////////////////////////////////////////////////////////////
 
 
 ///////////////////////////////////////////////////////////////////////////////

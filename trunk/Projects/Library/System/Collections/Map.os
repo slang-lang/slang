@@ -3,16 +3,16 @@ import System.Exception;
 import CollectionItem;
 import ICollection;
 import Iterator;
+import List;
 import Pair;
-import Set;
 
 public namespace System.Collections { }
 
 public object Map<K, V> implements ICollection {
-	private Set<Object> mItems;		// a set of Pair<K, V>
+	private List<Object> mItems;		// a list of Pair<K, V>
 
 	public void Constructor() {
-		mItems = new Set<Object>();
+		mItems = new List<Object>();
 	}
 
 	public void Destructor() {
@@ -25,7 +25,7 @@ public object Map<K, V> implements ICollection {
 
 	public bool contains(K key) const {
 		foreach ( Object p : mItems ) {
-			if ( p == key ) {
+			if ( (Pair<K, V> p) == key ) {
 				return true;
 			}
 		}
@@ -43,7 +43,7 @@ public object Map<K, V> implements ICollection {
 
 	public V get(K key) const throws {
 		foreach ( Object p : mItems ) {
-			if ( p == key ) {
+			if ( (Pair<K, V> p) == key ) {
 				Pair<K, V> pair = Pair<K, V> p;
 				return pair.second;
 			}
@@ -64,7 +64,7 @@ public object Map<K, V> implements ICollection {
 		int count = 0;
 
 		foreach ( Object p : mItems ) {
-			if ( p == key ) {
+			if ( (Pair<K, V> p) == key ) {
 				return count;
 			}
 		}
@@ -73,7 +73,8 @@ public object Map<K, V> implements ICollection {
 	}
 
 	public void insert(K k, V v) modify {
-		mItems.insert(
+		//mItems.insert(
+		mItems.push_back(
 			Object new Pair<K, V>(k, v)
 		);
 	}
@@ -84,7 +85,7 @@ public object Map<K, V> implements ICollection {
 
 	public void put(K key, V value) modify throws {
 		foreach ( Object p : mItems ) {
-			if ( p == key ) {
+			if ( (Pair<K, V> p) == key ) {
 				Pair<K, V> pair = Pair<K, V> p;
 				pair.second = value;
 				return;
@@ -98,7 +99,7 @@ public object Map<K, V> implements ICollection {
 		int index = 0;
 
 		foreach ( Object p : mItems ) {
-			if ( p == key ) {
+			if ( (Pair<K, V> p) == key ) {
 				mItems.erase(index);
 				return;
 			}

@@ -59,7 +59,7 @@ bool TestCase3() {
 	map.insert(1, new String("index 1"));
 
 	assert( map[0] == "index 0" );
-	assert( "index 1" == map[1] );
+	assert( "index 1" == string map[1] );
 
 	return true;
 }

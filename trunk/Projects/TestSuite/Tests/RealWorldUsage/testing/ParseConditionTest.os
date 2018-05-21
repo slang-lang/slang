@@ -19,21 +19,21 @@ public void Main(int argc, string args) {
 
 	print("Complex type:");
 
-	var obj = new ComplexType();
+	var ct = new ComplexType();
 
-	print("obj.mValue = " + obj.mValue);
-	if ( obj == 1 ) {
-		print("obj == 1");
+	print("ct.mValue = " + ct.mValue);
+	if ( ct == 1 ) {
+		print("ct == 1");
 	}
 	else {
-		print("obj != 1");
+		print("ct != 1");
 	}
 
-	if ( obj != 2 ) {
-		print("obj != 2");
+	if ( ct != 2 ) {
+		print("ct != 2");
 	}
 	else {
-		print("obj == 2");
+		print("ct == 2");
 	}
 }
 

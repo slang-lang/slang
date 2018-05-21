@@ -28,7 +28,6 @@ public:
 	public:
 		enum E {
 			AssertStatement,
-			Assignment,
 			BreakStatement,
 			CaseStatement,
 			CatchStatement,
@@ -134,28 +133,6 @@ public:
 public:
 	Node* mExpression;
 	Common::Position mPosition;
-};
-
-
-class Assignment : public Statement
-{
-public:
-	Assignment(SymbolExpression* lvalue, const Token& assignment, Node* rvalue, const std::string& /*resultType*/)
-	: Statement(StatementType::Assignment, assignment),
-	  mAssignment(assignment),
-	  mExpression(rvalue),
-	  mLValue(lvalue)
-	{ }
-	~Assignment() {
-		delete mExpression;
-		//delete mLValue;
-		mLValue = 0;
-	}
-
-public:
-	Token mAssignment;
-	Node* mExpression;
-	SymbolExpression* mLValue;
 };
 
 

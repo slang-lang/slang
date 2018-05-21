@@ -21,10 +21,10 @@ public void Main(int argc, string args) {
 
 	print("Complex type:");
 
-	var obj = new ComplexType();
+	var ct = new ComplexType();
 
-	print("obj.mValue = " + obj.mValue);
-	obj = obj + 2;
-	print("obj.mValue = "+ obj.mValue);	
+	print("ct.mValue = " + ct.mValue);
+	ct = ct + 2;
+	print("ct.mValue = "+ ct.mValue);	
 }
 

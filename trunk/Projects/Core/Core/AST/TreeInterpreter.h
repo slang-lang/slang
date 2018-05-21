@@ -63,7 +63,6 @@ private:
 	inline void visitStatement(Statement* node);
 
 	void visitAssert(AssertStatement* node);
-	void visitAssignment(Assignment* node);
 	void visitBreak(BreakStatement* node);
 	void visitContinue(ContinueStatement* node);
 	void visitDelete(DeleteStatement* node);
@@ -95,6 +94,7 @@ private:
 	// }
 
 	void evaluate(Node* exp, Runtime::Object* result);
+	void evaluateAssignmentExpression(AssignmentExpression* exp, Runtime::Object* result);
 	void evaluateBinaryExpression(BinaryExpression* exp, Runtime::Object* result);
 	void evaluateBooleanBinaryExpression(BooleanBinaryExpression* exp, Runtime::Object* result);
 	void evaluateCopyExpression(CopyExpression* exp, Runtime::Object* result);
