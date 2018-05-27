@@ -590,8 +590,8 @@ bool Analyser::createNamespace(TokenIterator& token)
  */
 void Analyser::generate(const TokenList& tokens)
 {
-	TokenList::const_iterator token = tokens.begin();
-	TokenList::const_iterator localEnd = tokens.end();
+	TokenList::const_iterator token = tokens.cbegin();
+	TokenList::const_iterator localEnd = tokens.cend();
 
 	while ( token != localEnd && token->type() != Token::Type::ENDOFFILE ) {
 		if ( Parser::isObjectDeclaration(token) ) {
@@ -672,22 +672,22 @@ void Analyser::processFile(const std::string& filename)
 	// read file content
 	std::ifstream in(mFilename.c_str(), std::ios_base::binary);
 
-	// create token list from string
-	TokenList tokens = generateTokens(std::string(std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>()));
-
 	// start the real processing
-	processTokens(tokens);
+	processTokens(
+		// create token list from string
+		generateTokens(std::string(std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>()))
+	);
 }
 
 void Analyser::processString(const std::string& content, const std::string& filename)
 {
 	mFilename = filename;
 
-	// create token list from string
-	TokenList tokens = generateTokens(content);
-
 	// start the real processing
-	processTokens(tokens);
+	processTokens(
+		// create token list from string
+		generateTokens(content)
+	);
 }
 
 void Analyser::processTokens(const TokenList& tokens)

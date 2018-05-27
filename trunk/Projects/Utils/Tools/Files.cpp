@@ -91,6 +91,26 @@ std::string _RemoveFileExt(const std::string& filename)
 
 
 
+std::string BuildLibraryPath(const std::string& baseFolder, const std::string& library)
+{
+	return BuildPath(baseFolder, library) + ".os";
+}
+
+std::string BuildPath(const std::string& baseFolder, const std::string& filename)
+{
+	std::string result = filename;
+	unsigned long npos;
+
+	do {
+		npos = result.find_first_of(".");
+		if ( npos != std::string::npos ) {
+			result[npos] = '/';
+		}
+	} while ( npos != std::string::npos );
+
+	return GetFullname(baseFolder + result);
+}
+
 std::string ExtractFileExt(const std::string& filename)
 {
 	std::string tmp = filename.substr(filename.find_last_of(".") + 1);
