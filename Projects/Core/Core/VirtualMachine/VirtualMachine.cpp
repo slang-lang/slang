@@ -65,21 +65,6 @@ void VirtualMachine::addLibraryFolder(const std::string &library)
 #endif
 }
 
-std::string VirtualMachine::buildPath(const std::string& basefolder, const std::string& library) const
-{
-	std::string result = library;
-	unsigned long npos;// = std::string::npos;
-
-	do {
-		npos = result.find_first_of(".");
-		if ( npos != std::string::npos ) {
-			result[npos] = '/';
-		}
-	} while ( npos != std::string::npos );
-
-	return Utils::Tools::Files::GetFullname(basefolder + result + ".os");
-}
-
 Script* VirtualMachine::createScript(const std::string& content, const ParameterList& params, Runtime::Object* result, bool collectErrors)
 {
 	init();
@@ -99,7 +84,7 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 		bool imported = false;
 
 		for ( StringSet::const_iterator folderIt = mLibraryFolders.begin(); folderIt != mLibraryFolders.end(); ++folderIt ) {
-			std::string filename = buildPath((*folderIt), (*libIt));
+			std::string filename = Utils::Tools::Files::BuildLibraryPath((*folderIt), (*libIt));
 
 			if ( loadLibrary(filename) ) {
 				imported = true;
@@ -176,8 +161,8 @@ Script* VirtualMachine::createScriptFromFile(const std::string& filename, const 
 
 	std::string content = std::string(std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>());
 
-	addLibraryFolder(Utils::Tools::Files::ExtractPathname(filename));
-	mScriptFile = filename;
+	addLibraryFolder(Utils::Tools::Files::ExtractPathname(Utils::Tools::Files::GetFullname(filename)));
+	mScriptFile = Utils::Tools::Files::GetFullname(filename);
 
 	return createScript(content, params, result, collectErrors);
 }
@@ -271,7 +256,7 @@ bool VirtualMachine::loadLibrary(const std::string& library)
 		bool imported = false;
 
 		for ( StringSet::const_iterator folderIt = mLibraryFolders.begin(); folderIt != mLibraryFolders.end(); ++folderIt ) {
-			std::string filename = buildPath((*folderIt), (*libIt));
+			std::string filename = Utils::Tools::Files::BuildLibraryPath((*folderIt), (*libIt));
 
 			if ( loadLibrary(filename) ) {
 				imported = true;

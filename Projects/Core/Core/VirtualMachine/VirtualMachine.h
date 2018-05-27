@@ -58,8 +58,6 @@ private:
 	typedef std::set<Script*> ScriptCollection;
 
 private:
-	std::string buildPath(const std::string& basefolder, const std::string& library) const;
-
 	Script* createScript(const std::string& content, const ParameterList& params, Runtime::Object* result, bool collectErrors);
 	void init();
 	bool loadExtensions();
