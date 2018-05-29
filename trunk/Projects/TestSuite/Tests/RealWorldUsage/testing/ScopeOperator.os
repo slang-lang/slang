@@ -5,7 +5,7 @@ public object TestObject {
 }
 
 public void Main(int argc, string args) {
-	Object obj = new TestObject();
+	Object obj = Object new TestObject();
 
 	(TestObject obj).mValue = 173;
 

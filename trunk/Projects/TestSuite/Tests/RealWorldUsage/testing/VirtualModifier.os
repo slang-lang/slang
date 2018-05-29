@@ -23,7 +23,7 @@ public object DerivedObject extends VirtualModifierObject {
 }
 
 public void Main(int argc, string args) {
-	VirtualModifierObject obj = new DerivedObject();
+	VirtualModifierObject obj = VirtualModifierObject new DerivedObject();
 
 	obj.PrintAbstract();
 	obj.PrintFinal();

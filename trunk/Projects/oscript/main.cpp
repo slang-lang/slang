@@ -190,7 +190,11 @@ int main(int argc, const char* argv[])
 
 		mVirtualMachine.createScriptFromFile(mFilename, mParameters, &result, true);
 
-		return result.getValue().toInt();
+		if ( result.getValue().type() == ObjectiveScript::Runtime::AtomicValue::Type::INT ) {
+			return result.getValue().toInt();
+		}
+
+		return 0;
 	}
 	catch ( ObjectiveScript::Runtime::ControlFlow::E &e ) {
 		if ( e != ObjectiveScript::Runtime::ControlFlow::ExitProgram ) {
