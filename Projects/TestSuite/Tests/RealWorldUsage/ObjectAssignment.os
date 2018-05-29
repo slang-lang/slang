@@ -29,7 +29,7 @@ private object Vector2D {
 	}
 
 	public bool operator==(Vector2D other ref) const {
-		print("operator==()");
+		print("operator==(Vector2D)");
 
 		return x == other.x && y == other.y;
 	}
