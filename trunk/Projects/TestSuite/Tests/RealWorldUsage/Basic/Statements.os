@@ -37,7 +37,7 @@ public object Statement extends Node {
 	public Statement mFollowingStatement;
 	public StatementType mStatementType const;
 
-	public void Constructor(StatementType statementType) {
+	public void Constructor(StatementType statementType val) {
 		base.Constructor(NodeType.StatementNode);
 
 		mStatementType = statementType;

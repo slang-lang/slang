@@ -10,13 +10,13 @@ public enum NodeType {
 }
 
 public object Node {
-	public NodeType mNodeType;
+	public NodeType mNodeType const;
 
-	public void Constructor(NodeType type) {
+	public void Constructor(NodeType type val) {
 		mNodeType = type;
 	}
 
-    public string toString() const {
+	public string toString() const {
 		return "NodeType: " + string mNodeType;
 	}
 }
