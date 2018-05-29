@@ -16,7 +16,7 @@ public enum ExpressionType {
 public abstract object Expression extends Node {
 	public ExpressionType mExpressionType const;
 
-	public void Constructor(ExpressionType expressionType) {
+	public void Constructor(ExpressionType expressionType val) {
 		base.Constructor(NodeType.ExpressionNode);
 
 		mExpressionType = expressionType;
