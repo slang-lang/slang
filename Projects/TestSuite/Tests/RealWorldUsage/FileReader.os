@@ -14,7 +14,7 @@ public object Scanner implements IIterateable {
 		mFile = file;
 		mSeparator = separator;
 
-		readAll(file);
+		readAll();
 	}
 
 	public string getFilename() const {
@@ -25,13 +25,13 @@ public object Scanner implements IIterateable {
 		return mText;
 	}
 
-	private void readAll(System.IO.File file) modify {
+	private void readAll() modify {
 		mText = "";
 
 		string ch;
 
-		while ( !file.isEOF() ) {
-			ch = file.readChar();
+		while ( !mFile.isEOF() ) {
+			ch = mFile.readChar();
 
 			mText += ch;
 		}
