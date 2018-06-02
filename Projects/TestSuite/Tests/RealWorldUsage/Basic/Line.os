@@ -22,6 +22,10 @@ public object Line {
 		mNextLineNumber = next;
 	}
 
+	public string toPrettyString() const {
+		return (string mLineNumber) + " " + mStatement.toPrettyString();
+	}
+
 	public string toString() const {
 		return (string mLineNumber) + " " + mStatement.toString();
 	}

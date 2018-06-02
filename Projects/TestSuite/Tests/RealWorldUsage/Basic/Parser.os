@@ -281,9 +281,7 @@ public object Parser {
 
 			ci.next();
 
-			var rightExp = expression(ci);
-
-			var binaryExp = new BinaryExpression(leftExp, op, rightExp);
+			var binaryExp = new BinaryExpression(leftExp, op, expression(ci));
 
 			return Expression binaryExp;
 		}

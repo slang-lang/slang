@@ -24,6 +24,8 @@ public abstract object Expression extends Node {
 
 	public bool isString() const abstract;
 
+	public string toPrettyString() const abstract;
+
 	public string toString() const {
 		return "Epression: " + string mExpressionType;
 	}
@@ -35,7 +37,7 @@ public object BinaryExpression extends Expression {
 	public string mOperator const;
 	public Expression mRight const;
 
-	public void Constructor(Expression left, string op, Expression right) {
+	public void Constructor(Expression left const, string op, Expression right const) {
 		base.Constructor(ExpressionType.BinaryExpression);
 
 		mLeft = left;
@@ -45,6 +47,10 @@ public object BinaryExpression extends Expression {
 
 	public bool isString() const {
 		return mLeft.isString() || mRight.isString();
+	}
+
+	public string toPrettyString() const {
+		return mLeft.toPrettyString() + " " + mOperator + " " + mRight.toPrettyString();
 	}
 
 	public string toString() const {
@@ -65,6 +71,10 @@ public object ConstNumberExpression extends Expression {
 		return false;
 	}
 
+	public string toPrettyString() const {
+		return string mValue;
+	}
+
 	public string toString() const {
 		return "ConstNumberExpression(" + mValue + ")";
 	}
@@ -83,6 +93,10 @@ public object ConstStringExpression extends Expression {
 		return true;
 	}
 
+	public string toPrettyString() const {
+		return "\"" + mValue + "\"";
+	}
+
 	public string toString() const {
 		return "ConstStringExpression('" + mValue + "')";
 	}
@@ -99,6 +113,10 @@ public object VariableExpression extends Expression {
 
 	public bool isString() const {
 		return false;
+	}
+
+	public string toPrettyString() const {
+		return mVariable;
 	}
 
 	public string toString() const {
