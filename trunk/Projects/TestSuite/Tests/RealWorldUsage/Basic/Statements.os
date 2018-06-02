@@ -43,12 +43,16 @@ public object Statement extends Node {
 		mStatementType = statementType;
 	}
 
-	public string toString() const {
-		return "Statement: " + string mStatementType;
-	}
+	public string toPrettyString() const abstract;
+
+	public string toString() const abstract;
 
 	protected string following() const {
 		return mFollowingStatement ? (" : " + mFollowingStatement.toString()) : "";
+	}
+
+	protected string prettyFollowing() const {
+		return mFollowingStatement ? (" : " + mFollowingStatement.toPrettyString()) : "";
 	}
 }
 
@@ -64,6 +68,10 @@ public object DimStatement extends Statement {
 		mVariable = variable;
 	}
 
+	public string toPrettyString() const {
+		return "DIM " + mVariable + mExpression ? ( " = " + mExpression.toPrettyString()) : "" + prettyFollowing();
+	}
+
 	public string toString() const {
 		return "DIM " + mVariable + mExpression ? (" = " + mExpression.toString()) : "" + following();
 	}
@@ -74,8 +82,12 @@ public object EndStatement extends Statement {
 		base.Constructor(StatementType.EndStatement);
 	}
 
+	public string toPrettyString() const {
+		return "END " + prettyFollowing();
+	}
+
 	public string toString() const {
-		return "END" + following();
+		return "END " + following();
 	}
 }
 
@@ -94,6 +106,10 @@ public object ForStatement extends Statement {
 		mVariable = variable;
 	}
 
+	public string toPrettyString() const {
+		return "FOR " + mVariable + " = " + mStartValue + " TO " + mEndValue + " STEP " + mStepValue + prettyFollowing();
+	}
+
 	public string toString() const {
 		return "FOR " + mVariable + " = " + mStartValue + " TO " + mEndValue + " STEP " + mStepValue + following();
 	}
@@ -106,6 +122,10 @@ public object GotoStatement extends Statement {
 		base.Constructor(StatementType.GotoStatement);
 
 		mLine = line;
+	}
+
+	public string toPrettyString() const {
+		return "GOTO " + mLine + prettyFollowing();
 	}
 
 	public string toString() const {
@@ -124,13 +144,17 @@ public object IfStatement extends Statement {
 		mThenBlock = thenBlock;
 	}
 
+	public string toPrettyString() const {
+		return "IF " + mExpression.toPrettyString()  + " THEN " + mThenBlock.toPrettyString() + prettyFollowing();
+	}
+
 	public string toString() const {
 		return "IF " + mExpression.toString() + " THEN " + mThenBlock.toString() + following();
 	}
 }
 
 public object InputStatement extends Statement {
-	public string mText;
+	public string mText const;
 	public string mVariable const;
 
 	public void Constructor(string text, string variable) {
@@ -140,8 +164,12 @@ public object InputStatement extends Statement {
 		mVariable = variable;
 	}
 
+	public string toPrettyString() const {
+		return "INPUT \"" + (mText ? (mText + "\" ") : "\"") + mVariable + prettyFollowing();
+	}
+
 	public string toString() const {
-		return "INPUT " + mText ? (mText + " ") : "" + mVariable;
+		return "INPUT \"" + (mText ? (mText + "\" ") : "\"") + mVariable + following();
 	}
 }
 
@@ -154,6 +182,10 @@ public object LetStatement extends Statement {
 
 		mExpression = exp;
 		mVariable = variable;
+	}
+
+	public string toPrettyString() const {
+		return "LET " + mVariable + " = " + mExpression.toPrettyString() + prettyFollowing();
 	}
 
 	public string toString() const {
@@ -170,6 +202,10 @@ public object PrintStatement extends Statement {
 		mExpression = exp;
 	}
 
+	public string toPrettyString() const {
+		return "PRINT " + (mExpression ? mExpression.toPrettyString() : "") + prettyFollowing();
+	}
+
 	public string toString() const {
 		return "PRINT " + (mExpression ? mExpression.toString() : "") + following();
 	}
@@ -182,6 +218,10 @@ public object RemStatement extends Statement {
 		base.Constructor(StatementType.RemStatement);
 
 		mComment = text;
+	}
+
+	public string toPrettyString() const {
+		return "REM " + mComment + prettyFollowing();
 	}
 
 	public string toString() const {

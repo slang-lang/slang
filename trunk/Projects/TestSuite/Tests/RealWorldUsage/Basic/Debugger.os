@@ -50,8 +50,8 @@ public object Debugger extends Interpreter {
 	}
 
 	private void printProgram() const {
-		foreach ( Line line : mLines ) {
-			print(string line);
+		foreach ( Pair<int,Line> line : mLines ) {
+			print(line.second.toPrettyString());
 		}
 	}
 
