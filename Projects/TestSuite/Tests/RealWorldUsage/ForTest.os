@@ -25,7 +25,6 @@ public void Main(int argc, string args) {
 	}
 
 	int n = 0;
-	for ( ; ; { print("n = " + n); n++; if ( n >= 5 ) { break; } } )
-		;
+	for ( ; ; { print("n = " + n); n++; if ( n >= 5 ) { break; } } ) ;
 }
 

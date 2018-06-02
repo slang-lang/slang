@@ -117,7 +117,7 @@ public object IfStatement extends Statement {
 	public Expression mExpression const;
 	public Statement mThenBlock const;
 
-	public void Constructor(Expression exp, Statement thenBlock) {
+	public void Constructor(Expression exp const, Statement thenBlock const) {
 		base.Constructor(StatementType.IfStatement);
 
 		mExpression = exp;
@@ -149,7 +149,7 @@ public object LetStatement extends Statement {
 	public Expression mExpression const;
 	public string mVariable const;
 
-	public void Constructor(string variable, Expression exp) {
+	public void Constructor(string variable, Expression exp const) {
 		base.Constructor(StatementType.LetStatement);
 
 		mExpression = exp;
