@@ -75,7 +75,7 @@ void printHelp() {
 	print("help    This screen");
 	print("load    Loads a file for execution");
 	print("run     Starts a debugging session for the loaded file");
-	print("quit     Quits the debugger");
+	print("quit    Quits the debugger");
 	print("");
 }
 
