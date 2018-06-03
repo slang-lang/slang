@@ -65,7 +65,7 @@ public object Debugger extends Interpreter {
 	}
 
 	private int processBreakpoint(Line line) modify throws {
-		print("> " + line.toString());
+		print("> " + line.toPrettyString());
 
 		while ( true ) {
 			write("debug> ");
