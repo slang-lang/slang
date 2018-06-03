@@ -317,11 +317,13 @@ void create(const StringList& params)
 
 	std::string moduleName = module.mShortName;
 
+/*
 	{	// create generic module information ("<module>.json")
 		std::cout << "Creating module information \"" << moduleName + ".json\"" << std::endl;
 
 		execute("cp " + path + "/" + filename + " " + moduleName + ".json");
 	}
+*/
 	{	// create version specific module information ("<module>_<version>.json")
 		std::cout << "Creating module information \"" << moduleName + "_" + module.mVersion.toString() + ".json\"" << std::endl;
 
