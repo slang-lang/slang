@@ -28,12 +28,12 @@ public void Main(int argc, string args) modify {
 	TestObject obj = new TestObject();
 	obj.mValue = 173;
 
-	print("obj = " + obj);
+	print("obj = " + string obj);
 	ObjectReceiver(Object obj);
-	print("obj = " + obj);
+	print("obj = " + string obj);
 
-	obj = ObjectProvider();
-	print("obj = " + obj);
+	obj = TestObject ObjectProvider();
+	print("obj = " + string obj);
 }
 
 private DerivedObject ObjectProvider() modify {
@@ -46,10 +46,12 @@ private DerivedObject ObjectProvider() modify {
 private bool ObjectReceiver(Object obj ref) modify {
 	assert(obj);
 
-	print("obj = " + obj);
-	obj.mValue = obj.mValue++;
-	print("obj = " + obj);
+	TestObject to = TestObject obj;
 
-	return obj;
+	print("obj = " + string to);
+	to.mValue = to.mValue++;
+	print("obj = " + string obj);
+
+	return bool obj;
 }
 
