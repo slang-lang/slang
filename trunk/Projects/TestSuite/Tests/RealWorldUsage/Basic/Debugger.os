@@ -17,13 +17,18 @@ public object Debugger extends Interpreter {
 	}
 
 	private void addBreakpoint(int line) modify {
+		print("Adding breakpoint at line " + line);
+
 		mBreakpoints.insert(new Breakpoint(line));
 	}
 
-	private void printAllVariables() const {
-		foreach ( string variable : mVariables ) {
-			printVariable(variable);
+	private void addBreakpoint(StringIterator it) modify {
+		if ( !it.hasNext() ) {
+			print("invalid breakpoint!");
+			return;
 		}
+
+		addBreakpoint(int it.next());
 	}
 
 	private void printBreakpoints() const {
@@ -34,12 +39,12 @@ public object Debugger extends Interpreter {
 
 	private void printHelp() const {
 		print("Available commands:");
-		print("a:  Add breakpoint");
-		print("b:  Print all breakpoints");
+		print("b:  Add breakpoint");
+		print("breakpoints:  Print all breakpoints");
 		print("c:  Continue execution");
 		print("d:  Delete breakpoint");
 		print("g:  Go to line");
-		print("h:  Print help (= this screen)");
+		print("help:  Print help (= this screen)");
 		print("l:  List program");
 		print("ll: Print current line");
 		print("m:  Modify variable");
@@ -64,6 +69,20 @@ public object Debugger extends Interpreter {
 		}
 	}
 
+	private void printVariable(StringIterator it) const {
+		if ( !it.hasNext() ) {
+			return printVariables();
+		}
+
+		return printVariable(it.next());
+	}
+
+	private void printVariables() const {
+		foreach ( string variable : mVariables ) {
+			printVariable(variable);
+		}
+	}
+
 	private int processBreakpoint(Line line) modify throws {
 		print("> " + line.toPrettyString());
 
@@ -76,19 +95,19 @@ public object Debugger extends Interpreter {
 			}
 
 			switch ( cmdIt.next() ) {
-				case "a" : { write("Add breakpoint: "); addBreakpoint(int cin()); break; }
-				case "b" : { printBreakpoints(); break; }
-				case "c" : { return 0; }
-				case "d" : { write("Delete breakpoint: "); removeBreakpoint(int cin()); break; }
-				case "g" : { write("Go to line: "); return int cin(); }
-				case "h" : { printHelp(); break; }
-				case "l" : { printProgram(); break; }
+				case "b": { addBreakpoint(cmdIt); break; }
+				case "breakpoints": { printBreakpoints(); break; }
+				case "c": { return 0; }
+				case "d": { write("Delete breakpoint: "); removeBreakpoint(int cin()); break; }
+				case "g": { write("Go to line: "); return int cin(); }
+				case "h": { printHelp(); break; }
+				case "help": { printHelp(); break; }
+				case "l": { printProgram(); break; }
 				case "ll": { print("> " + line.toString()); break; }
-				case "m" : { write("Enter variable: "); setVariable(cin()); break; }
-				case "n" : { return -1; }
-				case "p" : { write("Enter variable: "); printVariable(cin()); break; }
-				case "pa": { printAllVariables(); break; }
-				case "q" : { print("Aborting debug session..."); throw ControlFlow.Exit; }
+				case "m": { write("Enter variable: "); setVariable(cin()); break; }
+				case "n": { return -1; }
+				case "p": { printVariable(cmdIt); break; }
+				case "quit": { print("Aborting debug session..."); throw ControlFlow.Exit; }
 			}
 		}
 

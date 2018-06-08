@@ -34,11 +34,18 @@ public int Main(int argc, string args) modify {
 				case "load": { loadFile(commandIt); break; }
 				case "run": { run(commandIt); break; }
 				case "quit": { print("Quitting..."); return 0; }
+				default: { print("Invalid command"); break; }
 			}
 		}
 	}
+	catch ( string e ) {
+		print("Exception: " + e);
+	}
 	catch ( IException e ) {
-		print(e.what());
+		print("Exception: " + e.what());
+	}
+	catch {
+		print("Exception: uncaught exception!");
 	}
 
 	return 0;
@@ -101,11 +108,11 @@ void run(StringIterator it) modify {
 		print("");
 		print("Debug session exited.");
 	}
-	catch ( IException e ) {
-		print("Exception: " + e.what());
-	}
 	catch ( string e ) {
 		print("Exception: " + e);
+	}
+	catch ( IException e ) {
+		print("Exception: " + e.what());
 	}
 	catch {
 		print("Exception: caught unknown exception!");
