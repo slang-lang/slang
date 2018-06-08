@@ -96,6 +96,7 @@ void GenericAttributes::setMutability(Mutability::E value)
 MethodAttributes::MethodAttributes()
 : mAlgorithm(Algorithm::Heuristic),
   mCheckedExceptions(CheckedExceptions::Nothrow),
+  mMethodMutability(Mutability::Const),
   mMethodType(MethodType::Method),
   mVirtuality(Virtuality::Virtual)
 {
@@ -112,6 +113,11 @@ CheckedExceptions::E MethodAttributes::getExceptions() const
 	return mCheckedExceptions;
 }
 
+Mutability::E MethodAttributes::getMethodMutability() const
+{
+	return mMethodMutability;
+}
+
 MethodAttributes::MethodType::E MethodAttributes::getMethodType() const
 {
 	return mMethodType;
@@ -125,6 +131,11 @@ Virtuality::E MethodAttributes::getVirtuality() const
 bool MethodAttributes::isAbstract() const
 {
 	return mVirtuality == Virtuality::Abstract;
+}
+
+bool MethodAttributes::isConstMethod() const
+{
+	return mMethodMutability == Mutability::Const;
 }
 
 bool MethodAttributes::isFinal() const
@@ -149,6 +160,11 @@ void MethodAttributes::setExceptions(CheckedExceptions::E value)
 	checkSealState();
 
 	mCheckedExceptions = value;
+}
+
+void MethodAttributes::setMethodMutability(Mutability::E value)
+{
+	mMethodMutability = value;
 }
 
 void MethodAttributes::setMethodType(MethodType::E value)

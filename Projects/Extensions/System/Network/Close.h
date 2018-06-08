@@ -31,7 +31,7 @@ class Close : public ExtensionMethod
 {
 public:
 	Close()
-	: ExtensionMethod(0, "close", Designtime::IntegerObject::TYPENAME)
+	: ExtensionMethod(0, "close", Designtime::IntegerObject::TYPENAME, Mutability::Modify)
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("sockfd", Designtime::IntegerObject::TYPENAME));

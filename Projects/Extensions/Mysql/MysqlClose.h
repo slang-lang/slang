@@ -29,7 +29,7 @@ class MysqlClose: public ExtensionMethod
 {
 public:
 	MysqlClose()
-	: ExtensionMethod(0, "mysql_close", Designtime::IntegerObject::TYPENAME)
+	: ExtensionMethod(0, "mysql_close", Designtime::IntegerObject::TYPENAME, Mutability::Modify)
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME));

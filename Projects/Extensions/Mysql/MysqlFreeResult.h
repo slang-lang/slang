@@ -28,7 +28,7 @@ class MysqlFreeResult: public ExtensionMethod
 {
 public:
 	MysqlFreeResult()
-	: ExtensionMethod(0, "mysql_free_result", Designtime::VoidObject::TYPENAME)
+	: ExtensionMethod(0, "mysql_free_result", Designtime::VoidObject::TYPENAME, Mutability::Modify)
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME));

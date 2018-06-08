@@ -29,6 +29,7 @@ public:
 	explicit UserObject(const Object& object);
 
 public: // Operators
+/*
 	void operator_assign(const Object *other);
 	bool operator_bool() const;
 	void operator_divide(const Object *other);
@@ -40,6 +41,7 @@ public: // Operators
 	void operator_multiply(const Object *other);
 	void operator_plus(const Object *other);
 	void operator_subtract(const Object *other);
+*/
 };
 
 

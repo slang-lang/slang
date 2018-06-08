@@ -40,6 +40,7 @@ UserObject::UserObject(const Object& object)
 	mIsAtomicType = false;
 }
 
+/*
 void UserObject::operator_assign(const Object *other)
 {
 	if ( !other->isValid() ) {	// special handling for null object
@@ -172,6 +173,7 @@ void UserObject::operator_subtract(const Object *other)
 	Object tmp;
 	execute(&tmp, "operator-", params);
 }
+*/
 
 
 }

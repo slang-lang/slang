@@ -9,24 +9,18 @@ public void Main(int argc = 0, string args = "") {
 	bool result;
 
 	result = socket.Bind();
-	print("bind = " + result);
-
-	if ( result == -1 ) {
+	if ( !result ) {
 		print("bind failed");
 		assert(false);
 	}
 
 	result = socket.Listen();
-	print("listen = " + result);
-
-	if ( result == -1 ) {
+	if ( !result ) {
 		print("listen failed");
 		assert(false);
 	}
 
 	result = socket.Accept();
-	print("accept = " + result);
-
 	if ( !result ) {
 		print("accept failed");
 		assert(false);
