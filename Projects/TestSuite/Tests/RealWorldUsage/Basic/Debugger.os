@@ -49,8 +49,7 @@ public object Debugger extends Interpreter {
 		print("ll: Print current line");
 		print("m:  Modify variable");
 		print("n:  Execute next line and break on execution");
-		print("p:  Print variable");
-		print("pa: Print all variables");
+		print("p:  Print variable(s)");
 		print("q:  Quit debugger");
 	}
 
