@@ -15,7 +15,7 @@ public object Summierer {
 	public int forSumme(int startWert) {
 		int result = 0;
 
-		for ( int i = 1; i <= startWert; i=i++ ) {
+		for ( int i = 1; i <= startWert; i++ ) {
 			result = result + i;
 		}
 

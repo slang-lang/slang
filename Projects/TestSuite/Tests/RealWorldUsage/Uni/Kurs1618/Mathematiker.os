@@ -2,7 +2,7 @@
 
 import System.Exception;
 
-public void Main(int argc, string args) throws {
+public void Main(int argc, string args) {
     try {
         try {
             int i = 7 % 5;
