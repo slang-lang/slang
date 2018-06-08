@@ -12,8 +12,8 @@ public enum Company {
 public object CrunchifyEnumExample {
 	private Company mName;
  
-	public void Constructor(int name) {
-		writeln("CrunchifyEnumExample(" + name + ")");
+	public void Constructor(Company name val) {
+		writeln("CrunchifyEnumExample(" + (string name) + ")");
 
 		mName = name;
 	}
