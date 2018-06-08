@@ -23,20 +23,20 @@ public:
 	virtual ~GenericAttributes();
 
 public:
-	virtual bool isConst() const;
-	virtual void setConst(bool state);
+	bool isConst() const;
+	void setConst(bool state);
 
-	virtual bool isStatic() const;
-	virtual void setStatic(bool state);
+	bool isStatic() const;
+	void setStatic(bool state);
 
-	virtual LanguageFeatureState::E getLanguageFeatureState() const;
-	virtual void setLanguageFeatureState(LanguageFeatureState::E value);
+	LanguageFeatureState::E getLanguageFeatureState() const;
+	void setLanguageFeatureState(LanguageFeatureState::E value);
 
-	virtual MemoryLayout::E getMemoryLayout() const;
-	virtual void setMemoryLayout(MemoryLayout::E value);
+	MemoryLayout::E getMemoryLayout() const;
+	void setMemoryLayout(MemoryLayout::E value);
 
-	virtual Mutability::E getMutability() const;
-	virtual void setMutability(Mutability::E value);
+	Mutability::E getMutability() const;
+	void setMutability(Mutability::E value);
 
 protected:
 	void checkSealState();
@@ -67,26 +67,31 @@ public:
 	MethodAttributes();
 
 public:
-	virtual bool isAbstract() const;
-	virtual bool isFinal() const;
-	virtual bool isStatic() const;
-	virtual bool throws() const;
+	bool isAbstract() const;
+	bool isConstMethod() const;
+	bool isFinal() const;
+	bool isStatic() const;
+	bool throws() const;
 
-	virtual Algorithm::E getAlgorithm() const;
-	virtual void setAlgorithm(Algorithm::E value);
+	Algorithm::E getAlgorithm() const;
+	void setAlgorithm(Algorithm::E value);
 
-	virtual CheckedExceptions::E getExceptions() const;
-	virtual void setExceptions(CheckedExceptions::E value);
+	CheckedExceptions::E getExceptions() const;
+	void setExceptions(CheckedExceptions::E value);
 
-	virtual MethodType::E getMethodType() const;
-	virtual void setMethodType(MethodType::E value);
+	MethodType::E getMethodType() const;
+	void setMethodType(MethodType::E value);
 
-	virtual Virtuality::E getVirtuality() const;
-	virtual void setVirtuality(Virtuality::E value);
+	Mutability::E getMethodMutability() const;
+	void setMethodMutability(Mutability::E value);
+
+	Virtuality::E getVirtuality() const;
+	void setVirtuality(Virtuality::E value);
 
 protected:
 	Algorithm::E mAlgorithm;
 	CheckedExceptions::E mCheckedExceptions;
+	Mutability::E mMethodMutability;
 	MethodType::E mMethodType;
 	Virtuality::E mVirtuality;
 };
@@ -98,8 +103,8 @@ public:
 	NamespaceAttributes();
 
 public:
-	virtual bool isSealed() const;
-	virtual void setSealed(bool state);
+	bool isSealed() const;
+	void setSealed(bool state);
 };
 
 
@@ -109,14 +114,14 @@ public:
 	ObjectAttributes();
 
 public:
-	virtual ImplementationType::E getImplementationType() const;
-	virtual void setImplementationType(ImplementationType::E value);
+	ImplementationType::E getImplementationType() const;
+	void setImplementationType(ImplementationType::E value);
 
-	virtual bool isMember() const;
-	virtual void setMember(bool state);
+	bool isMember() const;
+	void setMember(bool state);
 
-	virtual bool isSealed() const;
-	virtual void setSealed(bool state);
+	bool isSealed() const;
+	void setSealed(bool state);
 
 protected:
 	ImplementationType::E mImplementationType;

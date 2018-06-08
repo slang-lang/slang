@@ -38,7 +38,7 @@ class FileWriteBool : public ExtensionMethod
 {
 public:
 	FileWriteBool()
-	: ExtensionMethod(0, "fwriteb", Designtime::IntegerObject::TYPENAME)
+	: ExtensionMethod(0, "fwriteb", Designtime::IntegerObject::TYPENAME, Mutability::Modify)
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME, 0));
@@ -88,7 +88,7 @@ class FileWriteDouble : public ExtensionMethod
 {
 public:
 	FileWriteDouble()
-	: ExtensionMethod(0, "fwrited", Designtime::IntegerObject::TYPENAME)
+	: ExtensionMethod(0, "fwrited", Designtime::IntegerObject::TYPENAME, Mutability::Modify)
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME, 0));
@@ -138,7 +138,7 @@ class FileWriteFloat : public ExtensionMethod
 {
 public:
 	FileWriteFloat()
-	: ExtensionMethod(0, "fwritef", Designtime::IntegerObject::TYPENAME)
+	: ExtensionMethod(0, "fwritef", Designtime::IntegerObject::TYPENAME, Mutability::Modify)
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME, 0));
@@ -188,7 +188,7 @@ class FileWriteInt : public ExtensionMethod
 {
 public:
 	FileWriteInt()
-	: ExtensionMethod(0, "fwritei", Designtime::IntegerObject::TYPENAME)
+	: ExtensionMethod(0, "fwritei", Designtime::IntegerObject::TYPENAME, Mutability::Modify)
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME, 0));
@@ -238,7 +238,7 @@ class FileWriteString : public ExtensionMethod
 {
 public:
 	FileWriteString()
-	: ExtensionMethod(0, "fwrites", Designtime::IntegerObject::TYPENAME)
+	: ExtensionMethod(0, "fwrites", Designtime::IntegerObject::TYPENAME, Mutability::Modify)
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME, 0));

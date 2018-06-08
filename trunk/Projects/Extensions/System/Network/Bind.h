@@ -33,7 +33,7 @@ class Bind : public ExtensionMethod
 {
 public:
 	Bind()
-	: ExtensionMethod(0, "bind", Designtime::IntegerObject::TYPENAME)
+	: ExtensionMethod(0, "bind", Designtime::IntegerObject::TYPENAME, Mutability::Modify)
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("sockfd", Designtime::IntegerObject::TYPENAME));

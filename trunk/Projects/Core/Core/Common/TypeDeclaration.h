@@ -7,6 +7,7 @@
 #include <string>
 
 // Project includes
+#include <Core/Attributes/Attributes.h>
 #include "PrototypeConstraint.h"
 
 // Forward declarations
@@ -22,23 +23,28 @@ class TypeDeclaration
 {
 public:
 	TypeDeclaration()
+	: mMutability(Mutability::Modify)
 	{ }
 	TypeDeclaration(const char* type)
-	: mName(type)
+	: mMutability(Mutability::Modify),
+	  mName(type)
 	{ }
 	TypeDeclaration(const std::string& type)
 	: mCombinedName(type),
+	  mMutability(Mutability::Modify),
 	  mName(type)
 	{ }
-	TypeDeclaration(const std::string& type, const PrototypeConstraints& constraints)
+	TypeDeclaration(const std::string& type, const PrototypeConstraints& constraints, Mutability::E mutability = Mutability::Modify)
 	: mCombinedName(type),
 	  mConstraints(constraints),
+	  mMutability(mutability),
 	  mName(type)
 	{ }
 
 public:
 	std::string mCombinedName;
 	PrototypeConstraints mConstraints;
+	Mutability::E mMutability;
 	std::string mName;
 };
 

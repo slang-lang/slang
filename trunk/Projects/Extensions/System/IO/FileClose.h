@@ -31,7 +31,7 @@ class FileClose : public ExtensionMethod
 {
 public:
 	FileClose()
-	: ExtensionMethod(0, "fclose", Designtime::IntegerObject::TYPENAME)
+	: ExtensionMethod(0, "fclose", Designtime::IntegerObject::TYPENAME, Mutability::Modify)
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME));

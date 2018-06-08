@@ -21,10 +21,11 @@ namespace ObjectiveScript {
 class ExtensionMethod : public Common::Method
 {
 public:
-	ExtensionMethod(IScope* parent, const std::string& name, const std::string& type)
+	ExtensionMethod(IScope* parent, const std::string& name, const std::string& type, Mutability::E mutabilty = Mutability::Const)
 	: Common::Method(parent, name, type)
 	{
 		mIsExtensionMethod = true;
+		mMethodMutability = mutabilty;
 	}
 
 	virtual Runtime::ControlFlow::E execute(Common::ThreadId threadId, const ParameterList& params, Runtime::Object* result, const Token& token) = 0;

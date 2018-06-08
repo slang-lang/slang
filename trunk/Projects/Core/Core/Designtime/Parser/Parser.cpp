@@ -600,7 +600,7 @@ ParameterList Parser::parseParameters(TokenIterator &token, IScope* scope)
 	expect(Token::Type::PARENTHESIS_OPEN, token);
 
 	while ( (*++token).type() != Token::Type::PARENTHESIS_CLOSE ) {
-		AccessMode::E accessMode;
+		AccessMode::E accessMode = AccessMode::Unspecified;
 		bool hasDefaultValue = false;
 		Mutability::E mutability = Mutability::Modify;
 		Runtime::AtomicValue value;
@@ -619,10 +619,10 @@ ParameterList Parser::parseParameters(TokenIterator &token, IScope* scope)
 
 		Common::TypeDeclaration type = parseTypeDeclaration(token, scope);
 
-		std::string name;
-
 		// this allows unnamed parameters that are not instantiated, just to satisfy an interface or similar
 		// {
+		std::string name;
+
 		if ( token->type() == Token::Type::IDENTIFIER ) {
 			name = token->content();
 			++token;
@@ -651,6 +651,9 @@ ParameterList Parser::parseParameters(TokenIterator &token, IScope* scope)
 			else if ( token->content() == RESERVED_WORD_BY_VALUE ) {
 				accessMode = AccessMode::ByValue;
 				++token;
+			}
+			else {
+				throw Common::Exceptions::SyntaxError("unexpected modifier '" + token->content() + "' found", token->position());
 			}
 		}
 
@@ -698,6 +701,8 @@ Common::TypeDeclaration Parser::parseTypeDeclaration(TokenIterator& token, IScop
 	else {
 		result.mConstraints = collectDesigntimePrototypeConstraints(token);
 	}
+
+	result.mMutability = parseMutability(token, Mutability::Modify);
 
 	return result;
 }

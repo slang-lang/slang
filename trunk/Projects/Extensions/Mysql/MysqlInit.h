@@ -27,7 +27,7 @@ class MysqlInit: public ExtensionMethod
 {
 public:
 	MysqlInit()
-	: ExtensionMethod(0, "mysql_init", Designtime::IntegerObject::TYPENAME)
+	: ExtensionMethod(0, "mysql_init", Designtime::IntegerObject::TYPENAME, Mutability::Modify)
 	{
 		ParameterList params;
 

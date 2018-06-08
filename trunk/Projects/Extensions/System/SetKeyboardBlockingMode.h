@@ -31,7 +31,7 @@ class SetKeyboardBlockingMode : public ExtensionMethod
 {
 public:
 	SetKeyboardBlockingMode()
-	: ExtensionMethod(0, "setKeyboardBlocking", Designtime::StringObject::TYPENAME)
+	: ExtensionMethod(0, "setKeyboardBlocking", Designtime::StringObject::TYPENAME, Mutability::Modify)
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("mode", Designtime::BoolObject::TYPENAME));

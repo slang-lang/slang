@@ -39,6 +39,7 @@ Method::Method(const Method& other)
 	mIsSealed = other.mIsSealed;
 	mLanguageFeatureState = other.mLanguageFeatureState;
 	mMemoryLayout = other.mMemoryLayout;
+	mMethodMutability = other.mMethodMutability;
 	mMethodType = other.mMethodType;
 	mMutability = other.mMutability;
 	mReturnType = other.mReturnType;
@@ -123,6 +124,7 @@ Method& Method::operator= (const Method& other)
 		mIsSealed = other.mIsSealed;
 		mLanguageFeatureState = other.mLanguageFeatureState;
 		mMemoryLayout = other.mMemoryLayout;
+		mMethodMutability = other.mMethodMutability;
 		mMethodType = other.mMethodType;
 		mMutability = other.mMutability;
 		mReturnType = other.mReturnType;
@@ -188,7 +190,7 @@ void Method::initialize(const PrototypeConstraints& constraints)
 			}
 
 			(*paramIt) = Parameter::CreateDesigntime(paramIt->name(),
-													 TypeDeclaration(type, PrototypeConstraints()),
+													 TypeDeclaration(type, PrototypeConstraints(), paramIt->mutability()),
 													 paramIt->value(),
 													 paramIt->hasDefaultValue(),
 													 paramIt->mutability(),
@@ -306,7 +308,7 @@ ParameterList Method::mergeParameters(const ParameterList& params) const
 		}
 
 		result.push_back(Parameter(
-			sigIt->name(), TypeDeclaration(sigIt->type()), value, sigIt->hasDefaultValue(), sigIt->mutability(), sigIt->access(), ref
+			sigIt->name(), TypeDeclaration(sigIt->type(), PrototypeConstraints(), sigIt->mutability()), value, sigIt->hasDefaultValue(), sigIt->mutability(), sigIt->access(), ref
 		));
 	}
 
@@ -330,11 +332,6 @@ void Method::setParent(IScope *scope)
 
 void Method::setPrototypeConstraints(const PrototypeConstraints& constraints)
 {
-/*
-	mReturnType.mCombinedName = Designtime::Parser::buildRuntimeConstraintTypename(mReturnType.mName, constraints);
-	mReturnType.mConstraints = PrototypeConstraints();
-*/
-
 	mReturnType.mConstraints = constraints;
 }
 

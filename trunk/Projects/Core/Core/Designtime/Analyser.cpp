@@ -135,7 +135,7 @@ bool Analyser::createBluePrint(TokenIterator& token)
 	// look for the type declaration
 	Common::TypeDeclaration type = Parser::parseTypeDeclaration(token, mScope);
 	// look for an optional modifier token
-	Mutability::E mutability = Parser::parseMutability(token, Mutability::Modify);
+	//Mutability::E mutability = Parser::parseMutability(token, Mutability::Modify);
 	// collect inheritance (if present)
 	Ancestors inheritance = collectInheritance(token);
 
@@ -167,7 +167,7 @@ bool Analyser::createBluePrint(TokenIterator& token)
 		}
 	}
 
-	if ( extends && mutability == Mutability::Const ) {
+	if ( extends && type.mMutability == Mutability::Const ) {
 		throw Common::Exceptions::ConstCorrectnessViolated("const object '" + getQualifiedTypename(type.mName) + "' cannot extend objects or implement interfaces", token->position());
 	}
 
@@ -177,20 +177,20 @@ bool Analyser::createBluePrint(TokenIterator& token)
 	}
 
 	// validate mutability
-	if ( mutability == Mutability::Unknown ) {
-		throw Common::Exceptions::SyntaxError("invalid mutability '" + Mutability::convert(mutability) + "' for " + getQualifiedTypename(type.mName), token->position());
+	if ( type.mMutability == Mutability::Unknown ) {
+		throw Common::Exceptions::SyntaxError("invalid mutability '" + Mutability::convert(type.mMutability) + "' for " + getQualifiedTypename(type.mName), token->position());
 	}
 
 	blueprint->setPrototypeConstraints(type.mConstraints);
 	blueprint->setImplementationType(implementationType);
 	blueprint->setIsReference(true);
 	blueprint->setLanguageFeatureState(languageFeatureState);
-	//blueprint->setMutability(mutability);
+	//blueprint->setMutability(type.mMutability);
 	blueprint->setParent(mScope);
 	blueprint->setQualifiedTypename(getQualifiedTypename(type.mName));
 	blueprint->setTokens(tokens);
 	blueprint->setVisibility(visibility);
-	//blueprint->setSealed(mutability == Mutability::Const);
+	//blueprint->setSealed(type.mMutability == Mutability::Const);
 
 	mScope->define(type.mName, blueprint);
 
@@ -286,9 +286,9 @@ bool Analyser::createInterface(TokenIterator& token)
 	// look for the type declaration
 	Common::TypeDeclaration type = Parser::parseTypeDeclaration(token, mScope);
 	// look for an optional mutability token
-	Mutability::E mutability = Parser::parseMutability(token, Mutability::Modify);
-	if ( mutability == Mutability::Unknown ) {
-		throw Common::Exceptions::SyntaxError("invalid mutability '" + Mutability::convert(mutability) + "' for " + getQualifiedTypename(type.mName), token->position());
+	//Mutability::E mutability = Parser::parseMutability(token, Mutability::Modify);
+	if ( type.mMutability == Mutability::Unknown ) {
+		throw Common::Exceptions::SyntaxError("invalid mutability '" + Mutability::convert(type.mMutability) + "' for " + getQualifiedTypename(type.mName), token->position());
 	}
 	// collect inheritance (if present)
 	Ancestors inheritance = Parser::collectInheritance(token);
@@ -314,7 +314,7 @@ bool Analyser::createInterface(TokenIterator& token)
 	blueprint->setImplementationType(ImplementationType::Interface);
 	blueprint->setIsReference(true);
 	blueprint->setLanguageFeatureState(languageFeatureState);
-	blueprint->setMutability(mutability);
+	blueprint->setMutability(type.mMutability);
 	blueprint->setParent(mScope);
 	blueprint->setQualifiedTypename(getQualifiedTypename(type.mName));
 	blueprint->setTokens(tokens);
@@ -507,9 +507,10 @@ bool Analyser::createMethodStub(TokenIterator& token, Visibility::E visibility, 
 	Common::Method* method = new Common::Method(mScope, name, type.mName);
 	method->setExceptions(exceptions);
 	method->setLanguageFeatureState(languageFeature);
-	method->setMethodType(methodType);
 	method->setMemoryLayout(memoryLayout);
-	method->setMutability(mutability);
+	method->setMethodMutability(mutability);
+	method->setMethodType(methodType);
+	method->setMutability(type.mMutability);
 	method->setParent(mScope);
 	method->setPrototypeConstraints(type.mConstraints);
 	method->setSignature(params);

@@ -89,10 +89,6 @@ void TreeGenerator::deinitialize()
 
 	// remove 'this' symbol
 	if ( mThis ) {
-		// revert blueprint constness to modifiable
-// TODO: this is really really wrong and dangerous!!!
-		mThis->setMutability(Mutability::Modify);
-
 		Symbol* thisSymbol = scope->resolve(IDENTIFIER_THIS, true);
 		if ( thisSymbol ) {
 			scope->undefine(IDENTIFIER_THIS);
@@ -292,8 +288,6 @@ void TreeGenerator::initialize(Common::Method* method)
 
 	// add 'this' symbol to method
 	if ( mThis && !mMethod->isStatic() ) {
-		mThis->setMutability(mMethod->getMutability());
-
 		scope->define(IDENTIFIER_THIS, mThis);
 	}
 
@@ -1212,11 +1206,11 @@ MethodExpression* TreeGenerator::process_method(SymbolExpression* symbol, const 
 	for ( ExpressionList::const_iterator it = expressions.begin(); it != expressions.end(); ++it ) {
 		params.push_back(Parameter::CreateDesigntime(
 			ANONYMOUS_OBJECT,
-			dynamic_cast<Expression*>((*it))->getResultType(),
+			Common::TypeDeclaration(dynamic_cast<Expression*>((*it))->getResultType(), PrototypeConstraints(), static_cast<Expression*>((*it))->isConst() ? Mutability::Const : Mutability::Modify),
 			Runtime::AtomicValue(),
 			false,
-			static_cast<Expression*>((*it))->isConst() ? Mutability::Const : Mutability::Modify,
-			static_cast<Expression*>((*it))->isAtomicType() ? AccessMode::ByValue : AccessMode::ByReference
+			dynamic_cast<Expression*>((*it))->isConst() ? Mutability::Const : Mutability::Modify,
+			dynamic_cast<Expression*>((*it))->isAtomicType() ? AccessMode::ByValue : AccessMode::ByReference
 		));
 	}
 
@@ -1228,8 +1222,8 @@ MethodExpression* TreeGenerator::process_method(SymbolExpression* symbol, const 
 	// validate parameters
 	const ParameterList& expectedParams = method->provideSignature();
 	ParameterList::const_iterator expectedIt = expectedParams.cbegin();
-	ParameterList::const_iterator providedIt = params.begin();
-	for ( ; expectedIt != expectedParams.end(); ++expectedIt ) {
+	ParameterList::const_iterator providedIt = params.cbegin();
+	for ( ; expectedIt != expectedParams.cend(); ++expectedIt ) {
 		if ( providedIt != params.end() ) {
 			// validate constness
 			if ( expectedIt->mAccessMode == AccessMode::ByReference &&
@@ -1253,12 +1247,12 @@ MethodExpression* TreeGenerator::process_method(SymbolExpression* symbol, const 
 	}
 
 	// prevent calls to modifiable methods from const methods
-	if ( mMethod->isConst() && method->getEnclosingScope() == mMethod->getEnclosingScope() && !method->isConst() ) {
+	if ( mMethod->isConstMethod() && mMethod->getEnclosingScope() == method->getEnclosingScope() && !method->isConstMethod() ) {
 		throw Common::Exceptions::ConstCorrectnessViolated("only calls to const methods are allowed in const method '" + mMethod->getFullScopeName() + "'", token.position());
 	}
 
 	// prevent calls to modifiable method from const symbol (exception: constructors are allowed)
-	if ( symbol->isConst() && !method->isConst() && method->getMethodType() != MethodAttributes::MethodType::Constructor ) {
+	if ( symbol->isConst() && !method->isConstMethod() /*&& method->getMethodType() != MethodAttributes::MethodType::Constructor*/ ) {
 		throw Common::Exceptions::ConstCorrectnessViolated("only calls to const methods are allowed from within const symbol '" + symbol->toString() + "'", token.position());
 	}
 
@@ -1923,7 +1917,7 @@ SymbolExpression* TreeGenerator::resolveWithThis(TokenIterator& token, IScope* b
 		SymbolExpression* exp = resolve(token, mThis, true, Visibility::Private);
 		if ( exp ) {
 			// insert "this" symbol as "parent" of our recently resolved symbol
-			SymbolExpression* symbol = new RuntimeSymbolExpression(IDENTIFIER_THIS, mThis->QualifiedTypename(), mMethod->isConst(), true, false);
+			SymbolExpression* symbol = new RuntimeSymbolExpression(IDENTIFIER_THIS, mThis->QualifiedTypename(), mMethod->isConstMethod(), true, false);
 			symbol->mSymbolExpression = exp;
 
 			return symbol;

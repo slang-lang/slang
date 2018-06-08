@@ -38,7 +38,7 @@ class WriteBool : public ExtensionMethod
 {
 public:
 	WriteBool()
-	: ExtensionMethod(0, "writeb", Designtime::IntegerObject::TYPENAME)
+	: ExtensionMethod(0, "writeb", Designtime::IntegerObject::TYPENAME, Mutability::Modify)
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME, 0));
@@ -82,7 +82,7 @@ class WriteDouble : public ExtensionMethod
 {
 public:
 	WriteDouble()
-	: ExtensionMethod(0, "writed", Designtime::IntegerObject::TYPENAME)
+	: ExtensionMethod(0, "writed", Designtime::IntegerObject::TYPENAME, Mutability::Modify)
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME, 0));
@@ -126,7 +126,7 @@ class WriteFloat : public ExtensionMethod
 {
 public:
 	WriteFloat()
-	: ExtensionMethod(0, "writef", Designtime::IntegerObject::TYPENAME)
+	: ExtensionMethod(0, "writef", Designtime::IntegerObject::TYPENAME, Mutability::Modify)
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME, 0));
@@ -170,7 +170,7 @@ class WriteInt : public ExtensionMethod
 {
 public:
 	WriteInt()
-	: ExtensionMethod(0, "writei", Designtime::IntegerObject::TYPENAME)
+	: ExtensionMethod(0, "writei", Designtime::IntegerObject::TYPENAME, Mutability::Modify)
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME, 0));
@@ -214,7 +214,7 @@ class WriteString : public ExtensionMethod
 {
 public:
 	WriteString()
-	: ExtensionMethod(0, "writes", Designtime::IntegerObject::TYPENAME)
+	: ExtensionMethod(0, "writes", Designtime::IntegerObject::TYPENAME, Mutability::Modify)
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME, 0));
