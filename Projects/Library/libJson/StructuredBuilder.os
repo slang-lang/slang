@@ -32,6 +32,16 @@ public void AddElement(string key, string value) {
 	mValue += "\"" + key + "\": \"" + value + "\"";
 }
 
+public void AddObject(string value) {
+	if ( !mIsFirstElement ) {
+		mValue += ", ";
+	}
+
+	mIsFirstElement = false;
+	mValue += value;
+}
+
+
 public void BeginArray() {
 	mIsFirstElement = true;
 
