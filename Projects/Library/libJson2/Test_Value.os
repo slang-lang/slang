@@ -8,7 +8,8 @@ public void Main(int argc, string args) {
 }
 
 private bool TestCase1() {
-	var value = new Json.Value();
+	var value = new Json.Value("key", "value");
+	print(value.toString());
 
 	return bool value;
 }

@@ -482,8 +482,12 @@ void Repository::initializeObject(Designtime::BluePrintObject* srcObj, Runtime::
 			continue;
 		}
 
-		Designtime::BluePrintObject* blue = static_cast<Designtime::BluePrintObject*>(it->second);
+		Designtime::BluePrintObject* blue = dynamic_cast<Designtime::BluePrintObject*>(it->second);
 		if ( blue->isStatic() ) {
+			continue;
+		}
+		if ( blue->getName() == ANONYMOUS_OBJECT ) {
+			// this is a type declaration
 			continue;
 		}
 
