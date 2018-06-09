@@ -5,10 +5,12 @@
 // Library includes
 
 // Project includes
+#include <Core/Common/Exceptions.h>
 #include <Core/Common/Method.h>
 #include <Core/Designtime/Parser/Parser.h>
 #include <Core/VirtualMachine/Repository.h>
 #include <Tools/Strings.h>
+#include <Utils.h>
 
 // Namespace declarations
 
@@ -148,6 +150,10 @@ void BluePrintObject::prepareParents(Repository* repository)
 	Ancestors ancestors = getAncestors();
 	for ( Ancestors::const_iterator it = ancestors.begin(); it != ancestors.end(); ++it ) {
 		BluePrintObject* parent = repository->findBluePrintObject(it->typeDeclaration());
+
+		if ( !parent ) {
+			throw Common::Exceptions::UnknownIdentifer("Unknown parent identifier '" + it->typeDeclaration().mName + "'");
+		}
 
 		if ( !parent->isPrepared() ) {
 			// recursively prepare parent objects
