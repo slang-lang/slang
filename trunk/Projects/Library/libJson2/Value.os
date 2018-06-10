@@ -1,10 +1,9 @@
 
+import System.Collections.Vector;
 import Exceptions;
 
 public namespace Json {
 
-public object Value {
-// Public
 	public enum Type {
 		Array,
 		Object,
@@ -17,28 +16,36 @@ public object Value {
 		Double,
 		Float,
 		Int,
+		Nil,
 		String
 		;
 	}
 
+public object Value {
+// Public
 	public void Constructor() {
+		mNumberValue = 0;
+		mStringValue = "null";
+		mValueType = ValueType.Nil;
 	}
 
-	public void Constructor(string key, bool value) {
-		mKey = key;
-
+	public void Constructor(bool value) {
 		setValue(value);
 	}
 
-	public void Constructor(string key, double value) {
-		mKey = key;
-
+	public void Constructor(double value) {
 		setValue(value);
 	}
 
-	public void Constructor(string key, string value) {
-		mKey = key;
+	public void Constructor(float value) {
+		setValue(value);
+	}
 
+	public void Constructor(int value) {
+		setValue(value);
+	}
+
+	public void Constructor(string value) {
 		setValue(value);
 	}
 
@@ -56,6 +63,22 @@ public object Value {
 		}
 
 		return double mNumberValue;
+	}
+
+	public float asFloat() const throws {
+		if ( mValueType == ValueType.String ) {
+			throw new InvalidTypeException();
+		}
+
+		return float mNumberValue;
+	}
+
+	public int asInt() const throws {
+		if ( mValueType == ValueType.String ) {
+			throw new InvalidTypeException();
+		}
+
+		return int mNumberValue;
 	}
 
 	public string asString() const {
@@ -90,6 +113,18 @@ public object Value {
 		mValueType = ValueType.Double;
 	}
 
+	public void setValue(float value) modify {
+		mNumberValue = value;
+		mType = Type.Value;
+		mValueType = ValueType.Float;
+	}
+
+	public void setValue(int value) modify {
+		mNumberValue = value;
+		mType = Type.Value;
+		mValueType = ValueType.Int;
+	}
+
 	public void setValue(string value) modify {
 		mStringValue = value;
 		mType = Type.Value;
@@ -116,6 +151,18 @@ public object Value {
 		return value;
 	}
 
+	public float operator=(float value) modify {
+		setValue(value);
+
+		return value;
+	}
+
+	public int operator=(int value) modify {
+		setValue(value);
+
+		return value;
+	}
+
 	public string operator=(string value) modify {
 		setValue(value);
 
@@ -127,6 +174,7 @@ public object Value {
 	protected Type mType;
 
 // Private
+	private Vector mMembers;
 	private double mNumberValue;
 	private string mStringValue;
 	private ValueType mValueType;
