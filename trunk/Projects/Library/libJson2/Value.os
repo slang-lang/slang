@@ -139,6 +139,13 @@ public object Value {
 		return string mNumberValue;
 	}
 
+	public Value operator=(Value value) modify {
+		mKey = value.getKey();
+		mType = value.getType();
+
+		return this;
+	}
+
 	public bool operator=(bool value) modify {
 		setValue(value);
 
@@ -174,10 +181,10 @@ public object Value {
 	protected Type mType;
 
 // Private
-	private Vector mMembers;
-	private double mNumberValue;
-	private string mStringValue;
-	private ValueType mValueType;
+	protected Vector mMembers;
+	protected double mNumberValue;
+	protected string mStringValue;
+	protected ValueType mValueType;
 }
 
 }
