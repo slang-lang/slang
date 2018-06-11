@@ -295,6 +295,10 @@ public:
 		delete mSymbolExpression;
 	}
 
+	SymbolExpressionType::E getSymbolExpressionType() const {
+		return mSymbolExpressionType;
+	}
+
 	bool isAtomicType() const {
 		// it's only important to know if the target type is atomic not if any one of the types is
 		return mSymbolExpression ? mSymbolExpression->isAtomicType() : mIsAtomicType;
