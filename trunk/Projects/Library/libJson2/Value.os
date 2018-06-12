@@ -1,6 +1,9 @@
 
-import System.Collections.Vector;
+// Library imports
+
+// Project imports
 import Exceptions;
+
 
 public namespace Json {
 
@@ -21,12 +24,14 @@ public namespace Json {
 		;
 	}
 
-public object Value {
+}
+
+public object JsonValue {
 // Public
 	public void Constructor() {
 		mNumberValue = 0;
 		mStringValue = "null";
-		mValueType = ValueType.Nil;
+		mValueType = Json.ValueType.Nil;
 	}
 
 	public void Constructor(bool value) {
@@ -50,7 +55,7 @@ public object Value {
 	}
 
 	public bool asBool() const {
-		if ( mValueType == ValueType.String ) {
+		if ( mValueType == Json.ValueType.String ) {
 			return bool mStringValue;
 		}
 
@@ -58,7 +63,7 @@ public object Value {
 	}
 
 	public double asDouble() const throws {
-		if ( mValueType == ValueType.String ) {
+		if ( mValueType == Json.ValueType.String ) {
 			throw new InvalidTypeException();
 		}
 
@@ -66,7 +71,7 @@ public object Value {
 	}
 
 	public float asFloat() const throws {
-		if ( mValueType == ValueType.String ) {
+		if ( mValueType == Json.ValueType.String ) {
 			throw new InvalidTypeException();
 		}
 
@@ -74,7 +79,7 @@ public object Value {
 	}
 
 	public int asInt() const throws {
-		if ( mValueType == ValueType.String ) {
+		if ( mValueType == Json.ValueType.String ) {
 			throw new InvalidTypeException();
 		}
 
@@ -82,7 +87,7 @@ public object Value {
 	}
 
 	public string asString() const {
-		if ( mValueType == ValueType.String ) {
+		if ( mValueType == Json.ValueType.String ) {
 			return mStringValue;
 		}
 
@@ -93,53 +98,57 @@ public object Value {
 		return mKey;
 	}
 
-	public Type getType() const {
+	public Json.Type getType() const {
 		return mType;
 	}
 
-	public ValueType getValueType() const {
+	public Json.ValueType getValueType() const {
 		return mValueType;
+	}
+
+	public bool isString() const {
+		return mValueType == Json.ValueType.String;
 	}
 
 	public void setValue(bool value) modify {
 		mNumberValue = value;
-		mType = Type.Value;
-		mValueType = ValueType.Bool;
+		mType = Json.Type.Value;
+		mValueType = Json.ValueType.Bool;
 	}
 
 	public void setValue(double value) modify {
 		mNumberValue = value;
-		mType = Type.Value;
-		mValueType = ValueType.Double;
+		mType = Json.Type.Value;
+		mValueType = Json.ValueType.Double;
 	}
 
 	public void setValue(float value) modify {
 		mNumberValue = value;
-		mType = Type.Value;
-		mValueType = ValueType.Float;
+		mType = Json.Type.Value;
+		mValueType = Json.ValueType.Float;
 	}
 
 	public void setValue(int value) modify {
 		mNumberValue = value;
-		mType = Type.Value;
-		mValueType = ValueType.Int;
+		mType = Json.Type.Value;
+		mValueType = Json.ValueType.Int;
 	}
 
 	public void setValue(string value) modify {
 		mStringValue = value;
-		mType = Type.Value;
-		mValueType = ValueType.String;
+		mType = Json.Type.Value;
+		mValueType = Json.ValueType.String;
 	}
 
 	public string toString() const {
-		if ( mValueType == ValueType.String ) {
+		if ( mValueType == Json.ValueType.String ) {
 			return "\"" + mStringValue + "\"";
 		}
 
 		return string mNumberValue;
 	}
 
-	public Value operator=(Value value) modify {
+	public JsonValue operator=(JsonValue value) modify {
 		mKey = value.getKey();
 		mType = value.getType();
 
@@ -178,14 +187,11 @@ public object Value {
 
 // Protected
 	protected string mKey const;
-	protected Type mType;
+	protected Json.Type mType;
 
 // Private
-	protected Vector mMembers;
 	protected double mNumberValue;
 	protected string mStringValue;
-	protected ValueType mValueType;
-}
-
+	protected Json.ValueType mValueType;
 }
 
