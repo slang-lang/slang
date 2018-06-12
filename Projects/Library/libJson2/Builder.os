@@ -1,22 +1,78 @@
 
 private namespace Json {
 
-public object JsonBuilder {
-	private string mValue;
+public object Builder {
+	private bool mIsFirstElement = true;
+	private string mValue = "";
 
-	public void Constructor(string value = "") {
-		mValue = value;
-	}
-
-	public void addElement(string key, string value) modify {
-		if ( mValue ) {
+	public void addElement(string key, bool value) modify {
+		if ( !mIsFirstElement ) {
 			mValue += ", ";
 		}
 
+		mIsFirstElement = false;
 		mValue += "\"" + key + "\": " + value;
 	}
 
-	public string getValue() const {
+	public void addElement(string key, int value) modify {
+		if ( !mIsFirstElement ) {
+			mValue += ", ";
+		}
+	
+		mIsFirstElement = false;
+		mValue += "\"" + key + "\": " + value;
+	}
+
+	public void addElement(string key, string value) modify {
+		if ( !mIsFirstElement ) {
+			mValue += ", ";
+		}
+
+		mIsFirstElement = false;
+		mValue += "\"" + key + "\": \"" + value + "\"";
+	}
+
+	public void beginArray() modify {
+		mIsFirstElement = true;
+
+		mValue += "[";
+	}
+
+	public void beginArray(string key) modify {
+		if ( !mIsFirstElement ) {
+			mValue += ", ";
+		}
+
+		mIsFirstElement = true;
+		mValue += "\"" + key + "\": [";
+	}
+
+	public void beginObject() modify {
+		mIsFirstElement = true;
+
+		mValue += "{";
+	}
+
+	public void beginObject(string key) modify {
+		if ( !mIsFirstElement ) {
+			mValue += ", ";
+		}
+
+		mIsFirstElement = true;
+		mValue += "\"" + key + "\": {";
+	}
+
+	public void endArray() modify {
+		mIsFirstElement = false;
+		mValue += "]";
+	}
+
+	public void endObject() modify {
+		mIsFirstElement = false;
+		mValue += "}";
+	}
+
+	public string getString() const {
 		return "{ " + mValue + " }";
 	}
 }
