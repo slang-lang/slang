@@ -1102,8 +1102,10 @@ void LocalClient::start()
 
 		Runtime::Object result;
 
-		Script *script = mVirtualMachine->createScriptFromFile(mSettings->filename(), mParameters, &result);
+		Script *script = mVirtualMachine->createScriptFromFile(mSettings->filename());
 		assert(script);
+
+		mVirtualMachine->run(script, mParameters, &result);
 
 		writeln("[Process finished" + (result.getValue().type() == Runtime::AtomicValue::Type::UNKOWN ? "" : " with exit code " + result.getValue().toStdString()) + "]");
 

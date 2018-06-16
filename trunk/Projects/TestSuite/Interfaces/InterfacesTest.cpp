@@ -54,7 +54,7 @@ void InterfacesTest::testBasicInterfaces()
 {
     try {
         VirtualMachine vm;
-        vm.createScriptFromFile("Tests/Interfaces/BasicInterfacesTest.os");
+        vm.runScriptFromFile("Tests/Interfaces/BasicInterfacesTest.os");
 
         // automatic success
     }
@@ -68,7 +68,7 @@ void InterfacesTest::testFail_MethodImplemented()
 {
     try {
         VirtualMachine vm;
-        TTHROWS(vm.createScriptFromFile("Tests/Interfaces/Fail_MethodImplemented.os"), ObjectiveScript::Common::Exceptions::SyntaxError);
+        TTHROWS(vm.runScriptFromFile("Tests/Interfaces/Fail_MethodImplemented.os"), ObjectiveScript::Common::Exceptions::SyntaxError);
 
         // automatic success
     }
@@ -84,7 +84,7 @@ TSKIP("inheriting from interfaces does not make an object abstract yet");
 
     try {
         VirtualMachine vm;
-        TTHROWS(vm.createScriptFromFile("Tests/Interfaces/InterfaceObject.os"), ObjectiveScript::Common::Exceptions::AbstractException);
+        TTHROWS(vm.runScriptFromFile("Tests/Interfaces/InterfaceObject.os"), ObjectiveScript::Common::Exceptions::AbstractException);
 
         // automatic success
     }
@@ -98,7 +98,7 @@ void InterfacesTest::testInterfaceAsParameter()
 {
     try {
         VirtualMachine vm;
-        vm.createScriptFromFile("Tests/Interfaces/InterfaceAsParameter.os");
+        vm.runScriptFromFile("Tests/Interfaces/InterfaceAsParameter.os");
 
         // automatic success
     }
@@ -112,7 +112,7 @@ void InterfacesTest::testInterfaceAsReturnValue()
 {
     try {
         VirtualMachine vm;
-        vm.createScriptFromFile("Tests/Interfaces/InterfaceAsReturnValue.os");
+        vm.runScriptFromFile("Tests/Interfaces/InterfaceAsReturnValue.os");
 
         // automatic success
     }
@@ -126,7 +126,7 @@ void InterfacesTest::testSlightlyMoreAdvancedTest()
 {
     try {
         VirtualMachine vm;
-        vm.createScriptFromFile("Tests/Interfaces/SlightlyMoreAdvancedTest.os");
+        vm.runScriptFromFile("Tests/Interfaces/SlightlyMoreAdvancedTest.os");
 
         // automatic success
     }

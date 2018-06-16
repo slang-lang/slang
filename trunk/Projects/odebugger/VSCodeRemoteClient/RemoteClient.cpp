@@ -398,8 +398,10 @@ void RemoteClient::start()
 	try {
 		Runtime::Object result;
 
-		Script *script = mVirtualMachine->createScriptFromFile(mSettings->filename(), mParameters, &result);
+		Script *script = mVirtualMachine->createScriptFromFile(mSettings->filename());
 		assert(script);
+
+		mVirtualMachine->run(script, mParameters, &result);
 
 		if ( mSettings->autoStop() ) {
 			mRunning = false;

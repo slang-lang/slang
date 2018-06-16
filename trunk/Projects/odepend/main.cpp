@@ -1005,6 +1005,14 @@ void search(const StringList& params)
 		if ( findCaseInsensitive(name, lookup) != std::string::npos ) {
 			result.push_back(name + "(" + (*it)["version"].asString() + ")");
 		}
+
+/*
+		std::string description = (*it)[""].asString();
+
+		if ( findCaseInsensitive(description, lookup) != std::string::npos ) {
+			result.push_back(name + "(" + (*it)["version"].asString() + ")");
+		}
+*/
 	}
 
 	if ( result.empty() ) {

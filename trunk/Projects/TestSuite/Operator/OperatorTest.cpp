@@ -65,7 +65,7 @@ void OperatorTest::testBooleanOperator()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/Operator/BooleanOperatorTest.os");
+		vm.runScriptFromFile("Tests/Operator/BooleanOperatorTest.os");
 
 		// automatic success
 	}
@@ -79,7 +79,7 @@ void OperatorTest::testBooleanOverloads_Assign()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/Operator/BooleanOverloads_Assign.os");
+		vm.runScriptFromFile("Tests/Operator/BooleanOverloads_Assign.os");
 
 		// automatic success
 	}
@@ -93,7 +93,7 @@ void OperatorTest::testBooleanOverloads_BitAnd()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/Operator/BooleanOverloads_BitAnd.os");
+		vm.runScriptFromFile("Tests/Operator/BooleanOverloads_BitAnd.os");
 
 		// automatic success
 	}
@@ -107,7 +107,7 @@ void OperatorTest::testBooleanOverloads_BitOr()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/Operator/BooleanOverloads_BitOr.os");
+		vm.runScriptFromFile("Tests/Operator/BooleanOverloads_BitOr.os");
 
 		// automatic success
 	}
@@ -121,7 +121,7 @@ void OperatorTest::testBooleanOverloads_Equal()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/Operator/BooleanOverloads_Equal.os");
+		vm.runScriptFromFile("Tests/Operator/BooleanOverloads_Equal.os");
 
 		// automatic success
 	}
@@ -135,7 +135,7 @@ void OperatorTest::testBooleanOverloads_Greater()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/Operator/BooleanOverloads_Greater.os");
+		vm.runScriptFromFile("Tests/Operator/BooleanOverloads_Greater.os");
 
 		// automatic success
 	}
@@ -149,7 +149,7 @@ void OperatorTest::testBooleanOverloads_Greater_Equal()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/Operator/BooleanOverloads_Greater_Equal.os");
+		vm.runScriptFromFile("Tests/Operator/BooleanOverloads_Greater_Equal.os");
 
 		// automatic success
 	}
@@ -163,7 +163,7 @@ void OperatorTest::testBooleanOverloads_Less()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/Operator/BooleanOverloads_Less.os");
+		vm.runScriptFromFile("Tests/Operator/BooleanOverloads_Less.os");
 
 		// automatic success
 	}
@@ -177,7 +177,7 @@ void OperatorTest::testBooleanOverloads_Less_Equal()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/Operator/BooleanOverloads_Less_Equal.os");
+		vm.runScriptFromFile("Tests/Operator/BooleanOverloads_Less_Equal.os");
 
 		// automatic success
 	}
@@ -191,7 +191,7 @@ void OperatorTest::testBooleanOverloads_Unequal()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/Operator/BooleanOverloads_Unequal.os");
+		vm.runScriptFromFile("Tests/Operator/BooleanOverloads_Unequal.os");
 
 		// automatic success
 	}
@@ -208,7 +208,7 @@ void OperatorTest::testIndexOperator()
 #ifdef USE_SYSTEM_EXTENSION
 		vm.addExtension(new ObjectiveScript::Extensions::System::SystemExtension());
 #endif
-		vm.createScriptFromFile("Tests/Operator/IndexOperatorTest.os");
+		vm.runScriptFromFile("Tests/Operator/IndexOperatorTest.os");
 
 		// automatic success
 	}
@@ -222,7 +222,7 @@ void OperatorTest::testInverseOperator()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/Operator/InverseOperatorTest.os");
+		vm.runScriptFromFile("Tests/Operator/InverseOperatorTest.os");
 
 		// automatic success
 	}
@@ -236,7 +236,7 @@ void OperatorTest::testIsOperator()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/Operator/BooleanOverloads_Unequal.os");
+		vm.runScriptFromFile("Tests/Operator/BooleanOverloads_Unequal.os");
 
 		// automatic success
 	}
@@ -250,7 +250,7 @@ void OperatorTest::testMathOverloadsWithNumbers()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/Operator/IsOperatorTest.os");
+		vm.runScriptFromFile("Tests/Operator/IsOperatorTest.os");
 
 		// automatic success
 	}
@@ -264,7 +264,7 @@ void OperatorTest::testMathOverloadsWithObjects()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/Operator/MathOverloadsWithObjects.os");
+		vm.runScriptFromFile("Tests/Operator/MathOverloadsWithObjects.os");
 
 		// automatic success
 	}
@@ -280,7 +280,7 @@ TSKIP("unary validate is not yet implemented");
 
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/Operator/UnaryValidate.os");
+		vm.runScriptFromFile("Tests/Operator/UnaryValidate.os");
 
 		// automatic success
 	}

@@ -64,7 +64,7 @@ void PrototypeTest::testAdvancedPrototypeTest()
 #ifdef USE_SYSTEM_EXTENSION
 		vm.addExtension(new ObjectiveScript::Extensions::System::SystemExtension());
 #endif
-		vm.createScriptFromFile("Tests/Prototypes/AdvancedPrototypeTest.os");
+		vm.runScriptFromFile("Tests/Prototypes/AdvancedPrototypeTest.os");
 
 		// automatic success
 	}
@@ -78,7 +78,7 @@ void PrototypeTest::testBasicPrototypeTest()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/Prototypes/BasicPrototypeTest.os");
+		vm.runScriptFromFile("Tests/Prototypes/BasicPrototypeTest.os");
 
 		// automatic success
 	}
@@ -95,7 +95,7 @@ void PrototypeTest::testBasicPrototypeWithInheritanceConstraint()
 #ifdef USE_SYSTEM_EXTENSION
 		vm.addExtension(new ObjectiveScript::Extensions::System::SystemExtension());
 #endif
-		vm.createScriptFromFile("Tests/Prototypes/BasicPrototypeWithInheritanceConstraint.os");
+		vm.runScriptFromFile("Tests/Prototypes/BasicPrototypeWithInheritanceConstraint.os");
 
 		// automatic success
 	}
@@ -109,7 +109,7 @@ void PrototypeTest::testBasicPrototypeWithObjectTest()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/Prototypes/BasicPrototypeWithObjectTest.os");
+		vm.runScriptFromFile("Tests/Prototypes/BasicPrototypeWithObjectTest.os");
 
 		// automatic success
 	}
@@ -126,7 +126,7 @@ void PrototypeTest::testFail_BasicPrototypeWithInheritanceConstraint()
 #ifdef USE_SYSTEM_EXTENSION
 		vm.addExtension(new ObjectiveScript::Extensions::System::SystemExtension());
 #endif
-		TTHROWS(vm.createScriptFromFile("Tests/Prototypes/Fail_BasicPrototypeWithInheritanceConstraint.os"), ObjectiveScript::Common::Exceptions::TypeMismatch);
+		TTHROWS(vm.runScriptFromFile("Tests/Prototypes/Fail_BasicPrototypeWithInheritanceConstraint.os"), ObjectiveScript::Common::Exceptions::TypeMismatch);
 	}
 	catch ( std::exception& e ) {
 		// exception has been thrown: test failed!
@@ -138,8 +138,8 @@ void PrototypeTest::testFail_PrototypeAssignment()
 {
 	try {
 		VirtualMachine vm;
-		//TTHROWS(vm.createScriptFromFile("Tests/Prototypes/Fail_PrototypeAssignment.os"), ObjectiveScript::Common::Exceptions::TypeMismatch);
-		TTHROWS(vm.createScriptFromFile("Tests/Prototypes/Fail_PrototypeAssignment.os"), ObjectiveScript::Common::Exceptions::UnknownIdentifer);
+		//TTHROWS(vm.runScriptFromFile("Tests/Prototypes/Fail_PrototypeAssignment.os"), ObjectiveScript::Common::Exceptions::TypeMismatch);
+		TTHROWS(vm.runScriptFromFile("Tests/Prototypes/Fail_PrototypeAssignment.os"), ObjectiveScript::Common::Exceptions::UnknownIdentifer);
 	}
 	catch ( std::exception& e ) {
 		// exception has been thrown: test failed!
@@ -151,7 +151,7 @@ void PrototypeTest::testInheritFromPrototypeTest()
 {
 	try {
 		VirtualMachine vm;
-		TTHROWS(vm.createScriptFromFile("Tests/Prototypes/InheritFromPrototypeTest.os"), ObjectiveScript::Common::Exceptions::NotSupported);
+		TTHROWS(vm.runScriptFromFile("Tests/Prototypes/InheritFromPrototypeTest.os"), ObjectiveScript::Common::Exceptions::NotSupported);
 	}
 	catch ( std::exception& e ) {
 		// exception has been thrown: test failed!
@@ -163,7 +163,7 @@ void PrototypeTest::testPrototypeAsMember()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/Prototypes/PrototypeAsMember.os");
+		vm.runScriptFromFile("Tests/Prototypes/PrototypeAsMember.os");
 
 		// automatic success
 	}
@@ -177,7 +177,7 @@ void PrototypeTest::testPrototypeAsParameter()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/Prototypes/PrototypeAsParameter.os");
+		vm.runScriptFromFile("Tests/Prototypes/PrototypeAsParameter.os");
 
 		// automatic success
 	}
@@ -191,7 +191,7 @@ void PrototypeTest::testPrototypeAsPrototypedMember()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/Prototypes/PrototypeAsPrototypedMember.os");
+		vm.runScriptFromFile("Tests/Prototypes/PrototypeAsPrototypedMember.os");
 
 		// automatic success
 	}
@@ -205,7 +205,7 @@ void PrototypeTest::testPrototypeAsReturnValue()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/Prototypes/PrototypeAsReturnValue.os");
+		vm.runScriptFromFile("Tests/Prototypes/PrototypeAsReturnValue.os");
 
 		// automatic success
 	}

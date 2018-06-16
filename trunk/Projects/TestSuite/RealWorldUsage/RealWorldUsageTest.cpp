@@ -49,7 +49,7 @@ void RealWorldUsageTest::testAlternateMemberDeclaration()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/RealWorldUsage/Namespaces/AlternateMemberDeclaration.os");
+		vm.runScriptFromFile("Tests/RealWorldUsage/Namespaces/AlternateMemberDeclaration.os");
 
 		// automatic success
 	}
@@ -63,7 +63,7 @@ void RealWorldUsageTest::testAutoBoxing()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/RealWorldUsage/AutoBoxing.os");
+		vm.runScriptFromFile("Tests/RealWorldUsage/AutoBoxing.os");
 
 		// automatic success
 	}
@@ -77,7 +77,7 @@ void RealWorldUsageTest::testCWithNamespace()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/RealWorldUsage/Namespaces/C-WithNamespaces.os");
+		vm.runScriptFromFile("Tests/RealWorldUsage/Namespaces/C-WithNamespaces.os");
 
 		// automatic success
 	}
@@ -91,7 +91,7 @@ void RealWorldUsageTest::testCreateScriptFromString()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromString(
+		vm.runScriptFromString(
 			"public object Main {\
 				public void Main(int argc = 0, string args = \"\") {\
 					int one = 1;\
@@ -112,7 +112,7 @@ void RealWorldUsageTest::testDeeperNamespaces()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/RealWorldUsage/Namespaces/DeeperNamespaces.os");
+		vm.runScriptFromFile("Tests/RealWorldUsage/Namespaces/DeeperNamespaces.os");
 
 		// automatic success
 	}
