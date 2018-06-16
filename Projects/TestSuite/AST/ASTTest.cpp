@@ -85,7 +85,7 @@ void ASTTest::testAssert()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/AST/AssertTest.os");
+		vm.runScriptFromFile("Tests/AST/AssertTest.os");
 
 		// automatic success
 	}
@@ -99,7 +99,7 @@ void ASTTest::testAssignment()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/AST/AssignmentTest.os");
+		vm.runScriptFromFile("Tests/AST/AssignmentTest.os");
 
 		// automatic success
 	}
@@ -113,7 +113,7 @@ void ASTTest::testBase()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/AST/BaseTest.os");
+		vm.runScriptFromFile("Tests/AST/BaseTest.os");
 
 		// automatic success
 	}
@@ -127,7 +127,7 @@ void ASTTest::testBreak()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/AST/BreakTest.os");
+		vm.runScriptFromFile("Tests/AST/BreakTest.os");
 
 		// automatic success
 	}
@@ -141,7 +141,7 @@ void ASTTest::testContinue()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/AST/ContinueTest.os");
+		vm.runScriptFromFile("Tests/AST/ContinueTest.os");
 
 		// automatic success
 	}
@@ -155,7 +155,7 @@ void ASTTest::testConstCorrectness1()
 {
 	try {
 		VirtualMachine vm;
-		TTHROWS(vm.createScriptFromFile("Tests/AST/ConstCorrectnessTest1.os"), Common::Exceptions::ConstCorrectnessViolated);
+		TTHROWS(vm.runScriptFromFile("Tests/AST/ConstCorrectnessTest1.os"), Common::Exceptions::ConstCorrectnessViolated);
 
 		// automatic success
 	}
@@ -169,7 +169,7 @@ void ASTTest::testConstCorrectness2()
 {
 	try {
 		VirtualMachine vm;
-		TTHROWS(vm.createScriptFromFile("Tests/AST/ConstCorrectnessTest2.os"), Common::Exceptions::ConstCorrectnessViolated);
+		TTHROWS(vm.runScriptFromFile("Tests/AST/ConstCorrectnessTest2.os"), Common::Exceptions::ConstCorrectnessViolated);
 
 		// automatic success
 	}
@@ -183,7 +183,7 @@ void ASTTest::testConstCorrectness3()
 {
 	try {
 		VirtualMachine vm;
-		TTHROWS(vm.createScriptFromFile("Tests/AST/ConstCorrectnessTest3.os"), Common::Exceptions::ConstCorrectnessViolated);
+		TTHROWS(vm.runScriptFromFile("Tests/AST/ConstCorrectnessTest3.os"), Common::Exceptions::ConstCorrectnessViolated);
 
 		// automatic success
 	}
@@ -197,7 +197,7 @@ void ASTTest::testConstCorrectness4()
 {
 	try {
 		VirtualMachine vm;
-		TTHROWS(vm.createScriptFromFile("Tests/AST/ConstCorrectnessTest4.os"), Common::Exceptions::StaticException);
+		TTHROWS(vm.runScriptFromFile("Tests/AST/ConstCorrectnessTest4.os"), Common::Exceptions::StaticException);
 
 		// automatic success
 	}
@@ -211,7 +211,7 @@ void ASTTest::testExit()
 {
 	try {
 		VirtualMachine vm;
-		TTHROWS(vm.createScriptFromFile("Tests/AST/ExitTest.os"), Runtime::ControlFlow::E);
+		TTHROWS(vm.runScriptFromFile("Tests/AST/ExitTest.os"), Runtime::ControlFlow::E);
 
 		// automatic success
 	}
@@ -225,7 +225,7 @@ void ASTTest::testExpression()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/AST/ExpressionTest.os");
+		vm.runScriptFromFile("Tests/AST/ExpressionTest.os");
 
 		// automatic success
 	}
@@ -239,7 +239,7 @@ void ASTTest::testFor()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/AST/ForTest.os");
+		vm.runScriptFromFile("Tests/AST/ForTest.os");
 
 		// automatic success
 	}
@@ -256,7 +256,7 @@ void ASTTest::testForeach()
 #ifdef USE_SYSTEM_EXTENSION
 		vm.addExtension(new ObjectiveScript::Extensions::System::SystemExtension());
 #endif
-		vm.createScriptFromFile("Tests/AST/ForeachTest.os");
+		vm.runScriptFromFile("Tests/AST/ForeachTest.os");
 
 		// automatic success
 	}
@@ -270,7 +270,7 @@ void ASTTest::testGenerator()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/AST/GeneratorTest.os");
+		vm.runScriptFromFile("Tests/AST/GeneratorTest.os");
 
 		// automatic success
 	}
@@ -284,7 +284,7 @@ void ASTTest::testIf()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/AST/IfTest.os");
+		vm.runScriptFromFile("Tests/AST/IfTest.os");
 
 		// automatic success
 	}
@@ -298,7 +298,7 @@ void ASTTest::testNamespace()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/AST/NamespaceTest.os");
+		vm.runScriptFromFile("Tests/AST/NamespaceTest.os");
 
 		// automatic success
 	}
@@ -312,7 +312,7 @@ void ASTTest::testNew()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/AST/NewTest.os");
+		vm.runScriptFromFile("Tests/AST/NewTest.os");
 
 		// automatic success
 	}
@@ -328,7 +328,7 @@ void ASTTest::testReturn()
 		VirtualMachine vm;
 
 		Runtime::Object returnValue;
-		vm.createScriptFromFile("Tests/AST/ReturnTest.os", ParameterList(), &returnValue);
+		vm.runScriptFromFile("Tests/AST/ReturnTest.os", ParameterList(), &returnValue);
 
 		// automatic success
 	}
@@ -342,7 +342,7 @@ void ASTTest::testSwitch()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/AST/SwitchTest.os");
+		vm.runScriptFromFile("Tests/AST/SwitchTest.os");
 
 		// automatic success
 	}
@@ -356,7 +356,7 @@ void ASTTest::testTernaryOperator()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/AST/TernaryOperatorTest.os");
+		vm.runScriptFromFile("Tests/AST/TernaryOperatorTest.os");
 
 		// automatic success
 	}
@@ -370,7 +370,7 @@ void ASTTest::testTernaryOperatorFail()
 {
 	try {
 		VirtualMachine vm;
-		TTHROWS(vm.createScriptFromFile("Tests/AST/Fail_TernaryOperatorTest.os"), Common::Exceptions::SyntaxError);
+		TTHROWS(vm.runScriptFromFile("Tests/AST/Fail_TernaryOperatorTest.os"), Common::Exceptions::SyntaxError);
 
 		// automatic success
 	}
@@ -384,7 +384,7 @@ void ASTTest::testThis()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/AST/ThisTest.os");
+		vm.runScriptFromFile("Tests/AST/ThisTest.os");
 
 		// automatic success
 	}
@@ -398,7 +398,7 @@ void ASTTest::testThrow()
 {
 	try {
 		VirtualMachine vm;
-		TTHROWS(vm.createScriptFromFile("Tests/AST/ThrowTest.os"), Runtime::ControlFlow::E);
+		TTHROWS(vm.runScriptFromFile("Tests/AST/ThrowTest.os"), Runtime::ControlFlow::E);
 
 		// automatic success
 	}
@@ -412,7 +412,7 @@ void ASTTest::testTry()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/AST/TryTest.os");
+		vm.runScriptFromFile("Tests/AST/TryTest.os");
 
 		// automatic success
 	}
@@ -426,7 +426,7 @@ void ASTTest::testTypecast()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/AST/TypecastTest.os");
+		vm.runScriptFromFile("Tests/AST/TypecastTest.os");
 
 		// automatic success
 	}
@@ -440,7 +440,7 @@ void ASTTest::testTypeDeclaration()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/AST/TypeDeclarationTest.os");
+		vm.runScriptFromFile("Tests/AST/TypeDeclarationTest.os");
 
 		// automatic success
 	}
@@ -454,7 +454,7 @@ void ASTTest::testTypeInference()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/AST/TypeInferenceTest.os");
+		vm.runScriptFromFile("Tests/AST/TypeInferenceTest.os");
 
 		// automatic success
 	}
@@ -468,7 +468,7 @@ void ASTTest::testTypeSystem()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/AST/TypeSystemTest.os");
+		vm.runScriptFromFile("Tests/AST/TypeSystemTest.os");
 
 		// automatic success
 	}
@@ -482,7 +482,7 @@ void ASTTest::testUnaryExpression()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/AST/UnaryExpressionTest.os");
+		vm.runScriptFromFile("Tests/AST/UnaryExpressionTest.os");
 
 		// automatic success
 	}
@@ -496,7 +496,7 @@ void ASTTest::testWhile()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/AST/WhileTest.os");
+		vm.runScriptFromFile("Tests/AST/WhileTest.os");
 
 		// automatic success
 	}

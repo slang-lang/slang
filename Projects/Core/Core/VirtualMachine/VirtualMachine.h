@@ -51,14 +51,18 @@ public:	// Setup
 	Settings& settings();
 
 public:
-	Script* createScriptFromFile(const std::string& filename, const ParameterList& params = ParameterList(), Runtime::Object* result = 0, bool collectErrors = false);
-	Script* createScriptFromString(const std::string& content, const ParameterList& params = ParameterList(), Runtime::Object* result = 0, bool collectErrors = false);
+	Script* createScriptFromFile(const std::string& filename, bool collectErrors = false);
+	Script* createScriptFromString(const std::string& content, bool collectErrors = false);
+
+	void run(Script* script, const ParameterList& params = ParameterList(), Runtime::Object* result = 0);
+	void runScriptFromFile(const std::string& filename, const ParameterList& params = ParameterList(), Runtime::Object* result = 0);
+	void runScriptFromString(const std::string& content, const ParameterList& params = ParameterList(), Runtime::Object* result = 0);
 
 private:
 	typedef std::set<Script*> ScriptCollection;
 
 private:
-	Script* createScript(const std::string& content, const ParameterList& params, Runtime::Object* result, bool collectErrors);
+	Script* createScript(const std::string& content, bool collectErrors = false);
 	void init();
 	bool loadExtensions();
 	bool loadLibrary(const std::string& library);

@@ -51,7 +51,7 @@ void MathTest::testBasicExpressionParsing()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/Math/BasicTest.os");
+		vm.runScriptFromFile("Tests/Math/BasicTest.os");
 
 		// automatic success
 	}
@@ -65,7 +65,7 @@ void MathTest::testDataTypeBool()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/Math/DataTypeBool.os");
+		vm.runScriptFromFile("Tests/Math/DataTypeBool.os");
 
 		// automatic success
 	}
@@ -79,7 +79,7 @@ void MathTest::testDataTypeDouble()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/Math/DataTypeDouble.os");
+		vm.runScriptFromFile("Tests/Math/DataTypeDouble.os");
 
 		// automatic success
 	}
@@ -93,7 +93,7 @@ void MathTest::testDataTypeFloat()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/Math/DataTypeFloat.os");
+		vm.runScriptFromFile("Tests/Math/DataTypeFloat.os");
 
 		// automatic success
 	}
@@ -107,7 +107,7 @@ void MathTest::testDataTypeInt()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/Math/DataTypeInt.os");
+		vm.runScriptFromFile("Tests/Math/DataTypeInt.os");
 
 		// automatic success
 	}
@@ -121,7 +121,7 @@ void MathTest::testSimpleMath()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/Math/SimpleMath.os");
+		vm.runScriptFromFile("Tests/Math/SimpleMath.os");
 
 		// automatic success
 	}
@@ -135,7 +135,7 @@ void MathTest::testUnaryMinus()
 {
 	try {
 		VirtualMachine vm;
-		vm.createScriptFromFile("Tests/Math/UnaryMinus.os");
+		vm.runScriptFromFile("Tests/Math/UnaryMinus.os");
 
 		// automatic success
 	}

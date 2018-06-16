@@ -188,7 +188,10 @@ int main(int argc, const char* argv[])
 	try {
 		ObjectiveScript::Runtime::Object result;
 
-		mVirtualMachine.createScriptFromFile(mFilename, mParameters, &result, true);
+		ObjectiveScript::Script* script = mVirtualMachine.createScriptFromFile(mFilename, true);
+		assert(script);
+
+		mVirtualMachine.run(script, mParameters, &result);
 
 		if ( result.getValue().type() == ObjectiveScript::Runtime::AtomicValue::Type::INT ) {
 			return result.getValue().toInt();

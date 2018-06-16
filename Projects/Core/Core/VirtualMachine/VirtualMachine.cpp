@@ -65,7 +65,7 @@ void VirtualMachine::addLibraryFolder(const std::string &library)
 #endif
 }
 
-Script* VirtualMachine::createScript(const std::string& content, const ParameterList& params, Runtime::Object* result, bool collectErrors)
+Script* VirtualMachine::createScript(const std::string& content, bool collectErrors)
 {
 	init();
 	printLibraryFolders();
@@ -124,26 +124,10 @@ Script* VirtualMachine::createScript(const std::string& content, const Parameter
 		throw Runtime::ControlFlow::ExitProgram;
 	}
 
-
-	Controller::Instance().phase(Controller::Phase::Execution);
-
-	// Startup
-	Common::Method* main = dynamic_cast<Common::Method*>(globalScope->resolveMethod("Main", params, false));
-	if ( !main ) {
-		throw Common::Exceptions::Exception("could not resolve method 'Main(" + toString(params) + ")'");
-	}
-
-	Thread* thread = Controller::Instance().threads()->createThread();
-
-	Runtime::ControlFlow::E controlflow = thread->execute(main, params, result);
-	if ( controlflow == Runtime::ControlFlow::Throw ) {
-		throw Runtime::ControlFlow::Throw;
-	}
-
 	return script;
 }
 
-Script* VirtualMachine::createScriptFromFile(const std::string& filename, const ParameterList& params, Runtime::Object* result, bool collectErrors)
+Script* VirtualMachine::createScriptFromFile(const std::string& filename, bool collectErrors)
 {
 	OSdebug("processing script '" + filename + "'...");
 
@@ -156,24 +140,25 @@ Script* VirtualMachine::createScriptFromFile(const std::string& filename, const 
 		throw Common::Exceptions::Exception("file '" + filename + "' not found!");
 	}
 
-	// read file content
+	// open file
 	std::ifstream in(filename.c_str(), std::ios_base::binary);
 
+	// read file content
 	std::string content = std::string(std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>());
 
 	addLibraryFolder(Utils::Tools::Files::ExtractPathname(Utils::Tools::Files::GetFullname(filename)));
 	mScriptFile = Utils::Tools::Files::GetFullname(filename);
 
-	return createScript(content, params, result, collectErrors);
+	return createScript(content, collectErrors);
 }
 
-Script* VirtualMachine::createScriptFromString(const std::string& content, const ParameterList& params, Runtime::Object* result, bool collectErrors)
+Script* VirtualMachine::createScriptFromString(const std::string& content, bool collectErrors)
 {
 	OSdebug("processing string...");
 
 	mScriptFile = "";
 
-	return createScript(content, params, result, collectErrors);
+	return createScript(content, collectErrors);
 }
 
 void VirtualMachine::init()
@@ -277,6 +262,43 @@ void VirtualMachine::printLibraryFolders()
 	for ( StringSet::const_iterator it = mLibraryFolders.begin(); it != mLibraryFolders.end(); ++it ) {
 		OSdebug("Library: " + (*it));
 	}
+}
+
+void VirtualMachine::run(Script* script, const ParameterList& params, Runtime::Object* result)
+{
+	if ( !script ) {
+		throw Common::Exceptions::Exception("provided invalid script to run!");
+	}
+
+	Controller::Instance().phase(Controller::Phase::Execution);
+
+	MethodScope* globalScope = Controller::Instance().globalScope();
+
+	Common::Method* main = dynamic_cast<Common::Method*>(globalScope->resolveMethod("Main", params, false));
+	if ( !main ) {
+		throw Common::Exceptions::Exception("could not resolve method 'Main(" + toString(params) + ")'");
+	}
+
+	Thread* thread = Controller::Instance().threads()->createThread();
+
+	Runtime::ControlFlow::E controlflow = thread->execute(main, params, result);
+	if ( controlflow == Runtime::ControlFlow::Throw ) {
+		throw Runtime::ControlFlow::Throw;
+	}
+}
+
+void VirtualMachine::runScriptFromFile(const std::string &filename, const ObjectiveScript::ParameterList &params, ObjectiveScript::Runtime::Object *result)
+{
+	Script* script = createScriptFromFile(filename);
+
+	run(script, params, result);
+}
+
+void VirtualMachine::runScriptFromString(const std::string &content, const ObjectiveScript::ParameterList &params, ObjectiveScript::Runtime::Object *result)
+{
+	Script* script = createScriptFromString(content);
+
+	run(script, params, result);
 }
 
 VirtualMachine::Settings& VirtualMachine::settings()

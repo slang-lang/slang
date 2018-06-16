@@ -45,6 +45,10 @@ void Memory::add(const Runtime::Reference &ref)
 
 void Memory::deinit()
 {
+	for ( MemoryMap::iterator it = mMemory.begin(); it != mMemory.end(); ++it ) {
+		// force delete
+		delete it->second.mObject;
+	}
 }
 
 void Memory::deleteObject(const Runtime::Reference& ref)

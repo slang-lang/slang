@@ -61,7 +61,7 @@ void InheritanceTest::testBasicInheritanceTest()
 {
     try {
         VirtualMachine vm;
-        vm.createScriptFromFile("Tests/Inheritance/BasicInheritanceTest.os");
+        vm.runScriptFromFile("Tests/Inheritance/BasicInheritanceTest.os");
 
         // automatic success
     }
@@ -75,7 +75,7 @@ void InheritanceTest::testDefaultConstructorTest()
 {
     try {
         VirtualMachine vm;
-        vm.createScriptFromFile("Tests/Inheritance/DefaultConstructorTest.os");
+        vm.runScriptFromFile("Tests/Inheritance/DefaultConstructorTest.os");
 
         // automatic success
     }
@@ -89,7 +89,7 @@ void InheritanceTest::testExceptionDuringConstructorTest()
 {
     try {
         VirtualMachine vm;
-        vm.createScriptFromFile("Tests/Inheritance/ExceptionDuringConstructor.os");
+        vm.runScriptFromFile("Tests/Inheritance/ExceptionDuringConstructor.os");
 
         // automatic success
     }
@@ -106,7 +106,7 @@ void InheritanceTest::testExceptionDuringDestructorTest()
 #ifdef USE_SYSTEM_EXTENSION
 		vm.addExtension(new ObjectiveScript::Extensions::System::SystemExtension());
 #endif
-        vm.createScriptFromFile("Tests/Inheritance/ExceptionDuringDestructor.os");
+        vm.runScriptFromFile("Tests/Inheritance/ExceptionDuringDestructor.os");
 
         // automatic success
     }
@@ -120,7 +120,7 @@ void InheritanceTest::testFinalMethodTest()
 {
     try {
         VirtualMachine vm;
-        vm.createScriptFromFile("Tests/Inheritance/FinalMethodTest.os");
+        vm.runScriptFromFile("Tests/Inheritance/FinalMethodTest.os");
 
         // automatic success
     }
@@ -134,7 +134,7 @@ void InheritanceTest::testHybridConstructorTest()
 {
     try {
         VirtualMachine vm;
-        vm.createScriptFromFile("Tests/Inheritance/HybridConstructorTest.os");
+        vm.runScriptFromFile("Tests/Inheritance/HybridConstructorTest.os");
 
         // automatic success
     }
@@ -148,7 +148,7 @@ void InheritanceTest::testKeywordBase()
 {
     try {
         VirtualMachine vm;
-        vm.createScriptFromFile("Tests/Inheritance/KeywordTest_Base.os");
+        vm.runScriptFromFile("Tests/Inheritance/KeywordTest_Base.os");
 
         // automatic success
     }
@@ -162,7 +162,7 @@ void InheritanceTest::testSpecializedConstructorTest()
 {
     try {
         VirtualMachine vm;
-        vm.createScriptFromFile("Tests/Inheritance/SpecializedConstructorTest.os");
+        vm.runScriptFromFile("Tests/Inheritance/SpecializedConstructorTest.os");
 
         // automatic success
     }
