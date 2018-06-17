@@ -41,6 +41,7 @@ private void ObjectMethod() {
 	}
 }
 
+/*
 private void ValueMethod() {
 	List<string> list = new List<string>();
 
@@ -64,4 +65,5 @@ private void ValueMethod() {
 		}
 	}
 }
+*/
 

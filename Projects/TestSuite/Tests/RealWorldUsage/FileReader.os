@@ -49,7 +49,7 @@ public void Main(int argc, string args) {
 	}
 
 	var params = new List<String>();
-	foreach ( string p : String(args) ) {
+	foreach ( string p : new String(args) ) {
 		params.push_back(new String(p));
 	}
 
