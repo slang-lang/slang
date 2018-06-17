@@ -374,13 +374,6 @@ void Repository::init()
 
 		scope->define(Designtime::FloatObject::TYPENAME, obj);
 	}
-	{	// "Object" type
-		Designtime::UserObject* obj = new Designtime::UserObject();
-		obj->setIsReference(true);
-		addBluePrint(obj);
-
-		scope->define(Designtime::UserObject::TYPENAME, obj);
-	}
 	{	// "int" type
 		Designtime::IntegerObject* obj = new Designtime::IntegerObject();
 		addBluePrint(obj);
@@ -398,6 +391,13 @@ void Repository::init()
 		addBluePrint(obj);
 
 		scope->define(Designtime::VoidObject::TYPENAME, obj);
+	}
+	{	// "Object" type
+		Designtime::UserObject* obj = new Designtime::UserObject();
+		obj->setIsReference(true);
+		addBluePrint(obj);
+
+		scope->define(Designtime::UserObject::TYPENAME, obj);
 	}
 
 	// add predefined runtime objects
@@ -424,35 +424,26 @@ void Repository::initializeBlueprints()
 		Designtime::BluePrintObject* blueprint = it->second;
 
 		Designtime::Ancestors ancestors = blueprint->getInheritance();
-		for ( Designtime::Ancestors::const_iterator it = ancestors.begin(); it != ancestors.end(); ++it ) {
-			switch ( it->ancestorType() ) {
+		for ( Designtime::Ancestors::const_iterator ancestorIt = ancestors.begin(); ancestorIt != ancestors.end(); ++ancestorIt ) {
+			prepareType(Common::TypeDeclaration(ancestorIt->name(), ancestorIt->constraints()));
+
+			Designtime::BluePrintObject* base = findBluePrintObject(
+				Designtime::Parser::buildRuntimeConstraintTypename(ancestorIt->name(), ancestorIt->constraints())
+			);
+
+			switch ( ancestorIt->ancestorType() ) {
 				case Designtime::Ancestor::Type::Extends: {
-					Designtime::BluePrintObject* base = findBluePrintObject(it->name());
-					if ( base ) {
-						blueprint->define(IDENTIFIER_BASE, base);
-					}
+					blueprint->define(IDENTIFIER_BASE, base);
 				} break;
 				case Designtime::Ancestor::Type::Implements:
 					// nothing to do here
 					break;
 				case Designtime::Ancestor::Type::Replicates: {
-					prepareType(Common::TypeDeclaration(it->name(), it->constraints()));
-
-					Designtime::BluePrintObject* base = findBluePrintObject(
-						Designtime::Parser::buildRuntimeConstraintTypename(it->name(), it->constraints())
-					);
 					Designtime::BluePrintObject* replica = base->replicate(
 						blueprint->QualifiedTypename(), blueprint->Filename()
 					);
 
-					BluePrintObjectMap::iterator blueIt = mBluePrintObjects.find(blueprint->QualifiedTypename());
-					if ( blueIt == mBluePrintObjects.end() ) {
-						throw Common::Exceptions::Exception("Blueprint '" + blueprint->QualifiedTypename() + "' not found!");
-					}
-
-					// TODO: potential memleak
-					blueIt->second = replica;
-					blueprint = replica;
+					it->second = replica;
 				} break;
 				case Designtime::Ancestor::Type::Unknown:
 					throw Common::Exceptions::Exception("invalid inheritance detected");
@@ -527,6 +518,10 @@ void Repository::initializeObject(Designtime::BluePrintObject* srcObj, Runtime::
  */
 void Repository::initBluePrintObject(Designtime::BluePrintObject* blueprint)
 {
+	if ( blueprint->isPrepared() ) {
+		// already prepared
+		return;
+	}
 	if ( blueprint->isAtomicType() && !blueprint->isEnumeration() ) {
 		// atomic types have been initialized at compile time
 		return;

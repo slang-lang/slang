@@ -247,8 +247,6 @@ BluePrintObject* BluePrintObject::replicate(const std::string& newType, const st
 		// ... copy its data from our template method
 		*method = *(*it);
 
-		//method->initialize();
-
 		replica->defineMethod((*it)->getName(), method);
 	}
 
