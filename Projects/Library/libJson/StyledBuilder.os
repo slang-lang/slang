@@ -109,7 +109,7 @@ public object StyledBuilder {
 	}
 
 	public string getString() const {
-		return "{ " + ascii(10) + mValue + ascii(10) + " }";
+		return "{" + ascii(10) + mValue + ascii(10) + "}" + ascii(10);
 	}
 
 	private void indent() modify {
