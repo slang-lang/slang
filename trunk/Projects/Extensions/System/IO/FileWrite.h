@@ -54,17 +54,15 @@ public:
 		try {
 			ParameterList::const_iterator it = list.begin();
 
-			std::string param_handle = (*it++).value().toStdString();
+			int param_handle = (*it++).value().toInt();
 
-			int handle = Utils::Tools::stringToInt(param_handle);
-
-			if ( mFileHandles.find(handle) == mFileHandles.end() ) {
+			if ( mFileHandles.find(param_handle) == mFileHandles.end() ) {
 				throw Runtime::Exceptions::RuntimeException("invalid file handle");
 			}
 
 			bool value = (*it++).value().toBool();
 
-			long size = fwrite(&value, sizeof(bool), 1, mFileHandles[handle]);
+			long size = fwrite(&value, sizeof(bool), 1, mFileHandles[param_handle]);
 			if ( size == -1 ) {    // error while writing
 				throw Runtime::Exceptions::RuntimeException("error while writing file");
 			}
@@ -104,17 +102,15 @@ public:
 		try {
 			ParameterList::const_iterator it = list.begin();
 
-			std::string param_handle = (*it++).value().toStdString();
+			int param_handle = (*it++).value().toInt();
 
-			int handle = Utils::Tools::stringToInt(param_handle);
-
-			if ( mFileHandles.find(handle) == mFileHandles.end() ) {
+			if ( mFileHandles.find(param_handle) == mFileHandles.end() ) {
 				throw Runtime::Exceptions::RuntimeException("invalid file handle");
 			}
 
 			double value = (*it++).value().toDouble();
 
-			long size = fwrite(&value, sizeof(double), 1, mFileHandles[handle]);
+			long size = fwrite(&value, sizeof(double), 1, mFileHandles[param_handle]);
 			if ( size == -1 ) {    // error while writing
 				throw Runtime::Exceptions::RuntimeException("error while writing file");
 			}
@@ -154,17 +150,15 @@ public:
 		try {
 			ParameterList::const_iterator it = list.begin();
 
-			std::string param_handle = (*it++).value().toStdString();
+			int param_handle = (*it++).value().toInt();
 
-			int handle = Utils::Tools::stringToInt(param_handle);
-
-			if ( mFileHandles.find(handle) == mFileHandles.end() ) {
+			if ( mFileHandles.find(param_handle) == mFileHandles.end() ) {
 				throw Runtime::Exceptions::RuntimeException("invalid file handle");
 			}
 
 			float value = (*it++).value().toFloat();
 
-			long size = fwrite(&value, sizeof(float), 1, mFileHandles[handle]);
+			long size = fwrite(&value, sizeof(float), 1, mFileHandles[param_handle]);
 			if ( size == -1 ) {    // error while writing
 				throw Runtime::Exceptions::RuntimeException("error while writing file");
 			}
@@ -204,17 +198,15 @@ public:
 		try {
 			ParameterList::const_iterator it = list.begin();
 
-			std::string param_handle = (*it++).value().toStdString();
+			int param_handle = (*it++).value().toInt();
 
-			int handle = Utils::Tools::stringToInt(param_handle);
-
-			if ( mFileHandles.find(handle) == mFileHandles.end() ) {
+			if ( mFileHandles.find(param_handle) == mFileHandles.end() ) {
 				throw Runtime::Exceptions::RuntimeException("invalid file handle");
 			}
 
 			int value = (*it++).value().toInt();
 
-			long size = fwrite(&value, sizeof(int), 1, mFileHandles[handle]);
+			long size = fwrite(&value, sizeof(int), 1, mFileHandles[param_handle]);
 			if ( size == -1 ) {    // error while writing
 				throw Runtime::Exceptions::RuntimeException("error while writing file");
 			}
@@ -254,17 +246,15 @@ public:
 		try {
 			ParameterList::const_iterator it = list.begin();
 
-			std::string param_handle = (*it++).value().toStdString();
+			int param_handle = (*it++).value().toInt();
 
-			int handle = Utils::Tools::stringToInt(param_handle);
-
-			if ( mFileHandles.find(handle) == mFileHandles.end() ) {
+			if ( mFileHandles.find(param_handle) == mFileHandles.end() ) {
 				throw Runtime::Exceptions::RuntimeException("invalid file handle");
 			}
 
 			std::string value = params.back().value().toStdString();
 
-			long size = fwrite(&value, sizeof(char), strlen(value.c_str()), mFileHandles[handle]);
+			long size = fwrite(&value, sizeof(char), strlen(value.c_str()), mFileHandles[param_handle]);
 			if ( size == -1 ) {    // error while writing
 				throw Runtime::Exceptions::RuntimeException("error while writing file");
 			}

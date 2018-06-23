@@ -31,7 +31,7 @@ class FileOpen : public ExtensionMethod
 {
 public:
 	FileOpen()
-	: ExtensionMethod(0, "fopen", Designtime::IntegerObject::TYPENAME, Mutability::Modify)
+	: ExtensionMethod(0, "fopen", Designtime::IntegerObject::TYPENAME)
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("filename", Designtime::StringObject::TYPENAME));
