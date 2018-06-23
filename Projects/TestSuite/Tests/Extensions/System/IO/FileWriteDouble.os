@@ -1,6 +1,6 @@
 #!/usr/local/bin/oscript
 
-public void Main(int argc, string argv) {
+public void Main(int argc, string argv) modify {
 	int file = 0;
 	int result = 0;
 
