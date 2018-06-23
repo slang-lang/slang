@@ -52,8 +52,8 @@ private bool TestCase5() const {
 	print("TestCase 5: String.At(idx)");
 
 	String str = new String("This is a string");
-	print("str.At(3) = \"" + str.At(3) + "\"");
+	print("str.CharAt(3) = \"" + str.CharAt(3) + "\"");
 
-	return str.At(3) == "s";
+	return str.CharAt(3) == "s";
 }
 
