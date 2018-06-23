@@ -41,8 +41,11 @@ public void AddObject(string value) {
 	mValue += value;
 }
 
-
 public void BeginArray() {
+	if ( !mIsFirstElement ) {
+		mValue += ", ";
+	}
+
 	mIsFirstElement = true;
 
 	mValue += "[";

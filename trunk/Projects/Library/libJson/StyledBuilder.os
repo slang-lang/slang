@@ -2,6 +2,11 @@
 private namespace Json {
 
 public object StyledBuilder {
+	// Consts
+	private string INDENTATION const = "    ";
+
+	// Members
+	private int mIndentationLevel = 0;
 	private bool mIsFirstElement = true;
 	private string mValue = "";
 
@@ -11,6 +16,8 @@ public object StyledBuilder {
 			mValue += ", " + ascii(10);
 		}
 
+		indent();
+
 		mIsFirstElement = false;
 		mValue += "\"" + key + "\": " + value;
 	}
@@ -19,7 +26,9 @@ public object StyledBuilder {
 		if ( !mIsFirstElement ) {
 			mValue += ", " + ascii(10);
 		}
-	
+
+		indent();
+
 		mIsFirstElement = false;
 		mValue += "\"" + key + "\": " + value;
 	}
@@ -29,13 +38,21 @@ public object StyledBuilder {
 			mValue += ", " + ascii(10);
 		}
 
+		indent();
+
 		mIsFirstElement = false;
 		mValue += "\"" + key + "\": \"" + value + "\"";
 	}
 
 	public void beginArray() modify {
-		mIsFirstElement = true;
+		if ( !mIsFirstElement ) {
+			mValue += ", " + ascii(10);
+		}
 
+		mIndentationLevel++;
+		indent();
+
+		mIsFirstElement = true;
 		mValue += "[" + ascii(10);
 	}
 
@@ -43,6 +60,9 @@ public object StyledBuilder {
 		if ( !mIsFirstElement ) {
 			mValue += ", " + ascii(10);
 		}
+
+		mIndentationLevel++;
+		indent();
 
 		mIsFirstElement = true;
 		mValue += "\"" + key + "\": [" + ascii(10);
@@ -53,6 +73,10 @@ public object StyledBuilder {
 			mValue += ", " + ascii(10);
 		}
 
+
+		mIndentationLevel++;
+		indent();
+
 		mIsFirstElement = true;
 		mValue += "{" + ascii(10);
 	}
@@ -62,22 +86,39 @@ public object StyledBuilder {
 			mValue += ", " + ascii(10);
 		}
 
+		mIndentationLevel++;
+		indent();
+
 		mIsFirstElement = true;
 		mValue += "\"" + key + "\": {" + ascii(10);
 	}
 
 	public void endArray() modify {
+		mIndentationLevel--;
+		indent();
+
 		mIsFirstElement = false;
-		mValue += "]" + ascii(10);
+		mValue += "]";
 	}
 
 	public void endObject() modify {
+		mIndentationLevel--;
+		indent();
+
 		mIsFirstElement = false;
-		mValue += "}" + ascii(10);
+		mValue += "}";
 	}
 
 	public string getString() const {
 		return "{ " + ascii(10) + mValue + ascii(10) + " }";
+	}
+
+	private void indent() modify {
+		int c;
+		while ( c < mIndentationLevel ) {
+			mValue += INDENTATION;
+			c++;
+		}
 	}
 }
 

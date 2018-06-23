@@ -5,7 +5,6 @@ public object Builder {
 	private bool mIsFirstElement = true;
 	private string mValue = "";
 
-
 	public void addElement(string key, bool value) modify {
 		if ( !mIsFirstElement ) {
 			mValue += ", ";
@@ -34,8 +33,11 @@ public object Builder {
 	}
 
 	public void beginArray() modify {
-		mIsFirstElement = true;
+		if ( !mIsFirstElement ) {
+			mValue += ", ";
+		}
 
+		mIsFirstElement = true;
 		mValue += "[";
 	}
 
