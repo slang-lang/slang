@@ -972,6 +972,9 @@ Statement* TreeGenerator::process_foreach(TokenIterator& token)
 			expression->mSurroundingScope = iterator;
 
 			nextExpression = process_method(expression, *token, ExpressionList());
+
+			// validate result type
+			//resolveType(expression, Token(Token::Type::ASSIGN, "="), nextExpression);
 		}
 	}
 
