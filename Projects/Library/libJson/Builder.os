@@ -49,8 +49,11 @@ public object Builder {
 	}
 
 	public void beginObject() modify {
-		mIsFirstElement = true;
+		if ( !mIsFirstElement ) {
+			mValue += ", ";
+		}
 
+		mIsFirstElement = true;
 		mValue += "{";
 	}
 
