@@ -254,7 +254,8 @@ public:
 
 			std::string value = params.back().value().toStdString();
 
-			long size = fwrite(&value, sizeof(char), strlen(value.c_str()), mFileHandles[param_handle]);
+			//long size = fwrite(&value, sizeof(char), strlen(value.c_str()), mFileHandles[param_handle]);
+			int size = fputs(value.c_str(), mFileHandles[param_handle]);
 			if ( size == -1 ) {    // error while writing
 				throw Runtime::Exceptions::RuntimeException("error while writing file");
 			}
