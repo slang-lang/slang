@@ -6,7 +6,7 @@ public object StyledBuilder {
 	private string INDENTATION const = "    ";
 
 	// Members
-	private int mIndentationLevel = 0;
+	private int mIndentationLevel = 1;
 	private bool mIsFirstElement = true;
 	private string mValue = "";
 
@@ -49,9 +49,9 @@ public object StyledBuilder {
 			mValue += ", " + ascii(10);
 		}
 
-		mIndentationLevel++;
 		indent();
 
+		mIndentationLevel++;
 		mIsFirstElement = true;
 		mValue += "[" + ascii(10);
 	}
@@ -61,9 +61,9 @@ public object StyledBuilder {
 			mValue += ", " + ascii(10);
 		}
 
-		mIndentationLevel++;
 		indent();
 
+		mIndentationLevel++;
 		mIsFirstElement = true;
 		mValue += "\"" + key + "\": [" + ascii(10);
 	}
@@ -73,10 +73,9 @@ public object StyledBuilder {
 			mValue += ", " + ascii(10);
 		}
 
-
-		mIndentationLevel++;
 		indent();
 
+		mIndentationLevel++;
 		mIsFirstElement = true;
 		mValue += "{" + ascii(10);
 	}
@@ -86,26 +85,26 @@ public object StyledBuilder {
 			mValue += ", " + ascii(10);
 		}
 
-		mIndentationLevel++;
 		indent();
 
+		mIndentationLevel++;
 		mIsFirstElement = true;
 		mValue += "\"" + key + "\": {" + ascii(10);
 	}
 
 	public void endArray() modify {
 		mIndentationLevel--;
-		indent();
-
 		mIsFirstElement = false;
+		mValue += ascii(10);
+		indent();
 		mValue += "]";
 	}
 
 	public void endObject() modify {
 		mIndentationLevel--;
-		indent();
-
 		mIsFirstElement = false;
+		mValue += ascii(10);
+		indent();
 		mValue += "}";
 	}
 
