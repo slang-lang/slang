@@ -6,7 +6,7 @@ public object Builder {
 	private string mValue = "";
 
 
-	public void AddElement(string key, bool value) modify {
+	public void addElement(string key, bool value) modify {
 		if ( !mIsFirstElement ) {
 			mValue += ", ";
 		}
@@ -15,7 +15,7 @@ public object Builder {
 		mValue += "\"" + key + "\": " + value;
 	}
 
-	public void AddElement(string key, int value) modify {
+	public void addElement(string key, int value) modify {
 		if ( !mIsFirstElement ) {
 			mValue += ", ";
 		}
@@ -24,7 +24,7 @@ public object Builder {
 		mValue += "\"" + key + "\": " + value;
 	}
 
-	public void AddElement(string key, string value) modify {
+	public void addElement(string key, string value) modify {
 		if ( !mIsFirstElement ) {
 			mValue += ", ";
 		}
@@ -33,13 +33,13 @@ public object Builder {
 		mValue += "\"" + key + "\": \"" + value + "\"";
 	}
 
-	public void BeginArray() modify {
+	public void beginArray() modify {
 		mIsFirstElement = true;
 
 		mValue += "[";
 	}
 
-	public void BeginArray(string key) modify {
+	public void beginArray(string key) modify {
 		if ( !mIsFirstElement ) {
 			mValue += ", ";
 		}
@@ -48,13 +48,13 @@ public object Builder {
 		mValue += "\"" + key + "\": [";
 	}
 
-	public void BeginObject() modify {
+	public void beginObject() modify {
 		mIsFirstElement = true;
 
 		mValue += "{";
 	}
 
-	public void BeginObject(string key) modify {
+	public void beginObject(string key) modify {
 		if ( !mIsFirstElement ) {
 			mValue += ", ";
 		}
@@ -63,17 +63,17 @@ public object Builder {
 		mValue += "\"" + key + "\": {";
 	}
 
-	public void EndArray() modify {
+	public void endArray() modify {
 		mIsFirstElement = false;
 		mValue += "]";
 	}
 
-	public void EndObject() modify {
+	public void endObject() modify {
 		mIsFirstElement = false;
 		mValue += "}";
 	}
 
-	public string GetString() const {
+	public string getString() const {
 		return "{ " + mValue + " }";
 	}
 }
