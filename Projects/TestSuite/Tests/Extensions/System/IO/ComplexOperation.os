@@ -2,7 +2,7 @@
 
 import System.IO.File;
 
-public void Main(int argc, string argv) {
+public void Main(int argc, string argv) modify {
 	System.IO.File file = new System.IO.File("file.complex", "wb");
 	assert( file.isOpen() );
 
@@ -10,7 +10,7 @@ public void Main(int argc, string argv) {
 	assert( readFile() );
 }
 
-private bool readFile() const {
+private bool readFile() {
 	int fd = 0;
 	int result = 0;
 
@@ -46,7 +46,7 @@ private bool readFile() const {
 	return true;
 }
 
-private bool writeFile() const {
+private bool writeFile() modify {
 	int fd = 0;
 	int result = 0;
 
