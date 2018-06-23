@@ -1,5 +1,6 @@
 
 // library imports
+import System.String;
 
 // project imports
 import Expressions;
@@ -29,6 +30,7 @@ public enum StatementType {
 	IfStatement,
 	InputStatement,
 	LetStatement,
+	MethodStatement,
 	PrintStatement,
 	RemStatement;
 }
@@ -190,6 +192,35 @@ public object LetStatement extends Statement {
 
 	public string toString() const {
 		return "LET " + mVariable + " = " + mExpression.toString() + following();
+	}
+}
+
+public object MethodStatement extends Statement {
+	public string mMethodName const;
+	public List<String> mParameters;
+
+	public void Constructor(string method) {
+		base.Constructor(StatementType.MethodStatement);
+
+		mMethodName = method;
+	}
+
+	public string toPrettyString() const {
+		string result = mMethodName + "(";
+		foreach ( String p : mParameters )
+			result += string p + " ";
+ 		result += ")";
+
+		return result + prettyFollowing();
+	}
+
+	public string toString() const {
+		string result = mMethodName + "(";
+		foreach ( string p : mParameters )
+			result += p + " ";
+ 		result += ")";
+
+		return result + following();
 	}
 }
 
