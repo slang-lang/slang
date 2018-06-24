@@ -47,7 +47,7 @@ public:
 	: ExtensionMethod(0, "system", Designtime::StringObject::TYPENAME)
 	{
 		ParameterList params;
-		params.push_back(Parameter::CreateDesigntime("command", Designtime::StringObject::TYPENAME, Runtime::AtomicValue(VALUE_NONE), true));
+		params.push_back(Parameter::CreateDesigntime("command", Designtime::StringObject::TYPENAME, Runtime::AtomicValue(std::string(VALUE_NONE)), true));
 
 		setSignature(params);
 	}

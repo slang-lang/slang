@@ -41,6 +41,10 @@ public:
 	  mName(type)
 	{ }
 
+	bool operator==(const std::string& type) const {
+		return mCombinedName.size() ? (mCombinedName == type) : (mName == type);
+	}
+
 public:
 	std::string mCombinedName;
 	PrototypeConstraints mConstraints;

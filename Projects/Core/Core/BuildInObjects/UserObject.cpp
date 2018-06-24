@@ -17,7 +17,7 @@ namespace ObjectiveScript {
 namespace Runtime {
 
 
-AtomicValue UserObject::DEFAULTVALUE = AtomicValue(VALUE_NONE);
+AtomicValue UserObject::DEFAULTVALUE;
 std::string UserObject::TYPENAME = _object;
 
 
@@ -28,7 +28,7 @@ UserObject::UserObject()
 }
 
 UserObject::UserObject(const std::string& name, const std::string& filename, const std::string& type, bool isReference)
-: Object(name, filename, type, AtomicValue(0))
+: Object(name, filename, type, DEFAULTVALUE)
 {
 	mIsAtomicType = false;
 	mIsReference = isReference;

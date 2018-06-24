@@ -16,7 +16,7 @@ namespace Runtime {
 
 
 AtomicValue::AtomicValue()
-: mType(Type::UNKOWN)
+: mType(Type::INT)
 {
 	mValue.bool_ = false;
 	mValue.double_ = 0.0;
