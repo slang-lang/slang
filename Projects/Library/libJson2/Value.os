@@ -34,23 +34,33 @@ public object JsonValue {
 		mValueType = Json.ValueType.Nil;
 	}
 
-	public void Constructor(bool value) {
+	public void Constructor(string key, bool value) {
+		mKey = key;
+
 		setValue(value);
 	}
 
-	public void Constructor(double value) {
+	public void Constructor(string key, double value) {
+		mKey = key;
+
 		setValue(value);
 	}
 
-	public void Constructor(float value) {
+	public void Constructor(string key, float value) {
+		mKey = key;
+
 		setValue(value);
 	}
 
-	public void Constructor(int value) {
+	public void Constructor(string key, int value) {
+		mKey = key;
+
 		setValue(value);
 	}
 
-	public void Constructor(string value) {
+	public void Constructor(string key, string value) {
+		mKey = key;
+
 		setValue(value);
 	}
 
@@ -140,12 +150,21 @@ public object JsonValue {
 		mValueType = Json.ValueType.String;
 	}
 
+	public int size() const {
+		return 0;
+	}
+
 	public string toString() const {
+		string result = "{ \"" + mKey + "\": ";
+
 		if ( mValueType == Json.ValueType.String ) {
-			return "\"" + mStringValue + "\"";
+			result += "\"" + mStringValue + "\"";
+		}
+		else {
+			result += mNumberValue;
 		}
 
-		return string mNumberValue;
+		return result + " }";
 	}
 
 	public JsonValue operator=(JsonValue value) modify {

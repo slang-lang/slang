@@ -8,7 +8,7 @@ public void Main(int argc, string args) {
 }
 
 private bool TestCase1() {
-	var value = new JsonValue("value");
+	var value = new JsonValue("key", "value");
 	print(value.toString());
 
 	return bool value;

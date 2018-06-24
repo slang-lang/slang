@@ -37,13 +37,17 @@ public object JsonObject extends JsonValue implements IIterateable {
 		return new Iterator(ICollection mMembers);
 	}
 
+	public int size() const {
+		return mMembers.size();
+	}
+
 	public string toString() const {
 		string members;
 		foreach ( JsonValue value : mMembers ) {
 			members += (members ? "," : "") + value.toString();
 		}
 
-		return "{\"" + mKey + "\":" + (members ?: "null") + "}";
+		return "{ \"" + mKey + "\": " + (members ?: "null") + " }";
 	}
 
 	private List<JsonValue> mMembers;
