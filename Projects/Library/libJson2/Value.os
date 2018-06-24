@@ -98,7 +98,7 @@ public object JsonValue {
 
 	public string asString() const {
 		if ( mValueType == Json.ValueType.String ) {
-			return mStringValue;
+			return "\"" + mStringValue + "\"";
 		}
 
 		return string mNumberValue;
@@ -155,16 +155,7 @@ public object JsonValue {
 	}
 
 	public string toString() const {
-		string result = "{ \"" + mKey + "\": ";
-
-		if ( mValueType == Json.ValueType.String ) {
-			result += "\"" + mStringValue + "\"";
-		}
-		else {
-			result += mNumberValue;
-		}
-
-		return result + " }";
+		return "{ \"" + mKey + "\": " + asString() + " }";
 	}
 
 	public JsonValue operator=(JsonValue value) modify {
