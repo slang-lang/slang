@@ -11,8 +11,8 @@ bool TestCase1() {
 	var array = new JsonArray("array");
 	print(array.toString());
 
-    array.addMember(new JsonObject("1", new JsonValue("value")));
-    array.addMember(new JsonObject("2", new JsonValue("value")));
+    array.addMember(new JsonValue("key1", "value"));
+    array.addMember(new JsonValue("key2", "value"));
 	print(array.toString());
 
 	return bool array;
