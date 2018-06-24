@@ -11,17 +11,12 @@ public namespace Json {
 }
 
 public object JsonArray extends JsonValue implements IIterateable {
-	public void Constructor() {
+	public void Constructor(string key) {
 		base.Constructor();
 
+		mKey = key;
 		mMembers = new Vector<JsonValue>();
 		mType = Json.Type.Array;
-	}
-
-	public void Constructor(string key) {
-		Constructor();
-
-		mKey = key;
 	}
 
 	public void addMember(JsonValue value) modify {
