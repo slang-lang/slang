@@ -18,11 +18,25 @@ public object JsonObject extends JsonValue implements IIterateable {
 		mType = Json.Type.Object;
 	}
 
+	public void Constructor(string key, JsonArray value) {
+		Constructor();
+
+		mKey = key;
+		mMembers.push_back(JsonValue value);
+	}
+
 	public void Constructor(string key, JsonValue value) {
 		Constructor();
 
 		mKey = key;
 		mMembers.push_back(value);
+	}
+
+	public void Constructor(string key, JsonObject value) {
+		Constructor();
+
+		mKey = key;
+		mMembers.push_back(JsonValue value);
 	}
 
 	public void addMember(JsonObject value) modify {
@@ -31,6 +45,10 @@ public object JsonObject extends JsonValue implements IIterateable {
 
 	public void addMember(string key, JsonValue value) modify {
 		mMembers.push_back(JsonValue new JsonObject(key, value));
+	}
+
+	public string getKey() const {
+		return mKey;
 	}
 
 	public Iterator getIterator() const {
@@ -50,6 +68,7 @@ public object JsonObject extends JsonValue implements IIterateable {
 		return "{ \"" + mKey + "\": " + (members ?: "null") + " }";
 	}
 
+	private string mKey;
 	private List<JsonValue> mMembers;
 }
 

@@ -31,6 +31,10 @@ public object JsonArray extends JsonValue implements IIterateable {
 		return new Iterator(ICollection mMembers);
 	}
 
+	public string getKey() const {
+		return mKey;
+	}
+
 	public int size() const {
 		return mMembers.size();
 	}
@@ -45,6 +49,7 @@ public object JsonArray extends JsonValue implements IIterateable {
 		return "{ \"" + mKey + "\": [" + (members ?: "") + "] }";
 	}
 
+	private string mKey;
 	private Vector<JsonValue> mMembers;
 }
 

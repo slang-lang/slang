@@ -30,7 +30,7 @@ public object JsonWriter {
 			throw new Exception("invalid Json Value provided!");
 		}
 
-		string result = "{" + mWhiteSpaceStart + indent(mIndentation++) + "\"" + root.getKey() + "\": ";
+		string result;
 
 		// handle complex types
 		if ( root is JsonArray ) {
@@ -44,7 +44,7 @@ public object JsonWriter {
 		}
 
 		// handle value types
-		return result + mWhiteSpaceEnd + indent(mIndentation--) + "}";
+		return result;
 	}
 
 	public string toString2(JsonValue root const) modify throws {
@@ -52,25 +52,26 @@ public object JsonWriter {
 			throw new Exception("invalid Json Value provided!");
 		}
 
-		string result = "{" + mWhiteSpaceStart + indent(mIndentation++) + "\"" + root.getKey() + "\": ";
+		string result;
 
 		if ( root.size() ) {
 			if ( root is JsonArray ) {
 				result += "[";
 			}
-			else {
+			else if ( root is JsonObject ) {
 				result += "{";
 			}
-			result += mWhiteSpaceStart;
+			result += mWhiteSpaceStart + indent(mIndentation);
+			//result += "\"" + root.getKey() + "\":";
 
 			string inner;
 			mIndentation++;
 			foreach ( JsonValue value : (JsonObject root) ) {
 				if ( inner ) {
-					inner += "," + mWhiteSpaceEnd;
+					inner += "," + mWhiteSpaceEnd + indent(mIndentation);
 				}
 
-				inner += indent(mIndentation) + toString2(value);
+				inner += toString2(value);
 			}
 			mIndentation--;
 
@@ -95,7 +96,7 @@ public object JsonWriter {
 			}
 		}
 
-		return result + mWhiteSpaceEnd + indent(mIndentation--) + "}";
+		return result;
 	}
 
 // Protected
@@ -114,9 +115,13 @@ public object JsonWriter {
 
 			result += indent(mIndentation) + toString(value);
 		}
+
+		if ( result ) {
+			result = "[" + mWhiteSpaceStart + indent(mIndentation) + result + mWhiteSpaceEnd + indent(mIndentation) + "]";
+		}
 		mIndentation--;
 
-		return result ? ("[" + mWhiteSpaceStart + indent(mIndentation) + result + mWhiteSpaceEnd + indent(mIndentation) + "]") : "[]";
+		return "{" + mWhiteSpaceStart + indent(mIndentation + 1) + "\"" + root.getKey() + "\": " + (result ?: "[]") + mWhiteSpaceEnd + indent(mIndentation) + "}";
 	}
 
 	protected string _toString(JsonObject root const ref) modify {
@@ -125,14 +130,14 @@ public object JsonWriter {
 		mIndentation++;
 		foreach ( JsonValue value : root ) {
 			if ( result ) {
-				result += "," + mWhiteSpaceEnd;
+				result += "," + mWhiteSpaceEnd + indent(mIndentation);
 			}
 
-			result += indent(mIndentation) + toString(value);
+			result += toString(value);
 		}
 		mIndentation--;
 
-		return result ? ("{" + mWhiteSpaceStart + indent(mIndentation + 1) + result + mWhiteSpaceEnd + indent(mIndentation) + "}") : "null";
+		return "{" + mWhiteSpaceStart + indent(mIndentation + 1) + "\"" + root.getKey() + "\": " + (result ?: "null") + mWhiteSpaceEnd + indent(mIndentation) + "}";
 	}
 
 	protected int mIndentation;
