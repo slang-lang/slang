@@ -1006,13 +1006,13 @@ void search(const StringList& params)
 			result.push_back(name + "(" + (*it)["version"].asString() + ")");
 		}
 
-/*
-		std::string description = (*it)[""].asString();
+		if ( (*it).isMember("description") ) {
+			std::string description = (*it)["description"].asString();
 
-		if ( findCaseInsensitive(description, lookup) != std::string::npos ) {
-			result.push_back(name + "(" + (*it)["version"].asString() + ")");
+			if ( findCaseInsensitive(description, lookup) != std::string::npos ) {
+				result.push_back(name + "(" + (*it)["version"].asString() + ")");
+			}
 		}
-*/
 	}
 
 	if ( result.empty() ) {
