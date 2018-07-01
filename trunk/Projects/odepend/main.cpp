@@ -187,7 +187,7 @@ void addRestriction(const StringList& params)
 void checkOutdatedModules(Repository::Modules& outdatedModules)
 {
 	// compare new index.json with local module information:
-	// find all folders in local <repo> folder and compare their corresponding <repo>/list/<module>.json [version] field
+	// find all folders in local <repo> folder and compare their corresponding <repo>/<module>/module.json [version] field
 	// with the version in the index.json file
 
 	Repository::Modules local = mLocalRepository.getModules();
@@ -302,7 +302,7 @@ bool contains(const StringList& list, const std::string& value)
 void create(const StringList& params)
 {
 	// (1) collect module information from given "<directory>/module.json"
-	// (2) create "<module>.json", "<module>_<version>.json", "<module>_<version>.tar.gz"
+	// (2) create "<module>_<version>.json", "<module>_<version>.tar.gz"
 
 	if ( params.empty() || params.size() != 1 ) {
 		std::cout << "!!! Invalid number of parameters" << std::endl;
@@ -317,13 +317,6 @@ void create(const StringList& params)
 
 	std::string moduleName = module.mShortName;
 
-/*
-	{	// create generic module information ("<module>.json")
-		std::cout << "Creating module information \"" << moduleName + ".json\"" << std::endl;
-
-		execute("cp " + path + "/" + filename + " " + moduleName + ".json");
-	}
-*/
 	{	// create version specific module information ("<module>_<version>.json")
 		std::cout << "Creating module information \"" << moduleName + "_" + module.mVersion.toString() + ".json\"" << std::endl;
 
@@ -387,9 +380,9 @@ void deinit()
 
 bool download(const std::string& url, const std::string& target, bool allowCleanup)
 {
-//#ifdef ODEPEND_DEBUG
-//	std::cout << "Downloading \"" << url << "\" => \"" << target << "\"" << std::endl;
-//#endif
+#ifdef ODEPEND_DEBUG
+	std::cout << "Downloading \"" << url << "\" => \"" << target << "\"" << std::endl;
+#endif
 
 	CURL *curl_handle;
 	FILE *pagefile;
