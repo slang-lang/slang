@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ $1 != "" ]; then
+if [ x$1 != "x" ]; then
 	odepend create $1
 fi
 
