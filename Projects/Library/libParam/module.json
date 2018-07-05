@@ -1,0 +1,14 @@
+{
+  "name": "ObjectiveScript cli parameter handling library",
+  "name_short": "libParam",
+  "version": "0.0.1",
+  "description": "The ObjectiveScript cli parameter handling library provides a way to easily handle command line parameter values.",
+  "dependencies": [
+    { "module": "system", "version_min": "0.0.1" }
+  ],
+  "target": {
+    "directory": "libParam",
+    "type": "internal",
+    "url": "libParam_0.0.1.tar.gz"
+  }
+}
