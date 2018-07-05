@@ -1,5 +1,8 @@
 #!/usr/local/bin/oscript
 
+// Library imports
+
+// Project imports
 import Object;
 
 public void Main(int argc, string args) {
