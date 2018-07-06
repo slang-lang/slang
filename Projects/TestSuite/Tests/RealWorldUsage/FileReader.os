@@ -1,5 +1,6 @@
 #!/usr/local/bin/oscript
 
+import libParam.ParameterHandler;
 import System.Collections.List;
 import System.Collections.IIterateable;
 import System.IO.File;
@@ -48,19 +49,38 @@ public void Main(int argc, string args) {
 		return;
 	}
 
-	var params = new List<String>();
-	foreach ( string p : new String(args) ) {
-		params.push_back(new String(p));
-	}
-
-	for ( int idx = 1; idx < argc; idx++ ) {
-		string filename = string params.at(idx);
-
-		print(filename + ":");
-
-		foreach ( string line : new Scanner(new System.IO.File(filename, "r"), ascii(10)) ) {
-			print(line);
+	try {
+/*
+		var params = new List<String>();
+		foreach ( string p : new String(args) ) {
+			params.push_back(new String(p));
 		}
+
+		for ( int idx = 1; idx < argc; idx++ ) {
+			string filename = string params.at(idx);
+
+			print(filename + ":");
+
+			foreach ( string line : new Scanner(new System.IO.File(filename, "r"), ascii(10)) ) {
+				print(line);
+			}
+		}
+*/
+
+		var params = new ParameterHandler(argc, args);
+		foreach ( string filename : params ) {
+			print(filename + ":");
+
+			foreach ( string line : new Scanner(new System.IO.File(filename, "r"), ascii(10)) ) {
+				print(line);
+			}
+		}
+	}
+	catch ( string e ) {
+		print("Exception: " + e);
+	}
+	catch ( IException e ) {
+		print("Exception: " + e.what());
 	}
 }
 

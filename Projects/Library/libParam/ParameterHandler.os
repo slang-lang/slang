@@ -42,9 +42,13 @@ public object ParameterHandler implements IIterateable {
 	}
 
 	private void process() modify {
-		foreach ( string p : new String(mArgs) ) {
-			mParams.push_back(new String(p));
+		StringIterator it = new StringIterator(mArgs, ascii(10));
+		while ( it.hasNext() ) {
+			mParams.push_back(new String(it.next()));
 		}
+
+		// verify that we correctly parsed all arguments
+		assert( mArgc == mParams.size() );
 	}
 }
 
