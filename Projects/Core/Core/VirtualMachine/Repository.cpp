@@ -518,10 +518,6 @@ void Repository::initializeObject(Designtime::BluePrintObject* srcObj, Runtime::
  */
 void Repository::initBluePrintObject(Designtime::BluePrintObject* blueprint)
 {
-	if ( blueprint->isPrepared() ) {
-		// already prepared
-		return;
-	}
 	if ( blueprint->isAtomicType() && !blueprint->isEnumeration() ) {
 		// atomic types have been initialized at compile time
 		return;
