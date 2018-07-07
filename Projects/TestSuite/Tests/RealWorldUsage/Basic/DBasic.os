@@ -1,6 +1,7 @@
 #!/usr/local/bin/oscript
 
 // library imports
+import libParam.ParameterHandler;
 import System.Collections.List;
 import System.IO.File;
 import System.String;
@@ -18,7 +19,11 @@ string filename;
 
 
 public int Main(int argc, string args) modify {
-	parseParameters(argc, args);
+	var params = new ParameterHandler(argc, args);
+	if ( params.size() > 1 ) {
+		// set filename if any params are set
+		filename = string params.at(1);
+	}
 
 	try {
 		while ( true ) {
@@ -58,22 +63,6 @@ void loadFile(StringIterator it) modify {
 	}
 
 	filename = it.next();
-}
-
-void parseParameters(int argc, string args) modify {
-	if ( argc < 2 ) {
-		// not enough params set
-		return;
-	}
-
-	var params = new List<String>();
-
-	foreach ( string p : new String(args) ) {
-		params.push_back(new String(p));
-	}
-
-	// set filename if any params are set
-	filename = string params.at(1);
 }
 
 void printHelp() {
