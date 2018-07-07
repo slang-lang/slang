@@ -1,6 +1,7 @@
 #!/usr/local/bin/oscript
 
 // library imports
+import libParam.ParameterHandler;
 import System.Collections.List;
 import System.IO.File;
 import System.String;
@@ -19,12 +20,7 @@ public int Main(int argc, string args) modify {
 		return -1;
 	}
 
-
-	List<String> params = new List<String>();
-
-	foreach ( string p : new String(args) ) {
-		params.push_back(new String(p));
-	}
+	var params = new ParameterHandler(argc, args);
 
 	try {
 		Parser parser = new Parser();
