@@ -57,10 +57,10 @@ public object List<T> implements ICollection {
 			throw new OutOfBoundsException("erase index(" + index + ") out of bounds");
 		}
 
-		if ( index == 0 ) {						// special handling for 1st element
+		if ( index == 0 ) {			// special handling for 1st element
 			mFirst = mFirst.mNext;
 		}
-		else {									// default handling for erasing
+		else {					// default handling for erasing
 			CollectionItem prev = mFirst;
 			for ( int i = 0; i < index - 1; i++ ) {
 				prev = prev.mNext;
@@ -120,7 +120,7 @@ public object List<T> implements ICollection {
 			throw new OutOfBoundsException("empty collection");
 		}
 
-		if ( mSize == 1 ) {		// special handling for 1st item
+		if ( mSize == 1 ) {			// special handling for 1st item
 			mFirst = CollectionItem null;
 			mLast = CollectionItem null;
 		}
@@ -153,10 +153,10 @@ public object List<T> implements ICollection {
 	public void push_back(T value) modify {
 		CollectionItem item = new CollectionItem(Object value);
 
-		if ( mSize == 0 ) {     // special handling for 1st item
+		if ( mSize == 0 ) {			// special handling for 1st item
 			mFirst = item;
 		}
-		else {                  // generic handling
+		else {					// generic handling
 			mLast.mNext = item;
 		}
 
