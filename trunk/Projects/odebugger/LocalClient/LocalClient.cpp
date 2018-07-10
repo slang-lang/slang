@@ -10,7 +10,7 @@
 // Project includes
 #include <Common/Settings.h>
 #include <Core/AST/TreeLineBuffer.h>
-#include <Core/AST/TreeVisitor.h>
+#include <Core/AST/PrintVisitor.h>
 #include <Core/BuildInObjects/BoolObject.h>
 #include <Core/BuildInObjects/DoubleObject.h>
 #include <Core/BuildInObjects/FloatObject.h>

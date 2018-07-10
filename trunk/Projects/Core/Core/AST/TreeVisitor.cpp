@@ -15,126 +15,15 @@ namespace ObjectiveScript {
 namespace AST {
 
 
-PrintVisitor::PrintVisitor()
-: mIndentation(0)
+TreeVisitor::TreeVisitor()
 {
 }
 
-PrintVisitor::~PrintVisitor()
+TreeVisitor::~TreeVisitor()
 {
 }
 
-void PrintVisitor::generate(Statements* root, TreeLineBuffer& output)
-{
-	// clean up old output
-	mOutput.clear();
-
-	// start processing beginning with our given root node
-	visitStatements(root);
-
-	// provide our callee with our collected output
-	output.insert(mOutput);
-}
-
-std::string PrintVisitor::printExpression(Node* node) const
-{
-	if ( !node ) {
-		return "";
-	}
-
-	assert(node->getNodeType() == Node::NodeType::Expression);
-
-	Expression* expression = static_cast<Expression*>(node);
-	std::string result;
-
-	switch ( expression->getExpressionType() ) {
-		case Expression::ExpressionType::AssignmentExpression: {
-			AssignmentExpression* ass = static_cast<AssignmentExpression*>(expression);
-
-			result += printExpression(ass->mLHS);
-			result += " = ";
-			result += printExpression(ass->mRHS);
-		} break;
-		case Expression::ExpressionType::BinaryExpression: {
-			BinaryExpression* bin = static_cast<BinaryExpression*>(node);
-
-			result += printExpression(bin->mLHS) + " ";
-			result += bin->mOperation.content() + " ";
-			result += printExpression(bin->mRHS);
-		} break;
-		case Expression::ExpressionType::CopyExpression: {
-			result += "copy " + printExpression(static_cast<CopyExpression*>(expression)->mExpression);
-		} break;
-		case Expression::ExpressionType::IsExpression: {
-			IsExpression* is = static_cast<IsExpression*>(expression);
-
-			result += printExpression(is->mExpression) + " is " + is->mMatchType;
-		} break;
-		case Expression::ExpressionType::NewExpression: {
-			result += "new " + printExpression(static_cast<NewExpression*>(expression)->mExpression);
-		} break;
-		case Expression::ExpressionType::LiteralExpression: {
-			Runtime::AtomicValue value = static_cast<LiteralExpression*>(expression)->mValue;
-			if ( value.type() == Runtime::AtomicValue::Type::STRING ) {
-				result += "\"";
-			}
-			result += value.toStdString();
-			if ( value.type() == Runtime::AtomicValue::Type::STRING ) {
-				result += "\"";
-			}
-		} break;
-		case Expression::ExpressionType::MethodExpression: {
-			MethodExpression* method = static_cast<MethodExpression*>(expression);
-
-			result += printExpression(method->mSymbolExpression);
-			result += "(";
-			for ( ExpressionList::const_iterator it = method->mParams.begin(); it != method->mParams.end(); ++it ) {
-				result += printExpression((*it));
-			}
-			result += ")";
-		} break;
-		case Expression::ExpressionType::SymbolExpression: {
-			SymbolExpression* sym = static_cast<SymbolExpression*>(expression);
-
-			result += sym->mSymbolExpression ? printExpression(sym->mSymbolExpression) : sym->mName;
-		} break;
-		case Expression::ExpressionType::TernaryExpression: {
-			TernaryExpression* ter = static_cast<TernaryExpression*>(expression);
-
-			result += printExpression(ter->mCondition) + " ? ";
-			result += printExpression(ter->mFirst) + " : ";
-			result += printExpression(ter->mSecond);
-		} break;
-		case Expression::ExpressionType::TypecastExpression: {
-			TypecastExpression* type = static_cast<TypecastExpression*>(expression);
-
-			result += "( " + type->mDestinationType + " " + printExpression(type->mExpression) + " )";
-		} break;
-		case Expression::ExpressionType::TypeidExpression: {
-			result += "typeid( " + printExpression(static_cast<TypeidExpression*>(expression)->mExpression) + " )";
-		} break;
-		case Expression::ExpressionType::UnaryExpression: {
-			UnaryExpression* un = static_cast<UnaryExpression*>(expression);
-
-			result += un->mOperation.content() + printExpression(un->mExpression);
-		} break;
-	}
-
-	return result;
-}
-
-std::string PrintVisitor::printIndentation(int indentation) const
-{
-	std::string result;
-
-	for ( int i = 0; i < indentation; i++ ) {
-		result += "\t";
-	}
-
-	return result;
-}
-
-void PrintVisitor::visit(Node* node)
+void TreeVisitor::visit(Node* node)
 {
 	if ( node ) {
 		switch ( node->getNodeType() ) {
@@ -151,105 +40,141 @@ void PrintVisitor::visit(Node* node)
 	}
 }
 
-void PrintVisitor::visitAssert(AssertStatement* node)
+void TreeVisitor::visitAssert(AssertStatement* node)
 {
-	mOutput.insert(node->token().position(), printIndentation(mIndentation) + "assert(" + printExpression(node->mExpression) + ");");
+	visit(node->mExpression);
 }
 
-void PrintVisitor::visitBreak(BreakStatement* node)
+void TreeVisitor::visitBreak(BreakStatement*)
 {
-	mOutput.insert(node->token().position(), printIndentation(mIndentation) + "break;");
 }
 
-void PrintVisitor::visitContinue(ContinueStatement* node)
+void TreeVisitor::visitContinue(ContinueStatement*)
 {
-	mOutput.insert(node->token().position(), printIndentation(mIndentation) + "continue;");
 }
 
-void PrintVisitor::visitDelete(DeleteStatement* node)
+void TreeVisitor::visitDelete(DeleteStatement* node)
 {
-	mOutput.insert(node->token().position(), printIndentation(mIndentation) + "delete " + printExpression(node->mExpression) + ";");
+	visit(node->mExpression);
 }
 
-void PrintVisitor::visitExit(ExitStatement* node)
+void TreeVisitor::visitExit(ExitStatement* node)
 {
-	mOutput.insert(node->token().position(), printIndentation(mIndentation) + "exit( " + printExpression(node->mExpression) + " );");
+	visit(node->mExpression);
 }
 
-void PrintVisitor::visitExpression(Expression* expression)
+void TreeVisitor::visitExpression(Expression* expression)
 {
-	mOutput.append(printIndentation(mIndentation) + printExpression(expression));
+	if ( !expression ) {
+		return;
+	}
+
+	assert(expression->getNodeType() == Node::NodeType::Expression);
+
+	switch ( expression->getExpressionType() ) {
+		case Expression::ExpressionType::AssignmentExpression: {
+			AssignmentExpression* ass = static_cast<AssignmentExpression*>(expression);
+
+			visit(ass->mLHS);
+			visit(ass->mRHS);
+		} break;
+		case Expression::ExpressionType::BinaryExpression: {
+			BinaryExpression* bin = static_cast<BinaryExpression*>(expression);
+
+			visit(bin->mLHS);
+			visit(bin->mRHS);
+		} break;
+		case Expression::ExpressionType::CopyExpression: {
+			visit(static_cast<CopyExpression*>(expression)->mExpression);
+		} break;
+		case Expression::ExpressionType::IsExpression: {
+			IsExpression* is = static_cast<IsExpression*>(expression);
+
+			visit(is->mExpression);
+		} break;
+		case Expression::ExpressionType::NewExpression: {
+			visit(static_cast<NewExpression*>(expression)->mExpression);
+		} break;
+		case Expression::ExpressionType::LiteralExpression: {
+		} break;
+		case Expression::ExpressionType::MethodExpression: {
+			MethodExpression* method = static_cast<MethodExpression*>(expression);
+
+			visit(method->mSymbolExpression);
+			for ( ExpressionList::const_iterator it = method->mParams.begin(); it != method->mParams.end(); ++it ) {
+				visit((*it));
+			}
+		} break;
+		case Expression::ExpressionType::SymbolExpression: {
+			SymbolExpression* sym = static_cast<SymbolExpression*>(expression);
+
+			visit(sym->mSymbolExpression);
+		} break;
+		case Expression::ExpressionType::TernaryExpression: {
+			TernaryExpression* ter = static_cast<TernaryExpression*>(expression);
+
+			visit(ter->mCondition);
+			visit(ter->mFirst);
+			visit(ter->mSecond);
+		} break;
+		case Expression::ExpressionType::TypecastExpression: {
+			TypecastExpression* type = static_cast<TypecastExpression*>(expression);
+
+			visit(type->mExpression);
+		} break;
+		case Expression::ExpressionType::TypeidExpression: {
+			visit(static_cast<TypeidExpression*>(expression)->mExpression);
+		} break;
+		case Expression::ExpressionType::UnaryExpression: {
+			UnaryExpression* un = static_cast<UnaryExpression*>(expression);
+
+			visit(un->mExpression);
+		} break;
+	}
 }
 
-void PrintVisitor::visitFor(ForStatement* node)
+void TreeVisitor::visitFor(ForStatement* node)
 {
-	mOutput.insert(node->token().position(), printIndentation(mIndentation) + "for ( ");
-
-	// set indentation to 0 temporarily
-	int indent = mIndentation;
-	mIndentation = 0;
-
 	visitStatement(static_cast<Statement*>(node->mInitialization));
-
-	mOutput.append("; " + printExpression(node->mCondition) + "; ");
 
 	visitStatement(static_cast<Statement*>(node->mIteration));
 
-	mOutput.append(" ) ");
-
-	// reset indentation
-	mIndentation = indent;
-
 	visit(node->mStatement);
 }
 
-void PrintVisitor::visitForeach(ForeachStatement *node)
+void TreeVisitor::visitForeach(ForeachStatement *node)
 {
-	mOutput.insert(node->token().position(), printIndentation(mIndentation) + "for ( ");
-
-	// set indentation to 0 temporarily
-	int indent = mIndentation;
-	mIndentation = 0;
-
 	visitStatement(node->mTypeDeclaration);
 
-	mOutput.append(" : " + printExpression(node->mCollectionExpression) + " ) ");
-
-	// reset indentation
-	mIndentation = indent;
-
 	visit(node->mStatement);
 }
 
-void PrintVisitor::visitIf(IfStatement* node)
+void TreeVisitor::visitIf(IfStatement* node)
 {
-	mOutput.insert(node->token().position(), printIndentation(mIndentation) + "if ( " + printExpression(node->mCondition) + " ) ");
+	visit(node->mCondition);
 
 	visit(node->mIfBlock);
 
 	if ( node->mElseBlock ) {
-		mOutput.insert(static_cast<Statements*>(node->mElseBlock)->token().position(), printIndentation(mIndentation) + "else ");
-
 		visit(node->mElseBlock);
 	}
 }
 
-void PrintVisitor::visitOperator(Operator* op)
+void TreeVisitor::visitOperator(Operator*)
 {
-	mOutput.append(op->token().content());
 }
 
-void PrintVisitor::visitPrint(PrintStatement* node)
+void TreeVisitor::visitPrint(PrintStatement* node)
 {
-	mOutput.insert(node->token().position(), printIndentation(mIndentation) + "print(" + printExpression(node->mExpression) + ");");
+	visit(node->mExpression);
 }
 
-void PrintVisitor::visitReturn(ReturnStatement* node)
+void TreeVisitor::visitReturn(ReturnStatement* node)
 {
-	mOutput.insert(node->token().position(), printIndentation(mIndentation) + "return " + printExpression(node->mExpression) + ";");
+	visit(node->mExpression);
 }
 
-void PrintVisitor::visitStatement(Statement *node)
+void TreeVisitor::visitStatement(Statement *node)
 {
 	if ( !node ) {
 		return;
@@ -314,11 +239,8 @@ void PrintVisitor::visitStatement(Statement *node)
 	}
 }
 
-void PrintVisitor::visitStatements(Statements* node)
+void TreeVisitor::visitStatements(Statements* node)
 {
-	mOutput.append("{ ");
-	mIndentation++;
-
 	Statements* statements = node;
 
 	if ( statements ) {
@@ -326,92 +248,64 @@ void PrintVisitor::visitStatements(Statements* node)
 			visit((*it));
 		}
 	}
-
-	mIndentation--;
-	mOutput.append(" }");
 }
 
-void PrintVisitor::visitSwitch(SwitchStatement* node)
+void TreeVisitor::visitSwitch(SwitchStatement* node)
 {
-	mOutput.insert(node->token().position(), printIndentation(mIndentation) + "switch ( " + printExpression(node->mExpression) + " ) {");
+	visit(node->mExpression);
 
 	for ( CaseStatements::const_iterator it = node->mCaseStatements.begin(); it != node->mCaseStatements.end(); ++it ) {
-		mOutput.insert(node->token().position(), printIndentation(mIndentation + 1) + printExpression((*it)->mCaseExpression) + ": ");
+		visit((*it)->mCaseExpression);
 
 		visit((*it)->mCaseBlock);
 	}
 
 	if ( node->mDefaultStatement ) {
-		mOutput.insert(node->token().position(), printIndentation(mIndentation + 1) + "default: ");
-
 		visit(node->mDefaultStatement);
 	}
-
-	mOutput.insert(node->token().position(), printIndentation(mIndentation) + "}");
 }
 
-void PrintVisitor::visitThrow(ThrowStatement* node)
+void TreeVisitor::visitThrow(ThrowStatement* node)
 {
-	mOutput.insert(node->token().position(), printIndentation(mIndentation) + "throw " + printExpression(node->mExpression) + ";");
+	visit(node->mExpression);
 }
 
-void PrintVisitor::visitTry(TryStatement* node)
+void TreeVisitor::visitTry(TryStatement* node)
 {
-	mOutput.insert(node->token().position(), printIndentation(mIndentation) + "try ");
-
 	visitStatement(node->mTryBlock);
 
 	// TODO: handle catch statements
 
 	for ( CatchStatements::const_iterator it = node->mCatchStatements.begin(); it != node->mCatchStatements.end(); ++it ) {
-		mOutput.insert((*it)->mStatements->token().position(), printIndentation(mIndentation) + "catch ");
-
 		if ( (*it)->mTypeDeclaration ) {
-			mOutput.append("(");
-
-			// set indentation to 0 temporarily
-			int indent = mIndentation;
-			mIndentation = 0;
-
 			//visitTypeDeclaration((*it)->mTypeDeclaration);
-
-			// reset indentation
-			mIndentation = indent;
-
-			mOutput.append(") ");
 
 			visitStatements((*it)->mStatements);
 		}
 	}
 
 	if ( node->mFinallyBlock ) {
-		mOutput.insert(node->mFinallyBlock->token().position(), printIndentation(mIndentation) + "finally ");
-
 		visitStatement(node->mFinallyBlock);
 	}
 }
 
-void PrintVisitor::visitTypeDeclaration(TypeDeclaration* node)
+void TreeVisitor::visitTypeDeclaration(TypeDeclaration* node)
 {
-	mOutput.insert(node->token().position(), printIndentation(mIndentation) + node->mType + " " + node->mName);
-
 	if ( node->mAssignment ) {
-		mOutput.insert(node->token().position(), " = " + printExpression(node->mAssignment));
+		visit(node->mAssignment);
 	}
 }
 
-void PrintVisitor::visitTypeInference(TypeInference* node)
+void TreeVisitor::visitTypeInference(TypeInference* node)
 {
-	mOutput.insert(node->token().position(), printIndentation(mIndentation) + "var " + node->mName);
-
 	if ( node->mAssignment ) {
-		mOutput.insert(node->token().position(), " = " + printExpression(node->mAssignment));
+		visit(node->mAssignment);
 	}
 }
 
-void PrintVisitor::visitWhile(WhileStatement* node)
+void TreeVisitor::visitWhile(WhileStatement* node)
 {
-	mOutput.insert(node->token().position(), printIndentation(mIndentation) + "while ( " + printExpression(node->mCondition) + " ) ");
+	visit(node->mCondition);
 
 	visit(node->mStatement);
 }
