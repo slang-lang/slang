@@ -29,13 +29,13 @@ public int Main(int argc, string args) modify {
 		return interpreter.run();
 	}
 	catch ( IException e ) {
-		print(e.what());
+		print("Exception: " + e.what());
 	}
 	catch ( string e ) {
-		print(e);
+		print("Exception: " + e);
 	}
 	catch {
-		print("caught unknown exception!");
+		print("Exception: caught unknown exception!");
 	}
 
 	return -1;

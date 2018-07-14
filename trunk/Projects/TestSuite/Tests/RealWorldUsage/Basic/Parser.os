@@ -72,6 +72,9 @@ public object Parser {
 		}
 
 		string lineLabel = substr(content, 0, idx);
+		if ( !isNumber(lineLabel) ) {
+			throw new Exception("invalid label '" + lineLabel + "'!");
+		}
 		// }
 
 		// parse statement
@@ -137,6 +140,11 @@ public object Parser {
 				//print(result.toString());
 				break;
 			}
+			case "NEXT": {
+				result = parseNEXT(ci);
+				//print(result.toString());
+				break;
+			}
 			case "PRINT": {
 				result = parsePRINT(ci);
 				//print(result.toString());
@@ -180,13 +188,54 @@ public object Parser {
 			throw new Exception("incomplete FOR!");
 		}
 
-		string variable = parseWord(ci);
+		VariableExpression varExp = new VariableExpression(parseWord(ci));
 
 		skipWhitespaces(ci);
 
-		throw "FOR-statement not implemented!";
+		if ( ci.current() != "=" ) {
+			throw "'=' expected!";
+		}
+		ci++;
 
-		return Statement new ForStatement(variable, 1, 10, 1);
+		Expression initExp = expression(ci);
+
+		string word;
+		while ( ci.hasNext() && isCharacter(ci.current()) ) {
+			word += ci.current();
+
+			ci.next();
+		}
+
+		if ( word != "TO" ) {
+			throw "'TO' expected but '" + word + "' found!";
+		}
+
+		Expression toExp = expression(ci); 
+
+		Expression stepExp;
+		if ( ci.hasNext() ) {
+			word = "";
+
+			while ( ci.hasNext() && isCharacter(ci.current()) ) {
+				word += ci.current();
+
+				ci.next();
+			}
+
+			if ( word != "STEP" ) {
+				throw "'STEP' expected but '" + word + "' found!";
+			}
+
+			stepExp = expression(ci);
+		}
+		else {
+			stepExp = expression("1");
+		}
+
+		return Statement new ForStatement(varExp,
+										  initExp,
+										  Expression new BinaryExpression(Expression varExp, "<", toExp),
+										  Expression new BinaryExpression(Expression varExp, "+", stepExp));
 	}
 
 	private Statement parseGOTO(CharacterIterator ci) throws {
@@ -212,7 +261,7 @@ public object Parser {
 		}
 
 		if ( then != "THEN" ) {
-			throw "'THEN' excpected but '" + then + "' found!";
+			throw "'THEN' expected but '" + then + "' found!";
 		}
 
 		return Statement new IfStatement(exp, parseStatement(ci));
@@ -246,6 +295,16 @@ public object Parser {
 		ci.next();
 
 		return Statement new LetStatement(variable, expression(ci));
+	}
+
+	private Statement parseNEXT(CharacterIterator ci) throws {
+		if ( !ci.hasNext() ) {
+			throw new Exception("incomplete NEXT!");
+		}
+
+		string variable = parseWord(ci);
+
+		return Statement new NextStatement(variable);
 	}
 
 	private Statement parsePRINT(CharacterIterator ci) throws {
@@ -320,8 +379,9 @@ public object Parser {
 			return false;
 		}
 
-		foreach ( string s : new String(value) ) {
-			if ( !NUMBERS.Contains(s) ) {
+		var ci = new CharacterIterator(value);
+		while ( ci.hasNext() ) {
+			if ( !NUMBERS.Contains(ci.next()) ) {
 				return false;
 			}
 		}
@@ -338,8 +398,9 @@ public object Parser {
 			return false;
 		}
 
-		foreach ( string s : new String(value) ) {
-			if ( !CHARS.Contains(s) ) {
+		var ci = new CharacterIterator(value);
+		while ( ci.hasNext() ) {
+			if ( !CHARS.Contains(ci.next()) ) {
 				return false;
 			}
 		}
@@ -351,8 +412,7 @@ public object Parser {
 		string line;
 
 		while ( ci.hasNext() ) {
-			ci++;
-			string c = ci.current();
+			string c = ci.next();
 
 			line += c;
 		}
