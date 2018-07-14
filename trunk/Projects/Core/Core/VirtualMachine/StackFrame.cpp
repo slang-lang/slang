@@ -34,6 +34,7 @@ StackFrame::StackFrame(unsigned long level, IScope* scope, const ParameterList& 
 
 StackFrame::~StackFrame()
 {
+	mScope = 0;
 }
 
 bool StackFrame::allowBreakAndContinue() const

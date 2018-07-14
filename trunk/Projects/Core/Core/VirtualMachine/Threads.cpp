@@ -111,10 +111,6 @@ void Thread::popFrame()
 
 void Thread::print()
 {
-	if ( mStackFrames.empty() ) {
-		return;
-	}
-
 	for ( StackFrames::const_iterator it = mStackFrames.begin(); it != mStackFrames.end(); ++it ) {
 		std::cout << "Thread " << mId << ": " << (*it)->toString() << std::endl;
 	}

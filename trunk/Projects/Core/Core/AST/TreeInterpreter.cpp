@@ -838,13 +838,13 @@ void TreeInterpreter::visit(Node* node)
 
 	switch ( node->getNodeType() ) {
 		case Node::NodeType::Expression:
-			visitExpression(static_cast<Expression*>(node));
+			visitExpression(dynamic_cast<Expression*>(node));
 			break;
 		case Node::NodeType::Operator:
-			visitOperator(static_cast<Operator*>(node));
+			visitOperator(dynamic_cast<Operator*>(node));
 			break;
 		case Node::NodeType::Statement:
-			visitStatement(static_cast<Statement*>(node));
+			visitStatement(dynamic_cast<Statement*>(node));
 			break;
 	}
 }
@@ -1045,10 +1045,6 @@ void TreeInterpreter::visitReturn(ReturnStatement* node)
 
 void TreeInterpreter::visitStatement(Statement *node)
 {
-	if ( !node ) {
-		return;
-	}
-
 	DEBUGGER( notify(getScope(), node->token()) );		// notify debugger
 
 	switch ( node->getStatementType() ) {
@@ -1192,7 +1188,12 @@ void TreeInterpreter::visitTry(TryStatement* node)
 	visitStatements(node->mTryBlock);
 
 	// execute exception handling only if an exception occurred and catch statements are present
-	if ( mControlFlow == Runtime::ControlFlow::Throw && !node->mCatchStatements.empty() ) {
+	if ( mControlFlow == Runtime::ControlFlow::Throw ) {
+		if ( node->mCatchStatements.empty() ) {
+			// this is a catch-all try-block, so we have to reset the control flow
+			mControlFlow = Runtime::ControlFlow::Normal;
+		}
+
 		// get exception data
 		Runtime::Object* exception = mThread->exception().getData();
 
@@ -1202,9 +1203,6 @@ void TreeInterpreter::visitTry(TryStatement* node)
 				// exception type does not match
 				continue;
 			}
-
-			// reset control flow to normal to allow execution of catch-block
-			mControlFlow = Runtime::ControlFlow::Normal;
 
 			// push a new scope to be able to clean up the exception variable
 			pushScope();
@@ -1220,6 +1218,9 @@ void TreeInterpreter::visitTry(TryStatement* node)
 
 			// notify our debugger that an exception has been caught
 			DEBUGGER( notifyExceptionCatch(getScope(), (*it)->token()) );
+
+			// reset current control flow to allow execution of catch block
+			mControlFlow = Runtime::ControlFlow::Normal;
 
 			// execute catch statements
 			visitStatements((*it)->mStatements);
@@ -1244,7 +1245,7 @@ void TreeInterpreter::visitTry(TryStatement* node)
 	}
 
 	// reset control flow to previous state if not set differently by finally statement
-	if ( mControlFlow == Runtime::ControlFlow::Normal && tmpControlFlow != Runtime::ControlFlow::Throw ) {
+	if ( mControlFlow == Runtime::ControlFlow::Normal ) {
 		mControlFlow = tmpControlFlow;
 	}
 }
