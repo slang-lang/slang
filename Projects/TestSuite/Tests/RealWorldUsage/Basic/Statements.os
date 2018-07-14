@@ -8,18 +8,22 @@ import Expressions;
 
 string KEYWORD_DIM const = "DIM";
 int KEYWORD_DIM_ID const = 1;
+string KEYWORD_FOR const = "FOR";
+int KEYWORD_FOR_ID const = 2;
 string KEYWORD_GOTO const = "GOTO";
-int KEYWORD_GOTO_ID const = 2;
+int KEYWORD_GOTO_ID const = 3;
 string KEYWORD_IF const = "IF";
-int KEYWORD_IF_ID const = 3;
-string KEYWORD_INPUT const = "IF";
-int KEYWORD_INPUT_ID const = 4;
+int KEYWORD_IF_ID const = 4;
+string KEYWORD_INPUT const = "INPUT";
+int KEYWORD_INPUT_ID const = 5;
+string KEYWORD_NEXT const = "NEXT";
+int KEYWORD_NEXT_ID const = 6;
 string KEYWORD_LABEL const = "LABEL";
-int KEYWORD_LABEL_ID const = 5;
+int KEYWORD_LABEL_ID const = 7;
 string KEYWORD_PRINT const = "PRINT";
-int KEYWORD_PRINT_ID const = 6;
+int KEYWORD_PRINT_ID const = 8;
 string KEYWORD_REM const = "REM";
-int KEYWORD_REM_ID const = 7;
+int KEYWORD_REM_ID const = 9;
 
 
 public enum StatementType {
@@ -31,6 +35,7 @@ public enum StatementType {
 	InputStatement,
 	LetStatement,
 	MethodStatement,
+	NextStatement,
 	PrintStatement,
 	RemStatement;
 }
@@ -94,26 +99,31 @@ public object EndStatement extends Statement {
 }
 
 public object ForStatement extends Statement {
-	public int mEndValue const;
-	public int mStartValue const;
-	public int mStepValue const;
-	public string mVariable const;
+	public VariableExpression mLoopVariable const;
+	public Expression mStartExpression const;
+	public Expression mStepExpression const;
+	public Expression mTargetExpression const;
 
-	public void Constructor(string variable, int startValue, int endValue, int stepValue = 1) {
-		base.Constructor(StatementType.DimStatement);
+	public void Constructor(VariableExpression variable, Expression startExpression,
+							Expression targetExpression, Expression stepExpression) {
+		base.Constructor(StatementType.ForStatement);
 
-		mEndValue = endValue;
-		mStartValue = startValue;
-		mStepValue = stepValue;
-		mVariable = variable;
+		mLoopVariable = variable;
+		mStartExpression = startExpression;
+		mStepExpression = stepExpression;
+		mTargetExpression = targetExpression;
 	}
 
 	public string toPrettyString() const {
-		return "FOR " + mVariable + " = " + mStartValue + " TO " + mEndValue + " STEP " + mStepValue + prettyFollowing();
+		return "FOR " + mLoopVariable.toPrettyString() + " = " + mStartExpression.toPrettyString() +
+			   " TO " + mTargetExpression.toPrettyString() +
+			   " STEP " + (mStepExpression ? mStepExpression.toPrettyString() : "1") + prettyFollowing();
 	}
 
 	public string toString() const {
-		return "FOR " + mVariable + " = " + mStartValue + " TO " + mEndValue + " STEP " + mStepValue + following();
+		return "FOR " + mLoopVariable.toString() + " = " + mStartExpression.toString() +
+		       " TO " + mTargetExpression.toString() +
+			   " STEP " + (mStepExpression ? mStepExpression.toString() : "1") + following();
 	}
 }
 
@@ -221,6 +231,24 @@ public object MethodStatement extends Statement {
  		result += ")";
 
 		return result + following();
+	}
+}
+
+public object NextStatement extends Statement {
+	public string mLoopVariable;
+
+	public void Constructor(string loopVariable) {
+		base.Constructor(StatementType.NextStatement);
+
+		mLoopVariable = loopVariable;
+	}
+
+	public string toPrettyString() const {
+		return "NEXT " + mLoopVariable + prettyFollowing();
+	}
+
+	public string toString() const {
+		return "NEXT " + mLoopVariable + following();
 	}
 }
 

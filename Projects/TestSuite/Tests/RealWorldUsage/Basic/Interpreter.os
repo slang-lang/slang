@@ -6,6 +6,7 @@ import System.String;
 // project imports
 import Line;
 
+public int FIRST_LINE const = 10;
 
 public enum ControlFlow {
 	Exit,
@@ -13,12 +14,16 @@ public enum ControlFlow {
 }
 
 public object Interpreter {
+	protected int mCurrentLine;
+	private Map<string, int> mForStack;
 	protected Map<int, Line> mLines;
 	protected Map<string, String> mVariables;
 
 	public void Constructor(Object lines) {
 		assert(lines is Map<int, Line>);
 
+		mCurrentLine = FIRST_LINE;
+		mForStack = new Map<string, int>();
 		mLines = Map<int, Line> lines;
 		mVariables = new Map<string, String>();
 	}
@@ -33,6 +38,9 @@ public object Interpreter {
 			case stmt is EndStatement: {
 				return processEND(EndStatement stmt);
 			}
+			case stmt is ForStatement: {
+				return processFOR(ForStatement stmt);
+			}
 			case stmt is GotoStatement: {
 				return processGOTO(GotoStatement stmt);
 			}
@@ -44,6 +52,9 @@ public object Interpreter {
 			}
 			case stmt is LetStatement: {
 				return processLET(LetStatement stmt);
+			}
+			case stmt is NextStatement: {
+				return processNEXT(NextStatement stmt);
 			}
 			case stmt is PrintStatement: {
 				return processPRINT(PrintStatement stmt);
@@ -63,30 +74,38 @@ public object Interpreter {
 		string left = processExpression(exp.mLeft);
 		string right = processExpression(exp.mRight);
 
+		//print("BinaryExpression: " + left + " " + exp.mOperator + " " + right);
+
 		switch ( exp.mOperator ) {
 			// compare operators
 			case "=": {
-				//print("left: '" + left + "' == '" + right + "'");
 				return "" + (left == right);
 			}
 			case "<": {
-				//print("left: '" + left + "' < '" + right + "'");
-				return "" + (left < right);
+				if ( isStringExp ) {
+					return "" + (left < right);
+				}
+				return "" + ((float left) < (float right));
 			}
 			case "<=": {
-				print("left: '" + left + "' <= '" + right + "'");
-				return "" + (left <= right);
+				if ( isStringExp ) {
+					return "" + (left <= right);
+				}
+				return "" + ((float left) <= (float right));
 			}
 			case ">": {
-				//print("left: '" + left + "' > '" + right + "'");
-				return "" + (left > right);
+				if ( isStringExp ) {
+					return "" + (left > right);
+				}
+				return "" + ((float left) > (float right));
 			}
 			case ">=": {
-				print("left: '" + left + "' >= '" + right + "'");
-				return "" + (left >= right);
+				if ( isStringExp ) {
+					return "" + (left >= right);
+				}
+				return "" + ((float left) >= (float right));
 			}
 			case "<>": {
-				print("left: '" + left + "' <> '" + right + "'");
 				return "" + (left != right);
 			}
 
@@ -201,6 +220,33 @@ public object Interpreter {
 		throw ControlFlow.Exit;
 	}
 
+	private int processFOR(ForStatement stmt) modify throws {
+		assert( stmt );
+
+		String obj;
+
+		if ( !mForStack.contains(stmt.mLoopVariable.mVariable) ) {
+			mForStack.insert(stmt.mLoopVariable.mVariable, mCurrentLine);
+
+			if ( !mVariables.contains(stmt.mLoopVariable.mVariable) ) {
+				mVariables.insert(stmt.mLoopVariable.mVariable, new String("0"));
+			}
+
+			obj = mVariables.get(stmt.mLoopVariable.mVariable);
+			obj = processExpression(stmt.mStartExpression);
+		}
+		else {
+			obj = mVariables.get(stmt.mLoopVariable.mVariable);
+			obj = processExpression(stmt.mStepExpression);
+		}
+
+		if ( !processBooleanExpression(stmt.mTargetExpression) ) {
+			mForStack.remove(stmt.mLoopVariable.mVariable);
+		}
+
+		return 0;
+	}
+
 	private int processGOTO(GotoStatement stmt) const throws {
 		assert(stmt);
 
@@ -245,6 +291,16 @@ public object Interpreter {
 		return stmt.mFollowingStatement ? process(stmt.mFollowingStatement) : 0;
 	}
 
+	private int processNEXT(NextStatement stmt) modify throws {
+		assert(stmt);
+
+		if ( mForStack.contains(stmt.mLoopVariable) ) {
+			return mForStack.get(stmt.mLoopVariable);
+		}
+
+		return 0;
+	}
+
 	private int processPRINT(PrintStatement stmt) modify {
 		assert(stmt);
 
@@ -260,16 +316,15 @@ public object Interpreter {
 
 		//print("Started interpreting statements...");
 
-		int lineNumber = 10;
-		Line line;
-
 		try {
-			while ( lineNumber > 0 ) {
-				//print("LINE: " + lineNumber);
+			Line line;
 
-				line = mLines.get(lineNumber);
+			while ( mCurrentLine > 0 ) {
+				//print("LINE: " + mCurrentLine);
 
-				lineNumber = process(line.mStatement) ?: line.nextLine();
+				line = mLines.get(mCurrentLine);
+
+				mCurrentLine = process(line.mStatement) ?: line.nextLine();
 			}
 		}
 		catch ( ControlFlow e ) {
