@@ -725,11 +725,11 @@ void LocalClient::prepare(const StringList& tokens)
 	StringList::const_iterator it = tokens.begin();
 	++it;	// skip first token
 	while ( it != tokens.end() ) {
-		paramStr += " " + (*it++);
+		paramStr += "\n" + (*it++);
 	}
 
 	mParameters.clear();
-	mParameters.push_back(ObjectiveScript::Parameter::CreateRuntime(ObjectiveScript::Runtime::IntegerObject::TYPENAME, 1));
+	mParameters.push_back(ObjectiveScript::Parameter::CreateRuntime(ObjectiveScript::Runtime::IntegerObject::TYPENAME, (int)tokens.size()));
 	mParameters.push_back(ObjectiveScript::Parameter::CreateRuntime(ObjectiveScript::Runtime::StringObject::TYPENAME, paramStr));
 }
 

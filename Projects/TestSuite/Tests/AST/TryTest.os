@@ -6,9 +6,10 @@ public void Main(int argc = 1, string args = "") {
 	assert( TestCase3() );
 	assert( TestCase4() );
 	assert( TestCase5() );
+	assert( TestCase6() );
 }
 
-private bool TestCase1() throws {
+private bool TestCase1() {
 	print("TestCase 1: try");
 
 	int blocks;
@@ -26,7 +27,7 @@ private bool TestCase1() throws {
 	return blocks == 1;
 }
 
-private bool TestCase2()  throws {
+private bool TestCase2()  {
 	print("TestCase 2: try-finally");
 
 	int blocks;
@@ -47,7 +48,7 @@ private bool TestCase2()  throws {
 	return blocks == 2;
 }
 
-private bool TestCase3() throws {
+private bool TestCase3() {
 	print("TestCase 3: try-catch");
 
 	int blocks;
@@ -67,7 +68,7 @@ private bool TestCase3() throws {
 	return blocks == 2;
 }
 
-private bool TestCase4() throws {
+private bool TestCase4() {
 	print("TestCase 4: try-catch-finally");
 
 	int blocks;
@@ -102,7 +103,7 @@ private bool TestCase4() throws {
 	return false;
 }
 
-private bool TestCase5() throws {
+private bool TestCase5() {
 	print("TestCase 5: try-catch");
 
 	int blocks;
@@ -117,5 +118,32 @@ private bool TestCase5() throws {
 	}
 
 	return false;
+}
+
+private bool TestCase6() {
+	print("TestCase 6: throw without matching catch");
+
+	try {
+		TestCase6ThrowingMethod();
+
+		assert( false );
+	}
+	catch ( int e ) {
+		print("e: " + e);
+	}
+
+	return true;
+}
+
+private void TestCase6ThrowingMethod() throws {
+	try {
+		throw 42;
+	}
+	catch ( string e ) {
+		print("e: " + e);
+		assert( false );
+	}
+
+	assert( false );
 }
 

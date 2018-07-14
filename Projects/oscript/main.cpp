@@ -211,8 +211,5 @@ int main(int argc, const char* argv[])
 		std::cout << "uncaught exception detected!" << std::endl;
 	}
 
-	// if we get here something bad has happened
-	ObjectiveScript::Controller::Instance().threads()->print();
-
 	return -1;
 }
