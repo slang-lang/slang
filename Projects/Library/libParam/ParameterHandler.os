@@ -25,7 +25,7 @@ public object Parameter {
 	}
 
 	public string =operator(string) const {
-		return Key ? Value : FullValue;
+		return FullValue;
 	}
 }
 
@@ -70,8 +70,24 @@ public object ParameterHandler implements IIterateable {
 		StringIterator it = new StringIterator(mArgs, ascii(10));
 		while ( it.hasNext() ) {
 			string current = it.next();
+			int keyPos = 0;
+			int startPos = 0;
 
-			mParameters.push_back(new Parameter(current));
+			if ( substr(current, 0, 1) == "-" ) {
+				startPos = 1;
+
+				if ( substr(current, 1, 1) == "-" ) {
+					startPos = 2;
+				}
+			}
+
+			if ( (keyPos = strfind(current, "=")) > 0 ) {
+				// extract key, value
+				mParameters.push_back(new Parameter(substr(current, startPos, keyPos - startPos), substr(current, keyPos + 1, strlen(current)), current));
+				continue;
+			}
+
+			mParameters.push_back(new Parameter(substr(current, startPos)));
 		}
 
 		// verify that we correctly parsed all arguments
@@ -106,6 +122,14 @@ public object ParameterIterator {
 
 	public void reset() modify {
 		mCurrentIndex = -1;
+	}
+
+	public Parameter =operator(Parameter) const {
+		return current();
+	}
+
+	public string =operator(string) const {
+		return string current();
 	}
 
 	private int mCurrentIndex;
