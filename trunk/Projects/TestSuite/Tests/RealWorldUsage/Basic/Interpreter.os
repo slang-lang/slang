@@ -15,7 +15,7 @@ public enum ControlFlow {
 
 public object Interpreter {
 	protected int mCurrentLine;
-	private Map<string, int> mForStack;
+	protected Map<string, int> mForStack;
 	protected Map<int, Line> mLines;
 	protected Map<string, String> mVariables;
 

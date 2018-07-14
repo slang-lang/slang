@@ -30,6 +30,21 @@ public object Debugger extends Interpreter {
 
 		addBreakpoint(int it.next());
 	}
+	private void modifyVariable(StringIterator si) modify {
+		if ( !si.hasNext() ) {
+			print("invalid variable name provided!");
+		}
+
+		try {
+			var obj = mVariables.get(si.next());
+
+			write("Enter value: ");
+			obj = cin();
+		}
+		catch {
+			print("Unknown variable '" + si.current() + "'!");
+		}
+	}
 
 	private void printBreakpoints() const {
 		foreach ( Breakpoint line : mBreakpoints ) {
@@ -77,8 +92,8 @@ public object Debugger extends Interpreter {
 	}
 
 	private void printVariables() const {
-		foreach ( string variable : mVariables ) {
-			printVariable(variable);
+		foreach ( Pair<string, String> p : mVariables ) {
+			printVariable(p.first);
 		}
 	}
 
@@ -103,7 +118,7 @@ public object Debugger extends Interpreter {
 				case "help": { printHelp(); break; }
 				case "l": { printProgram(); break; }
 				case "ll": { print("> " + line.toString()); break; }
-				case "m": { write("Enter variable: "); setVariable(cin()); break; }
+				case "m": { modifyVariable(cmdIt); break; }
 				case "n": { return -1; }
 				case "p": { printVariable(cmdIt); break; }
 				case "quit": { print("Aborting debug session..."); throw ControlFlow.Exit; }
@@ -168,18 +183,6 @@ public object Debugger extends Interpreter {
 		}
 
 		return 0;
-	}
-
-	private void setVariable(string variable) modify {
-		try {
-			var obj = mVariables.get(variable);
-
-			write("Enter value: ");
-			obj = cin();
-		}
-		catch {
-			print("Unknown variable '" + variable + "'!");
-		}
 	}
 }
 
