@@ -41,15 +41,15 @@ public object ParameterHandler implements IIterateable {
 
 	public Parameter at(int index) const throws {
 		if ( index < 0 || index >= mParameters.size() ) {
-			throw new OutOfBoundsException(string index);
+			throw new OutOfBoundsException("Index (" + index + ") out of bounds");
 		}
 
 		return mParameters.at(index);
 	}
 
 	public string stringAt(int index) const throws {
-		if ( mParameters.size() <= index ) {
-			throw new OutOfBoundsException(string index);
+		if ( index < 0 || index >= mParameters.size() ) {
+			throw new OutOfBoundsException("Index (" + index + ") out of bounds");
 		}
 
 		return string mParameters.at(index);
@@ -69,6 +69,7 @@ public object ParameterHandler implements IIterateable {
 
 	private void process() modify {
 		StringIterator it = new StringIterator(mArgs, ascii(10));
+
 		while ( it.hasNext() ) {
 			string current = it.next();
 			int keyPos = 0;
