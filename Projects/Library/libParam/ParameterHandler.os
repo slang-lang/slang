@@ -15,6 +15,7 @@ public object Parameter {
 
 	public void Constructor(string fullValue) {
 		FullValue = fullValue;
+		Key = fullValue;
 		Value = fullValue;
 	}
 
