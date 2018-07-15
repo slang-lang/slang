@@ -12,7 +12,7 @@ bool TestCase1() {
 
 	try {
 		int argc = 2;
-		string args = "./Test_ParameterHandler.os" + ascii(10) + "this is a parameter\"";
+		string args = "./Test_ParameterHandler.os" + ascii(10) + "this is a parameter";
 
 		var params = new ParameterHandler(argc, args);
 
@@ -53,13 +53,14 @@ bool TestCase2() {
 
 
 	param = params.at(1);
-	print("FullValue: " + string param);
+	print(string param);
 
 	assert( "two" == string param );
 
 	print("Key: " + param.Key);
 	assert( param.Key == "two" );
 
+	print("Value: " + param.Key);
 	assert( param.Value == "two" );
 
 
