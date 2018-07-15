@@ -3,7 +3,7 @@
 import System.Collections.IIterateable;
 import System.Collections.List;
 import System.Exception;
-import System.String;
+import System.StringIterator;
 
 // Project imports
 
