@@ -173,7 +173,7 @@ Statements* TreeGenerator::generate(const TokenList &tokens, bool allowBreakAndC
 /*
  * generates the abstract syntax tree that is executed by the TreeInterpreter for the given method
  */
-Statements* TreeGenerator::generateAST(Common::Method *method)
+Statements* TreeGenerator::generateAST(Common::Method* method)
 {
 	Common::Method scope(*method);
 
