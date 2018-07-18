@@ -50,7 +50,7 @@ public void Main(int argc, string args) {
 	}
 
 	try {
-		var params = new ParameterHandler(argc, args);
+		var params = new ParameterHandler(argc, args, true);
 		foreach ( Parameter filename : params ) {
 			print(filename.Value + ":");
 
