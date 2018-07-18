@@ -52,7 +52,7 @@ public:
 	~TreeGenerator();
 
 public:
-	Statements* generateAST(Common::Method *method);
+	Statements* generateAST(Common::Method* method);
 
 private:
 	class Initialization {
