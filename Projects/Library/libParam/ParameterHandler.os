@@ -31,12 +31,17 @@ public object Parameter {
 }
 
 public object ParameterHandler implements IIterateable {
-	public void Constructor(int argc, string args) {
+	public void Constructor(int argc, string args, bool skipProgramName = false) {
 		mArgc = argc;
 		mArgs = args;
 		mParameters = new List<Parameter>();
 
 		process();
+
+		if ( skipProgramName && mParameters.size() ) {
+			// remove first parameter
+			mParameters.erase(0);
+		}
 	}
 
 	public Parameter at(int index) const throws {
