@@ -61,9 +61,6 @@ void SystemExtension::initialize(IScope* scope)
 	// Win32 only
 #else
 	// Unix/Linux only
-	scope->define("EAFNOSUPPORT", new Runtime::IntegerObject(EAFNOSUPPORT));
-	scope->define("ENOBUFS", new Runtime::IntegerObject(ENOBUFS));
-	scope->define("EPROTONOSUPPORT", new Runtime::IntegerObject(EPROTONOSUPPORT));
 #endif
 
 	// Console
@@ -85,6 +82,10 @@ void SystemExtension::initialize(IScope* scope)
 
 	// Strings
 	mStringsExtension.initialize(scope);
+
+
+	// finalize initialization
+	AExtension::initialize(scope);
 }
 
 void SystemExtension::provideMethods(ExtensionMethods &methods)

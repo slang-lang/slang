@@ -35,6 +35,46 @@ SystemStringsExtension::~SystemStringsExtension()
 {
 }
 
+void SystemStringsExtension::initialize(IScope* scope)
+{
+#ifdef _WIN32
+	// Win32 only
+
+	{	// LINEBREAK (system specific)
+		std::ostringstream character;
+		character << (char)10 << (char)13;
+
+		scope->define("LINEBREAK", new Runtime::StringObject(character.str()));
+	}
+#else
+	// Unix/Linux only
+
+	{	// LINEBREAK (system specific)
+		std::ostringstream character;
+		character << (char)10;
+
+		scope->define("LINEBREAK", new Runtime::StringObject(character.str()));
+	}
+#endif
+
+	{	// LINEBREAK_DOS (system specific)
+		std::ostringstream character;
+		character << (char)10 << (char)13;
+
+		scope->define("LINEBREAK_DOS", new Runtime::StringObject(character.str()));
+	}
+	{	// LINEBREAK_UNIX (system specific)
+		std::ostringstream character;
+		character << (char)10;
+
+		scope->define("LINEBREAK_UNIX", new Runtime::StringObject(character.str()));
+	}
+
+
+	// finalize initialization
+	AExtension::initialize(scope);
+}
+
 void SystemStringsExtension::provideMethods(ExtensionMethods &methods)
 {
 	methods.push_back(new StrFind());
