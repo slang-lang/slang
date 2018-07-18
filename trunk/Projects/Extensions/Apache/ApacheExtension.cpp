@@ -4,9 +4,9 @@
 
 // Library includes
 #include <cstdio>
+#include <cstdlib>
+#include <cstring>
 #include <list>
-#include <stdlib.h>
-#include <string.h>
 
 // Project includes
 #include "Defs.h"
@@ -145,8 +145,10 @@ ApacheExtension::ApacheExtension()
 
 void ApacheExtension::initialize(IScope* scope)
 {
+	// finalize initialization
 	AExtension::initialize(scope);
 
+	// run after initialization is done
 	readGetData();
 	readPostData();
 }

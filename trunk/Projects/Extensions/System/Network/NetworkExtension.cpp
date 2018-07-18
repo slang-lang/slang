@@ -46,10 +46,16 @@ void SystemNetworkExtension::initialize(IScope* scope)
 	//scope->define("AF_PACKET", new Runtime::IntegerObject(AF_PACKET));
 	//scope->define("AF_ALG", new Runtime::IntegerObject(AF_ALG));
 
-#ifdef _MSC_VER
+#ifdef _WIN32
+	// Win32 only
 #else
+	// Unix/Linux only
 	scope->define("AF_LOCAL", new Runtime::IntegerObject(AF_LOCAL));
 	scope->define("AF_INET6", new Runtime::IntegerObject(AF_INET6));
+
+	scope->define("EAFNOSUPPORT", new Runtime::IntegerObject(EAFNOSUPPORT));
+	scope->define("ENOBUFS", new Runtime::IntegerObject(ENOBUFS));
+	scope->define("EPROTONOSUPPORT", new Runtime::IntegerObject(EPROTONOSUPPORT));
 #endif
 
 	// type constants
@@ -63,6 +69,10 @@ void SystemNetworkExtension::initialize(IScope* scope)
 	//scope->define("SOCK_CLOEXEC", new Runtime::IntegerObject(SOCK_CLOEXEC));
 
 	scope->define("INADDR_ANY", new Runtime::StringObject(std::string("0.0.0.0")));
+
+
+	// finalize initialization
+	AExtension::initialize(scope);
 }
 
 void SystemNetworkExtension::provideMethods(ExtensionMethods &methods)
