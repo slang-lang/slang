@@ -8,10 +8,10 @@ import System.StringIterator;
 
 public object Scanner implements IIterateable {
 	private System.IO.File mFile;
-	private string mSeparator = " ";
+	private string mSeparator;
 	private string mText;
 
-	public void Constructor(System.IO.File file ref, string separator) {
+	public void Constructor(System.IO.File file ref, string separator = " ") {
 		mFile = file;
 		mSeparator = separator;
 
@@ -50,28 +50,11 @@ public void Main(int argc, string args) {
 	}
 
 	try {
-/*
-		var params = new List<String>();
-		foreach ( string p : new String(args) ) {
-			params.push_back(new String(p));
-		}
-
-		for ( int idx = 1; idx < argc; idx++ ) {
-			string filename = string params.at(idx);
-
-			print(filename + ":");
-
-			foreach ( string line : new Scanner(new System.IO.File(filename, "r"), ascii(10)) ) {
-				print(line);
-			}
-		}
-*/
-
 		var params = new ParameterHandler(argc, args);
-		foreach ( string filename : params ) {
-			print(filename + ":");
+		foreach ( Parameter filename : params ) {
+			print(filename.Value + ":");
 
-			foreach ( string line : new Scanner(new System.IO.File(filename, "r"), ascii(10)) ) {
+			foreach ( string line : new Scanner(new System.IO.File(filename.Value, "r"), LINEBREAK) ) {
 				print(line);
 			}
 		}
