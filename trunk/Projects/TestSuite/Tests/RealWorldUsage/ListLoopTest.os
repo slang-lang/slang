@@ -36,7 +36,7 @@ private void ObjectMethod() {
 		//print("Loop " + count);
 
 		foreach ( Integer item : list ) {
-			//print(item.ToString());
+			//print(string item);
 		}
 	}
 }
