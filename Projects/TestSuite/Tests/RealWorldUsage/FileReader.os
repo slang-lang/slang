@@ -52,7 +52,9 @@ public void Main(int argc, string args) {
 	try {
 		var params = new ParameterHandler(argc, args, true);
 		foreach ( Parameter filename : params ) {
-			print(filename.Value + ":");
+			if ( params.size() > 2 ) {
+				print(filename.Value + ":");
+			}
 
 			foreach ( string line : new Scanner(new System.IO.File(filename.Value, "r"), LINEBREAK) ) {
 				print(line);
