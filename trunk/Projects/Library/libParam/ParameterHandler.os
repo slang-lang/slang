@@ -73,7 +73,7 @@ public object ParameterHandler implements IIterateable {
 	}
 
 	private void process() modify {
-		StringIterator it = new StringIterator(mArgs, ascii(10));
+		StringIterator it = new StringIterator(mArgs, LINEBREAK_UNIX);
 
 		while ( it.hasNext() ) {
 			string current = it.next();
