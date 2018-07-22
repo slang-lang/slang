@@ -27,6 +27,7 @@ namespace ObjectiveScript {
 
 
 VirtualMachine::VirtualMachine()
+: mIsInitialized(false)
 {
 	Controller::Instance().init();
 }
@@ -67,13 +68,14 @@ void VirtualMachine::addLibraryFolder(const std::string &library)
 
 Script* VirtualMachine::createScript(const std::string& content, bool collectErrors)
 {
-	init();
-	printLibraryFolders();
+	if ( !mIsInitialized ) {
+		init();
+		printLibraryFolders();
+	}
+
 
 	Script *script = new Script();
 	mScripts.insert(script);
-
-	Controller::Instance().phase(Controller::Phase::Generation);
 
 	Designtime::Analyser analyser(mSettings.DoSanityCheck);
 	analyser.processString(content, mScriptFile);
@@ -100,6 +102,8 @@ Script* VirtualMachine::createScript(const std::string& content, bool collectErr
 	MethodScope* globalScope = Controller::Instance().globalScope();
 
 	Controller::Instance().repository()->initializeBlueprints();
+
+	Controller::Instance().phase(Controller::Phase::Generation);
 
 	AST::Generator generator(collectErrors);
 	generator.process(globalScope);
@@ -181,6 +185,8 @@ void VirtualMachine::init()
 	}
 
 	loadExtensions();
+
+	mIsInitialized = true;
 }
 
 bool VirtualMachine::loadExtensions()

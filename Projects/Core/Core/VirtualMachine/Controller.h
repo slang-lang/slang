@@ -36,6 +36,7 @@ public:
 	class Phase {
 	public:
 		enum E {
+			Startup,
 			Preparation,
 			Generation,
 			Optimization,
