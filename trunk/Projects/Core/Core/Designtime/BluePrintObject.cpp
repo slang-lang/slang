@@ -190,9 +190,9 @@ Symbols BluePrintObject::provideSymbols() const
 	return mSymbols;
 }
 
-BluePrintObject* BluePrintObject::replicate(const std::string& newType, const std::string& filename) const
+BluePrintObject* BluePrintObject::replicate(const std::string& newType, const std::string& filename, BluePrintObject* target) const
 {
-	BluePrintObject* replica = new BluePrintObject(newType, filename);
+	BluePrintObject* replica = target ? target : new BluePrintObject(newType, filename);
 
 	// replicate basic blueprint data
 	replica->setConst(isConst());
@@ -224,9 +224,10 @@ BluePrintObject* BluePrintObject::replicate(const std::string& newType, const st
 			continue;
 		}
 
-		Designtime::BluePrintObject* blue = static_cast<Designtime::BluePrintObject*>(symIt->second);
+		Designtime::BluePrintObject* blue = dynamic_cast<Designtime::BluePrintObject*>(symIt->second);
 
 		Designtime::BluePrintObject* member = new Designtime::BluePrintObject(blue->QualifiedTypename(), blue->Filename(), blue->getName());
+		member->setIsEnumeration(blue->isEnumeration());
 		member->setLanguageFeatureState(blue->getLanguageFeatureState());
 		member->setMember(blue->isMember());
 		member->setMemoryLayout(blue->getMemoryLayout());

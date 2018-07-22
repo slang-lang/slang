@@ -947,14 +947,19 @@ Statement* TreeGenerator::process_foreach(TokenIterator& token)
 			throw Common::Exceptions::SyntaxError(collectionExpression->getResultType() + " is not iterable", token->position());
 		}
 
+		Common::Method* getIteratorMethod = dynamic_cast<Common::Method*>(collection->resolveMethod("getIterator", ParameterList(), false, Visibility::Public));
+		if ( !getIteratorMethod ) {
+			throw Common::Exceptions::SyntaxError(collectionExpression->getResultType() + " has no 'getIterator' method", token->position());
+		}
+
 		// check if iterator is a valid type
-		Designtime::BluePrintObject* iterator = mRepository->findBluePrintObject(std::string("Iterator"));
+		Designtime::BluePrintObject* iterator = mRepository->findBluePrintObject(getIteratorMethod->ReturnType());
 		if ( !iterator ) {
 			throw Common::Exceptions::SyntaxError("'Iterator' is not a valid type", token->position());
 		}
 
 		{	// look up "getIterator" method in given collection
-			SymbolExpression* expression = new DesigntimeSymbolExpression("getIterator", "Iterator", PrototypeConstraints(), false);
+			SymbolExpression* expression = new DesigntimeSymbolExpression(getIteratorMethod->getName(), getIteratorMethod->QualifiedTypename(), PrototypeConstraints(), false);
 			expression->mSurroundingScope = collection;
 
 			getIteratorExpression = process_method(expression, *token, ExpressionList());
@@ -1848,6 +1853,7 @@ SymbolExpression* TreeGenerator::resolve(TokenIterator& token, IScope* base, boo
 			scope = blueprint;
 
 			symbol = new DesigntimeSymbolExpression(name, type, constraints, blueprint->isAtomicType());
+			//symbol = new DesigntimeSymbolExpression(name, Designtime::Parser::buildRuntimeConstraintTypename(type, constraints), PrototypeConstraints(), blueprint->isAtomicType());
 		} break;
 		case Symbol::IType::NamespaceSymbol: {
 			Common::Namespace* space = dynamic_cast<Common::Namespace*>(result);

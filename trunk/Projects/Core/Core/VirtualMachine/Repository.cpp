@@ -86,17 +86,19 @@ Designtime::BluePrintObject* Repository::createBluePrintFromPrototype(Designtime
 	// add new blueprint to repository
 	addBluePrint(newBlue);
 
-	// initialize newly created blueprint
-	initBluePrintObject(newBlue);
-
 	// add new blueprint to parent scope
 	IScope* parent = blueprint->getEnclosingScope();
 	if ( parent ) {
 		parent->define(newBlue->QualifiedTypename(), newBlue);
 	}
 
-	AST::Generator generator;
-	generator.process(newBlue);
+	// initialize newly created blueprint
+	initBluePrintObject(newBlue);
+
+	if ( Controller::Instance().phase() > Controller::Phase::Preparation ) {
+		AST::Generator generator;
+		generator.process(newBlue);
+	}
 
 	return newBlue;
 }
@@ -164,7 +166,7 @@ Runtime::Object* Repository::createInstance(Designtime::BluePrintObject* bluepri
 		//Controller::Instance().memory()->newObject(object);
 	}
 
-	if ( Controller::Instance().phase() == Controller::Phase::Generation ) {
+	if ( Controller::Instance().phase() == Controller::Phase::Preparation ) {
 		switch ( object->getLanguageFeatureState() ) {
 			case LanguageFeatureState::Deprecated: OSwarn("Used type '" + object->QualifiedTypename() + "' is marked as deprecated"); break;
 			case LanguageFeatureState::NotImplemented: OSerror("Used type '" + object->QualifiedTypename() + "' is marked as not implemented"); break;
@@ -420,8 +422,8 @@ void Repository::init()
 void Repository::initializeBlueprints()
 {
 	// prepare inheritance
-	for ( BluePrintObjectMap::iterator it = mBluePrintObjects.begin(); it != mBluePrintObjects.end(); ++it ) {
-		Designtime::BluePrintObject* blueprint = it->second;
+	for ( BluePrintObjectMap::iterator blueIt = mBluePrintObjects.begin(); blueIt != mBluePrintObjects.end(); ++blueIt ) {
+		Designtime::BluePrintObject* blueprint = blueIt->second;
 
 		Designtime::Ancestors ancestors = blueprint->getInheritance();
 		for ( Designtime::Ancestors::const_iterator ancestorIt = ancestors.begin(); ancestorIt != ancestors.end(); ++ancestorIt ) {
@@ -439,11 +441,9 @@ void Repository::initializeBlueprints()
 					// nothing to do here
 					break;
 				case Designtime::Ancestor::Type::Replicates: {
-					Designtime::BluePrintObject* replica = base->replicate(
-						blueprint->QualifiedTypename(), blueprint->Filename()
+					blueIt->second = base->replicate(
+						blueprint->QualifiedTypename(), blueprint->Filename(), blueIt->second
 					);
-
-					it->second = replica;
 				} break;
 				case Designtime::Ancestor::Type::Unknown:
 					throw Common::Exceptions::Exception("invalid inheritance detected");

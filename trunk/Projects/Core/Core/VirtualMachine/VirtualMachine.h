@@ -48,6 +48,7 @@ public:
 public:	// Setup
 	void addExtension(Extensions::AExtension *extension);
 	void addLibraryFolder(const std::string &library);
+	void init();
 	Settings& settings();
 
 public:
@@ -63,7 +64,6 @@ private:
 
 private:
 	Script* createScript(const std::string& content, bool collectErrors = false);
-	void init();
 	bool loadExtensions();
 	bool loadLibrary(const std::string& library);
 	void printLibraryFolders();
@@ -71,6 +71,7 @@ private:
 private:
 	Extensions::ExtensionList mExtensions;
 	StringSet mImportedLibraries;
+	bool mIsInitialized;
 	StringSet mLibraryFolders;
 	std::string mScriptFile;
 	ScriptCollection mScripts;

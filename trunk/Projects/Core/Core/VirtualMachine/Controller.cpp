@@ -16,7 +16,7 @@ namespace ObjectiveScript {
 Controller::Controller()
 : mGlobalScope(0),
   mMemory(0),
-  mPhase(Phase::Preparation),
+  mPhase(Phase::Startup),
   mRepository(0),
   mThreads(0),
   mTypeSystem(0)
@@ -36,7 +36,7 @@ Controller& Controller::Instance()
 
 void Controller::deinit()
 {
-	assert(mPhase > Phase::Preparation);
+	assert(mPhase > Phase::Startup);
 
 	delete mGlobalScope;
 	mGlobalScope = 0;
@@ -65,7 +65,7 @@ Common::Namespace* Controller::globalScope() const
 
 void Controller::init()
 {
-	assert(mPhase == Phase::Preparation || mPhase == Phase::Shutdown);
+	assert(mPhase == Phase::Startup || mPhase == Phase::Shutdown);
 
 	assert(!mGlobalScope);
 	mGlobalScope = new Common::Namespace(VALUE_NONE, 0);
@@ -80,7 +80,7 @@ void Controller::init()
 	mRepository->init();
 	mThreads->init();
 
-	mPhase = Phase::Generation;
+	mPhase = Phase::Preparation;
 }
 
 Memory* Controller::memory() const
@@ -95,8 +95,6 @@ Controller::Phase::E Controller::phase() const
 
 void Controller::phase(Controller::Phase::E value)
 {
-	//assert(mPhase < value);
-
 	mPhase = value;
 }
 

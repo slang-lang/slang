@@ -947,6 +947,8 @@ void TreeInterpreter::visitForeach(ForeachStatement* node)
 
 	popScope();
 
+	TypeDeclaration* typeDeclaration = node->mTypeDeclaration;
+
 	for  ( ; ; ) {
 		// Setup
 		// {
@@ -967,8 +969,6 @@ void TreeInterpreter::visitForeach(ForeachStatement* node)
 
 			// execute type declaration
 			// {
-			TypeDeclaration* typeDeclaration = node->mTypeDeclaration;
-
 			Runtime::Object* loopVariable = mRepository->createInstance(typeDeclaration->mType, typeDeclaration->mName, typeDeclaration->mConstraints);
 
 			getScope()->define(typeDeclaration->mName, loopVariable);
@@ -981,6 +981,7 @@ void TreeInterpreter::visitForeach(ForeachStatement* node)
 
 			popScope();
 
+			// set mutability after initializing
 			loopVariable->setConst(typeDeclaration->mIsConst);
 
 			// execute statement
