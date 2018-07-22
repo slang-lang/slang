@@ -8,9 +8,12 @@ public namespace System.Collections { }
 
 public object Set<T> implements ICollection {
 	private bool mAllowDuplicates;
-	private CollectionItem mFirst;
-	private CollectionItem mLast;
+	private CollectionItem<T> mFirst;
+	private CollectionItem<T> mLast;
 	private int mSize = 0;
+
+	private Iterator<T> __iterator;				// this is a hack to automatically initialize a generic type
+	private ReverseIterator<T> __reverse_iterator;		// this is a hack to automatically initialize a generic type
 
 	public void Constructor(bool allowDuplicates = false) {
 		mAllowDuplicates = allowDuplicates;
@@ -25,7 +28,7 @@ public object Set<T> implements ICollection {
 			throw new OutOfBoundsException("index(" + index + ") out of bounds");
 		}
 
-		CollectionItem item = mFirst;
+		CollectionItem<T> item = mFirst;
 		for ( int i = 0; i < index; i++ ) {
 			item = item.mNext;
 		}
@@ -35,7 +38,7 @@ public object Set<T> implements ICollection {
 
 	public void clear() modify {
 		for ( int i = 0; i < mSize; i++ ) {
-			mFirst.mValue = null;
+			mFirst.mValue = T null;
 			mFirst = mFirst.mNext;
 		}
 
@@ -59,7 +62,7 @@ public object Set<T> implements ICollection {
 			mFirst = mFirst.mNext;
 		}
 		else {									// default handling for erasing
-			CollectionItem prev = mFirst;
+			CollectionItem<T> prev = mFirst;
 			for ( int i = 0; i < index - 1; i++ ) {
 				prev = prev.mNext;
 			}
@@ -83,16 +86,16 @@ public object Set<T> implements ICollection {
 		return T mFirst.mValue;
 	}
 
-	public Iterator getIterator() const {
-		return new Iterator(ICollection this);
+	public Iterator<T> getIterator() const {
+		return new Iterator<T>(ICollection this);
 	}
 
-	public ReverseIterator getReverseIterator() const {
-		return new ReverseIterator(ICollection this);
+	public ReverseIterator<T> getReverseIterator() const {
+		return new ReverseIterator<T>(ICollection this);
 	}
 
 	public int indexOf(T value) const {
-		CollectionItem item = mFirst;
+		CollectionItem<T> item = mFirst;
 
 		for ( int i = 0; i < mSize; i++ ) {
 			if ( item.mValue == value ) {
@@ -106,7 +109,7 @@ public object Set<T> implements ICollection {
 	}
 
 	public void insert(T value) modify throws {
-		CollectionItem item = new CollectionItem(Object value);
+		CollectionItem<T> item = new CollectionItem<T>(value);
 
 		if ( !mFirst ) {				// special handling for 1st element
 			mFirst = item;
@@ -117,8 +120,8 @@ public object Set<T> implements ICollection {
 			mFirst = item;
 		}
 		else {						// default handling for insertions
-			CollectionItem tmp = mFirst;
-			CollectionItem previous;
+			CollectionItem<T> tmp = mFirst;
+			CollectionItem<T> previous;
 
 			for ( int i = 0; i < mSize; i++ ) {
 				if ( (T value) < (T tmp.mValue) ) {

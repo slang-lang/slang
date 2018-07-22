@@ -181,7 +181,7 @@ private bool TestCase5() const {
 
 		Integer item;
 
-		Iterator it = list.getIterator();
+		Iterator<Integer> it = list.getIterator();
 		while ( it.hasNext() ) {
 			it.next();
 

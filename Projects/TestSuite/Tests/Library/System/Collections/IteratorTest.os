@@ -22,7 +22,7 @@ private bool TestCase1() const {
 		list.push_back(new String("2"));
 		list.push_back(new String("3"));
 
-		Iterator it = list.getIterator();
+		Iterator<String> it = list.getIterator();
 
 		while ( it.hasNext() ) {
 			it.next();
@@ -53,7 +53,7 @@ private bool TestCase2() const {
 		list.push_back(new String("2"));
 		list.push_back(new String("3"));
 
-		ReverseIterator it = list.getReverseIterator();
+		ReverseIterator<String> it = list.getReverseIterator();
 
 		while ( it.hasNext() ) {
 			it.next();
@@ -84,8 +84,8 @@ private bool TestCase3() const {
 		list.push_back(new String("2"));
 		list.push_back(new String("3"));
 
-		Iterator iterator = list.getIterator();
-		ReverseIterator reverse = list.getReverseIterator();
+		Iterator<String> iterator = list.getIterator();
+		ReverseIterator<String> reverse = list.getReverseIterator();
 
 		while ( iterator.hasNext() && reverse.hasNext() ) {
 			iterator.next();
@@ -124,7 +124,7 @@ private bool TestCase4() const {
 
 		assert( list.size() == 3 );
 
-		Iterator it = list.getIterator();
+		Iterator<String> it = list.getIterator();
 
 		while ( it.hasNext() ) {
 			it++;
