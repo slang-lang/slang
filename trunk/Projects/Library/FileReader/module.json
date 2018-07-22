@@ -8,8 +8,8 @@
     { "module": "system", "version_min": "0.1.0" }
   ],
   "target": {
-    "directory": "FielReader",
+    "directory": "FileReader",
     "type": "internal",
-    "url": "filereader_0.1.0.tar.gz"
+    "url": "FileReader_0.1.0.tar.gz"
   }
 }
