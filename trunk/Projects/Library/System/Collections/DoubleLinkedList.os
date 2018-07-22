@@ -36,7 +36,7 @@ public object DoubleLinkedList<T> implements ICollection {
 			item = item.mNext;
 		}
 
-		return T item.mValue;
+		return item.mValue;
 	}
 
 	public void clear() modify {
@@ -86,7 +86,7 @@ public object DoubleLinkedList<T> implements ICollection {
 			throw new OutOfBoundsException("empty collection");
 		}
 
-		return T mFirst.mValue;
+		return mFirst.mValue;
 	}
 
 	public Iterator<T> getIterator() const {
@@ -116,7 +116,7 @@ public object DoubleLinkedList<T> implements ICollection {
 			throw new OutOfBoundsException("empty collection");
 		}
 
-		return T mLast.mValue;
+		return mLast.mValue;
 	}
 
 	public void pop_back() modify throws {
@@ -159,7 +159,7 @@ public object DoubleLinkedList<T> implements ICollection {
 			mLast.mNext = item;
 		}
 
-		//item.mPrevious = mLast;	// this leaves a mem leak... ;-(
+		item.mPrevious = mLast;	// this leaves a mem leak... ;-(
 		mLast = item;
 
 		mSize++;
@@ -167,9 +167,9 @@ public object DoubleLinkedList<T> implements ICollection {
 
 	public void push_front(T value) modify {
 		CollectionItem<T> item = new CollectionItem<T>(value);
-
 		item.mNext = mFirst;
-		//mFirst.mPrevious = item;	// this leaves a mem leak... ;-(
+
+		mFirst.mPrevious = item;	// this leaves a mem leak... ;-(
 		mFirst = item;
 
 		mSize++;

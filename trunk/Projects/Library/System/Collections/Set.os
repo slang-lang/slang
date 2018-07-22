@@ -33,7 +33,7 @@ public object Set<T> implements ICollection {
 			item = item.mNext;
 		}
 
-		return T item.mValue;
+		return item.mValue;
 	}
 
 	public void clear() modify {
@@ -83,7 +83,7 @@ public object Set<T> implements ICollection {
 			throw new OutOfBoundsException("empty collection");
 		}
 
-		return T mFirst.mValue;
+		return mFirst.mValue;
 	}
 
 	public Iterator<T> getIterator() const {
@@ -152,7 +152,7 @@ public object Set<T> implements ICollection {
 			throw new OutOfBoundsException("empty collection");
 		}
 
-		return T mLast.mValue;
+		return mLast.mValue;
 	}
 
 	public int size() const {
