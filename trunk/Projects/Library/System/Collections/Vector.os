@@ -7,9 +7,12 @@ import Iterator;
 public namespace System.Collections { }
 
 public object Vector<T> implements ICollection {
-	private CollectionItem mFirst;
-	private CollectionItem mLast;
+	private CollectionItem<T> mFirst;
+	private CollectionItem<T> mLast;
 	private int mSize = 0;
+
+	private Iterator<T> __iterator;				// this is a hack to automatically initialize a generic type
+	private ReverseIterator<T> __reverse_iterator;		// this is a hack to automatically initialize a generic type
 
 	public void Constructor() {
 		// this is empty by intend
@@ -24,7 +27,7 @@ public object Vector<T> implements ICollection {
 			throw new OutOfBoundsException("index(" + index + ") out of bounds");
 		}
 
-		CollectionItem item = mFirst;
+		CollectionItem<T> item = mFirst;
 		for ( int i = 0; i < index; i++ ) {
 			item = item.mNext;
 		}
@@ -34,7 +37,7 @@ public object Vector<T> implements ICollection {
 
 	public void clear() modify {
 		for ( int i = 0; i < mSize; i++ ) {
-			mFirst.mValue = null;
+			mFirst.mValue = T null;
 			mFirst = mFirst.mNext;
 		}
 
@@ -58,7 +61,7 @@ public object Vector<T> implements ICollection {
 			mFirst = mFirst.mNext;
 		}
 		else {	                        // default handling for erasing
-			CollectionItem prev = mFirst;
+			CollectionItem<T> prev = mFirst;
 			for ( int i = 0; i < index - 1; i++ ) {
 				prev = prev.mNext;
 			}
@@ -82,16 +85,16 @@ public object Vector<T> implements ICollection {
 		return T mFirst.mValue;
 	}
 
-	public Iterator getIterator() const {
-		return new Iterator(ICollection this);
+	public Iterator<T> getIterator() const {
+		return new Iterator<T>(ICollection this);
 	}
 
-	public ReverseIterator getReverseIterator() const {
-		return new ReverseIterator(ICollection this);
+	public ReverseIterator<T> getReverseIterator() const {
+		return new ReverseIterator<T>(ICollection this);
 	}
 
 	public int indexOf(T value) const {
-		CollectionItem item = mFirst;
+		CollectionItem<T> item = mFirst;
 
 		for ( int i = 0; i < mSize; i++ ) {
 			if ( item.mValue == value ) {
@@ -109,7 +112,7 @@ public object Vector<T> implements ICollection {
 			throw new OutOfBoundsException("insert index(" + index + ") beyond end of list");
 		}
 
-		CollectionItem item = new CollectionItem(Object value);
+		CollectionItem<T> item = new CollectionItem<T>(value);
 
 		if ( !mFirst ) {
 			mFirst = item;
@@ -124,7 +127,7 @@ public object Vector<T> implements ICollection {
 			mLast = item;
 		}
 		else {					// default handling for insertions
-			CollectionItem tmp = mFirst;
+			CollectionItem<T> tmp = mFirst;
 			for ( int i = 0; i < index - 1; i++ ) {
 				tmp = tmp.mNext;
 			}

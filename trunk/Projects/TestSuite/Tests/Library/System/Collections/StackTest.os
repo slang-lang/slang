@@ -131,7 +131,7 @@ private bool TestCase3() const {
 
 		assert( stack.size() == 3 );
 
-		Iterator it = stack.getIterator();
+		Iterator<String> it = stack.getIterator();
 
 		it.next();
 		assert( "1" == string it.current() );
@@ -170,7 +170,7 @@ private bool TestCase4() const {
 
 		assert( stack.size() == 3 );
 
-		ReverseIterator it = stack.getReverseIterator();
+		ReverseIterator<String> it = stack.getReverseIterator();
 
 		it.next();
 		assert( "3" == string it.current() );

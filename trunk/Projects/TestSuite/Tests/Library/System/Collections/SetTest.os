@@ -64,7 +64,7 @@ private bool TestCase1() const {
 
 		TestObject last;
 
-		Iterator it = set.getIterator();
+		Iterator<TestObject> it = set.getIterator();
 		while ( it.hasNext() ) {
 			it.next();
 
@@ -105,7 +105,7 @@ private bool TestCase2() const {
 
 		//print("before erase: set has " + set.size() + " item(s)");
 
-		Iterator it = set.getIterator();
+		Iterator<Integer> it = set.getIterator();
 		while ( it.hasNext() ) {
 			it.next();
 
@@ -188,7 +188,7 @@ private bool TestCase4() {
 		assert( !set.empty() );
 		assert( set.size() == 10 );
 
-		Iterator it = set.getIterator();
+		Iterator<Integer> it = set.getIterator();
 		while ( it.hasNext() ) {
 			it.next();
 

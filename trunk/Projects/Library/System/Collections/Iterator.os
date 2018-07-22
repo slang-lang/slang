@@ -4,7 +4,7 @@ import System.Exception;
 
 public namespace System.Collections { }
 
-public object Iterator {
+public object Iterator<T> {
 	private ICollection mCollection;
 	private int mCurrentIndex;
 
@@ -14,7 +14,7 @@ public object Iterator {
 		reset();
 	}
 
-	public Object current() const throws {
+	public T current() const throws {
 		if ( !mCollection ) {
 			throw new Exception("current(): invalid iterator access");
 		}
@@ -22,7 +22,7 @@ public object Iterator {
 			throw new Exception("iterator not initialized");
 		}
 
-		return mCollection.at(mCurrentIndex);
+		return T mCollection.at(mCurrentIndex);
 	}
 
 	public bool hasNext() const throws {
@@ -33,21 +33,21 @@ public object Iterator {
 		return mCurrentIndex < mCollection.size() - 1;
 	}
 
-	public Object next() modify throws {
+	public T next() modify throws {
 		if ( !hasNext() ) {
 			throw new OutOfBoundsException("next(): index out of bounds");
 		}
 
 		mCurrentIndex++;
 
-		return mCollection.at(mCurrentIndex);
+		return T mCollection.at(mCurrentIndex);
 	}
 
 	public void reset() modify {
 		mCurrentIndex = -1;
 	}
 
-	public Object =operator(Object none ref) const throws {
+	public T =operator(T) const throws {
 		return current();
 	}
 
@@ -60,7 +60,7 @@ public object Iterator {
 	}
 }
 
-public object ReverseIterator {
+public object ReverseIterator<T> {
 	private ICollection mCollection;
 	private int mCurrentIndex;
 
@@ -70,7 +70,7 @@ public object ReverseIterator {
 		reset();
 	}
 
-	public Object current() const throws {
+	public T current() const throws {
 		if ( !mCollection ) {
 			throw new Exception("current(): invalid iterator access");
 		}
@@ -78,7 +78,7 @@ public object ReverseIterator {
 			throw new Exception("iterator not initialized");
 		}
 
-		return mCollection.at(mCurrentIndex);
+		return T mCollection.at(mCurrentIndex);
 	}
 
 	public bool hasNext() const throws {
@@ -89,21 +89,21 @@ public object ReverseIterator {
 		return mCurrentIndex > 0;
 	}
 
-	public Object next() modify throws {
+	public T next() modify throws {
 		if ( !hasNext() ) {
 			throw new OutOfBoundsException("next(): index out of bounds");
 		}
 
 		mCurrentIndex--;
 
-		return mCollection.at(mCurrentIndex);
+		return T mCollection.at(mCurrentIndex);
 	}
 
 	public void reset() modify {
 		mCurrentIndex = mCollection.size();
 	}
 
-	public Object =operator(Object none ref) const throws {
+	public T =operator(T) const throws {
 		return current();
 	}
 

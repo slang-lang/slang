@@ -10,6 +10,9 @@ public namespace System.Collections { }
 public object Queue<T> implements ICollection {
 	private List<T> mItems;
 
+	private Iterator<T> __iterator;				// this is a hack to automatically initialize a generic type
+	private ReverseIterator<T> __reverse_iterator;		// this is a hack to automatically initialize a generic type
+
 	public void Constructor() {
 		mItems = new List<T>();
 	}
@@ -42,7 +45,7 @@ public object Queue<T> implements ICollection {
 		mItems.push_back(item);
 	}
 
-	public Iterator getIterator() const {
+	public Iterator<T> getIterator() const {
 		return mItems.getIterator();
 	}
 

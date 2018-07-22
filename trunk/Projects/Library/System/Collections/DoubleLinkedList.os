@@ -11,9 +11,12 @@ public namespace System.Collections { }
  * allows reverse iteration
  */
 public object DoubleLinkedList<T> implements ICollection {
-	private CollectionItem mFirst;
-	private CollectionItem mLast;
+	private CollectionItem<T> mFirst;
+	private CollectionItem<T> mLast;
 	private int mSize = 0;
+
+	private Iterator<T> __iterator;				// this is a hack to automatically initialize a generic type
+	private ReverseIterator<T> __reverse_iterator;		// this is a hack to automatically initialize a generic type
 
 	public void Constructor() {
 		// this is empty by intend
@@ -28,7 +31,7 @@ public object DoubleLinkedList<T> implements ICollection {
 			throw new OutOfBoundsException("index(" + index + ") out of bounds");
 		}
 
-		CollectionItem item = mFirst;
+		CollectionItem<T> item = mFirst;
 		for ( int i = 0; i < index; i++ ) {
 			item = item.mNext;
 		}
@@ -38,7 +41,7 @@ public object DoubleLinkedList<T> implements ICollection {
 
 	public void clear() modify {
 		for ( int i = 0; i < mSize; i++ ) {
-			mFirst.mValue = null;
+			mFirst.mValue = T null;
 			mFirst = mFirst.mNext;
 		}
 
@@ -62,7 +65,7 @@ public object DoubleLinkedList<T> implements ICollection {
 			mFirst = mFirst.mNext;
 		}
 		else {									// default handling for erasing
-			CollectionItem prev = mFirst;
+			CollectionItem<T> prev = mFirst;
 			for ( int i = 0; i < index - 1; i++ ) {
 				prev = prev.mNext;
 			}
@@ -86,16 +89,16 @@ public object DoubleLinkedList<T> implements ICollection {
 		return T mFirst.mValue;
 	}
 
-	public Iterator getIterator() const {
-		return new Iterator(ICollection this);
+	public Iterator<T> getIterator() const {
+		return new Iterator<T>(ICollection this);
 	}
 
-	public ReverseIterator getReverseIterator() const {
-		return new ReverseIterator(ICollection this);
+	public ReverseIterator<T> getReverseIterator() const {
+		return new ReverseIterator<T>(ICollection this);
 	}
 
 	public int indexOf(T value) const {
-		CollectionItem item = mFirst;
+		CollectionItem<T> item = mFirst;
 
 		for ( int i = 0; i < mSize; i++ ) {
 			if ( item.mValue == value ) {
@@ -122,15 +125,15 @@ public object DoubleLinkedList<T> implements ICollection {
 		}
 
 		if ( mSize == 1 ) {
-			mFirst = CollectionItem null;
+			mFirst = CollectionItem<T> null;
 		}
 		else {
-			CollectionItem item = mFirst;
+			CollectionItem<T> item = mFirst;
 			for ( int i = 0; i < mSize - 1; i++ ) {
 				item = item.mNext;
 			}
 
-			item.mNext = CollectionItem null;
+			item.mNext = CollectionItem<T> null;
 		}
 
 		mSize--;
@@ -147,7 +150,7 @@ public object DoubleLinkedList<T> implements ICollection {
 	}
 
 	public void push_back(T value) modify {
-		CollectionItem item = new CollectionItem(Object value);
+		CollectionItem<T> item = new CollectionItem<T>(value);
 
 		if ( mSize == 0 ) {
 			mFirst = item;
@@ -163,7 +166,7 @@ public object DoubleLinkedList<T> implements ICollection {
 	}
 
 	public void push_front(T value) modify {
-		CollectionItem item = new CollectionItem(Object value);
+		CollectionItem<T> item = new CollectionItem<T>(value);
 
 		item.mNext = mFirst;
 		//mFirst.mPrevious = item;	// this leaves a mem leak... ;-(

@@ -178,7 +178,7 @@ private bool TestCase5() const {
 		item = Integer vector.at(2);
 		assert( item == 1389 );
 
-		Iterator it = vector.getIterator();
+		Iterator<Integer> it = vector.getIterator();
 
 		while ( it.hasNext() ) {
 			it.next();
@@ -205,7 +205,7 @@ private bool TestCase6() const {
 
 		assert( vector.size() == 3 );
 
-		ReverseIterator it = vector.getReverseIterator();
+		ReverseIterator<String> it = vector.getReverseIterator();
 
 		while ( it.hasNext() ) {
 			it.next();

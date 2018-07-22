@@ -73,7 +73,6 @@ public object Map<K, V> implements ICollection {
 	}
 
 	public void insert(K k, V v) modify {
-		//mItems.insert(
 		mItems.push_back(
 			Object new Pair<K, V>(k, v)
 		);

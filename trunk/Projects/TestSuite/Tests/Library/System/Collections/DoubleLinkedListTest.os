@@ -71,7 +71,7 @@ private bool TestCase2() const {
 		assert( list.size() == 3 );
 
 /*
-		Iterator it = list.getIterator();
+		Iterator<Integer> it = list.getIterator();
 		while ( it.hasNext() ) {
 			it.next();
 
@@ -204,7 +204,7 @@ private bool TestCase5() const {
 		// Usage
 		assert( list.size() == 3 );
 
-		Iterator it = list.getIterator();
+		Iterator<Integer> it = list.getIterator();
 
 		int count = 0;
 		while ( it.hasNext() ) {
@@ -252,7 +252,7 @@ private bool TestCase6() const {
 		// Usage
 		assert( list.size() == 3 );
 
-		ReverseIterator it = list.getReverseIterator();
+		ReverseIterator<Integer> it = list.getReverseIterator();
 
 		int count = 0;
 		while ( it.hasNext() ) {
