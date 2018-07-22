@@ -12,7 +12,7 @@ public namespace System.IO {
 			cleanup();
 		}
 
-		public void Constructor(string filename, string mode) {
+		public void Constructor(string filename, string mode = "r") {
 			cleanup();
 
 			open(filename, mode);
