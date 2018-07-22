@@ -52,6 +52,8 @@ public:	// Symbol::IType implementation
 	const std::string& QualifiedTypename() const;
 	void setQualifiedTypename(const std::string& type);
 
+	const TypeDeclaration& ReturnType() const;
+
 	void initialize(const PrototypeConstraints& constraints = PrototypeConstraints());
 
 public: // Signature

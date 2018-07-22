@@ -325,6 +325,11 @@ const std::string& Method::QualifiedTypename() const
 	return mReturnType.mCombinedName;
 }
 
+const TypeDeclaration& Method::ReturnType() const
+{
+	return mReturnType;
+}
+
 void Method::setParent(IScope *scope)
 {
 	mParent = scope;
