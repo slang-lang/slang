@@ -1,0 +1,15 @@
+{
+  "name": "FileReader",
+  "name_short": "FileReader",
+  "version": "0.1.0",
+  "description": "Script which reads in a complete text file and prints its contents to stdout.",
+  "dependencies": [
+    { "module": "libparam", "version_min": "0.1.0" },
+    { "module": "system", "version_min": "0.1.0" }
+  ],
+  "target": {
+    "directory": "FielReader",
+    "type": "internal",
+    "url": "filereader_0.1.0.tar.gz"
+  }
+}
