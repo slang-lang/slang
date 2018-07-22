@@ -52,12 +52,12 @@ public object Map<K, V> implements ICollection {
 		throw new Exception("unknown key!");
 	}
 
-	public Iterator getIterator() const {
-		return new Iterator(ICollection mItems);
+	public Iterator<Object> getIterator() const {
+		return new Iterator<Object>(ICollection mItems);
 	}
 
-	public ReverseIterator getReverseIterator() const {
-		return new ReverseIterator(ICollection mItems);
+	public ReverseIterator<Object> getReverseIterator() const {
+		return new ReverseIterator<Object>(ICollection mItems);
 	}
 
 	public int indexOf(K key) const throws {

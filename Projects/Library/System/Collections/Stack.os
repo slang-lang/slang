@@ -32,7 +32,7 @@ public object Stack<T> implements ICollection {
 			item = item.mNext;
 		}
 
-		return T item.mValue;
+		return item.mValue;
 	}
 
 	public void clear() modify {
@@ -104,7 +104,7 @@ public object Stack<T> implements ICollection {
 			throw new OutOfBoundsException("empty collection");
 		}
 
-		return T mLast.mValue;
+		return mLast.mValue;
 	}
 
 	public void pop() modify throws {
