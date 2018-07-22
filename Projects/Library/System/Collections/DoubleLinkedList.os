@@ -159,7 +159,7 @@ public object DoubleLinkedList<T> implements ICollection {
 			mLast.mNext = item;
 		}
 
-		item.mPrevious = mLast;	// this leaves a mem leak... ;-(
+		//item.mPrevious = mLast;	// this leaves a mem leak... ;-(
 		mLast = item;
 
 		mSize++;
@@ -169,7 +169,7 @@ public object DoubleLinkedList<T> implements ICollection {
 		CollectionItem<T> item = new CollectionItem<T>(value);
 		item.mNext = mFirst;
 
-		mFirst.mPrevious = item;	// this leaves a mem leak... ;-(
+		//mFirst.mPrevious = item;	// this leaves a mem leak... ;-(
 		mFirst = item;
 
 		mSize++;
