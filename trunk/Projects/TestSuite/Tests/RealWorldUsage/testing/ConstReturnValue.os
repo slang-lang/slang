@@ -12,7 +12,7 @@ public int Main(int argc, string args) {
 	return ConstReturnValue();
 }
 
-private int const ConstReturnValue() {
+int const ConstReturnValue() {
 	return 17;
 }
 
