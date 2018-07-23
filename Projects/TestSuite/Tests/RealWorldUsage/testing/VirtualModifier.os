@@ -20,6 +20,10 @@ public object DerivedObject extends VirtualModifierObject {
 	public void PrintFinal() {
 		print("DerivedObject.PrintFinal");
 	}
+
+	public void PrintVirtual() {
+		print("DerivedObject.PrintVirtual");
+	}
 }
 
 public void Main(int argc, string args) {

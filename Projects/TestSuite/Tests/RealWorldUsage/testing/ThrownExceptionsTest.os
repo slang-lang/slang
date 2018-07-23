@@ -7,7 +7,7 @@ public void Main(int argc, string args) {
 		try {
 			throw "bla";
 		}
-		catch ( int e ){
+		catch ( int e ) {
 			print("e = " + e);
 		}
 	}
