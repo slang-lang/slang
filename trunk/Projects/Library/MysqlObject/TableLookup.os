@@ -13,7 +13,7 @@ public object TableLookup {
 		mDatabaseHandle = dbHandle;
 	}
 
-	public List<String> getTables(string database) const throws {
+	public List<string> getTables(string database) const throws {
 		string query = "SELECT TABLE_NAME "
 			     + "FROM INFORMATION_SCHEMA.COLUMNS "
 			     + "WHERE TABLE_SCHEMA = '" + database + "' "
@@ -25,13 +25,13 @@ public object TableLookup {
 			throw mysql_error(mDatabaseHandle);
 		}
 
-		var tables = new List<String>();
+		var tables = new List<string>();
 
 		int result = mysql_store_result(mDatabaseHandle);
 		while ( mysql_next_row(result) ) {
 			string table = mysql_get_field_value(result, "TABLE_NAME");
 
-			tables.push_back(new String(table));
+			tables.push_back(table);
 		}
 
 		return tables;

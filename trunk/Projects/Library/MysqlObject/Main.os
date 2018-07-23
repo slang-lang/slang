@@ -54,7 +54,7 @@ public void Main(int argc, string args) modify throws {
 
 		int count;
 		foreach ( string tableName : tables ) {
-			generateTable(string tableName);
+			generateTable(tableName);
 
 			count++;
 		}

@@ -1171,7 +1171,7 @@ void TreeInterpreter::visitSwitch(SwitchStatement* node)
 void TreeInterpreter::visitThrow(ThrowStatement* node)
 {
 	if ( node->mExpression ) {	// throw new expression
-		Runtime::Object* data = mRepository->createInstance(_object, ANONYMOUS_OBJECT, PrototypeConstraints());
+		Runtime::Object* data = mRepository->createInstance(ANONYMOUS_OBJECT, ANONYMOUS_OBJECT, PrototypeConstraints());
 		tryControl(evaluate(node->mExpression, data));
 
 		mThread->exception() = Runtime::ExceptionData(data, Common::Position());
