@@ -6,7 +6,11 @@ public void Main(int argc, string args) {
 	Integer i = new Integer(173);
 	print("i = " + string i);
 
+	assert( i == 173 );
+
 	CallMethod(i);
+
+	assert( i == 174 );
 
 	print("i = " + string i);
 }
