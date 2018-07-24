@@ -36,8 +36,13 @@ public object List<T> implements ICollection {
 	}
 
 	public void clear() modify {
+		T check;
+		bool isObject = check is Object;
+
 		for ( int i = 0; i < mSize; i++ ) {
-			mFirst.mValue = T null;
+			if ( isObject ) {
+				mFirst.mValue = T null;
+			}
 			mFirst = mFirst.mNext;
 		}
 
