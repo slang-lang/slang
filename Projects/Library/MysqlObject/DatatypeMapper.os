@@ -29,6 +29,7 @@ public object DatatypeMapper {
 	}
 
 	private void InitDataTypes() modify {
+		DataTypes.insert("float", "float");
 		DataTypes.insert("int", "int");
 		DataTypes.insert("text", "string");
 		DataTypes.insert("tinyint", "bool");

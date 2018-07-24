@@ -39,10 +39,9 @@ void generateTable(string tableName) const {
 	}
 	tableData += "}" + LINEBREAK + LINEBREAK;
 
-	//print("object for table " + tableName + " generated.");
-
 	var outFile = new System.IO.File("output/Table_" + tableName + ".os", "w");
 	outFile.write(tableData);
+	outFile.close();
 }
 
 public void Main(int argc, string args) modify throws {
