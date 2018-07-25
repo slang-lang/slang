@@ -42,6 +42,7 @@ public void Main(int argc = 0, string args = "") const {
 	assert( TestCase2() );
 	assert( TestCase3() );
 	assert( TestCase4() );
+	assert( TestCase5() );
 }
 
 private bool TestCase1() const {
@@ -199,6 +200,32 @@ private bool TestCase4() {
 	}
 	catch ( Exception e ) {
 		print("Exception: " + e.what());
+	}
+
+	return false;
+}
+
+private bool TestCase5() {
+	print("TestCase 5: native types");
+
+	try {
+		var set = new Set<int>();
+		assert( set is ICollection );
+
+		set.insert( 2 );
+		set.insert( 1 );
+		set.insert( 3 );
+
+		assert( set.size() == 3 );
+
+		int compareValue;
+		var it = set.getIterator();
+
+		while ( it.hasNext() ) {
+			assert( (compareValue++) == it.next() );
+		}
+
+		return true;
 	}
 
 	return false;

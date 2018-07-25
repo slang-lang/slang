@@ -8,6 +8,7 @@ public namespace System.Collections { }
 
 public object Vector<T> implements ICollection {
 	private CollectionItem<T> mFirst;
+	private bool mIsObjectType;
 	private CollectionItem<T> mLast;
 	private int mSize = 0;
 
@@ -15,7 +16,9 @@ public object Vector<T> implements ICollection {
 	private ReverseIterator<T> __reverse_iterator;		// this is a hack to automatically initialize a generic type
 
 	public void Constructor() {
-		// this is empty by intend
+		// this determines if we are dealing with an object type or a native data type
+		T check;
+		mIsObjectType = check is Object;
 	}
 
 	public void Destructor() {
@@ -37,7 +40,7 @@ public object Vector<T> implements ICollection {
 
 	public void clear() modify {
 		for ( int i = 0; i < mSize; i++ ) {
-			mFirst.mValue = T null;
+			delete mFirst.mValue;
 			mFirst = mFirst.mNext;
 		}
 

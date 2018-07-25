@@ -13,6 +13,7 @@ public void Main(int argc = 0, string args = "") const {
 	assert( TestCase5() );
 	assert( TestCase6() );
 	assert( TestCase7() );
+	assert( TestCase8() );
 }
 
 private bool TestCase1() const {
@@ -262,6 +263,30 @@ private bool TestCase7() const {
 		assert( stack.contains(new Integer(1)) );
 		assert( stack.contains(new Integer(2)) );
 		assert( stack.contains(new Integer(3)) );
+
+		return true;
+	}
+
+	return false;
+}
+
+private bool TestCase8() const {
+	print("TestCase 8: native types");
+
+	try {
+		var stack = new Stack<int>();
+		assert( stack is ICollection );
+
+		stack.push( 1 );
+		assert( stack.peek() == 1 );
+
+		stack.push( 2 );
+		assert( stack.peek() == 2 );
+
+		assert( stack.size() == 2 );
+
+		assert( stack.contains( 2 ) );
+		assert( stack.contains( 1 ) );
 
 		return true;
 	}
