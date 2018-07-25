@@ -15,6 +15,7 @@ public void Main(int argc = 0, string args = "") const {
 	assert( TestCase6() );
 	assert( TestCase7() );
 	assert( TestCase8() );
+	assert( TestCase9() );
 }
 
 private bool TestCase1() const {
@@ -316,6 +317,28 @@ private bool TestCase8() const {
 		assert( list.contains(new Integer(1)) );
 		assert( list.contains(new Integer(2)) );
 		assert( list.contains(new Integer(3)) );
+
+		return true;
+	}
+
+	return false;
+}
+
+private bool TestCase9() const {
+	print("TestCase 9: native types");
+
+	try {
+		var list = new DoubleLinkedList<string>();
+		assert( list is ICollection );
+
+		list.push_back( "string 1" );
+		list.push_back( "string 2" );
+		list.push_back( "string 3" );
+
+		assert( list.size() == 3 );
+
+		assert( list.contains( "string 2" ) );
+		assert( !list.contains( "bla" ) );
 
 		return true;
 	}

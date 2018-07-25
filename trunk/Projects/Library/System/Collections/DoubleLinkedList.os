@@ -12,6 +12,7 @@ public namespace System.Collections { }
  */
 public object DoubleLinkedList<T> implements ICollection {
 	private CollectionItem<T> mFirst;
+	private bool mIsObjectType;
 	private CollectionItem<T> mLast;
 	private int mSize = 0;
 
@@ -19,7 +20,9 @@ public object DoubleLinkedList<T> implements ICollection {
 	private ReverseIterator<T> __reverse_iterator;		// this is a hack to automatically initialize a generic type
 
 	public void Constructor() {
-		// this is empty by intend
+		// this determines if we are dealing with an object type or a native data type
+		T check;
+		mIsObjectType = check is Object;
 	}
 
 	public void Destructor() {
@@ -41,7 +44,7 @@ public object DoubleLinkedList<T> implements ICollection {
 
 	public void clear() modify {
 		for ( int i = 0; i < mSize; i++ ) {
-			mFirst.mValue = T null;
+			delete mFirst.mValue;
 			mFirst = mFirst.mNext;
 		}
 
@@ -125,7 +128,7 @@ public object DoubleLinkedList<T> implements ICollection {
 		}
 
 		if ( mSize == 1 ) {
-			mFirst = CollectionItem<T> null;
+			delete mFirst;
 		}
 		else {
 			CollectionItem<T> item = mFirst;
@@ -133,7 +136,7 @@ public object DoubleLinkedList<T> implements ICollection {
 				item = item.mNext;
 			}
 
-			item.mNext = CollectionItem<T> null;
+			delete item.mNext;
 		}
 
 		mSize--;

@@ -8,6 +8,7 @@ public namespace System.Collections { }
 
 public object List<T> implements ICollection {
 	private CollectionItem<T> mFirst;
+	private bool mIsObjectType;
 	private CollectionItem<T> mLast;
 	private int mSize = 0;
 
@@ -15,7 +16,9 @@ public object List<T> implements ICollection {
 	private ReverseIterator<T> __reverse_iterator;		// this is a hack to automatically initialize a generic type
 
 	public void Constructor() {
-		// this is empty by intend
+		// this determines if we are dealing with an object type or a native data type
+		T check;
+		mIsObjectType = check is Object;
 	}
 
 	public void Destructor() {
@@ -36,13 +39,8 @@ public object List<T> implements ICollection {
 	}
 
 	public void clear() modify {
-		T check;
-		bool isObject = check is Object;
-
 		for ( int i = 0; i < mSize; i++ ) {
-			if ( isObject ) {
-				mFirst.mValue = T null;
-			}
+			delete mFirst.mValue;
 			mFirst = mFirst.mNext;
 		}
 
@@ -126,8 +124,8 @@ public object List<T> implements ICollection {
 		}
 
 		if ( mSize == 1 ) {			// special handling for 1st item
-			mFirst = CollectionItem<T> null;
-			mLast = CollectionItem<T> null;
+			delete mFirst;
+			delete mLast;
 		}
 		else {					// generic handling
 			CollectionItem<T> item = mFirst;
@@ -136,7 +134,7 @@ public object List<T> implements ICollection {
 			}
 
 			mLast = item;
-			item.mNext = CollectionItem<T> null;
+			delete item.mNext;
 		}
 
 		mSize--;
@@ -149,7 +147,7 @@ public object List<T> implements ICollection {
 
 		mFirst = mFirst.mNext;
 		if ( !mFirst ) {
-			mLast = CollectionItem<T> null;
+			delete mLast;
 		}
 
 		mSize--;

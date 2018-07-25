@@ -8,12 +8,17 @@ import List;
 public namespace System.Collections { }
 
 public object Queue<T> implements ICollection {
+	private bool mIsObjectType;
 	private List<T> mItems;
 
 	private Iterator<T> __iterator;				// this is a hack to automatically initialize a generic type
 	private ReverseIterator<T> __reverse_iterator;		// this is a hack to automatically initialize a generic type
 
 	public void Constructor() {
+		// this determines if we are dealing with an object type or a native data type
+		T check;
+		mIsObjectType = check is Object;
+
 		mItems = new List<T>();
 	}
 

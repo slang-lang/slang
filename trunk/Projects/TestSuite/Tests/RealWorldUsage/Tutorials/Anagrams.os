@@ -11,8 +11,11 @@ import System.StringIterator;
 // Project imports
 import Scanner;
 
+private object StringSet replicates Set<String>;
+
+
 public void Main(int argc, string args) {
-	Map<string, Set> map = new Map<string, Set>();
+	Map<string, StringSet> map = new Map<string, StringSet>();
 
 	try {
 		Scanner scanner = new Scanner(new System.IO.File("data.txt", "r"), ",");
@@ -21,19 +24,19 @@ public void Main(int argc, string args) {
 			string alpha = alphabetize(new String(word));
 			//print("alpha = " + alpha);
 
-			Set set;
+			StringSet set;
 			if ( map.contains(alpha) ) {
 				set = map.get(alpha);
 			}
 			else {
-				set = new Set();
+				set = new StringSet();
 				map.insert(alpha, set);
 			}
 
-			set.insert(Object new String(alpha));
+			set.insert(new String(alpha));
 		}
 
-		foreach ( Pair<string, Set> p : map ) {
+		foreach ( Pair<string, StringSet> p : map ) {
 			cout((string p.first) + ", " + (string p.second) + ": [");
 			foreach ( String s : p.second ) {
 				cout("" + string s + " ");
@@ -42,7 +45,7 @@ public void Main(int argc, string args) {
 			endl();
 		}
 	}
-	catch ( Exception e ) {
+	catch ( IException e ) {
 		print("exception: " + e.what());
 	}
 	catch ( string e ) {
@@ -54,16 +57,16 @@ public void Main(int argc, string args) {
 }
 
 private string alphabetize(String word ref) {
-	Set sorted = new Set();
+	StringSet sorted = new StringSet();
 
 	int length = word.Length();
 	for ( int i = 0; i < length; i++ ) {
-		sorted.insert(Object new String(word.CharAt(i)));
+		sorted.insert(new String(word.CharAt(i)));
 	}
 
 	word = "";
-	foreach ( Object s : sorted ) {
-		word = word + String s;
+	foreach ( String s : sorted ) {
+		word = word + s;
 	}
 
 	return string word;
