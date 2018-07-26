@@ -12,12 +12,11 @@ public void Main(int argc, string args) {
 
 	// Mittelwert berechnen
 	float Mittelwert = 0.f;
-	List inFeld = new List();
+	List<int> inFeld = new List<int>();
 
 	int idx;
 	for ( idx = 0; idx < FELDGROESSE; idx = idx++ ) {
-		Integer value = new Integer(int cin());
-		inFeld.push_back(Object value);
+		inFeld.push_back(int cin());
 	}
 
 	for ( idx = 0; idx < FELDGROESSE; idx = idx++ ) {
