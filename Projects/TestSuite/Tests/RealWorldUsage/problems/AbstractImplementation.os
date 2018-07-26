@@ -13,16 +13,17 @@ public object AbstractImplementation extends AbstractBase {
 		base.Constructor();
 	}
 
+/*
 	public string =operator(string none) const {
 		return "mSize = " + mSize;
 	}
+*/
 }
 
 public void Main(int argc, string args) {
-	print("runtime");
-
-	AbstractImplementation impl = new AbstractImplementation();
+	var impl = AbstractBase new AbstractImplementation();
 
 	print(string impl.size());
+	print(string impl);
 }
 
