@@ -28,7 +28,7 @@ public object Parser {
 	public Map<int, Line> parseFile(string filename) modify {
 		Scanner scanner = new Scanner(new System.IO.File(filename, "r"), ascii(10));
 
-		print("Parsing file '" + filename + "'...");
+		//print("Parsing file '" + filename + "'...");
 
 		StringIterator it = scanner.getIterator();
 		Map<int, Line> lines = new Map<int, Line>();
@@ -54,7 +54,7 @@ public object Parser {
 			}
 		}
 
-		print("Done parsing.");
+		//print("Done parsing.");
 
 		return lines;
 	}
@@ -233,9 +233,9 @@ public object Parser {
 		}
 
 		return Statement new ForStatement(varExp,
-										  initExp,
-										  Expression new BinaryExpression(Expression varExp, "<", toExp),
-										  Expression new BinaryExpression(Expression varExp, "+", stepExp));
+						  initExp,
+						  Expression new BinaryExpression(Expression varExp, "<", toExp),
+						  Expression new BinaryExpression(Expression varExp, "+", stepExp));
 	}
 
 	private Statement parseGOTO(CharacterIterator ci) throws {
