@@ -1,6 +1,6 @@
 
-#ifndef Core_Runtime_BuildInObjects_String_h
-#define Core_Runtime_BuildInObjects_String_h
+#ifndef Core_Runtime_BuildInTypes_String_h
+#define Core_Runtime_BuildInTypes_String_h
 
 
 // Library includes

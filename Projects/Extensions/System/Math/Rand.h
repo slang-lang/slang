@@ -7,9 +7,9 @@
 #include <math.h>
 
 // Project includes
-#include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
 #include <Core/Extensions/ExtensionMethod.h>
+#include <Core/Runtime/BuildInTypes/IntegerObject.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
 #include <Tools/Strings.h>

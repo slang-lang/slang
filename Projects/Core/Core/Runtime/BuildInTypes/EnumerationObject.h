@@ -1,6 +1,6 @@
 
-#ifndef Core_Runtime_BuildInObjects_EnumerationObject_h
-#define Core_Runtime_BuildInObjects_EnumerationObject_h
+#ifndef Core_Runtime_BuildInTypes_EnumerationObject_h
+#define Core_Runtime_BuildInTypes_EnumerationObject_h
 
 
 // Library includes

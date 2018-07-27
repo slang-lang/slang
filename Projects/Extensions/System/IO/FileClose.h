@@ -7,9 +7,9 @@
 
 // Project includes
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
-#include <Core/BuildInObjects/IntegerObject.h>
-#include <Core/BuildInObjects/StringObject.h>
 #include <Core/Extensions/ExtensionMethod.h>
+#include <Core/Runtime/BuildInTypes/IntegerObject.h>
+#include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>

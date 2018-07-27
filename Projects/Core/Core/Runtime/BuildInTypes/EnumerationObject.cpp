@@ -6,9 +6,9 @@
 
 // Project includes
 #include <Core/Common/Exceptions.h>
+#include <Core/Runtime/Exceptions.h>
 #include <Core/Tools.h>
 #include <Tools/Strings.h>
-#include <Core/Runtime/Exceptions.h>
 #include "BoolObject.h"
 #include "DoubleObject.h"
 #include "FloatObject.h"

@@ -5,12 +5,13 @@
 // Library includes
 
 // Project includes
-#include <Core/BuildInObjects/BoolObject.h>
-#include <Core/BuildInObjects/DoubleObject.h>
-#include <Core/BuildInObjects/FloatObject.h>
-#include <Core/BuildInObjects/IntegerObject.h>
-#include <Core/BuildInObjects/StringObject.h>
-#include <Core/BuildInObjects/VoidObject.h>
+#include <Core/Runtime/BuildInTypes/BoolObject.h>
+#include <Core/Runtime/BuildInTypes/DoubleObject.h>
+#include <Core/Runtime/BuildInTypes/EnumerationObject.h>
+#include <Core/Runtime/BuildInTypes/FloatObject.h>
+#include <Core/Runtime/BuildInTypes/IntegerObject.h>
+#include <Core/Runtime/BuildInTypes/StringObject.h>
+#include <Core/Runtime/BuildInTypes/VoidObject.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Utils.h>
 
@@ -41,6 +42,15 @@ void typecast(Object *base, const std::string& targetType)
 		DoubleObject tmp(*base);
 
 		base->assign(tmp);
+	}
+	else if ( targetType == EnumerationObject::TYPENAME ) {
+		assert(! "implement me");
+
+/*
+		EnumerationObject tmp(*base);
+
+		base->assign(tmp);
+ */
 	}
 	else if ( targetType == FloatObject::TYPENAME ) {
 		FloatObject tmp(*base);

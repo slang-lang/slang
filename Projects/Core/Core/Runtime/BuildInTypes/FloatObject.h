@@ -1,6 +1,6 @@
 
-#ifndef Core_Runtime_BuildInObjects_FloatObject_h
-#define Core_Runtime_BuildInObjects_FloatObject_h
+#ifndef Core_Runtime_BuildInTypes_FloatObject_h
+#define Core_Runtime_BuildInTypes_FloatObject_h
 
 
 // Library includes

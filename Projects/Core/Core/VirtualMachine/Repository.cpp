@@ -6,25 +6,25 @@
 
 // Project includes
 #include <Core/AST/Generator.h>
-#include <Core/BuildInObjects/BoolObject.h>
-#include <Core/BuildInObjects/DoubleObject.h>
-#include <Core/BuildInObjects/FloatObject.h>
-#include <Core/BuildInObjects/IntegerObject.h>
-#include <Core/BuildInObjects/StringObject.h>
-#include <Core/BuildInObjects/UserObject.h>
-#include <Core/BuildInObjects/VoidObject.h>
 #include <Core/Common/Exceptions.h>
 #include <Core/Common/Method.h>
 #include <Core/Designtime/BluePrintObject.h>
 #include <Core/Designtime/BuildInTypes/BoolObject.h>
 #include <Core/Designtime/BuildInTypes/DoubleObject.h>
-#include <Core/BuildInObjects/EnumerationObject.h>
 #include <Core/Designtime/BuildInTypes/FloatObject.h>
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
 #include <Core/Designtime/BuildInTypes/StringObject.h>
 #include <Core/Designtime/BuildInTypes/UserObject.h>
 #include <Core/Designtime/BuildInTypes/VoidObject.h>
 #include <Core/Designtime/Parser/Parser.h>
+#include <Core/Runtime/BuildInTypes/BoolObject.h>
+#include <Core/Runtime/BuildInTypes/DoubleObject.h>
+#include <Core/Runtime/BuildInTypes/EnumerationObject.h>
+#include <Core/Runtime/BuildInTypes/FloatObject.h>
+#include <Core/Runtime/BuildInTypes/IntegerObject.h>
+#include <Core/Runtime/BuildInTypes/StringObject.h>
+#include <Core/Runtime/BuildInTypes/UserObject.h>
+#include <Core/Runtime/BuildInTypes/VoidObject.h>
 #include <Core/Tools.h>
 #include <Utils.h>
 #include "Controller.h"

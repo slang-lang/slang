@@ -6,12 +6,12 @@
 // Library includes
 
 // Project includes
-#include <Core/BuildInObjects/StringObject.h>
 #include <Core/Common/Exceptions.h>
-#include <Core/BuildInObjects/VoidObject.h>
 #include <Core/Designtime/BuildInTypes/IntegerObject.h>
 #include <Core/Designtime/BuildInTypes/VoidObject.h>
 #include <Core/Extensions/ExtensionMethod.h>
+#include <Core/Runtime/BuildInTypes/StringObject.h>
+#include <Core/Runtime/BuildInTypes/VoidObject.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
 #include "Types.h"

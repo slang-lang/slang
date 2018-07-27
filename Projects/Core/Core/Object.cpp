@@ -6,10 +6,10 @@
 
 // Project includes
 #include <Core/AST/TreeInterpreter.h>
-#include <Core/BuildInObjects/VoidObject.h>
 #include <Core/Common/Exceptions.h>
 #include <Core/Common/Method.h>
 #include <Core/Defines.h>
+#include <Core/Runtime/BuildInTypes/VoidObject.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/VirtualMachine/Controller.h>
 #include <Tools/Strings.h>

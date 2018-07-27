@@ -10,10 +10,10 @@
 // Library includes
 
 // Project includes
-#include <Core/BuildInObjects/IntegerObject.h>
-#include <Core/BuildInObjects/StringObject.h>
 #include <Core/Common/Exceptions.h>
 #include <Core/Designtime/Exceptions.h>
+#include <Core/Runtime/BuildInTypes/IntegerObject.h>
+#include <Core/Runtime/BuildInTypes/StringObject.h>
 #include <Core/Runtime/Exceptions.h>
 #include <Core/Runtime/Script.h>
 #include <Core/VirtualMachine/VirtualMachine.h>
