@@ -1,6 +1,6 @@
 
-#ifndef Core_Runtime_BuildInObjects_DoubleObject_h
-#define Core_Runtime_BuildInObjects_DoubleObject_h
+#ifndef Core_Runtime_BuildInTypes_DoubleObject_h
+#define Core_Runtime_BuildInTypes_DoubleObject_h
 
 
 // Library includes

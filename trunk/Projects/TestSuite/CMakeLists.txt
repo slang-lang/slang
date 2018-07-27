@@ -34,11 +34,8 @@ SET(DEPENDENCIES
 	CoreRuntime
 	CoreExtensions
 	CoreDebugger
-	CoreDesigntimeParser
-	CoreDesigntimeBuildInTypes
 	CoreDesigntime
 	CoreCommon
-	CoreBuildInObjects
 	CoreAttributes
 	Core
 )

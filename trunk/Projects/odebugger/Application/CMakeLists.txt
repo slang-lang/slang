@@ -11,7 +11,6 @@ SET(HEADERS
 SET(DEPENDENCIES
 	DebuggerVSCodeRemoteClient
 	DebuggerLocalClient
-	CoreBuildInObjects
 	Core
 )
 

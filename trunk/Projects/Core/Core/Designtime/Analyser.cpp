@@ -8,12 +8,12 @@
 #include <iostream>
 
 // Project includes
-#include <Core/BuildInObjects/IntegerObject.h>
 #include <Core/Common/Exceptions.h>
 #include <Core/Common/Method.h>
 #include <Core/Common/Namespace.h>
 #include <Core/Designtime/Parser/Parser.h>
 #include <Core/Designtime/Parser/Tokenizer.h>
+#include <Core/Runtime/BuildInTypes/IntegerObject.h>
 #include <Core/Tools.h>
 #include <Core/VirtualMachine/Controller.h>
 #include <Tools/Files.h>

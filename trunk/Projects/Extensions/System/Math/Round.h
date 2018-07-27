@@ -7,13 +7,13 @@
 #include <math.h>
 
 // Project includes
-#include <Core/BuildInObjects/DoubleObject.h>
-#include <Core/BuildInObjects/FloatObject.h>
+#include <Core/Common/Exceptions.h>
 #include <Core/Designtime/BuildInTypes/DoubleObject.h>
 #include <Core/Designtime/BuildInTypes/FloatObject.h>
 #include <Core/Extensions/ExtensionMethod.h>
+#include <Core/Runtime/BuildInTypes/DoubleObject.h>
+#include <Core/Runtime/BuildInTypes/FloatObject.h>
 #include <Core/Tools.h>
-#include <Core/Common/Exceptions.h>
 #include <Tools/Strings.h>
 #include "Defines.h"
 

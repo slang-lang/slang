@@ -1,5 +1,7 @@
 INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Base.cmake)
 
+ADD_SUBDIRECTORY(BuildInTypes)
+
 SET(SOURCES
 	AtomicValue.cpp
 	ExceptionData.cpp
@@ -26,7 +28,7 @@ SET(HEADERS
 
 SET(DEPENDENCIES
 	CoreDebugger
-	CoreBuildInObjects
+	CoreRuntimeBuildInTypes
 	Utils
 )
 
