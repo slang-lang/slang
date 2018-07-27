@@ -1,4 +1,4 @@
-#!/usr/local/bin/oscript /Users/madelmann/workspace/ObjectiveScript/src/Projects/TestSuite/Tests/RealWorldUsage/Basic/Basic.os
+#!/usr/local/bin/Basic.os
 10 PRINT "GAME OF ROCK, PAPER, SCISSORS"
 20 PRINT "CREATIVE COMPUTING MORRISTOWN, NEW JERSEY"
 25 PRINT ""
