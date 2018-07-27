@@ -189,6 +189,10 @@ public object Interpreter {
 	private string processVariableExpression(VariableExpression exp) const throws {
 		//print("processVariableExpression(" + exp.toString() + ")");
 
+		if ( !mVariables.contains(exp.mVariable) ) {
+			throw new Exception("Unknown variable '" + exp.mVariable + "' referenced!");
+		}
+
 		return string mVariables.get(exp.mVariable);
 	}
 
@@ -267,10 +271,14 @@ public object Interpreter {
 		return stmt.mFollowingStatement ? process(stmt.mFollowingStatement) : 0;
 	}
 
-	private int processINPUT(InputStatement stmt) modify {
+	private int processINPUT(InputStatement stmt) modify throws {
 		assert(stmt);
 
 		write(stmt.mText);
+
+		if ( !mVariables.contains(stmt.mVariable) ){
+			throw new Exception("Unknown variable '" + stmt.mVariable + "' referenced!");
+		}
 
 		String obj = mVariables.get(stmt.mVariable);
 		obj = cin();
@@ -280,6 +288,10 @@ public object Interpreter {
 
 	private int processLET(LetStatement stmt) modify throws {
 		assert(stmt);
+
+		if ( !mVariables.contains(stmt.mVariable) ){
+			throw new Exception("Unknown variable '" + stmt.mVariable + "' referenced!");
+		}
 
 		String obj = mVariables.get(stmt.mVariable);
 		if ( !obj ) {
