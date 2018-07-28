@@ -113,8 +113,6 @@ private: // Execution
 	Node* parseFactor(TokenIterator &start);
 	Node* parseInfixPostfix(TokenIterator& start);
 	Node* parseTerm(TokenIterator& start);
-
-	SymbolExpression* parseSymbol(TokenIterator& token);
 	// }
 
 	SymbolExpression* resolve(TokenIterator& token, IScope* base, bool onlyCurrentScope, Visibility::E visibility) const;

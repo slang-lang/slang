@@ -561,18 +561,6 @@ Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 	return infixPostfix;
 }
 
-SymbolExpression* TreeGenerator::parseSymbol(TokenIterator& token)
-{
-	SymbolExpression* exp = new RuntimeSymbolExpression(token->content(), "", false, false, false);
-	++token;
-
-	while ( token->type() == Token::Type::SCOPE ) {
-		exp->mSymbolExpression = parseSymbol(++token);
-	}
-
-	return exp;
-}
-
 Node* TreeGenerator::parseTerm(TokenIterator& start)
 {
 	Node* term = 0;
@@ -612,6 +600,9 @@ Node* TreeGenerator::parseTerm(TokenIterator& start)
 
 			expect(Token::Type::PARENTHESIS_CLOSE, start);
 			++start;	// consume operator token
+		} break;
+		case Token::Type::SCOPE: {
+			assert( !"scope operator not implemented!" );
 		} break;
 		default:
 			throw Common::Exceptions::SyntaxError("identifier, literal or constant expected but '" + start->content() + "' found", start->position());
