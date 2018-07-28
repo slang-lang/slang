@@ -218,56 +218,6 @@ const TokenList& TreeGenerator::getTokens() const
 	return mStackFrame->getTokens();
 }
 
-inline Symbol* TreeGenerator::identify(TokenIterator& token) const
-{
-	Symbol *result = 0;
-	bool onlyCurrentScope = false;
-	std::string prev_identifier;	// hack to allow special 'this'-handling
-
-	while ( token->type() == Token::Type::IDENTIFIER || token->type() == Token::Type::TYPE ) {
-		std::string identifier = token->content();
-
-		if ( !result ) {
-			result = getScope()->resolve(identifier, onlyCurrentScope, Visibility::Private);
-
-			prev_identifier = identifier;
-		}
-		else {
-			switch ( result->getSymbolType() ) {
-				case Symbol::IType::BluePrintObjectSymbol:
-					result = dynamic_cast<Designtime::BluePrintObject*>(result)->resolve(identifier, onlyCurrentScope, Visibility::Public);
-					break;
-				case Symbol::IType::NamespaceSymbol:
-					result = dynamic_cast<Common::Namespace*>(result)->resolve(identifier, onlyCurrentScope, Visibility::Public);
-					break;
-				case Symbol::IType::ObjectSymbol:
-					result = dynamic_cast<Runtime::Object*>(result)->resolve(identifier, onlyCurrentScope, (prev_identifier == IDENTIFIER_THIS) ? Visibility::Private : Visibility::Public);
-					break;
-				case Symbol::IType::MethodSymbol:
-					throw Common::Exceptions::NotSupported("cannot directly access locales of method");
-			}
-
-			onlyCurrentScope = true;
-		}
-
-		if ( lookahead(token)->type() != Token::Type::SCOPE ) {
-			break;
-		}
-
-		token++;
-
-		TokenIterator tmp = token;
-		tmp++;
-		if ( tmp->type() != Token::Type::IDENTIFIER && tmp->type() != Token::Type::TYPE ) {
-			break;
-		}
-
-		token++;
-	}
-
-	return result;
-}
-
 void TreeGenerator::initialize(Common::Method* method)
 {
 	// initialize reuseable members
@@ -444,9 +394,6 @@ Node* TreeGenerator::parseFactor(TokenIterator &start)
 		Node* right = parseInfixPostfix(++start);
 		std::string type = resolveType(factor, operation, right);
 
-		//factor = new BinaryExpression(factor, operation, right, type);
-
-
 		SymbolExpression* exp = dynamic_cast<SymbolExpression*>(factor);
 
 		if ( !exp || exp->isAtomicType() ) {
@@ -513,7 +460,7 @@ Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 		} break;
 		case Token::Type::OPERATOR_IS: {		// postfix is operator
 			++start;
-			SymbolExpression* symbol = resolveWithThis(start, getScope());
+			SymbolExpression* symbol = resolveWithExceptions(start, getScope());
 
 			std::string type = symbol->getResultType();
 			if ( dynamic_cast<DesigntimeSymbolExpression*>(symbol) ) {
@@ -1278,16 +1225,6 @@ MethodExpression* TreeGenerator::process_method(SymbolExpression* symbol, const 
  */
 Expression* TreeGenerator::process_new(TokenIterator& token)
 {
-	TokenIterator start = token;
-
-	Symbol* symbol = identify(start);
-	if ( !symbol ) {
-		throw Common::Exceptions::UnknownIdentifer("symbol '" + start->content() + "' not found", token->position());
-	}
-	if ( symbol->getSymbolType() != Symbol::IType::BluePrintObjectSymbol ) {
-		throw Common::Exceptions::InvalidSymbol("invalid symbol type found", token->position());
-	}
-
 	SymbolExpression* exp = resolveWithExceptions(token, getScope());
 
 	std::string type;
@@ -1310,8 +1247,16 @@ Expression* TreeGenerator::process_new(TokenIterator& token)
 
 			inner->mSymbolExpression = new DesigntimeSymbolExpression(CONSTRUCTOR, _void, PrototypeConstraints(), false);
 			inner->mSymbolExpression->mSurroundingScope = mRepository->findBluePrintObject(type);
+
+			if ( !inner->mSymbolExpression->mSurroundingScope ) {
+				throw Common::Exceptions::UnknownIdentifer(type, token->position());
+			}
 			break;
 		}
+	}
+
+	if ( !mRepository->findBluePrintObject(exp->getResultType()) ) {
+		throw Common::Exceptions::UnknownIdentifer(exp->getResultType(), token->position());
 	}
 
 	return new NewExpression(type, process_method(exp, token));
@@ -1368,12 +1313,12 @@ Statement* TreeGenerator::process_return(TokenIterator& token)
 
 // syntax:
 // { [<statements>] }
-Statements* TreeGenerator::process_scope(TokenIterator& token, bool allowBreakAndContinue)
+Statements* TreeGenerator::process_scope(TokenIterator& token, bool allowBreakAndContinue, bool needsControlStatement)
 {
 	TokenList scopeTokens;
 	collectScopeTokens(token, scopeTokens);
 
-	return generate(scopeTokens, allowBreakAndContinue);
+	return generate(scopeTokens, allowBreakAndContinue, needsControlStatement);
 }
 
 Expression* TreeGenerator::process_subscript(TokenIterator& token, SymbolExpression* symbol)
@@ -1475,12 +1420,9 @@ Statement* TreeGenerator::process_switch(TokenIterator& token)
 			expect(Token::Type::COLON, token);
 			++token;
 
-			TokenList caseTokens;
-			collectScopeTokens(token, caseTokens);
-
 			// process case-block tokens
 			caseStatements.push_back(
-				new CaseStatement(start, caseExpression, generate(caseTokens, true, true))
+				new CaseStatement(start, caseExpression, process_scope(token, true, true))
 			);
 		}
 		else if ( token->type() == Token::Type::KEYWORD && token->content() == KEYWORD_DEFAULT ) {
@@ -1494,11 +1436,8 @@ Statement* TreeGenerator::process_switch(TokenIterator& token)
 			expect(Token::Type::COLON, token);
 			++token;
 
-			TokenList defaultTokens;
-			collectScopeTokens(token, defaultTokens);
-
 			// process default-block tokens
-			defaultStatement = generate(defaultTokens, true, true);
+			defaultStatement = process_scope(token, true, true);
 		}
 		else {
 			throw Designtime::Exceptions::DesigntimeException("invalid token '" + token->content() + "' found", token->position());
@@ -1554,11 +1493,8 @@ Statement* TreeGenerator::process_try(TokenIterator& token)
 	std::set<std::string> thrownExceptions = mThrownExceptions;
 	mThrownExceptions.clear();
 
-	TokenList tryTokens;
-	collectScopeTokens(token, tryTokens);
-
 	// process try-block
-	Statements* tryBlock = generate(tryTokens);
+	Statements* tryBlock = process_scope(token);
 
 	TokenIterator tmp = lookahead(token);
 	TokenIterator localEnd = getTokens().end();
@@ -1589,6 +1525,9 @@ Statement* TreeGenerator::process_try(TokenIterator& token)
 
 				expect(Token::Type::PARENTHESIS_CLOSE, tmp);
 				++tmp;
+
+				// remove caught exception from list of not-caught exceptions
+				mThrownExceptions.erase(typeDeclaration->mType);
 			}
 			else {
 				// this is a catch block without an exception type (= a "catch all"-block), so we have to clear all exceptions
@@ -1600,9 +1539,6 @@ Statement* TreeGenerator::process_try(TokenIterator& token)
 			catchStatements.push_back(
 				new CatchStatement(start, typeDeclaration, process_scope(tmp))
 			);
-
-			// remove caught exception from list of not-caught exceptions
-			mThrownExceptions.erase(typeDeclaration->mType);
 
 			popScope();		// pop exception instance scope
 
