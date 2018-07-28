@@ -93,6 +93,13 @@ std::string PrintVisitor::printExpression(Node* node) const
 			}
 			result += ")";
 		} break;
+		case Expression::ExpressionType::ScopeExpression: {
+			ScopeExpression* scope = dynamic_cast<ScopeExpression*>(expression);
+
+			result += printExpression(scope->mLHS);
+			result += ".";
+			result += printExpression(scope->mRHS);
+		} break;
 		case Expression::ExpressionType::SymbolExpression: {
 			SymbolExpression* sym = static_cast<SymbolExpression*>(expression);
 

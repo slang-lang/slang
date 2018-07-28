@@ -35,6 +35,7 @@ public:
 			LiteralExpression,
 			MethodExpression,
 			NewExpression,
+			ScopeExpression,
 			SymbolExpression,
 			TernaryExpression,
 			TypecastExpression,
@@ -276,6 +277,23 @@ public:
 public:
 	Node* mExpression;
 	std::string mMatchType;
+};
+
+
+class ScopeExpression : public Expression
+{
+public:
+	ScopeExpression(Expression* lhs, Expression* rhs, const std::string& resultType)
+	: Expression(ExpressionType::ScopeExpression),
+	  mLHS(lhs),
+	  mRHS(rhs)
+	{
+		mResultType = resultType;
+	}
+
+public:
+	Expression* mLHS;
+	Expression* mRHS;
 };
 
 
