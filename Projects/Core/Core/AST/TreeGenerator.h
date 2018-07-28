@@ -127,8 +127,8 @@ private: // Execution
 	MethodScope* getMethodScope(IScope* scope) const;
 
 	inline IScope* getScope() const;
-	void popScope();
-	void pushScope(IScope* scope = 0, bool allowBreakAndContinue = false);
+	inline void popScope();
+	inline void pushScope(IScope* scope = 0, bool allowBreakAndContinue = false);
 	// }
 
 	// Token stack

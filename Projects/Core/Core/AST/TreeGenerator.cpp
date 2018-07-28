@@ -1605,6 +1605,7 @@ Statement* TreeGenerator::process_try(TokenIterator& token)
 				new CatchStatement(start, typeDeclaration, generate(tokens))
 			);
 
+			// remove catched exception from list of not-catched exceptions
 			mThrownExceptions.erase(typeDeclaration->mType);
 
 			popScope();		// pop exception instance scope

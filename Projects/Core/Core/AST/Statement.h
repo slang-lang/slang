@@ -165,6 +165,7 @@ public:
 
 typedef std::list<CaseStatement*> CaseStatements;
 
+
 class CatchStatement : public Statement
 {
 public:

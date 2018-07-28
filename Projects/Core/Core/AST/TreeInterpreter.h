@@ -89,8 +89,8 @@ private:
 	// Scope stack
 	// {
 	inline IScope* getScope() const;
-	void popScope();
-	void pushScope(IScope* scope = 0);
+	inline void popScope();
+	inline void pushScope(IScope* scope = 0);
 	// }
 
 	void evaluate(Node* exp, Runtime::Object* result);
