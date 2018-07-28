@@ -502,8 +502,6 @@ Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 			throw Common::Exceptions::NotSupported("postfix ! operator not supported", start->position());
 		} break;
 		case Token::Type::SCOPE: {
-			//assert( !"scope operator not implemented!" );
-
 			++start;
 
 			Expression* baseExp = dynamic_cast<Expression*>(infixPostfix);
@@ -511,13 +509,18 @@ Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 				throw Common::Exceptions::SyntaxError("invalid expression type found!", start->position());
 			}
 
-			std::string type = baseExp->getResultType();
-
-			Designtime::BluePrintObject* scope = mRepository->findBluePrintObject(type);
+			Designtime::BluePrintObject* scope = mRepository->findBluePrintObject(baseExp->getResultType());
 
 			SymbolExpression* symbolExpression = resolve(start, scope, true, Visibility::Public);
 
-			infixPostfix = new ScopeExpression(baseExp, symbolExpression, symbolExpression->getResultType());
+			if ( start->type() == Token::Type::PARENTHESIS_OPEN ) {
+				MethodExpression* method = process_method(symbolExpression, start);
+
+				infixPostfix = new ScopeExpression(baseExp, method, method->getResultType());
+			}
+			else {
+				infixPostfix = new ScopeExpression(baseExp, symbolExpression, symbolExpression->getResultType());
+			}
 		} break;
 		default: {
 		} break;
