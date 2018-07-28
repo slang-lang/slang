@@ -501,6 +501,24 @@ Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 		case Token::Type::OPERATOR_NOT: {		// postfix ! operator
 			throw Common::Exceptions::NotSupported("postfix ! operator not supported", start->position());
 		} break;
+		case Token::Type::SCOPE: {
+			//assert( !"scope operator not implemented!" );
+
+			++start;
+
+			Expression* baseExp = dynamic_cast<Expression*>(infixPostfix);
+			if ( !baseExp ) {
+				throw Common::Exceptions::SyntaxError("invalid expression type found!", start->position());
+			}
+
+			std::string type = baseExp->getResultType();
+
+			Designtime::BluePrintObject* scope = mRepository->findBluePrintObject(type);
+
+			SymbolExpression* symbolExpression = resolve(start, scope, true, Visibility::Public);
+
+			infixPostfix = new ScopeExpression(baseExp, symbolExpression, symbolExpression->getResultType());
+		} break;
 		default: {
 		} break;
 	}
@@ -547,9 +565,6 @@ Node* TreeGenerator::parseTerm(TokenIterator& start)
 
 			expect(Token::Type::PARENTHESIS_CLOSE, start);
 			++start;	// consume operator token
-		} break;
-		case Token::Type::SCOPE: {
-			assert( !"scope operator not implemented!" );
 		} break;
 		default:
 			throw Common::Exceptions::SyntaxError("identifier, literal or constant expected but '" + start->content() + "' found", start->position());
@@ -932,7 +947,7 @@ Statement* TreeGenerator::process_foreach(TokenIterator& token)
  */
 Node* TreeGenerator::process_identifier(TokenIterator& token, bool allowTypeCast)
 {
-	Node* node = 0;
+	Node* node = NULL;
 
 	TokenIterator old = token;
 	SymbolExpression* symbol = resolveWithThis(token, getScope());

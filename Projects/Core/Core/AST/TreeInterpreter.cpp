@@ -98,18 +98,19 @@ void TreeInterpreter::evaluate(Node* exp, Runtime::Object* result)
 	}
 
 	switch ( static_cast<Expression*>(exp)->getExpressionType() ) {
-		case Expression::ExpressionType::AssignmentExpression: evaluateAssignmentExpression(static_cast<AssignmentExpression*>(exp), result); break;
-		case Expression::ExpressionType::BinaryExpression:   evaluateBinaryExpression(static_cast<BinaryExpression*>(exp), result); break;
-		case Expression::ExpressionType::CopyExpression:     evaluateCopyExpression(static_cast<CopyExpression*>(exp), result); break;
-		case Expression::ExpressionType::IsExpression:       evaluateIsExpression(static_cast<IsExpression*>(exp), result); break;
-		case Expression::ExpressionType::LiteralExpression:  evaluateLiteral(static_cast<LiteralExpression*>(exp), result); break;
-		case Expression::ExpressionType::MethodExpression:   evaluateMethodExpression(static_cast<MethodExpression*>(exp), result); break;
-		case Expression::ExpressionType::NewExpression:      evaluateNewExpression(static_cast<NewExpression*>(exp), result); break;
-		case Expression::ExpressionType::SymbolExpression:   evaluateSymbolExpression(static_cast<SymbolExpression *>(exp), result, getScope()); break;
-		case Expression::ExpressionType::TernaryExpression:  evaluateTernaryExpression(static_cast<TernaryExpression*>(exp), result); break;
-		case Expression::ExpressionType::TypecastExpression: evaluateTypeCastExpression(static_cast<TypecastExpression*>(exp), result); break;
-		case Expression::ExpressionType::TypeidExpression:   evaluateTypeidExpression(static_cast<TypeidExpression*>(exp), result); break;
-		case Expression::ExpressionType::UnaryExpression:    evaluateUnaryExpression(static_cast<UnaryExpression*>(exp), result); break;
+		case Expression::ExpressionType::AssignmentExpression: evaluateAssignmentExpression(dynamic_cast<AssignmentExpression*>(exp), result); break;
+		case Expression::ExpressionType::BinaryExpression:     evaluateBinaryExpression(dynamic_cast<BinaryExpression*>(exp), result); break;
+		case Expression::ExpressionType::CopyExpression:       evaluateCopyExpression(dynamic_cast<CopyExpression*>(exp), result); break;
+		case Expression::ExpressionType::IsExpression:         evaluateIsExpression(dynamic_cast<IsExpression*>(exp), result); break;
+		case Expression::ExpressionType::LiteralExpression:    evaluateLiteral(dynamic_cast<LiteralExpression*>(exp), result); break;
+		case Expression::ExpressionType::MethodExpression:     evaluateMethodExpression(dynamic_cast<MethodExpression*>(exp), result); break;
+		case Expression::ExpressionType::NewExpression:        evaluateNewExpression(dynamic_cast<NewExpression*>(exp), result); break;
+		case Expression::ExpressionType::ScopeExpression:      evaluateScopeExpression(dynamic_cast<ScopeExpression*>(exp), result); break;
+		case Expression::ExpressionType::SymbolExpression:     evaluateSymbolExpression(dynamic_cast<SymbolExpression *>(exp), result, getScope()); break;
+		case Expression::ExpressionType::TernaryExpression:    evaluateTernaryExpression(dynamic_cast<TernaryExpression*>(exp), result); break;
+		case Expression::ExpressionType::TypecastExpression:   evaluateTypeCastExpression(dynamic_cast<TypecastExpression*>(exp), result); break;
+		case Expression::ExpressionType::TypeidExpression:     evaluateTypeidExpression(dynamic_cast<TypeidExpression*>(exp), result); break;
+		case Expression::ExpressionType::UnaryExpression:      evaluateUnaryExpression(dynamic_cast<UnaryExpression*>(exp), result); break;
 	}
 }
 
@@ -293,6 +294,21 @@ void TreeInterpreter::evaluateMethodExpression(MethodExpression* exp, Runtime::O
 		case Runtime::ControlFlow::Throw: throw Runtime::ControlFlow::Throw;				// promote control flow
 		default: mControlFlow = Runtime::ControlFlow::Normal; break;
 	}
+}
+
+void TreeInterpreter::evaluateScopeExpression(ScopeExpression* exp, Runtime::Object* result)
+{
+	Runtime::Object left;
+	evaluate(exp->mLHS, &left);
+
+	pushScope(&left);
+
+	Runtime::Object right;
+	evaluate(exp->mRHS, &right);
+
+	popScope();
+
+	*result = *static_cast<Runtime::Object*>(&right);
 }
 
 void TreeInterpreter::evaluateNewExpression(NewExpression* exp, Runtime::Object* result)
@@ -682,6 +698,13 @@ std::string TreeInterpreter::printExpression(Node* node) const
 				result += printExpression((*it));
 			}
 			result += ")";
+		} break;
+		case Expression::ExpressionType::ScopeExpression: {
+			ScopeExpression* scope = dynamic_cast<ScopeExpression*>(expression);
+
+			result += printExpression(scope->mLHS);
+			result += ".";
+			result += printExpression(scope->mRHS);
 		} break;
 		case Expression::ExpressionType::SymbolExpression: {
 			SymbolExpression* sym = dynamic_cast<SymbolExpression*>(expression);

@@ -105,6 +105,12 @@ void TreeVisitor::visitExpression(Expression* expression)
 				visit((*it));
 			}
 		} break;
+		case Expression::ExpressionType::ScopeExpression: {
+			ScopeExpression* scope = dynamic_cast<ScopeExpression*>(expression);
+
+			visit(scope->mLHS);
+			visit(scope->mRHS);
+		} break;
 		case Expression::ExpressionType::SymbolExpression: {
 			SymbolExpression* sym = static_cast<SymbolExpression*>(expression);
 

@@ -5,10 +5,13 @@ public object TestObject {
 }
 
 public void Main(int argc, string args) {
-	Object obj = Object new TestObject();
+	TestObject testObj = new TestObject();
+	testObj.mValue = 173;
 
-	(TestObject obj).mValue = 173;
+	Object obj = Object testObj;
 
-	assert(obj.mValue == 173);
+	assert((TestObject obj).mValue == 173);
+
+	print("" + (TestObject obj).mValue);
 }
 
