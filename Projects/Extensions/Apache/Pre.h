@@ -48,12 +48,10 @@ public:
 			ParameterList::const_iterator it = list.begin();
 
 			std::string param_text = (*it++).value().toStdString();
-
 			size_t start = 0;
-			size_t end = 0;
 
 			while ( (start = param_text.find_first_of(APACHEEXT_VARPREFIX, start)) != std::string::npos ) {
-				end = param_text.find_first_of(APACHEEXT_VARPREFIX, start + 1);
+				size_t end = param_text.find_first_of(APACHEEXT_VARPREFIX, start + 1);
 
 				if ( end == std::string::npos ) {
 					break;
@@ -63,14 +61,13 @@ public:
 
 				Symbol* symbol = this->resolve(var, false);
 				if ( !symbol ) {
-					//throw Common::Exceptions::UnknownIdentifer("unknown identifier '" + var + "'", token.position());
 					continue;	// skip not-existing symbols
 				}
 				if ( symbol->getSymbolType() != Symbol::IType::ObjectSymbol ) {
-					throw Common::Exceptions::Exception("invalid symbol type found", token.position());
+					continue;	// skip symbols with wrong type
 				}
 
-				Runtime::Object* tmp = static_cast<Runtime::Object*>(symbol);
+				Runtime::Object* tmp = dynamic_cast<Runtime::Object*>(symbol);
 
 				param_text.replace(start, end - start + 1, tmp->getValue().toStdString());
 			}
