@@ -1096,10 +1096,8 @@ void TreeInterpreter::visitStatement(Statement *node)
 			visitTry(dynamic_cast<TryStatement*>(node));
 			break;
 		case Statement::StatementType::TypeDeclaration:
+		case Statement::StatementType::TypeInference:		// type inference is essentially a type declaration
 			visitTypeDeclaration(dynamic_cast<TypeDeclaration*>(node));
-			break;
-		case Statement::StatementType::TypeInference:
-			visitTypeInference(dynamic_cast<TypeInference*>(node));
 			break;
 		case Statement::StatementType::WhileStatement:
 			visitWhile(dynamic_cast<WhileStatement*>(node));
