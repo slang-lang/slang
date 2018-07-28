@@ -795,7 +795,7 @@ Statement* TreeGenerator::process_continue(TokenIterator& token)
 
 /*
  * syntax:
- * copy <identifier>;
+ * copy <expression>;
  */
 Expression* TreeGenerator::process_copy(TokenIterator& token)
 {
@@ -804,7 +804,7 @@ Expression* TreeGenerator::process_copy(TokenIterator& token)
 
 /*
  * syntax:
- * delete <identifier>;
+ * delete <expression>;
  */
 Statement* TreeGenerator::process_delete(TokenIterator& token)
 {
@@ -820,7 +820,7 @@ Statement* TreeGenerator::process_delete(TokenIterator& token)
 
 /*
  * syntax:
- * exit;
+ * exit( <expression> );
  */
 Statement* TreeGenerator::process_exit(TokenIterator& token)
 {
@@ -918,7 +918,7 @@ Statement* TreeGenerator::process_for(TokenIterator& token)
 
 /*
  * syntax:
- * foreach ( <type definition> <identifier> : <instance> ) <statement>
+ * foreach ( <type definition> <identifier> : <expression> ) <statement>
  */
 Statement* TreeGenerator::process_foreach(TokenIterator& token)
 {
@@ -990,7 +990,7 @@ Statement* TreeGenerator::process_foreach(TokenIterator& token)
 }
 
 /*
- * executes a method, processes an assign statement and instantiates new types
+ * executes a method, processes an assignment and instantiates new types
  */
 Node* TreeGenerator::process_identifier(TokenIterator& token, bool allowTypeCast)
 {
@@ -1000,7 +1000,7 @@ Node* TreeGenerator::process_identifier(TokenIterator& token, bool allowTypeCast
 	SymbolExpression* symbol = resolveWithThis(token, getScope());
 	TokenIterator op = token;
 
-	// type cast (followed by identifier, literal, 'copy' or 'new' keyword)
+	// type cast (followed by expression, identifier, literal, 'copy' or 'new' keyword)
 	if ( allowTypeCast &&
 		((op->category() == Token::Category::Constant || op->type() == Token::Type::IDENTIFIER || op->type() == Token::Type::KEYWORD) ||
 		 (dynamic_cast<DesigntimeSymbolExpression*>(symbol) && dynamic_cast<DesigntimeSymbolExpression*>(symbol)->isPrototype()))
@@ -1328,7 +1328,7 @@ Expression* TreeGenerator::process_new(TokenIterator& token)
 
 /*
  * syntax:
- * print(<expression>);
+ * print( <expression> );
  */
 Statement* TreeGenerator::process_print(TokenIterator& token)
 {
