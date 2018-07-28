@@ -25,12 +25,18 @@ public object Parameter {
 		Value = value;
 	}
 
+	public bool operator==(string key) const {
+		return Key == key;
+	}
+
 	public string =operator(string) const {
 		return FullValue;
 	}
 }
 
 public object ParameterHandler implements IIterateable {
+// Public interface
+
 	public void Constructor(int argc, string args, bool skipProgramName = false) {
 		mArgc = argc;
 		mArgs = args;
@@ -38,7 +44,7 @@ public object ParameterHandler implements IIterateable {
 
 		process();
 
-		if ( skipProgramName && mParameters.size() ) {
+		if ( skipProgramName && mParameters.size() > 0 ) {
 			// remove first parameter
 			mParameters.erase(0);
 		}
@@ -52,12 +58,14 @@ public object ParameterHandler implements IIterateable {
 		return mParameters.at(index);
 	}
 
-	public string stringAt(int index) const throws {
-		if ( index < 0 || index >= mParameters.size() ) {
-			throw new OutOfBoundsException("Index (" + index + ") out of bounds");
+	public bool contains(string key) const {
+		foreach ( Parameter p : mParameters ) {
+			if ( p == key ) {
+				return true;
+			}
 		}
 
-		return string mParameters.at(index);
+		return false;
 	}
 
 	public bool empty() const {
@@ -71,6 +79,16 @@ public object ParameterHandler implements IIterateable {
 	public int size() const {
 		return mParameters.size();
 	}
+
+	public string stringAt(int index) const throws {
+		if ( index < 0 || index >= mParameters.size() ) {
+			throw new OutOfBoundsException("Index (" + index + ") out of bounds");
+		}
+
+		return string mParameters.at(index);
+	}
+
+// Private
 
 	private void process() modify {
 		StringIterator it = new StringIterator(mArgs, LINEBREAK_UNIX);

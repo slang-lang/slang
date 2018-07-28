@@ -14,6 +14,9 @@ import Line;
 import Parser;
 
 
+public string APPNAME const = "ObjectiveScript BASIC Interpreter";
+public string VERSION const = "0.1.0";
+
 public int Main(int argc, string args) modify {
 	if ( argc < 2 ) {
 		print("not enought parameters provided!");
@@ -21,6 +24,10 @@ public int Main(int argc, string args) modify {
 	}
 
 	var params = new ParameterHandler(argc, args);
+	if ( params.contains("version") ) {
+		print(APPNAME + " " + VERSION);
+		return 0;
+	}
 
 	try {
 		Parser parser = new Parser();
