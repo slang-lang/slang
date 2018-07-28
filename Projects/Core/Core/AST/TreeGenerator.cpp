@@ -1595,17 +1595,13 @@ Statement* TreeGenerator::process_try(TokenIterator& token)
 				mThrownExceptions.clear();
 			}
 
-			// parse catch-block
-			TokenList tokens;
-			collectScopeTokens(tmp, tokens);
-
 			// TODO: prevent duplicate catch-blocks
 
 			catchStatements.push_back(
-				new CatchStatement(start, typeDeclaration, generate(tokens))
+				new CatchStatement(start, typeDeclaration, process_scope(tmp))
 			);
 
-			// remove catched exception from list of not-catched exceptions
+			// remove caught exception from list of not-caught exceptions
 			mThrownExceptions.erase(typeDeclaration->mType);
 
 			popScope();		// pop exception instance scope
