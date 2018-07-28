@@ -50,6 +50,7 @@ public object Map<K, V> implements ICollection {
 		}
 
 		throw new Exception("unknown key!");
+		//throw new Exception("unknown key '" + (string key) + "'!");
 	}
 
 	public Iterator<Object> getIterator() const {
