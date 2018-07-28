@@ -65,11 +65,9 @@ private:
 	};
 
 private: // Execution
-	inline void collectScopeTokens(TokenIterator& token, TokenList& tokens);
+	void collectScopeTokens(TokenIterator& token, TokenList& tokens);
 
 	Statements* generate(const TokenList &tokens, bool allowBreakAndContinue = false, bool needsControlStatement = false);
-
-	Symbol* identify(TokenIterator& token) const;
 
 	// token processing
 	// {
@@ -93,7 +91,7 @@ private: // Execution
 	Expression* process_new(TokenIterator& token);
 	Statement* process_print(TokenIterator& token);
 	Statement* process_return(TokenIterator& token);
-	Statements* process_scope(TokenIterator& token, bool allowBreakAndContinue = false);
+	Statements* process_scope(TokenIterator& token, bool allowBreakAndContinue = false, bool needsControlStatement = false);
 	Expression* process_subscript(TokenIterator& token, SymbolExpression* symbol);
 	Node* process_statement(TokenIterator& token, bool allowBreakAndContinue = false);
 	Statement* process_switch(TokenIterator& token);
