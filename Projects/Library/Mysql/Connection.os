@@ -59,18 +59,8 @@ public object MysqlConnection {
 		return mysql_error(mHandle);
 	}
 
-	public int handle() const {
-		return mHandle;
-	}
-
 	public string info() const throws {
 		return mysql_info(mHandle);
-	}
-
-	private void initialize() modify {
-		assert(!mSettings);	// prevent multiple initializations
-
-		mSettings = new MysqlSettings();
 	}
 
 	public bool isOpen() const {
@@ -120,15 +110,14 @@ public object MysqlConnection {
 		return new MysqlResult(mysql_store_result(mHandle));
 	}
 
-	public int selectDB(string database) modify {
+	public bool selectDB(string database) modify {
 		int result = int mysql_select_db(mHandle, database);
-
-		if ( !result ) {
+		if ( result == 0 ) {
 			// success! so we can update our database
 			mDatabase = database;
 		}
 
-		return result;
+		return result == 0;
 	}
 
 	public MysqlSettings settings() const {
@@ -140,6 +129,12 @@ public object MysqlConnection {
 	}
 
 // Private
+
+	private void initialize() modify {
+		assert(!mSettings);	// prevent multiple initializations
+
+		mSettings = new MysqlSettings();
+	}
 
 	private string mDatabase;
 	private int mHandle;

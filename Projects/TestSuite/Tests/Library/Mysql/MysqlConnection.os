@@ -10,7 +10,7 @@ public void Main(int argc, string args) {
 			return;
 		}
 
-		if ( conn.selectDB("ts_parking") != 0 ) {
+		if ( conn.selectDB("ts_parking") ) {
 			print("error while selecting database!");
 			return;
 		}
