@@ -3,11 +3,11 @@
 import Mysql.All;
 
 public void Main(int argc = 0, string args = "") modify {
-	MysqlQueryTest();
+	assert( MysqlQueryTest() );
 }
 
 private bool MysqlQueryTest() modify {
-	MysqlConnection conn = new MysqlConnection("0.0.0.0", 0, "root", "", "ts_parking");
+	MysqlConnection conn = new MysqlConnection("0.0.0.0", 3306, "root", "", "ts_parking");
 	if ( !conn.isOpen() ) {
 		print("error while connecting to database!");
 		exit(1);
