@@ -58,7 +58,9 @@ public object MysqlQuery {
 			prepare(queryStr);
 		}
 
-		queryStr = mExecutedQuery;
+		queryStr = string mExecutedQuery;
+
+		//print("Query: " + queryStr);
 
 		int error = mysql_query(mConnection.mHandle, queryStr);
 		if ( error ) { 

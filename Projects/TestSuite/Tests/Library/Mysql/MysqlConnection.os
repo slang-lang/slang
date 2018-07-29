@@ -2,7 +2,7 @@
 
 import Mysql.All;
 
-public void Main(int argc, string args) {
+public void Main(int argc, string args) modify {
 	try {
 		MysqlConnection conn = new MysqlConnection("0.0.0.0", 3306, "root", "");
 		if ( !conn.isOpen() ) {
@@ -10,7 +10,7 @@ public void Main(int argc, string args) {
 			return;
 		}
 
-		if ( conn.selectDB("ts_parking") ) {
+		if ( !conn.selectDB("ts_parking") ) {
 			print("error while selecting database!");
 			return;
 		}
