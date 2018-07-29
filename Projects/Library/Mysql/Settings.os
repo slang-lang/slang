@@ -1,21 +1,27 @@
 
-public namespace Mysql {
+// Library imports
 
-	public object Settings {
-		private bool mAutoEscaping;
+// Project imports
 
-		public void Constructor() {
-			mAutoEscaping = false;
-		}
+public namespace Mysql { }
 
-		public bool getAutoEscaping() const {
-			return mAutoEscaping;
-		}
+public object MysqlSettings {
+// Public interface
 
-		public void setAutoEscaping(bool state) modify {
-			mAutoEscaping = state;
-		}
+	public void Constructor() {
+		mAutoEscaping = false;
 	}
 
+	public bool getAutoEscaping() const {
+		return mAutoEscaping;
+	}
+
+	public void setAutoEscaping(bool state) modify {
+		mAutoEscaping = state;
+	}
+
+// Private
+
+	private bool mAutoEscaping;
 }
 

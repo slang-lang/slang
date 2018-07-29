@@ -1,95 +1,105 @@
 
+// Library imports
+import System.Collections.List;
+
+// Project imports
 import Entry;
 import Exceptions;
 import Row;
 
-public namespace Mysql {
+public namespace Mysql { }
 
-	public object Result {
-		private int mAffectedRows;
-		private int mCurrentFieldIdx;
-		private int mCurrentRowIdx;
-		private int mHandle;
-		private int mNumFields;
-		private int mNumRows;
+public object MysqlResult implements ICollection, IIterateable {
+// Public interface
 
-		public void Constructor(int handle) {
-			mHandle = handle;
+	public void Constructor(int handle) {
+		mCurrentRowIdx = -1;
+		mHandle = handle;
+		mNumFields = mysql_num_fields(mHandle);
+		mNumRows = mysql_num_rows(mHandle);
+		mRows = new List<MysqlRow>();
 
-			initialize();
+		initialize();
+	}
+
+	public MysqlRow at(int index) const throws {
+		return mRows.at(index);
+	}
+
+	public bool empty() const {
+		return mNumRows == 0;
+	}
+
+	public MysqlRow getCurrentRow() const throws {
+		if ( mCurrentRowIdx == -1 ) {
+			throw new MysqlException("not initialized!");
 		}
 
-		public int affectedRows() const {
-			return mAffectedRows;
+		return mCurrentRow;
+	}
+
+	public MysqlEntry getField(string name) const throws {
+		if ( mCurrentRowIdx == -1 ) {
+			throw new MysqlException("not initialized!");
 		}
 
-		public Mysql.Row getCurrentRow() const {
-			return new Row(mHandle);
+		return mCurrentRow.getField(name);
+	}
+
+	public Iterator<MysqlRow> getIterator() const {
+		return new Iterator<MysqlRow>(ICollection this);
+	}
+
+	public bool hasNext() const {
+		return mCurrentRowIdx < mNumRows;
+	}
+
+	public MysqlRow next() modify throws {
+		if ( mCurrentRowIdx >= mNumRows ) {
+			throw new MysqlException("index(" + mCurrentRowIdx + ") out of bounds!");
 		}
 
-		public Mysql.Entry getField(int fieldIdx) const throws {
-			if ( fieldIdx < 0 || fieldIdx > mNumFields ) {
-				throw new OutOfBoundsException("fieldIdx out of bounds");
+		mCurrentRow = mRows.at(mCurrentRowIdx);
+
+		return mCurrentRow;
+	}
+
+	public int numFields() const {
+		return mNumFields;
+	}
+
+	public int numRows() const {
+		return mNumRows;
+	}
+
+	public void reset() modify {
+		delete mCurrentRow;
+		mCurrentRowIdx = -1;
+	}
+
+	public int size() const {
+		return mNumRows;
+	}
+
+// Private
+	private void initialize() modify throws {
+		// prefetch data
+		for ( int idx = 0; idx < mNumRows; idx++ ) {
+			if ( !mysql_next_row(mHandle) ) {
+				throw new MysqlException("error while fetching row(" + idx + ")!");
 			}
 
-			string name = mysql_get_field_name(mHandle, fieldIdx);
-			string value = mysql_get_field_value(mHandle, fieldIdx);
-
-			return new Entry(name, value);
-		}
-
-		public Mysql.Entry getField(string name) const {
-			Entry entry;	// null object
-
-			for ( int idx = 0; idx < mNumFields; idx = idx + 1 ) {
-				if ( mysql_get_field_name(mHandle, idx) == name ) {
-					return new Entry(name, mysql_get_field_value(mHandle, idx));
-				}
-			}
-
-			return entry;
-		}
-
-		public void seekRow(int rowIdx) throws {
-			if ( rowIdx < 0 || rowIdx >= mNumRows ) {
-				throw new OutOfBoundsException("rowIdx out of bounds");
-			}
-
-			mysql_data_seek(mHandle, rowIdx);
-		}
-
-		public bool hasNext() const {
-			return mCurrentRowIdx < mNumRows;
-		}
-
-		private bool initialize() modify {
-			mAffectedRows = 0;
-			mCurrentFieldIdx = 0;
-			mCurrentRowIdx = 0;
-			mNumFields = mysql_num_fields(mHandle);
-			mNumRows = mysql_num_rows(mHandle);
-
-			return true;
-		}
-
-		public bool next() modify {
-			bool hasNext = mysql_next_row(mHandle);
-
-			if ( hasNext ) {
-				mCurrentRowIdx = mCurrentRowIdx + 1;
-			}
-
-			return hasNext;
-		}
-
-		public int numFields() const {
-			return mNumFields;
-		}
-
-		public int numRows() const {
-			return mNumRows;
+			mRows.push_back(
+				new MysqlRow(mHandle)
+			);
 		}
 	}
 
+	private MysqlRow mCurrentRow;
+	private int mCurrentRowIdx;
+	private int mHandle const;
+	private int mNumFields const;
+	private int mNumRows const;
+	private List<MysqlRow> mRows;
 }
 

@@ -1,95 +1,86 @@
 
-import Connection;
-import Debug;
-import Result;
-import Settings;
+// Library imports
 import System.String;
 
-public namespace Mysql {
+// Project imports
+import Connection;
+import Exceptions;
+import Result;
+import Settings;
 
-	public object Query {
-		private Mysql.Connection mConnection;
-		private String mExecutedQuery;
-		private String mPreparedQuery;
-		private int mResultHandle;
+public namespace Mysql { }
 
-		public void Constructor(Mysql.Connection connection ref, string queryStr = "") {
-			mConnection = connection;
-			mExecutedQuery = new String();
-			mPreparedQuery = new String();
-			mResultHandle = 0;
+public object MysqlQuery {
+// Public interface
 
+	public void Constructor(MysqlConnection connection ref, string queryStr = "") {
+		mConnection = connection;
+		mExecutedQuery = new String();
+		mHandle = 0;
+		mPreparedQuery = new String();
+
+		prepare(queryStr);
+	}
+
+	public void Destructor() {
+		if ( mHandle ) {
+			mysql_free_result(mHandle);
+		}
+	}
+
+	public bool bind(string field, bool value) modify {
+		// replace all occurances of field with value
+		return mExecutedQuery.ReplaceAll(field, string value);
+	}
+
+	public bool bind(string field, double value) modify {
+		// replace field with value
+		return mExecutedQuery.ReplaceAll(field, string value);
+	}
+
+	public bool bind(string field, float value) modify {
+		// replace field with value
+		return mExecutedQuery.ReplaceAll(field, string value);
+	}
+
+	public bool bind(string field, int value) modify {
+		// replace field with value
+		return mExecutedQuery.ReplaceAll(field, string value);
+	}
+
+	public bool bind(string field, string value) modify {
+		// replace field with value
+		return mExecutedQuery.ReplaceAll(field, value);
+	}
+
+	public MysqlResult execute(string queryStr = "") modify throws {
+		if ( !queryStr ) {
 			prepare(queryStr);
 		}
 
-		public void Destructor() {
-			if ( mResultHandle ) {
-				mysql_free_result(mResultHandle);
-			}
+		queryStr = mExecutedQuery;
+
+		int error = mysql_query(mConnection.mHandle, queryStr);
+		if ( error ) { 
+			// error while query execution
+			throw new MysqlException(mysql_error(mConnection.mHandle));
 		}
 
-		public bool bind(string field, bool value) modify {
-			if ( MysqlDebugMode ) { print("bind '" + field + "' with '" + value + "'"); }
-
-			// replace all occurances of field with value
-			return mExecutedQuery.ReplaceAll(field, string value);
-		}
-
-		public bool bind(string field, double value) modify {
-			if ( MysqlDebugMode ) { print("bind '" + field + "' with '" + value + "'"); }
-
-			// replace field with value
-			return mExecutedQuery.ReplaceAll(field, string value);
-		}
-
-		public bool bind(string field, float value) modify {
-			if ( MysqlDebugMode ) { print("bind '" + field + "' with '" + value + "'"); }
-
-			// replace field with value
-			return mExecutedQuery.ReplaceAll(field, string value);
-		}
-
-		public bool bind(string field, int value) modify {
-			if ( MysqlDebugMode ) { print("bind '" + field + "' with '" + value + "'"); }
-
-			// replace field with value
-			return mExecutedQuery.ReplaceAll(field, string value);
-		}
-
-		public bool bind(string field, string value) modify {
-			if ( MysqlDebugMode ) { print("bind '" + field + "' with '" + value + "'"); }
-
-			// replace field with value
-			return mExecutedQuery.ReplaceAll(field, value);
-		}
-
-		public Mysql.Result execute(string queryStr = "") modify {
-			if ( queryStr != "" ) {
-				assert(false);
-				prepare(queryStr);
-			}
-
-			queryStr = mExecutedQuery;
-
-			print(queryStr);
-
-			int error = mysql_query(mConnection.mHandle, queryStr);
-			if ( error ) {
-					// error while query execution
-				print(mysql_error(mConnection.mHandle));
-				return Mysql.Result null;
-			}
-
-			int handle = mysql_store_result(mConnection.mHandle);
-			return new Mysql.Result(handle);
-		}
-
-		public void prepare(string query) modify {
-			mExecutedQuery = query;
-			mPreparedQuery = query;
-
-			if ( MysqlDebugMode ) { print(ToString()); }
-		}
+		return new MysqlResult(
+			mysql_store_result(mConnection.mHandle)
+		);
 	}
+
+	public void prepare(string query) modify {
+		mExecutedQuery = query;
+		mPreparedQuery = query;
+	}
+
+// Private
+
+	private MysqlConnection mConnection;
+	private String mExecutedQuery;
+	private int mHandle;
+	private String mPreparedQuery;
 }
 

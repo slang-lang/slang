@@ -4,7 +4,7 @@ import Mysql.All;
 
 public void Main(int argc, string args) {
 	try {
-		Mysql.Connection conn = new Mysql.Connection("0.0.0.0", 0, "root", "");
+		MysqlConnection conn = new MysqlConnection("0.0.0.0", 0, "root", "");
 		if ( !conn.isOpen() ) {
 			writeln("error while opening Mysql connection: " + conn.error());
 			return;
@@ -15,15 +15,13 @@ public void Main(int argc, string args) {
 			return;
 		}
 
-		Mysql.MysqlDebugMode = true;
-
 		//conn.settings().setAutoEscaping(true);	// chaining is not supported
-		Mysql.Settings s = conn.settings();
+		MysqlSettings s = conn.settings();
 		s.setAutoEscaping(true);
 
 		writeln(conn.stat());
 
-		Mysql.Result result = conn.query("Select * from parking_zones");
+		MysqlResult result = conn.query("Select * from parking_zones");
 
 		writeln("result.numRows() = " + result.numRows());
 		writeln("result.numFields() = " + result.numFields());
@@ -31,7 +29,7 @@ public void Main(int argc, string args) {
 		while ( result.hasNext() ) {
 			result.next();
 
-			Mysql.Row row = result.getCurrentRow();
+			MysqlRow row = result.getCurrentRow();
 			writeln(row.toString());
 		}
 

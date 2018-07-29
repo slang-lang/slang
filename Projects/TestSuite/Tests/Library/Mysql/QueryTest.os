@@ -7,15 +7,13 @@ public void Main(int argc = 0, string args = "") modify {
 }
 
 private bool MysqlQueryTest() modify {
-	Mysql.MysqlDebugMode = true;
-
-	Mysql.Connection conn = new Mysql.Connection("0.0.0.0", 0, "root", "", "ts_parking");
+	MysqlConnection conn = new MysqlConnection("0.0.0.0", 0, "root", "", "ts_parking");
 	if ( !conn.isOpen() ) {
 		print("error while connecting to database!");
 		exit(1);
 	}
 
-	Mysql.Query query = conn.createQuery();
+	MysqlQuery query = conn.createQuery();
 	if ( !query ) {
 		print("error while creating query!");
 		exit(2);
@@ -34,7 +32,7 @@ private bool MysqlQueryTest() modify {
 	print(conn.stat());
 
 	try {
-		Mysql.Result result = query.execute();
+		MysqlResult result = query.execute();
 		if ( !result ) {
 			print("error while executing query");
 			exit(4);
@@ -43,8 +41,7 @@ private bool MysqlQueryTest() modify {
 		while ( result.hasNext() ) {
 			result.next();
 
-			Mysql.Row row = result.getCurrentRow();
-			print(row.ToString());
+			MysqlRow row = result.getCurrentRow();
 		}
 	}
 	catch {
