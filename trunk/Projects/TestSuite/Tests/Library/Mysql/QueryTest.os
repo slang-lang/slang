@@ -43,14 +43,16 @@ private bool MysqlQueryTest() modify {
 
 			MysqlRow row = result.getCurrentRow();
 		}
+
+		return true;
 	}
-	catch {
-		print("caught exception!");
+	catch ( string e ) {
+		print("Exception: " + e);
 	}
-	finally {
-		print("finally");
+	catch ( IException e ) {
+		print("Exception: " + e.what());
 	}
 
-	return true;
+	return false;
 }
 
