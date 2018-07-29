@@ -29,11 +29,11 @@ class MysqlSelectDB : public ExtensionMethod
 {
 public:
 	MysqlSelectDB()
-	: ExtensionMethod(0, "mysql_select_db", Designtime::StringObject::TYPENAME, Mutability::Modify)
+	: ExtensionMethod(0, "mysql_select_db", Designtime::IntegerObject::TYPENAME, Mutability::Modify)
 	{
 		ParameterList params;
 		params.push_back(Parameter::CreateDesigntime("handle", Designtime::IntegerObject::TYPENAME));
-		params.push_back(Parameter::CreateDesigntime("db", Designtime::StringObject::TYPENAME));
+		params.push_back(Parameter::CreateDesigntime("database", Designtime::StringObject::TYPENAME));
 
 		setSignature(params);
 	}
