@@ -49,6 +49,7 @@ private:	// Tests
 	void testNamespace();
 	void testNew();
 	void testReturn();
+	void testScopeOperator();
 	void testSwitch();
 	void testTernaryOperator();
 	void testTernaryOperatorFail();
