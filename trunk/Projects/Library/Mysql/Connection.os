@@ -111,7 +111,7 @@ public object MysqlConnection {
 	}
 
 	public bool selectDB(string database) modify {
-		int result = int mysql_select_db(mHandle, database);
+		int result = mysql_select_db(mHandle, database);
 		if ( result == 0 ) {
 			// success! so we can update our database
 			mDatabase = database;
