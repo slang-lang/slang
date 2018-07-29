@@ -59,6 +59,7 @@ void ASTTest::process()
 	TEST(testNamespace);
 	TEST(testNew);
 	TEST(testReturn);
+	TEST(testScopeOperator);
 	TEST(testSwitch);
 	TEST(testTernaryOperator);
 	TEST(testTernaryOperatorFail);
@@ -329,6 +330,22 @@ void ASTTest::testReturn()
 
 		Runtime::Object returnValue;
 		vm.runScriptFromFile("Tests/AST/ReturnTest.os", ParameterList(), &returnValue);
+
+		// automatic success
+	}
+	catch ( std::exception& e ) {
+		// exception has been thrown: test failed!
+		TFAIL(e.what());
+	}
+}
+
+void ASTTest::testScopeOperator()
+{
+	try {
+		VirtualMachine vm;
+
+		Runtime::Object returnValue;
+		vm.runScriptFromFile("Tests/AST/ScopeOperatorTest.os", ParameterList(), &returnValue);
 
 		// automatic success
 	}
