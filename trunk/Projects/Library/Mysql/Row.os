@@ -1,73 +1,86 @@
 
-import Entry;
-import Exceptions;
+// Library imports
 import System.Collections.List;
 
-public namespace Mysql {
+// Project imports
+import Entry;
+import Exceptions;
 
-	public object Row {
-		private List mEntries;
-		private int mNumFields;
-		private int mResultHandle;
+public namespace Mysql { }
 
-		public void Constructor(int handle) {
-			mEntries = new List();
-			mResultHandle = handle;
+public object MysqlRow implements ICollection, IIterateable {
+// Public
 
-			initialize();
-		}
+	public void Constructor(int handle) {
+		mEntries = new List<MysqlEntry>();
+		mHandle = handle;
+		mNumFields = mysql_num_fields(handle);
 
-		public Mysql.Entry getEntry(int fieldIdx) const{
-			return Entry mEntries.at(fieldIdx);
-		}
+		initialize();
+	}
 
-		public Mysql.Entry getEntry(string name) const {
-			for ( int idx = 0; idx < mEntries.size(); idx = idx++ ) {
-				Entry e = Entry mEntries.at(idx);
-
-				if ( e.name() == name ) {
-					return e;
-				}
-			}
-
-			return Mysql.Entry null;
-		}
-
-		public string getName(int fieldIdx) const {
-			Entry e = Entry mEntries.at(fieldIdx);
-			return e.name();
-		}
-
-		public string getValue(int fieldIdx) const {
-			Entry e = Entry mEntires.at(fieldIdx);
-			return e.value();
-		}
-
-		private void initialize() modify {
-			mNumFields = mysql_num_fields(mResultHandle);
-
-			for ( int fieldIdx = 0; fieldIdx < mNumFields; fieldIdx = fieldIdx++ ) {
-				string name = mysql_get_field_name(mResultHandle, fieldIdx);
-				string value = mysql_get_field_value(mResultHandle, fieldIdx);
-
-				mEntries.push_back(Object new Entry(name, value));
+	public MysqlEntry at(int index) const throws {
+		foreach ( MysqlEntry entry : mEntries ) {
+			if ( entry == index ) {
+				return entry;
 			}
 		}
 
-		public int numFields() const {
-			return mNumFields;
+		throw new MysqlException("no field with index('" + index + "')!");
+	}
+
+	public bool empty() const {
+		return mNumFields == 0;
+	}
+
+	public MysqlEntry getEntry(string name) const throws {
+		foreach ( MysqlEntry entry : mEntries ) {
+			if ( entry == name ) {
+				return entry;
+			}
 		}
 
-		public string toString() const {
-			string result = "|";
+		throw new MysqlException("no field with name('" + name + "')!");
+	}
 
-			for ( int i = 0; i < mNumFields; i = i++ ) {
-				Entry e = Entry mEntries.at(i);
-				result = result + " " + e.name() + ": " + e.value() + " |";
-			}
+	public Iterator<MysqlEntry> getIterator() const {
+		return new Iterator<MysqlEntry>(ICollection this);
+	}
 
-			return result;
+	public int numFields() const {
+		return mNumFields;
+	}
+
+	public int size() const {
+		return mNumFields;
+	}
+
+	public string toString() const {
+		string result = "|";
+
+		foreach ( MysqlEntry e : mEntries ) {
+			result += " " + e.name() + ": " + e.value() + " |";
+		}
+
+		return result;
+	}
+
+// Private
+
+	private void initialize() modify {
+		for ( int fieldIdx = 0; fieldIdx < mNumFields; fieldIdx++ ) {
+			mEntries.push_back(
+				new MysqlEntry(
+					fieldIdx,
+					mysql_get_field_name(mHandle, fieldIdx),
+					mysql_get_field_value(mHandle, fieldIdx)
+				)
+			);
 		}
 	}
 
+	private List<MysqlEntry> mEntries;
+	private int mHandle const;
+	private int mNumFields const;
 }
+

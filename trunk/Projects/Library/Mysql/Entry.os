@@ -1,28 +1,47 @@
 
-public namespace Mysql {
+// Library imports
 
-	public object Entry {
-		private string mName;
-		private string mValue;
+// Project imports
 
-		public void Constructor() {
-			mName = "null";
-			mValue = "null";
-		}
+public namespace Mysql { }
 
-		public void Constructor(string name, string value) {
-			mName = name;
-			mValue = value;
-		}
+public object MysqlEntry {
+	private int mIndex;
+	private string mName;
+	private string mValue;
 
-		public string name() const {
-			return mName;
-		}
-
-		public string value() const {
-			return mValue;
-		}
+	public void Constructor() {
+		Constructor(-1, "null", "null");
 	}
 
+	public void Constructor(string _name, string _value) {
+		Constructor(-1, _name, _value);
+	}
+
+	public void Constructor(int _index, string _name, string _value) {
+		mIndex = _index;
+		mName = _name;
+		mValue = _value;
+	}
+
+	public int index() const {
+		return mIndex;
+	}
+
+	public string name() const {
+		return mName;
+	}
+
+	public string value() const {
+		return mValue;
+	}
+
+	public bool operator==(int _index) const {
+		return mIndex == _index;
+	}
+
+	public bool operator==(string _name) const {
+		return mName == _name;
+	}
 }
 
