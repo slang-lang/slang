@@ -504,14 +504,22 @@ Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 		case Token::Type::SCOPE: {
 			++start;
 
+			OSwarn("Usage of extended scope operator is marked as unstable in " + start->position().toString());
+
 			Expression* baseExp = dynamic_cast<Expression*>(infixPostfix);
 			if ( !baseExp ) {
-				throw Common::Exceptions::SyntaxError("invalid expression type found!", start->position());
+				throw Common::Exceptions::SyntaxError("invalid expression type detected!", start->position());
 			}
 
 			Designtime::BluePrintObject* scope = mRepository->findBluePrintObject(baseExp->getResultType());
+			if ( !scope ) {
+				throw Common::Exceptions::SyntaxError("invalid type '" + baseExp->getResultType() + "' detected!", start->position());
+			}
 
 			SymbolExpression* symbolExpression = resolve(start, scope, true, Visibility::Public);
+			if ( !symbolExpression ) {
+				throw Common::Exceptions::SyntaxError("invalid symbol '" + start->content() + "' for type '" + baseExp->getResultType() + "' detected!", start->position());
+			}
 
 			if ( start->type() == Token::Type::PARENTHESIS_OPEN ) {
 				MethodExpression* method = process_method(symbolExpression, start);
