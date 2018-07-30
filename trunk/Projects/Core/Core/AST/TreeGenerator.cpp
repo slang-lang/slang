@@ -447,91 +447,114 @@ Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 
 	op = start->type();
 
-	// postfix
-	switch ( op ) {
-		case Token::Type::BRACKET_OPEN: {		// postfix operator[]
-			throw Common::Exceptions::NotSupported("postfix [] operator not supported", start->position());
-		} break;
-		case Token::Type::OPERATOR_DECREMENT:
-		case Token::Type::OPERATOR_INCREMENT: {	// postfix --/++ operators for rvalue
-			Token operation = (*start++);
+	// postfix (single repeat)
+	if ( op == Token::Type::OPERATOR_IS ) {		// postfix is operator
+		++start;
+		SymbolExpression* symbol = resolveWithExceptions(start, getScope());
 
-			infixPostfix = new UnaryExpression(operation, infixPostfix, UnaryExpression::ValueType::RValue);
-		} break;
-		case Token::Type::OPERATOR_IS: {		// postfix is operator
-			++start;
-			SymbolExpression* symbol = resolveWithExceptions(start, getScope());
+		std::string type = symbol->getResultType();
+		if ( dynamic_cast<DesigntimeSymbolExpression*>(symbol) ) {
+			type = Designtime::Parser::buildRuntimeConstraintTypename(type, dynamic_cast<DesigntimeSymbolExpression*>(symbol)->mConstraints);
+		}
 
-			std::string type = symbol->getResultType();
-			if ( dynamic_cast<DesigntimeSymbolExpression*>(symbol) ) {
-				type = Designtime::Parser::buildRuntimeConstraintTypename(type, dynamic_cast<DesigntimeSymbolExpression*>(symbol)->mConstraints);
+		infixPostfix = new IsExpression(infixPostfix, type);
+	}
+	else if ( op == Token::Type::QUESTION_MARK ) {		// postfix ternary ? operator
+		++start;
+
+		Node* condition = infixPostfix;
+		Node* first = NULL;
+		Node* second = NULL;
+
+		// determine the type of the ternary operator
+		if ( start->type() == Token::Type::COLON ) {
+			// use short ternary operator: <expression> ?: <expression>
+			first = condition;
+		}
+		else {
+			// use long ternary operator: <expression> ? <expression> : <expression>
+			first = expression(start);
+		}
+
+		expect(Token::Type::COLON, start);
+		++start;
+
+		second = expression(start);
+
+		TernaryExpression* ternaryExpression = new TernaryExpression(condition, first, second);
+		if ( ternaryExpression->getResultType() != ternaryExpression->getSecondResultType() ) {
+			throw Common::Exceptions::SyntaxError("expression results for first ('" + ternaryExpression->getResultType() + "') and second ('" + ternaryExpression->getSecondResultType() + "') expression don't match", start->position());
+		}
+
+		infixPostfix = ternaryExpression;
+	}
+	else if ( op == Token::Type::OPERATOR_NOT ) {		// postfix ! operator
+		throw Common::Exceptions::NotSupported("postfix ! operator not supported", start->position());
+	}
+	else {
+		// postfix (multiple repeat)
+		for ( ; ; ) {
+			Token::Type::E op = start->type();
+			if ( op != Token::Type::BRACKET_OPEN &&
+				 op != Token::Type::OPERATOR_DECREMENT &&
+				 op != Token::Type::OPERATOR_INCREMENT &&
+				 op != Token::Type::SCOPE ) {
+				return infixPostfix;
 			}
 
-			infixPostfix = new IsExpression(infixPostfix, type);
-		} break;
-		case Token::Type::QUESTION_MARK: {		// postfix ternary ? operator
-			++start;
+			switch ( op ) {
+				case Token::Type::BRACKET_OPEN: {
+					// postfix operator[]
+					throw Common::Exceptions::NotSupported("postfix [] operator not supported", start->position());
+				} break;
+				case Token::Type::OPERATOR_DECREMENT:
+				case Token::Type::OPERATOR_INCREMENT: {	// postfix --/++ operators for rvalue
+					Token operation = (*start++);
 
-			Node* condition = infixPostfix;
-			Node* first = NULL;
-			Node* second = NULL;
+					infixPostfix = new UnaryExpression(operation, infixPostfix, UnaryExpression::ValueType::RValue);
 
-			// determine the type of the ternary operator
-			if ( start->type() == Token::Type::COLON ) {
-				// use short ternary operator: <expression> ?: <expression>
-				first = condition;
+/*
+					Expression* baseExp = dynamic_cast<Expression*>(infixPostfix);
+					if ( !baseExp ) {
+						throw Common::Exceptions::SyntaxError("invalid expression type detected!", start->position());
+					}
+
+					infixPostfix = process_incdecrement(start, baseExp);
+*/
+				} break;
+				case Token::Type::SCOPE: {
+					++start;
+
+					//OSwarn("Usage of extended scope operator is marked as unstable in " + start->position().toString());
+
+					Expression* baseExp = dynamic_cast<Expression*>(infixPostfix);
+					if ( !baseExp ) {
+						throw Common::Exceptions::SyntaxError("invalid expression type detected!", start->position());
+					}
+
+					Designtime::BluePrintObject* scope = mRepository->findBluePrintObject(baseExp->getResultType());
+					if ( !scope ) {
+						throw Common::Exceptions::SyntaxError("invalid type '" + baseExp->getResultType() + "' detected!", start->position());
+					}
+
+					SymbolExpression* symbolExpression = resolve(start, scope, true, Visibility::Public);
+					if ( !symbolExpression ) {
+						throw Common::Exceptions::SyntaxError("invalid symbol '" + start->content() + "' for type '" + baseExp->getResultType() + "' detected!", start->position());
+					}
+
+					if ( start->type() == Token::Type::PARENTHESIS_OPEN ) {
+						MethodExpression* method = process_method(symbolExpression, start);
+
+						infixPostfix = new ScopeExpression(baseExp, method, method->getResultType());
+					}
+					else {
+						infixPostfix = new ScopeExpression(baseExp, symbolExpression, symbolExpression->getResultType());
+					}
+				} break;
+				default: {
+				} break;
 			}
-			else {
-				// use long ternary operator: <expression> ? <expression> : <expression>
-				first = expression(start);
-			}
-
-			expect(Token::Type::COLON, start);
-			++start;
-
-			second = expression(start);
-
-			TernaryExpression* ternaryExpression = new TernaryExpression(condition, first, second);
-			if ( ternaryExpression->getResultType() != ternaryExpression->getSecondResultType() ) {
-				throw Common::Exceptions::SyntaxError("expression results for first ('" + ternaryExpression->getResultType() + "') and second ('" + ternaryExpression->getSecondResultType() + "') expression don't match", start->position());
-			}
-
-			infixPostfix = ternaryExpression;
-		} break;
-		case Token::Type::OPERATOR_NOT: {		// postfix ! operator
-			throw Common::Exceptions::NotSupported("postfix ! operator not supported", start->position());
-		} break;
-		case Token::Type::SCOPE: {
-			++start;
-
-			OSwarn("Usage of extended scope operator is marked as unstable in " + start->position().toString());
-
-			Expression* baseExp = dynamic_cast<Expression*>(infixPostfix);
-			if ( !baseExp ) {
-				throw Common::Exceptions::SyntaxError("invalid expression type detected!", start->position());
-			}
-
-			Designtime::BluePrintObject* scope = mRepository->findBluePrintObject(baseExp->getResultType());
-			if ( !scope ) {
-				throw Common::Exceptions::SyntaxError("invalid type '" + baseExp->getResultType() + "' detected!", start->position());
-			}
-
-			SymbolExpression* symbolExpression = resolve(start, scope, true, Visibility::Public);
-			if ( !symbolExpression ) {
-				throw Common::Exceptions::SyntaxError("invalid symbol '" + start->content() + "' for type '" + baseExp->getResultType() + "' detected!", start->position());
-			}
-
-			if ( start->type() == Token::Type::PARENTHESIS_OPEN ) {
-				MethodExpression* method = process_method(symbolExpression, start);
-
-				infixPostfix = new ScopeExpression(baseExp, method, method->getResultType());
-			}
-			else {
-				infixPostfix = new ScopeExpression(baseExp, symbolExpression, symbolExpression->getResultType());
-			}
-		} break;
-		default: {
-		} break;
+		}
 	}
 
 	return infixPostfix;
@@ -1053,14 +1076,20 @@ Statement* TreeGenerator::process_if(TokenIterator& token)
 	return new IfStatement(start, exp, ifBlock, elseBlock);
 }
 
-Expression* TreeGenerator::process_incdecrement(TokenIterator& token, SymbolExpression* symbol)
+Expression* TreeGenerator::process_incdecrement(TokenIterator& token, Expression* lhs)
 {
-	if ( symbol->isConst() && !(mAllowConstModify && symbol->isMember()) ) {
-		throw Common::Exceptions::ConstCorrectnessViolated("tried to modify const symbol '" + symbol->mName + "'", token->position());
+	if ( lhs->isConst() && !(mAllowConstModify && lhs->isMember()) ) {
+		throw Common::Exceptions::ConstCorrectnessViolated("tried to modify const symbol '" + token->content() + "'", token->position());
 	}
 
-	if ( symbol->isAtomicType() ) {
-		return new UnaryExpression((*token++), symbol, UnaryExpression::ValueType::LValue);
+	if ( lhs->isAtomicType() ) {
+		return new UnaryExpression((*token++), lhs, UnaryExpression::ValueType::LValue);
+	}
+
+
+	SymbolExpression* symbol = dynamic_cast<SymbolExpression*>(lhs);
+	if ( !symbol ) {
+		throw Common::Exceptions::SyntaxError("invalid expression type detected!", token->position());
 	}
 
 	// check if we are using a valid type

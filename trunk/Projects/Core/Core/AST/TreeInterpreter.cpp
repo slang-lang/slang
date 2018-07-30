@@ -458,13 +458,13 @@ void TreeInterpreter::evaluateUnaryExpression(UnaryExpression* exp, Runtime::Obj
 			// {
 			case Token::Type::MATH_ADDITION:      Runtime::operator_unary_plus(result, exp->mOperation.position()); break;
 			case Token::Type::MATH_SUBTRACT:      Runtime::operator_unary_minus(result, exp->mOperation.position()); break;
-			case Token::Type::OPERATOR_DECREMENT: if ( exp->isAtomicType() ) Runtime::operator_unary_decrement(result, exp->mOperation.position()); break;
-			case Token::Type::OPERATOR_INCREMENT: if ( exp->isAtomicType() ) Runtime::operator_unary_increment(result, exp->mOperation.position()); break;
+			case Token::Type::OPERATOR_DECREMENT: Runtime::operator_unary_decrement(result, exp->mOperation.position()); break;
+			case Token::Type::OPERATOR_INCREMENT: Runtime::operator_unary_increment(result, exp->mOperation.position()); break;
 			// }
 
 			// subscript operator
 			// {
-			case Token::Type::BRACKET_OPEN:       if ( exp->isAtomicType() ) evaluate(exp->mExpression, result); break;
+			case Token::Type::BRACKET_OPEN:       evaluate(exp->mExpression, result); break;
 			// }
 
 			// default handling
