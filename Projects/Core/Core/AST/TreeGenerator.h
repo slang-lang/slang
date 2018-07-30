@@ -84,7 +84,7 @@ private: // Execution
 	Statement* process_foreach(TokenIterator& token);
 	Node* process_identifier(TokenIterator& token, bool allowTypeCast = false);
 	Statement* process_if(TokenIterator& token);
-	Expression* process_incdecrement(TokenIterator& token, SymbolExpression* symbol);
+	Expression* process_incdecrement(TokenIterator& token, Expression* lhs);
 	Statement* process_keyword(TokenIterator& token);
 	MethodExpression* process_method(SymbolExpression* symbol, TokenIterator& token);
 	MethodExpression* process_method(SymbolExpression* symbol, const Token& token, const ExpressionList& expressions);
