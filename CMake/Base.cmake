@@ -2,7 +2,7 @@
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)   # binary root
 SET(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)      # library root
 
-SET(CMAKE_CXX_FLAGS "-pedantic -fPIC -Wall -Werror -Wextra -Wunused -Wno-long-long -Wnon-virtual-dtor -std=c++14") # -std=c++0x -std=c++11 ;-(
+SET(CMAKE_CXX_FLAGS "-pedantic -fPIC -Wall -Werror -Wextra -Wunused -Wno-long-long -Wnon-virtual-dtor -std=c++14")
 
 if( "${BUILD}" STREQUAL "" OR "${BUILD}" MATCHES "Debug")
 
@@ -35,17 +35,18 @@ else()
 
 endif()
 
-# boost hack
-#add_definitions(-DBOOST_NO_HASH)
 
 # specify default includes for the project
 SET(CMAKE_INCLUDE_CURRENT_DIR ON)
+
 #include_directories(
 #    ${PROJECT_SOURCE_DIR}/Interfaces
 #    ${PROJECT_SOURCE_DIR}/Utils
 #)
 
+# additional definitions
 add_definitions(-DLOG_LEVEL=3)
+#add_definitions(-DLOG_FILE_AND_POSITION)
 
 # common used functionality and functions
 INCLUDE(${PROJECT_SOURCE_DIR}/CMake/Common.cmake)

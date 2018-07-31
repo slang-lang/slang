@@ -525,7 +525,7 @@ Node* TreeGenerator::parseInfixPostfix(TokenIterator& start)
 				case Token::Type::SCOPE: {
 					++start;
 
-					//OSwarn("Usage of extended scope operator is marked as unstable in " + start->position().toString());
+					//OSexperimental("Usage of extended scope operator is marked as unstable in " + start->position().toString());
 
 					Expression* baseExp = dynamic_cast<Expression*>(infixPostfix);
 					if ( !baseExp ) {
