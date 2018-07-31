@@ -54,9 +54,13 @@ Runtime::ControlFlow::E Thread::execute(Common::Method* method, const ParameterL
 	mState = State::Started;
 
 	AST::TreeInterpreter interpreter(mId);
-	Runtime::ControlFlow::E controlflow = interpreter.execute(method, params, result);
+	Runtime::ControlFlow::E controlflow = interpreter.execute(NULL, method, params, result);
 
 	mState = State::Stopping;
+
+	// shutdown things...
+
+	mState = State::Stopped;
 
 	return controlflow;
 }

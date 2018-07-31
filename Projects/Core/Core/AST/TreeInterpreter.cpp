@@ -286,7 +286,7 @@ void TreeInterpreter::evaluateMethodExpression(MethodExpression* exp, Runtime::O
 		mControlFlow = dynamic_cast<ObjectiveScript::ExtensionMethod*>(method)->execute(mThread->getId(), params, result, Token());
 	}
 	else {
-		mControlFlow = execute(method, params, result);
+		mControlFlow = execute(dynamic_cast<Runtime::Object*>(method->getEnclosingScope()), method, params, result);
 	}
 
 	switch ( mControlFlow ) {
@@ -464,7 +464,7 @@ void TreeInterpreter::evaluateUnaryExpression(UnaryExpression* exp, Runtime::Obj
 
 			// subscript operator
 			// {
-			case Token::Type::BRACKET_OPEN:       evaluate(exp->mExpression, result); break;
+			//case Token::Type::BRACKET_OPEN:       evaluate(exp->mExpression, result); break;
 			// }
 
 			// default handling
@@ -475,7 +475,7 @@ void TreeInterpreter::evaluateUnaryExpression(UnaryExpression* exp, Runtime::Obj
 	}
 }
 
-Runtime::ControlFlow::E TreeInterpreter::execute(Common::Method* method, const ParameterList& params, Runtime::Object* result)
+Runtime::ControlFlow::E TreeInterpreter::execute(Runtime::Object* self, Common::Method* method, const ParameterList& params, Runtime::Object* result)
 {
 	if ( !method ) {
 		throw Common::Exceptions::Exception("invalid method pointer provided!");
@@ -484,7 +484,12 @@ Runtime::ControlFlow::E TreeInterpreter::execute(Common::Method* method, const P
 		throw Common::Exceptions::AbstractException("cannot execute abstract method '" + method->getFullScopeName() + "'");
 	}
 
-	Common::Method scope(*method);
+	Common::Method scope(*method, true);
+
+	// assign this pointer and add to scope
+	if ( self ) {
+		scope.define(IDENTIFIER_THIS, self);
+	}
 
 	// initialize parameters & push scope
 	initialize(&scope, method->mergeParameters(params));

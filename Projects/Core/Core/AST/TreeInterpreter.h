@@ -51,7 +51,7 @@ public:
 	~TreeInterpreter();
 
 public: // Execution
-	Runtime::ControlFlow::E execute(Common::Method* method, const ParameterList& params, Runtime::Object* result);
+	Runtime::ControlFlow::E execute(Runtime::Object* self, Common::Method* method, const ParameterList& params, Runtime::Object* result);
 
 private:
 	void process(Statements* statements);

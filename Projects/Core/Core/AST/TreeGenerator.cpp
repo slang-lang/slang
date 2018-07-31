@@ -71,8 +71,6 @@ void TreeGenerator::collectScopeTokens(TokenIterator& token, TokenList& tokens)
 
 void TreeGenerator::deinitialize()
 {
-	IScope* scope = getScope();
-
 	if ( !mThrownExceptions.empty() && !mMethod->throws() ) {
 		// this method is not marked as 'throwing', but it throws uncaught exceptions
 		std::string exceptions = "'";
@@ -85,14 +83,6 @@ void TreeGenerator::deinitialize()
  		exceptions += "'";
 
 		throw Common::Exceptions::ControlFlowException("'" + mMethod->getFullScopeName() + "' throws " + exceptions + " exception(s) although it is not marked with 'throws'");
-	}
-
-	// remove 'this' symbol
-	if ( mThis ) {
-		Symbol* thisSymbol = scope->resolve(IDENTIFIER_THIS, true);
-		if ( thisSymbol ) {
-			scope->undefine(IDENTIFIER_THIS);
-		}
 	}
 
 	// pop tokens;

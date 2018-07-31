@@ -28,7 +28,7 @@ Method::Method(IScope* parent, const std::string& name, const std::string& type)
 {
 }
 
-Method::Method(const Method& other)
+Method::Method(const Method& other, bool shallowCopy)
 : NamedScope(other.getName(), other.getEnclosingScope()),
   MethodSymbol(other.getName())
 {
@@ -47,9 +47,12 @@ Method::Method(const Method& other)
 	mScopeName = other.mScopeName;
 	mScopeType = other.mScopeType;
 	mSignature = other.mSignature;
-	mTokens = other.mTokens;
 	mVirtuality = other.mVirtuality;
 	mVisibility = other.mVisibility;
+
+	if ( !shallowCopy ) {
+		mTokens = other.mTokens;
+	}
 }
 
 Method::~Method()

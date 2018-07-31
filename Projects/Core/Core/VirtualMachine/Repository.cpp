@@ -292,10 +292,8 @@ Runtime::Object* Repository::createUserObject(const std::string& name, Designtim
 				switch ( ancestorIt->ancestorType() ) {
 					case Designtime::Ancestor::Type::Extends: {
 						// create base object
-						Runtime::Object *ancestor = createReference(blueIt->second, IDENTIFIER_BASE, ancestorIt->constraints(), InitilizationType::AllowAbstract);
+						Runtime::Object *ancestor = createReference(blueIt->second, IDENTIFIER_THIS, ancestorIt->constraints(), InitilizationType::AllowAbstract);
 						ancestor->setParent(blueprint->getEnclosingScope());
-						ancestor->undefine(IDENTIFIER_THIS);
-						ancestor->define(IDENTIFIER_THIS, object);
 
 						// define new base
 						object->define(IDENTIFIER_BASE, ancestor);
