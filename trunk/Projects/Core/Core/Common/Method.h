@@ -40,7 +40,7 @@ class Method : public NamedScope,
 {
 public:
 	Method(IScope* parent, const std::string& name, const std::string& type);
-	Method(const Method& other);
+	Method(const Method& other, bool shallowCopy = false);
 	virtual ~Method();
 
 public: // overloaded operators
