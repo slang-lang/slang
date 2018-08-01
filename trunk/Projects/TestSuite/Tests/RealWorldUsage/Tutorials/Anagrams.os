@@ -22,7 +22,6 @@ public void Main(int argc, string args) {
 
 		foreach ( string word : scanner ) {
 			string alpha = alphabetize(new String(word));
-			//print("alpha = " + alpha);
 
 			StringSet set;
 			if ( map.contains(alpha) ) {
@@ -37,7 +36,7 @@ public void Main(int argc, string args) {
 		}
 
 		foreach ( Pair<string, StringSet> p : map ) {
-			cout((string p.first) + ", " + (string p.second) + ": [");
+			cout((string p.first) + ": [");
 			foreach ( String s : p.second ) {
 				cout("" + string s + " ");
 			}
