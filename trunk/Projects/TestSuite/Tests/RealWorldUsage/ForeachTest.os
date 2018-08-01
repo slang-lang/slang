@@ -15,8 +15,8 @@ private List<String> getList() const {
 }
 
 public void Main(int argc, string args) {
-	foreach ( string o : getList() ) {
-		print("o = " + o);
+	foreach ( String o : getList() ) {
+		print("o = " + string o);
 	}
 
 	foreach ( string p : new String(args) ) {
